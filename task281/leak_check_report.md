@@ -1,26 +1,19 @@
 # leak check, task281
 
-**Verdict: REVIEW.** 15 files read, 13 golden figures and 13 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 17 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: position, distribution, officers, payroll, control, average, analysis, vacant, academy, first-year, fifth-heaviest, standard, cohort, holders, availability, placement, director, factor, checks, classes, officer, extract, retroactive, readable, cracker
+Stump terms swept: drivers, luminaire, record, population, lifetime, weibull, failures, installer, january, distribution, suspensions, wear-out, utility, fraction, orders, follow-up, vantrel, silent, architecture, twelve, golden, expected, register, certificate, twelfth
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `fy2028_allowance_relief_positions_memo.pdf`: carries 40 of 40 distinctive words of the committed call: 'Place 59 of the 60 relief positions (Harlan Road Correctional Facility 9, Avesford Correctional Facility 8, Thornmere Wo'
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `halberd_certificates_of_conformance_2020-2025.pdf`: golden figure 133 appears: ...uality Assurance Certificates of Conformance Page 133 Certificate of Conformance Halberd Lighting Compa...
+- **REVIEW** `tpl_streetlight_lifecycle_model_note.pdf`: carries 8 of 9 distinctive words of the committed call: 'Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires still on t'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `fy2028_allowance_relief_positions_memo.pdf`: 10 of 25 stump-paragraph terms appear (position, payroll, control, analysis, standard, placement); read whether the document names the move
-- **REVIEW** `protective_services_agreement_excerpts.pdf`: 4 of 25 stump-paragraph terms appear (officers, payroll, officer, retroactive); read whether the document names the move
-- **REVIEW** `relief_coverage_standard.pdf`: 10 of 25 stump-paragraph terms appear (position, control, average, analysis, vacant, fifth-heaviest); read whether the document names the move
-
-## 6 ranking artifacts (REVIEW 2, INFO 1)
-- **REVIEW** `doc_average_daily_population_fy2026.csv`: names 3 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `hr_employee_extract_2026-10-01.csv`: names 4 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `fy2028_allowance_relief_positions_memo.pdf`: names 11 of 13 answer-set candidates; confirm it does not rank them on the decision question
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+- **REVIEW** `halberd_certificates_of_conformance_2020-2025.pdf`: 4 of 25 stump-paragraph terms appear (luminaire, january, vantrel, certificate); read whether the document names the move
+- **REVIEW** `schedule_sl_street_lighting_tariff_2026.pdf`: 3 of 25 stump-paragraph terms appear (luminaire, record, january); read whether the document names the move
+- **REVIEW** `tpl_streetlight_lifecycle_model_note.pdf`: 13 of 25 stump-paragraph terms appear (luminaire, record, lifetime, weibull, failures, installer); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -31,9 +24,13 @@ Stump terms swept: position, distribution, officers, payroll, control, average, 
 
 ## 5 announcements (clean)
 
+## 6 ranking artifacts (clean)
+
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 

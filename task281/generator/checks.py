@@ -1,413 +1,519 @@
-"""Generator checks for task281, run on every build: the call against the world, the golden's family, the ladder,
-the three rules (R1 to R3), each Layer 1 item mishandled, the semantic fork rows, the separation of the asks' devices
-from the call, the asks' devices against their stops, the input gates and the realism sweep."""
-from __future__ import annotations
+"""The generator's assertions for task281, run on the built pack, its goldens and the world's clean truth.
 
-import collections
+Every row of the design note's semantic fork table (SF1 to SF17) is asserted here, with the analyst test (R3a: the
+easy route on the correctly read record files all ten phases; R3b: the at-risk maker's drivers alone file the
+golden), the ladder's rungs and their clearances, the separation line, both asks against the world's own events, and
+the input gates."""
 import csv
 import datetime as dt
-import math
 import os
 import re
 
 import numpy as np
+from scipy.stats import chi2
 
 import analysis as A
-import asks as AK
-import common as K
-import pack as PK
+import params as P
+from world import EPOCH, d2i
 
-FAILS = []
-N = [0]
-
-
-def ok(label, cond, detail=""):
-    N[0] += 1
-    if not cond:
-        FAILS.append(label)
-    print("%s %s %s" % ("PASS" if cond else "FAIL", label, detail))
+AT_RISK, CURED = P.DRV["A"], P.DRV["B"]
+RESULTS = []
 
 
+def check(name, cond, detail=""):
+    RESULTS.append((bool(cond), name, detail))
+    return bool(cond)
+
+
+def local(x):
+    return dt.datetime(EPOCH.year, EPOCH.month, EPOCH.day) + dt.timedelta(minutes=int(round(x * 1440)))
+
+
+def sh(d):
+    return {pc: (v["share"] if isinstance(v, dict) else v) for pc, v in d.items()}
+
+
+def setof(s):
+    return [pc for pc in P.PHASE_CODES if s[pc] > P.TRIGGER]
+
+
+def r5(s):
+    return {pc: int(round(s[pc] * 100 / 5) * 5) for pc in P.PHASE_CODES}
+
+
+def edge(v, u):
+    return u / 2 - abs(v - round(v / u) * u)
+
+
+def maker_fits(rows):
+    return {mk: A.weibull_mle([r["t"] for r in rows if r["maker"] == mk], [r["d"] for r in rows if r["maker"] == mk])
+            for mk in (AT_RISK, CURED)}
+
+
+def golden_shares(rows, age="age", cured=None):
+    f = maker_fits(rows)
+    return sh(A.phase_shares(rows, lambda r: (cured(r) if (cured and r["maker"] == CURED)
+                                              else A.cond_fail(r[age], *f[r["maker"]]))))
+
+
+def loglik(t, d, k, lam):
+    t = np.maximum(np.asarray(t, float), 1e-9)
+    d = np.asarray(d, bool)
+    z = (t / lam) ** k
+    return float((np.log(k / lam) + (k - 1) * np.log(t / lam))[d].sum() - z.sum())
+
+
+# ---------------------------------------------------------------------------------------------- the truth
+def truth_lifetimes(w):
+    """Each conversion luminaire's original-driver record from the world's own events: failure and exit dated at
+    their work orders' completion, an order still open at the close not a failure."""
+    end = P.RECORD_END
+    fd, ex = {}, {}
+    for o in w.outages:
+        if o.get("lum") is None or o.get("circuit"):
+            continue
+        c = local(o["completed"]).date()
+        if c > end:
+            continue
+        i = o["lum"]
+        if o["kind"] == "driver" and not o.get("second"):
+            fd[i] = c
+        if o["kind"] in A.EXIT_KINDS:
+            ex[i] = min(ex.get(i, c), c)
+    rows = []
+    for i, L in enumerate(w.lum):
+        t0, f, e = L["install"], fd.get(i), ex.get(i)
+        failed = f is not None and (e is None or f <= e)
+        stop = f if failed else min(e or end, end)
+        rows.append(dict(pole=L["pole"], phase=L["phase"], maker=P.DRV[L["src"]], watts=L["watts"],
+                         t=(stop - t0).days / P.YEAR_D, d=failed, alive=(not failed) and e is None,
+                         age=(P.AS_OF - t0).days / P.YEAR_D, age_close=(end - t0).days / P.YEAR_D))
+    return rows
+
+
+def truth_energy(w, rc):
+    """Each town's 2026 saving from the world's events: the removed fixture, the luminaire's output through the
+    year (a glare reprogramming brings 110 W to 70 W on its completion day), the pole's removal, the node's record."""
+    nlc = {}
+    for row in rc.nlc_rows()[1]:
+        nlc[(int(row[1][3:]), int(row[2][5:7]))] = (float(row[3]), float(row[4]))
+    ev = {}
+    for o in w.outages:
+        if o.get("lum") is not None and not o.get("circuit") and o["completed"] <= d2i(P.RECORD_END) + 1:
+            ev.setdefault(o["lum"], []).append(o)
+    burn = P.BURN_H
+    out = {}
+    for i, L in enumerate(w.lum):
+        hps = P.INPUT_W[("HPS", L["hps_w"])]
+        steps, removed = [(L["install"], L["watts"])], None
+        for o in sorted(ev.get(i, []), key=lambda o: o["completed"]):
+            d = local(o["completed"]).date()
+            if o["kind"] == "reprogram":
+                steps.append((d, 70))
+            elif o["kind"] in ("knockdown", "luminaire"):
+                steps.append((d, 70 if L["reprog"] is not None else L["watts"]))
+            elif o["kind"] == "pole_removed":
+                removed = d
+        if removed is not None and removed < dt.date(2026, 1, 1):
+            continue
+        tot = 0.0
+        for m in range(1, 13):
+            nd = A._days(2026, m)
+            days = [dt.date(2026, m, x) for x in range(1, nd + 1) if removed is None or dt.date(2026, m, x) < removed]
+            if not days:
+                continue
+            lw = np.array([P.INPUT_W[("LED", [s for s in steps if s[0] <= x][-1][1])] for x in days], float)
+            h = burn[m - 1] / nd
+            e_led = (lw * h).sum()
+            rec = nlc.get((L["pole"], m))
+            if rec:
+                e_led -= lw.mean() * (1 - rec[1] / 100.0) * rec[0]
+            tot += hps * h * len(days) - e_led
+        out[L["town"]] = out.get(L["town"], 0.0) + tot
+    return {P.TOWN_NAME[t]: v / 1e6 for t, v in out.items()}
+
+
+def truth_repairs(w):
+    late, tot = {}, {}
+    gaps = []
+    for o in w.outages:
+        if o["kind"] in w.PLANNED or o["completed"] > d2i(P.RECORD_END) + 1:
+            continue
+        c = local(o["completed"])
+        if c.year != 2026:
+            continue
+        rs = [r for r in o.get("reports", []) if not r.get("after")]
+        first = min(r["t"] for r in rs) if rs else o["found"]
+        mins = int(round(o["completed"] * 1440)) - int(round(first * 1440))
+        t = P.TOWN_NAME[o["town"]]
+        tot[t] = tot.get(t, 0) + 1
+        late[t] = late.get(t, 0) + int(mins > 4320)
+        gaps.append(abs(mins - 4320))
+    return late, tot, min(gaps)
+
+
+def rc_addr_rows(target):
+    """The legacy orders whose location is written as an address with the pole's tag after it."""
+    with open(os.path.join(target, P.FILES["wo_legacy"]), newline="", encoding="utf-8") as fh:
+        return {r["WO_NO"] for r in csv.DictReader(fh) if not r["LOCATION"].startswith("TPL")}
+
+
+# ---------------------------------------------------------------------------------------------- rules and realism
 def pdf_text(path):
     import subprocess
-    try:
-        return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
-    except FileNotFoundError:
-        return ""
+    return " ".join(subprocess.run(["pdftotext", "-raw", path, "-"], capture_output=True, text=True,
+                                   check=True).stdout.split())
 
 
-def counts_with(pk, off, a1_of, after_of, weeks="fiscal", cut=K.K_WEEKS, rounding="ceil"):
-    out = []
-    for u in K.UNIT_CODES:
-        if weeks == "fiscal":
-            Au = np.zeros(K.WEEKS)
-            for r in pk.roster:
-                if r["unit_code"] == u and r["cat"] in off:
-                    w = K.fweek(PK.Pack.day_index(r["shift_date"]))
-                    if w:
-                        Au[w - 1] += 8.0
-        a = a1_of(u)
-        need = Au + A.vacancy(pk.new_lines(u), after_of(u, a))
-        x = np.sort(need)[::-1][cut] / (K.WEEK_H * a)
-        out.append(int(np.ceil(x - 1e-9)) if rounding == "ceil" else int(round(x)))
-    return out
+def rules_and_realism(target, D, G, fig, b):
+    import shutil
+    import subprocess
+    GSET = G["set"]
+    rows = G["rows"]
 
+    def same_call(D2):
+        G2 = A.golden_call(D2, rows=A.lifetimes(D2))
+        return G2["set"] == GSET
 
-def run(task, b, fig, res):
-    target = os.path.join(task, "target")
-    w, rc, py = b["w"], b["rc"], b["py"]
-    pk = res["pk"]
-    c = res["call"]
-    cnt = c["counts"]
-    gold = cnt[A.GOLDEN]
-    U = K.UNIT_CODES
-
-    # ------------------------------------------------------------------ the call against the world
-    truth = []
-    for u in U:
-        t = K.UNIT_TITLE[u]
-        js = [j for j, ln in enumerate(w.lines) if ln["unit"] == u]
-        Aw = np.zeros(K.WEEKS)
-        for j in js:
-            for i in range(K.WEEKS * 7):
-                if w.on[j, i] and w.status[j, i] in ("VAC", "SICK", "IOD", "TRN", "FMLA", "MIL"):
-                    Aw[i // 7] += 8.0
-        sched = off = 0
-        for jj, ln in enumerate(w.lines):
-            if K.UNIT_TITLE[ln["unit"]] != t:
-                continue
-            for i in range(K.FY26_DAYS):
-                e = w.holder[jj, i]
-                if w.on[jj, i] and e >= 0 and w.people[e]["cls"] == "2025-1":
-                    sched += 1
-                    off += w.status[jj, i] != "W"
-        a1 = 1 - off / sched
-        v = A.vacancy([(x["line_id"], x["first"], x["off"]) for x in rc.new_line_ids() if x["unit"] == u], 1 - a1)
-        truth.append(int(np.ceil(A.q5(Aw + v) / (40 * a1) - 1e-9)))
-    ok("CALL golden equals the world's placement", gold == truth, "%s vs %s" % (gold, truth))
-    ok("CALL 59 of the 60 placed, one returned", sum(gold) == 59 and fig["call"]["returned_to_reserve"] == 1,
-       str(sum(gold)))
-    for k in A.FAMILY:
-        ok("FAMILY %s places the golden counts" % k, cnt[k] == gold, str(cnt[k]))
-    edge = min(min(r - np.floor(r), np.ceil(r) - r) for k in A.FAMILY for r, _ in c["table"][k].values())
-    ok("MARGIN every family member sits 0.15 or more from a whole position on every unit", edge >= 0.15,
-       "%.3f" % edge)
-
-    # ------------------------------------------------------------------ the ladder
-    want = {"mean": 38, "R1": 62, "R2t": 63, "R2": 64, "R3": 57, "R4": 50, "R5": 52, "R6": 67}
-    for k in A.RUNGS:
-        diff = sum(a != g for a, g in zip(cnt[k], gold))
-        ok("LADDER %s files another placement (%d units differ, total %d)" % (k, diff, sum(cnt[k])),
-           cnt[k] != gold and diff >= 3 and sum(cnt[k]) == want[k], str(cnt[k]))
-    ok("LADDER the default path (R2t, the titles' average officers) is three short of the 60",
-       sum(cnt["R2t"]) - K.FUNDED == 3, str(sum(cnt["R2t"])))
-    ok("LADDER the default path places other counts on four units",
-       sum(a != g for a, g in zip(cnt["R2t"], gold)) == 4, str(cnt["R2t"]))
-
-    # ------------------------------------------------------------------ the three rules
-    with open(os.path.join(target, K.FILES["rosters"]), newline="") as fh:
-        head = next(csv.reader(fh))
-    ok("R1 the rosters ship one row a scheduled line-shift with its holder and status",
-       head[:3] == ["shift_date", "unit_code", "line_id"] and "employee_id" in head and "status_code" in head)
+    # R1: the field's raw material ships, and no shipped column holds the decisive quantity
     heads = []
     for f in os.listdir(target):
         if f.endswith(".csv"):
-            with open(os.path.join(target, f), newline="") as fh:
-                heads += next(csv.reader(fh))
-    ok("R1 no shipped column holds an availability, a weekly need or a complement",
-       not [h for h in heads if re.search(r"avail|need|relief|complement|net_hours|factor", h)], str(len(heads)))
-    ok("R1 the decisive estimate reads the July 2025 classes' own roster rows",
-       sum(1 for r in pk.roster if r["employee_id"] and pk.emp[r["employee_id"]]["academy_class"].endswith(" 2025-1"))
-       > 3000)
-    pk_dup = PK.Pack(target, dedupe=False)
-    ok("R2 Layer 1: the February re-run rows counted twice leave the call", A.call(pk_dup)["counts"]["G"] == gold,
-       str(len(pk_dup.roster) - len(pk.roster)))
-    pk_cur = PK.Pack(target)
-    pk_cur.emp = {e: v[0] for e, v in pk_cur.emp_hist.items()}
-    ok("R2 Layer 1: HR's title rows read first or last leave the call", A.call(pk_cur)["counts"]["G"] == gold)
-    pk_sl = PK.Pack(target, map_shiftlink=False)
-    ok("R2 Layer 1: Thornmere's ShiftLink codes left unread leave the call", A.call(pk_sl)["counts"]["G"] == gold)
-    ok("R2 Layer 1: the payroll is not read by the call (no payroll field in the placement)",
-       "payroll" not in open(os.path.join(os.path.dirname(__file__), "analysis.py")).read().split("import pack")[1])
-    ok("R3a analyst test: every rule applied with the title's average officer files 63, not 59",
-       sum(cnt["R2t"]) == 63 and cnt["R2t"] != gold)
-    ok("R3b the decisive step alone (R2t with the first-year availability) files the golden", cnt["G"] == gold)
-    ok("R3b the vacancy rung alone (R1 to R2) stays off the golden", cnt["R2"] != gold and cnt["R1"] != gold)
-    ok("R3b the availability alone on last year's vacancies (R3) stays off the golden", cnt["R3"] != gold)
-    seqs = {}
-    for r in pk.roster:
-        seqs.setdefault(r["line_id"], []).append(r["status_code"])
-    dup_lines = len(seqs) - len({tuple(v) for v in seqs.values()})
-    ok("R3c no line's year of statuses is a copy of another's", dup_lines == 0, str(dup_lines))
-    wk = [tuple(c["comp"][u]["A"]) for u in U]
-    ok("R3c no two units carry the same weekly off-post series", len(set(wk)) == len(wk))
-    memo = pdf_text(os.path.join(target, K.FILES["memo"])) + pdf_text(os.path.join(target, K.FILES["standard"]))
-    ok("R3c no document carries a placement figure or a wrong total",
-       not re.search(r"\b(38|50|52|57|62|64|67)\b", memo), "")
+            heads += next(csv.reader(open(os.path.join(target, f), encoding="utf-8")))
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, P.FILES["install"]), read_only=True)
+    for ws in wb.worksheets:
+        heads += [str(h) for h in next(ws.iter_rows(values_only=True))]
+    bad = [h for h in heads if re.search(r"maker|vendor|manufactur|driver|supplier|share|cure", h, re.I)]
+    n_lum = sum(p[3] for p in P.PHASES)
+    check("R1 the golden reads every conversion luminaire's censored original-driver duration; no shipped column names "
+          "a driver maker or holds a share", len(rows) == n_lum and not bad, "%d luminaires; columns hit: %s" % (
+              len(rows), bad))
+    # R2: each mess item mishandled leaves the call where it was
+    tagless = {p: I for p, I in D["inst"].items() if not (I["date"].year <= 2022 and p % 25 == 0)}
+    check("R2 the paper-form pole tags (TPL prefix or bare) partly unmatched: same call",
+          same_call(dict(D, inst=tagless)))
+    addr_lost = [x for x in D["wos"] if not (x["sys"] == "legacy" and x["pole"] is not None and x["pole"] % 20 == 0)]
+    check("R2 legacy locations written as an address before the tag partly lost: same call",
+          same_call(dict(D, wos=addr_lost)))
+    dbl = D["wos"] + [dict(x, sys="legacy", completed=y["completed"]) for x in D["wos"] if x["sys"] == "legacy"
+                      and x["completed"] is None for y in D["wos"] if y["source"] == "MIGRATED" and y["pole"] == x["pole"]
+                      and y["opened"] == x["opened"]]
+    check("R2 orders open at the cutover counted in both systems: same call", same_call(dict(D, wos=dbl)))
+    last = {}
+    for x in D["wos"]:
+        if x["kind"] == "driver" and x["completed"] is not None:
+            last[x["pole"]] = max(last.get(x["pole"], x["completed"]), x["completed"])
+    wl = [x for x in D["wos"] if not (x["kind"] == "driver" and x["completed"] is not None
+                                      and x["completed"] != last[x["pole"]])]
+    check("R2 a service driver's failure taken for the original's (the last driver order kept): same call",
+          same_call(dict(D, wos=wl)))
+    swap = {p: dict(I, date=dt.date(I["date"].year, I["date"].day, I["date"].month))
+            if (I["date"].year >= 2023 and I["date"].day <= 12) else I for p, I in D["inst"].items()}
+    check("R2 the tablet export's text dates read day first where they can be: same call",
+          same_call(dict(D, inst=swap)))
+    # R3c: no plant: no copied block, no constant stream, no shared bound set
+    nl = {}
+    for (p, m), (dh, lv) in D["nlc"].items():
+        nl.setdefault(p, {})[m] = dh
+    vecs = [tuple(v.get(m) for m in range(1, 13)) for v in nl.values()]
+    check("R3c no two nodes carry the same twelve months of dimmed hours", len(set(vecs)) == len(vecs),
+          "%d nodes, %d distinct" % (len(vecs), len(set(vecs))))
+    mode_share = max(np.unique([v for (p, m), (v, l) in D["nlc"].items() if m == 3], return_counts=True)[1]) / \
+        sum(1 for (p, m) in D["nlc"] if m == 3)
+    check("R3c no month's dimmed hours a constant across nodes", mode_share < 0.05, "modal share %.3f" % mode_share)
+    # realism sweep: identifiers with no constant step, documents dated after what they state
+    import pandas as pd
+    ids = {}
+    wn = pd.read_csv(os.path.join(target, P.FILES["wo_new"]), dtype=str)
+    ids["successor order numbers (2026)"] = sorted(int(x[6:]) for x in wn["work_order"] if x.startswith("WO-26"))
+    lg = pd.read_csv(os.path.join(target, P.FILES["wo_legacy"]), dtype=str)
+    ids["legacy order numbers"] = sorted(int(x[1:]) for x in lg["WO_NO"])
+    rp = pd.read_csv(os.path.join(target, P.FILES["reports"]), dtype=str)
+    ids["report ids"] = sorted(int(x[3:]) for x in rp["report_id"])
+    vg = pd.read_csv(os.path.join(target, P.FILES["vegetation"]), dtype=str)
+    ids["patrol ids"] = sorted(int(x[3:]) for x in vg["patrol_id"])
+    nn = pd.read_csv(os.path.join(target, P.FILES["nlc"]), dtype=str)
+    ids["node ids"] = sorted({int(x, 16) for x in nn["node_id"]})
+    coc = pdf_text(os.path.join(target, P.FILES["coc"]))
+    ids["purchase orders"] = sorted({int(x) for x in re.findall(r"Purchase order (\d{10})", coc)})
+    steps = {k: len(set(np.diff(v))) for k, v in ids.items()}
+    check("realism: no identifier column runs at one constant step", all(s > 1 for s in steps.values()), str(steps))
+    note = pdf_text(os.path.join(target, P.FILES["note"]))
+    tariff = pdf_text(os.path.join(target, P.FILES["tariff"]))
+    check("positive controls: the note, the tariff and the certificates read through the same extractor",
+          "two-parameter Weibull distribution, fitted by maximum likelihood" in note and
+          "within 72 hours of the first report" in tariff and "LED driver, programmable" in coc
+          and len(note) > 1000 and len(tariff) > 1000 and len(coc) > 10000)
+    words = r"cure|never wear|wear out|susceptib|immune|Vantrel|Corvane|driver maker|population at risk"
+    check("no governing document names a driver maker, a cure or a population at risk",
+          not re.search(words, note, re.I) and not re.search(words, tariff, re.I))
+    check("the certificates say nothing of wear-out or cure (both makers' drivers under one rated life)",
+          not re.search(r"cure|wear|susceptib", coc, re.I) and
+          coc.count("rated life 100,000 hours") == len(D["coc"]))
+    last_ship = max(L["ship"] for L in b["w"].lots)
+    check("documents dated after what they state: certificates after the last shipment, the note after the "
+          "record's close", last_ship <= dt.date(2025, 10, 2) and "6 January 2027" in note,
+          "last shipment %s" % last_ship)
+    # distractors: the golden and every ask unchanged with all three deleted
+    scratch = os.path.join(os.path.dirname(target), ".distractor_check")
+    if os.path.exists(scratch):
+        shutil.rmtree(scratch)
+    shutil.copytree(target, scratch)
+    for k in P.DISTRACTORS:
+        os.remove(os.path.join(scratch, P.FILES[k]))
+    D3 = A.load(scratch)
+    G3 = A.golden_call(D3)
+    E3 = A.energy_saving(D3)[0]
+    L3 = A.repairs(D3)[0]
+    shutil.rmtree(scratch)
+    check("distractors deleted: the call, every share and every ask unchanged",
+          G3["set"] == GSET and all(abs(G3["phases"][pc]["share"] - G["phases"][pc]["share"]) < 1e-12
+                                    for pc in P.PHASE_CODES)
+          and all(int(round(E3[t])) == fig["towns"][t]["energy"] and L3[t] == fig["towns"][t]["late"]
+                  for t in fig["towns"]))
 
-    # ------------------------------------------------------------------ semantic fork rows
-    a1t = {u: c["comp"][u]["a1"] for u in U}
-    ok("SF1 the July 2025 classes by title, by unit or as one class place the same counts",
-       cnt["G"] == cnt["G_unit"] == cnt["G_class"])
-    ok("SF2 every FY2026 first-year holder (mid-year classes in) places the same counts", cnt["G_first"] == gold)
-    ok("SF3 pooled hours or the mean of members' shares place the same counts", cnt["G_ratios"] == gold)
-    ok("SF4 a new line's holder after the first shift: first-year, none or the unit average, same counts",
-       cnt["G_none"] == gold and cnt["G_avg"] == gold)
-    std = pdf_text(os.path.join(target, K.FILES["standard"]))
-    flat = re.sub(r"\s+", " ", std)
-    alt4 = counts_with(pk, PK.OFF_POST, lambda u: a1t[u], lambda u, a: 40 * (1 - a), cut=3)
-    ok("SF5 the fifth-heaviest week is filed (3.1, 3.2); the fourth would place other counts",
-       "every week of the year planned for but four" in flat and "fifth-heaviest week" in flat and alt4 != gold,
-       str(alt4))
-    alt_r = counts_with(pk, PK.OFF_POST, lambda u: a1t[u], lambda u, a: 40 * (1 - a), rounding="round")
-    ok("SF6 the smallest whole number reaching the need is filed (3.2); rounding would place other counts",
-       "smallest whole number of relief positions" in flat and alt_r != gold, str(alt_r))
-    ok("SF7 fiscal weeks from 1 July, leftover days in no week, are filed (2.2)",
-       "seven days counted from 1 July" in flat and "belong to no week" in flat)
-    off2 = tuple(x for x in PK.OFF_POST if x != "Training")
-    ok("SF8 training away from the post is off post (2.3(a)) and the status table says so",
-       "in training away from the post" in flat and
-       any(r["state_category"] == "Training" and "off post" in r["description"].lower()
-           for r in PK.rows(os.path.join(target, K.FILES["codes"]))), str(off2))
-    ok("SF9 a line vacated during the year is outside the need (2.4)",
-       "falls vacant during the year" in flat and "not sized for it" in flat)
-    ok("SF10 the re-run rows counted once or twice place the same counts", A.call(pk_dup)["counts"]["G"] == gold)
-    ok("SF11 Thornmere's ShiftLink rows read or left place the same counts", A.call(pk_sl)["counts"]["G"] == gold)
-    memo_t = re.sub(r"\s+", " ", pdf_text(os.path.join(target, K.FILES["memo"])))
-    ok("SF12 positions not needed return to the reserve; a shortfall is reported (memo)",
-       "the rest return to the Governor's reserve" in memo_t and "how many more" in memo_t)
-    ok("SF13 the year planned for is FY2028, the last closed year FY2026 (memo, 2.1)",
-       "on the FY2026 rosters, our last closed year" in memo_t and "FY2028 position control" in memo_t)
-    ok("SF14 the standard files no grain for a relief position's hours; by title or by unit the same counts, and the "
-       "positions are filled from the July 2027 entry classes (memo)",
-       "reckoned by title" not in flat and cnt["G_unit"] == gold and "July 2027 entry classes" in memo_t)
 
-    # ------------------------------------------------------------------ separation of the asks from the call
-    pk_np = PK.Pack(target)
-    pk_np.payroll, pk_np.earn, pk_np.offers = [], [], []
-    ok("SEP the call reads no payroll line and no offer: dropping both leaves the placement",
-       A.call(pk_np)["counts"]["G"] == gold)
-    dev = len(AK.repeats(pk)) + sum(1 for r in pk.offers if r["response"] == "Accepted")
-    ok("SEP the asks' device rows sit in the payroll, the offer log and HR's rows outside the July 2025 classes",
-       dev > 3000, str(dev))
-    ch = AK.chains(pk)
-    ok("SEP the rehired officers hold no July 2025 class record",
-       all(not pk.emp[e]["academy_class"].endswith("2025-1") and not pk.emp[o]["academy_class"].endswith("2025-1")
-           for e, o in ch.items()))
-    movers = [e for e, v in pk.emp_hist.items() if len(v) > 1]
-    ok("SEP the officers who changed title hold no July 2025 class record",
-       all(not pk.emp[e]["academy_class"].endswith("2025-1") for e in movers), str(len(movers)))
+# ---------------------------------------------------------------------------------------------- the run
+def run(target, golden, b, fig, res):
+    RESULTS.clear()
+    w, rc = b["w"], b["rc"]
+    D, G = res["D"], res["G"]
+    rows = G["rows"]
+    gold = sh(G["phases"])
+    GSET = G["set"]
+    T = P.TRIGGER
 
-    # ------------------------------------------------------------------ the asks' filed readings (SF16 to SF18)
-    g = res["asks"]
-    agr = re.sub(r"\s+", " ", pdf_text(os.path.join(target, K.FILES["agreement"])))
-    pay_head = open(os.path.join(target, K.FILES["payroll"]), encoding="utf-8").readline().strip().split(",")
-    off_head = open(os.path.join(target, K.FILES["offers"]), encoding="utf-8").readline().strip().split(",")
-    ok("SF16 the payroll's own headers key every line to the employee's home timekeeper and cost center, the offer "
-       "log names the post's unit, and MOU 14.3 holds over and calls in the unit's own employees",
-       "home_timekeeper" in pay_head and "home_cost_center" in pay_head and "post_unit" in off_head and
-       "employees of the same title at the State's other units may also join" in agr and
-       "the unit holds over its junior employee on duty or calls in its junior employee off duty" in agr)
-    def home_on(e, d):
-        for x in pk.emp_hist.get(e, []):
-            if x["title_effective_from"] <= d and (not x["title_effective_to"] or d <= x["title_effective_to"]):
-                return x["home_unit"]
-        return pk.emp[e]["home_unit"]
-    hu = {}
-    for r in pk.payroll:
-        if r[AK.HOME] and r["work_date"]:
-            hu.setdefault(r[AK.HOME], set()).add(home_on(r["employee_id"], r["work_date"]))
-    ok("SF16 every line's home timekeeper is its employee's home unit in HR (SL-0410 Thornmere's employees only)",
-       all(v == {AK.LOC.get(k, k)} for k, v in hu.items()), str({k: sorted(v) for k, v in hu.items()}))
-    home = {e: p["unit"] for e, p in enumerate(w.people)}
-    fy_ev = [ev for ev in py.events if K.FY26_START <= ev["date"] <= dt.date(2026, 6, 30)]
-    ok("SF16 every piece not offered was worked at the employee's own unit, and every piece worked at another unit "
-       "was offered", all(ev["vol"] or ev["unit"] == home[ev["e"]] for ev in fy_ev) and
-       all(ev["vol"] for ev in fy_ev if ev["unit"] != home[ev["e"]]), str(len(fy_ev)))
-    acc = [r for r in pk.offers if r["response"] == "Accepted"]
-    key3 = {(r["employee_id"], r["post_date"], r["start_time"]): r["post_unit"] for r in acc}
-    ok("SF16 an accepted offer is one piece: employee, date and start repeat in no two acceptances",
-       len(key3) == len(acc), "%d acceptances" % len(acc))
-    rep = AK.repeats(pk)
-    canon = {old: new for new, old in AK.chains(pk).items()}
-    lit_a, lit_b = collections.defaultdict(float), collections.defaultdict(set)
-    for n, r in enumerate(pk.payroll):
-        if r["earn_code"] not in ("OT",) + tuple(AK.COMP) or not AK.in_fy(r["work_date"]):
-            continue
-        u = key3.get((r["employee_id"], r["work_date"], r["start_time"]))
-        u = u or AK.LOC.get(r[AK.HOME], r[AK.HOME])
-        lit_b[u].add(canon.get(r["employee_id"], r["employee_id"]))
-        if n not in rep:
-            lit_a[u] += AK.hours_worked(r, True, False, False, AK.credit(pk, r))
-    ok("SF16 the literal reading (the accepted offer's unit by employee, date and start, else the own unit) gives "
-       "the golden hours and people", {u: int(round(lit_a[u])) for u in U} == g["a"] and
-       {u: len(lit_b[u]) for u in U} == g["b"])
-    wt = collections.defaultdict(float)
-    for ev in fy_ev:
-        wt[ev["unit"]] += ev["hours"]
-    ok("SF16 the golden hours are the hours the world worked at each unit", {u: int(round(wt[u])) for u in U} == g["a"],
-       str({u: int(round(wt[u])) for u in U}))
-    ok("SF16 a join on a compensatory line's credited hours as if worked leaves its piece at the own unit, ruled out "
-       "by MOU 14.2 and the codes", AK.ask_a(pk, cte="raw") != g["a"])
-    earn = {r["earn_code"]: r["description"] for r in pk.earn}
-    cts = [r for r in pk.payroll if r["earn_code"] == "CTS"]
-    ok("SF17 the aides' compensatory time carries its own code, credited hour for hour; at 1.5 the forensic hospital "
-       "moves", earn.get("CTS") == "Comp time earned 1.0" and earn.get("CTE") == "Comp time earned 1.5" and
-       cts and all(pk.title_on(r["employee_id"], r["work_date"]) == "FSA" for r in cts) and
-       not [r for r in pk.payroll if r["earn_code"] == "CTE" and pk.title_on(r["employee_id"], r["work_date"]) == "FSA"]
-       and AK.ask_a(pk, flat=True)["FFH"] != g["a"]["FFH"], "%d CTS lines" % len(cts))
-    no_cte = collections.defaultdict(set)
-    for r in pk.payroll:
-        if r["earn_code"] == "OT" and AK.in_fy(r["work_date"]):
-            u = key3.get((r["employee_id"], r["work_date"], r["start_time"]))
-            no_cte[u or AK.LOC.get(r[AK.HOME], r[AK.HOME])].add(canon.get(r["employee_id"], r["employee_id"]))
-    ok("SF18 compensatory time is elected instead of overtime pay (MOU 14.2), so its holder worked overtime; counting "
-       "OT lines only moves the people", "elect compensatory time instead of overtime pay" in agr and
-       {u: len(no_cte[u]) for u in U} != g["b"])
-    ok("GATE no file under target/ describes the data (dictionary, readme, notes, manifest)",
-       not [f for f in os.listdir(target) if re.search(r"dictionar|readme|notes|manifest|codebook", f, re.I)])
+    # ---- input gates
+    files = sorted(os.listdir(target))
+    exts = {os.path.splitext(f)[1] for f in files}
+    big = max(b["counts"].values())
+    check("input gates: 10+ files, 3+ formats, a 25,000-row file",
+          len(files) >= 10 and len(exts) >= 3 and big >= 25000, "%d files, %s, largest %d rows" % (len(files),
+                                                                                             sorted(exts), big))
+    check("input gates: two or more distractors, none named as such", len(P.DISTRACTORS) >= 2 and not any(
+        "distract" in f for f in files), str([P.FILES[k] for k in P.DISTRACTORS]))
+    check("no file describes the data (no dictionary, readme, manifest, notes)",
+          not any(re.search(r"dictionar|readme|manifest|field_notes|extract_log", f, re.I) for f in files))
 
-    # ------------------------------------------------------------------ the asks' devices
-    for name, kw, need in (("A by the keying timekeeper, the offer log unread", dict(offers=False), 6),
-                           ("A a timesheet paid twice counted twice", dict(drop_repeats=False), 8),
-                           ("A compensatory time read as worked hours", dict(cte="raw"), 7),
-                           ("A compensatory time left out", dict(cte=False), 8),
-                           ("A night differential hours counted", dict(otn=True), 8),
-                           ("A compensatory time at 1.5 for every title", dict(flat=True), 1)):
-        v = AK.ask_a(pk, **kw)
-        n = sum(v[u] != g["a"][u] for u in U)
-        ok("DEVICE %s moves %d of 8 units" % (name, n), n >= need, str(n))
-    v = AK.ask_a(pk, flat=True)
-    ok("DEVICE A the aides' compensatory time at 1.5 moves the forensic hospital", v["FFH"] != g["a"]["FFH"],
-       "%d against %d" % (v["FFH"], g["a"]["FFH"]))
-    v = AK.ask_a(pk, dedupe_all=True)
-    ok("FAIR A: dropping every repeated piece key drops only the second payments",
-       all(v[u] == g["a"][u] for u in U))
-    for name, kw, need in (("B records counted as people", dict(merge=False), 4),
-                           ("B by the keying timekeeper, the offer log unread", dict(offers=False), 6)):
-        v = AK.ask_b(pk, **kw)
-        n = sum(v[u] != g["b"][u] for u in U)
-        ok("DEVICE %s moves %d of 8 units" % (name, n), n >= need, str(n))
-    v = AK.ask_b(pk, offers=False, merge=False)
-    ok("DEVICE B both unread moves every unit", all(v[u] != g["b"][u] for u in U), str(v))
-    for name, kw, need in (("C records counted as people", dict(merge=False), 2),
-                           ("C a timesheet paid twice counted twice", dict(drop_repeats=False), 1),
-                           ("C titles from HR's latest row", dict(title="current"), 2),
-                           ("C night differential hours counted", dict(otn=True), 2),
-                           ("C compensatory time left out", dict(cte=False), 1)):
-        v = AK.ask_c(pk, **kw)
-        n = sum(v[t] != g["c"][t] for t in K.TITLE_ORDER)
-        ok("DEVICE %s moves %d of 4 titles" % (name, n), n >= need, str(v))
-    near = sorted(h for h in g["hours"].values() if 590 <= h <= 610)
-    ok("ASK C no person within 10 hours of 600 on the golden handling", not near, str(near))
-    ph = AK.person_hours(pk, merge=False)
-    parts = [(ph.get(o, 0), ph.get(e, 0)) for e, o in ch.items()]
-    ok("ASK C four rehires joined by seniority date, each record under 600 and each person over it",
-       len(ch) == 4 and all(a < 600 and b < 600 and a + b > 615 for a, b in parts), str(parts))
-    ok("ASK C a rehire in every title", sorted({pk.emp[e]["title_code"] for e in ch}) == sorted(K.TITLE_ORDER),
-       str(sorted({pk.emp[e]["title_code"] for e in ch})))
-    gaps = []
-    for e, o in ch.items():
-        days = (dt.date.fromisoformat(pk.emp[e]["hire_date"]) - dt.date.fromisoformat(pk.emp[o]["separation_date"])).days
-        worked = [r for r in pk.payroll if r["employee_id"] in (e, o) and r["work_date"] and
-                  pk.emp[o]["separation_date"] < r["work_date"] < pk.emp[e]["hire_date"]]
-        rost = [r for r in pk.roster if r["employee_id"] in (e, o) and
-                pk.emp[o]["separation_date"] < r["shift_date"] < pk.emp[e]["hire_date"]]
-        gaps.append((days, len(worked), len(rost)))
-    ok("REAL no rehire worked, was rostered or was paid between leaving and coming back",
-       all(w_ == 0 and r_ == 0 for _, w_, r_ in gaps), str(gaps))
-    ok("FAIR every rehire's restored seniority date matches one earlier record only",
-       all(sum(1 for v in pk.emp.values() if v["seniority_date"] == pk.emp[e]["seniority_date"] and
-               v["separation_date"] and v["separation_date"] < pk.emp[e]["hire_date"] and
-               v["title_code"] == pk.emp[e]["title_code"]) == 1 for e in ch))
-    retro = [r for r in pk.payroll if r["earn_code"] == "OTR"]
-    rep = AK.repeats(pk)
-    tie = 0
-    ot = {}
-    for n_, r in enumerate(pk.payroll):
-        if r["earn_code"] == "OT":
-            ot.setdefault(r["employee_id"], []).append((r["work_date"], float(r["hours"])))
-    for r in retro:
-        s_ = sum(h for d, h in ot.get(r["employee_id"], []) if r["service_period_start"] <= d <= r["service_period_end"])
-        tie += abs(s_ - float(r["hours"])) < 1e-6
-    ok("FAIR every retroactive line's hours are the hours of the overtime lines paid for its service period",
-       tie == len(retro),
-       "%d of %d" % (tie, len(retro)))
-    pays = {}
-    for n_, r in enumerate(pk.payroll):
-        if n_ in rep:
-            pays.setdefault(AK.piece_key(r), []).append(r["check_date"])
-    first = {}
-    for n_, r in enumerate(pk.payroll):
-        if n_ not in rep and r["earn_code"] in ("OT", "OTN") + tuple(AK.COMP):
-            first.setdefault(AK.piece_key(r), []).append(r["check_date"])
-    ok("FAIR every second payment repeats a piece paid once before on an earlier check",
-       all(len(first.get(k, [])) == 1 and min(v) > first[k][0] for k, v in pays.items()), str(len(rep)))
-    acc = AK.worked_unit(pk)
-    keys = [(r["employee_id"], r["post_date"], r["start_time"], r["hours"]) for r in pk.offers if r["response"] == "Accepted"]
-    ok("FAIR every accepted offer names one piece", len(keys) == len(set(keys)), str(len(keys)))
-    pieces = {(r["employee_id"], r["work_date"], r["start_time"], AK.worked_key(pk, r)) for n_, r in enumerate(pk.payroll)
-              if r["earn_code"] in ("OT",) + tuple(AK.COMP) and n_ not in rep and AK.in_fy(r["work_date"])}
-    ok("FAIR every accepted offer is paid as one piece", all(k in pieces for k in acc), str(len(acc)))
-    day = {}
-    for n_, r in enumerate(pk.payroll):
-        if r["earn_code"] in ("OT",) + tuple(AK.COMP) and n_ not in rep:
-            h = float(r["hours"]) / AK.COMP.get(r["earn_code"], 1.0)
-            day[(r["employee_id"], r["work_date"])] = day.get((r["employee_id"], r["work_date"]), 0) + h
-    ok("REAL no employee worked more than 12 hours of overtime on a day", max(day.values()) <= 12,
-       str(max(day.values())))
-    late = [n_ for n_, r in enumerate(pk.payroll) if r["work_date"] and r["earn_code"] != "OTR" and
-            r["work_date"] < (dt.date.fromisoformat(r["pay_period_end"]) - dt.timedelta(days=13)).isoformat()]
-    ok("SILENT lines paid after their period are mostly first payments, so the period gap marks no second payment",
-       len(set(late) - rep) > len(set(late) & rep), "%d first, %d second" % (len(set(late) - rep), len(set(late) & rep)))
-    straddle = sum(1 for r in retro if AK.quarter(r["service_period_start"]) != AK.quarter(r["service_period_end"]))
-    ok("FAIR some retroactive periods straddle a quarter or the year's start", straddle > 50, str(straddle))
+    # ---- the clean truth
+    tr = truth_lifetimes(w)
+    by_pole = {r["pole"]: r for r in tr}
+    mism = sum(1 for r in rows if (by_pole[r["pole"]]["d"], round(by_pole[r["pole"]]["t"], 9), by_pole[r["pole"]]["alive"])
+               != (r["d"], round(r["t"], 9), r["alive"]))
+    check("the pack's lifetimes equal the world's, luminaire by luminaire", mism == 0, "%d mismatches" % mism)
+    mk_ok = all(D["coc"][D["inst"][L["pole"]]["lot"]]["maker"] == P.DRV[L["src"]] for L in w.lum)
+    check("every luminaire's lot finds its certificate and its driver maker", mk_ok)
+    true_set = setof({pc: np.mean([(A.cond_fail(r["age"], P.K_A, P.LAM_A) if r["maker"] == AT_RISK else
+                                    1 - np.exp(-P.RATE_B * (P.HORIZON_Y - r["age"])))
+                                   for r in tr if r["phase"] == pc and r["alive"]]) for pc in P.PHASE_CODES})
+    check("the golden set is the world's true set", GSET == true_set, "golden %s, truth %s" % (GSET, true_set))
+    check("golden set is P1, P3, P5, P7, P9", GSET == ["P1", "P3", "P5", "P7", "P9"], str(GSET))
 
-    # ------------------------------------------------------------------ input gates
-    files = os.listdir(target)
-    ok("GATE ten or more files", len(files) >= 10, str(len(files)))
-    ok("GATE three or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3,
-       str(sorted({f.rsplit(".", 1)[1] for f in files})))
-    ok("GATE a file of 25,000 rows or more", b["counts"]["rosters"] >= 25000, str(b["counts"]["rosters"]))
-    ok("GATE two or more distractors", len(K.DISTRACTORS) >= 2)
-    ok("GATE no file name names the stump",
-       not [f for f in files if re.search(r"first.?year|availab|trap|issue|known", f, re.I)])
+    # ---- R3a, R3b: the analyst test on the clean truth
+    pooled, (kP, lP) = A.rung_pooled(rows)
+    default_set = setof(sh(pooled))
+    check("R3a: one Weibull over every conversion driver files all ten phases", default_set == P.PHASE_CODES,
+          "default %s, shares %.1f to %.1f" % (default_set, min(sh(pooled).values()) * 100, max(sh(pooled).values()) * 100))
+    fA = A.weibull_mle([r["t"] for r in rows if r["maker"] == AT_RISK], [r["d"] for r in rows if r["maker"] == AT_RISK])
+    r3b = setof(sh(A.phase_shares(rows, lambda r: A.cond_fail(r["age"], *fA) if r["maker"] == AT_RISK else 0.0)))
+    check("R3b: the at-risk maker's drivers alone file the golden", r3b == GSET, str(r3b))
+    expB = sum((r["t"] / lP) ** kP for r in rows if r["maker"] == CURED)
+    nB = sum(r["d"] for r in rows if r["maker"] == CURED)
+    check("loudness after the join: the pooled fit expects hundreds of the cured maker's failures, the record has few",
+          expB > 20 * max(nB, 1), "expected %.0f, recorded %d" % (expB, nB))
 
-    # ------------------------------------------------------------------ realism sweep
-    tot = [int(c["comp"][u]["A"].sum()) for u in U]
-    ok("REAL no two units carry the same year of off-post hours", len(set(tot)) == len(tot), str(tot))
-    ok("REAL overtime hours by unit are not round", all(v % 100 for v in g["a"].values()), str(g["a"]))
-    text = ""
-    for f in files:
-        if f.endswith((".csv", ".txt")):
-            text += open(os.path.join(target, f), encoding="utf-8").read()
-        elif f.endswith(".pdf"):
-            text += pdf_text(os.path.join(target, f))
-    ok("REAL no em dash in the pack", "—" not in text)
-    ok("REAL every persona named in the pack is drawn", all(p in text for p in
-                                                            (K.PEOPLE["desk"], K.PEOPLE["director"],
-                                                             K.PEOPLE["recruit"], K.PEOPLE["payroll"])))
-    def week_read(new, after, through):
-        v = np.zeros(K.WEEKS)
-        for _, first, off in new:
-            fw = (first - K.FY28_START).days // 7
-            for i in range(K.WEEKS * 7):
-                if (K.FY28_START + dt.timedelta(days=i)).weekday() in off:
-                    continue
-                vac = (i // 7 <= fw) if through else (i // 7 < fw)
-                v[i // 7] += K.SHIFT_H if vac else K.SHIFT_H * after
-        return v
-    for through in (True, False):
-        whole = []
-        for u in U:
-            cc = c["comp"][u]
-            need = cc["A"] + week_read(cc["new"], 1 - cc["a1"], through)
-            whole.append(int(math.ceil(A.q5(need) / (K.WEEK_H * cc["a1"]) - 1e-9)))
-        ok("SF15 a new line's first week read whole (%s) places the same counts" % ("vacant" if through else "filled"),
-           whole == gold, str(whole))
-    splits = sum(1 for r in pk.position if r["status_fy2028_start"] == "Vacant" and
-                 (dt.date.fromisoformat(r["first_shift_on_post"]) - K.FY28_START).days % 7)
-    ok("DET most first shifts fall inside a fiscal week, so the day-level reading is exercised", splits >= 10, str(splits))
+    # ---- clearances: golden and default at 1.15x, every designated phase above and every other below
+    lo, hi = T / 1.15, T * 1.15
+    check("golden clears the trigger by 1.15x both ways", all(v >= hi or v <= lo for v in gold.values()),
+          "nearest %.3f" % min(gold.values(), key=lambda v: abs(v - T)))
+    check("default clears the trigger by 1.15x", all(v >= hi for v in sh(pooled).values()),
+          "lowest %.3f" % min(sh(pooled).values()))
 
-    print("checks: %d run, %d failed%s" % (N[0], len(FAILS), (": " + "; ".join(FAILS)) if FAILS else ""))
-    return 1 if FAILS else 0
+    # ---- the ladder's rungs (sets), each a different named answer
+    lad = {}
+    lad["R1 failure share to date"] = setof(sh(A.rung_naive(rows)))
+    lad["R2 one Weibull, the default"] = default_set
+    lfp, par = A.rung_lfp(rows)
+    lad["R2b limited-failure population, pooled"] = setof(sh(lfp))
+    lad["R3 phase scale (violates 3.2)"] = setof(sh(A.rung_groups(rows, lambda r: r["phase"], True)))
+    lad["R3b Weibull per phase (violates 3.2)"] = setof(sh(A.rung_groups(rows, lambda r: r["phase"], False)))
+    lad["R4 maker split, unconditioned"] = setof(sh(A.rung_maker_uncond(D, G)))
+    lad["R5 the golden"] = GSET
+    check("R2b the cure model on the pooled record files all ten phases (one susceptible fraction for every phase)",
+          lad["R2b limited-failure population, pooled"] == P.PHASE_CODES,
+          "p = %.3f, shares %.1f to %.1f" % (par[2], min(sh(lfp).values()) * 100, max(sh(lfp).values()) * 100))
+    lp = sh(A.rung_lfp_phase(rows))
+    lad["R3c cure fraction per phase (violates 3.2)"] = setof(lp)
+    check("R3c a susceptible fraction per phase (3.2) files another set", setof(lp) != GSET,
+          "%s, shares %s" % (setof(lp), " ".join("%.0f" % (lp[pc] * 100) for pc in P.PHASE_CODES)))
+    check("R1 files no phase (the record is young)", lad["R1 failure share to date"] == [])
+    check("R3 and R3b file sets other than the golden", lad["R3 phase scale (violates 3.2)"] != GSET and
+          lad["R3b Weibull per phase (violates 3.2)"] != GSET,
+          "%s / %s" % (lad["R3 phase scale (violates 3.2)"], lad["R3b Weibull per phase (violates 3.2)"]))
+    unc = sh(A.rung_maker_uncond(D, G))
+    check("R4 lands the set with other figures", lad["R4 maker split, unconditioned"] == GSET and
+          sum(r5(unc)[pc] != r5(gold)[pc] for pc in P.PHASE_CODES) >= 1,
+          "%d of 10 nearest-5 figures differ" % sum(r5(unc)[pc] != r5(gold)[pc] for pc in P.PHASE_CODES))
+
+    # ---- the shape and the figures
+    e5 = min(edge(v * 100, 5) for v in gold.values())
+    check("every share sits clear of its nearest-5 edge", e5 >= 0.3, "tightest %.2f points" % e5)
+    check("figures.json carries the nearest-5 shares", all(fig["phases"][pc]["share5"] == r5(gold)[pc]
+                                                           for pc in P.PHASE_CODES))
+
+    # ---- the semantic fork table, every row asserted
+    reg_phase = all(D["reg"][p]["conversion_phase"] == I["phase"] for p, I in D["inst"].items() if p in D["reg"])
+    check("SF1 the installer's phase and the register's conversion_phase agree on every standing pole", reg_phase)
+    yr_gap = np.mean([I["date"].year - int(D["reg"][p]["pole_set_year"]) for p, I in D["inst"].items() if p in D["reg"]])
+    check("SF2 the register's pole_set_year is the pole's (decades before the retrofit), ruled out by 2.4",
+          yr_gap > 10, "mean gap %.1f years" % yr_gap)
+    alt = A.lifetimes(D, failure_kinds=("driver", "glare"))
+    check("SF3 glare orders counted as driver events: same call", setof(golden_shares(alt)) == GSET)
+    alt = A.lifetimes(D, date_field="opened")
+    check("SF4 failures dated at the order's opening: same call", setof(golden_shares(alt)) == GSET)
+    wos_open = [dict(x, completed=x["opened"]) if (x["completed"] is None and x["kind"] == "driver") else x
+                for x in D["wos"]]
+    alt = A.lifetimes(dict(D, wos=wos_open))
+    check("SF5 an order open at the close counted as a failure: same call", setof(golden_shares(alt)) == GSET)
+    alt = A.lifetimes(D, exits=())
+    check("SF6 exits ignored (every luminaire kept to the close): same call", setof(golden_shares(alt)) == GSET)
+    after_exit = 0
+    for r in rows:
+        pass
+    ex_d = {}
+    for x in D["wos"]:
+        if x["kind"] in A.EXIT_KINDS and x["completed"] is not None and x["pole"] in D["inst"]:
+            ex_d[x["pole"]] = min(ex_d.get(x["pole"], x["completed"]), x["completed"])
+    after_exit = sum(1 for x in D["wos"] if x["kind"] == "driver" and x["completed"] is not None
+                     and x["pole"] in ex_d and x["completed"] > ex_d[x["pole"]])
+    check("SF7 no driver order follows an exit on its pole (a replacement luminaire's events never reach the fit)",
+          after_exit == 0, "%d" % after_exit)
+    leg_open = [x for x in D["wos"] if x["sys"] == "legacy" and x["completed"] is None]
+    mig = [x for x in D["wos"] if x["source"] == "MIGRATED"]
+    check("SF8 every legacy order open at the cutover is carried once into the successor",
+          len(leg_open) == len(mig) and {(x["pole"], x["opened"]) for x in leg_open} ==
+          {(x["pole"], x["opened"]) for x in mig}, "%d legacy open, %d migrated" % (len(leg_open), len(mig)))
+    alt12 = sh(A.phase_shares(rows, lambda r: A.cond_fail(r["age"], *maker_fits(rows)[r["maker"]],
+                                                          h=r["age"] + P.HORIZON_Y)))
+    check("SF9 twelve years counted from 1 January 2027 instead of from installation: same call, other figures, "
+          "ruled out by 2.1", setof(alt12) == GSET and r5(alt12) != r5(gold), str(r5(alt12)))
+    cl = golden_shares(rows, age="age_close")
+    check("SF10 conditioned at the record's close instead of 1 January: same call and nearest-5 figures",
+          setof(cl) == GSET and r5(cl) == r5(gold))
+    n_alive = {pc: G["phases"][pc]["n"] for pc in P.PHASE_CODES}
+    check("SF11 the population on 1 January 2027: no failure and no exit by the close",
+          sum(n_alive.values()) == sum(1 for r in rows if r["alive"]), str(n_alive))
+    check("SF12 lifetimes phase by phase (3.2) file another set", lad["R3 phase scale (violates 3.2)"] != GSET)
+    bz = golden_shares(rows, cured=lambda r: 0.0)
+    fB = maker_fits(rows)[CURED]
+    rate = sum(r["d"] for r in rows if r["maker"] == CURED) / sum(r["t"] for r in rows if r["maker"] == CURED)
+    be = golden_shares(rows, cured=lambda r: 1 - np.exp(-rate * (P.HORIZON_Y - r["age"])))
+    check("SF13 the cured maker at zero or at a constant rate instead of its own Weibull: same call and figures",
+          setof(bz) == GSET and setof(be) == GSET and r5(bz) == r5(gold) and r5(be) == r5(gold),
+          "Corvane shape %.2f, life %.0f years" % fB)
+    ow = sh(A.rung_groups(rows, lambda r: (r["maker"], r["watts"]), shared_shape=False))
+    ow2 = sh(A.rung_groups(rows, lambda r: (r["maker"], r["watts"]), shared_shape=True))
+    check("SF14 a Weibull per maker and output setting: same call and nearest-5 figures",
+          setof(ow) == GSET and r5(ow) == r5(gold), "max shift %.2f points" % max(abs(ow[pc] - gold[pc]) * 100
+                                                                                  for pc in P.PHASE_CODES))
+    rounded_set = [pc for pc in P.PHASE_CODES if r5(gold)[pc] > 45]
+    check("SF15 the trigger read on the rounded share: same call", rounded_set == GSET)
+    open_drv = sum(1 for x in D["wos"] if x["kind"] == "driver" and x["completed"] is None
+                   and x["pole"] in D["inst"] and D["inst"][x["pole"]]["phase"] in GSET)
+    check("SF16 the program's luminaires: every designated phase's luminaire on its original driver on 1 January "
+          "(an open order is not yet a failure, 2.2)", fig["call"]["program_luminaires"] ==
+          sum(n_alive[pc] for pc in GSET), "%d luminaires, %d with an open driver order" % (
+              fig["call"]["program_luminaires"], open_drv))
+    addr = [x for x in D["wos"] if not (x["sys"] == "legacy" and x["wo"] in rc_addr_rows(target))]
+    G_a = A.golden_call(dict(D, wos=addr), rows=A.lifetimes(dict(D, wos=addr)))
+    check("SF16 the program count reads the legacy orders located by address and tag (left unread, the count rises)",
+          sum(G_a["phases"][pc]["n"] for pc in GSET) > fig["call"]["program_luminaires"],
+          "%d with them unread" % sum(G_a["phases"][pc]["n"] for pc in GSET))
+    alt = [dict(r, t=r["t"] * P.YEAR_D / 365.0, age=r["age"] * P.YEAR_D / 365.0) for r in rows]
+    check("SF17 365-day years: same call and figures", setof(golden_shares(alt)) == GSET)
+
+    # ---- groupings the data cannot separate, and the one they refute
+    tA = [r["t"] for r in rows if r["maker"] == AT_RISK]
+    dA = [r["d"] for r in rows if r["maker"] == AT_RISK]
+    llA = loglik(tA, dA, *fA)
+    llW = sum(loglik([r["t"] for r in rows if r["maker"] == AT_RISK and r["watts"] == wt],
+                     [r["d"] for r in rows if r["maker"] == AT_RISK and r["watts"] == wt],
+                     *A.weibull_mle([r["t"] for r in rows if r["maker"] == AT_RISK and r["watts"] == wt],
+                                    [r["d"] for r in rows if r["maker"] == AT_RISK and r["watts"] == wt]))
+              for wt in (40, 70, 110))
+    pW = 1 - chi2.cdf(2 * (llW - llA), 4)
+    check("the output settings share one lifetime (likelihood ratio, 4 df)", pW > 0.01, "p = %.3f" % pW)
+    shared = A.weibull_groups(rows, lambda r: r["maker"], shared_shape=True)
+    ll_sep = llA + loglik([r["t"] for r in rows if r["maker"] == CURED], [r["d"] for r in rows if r["maker"] == CURED],
+                          *maker_fits(rows)[CURED])
+    ll_sh = sum(loglik([r["t"] for r in rows if r["maker"] == mk], [r["d"] for r in rows if r["maker"] == mk],
+                       *shared[mk]) for mk in (AT_RISK, CURED))
+    check("one shape for both makers is refuted (likelihood ratio, 1 df)", 2 * (ll_sep - ll_sh) > 10.83,
+          "2 dlogL = %.1f" % (2 * (ll_sep - ll_sh)))
+    ll_pool = loglik([r["t"] for r in rows], [r["d"] for r in rows], kP, lP)
+    check("one Weibull over every driver is refuted once the maker is read (likelihood ratio, 2 df)",
+          2 * (ll_sep - ll_pool) > 100, "2 dlogL = %.1f" % (2 * (ll_sep - ll_pool)))
+
+    # ---- not rule application: the family the note leaves open, enumerated and standing
+    enum = {"pooled": default_set, "LFP pooled": lad["R2b limited-failure population, pooled"],
+            "phase scale": lad["R3 phase scale (violates 3.2)"], "per phase": lad["R3b Weibull per phase (violates 3.2)"],
+            "maker": GSET, "maker x output": setof(ow), "maker x output, shared shape": setof(ow2),
+            "maker, cured at zero": setof(bz)}
+    standing = {k: v for k, v in enum.items() if k in ("pooled", "LFP pooled", "maker", "maker x output",
+                                                        "maker x output, shared shape", "maker, cured at zero")}
+    check("enumerated family: the sets spread", len({tuple(v) for v in enum.values()}) >= 3,
+          "; ".join("%s %d" % (k, len(v)) for k, v in enum.items()))
+    check("standing family, once the maker is read: one set",
+          len({tuple(v) for k, v in standing.items() if k not in ("pooled", "LFP pooled")}) == 1)
+
+    # ---- the separation line: no ask device or hazard row is read by the call
+    no_ask = dict(D, reports=[], nlc={}, wos=[x for x in D["wos"] if x["kind"] not in ("glare", "ug_cable")])
+    G2 = A.golden_call(no_ask, rows=A.lifetimes(no_ask))
+    check("separation: deleting the reports, the node records, the glare and cable orders leaves the call and every "
+          "share unchanged", G2["set"] == GSET and all(abs(G2["phases"][pc]["share"] - gold[pc]) < 1e-12
+                                                       for pc in P.PHASE_CODES))
+
+    # ---- ask E: the energy saving against the world's own events
+    E_t = truth_energy(w, rc)
+    E_g = {t: v["energy_mwh"] for t, v in fig["towns"].items()}
+    check("E: the golden equals the world's own saving, town by town (figures.json at three decimals)", all(abs(E_t[t] - E_g[t]) < 6e-4 for t in E_g),
+          str({t: round(E_t[t] - E_g[t], 6) for t in E_g}))
+    var = [A.energy_saving(D, removal_day_in=True)[0], A.energy_saving(D, change_day_new=False)[0]]
+    ee = min(edge(v, 1) for v in E_g.values())
+    check("E: whole MWh clear of the edge and the day conventions", ee >= 0.12 and all(
+        round(V[t]) == round(E_g[t]) for V in var for t in E_g), "tightest %.3f MWh" % ee)
+    reg_w = A.energy_saving(dict(D, inst={p: dict(I, catalog=re.sub(r"-\d+W-", "-%sW-" % D["reg"][p]["lamp_watts"],
+                                                                     I["catalog"]) if p in D["reg"] else I["catalog"])
+                                          for p, I in D["inst"].items()},
+                                 wos=[x for x in D["wos"] if x["kind"] != "glare"]))[0]
+    cat_w = A.energy_saving(dict(D, wos=[x for x in D["wos"] if x["kind"] != "glare"]))[0]
+    check("E primary: the register's wattage or the installer's catalog all year misses every town",
+          all(round(reg_w[t]) != round(E_g[t]) and round(cat_w[t]) != round(E_g[t]) for t in E_g))
+
+    # ---- ask R: repairs against the world's own reports
+    L_t, T_t, gap = truth_repairs(w)
+    L_g = {t: v["late"] for t, v in fig["towns"].items()}
+    check("R: the golden equals the world's own count, town by town", L_t == L_g and
+          T_t == {t: v["repaired"] for t, v in fig["towns"].items()}, "%s vs %s" % (L_t, L_g))
+    check("R: no repair within two minutes of 72 hours, on the wall clock or in elapsed time", gap > 2,
+          "nearest %d minutes" % gap)
+    own = A.repairs(D, circuits=False, lookback_days=10)[0]
+    check("R primary: reports matched to the order's own pole (ten days back) miss every town",
+          all(own[t] != L_g[t] for t in L_g),
+          str({t: own[t] - L_g[t] for t in L_g}))
+    unres = sum(1 for rp in A.report_poles(D) if rp["pole_res"] is None and rp["pole"] is None and
+                any(r["nearest_address"] == rp["address"] and r["town"] == rp["town"] for r in D["reg"].values()))
+    check("R: every report about a Company light resolves to one pole", unres == 0, "%d unresolved" % unres)
+
+    # ---- the three rules, executed (R1 raw material, R2 each mess item neutral, R3c no plant)
+    rules_and_realism(target, D, G, fig, b)
+
+    # ---- the deliverables
+    check("goldens written", all(os.path.exists(os.path.join(golden, f)) for f in P.DELIVERABLES))
+
+    ok = all(r[0] for r in RESULTS)
+    for good, name, detail in RESULTS:
+        print("%s  %s%s" % ("PASS" if good else "FAIL", name, (": " + detail) if detail else ""))
+    print("checks: %d of %d pass" % (sum(r[0] for r in RESULTS), len(RESULTS)))
+    return ok

@@ -1,107 +1,90 @@
 {
- "answer": "59 of the 60 positions placed (HRC 9, ACF 8, TWC 7, PCN 6, PCS 6, FFH 7, OXG 10, KPG 6); 1 returned to the Governor's reserve",
+ "answer": "Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires re-driven.",
  "deliverables": [
-  "fy2028_relief_positions_by_unit.xlsx",
-  "fy2028_weekly_backfill_need.png"
+  "2027_group_driver_replacement.xlsx",
+  "driver_failure_projection_by_phase.png"
  ],
  "distractor_files": [
-  "target/doc_average_daily_population_fy2026.csv",
-  "target/msp_communications_call_volume_fy2026.csv",
-  "target/sha_winter_operations_log_fy2026.csv",
-  "target/overtime_expenditure_by_program_fy2026.xlsx"
+  "target/sl_billing_lines_dec2026.csv",
+  "target/tpl_ops_center_daily_temperature_2021-2026.csv",
+  "target/vegetation_clearance_patrols_2025-2026.csv"
  ],
- "domain": "General Statistics & Data Science (exploratory data analysis and distribution assessment)",
+ "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "doc_average_daily_population_fy2026.csv": {
-   "date": "2026-10-23",
+  "brayle_install_logs_2021-2025.xlsx": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the installer's daily installation logs, 2021 to 2025; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "entry_class_calendar_fy2025_fy2028.csv": {
-   "date": "2026-10-23",
+  "corrinvale_nlc_dimming_profiles_2026.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "Corrinvale's networked lighting control system, monthly node records for 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "fy2028_allowance_relief_positions_memo.pdf": {
-   "date": "2026-10-23",
+  "customer_outage_reports_2026.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the customer portal's and call centre's outage reports, December 2025 to December 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "hr_employee_extract_2026-10-01.csv": {
-   "date": "2026-10-23",
+  "halberd_certificates_of_conformance_2020-2025.pdf": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the luminaire maker's certificates of conformance, one page a delivery lot; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "merrimont_shift_rosters_fy2026.csv": {
-   "date": "2026-10-23",
+  "schedule_sl_street_lighting_tariff_2026.pdf": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the utility's street lighting tariff, Schedule SL; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "msp_communications_call_volume_fy2026.csv": {
-   "date": "2026-10-23",
+  "sl_billing_lines_dec2026.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "December 2026 street lighting billing lines by municipal account; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "overtime_expenditure_by_program_fy2026.xlsx": {
-   "date": "2026-10-23",
+  "streetlight_register_2026-12-31.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the utility's GIS streetlight inventory, exported 31 December 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "overtime_offer_log_fy2026.csv": {
-   "date": "2026-10-23",
+  "tpl_ops_center_daily_temperature_2021-2026.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the utility's operations centre weather station, daily; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "payroll_earnings_codes.csv": {
-   "date": "2026-10-23",
+  "tpl_streetlight_lifecycle_model_note.pdf": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the utility's street lighting lifecycle model note, revision 3; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "payroll_overtime_lines_checks_jul2025_jul2026.csv": {
-   "date": "2026-10-23",
+  "vegetation_clearance_patrols_2025-2026.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "vegetation clearance patrols around streetlights, 2025 and 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "position_control_fy2028_round_the_clock_units.csv": {
-   "date": "2026-10-23",
+  "wms_legacy_work_orders_2021-01_2023-06.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the legacy work-management system's export at its June 2023 cutover; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   },
-  "protective_services_agreement_excerpts.pdf": {
-   "date": "2026-10-23",
+  "work_orders_2023-07_2026-12.csv": {
+   "date": "2027-01-14",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
-  },
-  "relief_coverage_standard.pdf": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
-  },
-  "sha_winter_operations_log_fy2026.csv": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
-  },
-  "timekeeping_status_codes.csv": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+   "source": "the enterprise asset management system's work orders, July 2023 to December 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
   }
  },
  "rows": {
-  "doc_average_daily_population_fy2026.csv": 96,
-  "entry_class_calendar_fy2025_fy2028.csv": 28,
-  "hr_employee_extract_2026-10-01.csv": 195,
-  "merrimont_shift_rosters_fy2026.csv": 44115,
-  "msp_communications_call_volume_fy2026.csv": 730,
-  "overtime_offer_log_fy2026.csv": 11567,
-  "payroll_earnings_codes.csv": 5,
-  "payroll_overtime_lines_checks_jul2025_jul2026.csv": 14056,
-  "position_control_fy2028_round_the_clock_units.csv": 182,
-  "sha_winter_operations_log_fy2026.csv": 84,
-  "timekeeping_status_codes.csv": 16
+  "brayle_install_logs_2021-2025.xlsx": 43686,
+  "corrinvale_nlc_dimming_profiles_2026.csv": 64008,
+  "customer_outage_reports_2026.csv": 4961,
+  "halberd_certificates_of_conformance_2020-2025.pdf": 140,
+  "sl_billing_lines_dec2026.csv": 48,
+  "streetlight_register_2026-12-31.csv": 44953,
+  "tpl_ops_center_daily_temperature_2021-2026.csv": 2191,
+  "vegetation_clearance_patrols_2025-2026.csv": 258,
+  "wms_legacy_work_orders_2021-01_2023-06.csv": 2984,
+  "work_orders_2023-07_2026-12.csv": 11029
  },
  "task": "task281",
- "title": "State of Merrimont: the FY2028 overtime-relief positions placed across eight round-the-clock units"
+ "title": "Tallisford Power & Light: the 2027 group driver replacement program across ten LED conversion phases"
 }

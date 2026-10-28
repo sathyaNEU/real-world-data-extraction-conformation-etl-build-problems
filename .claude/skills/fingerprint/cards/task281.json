@@ -10,14 +10,14 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires still on their original driver.",
+  "answer_source": "task281/submission.md block 1; task281/generator/figures.json call.set and call.program_luminaires",
   "gap": [
     "population",
     "time"
   ],
   "pattern": [
-    "none"
+    "C"
   ],
   "generators": [
     "G11",
@@ -30,7 +30,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_model",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who takes each luminaire's retrofit date from the installer's logs, every driver failure from both work-management systems, and fits the lifecycle model's two-parameter Weibull with suspensions to the whole conversion files every one of the ten phases into the 2027 group driver replacement program, against the golden's five, because the drivers from one of the two makers never show the wear-out and their zeros are read as failures still to come.",
   "domain_test": "The deciding quantity is a lifetime distribution read past its follow-up under a censoring structure in which part of the suspensions are cures, not failures still to come: each phase's share of original-driver luminaires whose driver will fail before year twelve, from a Weibull fitted only to the drivers at risk of the wear-out; replacing it with the failure share to date, a constant annual rate or one fit over every luminaire files other phases, and no noun swap makes the cure structure appear.",
@@ -49,11 +49,11 @@
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "installer_daily_logs",
-    "rows": 43000,
+    "file": "brayle_install_logs_2021-2025.xlsx",
+    "rows": 43686,
     "entity": "one luminaire installed on one pole on one day",
     "grain": "luminaire",
-    "source": "synthetic"
+    "source": "constructed (installer daily logs, one sheet a year)"
   },
   "forum": "committee_or_panel",
   "forcing_event": "vote_or_meeting",
@@ -62,7 +62,22 @@
     "geography": "United States (a fictional electric utility's service territory in Ohio)",
     "currency": "USD",
     "org_type": "investor-owned electric utility, street lighting asset group",
-    "invented_names": [],
+    "invented_names": [
+      "Tallisford Power & Light",
+      "Halberd Lighting Company",
+      "Brayle Electric",
+      "Vantrel Power Systems",
+      "Corvane Electronics",
+      "Lorand Controls",
+      "Ambrosine",
+      "Corrinvale",
+      "Dalwinter",
+      "Fallowmere",
+      "Garrick Hollow",
+      "Halverne Bend",
+      "Kesterbrook",
+      "Larkhaven"
+    ],
     "people": [
       "Andrew King",
       "Shawn Hoover",
@@ -78,10 +93,13 @@
   "question_form": "which",
   "driver": "The decisive quantity is the share of each group's surviving units that will suffer one wear-out failure before a fixed age, read past a record whose follow-up ends early in the wear-out, when part of the units carry a part from a source that never wears out that way; the record is too young to show the plateau, so one lifetime fit on every unit passes its back-test and treats those units' zeros as failures still to come, and only a provenance record kept for warranty claims, joined unit by unit through the delivery lot, shows which units are at risk at all.",
   "driver_concrete": "Each conversion phase's share of luminaires still on their original driver on 1 January 2027 whose driver will fail before the luminaire's twelfth year comes from a Weibull fitted only to the drivers of the maker whose drivers wear out; the other maker's drivers, identified only through the installer's lot numbers and the manufacturer's certificates of conformance, show no wear-out, so one fit over every luminaire reads their zeros as failures still to come and puts every phase in the program.",
-  "stump": "A competent solver fits the lifecycle model's Weibull with suspensions to every converted luminaire and projects each phase's original-driver luminaires, filing all ten phases into the 2027 group driver replacement program; the drivers of one maker, found only through the installer's lot numbers and the certificates of conformance, never show the wear-out, so the fit belongs to the other maker's drivers alone and only the phases rich in them qualify.",
+  "stump": "A competent solver fits the lifecycle model's Weibull with suspensions to every conversion driver and projects each phase's original-driver luminaires, filing all ten phases into the 2027 group driver replacement program at 68 to 71 per cent each; Corvane's drivers, found only through the installer's lot numbers and the luminaire maker's certificates of conformance, show no wear-out (16 failures against the 555 that fit expects), so the fit belongs to Vantrel's drivers alone and only P1, P3, P5, P7 and P9 clear 45 per cent.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task141": "task141 moves every unit to the rate the units already at a ceiling show under a cap; task281 has no policy change: it removes from the population at risk the units whose part source never shows the wear-out, found through a provenance record joined unit by unit, before a lifetime fit is read past its follow-up."
+    "task141": "task141 moves every unit to the rate the units already at a ceiling show under a cap; task281 has no policy change: it removes from the population at risk the units whose part source never shows the wear-out, found through a provenance record joined unit by unit, before a lifetime fit is read past its follow-up.",
+    "task177": "task177's architecture 3 reads a loan outcome as one rare event's rate times a conversion share, the event rare in the record and common forward; task281 has no event to convert: a censored lifetime fit's suspensions hold a sub-population whose part never wears out, found unit by unit through a provenance join, so each phase's at-risk share is built before the fit is carried past the follow-up.",
+    "task301": "task301 discounts each list by its own population's exit rate over its record ages; task281 discounts nothing by record age: it takes out of a censored lifetime fit the units whose part source shows no wear-out, found through the installer's lot and the maker's certificate, and projects the at-risk remainder to a fixed age.",
+    "task75": "task75 finds a second inflow channel as the residual between two counts of one period and projects it by its recurrence; task281 has no second channel or residual: it splits one lifetime record by the provenance of each unit's part and fits the wear-out to the source at risk alone."
   },
   "lineage": [
     {
@@ -111,6 +129,6 @@
       "fate": "spent 2026-10-27 at the portal: both top responses landed the call (59 of 60, one returned) by rating the relief positions at the July 2025 entry classes' first-year off-post share, the Director's memo having named the July 2027 entry classes; the world screened for a new step the same day and set aside, the axes then banned (government_agency, budget_or_appropriation, research_desk, filed_standard)"
     }
   ],
-  "notes": "Architecture 2, re-rooted 2026-10-28 into general-statistics-data-science / missing-data-censoring-measurement-error at the author's direction (a brand-new world and stump, Descriptive & Distribution Analysis). Organisation utility_or_infrastructure and context artifact filed_model drawn after the window moved to task118 v4 (filed_standard) and task464 v8 (local_government) at 02:50Z: an investor-owned utility owning company streetlights under a street-lighting tariff is the honest owner of this decision, and the lifecycle model note carrying the Weibull form and the group-replacement trigger is a filed model. Strategy population_selection: the decisive step selects the population at risk of the wear-out, forced by the records (the second maker's drivers show no wear-out failures against hundreds the one-population fit expects on their exposure). Gate G forecasting: the correctly read record does not pin the year-twelve share without the at-risk population. WARNs answered in the design note.",
+  "notes": "Architecture 2, re-rooted 2026-10-28 into general-statistics-data-science / missing-data-censoring-measurement-error at the author's direction (a brand-new world and stump, Descriptive & Distribution Analysis). Organisation utility_or_infrastructure and context artifact filed_model drawn after the window moved to task118 v4 (filed_standard) and task464 v8 (local_government) at 02:50Z: an investor-owned utility owning company streetlights under a street-lighting tariff is the honest owner of this decision, and the lifecycle model note carrying the Weibull form and the group-replacement trigger is a filed model. Strategy population_selection: the decisive step selects the population at risk of the wear-out, forced by the records (the second maker's drivers show no wear-out failures against hundreds the one-population fit expects on their exposure). Gate G forecasting: the correctly read record does not pin the year-twelve share without the at-risk population. WARNs answered in the design note. Labels redrawn at stage 3 (2026-10-28) when the window moved under the filed card (task305 v3 drawn 10-27 and registered after this card, task141 v4 now inside the last twelve): context_artifact filed_standard, the program note being the utility's program rule book as much as its model, and pattern C, each phase's at-risk share being an absolute share the analyst builds behind the lot-to-certificate join, which no column or stated rule carries; G11 stays the decisive generator.",
   "registered": "2026-10-28T02:52:03Z"
 }

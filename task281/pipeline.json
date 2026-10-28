@@ -1,30 +1,30 @@
 {
  "task": "task281",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "The default path fits the lifecycle model's Weibull with suspensions to every converted luminaire and files all ten phases into the 2027 group driver replacement program; one of the two driver makers' drivers never show the wear-out, which only the installer's lot numbers joined to the certificates of conformance reveal, so their zeros are cures, the Weibull belongs to the other maker's drivers alone, and only the five phases rich in those drivers clear 45 per cent.",
+ "stump": "The default path fits the lifecycle model's Weibull with suspensions to every conversion driver and files all ten phases into the 2027 group driver replacement program at 68 to 71 per cent each; Corvane's drivers show no wear-out (16 failures against the 555 that fit expects), which only the installer's lot numbers joined to the certificates of conformance reveal, so their suspensions are cures, the Weibull belongs to Vantrel's drivers alone, and only P1, P3, P5, P7 and P9 clear 45 per cent.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (sweeps 3 and 4 on the program note, the certificates and the tariff; answered in the note)",
+  "reader": "question 1: nothing quoted; the reader's own route pooled the fit across phases; question 6 analytical (whether the lifetime is fitted over the fleet or by driver maker); question 7 the installer's round hundreds, fixed"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task132 and task152 at 0.07 by text; test.same_driver_older against task141 v4, differentiated"
+  "heart": "WARN 2026-10-28 (overuse.forum, repeat.gate_g against task179 v5, repeat.question_form against task464); labels redrawn at stage 3: pattern C, context artifact filed_standard",
+  "nearest": "task132 and task152 at 0.07 by text; test.same_driver_older against task177 v3, task301 v2 and task75 v2, differentiated"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 1 NOT_DETERMINISTIC (repair ask: the local clock unstated; fixed with zone-stamped times); pass 2 DETERMINISTIC",
+  "disposition": "pass 2 FIX_NOW on the program count (thread 20,926 against 20,922): the thread left unread the legacy orders located by address and tag; 20,922 stands, asserted",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "returned": [
   {
@@ -42,7 +42,7 @@
  ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-24",
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

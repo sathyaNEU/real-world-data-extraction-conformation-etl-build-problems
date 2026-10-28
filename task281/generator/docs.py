@@ -1,5 +1,5 @@
-"""The pack's documents: the Relief Coverage Standard, the Director's allowance memo and the protective services
-agreement excerpts (PDF); and the Comptroller's overtime expenditure table (XLSX)."""
+"""The pack's documents: the street lighting lifecycle model note (the program test), the luminaire maker's
+certificates of conformance (one page a delivery lot) and the street lighting tariff, Schedule SL."""
 from __future__ import annotations
 
 import os
@@ -13,9 +13,9 @@ from reportlab.lib.styles import ParagraphStyle                                 
 from reportlab.lib.units import inch                                                # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                        # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
 
-import common as K   # noqa: E402
+import params as P   # noqa: E402
 
 FONT_DIR = next((d for d in ("/usr/share/fonts/truetype/liberation/", os.path.expanduser("~/Library/Fonts/"),
                               "/Library/Fonts/") if os.path.exists(d + "LiberationSerif-Regular.ttf")),
@@ -27,33 +27,32 @@ for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bol
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
 INK, GREY, RULE = colors.HexColor("#1b2430"), colors.HexColor("#56616c"), colors.HexColor("#b8c0c8")
-NAVY = colors.HexColor("#1f3b57")
-MAROON = colors.HexColor("#5a2330")
+TEAL = colors.HexColor("#1d4e5a")
+RUST = colors.HexColor("#6b3420")
 
 
-def styles(face="Sans", accent=NAVY):
+def styles(face="Sans", accent=TEAL):
     b = face + "-B"
-    body = ParagraphStyle("b", fontName=face, fontSize=10.2, leading=13.9, textColor=INK, spaceAfter=5)
+    body = ParagraphStyle("b", fontName=face, fontSize=10.0, leading=13.8, textColor=INK, spaceAfter=5)
     return dict(
         body=body,
-        h1=ParagraphStyle("h1", fontName=b, fontSize=14.5, leading=18, textColor=accent, spaceAfter=2),
-        h2=ParagraphStyle("h2", fontName=b, fontSize=10.8, leading=14, textColor=INK, spaceBefore=8, spaceAfter=2,
+        h1=ParagraphStyle("h1", fontName=b, fontSize=14.2, leading=18, textColor=accent, spaceAfter=2),
+        h2=ParagraphStyle("h2", fontName=b, fontSize=10.6, leading=14, textColor=INK, spaceBefore=8, spaceAfter=2,
                           keepWithNext=1),
-        meta=ParagraphStyle("m", fontName=face, fontSize=8.6, leading=11.4, textColor=GREY, spaceAfter=9),
-        cell=ParagraphStyle("c", fontName="Sans", fontSize=8.2, leading=10.2, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName="Sans-B", fontSize=8.2, leading=10.2, textColor=INK),
-        note=ParagraphStyle("n", fontName="Sans", fontSize=7.9, leading=10.1, textColor=GREY, spaceBefore=2,
+        meta=ParagraphStyle("m", fontName=face, fontSize=8.5, leading=11.3, textColor=GREY, spaceAfter=9),
+        cell=ParagraphStyle("c", fontName="Sans", fontSize=8.1, leading=10.1, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName="Sans-B", fontSize=8.1, leading=10.1, textColor=INK),
+        small=ParagraphStyle("s", fontName="Sans", fontSize=7.6, leading=9.6, textColor=GREY),
+        note=ParagraphStyle("n", fontName="Sans", fontSize=7.8, leading=10.0, textColor=GREY, spaceBefore=2,
                             spaceAfter=6),
-        memo=ParagraphStyle("mh", fontName="Sans", fontSize=10.2, leading=14.6, textColor=INK),
-        clause=ParagraphStyle("p", parent=body, leftIndent=30, firstLineIndent=-30),
-        sub=ParagraphStyle("s", parent=body, leftIndent=48, firstLineIndent=-18))
+        clause=ParagraphStyle("p", parent=body, leftIndent=28, firstLineIndent=-28))
 
 
 def _frame(left, right):
     def draw(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        canvas.setFont("Sans", 7.6)
+        canvas.setFont("Sans", 7.5)
         canvas.drawString(0.9 * inch, LETTER[1] - 0.55 * inch, left)
         canvas.drawRightString(LETTER[0] - 0.9 * inch, LETTER[1] - 0.55 * inch, right)
         canvas.drawRightString(LETTER[0] - 0.9 * inch, 0.5 * inch, "Page %d" % doc.page)
@@ -61,186 +60,180 @@ def _frame(left, right):
     return draw
 
 
-def _table(S, rows, widths, right=()):
-    data = [[Paragraph(str(c), S["cellb"] if i == 0 else S["cell"]) for c in r] for i, r in enumerate(rows)]
-    t = Table(data, colWidths=[w * inch for w in widths], repeatRows=1, hAlign="LEFT")
+def _table(S, rows, widths, right=(), head=True):
+    data = [[Paragraph(str(c), S["cellb"] if (i == 0 and head) else S["cell"]) for c in r] for i, r in enumerate(rows)]
+    t = Table(data, colWidths=[w * inch for w in widths], repeatRows=1 if head else 0, hAlign="LEFT")
     st = [("LINEBELOW", (0, 0), (-1, 0), .6, INK), ("LINEBELOW", (0, -1), (-1, -1), .4, RULE),
-          ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 1.8),
-          ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8)]
+          ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 1.6),
+          ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)]
     for c in right:
         st.append(("ALIGN", (c, 0), (c, -1), "RIGHT"))
     t.setStyle(TableStyle(st))
     return t
 
 
-def _clause(S, num, text, key="clause"):
-    return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (num, text), S[key])
+def _clause(S, num, text):
+    return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (num, text), S["clause"])
 
 
-def _doc(path, title, author, subject, left, right):
-    return SimpleDocTemplate(path, pagesize=LETTER, leftMargin=0.9 * inch, rightMargin=0.9 * inch,
+def _doc(path, title, author, subject, left, right, margins=0.9):
+    return SimpleDocTemplate(path, pagesize=LETTER, leftMargin=margins * inch, rightMargin=margins * inch,
                              topMargin=0.85 * inch, bottomMargin=0.8 * inch, title=title, author=author,
                              subject=subject, creator=author, producer=author), _frame(left, right)
 
 
-# ------------------------------------------------------------------------------------------------ the standard
-def write_standard(path):
-    S = styles("Serif", NAVY)
-    doc, fr = _doc(path, "Relief Coverage Standard for Round-the-Clock Units", "Office of Budget Analysis",
-                   "Budget Instruction 2024-07", "%s, %s" % (K.STATE, K.DBM), "Budget Instruction 2024-07")
-    st = [Paragraph("Relief Coverage Standard for Round-the-Clock Units", S["h1"]),
-          Paragraph("Budget Instruction 2024-07. Office of Budget Analysis, %s. Issued 14 August 2024; applies "
-                    "to the allowances from FY2026. It replaces the annual relief factor of Budget Instruction "
-                    "2016-03, which sized complements on a year's average hours." % K.DBM, S["meta"]),
+# ------------------------------------------------------------------------------------------ the lifecycle note
+def write_note(path):
+    S = styles("Serif", TEAL)
+    doc, fr = _doc(path, "Street Lighting Lifecycle Model: Program Note SL-LM-04", P.PEOPLE["asset_engineer"],
+                   "Group driver replacement program", "%s, Distribution Asset Management" % P.UTILITY,
+                   "Program Note SL-LM-04, rev. 3")
+    st = [Paragraph("Street Lighting Lifecycle Model: the Group Driver Replacement Program", S["h1"]),
+          Paragraph("Program Note SL-LM-04, revision 3, 6 January 2027. Distribution Asset Management, street "
+                    "lighting. Prepared by %s for the Asset Investment Committee. Revision 3 restates the program "
+                    "test for the 2027 program year; revision 2 (January 2026) set the twelfth anniversary as the "
+                    "horizon." % P.PEOPLE["asset_engineer"], S["meta"]),
           Paragraph("1. Purpose", S["h2"]),
-          _clause(S, "1.1", "This standard sizes the relief complement the allowance funds for a unit that staffs "
-                            "fixed posts around the clock on lines. A line is one officer's rota of five eight-hour "
-                            "shifts a week on one of the unit's shifts; the officer who holds it is its holder."),
-          _clause(S, "1.2", "Relief positions fill the posts whose lines their holders do not work, so that those "
-                            "posts are not filled on overtime or left short."),
-          Paragraph("2. Definitions", S["h2"]),
-          _clause(S, "2.1", "The year planned for is the fiscal year of the allowance in preparation. The last "
-                            "closed year is the latest fiscal year whose rosters the timekeeping systems have "
-                            "closed."),
-          _clause(S, "2.2", "A week is a fiscal week: seven days counted from 1 July. The day or two after a "
-                            "year's 52nd week belong to no week."),
-          _clause(S, "2.3", "A unit's backfill need in a week is the scheduled hours on its lines in that week "
-                            "that their holders will not work on post:"),
-          _clause(S, "(a)", "every scheduled hour a holder is off post, whether on leave of any kind, injured on "
-                            "duty or in training away from the post; and", "sub"),
-          _clause(S, "(b)", "every scheduled hour of a line the position control carries without a holder, until "
-                            "the first shift on post of the officer who fills it.", "sub"),
-          _clause(S, "2.4", "A unit's lines and their holders are those of the position control for the year "
-                            "planned for. A line that falls vacant during the year is backfilled from the unit's "
-                            "salary savings while the agency recruits to it; the relief complement is not sized "
-                            "for it."),
-          _clause(S, "2.5", "A relief position is established by title, for one unit, and carries no line. Its "
-                            "holder is scheduled for 40 hours a week to whichever of the unit's posts need filling."),
-          Paragraph("3. Sizing a unit's relief complement", S["h2"]),
-          _clause(S, "3.1", "A unit's relief complement meets the unit's backfill need in full in every week of "
-                            "the year planned for but four."),
-          _clause(S, "3.2", "The complement is the smallest whole number of relief positions whose hours on post "
-                            "in a week reach the unit's backfill need in its fifth-heaviest week of the year "
-                            "planned for."),
-          _clause(S, "3.3", "A relief position's hours on post in a week are the hours its holder will work on "
-                            "post in an average week of the year planned for: the 40 scheduled hours, less the "
-                            "hours the holder will be off post in the sense of 2.3(a)."),
-          _clause(S, "3.4", "The off-post hours of a unit's lines in each week of the year planned for are those "
-                            "its lines carried in the same fiscal week of the last closed year."),
-          Paragraph("4. Workings", S["h2"]),
-          _clause(S, "4.1", "The Office keeps each unit's workings with the allowance file: the weekly backfill "
-                            "need, the hours a relief position works on post, and the complement."),
+          _clause(S, "1.1", "The street lighting lifecycle model projects driver failures in the LED luminaires the "
+                            "Company installed in its 2021 to 2025 conversion of company streetlights from high-"
+                            "pressure sodium (the conversion), and sets each year's group driver replacement program. "
+                            "The Asset Investment Committee approves the program at its January meeting."),
+          _clause(S, "1.2", "In a group replacement every luminaire of a conversion phase that is still on its "
+                            "original driver is given a new driver in one planned campaign, scheduled by street. "
+                            "Once failures in a phase climb, a campaign costs a fraction of the truck rolls the same "
+                            "failures take one at a time, and it ends the outages they cause."),
+          Paragraph("2. The program test", S["h2"]),
+          _clause(S, "2.1", "A conversion phase enters the program year's group driver replacement when the expected "
+                            "number of the phase's luminaires still on their original driver on 1 January of the "
+                            "program year whose driver fails before the twelfth anniversary of the luminaire's "
+                            "installation is more than 45 per cent of those luminaires."),
+          _clause(S, "2.2", "A luminaire's original driver is the driver it was installed with. A driver failure is "
+                            "an outage the luminaire's own driver caused, closed by a work order that replaced the "
+                            "driver, and it dates from that work order's completion. A work order still open when "
+                            "the record closes is not yet a failure."),
+          _clause(S, "2.3", "A luminaire leaves the conversion when it is replaced, after a vehicle knockdown or under "
+                            "the maker's warranty, or when its pole is removed; it leaves on the completion of the work "
+                            "order that replaced or removed it. A luminaire installed in its place is not a "
+                            "conversion luminaire."),
+          _clause(S, "2.4", "Years of service run from the installation date the installer recorded, at 365.25 "
+                            "days a year. A luminaire's phase is the conversion phase the installer recorded for it."),
+          Paragraph("3. Projection", S["h2"]),
+          _clause(S, "3.1", "Driver wear-out in years of service follows the two-parameter Weibull distribution, "
+                            "fitted by maximum likelihood. A driver that has not failed is entered as a suspension at "
+                            "its age on the day the record closes or the day its luminaire left the conversion."),
+          _clause(S, "3.2", "Lifetimes are not estimated phase by phase: a phase's few years of record cannot carry a "
+                            "twelve-year projection on its own."),
+          _clause(S, "3.3", "For a program year the record closes on 31 December of the year before."),
+          Paragraph("4. The 2027 program", S["h2"]),
+          _clause(S, "4.1", "The 2027 campaign runs from March to October 2027. Field crews re-drive every original-"
+                            "driver luminaire in each designated phase with the maker's service driver kit for its "
+                            "wattage."),
+          _clause(S, "4.2", "A phase that does not enter the program stays on spot replacement and is tested again "
+                            "for the next program year."),
           Spacer(1, 8),
-          Paragraph("Questions on this instruction go to the Office of Budget Analysis, workforce analysis desk.",
-                    S["note"])]
+          Paragraph("Questions on this note go to Distribution Asset Management, street lighting (%s)."
+                    % P.PEOPLE["asset_engineer"], S["note"])]
     doc.build(st, onFirstPage=fr, onLaterPages=fr)
 
 
-# ------------------------------------------------------------------------------------------------ the memo
-def write_memo(path):
-    S = styles("Sans", MAROON)
-    doc, fr = _doc(path, "FY2028 allowance: overtime-relief positions", K.PEOPLE["director"],
-                   "FY2028 allowance", "%s, %s" % (K.STATE, K.DBM), "Office of Budget Analysis")
-    head = _table(S, [["", ""],
-                      ["To", "%s, Lead, Workforce Analysis Desk, Office of Budget Analysis" % K.PEOPLE["desk"]],
-                      ["From", "%s, Director, Office of Budget Analysis" % K.PEOPLE["director"]],
-                      ["Date", "9 October 2026"],
-                      ["Subject", "FY2028 allowance: overtime-relief positions for the round-the-clock units"]],
-                  [0.9, 5.6])
-    rows = [["Unit", "Agency", "Title"]] + [[K.UNIT_NAME[u], K.AGENCY[K.UNIT_TITLE[u]], K.TITLES[K.UNIT_TITLE[u]]]
-                                            for u in K.UNIT_CODES]
-    st = [Paragraph("Memorandum", S["h1"]), head, Spacer(1, 10),
-          Paragraph("The Governor's FY2028 allowance will fund 60 overtime-relief positions for the eight "
-                    "round-the-clock units below, as new positions from 1 July 2027. Please place them under the "
-                    "Relief Coverage Standard (Budget Instruction 2024-07), on the FY2026 rosters, our last closed "
-                    "year, and the FY2028 position control, and send me each unit's complement by 6 November 2026; "
-                    "I will enter the placement in the agencies' allowances.", S["body"]),
-          Paragraph("The positions will be filled from the agencies' July 2027 entry classes. %s, director of "
-                    "recruitment and training at Public Safety, will size those classes once the placement is "
-                    "settled, and Health and Transportation have agreed to work from the same placement."
-                    % K.PEOPLE["recruit"], S["body"]),
-          Paragraph("If the units need fewer than 60, the rest return to the Governor's reserve. If they need "
-                    "more, tell me how many more and I will take it to the Secretary before the allowance closes; "
-                    "the 60 are not to be spread thinner than the standard allows.", S["body"]),
-          Paragraph("For the briefing that goes with the allowance I will also need the overtime worked at these "
-                    "units in FY2026 and the people who worked it. %s at Central Payroll has sent the overtime "
-                    "lines from the checks of July 2025 to July 2026." % K.PEOPLE["payroll"], S["body"]),
-          Spacer(1, 4),
-          _table(S, rows, [2.7, 2.9, 1.6]),
-          Spacer(1, 10),
-          Paragraph("LW/ca", S["note"])]
-    doc.build(st, onFirstPage=fr, onLaterPages=fr)
+# ------------------------------------------------------------------------------------------ certificates
+def write_coc(path, lots, rng):
+    S = styles("Sans", RUST)
+    doc, fr = _doc(path, "Certificates of Conformance, HRX roadway luminaires", P.MAKER, "Certificates of "
+                   "conformance by delivery lot", "%s, Quality Assurance" % P.MAKER, "Certificates of Conformance",
+                   margins=0.8)
+    st = []
+    # one purchase order a conversion phase, numbered in the utility's general series
+    po_of, n = {}, 118230
+    for pc in P.PHASE_CODES:
+        n += int(rng.integers(900, 7400))
+        po_of[pc] = "4500%06d" % n
+    for k, L in enumerate(sorted(lots, key=lambda x: (x["ship"], x["lot"]))):
+        ser0 = L["lot"].replace("HL", "HRX") + "-0001"
+        ser1 = L["lot"].replace("HL", "HRX") + "-%04d" % L["qty"]
+        drv_maker = P.DRV[L["src"]]
+        led = "LM-%d-40K" % {40: 12, 70: 24, 110: 36}[L["watts"]]
+        rev = str(rng.choice(["C", "C", "D"]))
+        po = po_of[L["phase"]]
+        rows = [["Component", "Part number", "Manufacturer", "Rev."],
+                ["LED array", led, P.MAKER, rev],
+                ["LED driver, programmable, 0-10 V dimming", L["drv_part"].rsplit("-", 1)[0], drv_maker,
+                 L["drv_part"].rsplit("-", 1)[1]],
+                ["Surge protective device, 10 kV / 5 kA", "SP-10K", P.MAKER, "B"],
+                ["Photocontrol receptacle, 7-pin ANSI C136.41", "RCP-7P", "Lorand Controls", "A"],
+                ["Housing and optic", "HRX-H%d" % {40: 2, 70: 3, 110: 4}[L["watts"]], P.MAKER, "E"]]
+        tests = [["Sample", "Input W", "Power factor", "THD %", "Lumens"]]
+        base = {40: 40.8, 70: 71.6, 110: 112.4}[L["watts"]]
+        for s in range(1, 4):
+            tests.append(["%d" % s, "%.1f" % (base + rng.normal(0, .5)), "%.3f" % (0.97 + rng.uniform(0, .025)),
+                          "%.1f" % rng.uniform(5.5, 11.5), "%d" % int(base * 128 + rng.normal(0, 90))])
+        st += [Paragraph("Certificate of Conformance", S["h1"]),
+               Paragraph("%s, roadway luminaires. Lot <b>%s</b>." % (P.MAKER, L["lot"]), S["meta"]),
+               _table(S, [["Customer", P.UTILITY], ["Purchase order", po],
+                          ["Catalog number", P.CATALOG[L["watts"]]],
+                          ["Driver output setting", "%d W" % L["watts"]], ["Quantity", "%d" % L["qty"]],
+                          ["Serial numbers", "%s to %s" % (ser0, ser1)],
+                          ["Date of shipment", L["ship"].strftime("%d %B %Y")]], [1.6, 4.6], head=False),
+               Spacer(1, 8),
+               Paragraph("Components fitted to every luminaire in this lot", S["h2"]),
+               _table(S, rows, [2.4, 1.3, 1.9, 0.6]),
+               Spacer(1, 6),
+               Paragraph("Final test, three samples drawn from the lot", S["h2"]),
+               _table(S, tests, [0.8, 1.1, 1.2, 0.9, 1.0], right=(1, 2, 3, 4)),
+               Spacer(1, 8),
+               Paragraph("LED driver rated life 100,000 hours at a case temperature of 75 &deg;C. The luminaires in "
+                         "this lot conform to the purchase order and to ANSI C136.10, C136.37 and UL 1598. The "
+                         "luminaire and its components are warranted for ten years from the date of shipment.",
+                         S["body"]),
+               Spacer(1, 10),
+               Paragraph("Quality Assurance, %s, Plant 2." % P.MAKER, S["small"]),
+               PageBreak()]
+    doc.build(st[:-1], onFirstPage=fr, onLaterPages=fr)
 
 
-# ------------------------------------------------------------------------------------------------ the agreement
-def write_agreement(path):
-    S = styles("Serif", NAVY)
-    doc, fr = _doc(path, "Memorandum of Understanding 2025-2028: excerpts", "Office of Personnel Services",
-                   "Protective Services bargaining unit", "%s and the Merrimont Protective Services Association"
-                   % K.STATE, "MOU 2025-2028, excerpts")
-    st = [Paragraph("Memorandum of Understanding, 1 July 2025 to 30 June 2028", S["h1"]),
-          Paragraph("Between the %s and the Merrimont Protective Services Association (Correctional Officers, "
-                    "Police Communications Operators and Highway Maintenance Workers). "
-                    "Excerpts: Articles 14, 15, 16 and 32, and the side letter of 27 March 2026." % K.STATE,
+# ------------------------------------------------------------------------------------------ the tariff
+def write_tariff(path):
+    S = styles("Serif", TEAL)
+    doc, fr = _doc(path, "Schedule SL, Street Lighting Service", P.UTILITY, "Tariff No. 7, Schedule SL",
+                   "%s, Tariff No. 7" % P.UTILITY, "Schedule SL, effective 1 January 2026")
+    rates = [["Luminaire", "Input watts", "Monthly rate per luminaire"],
+             ["LED 40 W cobra-head", "%d" % P.INPUT_W[("LED", 40)], "$9.14"],
+             ["LED 70 W cobra-head", "%d" % P.INPUT_W[("LED", 70)], "$11.02"],
+             ["LED 110 W cobra-head", "%d" % P.INPUT_W[("LED", 110)], "$13.66"],
+             ["HPS 70 W (closed to new service)", "%d" % P.INPUT_W[("HPS", 70)], "$10.48"],
+             ["HPS 100 W (closed to new service)", "%d" % P.INPUT_W[("HPS", 100)], "$12.37"],
+             ["HPS 150 W (closed to new service)", "%d" % P.INPUT_W[("HPS", 150)], "$15.11"],
+             ["HPS 250 W flood (closed to new service)", "%d" % P.INPUT_W[("HPS", 250)], "$19.85"],
+             ["MH 175 W shoebox (closed to new service)", "210", "$17.40"]]
+    months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+              "November", "December"]
+    abbr = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."]
+    burn = [["Month"] + abbr + ["Year"],
+            ["Hours"] + ["%d" % h for h in P.BURN_H] + ["%s" % format(sum(P.BURN_H), ",")]]
+    st = [Paragraph("Schedule SL: Street Lighting Service", S["h1"]),
+          Paragraph("%s, Tariff No. 7. Effective with bills rendered on and after 1 January 2026." % P.UTILITY,
                     S["meta"]),
-          Paragraph("Article 14. Overtime", S["h2"]),
-          _clause(S, "14.1", "Hours worked beyond 40 in a work week, or on a scheduled day off, are overtime and "
-                             "are paid at one and one-half times the employee's base hourly rate."),
-          _clause(S, "14.2", "An employee may elect compensatory time instead of overtime pay. Compensatory time "
-                             "is credited at one and one-half hours for each hour of overtime worked, to a balance "
-                             "of no more than 480 hours."),
-          _clause(S, "14.3", "Overtime at a unit is offered by seniority from the unit's voluntary list, which "
-                             "employees of the same title at the State's other units may also join. When the list "
-                             "is exhausted, the unit holds over its junior employee on duty or calls in its junior "
-                             "employee off duty, for a full shift or for four hours."),
-          Paragraph("Article 15. Shift differential", S["h2"]),
-          _clause(S, "15.1", "An employee who works between 11:00 p.m. and 7:00 a.m. receives a night "
-                             "differential of $1.25 for each hour so worked, overtime hours included."),
-          Paragraph("Article 16. Hours of overtime", S["h2"]),
-          _clause(S, "16.1", "No employee shall work more than 600 hours of overtime in a fiscal year without the "
-                             "written approval of the appointing authority, which the employer reports to the "
-                             "Association each quarter."),
-          Paragraph("Article 32. Wages", S["h2"]),
-          _clause(S, "32.1", "Base hourly rates are those of the State's Protective Services salary schedule, by "
-                             "grade and step."),
-          _clause(S, "32.2", "Steps advance on 1 July for employees with a satisfactory rating."),
-          Paragraph("Side letter of 27 March 2026", S["h2"]),
-          Paragraph("The parties agree a general increase of 3.0 per cent to the Protective Services salary "
-                    "schedule, effective with the pay period beginning 29 June 2025. Central Payroll will load "
-                    "the new rates for the pay period beginning 5 April 2026 and will pay the increase on "
-                    "earnings of the earlier pay periods as retroactive pay on the check of 24 April 2026.",
-                    S["body"]),
-          Paragraph("For the State: %s, chief negotiator, Office of Personnel Services. For the Association: %s, "
-                    "president." % (K.PEOPLE["negotiator"], K.PEOPLE["union"]), S["note"])]
+          Paragraph("1. Availability", S["h2"]),
+          _clause(S, "1.1", "Available to municipalities for dusk-to-dawn lighting of public streets by Company-owned "
+                            "luminaires on Company-owned or municipal poles. Sodium and metal halide luminaires are "
+                            "closed to new service."),
+          Paragraph("2. Monthly rates", S["h2"]),
+          _clause(S, "2.1", "The monthly rate per luminaire covers energy, maintenance and the luminaire. Input "
+                            "watts are the luminaire's input including its driver or ballast."),
+          _table(S, rates, [3.0, 1.0, 1.9], right=(1, 2)),
+          Paragraph("3. Energy accounting", S["h2"]),
+          _clause(S, "3.1", "Energy for street lighting is accounted at each luminaire's input watts for the "
+                            "dusk-to-dawn burning hours below, in proportion to the days of a month the luminaire "
+                            "was in service. A luminaire is in service from the day it is energised to the day it is "
+                            "removed, and an outage does not take it out of service."),
+          _table(S, burn, [0.55] + [0.42] * 12 + [0.5], right=tuple(range(1, 14))),
+          _clause(S, "3.2", "A luminaire on networked lighting controls is accounted at its dimmed input, its input "
+                            "watts times the dimming level its control node records, for the dimmed hours the node "
+                            "records in a month, and at its full input for its other burning hours."),
+          Paragraph("4. Maintenance and repair", S["h2"]),
+          _clause(S, "4.1", "The Company maintains its luminaires and replaces failed components at its cost."),
+          _clause(S, "4.2", "The Company repairs an outage within 72 hours of the first report of it to the "
+                            "Company. An outage found by Company patrol is repaired within 72 hours of being found."),
+          Paragraph("5. Term", S["h2"]),
+          _clause(S, "5.1", "Service is for an initial term of five years and continues month to month.")]
     doc.build(st, onFirstPage=fr, onLaterPages=fr)
-
-
-# ------------------------------------------------------------------------------------------------ OT by program
-def write_otprog(path, rows):
-    """rows: (agency, program, overtime hours, overtime pay)"""
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Table 7"
-    ws.append(["Table 7. Overtime expenditure by agency and program, FY2026"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Checks dated 1 July 2025 to 30 June 2026. All funds."])
-    ws["A2"].font = Font(italic=True, size=9, color="56616C")
-    ws.append([])
-    ws.append(["Agency", "Program", "Overtime hours paid", "Overtime pay ($)"])
-    for c in ws[4]:
-        c.font = Font(bold=True, color="FFFFFF")
-        c.fill = PatternFill("solid", fgColor="1F3B57")
-        c.alignment = Alignment(wrap_text=True, vertical="center")
-    for r in rows:
-        ws.append(list(r))
-        ws.cell(ws.max_row, 3).number_format = "#,##0"
-        ws.cell(ws.max_row, 4).number_format = "#,##0"
-    ws.append([])
-    ws.append(["Source: Comptroller of Merrimont, FY2026 Annual Personnel Expenditure Report."])
-    ws.cell(ws.max_row, 1).font = Font(size=8.5, color="56616C")
-    for k, v in {"A": 48, "B": 44, "C": 16, "D": 16}.items():
-        ws.column_dimensions[k].width = v
-    ws.freeze_panes = "A5"
-    wb.save(path)

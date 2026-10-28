@@ -1,104 +1,109 @@
-"""submission.md, drafted from generator/figures.json so every figure it states is one the generator computed.
-
-    python3 task281/generator/writeup.py"""
+"""submission.md for task281, rendered from generator/figures.json so that every figure in the write-up is the one
+the generator computed (build.py calls it after the goldens)."""
 import json
 import os
 
+import params as P
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-ORDER = ["HRC", "ACF", "TWC", "PCN", "PCS", "FFH", "OXG", "KPG"]
-TITLES = [("CO", "Correctional Officer"), ("PCO", "Police Communications Operator"), ("FSA", "Forensic Security Aide"),
-          ("HMW", "Highway Maintenance Worker")]
-WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+A_, B_ = P.DRV["A"].split()[0], P.DRV["B"].split()[0]
 
 
-def main():
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    u = f["units"]
-    p = f["call"]["positions"]
-    ev = f["evidence"]
-    rt = f["route_totals"]
-    nm = lambda k: u[k]["name"]
-    placed = ", ".join("%s %d" % (nm(k), p[k]) for k in ORDER)
-    out = ["## Tags", "",
-           "**Domain:** General Statistics & Data Science (exploratory data analysis and distribution assessment).",
-           "**Analytical objective:** Descriptive & Distribution Analysis.", "",
-           "## 1. Final Recommendation", "",
-           "**Place %d of the 60 relief positions (%s) and return %s to the Governor's reserve.**"
-           % (f["call"]["total"], placed, WORD[f["call"]["returned_to_reserve"]]),
-           "The positions are filled from the July 2027 entry classes, whose holders will be in their first year on "
-           "post through FY2028, and the July 2025 classes were off post %.1f per cent of their scheduled hours in "
-           "that year against %.1f per cent for the units' holders. Not the title's average holder, which leaves a "
-           "relief position %.1f to %.1f hours on post a week and needs %d positions, %s short; not FY2026's weeks "
-           "as they stood with its separations' vacant lines, %d; not the annual relief factor the standard "
-           "replaced, %d."
-           % (ev["july2025_off_post_pct"], ev["units_off_post_pct"], ev["title_average_hours_range"][0],
-              ev["title_average_hours_range"][1], ev["default_path_total"], WORD[ev["default_path_short_by"]],
-              rt["R1"], rt["mean"]),
-           "",
-           "## 2. Critical Components", "",
-           "1. The FY2028 need carries the **%d** lines the position control holds vacant on 1 July 2027, in full "
-           "until their first shifts on post (fiscal weeks **%d** to **%d**)." % (ev["vacant_lines_fy2028"],
-                                                                                 ev["fill_weeks"][0],
-                                                                                 ev["fill_weeks"][1]),
-           "2. FY2026's **%s** hours of vacant line-shifts, lines vacated by separation, stay out of the FY2028 need "
-           "(Budget Instruction 2024-07, 2.4)." % format(ev["fy2026_vacant_line_hours"], ","),
-           "3. A relief position's holder is read as an entry-class graduate in the first year on post: the July "
-           "2025 classes were off post **%.1f** per cent of their FY2026 scheduled hours, the units' holders **%.1f** "
-           "per cent." % (ev["july2025_off_post_pct"], ev["units_off_post_pct"]),
-           "",
-           "## 3. Step-by-Step Solution", "",
-           "1. Took Budget Instruction 2024-07 (2.1 to 3.4) with the Director's memo: each unit's complement is the "
-           "smallest whole number of relief positions whose hours on post in an average FY2028 week reach its "
-           "fifth-heaviest FY2028 week of backfill need, the positions filled from the July 2027 entry classes.",
-           "2. Summed each unit's off-post hours by fiscal week of FY2026 from merrimont_shift_rosters_fy2026.csv "
-           "(the latest export of each line and date, both systems' codes through timekeeping_status_codes.csv, "
-           "training off post), leaving out the %s hours of vacant line-shifts (2.4)."
-           % format(ev["fy2026_vacant_line_hours"], ","),
-           "3. Added the %d lines position_control_fy2028_round_the_clock_units.csv carries vacant: eight hours on each "
-           "scheduled day (days_off left out) before first_shift_on_post, and from it the new holder's off-post share "
-           "of those hours."
-           % ev["vacant_lines_fy2028"],
-           "4. Rated a relief position at 40 hours less the off-post share of the July 2025 classes over FY2026 "
-           "(academy_class in hr_employee_extract_2026-10-01.csv), by title: %.1f per cent off post overall."
-           % ev["july2025_off_post_pct"],
-           "5. For overtime worked, summed the OT lines' hours and the CTE and CTS lines' credited hours over their credit "
-           "(1.5 and 1.0, payroll_earnings_codes.csv; MOU 14.2) for FY2026 work dates, each piece once (a later check "
-           "paying the same employee, work date, start_time and hours again is a second payment), at the post_unit of "
-           "the accepted offer in overtime_offer_log_fy2026.csv with the same employee_id, post_date and start_time, "
-           "else the employee's own unit (MOU 14.3), the line's home_timekeeper (SL-0410 is Thornmere); OTN and OTR "
-           "lines carry pay only.",
-           "6. For people at each unit, counted once everyone with an OT, CTE or CTS piece dated in FY2026 placed at the unit "
-           "as in step 5, joining each employee whose seniority_date precedes the hire_date to the separated record "
-           "with the same seniority_date and title.",
-           "7. For people over 600 hours, summed overtime worked as in step 5 over each joined person and counted those "
-           "over 600 hours under the title held in FY2026.",
-           "8. Cut each unit's %d weekly needs at the fifth-heaviest and divided by its title's relief hours, "
-           "rounding up: %s, %d of the 60, %s returned to the reserve."
-           % (ev["weeks"], placed, f["call"]["total"], WORD[f["call"]["returned_to_reserve"]]),
-           "",
-           "## 4. Deliverable Answers", "",
-           "### fy2028_relief_positions_by_unit.xlsx", "",
-           "1. Relief positions placed for FY2028 (whole positions):"]
-    for k in ORDER:
-        out.append("   - %s: %d" % (nm(k), p[k]))
-    out.append("   - All units: %d of the 60; %d returned to the Governor's reserve" % (f["call"]["total"],
-                                                                                   f["call"]["returned_to_reserve"]))
-    out.append("2. Overtime hours worked at each unit in FY2026 (nearest hour):")
-    for k in ORDER:
-        out.append("   - %s: %s" % (nm(k), format(f["ask_a_overtime_hours_by_unit"][k], ",")))
-    out.append("3. People who worked overtime at each unit in FY2026:")
-    for k in ORDER:
-        out.append("   - %s: %d" % (nm(k), f["ask_b_people_by_unit"][k]))
-    out.append("4. People who worked more than 600 hours of overtime in FY2026, by the title they held that year:")
-    for t, tn in TITLES:
-        out.append("   - %s: %d" % (tn, f["ask_c_people_over_600_hours"][t]))
-    out += ["", "### fy2028_weekly_backfill_need.png", "",
-            "1. Eight panels, one a unit, of the FY2028 weekly backfill need against the hours the unit's relief "
-            "positions work on post a week, the weeks above that line (four at most a unit) highlighted."]
-    with open(os.path.join(TASK, "submission.md"), "w") as fh:
-        fh.write("\n".join(out) + "\n")
+def c(n):
+    return format(int(n), ",")
+
+
+def render(fig):
+    ph, fits, pl, call = fig["phases"], fig["fits"], fig["pooled"], fig["call"]
+    gset = call["set"]
+    names = ", ".join(gset[:-1]) + " and " + gset[-1]
+    ins = [ph[p]["share5"] for p in gset]
+    out = [p for p in P.PHASE_CODES if p not in gset]
+    top_out = sorted(out, key=lambda p: -ph[p]["share"])[:2]
+    pmin = min(ph[p]["pooled_pct"] for p in P.PHASE_CODES)
+    pmax = max(ph[p]["pooled_pct"] for p in P.PHASE_CODES)
+    a, b = fits[P.DRV["A"]], fits[P.DRV["B"]]
+    floor = pl["expected_floor"]
+    rest_max = max(ph[p]["share5"] for p in out)
+    shares_in = ", ".join("%s %d" % (p, ph[p]["share5"]) for p in gset)
+    shares_out = ", ".join("%s %d" % (p, ph[p]["share5"]) for p in out)
+    towns = sorted(fig["towns"])
+    k = fig["constants"]
+    lines = []
+    w = lines.append
+    w("## Tags\n")
+    w("**Domain:** General Statistics & Data Science (missing data, censoring and measurement error: a censored "
+      "lifetime distribution read past its follow-up).")
+    w("**Analytical objective:** Descriptive & Distribution Analysis.\n")
+    w("## 1. Final Recommendation\n")
+    w("**Put conversion phases %s into the 2027 group driver replacement program, %s luminaires still on their "
+      "original driver.**" % (names, c(call["program_luminaires"])))
+    w("Each of the five is projected at %d to %d per cent of its original-driver luminaires failing before their "
+      "twelfth year against the %d per cent trigger, because only %s's drivers wear out and these phases were built "
+      "mostly from %s lots. Not all ten, which one Weibull over every conversion driver files at %d to %d per cent "
+      "each: it reads %s's survivors as failures still to come, expecting more than %s %s failures by the close "
+      "against the %d recorded. Not %s or %s, the highest of the rest at %d and %d per cent, built mostly from %s "
+      "lots.\n" % (min(ins), max(ins), k["trigger_pct"], A_, A_, round(pmin), round(pmax), B_, c(floor), B_,
+                   b["failures"], top_out[0], top_out[1], ph[top_out[0]]["share5"], ph[top_out[1]]["share5"], B_))
+    w("## 2. Critical Components\n")
+    w("1. Driver failures on record to 31 December 2026: **%s %s** of %s drivers and **%s %d** of %s, against the "
+      "**more than %s** %s failures one Weibull over every driver expects" % (
+          A_, c(a["failures"]), c(a["drivers"]), B_, b["failures"], c(b["drivers"]), c(floor), B_))
+    w("2. %s's original-driver lifetime: Weibull shape **%.1f**, characteristic life **%.1f years**; %s's drivers "
+      "show no wear-out" % (A_, a["shape1"], a["life1"], B_))
+    w("3. Projected share failing before year 12, to the nearest 5 per cent: **%s**; %s" % (shares_in, shares_out))
+    w("4. Luminaires on their original driver on 1 January 2027 in the five phases: **%s**\n" % c(call["program_luminaires"]))
+    w("## 3. Step-by-Step Solution\n")
+    w("1. Took each luminaire's retrofit date, phase and lot from %s (both sheet layouts, every pole-tag form) and each "
+      "lot's LED driver maker from %s: %s %s and %s %s drivers." % (
+          P.FILES["install"], P.FILES["coc"], c(a["drivers"]), A_, c(b["drivers"]), B_))
+    w("2. Dated each original driver's failure at the completion of the first driver-replacement order on its pole "
+      "(DRVR in %s, SL-DRV-RPL in %s, the legacy orders open at the cutover counted once as MIGRATED) and each exit "
+      "at its knockdown, warranty swap or pole removal order, per %s 2.2 to 2.4, every other luminaire suspended at "
+      "its age on 31 December 2026." % (P.FILES["wo_legacy"], P.FILES["wo_new"], P.FILES["note"]))
+    w("3. Fitted the two-parameter Weibull by maximum likelihood to each driver maker's drivers (the note's 3.1): %s "
+      "shape %.1f and characteristic life %.1f years on %s failures; %s's %d failures show no wear-out, where one fit "
+      "over both makers expects more than %s." % (A_, a["shape1"], a["life1"], c(a["failures"]), B_, b["failures"],
+                                                 c(floor)))
+    w("4. Averaged, over each phase's luminaires on their original driver on 1 January 2027, the probability of "
+      "failure before the twelfth anniversary of installation given survival to their age that day, under their "
+      "maker's fit: %s above %d per cent, every other phase at %d per cent or less." % (
+          names, k["trigger_pct"], rest_max))
+    w("5. Energy saved: each converted pole's sodium fixture from the installer's Removed column at %s input watts "
+      "against its LED at the catalog's input watts, the LED at %d W from the completion of a glare order without a "
+      "shield part where %s shows the pole at %d W, to its removal order's day, for the tariff's monthly burning hours "
+      "by days in service, Corrinvale's LEDs at the dimmed level for the hours %s records." % (
+          P.FILES["tariff"], k["reprogrammed_watts"], P.FILES["register"], k["reprogrammed_watts"], P.FILES["nlc"]))
+    w("6. Late repairs: every outage order completed in 2026, timed from the first report of the outage in %s (portal "
+      "stamps converted from UTC to the local time the orders carry, phone reports placed by pole number or register "
+      "address), an underground cable order's reports taken from every pole on its riser's feed in the register, an "
+      "order the crews found from its creation; counted those over %d hours (the tariff's 4.2)." % (
+          P.FILES["reports"], k["repair_standard_hours"]))
+    w("7. Designated the five phases above %d per cent: %s luminaires.\n" % (k["trigger_pct"],
+                                                                          c(call["program_luminaires"])))
+    w("## 4. Deliverable Answers\n")
+    w("### %s\n" % P.GOLDEN_XLSX)
+    w("1. The 2027 program: %s, %s luminaires on their original driver." % (names, c(call["program_luminaires"])))
+    w("2. Projected share failing before year 12, to the nearest 5 per cent, and whether the phase goes in:")
+    for p in P.PHASE_CODES:
+        w("   - %s: %d per cent, %s" % (p, ph[p]["share5"], "in" if ph[p]["designated"] else "out"))
+    w("3. Energy the converted poles saved in 2026 against the sodium fixtures, whole MWh:")
+    for t in towns:
+        w("   - %s: %s" % (t, c(fig["towns"][t]["energy"])))
+    w("4. Outages repaired in 2026 that missed the 72-hour standard:")
+    for t in towns:
+        w("   - %s: %d" % (t, fig["towns"][t]["late"]))
+    w("\n### %s\n" % P.GOLDEN_PNG)
+    w("1. One bar per phase of its projected share, the %d per cent trigger drawn across, the five program phases set "
+      "apart in colour, each bar labelled with its share to the nearest 5 per cent." % k["trigger_pct"])
+    return "\n".join(lines) + "\n"
+
+
+def write(fig, path=os.path.join(TASK, "submission.md")):
+    with open(path, "w") as fh:
+        fh.write(render(fig))
 
 
 if __name__ == "__main__":
-    main()
+    write(json.load(open(os.path.join(HERE, "figures.json"))))

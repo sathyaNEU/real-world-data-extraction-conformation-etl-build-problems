@@ -1,159 +1,274 @@
-"""Independent verifier for task281 (pandas, its own code path): recomputes the placement and the three asks (hours
-worked at each unit, the people who worked overtime at each unit, the people over 600 hours by title) from target/ and
-compares them with generator/figures.json."""
-from __future__ import annotations
-
+"""An independent path to every graded figure of task281, sharing no code with analysis.py: pandas readers, a
+regex-free certificate read by page and table position, the Weibull fitted on its full likelihood rather than the
+profile score, energy by month arithmetic in arrays, and repairs by a sort-and-scan over each light's orders and
+reports. It reads only <task>/target and compares with generator/figures.json."""
+import datetime as dt
 import json
-import math
 import os
+import subprocess
+import sys
+import zoneinfo
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import minimize
 
-UNITS = ["HRC", "ACF", "TWC", "PCN", "PCS", "FFH", "OXG", "KPG"]
-TITLE = {"HRC": "CO", "ACF": "CO", "TWC": "CO", "PCN": "PCO", "PCS": "PCO", "FFH": "FSA", "OXG": "HMW", "KPG": "HMW"}
-OFF = {"Annual leave", "Sick leave", "Injury on duty", "Training", "Family and medical leave", "Military leave"}
-FY26, FY28 = pd.Timestamp("2025-07-01"), pd.Timestamp("2027-07-01")
-DAYS = {"Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4, "Sat": 5, "Sun": 6}
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import params as P   # noqa: E402  (file names, the as-of dates and the trigger only)
 
 
-def placement(t):
-    ro = pd.read_csv(os.path.join(t, "merrimont_shift_rosters_fy2026.csv"), dtype=str).fillna("")
-    ro = ro.sort_values("exported_at").drop_duplicates(["shift_date", "line_id"], keep="last")
-    codes = pd.read_csv(os.path.join(t, "timekeeping_status_codes.csv"), dtype=str)
-    ro = ro.merge(codes[["source_system", "status_code", "state_category"]], on=["source_system", "status_code"],
-                  how="left")
-    ro["off"] = ro.state_category.isin(OFF)
-    ro["hrs"] = ro.scheduled_hours.astype(float)
-    ro["week"] = (pd.to_datetime(ro.shift_date) - FY26).dt.days // 7 + 1
-    emp = pd.read_csv(os.path.join(t, "hr_employee_extract_2026-10-01.csv"), dtype=str).fillna("")
-    cls = emp[emp.academy_class.str.endswith(" 2025-1")].drop_duplicates("employee_id")
-    held = ro[ro.employee_id.isin(cls.employee_id)].merge(cls[["employee_id", "academy_class"]], on="employee_id")
-    held["t"] = held.academy_class.str.split().str[0]
-    a1 = {t_: 1 - (g.hrs * g.off).sum() / g.hrs.sum() for t_, g in held.groupby("t")}
-    pc = pd.read_csv(os.path.join(t, "position_control_fy2028_round_the_clock_units.csv"), dtype=str).fillna("")
-    pc = pc[pc.status_fy2028_start == "Vacant"]
+def digits(s):
+    s = "" if s is None or (isinstance(s, float) and np.isnan(s)) else str(s)
+    d = "".join(ch if ch.isdigit() else " " for ch in s).split()
+    six = [x for x in d if len(x) == 6]
+    return int(six[-1]) if six else None
+
+
+def install(target):
+    xl = pd.read_excel(os.path.join(target, P.FILES["install"]), sheet_name=None)
+    parts = []
+    for name, df in xl.items():
+        if "Pole Tag" in df.columns:
+            df = df.rename(columns={"Date": "date", "Phase": "phase", "Municipality": "town", "Pole Tag": "pole",
+                                    "Catalog No.": "catalog", "Lot #": "lot", "Removed": "removed"})
+            df["date"] = pd.to_datetime(df["date"]).dt.date
+        else:
+            df = df.rename(columns={"install_date": "date", "pole_id": "pole", "removed_fixture": "removed"})
+            df["date"] = pd.to_datetime(df["date"], format="%m/%d/%Y").dt.date
+        df["pole"] = df["pole"].map(digits)
+        parts.append(df[["date", "phase", "town", "pole", "catalog", "lot", "removed"]])
+    out = pd.concat(parts, ignore_index=True)
+    out["watts"] = out["catalog"].str.extract(r"-(\d+)W-")[0].astype(int)
+    return out.set_index("pole")
+
+
+def makers(target):
+    txt = subprocess.run(["pdftotext", "-raw", os.path.join(target, P.FILES["coc"]), "-"], capture_output=True,
+                         text=True, check=True).stdout
     out = {}
-    for u in UNITS:
-        a = a1[TITLE[u]]
-        off = ro[(ro.unit_code == u) & ro.off & (ro.week <= 52)].groupby("week").hrs.sum()
-        need = np.array([off.get(k, 0.0) for k in range(1, 53)])
-        for _, r in pc[pc.unit_code == u].iterrows():
-            first = pd.Timestamp(r.first_shift_on_post)
-            dayoff = {DAYS[x] for x in r.days_off.split("/")}
-            for i in range(364):
-                d = FY28 + pd.Timedelta(days=i)
-                if d.weekday() in dayoff:
-                    continue
-                need[i // 7] += 8.0 if d < first else 8.0 * (1 - a)
-        out[u] = math.ceil(sorted(need, reverse=True)[4] / (40.0 * a) - 1e-9)
+    for page in txt.split("\f"):
+        lines = [x.strip() for x in page.splitlines() if x.strip()]
+        lot = next((x.split("Lot ")[1].rstrip(".") for x in lines if " Lot HL" in x), None)
+        if not lot:
+            continue
+        drv = next(x for x in lines if x.startswith("LED driver"))
+        out[lot] = "Vantrel" if "Vantrel" in drv else ("Corvane" if "Corvane" in drv else None)
     return out
 
 
-def asks(t):
-    pay = pd.read_csv(os.path.join(t, "payroll_overtime_lines_checks_jul2025_jul2026.csv"), dtype=str).fillna("")
-    emp = pd.read_csv(os.path.join(t, "hr_employee_extract_2026-10-01.csv"), dtype=str).fillna("")
-    offers = pd.read_csv(os.path.join(t, "overtime_offer_log_fy2026.csv"), dtype=str).fillna("")
-    spells = emp[["employee_id", "title_code", "title_effective_from", "title_effective_to"]]
-
-    def title_on(e, d):
-        s = spells[(spells.employee_id == e) & (spells.title_effective_from <= d) &
-                   ((spells.title_effective_to == "") | (spells.title_effective_to >= d))]
-        if len(s):
-            return s.title_code.iloc[0]
-        return spells[spells.employee_id == e].sort_values("title_effective_from").title_code.iloc[-1]
-    tcache = {}
-
-    def tt(e, d):
-        if (e, d) not in tcache:
-            tcache[(e, d)] = title_on(e, d)
-        return tcache[(e, d)]
-    for c in ("hours", "amount"):
-        pay[c] = pay[c].astype(float)
-    pay = pay.reset_index().rename(columns={"index": "n"})
-    key = ["employee_id", "work_date", "start_time", "hours", "earn_code"]
-    comp = {"CTE": 1.5, "CTS": 1.0}
-    piece = pay[pay.earn_code.isin(["OT", "OTN", "CTE", "CTS"])].sort_values(["check_date", "n"])
-    firsts = piece.groupby(key).check_date.transform("min")
-    repeat = set(piece.n[piece.check_date != firsts])
-    pay["infy"] = (pay.work_date >= "2025-07-01") & (pay.work_date <= "2026-06-30")
-    once = pay[~pay.n.isin(repeat)]
-    worked = once[once.infy & once.earn_code.isin(["OT", "CTE", "CTS"])].copy()
-    worked["cr"] = worked.earn_code.map(comp).fillna(1.0)
-    worked["w"] = worked.hours / worked.cr
-    acc = offers[offers.response == "Accepted"].copy()
-    acc["wh"] = acc.hours.astype(float).round(2)
-    acc = acc.rename(columns={"post_date": "work_date"})
-    worked["wh"] = worked.w.round(2)
-    worked = worked.merge(acc[["employee_id", "work_date", "start_time", "wh", "post_unit"]],
-                          on=["employee_id", "work_date", "start_time", "wh"], how="left")
-    worked["unit"] = worked.post_unit.fillna("").where(worked.post_unit.fillna("") != "",
-                                                        worked.home_timekeeper.replace({"SL-0410": "TWC"}))
-    a = worked.groupby("unit").w.sum().round().astype(int).to_dict()
-
-    cur = emp.sort_values("title_effective_from").drop_duplicates("employee_id", keep="last")
-    canon = {}
-    for _, r in cur.iterrows():
-        if r.seniority_date and r.seniority_date < r.hire_date:
-            m = cur[(cur.employee_id != r.employee_id) & (cur.seniority_date == r.seniority_date) &
-                    (cur.separation_date != "") & (cur.separation_date < r.hire_date) &
-                    (cur.title_code == r.title_code)]
-            if len(m) == 1:
-                canon[m.employee_id.iloc[0]] = r.employee_id
-    worked["person"] = worked.employee_id.map(lambda e: canon.get(e, e))
-    b = worked.groupby("unit").person.nunique().to_dict()
-
-    # SF16: the literal reading joins a line to its accepted offer by employee, date and start alone (the hours of a
-    # CTE line are credit, not the post's hours), and leaves an unoffered piece at the employee's own unit
-    k3 = acc.drop_duplicates(["employee_id", "work_date", "start_time"])
-    if len(k3) != len(acc):
-        raise SystemExit("verify: FAIL an accepted offer repeats employee, date and start")
-    alt = worked.drop(columns=["post_unit", "unit"]).merge(
-        k3[["employee_id", "work_date", "start_time", "post_unit"]], on=["employee_id", "work_date", "start_time"],
-        how="left")
-    alt["unit"] = alt.post_unit.fillna("").where(alt.post_unit.fillna("") != "",
-                                                  alt.home_timekeeper.replace({"SL-0410": "TWC"}))
-    if (alt.unit.values != worked.unit.values).any():
-        raise SystemExit("verify: FAIL the three-key join places a piece elsewhere than the four-key join")
-
-    person = worked.groupby("person").w.sum().to_dict()
-    c = {}
-    for e, h in person.items():
-        if h > 600:
-            t_ = tt(e, "2026-06-30")
-            c[t_] = c.get(t_, 0) + 1
-    return a, b, c
+def orders(target):
+    lg = pd.read_csv(os.path.join(target, P.FILES["wo_legacy"]), dtype=str).fillna("")
+    lg = pd.DataFrame(dict(pole=lg["LOCATION"].map(digits), res=lg["RES"],
+                           opened=pd.to_datetime(lg["OPENED"], format="%m/%d/%Y %H:%M"),
+                           done=pd.to_datetime(lg["CLOSED"], format="%m/%d/%Y %H:%M", errors="coerce"),
+                           source="", parts="", sysname="legacy"))
+    code = {"DRVR": "SL-DRV-RPL", "KD": "SL-KNOCKDOWN", "LUM": "SL-LUM-RPL", "REM": "SL-POLE-REM", "GLR": "SL-GLARE"}
+    lg["activity"] = lg["res"].map(lambda x: code.get(x, "LEG-" + x))
+    nw = pd.read_csv(os.path.join(target, P.FILES["wo_new"]), dtype=str).fillna("")
+    wall = lambda s: pd.to_datetime(s.str[:16], format="%Y-%m-%dT%H:%M", errors="coerce")
+    nw = pd.DataFrame(dict(pole=nw["asset_id"].map(digits), activity=nw["activity"],
+                           opened=wall(nw["created_at"]), reported=wall(nw["reported_at"]),
+                           done=wall(nw["completed_at"].where(nw["status"] == "CLOSED", "")),
+                           source=nw["source"], parts=nw["parts"], sysname="eam"))
+    return pd.concat([lg, nw], ignore_index=True)
 
 
-def run(task):
-    t = os.path.join(task, "target")
-    fig = json.load(open(os.path.join(task, "generator", "figures.json")))
-    bad = []
-    p = placement(t)
-    if p != fig["call"]["positions"]:
-        bad.append("placement %s vs %s" % (p, fig["call"]["positions"]))
-    if sum(p.values()) != fig["call"]["total"]:
-        bad.append("total")
-    # SF16 and SF17 as the files carry them: the payroll's own headers, the earnings codes, no file describing the data
-    head = open(os.path.join(t, "payroll_overtime_lines_checks_jul2025_jul2026.csv"), encoding="utf-8").readline()
-    if "home_timekeeper" not in head or "home_cost_center" not in head:
-        bad.append("payroll headers")
-    codes = pd.read_csv(os.path.join(t, "payroll_earnings_codes.csv"), dtype=str)
-    if not {"Comp time earned 1.5", "Comp time earned 1.0"} <= set(codes.description):
-        bad.append("earnings codes")
-    if [f for f in os.listdir(t) if any(w in f.lower() for w in ("dictionary", "readme", "manifest", "notes"))]:
-        bad.append("a file describing the data ships")
-    a, b, c = asks(t)
-    if {u: a.get(u, 0) for u in UNITS} != fig["ask_a_overtime_hours_by_unit"]:
-        bad.append("ask A %s" % a)
-    if {u: b.get(u, 0) for u in UNITS} != fig["ask_b_people_by_unit"]:
-        bad.append("ask B %s" % b)
-    if {k: c.get(k, 0) for k in ("CO", "PCO", "FSA", "HMW")} != fig["ask_c_people_over_600_hours"]:
-        bad.append("ask C %s" % c)
-    print("verify: %s" % ("PASS" if not bad else "FAIL " + "; ".join(bad)))
-    return 1 if bad else 0
+def nll(x, t, d):
+    k, lam = np.exp(x)
+    z = (t / lam) ** k
+    return -(np.sum(np.log(k) - np.log(lam) + (k - 1) * np.log(t / lam), where=d) - z.sum())
+
+
+def fit(t, d):
+    t = np.maximum(np.asarray(t, float), 1e-9)
+    d = np.asarray(d, bool)
+    best = None
+    for k0, l0 in ((3.0, 10.0), (1.0, 500.0), (1.5, 50.0)):
+        r = minimize(nll, [np.log(k0), np.log(l0)], args=(t, d), method="Nelder-Mead",
+                     options={"xatol": 1e-12, "fatol": 1e-12, "maxiter": 20000})
+        if best is None or r.fun < best.fun:
+            best = r
+    return np.exp(best.x)
+
+
+WORDS = {"twelfth": 12.0, "tenth": 10.0, "fifteenth": 15.0}
+
+
+def note(target):
+    """The program test as the lifecycle note files it: the trigger, the horizon and the year length."""
+    txt = " ".join(subprocess.run(["pdftotext", "-raw", os.path.join(target, P.FILES["note"]), "-"],
+                                  capture_output=True, text=True, check=True).stdout.split())
+    assert "two-parameter Weibull distribution, fitted by maximum likelihood" in txt, "the note's 3.1 not read"
+    trig = float(txt.split(" per cent of those luminaires")[0].split("more than ")[-1]) / 100.0
+    horizon = WORDS[txt.split(" anniversary of the luminaire")[0].split()[-1]]
+    year = float(txt.split(" days a year")[0].split()[-1])
+    return trig, horizon, year
+
+
+def call(target):
+    trig, horizon, year = note(target)
+    ins = install(target)
+    mk = makers(target)
+    ins["maker"] = ins["lot"].map(mk)
+    wo = orders(target)
+    wo = wo[wo["pole"].isin(ins.index) & wo["done"].notna()]
+    wo = wo[wo["done"].dt.date <= P.RECORD_END]
+    wo = wo.join(ins[["date"]], on="pole")
+    wo = wo[wo["done"].dt.date > wo["date"]]
+    first_drv = wo[wo["activity"] == "SL-DRV-RPL"].groupby("pole")["done"].min().dt.date
+    first_exit = wo[wo["activity"].isin(["SL-KNOCKDOWN", "SL-LUM-RPL", "SL-POLE-REM"])].groupby("pole")["done"].min().dt.date
+    ins["fail"] = first_drv
+    ins["exit"] = first_exit
+    failed = ins["fail"].notna() & (ins["exit"].isna() | (ins["fail"] <= ins["exit"]))
+    stop = np.where(failed, ins["fail"], ins["exit"].where(ins["exit"].notna(), P.RECORD_END))
+    stop = [min(s, P.RECORD_END) if not f else s for s, f in zip(stop, failed)]
+    ins["t"] = [(s - d0).days / year for s, d0 in zip(stop, ins["date"])]
+    ins["d"] = failed
+    ins["alive"] = (~failed) & ins["exit"].isna()
+    ins["age"] = [(P.AS_OF - d0).days / year for d0 in ins["date"]]
+    fits = {m: fit(g["t"], g["d"]) for m, g in ins.groupby("maker")}
+
+    def p(row):
+        k, lam = fits[row["maker"]]
+        F = lambda x: 1 - np.exp(-(x / lam) ** k)
+        return (F(horizon) - F(row["age"])) / (1 - F(row["age"]))
+    al = ins[ins["alive"]].copy()
+    al["p"] = al.apply(p, axis=1)
+    shares = al.groupby("phase")["p"].mean()
+    n = al.groupby("phase").size()
+    ins.attrs["trigger"] = trig
+    return shares, n, fits, ins
+
+
+def energy(target, ins):
+    tariff = subprocess.run(["pdftotext", "-layout", os.path.join(target, P.FILES["tariff"]), "-"],
+                            capture_output=True, text=True, check=True).stdout
+    watts = {}
+    for line in tariff.splitlines():
+        s = line.split()
+        if len(s) > 4 and s[0] in ("LED", "HPS") and s[2] == "W":
+            nums = [x for x in s[3:] if x.isdigit()]
+            watts[(s[0], int(s[1]))] = int(nums[0])
+        if s and s[0] == "Hours":
+            hrs = [int(x.replace(",", "")) for x in s[1:13]]
+    reg = pd.read_csv(os.path.join(target, P.FILES["register"]), dtype=str).fillna("")
+    reg["pole"] = reg["pole_id"].map(digits)
+    regw = dict(zip(reg["pole"], reg["lamp_watts"].astype(int)))
+    wo = orders(target)
+    wo = wo[wo["done"].notna() & wo["pole"].isin(ins.index)]
+    nlc = pd.read_csv(os.path.join(target, P.FILES["nlc"]), dtype={"pole_id": str})
+    nlc["pole"] = nlc["pole_id"].map(digits)
+    nlc["m"] = nlc["month"].str[5:7].astype(int)
+    nl = {(a, b): (c, e) for a, b, c, e in zip(nlc["pole"], nlc["m"], nlc["dimmed_hours"], nlc["dim_level_pct"])}
+    days = pd.date_range("2026-01-01", "2026-12-31").date
+    month = np.array([d.month for d in days])
+    ndays = np.array([pd.Timestamp(d).days_in_month for d in days])
+    perday = np.array([hrs[m - 1] for m in month]) / ndays
+    out = {}
+    for pole, g in wo.groupby("pole"):
+        pass
+    evs = {pole: g.sort_values("done") for pole, g in wo.groupby("pole")}
+    for pole, r in ins.iterrows():
+        hps = watts[("HPS", int(str(r["removed"]).split("W")[0].split()[-1]))]
+        cur = np.full(len(days), watts[("LED", int(r["watts"]))], float)
+        live = np.ones(len(days), bool)
+        gone_before = False
+        for _, e in (evs[pole].iterrows() if pole in evs else []):
+            d = e["done"].date()
+            if d <= r["date"]:
+                continue
+            ix = days >= d
+            if e["activity"] == "SL-GLARE" and not e["parts"].startswith("HSS"):
+                cur[ix] = watts[("LED", regw[pole])]
+            elif e["activity"] in ("SL-KNOCKDOWN", "SL-LUM-RPL") and "HRX-" in e["parts"]:
+                cur[ix] = watts[("LED", int(e["parts"].split("HRX-")[1].split("-")[1].rstrip("W")))]
+            elif e["activity"] in ("SL-POLE-REM",):
+                live &= ~ix
+                if d < dt.date(2026, 1, 1):
+                    gone_before = True
+        if gone_before:
+            continue
+        tot = 0.0
+        for m in range(1, 13):
+            sel = (month == m) & live
+            if not sel.any():
+                continue
+            tot += ((hps - cur[sel]) * perday[sel]).sum()
+            if (pole, m) in nl:
+                dh, lv = nl[(pole, m)]
+                tot += cur[sel].mean() * (1 - lv / 100.0) * dh
+        out[r["town"]] = out.get(r["town"], 0.0) + tot
+    return {t: v / 1e6 for t, v in out.items()}
+
+
+def repairs(target, ins):
+    ny = zoneinfo.ZoneInfo("America/New_York")
+    reg = pd.read_csv(os.path.join(target, P.FILES["register"]), dtype=str).fillna("")
+    reg["pole"] = reg["pole_id"].map(digits)
+    town = dict(zip(reg["pole"], reg["town"]))
+    for pl, r in ins.iterrows():
+        town.setdefault(pl, r["town"])
+    feed = dict(zip(reg["pole"], reg["feed"]))
+    members = reg[reg["feed"] != "OH"].groupby("feed")["pole"].apply(list).to_dict()
+    byaddr = reg.groupby(["town", "nearest_address"])["pole"].apply(list).to_dict()
+    rp = pd.read_csv(os.path.join(target, P.FILES["reports"]), dtype=str).fillna("")
+
+    def when(row):
+        if row["channel"] == "PORTAL":
+            return pd.Timestamp(row["received"]).tz_convert(ny).tz_localize(None)
+        return pd.to_datetime(row["received"][:19], format="%m/%d/%Y %I:%M %p")
+    rp["t"] = rp.apply(when, axis=1)
+    rp["pl"] = [digits(p) if digits(p) else (byaddr.get((tw, a), [None])[0] if len(byaddr.get((tw, a), [])) == 1
+                                             else None) for p, tw, a in zip(rp["pole"], rp["town"], rp["address"])]
+    rep = rp.dropna(subset=["pl"]).groupby("pl")["t"].apply(lambda s: sorted(s)).to_dict()
+    wo = orders(target)
+    wo = wo[(wo["sysname"] == "eam") & wo["done"].notna()].copy()
+    out_codes = {"SL-DRV-RPL", "SL-PC-RPL", "SL-WIRING", "SL-FUSE-RPL", "SL-LAMP-RPL", "SL-BALLAST-RPL",
+                 "SL-KNOCKDOWN", "SL-LUM-RPL", "SL-UG-CABLE"}
+    wo["lights"] = [members.get(feed.get(p), [p]) if a == "SL-UG-CABLE" else [p]
+                    for p, a in zip(wo["pole"], wo["activity"])]
+    cov = {}
+    for ls, d in zip(wo["lights"], wo["done"]):
+        for p in ls:
+            cov.setdefault(p, []).append(d)
+    late, tot = {}, {}
+    for _, w in wo[wo["activity"].isin(out_codes) & (wo["done"].dt.year == 2026)].iterrows():
+        prev = max([d for p in w["lights"] for d in cov.get(p, []) if d < w["done"]], default=None)
+        ts = [t for p in w["lights"] for t in rep.get(p, []) if (prev is None or t > prev) and t <= w["done"]]
+        base = w["reported"] if w["source"].startswith("CR-") else w["opened"]
+        first = min(ts + ([w["reported"]] if w["source"].startswith("CR-") else [])) if ts else base
+        tw = town[w["pole"]]
+        tot[tw] = tot.get(tw, 0) + 1
+        late[tw] = late.get(tw, 0) + int((w["done"] - first).total_seconds() > 72 * 3600)
+    return late, tot
+
+
+def run(target, golden):
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    shares, n, fits, ins = call(target)
+    ok = True
+    print("PASS  verify: the note read through its own extractor (trigger %.2f)" % ins.attrs["trigger"])
+    sset = [pc for pc in P.PHASE_CODES if shares[pc] > ins.attrs["trigger"]]
+    good = sset == fig["call"]["set"] and int(sum(n[pc] for pc in sset)) == fig["call"]["program_luminaires"]
+    print("%s  verify: the set %s and %d luminaires" % ("PASS" if good else "FAIL", sset, sum(n[pc] for pc in sset)))
+    ok &= good
+    d = max(abs(shares[pc] - fig["phases"][pc]["share"]) for pc in P.PHASE_CODES)
+    s5 = all(int(round(shares[pc] * 20) * 5) == fig["phases"][pc]["share5"] for pc in P.PHASE_CODES)
+    print("%s  verify: every phase's share (largest gap %.2e) and its nearest 5 per cent" % (
+        "PASS" if (d < 1e-4 and s5) else "FAIL", d))
+    ok &= d < 1e-4 and s5
+    E = energy(target, ins)
+    gE = all(int(round(E[t])) == fig["towns"][t]["energy"] for t in fig["towns"])
+    print("%s  verify: every town's MWh %s" % ("PASS" if gE else "FAIL", {t: round(v, 2) for t, v in sorted(E.items())}))
+    ok &= gE
+    late, tot = repairs(target, ins)
+    gR = all(late[t] == fig["towns"][t]["late"] and tot[t] == fig["towns"][t]["repaired"] for t in fig["towns"])
+    print("%s  verify: every town's late repairs %s" % ("PASS" if gR else "FAIL", dict(sorted(late.items()))))
+    ok &= gR
+    return ok
 
 
 if __name__ == "__main__":
-    import sys
-    sys.exit(run(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
+    sys.exit(0 if run(t, None) else 1)

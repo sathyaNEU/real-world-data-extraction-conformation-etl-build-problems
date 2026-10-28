@@ -1,233 +1,513 @@
-"""The world behind task281: lines, holders, rotas and every scheduled shift's status in FY2026, the July 2025
-academy class, and the FY2028 position control. Status codes per scheduled line-shift: W worked, V vacant, and the
-leave kinds VAC, SICK, IOD (injured on duty), TRN (in-service training), FMLA, MIL."""
+"""The clean truth: lots, luminaires, poles, every driver's life, every exit, every outage and its reports.
+
+Nothing here is shipped as it stands; records.py writes the files the utility, its installer and the luminaire maker
+keep, each in its own form. Times are in days from 2021-01-01 unless a date is named."""
+import datetime as dt
+
 import numpy as np
-import common as K
 
-D = K.FY26_DAYS
-WEEKDAY0 = K.FY26_START.weekday()            # 1 July 2025 is a Tuesday
+import params as P
 
-# per unit: years-of-service mix (share senior), sick base, injury rate, vacation season, FY2026 separations, new
-# FY2028 lines and their fill (fiscal week of FY2028, lines filled)
-PARAM = {
-    "HRC": dict(senior=0.65, sick=0.030, iod=0.050, vac_peak="summer", seps=4, new=3, fill=(16, 3)),
-    "ACF": dict(senior=0.55, sick=0.026, iod=0.040, vac_peak="summer", seps=6, new=3, fill=(30, 3)),
-    "TWC": dict(senior=0.60, sick=0.028, iod=0.030, vac_peak="holiday", seps=2, new=2, fill=(16, 2)),
-    "PCN": dict(senior=0.40, sick=0.022, iod=0.005, vac_peak="summer", seps=4, new=1, fill=(23, 1)),
-    "PCS": dict(senior=0.45, sick=0.024, iod=0.005, vac_peak="summer", seps=1, new=2, fill=(23, 2)),
-    "FFH": dict(senior=0.55, sick=0.032, iod=0.030, vac_peak="flu", seps=3, new=2, fill=(10, 2)),
-    "OXG": dict(senior=0.50, sick=0.020, iod=0.035, vac_peak="summer_only", seps=0, new=1, fill=(40, 1)),
-    "KPG": dict(senior=0.50, sick=0.020, iod=0.035, vac_peak="summer_only", seps=0, new=0, fill=None),
-}
-CLASS_FILLS_FY26 = {"CO": (128, 247), "PCO": (198,), "FSA": (92, 214), "HMW": (99,)}   # day indexes classes post
+EPOCH = dt.date(2021, 1, 1)
 
 
-def weekday(i):
-    return (WEEKDAY0 + i) % 7
+def d2i(d):
+    return (d - EPOCH).days
+
+
+def i2d(i):
+    return EPOCH + dt.timedelta(days=int(i))
+
+
+def workdays(a, b):
+    out, d = [], a
+    while d <= b:
+        if d.weekday() < 5 and not (d.month == 12 and d.day >= 22) and not (d.month == 1 and d.day <= 2) \
+                and not (d.month == 7 and d.day == 4) and not (d.month == 11 and 22 <= d.day <= 28 and d.weekday() == 3):
+            out.append(d)
+        d += dt.timedelta(days=1)
+    return out
 
 
 class World:
-    def __init__(self, seed=K.SEED, P=None):
-        self.rng = np.random.default_rng(seed)
-        self.P = {u: dict(PARAM[u], **((P or {}).get(u, {}))) for u in K.UNIT_CODES}
-        self.lines = []          # dicts: id, unit, shift, offset (first day-off weekday), group
-        self.emps = {}           # id -> dict(hire_year_service, class, unit, ...)
-        self._build_lines()
-        self._build_people()
-        self._simulate()
-        self._fy28()
+    def __init__(self, seed=P.SEED):
+        # one stream per part of the world, so that a change to the reports or the asks never moves a life
+        self.seed = seed
+        ss = np.random.SeedSequence(seed).spawn(9)
+        self.rngs = [np.random.default_rng(s) for s in ss]
+        self.rng = self.rngs[0]
+        self.make_lots_and_luminaires()
+        self.rng = self.rngs[1]
+        self.make_lives()
+        self.rng = self.rngs[2]
+        self.make_reprog()
+        self.rng = self.rngs[5]
+        self.make_noncon_poles()
+        self.rng = self.rngs[7]
+        self.make_circuits()
+        self.rng = self.rngs[3]
+        lum_out = self.make_outages()
+        self.rng = self.rngs[6]
+        nc_out = self.make_noncon_outages()
+        self.rng = self.rngs[8]
+        lum_out += self.make_shields()
+        self.rng = self.rngs[7]
+        ck_out = self.make_circuit_outages(lum_out)
+        # the last outage that darkened each pole, for the residents who report again after a repair
+        self._last = {}
+        for o in sorted(lum_out + nc_out + ck_out, key=lambda o: o["day"]):
+            for p in o["poles"]:
+                self._last[p] = id(o)
+        self.rng = self.rngs[4]
+        rep_l = self.make_reports_2026(lum_out)
+        self.rng = self.rngs[6]
+        rep_n = self.make_reports_2026(nc_out)
+        self.rng = self.rngs[7]
+        rep_c = self.make_reports_2026(ck_out)
+        rep_x = self.make_foreign_reports()
+        self.outages = sorted(lum_out + nc_out + ck_out, key=lambda o: (o["day"], o["pole"], o["kind"]))
+        # report numbers run in the order the reports were received, one series since the portal opened; the
+        # reports before December 2025 are known here only by the work orders created from them
+        pre = sorted([o for o in self.outages if "reported" in o], key=lambda o: (o["reported"], o["pole"]))
+        rid = 61204
+        for o in pre:
+            rid += int(self.rng.integers(1, 4))
+            o["pre_id"] = rid
+        self.reports = sorted(rep_l + rep_n + rep_c + rep_x, key=lambda x: (x[1]["t"], x[1]["pole"] or 0))
+        # the customer system numbers every contact it logs (billing, power outages, streetlights) in one series
+        idg = np.random.default_rng(np.random.SeedSequence(seed + 23))
+        for o, r in self.reports:
+            rid += int(idg.integers(1, 9))
+            r["id"] = rid
 
-    # ---------------------------------------------------------------------------------------------- lines and people
-    def _build_lines(self):
-        for code, name, title, posts in K.UNITS:
-            posts = self.P[code].get("posts", posts)
-            for s, p in zip(K.SHIFTS, posts):
-                groups = p // 5
-                n = 0
-                for g in range(groups):
-                    for k in range(7):
-                        n += 1
-                        self.lines.append(dict(id="%s-%s%02d" % (code, s, n), unit=code, shift=s, offset=k, group=g))
-        self.L = len(self.lines)
-        self.on = np.zeros((self.L, D), dtype=bool)          # scheduled to work
-        for j, ln in enumerate(self.lines):
-            off = {ln["offset"], (ln["offset"] + 1) % 7}
-            for i in range(D):
-                self.on[j, i] = weekday(i) not in off
-
-    def _build_people(self):
+    # ------------------------------------------------------------------ lots and luminaires
+    def make_lots_and_luminaires(self):
         rng = self.rng
-        self.holder = np.full((self.L, D), -1, dtype=int)  # employee index holding the line that day, -1 vacant
-        self.people = []                                   # dicts: unit, title, service (years at 1 July 2025), cls
-        for j, ln in enumerate(self.lines):
-            u = ln["unit"]; P = self.P[u]
-            if rng.uniform() < P["senior"]:
-                svc = int(rng.integers(6, 28))
+        lots, lum = [], []
+        pole_ids = rng.permutation(np.arange(400100, 400100 + 60000))
+        pole_k = 0
+        streets = {t: ["%s %s" % (s, k) for s in rng.choice(STREET_STEMS, 120, replace=False)
+                       for k in [rng.choice(["St", "Ave", "Rd", "Dr", "Ln", "Pike", "Way", "Ct"])]]
+                   for t in P.TOWN_CODES}
+        lot_seq = {}
+        for pc, a, b, n, sA, towns in P.PHASES:
+            d0, d1 = dt.date.fromisoformat(a), dt.date.fromisoformat(b)
+            days = workdays(d0, d1)
+            # lots for the phase: catalog by the wattage mix, driver source by lot so the A share lands on sA
+            sizes = []
+            while sum(sizes) < n:
+                sizes.append(int(rng.integers(*P.LOT_SIZE)))
+            sizes[-1] -= sum(sizes) - n
+            if sizes[-1] < 60:
+                sizes[-2] += sizes[-1]
+                sizes.pop()
+            m = len(sizes)
+            watts = rng.choice([40, 70, 110], m, p=[P.WATT_MIX[w] for w in (40, 70, 110)])
+            # choose the A lots greedily in a random order until their luminaires reach sA * n
+            order = rng.permutation(m)
+            src = np.array(["B"] * m, dtype=object)
+            acc = 0
+            for j in order:
+                if acc + sizes[j] / 2 <= sA * n:
+                    src[j] = "A"
+                    acc += sizes[j]
+            # ship dates: lots arrive in install order, two to nine weeks ahead of their first install
+            per_day = n / len(days)
+            cum = np.cumsum([0] + sizes[:-1])
+            for j in range(m):
+                first_day = days[min(len(days) - 1, int(cum[j] / per_day))]
+                ship = first_day - dt.timedelta(days=int(rng.integers(14, 63)))
+                ym = ship.strftime("%y%m")
+                lot_seq[ym] = lot_seq.get(ym, 0) + 1
+                lot_no = "HL%s-%02d" % (ym, lot_seq[ym])
+                rng.choice(["B1", "B2", "B3"]) if src[j] == "A" else rng.choice(["02", "03"])   # (kept: the stream)
+                part = P.DRV_PART[src[j]] + "-" + P.DRV_REV[src[j]]
+                lots.append(dict(lot=lot_no, phase=pc, ship=ship, watts=int(watts[j]), src=src[j], qty=sizes[j],
+                                 drv_part=part, first=first_day))
+            # luminaires: installed in order across the phase's workdays, lots consumed in order with a little
+            # interleaving (two lots open on the trucks at once)
+            phase_lots = lots[-m:]
+            seq = []
+            for j, L in enumerate(phase_lots):
+                seq += [j] * L["qty"]
+            seq = np.array(seq)
+            # interleave: swap a share of neighbours within a window of about half a lot
+            idx = np.arange(n) + rng.normal(0, 90, n)
+            seq = seq[np.argsort(idx, kind="stable")]
+            day_of = np.sort(rng.integers(0, len(days), n))
+            tw = list(towns)
+            tp = np.array([towns[t] for t in tw])
+            town_of = rng.choice(tw, n, p=tp / tp.sum())
+            serial_k = {}
+            for i in range(n):
+                L = phase_lots[seq[i]]
+                serial_k[L["lot"]] = serial_k.get(L["lot"], 0) + 1
+                t = town_of[i]
+                hps = P.HPS_FOR[L["watts"]]
+                hw = int(rng.choice([h for h, _ in hps], p=[q for _, q in hps]))
+                lum.append(dict(phase=pc, install=days[day_of[i]], lot=L["lot"], src=L["src"], watts=L["watts"],
+                                serial="%s-%04d" % (L["lot"].replace("HL", "HRX"), serial_k[L["lot"]]),
+                                pole=int(pole_ids[pole_k]), town=t,
+                                street=str(rng.choice(streets[t])), hps_w=hw,
+                                crew="B%02d" % int(rng.integers(1, 9))))
+                pole_k += 1
+        self.lots = lots
+        self.lum = lum
+        self.streets = streets
+        self.pole_ids_left = pole_ids[pole_k:]
+
+    # ------------------------------------------------------------------ lives
+    def make_lives(self):
+        rng = self.rng
+        n = len(self.lum)
+        end = d2i(P.RECORD_END)
+        for i, L in enumerate(self.lum):
+            t0 = d2i(L["install"])
+            if L["src"] == "A":
+                life = P.LAM_A * rng.weibull(P.K_A)
             else:
-                svc = int(rng.integers(1, 6))
-            self.people.append(dict(unit=u, title=K.UNIT_TITLE[u], service=svc, cls=None, start=0, end=D))
-            self.holder[j, :] = len(self.people) - 1
-        # the July 2025 academy class: a share of each unit's junior lines were vacant on 30 June and are posted on
-        # 1 July 2025 to first-year officers
-        self.jul25 = []
-        for u in K.UNIT_CODES:
-            js = [j for j, ln in enumerate(self.lines) if ln["unit"] == u]
-            juniors = [j for j in js if self.people[self.holder[j, 0]]["service"] < 6]
-            k = max(2, len(js) // 9)
-            for j in rng.choice(juniors, size=min(k, len(juniors)), replace=False):
-                self.people[self.holder[j, 0]].update(service=0, cls="2025-1")
-                self.jul25.append(self.holder[j, 0])
-        # FY2026 separations: a holder leaves on a day, the line stands vacant until a later class posts to it
-        for u in K.UNIT_CODES:
-            P = self.P[u]
-            js = [j for j, ln in enumerate(self.lines) if ln["unit"] == u
-                  and self.people[self.holder[j, 0]]["cls"] is None]
-            fills = CLASS_FILLS_FY26[K.UNIT_TITLE[u]]
-            for j in rng.choice(js, size=P["seps"], replace=False):
-                leave_day = int(rng.integers(20, 150))
-                later = [f for f in fills if f > leave_day + 30]
-                fill_day = later[0] if later else int(min(D - 1, leave_day + 200))
-                old = self.holder[j, 0]
-                self.people[old]["end"] = leave_day
-                self.holder[j, leave_day:fill_day] = -1
-                self.people.append(dict(unit=u, title=K.UNIT_TITLE[u], service=0, cls="2026-%d" % (1 + fills.index(fill_day)) if fill_day in fills else "lateral",
-                                        start=fill_day, end=D))
-                self.holder[j, fill_day:] = len(self.people) - 1
+                life = rng.exponential(1 / P.RATE_B)
+            L["drv_fail"] = t0 + int(round(life * P.YEAR_D)) + 1
+            ex = {k: t0 + int(round(rng.exponential(1 / r) * P.YEAR_D)) + 2 for k, r in P.EXIT.items()}
+            k = min(ex, key=ex.get)
+            L["exit"], L["exit_type"] = ex[k], k
+            L["end"] = end
+            # after a driver failure the luminaire carries a service driver, which can fail too (drawn whatever
+            # happens, so that no luminaire's draws move another's)
+            e2 = rng.exponential(1.0)
+            L["drv2_fail"] = None
+            if L["drv_fail"] < min(L["exit"], end):
+                L["drv2_fail"] = L["drv_fail"] + int(round(e2 / P.RATE_B * P.YEAR_D)) + 1
 
-    # ---------------------------------------------------------------------------------------------- leave
-    def _season(self, kind):
-        d = np.arange(D)
-        if kind == "summer":
-            return 1 + 1.6 * np.exp(-0.5 * ((d - 30) / 18.0) ** 2) + 0.6 * np.exp(-0.5 * ((d - 178) / 6.0) ** 2)
-        if kind == "summer_only":
-            return 0.2 + 2.6 * np.exp(-0.5 * ((d - 35) / 20.0) ** 2) + 0.4 * (d > 300)
-        if kind == "holiday":
-            return 1 + 0.6 * np.exp(-0.5 * ((d - 35) / 15.0) ** 2) + 1.8 * np.exp(-0.5 * ((d - 175) / 7.0) ** 2)
-        if kind == "flu":
-            return 1 + 0.8 * np.exp(-0.5 * ((d - 35) / 15.0) ** 2) + 0.5 * np.exp(-0.5 * ((d - 200) / 25.0) ** 2)
-        return np.ones(D)
-
-    def _simulate(self):
+    def make_reprog(self):
+        """Some 110 W luminaires were reprogrammed to 70 W after glare complaints, in 2025 and 2026."""
         rng = self.rng
-        self.status = np.full((self.L, D), "", dtype=object)
-        flu = 1 + 0.7 * np.exp(-0.5 * ((np.arange(D) - 205) / 22.0) ** 2)
-        for j, ln in enumerate(self.lines):
-            u = ln["unit"]; P = self.P[u]
-            vs = self._season(P["vac_peak"]); vs = vs / vs.mean()
-            e_prev = None
-            for i in range(D):
-                if not self.on[j, i]:
-                    continue
-                e = self.holder[j, i]
-                if e < 0:
-                    self.status[j, i] = "V"; continue
-                self.status[j, i] = "W"
-            # per holder spell on the line: vacation blocks, sick days, injuries, training
-            spells = []
-            i0 = 0
-            while i0 < D:
-                e = self.holder[j, i0]; i1 = i0
-                while i1 < D and self.holder[j, i1] == e:
-                    i1 += 1
-                if e >= 0:
-                    spells.append((e, i0, i1))
-                i0 = i1
-            for e, a, b in spells:
-                pe = self.people[e]
-                svc = pe["service"]
-                first = pe["cls"] is not None and svc == 0
-                days = np.array([i for i in range(a, b) if self.on[j, i]])
-                if len(days) == 0:
-                    continue
-                frac = len(days) / max(1, self.on[j].sum())
-                # vacation weeks
-                if first:
-                    vac_h = 40.0 if pe["start"] < 183 else 0.0
-                else:
-                    vac_h = 80.0 if svc < 2 else 120.0 if svc < 6 else 160.0 if svc < 11 else 200.0 if svc < 16 else 240.0
-                vac_h *= frac
-                nweeks = int(round(vac_h / 40.0))
-                w = vs[days] * (1.0 + (0.6 if svc >= 11 else 0.0) * (vs[days] > 1.3))
-                if first:
-                    w = np.where(days > 183, 1.0, 1e-6)
-                w = w / w.sum()
-                for _ in range(nweeks):
-                    c = int(rng.choice(days, p=w))
-                    for i in range(c, min(b, c + 7)):
-                        if self.on[j, i] and self.status[j, i] == "W":
-                            self.status[j, i] = "VAC"
-                # sick days
-                ps = P["sick"] * (0.75 if first else (1.0 + 0.015 * svc)) * flu[days]
-                for i, p in zip(days, ps):
-                    if self.status[j, i] == "W" and rng.uniform() < p:
-                        self.status[j, i] = "SICK"
-                # injury on duty: one long spell for some
-                if not first and rng.uniform() < P["iod"] * (1.0 + 0.03 * svc) * frac * 4:
-                    st = int(rng.choice(days)); ln_days = int(rng.integers(20, 120))
-                    for i in range(st, min(b, st + ln_days)):
-                        if self.on[j, i] and self.status[j, i] in ("W", "SICK"):
-                            self.status[j, i] = "IOD"
-                # post-academy field training: a first-year officer spends ten shifts in its first quarter off the post
-                if first:
-                    n = 0
-                    for i in range(a + 10, b):
-                        if self.on[j, i] and self.status[j, i] == "W" and rng.uniform() < 0.25:
-                            self.status[j, i] = "TRN"; n += 1
-                            if n == 10: break
-                # in-service training, five shifts in the spring for every holder past their first year
-                if not first and b - a > 300:
-                    st = int(rng.integers(250, 320))
-                    n = 0
-                    for i in range(st, b):
-                        if self.on[j, i] and self.status[j, i] == "W":
-                            self.status[j, i] = "TRN"; n += 1
-                            if n == 5: break
-                # family and military leave, rare
-                if rng.uniform() < 0.04 * frac:
-                    st = int(rng.choice(days)); ln_days = int(rng.integers(10, 60))
-                    code = "MIL" if rng.uniform() < 0.3 else "FMLA"
-                    for i in range(st, min(b, st + ln_days)):
-                        if self.on[j, i] and self.status[j, i] == "W":
-                            self.status[j, i] = code
+        for L in self.lum:
+            t0 = d2i(L["install"])
+            L["reprog"] = None
+            u = rng.random()
+            day = None
+            if L["watts"] == 110 and u < P.REPROG_2026 + P.REPROG_2025:
+                yr = 2026 if u < P.REPROG_2026 else 2025
+                day = d2i(dt.date(yr, 1, 1)) + int(rng.integers(5, 355))
+            if day is not None and t0 + 120 < day < min(L["exit"], d2i(P.RECORD_END)) and not (
+                    L["exit_type"] == "pole_removed" and L["exit"] <= d2i(P.RECORD_END)):
+                L["reprog"] = day
 
-    # ---------------------------------------------------------------------------------------------- FY2028
-    def _fy28(self):
-        """the position control: new lines authorized for FY2028, vacant on 1 July 2027 and filled by a class"""
-        self.new_lines = []
-        for u in K.UNIT_CODES:
-            P = self.P[u]
-            if not P["new"]:
+    # ------------------------------------------------------------------ outages (every year) for the work orders
+    HARD = ("driver", "knockdown", "luminaire", "pole_removed", "reprogram", "glare_shield")
+    PLANNED = ("reprogram", "pole_removed", "glare_shield")
+
+    @staticmethod
+    def _one_visit(out, key):
+        """A fault within 20 days of another outage on the same light is the same visit's work: keep one."""
+        by = {}
+        for o in sorted(out, key=lambda o: (o[key], o["day"], o["kind"])):
+            by.setdefault(o[key], []).append(o)
+        kept = []
+        for _, os_ in by.items():
+            fixed = [o for o in os_ if o["kind"] in World.HARD]
+            for o in os_:
+                if o["kind"] in World.HARD:
+                    kept.append(o)
+                    continue
+                if any(abs(q["day"] - o["day"]) <= 20 for q in fixed):
+                    continue
+                fixed.append(o)
+                kept.append(o)
+        return kept
+
+    KIND_ID = {"driver": 1, "photocontrol": 2, "wiring": 3, "fuse": 4, "lamp": 5, "ballast": 6, "knockdown": 7,
+               "luminaire": 8, "pole_removed": 9, "reprogram": 10, "glare_shield": 11, "ug_cable": 12}
+
+    def _g(self, o, salt):
+        """A generator for one outage's draws, so that no other outage's existence moves them."""
+        return np.random.default_rng([self.seed, salt, o["pole"], o["day"] + 50000, World.KIND_ID[o["kind"]],
+                                      int(o.get("second", False))])
+
+    def _times(self, out):
+        """The light goes out in the evening of its day; a report (portal or phone) or a patrol finds it; dispatch
+        picks up a report; the crew repairs it some days later."""
+        for o in out:
+            rng = self._g(o, 1)
+            o["dark"] = o["day"] + 0.80                                    # about 7 pm
+            o["patrol"] = rng.random() < (0.16 if o["kind"] not in World.PLANNED else 1.0)
+            delay = rng.exponential(1.4) + 0.05
+            o["found"] = o["dark"] + delay
+            o["repair_lag"] = 0.35 + rng.gamma(1.6, 1.15)               # days from dispatch to completion
+            if o["kind"] in ("knockdown", "pole_removed"):
+                o["repair_lag"] = 0.6 + rng.gamma(2.0, 1.6)
+
+    def make_outages(self):
+        rng = self.rng
+        end = d2i(P.RECORD_END)
+        out = []
+        for i, L in enumerate(self.lum):
+            t0 = d2i(L["install"])
+            stop = min(L["exit"], end)
+            u = dict(lum=i, pole=L["pole"], town=L["town"], poles=(L["pole"],))
+            # the original driver's failure
+            if L["drv_fail"] <= stop:
+                out.append(dict(u, kind="driver", day=L["drv_fail"]))
+            if L["drv2_fail"] is not None and L["drv2_fail"] <= stop:
+                out.append(dict(u, kind="driver", day=L["drv2_fail"], second=True))
+            for kind, r in P.OTHER.items():
+                t = t0
+                while True:
+                    t += int(round(rng.exponential(1 / r) * P.YEAR_D)) + 1
+                    if t > stop:
+                        break
+                    out.append(dict(u, kind=kind, day=t))
+            if L["exit"] <= end:
+                out.append(dict(u, kind=L["exit_type"], day=L["exit"]))
+            if L["reprog"] is not None and L["reprog"] <= stop:
+                out.append(dict(u, kind="reprogram", day=L["reprog"]))
+        self._times(out)
+        return self._one_visit(out, "pole")
+
+    def make_circuits(self):
+        """Some streets are fed underground: their lights hang on one circuit fed from a riser pole. The GIS records
+        each pole's feed."""
+        rng = self.rng
+        by_street = {}
+        for i, L in enumerate(self.lum):
+            by_street.setdefault((L["town"], L["street"]), []).append(i)
+        self.circuit_of, self.circuits, self.riser = {}, {}, {}
+        k = {t: 0 for t in P.TOWN_CODES}
+        for (town, street), idx in sorted(by_street.items()):
+            if len(idx) < 4 or rng.random() > P.UG_SHARE:
                 continue
-            wk, n = P["fill"]
-            for k in range(P["new"]):
-                self.new_lines.append(dict(unit=u, id="%s-X%02d" % (u, k + 1), offset=k % 7, fill_week=wk))
+            idx = sorted(idx, key=lambda i: self.lum[i]["pole"])
+            chunks, j = [], 0
+            while j < len(idx):
+                m = int(rng.integers(4, 10))
+                chunks.append(idx[j:j + m])
+                j += m
+            if len(chunks) > 1 and len(chunks[-1]) < 4:
+                tail = chunks.pop()
+                chunks[-1] = chunks[-1] + tail
+            end = d2i(P.RECORD_END)
+            for ch in chunks:
+                k[town] += 1
+                cid = "UG-%s-%03d" % (town, k[town])
+                self.circuits[cid] = ch
+                # the riser is a pole that stands to the end of the record
+                stand = [i for i in ch if not (self.lum[i]["exit_type"] == "pole_removed" and self.lum[i]["exit"] <= end)]
+                self.riser[cid] = self.lum[(stand or ch)[0]]["pole"]
+                for i in ch:
+                    self.circuit_of[self.lum[i]["pole"]] = cid
 
-    # ---------------------------------------------------------------------------------------------- truth helpers
-    def weekly(self, unit, codes):
-        js = [j for j, ln in enumerate(self.lines) if ln["unit"] == unit]
-        out = np.zeros(K.WEEKS)
-        for j in js:
-            for i in range(K.WEEKS * 7):
-                if self.on[j, i] and self.status[j, i] in codes:
-                    out[i // 7] += K.SHIFT_H
+    def make_shields(self):
+        """A glare complaint is answered with a house-side shield when the light's output can stay as it is."""
+        rng = self.rng
+        out = []
+        end = d2i(P.RECORD_END)
+        for i, L in enumerate(self.lum):
+            u, yr, dd = rng.random(), rng.random(), int(rng.integers(5, 355))
+            if L["reprog"] is not None or L["watts"] == 40 or u > P.SHIELD_RATE:
+                continue
+            day = d2i(dt.date(2026 if yr < 0.75 else 2025, 1, 1)) + dd
+            if d2i(L["install"]) + 120 < day < min(L["exit"], end):
+                out.append(dict(lum=i, pole=L["pole"], town=L["town"], poles=(L["pole"],), kind="glare_shield",
+                                day=day))
+        self._times(out)
         return out
 
-    def availability(self, unit, who):
-        js = [j for j, ln in enumerate(self.lines) if ln["unit"] == unit]
-        sched = absent = 0.0
-        for j in js:
-            for i in range(D):
-                if not self.on[j, i]:
+    def make_circuit_outages(self, pole_out):
+        """Underground cable faults: each darkens its whole circuit until the cable is spliced. A fault within 30
+        days of an outage on one of the circuit's lights is left out (the record would not tell them apart)."""
+        rng = self.rng
+        end = d2i(P.RECORD_END)
+        days_by_pole = {}
+        for o in pole_out:
+            days_by_pole.setdefault(o["pole"], []).append(o["day"])
+        out = []
+        for cid, idx in sorted(self.circuits.items()):
+            poles = tuple(self.lum[i]["pole"] for i in idx)
+            t = -int(rng.integers(0, 365))
+            while True:
+                t += int(round(rng.exponential(1 / P.UG_FAULT_RATE) * P.YEAR_D)) + 1
+                if t > end:
+                    break
+                if t < 0:
                     continue
-                e = self.holder[j, i]
-                if e < 0:
+                live = tuple(self.lum[i]["pole"] for i in idx if self.lum[i]["exit"] > t + 30 and not (
+                    self.lum[i]["exit_type"] == "pole_removed" and self.lum[i]["exit"] <= end))
+                if self.riser[cid] not in live or len(live) < 3:
                     continue
-                pe = self.people[e]
-                if who == "jul25" and pe["cls"] != "2025-1":
+                if any(abs(d - t) <= 30 for p in poles for d in days_by_pole.get(p, [])):
                     continue
-                if who == "first" and not (pe["cls"] is not None and pe["service"] == 0):
+                if out and out[-1]["circuit"] == cid and t - out[-1]["day"] <= 30:
                     continue
-                sched += 1
-                if self.status[j, i] not in ("W",):
-                    absent += 1
-        return 1.0 - absent / sched
+                ri = next(i for i in idx if self.lum[i]["pole"] == self.riser[cid])
+                out.append(dict(lum=None, circuit=cid, riser_i=ri, pole=self.riser[cid],
+                                town=self.lum[idx[0]]["town"], poles=live, kind="ug_cable", day=t))
+        for o in out:
+            g = self._g(o, 1)
+            o["dark"] = o["day"] + 0.80
+            o["patrol"] = g.random() < 0.05
+            o["found"] = o["dark"] + g.exponential(0.6) + 0.05
+            o["repair_lag"] = 0.8 + g.gamma(2.0, 0.9)
+        return out
+
+    def make_noncon_outages(self):
+        """The sodium and metal halide lights the conversion did not reach fail too: lamps, ballasts, photocontrols."""
+        rng = self.rng
+        end = d2i(P.RECORD_END)
+        out = []
+        for j, N in enumerate(self.noncon):
+            u = dict(lum=None, nc=j, pole=N["pole"], town=N["town"], poles=(N["pole"],))
+            for kind, r in P.OTHER_HPS.items():
+                t = -int(rng.integers(0, 365))
+                while True:
+                    t += int(round(rng.exponential(1 / r) * P.YEAR_D)) + 1
+                    if t > end:
+                        break
+                    if t >= 0:
+                        out.append(dict(u, kind=kind, day=t))
+        self._times(out)
+        return self._one_visit(out, "pole")
+
+    # ------------------------------------------------------------------ 2026 reports and dispatch
+    def make_reports_2026(self, outages):
+        """Each outage from December 2025 gets its customer reports and its work order's anchor. Residents report
+        through the portal (time stamped in UTC) or by phone (local time), each about the light in front of them.
+        Dispatch creates the work order from the report it picks up: usually the first, but a portal report can sit
+        in the unassigned queue until a phone report about the same light is taken, and the work order then carries
+        the phone report's time. An underground cable fault darkens every light on its circuit: residents report
+        whichever light they see, and the work order is the trouble crew's, raised on the circuit's riser pole once
+        it has found the fault."""
+        lo, hi = d2i(dt.date(2025, 12, 1)), d2i(P.RECORD_END)
+        reps = []
+        for o in sorted(outages, key=lambda o: (o["day"], o["pole"], o["kind"])):
+            rng = self._g(o, 2)
+            circuit = o["kind"] == "ug_cable"
+            if not (lo <= o["day"] <= hi) or o["kind"] in World.PLANNED:
+                o["reports"] = []
+                continue
+            rs = []
+            k = 1 + rng.poisson(1.6 if circuit else 0.55)
+            t = o["found"]
+            for j in range(k):
+                ch = "PORTAL" if rng.random() < 0.58 else "PHONE"
+                p = o["poles"][int(rng.integers(0, len(o["poles"])))]
+                if not o["patrol"]:
+                    rs.append(dict(t=t, ch=ch, pole=p))
+                t += rng.exponential(0.8 if circuit else 1.6) + 0.02
+            q, sw, dl = rng.random(), rng.exponential(1.2), rng.exponential(0.05)
+            anchor = None
+            if circuit:
+                # the trouble crew sent to the first report finds the cable fault and raises the circuit's order
+                created = (rs[0]["t"] + 0.5 + rng.exponential(0.8)) if rs else o["found"]
+            elif rs:
+                anchor = 0
+                if rs[0]["ch"] == "PORTAL" and q < 0.34:
+                    later_phone = [j for j in range(1, len(rs)) if rs[j]["ch"] == "PHONE"]
+                    if later_phone:
+                        anchor = later_phone[0]
+                    else:
+                        # nobody phoned: the portal report is picked up when the queue is swept
+                        rs[0]["swept"] = rs[0]["t"] + 1.5 + sw
+                created = rs[anchor].get("swept", rs[anchor]["t"]) + 0.02 + dl
+            else:
+                created = o["found"]
+            o["created"] = created
+            o["completed"] = created + o["repair_lag"]
+            self._clear_tie(o, rs[0]["t"] if rs else o["found"])
+            # once the light is back on nobody reports it out (the re-reports below are the exception)
+            rs = [r for r in rs if r["t"] < o["completed"] - 0.01]
+            if anchor is not None:
+                anchor = min(anchor, len(rs) - 1)
+            # residents sometimes report again after the repair (a light flickering back on, or a neighbour's
+            # light), only where nothing else darkens that light afterwards in the record
+            ra, ta, ca = rng.random(), rng.uniform(0.3, 6.0), rng.random()
+            if rs and ra < 0.05 and self._last.get(rs[-1]["pole"]) == id(o):
+                rs.append(dict(t=o["completed"] + ta, ch="PORTAL" if ca < .6 else "PHONE", pole=rs[-1]["pole"],
+                               after=True))
+            for j, r in enumerate(rs):
+                r["anchor"] = (j == anchor)
+            o["reports"] = rs
+            reps += [(o, r) for r in rs]
+        # outages before December 2025: a customer's report or a crew's find, then dispatch and the repair
+        for o in sorted(outages, key=lambda o: (o["day"], o["pole"], o["kind"])):
+            rng = self._g(o, 3)
+            if "created" not in o:
+                if not o["patrol"] and o["kind"] not in World.PLANNED:
+                    o["reported"] = o["found"]
+                    o["created"] = o["found"] + (0.5 + rng.exponential(0.8) if o["kind"] == "ug_cable"
+                                                 else 0.02 + rng.exponential(0.05))
+                else:
+                    o["created"] = o["found"]
+                o["completed"] = o["created"] + o["repair_lag"]
+        return reps
+
+    def make_foreign_reports(self):
+        """Residents also report lights the Company does not own (park and parking-lot lights, municipal
+        decorative poles): the call centre logs the address, and no work order follows."""
+        rng = self.rng
+        out = []
+        d0, d1 = d2i(dt.date(2025, 12, 1)), d2i(P.RECORD_END)
+        n = int(rng.poisson(0.35 * (d1 - d0 + 1)))
+        for _ in range(n):
+            town = str(rng.choice(P.TOWN_CODES))
+            t = d0 + rng.uniform(0, d1 - d0 + 1)
+            fake = dict(kind="foreign", town=town, pole=None, lum=None, poles=())
+            out.append((fake, dict(t=t, ch="PHONE" if rng.random() < 0.7 else "PORTAL", pole=None, anchor=False,
+                                   street=str(rng.choice(self.streets[town])), foreign=True,
+                                   house=int(rng.integers(1, 99)) * 20 + 19)))
+        return out
+
+    @staticmethod
+    def _offset(x):
+        """UTC offset in hours of local time x (days from EPOCH): US Eastern, 2 am second Sunday of March to 2 am
+        first Sunday of November."""
+        t = dt.datetime(EPOCH.year, EPOCH.month, EPOCH.day) + dt.timedelta(minutes=int(round(x * 1440)))
+        mar = dt.datetime(t.year, 3, 8)
+        while mar.weekday() != 6:
+            mar += dt.timedelta(days=1)
+        nov = dt.datetime(t.year, 11, 1)
+        while nov.weekday() != 6:
+            nov += dt.timedelta(days=1)
+        return 4 if mar + dt.timedelta(hours=2) <= t < nov + dt.timedelta(hours=2) else 5
+
+    def _clear_tie(self, o, first):
+        """A crew's completion stamp is never on the 72-hour mark to the minute, on the wall clock or in elapsed time
+        across a clock change."""
+        for _ in range(4):
+            naive = int(round(o["completed"] * 1440)) - int(round(first * 1440))
+            elapsed = naive + 60 * (self._offset(o["completed"]) - self._offset(first))
+            lo, hi = min(naive, elapsed), max(naive, elapsed)
+            if hi < 4320 - 2 or lo > 4320 + 2:
+                return
+            if naive >= 4320:
+                o["completed"] += (4320 + 7 - lo) / 1440.0
+            else:
+                o["completed"] -= (hi - 4320 + 7) / 1440.0
+
+    # ------------------------------------------------------------------ poles outside the program
+    def make_noncon_poles(self):
+        rng = self.rng
+        n = 1460
+        ids = self.pole_ids_left[:n]
+        self.noncon = []
+        for i in range(n):
+            town = str(rng.choice(P.TOWN_CODES))
+            self.noncon.append(dict(pole=int(ids[i]), town=town, street=str(rng.choice(self.streets[town])),
+                                    kind=str(rng.choice(["HPS 100 W post-top", "HPS 150 W acorn", "MH 175 W shoebox"],
+                                                        p=[.5, .3, .2])),
+                                    set_year=int(rng.integers(1978, 2012))))
+
+
+STREET_STEMS = [
+    "Abbott", "Alder", "Ash", "Aspen", "Bancroft", "Barlow", "Beech", "Birch", "Bramble", "Brook", "Calder", "Canal",
+    "Cedar", "Chapel", "Cherry", "Church", "Clay", "Clover", "Colfax", "Copper", "Cottage", "Crane", "Cross", "Dale",
+    "Delta", "Depot", "Dover", "Eastman", "Elm", "Ember", "Fairview", "Fern", "Field", "Finch", "Forest", "Foster",
+    "Garden", "Garfield", "Glen", "Grange", "Granite", "Grove", "Hadley", "Hale", "Harbor", "Hawthorn", "Hazel",
+    "Hickory", "High", "Hill", "Holly", "Hollis", "Holt", "Hudson", "Iron", "Ivy", "Juniper", "Kendall", "Kingston",
+    "Lake", "Larch", "Laurel", "Linden", "Locust", "Lyle", "Main", "Maple", "Market", "Meadow", "Mercer", "Mill",
+    "Milton", "Mulberry", "Myrtle", "North", "Oak", "Orchard", "Osage", "Park", "Pearl", "Pine", "Pleasant", "Poplar",
+    "Prospect", "Quarry", "Railroad", "Raven", "Ridge", "River", "Rowan", "Sawmill", "School", "Seneca", "Shady",
+    "Spring", "Spruce", "State", "Station", "Stone", "Summit", "Sumner", "Sycamore", "Tanner", "Thorn", "Tower",
+    "Union", "Valley", "Vine", "Walnut", "Warren", "Water", "Wayne", "Willow", "Windsor", "Wood", "Wren", "York",
+    "Zane", "Alcott", "Baird", "Corwin", "Dunmore", "Ellery", "Fenwick", "Galway", "Harlan", "Ingram", "Jessup",
+]
