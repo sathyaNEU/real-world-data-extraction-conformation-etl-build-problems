@@ -1,31 +1,30 @@
 {
  "task": "task281",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-27",
- "stump": "A competent analyst replays FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability, and files other counts for most units; the FY2028 need replaces FY2026's vacant lines with the position control's, closed as each academy class graduates, and the relief positions work at the July 2025 class's first-year availability.",
- "architecture": 1,
- "loops": 3,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-28",
+ "stump": "The default path fits the lifecycle model's Weibull with suspensions to every converted luminaire and files all ten phases into the 2027 group driver replacement program; one of the two driver makers' drivers never show the wear-out, which only the installer's lot numbers joined to the certificates of conformance reveal, so their zeros are cures, the Weibull belongs to the other maker's drivers alone, and only the five phases rich in those drivers clear 45 per cent.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 1,
-  "date": "2026-10-27",
-  "note": "51 of 52: the cracker row fails because the SF16 closure filed Ask A's silent primary (cracker 9 of 20, pair ceiling 53.2); waived by the author 2026-10-27"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (the same lines as at ship; the dictionary removed under the no-dictionary rule)",
-  "reader": "round 3 (7c914942): readers E and F off the call at 63 each, asks 1 of 20 each (5.0 per cent); not re-run at the determinism repair (no document near the decisive step changed)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "BLOCK ban.forum against task306, waived by the author 2026-10-27 (task306 drew first and entered the window at its 10-26 reship); otherwise WARN",
-  "nearest": "task468 0.09 by text; same gap, pattern and Gate G as seven older forecasting builds, differentiated on the card"
+  "heart": "",
+  "nearest": "task132 and task152 at 0.07 by text; test.same_driver_older against task141 v4, differentiated"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (re-judge pass 2, target.zip 4770974b, order kept)",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report_pass2.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -41,12 +40,12 @@
    "commit": ""
   }
  ],
- "resume": "PAUSED 2026-10-27 at stage 1 of the Path B re-root (the author's decision: a fresh draw in another client domain under descriptive-distribution, same number, architecture 2, the Merrimont world not kept and no guard ban waived); nothing drawn or registered, architecture 1's card stays architecture_spent. Read DESIGN_NOTE.md ## Tried and rejected first: its last three lines record about twenty-five Path B directions killed on paper this session (incorporation of the test into the reference, out-of-home loop share against dwell, timed link closures, NBD with subscription households, batch-schedule temporal allocation, Hardy-Weinberg with relatedness, adherence variants, conditional trend analysis with subscribers, testlet reliability, speed-limit minimum, audited payroll exposure, whole-script against item-level marking, the incorporation reframe, shared-structure N-1 groups), each with its kill. Also read, and do not re-screen, the sibling DESC slots' Tried and rejected (task272, task273, task274, task276 to task280, task282). guard.py slots already run: incorporation, reference, independent, blinded, reference standard; automation, anchoring, suggestion, overlay, assisted; radiologist, radiograph, worklist, PACS, triage, autonomous; redundancy, redundant, single point, N-1, failure group, shared risk; main, duct, trench, bridge, contingency (task198 records the common-cause, redundancy and N-1 family dead on file). Cells not yet worked as cells by any slot, and reading thin for the same reasons the siblings record: marketing-consumer-research (media-reach-frequency-audience-measurement, segmentation-market-structure) and political-science-public-policy (legislative-behavior-ideal-point-estimation, conflict-protest-event-data-analysis, small-area-public-opinion-estimation-mrp). Window at the pause (live last three task305, task464, task118, with task304 v2 live behind them): bans org hospital_or_health_provider, local_government, retailer_or_ecommerce; strategies composition_mix, population_selection, decomposition_attribution; forums executive_team, council_or_assembly, board_of_directors; events vote_or_meeting, period_close, budget_or_appropriation; roles finance_controller, procurement_lead, programme_officer; artifacts filed_model, register, planning_thread; shapes 07 and 11; re-read with guard.py check at the draw, never assume. Next session's procedure: pick one organisation in a free cell, enumerate the files it keeps for reasons other than the decision and what each pins that no other file pins, run the three one-line checks as code on a clean-truth sketch before any harness (the one-group-by route to the call; whether the forcing file's plainest column proxies the construction, corr and the one-divide hit rate; readability test 7, the organ named with its other use), and put a probe card through guard.py check before pricing. A fact for the author, not a reversal of Path B: a probe of Path A's axes moved within the hour, only budget_or_appropriation banned when dated 2026-10-27 (task118 v3), and dated 2026-10-28 in UTC government_agency and research_desk banned again by task179 v5 beside it; filed_standard and line_manager_or_team free.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "DA31 (world kept: relief positions for round-the-clock units of four titles, sized on the overtime they remove; re-set from a city to a state; the seed's mechanism rows set aside)"
+ "seed": "none (architecture 2 drawn outside the seeds: General Statistics & Data Science / missing-data-censoring-measurement-error, an electric utility's LED streetlight conversion phases)"
 }
