@@ -1,186 +1,153 @@
 {
- "task": "task118",
- "domain": "Product Analytics",
- "subdomain": "churn-propensity-uplift-modeling",
- "objective": "Opportunity Sizing & Decision Support",
- "as_of": "2026-10-19",
- "deliverables": [
-  "squad_placement_2027.docx",
-  "squad_placement_2027.xlsx"
- ],
- "distractor_files": [
-  "newsfold_syndication_agreement.pdf",
-  "newsletter_performance_2026-07_2026-09.csv",
-  "experimentation_dashboard_export_2026-10-01.csv",
-  "panel_monthly_audience_2025-10_2026-09.csv",
-  "panel_reference_workbook.xlsx"
- ],
- "input_gates": {
-  "files": 17,
-  "formats": [
-   "csv",
-   "docx",
-   "eml",
-   "parquet",
-   "pdf",
-   "xlsx"
+  "task": "task118",
+  "title": "Which of six localities gets an integrated care board's hypnotic deprescribing pharmacist team for 2027, and how many emergency admissions for a fall it avoids there, with each locality's fall admissions, bed-days and 30-day readmissions in 2025-26",
+  "domain": "Pharmacology & Pharmacoepidemiology",
+  "subdomain": "benefit-risk-assessment (the falls a deprescribing team avoids, from each current user's excess risk by time since first starting a benzodiazepine or Z-drug)",
+  "objective": "Opportunity Sizing & Decision Support",
+  "prompt_shape": "07: one of six localities with its sized avoidance, runner-up and gap, and a grid of four falls measures for each of six localities (24 figures)",
+  "as_of": "2026-10-20",
+  "deliverables": [
+    "deprescribing_case_2027.docx",
+    "deprescribing_placement_2027.xlsx"
   ],
-  "largest_file_rows": 2312406,
-  "largest_file": "pageviews_by_source_age_2025-10_2026-09.parquet"
- },
- "files": [
-  {
-   "path": "pageviews_by_source_age_2025-10_2026-09.parquet",
-   "format": "parquet",
-   "bytes": 5424361,
-   "rows": 2312406,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (original work)"
+  "distractor_files": [
+    "hypnotic_prescribing_dashboard_q2_2026.xlsx",
+    "falls_service_referrals_2025-26.csv"
+  ],
+  "stated_inputs": [
+    "the deprescribing policy's current-user definition, stop share, off-drug window, base rate and rate ratios (hypnotics_deprescribing_policy_2026.pdf)",
+    "the falls dashboard's F1 to F3 definitions (falls_indicator_definition_v2.pdf)"
+  ],
+  "field_terms": [],
+  "input_gates": {
+    "files": 12,
+    "formats": [
+      "csv",
+      "eml",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "dispensing_hypnotics_2026-04_2026-09.csv",
+    "largest_file_rows": 185725
   },
-  {
-   "path": "headline_tests_archive_2019-2026.csv",
-   "format": "csv",
-   "bytes": 1556099,
-   "rows": 14131,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "newsroom_staff_list_2026-10-12.xlsx",
-   "format": "xlsx",
-   "bytes": 15759,
-   "rows": 207,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "audience_plan_2027.xlsx",
-   "format": "xlsx",
-   "bytes": 6208,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "headline_squad_change_log.xlsx",
-   "format": "xlsx",
-   "bytes": 6398,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-02-11",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "headline_squad_2027_placement_brief.pdf",
-   "format": "pdf",
-   "bytes": 4944,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "desk_register.csv",
-   "format": "csv",
-   "bytes": 579,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "experimentation_dashboard_export_2026-10-01.csv",
-   "format": "csv",
-   "bytes": 450,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-01",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "cms_revisions_web_desks_2025-10_2026-09.csv",
-   "format": "csv",
-   "bytes": 20953077,
-   "rows": 272569,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "editorial_standards_s7_corrections.pdf",
-   "format": "pdf",
-   "bytes": 3242,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2025-11-27",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "panel_monthly_audience_2025-10_2026-09.csv",
-   "format": "csv",
-   "bytes": 6876,
-   "rows": 174,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-15",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "panel_reference_workbook.xlsx",
-   "format": "xlsx",
-   "bytes": 8145,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-15",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "standards_bulletin_2026-04.docx",
-   "format": "docx",
-   "bytes": 35402,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-04-08",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "squad_placement_thread.eml",
-   "format": "eml",
-   "bytes": 2377,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "newsfold_syndication_agreement.pdf",
-   "format": "pdf",
-   "bytes": 3097,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2025-06-24",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "newsletter_performance_2026-07_2026-09.csv",
-   "format": "csv",
-   "bytes": 5122,
-   "rows": null,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-02",
-   "license": "CC0-1.0 (original work)"
-  },
-  {
-   "path": "page_performance_monthly_2025-10_2026-09.csv",
-   "format": "csv",
-   "bytes": 12864,
-   "rows": 264,
-   "source": "Constructed for this task: fictional publisher Bightline News; no third-party data",
-   "date": "2026-10-14",
-   "license": "CC0-1.0 (original work)"
-  }
- ]
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "generated by task118/generator/make.py (seeded, deterministic) around a fictional integrated care board with six localities: the patients aged 60 or over dispensed a benzodiazepine or Z-drug from April to September 2026, their GP repeat templates and one locality's previous-system export, the practice register, the board's policy and falls definitions, and a SUS falls cohort with its hospital sites; layouts follow the public files named, every organisation, place and person is invented, and no real dataset is reproduced.",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-27",
+  "generator": "task118/generator/make.py",
+  "files": [
+    {
+      "path": "dispensing_hypnotics_2026-04_2026-09.csv",
+      "format": "csv",
+      "bytes": 13797570,
+      "rows": 185725,
+      "source": "Constructed (seeded generator) in the layout of an integrated care board data platform's patient-level dispensing extract (NHSBSA dispensing data, pseudonymised)",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "repeat_templates_hypnotics_2026-10-01.csv",
+      "format": "csv",
+      "bytes": 13352942,
+      "rows": 98020,
+      "source": "Constructed (seeded generator) in the layout of a GP clinical system's repeat-template export (pseudonymised)",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "Q89159_repeat_templates_previous_system_2026-07-12.csv",
+      "format": "csv",
+      "bytes": 113136,
+      "rows": 816,
+      "source": "Constructed (seeded generator) in the layout of a previous GP clinical system's repeat-template export, taken before a system migration",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "practice_locality_register_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7907,
+      "rows": null,
+      "source": "Constructed (seeded generator) in the layout of an integrated care board's practice register",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "hypnotics_deprescribing_policy_2026.pdf",
+      "format": "pdf",
+      "bytes": 4986,
+      "rows": null,
+      "source": "Constructed (seeded generator) in the layout of an integrated care board's medicines optimisation policy",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "deprescribing_team_placement.eml",
+      "format": "eml",
+      "bytes": 2348,
+      "rows": null,
+      "source": "Constructed (seeded generator) in the layout of NHSmail correspondence",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "dmd_hypnotic_products.csv",
+      "format": "csv",
+      "bytes": 1127,
+      "rows": 8,
+      "source": "Constructed (seeded generator) in the layout of the NHS Dictionary of Medicines and Devices (dm+d) VMP extract",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "sus_apc_falls_cohort_2025-26.csv",
+      "format": "csv",
+      "bytes": 4031635,
+      "rows": 32331,
+      "source": "Constructed (seeded generator) in the layout of SUS+ admitted patient care, episode level (pseudonymised)",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "falls_indicator_definition_v2.pdf",
+      "format": "pdf",
+      "bytes": 3137,
+      "rows": null,
+      "source": "Constructed (seeded generator) in the layout of an integrated care board's falls dashboard indicator definitions",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "provider_site_codes.csv",
+      "format": "csv",
+      "bytes": 749,
+      "rows": 8,
+      "source": "Constructed (seeded generator) in the layout of the ODS provider and site codes",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "hypnotic_prescribing_dashboard_q2_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 8328,
+      "rows": null,
+      "source": "Constructed (seeded generator) in the layout of an ePACT2-style prescribing dashboard",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "falls_service_referrals_2025-26.csv",
+      "format": "csv",
+      "bytes": 289987,
+      "rows": 4120,
+      "source": "Constructed (seeded generator) in the layout of a community falls service's referral log",
+      "date": "2026-10-20",
+      "license": "CC0-1.0 (original work)"
+    }
+  ]
 }

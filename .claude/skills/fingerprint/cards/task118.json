@@ -1,140 +1,159 @@
 {
-  "task": "task118",
-  "architecture": "v3",
-  "drawn": "2026-10-27",
-  "slot_note": "",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "subdomain": "benefit-risk-assessment",
-  "client_domain": "product-analytics",
-  "niche": "an integrated care board's hypnotic deprescribing team placed in one primary care network, sized by the emergency fall admissions it avoids among older patients on Z-drugs and benzodiazepines",
-  "objective": "opportunity-sizing-decision",
-  "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time"
+ "task": "task118",
+ "architecture": "v3",
+ "drawn": "2026-10-27",
+ "slot_note": "",
+ "domain": "pharmacology-pharmacoepidemiology-safety",
+ "subdomain": "benefit-risk-assessment",
+ "client_domain": "pharmacology-pharmacoepidemiology-safety",
+ "niche": "an integrated care board's hypnotic deprescribing pharmacist team placed in one of six localities for 2027, sized by the emergency fall admissions it avoids among patients aged 65 or over on benzodiazepines and Z-drugs",
+ "objective": "opportunity-sizing-decision",
+ "shape": "07",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "count",
+ "answer": "Saltreach Coast, 19 emergency admissions for a fall avoided in 2027; runner-up Hethermoss, 4 fewer",
+ "answer_source": "submission.md",
+ "gap": [
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G14",
+  "G13",
+  "G6"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "planning_thread",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every field and applies every filed rule takes each current user's first start from their first item in the board's dispensing extract, prices the excess from it and files Corvenham Central at 74 admissions avoided (Saltreach Coast 55), when the extract opens on 1 April 2026 and most of Corvenham Central's users started years before; the golden is Saltreach Coast at 19.",
+ "domain_test": "The deciding quantity is the excess fall admissions a current user's benzodiazepine or Z-drug causes over April to December 2027, a rate ratio that falls with time since the patient first started (the susceptible fall early and leave the cohort) times the background rate, summed over the users the team takes off: how a medicines safety team prices stopping a drug, by exposure duration; swapped to tyres in a depot the reason recent users carry the risk, the prescriber's yearly re-authorised template that holds the start and the 45 in 100 who come off all lose their meaning.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:excess-risk-by-time-on-drug-with-the-start-from-the-repeat-template",
+ "layer1": [
+  "patients aged under 65 and patients last dispensed before July in the dispensing extract",
+  "repeat templates re-authorised yearly, each replacing the last",
+  "a template export cut at April 2024, so long-term users' chains point at templates not in it",
+  "one practice's July 2026 clinical system move, its active templates re-created on the move's date with a reference into the old system's export (dates day-first, names upper case)",
+  "processing months beside dispensing dates",
+  "SUS episodes within spells within stays, moves between hospitals coded by the receiving hospital in its own way",
+  "a retired practice code on admissions before a list was taken over"
+ ],
+ "stakeholder_role": "the ICB's chief pharmacist, who chairs the medicines optimisation committee",
+ "role_family": "programme_officer",
+ "scoring_unit": "per episode",
+ "spine": {
+  "file": "dispensing_hypnotics_2026-04_2026-09.csv",
+  "rows": 185725,
+  "entity": "one dispensed item",
+  "grain": "patient x dispensing date x product",
+  "source": "synthetic"
+ },
+ "forum": "board_of_directors",
+ "forcing_event": "budget_or_appropriation",
+ "org_family": "hospital_or_health_provider",
+ "world": {
+  "geography": "England, an integrated care board area",
+  "currency": "GBP",
+  "org_type": "integrated care board",
+  "invented_names": [
+   "Kestrel Vale",
+   "Corvenham Central",
+   "Fenmarsh",
+   "Saltreach Coast",
+   "Quenford Rise",
+   "Hethermoss",
+   "Ledbridge North",
+   "Kestrel and Wold Commissioning Support Unit",
+   "Kestrel Royal Hospital",
+   "Fenmarsh Royal Infirmary",
+   "Mill Road Group Practice"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G14",
-    "G13",
-    "G6"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "planning_thread",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly takes each network's fall-admission rate among its current hypnotic users, applies it to the users the team would take off the drug, and names the network with the most users and admissions, when a hypnotic's fall hazard is highest in the first months of use and that network's users are mostly years into theirs.",
-  "domain_test": "The deciding quantity is the excess fall risk a deprescribing review removes, which pharmacoepidemiology reads by time since starting the drug (the early hazard and the depletion of susceptibles among long-term users), each patient's start taken from the repeat-template record rather than the first dispensing a truncated extract shows; swapped into a school's pupils or a feeder's megawatt-hours there is no exposure clock whose early months carry the harm.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:excess-risk-by-time-on-drug-with-the-start-from-the-repeat-template",
-  "layer1": [
-    "practice codes merged and renamed within a network",
-    "a dispensing extract whose first month is April 2023",
-    "dm+d product codes against BNF chapter codes",
-    "admissions in an SUS-style extract with episodes and spells",
-    "dates of birth to age bands",
-    "the financial year against calendar months"
-  ],
-  "stakeholder_role": "the ICB's chief pharmacist, who chairs the medicines optimisation committee",
-  "role_family": "programme_officer",
-  "scoring_unit": "per covered member",
-  "spine": {
-    "file": "dispensing items extract",
-    "rows": 0,
-    "entity": "one dispensed item",
-    "grain": "patient x dispensing date x product",
-    "source": "synthetic"
+  "people": [
+   "Julia Clayton",
+   "Leon Ross",
+   "Glenn Pearce",
+   "Katherine Watts"
+  ]
+ },
+ "deliverables": [
+  "deprescribing_case_2027.docx",
+  "deprescribing_placement_2027.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "A harm that eases with time since a unit's exposure began is priced from the first record of it in an activity log that opened after most exposures began, so every long-exposed unit looks newly exposed; each unit's real start lives in another record whose chain of renewals reaches back, and the candidate with the most units, mostly long exposed, loses to the one whose units began recently.",
+ "driver_concrete": "The board places a deprescribing team where it avoids the most emergency fall admissions in 2027, priced by the policy's rate ratio by months since each patient first started a benzodiazepine or Z-drug; the dispensing extract opens on 1 April 2026, so dating each start from a patient's first item there makes every long-term user an April starter and names Corvenham Central, the biggest locality, when each real start is the first template of the repeat-template chain (through one practice's previous system) and Saltreach Coast's users started most recently.",
+ "stump": "A competent analyst reads the policy, dates each current user's first start from their first item in the board's dispensing extract and names Corvenham Central at 74 admissions avoided, where the golden is Saltreach Coast at 19; the step that lands them there is taking the start of a record as the start of the exposure, when the extract opens on 1 April 2026 so that every patient already on the drug enters it as an April starter at the raised rate through 2027, and each patient's real first start is the first template of the repeat-template chain, where 1,888 of Saltreach Coast's current users started on or after 1 April 2025 against 477 of Corvenham Central's.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task131": "task131 moves load out of a window and prices the synchronised surge when it returns; this build prices an exposure's excess harm by time since the exposure began, nothing moved or returned",
+  "task169": "task169 corrects a forward rate for one of two processing routes a filed change closes; here no route or filed change: the harm falls with time on the drug and the start date sits in another record",
+  "task183": "task183 conditions a part's rate on its own count of past failures; this build conditions the excess risk on time since the exposure started, recovered from a start record the truncated activity log cannot show",
+  "task230": "task230 corrects a category count for a late processing channel's classification bias; nothing here is classified or processed late",
+  "task446": "task446 weights a signal by the component that raised it; here no signal or component: each unit's excess risk follows its own exposure clock",
+  "task133": "task133 fits a life table with delayed entry for loans a record watched only from a take-over; here nothing is estimated: the risk by duration is filed and each start is recovered from a second record that reaches back",
+  "task156": "task156 estimates survival with left truncation over a closed cohort; here the policy files the excess by duration and the step is dating each exposure from the prescribing record's history",
+  "task134": "task134 v2's forward inflow comes from a conversion hazard that rises after a waiting window in a pool outside the register; here the risk falls with time on the drug, the forward figure is filed by the policy, and the decisive step is recovering each exposure's start from the repeat-template history because the dispensing extract opened after most exposures began.",
+  "task149": "task149's hazard rises with the pace of work against its engineered content; here the excess fall risk depends on time since the patient first started the drug, and the step is dating that start from a second record.",
+  "task176": "task176 v2 counts units ending when a dependant reaches a fixed age, against a tenure hazard; here the rate turns on the patient's own time on the drug and the step is recovering when it began from a record that reaches back before a truncated extract.",
+  "task452": "task452 v1 reweights reference observations under a revised stratification's inclusion probabilities; here nothing is sampled or reweighted, each user's own start is recovered from the template chain."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
+   "fate": "FAILED_TO_STUMP 2026-10-27: both portal responses filed Culture·national at 1,250,000 (the golden), by keeping the clicks from Bightline's own surfaces and dropping the articles a desk had already tested, a filter they read as obvious (a tested headline cannot be tested again); shrinkage against the change log moved only the figure, never the desk",
+   "domain": "marketing-consumer-research",
+   "objective": "opportunity-sizing-decision",
+   "gap": [
+    "objective",
+    "rule",
+    "population"
+   ],
+   "pattern": [
+    "none",
+    "C",
+    "B"
+   ],
+   "gate_g": "decomposition_attribution",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "causal_design",
+   "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
+   "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan."
   },
-  "forum": "board_of_directors",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "hospital_or_health_provider",
-  "world": {
-    "geography": "England, an integrated care board area",
-    "currency": "GBP",
-    "org_type": "integrated care board",
-    "invented_names": [],
-    "people": [
-      "Julia Clayton",
-      "Leon Ross",
-      "Glenn Pearce",
-      "Katherine Watts"
-    ]
-  },
-  "deliverables": [
-    "deprescribing_placement_2027.xlsx",
-    "deprescribing_case_2027.docx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A harm concentrated in a unit's first months of exposure is priced at the cohort's average rate, when the candidate whose units are mostly long exposed has outlived the early hazard; each unit's exposure start lives in another record than the activity log, whose own start truncates the longest histories.",
-  "driver_concrete": "The board prices the fall admissions a deprescribing team avoids at each network's crude admission rate among current hypnotic users, when the fall hazard is highest in the first months on the drug; each patient's start comes from the GP repeat-template start date, not the first dispensing in an extract that begins in April 2023 and makes long-term users look new, so the network whose users are mostly long-term avoids far fewer admissions than its crude rate implies.",
-  "stump": "A competent analyst applies each network's crude fall-admission rate among current hypnotic users to the users the team would take off the drug and names the network with the most users; the step that lands them there is pricing every user at the cohort's average risk, when the risk falls after the first months on the drug and that network's users started years ago.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task131": "task131 moves load out of a window and prices the synchronised surge when it returns; this build prices an exposure's excess harm by time since the exposure began, nothing moved or returned",
-    "task169": "task169 corrects a forward rate for one of two processing routes a filed change closes; here no route or filed change: the harm falls with time on the drug and the start date sits in another record",
-    "task183": "task183 conditions a part's rate on its own count of past failures; this build conditions the excess risk on time since the exposure started, recovered from a start record the truncated activity log cannot show",
-    "task230": "task230 corrects a category count for a late processing channel's classification bias; nothing here is classified or processed late",
-    "task446": "task446 weights a signal by the component that raised it; here no signal or component: each unit's excess risk follows its own exposure clock"
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
-      "fate": "FAILED_TO_STUMP 2026-10-27: both portal responses filed Culture·national at 1,250,000 (the golden), by keeping the clicks from Bightline's own surfaces and dropping the articles a desk had already tested, a filter they read as obvious (a tested headline cannot be tested again); shrinkage against the change log moved only the figure, never the desk",
-      "domain": "marketing-consumer-research",
-      "objective": "opportunity-sizing-decision",
-      "gap": [
-        "objective",
-        "rule",
-        "population"
-      ],
-      "pattern": [
-        "none",
-        "C",
-        "B"
-      ],
-      "gate_g": "decomposition_attribution",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "causal_design",
-      "driver": "The gain a specialist team adds to a unit is its effect on the reachable volume the unit does not already treat itself, because the unit's own past trials, which supply the measured effect, have already banked their gains in the volume carried forward; every closed deployment went to units that had never run a trial of their own, so the shrunk effect times reachable volume reproduces all of them, while the unit leading on that basis already treats the items that carry most of its reachable volume and a unit that has treated little of its own overtakes it.",
-      "stump": "A competent solver rebuilds each desk's winning lift from the test archive, shrinks it as the seven closed embeddings' realised holdback lifts require, counts only the clicks that start on surfaces that show the tested headline, and names Local·metro at 2,800,000; the step that lands them there is never asking who ran the tests behind each desk's lift, which the archive's test owners joined to the newsroom staff list answer: Local·metro's own editors already test the headlines behind 71.1% of its platform clicks, so most of the gain the squad was sized on is already in the plan."
-    },
-    {
-      "architecture": "v2",
-      "fate": "spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced",
-      "driver": "The decisive quantity is the share of an item's measured gain that is new to the whole system rather than taken from the items shown beside it, which is one minus the rate at which a view of the shared display already ends in a choice; a unit whose volume arrives through displays that nearly always convert keeps little of its measured gain, so the unit leading on the measured gain falls behind one whose volume arrives through displays that rarely convert.",
-      "gap": [
-        "objective",
-        "population",
-        "rule"
-      ],
-      "pattern": [
-        "none",
-        "C",
-        "B"
-      ],
-      "gate_g": "decomposition_attribution",
-      "stump_strategy": "causal_design",
-      "generators": [
-        "G1",
-        "G16",
-        "G8",
-        "G5"
-      ],
-      "decision_type": "pick_one_of_n",
-      "domain": "product-analytics",
-      "subdomain": "churn-propensity-uplift-modeling"
-    }
-  ],
-  "notes": "Re-rooted 2026-10-27 to architecture 2 after the portal's FAILED_TO_STUMP; the pairing moved from marketing-consumer-research/media-reach-frequency-audience-measurement, whose task types serve Descriptive and Forecasting only, to product-analytics/churn-propensity-uplift-modeling, which serves Opportunity Sizing; the world, the six desks, the people and the ask layer are kept. Ban waiver (the author, 2026-10-27, at ship): ban.strategy causal_design and ban.pattern G1 against task139 v2, registered 2026-10-26T22:19Z, six hours before this architecture's draw, whose check read WARN only. The two share labels, not a mechanism: task139 transports a pilot effect measured only among units that had a first contact to units the programme never reached; task118 nets a correctly measured headline lift for the clicks the page's other headlines would have taken anyway. Both labels are honest here, so no axis was relabelled; the author waived the axis bans. The card keeps its draw's filing time (04:25Z): a fresh stamp would move this build behind every card filed since and reorder their windows, which `register --force` did once at ship and was put back. Second ban waiver (the author, 2026-10-27, at the determinism reship): guard heart BLOCKs on ban.role, ban.forum and ban.forcing_event against task304, ban.strategy against task171 v5, and test.same_puzzle and test.same_driver against task184's lineage, all from builds drawn after this architecture; the axes are the draw's own and are not relabelled. Architecture 2 spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced, which announced the page-level share. Architecture 3 (re-rooted 2026-10-27 at the author's direction, in this session): the Bightline world is spent (the netting, the page share, the timing rung blocked at v1's draw), so the number moves to Pharmacology & Pharmacoepidemiology / benefit-risk-assessment for Opportunity Sizing, a never-built pairing. Redrawn at check (2026-10-27): decisive pattern G9 (BLOCK against task464) to G14, the excess risk conditioned on each patient's time since starting, the honester key; context artifact register (BLOCK against task464) to published_series, the board's monthly prescribing series. Context artifact published_series (BLOCK against task311) redrawn to planning_thread, the board's thread placing the team. slots (2026-10-27): task178's note sets aside prevalent against new users as the client library's first card in the sister task type, a reflex; so the decisive step here is the conjunction, the hazard by time on the drug AND each user's start from the repeat-template record rather than the extract's first dispensing, each partial fix landing a different wrong network (client held trap 11, the quiet step behind the loud one).",
-  "registered": "2026-10-27T23:48:07Z"
+  {
+   "architecture": "v2",
+   "fate": "spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced",
+   "driver": "The decisive quantity is the share of an item's measured gain that is new to the whole system rather than taken from the items shown beside it, which is one minus the rate at which a view of the shared display already ends in a choice; a unit whose volume arrives through displays that nearly always convert keeps little of its measured gain, so the unit leading on the measured gain falls behind one whose volume arrives through displays that rarely convert.",
+   "gap": [
+    "objective",
+    "population",
+    "rule"
+   ],
+   "pattern": [
+    "none",
+    "C",
+    "B"
+   ],
+   "gate_g": "decomposition_attribution",
+   "stump_strategy": "causal_design",
+   "generators": [
+    "G1",
+    "G16",
+    "G8",
+    "G5"
+   ],
+   "decision_type": "pick_one_of_n",
+   "domain": "product-analytics",
+   "subdomain": "churn-propensity-uplift-modeling"
+  }
+ ],
+ "notes": "Re-rooted 2026-10-27 to architecture 2 after the portal's FAILED_TO_STUMP; the pairing moved from marketing-consumer-research/media-reach-frequency-audience-measurement, whose task types serve Descriptive and Forecasting only, to product-analytics/churn-propensity-uplift-modeling, which serves Opportunity Sizing; the world, the six desks, the people and the ask layer are kept. Ban waiver (the author, 2026-10-27, at ship): ban.strategy causal_design and ban.pattern G1 against task139 v2, registered 2026-10-26T22:19Z, six hours before this architecture's draw, whose check read WARN only. The two share labels, not a mechanism: task139 transports a pilot effect measured only among units that had a first contact to units the programme never reached; task118 nets a correctly measured headline lift for the clicks the page's other headlines would have taken anyway. Both labels are honest here, so no axis was relabelled; the author waived the axis bans. The card keeps its draw's filing time (04:25Z): a fresh stamp would move this build behind every card filed since and reorder their windows, which `register --force` did once at ship and was put back. Second ban waiver (the author, 2026-10-27, at the determinism reship): guard heart BLOCKs on ban.role, ban.forum and ban.forcing_event against task304, ban.strategy against task171 v5, and test.same_puzzle and test.same_driver against task184's lineage, all from builds drawn after this architecture; the axes are the draw's own and are not relabelled. Architecture 2 spent 2026-10-27 at the portal (FAILED_TO_STUMP after the determinism reship): both responses landed the call once the brief's sign-off required each closed embedding reproduced, which announced the page-level share. Architecture 3 (re-rooted 2026-10-27 at the author's direction, in this session): the Bightline world is spent (the netting, the page share, the timing rung blocked at v1's draw), so the number moves to Pharmacology & Pharmacoepidemiology / benefit-risk-assessment for Opportunity Sizing, a never-built pairing. Redrawn at check (2026-10-27): decisive pattern G9 (BLOCK against task464) to G14, the excess risk conditioned on each patient's time since starting, the honester key; context artifact register (BLOCK against task464) to published_series, the board's monthly prescribing series. Context artifact published_series (BLOCK against task311) redrawn to planning_thread, the board's thread placing the team. slots (2026-10-27): task178's note sets aside prevalent against new users as the client library's first card in the sister task type, a reflex; so the decisive step here is the conjunction, the hazard by time on the drug AND each user's start from the repeat-template record rather than the extract's first dispensing, each partial fix landing a different wrong network (client held trap 11, the quiet step behind the loud one). Architecture 3 (2026-10-27): six localities of an integrated care board (renamed at stage 3 from names near real places, figures unchanged); the card brought current at stage 3. Stage 4 (2026-10-27): gate_g moved from forecasting to method_or_model_selection on the determinism judge's reading (the policy's 'first started' pins the dating; the correctly read past pins the forward figure), with differentiation against task134, task149, task176 and task452.",
+ "registered": "2026-10-27T23:48:07Z"
 }

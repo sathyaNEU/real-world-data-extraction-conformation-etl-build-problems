@@ -2,119 +2,36 @@
  "task": "task118",
  "domain": "pharmacology-pharmacoepidemiology-safety / benefit-risk-assessment",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-27",
- "stump": "A competent analyst applies each network's crude fall-admission rate among current hypnotic users to the users the team would take off the drug and names the network with the most users; the step that lands them there is pricing every user at the cohort's average risk, when the risk falls after the first months on the drug and that network's users started years ago, their starts held in the repeat templates, not the extract that begins in April 2023.",
- "harden_loops": 4,
- "solver_rounds": [
-  {
-   "label": "round 1, plain",
-   "date": "2026-10-09",
-   "score": 46.0,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 2, plain",
-   "date": "2026-10-09",
-   "score": 38.0,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 3, plain",
-   "date": "2026-10-09",
-   "score": 46.5,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 3, skeptic",
-   "date": "2026-10-09",
-   "score": 36.8,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 4, plain",
-   "date": "2026-10-09",
-   "score": 34.4,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 5, plain",
-   "date": "2026-10-09",
-   "score": 43.9,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 5, skeptic",
-   "date": "2026-10-09",
-   "score": 33.7,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 6, plain",
-   "date": "2026-10-09",
-   "score": 36.1,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 7, plain",
-   "date": "2026-10-09",
-   "score": 45.5,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  },
-  {
-   "label": "round 7, skeptic",
-   "date": "2026-10-09",
-   "score": 36.3,
-   "landed": false,
-   "cracked": 1,
-   "items": 5
-  }
- ],
+ "stump": "A competent analyst reads the policy, dates each current user's first start from their first item in the board's dispensing extract and names Corvenham Central at 74 admissions avoided, where the golden is Saltreach Coast at 19; the step that lands them there is taking the start of a record as the start of the exposure, when the extract opens on 1 April 2026 so that every patient already on the drug enters it as an April starter at the raised rate through 2027, and each patient's real first start is the first template of the repeat-template chain, where 1,888 of Saltreach Coast's current users started on or after 1 April 2025 against 477 of Corvenham Central's.",
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (pass 8, zip 6f5ee314)",
-  "disposition": "APPROVE; informational note only (its own shrinkage 3 of 7 within 2 per cent against the recipe's 7 of 7), answered by stating the recipe in step 1",
+  "verdict": "DETERMINISTIC, APPROVE (architecture 3 pass 1, zip 900e68f6)",
+  "disposition": "APPROVE; the card's planning Gate G answered (method_or_model_selection with differentiation)",
   "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
   "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task118/determinism_check_report_pass8.md"
+  "report": "task118/determinism_check_report_arch3.md"
  },
  "approved": null,
  "delivered": "2026-10-27",
- "portal": "FAILED_TO_STUMP 2026-10-27 (round after the determinism reship): both responses filed Business·national at 500,000, runner-up Local·metro 100,000 behind, the golden",
+ "portal": "FAILED_TO_STUMP 2026-10-27 (round after the determinism reship): both responses filed Business\u00b7national at 500,000, runner-up Local\u00b7metro 100,000 behind, the golden",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "DESIGN",
- "resume": "stage 2 (architecture 3): prototype the world on the clean truth (six networks, users with true starts, the falls hazard by time on drug, the extract truncated at April 2023, the repeat templates) and measure the three routes (crude, hazard by extract start, hazard by template start) before writing the generator; then the design note's sections, the prompt (guide-to-prompt), the asks with silent devices, precut",
+ "status": "SHIPPED",
+ "resume": "",
  "leak": {
-  "leak_py": "REVIEW, the same sweeps ruled harmless (sweep 3 the brief, sweep 4 subjects' own words and the sign-off's 'working', sweep 5 the prompt)",
-  "reader": "read 2 on 6f5ee314: no decisive-step sentence, no ranking, no answer figure; question 5 executes to the golden; question 6 analytical"
+  "leak_py": "REVIEW, every line ruled (Stage 3 rulings)",
+  "reader": "read 1 on 900e68f6: no decisive-step sentence, no ranking file, no answer figure; question 3 the provider site list (publisher reference, harmless); question 5 executes to the golden's population; question 6 analytical"
  },
  "asks": {
-  "cracker_hits": 0,
+  "cracker_hits": 4,
   "of": 24,
-  "pair_ceiling": 27.5,
-  "mirror_leakage_pct": 0.0,
-  "device": "schedules set back to draft before their time (SF20); schedules moved to a later time (SF25); autosaves filed (SF19); totals beside the medians (SF23)"
+  "pair_ceiling": 37.7,
+  "mirror_leakage_pct": 16.7,
+  "device": "the stay through moves between hospitals: same-day trauma-unit moves whose site sorts first, receiving spells coded as fresh admissions or from home, next-day moves, same-day readmissions after going home; hazards Q80117, multi-episode spells"
  },
- "assertions": 318,
- "verifier": "86 of 86",
+ "assertions": 113,
+ "verifier": "19 of 19",
  "builds_byte_identical": true,
  "returned": [
   {
@@ -125,24 +42,24 @@
   },
   {
    "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
+   "portal": "FAILED_TO_STUMP: both responses filed Culture\u00b7national at 1,250,000 (the golden), runner-up named Sport\u00b7national (850,000, gap 350,000; and 200,000 behind)",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 2"
   },
   {
    "date": "2026-10-27",
-   "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport·metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
+   "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport\u00b7metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
    "repair": "determinism",
    "commit": ""
   },
   {
    "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business·national, 500,000 extra article clicks in 2027, runner-up Local·metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
+   "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business\u00b7national, 500,000 extra article clicks in 2027, runner-up Local\u00b7metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
    "repair": "re-root",
-   "commit": ""
+   "commit": "DRAWN (task118) architecture 3, baee0a47"
   }
  ],
- "zip_sha256_16": "6f5ee314bb1ca5c2",
+ "zip_sha256_16": "900e68f673731000",
  "architecture": 3,
  "loops": 0,
  "portal_status": "",
@@ -150,11 +67,12 @@
  "precut": {
   "exit": 0,
   "date": "2026-10-27",
-  "checks": "52, 0 FAIL, 0 WARN"
+  "checks": "53, 0 FAIL, 0 WARN"
  },
  "duplicate_check": {
-  "heart": "BLOCK on ban.strategy causal_design and ban.pattern G1 against task139 v2 (registered 2026-10-26T22:19Z, six hours before this draw), waived by the author 2026-10-27 at ship; the card keeps its 04:25Z filing time, the waiver in its notes; at the determinism reship (2026-10-27) BLOCKs on ban.role, ban.forum and ban.forcing_event against task304, ban.strategy against task171 v5, test.same_puzzle and test.same_driver against task184 lineage, all from builds drawn since, waived by the author, the card's axes unchanged",
-  "surface": "2 pairs promoted (task119 back to back, task116 pairing), each adjudicated clean"
+  "heart": "WARN (answered at the draw)",
+  "nearest": "0.07",
+  "surface": "clean; task131, task230, task183, task446 adjudicated clean"
  },
  "freeze": {
   "rubric": "PASS (six ask figures added, main call and stump unchanged)",

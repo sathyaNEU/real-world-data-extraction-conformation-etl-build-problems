@@ -1,98 +1,231 @@
 {
- "backtest": {
-  "average_share_hits": "2",
-  "average_share_pct": "57.0",
-  "average_share_worst_pct": "57",
-  "click_hits": "7",
-  "hits": "7",
-  "of": "7",
-  "packages": "10,111",
-  "raw_hits": "0",
-  "tolerance_pct": "2"
+ "ask_totals": {
+  "bed_days": 103847,
+  "falls_65_79": 4222,
+  "falls_80": 6154,
+  "readmitted": 1668
  },
- "call": "Business·national",
- "call_figure": "500,000",
- "components": {
-  "call_new_share_pct": "71.1",
-  "call_related_links_share_pct": "52.3",
-  "call_shrunk_lift_pct": "2.00",
-  "call_untested_own_page_clicks": "34,900,000",
-  "call_won_clicks": "700,000",
-  "ctr_culture_front_pct": "83.1",
-  "ctr_culture_tab_pct": "81.1",
-  "ctr_related_pct": "12.0",
-  "culture_extra": "350,000",
-  "culture_new_share_pct": "26.9",
-  "culture_won_clicks": "1,250,000",
-  "runner_up_new_share_pct": "48.6"
- },
- "extra_by_desk": {
-  "Business·national": "500,000",
-  "Culture·national": "350,000",
-  "Local·metro": "400,000",
-  "Politics·national": "300,000",
-  "Sport·metro": "50,000",
-  "Sport·national": "300,000"
- },
- "gap": "100,000",
- "rows": {
-  "Business·national": {
-   "corrected": "37",
-   "median_minutes": "89",
-   "over_three_hours": "6",
-   "total_minutes": "4,109",
-   "within_hour": "10"
+ "asks": {
+  "CC": {
+   "bed_days": 21717,
+   "falls_65_79": 969,
+   "falls_80": 1282,
+   "readmitted": 358
   },
-  "Culture·national": {
-   "corrected": "13",
-   "median_minutes": "119",
-   "over_three_hours": "5",
-   "total_minutes": "2,057",
-   "within_hour": "1"
+  "FM": {
+   "bed_days": 19041,
+   "falls_65_79": 720,
+   "falls_80": 1082,
+   "readmitted": 270
   },
-  "Local·metro": {
-   "corrected": "31",
-   "median_minutes": "102",
-   "over_three_hours": "6",
-   "total_minutes": "21,693",
-   "within_hour": "12"
+  "HM": {
+   "bed_days": 13967,
+   "falls_65_79": 574,
+   "falls_80": 846,
+   "readmitted": 226
   },
-  "Politics·national": {
-   "corrected": "43",
-   "median_minutes": "86",
-   "over_three_hours": "7",
-   "total_minutes": "5,231",
-   "within_hour": "14"
+  "LN": {
+   "bed_days": 11004,
+   "falls_65_79": 417,
+   "falls_80": 643,
+   "readmitted": 186
   },
-  "Sport·metro": {
-   "corrected": "17",
-   "median_minutes": "55",
-   "over_three_hours": "2",
-   "total_minutes": "1,342",
-   "within_hour": "9"
+  "QR": {
+   "bed_days": 15978,
+   "falls_65_79": 653,
+   "falls_80": 974,
+   "readmitted": 281
   },
-  "Sport·national": {
-   "corrected": "39",
-   "median_minutes": "47",
-   "over_three_hours": "2",
-   "total_minutes": "2,799",
-   "within_hour": "23"
+  "SC": {
+   "bed_days": 22140,
+   "falls_65_79": 889,
+   "falls_80": 1327,
+   "readmitted": 347
   }
  },
- "runner_up": "Local·metro",
- "runner_up_figure": "400,000",
- "write_up": {
-  "aest_offset_hours": "10",
-  "pages": "22",
-  "pairing_minutes": "10",
-  "policy_clauses": [
-   "7.3",
-   "7.4",
-   "7.5",
-   "7.8"
+ "avoided": 19.1569,
+ "avoided_r": 19,
+ "base": 4.0,
+ "constants": {
+  "age_band_80": 80,
+  "age_band_top": 79,
+  "age_min": 65,
+  "days_in_year": 365,
+  "destination_another_hospital": 51,
+  "months_bands": [
+   6,
+   24
   ],
-  "rounding": [
-   "50,000"
+  "per_100": 100,
+  "readmit_days": 30,
+  "transfer_method": 81
+ },
+ "extract_from": "2026-04-01",
+ "gap": 3.8729,
+ "gap_r": 4,
+ "localities": {
+  "CC": {
+   "avoided": 12.6027,
+   "avoided_r": 13,
+   "name": "Corvenham Central",
+   "recent": 477,
+   "users": 6812
+  },
+  "FM": {
+   "avoided": 11.9996,
+   "avoided_r": 12,
+   "name": "Fenmarsh",
+   "recent": 698,
+   "users": 4987
+  },
+  "HM": {
+   "avoided": 15.284,
+   "avoided_r": 15,
+   "name": "Hethermoss",
+   "recent": 1155,
+   "users": 3611
+  },
+  "LN": {
+   "avoided": 7.8444,
+   "avoided_r": 8,
+   "name": "Ledbridge North",
+   "recent": 452,
+   "users": 3226
+  },
+  "QR": {
+   "avoided": 11.0423,
+   "avoided_r": 11,
+   "name": "Quenford Rise",
+   "recent": 642,
+   "users": 4583
+  },
+  "SC": {
+   "avoided": 19.1569,
+   "avoided_r": 19,
+   "name": "Saltreach Coast",
+   "recent": 1888,
+   "users": 5034
+  }
+ },
+ "migrated": "QR",
+ "migrated_name": "Quenford Rise",
+ "migrated_practice": "Q89159",
+ "migrated_practice_name": "Mill Road Group Practice",
+ "n_users": 28253,
+ "off_from": "2027-04-01",
+ "off_to": "2027-12-31",
+ "others_max_r": 13,
+ "recent_since": "2025-04-01",
+ "routes": {
+  "current_system_root": {
+   "CC": 12.6027,
+   "FM": 11.9996,
+   "HM": 15.284,
+   "LN": 7.8444,
+   "QR": 13.1603,
+   "SC": 19.1569
+  },
+  "current_template": {
+   "CC": 72.3458,
+   "FM": 53.0472,
+   "HM": 38.5224,
+   "LN": 34.2482,
+   "QR": 48.7859,
+   "SC": 53.5923
+  },
+  "earliest_both_systems": {
+   "CC": 12.6027,
+   "FM": 11.9996,
+   "HM": 15.284,
+   "LN": 7.8444,
+   "QR": 11.0423,
+   "SC": 19.1569
+  },
+  "extract_first_dispensing": {
+   "CC": 73.9055,
+   "FM": 54.1055,
+   "HM": 39.1769,
+   "LN": 34.9999,
+   "QR": 49.7224,
+   "SC": 54.6155
+  },
+  "golden": {
+   "CC": 12.6027,
+   "FM": 11.9996,
+   "HM": 15.284,
+   "LN": 7.8444,
+   "QR": 11.0423,
+   "SC": 19.1569
+  },
+  "prevalent_long_term_21": {
+   "CC": 26.5157,
+   "FM": 20.6991,
+   "HM": 19.5545,
+   "LN": 13.5738,
+   "QR": 18.9551,
+   "SC": 20.6585
+  },
+  "prevalent_long_term_28": {
+   "CC": 10.5482,
+   "FM": 9.3074,
+   "HM": 12.9568,
+   "LN": 6.0458,
+   "QR": 8.5886,
+   "SC": 10.1495
+  },
+  "prevalent_long_term_35": {
+   "CC": 10.2919,
+   "FM": 8.9466,
+   "HM": 12.5106,
+   "LN": 5.8085,
+   "QR": 8.3133,
+   "SC": 9.8458
+  },
+  "prevalent_long_term_56": {
+   "CC": 10.1305,
+   "FM": 8.6238,
+   "HM": 11.3714,
+   "LN": 5.6091,
+   "QR": 7.9715,
+   "SC": 9.4755
+  },
+  "previous_system_one_hop": {
+   "CC": 12.6027,
+   "FM": 11.9996,
+   "HM": 15.284,
+   "LN": 7.8444,
+   "QR": 12.8475,
+   "SC": 19.1569
+  },
+  "users": {
+   "CC": 6812.0,
+   "FM": 4987.0,
+   "HM": 3611.0,
+   "LN": 3226.0,
+   "QR": 4583.0,
+   "SC": 5034.0
+  }
+ },
+ "rr": [
+  [
+   6,
+   3.0
+  ],
+  [
+   24,
+   1.8
+  ],
+  [
+   null,
+   1.1
   ]
- }
+ ],
+ "runner": "HM",
+ "runner_avoided": 15.284,
+ "runner_avoided_r": 15,
+ "runner_name": "Hethermoss",
+ "stop_pct": 45,
+ "winner": "SC",
+ "winner_mid": 1485,
+ "winner_name": "Saltreach Coast"
 }

@@ -1,386 +1,212 @@
-"""Builds the world in memory: staff, articles, the test archive and the spine allocation."""
+"""The board's hypnotic users and their records: each patient's true start, the repeat-template chains (one
+practice's split at its July 2026 system move), and the items dispensed April to September 2026."""
 import datetime as dt
 import hashlib
-import re
-import unicodedata
 
 import numpy as np
-from faker import Faker
 
 import params as P
-import archive as AR
-import spine as SP
 
-# Staff names come from Faker's own locale pools, mixed the way an Australian newsroom's surnames run. Faker has
-# no en_AU person provider (en_AU falls back to en_US's pools), so en_NZ carries the Australasian base.
-# (pool, share, where the given name comes from: the pool's own, or en_NZ's, with that probability of the pool's own)
-STAFF_POOLS = (("en_NZ", 0.48, 1.0), ("en_GB", 0.22, 1.0), ("en_IE", 0.10, 0.2), ("zh_CN", 0.07, 0.4),
-               ("en_IN", 0.05, 0.8), ("vi_VN", 0.04, 0.0), ("de_DE", 0.04, 0.2))
-# it_IT is left out: its surname list is drawn from notable Italians (Berlusconi came up in the first draw).
-NOT_STAFF_NAMES = {  # placeholder identities, a fast-food mascot and public figures a reader would recognise
-    "john smith", "jane smith", "john doe", "jane doe", "joe bloggs", "fred bloggs", "john citizen", "jane citizen",
-    "ronald mcdonald", "david jones", "steve smith", "steven smith", "scott morrison", "john howard", "kevin rudd",
-    "julia gillard", "tony abbott", "malcolm turnbull", "anthony albanese", "paul keating", "bob hawke",
-    "peter dutton", "penny wong", "jim chalmers", "chris bowen", "barnaby joyce", "pauline hanson", "clive palmer",
-    "rupert murdoch", "james packer", "kerry packer", "gina rinehart", "andrew forrest", "jacinda ardern",
-    "john key", "cathy freeman", "ian thorpe", "shane warne", "ricky ponting", "david warner", "pat cummins",
-    "steve irwin", "hugh jackman", "nicole kidman", "kylie minogue", "cate blanchett", "michael clarke"}
-NOT_STAFF_SURNAMES = {"Murdoch", "Packer", "Fairfax", "Stokes",   # Australian media dynasties, in a newsroom's list
-                      "O'Loughlinn"}                                 # a misspelling in Faker's en_IE pool
-GAELIC_MAC = {"donald", "kenzie", "leod", "intosh", "gregor", "lean", "millan", "neil", "pherson", "arthur",
-              "laren", "farlane", "kinnon", "dougall", "innes", "kay", "gill", "rae", "ewan", "allister", "aulay",
-              "lachlan", "queen", "nab", "nair", "iver", "kinlay", "bride", "callum", "ritchie", "fadyen", "diarmid",
-              "gillivray", "donnell", "namara", "manus", "carthy", "guire", "grath", "mahon", "cormack", "kenna",
-              "mullen", "cann", "auley"}
-NAME_RE = re.compile(r"^[A-Z][a-z]+(?:[-'][A-Z][a-z]+)?$|^(?:Mc|Mac|O')[A-Z][a-z]+$")
+D = dt.timedelta
 
 
-def recase(surname):
-    """Mc and the Gaelic Mac names take a capital after the prefix (McDonald, MacLeod), as do O' names."""
-    s = re.sub(r"^Mc([a-z])", lambda m: "Mc" + m.group(1).upper(), surname)
-    m = re.match(r"^Mac([a-z]+)$", s)
-    if m and m.group(1) in GAELIC_MAC:
-        s = "Mac" + m.group(1).capitalize()
-    s = re.sub(r"^O'([a-z])", lambda m: "O'" + m.group(1).upper(), s)
-    return re.sub(r"-([a-z])", lambda m: "-" + m.group(1).upper(), s)
+def rid(*key, n=10, alpha="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"):
+    h = hashlib.sha1("|".join(str(k) for k in key).encode()).digest()
+    return "".join(alpha[b % len(alpha)] for b in h[:n])
 
 
-def deaccent(s):
-    s = s.replace("Đ", "D").replace("đ", "d")
-    return "".join(c for c in unicodedata.normalize("NFKD", s) if not unicodedata.combining(c))
+def day(rs, a, b):
+    return a + D(days=int(rs.integers(0, (b - a).days + 1)))
 
 
-class StaffNames:
-    """Seeded draws from the pools above; never typed, never the en_US fallback."""
-
-    def __init__(self, avoid_first, avoid_last, used):
-        self.fk = {}
-        for k, (loc, _, _) in enumerate(STAFF_POOLS):
-            self.fk[loc] = Faker(loc)
-            self.fk[loc].seed_instance(P.SEED * 100 + k)
-        self.rng = AR.rng_for(11)           # its own stream: ids and dates keep drawing from rng_for(10)
-        self.share = np.array([s for _, s, _ in STAFF_POOLS])
-        self.share = self.share / self.share.sum()
-        self.avoid_first, self.avoid_last, self.used = avoid_first, avoid_last, used
-        self.n_last, self.n_first = {}, {}
-
-    def one(self):
-        loc, _, own = STAFF_POOLS[int(self.rng.choice(len(STAFF_POOLS), p=self.share))]
-        fk = self.fk[loc]
-        if loc == "zh_CN":
-            last = fk.last_romanized_name()
-            first = fk.first_romanized_name() if self.rng.random() < own else self.fk["en_NZ"].first_name()
-        else:
-            last = deaccent(fk.last_name()) if loc == "vi_VN" else fk.last_name()
-            first = fk.first_name() if self.rng.random() < own else self.fk["en_NZ"].first_name()
-        return first.strip(), recase(last.strip()), loc
-
-    def __call__(self):
-        while True:
-            first, last, loc = self.one()
-            nm = "%s %s" % (first, last)
-            if not (NAME_RE.match(first) and NAME_RE.match(last)) or nm in self.used:
-                continue
-            if nm.lower() in NOT_STAFF_NAMES or last in NOT_STAFF_SURNAMES or first in self.avoid_first \
-                    or last in self.avoid_last:
-                continue
-            if self.n_last.get(last, 0) >= 2 or self.n_first.get(first, 0) >= 3:
-                continue
-            self.used.add(nm)
-            self.n_last[last] = self.n_last.get(last, 0) + 1
-            self.n_first[first] = self.n_first.get(first, 0) + 1
-            return nm
+STREETS = ["Station Road", "Church Lane", "Market Street", "Mill Road", "High Street", "Park View", "Bridge Street",
+           "Orchard Way", "Castle Hill", "Green Lane", "Quay Street", "Abbey Road", "Victoria Road", "North Street",
+           "The Green", "Priory Lane", "West End", "Harbour Road", "Elm Grove", "School Lane"]
+KINDS = ["Surgery", "Medical Centre", "Health Centre", "Medical Practice", "Family Practice", "Group Practice"]
 
 
-PERSONAS = {
-    "Lisa Jennings": ("EDT", "Editor-in-chief", "Sydney", dt.date(2019, 3, 4)),
-    "Corey Cox": ("EDT", "Managing editor", "Sydney", dt.date(2020, 8, 17)),
-    "Kayla Torres": ("AUD", "Head of audience", "Sydney", dt.date(2021, 2, 1)),
-    "Nina Franklin": ("AUD-EXP", "Experimentation lead", "Melbourne", dt.date(2019, 6, 10)),
-    "Willie Smith": ("AUD-HS", "Headline squad lead", "Sydney", dt.date(2018, 11, 5)),
-    "Natalie Benjamin": ("AUD-DATA", "Audience data engineer", "Brisbane", dt.date(2022, 4, 19)),
-}
-TEAM_NAME = {"EDT": "Editorial leadership", "AUD": "Audience", "AUD-EXP": "Experimentation",
-             "AUD-HS": "Headline squad", "AUD-DATA": "Audience data", "STD": "Standards"}
-for _d in P.DESKS:
-    TEAM_NAME[_d[0]] = _d[1] + " desk"
-DESK_STAFF = {  # editing staff who can run tests (editor, deputies, senior producers, producers), reporters
-    "POL-N": (1, 2, 3, 6, 14), "BUS-N": (1, 1, 3, 5, 11), "SPT-N": (1, 2, 3, 7, 15), "CUL-N": (1, 1, 1, 3, 7),
-    "POL-M": (1, 1, 1, 2, 5), "SPT-M": (1, 1, 1, 3, 6), "LOC-M": (1, 1, 2, 5, 10),
-    "GAM-A": (1, 0, 1, 2, 0), "PZL-A": (1, 0, 1, 3, 0), "RCP-A": (1, 1, 1, 2, 1), "WEL-A": (1, 0, 1, 2, 1)}
-BASE = {"POL-N": "Canberra", "BUS-N": "Sydney", "SPT-N": "Melbourne", "CUL-N": "Melbourne", "POL-M": "Brisbane",
-        "SPT-M": "Brisbane", "LOC-M": "Brisbane", "GAM-A": "Sydney", "PZL-A": "Sydney", "RCP-A": "Sydney",
-        "WEL-A": "Sydney"}
-SQUAD_HISTORY = [  # role, start, end (None = current); Jason Anderson is the persona lead
-    ("Headline editor", dt.date(2018, 11, 19), dt.date(2021, 3, 26)),
-    ("Headline editor", dt.date(2019, 1, 14), dt.date(2023, 7, 14)),
-    ("Data analyst", dt.date(2018, 12, 3), dt.date(2020, 10, 2)),
-    ("Producer", dt.date(2019, 2, 4), dt.date(2022, 11, 25)),
-    ("Data analyst", dt.date(2020, 10, 26), dt.date(2024, 9, 13)),
-    ("Headline editor", dt.date(2021, 4, 12), None),
-    ("Producer", dt.date(2023, 1, 16), dt.date(2025, 6, 20)),
-    ("Headline editor", dt.date(2023, 8, 7), None),
-    ("Headline editor", dt.date(2024, 2, 12), None),
-    ("Data analyst", dt.date(2024, 10, 8), None),
-    ("Producer", dt.date(2025, 7, 21), None),
-]
+def practices():
+    """the register: code, name, locality, the code it took over (Fenmarsh Health Centre took Marsh Lane Surgery's list
+    on 1 October 2025) and its share of the locality's patients"""
+    rs = np.random.default_rng(P.SEED + 1)
+    out, used, s = [], {P.MERGED[0]}, 0
+    for code, name, _, _ in P.LOCALITIES:
+        k = P.PRACTICES[code]
+        w = rs.dirichlet(np.full(k, 4.0))
+        for j in range(k):
+            while True:
+                pc = "Q8%04d" % int(rs.integers(100, 9999))
+                if pc not in used:
+                    used.add(pc)
+                    break
+            town = name.split()[0]
+            out.append(dict(code=pc, name="%s %s" % (STREETS[s % len(STREETS)], KINDS[(s * 7) % len(KINDS)]),
+                            town=town, locality=code, predecessor="", weight=float(w[j])))
+            s += 1
+    fm = [p for p in out if p["locality"] == "FM"]
+    fm[1]["name"] = "Fenmarsh Health Centre"
+    fm[1]["predecessor"] = P.MERGED[0]
+    return out
 
 
-def sha(s, n=12):
-    return hashlib.sha1(s.encode()).hexdigest()[:n]
+def migrated_practice(prs):
+    """the Quenford Rise practice that moved clinical system in July 2026"""
+    return sorted([p for p in prs if p["locality"] == P.MIGRATED], key=lambda p: p["weight"])[0]
 
 
-class World:
-    pass
+def _age(rs):
+    return int(min(99, 65 + rs.gamma(2.0, 6.0)))
 
 
-def make_staff(W):
-    rng = AR.rng_for(10)
-    used = set(PERSONAS)
-    persona_first = {n.split()[0] for n in PERSONAS}
-    persona_last = {n.split()[-1] for n in PERSONAS}
-    name = StaffNames(persona_first, persona_last, used)
-
-    ids = set()
-
-    def sid(start):
-        block = 10000 + (start.year - 2010) * 650
-        while True:
-            v = block + int(rng.integers(0, 640))
-            if v not in ids:
-                ids.add(v)
-                return "BN%05d" % v
-
-    rows = []
-
-    def add(nm, team, role, base, start, end=None):
-        rows.append(dict(staff_id=sid(start), full_name=nm, team_code=team, team=TEAM_NAME[team], role=role,
-                         base=base, start_date=start, end_date=end))
-        return rows[-1]
-
-    for nm, (team, role, base, start) in PERSONAS.items():
-        add(nm, team, role, base, start)
-    for role, s, e in SQUAD_HISTORY:
-        add(name(), "AUD-HS", role, "Sydney", s, e)
-    for team, roles in [("AUD", ["Audience editor", "Audience editor", "Social editor", "Newsletter editor"]),
-                        ("AUD-DATA", ["Analytics engineer", "Data analyst", "Data analyst"]),
-                        ("AUD-EXP", ["Experimentation analyst", "Experimentation analyst"]),
-                        ("STD", ["Standards editor", "Standards producer", "Readers' editor"]),
-                        ("EDT", ["Deputy editor", "Executive producer"])]:
-        for r in roles:
-            start = dt.date(2016, 1, 4) + dt.timedelta(days=int(rng.integers(0, 3300)))
-            add(name(), team, r, "Sydney" if team != "AUD-DATA" else ["Sydney", "Brisbane"][int(rng.integers(2))], start)
-    W.testers = {}
-    for desk, (ed, dep, sp, prod, rep) in DESK_STAFF.items():
-        roles = ["Desk editor"] * ed + ["Deputy editor"] * dep + ["Senior producer"] * sp + ["Producer"] * prod + \
-                ["Reporter"] * rep
-        W.testers[desk] = []
-        for r in roles:
-            start = dt.date(2014, 2, 3) + dt.timedelta(days=int(rng.integers(0, 4100)))
-            if start > dt.date(2025, 9, 1):
-                start = start - dt.timedelta(days=700)
-            leaver = desk in P.WEB and r in ("Producer", "Senior producer", "Reporter") and rng.random() < 0.16
-            end = None
-            if leaver:
-                end = P.WINDOW_START + dt.timedelta(days=int(rng.integers(40, 330)))
-            row = add(name(), desk, r, BASE[desk], start, end)
-            if r != "Reporter":
-                W.testers[desk].append(row)
-            if leaver and r != "Reporter":
-                rs = end + dt.timedelta(days=int(rng.integers(14, 60)))
-                if rs < P.WINDOW_END - dt.timedelta(days=20):
-                    W.testers[desk].append(add(name(), desk, r, BASE[desk], rs))
-        # earlier leavers, before the window, so the list carries its history
-        for _ in range(int(rng.integers(1, 4))):
-            end = dt.date(2019, 1, 18) + dt.timedelta(days=int(rng.integers(0, 2400)))
-            start = end - dt.timedelta(days=int(rng.integers(300, 2500)))
-            add(name(), desk, ["Producer", "Reporter"][int(rng.integers(2))], BASE[desk], start, end)
-    W.staff = sorted(rows, key=lambda r: r["staff_id"])
-    W.squad = [r for r in W.staff if r["team_code"] == "AUD-HS"]
+def _drug(rs):
+    sh = np.array([d[5] for d in P.DRUGS])
+    return P.DRUGS[int(rs.choice(len(P.DRUGS), p=sh / sh.sum()))]
 
 
-def active(rows, when):
-    return [r for r in rows if r["start_date"] <= when and (r["end_date"] is None or r["end_date"] >= when)]
+def users(prs):
+    """every patient in the extract: the current users aged 65 or over by when they first started, the patients who
+    stopped before July 2026, and the current users aged under 65 on 1 January 2027"""
+    rs = np.random.default_rng(P.SEED)
+    by_loc = {}
+    for p in prs:
+        by_loc.setdefault(p["locality"], []).append(p)
+    out = []
+    windows = {"long": (dt.date(2008, 1, 1), dt.date(2025, 3, 31)), "mid": (dt.date(2025, 4, 1), dt.date(2026, 3, 31)),
+               "new": (dt.date(2026, 4, 1), dt.date(2026, 9, 20))}
 
+    def practice(code):
+        ps = by_loc[code]
+        w = np.array([p["weight"] for p in ps])
+        return ps[int(rs.choice(len(ps), p=w / w.sum()))]["code"]
 
-def make_articles(W):
-    W.art = {d: SP.build_articles(d) for d in P.DESK}
-    for d, A in W.art.items():
-        rng = AR.rng_for(300 + list(P.DESK).index(d))
-        SP.scale_tested(A, rng)
-        SP.build_mixes(A, rng)
-    # article ids: web desks share one sequence in publication order; app items their own block
-    rng = AR.rng_for(20)
-    allpub = sorted((A.pub[i], d, i) for d, A in W.art.items() if d in P.WEB for i in range(len(A.pub)))
-    nxt = 1184216
-    for d in P.WEB:
-        W.art[d].ids = np.zeros(len(W.art[d].pub), np.int64)
-    for m, d, i in allpub:
-        W.art[d].ids[i] = nxt
-        nxt += int(rng.integers(1, 4))
-    used = set()
-    for d in P.WEB:
-        A = W.art[d]
-        start = SP.minutes(P.WINDOW_START)
-        A.old_ids = np.zeros(len(A.old_pub), np.int64)
-        for i, m in enumerate(A.old_pub):
-            back_days = (start - m) / SP.DAY
-            v = 1184216 - int(back_days * 131) - int(rng.integers(0, 120))
-            while v in used:
-                v -= 1
-            used.add(v)
-            A.old_ids[i] = v
-    nxt = 30418820
-    for d in P.APP:
-        A = W.art[d]
-        A.ids = np.zeros(len(A.pub), np.int64)
-        A.old_ids = np.zeros(len(A.old_pub), np.int64)
-    app_pub = sorted((A.pub[i], d, i) for d, A in W.art.items() if d in P.APP for i in range(len(A.pub)))
-    for m, d, i in app_pub:
-        W.art[d].ids[i] = nxt
-        nxt += int(rng.integers(1, 3))
-    for d in P.APP:
-        A = W.art[d]
-        for i, m in enumerate(A.old_pub):
-            v = 30418820 - int((SP.minutes(P.WINDOW_START) - m) / SP.DAY * 9) - int(rng.integers(0, 8))
-            while v in used:
-                v -= 1
-            used.add(v)
-            A.old_ids[i] = v
-
-
-def make_tests(W):
-    """Simulate every concluded test, pair web tests with tested articles, set times and owners."""
-    W.tests = []          # dicts: test_id, engine, desk, article_id, owner, start(UTC), end(UTC), ns, cs, ship, group
-    for d in P.WEB:
-        c = P.WEB_TESTS[d]
-        inst = P.DESK[d][5]
-        sub = P.CUL_SUBSEED if d == "CUL-N" else 0
-        sim = AR.simulate_tests(AR.rng_for(100 + P.WEB.index(d), sub), c["n"], c["kp"], c["npk"], c["ctr"], P.GATE[inst])
-        A = W.art[d]
-        rng = AR.rng_for(400 + P.WEB.index(d))
-        tidx = np.where(A.tested)[0]
-        early = A.w[tidx] * (A.src[tidx, :5] * A.age[tidx, :5, 0]).sum(1)
-        a_order = tidx[np.argsort(-(early * rng.lognormal(0, 0.15, len(tidx))), kind="stable")]
-        t_order = np.argsort(-np.array([t["cs"].sum() for t in sim]), kind="stable")
-        for rank, ti in enumerate(t_order):
-            t = sim[ti]
-            ai = a_order[rank]
-            pub_aest = SP.to_dt(A.pub[ai])
-            start = pub_aest - P.AEST + dt.timedelta(minutes=int(rng.integers(4, 19)))
-            end = start + dt.timedelta(minutes=int(rng.integers(c["dur"][0], c["dur"][1] + 1)))
-            owners = active(W.testers[d], pub_aest.date())
-            prob = np.array([3.0 if r["role"] == "Producer" else 2.0 if r["role"] == "Senior producer" else 1.0
-                             for r in owners])
-            owner = owners[int(rng.choice(len(owners), p=prob / prob.sum()))]
-            W.tests.append(dict(engine="web", desk=d, art_index=int(ai), article_id=int(A.ids[ai]),
-                                owner=owner["staff_id"], start=start, end=end, group="web", **t))
-    # the squad: seven closed embeddings and the open one
-    W.emb_tests = {}
-    rng = AR.rng_for(30)
-    used = set(int(x) for d in P.APP for x in W.art[d].old_ids) | set(int(x) for d in P.APP for x in W.art[d].ids)
-    for e in P.EMBEDDINGS:
-        sim = AR.simulate_tests(AR.rng_for(900 + e["no"], P.EMBED_SUBSEED[e["no"]]), e["n"], P.APP_KP, e["npk"],
-                                P.APP_CTR, P.GATE["app"])
-        y = e["year"]
-        A = W.art[e["desk"]]
-        tidx = np.where(A.tested)[0] if e["no"] == 7 else np.array([], int)
-        n_in = len(tidx)
-        last = 360 if y < 2025 else (dt.date(2025, 9, 30) - dt.date(2025, 1, 1)).days
-        days = sorted(rng.choice(np.arange(5, last), size=len(sim) - n_in, replace=False))
-        by_size = np.argsort(-np.array([t["cs"].sum() for t in sim]), kind="stable")
-        in_tests = list(by_size[:n_in])
-        if n_in:
-            early = A.w[tidx] * (A.src[tidx, :5] * A.age[tidx, :5, 0]).sum(1)
-            items = list(tidx[np.argsort(-early, kind="stable")])
-        out = []
-        k_out = 0
-        for k, t in enumerate(sim):
-            if k in in_tests:
-                ai = items[in_tests.index(k)]
-                pub_aest = SP.to_dt(A.pub[ai])
-                start = pub_aest - P.AEST + dt.timedelta(minutes=int(rng.integers(3, 15)))
-                art_index, aid = int(ai), int(A.ids[ai])
-                when = pub_aest.date()
+    for code, name, n, shares in P.LOCALITIES:
+        k_mid, k_new = int(round(n * shares[1])), int(round(n * shares[2]))
+        k_long = n - k_mid - k_new
+        for i in range(n):
+            cls = "long" if i < k_long else ("mid" if i < k_long + k_mid else "new")
+            start = day(rs, *windows[cls])
+            age = _age(rs)
+            out.append(dict(pid="P" + rid("pt", code, i, n=9), loc=code, practice=practice(code), start=start,
+                            yob=2026 - age, sex="F" if rs.random() < 0.66 else "M", drug=_drug(rs), cls=cls,
+                            current=True, stop=None))
+        for i in range(int(round(n * P.STOPPED_SHARE))):
+            if i % 3 == 0:     # a short course started in April or May 2026, one or two packs
+                start = day(rs, dt.date(2026, 4, 1), dt.date(2026, 5, 8))
+                stop = start + D(days=int(rs.choice([20, 48])))
             else:
-                day = dt.date(y, 1, 1) + dt.timedelta(days=int(days[k_out]))
-                k_out += 1
-                start = dt.datetime(day.year, day.month, day.day, int(rng.integers(19, 23)), int(rng.integers(0, 60))) \
-                    - dt.timedelta(days=1)
-                aid = 30418820 - int((dt.date(2025, 10, 1) - day).days * 9) - int(rng.integers(0, 9))
-                while aid in used:
-                    aid -= 1
-                art_index, when = -1, day
-            used.add(aid)
-            end = start + dt.timedelta(minutes=int(rng.integers(25, 70)))
-            owners = [r for r in active(W.squad, when) if r["role"] != "Data analyst"]
-            owner = owners[int(rng.integers(len(owners)))]
-            rec = dict(engine="app", desk=e["desk"], art_index=art_index, article_id=aid, owner=owner["staff_id"],
-                       start=start, end=end, group="emb%d" % e["no"], **t)
-            out.append(rec)
-            W.tests.append(rec)
-        W.emb_tests[e["no"]] = out
-    o = P.OPEN_EMBEDDING
-    sim = AR.simulate_tests(AR.rng_for(990, 0), o["n"], P.APP_KP, o["npk"], P.APP_CTR, P.GATE["app"])
-    A = W.art[o["desk"]]
-    tidx = np.where(A.tested)[0]
-    rng2 = AR.rng_for(31)
-    for k, t in enumerate(sim):
-        ai = tidx[k]
-        pub_aest = SP.to_dt(A.pub[ai])
-        start = pub_aest - P.AEST + dt.timedelta(minutes=int(rng2.integers(3, 15)))
-        end = start + dt.timedelta(minutes=int(rng2.integers(25, 70)))
-        owners = [r for r in active(W.squad, pub_aest.date()) if r["role"] != "Data analyst"]
-        owner = owners[int(rng2.integers(len(owners)))]
-        W.tests.append(dict(engine="app", desk=o["desk"], art_index=int(ai), article_id=int(A.ids[ai]),
-                            owner=owner["staff_id"], start=start, end=end, group="open", **t))
-    W.tests.sort(key=lambda t: t["start"])
-    # ids: app engine APP-<year>-<seq>, web tool W<yymm>-<seq>
-    seq = {}
-    rng3 = AR.rng_for(40)
-    for t in W.tests:
-        if t["engine"] == "app":
-            key = ("app", t["start"].year)
-            seq[key] = seq.get(key, 0) + int(rng3.integers(1, 4))
-            t["test_id"] = "APP-%d-%05d" % (t["start"].year, seq[key])
+                start = day(rs, dt.date(2010, 1, 1), dt.date(2025, 12, 31))
+                stop = day(rs, dt.date(2026, 4, 20), dt.date(2026, 6, 26))
+            age = _age(rs)
+            out.append(dict(pid="P" + rid("ex", code, i, n=9), loc=code, practice=practice(code), start=start,
+                            yob=2026 - age, sex="F" if rs.random() < 0.66 else "M", drug=_drug(rs), cls="stopped",
+                            current=False, stop=stop))
+        for i in range(int(round(n * P.UNDER_65_SHARE))):
+            yob = int(rs.integers(1962, 1967))
+            # the 1962-born (64 on 1 January 2027, 65 during the year) have all been on the drug for years
+            start = day(rs, dt.date(2015, 1, 1), dt.date(2023, 12, 31) if yob == 1962 else dt.date(2026, 8, 31))
+            out.append(dict(pid="P" + rid("yg", code, i, n=9), loc=code, practice=practice(code), start=start,
+                            yob=yob, sex="F" if rs.random() < 0.6 else "M", drug=_drug(rs),
+                            cls="under65", current=True, stop=None))
+    return out
+
+
+def _auths(rs, u):
+    """the authorisation dates of the patient's repeat templates: twelve packs each, re-authorised as the last runs out"""
+    span = 12 * u["drug"][3]
+    last = u["stop"] or P.TEMPLATES_AS_AT - D(days=1)
+    a = [u["start"]]
+    while True:
+        nxt = a[-1] + D(days=span + int(rs.integers(-10, 16)))
+        if nxt > last:
+            return a
+        a.append(nxt)
+
+
+DIRECTIONS = {"Z-drug": ["ONE to be taken at night", "ONE at night when required", "ONE to be taken at bedtime"],
+              "benzodiazepine": ["ONE to be taken at night", "ONE at night when required", "ONE to be taken at bedtime",
+                                 "ONE to be taken at night as directed"]}
+
+
+def templates(us, prs):
+    """the current system's export (every template active on or after 1 April 2024, as at 1 October 2026) and the
+    previous system's export for the practice that moved in July 2026 (taken on its last day on the old system)"""
+    rs = np.random.default_rng(P.SEED + 2)
+    move = {migrated_practice(prs)["code"]: P.MIGRATION}
+    cur, leg = [], []
+    for u in us:
+        auths = _auths(rs, u)
+        mv = move.get(u["practice"])
+        if mv is not None:     # no re-authorisation in the days the practice was moving
+            auths = [a if (j == 0 or not (mv - D(days=3) <= a <= mv + D(days=3))) else mv + D(days=4)
+                     for j, a in enumerate(auths)]
+        directions = DIRECTIONS[u["drug"][2]][int(rs.integers(0, len(DIRECTIONS[u["drug"][2]])))]
+        prev_cur, prev_leg = "", ""
+        legacy_active = None
+        for j, a0 in enumerate(auths):
+            review = a0 + D(days=364)
+            nxt = auths[j + 1] if j + 1 < len(auths) else None
+            ended = (nxt - D(days=1)) if nxt else (u["stop"] if u["stop"] else None)
+            reason = "Reauthorised" if nxt else ("Stopped" if u["stop"] else "")
+            in_window = (ended or review) >= P.TEMPLATES_ACTIVE_SINCE
+            if mv is not None and a0 < mv:
+                ref = "%s/%d" % (u["practice"][-4:], int(rid("lt", u["pid"], j, n=7, alpha="0123456789")))
+                if in_window:
+                    if ended is not None and ended >= mv:
+                        ended_leg, reason_leg = None, ""
+                    else:
+                        ended_leg, reason_leg = ended, reason
+                    leg.append(dict(template_ref=ref, patient_pseudo_id=u["pid"], practice_code=u["practice"],
+                                    drug=u["drug"][1].upper(), directions=directions.upper(),
+                                    qty=u["drug"][3], issues=12, start_date=a0, review_date=review, end_date=ended_leg,
+                                    end_reason=reason_leg.upper(), superseded_ref=prev_leg))
+                prev_leg = ref
+                if ended is None or ended >= mv:
+                    legacy_active = (ref, review, ended, reason)
+            else:
+                if legacy_active is not None and not prev_cur:
+                    # the move re-created the active template on the new system, dated the day of the move
+                    ref, rv, en, rsn = legacy_active
+                    tid = "T" + rid("mv", u["pid"], n=9)
+                    en2 = (a0 - D(days=1))
+                    cur.append(dict(template_id=tid, patient_pseudo_id=u["pid"], practice_code=u["practice"],
+                                    product=u["drug"][1], directions=directions, quantity=u["drug"][3], issues=12,
+                                    authorised_from=mv, review_date=rv, ended_on=en2, end_reason="Reauthorised",
+                                    replaces_template_id="", migration_source_ref=ref))
+                    prev_cur = tid
+                tid = "T" + rid("tp", u["pid"], j, n=9)
+                if in_window:
+                    cur.append(dict(template_id=tid, patient_pseudo_id=u["pid"], practice_code=u["practice"],
+                                    product=u["drug"][1], directions=directions, quantity=u["drug"][3], issues=12,
+                                    authorised_from=a0, review_date=review, ended_on=ended, end_reason=reason,
+                                    replaces_template_id=prev_cur, migration_source_ref=""))
+                prev_cur = tid
+        if legacy_active is not None and not prev_cur:
+            ref, rv, en, rsn = legacy_active
+            tid = "T" + rid("mv", u["pid"], n=9)
+            cur.append(dict(template_id=tid, patient_pseudo_id=u["pid"], practice_code=u["practice"],
+                            product=u["drug"][1], directions=directions, quantity=u["drug"][3], issues=12,
+                            authorised_from=mv, review_date=rv, ended_on=en, end_reason=rsn,
+                            replaces_template_id="", migration_source_ref=ref))
+    return cur, leg, move
+
+
+def dispensing(us):
+    """items dispensed 1 April to 30 September 2026: a pack every 28 days (30 for lormetazepam) from the start, or from
+    the first collection after 1 April, to the stop or the extract's end; the first pack of a new start is dispensed the
+    day it is authorised"""
+    rs = np.random.default_rng(P.SEED + 3)
+    rows = []
+    for u in us:
+        step = u["drug"][3]
+        if u["start"] >= P.EXTRACT_FROM:
+            d = u["start"]
         else:
-            st = t["start"] + P.AEST
-            key = ("web", st.year, st.month)
-            seq[key] = seq.get(key, 0) + 1
-            t["test_id"] = "W%02d%02d-%04d" % (st.year % 100, st.month, seq[key])
-
-
-def fit(W):
-    L, S2 = AR.pooled(W.tests)
-    W.prior_mom = AR.prior_mom(L, S2)
-    W.prior = AR.prior_ml(L, S2, W.prior_mom)        # the golden prior: maximum likelihood on every package
-    W.prior_dl = AR.prior_dl(L, S2)
-    W.n_packages = len(L)
-    W.raw, W.shr = {}, {}
-    for d in P.WEB:
-        ts = [t for t in W.tests if t["desk"] == d]
-        W.raw[d] = AR.desk_lift(ts, shrink=False)
-        W.shr[d] = AR.desk_lift(ts, W.prior)
-
-
-def solve_totals(W):
-    W.total = {}
-    for d in P.DESK:
-        A = W.art[d]
-        win, old = SP.expected_fractions(A)
-        if d in P.F_TARGET:
-            u = win[~A.tested, :5, :].sum() + old[:, :5, :].sum()
-            W.total[d] = int(round(P.F_TARGET[d] / (W.shr[d] * u)))
-        else:
-            W.total[d] = int(round(P.P_GUIDE[d] * (1 + AR.rng_for(50, list(P.DESK).index(d)).uniform(-0.004, 0.004))))
-        SP.allocate(A, W.total[d])
-
-
-def build():
-    W = World()
-    make_staff(W)
-    make_articles(W)
-    make_tests(W)
-    fit(W)
-    solve_totals(W)
-    return W
+            d = P.EXTRACT_FROM + D(days=int(rs.integers(0, step)))
+        last = u["stop"] or P.EXTRACT_TO
+        while d <= min(last, P.EXTRACT_TO):
+            rows.append(dict(dispensed_date=d, patient_pseudo_id=u["pid"], practice_code=u["practice"],
+                             product=u["drug"][1], quantity=u["drug"][3], nic_gbp=u["drug"][4], year_of_birth=u["yob"],
+                             sex=u["sex"]))
+            d = d + D(days=step + int(rs.integers(-3, 5)))
+    rows.sort(key=lambda r: (r["dispensed_date"], r["practice_code"], r["patient_pseudo_id"]))
+    return rows
