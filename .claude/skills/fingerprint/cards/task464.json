@@ -1,95 +1,98 @@
 {
   "task": "task464",
-  "architecture": 8,
+  "architecture": 9,
   "drawn": "2026-10-28",
-  "slot_note": "wave 4 (second re-root). Architecture 2 (placing the retiring reading test's scores on the new scale) spent on the portal 2026-10-27 because the decisive step was psychometrics' own named method for the deciding quantity. Architecture 3 keeps the number and the ETL objective, takes a fresh world, and puts the field's own method in the default path: the decisive step is a reconstruction of the capacity input, not a choice of method.",
-  "domain": "education-learning-sciences",
-  "client_domain": "education-learning-sciences",
-  "subdomain": "text-analysis",
-  "niche": "an adult education service's withdrawal review: the composition of reasons behind the 2025/26 withdrawals, coded from learners' own free-text exit comments, with the moderation return the service draws each year by reason code (every OT, 400 of each other code)",
+  "slot_note": "wave 4 re-root, architecture 9: architecture 8 (coded withdrawal reasons corrected by a moderation sample) was sent back at stage 4 on Gate H3 as a surface-read flip, and education is spent for this number, so the draw moves to pharmacology-pharmacoepidemiology-safety under the same objective: a forward persistence forecast whose decisive step is the clock the hazard runs on, with every recorded figure in the pack correct",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "client_domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "medication-adherence-persistence",
+  "niche": "a primary care network placing its clinical pharmacist's statin continuity sessions for January to June 2027 at one of seven general practices, read from the practices' repeat statin issue records, their repeat authorisations and the patient register",
   "objective": "descriptive-distribution",
-  "shape": "05",
+  "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "objective"
+    "time",
+    "population"
   ],
   "pattern": [
-    "none"
+    "A"
   ],
   "generators": [
-    "G16",
-    "G6"
+    "G7",
+    "G13"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "classification_error",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "time_semantics",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks both withdrawal exports, conforms their layouts, keeps one row per withdrawal reference, normalises the typed codes and counts the coded reasons files work hours clash at 24.5 per cent of 2025/26 withdrawals as the reason the 2027 retention budget should target, with caring role second at 20.1; the golden is caring role at 25.4 per cent against work hours clash at 20.2",
-  "domain_test": "The deciding quantity is the composition of the reasons learners actually withdrew for, estimated the way the field estimates a composition from coded text: what the double-coded sample measures behind each assigned code, carried onto the coded counts. The noun swap breaks it because the categories are the learner's own account of why they stopped attending, written in their words and coded against a manual, so a caring responsibility reaches the record as a sentence about hours and is coded as one; swap in megawatt-hours or hospital beds and there is no narrative to code and no coder to disagree.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:composition-of-coded-free-text-at-unequal-recall",
+  "analyst_test": "A strong analyst who conforms the two clinical systems' issue extracts, rebuilds each patient's statin supply with carryover, fits each practice's persistence on time since the patient started and carries every patient now on a statin forward on that curve sends the pharmacist to Cobbet Street, whose six-issue repeats give it the steepest curve; the golden is Marrick House, whose patients' repeats were re-authorised together in its spring 2026 move to 56-day issues and all run out before March 2027",
+  "domain_test": "The deciding quantity is a persistence forecast, the medication-adherence-persistence task type's own estimate worked on issue records with carried-forward supply and a gap rule, and what decides it is the repeat authorisation: a prescriber authorises a fixed number of issues, the request after the last one waits for a clinician to re-authorise the repeat, and that is where patients who stop, stop. Swap in another field's nouns and the authorised issue count, the clinician's re-authorisation and a practice moving its repeats to 56-day issues have no counterpart, so the task no longer reads the same",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:persistence on the repeat-authorisation clock",
   "layer1": [
-    "four terms of withdrawal records in two exports across a student record system change",
-    "a merger renaming two sites mid-year, the winter export carrying the former names",
-    "winter withdrawals keyed late and present in both exports under one reference",
-    "reason codes the old system took as typed, with case and trailing-space noise",
-    "free-text comments with the usual typing and casing noise"
+    "two clinical systems' issue extracts in different layouts (date formats, drug and strength written differently, quantity with and without units)",
+    "a lost prescription reissued, so the same issue appears twice a day or two apart",
+    "acute statin issues beside the repeats, and dose text written freely ('ONE at night', '1 nocte')",
+    "patients who moved between the network's practices, carried under one network-wide pseudonym",
+    "deregistrations recorded with a reason code and a date that can follow the last issue by weeks"
   ],
-  "stakeholder_role": "the retention lead in an adult education service, who puts the 2027 retention budget's single target to the head of service and the curriculum managers",
-  "role_family": "policy_adviser",
-  "scoring_unit": "per resolved case",
+  "stakeholder_role": "the network's lead clinical pharmacist, who puts the placement of the statin continuity sessions to the network board",
+  "role_family": "programme_officer",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "withdrawals_autumn_winter_2025.csv + withdrawals_spring_summer_2026.json",
-    "rows": 17200,
-    "entity": "one withdrawal with the learner's free-text exit comment and the code assigned to it",
-    "grain": "withdrawal",
+    "file": "repeat_issues_*.csv",
+    "rows": 0,
+    "entity": "one prescription issue of one drug to one patient",
+    "grain": "issue",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "period_close",
-  "org_family": "local_government",
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "an unnamed combined authority area in England",
+    "geography": "England (an unnamed integrated care board area)",
     "currency": "GBP",
-    "org_type": "an adult education service reviewing why its learners withdraw",
+    "org_type": "a primary care network of seven general practices",
     "invented_names": [
-      "Exit Comment Coding Manual"
+      "Hensey Vale Primary Care Network",
+      "Marrick House Surgery",
+      "Cobbet Street Surgery",
+      "Fennbridge Medical Centre",
+      "Thistlecombe Surgery",
+      "Larkspur Road Practice",
+      "Wyndhollow Health Centre",
+      "Pellow Green Surgery"
     ],
     "people": [
-      "Roger Nicholls",
-      "Carly Leonard"
+      "Dorothy Mitchell",
+      "Hollie Kirk",
+      "Stuart Newman"
     ]
   },
   "deliverables": [
-    "withdrawal_reason_composition_2025_26.csv",
-    "retention_target_2027.xlsx"
+    "statin_sessions_2027.xlsx",
+    "cvd_repeat_returns_2025.csv"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is how a population divides between categories that are only ever observed through a classification that is right at different rates for different categories, so a category whose members describe themselves obliquely is under-counted while the category their words get read as is over-counted; counting the assigned labels ranks the categories by how legible they are rather than by how common they are, and only inverting the per-category hit rates measured on a re-classified sample recovers the division the decision needs.",
-  "driver_concrete": "Caring-role withdrawals reach the record as sentences about hours ('nobody to sit with mum on thursday so i cant be there for the start'), so the coding manual's caring-role category is recognised in 68 of 100 cases while work hours clash is recognised in 90 and absorbs the spill. Raw coded counts put work hours clash at 24.5 per cent and caring role at 20.1; carrying the moderation return's split behind each code onto the coded counts puts caring role at 25.4 and work hours clash at 20.2, so the 2027 retention budget targets the other reason.",
-  "stump": "A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.5 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which reasons learners had; reweighting the coded counts by what the service's own moderation return measures behind each code puts caring role first at 25.4 per cent against work hours clash at 20.2.",
+  "driver": "The decisive quantity is how many members of each group will have stopped by a date when a member keeps going only through a renewal reached after a fixed run of uses and nearly all stopping happens at a renewal; a curve on time since each member began, or any trailing rate, spreads those losses evenly and ranks the groups by their history, while running each member forward to its own next renewal shows that one group's members were all restarted together a year earlier, so their renewals fall inside the window.",
+  "driver_concrete": "Statin repeats in the seven practices run on authorisations of a fixed number of issues, and nearly every patient who stops does so when the last issue is used and the repeat waits for a clinician to re-authorise it; Marrick House moved 85 per cent of its repeat patients to 56-day issues in February and March 2026, re-authorising each repeat as six issues, so those repeats run out together in January and February 2027 and Marrick House has the most patients with no statin from March to June 2027, while every persistence curve on time since starting puts Cobbet Street first.",
+  "stump": "A competent analyst fits each practice's persistence curve on time since starting the statin, carries each patient now on a statin forward on it and sends the pharmacist to Cobbet Street, whose six-issue repeats give it the steepest curve; the losses sit at the end of each repeat authorisation, and Marrick House's spring 2026 move to 56-day issues re-authorised 85 per cent of its patients' repeats at once, so they run out together before March 2027 and Marrick House has the most patients with no statin from March to June.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task266": "task266 estimates the share of spells ending one way when others end differently and some are still open, so its decisive step is the cumulative incidence against a product-limit estimate: a survival estimator choice. This build's outcome is observed for everyone in both intakes and carries no censoring; the decisive step is the unit the effect is expressed in.",
-    "task268": "task268 carries each lost unit's survival from the state it was in when lost, an informative-censoring correction. Nothing here is lost to follow-up: the never-offered applicants are in the records throughout.",
-    "task44": "task44's pooled effect is a mixture of opposite effects split by a moderator in no column, so its step is a decomposition. Here each partner's effect is homogeneous within the partner and the gradient across partners is visible; what decides is the denominator the commissioner funds, which no decomposition reveals.",
-    "task83": "task83 conditions a holdout's effect on each unit's own prior treatment history because the target pool's mix differs. This build carries no effect onto another population: the call is among the same partners that were balloted.",
-    "task12": "task12 and task15 recover a population the records hide. Nothing is hidden here: every offer, every ballot rank and every funded place is shipped, and the step is what to divide by.",
-    "task270": "task270 v6 recovers where an item sold without a fixed slot actually landed, because the landing record shows only the items that stayed in the slot they were sold for, so one join over a coverage gap reverses the choice and the judge read the moved bookings as a planted flip. Nothing in this build is mis-recorded or absent: every funded place, every ballot rank, every offer and every achievement is shipped and reconciles, no join reveals a misplacement, and the step is not finding where a unit went but choosing what the per-100 figure is divided by, funded places against learners who took one up.",
-    "task253": "task253 is the other education build in a Descriptive objective and counts units whose noisy averages fall below a line, so its step is shrinkage of a measured level against sampling noise in the outcome. Nothing is shrunk here and no unit has a level: the quantity is a composition, and what is corrected is the classification that assigns each case to a category, measured as recall per category.",
-    "task449": "task449 corrects estimates from linked data for a false-link rate, so its error is created by matching records to each other across files. Here nothing is linked: one coder reads one comment and assigns one category, and the error is the category's own recall.",
-    "task121": "task121 v2 turns on which population a signed-out app session belongs to, so its step recovers the unit behind an unattributed event. Every withdrawal here is attributed to one learner and one term with no ambiguity; what is uncertain is the category the comment was placed in, and the correction is the per-category recall measured on the re-coded sample.",
-    "task260": "task260 holds a reader study where several readers score the same images and the question is whether a difference between readers survives its own noise, so its step is a variance question about agreement. Here one coder assigns one category per comment and agreement is not the quantity: the quantity is the composition, and the per-category recall is the instrument that distorts it.",
-    "task236": "task236 tracks ONE condition's capture rate through time, where a change in how a source captures cases moves the rate itself, and the repair is to read the captured share against an independent fixed-protocol sample's volume times its positivity, so the reference sits OUTSIDE the distorted source and the confound is the season. This build has no time dimension in the decisive step and no external reference: six categories are measured at one point by one instrument, the misses from one category land in a named other category, and the repair is to invert the square matrix of per-category hit rates that the service's own re-coded sample measures, so the correction is internal and redistributes between categories rather than rescaling one of them."
+    "task33": "task33 projects a measured elevation's forward yield and truncates it at a filed intervention, recovered by back-testing closed actions against an acceptance bar; nothing here is an elevation or an intervention and no closed action is back-tested: the forward count is each patient run to the end of a recorded repeat authorisation.",
+    "task41": "task41 recovers an unstated eligibility rule from a corpus of determinations (its lineage aggregates a per-person effect under displacement); no rule is recovered and nothing is displaced here: the forecast runs each patient to the end of a recorded authorisation, where stopping happens.",
+    "task55": "task55 finds which date each unit's expiry runs from, an unstated anchoring convention pinned by identity across lots; here the run length is recorded on every authorisation and the step is which clock the stopping hazard runs on, not which date a recorded term counts from.",
+    "task89": "task89 rolls a stock forward against a dated inflow schedule to a first passage through zero; no stock is rolled here: the quantity is a count of patients failing a re-authorisation reached at the end of each patient's own recorded run of issues.",
+    "task114": "task114 counts demand that arises only when two parties share a site on a day; no co-presence or site rule is involved here: the count is of patients whose repeat runs out inside the window and is not re-authorised.",
+    "task230": "task230 forecasts a classification bias in output still to be processed under a looser rule (its lineage a detection rate falling with target rarity); nothing is classified or detected here: the forecast is of patients failing a re-authorisation, timed by each patient's recorded run of issues."
   },
   "lineage": [
     {
@@ -153,9 +156,45 @@
       "stump_strategy": "population_selection",
       "gate_g": "binding_constraint",
       "driver": "The decisive quantity is what one funded unit delivers, where the buyer commits the unit before the recipient decides and a refused unit can be passed on only until a fixed calendar date closes the cycle, so the share of funded units ever taken up runs from under a half to nearly all across the candidates; an effect estimated per unit taken up, however cleanly identified from the random rationing, ranks the candidates by their effect on a recipient rather than by what the buyer's committed unit returns."
+    },
+    {
+      "domain": "education-learning-sciences",
+      "subdomain": "text-analysis",
+      "client_domain": "education-learning-sciences",
+      "niche": "an adult education service's withdrawal review: the composition of reasons behind the 2025/26 withdrawals, coded from learners' own free-text exit comments, with the moderation return the service draws each year by reason code (every OT, 400 of each other code)",
+      "objective": "descriptive-distribution",
+      "shape": "05",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "classification_error",
+      "calibration_form": "gold_standard_subsample",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:composition-of-coded-free-text-at-unequal-recall",
+      "driver": "The decisive quantity is how a population divides between categories that are only ever observed through a classification that is right at different rates for different categories, so a category whose members describe themselves obliquely is under-counted while the category their words get read as is over-counted; counting the assigned labels ranks the categories by how legible they are rather than by how common they are, and only inverting the per-category hit rates measured on a re-classified sample recovers the division the decision needs.",
+      "driver_concrete": "Caring-role withdrawals reach the record as sentences about hours ('nobody to sit with mum on thursday so i cant be there for the start'), so the coding manual's caring-role category is recognised in 68 of 100 cases while work hours clash is recognised in 90 and absorbs the spill. Raw coded counts put work hours clash at 24.5 per cent and caring role at 20.1; carrying the moderation return's split behind each code onto the coded counts puts caring role at 25.4 and work hours clash at 20.2, so the 2027 retention budget targets the other reason.",
+      "stump": "A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.5 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which reasons learners had; reweighting the coded counts by what the service's own moderation return measures behind each code puts caring role first at 25.4 per cent against work hours clash at 20.2.",
+      "forum": "line_manager_or_team",
+      "forcing_event": "period_close",
+      "org_family": "local_government",
+      "role_family": "policy_adviser",
+      "context_artifact": "close_out_summary",
+      "architecture": "v8 (Thornmere adult education withdrawal reasons, education x descriptive-distribution)",
+      "drawn": "2026-10-28",
+      "fate": "spent 2026-10-28 at stage 4: the determinism judge returned DETERMINISTIC with disposition SEND_BACK on Gate H3 (decisive_step planted: correcting the coded shares by the moderation return is the retired surface-read flip, Gate G planted_defect_flip and surface_read_rejection) and the leak reader's question 6 read the same; education-learning-sciences is spent for this number at architectures 2, 4 and 8"
     }
   ],
-  "notes": "Re-rooted 2026-10-27 to architecture 6 after the ETL objective closed for this number (architecture 5 screened all six ETL cells and refused or barred every one; ETL carries 66 cards across six cells and is the only objective with no never-drawn cell). experiment-causal is the least-spent objective, 9 cards and 30 of 32 cells never drawn. education-learning-sciences x experiment-causal is a never-built pairing and randomized-quasi-experimental-program-evaluation a never-drawn cell. MEASURED AT THE DRAW: the specification-extension law closes adding a control, level, interaction or random effect as a class, so the decisive step is the estimand, which CLAUDE.md blesses. Family screen over 304 cards: per-offer against per-attender 0 hits, effect per place 0 hits, while transport (43, 44, 83), population recovery (12, 15), competing risks (266), informative censoring (268, 184, 487, 308) and staggered adoption (9 cards) are spent. Ladder measured on individual-level data: rung 0 participants against non-participants names Brenlow, rung 1 ballot winners who enrolled against losers names Calderwick, rung 2 the first-round ballot ITT names Calderwick, rung 2b that ITT grossed per place names Brenlow, the clean per-offer contrast names Brenlow, and the golden per 100 funded places names Dunthorpe at a margin of 1.207. The golden sits 4th of 6 on rungs 0, 1 and 2b and 5th on rung 2. Bin test at a bin of 1.0 per 100 places: (a) 7.98, (b) 0.000 because golden equals 100 x offers-ever-made over places-funded x the clean contrast and has no free parameter, (c) 3.18, ratio 2.51, and (a) is not the smallest rung gap. Call stability 287 of 300 draws. Strategy key: causal_design and grain_or_unit are both banned on this window, and population_selection is the honest key for the decisive step, which is what the per-100 figure is divided by (funded places against learners who took a place), with places never taken up as the exposure that differs by partner. Decisive generator is G9, downstream survival against upstream acquisition: the authority funds places and only some survive to an enrolment, the surviving share running 0.455 to 0.963 by partner. G1, the unit of value, is the consequence, which figure the per-100 is divided by. Gate G mechanism is binding_constraint, not method_or_model_selection: no method is selected here, which is why the licensed-family spread measures 0.000 bins. What binds is the enrolment census date, a service limit that stops a refused place being passed further down the ballot, which is why a funded place at one partner strands and at another fills, and it is what removes the natural pick. ARCHITECTURE 8, 2026-10-28: re-rooted to education x descriptive-distribution on text-analysis, a never-drawn cell, after the four measured laws closed most of experiment-causal. Measured before drawing: 'a labelled subsample calibrates the classification' is 0 of 304 cards and prevalence-from-imperfect-classification only 2, both in other domains. Validated at the draw: the call reverses from work hours clash to caring role, (a) 5.25 points on the call's own figure, (b) 0.000 because the corrected composition is the closed-form solution of M p = q and carries no free parameter, (c) 1.39 points from a 4,000-comment double-coded sample, ratio 3.79, corrected margin 1.220, and the corrected ranking names caring role in 100 per cent of subsample draws. None of the four laws applies: no term is added to a fit, the unit is a share and is not the decisive step, the margin is structural rather than a hull interior, and nothing is selected on its own estimate. Axes at the draw: G3 was refused as the decisive generator because nothing here is a defect of record against operation (the guard's own note warns G3 alone reads as a planted flip) and because that signature is spent seven ways; the honest generator is G16, which method the structure entitles, with G6 the composition it acts on. operations_log, executive_team and decomposition_attribution were each banned against a recent build and redrawn. Strategy key: none of the existing keys honestly describes measurement error in a CLASSIFICATION (composition_mix is a mix shift, population_selection a denominator, uncertainty_hold noise rather than bias), so classification_error was added to vocab.json with its definition, which is the vocabulary-drift move fingerprint Part 4 licenses when no key is honest. Gate G is decomposition_attribution because the overlap between coding categories is what decides the split, not a method menu.",
-  "registered": "2026-10-28T01:33:37Z",
-  "architecture_spent": false
+  "notes": "gate_g method_or_model_selection: the decisive step is which clock the stopping hazard runs on (time since starting against the run to the end of the current repeat authorisation), a model choice inside the forecast; forecasting also fits, and its (time, A, forecasting) signature repeats task281's architecture 1 inside the batch",
+  "architecture_spent": false,
+  "registered": "2026-10-28T07:05:36Z"
 }
