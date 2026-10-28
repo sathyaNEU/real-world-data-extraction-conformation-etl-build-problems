@@ -89,8 +89,8 @@ A competent analyst builds this without hesitating, from the prompt's words and 
 5. Count the withdrawals by coded reason and divide each by all withdrawals across the four terms.
 6. Rank the six reasons by that share and name the largest as the reason the 2027 retention budget should target.
 
-`Ends on:` work hours clash, 24.8 per cent of 2025/26 withdrawals, with caring role second at 19.8.
-`Golden:` caring role, 25.0 per cent, with work hours clash second at 20.5, margin 1.220.
+- **Ends on:** work hours clash, 24.8 per cent of 2025/26 withdrawals, with caring role second at 19.8.
+- **Golden:** caring role, 25.0 per cent, with work hours clash second at 20.5, margin 1.220.
 
 ## Stump sentence
 
@@ -102,55 +102,55 @@ rates the service's own re-coded sample measures puts caring role first at 25.0 
 
 ## Three rules
 
-`Task type:` text-analysis, which serves Descriptive & Distribution in the client taxonomy and no other
+- **Task type:** text-analysis, which serves Descriptive & Distribution in the client taxonomy and no other
 objective.
 
-`Domain test:` the deciding quantity is the composition of the reasons learners actually withdrew for, estimated
+- **Domain test:** the deciding quantity is the composition of the reasons learners actually withdrew for, estimated
 the way the field estimates a composition from coded text: the per-category hit rates measured on the
 double-coded sample, inverted onto the coded counts.
 
-`Swap:` put megawatt-hours or hospital beds in the call sentence and it stops making sense, because there is no
+- **Swap:** put megawatt-hours or hospital beds in the call sentence and it stops making sense, because there is no
 narrative to code and no coder to disagree with: the categories here are the learner's own account of why they
 stopped attending, written in their words and placed in a category by someone reading them.
 
-`Layer 1:` four terms of withdrawal records in two exports across a student-record system change, a merger
+- **Layer 1:** four terms of withdrawal records in two exports across a student-record system change, a merger
 renaming two sites mid-year, academic year against funding year, comments re-coded after a manual revision with
 the superseded code left in place, learner references re-issued across sites, and the usual typing and casing
 noise in free text. Each is produced by the service's own systems and none carries the stump.
 
-`Layer 2:` family `estimation_fit`. The decisive choice is whether the composition is read off the assigned
+- **Layer 2:** family `estimation_fit`. The decisive choice is whether the composition is read off the assigned
 labels or recovered from them, which forces the per-category hit rates to be measured and inverted.
 
-`Decisive step:` invert the coders' per-category hit rates onto the coded counts, rather than reading the
+- **Decisive step:** invert the coders' per-category hit rates onto the coded counts, rather than reading the
 composition off the labels, because a category whose members describe themselves obliquely is recognised less
 often than the category their words get read as.
 
-`Not semantics:` every field is read correctly on the easy route. The coding field is correctly understood as
+- **Not semantics:** every field is read correctly on the easy route. The coding field is correctly understood as
 the category a coder assigned, the manual's six categories are read correctly, and the re-coded rows are
 correctly superseded, and the route still files work hours clash, because what it omits is that the assignment
 is right at different rates for different categories. No field states a hit rate and no reading of any field
 supplies one.
 
-`Not rule application:` no shipped sentence says to correct the composition, the coding manual states what each
+- **Not rule application:** no shipped sentence says to correct the composition, the coding manual states what each
 category means and never how often it is recognised, and the double-coded sample ships as the service's routine
 quality return with no instruction attached to it.
 
-`Analyst test:` the easy route is step 5 and 6 of the default path, the share of withdrawals by coded reason, and
+- **Analyst test:** the easy route is step 5 and 6 of the default path, the share of withdrawals by coded reason, and
 it files work hours clash at 24.8 per cent. Changing the decisive step alone, to the inverted hit rates, files
 caring role at 25.0.
 
-`Estimand:` the share of the service's 2025/26 withdrawals that happened for each of the six reasons in the
+- **Estimand:** the share of the service's 2025/26 withdrawals that happened for each of the six reasons in the
 coding manual, as a percentage of all withdrawals recorded across the four terms, to one decimal place, filed in
 the withdrawal review's terms of reference.
 
-`No decoy:` nothing is planted to be caught. There is no copied block, no hidden rule, no memo arguing a reason
+- **No decoy:** nothing is planted to be caught. There is no copied block, no hidden rule, no memo arguing a reason
 and no stakeholder figure written to carry the wrong answer; the coding is an honest record of people reading
 comments against a manual, and the re-coded sample is a return the service already makes.
 
-`No certified replay:` the method is not hidden and recovered by reproducing certified figures. No published
+- **No certified replay:** the method is not hidden and recovered by reproducing certified figures. No published
 composition ships, and no figure in the pack is reproduced only by the golden's route.
 
-`Lesson:` a model learns that a category counted through a classifier is counted at the classifier's recall for
+- **Lesson:** a model learns that a category counted through a classifier is counted at the classifier's recall for
 that category, so a composition read off labels ranks categories by how legible they are rather than how common,
 and that the correction needs no model, only the hit rates a re-coded sample already measures. No build on file
 teaches it: a labelled subsample calibrating a classification measures 0 of 304 cards.
@@ -637,7 +637,7 @@ response executed the concordance, not a route that lands the slate by accident.
 reason is in this note rather than in the portal.
 
 **Cause 1, and it is the root: the decisive step is the field's standard practice, so it is a reflex.** The
-`Domain test:` line says it outright: "psychometrics places one test's scores on another's scale by a concordance that
+- **Domain test:** line says it outright: "psychometrics places one test's scores on another's scale by a concordance that
 matches the two score distributions (equipercentile or linear linking ...), while a regression of one score on the
 other is a prediction that pulls every converted score toward the sample's mean." The golden is that concordance. The
 `## Readability screen` then rated the same move `silent` on test 3 with "no: the prediction reflexes and the cohort
