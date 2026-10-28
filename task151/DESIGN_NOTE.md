@@ -434,6 +434,15 @@ ranked by the same look-back, never from another reading.
 
 ## Ask sheet
 
+**Revision, 2026-10-27, portal return on the rubric.** Both top responses filed USD 4,000,000 at signing (the call
+held) and landed every ask figure, 84 and 79 per cent against the bar of 70. The sheet below shipped with a prose
+cracker that was the mirror's path; `generator/ceiling.py` now runs the careful solver on the pack and measures the
+cracker at 28 of 28 ask figures and the mirror at 0 of 28, so the gated fields carry those numbers and the gate fails,
+as a returned build's should. Neither ask can be re-sited onto a device that holds every row (`## Tried and rejected`,
+the 10-27 lines): Ask A's date is forced through 22.2 and 22.9, Ask B's split through the pristine batting lines, and
+every other quantity the ask-only files yield is either filed or a fork. The prompt, the pack and every figure are
+unchanged; the main side is untouched (`freeze.py check --mode rubric`).
+
 **Main call's declared row population:** the two box-score files (every row and column the golden reads: player, game,
 date, club, lineup slot, starter, plate appearances or their components), the crosswalk, the club directory, the
 vendor's winter depth charts, the five term sheets, the 2027 depth chart, FIN-14 and the feed notes (the look-back also
@@ -530,18 +539,19 @@ total** (seven player rows and three totals, 10 figures).
 register's terms and the box scores' plate appearances and starts by club. Each is a field the golden reads, not a
 control: no file ties only under the golden.
 
-| Ask figures | Cracker's path | Cracker's value | Verdict |
+| Ask figures | Cracker's path (`ceiling.py`, measured) | Cracker's value | Verdict |
 |---|---|---|---|
-| A stints: date taken effect and regular-season days (18) | the filed stint definition executed on the transaction wire (placement to reinstatement, transfers, rehab and trades inside, lists filtered, season caps applied), the date taken effect read as the placement's date on the wire and the report | every date one to three days late, every day count short by as much or more: all 18 off | miss |
-| B 2024 player rows and total (3) | the payroll's playing-time and legacy season-end lines at face value, each half to its season, voids netted, pitchers dropped | $250,000, $170,000, $420,000 | miss |
-| B 2025 player rows and total (4) | the same path | $420,000, $330,000, $275,000, $1,025,000 | miss |
-| B 2026 player rows and total (3) | the same path | $280,000, $165,000, $445,000 | miss |
+| A stints: date taken effect and regular-season days (18) | 22.1 to 22.9 executed: the wire's moves by League ID with a transfer, rehabilitation or trade inside the stint, the first report row's first date of reinstatement less the list's minimum, days through the day before reinstatement clipped to the calendar's season | every date and day count the golden's, 18 of 18 | hit |
+| B 2024 player rows and total (3) | the register's Notes executed: playing-time and legacy October and January lines through the HRIS map, voids netted, each half to its season, the plate-appearance half of the lines reached for the Club in the batting lines | 3 of 3 | hit |
+| B 2025 player rows and total (4) | the same path | 4 of 4 | hit |
+| B 2026 player rows and total (3) | the same path | 3 of 3 | hit |
 
-Mirror leakage: about 10 per cent of the ask weight (the mirror runs the natural ask paths, the move dates and the
-playing-time code by season, and keeps only the workbook's and the memo's structural criteria; no ask figure).
-Pair ceiling: 34 (on a rubric of about 35 for the call, the five player accruals and the look-back's ranking, 7 for
-instructions and 58 for the asks: the cracker lands the call, 35 plus 7 plus about 5 of structure, 47; the mirror keeps
-about 5 of the recommendation's weight plus 7 and 9 of structure, 21; neither keeps an ask figure).
+Mirror leakage: 0.0 per cent of the ask weight (the mirror stops at the move's own date and at the payroll's
+playing-time lines at face value, 0 of 28; the shipped sheet called these the cracker's path).
+Pair ceiling: 67.0 (Part 0's weights, neither top response on the call and both on the cracker's ask path, the
+portal's case; one cracker on the call with the mirror off it, 56.0; the portal measured 84 and 79 because its main
+side left a response off the call about 20 points rather than 5).
+Measured by: `generator/ceiling.py`, on the shipped target.zip (sha256 83bf068f).
 
 ## Residual
 
@@ -657,6 +667,29 @@ What the shipped build still carries, each item measured and none moving a commi
   against $412,500): the prompt says "paid to date" (SF15).
 - The club's 2027 pitching staff drawn new: the 2027 depth chart asked for it before the 2023 to 2026 staffs existed, so
   no 2026 pitcher was on it; every staff now exists before the league is named, and 2027's carries over from 2026.
+- Ask A as shipped (portal return of 10-27): the date a stint took effect is forced as the weekly report's first date of
+  reinstatement less the 22.2 minimum (the round 2 judge's own words), so a reader who executes 22.1, 22.2, 22.7 and
+  22.9 on the wire, the report and the calendar files every row; `generator/ceiling.py` on the shipped pack, 18 of 18,
+  and both top responses landed all nine rows. The prose cracker row ("the move's date as the date it took effect")
+  was the mirror's path.
+- Ask B as shipped (same return): the register's Notes file the population, the season, the reissue and the legacy
+  code, and the batting lines, which are the call's own pristine files, pin each payment's plate-appearance part, the
+  payroll amounts tying exactly; `ceiling.py`, 10 of 10, and both top responses landed every figure. The prose cracker
+  row (the payroll lines at face value) was the mirror's path too.
+- Re-siting either ask (rubric repair, 10-27): every quantity the ask-only files yield is executable, because the
+  wire, the weekly report, Article 22, the calendar, the register, the payroll and the HRIS map agree with one another
+  and are documented, and the batting lines any of them would be checked against are pristine; a filed sentence that
+  makes an ask determinate names the quantity's source, and withholding it opens a fork. Screened on paper against the
+  count test (a cross-file count tying under one reading only, no filed sentence adjudicating, every figure moved, work
+  left after the discovery): the wire dating each placement by the date it takes effect, with the ask on the date he
+  left the Active List (22.9 names the report's transaction date, so a sentence adjudicates and noticing is the
+  remedy); days on the Active List (a determinate count needs a pin naming the transaction date, the same sentence, and
+  a relief pitcher's games-finished and Active-List split inherits it); a reissued legacy employee number shown under
+  the later holder's name (passes the count, the 2024 installments summing to the earlier holder's register salary,
+  but moves two of 28 figures); a month-grain injured-list days statement in place of the report's eligibility column
+  (a reader matches its days and recovers the date); an official plate-appearance certification departing from the
+  feed (a reconciliation break whose discovery is its remedy). None holds every row, so no pack was cut and the ask
+  side waits on the author: a new ask-only source the author approves, or a re-root.
 
 ## Build record
 

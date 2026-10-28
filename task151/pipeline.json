@@ -1,11 +1,11 @@
 {
  "task": "task151",
- "status": "SHIPPED",
+ "status": "RETURNED",
  "domain": "general-statistics-data-science/resampling-simulation-monte-carlo-methods",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-10-27",
  "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
  "architecture": 1,
  "loops": 2,
@@ -48,12 +48,21 @@
    "by": "re-judge round 3 (DETERMINISTIC, APPROVE), coordinator",
    "finding": "step 4's grouping parenthetical wrong for the nines-whole rival (0.2182 needs catchers pooled); rival scores built on constructions the files do not fix (0.2254, 0.2698); the thin rival (slot plate appearances with substitutes per start, 0.17359 against 0.17301, $4.50M); the CF-14.4 window reading 2022 to 2025",
    "repair": "write-up and record only: step 4 states the golden's grouping and drops rival scores, block 1 and the memo drop rival figures; LB9 asserts the near rival losing on every reading (checks and verify); SF11 asserts 2022 to 2025; the design note's Residual and Pre-ship check; pack unchanged (target.zip 83bf068f)"
+  },
+  {
+   "date": "2026-10-27",
+   "by": "portal (the author's report)",
+   "portal": "call held by both top responses (each filed USD 4,000,000); every supplemental ask landed; 84 and 79 per cent against the 70 bar",
+   "repair": "rubric",
+   "finding": "generator/ceiling.py on the shipped pack: the cracker (22.1 to 22.9 and the register's Notes executed) keeps 28 of 28 ask figures, the mirror 0 of 28; pair 67.0 on Part 0's weights with both off the call, 81.5 at the portal",
+   "outcome": "blocked, handed back: no device holds either ask (design note, Tried and rejected, the 10-27 lines); prompt, pack and every figure unchanged; freeze.py check --mode rubric PASS",
+   "commit": ""
   }
  ],
- "resume": "",
+ "resume": "the author's decision on the ask side (design note, Ask sheet revision of 10-27): approve a new ask-only source or re-root; /fix-rubric task151 then starts from generator/ceiling.py's measured baseline (cracker 28 of 28)",
  "approved": null,
  "delivered": "2026-10-17",
- "portal": null,
+ "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
