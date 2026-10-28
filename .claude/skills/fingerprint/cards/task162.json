@@ -1,18 +1,17 @@
 {
   "task": "task162",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "wave 6 (new), seed FC33: the world (a browser's bug-triage team staffing its quarter to the busiest week at 120 triage items per triager-week, moving to a new tracker on 4 January 2027 after a four-week November parallel run, releases on a four-week train on 12 January, 9 February and 9 March), the decision and the quantity kept; the seed's merged-against-unmerged-duplicates reading is filed as a plain counting fact and its merge records carry no planted defect; the pitfall is re-found in how a release reaches its users",
-  "domain": "product-analytics",
-  "subdomain": "feature-adoption-diffusion-modeling",
-  "client_domain": "product-analytics",
-  "niche": "a Tampere browser vendor's bug-triage team filing its first-quarter 2027 triage headcount before the holidays, when the browser's update applies only when the browser restarts, most Windows machines restart in the two days after Microsoft's monthly Patch Tuesday, and all three of the quarter's releases (12 January, 9 February, 9 March) ship on Patch Tuesday itself, which no release in the past year did",
+  "architecture": "v2",
+  "drawn": "2026-10-28",
+  "slot_note": "architecture 2, re-rooted 2026-10-28 at the author's word after architecture 1 (the Tampere browser vendor's first-quarter triage staffing) was spent on determinism: portal round 2 and judge passes 3 to 5 found the forecast's deciding configuration out of sample",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "niche": "a water company's pressure management partner forecasting the leakage its third phase of fixed-outlet pressure reducing valves leaves in district metered areas at the far end of a trunk main, as the company's annual FAVAD leakage assessment will measure it in 2027-28",
   "objective": "forecasting",
-  "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "8 triagers for the first quarter of 2027 (the busiest week, a release week, forecast at about 900 triage items)",
-  "answer_source": "task162/generator/calc.py forecast on the cut pack (the restart model: each release's adoption from ordinary restarts plus the Windows restart wave after Patch Tuesday, carried through first-use reports per install); figures.json",
+  "shape": "02",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
@@ -21,96 +20,107 @@
     "none"
   ],
   "generators": [
-    "G13",
-    "G7"
+    "G7",
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "time_semantics",
+  "calibration_form": "none",
+  "stump_strategy": "binding_constraint",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
-  "stakeholder_role": "the browser's triage team lead, who files the team's first-quarter headcount for the engineering staffing review before the holidays",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "per accepted item",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "With every logger series conformed and the company's leakage assessment method, the valve schedule and the contract read correctly, the easy route takes each district's 2025-26 assessed leakage and scales it by the valve's night pressure, the average zone night pressure after over before raised to the district's N1, which carries the night reduction through every hour of the day and files the phase as meeting its contracted reduction, when each valve stands fully open whenever the trunk main's daytime drop takes its inlet below the setting, so the leakage the 2027-28 assessment will measure stays well above that figure and the phase misses.",
+  "domain_test": "The deciding quantity is the leakage the company's FAVAD assessment (net night flow times a night-day factor built from the average zone pressure) will measure once fixed-outlet valves are commissioned, which a water loss engineer forecasts by replaying each district's recorded inlet and average zone pressures through the valve's outlet setting reading by reading and rebuilding both the night flow and the night-day factor; put patients and wards in for districts and mains and there is no valve whose effect depends on an upstream pressure, no N1 and no night-day factor, so the task stops existing.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:fixed-outlet-valve-diurnal-bite",
+  "layer1": [
+    "loggers in GMT against SCADA in local time across the clock changes",
+    "logger swaps with new serials mid-year",
+    "pressure in bar on one logger make and metres head on the other",
+    "logger elevation against the average zone point's ground level",
+    "gaps from battery failures and duplicate re-transmitted readings",
+    "a district boundary moved by a valve operation mid-year",
+    "flow in litres a second on inlet meters against cubic metres an hour in the bulk extract"
+  ],
+  "stakeholder_role": "the partner's Northern zone pressure management programme manager",
+  "role_family": "operations_director",
+  "scoring_unit": "other",
   "spine": {
-    "file": "old_tracker_export_20251001_20261217.csv (the old tracker's bug export, one row per report filed through the form, duplicates included, 1 October 2025 to 17 December 2026)",
-    "rows": 29275,
-    "entity": "one report filed on the old tracker, with its product and component, reporter's version and platform, severity, status, resolution, duplicate-of link and security group",
-    "grain": "report",
-    "source": "synthetic (constructed in the layout of a Bugzilla-style CSV bug export)"
+    "file": "northern_zone_telemetry_2025_26 (logger readings)",
+    "rows": 0,
+    "entity": "one logger reading",
+    "grain": "logger x 15 minutes",
+    "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "cutover_or_migration",
-  "org_family": "software_or_platform",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "professional_services",
   "world": {
-    "geography": "Finland, Tampere (the vendor and its triage team; the browser's users are worldwide; the vendor, its browser, trackers, people and data are fictional)",
-    "currency": "EUR",
-    "org_type": "independent desktop browser vendor with a bug-triage team",
+    "geography": "England",
+    "currency": "GBP",
+    "org_type": "water company's pressure management and leakage delivery partner",
     "invented_names": [
-      "Usva Software Oy",
-      "Usva (the browser)",
-      "usvasoftware.fi",
-      "tracker-bridge",
-      "Browser intake (BRW)",
-      "Web compatibility (WEBC)"
+      "Lynmere Water",
+      "Coldbeck Network Partners",
+      "Thornholme service reservoir",
+      "Thornholme to Brackenby trunk main",
+      "Northern supply zone"
     ],
     "people": [
-      "Ulla Kauppinen",
-      "Juhani Immonen",
-      "Timo Huttunen",
-      "Ritva Grönroos",
-      "Simo Kinnunen",
-      "Helena Pakarinen",
-      "Linnea Kärki",
-      "Johannes Laukkanen",
-      "Saara Väisänen",
-      "Tapio Kallio",
-      "Arja Turunen",
-      "Sakari Puhakka",
-      "Milla Ojanen",
-      "Antero Järvinen"
+      "Emily Fitzgerald",
+      "Clive Heath",
+      "Annette Patel",
+      "Louis Lee",
+      "Mandy Austin"
     ]
   },
-  "layer1": [
-    "the old tracker's Bugzilla-style CSV export (Helsinki local timestamps, product and component as two columns, the security group in its own column, beta and nightly builds beside release builds, the parallel run's reports closed MOVED and put in an Archive product)",
-    "the public data portal's daily shares of each platform's active installs by major version and its daily active installs in thousands",
-    "the release calendar as a table inside a PDF, point releases listed",
-    "the old triage dashboard's weekly new defects on its own basis (duplicates, invalid and MOVED reports out, the run's weeks empty)",
-    "the record's partial first and last weeks and the year-end lull",
-    "the new tracker's Jira-style REST export of the parallel run (UTC times, component paths, multi-valued components, a changelog, two projects, the bridge's service account, catch-up writes carrying the old number in a label, a move dropping Legacy bug, the pilot project's own Old tracker ID, a Close transition without a resolution, re-sent copies, the team's tasks, restricted issues)"
-  ],
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:release-week-reach-set-by-the-monthly-restart-burst",
   "deliverables": [
-    "triage_staffing_q1_2027.xlsx",
-    "parallel_run_triage.svg"
+    "phase3_leakage_forecast_2027_28.xlsx",
+    "phase3_valve_bite.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A unit takes up each new version only at its next restart, and on the dominant platform most restarts come in a two-day burst once a month on a fixed day, so the share of units that reach a version in its first week, and the reports that follow their first use, are set by whether the burst falls inside that week; every version in the forward window ships on the burst's eve, which no version in the last year did, so the record's first-week profile, its busiest weeks or a ratio taken from the last version all understate each forward release week, and only the version-by-version restart model the record supports, ordinary restarts plus the monthly burst, sets them.",
-  "driver_concrete": "The browser's update is applied when the browser restarts, and most Windows machines restart in the two days after Microsoft's Patch Tuesday, so a release that ships a week or two before or after Patch Tuesday reaches users through ordinary restarts first and meets the Windows burst later, while a release shipped on Patch Tuesday meets the burst in its own first week; every release since autumn 2025 shipped off Patch Tuesday, and all three of the first quarter's releases ship on it, so their release weeks reach about one and a half times the usual share of users and carry the first-use reports and duplicates that follow, putting the busiest week at about 900 triage items.",
-  "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs (or the record's release-week profile, or an uplift from the last release), onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when every release since October 2025 shipped a week or two before Patch Tuesday and met the Windows restart burst only in its second or third week, while all three first-quarter releases ship on Patch Tuesday itself, so about three in four active installs reach each new version in its release week against at most about half in any recorded week, and the busiest week carries about 900 items and needs 8.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who rebuilds the new tracker's items from the old export (every report, duplicates included), reads the counting basis, the 120-item standard and the release calendar correctly, and scales last year's busiest first-quarter week for growth, or forecasts with the record's release-week profile, a last-release uplift or the record's typical first-month reach, files 6 triagers; only modelling each release's adoption as ordinary restarts plus the monthly Windows restart burst after Patch Tuesday, which the public adoption series shows month after month, and placing all three first-quarter releases on Patch Tuesday files 8.",
-  "domain_test": "The deciding quantity is each release week's first-use report wave, forecast the way product analytics forecasts version-driven activity: from the version's adoption curve (the update applies at the next browser restart, and on Windows most restarts come in the two days after Patch Tuesday) carried through the reports users file in their first days on the version; with a hospital's patients or a utility's megawatt-hours there is no update applied at restart and no operating-system restart cycle deciding when users reach a new version, so the quantity that decides the call has nothing to stand on.",
+  "question_form": "whether",
+  "driver": "A device that holds a supply variable at a setting lowers it only in the periods when the uncapped value would exceed that setting, while the quantity that matters rises steeply with the variable and is measured through a factor built from the variable's whole cycle, so the device's effect has to be replayed reading by reading on the recorded upstream values and the factor rebuilt; carrying the effect at the period it bites hardest across every period overstates it wherever the upstream value falls below the setting for part of each cycle.",
+  "driver_concrete": "Each Phase 3 valve holds its outlet at its design setting only while its inlet pressure is above it, and at the far end of the trunk main the morning and evening peaks take the inlet below the setting for hours each day, longer in summer, so the leakage the 2027-28 FAVAD assessment will measure comes from replaying each district's 15-minute inlet and average zone pressures through the setting and rebuilding the night flow and the night-day factor; scaling 2025-26 leakage by the night pressure ratio overstates the saving and files the contracted reduction as met.",
+  "stump": "A competent solver scales each district's 2025-26 assessed leakage by the valve's night pressure reduction raised to its N1, as if the reduction held all day, and files the phase as meeting its contracted reduction with no find-and-fix needed, missing that the valves stand open through each day's peaks so the phase falls short.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task156": "task156 sizes paid moderators from the work a shrinking volunteer pool cannot absorb, capacity seen only where it fell short; here no capacity is censored and no pool shrinks: the triage load is a demand forecast whose release weeks are set by when users reach each new version, and the decisive quantity is the share of users a release reaches in its first week.",
-    "task160": "task160 times regional surge waves by a stable propagation lag behind the region the wave starts in, observed this season; here nothing propagates: an external monthly restart cycle fixed by the operating system's calendar decides when each release reaches its users, and the forward releases' position in that cycle is known from the release calendar, not read from this season's wave.",
-    "task161": "task161 draws down a stock built ahead of a cost step at each holder's own use share; here there is no stock or drawdown: each release's reach in its first week is set by an external monthly restart burst, and the forecast is of first-use reports.",
-    "task157": "task157 completes a returning cohort's wave from the part already back at the as-of; here no wave is in flight at the as-of: the forward releases are not yet shipped, and their first-week reach comes from where each sits in the monthly restart cycle.",
-    "task148": "task148 drains a queue by abandonment; here no queue or patience enters: the forecast is of arrivals.",
-    "task159": "task159 builds a backlog where services arrive with less room than one interval's arrivals; here arrivals are forecast and no service capacity censors them.",
-    "task102": "task102 recovers a next-business-day release rule from the payment history and applies it to a forward period that ends on a weekend; here no rule is recovered and no period boundary moves anything: an adoption process (each install updates at its next restart, Windows restarts bunched in the two days after Patch Tuesday) is estimated from the public adoption series across every release, and the forward releases' place in the monthly cycle sets how many users each reaches in its first week.",
-    "task130": "task130 prices a short cover window from past events by how soon each was reported; here there is no cover window and no reporting delay to price: the forecast is of the first-use reports that follow each release's adoption, set by when its users restart.",
-    "task134": "task134's second architecture scaled an announced threshold step from the one smaller step its history held; here nothing is announced and nothing is scaled from one event: the restart burst recurs every month in the adoption record and every release since 2023 met it at some point of its first month.",
-    "task501": "task501's third architecture read a facility buffer off the furthest a cumulative path ran ahead of its forecast; here the quantity is one week's first-use reports, set by where each release sits in the monthly restart cycle, and no buffer, path or validation error is graded.",
-    "task171": "task171 v4 reads a collected share on the bills whose payers have already passed their own renewal, a young book's maturity censoring; here nothing is immature or censored at the as-of: the forecast is of reports not yet filed, and the decisive step models when each forward release reaches its installs through a restart hazard whose monthly burst the calendar places, release by release.",
-    "task178": "task178 v1 counts a forward period's crossings of a fixed level by a sum of a known deterministic component and a random remainder; here there is no level or exceedance: each release's first-week reach is a depletion of the installs still pending under a weekday restart hazard and a two-day monthly burst, and the calendar decides whether the burst falls inside the release week."
+    "task229": "task229 publishes a daily value by passing the day's mean input through a convex rating, so its bias is Jensen's gap inside a swinging day and the remedy is reading-by-reading conversion of a measured series; here a valve caps an upstream pressure only in the readings where that pressure exceeds its setting, the forecast is of an intervention not yet installed, and averaging the replayed readings is harmless (the mean-pressure route lands), so the move is finding the readings where the cap is slack, not the order of averaging and converting.",
+    "task105": "task105 v1 is an outlet that can win only commitments agreed after it opens, a season-ahead agreement window on demand; here nothing is agreed or won, and the operating window is physical: the hours each day in which a valve's inlet sits above its outlet setting.",
+    "task170": "task170 v1 is a first passage of scattered scheduled measurements over a fixed level that moves units to another line; here no unit moves and nothing is measured against a level for eligibility: a device's effect is replayed on a recorded diurnal pressure series and fed through the company's leakage assessment.",
+    "task303": "task303 removes shared upstream losses from a unit's recorded interruptions by the minute siblings share; here no loss is attributed between units, and the upstream quantity enters only as the inlet pressure that decides when each valve can bite."
   },
-  "lineage": [],
-  "notes": "Domain: the seed's label was Product Analytics, software quality operations; the client taxonomy's product-analytics task type that serves forecasting and fits a browser release reaching its users is feature-adoption-diffusion-modeling (the version's adoption curve and the first-use activity it drives, library pattern 1: effect by time since first exposure). Generators: G13 is decisive because the stump is that the forward release weeks sit where no release week in the recent record did in the monthly restart cycle (the decision window differs from the evidence windows; stumping strategies F1 lists G13 first for time_semantics); G7 is second (an update can apply only at a restart). Role: the triage team lead runs the frontline unit and files its headcount; capacity_planner and operations_director were banned by task161 and task182 at the draw and are not the stakeholder drawn. Artifact: the staffing-plan thread; filed_standard was banned by task161 and task182. Forum: the quarterly engineering staffing review that approves each team's headcount (committee_or_panel); line_manager_or_team was banned by task182 at the check.",
-  "registered": "2026-10-18T01:37:52Z"
+  "lineage": [
+    {
+      "domain": "product-analytics",
+      "subdomain": "feature-adoption-diffusion-modeling",
+      "niche": "a Tampere browser vendor's bug-triage team filing its first-quarter 2027 triage headcount before the holidays, when the browser's update applies only when the browser restarts, most Windows machines restart in the two days after Microsoft's monthly Patch Tuesday, and all three of the quarter's releases (12 January, 9 February, 9 March) ship on Patch Tuesday itself, which no release in the past year did",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "quantity_figure",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "gate_g": "forecasting",
+      "generators": [
+        "G13",
+        "G7"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "stump_strategy": "time_semantics",
+      "driver": "A unit takes up each new version only at its next restart, and on the dominant platform most restarts come in a two-day burst once a month on a fixed day, so the share of units that reach a version in its first week, and the reports that follow their first use, are set by whether the burst falls inside that week; every version in the forward window ships on the burst's eve, which no version in the last year did, so the record's first-week profile, its busiest weeks or a ratio taken from the last version all understate each forward release week, and only the version-by-version restart model the record supports, ordinary restarts plus the monthly burst, sets them.",
+      "driver_concrete": "The browser's update is applied when the browser restarts, and most Windows machines restart in the two days after Microsoft's Patch Tuesday, so a release that ships one or three weeks before Patch Tuesday reaches users through ordinary restarts first and meets the Windows burst later (a week later, or three weeks later and small), while a release shipped on Patch Tuesday meets the burst in its own first week; every release since autumn 2025 shipped off Patch Tuesday, and all three of the first quarter's releases ship on it, so their release weeks reach about one and a half times the usual share of users and carry the first-use reports and duplicates that follow, putting the busiest week at about 900 triage items.",
+      "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs (or the record's release-week profile, or an uplift from the last release), onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when every release since October 2025 shipped a week or two before Patch Tuesday and met the Windows restart burst only in its second or third week, while all three first-quarter releases ship on Patch Tuesday itself, so about three in four active installs reach each new version in its release week against at most about half in any recorded week, and the busiest week carries about 900 items and needs 8.",
+      "architecture": "v1",
+      "fate": "spent 2026-10-28 after the portal's round 2 (determinism: both judges competing_defensible_answer, a validated release-phase model filing 6) and judge passes 3 to 5 on the re-cut (target.zip db7f04c3, 60e4764a, c898f73f): the decisive configuration, a release shipped on Patch Tuesday, never occurs in the record, so no filed back-test over the record forces the restart model (pass 5: a count-based phase model with a Patch Tuesday term on the last 13 weeks missed 1,121 against the restart model's 1,305 to 1,395; measured in the generator at 1,185 against 1,434 with installs carried from the week before), and the restart family's own spread across defensible builds (848 to 977) exceeds the call's 120-item band; the author chose a re-root"
+    }
+  ],
+  "notes": "Task type: energy-systems-utilities / asset-condition-maintenance serves Forecasting; a water network's leakage is the condition of its mains and service pipes, and pressure management is the intervention whose effect the field forecasts by FAVAD. Strategy label: binding_constraint is the honest family, a valve setting that binds only in the readings where the inlet exceeds it; the skill's objection (a published limit applied is rule application) is answered in the design note's Three rules: the setting's level is filed, which readings it binds on is a physical consequence of the recorded inlet pressures that no shipped sentence states. Generators: G7 decisive (when can the valve physically lower the pressure), G13 beside it (the 2027-28 assessment year against the night the design report quotes). WARN repeat.gate_g and overuse.gate_g answered: forecasting is the mechanism that carries the stump here (a forward assessment of an intervention not yet installed), and the fine mechanism differs from task281's (a driver population read past its follow-up) and from every forecasting card on file (nearest driver 0.07). Org family professional_services (the company's delivery partner), not utility_or_infrastructure, which task281 holds in the window, and that is the honest seat: the partner carries the contracted reduction.",
+  "client_domain": "energy-systems-utilities",
+  "registered": "2026-10-28T04:48:39Z"
 }
