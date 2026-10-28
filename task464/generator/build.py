@@ -13,8 +13,8 @@ def main():
         shutil.rmtree(OUT)
     os.makedirs(OUT)
     sim = S.simulate()
-    enr, wmeta = pack.build(sim)
-    rows = pack.write(sim, enr, wmeta)
+    enr, wmeta, courses = pack.build(sim)
+    rows = pack.write(sim, enr, wmeta, courses)
     docs.main()
     rows += extras.write_all()
     import golden as _g

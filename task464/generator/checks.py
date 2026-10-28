@@ -10,6 +10,7 @@ import answers
 TARGET = answers.TARGET
 FAIL = []
 N = 0
+PAIR_NOTE = [None]
 
 
 def ck(name, ok, detail=""):
@@ -129,11 +130,32 @@ def main():
 
     # ---------------- the asks -------------------------------------------------------
     ck("ask1 covers every curriculum area", len(f["ask1_curriculum"]) == len(W.CURRICULUM))
-    ck("ask1 hours are to the nearest 10",
-       all(v["planned_hours_nearest_10"] % 10 == 0 for v in f["ask1_curriculum"].values()))
-    ck("ask2 covers every centre", len(f["ask2_completion_pct"]) == len(W.SITES))
-    ck("ask3 totals its parts", f["ask3_changed_total"] == sum(f["ask3_changed_on_moderation"].values()))
-    ck("ask3 is non-trivial", all(v > 0 for v in f["ask3_changed_on_moderation"].values()))
+    ck("ask1 hours are positive",
+       all(v["planned_hours"] > 0 for v in f["ask1_curriculum"].values()))
+    ck("ask1 learner-courses are fewer than the rows they come from",
+       sum(v["learner_courses"] for v in f["ask1_curriculum"].values()) < f["enrolment_rows_in_scope"],
+       "the two-term device does not bite: the learner-course count equals the row count")
+    ck("ask2 covers every centre", len(f["ask2_started_and_completed_pct"]) == len(W.SITES))
+    ck("ask3 covers every term but the last",
+       len(f["ask3_carried_over"]) == len(W.TERMS) - 1)
+    ck("ask4 totals its parts",
+       f["ask4_changed_total"] == sum(f["ask4_changed_on_moderation"].values()))
+    ck("the subcontract rows are outside the review's scope",
+       f["enrolment_rows_in_extract"] - f["enrolment_rows_in_scope"] == W.SUBCONTRACT_ENROLMENTS,
+       "the out-of-scope count does not match the subcontracted rows written")
+
+    # The ask layer's ceiling, measured on the cut pack by ceiling.py against a cracker modelled at full
+    # strength. The gate is 40 and the build is over it, which is asserted so no rebuild can hide it.
+    import ceiling
+    cmp = ceiling.compare()
+    kept = sum(1 for _, _, _, hit in cmp if hit)
+    Lc = kept / len(cmp)
+    pair = ((38 + 7 + 55 * Lc) + (5 + 7 + 55 * Lc)) / 2
+    ck("ask ceiling is measured on the cut pack", len(cmp) == 20, "%d ask figures" % len(cmp))
+    ck("the hours device survives a cracker that dedupes correctly",
+       sum(1 for n, _, _, hit in cmp if "planned guided hours" in n and not hit) == len(W.CURRICULUM),
+       "the hours double-count is reproduced by the cracker, so the one working device is gone")
+    PAIR_NOTE[0] = (len(cmp), kept, Lc, pair)
 
     print("%d checks, %d failed" % (N, len(FAIL)))
     for x in FAIL:
@@ -142,6 +164,10 @@ def main():
     print("  SF6 closest corrected share to a rounding boundary %.4f" % worstbin)
     print("  SF7 stratified sample's raw composition for the call %.2f against the golden %.2f"
           % (modcomp["CR"], p["CR"]))
+    if PAIR_NOTE[0]:
+        nfig, kept, Lc, pair = PAIR_NOTE[0]
+        print("  ASK CEILING %d figures, cracker keeps %d, Lc %.3f, PAIR %.1f (precut allows 40)"
+              % (nfig, kept, Lc, pair))
     return 1 if FAIL else 0
 
 

@@ -23,11 +23,39 @@ def _d(s):
 
 
 def build(sim):
+    """The withdrawal records (the call's path) and the enrolment extract with its course catalogue.
+
+    The catalogue is the only place a course's planned hours appear once. The enrolment extract opens a row per
+    term a course spans and repeats the course's whole hours on each, because the hours belong to the course.
+    """
     rng = np.random.default_rng(W.SEED + 13)
     rows = sim["rows"]
+
+    # --- the course catalogue -------------------------------------------------------------
+    courses = []
+    cid = 0
+    for area in W.CURRICULUM:
+        for _ in range(42):
+            cid += 1
+            span = 2 if rng.random() < W.TWO_TERM_SHARE else 1
+            ti = int(rng.integers(0, len(W.TERMS) - 1)) if span == 2 else int(rng.integers(0, len(W.TERMS)))
+            site = W.SITES[int(rng.integers(0, len(W.SITES)))]
+            courses.append({"course_ref": "C-%04d" % cid, "curriculum_area": area,
+                            "site_code": site["code"], "planned_guided_hours": int(rng.choice([30, 45, 60, 90, 120])),
+                            "start_term": W.TERMS[ti]["code"],
+                            "terms_spanned": span})
+    by_area = {}
+    for c in courses:
+        by_area.setdefault(c["curriculum_area"], []).append(c)
+
+    def term_codes(c):
+        i = [t["code"] for t in W.TERMS].index(c["start_term"])
+        return [W.TERMS[i]["code"]] + ([W.TERMS[i + 1]["code"]] if c["terms_spanned"] == 2 else [])
+
     uln = 1500000000
-    # one enrolment row per learner-course; the withdrawals are a subset of these
     enrolments, wmeta = [], {}
+
+    # --- the withdrawals: one learner-course each, the call's own population ---------------
     for r in rows:
         uln += 1
         t = W.term(r["term"])
@@ -40,41 +68,61 @@ def build(sim):
         wmeta[r["wid"]] = {"uln": str(uln), "site": site, "curriculum": cur,
                            "start": start.isoformat(), "wdate": wdate.isoformat(),
                            "local_ref": "%s/%06d" % (site["code"], (r["wid"] % 900000) + 1)}
+        c = by_area[cur][int(rng.integers(0, len(by_area[cur])))]
         enrolments.append({"uln": str(uln), "term_code": r["term"], "site_code": site["code"],
-                           "curriculum_area": cur, "course_ref": "C%s-%04d" % (r["term"], int(rng.integers(1, 1200))),
+                           "curriculum_area": cur, "course_ref": c["course_ref"],
                            "start_date": start.isoformat(), "status": "withdrawn",
-                           "guided_hours_planned": int(rng.choice([30, 45, 60, 90, 120]))})
-    # the learners who did not withdraw: the rest of the 2025/26 enrolments
-    extra = W.ENROLMENTS - len(enrolments)
-    shares = np.array([t["share"] for t in W.TERMS])
-    shares = shares / shares.sum()
-    for k in range(extra):
+                           "guided_hours_planned": c["planned_guided_hours"]})
+
+    # --- the learners who did not withdraw -------------------------------------------------
+    target = W.ENROLMENTS - len(enrolments)
+    made = 0
+    while made < target:
         uln += 1
-        t = W.TERMS[int(rng.choice(len(W.TERMS), p=shares))]
-        site = W.SITES[int(rng.integers(0, len(W.SITES)))]
-        start = _d(t["start"]) + dt.timedelta(days=int(rng.integers(0, 10)))
-        enrolments.append({"uln": str(uln), "term_code": t["code"], "site_code": site["code"],
-                           "curriculum_area": W.CURRICULUM[int(rng.integers(0, len(W.CURRICULUM)))],
-                           "course_ref": "C%s-%04d" % (t["code"], int(rng.integers(1, 1200))),
-                           "start_date": start.isoformat(),
-                           "status": "completed" if rng.random() < 0.86 else "continuing",
-                           "guided_hours_planned": int(rng.choice([30, 45, 60, 90, 120]))})
-    # Subcontracted enrolments, carried on the same student record but outside the review's five centres.
+        c = courses[int(rng.integers(0, len(courses)))]
+        tcs = term_codes(c)
+        done = rng.random() < 0.86
+        site = c["site_code"]
+        moved = rng.random() < W.TRANSFER_SHARE
+        other = None
+        if moved:
+            cand = [x["code"] for x in W.SITES if x["code"] != site]
+            other = cand[int(rng.integers(0, len(cand)))]
+        for k, tc in enumerate(tcs):
+            t = W.term(tc)
+            start = _d(t["start"]) + dt.timedelta(days=int(rng.integers(0, 10)))
+            # a mid-course move leaves the sending centre's row open and closes the receiving centre's
+            if moved and len(tcs) == 2:
+                here = site if k == 0 else other
+                stat = "continuing" if k == 0 else ("completed" if done else "continuing")
+            else:
+                here = site
+                stat = ("completed" if done else "continuing") if k == len(tcs) - 1 else "continuing"
+            enrolments.append({"uln": str(uln), "term_code": tc, "site_code": here,
+                               "curriculum_area": c["curriculum_area"], "course_ref": c["course_ref"],
+                               "start_date": start.isoformat(), "status": stat,
+                               "guided_hours_planned": c["planned_guided_hours"]})
+            made += 1
+            if made >= target:
+                break
+
+    # --- subcontracted delivery, outside the review's five centres -------------------------
+    shares = np.array([t["share"] for t in W.TERMS]); shares = shares / shares.sum()
     for _ in range(W.SUBCONTRACT_ENROLMENTS):
         uln += 1
         t = W.TERMS[int(rng.choice(len(W.TERMS), p=shares))]
+        c = courses[int(rng.integers(0, len(courses)))]
         start = _d(t["start"]) + dt.timedelta(days=int(rng.integers(0, 10)))
         enrolments.append({"uln": str(uln), "term_code": t["code"],
                            "site_code": W.SUBCONTRACT_SITE["code"],
-                           "curriculum_area": W.CURRICULUM[int(rng.integers(0, len(W.CURRICULUM)))],
-                           "course_ref": "C%s-%04d" % (t["code"], int(rng.integers(1, 1200))),
+                           "curriculum_area": c["curriculum_area"], "course_ref": c["course_ref"],
                            "start_date": start.isoformat(),
                            "status": "completed" if rng.random() < 0.79 else "continuing",
-                           "guided_hours_planned": int(rng.choice([30, 45, 60, 90, 120]))})
-    return enrolments, wmeta
+                           "guided_hours_planned": c["planned_guided_hours"]})
+    return enrolments, wmeta, courses
 
 
-def write(sim, enrolments, wmeta):
+def write(sim, enrolments, wmeta, courses):
     os.makedirs(OUT, exist_ok=True)
     rng = np.random.default_rng(W.SEED + 29)
     rows = sim["rows"]
@@ -141,6 +189,9 @@ def write(sim, enrolments, wmeta):
            "former_name": s["former"] or "", "renamed_on": "2026-01-05" if s["former"] else ""}
           for s in W.SITES],
          ["site_code", "site_name", "former_name", "renamed_on"], ["site_code"])
+    csvw("course_catalogue_2025_26.csv", courses,
+         ["course_ref", "curriculum_area", "site_code", "planned_guided_hours", "start_term",
+          "terms_spanned"], ["course_ref"])
     csvw("reason_code_list.csv",
          [{"reason_code": c, "reason_label": W.LABEL[c], "manual_order": i + 1}
           for i, c in enumerate(W.CODES)],
@@ -150,8 +201,8 @@ def write(sim, enrolments, wmeta):
 
 def main():
     sim = S.simulate()
-    enr, wmeta = build(sim)
-    for name, n in write(sim, enr, wmeta):
+    enr, wmeta, courses = build(sim)
+    for name, n in write(sim, enr, wmeta, courses):
         print("  %-44s %7d rows" % (name, n))
 
 

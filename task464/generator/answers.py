@@ -43,25 +43,44 @@ def figures():
     order = sorted(codes, key=lambda c: -p[c])
     call, runner = order[0], order[1]
 
-    # --- the asks ---------------------------------------------------------------------
-    # The review's scope is the service's five centres, which site_directory.csv is the only list of.
-    in_scope = {s["site_code"] for s in sites}
-    enr_scope = [e for e in enr if e["site_code"] in in_scope]
+    # --- the asks -------------------------------------------------------------------
+    # The review's scope is the service's five centres, the only list of which is site_directory.csv.
+    in_scope = {x["site_code"] for x in sites}
+    rows = [e for e in enr if e["site_code"] in in_scope]
+    cat = {c["course_ref"]: c for c in csv.DictReader(open(_p("course_catalogue_2025_26.csv"), encoding="utf-8"))}
+    tcodes = [t["code"] for t in W.TERMS]
+
+    # a learner-course is the unit: one learner on one course, however many terms it spans
+    lc = {}
+    for e in rows:
+        k = (e["uln"], e["course_ref"])
+        d = lc.setdefault(k, {"terms": set(), "sites": [], "status": set(), "area": e["curriculum_area"]})
+        d["terms"].add(e["term_code"])
+        d["sites"].append((e["term_code"], e["site_code"]))
+        d["status"].add(e["status"])
+
     a1 = {}
-    for a in W.CURRICULUM:
-        rows = [e for e in enr_scope if e["curriculum_area"] == a]
-        hours = sum(int(e["guided_hours_planned"]) for e in rows)
-        a1[a] = {"enrolments": len(rows), "planned_hours_nearest_10": int(round(hours / 10.0) * 10)}
+    for area in W.CURRICULUM:
+        ks = [k for k, d in lc.items() if d["area"] == area]
+        hours = sum(int(cat[k[1]]["planned_guided_hours"]) for k in ks)
+        a1[area] = {"learner_courses": len(ks), "planned_hours": hours}
+
     a2 = {}
-    for s in sites:
-        rows = [e for e in enr_scope if e["site_code"] == s["site_code"]]
-        comp = sum(1 for e in rows if e["status"] == "completed")
-        a2[s["site_name"]] = round(100.0 * comp / len(rows), 1)
+    for x in sites:
+        started = [k for k, d in lc.items()
+                   if min(d["sites"], key=lambda p: tcodes.index(p[0]))[1] == x["site_code"]]
+        done = [k for k in started if "completed" in lc[k]["status"]]
+        a2[x["site_name"]] = round(100.0 * len(done) / len(started), 1) if started else 0.0
+
     a3 = {}
+    for i, t in enumerate(W.TERMS[:-1]):
+        nxt = tcodes[i + 1]
+        a3[t["code"]] = sum(1 for d in lc.values() if t["code"] in d["terms"] and nxt in d["terms"])
+
+    a4 = {}
     for i in codes:
         sub = [m for m in mod if m["coded_reason"] == i]
-        a3[i] = sum(1 for m in sub if m["moderated_reason"] != i)
-    a3_total = sum(a3.values())
+        a4[i] = sum(1 for m in sub if m["moderated_reason"] != i)
 
     return {
         "call": call, "call_label": W.LABEL[call],
@@ -74,11 +93,13 @@ def figures():
         "withdrawals_total": n,
         "moderated_total": len(mod),
         "ask1_curriculum": a1,
-        "ask2_completion_pct": a2,
-        "ask3_changed_on_moderation": a3,
-        "ask3_changed_total": a3_total,
-        "enrolments_in_scope": len(enr_scope),
-        "enrolments_in_extract": len(enr),
+        "ask2_started_and_completed_pct": a2,
+        "ask3_carried_over": a3,
+        "ask4_changed_on_moderation": a4,
+        "ask4_changed_total": sum(a4.values()),
+        "learner_courses_in_scope": len(lc),
+        "enrolment_rows_in_scope": len(rows),
+        "enrolment_rows_in_extract": len(enr),
     }
 
 
@@ -92,7 +113,13 @@ def main():
     print("corrected      :", {W.LABEL[c]: f["corrected_share_pct"][c] for c in W.CODES})
     print("coded          :", {W.LABEL[c]: f["coded_share_pct"][c] for c in W.CODES})
     print("withdrawals %d, moderated %d" % (f["withdrawals_total"], f["moderated_total"]))
-    print("ask3 changed on moderation:", f["ask3_changed_on_moderation"], "total", f["ask3_changed_total"])
+    print("ask1 hours:", {k: v["planned_hours"] for k, v in f["ask1_curriculum"].items()})
+    print("ask1 learner-courses:", {k: v["learner_courses"] for k, v in f["ask1_curriculum"].items()})
+    print("ask2 started-and-completed:", f["ask2_started_and_completed_pct"])
+    print("ask3 carried over:", f["ask3_carried_over"])
+    print("ask4 changed on moderation:", f["ask4_changed_on_moderation"], "total", f["ask4_changed_total"])
+    print("learner-courses in scope %d from %d rows (%d in the extract)" % (
+        f["learner_courses_in_scope"], f["enrolment_rows_in_scope"], f["enrolment_rows_in_extract"]))
     print("figures.json written")
 
 
