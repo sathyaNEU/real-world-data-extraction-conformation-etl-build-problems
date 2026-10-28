@@ -1,0 +1,156 @@
+{
+ "task": "task488",
+ "title": "How many new items below the Approaching cut a regional assessment consortium must commission for each grade's adaptive pool when it moves its interim from one platform to another",
+ "domain": "Education & Learning Sciences",
+ "client_domain": "education-learning-sciences",
+ "subdomain": "item-response-theory-test-equating (calibrating workshop items run on provisional ratings in an adaptive interim onto the launch scale)",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "prompt_shape": "a count of items to commission for each of six grades; the conformed import file; per grade the imported items in each framework domain and the enemy sets with their items; a board memo with one chart",
+ "as_of": "2027-04-02",
+ "deliverables": [
+  "bank_import_2027-28.csv",
+  "pool_summary_2027-28.xlsx",
+  "low_band_commission_memo.docx"
+ ],
+ "distractor_files": [
+  "qrac_workshop_payments_2024_2025.csv",
+  "tessaline_platform_incidents_2025-26.csv",
+  "qrac_writing_panel_ratings_2024_2025.csv"
+ ],
+ "distractors": [
+  {
+   "file": "qrac_workshop_payments_2024_2025.csv",
+   "wrong_basis": false,
+   "why_relevant": "what the workshop paid per accepted item looks like the cost side of the commission",
+   "why_unused": "the commission is a count of items, set by the floor and the pool",
+   "ruled_out_by": "Corvane specification section 5"
+  },
+  {
+   "file": "tessaline_platform_incidents_2025-26.csv",
+   "wrong_basis": false,
+   "why_relevant": "interrupted sessions look like a reason to drop or weight responses",
+   "why_unused": "an interrupted session's re-delivery row is unscored and the scored row stands",
+   "ruled_out_by": "the response file's own unscored re-delivery rows"
+  },
+  {
+   "file": "qrac_writing_panel_ratings_2024_2025.csv",
+   "wrong_basis": false,
+   "why_relevant": "each workshop item's ratings by the panel that set its provisional difficulty",
+   "why_unused": "the panel's mean is already the bank's operational value, and the answer estimates the difficulty from the responses",
+   "ruled_out_by": "the bank export's difficulty_basis column"
+  }
+ ],
+ "stated_inputs": [
+  "150",
+  "July",
+  "2026",
+  "2025-26"
+ ],
+ "input_gates": {
+  "files": 12,
+  "formats": [
+   "csv",
+   "parquet",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "tessaline_item_responses_2025-26.parquet",
+  "largest_file_rows": 3925625
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task488/generator/build.py (seeded, deterministic) around a fictional regional assessment consortium of eleven Wisconsin school districts (Quarrystone Regional Assessment Consortium), a fictional delivery vendor (Tessaline Learning Systems) and a fictional new platform (Corvane Assessment); districts and students are invented and identified by code only.",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-28",
+ "generator": "task488/generator/build.py",
+ "files": [
+  {
+   "file": "tessaline_item_bank_export_20270331.csv",
+   "format": "csv",
+   "rows": 2707,
+   "covers": "every item in Tessaline's bank for the consortium at close-out, with its operational difficulty and basis",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "tessaline_sessions_2025-26.csv",
+   "format": "csv",
+   "rows": 98478,
+   "covers": "every 2025-26 test event, grades 3 to 8, three windows",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "tessaline_item_responses_2025-26.parquet",
+   "format": "parquet",
+   "rows": 3925625,
+   "covers": "every item delivery in the 2025-26 test events",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "tessaline_item_statistics_2025-26.xlsx",
+   "format": "xlsx",
+   "rows": 7614,
+   "covers": "Tessaline's item statistics by window, 2025-26",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "qrac_item_authoring_catalog_20270315.xlsx",
+   "format": "xlsx",
+   "rows": 3011,
+   "covers": "the consortium's authoring catalog, one row per authored version",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "qrac_framework_crosswalk_2010_to_2026.csv",
+   "format": "csv",
+   "rows": 340,
+   "covers": "the consortium's crosswalk from the 2010 standards to its 2026 framework domains",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "qrac_writing_panel_ratings_2024_2025.csv",
+   "format": "csv",
+   "rows": 1506,
+   "covers": "the writing panels' ratings of the 2024 and 2025 workshop items",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "qrac_student_roster_2025-26.csv",
+   "format": "csv",
+   "rows": 34459,
+   "covers": "the consortium's student roster for 2025-26 with Tessaline student keys",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "qrac_scale_and_cut_scores_2021.pdf",
+   "format": "pdf",
+   "rows": null,
+   "covers": "the consortium's note on the Quarrystone scale and cut scores",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "corvane_pool_import_specification_v3.pdf",
+   "format": "pdf",
+   "rows": null,
+   "covers": "Corvane's item pool import specification, version 3.2",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "qrac_workshop_payments_2024_2025.csv",
+   "format": "csv",
+   "rows": 65,
+   "covers": "stipends and mileage paid to workshop writers, 2024 and 2025",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  },
+  {
+   "file": "tessaline_platform_incidents_2025-26.csv",
+   "format": "csv",
+   "rows": 10,
+   "covers": "Tessaline platform incidents during 2025-26",
+   "made": "constructed by task488/generator/build.py (seeded, deterministic)"
+  }
+ ]
+}

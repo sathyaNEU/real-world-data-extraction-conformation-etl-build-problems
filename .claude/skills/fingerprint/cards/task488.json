@@ -5,13 +5,13 @@
   "slot_note": "Drawn 2026-10-28 at the user's request for an education task with a data-engineering feel and an analytical stump; task488's ET45 world (barcode catalog matching) was paused at stage 1 with no card, and its resume line allows a redraw outside the seed's world.",
   "domain": "education-learning-sciences",
   "subdomain": "item-response-theory-test-equating",
-  "niche": "a regional consortium of Wisconsin school districts moving its own adaptive mathematics interim (grades 3 to 8) off its vendor's platform, whose bank holds about 340 teacher-written items the vendor ran on the writing panel's provisional difficulty ratings, to size the summer 2027 item-writing commission against the new platform's low-band floor",
+  "niche": "a regional consortium of Wisconsin school districts moving its own adaptive mathematics interim (grades 3 to 8) off its vendor's platform, whose bank holds about 500 teacher-written items the vendor ran on the writing panel's provisional difficulty ratings, to size the summer 2027 item-writing commission against the new platform's low-band floor",
   "objective": "etl",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "commission 199 new items below the Approaching cut: 27, 39, 31, 33, 49 and 20 for grades 3 to 8",
+  "answer_source": "task488/submission.md block 1; task488/generator/figures.json (call, commission_3 to commission_8)",
   "gap": [
     "objective"
   ],
@@ -29,9 +29,9 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the vendor's export, sees that an adaptive test's percent correct carries no difficulty information and calibrates the 340 provisional items with the Rasch model against each student's reported scale score files a commission of about 50 low-band items, because the vendor computed those scores with the panel's ratings, which put the multi-step word problems far too easy, so the students who met them were scored too low and the word problems look easy enough for the low band; estimated together with the students' abilities with the calibrated items held at their bank values, the word problems sit above the band and the commission is about 90.",
+  "analyst_test": "A strong analyst who conforms the vendor's export, sees that an adaptive test's percent correct carries no difficulty information and calibrates the 502 workshop items with the Rasch model against each student's reported scale score files a commission of 138 items (against 199), because the vendor computed those scores with the panel's ratings, which put the multi-step word problems far too easy, so the students who met them were scored too low and the word problems look easy enough for the low band; estimated together with the students' abilities with the calibrated items held at their bank values, the word problems sit above the band and the commission is 199.",
   "domain_test": "The deciding quantity is each new item's difficulty on the consortium's Rasch reporting scale, which item response theory estimates from the item's responses conditional on the takers' abilities while the calibrated items hold the scale; in another field's nouns the task loses its object, since its structure (each item served to the students its recorded difficulty matched, and those students scored from the recorded difficulties) exists only in an adaptive test.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:adaptive-calibration-against-contaminated-scores",
@@ -47,8 +47,8 @@
   "role_family": "research_desk",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "tessaline_response_events_2025-26.parquet",
-    "rows": 0,
+    "file": "tessaline_item_responses_2025-26.parquet",
+    "rows": 3925625,
     "entity": "one student's response to one item in one test event",
     "grain": "test event x item",
     "source": "synthetic"
@@ -72,19 +72,20 @@
   },
   "deliverables": [
     "bank_import_2027-28.csv",
+    "pool_summary_2027-28.xlsx",
     "low_band_commission_memo.docx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is each new unit's level on an established scale, seen only through the responses of the members it was given to; each unit was given to the members its recorded level matched, and those members' published standings were computed from the recorded levels, so reading each unit against the published standings returns its recorded level, while estimating the units' levels and the members' standings together from every response, with the established units held at their known levels, recovers the true levels, which the established units' own levels confirm when recalibrated the same way.",
-  "driver_concrete": "Tessaline's adaptive engine served each of the 340 teacher-written items to students whose running estimate matched the writing panel's provisional rating and scored every student with those ratings, so the multi-step word problems the panel rated as easy were met by low-scoring students who mostly missed them and were scored lower still; calibrating against the reported scale scores leaves the word problems inside the low band, while a marginal-likelihood calibration with the calibrated items fixed puts them above it, and only that calibration recovers the calibrated items' own bank values when they are re-estimated from the same responses.",
-  "stump": "The default path files a commission of about 50 low-band items because it calibrates the 340 provisional items against the students' reported scale scores, which the vendor computed with the panel's provisional ratings, so the multi-step word problems the panel rated as easy land inside the low band; estimated jointly with the calibrated items fixed, they sit above it and the commission is about 90.",
+  "driver_concrete": "Tessaline's adaptive engine served each of the 502 teacher-written items to students whose running estimate matched the writing panel's provisional rating and scored every student with those ratings, so the multi-step word problems the panel rated as easy were met by low-scoring students who mostly missed them and were scored lower still; calibrating against the reported scale scores leaves the word problems inside the low band, while a marginal-likelihood calibration with the calibrated items fixed puts them above it, and only that calibration recovers the calibrated items' own bank values when they are re-estimated from the same responses.",
+  "stump": "The default path files a commission of 138 items against 199 because it calibrates each workshop item against the students' reported scale scores, which Tessaline computed with the writing panel's ratings, so the multi-step word problems the panel rated far too easy land back inside the low band; estimated jointly with the students' abilities, the launch items fixed, 61 of them sit above it.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task479": "task479's architecture 4 removed answers given too fast to have been read before scoring units; here no response is removed or cleaned, every response stays, and the decisive step is estimating the new items' levels jointly with the students' abilities from all responses with the calibrated items fixed, because the students met each new item because of its recorded level and their published scores were computed from those levels."
   },
   "lineage": [],
-  "notes": "Strategy other: contaminated conditioning, the variable each estimate would condition on (the reported scale score) was computed from the quantities being estimated (the provisional ratings), so the estimate returns them; the separating check is the calibrated items' own bank values, which only the joint marginal-likelihood calibration reproduces. Pattern none with G14 decisive (an item's difficulty is its success rate conditioned on the takers' ability, the ability here having to be estimated jointly rather than read from the published scores). Gap objective: the panel's ratings, the percent correct and the reported scale scores are each correct as recorded and none is the item's difficulty on the scale. Gate G etl_conformance: the stump sits in the difficulty field of the conformed bank import that Corvane's import contract defines. Labels population/G16/method_or_model_selection were tried first and refused: that signature is spent in task177's lineage and eight older builds.",
+  "notes": "Strategy other: contaminated conditioning, the variable each estimate would condition on (the reported scale score) was computed from the quantities being estimated (the provisional ratings), so the estimate returns them; the separating check is the calibrated items' own bank values, which only the joint marginal-likelihood calibration reproduces. Pattern none with G14 decisive (an item's difficulty is its success rate conditioned on the takers' ability, the ability here having to be estimated jointly rather than read from the published scores). Gap objective: the panel's ratings, the percent correct and the reported scale scores are each correct as recorded and none is the item's difficulty on the scale. Gate G etl_conformance: the stump sits in the difficulty field of the conformed bank import that Corvane's import contract defines. Labels population/G16/method_or_model_selection were tried first and refused: that signature is spent in task177's lineage and eight older builds. Context artifact redrawn in place from close_out_summary to monitoring_export on 2026-10-28 after the DRAWN push, when task162's ship commit relabelled its own card close_out_summary and put that value in the window; the monitoring export (Tessaline's item-statistics report, which answers how each item fared among the students who met it, correctly) is the more exact label for the artifact the consortium works from.",
   "client_domain": "education-learning-sciences",
   "registered": "2026-10-28T08:05:27Z"
 }

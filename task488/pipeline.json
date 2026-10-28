@@ -1,38 +1,49 @@
 {
  "task": "task488",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences/item-response-theory-test-equating",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "The default path files a commission of about 50 low-band items because it calibrates the 340 provisional items against the students' reported scale scores, which the vendor computed with the panel's provisional ratings, so the multi-step word problems the panel rated as easy land inside the low band; estimated jointly with the calibrated items fixed, they sit above it and the commission is about 90.",
+ "stump": "The default path files a commission of 138 items against 199 because it calibrates each workshop item against the students' reported scale scores, which Tessaline computed with the writing panel's ratings, so the multi-step word problems the panel rated far too easy land back inside the low band; estimated jointly with the students' abilities, the launch items fixed, 61 of them sit above it.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28",
+  "checks": 53
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-28 --asof 2027-04-02 (four lines on the specification and the scale note, ruled harmless in ## Leak sweep; no LEAK)",
+  "reader": "round 1 and round 2 2026-10-28: Q2 to Q4 none, Q5 executes to the golden, Q6 analytical, review lines harmless; round 2 Q1 quotes the population every route re-estimates (ruled harmless); payments realism fixed after round 1"
  },
  "duplicate_check": {
-  "check": "PASS 2026-10-28 at registration (NOTE driver.near 0.13 against task479 v4, differentiated)",
-  "heart": "",
-  "surface": "",
-  "nearest": "task479 v4 0.13, task126 v0 0.09, task171 v5 0.08"
+  "heart": "PASS 2026-10-28",
+  "surface": "exit 0 2026-10-28, personas none",
+  "check": "PASS (NOTE driver.near 0.13 task479 v4, differentiated)",
+  "nearest": "task479 v4 0.13"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 2 DETERMINISTIC",
+  "disposition": "APPROVE (pass 1 FIX_NOW on the asks, repaired)",
+  "report": "task488/determinism_check_report.md, task488/determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "DESIGN 2026-10-28, architecture 1 (education ETL, Quarrystone item bank migration): write the stage-2 sections and prompt.txt, then precut.py; the prototype is in scratchpad t488/proto (cat4 to cat7)",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": null,
  "source_note": "seed ET45 (analytical_tasks/07_data_extraction_conformation/ET45_gtin-normalization-product-master-matching.md), header and situation only",
- "card_registered": true
+ "card_registered": true,
+ "build": {
+  "checks": "46 of 46",
+  "verify": "53 of 53",
+  "byte_identical": true,
+  "figures_check": "81 of 81",
+  "pair_ceiling": 29.8,
+  "mirror_leakage": 4.8,
+  "zip": "bfca5a21e59bfa05",
+  "call_files_unchanged_by_ask_repair": "bank export, sessions, responses, scale note, item statistics, panel ratings, roster byte-identical"
+ }
 }
