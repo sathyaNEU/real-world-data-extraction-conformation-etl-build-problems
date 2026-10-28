@@ -1,14 +1,14 @@
 {
   "task": "task464",
-  "architecture": 6,
-  "drawn": "2026-10-27",
+  "architecture": 8,
+  "drawn": "2026-10-28",
   "slot_note": "wave 4 (second re-root). Architecture 2 (placing the retiring reading test's scores on the new scale) spent on the portal 2026-10-27 because the decisive step was psychometrics' own named method for the deciding quantity. Architecture 3 keeps the number and the ETL objective, takes a fresh world, and puts the field's own method in the default path: the decisive step is a reconstruction of the capacity input, not a choice of method.",
   "domain": "education-learning-sciences",
   "client_domain": "education-learning-sciences",
-  "subdomain": "randomized-quasi-experimental-program-evaluation",
-  "niche": "a combined authority's adult skills team choosing which of six delivery partners' models to scale for the 2027 funded place allocation, from two intakes of ballot-rationed place offers, waitlist re-offers that lapse at the enrolment census date, and qualification achievement records",
-  "objective": "experiment-causal",
-  "shape": "11",
+  "subdomain": "text-analysis",
+  "niche": "an adult education service's withdrawal review: the composition of reasons behind the 2025/26 withdrawals, coded from learners' own free-text exit comments, with a double-coded quality sample the service runs every term",
+  "objective": "descriptive-distribution",
+  "shape": "05",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
@@ -21,63 +21,63 @@
     "none"
   ],
   "generators": [
-    "G9",
-    "G1"
+    "G16",
+    "G6"
   ],
-  "gate_g": "binding_constraint",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms both intakes' enrolment layouts, resolves the learner identifiers across the provider merger, reads every field and the allocation policy correctly, uses the ballot rather than attendance so the contrast is randomised, and counts every offer the records hold rather than first-round offers alone, expresses each partner's effect per learner offered a place and files Brenlow at 13.7 additional achievements per 100, with Dunthorpe fourth of six; the golden is Dunthorpe at 19.4 per 100 funded places",
-  "domain_test": "The deciding quantity is what one funded place delivers in additional qualification achievements, estimated the way programme evaluation estimates a rationed offer (a within-partner contrast on the place ballot, carried to the unit the commissioner buys). The noun swap breaks it because the place is funded before the learner decides, a refused place can only be re-offered until the enrolment census date closes the intake, and the achievement is awarded on the academic cycle: swap in hospital beds or megawatt-hours and there is no census date that strands a bought unit unused, so nothing separates a funded unit from a used one",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:yield-per-funded-place-when-rationed-offers-lapse-at-a-census-date",
+  "analyst_test": "A strong analyst who stacks every term's withdrawal records, reads every field and the coding manual correctly, de-duplicates the re-coded comments and counts the coded reasons files work hours clash at 24.8 per cent of 2025/26 withdrawals as the reason the 2027 retention budget should target, with caring role second at 19.8; the golden is caring role at 25.0 per cent against work hours clash at 20.5",
+  "domain_test": "The deciding quantity is the composition of the reasons learners actually withdrew for, estimated the way the field estimates a composition from coded text: the coders' own recall per category, measured on the double-coded sample, inverted onto the coded counts. The noun swap breaks it because the categories are the learner's own account of why they stopped attending, written in their words and coded against a manual, so a caring responsibility reaches the record as a sentence about hours and is coded as one; swap in megawatt-hours or hospital beds and there is no narrative to code and no coder to disagree.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:composition-of-coded-free-text-at-unequal-recall",
   "layer1": [
-    "two enrolment-extract layouts across an intake-system change",
-    "a provider merger renaming two partners mid-period",
+    "four terms of withdrawal records in two exports across a system change",
+    "a provider merger renaming two sites mid-year",
     "academic year against funding year",
-    "a preliminary and a revised achievement release overlapping",
-    "learner identifiers re-issued across providers",
-    "thousands against units in the funding schedule"
+    "comments re-coded after a manual revision, with the superseded code left in place",
+    "learner references re-issued across sites",
+    "free-text comments with the usual typing and casing noise"
   ],
-  "stakeholder_role": "the commissioning manager in a combined authority's adult skills team, who puts the 2027 partner slate to the authority's assembly",
-  "role_family": "procurement_lead",
-  "scoring_unit": "flat per seat",
+  "stakeholder_role": "the retention lead in an adult education service, who puts the 2027 retention budget's single target to the head of service and the curriculum managers",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per resolved case",
   "spine": {
-    "file": "place_applications_2025_2026.csv",
-    "rows": 55362,
-    "entity": "one application to one partner for one intake, with its ballot rank and the offers made against it",
-    "grain": "application x partner x intake",
+    "file": "withdrawal_comments_2025_26.csv",
+    "rows": 0,
+    "entity": "one withdrawal with the learner's free-text exit comment and the code assigned to it",
+    "grain": "withdrawal x term",
     "source": "synthetic"
   },
-  "forum": "council_or_assembly",
+  "forum": "line_manager_or_team",
   "forcing_event": "period_close",
   "org_family": "local_government",
   "world": {
     "geography": "an unnamed combined authority area in England",
     "currency": "GBP",
-    "org_type": "a combined authority commissioning adult education places from six delivery partners",
+    "org_type": "an adult education service reviewing why its learners withdraw",
     "invented_names": [
-      "Adult Skills Place Ballot"
+      "Exit Comment Coding Manual"
     ],
     "people": [
-      "Glenn Taylor",
-      "Gail Dobson"
+      "Roger Nicholls",
+      "Carly Leonard"
     ]
   },
   "deliverables": [
-    "partner_place_yield_2027.csv",
-    "commissioning_slate_2027.xlsx"
+    "withdrawal_reason_composition_2025_26.csv",
+    "retention_target_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is what one funded unit delivers, where the buyer commits the unit before the recipient decides and a refused unit can be passed on only until a fixed calendar date closes the cycle, so the share of funded units ever taken up runs from under a half to nearly all across the candidates; an effect estimated per unit taken up, however cleanly identified from the random rationing, ranks the candidates by their effect on a recipient rather than by what the buyer's committed unit returns.",
-  "driver_concrete": "Each partner's place offers were rationed by ballot, so every partner carries a randomised contrast, but a refused place can only be re-offered down the ballot until the enrolment census date, and the partners differ enormously in how much of that waitlist they work (fill rates 0.455 to 0.963). The commissioner buys places, so the deciding figure is additional achievements per 100 funded places, which needs each partner's fill rate measured from the allocation records; no document publishes it.",
-  "stump": "A competent analyst uses the ballot, builds a clean offer contrast and reports each partner's effect per learner offered, naming Brenlow at 13.7 per 100 and placing Dunthorpe fourth of six, because that figure prices the effect on a learner who takes a place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 96 per cent of its places against Brenlow's 64, and per 100 funded places Dunthorpe returns 19.4 against Brenlow's 16.1.",
+  "driver": "The decisive quantity is how a population divides between categories that are only ever observed through a classification that is right at different rates for different categories, so a category whose members describe themselves obliquely is under-counted while the category their words get read as is over-counted; counting the assigned labels ranks the categories by how legible they are rather than by how common they are, and only inverting the per-category hit rates measured on a re-classified sample recovers the division the decision needs.",
+  "driver_concrete": "Caring-role withdrawals reach the record as sentences about hours ('could not get cover for mum on Tuesdays'), so the coding manual's caring-role category has 68 per cent recall while work hours clash has 90 and absorbs the spill. Raw coded counts put work hours clash at 24.8 per cent and caring role at 19.8; inverting the confusion matrix from the double-coded sample puts caring role at 25.0 and work hours clash at 20.5, so the 2027 retention budget targets the opposite reason.",
+  "stump": "A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.8 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which reasons learners had; correcting for the per-category recall on the service's own double-coded sample puts caring role first at 25.0 per cent against work hours clash at 20.5.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task266": "task266 estimates the share of spells ending one way when others end differently and some are still open, so its decisive step is the cumulative incidence against a product-limit estimate: a survival estimator choice. This build's outcome is observed for everyone in both intakes and carries no censoring; the decisive step is the unit the effect is expressed in.",
@@ -85,7 +85,12 @@
     "task44": "task44's pooled effect is a mixture of opposite effects split by a moderator in no column, so its step is a decomposition. Here each partner's effect is homogeneous within the partner and the gradient across partners is visible; what decides is the denominator the commissioner funds, which no decomposition reveals.",
     "task83": "task83 conditions a holdout's effect on each unit's own prior treatment history because the target pool's mix differs. This build carries no effect onto another population: the call is among the same partners that were balloted.",
     "task12": "task12 and task15 recover a population the records hide. Nothing is hidden here: every offer, every ballot rank and every funded place is shipped, and the step is what to divide by.",
-    "task270": "task270 v6 recovers where an item sold without a fixed slot actually landed, because the landing record shows only the items that stayed in the slot they were sold for, so one join over a coverage gap reverses the choice and the judge read the moved bookings as a planted flip. Nothing in this build is mis-recorded or absent: every funded place, every ballot rank, every offer and every achievement is shipped and reconciles, no join reveals a misplacement, and the step is not finding where a unit went but choosing what the per-100 figure is divided by, funded places against learners who took one up."
+    "task270": "task270 v6 recovers where an item sold without a fixed slot actually landed, because the landing record shows only the items that stayed in the slot they were sold for, so one join over a coverage gap reverses the choice and the judge read the moved bookings as a planted flip. Nothing in this build is mis-recorded or absent: every funded place, every ballot rank, every offer and every achievement is shipped and reconciles, no join reveals a misplacement, and the step is not finding where a unit went but choosing what the per-100 figure is divided by, funded places against learners who took one up.",
+    "task253": "task253 is the other education build in a Descriptive objective and counts units whose noisy averages fall below a line, so its step is shrinkage of a measured level against sampling noise in the outcome. Nothing is shrunk here and no unit has a level: the quantity is a composition, and what is corrected is the classification that assigns each case to a category, measured as recall per category.",
+    "task449": "task449 corrects estimates from linked data for a false-link rate, so its error is created by matching records to each other across files. Here nothing is linked: one coder reads one comment and assigns one category, and the error is the category's own recall.",
+    "task121": "task121 v2 turns on which population a signed-out app session belongs to, so its step recovers the unit behind an unattributed event. Every withdrawal here is attributed to one learner and one term with no ambiguity; what is uncertain is the category the comment was placed in, and the correction is the per-category recall measured on the re-coded sample.",
+    "task260": "task260 holds a reader study where several readers score the same images and the question is whether a difference between readers survives its own noise, so its step is a variance question about agreement. Here one coder assigns one category per comment and agreement is not the quantity: the quantity is the composition, and the per-category recall is the instrument that distorts it.",
+    "task236": "task236 tracks ONE condition's capture rate through time, where a change in how a source captures cases moves the rate itself, and the repair is to read the captured share against an independent fixed-protocol sample's volume times its positivity, so the reference sits OUTSIDE the distorted source and the confound is the season. This build has no time dimension in the decisive step and no external reference: six categories are measured at one point by one instrument, the misses from one category land in a named other category, and the repair is to invert the square matrix of per-category hit rates that the service's own re-coded sample measures, so the correction is internal and redistributes between categories rather than rescaling one of them."
   },
   "lineage": [
     {
@@ -138,9 +143,20 @@
       "stump_strategy": "binding_constraint",
       "gate_g": "binding_constraint",
       "driver": "The decisive quantity is how much a set of units can deliver in a forward period, and each unit's deliverable positions are fewer than the positions it reports because some of them cannot be worked at the same time, a ceiling no file states and no attestation reflects; the ceiling is fixed exactly by the greatest number of the unit's own timed service intervals that have ever run together, repeated in every period of a long record, so multiplying reported positions by staffed sessions overstates the total and overstates it most at the units whose ceiling is lowest."
+    },
+    {
+      "architecture": "v6 (Thornmere adult skills place slate, education x experiment-causal)",
+      "fate": "spent 2026-10-28 at stage 3 before the documents or asks were cut. Measured twice: as a measurement of the closed intakes the decisive step was a denominator choice, which collapses to execution once the estimand is filed literally (rule 3); as a forward call the hardening failed the margin floor, best 1.182 against 1.15 over 900,000 draws and every allocation from 4,500 to 20,000 places. Architecture 7's two candidates were also refused, attenuation on task249's reader having landed it and the winner's curse on the one-knob argument.",
+      "domain": "education-learning-sciences",
+      "subdomain": "randomized-quasi-experimental-program-evaluation",
+      "objective": "experiment-causal",
+      "shape": "11",
+      "stump_strategy": "population_selection",
+      "gate_g": "binding_constraint",
+      "driver": "The decisive quantity is what one funded unit delivers, where the buyer commits the unit before the recipient decides and a refused unit can be passed on only until a fixed calendar date closes the cycle, so the share of funded units ever taken up runs from under a half to nearly all across the candidates; an effect estimated per unit taken up, however cleanly identified from the random rationing, ranks the candidates by their effect on a recipient rather than by what the buyer's committed unit returns."
     }
   ],
-  "notes": "Re-rooted 2026-10-27 to architecture 6 after the ETL objective closed for this number (architecture 5 screened all six ETL cells and refused or barred every one; ETL carries 66 cards across six cells and is the only objective with no never-drawn cell). experiment-causal is the least-spent objective, 9 cards and 30 of 32 cells never drawn. education-learning-sciences x experiment-causal is a never-built pairing and randomized-quasi-experimental-program-evaluation a never-drawn cell. MEASURED AT THE DRAW: the specification-extension law closes adding a control, level, interaction or random effect as a class, so the decisive step is the estimand, which CLAUDE.md blesses. Family screen over 304 cards: per-offer against per-attender 0 hits, effect per place 0 hits, while transport (43, 44, 83), population recovery (12, 15), competing risks (266), informative censoring (268, 184, 487, 308) and staggered adoption (9 cards) are spent. Ladder measured on individual-level data: rung 0 participants against non-participants names Brenlow, rung 1 ballot winners who enrolled against losers names Calderwick, rung 2 the first-round ballot ITT names Calderwick, rung 2b that ITT grossed per place names Brenlow, the clean per-offer contrast names Brenlow, and the golden per 100 funded places names Dunthorpe at a margin of 1.207. The golden sits 4th of 6 on rungs 0, 1 and 2b and 5th on rung 2. Bin test at a bin of 1.0 per 100 places: (a) 7.98, (b) 0.000 because golden equals 100 x offers-ever-made over places-funded x the clean contrast and has no free parameter, (c) 3.18, ratio 2.51, and (a) is not the smallest rung gap. Call stability 287 of 300 draws. Strategy key: causal_design and grain_or_unit are both banned on this window, and population_selection is the honest key for the decisive step, which is what the per-100 figure is divided by (funded places against learners who took a place), with places never taken up as the exposure that differs by partner. Decisive generator is G9, downstream survival against upstream acquisition: the authority funds places and only some survive to an enrolment, the surviving share running 0.455 to 0.963 by partner. G1, the unit of value, is the consequence, which figure the per-100 is divided by. Gate G mechanism is binding_constraint, not method_or_model_selection: no method is selected here, which is why the licensed-family spread measures 0.000 bins. What binds is the enrolment census date, a service limit that stops a refused place being passed further down the ballot, which is why a funded place at one partner strands and at another fills, and it is what removes the natural pick.",
-  "registered": "2026-10-27T23:18:10Z",
+  "notes": "Re-rooted 2026-10-27 to architecture 6 after the ETL objective closed for this number (architecture 5 screened all six ETL cells and refused or barred every one; ETL carries 66 cards across six cells and is the only objective with no never-drawn cell). experiment-causal is the least-spent objective, 9 cards and 30 of 32 cells never drawn. education-learning-sciences x experiment-causal is a never-built pairing and randomized-quasi-experimental-program-evaluation a never-drawn cell. MEASURED AT THE DRAW: the specification-extension law closes adding a control, level, interaction or random effect as a class, so the decisive step is the estimand, which CLAUDE.md blesses. Family screen over 304 cards: per-offer against per-attender 0 hits, effect per place 0 hits, while transport (43, 44, 83), population recovery (12, 15), competing risks (266), informative censoring (268, 184, 487, 308) and staggered adoption (9 cards) are spent. Ladder measured on individual-level data: rung 0 participants against non-participants names Brenlow, rung 1 ballot winners who enrolled against losers names Calderwick, rung 2 the first-round ballot ITT names Calderwick, rung 2b that ITT grossed per place names Brenlow, the clean per-offer contrast names Brenlow, and the golden per 100 funded places names Dunthorpe at a margin of 1.207. The golden sits 4th of 6 on rungs 0, 1 and 2b and 5th on rung 2. Bin test at a bin of 1.0 per 100 places: (a) 7.98, (b) 0.000 because golden equals 100 x offers-ever-made over places-funded x the clean contrast and has no free parameter, (c) 3.18, ratio 2.51, and (a) is not the smallest rung gap. Call stability 287 of 300 draws. Strategy key: causal_design and grain_or_unit are both banned on this window, and population_selection is the honest key for the decisive step, which is what the per-100 figure is divided by (funded places against learners who took a place), with places never taken up as the exposure that differs by partner. Decisive generator is G9, downstream survival against upstream acquisition: the authority funds places and only some survive to an enrolment, the surviving share running 0.455 to 0.963 by partner. G1, the unit of value, is the consequence, which figure the per-100 is divided by. Gate G mechanism is binding_constraint, not method_or_model_selection: no method is selected here, which is why the licensed-family spread measures 0.000 bins. What binds is the enrolment census date, a service limit that stops a refused place being passed further down the ballot, which is why a funded place at one partner strands and at another fills, and it is what removes the natural pick. ARCHITECTURE 8, 2026-10-28: re-rooted to education x descriptive-distribution on text-analysis, a never-drawn cell, after the four measured laws closed most of experiment-causal. Measured before drawing: 'a labelled subsample calibrates the classification' is 0 of 304 cards and prevalence-from-imperfect-classification only 2, both in other domains. Validated at the draw: the call reverses from work hours clash to caring role, (a) 5.25 points on the call's own figure, (b) 0.000 because the corrected composition is the closed-form solution of M p = q and carries no free parameter, (c) 1.39 points from a 4,000-comment double-coded sample, ratio 3.79, corrected margin 1.220, and the corrected ranking names caring role in 100 per cent of subsample draws. None of the four laws applies: no term is added to a fit, the unit is a share and is not the decisive step, the margin is structural rather than a hull interior, and nothing is selected on its own estimate. Axes at the draw: G3 was refused as the decisive generator because nothing here is a defect of record against operation (the guard's own note warns G3 alone reads as a planted flip) and because that signature is spent seven ways; the honest generator is G16, which method the structure entitles, with G6 the composition it acts on. operations_log, executive_team and decomposition_attribution were each banned against a recent build and redrawn. Strategy key: none of the existing keys honestly describes measurement error in a CLASSIFICATION (composition_mix is a mix shift, population_selection a denominator, uncertainty_hold noise rather than bias), so classification_error was added to vocab.json with its definition, which is the vocabulary-drift move fingerprint Part 4 licenses when no key is honest. Gate G is decomposition_attribution because the overlap between coding categories is what decides the split, not a method menu.",
+  "registered": "2026-10-28T01:33:37Z",
   "architecture_spent": false
 }

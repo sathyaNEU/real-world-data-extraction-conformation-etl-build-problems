@@ -1,157 +1,159 @@
-# task464 design note: the 2027 adult skills place slate (architecture 6)
+# task464 design note: the 2027 retention target (architecture 8)
 
 Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the measured
 screens at the foot of this file before resuming. Architecture 1 (the Wendlemere building emissions slate) was
 sent back by the determinism judge. Architecture 2 (placing the retiring reading test's scores on the new scale)
-was solved on the portal, because its decisive step was psychometrics' own named method for the deciding
-quantity. Architecture 3 (the 2027 outpatient capacity register) was sent back at the stage 4 re-judge on Gate C
-and its world then measured closed; its body is not kept, and its measured record is in `## Tried and rejected`
-and `## Portal result and the diagnosis, 2026-10-27`. Architecture 4 screened the author's fixed education and
-ETL pairing and refused all four candidate decisive steps on measured arithmetic. Architecture 5 screened all six
-ETL cells in the taxonomy and refused or barred every one, which closed the ETL objective for this number.
+was solved on the portal because its decisive step was psychometrics' own named method. Architecture 3 (the 2027
+outpatient capacity register) was sent back at the stage 4 re-judge on Gate C and its world then measured
+closed. Architecture 4 screened the author's fixed education and ETL pairing and refused all four candidates.
+Architecture 5 screened all six ETL cells and refused or barred every one, closing the ETL objective for this
+number. Architecture 6 (the adult skills place slate) was refused twice on measured arithmetic and is the source
+of laws 2 and 3 below. Architecture 7's two candidates, attenuation and the winner's curse, were refused on the
+ledger and on arithmetic, giving laws 1 and 4.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 6; architectures 1, 2 and 3 in
-  `lineage`), registered 2026-10-27, guard WARN only, nearest driver on file 0.05.
-- **The one WARN answered.** `repeat.question_form`: which also opens task304's prompt. The decision is a pick of
-  one delivery partner from six, so which is the form the decision gives (the guard's own fix line), and the
-  alternatives each describe a different decision: how many would ask for a number of places, how much for a
-  budget, whether for a go or stop on one partner.
-- **Pairing:** education-learning-sciences / randomized-quasi-experimental-program-evaluation, objective
-  Experiment & Causal Analysis, prompt shape 11 (before and after with a control, each unit's effects). The
-  pairing has never been built and the cell has never been drawn; in the taxonomy
-  `randomized-quasi-experimental-program-evaluation` serves EC and no other objective.
-- **Why this objective, measured.** experiment-causal carries 9 cards with 30 of its 32 cells never drawn, the
-  least spent of the eight objectives. ETL carries 66 cards across 6 cells and is the only objective in the
-  corpus with no never-drawn cell, which is what architecture 5 established when it closed ETL for this number.
-- **Why shape 11 over 07 and 13.** The criteria come from each partner's own effects, three figures per partner
-  across six partners, which is the structure of the answer here. A grid of cells (07) would grade partner by
-  intake cells that the call never separates, and scenarios with a flip point (13) would make the dial the
-  object when the decision is a pick.
-- **Niche:** a combined authority's adult skills team choosing which of six delivery partners' models to scale
-  for the 2027 funded place allocation, from two intakes of ballot-rationed place offers, waitlist re-offers that
-  lapse at the enrolment census date, and qualification achievement records.
-- **Strategy:** `population_selection`, gap `population` then `objective`, Gate G `binding_constraint`,
-  generators `G9` (downstream survival against upstream acquisition) then `G1` (unit of value), decisive rule
-  filed `false`, official decoy `false`, validated decoy `false`, `stump_class: analytical`.
-- **Data-native sentence.** A place is funded before the learner decides, and a refused place can be passed down
-  the ballot only until the enrolment census date closes the intake, so each partner's funded places convert to
-  enrolments at a rate set by how much of its waitlist it works before that date. This pack carries two intakes
-  of ballot ranks and dated offers for 55,362 applications, and the converting share runs from 0.455 to 0.963
-  across the six partners. Nothing in the pack states it; it is only in the allocation records.
-- **Sources, one line each.** `guard.py mechanisms --objective experiment-causal` was read before drawing, and
-  the whole corpus was screened for the family. task266 spends the cumulative incidence against a product-limit
-  estimate, a survival estimator choice, in a community college; this build's outcome is observed for everyone
-  and carries no censoring. task268 spends informative censoring by clinical state; nothing here is lost to
-  follow-up. task44 and task83 spend carrying a pooled effect onto a population with a different mix; this call
-  is among the same partners that were balloted. task12 and task15 spend recovering a population the records
-  hide; every offer, ballot rank and funded place is shipped here. task270 v6 spends one join over a coverage gap
-  and was read as a planted flip; nothing here is mis-recorded.
-- **Fiction.** An unnamed combined authority area in England, GBP, a combined authority commissioning adult
-  education places from six delivery partners, forum `council_or_assembly`, forcing event `period_close`, org
-  family `local_government`. People drawn with `guard.py names --geo england --seed 464`: Glenn Taylor, Gail
-  Dobson.
-- **Deliverables:** `partner_place_yield_2027.csv` (one row per partner) and `commissioning_slate_2027.xlsx`
-  (the six partners against the yield, with the chart).
-- **The call faces forward:** the 2027 funded place allocation is not committed at the as-of date.
-- **Measured at the draw,** closed form and then on individual-level data, six partners, 55,362 applications:
+- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 8; architectures 1, 2, 3 and 6 in
+  `lineage`), registered 2026-10-28, guard WARN only, nearest driver on file 0.07, 304 cards validated.
+- **The WARNs answered.** `people.first`: Carly appears in task457, an older build, and the pair is drawn from
+  `guard.py names --geo england --seed 4648`, never typed. `repeat.decision` and `repeat.question_form`: the
+  decision is to pick one reason from six for a single budget line, so a pick asking which is the form the
+  decision gives (the guard's own fix line); a count or a gate would describe a different decision.
+- **Pairing:** education-learning-sciences / text-analysis, objective Descriptive & Distribution, prompt shape 05
+  (allocation to a fixed total, each bucket). `text-analysis` serves DD in the taxonomy and nothing else, and it
+  is a never-drawn cell.
+- **Why this ground, measured.** The four laws at the foot of this note close specification extensions, unit
+  choices, hull interiors and selection corrections, which with transport, population recovery, competing risks,
+  informative censoring and staggered adoption already spent leaves little in Experiment & Causal. Descriptive &
+  Distribution carries 19 never-drawn cells of 39, the most open ground in the corpus. Screened before drawing:
+  "a labelled subsample calibrates the classification" is 0 of 304 cards, and prevalence from imperfect
+  classification only 2, both in other domains.
+- **Shape 05 against 14 and 12.** The answer is a composition that sums to one total, so each bucket is a
+  criterion twice over, once as coded and once as corrected. Cuts of a distribution (14) would grade segments the
+  call never separates, and a drill-down (12) would make a hierarchy the manual does not have.
+- **Niche:** an adult education service's withdrawal review: the composition of reasons behind the 2025/26
+  withdrawals, coded from learners' own free-text exit comments, with the double-coded quality sample the service
+  runs every term.
+- **Strategy:** `classification_error` (new in `vocab.json`, its own SKILLS commit, because no existing key is
+  honest for measurement error in a classification), gap `population` then `objective`, Gate G
+  `decomposition_attribution` (the overlap between coding categories decides the split), generators `G16` then
+  `G6`, calibration organ `gold_standard_subsample`, decisive rule filed `false`, official decoy `false`,
+  validated decoy `false`, `stump_class: analytical`.
+- **Data-native sentence.** A learner who stops attending writes why in their own words, and a caring
+  responsibility reaches the record as a sentence about hours ("could not get cover for mum on Tuesdays"), so the
+  manual's caring-role category is recognised in 68 of every 100 cases that belong to it while work hours clash
+  is recognised in 90 and takes most of the spill. This pack carries four terms of those comments, their codes,
+  and the service's own re-coded sample, which is the only thing in it that measures a category's hit rate.
+- **Sources, one line each.** task253 is the other education build in a Descriptive objective and shrinks noisy
+  unit averages against a line; nothing is shrunk here and no unit has a level. task449 corrects for a false-link
+  rate created by matching records across files; nothing is linked here. task236 tracks one condition's capture
+  rate through time against an external fixed-protocol sample; this has no time dimension in the decisive step
+  and corrects internally, between categories. task260 asks whether a difference between readers survives its
+  noise; agreement is not the quantity here. task170 and task189 are the only two cards touching prevalence from
+  imperfect classification and both sit in other domains.
+- **Fiction.** An unnamed combined authority area in England, GBP, an adult education service reviewing why its
+  learners withdraw, forum `line_manager_or_team`, forcing event `period_close`, org family `local_government`.
+  People drawn with `guard.py names --geo england --seed 4648`: Roger Nicholls, Carly Leonard.
+- **Deliverables:** `withdrawal_reason_composition_2025_26.csv` (one row per reason) and
+  `retention_target_2027.xlsx` (the six reasons against the total, with the chart).
+- **The call faces forward:** the 2027 retention budget's target is not committed at the as-of date.
+- **Measured at the draw,** from the composition and the coder matrix, before any row was cut:
 
-  | route | what it computes | names | call's rank |
+  | reason | raw coded | corrected | shift |
   |---|---|---|---|
-  | rung 0 | learners who enrolled against learners who did not | Calderwick 31.9 | 4 of 6 |
-  | rung 1 | ballot winners who enrolled against ballot losers | Fairholt 30.5 | 4 of 6 |
-  | rung 2 | the first-round ballot contrast per learner offered | Brenlow 12.5 | 5 of 6 |
-  | rung 2b | that first-round contrast per funded place | Brenlow 13.9 | 3 of 6 |
-  | rung 3 | the clean offer contrast per learner offered | Brenlow 13.5 | 3 of 6 |
-  | golden | per 100 funded places | Dunthorpe 20.6 | 1, margin 1.372 |
+  | work hours clash | 24.8 | 20.5 | minus 4.3 |
+  | caring role | 19.8 | 25.0 | plus 5.3 |
+  | course difficulty | 15.3 | 15.5 | plus 0.2 |
+  | other | 14.4 | 12.0 | minus 2.4 |
+  | travel | 13.2 | 14.0 | plus 0.8 |
+  | health | 12.7 | 13.0 | plus 0.3 |
 
-  Three distinct wrong answers across the ladder (Calderwick, Fairholt, Brenlow). Graded yields are Dunthorpe
-  20.6, Brenlow 15.0, Calderwick 13.6, Fairholt 12.3, Ashcombe 9.3, Elmsgate 5.7, the smallest gap 1.37, so all
-  six are distinct to one decimal place. Fill rates are Dunthorpe 0.980, Brenlow 0.663, Ashcombe 0.571,
-  Calderwick 0.517, Elmsgate 0.495, Fairholt 0.394. The decisive step is worth 7.95 per 100 places on the call's
-  own figure, and the licensed-family spread is zero because the golden reduces to 100 times offers ever made
-  over places funded times the clean contrast, which carries no free parameter. Seed 46835, fixed in world.py.
+  The call reverses from work hours clash to caring role. (a) is 5.25 points on the call's own figure. (b) is
+  0.000 because the corrected composition is the closed-form solution of `M p = q` and carries no free
+  parameter: there is no estimator family to spread. (c) is 1.39 points from a 4,000-comment double-coded
+  sample, so the ratio is 3.79, and the corrected ranking still names caring role in 100 per cent of 3,000
+  resampled subsamples. The corrected margin over the runner-up is 1.220 and the raw margin over its own
+  runner-up is 1.254, so the easy route commits with confidence. None of the four laws applies: no term is added
+  to a fit, the unit is a share and is not the decisive step, the margin is structural rather than a hull
+  interior, and nothing is selected on its own estimate.
 
 ## Default path
 
 A competent analyst builds this without hesitating, from the prompt's words and the files' grain.
 
-1. Stack the two intakes' enrolment extracts across the intake-system change and conform the learner records,
-   resolving identifiers across the provider merger that renamed two partners mid-period.
-2. Read the place ballot records and keep, per partner and intake, each application with its ballot rank.
-3. Join the achievement release to the learners, taking the revised release where it supersedes the preliminary
-   one, and define the outcome as the qualification achieved by the award date.
-4. Reject an attendance-based comparison, because enrolment is the learner's choice: use the ballot instead, so
-   the contrast is randomised.
-5. Count every offer the records hold rather than first-round offers alone, so the treated group is every
-   applicant ever offered a place and the comparison group is the applicants never offered one.
-6. Compute each partner's contrast as the achievement rate among applicants ever offered a place less the rate
-   among those never offered, and express it per 100 learners offered a place.
-7. Rank the partners on that figure and recommend the top one.
+1. Stack the four terms' withdrawal exports and conform the two layouts across the student-record system change.
+2. Resolve learner references across the two sites the merger renamed, joining on the unique learner number
+   rather than the site's own reference.
+3. Keep one row per withdrawal, dropping the superseded rows where the manual revision re-coded a comment.
+4. Read each withdrawal's coded reason from the coding field and check it against the manual's six categories.
+5. Count the withdrawals by coded reason and divide each by all withdrawals across the four terms.
+6. Rank the six reasons by that share and name the largest as the reason the 2027 retention budget should target.
 
-`Ends on:` Brenlow, 13.5 additional achievements per 100 learners offered a place, with Dunthorpe third of six.
-`Golden:` Dunthorpe, 20.6 additional achievements per 100 funded places, Brenlow second at 15.0, margin 1.372.
+`Ends on:` work hours clash, 24.8 per cent of 2025/26 withdrawals, with caring role second at 19.8.
+`Golden:` caring role, 25.0 per cent, with work hours clash second at 20.5, margin 1.220.
 
 ## Stump sentence
 
-A competent analyst who uses the ballot rather than attendance, counts every offer the records hold and builds a
-clean randomised contrast expresses each partner's effect per learner offered a place and commits to Brenlow at
-13.5 per 100, placing Dunthorpe third of six, because that figure prices the effect on a learner who takes a
-place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 98 per cent of its funded
-places against Brenlow's 66, so per 100 funded places Dunthorpe returns 20.6 against Brenlow's 15.0.
+A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.8
+per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which
+reasons learners had; the manual's caring-role category is recognised in 68 of every 100 cases that belong to it
+against work hours clash's 90, and work hours clash takes most of the spill, so inverting the per-category hit
+rates the service's own re-coded sample measures puts caring role first at 25.0 per cent against 20.5.
 
 ## Three rules
 
-`Task type:` randomized-quasi-experimental-program-evaluation, which serves Experiment & Causal Analysis in the
-client taxonomy and no other objective.
+`Task type:` text-analysis, which serves Descriptive & Distribution in the client taxonomy and no other
+objective.
 
-`Domain test:` the deciding quantity is what one funded place delivers in additional qualification achievements,
-estimated the way programme evaluation estimates a rationed offer, as a within-partner contrast on the place
-ballot carried to the unit the commissioner buys.
+`Domain test:` the deciding quantity is the composition of the reasons learners actually withdrew for, estimated
+the way the field estimates a composition from coded text: the per-category hit rates measured on the
+double-coded sample, inverted onto the coded counts.
 
-`Swap:` put hospital beds or megawatt-hours in the call sentence and it stops making sense, because no census
-date strands a bought unit unused: a bed or a megawatt-hour is consumed when it is supplied, while a funded place
-is committed before the learner decides and lapses if the intake closes before the waitlist reaches a taker.
+`Swap:` put megawatt-hours or hospital beds in the call sentence and it stops making sense, because there is no
+narrative to code and no coder to disagree with: the categories here are the learner's own account of why they
+stopped attending, written in their words and placed in a category by someone reading them.
 
-`Layer 1:` two enrolment-extract layouts across an intake-system change, a provider merger renaming two partners
-mid-period, academic year against funding year, a preliminary and a revised achievement release overlapping,
-learner identifiers re-issued across providers, thousands against units in the funding schedule. Each is produced
-by the authority's own systems and none carries the stump.
+`Layer 1:` four terms of withdrawal records in two exports across a student-record system change, a merger
+renaming two sites mid-year, academic year against funding year, comments re-coded after a manual revision with
+the superseded code left in place, learner references re-issued across sites, and the usual typing and casing
+noise in free text. Each is produced by the service's own systems and none carries the stump.
 
-`Layer 2:` family `estimand_identification`. The decisive choice is the unit the effect is expressed in, which
-forces the fill rate to be measured from the allocation records.
+`Layer 2:` family `estimation_fit`. The decisive choice is whether the composition is read off the assigned
+labels or recovered from them, which forces the per-category hit rates to be measured and inverted.
 
-`Decisive step:` express each partner's randomised offer effect per funded place rather than per learner offered
-or per learner enrolled, which requires measuring what share of each partner's funded places ever reached a
-taker before the census date.
+`Decisive step:` invert the coders' per-category hit rates onto the coded counts, rather than reading the
+composition off the labels, because a category whose members describe themselves obliquely is recognised less
+often than the category their words get read as.
 
-`Not semantics:` every field is read correctly on the easy route. The offer records, ballot ranks, census date
-and achievement release are all read as they are, and the route still files Brenlow, because the error is the
-denominator the figure is expressed over, not any field's meaning. Measured: per enrolled learner names Calderwick, per
-learner offered names Brenlow, per funded place names Dunthorpe.
+`Not semantics:` every field is read correctly on the easy route. The coding field is correctly understood as
+the category a coder assigned, the manual's six categories are read correctly, and the re-coded rows are
+correctly superseded, and the route still files work hours clash, because what it omits is that the assignment
+is right at different rates for different categories. No field states a hit rate and no reading of any field
+supplies one.
 
-`Not rule application:` no shipped rule converts an offer contrast to a per-place yield, and no shipped document
-publishes any partner's fill rate or its places funded against places filled; the two sit in different systems
-and the ratio has to be constructed.
+`Not rule application:` no shipped sentence says to correct the composition, the coding manual states what each
+category means and never how often it is recognised, and the double-coded sample ships as the service's routine
+quality return with no instruction attached to it.
 
-`Analyst test:` the easy route is step 6 of the default path, the clean randomised contrast expressed per learner
-offered a place, and it files Brenlow at 13.5 per 100 with Dunthorpe third of six. Changing the decisive step
-alone, to per funded place, files Dunthorpe at 20.6.
+`Analyst test:` the easy route is step 5 and 6 of the default path, the share of withdrawals by coded reason, and
+it files work hours clash at 24.8 per cent. Changing the decisive step alone, to the inverted hit rates, files
+caring role at 25.0.
 
-`Estimand:` the additional learners achieving the qualification per 100 places the authority funds at a partner
-for the intake, counting a funded place that no learner took up, filed in the commissioning schedule.
+`Estimand:` the share of the service's 2025/26 withdrawals that happened for each of the six reasons in the
+coding manual, as a percentage of all withdrawals recorded across the four terms, to one decimal place, filed in
+the withdrawal review's terms of reference.
 
-`No decoy:` nothing is planted to be caught. There is no copied block, no hidden rule, no memo arguing a partner,
-and no stakeholder figure written to carry the wrong answer; the allocation records are an honest account of a
-ballot with a waitlist.
+`No decoy:` nothing is planted to be caught. There is no copied block, no hidden rule, no memo arguing a reason
+and no stakeholder figure written to carry the wrong answer; the coding is an honest record of people reading
+comments against a manual, and the re-coded sample is a return the service already makes.
 
-`No certified replay:` the method is not hidden and recovered by reproducing certified figures. No corpus of past
-commissioning decisions ships, and no published figure is reproduced only by the golden's route.
+`No certified replay:` the method is not hidden and recovered by reproducing certified figures. No published
+composition ships, and no figure in the pack is reproduced only by the golden's route.
 
-`Lesson:` a model learns that an effect has to be expressed in the unit the decision commits, and that a unit
-bought before the recipient chooses is not the unit the records measure the effect on. No build on file teaches
-it: per-offer against per-attender measures zero hits across 304 cards, and effect per funded unit measures zero.
+`Lesson:` a model learns that a category counted through a classifier is counted at the classifier's recall for
+that category, so a composition read off labels ranks categories by how legible they are rather than how common,
+and that the correction needs no model, only the hit rates a re-coded sample already measures. No build on file
+teaches it: a labelled subsample calibrating a classification measures 0 of 304 cards.
 
 ## Tried and rejected
 

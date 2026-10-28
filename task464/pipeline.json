@@ -2,12 +2,12 @@
  "task": "task464",
  "status": "DESIGN",
  "domain": "education-learning-sciences",
- "objective": "experiment-causal",
+ "objective": "descriptive-distribution",
  "stage": 2,
  "stage_name": "design",
- "updated": "2026-10-27",
- "stump": "A competent analyst who uses the ballot rather than attendance, counts every offer the records hold and builds a clean randomised contrast expresses each partner's effect per learner offered a place and commits to Brenlow at 13.7 per 100, placing Dunthorpe fourth of six, because that figure prices the effect on a learner who takes a place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 96 per cent of its funded places against Brenlow's 64, so per 100 funded places Dunthorpe returns 19.4 against Brenlow's 16.1.",
- "architecture": 6,
+ "updated": "2026-10-28",
+ "stump": "A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.8 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which reasons learners had; inverting the per-category hit rates the service's own re-coded sample measures puts caring role first at 25.0 per cent against 20.5.",
+ "architecture": 8,
  "architecture_spent": "3, on the re-judge's Gate C finding. Architecture 4 refused and its refusal covers the whole education-learning-sciences / item-response-theory-test-equating cell (0 of 168 cells over 24 seeds at 7 settings). Architecture 5 screened the two ETL cells the author allocated this pass, general-statistics-data-science / data-integration-record-linkage-entity-resolution (cell A) and survey-research-official-statistics / census-register-administrative-data-quality (cell C), and both are refused on measurement: see DESIGN_NOTE.md, '## Architecture 5' at the foot of the file, and the two architecture 5 lines in '## Tried and rejected'.",
  "loops": 0,
  "precut": {
@@ -45,7 +45,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 2 design. The draw is registered and committed and the note carries ## Draw, ## Default path, ## Stump sentence and ## Three rules. Still owed before precut.py can exit 0: ## Readability screen (a row per rung, the decisive row silent; the known risk to argue is that the waitlist cascade is visible to the hygiene battery, which is a lower rung's territory, while the per-funded-place denominator is not), ## Semantic fork table, ## Ladder, ## Closure table (22 axes), ## Literal reader, ## Oracles, ## Ask sheet, and prompt.txt through voice-check.py. The estimand must be filed literally as additional learners achieving per 100 places funded, counting a funded place no learner took up, in the commissioning schedule: filing it does not spend the stump, because what the solver must discover is that a funded place is not a participant and that the converting share runs 0.455 to 0.963, which no shipped document publishes. Guard against shipping any document that states places funded against places filled per partner, which would be an oracle. Prototypes and the measured ladder are in the scratchpad under t464.",
+ "resume": "Stage 2 design, architecture 8. The draw is registered and committed and the note carries ## Draw, ## Default path, ## Stump sentence and ## Three rules. Still owed before precut.py can exit 0: ## Readability screen, ## Semantic fork table, ## Ladder, ## Closure table (22 axes), ## Literal reader, ## Oracles, ## Ask sheet with a cracker sheet and a Measured by line naming an existing script, and prompt.txt through voice-check.py. The generator is rewritten for this world: architecture 6's world.py, sim.py and pack.py are the six-partner place ballot and do not apply. The estimand is filed in the review's terms of reference as the share of withdrawals that HAPPENED for each reason, which forces the correction without naming it. Guard against shipping any document that states a per-category hit rate or a corrected share, which would be the oracle. Measurements are in the scratchpad under t464.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": "both responses landed the call",
