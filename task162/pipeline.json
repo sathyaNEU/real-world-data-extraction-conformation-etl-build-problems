@@ -1,30 +1,30 @@
 {
  "task": "task162",
- "status": "SHIPPED",
- "domain": "product-analytics/feature-adoption-diffusion-modeling",
+ "status": "DESIGN",
+ "domain": "energy-systems-utilities/asset-condition-maintenance",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-27",
- "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs, onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when all three releases ship on Patch Tuesday and the Windows restart burst falls inside each release week, so the busiest week carries about 900 items and needs 8.",
- "architecture": 1,
- "loops": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-28",
+ "stump": "Scaling each Phase 3 district's 2025-26 assessed leakage by the valve's night pressure ratio raised to its N1 files the phase as meeting its contracted reduction with no find-and-fix; the step that lands it there is carrying the night reduction through every hour, when each fixed-outlet valve stands open whenever the trunk main's daytime drop takes its inlet below the setting, so the 2027-28 assessment will measure a smaller reduction and the phase falls short.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-27 (no LEAK; the export manifest and the field notes withdrawn, which sweep 1 now reads as LEAK; two design-note vocabulary lines, one ranking INFO)",
-  "reader": "clean on 62e91745 (Q1, Q2 and Q4 none, Q6 analytical; its two readings, the register's queue sentence and the run's end, ruled closed in leak_check_report.md)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-27 (strategy risk and question form, answered on the card; same_puzzle_older and same_driver_older against task171 v4 and task178 v1, lineage filed after this build shipped, differentiated on the card)",
-  "nearest": "stump text 0.07 task146; driver 0.08 task98 v4; surface: the same four card-level promotions (task160, task161, task130, task102), no hard tell"
+  "heart": "",
+  "nearest": "driver 0.07 task303 (guard check at registration, WARN only)"
  },
  "judge": {
-  "verdict": "APPROVE",
-  "disposition": "DETERMINISTIC, no fix (the repair's one re-judge on 62e91745: its blind derivation filed 6 triagers and about 700 before it read the answers, then 875 to 910 on the restart model, 8 triagers; every ask figure reproduced, Ask B by the arrival component; Gate G analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical)",
-  "report": "task162/determinism_check_report.md (2026-10-27, target.zip 62e91745)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -32,11 +32,17 @@
    "portal": "determinism block: one judge passed every gate (A to G pass, F strong, valid stump); the other unsure, Gate C on Ask B's \"arrived in its components\" (the component an item came in with, its components by the run's end, or every component it held: Graphics and Media 136 against 205) and the main call's 900, which it could not rebuild (no fork shown)",
    "repair": "determinism: the working agreement counts a group's intake once per report, in the group of the component it comes in with (SF15); the export manifest and the old export's field notes withdrawn as data descriptions, their facts moved into the files' own forms (Helsinki offsets on the old export's times, SF14; the runbook's sentence on the old tracker's export, SF9); the old dashboard declared a third distractor; every graded figure frozen (freeze.py PASS)",
    "commit": "RESHIPPED (task162) of 2026-10-27"
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "determinism block, round 2 on the 10-27 reship: one judge unsure, the other failed, both Gate C and D competing_defensible_answer on the main call, fix in the input files (a strong solver's validated release-phase model filed 6, and on the record, where only two releases had shipped off the usual week before Patch Tuesday, no shipped sentence or plain back-test ruled it out)",
+   "repair": "input files re-cut: the autumn 2026 releases sit two to four weeks before Patch Tuesday, so no profile carried from recent releases fits the next; the staffing thread files the test every team's forecast is held to (made the day before each of this year's releases, fewest items missed to the next, every week's miss counted over or under; SF16), which the restart model wins under every reading against every empirical model, all of which file 6; installs seasonality damped and the first-use share raised so every installs projection files 8; then, on the repair's judge pass 3 (DETERMINISTIC, optional FIX_NOW: the netted reading of the test, and an autumn-only fit reaching 9 triagers), the test's over-or-under clause and the first-use reports thinned by 2.5 per cent on their own stream so the forecast sits at the 8-triager band's centre (899.6), every fit window filing 8 (SF17); the call, the stump and the default path's 6 unchanged, every ask figure new (freeze.py fails in both modes, recorded in the design note)",
+   "commit": "none: the re-cut was judged three times on the regular checks and never resubmitted; architecture 1 spent 2026-10-28, re-rooted at the author's word"
   }
  ],
- "resume": "",
+ "resume": "Architecture 2 at stage 2 (design): default path, stump sentence, readability screen, semantic fork table, ladder, closure table, literal reader, ask sheet and prompt.txt for the Phase 3 valve forecast, gate precut.py exit 0; then the new generator (the architecture 1 generator in the folder is the returned reship's and is replaced whole at stage 3).",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
