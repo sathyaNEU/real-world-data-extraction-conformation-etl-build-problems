@@ -2,17 +2,17 @@
   "task": "task270",
   "architecture": "v11 (Tidewell Coast and Ranges Primary Health Network's 2028-2030 late-life frailty program: which of its twelve local government areas' residents reaching 85 could expect fewer than seven more years under their 2024-2026 death rates, the 85-and-over group's exposures rebuilt by single year of age from the 2021 census aged forward with the deaths since)",
   "drawn": "2026-10-28",
-  "slot_note": "Architecture 11, re-rooted in another domain after architecture 10 was sent back at stage 4 (Gate H rule_application; architectures 1 to 10 in lineage). The decisive step rebuilds each area's 85-and-over exposures by single year of age from the 2021 census aged with each cohort's deaths, and builds a complete life table, not the abridged table closed on the open group's crude death rate.",
+  "slot_note": "Architecture 11, re-rooted in another domain after architecture 10 was sent back at stage 4 (Gate H rule_application; architectures 1 to 10 in lineage). The guidelines file a single-year life table to 95 and over; the decisive step rebuilds each area's population at each age inside the published 85-and-over estimate by following the 2021 census ages forward with each birth window's deaths, where the default path splits the estimate by the census's single-year mix.",
   "domain": "sociology-demography",
   "subdomain": "fertility-mortality-life-table-estimation",
   "client_domain": "sociology-demography",
-  "niche": "a primary health network setting the areas for its 2028-2030 late-life frailty program by each local government area's period life expectancy at 85, the open-ended 85-and-over group's exposures rebuilt by single year of age from the 2021 census aged forward with each birth cohort's registered deaths",
+  "niche": "a primary health network setting the areas for its 2028-2030 late-life frailty program by each local government area's period life expectancy at 85 on a single-year life table to 95 and over, each age's population inside the published 85-and-over estimate rebuilt from the 2021 census followed forward with each birth window's registered deaths",
   "objective": "descriptive-distribution",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Coldwater Plains, Dunesford, Saltwick Shoals and Windermoor (planned at the draw; final from figures.json)",
-  "answer_source": "task270/generator/figures.json (call)",
+  "answer": "Coldwater Plains, Dunesford, Saltwick Shoals and Windermoor (life expectancy at 85 of 6.8, 6.9, 6.9, 6.6 years; the census split names Coldwater Plains, Spraymouth and Windermoor)",
+  "answer_source": "task270/generator/figures.json (call, e85)",
   "gap": [
     "population"
   ],
@@ -31,25 +31,27 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who takes every 2024 to 2026 death of a resident aged 85 and over by date of occurrence and usual residence, interstate registrations included, sums the estimated resident population aged 85 and over at 30 June of each year and closes the group on its crude death rate (the abridged life table's last row, years lived beyond 85 as person-years over deaths) names Cobbleton, Coldwater Plains, Spraymouth and Windermoor, when the life table's own rates on exposures rebuilt by single year from the 2021 census and each cohort's deaths name Coldwater Plains, Dunesford, Saltwick Shoals and Windermoor.",
-  "domain_test": "Life expectancy at 85 is demography's period life-table estimand, worked from age-specific death rates with the open-ended oldest group closed by its person-years; that closure on the group's crude rate is exact only where the group's age mix is the steady one its rates imply, and only a population counted by single year at a census with deaths registered by date of birth lets the group's exposures be rebuilt age by age, so a tenure or product life table, whose units' durations are recorded exactly, has no open group to close and the swap breaks.",
+  "analyst_test": "A strong analyst who takes every 2024 to 2026 death of a resident aged 85 and over by date and usual residence, interstate registrations included, and splits each area's 85-and-over estimated resident population into single years by its own 2021 census counts, as the guidelines' single-year table to 95 and over needs, names Coldwater Plains, Spraymouth and Windermoor, when the life table on exposures rebuilt by following each census age forward with its own deaths names Coldwater Plains, Dunesford, Saltwick Shoals and Windermoor.",
+  "domain_test": "Life expectancy at 85 is demography's period life-table estimand, worked from death rates at each age, deaths over the population at risk at that age; the estimated resident population is published above 85 only as one total, so each age's population has to be estimated, and only a population counted by single year at a census, with deaths registered by date of birth, lets each age be rebuilt by following the census forward. A tenure or product life table records every unit's duration exactly, so it has no population published as one total above an age to estimate inside, and the swap breaks.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:open-ended age group closed on single-year exposures rebuilt from the census and the deaths since",
+  "layer2_pattern": "own:single-year exposures inside a published open age group rebuilt from the census followed forward with each cohort's deaths",
   "layer1": [
     "census night 10 August 2021 against estimates at 30 June",
-    "deaths registered against deaths occurred, a late-2026 death registered in 2027",
-    "usual residence coded to SA2 with a 2023 council amalgamation re-coding two areas",
-    "residents' deaths registered in other states in a separate notification file",
-    "the 2026 estimates preliminary against revised 2024 and 2025",
-    "age at death from dates of birth and death, a stated age where the date of birth is missing"
+    "deaths by date against year of registration",
+    "usual residence coded to SA2, the registry's own LGA field coded at registration across the 2023 boundary adjustment",
+    "residents' deaths registered in other states in a separate ABS file",
+    "the 2026 estimates preliminary against revised 2022 to 2025",
+    "TableBuilder's randomly adjusted cells and a census night undercount",
+    "a missing date of birth on a few registrations, the age at death kept",
+    "the after-hours service's change of clinical system on 1 July 2026"
   ],
   "stakeholder_role": "population health planning manager",
   "role_family": "capacity_planner",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "death_registrations_2016_2026.csv",
-    "rows": 80000,
-    "entity": "one death registered in New South Wales, or notified from another state, of a resident of the network's region",
+    "file": "bdm_death_registrations_tidewell_2016_2027.csv",
+    "rows": 73066,
+    "entity": "one registration of the death of a usual resident of the network's region in New South Wales (registrations 1 January 2016 to 30 June 2027)",
     "grain": "death",
     "source": "synthetic"
   },
@@ -87,16 +89,16 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the expected remaining time of members past a fixed age, computed from rates in an open-ended oldest group whose crude rate gives that time only when the group's internal age mix is the steady one its own rates imply; where the cohorts reaching the group's lower bound changed in size, the group's exposures have to be rebuilt age by age from an earlier full count aged forward with the exits since, and closing the group on its crude rate overstates the time where the group is filling with younger members and understates it where it is ageing.",
-  "driver_concrete": "Each local government area's 2024 to 2026 life expectancy at 85 from a complete life table on single-year exposures rebuilt by ageing the 2021 census counts with each birth cohort's registered deaths to the estimated resident population, not from the 85-and-over group closed on its own crude death rate: the coast's 1990s retirement arrivals are crossing 85, so Saltwick Shoals' and Dunesford's 85-and-over groups are young and their crude rates understate the life table's, while Cobbleton's recent cohorts left young and Spraymouth's earlier arrivals are now in their nineties, so their groups are old and the crude rate overstates theirs.",
-  "stump": "A competent analyst closes each area's 85-and-over group on its crude 2024 to 2026 death rate and names Cobbleton, Coldwater Plains, Spraymouth and Windermoor; the step that lands it there is taking the open group's crude rate for the life table's where the cohorts reaching 85 changed in size, so with the group's exposures rebuilt age by age from the 2021 census aged with the deaths since, Saltwick Shoals and Dunesford fall below seven years and Cobbleton and Spraymouth clear it.",
+  "driver": "The decisive quantity is the expected remaining time of members past a fixed age, computed from rates at each age inside a group whose size is published only as one total, so each age's share has to be estimated; splitting the total by an earlier count's age mix assumes the mix of that earlier date, and where the cohorts reaching the group's lower bound changed in size since, each age has to be rebuilt by following the earlier count forward with its own exits, which moves the time down where the group filled with younger members and up where it aged.",
+  "driver_concrete": "Each local government area's 2024 to 2026 life expectancy at 85 from a single-year life table to 95 and over whose exposures are rebuilt by following each 2021 census age forward with the deaths of its own birth window and bringing each year's total to the estimated resident population, not by splitting that 85-and-over estimate by the census's or the state's single-year distribution: the coast's 1990s retirement arrivals crossed 85 after census night, so Saltwick Shoals' and Dunesford's groups are younger than the census mix says, and Spraymouth's 1980s arrivals moved from their late eighties into their nineties, so its group is older.",
+  "stump": "A competent analyst splits each area's 85-and-over estimated resident population into single years by the area's 2021 census counts, builds the life table to 95 and over and names Coldwater Plains, Spraymouth and Windermoor; the step that lands it there is taking the census's age mix inside the group for 2024 to 2026's when the cohorts reaching 85 changed in size, so with each census age followed forward with its deaths since census night, Saltwick Shoals and Dunesford fall below seven years and Spraymouth clears it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task239": "task239 reads a group-level covariance through members who each answered every component; this build closes a period life table's open age group on exposures rebuilt by single year of age, with no components, members' answers or covariance.",
+    "task239": "task239 reads a group-level covariance through members who each answered every component; this build rebuilds the single-year population inside a published open age group for a period life table, with no components, members' answers or covariance.",
     "task264": "task264 v1 follows a price change at the unit that sets the price; this build rebuilds a population's single-year exposures inside an open age group from a census and registered deaths. They share the gap label and grain pattern and nothing of the mechanism, files or world.",
-    "task48": "task48 v2 designates buyer-seller pairs; this build designates areas by a life expectancy whose open age group is closed on rebuilt exposures. Only the gap, grain pattern and decision type repeat.",
+    "task48": "task48 v2 designates buyer-seller pairs; this build designates areas by a life expectancy whose single-year exposures inside the published open age group are rebuilt from a census and deaths. Only the gap, grain pattern and decision type repeat.",
     "task120": "task120 v1 builds a percentile's unit from two record links; this build rebuilds age-specific exposures inside an open age group from a census aged with deaths, with no record linkage.",
-    "task269": "task269 v3 measures riders' waits against the departures serving each rider's destination; this build closes a life table's open age group on exposures rebuilt from a census and deaths. Only the gap, grain pattern and Gate G mechanism repeat."
+    "task269": "task269 v3 measures riders' waits against the departures serving each rider's destination; this build rebuilds a life table's single-year exposures inside a published open age group from a census and deaths. Only the gap, grain pattern and Gate G mechanism repeat."
   },
   "lineage": [
     {
@@ -406,7 +408,7 @@
       "fate": "spent 2026-10-28 at stage 4 (target.zip a97cd2a3): the leak reader clean; the judge reproduced every figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate H decisive_step rule_application: the cover standard files the replay end to end and is silent on where a free engine away from base starts its drive, so the station placement stands as a reading beside the live-location golden, and filed it leaves the step executing the standard; built state at commit 07bd926d"
     }
   ],
-  "notes": "Architecture 11 re-root, 2026-10-28, in sociology-demography / fertility-mortality-life-table-estimation (Descriptive), drawn after architecture 10's judge SEND_BACK. Strategy composition_mix: the open group's internal age mix decides its crude rate (not population_selection, since every resident aged 85 and over counts, and not time_semantics, since no clock decides). Generators G2 (the open 85-and-over group against the single ages the life table needs) and G6 (the age mix inside the group shifted with the cohorts reaching 85); G6 is the honest secondary and is barred as the decisive pattern by task273. The related screen in task173's note (exposure bias where adjacent birth cohorts differ in size, killed on a sub-per-cent lever for deaths at 75 to 89) is answered: the open-ended group closes life expectancy at 85 on one crude rate, and the prototype (realistic old-age levels, persons' life expectancy at 85 near seven years) moved it by -0.33 to +0.75 years across the twelve areas. Names screened at the draw against an Australian register of 20,769 locality, SA2 to SA4, local government area and PHN names (H21).",
+  "notes": "Architecture 11 re-root, 2026-10-28, in sociology-demography / fertility-mortality-life-table-estimation (Descriptive), drawn after architecture 10's judge SEND_BACK. Strategy composition_mix: the open group's internal age mix decides its single-year exposures (the guidelines file a single-year table to 95 and over, so the census split is the default path and the crude closure a lower rung) (not population_selection, since every resident aged 85 and over counts, and not time_semantics, since no clock decides). Generators G2 (the open 85-and-over group against the single ages the life table needs) and G6 (the age mix inside the group shifted with the cohorts reaching 85); G6 is the honest secondary and is barred as the decisive pattern by task273. The related screen in task173's note (exposure bias where adjacent birth cohorts differ in size, killed on a sub-per-cent lever for deaths at 75 to 89) is answered: here the lever is the age mix inside a group published as one total, and on the cut pack the census split against the rebuild moves Spraymouth's life expectancy at 85 by 0.50 years and Saltwick Shoals' by 0.31, and changes the named set. Names screened at the draw against an Australian register of 20,769 locality, SA2 to SA4, local government area and PHN names (H21).",
   "architecture_spent": false,
   "registered": "2026-10-28T15:25:06Z"
 }

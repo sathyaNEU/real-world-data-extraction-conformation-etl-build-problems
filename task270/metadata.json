@@ -1,0 +1,133 @@
+{
+  "task": "task270",
+  "title": "Which of a primary health network's twelve local government areas qualify for its 2028 to 2030 late-life frailty program, the areas whose residents reaching 85 could expect fewer than seven more years under the area's 2024 to 2026 death rates, each age's population inside the published 85-and-over estimate rebuilt from the 2021 census followed forward with each birth window's deaths; with the after-hours service's 2026 visits to residents aged 85 and over and the residents they reached",
+  "domain": "Sociology & Demography",
+  "client_domain": "Sociology & Demography",
+  "subdomain": "fertility-mortality-life-table-estimation (period life expectancy at 85 by local government area on a single-year life table to 95 and over, each age's population inside the published 85-and-over estimate rebuilt from the census and the deaths since)",
+  "objective": "Descriptive & Distribution Analysis",
+  "prompt_shape": "scorecard against a threshold: each of twelve areas' life expectancy at 85 against the seven-year line and whether it qualifies, beside each area's after-hours visits to residents aged 85 and over in 2026 and the residents they reached, and a chart",
+  "as_of": "2027-09-15",
+  "deliverables": [
+    "lga_life_expectancy_at_85_2024_2026.xlsx",
+    "lga_life_expectancy_at_85.png"
+  ],
+  "distractor_files": [
+    "erp_nsw_single_year_age_sex_2016_2026.csv",
+    "residential_aged_care_services_tidewell_2026.xlsx",
+    "falls_injury_hospitalisations_65plus_lga_2024_25.csv"
+  ],
+  "field_terms": [],
+  "stated_inputs": [],
+  "input_gates": {
+    "files": 10,
+    "formats": [
+      "csv",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "bdm_death_registrations_tidewell_2016_2027.csv",
+    "largest_file_rows": 73066
+  },
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task270/generator/build.py (seeded, deterministic) around a fictional New South Wales primary health network and its twelve local government areas, in the layouts of a registry death registration extract, an ABS file of deaths registered interstate, an ABS TableBuilder census export, ABS estimated resident population tables and an ASGS correspondence, a commissioned after-hours service's attendance export, a residential aged care service list, a published hospitalisation table and the network's PDF program guidelines; the NSW Registry of Births, Deaths and Marriages and the Australian Bureau of Statistics are named descriptively as the publishers whose layouts are followed, and no real organisation's records or person is depicted.",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-28",
+  "generator": "task270/generator/build.py",
+  "files": [
+    {
+      "path": "afterhours_attendances_2026.csv",
+      "format": "csv",
+      "bytes": 5750856,
+      "rows": 28873,
+      "source": "Constructed: Tidewell After Hours Medical Service attendance export for 2026 (January to June from the old clinical system, July to December from the new), one row per clinician attending",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "asgs2021_sa2_to_lga2023.csv",
+      "format": "csv",
+      "bytes": 3051,
+      "rows": 44,
+      "source": "Constructed: ABS correspondence layout: ASGS 2021 SA2 to 2023 local government area",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "bdm_death_registrations_tidewell_2016_2027.csv",
+      "format": "csv",
+      "bytes": 8372529,
+      "rows": 73066,
+      "source": "Constructed: NSW Registry of Births, Deaths and Marriages layout: registrations 1 January 2016 to 30 June 2027 of the deaths of the region's usual residents, released to the network under a data release agreement",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "census2021_sa2_age_sex_ur.csv",
+      "format": "csv",
+      "bytes": 376936,
+      "rows": 10224,
+      "source": "Constructed: ABS TableBuilder export layout ('CSV string value'): 2021 Census counts by SA2 of usual residence, sex and single year of age, cells randomly adjusted",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "erp_lga_age_sex_2016_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 61700,
+      "rows": 438,
+      "source": "Constructed: ABS Regional population by age and sex layout: estimated resident population by local government area (2023 boundaries), sex and five-year age group to 85 and over, 30 June 2016 to 2026 (2026 preliminary)",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "erp_nsw_single_year_age_sex_2016_2026.csv",
+      "format": "csv",
+      "bytes": 37486,
+      "rows": 2222,
+      "source": "Constructed: ABS layout: New South Wales estimated resident population by single year of age (to 100 and over) and sex, 30 June 2016 to 2026",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "falls_injury_hospitalisations_65plus_lga_2024_25.csv",
+      "format": "csv",
+      "bytes": 619,
+      "rows": 12,
+      "source": "Constructed: Falls-related injury hospitalisations of people aged 65 and over by local government area, 2024-25 (published table)",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "interstate_deaths_tidewell_residents_2016_2027.xlsx",
+      "format": "xlsx",
+      "bytes": 33194,
+      "rows": 532,
+      "source": "Constructed: Australian Bureau of Statistics layout: deaths of the region's usual residents registered in other states and territories, registrations 1 January 2016 to 30 June 2027",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "late_life_frailty_program_guidelines_2028_2030.pdf",
+      "format": "pdf",
+      "bytes": 43777,
+      "rows": null,
+      "source": "Constructed: Tidewell Coast and Ranges Primary Health Network, late-life frailty program 2028 to 2030, program guidelines version 1.0 (2 September 2027)",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "residential_aged_care_services_tidewell_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 9588,
+      "rows": 54,
+      "source": "Constructed: Residential aged care services in the region at 30 June 2026 (service list filtered to the network's SA2s)",
+      "date": "2027-09-15",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
+}

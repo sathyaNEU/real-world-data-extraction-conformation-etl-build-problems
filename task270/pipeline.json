@@ -1,34 +1,36 @@
 {
  "task": "task270",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "sociology-demography",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "A competent analyst closes each area's 85-and-over group on its crude 2024 to 2026 death rate and names Cobbleton, Coldwater Plains, Spraymouth and Windermoor; the step that lands it there is taking the open group's crude rate for the life table's where the cohorts reaching 85 changed in size, so with the group's exposures rebuilt age by age from the 2021 census aged with the deaths since, Saltwick Shoals and Dunesford fall below seven years and Cobbleton and Spraymouth clear it.",
+ "stump": "A competent analyst splits each area's 85-and-over estimated resident population into single years by the area's 2021 census counts, builds the life table to 95 and over and names Coldwater Plains, Spraymouth and Windermoor; the step that lands it there is taking the census's age mix inside the group for 2024 to 2026's when the cohorts reaching 85 changed in size, so with each census age followed forward with its deaths since census night, Saltwick Shoals and Dunesford fall below seven years and Spraymouth clears it.",
  "architecture": 11,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": "",
-  "result": ""
+  "exit": 0,
+  "date": "2026-10-28",
+  "result": "PASS (53 checks, 0 FAIL, 0 WARN)"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-28 --asof 2027-09-15 on target.zip 8e02e3d3: the guidelines' area list, the filed estimand's vocabulary, data files naming the areas, the correspondence's BMOS_NULL_FLAG; no LEAK",
+  "reader": "2026-10-28 on target.zip 26b6eb80, re-read on target.zip 8e02e3d3 after guidelines 3.2 changed: nothing quoted for questions 1 to 4, every question-5 sentence executes to the golden, question 6 ruled analytical by the ladder's measurement; answers under Solver's-eye read in leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (nearest driver 0.09, task73 v2) on target.zip 8e02e3d3",
+  "nearest": "no promoted pair; surface exit 0 (a place name read as a persona, Wolfram Ranges)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (pass 2); pass 1 NOT_DETERMINISTIC (underspecified_objective)",
+  "disposition": "APPROVE (pass 2); pass 1 FIX_NOW, fixed in one generator pass",
+  "report": "determinism_check_report_pass2.md (target.zip 8e02e3d3); determinism_check_report.md (pass 1, target.zip 4f72f776)",
+  "gate_g": "method_or_model_selection, analytical_non_defect",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "returned": [],
- "resume": "Architecture 11 drawn and registered (card WARN, three repeat WARNs answered in the note). Next: stage 2, the ladder from prototype 7 (crude closure, state mix, census shares single-year and five-year, the stable-population correction on three growth windows, the census aged with the deaths), the readability screen, the semantic fork table (closed or brought to the estimates, census-night birthday split, top age, average age at death, occurrence against registration, interstate deaths, persons on combined rates, strict line), the closure table, the ask sheet and prompt.txt, to precut.py exit 0.",
+ "resume": "",
  "architectures": [
   {
    "architecture": 1,
@@ -80,12 +82,21 @@
   }
  ],
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "seed": "none: a fresh world drawn 2026-10-28 (Tidewell Coast and Ranges Primary Health Network's 2028-2030 late-life frailty program)",
- "gates": {},
+ "gates": {
+  "zip": "8e02e3d3eed48833",
+  "checks": "101 of 101",
+  "verify": "0 failed",
+  "byte_identical": "16 files",
+  "figures_check": "75 figures, 0 absent",
+  "precut": "53 checks, 0 FAIL, 0 WARN",
+  "cracker": "pair ceiling 43.6 (cracker 67.0, mirror 20.2)",
+  "containers": "clean"
+ },
  "card_registered": true
 }

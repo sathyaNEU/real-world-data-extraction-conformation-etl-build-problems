@@ -1,0 +1,121 @@
+{
+ "call": [
+  "Coldwater Plains",
+  "Dunesford",
+  "Saltwick Shoals",
+  "Windermoor"
+ ],
+ "call_count": 4,
+ "conventions": {
+  "clauses": [
+   "3.1",
+   "3.2",
+   "3.3",
+   "3.4"
+  ],
+  "from_age": 85,
+  "late_days": 41,
+  "late_from_day_of_july": 1,
+  "late_to_day_of_august": 10,
+  "open_from": 95,
+  "single_to": 94,
+  "year_days": 365
+ },
+ "deaths_85plus_2024_2026": {
+  "Bannockvale": 976,
+  "Cobbleton": 354,
+  "Coldwater Plains": 314,
+  "Dunesford": 782,
+  "Gannetmouth": 1119,
+  "Kestrelmoor": 530,
+  "Mallowmere": 589,
+  "Merriwold": 413,
+  "Saltwick Shoals": 1052,
+  "Spraymouth": 838,
+  "Windermoor": 232,
+  "Wolfram Ranges": 286
+ },
+ "deaths_85plus_total": 7485,
+ "default_split_call": [
+  "Coldwater Plains",
+  "Spraymouth",
+  "Windermoor"
+ ],
+ "default_split_e85": {
+  "Bannockvale": 7.3,
+  "Cobbleton": 7.1,
+  "Coldwater Plains": 6.8,
+  "Dunesford": 7.0,
+  "Gannetmouth": 7.3,
+  "Kestrelmoor": 7.4,
+  "Mallowmere": 7.5,
+  "Merriwold": 7.3,
+  "Saltwick Shoals": 7.2,
+  "Spraymouth": 6.7,
+  "Windermoor": 6.5,
+  "Wolfram Ranges": 7.4
+ },
+ "e85": {
+  "Bannockvale": 7.3,
+  "Cobbleton": 7.1,
+  "Coldwater Plains": 6.8,
+  "Dunesford": 6.9,
+  "Gannetmouth": 7.5,
+  "Kestrelmoor": 7.4,
+  "Mallowmere": 7.4,
+  "Merriwold": 7.2,
+  "Saltwick Shoals": 6.9,
+  "Spraymouth": 7.2,
+  "Windermoor": 6.6,
+  "Wolfram Ranges": 7.3
+ },
+ "highest": "Gannetmouth",
+ "highest_e85": 7.5,
+ "line": 7.0,
+ "lowest": "Windermoor",
+ "lowest_e85": 6.6,
+ "nearest_above": "Cobbleton",
+ "nearest_above_e85": 7.1,
+ "qualifies": {
+  "Bannockvale": "No",
+  "Cobbleton": "No",
+  "Coldwater Plains": "Yes",
+  "Dunesford": "Yes",
+  "Gannetmouth": "No",
+  "Kestrelmoor": "No",
+  "Mallowmere": "No",
+  "Merriwold": "No",
+  "Saltwick Shoals": "Yes",
+  "Spraymouth": "No",
+  "Windermoor": "Yes",
+  "Wolfram Ranges": "No"
+ },
+ "residents": {
+  "Bannockvale": 697,
+  "Cobbleton": 233,
+  "Coldwater Plains": 211,
+  "Dunesford": 592,
+  "Gannetmouth": 829,
+  "Kestrelmoor": 407,
+  "Mallowmere": 471,
+  "Merriwold": 281,
+  "Saltwick Shoals": 797,
+  "Spraymouth": 596,
+  "Windermoor": 151,
+  "Wolfram Ranges": 229
+ },
+ "visits": {
+  "Bannockvale": 1002,
+  "Cobbleton": 340,
+  "Coldwater Plains": 278,
+  "Dunesford": 839,
+  "Gannetmouth": 1156,
+  "Kestrelmoor": 568,
+  "Mallowmere": 630,
+  "Merriwold": 393,
+  "Saltwick Shoals": 1109,
+  "Spraymouth": 828,
+  "Windermoor": 212,
+  "Wolfram Ranges": 304
+ }
+}
