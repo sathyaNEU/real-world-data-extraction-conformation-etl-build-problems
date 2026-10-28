@@ -156,6 +156,10 @@ for h in names:
         c = last_cls.get(rid, nyha(pat_by_id[rid]))
         tot += float(np.exp(-hz[c] * ((row["two"] - row["dx"]).days - row["T"])))
     fixed[h] = tot / len(df)
+crude = {h: 1 - coh.loc[coh["hospital_name"] == h, "E"].sum() / (coh["hospital_name"] == h).sum() for h in names}
+check(min(names, key=lambda h: crude[h]) == "Fennick General Hospital",
+      "SF13 the deaths on file over every patient, a patient who left follow-up counted alive, names Fennick: the reading "
+      "the charter's 3.2 and the manual's 4.3 rule out")
 order = sorted(names, key=lambda h: surv[h])
 pick, runner = order[0], order[1]
 gap = 100 * (surv[runner] - surv[pick])
@@ -219,8 +223,8 @@ check(vals == [half_up(100 * surv[h]) for h in order] and len(cats) == 5, "the d
 txt = subprocess.run(["pdftotext", "-layout", f("hf_early_diagnosis_programme_charter_2027.pdf"), "-"],
                      capture_output=True, text=True).stdout
 txt = " ".join(txt.split())
-check("including patients the registry no longer follows" in txt and "lowest two-year survival from diagnosis" in txt,
-      "the charter reads back: the estimand, every patient counted")
+check("the lack of a death on its files does not show that they were alive" in txt and "lowest two-year survival from diagnosis" in txt,
+      "the charter reads back: the estimand, every patient in the share, the deaths after a loss unknown")
 man = " ".join(subprocess.run(["pdftotext", "-layout", f("hf_registry_manual_v5.pdf"), "-"], capture_output=True,
                               text=True).stdout.split())
 check("The registry has no source for deaths in any other state" in man, "the manual reads back: the linkage's reach")

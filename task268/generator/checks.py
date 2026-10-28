@@ -162,6 +162,10 @@ def run(target, w):
        "class at the loss is the same whether the loss date's own visits are counted or not")
     movers = [p for p in C if p["lost"] == "north"]
     ok(all(p["visits"] and p["visits"][-1][0] < p["T"] for p in movers), "SF12 every mover's last visit precedes the loss")
+    ok(A.pick(L["crude"])[0] == FEN and A.pick(S)[0] == GUL,
+       "SF13 a patient who left follow-up counted alive for want of a death on file (the deaths on file over every "
+       "patient): Fennick, ruled out by the charter's 3.2 (the registry does not learn of their deaths) and the manual's "
+       "4.3 and 4.4")
     fl_new = {r["mrn"] for r in D["fl"]}
     ex_ids = {r["PARTNER_ID"] for r in D["exchange"]}
     leg2new = {r["legacy_mrn"]: r["new_mrn"] for r in D["crosswalk"]}
@@ -425,7 +429,7 @@ def run(target, w):
     ok(len({yrs[y] for y in ("2022", "2023", "2024", "2025")}) == 4, "the yearly enrolments vary")
     from pypdf import PdfReader
     must = {"charter": ["had the lowest two-year survival from diagnosis",
-                        "including patients the registry no longer follows", "at or above 400 pg/mL"],
+                        "the lack of a death on its files does not show that they were alive", "at or above 400 pg/mL"],
             "manual": ["The diagnosis date is the date of that encounter", "is recorded as a relocation (event REL), with the "
                        "state they are moving to", "The registry has no source for deaths in any other state",
                        "returned each quarter by the", "leaves follow-up that day (event CNR)"]}
