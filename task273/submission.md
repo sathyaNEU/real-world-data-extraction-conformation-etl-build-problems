@@ -1,60 +1,80 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (missing data, censoring and measurement error).
+**Domain:** Biomedical & Clinical Research (statistical genomics).  
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**The programme should cover four of the seven uses: taxicabs, ride-hail, parcel delivery and app-based delivery.**
-Their drivers caused crashes at 1.7 to 2.1 times private drivers' rate per mile, parcel delivery nearest the line at 1.7, while paratransit, airport shuttles and limousines all stay under 1.3. Not airport shuttles and paratransit, which the struck vehicles' share of the whole five years puts over the line: their miles run on freeways and in daylight, where crashes per mile are rare, so too few of them are struck for the miles they drive. Not a count of vehicles registered or permitted, which covers six uses because a commercial vehicle drives several times a private car's miles. Not road class or hour alone, each of which leaves ride-hail or both delivery uses under the line.
+**Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves.**
+
+The three founder conditions sit at 7, 6, 6 per 1,000 Study members, against the policy's line of one in 200, once each sequencing phase's calls are divided by its members' summed chance of a call. Not the calls counted over the cohort (3.8, 3.4, 3.5 per 1,000), which reads a phase 1 member with no call as a non-carrier; not the members read at least 10 or 20 times, which drops the island and glen members the cohort counts; not the cohort's calls over its pooled chance of a call, which gives members read 8 to 17 times the mainland's chance of being called. Each of the three files the current eleven.
 
 ## 2. Critical Components
 
-1. Crashes caused between moving vehicles, 2021 to 2025: taxicabs **1,564**; ride-hail **6,762**; limousines **558**; airport shuttles **648**; paratransit **865**; parcel delivery **3,317**; app-based delivery **3,282**; private drivers **91,211**.
-2. The Department's miles for the five years: **60,420** million on the region's roads, in **288** road class, day type and hour strata.
-3. Each use's miles come from the **134,224** vehicles that at-fault drivers struck in crashes with one driver at fault, each stratum's miles shared in proportion to them.
-4. Parcel delivery, the nearest use above the line, at **1.7** times private drivers' rate; paratransit, airport shuttles and limousines all under **1.3**.
+1. The reference cohort is **25,694** members: 7,945 from phase 1 and 17,749 from phase 2.
+2. ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS) carrier frequency is **7 per 1,000**.
+3. Diastrophic dysplasia (SLC26A2) carrier frequency is **6 per 1,000**.
+4. Joubert syndrome type 2 (TMEM216) carrier frequency is **6 per 1,000**.
 
 ## 3. Step-by-Step Solution
 
-1. From crash_extract_2021_2025_crashes.csv and crash_extract_2021_2025_units.csv, kept the crashes with two or more vehicles in transport (the coverage rule's crashes): 124,753 crashes.
-2. Took each crash's at-fault drivers from the 2023 form's AT_FAULT_UNIT and the 2016 form's contributing circumstance, gave each 2016 vehicle for hire or delivery the use of the operator named on the report (commission_operator_register_2026.xlsx), and left out drivers who fled unidentified, as the rule says: private drivers caused 91,211 crashes.
-3. Placed each crash in its road class (2016 crashes by legacy route and milepost through lrs_road_inventory_2025.xlsx), day type and Pacific hour (State Patrol times converted from UTC): 288 strata.
-4. Gave each stratum the Department's miles: its road class's 2021 to 2025 VMT (travel_monitoring_report_2025.pdf, Table 1) times the class's share of its count stations' 2025 traffic in that day type and hour (ccs_hourly_volumes_2025.csv): 60,420 million miles in all.
-5. Shared each stratum's miles among the uses in proportion to the vehicles struck there by the one at-fault driver of a crash: 134,224 vehicles struck.
-6. Divided each use's crashes caused by its miles and set the rate against private drivers': taxicabs, ride-hail, parcel delivery and app-based delivery at 1.9, 2.1, 1.7 and 2.0 times; paratransit, airport shuttles and limousines under 1.3.
-7. For the asks, read crash_extract_2021_2025_persons_injury_crashes.csv one person once (a person listed again in the same seat of the same unit taken at the later record), with deaths from road_fatality_register_2021_2025.csv, over every crash of any kind a use's driver caused, and costed each crash once at its most severe final injury (dot_crash_unit_costs_2025.pdf): ride-hail 402 people and USD 1,979.6 million.
-8. Recommended covering taxicabs, ride-hail, parcel delivery and app-based delivery.
+1. Built the reference cohort from the member register, members with consent in force and a released genotype on 1 November 2026 (policy 2.2): 25,694 members.
+2. Kept the variants the register classed pathogenic or likely pathogenic on 1 November 2026 from its change history (policy 2.3), and matched the phase 1 calls to the register by their GRCh37 positions: 1,793 and 3,178 called carriers in phase 1 and phase 2 across the 30 genes.
+3. Took, for every cohort member and register site, the binomial chance that a heterozygote read as many times as the depth file gives passes the member's phase calling rule (methods report section 2: phase 1 at least 5 alternate reads and 25 per cent, phase 2 at least 3 and 20 per cent).
+4. For each variant and phase, estimated the carriers as the phase's calls divided by the sum of its members' chances, times the phase's members; summed each gene's variants and phases and divided by the cohort.
+5. Compared each condition with one in 200 (policy 2.1): 14 conditions reach it, the eleven on the 2026/27 panel (lowest 8 per 1,000) and the three founder conditions at 7, 6, 6 per 1,000; the other 16 sit between 0 and 4 per 1,000.
+6. For the programme's 2025/26 figures, dated each couple's report by the later of its partners' result authorisations, or the first partner's alone where a sequential screen stopped (policy 4.1, 4.2); counted a partner's carried-forward result again in the new couple's report; classed each finding as the register's change history classed it on the day its result was authorised (policy 4.3), not by the export's classification column, which from the August 2025 LIMS release carries the class on the day of the export; and counted each couple once per condition.
+7. Recommended the 14-condition panel: SACS, SLC26A2, TMEM216 join and no condition leaves.
 
 ## 4. Deliverable Answers
 
-### fleet_safety_programme_2027.xlsx
+### carrier_panel_review_2027-28.xlsx
 
-1. The coverage test, every use:
-   - Taxicabs: covered
-   - Ride-hail: covered
-   - Limousines: not covered
-   - Airport shuttles: not covered
-   - Paratransit: not covered
-   - Parcel delivery: covered
-   - App-based delivery: covered
-2. People killed or seriously injured in all the crashes each use's drivers caused, 2021 to 2025 (whole people):
-   - Taxicabs: 74
-   - Ride-hail: 402
-   - Limousines: 45
-   - Airport shuttles: 63
-   - Paratransit: 55
-   - Parcel delivery: 109
-   - App-based delivery: 136
-3. Cost of those crashes at the Department's crash unit costs (millions of dollars, one decimal):
-   - Taxicabs: 505.9
-   - Ride-hail: 1,979.6
-   - Limousines: 242.4
-   - Airport shuttles: 299.5
-   - Paratransit: 279.5
-   - Parcel delivery: 641.9
-   - App-based delivery: 699.9
+1. Each condition's carrier frequency per 1,000 Study members and its place on the 2027/28 panel, in the workbook's order:
+   - Cystic fibrosis (CFTR): 40, stays
+   - Phenylketonuria (PAH): 19, stays
+   - GJB2-related hearing loss (GJB2): 18, stays
+   - Medium-chain acyl-CoA dehydrogenase deficiency (ACADM): 14, stays
+   - Smith-Lemli-Opitz syndrome (DHCR7): 12, stays
+   - Wilson disease (ATP7B): 11, stays
+   - Autosomal recessive polycystic kidney disease (PKHD1): 10, stays
+   - Usher syndrome type 2A (USH2A): 9, stays
+   - Methylmalonic acidaemia, MMUT type (MMUT): 8, stays
+   - Pompe disease (GAA): 8, stays
+   - Classic galactosaemia (GALT): 8, stays
+   - ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS): 7, joins
+   - Joubert syndrome type 2 (TMEM216): 6, joins
+   - Diastrophic dysplasia (SLC26A2): 6, joins
+   - Tay-Sachs disease (HEXA): 4, not on the panel
+   - PMM2-congenital disorder of glycosylation (PMM2): 4, not on the panel
+   - Mucopolysaccharidosis type I (IDUA): 4, not on the panel
+   - Niemann-Pick disease type C1 (NPC1): 4, not on the panel
+   - Zellweger spectrum disorder (PEX1): 3, not on the panel
+   - Metachromatic leukodystrophy (ARSA): 3, not on the panel
+   - Glycogen storage disease type Ia (G6PC1): 3, not on the panel
+   - Acid sphingomyelinase deficiency (SMPD1): 2, not on the panel
+   - Maple syrup urine disease type 1B (BCKDHB): 1, not on the panel
+   - Fanconi anaemia type C (FANCC): 1, not on the panel
+   - Canavan disease (ASPA): 1, not on the panel
+   - Congenital nephrotic syndrome, Finnish type (NPHS1): 1, not on the panel
+   - Mucolipidosis type IV (MCOLN1): 1, not on the panel
+   - Aspartylglucosaminuria (AGA): 0, not on the panel
+   - Bloom syndrome (BLM): 0, not on the panel
+   - Familial dysautonomia (ELP1): 0, not on the panel
+2. Couples told that one or both partners carry each condition on the 2026/27 panel, April to September 2025 and October 2025 to March 2026:
+   - Cystic fibrosis (CFTR): 88 and 98
+   - Phenylketonuria (PAH): 34 and 45
+   - GJB2-related hearing loss (GJB2): 57 and 58
+   - Medium-chain acyl-CoA dehydrogenase deficiency (ACADM): 27 and 37
+   - Smith-Lemli-Opitz syndrome (DHCR7): 30 and 43
+   - Classic galactosaemia (GALT): 23 and 22
+   - Wilson disease (ATP7B): 37 and 33
+   - Autosomal recessive polycystic kidney disease (PKHD1): 35 and 30
+   - Methylmalonic acidaemia, MMUT type (MMUT): 15 and 27
+   - Pompe disease (GAA): 37 and 30
+   - Usher syndrome type 2A (USH2A): 18 and 10
 
-### fleet_safety_programme_2027.pptx
+### panel_recommendation_2027-28.docx
 
-1. One chart of each use's rate per mile of causing crashes against private drivers' rate with the line at 1.5, the four covered uses above it and highlighted (slide 2).
+1. The recommendation: the 14-condition panel for 2027/28, the eleven current conditions kept and ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2), Joubert syndrome type 2 (TMEM216) joining, none leaving.
+2. A bar chart of all 30 conditions' carrier frequencies per 1,000 on a log scale against the one in 200 line, the three joining conditions marked and labelled with their frequency.

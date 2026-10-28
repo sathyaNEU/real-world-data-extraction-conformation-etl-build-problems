@@ -1,30 +1,30 @@
 {
  "task": "task273",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "biomedical-clinical-research",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "A competent solver counts each condition's called carriers among the members whose depth passes the usual genotype filter and files 11 conditions, leaving ARSACS, Joubert syndrome type 2 and diastrophic dysplasia off at about a quarter of a per cent; a member with no call at a variant the phase 1 kit read 8 to 11 times is a carrier the phase 1 caller missed about half the time, and the phase 1 members are the island and dale communities where those conditions are common, so scaling each phase's calls by its members' summed chance of a call puts all three at about 0.63 per cent and on the panel.",
+ "stump": "A competent solver counts each condition's called carriers among the members whose depth passes the usual genotype filter and files the current eleven unchanged, the three founder conditions at 2.3, 2.4 and 2.1 per 1,000; the step that lands it there is reading a member with no call as a non-carrier, when the phase 1 caller caught a heterozygote at 8 to 17 reads only about half the time and the phase 1 members are the island and glen communities where those conditions are common.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK; every line ruled harmless in the note)",
+  "reader": "pass 1 and pass 2: questions 1 to 4 none, 6 an analytical choice; the nominator hint and the realism tells fixed"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.11 task256 v1 (lineage), a share inside a box of correlated measurements; nothing here is a box or a carried conditional"
+  "heart": "WARN (no BLOCK; the forum redrawn to line_manager_or_team after task270's card was marked spent)",
+  "nearest": "0.11 task256 v1 (lineage), a share inside a box of correlated measurements"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass 2; pass 1 SEND_BACK kept as determinism_check_report_a4_pass1.md)"
  },
  "returned": [
   {
@@ -40,9 +40,9 @@
    "commit": "DRAWN (task273) of 2026-10-28"
   }
  ],
- "resume": "Stage 2 (design) on architecture 4: measure the ladder on a prototype of the Study (three founder conditions, two low-coverage mainland conditions, the 30-condition review), write the fork table and closure (population, outcome, census date, builds, calling rules, the depth floor, the licensed estimator family asserted to one designation and one rounded figure), design the asks with supplemental-stumping, draft prompt.txt, then precut.py.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -69,9 +69,10 @@
   {
    "architecture": 4,
    "drawn": "2026-10-28",
-   "fate": "",
+   "fate": "shipped 2026-10-28 (judge pass 2 DETERMINISTIC, APPROVE after pass 1's SEND_BACK was repaired in the data); pending review",
    "driver": "The decisive quantity is the share of a population carrying a trait that each member's own measurement reveals only with a probability set by how much measurement that member received, where the least measured members are a subgroup whose share differs; each group's detections are scaled by the sum of its members' chances of detection."
   }
  ],
- "seed": "none: a fresh draw in a new client domain (architecture 4); the DA23 seed was set aside at architecture 1"
+ "seed": "none: a fresh draw in a new client domain (architecture 4); the DA23 seed was set aside at architecture 1",
+ "answer": "Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves."
 }

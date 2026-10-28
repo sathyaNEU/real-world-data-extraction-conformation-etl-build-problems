@@ -1,117 +1,88 @@
 {
- "answer": "4 uses covered: Taxi, Ride-hail, Parcel delivery, App delivery",
+ "answer": "Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves.",
  "deliverables": [
-  "fleet_safety_programme_2027.xlsx",
-  "fleet_safety_programme_2027.pptx"
+  "carrier_panel_review_2027-28.xlsx",
+  "panel_recommendation_2027-28.docx"
  ],
  "distractor_files": [
-  "target/noaa_daily_weather_kelderwick_2021_2025.csv",
-  "target/work_zone_log_2021_2025.csv",
-  "target/dmv_registrations_stonereach_2021_2025.xlsx",
-  "target/platform_vehicle_reports_2025.csv"
+  "target/kgl_ccsp_turnaround_2025-26.csv",
+  "target/ccsp_referrals_2023-2026.csv"
  ],
- "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
+ "domain": "Biomedical & Clinical Research (statistical genomics)",
+ "field_terms": [],
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "README_pack_contents.txt": {
-   "date": "2026-10-22",
+  "ags_member_register_2026-11-03.csv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the Study's member register (phase, recruitment area, sample, genotype status, consent); constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "ccs_hourly_volumes_2025.csv": {
-   "date": "2026-10-22",
+  "ags_methods_and_quality_report_issue6.pdf": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the laboratory's methods and quality report for the Study's two phases; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "ccs_stations_2025.csv": {
-   "date": "2026-10-22",
+  "ags_phase1_calls_grch37.tsv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the phase 1 calling pipeline's non-reference calls at register sites, GRCh37, 2019 transcript names; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "cfsp_coverage_rule_2026.pdf": {
-   "date": "2026-10-22",
+  "ags_phase2_calls_grch38.tsv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the phase 2 calling pipeline's non-reference calls at register sites, GRCh38; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "commission_operator_register_2026.xlsx": {
-   "date": "2026-10-22",
+  "ags_register_site_depth_2026-11-03.csv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the laboratory's read counts at every register site for every released member; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "crash_extract_2021_2025_crashes.csv": {
-   "date": "2026-10-22",
+  "ccsp_panel_policy_v3.pdf": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the programme's panel policy, version 3; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "crash_extract_2021_2025_persons_injury_crashes.csv": {
-   "date": "2026-10-22",
+  "ccsp_panel_review_2027-28_conditions.xlsx": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the Panel Review Group's list of the 30 conditions under review; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "crash_extract_2021_2025_units.csv": {
-   "date": "2026-10-22",
+  "ccsp_referrals_2023-2026.csv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the programme's monthly referrals by source; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "crash_extract_data_dictionary.pdf": {
-   "date": "2026-10-22",
+  "ccsp_results_2025-26.csv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the programme's 2025/26 results export, one row per finding or per partner without one; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "dmv_registrations_stonereach_2021_2025.xlsx": {
-   "date": "2026-10-22",
+  "kgl_ccsp_turnaround_2025-26.csv": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the laboratory's monthly turnaround statistics for the programme; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   },
-  "dot_crash_unit_costs_2025.pdf": {
-   "date": "2026-10-22",
+  "kgl_variant_register_2026-11-03.xlsx": {
+   "date": "2026-11-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
-  },
-  "lrs_road_inventory_2025.xlsx": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
-  },
-  "noaa_daily_weather_kelderwick_2021_2025.csv": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
-  },
-  "platform_vehicle_reports_2025.csv": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
-  },
-  "road_fatality_register_2021_2025.csv": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
-  },
-  "travel_monitoring_report_2025.pdf": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
-  },
-  "work_zone_log_2021_2025.csv": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
+   "source": "the laboratory's variant register with its change history; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
   }
  },
  "rows": {
-  "ccs_hourly_volumes_2025.csv": 17148,
-  "ccs_stations_2025.csv": 24,
-  "commission_operator_register_2026.xlsx": 34,
-  "crash_extract_2021_2025_crashes.csv": 176063,
-  "crash_extract_2021_2025_persons_injury_crashes.csv": 175896,
-  "crash_extract_2021_2025_units.csv": 339100,
-  "lrs_road_inventory_2025.xlsx": 6471,
-  "noaa_daily_weather_kelderwick_2021_2025.csv": 1826,
-  "platform_vehicle_reports_2025.csv": 100,
-  "road_fatality_register_2021_2025.csv": 2038,
-  "work_zone_log_2021_2025.csv": 340
+  "ags_member_register_2026-11-03.csv": 25997,
+  "ags_phase1_calls_grch37.tsv": 2691,
+  "ags_phase2_calls_grch38.tsv": 5232,
+  "ags_register_site_depth_2026-11-03.csv": 25864,
+  "ccsp_panel_review_2027-28_conditions.xlsx": 30,
+  "ccsp_referrals_2023-2026.csv": 168,
+  "ccsp_results_2025-26.csv": 5383,
+  "kgl_ccsp_turnaround_2025-26.csv": 12,
+  "kgl_variant_register_2026-11-03.xlsx": 125
  },
+ "stated_inputs": [
+  "200",
+  "1,000"
+ ],
  "task": "task273",
- "title": "Stonereach Valley Regional Transportation Commission: the commercial vehicle uses the Commercial Fleet Safety Programme covers from 1 July 2027"
+ "title": "Ardvenny and Isles Health Board: the Couples Carrier Screening Programme's 2027/28 panel"
 }
