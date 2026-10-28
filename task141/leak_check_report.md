@@ -4,15 +4,16 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, end-of-term, extension, petition, maximum, capped, window, architecture, petitions, decisive, golden, question, forecasting, nothing, detention, already, extensions, booking, orders, counts, analytical, domain, forecast, center, standard
+Stump terms swept: record, end-of-term, extension, petition, maximum, capped, window, architecture, petitions, decisive, golden, question, forecasting, probation, nothing, detention, already, extensions, booking, orders, counts, analytical, domain, forecast, center
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `jail_operations_plan_instructions_2027.pdf`: golden figure 210 appears: ...22 Okelan County pod of 64 beds one unit for each 210 felony probation revocation admissions projected...
 - **REVIEW** `jail_operations_plan_instructions_2027.pdf`: carries 12 of 13 distinctive words of the committed call: "Okelan County's 2027 Jail Operations Plan should staff 7 violator pods (448 beds) for felony probation revocation admiss"
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `apd_annual_report_2025.pdf`: 3 of 25 stump-paragraph terms appear (petition, petitions, counts); read whether the document names the move
-- **REVIEW** `jail_operations_plan_instructions_2027.pdf`: 4 of 25 stump-paragraph terms appear (record, orders, counts, standard); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `apd_annual_report_2025.pdf`: 4 of 25 stump-paragraph terms appear (petition, petitions, probation, counts); read whether the document names the move
+- **REVIEW** `jail_operations_plan_instructions_2027.pdf`: 4 of 25 stump-paragraph terms appear (record, probation, orders, counts); read whether the document names the move
+- **REVIEW** `sb26_118_felony_probation_term_act.pdf`: 3 of 25 stump-paragraph terms appear (extension, probation, orders); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 2)
 - **REVIEW** `circuit_court_term_orders_2016_2026.csv`: 2427 ISO dates after 2026-10-20, e.g. 2026-10-21, 2026-10-22, 2026-10-23, 2026-10-24, 2026-10-25
@@ -34,6 +35,7 @@ Stump terms swept: record, end-of-term, extension, petition, maximum, capped, wi
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

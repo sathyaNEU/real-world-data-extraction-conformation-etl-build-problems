@@ -299,8 +299,7 @@ def write_report(path, F):
     s.append(Paragraph("A probationer on supervision is counted once for each open term. A petition is counted in the "
                        "year it was filed and its disposition in the year the court entered it, so the two tables cover "
                        "different petitions. Early termination is granted on the officer's motion after eighteen months "
-                       "of compliance on a felony term and six on a misdemeanor term. Under policy 4.12 the officer "
-                       "reviews each case in the 90 days before its scheduled expiration.", SB))
+                       "of compliance on a felony term and six on a misdemeanor term.", SB))
     s.append(Paragraph("Risk levels are the Community Supervision Risk Screen score taken at intake; terms opened in "
                        "CMS 1 are shown on the screen's current scale.", SB))
     doc = _doc(path, "Adult Probation Department annual report, fiscal year 2025", K.PEOPLE["research"])

@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "stump": "A competent solver builds the two-clock projection with the record's pooled end-of-term petition rate, caps the extensions under SB 26-118 and files 911 admissions (five pods); the step that lands it there is reading the end-of-term rate off terms that could mostly still be extended, when the Act leaves no capped term any room and the terms already at their class maximum show the rate such terms file at, so the plan staffs seven pods (1,424 projected).",
  "architecture": 4,
  "loops": 0,
@@ -41,11 +41,17 @@
    "portal": "determinism block on the reship with the author's rewritten prompt: judge 1 passed (valid stump), judge 2 competing_defensible_answer (Gates C and D) on the transport basis (a class- and age-adjusted hazard on 60-day bands, 904.6, five pods); rubric 36 and 54, average 45",
    "repair": "determinism",
    "commit": "RESHIPPED (task141), determinism, 2026-10-27"
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "after the determinism reship: both responses filed seven pods (1,445.83 and about 1,406), the call landed; the filed end-of-term review sentence pointed at the second clock",
+   "repair": "design (the sentence removed)",
+   "commit": "RESHIPPED (task141), the filed review sentence removed, 2026-10-28"
   }
  ],
- "resume": "Reshipped after the determinism return (the transport basis closed in the record: SF31 to SF34). Portal result pending.",
+ "resume": "Reshipped 2026-10-28 with the filed end-of-term review sentence removed (it was landed by both portal responses); the pack equals the first ship but for section 6.1's start-date pin, with the author's prompt. Portal result pending.",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -82,8 +88,8 @@
    "last_commit": "the SHIPPED (task141) commit of 2026-10-27"
   }
  ],
- "zip_sha256_16": "9d1d6a0aac0ab1e7",
+ "zip_sha256_16": "a201721dd193d0c9",
  "freeze": {
-  "determinism": "PASS (the main call, the stump and every frozen figure unchanged)"
+  "determinism": "only the author's rewritten call sentence moved; every figure unchanged"
  }
 }

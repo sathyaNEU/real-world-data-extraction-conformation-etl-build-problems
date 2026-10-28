@@ -256,12 +256,12 @@ def main():
           "logistic %.0f, banded %.0f admissions" % (out["logistic"], out["banded"]))
     rep = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(TARGET, K.REPORT)).pages).split())
     ins = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(TARGET, K.PLAN_PDF)).pages).split())
-    check("SF33 the department's end-of-term review is filed: the officer reviews each case in the 90 days before its "
-          "scheduled expiration", "reviews each case in the 90 days before its scheduled expiration" in rep)
-    for w_, need in ((90, 7), (105, 7), (150, 7)):
+    check("SF33 no shipped document names an end-of-term review or its window (a filed review sentence was landed by both "
+          "portal responses on 2026-10-28)", "before its scheduled expiration" not in rep and "end-of-term" not in rep)
+    for w_, need in ((60, 7), (90, 7), (105, 7), (150, 7)):
         S3 = rec_copy(R)
         vv = F.projection(S3, window=w_, **G.GOLD)[0]
-        check("SF33 a window covering the filed review (%d days) files %d pods" % (w_, need),
+        check("SF33 an end-of-term window of %d days files %d pods" % (w_, need),
               K.pods(vv) == need, "%.0f" % vv)
     check("SF34 section 6.1 dates time on supervision from the day the department's case records date",
           "day supervision began as the department's case records date it" in ins)

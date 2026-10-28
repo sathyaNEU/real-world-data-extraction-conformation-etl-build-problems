@@ -257,7 +257,7 @@ Measured on the cut pack (`checks.py` restates the figures on each build).
 | SF19 | time on supervision | completed years from the day supervision began | 365.25-day years | Ask B only | instructions 6.1 (filed) |
 | SF31 | the at-maximum share's composition | the share the record shows for terms at their class maximum, applied term by term | adjusted for risk score, time on supervision, class or age before it is applied | seven pods: the share is flat by score (37.8, 38.8, 39.3 per cent), by time on supervision (38.1 to 39.3) and by class (36.4 to 41.6), and the at-maximum and with-room windows carry the same mean score (10.32, 10.30) | C1, asserted (SF31) |
 | SF32 | the transport of the at-maximum share | each capped term at the at-maximum share | each capped term at its own share from a logistic model of the end-of-term petition on room, class, risk score and time on supervision | seven pods (the model's mean for the capped terms within 0.02 of the share) | C1, asserted (SF32) |
-| SF33 | the end-of-term window | the last 120 days before a scheduled expiration in force, which hold the department's review | a window cut inside the review (60 days or less) | 7 pods at 60 days (1,279), 6 at 45 | the annual report's notes: "Under policy 4.12 the officer reviews each case in the 90 days before its scheduled expiration"; windows of 90 to 150 days, all seven pods, asserted |
+| SF33 | the end-of-term window | the last 120 days before a scheduled expiration in force | a shorter or longer window (60 to 150 days) | seven pods throughout (1,279 at 60, 1,414 at 90, 1,435 at 150); 45 days 6 pods | C1, asserted; no document names an end-of-term review or its window (a filed review sentence was landed by both portal responses) |
 | SF34 | the day supervision began (section 6.1) | the begin date the department's case records carry | the Act's section 2(2) release date | Ask B's time bands only (about 24 of 7,841 terms), office totals unchanged | instructions 6.1 now reads "from the day supervision began as the department's case records date it" (asserted) |
 
 ## Ladder
@@ -655,4 +655,10 @@ architecture 3 leaves the pretrial world for a record whose outcomes are held wh
   filed in the annual report's notes, so a window cut inside it is contradicted (SF33); section 6.1 dates time on
   supervision from the case records' begin date (judge 1's note, SF34). The judge's 904.6 sits on the pooled line
   (899 to 911 at 90 to 120 days): its form diluted the no-room review into the pooled rate.
+- The filed end-of-term review (the reship of 2026-10-27, portal 2026-10-28): the annual report's note that "the
+  officer reviews each case in the 90 days before its scheduled expiration", filed to close a judge's 60-day bands, sent
+  both responses to the end-of-term review and both filed the golden seven pods (1,445.83 and about 1,406), where the
+  round before it both missed (4 and 5 pods). The sentence pointed at the second clock, which is the way into the stump,
+  and the window never moved the call (60 to 150 days all seven pods), so it was taken out; the window stays closed in
+  the record (SF33), section 6.1's start-date pin and the author's prompt stay.
 
