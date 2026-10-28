@@ -1,349 +1,655 @@
-"""Assertions on the built pack and the world it came from: the three rules executed (the easy routes file the named
-wrong book on the pack, the decisive step files the golden, the world's own 2027 agrees), the standing family and its
-bins, the ladder, every semantic fork row (SF1 to SF20), the Layer 1 items moving nothing, the ask devices and their
-stops, the pair ceiling, separation and the input gates.
-
-    python3 task304/generator/checks.py <target dir>
-"""
-import json
+"""Assertions on the built pack (target/), the figures and the clean world. Every label prints PASS or the build
+stops. The three-rules block (R1, R2, R3a to R3c) runs on every build."""
+import copy
+import datetime as dt
 import os
 import re
-import shutil
-import sys
-import tempfile
+import subprocess
+from collections import Counter, defaultdict
 
-import numpy as np
 import pandas as pd
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import pair
 import params as P
 import solve as S
-import world as W
 
-FTB, HLTV, SO, BTL = P.ORDER
-F = P.FILES
-# the figures the design note states, asserted against the pack
-NOTE = None
-N = 0
+N = [0]
 
 
-def ok(cond, msg):
-    global N
-    if cond:
-        N += 1
-    else:
-        FAILED.append(msg)
-        print("FAIL", msg, flush=True)
+def ok(label, cond, detail=""):
+    N[0] += 1
+    if not cond:
+        raise AssertionError("FAIL %s %s" % (label, detail))
+    print("PASS %-58s %s" % (label, detail))
 
 
-FAILED = []
+def edge10(v):
+    return 5.0 - abs(v - 10 * round(v / 10.0))
 
 
-def ten(v):
-    return int(round(v / 10.0) * 10)
-
-
-def edge(v, u):
-    return u / 2 - abs(v - round(v / u) * u)
-
-
-def r1(d):
-    return {P.SHORT[k]: round(v, 1) for k, v in d.items()}
+def winner(F, key):
+    o = sorted(P.SETTINGS, key=lambda s: -F[s][key])
+    return o[0], F[o[0]][key] / F[o[1]][key]
 
 
 def pdf_text(path):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(path).pages))
+    return " ".join(subprocess.run(["pdftotext", path, "-"], capture_output=True, text=True).stdout.split())
 
 
-def truth_2027(seed=P.SEED):
-    """the clean truth: the world carried on through 2027, each book's first entries among the accounts on the book at
-    30 September 2026 that are not with the recoveries team"""
-    w = W.World(seed).run()
-    pop = (w.status == 0) & (w.orig_m <= W.SNAP) & ~w.lit
-    first = np.full(w.n, -1)
-    rng = np.random.default_rng(seed + 1000)
-    prev = w.k.copy()
-    for m in range(W.SNAP + 1, W.ym(2027, 12) + 1):
-        w.step(m, rng)
-        hit = pop & (first < 0) & (w.k >= 2) & (prev < 2) & (m >= W.ym(2027, 1))
-        first[hit] = m
-        prev = w.k.copy()
-    ext = pop & (w.ext_m >= W.ym(2026, 1))
-    return ({P.BOOKNAME[b]: int(((first >= 0) & (w.book == j)).sum()) for j, b in enumerate(P.BOOKS)},
-            int(((first >= 0) & ext).sum()))
+def run(target, R, G):
+    F, T = R["F"], R["T"]
+    files = sorted(os.listdir(target))
+    # ------------------------------------------------------------------ input gates
+    ok("gate.files", len(files) >= 10, "%d files" % len(files))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    ok("gate.formats", len(fmts) >= 3, str(sorted(fmts)))
+    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) for f in files if f.endswith(".csv"))
+    ok("gate.big_file", big >= 25000, "%d rows" % big)
+    ok("gate.distractors", len(P.DISTRACTORS) >= 2, str(P.DISTRACTORS))
+    ok("gate.no_description_files", not any(re.search(r"readme|dictionar|notes|manifest|schema", f, re.I) for f in files))
+    ok("gate.no_stump_in_names", not any(re.search(r"cure|prison_cure|distractor|trap", f, re.I) for f in files))
+    # ------------------------------------------------------------------ documents read back with positive controls
+    plan = pdf_text(os.path.join(target, P.FILES["plan"]))
+    path = pdf_text(os.path.join(target, P.FILES["pathway"]))
+    ev = pdf_text(os.path.join(target, P.FILES["evaluation"]))
+    ok("doc.plan_control", "What we count" in plan and "two years to 30" in plan, "%d chars" % len(plan))
+    ok("doc.pathway_control", "twelve weeks" in path and "last dose" in path, "%d chars" % len(path))
+    ok("doc.evaluation_control", "Started within 12 weeks" in ev, "%d chars" % len(ev))
+    allt = (plan + path + ev).lower()
+    for w in ["stays positive", "antibody stays", "for life", "cured in prison", "cured inside", "persist",
+              "already cured", "past infection", "ever infected"]:
+        ok("doc.no_stump_vocab[%s]" % w, w not in allt)
+    ok("doc.no_method_named", "per person" not in allt and "each person's record" not in allt)
+    # ------------------------------------------------------------------ R1: the field's raw material ships
+    lab = T["lab"]
+    ok("R1.lab_is_raw_results", set(lab["test_code"]) <= {"HCVAB", "HCV-AB-EIA", "HCVPCR", "HCV-RNA-VL"},
+       str(sorted(set(lab["test_code"]))))
+    cols = " ".join(list(T["reg"].columns) + list(T["peer"].columns) + list(T["arr"].columns) + list(lab.columns))
+    ok("R1.no_deciding_column", not re.search(r"active|viraemic|cured|status|eligible", cols, re.I), cols[:80])
+    ok("R1.prison_sheets", set(pd.ExcelFile(os.path.join(target, P.FILES["prison"])).sheet_names) ==
+       {"Courses 2017-20", "Courses 2021-26", "Reception BBV positives"})
+    # ------------------------------------------------------------------ the ladder (R3a, R3b) and separation
+    w0, m0 = winner(F, "starts_R0")
+    w1, m1 = winner(F, "starts_R1")
+    w2, m2 = winner(F, "starts_R2")
+    w3, m3 = winner(F, "starts_R3")
+    ok("ladder.R0_names_DS", w0 == "DS", "%.2fx" % m0)
+    ok("ladder.R1_names_DS", w1 == "DS" and m1 >= 1.15, "%.2fx" % m1)
+    ok("R3a.analyst_test_default_R2_files_AP", w2 == "AP" and m2 >= 1.15, "%.2fx" % m2)
+    ok("R3b.decisive_step_alone_files_NSP", w3 == "NSP" and m3 >= 1.2, "%.2fx" % m3)
+    ok("ladder.golden_4th_or_lower_on_R1", sorted(P.SETTINGS, key=lambda s: -F[s]["starts_R1"]).index("NSP") >= 2)
+    ok("ladder.R2_and_R3_differ_every_setting",
+       all(S.r10(F[s]["starts_R2"]) != S.r10(F[s]["starts"]) or s == "NSP" for s in P.SETTINGS),
+       str({s: (S.r10(F[s]["starts_R2"]), S.r10(F[s]["starts"])) for s in P.SETTINGS}))
+    # ------------------------------------------------------------------ standing family and bins
+    for s in P.SETTINGS:
+        for k in ("active", "starts"):
+            v = F[s][k]
+            alt = F[s][k + "_R3_pilot_ratio"] if k + "_R3_pilot_ratio" in F[s] else F[s]["starts_R3_pilot_ratio"]
+            ok("bin.%s_%s_edge" % (s, k), edge10(v) >= 1.0, "%.2f edge %.2f" % (v, edge10(v)))
+            ok("family.%s_%s_pilot_ratio_same_bin" % (s, k), S.r10(v) == S.r10(alt), "%.2f vs %.2f" % (v, alt))
+    gap = F["NSP"]["starts"] - F["DS"]["starts"]
+    ok("bin.gap_edge", edge10(gap) >= 1.0, "%.2f" % gap)
+    ok("rates.lab_and_pilot_ratio_agree", abs(R["R"]["lab_ratio"] - R["R"]["pilot_ratio"]) < 0.02,
+       "%.3f %.3f" % (R["R"]["lab_ratio"], R["R"]["pilot_ratio"]))
+    # ------------------------------------------------------------------ the default's own validation passes
+    H = S.histories(T)
+    A, tests = S.pool(T)
+    labf = S.lab_frame(T)
+    rna = labf[labf["test"] == "RNA"]
+    by = defaultdict(list)
+    for p, d, res in zip(rna["pseudonym"], rna["sample_taken"], rna["result"]):
+        by[p].append((d, res))
+    for s in P.SETTINGS:
+        pos = tests[(tests["setting"] == s) & tests["reactive"]]
+        k = n = 0
+        for p, d in zip(pos["pid"], pos["test_date"]):
+            if any(st and st <= d + dt.timedelta(days=7) and (en is None or en >= d)
+                   for st, en in H["net_span"].get(p, [])):
+                continue          # on a network course at the test: its RNA tests are treatment monitoring
+            after = sorted(x for x in by.get(p, []) if 0 < (x[0] - d).days <= 120)
+            if after:
+                n += 1
+                k += after[0][1] == "Detected"
+        ok("validation.%s_rna_after_peer_test_near_074" % s, n >= 15 and 0.62 <= k / n <= 1.0,
+           "%d of %d = %.2f" % (k, n, k / max(n, 1)))
+    # ------------------------------------------------------------------ SF rows (semantic forks), each same call
+    F_alt = sf_variants(T, R)
+    for name, Fv in F_alt.items():
+        wv, mv = winner(Fv, "starts")
+        ok("%s same call" % name, wv == "NSP", "%.2fx" % mv)
+    for name in ("SF6_pilot_ratio", "SF12_completed_as_cure", "SF3_invalid_as_test", "SF1_distinct_over_two_years",
+                 "SF2_mean_of_pilot_sites", "SF9_rounded_per_step", "SF10_completed_is_cure", "SF11_on_course_counted",
+                 "SF16_reactive_share_per_person", "SF17_rna_after_the_kit", "SF18_setting_own_share",
+                 "SF19_status_at_arrival", "SF21_lost_to_follow_up_no_cure"):
+        same = all(S.r10(F_alt[name][s]["starts"]) == S.r10(F[s]["starts"]) for s in P.SETTINGS)
+        ok("%s same figures" % name, same, str({s: round(F_alt[name][s]["starts"], 1) for s in P.SETTINGS}))
+    ok("SF11 ruled out on the active figures by the plan",
+       "counted neither among the active infections it finds nor among its starts" in plan)
+    ok("SF2 ruled out by the plan", "test the same share of a setting's arrivals as the pilot tested" in plan)
+    ok("SF8 ruled out by the plan", "where it starts the most people" in plan)
+    stops_sf = ask_stops(T)
+    AHs = R["AH"]
+    d13 = sum(1 for kk in AHs if stops_sf["planned_end_for_stopped"][kk]["confirmed"] != AHs[kk]["confirmed"])
+    ok("SF13 last dose of a stopped course, ruled out by the pathway",
+       "the date it stopped for a course stopped early" in path and d13 >= 1, "%d cells move" % d13)
+    ok("SF14 first test twelve weeks on against any such test: records converge", sf14_rows(T) == 0)
+    d23 = sf23_cells(T, AHs)
+    ok("SF23 completed courses only, ruled out by the pathway and the prompt's ended",
+       "the date it stopped for a course stopped early" in path and "courses that ended in that half-year" in
+       open(os.path.join(os.path.dirname(target), "prompt.txt")).read(), "%d cells move" % d23)
+    nsp_reg = pd.read_csv(os.path.join(target, P.FILES["nsp_activity"]))
+    nsp_reg["py"] = pd.to_datetime(nsp_reg["week_beginning"]).dt.date.map(S.plan_year)
+    by_py = nsp_reg.groupby("py")["new_registrations_paper"].sum().to_dict()
+    for lab_, alt_a in (("second_year", by_py.get(2, 0)), ("both_years", (by_py.get(1, 0) + by_py.get(2, 0)) / 2)):
+        Fv = copy.deepcopy(F)
+        Fv["NSP"]["starts"] = F["NSP"]["starts"] * alt_a / F["NSP"]["arrivals"]
+        wv, mv = winner(Fv, "starts")
+        ok("SF22 needle exchange arrivals from the pharmacies' paper registrations (%s) same call" % lab_, wv == "NSP",
+           "%.1f arrivals, %.2fx" % (alt_a, mv))
+    ok("SF22 ruled out by the plan", "from the returns each provider sends the commissioners" in plan)
+    fib = pd.read_excel(os.path.join(target, P.FILES["fibroscan"]))
+    ok("SF24 the FibroScan sessions rank venues by liver disease, not people started; ruled out by the plan",
+       "where it starts the most people" in plan and not any("pseud" in str(col).lower() for col in fib.columns),
+       str(list(fib.columns)))
+    # realism: sibling requesting sites do not share the work evenly
+    locs = T["lab"].groupby(["location_type", "requesting_location"]).size()
+    for ltype in ("GP", "Antenatal", "Sexual health", "Drug service", "Hospital"):
+        v = locs[ltype]
+        ok("realism.sites_uneven[%s]" % ltype, v.max() / v.min() >= 1.5, "%d to %d" % (v.min(), v.max()))
+    d20 = sf20_cells(T, AHs)
+    ok("SF20 a course lost to follow-up read as finished at its planned end, ruled out by the pathway",
+       "A course lost to follow-up has no last dose on record" in path, "%d cells move" % d20)
+    d15 = sf15_cells(T, AHs)
+    ok("SF15 half-year by the last dose, the start ruled out by the prompt",
+       "ended in that half-year" in open(os.path.join(os.path.dirname(target), "prompt.txt")).read() and d15 >= 1,
+       "%d cells move" % d15)
+    # ------------------------------------------------------------------ R2: Layer 1 items neutral
+    for name, Fv in mess_variants(T, R).items():
+        wv, mv = winner(Fv, "starts")
+        ok("R2.mess_%s_call_unchanged" % name, wv == "NSP", "%.2fx" % mv)
+        same = all(S.r10(Fv[s][k]) == S.r10(F[s][k]) for s in P.SETTINGS for k in ("starts", "active"))
+        ok("R2.mess_%s_figures_unchanged" % name, same,
+           str({s: (round(Fv[s]["starts"], 1), round(Fv[s]["active"], 1)) for s in P.SETTINGS}))
+    # ------------------------------------------------------------------ R3c no plant; realism sweep
+    arr = T["arr"]
+    ok("R3c.no_repeated_blocks", arr.duplicated(["pseudonym", "arrival_date", "setting"]).sum() == 0)
+    counts = Counter(arr["setting"])
+    ok("realism.unequal_setting_counts", len(set(counts.values())) == 4, str(counts))
+    for col, df in (("lab_number", lab), ("course_ref", T["reg"]), ("test_id", T["peer"])):
+        ids = sorted(df[col].unique())
+        nums = [int(re.sub(r"\D", "", x)[-4:]) for x in ids[:200]]
+        steps = {b - a for a, b in zip(nums, nums[1:])}
+        ok("realism.%s_not_arithmetic" % col, len(steps) > 3, "%d distinct steps" % len(steps))
+    ok("realism.persona_names", P.DIRECTOR in plan and P.CLIN_LEAD in path and P.TEAM_LEAD in ev)
+    # ------------------------------------------------------------------ H16: no record dated past its extract
+    for label, (lo, hi), limit in h16_ranges(target, T):
+        ok("H16.%s_on_or_before_%s" % (label, limit), hi is None or hi <= limit, "%s to %s" % (lo, hi))
+    ok("H16.evaluation_after_every_12_week_window",
+       max(S._date(x) for x in T["pilot"]["test_date"] if x) + dt.timedelta(days=84) <= dt.date(2020, 1, 17)
+       and "17 January 2020" in ev)
+    ok("H21.no_near_real_place_names", not re.search(r"tamberley|haverleigh", (plan + path + ev).lower()) and
+       not any(re.search(r"Tamberley|Haverleigh", open(os.path.join(target, f), encoding="utf-8").read())
+               for f in files if f.endswith(".csv")))
+    # ------------------------------------------------------------------ the ask: separation and stops
+    AH = R["AH"]
+    sep = ask_separation(T, R)
+    ok("ask.device_rows_outside_call", sep == 0, "%d device rows read by the call" % sep)
+    stops = ask_stops(T)
+    need = {"register_only": 10, "pseudonym_only": 10, "no_twelve_week_rule": 5, "planned_end_for_stopped": 2}
+    for name, st in stops.items():
+        diff = sum(1 for kk in AH if st[kk]["confirmed"] != AH[kk]["confirmed"])
+        ok("ask.stop_%s_misses" % name, diff >= need[name], "%d of 10 cells differ" % diff)
+    ok("ask.each_clinic_has_courses", all(AH[(c, h)]["finished"] >= 4 for c in P.CLINICS for h in (1, 2)))
+    ok("ask.device_unnamed_in_register", not any(re.search(r"previous|merged|alias|former|old_", col, re.I)
+                                                 for col in T["reg"].columns), str(list(T["reg"].columns)))
+    AL = S.aliases(T)
+    reg_ids = set(T["reg"]["pseudonym"])
+    lab_ids = set(T["lab"]["pseudonym"])
+    two = {tuple(v) for v in AL.values() if len(v) > 1}
+    in_ask, outside = 0, 0
+    for v in two:
+        courses = T["reg"][T["reg"]["pseudonym"].isin(v)]
+        ends = [S._date(r["stopped_on"]) if r["outcome"] == "Stopped" else S._date(r["planned_end"])
+                for _, r in courses.iterrows()]
+        if any(e and P.POOL_START <= e <= dt.date(2025, 9, 30) for e in ends):
+            in_ask += 1
+        else:
+            outside += 1
+    ok("ask.device_reachable_every_course_person_has_a_lab_row", all(
+        any(p in lab_ids for p in v if p in reg_ids) for v in two), "%d two-number people" % len(two))
+    ok("ask.device_blended_two_number_people_outside_the_ask", outside >= in_ask,
+       "%d in the ask's courses, %d outside" % (in_ask, outside))
+    arr_people = set(T["arr"]["pseudonym"])
+    ok("ask.no_two_number_arrival", not any(p in arr_people for v in two for p in v))
+    # ------------------------------------------------------------------ capacity is not binding
+    ok("plan.capacity_not_binding", all(R["C"][s]["running"] < 70 for s in P.SETTINGS),
+       str({s: round(R["C"][s]["running"], 1) for s in P.SETTINGS}))
+    # ------------------------------------------------------------------ figures.json carries every graded figure
+    ok("figures.call", G["order"][0] == "NSP" and G["starts10"]["NSP"] == S.r10(F["NSP"]["starts"]))
+    # the approved premises' share cured inside prison, per test and per person, before the test or the arrival
+    A_, tests_ = S.pool(T)
+    pos_ = tests_[(tests_["setting"] == "AP") & tests_["reactive"]]
+    for unit, q in (("test", pos_), ("person", pos_.sort_values("test_date").drop_duplicates("pid"))):
+        n_ = len(q)
+        po = sum(1 for p_, d_ in zip(q["pid"], q["test_date"])
+                 if any(x and x < d_ for x in H["pr_cure"].get(p_, []))
+                 and not any(x and x < d_ for x in H["net_cure"].get(p_, [])))
+        pct = 100.0 * po / n_
+        ok("component.ap_prison_pct_per_%s" % unit, int(round(pct)) == G["ap_prison_pct"] and abs(pct - round(pct)) < 0.45,
+           "%.2f" % pct)
+    # the write-up states it as more than half: true under every match window a solver would use, per test or person
+    for w_ in (30, 42, 60, 90):
+        A_w, t_w = S.pool(T, window=w_)
+        pos_w = t_w[(t_w["setting"] == "AP") & t_w["reactive"]]
+        for unit, q in (("test", pos_w), ("person", pos_w.sort_values("test_date").drop_duplicates("pid"))):
+            k_ = sum(1 for p_, d_ in zip(q["pid"], q["test_date"])
+                     if any(x and x < d_ for x in H["pr_cure"].get(p_, []))
+                     and not any(x and x < d_ for x in H["net_cure"].get(p_, [])))
+            ok("component.ap_more_than_half_window_%d_per_%s" % (w_, unit), k_ / len(q) > 0.5,
+               "%d of %d" % (k_, len(q)))
+    # the paper's comparative words hold on the pack: a quarter of the approved premises' tested arrivals react, the
+    # largest intake is Fenwold Recovery's, nearly half of its positives were cured by the network's clinics, most of
+    # the needle exchange registrants' positives are active
+    ok("words.ap_a_quarter_react", 0.22 <= F["AP"]["ab_share"] <= 0.28, "%.3f" % F["AP"]["ab_share"])
+    ok("words.ds_largest_intake", max(P.SETTINGS, key=lambda s: F[s]["arrivals"]) == "DS")
+    cs = S.cured_shares(T)
+    ok("words.ds_nearly_half_cured_by_network", 0.40 <= cs["DS"]["net"] / cs["DS"]["n"] < 0.5,
+       "%.3f" % (cs["DS"]["net"] / cs["DS"]["n"]))
+    ok("words.nsp_most_positives_active", F["NSP"]["active"] / F["NSP"]["positives"] > 0.5,
+       "%.3f" % (F["NSP"]["active"] / F["NSP"]["positives"]))
+    print("checks: %d assertions passed" % N[0])
 
 
-def without(target, keys):
-    """a copy of the pack with the named files removed"""
-    d = tempfile.mkdtemp()
-    for f in os.listdir(target):
-        if f not in [F[k] for k in keys]:
-            shutil.copy(os.path.join(target, f), os.path.join(d, f))
-    return d
+def _with(T, **kw):
+    T2 = dict(T)
+    T2.pop("_labf", None)
+    T2.update(kw)
+    return T2
 
 
-
-def realism(target, ok):
-    """the realism sweep and the three rules executed (dataset-generation sections 7 and 7.1)"""
-    import pyarrow.parquet as pq
-    h = pd.read_parquet(os.path.join(target, F["history"]),
-                        columns=["account_number", "book", "period", "arrears_balance", "account_status"])
-    live = h[h.account_status == "Live"].drop_duplicates()
-    cnt = live.groupby(["book", "period"]).size().unstack(0).loc["2024-01":]
-    runs = (cnt.diff().iloc[1:] == 0).sum()
-    ok(int(runs.max()) <= 2, "realism: no book's live count repeats month on month (%d)" % int(runs.max()))
-    bk = pd.read_parquet(os.path.join(target, F["book"]), columns=["book"])
-    sizes = bk.book.value_counts()
-    ok(all(v % 100 for v in sizes), "realism: no book holds a round number of accounts")
-    a = h[(h.period >= "2024-01") & (h.arrears_balance > 0)].drop_duplicates()
-    paths = a.sort_values(["account_number", "period"]).groupby("account_number").apply(
-        lambda d: tuple(zip(d.period, d.arrears_balance.round(2))))
-    long_paths = paths[paths.map(len) >= 4]
-    ok(long_paths.duplicated().sum() == 0, "R3c: no account's arrears path is a copy of another's")
-    ct = pd.read_csv(os.path.join(target, F["contacts"]))
-    ok(ct.groupby("contact_reason").calls_answered.nunique().min() >= 10, "realism: contact volumes move month to month")
-    lit = pd.read_csv(os.path.join(target, F["litigation"]), dtype=str)
-    blocks = lit.groupby("claim_number").action.apply(tuple)
-    ok(blocks.value_counts().iloc[0] < 0.5 * len(blocks), "realism: no one action sequence makes up half the claims")
-    import pyarrow.parquet as pq
-    names = set()
-    for f in os.listdir(target):
-        if f.endswith(".parquet"):
-            names |= set(pq.read_schema(os.path.join(target, f)).names)
-        elif f.endswith(".csv"):
-            names |= set(pd.read_csv(os.path.join(target, f), nrows=1).columns)
-    ok(not any(w in " ".join(names).lower() for w in ("extension", "extended", "forborne", "concession", "charter")),
-       "R1: no field names the term increase")
-    cols = set()
-    for f in os.listdir(target):
-        if f.endswith(".parquet"):
-            cols |= set(pq.read_schema(os.path.join(target, f)).names)
-        elif f.endswith(".csv"):
-            cols |= set(pd.read_csv(os.path.join(target, f), nrows=1).columns)
-    ok(not any(k in c for c in cols for k in ("ext", "forb", "conc", "charter", "hazard", "risk")),
-       "R1: no shipped column holds the deciding quantity")
-    ok(pq.ParquetFile(os.path.join(target, F["history"])).metadata.num_rows >= 25000,
-       "R1: the account-month history the forecast runs on ships")
-
-
-def main(target, quick=False):
+def sf_variants(T, R):
+    """each row of the design note's semantic fork table, the golden's construction under the alternative reading"""
+    import solve as S2
     out = {}
-    H, B = S.load(target)
-    g = S.main_call(target, H, B)
-    rates, av = g["rates"], g["avoided"]
-    out["golden"] = r1(av)
-    out["entries"] = {P.SHORT[k]: round(v, 1) for k, v in g["entries"].items()}
-    ok(g["book"] == FTB, "R3b: the decisive step alone (the term increase as a state) files the first-time buyer book")
-    ok(ten(av[FTB]) == 10 and av[HLTV] < 5 and av[SO] < 5 and av[BTL] < 5, "the golden's bins")
-    ok(edge(av[FTB], 10) > 2 and 5 - av[HLTV] > 0.4, "the golden's figures sit inside their bins")
-    order = sorted(P.ORDER, key=lambda b: -av[b])
-    ok(order[1] == HLTV, "High LTV is the next best")
-    # ---- R1 executed: the easy routes on the pack file High LTV; the ladder's lower rungs too --------------------------
-    easy = {}
-    for label, kw in S.EASY:
-        r = S.main_call(target, H, B, **kw)
-        easy[label] = r1(r["avoided"])
-        ok(r["book"] == HLTV, "R3a: easy route %s files High LTV" % label)
-        ok(r["avoided"][FTB] < 5 and r["avoided"][HLTV] < 5, "easy route %s bins" % label)
-    out["easy"] = easy
-    st, pc = S.rung_stock(H, B, rates), S.rung_pace(H, rates)
-    out["R0"], out["R1"] = r1(st), r1(pc)
-    ok(max(st, key=st.get) == HLTV and max(pc, key=pc.get) == HLTV, "the stock and this year's pace file High LTV")
-    # ---- the standing family: every member files the first-time buyer book in the 10 bin, High LTV under 5 -------
-    fam = {}
-    if not quick:
-        for label, kw in S.FAMILY:
-            r = S.main_call(target, H, B, **kw)
-            fam[label] = round(r["avoided"][FTB], 1)
-            ok(r["book"] == FTB, "family member %s files the first-time buyer book" % label)
-            ok(ten(r["avoided"][FTB]) == 10, "family member %s: first-time buyer in the 10 bin (%.1f)" % (label, r["avoided"][FTB]))
-            ok(r["avoided"][HLTV] < 5, "family member %s: High LTV under 5" % label)
-        out["family"] = fam
-        out["family_range"] = [min(fam.values()), max(fam.values())]
-        out["family_n"] = len(fam)
-    # ---- the world's own 2027 agrees with the golden's direction -----------------------------------------------------
-    if not quick:
-        tr, tr_ext = truth_2027()
-        tav = {b: P.EFFECT * tr[b] * rates[b] for b in P.ORDER}
-        out["truth_avoided"] = r1(tav)
-        ok(max(tav, key=tav.get) == FTB, "the world's own 2027 files the first-time buyer book")
-        ok(tr_ext > 0.5 * tr[FTB], "the extended accounts carry most of the first-time buyer book's 2027 entries")
-    # ---- R3: no field marks an extension; the plan files no method --------------------------------------------------
-    hist_cols = list(pd.read_parquet(os.path.join(target, F["history"])).columns)
-    ok(not any(re.search(r"ext|forb|charter|concession|flag", c, re.I) for c in hist_cols), "no column marks a concession")
-    plan = pdf_text(os.path.join(target, F["plan"]))
-    ok("extension" not in plan.lower() and "charter" not in plan.lower(), "the plan names no extension")
-    # ---- Layer 1 items move nothing -------------------------------------------------------------------------------
-    if not quick:
-        Hd, Bd = S.load(target, dedupe=False)
-        ok(S.main_call(target, Hd, Bd)["book"] == FTB, "R2: the re-sent month rows kept: same call")
-        fx, fd = S.ext_facts(H, B), S.ext_facts(Hd, Bd)
-        ok(all(fx[k] == fd[k] for k in ("ftb_raised_2026", "raised_2024", "behind_8m", "behind_by_asof"))
-           and all(round(fx[k]) == round(fd[k]) for k in ("years_added_median", "pay_rise_extended", "pay_rise_kept")),
-           "the re-sent month rows kept: the term increase facts unchanged")
-        Hs, Bs = S.load(target, strip=False)
-        ok(S.main_call(target, Hs, Bs)["book"] == FTB, "R2: product codes read with their dashes: same call")
-        Hb, _ = S.load(target, extra=("balance",))
-        same = Hb.account_number.eq(Hb.account_number.shift()).to_numpy()
-        cap = same & (Hb.balance.to_numpy() > np.where(same, Hb.balance.shift().fillna(0), 0) + 1)
-        capped = set(Hb.account_number[cap])
-        out["capitalised_accounts"] = len(capped)
-        ok(len(capped) > 50, "capitalisations present")
-        r = S.main_call(target, H[~H.account_number.isin(capped)], B)
-        ok(r["book"] == FTB, "R2: capitalised accounts out of the fit: same call")
-    # ---- SF rows ---------------------------------------------------------------------------------------------------
-    policy = pdf_text(os.path.join(target, F["policy"]))
-    pilot = pdf_text(os.path.join(target, F["pilot"]))
-    ok("for the whole of 2027" in plan and "during 2027" in plan, "SF1: calendar 2027 filed")
-    ok("rounded down" in policy and "Payments in arrears is the arrears balance" in policy and "section 2 of the Arrears" in plan, "SF2: payments in arrears filed")
-    if not quick:
-        r = S.main_call(target, H, B, once=False)
-        out["SF3_every_entry"] = r1(r["avoided"])
-        ok(r["book"] == FTB, "SF3: every entry counted, same call")
-    ok("in the first month of the year it does so" in plan, "SF3: once, filed")
-    first_period = pd.read_parquet(os.path.join(target, F["history"]), columns=["account_number", "period"]).groupby("account_number").period.min()
-    ok(first_period.max() <= "2026-08", "SF4: no account opened after the book's date")
-    ok("The book is the accounts on it at 30 September 2026" in plan, "SF4: filed")
-    ok("with no allowance for accounts that close during the year" in plan, "SF21: filed")
-    if not quick:
-        r = S.main_call(target, H, B, attrition=True)
-        out["SF21_closures_netted"] = r1(r["avoided"])
-        ok(r["book"] == FTB, "SF21: accounts netted for closing first, same call")
-    if not quick:
-        r = S.main_call(target, H, B, recoveries_out=False)
-        ok(r["book"] == FTB, "SF5: recoveries accounts kept in, same call")
-    ok("already in litigation or with a receiver appointed at that date are left with the recoveries team" in plan, "SF5 filed")
-    # SF6: the printed planning rates reproduce from the history and the register
-    E = S.entries_table(H)
-    lo, hi = 2022 * 12, 2025 * 12 + 2
-    e1 = E[(E.m >= lo) & (E.m <= hi)].groupby("account_number").first().reset_index()
-    reg = S.register(target)
-    pm = reg.groupby("account_number").date.min()
-    pmm = e1.account_number.map(pm)
-    pmm = pmm.dt.year * 12 + pmm.dt.month - 1
-    e1["y"] = (pmm >= e1.m) & (pmm - e1.m <= 18)
-    rec = e1.groupby("book").y.mean()
-    for b in P.ORDER:
-        ok(abs(round(100 * rec[b], 1) - round(100 * rates[b], 1)) < 1e-9, "SF6: %s planning rate reproduces" % b)
-    ok("%d per cent of its expected 2027 borrowers taken on times its planning rate" % round(100 * P.EFFECT) in plan,
-       "SF7: the effect filed")
-    adj = {b: av[b] / P.EFFECT * 0.5 for b in P.ORDER}
-    ok(max(adj, key=adj.get) == FTB, "SF7: another effect size scales every book alike, same call")
-    ok(all(abs(av[b] - round(av[b])) > 1e-6 for b in P.ORDER), "SF8: possessions avoided are expected values")
-    ok(all(ten(P.EFFECT * round(g["entries"][b]) * rates[b]) == ten(av[b]) for b in P.ORDER),
-       "SF8: whole borrowers taken on give the same figures")
-    ok(order[1] == sorted(P.ORDER, key=lambda b: -g["entries"][b])[1], "SF9: the next best on the pool too")
-    ok(max(g["entries"].values()) < 1900 and "1,900 new cases a year" in plan, "SF10: capacity never binds")
-    for b in P.ORDER:
-        ok(ten(P.EFFECT * round(g["entries"][b], -1) * rates[b]) == ten(av[b]), "SF11: rounding path, %s" % b)
-    # ---- the asks: golden values, the stops, the devices, the pair ---------------------------------------------------
-    A = pair.lit_stops(target)
-    Bst = pair.loss_stops(target)
-    out["askA"] = {k: {P.SHORT[b]: [v[b]["orders"], v[b]["suspended"], v[b]["open"]] for b in P.ORDER[:3]}
-                   for k, v in A.items() if k != "snapshot_stage_open"}
-    out["askA_snapshot"] = {P.SHORT[b]: v for b, v in A["snapshot_stage_open"].items()}
-    out["askB"] = {k: {P.SHORT[b]: [v[b]["sold"], v[b]["at_loss"], None if v[b]["avg_loss"] != v[b]["avg_loss"]
-                                    else int(round(v[b]["avg_loss"] / 100.0) * 100)] for b in P.ORDER[:3]}
-                   for k, v in Bst.items()}
-    gA, gB = A["golden"], Bst["golden"]
-    ok("A claim stays open until it is withdrawn, the order is discharged or set aside, or the property is taken into possession" in policy, "SF12 filed")
-    ok("A possession order stays in force until it is varied (the new order takes its place)" in policy, "SF13 filed")
-    lit = pd.read_csv(os.path.join(target, F["litigation"]), dtype={"account_number": str})
-    ok(len(lit) > lit.drop_duplicates(["claim_number", "action_date", "action", "detail"]).shape[0], "SF14: per-defendant lines present")
-    bk_of = S.account_books(target)
-    ok(not (lit.account_number.map(bk_of) == BTL).any(), "SF15: no buy-to-let claim in the litigation file")
-    ok("any surplus" not in policy and "the surplus is paid to the borrower and the loss is nil" in policy, "SF17 filed")
-    sr = pd.read_csv(os.path.join(target, F["sales"]))
-    ok((sr.groupby("sale_ref").statement.max() > 1).any(), "SF18: corrected statements carry the next number")
-    import openpyxl
-    ok(not any(re.search(r"dictionary|readme|manifest|field.?notes|schema", f, re.I) for f in os.listdir(target)),
-       "dataset-generation 3: no file describes the data, by name")
-    sheets = [n for f in os.listdir(target) if f.endswith(".xlsx") for n in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames]
-    ok(not any(re.search(r"notes|readme|dictionary|fields|about", n, re.I) for n in sheets),
-       "dataset-generation 3: no sheet describes the data (%s)" % ", ".join(sheets))
-    ok("one of our four lending books" in plan, "SF19: the four books named")
-    for b in P.ORDER[:3]:
-        gv = gB[b]
-        ok(gv["sold"] > 0 and edge(gv["avg_loss"], 100) > 20, "ask B %s average loss sits inside its bin" % b)
-    sales_raw = pd.read_csv(os.path.join(target, F["sales"]))
-    ok([c for c in sales_raw.columns if "date" in c] == ["completion_date"], "SF16: one date on a sale")
-    two = sales_raw[sales_raw.statement == 2]
-    one = sales_raw[sales_raw.statement == 1].set_index("sale_ref")
-    ok((two.set_index("sale_ref").completion_date == one.completion_date.reindex(two.sale_ref)).all(),
-       "SF16: a corrected statement keeps its completion date")
-    _, sdet = S.losses(target)
-    for b in P.ORDER[:3]:
-        x = sdet[sdet.book == b]
-        ok(int((x.debt > x.sale_price - x.selling_costs).sum()) == gB[b]["at_loss"], "SF20: at a loss, %s" % b)
-    # ask A's primary: a re-sealed order follows the claim's previous order with the same terms and no hearing between
-    for b in P.ORDER[:3]:
-        ok(A["reseal_counted"][b]["orders"] > gA[b]["orders"], "ask A primary moves the orders, %s" % b)
-    ok(A["same_terms_dropped"][FTB]["orders"] < gA[FTB]["orders"] or A["same_terms_dropped"][HLTV]["orders"] < gA[HLTV]["orders"],
-       "ask A interior: genuine variations on the same terms after a hearing")
-    ok(A["no_register"][FTB]["open"] > gA[FTB]["open"], "ask A construction: the register closes claims")
-    # ask B's primary: one sale per account, the debt every loan part's
-    for b in P.ORDER[:3]:
-        sl, gv = Bst["statement_register_last"][b], gB[b]
-        ok(sl["sold"] > gv["sold"] and (sl["at_loss"] != gv["at_loss"] or round(sl["avg_loss"], -2) != round(gv["avg_loss"], -2)),
-           "SF22, ask B primary moves the sales and the losses, %s" % b)
-    rg = S.register(target)
-    twin = rg[rg.duplicated("account_number", keep=False)]
-    ok(len(twin) > 0 and (twin.groupby("account_number").date.nunique() == 1).all(), "SF22, ask B: a loan part shares its possession date")
-    Hb = pd.read_parquet(os.path.join(target, F["history"]), columns=["account_number", "period", "balance", "arrears_balance"]).drop_duplicates()
-    Hb["m"] = Hb.period.str[:4].astype(int) * 12 + Hb.period.str[5:7].astype(int) - 1
-    pmonth = rg.groupby("account_number").date.min()
-    gap = []
-    for acct, debt in rg[rg.account_number.isin(twin.account_number)].groupby("account_number").debt_at_possession.sum().items():
-        pm = pmonth[acct].year * 12 + pmonth[acct].month - 1
-        row = Hb[(Hb.account_number == acct) & (Hb.m == pm - 1)]
-        if len(row):
-            gap.append(debt - float(row.balance.iloc[0] + row.arrears_balance.iloc[0]))
-    ok(len(gap) > 10 and 0 <= np.median(gap) < 6000, "ask B: the loan parts' debts sum to the account's balance and arrears plus costs (median gap %.0f)" % np.median(gap))
-    res = pair.ceiling(target)
-    out["pair"] = round(res["pair"], 1)
-    out["mirror"] = round(100 * res["keep"], 1)
-    ok(res["pair"] <= 60 and res["keep"] < 0.35, "pair ceiling and mirror leakage")
-    # ---- separation: the call reads none of the recoveries files and none of the distractors ------------------------
-    if not quick:
-        d = without(target, ("litigation", "sales", "receivers", "possessions", "hpi", "contacts", "appetite", "ratecard"))
-        r = S.main_call(d)
-        ok(r["book"] == FTB and abs(r["avoided"][FTB] - av[FTB]) < 1e-9, "separation: the call without the recoveries files and distractors")
-        shutil.rmtree(d)
-    # ---- realism and gates -----------------------------------------------------------------------------------------
-    ok(reg.date.max() <= pd.Timestamp(P.ASOF), "register within the as-of date")
-    sales = pd.read_csv(os.path.join(target, F["sales"]))
-    ok(sales.completion_date.max() <= P.ASOF and lit.action_date.max() <= P.ASOF, "sales and litigation within the as-of date")
-    files = os.listdir(target)
-    ok(len(files) >= 10 and len({f.rsplit(".", 1)[1] for f in files}) >= 3, "input gates: files and formats")
-    import pyarrow.parquet as pq
-    ok(pq.ParquetFile(os.path.join(target, F["history"])).metadata.num_rows >= 25000, "input gates: a large file")
-    ok(not pq.ParquetFile(os.path.join(target, F["history"])).schema_arrow.metadata, "parquet carries no pandas schema block")
-    m = re.search(r"Support team \(even\) (\d+) (\d+) \(([\d.]+)%\) (\d+) \(([\d.]+)%\) Usual collections \(odd\) (\d+) (\d+) \(([\d.]+)%\) (\d+)", pilot)
-    ok(m is not None, "pilot table readable")
-    tl, ul = int(m.group(2)) / int(m.group(1)), int(m.group(7)) / int(m.group(6))
-    ok(0.62 < tl / ul < 0.78, "pilot: four payments behind about twice the planning cut less often (%.2f)" % (tl / ul))
-    ok(("about %d per cent less often" % (int(round((1 - tl / ul) * 20)) * 5)) in pilot, "pilot: the stated cut matches the table")
-    ok(100 * P.EFFECT < 0.5 * int(round((1 - tl / ul) * 20)) * 5, "pilot: the planning cut is under half the stated cut in arrears")
-    out["pilot_ratio"] = round(tl / ul, 2)
-    import build as BD
-    pt = BD.pilot_table(pd.read_parquet(os.path.join(target, F["history"])),
-                        pd.read_csv(os.path.join(target, F["litigation"]), dtype={"account_number": str}),
-                        pd.read_csv(os.path.join(target, F["receivers"]), dtype={"account_number": str}))
-    ok([pt[k] for k in ("team_n", "team_four", "team_claim", "usual_n", "usual_four", "usual_claim")]
-       == [int(m.group(i)) for i in (1, 2, 4, 6, 7, 9)], "pilot table reproduces from the records")
-    realism(target, ok)
-    if NOTE is not None:
-        for k, v in NOTE.items():
-            ok(out.get(k) == v, "note figure %s: note %s, pack %s" % (k, v, out.get(k)))
-    print("checks: %d passed, %d failed" % (N, len(FAILED)))
-    if FAILED:
-        raise AssertionError("; ".join(FAILED))
+    base_R = R["R"]
+    # SF1 a 2027 year's arrivals read as arrival rows (second stays counted) instead of distinct people
+    T1 = _with(T)
+    ar = T["arr"].copy()
+    ar["pseudonym"] = ar["pseudonym"] + "_" + ar.index.astype(str)
+    T1["arr"] = ar
+    A1, _ = S2.pool(T1)
+    F1 = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        F1[s]["starts"] = R["F"][s]["starts"] * A1[s] / R["F"][s]["arrivals"]
+    out["SF1_arrival_rows"] = F1
+    # SF3 an invalid kit read as a non-reactive test
+    T3 = _with(T)
+    pe = T["peer"].copy()
+    pe.loc[pe["result"] == "Invalid", "result"] = "Non-reactive"
+    T3["peer"] = pe
+    out["SF3_invalid_as_test"] = S2.funnel(T3, base_R)[0]
+    # SF4 the status read at 30 September 2026 instead of at the test
+    H = S2.histories(T)
+    A, tests = S2.pool(T)
+    F4 = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        pos = tests[(tests["setting"] == s) & tests["reactive"]]
+        v = sum(S2.status(p, P.AS_OF, H, base_R["lab_ratio"]) for p in pos["pid"]) / len(pos)
+        F4[s]["starts"] = R["F"][s]["positives"] * v * base_R["start_share"]
+    out["SF4_status_at_as_of"] = F4
+    # SF5 started at any time, not within twelve weeks
+    pl = T["pilot"]
+    det = pl[pl["rna"] == "Detected"]
+    any_share = (det["treatment_started"] == "Y").sum() / len(det)
+    out["SF5_any_start"] = {s: dict(R["F"][s], starts=R["F"][s]["starts"] / base_R["start_share"] * any_share)
+                            for s in P.SETTINGS}
+    # SF6 the pilot's viraemic share for positives with no record
+    out["SF6_pilot_ratio"] = {s: dict(R["F"][s], starts=R["F"][s]["starts_R3_pilot_ratio"]) for s in P.SETTINGS}
+    # SF7 a peer test matched to an arrival within 42 days, not 60
+    old = S2.pool
+    try:
+        S2.pool = lambda Tx, window=42: old(Tx, window=42)
+        out["SF7_window_42_days"] = S2.funnel(T, base_R)[0]
+    finally:
+        S2.pool = old
+    # SF1b distinct people over the two years, halved, instead of each year's distinct people averaged
+    arr = T["arr"].copy()
+    arr["d"] = arr["arrival_date"].map(S2._date)
+    arr["py"] = arr["d"].map(S2.plan_year)
+    F1b = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        a = arr[(arr["setting"] == s) & arr["py"].notna()]
+        F1b[s]["starts"] = R["F"][s]["starts"] * (a["pseudonym"].nunique() / 2) / R["F"][s]["arrivals"]
+    out["SF1_distinct_over_two_years"] = F1b
+    # SF2 the van's test share read as the peer team's coverage of each setting, or the mean of the pilot's sites
+    A, tests = S2.pool(T)
+    F2 = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        ppl = set(arr[(arr["setting"] == s) & arr["py"].notna()]["pseudonym"])
+        cov = len(set(tests[tests["setting"] == s]["pid"]) & ppl) / len(ppl)
+        F2[s]["starts"] = R["F"][s]["starts"] / base_R["test_share"] * cov
+    out["SF2_peer_coverage"] = F2
+    pl = T["pilot"]
+    sites = sorted(set(pl["pilot_site"]))
+    ts = sum(((pl["pilot_site"] == x) & (pl["tested_by_van"] == "Y")).sum() / (pl["pilot_site"] == x).sum()
+             for x in sites) / len(sites)
+    out["SF2_mean_of_pilot_sites"] = {s: dict(R["F"][s], starts=R["F"][s]["starts"] / base_R["test_share"] * ts)
+                                      for s in P.SETTINGS}
+    # SF8 the setting with the most active infections instead of the most starts
+    out["SF8_most_active"] = {s: dict(R["F"][s], starts=R["F"][s]["active"]) for s in P.SETTINGS}
+    # SF9 every rate rounded to two places and every count to whole people at each step
+    F9 = {}
+    for s in P.SETTINGS:
+        f = R["F"][s]
+        tested = round(round(f["arrivals"]) * round(base_R["test_share"], 2))
+        pos = round(tested * round(f["ab_share"], 2))
+        act = round(pos * round(f["active"] / f["positives"], 2))
+        F9[s] = dict(f, starts=act * round(base_R["start_share"], 2))
+    out["SF9_rounded_per_step"] = F9
+    # SF10 a cure read as a course completed, whatever its twelve-week result
+    T10 = _with(T)
+    rg = T["reg"].copy()
+    m = rg["outcome"] == "Completed"
+    rg.loc[m & (rg["svr12_date"] == ""), "svr12_date"] = rg.loc[m & (rg["svr12_date"] == ""), "planned_end"]
+    rg.loc[m, "svr12_result"] = "Not detected"
+    T10["reg"] = rg
+    pr = T["prison"].copy()
+    mp = pr["released"] == False
+    pr.loc[mp & (pr["svr_date"] == ""), "svr_date"] = pr.loc[mp & (pr["svr_date"] == ""), "end"]
+    pr.loc[mp, "svr"] = "Not detected"
+    T10["prison"] = pr
+    out["SF10_completed_is_cure"] = S2.funnel(T10, base_R)[0]
+    # SF11 a person on a course at the test counted at the viraemic share
+    H = S2.histories(T)
+    F11 = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        pos = tests[(tests["setting"] == s) & tests["reactive"]]
+        vals = []
+        for p, d in zip(pos["pid"], pos["test_date"]):
+            on = any(a is not None and a <= d and (b is None or b >= d)
+                     for a, b in H["net_span"].get(p, []) + H["pr_span"].get(p, []))
+            vals.append(base_R["lab_ratio"] if on else S2.status(p, d, H, base_R["lab_ratio"]))
+        F11[s]["starts"] = R["F"][s]["positives"] * sum(vals) / len(vals) * base_R["start_share"]
+    out["SF11_on_course_counted"] = F11
+    # SF16 the reactive share per person (first test) instead of per test
+    F16 = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        t = tests[tests["setting"] == s].sort_values("test_date").drop_duplicates("pid")
+        pos = t[t["reactive"]]
+        v = sum(S2.status(p, d, H, base_R["lab_ratio"]) for p, d in zip(pos["pid"], pos["test_date"])) / len(pos)
+        F16[s]["starts"] = R["F"][s]["arrivals"] * base_R["test_share"] * len(pos) / len(t) * v * base_R["start_share"]
+    out["SF16_reactive_share_per_person"] = F16
+    # SF17 a positive with no earlier record read from an RNA test in the 120 days after the kit, where there is one
+    labf = S2.lab_frame(T)
+    rna = defaultdict(list)
+    for p, d, res in zip(labf["pseudonym"], labf["sample_taken"], labf["result"]):
+        if res in ("Detected", "Not detected"):
+            rna[p].append((d, res))
+    F17, F18 = copy.deepcopy(R["F"]), copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        pos = tests[(tests["setting"] == s) & tests["reactive"]]
+        vals, k, n, none = [], 0, 0, []
+        for p, d in zip(pos["pid"], pos["test_date"]):
+            x = S2.status(p, d, H, -1.0)
+            if x == -1.0:
+                after = sorted(y for y in rna.get(p, []) if 0 <= (y[0] - d).days <= 120)
+                if after:
+                    n += 1
+                    k += after[0][1] == "Detected"
+                    x = 1.0 if after[0][1] == "Detected" else 0.0
+                else:
+                    x = base_R["lab_ratio"]
+            vals.append(x)
+            none.append((p, d))
+        F17[s]["starts"] = R["F"][s]["positives"] * sum(vals) / len(vals) * base_R["start_share"]
+        # SF18 each setting's own share among its positives with no earlier record and an RNA test after the kit
+        vs = [S2.status(p, d, H, k / n) for p, d in none]
+        F18[s]["starts"] = R["F"][s]["positives"] * sum(vs) / len(vs) * base_R["start_share"]
+    out["SF17_rna_after_the_kit"] = F17
+    out["SF18_setting_own_share"] = F18
+    # SF19 the status read at the arrival rather than at the peer team's test
+    arr_by = defaultdict(list)
+    for p, s, d, py in zip(arr["pseudonym"], arr["setting"], arr["d"], arr["py"]):
+        if py:
+            arr_by[p].append(d)
+    F19 = copy.deepcopy(R["F"])
+    for s in P.SETTINGS:
+        pos = tests[(tests["setting"] == s) & tests["reactive"]]
+        vals = [S2.status(p, max(x for x in arr_by[p] if 0 <= (d - x).days <= 60), H, base_R["lab_ratio"])
+                for p, d in zip(pos["pid"], pos["test_date"])]
+        F19[s]["starts"] = R["F"][s]["positives"] * sum(vals) / len(vals) * base_R["start_share"]
+    out["SF19_status_at_arrival"] = F19
+    # SF21 a course lost to follow-up has no last dose on record, so its keyed twelve-week result is not read as a cure
+    T21 = _with(T)
+    rg21 = T["reg"].copy()
+    m21 = rg21["outcome"] == "Lost to follow-up"
+    rg21.loc[m21, "svr12_result"] = ""
+    rg21.loc[m21, "svr12_date"] = ""
+    T21["reg"] = rg21
+    out["SF21_lost_to_follow_up_no_cure"] = S2.funnel(T21, base_R)[0]
+    # SF12 a course completed without a twelve-week result counted as a cure
+    T12 = _with(T)
+    rg = T["reg"].copy()
+    m = (rg["outcome"] == "Completed") & (rg["svr12_result"].isin(["", "Not done"]))
+    rg.loc[m, "svr12_result"] = "Not detected"
+    rg.loc[m, "svr12_date"] = rg.loc[m, "planned_end"]
+    T12["reg"] = rg
+    out["SF12_completed_as_cure"] = S2.funnel(T12, base_R)[0]
     return out
 
 
-if __name__ == "__main__":
-    o = main(sys.argv[1], quick="--quick" in sys.argv)
-    print(json.dumps(o, indent=1, default=str)[:6000])
+def mess_variants(T, R):
+    out = {}
+    # the re-sent laboratory rows kept
+    T2 = _with(T)
+    T2["lab"] = pd.concat([T["lab"], T["lab"].iloc[:5000]], ignore_index=True)
+    out["lab_resent_rows_kept"] = S.funnel(T2, R["R"])[0]
+    # invalid kit results counted as non-reactive tests
+    T3 = _with(T)
+    pe = T["peer"].copy()
+    pe.loc[pe["result"] == "Invalid", "result"] = "Non-reactive"
+    T3["peer"] = pe
+    out["invalid_kits_counted"] = S.funnel(T3, R["R"])[0]
+    # the hostels' day-first dates read month-first where possible
+    T4 = _with(T)
+    ar = T["arr"].copy()
+
+    def swap(s):
+        if "/" in s:
+            d, m, y = s.split("/")
+            if int(d) <= 12:
+                return "%s/%s/%s" % (m, d, y)
+        return s
+    ar["arrival_date"] = ar["arrival_date"].map(swap)
+    T4["arr"] = ar
+    out["hostel_dates_month_first"] = S.funnel(T4, R["R"])[0]
+    # the older workbook sheet's day-first text dates read month-first where possible
+    T5 = _with(T)
+    pr = T["prison"].copy()
+    old_rows = pr.index[pr["start"].str.contains("/", na=False)]
+    for col in ("start", "end", "svr_date"):
+        pr.loc[old_rows, col] = pr.loc[old_rows, col].map(swap)
+    T5["prison"] = pr
+    out["workbook_old_sheet_dates_month_first"] = S.funnel(T5, R["R"])[0]
+    return out
+
+
+def ask_separation(T, R):
+    """register rows carrying an ask device (a blank twelve-week result since the go-live, a previous pseudonym)
+    whose person is an antibody-positive arrival with the device row dated before their test"""
+    A, tests = S.pool(T)
+    pos = tests[tests["reactive"]]
+    first_test = {}
+    for p, d in zip(pos["pid"], pos["test_date"]):
+        first_test[p] = min(d, first_test.get(p, d))
+    labf = S.lab_frame(T)
+    AL = S.aliases(T)
+    rna = defaultdict(list)
+    for p, d, res in zip(labf["pseudonym"], labf["sample_taken"], labf["result"]):
+        if res in ("Detected", "Not detected"):
+            rna[p].append(d)
+    n = 0
+    for _, r in T["reg"].iterrows():
+        last = S._date(r["stopped_on"]) if r["outcome"] == "Stopped" else S._date(r["planned_end"])
+        unkeyed = (r["svr12_result"] == "" and r["outcome"] in ("Completed", "Stopped")
+                   and any((d - last).days >= 84 for d in rna.get(r["pseudonym"], [])))
+        ids = AL.get(r["pseudonym"], [r["pseudonym"]])
+        dev = len(ids) > 1 or unkeyed
+        if not dev:
+            continue
+        for pid in ids:
+            if pid in first_test and S._date(r["start_date"]) < first_test[pid]:
+                n += 1
+    return n
+
+
+def ask_stops(T):
+    """the ask's wrong stops: the register's keyed result only; the laboratory by pseudonym only; any negative RNA
+    after the last dose; the planned end for a course stopped early"""
+    labf = S.lab_frame(T)
+    AL = S.aliases(T)
+    rna = defaultdict(list)
+    for p, d, res in zip(labf["pseudonym"], labf["sample_taken"], labf["result"]):
+        if res in ("Detected", "Not detected"):
+            rna[p].append((d, res))
+    stops = {}
+    for name in ("register_only", "pseudonym_only", "no_twelve_week_rule", "planned_end_for_stopped"):
+        out = {(c, h): dict(finished=0, confirmed=0) for c in P.CLINICS for h in (1, 2)}
+        for _, r in T["reg"].iterrows():
+            if r["outcome"] == "Stopped":
+                last = S._date(r["planned_end"]) if name == "planned_end_for_stopped" else S._date(r["stopped_on"])
+            elif r["outcome"] == "Completed":
+                last = S._date(r["planned_end"])
+            else:
+                continue
+            if not (P.POOL_START <= last <= dt.date(2025, 9, 30)):
+                continue
+            h = 1 if last <= dt.date(2025, 3, 31) else 2
+            out[(r["clinic_code"], h)]["finished"] += 1
+            if name == "register_only":
+                okc = r["svr12_result"] == "Not detected"
+            else:
+                ids = [r["pseudonym"]] if name == "pseudonym_only" else AL.get(r["pseudonym"], [r["pseudonym"]])
+                lim = 0 if name == "no_twelve_week_rule" else 84
+                after = sorted(x for i in ids for x in rna.get(i, []) if (x[0] - last).days >= lim)
+                okc = bool(after) and after[0][1] == "Not detected"
+                if r["svr12_result"] == "Not detected":
+                    okc = True
+            out[(r["clinic_code"], h)]["confirmed"] += int(okc)
+        stops[name] = out
+    return stops
+
+
+def _rna_by(T):
+    labf = S.lab_frame(T)
+    rna = defaultdict(list)
+    for p, d, res in zip(labf["pseudonym"], labf["sample_taken"], labf["result"]):
+        if res in ("Detected", "Not detected"):
+            rna[p].append((d, res))
+    return rna
+
+
+def _finished(r):
+    if r["outcome"] == "Stopped":
+        return S._date(r["stopped_on"])
+    if r["outcome"] == "Completed":
+        return S._date(r["planned_end"])
+    return None
+
+
+def sf14_rows(T):
+    """courses in the ask whose first RNA test twelve weeks or more after the last dose and any such test disagree"""
+    rna = _rna_by(T)
+    n = 0
+    for _, r in T["reg"].iterrows():
+        last = _finished(r)
+        if last is None or not (P.POOL_START <= last <= dt.date(2025, 9, 30)):
+            continue
+        ids = S.aliases(T).get(r["pseudonym"], [r["pseudonym"]])
+        after = sorted(x for i in ids for x in rna.get(i, []) if (x[0] - last).days >= 84 and x[0] <= P.AS_OF)
+        first = bool(after) and after[0][1] == "Not detected"
+        anyn = any(x[1] == "Not detected" for x in after)
+        n += int(first != anyn)
+    return n
+
+
+def sf15_cells(T, AH):
+    """cells that move when the courses are put in half-years by their start instead of their last dose"""
+    rna = _rna_by(T)
+    out = {(c, h): 0 for c in P.CLINICS for h in (1, 2)}
+    for _, r in T["reg"].iterrows():
+        last = _finished(r)
+        st = S._date(r["start_date"])
+        if last is None or not (P.POOL_START <= st <= dt.date(2025, 9, 30)):
+            continue
+        h = 1 if st <= dt.date(2025, 3, 31) else 2
+        ids = S.aliases(T).get(r["pseudonym"], [r["pseudonym"]])
+        after = sorted(x for i in ids for x in rna.get(i, []) if (x[0] - last).days >= 84 and x[0] <= P.AS_OF)
+        c = bool(after) and after[0][1] == "Not detected"
+        if r["svr12_result"] == "Not detected":
+            c = True
+        out[(r["clinic_code"], h)] += int(c)
+    return sum(1 for kk in AH if out[kk] != AH[kk]["confirmed"])
+
+
+def h16_ranges(target, T):
+    """each extract column's date range against the date that extract is taken to; forward-looking columns (a
+    course's planned end) are on the allow-list and not checked"""
+    def rng_of(vals):
+        ds = [S._date(v) for v in vals if v not in ("", None) and not (isinstance(v, float) and pd.isna(v))]
+        return (min(ds), max(ds)) if ds else (None, None)
+    out = []
+    lab = T["lab"]
+    out.append(("lab.sample_taken", rng_of(lab["sample_taken"]), P.AS_OF))
+    for c in ("received", "authorised"):
+        out.append(("lab.%s" % c, rng_of(lab[c].str[:10]), P.EXPORT_DATE))
+    reg = T["reg"]
+    for c in ("start_date", "stopped_on", "svr12_date"):
+        out.append(("register.%s" % c, rng_of(reg[c]), P.AS_OF))
+    pr = T["prison"]
+    for c in ("start", "release", "svr_date"):
+        out.append(("prison.%s" % c, rng_of(pr[c]), P.AS_OF))
+    out.append(("prison.reception", rng_of(T["reception"]["d"]), P.AS_OF))
+    out.append(("peer.test_date", rng_of(T["peer"]["test_date"]), P.AS_OF))
+    out.append(("arrivals.arrival_date", rng_of(T["arr"]["arrival_date"]), P.AS_OF))
+    out.append(("pilot.test_date", rng_of(T["pilot"]["test_date"]), P.PILOT_END))
+    return out
+
+
+def sf20_cells(T, AH):
+    """cells that move when a course lost to follow-up is read as finished on its planned end"""
+    rna = _rna_by(T)
+    out = {kk: AH[kk]["confirmed"] for kk in AH}
+    for _, r in T["reg"].iterrows():
+        if r["outcome"] != "Lost to follow-up":
+            continue
+        last = S._date(r["planned_end"])
+        if not (P.POOL_START <= last <= dt.date(2025, 9, 30)):
+            continue
+        h = 1 if last <= dt.date(2025, 3, 31) else 2
+        ids = S.aliases(T).get(r["pseudonym"], [r["pseudonym"]])
+        after = sorted(x for i in ids for x in rna.get(i, []) if (x[0] - last).days >= 84 and x[0] <= P.AS_OF)
+        c = (bool(after) and after[0][1] == "Not detected") or r["svr12_result"] == "Not detected"
+        out[(r["clinic_code"], h)] += int(c)
+    return sum(1 for kk in AH if out[kk] != AH[kk]["confirmed"])
+
+
+def sf23_cells(T, AH):
+    """cells that move when only courses completed are counted, the stopped ones left out"""
+    rna = _rna_by(T)
+    out = {kk: 0 for kk in AH}
+    for _, r in T["reg"].iterrows():
+        if r["outcome"] != "Completed":
+            continue
+        last = S._date(r["planned_end"])
+        if not (P.POOL_START <= last <= dt.date(2025, 9, 30)):
+            continue
+        h = 1 if last <= dt.date(2025, 3, 31) else 2
+        ids = S.aliases(T).get(r["pseudonym"], [r["pseudonym"]])
+        after = sorted(x for i in ids for x in rna.get(i, []) if (x[0] - last).days >= 84 and x[0] <= P.AS_OF)
+        c = bool(after) and after[0][1] == "Not detected"
+        if (r["svr12_result"] == "Not detected" and S._date(r["svr12_date"])
+                and (S._date(r["svr12_date"]) - last).days >= 84):
+            c = True
+        out[(r["clinic_code"], h)] += int(c)
+    return sum(1 for kk in AH if out[kk] != AH[kk]["confirmed"])

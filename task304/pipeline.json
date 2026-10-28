@@ -1,30 +1,35 @@
 {
  "task": "task304",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "epidemiology-public-health",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design (architecture 2 drawn 2026-10-27, card registered at WARN)",
+ "stage": 5,
+ "stage_name": "shipped 2026-10-27 (target.zip 1382208d)",
  "updated": "2026-10-27",
- "stump": "A competent analyst takes each setting's 2027 intake, the share the peer programme found antibody positive, removes the positives the network's treatment register shows cured and carries the rest at the three-quarters viraemic share the laboratory and the 2018-19 pilot validate, and files the approved premises first at about 130 people started on treatment; the step that lands it there is treating the network's register as the record of every cure, when most of the approved premises' antibody positives were cured inside prison by the prison health provider, whose own treatment log holds those cures, and an antibody stays positive for life.",
+ "stump": "A competent analyst takes each setting's 2027 arrivals, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share the laboratory's first positives validate, and files the approved premises first at about 80 people started on treatment; the step that lands it there is treating the network's records as the record of every cure, when 223 of the approved premises' 406 antibody-positive arrivals were cured inside prison by Corvane Health, whose own workbook holds those courses and its reception tests, and an antibody stays reactive after a cure.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27",
+  "checks": "53 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-27 (sweeps 3, 4, 9 ruled in the note)",
+  "reader": "three passes clean: q1 the filed estimand each time, q6 analytical; forks closed (SF20, SF22, SF23); one realism tell fixed"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-27",
+  "nearest": "task137 0.07",
+  "surface": "7 pairs promoted for the author's clone check"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task304/determinism_check_report.md (pass 3)",
+  "gate_g": "method_or_model_selection (borderline against single_conceptual_flip), analytical_non_defect, surface_read_dependency no",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "passes": "pass 1 a159a58b SEND_BACK on a join error (reproduced: the older sheet's lower-case pseudonyms unmatched, 114 of 406; joined 223 of 406), fixed; pass 2 b93a12c2 FIX_NOW (a false superlative in block 1), fixed; pass 3 b93a12c2 APPROVE; the site-share realism fix after it is data-only, figures.json byte-identical"
  },
  "returned": [
   {
@@ -34,13 +39,13 @@
    "commit": ""
   }
  ],
- "resume": "Architecture 2 drawn 10-27 (epidemiology, hepatitis C find-and-treat van placement; card registered at WARN). Next: stage 2, the readability screen, ladder, fork table, closure table, literal reader, oracles and ask sheet in DESIGN_NOTE.md, prompt.txt, then precut.py; then stage 3, a new generator replacing architecture 1's (target.zip 57a875af is architecture 1 as shipped).",
+ "resume": "Shipped. Next: the author's portal list.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-27",
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "PENDING_REVIEW",
+ "portal_status_date": "2026-10-27",
  "architecture_1": {
   "shipped": "2026-10-27",
   "target_zip": "57a875af",
@@ -57,5 +62,6 @@
    "gate_h": "domain pass, layers pass, decisive step analytical"
   },
   "returned": "see returned[0]"
- }
+ },
+ "target_zip": "1382208d"
 }

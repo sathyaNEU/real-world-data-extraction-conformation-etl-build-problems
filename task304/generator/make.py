@@ -1,11 +1,10 @@
-"""Build the pack, compute every owed figure from it, write the goldens, figures.json, submission.md and metadata.json,
-run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run the independent
-verifier on it.
+"""Build the pack, compute every owed figure from it, write figures.json, the goldens, submission.md and
+metadata.json, run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and
+run the independent verifier on it.
 
     python3 task304/generator/make.py            (full: two builds, the zip, the verifier)
     python3 task304/generator/make.py --once     (one build, no zip)
 """
-import datetime as dt
 import hashlib
 import json
 import os
@@ -17,15 +16,35 @@ import zipfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import build as B
-import figs as FG
 import golden as GD
 import params as P
+import solve as S
 import writeup as WU
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 10, 9, 16, 5, 0)        # the afternoon the plan paper's pack was put together
+ZIP_TIME = (2026, 10, 12, 11, 40, 0)
+
+
+def figures(R):
+    F = R["F"]
+    o = R["order"]
+    s10 = {s: S.r10(F[s]["starts"]) for s in P.SETTINGS}
+    a10 = {s: S.r10(F[s]["active"]) for s in P.SETTINGS}
+    cured = S.cured_shares(R["T"])
+    G = dict(order=o, starts10=s10, active10=a10, gap10=S.r10(F[o[0]]["starts"] - F[o[1]]["starts"]),
+             r1_10={s: S.r10(F[s]["starts_R1"]) for s in P.SETTINGS},
+             r2_10={s: S.r10(F[s]["starts_R2"]) for s in P.SETTINGS},
+             r0_10={s: S.r10(F[s]["starts_R0"]) for s in P.SETTINGS},
+             test_share=round(float(R["R"]["test_share"]), 2), start_share=round(float(R["R"]["start_share"]), 2),
+             lab_ratio=round(float(R["R"]["lab_ratio"]), 2), pilot_ratio=round(float(R["R"]["pilot_ratio"]), 2),
+             pilot_arrived=R["R"]["pilot_arrived"], pilot_tested=R["R"]["pilot_tested"],
+             pilot_detected=R["R"]["pilot_detected"], pilot_started12=R["R"]["pilot_started12"],
+             cured=cured, ap_prison_pct=int(round(100.0 * cured["AP"]["prison_only"] / cured["AP"]["n"])),
+             AH={"%s_%d" % k: v for k, v in R["AH"].items()},
+             unrounded={s: {k: round(float(v), 4) for k, v in F[s].items()} for s in P.SETTINGS})
+    return G
 
 
 def metadata(target):
@@ -34,121 +53,92 @@ def metadata(target):
         f = P.FILES[k]
         p = os.path.join(target, f)
         rows = (sum(1 for _ in open(p, encoding="utf-8")) - 1) if f.endswith(".csv") else None
-        if f.endswith(".parquet"):
-            import pyarrow.parquet as pq
-            rows = pq.ParquetFile(p).metadata.num_rows
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator)", "date": "2026-10-09",
+                      "source": "Constructed (seeded generator)", "date": "2026-10-12",
                       "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
-    meta = {
+    return {
         "task": "task304",
-        "title": "Which of a building society's four mortgage books its 2027 financial support team should work, by "
-                 "the possessions it avoids among the borrowers who first fall two payments behind in 2027, with each "
-                 "owner-occupied book's open possession claims and the losses on its possessions sold",
-        "domain": "Banking, Credit & Financial Risk",
-        "subdomain": "collections-recovery (a collections function forecasting each book's entries into two payments "
-                     "of arrears in the coming year, account by account, to size where a support team avoids the "
-                     "most possessions)",
+        "title": "Where a hepatitis C charity's 2027 find-and-treat van works among four settings it has not "
+                 "worked, sized by the people it would start on treatment, with the treatment network's clinic "
+                 "outcomes for its last full year",
+        "domain": "Epidemiology & Public Health",
+        "subdomain": "screening-diagnostic-policy-evaluation (a find-and-treat case-finding programme placed and "
+                     "sized by the active infections it would find among each setting's arrivals and the people it "
+                     "would start on treatment)",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "other: the book chosen and its possessions avoided against the next best, with each "
-                        "owner-occupied book's litigation caseload and the losses on its possessions sold",
+        "prompt_shape": "09: a funnel for each of the four settings (active infections found, people started), the "
+                        "setting chosen, and the network's clinic outcomes by clinic and half-year",
         "as_of": "2026-09-30",
-        "deliverables": [GD.PDF, GD.XLSX],
+        "deliverables": [GD.DOCX, GD.XLSX],
         "distractor_files": [P.FILES[k] for k in B.DISTRACTORS],
         "context_artifacts": [P.FILES[k] for k in B.CONTEXT],
-        "stated_inputs": ["who the team takes on, the year, counting each borrower once, the book at 30 September 2026 "
-                          "less litigation and receivers, the planning rates and the 15 per cent cut (plan paper sections 1 "
-                          "to 3)", "payments in arrears, open claims, orders in force and the loss on a possession "
-                          "(Arrears and Possessions Policy sections 2, 5 and 8)"],
+        "stated_inputs": ["who the van counts, the year, a 2027 year's arrivals at the two-year average, the van "
+                          "working as the 2018-19 pilot did (van plan sections 2 and 3)",
+                          "a course's last dose and the twelve-week confirmation of a cure (the network's pathway, "
+                          "section 3)"],
         "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "generated by task304/generator/make.py (seeded, deterministic) around a fictional "
-                               "building society in West Yorkshire and the Pennine towns: four lending books from "
-                               "2010 to 2026, monthly payments and arrears, product transfers at the end of each fixed "
-                               "rate, term extensions under the Mortgage Charter from July 2023, collections "
-                               "capitalisations, litigation by two panel firms, LPA receivers for buy to let, "
-                               "possessions held until sold, the 2024 support team pilot allocated on the account "
-                               "number's last digit, and a house price index by area; every organisation, firm and "
-                               "person is invented, and no real dataset is reproduced.",
-                     "date": "2026-10-09", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-26",
+                               "hepatitis C charity, NHS treatment network, regional virology laboratory and prison "
+                               "health provider in an English city and county: people's infections, spontaneous "
+                               "clearance, community and prison testing, courses given by the network and inside "
+                               "prison, re-infection after a cure, four settings' arrivals, the peer team's tests "
+                               "and a 2018-19 van pilot; every organisation, place and person is invented and no "
+                               "real dataset is reproduced.",
+                     "date": "2026-10-12", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-27",
         "generator": "task304/generator/make.py",
         "files": files,
     }
-    with open(os.path.join(TASK, "metadata.json"), "w") as fh:
-        json.dump(meta, fh, indent=2, ensure_ascii=False)
-        fh.write("\n")
 
 
-def stamp(folder):
-    t = dt.datetime(*STAMP, tzinfo=dt.timezone.utc).timestamp()
-    for f in os.listdir(folder):
-        os.utime(os.path.join(folder, f), (t, t))
+def one(target, golden_dir):
+    B.build(target)
+    R = S.solve(target)
+    G = figures(R)
+    json.dump({k: v for k, v in G.items() if k != "png"}, open(os.path.join(HERE, "figures.json"), "w"), indent=1,
+              sort_keys=True)
+    GD.write(golden_dir, G)
+    WU.write(os.path.join(TASK, "submission.md"), G)
+    json.dump(metadata(target), open(os.path.join(TASK, "metadata.json"), "w"), indent=1)
+    return R, G
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = hashlib.md5()
+    for f in sorted(os.listdir(folder)):
+        h.update(f.encode())
+        h.update(open(os.path.join(folder, f), "rb").read())
+    return h.hexdigest()
 
 
-def cut_zip():
-    zp = os.path.join(TASK, "target.zip")
-    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
-        for f in sorted(os.listdir(TARGET)):
-            zi = zipfile.ZipInfo(f, date_time=STAMP)
+def zipit(target, path):
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo("target/" + f, ZIP_TIME)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(TARGET, f), "rb").read())
-    return zp
-
-
-def fresh(folder):
-    if os.path.isdir(folder):
-        for f in os.listdir(folder):
-            os.remove(os.path.join(folder, f))
-    os.makedirs(folder, exist_ok=True)
-
-
-def goldens(folder, fig, detail):
-    GD.paper(os.path.join(folder, GD.PDF), fig)
-    GD.workbook(os.path.join(folder, GD.XLSX), fig, detail)
-
-
-def main(second=True, checks=True):
-    fresh(TARGET)
-    B.build(TARGET)
-    stamp(TARGET)
-    fresh(GOLDEN)
-    fig, detail = FG.compute(TARGET)
-    FG.write(fig, os.path.join(HERE, "figures.json"))
-    goldens(GOLDEN, fig, detail)
-    stamp(GOLDEN)
-    WU.write(os.path.join(TASK, "submission.md"), fig)
-    metadata(TARGET)
-    if checks:
-        import checks as C
-        C.main(TARGET)
-    if second:
-        tmp = tempfile.mkdtemp()
-        t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
-        B.build(t2)
-        stamp(t2)
-        os.makedirs(g2, exist_ok=True)
-        f2, d2 = FG.compute(t2)
-        goldens(g2, f2, d2)
-        stamp(g2)
-        d1, dd2 = digest(TARGET), digest(t2)
-        assert d1 == dd2, [f for f in d1 if d1[f] != dd2.get(f)]
-        assert digest(GOLDEN) == digest(g2), [f for f in digest(GOLDEN) if digest(GOLDEN)[f] != digest(g2).get(f)]
-        shutil.rmtree(tmp)
-        zp = cut_zip()
-        print("byte-identical; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
-        import verify as V
-        assert not V.main(zp)
-    return fig
+            z.writestr(zi, open(os.path.join(target, f), "rb").read())
 
 
 if __name__ == "__main__":
-    main(second="--once" not in sys.argv, checks="--nochecks" not in sys.argv)
+    R, G = one(TARGET, GOLDEN)
+    import checks
+    checks.run(TARGET, R, G)
+    if "--once" in sys.argv:
+        print("one build:", digest(TARGET))
+        sys.exit(0)
+    d1 = digest(TARGET)
+    tmp = tempfile.mkdtemp()
+    t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
+    B.build(t2)
+    d2 = digest(t2)
+    assert d1 == d2, ("rebuild differs", d1, d2)
+    shutil.rmtree(tmp)
+    zipit(TARGET, os.path.join(TASK, "target.zip"))
+    import verify
+    verify.main(os.path.join(TASK, "target.zip"))
+    print("byte-identical rebuild:", d1, "zip md5:", hashlib.md5(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest())

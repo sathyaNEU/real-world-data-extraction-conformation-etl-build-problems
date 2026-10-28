@@ -1,22 +1,21 @@
 # leak check, task304
 
-**Verdict: REVIEW.** 13 files read, 3 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 0 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: arrears, account, payment, months, accounts, planning, window, payments, extension, switch, asserted, family, first-time, section, concession, policy, decisive, carries, history, golden, forecast, extended, chance, extensions, member
+Stump terms swept: register, laboratory, record, golden, first-time, positives, person, workbook, arrears, family, antibody, prison, pinned, corvane, arrivals, second, treated, decisive, window, accounts, arrival, asserted, inside, payment, carried
 
 ## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `financial_support_team_2027_plan_paper.pdf`: carries 11 of 14 distinctive words of the committed call: 'Place the Financial Support Team on the First-time buyer 2019-21 book in 2027: it avoids about 10 possessions there, aga'
+- **REVIEW** `find_and_treat_van_2027_plan.pdf`: carries 11 of 12 distinctive words of the committed call: "The van should work the needle exchange pharmacies' new registrants in 2027, where it would start about 50 people on hep"
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `arrears_and_possessions_policy_2026.pdf`: 9 of 25 stump-paragraph terms appear (arrears, account, payment, months, payments, extension); read whether the document names the move
-- **REVIEW** `board_risk_appetite_statement_2026.pdf`: 6 of 25 stump-paragraph terms appear (arrears, account, payment, accounts, payments, first-time); read whether the document names the move
-- **REVIEW** `financial_support_team_2027_plan_paper.pdf`: 12 of 25 stump-paragraph terms appear (arrears, account, payment, months, accounts, planning); read whether the document names the move
-- **REVIEW** `financial_support_team_pilot_2024_report.pdf`: 10 of 25 stump-paragraph terms appear (arrears, account, payment, months, accounts, planning); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `fenwold_hcv_pathway_2026.pdf`: 6 of 25 stump-paragraph terms appear (register, record, person, antibody, prison, corvane); read whether the document names the move
+- **REVIEW** `find_and_treat_van_2027_plan.pdf`: 7 of 25 stump-paragraph terms appear (register, person, antibody, prison, arrivals, arrival); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `mortgage_book_2026-09-30.parquet`: 54897 ISO dates after 2026-09-30, e.g. 2026-10-31, 2026-11-30, 2026-12-31, 2027-01-31, 2027-02-28
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `corvane_hcv_courses_2017-2026.xlsx`: 16 ISO dates after 2026-10-12, e.g. 2026-10-13, 2026-10-16, 2026-10-21, 2026-10-22, 2026-10-23
+- **REVIEW** `hcv_treatment_register_2015-2026.csv`: 31 ISO dates after 2026-10-12, e.g. 2026-10-13, 2026-10-14, 2026-10-18, 2026-10-19, 2026-10-20
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -35,25 +34,48 @@ Stump terms swept: arrears, account, payment, months, accounts, planning, window
 
 ## 11 prompt gate (clean)
 
+
 ## Solver's-eye read
 
-One isolated leak reader (sonnet, medium), on fresh copies of prompt.txt and target/ from target.zip 57a875af, read for leaks and solved nothing.
+### Pass 1 (target.zip a159a58b, isolated copy, sonnet at medium)
 
-1. Decisive step: none. "No sentence announces it. Closest are the plan paper's section 3 method sentences ... These fix the method rather than flag a pitfall."
-2. Ranking: the plan paper's planning-rate table (4.5, 7.4, 1.9, 10.7 per cent) with "the book with the most possessions avoided is the one to choose"; the reader calls the rates "an easy route to a placement" and names Buy to let, the highest rate, the obvious pick.
-3. Analyst-only file: none. "No file looks analyst-only."
-4. Answer figure: none. "Nothing reads as the answer"; the rates and the 15 per cent cut read as inputs and no book is named.
-5. Literal sentences: plan sections 2 and 3 fix the 2027 population (first crossings to two payments in arrears in calendar 2027, the 30 September 2026 book with no closures, litigation and receiver accounts left out), the arrears measure (policy section 2), the rate window and outcome, and the figure as 0.15 times each book's expected 2027 borrowers taken on times its planning rate.
-6. What decides: "Mostly an analytical choice"; read as a stated procedure only if the analyst takes the 2027 flow as given rather than estimating it.
+1. Decisive step: the plan's "We will place the van where it starts the most people on hepatitis C treatment in 2027" (section 2), the filed comparison rule; no sentence states which setting it picks.
+2. None: no file ranks or scores the four settings; the only comparative table compares the two 2018-19 pilot sites.
+3. None: every file reads as a record its organisation would keep.
+4. None: nothing pairs a setting name with a count.
+5. The plan's sentences fix the comparison (starts), the unit (a person once a year), the window (the two-year average, 2027 arrivals like those years), found and started (RNA detected at the van's test, a course within twelve weeks), the exclusion of people part-way through a course, and two of three rates from the pilot (silent on the share found with an active infection); the pathway fixes a course's end and what counts as confirmed.
+6. An analytical choice: building each setting's own active-infection share among its own linked arrivals, rather than carrying a pooled rate; Corvane's records read against the approved premises a second complication.
+7. Realism good (day-first hostel dates, two workbook layouts, free-text venues, repeat arrivals, non-round counts); two lost-to-follow-up rows with a later twelve-week result read as a plausible re-contact.
+8. Forks: "courses that finished" against the pathway's "ends", for courses lost to follow-up (no stopped date): closed in the fix pass by the pathway's sentence that a course lost to follow-up has no last dose on record (SF20).
+Sweeps: answer words harmless (the plan names the four candidates; no sentence pairs a setting with a figure); register dates harmless (planned ends of courses on treatment).
 
-Sweep lines: sweep 3 harmless (the paper is the Committee's own brief, it must use the team's and the books' names, and it carries no avoided count); sweep 9 harmless (every future date is product_end_date, fixed-rate expiries to 2031; completion_date ends 2026-08-28).
+### Pass 2 (target.zip b93a12c2, after the fix pass that added the pathway's lost-to-follow-up sentence)
 
-Realism: selling costs to the penny; the litigation file's 2022 claims inside a 2023-01 to 2026-09 name; claim numbers as letter and digit strings; the rate card's creator "Mortgage Pricing"; the distractors; the PDFs' saved times and producer; the plan's neat capacity figure; mixed date formats.
+1. None, read literally: the plan fixes the arithmetic shell and never says how each setting's own share with an active infection is found.
+2. None. 3. None. 4. None (the nurse's 70 courses is an operating constraint).
+5. The plan's sentences fix one count per person per year, the two-year average from the providers' returns, found and started at the van's own RNA test and twelve weeks, the exclusion of people part-way through a course, and the pilot's test and start shares; the pathway fixes a course's end (completed, stopped, and none for a course lost to follow-up) and a confirmed cure as a laboratory event.
+6. An analytical choice: each setting's own active-infection share among its arrivals, built from the register and the laboratory's records, nothing planted.
+7. Realism good: metadata matches the issuing bodies, no hidden content, about 800 exact duplicate laboratory rows read as ordinary re-sends, irregular pilot counts.
+8. Forks raised: the needle exchange arrivals from the pharmacies' paper registrations against the providers' returns (ruled out by the plan's "from the returns each provider sends the commissioners", call unchanged, asserted SF22); "finished" read as completed only against completed and stopped (the prompt now says "ended", the pathway's own word, asserted SF23); the register's keyed result against the pathway's laboratory test (the pathway defines a confirmed cure as the RNA test, which the golden reads in both records; the ask's hazard, not a fork).
+Sweeps: all three harmless (the plan names the candidates; the workbook's and the register's late dates are planned course ends).
+
+### Pass 3 (target.zip b93a12c2, after the prompt's "finished" became "ended")
+
+1. The plan's "We will place the van where it starts the most people on hepatitis C treatment in 2027": the decision rule, not an outcome; no file names a winning setting or a figure.
+2. None. 3. None. 4. None.
+5. The plan's sentences fix the two-year average carried forward, one person once a year, started as the van's own RNA test and twelve weeks, the exclusion of people part-way through a course, and the pilot's two shares.
+6. An analytical choice: each setting's own share of arrivals with an active infection, built from the linked testing and laboratory records; the exclusion of handovers is a linkage task, not a field read.
+7. One mild tell: the laboratory's sibling requesting sites (16 GP practices, two antenatal, two sexual health, three drug service hubs) each carried near-identical counts. Fixed in the generator: each person keeps one site, and sites take shares by their size (practices from 1,865 to 9,633 samples); no graded figure moved (figures.json byte-identical), asserted as realism.sites_uneven.
+8. Forks: the register's keyed twelve-week result against the pathway's RNA test read through the laboratory file. The pathway defines a confirmed cure as the RNA test, and the golden reads it in both records (the keyed result where there is one, the laboratory's first test twelve weeks on otherwise): the register-only reading is the ask's hazard (D4), not a licensed second reading. The city hostels and the approved premises sort cleanly. None on the main question.
+Sweeps: all three harmless (the plan names the candidates and states only the rule; the workbook's and the register's late dates are planned ends of courses still open at the cut).
 
 ### Rulings (main thread)
 
-- Q1, Q3, Q4: nothing quoted. Harmless.
-- Q2: harmless. The rate table holds a filed input of the estimand, not a ranking on the decision question: possessions avoided need each book's 2027 entries, and the rate alone names Buy to let, which is neither the call nor the default path's wrong book (Gate G passes on the judge's pass 1). It stays.
-- Q5: each quoted sentence is the WHAT the golden executes (population, window, unit, comparison, the 15 per cent cut); the 2027 entries are the forecast the plan leaves to the analyst. Executes to the golden; not a fork.
-- Q6: analytical. The plan files the arithmetic around the forecast, and the forecast of each book's 2027 entries is the step (the concessions' delayed re-entry), which no file states.
-- Realism: selling costs to the penny are fees on a sale price plus fixed charges, as real completion statements carry them; the litigation file holds every claim open at any time from January 2023, so claims issued in 2022 belong in it, and the name now says so; claim numbers follow the county court format; "Mortgage Pricing" is the owning team, as a shared workbook's author field often reads; the rate card's two sheets are "Product transfers" and "Terms" (the reader joined each title to its visibility state); the PDFs now carry working-day save times on the UK offset (fixed after the first read). No change.
+- Question 1 in all three passes quotes the plan's filed comparison, the estimand's WHAT; no sentence names the decisive step. Harmless.
+- Questions 2 to 4: none in all three passes.
+- Question 5: every quoted sentence executes to the golden (asserted as SF1, SF2, SF5, SF8, SF11, SF13, SF20, SF22, SF23).
+- Question 6: an analytical choice in all three passes.
+- Realism: the one tell (even site counts) fixed in the generator; the lost-to-follow-up rows were re-contacts in pass 1 and carry no twelve-week result for people outside the settings since the fix.
+- Forks: lost to follow-up (SF20, the pathway's sentence), the needle exchange arrivals' source (SF22, the plan), completed only (SF23, the prompt's ended and the pathway), the register-only cure (the ask's hazard D4).
+- Sweep 4 (stump vocabulary, ruled here and never sent to the reader): the pathway and the plan carry the world's nouns and state true operational facts (the register holds the network's courses; Corvane provides healthcare in three prisons; the van takes on handovers in the approved premises); neither says an antibody outlives a cure or that a setting's positives were treated inside. Harmless.
+

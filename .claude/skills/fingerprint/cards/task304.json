@@ -6,13 +6,13 @@
   "domain": "epidemiology-public-health",
   "subdomain": "screening-diagnostic-policy-evaluation",
   "client_domain": "epidemiology-public-health",
-  "niche": "a hepatitis C operational delivery network placing its 2027 find-and-treat outreach team in one of four settings it has not worked (approved premises, homeless hostels, drug service entrants, pharmacy needle exchange registrants), sized by the people it starts on treatment, when part of each setting's antibody-positive intake was cured earlier, by the network's own clinics or inside prison by the prison health provider, and stays antibody positive for life",
+  "niche": "a hepatitis C charity placing its 2027 find-and-treat van, run with the NHS treatment network, in one of four settings it has not worked (probation approved premises, city hostels, the drug service's new entrants, the pharmacy needle exchange's new registrants), sized by the people it would start on treatment, when part of each setting's antibody-positive arrivals were cured earlier, by the network's clinics or inside prison by the prison health provider, and an antibody test stays reactive after a cure",
   "objective": "opportunity-sizing-decision",
   "shape": "09",
   "decision_type": "pick_one_of_n",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "the needle exchange pharmacies' new registrants, about 50 people started on hepatitis C treatment in 2027 (Fenwold Recovery's new entrants next at about 30)",
+  "answer_source": "submission.md block 1; golden van_2027_trustee_paper.docx and van_2027_funnel.xlsx; generator/figures.json",
   "gap": [
     "time",
     "population"
@@ -33,27 +33,28 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst takes each setting's 2027 intake at its 2025-26 average, the share of that intake the peer programme found antibody positive, removes the positives the network's treatment register shows cured and carries the rest at the three-quarters viraemic share the laboratory's first positives and the 2018-19 pilot validate, and files the approved premises first, while most of the approved premises' positives were cured inside prison by the prison health provider, whose own treatment log holds those cures, so the pharmacy needle exchange registrants, the least treated, lead.",
-  "domain_test": "The deciding quantity is each setting's count of people with active hepatitis C the team would find and start on treatment, the epidemiologist's antibody positives times the share still viraemic, where an antibody persists for life after a cure, the never-treated keep the natural three-quarters chronic share after spontaneous clearance and a person treated in prison is cured in the prison health provider's record and not the network's; put another field's units in and an antibody that outlives the infection, a laboratory that never re-tests a known positive for antibody and a cure recorded by whichever organisation gave it stop meaning anything.",
+  "analyst_test": "A strong analyst takes each setting's 2027 arrivals at the two-year average, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share the laboratory's first positives and the 2018-19 pilot validate, and files the approved premises first at about 80 people started, while 55 per cent of the approved premises' positives had been cured inside prison by Corvane Health, on its own workbook, and the needle exchange registrants, the least treated, lead at about 50.",
+  "domain_test": "The deciding quantity is each setting's count of people with active hepatitis C the van would find and start on treatment, the epidemiologist's antibody positives times the share still viraemic, where an antibody test stays reactive after a cure, a never-diagnosed infection is chronic about three times in four after spontaneous clearance, and a person treated in prison is recorded by the prison health provider and not the network; put another field's units in and an antibody that outlives the infection, a laboratory that tests a known positive for RNA only and a cure recorded by whichever organisation gave it stop meaning anything.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:active-infection-among-antibody-positives-after-curative-treatment",
   "layer1": [
-    "the laboratory's test codes renamed at its 2021 system change",
-    "results written as text (Reactive, Non-reactive, Equivocal, Detected, Not detected, below 15 IU/mL)",
-    "rows the laboratory re-sent in a later extract",
-    "the prison log's day-first dates and prison numbers beside the shared pseudonym",
-    "setting names written several ways in the peer log",
-    "re-admissions in the intake registers"
+    "Fenwold Pathology's test codes renamed at its March 2021 system change, and a fortnight of results the new system re-sent",
+    "results written as text with a viral load column (Detected, Detected <15 IU/mL, Not detected)",
+    "the network register's twelve-week results keyed by hand since its October 2024 go-live",
+    "people holding two NHS numbers: the laboratory's samples under two pseudonyms joined by its own patient number, the register under one",
+    "Corvane's course workbook in two layouts, the older sheet with its own headers and day-first text dates",
+    "the peer log's setting written several ways, invalid kits and tests at other venues",
+    "the hostels' day-first arrival dates and second stays in a year"
   ],
   "stakeholder_role": "director of services at a hepatitis C charity that runs peer testing and a find-and-treat van with the regional treatment network",
   "role_family": "operations_director",
   "scoring_unit": "per resolved case",
   "spine": {
-    "file": "virology_hcv_tests_2015-01_to_2026-09.csv",
-    "rows": 0,
+    "file": "virology_hcv_results_2015-01_to_2026-09.csv",
+    "rows": 238986,
     "entity": "one hepatitis C laboratory test result",
     "grain": "test",
-    "source": "synthetic"
+    "source": "constructed (seeded generator)"
   },
   "forum": "trustees_or_governors",
   "forcing_event": "launch_or_rollout",
@@ -62,22 +63,35 @@
     "geography": "United Kingdom, England",
     "currency": "GBP",
     "org_type": "hepatitis C charity working with an NHS operational delivery network",
-    "invented_names": [],
+    "invented_names": [
+      "Brannock Trust",
+      "Fenwold Hepatitis C Network",
+      "Fenwold Pathology",
+      "Fenwold Recovery",
+      "Fenwold Teaching Hospitals NHS Foundation Trust",
+      "Corvane Health (Justice) Ltd",
+      "HMP Fenwold",
+      "HMP Sallowby",
+      "HMP Mardlow",
+      "Corrington",
+      "Sallowby",
+      "Ashgrove Health Centre"
+    ],
     "people": [
       "Katie Reynolds",
-      "Nathan Hewitt",
+      "Robin Higgins",
       "Clare Stevenson"
     ]
   },
   "deliverables": [
-    "outreach_team_2027_placement_note.pdf",
-    "outreach_team_2027_funnel.xlsx"
+    "van_2027_trustee_paper.docx",
+    "van_2027_funnel.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "The forward pool is the units still carrying an active condition among those a marker reads positive, estimated as the positives less those a removal programme's record shows cleared, times the active share the validating data shows; every validating case was a unit the condition had never been removed from, because the producing process tests the marker only on units not already known positive and predates the removal push, while the removal was given by two organisations each keeping its own record, so the forward units cleared by the second organisation look uncleared in the first's record and only a unit-by-unit join to the second's record finds them, which drops the group the first record leaves largest and lifts the one neither reached.",
-  "driver_concrete": "Each setting's people with active hepatitis C in its 2027 intake: the laboratory's first antibody positives and the 2018-19 pilot show about three quarters viraemic because nobody in them had been treated, the network's register removes the cures its own clinics gave, and the prison health provider's log holds the cures given inside, which are most of the approved premises' positives, so the needle exchange registrants lead.",
-  "stump": "A competent solver takes each setting's 2027 intake, its antibody positives, removes the cures the network's treatment register shows and carries the rest at the three-quarters viraemic share, and files the approved premises first; the step that lands it there is treating the network's register as the record of every cure when the approved premises' positives were mostly cured inside prison, in the prison health provider's own treatment log.",
+  "driver_concrete": "Each setting's people with active hepatitis C among its 2027 arrivals: the laboratory's first antibody positives and the 2018-19 pilot show about three quarters viraemic because nobody in them had been treated, the network's register and the laboratory remove the cures the network's clinics gave, and Corvane Health's course workbook holds the cures given inside prison, 55 per cent of the approved premises' positives, so the needle exchange registrants lead at about 50 starts against the approved premises' about 80 on the network's records alone.",
+  "stump": "A competent solver takes each setting's 2027 arrivals, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share, and files the approved premises first at about 80 starts; the step that lands it there is treating the network's records as the record of every cure when 55 per cent of the approved premises' positives were cured inside prison, in Corvane Health's own course workbook.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task144": "task144 discounts a conversion inflated by a launch burst; task304 removes from a marker-positive count the units a second organisation's treatment record shows cleared, unit by unit.",
@@ -113,6 +127,6 @@
       "niche": "a building society's 2027 financial support team going to the one mortgage book where it avoids the most possessions among the borrowers who fall two payments behind in 2027, when the first-time buyers of the 2021 stamp-duty rush took Mortgage Charter term extensions at their 2026 rate switch that keep them up to date for months before they fall behind"
     }
   ],
-  "notes": "Axes redrawn at the check (2026-10-27): org hospital_or_health_provider to nonprofit_or_charity, forum board_of_directors to trustees_or_governors, role programme_officer to operations_director (all against task118 v3); artifact register to operations_log (task464); strategy composition_mix to informative_censoring (task118 v3), the honester name for an active share observed only on positives who come forward. WARNs answered in the design note: overuse.objective, repeat.gate_g, repeat.decision.",
+  "notes": "Axes redrawn at the check (2026-10-27): org hospital_or_health_provider to nonprofit_or_charity, forum board_of_directors to trustees_or_governors, role programme_officer to operations_director (all against task118 v3); artifact register to operations_log (task464); strategy composition_mix to informative_censoring (task118 v3), the honester name for an active share observed only on positives who come forward. WARNs answered in the design note: overuse.objective, repeat.gate_g, repeat.decision. Built 2026-10-27: card brought to the built pack (people, deliverables, spine, answer); heart WARN (nearest driver 0.07, task137), surface 7 pairs promoted for the author's adjudication, none a BLOCK.",
   "registered": "2026-10-27T23:56:35Z"
 }

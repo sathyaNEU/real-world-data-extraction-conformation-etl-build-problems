@@ -1,99 +1,214 @@
 {
- "askA": {
-  "FTB": {
-   "open": 17,
-   "orders": 34,
-   "suspended": 27
+ "AH": {
+  "COMM_1": {
+   "confirmed": 9,
+   "finished": 9
   },
-  "HLTV": {
-   "open": 43,
-   "orders": 71,
-   "suspended": 56
+  "COMM_2": {
+   "confirmed": 26,
+   "finished": 28
   },
-  "SO": {
-   "open": 2,
-   "orders": 9,
-   "suspended": 9
+  "FRC_1": {
+   "confirmed": 43,
+   "finished": 50
+  },
+  "FRC_2": {
+   "confirmed": 33,
+   "finished": 39
+  },
+  "HEP_1": {
+   "confirmed": 15,
+   "finished": 16
+  },
+  "HEP_2": {
+   "confirmed": 11,
+   "finished": 13
+  },
+  "OUT_1": {
+   "confirmed": 30,
+   "finished": 33
+  },
+  "OUT_2": {
+   "confirmed": 55,
+   "finished": 61
+  },
+  "PHARM_1": {
+   "confirmed": 3,
+   "finished": 5
+  },
+  "PHARM_2": {
+   "confirmed": 11,
+   "finished": 11
   }
  },
- "askB": {
-  "FTB": {
-   "at_loss": 7,
-   "avg_loss": 4500,
-   "sold": 20
+ "active10": {
+  "AP": 10,
+  "DS": 40,
+  "HH": 30,
+  "NSP": 70
+ },
+ "ap_prison_pct": 55,
+ "cured": {
+  "AP": {
+   "any": 251,
+   "n": 406,
+   "net": 28,
+   "prison_only": 223
   },
-  "HLTV": {
-   "at_loss": 24,
-   "avg_loss": 33300,
-   "sold": 24
+  "DS": {
+   "any": 254,
+   "n": 476,
+   "net": 212,
+   "prison_only": 42
   },
-  "SO": {
-   "at_loss": 2,
-   "avg_loss": 3300,
-   "sold": 4
+  "HH": {
+   "any": 101,
+   "n": 255,
+   "net": 47,
+   "prison_only": 54
+  },
+  "NSP": {
+   "any": 41,
+   "n": 295,
+   "net": 16,
+   "prison_only": 25
   }
  },
- "basis": {
-  "as_of": "30 September 2026",
-  "effect_pct": 15,
-  "forecast_year": 2027,
-  "rise_bands_pct": [
-   5,
-   20,
-   40
-  ],
-  "smoothing_weight": 20,
-  "term_bands_months": [
-   8,
-   15,
-   16
-  ]
+ "gap10": 20,
+ "lab_ratio": 0.74,
+ "order": [
+  "NSP",
+  "DS",
+  "HH",
+  "AP"
+ ],
+ "pilot_arrived": 1450,
+ "pilot_detected": 215,
+ "pilot_ratio": 0.72,
+ "pilot_started12": 160,
+ "pilot_tested": 937,
+ "r0_10": {
+  "AP": 120,
+  "DS": 150,
+  "HH": 80,
+  "NSP": 90
  },
- "call": {
-  "avoided": {
-   "BTL": 1.2,
-   "FTB": 9.0,
-   "HLTV": 4.5,
-   "SO": 0.6
+ "r1_10": {
+  "AP": 90,
+  "DS": 110,
+  "HH": 60,
+  "NSP": 70
+ },
+ "r2_10": {
+  "AP": 80,
+  "DS": 40,
+  "HH": 40,
+  "NSP": 60
+ },
+ "start_share": 0.74,
+ "starts10": {
+  "AP": 10,
+  "DS": 30,
+  "HH": 20,
+  "NSP": 50
+ },
+ "test_share": 0.65,
+ "unrounded": {
+  "AP": {
+   "ab_share": 0.2512,
+   "active": 10.324,
+   "active_R1": 119.7722,
+   "active_R2": 100.842,
+   "active_R3": 10.324,
+   "active_R3_no_lab_for_never": 9.8821,
+   "active_R3_no_reinfection": 9.1232,
+   "active_R3_pilot_ratio": 10.2246,
+   "arrivals": 1001.0,
+   "n_positive": 406.0,
+   "n_tests": 1616.0,
+   "positives": 162.5138,
+   "starts": 7.683,
+   "starts_R0": 120.9405,
+   "starts_R1": 89.1328,
+   "starts_R1_pilot": 87.2558,
+   "starts_R2": 75.0452,
+   "starts_R3": 7.683,
+   "starts_R3_no_lab_for_never": 7.3541,
+   "starts_R3_no_reinfection": 6.7893,
+   "starts_R3_pilot_ratio": 7.609,
+   "tested": 646.8531
   },
-  "avoided_ten": {
-   "BTL": 0,
-   "FTB": 10,
-   "HLTV": 0,
-   "SO": 0
+  "DS": {
+   "ab_share": 0.1464,
+   "active": 39.9807,
+   "active_R1": 143.716,
+   "active_R2": 57.5988,
+   "active_R3": 39.9807,
+   "active_R3_no_lab_for_never": 57.5811,
+   "active_R3_no_reinfection": 38.7517,
+   "active_R3_pilot_ratio": 39.4148,
+   "arrivals": 2061.0,
+   "n_positive": 476.0,
+   "n_tests": 3251.0,
+   "positives": 195.0022,
+   "starts": 29.7531,
+   "starts_R0": 145.1179,
+   "starts_R1": 106.9515,
+   "starts_R1_pilot": 104.6992,
+   "starts_R2": 42.8642,
+   "starts_R3": 29.7531,
+   "starts_R3_no_lab_for_never": 42.8511,
+   "starts_R3_no_reinfection": 28.8384,
+   "starts_R3_pilot_ratio": 29.3319,
+   "tested": 1331.8324
   },
-  "book": "First-time buyer 2019-21",
-  "next_best": "High LTV 2022-24",
-  "rate_pct": {
-   "BTL": 10.7,
-   "FTB": 4.5,
-   "HLTV": 7.4,
-   "SO": 1.9
+  "HH": {
+   "ab_share": 0.1606,
+   "active": 31.9254,
+   "active_R1": 76.8587,
+   "active_R2": 53.9482,
+   "active_R3": 31.9254,
+   "active_R3_no_lab_for_never": 38.8815,
+   "active_R3_no_reinfection": 30.6985,
+   "active_R3_pilot_ratio": 31.4684,
+   "arrivals": 1005.0,
+   "n_positive": 255.0,
+   "n_tests": 1588.0,
+   "positives": 104.2863,
+   "starts": 23.7585,
+   "starts_R0": 77.6084,
+   "starts_R1": 57.1972,
+   "starts_R1_pilot": 55.9927,
+   "starts_R2": 40.1475,
+   "starts_R3": 23.7585,
+   "starts_R3_no_lab_for_never": 28.935,
+   "starts_R3_no_reinfection": 22.8454,
+   "starts_R3_pilot_ratio": 23.4184,
+   "tested": 649.4379
+  },
+  "NSP": {
+   "ab_share": 0.3851,
+   "active": 71.7076,
+   "active_R1": 90.5144,
+   "active_R2": 83.805,
+   "active_R3": 71.7076,
+   "active_R3_no_lab_for_never": 72.8278,
+   "active_R3_no_reinfection": 71.2912,
+   "active_R3_pilot_ratio": 70.4605,
+   "arrivals": 493.5,
+   "n_positive": 295.0,
+   "n_tests": 766.0,
+   "positives": 122.8152,
+   "starts": 53.3638,
+   "starts_R0": 91.3973,
+   "starts_R1": 67.3596,
+   "starts_R1_pilot": 65.941,
+   "starts_R2": 62.3665,
+   "starts_R3": 53.3638,
+   "starts_R3_no_lab_for_never": 54.1975,
+   "starts_R3_no_reinfection": 53.054,
+   "starts_R3_pilot_ratio": 52.4357,
+   "tested": 318.9031
   }
- },
- "easy": {
-  "avoided": {
-   "BTL": 1.2,
-   "FTB": 2.9,
-   "HLTV": 4.5,
-   "SO": 0.6
-  },
-  "avoided_ten": {
-   "BTL": 0,
-   "FTB": 0,
-   "HLTV": 0,
-   "SO": 0
-  },
-  "book": "High LTV 2022-24"
- },
- "ext": {
-  "behind_8m": 4,
-  "behind_by_asof": 81,
-  "ftb_on_book": 16455,
-  "ftb_raised_2026": 7129,
-  "pay_rise_extended": 10,
-  "pay_rise_kept": 26,
-  "raised_2024": 347,
-  "years_added_median": 10
  }
 }
