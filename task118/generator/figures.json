@@ -1,231 +1,319 @@
 {
- "ask_totals": {
-  "bed_days": 103847,
-  "falls_65_79": 4222,
-  "falls_80": 6154,
-  "readmitted": 1668
- },
- "asks": {
-  "CC": {
-   "bed_days": 21717,
-   "falls_65_79": 969,
-   "falls_80": 1282,
-   "readmitted": 358
+ "asks_exact": {
+  "BEER": {
+   "2025Q4": 916799.04,
+   "2026Q1": 720918.13,
+   "2026Q2": 866542.4,
+   "2026Q3": 1006581.6
   },
-  "FM": {
-   "bed_days": 19041,
-   "falls_65_79": 720,
-   "falls_80": 1082,
-   "readmitted": 270
+  "CIDR": {
+   "2025Q4": 469946.24,
+   "2026Q1": 424054.4,
+   "2026Q2": 560034.56,
+   "2026Q3": 650768.64
   },
-  "HM": {
-   "bed_days": 13967,
-   "falls_65_79": 574,
-   "falls_80": 846,
-   "readmitted": 226
+  "FUEL": {
+   "2025Q4": 9395030.89,
+   "2026Q1": 10062645.32,
+   "2026Q2": 10492832.8,
+   "2026Q3": 10775326.4
   },
-  "LN": {
-   "bed_days": 11004,
-   "falls_65_79": 417,
-   "falls_80": 643,
-   "readmitted": 186
+  "SPIR": {
+   "2025Q4": 1829921.14,
+   "2026Q1": 1311403.46,
+   "2026Q2": 1476688.5,
+   "2026Q3": 1515234.0
   },
-  "QR": {
-   "bed_days": 15978,
-   "falls_65_79": 653,
-   "falls_80": 974,
-   "readmitted": 281
-  },
-  "SC": {
-   "bed_days": 22140,
-   "falls_65_79": 889,
-   "falls_80": 1327,
-   "readmitted": 347
+  "WINE": {
+   "2025Q4": 1460092.81,
+   "2026Q1": 1189021.42,
+   "2026Q2": 1247276.2,
+   "2026Q3": 1270632.7
   }
  },
- "avoided": 19.1569,
- "avoided_r": 19,
- "base": 4.0,
- "constants": {
-  "age_band_80": 80,
-  "age_band_top": 79,
-  "age_min": 65,
-  "days_in_year": 365,
-  "destination_another_hospital": 51,
-  "months_bands": [
-   6,
-   24
-  ],
-  "per_100": 100,
-  "readmit_days": 30,
-  "transfer_method": 81
- },
- "extract_from": "2026-04-01",
- "gap": 3.8729,
- "gap_r": 4,
- "localities": {
-  "CC": {
-   "avoided": 12.6027,
-   "avoided_r": 13,
-   "name": "Corvenham Central",
-   "recent": 477,
-   "users": 6812
+ "asks_k": {
+  "BEER": {
+   "2025Q4": 916.8,
+   "2026Q1": 720.9,
+   "2026Q2": 866.5,
+   "2026Q3": 1006.6
   },
-  "FM": {
-   "avoided": 11.9996,
-   "avoided_r": 12,
-   "name": "Fenmarsh",
-   "recent": 698,
-   "users": 4987
+  "CIDR": {
+   "2025Q4": 469.9,
+   "2026Q1": 424.1,
+   "2026Q2": 560.0,
+   "2026Q3": 650.8
   },
-  "HM": {
-   "avoided": 15.284,
-   "avoided_r": 15,
-   "name": "Hethermoss",
-   "recent": 1155,
-   "users": 3611
+  "FUEL": {
+   "2025Q4": 9395.0,
+   "2026Q1": 10062.6,
+   "2026Q2": 10492.8,
+   "2026Q3": 10775.3
   },
-  "LN": {
-   "avoided": 7.8444,
-   "avoided_r": 8,
-   "name": "Ledbridge North",
-   "recent": 452,
-   "users": 3226
+  "SPIR": {
+   "2025Q4": 1829.9,
+   "2026Q1": 1311.4,
+   "2026Q2": 1476.7,
+   "2026Q3": 1515.2
   },
-  "QR": {
-   "avoided": 11.0423,
-   "avoided_r": 11,
-   "name": "Quenford Rise",
-   "recent": 642,
-   "users": 4583
-  },
-  "SC": {
-   "avoided": 19.1569,
-   "avoided_r": 19,
-   "name": "Saltreach Coast",
-   "recent": 1888,
-   "users": 5034
+  "WINE": {
+   "2025Q4": 1460.1,
+   "2026Q1": 1189.0,
+   "2026Q2": 1247.3,
+   "2026Q3": 1270.6
   }
  },
- "migrated": "QR",
- "migrated_name": "Quenford Rise",
- "migrated_practice": "Q89159",
- "migrated_practice_name": "Mill Road Group Practice",
- "n_users": 28253,
- "off_from": "2027-04-01",
- "off_to": "2027-12-31",
- "others_max_r": 13,
- "recent_since": "2025-04-01",
+ "codes": [
+  4071,
+  6171,
+  7171
+ ],
+ "duties": {
+  "BEER": {
+   "beta": -0.275,
+   "cut": 0.2312,
+   "cut_1dp": 0.2,
+   "eb": 199784.5551209523,
+   "eb_k": 200,
+   "eb_m": 0.2,
+   "eps": [
+    -0.275,
+    -0.418,
+    -0.493,
+    -0.532
+   ],
+   "extra_litres_k": 234.4,
+   "lam": 0.521,
+   "litres_k": 6885.7,
+   "name": "Beer",
+   "new_rate": 0.5888,
+   "new_rate_2dp": 0.59,
+   "producer": 2.3,
+   "rate27": 0.82,
+   "rate27_2dp": 0.82,
+   "shelf": 3.28,
+   "wedge_share": 0.298
+  },
+  "CIDR": {
+   "beta": -0.578,
+   "cut": 0.3289,
+   "cut_1dp": 0.3,
+   "eb": 408470.9623211083,
+   "eb_k": 408,
+   "eb_m": 0.4,
+   "eps": [
+    -0.578,
+    -0.776,
+    -0.844,
+    -0.867
+   ],
+   "extra_litres_k": 692.9,
+   "lam": 0.343,
+   "litres_k": 5196.1,
+   "name": "Cider",
+   "new_rate": 0.3311,
+   "new_rate_2dp": 0.33,
+   "producer": 1.55,
+   "rate27": 0.66,
+   "rate27_2dp": 0.66,
+   "shelf": 2.32,
+   "wedge_share": 0.332
+  },
+  "FUEL": {
+   "beta": -0.062,
+   "cut": 0.026,
+   "cut_1dp": 0.0,
+   "eb": 149642.14308640512,
+   "eb_k": 150,
+   "eb_m": 0.1,
+   "eps": [
+    -0.062,
+    -0.121,
+    -0.176,
+    -0.229
+   ],
+   "extra_litres_k": 170.2,
+   "lam": 0.946,
+   "litres_k": 60239.8,
+   "name": "Road fuel",
+   "new_rate": 0.798,
+   "new_rate_2dp": 0.8,
+   "producer": 0.55,
+   "rate27": 0.824,
+   "rate27_2dp": 0.82,
+   "shelf": 1.44,
+   "wedge_share": 0.619
+  },
+  "SPIR": {
+   "beta": -0.527,
+   "cut": 2.2593,
+   "cut_1dp": 2.3,
+   "eb": 882404.9965750074,
+   "eb_k": 882,
+   "eb_m": 0.9,
+   "eps": [
+    -0.527,
+    -0.688,
+    -0.736,
+    -0.751
+   ],
+   "extra_litres_k": 83.4,
+   "lam": 0.305,
+   "litres_k": 964.0,
+   "name": "Spirits",
+   "new_rate": 8.5607,
+   "new_rate_2dp": 8.56,
+   "producer": 9.0,
+   "rate27": 10.82,
+   "rate27_2dp": 10.82,
+   "shelf": 20.81,
+   "wedge_share": 0.568
+  },
+  "WINE": {
+   "beta": -0.291,
+   "cut": 0.4343,
+   "cut_1dp": 0.4,
+   "eb": 209410.66820561813,
+   "eb_k": 209,
+   "eb_m": 0.2,
+   "eps": [
+    -0.291,
+    -0.438,
+    -0.513,
+    -0.551
+   ],
+   "extra_litres_k": 80.1,
+   "lam": 0.507,
+   "litres_k": 3709.1,
+   "name": "Wine",
+   "new_rate": 1.9357,
+   "new_rate_2dp": 1.94,
+   "producer": 7.1,
+   "rate27": 2.37,
+   "rate27_2dp": 2.37,
+   "shelf": 9.94,
+   "wedge_share": 0.286
+  }
+ },
+ "envelope_m": 1.5,
+ "first_quarter": [
+  2008,
+  1
+ ],
+ "gst_pct": 5,
+ "order": [
+  "SPIR",
+  "CIDR",
+  "WINE",
+  "BEER",
+  "FUEL"
+ ],
+ "quarters": 75,
  "routes": {
-  "current_system_root": {
-   "CC": 12.6027,
-   "FM": 11.9996,
-   "HM": 15.284,
-   "LN": 7.8444,
-   "QR": 13.1603,
-   "SC": 19.1569
+  "duty_only": {
+   "BEER": 0.169,
+   "CIDR": 0.341,
+   "FUEL": 0.144,
+   "SPIR": 0.823,
+   "WINE": 0.177
   },
-  "current_template": {
-   "CC": 72.3458,
-   "FM": 53.0472,
-   "HM": 38.5224,
-   "LN": 34.2482,
-   "QR": 48.7859,
-   "SC": 53.5923
+  "family_adl11": {
+   "BEER": 0.199,
+   "CIDR": 0.409,
+   "FUEL": 0.168,
+   "SPIR": 0.885,
+   "WINE": 0.208
   },
-  "earliest_both_systems": {
-   "CC": 12.6027,
-   "FM": 11.9996,
-   "HM": 15.284,
-   "LN": 7.8444,
-   "QR": 11.0423,
-   "SC": 19.1569
+  "family_linear": {
+   "BEER": 0.2,
+   "CIDR": 0.414,
+   "FUEL": 0.15,
+   "SPIR": 0.886,
+   "WINE": 0.21
   },
-  "extract_first_dispensing": {
-   "CC": 73.9055,
-   "FM": 54.1055,
-   "HM": 39.1769,
-   "LN": 34.9999,
-   "QR": 49.7224,
-   "SC": 54.6155
+  "family_trend": {
+   "BEER": 0.205,
+   "CIDR": 0.402,
+   "FUEL": 0.146,
+   "SPIR": 0.895,
+   "WINE": 0.21
   },
   "golden": {
-   "CC": 12.6027,
-   "FM": 11.9996,
-   "HM": 15.284,
-   "LN": 7.8444,
-   "QR": 11.0423,
-   "SC": 19.1569
+   "BEER": 0.2,
+   "CIDR": 0.408,
+   "FUEL": 0.15,
+   "SPIR": 0.882,
+   "WINE": 0.209
   },
-  "prevalent_long_term_21": {
-   "CC": 26.5157,
-   "FM": 20.6991,
-   "HM": 19.5545,
-   "LN": 13.5738,
-   "QR": 18.9551,
-   "SC": 20.6585
+  "golden_static_revenue": {
+   "BEER": 0.181,
+   "CIDR": 0.35,
+   "FUEL": 0.136,
+   "SPIR": 0.581,
+   "WINE": 0.187
   },
-  "prevalent_long_term_28": {
-   "CC": 10.5482,
-   "FM": 9.3074,
-   "HM": 12.9568,
-   "LN": 6.0458,
-   "QR": 8.5886,
-   "SC": 10.1495
+  "impact_full": {
+   "BEER": 0.121,
+   "CIDR": 0.288,
+   "FUEL": 0.059,
+   "SPIR": 0.602,
+   "WINE": 0.128
   },
-  "prevalent_long_term_35": {
-   "CC": 10.2919,
-   "FM": 8.9466,
-   "HM": 12.5106,
-   "LN": 5.8085,
-   "QR": 8.3133,
-   "SC": 9.8458
+  "longrun_full": {
+   "BEER": 0.274,
+   "CIDR": 0.476,
+   "FUEL": 3.516,
+   "SPIR": 1.035,
+   "WINE": 0.282
   },
-  "prevalent_long_term_56": {
-   "CC": 10.1305,
-   "FM": 8.6238,
-   "HM": 11.3714,
-   "LN": 5.6091,
-   "QR": 7.9715,
-   "SC": 9.4755
+  "longrun_triangle": {
+   "BEER": 0.041,
+   "CIDR": 0.144,
+   "FUEL": 0.166,
+   "SPIR": 0.123,
+   "WINE": 0.026
   },
-  "previous_system_one_hop": {
-   "CC": 12.6027,
-   "FM": 11.9996,
-   "HM": 15.284,
-   "LN": 7.8444,
-   "QR": 12.8475,
-   "SC": 19.1569
+  "static_full": {
+   "BEER": 0.263,
+   "CIDR": 0.626,
+   "FUEL": 1.945,
+   "SPIR": 1.108,
+   "WINE": 0.283
   },
-  "users": {
-   "CC": 6812.0,
-   "FM": 4987.0,
-   "HM": 3611.0,
-   "LN": 3226.0,
-   "QR": 4583.0,
-   "SC": 5034.0
+  "static_triangle": {
+   "BEER": 0.039,
+   "CIDR": 0.204,
+   "FUEL": 0.063,
+   "SPIR": 0.136,
+   "WINE": 0.026
+  },
+  "static_triangle_static_revenue": {
+   "BEER": 0.029,
+   "CIDR": 0.117,
+   "FUEL": 0.012,
+   "SPIR": 0.047,
+   "WINE": 0.019
+  },
+  "triangle_year": {
+   "BEER": 0.028,
+   "CIDR": 0.12,
+   "FUEL": 0.002,
+   "SPIR": 0.099,
+   "WINE": 0.018
+  },
+  "yearend_full": {
+   "BEER": 0.251,
+   "CIDR": 0.468,
+   "FUEL": 0.245,
+   "SPIR": 1.02,
+   "WINE": 0.26
   }
  },
- "rr": [
-  [
-   6,
-   3.0
-  ],
-  [
-   24,
-   1.8
-  ],
-  [
-   null,
-   1.1
-  ]
- ],
- "runner": "HM",
- "runner_avoided": 15.284,
- "runner_avoided_r": 15,
- "runner_name": "Hethermoss",
- "stop_pct": 45,
- "winner": "SC",
- "winner_mid": 1485,
- "winner_name": "Saltreach Coast"
+ "runner": "CIDR",
+ "runner_m": 0.4,
+ "runner_name": "Cider",
+ "uprate_pct": 3,
+ "winner": "SPIR",
+ "winner_m": 0.9,
+ "winner_name": "Spirits"
 }

@@ -1,52 +1,55 @@
-"""figures.json: every owed figure, computed from the pack by solve.py."""
-import datetime as dt
+"""Every owed figure, computed from the pack by solve.py and written to figures.json for figures_check.py."""
 import json
+
+import numpy as np
 
 import params as P
 import solve as SV
 
+QUARTER_LABEL = {"2025Q4": "October to December 2025", "2026Q1": "January to March 2026",
+                 "2026Q2": "April to June 2026", "2026Q3": "July to September 2026"}
 
-def whole(x):
-    return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
+
+def tenth(x):
+    return float(np.floor(x * 10.0 + 0.5) / 10.0)
 
 
 def compute(target):
-    c = SV.call(target)
-    a = SV.asks(target)
-    names = {k: n for k, n, _, _ in P.LOCALITIES}
-    g = c["routes"]["golden"]
-    since = P.OFF_FROM.replace(year=P.OFF_FROM.year - 2)
-    recent = {k: sum(1 for p in c["users"] if c["where"][p] == k and c["starts"]["golden"][p] >= since)
-              for k in names}
-    w, r = c["winner"], c["runner"]
-    reg, _ = SV.register(target)
-    moved = sorted({t["practice_code"] for t in SV.read(SV.os.path.join(target, P.FILES["templates"]))
-                    if t["migration_source_ref"]})
-    assert len(moved) == 1, moved
-    mrow = [x for x in reg if x["Practice code"] == moved[0]][0]
-    mcode, mname, mloc = moved[0], mrow["Practice name"], mrow["Locality code"]
-    fig = dict(
-        winner=w, winner_name=names[w], avoided=round(g[w], 4), avoided_r=whole(g[w]),
-        runner=r, runner_name=names[r], runner_avoided=round(g[r], 4), runner_avoided_r=whole(g[r]),
-        gap=round(g[w] - g[r], 4), gap_r=whole(g[w] - g[r]),
-        others_max_r=max(whole(g[k]) for k in g if k not in (w, r)),
-        n_users=len(c["users"]), stop_pct=int(P.STOP * 100), base=P.BASE,
-        rr=[[m, v] for m, v in P.RR], recent_since=since.isoformat(),
-        localities={k: dict(name=names[k], users=c["n_users"][k], recent=recent[k], avoided=round(g[k], 4),
-                            avoided_r=whole(g[k])) for k in names},
-        routes={k: {l: round(v, 4) for l, v in rt.items()} for k, rt in c["routes"].items()},
-        asks=a,
-        ask_totals={f: sum(a[k][f] for k in a) for f in ("falls_65_79", "falls_80", "bed_days", "readmitted")},
-        migrated=mloc, migrated_name=names[mloc], migrated_practice=mcode, migrated_practice_name=mname,
-        winner_mid=sum(1 for p in c["users"] if c["where"][p] == w and since <= c["starts"]["golden"][p] < P.EXTRACT_FROM),
-        extract_from=P.EXTRACT_FROM.isoformat(), off_from=P.OFF_FROM.isoformat(), off_to=P.OFF_TO.isoformat(),
-        constants=dict(age_min=65, age_band_top=79, age_band_80=80, readmit_days=30, days_in_year=365, per_100=100,
-                       destination_another_hospital=51, transfer_method=81, months_bands=[6, 24]),
-    )
-    return fig
+    R = SV.call(target)
+    g = R["routes"]["golden"]
+    duties = {}
+    for code, name in SV.NAMES.items():
+        x, m = g[code], R["fits"][(code, "adl10")]
+        duties[code] = dict(
+            name=name,
+            beta=round(float(m["beta"]), 3), lam=round(float(m["lam"]), 3),
+            eps=[round(float(e), 3) for e in x["eps"]],
+            litres_k=round(float(np.sum(x["q0"])) / 1000.0, 1),
+            shelf=round(float(x["p0"]), 2), producer=round(float(x["c"]), 2),
+            rate27=round(float(x["d27"]), 4), cut=round(float(x["cut"]), 4),
+            new_rate=round(float(x["d27"] - x["cut"]), 4),
+            rate27_2dp=round(float(x["d27"]), 2), new_rate_2dp=round(float(x["d27"] - x["cut"]), 2),
+            cut_1dp=round(float(x["cut"]), 1),
+            wedge_share=round(float(x["wedge_share"]), 3),
+            extra_litres_k=round(float(np.sum(x["q1"] - x["q0"])) / 1000.0, 1),
+            eb_k=int(round(x["gain"] / 1000.0)), eb_m=tenth(x["gain"] / 1e6), eb=float(x["gain"]))
+    w, r = R["winner"], R["runner"]
+    A = SV.asks(target)
+    asks = {c: {q: SV.thousand(A[c][q]) for q in P.ASK_QUARTERS} for c in SV.NAMES}
+    routes = {k: {c: round(v[c]["gain"] / 1e6, 3) for c in SV.NAMES} for k, v in R["routes"].items()}
+    F = dict(winner=w, winner_name=SV.NAMES[w], runner=r, runner_name=SV.NAMES[r],
+             winner_m=tenth(g[w]["gain"] / 1e6), runner_m=tenth(g[r]["gain"] / 1e6),
+             order=R["order"], duties=duties, envelope_m=P.ENVELOPE / 1e6, gst_pct=int(round(P.GST * 100)),
+             uprate_pct=int(round((P.UPRATE_2027 - 1) * 100)),
+             asks_k=asks, asks_exact=A, routes=routes,
+             first_quarter=SV.series(target)[w]["quarters"][0], quarters=len(SV.series(target)[w]["quarters"]),
+             codes=[4071, 6171, 7171])
+    return F
 
 
-def write(fig, path):
+def write(F, path):
+    keep = {k: v for k, v in F.items() if k != "asks_exact"}
+    keep["asks_exact"] = {c: {q: round(v, 2) for q, v in d.items()} for c, d in F["asks_exact"].items()}
     with open(path, "w") as fh:
-        json.dump(fig, fh, indent=1, sort_keys=True)
+        json.dump(keep, fh, indent=1, sort_keys=True, default=str)
         fh.write("\n")

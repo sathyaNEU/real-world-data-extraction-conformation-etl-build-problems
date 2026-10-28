@@ -1,235 +1,193 @@
-"""Independent verifier: reads target.zip only (no generator state, its own code path), takes the policy's filed
-figures from the PDF's text, dates each start by the earliest template across both exports, integrates the excess day by
-day, rebuilds the stays its own way, and checks figures.json, submission.md and both goldens against what it finds.
-
-    python3 task118/generator/verify.py [target.zip]
-"""
-import collections
+"""Independent verifier: reads only target.zip (csv, openpyxl and pypdf; none of solve.py, world.py or params.py),
+recomputes every graded figure on its own code path and compares with figures.json."""
 import csv
 import datetime as dt
-import email
 import io
 import json
 import os
 import re
 import sys
 import zipfile
+import zoneinfo
+
+import numpy as np
+import openpyxl
+from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+UK = zoneinfo.ZoneInfo("Europe/London")
+DUTY = {"Beer": "BEER", "Cider": "CIDR", "Wine": "WINE", "Spirits": "SPIR", "Road fuel": "FUEL"}
+QUARTERS = ["2025Q4", "2026Q1", "2026Q2", "2026Q3"]
 
 
-def rows(z, name):
-    return list(csv.DictReader(io.StringIO(z.read(name).decode("utf-8"))))
-
-
-def text_of_pdf(data):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(data)).pages))
-
-
-def months_later(d, m):
-    y, mo = divmod(d.month - 1 + m, 12)
-    y += d.year
-    mo += 1
-    for day in (d.day, 30, 29, 28):
-        try:
-            return dt.date(y, mo, day)
-        except ValueError:
-            continue
-
-
-def main(zp=None):
-    zp = zp or os.path.join(TASK, "target.zip")
-    z = zipfile.ZipFile(zp)
+def main(zpath):
+    z = zipfile.ZipFile(zpath)
     names = z.namelist()
-    fails = []
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    n = [0]
 
     def check(label, cond, detail=""):
+        n[0] += 1
         if not cond:
-            fails.append("%s %s" % (label, detail))
-        print("%s  %s%s" % ("ok  " if cond else "FAIL", label, (" [%s]" % detail) if detail and not cond else ""))
+            raise AssertionError("VERIFY FAIL %s %s" % (label, detail))
 
-    def one(pattern):
-        m = [n for n in names if re.search(pattern, n)]
-        assert len(m) == 1, (pattern, m)
-        return m[0]
+    pick = lambda pre: [x for x in names if x.startswith(pre)][0]
 
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    def csv_rows(name):
+        with z.open(name) as f:
+            return list(csv.DictReader(io.TextIOWrapper(f, encoding="utf-8")))
 
-    # the policy's filed figures, read from the document itself
-    pol = text_of_pdf(z.read(one(r"deprescribing_policy.*\.pdf$")))
-    base = float(re.search(r"run at ([\d.]+) per 100 patients a year", pol).group(1))
-    stop = int(re.search(r"Coming off (\d+) in every 100", pol).group(1)) / 100.0
-    under = re.search(r"Under (\d+) months ([\d.]+) (\d+) months to under (\d+) months ([\d.]+) (\d+) months or more "
-                      r"([\d.]+)", pol)
-    b1, r1, _, b2, r2, _, r3 = under.groups()
-    b1, b2, r1, r2, r3 = int(b1), int(b2), float(r1), float(r2), float(r3)
-    off = re.search(r"off the drug from (\d+) April (\d{4}) to (\d+) December (\d{4})", pol)
-    off_from, off_to = dt.date(int(off.group(2)), 4, int(off.group(1))), dt.date(int(off.group(4)), 12, int(off.group(3)))
-    cu = re.search(r"aged (\d+) or over on 1 January (\d{4}) with a benzodiazepine or Z-drug dispensed between 1 July "
-                   r"and 30 September (\d{4})", pol)
-    age_min, age_year, disp_year = int(cu.group(1)), int(cu.group(2)), int(cu.group(3))
-    check("policy read back: base %.1f, stop %.2f, bands %d/%d at %.1f/%.1f/%.1f, off %s to %s" % (
-        base, stop, b1, b2, r1, r2, r3, off_from, off_to), (base, stop, b1, b2, r1, r2, r3) == (4.0, 0.45, 6, 24, 3.0, 1.8, 1.1))
+    def book(name):
+        return openpyxl.load_workbook(io.BytesIO(z.read(name)), read_only=True, data_only=True)
 
-    # the register, with the codes each practice has taken over
-    from openpyxl import load_workbook
-    wb = load_workbook(io.BytesIO(z.read(one(r"register.*\.xlsx$"))), read_only=True)
-    ws = wb["Practices"]
-    it = ws.iter_rows(values_only=True)
-    hdr = next(it)
-    loc = {}
-    for r in it:
-        rec = dict(zip(hdr, r))
-        loc[rec["Practice code"]] = rec["Locality code"]
-        for code in re.findall(r"[A-Z]\d{5}", str(rec["Previous practice codes"] or "")):
-            loc[code] = rec["Locality code"]
-    names_of = {}
-    for r in wb["Localities"].iter_rows(min_row=2, values_only=True):
-        names_of[r[0]] = r[1]
-    check("register read back: %d practice codes, %d localities" % (len(loc), len(names_of)), len(names_of) == 6)
+    def pdf_text(name):
+        return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read(name))).pages))
 
-    # current users
-    disp = rows(z, one(r"^dispensing_.*\.csv$"))
-    lo, hi = "%d-07-01" % disp_year, "%d-09-30" % disp_year
-    born_by = age_year - 1 - age_min
-    cur, where = set(), {}
-    for x in disp:
-        if lo <= x["dispensed_date"] <= hi and int(x["year_of_birth"]) <= born_by:
-            cur.add(x["patient_pseudo_id"])
-            where[x["patient_pseudo_id"]] = loc[x["practice_code"]]
-    check("current users %d" % len(cur), len(cur) == fig["n_users"], "figures.json %d" % fig["n_users"])
+    # the documents: every filed sentence the call or the asks lean on, read back from the shipped file
+    manual = pdf_text(pick("treasury_budget_appraisal_manual"))
+    for s in ("every tax on the good counts towards it: the duty and the GST charged on the duty-inclusive price",
+              "passes in full to the shelf price, with GST charged on top",
+              "the calendar year in which it takes effect", "on what consumers will buy in that year",
+              "the latest four quarters of duty-paid clearances", "each quarter standing for the same quarter of the "
+              "Budget year", "with the duty rates already set for the Budget year", "after consumers respond",
+              "the prices they pay", "removes the most excess burden in the Budget year for that sum"):
+        check("pdf manual: %s" % s[:40], s in manual)
+    ce14 = pdf_text(pick("customs_excise_accounting_note_ce14"))
+    for s in ("by the date in Eskerholm, which keeps United Kingdom time", "records acceptance times in UTC",
+              "in the period in which the release was first accepted", "A cancelled declaration accounts for nothing",
+              "credited in the period the repayment is accepted", "at the rate in force that day",
+              "up to the day before its end date"):
+        check("pdf CE14: %s" % s[:40], s in ce14)
+    eml = z.read(pick("budget_2027_duty_envelope")).decode("utf-8")
+    check("eml: the envelope", "GBP 1.5 million envelope" in eml and "It goes to" in eml)
+    envelope = 1.5e6
 
-    # first starts: the earliest template across both exports, skipping templates the move re-created
-    start = {}
-    for t in rows(z, one(r"^repeat_templates_.*\.csv$")):
-        if t["migration_source_ref"]:
+    # the series: the back-series workbook (one sheet per duty) and the long release, stacked
+    series = {c: {} for c in DUTY.values()}
+    wb = book(pick("excise_clearances_prices_quarterly_2008"))
+    for name, code in DUTY.items():
+        for row in list(wb[name].iter_rows(values_only=True))[1:]:
+            if row and row[0]:
+                y, q = row[0].split(" Q")
+                series[code][(int(y), int(q))] = (float(row[1]), float(row[2]))
+    check("xlsx back series: 16 quarters per duty", all(len(v) == 16 for v in series.values()))
+    for row in csv_rows(pick("excise_clearances_prices_quarterly_2012")):
+        y, q = row["quarter"].split("Q")
+        series[DUTY[row["duty"]]][(int(y), int(q))] = (float(row["duty_paid_clearances_thousand_litres"]),
+                                                       float(row["average_shelf_price_gbp_per_litre_2026_prices"]))
+    check("csv release: 75 quarters per duty once stacked", all(len(v) == 75 for v in series.values()))
+    rates = {c: [] for c in DUTY.values()}
+    wr = book(pick("excise_duty_rates"))
+    for row in list(wr["Duty rates"].iter_rows(values_only=True))[1:]:
+        d = row[1].date() if isinstance(row[1], dt.datetime) else row[1]
+        rates[DUTY[row[0]]].append((d, float(row[2])))
+    gst = [r for r in list(wr["GST"].iter_rows(values_only=True))[1:]]
+    check("xlsx GST: 5 per cent from April 2011", float(gst[-1][1]) == 0.05)
+    g = 0.05
+
+    def rate(code, day):
+        return [v for d, v in sorted(rates[code]) if d <= day][-1]
+
+    # each duty: OLS by the normal equations, the 2027 path, the cut by bisection, the welfare integral by quadrature
+    out = {}
+    for code, d in series.items():
+        ks = sorted(d)
+        lq = np.log([d[k][0] for k in ks])
+        lp = np.log([d[k][1] for k in ks])
+        X = np.array([[1.0 * (ks[t][1] == j) for j in (1, 2, 3, 4)] + [lp[t], lq[t - 1]] for t in range(1, len(ks))])
+        b = np.linalg.solve(X.T @ X, X.T @ lq[1:])
+        beta, lam = b[4], b[5]
+        eps = [beta * (1 - lam ** k) / (1 - lam) for k in (1, 2, 3, 4)]
+        last4 = {k[1]: d[k][0] * 1000.0 for k in ks[-4:]}
+        q0 = np.array([last4[1], last4[2], last4[3], last4[4]])
+        p_last = d[ks[-1]][1]
+        c = p_last / (1 + g) - rate(code, dt.date(2026, 9, 1))
+        d27 = rate(code, dt.date(2027, 1, 1))
+        p0 = (c + d27) * (1 + g)
+
+        def revenue(cut):
+            p1 = (c + d27 - cut) * (1 + g)
+            q1 = q0 * (p1 / p0) ** np.array(eps)
+            return float(np.sum((p0 - c) * q0 - (p1 - c) * q1)), q1, p1
+        lo, hi = 0.0, d27 * 0.999
+        for _ in range(200):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if revenue(mid)[0] < envelope else (lo, mid)
+        cut = (lo + hi) / 2
+        _, q1, p1 = revenue(cut)
+        gain = 0.0
+        for a, bq, e in zip(q0, q1, eps):
+            grid = np.linspace(a, bq, 4001)
+            price = p0 * (grid / a) ** (1.0 / e)
+            gain += float(np.sum((price[1:] + price[:-1]) / 2 - c) * (grid[1] - grid[0]))
+        out[code] = dict(gain=gain, cut=cut, d27=d27)
+    order = sorted(out, key=lambda k: -out[k]["gain"])
+    tenth = lambda x: float(np.floor(x * 10 + 0.5) / 10)
+    check("call: the duty", order[0] == fig["winner"], order)
+    check("call: the figure", tenth(out[order[0]]["gain"] / 1e6) == fig["winner_m"], out[order[0]]["gain"])
+    check("call: the next best", order[1] == fig["runner"])
+    check("call: its figure", tenth(out[order[1]]["gain"] / 1e6) == fig["runner_m"], out[order[1]]["gain"])
+    for code in out:
+        check("cut %s" % code, abs(out[code]["cut"] - fig["duties"][code]["cut"]) < 2e-4)
+        check("excess burden %s" % code, abs(out[code]["gain"] / 1000 - fig["duties"][code]["eb_k"]) <= 0.6)
+
+    # the asks: Customs' declarations under CE14, with the register
+    reg = book(pick("bonded_warehouse_register"))
+    prem = {}
+    for row in list(reg["Approved warehouses"].iter_rows(values_only=True))[1:]:
+        start = row[4].date() if isinstance(row[4], dt.datetime) else row[4]
+        end = row[5].date() if isinstance(row[5], dt.datetime) else (row[5] or None)
+        prem[row[0]] = (row[2], start, end)
+
+    def approved(wid, day):
+        p = prem[wid][0]
+        return any(v[0] == p and v[1] <= day and (v[2] is None or day < v[2]) for v in prem.values())
+    decl_rows = csv_rows(pick("customs_excise_declarations"))
+    check("csv declarations: 25,000 rows or more", len(decl_rows) >= 25000)
+    uniq = list({tuple(r.items()): r for r in decl_rows}.values())
+
+    def local(r):
+        return dt.datetime.fromisoformat(r["accepted_at_utc"].replace("Z", "+00:00")).astimezone(UK).date()
+
+    def qtr(d):
+        return "%dQ%d" % (d.year, (d.month + 2) // 3)
+    tot = {c: {q: 0.0 for q in QUARTERS} for c in DUTY.values()}
+    groups = {}
+    for r in uniq:
+        if r["cpc"] == "4071" and r["status"] != "CANCELLED":
+            groups.setdefault(r["declaration_no"], []).append(r)
+    parent = {no: rs[0]["related_declaration"] for no, rs in groups.items() if rs[0]["related_declaration"]}
+    corrected = set(parent.values())
+    for no, rs in groups.items():
+        if no in corrected:
             continue
-        d = dt.date.fromisoformat(t["authorised_from"])
-        p = t["patient_pseudo_id"]
-        if p not in start or d < start[p]:
-            start[p] = d
-    for t in rows(z, one(r"previous_system.*\.csv$")):
-        d = dt.datetime.strptime(t["StartDate"], "%d/%m/%Y").date()
-        p = t["PatientPseudoID"]
-        if p not in start or d < start[p]:
-            start[p] = d
-    check("every current user has a start", all(p in start for p in cur))
-
-    # excess admissions, a day at a time
-    days = [off_from + dt.timedelta(days=k) for k in range((off_to - off_from).days + 1)]
-    tot = collections.defaultdict(float)
-    for p in cur:
-        s = start[p]
-        e1, e2 = months_later(s, b1), months_later(s, b2)
-        ex = 0.0
-        for d in days:
-            ex += (r1 if d < e1 else (r2 if d < e2 else r3)) - 1.0
-        tot[where[p]] += ex / 365.0
-    av = {k: stop * base / 100.0 * v for k, v in tot.items()}
-    order = sorted(av, key=lambda k: -av[k])
-    w, r = order[0], order[1]
-    check("the call: %s %.3f, runner-up %s %.3f" % (names_of[w], av[w], names_of[r], av[r]),
-          w == fig["winner"] and r == fig["runner"] and abs(av[w] - fig["avoided"]) < 1e-3 and
-          abs(av[r] - fig["runner_avoided"]) < 1e-3, "figures.json %s %.3f, %s %.3f" % (
-              fig["winner"], fig["avoided"], fig["runner"], fig["runner_avoided"]))
-    rw, rr_, rg = int(av[w] + 0.5), int(av[r] + 0.5), int(av[w] - av[r] + 0.5)
-    check("rounded: %d, %d, %d fewer" % (rw, rr_, rg), (rw, rr_, rg) == (fig["avoided_r"], fig["runner_avoided_r"],
-                                                                          fig["gap_r"]))
-
-    # the falls definitions, read back
-    fd = text_of_pdf(z.read(one(r"falls_indicator.*\.pdf$")))
-    meth = set(re.search(r"admission method ([\w, ]+?) or (\w\w)\b", fd).group(1).replace(" ", "").split(",")) | {
-        re.search(r"admission method ([\w, ]+?) or (\w\w)\b", fd).group(2)}
-    window = int(re.search(r"in the (\d+) days after it", fd).group(1))
-    check("falls definitions read back: %d methods, %d days" % (len(meth), window), len(meth) == 10 and window == 30)
-
-    # stays rebuilt: walk each patient's spells in time order; a discharge to another hospital (49 to 53, 84, 87)
-    # carries the stay into the spell at another site that begins that day or the next
-    eps = rows(z, one(r"^sus_.*\.csv$"))
-    spell = {}
-    for e in eps:
-        k = (e["provider_code"], e["hospital_spell_no"])
-        s = spell.setdefault(k, {"pid": e["sus_pseudo_id"], "site": e["site_code"], "adm": e["admission_date"],
-                                 "method": e["admission_method"], "first": None, "last": None})
-        n = int(e["episode_no"])
-        if s["first"] is None or n < int(s["first"]["episode_no"]):
-            s["first"] = e
-        if s["last"] is None or n > int(s["last"]["episode_no"]):
-            s["last"] = e
-    per = collections.defaultdict(list)
-    for s in spell.values():
-        s["dis"] = s["last"]["discharge_date"]
-        s["dest"] = s["last"]["discharge_destination"]
-        s["died"] = s["last"]["discharge_method"] == "4"
-        per[s["pid"]].append(s)
-    moved = {"49", "50", "51", "52", "53", "84", "87"}
-    out = {k: [0, 0, 0, 0] for k in names_of}
-    for pid, ss in per.items():
-        pool = sorted(ss, key=lambda s: (s["adm"], s["dis"]))
-        used, stays = set(), []
-        for s in pool:
-            if id(s) in used:
-                continue
-            chain = [s]
-            used.add(id(s))
-            while chain[-1]["dest"] in moved:
-                last = dt.date.fromisoformat(chain[-1]["dis"])
-                nxt = [b for b in pool if id(b) not in used and b["site"] != chain[-1]["site"] and
-                       0 <= (dt.date.fromisoformat(b["adm"]) - last).days <= 1]
-                if not nxt:
-                    break
-                nxt.sort(key=lambda b: (b["adm"], b["dis"]))
-                chain.append(nxt[0])
-                used.add(id(nxt[0]))
-            stays.append(chain)
-        emerg = [c_ for c_ in stays if c_[0]["method"] in meth and c_[0]["method"] not in ("2B", "81")]
-        for c_ in stays:
-            f = c_[0]["first"]
-            codes = [f["primary_diagnosis"]] + [f["diag_%02d" % i] for i in range(2, 9)]
-            fall = any(re.fullmatch(r"W(0\d|1\d)\w*", x or "") for x in codes)
-            a0 = c_[0]["adm"]
-            if not (fall and c_[0]["method"] in meth and "2025-04-01" <= a0 <= "2026-03-31"):
-                continue
-            k = loc[f["gp_practice_code"]]
-            o = out[k]
-            o[0 if int(f["age_at_start"]) < 80 else 1] += 1
-            end = dt.date.fromisoformat(c_[-1]["dis"])
-            o[2] += (end - dt.date.fromisoformat(a0)).days
-            if not c_[-1]["died"]:
-                if any(x is not c_ and 0 <= (dt.date.fromisoformat(x[0]["adm"]) - end).days <= window for x in emerg):
-                    o[3] += 1
-    want = {k: [fig["asks"][k][f] for f in ("falls_65_79", "falls_80", "bed_days", "readmitted")] for k in names_of}
-    for k in names_of:
-        check("falls %s: %s" % (names_of[k], out[k]), out[k] == want[k], "figures.json %s" % want[k])
-
-    # the thread and the goldens read back
-    msg = email.message_from_bytes(z.read(one(r"\.eml$")))
-    body = msg.get_payload(decode=True).decode("utf-8")
-    check("thread read back: %s, %d lines" % (msg["Subject"], body.count("\n")), "placement" in msg["Subject"].lower())
-    gx = load_workbook(os.path.join(TASK, "golden", "deprescribing_placement_2027.xlsx"), read_only=True)
-    grid = {}
-    for row in gx["Falls 2025-26"].iter_rows(min_row=4, values_only=True):
-        if row and row[0] in names_of:
-            grid[row[0]] = list(row[2:6])
-    check("golden workbook carries the 24 falls figures", grid == want)
-    from docx import Document
-    doc = " ".join(p.text for p in Document(os.path.join(TASK, "golden", "deprescribing_case_2027.docx")).paragraphs)
-    check("golden paper names %s, %d avoided, %s at %d, %d fewer" % (names_of[w], rw, names_of[r], rr_, rg),
-          ("place the deprescribing team in %s" % names_of[w]).lower() in doc.lower() and
-          ("avoid %d emergency admissions" % rw) in doc and ("%s is the runner-up at %d, %d fewer" % (
-              names_of[r], rr_, rg)) in doc)
-    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    check("submission.md states the call", ("in %s, where it will avoid %d emergency admissions" % (names_of[w], rw)) in sub
-          and ("%s is the runner-up at %d, %d fewer" % (names_of[r], rr_, rg)) in sub)
-    block = sub[sub.index("### deprescribing_placement_2027.xlsx"):]
-    nums = [int(x.replace(",", "")) for x in re.findall(r"   - [A-Za-z ]+: ([\d,]+)", block)]
-    flat = [want[k][i] for i in range(4) for k in [c_ for c_ in ("CC", "FM", "SC", "QR", "HM", "LN")]]
-    check("submission.md's 24 falls figures", nums == flat)
-    print("verify: %d failure(s)" % len(fails))
-    return len(fails)
+        root = no
+        while root in parent:
+            root = parent[root]
+        first = local(groups[root][0])
+        q = qtr(first)
+        for r in rs:
+            if r["duty_code"] in tot and q in tot[r["duty_code"]]:
+                tot[r["duty_code"]][q] += round(int(r["quantity_litres"]) * rate(r["duty_code"], first), 2)
+    for r in uniq:
+        if r["cpc"] == "6171" and r["status"] != "CANCELLED" and r["duty_code"] in tot:
+            q = qtr(local(r))
+            if q in tot[r["duty_code"]]:
+                tot[r["duty_code"]][q] -= float(r["duty_gbp"])
+        if r["cpc"] == "7171" and r["status"] != "CANCELLED" and r["duty_code"] in tot:
+            day = local(r)
+            if not approved(r["warehouse_to"], day) and qtr(day) in tot[r["duty_code"]]:
+                tot[r["duty_code"]][qtr(day)] += round(int(r["quantity_litres"]) * rate(r["duty_code"], day), 2)
+    for c in tot:
+        for q in QUARTERS:
+            k = float(np.floor(tot[c][q] / 100 + 0.5) / 10)
+            check("ask %s %s" % (c, q), k == fig["asks_k"][c][q], (k, fig["asks_k"][c][q]))
+    cpc = csv_rows(pick("customs_procedure_codes"))
+    check("csv procedure codes: 4071 is a release for home use", any(r["cpc"] == "4071" and "home use" in r["description"]
+                                                                    for r in cpc))
+    print("verify: %d assertions passed on %s" % (n[0], os.path.basename(zpath)))
+    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(1 if main(sys.argv[1] if len(sys.argv) > 1 else None) else 0)
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target.zip")))

@@ -2,18 +2,27 @@
  "task": "task118",
  "domain": "economics / public-finance (client economics-econometrics / elasticity-welfare-policy-impact-estimation)",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-27",
- "stump": "",
- "judge": {},
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-28",
+ "stump": "valuing each duty's cut on the whole wedge of duty and GST over the response made within 2027 (default: cider; whole wedge on a static or long-run elasticity: road fuel)",
+ "judge": {
+  "verdict": "DETERMINISTIC, APPROVE (architecture 4 pass 1, zip 8031742f)",
+  "disposition": "APPROVE",
+  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "report": "task118/determinism_check_report_arch4.md"
+ },
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 3): both responses filed the golden, Saltreach Coast at 19, runner-up Hethermoss 4 fewer",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "DESIGN",
- "resume": "stage 2 (architecture 4, drawn 2026-10-27): the 2027 Budget's GBP 3 million envelope to one of five excise duties, sized by the excess burden removed in the Budget year; ladder measured on the clean model (t118v4/proto2.py: golden spirits 1.41, 1.90x; triangle routes cider; long-run or static with the full change road fuel). Next: the generator (quarterly series 2008-2026 from a partial-adjustment demand, the Treasury's appraisal manual, duty rates, customs declarations 2025-26 for the asks), then the note's sections and precut",
- "leak": {},
+ "status": "SHIPPED",
+ "resume": "",
+ "leak": {
+  "leak_py": "REVIEW, both lines ruled",
+  "reader": "architecture 4 read 1 on 8031742f: no decisive-step sentence, no ranking file, no answer figure; question 3 the CE14 note (Customs' own rules, harmless); question 6 analytical"
+ },
  "returned": [
   {
    "date": "2026-10-27",
@@ -43,19 +52,22 @@
    "date": "2026-10-27",
    "portal": "FAILED_TO_STUMP: both responses filed the golden call (Saltreach Coast, 19 emergency fall admissions avoided, 19.2 in one; runner-up Hethermoss 15, 4 fewer), the start dating through the repeat-template chains landed",
    "repair": "re-root",
-   "commit": ""
+   "commit": "DRAWN (task118) architecture 4, 583c1bf4"
   }
  ],
- "zip_sha256_16": "",
+ "zip_sha256_16": "8031742f5cae45ee",
  "architecture": 4,
  "loops": 0,
  "portal_status": "",
  "portal_status_date": "",
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-27"
  },
- "duplicate_check": {},
+ "duplicate_check": {
+  "heart": "WARN",
+  "surface": "exit 0; task119 and task172 low-priority promotions"
+ },
  "freeze": {
   "rubric": "PASS (six ask figures added, main call and stump unchanged)",
   "determinism": "FAIL on one item: Deliverable Answers for squad_placement_2027.xlsx (the six totals added)",

@@ -20,35 +20,256 @@ v1 to v3.
   which); `repeat.deliverables` (a Budget workbook and a Treasury paper are what a chief economist sends).
 - **Pairing:** Economics (house domain, client domain Economics & Econometrics, task type
   elasticity-welfare-policy-impact-estimation), for Opportunity Sizing & Decision Support, a never-built pairing: the
-  States of Castelmere's 2027 Budget gives up GBP 3 million of revenue to cut one of five excise duties (beer, cider,
-  wine, spirits, road fuel), sized by the excess burden the cut removes in the Budget year. Pool: each duty's excess
-  burden; realisable: the part the envelope's cut removes in 2027, on the demand the year actually reaches.
+  States of Eskerholm's 2027 Budget gives up GBP 1.5 million of duty and GST to cut one of five excise duties (beer,
+  cider, wine, spirits, road fuel), sized by the excess burden the cut removes in the Budget year. Pool: each duty's
+  excess burden; realisable: the part the envelope's cut removes in 2027, on the demand the year actually reaches.
 - **Strategy:** `other` (two independent moves, neither a vocabulary strategy), Gate G `method_or_model_selection`,
   generators G1 (each extra unit's value is the whole existing wedge, not half the cut), G13 (the Budget year's
   response against the static or long-run response), G16; gap objective and time; Layer 2 `field_method`, pattern
   `own:excess-burden-change-on-the-existing-wedge-over-the-budget-year-response`.
-- **The conjunction, measured on the clean model before any file (scratch t118v4/proto2.py):** with the full change in
-  excess burden on the Budget year's response path and the envelope scored after consumers respond, spirits removes
-  1.41 million, 1.90 times cider; the cut's triangle on any elasticity names cider (1.15 to 1.99 times); the full change
-  on the long-run or a static elasticity names road fuel (1.35 to 1.44 times), whose demand adjusts over years; scoring
-  the envelope with no behavioural feedback keeps spirits at 1.06 (a figure rung). No hill-climb: fixing the welfare
-  measure alone moves a solver from cider to road fuel, fixing the response alone leaves it on cider.
+- **The conjunction, measured on the built pack (figures in GBP million removed in 2027):** the whole wedge over the
+  response made within 2027 files spirits 0.882, 2.16 times cider 0.408; the cut's own triangle on any elasticity files
+  cider (1.21 to 2.49 times); the whole wedge on the static or the long-run elasticity files road fuel (1.76 and 3.40
+  times), whose demand adjusts over years; the long-run elasticity with the triangle files road fuel at 1.15. No
+  hill-climb: fixing the welfare measure alone moves a solver from cider to road fuel, fixing the response alone leaves
+  it on cider.
 - **Screens before the card:** staggered rollouts (task129, task136, task177; a probe landed task137's), conjoint
   latent classes (task301, task178, task309), regression to the mean (task130 v3), ratio of totals (task198), censored
   patience in a queue (task148), bunching at a threshold (task157, task174, task270) and collections pilots (task128)
   are spent; slots on excess burden, deadweight, Harberger, partial adjustment, long-run elasticity, excise, duty and
   envelope return only task136's additionality and task472's ship tonnage.
-- **Forum, event, organisation:** minister_or_cabinet (the Treasury Minister takes the Budget to the States),
-  budget_or_appropriation (the 2027 Budget), government_agency; role research_desk (the Treasury's chief economist).
-- **People** (`guard.py names --geo GB --seed 118`): Rhys Armstrong, chief economist; Aimee Miah, Treasury Minister;
-  Elaine Hooper, head of Customs and Excise; Benjamin Humphreys, Statistics Office.
+- **Forum, event, organisation (redrawn at stage 3):** council_or_assembly (the States Assembly votes the amendment
+  that places the envelope), vote_or_meeting (the Budget debate on 15 December, the panel meeting on 2 December), other
+  (an island legislature's economic affairs scrutiny panel, which no listed family fits); role policy_adviser (the
+  panel's expert adviser). The draw's furniture (minister_or_cabinet, budget_or_appropriation, government_agency,
+  research_desk) met `heart` BLOCKs once task310, drawn before this card with the same four, was delivered; redrawn,
+  the world rebuilt around the panel, `check` and `heart` WARN only.
+- **People** (`guard.py names --geo GB --seed 118`): Rhys Armstrong, the panel's expert adviser; Aimee Miah, the
+  panel's chair; Elaine Hooper, head of Customs and Excise; Benjamin Humphreys, Statistics Office.
+- **Clone screen (stage 3):** `guard.py heart` WARN (overuse.objective, overuse.gate_g, repeat.decision against task304,
+  repeat.deliverables against task311 and task304); `surface` exit 0, promoting task119 (gap objective and
+  pick_one_of_n, the two commonest values, back to back by number; domains, objectives and surfaces apart, 0.080) and
+  task172 (surface 0.102), both read as history because the ledger row carries architecture 3's portal fate; for the
+  author's adjudication if wanted.
 - **Data-native sentence:** each duty's quarterly clearances answer a price change gradually, road fuel over years
   and spirits within a few quarters, and every unit a cut adds was held back by the whole of the duty and GST already
   on it, so the duty whose cut removes most excess burden in the Budget year is neither the one with the most elastic
   long-run demand nor the one whose cut leaves the biggest triangle.
-- **Shape (07):** the duty, its figure, the runner-up and how much less it removes (4); each duty's excise accounted
-  on releases from bonded warehouses in each quarter of 2025-26 from the customs declarations (20); the two files (2):
-  26 criteria.
+- **Shape (07):** the duty, its figure, the next best and its figure (4); each duty's excise accounted for on releases
+  from bonded warehouses in each quarter, October 2025 to September 2026, from Customs' declarations (20); the two
+  files (2): 26 criteria.
+
+## Default path
+
+The strong analyst's route, every field read correctly and every filed sentence of the manual applied (figures from
+the built pack, seed 118; GBP million of excess burden removed in 2027):
+1. Stack the Statistics Office's two layouts (the 2008 to 2011 back-series workbook, one sheet per duty, and the 2012
+   to 2026 long release, preliminary quarters included) into one quarterly series per duty at constant 2026 prices.
+2. Estimate each duty's price elasticity the field's usual way, a log-log fit of clearances on the shelf price with
+   quarter dummies: beer -0.55, cider -1.09, wine -0.59, spirits -0.79, road fuel -0.92.
+3. Take the manual's starting point: the four quarters 2025 Q4 to 2026 Q3 standing for 2027's quarters, the 2026 Q3
+   shelf price, the producer price it implies, the 2027 rates already set, the cut passed in full with GST on top.
+4. Size each duty's cut so that the duty and GST given up in 2027, after buyers respond, is GBP 1.5 million.
+5. Value each cut as its Harberger triangle, half the cut in the tax on a litre times the extra litres: cider 0.204,
+   spirits 0.136, road fuel 0.063, beer 0.039, wine 0.026.
+Ends on: cider, about GBP 0.2 million of excess burden removed in 2027
+Golden: spirits, about GBP 0.9 million removed in 2027 (0.882), cider next at about GBP 0.4 million (0.408), once each
+cut is valued on the whole of the duty and GST still charged on every extra litre it buys and over the response each
+duty makes within 2027, from a demand model with lagged adjustment.
+
+## Stump sentence
+
+A competent analyst estimates each duty's price elasticity by a log-log fit of the Statistics Office's quarterly
+clearances on shelf prices, sizes each cut to the GBP 1.5 million envelope after buyers respond and values it as the
+cut's own Harberger triangle, filing cider at about GBP 0.2 million; the step that lands them there is valuing a cut by
+its own triangle on a static elasticity, when every extra litre a cut buys still carries the whole of the duty and GST
+on it and 2027 sees only the part of each duty's response that has arrived by then, so spirits removes about GBP 0.9
+million while road fuel, whose drivers adjust over years, removes far less than its static elasticity promises.
+
+## Three rules
+
+Task type: economics-econometrics / elasticity-welfare-policy-impact-estimation, which serves Opportunity Sizing: a fixed revenue envelope placed on the excise duty whose cut removes the most excess burden in the Budget year, sized from the pool of each duty's excess burden to the part the envelope's cut removes in 2027.
+Domain test: the deciding quantity is the excess burden a duty cut removes in one year, the public-finance welfare measure built from each good's demand response to its price and the tax wedge between what buyers pay and what supply costs; the field estimates it, and two of its own distinctions decide the call: the change in excess burden when an existing tax is cut against the triangle of the cut alone, and the response a year sees against the response in the long run.
+Swap: put "clinic" for "duty", "patients" for "litres" and "waiting time" for "price": no tax wedge stays on the extra units, no demand curve prices them, no GST sits on a duty, and no consumer adjusts to a permanent price change over years; the question stops being a question, so the domain is the task and not its backdrop.
+Layer 1: the organisations' own systems produce every mess item: the Statistics Office's release changed layout in 2012 (a workbook of one sheet per duty for 2008 to 2011 against a long CSV after), its 2026 Q2 and Q3 are preliminary, GST rose from 3 to 5 per cent in April 2011 inside the shelf prices, duty rates step on 1 January by uneven amounts, alcohol rates are set to the penny and road fuel's to a hundredth of a penny; Customs' extract records acceptance in UTC, carries amendments as versions, cancellations, repayments, exact duplicate rows and each declaration's duty on every item row. R2 asserts each call-side item leaves the duty and both graded figures where they are.
+Layer 2: field_method, the change in excess burden from cutting a tax that already distorts the market, valued on the whole wedge still charged on each extra litre plus half the cut, over the quantity response each duty makes within the Budget year from a demand model with lagged adjustment fitted on the quarterly series.
+Decisive step: valuing each duty's cut on the whole wedge of duty and GST still charged on every extra litre, over the response made by each quarter of 2027 from the fitted lagged adjustment, the conjunction of two moves each of which alone files a different wrong duty (the cut's own triangle files cider, the static or long-run response files road fuel).
+Not semantics: every field and term read correctly (shelf prices at constant 2026 prices, clearances in thousand litres, the 2027 rates, GST on the duty-inclusive price, the Budget year) still leaves the default route on cider and the static route on road fuel; no column, code, unit or definition carries the welfare measure or the response horizon, which are modelling choices a strong analyst makes the easy way.
+Not rule application: no filed rule says how to measure the excess burden a cut removes or how buyers' response unfolds within the year; the manual files the year, the starting point, the pass-through, the revenue after response and which taxes count, and executing every one of those sentences with a log-log elasticity and the cut's triangle files cider (1.50 times spirits); with the whole wedge and that elasticity, road fuel (1.76 times).
+Analyst test: Yes. A strong analyst who stacks both layouts cleanly, applies every sentence of the manual, fits log-log elasticities with quarter dummies and values each cut by its Harberger triangle files cider at about GBP 0.2 million, and one who counts the whole wedge on the same static elasticities files road fuel; only the whole wedge over the response made within 2027 files spirits at about GBP 0.9 million.
+Estimand: the manual files the population (2027's buyers of each duty's goods, none yet observed, at the latest four published quarters standing for 2027's quarters), the outcome (excess burden removed in calendar 2027, every tax on the good counting), the unit (GBP), the measure's sizing (the cut that gives up GBP 1.5 million of duty and GST in 2027 after buyers respond, passed in full to the shelf price with GST on top) and the comparison (the most excess burden removed for the sum, the next best beside it); the welfare measure and the response horizon are left open.
+No decoy: nothing is planted to be caught: no memo, draft, voice or stakeholder figure argues for a duty or a method, the thread sets the envelope and the panel's two requests only, and no file ranks the duties; the three distractors are the Treasury's monthly cash receipts, the price survey's shop quotes and travellers' allowance declarations.
+No certified replay: no shipped document computes an elasticity, an excess burden or a ranking, and nothing certifies a method; the manual's sentences say what is appraised, never how.
+Lesson: cutting a tax that already distorts a market gives back the whole of the remaining wedge on every unit the cut adds, not only the cut's own triangle, and a Budget year sees only the part of buyers' response that has arrived within it; a static or long-run elasticity credits a slowly adjusting good with demand it will not reach in the year. Architecture 3's stump was a data reconstruction both responses walked; this one is a modelling conjunction no reconstruction reaches.
+
+## Readability screen
+
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear | 7 dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 log-log elasticity, the cut's own triangle (default) | the manual's revenue after response and pass-through | clearances and shelf price columns | the field's textbook Harberger triangle on a static elasticity | none | no | yes | no | readable |
+| R1 the whole wedge on the static or long-run elasticity | the manual's "every tax on the good counts" names the taxes, not the measure | the same columns | a public-finance economist's reflex for cutting an existing tax | none | no | yes | no | readable |
+| R2 the response within 2027 with the cut's triangle | the manual's "in that year, on what consumers will buy in that year" | the same columns | a lagged adjustment is a second step the static fit never takes | none | no | no, a path | no | readable |
+| R3 the whole wedge over the response made within 2027 (decisive) | no sentence names the welfare measure or the adjustment path; the manual files the year and the taxes only | no column holds an elasticity, a path or a welfare figure | the field's reflex reaches one move at most and lands on road fuel or cider | no control ranks the duties | no sweep fits a lagged adjustment | no: a fixed point on the envelope and an integral along a four-quarter path | no: the quarterly series every rung reads | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | 2027 (the year the excess burden is removed) | calendar 2027, its four quarters | twelve months from the Council's meeting | same call | the manual, section 4 (the calendar year in which it takes effect; measures from 1 January); checks SF1 |
+| SF2 | the next best duty | the second duty under the same appraisal | the second by excess burden per pound of duty cut | same call | the manual, section 8 (reports the next best beside it); checks SF2 |
+| SF3 | the envelope | duty and GST given up in 2027 after buyers respond | duty only; revenue before the response | same call (0.6 and 0.8 on spirits: figure rungs) | the manual, section 6 and the thread; checks SF3 |
+| SF4 | the starting point | 2025 Q4 to 2026 Q3, each standing for its quarter of 2027, preliminary quarters included | the last four revised quarters | same call, same figures (R2) | the manual, section 5 (the latest four quarters the Statistics Office has published); checks SF4 |
+| SF5 | how a cut reaches the price | in full, GST on top | partial pass-through | same call | the manual, section 3; checks SF5 |
+| SF6 | the duty rate the cut starts from | the 2027 rate already set | the 2026 rate | same call, same figures (R2) | the manual, section 5 and the rates file's 2027 rows; checks SF6 |
+| SF7 | the producer price | the 2026 Q3 shelf price net of GST less the duty then in force, unchanged by the cut | the shelf price less duty and GST at 2027 rates | same call | the manual, sections 3 and 5; checks SF7 |
+| SF8 | the wedge that counts | duty and GST, the GST on the duty-inclusive price | duty only | same call (spirits 0.8, a figure rung) | the manual, section 2; checks SF8 |
+| SF9 | the quarter a declaration falls in (ask) | its acceptance date in Eskerholm, UK time | the UTC date | ask figures only | CE14, section 1; checks SF9 |
+| SF10 | a corrected declaration (ask) | replaced by the declaration that names it, so each release counts once, as the last declaration of its chain, in the quarter the chain's first declaration was accepted | dated by the declaration a correction names; each correction in its own quarter; the latest correction of each named declaration; every declaration counted | ask figures only | CE14, section 2 (replaces the one it corrects; the period in which the release was first accepted); every correction names a release declaration in the extract and none is corrected twice; checks SF10 |
+| SF11 | a cancelled declaration (ask) | nothing | its duty | ask figures only | CE14, section 2; checks SF11 |
+| SF12 | a repayment (ask) | credited in the quarter the repayment is accepted; the release it names stays a release | against the release's quarter; the release it names dropped as corrected | ask figures only | CE14, section 3 (a repayment gives the release it relates to as its related declaration); checks SF12 |
+| SF13 | a removal to premises whose approval ended (ask) | released, at that day's rate, from the end date on | a transfer in bond | ask figures only | CE14, section 4 (in force up to the day before its end date; no removal falls on an end date); checks SF13 |
+| SF14 | releases from bonded warehouses (ask) | procedure 4071 and removals to premises not approved that day | procedure 4000 imports as well | ask figures only | the procedure code list (4000 is entry on import); checks SF14 |
+| SF15 | the five duties (ask) | beer, cider, wine, spirits, road fuel | marked gas oil (REBF) on the same loads | ask figures only | the prompt and the register's duty codes; checks SF15 |
+| SF16 | a declaration's duty on its item rows (ask) | the declaration's total on every row, each item's share its litres at the rate on the release day | the total on each row as that item's | ask figures only | the records: on every release declaration the duty on each row equals its items at the rates of the release's first day to the penny, and one release in six carries more than one item; checks SF16 |
+| SF17 | rounding | the excess burden to GBP 0.1 million, the excise to GBP 100, once at the end | rounding each quarter's figure first | same call, same figures | the prompt; every cell GBP 1 or more and every graded figure 0.015 or more from an edge; checks SF17 |
+
+## Ladder
+
+| Rung | Construction | Beer | Cider | Wine | Spirits | Road fuel | Call |
+|---|---|---|---|---|---|---|---|
+| R0 | log-log elasticity, the cut's triangle (default) | 0.039 | 0.204 | 0.026 | 0.136 | 0.063 | cider (1.50x) |
+| R0b | the same with revenue before the response (textbook) | 0.029 | 0.117 | 0.019 | 0.047 | 0.012 | cider (2.49x) |
+| R1 | the whole wedge on the log-log elasticity | 0.263 | 0.626 | 0.283 | 1.108 | 1.945 | road fuel (1.76x) |
+| R1b | the whole wedge on the long-run elasticity | 0.274 | 0.476 | 0.282 | 1.035 | 3.516 | road fuel (3.40x) |
+| R2 | the response within 2027, the cut's triangle | 0.028 | 0.120 | 0.018 | 0.099 | 0.002 | cider (1.21x) |
+| R2b | the long-run elasticity, the cut's triangle | 0.041 | 0.144 | 0.026 | 0.123 | 0.166 | road fuel (1.15x) |
+| R3 | the whole wedge over the response within 2027 (golden) | 0.200 | 0.408 | 0.209 | 0.882 | 0.150 | spirits (2.16x) |
+
+GBP million removed in 2027 before rounding. Every wrong rung names cider or road fuel, each clears its runner-up by
+1.15x or more, and the two single corrections of the default land on different wrong duties (R1 road fuel, R2 cider).
+Figure rungs on spirits: revenue scored before the response 0.581, duty without GST 0.823, the first quarter's
+response all year 0.602, the fourth quarter's all year 1.020, each off the golden's 0.9. The method family (a time
+trend in the fit 0.895 and 0.402, a lagged price term 0.885 and 0.409, the straight-line welfare formula 0.886 and
+0.414, and their combinations) files spirits 0.9 and cider 0.4, each 0.015 or more from a bin edge. Every rung, margin,
+family member and bin distance is asserted in checks.py.
+
+## Closure table
+
+| # | Axis | Reading chosen | Closure move |
+|---|---|---|---|
+| 1 | Population | 2027's buyers of each duty's goods, none yet observed, at the latest four published quarters | pinned (manual 4, 5); SF1 SF4 |
+| 2 | Unit of account | a litre; GBP of excess burden | pinned (manual 2, 4) |
+| 3 | Attribution window | calendar 2027 | pinned (manual 4); SF1 |
+| 4 | As-of dating | 2026 Q3 shelf prices, the 2027 rates already set | pinned (manual 5); SF6 SF7 |
+| 5 | Version basis | the series as published, preliminary quarters included | pinned (manual 5); R2 asserted |
+| 6 | Denominator | none: a level, not a rate | C1 |
+| 7 | Weighting | each quarter of 2027 on its own baseline litres | pinned (manual 5) |
+| 8 | Window length | four quarters | pinned (manual 4) |
+| 9 | Boundary inclusivity | measures from 1 January; an approval in force up to the day before its end date (ask) | pinned (manual 4; CE14 4); SF13 |
+| 10 | Rounding path | unrounded, then GBP 0.1 million and GBP 100 once | the prompt; SF17 |
+| 11 | Tie-break | none needed (2.16x) | C1 |
+| 12 | Maturity and censoring | the response made by each quarter of 2027 | pinned (manual 4: in that year); C1 |
+| 13 | Order of operations | baseline, response path, cut solved on revenue after response, welfare along the path | C1 |
+| 14 | Row order | not order-dependent | C1 |
+| 15 | Duplicate resolution | none in the series; exact duplicate declaration rows dropped (ask) | C1; checks |
+| 16 | Identity normalisation | duty names in the series, codes in the declarations; the register's premises | C1 |
+| 17 | Netting against gross | the envelope net of the revenue the extra litres return | pinned (manual 6); SF3 |
+| 18 | Dimensional units | thousand litres in both layouts, GBP a litre at 2026 prices | C1 |
+| 19 | Code and status semantics | procedures 4071, 6171, 7171, 4000; CANCELLED; versions | pinned (CE14; the code list); SF10 to SF14 |
+| 20 | Integerisation | none | C1 |
+| 21 | Scope of a stated clause | "every tax on the good counts": duty and GST | pinned (manual 2); SF8 |
+| 22 | Forward window contents | 2027's quarters from the latest four, at the 2027 rates | pinned (manual 5); C1 |
+
+## Literal reader
+
+Executed word for word, the manual files the year (calendar 2027), the starting point (the latest four published
+quarters at the 2026 Q3 shelf prices and the 2027 rates), the pass-through, the revenue measure (duty and GST given up
+after buyers respond), the taxes that count towards excess burden (duty and GST) and the comparison (the most excess
+burden removed for the sum, the next best beside it); it is silent on how the excess burden a cut removes is measured
+and on how buyers' response unfolds within the year, and every literal execution that values each extra litre at the
+whole wedge over the response made by each quarter of 2027 lands on spirits at about GBP 0.9 million; the static,
+long-run and triangle routes are easy methods on the same literal estimand, not other readings.
+
+## Oracles
+
+None ranks the duties. The verifier recomputes every graded figure from target.zip on its own path (normal equations,
+bisection on the envelope, quadrature for the welfare integral). Customs' duty-paid litres and the Statistics Office's
+clearances agree within 7 per cent in every duty and quarter of the ask window and never tie (asserted), so neither
+validates the other's figures. No elasticity, excess burden or ranking is published anywhere in the pack.
+
+## Ask sheet
+
+| Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
+|---|---|---|---|---|---|---|---|---|
+| A, excise accounted for on releases from bonded warehouses, by duty and quarter, October 2025 to September 2026 | 20 | a reconciliation of the excise the Budget's annex reports, from Customs' declarations the call never reads | the panel's request in the thread (Elaine Hooper's note), for its review of the Budget's excise annex | D7 and D8, a prior-id chain anchored on the first record: a correction is a new declaration naming the one it corrects, so a release corrected twice or three times is a chain whose later links name a correction, not the release; keepers correct the last month's releases after their stock counts early in the next quarter (the year-end count fullest) and Customs' verification corrects some of those again, so 770 of the 2,733 corrections sit in chains and 493 name a declaration accepted in a later quarter than the release; the right count follows each chain to its first declaration for the quarter and the rates, and keeps only its last | the declaration's duty repeated on every item row (D6), UTC against UK dates (D8), cancellations, repayments naming the release in the same column (D1, repeated keys with opposite meanings), removals to two premises whose approval ended (D5), exact duplicate rows (D1), suspended duty on entries and duty on imports (D5) | customs_excise_declarations (13 columns: declaration_no, item_no, cpc, duty_code, accepted_at_utc, quantity_litres, duty_gbp, related_declaration, status among them), customs_procedure_codes, CE14, bonded_warehouse_register (premises, approval dates), excise_duty_rates (the rates by day) | dated by the declaration a correction names: every cell off, the smallest by GBP 3,734; each correction in its own quarter: GBP 20,424 or more; the latest correction of each named declaration: GBP 11,684 or more; every declaration counted: GBP 45,553 or more; a release a repayment names dropped: GBP 9,668 or more | Customs systems lodge a post-release correction as a new declaration citing the one it corrects, and keepers correct after stock counts |
+| C, the duty, its figure, the next best and its figure | 4 | the construction | the panel's amendment | none | none | the golden model | R0 to R3 | the manual's own measure |
+
+- **Main population zero-counts:** the call reads the Statistics Office's two files, the rates and the manual; no
+  declaration, procedure code, register row or CE14 sentence enters it (the call recomputed with every ask file deleted
+  is unchanged, and the call's five files are byte-identical to the call's build, both asserted), and no ask figure
+  reads the series.
+- **Hazard table (each on the golden's chain reading):** the repeated declaration duty kept once on the first item, shared
+  by litres or summed on every row moves all 20 cells; UTC dates 18; repayments left out 20; the lapsed premises left
+  out 20; duplicates kept 20; imports added 20; each correction priced on its own day 4 (the year-end cells).
+- **Referee:** none ties under one handling only. A grader confirms the chain from the records: every correction names
+  a release declaration in the extract, none is corrected twice, and every declaration's duty equals its items at the
+  rates of its chain's first day to the penny (asserted), which is the day CE14 dates it by.
+
+| Ask figures | Cracker's path | Cracker's value | Verdict |
+|---|---|---|---|
+| A beer, four quarters | the battery (duplicates, UTC, imports out, each item at litres times the rate) and CE14 executed, a correction dated and priced by the declaration it names | 894.5, 743.5, 851.6, 1,029.0 against 916.8, 720.9, 866.5, 1,006.6 | miss |
+| A cider, four quarters | the same | 466.2, 434.4, 546.1, 667.6 against 469.9, 424.1, 560.0, 650.8 | miss |
+| A wine, four quarters | the same | 1,410.0, 1,239.0, 1,234.8, 1,297.6 against 1,460.1, 1,189.0, 1,247.3, 1,270.6 | miss |
+| A spirits, four quarters | the same | 1,785.0, 1,365.4, 1,452.1, 1,551.1 against 1,829.9, 1,311.4, 1,476.7, 1,515.2 | miss |
+| A road fuel, four quarters | the same | 9,233.8, 10,240.0, 10,326.2, 11,094.2 against 9,395.0, 10,062.6, 10,492.8, 10,775.3 | miss |
+| C the call (4) | the golden's construction | right | outside |
+
+Careful paths, cells kept of 20 on the cut pack: litres times the rate with the battery, a correction dated and priced
+by the declaration it names, 0; the same priced at the release's own rates, 0; the same with the repeated declaration
+duty kept once, 0; each correction in its own quarter, 0; the latest correction of each named declaration, 0; every
+declaration counted, 0; the chain followed but a release a repayment names dropped, 0. Honest max 0. A response that
+finds the device and follows every chain to its first declaration keeps 16 pricing each correction on its own day and
+20 pricing it on the first day.
+Mirror leakage: 0.0 per cent of the ask weight: the mirror stops on R0 (cider) and does Ask A as the cracker does, the
+asks reading no file the call reads (separation asserted), so both rows keep nothing.
+Pair ceiling: 28.5 (the cracker at 45.0 with the call; the R0 mirror at 12.0). A response that follows every chain of
+corrections to its first declaration takes Ask A whole and the pair reaches 83.5 with one response on the call: the
+chain is the ask layer's one exposure, found only by asking whether the declaration a correction names is itself a
+correction, which no sweep asks once every reference has joined.
+Measured by: generator/pair.py on the cut pack (target.zip sha256 8031742f).
+
+## Leak sweep
+
+`leak.py --asof 2026-10-20` on the built pack: REVIEW, two lines, both ruled harmless. The manual's "a change in duty
+passes in full", "every tax on the good counts towards it" and "the duty rates already set" carry three stump-paragraph
+words: section 2 names which taxes count towards excess burden, not how a cut's change in it is measured (a solver who
+counts the GST on the cut inside its own triangle still files cider), and no sentence names the response within the
+year. The rates file's 2027-01-01 rows are the 2027 rates set by the 2026 Budget before the envelope, dated after the
+setting by design (the manual's starting point). The solver's-eye read is stage 4's.
+
+## Pre-ship check
+
+- Free gates on target.zip 8031742f (architecture 4): generator checks 149 of 149 (R1 to R3c, the ladder by name and
+  margin, every SF row, mess neutrality, separation, distractors, input gates, the call's five files unchanged by the
+  asks' rebuild); verify 57; two builds byte-identical; figures_check 37 of 37; precut 53 PASS with voice-check PASS;
+  pair.py: pair ceiling 28.5, mirror leakage 0.0 per cent, every careful path on Ask A (the battery and CE14 executed,
+  each natural reading of the correction chains) keeping 0 of 20; a response that follows every chain to its first
+  declaration keeps 16 or 20, and the pair then reaches 83.5 with one response on the call.
+- leak.py REVIEW, both lines ruled. Leak reader, architecture 4 read 1 (8031742f): no decisive-step sentence (it
+  quoted the manual's section 8 decision rule, "no model or numbers"), no ranking file, no answer figure; question 3 the
+  Customs accounting note CE14, ruled harmless as Customs' own published rules; question 5's baseline sentence
+  executes to the golden's; question 6 analytical, naming neither the whole wedge nor the within-year response.
+- Determinism judge, architecture 4 pass 1 (8031742f): DETERMINISTIC, APPROVE. Gate G method_or_model_selection,
+  analytical_non_defect, no surface-read dependency; Gate H domain, layers and decisive step pass. Its isolated thread
+  reproduced spirits at 0.88 and cider at 0.41 and all 20 Ask A cells, and confirmed the lagged-adjustment model
+  forced over the static one by the data's own Durbin-Watson and AIC. Its low-severity note: the whole-wedge valuation
+  was taken on trust, not stress-tested against a triangle-only reading; the manual's section 6 (the revenue cost is
+  the duty and GST the States receive less, after consumers respond) is the filed basis for the wedge.
+- Guard: heart WARN; surface exit 0 (task119 and task172 promoted on card axes, low priority).
+- The 10/10 rules re-read on the built pack: the deciding quantity is the excess burden a duty cut removes, the
+  welfare economist's own measure; the mess (two clearances layouts, preliminary quarters, CE14 chains, the clocks,
+  warehouse approvals) only complicates; the decisive steps are analytical, the whole tax wedge and the response
+  within the Budget year.
 
 ## Tried and rejected
 
@@ -157,3 +378,30 @@ v1 to v3.
   say, and the template chains are a file any reader opens: the quiet step was loud once the filed risk model named its
   quantity. Architecture 3 is spent; re-root to architecture 4 in another client domain.
 
+- Architecture 4 at a GBP 3 million envelope: cider's cut took 89 per cent of its duty, so the straight-line welfare
+  formula moved cider 0.04 above the exact integral and the gap's family straddled 0.95; at GBP 1.5 million every cut is
+  a smaller share of its duty and spirits, cider and the gap each sit 0.015 or more inside a bin.
+- Architecture 4 with the release layout changing in 2020: the 2020 to 2026 file alone fits spirits at 1.3 against the
+  full series' 0.9, so a reader who dropped the back series moved a graded figure (Layer 1 carrying a figure); the
+  change moved to 2012, where the newer file alone files 0.9 and 0.4.
+- Architecture 4's first ask device, a premises renumbered at a change of keeper (removals declared to the old
+  approval number): with CE14 filing the rule by premises it is executed by any reader who checks the premises, and by
+  approval number it is no device; replaced by the declaration's duty repeated on every item row.
+- Architecture 4's first declarations draft: duty_gbp was each line's own duty, so every CE14 handling was a filed rule
+  the cracker executes (20 of 20 kept); and declaration numbers from a nine-digit hash collided once in 26,752 lines
+  (two declarations merged), replaced by a multiplier prime to ten.
+- Architecture 4's furniture as drawn (a Treasury research desk taking the envelope to the Council of Ministers in the
+  Budget round): BLOCKed by `heart` on role, forum, forcing event and organisation against task310, drawn the same day
+  and delivered after this draw; redrawn to the Assembly's scrutiny panel and its adviser, the analysis unchanged.
+- Architecture 4's first invented names: Castelmere sits two letters from a real Rochdale district, and Granary Wharf,
+  Westfield, a saint's name and two retail brands in the shop quotes were real or distinctive; renamed (Eskerholm,
+  Ardvane, Ropewalk, Moorside) with every figure unchanged.
+- Architecture 4's ask primary as first built, each declaration's duty repeated on every item row: the battery's
+  repeated-total reflex sees it, and a careful solver prices every item as litres times the rate, which reaches the
+  golden without ever reading the repeated total (the coordinator's review; every careful path would have kept 20 of
+  20 and the pair sat near 83.5, not 28.5). Demoted to a hazard; replaced by corrections lodged as new declarations
+  naming the one they correct, chained across quarter ends, which acts on which rows are releases and in which
+  quarter rather than on the price.
+- The first chain draft spread stock-count corrections evenly over the quarter ends: the one-hop error in a quarter is
+  its inflow from the quarter before less its outflow to the next, and in one cell they cancelled to GBP 151; with the
+  year-end count fullest and the half-year next every careful path misses every cell by GBP 3,600 or more.

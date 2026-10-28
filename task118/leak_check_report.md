@@ -1,21 +1,16 @@
 # leak check, task118
 
-**Verdict: REVIEW.** 12 files read, 24 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 24 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: headline, release, extract, national, readers, template, clicks, culture, policy, section, current, months, golden, article, system, change, architecture, reading, corrections, minutes, device, record, export, counts, primary
+Stump terms swept: headline, release, national, readers, clicks, change, culture, architecture, counts, article, section, golden, elasticity, corrections, minutes, triangle, device, reading, method, already, months, primary, sentence, repeat, static
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `falls_indicator_definition_v2.pdf`: 3 of 25 stump-paragraph terms appear (national, change, counts); read whether the document names the move
-- **REVIEW** `hypnotics_deprescribing_policy_2026.pdf`: 4 of 25 stump-paragraph terms appear (policy, current, months, primary); read whether the document names the move
-
-## 6 ranking artifacts (REVIEW 1, INFO 1)
-- **REVIEW** `hypnotic_prescribing_dashboard_q2_2026.xlsx`: names 4 of 5 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `practice_locality_register_2026.xlsx`: names 4 of 5 answer-set candidates; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `treasury_budget_appraisal_manual_2026.pdf`: 3 of 25 stump-paragraph terms appear (change, counts, already); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `repeat_templates_hypnotics_2026-10-01.csv`: 31183 ISO dates after 2026-10-20, e.g. 2026-10-21, 2026-10-22, 2026-10-23, 2026-10-24, 2026-10-25
+- **REVIEW** `excise_duty_rates_2008-2027.xlsx`: 5 ISO dates after 2026-10-20, e.g. 2027-01-01
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -28,6 +23,8 @@ Stump terms swept: headline, release, extract, national, readers, template, clic
 
 ## 5 announcements (clean)
 
+## 6 ranking artifacts (clean)
+
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
@@ -36,20 +33,20 @@ Stump terms swept: headline, release, extract, national, readers, template, clic
 
 ## Solver's-eye read
 
-Architecture 3, read 1 on target.zip 900e68f6 (isolated Sonnet reader, fresh copy of prompt.txt and target/ only).
+Architecture 4, read 1 on target.zip 8031742f (isolated Sonnet reader, fresh copy of prompt.txt and target/ only).
 
-1. Decisive step: quoted the policy's section 6 placement sentence (the estimand: the admissions the 45 in 100 who come
-   off would have had on the drug from 1 April to 31 December 2027, less those off it). It names no source for a start
-   and no dating step. Ruled: no decisive-step sentence.
-2. Ranking file: none (the dashboard carries prescribing volumes and cost only).
-3. Helping file: provider_site_codes.csv. Ruled harmless: the ODS site list the SUS cohort's site codes come from, the
-   publisher's own reference data, which a reader needs to know the community sites are hospitals; it changes no
-   figure.
-4. Answer figure or name: none.
-5. Population sentence: the policy's section 4 current-user definition; its literal result (everyone 65 or over on 1
-   January 2027 with an item dispensed 1 July to 30 September 2026, by registered practice) is the golden's population.
-6. What decides: an analytical choice, the start of each user's time on the drug, which the April to September extract
-   cannot show and the template chains (through the moved practice's previous system) hold.
+1. Decisive step: quoted the manual's section 8 decision rule (the measure removing the most excess burden for the
+   fixed sum, the next best beside it), which "gives no model or numbers". Ruled: no decisive-step sentence; neither
+   the whole wedge nor the within-year response is named.
+2. Ranking file: none (grepped for excess burden, rank, elasticity, deadweight; no summary tab or hidden sheet).
+3. Helping file: the Customs accounting note CE14. Ruled harmless: Customs' own published accounting rules for the
+   declarations it governs, the asks' filed conventions.
+4. Answer figure or name: none; the five duties carry parallel data.
+5. Population sentence: the manual's section 5 baseline (the latest four published quarters, each standing for the
+   Budget year's quarter, at the latest shelf prices and the rates already set for 2027); its literal result is the
+   golden's baseline.
+6. What decides: an analytical choice (sizing each duty's response, the manual prescribing no model).
 
-REVIEW lines: the dashboard harmless (no falls or avoided figure ranks the localities); the templates' post-setting
-dates harmless (all in review_date, the next planned review). Realism tells: none.
+REVIEW line: the 2027 rates harmless (the uprating already legislated, the baseline section 5 requires). Realism: the
+reader noted 956 byte-identical duplicate rows as possibly generated; kept as retransmission noise, a hazard of the
+asks.

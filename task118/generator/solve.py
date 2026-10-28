@@ -1,21 +1,22 @@
-"""Every owed figure, from the pack alone: the current users, each one's first start (the root of the repeat-template
-chain, through Quenford Rise's previous system), the admissions each locality's team would avoid, and the falls
-figures from the SUS cohort rebuilt into stays. The wrong routes are kept beside the golden for the checks."""
-import collections
+"""Every owed figure, from the pack alone. The call: each duty's demand from the Statistics Office's quarterly series (a
+partial-adjustment model with quarterly seasons), the cut the GBP 3 million envelope buys once consumers respond over
+2027, and the excess burden it removes in 2027 on the whole wedge of duty and GST. The asks: the excise accounted for on
+releases from bonded warehouses by duty and quarter, from Customs' declarations under CE14. The wrong routes are kept
+beside the golden for the checks."""
 import csv
 import datetime as dt
 import os
+import zoneinfo
 
+import numpy as np
 from openpyxl import load_workbook
+from scipy.optimize import brentq
 
-import model as M
 import params as P
 
-D = dt.timedelta
-EMERGENCY = {"21", "22", "23", "24", "25", "28", "2A", "2B", "2C", "2D"}
-TRANSFER_IN = {"2B", "81"}
-HOSPITAL_DEST = {"49", "50", "51", "52", "53", "84", "87"}
-HOSPITAL_SOURCE = {"49", "50", "51", "52", "53", "87"}
+LONDON = zoneinfo.ZoneInfo("Europe/London")
+NAMES = {c: n for c, n, *_ in P.DUTIES}
+CODE = {n: c for c, n, *_ in P.DUTIES}
 
 
 def read(path):
@@ -23,217 +24,304 @@ def read(path):
         return list(csv.DictReader(fh))
 
 
-def day(s):
-    return dt.date.fromisoformat(s) if s else None
+def qkey(label):
+    label = label.replace(" ", "")
+    return int(label[:4]), int(label[-1])
 
 
-def ukday(s):
-    return dt.datetime.strptime(s, "%d/%m/%Y").date() if s else None
+def series(target):
+    """per duty: quarters 2008Q1 to the latest, volume (thousand litres) and price (2026 prices), both layouts stacked"""
+    out = {c: {} for c in NAMES}
+    wb = load_workbook(os.path.join(target, P.FILES["series_old"]), read_only=True)
+    for code, name in NAMES.items():
+        for r in list(wb[name].iter_rows(values_only=True))[1:]:
+            if r and r[0]:
+                out[code][qkey(r[0])] = (float(r[1]), float(r[2]))
+    for r in read(os.path.join(target, P.FILES["series_new"])):
+        out[CODE[r["duty"]]][qkey(r["quarter"])] = (float(r["duty_paid_clearances_thousand_litres"]),
+                                                    float(r["average_shelf_price_gbp_per_litre_2026_prices"]))
+    res = {}
+    for code, d in out.items():
+        ks = sorted(d)
+        res[code] = dict(quarters=ks, q=np.array([d[k][0] for k in ks]), p=np.array([d[k][1] for k in ks]))
+    return res
 
 
-def register(target):
-    wb = load_workbook(os.path.join(target, P.FILES["register"]), read_only=True)
-    ws = wb["Practices"]
-    rows = list(ws.iter_rows(values_only=True))
-    hdr = rows[0]
-    out = [dict(zip(hdr, r)) for r in rows[1:]]
-    loc = {r["Practice code"]: r["Locality code"] for r in out}
-    for r in out:
-        for c in str(r["Previous practice codes"] or "").replace(";", ",").split(","):
-            if c.strip():
-                loc[c.strip()] = r["Locality code"]
-    return out, loc
+def rates(target):
+    wb = load_workbook(os.path.join(target, P.FILES["rates"]), read_only=True)
+    rows = list(wb["Duty rates"].iter_rows(values_only=True))[1:]
+    out = {c: [] for c in NAMES}
+    for name, frm, rate, _ in rows:
+        d = frm.date() if isinstance(frm, dt.datetime) else frm
+        out[CODE[name]].append((d, float(rate)))
+    for c in out:
+        out[c].sort()
+    return out
 
 
-def current_users(target, loc):
-    """aged 65 or over on 1 January 2027 (born 1961 or earlier) with a benzodiazepine or Z-drug dispensed July to
-    September 2026, in the locality of their practice"""
-    first, inq, yob, where = {}, set(), {}, {}
-    for r in read(os.path.join(target, P.FILES["dispensing"])):
-        p, d = r["patient_pseudo_id"], day(r["dispensed_date"])
-        if p not in first or d < first[p]:
-            first[p] = d
-        if P.CURRENT_FROM <= d <= P.CURRENT_TO:
-            inq.add(p)
-            where[p] = loc[r["practice_code"]]
-        yob[p] = int(r["year_of_birth"])
-    cur = sorted(p for p in inq if yob[p] <= P.AGE_ON.year - 66)
-    return cur, {p: where[p] for p in cur}, first
+def rate_on(rt, code, day):
+    r = None
+    for d, v in rt[code]:
+        if d <= day:
+            r = v
+    return r
 
 
-def starts(target):
-    """each patient's first start: walk the current system's chain back by replaces_template_id; where the move
-    re-created a template, carry on in the previous system's export by SupersededRef; the root's date is the start"""
-    tm = read(os.path.join(target, P.FILES["templates"]))
-    lg = read(os.path.join(target, P.FILES["legacy"]))
-    by_id = {t["template_id"]: t for t in tm}
-    leg = {t["TemplateRef"]: t for t in lg}
-    latest = {}
-    for t in tm:
-        p = t["patient_pseudo_id"]
-        if p not in latest or t["authorised_from"] > latest[p]["authorised_from"]:
-            latest[p] = t
-    out, cur_root, latest_from, hop1 = {}, {}, {}, {}
-    for p, t in latest.items():
-        latest_from[p] = day(t["authorised_from"])
-        while t["replaces_template_id"] in by_id:
-            t = by_id[t["replaces_template_id"]]
-        cur_root[p] = day(t["authorised_from"])
-        if t["migration_source_ref"]:
-            lt = leg[t["migration_source_ref"]]
-            hop1[p] = ukday(lt["StartDate"])
-            while lt["SupersededRef"] in leg:
-                lt = leg[lt["SupersededRef"]]
-            out[p] = ukday(lt["StartDate"])
-        else:
-            hop1[p] = cur_root[p]
-            out[p] = cur_root[p]
-    earliest = collections.defaultdict(lambda: dt.date(9999, 1, 1))
-    for t in tm:
-        if not t["migration_source_ref"]:
-            earliest[t["patient_pseudo_id"]] = min(earliest[t["patient_pseudo_id"]], day(t["authorised_from"]))
-    for t in lg:
-        earliest[t["PatientPseudoID"]] = min(earliest[t["PatientPseudoID"]], ukday(t["StartDate"]))
-    return dict(golden=out, current_root=cur_root, current_template=latest_from, one_hop=hop1, earliest=dict(earliest))
+def fit(s, form="adl10"):
+    """OLS of log volume on quarter dummies, log price and last quarter's log volume (the golden); the variants for the
+    checks"""
+    lnq, lnp = np.log(s["q"]), np.log(s["p"])
+    qs = [k[1] for k in s["quarters"]]
+    n = len(lnq)
+    Dm = np.array([[1.0 if qs[t] == j + 1 else 0.0 for j in range(4)] for t in range(n)])
+    if form == "static":
+        b, *_ = np.linalg.lstsq(np.column_stack([Dm, lnp]), lnq, rcond=None)
+        return dict(form="static", beta=b[4])
+    cols = [Dm[1:], lnp[1:], lnq[:-1]]
+    if form in ("adl11",):
+        cols.append(lnp[:-1])
+    if form in ("adl10t",):
+        cols.append(np.arange(1, n)[:, None] / 100.0)
+    b, *_ = np.linalg.lstsq(np.column_stack(cols), lnq[1:], rcond=None)
+    out = dict(form=form, beta=b[4], lam=b[5])
+    if form == "adl11":
+        out["beta1"] = b[6]
+    return out
 
 
-def by_locality(users, where, start_of):
-    tot = collections.defaultdict(float)
-    for p in users:
-        tot[where[p]] += M.excess_years(start_of(p))
-    return {c: P.STOP * P.BASE / 100.0 * tot.get(c, 0.0) for c, _, _, _ in P.LOCALITIES}
+def path(m, horizon="year"):
+    """the cumulative response of log volume in each quarter of 2027 to a permanent log price change from 1 January"""
+    if m["form"] == "static":
+        return [m["beta"]] * 4
+    if horizon == "longrun":
+        return [(m["beta"] + m.get("beta1", 0.0)) / (1 - m["lam"])] * 4
+    out, prev = [], 0.0
+    for k in range(4):
+        prev = m["beta"] + (m.get("beta1", 0.0) if k > 0 else 0.0) + m["lam"] * prev
+        out.append(prev)
+    if horizon == "impact":
+        return [out[0]] * 4
+    if horizon == "yearend":
+        return [out[3]] * 4
+    return out
+
+
+def baseline(s, rt, code):
+    """the latest four quarters, each standing for its quarter of 2027; the latest shelf price; the producer price it
+    implies at the duty in force then; the 2027 rate already set"""
+    last = s["quarters"][-4:]
+    q0 = {k[1]: v * 1000.0 for k, v in zip(last, s["q"][-4:])}
+    q0 = np.array([q0[1], q0[2], q0[3], q0[4]])
+    y, qn = s["quarters"][-1]
+    day = dt.date(y, 3 * qn, 1)
+    d_now = rate_on(rt, code, day)
+    p_last = s["p"][-1]
+    c = p_last / (1 + P.GST) - d_now
+    d27 = rate_on(rt, code, dt.date(P.BUDGET_YEAR, 1, 1))
+    return q0, c, d27
+
+
+def appraise(s, rt, code, m, horizon="year", welfare="full", revenue="behav", wedge="all"):
+    q0, c, d27 = baseline(s, rt, code)
+    p0 = (c + d27) * (1 + P.GST)
+    eps = path(m, horizon)
+
+    def outcome(cut):
+        p1 = (c + d27 - cut) * (1 + P.GST)
+        mult = np.array([(p1 / p0) ** e for e in eps])
+        w0, w1 = (p0 - c, p1 - c) if wedge == "all" else (d27, d27 - cut)
+        q1 = q0 * mult
+        rev = float(np.sum(w0 * q0 - w1 * q1)) if revenue == "behav" else float(np.sum((w0 - w1) * q0))
+        gain = 0.0
+        for a, b, e in zip(q0, q1, eps):
+            if welfare == "full" and wedge != "all":       # the area above the producer price under the pre-GST price
+                k = 1.0 + 1.0 / e
+                gain += p0 / (1 + P.GST) * a / k * ((b / a) ** k - 1.0) - c * (b - a)
+            elif welfare == "full":
+                k = 1.0 + 1.0 / e
+                gain += p0 * a / k * ((b / a) ** k - 1.0) - c * (b - a)
+            elif welfare == "linear":
+                gain += (w0 - (w0 - w1) / 2.0) * (b - a)
+            else:
+                gain += 0.5 * (w0 - w1) * (b - a)
+        return rev, gain, q1
+    cut = brentq(lambda x: outcome(x)[0] - P.ENVELOPE, 1e-9, d27 * 0.999)
+    rev, gain, q1 = outcome(cut)
+    return dict(gain=gain, cut=cut, d27=d27, c=c, p0=p0, p1=(c + d27 - cut) * (1 + P.GST), q0=q0, q1=q1,
+                wedge_share=(p0 - c) / p0, eps=eps)
+
+
+ROUTES = {
+    "golden": dict(form="adl10"),
+    "family_trend": dict(form="adl10t"),
+    "family_adl11": dict(form="adl11"),
+    "family_linear": dict(form="adl10", welfare="linear"),
+    "static_triangle": dict(form="static", welfare="triangle"),
+    "triangle_year": dict(form="adl10", welfare="triangle"),
+    "longrun_full": dict(form="adl10", horizon="longrun"),
+    "static_full": dict(form="static"),
+    "static_triangle_static_revenue": dict(form="static", welfare="triangle", revenue="static"),
+    "golden_static_revenue": dict(form="adl10", revenue="static"),
+    "longrun_triangle": dict(form="adl10", horizon="longrun", welfare="triangle"),
+    "duty_only": dict(form="adl10", wedge="duty"),
+    "impact_full": dict(form="adl10", horizon="impact"),
+    "yearend_full": dict(form="adl10", horizon="yearend"),
+}
 
 
 def call(target):
-    reg, loc = register(target)
-    users, where, first = current_users(target, loc)
-    st = starts(target)
-    missing = [p for p in users if p not in st["golden"]]
-    routes = {
-        "golden": by_locality(users, where, lambda p: st["golden"][p]),
-        "earliest_both_systems": by_locality(users, where, lambda p: st["earliest"][p]),
-        "extract_first_dispensing": by_locality(users, where, lambda p: first[p]),
-        "current_template": by_locality(users, where, lambda p: st["current_template"][p]),
-        "current_system_root": by_locality(users, where, lambda p: st["current_root"][p]),
-        "previous_system_one_hop": by_locality(users, where, lambda p: st["one_hop"][p]),
-        "users": {c: float(sum(1 for p in users if where[p] == c)) for c, _, _, _ in P.LOCALITIES},
-    }
-    for k in (21, 28, 35, 56):
-        cut = P.EXTRACT_FROM + D(days=k)
-        routes["prevalent_long_term_%d" % k] = by_locality(
-            users, where, lambda p, cut=cut: first[p] if first[p] >= cut else dt.date(2020, 1, 1))
+    S = series(target)
+    rt = rates(target)
+    fits = {(c, f): fit(S[c], f) for c in NAMES for f in ("adl10", "adl10t", "adl11", "static")}
+    routes = {}
+    for name, kw in ROUTES.items():
+        kw = dict(kw)
+        form = kw.pop("form")
+        routes[name] = {c: appraise(S[c], rt, c, fits[(c, form)], **kw) for c in NAMES}
     g = routes["golden"]
-    order = sorted(g, key=lambda c: -g[c])
-    return dict(users=users, where=where, first=first, starts=st, missing=missing, routes=routes, order=order,
-                winner=order[0], runner=order[1], avoided=g[order[0]], runner_avoided=g[order[1]],
-                n_users={c: sum(1 for p in users if where[p] == c) for c, _, _, _ in P.LOCALITIES})
+    order = sorted(g, key=lambda c: -g[c]["gain"])
+    return dict(S=S, rt=rt, fits=fits, routes=routes, order=order, winner=order[0], runner=order[1])
 
 
 # ---------------------------------------------------------------------------------------------------- the asks
 
-def spells(target):
-    rows = read(os.path.join(target, P.FILES["sus"]))
-    sp = {}
-    for n, r in enumerate(rows):
-        k = (r["provider_code"], r["hospital_spell_no"])
-        s = sp.setdefault(k, dict(key=k, pid=r["sus_pseudo_id"], adm=day(r["admission_date"]), row=n,
-                                  site=r["site_code"], method=r["admission_method"], source=r["admission_source"],
-                                  eps=[]))
-        s["eps"].append(r)
-    for s in sp.values():
-        s["eps"].sort(key=lambda r: int(r["episode_no"]))
-        last = s["eps"][-1]
-        s["dis"] = day(last["discharge_date"])
-        s["dest"] = last["discharge_destination"]
-        s["dmethod"] = last["discharge_method"]
-        e1 = s["eps"][0]
-        s["age"] = int(e1["age_at_start"])
-        s["practice"] = e1["gp_practice_code"]
-        s["diags"] = [e1["primary_diagnosis"]] + [e1["diag_%02d" % i] for i in range(2, 9)]
-    return list(sp.values())
+def warehouses(target):
+    wb = load_workbook(os.path.join(target, P.FILES["warehouses"]), read_only=True)
+    rows = list(wb["Approved warehouses"].iter_rows(values_only=True))[1:]
+    out = {}
+    for wid, name, prem, goods, frm, end in rows:
+        d0 = frm.date() if isinstance(frm, dt.datetime) else frm
+        d1 = end.date() if isinstance(end, dt.datetime) else (end or None)
+        out[wid] = dict(premises=prem, start=d0, end=d1)
+    return out
 
 
-def is_fall(diags):
-    return any(c and c[0] == "W" and "00" <= c[1:3] <= "19" for c in diags)
+def local_day(ts):
+    t = dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
+    return t.astimezone(LONDON).date()
 
 
-def stays(sp, link="dest", gap=1):
-    """join a patient's spells into stays. The golden ("dest"): a spell whose patient was moved to another hospital
-    runs on into the patient's spell at another site beginning the day they left or the next, however the receiving
-    hospital coded it. The other modes are the routes a careful reader takes instead (checks and pair.py)."""
-    by_p = collections.defaultdict(list)
-    for s in sp:
-        by_p[s["pid"]].append(s)
-    out = []
-    for pid, ss in by_p.items():
-        if link == "shift":
-            ss.sort(key=lambda s: (s["adm"], s["row"]))
+def quarter(d):
+    return "%dQ%d" % (d.year, (d.month - 1) // 3 + 1)
+
+
+# Each route is a set of readings. chain: which declaration's acceptance dates a correction (the first release in
+# the chain of related declarations, the declaration it names, or its own). keep: which declarations count (those no
+# later declaration corrects, the latest correction of each named declaration, all of them, or those no declaration of
+# any procedure names). price: each item's litres at the rates on the first release's day, on the dating day, or on
+# its own day; or the declaration's duty kept once on its first item, shared by litres, or summed on every row.
+GOLDEN = dict(chain="first", keep="uncorrected", price="first", utc=False, dedup=True, repay=True, lapsed=True,
+              imports=False)
+MODES = {
+    "golden": {},
+    "one_hop": dict(chain="named", price="dating"),
+    "one_hop_duty": dict(chain="named"),
+    "one_hop_header_once": dict(chain="named", price="header_once"),
+    "own_quarter": dict(chain="own", price="own"),
+    "latest_per_named": dict(chain="named", keep="latest_per_named", price="dating"),
+    "every_declaration": dict(chain="own", keep="all", price="own"),
+    "named_by_any": dict(keep="named_by_any"),
+    "first_own_rate": dict(price="own"),
+    "header_once": dict(price="header_once"),
+    "header_litres": dict(price="header_litres"),
+    "header_every_item": dict(price="header_every_item"),
+    "utc_day": dict(utc=True),
+    "no_repayments": dict(repay=False),
+    "no_lapsed": dict(lapsed=False),
+    "no_dedup": dict(dedup=False),
+    "with_imports": dict(imports=True),
+}
+
+
+def asks(target, mode="golden"):
+    """excise accounted for on releases from bonded warehouses, by duty and quarter (CE14). The golden counts each
+    release once, as its last correction, in the quarter the release was first accepted, each item at the rates of
+    that day; repayments in their own quarter; removals to premises not approved that day at that day's rates."""
+    o = dict(GOLDEN, **MODES[mode])
+    rows = read(os.path.join(target, P.FILES["declarations"]))
+    rt = rates(target)
+    wh = warehouses(target)
+    if o["dedup"]:
+        seen, uniq = set(), []
+        for r in rows:
+            key = tuple(r.values())
+            if key not in seen:
+                seen.add(key)
+                uniq.append(r)
+        rows = uniq
+    out = {c: {q: 0.0 for q in P.ASK_QUARTERS} for c in NAMES}
+
+    def day_of(r):
+        if o["utc"]:
+            return dt.datetime.strptime(r["accepted_at_utc"], "%Y-%m-%dT%H:%M:%SZ").date()
+        return local_day(r["accepted_at_utc"])
+
+    def put(code, d, v):
+        q = quarter(d)
+        if code in out and q in out[code]:
+            out[code][q] += v
+
+    cpcs = ("4071", "4000") if o["imports"] else ("4071",)
+    decl = {}
+    for r in rows:
+        if r["cpc"] in cpcs and r["status"] != "CANCELLED":
+            decl.setdefault(r["declaration_no"], []).append(r)
+    named = {k: v[0]["related_declaration"] for k, v in decl.items() if v[0]["related_declaration"]}
+
+    def first(k):
+        while named.get(k) in decl:
+            k = named[k]
+        return k
+    if o["keep"] == "uncorrected":
+        keep = [k for k in decl if k not in set(named.values())]
+    elif o["keep"] == "named_by_any":
+        refs = {r["related_declaration"] for r in rows if r["related_declaration"]}
+        keep = [k for k in decl if k not in refs]
+    elif o["keep"] == "latest_per_named":
+        latest = {}
+        for k, n in named.items():
+            if n not in latest or day_of(decl[k][0]) > day_of(decl[latest[n]][0]):
+                latest[n] = k
+        keep = [k for k in decl if k not in named and k not in named.values()] + list(latest.values())
+    else:
+        keep = list(decl)
+    for k in keep:
+        items = decl[k]
+        own = day_of(items[0])
+        start = day_of(decl[first(k)][0])
+        d = {"first": start, "named": day_of(decl[named[k]][0]) if named.get(k) in decl else own, "own": own}[o["chain"]]
+        header = float(items[0]["duty_gbp"])
+        if o["price"] == "header_once":
+            put(min(items, key=lambda r: int(r["item_no"]))["duty_code"], d, header)
+        elif o["price"] == "header_litres":
+            tot = sum(float(r["quantity_litres"]) for r in items)
+            for r in items:
+                put(r["duty_code"], d, header * float(r["quantity_litres"]) / tot)
+        elif o["price"] == "header_every_item":
+            for r in items:
+                put(r["duty_code"], d, header)
         else:
-            ss.sort(key=lambda s: (s["adm"], s["dis"], s["key"]))
-        succ, taken = {}, set()
-        for i, a in enumerate(ss):
-            if link == "none":
-                break
-            if link == "shift":
-                b = ss[i + 1] if i + 1 < len(ss) else None
-                if b is not None and a["dest"] in HOSPITAL_DEST and 0 <= (b["adm"] - a["dis"]).days <= gap \
-                        and id(b) not in taken:
-                    succ[id(a)] = b
-                    taken.add(id(b))
+            rate_day = {"first": start, "dating": d, "own": own}[o["price"]]
+            for r in items:
+                if r["duty_code"] in NAMES:
+                    put(r["duty_code"], d, round(float(r["quantity_litres"]) * rate_on(rt, r["duty_code"], rate_day), 2))
+    if o["repay"]:
+        for r in rows:
+            if r["cpc"] == "6171" and r["status"] != "CANCELLED":
+                put(r["duty_code"], day_of(r), -float(r["duty_gbp"]))
+    if o["lapsed"]:
+        for r in rows:
+            if r["cpc"] != "7171" or r["status"] == "CANCELLED":
                 continue
-            for b in ss:
-                if b is a or id(b) in taken or b["adm"] < a["dis"] or (b["adm"] == a["adm"] and b["dis"] < a["dis"]):
-                    continue
-                lag = (b["adm"] - a["dis"]).days
-                if lag > gap:
-                    continue
-                if link == "consecutive":
-                    ok = True
-                else:
-                    ok = a["dest"] in HOSPITAL_DEST and b["site"] != a["site"]
-                    if link == "dest_src":
-                        ok = ok and b["source"] in HOSPITAL_SOURCE
-                    elif link == "dest_method":
-                        ok = ok and b["method"] in TRANSFER_IN
-                    elif link == "dest_either":
-                        ok = ok and (b["source"] in HOSPITAL_SOURCE or b["method"] in TRANSFER_IN)
-                if ok:
-                    succ[id(a)] = b
-                    taken.add(id(b))
-                    break
-        for s in ss:
-            if id(s) in taken:
-                continue
-            chain = [s]
-            while id(chain[-1]) in succ:
-                chain.append(succ[id(chain[-1])])
-            out.append(dict(pid=pid, spells=chain, start=chain[0]["adm"], end=chain[-1]["dis"],
-                            died=chain[-1]["dmethod"] == "4", age=chain[0]["age"], practice=chain[0]["practice"],
-                            method=chain[0]["method"], fall=is_fall(chain[0]["diags"])))
-    return out
+            d = day_of(r)
+            prem = wh[r["warehouse_to"]]["premises"]
+            ok = any(w["premises"] == prem and w["start"] <= d and (w["end"] is None or d < w["end"])
+                     for w in wh.values())
+            if not ok:
+                put(r["duty_code"], d, round(float(r["quantity_litres"]) * rate_on(rt, r["duty_code"], d), 2))
+    return {c: {q: round(v, 2) for q, v in d.items()} for c, d in out.items()}
 
 
-def asks(target, link="dest", gap=1, loc=None, emergency=None, readmit_from="end"):
-    if loc is None:
-        loc = register(target)[1]
-    emergency = emergency or (EMERGENCY - TRANSFER_IN)
-    st = stays(spells(target), link, gap)
-    by_p = collections.defaultdict(list)
-    for s in st:
-        by_p[s["pid"]].append(s)
-    out = {c: dict(falls_65_79=0, falls_80=0, bed_days=0, readmitted=0) for c, _, _, _ in P.LOCALITIES}
-    for s in st:
-        if not (s["fall"] and s["method"] in emergency and P.FY_FROM <= s["start"] <= P.FY_TO):
-            continue
-        c = loc.get(s["practice"])
-        if c is None:
-            continue
-        o = out[c]
-        o["falls_65_79" if s["age"] < 80 else "falls_80"] += 1
-        o["bed_days"] += (s["end"] - s["start"]).days
-        if not s["died"]:
-            left = s["end"] if readmit_from == "end" else s["spells"][0]["dis"]
-            if any(x is not s and x["method"] in emergency and left <= x["start"] <= left + D(days=30)
-                   for x in by_p[s["pid"]]):
-                o["readmitted"] += 1
-    return out
+def thousand(v):
+    """GBP thousands to one decimal place"""
+    return float(np.floor(v / 100.0 + 0.5) / 10.0)

@@ -1,78 +1,67 @@
-"""submission.md from figures.json: tags, the recommendation, its components, the steps and the deliverable answers."""
+"""submission.md, drafted from figures.json: every figure in it is read from there."""
+import figs as FG
+import golden as GD
 import params as P
 
 
-def c(x):
-    return "{:,}".format(int(x))
-
-
-def write(path, fig):
-    F = P.FILES
-    L = fig["localities"]
-    w, r = fig["winner"], fig["runner"]
-    t = []
-    t.append("## Tags\n")
-    t.append("**Domain:** Pharmacology, pharmacoepidemiology and safety (benefit-risk assessment).")
-    t.append("**Analytical objective:** Opportunity sizing and decision support.\n")
-    t.append("## 1. Final Recommendation\n")
-    t.append("**Place the hypnotic deprescribing team in %s, where it will avoid %d emergency admissions for a fall in "
-             "2027; %s is the runner-up at %d, %d fewer.**" % (fig["winner_name"], fig["avoided_r"],
-                                                                 fig["runner_name"], fig["runner_avoided_r"],
-                                                                 fig["gap_r"]))
-    t.append("The extra risk of a fall eases the longer a patient has been on a benzodiazepine or Z-drug, and %s's "
-             "current users started most recently. Not Corvenham Central, which leads only if each start is taken from "
-             "the patient's first item in the dispensing extract, which opens on 1 April 2026. Not %s, which leads only "
-             "if every patient already on the drug when the extract opens is taken to have started over two years "
-             "before.\n" % (fig["winner_name"], fig["runner_name"]))
-    t.append("## 2. Critical Components\n")
-    t.append("1. Current users (%s, section 4): **%s**, **%s** of them in %s." % (
-        F["policy"], c(fig["n_users"]), c(L[w]["users"]), fig["winner_name"]))
-    t.append("2. Admissions for a fall avoided from 1 April to 31 December 2027: **%d** in %s, **%d** in %s, **%d** or "
-             "fewer in each other locality.\n" % (fig["avoided_r"], fig["winner_name"], fig["runner_avoided_r"],
-                                                  fig["runner_name"], fig["others_max_r"]))
-    t.append("## 3. Step-by-Step Solution\n")
-    t.append("1. Took the current users from %s (born in 1961 or earlier, an item dispensed 1 July to 30 September "
-             "2026), each in the locality of their practice in %s: %s." % (F["dispensing"], F["register"],
-                                                                          c(fig["n_users"])))
-    t.append("2. Dated each user's first start by the first template of their chain in %s, walked back by "
-             "replaces_template_id and, where a template carries a migration_source_ref (%s, moved 13 July 2026), on "
-             "through %s by SupersededRef; a chain whose first template replaces one not in the export started before "
-             "April 2024." % (F["templates"], fig["migrated_practice_name"], F["legacy"]))
-    t.append("3. Summed each user's rate ratio less 1 over the days from 1 April to 31 December 2027 at the months since "
-             "that start, over 365, times %.1f per 100 and %d per cent (%s, sections 4 to 6)." % (
-                 fig["base"], fig["stop_pct"], F["policy"]))
-    t.append("4. Totalled by locality: %s %d, %s %d, the other four %d or fewer." % (
-        fig["winner_name"], fig["avoided_r"], fig["runner_name"], fig["runner_avoided_r"], fig["others_max_r"]))
-    t.append("5. Rebuilt the stays in %s (%s, F1): episodes into spells by provider_code and hospital_spell_no, and a "
-             "spell whose patient was discharged to another hospital (destination 51) into the patient's spell at "
-             "another site beginning that day or the next, however the receiving hospital coded it; counted the stays "
-             "beginning with an emergency admission, W00 to W19 in their first episode, admitted in 2025-26, by age at "
-             "admission and the practice's locality (Q80117 through the register's previous codes): %s %s aged 65 to "
-             "79 and %s aged 80 or over." % (F["sus"], F["falls_def"], fig["winner_name"],
-                                           c(fig["asks"][w]["falls_65_79"]), c(fig["asks"][w]["falls_80"])))
-    t.append("6. Bed-days (F2): each stay's last discharge less its first admission, summed: %s %s." % (
-        fig["winner_name"], c(fig["asks"][w]["bed_days"])))
-    t.append("7. Readmissions (F3): the stays ended alive and followed by another stay beginning with an emergency "
-             "admission on the day the stay ended or in the 30 days after: %s %s." % (
-                 fig["winner_name"], c(fig["asks"][w]["readmitted"])))
-    t.append("8. Recommended %s (%d) over %s (%d), %d fewer.\n" % (
-        fig["winner_name"], fig["avoided_r"], fig["runner_name"], fig["runner_avoided_r"], fig["gap_r"]))
-    t.append("## 4. Deliverable Answers\n")
-    t.append("### deprescribing_case_2027.docx\n")
-    t.append("1. The locality: %s." % fig["winner_name"])
-    t.append("2. Emergency admissions for a fall it avoids in 2027: %d." % fig["avoided_r"])
-    t.append("3. The runner-up: %s." % fig["runner_name"])
-    t.append("4. How many fewer it would avoid: %d." % fig["gap_r"])
-    t.append("\n### deprescribing_placement_2027.xlsx\n")
-    a = fig["asks"]
-    labels = [("falls_65_79", "Emergency admissions for a fall in 2025-26, aged 65 to 79"),
-              ("falls_80", "Emergency admissions for a fall in 2025-26, aged 80 or over"),
-              ("bed_days", "Bed-days those admissions used"),
-              ("readmitted", "Those admissions followed by another emergency admission within 30 days of leaving "
-                             "hospital")]
-    for i, (k, lab) in enumerate(labels, 1):
-        t.append("%d. %s:" % (i, lab))
-        for code, _, _, _ in P.LOCALITIES:
-            t.append("   - %s: %s" % (L[code]["name"], c(a[code][k])))
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(t) + "\n")
+def write(path, F):
+    w, r = F["winner"], F["runner"]
+    W = F["duties"][w]
+    fuel = F["duties"]["FUEL"]
+    L = []
+    L.append("## Tags\n")
+    L.append("**Domain:** Economics & Econometrics (elasticity, welfare and policy impact estimation: a fixed Budget "
+             "envelope given to the excise duty whose cut removes the most excess burden in the Budget year).")
+    L.append("**Analytical objective:** Opportunity Sizing & Decision Support.\n")
+    L.append("## 1. Final Recommendation\n")
+    L.append("**Give the 2027 Budget's GBP %.1f million envelope to spirits duty, cutting its 2027 rate of GBP %.2f a "
+             "litre by about a fifth from 1 January 2027, which removes about GBP %.1f million of excess burden in 2027; "
+             "the next best, cider, would remove about GBP %.1f million.**"
+             % (F["envelope_m"], W["rate27"], F["winner_m"], F["runner_m"]))
+    L.append("Not road fuel, whose duty and GST are the largest share of its price but whose drivers make under a third of "
+             "their response to a price cut within 2027. Not cider, the most price-responsive duty, whose "
+             "small wedge leaves little gain on the extra litres a cut buys. Not beer or wine, each about a quarter "
+             "of the spirits figure.")
+    L.append("\n## 2. Critical Components\n")
+    L.append("1. Excess burden removed in 2027 by the envelope: **spirits about GBP %.1f million**, cider about GBP "
+             "%.1f million" % (F["winner_m"], F["runner_m"]))
+    L.append("2. The gain is counted on every extra litre at the whole of the duty and GST still charged on it, not "
+             "only on the cut itself")
+    L.append("3. Buyers' response is the part made within 2027 from a demand model with lagged adjustment: spirits "
+             "nearly all of their long-run response by the fourth quarter, road fuel under a third")
+    L.append("\n## 3. Step-by-Step Solution\n")
+    L.append("1. Stacked %s (2008 to 2011, one sheet per duty) and %s (2012 to 2026 Q3, preliminary quarters "
+             "included) into one quarterly series per duty, %d quarters at constant 2026 prices."
+             % (P.FILES["series_old"], P.FILES["series_new"], F["quarters"]))
+    L.append("2. For each duty fitted least squares of log clearances on four quarter dummies, log shelf price and the "
+             "previous quarter's log clearances; the response to a price change from 1 January 2027 by quarter k is "
+             "the first-quarter coefficient times (1 - adjustment^k) / (1 - adjustment).")
+    L.append("3. Baseline (manual, section 5): the four quarters 2025 Q4 to 2026 Q3, each standing for its quarter of "
+             "2027; producer price = the 2026 Q3 shelf price net of %d per cent GST less the duty then in force; the "
+             "2027 rate from %s." % (F["gst_pct"], P.FILES["rates"]))
+    L.append("4. For each duty solved for the cut at which duty and GST received in 2027, on the litres bought each "
+             "quarter after the response, fall by GBP %.1f million (spirits by about a fifth of its rate)."
+             % F["envelope_m"])
+    L.append("5. Excess burden removed: each quarter, the area between the fitted constant-elasticity demand curve and "
+             "the producer price over the extra litres, summed over 2027: spirits %.1f, cider %.1f GBP million."
+             % (F["winner_m"], F["runner_m"]))
+    L.append("6. Excise on releases (%s, CE14): exact duplicate rows dropped; procedure 4071 not cancelled; a "
+             "declaration that a later one names as its related declaration is replaced by it, so each release counts "
+             "once, as the last declaration of its chain, in the quarter the chain's first declaration was accepted "
+             "(Eskerholm date, UTC to UK time)." % P.FILES["declarations"])
+    L.append("7. Each item priced at quantity times the rate in force on that first day (duty_gbp repeats the "
+             "declaration's total on every item row); less 6171 repayments (duty_gbp) in the quarter accepted; plus "
+             "7171 removals to premises with no approval in force that day (EKW171 from 14 November 2025, EKW157 from "
+             "9 October 2025) at that day's rate; GBP thousand to one decimal.")
+    L.append("\n## 4. Deliverable Answers\n")
+    L.append("### %s\n" % GD.DOCX)
+    L.append("1. The duty: spirits, its 2027 rate of GBP %.2f a litre cut by about a fifth, removing about GBP %.1f "
+             "million of excess burden in 2027." % (W["rate27"], F["winner_m"]))
+    L.append("2. The next best: cider, about GBP %.1f million." % F["runner_m"])
+    L.append("3. A bar chart of the excess burden each duty's cut would remove in 2027, spirits marked.")
+    L.append("\n### %s\n" % GD.XLSX)
+    L.append("1. Excise accounted for on releases from bonded warehouses, GBP thousand:")
+    for c, *_ in P.DUTIES:
+        for q in P.ASK_QUARTERS:
+            L.append("   - %s, %s: %s" % (F["duties"][c]["name"], FG.QUARTER_LABEL[q], "{:,.1f}".format(F["asks_k"][c][q])))
+    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")

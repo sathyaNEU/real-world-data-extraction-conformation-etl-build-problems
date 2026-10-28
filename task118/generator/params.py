@@ -1,74 +1,62 @@
-"""task118 (architecture 3) constants: Kestrel Vale integrated care board, its six localities, the hypnotic users and
-their repeat templates, the deprescribing policy's filed figures, the falls cohort the asks read, and file names."""
+"""task118 (architecture 4) constants: the States of Eskerholm, its Treasury's 2027 Budget envelope for one excise duty,
+the five duties' demand, the appraisal manual's filed terms, Customs' bonded-warehouse declarations for the asks, and
+file names."""
 import datetime as dt
 
-ORG = "NHS Kestrel Vale Integrated Care Board"
-CSU = "Kestrel and Wold Commissioning Support Unit"
-PEOPLE = {"chief": "Julia Clayton", "lead": "Leon Ross", "analyst": "Glenn Pearce", "falls": "Katherine Watts"}
-SEED = 1180
-AS_OF = dt.date(2026, 10, 20)                     # the folder as handed over
+ORG = "States of Eskerholm"
+TREASURY = "States of Eskerholm Treasury"
+ASSEMBLY = "States Assembly of Eskerholm"
+PANEL = "Economic Affairs Scrutiny Panel"
+TREASURY_UNIT = "Treasury Economics Unit"
+CUSTOMS = "Eskerholm Customs and Excise"
+STATS = "Eskerholm Statistics Office"
+PEOPLE = {"economist": "Rhys Armstrong", "minister": "Aimee Miah", "customs": "Elaine Hooper", "stats": "Benjamin Humphreys"}
+SEED = 118
+AS_OF = dt.date(2026, 10, 20)
 
-# the policy as filed (hypnotics_deprescribing_policy_2026.pdf)
-BASE = 4.0                                        # emergency fall admissions per 100 patients aged 65+ a year, off a hypnotic
-RR = ((6, 3.0), (24, 1.8), (None, 1.1))          # rate ratio by months since the patient first started a hypnotic
-STOP = 0.45                                       # share of reviewed users the team takes off the drug
-CURRENT_FROM, CURRENT_TO = dt.date(2026, 7, 1), dt.date(2026, 9, 30)   # a current user: a hypnotic dispensed here
-AGE_ON = dt.date(2027, 1, 1)                      # and aged 65 or over on this day
-OFF_FROM, OFF_TO = dt.date(2027, 4, 1), dt.date(2027, 12, 31)          # a patient who stops is off the drug over these days
-YEAR = 2027
+# the appraisal manual's filed terms
+ENVELOPE = 1.5e6            # revenue (duty and GST) the Budget gives up in 2027, after consumers respond
+GST = 0.05                  # on the duty-inclusive price; 3 per cent until 31 March 2011
+GST_FROM = 13               # quarter index of 2011Q2
+UPRATE_2027 = 1.03          # the 2027 duty rates already set, before any Budget measure
+BUDGET_YEAR = 2027
 
-EXTRACT_FROM, EXTRACT_TO = dt.date(2026, 4, 1), dt.date(2026, 9, 30)   # the dispensing extract (the platform's first months)
-TEMPLATES_ACTIVE_SINCE = dt.date(2024, 4, 1)      # the template export: every template active on or after this day
-TEMPLATES_AS_AT = dt.date(2026, 10, 1)
-MIGRATION = dt.date(2026, 7, 13)                  # one Quenford Rise practice moves clinical system
-MIGRATED = "QR"                                   # its locality; the practice is the locality's smallest
-
-# locality: code, name, current users aged 65+, shares of them who started before April 2025 (long), April 2025 to
-# March 2026 (mid), April to September 2026 (new)
-LOCALITIES = [
-    ("CC", "Corvenham Central", 6812, (0.93, 0.05, 0.02)),
-    ("FM", "Fenmarsh", 4987, (0.86, 0.08, 0.06)),
-    ("SC", "Saltreach Coast", 5034, (0.625, 0.295, 0.08)),
-    ("QR", "Quenford Rise", 4583, (0.86, 0.08, 0.06)),
-    ("HM", "Hethermoss", 3611, (0.68, 0.04, 0.28)),
-    ("LN", "Ledbridge North", 3226, (0.86, 0.08, 0.06)),
+# the world's demand (never shipped): quarterly short-run elasticity, persistence, seasonal pattern, noise
+DUTIES = [  # code, name, unit, annual litres (2026), producer price c (GBP a litre), duty d (2026, GBP a litre), beta, lam
+    ("BEER", "Beer", "litre", 7.0e6, 2.30, 0.80, -0.30, 0.55),
+    ("CIDR", "Cider", "litre", 5.2e6, 1.55, 0.64, -0.62, 0.35),
+    ("WINE", "Wine", "litre", 3.6e6, 7.10, 2.30, -0.32, 0.45),
+    ("SPIR", "Spirits", "litre", 0.95e6, 9.00, 10.50, -0.50, 0.35),
+    ("FUEL", "Road fuel", "litre", 56.0e6, 0.55, 0.80, -0.060, 0.94),
 ]
-PRACTICES = {"CC": 7, "FM": 6, "SC": 6, "QR": 6, "HM": 5, "LN": 5}
-STOPPED_SHARE = 0.07                              # users dispensed April to June 2026 only (not current)
-UNDER_65_SHARE = 0.04                             # users aged 63 or 64 on 1 January 2027 in the extract
+SEASON = {"BEER": (-0.12, 0.05, 0.13, -0.06), "CIDR": (-0.20, 0.10, 0.22, -0.12), "WINE": (-0.10, -0.02, 0.00, 0.12),
+          "SPIR": (-0.16, -0.05, -0.02, 0.23), "FUEL": (-0.03, 0.01, 0.03, -0.01)}
+NOISE = {"BEER": 0.012, "CIDR": 0.015, "WINE": 0.012, "SPIR": 0.014, "FUEL": 0.004}
+SHOCK = {"BEER": 0.03, "CIDR": 0.03, "WINE": 0.03, "SPIR": 0.03, "FUEL": 0.02}
+STEPS = {"FUEL": ([0.0, 0.05, 0.08, 0.12, -0.06, -0.10], [0.15, 0.2, 0.2, 0.15, 0.15, 0.15])}
+STEPS_DEFAULT = ([0.0, 0.03, 0.06, 0.10, -0.04, -0.08], [0.3, 0.2, 0.15, 0.1, 0.15, 0.1])
+QUARTERS = 75               # 2008Q1 to 2026Q3
+NEW_FROM = 16               # 2012Q1: the release in its current layout
+FIRST_YEAR = 2008
 
-DRUGS = [  # VTM, dm+d product, BNF class, pack quantity, NIC per pack (GBP), share of users
-    ("Zopiclone", "Zopiclone 7.5mg tablets", "Z-drug", 28, 1.02, 0.34),
-    ("Zopiclone", "Zopiclone 3.75mg tablets", "Z-drug", 28, 1.31, 0.10),
-    ("Zolpidem", "Zolpidem 10mg tablets", "Z-drug", 28, 1.18, 0.08),
-    ("Temazepam", "Temazepam 10mg tablets", "benzodiazepine", 28, 3.40, 0.16),
-    ("Diazepam", "Diazepam 2mg tablets", "benzodiazepine", 28, 0.79, 0.14),
-    ("Lorazepam", "Lorazepam 1mg tablets", "benzodiazepine", 28, 4.65, 0.08),
-    ("Nitrazepam", "Nitrazepam 5mg tablets", "benzodiazepine", 28, 6.92, 0.04),
-    ("Lormetazepam", "Lormetazepam 1mg tablets", "benzodiazepine", 30, 21.40, 0.06),
-]
-
-# the asks' falls cohort (SUS admitted patient care, every spell 1 March 2025 to 31 July 2026 for patients aged 65 or
-# over with an emergency admission carrying an external cause code in 2025-26)
-SUS_FROM, SUS_TO = dt.date(2025, 3, 1), dt.date(2026, 7, 31)
-FY_FROM, FY_TO = dt.date(2025, 4, 1), dt.date(2026, 3, 31)
-FALLS_PER_100 = {"CC": 2.05, "FM": 2.30, "SC": 2.65, "QR": 2.20, "HM": 2.40, "LN": 2.10}   # fall admissions a year
-OVER_65 = {"CC": 96000, "FM": 70500, "SC": 69800, "QR": 65200, "HM": 50600, "LN": 45800}  # never shipped
-MERGED = ("Q80117", "FM")                         # Marsh Lane Surgery's code, retired 1 October 2025
-MERGED_ON = dt.date(2025, 10, 1)
+# the asks: Customs' declarations for releases from bonded warehouses, October 2025 to September 2026
+ASK_QUARTERS = ["2025Q4", "2026Q1", "2026Q2", "2026Q3"]
+DECL_FROM, DECL_TO = dt.date(2025, 7, 1), dt.date(2026, 9, 30)
+REBATED_RATE = 0.1062      # marked gas oil, GBP per litre (not one of the five duties)
+LAPSED_DAILY = 0.10        # chance a day carries a removal to each lapsed premises, per duty
 
 FILES = {
-    "dispensing": "dispensing_hypnotics_2026-04_2026-09.csv",
-    "templates": "repeat_templates_hypnotics_2026-10-01.csv",
-    "legacy": "Q89159_repeat_templates_previous_system_2026-07-12.csv",
-    "register": "practice_locality_register_2026.xlsx",
-    "policy": "hypnotics_deprescribing_policy_2026.pdf",
-    "thread": "deprescribing_team_placement.eml",
-    "dmd": "dmd_hypnotic_products.csv",
-    "sus": "sus_apc_falls_cohort_2025-26.csv",
-    "falls_def": "falls_indicator_definition_v2.pdf",
-    "providers": "provider_site_codes.csv",
-    "dashboard": "hypnotic_prescribing_dashboard_q2_2026.xlsx",
-    "referrals": "falls_service_referrals_2025-26.csv",
+    "series_new": "excise_clearances_prices_quarterly_2012-2026.csv",
+    "series_old": "excise_clearances_prices_quarterly_2008-2011.xlsx",
+    "rates": "excise_duty_rates_2008-2027.xlsx",
+    "manual": "treasury_budget_appraisal_manual_2026.pdf",
+    "thread": "budget_2027_duty_envelope.eml",
+    "declarations": "customs_excise_declarations_2025-07_2026-09.csv",
+    "cpc": "customs_procedure_codes.csv",
+    "cpc_note": "customs_excise_accounting_note_ce14.pdf",
+    "warehouses": "bonded_warehouse_register_2026.xlsx",
+    "receipts": "excise_receipts_monthly_cash_2020-2026.csv",
+    "price_quotes": "retail_price_survey_quotes_2026.csv",
+    "passengers": "passenger_allowance_declarations_2025-26.csv",
 }
-DISTRACTORS = ["dashboard", "referrals"]
+DISTRACTORS = ["receipts", "price_quotes", "passengers"]

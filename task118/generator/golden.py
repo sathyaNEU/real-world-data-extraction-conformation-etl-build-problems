@@ -1,253 +1,254 @@
-"""The goldens from figures.json: the placement workbook (the falls figures by locality, and the placement) and the
-board's case paper with its chart."""
+"""The golden deliverables: the Treasury's paper to the Council of Ministers (docx, with the chart) and the envelope
+workbook (xlsx) with the appraisal and Customs' excise on releases for the Budget's excise annex."""
 import io
 import os
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-from docx import Document  # noqa: E402
-from docx.enum.table import WD_TABLE_ALIGNMENT  # noqa: E402
-from docx.oxml import OxmlElement  # noqa: E402
-from docx.oxml.ns import qn  # noqa: E402
-from docx.shared import Cm, Pt, RGBColor  # noqa: E402
-from openpyxl import Workbook  # noqa: E402
-from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
-from openpyxl.utils import get_column_letter  # noqa: E402
+import matplotlib.pyplot as plt
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
-import params as P  # noqa: E402
-import postprocess  # noqa: E402
+import figs as FG
+import params as P
+import postprocess
+import solve as SV
 
-XLSX = "deprescribing_placement_2027.xlsx"
-DOCX = "deprescribing_case_2027.docx"
-HEAD = PatternFill("solid", fgColor="DCE6F0")
-PICK = PatternFill("solid", fgColor="FFF2CC")
-NHS_BLUE, GREY, INK, MUTED, GRID = "#005EB8", "#848F96", "#212B32", "#4C6272", "#D8DDE0"
-
-
-def c(x):
-    return "{:,}".format(int(x))
+DOCX = "budget_2027_duty_cut_paper.docx"
+XLSX = "budget_2027_duty_envelope.xlsx"
+AUTHOR = P.PEOPLE["economist"]
+LOWER = {"BEER": "beer", "CIDR": "cider", "WINE": "wine", "SPIR": "spirits", "FUEL": "road fuel"}
 
 
-def _sheet(ws, title, header, rows, widths, fmts=None, note=None, pick=None):
-    ws.cell(row=1, column=1, value=title).font = Font(bold=True, size=12)
-    for j, h in enumerate(header, 1):
-        cell = ws.cell(row=3, column=j, value=h)
-        cell.font = Font(bold=True)
-        cell.fill = HEAD
-        cell.alignment = Alignment(vertical="top", wrap_text=True)
-    for i, row in enumerate(rows, 4):
-        for j, v in enumerate(row, 1):
-            cell = ws.cell(row=i, column=j, value=v)
-            if pick is not None and row[0] == pick:
-                cell.fill = PICK
-    for j, w in enumerate(widths, 1):
-        ws.column_dimensions[get_column_letter(j)].width = w
-    for col, f in (fmts or {}).items():
-        for i in range(4, 4 + len(rows)):
-            ws.cell(row=i, column=col).number_format = f
-    ws.row_dimensions[3].height = 45
-    ws.freeze_panes = "A4"
-    if note:
-        ws.cell(row=5 + len(rows), column=1, value=note).font = Font(italic=True, size=9, color="555555")
-
-
-def workbook(path, fig):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Falls 2025-26"
-    a = fig["asks"]
-    order = [k for k, _, _, _ in P.LOCALITIES]
-    rows = [[k, fig["localities"][k]["name"], a[k]["falls_65_79"], a[k]["falls_80"], a[k]["bed_days"],
-             a[k]["readmitted"]] for k in order]
-    t = fig["ask_totals"]
-    rows.append(["", "Kestrel Vale", t["falls_65_79"], t["falls_80"], t["bed_days"], t["readmitted"]])
-    _sheet(ws, "Emergency admissions for a fall, patients aged 65 or over, 2025-26",
-           ["Locality code", "Locality", "Admissions for a fall, aged 65 to 79", "Admissions for a fall, aged 80 or over",
-            "Bed-days of those admissions", "Admissions followed by an emergency readmission within 30 days"],
-           rows, [11, 20, 15, 15, 15, 20], {c_: "#,##0" for c_ in (3, 4, 5, 6)},
-           note="Falls dashboard definitions F1 to F3, version 2 (February 2026), on the SUS falls cohort extract. "
-                "An admission is one stay in hospital care, including any move to another hospital.")
-    ws.cell(row=4 + len(rows) - 1, column=2).font = Font(bold=True)
-    ws2 = wb.create_sheet("Placement 2027")
-    L = fig["localities"]
-    prow = sorted(order, key=lambda k: -L[k]["avoided"])
-    _sheet(ws2, "Hypnotic deprescribing team: emergency admissions for a fall avoided in 2027",
-           ["Locality code", "Locality", "Current users aged 65+", "Of whom first started on or after 1 April 2025",
-            "Admissions for a fall avoided, 1 April to 31 December 2027"],
-           [[k, L[k]["name"], L[k]["users"], L[k]["recent"], L[k]["avoided_r"]] for k in prow],
-           [11, 20, 14, 18, 20], {3: "#,##0", 4: "#,##0", 5: "0"}, pick=fig["winner"],
-           note="Policy MO-17 (version 1.2): 45 in 100 current users come off, off the drug from 1 April 2027; rate "
-                "ratio by time since the patient first started a benzodiazepine or Z-drug, dated from the start of "
-                "their first repeat template.")
-    r = 6 + len(prow)
-    ws2.cell(row=r + 1, column=1, value="Recommended").font = Font(bold=True)
-    ws2.cell(row=r + 1, column=2, value="%s: %d admissions avoided in 2027" % (fig["winner_name"], fig["avoided_r"]))
-    ws2.cell(row=r + 2, column=1, value="Runner-up").font = Font(bold=True)
-    ws2.cell(row=r + 2, column=2, value="%s: %d avoided, %d fewer" % (fig["runner_name"], fig["runner_avoided_r"],
-                                                                       fig["gap_r"]))
-    for sh in (ws, ws2):
-        sh.print_title_rows = "3:3"
-        sh.page_setup.orientation = "landscape"
-        sh.page_setup.fitToWidth = 1
-    ws3 = wb.create_sheet("Notes")
-    notes = [
-        ("Prepared", "%s, %s, 23 October 2026, for the board of 5 November 2026." % (P.PEOPLE["analyst"], P.CSU)),
-        ("Falls 2025-26", "Falls dashboard definitions version 2 (February 2026): F1 an emergency admission for a fall, "
-                          "one stay in hospital care, a move to another hospital included, with W00 to W19 in its first "
-                          "episode, by age and the registered practice's locality at the start of the admission and by "
-                          "the date of admission; F2 the days from admission to leaving hospital care; F3 an emergency "
-                          "admission again on the day of leaving or in the 30 days after, the patient alive on leaving."),
-        ("Source", "SUS admitted patient care falls cohort, 1 March 2025 to 31 July 2026; provider site codes; "
-                   "practice register (Q80117, on the cohort's episodes before October 2025, is Fenmarsh Health "
-                   "Centre's previous practice code)."),
-        ("Placement 2027", "Policy MO-17 version 1.2: current users aged 65 or over on 1 January 2027 with a "
-                           "benzodiazepine or Z-drug dispensed 1 July to 30 September 2026; 45 in 100 come off and are "
-                           "off the drug from 1 April to 31 December 2027; 4.0 admissions for a fall per 100 a year off "
-                           "the drug, times the rate ratio for the months since the patient first started."),
-        ("Rounding", "Admissions, bed-days and readmissions are whole numbers; admissions avoided are rounded to "
-                     "whole admissions at the end."),
-    ]
-    ws3.cell(row=1, column=1, value="Notes").font = Font(bold=True, size=12)
-    for i, (k, v) in enumerate(notes, 3):
-        ws3.cell(row=i, column=1, value=k).font = Font(bold=True)
-        cell = ws3.cell(row=i, column=2, value=v)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws3.row_dimensions[i].height = 15 * (1 + len(v) // 95)
-    ws3.column_dimensions["A"].width = 16
-    ws3.column_dimensions["B"].width = 100
-    wb.properties.creator = P.PEOPLE["analyst"]
-    wb.properties.lastModifiedBy = P.PEOPLE["analyst"]
-    wb.save(path)
-    postprocess.scrub(path, P.ORG, "2026-10-23")
-    postprocess.finish_office(path, "2026-10-21T08:55:00Z", "2026-10-23T15:20:00Z", P.ORG, person=P.PEOPLE["analyst"])
-
-
-def chart(fig):
-    """admissions avoided by locality, the recommended locality in blue; the paper's table carries every value"""
-    L = fig["localities"]
-    order = sorted(L, key=lambda k: -L[k]["avoided"])
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "task118"})
-    f, ax = plt.subplots(figsize=(6.3, 3.0), dpi=150)
-    vals = [L[k]["avoided"] for k in order]
-    cols = [NHS_BLUE if k == fig["winner"] else GREY for k in order]
-    ax.bar(range(len(order)), vals, 0.6, color=cols, zorder=2)
-    for i, k in enumerate(order):
-        if k in (fig["winner"], fig["runner"]):
-            ax.text(i, vals[i] + 0.35, "%d" % L[k]["avoided_r"], ha="center", va="bottom", color=INK, fontsize=9,
-                    fontweight="bold" if k == fig["winner"] else "normal")
-    ax.set_xticks(range(len(order)))
-    ax.set_xticklabels([L[k]["name"].replace(" ", "\n", 1) for k in order], color=INK)
-    ax.set_ylabel("Admissions avoided", color=MUTED)
-    ax.set_ylim(0, max(vals) * 1.2)
-    ax.yaxis.grid(True, color=GRID, linewidth=0.6, zorder=0)
-    for side in ("top", "right", "left"):
-        ax.spines[side].set_visible(False)
-    ax.spines["bottom"].set_color(MUTED)
-    ax.tick_params(axis="both", length=0, colors=MUTED)
-    f.text(0.012, 0.955, "%s avoids the most emergency admissions for a fall" % fig["winner_name"], ha="left",
-           va="top", fontsize=10, color=INK, fontweight="bold")
-    f.text(0.012, 0.885, "Admissions avoided by the team, 1 April to 31 December 2027, by locality", ha="left",
-           va="top", fontsize=8.2, color=MUTED)
-    f.tight_layout(rect=(0, 0, 1, 0.84))
+def chart_png(F):
+    order = F["order"]
+    vals = [F["duties"][c]["eb_k"] for c in order]
+    fig, ax = plt.subplots(figsize=(6.4, 2.9), dpi=150)
+    colours = ["#7A2E39" if c == order[0] else "#B9AEA6" for c in order]
+    y = list(range(len(order)))[::-1]
+    ax.barh(y, vals, color=colours, height=0.58)
+    ax.set_yticks(y)
+    ax.set_yticklabels([F["duties"][c]["name"] for c in order], fontsize=8.5)
+    for yi, v in zip(y, vals):
+        ax.text(v + 12, yi, "%d" % v, va="center", fontsize=8.5)
+    ax.text(vals[0] / 2, y[0], "Recommended", va="center", ha="center", color="white", fontsize=8.5,
+            fontweight="bold")
+    fig.suptitle("The spirits cut removes more than twice what any other duty's would",
+                 x=0.015, ha="left", fontsize=9.5, color="#222222")
+    ax.set_xlabel("GBP thousand, 2027", fontsize=8.5)
+    ax.set_xlim(0, max(vals) * 1.16)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.tick_params(axis="x", labelsize=8)
+    fig.tight_layout()
     buf = io.BytesIO()
-    f.savefig(buf, format="png", facecolor="#FFFFFF", metadata={"Software": None})
-    plt.close(f)
+    fig.savefig(buf, format="png", metadata={"Software": None})
+    plt.close(fig)
     return buf.getvalue()
 
 
-def paper(path, fig):
-    L = fig["localities"]
-    w, r = fig["winner"], fig["runner"]
+def _page_field(par):
+    fld = OxmlElement("w:fldSimple")
+    fld.set(qn("w:instr"), "PAGE")
+    r = OxmlElement("w:r")
+    t = OxmlElement("w:t")
+    t.text = "1"
+    r.append(t)
+    fld.append(r)
+    par._p.append(fld)
+
+
+def docx(path, F):
     d = Document()
     st = d.styles["Normal"]
     st.font.name = "Arial"
-    st.font.size = Pt(10.5)
-    for sec in d.sections:
-        sec.left_margin = sec.right_margin = Cm(2.2)
-    p = d.add_paragraph()
-    run = p.add_run("%s: Board, 5 November 2026. Item 9." % P.ORG)
-    run.bold = True
-    run.font.size = Pt(9)
-    run.font.color.rgb = RGBColor(0x42, 0x55, 0x63)
+    st.font.size = Pt(10)
+    sec = d.sections[0]
+    sec.left_margin = sec.right_margin = Cm(2.1)
+    sec.top_margin = Cm(1.8)
+    foot = sec.footer.paragraphs[0]
+    fr = foot.add_run("%s, %s. Meeting of 2 December 2026. Budget 2027 amendment. Page " % (P.PANEL, P.ASSEMBLY))
+    fr.font.size = Pt(8)
+    _page_field(foot)
+    w, r = F["winner"], F["runner"]
+    W, R = F["duties"][w], F["duties"][r]
     h = d.add_paragraph()
-    run = h.add_run("Hypnotic deprescribing team: place it in %s for 2027" % fig["winner_name"])
+    run = h.add_run("Budget 2027: the duty envelope should go to %s" % LOWER[w])
     run.bold = True
-    run.font.size = Pt(15)
-    d.add_paragraph().add_run("Presented by %s, Chief Pharmacist. Prepared by %s (%s). Purpose: for decision." % (
-        P.PEOPLE["chief"], P.PEOPLE["analyst"], P.CSU)).font.size = Pt(9)
-    foot = d.sections[0].footer.paragraphs[0]
-    run = foot.add_run("%s: board meeting, 5 November 2026, item 9. Page " % P.ORG)
-    run.font.size = Pt(8)
-    fld = OxmlElement("w:fldSimple")
-    fld.set(qn("w:instr"), "PAGE")
-    r_ = OxmlElement("w:r")
-    t_ = OxmlElement("w:t")
-    t_.text = "1"
-    r_.append(t_)
-    fld.append(r_)
-    foot._p.append(fld)
-    d.add_heading("Recommendation", level=2)
+    run.font.size = Pt(14)
+    p = d.add_paragraph("For decision. 26 October 2026. From %s, the panel's expert adviser, to the %s (Chair, Deputy "
+                        "%s) for its meeting on 2 December 2026 and its amendment to the 2027 Budget, debated on 15 "
+                        "December." % (AUTHOR, P.PANEL, P.PEOPLE["minister"]))
+    p.runs[0].font.size = Pt(8.5)
+    p.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    p = d.add_paragraph()
+    run = p.add_run("Recommendation: the panel's amendment gives the GBP %.1f million to %s duty, cutting its 2027 "
+                    "rate of GBP %.2f a litre by about a fifth from 1 January 2027. The cut removes about GBP %.1f "
+                    "million of excess burden in 2027. The next best is %s duty, which would remove about GBP %.1f "
+                    "million." % (F["envelope_m"], LOWER[w], W["rate27"], F["winner_m"], LOWER[r],
+                                  F["runner_m"]))
+    run.bold = True
     d.add_paragraph(
-        "Place the deprescribing team in %s from January 2027. On the deprescribing policy it will avoid %d emergency "
-        "admissions for a fall in 2027. %s is the runner-up at %d, %d fewer." % (
-            fig["winner_name"], fig["avoided_r"], fig["runner_name"], fig["runner_avoided_r"], fig["gap_r"]))
-    d.add_heading("Why %s" % fig["winner_name"], level=2)
-    d.add_paragraph(
-        "The team takes 45 in every 100 current users off the drug from 1 April, and each one it takes off stops "
-        "running the extra risk of a fall that the drug carries. That extra risk depends on how long the patient has "
-        "been taking a benzodiazepine or Z-drug: the policy puts it at 1.8 times the rate of a patient not taking one "
-        "until two years after they first started, and 1.1 times after that. So the team avoids most where the current "
-        "users started most recently, not where there are most of them.")
-    d.add_paragraph(
-        "%s has %s current users, and %s of them first started on or after 1 April 2025, more than in any other "
-        "locality. Corvenham Central has the most current users (%s) but only %s started that recently; most have "
-        "taken the drug for years and carry little extra risk now." % (
-            fig["winner_name"], c(L[w]["users"]), c(L[w]["recent"]), c(L["CC"]["users"]), c(L["CC"]["recent"])))
-    d.add_paragraph(
-        "Each patient's first start is the start of their first repeat template, traced back through every "
-        "re-authorisation, and for %s in %s through the templates exported from its previous clinical system, "
-        "because its July move re-created every active template with the date of the move. The "
-        "dispensing extract cannot date a start: it begins on 1 April 2026, so everyone already on the drug appears to "
-        "start that month." % (fig["migrated_practice_name"], fig["migrated_name"]))
-    d.add_picture(io.BytesIO(chart(fig)), width=Cm(15.5))
-    d.add_heading("The six localities", level=2)
-    order = sorted(L, key=lambda k: -L[k]["avoided"])
+        "Every litre a duty cut adds to what people buy carries the whole of the duty and GST still charged on it, and "
+        "that is where most of the gain is. Spirits carry the largest wedge of the alcohol duties, %d per cent of the "
+        "shelf price, and their buyers respond within months. Road fuel carries a larger wedge still, but drivers "
+        "change what they buy over years rather than months, so in 2027 a fuel cut would remove less than a fifth "
+        "of what the spirits cut removes. Cider buyers respond most to price, but cider's wedge is small, so most of "
+        "what a cider cut gives back is the duty itself." % round(100 * W["wedge_share"]))
+    d.add_paragraph("The envelope given to each duty in turn:")
     t = d.add_table(rows=1, cols=4)
-    t.style = "Light Grid Accent 1"
-    t.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for i, hd in enumerate(["Locality", "Current users", "First started since April 2025", "Admissions avoided"]):
-        t.rows[0].cells[i].text = hd
-    for k in order:
-        row = t.add_row().cells
-        row[0].text, row[1].text, row[2].text = L[k]["name"], c(L[k]["users"]), c(L[k]["recent"])
-        row[3].text = "%d" % L[k]["avoided_r"]
-    note = d.add_paragraph()
-    note.add_run("Current users: patients aged 65 or over on 1 January 2027 with a benzodiazepine or Z-drug dispensed "
-                 "between 1 July and 30 September 2026 (policy MO-17, section 4). Admissions avoided are rounded to "
-                 "whole admissions.").font.size = Pt(8)
-    src = d.add_paragraph()
-    src.add_run("Sources: dispensing extract April to September 2026; repeat templates as at 1 October 2026; "
-                "%s previous-system template export; practice register; policy MO-17." %
-                fig["migrated_practice_name"]).font.size = Pt(8)
-    d.add_heading("Falls burden", level=2)
+    t.style = "Light List Accent 1"
+    hdr = t.rows[0].cells
+    hdr[0].text, hdr[1].text, hdr[2].text, hdr[3].text = ("Duty", "2027 rate (GBP a litre)", "Cut (GBP a litre)",
+                                                          "Excess burden removed in 2027 (GBP thousand)")
+    for c in F["order"]:
+        x = F["duties"][c]
+        cells = t.add_row().cells
+        cells[0].text = x["name"]
+        dp = "%.4f" if c == "FUEL" else "%.2f"      # road fuel's rate is set to a hundredth of a penny
+        cells[1].text = dp % x["rate27"]
+        cells[2].text = dp % x["cut"]
+        cells[3].text = "%d" % x["eb_k"]
+    for row in t.rows:
+        for c in row.cells[1:]:
+            c.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    src = d.add_paragraph("Each cut is the one that gives up GBP %.1f million of duty and GST in 2027 once buyers have "
+                          "responded. Sources: Eskerholm Statistics Office, duty-paid clearances and shelf prices, "
+                          "2008 to 2026; Treasury duty rates." % F["envelope_m"])
+    src.runs[0].font.size = Pt(8)
+    src.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    d.add_picture(io.BytesIO(F["png"]), width=Cm(15.5))
+    cap = d.add_paragraph("Excess burden removed in 2027 by each duty's cut; the recommended duty in red.")
+    cap.runs[0].font.size = Pt(8.5)
+    h2 = d.add_paragraph()
+    run = h2.add_run("How it was appraised")
+    run.bold = True
     d.add_paragraph(
-        "The placement workbook gives each locality's emergency admissions for a fall in 2025-26 by age band, the "
-        "bed-days they used and the readmissions within 30 days, on the falls dashboard's version 2 definitions.")
-    d.add_heading("Risks", level=2)
+        "As the appraisal manual sets out, the starting point is the latest four quarters of duty-paid clearances, "
+        "each standing for the same quarter of 2027, at the latest shelf prices with the 2027 rates already set "
+        "(%d per cent above 2026). A cut passes in full to the shelf price with GST on top." % F["uprate_pct"])
     d.add_paragraph(
-        "The figure assumes the pilot's 45 in 100 holds in %s and that the policy's rate ratios hold for its patients. "
-        "If fewer come off, the number avoided falls in proportion in every locality, so the order does not change." %
-        fig["winner_name"])
-    d.core_properties.author = P.PEOPLE["analyst"]
-    d.core_properties.title = "Deprescribing team placement 2027"
+        "How far buyers respond, and how fast, comes from the quarterly clearances and prices since %s. For each duty "
+        "we fitted log clearances on the quarter, log shelf price and the previous quarter's log clearances, which "
+        "gives the response in the first quarter and the share of the gap closed each quarter after. In 2027 the "
+        "response builds through the year: by its fourth quarter spirits have made %d per cent of their long-run "
+        "response and road fuel %d per cent."
+        % (F["first_quarter"][0], round(100 * (1 - F["duties"]["SPIR"]["lam"] ** 4)),
+           round(100 * (1 - F["duties"]["FUEL"]["lam"] ** 4))))
+    d.add_paragraph(
+        "Each duty's cut is set so that the duty and GST given up in 2027, after buyers respond, is GBP %.1f million. "
+        "The excess burden it removes is the value of the extra litres to the people who buy them less what they cost "
+        "to supply, quarter by quarter along the demand curve fitted for that duty: the duty and GST still charged on "
+        "each extra litre, plus half the cut." % F["envelope_m"])
+    note = d.add_paragraph("The cut is permanent and goes on removing excess burden after 2027; the manual appraises "
+                           "the Budget year only (section 4). Health, road safety and environmental effects are reported "
+                           "by the departments concerned (section 9).")
+    note.runs[0].font.size = Pt(8)
+    note.runs[0].font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    d.core_properties.author = AUTHOR
+    d.core_properties.title = "Budget 2027: the duty envelope"
     d.save(path)
-    postprocess.scrub(path, P.ORG, "2026-10-23")
-    postprocess.finish_office(path, "2026-10-22T09:30:00Z", "2026-10-23T15:45:00Z", P.ORG, person=P.PEOPLE["analyst"],
-                              revision=5)
+    postprocess.scrub(path, P.ASSEMBLY, "2026-10-26")
+    postprocess.finish_office(path, "2026-10-21T08:40:00Z", "2026-10-26T16:05:00Z", P.ASSEMBLY, person=AUTHOR)
 
 
-def write(folder, fig):
-    os.makedirs(folder, exist_ok=True)
-    workbook(os.path.join(folder, XLSX), fig)
-    paper(os.path.join(folder, DOCX), fig)
+def xlsx(path, F):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Appraisal 2027"
+    thin = Side(style="thin", color="B0B7BE")
+    head = PatternFill("solid", fgColor="E7DFD8")
+    ws.append(["Duty", "Clearances, latest four quarters (000 litres)", "Shelf price 2027 before the cut (GBP a litre)",
+               "Producer price (GBP a litre)", "2027 rate already set (GBP a litre)",
+               "Duty and GST, share of the shelf price", "Response in the first quarter", "Share of the gap closed "
+               "each quarter", "Response by Q1 2027", "Response by Q2 2027", "Response by Q3 2027",
+               "Response by Q4 2027", "Cut (GBP a litre)", "Rate after the cut (GBP a litre)",
+               "Extra litres bought in 2027 (000)", "Excess burden removed in 2027 (GBP thousand)"])
+    for c in F["order"]:
+        x = F["duties"][c]
+        ws.append([x["name"], x["litres_k"], x["shelf"], x["producer"], x["rate27"], x["wedge_share"], x["beta"],
+                   round(1 - x["lam"], 3)] + x["eps"] + [x["cut"], x["new_rate"], x["extra_litres_k"], x["eb_k"]])
+    for row in ws.iter_rows(min_row=2, max_row=6):
+        row[1].number_format = "#,##0.0"
+        for k in (2, 3):
+            row[k].number_format = "0.00"
+        row[4].number_format = "0.0000"
+        for k in range(5, 12):
+            row[k].number_format = "0.000"
+        for k in (12, 13):
+            row[k].number_format = "0.0000"
+        row[14].number_format = "#,##0.0"
+        row[15].number_format = "#,##0"
+    ws.append([])
+    ws.append(["Envelope: GBP %.1f million of duty and GST given up in 2027 after buyers respond, given to one duty."
+               % F["envelope_m"]])
+    ws.append(["Recommended: %s, about GBP %.1f million of excess burden removed in 2027; next best %s, about GBP "
+               "%.1f million." % (F["winner_name"].lower(), F["winner_m"], F["runner_name"].lower(), F["runner_m"])])
+    ws2 = wb.create_sheet("Excise on releases")
+    ws2.append(["Duty"] + [FG.QUARTER_LABEL[q] for q in P.ASK_QUARTERS])
+    for c, *_ in P.DUTIES:
+        ws2.append([F["duties"][c]["name"]] + [F["asks_k"][c][q] for q in P.ASK_QUARTERS])
+    ws2.append(["Five duties"] + [SV.thousand(sum(F["asks_exact"][c][q] for c, *_ in P.DUTIES)) for q in P.ASK_QUARTERS])
+    for row in ws2.iter_rows(min_row=2, max_row=7):
+        for cell in row[1:]:
+            cell.number_format = "#,##0.0"
+    for cell in ws2[7]:
+        cell.font = Font(bold=True)
+        cell.border = Border(top=thin)
+    ws2.append([])
+    ws2.append(["GBP thousand. Excise accounted for on releases from bonded warehouses (procedure 4071): each release "
+                "once, as the last declaration correcting it, in the quarter it was first accepted (Eskerholm date), "
+                "each item at the rate in force that day; less repayments (6171) in the quarter accepted; plus removals "
+                "to premises no longer approved on the day (CE14, sections 2 to 4)."])
+    ws3 = wb.create_sheet("Notes")
+    notes = [
+        ["Notes"],
+        ["Records to 30 September 2026: the Statistics Office's release and back series as at 19 October 2026, Customs' "
+         "declarations extract to 30 September 2026, the register as at 29 September 2026."],
+        ["Clearances and shelf prices: Eskerholm Statistics Office, %s to 2026 Q3, at constant 2026 prices; 2008 to "
+         "2011 from the back-series workbook." % ("%d Q%d" % tuple(F["first_quarter"]))],
+        ["Demand: for each duty, log clearances on quarter dummies, log shelf price and the previous quarter's log "
+         "clearances (%d quarters). The response by each quarter of 2027 builds from the first quarter's response at "
+         "the fitted rate of adjustment." % (F["quarters"] - 1)],
+        ["Cut: the cut in each duty that gives up GBP %.1f million of duty and GST in 2027, at the clearances buyers "
+         "reach in each quarter after the cut, GST at %d per cent on the duty-inclusive price." % (F["envelope_m"],
+                                                                                                F["gst_pct"])],
+        ["Excess burden removed: the area between the fitted demand curve and the producer price over the extra litres "
+         "bought in each quarter of 2027."],
+    ]
+    for n in notes:
+        ws3.append(n)
+    ws3["A1"].font = Font(bold=True)
+    ws3.column_dimensions["A"].width = 120
+    for wsx in (ws, ws2):
+        for c in wsx[1]:
+            c.font = Font(bold=True)
+            c.fill = head
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+            c.border = Border(bottom=thin)
+    ws.column_dimensions["A"].width = 12
+    for k in range(2, 17):
+        ws.column_dimensions[chr(64 + k)].width = 12
+    ws2.column_dimensions["A"].width = 12
+    for col in "BCDE":
+        ws2.column_dimensions[col].width = 16
+    ws.freeze_panes = "B2"
+    ws2.freeze_panes = "B2"
+    ws.print_title_rows = "1:1"
+    ws2.print_title_rows = "1:1"
+    wb.save(path)
+    postprocess.scrub(path, P.ASSEMBLY, "2026-10-26")
+    postprocess.finish_office(path, "2026-10-20T10:15:00Z", "2026-10-26T15:50:00Z", P.ASSEMBLY, person=AUTHOR)
+
+
+def write(golden_dir, F):
+    os.makedirs(golden_dir, exist_ok=True)
+    F = dict(F)
+    F["png"] = chart_png(F)
+    docx(os.path.join(golden_dir, DOCX), F)
+    xlsx(os.path.join(golden_dir, XLSX), F)

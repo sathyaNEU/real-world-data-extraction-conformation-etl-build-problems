@@ -28,19 +28,19 @@ GOLDEN = os.path.join(TASK, "golden")
 STAMP = (2026, 10, 20, 9, 5, 0)        # the morning the placement folder was handed over
 
 SOURCES = {
-    "dispensing": "an integrated care board data platform's patient-level dispensing extract (NHSBSA dispensing data, "
-                  "pseudonymised)",
-    "templates": "a GP clinical system's repeat-template export (pseudonymised)",
-    "legacy": "a previous GP clinical system's repeat-template export, taken before a system migration",
-    "register": "an integrated care board's practice register",
-    "policy": "an integrated care board's medicines optimisation policy",
-    "thread": "NHSmail correspondence",
-    "dmd": "the NHS Dictionary of Medicines and Devices (dm+d) VMP extract",
-    "sus": "SUS+ admitted patient care, episode level (pseudonymised)",
-    "falls_def": "an integrated care board's falls dashboard indicator definitions",
-    "providers": "the ODS provider and site codes",
-    "dashboard": "an ePACT2-style prescribing dashboard",
-    "referrals": "a community falls service's referral log",
+    "series_new": "a national statistics office's quarterly excise clearances release (long CSV)",
+    "series_old": "a national statistics office's back-series workbook, one sheet per series",
+    "rates": "a finance ministry's duty rates table",
+    "manual": "a finance ministry's appraisal guidance for tax measures (in the manner of HM Treasury's Green Book)",
+    "thread": "government email correspondence",
+    "declarations": "a customs authority's line-level excise declarations extract (in the manner of HMRC's CHIEF and "
+                    "CDS procedure codes)",
+    "cpc": "a customs procedure code list",
+    "cpc_note": "a customs authority's excise accounting notice",
+    "warehouses": "a customs authority's register of approved excise warehouses",
+    "receipts": "a finance ministry's monthly excise cash receipts",
+    "price_quotes": "a statistics office's retail price survey shop quotes",
+    "passengers": "a customs authority's travellers' allowance declarations",
 }
 
 
@@ -58,32 +58,33 @@ def metadata(target):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task118",
-        "title": "Which of six localities gets an integrated care board's hypnotic deprescribing pharmacist team for "
-                 "2027, and how many emergency admissions for a fall it avoids there, with each locality's fall "
-                 "admissions, bed-days and 30-day readmissions in 2025-26",
-        "domain": "Pharmacology & Pharmacoepidemiology",
-        "subdomain": "benefit-risk-assessment (the falls a deprescribing team avoids, from each current user's excess "
-                     "risk by time since first starting a benzodiazepine or Z-drug)",
+        "title": "Which of five excise duties gets the States of Eskerholm's GBP 1.5 million 2027 Budget envelope, "
+                 "and how much excess burden the cut removes in 2027, with Customs' excise on releases from bonded "
+                 "warehouses by duty and quarter, October 2025 to September 2026",
+        "domain": "Economics & Econometrics",
+        "subdomain": "elasticity-welfare-policy-impact-estimation (the excess burden a duty cut removes in the Budget "
+                     "year, on the whole existing wedge and the response made within the year)",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "07: one of six localities with its sized avoidance, runner-up and gap, and a grid of four falls "
-                        "measures for each of six localities (24 figures)",
+        "prompt_shape": "07: one of five duties with its sized excess burden removed, the runner-up and its figure, and "
+                        "a grid of five duties by four quarters of excise on releases (20 figures)",
         "as_of": "2026-10-20",
         "deliverables": [GD.DOCX, GD.XLSX],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
-        "stated_inputs": ["the deprescribing policy's current-user definition, stop share, off-drug window, base rate and "
-                          "rate ratios (hypnotics_deprescribing_policy_2026.pdf)",
-                          "the falls dashboard's F1 to F3 definitions (falls_indicator_definition_v2.pdf)"],
+        "stated_inputs": ["the appraisal manual's Budget year, starting point, revenue cost, pass-through and what "
+                          "counts towards excess burden (treasury_budget_appraisal_manual_2026.pdf)",
+                          "CE14's accounting period, amendment, repayment and removal rules "
+                          "(customs_excise_accounting_note_ce14.pdf)"],
         "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "generated by task118/generator/make.py (seeded, deterministic) around a fictional "
-                               "integrated care board with six localities: the patients aged 60 or over dispensed a "
-                               "benzodiazepine or Z-drug from April to September 2026, their GP repeat templates and "
-                               "one locality's previous-system export, the practice register, the board's policy and "
-                               "falls definitions, and a SUS falls cohort with its hospital sites; layouts follow the "
-                               "public files named, every organisation, place and person is invented, and no real "
-                               "dataset is reproduced.",
+                               "island government with five excise duties: the statistics office's quarterly "
+                               "clearances and shelf prices from 2008 drawn from a partial-adjustment demand at "
+                               "constant prices, the duty and GST rates, the treasury's appraisal manual, customs' "
+                               "line-level declarations for July 2025 to September 2026 with its procedure codes, "
+                               "accounting note and warehouse register; layouts follow the public files named, every "
+                               "organisation, place and person is invented, and no real dataset is reproduced.",
                      "date": "2026-10-20", "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-27",
         "generator": "task118/generator/make.py",
