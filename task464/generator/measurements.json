@@ -1,141 +1,103 @@
 {
- "seed": 46835,
- "applications": 55362,
- "places_funded": 18494,
- "partners": {
-  "ASH": {
-   "golden": 9.2672,
-   "rung3": 8.1763,
-   "rung2b": 8.9655,
-   "rung2": 7.9102,
-   "rung1": 17.1918,
-   "rung0": 18.2219,
-   "places": 3388,
-   "offers": 3840,
-   "filled": 1934,
-   "fill": 0.5708
+ "seed": 46486,
+ "withdrawals": 17200,
+ "moderated": 2700,
+ "raw_coded": {
+  "CR": 19.8256,
+  "WH": 24.343,
+  "TR": 12.8605,
+  "CD": 15.2035,
+  "HL": 12.9244,
+  "OT": 14.843
+ },
+ "corrected": {
+  "CR": 26.0932,
+  "WH": 19.2675,
+  "TR": 14.111,
+  "CD": 15.1051,
+  "HL": 13.2147,
+  "OT": 12.2085
+ },
+ "rung1_drop_other": {
+  "CR": 23.2812,
+  "WH": 28.5861,
+  "TR": 15.1021,
+  "CD": 17.8535,
+  "HL": 15.1772,
+  "OT": 0.0
+ },
+ "rung2_moderated_raw": {
+  "CR": 23.1111,
+  "WH": 13.8519,
+  "TR": 16.8519,
+  "CD": 16.4444,
+  "HL": 16.4444,
+  "OT": 13.2963
+ },
+ "reverse_matrix": {
+  "CR": {
+   "CR": 0.897778,
+   "WH": 0.137778,
+   "TR": 0.104444,
+   "CD": 0.046667,
+   "HL": 0.042222,
+   "OT": 0.157778
   },
-  "BRN": {
-   "golden": 15.01,
-   "rung3": 13.5043,
-   "rung2b": 13.8556,
-   "rung2": 12.4657,
-   "rung1": 25.0216,
-   "rung0": 26.8295,
-   "places": 3175,
-   "offers": 3529,
-   "filled": 2104,
-   "fill": 0.6627
+  "WH": {
+   "CR": 0.017778,
+   "WH": 0.726667,
+   "TR": 0.022222,
+   "CD": 0.013333,
+   "HL": 0.011111,
+   "OT": 0.04
   },
-  "CAL": {
-   "golden": 13.6321,
-   "rung3": 12.6425,
-   "rung2b": 12.6776,
-   "rung2": 11.7572,
-   "rung1": 30.3339,
-   "rung0": 31.8788,
-   "places": 3066,
-   "offers": 3306,
-   "filled": 1585,
-   "fill": 0.517
+  "TR": {
+   "CR": 0.024444,
+   "WH": 0.062222,
+   "TR": 0.802222,
+   "CD": 0.028889,
+   "HL": 0.015556,
+   "OT": 0.077778
   },
-  "DUN": {
-   "golden": 20.593,
-   "rung3": 12.6368,
-   "rung2b": 11.9091,
-   "rung2": 7.308,
-   "rung1": 19.0188,
-   "rung0": 25.4939,
-   "places": 3364,
-   "offers": 5482,
-   "filled": 3298,
-   "fill": 0.9804
+  "CD": {
+   "CR": 0.015556,
+   "WH": 0.017778,
+   "TR": 0.015556,
+   "CD": 0.855556,
+   "HL": 0.033333,
+   "OT": 0.048889
   },
-  "ELM": {
-   "golden": 5.6979,
-   "rung3": 5.1392,
-   "rung2b": 5.2133,
-   "rung2": 4.7021,
-   "rung1": 15.8279,
-   "rung0": 16.4605,
-   "places": 2778,
-   "offers": 3080,
-   "filled": 1375,
-   "fill": 0.495
+  "HL": {
+   "CR": 0.024444,
+   "WH": 0.013333,
+   "TR": 0.035556,
+   "CD": 0.008889,
+   "HL": 0.84,
+   "OT": 0.064444
   },
-  "FAI": {
-   "golden": 12.2653,
-   "rung3": 11.3484,
-   "rung2b": 11.6095,
-   "rung2": 10.7417,
-   "rung1": 30.5392,
-   "rung0": 31.4707,
-   "places": 2723,
-   "offers": 2943,
-   "filled": 1074,
-   "fill": 0.3944
+  "OT": {
+   "CR": 0.02,
+   "WH": 0.042222,
+   "TR": 0.02,
+   "CD": 0.046667,
+   "HL": 0.057778,
+   "OT": 0.611111
   }
  },
- "routes": {
-  "rung0": [
-   "CAL",
-   "FAI",
-   "BRN",
-   "DUN",
-   "ASH",
-   "ELM"
-  ],
-  "rung1": [
-   "FAI",
-   "CAL",
-   "BRN",
-   "DUN",
-   "ASH",
-   "ELM"
-  ],
-  "rung2": [
-   "BRN",
-   "CAL",
-   "FAI",
-   "ASH",
-   "DUN",
-   "ELM"
-  ],
-  "rung2b": [
-   "BRN",
-   "CAL",
-   "DUN",
-   "FAI",
-   "ASH",
-   "ELM"
-  ],
-  "rung3": [
-   "BRN",
-   "CAL",
-   "DUN",
-   "FAI",
-   "ASH",
-   "ELM"
-  ],
-  "golden": [
-   "DUN",
-   "BRN",
-   "CAL",
-   "FAI",
-   "ASH",
-   "ELM"
-  ]
- },
- "call": "DUN",
- "runner_up": "BRN",
- "margin": 1.372,
- "min_graded_gap": 1.3668,
- "a_decisive_worth": 7.9562,
- "ranks_of_call": {
-  "rung0": 4,
-  "rung1": 4,
-  "rung2": 5,
-  "rung2b": 3,
-  "rung3": 3
+ "call": "CR",
+ "call_label": "Caring responsibilities",
+ "runner_up": "WH",
+ "margin": 1.3543,
+ "default_path": "WH",
+ "default_path_label": "Work hours clash",
+ "default_margin": 1.2279,
+ "a_decisive_worth": 6.2676,
+ "moderated_per_code": {
+  "CR": 450,
+  "WH": 450,
+  "TR": 450,
+  "CD": 450,
+  "HL": 450,
+  "OT": 450
  }
 }

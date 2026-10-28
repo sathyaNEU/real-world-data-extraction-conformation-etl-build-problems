@@ -1,81 +1,100 @@
-"""task464 architecture 6: the world.
+"""task464 architecture 8: the world.
 
-A combined authority commissions adult skills places from six delivery partners. Places are funded before the
-learner decides; a refused place can be passed down the ballot only until the intake's enrolment census date.
-The decision is which partner's model to scale for the 2027 funded place allocation.
+An adult education service reviews why its learners withdrew in 2025/26. Each withdrawal carries the learner's
+own free-text exit comment and the category a coder placed it in against the service's coding manual. Every term
+the service moderates a fixed number of comments per coded category: a second, senior coder re-reads them and
+records the category the comment belongs in.
 
-Nothing in this module states a fill rate, a yield or a ranking. Those are computed in sim.py and answers.py.
+Nothing in this module states a corrected share, a hit rate or a ranking. Those are computed in sim.py and
+answers.py and asserted in checks.py.
 """
 
+SERVICE = "Thornmere Adult Education Service"
 AUTHORITY = "Thornmere Combined Authority"
-PROGRAMME = "Adult Skills Place Ballot"
-QUALIFICATION = "Level 2 Certificate in Workplace Numeracy"
+MANUAL = "Exit Comment Coding Manual"
 CURRENCY = "GBP"
-ASOF = "2026-11-20"             # the commissioning decision is taken after this date
-DECISION_YEAR = "2027"          # the allocation not yet committed
+ASOF = "2026-11-18"          # the review is taken after this date
+YEAR = "2025/26"
+DECISION_YEAR = "2027"
 
-# People, drawn with guard.py names --geo england --seed 464. Never typed.
 PEOPLE = {
-    "commissioning_manager": "Glenn Taylor",     # adult skills team, prepares the slate
-    "data_officer": "Gail Dobson",               # management information returns
+    "retention_lead": "Roger Nicholls",     # puts the target to the head of service
+    "moderator": "Carly Leonard",           # senior coder who runs the termly moderation
 }
 
-# The two intakes the evidence covers. The census date is the hard stop on the waitlist cascade: a place not
-# taken up by a learner enrolled on that date cannot be claimed and cannot be re-offered.
-INTAKES = [
-    {"code": "AUT25", "label": "autumn 2025", "term_start": "2025-09-15", "census": "2025-10-15",
-     "release_prelim": "2026-06-30", "release_revised": "2026-07-28", "share": 0.56},
-    {"code": "SPR26", "label": "spring 2026", "term_start": "2026-01-12", "census": "2026-02-04",
-     "release_prelim": "2026-09-29", "release_revised": "2026-10-27", "share": 0.44},
+# The six categories of the coding manual, in manual order.
+CATEGORIES = [
+    ("CR", "Caring responsibilities"),
+    ("WH", "Work hours clash"),
+    ("TR", "Travel or transport"),
+    ("CD", "Course too difficult"),
+    ("HL", "Health"),
+    ("OT", "Other or not stated"),
+]
+CODES = [c for c, _ in CATEGORIES]
+LABEL = dict(CATEGORIES)
+
+# The composition of the reasons learners actually withdrew for. Latent: never shipped, never printed.
+TRUE_SHARE = {"CR": 0.250, "WH": 0.205, "TR": 0.140, "CD": 0.155, "HL": 0.130, "OT": 0.120}
+
+# How the coders behave. CODED_GIVEN_TRUE[coded][true] = P(a case of `true` is coded `coded`).
+# A caring responsibility reaches the record as a sentence about hours ("could not get cover for mum on
+# Tuesdays"), so CR is recognised in 68 of every 100 cases that belong to it and WH takes most of the spill.
+CODED_GIVEN_TRUE = {
+    "CR": {"CR": 0.68, "WH": 0.03, "TR": 0.05, "CD": 0.02, "HL": 0.04, "OT": 0.05},
+    "WH": {"CR": 0.14, "WH": 0.90, "TR": 0.08, "CD": 0.03, "HL": 0.02, "OT": 0.08},
+    "TR": {"CR": 0.06, "WH": 0.02, "TR": 0.74, "CD": 0.01, "HL": 0.02, "OT": 0.04},
+    "CD": {"CR": 0.02, "WH": 0.01, "TR": 0.02, "CD": 0.86, "HL": 0.01, "OT": 0.07},
+    "HL": {"CR": 0.02, "WH": 0.01, "TR": 0.02, "CD": 0.02, "HL": 0.84, "OT": 0.04},
+    "OT": {"CR": 0.08, "WH": 0.03, "TR": 0.09, "CD": 0.06, "HL": 0.07, "OT": 0.72},
+}
+
+ENROLMENTS = 86000           # 2025/26 enrolments across the service
+WITHDRAWALS = 17200          # of which withdrew before completing
+MODERATED_PER_CODE = 450     # the termly moderation sample is a fixed number PER CODED CATEGORY
+
+# Four terms. The student record system changed between T2 and T3, which is why the exports differ.
+TERMS = [
+    {"code": "T1", "label": "autumn 2025", "start": "2025-09-08", "end": "2025-10-24", "share": 0.29,
+     "export": "A"},
+    {"code": "T2", "label": "winter 2025", "start": "2025-11-03", "end": "2025-12-19", "share": 0.24,
+     "export": "A"},
+    {"code": "T3", "label": "spring 2026", "start": "2026-01-12", "end": "2026-03-27", "share": 0.27,
+     "export": "B"},
+    {"code": "T4", "label": "summer 2026", "start": "2026-04-20", "end": "2026-07-17", "share": 0.20,
+     "export": "B"},
 ]
 
-# One row per delivery partner.
-#   apps      total applications across both intakes
-#   places    places funded across both intakes (the commissioning schedule)
-#   takeup    share of applicants who would enrol if offered a place (the learner's own choice)
-#   cascade   share of refused places the partner refills from its waitlist before the census date
-#   effect    the effect on achievement among learners who enrol (the per-participant effect)
-#   base      achievement rate for a learner who does not enrol on the programme
-#   ballot_weeks   weeks between the partner's ballot and the census date, which is why cascade differs
-PARTNERS = [
-    {"key": "ASH", "name": "Ashcombe Adult Learning",      "town": "Ashcombe",
-     "apps": 10958, "places": 3388, "takeup": 0.50, "cascade": 0.13, "effect": 0.150, "base": 0.318,
-     "ballot_weeks": 3, "reserve_list": False},
-    {"key": "BRN", "name": "Brenlow Skills Trust",         "town": "Brenlow",
-     "apps": 9300,  "places": 3175, "takeup": 0.60, "cascade": 0.17, "effect": 0.240, "base": 0.281,
-     "ballot_weeks": 4, "reserve_list": False},
-    {"key": "CAL", "name": "Calderwick College",           "town": "Calderwick",
-     "apps": 9499,  "places": 3066, "takeup": 0.48, "cascade": 0.08, "effect": 0.260, "base": 0.247,
-     "ballot_weeks": 2, "reserve_list": False},
-    {"key": "DUN", "name": "Dunthorpe Learning Partnership","town": "Dunthorpe",
-     "apps": 8756,  "places": 3364, "takeup": 0.60, "cascade": 0.95, "effect": 0.200, "base": 0.262,
-     "ballot_weeks": 10, "reserve_list": True},
-    {"key": "ELM", "name": "Elmsgate Institute",           "town": "Elmsgate",
-     "apps": 8648,  "places": 2778, "takeup": 0.45, "cascade": 0.09, "effect": 0.120, "base": 0.236,
-     "ballot_weeks": 2, "reserve_list": False},
-    {"key": "FAI", "name": "Fairholt Training",            "town": "Fairholt",
-     "apps": 8201,  "places": 2723, "takeup": 0.36, "cascade": 0.05, "effect": 0.280, "base": 0.273,
-     "ballot_weeks": 1, "reserve_list": False},
+# Two sites were renamed by a merger between T2 and T3, so the earlier export carries the former names.
+SITES = [
+    {"code": "NMK", "name": "Northmarket Centre", "former": "Northmarket Adult College"},
+    {"code": "HWD", "name": "Hollowdean Centre", "former": "Hollowdean Learning Shop"},
+    {"code": "CSG", "name": "Cross Gate Centre", "former": None},
+    {"code": "WBR", "name": "Westbury Centre", "former": None},
+    {"code": "LTH", "name": "Lathe Street Centre", "former": None},
 ]
-BY_KEY = {p["key"]: p for p in PARTNERS}
 
-# Achievement is driven partly by a latent readiness that also drives take-up. This is the selection that makes
-# an attendance-based comparison wrong, and it is why the ballot is the only honest contrast.
-SELECTION = 0.045               # achievement points per standard deviation of readiness
+CURRICULUM = ["English and maths", "Digital skills", "ESOL", "Health and social care",
+              "Business administration", "Construction skills"]
 
-SEED = 46835                    # fixed; build.py asserts two byte-identical rebuilds
+# Subcontracted delivery. These enrolments sit in the same extract because they run on the service's own
+# student record, but they are not the service's own provision and the review's scope is the five centres.
+# The code is absent from site_directory.csv, which is the only place the five centres are listed.
+SUBCONTRACT_SITE = {"code": "MDV", "name": "Meadowvale (subcontracted)"}
+SUBCONTRACT_ENROLMENTS = 4130
 
-def intake(code):
-    for i in INTAKES:
-        if i["code"] == code:
-            return i
+SEED = 46486
+
+
+def term(code):
+    for t in TERMS:
+        if t["code"] == code:
+            return t
     raise KeyError(code)
 
-def places_for(partner, intake_code):
-    """Places funded for one partner in one intake. Integer, and the two intakes sum to the partner's total."""
-    first = int(round(partner["places"] * INTAKES[0]["share"]))
-    return first if intake_code == INTAKES[0]["code"] else partner["places"] - first
 
-def apps_for(partner, intake_code):
-    first = int(round(partner["apps"] * INTAKES[0]["share"]))
-    return first if intake_code == INTAKES[0]["code"] else partner["apps"] - first
+def withdrawals_for(code):
+    first = [int(round(WITHDRAWALS * t["share"])) for t in TERMS]
+    diff = WITHDRAWALS - sum(first)
+    first[0] += diff                      # the split sums exactly
+    return dict(zip([t["code"] for t in TERMS], first))[code]

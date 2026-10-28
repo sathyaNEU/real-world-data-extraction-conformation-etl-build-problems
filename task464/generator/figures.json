@@ -1,0 +1,71 @@
+{
+ "call": "CR",
+ "call_label": "Caring responsibilities",
+ "call_share_pct": 26.1,
+ "runner_up": "WH",
+ "runner_up_label": "Work hours clash",
+ "runner_up_share_pct": 19.3,
+ "gap_points": 6.8,
+ "corrected_share_pct": {
+  "CR": 26.1,
+  "WH": 19.3,
+  "TR": 14.1,
+  "CD": 15.1,
+  "HL": 13.2,
+  "OT": 12.2
+ },
+ "coded_share_pct": {
+  "CR": 19.8,
+  "WH": 24.3,
+  "TR": 12.9,
+  "CD": 15.2,
+  "HL": 12.9,
+  "OT": 14.8
+ },
+ "withdrawals_total": 17200,
+ "moderated_total": 2700,
+ "ask1_curriculum": {
+  "English and maths": {
+   "enrolments": 14329,
+   "planned_hours_nearest_10": 985710
+  },
+  "Digital skills": {
+   "enrolments": 14469,
+   "planned_hours_nearest_10": 994590
+  },
+  "ESOL": {
+   "enrolments": 14166,
+   "planned_hours_nearest_10": 980380
+  },
+  "Health and social care": {
+   "enrolments": 14144,
+   "planned_hours_nearest_10": 977780
+  },
+  "Business administration": {
+   "enrolments": 14262,
+   "planned_hours_nearest_10": 990380
+  },
+  "Construction skills": {
+   "enrolments": 14630,
+   "planned_hours_nearest_10": 1006940
+  }
+ },
+ "ask2_completion_pct": {
+  "Cross Gate Centre": 68.6,
+  "Hollowdean Centre": 68.5,
+  "Lathe Street Centre": 69.0,
+  "Northmarket Centre": 68.9,
+  "Westbury Centre": 69.4
+ },
+ "ask3_changed_on_moderation": {
+  "CR": 46,
+  "WH": 123,
+  "TR": 89,
+  "CD": 65,
+  "HL": 72,
+  "OT": 175
+ },
+ "ask3_changed_total": 570,
+ "enrolments_in_scope": 86000,
+ "enrolments_in_extract": 90130
+}

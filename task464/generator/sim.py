@@ -1,133 +1,154 @@
-"""task464 architecture 6: the generating process.
+"""task464 architecture 8: the generating process.
 
-Per partner and intake: applications arrive, a ballot orders them, places are offered to the top of the order,
-refused places are passed further down the order until the partner's waitlist effort runs out or the enrolment
-census date closes the intake, learners who are offered a place enrol if they would accept it, and achievement
-follows a latent readiness plus the partner's own effect on the learners who enrol.
+Each withdrawal has a reason the learner actually had, and a category a coder placed their comment in. The two
+differ at a rate that depends on the category, because some reasons are described obliquely.
 
-Readiness drives BOTH acceptance and achievement. That is the selection which makes any attendance-based
-comparison wrong, and it is why the ballot is the only honest contrast in the pack.
+The moderation sample is drawn as a fixed number PER CODED CATEGORY, so what it measures is
+P(true category | coded category), and the corrected composition is the coded composition reweighted by it:
+
+    p[j] = sum over coded i of q[i] * R[j|i]
+
+That is one formula with no free parameter. The moderation sample's own composition is NOT an estimate of the
+service's composition, because the stratification over-represents whichever categories are coded rarely.
 """
 import numpy as np
 import world as W
+
+# Clause pools. A comment carries the clause of the reason the learner had, and where the coder read it as
+# something else it also carries the clause that supports that reading, because that is why they read it so.
+TRUE_CLAUSE = {
+    "CR": ["my mum came out of hospital and i look after her now",
+           "no one else can collect the little ones from school",
+           "my daughter's childminder gave up at half term",
+           "im caring for my husband since his fall",
+           "had to take over looking after my grandson"],
+    "WH": ["my shifts changed to lates so i cant make the class",
+           "the depot put me on a 2 till 10 rota",
+           "work moved me to saturdays",
+           "i got more hours at the shop and they clash",
+           "my manager wont swap the tuesday shift"],
+    "TR": ["the 47 bus stopped running that early",
+           "it was two buses each way and i couldnt keep paying it",
+           "roadworks on the bypass made me late every week",
+           "my lift fell through when my neighbour moved",
+           "parking at the centre was impossible after six"],
+    "CD": ["the maths was way above what i did at school",
+           "i couldnt keep up with the pace of the units",
+           "the assignments were harder than i expected",
+           "felt lost after the first few weeks",
+           "the level was wrong for me, should have done entry 3"],
+    "HL": ["ive been signed off with my back",
+           "my anxiety got worse and i couldnt come in",
+           "waiting on an operation in march",
+           "chest infection and then it just dragged on",
+           "my medication changed and im not right yet"],
+    "OT": ["just wasnt for me in the end",
+           "changed my mind about the course",
+           "didnt get on with it",
+           "sorted something else out instead",
+           "no particular reason really"],
+}
+# The clause that makes a comment readable as the coded category when the coder read it that way.
+BRIDGE = {
+    "CR": ["and i cant get cover in the evenings", "so the evenings are not possible for me now"],
+    "WH": ["so the tuesday evening slot doesnt work with my hours",
+           "and the timing just clashes now", "the hours dont fit any more"],
+    "TR": ["and getting across town after that is hard", "so getting there got difficult"],
+    "CD": ["and i was falling behind on the work", "i wasnt keeping up either"],
+    "HL": ["and im not been well with it", "it took it out of me health wise"],
+    "OT": ["", "it just stopped working out"],
+}
 
 
 def simulate(seed=None):
     seed = W.SEED if seed is None else seed
     rng = np.random.default_rng(seed)
-    cells, rows = {}, []
-    for p in W.PARTNERS:
-        for ik in W.INTAKES:
-            n = W.apps_for(p, ik["code"])
-            places = W.places_for(p, ik["code"])
-            readiness = rng.normal(0, 1, n)
-            order = rng.permutation(n)                  # the ballot draw: random order
-            rank = np.empty(n, int)
-            rank[order] = np.arange(n)                  # rank 0 is first in the ballot
-            # Who would take a place up if offered one. Calibrated to the partner's own take-up.
-            accepts = readiness > np.quantile(readiness, 1 - p["takeup"])
-            won_first = rank < places
-
-            # The waitlist cascade. A refused place is passed to the next applicant in ballot order. The partner
-            # works its list only so far: cascade is the share of refused places it refills before the census
-            # date, which is set by how early it ballots and whether it keeps a standing reserve list.
-            refused = int((won_first & ~accepts).sum())
-            target = int(round(p["cascade"] * refused))
-            boundary, refilled, r = places - 1, 0, places
-            while r < n and refilled < target:
-                if accepts[order[r]]:
-                    refilled += 1
-                boundary = r
-                r += 1
-            offered = rank <= boundary                  # ever offered a place, first round or down the list
-            enrolled = offered & accepts
-
-            pr = p["base"] + W.SELECTION * readiness + p["effect"] * enrolled
-            achieved = rng.random(n) < np.clip(pr, 0.01, 0.99)
-
-            cells[(p["key"], ik["code"])] = dict(
-                n=n, places=places, rank=rank, order=order, offered=offered, won_first=won_first,
-                enrolled=enrolled, achieved=achieved, readiness=readiness,
-                boundary=int(boundary), refused=refused, refilled=refilled,
-                m=int(offered.sum()), filled=int(enrolled.sum()))
-            for i in range(n):
-                rows.append((p["key"], ik["code"], int(rank[i]), bool(offered[i]), bool(won_first[i]),
-                             bool(enrolled[i]), bool(achieved[i]), float(readiness[i])))
-    return dict(seed=seed, cells=cells, rows=rows)
+    codes = W.CODES
+    true_p = np.array([W.TRUE_SHARE[c] for c in codes])
+    rows = []
+    wid = 0
+    for t in W.TERMS:
+        n = W.withdrawals_for(t["code"])
+        for _ in range(n):
+            wid += 1
+            tr = codes[int(rng.choice(len(codes), p=true_p))]
+            col = np.array([W.CODED_GIVEN_TRUE[i][tr] for i in codes])
+            cd = codes[int(rng.choice(len(codes), p=col / col.sum()))]
+            txt = TRUE_CLAUSE[tr][int(rng.integers(0, len(TRUE_CLAUSE[tr])))]
+            if cd != tr:
+                br = BRIDGE[cd][int(rng.integers(0, len(BRIDGE[cd])))]
+                txt = (txt + " " + br).strip()
+            rows.append({"wid": wid, "term": t["code"], "true": tr, "coded": cd, "comment": txt})
+    # the moderation sample: a fixed number PER CODED CATEGORY, spread across the terms
+    mod = []
+    for i in codes:
+        pool = [r for r in rows if r["coded"] == i]
+        take = min(W.MODERATED_PER_CODE, len(pool))
+        pick = rng.choice(len(pool), size=take, replace=False)
+        for j in pick:
+            mod.append(pool[int(j)])
+    modset = {r["wid"] for r in mod}
+    for r in rows:
+        r["moderated"] = r["wid"] in modset
+    return {"seed": seed, "rows": rows, "codes": codes}
 
 
-def _contrast(c, treat_mask, control_mask):
-    y = c["achieved"]
-    if treat_mask.sum() == 0 or control_mask.sum() == 0:
-        return 0.0
-    return float(y[treat_mask].mean() - y[control_mask].mean())
+def composition(rows, key):
+    codes = W.CODES
+    n = len(rows)
+    return {c: sum(1 for r in rows if r[key] == c) / n for c in codes}
 
 
-def ladder(sim):
-    """Every route a competent analyst can take, per partner, pooled over the two intakes.
-
-    golden  additional achievements per 100 PLACES FUNDED, the unit the authority commits:
-            100 * sum_over_intakes(m_i * clean_contrast_i) / sum_over_intakes(places_i)
-    rung3   the same clean contrast expressed per 100 LEARNERS OFFERED a place
-    rung2b  the first-round ballot contrast grossed per funded place
-    rung2   the first-round ballot contrast per learner offered (the textbook ITT)
-    rung1   ballot winners who enrolled against ballot losers
-    rung0   learners who enrolled against learners who did not
-    """
-    out = {}
-    for p in W.PARTNERS:
-        num_clean = num_first = 0.0
-        m_tot = pl_tot = 0
-        enr_y = enr_n = nen_y = nen_n = 0
-        w1_y = w1_n = lo_y = lo_n = 0
-        for ik in W.INTAKES:
-            c = sim["cells"][(p["key"], ik["code"])]
-            clean = _contrast(c, c["offered"], ~c["offered"])
-            first = _contrast(c, c["won_first"], ~c["won_first"])
-            num_clean += clean * c["m"]
-            num_first += first * c["m"]
-            m_tot += c["m"]
-            pl_tot += c["places"]
-            y = c["achieved"]
-            enr_y += y[c["enrolled"]].sum(); enr_n += int(c["enrolled"].sum())
-            nen_y += y[~c["enrolled"]].sum(); nen_n += int((~c["enrolled"]).sum())
-            we = c["won_first"] & c["enrolled"]
-            w1_y += y[we].sum(); w1_n += int(we.sum())
-            lo_y += y[~c["won_first"]].sum(); lo_n += int((~c["won_first"]).sum())
-        out[p["key"]] = dict(
-            golden=100.0 * num_clean / pl_tot,
-            rung3=100.0 * num_clean / m_tot,
-            rung2b=100.0 * num_first / pl_tot,
-            rung2=100.0 * num_first / m_tot,
-            rung1=100.0 * (w1_y / w1_n - lo_y / lo_n),
-            rung0=100.0 * (enr_y / enr_n - nen_y / nen_n),
-            places=pl_tot, offers=m_tot,
-            filled=sum(sim["cells"][(p["key"], i["code"])]["filled"] for i in W.INTAKES))
-        out[p["key"]]["fill"] = out[p["key"]]["filled"] / pl_tot
-    return out
+def reverse_matrix(rows):
+    """R[j][i] = P(true j | coded i), from the moderation sample alone."""
+    codes = W.CODES
+    R = {j: {} for j in codes}
+    for i in codes:
+        sub = [r for r in rows if r["moderated"] and r["coded"] == i]
+        m = len(sub)
+        for j in codes:
+            R[j][i] = (sum(1 for r in sub if r["true"] == j) / m) if m else 0.0
+    return R
 
 
-def rank_by(lad, key):
-    return sorted(lad, key=lambda k: -lad[k][key])
+def corrected(rows):
+    q = composition(rows, "coded")
+    R = reverse_matrix(rows)
+    return {j: sum(q[i] * R[j][i] for i in W.CODES) for j in W.CODES}, q, R
+
+
+def ladder(rows):
+    codes = W.CODES
+    q = composition(rows, "coded")
+    p, _, R = corrected(rows)
+    # rung 1: drop the catch-all and renormalise, a common tidy-up
+    s = sum(q[c] for c in codes if c != "OT")
+    r1 = {c: (q[c] / s if c != "OT" else 0.0) for c in codes}
+    # rung 2: the moderation sample's own composition, ignoring that it is stratified by coded category
+    mod = [r for r in rows if r["moderated"]]
+    r2 = {c: sum(1 for r in mod if r["true"] == c) / len(mod) for c in codes}
+    return {"rung0_raw_coded": q, "rung1_drop_other": r1, "rung2_moderated_raw": r2, "golden_corrected": p,
+            "reverse_matrix": R}
 
 
 if __name__ == "__main__":
     s = simulate()
-    lad = ladder(s)
-    print("seed", s["seed"], " applications", len(s["rows"]))
-    print("%-4s %7s %7s %7s %7s %7s %8s | %6s %7s %7s" % (
-        "key", "rung0", "rung1", "rung2", "rung2b", "rung3", "GOLDEN", "fill", "places", "offers"))
-    for p in W.PARTNERS:
-        d = lad[p["key"]]
-        print("%-4s %7.2f %7.2f %7.2f %7.2f %7.2f %8.2f | %6.3f %7d %7d" % (
-            p["key"], d["rung0"], d["rung1"], d["rung2"], d["rung2b"], d["rung3"], d["golden"],
-            d["fill"], d["places"], d["offers"]))
+    lad = ladder(s["rows"])
+    print("seed", s["seed"], " withdrawals", len(s["rows"]),
+          " moderated", sum(1 for r in s["rows"] if r["moderated"]))
     print()
-    for k in ("rung0", "rung1", "rung2", "rung2b", "rung3", "golden"):
-        print("%-7s %s" % (k, " > ".join(rank_by(lad, k))))
-    g = rank_by(lad, "golden")
+    print("%-26s %9s %9s %9s %9s" % ("reason", "rung0", "rung1", "rung2", "GOLDEN"))
+    for c in W.CODES:
+        print("%-26s %8.2f%% %8.2f%% %8.2f%% %8.2f%%" % (
+            W.LABEL[c], 100 * lad["rung0_raw_coded"][c], 100 * lad["rung1_drop_other"][c],
+            100 * lad["rung2_moderated_raw"][c], 100 * lad["golden_corrected"][c]))
     print()
-    print("call %s, runner-up %s, margin %.3fx" % (g[0], g[1], lad[g[0]]["golden"] / lad[g[1]]["golden"]))
-    for k in ("rung0", "rung1", "rung2", "rung2b", "rung3"):
-        print("  golden's rank on %-7s %d of 6 (that route names %s)" % (
-            k, rank_by(lad, k).index(g[0]) + 1, rank_by(lad, k)[0]))
+    for k in ("rung0_raw_coded", "rung1_drop_other", "rung2_moderated_raw", "golden_corrected"):
+        r = sorted(W.CODES, key=lambda c: -lad[k][c])
+        print("%-22s names %-26s margin %.3fx" % (
+            k, W.LABEL[r[0]], lad[k][r[0]] / lad[k][r[1]]))
+    g = sorted(W.CODES, key=lambda c: -lad["golden_corrected"][c])
+    print()
+    print("recall of each category (P(coded as itself | true)) from the moderation sample:")
+    for c in W.CODES:
+        print("   %-26s %.3f" % (W.LABEL[c], lad["reverse_matrix"][c][c]))

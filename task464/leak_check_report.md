@@ -1,19 +1,15 @@
 # leak check, task464
 
-**Verdict: REVIEW.** 13 files read, 74 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 74 golden figures and 5 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, positions, demand, ceiling, attested, sentence, inside, station, reading, carries, verdict, control, position, asserted, architecture, scores, intervals, nothing, spends, golden, method, objective, nonprofit, directory, licence
+Stump terms swept: measured, architecture, decisive, places, margin, refused, winner, family, allocation, learners, arithmetic, selection, carries, classification, service, sentence, partner, reading, education, objective, decision, nothing, specification, population, competing
 
-## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `licence_fee_schedule_2026.pdf`: golden figure 105 appears: ...l surcharge 1 to 4 USD 1,340 USD 185 5 to 8 USD 2,105 USD 240 9 to 12 USD 3,460 USD 310 13 to 18 USD 4,...
-- **REVIEW** `network_agreement_2027_capacity_terms.pdf`: golden figure 4.5 appears: ...er it was delivered in network or out of network. 4.5 Corrective action Wrenlow Community Health Plan...
-- **REVIEW** `network_agreement_2027_capacity_terms.pdf`: carries 12 of 13 distinctive words of the committed call: 'The 2027 outpatient dialysis and infusion network holds 3,886 weekly treatment slots, and six of the twelve service area'
-
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `licence_fee_schedule_2026.pdf`: 3 of 25 stump-paragraph terms appear (station, carries, licence); read whether the document names the move
-- **REVIEW** `network_agreement_2027_capacity_terms.pdf`: 6 of 25 stump-paragraph terms appear (positions, demand, station, position, directory, licence); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `coding_manual_2025.pdf`: 3 of 25 stump-paragraph terms appear (carries, service, partner); read whether the document names the move
+- **REVIEW** `quality_assurance_procedure.pdf`: 3 of 25 stump-paragraph terms appear (service, reading, education); read whether the document names the move
+- **REVIEW** `withdrawal_review_terms_of_reference.pdf`: 4 of 25 stump-paragraph terms appear (learners, carries, service, education); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -21,6 +17,8 @@ Stump terms swept: decisive, positions, demand, ceiling, attested, sentence, ins
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
+
+## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
