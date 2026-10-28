@@ -1,386 +1,294 @@
-"""The goldens: hf_programme_site_2027.xlsx (each hospital's two-year survival and how its patients left follow-up, the
-2025 laboratory testing, the 2025 new diagnoses) and service_line_committee_hf_2027.pptx (the recommendation to the
-service line committee with the chart of the five hospitals' two-year survival), plus generator/figures.json and
-metadata.json. Every figure comes from analysis.py run on the shipped pack."""
+"""The goldens: the frequency workbook and the decision deck, and generator/figures.json, from the golden's own run
+on the bundle."""
 import json
 import os
-import shutil
 
-import analysis as A
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.utils import get_column_letter
+
 import common as K
-import postprocess as PP
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-XLSX, PPTX = "hf_programme_site_2027.xlsx", "service_line_committee_hf_2027.pptx"
-
-
-def whole(x):
-    """Round half up to the whole unit (percent, point, count)."""
-    return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
+ROUTE_ORDER = ["Policyholder", "Third party", "Third-party insurer", "Solicitor practice", "Claims management company"]
+HDR = PatternFill("solid", fgColor="1F4E5A")
+PILOT = PatternFill("solid", fgColor="E3EFEC")
+THIN = Side(style="thin", color="9AA9B0")
 
 
-def results(target):
-    D = A.load(target)
-    L = A.ladder(D)
-    C = L["_cohort"]
-    S = L["golden"]
-    order = sorted(K.CODES, key=lambda h: S[h])
-    pick, runner = order[0], order[1]
-    gap = 100 * (S[runner] - S[pick])
-    G = A.by_h(C)
-    counts = {}
-    for h in K.CODES:
-        g = G[h]
-        counts[h] = dict(n=len(g), deaths=sum(p["E"] for p in g), north=sum(p["lost"] == "north" for p in g),
-                         consent=sum(p["lost"] == "consent" for p in g))
-    rates = {h: A.censor_rates(G[h]) for h in K.CODES}
-    visits = {h: [sum(1 for p in G[h] for d, c in p["visits"] if d <= p["T"] and c == k) for k in range(4)] for h in K.CODES}
-    moves = {h: [sum(1 for p in G[h] if p["lost"] == "north" and p["visits"] and p["visits"][-1][1] == k)
-                 for k in range(4)] for h in K.CODES}
-    return dict(D=D, L=L, S=S, order=order, pick=pick, runner=runner, gap=gap, counts=counts, rates=rates, visits=visits,
-                moves=moves, surv={h: whole(100 * S[h]) for h in K.CODES}, gap_pts=whole(gap),
-                km={h: whole(100 * L["km"][h]) for h in K.CODES}, ask_a=A.ask_a(D), ask_b=A.ask_b(D))
+def r1(x):
+    return float("%.1f" % (x + 1e-12))
 
 
-# ---------------------------------------------------------------------------------------------- the workbook
-def workbook(path, o):
-    import openpyxl
-    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-    wb = openpyxl.Workbook()
-    ink, accent = "1C2428", "0E5A6E"
-    thin = Side(style="thin", color="B4BDC3")
-    head_fill = PatternFill("solid", fgColor="E3EEF1")
-    pick_fill = PatternFill("solid", fgColor="FBE7D6")
-    pick, runner = o["pick"], o["runner"]
+def figures(R):
+    g = R["freq"]["route"]
+    F = {"call": R["call"], "third": R["third"],
+         "frequency": {r: r1(g[r]) for r in K.REG},
+         "frequency_unrounded": {r: round(g[r], 4) for r in K.REG},
+         "gap": r1(R["gap"]),
+         "earned_car_years": {r: round(R["cy"][r], 2) for r in K.REG},
+         "notified_2025": R["notified"],
+         "ultimate_2025": {r: round(R["est"]["route"][r], 1) for r in K.REG},
+         "not_yet_notified_2025": {r: round(R["est"]["route"][r] - R["notified"][r], 1) for r in K.REG},
+         "backtest_2022_route_pct": {r: round(R["bt"]["route"][r][2], 2) for r in K.REG},
+         "backtest_2022_worst_pct": {h: round(max(abs(v[2]) for v in R["bt"][h].values()), 2) for h in R["bt"]},
+         "final_2022": R["final22"],
+         "default_pooled": {r: r1(R["freq"]["pooled"][r]) for r in K.REG},
+         "default_head": {r: r1(R["freq"]["head"][r]) for r in K.REG},
+         "default_notified_by": {r: r1(R["freq"]["notified_by"][r]) for r in K.REG},
+         "route_factors": {k: round(v, 4) for k, v in R["factors_route"].items()},
+         "cars_on_cover": {"%s|%s" % k: v for k, v in R["ask_a"].items()},
+         "share_still_to_come_pct": {r: round(100 * (R["est"]["route"][r] - R["notified"][r]) / R["est"]["route"][r], 1) for r in K.REG}}
+    return F
 
-    def header(ws, row, cols, height=42):
-        for j, v in enumerate(cols, 1):
-            cell = ws.cell(row=row, column=j, value=v)
-            cell.font = Font(bold=True, color=ink)
-            cell.fill = head_fill
-            cell.alignment = Alignment(wrap_text=True, vertical="top", horizontal="left" if j == 1 else "right")
-            cell.border = Border(bottom=thin)
-        ws.row_dimensions[row].height = height
 
-    def landscape(ws):
-        ws.page_setup.orientation = "landscape"
-        ws.page_setup.paperSize = ws.PAPERSIZE_LETTER
-        ws.page_setup.fitToWidth, ws.page_setup.fitToHeight = 1, 0
-        ws.sheet_properties.pageSetUpPr.fitToPage = True
-        ws.print_title_rows = "4:4"
+def _hdr(ws, row, cols):
+    for i, c in enumerate(cols, 1):
+        cell = ws.cell(row, i, c)
+        cell.font = Font(bold=True, color="FFFFFF", name="Arial", size=10)
+        cell.fill = HDR
+        cell.alignment = Alignment(wrap_text=True, vertical="center")
+    ws.row_dimensions[row].height = 30
 
-    def title(ws, text, sub):
-        ws["A1"] = text
-        ws["A1"].font = Font(bold=True, size=13, color=accent)
-        ws["A2"] = sub
-        ws["A2"].font = Font(italic=True, size=9, color="5A646B")
 
-    def widths(ws, ws_w):
-        for j, w in enumerate(ws_w, 1):
-            ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
+def _title(ws, title, sub):
+    ws["A1"] = title
+    ws["A1"].font = Font(bold=True, size=13, name="Arial", color="1F4E5A")
+    ws["A2"] = sub
+    ws["A2"].font = Font(italic=True, size=9, name="Arial", color="5D666C")
 
-    # Survival
+
+def write_workbook(path, R, F):
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Survival"
-    title(ws, "Host the 2027 programme at %s: the lowest two-year survival from diagnosis" % K.NAME[pick],
-          "Patients newly diagnosed with heart failure in 2022 and 2023, %s. Two-year survival with each patient who moved "
-          "beyond the registry's death linkage carried by the NYHA class recorded at the visit where the move was "
-          "reported." % K.REGISTRY)
-    header(ws, 4, ["Hospital", "Patients diagnosed 2022-23", "Deaths within two years on file",
-                   "Moved beyond the death linkage before two years", "Left at the re-consent before two years",
-                   "Two-year survival (%)"])
-    r = 5
-    for h in o["order"]:
-        c = o["counts"][h]
-        vals = [K.NAME[h], c["n"], c["deaths"], c["north"], c["consent"], o["surv"][h]]
+    ws.title = "Frequency 2025"
+    _title(ws, "Private-car claim frequency, accident year 2025, by sales region",
+           "Claims to 30 September 2026 and claims not yet notified (Motor Reserving Standard v4, development by "
+           "notifying route); per 100 car-years earned in 2025. Pilot terms of 6 October 2026.")
+    cols = ["Sales region", "Earned car-years 2025", "Claims notified to 30 Sep 2026",
+            "Claims not yet notified (estimated)", "Claims, accident year 2025", "Frequency per 100 car-years",
+            "Rank", "Pilot region"]
+    _hdr(ws, 4, cols)
+    order = R["order"]
+    for i, r in enumerate(order):
+        row = 5 + i
+        vals = [r, R["cy"][r], R["notified"][r], R["est"]["route"][r] - R["notified"][r], R["est"]["route"][r],
+                R["freq"]["route"][r], i + 1, "Yes" if r in R["call"] else "No"]
         for j, v in enumerate(vals, 1):
-            cell = ws.cell(row=r, column=j, value=v)
-            if j >= 2:
-                cell.alignment = Alignment(horizontal="right")
-                cell.number_format = "#,##0"
-            if h == pick:
-                cell.fill = pick_fill
-                cell.font = Font(bold=True, color=ink)
-        r += 1
-    r += 1
-    ws.cell(row=r, column=1, value="Recommendation: host the programme at %s from April 2027. Its patients' two-year "
-            "survival is %d%%, %d points below %s's %d%%, the next lowest." % (
-                K.NAME[pick], o["surv"][pick], o["gap_pts"], K.NAME[runner], o["surv"][runner])).font = Font(bold=True)
-    ws.cell(row=r + 1, column=1, value="Survival is the product-limit estimate at two years, each patient still followed "
-            "weighted, visit by visit, by the inverse of the hospital's chance that a patient of the class recorded at "
-            "that visit stays within the death linkage's reach. The gap is worked from the unrounded figures.").font = \
-        Font(size=9, color="5A646B")
-    widths(ws, [34, 14, 14, 18, 16, 14])
+            c = ws.cell(row, j, v)
+            c.font = Font(name="Arial", size=10, bold=(r in R["call"] and j in (1, 6, 8)))
+            if r in R["call"]:
+                c.fill = PILOT
+        ws.cell(row, 2).number_format = "#,##0.00"
+        ws.cell(row, 3).number_format = "#,##0"
+        ws.cell(row, 4).number_format = "#,##0"
+        ws.cell(row, 5).number_format = "#,##0"
+        ws.cell(row, 6).number_format = "0.0"
+    tr = 10
+    ws.cell(tr, 1, "All regions").font = Font(bold=True, name="Arial", size=10)
+    for j, col in ((2, "B"), (3, "C"), (4, "D"), (5, "E")):
+        ws.cell(tr, j, "=SUM(%s5:%s9)" % (col, col)).font = Font(bold=True, name="Arial", size=10)
+        ws.cell(tr, j).number_format = "#,##0.00" if j == 2 else "#,##0"
+        ws.cell(tr, j).border = Border(top=THIN)
+    ws.cell(tr, 6, "=E10/B10*100").number_format = "0.0"
+    ws.cell(12, 1, "Gap, second region to third (%s to %s), per 100 car-years" % (order[1], order[2]))
+    ws.cell(12, 6, R["gap"]).number_format = "0.0"
+    ws.cell(14, 1, "Ranked on unrounded frequencies; the gap is taken before rounding.").font = Font(italic=True, size=9, name="Arial", color="5D666C")
+    for j, wd in enumerate((16, 14, 16, 18, 15, 15, 7, 8), 1):
+        ws.column_dimensions[get_column_letter(j)].width = wd
     ws.freeze_panes = "B5"
-    landscape(ws)
 
-    # Moves by class
-    ws = wb.create_sheet("Moves by class")
-    title(ws, "How the patients left follow-up: moves beyond the death linkage by the NYHA class at the visit",
-          "Clinic visits within each patient's first two years, while followed; a move is counted at the visit where it "
-          "was reported.")
-    header(ws, 4, ["Hospital", "Visits in class I", "II", "III", "IV", "Moves in class I", "II", "III", "IV",
-                   "Chance of moving at a class III visit (%)", "At a class IV visit (%)"])
-    r = 5
-    for h in K.CODES:
-        v, m, rt = o["visits"][h], o["moves"][h], o["rates"][h]
-        vals = [K.NAME[h]] + v + m + [round(100 * rt.get(2, 0.0), 1), round(100 * rt.get(3, 0.0), 1)]
-        for j, x in enumerate(vals, 1):
-            cell = ws.cell(row=r, column=j, value=x)
-            if j >= 2:
-                cell.alignment = Alignment(horizontal="right")
-                cell.number_format = "#,##0" if j <= 9 else "0.0"
-            if h == pick:
-                cell.fill = pick_fill
-        r += 1
-    widths(ws, [34] + [10] * 8 + [16, 14])
-    landscape(ws)
+    ws2 = wb.create_sheet("Development")
+    _title(ws2, "Development factors by notifying route, whole private-car book",
+           "Closed accident years 2019 to 2022: claims at 21 months (30 September of the following year) and final.")
+    _hdr(ws2, 4, ["Notifying route", "Claims at 21 months", "Final claims", "Factor, 21 months to final"] +
+         ["2025 notified, %s" % r for r in K.REG])
+    G = R["_G"]
+    pos = {ay: G.position(ay) for ay in K.CLOSED}
+    fin = {ay: G.final(ay) for ay in K.CLOSED}
+    p25 = G.position(K.OPEN_YEAR)
+    for i, rt in enumerate(ROUTE_ORDER):
+        a = sum(int((pos[ay].route == rt).sum()) for ay in K.CLOSED)
+        b = sum(int((fin[ay].route == rt).sum()) for ay in K.CLOSED)
+        row = 5 + i
+        ws2.cell(row, 1, rt)
+        ws2.cell(row, 2, a).number_format = "#,##0"
+        ws2.cell(row, 3, b).number_format = "#,##0"
+        ws2.cell(row, 4, "=C%d/B%d" % (row, row)).number_format = "0.000"
+        for j, r in enumerate(K.REG):
+            ws2.cell(row, 5 + j, int(((p25.route == rt) & (p25.region == r)).sum())).number_format = "#,##0"
+    ws2.cell(11, 1, "The notifying route is the notified-by field, with claims a representative notified split by the "
+                    "firm type on claimant_representatives.csv.").font = Font(italic=True, size=9, name="Arial", color="5D666C")
+    for j, wd in enumerate((26, 13, 12, 14, 13, 13, 13, 13, 13), 1):
+        ws2.column_dimensions[get_column_letter(j)].width = wd
+    ws2.freeze_panes = "B5"
 
-    # Laboratory
-    ws = wb.create_sheet("Laboratory")
-    title(ws, "Specimens with an NT-proBNP result reported in 2025, by hospital laboratory",
-          "Each specimen once: a result corrected and released again under a new accession is the same specimen; the "
-          "referral level is %d pg/mL (charter, 2.3)." % K.REFERRAL)
-    header(ws, 4, ["Hospital", "Specimens reported in 2025", "At or above %d pg/mL" % K.REFERRAL], 32)
-    r = 5
-    for h in K.CODES:
-        a = o["ask_a"][h]
-        for j, x in enumerate([K.NAME[h], a[0], a[1]], 1):
-            cell = ws.cell(row=r, column=j, value=x)
-            if j >= 2:
-                cell.alignment = Alignment(horizontal="right")
-                cell.number_format = "#,##0"
-        r += 1
-    widths(ws, [34, 18, 18])
+    ws3 = wb.create_sheet("Back-test 2022")
+    _title(ws3, "Standard 3.3: each development re-run on accident year 2022",
+           "From 30 September 2023 with 2019 to 2021; estimate against the final count, per cent. Used only within "
+           "two per cent in every region.")
+    names = [("pooled", "Whole book, pooled"), ("head", "By head of claim"), ("notified_by", "By notified-by field"),
+             ("representative", "By representative"), ("route", "By notifying route"),
+             ("cmc_rest", "Claims-management companies against the rest"), ("route_head", "By notifying route and head")]
+    _hdr(ws3, 4, ["Development"] + K.REG + ["Largest miss", "Passes"])
+    for i, (h, nm) in enumerate(names):
+        row = 5 + i
+        ws3.cell(row, 1, nm)
+        for j, r in enumerate(K.REG):
+            ws3.cell(row, 2 + j, R["bt"][h][r][2] / 100).number_format = "+0.00%;-0.00%"
+        worst = max(abs(v[2]) for v in R["bt"][h].values())
+        ws3.cell(row, 7, worst / 100).number_format = "0.00%"
+        ok = worst <= K.TOLERANCE
+        ws3.cell(row, 8, "Yes" if ok else "No")
+        if ok:
+            for j in range(1, 9):
+                ws3.cell(row, j).fill = PILOT
+    ws3.cell(13, 1, "Final 2022 counts: " + ", ".join("%s %s" % (r, format(R["final22"][r], ",")) for r in K.REG)).font = Font(size=9, name="Arial")
+    for j, wd in enumerate((40, 11, 11, 11, 11, 11, 13, 8), 1):
+        ws3.column_dimensions[get_column_letter(j)].width = wd
 
-    # New diagnoses
-    ws = wb.create_sheet("New diagnoses 2025")
-    title(ws, "Patients newly diagnosed with heart failure in 2025, by hospital",
-          "By diagnosis date (a record showing its diagnosis after its enrolment is dated at the enrolment); a patient "
-          "enrolled again after the 2024 record-number migration is not a new diagnosis.")
-    header(ws, 4, ["Hospital", "Newly diagnosed in 2025", "Of whom during an inpatient stay"], 32)
-    r = 5
-    for h in K.CODES:
-        b = o["ask_b"][h]
-        for j, x in enumerate([K.NAME[h], b[0], b[1]], 1):
-            cell = ws.cell(row=r, column=j, value=x)
-            if j >= 2:
-                cell.alignment = Alignment(horizontal="right")
-                cell.number_format = "#,##0"
-        r += 1
-    widths(ws, [34, 18, 22])
-
-    # Notes
-    ws = wb.create_sheet("Notes")
-    notes = [
-        "Cohort: every enrolment in %s with a diagnosis date from 1 January 2022 to 31 December 2023; the hospital "
-        "is the hospital of diagnosis (Brenmoor's North Campus is Brenmoor Regional)." % K.FILES["patients"],
-        "Deaths: the Florida certificate linkage (by current record number, legacy numbers through the crosswalk) and "
-        "the Tri-State exchange (by registry identifier); a patient alive on the second anniversary of diagnosis "
-        "survived two years.",
-        "Follow-up ends at a relocation to a state outside Georgia, Alabama and South Carolina and at Wrenhaven's "
-        "re-consent of %s; patients who moved to those three states stay in vital status follow-up."
-        % K.RECONSENT.strftime("%-d %B %Y"),
-        "At %s most patients who moved beyond the linkage were in NYHA class III or IV at the visit where the move was "
-        "reported, so the product-limit estimate with the moves as ordinary censoring credits them with the survival "
-        "of the patients who stayed (%d%% against %d%% weighted). The chance of a move by class is measured hospital "
-        "by hospital." % (K.NAME[pick], o["km"][pick], o["surv"][pick]),
-        "Laboratory: results released in 2025; a corrected result released again under a new accession (same patient "
-        "and collection time) counts once, at its final value.",
-        "New diagnoses: by diagnosis date; the registry module's update of November 2024 overwrote some diagnosis "
-        "dates with a later problem-list date, so a record showing its diagnosis after its enrolment is dated at the "
-        "enrolment (the diagnosis came first). A 2025 enrolment whose record number maps through the crosswalk to a "
-        "patient enrolled earlier is not counted; the inpatient stays are those the setting records as Inpatient or INPT.",
-    ]
-    ws["A1"] = "Notes on the figures"
-    ws["A1"].font = Font(bold=True, size=12, color=accent)
-    for k, t in enumerate(notes, 3):
-        ws.cell(row=k, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
-    ws.column_dimensions["A"].width = 120
+    ws4 = wb.create_sheet("Cars on cover")
+    _title(ws4, "Private cars on cover at 30 September 2026, for the Brackwell order",
+           "Risk postcode district and cover as at 30 September 2026 (in-force file with the mid-term changes "
+           "effective on or before that date).")
+    _hdr(ws4, 4, ["Sales region", "COMP", "TPFT", "TPO", "All private cars"])
+    for i, r in enumerate(K.REG):
+        row = 5 + i
+        ws4.cell(row, 1, r)
+        for j, cv in enumerate(("COMP", "TPFT", "TPO")):
+            ws4.cell(row, 2 + j, R["ask_a"][(r, cv)]).number_format = "#,##0"
+        ws4.cell(row, 5, "=SUM(B%d:D%d)" % (row, row)).number_format = "#,##0"
+    ws4.cell(10, 1, "Total").font = Font(bold=True, name="Arial", size=10)
+    for j, col in ((2, "B"), (3, "C"), (4, "D"), (5, "E")):
+        ws4.cell(10, j, "=SUM(%s5:%s9)" % (col, col)).number_format = "#,##0"
+    for j, wd in enumerate((16, 12, 12, 12, 16), 1):
+        ws4.column_dimensions[get_column_letter(j)].width = wd
     wb.save(path)
 
 
-# ---------------------------------------------------------------------------------------------- the deck
-def deck(path, o):
+def write_deck(path, R, F):
     from pptx import Presentation
     from pptx.chart.data import CategoryChartData
     from pptx.dml.color import RGBColor
-    from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION
-    from pptx.enum.text import PP_ALIGN
+    from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
     from pptx.util import Emu, Pt
+
+    TEAL, GREY, INKC = RGBColor(0x1F, 0x4E, 0x5A), RGBColor(0x9A, 0xA9, 0xB0), RGBColor(0x1D, 0x23, 0x27)
     prs = Presentation()
     prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)
     blank = prs.slide_layouts[6]
-    INK, GREY, ACC = RGBColor(0x1C, 0x24, 0x28), RGBColor(0x5A, 0x64, 0x6B), RGBColor(0xB2, 0x4A, 0x16)
-    TEAL = RGBColor(0x0E, 0x5A, 0x6E)
-    pick, runner = o["pick"], o["runner"]
 
-    def text(slide, x, y, w, h, s, size=14, bold=False, color=INK, align=None):
+    def text(slide, x, y, w, h, s, size=14, bold=False, color=INKC):
         tb = slide.shapes.add_textbox(Emu(x), Emu(y), Emu(w), Emu(h))
         tf = tb.text_frame
         tf.word_wrap = True
-        p = tf.paragraphs[0]
-        p.text = s
-        p.font.size, p.font.bold, p.font.color.rgb = Pt(size), bold, color
-        p.font.name = "Calibri"
-        if align:
-            p.alignment = align
-        return tf
-
-    def footer(slide, n, source):
-        text(slide, 457200, 6400800, 10300000, 300000, "Heart and vascular outcomes | Service line committee, May 2026 | "
-             "Source: " + source, 9, color=GREY)
-        text(slide, 11000000, 6400800, 800000, 300000, str(n), 9, color=GREY, align=PP_ALIGN.RIGHT)
-
-    HEAD, BAND, PICK = RGBColor(0x1F, 0x4E, 0x5C), RGBColor(0xF2, 0xF5, 0xF6), RGBColor(0xFB, 0xE7, 0xD6)
-
-    def table(slide, rows, x, y, w, h, bold_row=None, size=13, cw=None):
-        shape = slide.shapes.add_table(len(rows), len(rows[0]), Emu(x), Emu(y), Emu(w), Emu(h))
-        tb = shape.table
-        tb.first_row = True
-        tb.horz_banding = False
-        if cw:
-            for j, f in enumerate(cw):
-                tb.columns[j].width = Emu(int(w * f))
-        for i, r in enumerate(rows):
-            for j, v in enumerate(r):
-                cell = tb.cell(i, j)
-                cell.text = v
-                cell.fill.solid()
-                cell.fill.fore_color.rgb = HEAD if i == 0 else (PICK if bold_row is not None and r[0] == bold_row
-                                                                 else (BAND if i % 2 == 0 else RGBColor(0xFF, 0xFF, 0xFF)))
-                para = cell.text_frame.paragraphs[0]
-                para.font.size = Pt(size if i else size - 1)
-                para.font.name = "Calibri"
-                para.font.bold = i == 0 or (bold_row is not None and r[0] == bold_row)
-                para.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else INK
-                if j:
-                    para.alignment = PP_ALIGN.RIGHT
+        lines = s.split("\n")
+        for i, ln in enumerate(lines):
+            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+            p.text = ln
+            p.font.size, p.font.bold, p.font.color.rgb, p.font.name = Pt(size), bold, color, "Arial"
         return tb
 
-    S = o["surv"]
-    # 1. the call
+    def foot(slide, n):
+        text(slide, 457200, 6400800, 9000000, 300000, "Corriven Insurance, telematics pilot 2027, 13 November 2026. "
+             "Claims extract to 30 September 2026; pricing mart exposure.", 9, color=GREY)
+        text(slide, 11000000, 6400800, 700000, 300000, str(n), 9, color=GREY)
+
+    order, f = R["order"], R["freq"]["route"]
+    share = {r: 100 * (R["est"]["route"][r] - R["notified"][r]) / R["est"]["route"][r] for r in K.REG}
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 1250000, 11200000, 900000, "Host the 2027 programme at %s" % K.NAME[pick], 34, True, ACC)
-    tf = text(s, 457200, 2350000, 11000000, 1500000,
-              "Its patients newly diagnosed with heart failure in 2022 and 2023 had a two-year survival of %d%%, the "
-              "lowest of our five hospitals and %d points below %s's %d%%." % (S[pick], o["gap_pts"], K.NAME[runner],
-                                                                             S[runner]), 20)
-    p = tf.add_paragraph()
-    p.text = ("Charter, section 3: the programme goes to the hospital whose newly diagnosed patients had the lowest "
-              "two-year survival from diagnosis, every patient counted, those the registry no longer follows included.")
-    p.font.size, p.font.color.rgb = Pt(14), GREY
-    rows = [["Hospital"] + [K.SHORT[h] for h in o["order"]],
-            ["Two-year survival, 2022-23 diagnoses"] + ["%d%%" % S[h] for h in o["order"]]]
-    table(s, rows, 457200, 4250000, 11200000, 900000, size=13, cw=[0.30] + [0.14] * 5)
-    footer(s, 1, K.REGISTRY + ", extract of 31 March 2026")
-    # 2. the chart
+    text(s, 457200, 1600000, 11000000, 1200000, "Mersey and Pennine host the 2027 telematics pilot", 34, True, TEAL)
+    text(s, 457200, 2900000, 11000000, 1400000,
+         "Their private cars had the highest claim frequency in accident year 2025: %.1f and %.1f claims per 100 "
+         "car-years, against %.1f in %s, the next region.\nPaper for Damian Warren, Chief Underwriting Officer, 13 November 2026. "
+         "Carol Thorpe, motor portfolio actuary." % (f[order[0]], f[order[1]], f[order[2]], order[2]), 16)
+    foot(s, 1)
+
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "%s's patients have the lowest two-year survival" % K.SHORT[pick], 26, True)
-    text(s, 457200, 900000, 11200000, 400000, "Two-year survival from diagnosis, patients newly diagnosed with heart "
-         "failure in 2022 and 2023, per cent", 13, color=GREY)
+    text(s, 457200, 300000, 11200000, 900000, "Pennine is second once the 2025 claims still to come are counted by who "
+         "notifies them", 24, True, TEAL)
     cd = CategoryChartData()
-    cd.categories = [K.SHORT[h] for h in o["order"]]
-    cd.add_series("Two-year survival (%)", [S[h] for h in o["order"]])
-    gf = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Emu(457200), Emu(1400000), Emu(11200000), Emu(4800000), cd)
-    ch = gf.chart
-    ch.has_title = False
-    ch.has_legend = False
-    plot = ch.plots[0]
-    plot.gap_width = 70
-    plot.has_data_labels = True
-    dl = plot.data_labels
-    dl.number_format, dl.number_format_is_linked = '0"%"', False
-    dl.position = XL_LABEL_POSITION.OUTSIDE_END
-    dl.font.size = Pt(14)
-    ser = plot.series[0]
-    for k, h in enumerate(o["order"]):
-        pt = ser.points[k]
-        pt.format.fill.solid()
-        pt.format.fill.fore_color.rgb = ACC if h == pick else TEAL
-    va = ch.value_axis
-    va.minimum_scale, va.maximum_scale, va.major_unit = 0, 100, 20
-    va.has_major_gridlines = True
-    va.major_gridlines.format.line.color.rgb = RGBColor(0xDD, 0xE2, 0xE5)
-    va.tick_labels.font.size = Pt(12)
-    ch.category_axis.tick_labels.font.size = Pt(14)
-    footer(s, 2, K.REGISTRY + "; Florida death certificate linkage; Tri-State exchange")
-    # 3. why the plain estimate misleads at the pick
+    cd.categories = order
+    cd.add_series("Notified to 30 September 2026", [round(100 * R["notified"][r] / R["cy"][r], 2) for r in order])
+    cd.add_series("Not yet notified (estimated)",
+                  [round(100 * (R["est"]["route"][r] - R["notified"][r]) / R["cy"][r], 2) for r in order])
+    ch = s.shapes.add_chart(XL_CHART_TYPE.COLUMN_STACKED, Emu(457200), Emu(1300000), Emu(7000000), Emu(4900000), cd).chart
+    ch.has_legend = True
+    ch.legend.position = XL_LEGEND_POSITION.BOTTOM
+    ch.legend.include_in_layout = False
+    ch.value_axis.has_major_gridlines = False
+    ch.value_axis.tick_labels.font.size = Pt(10)
+    ch.category_axis.tick_labels.font.size = Pt(11)
+    ch.plots[0].series[0].format.fill.solid()
+    ch.plots[0].series[0].format.fill.fore_color.rgb = TEAL
+    ch.plots[0].series[1].format.fill.solid()
+    ch.plots[0].series[1].format.fill.fore_color.rgb = GREY
+    text(s, 7700000, 1500000, 4000000, 4600000,
+         "Claims per 100 car-years, accident year 2025\n" +
+         "\n".join("%s  %.1f%s" % (r, f[r], "  (pilot)" if r in R["call"] else "") for r in order) +
+         "\n\nGap, %s to %s: %.1f\n\nClaims-management companies notify injury claims months and years after the "
+         "accident, and Pennine's 2025 injury claims came through them far more often than in earlier years: %.0f per "
+         "cent of its 2025 claims are still to come, against %.0f to %.0f per cent in the other regions."
+         % (order[1], order[2], R["gap"], share["Pennine"], min(v for r, v in share.items() if r != "Pennine"),
+            max(v for r, v in share.items() if r != "Pennine")), 13)
+    foot(s, 2)
+
     s = prs.slides.add_slide(blank)
-    v, m = o["visits"][pick], o["moves"][pick]
-    tot = sum(m)
-    hi = m[2] + m[3]
-    text(s, 457200, 300000, 11200000, 700000, "At %s the patients who moved north had worsened" % K.SHORT[pick], 26, True)
-    lines = [
-        "{:,} of {}'s {:,} patients moved beyond the registry's death linkage within two years of diagnosis; {:,} of them "
-        "were in NYHA class III or IV at the visit where they told the clinic.".format(tot, K.SHORT[pick],
-                                                                                        o["counts"][pick]["n"], hi),
-        "Counting those moves as ordinary losses puts %s's survival at %d%%, as if the movers fared like the patients "
-        "who stayed. Weighted by the class at each visit it is %d%%." % (K.SHORT[pick], o["km"][pick], S[pick]),
-    ]
-    tf = text(s, 457200, 1250000, 11200000, 1900000, lines[0], 16)
-    p = tf.add_paragraph()
-    p.text = lines[1]
-    p.font.size = Pt(16)
-    p.space_before = Pt(10)
-    rt = o["rates"][pick]
-    rows = [["NYHA class at the visit", "Visits", "Moves beyond the linkage", "Chance of moving at the visit"]]
-    for k in range(4):
-        rows.append([K.CLASSES[k], "{:,}".format(v[k]), "{:,}".format(m[k]), "%.1f%%" % (100 * rt.get(k, 0.0))])
-    table(s, rows, 457200, 3450000, 11200000, 2000000, size=14, cw=[0.31, 0.2, 0.25, 0.24])
-    footer(s, 3, K.REGISTRY + ", clinic visits and follow-up events")
-    # 4. the testing and the diagnoses the programme builds on
+    text(s, 457200, 300000, 11200000, 900000, "Only the development by notifying route reproduces 2022 within the "
+         "Standard's two per cent", 24, True, TEAL)
+    rows = [("Whole book, pooled", "pooled"), ("By head of claim", "head"), ("By notified-by field", "notified_by"),
+            ("By representative", "representative"), ("By notifying route", "route")]
+    tbl = s.shapes.add_table(len(rows) + 1, 4, Emu(457200), Emu(1400000), Emu(11200000), Emu(2800000)).table
+    for j, h in enumerate(["Development of the claims not yet notified", "Largest 2022 miss (region)", "Pennine 2025",
+                           "Severn 2025"]):
+        tbl.cell(0, j).text = h
+    for i, (nm, h) in enumerate(rows, 1):
+        worst_r = max(K.REG, key=lambda r: abs(R["bt"][h][r][2]))
+        tbl.cell(i, 0).text = nm
+        tbl.cell(i, 1).text = "%+.2f per cent (%s)" % (R["bt"][h][worst_r][2], worst_r)
+        tbl.cell(i, 2).text = "%.1f" % R["freq"][h]["Pennine"]
+        tbl.cell(i, 3).text = "%.1f" % R["freq"][h]["Severn"]
+    for row in tbl.rows:
+        for c in row.cells:
+            for p in c.text_frame.paragraphs:
+                p.font.size, p.font.name = Pt(12), "Arial"
+    text(s, 457200, 4500000, 11200000, 1600000,
+         "Re-run on accident year 2022 from 30 September 2023 with 2019 to 2021, as the Standard (3.3) requires. "
+         "Wessex had a wave of claims-management injury claims in 2022; every development that blends those firms "
+         "with faster notifiers falls short there, and each of them would have put Severn in the pilot.", 13)
+    foot(s, 3)
+
     s = prs.slides.add_slide(blank)
-    text(s, 457200, 300000, 11200000, 700000, "Testing and new diagnoses, 2025", 26, True)
-    rows = [["Hospital", "NT-proBNP specimens reported", "At or above %d pg/mL" % K.REFERRAL, "Newly diagnosed",
-             "Diagnosed as inpatients"]]
-    for h in K.CODES:
-        a, b = o["ask_a"][h], o["ask_b"][h]
-        rows.append([K.NAME[h], "{:,}".format(a[0]), "{:,}".format(a[1]), "{:,}".format(b[0]), "{:,}".format(b[1])])
-    table(s, rows, 457200, 1300000, 11200000, 2600000, bold_row=K.NAME[pick], size=14, cw=[0.32, 0.17, 0.17, 0.17, 0.17])
-    text(s, 457200, 4300000, 11200000, 1100000, "Specimens: each once, a corrected result released under a new accession being the same specimen. New diagnoses: by "
-         "diagnosis date, a record dated after its own enrolment taken at the enrolment; a patient enrolled again after "
-         "the 2024 record-number migration is not counted.", 13, color=GREY)
-    footer(s, 4, "laboratory results 2025; " + K.REGISTRY)
+    text(s, 457200, 300000, 11200000, 900000, "The Brackwell order: private cars on cover at 30 September 2026", 24, True, TEAL)
+    tbl = s.shapes.add_table(7, 5, Emu(457200), Emu(1400000), Emu(8000000), Emu(3200000)).table
+    for j, h in enumerate(["Sales region", "COMP", "TPFT", "TPO", "All"]):
+        tbl.cell(0, j).text = h
+    tot = [0, 0, 0]
+    for i, r in enumerate(K.REG, 1):
+        vals = [R["ask_a"][(r, cv)] for cv in ("COMP", "TPFT", "TPO")]
+        tot = [x + y for x, y in zip(tot, vals)]
+        tbl.cell(i, 0).text = r + (" (pilot)" if r in R["call"] else "")
+        for j, v in enumerate(vals + [sum(vals)], 1):
+            tbl.cell(i, j).text = format(v, ",")
+    tbl.cell(6, 0).text = "Total"
+    for j, v in enumerate(tot + [sum(tot)], 1):
+        tbl.cell(6, j).text = format(v, ",")
+    for row in tbl.rows:
+        for c in row.cells:
+            for p in c.text_frame.paragraphs:
+                p.font.size, p.font.name = Pt(12), "Arial"
+    text(s, 8800000, 1500000, 2900000, 3600000, "Region and cover as they stood on 30 September, after the mid-term "
+         "address and cover changes effective by then. The order is placed by cover because each cover has its own "
+         "discount scale (terms 6).", 12)
+    foot(s, 4)
     prs.save(path)
 
 
-def figures(o):
-    L = o["L"]
-    return {
-        "call": dict(hospital=K.NAME[o["pick"]], runner_up=K.NAME[o["runner"]], gap=o["gap_pts"], survival=o["surv"][o["pick"]],
-                     runner_survival=o["surv"][o["runner"]]),
-        "survival": {K.NAME[h]: o["surv"][h] for h in K.CODES},
-        "rungs": {r: dict(pick=K.NAME[A.pick(L[r])[0]], survival={K.NAME[h]: round(100 * L[r][h], 1) for h in K.CODES})
-                  for r in A.WRONG + A.FAMILY},
-        "counts": {K.NAME[h]: o["counts"][h] for h in K.CODES},
-        "ask_a": {K.NAME[h]: dict(tests=o["ask_a"][h][0], referral=o["ask_a"][h][1]) for h in K.CODES},
-        "ask_b": {K.NAME[h]: dict(new=o["ask_b"][h][0], inpatient=o["ask_b"][h][1]) for h in K.CODES},
-        "km": {K.NAME[h]: o["km"][h] for h in K.CODES},
-        "cohort_total": sum(o["counts"][h]["n"] for h in K.CODES),
-        "moves_class_3_4": {K.NAME[h]: o["moves"][h][2] + o["moves"][h][3] for h in K.CODES},
-        "move_rate": {K.NAME[h]: {"class_3": round(100 * o["rates"][h].get(2, 0.0), 1),
-                                  "class_4": round(100 * o["rates"][h].get(3, 0.0), 1)} for h in K.CODES},
-        "params": dict(cohort_years=[2022, 2023], years=2, referral=K.REFERRAL, results_year=2025, diagnoses_year=2025,
-                       charter_clauses=sorted(float(v) for v in K.CHARTER_CLAUSES.values()),
-                       manual_sections=sorted(float(v) for v in K.MANUAL_SECTIONS.values()), chart_max=100),
-    }
-
-
-def write(target, golden, W=None):
-    o = results(target)
-    if os.path.exists(golden):
-        shutil.rmtree(golden)
-    os.makedirs(golden)
-    workbook(os.path.join(golden, XLSX), o)
-    deck(os.path.join(golden, PPTX), o)
-    PP.COMPANY = K.ORG_INC
-    PP.normalize_ooxml(os.path.join(golden, XLSX), K.PEOPLE["epi"], K.PEOPLE["epi"], "2026-04-16T13:05:41Z",
-                       "2026-04-29T21:12:08Z", excel=True)
-    PP.normalize_ooxml(os.path.join(golden, PPTX), K.PEOPLE["epi"], K.PEOPLE["director"], "2026-04-30T14:22:19Z",
-                       "2026-05-06T22:47:55Z", title="HF early diagnosis programme: host hospital")
-    json.dump(figures(o), open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
-    meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS], "deliverables": [XLSX, PPTX],
-            "stated_inputs": []}
-    json.dump(meta, open(os.path.join(os.path.dirname(HERE), "metadata.json"), "w"), indent=2)
-    return o
+def write_all(golden_dir, gen_dir, R):
+    os.makedirs(golden_dir, exist_ok=True)
+    F = figures(R)
+    write_workbook(os.path.join(golden_dir, K.GOLDEN), R, F)
+    write_deck(os.path.join(golden_dir, K.DECK), R, F)
+    with open(os.path.join(gen_dir, "figures.json"), "w") as f:
+        json.dump(F, f, indent=1, sort_keys=True)
+        f.write("\n")
+    return F

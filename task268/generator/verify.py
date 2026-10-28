@@ -1,234 +1,184 @@
-"""Independent verifier for task268. Reads only the shipped bundle (target/) and the goldens, on its own code path
-(pandas, no generator module), and recomputes the cohort, the deaths from both sources, every end of follow-up, the
-Kaplan-Meier figure the default path files, the golden's weighted estimate, the call and the gap, and both asks; then
-reads the goldens back and compares. Exit 0 when everything agrees.
+"""The independent verifier: reads only the bundle (and the goldens), on its own code path with the csv module, and
+recomputes every graded figure; each document carrying a filed sentence is read back through its own extractor with a
+positive control first.
 
-    python3 verify.py <target> <golden>"""
+    python3 task268/generator/verify.py [target_dir] [figures.json]"""
+import csv
 import datetime as dt
+import json
 import os
 import re
-import subprocess
 import sys
+from collections import Counter, defaultdict
 
-import numpy as np
-import pandas as pd
-
-T, G = sys.argv[1], sys.argv[2]
-fails = []
+HERE = os.path.dirname(os.path.abspath(__file__))
+REG = ["Mersey", "Pennine", "Wessex", "Fenland", "Severn"]
 
 
-def check(cond, label):
-    print(("ok    " if cond else "FAIL  ") + label)
-    if not cond:
-        fails.append(label)
+def _rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def half_up(x):
-    return int(np.floor(x + 0.5))
+def _last_sunday(y, m):
+    d = dt.date(y, m, 31)
+    while d.weekday() != 6:
+        d -= dt.timedelta(days=1)
+    return d
 
 
-f = lambda name: os.path.join(T, name)
-pat = pd.read_csv(f("hf_registry_patients.csv"), dtype=str)
-vis = pd.read_csv(f("hf_registry_visits_2022_2026.csv"), dtype=str)
-ev = pd.read_csv(f("hf_registry_followup_events.csv"), dtype=str, keep_default_na=False)
-xw = pd.read_csv(f("mrn_crosswalk_2024.csv"), dtype=str)
-fl = pd.read_excel(f("fl_death_linkage_2022_2025.xlsx"), sheet_name="Linked deaths", dtype={"MRN": str})
-ex = pd.read_csv(f("tristate_exchange_deaths_2022_2025.txt"), sep="|", dtype=str)
-lab = pd.read_csv(f("ntprobnp_results_2025.csv"), dtype=str)
-hosp = pd.read_excel(f("hospital_reference.xlsx"), sheet_name="Hospitals")
-check(len(fl) > 1000 and len(ex) > 50 and len(hosp) == 6, "every format reads back: csv, pipe-delimited text, xlsx")
-
-# the hospital of each code, from the reference (a campus belongs to its hospital)
-code2hosp = dict(zip(hosp["Code"], hosp["Hospital"]))
-names = sorted(set(code2hosp.values()))
-check(len(names) == 5, "five hospitals in the reference")
+def uk_date(s):
+    if len(s) == 10:
+        return dt.date(int(s[:4]), int(s[5:7]), int(s[8:10]))
+    t = dt.datetime(int(s[:4]), int(s[5:7]), int(s[8:10]), int(s[11:13]), int(s[14:16]), int(s[17:19]))
+    on = dt.datetime.combine(_last_sunday(t.year, 3), dt.time(1))
+    off = dt.datetime.combine(_last_sunday(t.year, 10), dt.time(1))
+    return (t + dt.timedelta(hours=1)).date() if on <= t < off else t.date()
 
 
-def nyha(s):
-    m = re.search(r"(IV|III|II|I|[1-4])\s*$", str(s).strip())
-    return {"I": 1, "II": 2, "III": 3, "IV": 4, "1": 1, "2": 2, "3": 3, "4": 4}[m.group(1)]
-
-
-# ---------------------------------------------------------------------------------------------- the cohort
-pat["dx"] = pd.to_datetime(pat["diagnosis_date"])
-coh = pat[(pat["dx"] >= "2022-01-01") & (pat["dx"] <= "2023-12-31")].copy()
-coh["hospital_name"] = coh["hospital"].map(code2hosp)
-leg = dict(zip(xw["legacy_mrn"], xw["new_mrn"]))
-coh["new_mrn"] = coh["mrn"].map(lambda m: leg.get(m, m))
-fl["dod"] = pd.to_datetime(fl["Date of death"])
-fl_first = fl.groupby("MRN")["dod"].min()
-ex["dod"] = pd.to_datetime(ex["DOD"], format="%Y%m%d")
-ex_first = ex.groupby("PARTNER_ID")["dod"].min()
-coh["death"] = pd.concat([coh["new_mrn"].map(fl_first), coh["registry_id"].map(ex_first)], axis=1).min(axis=1)
-ev["date"] = pd.to_datetime(ev["event_date"])
-lost = ev[((ev["event"] == "REL") & ~ev["destination_state"].isin(["GA", "AL", "SC"])) | (ev["event"] == "CNR")]
-first_loss = lost.sort_values("date").groupby("registry_id").first()
-coh["end"] = coh["registry_id"].map(first_loss["date"])
-coh["why"] = coh["registry_id"].map(first_loss["event"])
-coh["two"] = coh["dx"].map(lambda d: pd.Timestamp(d.year + 2, d.month, d.day))
-dead = coh["death"].notna() & (coh["death"] <= coh["two"]) & (coh["end"].isna() | (coh["death"] <= coh["end"]))
-cens = ~dead & coh["end"].notna() & (coh["end"] < coh["two"])
-coh["E"] = dead.astype(int)
-coh["T"] = np.where(dead, (coh["death"] - coh["dx"]).dt.days,
-                    np.where(cens, (coh["end"] - coh["dx"]).dt.days, (coh["two"] - coh["dx"]).dt.days))
-coh["north"] = cens & (coh["why"] == "REL")
-pat_by_id = dict(zip(pat["registry_id"], pat["nyha_at_diagnosis"]))
-check(coh["T"].max() <= 731 and (coh["two"] <= pd.Timestamp("2025-12-31")).all(),
-      "every two-year date falls inside the death sources' completeness")
-vis["date"] = pd.to_datetime(vis["visit_date"])
-vis["cls"] = vis["nyha_class"].map(nyha)
-v = vis.merge(coh[["registry_id", "dx", "T", "north", "hospital_name"]], on="registry_id")
-v["d"] = (v["date"] - v["dx"]).dt.days
-v = v[(v["d"] > 0) & (v["d"] <= v["T"])].copy()
-v["move"] = v["north"] & (v["d"] == v.groupby("registry_id")["d"].transform("max"))
-
-
-def km(df, w_at=None):
-    """Product-limit survival at each patient's two-year date (the curve's value after the last day at risk);
-    w_at(ids, t) gives each patient's weight in force on day t."""
-    S = 1.0
-    deaths = df[df["E"] == 1]
-    for t in sorted(deaths["T"].unique()):
-        risk = df[df["T"] >= t]
-        dd = deaths[deaths["T"] == t]
-        if w_at is None:
-            n, d = len(risk), len(dd)
+def counted(rows):
+    """one claimant's claim under one head from one accident, once"""
+    groups = defaultdict(list)
+    for r in rows:
+        groups[(r["policy_ref"], r["vrm"], r["accident_date"], r["head_of_claim"])].append(r)
+    out = []
+    for g in groups.values():
+        nums = {}
+        for r in sorted(g, key=lambda x: (x["_note"], x["claim_ref"])):
+            if r["claimant_no"]:
+                nums.setdefault(r["claimant_no"], r)
+        if nums:
+            out.extend(nums.values())
         else:
-            n, d = w_at(risk, t).sum(), w_at(dd, t).sum()
-        S *= 1 - d / n
-    return S
+            out.append(min(g, key=lambda x: (x["_note"], x["claim_ref"])))
+    return out
 
 
-def ipcw_weights(df_h, v_h):
-    """The chance of a move beyond the linkage at a visit, by the class recorded there, from this hospital's visits;
-    each patient's weight on day t is the product of 1 / (1 - chance) over the visits before t."""
-    rate = v_h.groupby("cls")["move"].mean().clip(upper=0.9)
-    vv = v_h.assign(f=1.0 / (1.0 - v_h["cls"].map(rate)))
-    by = {rid: (g["d"].to_numpy(), np.cumprod(g.sort_values("d")["f"].to_numpy()))
-          for rid, g in vv.sort_values("d").groupby("registry_id")}
+def run(target, figures_path):
+    bad = []
+    F = json.load(open(figures_path))
+    d2r = {r["postcode_district"]: r["sales_region"] for r in _rows(os.path.join(target, "postcode_district_sales_regions.csv"))}
+    ftype = {r["representative_ref"]: r["firm_type"] for r in _rows(os.path.join(target, "claimant_representatives.csv"))}
+    claims = _rows(os.path.join(target, "motor_claims_notified_2019_2026.csv"))
+    for r in claims:
+        r["_note"] = uk_date(r["notified_at"])
+        r["_ay"] = int(r["accident_date"][:4])
+        r["_reg"] = d2r[r["risk_postcode_district"]]
+        r["_route"] = r["notified_by"] if r["notified_by"] != "Representative" else ftype[r["representative_ref"]]
+    pc = [r for r in claims if r["product"] == "PC"]
+    by_ay = defaultdict(list)
+    for r in pc:
+        by_ay[r["_ay"]].append(r)
+    cnt = {ay: counted(v) for ay, v in by_ay.items()}
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, "earned_exposure_2019_2025.xlsx"), read_only=True)
+    cy = Counter()
+    rows = list(wb["2025"].iter_rows(values_only=True))
+    for month, reg, prod, cov, v in rows[1:]:
+        if prod == "PC":
+            cy[reg] += v
 
-    def w_at(rows, t):
-        out = []
-        for rid in rows["registry_id"]:
-            if rid not in by:
-                out.append(1.0)
-                continue
-            d, cp = by[rid]
-            k = np.searchsorted(d, t, side="left")
-            out.append(cp[k - 1] if k > 0 else 1.0)
-        return np.array(out)
-    return w_at
+    def at(ay):
+        cut = dt.date(ay + 1, 9, 30)
+        return [r for r in cnt[ay] if r["_note"] <= cut]
+
+    def fac(years, key):
+        n, d = Counter(), Counter()
+        for ay in years:
+            n.update(key(r) for r in cnt[ay])
+            d.update(key(r) for r in at(ay))
+        return {k: n[k] / d[k] for k in n if d[k]}
+
+    def est(ay, years, key):
+        f = fac(years, key)
+        e = Counter()
+        for r in at(ay):
+            e[r["_reg"]] += f.get(key(r), 1.0)
+        return e
+
+    route = lambda r: r["_route"]
+    e25 = est(2025, (2019, 2020, 2021, 2022), route)
+    fr = {g: 100 * e25[g] / cy[g] for g in REG}
+    order = sorted(REG, key=lambda g: -fr[g])
+    if order[:2] != F["call"]:
+        bad.append("call %s" % order[:2])
+    for g in REG:
+        if "%.1f" % fr[g] != "%.1f" % F["frequency"][g]:
+            bad.append("frequency %s %.3f" % (g, fr[g]))
+        if abs(cy[g] - F["earned_car_years"][g]) > 0.006:
+            bad.append("car-years %s" % g)
+    if "%.1f" % (fr[order[1]] - fr[order[2]]) != "%.1f" % F["gap"]:
+        bad.append("gap")
+    n25 = Counter(r["_reg"] for r in at(2025))
+    if dict(n25) != F["notified_2025"]:
+        bad.append("notified 2025")
+    # the back-test: route within tolerance everywhere, the extract's own groupings outside it in Wessex
+    e22 = est(2022, (2019, 2020, 2021), route)
+    f22 = Counter(r["_reg"] for r in cnt[2022])
+    worst = max(abs(100 * (e22[g] / f22[g] - 1)) for g in REG)
+    if worst > 2.0 or abs(worst - F["backtest_2022_worst_pct"]["route"]) > 0.01:
+        bad.append("route back-test %.2f" % worst)
+    for nm, key in (("pooled", lambda r: 0), ("head", lambda r: r["head_of_claim"]), ("notified_by", lambda r: r["notified_by"])):
+        e = est(2022, (2019, 2020, 2021), key)
+        w = 100 * (e["Wessex"] / f22["Wessex"] - 1)
+        if w > -2.0:
+            bad.append("%s passes the back-test" % nm)
+        e5 = est(2025, (2019, 2020, 2021, 2022), key)
+        o5 = sorted(REG, key=lambda g: -e5[g] / cy[g])
+        if o5[:2] != ["Mersey", "Severn"]:
+            bad.append("%s names %s" % (nm, o5[:2]))
+    # Ask A
+    snap = "2026-09-30"
+    vehicles = [v for v in _rows(os.path.join(target, "policy_vehicles_in_force_20260930.csv")) if v["product"] == "PC"
+                and v["vehicle_on_cover_from"] <= snap and (not v["vehicle_off_cover_from"] or v["vehicle_off_cover_from"] > snap)
+                and (not v["cancelled_from"] or v["cancelled_from"] > snap)]
+    start = {v["policy_ref"]: v["term_start"] for v in vehicles}
+    dist = {v["policy_ref"]: v["risk_postcode_district"] for v in vehicles}
+    cov = {v["policy_ref"]: v["cover"] for v in vehicles}
+    chg = [c for c in _rows(os.path.join(target, "policy_changes_2025_2026.csv")) if c["policy_ref"] in start
+           and c["change_type"] in ("ADDRESS", "COVER") and start[c["policy_ref"]] <= c["effective_from"] <= snap]
+    for c in sorted(chg, key=lambda c: (c["effective_from"], c["processed_on"], c["change_ref"])):
+        if c["change_type"] == "ADDRESS":
+            dist[c["policy_ref"]] = c["new_postcode_district"]
+        else:
+            cov[c["policy_ref"]] = c["new_cover"]
+    a = Counter((d2r[dist[v["policy_ref"]]], cov[v["policy_ref"]]) for v in vehicles)
+    for k, val in F["cars_on_cover"].items():
+        g, cv = k.split("|")
+        if a[(g, cv)] != val:
+            bad.append("cars %s %d" % (k, a[(g, cv)]))
+    # the documents, read back: a positive control, then the filed sentences
+    from pypdf import PdfReader
+    txt = lambda f: re.sub(r"\s+", " ", " ".join(p.extract_text() or "" for p in PdfReader(os.path.join(target, f)).pages))
+    terms, std = txt("telematics_pilot_terms_2027.pdf"), txt("motor_reserving_standard_v4.pdf")
+    if "Telematics pilot 2027" not in terms or "Motor Claims Reserving Standard" not in std:
+        bad.append("PDF control")
+    for s in ("the two sales regions whose private-car policies had the highest claim frequency in accident year 2025",
+              "per 100 car-years earned in the region in 2025"):
+        if s not in terms:
+            bad.append("terms: %s" % s[:40])
+    for s in ("closed three years after its last day", "measured on the closed accident years of the whole private-car book",
+              "within two per cent"):
+        if s not in std:
+            bad.append("standard: %s" % s[:40])
+    # the goldens
+    gold = os.path.join(os.path.dirname(target), "golden")
+    if os.path.exists(gold):
+        g = load_workbook(os.path.join(gold, "telematics_pilot_regions_2027.xlsx"), read_only=True)["Frequency 2025"]
+        vals = {row[0]: row[5] for row in g.iter_rows(min_row=5, max_row=9, values_only=True)}
+        if any("%.1f" % vals[r] != "%.1f" % F["frequency"][r] for r in REG):
+            bad.append("golden workbook frequencies")
+        from pptx import Presentation
+        deck = " ".join(sh.text_frame.text for s in Presentation(os.path.join(gold, "telematics_pilot_regions_2027.pptx")).slides
+                        for sh in s.shapes if sh.has_text_frame)
+        if "Mersey and Pennine host the 2027 telematics pilot" not in deck:
+            bad.append("deck title")
+    return bad
 
 
-surv, kms = {}, {}
-for h in names:
-    df = coh[coh["hospital_name"] == h]
-    kms[h] = km(df)
-    surv[h] = km(df, ipcw_weights(df, v[v["hospital_name"] == h]))
-# a second estimator on its own path: each patient lost to a move carried at the constant death rate of the class
-# recorded at the visit where the move was reported (deaths over days at risk in each class, the hospital's own)
-fixed = {}
-for h in names:
-    df = coh[coh["hospital_name"] == h].set_index("registry_id")
-    vh = v[v["hospital_name"] == h].sort_values(["registry_id", "d"])
-    expo, dth = np.zeros(5), np.zeros(5)
-    groups = {rid: g for rid, g in vh.groupby("registry_id")}
-    last_cls = {rid: int(g["cls"].iloc[-1]) for rid, g in groups.items()}
-    for rid, row in df.iterrows():
-        g = groups.get(rid)
-        c0 = nyha(pat_by_id[rid])
-        pts = [(0, c0)] + ([] if g is None else list(zip(g["d"], g["cls"])))
-        for j, (d0, c) in enumerate(pts):
-            d1 = pts[j + 1][0] if j + 1 < len(pts) else row["T"]
-            if d1 > d0:
-                expo[c] += d1 - d0
-                if j + 1 == len(pts) and row["E"] == 1:
-                    dth[c] += 1
-    hz = dth / np.maximum(expo, 1)
-    tot = 0.0
-    for rid, row in df.iterrows():
-        if row["E"] == 1:
-            continue
-        lost = row["north"] or (row["why"] == "CNR" and pd.notna(row["end"]) and row["end"] < row["two"])
-        if not lost:
-            tot += 1
-            continue
-        c = last_cls.get(rid, nyha(pat_by_id[rid]))
-        tot += float(np.exp(-hz[c] * ((row["two"] - row["dx"]).days - row["T"])))
-    fixed[h] = tot / len(df)
-crude = {h: 1 - coh.loc[coh["hospital_name"] == h, "E"].sum() / (coh["hospital_name"] == h).sum() for h in names}
-check(min(names, key=lambda h: crude[h]) == "Fennick General Hospital",
-      "SF13 the deaths on file over every patient, a patient who left follow-up counted alive, names Fennick: the reading "
-      "the charter's 3.2 and the manual's 4.3 rule out")
-order = sorted(names, key=lambda h: surv[h])
-pick, runner = order[0], order[1]
-gap = 100 * (surv[runner] - surv[pick])
-km_pick = min(names, key=lambda h: kms[h])
-print("  survival:", ", ".join("%s %.2f" % (h, 100 * surv[h]) for h in order), "| gap %.2f" % gap)
-print("  Kaplan-Meier:", ", ".join("%s %.2f" % (h, 100 * kms[h]) for h in sorted(names, key=lambda h: kms[h])))
-check(pick == "Gullhaven Hospital" and runner == "Fennick General Hospital", "the weighted estimate: Gullhaven lowest, "
-                                                                              "Fennick next")
-check(km_pick == "Fennick General Hospital", "the default path (Kaplan-Meier, the moves as ordinary censoring) files "
-                                             "Fennick")
-print("  fixed last class:", ", ".join("%s %.2f" % (h, 100 * fixed[h]) for h in sorted(names, key=lambda h: fixed[h])))
-check(min(names, key=lambda h: fixed[h]) == pick and all(half_up(100 * fixed[h]) == half_up(100 * surv[h]) for h in names),
-      "a second estimator (the lost carried at their class's constant death rate) gives the same five whole percents")
-km_order = sorted(names, key=lambda h: kms[h])
-check(half_up(100 * (kms[km_order[1]] - kms[km_order[0]])) != half_up(gap),
-      "the default path's gap prints a different whole point from the golden's")
-moved = coh[coh["north"] & (coh["hospital_name"] == pick)]
-last_cls = v[v["move"]].set_index("registry_id")["cls"]
-hi = (moved["registry_id"].map(last_cls) >= 3).mean()
-check(hi > 0.85, "Gullhaven's movers beyond the linkage: %.0f%% in class III or IV at the move" % (100 * hi))
-
-# ---------------------------------------------------------------------------------------------- the asks
-lab["rel"] = pd.to_datetime(lab["released"])
-l5 = lab[lab["rel"].dt.year == 2025].sort_values("rel")
-l5 = l5.drop_duplicates(["performing_lab", "mrn", "collected"], keep="last")
-num = l5["result"].map(lambda s: 1e9 if s.startswith(">") else (-1.0 if s.startswith("<") else float(s)))
-lab_name = {c: code2hosp[c] for c in ["FEN", "LIN", "BRE", "GUL", "WRE"]}
-ask_a = {lab_name[c]: (int((l5["performing_lab"] == c).sum()), int(((l5["performing_lab"] == c) & (num >= 400)).sum()))
-         for c in lab_name}
-pat["new_mrn"] = pat["mrn"].map(lambda m: leg.get(m, m))
-# a diagnosis cannot follow its own enrolment: where the record shows it after, it came on or before the enrolment
-pat["eff"] = pat[["dx"]].assign(en=pd.to_datetime(pat["enrolment_date"])).min(axis=1)
-first_dx = pat.groupby("new_mrn")["eff"].min()
-p5 = pat[pat["eff"].dt.year == 2025]
-p5 = p5[p5["new_mrn"].map(first_dx) >= p5["eff"]]
-p5 = p5.assign(h=p5["hospital"].map(code2hosp))
-ask_b = {h: (int((p5["h"] == h).sum()), int(((p5["h"] == h) & p5["diagnosis_setting"].isin(["Inpatient", "INPT", "IP"]))
-                                            .sum())) for h in names}
-
-# ---------------------------------------------------------------------------------------------- the goldens
-wb = pd.read_excel(os.path.join(G, "hf_programme_site_2027.xlsx"), sheet_name=None, header=None)
-sv = wb["Survival"]
-rows = {r[0]: r for r in sv.itertuples(index=False) if r[0] in names}
-check(all(int(rows[h][5]) == half_up(100 * surv[h]) for h in names), "the workbook's survival, every hospital")
-check(str(sv.iloc[4, 0]) == pick, "the workbook leads with the pick")
-rec = " ".join(str(x) for x in sv[0].tolist() if isinstance(x, str) and x.startswith("Recommendation"))
-check(("%d points below" % half_up(gap)) in rec and pick in rec, "the recommendation states the pick and the gap")
-for sheet, ask in (("Laboratory", ask_a), ("New diagnoses 2025", ask_b)):
-    t = {r[0]: (int(r[1]), int(r[2])) for r in wb[sheet].itertuples(index=False) if r[0] in names}
-    check(t == ask, "the workbook's %s sheet, every hospital and figure" % sheet)
-from pptx import Presentation  # noqa: E402
-deck = Presentation(os.path.join(G, "service_line_committee_hf_2027.pptx"))
-text = " ".join(sh.text_frame.text for s in deck.slides for sh in s.shapes if sh.has_text_frame)
-check(("Host the 2027 programme at %s" % pick) in text and ("%d points below" % half_up(gap)) in text,
-      "the deck states the call and the gap")
-ch = [sh.chart for s in deck.slides for sh in s.shapes if sh.has_chart][0]
-vals = list(ch.plots[0].series[0].values)
-cats = list(ch.plots[0].categories)
-check(vals == [half_up(100 * surv[h]) for h in order] and len(cats) == 5, "the deck's chart: five hospitals' survival "
-                                                                         "in order")
-txt = subprocess.run(["pdftotext", "-layout", f("hf_early_diagnosis_programme_charter_2027.pdf"), "-"],
-                     capture_output=True, text=True).stdout
-txt = " ".join(txt.split())
-check("the lack of a death on its files does not show that they were alive" in txt and "lowest two-year survival from diagnosis" in txt,
-      "the charter reads back: the estimand, every patient in the share, the deaths after a loss unknown")
-man = " ".join(subprocess.run(["pdftotext", "-layout", f("hf_registry_manual_v5.pdf"), "-"], capture_output=True,
-                              text=True).stdout.split())
-check("The registry has no source for deaths in any other state" in man, "the manual reads back: the linkage's reach")
-cont = open(f("pack_contents.txt"), encoding="utf-8").read()
-check(all(n in cont for n in os.listdir(T) if n != "pack_contents.txt"), "the contents list names every file")
-print("verify: %d failures" % len(fails))
-sys.exit(1 if fails else 0)
+if __name__ == "__main__":
+    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
+    fj = sys.argv[2] if len(sys.argv) > 2 else os.path.join(HERE, "figures.json")
+    b = run(tgt, fj)
+    print("verify: %s" % ("PASS" if not b else "FAIL: " + "; ".join(b)))
+    sys.exit(1 if b else 0)

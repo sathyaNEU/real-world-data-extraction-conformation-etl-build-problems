@@ -1,30 +1,30 @@
 {
  "task": "task268",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "actuarial-science-insurance",
  "objective": "descriptive-distribution",
- "stage": "2",
- "stage_name": "design",
+ "stage": "5",
+ "stage_name": "ship",
  "updated": "2026-10-28",
  "stump": "The default path develops each region's 2025 claims still to be notified with the region's own report-lag factors, or splits bodily injury from damage, and leaves Valley out of the pilot; developed by notifying channel, the split that reproduces accident year 2022 as it finally came in, Valley's 2025 frequency is among the two highest.",
  "architecture": "4",
  "loops": "0",
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK), 2026-10-28",
+  "reader": "re-read clean on md5 9f49c3af (Q1 none, Q6 analytical choice)"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task238 0.09"
+  "heart": "WARN (no BLOCK), 2026-10-28",
+  "nearest": "task169 v2 0.08"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (re-judge on md5 9f49c3af653b4216ab1af1381d9d0dbe); pass 1 SEND_BACK on the retired 2026 claims ask in determinism_check_report_pass6.md"
  },
  "returned": [
   {
@@ -34,13 +34,14 @@
    "commit": ""
   }
  ],
- "resume": "architecture 4 drawn 2026-10-28: prototype the world (regions, channels, report lags, the 2022 Coast wave and the 2025 Valley wave), measure the default path, the golden and the back-test, then write the stage-2 sections and run precut",
+ "resume": "shipped 2026-10-28; awaiting the portal",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
- "seed_world": 273
+ "seed_world": 273,
+ "zip_md5": "9f49c3af653b4216ab1af1381d9d0dbe"
 }

@@ -1,92 +1,44 @@
-"""The cracker's path on the cut pack (supplemental-stumping 1.1): a response that lands the call, runs the hygiene
-battery (exact duplicates, key uniqueness on the accession, the registry identifier and the record number, unmatched
-record numbers through the crosswalk), parses the out-of-range results, reads the release and diagnosis dates and
-executes the registry manual's definitions, then answers the two asks on what it finds. Each ask figure is scored
-against figures.json; every one must miss. The mirror takes the asks the same way. Exit 0 when every figure misses.
+"""The ask layer measured on a cut pack: the cracker (lands the call, runs the hygiene battery, executes every filed rule
+it points at) and the mirror (stops at the most attractive wrong rung) against the golden, cell by cell; the pair
+ceiling and the mirror leakage from the pair arithmetic (supplemental-stumping Part 0).
 
-    python3 cracker.py <target>"""
-import csv
-import json
+    python3 task268/generator/cracker.py [target_dir]"""
 import os
 import sys
-from collections import Counter
 
-T = sys.argv[1]
 HERE = os.path.dirname(os.path.abspath(__file__))
-fig = json.load(open(os.path.join(HERE, "figures.json")))
+sys.path.insert(0, HERE)
+import analysis as A   # noqa: E402
+import common as K     # noqa: E402
 
 
-def rows(name, delim=","):
-    with open(os.path.join(T, name), newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f, delimiter=delim))
+def measure(target):
+    G = A.Golden(target)
+    gold = {"A": G.ask_a()}
+    # the cracker: the in-force file read as it stands (cover and risk district on the row)
+    crack = {"A": G.ask_a(apply_changes=False)}
+    # the mirror: every address and cover change in the log applied in processing order, whatever its effective date
+    mirror = {"A": G.ask_a(apply_changes=True, effective_only=False)}
+    rows, kc, km, n = [], 0, 0, 0
+    for ask in ("A",):
+        for cell, g in gold[ask].items():
+            cr, m = crack[ask][cell], mirror[ask][cell]
+            hc, hm = abs(cr - g) < 0.5, abs(m - g) < 0.5
+            kc += hc
+            km += hm
+            n += 1
+            rows.append((ask, cell, g, cr, m, hc, hm))
+    Lc, Ls = kc / n, km / n
+    C = 38 + 7 + 55 * Lc
+    S = 5 + 7 + 55 * Ls
+    return dict(rows=rows, Lc=Lc, Ls=Ls, pair=(C + S) / 2, leak=100 * Ls, n=n)
 
 
-lab, pat, xw = rows("ntprobnp_results_2025.csv"), rows("hf_registry_patients.csv"), rows("mrn_crosswalk_2024.csv")
-code = {"FEN": "Fennick General Hospital", "LIN": "Linmoor Hospital", "BRE": "Brenmoor Regional Medical Center",
-        "BRN": "Brenmoor Regional Medical Center", "GUL": "Gullhaven Hospital", "WRE": "Wrenhaven Medical Center"}
-
-# the hygiene battery: nothing for it to find
-battery = {
-    "lab exact duplicates": len(lab) - len({tuple(r.values()) for r in lab}),
-    "lab accession repeats": len(lab) - len({r["accession"] for r in lab}),
-    "registry identifier repeats": len(pat) - len({r["registry_id"] for r in pat}),
-    "registry record number repeats": len(pat) - len({r["mrn"] for r in pat}),
-    "crosswalk legacy repeats": len(xw) - len({r["legacy_mrn"] for r in xw}),
-    "crosswalk new repeats": len(xw) - len({r["new_mrn"] for r in xw}),
-}
-known = {r["legacy_mrn"] for r in xw} | {r["new_mrn"] for r in xw}
-battery["registry numbers unknown to the crosswalk"] = sum(1 for r in pat if r["mrn"].startswith("H") and r["mrn"] not in
-                                                           known)
-print("battery:", battery)
-
-
-def value(t):
-    return 1e9 if t.startswith(">") else (-1.0 if t.startswith("<") else float(t))
-
-
-a = Counter()
-a_hi = Counter()
-for r in lab:
-    if r["released"][:4] == "2025":
-        a[code[r["performing_lab"]]] += 1
-        a_hi[code[r["performing_lab"]]] += value(r["result"]) >= 400
-b = Counter()
-b_ip = Counter()
-for r in pat:
-    if r["diagnosis_date"][:4] == "2025":
-        b[code[r["hospital"]]] += 1
-        b_ip[code[r["hospital"]]] += r["diagnosis_setting"] in ("Inpatient", "INPT", "IP")
-
-# the stage 4 reader's path on Ask B (round 1): every record number through the crosswalk, a 2025 enrolment of a patient
-# enrolled before left out, the year read from the diagnosis date as shown
-leg = {r["legacy_mrn"]: r["new_mrn"] for r in xw}
-by_new = {}
-for r in pat:
-    by_new.setdefault(leg.get(r["mrn"], r["mrn"]), []).append(r)
-rb, rb_ip = Counter(), Counter()
-for r in pat:
-    if r["diagnosis_date"][:4] == "2025" and not any(q is not r and q["diagnosis_date"] < r["diagnosis_date"]
-                                                       for q in by_new[r["mrn"]]):
-        rb[code[r["hospital"]]] += 1
-        rb_ip[code[r["hospital"]]] += r["diagnosis_setting"] in ("Inpatient", "INPT", "IP")
-reader_hits = sum((rb[h], rb_ip[h]) == (g["new"], g["inpatient"]) for h, g in fig["ask_b"].items())
-print("the round-1 reader's Ask B path: %d of %d hospitals right" % (reader_hits, len(fig["ask_b"])))
-hits, total = 0, 0
-for h, g in fig["ask_a"].items():
-    for got, want in ((a[h], g["tests"]), (a_hi[h], g["referral"])):
-        total += 1
-        hits += got == want
-        print("  Ask A %-34s %6d against %6d %s" % (h, got, want, "HIT" if got == want else "miss"))
-for h, g in fig["ask_b"].items():
-    for got, want in ((b[h], g["new"]), (b_ip[h], g["inpatient"])):
-        total += 1
-        hits += got == want
-        print("  Ask B %-34s %6d against %6d %s" % (h, got, want, "HIT" if got == want else "miss"))
-# the pair: the cracker lands the call (recommendation and critical components 38, instruction-following 7) and keeps
-# none of the ask weight; the mirror stops at Kaplan-Meier (the recommendation's residue, about 5, and 7) with the
-# asks taken the same way
-ask_kept = 55.0 * hits / total
-cracker, mirror = 38 + 7 + ask_kept, 5 + 7 + ask_kept
-print("cracker hits %d of %d ask figures; pair ceiling %.1f (cracker %.1f, mirror %.1f); mirror leakage %.0f%%"
-      % (hits, total, (cracker + mirror) / 2, cracker, mirror, 100.0 * hits / total))
-sys.exit(1 if hits or reader_hits else 0)
+if __name__ == "__main__":
+    tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
+    M = measure(tgt)
+    for ask, cell, g, c, m, hc, hm in M["rows"]:
+        print("%s %-8s %-13s golden %6d  cracker %6d (%s)  mirror %6d (%s)" % (
+            ask, cell[0], cell[1], g, c, "hit" if hc else "miss", m, "hit" if hm else "miss"))
+    print("cracker keeps %.1f per cent, mirror keeps %.1f per cent of %d ask figures; pair ceiling %.1f"
+          % (100 * M["Lc"], M["leak"], M["n"], M["pair"]))

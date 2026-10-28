@@ -1,62 +1,120 @@
-# determinism-check report, task268, 2026-10-19 (round 2 of architecture 3)
+# determinism-check report, task268, 2026-10-28
 
-Round 1 (same date): DETERMINISTIC, APPROVE, advisory findings only (estimator not filed, moderate; ask 2 and 3 dedupe conventions unfiled, low to moderate). Round 2 follows the rebuild for the reader's Gate F findings (Brenmoor now 68, Ask B's 2025 counts with a further record-level issue). This file replaces round 1's report.
+Re-judge after pass6's send-back. Pass6 (`determinism_check_report_pass6.md`) found the main call and the
+cars-on-cover ask uniquely forced, and sent the build back on a second ask, the 2026 claims baseline. That ask
+has been retired from `prompt.txt`, `submission.md` and the goldens; the ask layer is now the private cars on
+cover on 30 September 2026 by region and by cover (COMP, TPFT, TPO). The main call and its figures are
+unchanged. This pass judges the repaired bundle end to end, isolated thread spawned fresh on a clean unzip of
+the current `target.zip`.
 
 ## Verdict
-NOT_DETERMINISTIC (governing label: margin_or_boundary_fragility)
-**Disposition:** SEND_BACK (the repair widens a decisive margin or files a method-forcing criterion, both of which change what solvers see; a model rerun is required)
-**Stumping type:** mechanism: statistical_rigor, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**DETERMINISTIC**
+**Disposition:** APPROVE — every load-bearing figure reproduced exactly from the shipped files; no repair,
+no rerun.
+**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect,
+surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One judge thread (general-purpose, sonnet, medium) saw only a fresh unzip and the inlined blocks. Every graded figure reproduces under the golden's estimator (hospital-specific, time-varying-class inverse-probability-of-censoring weights): GUL 64.9, FEN 67.0, BRE 67.9, LIN 73.25, WRE 72.2, gap 2.1. But charter 3.2 asks for the share alive at two years including patients the registry no longer follows, which for Gullhaven's 526 movers is unobserved, so the figure is a modelled estimate and no shipped file selects the model. Equally licensed class-adjusted estimators on the same cleaned data give Gullhaven 64.9 to 67.3 against Fennick's steady 67.0 to 67.05, and the gap comes out at 2.1, 0.8, 0.2 or -0.3 points. Gullhaven's lead (about one standard error of the difference, roughly 1.6 points) is inside method noise, and the thread's own claim that class-progression projection "gives the same five figures" (submission step 6) did not reproduce (it gives Gullhaven 66).
-
-Formal reconciliation: the margin rule fails only when the thinness meets real uncertainty, with multiple valid methods whose range straddles the deciding line. Here the lowest-hospital pick holds under every hospital-specific class-adjusted method (IPCW, multi-state, landmark) and flips only under pooled-transition variants and baseline-class weighting, which are weaker choices. That alone I would weigh as a thin-but-mostly-clean call. The gap is the second half of the main ask ("by how many points"), and it is 2, 1 or 0 by method among hospital-specific estimators, with nothing shipped (no standard, selection criterion or filed back-test) to choose among them. The `Current spec` requires the method open only where the design, a standard or a filed criterion forces it, with the data separating candidates; the data here do not separate them. NOT_DETERMINISTIC stands, and since the repair changes solver-visible artifacts, SEND_BACK, not FIX_NOW.
+The judge thread reproduced the main call (Mersey + Pennine) and every cars-on-cover figure independently from
+a fresh unzip, seeing only the prompt text and the shipped bundle. The deciding mechanism is the Motor
+Reserving Standard's own mandated back-test (clause 3.3, within two per cent): the whole-book pooled
+development, a by-head-of-claim split, and the literal `notified_by` field split each miss accident year 2022
+in Wessex (8.54%, 7.85%, 6.78% respectively), so the Standard itself disqualifies them; only the development
+split by notifying route (claims-management company, joined through `claimant_representatives.csv`'s
+`firm_type`, versus everyone else) clears every region (max miss 1.09%, matching Critical Component 4's
+"within 1.1 per cent" verbatim). That route split reproduces the stated 2025 frequencies (8.9 / 8.2 / 8.0 /
+7.3 / 5.9) and the 0.2 Pennine–Severn gap to the digit, while every naive method the thread tried (pooled,
+by-head, literal `notified_by`, binary representative/non-representative, by cover) ranks Severn above
+Pennine — the Mersey + Severn pairing the golden explicitly names and rejects. The cars-on-cover ask (the
+repaired ask layer) reproduced to the exact car for all five regions and all three cover types once the
+vehicle-in-force snapshot was overlaid with each policy's latest mid-term ADDRESS/COVER change effective by
+30 September 2026, and once the claims-notification timestamps were read as UTC and converted to UK local
+time before dating. No gate A–E failure found.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Cohort 2022 to 2023 | GUL 2,430; FEN 1,622; BRE 1,492; LIN 1,536; WRE 1,703 | identical | yes |
-| GUL movers beyond linkage within 2 years | 526 | 526 (WRE 948 lost, mostly CNR) | yes |
-| KM, moves and CNR as censoring | GUL 70, FEN 67 | GUL 69.6, FEN 67.2, BRE 68.0, LIN 73.3, WRE 72.3 | yes |
-| GUL move chance at class III / IV | 2.2% / 24.3% | 2.19% / 24.5% | yes |
-| Two-year survival, golden method | 65 / 67 / 68 / 73 / 72 (GUL, FEN, BRE, LIN, WRE) | 64.9 / 67.0 / 67.9 / 73.25 / 72.2 | yes, under that one method |
-| Gap | 2 points | 2.1 (IPCW), 0.8 (multi-state), 0.2 (landmark), -0.3 (pooled landmark) | only under IPCW |
-| Step 6 claim: projection gives the same five figures | same | GUL 66.2 to 66.6, WRE 71.6 to 71.7 | no |
-| Ask 2, NT-proBNP | FEN 10,639; 6,991, LIN 8,364; 5,460, BRE 8,704; 5,718, GUL 11,770; 7,723, WRE 9,368; 6,040 | identical | yes, all ten |
-| Ask 3, 2025 diagnoses; inpatient | FEN 795; 465, LIN 736; 417, BRE 734; 404, GUL 1,222; 723, WRE 833; 494 | identical | yes (with the stated reading, below) |
+| Car-years earned 2025, private car (5 regions) | Mersey 61,924.81; Pennine 40,568.81; Severn 47,215.47; Wessex 38,108.96; Fenland 23,927.05 | same, from `earned_exposure_2019_2025.xlsx` | yes |
+| Claims from 2025 accidents notified by 30 Sep 2026 (5 regions) | Mersey 5,297; Pennine 2,991; Severn 3,713; Wessex 2,681; Fenland 1,374 | same, `motor_claims_notified_2019_2026.csv` joined to region via `postcode_district_sales_regions.csv`, UTC→UK-local date | yes |
+| AY2022 back-test miss, Wessex, by method | pooled/head/`notified_by` "miss ... by 6.8 to 8.5 per cent"; route split "within 1.1 per cent" | pooled 8.54%, by-head 7.85%, literal `notified_by` 6.78%, by-route 1.09% | yes |
+| Route development factors | CMC 3.7, Solicitor 1.2 | CMC 3.687≈3.7, Solicitor 1.174≈1.2 | yes |
+| AY2025 frequency per 100 car-years (5 regions) | 8.9 / 8.2 / 8.0 / 7.3 / 5.9 | 8.909 / 8.200 / 8.017 / 7.301 / 5.887 → same roundings | yes |
+| Gap, Pennine to Severn | 0.2 | 0.184 → 0.2 | yes |
+| Cars on cover 30 Sep 2026 by region × cover (15 cells) | as in Critical Component 3 / ask 4 | same to the exact car, vehicle-in-force rows overlaid with latest mid-term change ≤ cutoff | yes |
+
+A second, independently-constructed valid route split (binary is_CMC vs. everyone else, collapsing the
+solicitor category) also clears the 2% back-test (max 1.01%) and converges on materially the same rounded
+answer (8.9/8.2/8.0/7.3/5.9, gap 0.2), which rules out a knife-edge dependency on one arbitrary partition of
+the representative population.
 
 ## Competing answers that survived
-1. Estimator of the deciding quantity (main call and Ask 1). Two answers on the gap and Gullhaven's whole-percent figure: 65 and 2 points (hospital-specific IPCW) against 66 and 1 point (continuous-time multi-state) or 67 and 0 points (landmark); the lowest hospital flips to Fennick under the pooled variants and baseline-class weighting. The shipped rule meant to close it: none (the design's ladder asserts separation among its own rungs, but the later methods are not on it and nothing filed selects among them).
-2. Ask 3 diagnosis date. 208 rows carry a diagnosis date after the enrolment date, 95 dated 2025 but enrolled in 2024 with an HF24- id. Read as written, the counts are BRE 756, FEN 811, GUL 1,244, LIN 750, WRE 854. The golden takes the enrolment date for those rows. Manual 2.1 (diagnosis precedes entry) and the id prefix close it only by inference.
-3. Wrenhaven's CNR leavers as ordinary censoring: KM 72.3, multi-state 71.7, landmark 71.6; all round to 72. No effect on the pick.
+None. Every naive AY2025 projection the thread tried (pooled, by-head-of-claim, literal `notified_by`, binary
+representative/non-representative, by cover) ranks Severn above Pennine and files Mersey + Severn — the wrong
+pair the golden names and rejects — but none of them survives the Standard's own clause 3.3 back-test, so none
+is defensible. No fork on the cars-on-cover ask: vehicle rows are read literally (on/off/cancelled dates;
+multiple concurrently-on-cover rows per policy are genuine multi-vehicle policies, not a join artifact), and
+the ADDRESS/COVER overlay from `policy_changes_2025_2026.csv` is forced by the prompt's "as at 30 September
+2026" and the vehicle file's own stale term-start snapshot.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 13 | yes |
-| Formats | 3 or more | 4 (csv, pdf, xlsx, txt) | yes |
-| Large file | 25,000 rows or more | visits file 97,172 rows (also ntprobnp, crosswalk) | yes |
-| Distractors | 2 or more, in metadata.json, not labelled by file name | echo_lab_activity_2025.xlsx, hf_clinic_sessions_2026.csv; neutral names | yes |
-| Distractor weight | unused; relevant enough to weigh | not used by the thread's recomputation; not independently stress-tested by me | yes (light check) |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, pptx) | yes |
-| Asks | multi-dimensional, unit and rounding stated | five-hospital multi-measure; whole percent and nearest point stated | yes |
-| Prompt shape and rubric | 25 or more criteria | one paragraph, 850 characters; 25 not computable from the bundle | yes (estimated) |
-| Reads as real | no LLM tells | none seen; dates coherent with the 14 April 2026 pack | yes |
-Hygiene is clean: nothing exclusion-level. The determinism gates (A partly, C, margin) are the failures.
+| File count | ≥10 | 11 shipped files | yes |
+| Format mix | ≥3 formats | csv ×5, xlsx ×2, pdf ×3, txt ×1 = 4 formats | yes |
+| Large file | ≥1 file ≥25,000 rows | `motor_claims_notified_2019_2026.csv` 137,580 rows; `policy_vehicles_in_force_20260930.csv` 248,648 rows; `policy_changes_2025_2026.csv` 32,264 rows | yes |
+| Distractors named | `metadata.json` names ≥2, no filename labels one | `telematics_supplier_quote_2026.pdf`, `aggregator_quote_volumes_2025_26.xlsx`, neither filename says "distractor" | yes |
+| Distractor relevance/unused | unused by solution, relevant enough to weigh; one reproduces a graded quantity and a shipped fact rules it out | both unused in the route-development or cars-on-cover computation; `aggregator_quote_volumes_2025_26.xlsx` tempts a naive "most demand" read (quotes/clicks/sales by region) toward a different region ranking, but it is new-business quote volume, not the in-force vehicle stock the cars-on-cover ask and the frequency's car-year denominator require, so the vehicle-in-force and exposure files rule it out structurally rather than by one coincident arithmetic match | partial — relevance and non-use confirmed; no distractor figure was found to reproduce a graded quantity arithmetically before being ruled out by a shipped fact |
+| Deliverables | 1–3, all present in golden, no format family required | 2: `telematics_pilot_regions_2027.xlsx`, `telematics_pilot_regions_2027.pptx`, both in `golden/` | yes |
+| Asks multi-dimensional | not stacked lookups; unit + rounding stated | frequency (5 regions + gap, one decimal) and cars-on-cover (5 regions × 3 covers, whole cars) stated in the prompt's closing sentence | yes |
+| Prompt shape / rubric ≥25 criteria | identifiable shape, rubric ≥25 criteria | prompt shape (claims-frequency-severity, actuarial) is identifiable; no rubric artifact is present in the task folder for this pass to recount directly | not independently checked this pass — no rubric file in `task268/` to recompute against; flagging for the author to confirm at the regular rubric gate, not a determinism finding |
+| Realism / not LLM-generated | nothing reads LLM-authored; goldens read as real work product | judge's hygiene pass: Reserving Standard's v3→v4 versioning note, informal email cross-talk in `telematics_pilot_thread.txt`, mixed legacy/new claims-system references read as genuine operational artifacts; no benchmark/authoring disclosure, no placeholder names | yes |
 
 ## Gate G reconciliation
-Thread: mechanism statistical_rigor, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The design note and card say the same (stump_class analytical; the surface read is KM with moves as censoring, a method rather than a shipped artifact; the two declared distractors do not carry the task). Match, no Gate G finding. Gate H: domain pass, layers pass, decisive_step analytical, matching the note's Three rules (Layer 1: legacy and new record numbers, code changes, tri-state and Florida death sources, corrected lab re-releases; Layer 2: class-dependent moves). The note's analyst test (a strong analyst runs KM and names Fennick 67 against Gullhaven 70) reproduces. The mismatch the send-back rests on is not Gate G or H but the note's closure: its fork table treats the estimator as closed by the ladder (R4), where the thread finds valid sibling estimators the ladder does not carry.
+Judge: `mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`,
+`surface_read_dependency: no`, `sole_data_defect: no`. Gate H: `domain: pass`, `layers: pass`,
+`decisive_step: analytical`.
 
-Realism items applied after the thread's unzip (two diagnosis dates after a death, 29 relocations after a consent withdrawal, specimens after death or move) leave every graded figure unchanged and do not bear on these findings; they were not part of the thread's pack, so the next pass must unzip the rebuilt target.zip fresh.
+Design note's `## Three rules` (card `stump_class: analytical`): Layer 2 is named
+`field_method, own:claim-count-development-by-notifying-route`, the basis chosen by the Standard's own
+out-of-sample back-test, with "no decoy" and "no certified replay" both asserted — no shipped figure is itself
+a frequency, ultimate count, or development factor that could be reproduced by replay. `analyst_test` names
+the exact easy route (pooled, by-head, or by-`notified_by` development → Mersey and Severn) and `domain_test`
+names the field's own completion-by-development-with-back-test method as the deciding quantity. This matches
+the judge's classification point for point: the judge independently discovered the same three failing naive
+splits (pooled, by-head, literal `notified_by`) and the same passing route split, with misses (8.54/7.85/6.78
+vs. 1.09 per cent) that match the design note's own figures (8.54, 7.85, 6.78 vs. "within 1.1 per cent") to
+two decimal places. No mismatch: the judge did not name either declared distractor as a surface read carrying
+the task, and the design note likewise asserts no decoy and no certified replay. This is the library's own
+textbook route (claims-development-by-report-lag-factor, validated by a governing standard's back-test) that
+a strong analyst applying the field's standard method would still take the easy way and get wrong — a
+landable call under `stumping` 1.3, not a planted trap. The main thread should weigh it as such against the
+design note's ladder, but nothing here signals a send-back.
 
 ## Stump power (Gate F)
-Good, and not the problem. KM on the cleaned data names Fennick (or Wrenhaven if movers are dropped or counted dead); only class-adjusted handling reaches Gullhaven. The weakness is too open, not too easy: even the intended insight does not yield a single number.
+The judge's assessment: the pilot terms and the Reserving Standard both describe the general mechanics of
+development and back-testing, but neither names "split by notifying route" or "claims-management company" as
+the required grouping. A model has to run the mandated back-test itself, discover that the obvious whole-book,
+by-head, or by-field development fails it, and then search for and find the one split (joined through
+`claimant_representatives.csv`) that passes. A model that computes a pooled or by-head development factor and
+stops — the natural "list the Standard's steps and apply them" route — files Mersey + Severn, the wrong pair.
+This is a genuine out-of-sample-validated method-selection trap on honest, correctly-reported data, consistent
+with the design note's `analyst_test`, and it is the field's own standard analytical move (claims development
+completed by report-lag factor, validated against a closed year) rather than a reflex to distrust a stated
+number. Two independently-constructed valid splits converge on the same rounded answer, which also rules out
+the task collapsing to a knife-edge arbitrary partition.
 
 ## Findings, ranked
-1. (Blocking) The gap and Gullhaven's whole-percent figure are not forced: hospital-specific class-adjusted estimators give a 2.1, 0.8 or 0.2 point gap, and some pooled variants flip the lowest hospital. Gullhaven's lead is about one standard error. Gates C and the margin test fail on the main call.
-2. (Blocking, same cause) Submission step 6 claims the class-progression projection gives the same five figures; it did not reproduce (Gullhaven 66, Wrenhaven 71.6 to 71.7). Drop or substantiate it.
-3. (Should fix) Ask 3 turns on an inferred reading of 208 diagnosis-after-enrolment rows. Close it in the manual or repair the dates.
-4. (Advisory) Carried from round 1: nothing files the estimand's treatment of unobserved status beyond "counts"; file the WHAT, never name the method.
+1. (informational, not a send-back) The spec-gate distractor check is partially unconfirmed: neither
+   `telematics_supplier_quote_2026.pdf` nor `aggregator_quote_volumes_2025_26.xlsx` was found to reproduce a
+   graded quantity arithmetically before being ruled out by a shipped fact; both are relevant-but-unused by
+   file type and subject matter rather than by a near-miss number. Worth a author glance at the next regular
+   hygiene pass, not a determinism defect.
+2. (informational) No rubric artifact exists in `task268/` for this pass to recount against the "≥25
+   criteria" gate; flag for the regular rubric check, not raised here as a determinism finding.
+3. No Gate A–H finding. No competing answer survives for the main call or the cars-on-cover ask. No
+   Gate G or Gate H mismatch between the judge and the design note.
 
 ## Next action for the author
-Redesign the margin, not the wording: either widen Gullhaven's real deficit so it leads under every hospital-specific class-adjusted estimator and rounds to the same whole percent and gap (with Fennick unchanged), or file a selection criterion the estimators can be held to (for example a filed out-of-sample back-test that the data resolve; never the method by name, never consecutive builds). Correct step 6, close the Ask 3 date reading, rebuild twice, and run one fresh determinism pass on the new target.zip.
+None required for determinism. Ship: record the portal result in the ledger and mark the card's
+`mechanism`/`stumping_family` fields (currently `None`) with the judge's values
+(`method_or_model_selection` / `analytical_non_defect`) to keep the card current with this pass's verdict.

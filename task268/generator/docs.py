@@ -1,12 +1,14 @@
-"""The pack's documents: the service line committee's charter for the 2027 heart failure early-diagnosis programme, the
-heart failure registry's manual (version 5) and the pack's contents list."""
+"""The pack's documents: the chief underwriting officer's terms for the 2027 telematics pilot, the Motor Claims Reserving
+Standard (version 4), the telematics supplier's quotation and the planning thread."""
 from __future__ import annotations
+
+import datetime as dt
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
 from reportlab.lib import colors                                                    # noqa: E402
-from reportlab.lib.pagesizes import letter                                          # noqa: E402
+from reportlab.lib.pagesizes import A4                                              # noqa: E402
 from reportlab.lib.styles import ParagraphStyle                                     # noqa: E402
 from reportlab.lib.units import mm                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
@@ -15,37 +17,37 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, Tabl
 
 import common as K   # noqa: E402
 
-FONT_DIR = "/usr/share/fonts/truetype/liberation/"
 for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Sans-I", "LiberationSans-Italic"),
               ("Serif", "LiberationSerif-Regular"), ("Serif-B", "LiberationSerif-Bold"),
               ("Serif-I", "LiberationSerif-Italic")):
-    pdfmetrics.registerFont(TTFont(nm, FONT_DIR + f + ".ttf"))
+    pdfmetrics.registerFont(TTFont(nm, K.FONT_DIR + f + ".ttf"))
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
-INK, GREY, RULE = colors.HexColor("#1c2428"), colors.HexColor("#5a646b"), colors.HexColor("#b4bdc3")
+INK, GREY, RULE = colors.HexColor("#1d2327"), colors.HexColor("#5d666c"), colors.HexColor("#b7c0c6")
+TEAL, PLUM, SLATE = colors.HexColor("#0f5f66"), colors.HexColor("#5b2a4e"), colors.HexColor("#2f3e4c")
 
 
 def styles(font, accent):
-    body = ParagraphStyle("b", fontName=font, fontSize=10, leading=13.8, textColor=INK, spaceAfter=5)
+    body = ParagraphStyle("b", fontName=font, fontSize=9.8, leading=13.6, textColor=INK, spaceAfter=5)
     return dict(
         body=body,
         h1=ParagraphStyle("h1", fontName=font + "-B", fontSize=15, leading=19, textColor=accent, spaceAfter=2),
-        h2=ParagraphStyle("h2", fontName=font + "-B", fontSize=10.8, leading=14, textColor=INK, spaceBefore=8,
+        h2=ParagraphStyle("h2", fontName=font + "-B", fontSize=10.6, leading=14, textColor=INK, spaceBefore=8,
                           spaceAfter=2, keepWithNext=1),
-        meta=ParagraphStyle("m", fontName=font, fontSize=8.6, leading=11.6, textColor=GREY, spaceAfter=9),
-        cell=ParagraphStyle("c", fontName=font, fontSize=8.4, leading=10.6, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName=font + "-B", fontSize=8.4, leading=10.6, textColor=INK),
-        clause=ParagraphStyle("p", parent=body, leftIndent=26, firstLineIndent=-26))
+        meta=ParagraphStyle("m", fontName=font, fontSize=8.5, leading=11.4, textColor=GREY, spaceAfter=9),
+        cell=ParagraphStyle("c", fontName=font, fontSize=8.3, leading=10.4, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName=font + "-B", fontSize=8.3, leading=10.4, textColor=INK),
+        clause=ParagraphStyle("p", parent=body, leftIndent=24, firstLineIndent=-24))
 
 
 def _frame(left, right, font):
     def draw(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        canvas.setFont(font, 7.6)
-        canvas.drawString(19 * mm, letter[1] - 11.5 * mm, left)
-        canvas.drawRightString(letter[0] - 19 * mm, letter[1] - 11.5 * mm, right)
-        canvas.drawRightString(letter[0] - 19 * mm, 10 * mm, "Page %d" % doc.page)
+        canvas.setFont(font, 7.5)
+        canvas.drawString(18 * mm, A4[1] - 11 * mm, left)
+        canvas.drawRightString(A4[0] - 18 * mm, A4[1] - 11 * mm, right)
+        canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
         canvas.restoreState()
     return draw
 
@@ -62,133 +64,171 @@ def _table(S, rows, widths, right=()):
 
 
 def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=letter, leftMargin=19 * mm, rightMargin=19 * mm, topMargin=20 * mm,
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=19 * mm,
                              bottomMargin=17 * mm, title=title, author=author, subject="", creator="", producer="")
 
 
-# ---------------------------------------------------------------------------------------------- the charter
-def write_charter(path):
-    S = styles("Sans", colors.HexColor("#0E5A6E"))
-    doc = _doc(path, "Heart Failure Early Diagnosis Programme 2027: Charter", K.ORG_INC)
-    st = [Paragraph("Heart Failure Early Diagnosis Programme 2027", S["h1"]),
-          Paragraph("Charter of the %s, %s. Approved at the committee's meeting of 17 February 2026." % (K.COMMITTEE, K.ORG),
-                    S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    Hd = lambda t: st.append(Paragraph(t, S["h2"]))
-    C = lambda n, t: st.append(Paragraph("%s&nbsp;&nbsp;%s" % (n, t), S["clause"]))
-    Hd("1. Purpose")
-    P("Most heart failure in the communities our hospitals serve is still diagnosed during an emergency admission, when "
-      "the disease is already advanced. The programme moves diagnosis earlier and out of hospital: primary care "
-      "practices test patients with breathlessness, swollen ankles or unexplained fatigue for NT-proBNP, and a "
-      "rapid-access heart failure clinic sees the patients the test points to, with echocardiography the same week.")
-    Hd("2. The programme")
-    C("2.1", "Community testing. Participating primary care practices in the host hospital's service area order "
-             "NT-proBNP through the host hospital's laboratory, on the programme's request form.")
-    C("2.2", "Rapid-access clinic. An advanced practice provider and a cardiac sonographer run three clinic sessions a "
-             "week at the host hospital, with a cardiologist's review of every new diagnosis.")
-    C(K.CHARTER_CLAUSES["referral"], "Referral. A patient whose NT-proBNP is at or above %d pg/mL is referred to the rapid-access clinic and seen "
-             "within two weeks; below that level the practice manages the patient and re-tests if symptoms persist."
-      % K.REFERRAL)
-    C("2.4", "Resources. The first year is funded at $1.42 million: the clinic staff, the echocardiography sessions, a "
-             "programme coordinator and the practices' testing.")
-    Hd("3. Choosing the host hospital")
-    C(K.CHARTER_CLAUSES["host"], "The programme starts at one hospital in April 2027. It goes to the hospital whose patients newly diagnosed "
-             "with heart failure in 2022 and 2023 had the lowest two-year survival from diagnosis: survival from "
-             "diagnosis is shortest where heart failure is found latest, and that is where finding it earlier has the "
-             "most to give.")
-    C(K.CHARTER_CLAUSES["survival"], "Two-year survival is the share of the hospital's patients newly diagnosed with heart failure in 2022 and "
-             "2023 who were alive two years after their diagnosis date. Every patient newly diagnosed at the hospital in "
-             "those years is in the share, alive or dead as they were at two years, including the patients who left the "
-             "registry's follow-up before their two-year date. The registry does not learn of those patients' deaths, so "
-             "the lack of a death on its files does not show that they were alive.")
-    C("3.3", "The figures come from the %s, whose manual (section 2) sets out who is newly diagnosed and at which "
-             "hospital." % K.REGISTRY)
-    Hd("4. Timeline")
-    P("The committee chooses the host hospital at its May 2026 meeting. Practices are recruited from September 2026, "
-      "the clinic opens in March 2027 and the first community referrals are expected in April 2027.")
-    Hd("5. Review")
-    P("The committee reviews the programme after its first twelve months: the practices taking part, the tests ordered, "
-      "the referrals made, the diagnoses reached and how many of them were made outside an emergency admission. A "
-      "second hospital is considered at that review.")
-    st.append(Spacer(1, 8))
-    P("<i>Chair of the committee: %s, Medical Director, Heart and Vascular Services.</i>" % K.PEOPLE["director"])
-    frame = _frame(K.ORG + "  |  " + K.COMMITTEE, "Charter, approved 17 February 2026", "Sans")
-    doc.build(st, onFirstPage=frame, onLaterPages=frame)
+def _d(d):
+    return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
 
 
-# ---------------------------------------------------------------------------------------------- the registry manual
-def write_manual(path):
-    S = styles("Serif", colors.HexColor("#33415C"))
-    doc = _doc(path, "Heronmere Heart Failure Registry: manual, version 5", K.ORG_INC)
-    st = [Paragraph(K.REGISTRY + ": Manual", S["h1"]),
-          Paragraph("Version 5, 3 March 2025. Replaces version 4 (August 2023). Maintained by the registry team, "
-                    "Heart and Vascular Services, %s." % K.ORG, S["meta"])]
-    P = lambda t: st.append(Paragraph(t, S["body"]))
-    Hd = lambda t: st.append(Paragraph(t, S["h2"]))
-    C = lambda n, t: st.append(Paragraph("%s&nbsp;&nbsp;%s" % (n, t), S["clause"]))
-    Hd("1. About the registry")
-    P("The registry has enrolled every patient newly diagnosed with heart failure at a Heronmere hospital since 1 January "
-      "2022. It follows them in the hospitals' heart failure clinics and records their deaths, so that the service line "
-      "can see how its patients fare and plan its services.")
-    Hd("2. Enrolment")
-    C(K.MANUAL_SECTIONS["enrolment"], "A patient is enrolled when heart failure is first diagnosed at a Heronmere hospital, in an admission, in "
-             "an emergency department visit or in an outpatient clinic. The diagnosis date is the date of that "
-             "encounter. The enrolment date is the date the registry nurse entered the patient, within three weeks "
-             "after the diagnosing encounter.")
-    C(K.MANUAL_SECTIONS["hospital"], "The hospital is the hospital of the diagnosing encounter. The North Campus of Brenmoor Regional Medical "
-             "Center used the main campus's code (BRE) until 1 July 2024 and its own code (BRN) from that date; both "
-             "campuses are Brenmoor Regional Medical Center.")
-    C("2.3", "The registry nurse records the NYHA functional class at diagnosis, the ejection fraction category (reduced, "
-             "mildly reduced, preserved) and the setting of the diagnosing encounter.")
-    Hd("3. Clinic follow-up")
-    C("3.1", "Enrolled patients are seen in the heart failure clinic of their hospital about every three months. At each "
-             "visit the clinician records the NYHA functional class, weight, blood pressure, heart rate and the daily "
-             "loop diuretic dose.")
-    C(K.MANUAL_SECTIONS["spelling"], "The legacy record writes the NYHA class as I to IV or as Class I to Class IV; the new record, from 1 June "
-             "2024, writes it as 1 to 4 or as NYHA 1 to NYHA 4. The diagnosis setting is IP, OP or ED in the legacy "
-             "record and Inpatient (or INPT), Outpatient or ED visit in the new one.")
-    C(K.MANUAL_SECTIONS["relocation"], "A patient who tells the clinic that they are moving out of Florida is recorded as a relocation (event REL), "
-             "with the state they are moving to, when the registry processes the note of that visit, a few days later. "
-             "The clinic does not see them again.")
-    Hd("4. Vital status")
-    C(K.MANUAL_SECTIONS["florida"], "Deaths in Florida are found by the state's death certificate linkage, run each March on the record numbers "
-             "of the patients in follow-up. The linkage returns one row for each linked death, under the patient's "
-             "current record number.")
-    C(K.MANUAL_SECTIONS["exchange"], "Deaths of patients who have moved to Georgia, Alabama or South Carolina are returned each quarter by the "
-             "%s, under the registry identifier." % K.EXCHANGE)
-    C(K.MANUAL_SECTIONS["no_source"], "The registry has no source for deaths in any other state. A patient who moves to any other state leaves "
-             "vital status follow-up on the date of the relocation, and the registry holds nothing on them after it.")
-    C(K.MANUAL_SECTIONS["reconsent"], "The registry is re-consenting the patients Wrenhaven Medical Center enrolled before 2024, after a change "
-             "to that hospital's data-sharing agreement. A patient who has not returned the new consent form by %s "
-             "leaves follow-up that day (event CNR), and the registry holds nothing on them after it."
-      % K.RECONSENT.strftime("%-d %B %Y"))
-    Hd("5. Record numbers")
-    P("On 1 June 2024 Heronmere moved to a new electronic health record and every patient was given a new medical record "
-      "number. The registry keeps the number under which each patient was enrolled. The record-number crosswalk maps "
-      "each legacy number to the patient's new number.")
-    Hd("6. Files")
-    rows = [["File", "One row is", "Key fields"],
-            [K.FILES["patients"], "an enrolment", "registry_id, mrn (the number at enrolment), hospital, diagnosis_date, "
-                                                 "enrolment_date, nyha_at_diagnosis, diagnosis_setting"],
-            [K.FILES["visits"], "a heart failure clinic visit", "registry_id, visit_date, clinic, nyha_class"],
-            [K.FILES["events"], "a relocation or a consent withdrawal", "registry_id, event_date, event (REL, CNR), "
-                                                                       "destination_state"],
-            [K.FILES["fl_deaths"], "a linked Florida death", "MRN (current), date of death"],
-            [K.FILES["exchange"], "a death returned by the exchange", "PARTNER_ID (the registry identifier), STATE, DOD"],
-            [K.FILES["crosswalk"], "a legacy record number", "legacy_mrn, new_mrn"]]
-    st.append(_table(S, rows, (58, 38, 82)))
-    frame = _frame(K.REGISTRY, "Manual, version 5", "Serif")
-    doc.build(st, onFirstPage=frame, onLaterPages=frame)
+# ---------------------------------------------------------------------------------------------- the pilot terms
+TERMS = [
+    ("1", "Purpose", "The pilot tests whether a telematics policy, priced at each renewal on the driving the device "
+     "records, reduces claim frequency on Corriven's private-car book. It runs for twelve months from 1 March 2027 "
+     "and its result informs the 2028 rating plan."),
+    ("2", "Where the pilot runs", "The pilot runs in the two sales regions whose private-car policies had the highest "
+     "claim frequency in accident year 2025."),
+    ("3", "Claim frequency", "Claim frequency for accident year 2025 is the number of claims arising from accidents "
+     "between 1 January and 31 December 2025 under private-car policies in the region, whether or not they had been "
+     "notified to Corriven by the end of 30 September 2026, per 100 car-years earned in the region in 2025. Claims "
+     "are counted as the Motor Reserving Standard counts them, including claims closed without payment, and claims "
+     "not yet notified are estimated as that Standard provides. Earned car-years are the pricing mart's earned "
+     "exposure for private cars."),
+    ("4", "Regions", "A claim or a car belongs to the sales region of its risk postcode district, on the 2025 drawing "
+     "of the regions. Vans and other light commercial vehicles are outside the pilot."),
+    ("5", "Reporting", "Frequencies are reported per 100 car-years to one decimal place."),
+    ("6", "The offer", "Policyholders in the pilot regions are offered the device at renewal from 1 March 2027. "
+     "COMP, TPFT and TPO policies are each offered their own discount scale, so the supplier's order is placed by "
+     "cover."),
+    ("7", "Timetable", "The regions are decided on %s. The supplier's order is placed by %s, and fitting "
+     "starts in February 2027." % (_d(K.DECISION_DATE), _d(K.ORDER_DATE))),
+    ("8", "Evaluation", "The pilot's claim frequency is compared at the end of the pilot with the same regions' "
+     "policyholders who declined the device and with the other three regions, adjusted for the rating factors. The "
+     "evaluation plan is a separate paper."),
+]
 
 
-# ---------------------------------------------------------------------------------------------- contents
-def write_contents(path, rows):
-    widths = [max(len(str(r[i])) for r in rows) for i in range(len(rows[0]))]
-    lines = ["Committee pack: 2027 Heart Failure Early Diagnosis Programme, host hospital",
-             "Prepared for the %s, %s" % (K.COMMITTEE, K.PACK_DATE.strftime("%d %B %Y").lstrip("0")), ""]
-    for i, r in enumerate(rows):
-        lines.append("  ".join(str(c).ljust(widths[j]) for j, c in enumerate(r)).rstrip())
-        if i == 0:
-            lines.append("  ".join("-" * w for w in widths))
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write("\n".join(lines) + "\n")
+def write_terms(path):
+    S = styles("Sans", TEAL)
+    doc = _doc(path, "Telematics pilot 2027: terms", "Chief Underwriting Officer")
+    st = [Paragraph("Telematics pilot 2027", S["h1"]),
+          Paragraph("Terms set by %s, Chief Underwriting Officer, %s, after consultation with Pricing, Claims and "
+                    "Reserving. Distribution: Motor Pricing, Claims, Reserving, Underwriting Operations." % (K.PEOPLE["cuo"], _d(K.TERMS_DATE)), S["meta"])]
+    for num, head, text in TERMS:
+        st.append(Paragraph("%s&nbsp;&nbsp;%s" % (num, head), S["h2"]))
+        st.append(Paragraph(text, S["body"]))
+    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Underwriting", "Sans"),
+              onLaterPages=_frame(K.ORG_LTD, "Underwriting", "Sans"))
+
+
+# ---------------------------------------------------------------------------------------------- the reserving standard
+STANDARD = [
+    ("1", "Scope", [
+        ("1.1", "This Standard governs the estimation of claim numbers and claim amounts for Corriven's private-car and "
+                "light commercial vehicle books, for the quarterly reserving review, the annual actuarial function "
+                "report and any pricing or portfolio work that uses claim numbers.")]),
+    ("2", "Claims and accident years", [
+        ("2.1", "A claim is one claimant's claim under one head of claim (own damage, third-party property damage, "
+                "third-party injury, theft, fire or glass) arising from one accident. One accident can give rise to "
+                "several claims. Every claim notified counts once, including claims closed without payment."),
+        ("2.2", "Claims are grouped by the calendar year of the accident and valued at 30 September each year. The "
+                "valuation age of an accident year is counted in months from 1 January of that year, so an accident "
+                "year is 21 months old at the first 30 September after it ends."),
+        ("2.3", "An accident year is closed three years after its last day, and its claim count is then final.")]),
+    ("3", "Claims not yet notified", [
+        ("3.1", "The number of claims incurred but not yet notified for an open accident year is estimated by "
+                "development. Development factors are measured on the closed accident years of the whole private-car "
+                "book, from their counts at the same valuation age to their final counts."),
+        ("3.2", "Sales-region estimates apply the whole book's factors to each region's notified claims; regional "
+                "triangles are too thin to give stable factors."),
+        ("3.3", "Before a development basis is used for an open accident year, it is re-run on the most recent closed "
+                "accident year from that year's position at the same valuation age, with only the closed accident "
+                "years before it. The basis is used only if its estimate reproduces that year's final count in every "
+                "sales region to within two per cent.")]),
+    ("4", "Claim amounts", [
+        ("4.1", "Case estimates are set by the handler at first contact and reviewed at each material change and at "
+                "least every 90 days. Injury estimates follow the Judicial College guidelines and, for claims under "
+                "the whiplash tariff, the tariff in force at the date of the accident."),
+        ("4.2", "Incurred but not enough reported amounts are projected on paid and incurred triangles by head of "
+                "claim. Claims over 250,000 pounds incurred are projected individually by the large loss team and "
+                "excluded from the triangles."),
+        ("4.3", "Periodical payment orders are valued at the discount rate set in the reserving basis, with the "
+                "personal injury discount rate of the date of settlement for lump sums.")]),
+    ("5", "Governance", [
+        ("5.1", "The Chief Actuary owns this Standard and reviews it each year. Changes are approved by the Reserving "
+                "Committee. Version 4 replaces version 3 from 1 December 2025; the change is the back-test in 3.3, "
+                "which version 3 required only for the annual report.")]),
+]
+
+
+def write_standard(path):
+    S = styles("Serif", PLUM)
+    doc = _doc(path, "Motor Claims Reserving Standard, version 4", "Chief Actuary")
+    st = [Paragraph("Motor Claims Reserving Standard", S["h1"]),
+          Paragraph("Version 4. Approved by the Reserving Committee on %s; effective 1 December 2025. Owner: Chief "
+                    "Actuary." % _d(K.STANDARD_DATE), S["meta"])]
+    for num, head, clauses in STANDARD:
+        st.append(Paragraph("%s&nbsp;&nbsp;%s" % (num, head), S["h2"]))
+        for cn, text in clauses:
+            st.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (cn, text), S["clause"]))
+    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Reserving Standard v4", "Serif"),
+              onLaterPages=_frame(K.ORG_LTD, "Reserving Standard v4", "Serif"))
+
+
+# ---------------------------------------------------------------------------------------------- the supplier's quote
+def write_quote(path):
+    S = styles("Sans", SLATE)
+    doc = _doc(path, "Quotation Q-26-1184", "Brackwell Telematics Ltd")
+    st = [Paragraph("Quotation Q-26-1184: device telematics for private-car policies", S["h1"]),
+          Paragraph("Brackwell Telematics Ltd, Unit 4, Brunel Park, Northampton NN4 7BF. For Corriven Insurance "
+                    "Limited, attention %s. Issued 22 September 2026; valid to 31 December 2026." % K.PEOPLE["cuo"],
+                    S["meta"]),
+          Paragraph("Scope", S["h2"]),
+          Paragraph("Supply and fitting of the VT-5 self-install device, the driving-score service and the claims "
+                    "notification feed for a twelve-month pilot, with an option to extend. Devices are posted to the "
+                    "policyholder on renewal and activate on first journey; a fitter visit is offered where the car has "
+                    "no accessible OBD port.", S["body"]),
+          Paragraph("Charges", S["h2"]),
+          _table(S, [["Item", "Unit", "Price (GBP, excl. VAT)"],
+                     ["VT-5 device, posted", "per device", "38.50"],
+                     ["Fitter visit (where required)", "per visit", "64.00"],
+                     ["Driving-score and data service", "per active device per month", "2.15"],
+                     ["First-notice crash alert and reconstruction", "per alert", "11.00"],
+                     ["Returns handling at lapse", "per device", "6.20"],
+                     ["Programme set-up and integration", "once", "18,500.00"]], [92, 44, 38], right=(2,)),
+          Spacer(1, 6),
+          Paragraph("Volume terms", S["h2"]),
+          _table(S, [["Devices ordered", "Device price", "Data service"],
+                     ["up to 5,000", "list", "list"],
+                     ["5,001 to 20,000", "list less 6 per cent", "list less 4 per cent"],
+                     ["over 20,000", "list less 11 per cent", "list less 8 per cent"]], [60, 56, 58]),
+          Spacer(1, 6),
+          Paragraph("Terms", S["h2"]),
+          Paragraph("Prices are fixed for orders placed before 31 December 2026. The volume tier is set by the devices "
+                    "on the order. Data is held in the United Kingdom and processed under the data processing "
+                    "agreement of 14 May 2025. Expected take-up in comparable pilots has been 18 to 31 per cent of "
+                    "renewing policies offered the device.", S["body"])]
+    doc.build(st, onFirstPage=_frame("Brackwell Telematics Ltd", "Q-26-1184", "Sans"),
+              onLaterPages=_frame("Brackwell Telematics Ltd", "Q-26-1184", "Sans"))
+
+
+# ---------------------------------------------------------------------------------------------- the planning thread
+def thread_text():
+    a, c, i = K.PEOPLE["actuary"], K.PEOPLE["cuo"], K.PEOPLE["claims"]
+    mail = lambda n: n.lower().replace(" ", ".") + "@corriven.co.uk"
+    msgs = [
+        (c, [a, i], dt.datetime(2026, 10, 7, 9, 12), "Telematics pilot: paper for 13 November",
+         "Carol, Iain,\n\nI signed off the pilot terms yesterday (attached). Brackwell's quote holds to the end of "
+         "the year, and I want the order placed by 27 November so fitting can start in February. Could I have the "
+         "paper by 13 November? It needs to name the two regions with the 2025 frequencies behind them, "
+         "and tell Brackwell how many cars it is ordering for.\n\nDamian"),
+        (a, [c, i], dt.datetime(2026, 10, 7, 14, 40), "RE: Telematics pilot: paper for 13 November",
+         "Damian,\n\nYes. I'll work from the claims extract Data took on 1 October (everything notified to the end of "
+         "30 September) and the pricing mart's exposure, and do the 2025 year on the terms' basis, all five regions so "
+         "you see the gap below the two.\n\nFor Brackwell I'll count the private cars on cover at 30 "
+         "September, region by region and by cover, since each cover has its own discount scale.\n\nCarol"),
+        (i, [a, c], dt.datetime(2026, 10, 8, 8, 55), "RE: Telematics pilot: paper for 13 November",
+         "Damian, Carol,\n\nBrackwell's crash alerts will come into my first-notice desk from February, so I need the "
+         "two regions settled before the order goes. Happy to help with the claims extract if anything in it looks "
+         "odd.\n\nIain"),
+        (c, [a, i], dt.datetime(2026, 10, 9, 17, 31), "RE: Telematics pilot: paper for 13 November",
+         "Thanks both. A workbook with the figures and a short deck I can decide from, please; four or five slides "
+         "is plenty.\n\nDamian"),
+    ]
+    out = []
+    for frm, to, t, subj, body in reversed(msgs):
+        out.append("From: %s <%s>\nTo: %s\nDate: %s\nSubject: %s\n\n%s\n" % (
+            frm, mail(frm), "; ".join("%s <%s>" % (x, mail(x)) for x in to),
+            t.strftime("%a %d %b %Y %H:%M"), subj, body))
+    return ("\n" + "-" * 72 + "\n\n").join(out)

@@ -1,54 +1,51 @@
 ## Tags
 
-**Domain:** Biomedical & Clinical Research, survival and time-to-event analysis (which of Heronmere Health's five hospitals hosts the 2027 heart failure early-diagnosis programme, by the two-year survival from diagnosis of each hospital's patients newly diagnosed with heart failure in 2022 and 2023, from a registry whose follow-up ends when a patient moves beyond its death linkage).
-**Analytical objective:** Descriptive & Distribution Analysis (each hospital's distribution of time from heart failure diagnosis to death, read at two years, with the patients lost to a move carried from their recorded clinical state).
+**Domain:** Actuarial Science & Insurance (claims frequency and severity).
+**Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Host the 2027 heart failure early-diagnosis programme at Gullhaven Hospital.**
-Its patients newly diagnosed with heart failure in 2022 and 2023 had a two-year survival of 58%, the lowest of the five hospitals and 3 points below Fennick General Hospital's 61%, the next lowest. Not Fennick General Hospital, which Kaplan-Meier with every move as ordinary censoring puts lowest (61% against Gullhaven's 62%), because 612 of Gullhaven's 2,996 patients moved beyond the registry's death linkage within two years, 581 of them in NYHA class III or IV at the visit where they reported the move, and Kaplan-Meier credits them with the survival of the patients who stayed. Not Wrenhaven Medical Center, which comes out lowest only when the 347 patients who left at its 2025 re-consent are dropped or counted as dead.
+**Put the 2027 telematics pilot in Mersey and Pennine.**
+Their private cars had the two highest claim frequencies in accident year 2025, 8.9 and 8.2 claims per 100 car-years, and Severn, third at 8.0, is 0.2 below Pennine. Not Mersey and Severn, which the whole book's development gives pooled, by head of claim or by the notified-by field: each blends the claims-management companies that notify Pennine's 2025 injury claims late with faster notifiers, and each misses 2022 in Wessex by 6.8 to 8.5 per cent, outside the Reserving Standard's two.
 
 ## 2. Critical Components
 
-1. Gullhaven Hospital's two-year survival from diagnosis, each patient who moved beyond the death linkage carried by the NYHA class recorded at the visit where the move was reported: **58%**.
-2. Fennick General Hospital, the next lowest: **61%**; Gullhaven is **3 points** below it.
-3. Kaplan-Meier with the moves as ordinary censoring: Fennick **61%**, Gullhaven **62%**.
+1. Claim frequency, accident year 2025, per 100 car-years earned in 2025: Mersey **8.9**; Pennine **8.2**; Severn **8.0**; Wessex **7.3**; Fenland **5.9**; gap from Pennine to Severn **0.2**.
+2. Car-years earned in 2025, private cars: Mersey **61,924.81**; Pennine **40,568.81**; Severn **47,215.47**; Wessex **38,108.96**; Fenland **23,927.05**.
+3. Claims from 2025 accidents notified by 30 September 2026: Mersey **5,297**; Pennine **2,991**; Severn **3,713**; Wessex **2,681**; Fenland **1,374**.
+4. The development by notifying route reproduces accident year 2022 within **1.1** per cent in every region, as the Standard's 3.3 requires.
 
 ## 3. Step-by-Step Solution
 
-1. Took every enrolment in hf_registry_patients.csv with a diagnosis date in 2022 or 2023 (charter 3.1 and 3.2, manual 2.1), at the hospital of diagnosis (BRN is Brenmoor Regional, manual 2.2): 9,339 patients.
-2. Deaths from fl_death_linkage_2022_2025.xlsx by current record number, legacy numbers through mrn_crosswalk_2024.csv (manual 4.1), and from tristate_exchange_deaths_2022_2025.txt by registry identifier (manual 4.2); a death on or before the second anniversary of diagnosis is a death within two years.
-3. Follow-up ends at a relocation (REL) to a state outside Georgia, Alabama and South Carolina (manual 3.3 and 4.3) and at Wrenhaven's re-consent withdrawals (CNR, manual 4.4); relocations to those three states stay in follow-up.
-4. Read each clinic visit's NYHA class as one scale (manual 3.2) and measured, hospital by hospital, the chance that a visit in each class ends in a move beyond the linkage: Gullhaven 0.4% at a class III visit and 15.7% at class IV.
-5. Weighted each patient still followed, from each visit on, by the inverse of the product of the hospital's chances of staying in reach at the classes recorded so far, and took the weighted product-limit estimate at two years.
-6. Two-year survival: Gullhaven 58%, Fennick 61%, Wrenhaven 64%, Brenmoor 66%, Linmoor 70%.
-7. Counted the specimens each laboratory released an NT-proBNP result on in 2025, a result corrected and released again under a new accession (the same patient, collection and receipt time) being the same specimen; a result reported above the analyser's range is at or above 400 pg/mL.
-8. Counted the 2025 diagnoses by diagnosis date, a record showing its diagnosis after its enrolment taken at the enrolment date (the diagnosis comes first, manual 2.1), leaving out a 2025 enrolment whose record number maps through the crosswalk to a patient enrolled earlier; inpatient diagnoses are those whose setting reads Inpatient or INPT.
+1. Summed the private-car rows of the 2025 sheet of earned_exposure_2019_2025.xlsx, the earned exposure telematics_pilot_terms_2027.pdf term 3 names: 211,745.10 car-years in all.
+2. Counted private-car claims in motor_claims_notified_2019_2026.csv by the Standard's 2.1, each in its region from postcode_district_sales_regions.csv and notified on its UK date: 16,056 claims from 2025 accidents by 30 September 2026.
+3. Gave each claim its notifying route, the notified-by field with representatives split by the firm type in claimant_representatives.csv, and measured the whole book's factors from 21 months to final on the closed years 2019 to 2022 (Standard 3.1, 3.2): 3.7 for claims-management companies against 1.2 for solicitors.
+4. Re-ran each development on accident year 2022 from 30 September 2023 with 2019 to 2021 (Standard 3.3): the route development is within 1.1 per cent in every region, while pooled, by head of claim and by notified-by field miss Wessex by 6.8 to 8.5 per cent.
+5. For cars on cover, applied the address and cover changes in policy_changes_2025_2026.csv effective from each term's start to 30 September 2026 to the private cars on cover that day in policy_vehicles_in_force_20260930.csv, whose rows carry the district and cover at the term's start: Mersey 44,743 COMP, 11,434 TPFT and 4,925 TPO; Pennine 30,213 COMP, 7,051 TPFT and 2,831 TPO; Wessex 30,001 COMP, 5,746 TPFT and 2,037 TPO; Fenland 19,421 COMP, 3,243 TPFT and 1,003 TPO; Severn 36,590 COMP, 7,448 TPFT and 2,919 TPO.
+6. Applied the route factors to each region's 2025 notified claims and divided by its car-years: Mersey 8.9; Pennine 8.2; Severn 8.0; Wessex 7.3; Fenland 5.9; Mersey and Pennine host the pilot.
 
 ## 4. Deliverable Answers
 
-### hf_programme_site_2027.xlsx
+### telematics_pilot_regions_2027.xlsx
 
-1. Each hospital's two-year survival from diagnosis, patients newly diagnosed with heart failure in 2022 and 2023 (whole percent):
-   - Gullhaven Hospital: 58%
-   - Fennick General Hospital: 61%
-   - Wrenhaven Medical Center: 64%
-   - Brenmoor Regional Medical Center: 66%
-   - Linmoor Hospital: 70%
-2. Specimens each hospital's laboratory reported NT-proBNP results on in 2025; of them, at or above 400 pg/mL:
-   - Fennick General Hospital: 10,421; 6,834
-   - Linmoor Hospital: 8,109; 5,120
-   - Brenmoor Regional Medical Center: 8,880; 5,838
-   - Gullhaven Hospital: 11,694; 7,524
-   - Wrenhaven Medical Center: 9,412; 6,186
-3. Patients newly diagnosed with heart failure at each hospital in 2025; of them, diagnosed during an inpatient stay:
-   - Fennick General Hospital: 832; 483
-   - Linmoor Hospital: 790; 456
-   - Brenmoor Regional Medical Center: 772; 432
-   - Gullhaven Hospital: 1,555; 897
-   - Wrenhaven Medical Center: 895; 523
+1. Pilot regions: Mersey and Pennine.
+2. Claim frequency, accident year 2025, per 100 car-years, one decimal:
+   - Mersey: 8.9
+   - Pennine: 8.2
+   - Severn: 8.0
+   - Wessex: 7.3
+   - Fenland: 5.9
+3. Gap between the second region and the third, Pennine to Severn: 0.2
+4. Private cars on cover on 30 September 2026, by cover, whole cars:
+   - Mersey: 44,743 COMP, 11,434 TPFT, 4,925 TPO
+   - Pennine: 30,213 COMP, 7,051 TPFT, 2,831 TPO
+   - Wessex: 30,001 COMP, 5,746 TPFT, 2,037 TPO
+   - Fenland: 19,421 COMP, 3,243 TPFT, 1,003 TPO
+   - Severn: 36,590 COMP, 7,448 TPFT, 2,919 TPO
 
-### service_line_committee_hf_2027.pptx
+### telematics_pilot_regions_2027.pptx
 
-1. Recommendation: host the programme at Gullhaven Hospital, two-year survival 58%, 3 points below Fennick General Hospital's 61%.
-2. Chart of the five hospitals' two-year survival from diagnosis, lowest first, Gullhaven Hospital highlighted.
+1. Slide 1 names Mersey and Pennine as the pilot regions, at 8.9 and 8.2 claims per 100 car-years.
+2. Slide 2 charts the five regions' 2025 frequency as stacked columns, claims notified by 30 September 2026 and claims still to come, the two pilot regions named and the gap of 0.2 stated.
+3. Slide 3 sets each development's 2022 back-test beside the Pennine and Severn frequency it gives.
+4. Slide 4 carries the cars on cover by region and cover as in the workbook.
