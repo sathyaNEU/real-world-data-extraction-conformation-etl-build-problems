@@ -229,6 +229,8 @@ history's did, and the members paying for them are at their group's risk, not th
 | SF12 | rounding | the expected count to the nearest 100 | to the nearest 50 | the prompt's last sentence | the prompt files the nearest 100 |
 | SF13 | the group's last meeting "at the cut-off" | on or before 31 December 2026 | strictly before it (263 groups met on the day) | same call (277.3 against 278.1) | asserted (`sf_cutoff_strict`); the ledger runs through 31 December |
 | SF14 | the grain of the history's rates | one rate per state, every branch pooled | by district, by branch, by the loan's cycle counted in the ledger | same call (276.8, 277.1, 254.7) | asserted (`sf_grain_*`); the cycle split rests on a left-censored count, since the ledger starts in July 2023 and holds no cycle column |
+| SF15 | members' repayment in the forecast months (January to June 2027) | as in the Assignor's experience before the cyclone of 16 October 2026 | the cyclone's own months carried into 2027: a group-level chain of meeting-to-meeting carried counts calibrated on December 2026 (547.2), on November and December (801.7) or on everything after landfall (1,191.1) | 500, 800 or 1,200 (the portal's two judges, 10-28: 528, 779, 1,118) | the term sheet's clause 12 (filed 10-28 on the portal's return); the same chain calibrated on the experience before the cyclone files 277.8 (281.1 on the Kshetra months), another construction of the golden; asserted (`sf_chain_*`) |
+| SF16 | "the Assignor's experience before the cyclone" read strictly | the history's month ends 31 July 2023 to 30 June 2026 | only the 33 month ends whose 181 days closed before the landfall | same call (277.4) | asserted (`sf_windows_before_landfall`) |
 
 ## Ladder
 
@@ -279,7 +281,7 @@ history's did, and the members paying for them are at their group's risk, not th
 | 19 | Code and status semantics | SELF and OWN, GS and GRP_SUPP paid; NIL and NOT_PAID unpaid | the operating policy's section 4 (never the stump) |
 | 20 | Integerisation | none before the final rounding | asserted |
 | 21 | Clause scope | the policy's days-past-due rule applies to every loan | the policy's section 6 |
-| 22 | Forward window contents | no event after the cut-off is shipped; the window is forecast from the states | the pack ends at the cut-off, asserted |
+| 22 | Forward window contents | no event after the cut-off is shipped; members' repayment from 1 January 2027 is taken as in the experience before the cyclone | the term sheet's clause 12 (SF15); the pack ends at the cut-off, asserted |
 
 ## Literal reader
 
@@ -287,7 +289,10 @@ Executed word for word, the prompt asks for a count of the pool tape's loans 90 
 2027 under the policy's rule, which no file records because the date is ahead; every literal route has to forecast
 it from the ledger's history, and every reading of the estimand's terms (SF1 to SF12) gives the same printed call
 or is ruled out by a quoted sentence; the easy answer (100) comes from an easy method on the same estimand, the
-member-level split, never from another reading.
+member-level split, never from another reading. The forecast months' conditions are filed: the term sheet's clause 12
+takes members' repayment from 1 January 2027 as in the Assignor's experience before the cyclone, so a literal reader
+reads the history's rates off the months before landfall (SF15, SF16) and does not carry the cyclone's October to
+December into 2027.
 
 ## Oracles
 
@@ -409,6 +414,18 @@ Mirror leakage: 0.0 per cent of ask weight (the bureau summary misses all 28)
   as its parent, and loans under the code of an institution it succeeded, count as that institution's. The same fork
   closed further, so no third judge (`/fix-determinism` step 6); the reader re-ran because a document's sentence
   changed.
+
+- **Portal return, 2026-10-28: determinism block, both judges (Gates C and D, competing_defensible_answer and
+  underspecified_objective).** Both reproduced the call (278.1 from 0.34, 3.11, 31.15 and 100 per cent on 9,082, 3,372,
+  412 and 14) and the whole guardrail ask (2,528, INR 821.3 lakh), with Gate G analytical and Gate H passing; the
+  finding was that no file said which conditions the forecast months run under, so the model's group-state transition
+  chain calibrated on December 2026 (528), November and December (779) or everything after landfall (1,118) stood
+  beside the golden. Measured on the pack: the same chain files 547.2, 801.7 and 1,191.1 on those windows and 277.8 on
+  the months before landfall. The world agrees with the golden at its rounding: 24 re-drawn futures from the cut-off
+  give 273.7 with the cyclone's added shortfalls ended at the cut-off and 301.3 with their tail into January left on
+  (the realised world 332), all 300. Not the stump: the default path files 100 under either reading. Closed by one pin
+  at authority, the term sheet's clause 12 (the WHAT: the forecast months' repayment conditions, axis 22, never how
+  the forecast is built), asserted as SF15 and SF16; every graded figure unchanged.
 
 ## Architecture 3 record (banking-credit-financial-risk / credit-scoring-pd-modeling, spent at Gate F on 2026-10-23)
 
@@ -2072,6 +2089,12 @@ its group's surviving records), the same family by its label.
   BNK0115 into BNK0102 by the " - BC Portfolio" suffix; judge pass 1 read the merge as inferred (2,652 and INR 860.1
   lakh on the successor link alone), and pass 2, after the directory gained `parent_code`, found CPN-MF-07 section 3
   naming succession only. Both links are now filed: the directory's `parent_code` and section 3's parent clause.
+- 2026-10-28, the portal's determinism return (architecture 4): the forecast months' repayment conditions left to the
+  reader, so a group-state chain calibrated on the cyclone's own months (December 547.2, November and December 801.7,
+  after landfall 1,191.1) stood beside the golden. Converging the records was not open (the December shortfalls that
+  drive those chains also make the pool's states at the cut-off, which are frozen), and the fork is not the stump (the
+  default path files 100 under either reading); closed by the term sheet's clause 12, the WHAT of the forecast months
+  (members' repayment from 1 January 2027 as in the experience before the cyclone), never the HOW (SF15, SF16).
 
 ## Retired
 

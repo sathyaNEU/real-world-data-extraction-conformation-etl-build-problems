@@ -15,8 +15,8 @@
         "checks": 53
     },
     "leak": {
-        "leak_py": "REVIEW 2026-10-28 --asof 2027-01-08 on pack 90d1fbd324871a49 (four lines on the policy, term sheet and field update, each answered in the design note's ## Leak sweep; no LEAK)",
-        "reader": "rounds 1 to 3 clean 2026-10-28, Q1 none and Q6 analytical each time (round 1 Q4 named the bureau's summary columns, the ask's designed wrong basis, ruled harmless; round 2 after the prompt reword and the directory's parent_code; round 3 after the guardrail note's section 3 wording)"
+        "leak_py": "REVIEW 2026-10-28 --asof 2027-01-08 on pack 3a18f553c3611317 (five lines: the call's words in the term sheet, now carrying clause 12, and in the policy; stump terms in the policy, term sheet and field update; each harmless; no LEAK)",
+        "reader": "rounds 1 to 3 clean 2026-10-28 before the first ship, Q1 none and Q6 analytical each time (round 1 Q4 named the bureau's summary columns, the ask's designed wrong basis, ruled harmless; round 2 after the prompt reword and the directory's parent_code; round 3 after the guardrail note's section 3 wording); round 4 clean 2026-10-28 on 3a18f553 after the term sheet's clause 12 (Q1 'states the estimand and condition, not the method', Q2 to Q4 none, Q5 the golden's estimand with the method open, Q6 analytical)"
     },
     "duplicate_check": {
         "heart": "WARN 2026-10-28 (repeat.deliverables docx+xlsx against task304 architecture 3, answered in ## Draw); pattern redrawn C to E in place at stage 3 (task281 v2 took C after this card filed)",
@@ -25,12 +25,22 @@
         "nearest": "task127 0.09, task308 0.07, task482 0.07, task139 0.07"
     },
     "judge": {
-        "verdict": "pass 1 NOT_DETERMINISTIC FIX_NOW (Ask A: BNK0115 tied to BNK0102 by name only); pass 2 NOT_DETERMINISTIC labelled SEND_BACK (the same fork: CPN-MF-07 section 3 named succession only)",
-        "disposition": "read against the gate table: Gate C confined to a supplementary ask, main call reproduced exactly in both passes, Gate G forecasting and analytical_non_defect, Gate H pass, Gate F strong; an ask-layer wording repair, no architecture spent; the same fork closed further, so no third judge",
-        "report": "determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)"
+        "verdict": "DETERMINISTIC (pass 3, after the portal's determinism return); pass 1 NOT_DETERMINISTIC FIX_NOW (Ask A: BNK0115 tied to BNK0102 by name only); pass 2 NOT_DETERMINISTIC labelled SEND_BACK (the same fork: CPN-MF-07 section 3 named succession only)",
+        "disposition": "APPROVE (pass 3: every figure reproduced, forecast 276 to 302 under every specification, all 300; held-out log-loss selects the group's carried count; the post-landfall hazard ruled out by term sheet clause 12; one optional wording note on step 3, no figure moves, not applied). Passes 1 and 2 were ask-layer wording repairs read against the gate table, the same fork closed further",
+        "report": "determinism_check_report_pass3.md (pass 3); determinism_check_report.md (pass 1), determinism_check_report_pass2.md (pass 2)",
+        "gate_g": "forecasting (method_or_model_selection), analytical_non_defect, no surface-read dependency, no sole data defect",
+        "gate_h": "domain pass, layers pass, decisive step analytical"
     },
-    "returned": [],
-    "resume": "SHIPPED 2026-10-28; next: the author's portal result",
+    "returned": [
+        {
+            "date": "2026-10-28",
+            "portal": "determinism block, both judges Gates C and D (competing_defensible_answer, underspecified_objective): no shipped file filed which repayment regime the 90-day forecast carries across the cyclone of 16 October 2026; responses calibrated on December 2026 (528, 500), November to December (779, 800) and everything after landfall (1,118, 1,100) against the committed 278.1, 300; the branch guardrail ask (2,528 borrowers, INR 821.3 lakh) reproduced and forced",
+            "repair": "determinism",
+            "move": "one WHAT pin at authority, term sheet clause 12 (Assessment basis): the forecast is made from the pool as it stands at the cut-off, taking members' repayment from 1 January 2027 to be as in the Assignor's experience before the cyclone (closure axis 22, the forward window's contents); C1 impossible because the December meetings also set the frozen cut-off states. SF15 (the group-level chain calibrated before the cyclone 277.8 and on Kshetra alone 281.1, both 300; on December 547.2, November to December 801.7 and after landfall 1,191.1, none 300) and SF16 (month ends whose 181 days closed before landfall, 33 as-ofs, 277.4, 300) asserted in checks.py, V14 and V15 in verify.py; step 3 of the write-up and the workbook's Sources sheet cite the clause. freeze.py --mode determinism PASS; only the term sheet changed in the pack",
+            "commit": "RESHIPPED (task177), determinism, 2026-10-28"
+        }
+    ],
+    "resume": "RESHIPPED 2026-10-28 after the portal's determinism return (term sheet clause 12 files the forward window's repayment conditions); next: the author's portal result. Stump risk on record: the returned round's responses had built group-state reads and parted only on the regime, so with the clause filed that route lands 300",
     "approved": null,
     "delivered": "2026-10-28",
     "portal": null,
@@ -316,12 +326,15 @@
         "card": "none registered; cards/task177.json unchanged"
     },
     "build": {
-        "checks": "65 of 65",
-        "verify": "19 of 19",
+        "checks": "72 of 72",
+        "verify": "21 of 21",
         "byte_identical": true,
-        "figures_check": "65 of 65",
+        "figures_check": "68 of 68",
         "pair_ceiling": 28.5,
         "mirror_leakage": 0.0,
-        "zip": "90d1fbd324871a49"
+        "precut": "exit 0 (53 checks)",
+        "voice_check": "PASS",
+        "freeze": "PASS --mode determinism",
+        "zip": "3a18f553c3611317"
     }
 }

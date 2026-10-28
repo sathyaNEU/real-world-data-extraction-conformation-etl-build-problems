@@ -63,6 +63,20 @@ def compute(shipped, aux, with_family=True):
     # were carried at the same meeting
     F.update(contrast(mc))
     F.update(edges(shipped, mc))
+    # SF15 and SF16: the forecast months' repayment conditions (term sheet clause 12) and its strict reading
+    land = pd.Timestamp(P.CYCLONE)
+    for key, lo, hi in (("pre", pd.Timestamp(P.HIST_START), land - pd.Timedelta(days=1)),
+                        ("pre_kshetra", pd.Timestamp(P.MIGRATION), land - pd.Timedelta(days=1)),
+                        ("dec", pd.Timestamp(2026, 12, 1), pd.Timestamp(P.CUTOFF)),
+                        ("novdec", pd.Timestamp(2026, 11, 1), pd.Timestamp(P.CUTOFF)),
+                        ("post", land, pd.Timestamp(P.CUTOFF))):
+        v, n, _ = S.regime_chain(shipped, mc, lo, hi)
+        F["sf_chain_%s" % key] = round(v, 1)
+        F["sf_chain_%s_printed" % key] = nearest(v, 100)
+        F["sf_chain_%s_transitions" % key] = n
+    v, n = S.windows_before_landfall(mc)
+    F["sf_windows_before_landfall"] = round(v, 1)
+    F["sf_windows_before_landfall_asofs"] = n
     # the ask
     for b in BRANCH_ORDER:
         F["ask_breach_%s" % b] = int(ab["gold_n"].get(b, 0))

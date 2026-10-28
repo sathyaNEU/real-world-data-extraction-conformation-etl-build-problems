@@ -119,6 +119,10 @@ def term_sheet(path, n_loans, principal_lakh):
                           "(April 2025 to December 2026); the migration map; member KYC for the pool; centre "
                           "master; the Assignor's monthly portfolio report; credit bureau portfolio review of the "
                           "pool's borrowers at the cut-off"],
+        ["12. Assessment basis", "The Assignee prices the pool on its forecast of the pool's loans 90 or more days "
+                                 "past due on 30 June 2027, made from the pool as it stands at the cut-off and taking "
+                                 "members' repayment from 1 January 2027 to be as it was in the Assignor's experience "
+                                 "before the cyclone of 16 October 2026"],
     ]
     t = Table([[_p(a), _p(b)] for a, b in rows], colWidths=[45 * mm, 120 * mm])
     t.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP"), ("LINEBELOW", (0, 0), (-1, -1), 0.25,

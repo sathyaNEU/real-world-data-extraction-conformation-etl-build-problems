@@ -189,6 +189,22 @@ def run(shipped, aux, F, ex, target):
     for col in ("district", "branch", "cycle"):
         ok("SF14 the call holds with the history's rates by %s" % col,
            S_round(F["sf_grain_%s" % col]) == F["call"], "%.1f" % F["sf_grain_%s" % col])
+    # SF15: the forecast months' repayment conditions are filed (term sheet clause 12); the group-level chain calibrated
+    # on the experience it names is another construction of the golden, and the chains that carry the cyclone's own
+    # months into 2027 file other figures, so the clause, not a reading, decides between them
+    ts = " ".join(pdf_text(os.path.join(target, PK.FILES["term_sheet"])).split())
+    ok("SF15 the term sheet files the forecast months' repayment as the experience before the cyclone",
+       "taking members' repayment from 1 January 2027 to be as it was in the Assignor's experience before the cyclone "
+       "of 16 October 2026" in ts, "")
+    for key in ("pre", "pre_kshetra"):
+        ok("SF15 the chain calibrated on the experience before the cyclone (%s) prints the call" % key,
+           S_round(F["sf_chain_%s" % key]) == F["call"], "%.1f" % F["sf_chain_%s" % key])
+    for key in ("dec", "novdec", "post"):
+        ok("SF15 the chain carrying the cyclone's months (%s) files another figure, ruled out by clause 12" % key,
+           S_round(F["sf_chain_%s" % key]) != F["call"], "%.1f" % F["sf_chain_%s" % key])
+    ok("SF16 the call holds on the history's windows closed before landfall",
+       S_round(F["sf_windows_before_landfall"]) == F["call"],
+       "%.1f on %d as-ofs" % (F["sf_windows_before_landfall"], F["sf_windows_before_landfall_asofs"]))
     # ---- the ask
     bt = aux["bureau_truth"]
     bor = ab["borrower"].set_index("member_id")

@@ -50,6 +50,10 @@ def main():
     check("V3 policy files the posting codes", "GRP_SUPP, paid at the meeting by another member of the group" in pol)
     ts = pdf(pick("term_sheet"))
     check("V4 term sheet names the pool tape as the pool", "loans listed in the pool tape dated 31 December 2026" in ts)
+    tsn = " ".join(ts.split())
+    check("V14 term sheet files the forecast months' repayment as the experience before the cyclone",
+          "taking members' repayment from 1 January 2027 to be as it was in the Assignor's experience before the "
+          "cyclone of 16 October 2026" in tsn)
     gr = pdf(pick("guardrails"))
     check("V5 guardrail note files the breach and the counting", "four or more lending institutions" in gr and
           "A loan is counted once, at its latest report" in gr)
@@ -149,6 +153,23 @@ def main():
         check("V8 pool loans in state %d" % k, cnt[k] == fig["state_loans_%d" % k], "%d" % cnt[k])
     fc = sum(rate[k] * cnt[k] for k in cnt)
     check("V9 forecast", abs(fc - fig["call_unrounded"]) < 0.06 and int(round(fc / 100) * 100) == fig["call"], "%.2f" % fc)
+    # the strict reading of clause 12: rates only from as-ofs whose windows closed before landfall
+    land = dt.date(2026, 10, 16)
+    num2, den2 = defaultdict(int), defaultdict(int)
+    for E in ends:
+        if E + dt.timedelta(days=H) >= land:
+            continue
+        for l in by_loan:
+            g = current(l, E)
+            if g is None:
+                continue
+            k = state(g, E)
+            fu = first_unpaid.get(l)
+            num2[k] += fu is not None and fu <= E + dt.timedelta(days=H - DPD)
+            den2[k] += 1
+    fc2 = sum(num2[k] / den2[k] * cnt[k] for k in cnt if den2[k])
+    check("V15 the call holds on windows closed before landfall", int(round(fc2 / 100) * 100) == fig["call"] and
+          abs(fc2 - fig["sf_windows_before_landfall"]) < 0.06, "%.2f" % fc2)
     # the guardrails
     dirx = rd(pick("member_directory"))
     inst = {r["member_code"]: r["institution"] for r in dirx}

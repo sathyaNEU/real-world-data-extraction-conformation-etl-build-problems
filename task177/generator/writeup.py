@@ -51,8 +51,11 @@ def submission(F):
           "3. At each month end from %s to %s, took the loans current then and disbursed at least 91 days earlier, "
           "counted the instalments other members paid in the loan's group at its last meeting on or before the month "
           "end, and read the share of loans 90 or more days past due 181 days later: %.2f, %.2f, %.2f and %.2f per cent "
-          "for none, one, two and three or more." % (day(F["hist_first_asof"]), day(F["hist_last_asof"]), F["state_rate_pct_0"],
-                                                     F["state_rate_pct_1"], F["state_rate_pct_2"], F["state_rate_pct_3"]),
+          "for none, one, two and three or more. These are the Assignor's experience before the cyclone, which the term "
+          "sheet's clause 12 takes as members' repayment from 1 January 2027; read only from the month ends whose 181 "
+          "days closed before the landfall of 16 October 2026, the forecast is %.1f, the same %s." % (
+              day(F["hist_first_asof"]), day(F["hist_last_asof"]), F["state_rate_pct_0"], F["state_rate_pct_1"],
+              F["state_rate_pct_2"], F["state_rate_pct_3"], F["sf_windows_before_landfall"], n(F["call"])),
           "4. Counted the pool tape's %s loans by the same count at their group's last meeting on or before 31 December "
           "2026: %s, %s, %s and %s." % (n(F["pool_loans"]), n(F["state_loans_0"]), n(F["state_loans_1"]),
                                         n(F["state_loans_2"]), n(F["state_loans_3"])),

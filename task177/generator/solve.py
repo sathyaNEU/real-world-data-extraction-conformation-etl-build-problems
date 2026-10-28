@@ -280,3 +280,53 @@ def family(s, mc):
                     pk = st[col].clip(upper=cap)
                     out[(step, mhp, span, state, cap)] = float(sum(r.loc[k] * (pk == k).sum() for k in r.index))
     return out
+
+
+def regime_chain(s, mc, lo, hi):
+    """A group-level transition chain: a group's carried count at one meeting (0, 1, 2, 3 or more) to its count at the
+    next, or to stopped (the next meeting's rows all unpaid), estimated on meetings from lo to hi whose next meeting also
+    falls by hi; then run forward from each pool group's count at its last meeting on or before the cut-off over its
+    meetings due on or before the day 90 days ahead of 30 June 2027. Calibrated on the experience before the cyclone it is
+    another construction of the golden; calibrated on the cyclone's own months it carries them into 2027."""
+    if "chain_g" not in mc:
+        led = mc["led"]
+        t = led.assign(sup=(led.txn == "GRP_SUPP").astype(int), unp=(led.txn == "NOT_PAID").astype(int), one=1)
+        g = t.groupby(["group", "date"])[["sup", "unp", "one"]].sum().reset_index().sort_values(["group", "date"])
+        g["k3"] = g.sup.clip(upper=3)
+        g["stopped"] = g.unp == g.one
+        nxt = g.groupby("group")
+        g["to"] = np.where(nxt.stopped.shift(-1) == True, 4, nxt.k3.shift(-1))
+        g["next_date"] = nxt.date.shift(-1)
+        mc["chain_g"] = g
+    g = mc["chain_g"]
+    a = g[~g.stopped & g.next_date.notna() & (g.date >= lo) & (g.date <= hi) & (g.next_date <= hi)]
+    M = np.zeros((5, 5))
+    for k in range(4):
+        sub = a[a.k3 == k]
+        if len(sub):
+            for j in range(5):
+                M[k, j] = float((sub.to == j).mean())
+        else:
+            M[k, k] = 1.0
+    M[4, 4] = 1.0
+    pt = s["pool_tape"]
+    st = mc["states"].set_index("loan_id")
+    nd = pd.to_datetime(pt.next_due_on, dayfirst=True)
+    line = pd.Timestamp(P.OUTCOME) - pd.Timedelta(days=P.DPD_LINE)
+    steps = ((line - nd).dt.days // 14 + 1).clip(lower=0)
+    frame = pd.DataFrame({"k3": st.loc[pt.loan_id, "k3"].values, "steps": steps.values})
+    tot = 0.0
+    for (k, n), sub in frame.groupby(["k3", "steps"]):
+        v = np.zeros(5)
+        v[int(k)] = 1.0
+        for _ in range(int(n)):
+            v = v @ M
+        tot += v[4] * len(sub)
+    return tot, int(len(a)), M
+
+
+def windows_before_landfall(mc):
+    """The golden's rates read only from as-ofs whose 181-day windows closed before the cyclone's landfall."""
+    h = mc["hist"]
+    hh = h[h.E + pd.Timedelta(days=P.HORIZON_DAYS) < pd.Timestamp(P.CYCLONE)]
+    return forecast(rates(hh), mc["states"]), int(hh.E.nunique())

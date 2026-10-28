@@ -146,6 +146,8 @@ def workbook(F, path):
                           "not paid in full"],
         ["History", "Collections July 2023 to December 2026, CollectPro and Kshetra joined through the migration "
                     "map; month ends with 181 days of follow-up in the record"],
+        ["Basis", "Members' repayment from 1 January 2027 taken as in the assignor's experience before the cyclone "
+                  "of 16 October 2026 (term sheet clause 12)"],
         ["Guardrails", "CPN-MF-07 sections 2 and 3, on the bureau's portfolio review at the cut-off"],
         ["Rounding", "Forecast to the nearest 100 loans; principal in INR lakh to one decimal"],
     ]:
