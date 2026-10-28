@@ -1,5 +1,115 @@
 # task174 design note
 
+**Status: architecture 2, drawn 2026-10-28** in education-learning-sciences / learning-analytics-early-warning-models
+(Forecasting), the slot's first registered card. The screens of 2026-10-19 and 2026-10-23 registered nothing and cut
+nothing; their record is kept under `## Slot history` and every death is a line in `## Tried and rejected`. This draw
+re-enters the early-warning cell with the one family the 2026-10-19 pass never screened: practice logs written under a
+mastery stop rule and a daily cap, read for a routine with no night in it.
+
+## Draw
+
+1. **Pairing.** education-learning-sciences / learning-analytics-early-warning-models, Forecasting (the task type
+   serves F only). The call forecasts, for each spring unit, the seventh graders who will fall short on a check
+   taken after a fixed practice set in one class period, and sets the set length against funded reteach places.
+2. **Niche.** Tamberlin County Schools (North Carolina, twelve middle schools, about 2,800 seventh graders a year)
+   has run each math unit's practice as a Rungwell Math skill builder done as homework: a student is done at three
+   first-attempt answers right in a row, can answer at most ten of a skill builder's problems a day, and the
+   skill builder closes ten school days after it opens. From 4 January 2027 the four spring units' skill builders
+   move into class: one period holds a set of problems and then a five-problem check from the same skill builder,
+   and a student with fewer than three of the five right joins the next day's reteach group with an
+   interventionist. The board's amendment funds 4,300 reteach places (one place is one student in one unit's
+   group); the math office sets the set length, 6, 8 or 10 problems, as the shortest whose failed checks fit the
+   places, and staffs on the seventh graders on roll on 23 October 2026.
+3. **Decision.** Which set length (6, 8 or 10 problems), with the failed checks forecast at each length and for
+   each spring unit at the chosen one. Forward facing: spring 2027, nothing of it observed.
+4. **Data-native sentence.** Rungwell stops a student at the first three right in a row and holds homework to ten
+   problems a day, so the log's later problems belong to students who had not yet stopped and sit after a night
+   that kept only part of the earlier sitting's gain, while the spring check comes after one sitting with no night
+   in it.
+5. **Default path's answer against the golden.** The field's learning curve fitted with one practice count per
+   student and skill builder files that no allowed set fits (about 5,600 failed checks even at ten problems);
+   golden eight problems, about 3,900 failed checks against 4,300 places.
+6. **Shape.** 04, setting one dial (F over an open window): the forecast at each of the three lengths, the chosen
+   length, and each spring unit's failed checks at it.
+7. **Deliverables.** `spring_practice_set_length.xlsx` (the forecast by length and unit, and the asks),
+   `spring_reteach_memo.docx` (the case for the length), `spring_reteach_forecast.png` (failed checks by length
+   against the places).
+8. **Nearest driver.** `guard.py check` on the registered card: PASS; nearest drivers task272 (0.07), task122
+   (0.05), task179 and task156 (0.04). `mechanisms --objective forecasting` and `slots` on practice, mastery, learning
+   curve, knowledge tracing, streak, stopping rule, survivor, overnight, sitting, forgetting, spacing, homework,
+   reteach, interventionist and skill builder: no build on file models learning or forgetting from a practice log.
+   The closest insight is task156's frailty (fast leavers go first), which here is the second move only.
+9. **Guard.** PASS after six differentiation lines (task178, task461, task229, task242, task476, task501: the
+   signature time, G13, method_or_model_selection is crowded, none of the six is the same mechanism). Axes redrawn
+   against the live window (task304, task177, task162): forcing event budget_or_appropriation (the places are what
+   the board funded; launch_or_rollout is barred and the rollout itself is already decided, so the budget is what
+   forces the length now), context artifact planning_thread (operations_log and monitoring_export barred; the
+   stakeholder's artifact is the plan thread, the log is the spine), decisive generator G13 (G7 barred; the
+   decision's practice window, one sitting, differs from the record's, several evenings), shape 04 (02 barred).
+10. **People** (`guard.py names --geo US --seed 174`): Linda Ramos (district mathematics coordinator), Tara
+    Richardson (chief academic officer), Heidi Ortega (accountability and data analyst), Bryan Wallace
+    (interventionist programme manager), Gregory Griffin (budget director). None appears in the prompt.
+
+## Default path
+
+The competent route, every field and rule read correctly:
+
+1. Read the plan: the shortest of 6, 8 or 10 problems whose failed checks fit the 4,300 places, staffed on the
+   seventh graders on roll on 23 October 2026, Units 4 to 7.
+2. Clean the log: stack the two export layouts, put the 2025-26 UTC times on Eastern time, keep original problems
+   (drop scaffold rows), map platform accounts to students through the crosswalk, drop staff test accounts and the
+   re-exported duplicate month.
+3. Fit the field's learning curve to the seventh graders' first attempts: each student's ability, each skill
+   builder's easiness and a learning slope on the count of the skill builder's problems the student has answered
+   (the additive factors model, student effects as random intercepts).
+4. For each seventh grader on roll and each spring skill builder, predict the five check problems after a set of
+   6, 8 or 10 problems, and add up the chance of fewer than three right.
+5. About 6,600 at six, 6,200 at eight and 5,600 at ten: none fits 4,300, so the memo files that no allowed set
+   keeps within the places and asks for more.
+
+Ends on: no allowed set fits (about 5,600 failed checks even at ten problems)
+Golden: eight problems, about 3,900 failed checks
+
+## Stump sentence
+
+A competent analyst fits the additive factors learning curve to the homework log with one practice count per
+student and skill builder, reads the overnight loss as slow learning, and files that no allowed set fits (about
+5,600 failed checks even at ten problems); the golden counts the current sitting's problems apart from earlier
+sittings' within each student and files eight problems, about 3,900 failed checks against 4,300 places.
+
+## Three rules
+
+Task type: learning-analytics-early-warning-models (education-learning-sciences), which serves Forecasting: the call forecasts which seventh graders will fall short on each spring unit's check and sizes the set length against funded reteach places.
+Domain test: the deciding quantity is each student's gain per problem practised within one sitting, the learning slope of the additive factors model estimated within student from first-attempt correctness by practice opportunity, with earlier sittings' practice counted apart, the way learning analytics models practice logs with recency and spacing terms.
+Swap: "how many machines fail the bench check after eight cycles in one shift, read from a log where machines stop at three passes in a row and resume next shift" keeps the arithmetic and loses the learner who gains within a sitting and keeps part of it overnight, so the deciding quantity has no counterpart; with nurses on a simulator the task stays in education.
+Layer 1: Rungwell changed its export between school years (renamed columns, Eastern local time in 2024-25 and UTC from 2025-26), logs scaffold sub-questions beside original problems, re-exported one school's November 2025, gives a re-enrolled student a second account that the district crosswalk maps, keeps staff test accounts in the log, and the student system records mid-year moves as enrollment spells; none is placed and none decides the call.
+Layer 2: estimand_identification: the quantity is the gain within one sitting, estimated within student under the mastery stop, against the pooled curve, the single-count curve or a replay of homework completion, each of which files a different length.
+Decisive step: counting each student's problems in the current sitting apart from the problems of earlier sittings while estimating the slope within student, then predicting the check after a set done in one sitting.
+Not semantics: every column, code and rule read correctly (original problems, first attempts, the ten-a-day cap on the local day, the crosswalk, the roll date) still leaves the field's learning curve with one practice count per student, which files that no allowed set fits.
+Not rule application: no filed rule says how practice carries over a night or how to estimate a gain, the plan states only the routine, the check and the places; the enumerated family (replay, pooled curve, one-count curve within student, log-count curve, pooled sitting-aware, sitting-aware within student) spans about 1,800 to 6,600 failed checks at eight problems and files 6, 10, 8 or none, the standing family (sitting-aware within student with two counts, first sittings only, decay by elapsed days, ability by posterior mode or integrated) spans about 3 per cent and files eight, and the ruling-out is the data's own fit, log-likelihood gaps of about 4,000 against the one-count and log-count curves.
+Analyst test: a strong analyst who cleans the log and reads every rule fits the additive factors curve with one practice count per student and skill builder and files that no allowed set fits (about 5,600 failed checks even at ten problems), while the plainer replay of homework completion files six problems.
+Estimand: the spring plan (spring_2027_seventh_grade_math_plan) fixes the population (the seventh graders on roll on 23 October 2026), the outcome (fewer than three of the five check problems right on a unit's check, one place each), the window (Units 4 to 7, spring 2027), the unit (one student in one unit's group) and the comparison (sets of 6, 8 or 10 problems, the shortest whose places fit 4,300).
+No decoy: nothing is planted: the vendor guide states its own rules, the plan states the routine and the funded places, and no memo, draft, briefing or stakeholder figure argues for a set length or a failed-check count.
+No certified replay: no certified or published figure is reproduced to recover a method; the vendor's national benchmark report states homework-mode averages, ranks nothing on the decision question and is a named distractor.
+Lesson: a learning curve read from a practice log is the gain under the log's own schedule; carried to a routine with no night in it, the gain within one sitting has to be measured apart from what survives the night and within each learner, because the stop rule takes the fast learners out of the later problems; no build on file models learning or forgetting from practice.
+
+## Readability screen
+
+## Semantic fork table
+
+## Ladder
+
+## Closure table
+
+## Literal reader
+
+## Oracles
+
+## Ask sheet
+
+## Slot history
+
+
 **Status: PAUSED at stage 1 on 2026-10-23 after six rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics, ratemaking and reserving, a second pass over fourteen fresh cells left to the build and a third over stress testing, seasonal adjustment and urban forecasting (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
@@ -55,7 +165,8 @@ time since entry task134 v2's. A commitment end, a renewal date or a plan is vis
 reads it. A response to a policy (reminder laws, cooling-off rights, bundle partners, payment-method sunsets) is
 causal, sized from one past event, with causal_design blocked by task249 v4.
 
-## Retired
+
+### Retired (2026-10-19)
 
 Retired on 2026-10-19 at stage 1, by the author's rule that a number which dies in its second new cell this round
 is retired. No card was ever registered, no axis of the guard's window was spent, and nothing was cut. Three
@@ -64,7 +175,7 @@ worlds were screened: seed FC45's upstream gas producer (two mechanisms, dead on
 retention-cohort-lifetime-value-modeling (fifteen candidates, two on code). Every death is a line in `## Tried and
 rejected`; the prototypes stay in the session scratchpads (b174/proto and r174).
 
-## Rebuild (2026-10-23)
+### Rebuild (2026-10-23)
 
 Reopened by the author's rule that no number stays retired, and screened from scratch in
 biomedical-clinical-research / survival-time-to-event-analysis (Forecasting), the cell the coordinator allocated,
@@ -196,6 +307,7 @@ A cap that rarely bound in the older years and binds for most recent claims, and
 payment, are task172's driver (a per-unit ceiling or deadline that the record seldom reached and the forward units
 mostly reach). The index is the inflation-adjusted chain ladder, a textbook method. The closure-speed change is the
 Berquist-Sherman card.
+
 
 ## Tried and rejected
 
@@ -705,3 +817,11 @@ Berquist-Sherman card.
   chain is the housing literature's own construct, the direct transfers into new affordable homes are obvious, and the
   private-market chains that reach a social tenancy inside the year are rare, so the lever over the relet trend is a
   few per cent. On paper.
+- **Architecture 2 draw, 2026-10-28: the call as the pick of the spring unit with the most failed checks.** The
+  replay of homework completion names the same flat unit as the golden (the flat skill builder also leaves the most
+  students unfinished at the close), so a pick is landed by the plainest route; the call became the set length
+  against funded places, where each route files a different length.
+- **Architecture 2 draw, 2026-10-28: a homework cap of fifteen problems a day.** It puts the check inside the
+  observed sitting length, but problems 9 to 13 of the log then sit in the first sitting for most students who
+  reach them, and that replay lands within about 18 per cent of the golden at eight problems, so a funded-places
+  line between them leaves no room; the cap stays at ten, Rungwell's documented limit.

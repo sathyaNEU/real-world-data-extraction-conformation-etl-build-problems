@@ -1,0 +1,97 @@
+{
+  "task": "task174",
+  "architecture": "v2",
+  "drawn": "2026-10-28",
+  "slot_note": "architecture 2 of the slot (the first registered card): the cell is education-learning-sciences / learning-analytics-early-warning-models, re-entered with a mechanism the 2026-10-19 pass never screened (practice logs written under a mastery stop rule and a daily cap)",
+  "domain": "education-learning-sciences",
+  "subdomain": "learning-analytics-early-warning-models",
+  "client_domain": "education-learning-sciences",
+  "niche": "a county district's seventh-grade skill-builder practice moving from mastery-based homework into one class period, with failed same-period checks filling funded reteach places",
+  "objective": "forecasting",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G9",
+    "G16"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "informative_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the homework log and reads every platform rule fits the field's learning-curve model with one practice count per student and skill builder, reads the overnight loss as slow learning and files that no allowed set keeps the spring's failed checks within the funded reteach places, while the plainer replay of homework mastery files the shortest set.",
+  "domain_test": "The call turns on each student's gain per problem practised inside one sitting, the slope of the additive factors learning curve estimated within student from first-attempt correctness by practice opportunity, which learning analytics reads from practice logs; with a factory's nouns the run-of-three stop and the learner who keeps part of a sitting's gain overnight have no counterpart, so the swap breaks.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:within-sitting-learning-gain-under-a-mastery-stop-and-overnight-loss",
+  "layer1": [
+    "export layout changed between school years (renamed columns, local time then UTC)",
+    "UTC timestamps against the school's local day for the daily cap",
+    "scaffold sub-question rows logged beside original problems",
+    "a re-export duplicating one school's month",
+    "re-enrolled students holding two platform accounts mapped in the roster crosswalk",
+    "staff test accounts in the log",
+    "mid-year school moves in enrollment spells"
+  ],
+  "stakeholder_role": "district mathematics coordinator",
+  "role_family": "capacity_planner",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "skill_builder_problem_log",
+    "rows": 0,
+    "entity": "one row is one first attempt at one skill-builder problem",
+    "grain": "student x skill builder x problem",
+    "source": "synthetic"
+  },
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "North Carolina, United States",
+    "currency": "USD",
+    "org_type": "county public school district",
+    "invented_names": [],
+    "people": [
+      "Linda Ramos",
+      "Tara Richardson",
+      "Heidi Ortega",
+      "Bryan Wallace",
+      "Gregory Griffin"
+    ]
+  },
+  "deliverables": [
+    "spring_practice_set_length.xlsx",
+    "spring_reteach_memo.docx",
+    "spring_reteach_forecast.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is each member's gain per repetition inside a single session, recovered from records where members stop at their first run of three successes and later repetitions follow an overnight break that keeps only part of the earlier gain, so a replay of the stops, a pooled curve or one repetition count across sessions each misstates the shortfall of a fixed set done in one session and lands a different setting.",
+  "driver_concrete": "The spring check follows a fixed set done in one class period, so the quantity is each seventh grader's gain per problem within one sitting; the homework log shows it only through students who stop at three right in a row and whose later problems come after a night that keeps about two fifths of the gain, so replaying homework mastery, pooling students or fitting one practice count each misstates the failed checks and picks the wrong set length.",
+  "stump": "A solver who fits the additive factors model to the homework log with one practice count per student and skill builder reads the overnight loss as slow learning, forecasts far more failed checks than the places at every allowed length and files that no set fits, while the replay of homework mastery files the shortest set; the golden is the middle length.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task178": "task178 strips an absorbing trader's flow out of a forward dispersion; nothing is removed here, and the quantity is a learner's gain inside one sitting, read through a run-of-three stop and net of an overnight loss.",
+    "task461": "task461 carries a short record's low quantile through an auxiliary series' overlap; there is no auxiliary series here, and the within-sitting gain is recovered from the same students' homework sittings.",
+    "task229": "task229's bias is a convex conversion of a daily mean; here the gap is practice spread over nights against practice in one sitting, recovered within each student.",
+    "task242": "task242 averages a fading detection curve over each unit's event times; every answer here is recorded at once, and the issue is the gain lost between sittings and the students who stop at three right.",
+    "task476": "task476 dates items found at periodic inspections; every attempt here is timestamped, and the decisive split is within a sitting against across nights.",
+    "task501": "task501 separates two mixing regimes inside one contact matrix; here both regimes (one sitting, across nights) sit inside each student's own practice, and the forward routine runs past the daily cap the record never crossed in one sitting."
+  },
+  "lineage": [],
+  "notes": "slot task174: stage-1 screens of 2026-10-19 and 2026-10-23 registered no card; this is the slot's first registered draw",
+  "registered": "2026-10-28T06:54:38Z"
+}
