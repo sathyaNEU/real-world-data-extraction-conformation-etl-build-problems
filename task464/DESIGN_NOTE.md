@@ -57,19 +57,21 @@ ETL cells in the taxonomy and refused or barred every one, which closed the ETL 
 - **The call faces forward:** the 2027 funded place allocation is not committed at the as-of date.
 - **Measured at the draw,** closed form and then on individual-level data, six partners, 55,362 applications:
 
-  | route | what it computes | names | golden's rank |
+  | route | what it computes | names | call's rank |
   |---|---|---|---|
-  | rung 0 | participants against non-participants | Brenlow | 4 of 6 |
-  | rung 1 | ballot winners who enrolled against ballot losers | Calderwick | 4 of 6 |
-  | rung 2 | the first-round ballot ITT | Calderwick | 5 of 6 |
-  | rung 2b | that ITT grossed per funded place | Brenlow | 4 of 6 |
-  | rung 3 | the clean offer contrast, per learner offered | Brenlow, 13.7 | 4 of 6 |
-  | golden | per 100 funded places | Dunthorpe, 19.4 | 1, margin 1.207 |
+  | rung 0 | learners who enrolled against learners who did not | Calderwick 31.9 | 4 of 6 |
+  | rung 1 | ballot winners who enrolled against ballot losers | Fairholt 30.5 | 4 of 6 |
+  | rung 2 | the first-round ballot contrast per learner offered | Brenlow 12.5 | 5 of 6 |
+  | rung 2b | that first-round contrast per funded place | Brenlow 13.9 | 3 of 6 |
+  | rung 3 | the clean offer contrast per learner offered | Brenlow 13.5 | 3 of 6 |
+  | golden | per 100 funded places | Dunthorpe 20.6 | 1, margin 1.372 |
 
-  Bin test at a bin of 1.0 per 100 places: (a) 7.98, (b) 0.000, (c) 3.18, ratio 2.51, and (a) is not the smallest
-  rung gap (0.41). (b) is zero because the golden reduces to 100 times offers ever made over places funded times
-  the clean contrast, which carries no free parameter: there is no estimator family to spread. Call stability 287
-  of 300 draws. Fill rates by partner 0.455, 0.637, 0.501, 0.959, 0.963, 0.646.
+  Three distinct wrong answers across the ladder (Calderwick, Fairholt, Brenlow). Graded yields are Dunthorpe
+  20.6, Brenlow 15.0, Calderwick 13.6, Fairholt 12.3, Ashcombe 9.3, Elmsgate 5.7, the smallest gap 1.37, so all
+  six are distinct to one decimal place. Fill rates are Dunthorpe 0.980, Brenlow 0.663, Ashcombe 0.571,
+  Calderwick 0.517, Elmsgate 0.495, Fairholt 0.394. The decisive step is worth 7.95 per 100 places on the call's
+  own figure, and the licensed-family spread is zero because the golden reduces to 100 times offers ever made
+  over places funded times the clean contrast, which carries no free parameter. Seed 46835, fixed in world.py.
 
 ## Default path
 
@@ -88,16 +90,16 @@ A competent analyst builds this without hesitating, from the prompt's words and 
    among those never offered, and express it per 100 learners offered a place.
 7. Rank the partners on that figure and recommend the top one.
 
-`Ends on:` Brenlow, 13.7 additional achievements per 100 learners offered a place, with Dunthorpe fourth of six.
-`Golden:` Dunthorpe, 19.4 additional achievements per 100 funded places, Brenlow second at 16.1, margin 1.207.
+`Ends on:` Brenlow, 13.5 additional achievements per 100 learners offered a place, with Dunthorpe third of six.
+`Golden:` Dunthorpe, 20.6 additional achievements per 100 funded places, Brenlow second at 15.0, margin 1.372.
 
 ## Stump sentence
 
 A competent analyst who uses the ballot rather than attendance, counts every offer the records hold and builds a
 clean randomised contrast expresses each partner's effect per learner offered a place and commits to Brenlow at
-13.7 per 100, placing Dunthorpe fourth of six, because that figure prices the effect on a learner who takes a
-place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 96 per cent of its funded
-places against Brenlow's 64, so per 100 funded places Dunthorpe returns 19.4 against Brenlow's 16.1.
+13.5 per 100, placing Dunthorpe third of six, because that figure prices the effect on a learner who takes a
+place rather than the return on a place the authority funds; Dunthorpe's waitlist fills 98 per cent of its funded
+places against Brenlow's 66, so per 100 funded places Dunthorpe returns 20.6 against Brenlow's 15.0.
 
 ## Three rules
 
@@ -126,16 +128,16 @@ taker before the census date.
 
 `Not semantics:` every field is read correctly on the easy route. The offer records, ballot ranks, census date
 and achievement release are all read as they are, and the route still files Brenlow, because the error is the
-denominator the figure is expressed over, not any field's meaning. Measured: per enrolled learner names Brenlow,
-per learner offered names Brenlow, per funded place names Dunthorpe.
+denominator the figure is expressed over, not any field's meaning. Measured: per enrolled learner names Calderwick, per
+learner offered names Brenlow, per funded place names Dunthorpe.
 
 `Not rule application:` no shipped rule converts an offer contrast to a per-place yield, and no shipped document
 publishes any partner's fill rate or its places funded against places filled; the two sit in different systems
 and the ratio has to be constructed.
 
 `Analyst test:` the easy route is step 6 of the default path, the clean randomised contrast expressed per learner
-offered a place, and it files Brenlow at 13.7 per 100 with Dunthorpe fourth of six. Changing the decisive step
-alone, to per funded place, files Dunthorpe at 19.4.
+offered a place, and it files Brenlow at 13.5 per 100 with Dunthorpe third of six. Changing the decisive step
+alone, to per funded place, files Dunthorpe at 20.6.
 
 `Estimand:` the additional learners achieving the qualification per 100 places the authority funds at a partner
 for the intake, counting a funded place that no learner took up, filed in the commissioning schedule.

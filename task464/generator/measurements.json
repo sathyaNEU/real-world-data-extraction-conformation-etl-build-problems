@@ -1,222 +1,141 @@
 {
-  "apparent_util": [
-    0.419,
-    0.951
-  ],
-  "ask_deltas": {
-    "ask_a_adjudication_basis": 24,
-    "ask_b_status_only": 12,
-    "ask_c_row_count": 10
+ "seed": 46835,
+ "applications": 55362,
+ "places_funded": 18494,
+ "partners": {
+  "ASH": {
+   "golden": 9.2672,
+   "rung3": 8.1763,
+   "rung2b": 8.9655,
+   "rung2": 7.9102,
+   "rung1": 17.1918,
+   "rung0": 18.2219,
+   "places": 3388,
+   "offers": 3840,
+   "filled": 1934,
+   "fill": 0.5708
   },
-  "ask_span": {
-    "A": {
-      "columns": 13,
-      "files": 6
-    },
-    "B": {
-      "columns": 8,
-      "files": 1
-    },
-    "C": {
-      "columns": 10,
-      "files": 3
-    }
+  "BRN": {
+   "golden": 15.01,
+   "rung3": 13.5043,
+   "rung2b": 13.8556,
+   "rung2": 12.4657,
+   "rung1": 25.0216,
+   "rung0": 26.8295,
+   "places": 3175,
+   "offers": 3529,
+   "filled": 2104,
+   "fill": 0.6627
   },
-  "closed_shift_sites": 6,
-  "closest_pair_pct": 7.62,
-  "constrained_sites": 16,
-  "counter_pin_hits": [],
-  "crossover_worst": 0.938,
-  "encounter_record": {
-    "bytes": 62611456,
-    "cancelled_rows": 7577,
-    "format": "SQLite database, two tables, one per encounter layout",
-    "rows": 639110,
-    "rows_2023_2024": 331926,
-    "rows_2025_2026": 307184
+  "CAL": {
+   "golden": 13.6321,
+   "rung3": 12.6425,
+   "rung2b": 12.6776,
+   "rung2": 11.7572,
+   "rung1": 30.3339,
+   "rung0": 31.8788,
+   "places": 3066,
+   "offers": 3306,
+   "filled": 1585,
+   "fill": 0.517
   },
-  "encounter_rows": 639110,
-  "figure_count": 211,
-  "files": [
-    "encounter_extract_transmittal.json",
-    "enrolment_projection_2027.csv",
-    "licence_fee_schedule_2026.pdf",
-    "nemt_trips_2026.csv",
-    "network_agreement_2027_capacity_terms.pdf",
-    "out_of_network_payments_2026.csv",
-    "out_of_network_payments_reconciliation_2026.xlsx",
-    "out_of_network_payments_runout_2027q1.csv",
-    "provider_directory_2027.csv",
-    "staffing_roster_2026q4.csv",
-    "state_adequacy_filing_2026.xlsx",
-    "state_licence_register.xlsx",
-    "treatment_encounters.db"
-  ],
-  "flip_set": [
-    "SA-02",
-    "SA-07",
-    "SA-11"
-  ],
-  "formats": [
-    ".csv",
-    ".db",
-    ".json",
-    ".pdf",
-    ".xlsx"
-  ],
-  "hazard_deltas": {
-    "h1_run_out_supplement_left_out": 12,
-    "h2_corporate_rows_counted_as_sites": 24,
-    "h2_licence_row_at_the_as_of_date": 6,
-    "h3_member_residence_area": 24,
-    "primary_a_claim_header_summed_with_its_lines": 24
+  "DUN": {
+   "golden": 20.593,
+   "rung3": 12.6368,
+   "rung2b": 11.9091,
+   "rung2": 7.308,
+   "rung1": 19.0188,
+   "rung0": 25.4939,
+   "places": 3364,
+   "offers": 5482,
+   "filled": 3298,
+   "fill": 0.9804
   },
-  "largest_file_bytes": 62611456,
-  "legibility": {
-    "argmax_hour_modal_share_median": 0.29,
-    "argmax_hour_modal_share_worst": 0.48,
-    "clock_block_hits": {
-      "60": 15,
-      "120": 30,
-      "180": 24,
-      "240": 16
-    },
-    "day_count_over_positions_min": 1.38,
-    "distinct_argmax_hours_median": 10,
-    "members_a_day_over_positions_min": 1.38,
-    "sites_where_a_window_start_count_equals_positions": {
-      "60": 18,
-      "120": 36,
-      "180": 25
-    }
+  "ELM": {
+   "golden": 5.6979,
+   "rung3": 5.1392,
+   "rung2b": 5.2133,
+   "rung2": 4.7021,
+   "rung1": 15.8279,
+   "rung0": 16.4605,
+   "places": 2778,
+   "offers": 3080,
+   "filled": 1375,
+   "fill": 0.495
   },
-  "named_wrong_cells": {
-    "clock_hour_start_count": 3013,
-    "percentile_75_occupancy": 2911,
-    "realised_demand_basis_areas_flipped": 0,
-    "realised_demand_basis_areas_short": 3,
-    "sites_where_hours_misread_exceeds_attested": 40,
-    "tax_identifier_merge": 4512,
-    "two_hour_start_count": 3825
-  },
-  "nearest_area": "SA-04",
-  "nearest_daylight_slots": 2,
-  "partial_cells": 41,
-  "partial_worst_pct": 6.72,
-  "peak_over_attested": 0.988,
-  "peak_over_mean": 1.64,
-  "quantile_hits": {
-    "0.90": 27,
-    "0.95": 40,
-    "0.99": 40
-  },
-  "r0_over_golden": 1.2012,
-  "r2_adds": [
-    "SA-01",
-    "SA-03",
-    "SA-06",
-    "SA-10"
-  ],
-  "r2_misses": [
-    "SA-02",
-    "SA-07"
-  ],
-  "required_bin_distance": 0.06,
-  "rung_ratios": {
-    "R0": 1.2012,
-    "R1": 1.2882,
-    "R2": 0.9238,
-    "R3": 1.0
-  },
-  "rung_short": {
-    "R0": [
-      "SA-04",
-      "SA-09",
-      "SA-12"
-    ],
-    "R1": [
-      "SA-04",
-      "SA-09"
-    ],
-    "R2": [
-      "SA-01",
-      "SA-03",
-      "SA-04",
-      "SA-06",
-      "SA-09",
-      "SA-10",
-      "SA-11",
-      "SA-12"
-    ],
-    "R3": [
-      "SA-02",
-      "SA-04",
-      "SA-07",
-      "SA-09",
-      "SA-11",
-      "SA-12"
-    ]
-  },
-  "rung_totals": {
-    "R0": 4668,
-    "R1": 5006,
-    "R2": 3590,
-    "R3": 3886
-  },
-  "share_at_ceiling": [
-    0.062,
-    0.213
-  ],
-  "sheets": [
-    "Adjudicated Quarters",
-    "Contracted Sites",
-    "Area Summary",
-    "Licences",
-    "Register Summary"
-  ],
-  "short_area_gaps": {
-    "SA-02": {
-      "ceiling": 23,
-      "floor": 22,
-      "round": 22,
-      "unrounded": 22.07
-    },
-    "SA-04": {
-      "ceiling": 20,
-      "floor": 19,
-      "round": 20,
-      "unrounded": 19.62
-    },
-    "SA-07": {
-      "ceiling": 23,
-      "floor": 22,
-      "round": 22,
-      "unrounded": 22.08
-    },
-    "SA-09": {
-      "ceiling": 48,
-      "floor": 47,
-      "round": 47,
-      "unrounded": 47.06
-    },
-    "SA-11": {
-      "ceiling": 35,
-      "floor": 34,
-      "round": 34,
-      "unrounded": 34.33
-    },
-    "SA-12": {
-      "ceiling": 24,
-      "floor": 23,
-      "round": 23,
-      "unrounded": 23.28
-    }
-  },
-  "worst_area_margin": 6.72,
-  "worth": {
-    "R0": -0.0,
-    "R1": -0.432,
-    "R2": 1.379,
-    "R3": 1.0
+  "FAI": {
+   "golden": 12.2653,
+   "rung3": 11.3484,
+   "rung2b": 11.6095,
+   "rung2": 10.7417,
+   "rung1": 30.5392,
+   "rung0": 31.4707,
+   "places": 2723,
+   "offers": 2943,
+   "filled": 1074,
+   "fill": 0.3944
   }
+ },
+ "routes": {
+  "rung0": [
+   "CAL",
+   "FAI",
+   "BRN",
+   "DUN",
+   "ASH",
+   "ELM"
+  ],
+  "rung1": [
+   "FAI",
+   "CAL",
+   "BRN",
+   "DUN",
+   "ASH",
+   "ELM"
+  ],
+  "rung2": [
+   "BRN",
+   "CAL",
+   "FAI",
+   "ASH",
+   "DUN",
+   "ELM"
+  ],
+  "rung2b": [
+   "BRN",
+   "CAL",
+   "DUN",
+   "FAI",
+   "ASH",
+   "ELM"
+  ],
+  "rung3": [
+   "BRN",
+   "CAL",
+   "DUN",
+   "FAI",
+   "ASH",
+   "ELM"
+  ],
+  "golden": [
+   "DUN",
+   "BRN",
+   "CAL",
+   "FAI",
+   "ASH",
+   "ELM"
+  ]
+ },
+ "call": "DUN",
+ "runner_up": "BRN",
+ "margin": 1.372,
+ "min_graded_gap": 1.3668,
+ "a_decisive_worth": 7.9562,
+ "ranks_of_call": {
+  "rung0": 4,
+  "rung1": 4,
+  "rung2": 5,
+  "rung2b": 3,
+  "rung3": 3
+ }
 }
