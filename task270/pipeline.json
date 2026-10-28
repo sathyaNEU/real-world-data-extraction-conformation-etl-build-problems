@@ -10,24 +10,25 @@
  "architecture": 10,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28",
+  "result": "PASS (53 checks, 0 FAIL)"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-28 --asof 2027-02-16 on a97cd2a3, four lines, no LEAK, each ruled harmless in the design note",
+  "reader": "one isolated read on 5dc16901: questions 1 to 4 none, question 6 analytical; its minute-start reading asserted as SF16 (same whole per cent); its realism tells fixed in the generator, no sentence under target/ or in the prompt changed"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task198 0.09 at the draw"
+  "heart": "WARN",
+  "nearest": "task271 (surface promotion: same gap objective and designation set, answered)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC (ask 3; forks on the call and ask 2)",
+  "disposition": "SEND_BACK",
+  "report": "task270/determinism_check_report.md (run 1793194046; run 1793190528 stopped by a user interrupt before any verdict)"
  },
  "returned": [],
- "resume": "Architecture 10 at stage 2: calibrate the generator from the p2 prototype (districts' homes, training, visits, standby moves, on-call availability) so the station replay names Altmoor and Skirwold and the position replay Wrenfold and Pelmarsh with every share 1.5 points or more from 75; measure the ladder and the licensed family, write the readability screen, fork and closure tables, literal reader, oracles and ask sheet, then prompt.txt and precut.py.",
+ "resume": "Architecture 10 spent at stage 4 (judge SEND_BACK, Gate H rule_application: placing a free engine where the log has it is a reading of a silent standard, and filed it is executing the standard). Re-root to architecture 11 at the draw in another domain: a decisive step that stays an analytical choice once every WHAT is filed (the judge: an estimate the record must be modelled to give, never a position or record the standard can name).",
  "architectures": [
   {
    "architecture": 1,
@@ -69,7 +70,7 @@
   },
   {
    "architecture": 10,
-   "fate": "drawn 2026-10-28 (fire cover read from where each free engine stood, Ostrevale Fire and Rescue Service)",
+   "fate": "spent 2026-10-28 at stage 4 (target.zip a97cd2a3): the leak reader was clean, and the judge reproduced every figure but returned NOT_DETERMINISTIC, SEND_BACK, Gate H decisive_step rule_application: standard OFRS-RS-03 files the cover replay end to end and never says where a free engine away from base starts its drive, so the station placement (Altmoor and Skirwold) stands as a reading beside the live-location golden (Wrenfold and Pelmarsh), and filing the start position would leave the step executing the standard; Ask C's same-actuation rule and Ask A's booking clock, later-booking and role-on-the-day conventions were in no shipped file (forced only by reconciling against the log); built state at the STATUS commit recording the spend",
    "drawn": "2026-10-28"
   }
  ],
@@ -80,5 +81,15 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "none: a fresh world drawn 2026-10-28 (Ostrevale Fire and Rescue Service's 2027-2031 community risk management plan)",
- "gates": {}
+ "gates": {
+  "build": "2026-10-28 after the stage 4 fix pass: checks.py 82 of 82, verify.py 0 failed, two rebuilds byte-identical (15 files)",
+  "figures_check": "71 figures, 0 absent",
+  "zip_sha256": "a97cd2a30af828fece90f9012e36d40fa3539e50c840fe4a331116d86c14642e",
+  "zip_md5": "c563ffb7eaaf20603a1a12d47326c4c7",
+  "cracker": "pair 28.5 (45.0 with both on the call), mirror leakage 0.0",
+  "voice_check": "exit 0 (994 characters)",
+  "guard": "heart WARN, surface exit 0 (task271 promoted pair answered in the note)",
+  "precut": "53 checks, 0 FAIL"
+ },
+ "card_registered": true
 }

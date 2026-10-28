@@ -2,7 +2,7 @@
   "task": "task270",
   "architecture": "v10 (Ostrevale Fire and Rescue Service's 2027-2031 community risk management plan: which of the county's seven districts kept a free fire engine within ten minutes of fewer than three quarters of their homes across 2026, the cover read from where each free engine stood)",
   "drawn": "2026-10-28",
-  "slot_note": "Architecture 10, re-rooted in another domain after architecture 9 was blocked at the ship gate on an axis ban (architectures 1 to 9 in lineage). The decisive step reads each free engine's cover from where it stood in the tracking export, minute by minute, not from its station.",
+  "slot_note": "Architecture 10, re-rooted in another domain after architecture 9 was blocked at the ship gate on an axis ban (architectures 1 to 9 in lineage). The decisive step reads each free engine's cover from where the resource log's location rows place it, minute by minute, not from its station.",
   "domain": "urban-regional-science",
   "subdomain": "network-analysis",
   "client_domain": "urban-regional-science",
@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Wrenfold and Pelmarsh",
+  "answer_source": "task270/generator/figures.json (call)",
   "gap": [
     "objective"
   ],
@@ -36,22 +36,21 @@
   "layer2_family": "field_method",
   "layer2_pattern": "own:fire cover read from where each free engine stood rather than from its station",
   "layer1": [
-    "the mobilising system's status log in UTC and the vehicle tracking export in local clock time, the October clock change repeating an hour",
-    "the mobilising system re-sending an unchanged status as a heartbeat every 30 minutes",
-    "a reserve engine carrying its own call sign while standing in at a station during maintenance",
-    "on-call crews booking off the run in two-hour blocks, coded separately from maintenance and defects",
-    "the road network's one-way urban links and missing farm-track links",
+    "the mobilising system re-sending an unchanged status four hours after an engine's last message",
+    "one-way town links and missing farm-track links in the routing network",
     "the address register's commercial and residential classes, homes counted from residential points only",
-    "output areas recoded at the 2021 boundary review, a lookup carrying the old codes"
+    "on-call bookings in local clock time against the resource log's UTC",
+    "incident records on 2011 output areas before April 2023 and on a new classification from April 2024",
+    "vehicle location reports at irregular intervals with the odd report lost"
   ],
   "stakeholder_role": "area manager for response and resilience",
   "role_family": "operations_director",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "vehicle_tracking_export_2026.csv",
-    "rows": 0,
-    "entity": "one position report from an engine's tracking unit while the engine was away from its station",
-    "grain": "engine x five-minute report",
+    "file": "mobilising_resource_log_2026.csv",
+    "rows": 320050,
+    "entity": "one status message or vehicle location report from the mobilising system's resource log for a fire engine",
+    "grain": "engine x status change or location report (a minute while moving, ten minutes while stopped)",
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
@@ -71,7 +70,25 @@
       "Pelmarsh",
       "Altmoor",
       "Skirwold",
-      "Brandeth"
+      "Brandeth",
+      "Midmere",
+      "Brinheath",
+      "Skelbury",
+      "Cauldhope",
+      "Dunmarsh",
+      "Burheath",
+      "Oakhope",
+      "Velheath",
+      "Nestmere",
+      "Thackbury",
+      "Thornstead",
+      "Fernmere",
+      "Kescombe",
+      "Foxmoor",
+      "Nedbeck",
+      "Langgarth",
+      "Ludwold",
+      "Kelmoor"
     ],
     "people": [
       "Valerie Leach",
@@ -86,11 +103,13 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is the share of demand points a free server can reach within a time standard, averaged over a year, where the record marks a server free wherever it stands and free servers spent part of the year away from their bases on other work or standing in at other bases; crediting each free server with its own base's reach puts that cover back where the servers had left and takes it from where they had gone.",
-  "driver_concrete": "Each of Ostrevale's seven districts' 2026 share of homes within ten minutes of a free fire engine, turnout included over the road network, averaged over every minute of the year and read from where each free engine stood in the vehicle tracking export: wholetime engines spent weekday mornings free at the Brandeth training centre and afternoons free on prevention visits across district lines, and county-town engines stood by at rural on-call stations when those were off the run, so cover credited to each engine's own station overstates the market-town districts and understates the rural ones.",
+  "driver_concrete": "Each of Ostrevale's seven districts' 2026 share of homes within ten minutes of a free fire engine, turnout included over the road network, averaged over every minute of the year and read from where each free engine stood in the mobilising system's resource log: wholetime engines spent weekday mornings free at the Brandeth training centre and afternoons free on prevention visits across district lines, and county-town engines stood by at rural on-call stations when those were off the run, so cover credited to each engine's own station overstates the market-town districts and understates the rural ones.",
   "stump": "A competent analyst replays 2026 minute by minute from the status log, credits every free engine with its own station's ten-minute reach over the road network and names Altmoor and Skirwold as the districts below three quarters; the step that lands it there is reading a free engine's cover from its station when wholetime engines spent weekday mornings and afternoons free away from it and county-town engines stood by at rural stations, so read from where the engines stood Wrenfold and Pelmarsh fall below the line and the two rural districts clear it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task273": "task273 v3 reads reach through which boundary valves can actually be operated in a fixed pipe network; this build keeps the road network fixed and reads reach from where mobile servers stood, minute by minute, against the stations the status record implies"
+    "task273": "task273 v3 reads reach through which boundary valves can actually be operated in a fixed pipe network; this build keeps the road network fixed and reads reach from where mobile servers stood, minute by minute, against the stations the status record implies",
+    "task271": "task271 v5 reads a measured level's move after an actor's events, net of the actor's own later events in the same window; this build reads a road network's reach from where mobile servers stood minute by minute. They share only the gap label and the designation_set decision type; no mechanism, file, world or word.",
+    "task458": "task458 v1 designates Medicaid counties for a prescriber loan-repayment pilot, counting a trait-defined population from claims seen only while members are enrolled (ETL); the pair shares shape 10 and the designation_set decision type and nothing of the files, world, mechanism or call: this build reads fire cover from where free engines stood"
   },
   "lineage": [
     {
@@ -365,6 +384,7 @@
       "fate": "spent 2026-10-27 at the ship gate (target.zip 71a1f378): built, leak reader clean, judge DETERMINISTIC, APPROVE, then heart BLOCK ban.pattern G13 against task139 v3, whose ship commit moved G13 to the front of its generators after this card registered; G16, the only other honest decisive pattern, opens test.same_puzzle_older, test.same_driver_older and test.own_lineage; re-checked 2026-10-28 and still BLOCK (task174 now holds G13 in the window), so the slot re-roots"
     }
   ],
-  "notes": "Architecture 10 re-root, 2026-10-28, in urban-regional-science / network-analysis (Descriptive). Strategy other: cover follows a free server's position (not time_semantics, since no clock or calendar reading decides; not population_selection, since every free engine-minute counts). The availability replay that credits stations jointly (task143's lesson in other nouns) is a lower rung here, never the decisive step. Personas from guard.py names --geo england --seed 2710. Gap objective: the status log's free and committed codes are correct, and the standard scores cover, the reach from where a free engine stood; decisive pattern G8 (reachability against the count of free engines), G3 second (the free status is the record, the engine's position the operation). WARNs answered in DESIGN_NOTE.md ## Draw: repeat.gate_g, repeat.question_form, repeat.geography. Invented names re-screened against the H21 reference register before DRAWN (2026-10-28): Kelvenham, Morrowby, Tansford, Harlowden, Pennistow and Silverlade sat within two edits of, or contained, a real place (Elsenham, Barrowby, Basford, Harlow, Ennis, Silverdale) and were replaced by Calderstow, Tollesham, Wrenfold, Hollinbury, Pelmarsh and Skirwold.",
-  "registered": "2026-10-28T08:52:07Z"
+  "notes": "Architecture 10 re-root, 2026-10-28, in urban-regional-science / network-analysis (Descriptive). Strategy other: cover follows a free server's position (not time_semantics, since no clock or calendar reading decides; not population_selection, since every free engine-minute counts). The availability replay that credits stations jointly (task143's lesson in other nouns) is a lower rung here, never the decisive step. Personas from guard.py names --geo england --seed 2710. Gap objective: the status log's free and committed codes are correct, and the standard scores cover, the reach from where a free engine stood; decisive pattern G8 (reachability against the count of free engines), G3 second (the free status is the record, the engine's position the operation). WARNs answered in DESIGN_NOTE.md ## Draw: repeat.gate_g, repeat.question_form, repeat.geography. Invented names re-screened against the H21 reference register before DRAWN (2026-10-28): Kelvenham, Morrowby, Tansford, Harlowden, Pennistow and Silverlade sat within two edits of, or contained, a real place (Elsenham, Barrowby, Basford, Harlow, Ennis, Silverdale) and were replaced by Calderstow, Tollesham, Wrenfold, Hollinbury, Pelmarsh and Skirwold. Stage 4 (2026-10-28): the isolated leak reader quoted nothing for questions 1 to 4 and read the deciding step as analytical; its realism tells (re-sends on the hour, six GPS speeds, whole-minute incident durations, uniform re-booking edges, one LGV date, tidy promotions, crews, establishments, populations and UPRNs) were fixed in the generator with the call and every whole-per-cent cover unchanged, and its minute-start reading asserted as SF16. Spent 2026-10-28 at stage 4: the judge's SEND_BACK, Gate H rule_application (the standard is silent on where a free engine starts its drive, so the station placement stands as a reading; filed, the step executes the standard).",
+  "registered": "2026-10-28T08:52:07Z",
+  "architecture_spent": true
 }
