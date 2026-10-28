@@ -15,8 +15,8 @@
   "checks": 52
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), --asof 2026-10-16, every REVIEW line answered by the reader",
-  "reader": "four isolated reads (zips 4066ee80, 2b591366, 9d45538d and the repaired zip): question 1 nothing, question 6 analytical, no planted decoy, no file that ranks or forecasts 2027"
+  "leak_py": "REVIEW, the same lines as shipped, ruled harmless",
+  "reader": "determinism repair read 1 on 9d1d6a0a: no decisive-step sentence (it read the Act as shrinking the caseload, the easy route), the annual report's 90-day review says nothing about the projection; question 4 the headcount file's 'V PODS 1-5' (today's units), harmless"
  },
  "duplicate_check": {
   "heart": "WARN (driver.near 0.14 own architecture 3, overuse.gate_g, repeat.deliverables task273)",
@@ -35,9 +35,15 @@
    "portal": "both responses landed the call at NCA scores 1 to 3",
    "repair": "design",
    "commit": ""
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "determinism block on the reship with the author's rewritten prompt: judge 1 passed (valid stump), judge 2 competing_defensible_answer (Gates C and D) on the transport basis (a class- and age-adjusted hazard on 60-day bands, 904.6, five pods); rubric 36 and 54, average 45",
+   "repair": "determinism",
+   "commit": "RESHIPPED (task141), determinism, 2026-10-27"
   }
  ],
- "resume": "Shipped. Portal result pending; a determinism or rubric return goes to /fix-determinism or /fix-rubric, a landed call back to stage 2 against this note.",
+ "resume": "Reshipped after the determinism return (the transport basis closed in the record: SF31 to SF34). Portal result pending.",
  "approved": null,
  "delivered": "2026-10-27",
  "portal": null,
@@ -75,5 +81,9 @@
    "fate": "SHIPPED 2026-10-27, pending review (stage 4 pass 4 SEND_BACK on margin fragility repaired in the generator; pass 5 APPROVE)",
    "last_commit": "the SHIPPED (task141) commit of 2026-10-27"
   }
- ]
+ ],
+ "zip_sha256_16": "9d1d6a0aac0ab1e7",
+ "freeze": {
+  "determinism": "PASS (the main call, the stump and every frozen figure unchanged)"
+ }
 }

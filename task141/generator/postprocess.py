@@ -2,6 +2,8 @@
 saved stamps, not the writing library and the build clock; PDFs carry their issue date and no library
 banner. Every substitution keeps byte lengths where the format needs it."""
 import re
+
+import common as K
 import zipfile
 
 COMPANY = "Okelan County"
@@ -403,7 +405,7 @@ class _Layout:
         key = (face, size, bold)
         if key not in self.fonts:
             f, _ = FACES.get(face, FACES["Calibri"])
-            self.fonts[key] = self.ImageFont.truetype(FONT_ROOT + f % ("Bold" if bold else "Regular"), size=size)
+            self.fonts[key] = self.ImageFont.truetype(K.font_path(f % ("Bold" if bold else "Regular")), size=size)
         return self.fonts[key]
 
     def paragraph(self, p_xml, width, after, line):

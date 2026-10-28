@@ -19,6 +19,7 @@ TARGET = os.path.join(TASK, "target")
 sys.path.insert(0, HERE)
 
 import numpy as np    # noqa: E402
+from pypdf import PdfReader  # noqa: E402
 
 import asks as AS     # noqa: E402
 import ceiling as C   # noqa: E402
@@ -190,6 +191,80 @@ def main():
     check("R1: every class at its maximum files at the at-maximum rate, drug felony class 4's 24 months included",
           "DF4" in at and all(abs(m - rt["n"]) < 0.06 for m, _ in at.values()) and max(wr.values()) < 0.12,
           " ".join("%s %.3f (%d)" % (kk, m, n) for kk, (m, n) in sorted(at.items())))
+
+    # ------------------------------------------------------------------ SF31 to SF33: the transport basis (portal
+    # determinism return, 2026-10-27: one judge transported the at-maximum share through a class- and age-adjusted
+    # hazard on 60-day bands and filed 904.6, five pods)
+    rows_c = []
+    for cc in R.cases:
+        ps = R.byc.get(cc["id"], [])
+        e = F.end_of(R, cc) if cc["id"] in R.close else K.EXTRACT + 1
+        sch = R.scheds[cc["id"]]
+        for i, (since, s_) in enumerate(sch):
+            until = sch[i + 1][0] if i + 1 < len(sch) else 10 ** 9
+            wo = s_ - 120
+            if s_ > K.EXTRACT - 30 or not (since <= wo < until) or wo < K.RECORD_START or e <= wo or cc["sup"] > wo:
+                continue
+            rows_c.append((F.term_m_at(cc, wo) >= cc["max_m"], any(wo <= p["file"] < s_ for p in ps), cc["score"],
+                           (wo - cc["sup"]) / K.M, cc["klass"]))
+    atm = [r for r in rows_c if r[0]]
+    bands = {}
+    for lab, sel in (("CSRS 0 to 7", lambda r: r[2] <= 7), ("CSRS 8 to 13", lambda r: 8 <= r[2] <= 13),
+                     ("CSRS 14 to 20", lambda r: r[2] >= 14), ("under 30 months on supervision", lambda r: r[3] < 30),
+                     ("30 to 42 months", lambda r: 30 <= r[3] < 42), ("42 to 60 months", lambda r: 42 <= r[3] < 60),
+                     ("60 months or more", lambda r: r[3] >= 60)):
+        v = [r[1] for r in atm if sel(r)]
+        bands[lab] = (float(np.mean(v)), len(v))
+    check("SF31 the at-maximum end-of-term share is flat by risk score and by time on supervision (no confounding "
+          "to adjust)", all(abs(m - rt["n"]) < 0.03 and n >= 900 for m, n in bands.values()),
+          "; ".join("%s %.3f (%d)" % (k, m, n) for k, (m, n) in bands.items()))
+    # adjusted for class, risk score and time on supervision on the windows the share comes from (terms without room;
+    # the with-room windows are another decision, extend or file), each capped term's own share files the golden's pods
+    kl = sorted({r[4] for r in atm})
+    X = np.array([[1.0, r[2] - 10.0, r[3] / 12.0] + [float(r[4] == k) for k in kl[1:]] for r in atm])
+    y = np.array([float(r[1]) for r in atm])
+    b = np.zeros(X.shape[1])
+    for _ in range(30):
+        p_ = 1.0 / (1.0 + np.exp(-X @ b))
+        w_ = p_ * (1 - p_)
+        b = b + np.linalg.solve(X.T @ (X * w_[:, None]) + 1e-9 * np.eye(X.shape[1]), X.T @ (y - p_))
+    capped = [cc for cc in R.cases if F.act_end(R, cc) == K.TRANS and cc["id"] not in R.close]
+    Xc = np.array([[1.0, cc["score"] - 10.0, (K.TRANS - 90 - cc["sup"]) / K.M / 12.0] +
+                   [float(cc["klass"] == k) for k in kl[1:]] for cc in capped])
+    adj = float(np.mean(1.0 / (1.0 + np.exp(-Xc @ b))))
+
+    def band(t):
+        return 0 if t < 30 else (1 if t < 42 else (2 if t < 60 else 3))
+    bsh = collections.defaultdict(list)
+    for r in atm:
+        bsh[band(r[3])].append(r[1])
+    adj_b = float(np.mean([np.mean(bsh[band((K.TRANS - 90 - cc["sup"]) / K.M)]) for cc in capped]))
+    orig_rates = F.window_rates
+    out = {}
+    for lab, val in (("logistic", adj), ("banded", adj_b)):
+        S2 = rec_copy(R)
+        F.window_rates = lambda RR, window=120, pending_free=False, val=val: dict(orig_rates(RR, window, pending_free),
+                                                                                    n=val)
+        try:
+            out[lab] = F.projection(S2, **G.GOLD)[0]
+        finally:
+            F.window_rates = orig_rates
+    check("SF32 the at-maximum share transported term by term, adjusted for class, risk score and time on supervision on "
+          "the windows without room (%d capped terms: logistic %.3f, by time band %.3f, against %.3f), files seven pods"
+          % (len(capped), adj, adj_b, rt["n"]),
+          abs(adj - rt["n"]) < 0.015 and abs(adj_b - rt["n"]) < 0.015 and all(K.pods(v) == 7 for v in out.values()),
+          "logistic %.0f, banded %.0f admissions" % (out["logistic"], out["banded"]))
+    rep = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(TARGET, K.REPORT)).pages).split())
+    ins = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(TARGET, K.PLAN_PDF)).pages).split())
+    check("SF33 the department's end-of-term review is filed: the officer reviews each case in the 90 days before its "
+          "scheduled expiration", "reviews each case in the 90 days before its scheduled expiration" in rep)
+    for w_, need in ((90, 7), (105, 7), (150, 7)):
+        S3 = rec_copy(R)
+        vv = F.projection(S3, window=w_, **G.GOLD)[0]
+        check("SF33 a window covering the filed review (%d days) files %d pods" % (w_, need),
+              K.pods(vv) == need, "%.0f" % vv)
+    check("SF34 section 6.1 dates time on supervision from the day the department's case records date",
+          "day supervision began as the department's case records date it" in ins)
 
     # ------------------------------------------------------------------ R2: each mess item mishandled
     raw = {r["CASE_NO"]: int(r["RISK_SCORE"]) for r in P["cms1"]}

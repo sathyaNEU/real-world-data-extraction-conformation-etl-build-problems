@@ -27,7 +27,7 @@ for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "c
                ("LiberationSerif", "liberation/LiberationSerif-Regular.ttf"),
                ("LiberationSerif-Bold", "liberation/LiberationSerif-Bold.ttf"),
                ("LiberationSerif-Italic", "liberation/LiberationSerif-Italic.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
+    pdfmetrics.registerFont(TTFont(_n, K.font_path(_f)))
 SANS, SANS_B, SANS_I = "Carlito", "Carlito-Bold", "Carlito-Italic"
 SERIF, SERIF_B, SERIF_I = "LiberationSerif", "LiberationSerif-Bold", "LiberationSerif-Italic"
 INK = colors.HexColor("#1b1f27")
@@ -200,8 +200,8 @@ def write_plan(path):
     head("6. Felony probationers on supervision")
     cl("6.1", "Report, for each office supervising them at the extract, the felony probationers the county probation "
               "department supervised at the extract, by time on supervision at the extract in completed years from the "
-              "day supervision began: under one year, one year to under two years, two years to under three years, "
-              "and three years or more.")
+              "day supervision began as the department's case records date it: under one year, one year to under two "
+              "years, two years to under three years, and three years or more.")
     head("7. Changes in law")
     cl("7.1", "Senate Bill 26-118, the Felony Probation Term Act, takes effect on 1 January 2027.")
     s.append(Paragraph("Annex. Violator housing standards on file with the Board, 1 July 2026", SH2))
@@ -299,7 +299,8 @@ def write_report(path, F):
     s.append(Paragraph("A probationer on supervision is counted once for each open term. A petition is counted in the "
                        "year it was filed and its disposition in the year the court entered it, so the two tables cover "
                        "different petitions. Early termination is granted on the officer's motion after eighteen months "
-                       "of compliance on a felony term and six on a misdemeanor term.", SB))
+                       "of compliance on a felony term and six on a misdemeanor term. Under policy 4.12 the officer "
+                       "reviews each case in the 90 days before its scheduled expiration.", SB))
     s.append(Paragraph("Risk levels are the Community Supervision Risk Screen score taken at intake; terms opened in "
                        "CMS 1 are shown on the screen's current scale.", SB))
     doc = _doc(path, "Adult Probation Department annual report, fiscal year 2025", K.PEOPLE["research"])

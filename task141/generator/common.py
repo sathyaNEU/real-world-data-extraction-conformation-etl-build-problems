@@ -212,3 +212,13 @@ def round1(x):
 def pods(admissions):
     """the county's filed standard: one pod for each 210 projected admissions or part of 210"""
     return int(math.ceil(admissions / POD_SIZE - 1e-12))
+
+
+def font_path(rel):
+    """a font file by its Linux path under /usr/share/fonts/truetype/, or by its file name in the user's fonts folder
+    (the same Carlito and Liberation files, laid out flat on macOS)"""
+    import os
+    for p in ("/usr/share/fonts/truetype/" + rel, os.path.expanduser("~/Library/Fonts/" + os.path.basename(rel))):
+        if os.path.exists(p):
+            return p
+    raise FileNotFoundError(rel)

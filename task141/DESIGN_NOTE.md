@@ -255,6 +255,10 @@ Measured on the cut pack (`checks.py` restates the figures on each build).
 | SF17 | a window's room | the class's longest term less the term in force when the window opened (imposed plus the extensions ordered before) | the term imposed alone; the term as it now stands | imposed alone the same call (1,363, seven pods); as it now stands another call (973, five pods) | the code table's note (no order imposing or extending a term may set it longer) and the orders' term_months_after, the term in force on each date |
 | SF18 | the office supervising a term at the extract | its officer's office in the assignment in effect on 30 September 2026 | CMS 2's intake_office; the officer's open row in the export of 2 October, which holds the redistribution of 1 October | Ask B only (0 and 1 of 16) | instructions 6.1 (each office supervising them at the extract), the column's name, the roster's dates |
 | SF19 | time on supervision | completed years from the day supervision began | 365.25-day years | Ask B only | instructions 6.1 (filed) |
+| SF31 | the at-maximum share's composition | the share the record shows for terms at their class maximum, applied term by term | adjusted for risk score, time on supervision, class or age before it is applied | seven pods: the share is flat by score (37.8, 38.8, 39.3 per cent), by time on supervision (38.1 to 39.3) and by class (36.4 to 41.6), and the at-maximum and with-room windows carry the same mean score (10.32, 10.30) | C1, asserted (SF31) |
+| SF32 | the transport of the at-maximum share | each capped term at the at-maximum share | each capped term at its own share from a logistic model of the end-of-term petition on room, class, risk score and time on supervision | seven pods (the model's mean for the capped terms within 0.02 of the share) | C1, asserted (SF32) |
+| SF33 | the end-of-term window | the last 120 days before a scheduled expiration in force, which hold the department's review | a window cut inside the review (60 days or less) | 7 pods at 60 days (1,279), 6 at 45 | the annual report's notes: "Under policy 4.12 the officer reviews each case in the 90 days before its scheduled expiration"; windows of 90 to 150 days, all seven pods, asserted |
+| SF34 | the day supervision began (section 6.1) | the begin date the department's case records carry | the Act's section 2(2) release date | Ask B's time bands only (about 24 of 7,841 terms), office totals unchanged | instructions 6.1 now reads "from the day supervision began as the department's case records date it" (asserted) |
 
 ## Ladder
 
@@ -640,3 +644,15 @@ architecture 3 leaves the pretrial world for a record whose outcomes are held wh
   intake office, so the column now carries that name and 6.1 files completed years; with the office then found from the
   roster, the device moved to the personnel export's redistribution of 1 October 2026, where an officer's open row is
   the office from that day.
+- The determinism block on the reship of 2026-10-27 (the author's rewritten prompt; rubric 36 and 54, average 45):
+  judge 1 passed (valid stump, every ask reproduced), judge 2 failed (competing_defensible_answer, Gates C and D) on
+  the transport basis: its model carried the at-maximum response through a class- and age-adjusted hazard on 60-day
+  bands and filed 904.6 (five pods), and no shipped sentence named the window or ruled the adjustment out. Its
+  suggested pin ("at the filing rate the records show for terms at their class maximum ... without adjustment for
+  tenure") files the method and hands every reader the decisive step, so it was not taken. Closed in the record
+  instead: the at-maximum share is flat by score, time on supervision and class (SF31), so any adjustment the data
+  supports returns it and a logistic transport files seven pods (SF32); the department's 90-day end-of-term review is
+  filed in the annual report's notes, so a window cut inside it is contradicted (SF33); section 6.1 dates time on
+  supervision from the case records' begin date (judge 1's note, SF34). The judge's 904.6 sits on the pooled line
+  (899 to 911 at 90 to 120 days): its form diluted the no-room review into the pooled rate.
+
