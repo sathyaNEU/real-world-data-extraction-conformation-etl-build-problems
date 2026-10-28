@@ -155,6 +155,30 @@ it: per-offer against per-attender measures zero hits across 304 cards, and effe
 
 ## Tried and rejected
 
+- **Architecture 6's decisive step is too thin as a measurement of the closed intakes, measured 2026-10-28.**
+  Determinism requires the estimand filed literally, comparison included. Filed as "additional learners
+  achieving the qualification per 100 places funded at the partner for the intake, measured against applicants
+  not offered a place at that partner for that intake", the sentence determines the golden: a solver who reads
+  it and notices that 22,180 learners were offered against 18,494 places funded computes 100 times the clean
+  contrast times offers over places and lands Dunthorpe. The three-rules test then answers no, a strong analyst
+  who read every rule correctly does not get it wrong the easy way, so the step is execution and rule 3 applies.
+  This is the dial architecture 3 died on, recorded there as Gate C and Gate F riding one dial with no middle.
+  Keeping the per-place unit unfiled is not the escape, because the per-learner against per-place reading then
+  becomes an open Gate C fork that changes the call.
+  **The hardening, arithmetic checked before adopting it.** The waitlist effort is a fixed number of re-offers
+  bounded by the census date, so the fill rate falls as an allocation grows: more refused places to backfill in
+  the same weeks. With `f(A) = t + min(E t / A, 1 - t)`, Dunthorpe's effort of about 2,131 re-offers holds 0.980
+  at its 3,364 places and only 0.813 at 10,000, while Brenlow's 360 re-offers give 0.663 and 0.622, so the yield
+  tends to 100 e t as the allocation grows and that ranking is Brenlow 14.4 above Calderwick above Dunthorpe
+  12.0. The historical per-place winner is therefore not the winner at the scale the 2027 round would fund, and
+  the crossover sits near 8,500 places. That quantity is forward facing, is not fixed by any filed sentence and
+  is not a field reading. Constraint measured at the same time: the reversal's margin is bounded by the
+  asymptotic per-offer ranking of 1.20 and approached slowly, about 1.10 at 20,000 places, so the partner
+  parameters need re-tuning to clear the 1.15 floor at a plausible allocation.
+  What survives unchanged: the pack's core, the six-partner ladder with three distinct wrong answers, and the
+  pooling closure (stratified against pooled across the two intakes diverges by at most 0.0079 per 100 places,
+  identical at one decimal for all six partners and identical in ranking, so it closes by convergence).
+
 - **The ETL objective is closed for this number and the re-root goes to education and Experiment & Causal
   Analysis, measured 2026-10-27.** Architecture 5 screened all six ETL cells in the taxonomy and refused or
   barred each one; ETL carries 66 cards across those six cells and is the only objective in the corpus with no
