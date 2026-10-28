@@ -30,7 +30,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
+  "context_artifact": "register",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst who conforms the two clinical systems' issue extracts, rebuilds each patient's statin supply with carryover, fits each practice's persistence on time since the patient started and carries every patient now on a statin forward on that curve sends the pharmacist to Cobbet Street, whose six-issue repeats give it the steepest curve; the golden is Marrick House, whose patients' repeats were re-authorised together in its spring 2026 move to 56-day issues and all run out before March 2027",
   "domain_test": "The deciding quantity is a persistence forecast, the medication-adherence-persistence task type's own estimate worked on issue records with carried-forward supply and a gap rule, and what decides it is the repeat authorisation: a prescriber authorises a fixed number of issues, the request after the last one waits for a clinician to re-authorise the repeat, and that is where patients who stop, stop. Swap in another field's nouns and the authorised issue count, the clinician's re-authorisation and a practice moving its repeats to 56-day issues have no counterpart, so the task no longer reads the same",
@@ -196,5 +196,5 @@
   ],
   "notes": "gate_g method_or_model_selection: the decisive step is which clock the stopping hazard runs on (time since starting against the run to the end of the current repeat authorisation), a model choice inside the forecast; forecasting also fits, and its (time, A, forecasting) signature repeats task281's architecture 1 inside the batch",
   "architecture_spent": false,
-  "registered": "2026-10-28T07:05:36Z"
+  "registered": "2026-10-28T07:10:42Z"
 }

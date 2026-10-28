@@ -18,9 +18,15 @@ recorded figure right and puts the difficulty in which clock a forward persisten
 - **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 9; architectures 1, 2, 3, 6 and 8 in
   `lineage`), registered 2026-10-28, guard WARN only, nearest driver on file 0.11 (task157's architecture 1, a
   return wave of members who stopped together), 304 cards validated.
-- **The WARN answered.** `three_rules.strategy_risk` (time_semantics): the analyst test below is the easy route
+- **The WARNs answered.** `three_rules.strategy_risk` (time_semantics): the analyst test below is the easy route
   that still fails with every field and rule read correctly; no field states when patients stop and no rule
-  says how to forecast it.
+  says how to forecast it. `people.last`: Mitchell appears in task473, an older build, and every name is drawn
+  from `guard.py names --geo england --seed 4649`, never typed. `repeat.gate_g` against task174's architecture 2
+  (drawn minutes earlier): its driver is a mastery-stop homework set length, nothing like a renewal clock.
+- **The window moved at the last check, and the axis was redrawn.** Re-checked after the DRAWN push, the context
+  artifact `planning_thread` was banned against task174, drawn by another session in the same hour. The card now
+  carries `register`, which is the honester label anyway: the file the network's decision turns on is its
+  register of repeat authorisations, and the programme brief is only the cover sheet that files the estimand.
 - **One label redrawn, and why the replacement is the honester one.** The first draft carried Gate G
   `forecasting` with gap `time` and pattern `A`, and `test.same_driver` blocked it against task281's
   architecture 1 inside the batch. The card now carries `method_or_model_selection`: the trailing and recorded
