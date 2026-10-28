@@ -1,31 +1,32 @@
 {
  "task": "task174",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences/learning-analytics-early-warning-models",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
  "stump": "A competent analyst fits the additive factors learning curve to the homework log with one practice count per student and skill builder, reads the overnight loss as slow learning, and files that no allowed set fits (about 5,600 failed checks even at ten problems); the golden counts the current sitting's problems apart from earlier sittings' within each student and files eight problems, about 3,900 failed checks against 4,300 places.",
  "architecture": 2,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28",
+  "checks": 53
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK) on 7eb0bd69, every line ruled harmless in the design note",
+  "reader": "three rounds: round 1 clean on Q1 to Q6 with four realism repairs; round 2 clean with two repairs (benchmark minutes, test accounts' stop); round 3 on the shipped pack clean, no repair"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "PASS",
+  "nearest": "task272 0.07; surface promotes task242, task461, task476, task501 on card labels only (surface 0.020 to 0.033)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md on 94f4f617: Gate G forecasting, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical; the readers' repairs since moved no graded figure (figures.json byte-identical) and touched no clause a gate turned on, so the APPROVE carries to 7eb0bd69"
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC45: the world, the decision and the quantity kept; the seed's planning clause, type curve and drilled-but-uncompleted flag never used",
@@ -38,9 +39,9 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "stage 2 of architecture 2 (drawn 2026-10-28): readability screen, semantic fork table, ladder, closure table, literal reader, oracles, ask sheet and prompt.txt, gate precut.py exit 0; prototypes in the session scratchpad e174 (proto1.py to proto5.py)",
+ "resume": "shipped 10-28: await the author's portal list (APPROVED, PENDING_REVIEW, or missing = FAILED_TO_STUMP)",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -125,5 +126,14 @@
   "assigned": "architecture 2, 2026-10-28, education-learning-sciences / learning-analytics-early-warning-models (Forecasting): a mastery-stop practice log read for a one-sitting routine",
   "measured": "proto3/proto4/proto5 (seed 3, 2,800 students a cohort, overnight retention 0.4): at a daily cap of 10 and sets of 8, 10, 12 the sitting-aware within-student model files 3,903 / 3,036 / 2,365 against truth 3,891 / 3,014 / 2,333; one-count curve 6,158 / 5,636 / 5,118; pooled sitting-aware 4,881 / 4,000 / 3,338; problems after the set as the check 4,988 / 4,457 / 3,922; not completed within the set 7,964 / 7,028 / 6,263; replay of homework completion 1,834; variants of the standing family (prior sd 1 or 3, integrated ability) within 3 per cent; log-count curve refuted by about 4,000 log-likelihood points",
   "prior_resume": "PAUSED 2026-10-23 at stage 1 after the third rebuild pass (stress testing, seasonal adjustment, urban forecasting, about twenty-three candidates on paper): no card registered, nothing cut; the main session assigns another cell (screen_pass3 and the design note's ## Rebuild (2026-10-23))."
+ },
+ "zip": "7eb0bd699128c923859511d9e8fd2279cc3cdf62fe7dc0297b15d76be470c090",
+ "gates": {
+  "checks": "149/149",
+  "verify": "67/67",
+  "byte_identical": true,
+  "figures_check": "138/138",
+  "precut": "53/0",
+  "voice_check": "PASS"
  }
 }

@@ -2,7 +2,7 @@
 
 **Status: architecture 2, drawn 2026-10-28** in education-learning-sciences / learning-analytics-early-warning-models
 (Forecasting), the slot's first registered card. The screens of 2026-10-19 and 2026-10-23 registered nothing and cut
-nothing; their record is kept under `## Slot history` and every death is a line in `## Tried and rejected`. This draw
+nothing; their record is kept under the Slot history heading and every death is a line in Tried and rejected. This draw
 re-enters the early-warning cell with the one family the 2026-10-19 pass never screened: practice logs written under a
 mastery stop rule and a daily cap, read for a routine with no night in it.
 
@@ -11,34 +11,34 @@ mastery stop rule and a daily cap, read for a routine with no night in it.
 1. **Pairing.** education-learning-sciences / learning-analytics-early-warning-models, Forecasting (the task type
    serves F only). The call forecasts, for each spring unit, the seventh graders who will fall short on a check
    taken after a fixed practice set in one class period, and sets the set length against funded reteach places.
-2. **Niche.** Tamberlin County Schools (North Carolina, twelve middle schools, about 2,800 seventh graders a year)
-   has run each math unit's practice as a Rungwell Math skill builder done as homework: a student is done at three
-   first-attempt answers right in a row, can answer at most ten of a skill builder's problems a day, and the
-   skill builder closes ten school days after it opens. From 4 January 2027 the four spring units' skill builders
-   move into class: one period holds a set of problems and then a five-problem check from the same skill builder,
-   and a student with fewer than three of the five right joins the next day's reteach group with an
-   interventionist. The board's amendment funds 4,300 reteach places (one place is one student in one unit's
-   group); the math office sets the set length, 6, 8 or 10 problems, as the shortest whose failed checks fit the
-   places, and staffs on the seventh graders on roll on 23 October 2026.
-3. **Decision.** Which set length (6, 8 or 10 problems), with the failed checks forecast at each length and for
+2. **Niche.** Tamberlin County Schools (North Carolina, twelve middle schools, about 2,400 seventh graders a year)
+   has run each math unit's practice as Pellmore Math skill builders done as homework: a student is done at three
+   first-attempt answers right in a row, can start at most ten of a skill builder's problems a day, and the skill
+   builder closes ten school days after it opens. From 5 January 2027 the four spring units' skill builders move
+   into class: one period holds a set of problems and then a five-problem check from the same skill builder, and a
+   student with fewer than three of the five right joins the next day's reteach group. The board's amendment funds
+   4,100 reteach places (one place is one student in one unit's group); the math office sets the set length, 6, 8
+   or 10 problems, as the shortest whose expected failed checks fit the places, staffed on the 2,402 seventh
+   graders on roll on 23 October 2026.
+3. **Decision.** Which set length (6, 8 or 10 problems), with the expected failed checks at each length and for
    each spring unit at the chosen one. Forward facing: spring 2027, nothing of it observed.
-4. **Data-native sentence.** Rungwell stops a student at the first three right in a row and holds homework to ten
+4. **Data-native sentence.** Pellmore stops a student at the first three right in a row and holds homework to ten
    problems a day, so the log's later problems belong to students who had not yet stopped and sit after a night
-   that kept only part of the earlier sitting's gain, while the spring check comes after one sitting with no night
-   in it.
+   that kept only about two fifths of the earlier sitting's gain, while the spring check comes after one sitting
+   with no night in it.
 5. **Default path's answer against the golden.** The field's learning curve fitted with one practice count per
-   student and skill builder files that no allowed set fits (about 5,600 failed checks even at ten problems);
-   golden eight problems, about 3,900 failed checks against 4,300 places.
-6. **Shape.** 04, setting one dial (F over an open window): the forecast at each of the three lengths, the chosen
-   length, and each spring unit's failed checks at it.
-7. **Deliverables.** `spring_practice_set_length.xlsx` (the forecast by length and unit, and the asks),
+   student and skill builder files that no allowed set fits (about 5,000 failed checks even at ten problems);
+   golden eight problems, about 3,500 failed checks against 4,100 places.
+6. **Shape.** 04, setting one dial (F over an open window): the expected failed checks at each of the three
+   lengths, the chosen length, and each spring unit's failed checks at it.
+7. **Deliverables.** `spring_practice_set_length.xlsx` (the forecast by length and unit, and the ask),
    `spring_reteach_memo.docx` (the case for the length), `spring_reteach_forecast.png` (failed checks by length
    against the places).
 8. **Nearest driver.** `guard.py check` on the registered card: PASS; nearest drivers task272 (0.07), task122
-   (0.05), task179 and task156 (0.04). `mechanisms --objective forecasting` and `slots` on practice, mastery, learning
-   curve, knowledge tracing, streak, stopping rule, survivor, overnight, sitting, forgetting, spacing, homework,
-   reteach, interventionist and skill builder: no build on file models learning or forgetting from a practice log.
-   The closest insight is task156's frailty (fast leavers go first), which here is the second move only.
+   (0.05), task179 and task156 (0.04). `mechanisms --objective forecasting` and `slots` on practice, mastery,
+   learning curve, knowledge tracing, streak, stopping rule, survivor, overnight, sitting, forgetting, spacing,
+   homework, reteach, interventionist and skill builder: no build on file models learning or forgetting from a
+   practice log. The closest insight is task156's frailty (fast leavers go first), which here is the second move.
 9. **Guard.** PASS after six differentiation lines (task178, task461, task229, task242, task476, task501: the
    signature time, G13, method_or_model_selection is crowded, none of the six is the same mechanism). Axes redrawn
    against the live window (task304, task177, task162): forcing event budget_or_appropriation (the places are what
@@ -47,65 +47,273 @@ mastery stop rule and a daily cap, read for a routine with no night in it.
    stakeholder's artifact is the plan thread, the log is the spine), decisive generator G13 (G7 barred; the
    decision's practice window, one sitting, differs from the record's, several evenings), shape 04 (02 barred).
 10. **People** (`guard.py names --geo US --seed 174`): Linda Ramos (district mathematics coordinator), Tara
-    Richardson (chief academic officer), Heidi Ortega (accountability and data analyst), Bryan Wallace
-    (interventionist programme manager), Gregory Griffin (budget director). None appears in the prompt.
+    Richardson (chief academic officer), Heidi Ortega (accountability and data analyst), Claire Montoya
+    (interventions program manager), Gregory Griffin (budget director). None appears in the prompt.
 
 ## Default path
 
 The competent route, every field and rule read correctly:
 
-1. Read the plan: the shortest of 6, 8 or 10 problems whose failed checks fit the 4,300 places, staffed on the
-   seventh graders on roll on 23 October 2026, Units 4 to 7.
-2. Clean the log: stack the two export layouts, put the 2025-26 UTC times on Eastern time, keep original problems
-   (drop scaffold rows), map platform accounts to students through the crosswalk, drop staff test accounts and the
-   re-exported duplicate month.
-3. Fit the field's learning curve to the seventh graders' first attempts: each student's ability, each skill
+1. Read the plan: the shortest of 6, 8 or 10 problems whose expected failed checks fit the 4,100 places, staffed
+   on the seventh graders on roll on 23 October 2026, Units 4 to 7.
+2. Clean the logs: stack the legacy export (local time) and the data-platform exports (UTC put on Eastern time),
+   map platform accounts to students through the link (staff test accounts drop out, second accounts merge), map
+   each assignment to its skill builder.
+3. Fit the field's learning curve to the first attempts: each student's ability (a random intercept), each skill
    builder's easiness and a learning slope on the count of the skill builder's problems the student has answered
-   (the additive factors model, student effects as random intercepts).
-4. For each seventh grader on roll and each spring skill builder, predict the five check problems after a set of
-   6, 8 or 10 problems, and add up the chance of fewer than three right.
-5. About 6,600 at six, 6,200 at eight and 5,600 at ten: none fits 4,300, so the memo files that no allowed set
-   keeps within the places and asks for more.
+   (the additive factors model).
+4. For each seventh grader on roll and each spring skill builder, predict the five check problems after a set of 6,
+   8 or 10 problems, and add up the chance of fewer than three right.
+5. About 5,850 at six, 5,450 at eight and 5,050 at ten: none fits 4,100, so the memo files that no allowed set keeps
+   within the places.
 
-Ends on: no allowed set fits (about 5,600 failed checks even at ten problems)
-Golden: eight problems, about 3,900 failed checks
+Ends on: no allowed set fits (about 5,000 failed checks even at ten problems)
+Golden: eight problems, about 3,500 failed checks
 
 ## Stump sentence
 
 A competent analyst fits the additive factors learning curve to the homework log with one practice count per
 student and skill builder, reads the overnight loss as slow learning, and files that no allowed set fits (about
-5,600 failed checks even at ten problems); the golden counts the current sitting's problems apart from earlier
-sittings' within each student and files eight problems, about 3,900 failed checks against 4,300 places.
+5,000 failed checks even at ten problems); the golden counts the current sitting's problems apart from earlier
+sittings' within each student and files eight problems, about 3,500 failed checks against 4,100 places.
 
 ## Three rules
 
 Task type: learning-analytics-early-warning-models (education-learning-sciences), which serves Forecasting: the call forecasts which seventh graders will fall short on each spring unit's check and sizes the set length against funded reteach places.
 Domain test: the deciding quantity is each student's gain per problem practised within one sitting, the learning slope of the additive factors model estimated within student from first-attempt correctness by practice opportunity, with earlier sittings' practice counted apart, the way learning analytics models practice logs with recency and spacing terms.
 Swap: "how many machines fail the bench check after eight cycles in one shift, read from a log where machines stop at three passes in a row and resume next shift" keeps the arithmetic and loses the learner who gains within a sitting and keeps part of it overnight, so the deciding quantity has no counterpart; with nurses on a simulator the task stays in education.
-Layer 1: Rungwell changed its export between school years (renamed columns, Eastern local time in 2024-25 and UTC from 2025-26), logs scaffold sub-questions beside original problems, re-exported one school's November 2025, gives a re-enrolled student a second account that the district crosswalk maps, keeps staff test accounts in the log, and the student system records mid-year moves as enrollment spells; none is placed and none decides the call.
+Layer 1: Pellmore's export changed in January 2026 (renamed columns, numeric against string keys, the school by name against by code, Eastern local time against UTC), the roster sync gives a re-enrolled student a second account that the link maps, teachers' test accounts sit in the log, and the student system records mid-year and summer moves as enrollment spells; each is neutral for the call (R2, asserted) and none is placed.
 Layer 2: estimand_identification: the quantity is the gain within one sitting, estimated within student under the mastery stop, against the pooled curve, the single-count curve or a replay of homework completion, each of which files a different length.
 Decisive step: counting each student's problems in the current sitting apart from the problems of earlier sittings while estimating the slope within student, then predicting the check after a set done in one sitting.
-Not semantics: every column, code and rule read correctly (original problems, first attempts, the ten-a-day cap on the local day, the crosswalk, the roll date) still leaves the field's learning curve with one practice count per student, which files that no allowed set fits.
-Not rule application: no filed rule says how practice carries over a night or how to estimate a gain, the plan states only the routine, the check and the places; the enumerated family (replay, pooled curve, one-count curve within student, log-count curve, pooled sitting-aware, sitting-aware within student) spans about 1,800 to 6,600 failed checks at eight problems and files 6, 10, 8 or none, the standing family (sitting-aware within student with two counts, first sittings only, decay by elapsed days, ability by posterior mode or integrated) spans about 3 per cent and files eight, and the ruling-out is the data's own fit, log-likelihood gaps of about 4,000 against the one-count and log-count curves.
-Analyst test: a strong analyst who cleans the log and reads every rule fits the additive factors curve with one practice count per student and skill builder and files that no allowed set fits (about 5,600 failed checks even at ten problems), while the plainer replay of homework completion files six problems.
-Estimand: the spring plan (spring_2027_seventh_grade_math_plan) fixes the population (the seventh graders on roll on 23 October 2026), the outcome (fewer than three of the five check problems right on a unit's check, one place each), the window (Units 4 to 7, spring 2027), the unit (one student in one unit's group) and the comparison (sets of 6, 8 or 10 problems, the shortest whose places fit 4,300).
+Not semantics: every column, code and rule read correctly (first attempts, the ten-a-day limit on the local day, the link, the roll date, the check and the bar) still leaves the field's learning curve with one practice count per student, which files that no allowed set fits.
+Not rule application: no filed rule says how practice carries over a night or how to estimate a gain, the plan states only the routine, the check and the places; the enumerated family (replay, not completed within the set, the log's next five problems, one-count curve within student, log-count curve, pooled sitting-aware, sitting-aware within student) spans about 1,900 to 6,850 failed checks at eight problems and files 6, 10 or none, the standing family (sitting-aware within student by gap or by Eastern day, first sittings only, ability integrated or plugged in, sigma by likelihood or one, earlier sittings decayed at the likelihood-best rate) files eight and the same rounded figures, and the ruling-out is the data's own fit: log-likelihood gaps of about 2,800 against the one-count curve, 3,300 against log counts and 35,000 against the pooled one, while a decay of earlier sittings' practice by elapsed days is refuted at every rate below one (0.95 worse by about 200 points), so the form is the data's choice and not the author's.
+Analyst test: a strong analyst who cleans the logs and reads every rule fits the additive factors curve with one practice count per student and skill builder and files that no allowed set fits (about 5,000 failed checks even at ten problems), while the plainer replay of homework completion files six problems.
+Estimand: the spring plan (spring_2027_grade7_math_plan.docx) fixes the population (the seventh graders on roll on 23 October 2026), the outcome (fewer than three of the five check problems right on a unit's check, one place each), the window (Units 4 to 7, spring 2027), the unit (one student in one unit's group) and the comparison (sets of 6, 8 or 10 problems, the shortest whose expected failed checks fit 4,100).
 No decoy: nothing is planted: the vendor guide states its own rules, the plan states the routine and the funded places, and no memo, draft, briefing or stakeholder figure argues for a set length or a failed-check count.
-No certified replay: no certified or published figure is reproduced to recover a method; the vendor's national benchmark report states homework-mode averages, ranks nothing on the decision question and is a named distractor.
+No certified replay: no certified or published figure is reproduced to recover a method; the vendor's national benchmark note states homework-mode completion and medians, ranks nothing on the decision question and is a named distractor.
 Lesson: a learning curve read from a practice log is the gain under the log's own schedule; carried to a routine with no night in it, the gain within one sitting has to be measured apart from what survives the night and within each learner, because the stop rule takes the fast learners out of the later problems; no build on file models learning or forgetting from practice.
 
 ## Readability screen
 
+Tests: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 dedicated organ.
+
+| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 replay homework completion (files 6) | no | completion is a three-in-a-row predicate | yes, last year carried | no | no | one divide | no | readable |
+| R1 not completed within the set (none) | no | a filter on the problem count | yes | no | no | one filter | no | readable |
+| R2 the log's next five problems as the check (none) | no | the log's own order | partly | no | no | a filter | no | readable |
+| R3 one practice count within student, the default path (none) | no | no | yes, the field's additive factors model | no | no | no | no | readable |
+| R4 sitting split, students pooled (files 10) | no | no | no | no | no | no | no | silent |
+| R5 (decisive) sitting split within student (files 8) | no document names a sitting, a night, an evening or forgetting (asserted) | no session or sitting column; sittings are rebuilt from start times | the field's reflexes (additive factors, knowledge tracing, performance factors) count practice once | no control or corpus scores a curve | the battery changes nothing (R2 asserted) | a fit with two counts, never one divide | the start times are shipped for the daily limit, the time-zone layout and the ask | silent |
+
 ## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | seventh graders | the 2,402 on the roll sheet of 23 October 2026 | students with fall practice only; anyone on roll this year | same call and figures (students without practice dropped, asserted) | the plan: staffing is planned on the seventh graders on roll on 23 October 2026 |
+| SF2 | failed check | fewer than three of the five check problems right | not three right in a row; fewer than four | another total at four (asserted) | the plan: fewer than three of the five check problems right |
+| SF3 | right | a correct first action, no hint | correct eventually | the log holds first actions only | the guide: a problem counts as right only when the first action is a correct answer |
+| SF4 | place | one student in one unit's group | one place per student for the spring | four units add | the plan: a student who falls short on two units' checks uses two places |
+| SF5 | fit | the four units' expected failed checks together within 4,100 | each unit within a quarter | the plan states the total | the plan: 4,100 reteach places for Units 4 to 7 together |
+| SF6 | expected | the expected (mean) count | a high percentile | same call at the median; a percentile is not filed | the plan: the shortest set whose expected failed checks fit |
+| SF7 | set length | problems before the check, the check five more | the check inside the set | the plan states the order | the plan: a set of problems and then five more as the check |
+| SF8 | absence | every student on roll takes every check | absentees skip | the plan states make-up | the plan: a student absent does the set and the check on return |
+| SF9 | spring units | skill builders 4, 5, 6 and 7 | Unit 3's fall skill builders | the plan states the units | the plan: Units 4 to 7, one skill builder each |
+| SF10 | rounding | each figure rounded once to the nearest 250 from the unrounded expected count | units rounded then added | totals from unrounded sums (asserted) | the prompt's rounding sentence |
+| SF11 | in one period | the check follows the set in the same sitting | the check the next day | the plan states one period | the plan: in the same period |
+| SF12 | roll date | 23 October 2026 | the January roll | the plan states the date | the plan |
+| SF13 | shortest | the first of 6, 8, 10 within the places | the length with most room | the plan states the rule | the plan: we will use the shortest set |
+| SF14 | one length | every class and every unit at the same length | a length per unit | the plan states it | the plan: every class will use the same length |
 
 ## Ladder
 
+Measured on the cut pack (failed checks at 6, 8 and 10 problems; `checks.py` asserts each rung's call):
+
+| Rung | 6 | 8 | 10 | Files |
+|---|---|---|---|---|
+| R0 replay homework completion | 1,906 | 1,906 | 1,906 | 6 |
+| R1 not completed within the set | 7,686 | 6,861 | 6,106 | none |
+| R2 the log's next five problems as the check | 4,911 | 4,480 | 4,124 | none |
+| R3 one practice count within student (default path) | 5,852 | 5,447 | 5,027 | none |
+| R4 sitting split, students pooled | 5,281 | 4,346 | 3,545 | 10 |
+| R5 golden: sitting split within student | 4,476 | 3,567 | 2,774 | 8 |
+
+Each single correction lands a different wrong answer: the sitting split alone (R4) files 10, the within-student
+model alone (R3) files none, the replay files 6; only both together file 8. On the clean truth (the world's own
+records, no export) the same holds and no cheap route lands 8 (R3a, R3b and Gate F asserted).
+
 ## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | the 2,402 on the roll sheet | filed in the plan; C1 with the students who have no fall practice dropped |
+| 2 | Unit of account | one student in one unit's check | filed in the plan (two units, two places) |
+| 3 | Attribution window | Units 4 to 7, spring 2027 | filed in the plan and the pacing guide |
+| 4 | As-of dating | the roll and the logs to 23 October 2026 | filed in the plan; the fall export ends that day |
+| 5 | Version basis | no revised records for the call | C1: the call reads first attempts, never a revised field |
+| 6 | Denominator | none: an expected count | not applicable, asserted that totals add unrounded |
+| 7 | Weighting | each student once | C1: the forecast sums students; no weight is filed or needed |
+| 8 | Window length | every skill builder in the logs | C1: the legacy fall export left out files the same figures (asserted) |
+| 9 | Boundary inclusivity | within means at or below 4,100 | C1: no length sits within 8 per cent of the places (asserted) |
+| 10 | Rounding path | once, from the unrounded sum | SF10, asserted |
+| 11 | Tie-break | the shortest length within the places | filed in the plan |
+| 12 | Maturity and censoring | sequences stopped by completion, the close or the as-of date | C1: the likelihood treats each sequence as observed; the stop depends only on observed answers |
+| 13 | Order of operations | fit, forecast each student, sum, round | asserted in the verifier |
+| 14 | Row order | the fit sorts by student, skill builder and time | C1 |
+| 15 | Duplicate resolution | no duplicate rows | C1 |
+| 16 | Identity normalisation | accounts to students through the link | C1: second accounts unmerged or staff kept file the same figures (R2 asserted) |
+| 17 | Netting against gross | not applicable | none |
+| 18 | Dimensional units | problems, students; UTC and local times | C1: UTC read as local files the same figures with gap sittings (R2 asserted) |
+| 19 | Code semantics | first_action, first_correct and the legacy correct | the guide: a hint first counts as wrong |
+| 20 | Integerisation | expected counts kept unrounded until the end | SF10 |
+| 21 | Clause scope | the in-class routine is Units 4 to 7 only | filed in the plan; Unit 3 stays homework |
+| 22 | Forward window contents | the roll's students, every spring check | filed in the plan; arrivals after the roll date are not staffed |
 
 ## Literal reader
 
+Executed word for word, the plan fixes the population (on roll on 23 October 2026), the routine (a set of N then
+five check problems from the same skill builder in one period), the outcome (fewer than three of five right), the
+unit (one place per student per unit), the comparison (6, 8 or 10) and the rule (the shortest whose expected failed
+checks fit 4,100), and the guide fixes what right means. Nothing says how practice carries between evenings; a
+literal reader who fits the field's learning curve with one count files that no length fits, an easy method on the
+same literal estimand rather than another reading. Every licensed construction that measures the gain inside a
+sitting files eight and the same rounded figures (asserted in `checks.py`).
+
 ## Oracles
 
+No control, certified or published figure ties to the call. The vendor's national benchmark note gives
+homework-mode completion and medians, ranks nothing on the decision and is a declared distractor. The board email
+states the places only. The ask has no control total: the export's school_code ties to nothing and contradicts the
+enrollment history only at a cross-file cut.
+
 ## Ask sheet
+
+The ask: each school's 2025-26 skill-builder problems on each of Units 4 to 7, counted at the school the student
+attended that day (48 cells, whole problems), the homework practice the in-class sets replace.
+
+- Primary (D2, an attribute at a later snapshot): the data-platform export's school_code is each account's school
+  when the export ran on 19 October 2026. The roster sync moves an account with its student, so within-year
+  transfers and the seventh graders who changed middle school over the summer carry their whole spring practice
+  to the new school. Remedy: the archived enrollment history's spells on the Eastern day each problem was started,
+  an as-of join in which problems started between two enrollments count for no school (a reconstruction).
+- Hazards: teachers' test accounts carry school codes (out through the link); problems started between two
+  enrollments; the UTC day against the Eastern day at an enrollment boundary.
+- Separation: the call's frame drops the school column and never reads the archive (asserted); no device row moves
+  the call.
+
+Pair ceiling: 28.5
+Mirror leakage: 0.0
+Measured by: generator/pair.py
+
+| School | Cracker (export school_code) | Golden (school attended that day) | Cracker misses |
+|---|---|---|---|
+| TCS-304 | 4000/3800/3224/3262 | 4070/3842/3223/3282 | yes |
+| TCS-308 | 3516/3196/2862/2541 | 3670/3446/2930/2751 | yes |
+| TCS-316 | 3607/3578/2976/3124 | 3584/3508/2968/3026 | yes |
+| TCS-322 | 3316/3326/2771/2755 | 3468/3404/2899/2907 | yes |
+| TCS-331 | 3481/3200/3059/2595 | 3432/3080/2956/2564 | yes |
+| TCS-338 | 3544/3587/2978/2857 | 3580/3573/3001/2828 | yes |
+| TCS-342 | 2639/2731/2420/2268 | 2595/2814/2459/2302 | yes |
+| TCS-351 | 3210/3060/2788/2548 | 3034/3029/2713/2498 | yes |
+| TCS-356 | 2511/2212/2086/1929 | 2448/2091/2037/1796 | yes |
+| TCS-364 | 3122/3118/2623/2559 | 3001/3089/2605/2481 | yes |
+| TCS-372 | 2705/3044/2582/2388 | 2982/3265/2719/2587 | yes |
+| TCS-379 | 3721/3779/3225/3173 | 3498/3473/3075/2967 | yes |
+
+The cracker keeps 0 of 48 cells and the mirror (the export's rows by school_code, staff accounts in) keeps 0. A
+solver who finds the archived enrollment history and joins it on the Eastern day keeps all 48: the route is
+reachable, and it is the golden.
+
+## Pre-ship check
+
+- **The 10/10 rules against the built pack.** Rule 1: the deciding quantity is each student's gain per problem
+  within one sitting, the additive factors slope estimated within student, which a factory's nouns cannot carry.
+  Rule 2: the Layer 1 items (the January export change, UTC against local time, second accounts, teachers' test
+  accounts, enrollment spells, the export's school column) each leave the call and every component where they were
+  when mishandled (R2 asserted for UTC read as local, the legacy export left out, staff accounts kept and second
+  accounts unmerged); Layer 2 decides. Rule 3: the analyst's route on the clean truth files that no length fits
+  (R3a), the decisive step alone files eight (R3b), the single lower correction (sitting split, students pooled)
+  files ten, and no cheap route lands eight on the clean truth (Gate F count zero); nothing is planted (R3c).
+- **Free gates.** `checks.py` 149 of 149; `verify.py` 67 of 67 on the zip, on its own code path (Eastern-day
+  sittings, block Newton fit, sigma one, 41-node integration, the places and lengths parsed from the plan); two
+  byte-identical builds; `figures_check.py` 138 of 138; `precut.py` 53 checks, 0 FAIL; `leak.py` REVIEW with every
+  line ruled below; `guard.py heart` PASS; `voice-check.py` PASS.
+- **The pack.** `target.zip` sha256 7eb0bd699128c923859511d9e8fd2279cc3cdf62fe7dc0297b15d76be470c090, 16 files in
+  five formats, the largest `pellmore_problem_log_2025-26_aug_dec.csv` at 207,716 rows; distractors (the state
+  results, the national benchmark note, the Math Lab export and its procedures) named in `metadata.json`.
+- **The standing family at the graded rounding (250).** Six problems 4,408 to 4,476 (bin 4,500), eight 3,520 to
+  3,567 (bin 3,500), ten 2,718 to 2,774 (bin 2,750); every unit at eight in its bin; the decay of earlier sittings
+  profiled by likelihood picks the golden's form and refutes 0.95 by 207 points.
+
+- **The judge's note on the sitting break.** The 3-hour break is not filed and need not be: a break of 1, 2, 3 or 6
+  hours and the Eastern calendar day give the identical split of every problem into its sitting (C1, asserted in
+  `checks.py`); a 12-hour break differs because it joins an evening sitting to the next morning's across a night,
+  which is not a sitting. Filing a threshold would file the method.
+
+- **The judge (stage 4, on 94f4f617).** DETERMINISTIC, APPROVE; Gate G forecasting, analytical_non_defect, no
+  surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive step analytical; all 48 ask
+  cells reproduced. The reader's repairs since (the prompt's vendor name, problem-pool sizes, PDF times of day,
+  opaque assignment and section ids) move no graded figure (`figures.json` byte-identical, asserted) and touch no
+  clause a gate turned on, nor do round 2's (the benchmark note's minutes, the test accounts' stop), so the APPROVE carries to 7eb0bd69.
+
+## Leak review
+
+`leak.py --asof 2026-10-23` (pack 7eb0bd69, after both readers' repairs): REVIEW, no LEAK. One line per REVIEW:
+- Sweep 3, the guide and the plan share words with the call (skill builders, problems, check, spring): the call is
+  written in the plan's own vocabulary; neither document states a set length to choose or any figure. Harmless.
+- Sweep 4, the guide, the plan, the Math Lab procedures and the benchmark note carry common words of the field
+  (homework, builder, record, learning, completion): none names a sitting, a night, an evening, carry-over or
+  forgetting (asserted in `checks.py`). Harmless.
+- Sweep 6, the roster and the legacy log name the twelve schools beside numbers: schools are the ask's rows, not the
+  call's candidates (the set lengths); neither file ranks anything on the decision. Harmless.
+- Sweep 8, the legacy log's `correct`: the column name the legacy problem-log export really carries. Harmless.
+- Sweep 9, the pacing guide's dates after 23 October 2026: the forward schedule (Unit 3's skill builders and the
+  spring units), the allow-listed kind of forward record (`reduce-house-fixes` H16). Harmless.
+- `guard.py surface`: four pairs promoted on card labels only (task242, task461, task476, task501: gap time, G13,
+  method_or_model_selection), surface similarity 0.020 to 0.033, the 11th to 14th corpus percentile, each answered
+  by a differentiation line; the persona scan's "Greg Gregory" is the email's sign-off ("Greg") above its signature
+  line ("Gregory Griffin"), one person already on the card. `guard.py heart`: PASS.
+
+### The stage 4 leak reader (round 1, on 94f4f617)
+
+- Q1 nothing names the decisive step (the closest are the guide's two mode descriptions, which state how each mode
+  behaves and never how to carry one to the other); Q2 no file ranks 6, 8 or 10; Q3 no file exists only for the
+  analyst (the guide is the closest and is a dated help-centre article); Q4 no figure reads as the answer (the
+  benchmark medians are framed as homework mode in partner districts); Q5 the quoted population (on roll 23 October
+  2026), comparison (the four units' expected failed checks against 4,100) and place unit (one student in one
+  unit's group) are the golden's readings; Q6 an analytical choice decides, which the reader located in the stop
+  rule's censoring and not in the overnight loss: the decisive rung stayed silent.
+- Repairs from Q7, each in the generator, no graded figure moved (`figures.json` unchanged, asserted):
+  the prompt still named the old vendor (Rungwell) after the rename, now Pellmore; every skill builder's problem pool
+  was exactly 359 contiguous numbers, now pools of their own size with retired numbers (drawn from the same random
+  draw, so no stream moved); the three PDFs were stamped at midnight UTC, now a local time of day on the issue date;
+  the assignment references and the assignment list carried the school code, which hands a solver the school of each
+  section for the ask, now opaque references and section ids with no school column.
+- The reader also found the ask's device by a cross-file cut (a transfer whose rows carry the account's later
+  school): reachable, as the ask sheet says, and the golden.
+
+### The stage 4 leak reader (round 2, on d0e8ff7e, after the prompt changed)
+
+- Q1 to Q6 clean again: no method sentence (the plan files the WHAT, the guide states each mode's rules and never the
+  bridge between them), no ranking file, no analyst-only file, the quoted readings are the golden's, and the deciding
+  step is an analytical choice the reader did not locate in the overnight loss. Round 1's four repairs held.
+- Q4 flagged the national benchmark note's "median problems to complete" (12, 8, 9 and 8 for Units 4 to 7): two of
+  four sat on the golden length, an anchor a skimming solver could ride to the call by coincidence. The note now
+  reports median minutes to complete (14 to 28), the measure such vendor notes carry, so no figure in the distractor
+  reads as a set length (asserted).
+- Q7 found 0.13 to 0.18 per cent of histories served a problem after three right in a row: every one a teachers'
+  test account, which the generator let answer a fixed few problems; the test accounts now obey the stop like any
+  account (asserted over every legacy history). Both repairs touch rows and files the call never reads, so no graded
+  figure moves (`figures.json` byte-identical, asserted); the benchmark note's sentence changed, so the reader reads the pack once more (round 3).
+
+### The stage 4 leak reader (round 3, on 7eb0bd69, the shipped pack)
+
+- Q1 to Q6 clean: the reader confirmed every logged assignment is homework mode, so the method has no in-pack analog,
+  and read the deciding step as a modeling choice it did not tie to the overnight loss. Q4's only note is the guide's
+  homework limit ("at most ten problems ... in one day"), a mechanic the export needs; a skim it misleads files ten,
+  a wrong length, never the golden. Q7 found nothing generated or rule-breaking (the stop rule, the hint rule, the
+  local-day limit, ids, pools, document dates, the Math Lab saves) and read the export-time school field as authentic.
+  No repair; ship.
 
 ## Slot history
 
@@ -824,4 +1032,23 @@ Berquist-Sherman card.
 - **Architecture 2 draw, 2026-10-28: a homework cap of fifteen problems a day.** It puts the check inside the
   observed sitting length, but problems 9 to 13 of the log then sit in the first sitting for most students who
   reach them, and that replay lands within about 18 per cent of the golden at eight problems, so a funded-places
-  line between them leaves no room; the cap stays at ten, Rungwell's documented limit.
+  line between them leaves no room; the cap stays at ten, Pellmore's documented limit.
+- **Architecture 2 build, 2026-10-28: a second ask on spring 2026 Math Lab interventionist hours.** Its devices (the
+  latest save of an edited session, one session per interventionist) had to be filed in the Math Lab procedures to
+  close the readings, so a careful solver executes them and keeps the ask; the Math Lab export and procedures stay
+  in the pack as distractors and the ask became the 48-cell practice table.
+- **Architecture 2 build, 2026-10-28: failed checks to the nearest 100.** The standing family (plug-in against
+  integrated ability, first sittings only) spread the 10-problem total over about 100, wider than the bin, so no
+  setting held every licensed construction in one bin; the rounding moved to the nearest 250, the precision the
+  estimator family carries.
+- **Architecture 2 build, 2026-10-28: scaffold questions in the exports.** Counted as problems they moved the call
+  to ten (R2), even confined to the legacy export, through the history cohort's ability scale; cut from both
+  exports, which is the data platform's own problem-level grain.
+- **Architecture 2 build, 2026-10-28: sittings by calendar day in the golden.** With the data-platform times read as
+  local, evening sittings split at UTC midnight and the call moved to ten (R2); the golden splits sittings at a
+  break of more than three hours, which files the same figures as the Eastern day and is neutral to the time zone.
+- **Architecture 2 build, 2026-10-28: a field-notes sheet in the roster** (exit dates inclusive, exit codes): a
+  sheet describing the data; removed, the convention carried by the headers (first_day_on_roll, last_day_on_roll)
+  and the reasons written out.
+- **Architecture 2 build, 2026-10-28: the vendor name Rungwell.** It carries the ladder's own word, so every platform
+  file name was a LEAK in leak.py's sweep 1; renamed Pellmore.

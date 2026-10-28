@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Eight-problem sets: about 3,500 expected failed checks across Units 4 to 7 against the 4,100 funded reteach places (6 problems about 4,500, 10 problems about 2,750)",
+  "answer_source": "submission.md block 1",
   "gap": [
     "time",
     "population"
@@ -38,20 +38,19 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:within-sitting-learning-gain-under-a-mastery-stop-and-overnight-loss",
   "layer1": [
-    "export layout changed between school years (renamed columns, local time then UTC)",
-    "UTC timestamps against the school's local day for the daily cap",
-    "scaffold sub-question rows logged beside original problems",
-    "a re-export duplicating one school's month",
-    "re-enrolled students holding two platform accounts mapped in the roster crosswalk",
-    "staff test accounts in the log",
-    "mid-year school moves in enrollment spells"
+    "the platform export changed in January 2026 (renamed columns, numeric against string keys, school name against code, Eastern local time against UTC)",
+    "UTC timestamps against the school's local day for the daily limit",
+    "re-enrolled students holding two platform accounts mapped in the roster-sync link",
+    "teachers' test accounts in the log",
+    "mid-year and summer school moves recorded as enrollment spells",
+    "the export's school column is the account's school on the export day"
   ],
   "stakeholder_role": "district mathematics coordinator",
   "role_family": "capacity_planner",
   "scoring_unit": "units served",
   "spine": {
-    "file": "skill_builder_problem_log",
-    "rows": 0,
+    "file": "pellmore_problem_log_2025-26_aug_dec.csv",
+    "rows": 207716,
     "entity": "one row is one first attempt at one skill-builder problem",
     "grain": "student x skill builder x problem",
     "source": "synthetic"
@@ -63,12 +62,28 @@
     "geography": "North Carolina, United States",
     "currency": "USD",
     "org_type": "county public school district",
-    "invented_names": [],
+    "invented_names": [
+      "Tamberlin County Schools",
+      "Pellmore Learning",
+      "Pellmore Math",
+      "Arrowmere Middle School",
+      "Calderwick Middle",
+      "Dovering Magnet Middle School",
+      "Elmswade Academy (6-8)",
+      "Fallowmere STEM Middle School",
+      "Gorsedale Middle School",
+      "Hollisgrove Middle",
+      "Ivelbrook Middle School",
+      "Juniper Shoals Middle School",
+      "Kettlewyn Middle School",
+      "Larkmoor Leadership Academy",
+      "Quillon Heights Middle School"
+    ],
     "people": [
       "Linda Ramos",
       "Tara Richardson",
       "Heidi Ortega",
-      "Bryan Wallace",
+      "Claire Montoya",
       "Gregory Griffin"
     ]
   },
@@ -78,10 +93,10 @@
     "spring_reteach_forecast.png"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
+  "question_form": "which",
   "driver": "The decisive quantity is each member's gain per repetition inside a single session, recovered from records where members stop at their first run of three successes and later repetitions follow an overnight break that keeps only part of the earlier gain, so a replay of the stops, a pooled curve or one repetition count across sessions each misstates the shortfall of a fixed set done in one session and lands a different setting.",
   "driver_concrete": "The spring check follows a fixed set done in one class period, so the quantity is each seventh grader's gain per problem within one sitting; the homework log shows it only through students who stop at three right in a row and whose later problems come after a night that keeps about two fifths of the gain, so replaying homework mastery, pooling students or fitting one practice count each misstates the failed checks and picks the wrong set length.",
-  "stump": "A solver who fits the additive factors model to the homework log with one practice count per student and skill builder reads the overnight loss as slow learning, forecasts far more failed checks than the places at every allowed length and files that no set fits, while the replay of homework mastery files the shortest set; the golden is the middle length.",
+  "stump": "A solver who fits the additive factors model to the homework log with one practice count per student and skill builder reads the overnight loss as slow learning and files that no allowed set fits (about 5,000 failed checks even at ten problems), the replay of homework completion files six problems and the sitting split with students pooled files ten; the golden is eight problems, about 3,500.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task178": "task178 strips an absorbing trader's flow out of a forward dispersion; nothing is removed here, and the quantity is a learner's gain inside one sitting, read through a run-of-three stop and net of an overnight loss.",
