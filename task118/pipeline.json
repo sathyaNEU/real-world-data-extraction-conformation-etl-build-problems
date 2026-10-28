@@ -1,38 +1,19 @@
 {
  "task": "task118",
- "domain": "pharmacology-pharmacoepidemiology-safety / benefit-risk-assessment",
+ "domain": "economics / public-finance (client economics-econometrics / elasticity-welfare-policy-impact-estimation)",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-27",
- "stump": "A competent analyst reads the policy, dates each current user's first start from their first item in the board's dispensing extract and names Corvenham Central at 74 admissions avoided, where the golden is Saltreach Coast at 19; the step that lands them there is taking the start of a record as the start of the exposure, when the extract opens on 1 April 2026 so that every patient already on the drug enters it as an April starter at the raised rate through 2027, and each patient's real first start is the first template of the repeat-template chain, where 1,888 of Saltreach Coast's current users started on or after 1 April 2025 against 477 of Corvenham Central's.",
- "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (architecture 3 pass 1, zip 900e68f6)",
-  "disposition": "APPROVE; the card's planning Gate G answered (method_or_model_selection with differentiation)",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task118/determinism_check_report_arch3.md"
- },
+ "stump": "",
+ "judge": {},
  "approved": null,
- "delivered": "2026-10-27",
- "portal": "FAILED_TO_STUMP 2026-10-27 (round after the determinism reship): both responses filed Business\u00b7national at 500,000, runner-up Local\u00b7metro 100,000 behind, the golden",
+ "delivered": null,
+ "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 3): both responses filed the golden, Saltreach Coast at 19, runner-up Hethermoss 4 fewer",
  "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "SHIPPED",
- "resume": "",
- "leak": {
-  "leak_py": "REVIEW, every line ruled (Stage 3 rulings)",
-  "reader": "read 1 on 900e68f6: no decisive-step sentence, no ranking file, no answer figure; question 3 the provider site list (publisher reference, harmless); question 5 executes to the golden's population; question 6 analytical"
- },
- "asks": {
-  "cracker_hits": 4,
-  "of": 24,
-  "pair_ceiling": 37.7,
-  "mirror_leakage_pct": 16.7,
-  "device": "the stay through moves between hospitals: same-day trauma-unit moves whose site sorts first, receiving spells coded as fresh admissions or from home, next-day moves, same-day readmissions after going home; hazards Q80117, multi-episode spells"
- },
- "assertions": 113,
- "verifier": "19 of 19",
- "builds_byte_identical": true,
+ "status": "DESIGN",
+ "resume": "stage 2 (architecture 4, drawn 2026-10-27): the 2027 Budget's GBP 3 million envelope to one of five excise duties, sized by the excess burden removed in the Budget year; ladder measured on the clean model (t118v4/proto2.py: golden spirits 1.41, 1.90x; triangle routes cider; long-run or static with the full change road fuel). Next: the generator (quarterly series 2008-2026 from a partial-adjustment demand, the Treasury's appraisal manual, duty rates, customs declarations 2025-26 for the asks), then the note's sections and precut",
+ "leak": {},
  "returned": [
   {
    "date": "2026-10-27",
@@ -57,23 +38,24 @@
    "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business\u00b7national, 500,000 extra article clicks in 2027, runner-up Local\u00b7metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 3, baee0a47"
+  },
+  {
+   "date": "2026-10-27",
+   "portal": "FAILED_TO_STUMP: both responses filed the golden call (Saltreach Coast, 19 emergency fall admissions avoided, 19.2 in one; runner-up Hethermoss 15, 4 fewer), the start dating through the repeat-template chains landed",
+   "repair": "re-root",
+   "commit": ""
   }
  ],
- "zip_sha256_16": "900e68f673731000",
- "architecture": 3,
+ "zip_sha256_16": "",
+ "architecture": 4,
  "loops": 0,
  "portal_status": "",
  "portal_status_date": "",
  "precut": {
-  "exit": 0,
-  "date": "2026-10-27",
-  "checks": "53, 0 FAIL, 0 WARN"
+  "exit": null,
+  "date": ""
  },
- "duplicate_check": {
-  "heart": "WARN (answered at the draw)",
-  "nearest": "0.07",
-  "surface": "clean; task131, task230, task183, task446 adjudicated clean"
- },
+ "duplicate_check": {},
  "freeze": {
   "rubric": "PASS (six ask figures added, main call and stump unchanged)",
   "determinism": "FAIL on one item: Deliverable Answers for squad_placement_2027.xlsx (the six totals added)",
