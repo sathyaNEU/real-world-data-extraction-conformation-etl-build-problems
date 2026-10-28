@@ -1,93 +1,83 @@
-"""task304 architecture 2: the Brannock Trust's 2027 find-and-treat van, four candidate settings.
-
-Every parameter of the world lives here; the generator reads nothing else. Rates are the world's own, not the
-answers: every graded figure is computed from the shipped files by solve.py."""
+"""Constants for task304 (architecture 3): Brannock Trust's find-and-treat van, placed full-time in one of four settings
+for 2027 after a 2026 rota that visited all four. Every rate here is a property of the world the records are drawn
+from; the figures the build grades are computed forward from the shipped files (solve.py), never from these."""
 import datetime as dt
 
-SEED = 304230
-AS_OF = dt.date(2026, 9, 30)
-LAB_START = dt.date(2015, 1, 1)
-POOL_START = dt.date(2024, 10, 1)          # the two plan years: Oct 2024 to Sep 2025, Oct 2025 to Sep 2026
-ARRIVALS_START = dt.date(2023, 10, 1)      # the arrivals returns run three years
-PILOT_START, PILOT_END = dt.date(2018, 10, 1), dt.date(2019, 9, 30)
-EXPORT_DATE = dt.date(2026, 10, 12)         # the day the pack was pulled together for the trustees' paper
+D = dt.date
+SEED = 304301
+SEEDS = dict(pharm=3041, hh=16, ap=356, ds=115, nsp=284, courses=24, lab=3047)
+AS_OF = D(2026, 9, 30)
+ROTA_START, ROTA_END = D(2026, 1, 5), D(2026, 9, 25)
+BANK_HOLIDAYS = {D(2026, 4, 3), D(2026, 4, 6), D(2026, 5, 4), D(2026, 5, 25), D(2026, 8, 31)}
+EPR_GO_LIVE = D(2024, 10, 1)
+ASSAY_CHANGE = D(2025, 7, 1)
+ROLLOUT = D(2027, 4, 1)
 
 ORG = "Brannock Trust"
 NETWORK = "Fenwold Hepatitis C Network"
-HOST_TRUST = "Fenwold Teaching Hospitals NHS Foundation Trust"
-PRISON_PROVIDER = "Corvane Health (Justice) Ltd"
-LAB = "Fenwold Pathology, virology"
+ICB = "NHS Fenwold Integrated Care Board"
+LAB = "Fenwold Pathology"
+DIRECTOR = "Stephanie Davis"
+TEAM_LEAD = "Duncan Jackson"
+CLIN_LEAD = "Alison Hartley"
 
-# people (guard.py names --geo uk --seed 304)
-DIRECTOR = "Katie Reynolds"        # director of services, Brannock Trust
-TEAM_LEAD = "Robin Higgins"        # outreach team lead, ran the 2018-19 pilot
-CLIN_LEAD = "Clare Stevenson"      # consultant hepatologist, the network's clinical lead
-
-# the four candidate settings: code, label in the plan, the returning organisation
 SETTINGS = ["AP", "HH", "DS", "NSP"]
-SETTING_LABEL = {
-    "AP": "the approved premises",
-    "HH": "the city hostels",
-    "DS": "Fenwold Recovery's new entrants",
-    "NSP": "the pharmacy needle exchange's new registrants",
-}
+LABEL = {"AP": "the approved premises", "HH": "the city hostels", "DS": "Fenwold Recovery's new entrants",
+         "NSP": "the needle exchange pharmacies' new registrants"}
+SHORT = {"AP": "Approved premises", "HH": "City hostels", "DS": "Fenwold Recovery new entrants",
+         "NSP": "Needle exchange new registrants"}
+# the van tablet's setting values; its app update of 18 May 2026 shortened the hostels' site names
+TABLET_OLD = {"AP": "Approved Premises", "HH": "Hostel", "DS": "Fenwold Recovery", "NSP": "Pharmacy NSP"}
+TABLET_UPDATE = D(2026, 5, 18)
+HOSTEL_SHORT = {"Albion House": "ALBION HSE", "St Bride's Court": "ST BRIDES CT", "Marlowe House": "MARLOWE HSE",
+                "Canal Street": "CANAL ST", "Holmfield": "HOLMFIELD", "The Foyer, Wexley Road": "FOYER WEXLEY RD",
+                "Greyfriars": "GREYFRIARS", "Tenter Lane": "TENTER LN", "Ropewalk House": "ROPEWALK HSE"}
 
-# distinct people arriving per plan year (mean), antibody positive share among them,
-# share of positives cured before they arrive, share of those cures given inside prison,
-# share of cured who were infected again before arriving, share of those whose re-infection the regional
-# laboratory recorded (an RNA detected after the cure), share of never-treated positives coming to clinic
-WORLD = {
-    "AP":  dict(arrive=980,  ab=0.240, comm_dx=0.45, prison_dx=0.93, cov_prison=0.95, cov_comm=0.25, reinf=0.060, reinf_lab=0.60),
-    "HH":  dict(arrive=1010, ab=0.152, comm_dx=0.45, prison_dx=0.36, cov_prison=0.95, cov_comm=0.55, reinf=0.050, reinf_lab=0.60),
-    "DS":  dict(arrive=2060, ab=0.156, comm_dx=0.74, prison_dx=0.26, cov_prison=0.95, cov_comm=0.86, reinf=0.040, reinf_lab=0.60),
-    "NSP": dict(arrive=490,  ab=0.380, comm_dx=0.26, prison_dx=0.15, cov_prison=0.95, cov_comm=0.42, reinf=0.050, reinf_lab=0.60),
-}
-VIRAEMIC_NEVER_TREATED = 0.74      # chronic share after spontaneous clearance, the field's constant
-ATTEND = 0.56                      # never-treated (and re-infected) positives coming to clinic after a reactive test
-PEER_TEST_SHARE = 0.80             # arrivals the peer team tests within six weeks of arriving
-SVR_RATE = 0.955                   # courses cured
-UNTESTED_SHARE = 0.12               # courses with no twelve-week test, people outside the settings
-TWO_NUMBER_SHARE = 0.025            # people with a course ended before the go-live whose later samples carry a second NHS number
-NO_SVR_TEST = 0.02                 # completed courses with no twelve-week test (rare in both records)
+# the world's rates (truth); the 2026 rota measures them with sampling noise
+ACCEPT = {"AP": 0.85, "HH": 0.95, "DS": 0.80, "NSP": 0.70}
+ACTIVE = {"AP": 0.060, "HH": 0.110, "DS": 0.066, "NSP": 0.170}
+ACTIVE_PILOT = 0.025            # new registrants at a pharmacy whose pharmacist already tests and treats
+START12 = {"AP": 0.48, "HH": 0.80, "DS": 0.60, "NSP": 0.62}
+COVER = {"AP": 0.84, "DS": 0.56, "NSP": 0.62}     # chance a 2026 arrival is met by the van on its rota day
+HH_ABSENT = 0.06
+HOSTEL_INCIDENCE = 0.0013       # new infections per resident-year among residents who tested negative
 
-# the pilot (validated evidence): two settings, everyone arriving in the pilot year
-PILOT = dict(arrive={"HOPE": 690, "CORR": 760}, test=0.62, ab={"HOPE": 0.27, "CORR": 0.34}, cured=0.035,
-             start12=0.71)
+AP_PREMISES = [("Holloway House", 30), ("Bracken Lodge", 38), ("Tanner's Yard", 42)]
+AP_STAY, AP_GAP = 77.0, 4.0
+HOSTELS = [("Albion House", "Fenwold Housing Trust", 86), ("St Bride's Court", "Fenwold Housing Trust", 112),
+           ("Marlowe House", "Fenwold Housing Trust", 64), ("Canal Street", "Fenwold Housing Trust", 140),
+           ("Holmfield", "Fenwold Housing Trust", 96), ("The Foyer, Wexley Road", "Calder Street Homes", 72),
+           ("Greyfriars", "Calder Street Homes", 118), ("Tenter Lane", "Calder Street Homes", 104),
+           ("Ropewalk House", "Calder Street Homes", 128)]
+HH_STAY, HH_GAP = 1095.0, 12.0
+DS_MONTHLY = 158.0
+NSP_MONTHLY = 161.0
+NSP_REISSUE = 0.085             # share of 'New' rows in a year that re-register a lapsed client
+PILOTS = {"FW318": D(2025, 3, 10), "FK207": D(2025, 6, 16), "FN562": D(2025, 11, 3)}
 
-# background laboratory volume per year by requester group (antibody tests), and the first-positive share
-LAB_REQUESTERS = {
-    "GP": (5200, 0.012), "ANTENATAL": (5900, 0.0016), "SEXUAL_HEALTH": (2300, 0.008),
-    "HOSPITAL": (1500, 0.020), "DRUG_SERVICE": (1500, 0.140), "OUTREACH_CLINIC": (480, 0.200),
-}
-
-# the network's clinics (Ask A)
-CLINICS = ["HEP", "COMM", "FRC", "PHARM", "OUT"]
-CLINIC_LABEL = {
-    "HEP": "hospital hepatology clinic",
-    "COMM": "community hepatitis clinic",
-    "FRC": "Fenwold Recovery clinic",
-    "PHARM": "pharmacy-led clinic",
-    "OUT": "outreach nurse clinic",
-}
-SVR_KEYED_SINCE_GOLIVE = 0.62      # share of twelve-week results keyed into the register after the Oct 2024 go-live
-EPR_GO_LIVE = dt.date(2024, 10, 1)
-
-# the van
-VAN_TEST_SHARE_NOTE = "the pilot's"
-PRISONS = {"TAM": "HMP Fenwold", "SAL": "HMP Sallowby", "HAV": "HMP Mardlow"}
+CLINICS = ["HEP", "COMM", "FRC", "HHC", "SHC"]
+CLINIC_OLD = {"HEP": "RFI-HEP", "COMM": "KR-COM", "FRC": "FR-CLN", "HHC": "RS-HHC", "SHC": "SH-GUM"}
+CLINIC_NAME = {"HEP": "Fenwold Royal Infirmary hepatology clinic", "COMM": "Kestle Road community hepatitis clinic",
+               "FRC": "Fenwold Recovery hub clinic", "HHC": "Riverside homeless health clinic",
+               "SHC": "Fenwold sexual health clinic"}
+CLINIC_YEARLY = {"HEP": 104, "COMM": 120, "FRC": 78, "HHC": 52, "SHC": 38}
 
 FILES = {
-    "lab": "virology_hcv_results_2015-01_to_2026-09.csv",
+    "van": "van_tests_2026-01_to_2026-09.csv",
     "register": "hcv_treatment_register_2015-2026.csv",
-    "prison": "corvane_hcv_courses_2017-2026.xlsx",
-    "peer": "peer_testing_log_2024-10_to_2026-09.csv",
-    "arrivals": "setting_arrivals_2023-10_to_2026-09.csv",
-    "pilot": "van_pilot_2018-19_caseload.csv",
+    "dispensing": "daa_dispensing_2024-04_to_2026-09.csv",
+    "lab": "virology_hcv_results_2015-01_to_2026-09.csv",
+    "census": "hostel_residents_2026-09-30.xlsx",
+    "hostel_returns": "hostel_occupancy_returns_2023-10_to_2026-09.csv",
+    "ap_returns": "approved_premises_returns_2023-10_to_2026-09.csv",
+    "ds_episodes": "fenwold_recovery_new_episodes_2023-10_to_2026-09.csv",
+    "nsp_reg": "nsp_registrations_2019-04_to_2026-09.csv",
+    "pharmacies": "nsp_pharmacies_2026.csv",
+    "clinics": "network_clinics_2026.csv",
     "plan": "find_and_treat_van_2027_plan.pdf",
-    "evaluation": "van_pilot_evaluation_2018-19.pdf",
     "pathway": "fenwold_hcv_pathway_2026.pdf",
-    "clinics": "network_clinic_list_2026.csv",
-    "nsp_activity": "nsp_pharmacy_transactions_2025-04_to_2026-09.csv",
-    "fibroscan": "fibroscan_sessions_2025-26.xlsx",
+    "intentions": "fenwold_icb_commissioning_intentions_2027-28.pdf",
+    "fibroscan": "van_fibroscan_sessions_2026.xlsx",
+    "costs": "van_running_costs_2026.xlsx",
 }
-DISTRACTORS = ["nsp_activity", "fibroscan"]
+DISTRACTORS = ["fibroscan", "costs"]

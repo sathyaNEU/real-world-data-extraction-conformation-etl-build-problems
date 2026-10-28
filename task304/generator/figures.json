@@ -1,214 +1,123 @@
 {
- "AH": {
-  "COMM_1": {
-   "confirmed": 9,
-   "finished": 9
-  },
-  "COMM_2": {
-   "confirmed": 26,
-   "finished": 28
-  },
-  "FRC_1": {
-   "confirmed": 43,
-   "finished": 50
-  },
-  "FRC_2": {
-   "confirmed": 33,
-   "finished": 39
-  },
-  "HEP_1": {
-   "confirmed": 15,
-   "finished": 16
-  },
-  "HEP_2": {
-   "confirmed": 11,
-   "finished": 13
-  },
-  "OUT_1": {
-   "confirmed": 30,
-   "finished": 33
-  },
-  "OUT_2": {
-   "confirmed": 55,
-   "finished": 61
-  },
-  "PHARM_1": {
-   "confirmed": 3,
-   "finished": 5
-  },
-  "PHARM_2": {
-   "confirmed": 11,
-   "finished": 11
-  }
+ "F_nonpilot": "0.168",
+ "F_pilot": "0.025",
+ "ap_arrivals": 485,
+ "ap_residents": 102,
+ "call": "Fenwold Recovery's new entrants",
+ "census": 905,
+ "cures": {
+  "COMM_H1": 44,
+  "COMM_H2": 36,
+  "FRC_H1": 38,
+  "FRC_H2": 29,
+  "HEP_H1": 66,
+  "HEP_H2": 35,
+  "HHC_H1": 21,
+  "HHC_H2": 23,
+  "SHC_H1": 18,
+  "SHC_H2": 23
  },
- "active10": {
-  "AP": 10,
-  "DS": 40,
-  "HH": 30,
+ "ds_arrivals": 1872,
+ "found": {
+  "AP": "40.4",
+  "DS": "111.3",
+  "HH": "49.9",
+  "NSP": "68.8"
+ },
+ "found10": {
+  "AP": 40,
+  "DS": 110,
+  "HH": 50,
   "NSP": 70
  },
- "ap_prison_pct": 55,
- "cured": {
-  "AP": {
-   "any": 251,
-   "n": 406,
-   "net": 28,
-   "prison_only": 223
+ "gap10": 20,
+ "hh_arrivals": 264,
+ "hh_found": 89,
+ "hh_negative": 648,
+ "hh_tested": 737,
+ "hh_untested": 168,
+ "inc": "0.0013",
+ "inc_events": 2,
+ "inc_py": 1559,
+ "ladder": {
+  "A_only": {
+   "AP": 20.2,
+   "DS": 68.7,
+   "HH": 107.8,
+   "NSP": 49.3
   },
-  "DS": {
-   "any": 254,
-   "n": 476,
-   "net": 212,
-   "prison_only": 42
+  "A_only_census_only": {
+   "AP": 20.2,
+   "DS": 68.7,
+   "HH": 83.5,
+   "NSP": 49.3
   },
-  "HH": {
-   "any": 101,
-   "n": 255,
-   "net": 47,
-   "prison_only": 54
+  "B_only": {
+   "AP": 20.2,
+   "DS": 68.7,
+   "HH": 40.5,
+   "NSP": 130.3
   },
-  "NSP": {
-   "any": 41,
-   "n": 295,
-   "net": 16,
-   "prison_only": 25
+  "R0": {
+   "AP": 20.2,
+   "DS": 68.7,
+   "HH": 107.8,
+   "NSP": 130.3
+  },
+  "golden": {
+   "AP": 20.2,
+   "DS": 68.7,
+   "HH": 40.5,
+   "NSP": 49.3
   }
  },
- "gap10": 20,
- "lab_ratio": 0.74,
+ "nsp_regs": 1861,
  "order": [
-  "NSP",
   "DS",
+  "NSP",
   "HH",
   "AP"
  ],
- "pilot_arrived": 1450,
- "pilot_detected": 215,
- "pilot_ratio": 0.72,
- "pilot_started12": 160,
- "pilot_tested": 937,
- "r0_10": {
-  "AP": 120,
-  "DS": 150,
-  "HH": 80,
-  "NSP": 90
- },
- "r1_10": {
-  "AP": 90,
-  "DS": 110,
-  "HH": 60,
-  "NSP": 70
- },
- "r2_10": {
-  "AP": 80,
-  "DS": 40,
-  "HH": 40,
-  "NSP": 60
- },
- "start_share": 0.74,
- "starts10": {
-  "AP": 10,
-  "DS": 30,
-  "HH": 20,
-  "NSP": 50
- },
- "test_share": 0.65,
- "unrounded": {
+ "pack_tail": 27,
+ "pilot_found": 3,
+ "pilot_tested": 120,
+ "pilots": [
+  "FK207",
+  "FN562",
+  "FW318"
+ ],
+ "rates": {
   "AP": {
-   "ab_share": 0.2512,
-   "active": 10.324,
-   "active_R1": 119.7722,
-   "active_R2": 100.842,
-   "active_R3": 10.324,
-   "active_R3_no_lab_for_never": 9.8821,
-   "active_R3_no_reinfection": 9.1232,
-   "active_R3_pilot_ratio": 10.2246,
-   "arrivals": 1001.0,
-   "n_positive": 406.0,
-   "n_tests": 1616.0,
-   "positives": 162.5138,
-   "starts": 7.683,
-   "starts_R0": 120.9405,
-   "starts_R1": 89.1328,
-   "starts_R1_pilot": 87.2558,
-   "starts_R2": 75.0452,
-   "starts_R3": 7.683,
-   "starts_R3_no_lab_for_never": 7.3541,
-   "starts_R3_no_reinfection": 6.7893,
-   "starts_R3_pilot_ratio": 7.609,
-   "tested": 646.8531
+   "A": "0.86",
+   "F": "0.080",
+   "ST": "0.50"
   },
   "DS": {
-   "ab_share": 0.1464,
-   "active": 39.9807,
-   "active_R1": 143.716,
-   "active_R2": 57.5988,
-   "active_R3": 39.9807,
-   "active_R3_no_lab_for_never": 57.5811,
-   "active_R3_no_reinfection": 38.7517,
-   "active_R3_pilot_ratio": 39.4148,
-   "arrivals": 2061.0,
-   "n_positive": 476.0,
-   "n_tests": 3251.0,
-   "positives": 195.0022,
-   "starts": 29.7531,
-   "starts_R0": 145.1179,
-   "starts_R1": 106.9515,
-   "starts_R1_pilot": 104.6992,
-   "starts_R2": 42.8642,
-   "starts_R3": 29.7531,
-   "starts_R3_no_lab_for_never": 42.8511,
-   "starts_R3_no_reinfection": 28.8384,
-   "starts_R3_pilot_ratio": 29.3319,
-   "tested": 1331.8324
+   "A": "0.82",
+   "F": "0.073",
+   "ST": "0.62"
   },
   "HH": {
-   "ab_share": 0.1606,
-   "active": 31.9254,
-   "active_R1": 76.8587,
-   "active_R2": 53.9482,
-   "active_R3": 31.9254,
-   "active_R3_no_lab_for_never": 38.8815,
-   "active_R3_no_reinfection": 30.6985,
-   "active_R3_pilot_ratio": 31.4684,
-   "arrivals": 1005.0,
-   "n_positive": 255.0,
-   "n_tests": 1588.0,
-   "positives": 104.2863,
-   "starts": 23.7585,
-   "starts_R0": 77.6084,
-   "starts_R1": 57.1972,
-   "starts_R1_pilot": 55.9927,
-   "starts_R2": 40.1475,
-   "starts_R3": 23.7585,
-   "starts_R3_no_lab_for_never": 28.935,
-   "starts_R3_no_reinfection": 22.8454,
-   "starts_R3_pilot_ratio": 23.4184,
-   "tested": 649.4379
+   "A": "0.95",
+   "F": "0.120",
+   "ST": "0.81"
   },
   "NSP": {
-   "ab_share": 0.3851,
-   "active": 71.7076,
-   "active_R1": 90.5144,
-   "active_R2": 83.805,
-   "active_R3": 71.7076,
-   "active_R3_no_lab_for_never": 72.8278,
-   "active_R3_no_reinfection": 71.2912,
-   "active_R3_pilot_ratio": 70.4605,
-   "arrivals": 493.5,
-   "n_positive": 295.0,
-   "n_tests": 766.0,
-   "positives": 122.8152,
-   "starts": 53.3638,
-   "starts_R0": 91.3973,
-   "starts_R1": 67.3596,
-   "starts_R1_pilot": 65.941,
-   "starts_R2": 62.3665,
-   "starts_R3": 53.3638,
-   "starts_R3_no_lab_for_never": 54.1975,
-   "starts_R3_no_reinfection": 53.054,
-   "starts_R3_pilot_ratio": 52.4357,
-   "tested": 318.9031
+   "A": "0.70",
+   "F": "0.140",
+   "ST": "0.72"
   }
+ },
+ "starts": {
+  "AP": "20.2",
+  "DS": "68.7",
+  "HH": "40.5",
+  "NSP": "49.3"
+ },
+ "starts10": {
+  "AP": 20,
+  "DS": 70,
+  "HH": 40,
+  "NSP": 50
  }
 }

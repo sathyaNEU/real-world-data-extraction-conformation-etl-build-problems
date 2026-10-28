@@ -1,56 +1,43 @@
 ## Tags
 
-**Domain:** Epidemiology & Public Health (screening and diagnostic policy evaluation: a hepatitis C find-and-treat programme placed and sized by the people it starts on treatment).
+**Domain:** Epidemiology & Public Health (screening and diagnostic policy evaluation: a hepatitis C find-and-treat van placed and sized by the people it starts on treatment).
 **Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**The van should work the needle exchange pharmacies' new registrants in 2027, where it would start about 50 people on hepatitis C treatment, 20 more than at Fenwold Recovery's new entrants (about 30).**
-Not the approved premises, where a quarter of arrivals test antibody positive: more than half of those positives had been cured inside prison by Corvane Health before they arrived, and the van would start about 10 there. Not Fenwold Recovery's new entrants, the largest intake: nearly half of their positives had already been cured by the network's clinics. Not the city hostels, about 20.
+**The van should work with Fenwold Recovery's new entrants in 2027, where it would start about 70 people on hepatitis C treatment, 20 more than at the needle exchange pharmacies' new registrants.**
+Not the needle exchange registrants, where the van found the most infections per test in 2026: pharmacist test and treat reaches every needle exchange pharmacy on 1 April 2027, and at the three pharmacies already running it the van found 3 in 120 tests. Not the city hostels, where the van had already tested 737 of the 905 residents in 2026, so it would start about 40. Not the approved premises, at about 20.
 
 ## 2. Critical Components
 
-1. The van's rates from the 2018-19 pilot: it tested **0.65** of arrivals and started **0.74** of the people with RNA detected within twelve weeks
-2. Approved premises arrivals the peer team found antibody positive who had been cured inside prison before they arrived, on Corvane's workbook and not the network's register: **more than half**
-3. People started on treatment in 2027: **needle exchange registrants 50**, Fenwold Recovery new entrants 30
+1. The van's 2026 yield per test at the three needle exchange pharmacies running pharmacist test and treat, the rate every pharmacy carries from April 2027: **0.025**, against 0.168 at the other 21
+2. City hostel residents on the 30 September 2026 lists the van had already tested in 2026: **737 of 905**, leaving 168 untested
+3. People started on treatment in 2027: **Fenwold Recovery new entrants 70**, needle exchange new registrants 50, city hostels 40, approved premises 20
 
 ## 3. Step-by-Step Solution
 
-1. Counted each setting's distinct arrivals in each plan year (October to September) in setting_arrivals_2023-10_to_2026-09.csv and averaged the two years to 30 September 2026, as the van plan counts a year's arrivals.
-2. From van_pilot_2018-19_caseload.csv took the share of arrivals the van tested (937 of 1,450) and the share of people with RNA detected who started within twelve weeks of the test (160 of 215).
-3. Matched each valid test in peer_testing_log_2024-10_to_2026-09.csv to its person's arrival in the two years (by pseudonym, the test within 60 days of the arrival) and took each setting's share reactive.
-4. For each reactive arrival read the records before the test: a course with a twelve-week result not detected in hcv_treatment_register_2015-2026.csv or corvane_hcv_courses_2017-2026.xlsx counts as cured and inactive unless a later RNA test before the peer test detected it; a course running at the test counts as neither found nor started; otherwise the latest RNA result (virology_hcv_results_2015-01_to_2026-09.csv or the workbook's reception tests) decides; with no record the person counts at the first-positive share 0.74.
-5. Multiplied each setting's arrivals by the test share, the reactive share and the mean of step 4 for active infections, then by the start share for people started: needle exchange registrants 50, Fenwold Recovery new entrants 30, city hostels 20, approved premises 10.
-6. Clinic outcomes: a course in hcv_treatment_register_2015-2026.csv ended on its last dose (the planned end, or the date it stopped, as the pathway puts it) in the half-year, and is a confirmed cure when its keyed twelve-week result is not detected or, where none is keyed, the first Fenwold Pathology RNA test taken twelve weeks or more after the last dose is not detected, read under every pseudonym Fenwold Pathology holds for the same patient (its lims_patient_id).
-7. Placed the van with the needle exchange pharmacies' new registrants, 50 starts against 30.
+1. From van_tests_2026-01_to_2026-09.csv, each contact_ref once, took each setting's share of people offered who took a test and the found per test, and from hcv_treatment_register_2015-2026.csv the share of people found by 8 July 2026 who started within 84 days: approved premises 0.86, 0.080, 0.50; hostels 0.95, 0.120, 0.81; Recovery hub 0.82, 0.073, 0.62; pharmacies 0.70, 0.140, 0.72.
+2. Sized each 2027 pool as the plan's section 5 sets it: approved premises 102 residents and 485 arrivals (approved_premises_returns_2023-10_to_2026-09.csv), hostels 905 residents on hostel_residents_2026-09-30.xlsx and 264 arrivals (hostel_occupancy_returns_2023-10_to_2026-09.csv), 1,872 new treatment episodes (fenwold_recovery_new_episodes_2023-10_to_2026-09.csv) and 1,861 first registrations, each client_code's earliest row in nsp_registrations_2019-04_to_2026-09.csv.
+3. Pharmacies: fenwold_icb_commissioning_intentions_2027-28.pdf (PH-12) puts test and treat at every needle exchange pharmacy from 1 April 2027; the register's pharmacist-prescribed courses show FW318, FK207 and FN562 doing it since 2025, where the van found 3 of 120 tested; January to March 2027 at each pharmacy's own 2026 rate and April to December at those three's gives 68.8 people found.
+4. Hostels: joined the residents lists to the van's 2026 tests by pseudonym, 737 of 905 tested (89 of them found); the 168 untested and the 264 arrivals at the 2026 found per test, and the 648 who tested negative at the homeless health clinic's new infections per person-year in virology_hcv_results_2015-01_to_2026-09.csv, 2 in 1,559, gives 49.9 people found.
+5. Multiplied each setting's people found by its start share: Recovery new entrants 68.7, pharmacies 49.3, hostels 40.5, approved premises 20.2 people started.
+6. Cures: took each course's last dose as its last pack in daa_dispensing_2024-04_to_2026-09.csv plus 27 days (the register's end_date is the course's planned end), followed a course open at the 1 October 2024 go-live through migrated_from as one course, and counted a confirmed cure where an RNA result Not detected sits 84 days or more after that last dose and before any later course, per the pathway's section 3: the ten counts in block 4.
+7. Placed the van with Fenwold Recovery's new entrants, 70 people started against 50.
 
 ## 4. Deliverable Answers
 
 ### van_2027_trustee_paper.docx
 
-1. The van's setting: the needle exchange pharmacies' new registrants, about 50 people started on treatment in 2027.
-2. People with an active infection the van would find in 2027:
-   - Approved premises: 10
-   - City hostels: 30
-   - Fenwold Recovery new entrants: 40
-   - Needle exchange new registrants: 70
-3. People it would start on treatment in 2027:
-   - Approved premises: 10
-   - City hostels: 20
-   - Fenwold Recovery new entrants: 30
-   - Needle exchange new registrants: 50
-4. A horizontal bar chart of the people each setting would start, largest first, the needle exchange registrants' bar marked "Van, 2027".
+1. Setting for 2027: Fenwold Recovery's new entrants
+2. People with an active infection the van would find in 2027, nearest 10: approved premises 40; city hostels 50; Fenwold Recovery's new entrants 110; needle exchange pharmacies' new registrants 70
+3. People the van would start on treatment in 2027, nearest 10: approved premises 20; city hostels 40; Fenwold Recovery's new entrants 70; needle exchange pharmacies' new registrants 50
+4. Bar chart of the four settings' 2027 starts on page 1, Fenwold Recovery's new entrants marked in blue as the setting chosen
 
-### van_2027_funnel.xlsx
+### clinic_cures_2024-25.xlsx
 
-1. Confirmed cures among the courses each clinic ended, by half-year:
-   - Hospital hepatology clinic, Oct 2024 to Mar 2025: 15
-   - Hospital hepatology clinic, Apr to Sep 2025: 11
-   - Community hepatitis clinic, Oct 2024 to Mar 2025: 9
-   - Community hepatitis clinic, Apr to Sep 2025: 26
-   - Fenwold Recovery clinic, Oct 2024 to Mar 2025: 43
-   - Fenwold Recovery clinic, Apr to Sep 2025: 33
-   - Pharmacy-led clinic, Oct 2024 to Mar 2025: 3
-   - Pharmacy-led clinic, Apr to Sep 2025: 11
-   - Outreach nurse clinic, Oct 2024 to Mar 2025: 30
-   - Outreach nurse clinic, Apr to Sep 2025: 55
+1. Confirmed cures among courses that ended in each half-year, whole counts:
+   - Fenwold Royal Infirmary hepatology clinic: October 2024 to March 2025 66; April to September 2025 35
+   - Kestle Road community hepatitis clinic: October 2024 to March 2025 44; April to September 2025 36
+   - Fenwold Recovery hub clinic: October 2024 to March 2025 38; April to September 2025 29
+   - Riverside homeless health clinic: October 2024 to March 2025 21; April to September 2025 23
+   - Fenwold sexual health clinic: October 2024 to March 2025 18; April to September 2025 23

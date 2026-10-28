@@ -1,44 +1,25 @@
-"""Independent verifier: reads only target.zip (csv module and openpyxl, no pandas, none of solve.py), recomputes
-every graded figure and compares with figures.json."""
-import csv
-import datetime as dt
+"""Independent verifier: reads only target.zip (pandas, openpyxl and pypdf; none of solve.py, world.py or params.py),
+recomputes every graded figure on its own code path and compares with figures.json."""
 import io
 import json
 import os
-import subprocess
+import re
 import sys
-import tempfile
 import zipfile
-from collections import defaultdict
 
-import openpyxl
+import numpy as np
+import pandas as pd
+from openpyxl import load_workbook
+from pypdf import PdfReader
 
-D = dt.date
 HERE = os.path.dirname(os.path.abspath(__file__))
-
-
-def pd_(s):
-    if isinstance(s, dt.datetime):
-        return s.date()
-    if isinstance(s, dt.date):
-        return s
-    s = (s or "").strip()
-    if not s:
-        return None
-    if "/" in s:
-        a, b, c = s.split("/")
-        return D(int(c), int(b), int(a))
-    return D.fromisoformat(s[:10])
-
-
-def rows(z, name):
-    with z.open("target/" + name) as f:
-        return list(csv.DictReader(io.TextIOWrapper(f, encoding="utf-8")))
+SETTINGS = {"Approved Premises": "AP", "Hostel": "HH", "Fenwold Recovery": "DS", "Pharmacy NSP": "NSP"}
+CLINICS = ["HEP", "COMM", "FRC", "HHC", "SHC"]
 
 
 def main(zpath):
     z = zipfile.ZipFile(zpath)
-    names = [n[len("target/"):] for n in z.namelist()]
+    names = z.namelist()
     fig = json.load(open(os.path.join(HERE, "figures.json")))
     n = [0]
 
@@ -48,147 +29,129 @@ def main(zpath):
             raise AssertionError("VERIFY FAIL %s %s" % (label, detail))
 
     pick = lambda pre: [x for x in names if x.startswith(pre)][0]
-    # the pilot
-    pilot = rows(z, pick("van_pilot_2018-19"))
-    arrived = len(pilot)
-    tested = sum(r["tested_by_van"] == "Y" for r in pilot)
-    react = sum(r["tested_by_van"] == "Y" and r["antibody"] == "Reactive" for r in pilot)
-    det = [r for r in pilot if r["rna"] == "Detected"]
-    s12 = sum(1 for r in det if r["treatment_started"] == "Y" and (pd_(r["start_date"]) - pd_(r["test_date"])).days <= 84)
-    t_share, l_share = tested / arrived, s12 / len(det)
-    check("pilot", (tested, arrived, s12, len(det)) == (fig["pilot_tested"], fig["pilot_arrived"],
-                                                         fig["pilot_started12"], fig["pilot_detected"]))
-    # the laboratory
-    lab = {}
-    for r in rows(z, pick("virology_hcv_results")):
-        lab[r["lab_number"]] = r
-    labr = list(lab.values())
-    first = {}
-    rna = defaultdict(list)
-    for r in labr:
-        d = pd_(r["sample_taken"])
-        if r["test_code"] in ("HCVAB", "HCV-AB-EIA") and r["result"] == "Reactive":
-            if r["pseudonym"] not in first or (d, r["lab_number"]) < first[r["pseudonym"]]:
-                first[r["pseudonym"]] = (d, r["lab_number"])
-        if r["test_code"] in ("HCVPCR", "HCV-RNA-VL"):
-            rna[r["pseudonym"]].append((d, "N" if r["result"] == "Not detected" else "D"))
-    k = m = 0
-    for p, (d, _) in first.items():
-        h = sorted(x for x in rna.get(p, []) if 0 <= (x[0] - d).days <= 30)
-        if h:
-            m += 1
-            k += h[0][1] == "D"
-    ratio = k / m
-    check("lab_ratio", round(ratio, 2) == fig["lab_ratio"], "%.4f" % ratio)
-    # the register and the prison workbook
-    reg = rows(z, pick("hcv_treatment_register"))
-    cure, span = defaultdict(list), defaultdict(list)
-    for r in reg:
-        last = pd_(r["stopped_on"]) if r["outcome"] == "Stopped" else pd_(r["planned_end"])
-        span[r["pseudonym"]].append((pd_(r["start_date"]), last))
-        if r["svr12_result"] == "Not detected":
-            cure[r["pseudonym"]].append(pd_(r["svr12_date"]))
-    with z.open("target/" + pick("corvane_hcv_courses")) as f:
-        wb = openpyxl.load_workbook(io.BytesIO(f.read()), read_only=True)
-    pcure, pspan, prna = defaultdict(list), defaultdict(list), defaultdict(list)
-    for sheet, (ci, cs, ce, cd, cr) in (("Courses 2017-20", (2, 3, 6, 8, 9)), ("Courses 2021-26", (2, 3, 6, 9, 10))):
-        for i, row in enumerate(wb[sheet].iter_rows(values_only=True)):
-            if i == 0:
-                continue
-            p = str(row[ci]).upper()
-            pspan[p].append((pd_(row[cs]), pd_(row[ce])))
-            if row[cr] == "Not detected":
-                pcure[p].append(pd_(row[cd]))
-    for i, row in enumerate(wb["Reception BBV positives"].iter_rows(values_only=True)):
-        if i:
-            prna[str(row[2]).upper()].append((pd_(row[3]), "D" if row[5] == "Detected" else "N"))
-    # arrivals and the peer team's tests
-    arr = rows(z, pick("setting_arrivals"))
-    py = lambda d: 1 if D(2024, 10, 1) <= d <= D(2025, 9, 30) else (2 if D(2025, 10, 1) <= d <= D(2026, 9, 30) else 0)
-    people = defaultdict(lambda: defaultdict(set))
-    arrs = defaultdict(list)
-    for r in arr:
-        d = pd_(r["arrival_date"])
-        y = py(d)
-        if y:
-            people[r["setting"]][y].add(r["pseudonym"])
-            arrs[r["pseudonym"]].append((d, r["setting"]))
+    csv = lambda pre, **kw: pd.read_csv(io.BytesIO(z.read(pick(pre))), dtype=str, keep_default_na=False, **kw)
+    text = lambda pre: re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(io.BytesIO(z.read(pick(pre)))).pages))
+    r10 = lambda x: int(np.floor(x / 10 + 0.5) * 10)
+
+    # the documents, read back through pypdf with a positive control on each
+    plan, path_, intent = text("find_and_treat_van_2027_plan"), text("fenwold_hcv_pathway_2026"), text("fenwold_icb")
+    for s in ("start the most people on hepatitis C treatment in 2027", "does not test again anyone it has already found",
+              "within twelve weeks of the van's test", "own rates there in 2026",
+              "residents of the approved premises and of the hostels on 30 September 2026",
+              "each month standing for the same month of 2027", "first registrations at the pharmacies"):
+        check("pdf plan: %s" % s[:40], s in plan)
+    for s in ("A course of treatment ends with its last dose", "84 days (twelve weeks) or more after the last dose",
+              "detected, at any level, is not a cure"):
+        check("pdf pathway: %s" % s[:40], s in path_)
+    check("pdf intentions: PH-12 from 1 April 2027", re.search(r"PH-12 Community pharmacy hepatitis C testing and "
+                                                               r"treatment .*? 1 April 2027", intent) is not None)
+
+    # the van's contacts: one row per contact reference, the local date from the UTC clock
+    v = csv("van_tests").drop_duplicates("contact_ref")
+    v["day"] = pd.to_datetime(v["recorded_at_utc"]).dt.tz_localize("UTC").dt.tz_convert("Europe/London").dt.date
+    v["s"] = v["setting"].map(SETTINGS)
+    check("van: every setting value mapped", v["s"].notna().all())
+    reg = csv("hcv_treatment_register")
+    reg["start"] = pd.to_datetime(reg["start_date"]).dt.date
+    starts = reg.groupby("pseudonym")["start"].apply(list).to_dict()
+    mature = pd.Timestamp("2026-07-08").date()
+
+    def funnel(sub):
+        tested = sub[sub["test_outcome"] == "Accepted"]
+        found = tested[tested["rna_result"] == "Detected"]
+        fm = found[found["day"] <= mature]
+        st = sum(any(d <= s <= d + pd.Timedelta(days=84) for s in starts.get(p, [])) for p, d in zip(fm["client_pseudonym"], fm["day"]))
+        return len(tested) / len(sub), len(found) / len(tested), st / len(fm), len(found), len(tested)
+    pil = set(reg.loc[reg["prescriber_role"] == "Pharmacist independent prescriber", "prescribing_site"])
+    check("pilots: three pharmacies prescribe", len(pil) == 3, pil)
+    F = {s: funnel(v[v["s"] == s]) for s in ("AP", "HH", "DS", "NSP")}
+    nsp = v[v["s"] == "NSP"]
+    Fn, Fp = funnel(nsp[~nsp["site"].isin(pil)]), funnel(nsp[nsp["site"].isin(pil)])
+    check("pilot yield", "%.3f" % Fp[1] == fig["F_pilot"] and Fp[3] == fig["pilot_found"], (Fp, fig["F_pilot"]))
+
+    # pools
+    hr, ap, ds = csv("hostel_occupancy_returns"), csv("approved_premises_returns"), csv("fenwold_recovery_new_episodes")
+    ap["ym"] = pd.to_datetime(ap["Month"], format="%b-%y").dt.strftime("%Y-%m")
+    in12 = lambda s: (s >= "2025-10") & (s <= "2026-09")
+    hh_arr = hr.loc[in12(hr["month"]), "arrivals"].astype(int).sum()
+    ap_res = ap.loc[ap["ym"] == "2026-09", "Residents at month end"].astype(int).sum()
+    ap_arr = ap.loc[in12(ap["ym"]), "Arrivals"].astype(int).sum()
+    ds_arr = ds.loc[in12(ds["month"]), "new_treatment_episodes"].astype(int).sum()
+    nr = csv("nsp_registrations").sort_values(["registered_on", "registration_id"]).drop_duplicates("client_code")
+    nr = nr[(nr["registered_on"] >= "2025-10-01") & (nr["registered_on"] <= "2026-09-30")]
+    wb = load_workbook(io.BytesIO(z.read(pick("hostel_residents"))), read_only=True)
+    cen = [r[0] for r in list(wb["FHT residents"].iter_rows(values_only=True))[3:] if r and r[0]]
+    cen += [r[1] for r in list(wb["CSH 30.09.26"].iter_rows(values_only=True))[1:] if r and r[1]]
+    hh = v[v["s"] == "HH"]
+    tested = set(hh.loc[hh["test_outcome"] == "Accepted", "client_pseudonym"])
+    found = set(hh.loc[hh["rna_result"] == "Detected", "client_pseudonym"])
+    T = sum(p in tested for p in cen)
+    Tneg = T - sum(p in found for p in cen)
+    check("hostels: tested of the lists", T == fig["hh_tested"] and len(cen) == fig["census"], (T, len(cen)))
+    lab = csv("virology_hcv_results")
+    rv = lab[(lab["requesting_location"] == "Riverside Homeless Health") & (lab["test_code"] == "HCVAB")]
+    rv = rv.drop_duplicates(["patient_pseudonym", "sample_collected", "result"]).sort_values("sample_collected")
+    ev, py = 0, 0.0
+    for p, g in rv.groupby("patient_pseudonym"):
+        if len(g) < 2 or g["result"].iloc[0] != "Not reactive":
+            continue
+        d = pd.to_datetime(g["sample_collected"])
+        pos = d[g["result"].values == "Reactive"]
+        ev += len(pos) > 0
+        py += ((pos.iloc[0] if len(pos) else d.iloc[-1]) - d.iloc[0]).days / 365.25
+    check("hostels: new infections", ev == fig["inc_events"] and round(py) == fig["inc_py"], (ev, py))
+    k = lambda f: f[0] * f[1]
+    nr["m"] = nr["registered_on"].str[5:7].astype(int)
+    q1 = nr[nr["m"] <= 3]
+    found_ = {"AP": (ap_res + ap_arr) * k(F["AP"]),
+              "HH": (len(cen) - T + hh_arr) * k(F["HH"]) + Tneg * F["HH"][0] * ev / py,
+              "DS": ds_arr * k(F["DS"]),
+              "NSP": (~q1["pharmacy_code"].isin(pil)).sum() * k(Fn) + (q1["pharmacy_code"].isin(pil).sum()
+                                                                       + len(nr) - len(q1)) * k(Fp)}
+    starts_ = {s: found_[s] * F[s][2] for s in found_}
+    for s in found_:
+        check("found %s" % s, r10(found_[s]) == fig["found10"][s] and "%.1f" % found_[s] == fig["found"][s],
+              (found_[s], fig["found"][s]))
+        check("started %s" % s, r10(starts_[s]) == fig["starts10"][s] and "%.1f" % starts_[s] == fig["starts"][s],
+              (starts_[s], fig["starts"][s]))
+    check("call", max(starts_, key=starts_.get) == fig["order"][0] == "DS")
+
+    # the ask: last dose from the packs, a course open at the go-live followed through migrated_from
+    dp = csv("daa_dispensing")
+    dp["end"] = pd.to_datetime(dp["dispensed_on"]) + pd.to_timedelta(dp["days_supply"].astype(int) - 1, unit="D")
+    last = dp.groupby("course_ref")["end"].max().to_dict()
+    cl = csv("network_clinics")
+    code = dict(zip(cl["clinic_code"], cl["clinic_code"]))
+    code.update(dict(zip(cl["code_before_1_oct_2024"], cl["clinic_code"])))
+    cont = reg[reg["migrated_from"] != ""].set_index("migrated_from")["course_ref"].to_dict()
+    rna = lab[lab["test_code"].isin(["HCVPCR", "HCVQNT"])]
+    rna = rna.assign(d=pd.to_datetime(rna["sample_collected"]))
+    nd = rna[rna["result"] == "Not detected"].groupby("patient_pseudonym")["d"].apply(list).to_dict()
+    mine = reg[reg["clinic_code"].isin(code) & (reg["migrated_from"] == "")].copy()
+    allstarts = {}
+    for p, s in zip(mine["pseudonym"], pd.to_datetime(mine["start_date"])):
+        allstarts.setdefault(p, []).append(s)
     out = {}
-    for r in rows(z, pick("peer_testing_log")):
-        if r["result"] not in ("Reactive", "Non-reactive") or not r["pseudonym"]:
+    for _, r in mine.iterrows():
+        refs = [r["course_ref"]] + ([cont[r["course_ref"]]] if r["course_ref"] in cont else [])
+        ends = [last[x] for x in refs if x in last]
+        if not ends:
             continue
-        d = pd_(r["test_date"])
-        hits = [x for x in arrs.get(r["pseudonym"], []) if 0 <= (d - x[0]).days <= 60]
-        if hits:
-            s = max(hits)[1]
-            out.setdefault(s, []).append((r["pseudonym"], d, r["result"] == "Reactive"))
-
-    def status(p, d):
-        sp = span.get(p, []) + pspan.get(p, [])
-        if any(a and a <= d and (b is None or b >= d) for a, b in sp):
-            return 0.0
-        cures = [x for x in cure.get(p, []) + pcure.get(p, []) if x and x < d]
-        rs = sorted([x for x in rna.get(p, []) if x[0] < d] + [x for x in prna.get(p, []) if x[0] < d])
-        if cures:
-            return 1.0 if any(x[0] > max(cures) and x[1] == "D" for x in rs) else 0.0
-        if rs:
-            return 1.0 if rs[-1][1] == "D" else 0.0
-        return ratio
-
-    starts = {}
-    for s, ts in out.items():
-        A = (len(people[s][1]) + len(people[s][2])) / 2
-        pos = [t for t in ts if t[2]]
-        v = sum(status(p, d) for p, d, _ in pos) / len(pos)
-        active = A * t_share * len(pos) / len(ts) * v
-        st = active * l_share
-        starts[s] = st
-        check("active_%s" % s, int(10 * round(active / 10)) == fig["active10"][s], "%.2f" % active)
-        check("starts_%s" % s, int(10 * round(st / 10)) == fig["starts10"][s], "%.2f" % st)
-    ap = [(p, d) for p, d, rx in out["AP"] if rx]
-    po = sum(1 for p, d in ap if any(x and x < d for x in pcure.get(p, [])) and not any(x and x < d for x in cure.get(p, [])))
-    check("ap_prison_pct", int(round(100.0 * po / len(ap))) == fig["ap_prison_pct"], "%d of %d" % (po, len(ap)))
-    order = sorted(starts, key=lambda s: -starts[s])
-    check("call", order[0] == fig["order"][0] and order[1] == fig["order"][1])
-    check("gap", int(10 * round((starts[order[0]] - starts[order[1]]) / 10)) == fig["gap10"])
-    # the ask: clinic outcomes
-    lims = defaultdict(set)
-    for r in labr:
-        lims[r["lims_patient_id"]].add(r["pseudonym"])
-    alias = {p: sorted(ps) for ps in lims.values() for p in ps}
-    got = defaultdict(lambda: [0, 0])
-    for r in reg:
-        if r["outcome"] == "Stopped":
-            last = pd_(r["stopped_on"])
-        elif r["outcome"] == "Completed":
-            last = pd_(r["planned_end"])
-        else:
-            continue
-        if not (D(2024, 10, 1) <= last <= D(2025, 9, 30)):
-            continue
-        h = 1 if last <= D(2025, 3, 31) else 2
-        key = "%s_%d" % (r["clinic_code"], h)
-        got[key][0] += 1
-        ids = alias.get(r["pseudonym"], [r["pseudonym"]])
-        aft = sorted(x for i in ids for x in rna.get(i, []) if (x[0] - last).days >= 84 and x[0] <= D(2026, 9, 30))
-        c = bool(aft) and aft[0][1] == "N"
-        if r["svr12_result"] == "Not detected" and (pd_(r["svr12_date"]) - last).days >= 84:
-            c = True
-        got[key][1] += int(c)
-    for key, v in fig["AH"].items():
-        check("ask_%s" % key, got[key][1] == v["confirmed"], "%s vs %s" % (got[key], v))
-    # every format read back, with a positive control on each document
-    tmp = tempfile.mkdtemp()
-    for nm in names:
-        if nm.endswith(".pdf"):
-            p = os.path.join(tmp, nm)
-            open(p, "wb").write(z.read("target/" + nm))
-            txt = subprocess.run(["pdftotext", p, "-"], capture_output=True, text=True).stdout
-            check("pdf_%s" % nm, len(txt) > 400, nm)
-    check("pathway_rule", "twelve weeks or more after the last dose" in subprocess.run(
-        ["pdftotext", os.path.join(tmp, pick("fenwold_hcv_pathway")), "-"], capture_output=True, text=True).stdout.replace("\n", " "))
-    print("verify: %d checks passed on %s" % (n[0], os.path.basename(zpath)))
+        e = max(ends)
+        s0 = pd.Timestamp(r["start_date"])
+        nxt = min([s for s in allstarts[r["pseudonym"]] if s > s0], default=None)
+        h = "H1" if pd.Timestamp("2024-10-01") <= e <= pd.Timestamp("2025-03-31") else (
+            "H2" if pd.Timestamp("2025-04-01") <= e <= pd.Timestamp("2025-09-30") else None)
+        if h and any(d >= e + pd.Timedelta(days=84) and (nxt is None or d < nxt) for d in nd.get(r["pseudonym"], [])):
+            key = "%s_%s" % (code[r["clinic_code"]], h)
+            out[key] = out.get(key, 0) + 1
+    for c in CLINICS:
+        for h in ("H1", "H2"):
+            key = "%s_%s" % (c, h)
+            check("cures %s" % key, out.get(key, 0) == fig["cures"][key], (out.get(key, 0), fig["cures"][key]))
+    print("verify: %d assertions passed on %s" % (n[0], os.path.basename(zpath)))
+    return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target.zip"))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target.zip")))

@@ -1,13 +1,13 @@
-"""The clean world for task304 architecture 2: people, their hepatitis C histories, the four settings' arrivals,
-the peer team's tests, the regional laboratory's results, the network's treatment register, the prison health
-provider's course log and the 2018-19 pilot. Nothing here is messy: records.py writes the shipped files from it.
+"""The clean world for task304 architecture 3: the four settings' people and flows, the van's 2026 rota, the starts it
+led to, the network's courses with their dispensing and laboratory results, and the pharmacies' needle exchange
+registrations. Nothing here is messy; pack.py writes the shipped files from it.
 
-Every person's history is drawn once, forward in time, and every record is derived from that history, so each file
-holds what its own producer could see: the regional laboratory never sees a prison sample (the prisons send theirs to
-the prison provider's contracted laboratory), the network register holds only courses its own clinics ran, the prison
-log only courses given inside, and the peer team only what it tested."""
+Each record is derived from a history drawn once, forward in time, so every file holds what its producer could see:
+the van's tablet holds only its own contacts, the hostels list who lives there, the register holds the courses as the
+clinic entered them (a planned end written at the start), the dispensing log holds the packs that left the pharmacy."""
 import datetime as dt
 import hashlib
+import zoneinfo
 
 import numpy as np
 
@@ -15,457 +15,455 @@ import params as P
 
 D = dt.date
 DAY = dt.timedelta(days=1)
+UK = zoneinfo.ZoneInfo("Europe/London")
+UTC = dt.timezone.utc
 
 
-def _d(x):
+def od(x):
     return D.fromordinal(int(x))
 
 
-class World:
-    def __init__(self, seed=P.SEED):
-        self.rng = np.random.default_rng(seed)
-        self.people = {}          # pid -> dict(sex, birth_year)
-        self.lab = []             # dict rows: pid, sample_date, requester, test (AB/RNA), result, vl
-        self.register = []        # network courses
-        self.prison = []          # prison provider courses
-        self.prison_tests = []    # prison reception blood-borne virus tests (positives)
-        self.arrivals = []        # pid, setting, arrival_date
-        self.peer = []            # pid, setting/venue, test_date, result
-        self.pilot = []           # pilot caseload
-        self.truth = {}           # (pid, setting, plan_year) -> state at first arrival that year
-        self._ids = set()
-        self._ord_seq = 0
+def months(a, b):
+    """(year, month) from a to b inclusive"""
+    y, m = a
+    out = []
+    while (y, m) <= b:
+        out.append((y, m))
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return out
 
-    # ---------------------------------------------------------------- identities
+
+def month_days(y, m):
+    a = D(y, m, 1)
+    b = D(y + (m == 12), m % 12 + 1, 1)
+    return a, b - DAY
+
+
+class World:
+    def __init__(self):
+        self.rng = None
+        self._ids, self._seq = set(), 0
+        self.hostel_res, self.ap_res = [], []
+        self.ds_monthly, self.ds_2026 = {}, []
+        self.nsp_reg, self.nsp_2026 = [], []
+        self.pharmacies = []
+        self.contacts, self.starts = [], []
+        self.courses, self.dispensing, self.lab = [], [], []
+        self.status = {}            # pid -> 'active' | 'cleared' | 'never'
+        self.conv = {}              # pid -> the day a hostel resident who tested negative became infected
+
+    # ------------------------------------------------------------------ identities
     def pid(self):
         while True:
-            h = hashlib.sha256(("%d-%d" % (P.SEED, self._ord_seq)).encode()).hexdigest().upper()
-            self._ord_seq += 1
-            x = h[:10]
-            if x[0].isalpha() and x not in self._ids:
+            h = hashlib.sha256(("fhn-%d-%d" % (P.SEED, self._seq)).encode()).hexdigest().upper()
+            self._seq += 1
+            x = "FHN" + "".join(c for c in h if c not in "01IO")[:7]
+            if x not in self._ids:
                 self._ids.add(x)
                 return x
 
-    def person(self, sex=None, by=None):
-        p = self.pid()
-        r = self.rng
-        self.people[p] = dict(sex=sex or ("M" if r.random() < 0.72 else "F"),
-                              birth_year=int(by if by else r.integers(1960, 2003)))
-        return p
+    def use(self, seed):
+        self.rng = np.random.default_rng(seed)
 
     def rdate(self, a, b):
         a, b = a.toordinal(), b.toordinal()
-        if b <= a:
-            return _d(a)
-        return _d(self.rng.integers(a, b + 1))
+        return od(a) if b <= a else od(self.rng.integers(a, b + 1))
 
-    # ---------------------------------------------------------------- laboratory events
-    def lab_ab(self, pid, when, requester, reactive):
-        self.lab.append(dict(pid=pid, sample_date=when, requester=requester, test="AB",
-                             result="Reactive" if reactive else "Non-reactive", vl=None))
-
-    def lab_rna(self, pid, when, requester, detected):
+    def stamp(self, day, lo=9.5, hi=16.6):
+        """a local working-hours time on `day`, returned in UTC (the van's tablet clock)"""
         r = self.rng
-        vl = None
-        if detected:
-            vl = float(10 ** r.normal(5.6, 0.8)) if r.random() > 0.03 else 9.0   # a few detected below 15
-        self.lab.append(dict(pid=pid, sample_date=when, requester=requester, test="RNA",
-                             result="Detected" if detected else "Not detected", vl=vl))
+        sec = int(r.uniform(lo, hi) * 3600)
+        local = dt.datetime(day.year, day.month, day.day, sec // 3600, sec // 60 % 60, sec % 60, tzinfo=UK)
+        return local.astimezone(UTC).replace(tzinfo=None)
 
-    def diagnose_in_lab(self, pid, when, requester, chronic):
-        """first lab diagnosis: antibody, reflex RNA on the same sample a few days later"""
-        self.lab_ab(pid, when, requester, True)
-        self.lab_rna(pid, when + dt.timedelta(days=int(self.rng.integers(0, 9))), requester, chronic)
-
-    # ---------------------------------------------------------------- courses
-    def network_course(self, pid, start, clinic, svr_in_lab=True, route=None, cure=None):
-        """a course the network's clinics run; returns (cured, svr_date)"""
+    def infect(self, pid, setting, pilot=False):
         r = self.rng
-        weeks = 8 if r.random() < 0.46 else 12
-        regimen = "glecaprevir/pibrentasvir" if weeks == 8 else "sofosbuvir/velpatasvir"
-        if start < D(2017, 6, 1) and r.random() < 0.5:
-            regimen, weeks = "ledipasvir/sofosbuvir", 12
-        planned_end = start + dt.timedelta(weeks=weeks)
+        p_act = P.ACTIVE_PILOT if pilot else P.ACTIVE[setting]
+        p_clr = {"AP": 0.08, "HH": 0.10, "DS": 0.07, "NSP": 0.06}[setting]
         u = r.random()
-        if u < 0.035:
-            outcome, stopped = "Stopped", start + dt.timedelta(days=int(r.integers(14, weeks * 7 - 7)))
-        elif u < 0.055:
-            outcome, stopped = "Lost to follow-up", None
-        else:
-            outcome, stopped = "Completed", None
-        end = stopped or planned_end
-        if cure is None:
-            cure = r.random() < (P.SVR_RATE if outcome == "Completed" else 0.55)
-        no_test = r.random() < (P.NO_SVR_TEST if outcome == "Completed" else 0.45)
-        svr_date = end + dt.timedelta(days=int(r.integers(86, 150)))
-        # end-of-treatment test in the lab for most courses
-        if svr_in_lab and outcome != "Lost to follow-up" and r.random() < 0.7:
-            self.lab_rna(pid, end + dt.timedelta(days=int(r.integers(0, 27))), clinic_req(clinic), False)
-        keyed = True
-        if no_test:
-            res = None
-        else:
-            res = "Not detected" if cure else "Detected"
-            if svr_in_lab:
-                self.lab_rna(pid, svr_date, clinic_req(clinic), not cure)
-        row = dict(pid=pid, clinic=clinic, route=route or clinic_route(clinic, r), start=start, regimen=regimen,
-                   weeks=weeks, planned_end=planned_end, outcome=outcome, stopped=stopped,
-                   svr_date=None if res is None else svr_date, svr_result=res, keyed=keyed, cure=cure and not no_test,
-                   true_cure=cure)
-        self.register.append(row)
-        return (cure, svr_date, row)
-
-    def reception_test(self, pid, prison, prisoner_no, when, viraemic):
-        """opt-out blood-borne virus test at a prison reception, run by Corvane's own laboratory"""
-        self.prison_tests.append(dict(pid=pid, prison=prison, prisoner_no=prisoner_no, test_date=when,
-                                      ab="Reactive", rna="Detected" if viraemic else "Not detected"))
-
-    def prison_course(self, pid, start, prison, prisoner_no, release=None, cure=None):
-        r = self.rng
-        weeks = 8 if r.random() < 0.55 else 12
-        regimen = "glecaprevir/pibrentasvir" if weeks == 8 else "sofosbuvir/velpatasvir"
-        end = start + dt.timedelta(weeks=weeks)
-        released_mid = release is not None and release < end
-        if cure is None:
-            cure = r.random() < P.SVR_RATE
-        no_test = r.random() < P.NO_SVR_TEST + (0.10 if released_mid else 0.0)
-        svr_date = end + dt.timedelta(days=int(r.integers(86, 140)))
-        res = None if no_test else ("Not detected" if cure else "Detected")
-        self.prison.append(dict(pid=pid, prison=prison, prisoner_no=prisoner_no, start=start, regimen=regimen,
-                                weeks=weeks, end=end, released_mid=released_mid,
-                                release=release if released_mid else None,
-                                svr_date=None if res is None else svr_date, svr_result=res, true_cure=cure))
-        return (cure, svr_date)
+        self.status[pid] = "active" if u < p_act else ("cleared" if u < p_act + p_clr else "never")
 
 
-def clinic_req(clinic):
-    return {"HEP": "HOSPITAL", "COMM": "COMMUNITY_CLINIC", "FRC": "DRUG_SERVICE", "PHARM": "PHARMACY_CLINIC",
-            "OUT": "OUTREACH_CLINIC"}[clinic]
+def rota_days():
+    d, out = P.ROTA_START, {"HH": [], "NSP": [], "DS": [], "AP": []}
+    while d <= P.ROTA_END:
+        if d.weekday() < 5 and d not in P.BANK_HOLIDAYS:
+            out[{0: "HH", 1: "HH", 2: "NSP", 3: "DS", 4: "AP"}[d.weekday()]].append(d)
+        d += DAY
+    return out
 
 
-def clinic_route(clinic, r):
-    return {"HEP": "GP referral", "COMM": "GP referral", "FRC": "Drug service", "PHARM": "Pharmacy",
-            "OUT": "Outreach"}[clinic]
-
-
-def prisoner_no(r):
-    letters = "ABCDEFGHJKLMNPRSTVWXYZ"
-    return "%s%04d%s%s" % (letters[r.integers(0, len(letters))], r.integers(1000, 9999),
-                           letters[r.integers(0, len(letters))], letters[r.integers(0, len(letters))])
-
-
-def plan_year(d):
-    if P.POOL_START <= d <= D(2025, 9, 30):
-        return 1
-    if D(2025, 10, 1) <= d <= P.AS_OF:
-        return 2
-    if P.ARRIVALS_START <= d < P.POOL_START:
-        return 0
-    return None
-
-
-def build(seed=P.SEED):
-    W = World(seed)
+# ---------------------------------------------------------------------------- the settings
+def _beds(W, places, stay, gap, start, shape=None):
+    """each bed a renewal process from `start` to the as-of date; returns occupancies (move_in, move_out or None)"""
     r = W.rng
-    _background(W)
-    _settings(W)
-    _pilot(W)
-    _prison_background(W)
-    return W
+    occ = []
+    for _ in range(places):
+        back = r.exponential(stay) if shape is None else r.gamma(shape, stay / shape) * r.random()
+        t_in = start.toordinal() - back
+        t_out = start.toordinal() + (r.exponential(stay) if shape is None else r.gamma(shape, stay / shape) * r.random())
+        while True:
+            occ.append((od(t_in), None if t_out > P.AS_OF.toordinal() else od(t_out)))
+            if t_out > P.AS_OF.toordinal():
+                break
+            t_in = t_out + 1 + r.exponential(gap)
+            if t_in > P.AS_OF.toordinal():
+                break
+            t_out = t_in + (r.exponential(stay) if shape is None else max(7.0, r.gamma(shape, stay / shape)))
+    return occ
 
 
-# -------------------------------------------------------------------- background laboratory and network courses
-def _background(W):
+def hostels(W):
+    for name, prov, places in P.HOSTELS:
+        for t_in, t_out in _beds(W, places, P.HH_STAY, P.HH_GAP, D(2019, 1, 1)):
+            pid = W.pid()
+            W.infect(pid, "HH")
+            W.hostel_res.append(dict(pid=pid, hostel=name, provider=prov, move_in=t_in, move_out=t_out))
+
+
+def approved_premises(W):
+    for name, places in P.AP_PREMISES:
+        for t_in, t_out in _beds(W, places, P.AP_STAY, P.AP_GAP, D(2023, 1, 1), shape=4.0):
+            pid = W.pid()
+            W.infect(pid, "AP")
+            W.ap_res.append(dict(pid=pid, premises=name, arrive=t_in, leave=t_out,
+                                 engages=W.rng.random() < P.COVER["AP"]))
+
+
+def recovery(W):
     r = W.rng
-    years = range(2015, 2027)
-    for y in years:
-        frac = 0.75 if y == 2026 else 1.0
-        for req, (n, pos) in P.LAB_REQUESTERS.items():
-            scale = 1.0 + 0.035 * (y - 2015) if req in ("GP", "SEXUAL_HEALTH") else 1.0
-            if req == "OUTREACH_CLINIC" and y < 2018:
+    for y, m in months((2023, 10), (2026, 9)):
+        lam = P.DS_MONTHLY * (0.91 if m == 12 else 1.0) * (1.04 if m in (1, 3) else 1.0)
+        n = int(r.poisson(lam))
+        W.ds_monthly[(y, m)] = n
+        if y == 2026:
+            a, b = month_days(y, m)
+            for _ in range(n):
+                d = W.rdate(a, b)
+                while d.weekday() > 4:
+                    d = W.rdate(a, b)
+                pid = W.pid()
+                W.infect(pid, "DS")
+                W.ds_2026.append(dict(pid=pid, date=d))
+
+
+PHARMACY_NAMES = [
+    ("FW318", "Gorse Street Pharmacy", "41 Gorse Street", "FW3"), ("FK207", "Halden Chemists", "2 Halden Parade", "FW7"),
+    ("FN562", "Morrow & Pike Pharmacy", "118 Wexley Road", "FW2"), ("FA915", "Stanmoor Co-operative Pharmacy",
+                                                                      "Unit 4, Stanmoor Centre", "FW9"),
+    ("FC433", "Kestle Road Pharmacy", "77 Kestle Road", "FW3"), ("FD148", "Tannery Lane Chemist", "9 Tannery Lane", "FW1"),
+    ("FE726", "Riverside Pharmacy", "Riverside Health Centre, Quay Street", "FW1"),
+    ("FG381", "Ashworth's Pharmacy", "230 Calder Street", "FW4"), ("FH654", "Northgate Late Night Pharmacy",
+                                                                    "15 Northgate", "FW1"),
+    ("FJ029", "Pennant Pharmacy", "3 Pennant Way", "FW8"), ("FL870", "Hollins Chemist", "61 Hollins Lane", "FW6"),
+    ("FM413", "Bridge End Pharmacy", "Bridge End Surgery, Mill Road", "FW5"),
+    ("FP292", "Fenwold Central Pharmacy", "12 Market Place", "FW1"), ("FQ745", "Okeby Pharmacy", "88 Okeby Road", "FW10"),
+    ("FR136", "Whitcliffe Pharmacy", "5 Whitcliffe Green", "FW11"), ("FS508", "Lowmoor Pharmacy",
+                                                                     "Lowmoor Shopping Parade", "FW12"),
+    ("FT967", "Dunmore & Sons Chemists", "140 Station Road", "FW2"), ("FV214", "Carrbrook Pharmacy",
+                                                                       "1 Carrbrook Rise", "FW13"),
+    ("FX553", "St Ann's Pharmacy", "St Ann's Medical Centre, Vale Street", "FW4"),
+    ("FY380", "Moorside Pharmacy", "27 Moorside Road", "FW14"), ("FZ671", "Coldharbour Chemist",
+                                                                  "Coldharbour Lane", "FW6"),
+    ("FB842", "Wexley Road Pharmacy", "301 Wexley Road", "FW2"), ("FF105", "Abbeygate Pharmacy (Fenwold Station)",
+                                                                   "Concourse, Fenwold Station", "FW1"),
+    ("FU469", "Highfield Pharmacy", "54 Highfield Avenue", "FW15")]
+
+
+def pharmacies(W):
+    r = W.rng
+    w = r.lognormal(0.0, 0.42, len(PHARMACY_NAMES))
+    for (code, name, addr, dist), wi in zip(PHARMACY_NAMES, w):
+        if code in P.PILOTS:
+            wi = 2.0 * float(np.median(w))
+        W.pharmacies.append(dict(code=code, name=name, address=addr, district=dist, weight=float(wi),
+                                 level=("Level 2" if r.random() < 0.4 else "Level 1")))
+    tot = sum(p["weight"] for p in W.pharmacies)
+    for p in W.pharmacies:
+        p["weight"] /= tot
+
+
+def nsp(W):
+    """first registrations from the system's go-live (April 2019), and the 'New' rows the system writes when a client
+    whose registration lapsed (twelve months without a visit) comes back"""
+    r = W.rng
+    codes = [p["code"] for p in W.pharmacies]
+    wts = np.array([p["weight"] for p in W.pharmacies])
+    clients, seq, used = [], 0, set()
+    for y, m in months((2019, 4), (2026, 9)):
+        a, b = month_days(y, m)
+        lam = P.NSP_MONTHLY * (0.94 if (y, m) < (2021, 1) else 1.0) * (0.85 if (y, m) in ((2020, 4), (2020, 5)) else 1)
+        for _ in range(int(r.poisson(lam))):
+            seq += 1
+            client = "N%06d" % int(r.integers(100000, 999999))
+            while client in used:
+                client = "N%06d" % int(r.integers(100000, 999999))
+            used.add(client)
+            ph = codes[int(r.choice(len(codes), p=wts))]
+            d = W.rdate(a, b)
+            clients.append((client, ph, d))
+            W.nsp_reg.append(dict(client=client, pharmacy=ph, date=d, first=True))
+            if y == 2026 and d <= P.ROTA_END:
+                pid = W.pid()
+                pilot = ph in P.PILOTS and d >= P.PILOTS[ph]
+                W.infect(pid, "NSP", pilot=pilot)
+                W.nsp_2026.append(dict(pid=pid, pharmacy=ph, date=d, pilot=pilot))
+        older = [c for c in clients if c[2] <= D(y - 1, m, 1) - 30 * DAY]
+        n_re = int(r.poisson(P.NSP_MONTHLY * P.NSP_REISSUE / (1 - P.NSP_REISSUE))) if older else 0
+        for _ in range(n_re):
+            c = older[int(r.integers(len(older)))]
+            ph = c[1] if r.random() < 0.7 else codes[int(r.choice(len(codes), p=wts))]
+            W.nsp_reg.append(dict(client=c[0], pharmacy=ph, date=W.rdate(a, b), first=False))
+
+
+# ---------------------------------------------------------------------------- the van's 2026 rota
+def _contact(W, pid, setting, site, day):
+    r = W.rng
+    acc = r.random() < P.ACCEPT[setting]
+    st = W.status[pid]
+    if pid in W.conv and day >= W.conv[pid]:
+        st = "active"
+    ab = ("Reactive" if st in ("active", "cleared") else "Non-reactive") if acc else ""
+    rna = ("Detected" if st == "active" else "Not detected") if acc and ab == "Reactive" else ""
+    c = dict(pid=pid, setting=setting, site=site, when=W.stamp(day), accepted=acc, ab=ab, rna=rna)
+    W.contacts.append(c)
+    return c
+
+
+def rota_hh(W):
+    """the hostels: worked through in blocks, every resident present offered once in the hostel's block"""
+    r = W.rng
+    hh = rota_days()["HH"]
+    order = [P.HOSTELS[i] for i in r.permutation(len(P.HOSTELS))]
+    cap = np.array([h[2] for h in order], dtype=float)
+    alloc = np.floor(cap / cap.sum() * len(hh)).astype(int)
+    for i in np.argsort(-(cap / cap.sum() * len(hh) - alloc))[:len(hh) - alloc.sum()]:
+        alloc[i] += 1
+    pos = 0
+    for (name, prov, places), k in zip(order, alloc):
+        block = hh[pos:pos + k]
+        pos += k
+        for res in W.hostel_res:
+            if res["hostel"] != name or res["move_in"] > block[-1]:
                 continue
-            k = int(r.normal(n * scale * frac, n * 0.03))
-            for _ in range(k):
-                pid = W.person(sex="F" if req == "ANTENATAL" else None,
-                               by=(r.integers(1982, 2005) if req == "ANTENATAL" else None))
-                when = W.rdate(D(y, 1, 1), min(D(y, 12, 31), P.AS_OF))
-                if r.random() < pos:
-                    chronic = r.random() < P.VIRAEMIC_NEVER_TREATED
-                    W.diagnose_in_lab(pid, when, req, chronic)
-                    if chronic and r.random() < _treat_prob(y):
-                        start = when + dt.timedelta(days=int(r.integers(35, 200)))
-                        if start <= P.AS_OF - dt.timedelta(days=10):
-                            clinic = _clinic_for(req, start, r)
-                            cure, svr_date, row = W.network_course(pid, start, clinic)
-                            _maybe_reinfect(W, pid, svr_date, cure, req)
-                else:
-                    W.lab_ab(pid, when, req, False)
-                # some background people are tested again for antibody years later (still negative)
-                if r.random() < 0.05:
-                    later = when + dt.timedelta(days=int(r.integers(200, 1500)))
-                    if later <= P.AS_OF:
-                        W.lab_ab(pid, later, req, False)
+            if res["move_out"] is not None and res["move_out"] <= block[0]:
+                continue
+            here = [d for d in block if d >= res["move_in"] and (res["move_out"] is None or d < res["move_out"])]
+            if not here or r.random() < P.HH_ABSENT:
+                continue
+            _contact(W, res["pid"], "HH", name, here[int(r.integers(len(here)))])
 
 
-def _treat_prob(y):
-    return {2015: 0.18, 2016: 0.35, 2017: 0.5, 2018: 0.62, 2019: 0.7, 2020: 0.55, 2021: 0.66, 2022: 0.7,
-            2023: 0.68, 2024: 0.66, 2025: 0.62, 2026: 0.45}[y]
+def rota_ap(W):
+    """the approved premises: one premises each Friday in turn, residents offered at their first visit"""
+    names = [p[0] for p in P.AP_PREMISES]
+    for i, d in enumerate(rota_days()["AP"]):
+        name = names[i % 3]
+        for res in W.ap_res:
+            if res["premises"] == name and res["engages"] and not res.get("met") and res["arrive"] <= d and (
+                    res["leave"] is None or d < res["leave"]):
+                res["met"] = True
+                _contact(W, res["pid"], "AP", name, d)
 
 
-def _clinic_for(req, start, r):
-    if req in ("DRUG_SERVICE",):
-        return "FRC" if r.random() < 0.8 else "OUT"
-    if req == "OUTREACH_CLINIC":
-        return "OUT" if r.random() < 0.75 else "PHARM"
-    if req == "HOSPITAL":
-        return "HEP"
-    u = r.random()
-    if start >= D(2019, 1, 1) and u < 0.12:
-        return "PHARM"
-    return "COMM" if u < 0.62 else "HEP"
-
-
-def _maybe_reinfect(W, pid, svr_date, cure, req):
+def rota_ds(W):
     r = W.rng
-    if cure and req in ("DRUG_SERVICE", "OUTREACH_CLINIC") and r.random() < 0.07:
-        when = svr_date + dt.timedelta(days=int(r.integers(200, 1400)))
-        if when <= P.AS_OF - dt.timedelta(days=60):
-            W.lab_rna(pid, when, req, True)
-            if r.random() < 0.6:
-                start = when + dt.timedelta(days=int(r.integers(30, 120)))
-                if start <= P.AS_OF - dt.timedelta(days=10):
-                    W.network_course(pid, start, "FRC" if req == "DRUG_SERVICE" else "OUT")
+    days = rota_days()["DS"]
+    for e in W.ds_2026:
+        nxt = [d for d in days if e["date"] <= d <= e["date"] + 6 * DAY]
+        if nxt and r.random() < P.COVER["DS"]:
+            _contact(W, e["pid"], "DS", "Recovery hub", nxt[0])
 
 
-# -------------------------------------------------------------------- the four settings
-def _settings(W):
+def rota_nsp(W):
     r = W.rng
-    years = [(0, P.ARRIVALS_START, D(2024, 9, 30)), (1, P.POOL_START, D(2025, 9, 30)), (2, D(2025, 10, 1), P.AS_OF)]
-    carry = {s: [] for s in P.SETTINGS}       # people who come back the next year
-    for s in P.SETTINGS:
-        w = P.WORLD[s]
-        for (yi, a, b) in years:
-            n = int(round(r.normal(w["arrive"], w["arrive"] * 0.035)))
-            back = [p for p in carry[s] if r.random() < 0.5]
-            new = n - len(back)
-            pids = back + [(_in_course_person(W, a, b) if (s == "AP" and yi >= 1 and r.random() < 0.015)
-                            else _arrival_person(W, s, a)) for _ in range(max(new, 0))]
-            nxt = []
-            for pid in pids:
-                first = W.people[pid].pop("fixed_arrival", None) or W.rdate(a, b)
-                W.arrivals.append(dict(pid=pid, setting=s, arrival_date=first))
-                if r.random() < 0.06:          # a second stay in the same plan year
-                    again = first + dt.timedelta(days=int(r.integers(20, 160)))
-                    if again <= b:
-                        W.arrivals.append(dict(pid=pid, setting=s, arrival_date=again))
-                state = _state_at(W, pid, first)
-                W.truth[(pid, s, yi)] = dict(state, arrival=first)
-                if yi >= 1:
-                    _peer_and_after(W, pid, s, first, state)
-                if r.random() < 0.08:
-                    nxt.append(pid)
-            carry[s] = nxt
+    days = rota_days()["NSP"]
+    for e in W.nsp_2026:
+        nxt = [d for d in days if e["date"] <= d <= e["date"] + 27 * DAY]
+        if nxt and r.random() < P.COVER["NSP"]:
+            _contact(W, e["pid"], "NSP", e["pharmacy"], nxt[int(r.integers(len(nxt)))])
 
 
-def _arrival_person(W, s, window_start):
-    """draw a person and their whole hepatitis C history up to the end of the record.
-
-    An infection is chronic (the field's three quarters) or clears by itself. A person may have been tested at a
-    prison reception (Corvane's own laboratory, recorded in its workbook) and in the community (Fenwold Pathology);
-    a chronic infection found at either is treated with that setting's coverage, inside by Corvane or outside by the
-    network. Community testing, where it happened, came first. A cure can be followed by a new infection."""
+def starts(W, setting):
+    """the nurse prescribes on the van; most who start do so within days, a few long after twelve weeks"""
     r = W.rng
-    w = P.WORLD[s]
-    pid = W.person(by=r.integers(1966, 2004))
-    pos = r.random() < w["ab"]
-    hist = dict(pos=pos, cured=False, chronic=False, reinfected=False, where=None, reinf_date=None,
-                cure_date=None, in_lab=False)
-    W.people[pid]["hist"] = hist
-    if not pos:
-        if r.random() < 0.35:   # tested negative in the community at some point
-            when = W.rdate(D(2015, 3, 1), window_start - dt.timedelta(days=60))
-            W.lab_ab(pid, when, "DRUG_SERVICE" if s in ("DS", "NSP") else "GP", False)
-        return pid
-    chronic = r.random() < P.VIRAEMIC_NEVER_TREATED
-    hist["chronic"] = chronic
-    latest = window_start - dt.timedelta(days=150)
-    comm_dx = r.random() < w["comm_dx"]
-    prison_dx = r.random() < w["prison_dx"]
-    t_comm = W.rdate(D(2015, 2, 1), latest - dt.timedelta(days=400)) if comm_dx else None
-    receptions = []
-    if prison_dx:
-        k = 1 + int(r.random() < 0.45) + int(r.random() < 0.2)
-        lo = max(D(2017, 4, 1), (t_comm + dt.timedelta(days=60)) if t_comm else D(2017, 4, 1))
-        receptions = sorted(W.rdate(lo, latest - dt.timedelta(days=120)) for _ in range(k))
-    prison = ["TAM", "SAL"][int(r.integers(0, 2))] if W.people[pid]["sex"] == "M" else "HAV"
-    pno = prisoner_no(r)
-    cured_at = None
-    if comm_dx:
-        W.diagnose_in_lab(pid, t_comm, "DRUG_SERVICE" if r.random() < 0.55 else "GP", chronic)
-        hist["in_lab"] = True
-        if chronic and r.random() < w["cov_comm"]:
-            start = t_comm + dt.timedelta(days=int(r.integers(40, 320)))
-            if not receptions or start < receptions[0]:
-                clinic = "FRC" if r.random() < 0.45 else ("COMM" if r.random() < 0.6 else "HEP")
-                cure, svr, row = W.network_course(pid, start, clinic, cure=True)
-                if row["svr_result"] is None:
-                    row["svr_result"], row["svr_date"] = "Not detected", svr
-                    W.lab_rna(pid, svr, clinic_req(clinic), False)
-                cured_at, hist["where"] = svr, "network"
-    if receptions:
-        hist["prison_tested"] = True
-    for i, rec in enumerate(receptions):
-        viraemic = chronic and (cured_at is None or rec < cured_at)
-        W.reception_test(pid, prison, pno, rec, viraemic if cured_at is None else False)
-        if viraemic and cured_at is None and r.random() < w["cov_prison"]:
-            start = rec + dt.timedelta(days=int(r.integers(18, 70)))
-            cure, svr = W.prison_course(pid, start, prison, pno, cure=True)
-            if W.prison[-1]["svr_result"] is None:     # every cure of a setting arrival is on record
-                W.prison[-1]["svr_result"], W.prison[-1]["svr_date"] = "Not detected", svr
-            cured_at, hist["where"] = svr, "prison"
-    if cured_at is not None:
-        hist["cured"], hist["cure_date"] = True, cured_at
-        if r.random() < w["reinf"]:
-            hist["reinfected"] = True
-            rd = W.rdate(cured_at + dt.timedelta(days=180), window_start - dt.timedelta(days=40))
-            hist["reinf_date"] = rd
-            if hist["in_lab"] and r.random() < w["reinf_lab"]:
-                W.lab_rna(pid, rd + dt.timedelta(days=int(r.integers(30, 200))),
-                          "DRUG_SERVICE" if r.random() < 0.6 else "OUTREACH_CLINIC", True)
-                hist["reinf_in_lab"] = True
-    return pid
+    for c in [c for c in W.contacts if c["setting"] == setting and c["rna"] == "Detected"]:
+        test = c["when"].date()
+        if r.random() < P.START12[setting]:
+            start = test + int(1 + r.gamma(1.6, 5.5)) * DAY
+        elif r.random() < 0.12:
+            start = test + int(r.integers(92, 220)) * DAY
+        else:
+            continue
+        if start <= P.AS_OF:
+            W.starts.append(dict(pid=c["pid"], setting=setting, test=test, start=start,
+                                 clinic="HHC" if setting == "HH" else "COMM"))
 
 
-def _in_course_person(W, a, b):
-    """a person released part-way through a prison course, arriving at the approved premises; the network
-    carries the course on (a register row from the handover)"""
+# ---------------------------------------------------------------------------- courses, packs and results
+def _scale(y):
+    return {2015: 0.7, 2016: 1.25, 2017: 1.45, 2018: 1.5, 2019: 1.35, 2020: 0.6, 2021: 0.85, 2022: 0.95,
+            2023: 1.0, 2024: 1.0, 2025: 1.0, 2026: 0.97}[y]
+
+
+def _course(W, pid, clinic, start, role="Nurse", site="", source="", forced_weeks=None):
     r = W.rng
-    pid = W.person(sex="M", by=r.integers(1966, 2004))
-    h = dict(pos=True, cured=False, chronic=True, reinfected=False, where=None, reinf_date=None, cure_date=None,
-             in_lab=False, in_course=True)
-    W.people[pid]["hist"] = h
-    first = W.rdate(a, b)
-    W.people[pid]["fixed_arrival"] = first
-    release = first - dt.timedelta(days=int(r.integers(0, 4)))
-    start = release - dt.timedelta(days=int(r.integers(12, 50)))
-    pr = ["TAM", "SAL"][int(r.integers(0, 2))]
-    pno = prisoner_no(r)
-    W.reception_test(pid, pr, pno, start - dt.timedelta(days=int(r.integers(20, 60))), True)
-    W.prison_course(pid, start, pr, pno, release=release, cure=True)
-    weeks_left = max(1, W.prison[-1]["weeks"] - (release - start).days // 7)
-    cure, svr, row = W.network_course(pid, first + dt.timedelta(days=int(r.integers(1, 6))), "OUT",
-                                      route="Prison handover", cure=True)
-    row.update(weeks=weeks_left, planned_end=row["start"] + dt.timedelta(weeks=weeks_left), regimen=W.prison[-1]["regimen"])
-    h["post_cure"] = svr
-    h["in_course_until"] = row["planned_end"]
-    return pid
+    weeks = forced_weeks or (8 if r.random() < 0.6 else 12)
+    product = "Glecaprevir/pibrentasvir" if weeks == 8 else "Sofosbuvir/velpatasvir"
+    n = weeks // 4
+    stop = int(r.integers(1, n)) if r.random() < 0.08 else n        # packs collected before stopping
+    packs, d = [], start
+    for i in range(stop):
+        packs.append(d)
+        if r.random() < 0.3:
+            d = d + int(28 + r.integers(1, 15)) * DAY
+        else:
+            d = d + int(28 - r.integers(0, 4)) * DAY
+    last = packs[-1] + 27 * DAY
+    c = dict(pid=pid, clinic=clinic, start=start, weeks=weeks, product=product, packs=packs, last=last,
+             planned_end=start + (7 * weeks - 1) * DAY, early_stop=stop < n, role=role, site=site, source=source)
+    W.courses.append(c)
+    return c
 
 
-def _state_at(W, pid, when):
-    h = W.people[pid].get("hist")
-    if not h or not h["pos"]:
-        return dict(pos=False, active=False, cat="neg")
-    if h.get("in_course"):
-        return dict(pos=True, active=False, cat="in_course")
-    if h.get("post_cure") and h["post_cure"] <= when:
-        return dict(pos=True, active=False, cat="cured_after")
-    if h["cured"]:
-        if h["reinfected"] and h["reinf_date"] <= when:
-            return dict(pos=True, active=True, cat="reinfected_" + h["where"], reinf_lab=h.get("reinf_in_lab", False))
-        return dict(pos=True, active=False, cat="cured_" + h["where"])
-    return dict(pos=True, active=h["chronic"], cat="untreated_chronic" if h["chronic"] else "cleared")
-
-
-def _peer_and_after(W, pid, s, first, state):
+def _outcome(W, c):
+    """twelve-week result (or none), the occasional early sample, a later cure seen on an annual test"""
     r = W.rng
-    if r.random() >= P.PEER_TEST_SHARE:
-        return
-    # one test per person in twelve months
-    last = W.people[pid].get("last_peer")
-    td = first + dt.timedelta(days=int(r.integers(0, 42)))
-    td = min(td, P.AS_OF)
-    if last is not None and (td - last).days < 365:
-        return
-    W.people[pid]["last_peer"] = td
-    W.peer.append(dict(pid=pid, setting=s, test_date=td, result="Reactive" if state["pos"] else "Non-reactive"))
-    if not state["pos"]:
-        return
-    h0 = W.people[pid]["hist"]
-    if state["cat"].startswith("cured_") or state["cat"] in ("cured_after", "in_course"):
-        return       # they know they were treated (or are on a course), and do not come to clinic for an RNA test
-    if state["cat"] == "cleared" and (h0.get("in_lab") or h0.get("prison_tested")):
-        return       # told at an earlier test that the virus had cleared
-    if r.random() >= P.ATTEND:
-        return
-    when = td + dt.timedelta(days=int(r.integers(14, 75)))
-    if when > P.AS_OF:
-        return
-    h = W.people[pid]["hist"]
-    req = "OUTREACH_CLINIC" if r.random() < 0.5 else "COMMUNITY_CLINIC"
-    if h.get("in_lab"):
-        W.lab_rna(pid, when, req, state["active"])          # a known positive is tested for RNA only
-    else:
-        W.diagnose_in_lab(pid, when, req, state["active"])
-        h["in_lab"] = True
-    if state["active"] and r.random() < 0.8:
-        start = when + dt.timedelta(days=int(r.integers(21, 70)))
-        if start <= P.AS_OF - dt.timedelta(days=7):
-            clinic = "OUT" if req == "OUTREACH_CLINIC" else "COMM"
-            cure, svr, row = W.network_course(pid, start, clinic)
-            if cure:
-                h["post_cure"] = svr
+    cured = r.random() < (0.85 if c["early_stop"] else 0.965)
+    c["cured"] = cured
+    tests = []
+    if r.random() < 0.07:
+        tests.append(c["last"] + int(r.integers(56, 84)) * DAY)
+    if r.random() < 0.80:
+        tests.append(c["last"] + int(r.integers(84, 120)) * DAY)
+    elif cured and r.random() < 0.25:
+        tests.append(c["last"] + int(r.integers(200, 560)) * DAY)
+    low = cured and r.random() < 0.035
+    for t in tests:
+        if t > P.AS_OF:
+            continue
+        if not cured:
+            W.lab.append(dict(pid=c["pid"], date=t, kind="RNA", result="Detected", vl=int(r.lognormal(12.5, 1.2)),
+                              loc=c["clinic"]))
+        elif low and t >= P.ASSAY_CHANGE and t >= c["last"] + 84 * DAY:
+            W.lab.append(dict(pid=c["pid"], date=t, kind="RNA", result="Detected <12", vl=None, loc=c["clinic"]))
+            break
+        else:
+            W.lab.append(dict(pid=c["pid"], date=t, kind="RNA", result="Not detected", vl=None, loc=c["clinic"]))
+    return cured
 
 
-# -------------------------------------------------------------------- the 2018-19 pilot
-def _pilot(W):
+def network_courses(W):
     r = W.rng
-    for site, n in P.PILOT["arrive"].items():
-        ab = P.PILOT["ab"][site]
-        for _ in range(n):
-            pid = W.person(by=r.integers(1960, 2001))
-            arr = W.rdate(P.PILOT_START, P.PILOT_END)
-            pos = r.random() < ab
-            cured = pos and r.random() < P.PILOT["cured"]
-            chronic = pos and not cured and r.random() < P.VIRAEMIC_NEVER_TREATED
-            tested = r.random() < P.PILOT["test"]
-            row = dict(pid=pid, site=site, arrival=arr, tested=tested, test_date=None, ab=None, rna=None,
-                       started=False, start_date=None)
-            if tested:
-                off = int(r.integers(0, 35))
-                left = (P.PILOT_END - arr).days
-                if off > left:
-                    off = off % (left + 1)     # the van left the two sites at the end of September 2019
-                td = arr + dt.timedelta(days=off)
-                row.update(test_date=td, ab="Reactive" if pos else "Non-reactive")
-                if pos:
-                    row["rna"] = "Detected" if chronic else "Not detected"
-                    if chronic and r.random() < P.PILOT["start12"] / 0.93:
-                        delay = int(r.integers(10, 84)) if r.random() < 0.93 else int(r.integers(90, 200))
-                        row.update(started=True, start_date=td + dt.timedelta(days=delay))
-            W.pilot.append(row)
+    for clinic in P.CLINICS:
+        for y in range(2015, 2027):
+            lam = P.CLINIC_YEARLY[clinic] * _scale(y) * (0.75 if y == 2026 else 1.0)
+            for _ in range(int(r.poisson(lam))):
+                start = W.rdate(D(y, 1, 1), min(D(y, 12, 31), P.AS_OF - 20 * DAY))
+                pid = W.pid()
+                W.status[pid] = "active"
+                W.lab.append(dict(pid=pid, date=start - int(r.integers(14, 70)) * DAY, kind="RNA", result="Detected",
+                                  vl=int(r.lognormal(13.0, 1.1)), loc=clinic))
+                c = _course(W, pid, clinic, start, role="Consultant" if clinic == "HEP" and r.random() < 0.5 else
+                            "Nurse", source=str(r.choice(["GP", "Drug service", "Self", "Sexual health", "Prison",
+                                                           "Hospital", "Outreach"])))
+                if not _outcome(W, c) and r.random() < 0.7:
+                    s2 = c["last"] + int(r.integers(150, 300)) * DAY
+                    if s2 < P.AS_OF - 20 * DAY:
+                        c2 = _course(W, pid, "HEP", s2, role="Consultant", source="Re-treatment", forced_weeks=12)
+                        _outcome(W, c2)
+    for s in W.starts:
+        c = _course(W, s["pid"], s["clinic"], s["start"], source="Brannock Trust van")
+        _outcome(W, c)
+    # community pharmacist prescribers: since each pilot's launch its pharmacist tests new registrants at registration
+    for reg in W.nsp_reg:
+        launch = P.PILOTS.get(reg["pharmacy"])
+        if not reg["first"] or launch is None or reg["date"] < launch or reg["date"] > P.AS_OF - 14 * DAY:
+            continue
+        if r.random() < 0.9 * P.ACTIVE["NSP"] * 0.92:
+            pid = W.pid()
+            W.status[pid] = "active"
+            c = _course(W, pid, "PHARM", reg["date"] + int(r.integers(0, 9)) * DAY, role="Pharmacist",
+                        site=reg["pharmacy"], source="Needle exchange", forced_weeks=8)
+            _outcome(W, c)
 
 
-# -------------------------------------------------------------------- prison courses for people not in the settings
-def _prison_background(W):
-    """people tested positive at a reception who never arrive in the four settings: their reception results and the
-    courses Corvane gave them"""
+def background_lab(W):
+    """antibody screens across the network, with the laboratory's RNA test on every reactive sample"""
     r = W.rng
-    for y in range(2017, 2027):
-        n = {2017: 150, 2018: 230, 2019: 420, 2020: 330, 2021: 380, 2022: 390, 2023: 300, 2024: 260,
-             2025: 230, 2026: 140}[y]
-        n = int(r.normal(n, n * 0.05))
-        for _ in range(n):
-            pr = ["TAM", "SAL", "HAV"][int(r.choice(3, p=[0.5, 0.33, 0.17]))]
-            pid = W.person(sex="F" if pr == "HAV" else "M", by=r.integers(1962, 2004))
-            pno = prisoner_no(r)
-            rec = W.rdate(D(y, 1, 1), min(D(y, 12, 31), P.AS_OF - dt.timedelta(days=30)))
-            chronic = r.random() < P.VIRAEMIC_NEVER_TREATED
-            W.reception_test(pid, pr, pno, rec, chronic)
-            if chronic and r.random() < (0.55 if y < 2019 else 0.9):
-                start = rec + dt.timedelta(days=int(r.integers(18, 80)))
-                if start > P.AS_OF - dt.timedelta(days=20):
-                    continue
-                release = None
-                if r.random() < 0.16:
-                    release = start + dt.timedelta(days=int(r.integers(7, 80)))
-                W.prison_course(pid, start, pr, pno, release=release)
+    locs = (["GP"] * 46 + ["Drug service"] * 18 + ["Sexual health"] * 14 + ["Prison"] * 9 + ["Antenatal"] * 7 +
+            ["Emergency department"] * 6)
+    for y, m in months((2015, 1), (2026, 9)):
+        a, b = month_days(y, m)
+        for _ in range(int(r.poisson(2350 / 12 * (0.62 if (y, m) in ((2020, 4), (2020, 5)) else 1.0)))):
+            pid = W.pid()
+            d = W.rdate(a, b)
+            loc = locs[int(r.integers(len(locs)))]
+            u = r.random()
+            if u < 0.024:
+                W.lab.append(dict(pid=pid, date=d, kind="AB", result="Reactive", vl=None, loc=loc))
+                act = r.random() < 0.55
+                W.lab.append(dict(pid=pid, date=d, kind="RNA", result="Detected" if act else "Not detected",
+                                  vl=int(r.lognormal(13, 1.2)) if act else None, loc=loc))
+            else:
+                W.lab.append(dict(pid=pid, date=d, kind="AB", result="Non-reactive", vl=None, loc=loc))
+
+
+def hostel_lab(W):
+    """the homeless health clinic's screens of hostel residents; new infections among those who tested negative"""
+    r = W.rng
+    for res in W.hostel_res:
+        a = max(res["move_in"], D(2019, 1, 1))
+        b = min(res["move_out"] or P.AS_OF, P.AS_OF)
+        if b <= a:
+            continue
+        yrs = (b - a).days / 365.25
+        k = int(r.poisson(0.55 * yrs))
+        dates = sorted(W.rdate(a, b) for _ in range(k))
+        st = W.status[res["pid"]]
+        conv = None
+        if st == "never":
+            t = r.exponential(1 / P.HOSTEL_INCIDENCE)
+            if t < yrs:
+                conv = a + int(t * 365.25) * DAY
+        for d in dates:
+            pos = st in ("active", "cleared") or (conv is not None and d >= conv)
+            W.lab.append(dict(pid=res["pid"], date=d, kind="AB", result="Reactive" if pos else "Non-reactive",
+                              vl=None, loc="HHC"))
+            if pos:
+                act = st == "active" or conv is not None
+                W.lab.append(dict(pid=res["pid"], date=d, kind="RNA", result="Detected" if act else "Not detected",
+                                  vl=int(r.lognormal(12.8, 1.1)) if act else None, loc="HHC"))
+        if conv is not None:
+            W.conv[res["pid"]] = conv
+
+
+def build(seeds=None):
+    sd = dict(P.SEEDS, **(seeds or {}))
+    W = World()
+    W.use(sd["pharm"])
+    pharmacies(W)
+    W.use(sd["hh"])
+    hostels(W)
+    hostel_lab(W)
+    rota_hh(W)
+    starts(W, "HH")
+    W.use(sd["ap"])
+    approved_premises(W)
+    rota_ap(W)
+    starts(W, "AP")
+    W.use(sd["ds"])
+    recovery(W)
+    rota_ds(W)
+    starts(W, "DS")
+    W.use(sd["nsp"])
+    nsp(W)
+    rota_nsp(W)
+    starts(W, "NSP")
+    W.contacts.sort(key=lambda c: c["when"])
+    W.use(sd["courses"])
+    network_courses(W)
+    W.use(sd["lab"])
+    background_lab(W)
+    W.lab.sort(key=lambda x: (x["date"], x["pid"], x["kind"]))
+    return W

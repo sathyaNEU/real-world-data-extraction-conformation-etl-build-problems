@@ -1,35 +1,18 @@
 {
  "task": "task304",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "epidemiology-public-health",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "A competent analyst carries the van's 2026 yields per person tested to each setting's 2027 pool and files the needle exchange registrants first at about 85 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test-and-treat reaches every needle exchange pharmacy in April 2027, where the three pharmacies running it since 2025 show what the van then finds, and 640 of the hostels' 900 residents were already tested by the van's 2026 visits.",
+ "stump": "A competent analyst carries the van's 2026 yields per test to each setting's 2027 pool and files the needle exchange pharmacies' new registrants at about 130 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test and treat reaches every needle exchange pharmacy on 1 April 2027, where the three pharmacies running it since 2025 show the van finding 3 in 120 tests against 0.168 elsewhere, and 737 of the hostels' 905 residents were tested by the van in 2026.",
  "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-27",
+  "date": "2026-10-28",
   "checks": "53 checks, 0 FAIL, 0 WARN"
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-27 (sweeps 3, 4, 9 ruled in the note)",
-  "reader": "three passes clean: q1 the filed estimand each time, q6 analytical; forks closed (SF20, SF22, SF23); one realism tell fixed"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-27",
-  "nearest": "task137 0.07",
-  "surface": "7 pairs promoted for the author's clone check"
- },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task304/determinism_check_report.md (pass 3)",
-  "gate_g": "method_or_model_selection (borderline against single_conceptual_flip), analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "passes": "pass 1 a159a58b SEND_BACK on a join error (reproduced: the older sheet's lower-case pseudonyms unmatched, 114 of 406; joined 223 of 406), fixed; pass 2 b93a12c2 FIX_NOW (a false superlative in block 1), fixed; pass 3 b93a12c2 APPROVE; the site-share realism fix after it is data-only, figures.json byte-identical"
  },
  "returned": [
   {
@@ -45,9 +28,9 @@
    "commit": ""
   }
  ],
- "resume": "stage 2 (architecture 3): the ladder measured on expected values (scratch t304v3/ev.py); next the precut sections, the prompt, then the new generator (the van's 2026 rota log, the arrivals, the hostel census, the pharmacies, the commissioning intentions, the register with the asks' course chains)",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": "2026-10-28",
  "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
  "portal_id": "",
  "portal_status": "PENDING_REVIEW",
@@ -69,5 +52,22 @@
   },
   "returned": "see returned[0]"
  },
- "target_zip": "1382208d"
+ "target_zip": "6ccd2099",
+ "leak": {
+  "leak_py": "REVIEW, each line ruled",
+  "reader": "architecture 3 read 1 on 6ccd2099: no decisive-step sentence, no ranking, no answer figure; question 3 the pathway (harmless); PH-12 seen as the filed change"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-28",
+  "nearest": "task29 0.08",
+  "surface": "8 pairs promoted for the author's clone check"
+ },
+ "zip_sha256_16": "6ccd2099db2bb961",
+ "judge": {
+  "verdict": "DETERMINISTIC, APPROVE (architecture 3 pass 1, zip 6ccd2099)",
+  "disposition": "APPROVE",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "report": "task304/determinism_check_report_arch3.md"
+ }
 }
