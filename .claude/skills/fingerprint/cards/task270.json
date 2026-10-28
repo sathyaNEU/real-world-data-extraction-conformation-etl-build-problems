@@ -1,18 +1,18 @@
 {
   "task": "task270",
-  "architecture": "v9 (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups: which of its eleven community mental health teams get one, the teams where at least 30 per cent of the patients they assessed with the trust's mood app in 2026 have high emotional instability as the Sallowdene Provider Collaborative's app will measure it)",
-  "drawn": "2026-10-27",
-  "slot_note": "Architecture 9, re-rooted in another domain after architecture 8 was spent at stage 4 (architectures 1 to 8 in lineage). The decisive step reads each patient's emotional instability at the three hours between the collaborative app's prompts, from trust app ratings whose adjacent prompts sat about 90 minutes apart.",
-  "domain": "psychology-behavioral-science",
-  "subdomain": "experience-sampling-intensive-longitudinal-analysis",
-  "client_domain": "psychology-behavioral-science",
-  "niche": "an NHS mental health trust choosing which community mental health teams run a 2027-28 dialectical behaviour therapy skills group, on each team's share of the patients it assessed with the trust's own mood app in 2026 whose emotional instability reaches the provider collaborative's standard as the collaborative's three-hourly app will measure it, read from trust app ratings taken at a random minute in each of eight 90-minute blocks a day",
+  "architecture": "v10 (Ostrevale Fire and Rescue Service's 2027-2031 community risk management plan: which of the county's seven districts kept a free fire engine within ten minutes of fewer than three quarters of their homes across 2026, the cover read from where each free engine stood)",
+  "drawn": "2026-10-28",
+  "slot_note": "Architecture 10, re-rooted in another domain after architecture 9 was blocked at the ship gate on an axis ban (architectures 1 to 9 in lineage). The decisive step reads each free engine's cover from where it stood in the tracking export, minute by minute, not from its station.",
+  "domain": "urban-regional-science",
+  "subdomain": "network-analysis",
+  "client_domain": "urban-regional-science",
+  "niche": "a county council's fire and rescue service finding, for its 2027-2031 community risk management plan, which of its seven districts kept a free fire engine within ten minutes of the call (turnout included, over the road network) of fewer than three quarters of their homes across 2026, read from where each free engine stood minute by minute rather than from the stations the service's cover modelling places them at",
   "objective": "descriptive-distribution",
-  "shape": "14",
+  "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Fund a DBT skills group in 2027-28 in Dunnerby, Marrowcombe, Drystow, Haddersley and Cressbeck, and in none of the other six teams",
-  "answer_source": "task270/submission.md",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "objective"
   ],
@@ -20,8 +20,8 @@
     "none"
   ],
   "generators": [
-    "G13",
-    "G16"
+    "G8",
+    "G3"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
@@ -29,78 +29,68 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the collaborative's standard and both app exports correctly computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight, applies the standard's 2.0 and funds groups in Dunnerby and Marrowcombe alone, because the trust app's adjacent prompts sat about 90 minutes apart while the collaborative's sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
-  "domain_test": "Emotional instability is experience sampling's own estimand, the root mean square of the change in momentary negative affect between adjacent prompts, and it measures change over the interval the prompt schedule sets, so the field reads an instability threshold only at the spacing it was set on; a swap to a building's temperature log breaks because no prompt schedule, answering window or clinical cut point fixes the interval a drift is read over.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a successive-difference instability index read at the interval its threshold was set on",
+  "analyst_test": "A strong analyst who reads the cover standard, the mobilising system's status log and the road network correctly replays 2026 minute by minute, credits every free engine with its own station's ten-minute reach and names the two rural districts, when free wholetime engines spent weekday mornings at the training centre and afternoons on prevention visits and county-town engines stood by at rural on-call stations, so read from where the engines stood two market-town districts fall below the line and the rural two clear it.",
+  "domain_test": "Fire cover is the fire service's own planning measure, the share of homes a free engine can reach within the attendance standard over the road network with the crew's turnout added, and an engine covers from where it is, so the field reads cover from engine positions; with porters for engines and wards for homes the road network, the duty systems' turnouts and the attendance standard stop making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:fire cover read from where each free engine stood rather than from its station",
   "layer1": [
-    "the trust app's export changed layout on 15 June 2026 (version 3 to version 4): item scores on 0 to 100 sliders before and 0 to 10 buttons after, local times before and UTC after, so a fortnight across the change sits in both files",
-    "app participant codes keyed to the electronic patient record through an enrolment log, with patients who re-enrolled on a new phone holding two codes",
-    "community team episodes from the patient record, with two Haddersley teams merged into one on 1 October 2026",
-    "the assessment register's clinician-entered fortnight status, which marks some fortnights completed that the trust's own half-answered rule does not",
-    "version 4's offline sync resending some answers, the same prompt arriving twice",
-    "the British Summer Time change inside fortnights",
-    "the Complex Emotional Needs Service's referrals keyed into the patient record's referral module over the three weeks from its 22 June 2026 go-live, each stamped with the day it was keyed (an ask device, outside the call's population)",
-    "PTD-114 passing from the four-day DBT skills group facilitation course to the one-day refresher at the learning catalogue's rebuild of 1 April 2025 (an ask device, outside the call's population)"
+    "the mobilising system's status log in UTC and the vehicle tracking export in local clock time, the October clock change repeating an hour",
+    "the mobilising system re-sending an unchanged status as a heartbeat every 30 minutes",
+    "a reserve engine carrying its own call sign while standing in at a station during maintenance",
+    "on-call crews booking off the run in two-hour blocks, coded separately from maintenance and defects",
+    "the road network's one-way urban links and missing farm-track links",
+    "the address register's commercial and residential classes, homes counted from residential points only",
+    "output areas recoded at the 2021 boundary review, a lookup carrying the old codes"
   ],
-  "stakeholder_role": "director of psychological therapies",
-  "role_family": "programme_officer",
+  "stakeholder_role": "area manager for response and resilience",
+  "role_family": "operations_director",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "mood_app_export_v4_2026-06-15_to_2026-12-27.csv",
-    "rows": 45318,
-    "entity": "one prompt the trust's mood app sent a patient during a 2026 assessment fortnight",
-    "grain": "prompt",
+    "file": "vehicle_tracking_export_2026.csv",
+    "rows": 0,
+    "entity": "one position report from an engine's tracking unit while the engine was away from its station",
+    "grain": "engine x five-minute report",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "hospital_or_health_provider",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
   "world": {
     "geography": "England",
     "currency": "GBP",
-    "org_type": "NHS mental health foundation trust",
+    "org_type": "county council fire and rescue service",
     "invented_names": [
-      "Brindholm and Wendholt NHS Foundation Trust",
-      "Brindholm",
-      "Wendholt",
-      "Sallowdene Provider Collaborative",
-      "Sallowdene",
-      "Dunnerby",
-      "Marrowcombe",
-      "Drystow",
-      "Haddersley",
-      "Cressbeck",
-      "Rennicombe",
-      "Ashwardine",
-      "Hawkslow",
-      "Garthby",
-      "Sedgeholm",
-      "Torrinsby",
-      "Wynmoor",
-      "Fordwyke",
-      "Wraybeck"
+      "Ostrevale",
+      "Ostrevale Fire and Rescue Service",
+      "Calderstow",
+      "Tollesham",
+      "Wrenfold",
+      "Hollinbury",
+      "Pelmarsh",
+      "Altmoor",
+      "Skirwold",
+      "Brandeth"
     ],
     "people": [
-      "Hilary O'Donnell",
-      "Howard Harding",
-      "Jeremy Austin"
+      "Valerie Leach",
+      "Declan Evans",
+      "Roger Sykes"
     ]
   },
   "deliverables": [
-    "dbt_skills_groups_2027_28.xlsx",
-    "team_instability_2026.png"
+    "district_fire_cover_2026.xlsx",
+    "district_fire_cover_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the share of a group's members whose root mean square move between two readings a fixed interval apart reaches a set level, read from readings taken at random times about half that interval apart; each member's level wanders and returns, so the mean square of a move grows with the time between the readings and then levels off, and the set level read against the moves between neighbouring readings as taken passes too few members, so only the moves the record holds near the fixed interval, or each member's fitted curve of mean square move against the time between readings read at that interval, sort the groups.",
-  "driver_concrete": "Each of the trust's eleven community mental health teams' share of the patients it assessed with its mood app in 2026 whose emotional instability, the root mean square change in negative affect between adjacent same-day prompts of the Sallowdene Provider Collaborative's app (9:00, 12:00, 15:00, 18:00 and 21:00), reaches the collaborative's 2.0, estimated from the trust app's 2026 ratings taken at a random minute in each of eight 90-minute blocks a day: each patient's change over three hours from the ratings about three hours apart or from a fitted curve of mean squared change against the time between ratings, not the change between adjacent 2026 ratings about 90 minutes apart.",
-  "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of their 2026 fortnight, applies the collaborative's 2.0 and funds DBT skills groups in Dunnerby and Marrowcombe alone; the step that lands it there is reading the trust app's ratings, about 90 minutes apart, as the collaborative's app would, when its prompts sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+  "driver": "The decisive quantity is the share of demand points a free server can reach within a time standard, averaged over a year, where the record marks a server free wherever it stands and free servers spent part of the year away from their bases on other work or standing in at other bases; crediting each free server with its own base's reach puts that cover back where the servers had left and takes it from where they had gone.",
+  "driver_concrete": "Each of Ostrevale's seven districts' 2026 share of homes within ten minutes of a free fire engine, turnout included over the road network, averaged over every minute of the year and read from where each free engine stood in the vehicle tracking export: wholetime engines spent weekday mornings free at the Brandeth training centre and afternoons free on prevention visits across district lines, and county-town engines stood by at rural on-call stations when those were off the run, so cover credited to each engine's own station overstates the market-town districts and understates the rural ones.",
+  "stump": "A competent analyst replays 2026 minute by minute from the status log, credits every free engine with its own station's ten-minute reach over the road network and names Altmoor and Skirwold as the districts below three quarters; the step that lands it there is reading a free engine's cover from its station when wholetime engines spent weekday mornings and afternoons free away from it and county-town engines stood by at rural stations, so read from where the engines stood Wrenfold and Pelmarsh fall below the line and the two rural districts clear it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task272": "task272 v2 scales an income level measured over one quarter to the year across a seasonal calendar that differs by place and by kind of work; this build reads the change between two readings at the interval a threshold was set on, a change that grows with the interval because the level reverts, with no season, no calendar and the same patients throughout"
+    "task273": "task273 v3 reads reach through which boundary valves can actually be operated in a fixed pipe network; this build keeps the road network fixed and reads reach from where mobile servers stood, minute by minute, against the stations the status record implies"
   },
   "lineage": [
     {
@@ -348,8 +338,33 @@
       "stump": "A competent analyst takes out care home residents and the patients system A's extract codes as using a compliance aid, takes each network's share of the rest under 80 per cent of days covered and names too few networks; the step that lands them there is leaving in the compliance-aid patients no code marks (every one of system B's and about a third of system A's), whose statins the pharmacy dispensed on its own 7- or 28-day cycle and who read as fully covered.",
       "architecture": "v8",
       "fate": "spent 2026-10-27 at stage 4 (target.zip dc5e15f6): the leak reader read the decisive step as field reading and stated rules; the judge reproduced every main figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate G planted_defect_flip (surface_read_rejection: the uncoded compliance-aid patients behind a partly recorded flag), Gate H decisive_step data_semantics"
+    },
+    {
+      "domain": "psychology-behavioral-science",
+      "subdomain": "experience-sampling-intensive-longitudinal-analysis",
+      "niche": "an NHS mental health trust choosing which community mental health teams run a 2027-28 dialectical behaviour therapy skills group, on each team's share of the patients it assessed with the trust's own mood app in 2026 whose emotional instability reaches the provider collaborative's standard as the collaborative's three-hourly app will measure it, read from trust app ratings taken at a random minute in each of eight 90-minute blocks a day",
+      "objective": "descriptive-distribution",
+      "shape": "14",
+      "decision_type": "designation_set",
+      "gap": [
+        "objective"
+      ],
+      "gate_g": "method_or_model_selection",
+      "generators": [
+        "G13",
+        "G16"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "stump_strategy": "other",
+      "driver": "The decisive quantity is the share of a group's members whose root mean square move between two readings a fixed interval apart reaches a set level, read from readings taken at random times about half that interval apart; each member's level wanders and returns, so the mean square of a move grows with the time between the readings and then levels off, and the set level read against the moves between neighbouring readings as taken passes too few members, so only the moves the record holds near the fixed interval, or each member's fitted curve of mean square move against the time between readings read at that interval, sort the groups.",
+      "driver_concrete": "Each of the trust's eleven community mental health teams' share of the patients it assessed with its mood app in 2026 whose emotional instability, the root mean square change in negative affect between adjacent same-day prompts of the Sallowdene Provider Collaborative's app (9:00, 12:00, 15:00, 18:00 and 21:00), reaches the collaborative's 2.0, estimated from the trust app's 2026 ratings taken at a random minute in each of eight 90-minute blocks a day: each patient's change over three hours from the ratings about three hours apart or from a fitted curve of mean squared change against the time between ratings, not the change between adjacent 2026 ratings about 90 minutes apart.",
+      "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of their 2026 fortnight, applies the collaborative's 2.0 and funds DBT skills groups in Dunnerby and Marrowcombe alone; the step that lands it there is reading the trust app's ratings, about 90 minutes apart, as the collaborative's app would, when its prompts sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+      "architecture": "v9",
+      "fate": "spent 2026-10-27 at the ship gate (target.zip 71a1f378): built, leak reader clean, judge DETERMINISTIC, APPROVE, then heart BLOCK ban.pattern G13 against task139 v3, whose ship commit moved G13 to the front of its generators after this card registered; G16, the only other honest decisive pattern, opens test.same_puzzle_older, test.same_driver_older and test.own_lineage; re-checked 2026-10-28 and still BLOCK (task174 now holds G13 in the window), so the slot re-roots"
     }
   ],
-  "notes": "Architecture 6 re-root in a fresh world after architecture 5 was spent at stage 4. Filed after the build because G9 as the decisive pattern was banned while task485 sat in the window; redrawn at filing: forum to executive_team (task308 held the board), context artifact to register (task487 holds the operations log), forcing event to vote_or_meeting (task137 v4 holds purchase_order_or_contract; the Comissão Executiva decides on 2 December, the channels' April bookings close on 11 December). Architecture 7 drawn 2026-10-26 in a fresh world after architecture 6 was spent at stage 4. Architecture 7 spent 2026-10-26 at stage 4 round 1: both isolated scored readers ran the stock-and-flow balance with each pack's own kilograms per level point and landed Lancashire. Architecture 8 drawn 2026-10-27 in a fresh world after architecture 7 was spent at stage 4; the decisive step is the refill measure's population (patients whose supply is not dispensed on a pharmacy's compliance-aid cycle), labelled population_selection, the honest family (scope). Filed 2026-10-27 at stage 3: the forum, forcing event and organisation family were redrawn when task308 and task307 registered (committee_or_panel and purchase_order_or_contract held by task308, government_agency by task307): the decision moved to Iversford Vale GP Federation, the provider company its member practices own, whose board sets the tier schedule before the service launches on 1 April 2027 (board_of_directors, launch_or_rollout, hospital_or_health_provider), the integrated care board kept as the source of the data and the guidance; the context artifact went back to filed_standard (the service specification, the honest label, free once task204 left the window) when task139 took register. Architecture 8 spent 2026-10-27 at stage 4: the judge's SEND_BACK (Gate G planted_defect_flip, surface_read_rejection; Gate H decisive_step data_semantics): a population hidden behind a partly recorded flag is a surface read rejected; re-rooted to architecture 9 in another domain. Architecture 8 spent 2026-10-27 at stage 4 (the judge's SEND_BACK, a population behind a partly recorded flag). Architecture 9 drawn 2026-10-27 in another domain (psychology, experience sampling): stump_strategy other, the interval dependence of a successive-difference index (no strategy label names it: not time_semantics, since no calendar or as-of reading decides, and not grain_or_unit, since the unit is the patient throughout). Redrawn 2026-10-27 after registration: task309 registered at 14:29Z with board_of_directors, which BLOCKed ban.forum on the registered card; the decision moves to the trust board's Finance and Performance Committee, which approves investment plans under the board's delegated limit (committee_or_panel, free once task308 left the window), the honester label for an allocation of eleven skills groups that sits below the board's reserved decisions. repeat.gate_g against task309 answered: method_or_model_selection is the honest mechanism for an estimator read at the standard's interval, and task309's decisive step (catastrophe exposure accumulation) shares no mechanism with it. Architecture 9 spent 2026-10-27 at the ship gate on ban.pattern G13 (task139 v3 moved G13 first at its ship); re-root to architecture 10.",
-  "registered": "2026-10-27T14:59:41Z"
+  "notes": "Architecture 10 re-root, 2026-10-28, in urban-regional-science / network-analysis (Descriptive). Strategy other: cover follows a free server's position (not time_semantics, since no clock or calendar reading decides; not population_selection, since every free engine-minute counts). The availability replay that credits stations jointly (task143's lesson in other nouns) is a lower rung here, never the decisive step. Personas from guard.py names --geo england --seed 2710. Gap objective: the status log's free and committed codes are correct, and the standard scores cover, the reach from where a free engine stood; decisive pattern G8 (reachability against the count of free engines), G3 second (the free status is the record, the engine's position the operation). WARNs answered in DESIGN_NOTE.md ## Draw: repeat.gate_g, repeat.question_form, repeat.geography. Invented names re-screened against the H21 reference register before DRAWN (2026-10-28): Kelvenham, Morrowby, Tansford, Harlowden, Pennistow and Silverlade sat within two edits of, or contained, a real place (Elsenham, Barrowby, Basford, Harlow, Ennis, Silverdale) and were replaced by Calderstow, Tollesham, Wrenfold, Hollinbury, Pelmarsh and Skirwold.",
+  "registered": "2026-10-28T08:52:07Z"
 }

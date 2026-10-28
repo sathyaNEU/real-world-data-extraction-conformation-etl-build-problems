@@ -1,33 +1,33 @@
 {
  "task": "task270",
  "status": "DRAWING",
- "domain": "psychology-behavioral-science",
+ "domain": "urban-regional-science",
  "objective": "descriptive-distribution",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-27",
- "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of the 2026 fortnight and funds DBT skills groups in Dunnerby and Marrowcombe alone, reading the trust app's ratings about 90 minutes apart as the collaborative's three-hourly app would; read at three hours, Drystow, Haddersley and Cressbeck reach 30 per cent too.",
+ "updated": "2026-10-28",
+ "stump": "A competent analyst replays 2026 minute by minute from the status log, credits every free engine with its own station's ten-minute reach over the road network and names Altmoor and Skirwold as the districts below three quarters; the step that lands it there is reading a free engine's cover from its station when wholetime engines spent weekday mornings and afternoons free away from it and county-town engines stood by at rural stations, so read from where the engines stood Wrenfold and Pelmarsh fall below the line and the two rural districts clear it.",
  "architecture": 10,
  "loops": 0,
- "precut": "exit 0, 53 checks, 0 FAIL, 0 WARN (2026-10-27, cracker 0 of 33 ask figures, pair ceiling 28.5)",
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-27, --asof 2027-01-21): the standard's own 2.0, the paper's appendix of all eleven teams, filed definitions; ruled in DESIGN_NOTE.md ## Leak sweep",
-  "readers": "one isolated reader at stage 4 (2026-10-27, Sonnet, medium): no decisive-step sentence, no ranking file, no help file, nothing read as the answer; question 6 analytical; both sweep lines harmless"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (2026-10-27): repeat.gate_g against task309 and repeat.question_form, both answered on the card; same_driver_older differentiated against task272 v2; nearest driver 0.10 (task246)",
-  "surface": "exit 0 (2026-10-27), two pairs promoted on card axes, no hard tell (no identical file, seed table or shared name): task272 v2 (open, awaiting re-root) on gap, pattern and Gate G, differentiated on the card at registration; task271 v5 (shipped 10-27, back to back) on gap objective and decision type designation_set, its pattern (E against none), generators (G14, G3 against G13, G16), Gate G (decomposition_attribution against method_or_model_selection), strategy (causal_design against other), domain and world all differing; left for the author's adjudicated clone-check"
+  "heart": "",
+  "nearest": "task198 0.09 at the draw"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task270/determinism_check_report.md (pass 1, 2026-10-27, target.zip 71a1f378)",
-  "gate_g": "other, analytical_non_defect, no surface-read dependency, no sole data defect (borderline against single_conceptual_flip, passed)",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "declined": "the optional pin of the 2.5 to 3.5 hour window (it files the method)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 10 at the draw: a fresh world in another domain (candidate: banking, credit and financial risk, lifetime default with early settlement as a competing exit), guard.py check and register, then design.",
+ "resume": "Architecture 10 at stage 2: calibrate the generator from the p2 prototype (districts' homes, training, visits, standby moves, on-call availability) so the station replay names Altmoor and Skirwold and the position replay Wrenfold and Pelmarsh with every share 1.5 points or more from 75; measure the ladder and the licensed family, write the readability screen, fork and closure tables, literal reader, oracles and ask sheet, then prompt.txt and precut.py.",
  "architectures": [
   {
    "architecture": 1,
@@ -64,13 +64,13 @@
   },
   {
    "architecture": 9,
-   "fate": "spent 2026-10-27 at the ship gate (target.zip 71a1f378): built and judged DETERMINISTIC, APPROVE (leak reader clean, 102 checks), then the guard re-read after the final pull returned heart BLOCK ban.pattern G13 against task139 v3, whose ship commit (16:40Z) moved G13 to the front of its generators after this card registered (14:59Z); the only other honest decisive pattern, G16, opens test.same_puzzle_older, test.same_driver_older and test.own_lineage BLOCKs; no waiver given, so the axis is redrawn by a re-root",
+   "fate": "spent 2026-10-27 at the ship gate (target.zip 71a1f378): built and judged DETERMINISTIC, APPROVE (leak reader clean, 102 checks), then the guard re-read after the final pull returned heart BLOCK ban.pattern G13 against task139 v3, whose ship commit (16:40Z) moved G13 to the front of its generators after this card registered (14:59Z); the only other honest decisive pattern, G16, opens test.same_puzzle_older, test.same_driver_older and test.own_lineage BLOCKs; no waiver given, so the axis is redrawn by a re-root; re-checked 2026-10-28, still blocked (task174 holds G13 in the window); built state at 0c3181bb",
    "drawn": "2026-10-27"
   },
   {
    "architecture": 10,
-   "fate": "drawing 2026-10-27",
-   "drawn": "2026-10-27"
+   "fate": "drawn 2026-10-28 (fire cover read from where each free engine stood, Ostrevale Fire and Rescue Service)",
+   "drawn": "2026-10-28"
   }
  ],
  "approved": null,
@@ -79,14 +79,6 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-27 (Brindholm and Wendholt NHS Foundation Trust's 2027-28 DBT skills groups)",
- "gates": {
-  "checks": "102 of 102 (2026-10-27)",
-  "verify": "0 failed",
-  "rebuild": "byte-identical: target, golden, figures, submission",
-  "figures_check": "44 figures, 0 absent",
-  "voice_check": "PASS, 763 characters",
-  "house_fixes": "H1 audit clean on target and golden; H25 strict and lenient PDF readers agree (wired into checks.py)",
-  "target_zip_sha256": "71a1f37838ab0b2d17f4262386395cf9295f87583ddf96d9903e4296ff576ea1"
- }
+ "seed": "none: a fresh world drawn 2026-10-28 (Ostrevale Fire and Rescue Service's 2027-2031 community risk management plan)",
+ "gates": {}
 }
