@@ -155,6 +155,37 @@ it: per-offer against per-attender measures zero hits across 304 cards, and effe
 
 ## Tried and rejected
 
+- **Architecture 7's two candidate decisive steps are refused, and the four structural laws are now measured,
+  2026-10-28.** Attenuation of a noisy intake adjustment was refused on the ledger rather than on arithmetic:
+  task249's first architecture was an errors-in-variables slope and its stage 4 reader landed the call, so the
+  correction is a reflex and the rung is readable. The winner's curse in a multi-arm trial was refused on
+  measured arithmetic. The mechanism is real and large: over 4,000 simulated trials of eight variants against a
+  shared control at 900 learners an arm, selection on the maximum inflates the winning arm's own phase 1 lift by
+  2.23 points, pooling both phases inflates it by 0.57, a phase 2 run on fresh learners is unbiased at minus
+  0.03, and the arm that won phase 1 is genuinely the best arm only 22.6 per cent of the time. It still cannot
+  be both hard and deterministic: for a pooled estimate to stay wrong, phase 1 has to carry most of the weight,
+  and for phase 2 alone to identify the best arm, phase 2 has to be large. Those are one knob. Correcting the
+  winner inside the selection data instead puts the answer inside a correction family (empirical Bayes against
+  rank-conditional against split-sample), which is the large (b) that the specification-extension law already
+  closes.
+  **The four laws, each measured this session, each closing a family of decisive steps:**
+  1. A specification extension (adding a control, level, interaction or random effect) cannot pass the bin test,
+     because the cheap rungs and the weakest licensed family member both file the figure with the term absent, so
+     (a) and (b) are the same quantity. Measured ratio 0.999 at both ends of a sixfold sweep, 0 of 8 settings.
+  2. A denominator or unit choice collapses to execution once the estimand is filed literally, which determinism
+     requires, so it fails rule 3. Filing the unit is not optional and leaving it open is an open Gate C fork
+     that changes the call.
+  3. A decisive step whose winner is an intermediate point on a convex hull cannot carry a margin, because it
+     ties with a neighbour at each end of its interval. Best available 1.182 against a 1.15 floor over 900,000
+     draws and every allocation from 4,500 to 20,000 places, with 0 draws clearing the gap and floor conditions
+     as well.
+  4. A selection correction is either obvious (a held-out phase, where the answer is simply to use it) or sits
+     inside a correction family (same-data, where (b) swamps (a)). There is no middle.
+  Taken together these close specification extensions, unit choices, hull interiors and selection corrections as
+  decisive steps, which is most of what Experiment & Causal Analysis offers once transport (task43, task44,
+  task83), population recovery (task12, task15), competing risks (task266), informative censoring (task268) and
+  staggered adoption (nine cards) are already spent. The slot has no validated architecture in hand.
+
 - **Architecture 6 is spent: the forward hardening fails the margin floor across the whole parameter space,
   measured 2026-10-28.** The forward yield is `yield(A) = base + bonus/A` with `base = 100 e t` and
   `bonus = 100 e (1-t) c P`, so the winner at an allocation A is the upper envelope of lines in `1/A`: the
