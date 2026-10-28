@@ -1,118 +1,77 @@
-"""task305 constants: the planning region, Marrable Foodstores' estate, the competitors, the six sites, the holiday
-parks, the spend-share model's filed parameters and the pack's file names."""
-import datetime as dt
+"""task305 (architecture 3): Brindlecote Software's free-plan three-project limit, the world's constants.
 
-ORG = "Marrable Foodstores Ltd"
-PEOPLE = {"chair": "Pauline Sullivan", "property": "Joshua Ingram", "gis": "Hazel Lucas",
-          "workforce": "Hollie Richardson", "transport": "Kathryn Hughes"}
-SEED = 7                      # the world (towns, output areas, villages)
-OPS_SEED = 30517              # the asks' operational records
-E0, N0 = 492000, 352000       # grid origin of the region, metres (British National Grid)
-AREA = "LQ"                   # the region's postcode area
-LAD = "E06000099"
-AS_OF = dt.date(2026, 10, 9)  # the appraisal folder
+Months are counted from January 2000 (m = 0); the research panel runs from January 2023 (276) to September 2026
+(320), the limit starts on 1 January 2027 (324) and the year it is sized over ends in December 2027 (335)."""
 
-# the spend-share model as filed (spend_share_model_2025.pdf)
-ALPHA, BETA, ROADF, INSTORE, MARGIN, MIN_AREA = 1.0, 0.22, 1.25, 0.88, 0.26, 280
-GROCERY = ("SUPERMARKET AND PREMISES", "SUPERSTORE AND PREMISES", "FOOD STORE AND PREMISES")
+ORG = "Brindlecote Software Ltd"
+SEED = 30503
 
-# the world's guests: in-store grocery spend a holiday pitch's guests make in a season (1 March to 31 October)
-V_PITCH = 2500.0
-VFR = 0.003                   # cardholders living outside the region who shop all year (visiting family, work)
-SEASON = (3, 4, 5, 6, 7, 8, 9, 10)
+APPS = ["Tracewood", "Taskfold", "Ledgerline", "Formbox", "Notewell"]
+CODE = {"Tracewood": "TRW", "Taskfold": "TSK", "Ledgerline": "LDG", "Formbox": "FBX", "Notewell": "NTW"}
+OLD_NAME = {"Notewell": "Leafnote"}          # renamed in April 2025
+RENAME_MONTH = 303                          # April 2025: the panel and the KPI carry the old name before it
+LAUNCH = [161, 185, 177, 201, 146]          # Jun 2013, Jun 2015, Oct 2014, Oct 2016, Mar 2012 (by APPS order)
 
-TOWNS = [  # name, x km, y km, output areas, households per OA, postcode sectors
-    ("Darrowfield", 36, 22, 34, 128, 5), ("Bellingtoft", 50, 28, 22, 122, 3), ("Brackenmere", 22, 30, 26, 125, 4),
-    ("Sallowmere", 60, 12, 18, 118, 3), ("Quellby", 12, 14, 20, 120, 3), ("Withybeck", 44, 38, 16, 119, 2),
-    ("Corrinby", 6, 40, 14, 112, 2), ("Wrentoft", 66, 42, 6, 112, 2), ("Raddleford", 28, 8, 15, 121, 2),
-    ("Sedgeton", 54, 4, 12, 117, 2), ("Haddrell Fen", 16, 24, 9, 115, 1), ("Loderwell", 40, 12, 10, 116, 1)]
-N_VILL = 140
+# Plus, a month, pounds before VAT (the price list), and the free-plan revenue per active free account a month
+# (Finance's 2026 run rate: marketplace commission, advertising, partner referrals).
+PLUS = [20.0, 8.0, 28.0, 13.0, 6.0]
+FREE_REV = [2.00, 0.45, 1.00, 0.06, 0.80]
 
-OWN = [  # store no, town, x, y, rating-list floor area m2, opened
-    ("101", "Darrowfield", 34.5, 21.0, 2300, 1993), ("102", "Brackenmere", 22.5, 31.0, 1900, 1999),
-    ("103", "Quellby", 12.5, 13.5, 1700, 2002), ("104", "Sallowmere", 60.5, 12.5, 1600, 2004),
-    ("105", "Withybeck", 44.0, 38.5, 1400, 2008), ("106", "Corrinby", 6.2, 40.1, 1500, 2009),
-    ("107", "Raddleford", 28.5, 8.2, 1500, 2011), ("108", "Loderwell", 40.2, 12.4, 1300, 2016),
-    ("109", "Sedgeton", 54.2, 4.3, 1200, 2017), ("110", "Haddrell Fen", 16.3, 24.2, 1100, 2021)]
-COMP = [  # fascia, town, x, y, rating-list floor area m2
-    ("Fairbasket", "Darrowfield", 37.5, 23.0, 3200), ("Brightmart", "Darrowfield", 36.0, 20.5, 900),
-    ("Pettifer's", "Bellingtoft", 50.5, 28.0, 1800), ("Fairbasket", "Brackenmere", 21.5, 29.5, 1500),
-    ("Pettifer's", "Quellby", 11.8, 14.6, 2100), ("Valuewise", "Sallowmere", 59.5, 11.5, 1400),
-    ("Brightmart", "Withybeck", 44.6, 37.5, 900), ("Valuewise", "Corrinby", 5.6, 39.6, 650),
-    ("Brightmart", "Wrentoft", 66.4, 42.3, 850), ("Valuewise", "Raddleford", 27.6, 8.8, 1000),
-    ("Brightmart", "Loderwell", 39.6, 11.6, 700), ("Valuewise", "Sedgeton", 53.6, 4.8, 800),
-    ("Brightmart", "Bellingtoft", 49.4, 27.2, 600), ("Valuewise", "Brackenmere", 23.6, 30.4, 500),
-    ("Fairbasket", "Raddleford", 29.75, 6.75, 3600), ("Fairbasket", "Withybeck", 47.3, 41.3, 3200),
-    ("Pettifer's", "Sallowmere", 58.05, 14.5, 3000)]
-SITES = [  # site, address, town, x, y, proposed floor area m2 (rating-list basis), (rent, rates, staffing, other)
-    ("S1", "Fenton Road", "Bellingtoft", 50.2, 28.6, 1800, (334000, 158000, 552000, 133000)),
-    ("S2", "Eastgate", "Darrowfield", 39.0, 22.5, 1800, (171000, 101000, 470000, 97000)),
-    ("S3", "Mill Lane", "Wrentoft", 66.0, 41.8, 1500, (144000, 92000, 571000, 134000)),
-    ("S4", "Northfield", "Brackenmere", 22.0, 33.0, 1500, (142000, 84000, 380000, 85000)),
-    ("S5", "Sutton Road", "Quellby", 16.0, 17.0, 1600, (128000, 77000, 380000, 74000)),
-    ("S6", "Westway", "Sallowmere", 57.0, 13.0, 1500, (116000, 72000, 410000, 64000))]
-PARKS = [  # name, x, y, pitches, rating-list description
-    ("Raddleford Water Holiday Park", 29.8, 6.6, 640, "CARAVAN PARK AND PREMISES"),
-    ("Wrentoft Lakes Holiday Park", 68.5, 44.0, 1750, "CARAVAN PARK AND PREMISES"),
-    ("Withybeck Lakes Caravan Park", 47.5, 41.5, 520, "CARAVAN PARK AND PREMISES"),
-    ("Sallowmere Mill Caravan Park", 58.0, 14.6, 160, "CARAVAN PARK AND PREMISES")]
-# what changed after the card feed's year (2026, on the 2026 list): our two park-side stores were extended twice and
-# three parks added pitches; the 2025 state stands on the 2023 list to its close on 31 March 2026
-OWN_2025 = {"105": 950, "107": 1000}
-OWN_STEPS = {"105": [(dt.date(2026, 4, 27), 1250), (dt.date(2026, 9, 7), 1400)],
-             "107": [(dt.date(2026, 5, 11), 1350), (dt.date(2026, 8, 17), 1500)]}
-OWN_EARLIER = {"101": (dt.date(2019, 3, 4), 2050), "103": (dt.date(2022, 6, 13), 1550),
-               "108": (dt.date(2021, 9, 27), 1150)}       # earlier extensions the estate register still shows
-PARKS_2025 = {"Raddleford Water Holiday Park": 480, "Withybeck Lakes Caravan Park": 400,
-              "Wrentoft Lakes Holiday Park": 1450}
-PARK_STEPS = {"Raddleford Water Holiday Park": dt.date(2026, 5, 18), "Withybeck Lakes Caravan Park": dt.date(2026, 6, 8),
-              "Wrentoft Lakes Holiday Park": dt.date(2026, 6, 22)}
-LIST_2023 = (dt.date(2023, 4, 1), dt.date(2026, 3, 31))
-LIST_2026 = dt.date(2026, 4, 1)
+# sign-ups a month per app in the simulated full population, before seasonality
+SIGNUPS = [2165, 850, 826, 993, 852]
+SEASON = [1.16, 1.06, 1.02, 0.96, 0.94, 0.90, 0.88, 0.92, 1.10, 1.06, 1.00, 0.86]
 
-DC = ("Loderwell Gate distribution centre", 40.5, 11.0)
-PARK_ROAD = {"Raddleford Water Holiday Park": "Water Lane", "Wrentoft Lakes Holiday Park": "Marsh Road",
-             "Withybeck Lakes Caravan Park": "Lakes Road", "Sallowmere Mill Caravan Park": "Mill Road",
-             "Corrinby Farm Camping and Caravans": "Grange Lane", "Loderwell Brook Touring Park": "Brook Lane"}
-# the parishes the villages lie in, named on every rural address (records.py seats them in this order)
-PARISHES = [
-    "Chalderby", "Dorrelby", "Rushelby", "Scaddleby", "Linnetby", "Gorseyby", "Reedleby", "Winnowby", "Martenby",
-    "Skerryby", "Anselham", "Cressetham", "Harrelham", "Kirtleham", "Mosselham", "Saxelham", "Osierham", "Tansyham",
-    "Cobbleham", "Teaselton", "Marramton", "Fennelton", "Otterholme", "Emberholme", "Crandleholme", "Flintholme",
-    "Carrowholme", "Cinderholme", "Bitternholme", "Hollintoft", "Rooktoft", "Reedtoft", "Burdocktoft", "Farrowstead",
-    "Tithestead", "Peatstead", "Ryestead", "Larchstead", "Garretstead", "Elderworth", "Pindercote", "Coppercote",
-    "Alderbeck", "Limebeck", "Cantlebeck", "Wharfbeck", "Maltmere", "Bardlemere", "Gimblemere", "Shingledale",
-    "Kindledale", "Vetchdale", "Fallowley", "Tindleley", "Heronwell", "Brambleford", "Sorrelfield", "Umbercroft",
-    "Ashencroft", "Tallowcroft", "Wimblecroft"]
+M_PANEL0, M_EXTRACT, M_LIMIT, M_LAST = 276, 320, 324, 335
+M_SIM0 = 146                                 # the first launch
+PANEL_RATE = 25                              # one account in twenty-five, drawn at sign-up
 
-FY = (dt.date(2025, 4, 1), dt.date(2026, 3, 31))
-MONTHS = ["2025-%02d" % m for m in range(4, 13)] + ["2026-%02d" % m for m in range(1, 4)]
-TMS_FROM, TMS_TO = dt.date(2025, 10, 6), dt.date(2026, 3, 29)     # 25 weeks, the TMS export
-BUS_DAY = dt.date(2027, 1, 15)
-BUS_RADIUS = 400.0
+CAP = 2048.0                                 # the free plan's storage allowance, MiB
+STOP_AT = 2024.0                             # the next upload no longer fits
+TRIM = (0.15, 0.45)                          # a trimmed account keeps this share of the allowance
+LEARN = 0.35                                 # and fills it at this share of its old pace
+RESPONSE = (0.05, 0.36)                      # a stopped free account: upgrades, leaves (the rest trims)
+PAID_CHURN = 0.018                           # a Plus account cancels, a month
+SKIP = 0.015                                 # an established free account goes a month unused
+
+
+def own_rates(t):
+    """own-accord upgrade and leave hazards a month by months since sign-up (scalars or numpy arrays)"""
+    import numpy as np
+    u = np.where(t == 0, 0.05, np.where(t <= 2, 0.012, 0.002))
+    lv = np.where(t == 0, 0.35, np.where(t <= 2, 0.12, np.where(t <= 11, 0.02, 0.0028)))
+    return u, lv
+
+
+PROJ_BIRTH = (0.085, 0.70)                   # an account's project-creation rate a month: lognormal median, sigma
+PROJ_DEATH = 0.02                            # each active project is archived with this chance a month
+STORE_GROW = (32.0, 0.75)                    # MiB a month: lognormal median, sigma
+STORE_TILT = 0.5                             # accounts that open many projects keep smaller files in them
+CLEANUP = (0.03, 0.6, 0.9)                   # chance a month, and the share an account keeps after a clean-up
+
+AS_OF = "2026-10-12"                         # the folder was put together
+PEOPLE = {"head": "Lynne Powell", "cfo": "Leonard Young", "analyst": "Frederick Nicholls"}
+DOMAIN = "brindlecote.co.uk"
+
+
+def ym(m):
+    return "%04d-%02d" % (2000 + m // 12, m % 12 + 1)
+
+
+def month_of(year, month):
+    return (year - 2000) * 12 + month - 1
+
 
 FILES = {
-    "households": "census2021_ts041_households_oa.csv",
-    "pwc": "oa21_population_weighted_centroids.csv",
-    "spend": "grocery_spend_estimates_2026_oa21.csv",
-    "onspd": "onspd_may2026_lq.csv",
-    "voa_list": "voa_list_entries_2026_lq.txt",
-    "voa_smv": "voa_summary_valuations_2026_lq.csv",
-    "voa_hist": "archive/voa_historic_list_entries_lq_20261002.txt",
-    "voa_hist_smv": "archive/voa_historic_summary_valuations_lq_20261002.csv",
-    "estate": "store_estate_2026.xlsx",
-    "cards": "card_spend_by_home_sector_fy2025_26.csv",
-    "shortlist": "site_shortlist_2027.xlsx",
-    "model": "spend_share_model_2025.pdf",
-    "voa_spec": "voa_compiled_list_file_specification_2026.pdf",
-    "dc_proc": "loderwell_gate_store_deliveries_procedure.pdf",
-    "tms": "tms_stop_export_20251006_20260329.csv",
-    "receipts": "goods_in_receipts_20251006_20260329.csv",
-    "wfm": "wfm_paid_hours_20251006_20260329.csv",
-    "punches": "ta_punches_20251006_20260329.csv",
-    "terminals": "ta_terminals.csv",
-    "gtfs_lb": "gtfs_sallowmere_motor_services_20261002.zip",
-    "gtfs_pdc": "gtfs_wrentoft_district_coaches_20261002.zip",
-    "aadf": "dft_aadf_count_points_lq_2025.csv",
-    "survey": "customer_survey_store_scores_2025.csv",
+    "paper": "free_plan_limit_paper_2027.pdf",
+    "thread": "re_free_plan_limit_which_app_first.eml",
+    "catalogue": "plan_catalogue_2026.csv",
+    "kpi": "free_accounts_by_active_projects_2023_2026.xlsx",
+    "panel_accounts": "research_panel_accounts.csv",
+    "panel_months": "research_panel_account_months_2023_2026.csv",
+    "subs": "billing_subscriptions_20250930.csv",
+    "events": "billing_subscription_events_20251001_20260930.csv",
+    "fx": "fx_plan_rates.csv",
+    "policy": "recurring_revenue_policy_fin07.pdf",
+    "ratings": "app_store_ratings_2023_2026.csv",
+    "acquisition": "acquisition_spend_2026.xlsx",
 }

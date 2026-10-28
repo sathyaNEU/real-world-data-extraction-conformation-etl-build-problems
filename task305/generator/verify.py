@@ -1,249 +1,200 @@
-"""Independent verifier: unzip target.zip into a scratch folder and recompute every graded figure from the bundle with
-code that shares nothing with solve.py, then compare with figures.json and the write-up.
+"""The independent verifier: reads target.zip (no pandas, nothing from solve.py), opens every file in its own format and
+recomputes the call's addition for each app and every bridge figure, against figures.json.
 
     python3 task305/generator/verify.py [target.zip]
 """
+import csv
 import datetime as dt
+import email
 import io
 import json
-import math
 import os
-import re
+import subprocess
 import sys
 import tempfile
 import zipfile
-import zoneinfo
 
-import numpy as np
-import pandas as pd
+from openpyxl import load_workbook
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+APPS = ["Tracewood", "Taskfold", "Ledgerline", "Formbox", "Notewell"]
 
 
-def ll(E, N):
-    """OSGB36 grid to WGS84, Ordnance Survey's own formulas (Helmert shift), written afresh here"""
-    a, b, F0 = 6377563.396, 6356256.909, 0.9996012717
-    phi0, lam0, N0, E0 = math.radians(49), math.radians(-2), -100000, 400000
-    e2 = 1 - b * b / (a * a)
-    n = (a - b) / (a + b)
-    phi, M = phi0, 0.0
-    while True:
-        phi = (N - N0 - M) / (a * F0) + phi
-        M = b * F0 * ((1 + n + 1.25 * n * n + 1.25 * n ** 3) * (phi - phi0)
-                      - (3 * n + 3 * n * n + 2.625 * n ** 3) * math.sin(phi - phi0) * math.cos(phi + phi0)
-                      + (1.875 * n * n + 1.875 * n ** 3) * math.sin(2 * (phi - phi0)) * math.cos(2 * (phi + phi0))
-                      - (35 / 24) * n ** 3 * math.sin(3 * (phi - phi0)) * math.cos(3 * (phi + phi0)))
-        if abs(N - N0 - M) < 1e-5:
-            break
-    s, c, t = math.sin(phi), math.cos(phi), math.tan(phi)
-    nu = a * F0 / math.sqrt(1 - e2 * s * s)
-    rho = a * F0 * (1 - e2) / (1 - e2 * s * s) ** 1.5
-    eta2 = nu / rho - 1
-    d = E - E0
-    lat = phi - t / (2 * rho * nu) * d ** 2 + t / (24 * rho * nu ** 3) * (5 + 3 * t * t + eta2 - 9 * t * t * eta2) * d ** 4 \
-        - t / (720 * rho * nu ** 5) * (61 + 90 * t * t + 45 * t ** 4) * d ** 6
-    lon = lam0 + d / (c * nu) - (nu / rho + 2 * t * t) / (6 * c * nu ** 3) * d ** 3 \
-        + (5 + 28 * t * t + 24 * t ** 4) / (120 * c * nu ** 5) * d ** 5 \
-        - (61 + 662 * t * t + 1320 * t ** 4 + 720 * t ** 6) / (5040 * c * nu ** 7) * d ** 7
-    sl, cl = math.sin(lat), math.cos(lat)
-    nu0 = a / math.sqrt(1 - e2 * sl * sl)
-    x, y, z = nu0 * cl * math.cos(lon), nu0 * cl * math.sin(lon), (1 - e2) * nu0 * sl
-    sc = -20.4894e-6
-    rx, ry, rz = (math.radians(v / 3600) for v in (0.1502, 0.2470, 0.8421))
-    X = 446.448 + (1 + sc) * x - rz * y + ry * z
-    Y = -125.157 + rz * x + (1 + sc) * y - rx * z
-    Z = 542.060 - ry * x + rx * y + (1 + sc) * z
-    A, B = 6378137.0, 6356752.3142
-    E2 = 1 - B * B / (A * A)
-    p = math.hypot(X, Y)
-    la = math.atan2(Z, p * (1 - E2))
-    for _ in range(12):
-        la = math.atan2(Z + E2 * A / math.sqrt(1 - E2 * math.sin(la) ** 2) * math.sin(la), p)
-    return math.degrees(la), math.degrees(math.atan2(Y, X))
+def rows(z, name):
+    return list(csv.DictReader(io.TextIOWrapper(z.open(name), encoding="utf-8")))
 
 
-def dist(a, b):
-    p1, p2 = math.radians(a[0]), math.radians(b[0])
-    h = math.sin((p2 - p1) / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(math.radians(b[1] - a[1]) / 2) ** 2
-    return 2 * 6371008.8 * math.asin(math.sqrt(h))
-
-
-def call(T):
-    hh = pd.read_csv(os.path.join(T, "census2021_ts041_households_oa.csv"))
-    pw = pd.read_csv(os.path.join(T, "oa21_population_weighted_centroids.csv"))
-    sp = pd.read_csv(os.path.join(T, "grocery_spend_estimates_2026_oa21.csv"))
-    oa = hh.merge(pw, left_on="geography code", right_on="OA21CD").merge(sp, on="OA21CD")
-    oa["d"] = oa["Number of households"] * oa["AvgWeeklyGrocerySpendPerHousehold_GBP_2026"] * 52 * 0.88
-    pcs = pd.read_csv(os.path.join(T, "onspd_may2026_lq.csv"), dtype=str).set_index("pcds")
-    lst = pd.read_csv(os.path.join(T, "voa_list_entries_2026_lq.txt"), sep="*", header=None, dtype=str, keep_default_na=False)
-    smv = pd.read_csv(os.path.join(T, "voa_summary_valuations_2026_lq.csv"), dtype=str)
-    lst = lst.merge(smv, left_on=6, right_on="uarn", how="left")
-    lst["mm"] = pd.to_numeric(lst["main_measure"], errors="coerce")
-    groc = lst[lst[5].isin(["SUPERMARKET AND PREMISES", "SUPERSTORE AND PREMISES", "FOOD STORE AND PREMISES"]) &
-               (lst["unit_of_measurement"] == "m2") & (lst["mm"] >= 280)]
-    est = pd.read_excel(os.path.join(T, "store_estate_2026.xlsx"), sheet_name="Stores", dtype={"store_no": str})
-    ownpc = dict(zip(est["postcode"], est["store_no"]))
-    xy = lambda pc: (float(pcs.loc[pc, "oseast1m"]), float(pcs.loc[pc, "osnrth1m"]))
-    stores = [(ownpc.get(r[14]), xy(r[14]), r["mm"]) for _, r in groc.iterrows()]
-    parks = [(xy(r[14]), r["mm"]) for _, r in lst[lst["unit_of_measurement"] == "pitches"].iterrows()]
-
-    def sh(o, S):
-        w = np.array([a * math.exp(-0.22 * 1.25 * math.hypot(o[0] - p[0], o[1] - p[1]) / 1000.0) for _, p, a in S])
-        return w / w.sum()
-    cards = pd.read_csv(os.path.join(T, "card_spend_by_home_sector_fy2025_26.csv"), dtype={"store_no": str})
-    nl = cards[~cards["cardholder_home_sector"].str.startswith("LQ")].groupby(["store_no", "month"])["spend_gbp"].sum().unstack(fill_value=0.0)
-    off = nl[["2025-11", "2025-12", "2026-01", "2026-02"]].mean(axis=1)
-    season = [m for m in nl.columns if int(m[5:]) in (3, 4, 5, 6, 7, 8, 9, 10)]
-    share = dict(zip(est["store_no"], est["card_share_of_sales"]))
-    guests = {s: float((nl.loc[s, season] - off[s]).sum()) / float(share[s]) for s in nl.index}
-    own_idx = [i for i, (sid, _, _) in enumerate(stores) if sid]
-    # the take was made in FY2025/26: invert it on the stores and parks of then, from the historic entries (each
-    # version's current-from and current-to dates), joined to their measures by assessment reference
-    hl = pd.read_csv(os.path.join(T, "archive", "voa_historic_list_entries_lq_20261002.txt"), sep="*", header=None,
-                     dtype=str, keep_default_na=False)
-    hs = pd.read_csv(os.path.join(T, "archive", "voa_historic_summary_valuations_lq_20261002.csv"), dtype=str)
-    hl = hl.merge(hs, left_on=19, right_on="assessment_reference", how="inner")
-    hl["frm"] = pd.to_datetime(hl[26], format="%d-%b-%Y")
-    hl["to"] = pd.to_datetime(hl[27], format="%d-%b-%Y")
-    then = hl[(hl["frm"] <= "2025-04-01") & (hl["to"] >= "2026-03-31")].copy()
-    then["mm"] = pd.to_numeric(then["main_measure"], errors="coerce")
-    g25 = then[then[5].isin(["SUPERMARKET AND PREMISES", "SUPERSTORE AND PREMISES", "FOOD STORE AND PREMISES"]) &
-               (then["unit_of_measurement"] == "m2") & (then["mm"] >= 280)]
-    stores25 = [(ownpc.get(r[14]), xy(r[14]), r["mm"]) for _, r in g25.iterrows()]
-    parks25 = [(xy(r[14]), r["mm"]) for _, r in then[then["unit_of_measurement"] == "pitches"].iterrows()]
-    own25 = [i for i, (sid, _, _) in enumerate(stores25) if sid]
-    den = sum(n * sum(sh(p, stores25)[i] for i in own25) for p, n in parks25)
-    V = sum(guests.values()) / den
-    origins = [((r["x"], r["y"]), r["d"]) for _, r in oa.iterrows()] + [(p, n * V) for p, n in parks]
-    res_only = [((r["x"], r["y"]), r["d"]) for _, r in oa.iterrows()]
-    sites = pd.read_excel(os.path.join(T, "site_shortlist_2027.xlsx"), sheet_name="Shortlist")
-    out = {}
-    for label, org in (("golden", origins), ("resident", res_only)):
-        base = sum(d * sh(o, stores) for o, d in org)
-        add = {}
-        for _, r in sites.iterrows():
-            S2 = stores + [(r["site"], xy(r["postcode"]), float(r["proposed_floor_area_m2"]))]
-            b2 = sum(d * sh(o, S2) for o, d in org)
-            took = sum(base[i] - b2[i] for i in own_idx)
-            add[r["site"]] = 0.26 * (b2[-1] - took) - float(r["rent_gbp"] + r["business_rates_gbp"] + r["staffing_gbp"] + r["other_running_gbp"])
-        out[label] = add
-    return out, V
-
-
-def asks(T):
-    LON = zoneinfo.ZoneInfo("Europe/London")
-    # A: delivered cases; a stop closed sooner than its cases could come off (4 min + 0.02 min a case) was turned away
-    tms = pd.read_csv(os.path.join(T, "tms_stop_export_20251006_20260329.csv"), dtype={"store_no": str})
-    d = tms[tms["stop_type"] == "DEL"].copy()
-    arr, dep = pd.to_datetime(d["arrive_utc"]), pd.to_datetime(d["depart_utc"])
-    d = d[(dep - arr).dt.total_seconds() / 60.0 >= 4 + 0.02 * d["cases"]]
-    d["local"] = pd.to_datetime(d["arrive_utc"]).dt.tz_localize("UTC").dt.tz_convert(LON).dt.date
-    d = d[(d["local"] >= dt.date(2025, 10, 6)) & (d["local"] <= dt.date(2026, 3, 29))]
-    A = (d.groupby("store_no")["cases"].sum() / 25.0).to_dict()
-    # B: the report lists a night shift against both dates it covers; the shifts a colleague starts on a date are the
-    # clock-ins that date (a clock-out with no clock-in before it is a shift whose clock-in was forgotten, dated by the
-    # clock-out), and each takes one of that date's lines, at the store of the terminal it was punched at
-    _wl = open(os.path.join(T, "wfm_paid_hours_20251006_20260329.csv"), encoding="utf-8").read().split("\n")
-    w = pd.read_csv(io.StringIO("\n".join(_wl[next(i for i, ln in enumerate(_wl) if ln.startswith("employee_no,")):])), dtype=str)
-    p = pd.read_csv(os.path.join(T, "ta_punches_20251006_20260329.csv"), dtype=str)
-    term = dict(zip(*[pd.read_csv(os.path.join(T, "ta_terminals.csv"), dtype=str)[c] for c in ("terminal_id", "store_no")]))
-    p["t"] = pd.to_datetime(p["punch_time_local"])
-    p["store"] = p["terminal_id"].map(term)
-    p = p.sort_values(["employee_no", "t"])
-    begin = {}
-    for emp, g in p.groupby("employee_no"):
-        prev = None
-        for t, kind, store in zip(g["t"], g["punch"], g["store"]):
-            if kind == "IN":
-                begin.setdefault((emp, t.date().isoformat()), []).append(store)
-            elif prev != "IN":
-                begin.setdefault((emp, t.date().isoformat()), []).append(store)
-            prev = kind
-    Bh = {}
-    for (emp, d), g in w.groupby(["employee_no", "date"], sort=False):
-        for paid, store in zip(g["paid_hours"].astype(float), begin.get((emp, d), [])):
-            Bh[store] = Bh.get(store, 0.0) + paid
-    Bh = {s: x / 25.0 for s, x in Bh.items()}
-    # C: departures by the clock on Friday 15 January 2027
-    pcs = pd.read_csv(os.path.join(T, "onspd_may2026_lq.csv"), dtype=str).set_index("pcds")
-    sites = pd.read_excel(os.path.join(T, "site_shortlist_2027.xlsx"), sheet_name="Shortlist")
-    pos = {r["site"]: ll(float(pcs.loc[r["postcode"], "oseast1m"]), float(pcs.loc[r["postcode"], "osnrth1m"]))
-           for _, r in sites.iterrows()}
-    seen = set()
-    for f in ("gtfs_sallowmere_motor_services_20261002.zip", "gtfs_wrentoft_district_coaches_20261002.zip"):
-        z = zipfile.ZipFile(os.path.join(T, f))
-        rd = lambda n: pd.read_csv(io.BytesIO(z.read(n)), dtype=str)
-        cal, cd = rd("calendar.txt"), rd("calendar_dates.txt")
-        trips = rd("trips.txt")
-        stops = rd("stops.txt")
-        near = {k: set(stops[[dist((float(a), float(b)), q) <= 400 for a, b in zip(stops["stop_lat"], stops["stop_lon"])]]["stop_id"])
-                for k, q in pos.items()}
-        st = rd("stop_times.txt")
-        st = st[st["pickup_type"] != "1"]
-        for ymd, wd, late in (("20270115", "friday", False), ("20270114", "thursday", True)):
-            on = set(cal[(cal[wd] == "1") & (cal["start_date"] <= ymd) & (cal["end_date"] >= ymd)]["service_id"])
-            on |= set(cd[(cd["date"] == ymd) & (cd["exception_type"] == "1")]["service_id"])
-            on -= set(cd[(cd["date"] == ymd) & (cd["exception_type"] == "2")]["service_id"])
-            tr = trips[trips["service_id"].isin(on)][["trip_id", "block_id"]]
-            x = st.merge(tr, on="trip_id")
-            x = x[(x["departure_time"] >= "24:00:00") == late]
-            # a bus is its block: the same block at the same stop and time is one departure, whichever feed or
-            # timetable lists it
-            for blk, sid, tm in zip(x["block_id"], x["stop_id"], x["departure_time"]):
-                for k in pos:
-                    if sid in near[k]:
-                        seen.add((k, ymd, blk, sid, tm))
-    C = {k: 0 for k in pos}
-    for key in seen:
-        C[key[0]] += 1
-    return A, Bh, C
-
-
-def main(zpath=None):
-    zpath = zpath or os.path.join(TASK, "target.zip")
+def main(zp):
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    with tempfile.TemporaryDirectory() as tmp:
-        with zipfile.ZipFile(zpath) as z:
-            z.extractall(tmp)
-        T = os.path.join(tmp, "target") if os.path.isdir(os.path.join(tmp, "target")) else tmp
-        out, V = call(T)
-        A, B, C = asks(T)
     bad = []
-    g = out["golden"]
-    site = max(g, key=g.get)
-    if site != fig["site"] or round(g[site] / 1e5) / 10 != fig["add"]:
-        bad.append("call %s %.0f" % (site, g[site]))
-    if int(round(V / 10.0) * 10) != fig["V"]:
-        bad.append("V %.1f" % V)
-    r = out["resident"]
-    if max(r, key=r.get) != fig["resident_site"] or round(r[fig["resident_site"]] / 1e5) / 10 != fig["resident_add"]:
-        bad.append("resident route")
-    for k, v in A.items():
-        if int(round(v)) != fig["ask_a"][k]:
-            bad.append("ask A %s %.2f" % (k, v))
-    for k, v in B.items():
-        if int(round(v)) != fig["ask_b"][k]:
-            bad.append("ask B %s %.2f" % (k, v))
-    for k, v in C.items():
-        if v != fig["ask_c"][k]:
-            bad.append("ask C %s %d" % (k, v))
-    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    for k, v in fig["ask_a"].items():
-        if "Store %s: %s cases" % (k, "{:,}".format(v)) not in sub:
-            bad.append("write-up lacks store %s's cases" % k)
-    for k, v in fig["ask_b"].items():
-        if "Store %s: %s hours" % (k, "{:,}".format(v)) not in sub:
-            bad.append("write-up lacks store %s's hours" % k)
-    if "GBP %.1f million" % fig["add"] not in sub:
-        bad.append("write-up lacks the addition")
-    if bad:
-        print("VERIFY FAIL: " + "; ".join(bad))
-        return 1
-    print("verify: the bundle recomputes the call (%s, %.1f million, %d a pitch), the resident route and all 26 ask "
-          "figures" % (site, fig["add"], fig["V"]))
-    return 0
+
+    def ok(cond, msg):
+        print(("ok    " if cond else "FAIL  ") + msg)
+        if not cond:
+            bad.append(msg)
+    z = zipfile.ZipFile(zp)
+    names = sorted(z.namelist())
+    ok(len(names) >= 10, "%d files in the zip" % len(names))
+    tmp = tempfile.mkdtemp()
+    for n in names:
+        if n.endswith(".csv"):
+            r = rows(z, n)
+            ok(len(r) > 0, "%s: %d rows" % (n, len(r)))
+        elif n.endswith(".xlsx"):
+            wb = load_workbook(io.BytesIO(z.read(n)), read_only=True)
+            ok(len(wb.sheetnames) >= 1, "%s: sheets %s" % (n, wb.sheetnames))
+        elif n.endswith(".pdf"):
+            p = os.path.join(tmp, os.path.basename(n))
+            open(p, "wb").write(z.read(n))
+            txt = subprocess.run(["pdftotext", "-layout", p, "-"], capture_output=True, text=True).stdout
+            ok(len(txt) > 400, "%s: %d characters of text" % (n, len(txt)))
+        elif n.endswith(".eml"):
+            msg = email.message_from_bytes(z.read(n))
+            ok(bool(msg["Subject"]) and bool(msg.get_payload()), "%s: %s" % (n, msg["Subject"]))
+    # the paper's table
+    p = os.path.join(tmp, "free_plan_limit_paper_2027.pdf")
+    txt = subprocess.run(["pdftotext", "-layout", p, "-"], capture_output=True, text=True).stdout
+    price, free = {}, {}
+    for line in txt.splitlines():
+        w = line.split()
+        if w and w[0] in APPS and len(w) > 2:
+            try:
+                price[w[0]], free[w[0]] = float(w[1]), float(w[2])
+            except ValueError:
+                pass
+    # the count of free accounts over three projects and with three or fewer, latest month
+    wb = load_workbook(io.BytesIO(z.read("free_accounts_by_active_projects_2023_2026.xlsx")), read_only=True)
+    ws = wb[sorted(wb.sheetnames)[-1]]
+    data = list(ws.iter_rows(values_only=True))
+    last = max(r[0] for r in data[1:])
+    heavy = {a: 0 for a in APPS}
+    light = {a: 0 for a in APPS}
+    for r in data[1:]:
+        if r[0] != last:
+            continue
+        a = "Notewell" if r[1] == "Leafnote" else r[1]
+        (light if str(r[2]) in ("1", "2", "3") else heavy)[a] += int(r[3])
+    # the panel, account by account
+    acc = {}
+    months = set()
+    for r in rows(z, "research_panel_account_months_2023_2026.csv"):
+        y, m = r["month"].split("-")
+        mi = int(y) * 12 + int(m) - 1
+        months.add(mi)
+        acc.setdefault(r["account_id"], {})[mi] = (r["plan"], int(r["active_projects"]), float(r["storage_mib"]))
+    lo, hi = min(months), max(months)
+    end = hi - 12
+
+    def state(rec, mi):
+        v = rec.get(mi)
+        return None if v is None else (1 if v[0] == "plus" else 0)
+    stop_rows, ctrl_rows = [], []
+    for a_, rec in acc.items():
+        firsts = [mi for mi in sorted(rec) if rec[mi][0] == "free" and rec[mi][2] >= 0.99 * 2048]
+        if firsts and firsts[0] <= end:
+            stop_rows.append((a_, firsts[0]))
+        for mi, (pl, k, s) in rec.items():
+            if mi <= end and pl == "free" and k >= 4 and s < 0.99 * 2048:
+                ctrl_rows.append((a_, mi))
+
+    def curve(rs):
+        P = [0.0] * 12
+        F = [0.0] * 12
+        for a_, mi in rs:
+            for h in range(12):
+                s = state(acc[a_], mi + h + 1)
+                P[h] += s == 1
+                F[h] += s == 0
+        return [x / len(rs) for x in P], [x / len(rs) for x in F]
+    P1, F1 = curve(stop_rows)
+    P0, F0 = curve(ctrl_rows)
+    ok(len(stop_rows) == fig["response"]["stops"], "first stops %d" % len(stop_rows))
+    dP = [a - b for a, b in zip(P1, P0)]
+    dF = [b - a for a, b in zip(F1, F0)]
+    # accounts below four in September a year before the extract, first reaching four month by month
+    j0 = end
+    base = [a_ for a_, rec in acc.items() if rec.get(j0, ("x", 9, 0))[0] == "free" and rec[j0][1] <= 3]
+    fr = [0] * 12
+    for a_ in base:
+        for h in range(1, 13):
+            v = acc[a_].get(j0 + h)
+            if v and v[0] == "free" and v[1] >= 4:
+                fr[h - 1] += 1
+                break
+    fr = [x / len(base) for x in fr]
+    for a in APPS:
+        val = heavy[a] * (sum(dP) * price[a] - sum(dF) * free[a])
+        for h in range(1, 12):
+            val += light[a] * fr[h - 1] * (sum(dP[:12 - h]) * price[a] - sum(dF[:12 - h]) * free[a])
+        ok(abs(val - fig["by_app"][a]["addition"]) <= 1.0, "%s addition %.0f against %d" % (a, val, fig["by_app"][a]["addition"]))
+    # the bridge
+    rates = {"GBP": 1.0}
+    for r in rows(z, "fx_plan_rates.csv"):
+        if r["plan_year"] == "2026/27":
+            rates[r["currency"]] = float(r["units_per_gbp"])
+
+    def val(r, started):
+        v = float(r["unit_amount"]) * int(r["quantity"]) / (12.0 if r["billing_interval"] == "year" else 1.0)
+        if r["discount_percent"]:
+            e = dt.datetime.strptime(r["discount_ends"], "%Y-%m-%d")
+            if (e.year - started.year) * 12 + e.month - started.month + (e.day - started.day) / 31.0 >= 11.99:
+                v *= 1 - float(r["discount_percent"]) / 100.0
+        return v / rates[r["currency"]]
+    ts = lambda s: dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
+    cur, start, who = {}, {}, {}
+    opening = {}
+    for r in rows(z, "billing_subscriptions_20250930.csv"):
+        start[r["subscription_id"]] = ts(r["started_at"])
+        cur[r["subscription_id"]] = r
+        who[r["subscription_id"]] = (r["app"], r["customer_id"], r["account_id"])
+        opening[r["subscription_id"]] = val(r, start[r["subscription_id"]])
+    live = set(cur)
+    for r in rows(z, "billing_subscription_events_20251001_20260930.csv"):
+        sid, kind = r["subscription_id"], r["event_type"].split(".")[1]
+        who.setdefault(sid, (r["app"], r["customer_id"], r["account_id"]))
+        if kind == "created":
+            start[sid] = ts(r["occurred_at"])
+            live.add(sid)
+        if kind in ("created", "updated", "renewed"):
+            cur[sid] = r
+        if kind == "ended":
+            live.discard(sid)
+    closing = {sid: val(cur[sid], start[sid]) for sid in live}
+    parent = {}
+
+    def find(x):
+        while parent.get(x, x) != x:
+            x = parent[x]
+        return x
+    for sid, (app, c, a_) in who.items():
+        ra, rb = find(("c", app, c)), find(("a", app, a_))
+        if ra != rb:
+            parent[ra] = rb
+    tot = {}
+    for sid, v in opening.items():
+        k = (who[sid][0], find(("c", who[sid][0], who[sid][1])))
+        tot.setdefault(k, [0.0, 0.0])[0] += v
+    for sid, v in closing.items():
+        k = (who[sid][0], find(("c", who[sid][0], who[sid][1])))
+        tot.setdefault(k, [0.0, 0.0])[1] += v
+    for a in APPS:
+        n = e = c_ = ch = 0.0
+        for (app, _), (o, cl) in tot.items():
+            if app != a:
+                continue
+            if o <= 1e-9 < cl:
+                n += cl
+            elif cl <= 1e-9 < o:
+                ch += o
+            elif cl > o:
+                e += cl - o
+            else:
+                c_ += o - cl
+        for k, v in (("new", n), ("expansion", e), ("contraction", c_), ("churned", ch)):
+            ok(abs(round(v) - fig["ask"]["%s %s" % (a, k)]) <= 0.5, "%s %s %d" % (a, k, round(v)))
+    print("%d failures" % len(bad))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(*sys.argv[1:]))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target.zip")))

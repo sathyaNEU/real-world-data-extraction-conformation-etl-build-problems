@@ -1,249 +1,316 @@
 {
- "V": 2550,
- "V_exact": 2548.6,
- "add": 0.8,
- "add_exact": 800771,
- "area_2025": {
-  "105": 945,
-  "107": 1008
+ "allowance_mib": 2048,
+ "ask": {
+  "Formbox churned": 20364,
+  "Formbox closing": 142981,
+  "Formbox contraction": 1672,
+  "Formbox expansion": 7015,
+  "Formbox new": 36825,
+  "Formbox opening": 121177,
+  "Ledgerline churned": 41485,
+  "Ledgerline closing": 262410,
+  "Ledgerline contraction": 2086,
+  "Ledgerline expansion": 22497,
+  "Ledgerline new": 62034,
+  "Ledgerline opening": 221451,
+  "Notewell churned": 11070,
+  "Notewell closing": 75455,
+  "Notewell contraction": 940,
+  "Notewell expansion": 4060,
+  "Notewell new": 15536,
+  "Notewell opening": 67869,
+  "Taskfold churned": 10578,
+  "Taskfold closing": 75260,
+  "Taskfold contraction": 846,
+  "Taskfold expansion": 4109,
+  "Taskfold new": 17212,
+  "Taskfold opening": 65363,
+  "Tracewood churned": 69365,
+  "Tracewood closing": 559818,
+  "Tracewood contraction": 4379,
+  "Tracewood expansion": 58059,
+  "Tracewood new": 125062,
+  "Tracewood opening": 450441
  },
- "area_code": "LQ",
- "area_now": {
-  "105": 1413,
-  "107": 1490
- },
- "ask_a": {
-  "101": 7079,
-  "102": 7001,
-  "103": 6700,
-  "104": 4707,
-  "105": 2885,
-  "106": 6730,
-  "107": 2323,
-  "108": 3985,
-  "109": 3354,
-  "110": 4372
- },
- "ask_a_exact": {
-  "101": 7079.08,
-  "102": 7001.4,
-  "103": 6700.0,
-  "104": 4706.88,
-  "105": 2885.0,
-  "106": 6730.04,
-  "107": 2322.8,
-  "108": 3984.96,
-  "109": 3353.68,
-  "110": 4372.16
- },
- "ask_b": {
-  "101": 1890,
-  "102": 1608,
-  "103": 1488,
-  "104": 1401,
-  "105": 1194,
-  "106": 1259,
-  "107": 1248,
-  "108": 1052,
-  "109": 822,
-  "110": 764
- },
- "ask_b_exact": {
-  "101": 1890.48,
-  "102": 1608.38,
-  "103": 1487.78,
-  "104": 1400.8,
-  "105": 1193.72,
-  "106": 1259.1,
-  "107": 1247.78,
-  "108": 1051.66,
-  "109": 821.64,
-  "110": 763.56
- },
- "ask_c": {
-  "S1": 44,
-  "S2": 110,
-  "S3": 44,
-  "S4": 64,
-  "S5": 72,
-  "S6": 84
- },
- "beta": 0.22,
- "bus_day": 15,
- "bus_eve": 14,
- "bus_weekday": "Friday",
- "deterrence_exponent": -0.22,
- "direct_add": 0.4,
- "direct_s3": 0.2,
- "direct_site": "S1",
- "guests_by_store": {
-  "101": 11290,
-  "102": 1872,
-  "103": 3618,
-  "104": 63880,
-  "105": 82995,
-  "106": 253,
-  "107": 150230,
-  "108": 13657,
-  "109": 6170,
-  "110": 1116
- },
- "instore_pct": 88,
- "margin_pct": 26,
- "min_area": 280,
- "n_park_sites": 4,
- "n_stores_share": 27,
- "now_add": 0.5,
- "now_site": "S3",
- "park_shares_now_pct": {
-  "Raddleford Water Holiday Park": 19,
-  "Sallowmere Mill Caravan Park": 17,
-  "Withybeck Lakes Caravan Park": 11
- },
- "park_shares_pct": {
-  "Raddleford Water Holiday Park": 15,
-  "Sallowmere Mill Caravan Park": 17,
-  "Withybeck Lakes Caravan Park": 8
- },
- "parks": [
-  {
-   "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 1750,
-   "postcode": "LQ15 4UE"
+ "by_app": {
+  "Formbox": {
+   "addition": 70314,
+   "free_revenue": 0.06,
+   "over_three": 10258,
+   "plus_price": 13.0,
+   "reaching_four_2027": 3374,
+   "three_or_fewer": 18147
   },
-  {
-   "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 640,
-   "postcode": "LQ18 4XA"
+  "Ledgerline": {
+   "addition": 102022,
+   "free_revenue": 1.0,
+   "over_three": 10219,
+   "plus_price": 28.0,
+   "reaching_four_2027": 3035,
+   "three_or_fewer": 16320
   },
-  {
-   "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 520,
-   "postcode": "LQ6 2HZ"
+  "Notewell": {
+   "addition": -11355,
+   "free_revenue": 0.8,
+   "over_three": 12555,
+   "plus_price": 6.0,
+   "reaching_four_2027": 3292,
+   "three_or_fewer": 17705
   },
-  {
-   "desc": "CARAVAN PARK AND PREMISES",
-   "pitches": 160,
-   "postcode": "LQ16 1NA"
-  }
- ],
- "pitches_2025": {
-  "Raddleford Water Holiday Park": 480,
-  "Sallowmere Mill Caravan Park": 160,
-  "Withybeck Lakes Caravan Park": 400,
-  "Wrentoft Lakes Holiday Park": 1450
- },
- "pitches_now": {
-  "Raddleford Water Holiday Park": 640,
-  "Sallowmere Mill Caravan Park": 160,
-  "Withybeck Lakes Caravan Park": 520,
-  "Wrentoft Lakes Holiday Park": 1750
- },
- "radius_m": 400,
- "resident_add": 0.4,
- "resident_site": "S1",
- "resident_site_name": "Bellingtoft, Fenton Road",
- "roadf": 1.25,
- "runner_up": "S1",
- "runner_up_add": 0.4,
- "s3_cost": 941000,
- "s3_resident": 0.1,
- "s3_resident_rank": "second",
- "s3_sales": 6.8,
- "s3_took": 143,
- "site": "S3",
- "site_name": "Wrentoft, Mill Lane",
- "sites": {
-  "S1": {
-   "add": 0.4,
-   "add_exact": 420113,
-   "area": 1800,
-   "cost": 1177000,
-   "name": "Bellingtoft, Fenton Road",
-   "resident_add": 0.4,
-   "resident_add_exact": 408667,
-   "sales": 6.8,
-   "sales_exact": 6754870,
-   "took": 612127
+  "Taskfold": {
+   "addition": 20087,
+   "free_revenue": 0.45,
+   "over_three": 10036,
+   "plus_price": 8.0,
+   "reaching_four_2027": 3036,
+   "three_or_fewer": 16326
   },
-  "S2": {
-   "add": 0.1,
-   "add_exact": 64750,
-   "area": 1800,
-   "cost": 839000,
-   "name": "Darrowfield, Eastgate",
-   "resident_add": 0.1,
-   "resident_add_exact": 63097,
-   "sales": 5.2,
-   "sales_exact": 5235965,
-   "took": 1760005
-  },
-  "S3": {
-   "add": 0.8,
-   "add_exact": 800771,
-   "area": 1500,
-   "cost": 941000,
-   "name": "Wrentoft, Mill Lane",
-   "resident_add": 0.1,
-   "resident_add_exact": 120306,
-   "sales": 6.8,
-   "sales_exact": 6842069,
-   "took": 142950
-  },
-  "S4": {
-   "add": -0.1,
-   "add_exact": -146536,
-   "area": 1500,
-   "cost": 691000,
-   "name": "Brackenmere, Northfield",
-   "resident_add": -0.1,
-   "resident_add_exact": -146675,
-   "sales": 4.4,
-   "sales_exact": 4399262,
-   "took": 2305171
-  },
-  "S5": {
-   "add": -0.1,
-   "add_exact": -122287,
-   "area": 1600,
-   "cost": 659000,
-   "name": "Quellby, Sutton Road",
-   "resident_add": -0.1,
-   "resident_add_exact": -123247,
-   "sales": 4.2,
-   "sales_exact": 4237799,
-   "took": 2173519
-  },
-  "S6": {
-   "add": 0.0,
-   "add_exact": -35984,
-   "area": 1500,
-   "cost": 662000,
-   "name": "Sallowmere, Westway",
-   "resident_add": -0.1,
-   "resident_add_exact": -51802,
-   "sales": 3.6,
-   "sales_exact": 3588196,
-   "took": 1180442
+  "Tracewood": {
+   "addition": 12177,
+   "free_revenue": 2.0,
+   "over_three": 29359,
+   "plus_price": 20.0,
+   "reaching_four_2027": 8213,
+   "three_or_fewer": 44166
   }
  },
- "store_numbers": [
-  101,
-  102,
-  103,
-  104,
-  105,
-  106,
-  107,
-  108,
-  109,
-  110
- ],
- "turn_base_min": 4,
- "turn_min_per_case": 0.02,
- "v_direct": 230,
- "v_now": 1560,
- "weeks": 25,
- "weeks_year": 52,
- "wrentoft_lakes_pitches": 1750
+ "call": {
+  "addition": 102022,
+  "addition_rounded": 100000,
+  "app": "Ledgerline",
+  "margin": 1.451,
+  "runner_up": "Formbox",
+  "runner_up_addition": 70314
+ },
+ "kpi_month": "2026-09",
+ "response": {
+  "free_months_lost": 4.476,
+  "free_next_month": 0.5816,
+  "gone_next_month": 0.3668,
+  "own_gone_12": 0.0757,
+  "own_plus_12": 0.0254,
+  "plus_months_gained": 0.4607,
+  "plus_next_month": 0.0516,
+  "reaching_four_by_month": [
+   0.02215,
+   0.01862,
+   0.01791,
+   0.01603,
+   0.0231,
+   0.01909,
+   0.0165,
+   0.01485,
+   0.01438,
+   0.01178,
+   0.01155,
+   0.01603
+  ],
+  "stopped_free": [
+   0.5816,
+   0.581,
+   0.5727,
+   0.5745,
+   0.568,
+   0.5685,
+   0.5662,
+   0.5638,
+   0.5602,
+   0.5549,
+   0.5531,
+   0.5424
+  ],
+  "stopped_plus": [
+   0.0516,
+   0.0516,
+   0.0516,
+   0.0504,
+   0.0528,
+   0.0522,
+   0.0558,
+   0.0558,
+   0.051,
+   0.0522,
+   0.051,
+   0.0552
+  ],
+  "stops": 1685,
+  "unstopped_account_months": 72987,
+  "unstopped_free": [
+   0.9797,
+   0.9718,
+   0.9644,
+   0.9565,
+   0.949,
+   0.9416,
+   0.9345,
+   0.9274,
+   0.9201,
+   0.9129,
+   0.9061,
+   0.8989
+  ],
+  "unstopped_plus": [
+   0.002,
+   0.0044,
+   0.0067,
+   0.009,
+   0.0112,
+   0.0135,
+   0.0156,
+   0.0178,
+   0.0199,
+   0.0218,
+   0.0236,
+   0.0254
+  ]
+ },
+ "rounding_gbp": 50000,
+ "routes": {
+  "G stopped against unstopped": {
+   "Formbox": 70314,
+   "Ledgerline": 102022,
+   "Notewell": -11355,
+   "Taskfold": 20087,
+   "Tracewood": 12177
+  },
+  "L0 the heavy accounts' own upgrades, nobody leaving": {
+   "Formbox": 40671,
+   "Ledgerline": 87266,
+   "Notewell": 22975,
+   "Taskfold": 24487,
+   "Tracewood": 179082
+  },
+  "L1 the heavy accounts' own upgrades and own losses": {
+   "Formbox": 40112,
+   "Ledgerline": 77985,
+   "Notewell": 13852,
+   "Taskfold": 20385,
+   "Tracewood": 125753
+  },
+  "L2 the stopped accounts' upgrade share, nobody leaving": {
+   "Formbox": 82624,
+   "Ledgerline": 177283,
+   "Notewell": 46673,
+   "Taskfold": 49745,
+   "Tracewood": 363808
+  },
+  "L3 every account that does not upgrade leaves": {
+   "Formbox": 75620,
+   "Ledgerline": 60987,
+   "Notewell": -67632,
+   "Taskfold": -1651,
+   "Tracewood": -304428
+  },
+  "S1 the stopped accounts' response shares for a year": {
+   "Formbox": 79915,
+   "Ledgerline": 132307,
+   "Notewell": 2468,
+   "Taskfold": 29869,
+   "Tracewood": 105379
+  },
+  "S2 the stopped accounts' year with nothing set against it": {
+   "Formbox": 81387,
+   "Ledgerline": 133860,
+   "Notewell": 1550,
+   "Taskfold": 30007,
+   "Tracewood": 101755
+  },
+  "S3 the response, then carried as unstopped": {
+   "Formbox": 74687,
+   "Ledgerline": 108883,
+   "Notewell": -11532,
+   "Taskfold": 21569,
+   "Tracewood": 16033
+  }
+ },
+ "shares_pct": {
+  "free_next_month": 58.2,
+  "gone_next_month": 36.7,
+  "own_plus_12": 2.5,
+  "plus_next_month": 5.2
+ },
+ "standing": {
+  "crossings over the year to September 2024": {
+   "Formbox": 71043,
+   "Ledgerline": 103010,
+   "Notewell": -11435,
+   "Taskfold": 20289,
+   "Tracewood": 12389
+  },
+  "each app read from its own stopped accounts": {
+   "Formbox": 70431,
+   "Ledgerline": 121063,
+   "Notewell": -10675,
+   "Taskfold": 10600,
+   "Tracewood": 13513
+  },
+  "every stop, not the first": {
+   "Formbox": 70087,
+   "Ledgerline": 101607,
+   "Notewell": -11411,
+   "Taskfold": 19982,
+   "Tracewood": 11600
+  },
+  "every unstopped free account as the comparison": {
+   "Formbox": 69669,
+   "Ledgerline": 103371,
+   "Notewell": -8797,
+   "Taskfold": 20968,
+   "Tracewood": 26335
+  },
+  "only accounts with four or more active projects": {
+   "Formbox": 77156,
+   "Ledgerline": 117362,
+   "Notewell": -6669,
+   "Taskfold": 24566,
+   "Tracewood": 47098
+  },
+  "stops in 2023 only": {
+   "Formbox": 72008,
+   "Ledgerline": 104986,
+   "Notewell": -11097,
+   "Taskfold": 20803,
+   "Tracewood": 15571
+  },
+  "stops in 2024 only": {
+   "Formbox": 71180,
+   "Ledgerline": 103835,
+   "Notewell": -10897,
+   "Taskfold": 20596,
+   "Tracewood": 15815
+  },
+  "stops in 2025 only": {
+   "Formbox": 67899,
+   "Ledgerline": 97761,
+   "Notewell": -11774,
+   "Taskfold": 19043,
+   "Tracewood": 7038
+  },
+  "the allowance read at 1,950 MiB": {
+   "Formbox": 59066,
+   "Ledgerline": 85980,
+   "Notewell": -9424,
+   "Taskfold": 16957,
+   "Tracewood": 11091
+  },
+  "the allowance read at 2,000 MiB": {
+   "Formbox": 63764,
+   "Ledgerline": 90928,
+   "Notewell": -12064,
+   "Taskfold": 17458,
+   "Tracewood": 820
+  },
+  "the allowance read at 2,047 MiB": {
+   "Formbox": 70314,
+   "Ledgerline": 102022,
+   "Notewell": -11355,
+   "Taskfold": 20087,
+   "Tracewood": 12177
+  }
+ },
+ "thresholds_mib": [
+  2000,
+  1950,
+  2047
+ ]
 }

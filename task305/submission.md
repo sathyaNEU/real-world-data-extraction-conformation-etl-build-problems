@@ -1,66 +1,45 @@
 ## Tags
 
-**Domain:** Urban and regional science (accessibility, agglomeration and location analysis).
-**Analytical objective:** Opportunity sizing and decision support.
+**Domain:** Product Analytics, churn propensity and uplift modelling (a software company's choice of which of five apps takes a three-project limit on its free plan first, sized by the 2027 revenue the limit adds, with free accounts' response read from the accounts the free plan's storage allowance already stops, and each app's recurring revenue bridge from its billing records).
+**Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**Marrable Foodstores should open S3, Wrentoft, Mill Lane, which will add GBP 0.8 million a year to the chain's contribution once it is trading.**
-The guests staying on Wrentoft Lakes Holiday Park's 1,750 pitches spend about GBP 2,550 a pitch a season on groceries in store, and S3 is the site nearest them. Our stores see that spend only as their share of each park's, and the share that recovers it is the one they had when the card feed recorded it: in FY2025/26 store 105 traded on 945 m2 and store 107 on 1,008 m2, and Raddleford Water and Withybeck Lakes had 480 and 400 pitches, before the 2026 extensions the current list shows; on those the model gives our ten stores together 15 per cent of what starts at Raddleford Water, 8 per cent at Withybeck Lakes and 17 per cent at Sallowmere Mill. Inverted on today's list a pitch comes to GBP 1,560 and S3 adds only GBP 0.5 million. Not S1 Bellingtoft, which adds GBP 0.4 million and leads only if a pitch is priced at our stores' take over the pitches alone. Not S2 Eastgate, which adds GBP 0.1 million because about a third of its sales would come from our own stores.
+**Brindlecote should take the three-project limit first in Ledgerline, where it adds about GBP 100,000 to 2027 revenue.**
+The limit adds GBP 102,022 to Ledgerline's 2027 revenue as built (GBP 85,980 to 121,063 across the standing variants of its construction), against GBP 70,314 in Formbox, the next best. The free plan already stops accounts at its two-gigabyte storage allowance: the month after an account reaches it, 5.2 per cent are on Plus and 36.7 per cent have stopped using the app, and over the following year a stopped account spends 0.46 more months on Plus and 4.5 fewer months on the free plan than an unstopped account over three projects. Ledgerline's GBP 28.00 Plus price outweighs the free-plan revenue (GBP 1.00 a month) each leaver takes with it. Not Tracewood, which the free accounts' own upgrade rate with nobody leaving puts first (GBP 179,082 against GBP 87,266 for Ledgerline): an account the limit stops is not an account upgrading of its own accord, and the leavers cost Tracewood GBP 2.00 a month each. Not Formbox either, which counting every account that does not pay as lost puts first.
 
 ## 2. Critical Components
 
-1. Spend starts where people are, a household's at its output area and anyone else's where they stay (spend_share_model_2025.pdf, section 1): Wrentoft Lakes Holiday Park, the largest pitch-measured site with **1,750** pitches, is nearer S3 than any other site.
-2. A pitch's guests spend **GBP 2,550** a season in store: our stores' out-of-region card spend in FY2025/26's season over the pitches weighted by the share of each park's spend the model gives our ten stores together on the stores and pitches of that year (**15 per cent** at Raddleford Water, **8 per cent** at Withybeck Lakes, **17 per cent** at Sallowmere Mill).
-3. With the guests carried at today's pitches, S3 sells **GBP 6.8 million** a year and adds **GBP 0.8 million**.
+1. The month after a free account first reached the storage allowance (January 2023 to September 2025, 1,685 accounts in the research panel), **5.2 per cent** were on Plus and **36.7 per cent** had stopped using the app, alike across apps, project counts and account ages, while free accounts over three projects move to Plus on their own at about **2.5 per cent a year**.
+2. Set against unstopped free accounts over three projects, a stopped account gains **0.46 months on Plus** and loses **4.5 months of free use** in the year after the stop.
+3. The limit reaches **10,219** free accounts over three active projects in Ledgerline and **3,035** more reaching a fourth during 2027, and adds **GBP 102,022** to Ledgerline's 2027 revenue (about GBP 100,000), more than in any other app (Formbox GBP 70,314).
 
 ## 3. Step-by-Step Solution
 
-1. Shared each output area's grocery spend (its households in census2021_ts041_households_oa.csv, times the weekly spend in grocery_spend_estimates_2026_oa21.csv, times 52 weeks and 88 per cent in store) among the 27 grocery stores of 280 m2 or more in voa_list_entries_2026_lq.txt and voa_summary_valuations_2026_lq.csv, by floor area over exp(-0.22 x 1.25 x straight-line km) from the output area's centroid in oa21_population_weighted_centroids.csv (spend_share_model_2025.pdf): on residents alone S1 adds GBP 0.4 million and S3 GBP 0.1 million.
-2. Took each of our stores' guest spend from card_spend_by_home_sector_fy2025_26.csv: cardholders whose home sector is outside the LQ postcode area, March to October, above the store's own November to February monthly level, divided by the store's card share in store_estate_2026.xlsx.
-3. Took the stores and parks as they stood in FY2025/26 from archive/voa_historic_list_entries_lq_20261002.txt and archive/voa_historic_summary_valuations_lq_20261002.csv, each entry's version current over 1 April 2025 to 31 March 2026 (store 105 at 945 m2, store 107 at 1,008 m2, Raddleford Water at 480 pitches, Withybeck Lakes at 400), since the model sheet shares spend among the stores trading when it is made, at their floor area then (section 2); divided our ten stores' guest spend by the pitches of the 4 pitch-measured sites, each weighted by the model's share of its spend going to our stores then: GBP 2,550 a pitch for a season.
-4. Added each park as an origin at today's pitches (Wrentoft Lakes 1,750) times GBP 2,550, and appraised each site on today's list by the model sheet's rule (26 per cent of its sales, less 26 per cent of what it takes from our stores, less the running costs in site_shortlist_2027.xlsx): S3 sells GBP 6.8 million and adds GBP 0.8 million, S1 adds GBP 0.4 million.
-5. Cases: summed the cases of the DEL stops in tms_stop_export_20251006_20260329.csv by store for UK arrival dates from 6 October 2025 to 29 March 2026 and divided by 25, counting a load a store turned away once: a stop closed in under 4 minutes plus 0.02 of a minute a case had its cases taken back and delivered to the store the next day on a trip of their own, so it is left out.
-6. Paid hours: paired each colleague's clock-ins and clock-outs in ta_punches_20251006_20260329.csv into shifts (a clock-in or clock-out with no partner is a shift whose other punch was forgotten), dated each shift by its clock-in (by its clock-out where there is none) and placed it at the store, in ta_terminals.csv, of that punch's terminal, not the location column; took one of the colleague's lines in wfm_paid_hours_20251006_20260329.csv for each shift starting that date, since the report lists a night shift against both dates it covers at its full paid hours, summed paid_hours by store and divided by 25.
-7. Buses: from gtfs_sallowmere_motor_services_20261002.zip and gtfs_wrentoft_district_coaches_20261002.zip, the departures with pickup allowed from stops within 400 m of the site's postcode by the clock on Friday 15 January 2027, which are that day's services up to 24:00 and the previous day's services from 24:00 on (a GTFS service day runs past midnight), each bus once by its block_id: the same block at the same stop and time is one departure (a jointly run route's journey listed in both feeds, and a weekday journey the Friday-late timetable lists again), while a second bus on the same timetable on a block of its own (a school-day duplicate) is another.
-8. Recommended S3, Wrentoft, Mill Lane: it adds GBP 0.8 million a year against S1's GBP 0.4 million.
+1. Read free_plan_limit_paper_2027.pdf: the limit stops a free account over three active projects from editing until it archives or moves to Plus; the addition is the app's 2027 revenue with the limit less without it, a month on Plus at the Plus price and a month of free use at the free-plan revenue per active free account (section 4), the limit reaching every free account over three active projects on 1 January 2027 and every one reaching a fourth during the year.
+2. Built each research panel account's months from research_panel_account_months_2023_2026.csv (Leafnote read as Notewell before April 2025): plan, active projects, storage and whether it was used that month; an account with no row in a month was not used.
+3. Found the free plan's existing stop in plan_catalogue_2026.csv (2 GB, 2,048 MiB, of storage on the free plan) and the free account-months at it (storage within one per cent of 2,048 MiB): 1,685 accounts reached it for the first time from January 2023 to September 2025, each followed for twelve months.
+4. Compared them with free accounts over three active projects below the allowance in the same months (the accounts the limit stops, as they act unstopped), month by month for a year: 0.46 more months on Plus and 4.5 fewer months of free use for a stopped account.
+5. Took the accounts the limit reaches from free_accounts_by_active_projects_2023_2026.xlsx for 2026-09 (bands 4-5, 6-9 and 10+), and the accounts reaching a fourth active project each month of a year from the panel's accounts below four in September 2025, applied to each app's accounts with three or fewer.
+6. Valued each app's year: the accounts over the limit on 1 January for twelve months after the stop and each month's new arrivals for the rest of the year, at the paper's Plus price and free-plan revenue: Tracewood GBP 12,177; Taskfold GBP 20,087; Ledgerline GBP 102,022; Formbox GBP 70,314; Notewell GBP -11,355.
+7. Checked the standing variants (every stop rather than the first, the allowance read at 2,000, 1,950 or 2,047 MiB, every unstopped free account as the comparison, the stops of one year, a year's crossings to September 2024, each app read from its own stopped accounts, only accounts with four or more projects): Ledgerline stays first, GBP 85,980 to 121,063.
+8. For the bridge, valued every subscription on FIN-07 (recurring_revenue_policy_fin07.pdf): a monthly price as it is, an annual price over twelve, seat price times seats, after discounts of twelve months or more, euros and dollars at the 2026/27 plan rates in fx_plan_rates.csv; live from billing_subscriptions_20250930.csv and the events to the end of 30 September 2026 (a cancellation ends a subscription at its subscription.ended event, a past-due subscription stays live).
+9. Took the customer as the person or organisation that pays: a subscription opened under a new customer record by the same account the day the platform ended its old one after failed payments is the same customer, and staff accounts' Plus subscriptions a company record moved onto one Team subscription stay with that company; then compared each customer's recurring revenue at the two dates, app by app.
 
 ## 4. Deliverable Answers
 
-### marrable_site_appraisal_2027.xlsx
+### free_plan_limit_2027.xlsx
 
-1. The site to open: S3, Wrentoft, Mill Lane.
-2. Its addition to the chain's annual contribution: GBP 0.8 million.
-3. Cases a week the distribution centre delivered to each store, 6 October 2025 to 29 March 2026:
-   - Store 101: 7,079 cases
-   - Store 102: 7,001 cases
-   - Store 103: 6,700 cases
-   - Store 104: 4,707 cases
-   - Store 105: 2,885 cases
-   - Store 106: 6,730 cases
-   - Store 107: 2,323 cases
-   - Store 108: 3,985 cases
-   - Store 109: 3,354 cases
-   - Store 110: 4,372 cases
-4. Paid hours a week worked at each store, 6 October 2025 to 29 March 2026:
-   - Store 101: 1,890 hours
-   - Store 102: 1,608 hours
-   - Store 103: 1,488 hours
-   - Store 104: 1,401 hours
-   - Store 105: 1,194 hours
-   - Store 106: 1,259 hours
-   - Store 107: 1,248 hours
-   - Store 108: 1,052 hours
-   - Store 109: 822 hours
-   - Store 110: 764 hours
-5. Bus departures that pick up passengers from stops within 400 metres on Friday 15 January 2027:
-   - S1 Bellingtoft, Fenton Road: 44
-   - S2 Darrowfield, Eastgate: 110
-   - S3 Wrentoft, Mill Lane: 44
-   - S4 Brackenmere, Northfield: 64
-   - S5 Quellby, Sutton Road: 72
-   - S6 Sallowmere, Westway: 84
+1. App to take the three-project limit first: Ledgerline.
+2. What it adds to Ledgerline's 2027 revenue: GBP 100,000 (nearest GBP 50,000; GBP 102,022 as built).
+3. Each app's 2027 addition behind the call: Tracewood GBP 12,177; Taskfold GBP 20,087; Ledgerline GBP 102,022; Formbox GBP 70,314; Notewell GBP -11,355.
+4. Each app's recurring revenue movements from 30 September 2025 to 30 September 2026, GBP a month (new, expansion, contraction, churned):
+   - Tracewood: new 125,062, expansion 58,059, contraction 4,379, churned 69,365
+   - Taskfold: new 17,212, expansion 4,109, contraction 846, churned 10,578
+   - Ledgerline: new 62,034, expansion 22,497, contraction 2,086, churned 41,485
+   - Formbox: new 36,825, expansion 7,015, contraction 1,672, churned 20,364
+   - Notewell: new 15,536, expansion 4,060, contraction 940, churned 11,070
 
-### new_store_case_2027.docx
+### free_plan_limit_case_2027.docx
 
-1. The case for opening S3, Wrentoft, Mill Lane, which adds GBP 0.8 million a year.
+1. The case for the executive: take the limit first in Ledgerline, about GBP 100,000 added to its 2027 revenue, read from the accounts the storage allowance already stops; not Tracewood, which only the free accounts' own upgrades with nobody leaving put first.

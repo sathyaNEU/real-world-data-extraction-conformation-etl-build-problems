@@ -1,109 +1,108 @@
-"""submission.md from figures.json: tags, the recommendation, its components, the steps and the deliverable answers."""
-import params as P
+"""submission.md from figures.json."""
+import solve as S
 
 
-def c(x):
-    return "{:,}".format(int(x))
-
-
-def m(x):
-    return "%.1f" % x
+def f0(x):
+    return format(int(round(x)), ",")
 
 
 def write(path, fig):
-    F = P.FILES
-    s = fig["sites"]
-    t = []
-    t.append("## Tags\n")
-    t.append("**Domain:** Urban and regional science (accessibility, agglomeration and location analysis).")
-    t.append("**Analytical objective:** Opportunity sizing and decision support.\n")
-    t.append("## 1. Final Recommendation\n")
-    t.append("**Marrable Foodstores should open S3, %s, which will add GBP %s million a year to the chain's contribution "
-             "once it is trading.**" % (fig["site_name"], m(fig["add"])))
-    sh = fig["park_shares_pct"]
-    p25, pnow, a25 = fig["pitches_2025"], fig["pitches_now"], fig["area_2025"]
-    t.append("The guests staying on Wrentoft Lakes Holiday Park's %s pitches spend about GBP %s a pitch a season on "
-             "groceries in store, and S3 is the site nearest them. Our stores see that spend only as their share of each "
-             "park's, and the share that recovers it is the one they had when the card feed recorded it: in FY2025/26 "
-             "store 105 traded on %s m2 and store 107 on %s m2, and Raddleford Water and Withybeck Lakes had %s and %s "
-             "pitches, before the 2026 extensions the current list shows; on those the model gives our ten stores "
-             "together %d per cent of what starts at Raddleford Water, %d per cent at Withybeck Lakes and %d per cent at Sallowmere Mill. "
-             "Inverted on today's list a pitch comes to GBP %s and S3 adds only GBP %s million. Not S1 Bellingtoft, which "
-             "adds GBP %s million and leads only if a pitch is priced at our stores' take over the pitches alone. Not S2 "
-             "Eastgate, which adds GBP %s million because about a third of its sales would come from our own stores.\n"
-             % (c(fig["wrentoft_lakes_pitches"]), c(fig["V"]), c(a25["105"]), c(a25["107"]),
-                c(p25["Raddleford Water Holiday Park"]), c(p25["Withybeck Lakes Caravan Park"]),
-                sh["Raddleford Water Holiday Park"], sh["Withybeck Lakes Caravan Park"], sh["Sallowmere Mill Caravan Park"],
-                c(fig["v_now"]), m(fig["now_add"]), m(s["S1"]["add"]), m(s["S2"]["add"])))
-    t.append("## 2. Critical Components\n")
-    t.append("1. Spend starts where people are, a household's at its output area and anyone else's where they stay "
-             "(%s, section 1): Wrentoft Lakes Holiday Park, the largest pitch-measured site with **%s** pitches, is "
-             "nearer S3 than any other site." % (F["model"], c(fig["wrentoft_lakes_pitches"])))
-    t.append("2. A pitch's guests spend **GBP %s** a season in store: our stores' out-of-region card spend in FY2025/26's "
-             "season over the pitches weighted by the share of each park's spend the model gives our ten stores together "
-             "on the stores and pitches of that year (**%d per cent** at Raddleford Water, **%d per cent** at Withybeck Lakes, **%d per "
-             "cent** at Sallowmere Mill)." % (c(fig["V"]), sh["Raddleford Water Holiday Park"],
-                                             sh["Withybeck Lakes Caravan Park"], sh["Sallowmere Mill Caravan Park"]))
-    t.append("3. With the guests carried at today's pitches, S3 sells **GBP %s million** a year and adds **GBP %s "
-             "million**.\n" % (m(fig["s3_sales"]), m(fig["add"])))
-    t.append("## 3. Step-by-Step Solution\n")
-    t.append("1. Shared each output area's grocery spend (its households in %s, times the weekly spend in %s, times "
-             "%d weeks and %d per cent in store) among the %d grocery stores of %d m2 or more in %s and %s, by floor "
-             "area over exp(-%.2f x %.2f x straight-line km) from the output area's centroid in %s (%s): on residents "
-             "alone S1 adds GBP %s million and S3 GBP %s million."
-             % (F["households"], F["spend"], fig["weeks_year"], fig["instore_pct"], fig["n_stores_share"],
-                fig["min_area"], F["voa_list"], F["voa_smv"], fig["beta"], fig["roadf"], F["pwc"], F["model"],
-                m(fig["resident_add"]), m(fig["s3_resident"])))
-    t.append("2. Took each of our stores' guest spend from %s: cardholders whose home sector is outside the %s "
-             "postcode area, March to October, above the store's own November to February monthly level, divided "
-             "by the store's card share in %s." % (F["cards"], fig["area_code"], F["estate"]))
-    t.append("3. Took the stores and parks as they stood in FY2025/26 from %s and %s, each entry's version current over "
-             "1 April 2025 to 31 March 2026 (store 105 at %s m2, store 107 at %s m2, Raddleford Water at %s pitches, "
-             "Withybeck Lakes at %s), since the model sheet shares spend among the stores trading when it is made, at "
-             "their floor area then (section 2); divided our ten stores' guest spend by the pitches of the %d "
-             "pitch-measured sites, each weighted by the model's share of its spend going to our stores then: GBP %s a "
-             "pitch for a season." % (F["voa_hist"], F["voa_hist_smv"], c(a25["105"]), c(a25["107"]),
-                                     c(p25["Raddleford Water Holiday Park"]), c(p25["Withybeck Lakes Caravan Park"]),
-                                     fig["n_park_sites"], c(fig["V"])))
-    t.append("4. Added each park as an origin at today's pitches (Wrentoft Lakes %s) times GBP %s, and appraised each site "
-             "on today's list by the model sheet's rule (%d per cent of its sales, less %d per cent of what it takes from "
-             "our stores, less the running costs in %s): S3 sells GBP %s million and adds GBP %s million, S1 adds GBP %s "
-             "million." % (c(fig["wrentoft_lakes_pitches"]), c(fig["V"]), fig["margin_pct"], fig["margin_pct"],
-                           F["shortlist"], m(fig["s3_sales"]), m(fig["add"]), m(s["S1"]["add"])))
-    t.append("5. Cases: summed the cases of the DEL stops in %s by store for UK arrival dates from 6 October 2025 to "
-             "29 March 2026 and divided by %d, counting a load a store turned away once: a stop closed in under %d "
-             "minutes plus %s of a minute a case had its cases taken back and delivered to the store the next day on a "
-             "trip of their own, so it is left out." % (F["tms"], fig["weeks"], fig["turn_base_min"], fig["turn_min_per_case"]))
-    t.append("6. Paid hours: paired each colleague's clock-ins and clock-outs in %s into shifts (a clock-in or "
-             "clock-out with no partner is a shift whose other punch was forgotten), dated each shift by its clock-in "
-             "(by its clock-out where there is none) and placed it at the store, in %s, of that punch's terminal, not "
-             "the location column; took one of the colleague's lines in %s for each shift starting that date, since the "
-             "report lists a night shift against both dates it covers at its full paid hours, summed paid_hours by "
-             "store and divided by %d." % (F["punches"], F["terminals"], F["wfm"], fig["weeks"]))
-    t.append("7. Buses: from %s and %s, the departures with pickup allowed from stops within %d m of the site's postcode "
-             "by the clock on %s %d January 2027, which are that day's services up to 24:00 and the previous day's "
-             "services from 24:00 on (a GTFS service day runs past midnight), each bus once by its block_id: the same "
-             "block at the same stop and time is one departure (a jointly run route's journey listed in both feeds, "
-             "and a weekday journey the Friday-late timetable lists again), while a second bus on the same timetable on "
-             "a block of its own (a school-day duplicate) is another." % (F["gtfs_lb"], F["gtfs_pdc"], fig["radius_m"],
-                                                                          fig["bus_weekday"], fig["bus_day"]))
-    t.append("8. Recommended S3, %s: it adds GBP %s million a year against S1's GBP %s million.\n"
-             % (fig["site_name"], m(fig["add"]), m(s["S1"]["add"])))
-    t.append("## 4. Deliverable Answers\n")
-    t.append("### marrable_site_appraisal_2027.xlsx\n")
-    t.append("1. The site to open: S3, %s." % fig["site_name"])
-    t.append("2. Its addition to the chain's annual contribution: GBP %s million." % m(fig["add"]))
-    t.append("3. Cases a week the distribution centre delivered to each store, 6 October 2025 to 29 March 2026:")
-    for k, v in fig["ask_a"].items():
-        t.append("   - Store %s: %s cases" % (k, c(v)))
-    t.append("4. Paid hours a week worked at each store, 6 October 2025 to 29 March 2026:")
-    for k, v in fig["ask_b"].items():
-        t.append("   - Store %s: %s hours" % (k, c(v)))
-    t.append("5. Bus departures that pick up passengers from stops within %d metres on %s %d January 2027:" % (
-        fig["radius_m"], fig["bus_weekday"], fig["bus_day"]))
-    for k, v in fig["ask_c"].items():
-        t.append("   - %s %s: %s" % (k, s[k]["name"], c(v)))
-    t.append("\n### new_store_case_2027.docx\n")
-    t.append("1. The case for opening S3, %s, which adds GBP %s million a year." % (fig["site_name"], m(fig["add"])))
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(t) + "\n")
+    c, b, r, ask, rt = fig["call"], fig["by_app"], fig["response"], fig["ask"], fig["routes"]
+    win, run = c["app"], c["runner_up"]
+    l0 = rt["L0 the heavy accounts' own upgrades, nobody leaving"]
+    l2 = rt["L2 the stopped accounts' upgrade share, nobody leaving"]
+    l3 = rt["L3 every account that does not upgrade leaves"]
+    lo = min(v[win] for v in fig["standing"].values())
+    hi = max(v[win] for v in fig["standing"].values())
+    pc = fig["shares_pct"]
+    out = []
+    out.append("## Tags\n")
+    out.append("**Domain:** Product Analytics, churn propensity and uplift modelling (a software company's choice of which "
+               "of five apps takes a three-project limit on its free plan first, sized by the 2027 revenue the limit adds, "
+               "with free accounts' response read from the accounts the free plan's storage allowance already stops, "
+               "and each app's recurring revenue bridge from its billing records).")
+    out.append("**Analytical objective:** Opportunity Sizing & Decision Support.\n")
+    out.append("## 1. Final Recommendation\n")
+    out.append("**Brindlecote should take the three-project limit first in %s, where it adds about GBP %s to 2027 revenue.**"
+               % (win, f0(c["addition_rounded"])))
+    out.append("The limit adds GBP %s to %s's 2027 revenue as built (GBP %s to %s across the standing variants of its "
+               "construction), against GBP %s in %s, the next best. The free plan already stops accounts at its two-gigabyte "
+               "storage allowance: the month after an account reaches it, %.1f per cent are on Plus and %.1f per cent have "
+               "stopped using the app, and over the following year a stopped account spends %.2f more months on Plus and %.1f fewer "
+               "months on the free plan than an unstopped account over three projects. %s's GBP %.2f Plus price outweighs "
+               "the free-plan revenue (GBP %.2f a month) each leaver takes with it. Not Tracewood, which the free accounts' "
+               "own upgrade rate with nobody leaving puts first (GBP %s against GBP %s for %s): an account the limit stops "
+               "is not an account upgrading of its own accord, and the leavers cost Tracewood GBP 2.00 a month each. Not "
+               "%s either, which counting every account that does not pay as lost puts first."
+               % (f0(c["addition"]), win, f0(lo), f0(hi), f0(c["runner_up_addition"]), run, pc["plus_next_month"],
+                  pc["gone_next_month"], r["plus_months_gained"], r["free_months_lost"], win, b[win]["plus_price"],
+                  b[win]["free_revenue"], f0(l0["Tracewood"]), f0(l0[win]), win,
+                  max(l3, key=lambda a: l3[a])))
+    out.append("\n## 2. Critical Components\n")
+    out.append("1. The month after a free account first reached the storage allowance (January 2023 to September 2025, "
+               "%s accounts in the research panel), **%.1f per cent** were on Plus and **%.1f per cent** had stopped "
+               "using the app, alike across apps, project counts and account ages, while free accounts over three projects "
+               "move to Plus on their own at about **%.1f per cent a year**." % (f0(r["stops"]), pc["plus_next_month"],
+                                                                                  pc["gone_next_month"], pc["own_plus_12"]))
+    out.append("2. Set against unstopped free accounts over three projects, a stopped account gains **%.2f months on Plus** "
+               "and loses **%.1f months of free use** in the year after the stop." % (r["plus_months_gained"],
+                                                                                      r["free_months_lost"]))
+    out.append("3. The limit reaches **%s** free accounts over three active projects in %s and **%s** more reaching a "
+               "fourth during 2027, and adds **GBP %s** to %s's 2027 revenue (about GBP %s), more than in any other app "
+               "(%s GBP %s)." % (f0(b[win]["over_three"]), win, f0(b[win]["reaching_four_2027"]), f0(c["addition"]), win,
+                                 f0(c["addition_rounded"]), run, f0(c["runner_up_addition"])))
+    out.append("\n## 3. Step-by-Step Solution\n")
+    steps = [
+        "Read free_plan_limit_paper_2027.pdf: the limit stops a free account over three active projects from editing until "
+        "it archives or moves to Plus; the addition is the app's 2027 revenue with the limit less without it, a month on Plus "
+        "at the Plus price and a month of free use at the free-plan revenue per active free account (section 4), the limit "
+        "reaching every free account over three active projects on 1 January 2027 and every one reaching a fourth during the year.",
+        "Built each research panel account's months from research_panel_account_months_2023_2026.csv (Leafnote read as "
+        "Notewell before April 2025): plan, active projects, storage and whether it was used that month; an account with no "
+        "row in a month was not used.",
+        "Found the free plan's existing stop in plan_catalogue_2026.csv (2 GB, 2,048 MiB, of storage on the free plan) and the "
+        "free account-months at it (storage within one per cent of 2,048 MiB): %s accounts reached it for the first time from "
+        "January 2023 to September 2025, each followed for twelve months." % f0(r["stops"]),
+        "Compared them with free accounts over three active projects below the allowance in the same months (the accounts the "
+        "limit stops, as they act unstopped), month by month for a year: %.2f more months on Plus and %.1f fewer months of free "
+        "use for a stopped account." % (r["plus_months_gained"], r["free_months_lost"]),
+        "Took the accounts the limit reaches from free_accounts_by_active_projects_2023_2026.xlsx for %s (bands 4-5, 6-9 and 10+), "
+        "and the accounts reaching a fourth active project each month of a year from the panel's accounts below four in "
+        "September 2025, applied to each app's accounts with three or fewer." % fig["kpi_month"],
+        "Valued each app's year: the accounts over the limit on 1 January for twelve months after the stop and each month's new "
+        "arrivals for the rest of the year, at the paper's Plus price and free-plan revenue: %s." % "; ".join(
+            "%s GBP %s" % (a, f0(b[a]["addition"])) for a in S.APPS),
+        "Checked the standing variants (every stop rather than the first, the allowance read at 2,000, 1,950 or 2,047 MiB, "
+        "every unstopped free account as the comparison, the stops of one year, a year's crossings to September 2024, each "
+        "app read from its own stopped accounts, only accounts with four or more projects): %s stays first, GBP %s to %s." % (
+            win, f0(lo), f0(hi)),
+        "For the bridge, valued every subscription on FIN-07 (recurring_revenue_policy_fin07.pdf): a monthly price as it is, "
+        "an annual price over twelve, seat price times seats, after discounts of twelve months or more, euros and dollars at "
+        "the 2026/27 plan rates in fx_plan_rates.csv; live from billing_subscriptions_20250930.csv and the events to the end "
+        "of 30 September 2026 (a cancellation ends a subscription at its subscription.ended event, a past-due subscription "
+        "stays live).",
+        "Took the customer as the person or organisation that pays: a subscription opened under a new customer record by the "
+        "same account the day the platform ended its old one after failed payments is the same customer, and staff accounts' "
+        "Plus subscriptions a company record moved onto one Team subscription stay with that company; then compared each "
+        "customer's recurring revenue at the two dates, app by app.",
+    ]
+    for i, s in enumerate(steps, 1):
+        out.append("%d. %s" % (i, s))
+    out.append("\n## 4. Deliverable Answers\n")
+    out.append("### free_plan_limit_2027.xlsx\n")
+    out.append("1. App to take the three-project limit first: %s." % win)
+    out.append("2. What it adds to %s's 2027 revenue: GBP %s (nearest GBP %s; GBP %s as built)." % (
+        win, f0(c["addition_rounded"]), f0(fig["rounding_gbp"]), f0(c["addition"])))
+    out.append("3. Each app's 2027 addition behind the call: %s." % "; ".join("%s GBP %s" % (a, f0(b[a]["addition"]))
+                                                                         for a in S.APPS))
+    out.append("4. Each app's recurring revenue movements from 30 September 2025 to 30 September 2026, GBP a month (new, "
+               "expansion, contraction, churned):")
+    for a in S.APPS:
+        out.append("   - %s: new %s, expansion %s, contraction %s, churned %s" % (
+            a, f0(ask["%s new" % a]), f0(ask["%s expansion" % a]), f0(ask["%s contraction" % a]), f0(ask["%s churned" % a])))
+    out.append("\n### free_plan_limit_case_2027.docx\n")
+    out.append("1. The case for the executive: take the limit first in %s, about GBP %s added to its 2027 revenue, read "
+               "from the accounts the storage allowance already stops; not Tracewood, which only the free accounts' own "
+               "upgrades with nobody leaving put first." % (win, f0(c["addition_rounded"])))
+    with open(path, "w") as fh:
+        fh.write("\n".join(out) + "\n")

@@ -1,30 +1,34 @@
 {
  "task": "task305",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "product-analytics / churn-propensity-uplift-modeling",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-27",
- "stump": "A competent analyst prices the limit at the heavy free users' own upgrade rate with nobody leaving and files Canvasly, when users a limit stops respond as the storage limit's users do and the leavers cost each app its free-plan revenue; the golden is Ledgerline.",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-28",
+ "stump": "A competent analyst prices the limit at the free accounts over three projects' own upgrade rate with nobody leaving and files Tracewood (GBP 179,082); the step that lands it there is reading the response from accounts nothing stops, when the free plan's storage allowance already stops accounts and, set against unstopped ones, they show 5.2 per cent paying and 36.7 per cent leaving, whose free-plan revenue decides the app: Ledgerline, about GBP 100,000.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28",
+  "checks": 53
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, six lines ruled",
+  "reader": "architecture 3 read 1 on 9ac88dea: no decisive-step sentence, no ranking or helping file, no answer figure; question 6 analytical"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.07"
+  "heart": "WARN (overuse.objective, repeat.decision, repeat.deliverables, repeat.question_form against task118 v4); forcing event redrawn to cutover_or_migration",
+  "surface": "five pairs promoted on card axes (task303, task304, task307, task53, task170), surface 0.071 to 0.090, for the author's adjudicated read",
+  "nearest": "0.07 (task243)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC, APPROVE (architecture 3 pass 1, zip 9ac88dea)",
+  "disposition": "APPROVE",
+  "gate_g": "forecasting (secondary method_or_model_selection), analytical_non_defect",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "report": "task305/determinism_check_report_arch3.md"
  },
  "returned": [
   {
@@ -46,17 +50,17 @@
    "commit": "DRAWN (task305) architecture 3"
   }
  ],
- "resume": "stage 2 (architecture 3, Larkfield Software's free-plan limit): prototype the five apps (no churn -> Canvasly, all non-upgraders leaving -> Formbox, the storage limit's response 7/28/65 -> Ledgerline), then the design note's sections, the prompt and precut",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": "2026-10-28",
  "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 2 loop 1): both responses filed the golden, S3 Wrentoft at GBP 0.8 million",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "guard_override": "author, 2026-10-24: heart BLOCKs on ban.strategy and ban.forcing_event against task275 arose after the draw when four builds drawn between them were marked spent; overridden rather than relabelled",
  "shipped_zip": "5cbd1f6fec20d66794704a1b904705b0e9eedcc921359cd3d6e17d5235b08ed4",
- "assertions": 225,
- "verifier": "recomputes the call and all 26 ask figures",
+ "assertions": 66,
+ "verifier": "recomputes every app's 2027 addition and all 20 bridge figures from the zip",
  "builds_byte_identical": true,
- "zip_sha256_16": "c91a09a227bb7365"
+ "zip_sha256_16": "9ac88deafcd8d378"
 }

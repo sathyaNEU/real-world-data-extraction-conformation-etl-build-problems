@@ -1,5 +1,5 @@
-"""task305 documents: the property team's spend-share model sheet (pdf) and the GIS analyst's notes on the data
-folder (md)."""
+"""task305 documents: the monetisation team's paper (pdf), Finance's recurring revenue policy (pdf) and the thread that
+asks for the numbers (eml)."""
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -11,11 +11,11 @@ import params as P
 
 def _styles():
     ss = getSampleStyleSheet()
-    body = ParagraphStyle("body", parent=ss["Normal"], fontName="Helvetica", fontSize=9.4, leading=13.0, spaceAfter=5)
-    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13.0, leading=17, spaceAfter=3)
-    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.2, leading=14,
+    body = ParagraphStyle("body", parent=ss["Normal"], fontName="Helvetica", fontSize=9.6, leading=13.4, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=3)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.4, leading=14,
                         spaceBefore=8, spaceAfter=4, keepWithNext=1)
-    small = ParagraphStyle("small", parent=body, fontSize=8.0, leading=10.6, textColor=colors.HexColor("#444444"))
+    small = ParagraphStyle("small", parent=body, fontSize=8.2, leading=10.8, textColor=colors.HexColor("#444444"))
     return body, h1, h2, small
 
 
@@ -30,108 +30,132 @@ def _footer(text):
     return foot
 
 
-def _table(rows, widths, size=8.4):
-    cell = ParagraphStyle("cell", fontName="Helvetica", fontSize=size, leading=size + 2.2)
+def _table(rows, widths, size=8.6):
+    cell = ParagraphStyle("cell", fontName="Helvetica", fontSize=size, leading=size + 2.4)
     head = ParagraphStyle("head", parent=cell, fontName="Helvetica-Bold")
     rows = [[Paragraph(str(v), head if r == 0 else cell) for v in row] for r, row in enumerate(rows)]
     t = Table(rows, colWidths=[w * mm for w in widths], repeatRows=1)
     t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9A9A9A")),
-                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E3E9E4")),
+                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E4E8EF")),
                            ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     return t
 
 
-def model_sheet(path):
+SOURCES = {"Tracewood": "template marketplace commission and advertising",
+           "Taskfold": "integration partner referrals",
+           "Ledgerline": "bank-feed and payments partner referrals",
+           "Formbox": "payments partner referrals",
+           "Notewell": "advertising"}
+
+
+def paper(path):
     body, h1, h2, small = _styles()
-    s = []
-    s.append(Paragraph("Marrable Foodstores: store sales model", h1))
-    s.append(Paragraph("Spend-share parameters. Property and Network Planning, recalibrated June 2025 (supersedes the "
-                       "parameters of March 2022). Owner: %s." % P.PEOPLE["property"], small))
+    s = [Paragraph("Free plan: a three-project limit, and which app takes it first", h1),
+         Paragraph("Paper for the executive team, meeting of 19 November 2026. Monetisation; %s, head of monetisation. "
+                   "Draft 3, 12 October 2026." % P.PEOPLE["head"], small), Spacer(1, 4)]
+    s.append(Paragraph("1. Proposal", h2))
+    s.append(Paragraph("From 1 January 2027 the free plan of one of our apps keeps up to three active projects an account. "
+                       "A free account over the limit can still open, share and export every project, but can edit only "
+                       "three; to edit another it archives one, or it moves to Plus, which has no project limit. An archived "
+                       "project can be restored at any time within the limit. The other four apps keep the free plan as it "
+                       "is through 2027, and the executive looks at them again with a year of the first app's results.", body))
+    s.append(Paragraph("2. The decision", h2))
+    s.append(Paragraph("The executive takes the limit first in the app where it adds the most to 2027 revenue, and the "
+                       "paper states that addition.", body))
+    s.append(Paragraph("3. What the paper estimates", h2))
+    s.append(Paragraph("For each app, the revenue the limit adds in calendar 2027: the app's 2027 revenue with the limit "
+                       "less its 2027 revenue without it. A month on Plus counts at the app's Plus monthly price before VAT, "
+                       "and a month in which a free account is used counts at the app's free-plan revenue per active free "
+                       "account, both from the table in section 4. The limit reaches every free account with more than "
+                       "three active projects on 1 January 2027 and every free account that reaches a fourth active "
+                       "project during the year. Free accounts and paying customers act as our records show them acting.",
+                       body))
+    s.append(Paragraph("4. Prices and free-plan revenue", h2))
+    rows = [["App", "Plus, a month (GBP, before VAT)", "Free-plan revenue per active free account, a month (GBP)",
+             "Where free-plan revenue comes from"]]
+    for i, a in enumerate(P.APPS):
+        rows.append([a, "%.2f" % P.PLUS[i], "%.2f" % P.FREE_REV[i], SOURCES[a]])
+    s.append(_table(rows, [26, 34, 46, 64]))
     s.append(Spacer(1, 4))
-    s.append(Paragraph("1. What the model does", h2))
-    s.append(Paragraph("The model shares grocery spend among the grocery stores that can win it. Spend starts where people "
-                       "are: a household's at its output area, and anyone else's at the place where they are staying. A "
-                       "store's share of the spend that starts at a place is its pull times its deterrence from that "
-                       "place, divided by the sum of pull times deterrence over every store in the share. A store's sales "
-                       "are the sum of its shares of the spend.", body))
-    s.append(Paragraph("2. The stores in the share", h2))
-    s.append(Paragraph("The grocery stores trading when the spend is made, each at its floor area then: every entry on "
-                       "the VOA rating list for the planning region whose primary description is SUPERMARKET AND "
-                       "PREMISES, SUPERSTORE AND PREMISES or FOOD STORE AND PREMISES and whose summary valuation measures "
-                       "280 m2 or more, our own stores included. A proposed store enters the share at its proposed floor "
-                       "area from the site schedule.", body))
-    s.append(Paragraph("3. Parameters", h2))
-    s.append(_table([["Term", "Value", "Source"],
-                     ["Pull", "floor area in m2, to the power 1.0", "summary valuation, main measure"],
-                     ["Deterrence", "exp(-0.22 x road km)", "fitted, June 2025"],
-                     ["Road km", "1.25 x straight-line km between grid references", "network sample, 2022"],
-                     ["Grid reference", "an output area at its population-weighted centroid; a store, a site or any "
-                                        "other address at its postcode's grid reference", "ONS centroids; ONSPD"],
-                     ["Households", "an output area's households as Census 2021 counted them, not rolled forward",
-                      "Census 2021, TS041"],
-                     ["In-store share", "88 per cent of households' grocery spend; the rest is bought online and is "
-                                        "not shared", "household spend survey, 2025"]],
-                    [30, 82, 52]))
-    s.append(Paragraph("4. Appraisal of a new store (Finance)", h2))
-    s.append(Paragraph("A store's contribution is 26 per cent of its sales less its running costs. A new store adds to the "
-                       "chain's contribution 26 per cent of its own sales, less 26 per cent of the sales it takes from "
-                       "our existing stores, less its running costs as the site schedule estimates them: a year of "
-                       "trading at 2026 prices.", body))
-    s.append(Paragraph("5. Calibration", h2))
-    s.append(Paragraph("Fitted in June 2025 to our stores' card spend by month and cardholder home sector for FY2024/25. "
-                       "The deterrence held at 0.22 and the floor-area power at 1.0, both as in 2022; the road factor was "
-                       "not refitted.", body))
+    s.append(Paragraph("Plus prices are the price list in force from 1 April 2026. Free-plan revenue is Finance's 2026 run "
+                       "rate over the average number of active free accounts; an active free account is one used in the "
+                       "month. Notewell was called Leafnote until April 2025.", small))
+    s.append(Paragraph("5. Records", h2))
+    s.append(Paragraph("Product Analytics' research panel (one account in twenty-five, drawn at sign-up) and the monthly "
+                       "count of free accounts by active projects, both to 30 September 2026; the price list; Billing's "
+                       "subscription records and Finance's recurring revenue policy for the board pack.", body))
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
-                            bottomMargin=18 * mm, title="Store sales model: spend-share parameters", author=P.ORG,
-                            creator=P.ORG, subject="Property and Network Planning", invariant=1)
-    doc.build(s, onFirstPage=_footer("Marrable Foodstores, Property and Network Planning. Internal."),
-              onLaterPages=_footer("Marrable Foodstores, Property and Network Planning. Internal."))
+                            bottomMargin=18 * mm, title="Free plan: a three-project limit", author=P.PEOPLE["head"],
+                            creator=P.ORG, subject="Monetisation", invariant=1)
+    doc.build(s, onFirstPage=_footer("Brindlecote Software, Monetisation. Internal: executive team."),
+              onLaterPages=_footer("Brindlecote Software, Monetisation. Internal: executive team."))
 
 
-VOA_FIELDS = ["Entry number", "Billing authority code", "Community code", "Billing authority reference",
-              "Primary description code", "Primary description", "Unique address reference number (UARN)",
-              "Full property identifier", "Firm's name", "Number or name", "Street", "Town", "Postal district",
-              "County", "Postcode", "Effective date", "Composite indicator", "Rateable value",
-              "Appeal settlement code", "Assessment reference", "List alteration date", "SCAT code and suffix",
-              "Sub-street level 3", "Sub-street level 2", "Sub-street level 1", "Case number", "Current from date",
-              "Current to date"]
-
-
-def voa_spec(path):
-    """the VOA's own layout for the compiled list entries file (publisher documentation)"""
+def policy(path):
     body, h1, h2, small = _styles()
-    s = [Paragraph("Valuation Office Agency: compiled list entries, file specification", h1),
-         Paragraph("Non-domestic rating, 2026 local rating list. Data download service.", small), Spacer(1, 4),
-         Paragraph("Each list entry is one line of text. Fields are separated by an asterisk (*); there is no header "
-                   "line, and an empty field is two consecutive asterisks. Dates are written DD-MON-YYYY. The rateable "
-                   "value is in whole pounds.", body),
-         Paragraph("Field order", h2),
-         _table([["Position", "Field"]] + [[str(k + 1), f] for k, f in enumerate(VOA_FIELDS)], [24, 110])]
+    s = [Paragraph("FIN-07 Recurring revenue", h1),
+         Paragraph("Finance policy, issue 4, April 2026. Owner: financial controller. Supersedes issue 3 (March 2024).",
+                   small), Spacer(1, 4),
+         Paragraph("1. Scope", h2),
+         Paragraph("Recurring revenue is how Finance reports the subscription business month by month and in the board "
+                   "pack. It is a measure of what customers are signed up to pay, not of cash or of revenue under our "
+                   "accounting policies.", body),
+         Paragraph("2. The value of a subscription", h2),
+         Paragraph("A subscription counts at its monthly value: a monthly price as it is, an annual price over twelve, a "
+                   "seat price times the seats, before VAT, and after any discount that runs for twelve months or more. A "
+                   "discount that runs for less than twelve months is left out.", body),
+         Paragraph("3. Currency", h2),
+         Paragraph("Subscriptions in euros and US dollars are translated into pounds at the plan rates for the plan year "
+                   "in which the reporting period ends, so that a bridge moves only on what customers do. The plan year "
+                   "runs from 1 April to 31 March.", body),
+         Paragraph("4. Live subscriptions", h2),
+         Paragraph("A subscription counts while it is live: from its start until it ends. A subscription whose payment has "
+                   "failed stays live while the billing platform retries the payment.", body),
+         Paragraph("5. The bridge", h2),
+         Paragraph("The bridge for a period compares each customer's recurring revenue at the start and at the end of the "
+                   "period, app by app: new where the customer had none at the start, churned where it has none at the "
+                   "end, and expansion or contraction where it has some at both and the end is higher or lower. A "
+                   "customer is the person or organisation that pays. Dates are UK dates; a period ends at midnight at "
+                   "the end of its last day.", body)]
     doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
-                            bottomMargin=18 * mm, title="Compiled list entries: file specification",
-                            author="Valuation Office Agency", creator="Valuation Office Agency", invariant=1)
-    doc.build(s, onFirstPage=_footer("Valuation Office Agency. Open Government Licence v3.0."),
-              onLaterPages=_footer("Valuation Office Agency. Open Government Licence v3.0."))
+                            bottomMargin=18 * mm, title="FIN-07 Recurring revenue", author="Financial controller",
+                            creator=P.ORG, subject="Finance policy", invariant=1)
+    doc.build(s, onFirstPage=_footer("Brindlecote Software, Finance. Policy FIN-07."),
+              onLaterPages=_footer("Brindlecote Software, Finance. Policy FIN-07."))
 
 
-def dc_procedure(path):
-    """the distribution centre's store deliveries procedure (governing document for the DC's records)"""
-    body, h1, h2, small = _styles()
-    s = [Paragraph("Loderwell Gate distribution centre: store deliveries", h1),
-         Paragraph("Transport procedure TP-04, issue 3, September 2025. Owner: transport manager.", small), Spacer(1, 4),
-         Paragraph("1. Planning", h2),
-         Paragraph("Each night's trips are planned on the transport management system from the stores' orders. A trip's "
-                   "load plan gives the cases and cages for each stop; the system keeps every time in UTC.", body),
-         Paragraph("2. At the store", h2),
-         Paragraph("The driver closes each stop on the handset when the trailer leaves the bay. A store may turn a load "
-                   "away at the door, for damage, temperature or no room in the backroom; the driver still closes the "
-                   "stop as delivered, and the planners send the same load again the next day on a trip of its own.",
-                   body),
-         Paragraph("3. Collections", h2),
-         Paragraph("Empty cages and recyclables come back on the same trip and are closed as collections, with no "
-                   "cases.", body)]
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
-                            bottomMargin=18 * mm, title="Store deliveries: transport procedure TP-04", author=P.ORG,
-                            creator=P.ORG, invariant=1)
-    doc.build(s, onFirstPage=_footer("Marrable Foodstores, Loderwell Gate distribution centre. Internal."),
-              onLaterPages=_footer("Marrable Foodstores, Loderwell Gate distribution centre. Internal."))
+def thread(path):
+    head, cfo, an = P.PEOPLE["head"], P.PEOPLE["cfo"], P.PEOPLE["analyst"]
+
+    def addr(name):
+        return "%s <%s@%s>" % (name, name.lower().replace(" ", "."), P.DOMAIN)
+    text = "\r\n".join([
+        "Message-ID: <20261012091422.4F1C7A@%s>" % P.DOMAIN,
+        "Date: Mon, 12 Oct 2026 09:14:22 +0100",
+        "From: %s" % addr(head),
+        "To: %s" % addr(an),
+        "Cc: %s" % addr(cfo),
+        "Subject: Re: Free plan limit, which app first",
+        "In-Reply-To: <20261009174803.11AB02@%s>" % P.DOMAIN,
+        "MIME-Version: 1.0",
+        "Content-Type: text/plain; charset=utf-8",
+        "Content-Transfer-Encoding: 8bit",
+        "",
+        "Frederick,",
+        "",
+        "Leonard wants the paper's numbers before the 19 November meeting: which app should take the three-project",
+        "limit first, and what it adds to that app's 2027 revenue. For the board pack he also wants each app's",
+        "recurring revenue bridge for the year to 30 September, on FIN-07.",
+        "",
+        "Everything Product Analytics, Billing and Finance pulled for this is in the shared folder. Draft 3 of the",
+        "paper is there too; the numbers in it are yours to fill.",
+        "",
+        "Thanks,",
+        "Lynne",
+        "",
+        "On Fri, 9 Oct 2026 at 17:48, %s wrote:" % cfo,
+        "> Lynne, before the 19th I'd like the limit sized app by app, so we put it where it earns most next",
+        "> year, and the year's bridges for the board pack. L.",
+        ""])
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(text)

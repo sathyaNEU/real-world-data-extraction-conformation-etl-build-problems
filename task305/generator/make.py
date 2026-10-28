@@ -1,6 +1,6 @@
-"""Build the pack, compute every owed figure from it, write the goldens, figures.json, submission.md and metadata.json,
-run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run the independent
-verifier on it.
+"""Build the pack, compute every owed figure from it, write the goldens, figures.json, truth.json, submission.md and
+metadata.json, run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run
+the independent verifier on it.
 
     python3 task305/generator/make.py            (full: two builds, the zip, the verifier)
     python3 task305/generator/make.py --once     (one build, no zip)
@@ -16,77 +16,71 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as B
 import figs as FG
 import golden as GD
+import pack as PK
 import params as P
+import truth as TR
 import writeup as WU
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 10, 9, 15, 50, 0)        # the afternoon the appraisal folder was put together
+STAMP = (2026, 10, 12, 16, 40, 0)        # the afternoon the folder was put together
 
 SOURCES = {
-    "households": "Census 2021 table TS041 (ONS bulk download)", "pwc": "the ONS output area population-weighted centroids",
-    "spend": "a data provider's modelled weekly grocery spend per household", "onspd": "the ONS Postcode Directory (May 2026)",
-    "voa_list": "the VOA compiled list entries (asterisk-separated)", "voa_smv": "the VOA summary valuation main measures",
-    "voa_hist": "the VOA historic list entries (asterisk-separated, each version with its current from and to dates)",
-    "voa_hist_smv": "the VOA summary valuation main measures for historic assessments",
-    "estate": "the chain's estate workbook", "cards": "a payment acquirer's merchant-insight feed",
-    "shortlist": "the property team's site schedule", "model": "the property team's model sheet",
-    "voa_spec": "the VOA's compiled list file specification", "dc_proc": "the distribution centre's store deliveries procedure",
-    "tms": "a transport management system's stop export",
-    "receipts": "store handheld goods-in receipts", "wfm": "a workforce management system's paid hours report",
-    "punches": "a time-and-attendance system's clocking punches", "terminals": "a time-and-attendance terminal register",
-    "gtfs_lb": "GTFS as published on the Bus Open Data Service",
-    "gtfs_pdc": "GTFS as published on the Bus Open Data Service", "aadf": "the DfT road traffic count points",
-    "survey": "the chain's customer survey scores"}
+    "paper": "the monetisation team's paper to the executive (PDF)", "thread": "an internal email thread (RFC 5322)",
+    "catalogue": "a software company's price list export", "kpi": "a product analytics team's monthly count workbook",
+    "panel_accounts": "a research panel's account register", "panel_months": "a research panel's monthly account table",
+    "subs": "a subscription billing platform's subscription export",
+    "events": "a subscription billing platform's event export", "fx": "a finance team's plan exchange rates",
+    "policy": "a finance policy document (PDF)", "ratings": "app store rating summaries by month",
+    "acquisition": "a growth marketing team's spend workbook"}
 
 
 def metadata(target):
     files = []
-    for k in B.PACK:
-        f = P.FILES[k]
+    for k, f in P.FILES.items():
         p = os.path.join(target, f)
-        rows = None
-        if f.endswith((".csv", ".txt")):
-            rows = sum(1 for _ in open(p, encoding="utf-8")) - (0 if f.endswith(".txt") else 1)
-        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator) in the layout of %s" % SOURCES[k], "date": "2026-10-09",
+        nrows = None
+        if f.endswith(".csv"):
+            nrows = sum(1 for _ in open(p, encoding="utf-8")) - 1
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": nrows,
+                      "source": "Constructed (seeded generator) in the layout of %s" % SOURCES[k], "date": P.AS_OF,
                       "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task305",
-        "title": "Which of six shortlisted sites a regional grocer should open in 2027, and what it adds to the chain's "
-                 "annual contribution, with the distribution centre's cases a week and the paid hours a week by store "
-                 "and the bus departures near each site",
-        "domain": "Urban & Regional Science",
-        "subdomain": "accessibility-agglomeration-location-analysis (a new grocery store's trade from a spatial-interaction "
-                     "model of every origin's grocery spend within reach, sized as its addition to the chain's contribution)",
+        "title": "Which of five apps should take a three-project limit on its free plan first in 2027, and what it adds to "
+                 "that app's 2027 revenue, with each app's recurring revenue bridge for the year to 30 September 2026",
+        "domain": "Product Analytics",
+        "subdomain": "churn-propensity-uplift-modeling (the response of free accounts a new plan limit stops, read from "
+                     "the accounts an existing limit already stops and set against unstopped accounts, sized as the "
+                     "limit's addition to an app's revenue)",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "other: one of six sites with its sized addition, and three per-store or per-site measures from the "
-                        "chain's operational records (ten, ten and six figures)",
-        "as_of": "2026-10-09",
+        "prompt_shape": "03: one of five apps with its sized addition, and each app's recurring revenue bridge (twenty "
+                        "figures)",
+        "as_of": P.AS_OF,
         "deliverables": [GD.XLSX, GD.DOCX],
-        "distractor_files": [P.FILES[k] for k in B.DISTRACTORS],
-        "context_artifacts": [P.FILES[k] for k in B.CONTEXT],
-        "stated_inputs": ["the spend-share model's parameters and Finance's appraisal rule (spend_share_model_2025.pdf)",
-                          "the six sites' floor areas and running costs (site_shortlist_2027.xlsx)"],
+        "distractor_files": [P.FILES[k] for k in PK.DISTRACTORS],
+        "context_artifacts": [P.FILES["paper"]],
+        "stated_inputs": ["the Plus price and the free-plan revenue per active free account for each app "
+                          "(free_plan_limit_paper_2027.pdf, section 4)",
+                          "the recurring revenue policy (recurring_revenue_policy_fin07.pdf)"] +
+                         ["%.2f" % x for x in P.PLUS + P.FREE_REV],
         "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
-                     "origin": "generated by task305/generator/make.py (seeded, deterministic) around a fictional regional "
-                               "grocer with ten stores in a fictional planning region of twelve towns and their rural parishes "
-                               "(postcode area LQ, placed on the British National Grid): output areas with households and spend, the rating list, "
-                               "the chain's stores and the competitors, holiday parks whose guests live outside the "
-                               "region, an acquirer's card feed by home sector, the distribution centre's trips, the "
-                               "stores' shifts and clocking punches and two bus operators' timetables; layouts follow the "
-                               "public files named, every organisation, place and person is invented, and no real "
-                               "dataset is reproduced.",
-                     "date": "2026-10-09", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-24",
+                     "origin": "generated by task305/generator/make.py (seeded, deterministic) around a fictional UK "
+                               "software company with five apps on free and paid plans: every account's months from each "
+                               "app's launch (sign-up, projects, storage, use, upgrades and departures), a research panel "
+                               "of one account in twenty-five, the monthly count of free accounts by active projects, the "
+                               "billing platform's subscriptions and events for the paying accounts, and the finance "
+                               "team's policy and plan rates; every organisation, product and person is invented, and no "
+                               "real dataset is reproduced.",
+                     "date": P.AS_OF, "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-28",
         "generator": "task305/generator/make.py",
         "files": files,
     }
@@ -96,7 +90,6 @@ def metadata(target):
 
 
 def walk(folder):
-    """every file under a folder, by its path relative to it"""
     out = []
     for root, dirs, files in os.walk(folder):
         dirs.sort()
@@ -134,8 +127,9 @@ def fresh(folder):
 
 def main(second=True, checks=True):
     fresh(TARGET)
-    B.build(TARGET)
+    world = PK.build(TARGET)
     stamp(TARGET)
+    TR.write(world, os.path.join(HERE, "truth.json"))
     fresh(GOLDEN)
     fig = FG.compute(TARGET)
     FG.write(fig, os.path.join(HERE, "figures.json"))
@@ -149,7 +143,9 @@ def main(second=True, checks=True):
     if second:
         tmp = tempfile.mkdtemp()
         t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
-        B.build(t2)
+        os.makedirs(t2)
+        os.makedirs(g2)
+        PK.build(t2)
         stamp(t2)
         GD.write(g2, FG.compute(t2))
         stamp(g2)

@@ -1,93 +1,54 @@
-"""Every figure the goldens and the write-up state, computed from the pack alone, written to figures.json."""
-import datetime as dt
+"""Every owed figure, computed from the cut pack by solve.py, written to figures.json."""
 import json
 
-import params as P
+import numpy as np
+
 import solve as S
 
 
+def nearest(x, step):
+    return int(step * round(float(x) / step))
+
+
 def compute(target):
-    pk = S.Pack(target)
-    c = pk.call()
-    g, r0 = c["golden"], c["resident"]
-    guests = pk.guests()
-    parks = sorted(pk.parks, key=lambda p: -p["n"])
-    pl = parks[0]
-    s3 = g[c["site"]]
-    names = {r["site"]: "%s, %s" % (r["town"], r["address"]) for r in pk.sites}
-    area = {r["site"]: float(r["proposed_floor_area_m2"]) for r in pk.sites}
-    A, B, C = S.ask_a(target), S.ask_b(target), S.ask_c(target)
-    tenth = lambda v: round(v / 1e5) / 10.0
-    # our stores' modelled share of each park's spend in the card feed's year, on the stores and pitches of then
-    own = [k for k, x in enumerate(pk.stores_2025) if x["own"]]
-    park_share = {}
-    for p in pk.parks_2025:
-        sh = pk.shares(p["xy"], pk.stores_2025)
-        park_share[p["pc"]] = sum(sh[k] for k in own)
-    own_now = [k for k, x in enumerate(pk.stores) if x["own"]]
-    park_share_now = {}
-    for p in pk.parks:
-        sh = pk.shares(p["xy"], pk.stores)
-        park_share_now[p["pc"]] = sum(sh[k] for k in own_now)
-    v_now = pk.v_per_pitch(stores=pk.stores, parks=pk.parks)
-    a_now = pk.appraise(v_now)
-    p25 = {p["pc"]: int(p["n"]) for p in pk.parks_2025}
-    a25 = {x["id"]: x["a"] for x in pk.stores_2025 if x["own"]}
-    anow = {x["id"]: x["a"] for x in pk.stores if x["own"]}
-    side = {"107": "RADDLEFORD WATER HOLIDAY PARK", "105": "WITHYBECK LAKES CARAVAN PARK", "104": "SALLOWMERE MILL CARAVAN PARK"}
-    named = {r[9]: (pk.smv[r[6]][0], r[14]) for r in pk.voa if r[6] in pk.smv and pk.smv[r[6]][1] == "pitches"}
-    v_direct = sum(guests[k] for k in side) / sum(named[v][0] for v in side.values())
-    ad = pk.appraise(v_direct)
-    d_site = max(ad, key=lambda k: ad[k]["add"])
-    fig_extra = dict(
-        park_shares_pct={v.title(): int(round(100 * park_share[named[v][1]])) for v in side.values()},
-        park_shares_now_pct={v.title(): int(round(100 * park_share_now[named[v][1]])) for v in side.values()},
-        pitches_2025={v.title(): p25[named[v][1]] for v in list(side.values()) + ["WRENTOFT LAKES HOLIDAY PARK"]},
-        pitches_now={v.title(): int(named[v][0]) for v in list(side.values()) + ["WRENTOFT LAKES HOLIDAY PARK"]},
-        area_2025={k: round(a25[k]) for k in ("105", "107")}, area_now={k: round(anow[k]) for k in ("105", "107")},
-        v_now=int(round(v_now / 10.0) * 10), now_add=tenth(a_now[c["site"]]["add"]),
-        now_site=max(a_now, key=lambda k: a_now[k]["add"]),
-        v_direct=int(round(v_direct / 10.0) * 10), direct_site=d_site, direct_add=tenth(ad[d_site]["add"]),
-        direct_s3=tenth(ad[c["site"]]["add"]),
-    )
-    fig = dict(
-        site=c["site"], site_name=names[c["site"]], add=tenth(c["add"]), add_exact=round(c["add"]),
-        V=int(round(c["V"] / 10.0) * 10), V_exact=round(c["V"], 1),
-        wrentoft_lakes_pitches=int(pl["n"]),
-        s3_sales=tenth(s3["new"]), s3_took=round(s3["took"] / 1e3), s3_cost=round(s3["cost"]),
-        s3_resident=tenth(r0[c["site"]]["add"]), resident_site=c["resident_site"],
-        s3_resident_rank=["first", "second", "third", "fourth", "fifth", "sixth"][
-            sorted(r0, key=lambda k: -r0[k]["add"]).index(c["site"])],
-        resident_site_name=names[c["resident_site"]], resident_add=tenth(r0[c["resident_site"]]["add"]),
-        runner_up="S1", runner_up_add=tenth(g["S1"]["add"]),
-        sites={k: dict(name=names[k], add=tenth(v["add"]), add_exact=round(v["add"]), sales=tenth(v["new"]),
-                       sales_exact=round(v["new"]), took=round(v["took"]), cost=round(v["cost"]),
-                       resident_add=tenth(r0[k]["add"]), resident_add_exact=round(r0[k]["add"]),
-                       area=int(area[k])) for k, v in g.items()},
-        guests_by_store={k: round(v) for k, v in sorted(guests.items())},
-        parks=[dict(desc=p["desc"], pitches=int(p["n"]), postcode=p["pc"]) for p in parks],
-        n_stores_share=len(pk.stores),
-        ask_a={k: int(round(v)) for k, v in sorted(A.items())}, ask_a_exact={k: round(v, 2) for k, v in sorted(A.items())},
-        ask_b={k: int(round(v)) for k, v in sorted(B.items())}, ask_b_exact={k: round(v, 2) for k, v in sorted(B.items())},
-        ask_c={k: int(v) for k, v in sorted(C.items())},
-        weeks=25, radius_m=int(P.BUS_RADIUS), margin_pct=int(P.MARGIN * 100), instore_pct=int(P.INSTORE * 100),
-        beta=P.BETA, roadf=P.ROADF, min_area=P.MIN_AREA, weeks_year=52, turn_base_min=4, turn_min_per_case=0.02,
-        n_park_sites=len(parks), area_code=P.AREA, deterrence_exponent=-P.BETA, bus_day=P.BUS_DAY.day,
-        bus_weekday=P.BUS_DAY.strftime("%A"), bus_eve=(P.BUS_DAY - dt.timedelta(days=1)).day,
-        store_numbers=sorted(int(k) for k in A),
-    )
-    fig.update(fig_extra)
+    price, free = S.paper_table(target)
+    heavy, light, latest = S.kpi(target)
+    g, c = S.golden_call(target)
+    up1, free1, gone1 = S.response(target)
+    rt, info = S.routes(target)
+    order = np.argsort(-g)
+    win, run = int(order[0]), int(order[1])
+    dP, dF, fr = c["P1"] - c["P0"], c["F0"] - c["F1"], c["fr"]
+    by_app = {}
+    for i, a in enumerate(S.APPS):
+        by_app[a] = {"over_three": int(heavy[i]), "three_or_fewer": int(light[i]),
+                     "reaching_four_2027": int(round(light[i] * fr[:11].sum())),
+                     "plus_price": float(price[i]), "free_revenue": float(free[i]),
+                     "addition": int(round(g[i]))}
+    fig = {
+        "call": {"app": S.APPS[win], "addition": int(round(g[win])), "addition_rounded": nearest(g[win], 50000),
+                 "runner_up": S.APPS[run], "runner_up_addition": int(round(g[run])), "margin": round(float(g[win] / g[run]), 3)},
+        "by_app": by_app,
+        "response": {"stops": int(c["n1"]), "unstopped_account_months": int(c["n0"]), "plus_next_month": round(float(up1), 4),
+                     "free_next_month": round(float(free1), 4), "gone_next_month": round(float(gone1), 4),
+                     "plus_months_gained": round(float(dP.sum()), 4), "free_months_lost": round(float(dF.sum()), 4),
+                     "own_plus_12": round(float(info["U"]), 4), "own_gone_12": round(float(info["L"]), 4),
+                     "stopped_plus": [round(float(x), 4) for x in c["P1"]], "stopped_free": [round(float(x), 4) for x in c["F1"]],
+                     "unstopped_plus": [round(float(x), 4) for x in c["P0"]], "unstopped_free": [round(float(x), 4) for x in c["F0"]],
+                     "reaching_four_by_month": [round(float(x), 5) for x in fr]},
+        "shares_pct": {"plus_next_month": round(100 * float(up1), 1), "free_next_month": round(100 * float(free1), 1),
+                       "gone_next_month": round(100 * float(gone1), 1), "own_plus_12": round(100 * float(info["U"]), 1)},
+        "allowance_mib": 2048, "thresholds_mib": [2000, 1950, 2047], "rounding_gbp": 50000,
+        "kpi_month": str(latest),
+        "routes": {k: {a: int(round(v[i])) for i, a in enumerate(S.APPS)} for k, v in rt.items()},
+        "standing": {k: {a: int(round(v[i])) for i, a in enumerate(S.APPS)}
+                     for k, v in list(S.standing(target).items()) + list(S.adjusted(target).items())},
+        "ask": S.bridge(target),
+    }
     return fig
 
 
 def write(fig, path):
-    with open(path, "w", encoding="utf-8") as fh:
+    with open(path, "w") as fh:
         json.dump(fig, fh, indent=1, sort_keys=True)
         fh.write("\n")
-
-
-if __name__ == "__main__":
-    import sys
-    f = compute(sys.argv[1])
-    print(json.dumps({k: f[k] for k in ("site", "add", "V", "s3_sales", "s3_resident", "resident_site", "resident_add", "runner_up_add")}))
-    print(f["sites"])
