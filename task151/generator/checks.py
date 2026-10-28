@@ -539,7 +539,7 @@ def run(target, golden, W, R, meta_path):
     # ---- the ask: playing-time bonuses other than plate-appearance bonuses paid, 2023 to 2025
     rep = list(csv.DictReader(open(os.path.join(target, REC.F_ILREP), encoding="utf-8")))
     BT = calc.ask_totals(B)
-    GT_ASK = {2023: 580000, 2024: 1080000, 2025: 1230000}
+    GT_ASK = {2023: 525000, 2024: 1005000, 2025: 1085000}
     C("AK1 paid for 2023, 2024, 2025: %s (%d player rows)" % (", ".join(K.money(GT_ASK[y]) for y in sorted(GT_ASK)),
                                                               len(B)),
       {y: round(v) for y, v in BT.items()} == GT_ASK and len(B) == 18, ({y: round(v) for y, v in BT.items()}, len(B)))
@@ -555,7 +555,7 @@ def run(target, golden, W, R, meta_path):
                r["pay_date"] < "2026-01-01" and r["status"] == "PAID"]
     pre_jan = [r for r in pay if r["employee_name"] in pnames and r["pay_date"][5:] == "01-15" and
                r["pay_date"] < "2026-01-01"]
-    C("AK3 the primary: every pitcher's season-end half before the HRIS cutover is a legacy E45 OTHER BONUS line (%d), "
+    C("AK3 the primary: every pitcher's season-end payment before the HRIS cutover is a legacy E45 OTHER BONUS line (%d), "
       "the code the earning-code table migrates as other bonus, and every legacy January half is E40 PERF BONUS (%d), "
       "the code it migrates as the playing-time bonus" % (len(pre_oct), len(pre_jan)),
       pre_oct and all(r["earning_code"] == "E45" and r["earning_description"] == "OTHER BONUS" for r in pre_oct) and
@@ -563,7 +563,8 @@ def run(target, golden, W, R, meta_path):
       codes["E40"]["migrated_as"] == "BPA" and codes["BPA"]["description"] == "Playing-time bonus" and
       codes["BOT"]["description"] == "Other bonus", (len(pre_oct), len(pre_jan)))
     twins = [r for r in pay if r["earning_code"] == "E45" and r["employee_name"] not in pnames]
-    C("AK3b the catch-all code has benign twins: E45 also carries award bonuses to hitters (%d lines)" % len(twins),
+    C("AK3b the catch-all code has benign twins: E45 also carries award bonuses and deferred salary to hitters (%d lines)"
+      % len(twins),
       len(twins) >= 2 and all(r["pay_date"][5:] in ("10-15", "11-15") for r in twins), len(twins))
     pnames_all = pnames | {REC.hris_name(L.players[k].name) for k in REC.PITCHER_CONTRACTS}
     hitters_pt = [r for r in pay if r["earning_code"] in ("E40", "BPA") and r["employee_name"] not in pnames_all]
@@ -582,18 +583,23 @@ def run(target, golden, W, R, meta_path):
                     sums = {s + a_ * j for s in sums for j in range(n_ + 1)}
                 return round(amount) in sums
         return False
-    C("AK3d the wrong reading is complete: every half the playing-time codes carry is itself a full bonus the player's "
-      "own terms allow, so no row fails a check against the register", all(valid_full(n, y, B[(y, n)] / 2)
-                                                                          for (y, n) in B))
     cr = calc.ask(P, "cracker")
+    last_rows = {(y, n) for (y, n) in B if any(r["Player"] == n and calc.parse_terms(r[calc.OTHER_COL]) and
+                                               max(calc.seasons_of(r["Seasons"])) == y for r in calc.register(target))}
+    C("AK3d the wrong reading is complete: every amount the playing-time codes carry for a season is itself a full bonus "
+      "the player's own terms allow, and the %d seasons they carry nothing for (each a contract's last) read as seasons "
+      "with no line reached, so no row fails a check against the register" % len(last_rows),
+      all(valid_full(n, y, v) for (y, n), v in cr.items()) and set(B) - set(cr) == last_rows and len(last_rows) == 7,
+      sorted(set(B) - set(cr)))
     crt = calc.ask_totals(cr)
     hit_rows = [k2 for k2 in B if abs(cr.get(k2, 0) - B[k2]) < 0.5]
     hit_tot = [y for y in BT if abs(crt.get(y, 0) - BT[y]) < 0.5]
     C("AK4 the cracker (the earning-code table's playing-time codes, each legacy line by its name, voids netted, each "
-      "half to its season) misses all %d figures, every row at exactly half its golden" % (len(B) + len(BT)),
-      not hit_rows and not hit_tot and all(abs(cr.get(k2, 0) - B[k2] / 2) < 0.5 for k2 in B), (hit_rows, hit_tot))
-    designed = {"payyear": (18, 3), "e45_whole": (3, 3), "e45_all": (4, 3), "map": (1, 1), "register_id": (1, 1),
-                "gross": (1, 1)}
+      "half to its season) misses all %d figures: every row it carries at exactly half its golden, a contract's last "
+      "season not at all" % (len(B) + len(BT)),
+      not hit_rows and not hit_tot and all(abs(cr[k2] - B[k2] / 2) < 0.5 for k2 in cr), (hit_rows, hit_tot))
+    designed = {"payyear": (18, 3), "e45_whole": (8, 3), "e45_all": (9, 3), "map": (1, 1), "register_id": (1, 1),
+                "gross": (1, 1), "settle_whole": (5, 3), "double": (7, 3), "cap": (5, 3), "roundest": (5, 3)}
     for mode, (rows_min, tot_min) in designed.items():
         S2 = calc.ask(P, mode)
         T2 = calc.ask_totals(S2)
@@ -625,6 +631,90 @@ def run(target, golden, W, R, meta_path):
     jan23 = [r for r in pay if r["pay_date"] == "2023-01-15" and r["earning_code"] == "E40"]
     C("AK9 the January 2023 line is the 2022 season's second half (the pay-year reading moves it into 2023)",
       len(jan23) == 1 and jan23[0]["employee_name"] in pnames, jan23)
+    # ---- the second device: the season-end line after a contract's last season settles the deferred salary too
+    reg_all = calc.register(target)
+    sal_paid = defaultdict(float)
+    by_ln = {calc.legacy_key(r["Player"]): r["Player"] for r in reg_all}
+    by_eid = {str(r["Employee ID"]): r["Player"] for r in reg_all}
+    for r in pay:
+        if r["earning_code"] in calc.SALARY_CODES:
+            nm = by_eid.get(r["employee_id"]) if not r["employee_id"].isdigit() else by_ln.get(r["employee_name"])
+            sal_paid[(nm, int(r["pay_date"][:4]))] += float(r["amount"])
+    short = {}
+    for r in reg_all:
+        ss = calc.seasons_of(r["Seasons"])
+        sh = sum(r["Salary %d" % y] - sal_paid[(r["Player"], y)] for y in ss if 2023 <= y <= 2026 and r.get("Salary %d" % y))
+        if abs(sh) > 0.5:
+            short[(r["Player"], r["Seasons"])] = round(sh, 2)
+    dfr_rows = {k2: v["deferral"] for k2, v in D_.items() if v["deferral"]}
+    gen_dfr = {(y, REC.hris_name(L.players[k].name)): REC.deferral_due(k, y) for k in REC.PITCHER_CONTRACTS
+               for y in calc.ASK_SEASONS if REC.last_season(k, y) and REC.deferral_due(k, y)}
+    tmax = {k2: max(calc.combos([(a_, n_) for (nm, ss), tt in terms_of.items() if nm == k2[1] and
+                                 k2[0] in calc.seasons_of(ss) for a_, n_ in tt])) for k2 in B}
+    C("DF1 the second device: after a contract's last season the season-end line settles the season's whole bonus and, "
+      "on %d pitchers' contracts, the salary the contract deferred to its end; each such line less any award is above "
+      "the largest bonus his terms allow, and the excess is the register's salary less the salary lines paid over the "
+      "contract, to the dollar %s" % (len(dfr_rows), sorted((y, n, round(v)) for (y, n), v in dfr_rows.items())),
+      len(dfr_rows) == 5 and {k2: round(v) for k2, v in dfr_rows.items()} == {k2: round(v) for k2, v in gen_dfr.items()}
+      and all(D_[k2]["oct"] - D_[k2]["award"] > tmax[k2] and D_[k2]["jan"] == 0 for k2 in dfr_rows) and
+      {y for y, _ in dfr_rows} == set(calc.ASK_SEASONS), dfr_rows)
+    full1 = calc.ask(P, "settle_whole")
+    f1t = calc.ask_totals(full1)
+    f1_miss = {k2 for k2 in B if abs(full1.get(k2, 0) - B[k2]) >= 0.5}
+    C("DF2 the full handling of the catch-all (both payments whatever the code, every All-Star taken out, the reissued "
+      "number by name, the void netted, each payment to its season) misses the %d deferral rows and all three totals, "
+      "keeping %d of %d figures" % (len(f1_miss), len(B) - len(f1_miss), len(B) + len(BT)),
+      f1_miss == set(dfr_rows) and all(abs(f1t[y] - BT[y]) >= 0.5 for y in BT), sorted(f1_miss))
+    C("DF3 every deferral row's golden is below the largest bonus his terms allow, so cutting the line to his terms "
+      "misses it too", all(B[k2] < tmax[k2] for k2 in dfr_rows) and
+      {k2 for k2 in B if abs(calc.ask(P, "cap").get(k2, 0) - B[k2]) >= 0.5} == set(dfr_rows))
+    dbl = calc.ask(P, "double")
+    C("DF4 twice the January half misses every contract's last season (no January payment follows it)",
+      all(abs(dbl.get(k2, 0) - B[k2]) >= 0.5 for k2 in last_rows) and all(abs(dbl[k2] - B[k2]) < 0.5 for k2 in dbl
+                                                                          if k2 not in last_rows))
+    rnd = calc.ask(P, "roundest")
+    C("DF8 aimed: splitting a line his terms cannot hold into a bonus they allow and the roundest remainder (a guess at a "
+      "round non-bonus payment, no reconciliation) misses every deferral row and every total",
+      {k2 for k2 in B if abs(rnd.get(k2, 0) - B[k2]) >= 0.5} == set(dfr_rows) and
+      all(abs(calc.ask_totals(rnd)[y] - BT[y]) >= 0.5 for y in BT), sorted((k2, rnd.get(k2)) for k2 in dfr_rows))
+    reg_text = " ".join(str(c) for r in reg_all for c in r.values() if c is not None)
+    wbh = openpyxl.load_workbook(os.path.join(target, REC.F_REG), read_only=True)
+    head_text = " ".join(str(c) for row in wbh["Register"].iter_rows(max_row=4, values_only=True) for c in row if c)
+    C("DF5 silent: no shipped file states a deferral of a club contract (the register carries no deferral column or "
+      "note; FIN-14 3.2 states the policy, and the term sheets the 2027 signing's own deferral, 2033 to 2037)",
+      not re.search(r"defer", reg_text + " " + head_text, re.I) and
+      not re.search(r"defer", " ".join(t for f, t in texts.items() if f not in (DOC.F_FIN14, DOC.F_TERMS)), re.I) and
+      re.search(r"deferred,\s+payable\s+in\s+equal\s+installments\s+2033\s+to\s+2037", texts[DOC.F_TERMS]))
+    hit_def = {by_ln.get(r["employee_name"]): float(r["amount"]) for r in pay if r["earning_code"] == "E45" and
+               r["pay_date"] == "2024-10-15" and r["employee_name"] not in pnames}
+    vet_short = {k2: v for k2, v in short.items() if k2[1] == "2023-2024" and not any(
+        calc.parse_terms(r[calc.OTHER_COL]) for r in reg_all if (r["Player"], r["Seasons"]) == k2)}
+    star24 = {n: sum(calc.parse_awards(r[calc.AWARD_COL])) for r in reg_all for n in [r["Player"]]
+              if r["Seasons"] == "2023-2024" and "All-Star" in (r[calc.AWARD_COL] or "")}
+    C("DF6 benign twins: the catch-all carries the deferred salary of two hitters whose contracts ended in 2024, one "
+      "line alone and one with an All-Star bonus in the same line; the ask counts neither (no hitter's contract carries "
+      "other terms) %s" % sorted((n, round(v)) for (n, _), v in vet_short.items()),
+      len(vet_short) == 2 and len(hit_def) == 2 and all(abs(hit_def.get(n, 0) - v - star24.get(n, 0)) < 0.5
+                                                        for (n, _), v in vet_short.items()) and
+      sum(1 for (n, _) in vet_short if n in star24) == 1, (hit_def, vet_short))
+    pit_short = {k2: v for k2, v in short.items() if any(calc.parse_terms(r[calc.OTHER_COL]) for r in reg_all
+                                                         if (r["Player"], r["Seasons"]) == k2)}
+    C("DF7 the deferral is salary: the five pitchers' contracts are the only ones with other terms whose salary lines "
+      "fall short of the register, and each by its deferral", sorted(round(v) for v in pit_short.values()) ==
+      sorted(round(v) for v in dfr_rows.values()), pit_short)
+    C("SF20 the deferred salary inside the season-end line is not a playing-time bonus: FIN-14 3.2 sets deferred "
+      "salary apart from 4.1's class, and each line less the deferral is a bonus his terms allow",
+      "3.2 Salary deferred under a contract" in texts[DOC.F_FIN14] and all(round(B[k2]) in calc.combos(
+          [(a_, n_) for (nm, ss), tt in terms_of.items() if nm == k2[1] and k2[0] in calc.seasons_of(ss)
+           for a_, n_ in tt]) for k2 in dfr_rows))
+    C("SF21 the season-end line after a contract's last season is the whole season paid (a first half with the second "
+      "unpaid reads the same figure: paid is paid), and no such line carries an award", all(
+          D_[k2]["jan"] == 0 and D_[k2]["award"] == 0 for k2 in last_rows))
+    assigned = [r["Player"] for r in reg_all if str(r["Status"]).startswith("Assigned to")]
+    C("SF22 the register's salary is the contract's, gross of the deferral: every contract's salary lines add to it to "
+      "the cent but the seven with a deferral (short by it) and the one assigned mid-season (short by the salary after "
+      "its assignment)", set(short) == set(pit_short) | set(vet_short) | {k2 for k2 in short if k2[0] in assigned} and
+      len(pit_short) == 5 and len(vet_short) == 2 and len(assigned) == 1, sorted(short))
     main_figs = {GOLD_TOTAL} | set(GOLD_PER.values())
     C("AK10 no ask figure equals a figure of the call", not ({round(v) for v in B.values()} | set(GT_ASK.values())) &
       main_figs)
@@ -785,9 +875,9 @@ def run(target, golden, W, R, meta_path):
     for r in ws3.iter_rows(min_row=4, values_only=True):
         if isinstance(r[0], int) and r[1]:
             yy = r[0]
-            pb[(r[0], r[1])] = r[6]
+            pb[(r[0], r[1])] = r[7]
         elif r[1] and str(r[1]).startswith("Total"):
-            ptot[int(str(r[1]).split()[-1])] = r[6]
+            ptot[int(str(r[1]).split()[-1])] = r[7]
     C("GD3 the workbook's payments equal the ask, row by row and in total", pb == {
         (y, DL.plain(n)): round(v) for (y, n), v in B.items() if v} and ptot == {y: round(v) for y, v in BT.items()},
       (pb, ptot))

@@ -655,7 +655,10 @@ F_REG = "ral_player_contract_register_2023_2026.xlsx"
 OTHER_COL = "Other playing-time bonuses (each season)"
 AWARD_COL = "Award bonuses"
 ASK_SEASONS = (2023, 2024, 2025)
-ASK_MODES = ("cracker", "payyear", "e45_whole", "e45_all", "map", "register_id", "gross")
+ASK_MODES = ("cracker", "payyear", "e45_whole", "e45_all", "map", "register_id", "gross", "settle_whole", "double",
+             "cap", "roundest")
+ROUND_UNITS = (1000000, 500000, 250000, 100000, 50000, 25000, 10000, 5000, 1000)
+SALARY_CODES = ("E01", "SAL")
 
 
 def report_name(name):
@@ -704,28 +707,47 @@ def legacy_key(name_hris):
     return "%s %s" % (fold(last).upper(), fold(first).upper())
 
 
+def combos(terms):
+    """Every amount a season's terms allow: [(amount per line, lines)] -> the set of sums."""
+    sums = {0}
+    for a, n in terms:
+        sums = {x + a * j for x in sums for j in range(n + 1)}
+    return sums
+
+
 def ask(P, mode="golden", detail=False):
     """The playing-time bonuses other than plate-appearance bonuses the club paid for each of the 2023, 2024 and 2025
     seasons, by player (the register's name) and season. The golden: every playing-time payment to a player whose
     contract carries other playing-time terms, the season-end (October) payment to its season and the January payment
     to the season before, whatever the payroll code (the legacy payroll paid the season-end halves of the pitchers'
     bonuses on its catch-all code), net of voids, less an award bonus the legacy season-end line carries (the October
-    payment exceeding the January one by an award term of his); each legacy line is the player its legacy name gives.
+    payment exceeding the January one by an award term of his), and less the salary a contract deferred to its end,
+    which the season-end line after its last season also carries (the register's salary for each of its seasons less
+    the salary lines the payroll paid in it); each legacy line is the player its legacy name gives.
     Modes give the stops: 'cracker' (the playing-time codes the earning-code table gives, E40 and BPA, each legacy
-    line the player its legacy name gives, as a key-uniqueness sweep finds), 'payyear' (the same by the year paid), 'e45_whole' (the catch-all lines taken whole),
-    'e45_all' (every bonus line to those players, any month, taken whole), 'map' (every legacy number through the HRIS
-    map), 'register_id' (every legacy number to the register's own Employee ID), 'gross' (the void's reversal left out),
-    'golden'."""
+    line the player its legacy name gives, as a key-uniqueness sweep finds), 'payyear' (the same by the year paid),
+    'e45_whole' (the catch-all lines taken whole), 'e45_all' (every bonus line to those players, any month, taken
+    whole), 'map' (every legacy number through the HRIS map), 'register_id' (every legacy number to the register's own
+    Employee ID), 'gross' (the void's reversal left out), 'settle_whole' (the full handling of the catch-all with every
+    hazard, the season-end line after a contract's last season taken whole), 'double' (twice the January half), 'cap'
+    ('settle_whole' with each row cut to the largest amount his terms allow at or below it), 'roundest' ('settle_whole'
+    with a line his terms cannot hold split into a bonus they allow and the roundest remainder), 'golden'."""
     pay = read_csv(os.path.join(P.target, F_PAY))
     hmap = {r["legacy_employee_no"]: r["employee_id"] for r in read_csv(os.path.join(P.target, F_HRIS))}
     reg = register(P.target)
     other, awards, by_id, by_legacy_name = defaultdict(set), defaultdict(set), {}, {}
+    contracts, terms = [], {}
     for r in reg:
         name = r["Player"]
         by_id.setdefault(str(r["Employee ID"]), name)
         by_legacy_name[legacy_key(name)] = name
-        if parse_terms(r[OTHER_COL]):
-            other[name] |= seasons_of(r["Seasons"])
+        tt = parse_terms(r[OTHER_COL])
+        if tt:
+            ss = seasons_of(r["Seasons"])
+            other[name] |= ss
+            contracts.append((name, ss, {y: r.get("Salary %d" % y) for y in range(2023, 2027)}))
+            for y in ss:
+                terms[(name, y)] = [(a, len(lines)) for _, a, lines in tt]
         for a in parse_awards(r[AWARD_COL]):
             awards[name].add(a)
 
@@ -742,6 +764,18 @@ def ask(P, mode="golden", detail=False):
     def season_of(d):
         return d.year if d.month >= 7 else d.year - 1
 
+    # the salary each contract deferred to its end: its register salary less the salary lines paid, season by season
+    paid_salary = defaultdict(float)
+    for r in pay:
+        if r["earning_code"] in SALARY_CODES:
+            paid_salary[(who(r), ymd(r["pay_date"]).year)] += float(r["amount"])
+    deferral = {}
+    if mode not in ("settle_whole", "cap", "roundest", "e45_whole", "e45_all", "double", "cracker", "payyear"):
+        for name, ss, sal in contracts:
+            short = sum(sal[y] - paid_salary[(name, y)] for y in ss if sal.get(y))
+            if short > 0.5:
+                deferral[(max(ss), name)] = round(short, 2)
+
     parts = defaultdict(lambda: defaultdict(float))
     for r in pay:
         name = who(r)
@@ -752,8 +786,12 @@ def ask(P, mode="golden", detail=False):
         code = r["earning_code"]
         if mode == "gross" and amt < 0:
             continue
-        if mode in ("cracker", "payyear"):
+        if mode in ("cracker", "payyear", "double"):
             if code not in ("E40", "BPA"):
+                continue
+            if mode == "double":
+                if d.month == 1:
+                    parts[(d.year - 1, name)]["all"] += 2 * amt
                 continue
             y = d.year if mode == "payyear" else season_of(d)
             parts[(y, name)]["all"] += amt
@@ -772,16 +810,22 @@ def ask(P, mode="golden", detail=False):
         if y not in ASK_SEASONS or y not in other[name]:
             continue
         award = 0.0
+        dfr = deferral.get((y, name), 0.0)
         if "all" in p:
             v = p["all"]
         else:
-            v = p["oct"] + p["jan"]
-            diff = round(p["oct"] - p["jan"], 2)
-            if mode != "e45_whole" and diff > 0.5 and diff in awards[name]:
+            v = p["oct"] - dfr + p["jan"]
+            diff = round(p["oct"] - dfr - p["jan"], 2)
+            if mode != "e45_whole" and p["jan"] > 0.5 and diff > 0.5 and diff in awards[name]:
                 award = diff
                 v -= diff
+        if mode == "cap":
+            v = max(x for x in combos(terms[(name, y)]) if x <= v + 0.5)
+        if mode == "roundest" and v > max(combos(terms[(name, y)])) + 0.5:
+            v = max((next((u for u in ROUND_UNITS if round(v - b) % u == 0), 1), b)
+                    for b in combos(terms[(name, y)]) if b <= v + 0.5)[1]
         if abs(v) > 0.5:
-            out[(y, name)] = dict(oct=p["oct"], jan=p["jan"], award=award, paid=v) if detail else v
+            out[(y, name)] = dict(oct=p["oct"], jan=p["jan"], award=award, deferral=dfr, paid=v) if detail else v
     return out
 
 

@@ -257,7 +257,7 @@ def write_book(R, path):
                  "December 11, 2026)" % tuple(usd(tot) for _, _, tot in paid_rows(R)))
     ws3["A1"].font = Font(bold=True)
     _hdr(ws3, 3, ["Season", "Player", "Contract terms (each season)", "Season-end payment", "January payment",
-                  "Award in season-end line", "Paid for the season"])
+                  "Award in season-end line", "Deferred salary in season-end line", "Paid for the season"])
     r = 4
     for y, rows, tot in paid_rows(R):
         for n, v in rows:
@@ -266,33 +266,39 @@ def write_book(R, path):
             ws3.cell(row=r, column=2, value=plain(n))
             ws3.cell(row=r, column=3, value=terms_for(R, n, y))
             ws3.cell(row=r, column=4, value=round(dd["oct"])).number_format = "$#,##0"
-            ws3.cell(row=r, column=5, value=round(dd["jan"])).number_format = "$#,##0"
+            ws3.cell(row=r, column=5, value=round(dd["jan"]) or None).number_format = "$#,##0"
             c = ws3.cell(row=r, column=6, value=-round(dd["award"]) if dd["award"] else None)
             c.number_format = "$#,##0;($#,##0)"
-            ws3.cell(row=r, column=7, value=round(v)).number_format = "$#,##0"
+            c = ws3.cell(row=r, column=7, value=-round(dd["deferral"]) if dd["deferral"] else None)
+            c.number_format = "$#,##0;($#,##0)"
+            ws3.cell(row=r, column=8, value=round(v)).number_format = "$#,##0"
             r += 1
         ws3.cell(row=r, column=2, value="Total %d" % y).font = Font(bold=True)
         parts = [R["BD"][(y, n)] for n, _ in rows]
         for col, v in ((4, sum(p["oct"] for p in parts)), (5, sum(p["jan"] for p in parts)),
-                       (6, -sum(p["award"] for p in parts) or None), (7, tot)):
+                       (6, -sum(p["award"] for p in parts) or None), (7, -sum(p["deferral"] for p in parts) or None),
+                       (8, tot)):
             c = ws3.cell(row=r, column=col, value=round(v) if v is not None else None)
             c.number_format = "$#,##0;($#,##0)"
             c.font = Font(bold=True)
             c.border = Border(top=THIN)
         r += 2
     ws3.cell(row=r, column=1, value="The pitchers' bonuses are paid half in the season-end run (October 15) and half "
-                                    "on the following January 15. Before the January 2026 HRIS cutover the legacy "
-                                    "payroll put the season-end halves on E45 OTHER BONUS and the January halves on E40 "
-                                    "PERF BONUS; from January 2026 both are BPA.")
-    ws3.cell(row=r + 1, column=1, value="An All-Star bonus paid in the same legacy season-end line is taken out (Ruiz "
-                                        "2023, Livingston 2024, Pietersz 2025). White's Cy Young bonus (November 15, "
-                                        "2024) is an award, not playing time.")
-    ws3.cell(row=r + 2, column=1, value="Legacy number %s was reissued: Yordy Benítez's lines to January 2024, Gilmar "
+                                    "on the following January 15; after the last season of a contract the season-end "
+                                    "run pays the whole season. Before the January 2026 HRIS cutover the legacy payroll "
+                                    "put the season-end payments on E45 OTHER BONUS and the January halves on E40 PERF "
+                                    "BONUS; from January 2026 both are BPA.")
+    ws3.cell(row=r + 1, column=1, value="Taken out of the season-end line: an All-Star bonus paid in it (Ruiz 2023, "
+                                        "Livingston 2024, Pietersz 2025), and after a contract's last season the salary "
+                                        "the contract deferred to its end (the register's salary less the salary paid, "
+                                        "each season of the contract). White's Cy Young bonus (November 15, 2024) is an "
+                                        "award, not playing time.")
+    ws3.cell(row=r + 2, column=1, value="Legacy number %s was reissued: Yordy Benítez's lines in 2023, Gilmar "
                                         "Pietersz's from 2025; legacy lines are taken by the name on the line. The "
                                         "October 2025 void and reissue to Reed counts once." % R["reissued"][0])
     ws3.cell(row=r + 3, column=1, value="Sources: ral_payroll_player_earnings_2023_2026.csv; "
                                         "ral_hris_legacy_employee_map.csv; ral_player_contract_register_2023_2026.xlsx.")
-    for col, w in zip("ABCDEFG", (8, 20, 62, 14, 14, 14, 14)):
+    for col, w in zip("ABCDEFGH", (8, 20, 62, 14, 14, 14, 14, 14)):
         ws3.column_dimensions[col].width = w
     ws3.row_dimensions[3].height = 30
     ws3.freeze_panes = "C4"
@@ -491,11 +497,12 @@ def submission(R, fig, path):
     lines.append("8. For each player whose contract in ral_player_contract_register_2023_2026.xlsx carries other "
                  "playing-time terms, added the season-end payment (October 15) and the January 15 payment after it in "
                  "ral_payroll_player_earnings_2023_2026.csv, whatever the code (the legacy payroll paid the pitchers' "
-                 "season-end halves on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star "
-                 "bonus a legacy season-end line carries, each legacy line read by its name (number %s is Yordy "
-                 "Benítez in 2023 and Gilmar Pietersz in 2025): %s." % (
-                     fig["deliverables"]["reissued_legacy_numbers"][0],
-                     "; ".join("%s %s" % (b["season"], b["total"]) for b in pd_)))
+                 "season-end payments on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star "
+                 "bonus a legacy season-end line carries and, in the line after a contract's last season, the salary "
+                 "the contract deferred to its end (its register salary less the E01 salary lines paid, each season), "
+                 "each legacy line read by its name (number %s is Yordy Benítez in 2023 and Gilmar Pietersz in 2025): "
+                 "%s." % (fig["deliverables"]["reissued_legacy_numbers"][0],
+                          "; ".join("%s %s" % (b["season"], b["total"]) for b in pd_)))
     lines.append("")
     lines.append("## 4. Deliverable Answers\n")
     lines.append("### %s\n" % F_BOOK)

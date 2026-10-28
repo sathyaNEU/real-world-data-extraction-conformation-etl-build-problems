@@ -494,11 +494,15 @@ def write_depth_chart_2027(L, out):
 # contracts with their other playing-time bonuses (FIN-14 4.1's innings pitched, games started, relief appearances and
 # days on the Active List) and award terms. Keys are the generator's; every amount is the contract's, and the lines a
 # pitcher reached each season are the season as it happened (nothing keyed ships; the payroll and the register do).
+# 'deferred' is the salary a contract defers to its end (FIN-14 3.2), by the season it is earned: the payroll pays that
+# season's salary less it, and the season-end run after the contract's last season pays it, one line a code a run.
 VET_CONTRACTS = {
     "V1": dict(signed=dt.date(2022, 12, 14), seasons=(2023, 2024), salary=9_500_000, signing_bonus=1_000_000,
-               pa=(140_000, (500, 550, 600, 650)), awards=[("Silver Slugger Award", 75_000)]),
+               pa=(140_000, (500, 550, 600, 650)), awards=[("Silver Slugger Award", 75_000)],
+               deferred={2023: 350_000, 2024: 350_000}),
     "V3": dict(signed=dt.date(2022, 11, 30), seasons=(2023, 2024), salary=6_000_000, signing_bonus=0,
-               pa=(100_000, (450, 500, 550)), awards=[("All-Star selection", 50_000)]),
+               pa=(100_000, (450, 500, 550)), awards=[("All-Star selection", 50_000)],
+               deferred={2023: 200_000, 2024: 200_000}),
     "V2": dict(signed=dt.date(2023, 12, 6), seasons=(2024, 2025, 2026), salary=8_000_000, signing_bonus=2_000_000,
                pa=(125_000, (500, 550, 600)), awards=[("All-Star selection", 50_000)]),
     "V4": dict(signed=dt.date(2024, 12, 12), seasons=(2025,), salary=7_250_000, signing_bonus=500_000,
@@ -514,17 +518,19 @@ CY5 = "finishing in the top five of the Cy Young Award voting"
 # number of lines of each measure he reached each season (lowest lines first)
 PITCHER_CONTRACTS = {
     "qRAL202301": [dict(signed=dt.date(2021, 12, 2), seasons=(2022, 2023), salary={2022: 11_500_000, 2023: 12_000_000},
-                        terms=[(IP, 70_000, (150, 170, 190))], awards=[],
+                        terms=[(IP, 70_000, (150, 170, 190))], awards=[], deferred={2023: 430_000},
                         reached={2022: {IP: 1}, 2023: {IP: 2}}),
                    dict(signed=dt.date(2023, 12, 12), seasons=(2024, 2025, 2026), salary=14_500_000,
                         terms=[(IP, 100_000, (150, 165, 180)), (GS, 50_000, (25, 30))], awards=[],
                         reached={2024: {IP: 2, GS: 2}, 2025: {IP: 2, GS: 0}, 2026: {IP: 1, GS: 2}})],
     "qRAL202304": [dict(signed=dt.date(2022, 11, 21), seasons=(2023, 2024, 2025), salary=8_250_000,
                         terms=[(IP, 60_000, (160, 180)), (GS, 60_000, (28, 32))], awards=[(CY5, 75_000)],
-                        reached={2023: {IP: 2, GS: 0}, 2024: {IP: 2, GS: 0}, 2025: {IP: 2, GS: 2}})],
+                        deferred={2023: 230_000, 2024: 230_000, 2025: 230_000},
+                        reached={2023: {IP: 2, GS: 0}, 2024: {IP: 2, GS: 0}, 2025: {IP: 2, GS: 1}})],
     "qRAL202303": [dict(signed=dt.date(2023, 11, 26), seasons=(2024, 2025), salary=6_750_000,
                         terms=[(IP, 85_000, (150, 175)), (GS, 85_000, (28, 32))], awards=[],
-                        reached={2024: {IP: 2, GS: 0}, 2025: {IP: 2, GS: 2}})],
+                        deferred={2024: 310_000, 2025: 310_000},
+                        reached={2024: {IP: 2, GS: 0}, 2025: {IP: 2, GS: 1}})],
     "qRAL202312": [dict(signed=dt.date(2023, 11, 3), seasons=(2024, 2025, 2026), salary=1_600_000,
                         terms=[(RA, 50_000, (50, 60, 70))], awards=[("All-Star selection", 40_000)],
                         reached={2024: {RA: 2}, 2025: {RA: 2}, 2026: {RA: 1}})],
@@ -533,13 +539,14 @@ PITCHER_CONTRACTS = {
                         reached={2024: {RA: 2}, 2025: {RA: 2}})],
     "qRAL202310": [dict(signed=dt.date(2022, 12, 16), seasons=(2023, 2024), salary=4_200_000,
                         terms=[(DAL, 75_000, (120, 150)), (RA, 75_000, (45, 55))], awards=[("All-Star selection", 50_000)],
-                        reached={2023: {DAL: 2, RA: 0}, 2024: {DAL: 2, RA: 2}})],
+                        deferred={2023: 175_000, 2024: 175_000},
+                        reached={2023: {DAL: 2, RA: 0}, 2024: {DAL: 2, RA: 1}})],
     "qRAL202313": [dict(signed=dt.date(2022, 12, 5), seasons=(2023,), salary=1_150_000,
                         terms=[(RA, 30_000, (40, 50, 60))], awards=[],
                         reached={2023: {RA: 2}})],
     "qRAL202305": [dict(signed=dt.date(2022, 12, 20), seasons=(2023,), salary=5_500_000,
-                        terms=[(IP, 55_000, (140, 160))], awards=[],
-                        reached={2023: {IP: 2}})],
+                        terms=[(IP, 55_000, (140, 160))], awards=[], deferred={2023: 255_000},
+                        reached={2023: {IP: 1}})],
     "qRAL202404": [dict(signed=dt.date(2024, 11, 15), seasons=(2025, 2026, 2027), salary=9_000_000,
                         terms=[(GS, 70_000, (28, 32))], awards=[],
                         reached={2025: {GS: 2}, 2026: {GS: 1}})],
@@ -636,6 +643,31 @@ def salary_of(L, k, y, r):
     return int(round(r.uniform(4.5, 14.0), 2) * 1_000_000 / 50_000) * 50_000
 
 
+def deferred_of(k, y):
+    """The salary the contract in force in season y defers to its end (FIN-14 3.2), out of that season's salary."""
+    if k in VET_CONTRACTS and y in VET_CONTRACTS[k]["seasons"]:
+        return VET_CONTRACTS[k].get("deferred", {}).get(y, 0)
+    for c in PITCHER_CONTRACTS.get(k, []):
+        if y in c["seasons"]:
+            return c.get("deferred", {}).get(y, 0)
+    return 0
+
+
+def deferral_due(k, y):
+    """The deferred salary the season-end run after season y pays the player: the whole deferral of every contract of
+    his whose last season is y."""
+    cs = ([VET_CONTRACTS[k]] if k in VET_CONTRACTS else []) + PITCHER_CONTRACTS.get(k, [])
+    return sum(sum(c.get("deferred", {}).values()) for c in cs if c["seasons"][-1] == y)
+
+
+def last_season(k, y):
+    """True when y is the last season of the pitcher's contract in force in y."""
+    for c in PITCHER_CONTRACTS.get(k, []):
+        if y in c["seasons"]:
+            return c["seasons"][-1] == y
+    return False
+
+
 def paydays(y):
     """Semi-monthly championship-season paydays, April 15 to September 30."""
     out = []
@@ -676,9 +708,11 @@ def employee_numbers(L, people):
 
 def payroll(L):
     """The payroll rows the HRIS export carries for players, January 2023 to December 11, 2026. Rows paid before the
-    January 1, 2026 migration keep the legacy employee number, name format and earning code. Internal codes: SAL salary,
-    SGN signing bonus, PA a plate-appearance bonus, PT a pitcher's playing-time bonus paid in the season-end run, PT2 a
-    second half paid in the January run, AW an award bonus, AS an All-Star bonus."""
+    January 1, 2026 migration keep the legacy employee number, name format and earning code. Internal codes: SAL salary
+    (the season's salary less what the contract defers to its end), SGN signing bonus, PA a plate-appearance bonus, PT a
+    pitcher's playing-time bonus paid in the season-end run (after a contract's last season, the whole season's bonus
+    with the salary the contract deferred), PT2 a second half paid in the January run, AW an award bonus, AS an All-Star
+    bonus, DEF deferred salary paid alone."""
     people = club_people(L)
     legacy, new = employee_numbers(L, people)
     rows = []
@@ -690,7 +724,7 @@ def payroll(L):
     for y in (2023, 2024, 2025, 2026):
         hitters, staff = ral_roster(L, y)
         for k in hitters + staff:
-            sal = salary_of(L, k, y, K.rng("salary", y, k))
+            sal = salary_of(L, k, y, K.rng("salary", y, k)) - deferred_of(k, y)
             per = round(sal / 12, 2)
             for i, d in enumerate(paydays(y)):
                 if y == 2025 and k == "V4" and d > dt.date(2025, 7, 28):
@@ -702,8 +736,9 @@ def payroll(L):
             d = dt.date(c["signed"].year + 1, 1, 15) if c["signed"].month >= 11 else dt.date(c["signed"].year, 2, 13)
             add(d, k, "SGN", c["signing_bonus"])
     # playing-time bonuses through the 2025 season: the hitters' plate-appearance bonuses in full in the season-end run
-    # (October 15), the pitchers' half in it and half in the January 15 run after it; the 2026 season's are payable in
-    # full on January 15, 2027
+    # (October 15), the pitchers' half in it and half in the January 15 run after it, except that the season-end run
+    # after a contract's last season settles what the contract still owes (the season's bonuses in full and the salary
+    # it deferred to its end); the 2026 season's are payable in full on January 15, 2027
     earned = defaultdict(int)
     for b in vet_bonuses(L):
         if b["club"] == K.CLUB:
@@ -722,8 +757,28 @@ def payroll(L):
             add(dt.date(y, 10, 15), k, "AS", amt)
         else:
             add(dt.date(y, 11, 15), k, "AW", amt)
+    # a veteran's deferred salary in the season-end run after his contract's last season, on the legacy catch-all, one
+    # line a code a run (with an All-Star bonus paid in the same run)
+    for k, c in sorted(VET_CONTRACTS.items()):
+        due = deferral_due(k, c["seasons"][-1])
+        if not due:
+            continue
+        d = dt.date(c["seasons"][-1], 10, 15)
+        assert d < K.HRIS_LIVE
+        same = [x for x in rows if x["k"] == k and x["date"] == d and LEGACY_CODE[x["code"]][0] == "E45"]
+        if same:
+            same[0]["amount"] += due
+        else:
+            add(d, k, "DEF", due)
     for (k, y), amt in sorted(pitcher_bonuses().items()):
-        if y >= 2026 or not amt:
+        if y >= 2026:
+            continue
+        if last_season(k, y):
+            owed = amt + star.pop((k, y), 0) + deferral_due(k, y)
+            if owed and y >= 2023:
+                add(dt.date(y, 10, 15), k, "PT", owed)
+            continue
+        if not amt:
             continue
         if y >= 2023:
             add(dt.date(y, 10, 15), k, "PT", amt / 2 + star.pop((k, y), 0))
@@ -745,10 +800,10 @@ def payroll(L):
 
 LEGACY_CODE = {"SAL": ("E01", "SALARY-PLAYER"), "SGN": ("E10", "SIGNING BONUS"), "PA": ("E40", "PERF BONUS"),
                "PT": ("E45", "OTHER BONUS"), "PT2": ("E40", "PERF BONUS"), "AW": ("E45", "OTHER BONUS"),
-               "AS": ("E45", "OTHER BONUS")}
+               "AS": ("E45", "OTHER BONUS"), "DEF": ("E45", "OTHER BONUS")}
 NEW_CODE = {"SAL": ("SAL", "Player salary"), "SGN": ("SGN", "Signing bonus"), "PA": ("BPA", "Playing-time bonus"),
             "PT": ("BPA", "Playing-time bonus"), "PT2": ("BPA", "Playing-time bonus"), "AW": ("BAW", "Award bonus"),
-            "AS": ("BAS", "All-Star bonus")}
+            "AS": ("BAS", "All-Star bonus"), "DEF": ("BOT", "Other bonus")}
 
 
 def legacy_name(name):

@@ -23,7 +23,7 @@ Each bonus is priced at the share of the 1,440 seasons of the non-catcher regula
 5. For each bonus line in term_sheets_2027_free_agent_hitters.pdf, the probability under FIN-14 4.2 and 4.3 is the share of those seasons whose starts times the player's 2027 slot rate reach the threshold, and the expected amount is the bonus times that share.
 6. Summed each player's expected amounts and rounded to the nearest $100,000: Sawyer Lusk $500,000; Andres Rivas $1,000,000; Drew Brock $600,000; Ángel Medina $1,200,000; Mike Meeks $900,000.
 7. Summed the five players' unrounded amounts and rounded to the nearest $250,000 (FIN-14 6): $4,250,000; the rounded player figures add to $4,200,000.
-8. For each player whose contract in ral_player_contract_register_2023_2026.xlsx carries other playing-time terms, added the season-end payment (October 15) and the January 15 payment after it in ral_payroll_player_earnings_2023_2026.csv, whatever the code (the legacy payroll paid the pitchers' season-end halves on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star bonus a legacy season-end line carries, each legacy line read by its name (number 01661 is Yordy Benítez in 2023 and Gilmar Pietersz in 2025): 2023 $580,000; 2024 $1,080,000; 2025 $1,230,000.
+8. For each player whose contract in ral_player_contract_register_2023_2026.xlsx carries other playing-time terms, added the season-end payment (October 15) and the January 15 payment after it in ral_payroll_player_earnings_2023_2026.csv, whatever the code (the legacy payroll paid the pitchers' season-end payments on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star bonus a legacy season-end line carries and, in the line after a contract's last season, the salary the contract deferred to its end (its register salary less the E01 salary lines paid, each season), each legacy line read by its name (number 01661 is Yordy Benítez in 2023 and Gilmar Pietersz in 2025): 2023 $525,000; 2024 $1,005,000; 2025 $1,085,000.
 
 ## 4. Deliverable Answers
 
@@ -37,27 +37,27 @@ Each bonus is priced at the share of the 1,440 seasons of the non-catcher regula
    - Mike Meeks: $900,000
    - Total: $4,250,000
 2. Playing-time bonuses other than plate-appearance bonuses paid for each season, player by player and in total:
-   - 2023 season, Yordy Benítez: $110,000
+   - 2023 season, Yordy Benítez: $55,000
    - 2023 season, Julio Casilla: $60,000
    - 2023 season, Carlos Lara: $140,000
    - 2023 season, Santiago Ruiz: $150,000
    - 2023 season, Max White: $120,000
-   - 2023 season, total: $580,000
+   - 2023 season, total: $525,000
    - 2024 season, Carlos Lara: $300,000
    - 2024 season, Joe Livingston: $100,000
    - 2024 season, Tyler Reed: $170,000
    - 2024 season, Sam Robertson: $90,000
-   - 2024 season, Santiago Ruiz: $300,000
+   - 2024 season, Santiago Ruiz: $225,000
    - 2024 season, Max White: $120,000
-   - 2024 season, total: $1,080,000
+   - 2024 season, total: $1,005,000
    - 2025 season, Johnny Blair: $140,000
    - 2025 season, Carlos Lara: $200,000
    - 2025 season, Joe Livingston: $100,000
    - 2025 season, Gilmar Pietersz: $120,000
-   - 2025 season, Tyler Reed: $340,000
+   - 2025 season, Tyler Reed: $255,000
    - 2025 season, Sam Robertson: $90,000
-   - 2025 season, Max White: $240,000
-   - 2025 season, total: $1,230,000
+   - 2025 season, Max White: $180,000
+   - 2025 season, total: $1,085,000
 
 ### pa_bonus_accrual_memo_2027.docx
 

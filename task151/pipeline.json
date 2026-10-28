@@ -15,12 +15,12 @@
   "checks": 53
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-28, rubric repair rebuild, --asof 2026-12-11; a first cut's $320,000 Reed row equalled a term-sheet line amount (LEAK) and moved; every REVIEW line answered in the design note's Build record)",
-  "reader": "CLEAN (2026-10-28, isolated sonnet reader at medium on a fresh unzip of target.zip f4bcf386 and prompt.txt): no sentence names either step, no file ranks, every REVIEW line harmless; it read the pay year against the season earned as two readings (the judge found the season earned forced) and, reading player by player, paired a pitcher's October OTHER BONUS line with his January PERF BONUS line, the open includer risk"
+  "leak_py": "REVIEW, no LEAK (2026-10-28, the hardening rebuild, --asof 2026-12-11; two REVIEW lines new, the register's $55,000 and $225,000 terms beside two ask rows, answered in the design note's Build record)",
+  "reader": "CLEAN (2026-10-28, isolated sonnet reader at medium on a fresh unzip of target.zip 44480c2b and prompt.txt): no sentence names a step for the table, no file ranks, nothing planted, the payroll, register, HRIS map and code table one club's records; it did not surface the deferred salary. The shipped 3ded6ddd changed only a record file, so the read stands"
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK (2026-10-28; overuse.objective, repeat.gate_g, people WARNs on names the frozen files carry)",
-  "nearest": "surface: task155 and task472 at 0.101 (the shipped pack scores 0.1007, layout and format axes only), task184 and task158 on the card's structure, differentiated"
+  "heart": "BLOCK on people.last alone, an H27 artifact (2026-10-28): the register's payroll contact Matthew Wallace, drawn for this build on 10-16, was drawn again by task179 and task174 on 10-28; every other line the WARN or NOTE of the last ship",
+  "nearest": "surface: task155 and task472 at 0.101, task184 and task158 on the card's structure, the four promoted pairs of the last ship, differentiated"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -35,7 +35,8 @@
    "report": "determinism_check_report.md",
    "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
    "gate_h": "domain pass, layers pass, decisive_step analytical"
-  }
+  },
+  "rubric_hardening_10_28": "DETERMINISTIC, APPROVE (pass 3, 2026-10-28, determinism_check_report_pass3.md, on target.zip 44480c2b): every figure of the call and every row of the table reproduced, the contract-end deferred salary among them, no competing answer; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive step analytical. The shipped 3ded6ddd differs only in the payroll export's five deferral amounts (no graded figure, clause or document moved), so the APPROVE stands"
  },
  "returned": [
   {
@@ -83,22 +84,30 @@
    "finding": "the shipped asks were pinned by the frozen batting lines and Article 22 (cracker 28 of 28, portal case 67.0); re-sited onto the playing-time bonuses other than plate-appearance bonuses the club paid for 2023 to 2025 (18 player rows and 3 totals), which no batting line pins because pitchers do not bat",
    "outcome": "reshipped: primary D2, the legacy payroll's catch-all E45 OTHER BONUS (migrated as other bonus) carrying the pitchers' season-end halves, so the careful path files every row at half and each half is a full bonus the pitcher's own terms allow; hazards an All-Star bonus inside three season-end lines, a Cy Young bonus on the catch-all, a reissued legacy number, a void and reissue, a 2022 half paid in January 2023. ceiling.py on target.zip f4bcf386: cracker 0 of 21, mirror 0 of 21, pair 28.5 one on the call and 12.0 both off it (36.0 and 27.0 on the portal's calibration); the open risk, a solver who reads each pitcher's payments and adds the catch-all lines with the awards taken out, keeps 21 of 21. freeze.py check --mode rubric PASS with deliverables.paid.1.total and deliverables.paid.2.season allowed (ask keys whose old values equalled block 1 and 2 numbers); --mode determinism FAIL on the 48 moved ask items, recorded only",
    "commit": ""
+  },
+  {
+   "date": "2026-10-28",
+   "by": "/fix-rubric, the author's hardening (a second ask device from another family, the ask's wording kept)",
+   "repair": "rubric",
+   "finding": "generator/ceiling.py on the f4bcf386 pack: the cracker 0 of 21 and the mirror 0, but the full handling of the catch-all device with every hazard kept 21 of 21 (pair 67.0 both off the call on Part 0's weights, 82.0 on the portal's calibration), and twice each January half also landed all 21",
+   "outcome": "reshipped: second device, the contract-end settlement (a grain device whose item is deferred salary and whose remedy is a salary reconciliation; it lands on the same catch-all line, inheriting HZ1's one-line-a-code-a-run): after a contract's last season the season-end line pays the whole season's bonus, no January half following, and on five pitchers' contracts also the salary the contract deferred to its end, found only as the register's salary less the salary lines paid. ceiling.py on target.zip 3ded6ddd: cracker 0 of 21, mirror 0 (pair 28.5 and 12.0; 36.0 and 27.0 on the portal's calibration); the full handling of the first device 13 of 21 (46.0 both off the call, 61.0 on the portal's calibration; 62.5 and 70.0 with one on the call); twice the January half 11; cut to the terms 13; split at the roundest remainder 12; both devices handled 21. Seven ask figures moved (four last-season outcomes re-drawn below their terms' maximum, the three totals: $525,000, $1,005,000, $1,085,000); freeze.py check --mode rubric PASS with no key allowed",
+   "commit": ""
   }
  ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-28",
- "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70; reshipped 10-28 with the asks re-sited",
+ "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70; reshipped 10-28 with the asks re-sited, and again 10-28 with a second ask device",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
  "build": {
-  "checks": 274,
+  "checks": 289,
   "verify": "agreeing",
   "byte_identical": true,
   "figures_check": "82 of 82",
-  "target_zip_sha256": "f4bcf386b7171226e5a20fc239a8895bc269ea63bd89e3da61d2d459b2769294",
+  "target_zip_sha256": "3ded6ddd4f10b827264bb5244c604168e8b864ec8d334027bb0e31ece9c4fc1e",
   "world_seed": 1539,
   "files": 21
  }

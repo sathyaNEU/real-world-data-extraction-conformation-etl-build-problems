@@ -189,8 +189,8 @@
     {
       "path": "ral_hris_legacy_employee_map.csv",
       "format": "csv",
-      "bytes": 1680,
-      "rows": 38,
+      "bytes": 1637,
+      "rows": 37,
       "source": "Constructed: Raleigh Oaks HRIS, legacy employee number map from the January 2026 migration",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -207,8 +207,8 @@
     {
       "path": "ral_payroll_player_earnings_2023_2026.csv",
       "format": "csv",
-      "bytes": 100268,
-      "rows": 1393,
+      "bytes": 99822,
+      "rows": 1387,
       "source": "Constructed: Raleigh Oaks HRIS payroll, player earnings register, pay dates January 2023 to December 11, 2026",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -216,7 +216,7 @@
     {
       "path": "ral_player_contract_register_2023_2026.xlsx",
       "format": "xlsx",
-      "bytes": 10113,
+      "bytes": 10112,
       "rows": null,
       "source": "Constructed: Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2023 to 2026 seasons",
       "date": "2026-12-11",

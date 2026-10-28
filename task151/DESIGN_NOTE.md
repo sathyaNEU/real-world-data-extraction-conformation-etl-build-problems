@@ -214,7 +214,8 @@ included): the basis that scores lowest in the same look-back and accrues $4,250
   with DH, batting order, bench rows); the term sheets and the policy as PDFs; the transaction wire and the weekly
   injured-list report beside the Article 22 excerpt (distractors); on the ask side, the payroll export across the
   January 2026 HRIS migration (legacy numbers, names and codes on legacy history, a reissued legacy number, a void and
-  reissue), the earning codes and the contract register (Ask sheet). Each is what these systems write; none moves the
+  reissue, the season-end line after a contract's last season settling the salary it deferred), the earning codes and
+  the contract register (Ask sheet). Each is what these systems write; none moves the
   call or a player figure (R2: legacy
   PA without CI, doubleheaders merged to one start a date, accented names dropped, traded regulars cut to the planning
   club, each asserted).
@@ -313,10 +314,13 @@ Every row is asserted in `generator/checks.py` under its id.
 | SF13 | CF-14.4's "100 plate appearances in each of the two seasons before" | as the League counts them, every club | with the planning club only | same call (asserted) | CF-14.4 ("counting his plate appearances for every club") |
 | SF14 | CF-14.4's "reached the threshold" | plate appearances at or above it | above it only | same call (asserted) | CF-14.4; the term sheets ("when the Player reaches its threshold") |
 | SF15 | the ask's "playing-time bonuses other than plate-appearance bonuses" | FIN-14 4.1's class less plate appearances: the innings, starts, relief-appearance and Active List terms in the register's "Other playing-time bonuses" column, the pitchers' | award bonuses counted in, or hitters' games-started bonuses | the award reading adds $75,000 to 2024 and the All-Star amounts (AK5 'e45_all'); no hitter carries other terms | FIN-14 4.1 and 5; the register's column (asserted, SF15) |
-| SF16 | the ask's "paid for each of the 2023, 2024 and 2025 seasons" | the season the bonus was earned: an October payment to its season, a January payment to the season before | the year paid | the pay-year reading files $35,000, $205,000 and $385,000 (asserted) | every January payment falls before that year's Opening Day (SF16) |
-| SF17 | the ask's "paid" | paid through the December 11 pull, voids netted | earned, or gross of the void | same figures: every half of 2023 to 2025 is paid by January 15, 2026; gross adds $160,000 to 2025 (AK8) | the payroll register; SF17 |
+| SF16 | the ask's "paid for each of the 2023, 2024 and 2025 seasons" | the season the bonus was earned: an October payment to its season, a January payment to the season before | the year paid | the pay-year reading files $35,000, $135,000 and $390,000 (asserted) | every January payment falls before that year's Opening Day (SF16) |
+| SF17 | the ask's "paid" | paid through the December 11 pull, voids netted | earned, or gross of the void | same figures: every payment for 2023 to 2025 is made by January 15, 2026; gross adds $875,000 to 2025 (AK8) | the payroll register; SF17 |
 | SF18 | an award bonus inside a playing-time payment | not a playing-time bonus | counted in | +$50,000, +$40,000, +$50,000 on three rows (AK7) | FIN-14 5 (asserted, SF18) |
 | SF19 | "player by player" | the player paid, by the name each legacy line carries | the legacy number through the HRIS map, or to the register's ID | moves Benítez 2023 or Pietersz 2025 (AK5, AK6) | the payroll's own name on each line |
+| SF20 | the excess in the season-end line after a contract's last season | salary the contract deferred to its end, not a bonus: out of the row | a playing-time bonus paid, counted in | +$255,000, +$430,000, +$350,000, +$690,000, +$620,000 on five rows (DF2) | FIN-14 3.2 (deferred salary) apart from 4.1's class; each line less the deferral is a bonus his terms allow and the whole line is above the largest (asserted, SF20, DF1) |
+| SF21 | a contract's last season, paid in one season-end line | the whole season paid | a first half with the second unpaid | same figures: paid is paid, and the row is what the line carries less the deferral (asserted, SF21) | the payroll register (no later payment to those players for those seasons) |
+| SF22 | the register's salary for a season | the contract's salary, gross of the deferral | the salary paid, net of it | the net reading leaves no deferral to take out: the full includer's figures (DF2) | every other contract's salary lines add to its register salary to the cent, and the five fall short by their deferral exactly (asserted, SF22, DF7) |
 
 ## Ladder
 
@@ -423,7 +427,7 @@ bonus's amount times the probability, as at signing, that the player reaches its
 the contract standing all season with the player in his planned role and his health inside the probability), the rule
 that chooses the basis (4.4's look-back, its population, window, thresholds and score set in working paper CF-14.4)
 and the arithmetic from the probabilities to the rounded totals; it leaves only which basis to build, and every reading
-of every term converges on the golden or violates a quoted line (SF1 to SF14 for the call, SF15 to SF19 for the ask). The literal executor of 4.4 and CF-14.4
+of every term converges on the golden or violates a quoted line (SF1 to SF14 for the call, SF15 to SF22 for the ask). The literal executor of 4.4 and CF-14.4
 still has to bring bases to rank; the one basis the paper's words suggest (its own hitters' seasons) files $4,500,000. The easy answers come from easy bases
 ranked by the same look-back, never from another reading.
 
@@ -439,6 +443,18 @@ ranked by the same look-back, never from another reading.
 - Nothing ties only under the golden: no 2027 projection of starts, no control total and no certified figure ships.
 
 ## Ask sheet
+
+**Revision, 2026-10-28, the author's hardening: a second device.** The re-sited ask shipped at f4bcf386 with one
+primary, the legacy catch-all carrying the pitchers' season-end halves. `ceiling.py` priced the careful path at 0 of 21,
+but a solver who reads each pitcher's payments and adds the catch-all lines with every hazard handled kept 21 of 21
+(pair 67.0 on Part 0's weights with both off the call, 82.0 on the portal's calibration), and so did the other full
+handling, twice each January half, measured at this repair on the f4bcf386 pack at 21 of 21; the stage 4 leak reader
+paired the two lines unprompted. The author asked for a second device from another family, so that a full handling of
+the first still misses a block of figures, with the ask's wording kept. It is the contract-end settlement below. The
+prompt, the call, every file the call reads (SEP4 against e93c6561) and the ask's shape (18 rows, 3 totals, whole
+dollars) are unchanged. Seven ask figures moved: four rows whose last-season outcomes were re-drawn so each golden sits
+below the largest bonus its terms allow (Benítez 2023, Ruiz 2024, White 2025, Reed 2025, all inside the settlement
+device), and the three totals; `freeze.py check --mode rubric` passes with no key allowed.
 
 **Revision, 2026-10-28, the author's re-site.** The shipped asks (the five's injured-list stints since 2024; the club's
 plate-appearance bonuses paid for 2024 to 2026) were landed by both top responses at the portal, which missed the call
@@ -471,72 +487,114 @@ ask is not keyed to the call, its construction or its figures: it reads pitchers
   decision.
 - The unit, filed: FIN-14 4.1 names the playing-time bonuses (plate appearances, games played, games started, innings
   pitched, relief appearances and days on the Active List) and FIN-14 5 sets award bonuses apart; the register's "Other
-  playing-time bonuses (each season)" column carries each pitcher's terms and no hitter's (SF15); a bonus paid for a
-  season is the season it was earned, every January payment falling before that year's Opening Day (SF16); paid means
-  paid by the pull, every half of 2023 to 2025 paid by January 15, 2026 (SF17).
+  playing-time bonuses (each season)" column carries each pitcher's terms and no hitter's (SF15); salary a contract
+  defers is salary under FIN-14 3.2, not a bonus (SF20); a bonus paid for a season is the season it was earned, every
+  January payment falling before that year's Opening Day (SF16); paid means paid by the pull, every payment for 2023 to
+  2025 made by January 15, 2026 (SF17).
 - Primary device (D2, a label stored before a silent switch): until the January 2026 HRIS cutover the legacy payroll
-  paid the pitchers' season-end halves (October 15) on its catch-all E45 OTHER BONUS, which the earning-code table
+  paid the pitchers' season-end payments (October 15) on its catch-all E45 OTHER BONUS, which the earning-code table
   migrates as BOT Other bonus, and their January halves on E40 PERF BONUS, which it migrates as BPA Playing-time bonus;
   the hitters' plate-appearance bonuses ran in full on E40 in October, so E40 and BPA read as the playing-time code
-  (AK3, AK3c). The careful path executes the table and reads each line for what it says, and files every pitcher-season
-  at exactly half (AK4). The wrong reading is complete: each half is itself a full bonus the pitcher's own terms allow
-  (AK3d), so no check against the register fails, and nothing ties only under the golden. What finds it: a pitcher's
-  OTHER BONUS line on October 15 equal to his PERF BONUS line the next January 15, in every legacy season, with no
-  filed sentence, column name or battery sweep pointing at it. Work left after noticing: the All-Star bonus inside three
-  season-end lines, the reissued legacy number, the void, each half to its season (Fair: the golden equals the season
-  as it happened, every row, AK2).
+  (AK3, AK3c). The careful path executes the table and reads each line for what it says: it files every season it
+  carries at exactly half, and a contract's last season, which no January half follows, not at all (AK4). The wrong
+  reading is complete: every amount it carries is itself a full bonus the pitcher's own terms allow, and the seven
+  seasons it carries nothing for read as seasons with no line reached (AK3d), so no check against the register fails,
+  and nothing ties only under the golden. What finds it: a pitcher's OTHER BONUS line on October 15 equal to his PERF
+  BONUS line the next January 15, in every legacy season but a contract's last, with no filed sentence, column name or
+  battery sweep pointing at it. Work left after noticing: the All-Star bonus inside three season-end lines, the
+  reissued legacy number, the void, each payment to its season, and the second device (Fair: the golden equals the
+  season as it happened, every row, AK2).
+- Second device (a grain device; its item deferred salary, its remedy a salary reconciliation): after the last season of
+  a contract the legacy season-end run settled what the contract still owed, one line a code a run: the season's
+  playing-time bonus in full, no January half following, and on five pitchers' contracts the salary the contract had
+  deferred to its end, which the legacy payroll, having no deferred-compensation code, paid on the same catch-all. The
+  family, stated plainly: the collision still lands on E45 and inherits the legacy's one-line-a-code-a-run from HZ1 (a
+  shared cause, law 9), and it adds no new code label; what is new is the grain (one season-end line settling two
+  obligations at a contract's end) and the remedy, which the full handling of the catch-all never reads. That
+  handling ('settle_whole' in `calc.py`, `full` in `ceiling.py`) takes each of the five lines as the season's bonus
+  and keeps the deferral (DF2): Yordy Benítez 2023 (line $310,000, deferral $255,000), Carlos Lara 2023 ($570,000,
+  $430,000), Santiago Ruiz 2024 ($575,000, $350,000), Max White 2025 ($870,000, $690,000) and Tyler Reed 2025 ($875,000,
+  voided and reissued, $620,000), and with them every season total. Twice the January half misses all seven of a
+  contract's last seasons (DF4); cutting a line to the largest bonus his terms allow misses all five, each golden
+  sitting below its maximum (DF3); splitting a line into a bonus his terms allow and the roundest remainder, a guess
+  at a round non-bonus payment, misses all five too, each line's roundest split being a wrong bonus (DF8). The forcing figure (DF1, DF7, SF22): each of the five lines less any award is above
+  the largest bonus the pitcher's terms allow, and the excess equals, to the dollar, the register's salary less the E01
+  salary lines paid over the contract (Benítez $255,000 of 2023; Lara $430,000 of 2023; Ruiz $175,000 of each of 2023
+  and 2024; White $230,000 of each of 2023 to 2025; Reed $310,000 of each of 2024 and 2025); every other contract's
+  salary lines add to its register salary to the cent but two hitters' (their own deferrals) and the one assigned
+  mid-season. Work left after noticing: the terms check says only that a line is too big; what it carries is rebuilt
+  from the salary lines, season by season over the contract, against the register's salary columns (Lara's first
+  contract reaches back to 2022, which the export does not hold, so his deferral is a 2023-only term, asserted). Silent
+  (DF5): no shipped file states a club contract's deferral; FIN-14 3.2 states the policy and the term sheets the 2027
+  signing's own deferral, payable 2033 to 2037. Benign twins (DF6): the same catch-all carries the deferred salary of two
+  hitters whose contracts ended in 2024 (Herron's line alone, Cedeno's with his All-Star bonus), which the ask does not
+  count.
 - Hazards: HZ1 an All-Star bonus inside the legacy season-end line (Ruiz 2023, $50,000; Livingston 2024, $40,000;
   Pietersz 2025, $50,000; the line taken whole adds it, AK7); HZ2 a Cy Young bonus on the same catch-all in November
-  (White 2024, $75,000; every catch-all line taken adds it); HZ3 legacy number 01661 reissued (Yordy Benítez's lines to
-  January 2024, Gilmar Pietersz's from 2025: the HRIS map gives it to Pietersz and the register to Benítez, so either
-  join moves a row, and the name on each line settles it, AK6); HZ4 a season-end payment voided and reissued (Reed,
-  October 2025: summing gross adds $170,000, AK8); HZ5 the 2022 season's second half paid January 15, 2023 (Lara: the
-  pay-year reading moves it into 2023, AK9); HZ6 benign twins (award bonuses to hitters on E45; the hitters'
-  plate-appearance bonuses on E40, outside the ask by its words).
-- Stops (measured, AK4, AK5 and `ceiling.py`): the earning-code table's playing-time codes by season, every row at half
-  ($290,000, $540,000, $615,000); the same codes by the year paid ($35,000, $205,000, $390,000); the catch-all lines
-  taken whole (4 rows and every total off: $520,000, $1,120,000, $1,280,000); every catch-all line in any month (5 rows,
-  2024 at $1,195,000); every legacy number through the HRIS map (Benítez's 2023 row to Pietersz, 2023 at $470,000);
-  every legacy number to the register's own ID (Pietersz's 2025 row to Benítez, 2025 at $1,170,000); the void's reversal
-  left out (2025 at $1,400,000); the golden ($580,000, $1,080,000, $1,230,000).
-- Span: the payroll export, the HRIS map, the earning codes and the contract register (4 files, 14 columns on the
-  golden's path); FIN-14 4.1 and 5 for the class.
-- Realism: a legacy payroll with few earning codes, its catch-all carrying what its clause types did not cover; an HRIS
-  migration mapping legacy codes one to one and keeping legacy history under legacy numbers and names, and migrating
-  only the employees paid in its last year; a legacy system reissuing a departed employee's number; one payroll line a
-  code a run; a void and reissue after changed bank details. None was placed to be caught: each moves no amount.
+  (White 2024, $75,000; every catch-all line taken adds it); HZ3 legacy number 01661 reissued (Yordy Benítez's lines in
+  2023, Gilmar Pietersz's from 2025: the HRIS map gives it to Pietersz and the register to Benítez, so either join moves a
+  row, and the name on each line settles it, AK6); HZ4 a season-end payment voided and reissued (Reed's contract-end line,
+  October 2025: summing gross adds $875,000, AK8); HZ5 the 2022 season's second half paid January 15, 2023 (Lara: the
+  pay-year reading moves it into 2023, AK9); HZ6 benign twins (award bonuses and deferred salary to hitters on E45; the
+  hitters' plate-appearance bonuses on E40, outside the ask by its words).
+- Stops (measured, AK4, AK5, DF2 to DF4, DF8 and `ceiling.py`): the earning-code table's playing-time codes by season,
+  every row it carries at half and a contract's last season absent ($135,000, $390,000, $280,000); the same codes by the
+  year paid ($35,000, $135,000, $390,000); the catch-all lines taken whole (8 rows and every total: $950,000,
+  $1,395,000, $2,445,000); every catch-all line in any month (9 rows, 2024 at $1,470,000); the full handling of the
+  catch-all with every hazard (5 rows and every total: $1,210,000, $1,355,000, $2,395,000); twice the January half (7
+  rows: $270,000, $780,000, $560,000); each row cut to his terms (5 rows: $650,000, $1,080,000, $1,230,000); each line
+  his terms cannot hold split at its roundest remainder (5 rows: $510,000, $855,000, $770,000); every legacy number
+  through the HRIS map (Benítez's 2023 row to Pietersz, 2023 at $470,000); every legacy number to the register's own ID
+  (Pietersz's 2025 row to Benítez, 2025 at $1,025,000); the void's reversal left out (2025 at $1,960,000); the golden
+  ($525,000, $1,005,000, $1,085,000). No stop total equals a figure of the call.
+- Span: the payroll export (bonus and salary lines), the HRIS map, the earning codes and the contract register (its
+  terms, awards, seasons and salary columns): 4 files, 18 columns on the golden's path; FIN-14 3.2, 4.1 and 5 for the
+  class.
+- Realism: a legacy payroll with few earning codes, its catch-all carrying what its clause types did not cover (award
+  bonuses, the pitchers' season-end payments, deferred salary); a club settling everything a contract still owes in the
+  season-end run after its last season; salary deferred to a contract's end in larger contracts, as the club's 2027
+  signing also defers (term sheets); an HRIS migration mapping legacy codes one to one, keeping legacy history under
+  legacy numbers and names, and migrating only the employees paid in its last year; a legacy system reissuing a
+  departed employee's number; one payroll line a code a run; a void and reissue after changed bank details. None was
+  placed to be caught: each pays what the contract owed.
 
 **Hazard table**
 
 | Hazard | Root cause | Moves | Delta |
 |---|---|---|---|
-| D2 the season-end halves on the catch-all code | the legacy payroll's clause types | every row and total | each figure halved on the careful path |
+| D2 the season-end payments on the catch-all code | the legacy payroll's clause types | every row and total | each row it carries at half, a contract's last season at nothing, on the careful path |
+| D3 the contract-end line carrying deferred salary | the contract-end settlement, one line a code a run | 5 rows, every total | +$255,000, +$430,000, +$350,000, +$690,000, +$620,000 if the line is read as the bonus |
 | HZ1 an All-Star bonus inside the season-end line | one legacy line a code a run | 3 rows, every total | +$50,000, +$40,000, +$50,000 if taken whole |
 | HZ2 a Cy Young bonus on the catch-all | award bonuses on the catch-all | White 2024, 2024 total | +$75,000 if every catch-all line is taken |
-| HZ3 a reissued legacy number | the legacy system's number reuse | Benítez 2023 or Pietersz 2025, a total | -$110,000 from 2023 or -$60,000 from 2025 |
-| HZ4 a void and reissue | changed bank details | Reed 2025, 2025 total | +$170,000 if summed gross |
+| HZ3 a reissued legacy number | the legacy system's number reuse | Benítez 2023 or Pietersz 2025, a total | -$55,000 from 2023 or -$60,000 from 2025 |
+| HZ4 a void and reissue | changed bank details | Reed 2025, 2025 total | +$875,000 if summed gross |
 | HZ5 a 2022 half paid in January 2023 | the January run | 2023 on the pay-year reading | +$35,000 |
 
-**Referee.** The register's terms (each half is a full bonus on the careful path, so they arbitrate nothing) and each
-season-end line's January twin (equal except where an award sits inside). No file ties only under the golden.
+**Referee.** The register's terms (every amount the careful path carries is a full bonus, so they arbitrate nothing; on
+the full includer's path they only say that five lines are too big, not by how much) and each season-end line's
+January twin (equal except where an award sits inside, absent after a contract's last season). The salary lines tie the
+deferral only on the golden's path, a reconciliation the ask never asks for. No file ties only under the golden.
 
 | Ask figures | Cracker's path (`ceiling.py`, measured) | Cracker's value | Verdict |
 |---|---|---|---|
-| 2023 player rows (5) | the earning-code table's playing-time codes (E40, BPA), each legacy line by its name, voids netted, each half to its season | each row at half the golden | miss |
-| 2023 total (1) | the same | $290,000 against $580,000 | miss |
-| 2024 player rows (6) | the same | each row at half the golden | miss |
-| 2024 total (1) | the same | $540,000 against $1,080,000 | miss |
-| 2025 player rows (7) | the same | each row at half the golden | miss |
-| 2025 total (1) | the same | $615,000 against $1,230,000 | miss |
+| 2023 player rows (5) | the earning-code table's playing-time codes (E40, BPA), each legacy line by its name, voids netted, each payment to its season | Ruiz and White at half; Benítez, Casilla and Lara (a contract's last season) absent | miss |
+| 2023 total (1) | the same | $135,000 against $525,000 | miss |
+| 2024 player rows (6) | the same | five rows at half; Ruiz (a contract's last season) absent | miss |
+| 2024 total (1) | the same | $390,000 against $1,005,000 | miss |
+| 2025 player rows (7) | the same | Blair, Lara, Livingston and Pietersz at half; Reed, Robertson and White (a contract's last season) absent | miss |
+| 2025 total (1) | the same | $280,000 against $1,085,000 | miss |
 
-The includers, the risk this gate does not price (`ceiling.py`): a solver who notices the catch-all lines and adds them
-whole keeps 15 of 21 (both such responses off the call: pair 51.3, or 66.3 on the portal's calibration of an off-call
-response at 20); every catch-all line, 14 of 21 (48.7, 63.7); the full handling (the All-Star bonuses out, the name on
-each legacy line, the void netted), 21 of 21 (67.0, 82.0). The portal measures whether its top responses notice.
+The includers, the risk the cracker sheet does not price (`ceiling.py`, both off the call; on the portal's calibration
+in brackets): the catch-all lines taken whole keep 10 of 21 (38.2; 53.2); every catch-all line in any month, 9 (35.6;
+50.6); the full handling of the first device and every one of its hazards, 13 (46.0; 61.0), the author's target case,
+at or under 60 and about 65; twice the January half, 11 (40.8; 55.8); the full handling with each row cut to his terms,
+13 (46.0; 61.0); the full handling with each oversized line split at its roundest remainder, 12 (43.4; 58.4); the full
+handling of both devices, the salary reconciliation included, 21 (67.0; 82.0), the fair handling. With one response on the call and both on the full handling of the first device the pair is 62.5 (70.0 on the
+portal's calibration): a call-lander and a second full includer together still reach the bar.
 Mirror leakage: 0.0 per cent of the ask weight (the mirror stops at the same codes by the year paid, 0 of 21).
 Pair ceiling: 28.5 (Part 0's weights, the cracker on the call and the mirror off it; neither on the call and both on the
 cracker's ask path, the portal's case, 12.0; on the portal's calibration, 36.0 and 27.0).
-Measured by: `generator/ceiling.py`, on the cut target.zip (sha256 f4bcf386), 10-28.
+Measured by: `generator/ceiling.py`, on the cut target.zip (sha256 3ded6ddd), 10-28.
 
 ## Residual
 
@@ -555,12 +613,22 @@ What the shipped build still carries, each item measured and none moving a commi
   Outcome); the world keeps seed 1539, which a search over seeds chose.
 - **Strength.** P(one strong solver lands) about 0.2 to 0.25 and P(both of two land) about 0.07 to 0.11 (the rule 3
   re-audit's outside read, Ladder).
-- **The ask's open risk.** The gate prices the careful path, which files every row at half; a solver who reads each
-  pitcher's payments rather than the playing-time codes sees an OTHER BONUS line beside each PERF BONUS line of the same
-  amount and can add it. Measured (`ceiling.py`): adding the catch-all lines whole keeps 15 of 21 figures, the full
-  handling 21 of 21, so two full-handling responses off the call put the pair at 67.0 on Part 0's weights and 82.0 on
-  the portal's calibration. The device's strength is whether the top responses read by code or by player, which only
-  the portal measures.
+- **The ask's open risks.** The cracker sheet prices the careful path, which files every row it carries at half; the
+  full handling of the first device (each pitcher's October line beside his January line, every hazard handled) now
+  keeps 13 of 21 (`ceiling.py`), because five contract-end lines carry the salary the contract deferred. What is left:
+  (1) a solver who reconciles each pitcher's salary lines against the register's salary, and pairs the shortfall with
+  the oversized contract-end line, lands both devices, 21 of 21 (67.0 both off the call on Part 0's weights, 82.0 on
+  the portal's calibration); the terms check tells it five lines are too big and not by how much, and whether the top
+  responses go on to the reconciliation only the portal measures; (2) one response on the call with two full includers
+  of the first device puts the pair at 62.5 on Part 0's weights and 70.0 on the portal's calibration (a guess at a
+  round non-bonus remainder no longer helps: 12 of 21, DF8); (3) the realism
+  trade, made deliberately: the register extract carries no deferral column or note though FIN-14 3.2 names deferred
+  salary and the club's 2027 signing defers, because a documented deferral is a work order the full includer would
+  execute; a judge may read the extract as incomplete.
+- **The heart BLOCK is a later builds' artifact (H27).** `guard.py heart` exits 1 on one rule, people.last: the surname
+  of the register's payroll contact, Matthew Wallace (drawn for this build on 10-16), was drawn again by task179 and
+  task174, both on 2026-10-28, after this card. Recorded with the dates; every other heart line is the WARN or NOTE of
+  the last ship.
 
 ## Pre-ship check
 
@@ -570,22 +638,30 @@ What the shipped build still carries, each item measured and none moving a commi
   $4,500,000 (R3a, LB7); only the planned non-catcher regulars' starts at the new slot's rate win the look-back on every
   reading (LB1, SF11 to SF14, LB9). Layer 1 (two layouts and the crosswalk, catcher's interference, substitute lines,
   doubleheaders, suspended games, accents, traded regulars) is neutral: every mishandled reading leaves the call (R2).
-- **Free gates on the final rebuild (rubric repair, 10-28).** `checks.py` 274 assertions, 0 failed (the ask's AK1 to
-  AK12 and SF15 to SF19; SEP4 hashes the twelve files the call reads against e93c6561); `verify.py` agrees on its own
-  path for the call and the 21 ask figures; two builds byte-identical, target.zip sha256 f4bcf386; `figures_check.py`
-  82 figures, 0 absent; `precut.py` exit 0 (53 checks); `voice-check.py` PASS (609 characters); container audit clean
-  on the pack and the goldens; `leak.py` REVIEW, no LEAK (answered in the Build record); `guard.py validate` clean,
-  `heart` WARN (no BLOCK), `surface` four promoted pairs answered in the Build record; `freeze.py check --mode rubric`
-  PASS with the two waived ask keys allowed (the main call, the stump, the card's stump and driver, the ladder, the
-  default path and the call sentence unchanged).
+- **Free gates on the final rebuild (the hardening, 10-28).** `checks.py` 289 assertions, 0 failed (the ask's AK1 to
+  AK12, DF1 to DF8 and SF15 to SF22; SEP4 hashes the twelve files the call reads against e93c6561); `verify.py` agrees on
+  its own path for the call and the 21 ask figures, the deferral taken from the register's salary less the salary lines
+  paid; two builds byte-identical, target.zip sha256 3ded6ddd; `figures_check.py` 82 figures, 0 absent; `precut.py` exit
+  0 (53 checks); `voice-check.py` PASS (609 characters, the prompt unchanged); container audit clean on the pack and the
+  goldens; `leak.py` REVIEW, no LEAK (answered in the Build record); `guard.py validate` clean, `surface` the four
+  promoted pairs of the last ship, `heart` BLOCK on people.last alone (Residual, H27); `freeze.py check --mode rubric`
+  PASS with no key allowed (the main call, the stump, the card's stump and driver, the ladder, the default path and the
+  call sentence unchanged; seven ask figures and the workbook moved).
 - **The 10/10 rules after the repair.** The call's decisive step and every file it reads are untouched (SEP4), so the
-  three rules read as at ship. The ask's device turns on reading a legacy code against its substance, which 2.1 of
-  `supplemental-stumping` licenses for an ask; nothing in it is planted (each payment is real, its amount the
-  contract's, its code the legacy system's).
-- **Stage 4.** Judge round 3 DETERMINISTIC, APPROVE (`determinism_check_report.md`), every figure reproduced; its
-  optional wording finding taken (step 4 states the golden's grouping, rival scores out of blocks 1 and 3, the memo's
-  rival figures out); the leak reader clean and its targeted re-read of 4.4 and CF-14.4 clean (an ordinary estimate
-  review; the names read as a realistic league).
+  three rules read as at ship. The ask's first device turns on reading a legacy code against its substance and the
+  second on reconciling the salary lines to the register's salary, both licensed for an ask by 2.1 of
+  `supplemental-stumping`; nothing in either is planted (each payment is real, its amount the contract's, its code the
+  legacy system's, and the deferral a term of the contract paid when the contract said).
+- **Stage 4 (the hardening, 10-28).** Determinism judge pass 3 DETERMINISTIC, APPROVE
+  (`determinism_check_report_pass3.md`, on target.zip 44480c2b): every figure of the call and every row of the table
+  reproduced, the deferred salary in the contract-end line among them, no competing answer surviving; Gate G
+  method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass,
+  layers pass, decisive step analytical. Leak reader CLEAN on the same pack (no sentence names a step for the table, no
+  file ranks, nothing reads as planted, the payroll, register, HRIS map and code table read as one club's records; it
+  did not surface the deferral). After both, the five deferral amounts were re-aimed (`## Tried and rejected`, the
+  roundest split): no graded figure, clause, document or prompt moved, so the APPROVE stands for the shipped pack
+  3ded6ddd under `determinism-check` (an APPROVE is voided only by a change to a graded figure or a clause a gate turned
+  on) and the reader is not re-run (only a record file changed); `leak.py` and every free gate re-run on it.
 - **Personas in the pack.** Harry Barnes, Steven Armstrong and Matthew Wallace (drawn with `guard.py names`); the
   players from the generator's ranked pools, the designed names on the card.
 
@@ -735,6 +811,37 @@ What the shipped build still carries, each item measured and none moving a commi
   full bonus (AK3d), and the hitters' plate-appearance bonuses run in full in October. The same pass moved two outcomes
   whose 2024 half equalled the 2025 total (Lara, Livingston), which had let the pay-year reading hit two rows.
 
+- The re-sited ask with its one device (f4bcf386), measured at the hardening (10-28): besides the full includer of the
+  catch-all lines (21 of 21), twice each January half lands all 21 figures, a second full handling of the first device,
+  so any device that leaves a January half clean and loads only the October line hands the row to the doubler.
+- Second devices screened for the hardening and rejected (10-28), each against the full includer's invariant (a
+  pitcher-season is his October line plus his January line, less an award its twin shows), with no pitching statistics
+  in the pack to force anything a payment does not show:
+  a bonus split across two clubs after a trade is invisible under "paid" (the payroll holds what we paid either way), and
+  its offseason-assignment variants give a row the cracker lands (a January half we paid on E40 for a season with
+  another club) or one the full includer lands; a later check, or an installment or deferral schedule on the bonus
+  itself, is placed by the twin check and the month paid, and a delay long enough to fool it (past the next July) is
+  forced only by a filed schedule, which the includer executes, or by pitching statistics, which would make it a fork;
+  record identity at block scale (legacy history attached to each number's latest holder, several numbers reissued)
+  moves at most six figures, its rows turn up as orphans an unmatched join sees, and the totals move only if the
+  includer drops the stray lines; what the HRIS migrated (departed players' legacy history only in the legacy year-end
+  registers at calendar-year grain, the departed pitchers' 2025 second halves in a December 2025 final run) misses 8 on a
+  natural annual reading, but the twin pairing that found the first device splits the year's E40 total by equal halves
+  at once, discovery and remedy one act; deferred salary paid with a season-end half while a January twin follows makes
+  the October line exceed its twin, and twice the January half lands the row; an award paid in halves inside both twins
+  is HZ1's family and the terms check finds every pair that is not a valid combination; a currency or tax-year basis has
+  no record in this world beyond the pay year, already the mirror's stop. The device that holds sits on a contract's last
+  season, which no January payment follows, and is resolved only from the salary lines.
+- Contract-end outcomes at their terms' maximum (Benítez 2023, Ruiz 2024, White 2025 and Reed 2025 as first drawn):
+  cutting an oversized line to the largest bonus his terms allow would have landed each; re-drawn below the maximum
+  (Benítez one innings line of two, Ruiz three lines of four, White three of four, Reed three of four), the ask's
+  figures waived by the author.
+- The first-drawn deferral amounts (Benítez $300,000; Lara $450,000; White $250,000 and Reed $325,000 a season), found
+  after stage 4: four of the five oversized lines split at their roundest remainder into the true bonus, so a solver who
+  guessed a round non-bonus payment instead of reconciling the salary kept 19 of 21 (`ceiling.py` 'round'). Re-aimed to
+  amounts whose roundest split is a wrong bonus (Benítez $255,000; Lara $430,000; White $230,000 and Reed $310,000 a
+  season; Ruiz's $175,000 a season already split wrong): the guess keeps 12 (DF8), and no graded figure moved.
+
 ## Build record
 
 Stage 3, built 2026-10-16 (world seed 1511), PAUSED at 5e385a0. Stage 4 repair, built 2026-10-16 (world seed 1539),
@@ -827,3 +934,30 @@ allowed.
   player by player, it paired a pitcher's October OTHER BONUS line with his January PERF BONUS line unprompted, which
   is the full includer's route. Its other notes sit in frozen main-call files (the vendor's December 1 projection after
   two signings, which the golden basis does not read; the five's signing order equalling their lineup order).
+
+Rubric hardening, 2026-10-28 (the author's second device): the ask's wording, the call and every file the call reads
+unchanged. Generator: `records.py` (the salary each of five pitchers' contracts and two hitters' defers to its end, the
+salary lines paid net of it; the season-end run after a contract's last season settling the season's whole bonus and
+the deferral in one catch-all line; four last-season outcomes re-drawn below their terms' maximum; the deferral amounts
+re-aimed after stage 4), `calc.py` (the golden takes the deferral out, found as the register's salary less the salary
+lines paid over the contract; stops `settle_whole`, `double`, `cap`, `roundest`), `checks.py` (DF1 to DF8, SF20 to SF22;
+AK1, AK3, AK3b, AK3d, AK4 and AK5 restated for the contract-end seasons; GD3 reads the workbook's new column),
+`verify.py` (the deferral on its own pandas path), `deliver.py` (the workbook's deferred-salary column and notes, a blank
+January cell where none was paid, step 8), `ceiling.py` rewritten with the includer paths `full`, `double`, `cap`,
+`round` and `full2`. Gates as in the Pre-ship check; `ceiling.py` on target.zip 3ded6ddd: the cracker 0 of 21, the
+mirror 0, the full handling of the first device 13 (46.0 both off the call on Part 0's weights, 61.0 on the portal's
+calibration), twice the January half 11, cut to the terms 13, split at the roundest remainder 12, both devices handled
+21.
+- `leak.py` REVIEW lines new at this repair: the register's "$55,000 each" (Benítez's innings term) beside his 2023 row
+  of $55,000 (one line reached), and "$225,000 each" (Nunez's plate-appearance term, a hitter's) beside Ruiz's 2024 row
+  of $225,000 (three of his $75,000 lines): the register is the ask's input, and each figure is the pitcher's own lines
+  or another player's term. The stump-term sweep now draws "contract" from this note and so reads the term sheets
+  (season, appearances, contract), FIN-14 and CF-14.4 as before: the term sheets are the contracts the call accrues for,
+  FIN-14 and CF-14.4 the frozen policy and paper answered above. Every other REVIEW line is the last ship's.
+- Stage 4: the judge (pass 3) and the leak reader as in the Pre-ship check. The judge's one informational note, that the
+  card's `analyst_test` opens on $4,500,000 beside a list without it, misreads the sentence: $4,500,000 is the default
+  path's figure (the look-back run on the bases at hand), named first, and the list after it is the other rungs; the
+  card is left as it is. The reader read FIN-14 4.4 as naming the decisive step (choosing the basis by a back-test) and
+  its question 6 as an analytical choice: 4.4 is the filed selection criterion that names no basis, unchanged since the
+  round 1 repair and judged so in every round. Its question 3 names the League's feed notes and the close-file index, both
+  frozen main-call files carried since e93c6561.

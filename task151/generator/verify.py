@@ -132,7 +132,9 @@ def paid(target):
     """The playing-time bonuses other than plate appearances the club paid for 2023 to 2025, by player and season: for
     every player whose register row carries other playing-time terms, the season-end (October) payments and the
     January payments after them, any bonus code, all statuses summed, less an award term the October side exceeds the
-    January side by; a legacy line is the player whose name it carries, an HRIS line the register's ID."""
+    January side by, and less, in the October after a contract's last season, what its salary lines paid short of the
+    register's salary over its seasons; a legacy line is the player whose name it carries, an HRIS line the register's
+    ID."""
     pay = pd.read_csv(os.path.join(target, "ral_payroll_player_earnings_2023_2026.csv"), dtype={"employee_id": str})
     wb = openpyxl.load_workbook(os.path.join(target, "ral_player_contract_register_2023_2026.xlsx"), data_only=True)
     rows = list(wb["Register"].iter_rows(values_only=True))
@@ -155,6 +157,14 @@ def paid(target):
     legacy_line = pay.employee_id.str.fullmatch(r"\d+")
     pay["player"] = np.where(legacy_line, pay.employee_name.map(by_legacy), pay.employee_id.map(by_id))
     pay["date"] = pd.to_datetime(pay.pay_date)
+    sal = pay[pay.earning_code.isin(["E01", "SAL"])].groupby([pay.player, pay.date.dt.year]).amount.sum()
+    held = {}
+    for _, r in oth.iterrows():
+        yrs = span(r["Seasons"])
+        gap = sum(float(r["Salary %d" % y]) - float(sal.get((r["Player"], y), 0.0)) for y in yrs
+                  if 2023 <= y <= 2026 and pd.notna(r.get("Salary %d" % y)))
+        if gap > 0.5:
+            held[(max(yrs), r["Player"])] = gap
     pt = pay[pay.player.isin(seasons) & pay.earning_code.isin(["E40", "E45", "BPA"]) &
              pay.date.dt.month.isin([10, 1])].copy()
     pt["season"] = np.where(pt.date.dt.month == 10, pt.date.dt.year, pt.date.dt.year - 1)
@@ -164,8 +174,10 @@ def paid(target):
     for (season, player), r in g.iterrows():
         if season not in (2023, 2024, 2025) or season not in seasons[player]:
             continue
-        diff = round(r.get("oct", 0.0) - r.get("jan", 0.0), 2)
-        v = r.get("oct", 0.0) + r.get("jan", 0.0) - (diff if diff > 0.5 and diff in award.get(player, set()) else 0.0)
+        o = r.get("oct", 0.0) - held.get((season, player), 0.0)
+        j = r.get("jan", 0.0)
+        diff = round(o - j, 2)
+        v = o + j - (diff if j > 0.5 and diff > 0.5 and diff in award.get(player, set()) else 0.0)
         if abs(v) > 0.5:
             out[(int(season), player)] = v
     return out
