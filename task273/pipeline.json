@@ -1,30 +1,30 @@
 {
  "task": "task273",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "biomedical-clinical-research",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-28",
- "stump": "A competent solver counts each condition's called carriers among the members whose depth passes the usual genotype filter and files the current eleven unchanged, the three founder conditions at 2.3, 2.4 and 2.1 per 1,000; the step that lands it there is reading a member with no call as a non-carrier, when the phase 1 caller caught a heterozygote at 8 to 17 reads only about half the time and the phase 1 members are the island and glen communities where those conditions are common.",
- "architecture": 4,
+ "stump": "",
+ "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-28"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; every line ruled harmless in the note)",
-  "reader": "pass 1 and pass 2: questions 1 to 4 none, 6 an analytical choice; the nominator hint and the realism tells fixed"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK; the forum redrawn to line_manager_or_team after task270's card was marked spent)",
-  "nearest": "0.11 task256 v1 (lineage), a share inside a box of correlated measurements"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 2 on f17337a6; pass 1 SEND_BACK kept as determinism_check_report_a4_pass1.md); shipped ea742c6b differs only in policy 3.1's decider, PDF producers and register texture, figures identical"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -38,11 +38,17 @@
    "portal": "determinism check on architecture 2's pack: both judge runs failed, run 1 underspecified_objective (the duplicate person records behind the KSI and cost asks, later record against most severe), run 2 competing_defensible_answer on the main call (the unstratified relative involvement ratio files airport shuttles and paratransit); determinism_check_report_portal.md",
    "repair": "design: re-rooted to architecture 4 on 2026-10-28 (author's choice of the genomics design over retirement), Wardale and Isles Health Board's 2027/28 couples' carrier screening panel, biomedical-clinical-research / statistical-genomics",
    "commit": "DRAWN (task273) of 2026-10-28"
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "both responses filed the golden: 14 conditions, ARSACS, Joubert syndrome type 2 and diastrophic dysplasia joining, one reporting observed and sensitivity-adjusted frequencies",
+   "repair": "design: re-rooted to architecture 5",
+   "commit": "DRAWN (task273) architecture 5"
   }
  ],
- "resume": "",
+ "resume": "Architecture 5 is not drawn: nine directions were screened on paper on 2026-10-28 and every one died on a named screen in this repo (the screen record and the four-architecture pincer are the last two lines of DESIGN_NOTE.md's Tried and rejected). Read that record first, then the card's lineage (v1 to v4, all spent) and the neighbouring slots' notes. The next move is the author's call, which CLAUDE.md reserves to them: a ban or clone waiver that reopens adjacent ground (the task258 reach family carried by a different mechanism, or a control set used the way the client's own held tasks use one, which stumping 2.4 and readability test 4 currently bar), retirement after four architectures, or re-tasking the number to another objective. The design target the record leaves, for whoever takes it with a waiver: an internal contrast between two shipped records that refutes the easy count, whose repair is a nameless exact composition forced by a process identity at a finer grain rather than a published correction, because architecture 4 measured that a visible contrast plus a named correction is executed by frontier solvers and a hidden one forks the main call. Done already and committed: the portal return appended to returned, architecture 4's fate marked spent here and on the card (architecture_spent true), the ledger's lineage row 273 (v4) written and the main 273 row rewritten off delivered.",
  "approved": null,
- "delivered": "2026-10-28",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -69,10 +75,15 @@
   {
    "architecture": 4,
    "drawn": "2026-10-28",
-   "fate": "shipped 2026-10-28 (judge pass 2 DETERMINISTIC, APPROVE after pass 1's SEND_BACK was repaired in the data); pending review",
+   "fate": "shipped 2026-10-28 (judge pass 2 DETERMINISTIC, APPROVE after pass 1's SEND_BACK was repaired in the data); spent 2026-10-28 at the portal: both responses filed the golden 14 conditions, one reporting observed and sensitivity-adjusted frequencies, so each phase's calls scaled by its members' depth-dependent chance of a call is a published correction the data made findable",
    "driver": "The decisive quantity is the share of a population carrying a trait that each member's own measurement reveals only with a probability set by how much measurement that member received, where the least measured members are a subgroup whose share differs; each group's detections are scaled by the sum of its members' chances of detection."
+  },
+  {
+   "architecture": 5,
+   "drawn": null,
+   "fate": "not drawn: the draw screen of 2026-10-28 killed nine directions on paper (DESIGN_NOTE.md, Tried and rejected); the slot waits on the author's waiver, retirement or re-tasking decision"
   }
  ],
  "seed": "none: a fresh draw in a new client domain (architecture 4); the DA23 seed was set aside at architecture 1",
- "answer": "Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves."
+ "answer": ""
 }
