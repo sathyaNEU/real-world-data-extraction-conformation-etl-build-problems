@@ -1,81 +1,87 @@
-"""task464 architecture 8: metadata.json, written from the built pack so it never drifts from it."""
+"""task464 architecture 9: metadata.json, written from the built pack so it never drifts from it."""
 import json, os
 import world as W
 import answers
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PLAN = "%s, plan record released for the withdrawal review" % W.SERVICE
+NET = W.NETWORK
+SEARCH = "%s, network searches of the practices' clinical systems run by the digital and data lead" % NET
 
 FILES = [
-    ("withdrawals_autumn_winter_2025.csv", "spine",
-     "Withdrawals recorded in the autumn and winter terms of 2025/26, exported from the student record system "
-     "in use until the winter term closed, with each learner's exit comment and the reason code a coder gave it.",
-     "%s, student records (legacy system export)" % W.SERVICE, "2026-01-09"),
-    ("withdrawals_spring_summer_2026.json", "spine",
-     "Withdrawals recorded in the spring and summer terms, from the Horizon SR v4 learner withdrawal extract, "
-     "with the winter withdrawals keyed after the old system closed.",
-     "%s, student records (Horizon SR v4)" % W.SERVICE, "2026-08-03"),
-    ("coding_moderation_2025_26.csv", "spine",
-     "The year's moderation return: the withdrawals the quality team drew by reason code, with the code "
-     "recorded and the category the moderating coder placed the comment in.",
-     "%s, quality team" % W.SERVICE, "2026-08-21"),
-    ("coding_manual_2025.pdf", "governing document",
-     "The exit comment coding manual, version 4.2: the six reason codes and when to use each.",
-     "%s, quality team" % W.SERVICE, "2025-09-01"),
-    ("quality_assurance_procedure.pdf", "governing document",
-     "How the quality team draws and moderates the coding sample.", "%s, quality team" % W.SERVICE, "2025-09-01"),
-    ("withdrawal_review_terms_of_reference.pdf", "governing document",
-     "The terms of reference of the 2025/26 withdrawal review.", "%s, head of service" % W.SERVICE, W.ASOF),
-    ("reason_code_list.csv", "reference", "The six reason codes and labels in manual order.",
-     "%s, student records" % W.SERVICE, "2025-09-01"),
-    ("enrolments_2025_26.csv", "operating extract",
-     "Every 2025/26 enrolment on the student record, one row per learner, course and term.",
-     "%s, student records (Horizon SR v4)" % W.SERVICE, "2026-08-03"),
-    ("course_catalogue_2025_26.csv", "reference",
-     "The 2025/26 course catalogue: each course reference with its centre, curriculum area, planned guided "
-     "hours, start term and the number of terms it was planned over.",
-     "%s, curriculum planning" % W.SERVICE, "2026-08-03"),
-    ("site_directory.csv", "reference", "The service's five centres, with the former names the merger replaced.",
-     "%s, estates" % W.SERVICE, "2026-01-05"),
-    ("retention_budget_2027_lines.xlsx", "context artifact", "The 2027 retention budget lines and their status.",
-     "%s, finance" % W.SERVICE, "2026-11-02"),
-    ("learner_satisfaction_2025_26.xlsx", "distractor",
-     "The 2025/26 learner satisfaction survey by centre and by curriculum area.",
-     "%s, quality team" % W.SERVICE, "2026-08-14"),
-    ("attendance_rates_2025_26.csv", "distractor",
-     "Scheduled sessions and attendance rates by curriculum area and term.",
-     "%s, quality team" % W.SERVICE, "2026-08-14"),
+    ("repeat_issues_system_a_2024-01_to_2026-11.csv", "spine",
+     "Every statin, ACE inhibitor, angiotensin II receptor blocker, DOAC and antiplatelet issue recorded from "
+     "1 January 2024 to 30 November 2026 at the four practices on clinical system A, in that system's issue "
+     "report layout.", SEARCH, "2026-12-01"),
+    ("repeat_issues_system_b_2024-01_to_2026-11.jsonl", "spine",
+     "The same issues for the three practices on clinical system B, in that system's JSON lines export.",
+     SEARCH, "2026-12-01"),
+    ("repeat_authorisations_system_a.csv", "context artifact",
+     "System A's repeat authorisations for those medicines active at any point from 1 January 2024: the register "
+     "of repeats, with each one's authorised issues, dates and current dosage.", SEARCH, "2026-12-01"),
+    ("repeat_authorisations_system_b.csv", "context artifact",
+     "System B's repeat authorisations for the same medicines, in its own layout.", SEARCH, "2026-12-01"),
+    ("patient_register_2026-12-01.csv", "operating extract",
+     "Registration episodes at the seven practices for every patient in the issue searches, under the network's "
+     "pseudonym.", SEARCH, "2026-12-01"),
+    ("eps_item_cancellations_2024-2026.csv", "operating extract",
+     "Items cancelled through the Electronic Prescription Service tracker before they were dispensed.",
+     "%s, EPS prescription tracker item report" % NET, "2026-12-01"),
+    ("repeat_changes_2024-01_to_2026-11.csv", "operating extract",
+     "Edits made in place to those repeats (dosage, quantity, notes, authorising clinician), from the medicines "
+     "safety search.", SEARCH, "2026-12-01"),
+    ("cvd_clinical_events_2023-2026.csv", "operating extract",
+     "The network's coded cardiovascular events search: diagnoses, observations, results and the coded entries of "
+     "discharge summaries.", SEARCH, "2026-12-01"),
+    ("cvd_product_lookup.csv", "reference",
+     "The network's crosswalk of each system's product strings to the drug, strength, form and BNF class.",
+     "%s, medicines team" % NET, "2026-06-15"),
+    ("pcn_practice_profiles_2026.xlsx", "reference",
+     "The seven member practices: ODS code, clinical system, list size, staffing and current pharmacist sessions.",
+     "%s, network manager" % NET, "2026-10-05"),
+    ("statin_continuity_sessions_brief.pdf", "governing document",
+     "The clinical director's brief to the network board on the 2027 statin continuity sessions.",
+     "%s, clinical director" % NET, "2026-12-03"),
+    ("icb_cvd_repeat_return_2025_spec.pdf", "governing document",
+     "The integrated care board's specification for the 2025 CVD medicines repeat return.",
+     "Integrated care board, medicines optimisation team", "2026-07-15"),
+    ("qof_cvd_achievement_2025-26.csv", "distractor",
+     "The practices' published 2025-26 QOF achievement on four cardiovascular indicators.",
+     "Quality and Outcomes Framework, practice achievement as published", "2026-09-10"),
+    ("dispensed_items_cvd_2025-26.csv", "distractor",
+     "Items and quantities dispensed against the practices' prescriptions, by month and chemical, 2025-26.",
+     "Dispensing data by prescribing practice, as the network receives it", "2026-07-20"),
 ]
 
 
 def main():
-    f = answers.figures()
+    f = answers.figures(write=False)
     names = sorted(os.listdir(os.path.join(BASE, "target")))
     listed = sorted(n for n, *_ in FILES)
     assert names == listed, (names, listed)
     meta = {
         "task": "task464",
-        "domain": "education-learning-sciences",
-        "subdomain": "text-analysis",
+        "domain": "pharmacology-pharmacoepidemiology-safety",
+        "subdomain": "medication-adherence-persistence",
         "objective": "descriptive-distribution",
-        "prompt_shape": "05",
-        "as_of": W.ASOF,
+        "prompt_shape": "01",
+        "as_of": "2026-12-03",
+        "extract_to": W.iso(W.ASOF),
         "currency": W.CURRENCY,
-        "compiled_by": "%s, retention lead's office" % W.SERVICE,
-        "compiled_on": W.ASOF,
-        "licence": ("Compiled by %s for its 2025/26 withdrawal review. Every file is the service's own record, "
-                    "synthetic, and released for the review's use." % W.SERVICE),
+        "compiled_by": "%s, digital and data lead" % NET,
+        "compiled_on": "2026-12-03",
+        "licence": ("Synthetic records compiled for %s's statin continuity sessions brief and its 2025 return. "
+                    "Every file is constructed, contains no real patient, and is released for this task's use." % NET),
         "files": [{"path": "target/" + n, "role": role, "covers": cov, "source": src, "date": d,
-                   "licence": "service record, synthetic, released for the review's use"}
+                   "licence": "synthetic, constructed for this task, free to use"}
                   for n, role, cov, src, d in FILES],
-        "distractor_files": ["target/learner_satisfaction_2025_26.xlsx", "target/attendance_rates_2025_26.csv"],
-        "stated_inputs": {"terms": [t["code"] for t in W.TERMS], "centres": len(W.SITES),
-                          "reason_codes": len(W.CODES), "decision_year": W.DECISION_YEAR},
-        "field_terms": ["withdrawal", "reason code", "moderation", "learner-course", "planned guided hours"],
-        "deliverables": ["withdrawal_reason_composition_2025_26.csv", "retention_target_2027.xlsx"],
-        "portal": {"call": "the one withdrawal reason the 2027 retention budget line targets",
-                   "answer": f["call_label"], "share_pct": f["call_share_pct"],
-                   "runner_up": f["runner_up_label"], "gap_points": f["gap_points"]},
+        "distractor_files": ["target/qof_cvd_achievement_2025-26.csv", "target/dispensed_items_cvd_2025-26.csv"],
+        "stated_inputs": {"practices": len(W.PRACTICES), "outcome_window": ["2027-03-01", "2027-06-30"],
+                          "population_window": ["2026-09-01", "2026-11-30"], "rounding": W.ROUND_TO},
+        "field_terms": ["repeat authorisation", "authorised issues", "re-authorisation", "persistence",
+                        "proportion of days covered"],
+        "deliverables": ["statin_sessions_2027.xlsx", "cvd_repeat_returns_2025.csv"],
+        "portal": {"call": "the practice that hosts the statin continuity sessions, January to June 2027",
+                   "answer": f["call_name"], "expected": f["call_expected"], "runner_up": f["runner_up_name"]},
     }
     json.dump(meta, open(os.path.join(BASE, "metadata.json"), "w"), indent=2)
     print("  metadata.json, %d files" % len(FILES))

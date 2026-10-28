@@ -1,51 +1,60 @@
 ## Tags
-**Domain:** Education & Learning Sciences (text analysis: learners' free-text exit comments coded against a manual).
+
+**Domain:** Pharmacology, Pharmacoepidemiology & Safety (medication adherence and persistence).
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
-**Our 2027 retention budget line should target caring responsibilities.**
-Caring responsibilities account for 25.1 per cent of 2025/26 withdrawals against work hours clash at 19.4, a gap of 5.7 points. Not work hours clash, which leads the coded counts at 24.4 per cent only because 14.8 per cent of the comments coded to it are about caring. Not other or not stated, which leads the moderation file's own mix only because every comment coded OT is moderated.
+
+**Place the 2027 statin continuity sessions at Marrick House Surgery, with Cobbet Street Surgery next in line.**
+1,232 of Marrick House Surgery's 1,648 patients in the brief's population are on a statin repeat of six 56-day issues authorised in February or March 2026, so their repeats run out together before March 2027, and 12% of statin repeats that run out are not re-authorised. Not Cobbet Street Surgery, whose six-issue repeats bring its reviews round through the whole year rather than together. Not Fennbridge Medical Centre, the largest list, whose summer switch to atorvastatin re-authorised most of its statin patients for a year.
 
 ## 2. Critical Components
-1. Coded shares of the 17,231 withdrawals: work hours clash **24.4** per cent, caring responsibilities **19.4**
-2. Of the moderated comments coded work hours clash, **14.8** per cent belong to caring responsibilities
-3. Share of withdrawals that happened for caring responsibilities **25.1** per cent, for work hours clash **19.4**
+
+1. **12%** of statin repeats whose authorised issues were all issued were not re-authorised within 60 days.
+2. Marrick House Surgery has **1,648** patients in the brief's population, **1,232** of them on a repeat of six 56-day issues authorised in February or March 2026.
 
 ## 3. Step-by-Step Solution
-1. Stacked withdrawals_autumn_winter_2025.csv and withdrawals_spring_summer_2026.json on the spring export's term codes, kept one row per withdrawal reference (the late-keyed winter withdrawals sit in both) and normalised the typed reason codes: 17,231 withdrawals.
-2. Counted the withdrawals by coded reason over the four terms: work hours clash 24.4 per cent, caring responsibilities 19.4.
-3. Took, within each coded reason in coding_moderation_2025_26.csv, the split of the moderating coder's categories, the return being drawn by code as quality_assurance_procedure.pdf sets out: 14.8 per cent of moderated work hours clash comments belong to caring responsibilities.
-4. Carried each code's split onto that code's share of the year's withdrawals and summed by reason: caring responsibilities 25.1 per cent, work hours clash 19.4.
-5. Built learner-courses from enrolments_2025_26.csv at the five centres in site_directory.csv on the learner number and the course reference, linking each course that course_catalogue_2025_26.csv plans over winter and spring but which has no spring rows to the one spring course at the same centre whose learners are all its continuing learners (25 links), and summed each learner-course's planned hours once from the catalogue: six area totals.
-6. Attributed each learner-course to the centre of its first term's row and counted it completed where any of its rows reads completed: five started counts and five completed shares.
-7. Named the reason with the largest share of withdrawals: caring responsibilities, 5.7 points ahead of work hours clash.
+
+1. Stacked both systems' issue extracts through cvd_product_lookup.csv and took the patients registered on 30 November 2026 in patient_register_2026-12-01.csv who were issued a statin by that practice from 1 September to 30 November 2026: 8,648 patients across the seven practices.
+2. Matched each statin repeat authorised from January 2024 in repeat_authorisations_system_a.csv and repeat_authorisations_system_b.csv whose authorised issues were all issued, the last by 3 July 2026, to a new statin repeat for the patient within 60 days of its supply running out: 12% were not re-authorised.
+3. Measured stops between reviews as statin repeats left with issues unused and no statin issued for 150 days, per 28 days of statin supply, separately for a new start's first six months.
+4. Ran each patient's current repeat, the one their latest statin issue was on, forward from that issue at the record's mean request interval to the request after its last authorised issue, counting a stop or a failed re-authorisation that follows a last issue before 1 March 2027 and a repeat that ran out over three weeks before the searches with no new repeat as not issued, scaled by the record's seven-month stay on the register.
+5. Summed by practice: Marrick House Surgery has the largest expected number and Cobbet Street Surgery the next.
+6. R1: rebuilt the dosage each ACE inhibitor or ARB issue was prescribed at by walking repeat_changes_2024-01_to_2026-11.csv back from the dosage on the authorisation, dropped the items in eps_item_cancellations_2024-2026.csv, carried supply forward within the drug and counted the days of 2025 covered per the return specification: each practice's R1 percentage below.
+7. R2: took each start from the 'Ticagrelor 90mg twice daily started in secondary care' entries in cvd_clinical_events_2023-2026.csv within three days of a myocardial infarction, both inside the window, at the practice coded on the entry, and counted the patients issued ticagrelor 90mg on a day later than its first anniversary: each practice's R2 percentage below.
+8. Placed the sessions at Marrick House Surgery.
 
 ## 4. Deliverable Answers
 
-### withdrawal_reason_composition_2025_26.csv
-1. Share of 2025/26 withdrawals that happened for each reason, six rows, per cent to one decimal place:
-   - Caring responsibilities: 25.1
-   - Work hours clash: 19.4
-   - Course too difficult: 15.5
-   - Travel or transport: 14.7
-   - Health: 13.5
-   - Other or not stated: 11.8
+### statin_sessions_2027.xlsx
 
-### retention_target_2027.xlsx
-1. Reason the 2027 retention budget line targets: caring responsibilities, 25.1 per cent
-2. Runner-up: work hours clash, 19.4 per cent
-3. Gap between them: 5.7 points
-4. Bar chart of the six shares by reason on the Reason composition sheet, caring responsibilities picked out
-5. Planned guided hours of the learner-courses the five centres started in 2025/26, by curriculum area, whole hours:
-   - English and maths: 832,566
-   - Digital skills: 734,640
-   - ESOL: 749,682
-   - Health and social care: 756,246
-   - Business administration: 726,420
-   - Construction skills: 687,663
-6. Learner-courses started in 2025/26 and the share of them that completed, by centre, per cent to one decimal place:
-   - Cassgrove: 11,468 started, 64.6 completed
-   - Hollowdean Learning Hub: 12,849 started, 64.1 completed
-   - Northmarket Centre: 17,228 started, 65.5 completed
-   - The Lathe Street Building: 15,857 started, 64.7 completed
-   - Wyebrook Adult Learning Centre: 11,749 started, 63.9 completed
+1. Patients in the brief's population, by practice:
+   - Thistlecombe Surgery (P81066): 1,017
+   - Pellow Green Surgery (P81177): 829
+   - Larkspur Road Practice (P81283): 877
+   - Fennbridge Medical Centre (P81402): 1,961
+   - Marrick House Surgery (P81555): 1,648
+   - Cobbet Street Surgery (P81719): 1,192
+   - Wyndhollow Health Centre (P81940): 1,124
+2. Sessions placed at Marrick House Surgery.
+3. Runner-up: Cobbet Street Surgery.
+4. Bar chart of the seven practices on the brief's figure, Marrick House Surgery highlighted, on the Placement sheet.
+
+### cvd_repeat_returns_2025.csv
+
+1. R1, ACE inhibitor or angiotensin II receptor blocker adherence in 2025, percentage to one decimal place:
+   - Thistlecombe Surgery (P81066): 81.0
+   - Pellow Green Surgery (P81177): 80.3
+   - Larkspur Road Practice (P81283): 81.9
+   - Fennbridge Medical Centre (P81402): 77.8
+   - Marrick House Surgery (P81555): 79.9
+   - Cobbet Street Surgery (P81719): 75.8
+   - Wyndhollow Health Centre (P81940): 92.9
+2. R2, ticagrelor 90mg issued after the first anniversary of starting it, percentage to a whole number:
+   - Thistlecombe Surgery (P81066): 82
+   - Pellow Green Surgery (P81177): 83
+   - Larkspur Road Practice (P81283): 83
+   - Fennbridge Medical Centre (P81402): 71
+   - Marrick House Surgery (P81555): 84
+   - Cobbet Street Surgery (P81719): 58
+   - Wyndhollow Health Centre (P81940): 55

@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Marrick House Surgery hosts the 2027 statin continuity sessions, Cobbet Street Surgery next in line (expected patients with no statin issued from March to June 2027: 170 against 129, shown and not graded)",
+  "answer_source": "submission.md block 1 and golden/statin_sessions_2027.xlsx, from generator/figures.json",
   "gap": [
     "time",
     "population"
@@ -32,23 +32,23 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two clinical systems' issue extracts, rebuilds each patient's statin supply with carryover, fits each practice's persistence on time since the patient started and carries every patient now on a statin forward on that curve sends the pharmacist to Cobbet Street, whose six-issue repeats give it the steepest curve; the golden is Marrick House, whose patients' repeats were re-authorised together in its spring 2026 move to 56-day issues and all run out before March 2027",
+  "analyst_test": "A strong analyst who conforms the two clinical systems' issue extracts, rebuilds each patient's statin supply with carryover, fits each practice's persistence on time since the patient started and carries every patient now on a statin forward on that curve sends the pharmacist to Cobbet Street at about 83, whose six-issue repeats give it the steepest curve; last year's same window and the trailing year's stops also file Cobbet Street. The golden is Marrick House at 170, whose patients' repeats were re-authorised together in its spring 2026 move to 56-day issues and all run out before March 2027.",
   "domain_test": "The deciding quantity is a persistence forecast, the medication-adherence-persistence task type's own estimate worked on issue records with carried-forward supply and a gap rule, and what decides it is the repeat authorisation: a prescriber authorises a fixed number of issues, the request after the last one waits for a clinician to re-authorise the repeat, and that is where patients who stop, stop. Swap in another field's nouns and the authorised issue count, the clinician's re-authorisation and a practice moving its repeats to 56-day issues have no counterpart, so the task no longer reads the same",
   "layer2_family": "field_method",
   "layer2_pattern": "own:persistence on the repeat-authorisation clock",
   "layer1": [
-    "two clinical systems' issue extracts in different layouts (date formats, drug and strength written differently, quantity with and without units)",
-    "a lost prescription reissued, so the same issue appears twice a day or two apart",
+    "two clinical systems' exports in different layouts (UK against ISO dates, CSV against JSON lines, drug and strength written two ways and joined through the network's crosswalk, quantity with and without its unit)",
     "acute statin issues beside the repeats, and dose text written freely ('ONE at night', '1 nocte')",
     "patients who moved between the network's practices, carried under one network-wide pseudonym",
-    "deregistrations recorded with a reason code and a date that can follow the last issue by weeks"
+    "deregistrations recorded with a reason and a date that can follow the last issue by weeks; blank end dates on repeats that stopped",
+    "out-of-stock items cancelled and re-sent, and duplicate requests dispensed twice, on the ACE inhibitor and ARB repeats"
   ],
   "stakeholder_role": "the network's lead clinical pharmacist, who puts the placement of the statin continuity sessions to the network board",
   "role_family": "programme_officer",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "repeat_issues_*.csv",
-    "rows": 0,
+    "file": "repeat_issues_system_a_2024-01_to_2026-11.csv and repeat_issues_system_b_2024-01_to_2026-11.jsonl",
+    "rows": 502516,
     "entity": "one prescription issue of one drug to one patient",
     "grain": "issue",
     "source": "synthetic"
@@ -83,8 +83,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is how many members of each group will have stopped by a date when a member keeps going only through a renewal reached after a fixed run of uses and nearly all stopping happens at a renewal; a curve on time since each member began, or any trailing rate, spreads those losses evenly and ranks the groups by their history, while running each member forward to its own next renewal shows that one group's members were all restarted together a year earlier, so their renewals fall inside the window.",
-  "driver_concrete": "Statin repeats in the seven practices run on authorisations of a fixed number of issues, and nearly every patient who stops does so when the last issue is used and the repeat waits for a clinician to re-authorise it; Marrick House moved 85 per cent of its repeat patients to 56-day issues in February and March 2026, re-authorising each repeat as six issues, so those repeats run out together in January and February 2027 and Marrick House has the most patients with no statin from March to June 2027, while every persistence curve on time since starting puts Cobbet Street first.",
-  "stump": "A competent analyst fits each practice's persistence curve on time since starting the statin, carries each patient now on a statin forward on it and sends the pharmacist to Cobbet Street, whose six-issue repeats give it the steepest curve; the losses sit at the end of each repeat authorisation, and Marrick House's spring 2026 move to 56-day issues re-authorised 85 per cent of its patients' repeats at once, so they run out together before March 2027 and Marrick House has the most patients with no statin from March to June.",
+  "driver_concrete": "Statin repeats in the seven practices run on authorisations of a fixed number of issues, and nearly every patient who stops does so when the last issue is used and the repeat waits for a clinician to re-authorise it; Marrick House moved most of its stable repeat patients to 56-day issues in February and March 2026, re-authorising each repeat as six issues, so those repeats run out together in January and February 2027 and Marrick House has the most patients with no statin from March to June 2027 (170), while the persistence curve on time since starting, last year's same window and the trailing year's stops all put Cobbet Street first.",
+  "stump": "A competent analyst fits each practice's persistence curve on months since starting the statin, carries each patient now on a statin forward on it and sends the pharmacist to Cobbet Street at about 83, whose six-issue repeats give it the steepest curve, with Marrick House last at 46; the losses sit at the end of each repeat authorisation, and Marrick House's spring 2026 move to 56-day issues re-authorised most of its patients' repeats at once, so they run out together before March 2027 and Marrick House has about 170 against Cobbet Street's 129.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task33": "task33 projects a measured elevation's forward yield and truncates it at a filed intervention, recovered by back-testing closed actions against an acceptance bar; nothing here is an elevation or an intervention and no closed action is back-tested: the forward count is each patient run to the end of a recorded repeat authorisation.",

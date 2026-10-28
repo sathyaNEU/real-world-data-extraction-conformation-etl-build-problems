@@ -1,70 +1,82 @@
-"""task464 architecture 8: submission.md, drafted from figures.json so no figure in it is typed."""
+"""task464 architecture 9: submission.md, every figure emitted from figures.json."""
 import json, os
 import world as W
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FIG = os.path.join(BASE, "generator", "figures.json")
+
+
+def fmt(n):
+    return "{:,}".format(n)
 
 
 def main():
-    f = json.load(open(os.path.join(BASE, "generator", "figures.json")))
-    L = W.LABEL
-    order = sorted(W.CODES, key=lambda c: -f["corrected_share_pct"][c])
-    cents = sorted(f["ask2_started"])
-    n = format(f["withdrawals_total"], ",")
-    o = []
-    o += ["## Tags",
-          "**Domain:** Education & Learning Sciences (text analysis: learners' free-text exit comments coded against a manual).",
+    F = json.load(open(FIG, encoding="utf-8"))
+    name = {p["code"]: p["name"] for p in W.PRACTICES}
+    order = F["ranking"]
+    call = F["call"]
+    second = order[1]
+    L = []
+    L += ["## Tags", "",
+          "**Domain:** Pharmacology, Pharmacoepidemiology & Safety (medication adherence and persistence).",
           "**Analytical objective:** Descriptive & Distribution Analysis.", ""]
-    o += ["## 1. Final Recommendation",
-          "**Our 2027 retention budget line should target caring responsibilities.**",
-          "Caring responsibilities account for %.1f per cent of 2025/26 withdrawals against work hours clash at %.1f, "
-          "a gap of %.1f points. Not work hours clash, which leads the coded counts at %.1f per cent only because "
-          "%.1f per cent of the comments coded to it are about caring. Not other or not stated, which leads the "
-          "moderation file's own mix only because every comment coded OT is moderated."
-          % (f["call_share_pct"], f["runner_up_share_pct"], f["gap_points"], f["coded_share_pct"]["WH"],
-             f["wh_coded_belonging_cr_pct"]), ""]
-    o += ["## 2. Critical Components",
-          "1. Coded shares of the %s withdrawals: work hours clash **%.1f** per cent, caring responsibilities **%.1f**"
-          % (n, f["coded_share_pct"]["WH"], f["coded_share_pct"]["CR"]),
-          "2. Of the moderated comments coded work hours clash, **%.1f** per cent belong to caring responsibilities"
-          % f["wh_coded_belonging_cr_pct"],
-          "3. Share of withdrawals that happened for caring responsibilities **%.1f** per cent, for work hours clash **%.1f**"
-          % (f["call_share_pct"], f["runner_up_share_pct"]), ""]
-    o += ["## 3. Step-by-Step Solution",
-          "1. Stacked withdrawals_autumn_winter_2025.csv and withdrawals_spring_summer_2026.json on the spring export's "
-          "term codes, kept one row per withdrawal reference (the late-keyed winter withdrawals sit in both) and "
-          "normalised the typed reason codes: %s withdrawals." % n,
-          "2. Counted the withdrawals by coded reason over the four terms: work hours clash %.1f per cent, caring "
-          "responsibilities %.1f." % (f["coded_share_pct"]["WH"], f["coded_share_pct"]["CR"]),
-          "3. Took, within each coded reason in coding_moderation_2025_26.csv, the split of the moderating coder's "
-          "categories, the return being drawn by code as quality_assurance_procedure.pdf sets out: %.1f per cent of "
-          "moderated work hours clash comments belong to caring responsibilities." % f["wh_coded_belonging_cr_pct"],
-          "4. Carried each code's split onto that code's share of the year's withdrawals and summed by reason: caring "
-          "responsibilities %.1f per cent, work hours clash %.1f." % (f["call_share_pct"], f["runner_up_share_pct"]),
-          "5. Built learner-courses from enrolments_2025_26.csv at the five centres in site_directory.csv on the learner "
-          "number and the course reference, linking each course that course_catalogue_2025_26.csv plans over winter "
-          "and spring but which has no spring rows to the one spring course at the same centre whose learners are all "
-          "its continuing learners (%d links), and summed each learner-course's planned hours once from the catalogue: "
-          "six area totals." % f["cutover_links"],
-          "6. Attributed each learner-course to the centre of its first term's row and counted it completed where any "
-          "of its rows reads completed: five started counts and five completed shares.",
-          "7. Named the reason with the largest share of withdrawals: caring responsibilities, %.1f points ahead of "
-          "work hours clash." % f["gap_points"], ""]
-    o += ["## 4. Deliverable Answers", "", "### withdrawal_reason_composition_2025_26.csv",
-          "1. Share of 2025/26 withdrawals that happened for each reason, six rows, per cent to one decimal place:"]
-    o += ["   - %s: %.1f" % (L[c], f["corrected_share_pct"][c]) for c in order]
-    o += ["", "### retention_target_2027.xlsx",
-          "1. Reason the 2027 retention budget line targets: caring responsibilities, %.1f per cent" % f["call_share_pct"],
-          "2. Runner-up: work hours clash, %.1f per cent" % f["runner_up_share_pct"],
-          "3. Gap between them: %.1f points" % f["gap_points"],
-          "4. Bar chart of the six shares by reason on the Reason composition sheet, caring responsibilities picked out",
-          "5. Planned guided hours of the learner-courses the five centres started in 2025/26, by curriculum area, whole hours:"]
-    o += ["   - %s: %s" % (a, format(f["ask1_planned_hours"][a], ",")) for a in W.CURRICULUM]
-    o += ["6. Learner-courses started in 2025/26 and the share of them that completed, by centre, per cent to one decimal place:"]
-    o += ["   - %s: %s started, %.1f completed" % (c, format(f["ask2_started"][c], ","), f["ask2_completed_pct"][c])
-          for c in cents]
-    open(os.path.join(BASE, "submission.md"), "w").write("\n".join(o) + "\n")
-    print("  submission.md")
+    L += ["## 1. Final Recommendation", "",
+          "**Place the 2027 statin continuity sessions at %s, with %s next in line.**" % (name[call], name[second]),
+          "%s of %s's %s patients in the brief's population are on a statin repeat of six 56-day issues authorised in "
+          "February or March 2026, so their repeats run out together before March 2027, and %d%% of statin repeats that "
+          "run out are not re-authorised. Not %s, whose six-issue repeats bring its reviews round through the whole "
+          "year rather than together. Not %s, the largest list, whose summer switch to atorvastatin re-authorised most "
+          "of its statin patients for a year." % (fmt(F["six_56day_feb_mar_2026"][call]), name[call],
+                                                  fmt(F["population"][call]), F["reauth_fail_whole"], name[second],
+                                                  name[order[2]]), ""]
+    L += ["## 2. Critical Components", "",
+          "1. **%d%%** of statin repeats whose authorised issues were all issued were not re-authorised within 60 "
+          "days." % F["reauth_fail_whole"],
+          "2. %s has **%s** patients in the brief's population, **%s** of them on a repeat of six 56-day issues "
+          "authorised in February or March 2026." % (name[call], fmt(F["population"][call]),
+                                                     fmt(F["six_56day_feb_mar_2026"][call])), ""]
+    L += ["## 3. Step-by-Step Solution", "",
+          "1. Stacked both systems' issue extracts through cvd_product_lookup.csv and took the patients registered "
+          "on 30 November 2026 in patient_register_2026-12-01.csv who were issued a statin by that practice from "
+          "1 September to 30 November 2026: %s patients across the seven practices." % fmt(F["population_total"]),
+          "2. Matched each statin repeat authorised from January 2024 in repeat_authorisations_system_a.csv and "
+          "repeat_authorisations_system_b.csv whose authorised issues were all issued, the last by 3 July 2026, to a "
+          "new statin repeat for the patient within 60 days of its supply running out: %d%% were not "
+          "re-authorised." % F["reauth_fail_whole"],
+          "3. Measured stops between reviews as statin repeats left with issues unused and no statin issued for "
+          "%d days, per 28 days of statin supply, separately for a new start's first six months." % F["stop_gap_days"],
+          "4. Ran each patient's current repeat, the one their latest statin issue was on, forward from that issue at "
+          "the record's mean request interval to the request after its last authorised issue, counting a stop or a "
+          "failed re-authorisation that follows a last issue before 1 March 2027 and a repeat that ran out over three "
+          "weeks before the searches with no new repeat as not issued, scaled by the record's seven-month stay on "
+          "the register.",
+          "5. Summed by practice: %s has the largest expected number and %s the next." % (name[call], name[second]),
+          "6. R1: rebuilt the dosage each ACE inhibitor or ARB issue was prescribed at by walking "
+          "repeat_changes_2024-01_to_2026-11.csv back from the dosage on the authorisation, dropped the items in "
+          "eps_item_cancellations_2024-2026.csv, carried supply forward within the drug and counted the days of %d "
+          "covered per the return specification: each practice's R1 percentage below." % F["return_year"],
+          "7. R2: took each start from the 'Ticagrelor 90mg twice daily started in secondary care' entries in "
+          "cvd_clinical_events_2023-2026.csv within three days of a myocardial infarction, both inside the window, at "
+          "the practice coded on the entry, and counted the patients issued ticagrelor 90mg on a day later than its "
+          "first anniversary: each practice's R2 percentage below.",
+          "8. Placed the sessions at %s." % name[call], ""]
+    L += ["## 4. Deliverable Answers", "", "### statin_sessions_2027.xlsx", "",
+          "1. Patients in the brief's population, by practice:"]
+    for c in sorted(F["population"]):
+        L.append("   - %s (%s): %s" % (name[c], c, fmt(F["population"][c])))
+    L += ["2. Sessions placed at %s." % name[call],
+          "3. Runner-up: %s." % name[second],
+          "4. Bar chart of the seven practices on the brief's figure, %s highlighted, on the Placement sheet." % name[call], "",
+          "### cvd_repeat_returns_2025.csv", "",
+          "1. R1, ACE inhibitor or angiotensin II receptor blocker adherence in 2025, percentage to one decimal place:"]
+    for c in sorted(F["ask_a"]):
+        L.append("   - %s (%s): %.1f" % (name[c], c, F["ask_a"][c]["pct"]))
+    L.append("2. R2, ticagrelor 90mg issued after the first anniversary of starting it, percentage to a whole number:")
+    for c in sorted(F["ask_b"]):
+        L.append("   - %s (%s): %d" % (name[c], c, F["ask_b"][c]["pct"]))
+    L.append("")
+    open(os.path.join(BASE, "submission.md"), "w", encoding="utf-8").write("\n".join(L))
+    print("  submission.md, %d lines" % len(L))
 
 
 if __name__ == "__main__":

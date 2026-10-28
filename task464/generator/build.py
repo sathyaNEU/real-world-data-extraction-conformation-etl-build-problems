@@ -1,50 +1,42 @@
-"""task464 architecture 8: the orchestrator. Wipes target/ and rebuilds the whole pack from the generator."""
-import os, shutil, sys
+"""task464 architecture 9: the orchestrator. Wipes target/ and rebuilds the pack, the goldens and the write-up."""
+import os, shutil, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-OUT = os.path.join(os.path.dirname(HERE), "target")
+BASE = os.path.dirname(HERE)
+OUT = os.environ.get("T464_TARGET") or os.path.join(BASE, "target")
 import world as W
 import sim as S
-import pack, docs, extras, postprocess
+import pack, extras
 
 
-def main():
+def build_pack(seed=None):
     if os.path.isdir(OUT):
         shutil.rmtree(OUT)
     os.makedirs(OUT)
-    sim = S.simulate()
-    enr, wmeta, courses = pack.build(sim)
-    rows = pack.write(sim, enr, wmeta, courses)
-    docs.main()
-    rows += extras.write_all()
-    import golden as _g
-    _g.main()
-    import answers as _a
-    _a.main()
-    import meta as _m
-    _m.main()
-    import writeup as _w
-    _w.main()
-    for n, k, ch in postprocess.run(OUT):
-        pass
-    for n, k, ch in postprocess.run(os.path.join(os.path.dirname(HERE), "golden")):
-        pass
-    import cut as _c
-    _c.main()
-    print()
-    names = sorted(os.listdir(OUT))
-    exts = sorted({os.path.splitext(n)[1] for n in names})
-    big = max((os.path.getsize(os.path.join(OUT, n)), n) for n in names)
-    import csv as _csv
-    maxrows = 0
-    for n in names:
-        if n.endswith(".csv"):
-            with open(os.path.join(OUT, n), encoding="utf-8") as fh:
-                maxrows = max(maxrows, sum(1 for _ in fh) - 1)
-    print("pack: %d files, %d formats %s" % (len(names), len(exts), exts))
-    print("largest file %s at %.1f MB, largest csv row count %d" % (big[1], big[0] / 1e6, maxrows))
-    for n in names:
-        print("   %-46s %9d bytes" % (n, os.path.getsize(os.path.join(OUT, n))))
+    t0 = time.time()
+    w = S.simulate(seed if seed is not None else S.SEED)
+    st = pack.write(w)
+    pids = set(r["pid"] for r in w.issues if W.EXTRACT_FROM <= r["t"] <= W.ASOF)
+    st.update(extras.write_all(w, pids))
+    return w, st, time.time() - t0
+
+
+def main():
+    w, st, dt = build_pack()
+    print("pack written in %.0fs" % dt, st)
+    import docs; docs.main()
+    import answers; answers.main()
+    import family; family.main()
+    import golden; golden.main()
+    import meta; meta.main()
+    import writeup; writeup.main()
+    import postprocess
+    for folder in ("target", "golden"):
+        d = os.path.join(BASE, folder)
+        if os.path.isdir(d):
+            postprocess.run(d)
+    import cut; cut.main()
+    import ceiling; ceiling.main()
 
 
 if __name__ == "__main__":

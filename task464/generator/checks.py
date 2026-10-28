@@ -1,285 +1,344 @@
-"""task464 architecture 8: the generator's assertions.
+"""task464 architecture 9: the generator's assertions, run on the cut pack after every build.
 
-Every semantic fork row (SF1 to SF8) of the design note is asserted here, the three-rules block (R1 to R4)
-executes the analyst test on the pack, and the ladder's magnitudes are checked.
+Blocks: input gates; the call and its estimator family (closure, edges, separation, the reflexes); the semantic
+fork rows SF1 to SF22; the three rules executed (R1 to R3); Layer 1 mess neutrality (L1); the separation line
+between the asks and the call; the ask devices; the realism sweep. Exit 1 on any failure.
 """
-import csv, json, os, sys
+import collections, copy, csv, json, os, re, sys, zipfile
 import world as W
-import answers
+import answers as A
+import family as FAM
 
-TARGET = answers.TARGET
-FAIL = []
-N = 0
-PAIR_NOTE = [None]
-
-
-def ck(name, ok, detail=""):
-    global N
-    N += 1
-    if not ok:
-        FAIL.append("%s: %s" % (name, detail))
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+T = os.path.join(BASE, "target")
+RES = []
 
 
-def r0_default(q):
-    return max(q, key=q.get)
+def check(label, ok, detail=""):
+    RES.append((label, bool(ok), detail))
+
+
+def edge(v, u):
+    c = round(v / u) * u
+    return u / 2 - abs(v - c)
+
+
+def printed(v):
+    return A.rnd(v)
+
+
+def rows_of(path):
+    if path.endswith(".csv"):
+        with open(path, encoding="utf-8") as fh:
+            return sum(1 for _ in fh) - 1
+    if path.endswith(".jsonl"):
+        with open(path, encoding="utf-8") as fh:
+            return sum(1 for _ in fh)
+    return 0
 
 
 def main():
-    coded, mod, enr, sites = answers.load()
-    f = answers.figures()
-    codes = W.CODES
-    n = len(coded)
+    D = A.Data()
+    F = A.figures(D, write=False)
+    M = FAM.members(D)
+    name = {p["code"]: p["name"] for p in W.PRACTICES}
+    call = F["call"]
+    pop = A.population(D)
+    stay = A.stay_share(D)
 
-    # ---------------- the pack -------------------------------------------------------
-    ck("pack rows", n == W.WITHDRAWALS, "%d withdrawals" % n)
-    ck("moderation drawn by coded category", all(
-        sum(1 for m in mod if m["coded_reason"] == i) ==
-        (sum(1 for r in coded if r["code"] == i) if i in W.MODERATED_ALL else W.MODERATED_PER_CODE)
-        for i in codes), "the moderation sample is not every OT and a fixed number of each other code")
-    ck("every withdrawal carries a comment", all(
-        (r.get("code") in codes) for r in coded))
-    names = sorted(os.listdir(TARGET))
-    ck("input gate files", len(names) >= 10, "%d files" % len(names))
-    ck("input gate formats", len({os.path.splitext(x)[1] for x in names}) >= 3)
-    big = 0
-    for x in names:
-        if x.endswith(".csv"):
-            with open(os.path.join(TARGET, x), encoding="utf-8") as fh:
-                big = max(big, sum(1 for _ in fh) - 1)
-    ck("input gate large file", big >= 25000, "largest csv %d rows" % big)
+    # ------------------------------------------------------------------ input gates
+    names = sorted(os.listdir(T))
+    exts = {os.path.splitext(n)[1] for n in names}
+    check("G1 ten or more files", len(names) >= 10, "%d files" % len(names))
+    check("G2 three or more formats", len(exts) >= 3, ", ".join(sorted(exts)))
+    big = max(rows_of(os.path.join(T, n)) for n in names)
+    check("G3 a file of 25,000 rows or more", big >= 25000, "largest %d rows" % big)
+    meta = json.load(open(os.path.join(BASE, "metadata.json")))
+    dis = meta.get("distractor_files", [])
+    check("G4 two or more distractors declared", len(dis) >= 2 and all(os.path.exists(os.path.join(BASE, d)) for d in dis),
+          ", ".join(dis))
+    bad = [n for n in names if re.search(r"readme|dictionar|manifest|notes|schema|codebook|field", n, re.I)]
+    check("G5 no file describes the data", not bad, ", ".join(bad) or "none")
+    sheets = []
+    for n in names:
+        if n.endswith(".xlsx"):
+            with zipfile.ZipFile(os.path.join(T, n)) as z:
+                wbx = z.read("xl/workbook.xml").decode()
+            sheets += re.findall(r'<sheet [^>]*name="([^"]+)"', wbx)
+    check("G6 no notes or readme sheet", not [s for s in sheets if re.search(r"note|readme|about|dictionary", s, re.I)],
+          ", ".join(sheets))
+    check("G7 every shipped file is in metadata.json", sorted(f["path"][7:] for f in meta["files"]) == names)
 
-    R0 = {j: {i: (sum(1 for m in mod if m["coded_reason"] == i and m["moderated_reason"] == j)
-                  / sum(1 for m in mod if m["coded_reason"] == i)) for i in codes} for j in codes}
+    # ------------------------------------------------------------------ the call and its family
+    comp = {k: m for k, m in M.items() if k != "passed review at the rate"}
+    check("C1 the golden places the sessions at Marrick House", name[call] == "Marrick House Surgery", name[call])
+    tops = {k: max(m, key=m.get) for k, m in M.items()}
+    check("C2 Marrick House is largest under every member of the family", set(tops.values()) == {call},
+          str(sorted(set(tops.values()))))
+    dv = [m[call] for m in comp.values()]
+    check("C3 Marrick House's competent family spread under 0.4 of the printed unit", max(dv) - min(dv) < 4.0,
+          "%.1f to %.1f" % (min(dv), max(dv)))
+    allv = [m[call] for m in M.values()]
+    check("C4 Marrick House prints the same under every member", len({printed(v) for v in allv}) == 1,
+          str(sorted({printed(v) for v in allv})))
+    check("C5 the golden's edge distance at least 2 patients", edge(F["expected"][call], 10) >= 2.0,
+          "%.2f from the nearest edge" % edge(F["expected"][call], 10))
+    check("C6 every member clear of the edge by 1 patient", min(edge(v, 10) for v in allv) >= 1.0,
+          "tightest %.2f" % min(edge(v, 10) for v in allv))
+    orders = {k: tuple(sorted(m, key=lambda c: -m[c])) for k, m in M.items()}
+    check("C7 the full ranking is identical under every member", len(set(orders.values())) == 1,
+          " > ".join(W.BY_CODE[c]["key"] for c in orders["golden"]))
+    g = F["expected"]
+    sec = F["runner_up"]
+    check("C8 the call's margin over the runner-up at least 1.2x", g[call] / g[sec] >= 1.2, "%.2fx" % (g[call] / g[sec]))
+    check("C9 the call's weakest member clears the runner-up's strongest by 1.15x",
+          min(allv) / max(m[sec] for m in M.values()) >= 1.15,
+          "%.2fx" % (min(allv) / max(m[sec] for m in M.values())))
+    for k in ("default_km", "last_year", "trailing"):
+        pick = max(F[k], key=F[k].get)
+        check("C10 reflex '%s' names another practice" % k, pick != call, name[pick])
+    km = F["default_km"]
+    pos = sorted(km, key=lambda c: -km[c]).index(call) + 1
+    check("C11 Marrick House sits fourth or lower on the persistence curve", pos >= 4, "position %d of 7" % pos)
+    r_full, n_full, _ = A.reauth_rate(D, per=True)
+    r_rec, n_rec, _ = A.reauth_rate(D, lo=W.ASOF - 420, per=True)
+    spread = max(list(r_full.values()) + list(r_rec.values())) - min(list(r_full.values()) + list(r_rec.values()))
+    check("C12 the re-authorisation rate agrees by practice and window within 0.8 points", spread < 0.008,
+          "%.2f points" % (100 * spread))
+    check("C13 the pooled rate prints 12 per cent", F["reauth_fail_whole"] == 12, "%.2f" % F["reauth_fail_pct"])
 
-    # ---------------- SF1: the reason a withdrawal happened for, against the code recorded
-    q = {c: f["coded_share_pct"][c] for c in codes}
-    p = {c: f["corrected_share_pct"][c] for c in codes}
-    ck("SF1 the two readings differ and the golden is the corrected one",
-       max(q, key=q.get) != max(p, key=p.get),
-       "the coded and corrected compositions name the same reason, so there is nothing to decide")
-    ck("SF1 the terms of reference carry the estimand's wording", True)
+    # ------------------------------------------------------------------ semantic fork rows
+    reg = D.reg
+    on_edge = [pid for pid, c in pop.items() for (cc, a, b, why) in reg[pid] if cc == c and b == W.ASOF]
+    check("SF1 nobody's registration ends on 30 November 2026 itself", not on_edge, "%d" % len(on_edge))
+    anyp = {}
+    for pid, rows in D.statin_by.items():
+        if any(W.POP_FROM <= r["t"] <= W.ASOF for r in rows):
+            for c in W.BY_CODE:
+                if A.registered_at(reg, pid, c, W.ASOF):
+                    anyp[pid] = c
+    def call_and_print(p2):
+        g2 = A.golden(D, p2, rate, bg, pm, stay)
+        return max(g2, key=g2.get), printed(g2[call])
+    rate, _, _ = A.reauth_rate(D); bg = A.stop_rates(D); pm, _ = A.pacing(D)
+    check("SF2 the brief's 'issued a statin by it' against 'by any practice': the call and its figure hold",
+          call_and_print({p: c for p, c in anyp.items() if any(r["code"] == c for r in D.statin_by[p])}) == (call, F["call_expected"])
+          and len(anyp) - len(pop) <= 5, "%d against %d patients" % (len(anyp), len(pop)))
+    acute_only = sum(1 for pid in pop if all(r["acute"] for r in D.statin_by[pid] if r["t"] <= W.ASOF))
+    check("SF3 the brief's 'acute or repeat' keeps the new starts not yet on a repeat", acute_only > 0,
+          "%d patients on acute issues only" % acute_only)
+    ez = sum(1 for r in D.issues if r["vtm"] == "Ezetimibe")
+    check("SF4 no ezetimibe issue enters the population", ez == 0 or all(r["cls"] != "Statin" for r in D.issues if r["vtm"] == "Ezetimibe"),
+          "%d ezetimibe issues" % ez)
+    g_nostay = A.golden(D, pop, rate, bg, pm, 1.0)
+    check("SF5 ignoring leavers keeps the call and its printed figure",
+          max(g_nostay, key=g_nostay.get) == call and printed(g_nostay[call]) == F["call_expected"],
+          "%.1f" % g_nostay[call])
+    last_any = max(r["t"] for r in D.statin)
+    check("SF6 no statin issue dated after the searches' cover", last_any <= W.ASOF, W.iso(last_any))
+    check("SF7 the call's figure is clear of a rounding half, so half up and half even agree", edge(g[call], 10) > 0.5,
+          "%.2f" % g[call])
+    check("SF8 no tie for the largest", g[call] / g[sec] > 1.05, "%.2fx" % (g[call] / g[sec]))
+    only_edge = sum(1 for pid, c in pop.items()
+                    if {r["t"] for r in D.statin_by[pid] if r["code"] == c and W.POP_FROM <= r["t"] <= W.ASOF} <= {W.POP_FROM, W.ASOF})
+    strict = {pid: c for pid, c in pop.items()
+              if any(r["code"] == c and W.POP_FROM < r["t"] < W.ASOF for r in D.statin_by[pid])}
+    check("SF9 'from 1 September to 30 November' read without its end days keeps the call and its figure",
+          call_and_print(strict) == (call, F["call_expected"]),
+          "%d patients whose only issue in the window is on its first or last day" % only_edge)
+    moved = [pid for pid, c in pop.items() if len({e[0] for e in reg[pid]}) > 1]
+    check("SF10 patients who moved inside the network are counted once, at their practice on 30 November",
+          len(set(pop)) == len(pop) and all(A.registered_at(reg, p, pop[p], W.ASOF) for p in moved), "%d moved" % len(moved))
+    canc_statin = sum(1 for r in D.issues if r["cls"] == "Statin" and r["cancelled"])
+    check("SF11 no statin item was cancelled, so 'issued' reads one way", canc_statin == 0, "%d" % canc_statin)
+    deaths = sum(1 for pid in pop for e in reg[pid] if e[3] == "Death")
+    check("SF12 deaths leave the register like any other leaver", stay < 1.0, "stay %.4f" % stay)
+    check("SF13 a patient first issued after 30 November is outside the figure",
+          all(any(W.POP_FROM <= r["t"] <= W.ASOF for r in D.statin_by[p]) for p in pop))
+    # asks
+    y0, y1 = W.day("2025-01-01"), W.day("2025-12-31")
+    raas_pids = {r["pid"] for r in D.issues if r["cls"] in ("ACE inhibitor", "Angiotensin II receptor antagonist")
+                 and y0 <= r["t"] <= y1}
+    edge_reg = sum(1 for pid in raas_pids for c, a, b, why in reg.get(pid, [])
+                   if a in (y0, y0 + 1) or b in (y1, y1 + 1))
+    a_strict = A.ask_a(D)
+    check("SF14 R1's 'throughout 2025' read inclusively or strictly gives one denominator", edge_reg == 0,
+          "%d registrations of R1 patients start or end on the year's edge" % edge_reg)
+    ch = A.load_changes()
+    dose_edits = sum(1 for v in ch.values() for (t, o, n) in v if A.doses_per_day(o) != A.doses_per_day(n))
+    check("SF15 R1's directions on the prescription differ from the authorisation's for some issues", dose_edits > 0,
+          "%d dose edits" % dose_edits)
+    a_cur = A.ask_a(D, use_history=False)
+    check("SF16 R1 under the authorisation's current directions misses every practice",
+          all(a_cur[c][1] != a_strict[c][1] for c in a_strict))
+    a_canc = A.ask_a(D, drop_cancelled=False)
+    tot = lambda x: (sum(v[1] for v in x.values()), sum(v[0] for v in x.values()))
+    check("SF17 R1 reading a cancelled item as issued moves the network's figure", tot(a_canc) != tot(a_strict),
+          "%s against %s" % (tot(a_canc), tot(a_strict)))
+    b_h = A.ask_b(D); b_gp = A.ask_b(D, anchor="gp")
+    check("SF18 R2's 'the day they started it' and the first GP issue differ at every practice",
+          all(A.pct(b_h[c][1], b_h[c][0], 0) != A.pct(b_gp.get(c, (1, 0))[1], b_gp.get(c, (1, 0))[0], 0) for c in b_h))
+    tic = collections.defaultdict(list)
+    for r in D.issues:
+        if r["vtm"] == "Ticagrelor" and r["strength"] == "90mg" and not r["cancelled"]:
+            tic[r["pid"]].append(r["t"])
+    ev = A.load_events()
+    on_anniv = 0
+    for pid, rows in ev.items():
+        for (t, c, code, term) in rows:
+            if code == "1290071000000109" and any(x == A.anniversary(t) for x in tic.get(pid, [])):
+                on_anniv += 1
+    check("SF19 'on a day later than the first anniversary' is what the golden counts (issues on the day itself: %d)" % on_anniv,
+          "> anniversary(t)" in open(os.path.join(BASE, "generator", "answers.py")).read())
+    lo, hi = W.day("2024-07-01"), W.day("2025-06-30")
+    straddle = 0
+    for pid, rows in ev.items():
+        mi = [t for (t, c, code, term) in rows if code == "22298006"]
+        for (t, c, code, term) in rows:
+            if code != "1290071000000109": continue
+            m = [x for x in mi if abs(t - x) <= 3]
+            if m and (lo <= t <= hi) != (lo <= m[0] <= hi):
+                straddle += 1
+    check("SF20 the specification's 'both between' leaves out the starts whose infarction falls before the window",
+          straddle <= 3 and sum(v[0] for v in b_h.values()) > 0, "%d straddling" % straddle)
+    ties1 = [c for c in a_strict if abs((1000 * a_strict[c][1] / a_strict[c][0]) % 1 - 0.5) < 1e-9]
+    ties2 = [c for c in b_h if abs((100 * b_h[c][1] / b_h[c][0]) % 1 - 0.5) < 1e-9]
+    check("SF21 no R1 or R2 percentage sits on a rounding half", not ties1 and not ties2, str(ties1 + ties2))
+    mv_tic = [pid for pid in tic if len({e[0] for e in reg.get(pid, [])}) > 1]
+    coded_ok = all(A.registered_at(reg, pid, c, t) for pid, rows in ev.items() for (t, c, code, term) in rows
+                   if code == "1290071000000109" and lo <= t <= hi)
+    check("SF22 each start is coded at the practice the patient was registered with that day, the specification's attribution",
+          coded_ok, "%d ticagrelor patients changed practice" % len(mv_tic))
 
-    # ---------------- SF2 and SF3: scope and denominator ------------------------------
-    terms = {t["code"] for t in W.TERMS}
-    ck("SF2 every term in scope is present", {r["term"] for r in coded} >= set(), "")
-    ck("SF3 the denominator is every withdrawal in the four terms",
-       abs(sum(p.values()) - 100.0) < 0.05, "corrected shares sum to %.3f" % sum(p.values()))
+    from pypdf import PdfReader
+    brief = " ".join(" ".join((pg.extract_text() or "") for pg in PdfReader(os.path.join(T, "statin_continuity_sessions_brief.pdf")).pages).split())
+    g_nostop = A.golden(D, pop, rate, {k: (0.0, 0.0) for k in bg}, pm, stay)
+    check("SF23 the brief's 'for whatever reason' keeps stops between reviews in the figure (left out it prints %d)"
+          % printed(g_nostop[call]), "for whatever reason" in brief and printed(g[call]) == F["call_expected"])
 
-    # ---------------- SF4: per-term weighting against the whole year ------------------
-    per_term = {c: 0.0 for c in codes}
-    for t in W.TERMS:
-        sub = [r for r in coded if r["term"] in (t["code"], t["label"])]
-        if not sub:
-            continue
-        qt = {c: sum(1 for r in sub if r["code"] == c) / len(sub) for c in codes}
-        mt = [m for m in mod if m["term_code"] == t["code"]]
-        Rt = {}
-        for j in codes:
-            Rt[j] = {}
-            for i in codes:
-                s2 = [m for m in mt if m["coded_reason"] == i]
-                Rt[j][i] = (sum(1 for m in s2 if m["moderated_reason"] == j) / len(s2)) if s2 else 0.0
-        pt = {j: sum(qt[i] * Rt[j][i] for i in codes) for j in codes}
-        for c in codes:
-            per_term[c] += 100.0 * pt[c] * len(sub) / n
-    worst = max(abs(per_term[c] - p[c]) for c in codes)
-    ck("SF4 per-term weighting converges on the whole-year figure",
-       worst < 0.6 and max(per_term, key=per_term.get) == f["call"],
-       "worst divergence %.3f points, per-term call %s" % (worst, max(per_term, key=per_term.get)))
+    spec = " ".join(" ".join((pg.extract_text() or "") for pg in PdfReader(os.path.join(T, "icb_cvd_repeat_return_2025_spec.pdf")).pages).split())
+    same_practice = {}
+    for pid, rows in ev.items():
+        for (t, cc, code, term) in rows:
+            if code == "1290071000000109" and lo <= t <= hi:
+                mi_t = [x for (x, c2, code2, term2) in rows if code2 == "22298006" and abs(x - t) <= 3]
+                if not mi_t or not (lo <= mi_t[0] <= hi): continue
+                a0, k0 = same_practice.get(cc, (0, 0))
+                own = any(r["t"] > A.anniversary(t) and r["code"] == cc for r in D.issues
+                          if r["pid"] == pid and r["vtm"] == "Ticagrelor" and r["strength"] == "90mg" and not r["cancelled"])
+                same_practice[cc] = (a0 + 1, k0 + own)
+    moved_pct = [c for c in b_h if A.pct(b_h[c][1], b_h[c][0], 0) != A.pct(*same_practice.get(c, (1, 0))[::-1], 0)]
+    check("SF24 R2's numerator counts 90mg issues at any practice, as the specification says ('at any practice'); the "
+          "starting practice alone would move %d practices" % len(moved_pct), "at any practice" in spec)
+    check("SF25 practices are compared before rounding, as the brief says; the order is the golden's unrounded order",
+          "compared on their figures before rounding" in brief and order_ok if (order_ok := (F["ranking"][0] == call)) else False)
 
-    # ---------------- SF5: the retired FN code is absent ------------------------------
-    ck("SF5 no withdrawal carries the retired code",
-       not any(r["code"] == "FN" for r in coded), "an FN row is present")
+    # ------------------------------------------------------------------ the three rules, executed
+    issue_rows = rows_of(os.path.join(T, "repeat_issues_system_a_2024-01_to_2026-11.csv")) + \
+        rows_of(os.path.join(T, "repeat_issues_system_b_2024-01_to_2026-11.jsonl"))
+    check("R1 the record ships issue by issue with each repeat's authorised issues", issue_rows > 50000 and
+          all(tp["M"] > 0 for tp in D.tpl.values()), "%d issue rows" % issue_rows)
+    txt = " ".join(open(os.path.join(T, n), encoding="utf-8", errors="ignore").read()[:200000]
+                   for n in names if n.endswith((".csv", ".jsonl")))
+    check("R1 no file ships an expected count, a persistence figure or a ranking of the practices",
+          not re.search(r"expected|persisten|rank|kaplan|survival", txt, re.I))
+    check("R2 the easy route, a persistence curve on months since starting, files another practice",
+          max(km, key=km.get) != call, name[max(km, key=km.get)])
+    check("R3 changing only the clock, to each patient's own re-authorisation, files Marrick House",
+          max(g, key=g.get) == call and max(km, key=km.get) != call)
 
-    # ---------------- SF6: every graded share sits inside its bin ---------------------
-    import math
-    def midbin(v, step=0.1):
-        s = v / step
-        return abs(s - math.floor(s) - 0.5) * step
-    raw = {}
-    nq = {c: sum(1 for r in coded if r["code"] == c) / n for c in codes}
-    R = {j: {i: (sum(1 for m in mod if m["coded_reason"] == i and m["moderated_reason"] == j)
-                 / sum(1 for m in mod if m["coded_reason"] == i)) for i in codes} for j in codes}
-    for c in codes:
-        raw[c] = 100 * sum(nq[i] * R[c][i] for i in codes)
-    worstbin = min(midbin(raw[c]) for c in codes)
-    ck("SF6 every corrected share is mid-bin at one decimal place",
-       worstbin >= 0.012, "closest to a rounding boundary %.4f" % worstbin)
+    # ------------------------------------------------------------------ Layer 1 mess neutrality
+    def call_on(Dx):
+        popx = A.population(Dx); rx, _, _ = A.reauth_rate(Dx); bx = A.stop_rates(Dx); px, _ = A.pacing(Dx)
+        gx = A.golden(Dx, popx, rx, bx, px, A.stay_share(Dx))
+        return max(gx, key=gx.get), gx
+    Dm = copy.copy(D)
+    Dm.reg = {pid: [e for e in eps] for pid, eps in D.reg.items()}
+    for pid, eps in Dm.reg.items():
+        if len({e[0] for e in eps}) > 1:
+            Dm.reg[pid] = eps[-1:]
+    c1, g1 = call_on(Dm)
+    check("L1 reading moved patients at their current practice only keeps the call", c1 == call, "%.1f" % g1[call])
+    act = collections.Counter(tp["pid"] for tp in D.tpl.values() if tp["cls"] == "Statin" and tp["end"] is None
+                              and tp["pid"] in pop and tp["code"] == pop[tp["pid"]])
+    two = [p for p, k in act.items() if k > 1]
+    stale = sum(1 for p in pop if D.statin_by[p][-1]["acute"] and act.get(p, 0) >= 1)
+    evx = A.load_events()
+    recent_mi = {p for p, rows in evx.items() for (t, cc, code, term) in rows if code == "22298006" and t >= W.ASOF - 60}
+    off = [p for p in pop if not D.statin_by[p][-1]["acute"] and D.tpl[D.statin_by[p][-1]["ref"]]["end"] is not None]
+    check("L1 every patient's latest statin issue sits on their one active repeat, except a repeat a filed discharge summary ended",
+          not two and all(p in recent_mi for p in off),
+          "%d with two active; %d ended by a heart attack in the last 60 days; %d restarted on an acute issue with the "
+          "stopped repeat still listed" % (len(two), len(off), stale))
+    canc_tokens = {e for (e, item) in A.load_cancellations()}
+    Dc = copy.copy(D)
+    Dc.statin = [r for r in D.statin if r["eps"] not in canc_tokens]
+    byc = collections.defaultdict(list)
+    for r in Dc.statin:
+        byc[r["pid"]].append(r)
+    Dc.statin_by = byc
+    Dc.made = collections.Counter(r["ref"] for r in Dc.statin if r["ref"])
+    c2, g2 = call_on(Dc)
+    hit = len(D.statin) - len(Dc.statin)
+    check("L1 dropping every item on a prescription with a cancelled item keeps the call and its figure",
+          c2 == call and printed(g2[call]) == F["call_expected"], "%d statin items dropped, %.1f" % (hit, g2[call]))
+    late = sum(1 for pid, eps in D.reg.items() for (c, a, b, why) in eps
+               if b is not None and pid in D.statin_by and b - max(r["t"] for r in D.statin_by[pid]) > 28)
+    check("L1 deregistrations dated weeks after the last issue are present and neutral", late > 0, "%d" % late)
+    sys_a = sum(1 for r in D.statin if W.BY_CODE[r["code"]]["system"] == "A")
+    sys_b = sum(1 for r in D.statin if W.BY_CODE[r["code"]]["system"] == "B")
+    check("L1 both clinical systems' layouts carry the call's rows", sys_a > 0 and sys_b > 0, "%d and %d" % (sys_a, sys_b))
+    dirs = collections.Counter(tp["directions"] for tp in D.tpl.values() if tp["cls"] == "Statin")
+    check("L1 statin dose text is free text in several forms, one dose each", len(dirs) >= 6 and
+          all(A.doses_per_day(d) == 1 for d in dirs), "%d forms" % len(dirs))
 
-    # ---------------- SF7: the moderation sample is not a composition -----------------
-    modcomp = {c: 100.0 * sum(1 for m in mod if m["moderated_reason"] == c) / len(mod) for c in codes}
-    ck("SF7 the moderation sample's own composition is not the answer",
-       max(abs(modcomp[c] - p[c]) for c in codes) > 1.5,
-       "the stratified sample's raw composition is within rounding of the golden, so the rung does not die")
+    # ------------------------------------------------------------------ separation
+    statin_refs = {ref for ref, tp in D.tpl.items() if tp["cls"] == "Statin"}
+    dose_on_statin = sum(1 for ref, v in ch.items() if ref in statin_refs for (t, o, n) in v
+                         if A.doses_per_day(o) != A.doses_per_day(n))
+    check("S1 no dose edit sits on a statin repeat", dose_on_statin == 0, "%d" % dose_on_statin)
+    check("S2 no cancelled item is a statin", canc_statin == 0)
+    with open(os.path.join(T, "cvd_product_lookup.csv"), encoding="utf-8") as fh:
+        look = list(csv.DictReader(fh))
+    check("S3 the asks' medicines are no statin", all(r["bnf_class"] != "Statin" for r in look
+                                                         if r["vtm"] in ("Ticagrelor", "Ramipril", "Losartan")))
+    check("S4 the call reads no change log, no clinical event and no cancellation of a statin",
+          "load_changes" not in A.golden.__code__.co_names and "load_events" not in A.golden.__code__.co_names)
 
-    # ---------------- SF8: the unit is the withdrawal, not the learner -----------------
-    wl = {}
-    for r in csv.DictReader(open(os.path.join(TARGET, "withdrawals_autumn_winter_2025.csv"), encoding="utf-8")):
-        wl[r["withdrawal_ref"]] = r["uln"]
-    for r in json.load(open(os.path.join(TARGET, "withdrawals_spring_summer_2026.json"), encoding="utf-8"))["records"]:
-        wl[r["withdrawalRef"]] = r["learnerUln"]
-    byl = {}
-    for r in coded:
-        byl.setdefault(wl[r["ref"]], r["code"])
-    ql = {c: sum(1 for v in byl.values() if v == c) for c in codes}
-    ck("SF8 counting learners instead of withdrawals leaves the same call",
-       max(ql, key=ql.get) == r0_default(q), "%d learners for %d withdrawals" % (len(byl), n))
-
-    # ---------------- SF9: the forward form of the same correction converges -----------
-    import numpy as _np
-    Pj = {j: sum(nq[i] * R[j][i] for i in codes) for j in codes}
-    Mw = _np.array([[nq[i] * R[j][i] / Pj[j] for j in codes] for i in codes])
-    pw = _np.linalg.solve(Mw, _np.array([nq[c] for c in codes]))
-    ck("SF9 the weighted forward inversion files the golden to the last digit",
-       max(abs(100 * pw[k] - raw[c]) for k, c in enumerate(codes)) < 1e-9)
-
-    # ---------------- Layer 1 is mess-neutral on the call ----------------------------
-    raw_rows = answers.load(raw=True)[0]
-    dup = len(raw_rows) - len({r["ref"] for r in raw_rows})
-    ck("L1 late-keyed winter withdrawals sit in both exports", dup > 100, "%d repeated references" % dup)
-    noisy = sum(1 for r in raw_rows if r["code"] not in codes)
-    ck("L1 the old system's typed codes carry case and space noise", noisy > 100, "%d noisy codes" % noisy)
-    def lead(rs, norm):
-        cnt = {c: 0 for c in codes}
-        for r in rs:
-            c = r["code"].strip().upper() if norm else r["code"]
-            if c in cnt:
-                cnt[c] += 1
-        return max(cnt, key=cnt.get), cnt
-    ck("L1 keeping the repeats leaves the default path's answer", lead(raw_rows, True)[0] == "WH")
-    ck("L1 dropping the noisy codes leaves the default path's answer", lead(raw_rows, False)[0] == "WH")
-    cnt = lead(raw_rows, True)[1]
-    nn = sum(cnt.values())
-    pk = {j: sum(cnt[i] / nn * R0[j][i] for i in codes) for j in codes}
-    ck("L1 keeping the repeats leaves the golden call", max(pk, key=pk.get) == f["call"])
-
-    # ---------------- R block: the three rules, executed -----------------------------
-    r0 = max(q, key=q.get)
-    ck("R1 the analyst test files the named wrong answer on the pack",
-       r0 == "WH" and abs(q[r0] - 24.4) < 0.05, "default path names %s at %.1f" % (r0, q[r0]))
-    ck("R2 the golden is the corrected composition's leader",
-       f["call"] == "CR" and abs(f["call_share_pct"] - 25.1) < 0.05,
-       "golden names %s at %.1f" % (f["call"], f["call_share_pct"]))
-    ck("R3 changing the decisive step alone flips the call", r0 != f["call"])
-    margin = p[f["call"]] / p[f["runner_up"]]
-    ck("R4 the golden's margin clears 1.15", margin >= 1.15, "margin %.3f" % margin)
-
-    # ---------------- the ladder -----------------------------------------------------
-    s = sum(q[c] for c in codes if c != "OT")
-    r1 = {c: (100 * q[c] / s if c != "OT" else 0.0) for c in codes}
-    ck("rung1 drop-the-catch-all still names the wrong reason", max(r1, key=r1.get) == "WH")
-    ck("rung2 the moderation sample's own composition names a different reason",
-       max(modcomp, key=modcomp.get) != f["call"], "it names %s" % max(modcomp, key=modcomp.get))
-    # rung 2b: the moderator's category substituted on the moderated rows, every other code kept
-    modref = {m["withdrawal_ref"]: m["moderated_reason"] for m in mod}
-    sub = {c: 0 for c in codes}
-    for r in coded:
-        sub[modref.get(r["ref"], r["code"])] += 1
-    ck("rung2b substituting the moderated codes still names the wrong reason",
-       max(sub, key=sub.get) == "WH", "it names %s" % max(sub, key=sub.get))
-    ck("decisive step's worth on the call's own figure",
-       abs(p["CR"] - q["CR"]) > 4.0, "(a) %.2f points" % abs(p["CR"] - q["CR"]))
-
-    # ---------------- the asks -------------------------------------------------------
-    import csv as _csv
-    cat = {c["course_ref"]: c for c in _csv.DictReader(open(os.path.join(TARGET, "course_catalogue_2025_26.csv"),
-                                                            encoding="utf-8"))}
-    in_scope = {x["site_code"] for x in sites}
-    rows = [e for e in enr if e["site_code"] in in_scope]
-    link = answers.cutover_links(rows, cat)
-    tcodes = [t["code"] for t in W.TERMS]
-    cut = tcodes.index(W.CUTOVER_AFTER)
-    across = [r for r, c in cat.items() if int(c["terms_spanned"]) == 2 and tcodes.index(c["start_term"]) == cut]
-    ck("ask device: every course across the cutover is linked to exactly one continuation",
-       sorted(link.values()) == sorted(across), "%d links for %d courses" % (len(link), len(across)))
-    # the identity that forces the link, measured on the shipped rows: every learner on a continuation holds a
-    # continuing row on the old reference, and no other course in the catalogue is in that position
-    on = {}
-    for e in rows:
-        on.setdefault((e["course_ref"], e["term_code"]), set()).add(e["uln"])
-    ident = all(on[(y, tcodes[cut + 1])] <= on[(x, tcodes[cut])] for y, x in link.items())
-    ck("ask device: the learner-set identity holds on every link", ident)
-    ck("ask device: no course outside the cutover is missing its second term",
-       all((r, tcodes[tcodes.index(c["start_term"]) + 1]) in on for r, c in cat.items()
-           if int(c["terms_spanned"]) == 2 and r not in across))
-    ck("ask device: every centre carries linked learner-courses",
-       {cat[x]["site_code"] for x in link.values()} >= in_scope)
-    ck("ask device: every curriculum area carries linked learner-courses",
-       {cat[x]["curriculum_area"] for x in link.values()} == set(W.CURRICULUM))
-    # the separation line: no learner the call reads holds a row on a continuation reference
-    wd_ulns = set()
-    for r in _csv.DictReader(open(os.path.join(TARGET, "withdrawals_autumn_winter_2025.csv"), encoding="utf-8")):
-        wd_ulns.add(r["uln"])
-    for r in json.load(open(os.path.join(TARGET, "withdrawals_spring_summer_2026.json"), encoding="utf-8"))["records"]:
-        wd_ulns.add(r["learnerUln"])
-    dev_ulns = {e["uln"] for e in rows if e["course_ref"] in link}
-    ck("separation: zero device rows on a learner the call reads", not (wd_ulns & dev_ulns),
-       "%d withdrawn learners hold a continuation row" % len(wd_ulns & dev_ulns))
-    ck("separation: the call reads only the withdrawal exports and the moderation file", True)
-    ck("ask1 covers every curriculum area", len(f["ask1_planned_hours"]) == len(W.CURRICULUM))
-    ck("ask2 covers every centre", len(f["ask2_started"]) == len(W.SITES) == len(f["ask2_completed_pct"]))
-    ck("ask2 every completed share is clear of its rounding boundary",
-       min(abs((10 * v) % 1 - 0.5) for v in f["ask2_completed_raw"].values()) >= 0.12,
-       "closest %.3f" % min(abs((10 * v) % 1 - 0.5) for v in f["ask2_completed_raw"].values()))
-    ck("the subcontract rows are outside the review's scope",
-       f["enrolment_rows_in_extract"] - f["enrolment_rows_in_scope"] == W.SUBCONTRACT_ENROLMENTS,
-       "the out-of-scope count does not match the subcontracted rows written")
-    ck("every row repeats its course's whole planned hours",
-       all(int(e["guided_hours_planned"]) == int(cat[e["course_ref"]]["planned_guided_hours"]) for e in enr))
-
-    # ---------------- realism sweep: the five measured shapes and no round totals ----------
-    def steps(vals):
-        nums = sorted(int("".join(ch for ch in v if ch.isdigit())) for v in vals)
-        return {b - a for a, b in zip(nums, nums[1:])}
-    wrefs = [r["ref"] for r in coded]
-    ck("realism 1 withdrawal references are not one constant step", len(steps(wrefs)) > 1)
-    ck("realism 1 learner numbers are not one constant step", len(steps({e["uln"] for e in enr})) > 1)
-    ck("realism 1 course references are not one constant step", len(steps(cat.keys())) > 1)
-    by_code = [x["site_name"] for x in sorted(sites, key=lambda x: x["site_code"])]
-    ck("realism 2 the centres in code order are not the centres sorted", by_code != sorted(by_code))
-    shapes = {x["site_name"].split()[-1] for x in sites}
-    ck("realism 3 centre names take more than two shapes", len(shapes) > 2, ", ".join(sorted(shapes)))
-    ck("realism 4 no round totals", n % 100 != 0 and f["enrolment_rows_in_scope"] % 100 != 0
-       and f["enrolment_rows_in_extract"] % 100 != 0, "%d withdrawals, %d rows" % (n, f["enrolment_rows_in_scope"]))
-    import subprocess
-    pdfs = sorted(x for x in names if x.endswith(".pdf"))
-    late = []
-    import re as _re, datetime as _dt
-    months = {m: k for k, m in enumerate(["january", "february", "march", "april", "may", "june", "july",
-                                         "august", "september", "october", "november", "december"], 1)}
-    for x in pdfs:
-        txt = subprocess.run(["pdftotext", os.path.join(TARGET, x), "-"], capture_output=True, text=True).stdout
-        found = [_dt.date.fromisoformat(d) for d in _re.findall(r"\b\d{4}-\d{2}-\d{2}\b", txt)]
-        for d, m, y in _re.findall(r"\b(\d{1,2}) (%s) (\d{4})\b" % "|".join(months), txt.lower()):
-            found.append(_dt.date(int(y), months[m], int(d)))
-        if not found or max(found) > _dt.date.fromisoformat(W.ASOF):
-            late.append("%s (%s)" % (x, max(found) if found else "no date"))
-    ck("realism 5 no document states a date after the review's own", not late, ", ".join(late))
-
-    # The ask layer's ceiling, measured on the cut pack by ceiling.py against the Part 1.1 cracker.
+    # ------------------------------------------------------------------ the ask devices
     import ceiling
-    cmp = ceiling.compare()
-    kept, Lc, Ls, pair = ceiling.pair_of(cmp)
-    ck("ask ceiling is measured on the cut pack", len(cmp) == 16, "%d ask figures" % len(cmp))
-    ck("the cracker misses every ask figure", kept == 0,
-       "keeps " + ", ".join(n for n, _, _, hit in cmp if hit))
-    ck("the pair ceiling is inside the build target", pair <= 51.0, "pair %.1f" % pair)
-    weak = ceiling.compare(sum_rows=True)
-    ck("the weaker reading misses every ask figure too", ceiling.pair_of(weak)[0] == 0)
-    PAIR_NOTE[0] = (len(cmp), kept, Lc, pair)
+    rs = ceiling.rows(D)
+    check("D1 the cracker misses every asked figure", all(not r[3] for r in rs),
+          "keeps " + ", ".join(r[0] for r in rs if r[3]) if any(r[3] for r in rs) else "%d of %d missed" % (len(rs), len(rs)))
+    gap_a = min(abs(F["ask_a"][c]["pct"] - A.pct(a_cur[c][1], a_cur[c][0], 1)) for c in a_strict)
+    check("D2 R1's device moves every practice by a point or more", gap_a >= 1.0, "smallest %.1f" % gap_a)
+    pdc_twin = sum(1 for r in D.issues if r["cls"] in ("ACE inhibitor", "Angiotensin II receptor antagonist")
+                   and not r["cancelled"])
+    check("D3 R1 reads more than a few thousand issues", pdc_twin > 20000, "%d" % pdc_twin)
 
-    print("%d checks, %d failed" % (N, len(FAIL)))
-    for x in FAIL:
-        print("  FAIL", x)
-    print("  SF4 worst per-term divergence %.3f points" % worst)
-    print("  SF6 closest corrected share to a rounding boundary %.4f" % worstbin)
-    print("  SF7 stratified sample's raw composition for the call %.2f against the golden %.2f"
-          % (modcomp["CR"], p["CR"]))
-    if PAIR_NOTE[0]:
-        nfig, kept, Lc, pair = PAIR_NOTE[0]
-        print("  ASK CEILING %d figures, cracker keeps %d, Lc %.3f, PAIR %.1f (precut allows 60)"
-              % (nfig, kept, Lc, pair))
-    return 1 if FAIL else 0
+    # ------------------------------------------------------------------ realism sweep
+    npop = collections.Counter(pop.values())
+    check("Z1 no two practices share a population count", len(set(npop.values())) == len(npop), str(sorted(npop.values())))
+    check("Z2 the headline figure is not round", abs(g[call] - round(g[call])) > 0.01 or g[call] % 10 != 0)
+    tok = collections.defaultdict(set)
+    for r in D.issues:
+        tok[r["eps"]].add((r["pid"], r["t"]))
+    multi = sum(1 for v in tok.values() if len(v) > 1)
+    check("Z3 an EPS prescription id belongs to one patient on one day", multi == 0, "%d ids, %d shared" % (len(tok), multi))
+    refs = sorted(int(r[1:]) for r in D.tpl if r.startswith("R"))
+    steps = collections.Counter(b - a for a, b in zip(refs, refs[1:]))
+    check("Z4 repeat references are not an arithmetic sequence", steps.most_common(1)[0][1] < 0.2 * len(refs),
+          "most common step %s" % (steps.most_common(1),))
+    people = set(W.PEOPLE.values())
+    check("Z5 the personas are the drawn names", people == {"Dorothy Mitchell", "Hollie Kirk", "Stuart Newman"})
+    last_reg = max(a for eps in reg.values() for (c, a, b, why) in eps)
+    check("Z6 no registration starts after the searches", last_reg <= W.ASOF, W.iso(last_reg))
+
+    fails = [r for r in RES if not r[1]]
+    for label, ok, detail in RES:
+        print("%s %-96s %s" % ("PASS" if ok else "FAIL", label, detail))
+    print("%d checks, %d failed" % (len(RES), len(fails)))
+    return 1 if fails else 0
 
 
 if __name__ == "__main__":

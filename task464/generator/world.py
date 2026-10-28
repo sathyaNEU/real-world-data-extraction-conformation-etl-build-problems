@@ -1,126 +1,143 @@
-"""task464 architecture 8: the world.
+"""task464 architecture 9: the world.
 
-An adult education service reviews why its learners withdrew in 2025/26. Each withdrawal carries the learner's
-own free-text exit comment and the category a coder placed it in against the service's coding manual. Each year
-the service moderates a sample drawn by coded category (every OT, a fixed number of each other code): a second,
-senior coder re-reads them and records the category the comment belongs in.
+The Hensey Vale Primary Care Network's seven practices issue repeat medicines on authorisations of a fixed number
+of issues. When a repeat's last authorised issue is used, or a practice's review season comes round, the next
+request waits for a clinician to re-authorise it at a review, and that is where nearly every patient who stops a
+statin stops. Two practices re-authorised large parts of their lists in 2026 for their own reasons: Marrick House
+moved its stable repeat patients to 56-day issues in February and March, re-authorising each converted repeat as
+six issues, and Fennbridge switched its simvastatin patients to atorvastatin in June and July.
 
-Nothing in this module states a corrected share, a hit rate or a ranking. Those are computed in sim.py and
-answers.py and asserted in checks.py.
+Nothing here states an expected count, a rate read off the record or a ranking of the practices. Those are
+computed from the shipped files in answers.py and asserted in checks.py.
 """
+import datetime as dt
 
-SERVICE = "Thornmere Adult Education Service"
-AUTHORITY = "Thornmere Combined Authority"
-MANUAL = "Exit Comment Coding Manual"
+NETWORK = "Hensey Vale Primary Care Network"
+NETWORK_SHORT = "Hensey Vale PCN"
+ICB = "the integrated care board"
 CURRENCY = "GBP"
-ASOF = "2026-11-18"          # the review is taken after this date
-YEAR = "2025/26"
-DECISION_YEAR = "2027"
+
+D0 = dt.date(2019, 1, 1)
+
+
+def day(s):
+    return (dt.date.fromisoformat(s) - D0).days
+
+
+def date_of(n):
+    return D0 + dt.timedelta(days=int(n))
+
+
+def iso(n):
+    return date_of(n).isoformat()
+
+
+ASOF = day("2026-11-30")          # the extracts run to the end of this day
+PULL = "2026-12-01"               # the network's searches ran the next morning
+EXTRACT_FROM = day("2024-01-01")  # issue and change extracts start here
+OUT = day("2027-06-30")           # outcome date
+W0 = day("2027-03-01")            # outcome window opens
+POP_FROM = day("2026-09-01")      # "issued a statin from 1 September to 30 November 2026"
+SIM_START = day("2020-01-01")     # the simulated world starts four years before the extracts
+KEEP_FROM = day("2023-01-01")     # issue rows before this are counted on their repeat but not kept
+BRIEF_DATE = "2026-12-03"
+BOARD_DATE = "2026-12-10"
+SPEC_DATE = "2026-07-15"          # the ICB's return specification for calendar 2025, version 1.1
+RETURN_YEAR = 2025
 
 PEOPLE = {
-    "retention_lead": "Roger Nicholls",     # puts the target to the head of service
-    "moderator": "Carly Leonard",           # senior coder who runs the termly moderation
+    "clinical_director": "Dorothy Mitchell",
+    "lead_pharmacist": "Hollie Kirk",
+    "data_lead": "Stuart Newman",
 }
 
-# The six categories of the coding manual, in manual order.
-CATEGORIES = [
-    ("CR", "Caring responsibilities"),
-    ("WH", "Work hours clash"),
-    ("TR", "Travel or transport"),
-    ("CD", "Course too difficult"),
-    ("HL", "Health"),
-    ("OT", "Other or not stated"),
+# The seven practices. `season` is the months whose first request meets a review (a practice that reviews its
+# repeat patients in fixed months); `drive` is a 2026 batch re-authorisation done without a review.
+PRACTICES = [
+    dict(key="A", code="P81402", name="Fennbridge Medical Centre", system="A", list_size=15240,
+         L=28, M=13, season=(), drive=("switch", "2026-06-01", "2026-07-31", 0.42), n=2250, incid=0.155),
+    dict(key="B", code="P81719", name="Cobbet Street Surgery", system="B", list_size=9380,
+         L=28, M=6, season=(), drive=None, n=1300, incid=0.27),
+    dict(key="C", code="P81066", name="Thistlecombe Surgery", system="A", list_size=8115,
+         L=28, M=13, season=(), drive=None, n=1020, incid=0.155),
+    dict(key="D", code="P81555", name="Marrick House Surgery", system="B", list_size=13610,
+         L=28, M=13, season=(), drive=("length", "2026-02-02", "2026-03-27", 0.88), n=1690, incid=0.155),
+    dict(key="E", code="P81283", name="Larkspur Road Practice", system="A", list_size=7290,
+         L=28, M=13, season=(), drive=None, n=850, incid=0.155),
+    dict(key="F", code="P81940", name="Wyndhollow Health Centre", system="B", list_size=9805,
+         L=56, M=6, season=(), drive=None, n=1180, incid=0.16),
+    dict(key="G", code="P81177", name="Pellow Green Surgery", system="A", list_size=6870,
+         L=28, M=13, season=(), drive=None, n=780, incid=0.155),
 ]
-CODES = [c for c, _ in CATEGORIES]
-LABEL = dict(CATEGORIES)
+BY_KEY = {p["key"]: p for p in PRACTICES}
+BY_CODE = {p["code"]: p for p in PRACTICES}
+KEYS = [p["key"] for p in PRACTICES]
 
-# The composition of the reasons learners actually withdrew for. Latent: never shipped, never printed.
-TRUE_SHARE = {"CR": 0.250, "WH": 0.205, "TR": 0.140, "CD": 0.155, "HL": 0.130, "OT": 0.120}
+# The repeat process.
+Q_FAIL = 0.12            # share of reviews at which a patient's repeats are not re-authorised
+BG_EARLY = 0.012         # chance a patient stops one medicine at a request, per 28 days, first 182 days on it
+BG_LATE = 0.0024         # after that
+DEREG_Y = 0.025          # leaving the list, a year
+RETURN = 0.22            # a patient who stopped restarts later
+RET_MIN, RET_MAX = 270, 520
+SWITCH_STOP = 0.02       # stops at Fennbridge's switch
+MOVE_Y = 0.004           # moves to another network practice, a year
 
-# How the coders behave. CODED_GIVEN_TRUE[coded][true] = P(a case of `true` is coded `coded`).
-# A caring responsibility reaches the record as a sentence about hours ("could not get cover for mum on
-# Tuesdays"), so CR is recognised in 68 of every 100 cases that belong to it and WH takes most of the spill.
-CODED_GIVEN_TRUE = {
-    "CR": {"CR": 0.68, "WH": 0.03, "TR": 0.05, "CD": 0.02, "HL": 0.04, "OT": 0.05},
-    "WH": {"CR": 0.14, "WH": 0.90, "TR": 0.08, "CD": 0.03, "HL": 0.02, "OT": 0.08},
-    "TR": {"CR": 0.06, "WH": 0.02, "TR": 0.74, "CD": 0.01, "HL": 0.02, "OT": 0.04},
-    "CD": {"CR": 0.02, "WH": 0.01, "TR": 0.02, "CD": 0.86, "HL": 0.01, "OT": 0.07},
-    "HL": {"CR": 0.02, "WH": 0.01, "TR": 0.02, "CD": 0.02, "HL": 0.84, "OT": 0.04},
-    "OT": {"CR": 0.08, "WH": 0.03, "TR": 0.09, "CD": 0.06, "HL": 0.07, "OT": 0.72},
-}
+# Patients on an ACE inhibitor or ARB alone whose practice issues them other lengths: (share, days) by the
+# practice's usual issue length.
+OWN_LENGTH = {28: [(0.10, 84), (0.12, 56)], 56: [(0.15, 28), (0.10, 84)]}
 
-ENROLMENTS = 86413           # 2025/26 enrolment rows across the service's five centres
-WITHDRAWALS = 17231          # of which withdrew before completing
-# The moderation sample is drawn by CODED category. Every withdrawal coded OT is moderated, because OT is the
-# code the service learns least from; for each of the other five codes a fixed number is drawn across the year.
-MODERATED_ALL = ("OT",)
-MODERATED_PER_CODE = 400
+# How late patients habitually order: most order as their supply runs low, some days or weeks late.
+LATE_TYPES = [(0.68, 0, 0), (0.20, 4, 11), (0.12, 9, 24)]   # (share, extra days low, extra days high)
 
-# Four terms. The student record system changed between T2 and T3, which is why the exports differ.
-TERMS = [
-    {"code": "T1", "label": "autumn 2025", "start": "2025-09-08", "end": "2025-10-24", "share": 0.29,
-     "export": "A"},
-    {"code": "T2", "label": "winter 2025", "start": "2025-11-03", "end": "2025-12-19", "share": 0.24,
-     "export": "A"},
-    {"code": "T3", "label": "spring 2026", "start": "2026-01-12", "end": "2026-03-27", "share": 0.27,
-     "export": "B"},
-    {"code": "T4", "label": "summer 2026", "start": "2026-04-20", "end": "2026-07-17", "share": 0.20,
-     "export": "B"},
+# Medicines in the network's CVD repeat search.
+STATINS = [
+    # (drug, strength, share among starts before 2025, share among starts from 2025)
+    ("Simvastatin", "40mg", 0.36, 0.06),
+    ("Simvastatin", "20mg", 0.10, 0.02),
+    ("Atorvastatin", "20mg", 0.30, 0.62),
+    ("Atorvastatin", "40mg", 0.08, 0.10),
+    ("Atorvastatin", "80mg", 0.07, 0.11),
+    ("Rosuvastatin", "10mg", 0.05, 0.06),
+    ("Pravastatin", "40mg", 0.04, 0.03),
 ]
-
-# Two sites were renamed by a merger between T2 and T3, so the earlier export carries the former names.
-SITES = [
-    {"code": "NMK", "name": "Northmarket Centre", "former": "Northmarket Adult College"},
-    {"code": "HWD", "name": "Hollowdean Learning Hub", "former": "Hollowdean Learning Shop"},
-    {"code": "CSG", "name": "Cassgrove", "former": None},
-    {"code": "WBR", "name": "Wyebrook Adult Learning Centre", "former": None},
-    {"code": "LTH", "name": "The Lathe Street Building", "former": None},
+STATIN_NAMES = ("Atorvastatin", "Simvastatin", "Rosuvastatin", "Pravastatin", "Fluvastatin")
+ACE_ARB = [
+    ("Ramipril", "2.5mg", "capsules", 0.16), ("Ramipril", "5mg", "capsules", 0.20), ("Ramipril", "10mg", "capsules", 0.12),
+    ("Lisinopril", "10mg", "tablets", 0.10), ("Lisinopril", "20mg", "tablets", 0.07),
+    ("Perindopril erbumine", "4mg", "tablets", 0.05),
+    ("Losartan", "50mg", "tablets", 0.12), ("Losartan", "100mg", "tablets", 0.05),
+    ("Candesartan", "8mg", "tablets", 0.08), ("Irbesartan", "150mg", "tablets", 0.05),
 ]
+ACE_NAMES = ("Ramipril", "Lisinopril", "Perindopril erbumine", "Enalapril")
+ARB_NAMES = ("Losartan", "Candesartan", "Irbesartan", "Valsartan", "Olmesartan")
+DOACS = [("Apixaban", "5mg", 2, 0.52), ("Apixaban", "2.5mg", 2, 0.12), ("Edoxaban", "60mg", 1, 0.20),
+         ("Rivaroxaban", "20mg", 1, 0.16)]
+P2Y12 = [("Ticagrelor", "90mg"), ("Clopidogrel", "75mg")]
 
-# planned guided hours a course may carry
-GUIDED_HOURS = [30, 36, 45, 54, 60, 72, 90, 120]
+# Directions as each clinical system's prescribers write them.
+DIRECTIONS_ONE = ["ONE daily", "ONE to be taken each day", "1 daily", "Take ONE tablet daily", "one a day"]
+DIRECTIONS_NIGHT = ["ONE at night", "1 at night", "Take ONE tablet at night", "ONE to be taken at night", "1 nocte"]
+DIRECTIONS_TWO = ["TWO daily", "TWO to be taken each day", "2 daily", "Take TWO tablets daily"]
+DIRECTIONS_BD = ["ONE twice a day", "ONE twice daily", "1 bd", "Take ONE tablet twice a day"]
+DIRECTIONS_HALF = ["HALF a tablet daily", "half daily"]
 
-CURRICULUM = ["English and maths", "Digital skills", "ESOL", "Health and social care",
-              "Business administration", "Construction skills"]
+# Ask A: 2025 titrations of ACE inhibitors and ARBs edited in place on the repeat (same product, tablets a day
+# changed), and the 2025 out-of-stock reissues.
+TITRATE_2025 = 0.15            # share of 2025 ACE/ARB patients whose repeat directions were edited in 2025
+TITRATE_UP = 0.62              # of which, one to two a day (quantity per issue doubled)
+SHORTAGES = [("Losartan", "2025-03-10", "2025-05-23"), ("Ramipril", "2025-09-01", "2025-10-24")]
+REISSUE_P = 0.22               # share of issues of a short line in its window cancelled and reissued
+TWIN_P = 0.012                 # duplicate requests both dispensed, any non-statin repeat
+REPRINT_P = 0.004              # spoilt or lost paper prescriptions reprinted, non-statin repeats
 
-# Subcontracted delivery. These enrolments sit in the same extract because they run on the service's own
-# student record, but they are not the service's own provision and the review's scope is the five centres.
-# The code is absent from site_directory.csv, which is the only place the five centres are listed.
-SUBCONTRACT_SITE = {"code": "MDV", "name": "Meadowvale (subcontracted)"}
-SUBCONTRACT_ENROLMENTS = 4127
+# Ask B: ticagrelor 90mg after a heart attack.
+MI_Y = 0.012                   # heart attacks a year among the network's statin patients (plus new presentations)
+TICAGRELOR_ISSUES = 13         # the GP repeat after discharge: thirteen 28-day issues
+TICAG_OVERRUN = 0.18           # carried on past the thirteenth issue
+TICAG_PEGASUS = 0.10           # moved to 60mg at the end
+DISCHARGE_SUPPLY = (14, 28)
 
-# Courses that run across two terms. The student record opens an enrolment row for the learner in EACH term
-# the course spans, and both rows carry the WHOLE course's planned hours, because the hours belong to the
-# course and not to the term. Summing the column over rows therefore counts a two-term course's hours twice.
-# Nothing flags it: (learner, course, term) is unique, and a learner holding two rows for one course is
-# correct data. Only course_catalogue.csv, which carries each course's hours once, resolves it.
-TWO_TERM_SHARE = 0.34          # share of courses that span two terms
-# Learners who move centre mid-course keep the same course and appear at both centres, the sending centre's
-# row left at continuing and the receiving centre's closed at completed.
-TRANSFER_SHARE = 0.047
-# The student record system changed between T2 and T3. A course running across the change could not be carried
-# into the new system as an open occurrence, so it was closed in the old one after its winter term and created
-# again in the new one for its spring term, under a new course reference with the same centre, curriculum area
-# and planned hours. The catalogue keeps both references, the old one still showing the two terms it was
-# planned for. Nothing on either row says the two are one course: the learners on the new reference are the
-# learners of the old one, and that identity is the only thing that links them.
-CUTOVER_AFTER = "T2"
-# Winter withdrawals keyed in the last fortnight of term went into the new system as well as the old one.
-LATE_KEYED_SHARE = 0.55
-
-SEED = 46835
-PACK_SEED = SEED + 17     # the enrolment extract and the catalogue, drawn apart from the withdrawals
-
-
-def term(code):
-    for t in TERMS:
-        if t["code"] == code:
-            return t
-    raise KeyError(code)
-
-
-def withdrawals_for(code):
-    first = [int(round(WITHDRAWALS * t["share"])) for t in TERMS]
-    diff = WITHDRAWALS - sum(first)
-    first[0] += diff                      # the split sums exactly
-    return dict(zip([t["code"] for t in TERMS], first))[code]
+# The governing figures the documents state.
+ROUND_TO = 10                  # expected numbers to the nearest 10 patients
+PDC_LINE = 0.80

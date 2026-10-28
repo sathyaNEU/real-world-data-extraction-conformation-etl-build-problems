@@ -1,31 +1,31 @@
 {
  "task": "task464",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "pharmacology-pharmacoepidemiology-safety",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "A competent analyst fits each practice's persistence curve on months since its patients started a statin, carries every patient now on one forward on it and sends the pharmacist to Cobbet Street at about 140, because the curve spreads over the year the losses that sit at the end of each repeat authorisation; Marrick House moved its stable repeat patients to 56-day issues in February and March 2026 and re-authorised each repeat as six issues, so they run out together before March 2027, and run to each patient's own re-authorisation Marrick House has about 180 against Cobbet Street's about 110.",
+ "stump": "A competent analyst fits each practice's persistence curve on months since its patients started a statin, carries every patient now on one forward on it and sends the pharmacist to Cobbet Street Surgery at about 83, because the curve spreads over the year the losses that sit at the end of each repeat authorisation; Marrick House moved its stable repeat patients to 56-day issues in February and March 2026 and re-authorised each repeat as six issues, so they run out together before March 2027, and run to each patient's own re-authorisation Marrick House has about 170 against Cobbet Street's about 129.",
  "architecture": 9,
  "loops": 0,
  "architecture_spent": "8, at stage 4 on the judge's Gate H3 SEND_BACK (decisive_step planted: correcting the coded shares is the retired surface-read flip), report determinism_check_report_pass5.md. Earlier: 3, on the re-judge's Gate C finding; 4 refused across the education-learning-sciences / item-response-theory-test-equating cell; 5 refused all six ETL cells; 6 refused twice on arithmetic; 7's two candidates refused. See DESIGN_NOTE.md, '## Tried and rejected'.",
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, three lines ruled harmless in the design note",
+  "reader": "five isolated reads, no leak, question 6 analytical; the last on the final prompt and pack"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "WARN (no BLOCK), nearest driver 0.11 task157 v1",
+  "surface": "exit 0; task33 and task114 promoted at history severity on shared card labels, differentiated on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass8.md; pass 7 NOT_DETERMINISTIC on the top figure and ranks 4 to 7 only, repaired by narrowing the prompt to the placement, runner-up and populations; pass 6 APPROVE"
  },
  "returned": [
   {
@@ -41,11 +41,14 @@
    "commit": ""
   }
  ],
- "resume": "Stage 2 for architecture 9 (statin repeats on the authorisation clock, Hensey Vale PCN): close the golden family on the harness first (returns held past the window, a homogeneous re-authorisation record, the seed aligned, measured inside 0.4 of the printed unit of 10), then the readability screen, the fork table, the ladder, the closure table, the literal reader, the oracles, the ask sheet with a cracker script and prompt.txt, to precut.py exit 0. Harness: the scratch proto2.py and variants.py are not kept; stage 3 writes the generator afresh.",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-17",
- "portal": "both responses landed the call",
+ "delivered": "2026-10-28",
+ "portal": null,
  "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study",
- "portal_status": "not on the approved list",
- "portal_status_date": "2026-10-27"
+ "portal_status": "",
+ "portal_status_date": "",
+ "portal_id": "",
+ "target_zip_md5": "b4b0fc88223e45b9a5097174052794cd",
+ "shipped_call": "Marrick House Surgery hosts the 2027 statin continuity sessions, Cobbet Street Surgery next"
 }

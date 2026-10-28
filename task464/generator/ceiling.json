@@ -1,7 +1,109 @@
 {
- "ask_figures": 16,
- "cracker_keeps": 0,
+ "pack": "5576424e105eeb08",
+ "asked_figures": 14,
+ "kept": 0,
  "Lc": 0.0,
- "pair_ceiling": 28.5,
- "mirror_leakage_pct": 0.0
+ "Ls": 0.0,
+ "pair": 28.5,
+ "mirror_leakage_pct": 0.0,
+ "every_return_column": {
+  "figures": 42,
+  "kept": 8,
+  "L": 0.1905,
+  "pair": 39.0
+ },
+ "rows": [
+  {
+   "figure": "R1 percent, Thistlecombe Surgery",
+   "golden": 81.0,
+   "cracker": 75.8,
+   "kept": false
+  },
+  {
+   "figure": "R1 percent, Pellow Green Surgery",
+   "golden": 80.3,
+   "cracker": 73.8,
+   "kept": false
+  },
+  {
+   "figure": "R1 percent, Larkspur Road Practice",
+   "golden": 81.9,
+   "cracker": 74.8,
+   "kept": false
+  },
+  {
+   "figure": "R1 percent, Fennbridge Medical Centre",
+   "golden": 77.8,
+   "cracker": 71.1,
+   "kept": false
+  },
+  {
+   "figure": "R1 percent, Marrick House Surgery",
+   "golden": 79.9,
+   "cracker": 74.3,
+   "kept": false
+  },
+  {
+   "figure": "R1 percent, Cobbet Street Surgery",
+   "golden": 75.8,
+   "cracker": 71.7,
+   "kept": false
+  },
+  {
+   "figure": "R1 percent, Wyndhollow Health Centre",
+   "golden": 92.9,
+   "cracker": 85.9,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Thistlecombe Surgery",
+   "golden": 82.0,
+   "cracker": 53.0,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Pellow Green Surgery",
+   "golden": 83.0,
+   "cracker": 57.0,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Larkspur Road Practice",
+   "golden": 83.0,
+   "cracker": 54.0,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Fennbridge Medical Centre",
+   "golden": 71.0,
+   "cracker": 25.0,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Marrick House Surgery",
+   "golden": 84.0,
+   "cracker": 73.0,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Cobbet Street Surgery",
+   "golden": 58.0,
+   "cracker": 40.0,
+   "kept": false
+  },
+  {
+   "figure": "R2 percent, Wyndhollow Health Centre",
+   "golden": 55.0,
+   "cracker": 30.0,
+   "kept": false
+  }
+ ],
+ "hazards": {
+  "R1 current dosage (the device)": -6.1,
+  "R1 cancelled items kept": 1.5,
+  "R1 second issue within 7 days dropped": -1.3,
+  "R1 every issue read as 28 days": -17.6,
+  "R2 first GP issue as the start (the device)": -29.0,
+  "R2 ticagrelor 60mg counted": 5.0
+ }
 }

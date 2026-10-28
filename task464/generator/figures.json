@@ -1,70 +1,185 @@
 {
- "call": "CR",
- "call_label": "Caring responsibilities",
- "call_share_pct": 25.1,
- "runner_up": "WH",
- "runner_up_label": "Work hours clash",
- "runner_up_share_pct": 19.4,
- "gap_points": 5.7,
- "corrected_share_pct": {
-  "CR": 25.1,
-  "WH": 19.4,
-  "TR": 14.7,
-  "CD": 15.5,
-  "HL": 13.5,
-  "OT": 11.8
+ "ask_a": {
+  "P81066": {
+   "at_80": 562,
+   "patients": 694,
+   "pct": 81.0
+  },
+  "P81177": {
+   "at_80": 420,
+   "patients": 523,
+   "pct": 80.3
+  },
+  "P81283": {
+   "at_80": 481,
+   "patients": 587,
+   "pct": 81.9
+  },
+  "P81402": {
+   "at_80": 1114,
+   "patients": 1432,
+   "pct": 77.8
+  },
+  "P81555": {
+   "at_80": 897,
+   "patients": 1123,
+   "pct": 79.9
+  },
+  "P81719": {
+   "at_80": 507,
+   "patients": 669,
+   "pct": 75.8
+  },
+  "P81940": {
+   "at_80": 697,
+   "patients": 750,
+   "pct": 92.9
+  }
  },
- "coded_share_pct": {
-  "CR": 19.4,
-  "WH": 24.4,
-  "TR": 13.6,
-  "CD": 15.4,
-  "HL": 13.2,
-  "OT": 14.0
+ "ask_a_network": {
+  "at_80": 4678,
+  "patients": 5778,
+  "pct": 81.0
  },
- "withdrawals_total": 17231,
- "coded_counts": {
-  "CR": 3337,
-  "WH": 4199,
-  "TR": 2349,
-  "CD": 2656,
-  "HL": 2274,
-  "OT": 2416
+ "ask_b": {
+  "P81066": {
+   "overrun": 9,
+   "pct": 82.0,
+   "started": 11
+  },
+  "P81177": {
+   "overrun": 5,
+   "pct": 83.0,
+   "started": 6
+  },
+  "P81283": {
+   "overrun": 10,
+   "pct": 83.0,
+   "started": 12
+  },
+  "P81402": {
+   "overrun": 20,
+   "pct": 71.0,
+   "started": 28
+  },
+  "P81555": {
+   "overrun": 16,
+   "pct": 84.0,
+   "started": 19
+  },
+  "P81719": {
+   "overrun": 7,
+   "pct": 58.0,
+   "started": 12
+  },
+  "P81940": {
+   "overrun": 6,
+   "pct": 55.0,
+   "started": 11
+  }
  },
- "wh_coded_belonging_cr_pct": 14.8,
- "cr_coded_confirmed_pct": 86.2,
- "moderated_total": 4416,
- "ask1_planned_hours": {
-  "English and maths": 832566,
-  "Digital skills": 734640,
-  "ESOL": 749682,
-  "Health and social care": 756246,
-  "Business administration": 726420,
-  "Construction skills": 687663
+ "ask_b_network": {
+  "overrun": 73,
+  "pct": 74.0,
+  "started": 99
  },
- "ask2_started": {
-  "Cassgrove": 11468,
-  "Hollowdean Learning Hub": 12849,
-  "The Lathe Street Building": 15857,
-  "Northmarket Centre": 17228,
-  "Wyebrook Adult Learning Centre": 11749
+ "call": "P81555",
+ "call_expected": 170,
+ "call_name": "Marrick House Surgery",
+ "default_km": {
+  "P81066": 48.35496685377526,
+  "P81177": 53.01492588926691,
+  "P81283": 50.37883317096916,
+  "P81402": 75.01761237434775,
+  "P81555": 45.76082293691223,
+  "P81719": 82.65818311435815,
+  "P81940": 60.626755568543054
  },
- "ask2_completed_pct": {
-  "Cassgrove": 64.6,
-  "Hollowdean Learning Hub": 64.1,
-  "The Lathe Street Building": 64.7,
-  "Northmarket Centre": 65.5,
-  "Wyebrook Adult Learning Centre": 63.9
+ "default_pick": "P81719",
+ "default_pick_name": "Cobbet Street Surgery",
+ "expected": {
+  "P81066": 56.34730463443356,
+  "P81177": 44.60087020565967,
+  "P81283": 51.89926399552104,
+  "P81402": 95.38360243210083,
+  "P81555": 170.31289708583702,
+  "P81719": 128.54701935849045,
+  "P81940": 71.53671085640453
  },
- "ask2_completed_raw": {
-  "Cassgrove": 64.62329961632368,
-  "Hollowdean Learning Hub": 64.11393882792436,
-  "The Lathe Street Building": 64.6654474364634,
-  "Northmarket Centre": 65.49802646853959,
-  "Wyebrook Adult Learning Centre": 63.928845008085794
+ "expected_rounded": {
+  "P81066": 60,
+  "P81177": 40,
+  "P81283": 50,
+  "P81402": 100,
+  "P81555": 170,
+  "P81719": 130,
+  "P81940": 70
  },
- "cutover_links": 25,
- "learner_courses_in_scope": 69151,
- "enrolment_rows_in_scope": 86413,
- "enrolment_rows_in_extract": 90540
+ "gap": 40,
+ "largest_practice": "P81402",
+ "last_year": {
+  "P81066": 67.26456071076011,
+  "P81177": 51.8760736196319,
+  "P81283": 56.908458864426414,
+  "P81402": 131.95134575569358,
+  "P81555": 94.04928664072632,
+  "P81719": 147.12342569269524,
+  "P81940": 82.58781362007169
+ },
+ "last_year_pick": "P81719",
+ "pace_mean": 2.967063202322227,
+ "population": {
+  "P81066": 1017,
+  "P81177": 829,
+  "P81283": 877,
+  "P81402": 1961,
+  "P81555": 1648,
+  "P81719": 1192,
+  "P81940": 1124
+ },
+ "population_total": 8648,
+ "ranking": [
+  "P81555",
+  "P81719",
+  "P81402",
+  "P81940",
+  "P81066",
+  "P81283",
+  "P81177"
+ ],
+ "reauth_fail_pct": 12.0,
+ "reauth_fail_whole": 12,
+ "reauth_follow_days": 60,
+ "return_year": 2025,
+ "reviews_measured": 13574,
+ "reviews_not_renewed": 1632,
+ "runner_up": "P81719",
+ "runner_up_expected": 130,
+ "runner_up_name": "Cobbet Street Surgery",
+ "six_56day_feb_mar_2026": {
+  "P81066": 0,
+  "P81177": 0,
+  "P81283": 0,
+  "P81402": 0,
+  "P81555": 1232,
+  "P81719": 0,
+  "P81940": 195
+ },
+ "stay": 0.9873880043371569,
+ "stay_pct": 98.7,
+ "stop_gap_days": 150,
+ "stop_rate_early_pct": 0.93,
+ "stop_rate_early_per_28d": 0.009262662647945306,
+ "stop_rate_late_pct": 0.2,
+ "stop_rate_late_per_28d": 0.0020199230012257654,
+ "trailing": {
+  "P81066": 38.253708168834955,
+  "P81177": 31.45698043750916,
+  "P81283": 34.49745152613002,
+  "P81402": 75.06448595544485,
+  "P81555": 48.97461370550523,
+  "P81719": 77.10303992270799,
+  "P81940": 47.162507471425606
+ },
+ "trailing_pick": "P81719"
 }

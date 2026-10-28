@@ -1,19 +1,14 @@
-"""task464 architecture 8: the governing documents.
+"""task464 architecture 9: the governing documents.
 
-Three PDFs. Between them they file WHAT the review has to produce and HOW the moderation sample is drawn, and
-neither of those is HOW the composition is to be computed:
+Two PDFs, each a filed fact about the world and neither a description of the data:
 
-  coding_manual_2025.pdf           what each of the six categories means. No hit rate appears anywhere.
-  quality_assurance_procedure.pdf  how the moderation sample is drawn (by CODED category: every OT, a fixed
-                                   number of each other code) and
-                                   that the moderating coder's category is the authoritative one. It does not
-                                   say what to do with the sample.
-  withdrawal_review_terms_of_reference.pdf
-                                   the estimand: the share of withdrawals that HAPPENED for each reason, over
-                                   all four terms, to one decimal place, and the one reason the 2027 retention
-                                   budget will carry.
+  statin_continuity_sessions_brief.pdf    the network board's brief: what the sessions are and the figure they
+                                          are placed on (the estimand, at authority). It says nothing about how
+                                          or when patients stop a statin.
+  icb_cvd_repeat_return_2025_spec.pdf     the integrated care board's specification for the 2025 repeat return:
+                                          the two measures the asks report.
 
-No document states a corrected share, a per-category hit rate, or any ranking of the reasons.
+No document states an expected count, a rate read off the record or a ranking of the practices.
 """
 import os
 from reportlab.lib.pagesizes import A4
@@ -25,17 +20,20 @@ import world as W
 
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "target")
 S = getSampleStyleSheet()
-H1 = ParagraphStyle("h1", parent=S["Heading1"], fontSize=13, spaceAfter=7)
-H2 = ParagraphStyle("h2", parent=S["Heading2"], fontSize=10.5, spaceBefore=9, spaceAfter=4)
-BODY = ParagraphStyle("body", parent=S["BodyText"], fontSize=9, leading=12.5, spaceAfter=5)
-SMALL = ParagraphStyle("small", parent=BODY, fontSize=7.8, textColor=colors.HexColor("#555555"))
+H1 = ParagraphStyle("h1", parent=S["Heading1"], fontSize=13.5, spaceAfter=4)
+H2 = ParagraphStyle("h2", parent=S["Heading2"], fontSize=10.5, spaceBefore=9, spaceAfter=3)
+BODY = ParagraphStyle("body", parent=S["BodyText"], fontSize=9.2, leading=12.8, spaceAfter=5)
+LIST = ParagraphStyle("list", parent=BODY, leftIndent=12, bulletIndent=2, spaceAfter=2)
+SMALL = ParagraphStyle("small", parent=BODY, fontSize=7.8, leading=10, textColor=colors.HexColor("#555555"))
+
+BRIEF = "statin_continuity_sessions_brief.pdf"
+SPEC = "icb_cvd_repeat_return_2025_spec.pdf"
 
 
-def _doc(name, title, flow):
+def _doc(name, title, author, flow):
     d = SimpleDocTemplate(os.path.join(OUT, name), pagesize=A4,
-                          leftMargin=20 * mm, rightMargin=20 * mm,
-                          topMargin=18 * mm, bottomMargin=18 * mm,
-                          title=title, author=W.SERVICE, subject="", creator="")
+                          leftMargin=21 * mm, rightMargin=21 * mm, topMargin=18 * mm, bottomMargin=18 * mm,
+                          title=title, author=author, subject="", creator="")
     d.build(flow)
     return name
 
@@ -44,9 +42,8 @@ def _table(data, widths):
     t = Table(data, colWidths=widths, repeatRows=1)
     t.setStyle(TableStyle([
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -1), 8),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("FONTSIZE", (0, 0), (-1, -1), 8.2),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 3),
         ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.black),
         ("LINEBELOW", (0, 1), (-1, -2), 0.2, colors.HexColor("#bbbbbb")),
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
@@ -54,102 +51,98 @@ def _table(data, widths):
     return t
 
 
-MEANING = {
-    "CR": ("Use this code where the learner gives looking after another person as the reason they stopped "
-           "attending. It covers children, an adult relative, a partner and a neighbour, and it covers both a "
-           "standing arrangement and one that broke down."),
-    "WH": ("Use this code where the learner gives their paid working hours as the reason, including a change of "
-           "shift, a change of rota, extra hours taken on, and an employer declining to move a shift."),
-    "TR": ("Use this code where the learner gives getting to or from the centre as the reason, including a "
-           "service withdrawn, the cost of the journey, a lift that fell through and parking."),
-    "CD": ("Use this code where the learner gives the demand of the course itself as the reason, including the "
-           "level, the pace, the assignments and being placed on the wrong course."),
-    "HL": ("Use this code where the learner gives their own physical or mental health as the reason, including a "
-           "period signed off, a waiting list and a change of medication."),
-    "OT": ("Use this code where the learner gives no reason, gives one the five codes above do not cover, or "
-           "gives only that the course was not for them."),
-}
+def brief():
+    P = W.PEOPLE
+    f = [Paragraph("Statin continuity sessions, January to June 2027", H1),
+         Paragraph("%s. Brief for the network board, meeting of 10 December 2026. Prepared by %s, clinical "
+                   "director, 3 December 2026." % (W.NETWORK, P["clinical_director"]), SMALL),
+         Paragraph("The sessions", H2),
+         Paragraph("From the week of 11 January to the end of June 2027 the network's lead clinical pharmacist, "
+                   "%s, will hold two statin continuity sessions a week at one member practice. The sessions work "
+                   "through that practice's patients who take a statin: patients are contacted, seen in clinic or "
+                   "by telephone, and supported to keep taking it or to restart. The pharmacist's other sessions "
+                   "stay where they are. One practice hosts all of them, because the pharmacist works from that "
+                   "practice's clinical system and its list." % P["lead_pharmacist"], BODY),
+         Paragraph("The figure the board places them on", H2),
+         Paragraph("The board will place the sessions at the practice with the largest expected number of "
+                   "patients who:", BODY),
+         Paragraph("are registered with the practice on 30 November 2026 and were issued a statin by it from "
+                   "1 September to 30 November 2026; and", LIST, bulletText="•"),
+         Paragraph("are still registered with the same practice on 30 June 2027, and will have had no statin "
+                   "issued to them from 1 March to 30 June 2027, for whatever reason.", LIST, bulletText="•"),
+         Paragraph("A patient who leaves the practice or dies before 30 June 2027 is not counted. A patient first "
+                   "issued a statin after 30 November 2026 is not in the figure. Each practice's figure is an "
+                   "expected number of patients, rounded to the nearest 10; the practices are compared on their "
+                   "figures before rounding.", BODY),
+         Paragraph("A statin here is atorvastatin, simvastatin, rosuvastatin, pravastatin or fluvastatin, at any "
+                   "strength, on an acute or a repeat prescription. Ezetimibe is not a statin.", BODY),
+         Paragraph("Timetable", H2)]
+    data = [["Date", "Step"],
+            ["1 December 2026", Paragraph("Network searches of both clinical systems run (%s); they cover the "
+                                          "period to the end of 30 November 2026." % P["data_lead"], BODY)],
+            ["4 December 2026", Paragraph("Board papers issued.", BODY)],
+            ["10 December 2026", Paragraph("Board places the sessions.", BODY)],
+            ["11 January 2027", Paragraph("First session.", BODY)],
+            ["30 June 2027", Paragraph("Last session; the network reviews the practice's figure against what "
+                                       "happened.", BODY)]]
+    f.append(_table(data, [32 * mm, 136 * mm]))
+    f += [Spacer(1, 6),
+          Paragraph("%s, clinical director, %s" % (P["clinical_director"], W.NETWORK), SMALL)]
+    return _doc(BRIEF, "Statin continuity sessions, January to June 2027", W.NETWORK, f)
 
 
-def coding_manual():
-    f = [Paragraph("%s" % W.MANUAL, H1),
-         Paragraph("Version 4.2, in force from 1 September 2025. Supersedes version 4.1.", SMALL),
+def spec():
+    f = [Paragraph("CVD medicines: practice repeat return for calendar year 2025", H1),
+         Paragraph("Integrated care board, medicines optimisation team. Specification, version 1.1, 15 July "
+                   "2026. Version 1.1 moves the submission date to after the last course's anniversary; the "
+                   "measures are unchanged from version 1.0.", SMALL),
          Paragraph("Purpose", H2),
-         Paragraph("Every withdrawal recorded on the student record carries the learner's exit comment in their "
-                   "own words. A coder reads the comment and records one reason code against the withdrawal. "
-                   "One code is recorded for each withdrawal, and only one.", BODY),
-         Paragraph("Choosing between codes", H2),
-         Paragraph("Comments often touch on more than one thing. Where a comment carries more than one reason, "
-                   "record the code for the reason the learner puts first. Where a comment is short or general, "
-                   "record OT rather than inferring a reason the learner has not given.", BODY),
-         Paragraph("The codes", H2)]
-    data = [["Code", "Reason", "When to use it"]]
-    for c in W.CODES:
-        data.append([c, Paragraph(W.LABEL[c], BODY), Paragraph(MEANING[c], BODY)])
-    f.append(_table(data, [16 * mm, 32 * mm, 118 * mm]))
-    f += [Paragraph("Changes in version 4.2", H2),
-          Paragraph("Version 4.1 carried a seventh code, FN, for financial reasons. FN is withdrawn. Comments "
-                    "that would have carried FN are now coded under the reason the learner gives for the cost "
-                    "mattering, most often TR where the cost is the journey, and otherwise OT. Withdrawals coded "
-                    "before 1 September 2025 keep the code they were given.", BODY)]
-    return _doc("coding_manual_2025.pdf", W.MANUAL, f)
-
-
-def qa_procedure():
-    f = [Paragraph("Exit comment coding: quality assurance procedure", H1),
-         Paragraph("%s. Issued by the quality team on 1 September 2025." % W.SERVICE, SMALL),
-         Paragraph("Why we moderate", H2),
-         Paragraph("Coding an exit comment is a judgement. Two coders reading the same comment do not always "
-                   "place it in the same category, and the service needs to know how its coding stands up "
-                   "before the figures are used. The quality team therefore moderates a sample of coded "
-                   "withdrawals each year.", BODY),
-         Paragraph("How the sample is drawn", H2),
-         Paragraph("The sample is drawn by reason code, once a year, across the four terms. Every withdrawal "
-                   "coded OT is moderated, because OT tells the service least about why a learner left and is "
-                   "where a reason given in passing is most often missed. For each of the other five codes the "
-                   "quality team draws %d withdrawals at random from those carrying that code."
-                   % W.MODERATED_PER_CODE, BODY),
-         Paragraph("What the moderating coder records", H2),
-         Paragraph("A senior coder re-reads the learner's comment without seeing the code already recorded "
-                   "against it, and records the category the comment belongs in under the manual. The original "
-                   "code is left on the student record, and both are kept in the moderation file so that the two "
-                   "can be compared.", BODY),
-         Paragraph("What is published", H2),
-         Paragraph("The moderation file is released with the withdrawal extracts each year. The quality team "
-                   "reports the number of comments moderated and does not publish any figure derived from "
-                   "them.", BODY)]
-    return _doc("quality_assurance_procedure.pdf", "Coding quality assurance procedure", f)
-
-
-def terms_of_reference():
-    f = [Paragraph("%s withdrawal review %s: terms of reference" % (W.SERVICE, W.YEAR), H1),
-         Paragraph("Agreed by the head of service, %s. Lead: %s, retention lead."
-                   % (W.ASOF, W.PEOPLE["retention_lead"]), SMALL),
-         Paragraph("What the review is for", H2),
-         Paragraph("The service carries one retention budget line in %s and it funds work against a single "
-                   "reason for withdrawal. The review decides which reason that is." % W.DECISION_YEAR, BODY),
-         Paragraph("What the review has to produce", H2),
-         Paragraph("For each of the six reasons in the %s, the share of the service's %s withdrawals that "
-                   "<b>happened for that reason</b>, as a percentage of all withdrawals recorded across the "
-                   "four terms of %s, to one decimal place. The six shares are of one total and together they "
-                   "account for every withdrawal in the year."
-                   % (W.MANUAL, W.YEAR, W.YEAR), BODY),
-         Paragraph("Scope", H2),
-         Paragraph("All withdrawals recorded across the four terms of %s at the service's five centres, on every "
-                   "curriculum area. Learners who completed and learners still enrolled are out of scope. "
-                   "Withdrawals from earlier years are out of scope." % W.YEAR, BODY),
-         Paragraph("The call", H2),
-         Paragraph("The review names one reason, with the runner-up and the gap between them, and the budget "
-                   "line follows it. The review does not reopen the coding manual and does not re-read or "
-                   "re-code the exit comments.", BODY)]
-    return _doc("withdrawal_review_terms_of_reference.pdf",
-                "Withdrawal review terms of reference", f)
+         Paragraph("The integrated care board collects two measures of how cardiovascular medicines are issued on "
+                   "repeat, once a year, from every practice through its primary care network. The 2025 return "
+                   "covers adherence to ACE inhibitors and angiotensin II receptor blockers in calendar year "
+                   "2025, and how long ticagrelor 90mg is issued after a heart attack for courses started from "
+                   "1 July 2024 to 30 June 2025. Networks submit one file for their practices by 18 December "
+                   "2026, once the last course in the return has passed its first anniversary.", BODY),
+         Paragraph("Measure R1: ACE inhibitor or angiotensin II receptor blocker adherence, 2025", H2),
+         Paragraph("<b>Denominator.</b> Patients registered with the practice throughout 2025, from 1 January to "
+                   "31 December, who were issued an ACE inhibitor or an angiotensin II receptor blocker by the "
+                   "practice in each of the four quarters of 2025.", BODY),
+         Paragraph("<b>Numerator.</b> Those patients whose issues of these medicines covered at least 80 per cent "
+                   "of the 365 days of 2025.", BODY),
+         Paragraph("<b>Days covered.</b> Each issue covers the days its quantity lasts at the dose in the "
+                   "directions on that prescription. It covers days from the day it was issued or, where the "
+                   "patient still had supply of the same medicine (the same drug at any strength) from an earlier "
+                   "issue, from the day after that supply ran out. Supply carried into 2025 from issues in 2024 "
+                   "counts. A day is covered once however many issues cover it, and days after 31 December 2025 "
+                   "are not counted. An item cancelled before it was dispensed was not issued.", BODY),
+         Paragraph("Measure R2: ticagrelor 90mg after a heart attack", H2),
+         Paragraph("Ticagrelor 90mg twice a day is given with aspirin for twelve months after a heart attack "
+                   "(myocardial infarction).", BODY),
+         Paragraph("<b>Denominator.</b> Patients who had a myocardial infarction and started ticagrelor 90mg "
+                   "after it, both between 1 July 2024 and 30 June 2025, counted at the practice they were "
+                   "registered with on the day they started it.", BODY),
+         Paragraph("<b>Numerator.</b> Those issued ticagrelor 90mg, at any practice, on a day later than the "
+                   "first anniversary of the day they started it. Ticagrelor 60mg is not part of this measure.", BODY),
+         Paragraph("The return", H2),
+         Paragraph("One row per practice, identified by its ODS code:", BODY)]
+    data = [["Field", "Content"],
+            ["ods_code", "The practice's ODS code"],
+            ["r1_denominator", "R1 denominator, patients"],
+            ["r1_numerator", "R1 numerator, patients"],
+            ["r1_percent", "R1 numerator as a percentage of the denominator, one decimal place"],
+            ["r2_denominator", "R2 denominator, patients"],
+            ["r2_numerator", "R2 numerator, patients"],
+            ["r2_percent", "R2 numerator as a percentage of the denominator, whole number"]]
+    f.append(_table(data, [34 * mm, 134 * mm]))
+    f += [Spacer(1, 6),
+          Paragraph("The measures are reported to the integrated care board's prescribing group and are not "
+                    "published by practice.", SMALL)]
+    return _doc(SPEC, "CVD medicines: practice repeat return for calendar year 2025", "Medicines optimisation team", f)
 
 
 def main():
-    for fn in (coding_manual, qa_procedure, terms_of_reference):
-        print("  %s" % fn())
+    return [brief(), spec()]
 
 
 if __name__ == "__main__":
-    main()
+    print(main())

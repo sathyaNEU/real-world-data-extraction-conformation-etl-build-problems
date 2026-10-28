@@ -1,151 +1,160 @@
 {
   "task": "task464",
-  "domain": "education-learning-sciences",
-  "subdomain": "text-analysis",
+  "domain": "pharmacology-pharmacoepidemiology-safety",
+  "subdomain": "medication-adherence-persistence",
   "objective": "descriptive-distribution",
-  "prompt_shape": "05",
-  "as_of": "2026-11-18",
+  "prompt_shape": "01",
+  "as_of": "2026-12-03",
+  "extract_to": "2026-11-30",
   "currency": "GBP",
-  "compiled_by": "Thornmere Adult Education Service, retention lead's office",
-  "compiled_on": "2026-11-18",
-  "licence": "Compiled by Thornmere Adult Education Service for its 2025/26 withdrawal review. Every file is the service's own record, synthetic, and released for the review's use.",
+  "compiled_by": "Hensey Vale Primary Care Network, digital and data lead",
+  "compiled_on": "2026-12-03",
+  "licence": "Synthetic records compiled for Hensey Vale Primary Care Network's statin continuity sessions brief and its 2025 return. Every file is constructed, contains no real patient, and is released for this task's use.",
   "files": [
     {
-      "path": "target/withdrawals_autumn_winter_2025.csv",
+      "path": "target/repeat_issues_system_a_2024-01_to_2026-11.csv",
       "role": "spine",
-      "covers": "Withdrawals recorded in the autumn and winter terms of 2025/26, exported from the student record system in use until the winter term closed, with each learner's exit comment and the reason code a coder gave it.",
-      "source": "Thornmere Adult Education Service, student records (legacy system export)",
-      "date": "2026-01-09",
-      "licence": "service record, synthetic, released for the review's use"
+      "covers": "Every statin, ACE inhibitor, angiotensin II receptor blocker, DOAC and antiplatelet issue recorded from 1 January 2024 to 30 November 2026 at the four practices on clinical system A, in that system's issue report layout.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/withdrawals_spring_summer_2026.json",
+      "path": "target/repeat_issues_system_b_2024-01_to_2026-11.jsonl",
       "role": "spine",
-      "covers": "Withdrawals recorded in the spring and summer terms, from the Horizon SR v4 learner withdrawal extract, with the winter withdrawals keyed after the old system closed.",
-      "source": "Thornmere Adult Education Service, student records (Horizon SR v4)",
-      "date": "2026-08-03",
-      "licence": "service record, synthetic, released for the review's use"
+      "covers": "The same issues for the three practices on clinical system B, in that system's JSON lines export.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/coding_moderation_2025_26.csv",
-      "role": "spine",
-      "covers": "The year's moderation return: the withdrawals the quality team drew by reason code, with the code recorded and the category the moderating coder placed the comment in.",
-      "source": "Thornmere Adult Education Service, quality team",
-      "date": "2026-08-21",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/coding_manual_2025.pdf",
-      "role": "governing document",
-      "covers": "The exit comment coding manual, version 4.2: the six reason codes and when to use each.",
-      "source": "Thornmere Adult Education Service, quality team",
-      "date": "2025-09-01",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/quality_assurance_procedure.pdf",
-      "role": "governing document",
-      "covers": "How the quality team draws and moderates the coding sample.",
-      "source": "Thornmere Adult Education Service, quality team",
-      "date": "2025-09-01",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/withdrawal_review_terms_of_reference.pdf",
-      "role": "governing document",
-      "covers": "The terms of reference of the 2025/26 withdrawal review.",
-      "source": "Thornmere Adult Education Service, head of service",
-      "date": "2026-11-18",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/reason_code_list.csv",
-      "role": "reference",
-      "covers": "The six reason codes and labels in manual order.",
-      "source": "Thornmere Adult Education Service, student records",
-      "date": "2025-09-01",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/enrolments_2025_26.csv",
-      "role": "operating extract",
-      "covers": "Every 2025/26 enrolment on the student record, one row per learner, course and term.",
-      "source": "Thornmere Adult Education Service, student records (Horizon SR v4)",
-      "date": "2026-08-03",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/course_catalogue_2025_26.csv",
-      "role": "reference",
-      "covers": "The 2025/26 course catalogue: each course reference with its centre, curriculum area, planned guided hours, start term and the number of terms it was planned over.",
-      "source": "Thornmere Adult Education Service, curriculum planning",
-      "date": "2026-08-03",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/site_directory.csv",
-      "role": "reference",
-      "covers": "The service's five centres, with the former names the merger replaced.",
-      "source": "Thornmere Adult Education Service, estates",
-      "date": "2026-01-05",
-      "licence": "service record, synthetic, released for the review's use"
-    },
-    {
-      "path": "target/retention_budget_2027_lines.xlsx",
+      "path": "target/repeat_authorisations_system_a.csv",
       "role": "context artifact",
-      "covers": "The 2027 retention budget lines and their status.",
-      "source": "Thornmere Adult Education Service, finance",
-      "date": "2026-11-02",
-      "licence": "service record, synthetic, released for the review's use"
+      "covers": "System A's repeat authorisations for those medicines active at any point from 1 January 2024: the register of repeats, with each one's authorised issues, dates and current dosage.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/learner_satisfaction_2025_26.xlsx",
-      "role": "distractor",
-      "covers": "The 2025/26 learner satisfaction survey by centre and by curriculum area.",
-      "source": "Thornmere Adult Education Service, quality team",
-      "date": "2026-08-14",
-      "licence": "service record, synthetic, released for the review's use"
+      "path": "target/repeat_authorisations_system_b.csv",
+      "role": "context artifact",
+      "covers": "System B's repeat authorisations for the same medicines, in its own layout.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
     },
     {
-      "path": "target/attendance_rates_2025_26.csv",
+      "path": "target/patient_register_2026-12-01.csv",
+      "role": "operating extract",
+      "covers": "Registration episodes at the seven practices for every patient in the issue searches, under the network's pseudonym.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/eps_item_cancellations_2024-2026.csv",
+      "role": "operating extract",
+      "covers": "Items cancelled through the Electronic Prescription Service tracker before they were dispensed.",
+      "source": "Hensey Vale Primary Care Network, EPS prescription tracker item report",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/repeat_changes_2024-01_to_2026-11.csv",
+      "role": "operating extract",
+      "covers": "Edits made in place to those repeats (dosage, quantity, notes, authorising clinician), from the medicines safety search.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/cvd_clinical_events_2023-2026.csv",
+      "role": "operating extract",
+      "covers": "The network's coded cardiovascular events search: diagnoses, observations, results and the coded entries of discharge summaries.",
+      "source": "Hensey Vale Primary Care Network, network searches of the practices' clinical systems run by the digital and data lead",
+      "date": "2026-12-01",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/cvd_product_lookup.csv",
+      "role": "reference",
+      "covers": "The network's crosswalk of each system's product strings to the drug, strength, form and BNF class.",
+      "source": "Hensey Vale Primary Care Network, medicines team",
+      "date": "2026-06-15",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/pcn_practice_profiles_2026.xlsx",
+      "role": "reference",
+      "covers": "The seven member practices: ODS code, clinical system, list size, staffing and current pharmacist sessions.",
+      "source": "Hensey Vale Primary Care Network, network manager",
+      "date": "2026-10-05",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/statin_continuity_sessions_brief.pdf",
+      "role": "governing document",
+      "covers": "The clinical director's brief to the network board on the 2027 statin continuity sessions.",
+      "source": "Hensey Vale Primary Care Network, clinical director",
+      "date": "2026-12-03",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/icb_cvd_repeat_return_2025_spec.pdf",
+      "role": "governing document",
+      "covers": "The integrated care board's specification for the 2025 CVD medicines repeat return.",
+      "source": "Integrated care board, medicines optimisation team",
+      "date": "2026-07-15",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/qof_cvd_achievement_2025-26.csv",
       "role": "distractor",
-      "covers": "Scheduled sessions and attendance rates by curriculum area and term.",
-      "source": "Thornmere Adult Education Service, quality team",
-      "date": "2026-08-14",
-      "licence": "service record, synthetic, released for the review's use"
+      "covers": "The practices' published 2025-26 QOF achievement on four cardiovascular indicators.",
+      "source": "Quality and Outcomes Framework, practice achievement as published",
+      "date": "2026-09-10",
+      "licence": "synthetic, constructed for this task, free to use"
+    },
+    {
+      "path": "target/dispensed_items_cvd_2025-26.csv",
+      "role": "distractor",
+      "covers": "Items and quantities dispensed against the practices' prescriptions, by month and chemical, 2025-26.",
+      "source": "Dispensing data by prescribing practice, as the network receives it",
+      "date": "2026-07-20",
+      "licence": "synthetic, constructed for this task, free to use"
     }
   ],
   "distractor_files": [
-    "target/learner_satisfaction_2025_26.xlsx",
-    "target/attendance_rates_2025_26.csv"
+    "target/qof_cvd_achievement_2025-26.csv",
+    "target/dispensed_items_cvd_2025-26.csv"
   ],
   "stated_inputs": {
-    "terms": [
-      "T1",
-      "T2",
-      "T3",
-      "T4"
+    "practices": 7,
+    "outcome_window": [
+      "2027-03-01",
+      "2027-06-30"
     ],
-    "centres": 5,
-    "reason_codes": 6,
-    "decision_year": "2027"
+    "population_window": [
+      "2026-09-01",
+      "2026-11-30"
+    ],
+    "rounding": 10
   },
   "field_terms": [
-    "withdrawal",
-    "reason code",
-    "moderation",
-    "learner-course",
-    "planned guided hours"
+    "repeat authorisation",
+    "authorised issues",
+    "re-authorisation",
+    "persistence",
+    "proportion of days covered"
   ],
   "deliverables": [
-    "withdrawal_reason_composition_2025_26.csv",
-    "retention_target_2027.xlsx"
+    "statin_sessions_2027.xlsx",
+    "cvd_repeat_returns_2025.csv"
   ],
   "portal": {
-    "call": "the one withdrawal reason the 2027 retention budget line targets",
-    "answer": "Caring responsibilities",
-    "share_pct": 25.1,
-    "runner_up": "Work hours clash",
-    "gap_points": 5.7
+    "call": "the practice that hosts the statin continuity sessions, January to June 2027",
+    "answer": "Marrick House Surgery",
+    "expected": 170,
+    "runner_up": "Cobbet Street Surgery"
   }
 }

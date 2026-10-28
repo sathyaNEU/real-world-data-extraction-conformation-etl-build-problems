@@ -1,8 +1,8 @@
-"""task464 architecture 8: cut target.zip from target/, files at the root, sorted, one fixed timestamp."""
+"""task464 architecture 9: cut target.zip from target/, files at the root, sorted, one fixed timestamp."""
 import os, zipfile
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STAMP = (2026, 11, 18, 9, 0, 0)
+STAMP = (2026, 12, 3, 9, 0, 0)
 
 
 def main():

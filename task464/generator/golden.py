@@ -1,169 +1,160 @@
-"""task464 architecture 8: the golden deliverables. Every figure comes from answers.figures()."""
-import csv, os
+"""task464 architecture 9: the golden deliverables, written from figures.json.
+
+  statin_sessions_2027.xlsx       the seven practices ranked on the brief's figure, each practice's expected
+                                  number to the nearest 10, the placement, the rates the run used, and a chart
+  cvd_repeat_returns_2025.csv     the network's 2025 return, one row per practice in the specification's layout
+"""
+import csv, json, os
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, Reference
-from openpyxl.styles import Font, Alignment, PatternFill
-from openpyxl.utils import get_column_letter
+from openpyxl.chart.label import DataLabelList
+from openpyxl.chart.marker import DataPoint
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 import world as W
-import answers
 
-GOLD = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "golden")
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+GOLD = os.path.join(BASE, "golden")
+FIG = os.path.join(BASE, "generator", "figures.json")
+
+THIN = Side(style="thin", color="BFBFBF")
 
 
-def main():
-    import shutil
-    if os.path.isdir(GOLD):
-        shutil.rmtree(GOLD)
-    os.makedirs(GOLD, exist_ok=True)
-    f = answers.figures()
-    order = sorted(W.CODES, key=lambda c: -f["corrected_share_pct"][c])
-    coded_n = f["coded_counts"]
-
-    path = os.path.join(GOLD, "withdrawal_reason_composition_2025_26.csv")
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["reason_code", "reason", "withdrawals_coded", "coded_share_pct",
-                    "share_of_withdrawals_pct"])
-        for c in order:
-            w.writerow([c, W.LABEL[c], coded_n[c], "%.1f" % f["coded_share_pct"][c],
-                        "%.1f" % f["corrected_share_pct"][c]])
-    print("  golden/withdrawal_reason_composition_2025_26.csv")
-
+def workbook(F):
+    name = {p["code"]: p["name"] for p in W.PRACTICES}
+    order = F["ranking"]
+    call = F["call"]
     wb = Workbook()
     ws = wb.active
-    ws.title = "Reason composition"
-    ws["A1"] = ("RET-01 should target %s: %.1f per cent of %s withdrawals"
-                % (f["call_label"].lower(), f["call_share_pct"], W.YEAR))
+    ws.title = "Placement"
+    ws["A1"] = "Statin continuity sessions go to %s, January to June 2027" % name[call]
     ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("%s withdrawal review %s. %s withdrawals across the four terms at the five centres; "
-                "shares to one decimal place." % (W.SERVICE, W.YEAR, format(f["withdrawals_total"], ",")))
-    ws["A2"].font = Font(size=9, italic=True)
-    ws["A4"] = ("%s %.1f per cent, ahead of %s at %.1f: a gap of %.1f points."
-                % (f["call_label"], f["call_share_pct"], f["runner_up_label"].lower(),
-                   f["runner_up_share_pct"], f["gap_points"]))
-    ws["A4"].font = Font(bold=True, size=10)
-    hdr = ["Reason", "Withdrawals coded", "Coded share (%)", "Share of withdrawals (%)"]
+    ws["A2"] = ("Hensey Vale PCN board, 10 December 2026. Network searches of 1 December 2026; figure as the "
+                "board brief of 3 December 2026 defines it.")
+    ws["A2"].font = Font(italic=True, size=9, color="52514E")
     ws.append([])
+    hdr = ["", "Practice", "ODS code", "Patients issued a statin, Sep to Nov 2026",
+           "Expected with no statin issued, Mar to Jun 2027"]
     ws.append(hdr)
-    hr = ws.max_row
-    for c in ws[hr]:
+    for c in ws[4]:
         c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="EDEDED")
-        c.alignment = Alignment(wrap_text=True, vertical="bottom")
-    for c in order:
-        ws.append([W.LABEL[c], coded_n[c], f["coded_share_pct"][c], f["corrected_share_pct"][c]])
-        if c == f["call"]:
+        c.fill = PatternFill("solid", fgColor="E9EEF5")
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+        c.border = Border(bottom=THIN)
+    for i, c in enumerate(order, 1):
+        mark = "Sessions" if i == 1 else ("Next" if i == 2 else None)
+        ws.append([mark, name[c], c, F["population"][c], F["expected_rounded"][c]])
+        if c == call:
             for cell in ws[ws.max_row]:
                 cell.font = Font(bold=True)
-    first, last = hr + 1, hr + len(order)
-    ws.append(["All withdrawals", sum(coded_n[c] for c in order), None, None])
-    for c in ws[ws.max_row]:
-        c.font = Font(bold=True)
-    ws.append([])
-    ws.append(["Source: student record withdrawal exports (legacy system to winter 2025, Horizon SR v4 from "
-               "spring 2026) and the %s coding moderation return." % W.YEAR])
-    ws[ws.max_row][0].font = Font(size=8, italic=True, color="555555")
-    ws.append(["The coded share is the code as first recorded. The share of withdrawals carries the "
-               "moderating coder's split behind each code onto that code's count."])
-    ws[ws.max_row][0].font = Font(size=8, italic=True, color="555555")
-    for col, wd in zip("ABCD", (30, 18, 16, 22)):
+    tot = 5 + len(order)
+    ws.cell(row=tot, column=2, value="Network")
+    ws.cell(row=tot, column=4, value=F["population_total"])
+    for cell in ws[tot]:
+        cell.border = Border(top=THIN)
+        cell.font = Font(bold=True)
+    for row in ws.iter_rows(min_row=5, max_row=tot):
+        row[3].number_format = "#,##0"
+        row[4].number_format = "#,##0"
+        row[0].alignment = Alignment(horizontal="center")
+    ws.cell(row=tot + 2, column=1, value="Expected numbers rounded to the nearest 10, as the brief asks; the order "
+                                         "follows the unrounded figures.").font = Font(size=9, color="52514E")
+    for col, wd in zip("ABCDE", (9, 30, 11, 20, 24)):
         ws.column_dimensions[col].width = wd
-    for row in ws.iter_rows(min_row=first, max_row=last + 1, min_col=2, max_col=2):
-        for c in row:
-            c.number_format = "#,##0"
-    for row in ws.iter_rows(min_row=first, max_row=last, min_col=3, max_col=4):
-        for c in row:
-            c.number_format = "0.0"
-    ws.freeze_panes = ws.cell(row=hr + 1, column=1)
+    ws.row_dimensions[4].height = 44
+    ws.freeze_panes = "A5"
+    ws.print_title_rows = "4:4"
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 0
+    ws.sheet_properties.pageSetUpPr.fitToPage = True
 
     ch = BarChart()
     ch.type = "bar"
-    ch.title = "%s leads the reasons for leaving" % f["call_label"]
-    ch.y_axis.title = "Per cent of %s withdrawals" % W.YEAR
-    ch.y_axis.numFmt = "0"
+    ch.style = 2
+    ch.title = "%s has the most patients expected to go without a statin" % name[call].replace(" Surgery", "")
+    ch.y_axis.title = "Patients, nearest 10"
     ch.y_axis.majorGridlines = None
-    ch.x_axis.title = None
-    ch.add_data(Reference(ws, min_col=4, min_row=hr, max_row=last), titles_from_data=True)
-    ch.set_categories(Reference(ws, min_col=1, min_row=first, max_row=last))
     ch.x_axis.scaling.orientation = "maxMin"
-    ser = ch.series[0]
-    ser.graphicalProperties.solidFill = "9AA5B1"
-    ser.graphicalProperties.line.solidFill = "9AA5B1"
-    from openpyxl.chart.marker import DataPoint
-    from openpyxl.chart.label import DataLabelList
-    pt = DataPoint(idx=order.index(f["call"]))
-    pt.graphicalProperties.solidFill = "1F5F8B"
-    pt.graphicalProperties.line.solidFill = "1F5F8B"
-    ser.dPt.append(pt)
-    ser.dLbls = DataLabelList()
-    ser.dLbls.showVal = True
-    ser.dLbls.numFmt = "0.0"
-    ch.height, ch.width = 8.5, 16
+    data = Reference(ws, min_col=5, min_row=4, max_row=4 + len(order))
+    cats = Reference(ws, min_col=2, min_row=5, max_row=4 + len(order))
+    ch.add_data(data, titles_from_data=True)
+    ch.set_categories(cats)
     ch.legend = None
-    ws.add_chart(ch, "F6")
+    ser = ch.series[0]
+    ser.graphicalProperties.solidFill = "B8B6B0"
+    ser.graphicalProperties.line.solidFill = "B8B6B0"
+    for i, c in enumerate(order):
+        if c == call:
+            pt = DataPoint(idx=i)
+            pt.graphicalProperties.solidFill = "2A78D6"
+            pt.graphicalProperties.line.solidFill = "2A78D6"
+            ser.dPt.append(pt)
+    ch.dataLabels = DataLabelList()
+    ch.dataLabels.showVal = True
+    ch.dataLabels.showSerName = False
+    ch.dataLabels.showCatName = False
+    ch.dataLabels.showLegendKey = False
+    ch.dataLabels.showPercent = False
+    ch.dataLabels.position = "outEnd"
+    ch.x_axis.delete = False
+    ch.y_axis.delete = False
+    ch.gapWidth = 60
+    ch.height = 8.5
+    ch.width = 17
+    ws.add_chart(ch, "G4")
 
-    ws2 = wb.create_sheet("Provision 2025-26")
-    ws2["A1"] = "Learner-courses the five centres started in %s" % W.YEAR
-    ws2["A1"].font = Font(bold=True, size=11)
-    ws2["A2"] = "A learner-course is one learner on one course, however many terms it runs."
-    ws2["A2"].font = Font(size=9, italic=True)
-    ws2.append([])
-    ws2.append(["Curriculum area", "Planned guided hours"])
-    for c in ws2[ws2.max_row]:
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="EDEDED")
-    for a in W.CURRICULUM:
-        ws2.append([a, f["ask1_planned_hours"][a]])
-        ws2.cell(row=ws2.max_row, column=2).number_format = "#,##0"
-    ws2.append(["All areas", sum(f["ask1_planned_hours"].values())])
-    ws2.cell(row=ws2.max_row, column=2).number_format = "#,##0"
-    for c in ws2[ws2.max_row]:
-        c.font = Font(bold=True)
-    ws2.append([])
-    ws2.append(["Centre", "Learner-courses started", "Completed (%)"])
-    for c in ws2[ws2.max_row]:
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="EDEDED")
-    for k in sorted(f["ask2_started"]):
-        ws2.append([k, f["ask2_started"][k], f["ask2_completed_pct"][k]])
-        ws2.cell(row=ws2.max_row, column=2).number_format = "#,##0"
-        ws2.cell(row=ws2.max_row, column=3).number_format = "0.0"
-    ws2.append([])
-    ws2.append(["Source: enrolments_2025_26 and the 2025/26 course catalogue, the five centres in the site "
-                "directory; subcontracted delivery excluded."])
-    ws2[ws2.max_row][0].font = Font(size=8, italic=True, color="555555")
-    for col, wd in zip("ABC", (32, 24, 16)):
-        ws2.column_dimensions[col].width = wd
-
-    ws3 = wb.create_sheet("Notes")
+    ns = wb.create_sheet("Notes")
     notes = [
-        ("As at", W.ASOF),
-        ("Withdrawals", "Every withdrawal recorded across the four terms of %s, once each. Winter withdrawals "
-                        "keyed after the legacy system closed appear in both exports and are counted once."
-                        % W.YEAR),
-        ("Reason codes", "The six codes of the Exit Comment Coding Manual, version 4.2. Codes typed in the "
-                         "legacy system are read without regard to case or trailing spaces."),
-        ("Moderation", "The quality team moderates every withdrawal coded OT and 400 of each other code. The "
-                       "return is read code by code; its own mix is not the year's."),
-        ("Learner-courses", "Courses running across the move to Horizon SR v4 were closed after the winter term "
-                            "and opened again for spring under a new reference. Both halves are one "
-                            "learner-course, placed at the centre where it started."),
-        ("Rounding", "Shares to one decimal place, hours in whole hours, each from unrounded counts."),
+        ("Figure", "Patients registered with the practice on 30 November 2026 and issued a statin by it from 1 September "
+                   "to 30 November 2026 who, still registered with the same practice on 30 June 2027, will have had no "
+                   "statin issued to them from 1 March to 30 June 2027. Leavers and deaths are not counted; patients "
+                   "first issued a statin after 30 November are not in the figure."),
+        ("Source", "Issue, repeat authorisation and registration searches of both clinical systems, run 1 December 2026, "
+                   "covering issues from 1 January 2024."),
+        ("Run", "Each patient's current statin repeat run forward from its last issue to the request after its last "
+                "authorised issue, at the record's mean request interval (%.1f days after supply runs out)." % F["pace_mean"]),
+        ("Not re-authorised", "%s of %s statin repeats that ran out, January 2024 to July 2026 (%.1f%%)."
+         % ("{:,}".format(F["reviews_not_renewed"]), "{:,}".format(F["reviews_measured"]), F["reauth_fail_pct"])),
+        ("Stopped between reviews", "%.2f%% per 28 days of supply in a new start's first six months, %.2f%% after."
+         % (F["stop_rate_early_pct"], F["stop_rate_late_pct"])),
+        ("Already lapsed", "A repeat that ran out more than three weeks before the searches with no new repeat is "
+                           "counted as not issued."),
+        ("Still registered", "%.1f%% of the network's statin patients stay registered seven months, 2024 and 2025 "
+                             "windows." % F["stay_pct"]),
     ]
-    ws3.append(["Item", "Note"])
-    for c in ws3[1]:
+    ns.append(["Item", "Note"])
+    for c in ns[1]:
         c.font = Font(bold=True)
+        c.fill = PatternFill("solid", fgColor="E9EEF5")
     for k, v in notes:
-        ws3.append([k, v])
-        ws3.cell(row=ws3.max_row, column=2).alignment = Alignment(wrap_text=True, vertical="top")
-        ws3.cell(row=ws3.max_row, column=1).alignment = Alignment(vertical="top")
-    ws3.column_dimensions["A"].width = 18
-    ws3.column_dimensions["B"].width = 96
-    wb.properties.creator = W.PEOPLE["retention_lead"]
-    wb.properties.lastModifiedBy = W.PEOPLE["retention_lead"]
-    wb.save(os.path.join(GOLD, "retention_target_2027.xlsx"))
-    print("  golden/retention_target_2027.xlsx")
+        ns.append([k, v])
+    for row in ns.iter_rows(min_row=2):
+        row[1].alignment = Alignment(wrap_text=True, vertical="top")
+        row[0].alignment = Alignment(vertical="top")
+    ns.column_dimensions["A"].width = 22
+    ns.column_dimensions["B"].width = 100
+    out = os.path.join(GOLD, "statin_sessions_2027.xlsx")
+    wb.save(out)
+    return out
+
+
+def returns(F):
+    out = os.path.join(GOLD, "cvd_repeat_returns_2025.csv")
+    with open(out, "w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh, lineterminator="\n")
+        wr.writerow(["ods_code", "r1_denominator", "r1_numerator", "r1_percent", "r2_denominator", "r2_numerator",
+                     "r2_percent"])
+        for c in sorted(F["ask_a"]):
+            a = F["ask_a"][c]; b = F["ask_b"][c]
+            wr.writerow([c, a["patients"], a["at_80"], "%.1f" % a["pct"], b["started"], b["overrun"], "%d" % b["pct"]])
+    return out
+
+
+def main():
+    os.makedirs(GOLD, exist_ok=True)
+    F = json.load(open(FIG, encoding="utf-8"))
+    return [workbook(F), returns(F)]
 
 
 if __name__ == "__main__":
-    main()
+    print(main())
