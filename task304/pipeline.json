@@ -1,13 +1,13 @@
 {
  "task": "task304",
- "status": "SHIPPED",
+ "status": "DESIGN",
  "domain": "epidemiology-public-health",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "shipped 2026-10-27 (target.zip 1382208d)",
- "updated": "2026-10-27",
- "stump": "A competent analyst takes each setting's 2027 arrivals, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share the laboratory's first positives validate, and files the approved premises first at about 80 people started on treatment; the step that lands it there is treating the network's records as the record of every cure, when 223 of the approved premises' 406 antibody-positive arrivals were cured inside prison by Corvane Health, whose own workbook holds those courses and its reception tests, and an antibody stays reactive after a cure.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-28",
+ "stump": "A competent analyst carries the van's 2026 yields per person tested to each setting's 2027 pool and files the needle exchange registrants first at about 85 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test-and-treat reaches every needle exchange pharmacy in April 2027, where the three pharmacies running it since 2025 show what the van then finds, and 640 of the hostels' 900 residents were already tested by the van's 2026 visits.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -37,12 +37,18 @@
    "portal": "rubric and stump held; determinism one judge unsure (C and D unsure), one failed (A, C and D), competing_defensible_answer: a held-out-validated arrears chain with no term-increase state (first-time buyer 316 against 325 observed) files High LTV, and the 2024 term increases (81 of 347) read as small and possibly selected; no shipped file pins whether the 2026 term increases carry a delayed hazard",
    "repair": "design",
    "commit": ""
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "FAILED_TO_STUMP: both responses filed the golden (the needle exchange registrants, about 70 found and 50 starts)",
+   "repair": "re-root",
+   "commit": ""
   }
  ],
- "resume": "Shipped. Next: the author's portal list.",
+ "resume": "stage 2 (architecture 3): the ladder measured on expected values (scratch t304v3/ev.py); next the precut sections, the prompt, then the new generator (the van's 2026 rota log, the arrivals, the hostel census, the pharmacies, the commissioning intentions, the register with the asks' course chains)",
  "approved": null,
  "delivered": "2026-10-27",
- "portal": null,
+ "portal": "FAILED_TO_STUMP 2026-10-28 (architecture 2)",
  "portal_id": "",
  "portal_status": "PENDING_REVIEW",
  "portal_status_date": "2026-10-27",

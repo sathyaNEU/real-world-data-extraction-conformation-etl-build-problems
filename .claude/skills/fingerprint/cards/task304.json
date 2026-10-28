@@ -1,12 +1,12 @@
 {
   "task": "task304",
-  "architecture": "v2",
-  "drawn": "2026-10-27",
+  "architecture": 3,
+  "drawn": "2026-10-28",
   "slot_note": "",
   "domain": "epidemiology-public-health",
   "subdomain": "screening-diagnostic-policy-evaluation",
   "client_domain": "epidemiology-public-health",
-  "niche": "a hepatitis C charity placing its 2027 find-and-treat van, run with the NHS treatment network, in one of four settings it has not worked (probation approved premises, city hostels, the drug service's new entrants, the pharmacy needle exchange's new registrants), sized by the people it would start on treatment, when part of each setting's antibody-positive arrivals were cured earlier, by the network's clinics or inside prison by the prison health provider, and an antibody test stays reactive after a cure",
+  "niche": "a hepatitis C charity placing its find-and-treat van full-time in one of four settings for 2027 after a 2026 rota that visited all four, when pharmacist test-and-treat reaches every needle exchange pharmacy in April 2027 and the van's 2026 hostel visits were a first sweep of the residents",
   "objective": "opportunity-sizing-decision",
   "shape": "09",
   "decision_type": "pick_one_of_n",
@@ -14,29 +14,29 @@
   "answer": "the needle exchange pharmacies' new registrants, about 50 people started on hepatitis C treatment in 2027 (Fenwold Recovery's new entrants next at about 30)",
   "answer_source": "submission.md block 1; golden van_2027_trustee_paper.docx and van_2027_funnel.xlsx; generator/figures.json",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
+    "G5",
     "G6",
-    "G3",
     "G13"
   ],
   "gate_g": "forecasting",
   "calibration_form": "pilot_log",
-  "stump_strategy": "informative_censoring",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst takes each setting's 2027 arrivals at the two-year average, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share the laboratory's first positives and the 2018-19 pilot validate, and files the approved premises first at about 80 people started, while 55 per cent of the approved premises' positives had been cured inside prison by Corvane Health, on its own workbook, and the needle exchange registrants, the least treated, lead at about 50.",
-  "domain_test": "The deciding quantity is each setting's count of people with active hepatitis C the van would find and start on treatment, the epidemiologist's antibody positives times the share still viraemic, where an antibody test stays reactive after a cure, a never-diagnosed infection is chronic about three times in four after spontaneous clearance, and a person treated in prison is recorded by the prison health provider and not the network; put another field's units in and an antibody that outlives the infection, a laboratory that tests a known positive for RNA only and a cure recorded by whichever organisation gave it stop meaning anything.",
+  "analyst_test": "A strong analyst who cleans every file and reads every rule takes the van's 2026 rota yields per person tested, the found and started shares, and each setting's 2027 pool (the trailing year's arrivals, and the hostel census with its arrivals), and files the needle exchange registrants first at about 85 starts; correcting only the needle exchanges for the April rollout files the hostels at about 72; correcting only the hostels leaves the needle exchanges; the golden is Fenwold Recovery's new entrants at about 60.",
+  "domain_test": "The deciding quantity is each setting's people with an active hepatitis C infection the van would find and start on treatment in 2027, a screening programme's yield, which falls after a first round has found the prevalent cases and falls again where another service already tests and treats the same people; put another field's nouns in and a first round of testing, an incident flow after it and a competing test-and-treat service stop meaning anything.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:active-infection-among-antibody-positives-after-curative-treatment",
+  "layer2_pattern": "own:screening-yield-after-a-first-round-and-a-competing-test-and-treat-rollout",
   "layer1": [
     "Fenwold Pathology's test codes renamed at its March 2021 system change, and a fortnight of results the new system re-sent",
     "results written as text with a viral load column (Detected, Detected <15 IU/mL, Not detected)",
@@ -89,9 +89,9 @@
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The forward pool is the units still carrying an active condition among those a marker reads positive, estimated as the positives less those a removal programme's record shows cleared, times the active share the validating data shows; every validating case was a unit the condition had never been removed from, because the producing process tests the marker only on units not already known positive and predates the removal push, while the removal was given by two organisations each keeping its own record, so the forward units cleared by the second organisation look uncleared in the first's record and only a unit-by-unit join to the second's record finds them, which drops the group the first record leaves largest and lifts the one neither reached.",
-  "driver_concrete": "Each setting's people with active hepatitis C among its 2027 arrivals: the laboratory's first antibody positives and the 2018-19 pilot show about three quarters viraemic because nobody in them had been treated, the network's register and the laboratory remove the cures the network's clinics gave, and Corvane Health's course workbook holds the cures given inside prison, 55 per cent of the approved premises' positives, so the needle exchange registrants lead at about 50 starts against the approved premises' about 80 on the network's records alone.",
-  "stump": "A competent solver takes each setting's 2027 arrivals, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share, and files the approved premises first at about 80 starts; the step that lands it there is treating the network's records as the record of every cure when 55 per cent of the approved premises' positives were cured inside prison, in Corvane Health's own course workbook.",
+  "driver": "A placement's forward yield is not its pilot yield: one candidate's pool is absorbed from a fixed date by a competing service whose effect shows only at the few sites that adopted it early, and another candidate's pilot yield came from a first sweep of a standing population the sweep has mostly reached; correcting either alone moves the choice to a different wrong candidate, and only both together reach the candidate whose pool is a steady flow.",
+  "driver_concrete": "The van's 2026 rota yields carried to 2027 put the needle exchange registrants first; from 1 April 2027 pharmacists test and treat new registrants at every needle exchange pharmacy, which the three pharmacies running it since 2025 show leaves the van about a fifth of the yield, and the van's 2026 hostel visits tested 640 of the 900 residents, so 2027's hostel pool is the untested residue and the arrivals; with both, Fenwold Recovery's new entrants lead at about 60 starts.",
+  "stump": "A competent analyst carries the van's 2026 yields per person tested to each setting's 2027 pool and files the needle exchange registrants first at about 85 starts; the step that lands it there is treating 2026 as 2027 in two places: pharmacist test-and-treat reaches every needle exchange pharmacy in April 2027, where the three pharmacies running it since 2025 show what the van then finds, and 640 of the hostels' 900 residents were already tested by the van's 2026 visits, so the hostel census is not 2027's pool.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task144": "task144 discounts a conversion inflated by a launch burst; task304 removes from a marker-positive count the units a second organisation's treatment record shows cleared, unit by unit.",
@@ -99,7 +99,10 @@
     "task150": "task150 splits next-period counts into carried members, steady arrivals and transfers; task304 splits a marker-positive count into units still carrying the condition and units a curative programme cleared.",
     "task179": "task179 reads each member's leaving chance at its own peer co-membership; task304 reads each positive's cure from whichever organisation treated it, which the validating ratio never saw.",
     "task501": "task501 sets a threshold by a contact matrix's eigenvalue; task304 is a count of active cases among marker positives after curative treatment given by two providers.",
-    "task304": "architecture 1 carried a concession hidden in a remaining-term path through a fitted delayed hazard; architecture 2 has no hazard to fit: cured positives are read from two providers' treatment records and the never-treated carry the validated viraemic share."
+    "task304": "architecture 1 carried a concession hidden in a remaining-term path through a fitted delayed hazard; architecture 2 has no hazard to fit: cured positives are read from two providers' treatment records and the never-treated carry the validated viraemic share.",
+    "task128": "task128 v3 reads a contact's effect where the day's queue outran the team, a within-day contrast on a call list; here a screening van's forward yield, where a competing service absorbs one candidate's pool from a fixed date and a first sweep has already reached another candidate's standing population: no queue, no within-day contrast.",
+    "task98": "task98 v1 sizes a whole system's nightly residual after an absorbing outlet is removed, peaking on a night the system sets; here an outlet is added (pharmacist test-and-treat) and absorbs part of one candidate's pool, sized at the sites that adopted it early, beside a first-round depletion at another candidate: no residual, no displaced-cohort model, no peak.",
+    "task141": "task141 transports the end-of-term behaviour of terms already at their class maximum to every term a law caps, raising revocations; here two independent pool corrections, a competing service's absorption at its early sites and a screening programme's first round against its later rounds, each alone moving the choice to a different wrong setting."
   },
   "lineage": [
     {
@@ -125,8 +128,41 @@
       "driver": "The decisive quantity is next year's entries into a failure state from units whose recorded good standing was produced by the organisation's own concession at a scheduled reset, which lowered what each owes while the condition that prompted it stayed; a forecast keyed on each unit's current state and on the size of the change it absorbed treats them as sound, and only each unit's concession, rebuilt from the changes in an ordinary field over its history, with the delayed re-entry rate the earlier concessions show by time since the concession, carries the forward count.",
       "stump": "A competent solver fits the chance of falling two payments behind on book, current arrears and the payment rise at the last rate switch, carries every account on the book through 2027 at the plan's planning rates and files High LTV 2022-24 first (4.5 possessions avoided against the first-time buyer book's 2.9); the step that lands it there is reading the up-to-date first-time buyers' small payment rise as low risk when their remaining term rose at the switch, the Charter extension that kept a budget the new rate broke up to date for a few months.",
       "niche": "a building society's 2027 financial support team going to the one mortgage book where it avoids the most possessions among the borrowers who fall two payments behind in 2027, when the first-time buyers of the 2021 stamp-duty rush took Mortgage Charter term extensions at their 2026 rate switch that keep them up to date for months before they fall behind"
+    },
+    {
+      "driver": "The forward pool is the units still carrying an active condition among those a marker reads positive, estimated as the positives less those a removal programme's record shows cleared, times the active share the validating data shows; every validating case was a unit the condition had never been removed from, because the producing process tests the marker only on units not already known positive and predates the removal push, while the removal was given by two organisations each keeping its own record, so the forward units cleared by the second organisation look uncleared in the first's record and only a unit-by-unit join to the second's record finds them, which drops the group the first record leaves largest and lifts the one neither reached.",
+      "driver_concrete": "Each setting's people with active hepatitis C among its 2027 arrivals: the laboratory's first antibody positives and the 2018-19 pilot show about three quarters viraemic because nobody in them had been treated, the network's register and the laboratory remove the cures the network's clinics gave, and Corvane Health's course workbook holds the cures given inside prison, 55 per cent of the approved premises' positives, so the needle exchange registrants lead at about 50 starts against the approved premises' about 80 on the network's records alone.",
+      "stump": "A competent solver takes each setting's 2027 arrivals, the share the peer team found antibody positive, reads each positive's status from the network's treatment register and Fenwold Pathology, carries the rest at the 0.74 viraemic share, and files the approved premises first at about 80 starts; the step that lands it there is treating the network's records as the record of every cure when 55 per cent of the approved premises' positives were cured inside prison, in Corvane Health's own course workbook.",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G3",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "informative_censoring",
+      "layer2_pattern": "own:active-infection-among-antibody-positives-after-curative-treatment",
+      "niche": "a hepatitis C charity placing its 2027 find-and-treat van, run with the NHS treatment network, in one of four settings it has not worked (probation approved premises, city hostels, the drug service's new entrants, the pharmacy needle exchange's new registrants), sized by the people it would start on treatment, when part of each setting's antibody-positive arrivals were cured earlier, by the network's clinics or inside prison by the prison health provider, and an antibody test stays reactive after a cure",
+      "subdomain": "screening-diagnostic-policy-evaluation",
+      "decision_type": "pick_one_of_n",
+      "forum": "trustees_or_governors",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "nonprofit_or_charity",
+      "context_artifact": "operations_log",
+      "calibration_form": "pilot_log",
+      "role_family": "operations_director",
+      "version": "v2",
+      "architecture": 2,
+      "fate": "spent at the portal 2026-10-28 (FAILED_TO_STUMP): both responses filed the golden, the needle exchange registrants at about 50 starts, reading the prison cures in Corvane Health's workbook and the antibody that outlives a cure; a record-reading step both responses executed"
     }
   ],
   "notes": "Axes redrawn at the check (2026-10-27): org hospital_or_health_provider to nonprofit_or_charity, forum board_of_directors to trustees_or_governors, role programme_officer to operations_director (all against task118 v3); artifact register to operations_log (task464); strategy composition_mix to informative_censoring (task118 v3), the honester name for an active share observed only on positives who come forward. WARNs answered in the design note: overuse.objective, repeat.gate_g, repeat.decision. Built 2026-10-27: card brought to the built pack (people, deliverables, spine, answer); heart WARN (nearest driver 0.07, task137), surface 7 pairs promoted for the author's adjudication, none a BLOCK.",
-  "registered": "2026-10-27T23:56:35Z"
+  "architecture_spent": false,
+  "registered": "2026-10-28T04:31:56Z"
 }
