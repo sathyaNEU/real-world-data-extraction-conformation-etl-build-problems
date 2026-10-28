@@ -1,12 +1,12 @@
 {
  "task": "task488",
- "status": "PAUSED",
- "domain": "",
+ "status": "DESIGN",
+ "domain": "education-learning-sciences/item-response-theory-test-equating",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-26",
- "stump": "",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-28",
+ "stump": "The default path files a commission of about 50 low-band items because it calibrates the 340 provisional items against the students' reported scale scores, which the vendor computed with the panel's provisional ratings, so the multi-step word problems the panel rated as easy land inside the low band; estimated jointly with the calibrated items fixed, they sit above it and the commission is about 90.",
  "architecture": 1,
  "loops": 0,
  "precut": {
@@ -18,8 +18,10 @@
   "reader": ""
  },
  "duplicate_check": {
+  "check": "PASS 2026-10-28 at registration (NOTE driver.near 0.13 against task479 v4, differentiated)",
   "heart": "",
-  "nearest": ""
+  "surface": "",
+  "nearest": "task479 v4 0.13, task126 v0 0.09, task171 v5 0.08"
  },
  "judge": {
   "verdict": "",
@@ -27,9 +29,10 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 1 draw: the screen is recorded in DESIGN_NOTE.md (## Draw lists the two live record-linkage candidates, value-specific agreement weight and matcher calibration, with each one's open problem; ## Tried and rejected holds the five dead ones). Paused at the author's request to rework task139 and task141; resume by fixing one candidate's determinism on paper (or redrawing outside the seed's world as task487 did), then the card through guard.py check and register, and commit DRAWN (task488).",
+ "resume": "DESIGN 2026-10-28, architecture 1 (education ETL, Quarrystone item bank migration): write the stage-2 sections and prompt.txt, then precut.py; the prototype is in scratchpad t488/proto (cat4 to cat7)",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET45 (analytical_tasks/07_data_extraction_conformation/ET45_gtin-normalization-product-master-matching.md), header and situation only"
+ "source_note": "seed ET45 (analytical_tasks/07_data_extraction_conformation/ET45_gtin-normalization-product-master-matching.md), header and situation only",
+ "card_registered": true
 }

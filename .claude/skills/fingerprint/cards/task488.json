@@ -1,0 +1,90 @@
+{
+  "task": "task488",
+  "architecture": "v1",
+  "drawn": "2026-10-28",
+  "slot_note": "Drawn 2026-10-28 at the user's request for an education task with a data-engineering feel and an analytical stump; task488's ET45 world (barcode catalog matching) was paused at stage 1 with no card, and its resume line allows a redraw outside the seed's world.",
+  "domain": "education-learning-sciences",
+  "subdomain": "item-response-theory-test-equating",
+  "niche": "a regional consortium of Wisconsin school districts moving its own adaptive mathematics interim (grades 3 to 8) off its vendor's platform, whose bank holds about 340 teacher-written items the vendor ran on the writing panel's provisional difficulty ratings, to size the summer 2027 item-writing commission against the new platform's low-band floor",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G16",
+    "G19"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the vendor's export, sees that an adaptive test's percent correct carries no difficulty information and calibrates the 340 provisional items with the Rasch model against each student's reported scale score files a commission of about 50 low-band items, because the vendor computed those scores with the panel's ratings, which put the multi-step word problems far too easy, so the students who met them were scored too low and the word problems look easy enough for the low band; estimated together with the students' abilities with the calibrated items held at their bank values, the word problems sit above the band and the commission is about 90.",
+  "domain_test": "The deciding quantity is each new item's difficulty on the consortium's Rasch reporting scale, which item response theory estimates from the item's responses conditional on the takers' abilities while the calibrated items hold the scale; in another field's nouns the task loses its object, since its structure (each item served to the students its recorded difficulty matched, and those students scored from the recorded difficulties) exists only in an adaptive test.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:adaptive-calibration-against-contaminated-scores",
+  "layer1": [
+    "two item-identifier systems (the vendor's item keys and the consortium's authoring IDs) joined by a crosswalk in which edited items carry a new version",
+    "response events logged in UTC, with a resumed session re-logging the item that was on screen",
+    "scale scores reported as integers on a linear transform of the Rasch scale, with a separate standard error",
+    "invalidated and retested test events inside the same window",
+    "three testing windows a year, with students promoted a grade between years",
+    "district student identifiers mapped to the consortium's identifiers"
+  ],
+  "stakeholder_role": "the consortium's director of assessment, who brings the summer item-writing commission to the consortium's board",
+  "role_family": "research_desk",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "tessaline_response_events_2025-26.parquet",
+    "rows": 0,
+    "entity": "one student's response to one item in one test event",
+    "grain": "test event x item",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United States (Wisconsin)",
+    "currency": "USD",
+    "org_type": "regional consortium of school districts running its own adaptive interim assessment",
+    "invented_names": [
+      "Quarrystone Regional Assessment Consortium",
+      "Tessaline Learning Systems",
+      "Corvane Assessment"
+    ],
+    "people": [
+      "Sheri Brady",
+      "Timothy Fitzgerald"
+    ]
+  },
+  "deliverables": [
+    "bank_import_2027-28.csv",
+    "low_band_commission_memo.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is each new unit's level on an established scale, seen only through the responses of the members it was given to; each unit was given to the members its recorded level matched, and those members' published standings were computed from the recorded levels, so reading each unit against the published standings returns its recorded level, while estimating the units' levels and the members' standings together from every response, with the established units held at their known levels, recovers the true levels, which the established units' own levels confirm when recalibrated the same way.",
+  "driver_concrete": "Tessaline's adaptive engine served each of the 340 teacher-written items to students whose running estimate matched the writing panel's provisional rating and scored every student with those ratings, so the multi-step word problems the panel rated as easy were met by low-scoring students who mostly missed them and were scored lower still; calibrating against the reported scale scores leaves the word problems inside the low band, while a marginal-likelihood calibration with the calibrated items fixed puts them above it, and only that calibration recovers the calibrated items' own bank values when they are re-estimated from the same responses.",
+  "stump": "The default path files a commission of about 50 low-band items because it calibrates the 340 provisional items against the students' reported scale scores, which the vendor computed with the panel's provisional ratings, so the multi-step word problems the panel rated as easy land inside the low band; estimated jointly with the calibrated items fixed, they sit above it and the commission is about 90.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task479": "task479's architecture 4 removed answers given too fast to have been read before scoring units; here no response is removed or cleaned, every response stays, and the decisive step is estimating the new items' levels jointly with the students' abilities from all responses with the calibrated items fixed, because the students met each new item because of its recorded level and their published scores were computed from those levels."
+  },
+  "lineage": [],
+  "notes": "Strategy other: contaminated conditioning, the variable each estimate would condition on (the reported scale score) was computed from the quantities being estimated (the provisional ratings), so the estimate returns them; the separating check is the calibrated items' own bank values, which only the joint marginal-likelihood calibration reproduces. Pattern none with G14 decisive (an item's difficulty is its success rate conditioned on the takers' ability, the ability here having to be estimated jointly rather than read from the published scores). Gap objective: the panel's ratings, the percent correct and the reported scale scores are each correct as recorded and none is the item's difficulty on the scale. Gate G etl_conformance: the stump sits in the difficulty field of the conformed bank import that Corvane's import contract defines. Labels population/G16/method_or_model_selection were tried first and refused: that signature is spent in task177's lineage and eight older builds.",
+  "client_domain": "education-learning-sciences",
+  "registered": "2026-10-28T08:05:27Z"
+}
