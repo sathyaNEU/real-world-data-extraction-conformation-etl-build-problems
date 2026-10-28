@@ -43,10 +43,11 @@ def scrub_xlsx(path):
             t = data[n]
             nt = re.sub(rb"[Oo]pen[Pp]yxl", b"Workbook", t)
             # openpyxl writes the build time into the document properties
-            nt = re.sub(rb"<dcterms:created[^>]*>[^<]*</dcterms:created>",
-                        b'<dcterms:created xsi:type="dcterms:W3CDTF">2026-11-18T09:00:00Z</dcterms:created>', nt)
-            nt = re.sub(rb"<dcterms:modified[^>]*>[^<]*</dcterms:modified>",
-                        b'<dcterms:modified xsi:type="dcterms:W3CDTF">2026-11-18T09:00:00Z</dcterms:modified>', nt)
+            # only the timestamp text is replaced; the element keeps the attributes its writer declared
+            nt = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)",
+                        rb"\g<1>2026-11-18T09:00:00Z\g<2>", nt)
+            nt = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
+                        rb"\g<1>2026-11-18T09:00:00Z\g<2>", nt)
             if nt != t:
                 data[n] = nt
                 changed = True

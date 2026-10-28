@@ -4,7 +4,8 @@ Three PDFs. Between them they file WHAT the review has to produce and HOW the mo
 neither of those is HOW the composition is to be computed:
 
   coding_manual_2025.pdf           what each of the six categories means. No hit rate appears anywhere.
-  quality_assurance_procedure.pdf  how the moderation sample is drawn (a fixed number per CODED category) and
+  quality_assurance_procedure.pdf  how the moderation sample is drawn (by CODED category: every OT, a fixed
+                                   number of each other code) and
                                    that the moderating coder's category is the authoritative one. It does not
                                    say what to do with the sample.
   withdrawal_review_terms_of_reference.pdf
@@ -96,24 +97,23 @@ def coding_manual():
 
 def qa_procedure():
     f = [Paragraph("Exit comment coding: quality assurance procedure", H1),
-         Paragraph("%s. Issued by the quality team, September 2025." % W.SERVICE, SMALL),
+         Paragraph("%s. Issued by the quality team on 1 September 2025." % W.SERVICE, SMALL),
          Paragraph("Why we moderate", H2),
          Paragraph("Coding an exit comment is a judgement. Two coders reading the same comment do not always "
                    "place it in the same category, and the service needs to know how its coding stands up "
                    "before the figures are used. The quality team therefore moderates a sample of coded "
-                   "withdrawals every term.", BODY),
+                   "withdrawals each year.", BODY),
          Paragraph("How the sample is drawn", H2),
-         Paragraph("The sample is drawn <b>by reason code</b>. For each of the six codes in the manual, the "
-                   "quality team draws %d withdrawals across the year that carry that code, spread across the "
-                   "four terms. The sample is therefore the same size for every code and is not in proportion "
-                   "to how often each code is recorded. It is not a sample of withdrawals in general and it "
-                   "must not be read as one."
+         Paragraph("The sample is drawn by reason code, once a year, across the four terms. Every withdrawal "
+                   "coded OT is moderated, because OT tells the service least about why a learner left and is "
+                   "where a reason given in passing is most often missed. For each of the other five codes the "
+                   "quality team draws %d withdrawals at random from those carrying that code."
                    % W.MODERATED_PER_CODE, BODY),
          Paragraph("What the moderating coder records", H2),
          Paragraph("A senior coder re-reads the learner's comment without seeing the code already recorded "
-                   "against it, and records the category the comment belongs in under the manual. Where the two "
-                   "differ, the moderating coder's category stands as the service's view of that comment. The "
-                   "original code is left on the student record so that the two can be compared.", BODY),
+                   "against it, and records the category the comment belongs in under the manual. The original "
+                   "code is left on the student record, and both are kept in the moderation file so that the two "
+                   "can be compared.", BODY),
          Paragraph("What is published", H2),
          Paragraph("The moderation file is released with the withdrawal extracts each year. The quality team "
                    "reports the number of comments moderated and does not publish any figure derived from "
@@ -140,8 +140,8 @@ def terms_of_reference():
                    "Withdrawals from earlier years are out of scope." % W.YEAR, BODY),
          Paragraph("The call", H2),
          Paragraph("The review names one reason, with the runner-up and the gap between them, and the budget "
-                   "line follows it. The review does not reopen the coding manual and does not recode any "
-                   "withdrawal.", BODY)]
+                   "line follows it. The review does not reopen the coding manual and does not re-read or "
+                   "re-code the exit comments.", BODY)]
     return _doc("withdrawal_review_terms_of_reference.pdf",
                 "Withdrawal review terms of reference", f)
 

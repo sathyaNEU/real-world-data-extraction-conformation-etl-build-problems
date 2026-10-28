@@ -46,6 +46,8 @@ def write_all():
         w.column_dimensions["A"].width = 26
         for col in "BCDE":
             w.column_dimensions[col].width = 20
+    wb.properties.creator = "Quality Team"
+    wb.properties.lastModifiedBy = "Quality Team"
     wb.save(os.path.join(OUT, "learner_satisfaction_2025_26.xlsx"))
     out.append(("learner_satisfaction_2025_26.xlsx", len(W.SITES) + len(W.CURRICULUM)))
 
@@ -74,6 +76,8 @@ def write_all():
     ws.column_dimensions["B"].width = 48
     ws.column_dimensions["C"].width = 22
     ws.column_dimensions["D"].width = 22
+    wb.properties.creator = "Finance"
+    wb.properties.lastModifiedBy = "Finance"
     wb.save(os.path.join(OUT, "retention_budget_2027_lines.xlsx"))
     out.append(("retention_budget_2027_lines.xlsx", 3))
 

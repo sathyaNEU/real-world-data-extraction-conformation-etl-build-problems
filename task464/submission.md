@@ -1,135 +1,51 @@
 ## Tags
-**Domain:** Healthcare delivery and health economics (payment, claims and health plan analytics).
-**Analytical objective:** Data extraction and conformation (ETL).
+**Domain:** Education & Learning Sciences (text analysis: learners' free-text exit comments coded against a manual).
+**Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
-**The 2027 outpatient dialysis and infusion network holds 3,886 weekly treatment slots, and six of the twelve service areas sit below the adequacy standard.**
-Network slots are 3,886 against 3,568 required across the twelve areas, and Hesper Vale is the nearest of the six to the standard, 20 slots short. Not the stations the directory attests, which are 327 against 274 deliverable positions and put three of those six areas above the standard. Not the stations the state licence lists, which are higher again. Not each site's busiest week in the record, which measures demand and leaves 8 of the twelve areas short.
+**Our 2027 retention budget line should target caring responsibilities.**
+Caring responsibilities account for 25.1 per cent of 2025/26 withdrawals against work hours clash at 19.4, a gap of 5.7 points. Not work hours clash, which leads the coded counts at 24.4 per cent only because 14.8 per cent of the comments coded to it are about caring. Not other or not stated, which leads the moderation file's own mix only because every comment coded OT is moderated.
 
 ## 2. Critical Components
-1. Deliverable treatment positions across the forty sites in scope are **274**, against **327** attested stations
-2. Projected 2027 weekly treatment demand across the twelve areas is **3,095** treatments
-3. The weekly treatment slots the standard requires across the twelve areas are **3,568**
+1. Coded shares of the 17,231 withdrawals: work hours clash **24.4** per cent, caring responsibilities **19.4**
+2. Of the moderated comments coded work hours clash, **14.8** per cent belong to caring responsibilities
+3. Share of withdrawals that happened for caring responsibilities **25.1** per cent, for work hours clash **19.4**
 
 ## 3. Step-by-Step Solution
-1. Took the sites carrying a 2027 contract intent on the attestation cycle current at the network position date in provider_directory_2027.csv: forty sites in twelve service areas.
-2. Counted the treatment sessions each site's roster staffs in a week from staffing_roster_2026q4.csv, and the treatments a position delivers in a session from Schedule 4 clause 4.2.
-3. Rebuilt each treatment's service interval from both tables of treatment_encounters.db, the 2023 and 2024 table carrying a stop time and the 2025 and 2026 table a length in minutes, and took each site's deliverable treatment positions as the greatest number of its own treatments running at one time over the four-year record: 274 positions against 327 attested stations.
-4. Multiplied each site's positions by its sessions a week and by its category figure, as Schedule 4 clause 4.2 sets the unit: 3,886 weekly treatment slots for the network.
-5. Took each area's 2026 contract year treatments a week from the same extract and grew them by the area's factor in enrolment_projection_2027.csv, then applied the 1.15 cushion and rounded each area up to the next whole slot as clause 4.4 requires: 3,095 treatments a week projected and 3,568 weekly slots required.
-6. Counted the out-of-network treatments a claim at a time from out_of_network_payments_2026.csv with out_of_network_payments_runout_2027q1.csv, taking a claim's header line as its own treatment count where the register writes one and its service lines where it does not: 48 figures on the Out of Network 2026 sheet.
-7. Took the state_licence_register.xlsx facility row covering the position date for each licence number, corporate rows excluded, for the licensed supply, and the row covering the 2026 filing's own position date to resolve each distinct site in state_adequacy_filing_2026.xlsx: 24 and 24 figures.
-8. Compared each area's slots with its required figure: 6 of the twelve areas sit below the standard and the network holds 3,886 weekly treatment slots.
+1. Stacked withdrawals_autumn_winter_2025.csv and withdrawals_spring_summer_2026.json on the spring export's term codes, kept one row per withdrawal reference (the late-keyed winter withdrawals sit in both) and normalised the typed reason codes: 17,231 withdrawals.
+2. Counted the withdrawals by coded reason over the four terms: work hours clash 24.4 per cent, caring responsibilities 19.4.
+3. Took, within each coded reason in coding_moderation_2025_26.csv, the split of the moderating coder's categories, the return being drawn by code as quality_assurance_procedure.pdf sets out: 14.8 per cent of moderated work hours clash comments belong to caring responsibilities.
+4. Carried each code's split onto that code's share of the year's withdrawals and summed by reason: caring responsibilities 25.1 per cent, work hours clash 19.4.
+5. Built learner-courses from enrolments_2025_26.csv at the five centres in site_directory.csv on the learner number and the course reference, linking each course that course_catalogue_2025_26.csv plans over winter and spring but which has no spring rows to the one spring course at the same centre whose learners are all its continuing learners (25 links), and summed each learner-course's planned hours once from the catalogue: six area totals.
+6. Attributed each learner-course to the centre of its first term's row and counted it completed where any of its rows reads completed: five started counts and five completed shares.
+7. Named the reason with the largest share of withdrawals: caring responsibilities, 5.7 points ahead of work hours clash.
 
 ## 4. Deliverable Answers
 
-### outpatient_capacity_2027.csv
-1. Weekly treatment slots, forty rows in the file's order, whole slots:
-   - PS-10404, Granleigh: 80
-   - PS-10556, Granleigh: 80
-   - PS-10682, Granleigh: 126
-   - PS-10787, Granleigh: 40
-   - PS-10803, Lowenbrook: 96
-   - PS-10975, Lowenbrook: 120
-   - PS-11153, Lowenbrook: 96
-   - PS-11290, Ammerly: 40
-   - PS-11491, Ammerly: 150
-   - PS-11515, Ammerly: 96
-   - PS-11650, Ammerly: 80
-   - PS-11685, Hesper Vale: 40
-   - PS-11912, Hesper Vale: 50
-   - PS-11977, Hesper Vale: 80
-   - PS-11992, Crannock: 126
-   - PS-12060, Crannock: 96
-   - PS-12122, Crannock: 80
-   - PS-12285, Innsmere: 80
-   - PS-12488, Innsmere: 144
-   - PS-12630, Innsmere: 40
-   - PS-12846, Innsmere: 96
-   - PS-12899, Bexhollow: 108
-   - PS-13100, Bexhollow: 96
-   - PS-13158, Bexhollow: 108
-   - PS-13209, Kettlebrook: 80
-   - PS-13429, Kettlebrook: 80
-   - PS-13569, Kettlebrook: 105
-   - PS-13795, Eastmoor Reach: 120
-   - PS-13828, Eastmoor Reach: 120
-   - PS-13939, Eastmoor Reach: 50
-   - PS-14074, Eastmoor Reach: 96
-   - PS-14191, Durnsfield: 120
-   - PS-14258, Durnsfield: 126
-   - PS-14433, Durnsfield: 150
-   - PS-14479, Jarrowmead: 162
-   - PS-14583, Jarrowmead: 180
-   - PS-14631, Jarrowmead: 144
-   - PS-14653, Fallowbray: 105
-   - PS-14822, Fallowbray: 40
-   - PS-14888, Fallowbray: 60
+### withdrawal_reason_composition_2025_26.csv
+1. Share of 2025/26 withdrawals that happened for each reason, six rows, per cent to one decimal place:
+   - Caring responsibilities: 25.1
+   - Work hours clash: 19.4
+   - Course too difficult: 15.5
+   - Travel or transport: 14.7
+   - Health: 13.5
+   - Other or not stated: 11.8
 
-### area_capacity_2027.xlsx
-2. Area Capacity, the twelve areas in the sheet's order, whole slots:
-   - Granleigh: 326 slots, 245 required, meets the standard yes
-   - Lowenbrook: 312 slots, 335 required, meets the standard no, 23 slots short
-   - Ammerly: 366 slots, 271 required, meets the standard yes
-   - Hesper Vale: 170 slots, 190 required, meets the standard no, 20 slots short
-   - Crannock: 302 slots, 239 required, meets the standard yes
-   - Innsmere: 360 slots, 260 required, meets the standard yes
-   - Bexhollow: 312 slots, 335 required, meets the standard no, 23 slots short
-   - Kettlebrook: 265 slots, 207 required, meets the standard yes
-   - Eastmoor Reach: 386 slots, 434 required, meets the standard no, 48 slots short
-   - Durnsfield: 396 slots, 302 required, meets the standard yes
-   - Jarrowmead: 486 slots, 521 required, meets the standard no, 35 slots short
-   - Fallowbray: 205 slots, 229 required, meets the standard no, 24 slots short
-3. Nearest the standard without meeting it: Hesper Vale, 20 slots short.
-4. Out of Network 2026, twelve areas by half, whole treatments and shares to one decimal:
-   - Granleigh, H1: 572 treatments, 9.7 per cent
-   - Granleigh, H2: 559 treatments, 9.8 per cent
-   - Lowenbrook, H1: 234 treatments, 3.2 per cent
-   - Lowenbrook, H2: 229 treatments, 3.3 per cent
-   - Ammerly, H1: 650 treatments, 10.1 per cent
-   - Ammerly, H2: 638 treatments, 10.2 per cent
-   - Hesper Vale, H1: 234 treatments, 5.4 per cent
-   - Hesper Vale, H2: 228 treatments, 5.4 per cent
-   - Crannock, H1: 546 treatments, 9.4 per cent
-   - Crannock, H2: 535 treatments, 9.5 per cent
-   - Innsmere, H1: 806 treatments, 12.8 per cent
-   - Innsmere, H2: 790 treatments, 12.9 per cent
-   - Bexhollow, H1: 468 treatments, 6.3 per cent
-   - Bexhollow, H2: 457 treatments, 6.3 per cent
-   - Kettlebrook, H1: 494 treatments, 9.9 per cent
-   - Kettlebrook, H2: 484 treatments, 10.1 per cent
-   - Eastmoor Reach, H1: 338 treatments, 3.6 per cent
-   - Eastmoor Reach, H2: 329 treatments, 3.6 per cent
-   - Durnsfield, H1: 364 treatments, 5.2 per cent
-   - Durnsfield, H2: 357 treatments, 5.3 per cent
-   - Jarrowmead, H1: 520 treatments, 4.5 per cent
-   - Jarrowmead, H2: 510 treatments, 4.5 per cent
-   - Fallowbray, H1: 676 treatments, 12.1 per cent
-   - Fallowbray, H2: 664 treatments, 12.3 per cent
-5. Licensed Supply, twelve areas, whole sites and stations:
-   - Granleigh: 7 sites, 43 stations
-   - Lowenbrook: 6 sites, 62 stations
-   - Ammerly: 7 sites, 54 stations
-   - Hesper Vale: 6 sites, 39 stations
-   - Crannock: 5 sites, 51 stations
-   - Innsmere: 8 sites, 66 stations
-   - Bexhollow: 5 sites, 50 stations
-   - Kettlebrook: 6 sites, 38 stations
-   - Eastmoor Reach: 6 sites, 36 stations
-   - Durnsfield: 6 sites, 59 stations
-   - Jarrowmead: 5 sites, 55 stations
-   - Fallowbray: 5 sites, 38 stations
-6. Sites Dropped, twelve areas, whole sites and stations:
-   - Granleigh: 2 sites, 15 stations
-   - Lowenbrook: 1 sites, 8 stations
-   - Ammerly: 1 sites, 10 stations
-   - Hesper Vale: 1 sites, 5 stations
-   - Crannock: 1 sites, 12 stations
-   - Innsmere: 2 sites, 16 stations
-   - Bexhollow: 1 sites, 6 stations
-   - Kettlebrook: 1 sites, 5 stations
-   - Eastmoor Reach: 1 sites, 6 stations
-   - Durnsfield: 1 sites, 8 stations
-   - Jarrowmead: 1 sites, 6 stations
-   - Fallowbray: 1 sites, 8 stations
-7. Bar chart of weekly treatment slots against the required figure on the Area Capacity sheet, the six areas below the standard carrying their shortfall in the sheet's own shortfall column.
+### retention_target_2027.xlsx
+1. Reason the 2027 retention budget line targets: caring responsibilities, 25.1 per cent
+2. Runner-up: work hours clash, 19.4 per cent
+3. Gap between them: 5.7 points
+4. Bar chart of the six shares by reason on the Reason composition sheet, caring responsibilities picked out
+5. Planned guided hours of the learner-courses the five centres started in 2025/26, by curriculum area, whole hours:
+   - English and maths: 832,566
+   - Digital skills: 734,640
+   - ESOL: 749,682
+   - Health and social care: 756,246
+   - Business administration: 726,420
+   - Construction skills: 687,663
+6. Learner-courses started in 2025/26 and the share of them that completed, by centre, per cent to one decimal place:
+   - Cassgrove: 11,468 started, 64.6 completed
+   - Hollowdean Learning Hub: 12,849 started, 64.1 completed
+   - Northmarket Centre: 17,228 started, 65.5 completed
+   - The Lathe Street Building: 15,857 started, 64.7 completed
+   - Wyebrook Adult Learning Centre: 11,749 started, 63.9 completed

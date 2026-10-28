@@ -33,7 +33,7 @@ ledger and on arithmetic, giving laws 1 and 4.
   call never separates, and a drill-down (12) would make a hierarchy the manual does not have.
 - **Niche:** an adult education service's withdrawal review: the composition of reasons behind the 2025/26
   withdrawals, coded from learners' own free-text exit comments, with the double-coded quality sample the service
-  runs every term.
+  draws each year by reason code (every OT, 400 of each other code).
 - **Strategy:** `classification_error` (new in `vocab.json`, its own SKILLS commit, because no existing key is
   honest for measurement error in a classification), gap `population` then `objective`, Gate G
   `decomposition_attribution` (the overlap between coding categories decides the split), generators `G16` then
@@ -43,7 +43,7 @@ ledger and on arithmetic, giving laws 1 and 4.
   responsibility reaches the record as a sentence about hours ("could not get cover for mum on Tuesdays"), so the
   manual's caring-role category is recognised in 68 of every 100 cases that belong to it while work hours clash
   is recognised in 90 and takes most of the spill. This pack carries four terms of those comments, their codes,
-  and the service's own re-coded sample, which is the only thing in it that measures a category's hit rate.
+  and the service's own moderation return, which is the only thing in it that measures how the codes stand up.
 - **Sources, one line each.** task253 is the other education build in a Descriptive objective and shrinks noisy
   unit averages against a line; nothing is shrunk here and no unit has a level. task449 corrects for a false-link
   rate created by matching records across files; nothing is linked here. task236 tracks one condition's capture
@@ -57,7 +57,8 @@ ledger and on arithmetic, giving laws 1 and 4.
 - **Deliverables:** `withdrawal_reason_composition_2025_26.csv` (one row per reason) and
   `retention_target_2027.xlsx` (the six reasons against the total, with the chart).
 - **The call faces forward:** the 2027 retention budget's target is not committed at the as-of date.
-- **Measured at the draw,** from the composition and the coder matrix, before any row was cut:
+- **Measured at the draw,** from the composition and the coder matrix, before any row was cut (the cut pack's
+  figures are in `## Ladder`, and they are the ones every gate reads):
 
   | reason | raw coded | corrected | shift |
   |---|---|---|---|
@@ -81,24 +82,25 @@ ledger and on arithmetic, giving laws 1 and 4.
 
 A competent analyst builds this without hesitating, from the prompt's words and the files' grain.
 
-1. Stack the four terms' withdrawal exports and conform the two layouts across the student-record system change.
-2. Resolve learner references across the two sites the merger renamed, joining on the unique learner number
-   rather than the site's own reference.
-3. Keep one row per withdrawal, dropping the superseded rows where the manual revision re-coded a comment.
-4. Read each withdrawal's coded reason from the coding field and check it against the manual's six categories.
-5. Count the withdrawals by coded reason and divide each by all withdrawals across the four terms.
-6. Rank the six reasons by that share and name the largest as the reason the 2027 retention budget should target.
+1. Stack the four terms' withdrawal exports and conform the two layouts across the student-record system change
+   (the winter export's term labels to the spring export's term codes, the former centre names to the site codes).
+2. Keep one row per withdrawal reference, dropping the late-keyed winter withdrawals the spring export repeats.
+3. Normalise the reason codes the old system took as typed (case and trailing space) and check every code against
+   the manual's six categories.
+4. Count the withdrawals by coded reason and divide each by all 17,231 withdrawals across the four terms.
+5. Rank the six reasons by that share and name the largest as the reason the 2027 retention budget should target.
 
-- **Ends on:** work hours clash, 24.8 per cent of 2025/26 withdrawals, with caring role second at 19.8.
-- **Golden:** caring role, 25.0 per cent, with work hours clash second at 20.5, margin 1.220.
+- **Ends on:** work hours clash, 24.4 per cent of 2025/26 withdrawals, with caring role second at 19.4.
+- **Golden:** caring role, 25.1 per cent, with work hours clash second at 19.4, a gap of 5.7 points.
 
 ## Stump sentence
 
-A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.8
+A competent analyst counts the coded reasons and commits the 2027 retention budget to work hours clash at 24.4
 per cent of withdrawals, because the coded counts measure which reasons the coders recognise rather than which
 reasons learners had; the manual's caring-role category is recognised in 68 of every 100 cases that belong to it
-against work hours clash's 90, and work hours clash takes most of the spill, so inverting the per-category hit
-rates the service's own re-coded sample measures puts caring role first at 25.0 per cent against 20.5.
+against work hours clash's 90, and work hours clash takes most of the spill, so reweighting the coded counts by
+what the service's own moderation return measures behind each code puts caring role first at 25.1 per cent
+against 19.4.
 
 ## Three rules
 
@@ -106,24 +108,26 @@ rates the service's own re-coded sample measures puts caring role first at 25.0 
 objective.
 
 - **Domain test:** the deciding quantity is the composition of the reasons learners actually withdrew for, estimated
-the way the field estimates a composition from coded text: the per-category hit rates measured on the
-double-coded sample, inverted onto the coded counts.
+the way the field estimates a composition from coded text: what the double-coded sample measures behind each
+assigned code, carried onto the coded counts so the composition is of reasons rather than of labels.
 
 - **Swap:** put megawatt-hours or hospital beds in the call sentence and it stops making sense, because there is no
 narrative to code and no coder to disagree with: the categories here are the learner's own account of why they
 stopped attending, written in their words and placed in a category by someone reading them.
 
-- **Layer 1:** four terms of withdrawal records in two exports across a student-record system change, a merger
-renaming two sites mid-year, academic year against funding year, comments re-coded after a manual revision with
-the superseded code left in place, learner references re-issued across sites, and the usual typing and casing
-noise in free text. Each is produced by the service's own systems and none carries the stump.
+- **Layer 1:** four terms of withdrawal records in two exports across a student-record system change (a flat CSV
+with term labels and a JSON extract with its own field names and term codes), a merger renaming two sites
+mid-year so the winter export carries the former names, winter withdrawals keyed late and so present in both
+exports under one reference, reason codes the old system took as typed (case and a trailing space), and the
+usual typing and casing noise in the free text. Each is produced by the service's own systems, each is
+asserted mess-neutral on the call in `checks.py` (block L1), and none carries the stump.
 
 - **Layer 2:** family `estimation_fit`. The decisive choice is whether the composition is read off the assigned
 labels or recovered from them, which forces the per-category hit rates to be measured and inverted.
 
-- **Decisive step:** invert the coders' per-category hit rates onto the coded counts, rather than reading the
-composition off the labels, because a category whose members describe themselves obliquely is recognised less
-often than the category their words get read as.
+- **Decisive step:** carry the moderation return's measured split of reasons behind each assigned code onto the
+year's coded counts, rather than reading the composition off the labels, because a category whose members
+describe themselves obliquely is recognised less often than the category their words get read as.
 
 - **Not semantics:** every field is read correctly on the easy route. The coding field is correctly understood as
 the category a coder assigned, the manual's six categories are read correctly, and the re-coded rows are
@@ -132,12 +136,14 @@ is right at different rates for different categories. No field states a hit rate
 supplies one.
 
 - **Not rule application:** no shipped sentence says to correct the composition, the coding manual states what each
-category means and never how often it is recognised, and the double-coded sample ships as the service's routine
-quality return with no instruction attached to it.
+category means and never how often it is recognised, and the quality procedure says how the moderation sample is
+drawn and what the moderating coder records and nothing about what to do with it; the one sentence that once
+read as a rule ("the moderating coder's category stands as the service's view of that comment") is cut, because
+executing it as substitution files work hours clash and would be a stated rule against an unstated one.
 
-- **Analyst test:** the easy route is step 5 and 6 of the default path, the share of withdrawals by coded reason, and
-it files work hours clash at 24.8 per cent. Changing the decisive step alone, to the inverted hit rates, files
-caring role at 25.0.
+- **Analyst test:** the easy route is steps 4 and 5 of the default path, the share of withdrawals by coded reason,
+and it files work hours clash at 24.4 per cent on the cut pack (`checks.py` R1). Changing the decisive step
+alone, to the reweighted composition, files caring role at 25.1 (R2 and R3).
 
 - **Estimand:** the share of the service's 2025/26 withdrawals that happened for each of the six reasons in the
 coding manual, as a percentage of all withdrawals recorded across the four terms, to one decimal place, filed in
@@ -154,6 +160,206 @@ composition ships, and no figure in the pack is reproduced only by the golden's 
 that category, so a composition read off labels ranks categories by how legible they are rather than how common,
 and that the correction needs no model, only the hit rates a re-coded sample already measures. No build on file
 teaches it: a labelled subsample calibrating a classification measures 0 of 304 cards.
+
+## Readability screen
+
+The reflex row is written from what coded-text work does with a double-coded sample, not from the rungs below
+it: the field's habitual use of one is an agreement statistic (per cent agreement, Cohen's kappa) reported beside
+the coded counts as their quality, and an agreement statistic leaves the composition where the labels put it.
+Tests: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 dedicated organ.
+
+| Rung | What fires, test by test | Verdict |
+|---|---|---|
+| 0 coded counts (work hours clash 24.4) | 3: the reflex itself, the label read as the reason, with a kappa beside it | readable |
+| 1 drop OT and renormalise (work hours clash 28.3) | 3: a common tidy-up of a catch-all | readable |
+| 2 the moderation file's own composition (Other 34.5) | 2: two reason columns on one row invite a crosstab, and its margin is the first thing a crosstab prints | readable |
+| 2b the moderator's code substituted on the moderated rows (work hours clash 24.5) | 2: the file is keyed on the withdrawal reference, so a join and a replace is one line; no sentence licenses it since the "stands as the service's view" clause is cut | readable |
+| 3 (decisive) the reasons behind each code carried onto the coded counts (caring role 25.1) | 1: no sentence names a correction, a hit rate or a weighting; the terms of reference file only the WHAT ("happened for that reason"). 2: no column carries a weight, a stratum size or a rate, and nothing in the moderation file says it is the year's composition or is not. 3: the field's reflex for a double-coded sample is agreement, which leaves the labels' composition standing. 4: no control or published figure ties under any basis. 5: the battery (duplicates, unmatched joins, key uniqueness, fan-out) finds the late-keyed repeats and the typed codes, both mess-neutral, and nothing on this step. 6: not one subtraction or ratio of a reported figure: a six-by-six table of rates has to be built and carried onto six counts. 7: the moderation return is the service's routine quality return, released every year with the extracts for a reason it independently has (the quality team reports the number moderated), so its presence says nothing about the decisive step | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative, and the call under it | Ruled out by |
+|---|---|---|---|---|
+| SF1 | "the share of the year's withdrawals that happened for that reason" | the composition of the reasons learners had | not a second reading but the easy method on the same estimand: the coded label taken as the reason, work hours clash | the terms of reference file the estimand as the share that "happened for that reason", and the quality procedure says two coders reading the same comment "do not always place it in the same category", so a label is not the reason by definition |
+| SF2 | "across all four terms of 2025/26" | T1 to T4, including the late-keyed T2 rows that sit in the spring export | the spring export read as T3 and T4 only (its header lists those two) | same call: the late-keyed rows repeat references already in the winter export (checks L1) |
+| SF3 | the denominator | every withdrawal reference once, 17,231 | the 18,846 stacked rows, repeats kept | same call, asserted (checks L1, keeping the repeats) |
+| SF4 | pooled year against term by term | one moderation return over the year, as the quality procedure draws it | a correction term by term, weighted back to the year | same call; worst divergence 0.035 points, asserted |
+| SF5 | the retired FN code | absent from every 2025/26 withdrawal | an FN row recoded under the manual's change note | same call: no row carries FN, asserted |
+| SF6 | rounding path | shares rounded once at the end; the gap from the unrounded shares | the gap from the rounded shares | same call and same figure: 25.1 less 19.4 is 5.7 either way; every share at least 0.0243 points clear of a boundary, asserted |
+| SF7 | the moderation file as the year's composition | it is a return drawn by code, every OT and 400 of each other | its own composition read as the year's (Other or not stated) | the quality procedure: "Every withdrawal coded OT is moderated ... For each of the other five codes the quality team draws 400 withdrawals at random from those carrying that code" |
+| SF8 | the unit counted | the withdrawal | the learner | same call, asserted (one withdrawal per learner in this pack's year) |
+| SF9 | the forward and the reverse form of the correction | the reasons behind each code carried onto the coded counts | the coded-given-reason rates built from the same weighted table and inverted | same figure to the last digit (C1), asserted |
+
+## Ladder
+
+Measured on the cut pack (`generator/checks.py` and the figures in `figures.json`), seed 46835, pack seed 46852.
+
+| Rung | The analysis | Names | Figure | Dies to |
+|---|---|---|---|---|
+| 0 | count the coded reasons over the four terms | work hours clash | 24.4 against caring role 19.4 | the moderation return, where 28 of every 100 moderated comments coded work hours clash belong elsewhere |
+| 1 | drop OT as uninformative and renormalise | work hours clash | 28.3 against 22.5 | the terms of reference: the six shares "together account for every withdrawal in the year" |
+| 2 | the moderation file's own composition | Other or not stated | 34.5 against caring role 19.0 | the quality procedure's draw, every OT and 400 of each other code |
+| 2b | substitute the moderator's code on the 4,416 moderated rows, keep the rest | work hours clash | 24.5 against 21.9 | the 12,815 unmoderated withdrawals keep codes the return shows are wrong at a measured rate, so the count estimates nothing about them |
+| 3 | invert coded-given-reason rates built from the unweighted moderation rows | caring role | 42.9, with Other at minus 31.4 | a negative share |
+| golden | carry the measured split of reasons behind each code onto the year's coded counts | caring role | 25.1 against work hours clash 19.4, gap 5.7 | |
+
+Rungs 0, 1, 2 and 2b each file a wrong reason; rung 3 names caring role with every figure wrong and an
+impossible share, so a response stopping there lands the pick and none of the shares. The decisive step is
+worth 5.73 points on the call's own figure. The estimator family is closed (SF4, SF9: 0.035 points at most),
+and over 2,000 resamples of the moderation return within its strata caring role leads in every one, the
+share's standard deviation 0.621 points and the gap's smallest draw 2.20 points.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | every 2025/26 withdrawal at the five centres, filed in the terms of reference | filed literally; the late-keyed repeats converge (C1) |
+| 2 Unit of account | the withdrawal | filed ("share of the year's withdrawals"); SF8 C1 |
+| 3 Attribution window | the four terms of 2025/26 | filed; no withdrawal dated outside its term |
+| 4 As-of dating | the extracts as released | static: nothing in the call changes after the year |
+| 5 Version basis | the code as recorded; manual version 4.2 in force all year | filed in the manual; FN absent (SF5) |
+| 6 Denominator | 17,231 withdrawals | filed ("of one total"); SF3 C1 |
+| 7 Weighting | the year's coded counts, the return's split within each code | records force it (SF9 C1); per-term weighting C1 (SF4) |
+| 8 Window length | one year | filed |
+| 9 Boundary inclusivity | term dates | nothing on an edge |
+| 10 Rounding path | once at the end, one decimal | filed in the prompt; SF6 asserted mid-bin |
+| 11 Tie-break | none needed | the margin is 1.293 and the gap's smallest resample 2.20 points |
+| 12 Maturity and censoring | none: the year is closed | not applicable, stated |
+| 13 Order of operations | dedupe, normalise, count, carry | commutes: asserted by the L1 block on every order |
+| 14 Row order | file order | C1: every figure is a count |
+| 15 Duplicate resolution | one row per withdrawal reference | C1: the repeats are identical rows (checks L1) |
+| 16 Identity normalisation | the withdrawal reference across both exports | the systems' own key, carried unchanged |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | counts and shares | one unit |
+| 19 Code and status semantics | the six manual codes, typed case and space normalised | the manual's code list and the code reference file |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | the terms of reference govern the review; the quality procedure governs the draw | each document's own scope, stated in its title |
+| 22 Forward window contents | the 2027 budget line funds one reason; nothing about 2027 is graded | the call faces forward on the 2025/26 composition, filed in the terms of reference |
+
+## Literal reader
+
+Executed word for word, the prompt and the terms of reference ask for the share of 2025/26 withdrawals that
+happened for each reason; the coded count answers it only if a label is the reason, which the quality procedure
+denies in its first paragraph, and every route the records license that estimates what happened (the reverse
+form, the weighted forward form, the term-by-term form) files caring role at 25.1 within 0.035 points. Where the
+text is silent (the grain of the repeats, the rounding of the gap, the unit counted) every option was computed
+and gives the same call (SF2, SF3, SF6, SF8). Pass.
+
+## Oracles
+
+- The moderation return reports its own size (4,416) and nothing derived from it: it confirms nothing on either
+  path.
+- The coding manual's change note on FN: true under every basis, ties nothing.
+- The budget workbook's line RET-01 states its value and "awaiting the review": no reason named.
+- The satisfaction workbook and the attendance return (the two distractors): no reason composition in either.
+- No published composition, no hit rate, no ranking and no corrected share ships anywhere, asserted by the leak
+  sweep at stage 3.
+- The ask layer's referee (the course catalogue's planned span) never touches the call: the call reads only the
+  two withdrawal exports and the moderation file.
+
+## Ask sheet
+
+The asks consume nothing the call's construction produces and read no file the call reads. The separation is
+asserted: zero device rows on a learner the call reads (`checks.py`, separation), and the call recomputes from
+the two withdrawal exports and the moderation file alone.
+
+- **Ask 1, planned guided hours by curriculum area (6 figures, whole hours).** H18 home: the provision behind
+  the withdrawals, which the retention lead sets the target against. Use: the head of service's curriculum
+  managers plan against hours. Primary: D6, an event's quantity on every line it covers, grain unstated: the
+  enrolment extract opens a row per term a course spans and repeats the whole course's hours on each. Hazards:
+  the cutover (below), which doubles a carried course's hours even for a response that takes hours once per
+  learner-course from the catalogue; the subcontracted delivery (structure only: a site code the directory does
+  not list). Files: enrolments, catalogue, site directory (14 columns on the path). Stops: rows summed (every
+  area over by 149,850 to 242,844 hours), hours once per learner-course on the extract's own key (over by 37,998
+  to 83,829), the golden. Realism: a student record that stores a course's hours on the course and prints them on
+  every term's enrolment row.
+- **Ask 2, learner-courses started and the share completed, by centre (10 figures).** H18 home: each centre's
+  completion, the other side of the withdrawal count. Use: the centres' managers. Primary: D7, the true key
+  elsewhere: a course running across the winter-to-spring system change was closed in the old system and
+  created again in the new one under a new course reference, same centre, area and hours; the catalogue keeps
+  both, the old one still planned over two terms. Nothing on either row links them: the new reference's
+  learners are the old one's continuing learners, every one (asserted on the shipped rows), and no other course
+  in the catalogue is in that position. A response keyed on the extract's learner number and course reference
+  counts each carried learner-course twice, once stranded as continuing at its winter centre. Hazards: the
+  mid-course transfers (the sending centre's row left open), the subcontracted rows. Stops: keyed on the
+  extract's key (every centre's started count over by 245 to 1,848, every completed share down 0.8 to 7.1
+  points), the golden. Realism: a migration that cannot carry an open course occurrence closes it and opens a
+  new one; the learners are re-enrolled onto the new reference.
+- **After the discovery there is still work, and it can be done wrong** (Part 1.0b): a response that notices the
+  25 two-term courses with no spring rows has to find the continuation by the learners it carries (centre, area
+  and hours alone do not pick one course in every case), and then attribute each linked learner-course to its
+  winter centre and its spring outcome.
+- **Ask forks, closed.** "a learner-course as one learner on one course however many terms it runs" is in the
+  asking sentence, and the catalogue's planned span is what makes a winter half without its spring half one
+  course; "our five centres" is the site directory; "started in 2025/26" is every row in the extract, whose
+  terms are all 2025/26; "planned guided hours" is the course's planned hours, the same figure on the catalogue
+  and on every row; "the learner-courses it started" is the centre of the first term's row; "the share of them
+  that completed" is a learner-course with a completed row anywhere.
+- **Main population zero-counts:** device rows on a withdrawn learner 0; on the withdrawal exports or the
+  moderation file 0 (asserted).
+- **Measured by:** generator/ceiling.py, run on the cut pack after the final rebuild (16 ask figures).
+
+| Ask figure | Golden | Cracker | Cracker verdict |
+|---|---|---|---|
+| ask 1 hours, English and maths | 832,566 | 894,354 | miss |
+| ask 1 hours, Digital skills | 734,640 | 818,469 | miss |
+| ask 1 hours, ESOL | 749,682 | 792,762 | miss |
+| ask 1 hours, Health and social care | 756,246 | 794,244 | miss |
+| ask 1 hours, Business administration | 726,420 | 788,331 | miss |
+| ask 1 hours, Construction skills | 687,663 | 751,239 | miss |
+| ask 2 started, Cassgrove | 11,468 | 12,294 | miss |
+| ask 2 started, Hollowdean Learning Hub | 12,849 | 13,094 | miss |
+| ask 2 started, Northmarket Centre | 17,228 | 18,740 | miss |
+| ask 2 started, The Lathe Street Building | 15,857 | 17,705 | miss |
+| ask 2 started, Wyebrook Adult Learning Centre | 11,749 | 12,631 | miss |
+| ask 2 completed share, Cassgrove | 64.6 | 60.3 | miss |
+| ask 2 completed share, Hollowdean Learning Hub | 64.1 | 63.3 | miss |
+| ask 2 completed share, Northmarket Centre | 65.5 | 60.1 | miss |
+| ask 2 completed share, The Lathe Street Building | 64.7 | 57.6 | miss |
+| ask 2 completed share, Wyebrook Adult Learning Centre | 63.9 | 59.6 | miss |
+
+- **Pair ceiling:** 28.5, on Part 0's weights (38, 7, 55), the cracker keeping 0 of 16 and the response off the
+  call taking the same ask path (the asks are decoupled, so Ls equals Lc by construction, not by a second count).
+- **Mirror leakage:** 0.0 per cent of ask weight.
+- **What the number rests on, stated plainly.** Every ask figure rides one discovery family. A response that
+  reconstructs the cutover keeps ask 2 whole and ask 1 too if it also takes hours once, so with the cracker
+  doing that the pair is 56.0, and with both top responses doing it 83.5. The ceiling is the Part 1.1 cracker's,
+  which runs the battery and executes the filed rules and finds no sentence, column or join that reaches the
+  cutover; the sensitivity is recorded so the portal's result can be read against it.
+
+## Leak check
+
+`leak.py --asof 2026-11-18` on the final build: REVIEW, no LEAK, four lines. The three stump-vocabulary lines are
+ruled here, in the main thread, so the reader's question 1 stays cold:
+
+- `coding_manual_2025.pdf` (service, caring, carries): harmless. The words are the manual's own ("Use this code
+  where the learner gives looking after another person"); it names no rate, no correction and no sample.
+- `quality_assurance_procedure.pdf` (service, moderation, education): harmless. The procedure names its own
+  subject, the moderation; it says how the return is drawn and what the moderating coder records, and nothing
+  about how to use it. The substitution clause that once read as a rule is cut.
+- `withdrawal_review_terms_of_reference.pdf` (service, carries, education): harmless. "carries" is the budget line
+  ("The service carries one retention budget line in 2027"); the document files the WHAT and nothing of the HOW.
+- `learner_satisfaction_2025_26.xlsx` (centre names beside numbers): sent to the reader; it is a distractor that
+  ranks centres on satisfaction, never the reasons on the decision question.
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack, 2026-10-28:
+
+- **Rule 1, the domain:** the decision turns on the composition of reasons learners had, recovered from
+  free-text codes through a double-coded return, the way coded-text work estimates a composition. Swapping in
+  another field's nouns leaves no narrative and no coder.
+- **Rule 2, two layers:** Layer 1 on the cut pack is the two export layouts, the merger's former names, 1,615
+  late-keyed winter withdrawals in both exports, 317 typed codes with case or space noise and the free text's
+  own typing; every item is asserted mess-neutral on the call (`checks.py` L1) and none carries the stump.
+  Layer 2 is the decisive step, carrying the return's split behind each code onto the coded counts.
+- **Rule 3, the banned stumps:** no plant (no copied block, no memo, no stakeholder figure); not semantics (every
+  field read correctly still files work hours clash); not rule application (no sentence says to correct, and
+  the one sentence that read as a substitution rule is cut).
+- **The test:** a strong analyst who cleans both exports, dedupes and normalises, and reads every rule correctly
+  still files work hours clash at 24.4 by counting the codes. Yes: analytical.
+- **Mess still Layer 1 only:** cleaning the data does not make the call easy (R1 holds on the cleaned counts).
+- **Card current:** stump, analyst test, driver, Layer 1 list and spine match the built pack.
 
 ## Tried and rejected
 
@@ -627,6 +833,35 @@ teaches it: a labelled subsample calibrating a classification measures 0 of 304 
   bins), and the smallest rung gap is the golden to the cheapest licensed member at 5.36 bins against a decisive step
   worth 51.46. A certified conversion consumes a level and a key and nothing else, which closes the shape in this
   cell with no fifth case.
+
+- **Architecture 8's first ask layer, rejected at a measured pair of 67.0, 2026-10-28.** Twenty figures:
+  learner-courses and planned hours by area, completion by starting centre, carry-over from each term. Once the
+  asking sentence names the learner-course unit, which determinism requires, a cracker keyed on the learner number
+  and the course reference reproduced 14 of 20 (the counts, the completion shares, the carry-over); only the hours
+  repeated on every term row held. The free figures are cut (carry-over and the per-area counts), and the ask of
+  moderated comments placed in another category is cut too, because it is computed over the call's own moderation
+  file and its six counts are most of the way to the hit rates. Replaced by the cutover device below.
+- **The moderation return drawn as 450 of every code, rejected 2026-10-28.** Its own composition named caring role
+  at 23.1 against work hours clash 13.9, so a response reading the moderation file as a sample of withdrawals
+  landed the call without the decisive step. Drawn instead as every OT and 400 of each other code, which is how a
+  quality team treats the code it learns least from, its own composition names Other or not stated at 36.0.
+- **The quality procedure's "the moderating coder's category stands as the service's view of that comment",
+  cut 2026-10-28.** Executed as written it is substitution on the moderated rows, which files work hours clash at
+  24.7: a stated rule pointing at a wrong answer beside an unstated golden method, the shape `guard.py` blocks.
+  The terms of reference's "does not recode any withdrawal" read as forbidding the correction itself, and became
+  "does not re-read or re-code the exit comments", which still rules out a response coding the comments itself.
+- **Forty-three comment strings for 17,200 withdrawals, rejected as templated, 2026-10-28.** The pools now fill
+  slots (who is cared for, which shift, which bus, which subject) with an opener, a closer and typing noise drawn
+  on their own stream, 14,284 distinct comments; the reasons and codes are drawn apart from the words so the call
+  does not move with the text.
+- **Architecture 8 spent at stage 4, 2026-10-28: the judge's SEND_BACK on Gate H3, decisive_step planted.** Every
+  graded figure reproduced and the call was DETERMINISTIC, but the judge classed the step as the client's retired
+  scaffold (planted_defect_flip, surface_read_rejection): the coded shares are a misleading reported read and the
+  call flips away from it, so "on clean, correctly coded data the task would not stump". The isolated leak reader's
+  question 6 said the same from outside ("a planted-data component", miscodings that "look injected"). The lesson
+  for the re-root: a classification's error is the record being wrong, whatever the field calls it, so a decisive
+  step that corrects reported labels is a surface-read flip; the next draw keeps every reported number right and
+  puts the difficulty in an estimand or method choice. Report `determinism_check_report_pass5.md`.
 
 ## Portal result and the diagnosis, 2026-10-27
 

@@ -27,50 +27,80 @@ def build(sim):
 
     The catalogue is the only place a course's planned hours appear once. The enrolment extract opens a row per
     term a course spans and repeats the course's whole hours on each, because the hours belong to the course.
+    A course running across the system change is closed under its old reference after its winter term and
+    created again under a new reference for its spring term, so its learners' two rows sit on two references.
     """
-    rng = np.random.default_rng(W.SEED + 13)
+    rng = np.random.default_rng(W.PACK_SEED)
     rows = sim["rows"]
+    tcodes = [t["code"] for t in W.TERMS]
+    cut = tcodes.index(W.CUTOVER_AFTER)
 
     # --- the course catalogue -------------------------------------------------------------
-    courses = []
-    cid = 0
+    planned = []
     for area in W.CURRICULUM:
         for _ in range(42):
-            cid += 1
             span = 2 if rng.random() < W.TWO_TERM_SHARE else 1
             ti = int(rng.integers(0, len(W.TERMS) - 1)) if span == 2 else int(rng.integers(0, len(W.TERMS)))
             site = W.SITES[int(rng.integers(0, len(W.SITES)))]
-            courses.append({"course_ref": "C-%04d" % cid, "curriculum_area": area,
-                            "site_code": site["code"], "planned_guided_hours": int(rng.choice([30, 45, 60, 90, 120])),
-                            "start_term": W.TERMS[ti]["code"],
-                            "terms_spanned": span})
-    by_area = {}
-    for c in courses:
-        by_area.setdefault(c["curriculum_area"], []).append(c)
+            planned.append({"curriculum_area": area, "site_code": site["code"],
+                            "planned_guided_hours": int(rng.choice(W.GUIDED_HOURS)),
+                            "start_term": tcodes[ti], "terms_spanned": span, "ord": float(rng.random())})
+    # a course across the cutover gets a second occurrence for its spring term
+    for c in list(planned):
+        if c["terms_spanned"] == 2 and tcodes.index(c["start_term"]) == cut:
+            y = dict(c, start_term=tcodes[cut + 1], terms_spanned=1, ord=float(rng.random()))
+            c["recreated_as"] = y
+            planned.append(y)
+    # references are issued in the order courses were set up, term by term, with the gaps a live system leaves
+    planned.sort(key=lambda c: (tcodes.index(c["start_term"]), c["ord"]))
+    idr = np.random.default_rng(W.PACK_SEED + 5)
+    k = 1000 + int(idr.integers(0, 400))
+    for c in planned:
+        k += 1 + int(idr.integers(0, 4))
+        c["course_ref"] = "C-%05d" % k
+    courses = [{key: c[key] for key in ("course_ref", "curriculum_area", "site_code", "planned_guided_hours",
+                                        "start_term", "terms_spanned")} for c in planned]
+    recreated = {id(c["recreated_as"]) for c in planned if "recreated_as" in c}
+    originals = [c for c in planned if id(c) not in recreated]
 
-    def term_codes(c):
-        i = [t["code"] for t in W.TERMS].index(c["start_term"])
-        return [W.TERMS[i]["code"]] + ([W.TERMS[i + 1]["code"]] if c["terms_spanned"] == 2 else [])
+    def legs(c):
+        """(term, reference) for each term the learner attends, following a cutover course to its new ref."""
+        i = tcodes.index(c["start_term"])
+        out = [(tcodes[i], c["course_ref"])]
+        if c["terms_spanned"] == 2:
+            out.append((tcodes[i + 1], c["recreated_as"]["course_ref"] if "recreated_as" in c
+                        else c["course_ref"]))
+        return out
 
-    uln = 1500000000
+    ulr = np.random.default_rng(W.PACK_SEED + 7)
+    issued = set()
+
+    def new_uln():
+        while True:
+            u = str(int(ulr.integers(1000000000, 9999999999)))
+            if u not in issued:
+                issued.add(u)
+                return u
+
     enrolments, wmeta = [], {}
 
-    # --- the withdrawals: one learner-course each, the call's own population ---------------
+    # --- the withdrawals: one learner-course each, withdrawn in its first term ---------------
+    starting = {t: [c for c in originals if c["start_term"] == t] for t in tcodes}
     for r in rows:
-        uln += 1
+        uln = new_uln()
         t = W.term(r["term"])
-        site = W.SITES[int(rng.integers(0, len(W.SITES)))]
-        cur = W.CURRICULUM[int(rng.integers(0, len(W.CURRICULUM)))]
+        pool = starting[r["term"]]
+        c = pool[int(rng.integers(0, len(pool)))]
+        site = [x for x in W.SITES if x["code"] == c["site_code"]][0]
         start = _d(t["start"]) + dt.timedelta(days=int(rng.integers(0, 10)))
         wdate = start + dt.timedelta(days=int(rng.integers(14, 70)))
         if wdate > _d(t["end"]):
             wdate = _d(t["end"])
-        wmeta[r["wid"]] = {"uln": str(uln), "site": site, "curriculum": cur,
+        wmeta[r["wid"]] = {"uln": uln, "site": site, "curriculum": c["curriculum_area"],
                            "start": start.isoformat(), "wdate": wdate.isoformat(),
-                           "local_ref": "%s/%06d" % (site["code"], (r["wid"] % 900000) + 1)}
-        c = by_area[cur][int(rng.integers(0, len(by_area[cur])))]
-        enrolments.append({"uln": str(uln), "term_code": r["term"], "site_code": site["code"],
-                           "curriculum_area": cur, "course_ref": c["course_ref"],
+                           "local_ref": "%s/%06d" % (site["code"], int(ulr.integers(10000, 999999)))}
+        enrolments.append({"uln": uln, "term_code": r["term"], "site_code": site["code"],
+                           "curriculum_area": c["curriculum_area"], "course_ref": c["course_ref"],
                            "start_date": start.isoformat(), "status": "withdrawn",
                            "guided_hours_planned": c["planned_guided_hours"]})
 
@@ -78,9 +108,9 @@ def build(sim):
     target = W.ENROLMENTS - len(enrolments)
     made = 0
     while made < target:
-        uln += 1
-        c = courses[int(rng.integers(0, len(courses)))]
-        tcs = term_codes(c)
+        uln = new_uln()
+        c = originals[int(rng.integers(0, len(originals)))]
+        lg = legs(c)
         done = rng.random() < 0.86
         site = c["site_code"]
         moved = rng.random() < W.TRANSFER_SHARE
@@ -88,18 +118,18 @@ def build(sim):
         if moved:
             cand = [x["code"] for x in W.SITES if x["code"] != site]
             other = cand[int(rng.integers(0, len(cand)))]
-        for k, tc in enumerate(tcs):
+        for k, (tc, ref) in enumerate(lg):
             t = W.term(tc)
             start = _d(t["start"]) + dt.timedelta(days=int(rng.integers(0, 10)))
             # a mid-course move leaves the sending centre's row open and closes the receiving centre's
-            if moved and len(tcs) == 2:
+            if moved and len(lg) == 2:
                 here = site if k == 0 else other
                 stat = "continuing" if k == 0 else ("completed" if done else "continuing")
             else:
                 here = site
-                stat = ("completed" if done else "continuing") if k == len(tcs) - 1 else "continuing"
-            enrolments.append({"uln": str(uln), "term_code": tc, "site_code": here,
-                               "curriculum_area": c["curriculum_area"], "course_ref": c["course_ref"],
+                stat = ("completed" if done else "continuing") if k == len(lg) - 1 else "continuing"
+            enrolments.append({"uln": uln, "term_code": tc, "site_code": here,
+                               "curriculum_area": c["curriculum_area"], "course_ref": ref,
                                "start_date": start.isoformat(), "status": stat,
                                "guided_hours_planned": c["planned_guided_hours"]})
             made += 1
@@ -109,11 +139,12 @@ def build(sim):
     # --- subcontracted delivery, outside the review's five centres -------------------------
     shares = np.array([t["share"] for t in W.TERMS]); shares = shares / shares.sum()
     for _ in range(W.SUBCONTRACT_ENROLMENTS):
-        uln += 1
+        uln = new_uln()
         t = W.TERMS[int(rng.choice(len(W.TERMS), p=shares))]
-        c = courses[int(rng.integers(0, len(courses)))]
+        pool = starting[t["code"]]
+        c = pool[int(rng.integers(0, len(pool)))]
         start = _d(t["start"]) + dt.timedelta(days=int(rng.integers(0, 10)))
-        enrolments.append({"uln": str(uln), "term_code": t["code"],
+        enrolments.append({"uln": uln, "term_code": t["code"],
                            "site_code": W.SUBCONTRACT_SITE["code"],
                            "curriculum_area": c["curriculum_area"], "course_ref": c["course_ref"],
                            "start_date": start.isoformat(),
@@ -127,6 +158,12 @@ def write(sim, enrolments, wmeta, courses):
     rng = np.random.default_rng(W.SEED + 29)
     rows = sim["rows"]
     written = []
+    # withdrawal references come off the student record's own counter, which other record types share
+    wrng = np.random.default_rng(W.SEED + 43)
+    wref, k = {}, 204000 + int(wrng.integers(0, 900))
+    for r in rows:
+        k += 1 + int(wrng.integers(0, 3))
+        wref[r["wid"]] = "WD%07d" % k
 
     def csvw(name, data, fields, sortkeys):
         data = sorted(data, key=lambda r: tuple(str(r[f]) for f in sortkeys))
@@ -138,22 +175,37 @@ def write(sim, enrolments, wmeta, courses):
         written.append((name, len(data)))
 
     # --- the withdrawal records, in two exports across the system change -----------------
+    # The old system took the reason code as typed, so a few carry a stray case or space. Winter withdrawals
+    # keyed late, after the old system had closed, were entered in the new one as well, so they come out in
+    # both exports under the same reference.
+    nrng = np.random.default_rng(W.SEED + 37)
     a, b = [], []
     for r in rows:
         m = wmeta[r["wid"]]
         site = m["site"]
+        rec_b = {"withdrawalRef": wref[r["wid"]], "localRef": m["local_ref"],
+                 "learnerUln": m["uln"], "siteCode": site["code"],
+                 "curriculumArea": m["curriculum"], "termCode": r["term"],
+                 "withdrawalDate": m["wdate"], "exitComment": r["comment"],
+                 "exitReasonCode": r["coded"]}
         if W.term(r["term"])["export"] == "A":
-            a.append({"withdrawal_ref": "WD%06d" % r["wid"], "learner_ref": m["local_ref"],
+            code = r["coded"]
+            u = nrng.random()
+            if u < 0.018:
+                code = code.lower()
+            elif u < 0.030:
+                code = code + " "
+            elif u < 0.036:
+                code = code[0] + code[1].lower()
+            a.append({"withdrawal_ref": wref[r["wid"]], "learner_ref": m["local_ref"],
                       "uln": m["uln"],
                       "centre": site["former"] or site["name"], "curriculum_area": m["curriculum"],
                       "term": W.term(r["term"])["label"], "withdrawal_date": m["wdate"],
-                      "exit_comment": r["comment"], "reason_code": r["coded"]})
+                      "exit_comment": r["comment"], "reason_code": code})
+            if r["term"] == W.CUTOVER_AFTER and m["wdate"] >= "2025-12-08" and nrng.random() < W.LATE_KEYED_SHARE:
+                b.append(rec_b)
         else:
-            b.append({"withdrawalRef": "WD%06d" % r["wid"], "localRef": m["local_ref"],
-                      "learnerUln": m["uln"], "siteCode": site["code"],
-                      "curriculumArea": m["curriculum"], "termCode": r["term"],
-                      "withdrawalDate": m["wdate"], "exitComment": r["comment"],
-                      "exitReasonCode": r["coded"]})
+            b.append(rec_b)
     csvw("withdrawals_autumn_winter_2025.csv", a,
          ["withdrawal_ref", "learner_ref", "uln", "centre", "curriculum_area", "term",
           "withdrawal_date", "exit_comment", "reason_code"], ["withdrawal_ref"])
@@ -171,7 +223,7 @@ def write(sim, enrolments, wmeta, courses):
             continue
         m = wmeta[r["wid"]]
         d = _d(W.term(r["term"])["end"]) + dt.timedelta(days=int(rng.integers(6, 26)))
-        mod.append({"withdrawal_ref": "WD%06d" % r["wid"], "term_code": r["term"],
+        mod.append({"withdrawal_ref": wref[r["wid"]], "term_code": r["term"],
                     "coded_reason": r["coded"], "moderated_reason": r["true"],
                     "moderator": W.PEOPLE["moderator"], "moderation_date": d.isoformat()})
     csvw("coding_moderation_2025_26.csv", mod,
