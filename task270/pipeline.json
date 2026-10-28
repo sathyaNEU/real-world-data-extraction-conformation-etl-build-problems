@@ -1,34 +1,34 @@
 {
  "task": "task270",
- "status": "DRAWING",
- "domain": "urban-regional-science",
+ "status": "DESIGN",
+ "domain": "sociology-demography",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-28",
- "stump": "A competent analyst replays 2026 minute by minute from the status log, credits every free engine with its own station's ten-minute reach over the road network and names Altmoor and Skirwold as the districts below three quarters; the step that lands it there is reading a free engine's cover from its station when wholetime engines spent weekday mornings and afternoons free away from it and county-town engines stood by at rural stations, so read from where the engines stood Wrenfold and Pelmarsh fall below the line and the two rural districts clear it.",
- "architecture": 10,
+ "stump": "A competent analyst closes each area's 85-and-over group on its crude 2024 to 2026 death rate and names Cobbleton, Coldwater Plains, Spraymouth and Windermoor; the step that lands it there is taking the open group's crude rate for the life table's where the cohorts reaching 85 changed in size, so with the group's exposures rebuilt age by age from the 2021 census aged with the deaths since, Saltwick Shoals and Dunesford fall below seven years and Cobbleton and Spraymouth clear it.",
+ "architecture": 11,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-28",
-  "result": "PASS (53 checks, 0 FAIL)"
+  "exit": null,
+  "date": "",
+  "result": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-28 --asof 2027-02-16 on a97cd2a3, four lines, no LEAK, each ruled harmless in the design note",
-  "reader": "one isolated read on 5dc16901: questions 1 to 4 none, question 6 analytical; its minute-start reading asserted as SF16 (same whole per cent); its realism tells fixed in the generator, no sentence under target/ or in the prompt changed"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "task271 (surface promotion: same gap objective and designation set, answered)"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (ask 3; forks on the call and ask 2)",
-  "disposition": "SEND_BACK",
-  "report": "task270/determinism_check_report.md (run 1793194046; run 1793190528 stopped by a user interrupt before any verdict)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 10 spent at stage 4 (judge SEND_BACK, Gate H rule_application: placing a free engine where the log has it is a reading of a silent standard, and filed it is executing the standard). Re-root to architecture 11 at the draw in another domain: a decisive step that stays an analytical choice once every WHAT is filed (the judge: an estimate the record must be modelled to give, never a position or record the standard can name).",
+ "resume": "Architecture 11 drawn and registered (card WARN, three repeat WARNs answered in the note). Next: stage 2, the ladder from prototype 7 (crude closure, state mix, census shares single-year and five-year, the stable-population correction on three growth windows, the census aged with the deaths), the readability screen, the semantic fork table (closed or brought to the estimates, census-night birthday split, top age, average age at death, occurrence against registration, interstate deaths, persons on combined rates, strict line), the closure table, the ask sheet and prompt.txt, to precut.py exit 0.",
  "architectures": [
   {
    "architecture": 1,
@@ -72,6 +72,11 @@
    "architecture": 10,
    "fate": "spent 2026-10-28 at stage 4 (target.zip a97cd2a3): the leak reader was clean, and the judge reproduced every figure but returned NOT_DETERMINISTIC, SEND_BACK, Gate H decisive_step rule_application: standard OFRS-RS-03 files the cover replay end to end and never says where a free engine away from base starts its drive, so the station placement (Altmoor and Skirwold) stands as a reading beside the live-location golden (Wrenfold and Pelmarsh), and filing the start position would leave the step executing the standard; Ask C's same-actuation rule and Ask A's booking clock, later-booking and role-on-the-day conventions were in no shipped file (forced only by reconciling against the log); built state at the STATUS commit recording the spend",
    "drawn": "2026-10-28"
+  },
+  {
+   "architecture": 11,
+   "fate": "",
+   "drawn": "2026-10-28"
   }
  ],
  "approved": null,
@@ -80,16 +85,7 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none: a fresh world drawn 2026-10-28 (Ostrevale Fire and Rescue Service's 2027-2031 community risk management plan)",
- "gates": {
-  "build": "2026-10-28 after the stage 4 fix pass: checks.py 82 of 82, verify.py 0 failed, two rebuilds byte-identical (15 files)",
-  "figures_check": "71 figures, 0 absent",
-  "zip_sha256": "a97cd2a30af828fece90f9012e36d40fa3539e50c840fe4a331116d86c14642e",
-  "zip_md5": "c563ffb7eaaf20603a1a12d47326c4c7",
-  "cracker": "pair 28.5 (45.0 with both on the call), mirror leakage 0.0",
-  "voice_check": "exit 0 (994 characters)",
-  "guard": "heart WARN, surface exit 0 (task271 promoted pair answered in the note)",
-  "precut": "53 checks, 0 FAIL"
- },
+ "seed": "none: a fresh world drawn 2026-10-28 (Tidewell Coast and Ranges Primary Health Network's 2028-2030 late-life frailty program)",
+ "gates": {},
  "card_registered": true
 }

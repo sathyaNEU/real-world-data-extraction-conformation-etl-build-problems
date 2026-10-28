@@ -1,115 +1,102 @@
 {
   "task": "task270",
-  "architecture": "v10 (Ostrevale Fire and Rescue Service's 2027-2031 community risk management plan: which of the county's seven districts kept a free fire engine within ten minutes of fewer than three quarters of their homes across 2026, the cover read from where each free engine stood)",
+  "architecture": "v11 (Tidewell Coast and Ranges Primary Health Network's 2028-2030 late-life frailty program: which of its twelve local government areas' residents reaching 85 could expect fewer than seven more years under their 2024-2026 death rates, the 85-and-over group's exposures rebuilt by single year of age from the 2021 census aged forward with the deaths since)",
   "drawn": "2026-10-28",
-  "slot_note": "Architecture 10, re-rooted in another domain after architecture 9 was blocked at the ship gate on an axis ban (architectures 1 to 9 in lineage). The decisive step reads each free engine's cover from where the resource log's location rows place it, minute by minute, not from its station.",
-  "domain": "urban-regional-science",
-  "subdomain": "network-analysis",
-  "client_domain": "urban-regional-science",
-  "niche": "a county council's fire and rescue service finding, for its 2027-2031 community risk management plan, which of its seven districts kept a free fire engine within ten minutes of the call (turnout included, over the road network) of fewer than three quarters of their homes across 2026, read from where each free engine stood minute by minute rather than from the stations the service's cover modelling places them at",
+  "slot_note": "Architecture 11, re-rooted in another domain after architecture 10 was sent back at stage 4 (Gate H rule_application; architectures 1 to 10 in lineage). The decisive step rebuilds each area's 85-and-over exposures by single year of age from the 2021 census aged with each cohort's deaths, and builds a complete life table, not the abridged table closed on the open group's crude death rate.",
+  "domain": "sociology-demography",
+  "subdomain": "fertility-mortality-life-table-estimation",
+  "client_domain": "sociology-demography",
+  "niche": "a primary health network setting the areas for its 2028-2030 late-life frailty program by each local government area's period life expectancy at 85, the open-ended 85-and-over group's exposures rebuilt by single year of age from the 2021 census aged forward with each birth cohort's registered deaths",
   "objective": "descriptive-distribution",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Wrenfold and Pelmarsh",
+  "answer": "Coldwater Plains, Dunesford, Saltwick Shoals and Windermoor (planned at the draw; final from figures.json)",
   "answer_source": "task270/generator/figures.json (call)",
   "gap": [
-    "objective"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G8",
-    "G3"
+    "G2",
+    "G6"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the cover standard, the mobilising system's status log and the road network correctly replays 2026 minute by minute, credits every free engine with its own station's ten-minute reach and names the two rural districts, when free wholetime engines spent weekday mornings at the training centre and afternoons on prevention visits and county-town engines stood by at rural on-call stations, so read from where the engines stood two market-town districts fall below the line and the rural two clear it.",
-  "domain_test": "Fire cover is the fire service's own planning measure, the share of homes a free engine can reach within the attendance standard over the road network with the crew's turnout added, and an engine covers from where it is, so the field reads cover from engine positions; with porters for engines and wards for homes the road network, the duty systems' turnouts and the attendance standard stop making sense.",
+  "analyst_test": "A strong analyst who takes every 2024 to 2026 death of a resident aged 85 and over by date of occurrence and usual residence, interstate registrations included, sums the estimated resident population aged 85 and over at 30 June of each year and closes the group on its crude death rate (the abridged life table's last row, years lived beyond 85 as person-years over deaths) names Cobbleton, Coldwater Plains, Spraymouth and Windermoor, when the life table's own rates on exposures rebuilt by single year from the 2021 census and each cohort's deaths name Coldwater Plains, Dunesford, Saltwick Shoals and Windermoor.",
+  "domain_test": "Life expectancy at 85 is demography's period life-table estimand, worked from age-specific death rates with the open-ended oldest group closed by its person-years; that closure on the group's crude rate is exact only where the group's age mix is the steady one its rates imply, and only a population counted by single year at a census with deaths registered by date of birth lets the group's exposures be rebuilt age by age, so a tenure or product life table, whose units' durations are recorded exactly, has no open group to close and the swap breaks.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:fire cover read from where each free engine stood rather than from its station",
+  "layer2_pattern": "own:open-ended age group closed on single-year exposures rebuilt from the census and the deaths since",
   "layer1": [
-    "the mobilising system re-sending an unchanged status four hours after an engine's last message",
-    "one-way town links and missing farm-track links in the routing network",
-    "the address register's commercial and residential classes, homes counted from residential points only",
-    "on-call bookings in local clock time against the resource log's UTC",
-    "incident records on 2011 output areas before April 2023 and on a new classification from April 2024",
-    "vehicle location reports at irregular intervals with the odd report lost"
+    "census night 10 August 2021 against estimates at 30 June",
+    "deaths registered against deaths occurred, a late-2026 death registered in 2027",
+    "usual residence coded to SA2 with a 2023 council amalgamation re-coding two areas",
+    "residents' deaths registered in other states in a separate notification file",
+    "the 2026 estimates preliminary against revised 2024 and 2025",
+    "age at death from dates of birth and death, a stated age where the date of birth is missing"
   ],
-  "stakeholder_role": "area manager for response and resilience",
-  "role_family": "operations_director",
+  "stakeholder_role": "population health planning manager",
+  "role_family": "capacity_planner",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "mobilising_resource_log_2026.csv",
-    "rows": 320050,
-    "entity": "one status message or vehicle location report from the mobilising system's resource log for a fire engine",
-    "grain": "engine x status change or location report (a minute while moving, ten minutes while stopped)",
+    "file": "death_registrations_2016_2026.csv",
+    "rows": 80000,
+    "entity": "one death registered in New South Wales, or notified from another state, of a resident of the network's region",
+    "grain": "death",
     "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "local_government",
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "England",
-    "currency": "GBP",
-    "org_type": "county council fire and rescue service",
+    "geography": "Australia (New South Wales)",
+    "currency": "AUD",
+    "org_type": "primary health network (a not-for-profit company)",
     "invented_names": [
-      "Ostrevale",
-      "Ostrevale Fire and Rescue Service",
-      "Calderstow",
-      "Tollesham",
-      "Wrenfold",
-      "Hollinbury",
-      "Pelmarsh",
-      "Altmoor",
-      "Skirwold",
-      "Brandeth",
-      "Midmere",
-      "Brinheath",
-      "Skelbury",
-      "Cauldhope",
-      "Dunmarsh",
-      "Burheath",
-      "Oakhope",
-      "Velheath",
-      "Nestmere",
-      "Thackbury",
-      "Thornstead",
-      "Fernmere",
-      "Kescombe",
-      "Foxmoor",
-      "Nedbeck",
-      "Langgarth",
-      "Ludwold",
-      "Kelmoor"
+      "Tidewell Coast and Ranges Primary Health Network",
+      "Saltwick Shoals",
+      "Dunesford",
+      "Gannetmouth",
+      "Spraymouth",
+      "Bannockvale",
+      "Coldwater Plains",
+      "Merriwold",
+      "Windermoor",
+      "Wolfram Ranges",
+      "Cobbleton",
+      "Mallowmere",
+      "Kestrelmoor"
     ],
     "people": [
-      "Valerie Leach",
-      "Declan Evans",
-      "Roger Sykes"
+      "Melanie Howard",
+      "Jack Armstrong",
+      "Julia Larson"
     ]
   },
   "deliverables": [
-    "district_fire_cover_2026.xlsx",
-    "district_fire_cover_2026.png"
+    "lga_life_expectancy_at_85_2024_2026.xlsx",
+    "lga_life_expectancy_at_85.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the share of demand points a free server can reach within a time standard, averaged over a year, where the record marks a server free wherever it stands and free servers spent part of the year away from their bases on other work or standing in at other bases; crediting each free server with its own base's reach puts that cover back where the servers had left and takes it from where they had gone.",
-  "driver_concrete": "Each of Ostrevale's seven districts' 2026 share of homes within ten minutes of a free fire engine, turnout included over the road network, averaged over every minute of the year and read from where each free engine stood in the mobilising system's resource log: wholetime engines spent weekday mornings free at the Brandeth training centre and afternoons free on prevention visits across district lines, and county-town engines stood by at rural on-call stations when those were off the run, so cover credited to each engine's own station overstates the market-town districts and understates the rural ones.",
-  "stump": "A competent analyst replays 2026 minute by minute from the status log, credits every free engine with its own station's ten-minute reach over the road network and names Altmoor and Skirwold as the districts below three quarters; the step that lands it there is reading a free engine's cover from its station when wholetime engines spent weekday mornings and afternoons free away from it and county-town engines stood by at rural stations, so read from where the engines stood Wrenfold and Pelmarsh fall below the line and the two rural districts clear it.",
+  "driver": "The decisive quantity is the expected remaining time of members past a fixed age, computed from rates in an open-ended oldest group whose crude rate gives that time only when the group's internal age mix is the steady one its own rates imply; where the cohorts reaching the group's lower bound changed in size, the group's exposures have to be rebuilt age by age from an earlier full count aged forward with the exits since, and closing the group on its crude rate overstates the time where the group is filling with younger members and understates it where it is ageing.",
+  "driver_concrete": "Each local government area's 2024 to 2026 life expectancy at 85 from a complete life table on single-year exposures rebuilt by ageing the 2021 census counts with each birth cohort's registered deaths to the estimated resident population, not from the 85-and-over group closed on its own crude death rate: the coast's 1990s retirement arrivals are crossing 85, so Saltwick Shoals' and Dunesford's 85-and-over groups are young and their crude rates understate the life table's, while Cobbleton's recent cohorts left young and Spraymouth's earlier arrivals are now in their nineties, so their groups are old and the crude rate overstates theirs.",
+  "stump": "A competent analyst closes each area's 85-and-over group on its crude 2024 to 2026 death rate and names Cobbleton, Coldwater Plains, Spraymouth and Windermoor; the step that lands it there is taking the open group's crude rate for the life table's where the cohorts reaching 85 changed in size, so with the group's exposures rebuilt age by age from the 2021 census aged with the deaths since, Saltwick Shoals and Dunesford fall below seven years and Cobbleton and Spraymouth clear it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task273": "task273 v3 reads reach through which boundary valves can actually be operated in a fixed pipe network; this build keeps the road network fixed and reads reach from where mobile servers stood, minute by minute, against the stations the status record implies",
-    "task271": "task271 v5 reads a measured level's move after an actor's events, net of the actor's own later events in the same window; this build reads a road network's reach from where mobile servers stood minute by minute. They share only the gap label and the designation_set decision type; no mechanism, file, world or word.",
-    "task458": "task458 v1 designates Medicaid counties for a prescriber loan-repayment pilot, counting a trait-defined population from claims seen only while members are enrolled (ETL); the pair shares shape 10 and the designation_set decision type and nothing of the files, world, mechanism or call: this build reads fire cover from where free engines stood"
+    "task239": "task239 reads a group-level covariance through members who each answered every component; this build closes a period life table's open age group on exposures rebuilt by single year of age, with no components, members' answers or covariance.",
+    "task264": "task264 v1 follows a price change at the unit that sets the price; this build rebuilds a population's single-year exposures inside an open age group from a census and registered deaths. They share the gap label and grain pattern and nothing of the mechanism, files or world.",
+    "task48": "task48 v2 designates buyer-seller pairs; this build designates areas by a life expectancy whose open age group is closed on rebuilt exposures. Only the gap, grain pattern and decision type repeat.",
+    "task120": "task120 v1 builds a percentile's unit from two record links; this build rebuilds age-specific exposures inside an open age group from a census aged with deaths, with no record linkage.",
+    "task269": "task269 v3 measures riders' waits against the departures serving each rider's destination; this build closes a life table's open age group on exposures rebuilt from a census and deaths. Only the gap, grain pattern and Gate G mechanism repeat."
   },
   "lineage": [
     {
@@ -382,9 +369,44 @@
       "stump": "A competent analyst computes each patient's root mean square change in negative affect between adjacent answered prompts of their 2026 fortnight, applies the collaborative's 2.0 and funds DBT skills groups in Dunnerby and Marrowcombe alone; the step that lands it there is reading the trust app's ratings, about 90 minutes apart, as the collaborative's app would, when its prompts sit three hours apart and negative affect moves further in three hours, so read at three hours Drystow, Haddersley and Cressbeck reach 30 per cent too.",
       "architecture": "v9",
       "fate": "spent 2026-10-27 at the ship gate (target.zip 71a1f378): built, leak reader clean, judge DETERMINISTIC, APPROVE, then heart BLOCK ban.pattern G13 against task139 v3, whose ship commit moved G13 to the front of its generators after this card registered; G16, the only other honest decisive pattern, opens test.same_puzzle_older, test.same_driver_older and test.own_lineage; re-checked 2026-10-28 and still BLOCK (task174 now holds G13 in the window), so the slot re-roots"
+    },
+    {
+      "domain": "urban-regional-science",
+      "subdomain": "network-analysis",
+      "niche": "a county council's fire and rescue service finding, for its 2027-2031 community risk management plan, which of its seven districts kept a free fire engine within ten minutes of the call (turnout included, over the road network) of fewer than three quarters of their homes across 2026, read from where each free engine stood minute by minute rather than from the stations the service's cover modelling places them at",
+      "objective": "descriptive-distribution",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G8",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "none",
+      "stump_strategy": "other",
+      "context_artifact": "operations_log",
+      "role_family": "operations_director",
+      "forum": "minister_or_cabinet",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "local_government",
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:fire cover read from where each free engine stood rather than from its station",
+      "driver": "The decisive quantity is the share of demand points a free server can reach within a time standard, averaged over a year, where the record marks a server free wherever it stands and free servers spent part of the year away from their bases on other work or standing in at other bases; crediting each free server with its own base's reach puts that cover back where the servers had left and takes it from where they had gone.",
+      "driver_concrete": "Each of Ostrevale's seven districts' 2026 share of homes within ten minutes of a free fire engine, turnout included over the road network, averaged over every minute of the year and read from where each free engine stood in the mobilising system's resource log: wholetime engines spent weekday mornings free at the Brandeth training centre and afternoons free on prevention visits across district lines, and county-town engines stood by at rural on-call stations when those were off the run, so cover credited to each engine's own station overstates the market-town districts and understates the rural ones.",
+      "stump": "A competent analyst replays 2026 minute by minute from the status log, credits every free engine with its own station's ten-minute reach over the road network and names Altmoor and Skirwold as the districts below three quarters; the step that lands it there is reading a free engine's cover from its station when wholetime engines spent weekday mornings and afternoons free away from it and county-town engines stood by at rural stations, so read from where the engines stood Wrenfold and Pelmarsh fall below the line and the two rural districts clear it.",
+      "answer": "Wrenfold and Pelmarsh",
+      "architecture": "v10 (Ostrevale Fire and Rescue Service 2027-2031 plan: districts whose 2026 fire cover fell below 75 per cent, read from where each free engine stood)",
+      "fate": "spent 2026-10-28 at stage 4 (target.zip a97cd2a3): the leak reader clean; the judge reproduced every figure and returned NOT_DETERMINISTIC, SEND_BACK, Gate H decisive_step rule_application: the cover standard files the replay end to end and is silent on where a free engine away from base starts its drive, so the station placement stands as a reading beside the live-location golden, and filed it leaves the step executing the standard; built state at commit 07bd926d"
     }
   ],
-  "notes": "Architecture 10 re-root, 2026-10-28, in urban-regional-science / network-analysis (Descriptive). Strategy other: cover follows a free server's position (not time_semantics, since no clock or calendar reading decides; not population_selection, since every free engine-minute counts). The availability replay that credits stations jointly (task143's lesson in other nouns) is a lower rung here, never the decisive step. Personas from guard.py names --geo england --seed 2710. Gap objective: the status log's free and committed codes are correct, and the standard scores cover, the reach from where a free engine stood; decisive pattern G8 (reachability against the count of free engines), G3 second (the free status is the record, the engine's position the operation). WARNs answered in DESIGN_NOTE.md ## Draw: repeat.gate_g, repeat.question_form, repeat.geography. Invented names re-screened against the H21 reference register before DRAWN (2026-10-28): Kelvenham, Morrowby, Tansford, Harlowden, Pennistow and Silverlade sat within two edits of, or contained, a real place (Elsenham, Barrowby, Basford, Harlow, Ennis, Silverdale) and were replaced by Calderstow, Tollesham, Wrenfold, Hollinbury, Pelmarsh and Skirwold. Stage 4 (2026-10-28): the isolated leak reader quoted nothing for questions 1 to 4 and read the deciding step as analytical; its realism tells (re-sends on the hour, six GPS speeds, whole-minute incident durations, uniform re-booking edges, one LGV date, tidy promotions, crews, establishments, populations and UPRNs) were fixed in the generator with the call and every whole-per-cent cover unchanged, and its minute-start reading asserted as SF16. Spent 2026-10-28 at stage 4: the judge's SEND_BACK, Gate H rule_application (the standard is silent on where a free engine starts its drive, so the station placement stands as a reading; filed, the step executes the standard).",
-  "registered": "2026-10-28T08:52:07Z",
-  "architecture_spent": true
+  "notes": "Architecture 11 re-root, 2026-10-28, in sociology-demography / fertility-mortality-life-table-estimation (Descriptive), drawn after architecture 10's judge SEND_BACK. Strategy composition_mix: the open group's internal age mix decides its crude rate (not population_selection, since every resident aged 85 and over counts, and not time_semantics, since no clock decides). Generators G2 (the open 85-and-over group against the single ages the life table needs) and G6 (the age mix inside the group shifted with the cohorts reaching 85); G6 is the honest secondary and is barred as the decisive pattern by task273. The related screen in task173's note (exposure bias where adjacent birth cohorts differ in size, killed on a sub-per-cent lever for deaths at 75 to 89) is answered: the open-ended group closes life expectancy at 85 on one crude rate, and the prototype (realistic old-age levels, persons' life expectancy at 85 near seven years) moved it by -0.33 to +0.75 years across the twelve areas. Names screened at the draw against an Australian register of 20,769 locality, SA2 to SA4, local government area and PHN names (H21).",
+  "architecture_spent": false,
+  "registered": "2026-10-28T15:25:06Z"
 }
