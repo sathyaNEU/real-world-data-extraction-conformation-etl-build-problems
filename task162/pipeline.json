@@ -1,30 +1,31 @@
 {
  "task": "task162",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities/asset-condition-maintenance",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
- "stump": "Scaling each Phase 3 district's 2025-26 assessed leakage by the valve's night pressure ratio raised to its N1 files the phase as meeting its contracted reduction with no find-and-fix; the step that lands it there is carrying the night reduction through every hour, when each fixed-outlet valve stands open whenever the trunk main's daytime drop takes its inlet below the setting, so the 2027-28 assessment will measure a smaller reduction and the phase falls short.",
+ "stump": "Scaling each Phase 3 district's 2025-26 assessed leakage by its valve's night pressure ratio raised to the district's N1 files the phase as meeting its contracted 0.48 Ml/d with a 0.62 Ml/d reduction and no find-and-fix; the step that lands it there is carrying the night reduction through every hour, when on weekday daytimes the paper mill's draw on the trunk main pulls the far districts' inlets below their valves' settings and the valves stand fully open, so the 2027-28 assessment, rebuilt hour by hour through the settings, measures a 0.40 Ml/d reduction, 0.08 Ml/d short, and the phase needs 2 find-and-fix gang-years.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-28",
+  "checks": "53, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (no LEAK) on target.zip a8146587, --asof 2026-11-02",
+  "reader": "2026-10-28 on 828ecbc5: no decisive-step sentence, no ranking or helper file, the deciding step an analytical choice; realism tells (flat Phase 3 counts, flat night flows, commissioning in code order) and the certificate's test points fixed in the generator; no sentence under target/ changed"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "driver 0.07 task303 (guard check at registration, WARN only)"
+  "heart": "WARN (repeat.gate_g, overuse.gate_g) 2026-10-28 on the final card",
+  "nearest": "driver 0.08 task482 v7 lineage; surface clean"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (run r2 on target.zip a8146587633b1cd3; Gate G forecasting, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical; stump power moderate; two optional pins declined in the design note's Stage 4)"
  },
  "returned": [
   {
@@ -40,9 +41,9 @@
    "commit": "none: the re-cut was judged three times on the regular checks and never resubmitted; architecture 1 spent 2026-10-28, re-rooted at the author's word"
   }
  ],
- "resume": "Architecture 2 at stage 2 (design): default path, stump sentence, readability screen, semantic fork table, ladder, closure table, literal reader, ask sheet and prompt.txt for the Phase 3 valve forecast, gate precut.py exit 0; then the new generator (the architecture 1 generator in the folder is the returned reship's and is replaced whole at stage 3).",
+ "resume": "Architecture 2 SHIPPED 2026-10-28 (target.zip a8146587633b1cd3): Phase 3 falls 0.07 Ml/d short of 0.48 with a 0.41 reduction, 2 find-and-fix gang-years; next: the author's portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

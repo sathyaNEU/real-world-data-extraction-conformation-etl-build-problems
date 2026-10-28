@@ -1,65 +1,59 @@
-# determinism-check report, task162, 2026-10-27
+# determinism-check report, task162, 2026-10-28 (run r2, target.zip sha256 a8146587633b1cd3)
 
 ## Verdict
 DETERMINISTIC
 **Disposition:** APPROVE
-**Stumping type:** mechanism: forecasting (method selection validated out of sample), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
-Thread: one general-purpose sonnet thread, medium effort, scratch /tmp/determinism-check-task162-r1/ (target.zip sha256 begins 62e91745404c). It reports it kept the order (literal_derivation.md written before graded_blocks.md was opened). Its literal derivation got the supplementary figures right and the main call wrong (6 triagers, about 700 items, position-in-cycle forecast); that is the intended easy route.
+(r1 on target.zip 828ecbc5 was superseded before a thread ran; this is the only judged pass. Thread verdict: scratchpad/determinism-check-task162-r2/verdict.md.)
 
 ## Why
-Every supplementary figure reproduces exactly from the bundle. The main call (8 triagers, about 900 items) is what a restart-wave model fitted on version_share_daily.csv, active_installs_daily.csv and the old export gives (about 875-910; ceil(/120) = 8 for any value from 841 to 960). The counting rules are filed in the runbook, working agreement and e-mail. The wave is data-native: the Windows share jumps about 24.5 points on the Wednesday after the second Tuesday every month. All three 2027 releases sit on that Tuesday.
+Executed literally, the prompt, Schedule 4, LW-LA-04 issue 6, rev C settings and the planning e-mail give one main call: replaying each hourly inlet pressure through the fixed-outlet setting (lower of recorded and setting) and rebuilding N1 and the night-day factor gives 3.22 to 2.81 Ml/d, reduction 0.41, shortfall 0.07 (0.0701), 2 gang-years. The night-ratio shortcut gives 0.63 Ml/d and 0 gang-years; the routes separate cleanly. Every Ask figure reproduced.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Unique form reports in run | 1592 (implied) | 1592 = old CSV Archive/MOVED rows; 68 bridge replay copies excluded | yes |
-| Security excluded / items | 59 / 1533 | 59 / 1533 (json security field = csv core-security) | yes |
-| 2-8 Nov no-action / closed | 109 / 319 | 109 / 319 | yes |
-| 9-15 Nov | 101 / 262 | 101 / 262 | yes |
-| 16-22 Nov | 45 / 119 | 45 / 119 | yes |
-| 23-29 Nov | 85 / 76 | 85 / 76 | yes |
-| Groups by arrival component | 451/136/109/169/468/75/70/55 | same, sum 1533 | yes |
-| Windows wave | Wed ~60%, Thu ~46% of pending, ~79% combined, ~12% ordinary day | consistent | yes |
-| Max weekly reach in record | 48% | 47-48% | yes |
-| First-use rate | 1.1 per 10,000 reaching | 1.08, r 0.98, RMSE 27 per week | yes |
-| Release-week reach 2027 | about 75% | about 72-75% | yes |
-| Busiest week forecast | about 900 | 875-910 | yes (within about 3%) |
-| Triagers | 8 | 8 | yes |
+| Phase 3 2025-26 leakage | 3.22 | 3.2211 (export Year sheet 3.2210) | yes |
+| Forecast 2027-28 | 2.81 | 2.8112 | yes |
+| Reduction / shortfall | 0.41 / 0.07 | 0.4099 / 0.0701 | yes |
+| Gang-years | 2 | ceil(0.0701/0.05)=2 | yes |
+| Night-ratio route (easy) | n/a | 2.5908, reduction 0.6303, 0 gang-years | yes |
+| Twelve districts (3dp) | NZ01 0.153 ... NZ12 0.114 | identical, all 12 | yes |
+| System input | 30.36 | 30.3619 | yes |
+| Billed unmetered | 5.61 | 5.613 | yes |
+| Real losses | 5.97 | 5.972 | yes |
+Sensitivities (proportional zone pressure, 0.1 m head loss) keep shortfall 0.065 to 0.071 and 2 gang-years.
 
 ## Competing answers that survived
-1. Replay copies (68, closed Duplicate with a link to the original) are documented in no shipped file. Counting them under "duplicates included" adds 68 items to weeks 16-22 Nov. The report form wording, the old bug number on every copy and the 1592 Archive count all point against it. Residual risk low to moderate; the golden does not state the exclusion.
-2. The 900 rounding: a lower release-week reach or no install growth gives 840-870, which could round to 800. The triager count stays 8 above 840. The margin on "900" is thin, about 3-4%.
-3. "Patch Tuesday" appears in no file; it is recoverable from the share series, and every candidate rule gives 13 Jan, 10 Feb, 10 Mar.
-None reaches a committed triager count. Items 1 and 2 touch graded figures (the replay copies the weekly cells, the rounding the 900).
+None on the main call. Residual forks on Ask 2 (all inferred from data, not filed in text), recorded for the author:
+- Dwelling count (LW-LA-04 s4 "each dwelling"; the extract's counting is not defined in shipped text). Golden counts each dwelling once (plot to address handover, each flat once). Alternatives: all records counted (NZ01 0.151), distinct supply points (0.159), plot records dropped (0.155). The thread judged the golden pinned by data (plot records without UPRN, bills starting on connection date, 345 handovers, k identical bill lines per flat supply point). Design note SF5 says Phase 3 is the same under every reading but the twelve-district asks are not; the design note deliberately declined the optional pin (Ask A's primary).
+- NZ09/NZ10 12 to 20 January 2026 exclusion (no valve log shipped; evidence is the dry NZ09 inlet and doubled NZ10 inflow). Without it NZ09 0.140, NZ10 0.152 (golden 0.146, 0.146 with the exclusion).
+- Identical assessed bill lines kept (dedup gives 5.36 and 6.22); bill_to inclusive (exclusive gives 6.00). Both pinned by the extract.
+None touches the main call.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 13 (the thread said 14; the zip lists 13) | yes |
-| Formats | 3 or more | 6 (csv, docx, eml, json, pdf, xlsx) | yes |
-| Large file | 25,000 rows or more | old tracker CSV, 29,275 rows | yes |
-| Distractors in metadata.json | 2 or more, none labelled by file name | public_bug_statistics_monthly.csv, stability_monthly.csv; names carry no label | yes |
-| Distractors unused yet weighable | yes | stability and public statistics answer their own questions; the dashboard's old basis (peak about 300, files 3) is ruled out by the runbook counting rule. The dashboard is not named in metadata | yes (see finding 3) |
-| Deliverables | 1 to 3, all in golden | 2 (xlsx, svg), both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | weekly pair, 8 groups, whole numbers, nearest 100 stated | yes |
-| Prompt shape and 25 or more criteria | identifiable, 25 or more | shape identified; about 2 + 8 + 8 + chart + 3 components, near 25; the generated rubric was not available to check | not verified |
-| Reads as real work product | yes | thread saw no authoring language | yes |
+| Files / formats / rows | 10+ / 3+ / 25,000+ | 16 / 4 (csv, xlsx, pdf, eml) / 306,523 rows | yes |
+| Distractors | 2+ named in metadata.json, none labelled by file name | customer_contacts and brackenby_mill_amr named; neither named "distractor" in a file name | yes |
+| Distractors unused yet weighty | unused by golden, ruled out by a shipped fact | contacts unused; mill AMR explains weekday inlet drop only, does not answer a graded figure | yes |
+| Deliverables | 1 to 3, all in golden, no format family | 2 (xlsx, svg), both in golden/ | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | prompt states Ml/d to 2dp, 12 districts to 3dp, gang-years whole | yes |
+| Prompt shape, rubric 25+ | identifiable, 25+ | shape in metadata (go/hold plus grid plus chart); rubric is generated downstream, not verifiable here | yes (shape); rubric not checked |
+| Not LLM-looking, goldens real | yes | thread found no tool banner or generator signature; golden realism not re-judged here | yes |
 
 ## Gate G reconciliation
-Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card and note: gate_g forecasting, stump_strategy time_semantics, decisive_rule_filed false, official_decoy false, validated_decoy false, stump class analytical. These match. No distractor carries the task: the dashboard basis gives 3, the dropped Web-compat counting gives 5, the position-in-cycle forecast gives 6, and none is a shipped answer. Note the card's strategy label "time_semantics" sits oddly beside the note's analytical class. The thread's finding is that the decisive step is method choice under a regime shift, not a field reading.
+Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_class analytical, analyst_test is the night-ratio-through-the-day route (0.63, target met), identical to the thread's competing answer. Design note stump sentence: same. Match. The thread did not name either declared distractor as the surface read carrying the task. Watch item: the rev C schedule's "AZNP after commissioning" column is the true night figure that equals the replayed night AZP and invites the easy route. The design note states it as a true night figure with no benefit stated, so it is not a wrong shipped ranking; thread did not raise it as a Gate G violation.
 
-## Gate H line
-domain: pass; layers: pass; decisive_step: analytical. Thread: release-driven first-use reports and the OS patch cycle are software-release analysis, not a backdrop. Layer 1 is the bridge outage, replay copies, UTC vs Helsinki and the dashboard basis. Layer 2 is forecasting a regime the history only partly shows. The note's Three rules agree (decisive step: build adoption from ordinary restarts plus the Patch Tuesday burst; analyst test 6 vs 8, executed in checks.py R3a/R3b). The thread did not report that the golden is reached by applying a field standard with no judgment; the 2027 regime appears in no past week, so the model choice is a judgment the data must settle, validated on the 12 Oct and 9 Nov weeks.
+Gate H reconciliation: thread domain pass, layers pass, decisive_step analytical. Design note and card (domain_test, Three rules lines present: No decoy, Not semantics, Not rule application) agree. Mismatch: none.
 
 ## Stump power (Gate F)
-Good. Position-in-cycle forecasting fits 13 of 15 releases and files about 700 / 6. Only the restart-wave model, checked on the two off-cycle releases, files 900 / 8. A solver who also misses the counting traps files 3 or 5. The restart model is the product-analytics diffusion method and a strong solver may reach it, but the 2027 regime has no record, so the route has to be reasoned out. The main thread should weigh this against the ladder.
+Thread: moderate on the main call, plus heavy independent weight in the asks (dwelling dedupe, NZ09/NZ10 exclusion, flat bills kept, calibration cut-off). One caution for the main thread: the fixed-outlet valve behavior is physical judgment, not filed, but a strong solver who asks what a fixed-outlet valve does to an already-low inlet reaches it. The note's own ladder governs; the thread did not class the step analytical merely because the golden is a standard method.
 
 ## Findings, ranked
-1. Low to moderate: the 68 replay copies are undocumented in shipped text (fork 1). The weekly 16-22 Nov cells hold only through the old-bug-number reading. The thread suggests noting the exclusion in the write-up.
-2. Low: 900 sits about 3-4% from the 800/900 boundary; the triager count is robust.
-3. Low: triage_dashboard_weekly.xlsx is a wrong-basis artifact not named in metadata.json distractors. It ranks nothing and the runbook rules it out, but the declared list and the shipped set differ.
-4. Info: the 25-criteria rubric count was not verified.
+1. None blocking.
+2. Ask 2 dwelling count rests on data inference rather than a filed sentence (design note declined the pin on purpose; it is the intended Ask device, but it is a determinism exposure on twelve gradable figures).
+3. NZ09/NZ10 exclusion rests on telemetry evidence only.
 
 ## Next action for the author
-Approve; optionally add one sentence to submission.md step 1 saying bridge replay copies (closed Duplicate, old bug number repeated) are excluded, so 1592 is not read as a miscount.
+Proceed to ship. If the portal flags a determinism finding on Ask 2, file the WHAT ("a dwelling is counted once") not the HOW.

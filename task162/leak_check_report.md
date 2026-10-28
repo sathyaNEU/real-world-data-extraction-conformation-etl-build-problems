@@ -1,17 +1,25 @@
 # leak check, task162
 
-**Verdict: REVIEW.** 13 files read, 11 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 20 golden figures and 10 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: release, restart, record, version, adoption, reports, installs, tuesday, releases, first-quarter, windows, export, restarts, calendar, install, first-use, method, thread, profile, dashboard, exposure, forward, scaled, update, window
+Stump terms swept: setting, method, factor, export, release, contract, restart, architecture, night-day, schedule, record, decisive, pressures, carried, window, outlet, settings, replayed, loggers, tuesday, target, reading, scheme, benefit, sentence
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `release_calendar_2025_2027.pdf`: 5 of 25 stump-paragraph terms appear (release, version, releases, calendar, update); read whether the document names the move
-- **REVIEW** `tracker_cutover_runbook.docx`: 5 of 25 stump-paragraph terms appear (release, record, version, reports, export); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `LW-LA-04_DMA_leakage_assessment_method.pdf`: candidate 'Cragthwaite Top' sits beside decision vocabulary: ...Road 1.18 NZ23 Thornsike Bridge 1.39 NZ07 Sorrelby End 0.91 NZ24 Brockmere Lane 1.58 NZ08 Cragthwaite Top 1.58 NZ25 Hagg Wood 1.22 LW-LA-04 issue 6 | Uncontrolled when printed Page 2 District...
+- **REVIEW** `LW-LA-04_DMA_leakage_assessment_method.pdf`: candidate 'Kestle Road' sits beside decision vocabulary: ...enfold 1.02 NZ21 Chapelrigg 1.09 NZ05 Stainmoor Ings 0.92 NZ22 Netherskell Rise 1.09 NZ06 Kestle Road 1.18 NZ23 Thornsike Bridge 1.39 NZ07 Sorrelby End 0.91 NZ24 Brockmere Lane 1.58 NZ08 Crag...
+- **REVIEW** `LW-LA-04_DMA_leakage_assessment_method.pdf`: candidate 'Sorrelby End' sits beside decision vocabulary: ...ngs 0.92 NZ22 Netherskell Rise 1.09 NZ06 Kestle Road 1.18 NZ23 Thornsike Bridge 1.39 NZ07 Sorrelby End 0.91 NZ24 Brockmere Lane 1.58 NZ08 Cragthwaite Top 1.58 NZ25 Hagg Wood 1.22 LW-LA-04 iss...
 
-## 6 ranking artifacts (INFO 1)
-- **INFO** `component_groups.xlsx`: names 3 of 4 answer-set candidates; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `LW-LA-04_DMA_leakage_assessment_method.pdf`: 9 of 25 stump-paragraph terms appear (method, factor, contract, night-day, record, carried); read whether the document names the move
+- **REVIEW** `TH-OUT-0417_calibration_certificate.pdf`: 3 of 25 stump-paragraph terms appear (method, outlet, reading); read whether the document names the move
+- **REVIEW** `outcome_contract_schedule_4_phase3.pdf`: 5 of 25 stump-paragraph terms appear (method, export, contract, schedule, target); read whether the document names the move
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Will the 22 fixed-outlet pressure reducing valves Coldbeck commissions in Lynmere Water's Northern zone by March 2027 cut the Phase 3 districts' leakage by the contracted 0.48 Ml/d in the 2027-28 assessment, and if not, "
+
+## 6 ranking artifacts (REVIEW 1, INFO 1)
+- **REVIEW** `LW-LA-04_DMA_leakage_assessment_method.pdf`: names 10 of 10 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `district_register.csv`: names 10 of 10 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -19,8 +27,6 @@ Stump terms swept: release, restart, record, version, adoption, reports, install
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
-
-## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
@@ -34,32 +40,51 @@ Stump terms swept: release, restart, record, version, adoption, reports, install
 
 ## Solver's-eye read
 
-One isolated reader (Sonnet, medium) on a fresh copy of prompt.txt and target/ (target.zip 62e91745, the determinism
-repair of 2026-10-27), never the design note, generator or submission. The stump-vocabulary sweep's REVIEW lines were
-ruled in the main thread and not handed over. Its answers, verbatim:
+One isolated reader (Sonnet, medium) on a fresh copy of prompt.txt and target/ (target.zip 828ecbc5, the stage 3
+pack), never the design note, generator, submission or report. The stump-vocabulary sweep's REVIEW lines were ruled in
+the main thread and not handed over; the answer-figure sweep's lines went over with their numbers removed. Its answers,
+in short:
 
-1. Decisive step: none stated as such. Closest, staffing_plan_q1_2027.eml: "size for the expected load in the quarter's busiest week at 120 triage items per triager-week, rounding up" (fixes the sizing rule, not the forecasting method). The method for turning the old record into the triage-item series is left to the analyst; the runbook only defines what counts.
-2. No file ranks candidates or states a forecast. triage_dashboard_weekly.xlsx gives weekly "New defects" by product, but on the old definition (excludes DUPLICATE/INVALID/WORKSFORME/MOVED, groups by current product), and its parallel-run weeks are zero. The eml says the old dashboard's number "won't line up". No figure on the main question.
-3. Helper-type files: tracker_cutover_runbook.docx (definitions of what is migrated and what counts as a triage item); triage_working_agreement.docx (definitions of triage action, closed, week, group intake); component_groups.xlsx (component-to-group mapping, a lookup register); triage_dashboard_weekly.xlsx header and notes explain its own counting. No readme, manifest or data dictionary as such.
-4. Nothing reads as the answer. The only quantities are context: "120 triage items per triager-week", the dashboard's old-definition weekly counts.
-5. Literal sentences:
-- eml: "size for the expected load in the quarter's busiest week at 120 triage items per triager-week, rounding up. Q1 ... the 13 weeks Mon 4 Jan to Sun 4 Apr, weeks Monday to Sunday, Helsinki time." Reading: forecast each of the 13 weeks, take the largest, divide by the capacity, round up.
-- runbook: "Every report filed through the report form is a triage item, duplicates included" (include duplicates). "Reports in the security group ... are not triage items. Spam caught by the form's filter never reaches the queue." (exclude security). "A report the team moves to another team's project during triage stays a triage item." (include moved). "The form takes reports from release, beta and nightly builds, and each is a triage item whatever version the reporter runs." (include all channels). "Reports filed with the Report a site issue tool go to ... WEBC ... and are not triage items." (exclude site-issue reports). "Migrated reports keep their state and are not new triage items." (exclude migrated). "A report is counted in the week it is filed." "Until the cutover the team counts from the old tracker's weekly triage export: every report filed through the form there and no other, wherever the report sits now." (count all form-filed reports on the old tracker regardless of current status or product).
-- working agreement: "A triage action is a change by one of the rota's triagers to a report's status, resolution, component or priority, or a move of the report to another team's project. The target is a triage action on every report within 24 hours of its filing." (only rota triagers' changes count, not bridge changes). "A report is closed when it is in Resolved or Closed, or sits in another team's project." "Weeks run Monday to Sunday, Helsinki time ... The parallel run's reports are those filed from 00:00 on Monday 2 November to 23:59 on Sunday 29 November." "A group's intake is the reports that arrive in its components, each report counted once, in the group of the component it comes in with; a component set in triage does not change where a report arrived." (group by the initial component; multi-group reports once).
-- component_groups.xlsx: "A report with components in more than one group is in each of those groups' queues." (this sits against the agreement's "each report counted once"; a possible tension, see 8).
-6. (a) an analytical choice, with a rule-application and data-reading layer around it: the forecast of the busiest week from the conformed old-tracker series (no filed method, in the data only), with the counting definitions all stated literally in tracker_cutover_runbook.docx. Deciding source: the eml's busiest-week sizing instruction plus the old export.
-7. Mostly realistic (Jira JSON with changelogs, Bugzilla-style CSV, dated eml, release calendar). Possibly neat: the repeated, near-identical rota rows and dashboard "New defects" formulas; the runbook sentence "so that the parallel run's duplicates had reports to link to" and the dashboard note "closed MOVED here on 30.11.2026" read as explanatory for the analyst. The dashboard's zero rows for the run weeks are an intentional tell but plausible.
-8. Yes. (i) Group intake: working_agreement says each report counted once in the group of the component it arrives with, while component_groups.xlsx says a multi-group report is in each group's queue and the working agreement says "A report that spans two areas gets both components". Readings: count once by the first/arrival component, or count in every group it touches (group counts then exceed the report total). The "arrive ... comes in with" wording probably resolves it but "which component if two arrive together" is open. (ii) "closed by the time the run ended": run end could be 29 Nov 23:59 or the 4 Dec export; the runbook says exported 4 Dec and the rota speaks of follow-up through 4 Dec, so this is arguable. (iii) "no triage action within 24 hours" for a report filed in the final hours of the run or ones migrated by the bridge: baseline is clear, little else. (iv) The "busiest week" is not stated as a forecast window but the eml supplies the 13 weeks; low risk.
+1. Decisive step: none stated. Closest context: the planning note ("take each Phase 3 district's demand and pressures in
+   each month of 2027-28 as they were recorded in the same month of 2025-26 ... with no growth. The valves are in
+   service for the whole of 2027-28 at the settings in Annette's Phase 3 schedule (rev C).") and LW-LA-04 section 7 (N1
+   "applies to the night-day factor and to any change in a district's leakage with its pressure"), a method standard
+   that does not say how to apply it.
+2. No file ranks the districts or states a 2027-28 leakage figure; the export's Year sheet is the 2025-26 baseline and
+   the valve schedule's "AZNP after commissioning (m)" is a pressure, not a leakage figure.
+3. No manifest or data dictionary; the registers and the code history are reference tables, LW-LA-04 and Schedule 4
+   governing documents.
+4. Nothing reads as the answer; the AZNP after commissioning column is the nearest thing to a handed-over intermediate.
+5. Literal sentences: Schedule 4.2 (the 22 districts, annual-figure sums, the export as baseline, 2025-26 less
+   2027-28), 4.4 (the shortfall over 0.05, rounded up), the planning note (each month as recorded, valves all year at rev
+   C, no growth), LW-LA-04 sections 2 to 7 (GMT, the 03:00 mean, 1.7 l/h a dwelling and 8.0 a non-household connected
+   that day, valid days, the factor with N1, month mean then year mean, groups summed), the valve schedule (settings
+   metres head at the outlet, where the inlet logger reads).
+6. An analytical choice: how the outlet settings translate into the zone pressures and then into leakage through each
+   district's N1 is not executed by any filed text; GMT, the bar factor, valid days, the dwelling allowance and the code
+   history are rule application around it.
+7. Realism: the export's household and non-household means constant across all twelve months for each district; the
+   monthly minimum night flow nearly flat with isolated bumps; the valve schedule's commissioning weeks two districts a
+   week in code order; the AZP point codes sequential with a random suffix (not obviously wrong).
+8. Supporting outputs: the twelve districts' figures read as closed (NZ04's two inlets by section 2, the closed-day rule
+   by section 5, the dwelling allowance by the extract's dates, units by the 10.197 factor); system input could take
+   the certificate's error by dividing by 0.986 or multiplying by 1.014, or from the test-point errors (-1.42, -1.39,
+   -1.41 per cent); billed unmetered rests on the billing basis column read consistently.
+a to c. Table C2 (district names beside N1), its listing of every district, and district_register.csv: harmless,
+   parameter and reference tables that rank nothing on the question.
 
 Main thread's ruling, one line each:
-- Q1, Q2, Q4: none. Q6: analytical. Every Q5 sentence executes to the golden's population (each is a filed WHAT).
-- Q3: the runbook, the working agreement and the component register are the organisation's own governing documents
-  and lookup; no file describes the data (the manifest and the field notes were withdrawn in this repair).
-- Q7: the runbook's trial-migration sentence and the dashboard's note on the run's weeks were in the pack the stage 4
-  reader and both portal judges read; each states an operational fact the document's genre records. Harmless.
-- Q8 (i): every one of the run's 1,533 items comes in with exactly one grouped component (asserted, SF15), so the
-  register's queue sentence and the agreement's count once give the same figures; read over later components it is
-  ruled out by "a component set in triage does not change where a report arrived". Closed.
-- Q8 (ii): the run is 2 to 29 November in the runbook's heading and the agreement's span ("to 23:59 on Sunday
-  29 November"); the 4 December export is the export's date, not the run's end. Both portal judges reproduced Ask A on
-  that reading. Closed.
+- 1 to 6: no decisive-step sentence, no ranking file, no helper file, nothing read as the answer; question 6 classes the
+  deciding step as an analytical choice, which matches the design (Gate H from outside).
+- The AZNP after commissioning column: the valve schedule's true night figure, the default path's input; kept (asserted
+  in checks.py R3c as the pack's own replay at 03:00), it states no leakage and no benefit.
+- 7, household counts flat: fixed in the generator, Phase 3 now carries single infill houses and demolitions (every
+  count reads them alike, SF5 and A9 asserted).
+- 7, night flows flat: fixed, background leakage rises through the winter and bursts are smaller and more frequent.
+- 7, commissioning weeks in code order: fixed, the crews' route, one to three valves a week, the half-term week empty.
+- 7, AZP point codes: harmless, the register's own point numbering.
+- 8, the certificate: dividing and multiplying already print every balance figure alike (B2 asserted); the test points
+  now read -1.41, -1.40 and -1.39 per cent, each inside the same corridor.
+- a to c: harmless, as the reader ruled.
+- The fixes changed no sentence under target/ (data, table values and commissioning dates only) and not the prompt's
+  question; leak.py re-run on the rebuilt pack (target.zip a8146587): REVIEW, the same three sweeps, no LEAK.

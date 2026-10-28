@@ -1,163 +1,186 @@
 {
   "task": "task162",
-  "title": "How many bug triagers a browser vendor needs for the first quarter of 2027, its first on a new tracker, when every one of the quarter's releases ships on Patch Tuesday and meets the Windows restart wave in its own release week",
-  "domain": "Product Analytics",
-  "client_domain": "Product Analytics",
-  "house_domain": "product-analytics",
-  "subdomain": "feature-adoption-diffusion-modeling (a desktop browser's releases reaching its installs: each install takes an update at its next restart and most Windows installs restart in the two days after Patch Tuesday, so a release's first-week reach and the first-use reports that follow are set by where it sits in the monthly restart cycle)",
+  "title": "Whether 22 fixed-outlet pressure reducing valves at the far end of a water company's trunk main will cut the districts' assessed leakage by the contracted reduction in 2027-28, when a paper mill's weekday shifts take the inlet pressures below the valves' settings for most of the working day, and how many find-and-fix gang-years must make up any shortfall",
+  "domain": "Energy Systems & Utilities",
+  "client_domain": "Energy Systems & Utilities",
+  "subdomain": "asset-condition-maintenance (a water network's leakage as the standing condition of its mains, assessed district by district from night flows and pressures by FAVAD, and a pressure scheme's effect on it forecast before the valves are installed)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed headcount (triagers, rounded up from the busiest week's forecast at 120 items per triager-week) with the busiest week's forecast to the nearest 100, a table of the parallel run's four weeks (triage items with no triage action within 24 hours of filing, triage items closed by the run's end), a table of the eight component groups (triage items that arrived in each group's components), and a chart of the weekly figures",
-  "as_of": "2026-12-18",
+  "prompt_shape": "a committed go or hold (whether the phase meets its contracted reduction) with the phase's forecast leakage, its reduction, the shortfall and the find-and-fix gang-years, beside a grid of the zone's twelve other districts' 2025-26 assessed leakage and the zone's 2025-26 system input, billed unmetered consumption and real losses, and a chart of the 22 Phase 3 districts",
+  "as_of": "2026-11-02",
   "deliverables": [
-    "triage_staffing_q1_2027.xlsx",
-    "parallel_run_triage.svg"
+    "phase3_leakage_forecast_2027_28.xlsx",
+    "phase3_leakage_by_district.svg"
   ],
   "distractor_files": [
-    "public_bug_statistics_monthly.csv",
-    "stability_monthly.csv",
-    "triage_dashboard_weekly.xlsx"
+    "customer_contacts_northern_2025_26.csv",
+    "brackenby_mill_amr_hourly_2025_26.csv"
   ],
   "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 13,
+    "files": 16,
     "formats": [
       "csv",
-      "docx",
       "eml",
-      "json",
       "pdf",
       "xlsx"
     ],
-    "largest_file": "old_tracker_export_20251001_20261217.csv",
-    "largest_file_rows": 29275
+    "largest_file": "northern_zone_inlet_loggers_2025_26.csv",
+    "largest_file_rows": 306523
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task162/generator/build.py (seeded, deterministic) around a fictional Tampere browser vendor, in the layouts of a Bugzilla-style CSV bug export, a Jira-style REST search export with changelogs, a public data portal's daily series, office workbooks and documents, a release calendar PDF and a mail thread; no real organisation's records or person is depicted.",
-      "date": "2026-12-18",
+      "origin": "constructed for this task by task162/generator/build.py (seeded, deterministic) around a fictional English water company and its pressure management partner, in the layouts of a telemetry archive's hourly CSV export, network and property registers, a billing extract by supply point, an assessment export workbook, a valve schedule workbook, PDF method, contract and certificate documents and an e-mail; no real organisation's records or person is depicted.",
+      "date": "2026-11-02",
       "license": "CC0-1.0 (original work)"
     }
   ],
-  "created": "2026-10-18",
+  "created": "2026-10-28",
   "generator": "task162/generator/build.py",
   "files": [
     {
-      "path": "active_installs_daily.csv",
-      "format": "csv",
-      "bytes": 29629,
-      "rows": 1329,
-      "source": "Constructed: Usva public data portal, daily active installs by platform",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "component_groups.xlsx",
-      "format": "xlsx",
-      "bytes": 7264,
-      "rows": 36,
-      "source": "Constructed: Usva triage team, component register of the Browser intake project (26 October 2026)",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "newtracker_parallel_run_export.json",
-      "format": "json",
-      "bytes": 5599085,
-      "rows": 1948,
-      "source": "Constructed: Usva new tracker, REST search export of the parallel run (projects BRW and WEBC), 4 December 2026",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "old_tracker_export_20251001_20261217.csv",
-      "format": "csv",
-      "bytes": 3584735,
-      "rows": 29275,
-      "source": "Constructed: Usva bug tracker (old tracker), saved search triage-weekly-export, reports filed 1 October 2025 to 17 December 2026",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "public_bug_statistics_monthly.csv",
-      "format": "csv",
-      "bytes": 1070,
-      "rows": 42,
-      "source": "Constructed: Usva bug statistics page, monthly reports filed by platform",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "release_calendar_2025_2027.pdf",
-      "format": "pdf",
-      "bytes": 42188,
-      "rows": null,
-      "source": "Constructed: Usva release management, release calendar 2025 to 2027 (3 December 2026)",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "stability_monthly.csv",
-      "format": "csv",
-      "bytes": 3965,
-      "rows": 114,
-      "source": "Constructed: Usva crash reporter, monthly stability by version and platform",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "staffing_plan_q1_2027.eml",
+      "path": "2027-28_planning_assumptions.eml",
       "format": "eml",
-      "bytes": 1434,
+      "bytes": 1007,
       "rows": null,
-      "source": "Constructed: Usva engineering, mail thread on first-quarter headcount (7 and 17 December 2026)",
-      "date": "2026-12-18",
+      "source": "Constructed: Lynmere Water contract manager's e-mail on the 2027-28 delivery plan's planning assumptions (19 October 2026)",
+      "date": "2026-11-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "tracker_cutover_runbook.docx",
-      "format": "docx",
-      "bytes": 11739,
+      "path": "LW-LA-04_DMA_leakage_assessment_method.pdf",
+      "format": "pdf",
+      "bytes": 45130,
       "rows": null,
-      "source": "Constructed: Usva tracker migration, cutover runbook version 1.5 (7 December 2026)",
-      "date": "2026-12-18",
+      "source": "Constructed: Lynmere Water leakage analysis, method LW-LA-04 issue 6 (effective 1 April 2025)",
+      "date": "2026-11-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "triage_dashboard_weekly.xlsx",
-      "format": "xlsx",
-      "bytes": 9479,
-      "rows": 70,
-      "source": "Constructed: Usva triage dashboard, weekly new defects by product (old tracker)",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "triage_rota_2026-11.xlsx",
-      "format": "xlsx",
-      "bytes": 7416,
-      "rows": 31,
-      "source": "Constructed: Usva triage team, rota for the parallel run and the follow-up week",
-      "date": "2026-12-18",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "triage_working_agreement.docx",
-      "format": "docx",
-      "bytes": 10628,
+      "path": "TH-OUT-0417_calibration_certificate.pdf",
+      "format": "pdf",
+      "bytes": 41228,
       "rows": null,
-      "source": "Constructed: Usva triage team, working agreement for the new tracker (28 October 2026)",
-      "date": "2026-12-18",
+      "source": "Constructed: Fenwold Flow Services, certificate of verification FFS-25-1182 for outlet meter TH-OUT-0417 (12 November 2025)",
+      "date": "2026-11-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "version_share_daily.csv",
+      "path": "billing_extract_north_2025_26.csv",
       "format": "csv",
-      "bytes": 140005,
-      "rows": 5281,
-      "source": "Constructed: Usva public data portal, daily release-channel version shares by platform",
-      "date": "2026-12-18",
+      "bytes": 7684525,
+      "rows": 152382,
+      "source": "Constructed: Lynmere Water billing, North region consumption by supply point and bill period, 2025-26 and its edges",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "brackenby_mill_amr_hourly_2025_26.csv",
+      "format": "csv",
+      "bytes": 196506,
+      "rows": 8760,
+      "source": "Constructed: Brackenby Paper Mill AMR, hourly flow on its trunk main off-take, 2025-26",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "customer_contacts_northern_2025_26.csv",
+      "format": "csv",
+      "bytes": 23519,
+      "rows": 395,
+      "source": "Constructed: Lynmere Water customer contact log, Northern zone, 2025-26",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "district_code_history.csv",
+      "format": "csv",
+      "bytes": 375,
+      "rows": 4,
+      "source": "Constructed: Lynmere Water network records, district code history",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "district_register.csv",
+      "format": "csv",
+      "bytes": 1603,
+      "rows": 34,
+      "source": "Constructed: Lynmere Water network records, Northern zone district register",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dma_leakage_assessment_phase3_2025_26.xlsx",
+      "format": "xlsx",
+      "bytes": 22034,
+      "rows": 292,
+      "source": "Constructed: Lynmere Water leakage analysis, DMA leakage assessment export for the Phase 3 districts, 14 May 2026",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "logger_register.csv",
+      "format": "csv",
+      "bytes": 4686,
+      "rows": 71,
+      "source": "Constructed: Lynmere Water telemetry, logger register for the Northern zone (serials, points, makes, units, dates)",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "northern_zone_inlet_loggers_2025_26.csv",
+      "format": "csv",
+      "bytes": 11740747,
+      "rows": 306523,
+      "source": "Constructed: Lynmere Water telemetry archive, Northern zone inlet loggers (flow and pressure), hourly means in GMT, 1 April 2025 to 31 March 2026",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "northern_zone_pressure_loggers_2025_26.csv",
+      "format": "csv",
+      "bytes": 9847562,
+      "rows": 297797,
+      "source": "Constructed: Lynmere Water telemetry archive, Northern zone average zone point loggers, hourly means in GMT, 2025-26",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "outcome_contract_schedule_4_phase3.pdf",
+      "format": "pdf",
+      "bytes": 42193,
+      "rows": null,
+      "source": "Constructed: Leakage Outcome Contract LW/LOC/2024/07, Schedule 4 for Phase 3, Variation 3 (2 September 2026)",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "phase3_prv_schedule_rev_C.xlsx",
+      "format": "xlsx",
+      "bytes": 8022,
+      "rows": 26,
+      "source": "Constructed: Coldbeck Network Partners network modelling, Phase 3 pressure reducing valve schedule rev C (9 October 2026)",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "property_extract_2026-11-02.csv",
+      "format": "csv",
+      "bytes": 3813250,
+      "rows": 63814,
+      "source": "Constructed: Lynmere Water property system, North region extract of 2 November 2026",
+      "date": "2026-11-02",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "thornholme_outlet_daily_2025_26.csv",
+      "format": "csv",
+      "bytes": 10985,
+      "rows": 365,
+      "source": "Constructed: Lynmere Water telemetry, Thornholme service reservoir outlet meter TH-OUT-0417, daily volumes",
+      "date": "2026-11-02",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]

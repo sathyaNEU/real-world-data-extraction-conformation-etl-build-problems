@@ -1,68 +1,74 @@
 {
   "answers": {
-    "ask_a": [
-      {
-        "closed": 319,
-        "no_action": 109,
-        "week": "2 to 8 Nov"
-      },
-      {
-        "closed": 262,
-        "no_action": 101,
-        "week": "9 to 15 Nov"
-      },
-      {
-        "closed": 119,
-        "no_action": 45,
-        "week": "16 to 22 Nov"
-      },
-      {
-        "closed": 76,
-        "no_action": 85,
-        "week": "23 to 29 Nov"
-      }
-    ],
-    "ask_b": {
-      "Browser Interface": 468,
-      "Developer Tools": 70,
-      "Extensions": 75,
-      "Graphics and Media": 136,
-      "Networking": 109,
-      "Platform and Updates": 55,
-      "Rendering and Layout": 451,
-      "Script and Web APIs": 169
+    "ask_a": {
+      "NZ01": "0.153",
+      "NZ02": "0.127",
+      "NZ03": "0.164",
+      "NZ04": "0.138",
+      "NZ05": "0.126",
+      "NZ06": "0.095",
+      "NZ07": "0.209",
+      "NZ08": "0.098",
+      "NZ09": "0.146",
+      "NZ10": "0.146",
+      "NZ11": "0.101",
+      "NZ12": "0.114"
     },
-    "busiest_week": "900",
-    "triagers": 8
+    "ask_b": {
+      "apparent": "0.54",
+      "billed_metered": "18.11",
+      "billed_unmetered": "5.61",
+      "real_losses": "5.97",
+      "system_input": "30.36",
+      "unbilled": "0.12"
+    }
   },
   "call": {
-    "busiest_week": "900",
-    "default_triagers": 6,
-    "rounding_step": 100,
-    "standard": 120,
-    "triagers": 8
-  },
-  "components": {
-    "record_max_reach_pct": "48",
-    "release_week_reach_pct": "75",
-    "windows_thu_pct": "46",
-    "windows_two_day_pct": "79",
-    "windows_wed_pct": "60",
-    "windows_weekday_pct": "12"
+    "base": "3.22",
+    "default_reduction": "0.63",
+    "districts": 22,
+    "forecast": "2.81",
+    "gang_years": 2,
+    "gang_yield": "0.05",
+    "meets_target": "no",
+    "reduction": "0.41",
+    "shortfall": "0.07",
+    "target": "0.48"
   },
   "steps": {
-    "default_busiest": "700",
-    "early_releases": 13,
-    "first_use_per_10000": "1.1",
-    "growth_pct": "3.9",
-    "last_year_busiest": "674",
-    "late_releases": 2,
-    "per": "10,000",
-    "profile_share_pct": "40",
-    "restart_within_pct": "15"
+    "bar_m": "10.197",
+    "cert_divisor": "0.986",
+    "cert_pct": "1.4",
+    "near_districts": 12,
+    "zone_districts": 34
   },
   "unrounded": {
-    "busiest": 912.38,
-    "sigma": 9.82
+    "ask_a": {
+      "NZ01": 0.15301,
+      "NZ02": 0.12701,
+      "NZ03": 0.16401,
+      "NZ04": 0.13798,
+      "NZ05": 0.12598,
+      "NZ06": 0.09502,
+      "NZ07": 0.209,
+      "NZ08": 0.098,
+      "NZ09": 0.14603,
+      "NZ10": 0.14598,
+      "NZ11": 0.101,
+      "NZ12": 0.114
+    },
+    "ask_b": {
+      "apparent": 0.54387,
+      "metered": 18.11144,
+      "real": 5.97213,
+      "siv": 30.36186,
+      "unbilled": 0.12145,
+      "unmeasured": 5.61297
+    },
+    "base": 3.221,
+    "default_reduction": 0.63026,
+    "forecast": 2.81117,
+    "reduction": 0.40983,
+    "shortfall": 0.07017
   }
 }

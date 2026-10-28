@@ -1,126 +1,131 @@
 {
-  "task": "task162",
-  "architecture": "v2",
-  "drawn": "2026-10-28",
-  "slot_note": "architecture 2, re-rooted 2026-10-28 at the author's word after architecture 1 (the Tampere browser vendor's first-quarter triage staffing) was spent on determinism: portal round 2 and judge passes 3 to 5 found the forecast's deciding configuration out of sample",
-  "domain": "energy-systems-utilities",
-  "subdomain": "asset-condition-maintenance",
-  "niche": "a water company's pressure management partner forecasting the leakage its third phase of fixed-outlet pressure reducing valves leaves in district metered areas at the far end of a trunk main, as the company's annual FAVAD leakage assessment will measure it in 2027-28",
-  "objective": "forecasting",
-  "shape": "02",
-  "decision_type": "go_hold_or_stop",
-  "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task162",
+ "architecture": "v2",
+ "drawn": "2026-10-28",
+ "slot_note": "architecture 2, re-rooted 2026-10-28 at the author's word after architecture 1 (the Tampere browser vendor's first-quarter triage staffing) was spent on determinism: portal round 2 and judge passes 3 to 5 found the forecast's deciding configuration out of sample",
+ "domain": "energy-systems-utilities",
+ "subdomain": "asset-condition-maintenance",
+ "niche": "a water company's pressure management partner forecasting the leakage its third phase of fixed-outlet pressure reducing valves leaves in district metered areas at the far end of a trunk main, as the company's annual FAVAD leakage assessment will measure it in 2027-28",
+ "objective": "forecasting",
+ "shape": "07",
+ "decision_type": "go_hold_or_stop",
+ "answer_unit": "rate_or_share",
+ "answer": "No: the 22 valves take Phase 3's assessed leakage from 3.22 to 2.81 Ml/d in 2027-28, a 0.41 Ml/d reduction, 0.07 Ml/d short of the contracted 0.48 Ml/d; the 2027-28 delivery plan adds 2 find-and-fix gang-years.",
+ "answer_source": "submission.md block 1; generator/figures.json (call)",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G7",
+  "G13"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "none",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "close_out_summary",
+ "stump_class": "analytical",
+ "analyst_test": "With every logger series conformed and the company's leakage assessment method, the valve schedule and the contract read correctly, the easy route takes each district's 2025-26 assessed leakage and scales it by the valve's night pressure, the average zone night pressure after over before raised to the district's N1, which carries the night reduction through every hour of the day and files the phase as meeting its contracted reduction, when each valve stands fully open whenever the trunk main's daytime drop takes its inlet below the setting, so the leakage the 2027-28 assessment will measure stays well above that figure and the phase misses.",
+ "domain_test": "The deciding quantity is the leakage the company's FAVAD assessment (net night flow times a night-day factor built from the average zone pressure) will measure once fixed-outlet valves are commissioned, which a water loss engineer forecasts by replaying each district's recorded inlet and average zone pressures through the valve's outlet setting reading by reading and rebuilding both the night flow and the night-day factor; put patients and wards in for districts and mains and there is no valve whose effect depends on an upstream pressure, no N1 and no night-day factor, so the task stops existing.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:fixed-outlet-valve-diurnal-bite",
+ "layer1": [
+  "telemetry hourly means stamped in GMT, the loggers' clock",
+  "logger swaps with new serials mid-year",
+  "pressure in bar on one logger make and metres head on the other",
+  "battery gaps and re-transmitted blocks in the telemetry archive",
+  "a retired district code still in the logger register and the property system",
+  "a district fed through its neighbour for nine days",
+  "new builds under a developer's plot record and a later address record on one supply point",
+  "flats on shared supplies, one assessed bill each",
+  "a billing extract by supply point and bill period across the year's edges",
+  "a reservoir outlet meter read low until its calibration"
+ ],
+ "stakeholder_role": "the partner's Northern zone delivery lead, who runs the zone's find-and-fix gangs",
+ "role_family": "field_unit_lead",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "northern_zone_inlet_loggers_2025_26.csv",
+  "rows": 306523,
+  "entity": "one inlet logger's hourly mean",
+  "grain": "logger x hour (GMT)",
+  "source": "constructed"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "professional_services",
+ "world": {
+  "geography": "England",
+  "currency": "GBP",
+  "org_type": "water company's pressure management and leakage delivery partner",
+  "invented_names": [
+   "Lynmere Water",
+   "Coldbeck Network Partners",
+   "Thornholme service reservoir",
+   "Thornholme to Brackenby trunk main",
+   "Northern supply zone",
+   "Brackenby Paper Mill",
+   "Fenwold Flow Services"
+  ],
+  "people": [
+   "Emily Fitzgerald",
+   "Clive Heath",
+   "Annette Patel",
+   "Louis Lee",
+   "Mandy Austin"
+  ]
+ },
+ "deliverables": [
+  "phase3_leakage_forecast_2027_28.xlsx",
+  "phase3_leakage_by_district.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "A device that holds a supply variable at a setting lowers it only in the periods when the uncapped value would exceed that setting, while the quantity that matters rises steeply with the variable and is measured through a factor built from the variable's whole cycle, so the device's effect has to be replayed reading by reading on the recorded upstream values and the factor rebuilt; carrying the effect at the period it bites hardest across every period overstates it wherever the upstream value falls below the setting for part of each cycle.",
+ "driver_concrete": "Each Phase 3 valve holds its outlet at its design setting only while its inlet pressure is above it, and at the far end of the trunk main the paper mill's weekday shifts take the inlets below the settings for much of the working day, so the leakage the 2027-28 FAVAD assessment will measure comes from replaying each day's hourly inlet and zone pressures through the settings and rebuilding the net night flow and the night-day factor, not from the night pressure ratio carried to every hour.",
+ "stump": "A competent solver scales each district's 2025-26 assessed leakage by the valve's average zone night pressure ratio raised to its N1, as if the night reduction held all day, and files the phase as meeting its contracted 0.48 Ml/d with a 0.63 Ml/d reduction and no find-and-fix, missing that on weekday daytimes the paper mill's draw takes the far districts' inlets below their settings and the valves stand open; replayed hour by hour the 2027-28 assessment measures 0.41 Ml/d, 0.07 short, and 2 gang-years are needed.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task229": "task229 publishes a daily value by passing the day's mean input through a convex rating, so its bias is Jensen's gap inside a swinging day and the remedy is reading-by-reading conversion of a measured series; here a valve caps an upstream pressure only in the readings where that pressure exceeds its setting, the forecast is of an intervention not yet installed, and averaging the replayed readings is harmless (the mean-pressure route lands), so the move is finding the readings where the cap is slack, not the order of averaging and converting.",
+  "task105": "task105 v1 is an outlet that can win only commitments agreed after it opens, a season-ahead agreement window on demand; here nothing is agreed or won, and the operating window is physical: the hours each day in which a valve's inlet sits above its outlet setting.",
+  "task170": "task170 v1 is a first passage of scattered scheduled measurements over a fixed level that moves units to another line; here no unit moves and nothing is measured against a level for eligibility: a device's effect is replayed on a recorded diurnal pressure series and fed through the company's leakage assessment.",
+  "task303": "task303 removes shared upstream losses from a unit's recorded interruptions by the minute siblings share; here no loss is attributed between units, and the upstream quantity enters only as the inlet pressure that decides when each valve can bite."
+ },
+ "lineage": [
+  {
+   "domain": "product-analytics",
+   "subdomain": "feature-adoption-diffusion-modeling",
+   "niche": "a Tampere browser vendor's bug-triage team filing its first-quarter 2027 triage headcount before the holidays, when the browser's update applies only when the browser restarts, most Windows machines restart in the two days after Microsoft's monthly Patch Tuesday, and all three of the quarter's releases (12 January, 9 February, 9 March) ship on Patch Tuesday itself, which no release in the past year did",
+   "objective": "forecasting",
+   "shape": "other",
+   "decision_type": "quantity_figure",
+   "gap": [
     "time",
     "population"
-  ],
-  "pattern": [
+   ],
+   "gate_g": "forecasting",
+   "generators": [
+    "G13",
+    "G7"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G7",
-    "G13"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "binding_constraint",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "With every logger series conformed and the company's leakage assessment method, the valve schedule and the contract read correctly, the easy route takes each district's 2025-26 assessed leakage and scales it by the valve's night pressure, the average zone night pressure after over before raised to the district's N1, which carries the night reduction through every hour of the day and files the phase as meeting its contracted reduction, when each valve stands fully open whenever the trunk main's daytime drop takes its inlet below the setting, so the leakage the 2027-28 assessment will measure stays well above that figure and the phase misses.",
-  "domain_test": "The deciding quantity is the leakage the company's FAVAD assessment (net night flow times a night-day factor built from the average zone pressure) will measure once fixed-outlet valves are commissioned, which a water loss engineer forecasts by replaying each district's recorded inlet and average zone pressures through the valve's outlet setting reading by reading and rebuilding both the night flow and the night-day factor; put patients and wards in for districts and mains and there is no valve whose effect depends on an upstream pressure, no N1 and no night-day factor, so the task stops existing.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:fixed-outlet-valve-diurnal-bite",
-  "layer1": [
-    "loggers in GMT against SCADA in local time across the clock changes",
-    "logger swaps with new serials mid-year",
-    "pressure in bar on one logger make and metres head on the other",
-    "logger elevation against the average zone point's ground level",
-    "gaps from battery failures and duplicate re-transmitted readings",
-    "a district boundary moved by a valve operation mid-year",
-    "flow in litres a second on inlet meters against cubic metres an hour in the bulk extract"
-  ],
-  "stakeholder_role": "the partner's Northern zone pressure management programme manager",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "northern_zone_telemetry_2025_26 (logger readings)",
-    "rows": 0,
-    "entity": "one logger reading",
-    "grain": "logger x 15 minutes",
-    "source": "synthetic"
-  },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "professional_services",
-  "world": {
-    "geography": "England",
-    "currency": "GBP",
-    "org_type": "water company's pressure management and leakage delivery partner",
-    "invented_names": [
-      "Lynmere Water",
-      "Coldbeck Network Partners",
-      "Thornholme service reservoir",
-      "Thornholme to Brackenby trunk main",
-      "Northern supply zone"
-    ],
-    "people": [
-      "Emily Fitzgerald",
-      "Clive Heath",
-      "Annette Patel",
-      "Louis Lee",
-      "Mandy Austin"
-    ]
-  },
-  "deliverables": [
-    "phase3_leakage_forecast_2027_28.xlsx",
-    "phase3_valve_bite.svg"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "A device that holds a supply variable at a setting lowers it only in the periods when the uncapped value would exceed that setting, while the quantity that matters rises steeply with the variable and is measured through a factor built from the variable's whole cycle, so the device's effect has to be replayed reading by reading on the recorded upstream values and the factor rebuilt; carrying the effect at the period it bites hardest across every period overstates it wherever the upstream value falls below the setting for part of each cycle.",
-  "driver_concrete": "Each Phase 3 valve holds its outlet at its design setting only while its inlet pressure is above it, and at the far end of the trunk main the morning and evening peaks take the inlet below the setting for hours each day, longer in summer, so the leakage the 2027-28 FAVAD assessment will measure comes from replaying each district's 15-minute inlet and average zone pressures through the setting and rebuilding the night flow and the night-day factor; scaling 2025-26 leakage by the night pressure ratio overstates the saving and files the contracted reduction as met.",
-  "stump": "A competent solver scales each district's 2025-26 assessed leakage by the valve's night pressure reduction raised to its N1, as if the reduction held all day, and files the phase as meeting its contracted reduction with no find-and-fix needed, missing that the valves stand open through each day's peaks so the phase falls short.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task229": "task229 publishes a daily value by passing the day's mean input through a convex rating, so its bias is Jensen's gap inside a swinging day and the remedy is reading-by-reading conversion of a measured series; here a valve caps an upstream pressure only in the readings where that pressure exceeds its setting, the forecast is of an intervention not yet installed, and averaging the replayed readings is harmless (the mean-pressure route lands), so the move is finding the readings where the cap is slack, not the order of averaging and converting.",
-    "task105": "task105 v1 is an outlet that can win only commitments agreed after it opens, a season-ahead agreement window on demand; here nothing is agreed or won, and the operating window is physical: the hours each day in which a valve's inlet sits above its outlet setting.",
-    "task170": "task170 v1 is a first passage of scattered scheduled measurements over a fixed level that moves units to another line; here no unit moves and nothing is measured against a level for eligibility: a device's effect is replayed on a recorded diurnal pressure series and fed through the company's leakage assessment.",
-    "task303": "task303 removes shared upstream losses from a unit's recorded interruptions by the minute siblings share; here no loss is attributed between units, and the upstream quantity enters only as the inlet pressure that decides when each valve can bite."
-  },
-  "lineage": [
-    {
-      "domain": "product-analytics",
-      "subdomain": "feature-adoption-diffusion-modeling",
-      "niche": "a Tampere browser vendor's bug-triage team filing its first-quarter 2027 triage headcount before the holidays, when the browser's update applies only when the browser restarts, most Windows machines restart in the two days after Microsoft's monthly Patch Tuesday, and all three of the quarter's releases (12 January, 9 February, 9 March) ship on Patch Tuesday itself, which no release in the past year did",
-      "objective": "forecasting",
-      "shape": "other",
-      "decision_type": "quantity_figure",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "gate_g": "forecasting",
-      "generators": [
-        "G13",
-        "G7"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "stump_strategy": "time_semantics",
-      "driver": "A unit takes up each new version only at its next restart, and on the dominant platform most restarts come in a two-day burst once a month on a fixed day, so the share of units that reach a version in its first week, and the reports that follow their first use, are set by whether the burst falls inside that week; every version in the forward window ships on the burst's eve, which no version in the last year did, so the record's first-week profile, its busiest weeks or a ratio taken from the last version all understate each forward release week, and only the version-by-version restart model the record supports, ordinary restarts plus the monthly burst, sets them.",
-      "driver_concrete": "The browser's update is applied when the browser restarts, and most Windows machines restart in the two days after Microsoft's Patch Tuesday, so a release that ships one or three weeks before Patch Tuesday reaches users through ordinary restarts first and meets the Windows burst later (a week later, or three weeks later and small), while a release shipped on Patch Tuesday meets the burst in its own first week; every release since autumn 2025 shipped off Patch Tuesday, and all three of the first quarter's releases ship on it, so their release weeks reach about one and a half times the usual share of users and carry the first-use reports and duplicates that follow, putting the busiest week at about 900 triage items.",
-      "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs (or the record's release-week profile, or an uplift from the last release), onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when every release since October 2025 shipped a week or two before Patch Tuesday and met the Windows restart burst only in its second or third week, while all three first-quarter releases ship on Patch Tuesday itself, so about three in four active installs reach each new version in its release week against at most about half in any recorded week, and the busiest week carries about 900 items and needs 8.",
-      "architecture": "v1",
-      "fate": "spent 2026-10-28 after the portal's round 2 (determinism: both judges competing_defensible_answer, a validated release-phase model filing 6) and judge passes 3 to 5 on the re-cut (target.zip db7f04c3, 60e4764a, c898f73f): the decisive configuration, a release shipped on Patch Tuesday, never occurs in the record, so no filed back-test over the record forces the restart model (pass 5: a count-based phase model with a Patch Tuesday term on the last 13 weeks missed 1,121 against the restart model's 1,305 to 1,395; measured in the generator at 1,185 against 1,434 with installs carried from the week before), and the restart family's own spread across defensible builds (848 to 977) exceeds the call's 120-item band; the author chose a re-root"
-    }
-  ],
-  "notes": "Task type: energy-systems-utilities / asset-condition-maintenance serves Forecasting; a water network's leakage is the condition of its mains and service pipes, and pressure management is the intervention whose effect the field forecasts by FAVAD. Strategy label: binding_constraint is the honest family, a valve setting that binds only in the readings where the inlet exceeds it; the skill's objection (a published limit applied is rule application) is answered in the design note's Three rules: the setting's level is filed, which readings it binds on is a physical consequence of the recorded inlet pressures that no shipped sentence states. Generators: G7 decisive (when can the valve physically lower the pressure), G13 beside it (the 2027-28 assessment year against the night the design report quotes). WARN repeat.gate_g and overuse.gate_g answered: forecasting is the mechanism that carries the stump here (a forward assessment of an intervention not yet installed), and the fine mechanism differs from task281's (a driver population read past its follow-up) and from every forecasting card on file (nearest driver 0.07). Org family professional_services (the company's delivery partner), not utility_or_infrastructure, which task281 holds in the window, and that is the honest seat: the partner carries the contracted reduction.",
-  "client_domain": "energy-systems-utilities",
-  "registered": "2026-10-28T04:48:39Z"
+   ],
+   "stump_strategy": "time_semantics",
+   "driver": "A unit takes up each new version only at its next restart, and on the dominant platform most restarts come in a two-day burst once a month on a fixed day, so the share of units that reach a version in its first week, and the reports that follow their first use, are set by whether the burst falls inside that week; every version in the forward window ships on the burst's eve, which no version in the last year did, so the record's first-week profile, its busiest weeks or a ratio taken from the last version all understate each forward release week, and only the version-by-version restart model the record supports, ordinary restarts plus the monthly burst, sets them.",
+   "driver_concrete": "The browser's update is applied when the browser restarts, and most Windows machines restart in the two days after Microsoft's Patch Tuesday, so a release that ships one or three weeks before Patch Tuesday reaches users through ordinary restarts first and meets the Windows burst later (a week later, or three weeks later and small), while a release shipped on Patch Tuesday meets the burst in its own first week; every release since autumn 2025 shipped off Patch Tuesday, and all three of the first quarter's releases ship on it, so their release weeks reach about one and a half times the usual share of users and carry the first-use reports and duplicates that follow, putting the busiest week at about 900 triage items.",
+   "stump": "Rebuilding the new tracker's weekly triage items from the old export and carrying last year's busiest first-quarter week, scaled for the growth in active installs (or the record's release-week profile, or an uplift from the last release), onto the quarter files 6 triagers; the step that lands it there is treating each first-quarter release week like the record's, when every release since October 2025 shipped a week or two before Patch Tuesday and met the Windows restart burst only in its second or third week, while all three first-quarter releases ship on Patch Tuesday itself, so about three in four active installs reach each new version in its release week against at most about half in any recorded week, and the busiest week carries about 900 items and needs 8.",
+   "architecture": "v1",
+   "fate": "spent 2026-10-28 after the portal's round 2 (determinism: both judges competing_defensible_answer, a validated release-phase model filing 6) and judge passes 3 to 5 on the re-cut (target.zip db7f04c3, 60e4764a, c898f73f): the decisive configuration, a release shipped on Patch Tuesday, never occurs in the record, so no filed back-test over the record forces the restart model (pass 5: a count-based phase model with a Patch Tuesday term on the last 13 weeks missed 1,121 against the restart model's 1,305 to 1,395; measured in the generator at 1,185 against 1,434 with installs carried from the week before), and the restart family's own spread across defensible builds (848 to 977) exceeds the call's 120-item band; the author chose a re-root"
+  }
+ ],
+ "notes": "Task type: energy-systems-utilities / asset-condition-maintenance serves Forecasting; a water network's leakage is the condition of its mains and service pipes, and pressure management is the intervention whose effect the field forecasts by FAVAD. Strategy label: other (an intervention's effect replayed at the hour a device acts, on recorded upstream values, rather than carried from the hour it acts hardest); binding_constraint was the first label and task177 v4 holds it in the window, and the step is not a limit deciding feasibility, so other is the honester key. Generators: G7 decisive (when can the valve physically lower the pressure), G13 beside it (the 2027-28 assessment year against the night the design report quotes). WARN repeat.gate_g and overuse.gate_g answered: forecasting is the mechanism that carries the stump here (a forward assessment of an intervention not yet installed), and the fine mechanism differs from task281's (a driver population read past its follow-up) and from every forecasting card on file (nearest driver 0.07). Org family professional_services (the company's delivery partner), not utility_or_infrastructure, which task281 holds in the window, and that is the honest seat: the partner carries the contracted reduction. Redrawn at stage 2 after the window moved (task304 and task177 v4 filed after this card): role operations_director to field_unit_lead (the partner's Northern zone delivery lead, who runs the find-and-fix gangs the call sizes, the honest seat), context artifact monitoring_export to close_out_summary (Lynmere's 2025-26 district leakage assessment is the closed year's assessment, issued after the year end). Shape 02 to 07: the call's monthly figures sit on its own population and are not graded; the criteria come from the Phase 4 candidates' grid and the zone balance. Forcing event redrawn at stage 2 from launch_or_rollout (task304 holds it) to purchase_order_or_contract (the contract's 2027-28 delivery plan instructs the gangs; task179 has left the window).",
+ "client_domain": "energy-systems-utilities",
+ "registered": "2026-10-28T04:48:39Z"
 }

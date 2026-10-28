@@ -1,50 +1,52 @@
+# task162 submission
+
 ## Tags
 
-**Domain:** Product Analytics (feature adoption and diffusion modeling: a desktop browser's releases reaching its installs, each install taking the update at its next restart and most Windows installs restarting in the two days after Patch Tuesday).
+**Domain:** Energy Systems & Utilities, asset condition and maintenance (a water network's district leakage under a pressure management scheme).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Staff the triage team with 8 triagers for the first quarter of 2027: its busiest week, a release week, is forecast at about 900 triage items.**
-All three of the quarter's releases (12 January, 9 February and 9 March) ship on Patch Tuesday, so the Windows restart wave of the Wednesday and Thursday after falls inside each release week and about 75 per cent of active installs reach the new version in it, against at most 48 per cent in any week of the record. Not last year's busiest first-quarter week scaled for install growth: that week's release shipped a week before Patch Tuesday and met the restart wave only in its second week. Not the record's release-week profile, which the two releases shipped two weeks before Patch Tuesday in autumn 2026 reject out of sample.
+**Phase 3's valves will not deliver the contracted 0.48 Ml/d in 2027-28: the delivery plan adds 2 find-and-fix gang-years.**
+Replayed hour by hour through the rev C settings, the 22 districts' assessed leakage falls from 3.22 to 2.81 Ml/d, a 0.41 Ml/d reduction, 0.07 Ml/d short. Not the night pressure ratio carried through the day (0.63 Ml/d, target met), which credits each valve with its setting in the weekday hours when the paper mill's draw on the trunk main has already taken its inlet below it.
 
 ## 2. Critical Components
 
-1. About **75 per cent** of active installs reach each first-quarter release in its release week, against at most **48 per cent** in any week of the record.
-2. About **79 per cent** of the Windows installs not yet on the newest version update in the two days after Patch Tuesday, against about **12 per cent** a day on other weekdays.
-3. The busiest week's forecast is about **900** triage items, 8 triagers at 120 items per triager-week.
+1. The Phase 3 districts' 2025-26 assessed leakage is **3.22 Ml/d** (Lynmere's export of 14 May 2026).
+2. Their forecast 2027-28 assessed leakage with the valves in service is **2.81 Ml/d**.
+3. The reduction is **0.41 Ml/d**, **0.07 Ml/d** short of the 0.48 Ml/d target.
 
 ## 3. Step-by-Step Solution
 
-1. Counted triage items per tracker_cutover_runbook.docx from old_tracker_export_20251001_20261217.csv: every report in the Monday-to-Sunday Helsinki week of its opened time, duplicates included, the core-security group out; the record's busiest weeks fall in the first two weeks after each release.
-2. Read each release's daily reach by platform from version_share_daily.csv as the rise in its major version's share over the share still on older versions: Windows installs update at about 12 per cent of those pending on an ordinary weekday and about 60 and 46 per cent on the Wednesday and Thursday after Patch Tuesday; macOS and Linux have no such days.
-3. Fitted each platform's daily triage items on its active installs (active_installs_daily.csv) plus the installs reaching the newest version over the following days: about 1.1 first-use reports for every 10,000 installs reaching a version.
-4. Out of sample, the release-week profile of the 13 releases shipped a week before Patch Tuesday missed the third weeks of the 2 releases shipped two weeks before it by more than half, while the restart model fitted on the same releases came within 15 per cent.
-5. release_calendar_2025_2027.pdf puts the quarter's releases on 12 January, 9 February and 9 March 2027, each a Patch Tuesday, so the restart wave falls inside each release week and about 75 per cent of active installs reach the version in it.
-6. Projected each platform's active installs from the same weeks a year earlier and the last eight weeks' growth of 3.9 per cent, and added the baseline and the first-use reports by week: the busiest week, a release week, comes to about 900 items.
-7. Divided by 120 and rounded up per staffing_plan_q1_2027.eml: 8 triagers.
+1. Read Schedule 4 (target 0.48 Ml/d, 0.05 Ml/d a gang-year rounded up, both years by LW-LA-04 issue 6), the planning note (each 2027-28 month as recorded in the same month of 2025-26, valves at rev C all year) and the export's Year sheet: 2025-26 leakage 3.22 Ml/d.
+2. Conformed the telemetry through logger_register.csv and district_code_history.csv (serials by their dates, bar at 10.197 m, re-sent rows once, NZ04A as NZ04) into hourly inflow, inlet pressure and average zone pressure per district and GMT day.
+3. For each Phase 3 district and valid day, passed every hourly inlet pressure through its rev C setting from phase3_prv_schedule_rev_C.xlsx (the outlet the lower of the two) and lowered the zone pressure by what the valve takes off the inlet.
+4. Scaled each day's net night flow by the replayed night zone pressure over the recorded one to the district's Table C2 N1, rebuilt the night-day factor from the replayed pressures and took LW-LA-04's months and year: 2027-28 leakage 2.81 Ml/d.
+5. Reduction 0.41 Ml/d against 0.48: shortfall 0.07 Ml/d, 2 gang-years at 0.05 Ml/d each, rounded up.
+6. Ran LW-LA-04 day by day on the zone's twelve other districts' own loggers (NZ04's two inlets summed; NZ09 and NZ10 without 12 to 20 January 2026, when NZ09's inlet was dry and BV-0910 open), allowing for each dwelling once from property_extract_2026-11-02.csv (a new build from its plot connection, its address record on the same supply point taking over; each flat on a shared supply): NZ01 0.153, NZ02 0.127, NZ03 0.164, NZ04 0.138, NZ05 0.126, NZ06 0.095, NZ07 0.209, NZ08 0.098, NZ09 0.146, NZ10 0.146, NZ11 0.101, NZ12 0.114 Ml/d.
+7. Ran section 8 on thornholme_outlet_daily_2025_26.csv (readings before 12 November 2025 divided by 0.986, certificate FFS-25-1182) and billing_extract_north_2025_26.csv (the zone's properties and NZ-TM, bills apportioned by days, every identical assessed line kept as one flat's bill): system input 30.36, billed unmetered 5.61, real losses 5.97 Ml/d.
+8. Phase 3 falls 0.07 Ml/d short of its target, so the 2027-28 delivery plan adds 2 find-and-fix gang-years.
 
 ## 4. Deliverable Answers
 
-### triage_staffing_q1_2027.xlsx
+### phase3_leakage_forecast_2027_28.xlsx
 
-1. Triagers for the first quarter of 2027: 8.
-2. Busiest week's forecast triage items, to the nearest 100: 900.
-3. Parallel run, by the week the reports were filed (Monday to Sunday, Helsinki time), whole items:
-   - 2 to 8 November 2026: 109 with no triage action within 24 hours of being filed, 319 closed by the end of the run
-   - 9 to 15 November 2026: 101 with no triage action within 24 hours of being filed, 262 closed by the end of the run
-   - 16 to 22 November 2026: 45 with no triage action within 24 hours of being filed, 119 closed by the end of the run
-   - 23 to 29 November 2026: 85 with no triage action within 24 hours of being filed, 76 closed by the end of the run
-4. The run's triage items by the component group they arrived in, whole items:
-   - Rendering and Layout: 451
-   - Graphics and Media: 136
-   - Networking: 109
-   - Script and Web APIs: 169
-   - Browser Interface: 468
-   - Extensions: 75
-   - Developer Tools: 70
-   - Platform and Updates: 55
+1. Phase 3 in 2027-28: forecast leakage 2.81 Ml/d, reduction 0.41 Ml/d, shortfall 0.07 Ml/d against the contracted 0.48 Ml/d, 2 find-and-fix gang-years.
+2. The zone's twelve other districts' 2025-26 assessed leakage, Ml/d to three decimals:
+   - NZ01 Orlesby Village: 0.153
+   - NZ02 Kessington Lane: 0.127
+   - NZ03 Halverby Park: 0.164
+   - NZ04 Wrenfold: 0.138
+   - NZ05 Stainmoor Ings: 0.126
+   - NZ06 Kestle Road: 0.095
+   - NZ07 Sorrelby End: 0.209
+   - NZ08 Cragthwaite Top: 0.098
+   - NZ09 Linmere Green: 0.146
+   - NZ10 Barrowside: 0.146
+   - NZ11 Old Mill Fields: 0.101
+   - NZ12 Ravens Clough: 0.114
+3. The Northern zone's 2025-26 top-down balance: system input 30.36 Ml/d, billed unmetered consumption 5.61 Ml/d, real losses 5.97 Ml/d.
 
-### parallel_run_triage.svg
+### phase3_leakage_by_district.svg
 
-5. Grouped bar chart titled "Parallel run on the new tracker, 2 to 29 November 2026", one pair of labelled bars per week: the items with no triage action within 24 hours of filing and the items closed by the end of the run.
+4. Dumbbell chart of the 22 Phase 3 districts, NZ13 to NZ34 in order along the trunk main, each district's 2025-26 assessed leakage beside its forecast 2027-28 leakage, the phase's 3.22 and 2.81 Ml/d in the subtitle.

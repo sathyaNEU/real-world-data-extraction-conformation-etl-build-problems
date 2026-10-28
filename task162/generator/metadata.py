@@ -7,25 +7,32 @@ import docs as DOC
 import records as R
 
 SOURCES = {
-    R.F_EXPORT: "Usva bug tracker (old tracker), saved search triage-weekly-export, reports filed 1 October 2025 to "
-                "17 December 2026",
-    R.F_SHARES: "Usva public data portal, daily release-channel version shares by platform",
-    R.F_INSTALLS: "Usva public data portal, daily active installs by platform",
-    R.F_DASH: "Usva triage dashboard, weekly new defects by product (old tracker)",
-    R.F_PUBLIC: "Usva bug statistics page, monthly reports filed by platform",
-    R.F_STABILITY: "Usva crash reporter, monthly stability by version and platform",
-    R.F_NEWEXPORT: "Usva new tracker, REST search export of the parallel run (projects BRW and WEBC), 4 December 2026",
-    R.F_GROUPS: "Usva triage team, component register of the Browser intake project (26 October 2026)",
-    R.F_ROTA: "Usva triage team, rota for the parallel run and the follow-up week",
-    DOC.F_THREAD: "Usva engineering, mail thread on first-quarter headcount (7 and 17 December 2026)",
-    DOC.F_RUNBOOK: "Usva tracker migration, cutover runbook version 1.5 (7 December 2026)",
-    DOC.F_AGREEMENT: "Usva triage team, working agreement for the new tracker (28 October 2026)",
-    DOC.F_CALENDAR: "Usva release management, release calendar 2025 to 2027 (3 December 2026)",
+    R.F_INLET: "Lynmere Water telemetry archive, Northern zone inlet loggers (flow and pressure), hourly means in GMT, "
+               "1 April 2025 to 31 March 2026",
+    R.F_ZONE: "Lynmere Water telemetry archive, Northern zone average zone point loggers, hourly means in GMT, 2025-26",
+    R.F_LOGGERS: "Lynmere Water telemetry, logger register for the Northern zone (serials, points, makes, units, dates)",
+    R.F_DISTRICTS: "Lynmere Water network records, Northern zone district register",
+    R.F_CODES: "Lynmere Water network records, district code history",
+    R.F_PROPS: "Lynmere Water property system, North region extract of 2 November 2026",
+    R.F_BILLS: "Lynmere Water billing, North region consumption by supply point and bill period, 2025-26 and its edges",
+    R.F_OUTLET: "Lynmere Water telemetry, Thornholme service reservoir outlet meter TH-OUT-0417, daily volumes",
+    R.F_EXPORT: "Lynmere Water leakage analysis, DMA leakage assessment export for the Phase 3 districts, 14 May 2026",
+    R.F_CONTACTS: "Lynmere Water customer contact log, Northern zone, 2025-26",
+    R.F_MILL: "Brackenby Paper Mill AMR, hourly flow on its trunk main off-take, 2025-26",
+    DOC.F_METHOD: "Lynmere Water leakage analysis, method LW-LA-04 issue 6 (effective 1 April 2025)",
+    DOC.F_SCHEDULE: "Leakage Outcome Contract LW/LOC/2024/07, Schedule 4 for Phase 3, Variation 3 (2 September 2026)",
+    DOC.F_NOTE: "Lynmere Water contract manager's e-mail on the 2027-28 delivery plan's planning assumptions "
+                "(19 October 2026)",
+    DOC.F_VALVES: "Coldbeck Network Partners network modelling, Phase 3 pressure reducing valve schedule rev C "
+                  "(9 October 2026)",
+    DOC.F_CERT: "Fenwold Flow Services, certificate of verification FFS-25-1182 for outlet meter TH-OUT-0417 "
+                "(12 November 2025)",
 }
-DISTRACTORS = [R.F_PUBLIC, R.F_STABILITY, R.F_DASH]
-TITLE = ("How many bug triagers a browser vendor needs for the first quarter of 2027, its first on a new tracker, "
-         "when every one of the quarter's releases ships on Patch Tuesday and meets the Windows restart wave in its "
-         "own release week")
+DISTRACTORS = [R.F_CONTACTS, R.F_MILL]
+TITLE = ("Whether 22 fixed-outlet pressure reducing valves at the far end of a water company's trunk main will cut "
+         "the districts' assessed leakage by the contracted reduction in 2027-28, when a paper mill's weekday shifts "
+         "take the inlet pressures below the valves' settings for most of the working day, and how many find-and-fix "
+         "gang-years must make up any shortfall")
 
 
 def rows_of(path):
@@ -38,39 +45,33 @@ def rows_of(path):
         n = sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
         wb.close()
         return n
-    if path.endswith(".json"):
-        with open(path, encoding="utf-8") as fh:
-            return len(json.load(fh)["issues"])
     return None
 
 
-def write(task_dir, n=None):
+def write(task_dir):
     target = os.path.join(task_dir, "target")
     out = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
         out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                    "source": "Constructed: " + SOURCES[f], "date": "2026-12-18",
+                    "source": "Constructed: " + SOURCES[f], "date": "2026-11-02",
                     "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task162",
         "title": TITLE,
-        "domain": "Product Analytics",
-        "client_domain": "Product Analytics",
-        "house_domain": "product-analytics",
-        "subdomain": "feature-adoption-diffusion-modeling (a desktop browser's releases reaching its installs: each "
-                     "install takes an update at its next restart and most Windows installs restart in the two days "
-                     "after Patch Tuesday, so a release's first-week reach and the first-use reports that follow are "
-                     "set by where it sits in the monthly restart cycle)",
+        "domain": "Energy Systems & Utilities",
+        "client_domain": "Energy Systems & Utilities",
+        "subdomain": "asset-condition-maintenance (a water network's leakage as the standing condition of its mains, "
+                     "assessed district by district from night flows and pressures by FAVAD, and a pressure scheme's "
+                     "effect on it forecast before the valves are installed)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed headcount (triagers, rounded up from the busiest week's forecast at 120 items per "
-                        "triager-week) with the busiest week's forecast to the nearest 100, a table of the parallel "
-                        "run's four weeks (triage items with no triage action within 24 hours of filing, triage items "
-                        "closed by the run's end), a table of the eight component groups (triage items that arrived in "
-                        "each group's components), and a chart of the weekly figures",
-        "as_of": "2026-12-18",
-        "deliverables": ["triage_staffing_q1_2027.xlsx", "parallel_run_triage.svg"],
+        "prompt_shape": "a committed go or hold (whether the phase meets its contracted reduction) with the phase's "
+                        "forecast leakage, its reduction, the shortfall and the find-and-fix gang-years, beside a grid "
+                        "of the zone's twelve other districts' 2025-26 assessed leakage and the zone's 2025-26 system input, "
+                        "billed unmetered consumption and real losses, and a chart of the 22 Phase 3 districts",
+        "as_of": "2026-11-02",
+        "deliverables": ["phase3_leakage_forecast_2027_28.xlsx", "phase3_leakage_by_district.svg"],
         "distractor_files": DISTRACTORS,
         "field_terms": [],
         "stated_inputs": [],
@@ -78,12 +79,13 @@ def write(task_dir, n=None):
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "constructed for this task by task162/generator/build.py (seeded, deterministic) around "
-                               "a fictional Tampere browser vendor, in the layouts of a Bugzilla-style CSV bug export, "
-                               "a Jira-style REST search export with changelogs, a public data portal's daily series, "
-                               "office workbooks and documents, a release calendar PDF and a mail thread; no real "
-                               "organisation's records or person is depicted.",
-                     "date": "2026-12-18", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-18",
+                               "a fictional English water company and its pressure management partner, in the layouts "
+                               "of a telemetry archive's hourly CSV export, network and property registers, a billing "
+                               "extract by supply point, an assessment export workbook, a valve schedule workbook, "
+                               "PDF method, contract and certificate documents and an e-mail; no real organisation's "
+                               "records or person is depicted.",
+                     "date": "2026-11-02", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-28",
         "generator": "task162/generator/build.py",
         "files": out,
     }

@@ -1,592 +1,401 @@
-"""task162 data files cut from the truth: the old tracker's export, the public data portal's daily version shares and
-daily active installs, the old triage dashboard, the public bug statistics, the stability series, the new tracker's
-parallel-run export, the component-group register and the triage rota."""
+"""task162 records: what Lynmere's systems export, built from the truth in world.py.
+
+The telemetry is Lynmere's hourly-mean archive for the zone's loggers (GMT, the loggers' own clock): inlet loggers
+carry flow and pressure, zone loggers the average zone pressure. Two logger makes are in service: the Halcyon HL-4
+reports pressure in metres head, the Vexmet DP2 in bar. Loggers are swapped when they fail; the register dates each
+serial's service. Batteries die and leave gaps; the archive's re-sends repeat whole blocks of rows."""
 from __future__ import annotations
 
 import datetime as dt
-import math
-import re
 
 import numpy as np
 
 import common as K
-import parallel as PR
 import world as W
 
-F_EXPORT = "old_tracker_export_20251001_20261217.csv"
-F_SHARES = "version_share_daily.csv"
-F_INSTALLS = "active_installs_daily.csv"
-F_DASH = "triage_dashboard_weekly.xlsx"
-F_PUBLIC = "public_bug_statistics_monthly.csv"
-F_STABILITY = "stability_monthly.csv"
-F_NEWEXPORT = "newtracker_parallel_run_export.json"
-F_GROUPS = "component_groups.xlsx"
-F_ROTA = "triage_rota_2026-11.xlsx"
+BAR = 10.197      # metres head per bar
 
-EXPORT_COLS = ["bug_id", "opened", "changeddate", "product", "component", "version", "op_sys", "bug_severity",
-               "bug_status", "resolution", "dupe_of", "groups", "keywords"]
-SHARE_COLS = ["date", "platform", "version", "share_pct"]
-INSTALL_COLS = ["date", "platform", "active_installs_thousands"]
-PUBLIC_COLS = ["month", "platform", "reports_filed", "reports_per_100k_active_installs"]
-STABILITY_COLS = ["month", "platform", "version", "usage_hours_millions", "crash_reports", "crashes_per_1000_hours"]
-PULL = K.PULL
-BULK_CLOSE = dt.datetime(2026, 11, 30, 9, 14, 0)
-ARCHIVE = ("Archive", "Parallel run 2026-11")
+F_INLET = "northern_zone_inlet_loggers_2025_26.csv"
+F_ZONE = "northern_zone_pressure_loggers_2025_26.csv"
+F_LOGGERS = "logger_register.csv"
+F_DISTRICTS = "district_register.csv"
+F_CODES = "district_code_history.csv"
+F_PROPS = "property_extract_2026-11-02.csv"
+F_BILLS = "billing_extract_north_2025_26.csv"
+F_OUTLET = "thornholme_outlet_daily_2025_26.csv"
+F_EXPORT = "dma_leakage_assessment_phase3_2025_26.xlsx"
+F_CONTACTS = "customer_contacts_northern_2025_26.csv"
+F_MILL = "brackenby_mill_amr_hourly_2025_26.csv"
+
+INLET_COLS = ["logger_serial", "reading_time_gmt", "flow_l_s", "pressure"]
+ZONE_COLS = ["logger_serial", "reading_time_gmt", "pressure"]
+LOGGER_COLS = ["logger_serial", "district_code", "point", "make", "pressure_unit", "installed", "removed"]
+DISTRICT_COLS = ["district_code", "district_name", "mains_km", "boundary_valves", "inlets", "azp_point"]
+CODE_COLS = ["old_code", "current_code", "effective", "reason"]
+PROP_COLS = ["property_ref", "uprn", "district_code", "property_class", "supply_point_ref", "charging_basis",
+             "connected", "disconnected"]
+BILL_COLS = ["supply_point_ref", "bill_from", "bill_to", "volume_m3", "basis", "read_type"]
+OUTLET_COLS = ["date", "outlet_volume_ml", "meter_serial"]
+CONTACT_COLS = ["contact_ref", "received", "district_code", "category", "outcome"]
+MILL_COLS = ["reading_time_gmt", "flow_l_s"]
+
+MAKES = {"HL4": ("Halcyon HL-4", "m"), "DP2": ("Vexmet DP2", "bar")}
 
 
-def fmt(t):
-    """A Helsinki local time the way the old tracker's CSV writer prints it, with its UTC offset (+0300 in summer time,
-    +0200 in winter; the repeated hour of the October change read as summer time, as K.to_utc reads it)."""
-    off = round((t - K.to_utc(t)).total_seconds() / 3600)
-    return t.strftime("%Y-%m-%d %H:%M:%S") + " +%02d00" % off
+def stamp(t):
+    return t.strftime("%Y-%m-%d %H:%M")
 
 
-def old_states(T, reps):
-    """Each exported report's state on the old tracker at the pull: component, status, resolution, dupe_of and last
-    change. The parallel run's reports were worked on the new tracker and closed MOVED in bulk on 30 November."""
-    r = K.rng("old_states")
+# ------------------------------------------------------------------------------------------------- the logger fleet
+def fleet(T):
+    """Every logger serial with its district, point, make and service dates. Swaps: NZ20's inlet logger (Phase 3) on
+    14 April 2025 and NZ03's zone logger on 9 December 2025 (to the bar make). The bar make also runs at NZ02's and
+    NZ08's inlets and at NZ06's and NZ11's average zone points; every Phase 3 logger reads metres head."""
+    r = K.rng("fleet")
     out = []
-    run_a = PR.RUN_FROM
-    run_b = PR.RUN_TO
-    for x in reps:
-        if x["kind"] not in ("baseline", "first_use"):
-            continue
-        d = x["opened"].date()
-        if d < K.RECORD_START or d > K.AS_OF:
-            continue
-        s = dict(x)
-        filed = x["opened"]
-        default = PR.form_default(x["product"], x["component"])
-        triage_at = filed + dt.timedelta(hours=float(r.lognormal(math.log(14), 0.9)))
-        if run_a <= filed < run_b:
-            # closed MOVED in bulk after the run and moved to the archive product
-            s["component_now"] = ARCHIVE
-            s["status"], s["resolution"], s["dupe"] = "RESOLVED", "MOVED", None
-            s["changed"] = BULK_CLOSE + dt.timedelta(seconds=int((x["bug_id"] % 97) * 3 + r.integers(0, 3)))
-            s["keywords"] = ""
-            out.append(s)
-            continue
-        comp = (x["product"], x["component"])
-        if x["moved_webcompat"]:
-            comp = W.WEBCOMPAT_PRODUCT
-        last = filed
-        status, res, dupe = "UNCONFIRMED", "", None
-        if triage_at < PULL:
-            status = "NEW"
-            last = triage_at
-            s["component_now"] = comp
+    used = set()
+
+    def serial(make):
+        while True:
+            s = "%s-%s" % (make, "".join(str(x) for x in r.integers(0, 10, 6)))
+            if s not in used:
+                used.add(s)
+                return s
+
+    bar_inlet = {"NZ02", "NZ08"}
+    bar_zone = {"NZ06", "NZ11"}
+    for p in T["P"]:
+        c = p["code"]
+        mk = "DP2" if c in bar_inlet else "HL4"
+        inst = dt.date(2019, 1, 1) + dt.timedelta(int(r.integers(0, 1800)))
+        if c == "NZ20":
+            s1, s2 = serial("HL4"), serial("HL4")
+            out.append(dict(serial=s1, code=c, point="inlet", make="HL4", installed=inst, removed=dt.date(2025, 4, 14),
+                            swap_at=dt.datetime(2025, 4, 14, 10)))
+            out.append(dict(serial=s2, code=c, point="inlet", make="HL4", installed=dt.date(2025, 4, 14), removed=None,
+                            swap_from=dt.datetime(2025, 4, 14, 12)))
         else:
-            s["component_now"] = default
-        if x["dupe_of"] is not None:
-            at = filed + dt.timedelta(hours=float(r.lognormal(math.log(40), 0.8)))
-            if at < PULL:
-                status, res, dupe, last = "RESOLVED", "DUPLICATE", x["dupe_of"], at
-                s["component_now"] = comp
+            out.append(dict(serial=serial(mk), code=c, point="inlet", make=mk, installed=inst, removed=None))
+        if c == "NZ04":
+            out.append(dict(serial=serial("HL4"), code="NZ04A", point="inlet", make="HL4",
+                            installed=dt.date(2018, 6, 14), removed=None))
+        mz = "DP2" if c in bar_zone else "HL4"
+        instz = dt.date(2019, 1, 1) + dt.timedelta(int(r.integers(0, 1800)))
+        if c == "NZ03":
+            s1, s2 = serial("HL4"), serial("DP2")
+            out.append(dict(serial=s1, code=c, point="AZP", make="HL4", installed=instz, removed=dt.date(2025, 12, 9),
+                            swap_at=dt.datetime(2025, 12, 9, 9)))
+            out.append(dict(serial=s2, code=c, point="AZP", make="DP2", installed=dt.date(2025, 12, 9), removed=None,
+                            swap_from=dt.datetime(2025, 12, 9, 11)))
         else:
-            at = filed + dt.timedelta(days=float(r.lognormal(math.log(11), 1.3)))
-            if at < PULL and r.random() < 0.74:
-                res = str(r.choice(["FIXED", "INCOMPLETE", "WORKSFORME", "INVALID", "WONTFIX"],
-                                   p=[0.30, 0.26, 0.17, 0.15, 0.12]))
-                status, last = ("VERIFIED" if res == "FIXED" and r.random() < 0.18 else "RESOLVED"), at
-                s["component_now"] = comp
-            elif status == "NEW" and r.random() < 0.22:
-                status = "ASSIGNED"
-                last = triage_at + dt.timedelta(hours=float(r.uniform(2, 200)))
-                if last >= PULL:
-                    last = triage_at
-        s["status"], s["resolution"], s["dupe"] = status, res, dupe
-        s["changed"] = max(last, filed + dt.timedelta(seconds=40))
-        if x["regression_key"] is not None and x["dupe_of"] is None:
-            s["keywords"] = "regression" if r.random() < 0.62 else ""
-        elif x["product"] == "Install and Update" and x["component"] == "Crash Reporter":
-            s["keywords"] = "crash"
-        else:
-            s["keywords"] = ""
-        out.append(s)
+            out.append(dict(serial=serial(mz), code=c, point="AZP", make=mz, installed=instz, removed=None))
     return out
 
 
-def export_rows(states):
-    for s in sorted(states, key=lambda s: s["bug_id"]):
-        yield {"bug_id": s["bug_id"], "opened": fmt(s["opened"]), "changeddate": fmt(s["changed"]),
-               "product": s["component_now"][0], "component": s["component_now"][1], "version": s["version"],
-               "op_sys": s["op_sys"], "bug_severity": s["severity"], "bug_status": s["status"],
-               "resolution": s["resolution"] or "---", "dupe_of": s["dupe"] if s["dupe"] else "",
-               "groups": "core-security" if s["security"] else "", "keywords": s["keywords"]}
-
-
-# ------------------------------------------------------------------------------------------------- the portal
-def share_rows(T):
-    """Daily share of each platform's active installs on each release-channel major version, as the portal publishes
-    it (per cent to two decimals; majors under 0.05 per cent folded into 'older')."""
-    r = K.rng("portal_shares")
-    for d in W.DAYS:
-        if d < K.RECORD_START or d > K.AS_OF:
-            continue
-        i = W.IDX[d]
-        for p in W.PLATFORMS:
-            st = {}
-            for v, sh in T.adopt.share[p][i].items():
-                m = int(v.split(".")[0])
-                st[m] = st.get(m, 0.0) + sh
-            vals = {}
-            for m, sh in st.items():
-                vals[m] = max(0.0, 100 * sh + float(r.normal(0, 0.035)) * (1 if sh > 0.002 else 0))
-            keep = {m: s for m, s in vals.items() if s >= 0.05}
-            older = sum(s for m, s in vals.items() if s < 0.05)
-            tot = sum(keep.values()) + older
-            for m in sorted(keep):
-                yield {"date": d.isoformat(), "platform": p, "version": "%d" % m,
-                       "share_pct": "%.2f" % (keep[m] * 100 / tot)}
-            if older >= 0.005:
-                yield {"date": d.isoformat(), "platform": p, "version": "older", "share_pct": "%.2f" % (older * 100 / tot)}
-
-
-def install_rows(T):
-    r = K.rng("portal_installs")
-    for d in W.DAYS:
-        if d < K.RECORD_START or d > K.AS_OF:
-            continue
-        for p in W.PLATFORMS:
-            v = W.dai(d, p) * (1 + float(r.normal(0, 0.0022)))
-            yield {"date": d.isoformat(), "platform": p, "active_installs_thousands": int(round(v / 1000))}
-
-
-# ------------------------------------------------------------------------------------------------- the dashboard
-DASH_PRODUCTS = ["Engine", "Shell", "Extensions", "DevTools", "Install and Update", "Web Compatibility"]
-DASH_EXCLUDED = ("DUPLICATE", "INVALID", "WORKSFORME", "MOVED")
-DASH_FIRST = dt.date(2025, 9, 29)
-DASH_LAST = dt.date(2026, 12, 7)
-
-
-def dashboard_rows(states):
-    """New defects by week filed and product, the old dashboard's basis, at the pull."""
-    weeks = []
-    m = DASH_FIRST
-    while m <= DASH_LAST:
-        weeks.append(m)
-        m += dt.timedelta(days=7)
-    cnt = {w: {p: 0 for p in DASH_PRODUCTS} for w in weeks}
-    for s in states:
-        if s["security"] or s["resolution"] in DASH_EXCLUDED:
-            continue
-        w = K.monday(s["opened"].date())
-        if w in cnt:
-            cnt[w][s["component_now"][0]] += 1
-    return [(w, cnt[w]) for w in weeks]
-
-
-def write_dashboard(path, states):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Weekly"
-    ws["A1"] = "Triage dashboard: new defects by week filed"
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("Reports filed through the report form in the week (Monday to Sunday, Helsinki time), by product they "
-                "are in now. The security group is left out, and so are reports resolved DUPLICATE, INVALID, "
-                "WORKSFORME or MOVED.")
-    ws["A3"] = "Old tracker, refreshed 18.12.2026 06:40 with the weekly export. Dashboard v3.2, triage team."
-    ws["A2"].alignment = Alignment(wrap_text=False)
-    head = ["Week starting"] + DASH_PRODUCTS + ["New defects"]
-    for j, h in enumerate(head):
-        c = ws.cell(row=5, column=j + 1, value=h)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="DCE6F0")
-    rows = dashboard_rows(states)
-    for i, (w, c) in enumerate(rows):
-        rr = 6 + i
-        ws.cell(row=rr, column=1, value=w).number_format = "d.m.yyyy"
-        for j, p in enumerate(DASH_PRODUCTS):
-            ws.cell(row=rr, column=2 + j, value=c[p])
-        ws.cell(row=rr, column=2 + len(DASH_PRODUCTS), value="=SUM(B%d:G%d)" % (rr, rr))
-    last = 6 + len(rows)
-    ws.cell(row=last + 1, column=1, value="29.9.2025: the record starts on Wednesday 1 October 2025.")
-    ws.cell(row=last + 2, column=1, value=("2.11. to 23.11.2026: the parallel run's reports were triaged on the new "
-                                           "tracker and closed MOVED here on 30.11.2026."))
-    ws.column_dimensions["A"].width = 14
-    for j in range(len(DASH_PRODUCTS) + 1):
-        ws.column_dimensions["BCDEFGH"[j]].width = 13
-    ws.freeze_panes = "B6"
-    wb.save(path)
-    return rows
-
-
-# ------------------------------------------------------------------------------------------------- public statistics
-def months(a, b):
-    out = []
-    y, m = a.year, a.month
-    while (y, m) <= (b.year, b.month):
-        out.append((y, m))
-        m += 1
-        if m == 13:
-            y, m = y + 1, 1
-    return out
-
-
-def public_rows(states, T):
-    """The vendor's published monthly bug statistics: reports filed through the form by platform (security reports
-    not published), and per 100,000 of the month's average daily active installs."""
-    cnt = {}
-    for s in states:
-        if s["security"]:
-            continue
-        p = "Windows" if s["op_sys"].startswith("Windows") else "macOS" if s["op_sys"].startswith("macOS") else "Linux"
-        key = (s["opened"].year, s["opened"].month, p)
-        cnt[key] = cnt.get(key, 0) + 1
-    for (y, m) in months(K.RECORD_START, dt.date(2026, 11, 1)):
-        days = [d for d in W.DAYS if d.year == y and d.month == m and d >= K.RECORD_START]
-        for p in W.PLATFORMS:
-            avg = sum(W.dai(d, p) for d in days) / len(days)
-            n = cnt.get((y, m, p), 0)
-            yield {"month": "%d-%02d" % (y, m), "platform": p, "reports_filed": n,
-                   "reports_per_100k_active_installs": "%.1f" % K.round_half_up(n / avg * 1e5, 1)}
-
-
-# ------------------------------------------------------------------------------------------------- stability
-def stability_rows(T):
-    """The crash reporter's monthly stability by release-channel major version and platform."""
-    r = K.rng("stability")
-    rate = {}
-    for m, _ in K.RELEASES:
-        for p in W.PLATFORMS:
-            rate[(m, p)] = {"Windows": 0.92, "macOS": 0.61, "Linux": 0.74}[p] * float(r.lognormal(0, 0.18))
-    hours_per_day = {"Windows": 2.71, "macOS": 2.38, "Linux": 2.95}
-    for (y, mo) in months(K.RECORD_START, dt.date(2026, 11, 1)):
-        days = [d for d in W.DAYS if d.year == y and d.month == mo and d >= K.RECORD_START]
-        for p in W.PLATFORMS:
-            use = {}
-            for d in days:
-                st = T.adopt.share[p][W.IDX[d]]
-                for v, sh in st.items():
-                    major = int(v.split(".")[0])
-                    use[major] = use.get(major, 0.0) + W.dai(d, p) * sh * hours_per_day[p]
-            tot = sum(use.values())
-            for major in sorted(use):
-                if use[major] < 0.01 * tot:
-                    continue
-                crashes = int(r.poisson(use[major] / 1000 * rate.get((major, p), rate[(31, p)])))
-                yield {"month": "%d-%02d" % (y, mo), "platform": p, "version": "%d" % major,
-                       "usage_hours_millions": "%.2f" % (use[major] / 1e6), "crash_reports": crashes,
-                       "crashes_per_1000_hours": "%.2f" % (crashes / use[major] * 1000)}
-
-
-# ------------------------------------------------------------------------------------------------- the new tracker
-STATUS_ID = {"New": "10000", "Triaged": "10101", "Resolved": "5", "Closed": "6", "Needs diagnosis": "10411",
-             "Diagnosed": "10412", "Done": "10001"}
-STATUS_CAT = {"New": ("new", "To Do"), "Triaged": ("indeterminate", "In Progress"), "Resolved": ("done", "Done"),
-              "Closed": ("done", "Done"), "Needs diagnosis": ("new", "To Do"), "Diagnosed": ("indeterminate", "In Progress"),
-              "Done": ("done", "Done")}
-RESOLUTION_ID = {"Fixed": "1", "Won't Fix": "2", "Duplicate": "3", "Incomplete": "4", "Cannot Reproduce": "5",
-                 "Invalid": "10100", "Done": "10000"}
-PRIORITY_ID = {"P1": "1", "P2": "2", "P3": "3", "P4": "4", "Unprioritised": "10600"}
-PROJECT = {"BRW": ("10201", "Browser intake"), "WEBC": ("10305", "Web compatibility")}
-WORKFLOW = {"BRW": "BRW: Triage workflow", "WEBC": "WEBC: Site report workflow"}
-LINK_TYPE = {"id": "10002", "name": "Duplicate", "inward": "is duplicated by", "outward": "duplicates"}
-
-
-def version_key(v):
-    m = re.match(r"(\d+)\.(\d+)(?:\.(\d+)|b(\d+)|a(\d+))?$", v)
-    major, minor = int(m.group(1)), int(m.group(2))
-    if m.group(4):
-        return (major, minor, 1, int(m.group(4)))
-    if m.group(5):
-        return (major, minor, 0, int(m.group(5)))
-    return (major, minor, 2, int(m.group(3) or 0))
-
-
-def jtime(t_local, ms):
-    u = K.to_utc(t_local)
-    return u.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d+0000" % ms
-
-
-def newtracker(issues):
-    """The migration team's export of the run: every issue created in BRW and WEBC from 2 November to the bridge's
-    switch-off on 30 November, with its changelog, as the REST search returns it (fields listed, times UTC)."""
-    r = K.rng("jira_export")
-    comps = sorted({it["comp0"] for it in issues} | set(PR.NEW_COMPONENT.values()) | {PR.WEBC_COMPONENT})
-    comp_id = {c: str(10230 + k) for k, c in enumerate(comps)}
-    vers = sorted({it["src"]["version"] for it in issues if it["src"]}, key=version_key)
-    ver_id = {v: str(11690 + k) for k, v in enumerate(vers)}
-    order = sorted(issues, key=lambda it: (it["created"], it["legacy"] or 0, it["copy"]))
-    iid = {id(it): str(1184033 + k) for k, it in enumerate(order)}
-    # link entries on the issue linked to (Jira writes the link on both ends)
-    inward = {}
-    for it in issues:
-        for h in it["hist"]:
-            for f, a, b in h["items"]:
-                if f == "Link" and b[1][0] == "issue":
-                    inward.setdefault(id(b[1][1]), []).append((h, it))
-    hist_all = []
-    for it in issues:
-        for h in it["hist"]:
-            hist_all.append((h["at"], 0, id(it), h, it))
-        for h, src in inward.get(id(it), []):
-            hist_all.append((h["at"], 1, id(it), h, src))
-    hist_all.sort(key=lambda e: (e[0], e[1], iid[e[2]]))
-    hid = {}
-    for k, e in enumerate(hist_all):
-        hid[(e[1], e[2], id(e[3]))] = str(2840117 + k)
-    ms_of = {}
-
-    def ms(key):
-        if key not in ms_of:
-            ms_of[key] = int(r.integers(0, 1000))
-        return ms_of[key]
-
-    link_ids = {}
-
-    def link_id(a, b):
-        k = (a, b)
-        if k not in link_ids:
-            link_ids[k] = str(70311 + 3 * len(link_ids) + int(r.integers(0, 3)))
-        return link_ids[k]
-
-    out = []
-    for it in sorted(issues, key=lambda it: (it["project"] if not it.get("moved_at") else "WEBC",
-                                             int(PR.current_key(it).split("-")[1]))):
-        x = it["src"]
-        status, resolution, resdate, prio = "New", None, None, "Unprioritised"
-        if it["project"] == "WEBC":
-            status = "Needs diagnosis"
-        comps_now = [it["comp0"]]
-        legacy_now = None
-        old_id_now = None
-        updated = it["created"]
-        links = []
-        histories = []
-        entries = [(h, 0, it) for h in it["hist"]] + [(h, 1, src) for h, src in inward.get(id(it), [])]
-        entries.sort(key=lambda e: (e[0]["at"], e[1]))
-        for h, kind, src in entries:
-            items = []
-            at = h["at"]
-            if kind == 1:
-                tgt_key = PR.key_at(src, at)
-                items.append({"field": "Link", "fieldtype": "jira", "from": None, "fromString": None, "to": tgt_key,
-                              "toString": "This issue is duplicated by %s" % tgt_key})
-                links.append({"id": link_id(id(src), id(it)), "type": dict(LINK_TYPE),
-                              "inwardIssue": {"id": iid[id(src)], "key": PR.current_key(src)}})
-            else:
-                for f, a, b in h["items"]:
-                    if f == "Legacy bug":
-                        items.append({"field": "Legacy bug", "fieldtype": "custom", "fieldId": "customfield_10410",
-                                      "from": None, "fromString": a, "to": None, "toString": b})
-                        legacy_now = b
-                    elif f == "Old tracker ID":
-                        items.append({"field": "Old tracker ID", "fieldtype": "custom", "fieldId": "customfield_10522",
-                                      "from": None, "fromString": a, "to": None, "toString": b})
-                        old_id_now = b
-                    elif f == "Affects Version/s":
-                        items.append({"field": "Version", "fieldtype": "jira", "fieldId": "versions", "from": None,
-                                      "fromString": None, "to": ver_id[b], "toString": b})
-                    elif f == "status":
-                        items.append({"field": "status", "fieldtype": "jira", "fieldId": "status",
-                                      "from": STATUS_ID[status], "fromString": status, "to": STATUS_ID[b],
-                                      "toString": b})
-                        status = b
-                    elif f == "resolution":
-                        items.append({"field": "resolution", "fieldtype": "jira", "fieldId": "resolution",
-                                      "from": None, "fromString": None, "to": RESOLUTION_ID[b], "toString": b})
-                        resolution, resdate = b, at
-                    elif f == "priority":
-                        items.append({"field": "priority", "fieldtype": "jira", "fieldId": "priority",
-                                      "from": PRIORITY_ID[prio], "fromString": prio, "to": PRIORITY_ID[b], "toString": b})
-                        prio = b
-                    elif f == "Component":
-                        if a is not None:
-                            items.append({"field": "Component", "fieldtype": "jira", "fieldId": "components",
-                                          "from": comp_id[a], "fromString": a, "to": None, "toString": None})
-                            comps_now.remove(a)
-                        else:
-                            items.append({"field": "Component", "fieldtype": "jira", "fieldId": "components",
-                                          "from": None, "fromString": None, "to": comp_id[b], "toString": b})
-                            comps_now.append(b)
-                    elif f == "project":
-                        items.append({"field": "project", "fieldtype": "jira", "fieldId": "project",
-                                      "from": PROJECT["BRW"][0], "fromString": PROJECT["BRW"][1],
-                                      "to": PROJECT["WEBC"][0], "toString": PROJECT["WEBC"][1]})
-                        items.append({"field": "Workflow", "fieldtype": "jira", "from": None,
-                                      "fromString": WORKFLOW["BRW"], "to": None, "toString": WORKFLOW["WEBC"]})
-                    elif f == "Key":
-                        items.append({"field": "Key", "fieldtype": "jira", "from": None, "fromString": it["key0"],
-                                      "to": None, "toString": it["key_moved"]})
-                    elif f == "Link":
-                        tgt = b[1]
-                        if tgt[0] == "issue":
-                            k2 = PR.key_at(tgt[1], at)
-                            links.append({"id": link_id(id(it), id(tgt[1])), "type": dict(LINK_TYPE),
-                                          "outwardIssue": {"id": iid[id(tgt[1])], "key": PR.current_key(tgt[1])}})
-                        else:
-                            k2 = it["preload_key"]
-                            links.append({"id": link_id(id(it), k2), "type": dict(LINK_TYPE),
-                                          "outwardIssue": {"id": str(1100000 + int(k2.split("-")[1]) * 3 % 83000),
-                                                           "key": k2}})
-                        items.append({"field": "Link", "fieldtype": "jira", "from": None, "fromString": None,
-                                      "to": k2, "toString": "This issue duplicates %s" % k2})
-            author = h["author"]
-            histories.append({"id": hid[(kind, id(it), id(h))],
-                              "author": {"displayName": author, "active": True,
-                                         "timeZone": "Europe/Helsinki" if author != PR.BRIDGE else "Etc/UTC"},
-                              "created": jtime(at, ms(("h", kind, id(it), id(h)))), "items": items})
-            updated = max(updated, at)
-        if it["issuetype"] == "Task":
-            reporter = it["task_by"]
-        else:
-            reporter = PR.BRIDGE
-        proj = "WEBC" if (it["project"] == "WEBC" or it.get("moved_at")) else "BRW"
-        sc = STATUS_CAT[status]
-        fields = {
-            "issuetype": {"name": it["issuetype"], "subtask": False},
-            "project": {"id": PROJECT[proj][0], "key": proj, "name": PROJECT[proj][1]},
-            "status": {"id": STATUS_ID[status], "name": status, "statusCategory": {"key": sc[0], "name": sc[1]}},
-            "resolution": None if resolution is None else {"id": RESOLUTION_ID[resolution], "name": resolution},
-            "resolutiondate": None if resdate is None else jtime(resdate, ms(("r", id(it)))),
-            "created": jtime(it["created"], ms(("c", id(it)))),
-            "updated": jtime(updated, ms(("u", id(it)))) if updated != it["created"] else jtime(it["created"], ms(("c", id(it)))),
-            "priority": {"id": PRIORITY_ID[prio], "name": prio},
-            "components": [{"id": comp_id[c], "name": c} for c in comps_now],
-            "versions": [{"id": ver_id[x["version"]], "name": x["version"]}] if x and not it["bulk"] else [],
-            "labels": ["legacy-%d" % it["legacy"]] if it["bulk"] and it["legacy"] is not None else [],
-            "environment": x["op_sys"] if x else None,
-            "security": {"id": "10050", "name": "Security team"} if it["restricted"] else None,
-            "reporter": {"displayName": reporter, "active": True},
-            "issuelinks": links,
-            "customfield_10410": float(legacy_now) if legacy_now is not None else None,
-            "customfield_10522": old_id_now,
-        }
-        out.append({"expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
-                    "id": iid[id(it)], "key": PR.current_key(it), "fields": fields,
-                    "changelog": {"startAt": 0, "maxResults": len(histories), "total": len(histories),
-                                  "histories": histories}})
-    names = {"issuetype": "Issue Type", "project": "Project", "status": "Status", "resolution": "Resolution",
-             "resolutiondate": "Resolved", "created": "Created", "updated": "Updated", "priority": "Priority",
-             "components": "Component/s", "versions": "Affects Version/s", "environment": "Environment",
-             "security": "Security Level", "reporter": "Reporter", "issuelinks": "Linked Issues", "labels": "Labels",
-             "customfield_10410": "Legacy bug", "customfield_10522": "Old tracker ID"}
-    return {"expand": "names,schema", "startAt": 0, "maxResults": len(out), "total": len(out), "issues": out,
-            "names": names}
-
-
-def task_history(issues):
-    """The team's own tasks: housekeeping on the new tracker, most done within the run."""
-    r = K.rng("tasks")
-    for it in issues:
-        if it["issuetype"] != "Task":
-            continue
-        if r.random() < 0.7:
-            at = PR.next_working(it["created"] + dt.timedelta(hours=float(r.uniform(2, 120))))
-            if at is not None:
-                it["hist"].append(dict(author=it["task_by"], at=at,
-                                       items=[("status", "New", "Done"), ("resolution", None, "Done")]))
-
-
-# ------------------------------------------------------------------------------------------------- register and rota
-REGISTER_LEADS = {"Rendering and Layout": "Johannes Laukkanen", "Graphics and Media": "Saara Väisänen",
-                  "Networking": "Tapio Kallio", "Script and Web APIs": "Johannes Laukkanen",
-                  "Browser Interface": "Linnea Kärki", "Extensions": "Arja Turunen",
-                  "Developer Tools": "Sakari Puhakka", "Platform and Updates": "Tapio Kallio"}
-
-
-def register_rows():
-    rows = []
-    for g in PR.GROUPS:
-        for c in sorted(set(PR.NEW_COMPONENT.values())):
-            if PR.group_of(c) == g:
-                rows.append((g, c, REGISTER_LEADS[g]))
-    return rows
-
-
-def write_groups(path):
-    import openpyxl
-    from openpyxl.styles import Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Component groups"
-    ws["A1"] = "Browser intake (BRW): component groups"
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = ("Each group is one area rota on the new tracker. A report with components in more than one group is "
-                "in each of those groups' queues.")
-    for j, h in enumerate(["Group", "Component", "Area contact"]):
-        c = ws.cell(row=4, column=j + 1, value=h)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="E2EFDA")
-    rows = register_rows()
-    for i, (g, c, lead) in enumerate(rows):
-        ws.cell(row=5 + i, column=1, value=g)
-        ws.cell(row=5 + i, column=2, value=c)
-        ws.cell(row=5 + i, column=3, value=lead)
-    n = 5 + len(rows)
-    ws.cell(row=n + 1, column=1, value="Not in a group")
-    ws.cell(row=n + 1, column=2, value=PR.HOUSEKEEPING)
-    ws.cell(row=n + 1, column=3, value="the triage team's own tasks")
-    ws.cell(row=n + 3, column=1, value="Agreed at the triage team's weekly, 26.10.2026.")
-    ws.column_dimensions["A"].width = 24
-    ws.column_dimensions["B"].width = 40
-    ws.column_dimensions["C"].width = 26
-    wb.save(path)
-    return rows
-
-
-# the rota as the team kept it: the week's plan, with the changes made during the run noted on the day
-ROTA_NOTES = {
-    dt.date(2026, 11, 2): "Sakari Puhakka on call for 47.0.1 this week (point release Thu 5.11.), Saturday cover 7.11.",
-    dt.date(2026, 11, 9): "Saara Väisänen on the cutover rehearsal with tracker migration this week",
-    dt.date(2026, 11, 14): "swapped with Johannes Laukkanen",
-    dt.date(2026, 11, 16): "Johannes Laukkanen on the component mapping with tracker migration this week",
-    dt.date(2026, 11, 17): "Arja, Tapio and Sakari at the new tracker workflow training 13:00-16:30",
-    dt.date(2026, 11, 21): "swapped with Saara Väisänen",
-    dt.date(2026, 11, 23): "Tapio Kallio on the 48.0 sign-off this week, Saturday cover 28.11.",
-    dt.date(2026, 11, 24): "Linnea Kärki until 12:00",
-    dt.date(2026, 11, 30): "follow-up on the new tracker; Arja Turunen back on the old tracker's queue",
-    dt.date(2026, 12, 2): "Sakari Puhakka sick",
-    dt.date(2026, 12, 4): "last follow-up items before the run's export",
+GAPS = {   # battery failures: (district, point) -> list of (start GMT, hours)
+    ("NZ27", "AZP"): [(dt.datetime(2026, 2, 6, 14), 61)],
+    ("NZ15", "inlet"): [(dt.datetime(2025, 10, 21, 2), 30)],
+    ("NZ11", "inlet"): [(dt.datetime(2025, 7, 8, 9), 93)],
+    ("NZ05", "AZP"): [(dt.datetime(2025, 11, 30, 20), 40)],
 }
-ROTA_OFF = {dt.date(2026, 12, 2): {"Sakari Puhakka"}}
-ROTA_DAY = {dt.date(2026, 12, 4): (["Johannes Laukkanen"], "08:00-10:00")}
+RESENDS = [("NZ22", "inlet", dt.datetime(2025, 6, 17, 0), 48), ("NZ08", "AZP", dt.datetime(2026, 1, 28, 6), 24),
+           ("NZ30", "AZP", dt.datetime(2025, 9, 9, 0), 36)]
 
 
-def rota_rows():
-    rows = []
-    d = K.RUN_START
-    while d <= dt.date(2026, 12, 4):
-        wk = K.monday(d)
-        names, sat = PR.ROTA[wk]
-        note = ROTA_NOTES.get(d, "")
-        if d in ROTA_DAY:
-            who, hours = ROTA_DAY[d]
-            rows.append((d, hours, ", ".join(who), note))
-        elif d.weekday() < 5:
-            on = [n for n in names if n not in ROTA_OFF.get(d, set())]
-            rows.append((d, "08:00-16:30", ", ".join(on), note))
-        elif d.weekday() == 5 and sat:
-            rows.append((d, "10:00-14:00", sat, ("Saturday cover, " + note) if note else "Saturday cover"))
-        d += dt.timedelta(days=1)
-    return rows
+def logger_series(T):
+    """Hourly readings as each logger reports them: (inlet rows, zone rows). Values carry the logger's own noise and
+    resolution: flows to 0.01 l/s, metres to 0.1, bar to 0.001."""
+    idx = T["idx"]
+    F = fleet(T)
+    inlet_rows, zone_rows = [], []
+    for f in F:
+        code = "NZ04" if f["code"] == "NZ04A" else f["code"]
+        D = T[code]
+        rr = K.rng("logger", f["serial"])
+        n = len(idx)
+        if f["point"] == "inlet":
+            flow = D["flow_inlet_a"] if f["code"] == "NZ04A" else D["flow_inlet"]
+            flow = flow * (1.0 + 0.004 * rr.standard_normal(n))
+            pres = D["inlet"] + 0.05 * rr.standard_normal(n)
+        else:
+            flow = None
+            pres = D["azp"] + 0.05 * rr.standard_normal(n)
+        unit = MAKES[f["make"]][1]
+        gaps = GAPS.get((code, f["point"]), [])
+        rows = []
+        for h, t in enumerate(idx):
+            if "swap_at" in f and t >= f["swap_at"]:
+                break
+            if "swap_from" in f and t < f["swap_from"]:
+                continue
+            if any(g0 <= t < g0 + dt.timedelta(hours=gh) for g0, gh in gaps):
+                continue
+            pv = pres[h] / BAR if unit == "bar" else pres[h]
+            pv = round(pv, 3) if unit == "bar" else round(pv, 1)
+            if f["point"] == "inlet":
+                rows.append([f["serial"], stamp(t), "%.2f" % max(flow[h], 0.0), ("%.3f" % pv) if unit == "bar" else ("%.1f" % pv)])
+            else:
+                rows.append([f["serial"], stamp(t), ("%.3f" % pv) if unit == "bar" else ("%.1f" % pv)])
+        for (dc, pt, t0, hrs) in RESENDS:
+            if dc == f["code"] and pt == f["point"]:
+                block = [r for r in rows if t0 <= dt.datetime.strptime(r[1], "%Y-%m-%d %H:%M") < t0 + dt.timedelta(hours=hrs)]
+                at = next(i for i, r in enumerate(rows) if r[1] == stamp(t0 + dt.timedelta(hours=hrs)))
+                rows = rows[:at] + block + rows[at:]
+        (inlet_rows if f["point"] == "inlet" else zone_rows).extend(rows)
+    return F, inlet_rows, zone_rows
 
 
-def write_rota(path):
-    import openpyxl
-    from openpyxl.styles import Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Rota"
-    ws["A1"] = "Triage rota, parallel run 2.11. to 29.11.2026 and the follow-up week"
-    ws["A1"].font = Font(bold=True, size=13)
-    for j, h in enumerate(["Date", "Day", "Hours", "On duty", "Note"]):
-        c = ws.cell(row=3, column=j + 1, value=h)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="FCE4D6")
-    for i, (d, hours, who, note) in enumerate(rota_rows()):
-        ws.cell(row=4 + i, column=1, value=d).number_format = "d.m.yyyy"
-        ws.cell(row=4 + i, column=2, value=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][d.weekday()])
-        ws.cell(row=4 + i, column=3, value=hours)
-        ws.cell(row=4 + i, column=4, value=who)
-        ws.cell(row=4 + i, column=5, value=note or None)
-    ws.column_dimensions["A"].width = 12
-    ws.column_dimensions["B"].width = 6
-    ws.column_dimensions["C"].width = 13
-    ws.column_dimensions["D"].width = 72
-    ws.column_dimensions["E"].width = 70
-    ws.freeze_panes = "A4"
-    wb.save(path)
+def logger_register_rows(F):
+    out = []
+    for f in F:
+        out.append([f["serial"], f["code"], "inlet" if f["point"] == "inlet" else "average zone point", MAKES[f["make"]][0],
+                    "metres head" if MAKES[f["make"]][1] == "m" else "bar", f["installed"].isoformat(),
+                    f["removed"].isoformat() if f["removed"] else ""])
+    return sorted(out, key=lambda r: (r[1], r[2], r[5]))
+
+
+def district_rows(T):
+    r = K.rng("district_register")
+    out = []
+    for p in T["P"]:
+        c = p["code"]
+        bv = {"NZ09": "BV-0910", "NZ10": "BV-0910; BV-1011", "NZ11": "BV-1011"}.get(c, "BV-%s%02d" % (c[2:], int(r.integers(1, 40))))
+        out.append([c, p["name"], "%.1f" % (p["households"] / 95.0 + r.uniform(1, 6)), bv, 2 if c == "NZ04" else 1,
+                    "AZP-%s-%02d" % (c, int(r.integers(1, 30)))])
+    return out
+
+
+CODE_HISTORY = [
+    ["NZ04A", "NZ04", "2024-03-11", "Wrenfold Lane boundary valve left open after the 2024 rezoning; the old upper "
+                                    "district's inlet meter stays in service"],
+    ["NZ19B", "NZ19", "2021-08-02", "Tolleby merged on the trunk main diversion"],
+    ["NZ27X", "NZ27", "2022-11-21", "temporary code during the Holmwick mains renewal"],
+    ["NZ31A", "NZ31", "2020-05-04", "Dimmock Edge upper and lower combined"],
+]
+
+
+# ------------------------------------------------------------------------------------------------- properties and bills
+def properties(T):
+    """Every property in the zone, existing ones and the year's new connections, with its district code as the
+    property system holds it (NZ04's upper streets still under NZ04A), class, supply point and charging basis. The
+    older streets nearer Thornholme have flats on shared supplies (two to six dwellings on one supply point, each on
+    the assessed charge); a new build is connected under the developer's plot record and gets its address record, on
+    the same supply point, when it is addressed weeks or months later (the plot record is closed then about one time
+    in seven). The Western zone, on another reservoir, shares the North region's property system."""
+    r = K.rng("properties")
+    out = []
+    k = 0
+
+    def ref():
+        return "P%07d" % (3100000 + k)
+
+    def uprn():
+        return "%012d" % (10090000000 + 7919 * k % 89000000)
+
+    def homes(code_of, n, shared, metered_share):
+        nonlocal k
+        i = 0
+        while i < n:
+            size = min(int(r.choice((2, 2, 3, 3, 4, 5, 6))), n - i) if (shared and r.random() < 0.035) else 1
+            k += 1
+            sp = "SP%08d" % (40000000 + k)
+            for j in range(size):
+                if j:
+                    k += 1
+                if size > 1:
+                    basis = "unmeasured"
+                else:
+                    basis = "metered" if r.random() < metered_share else "unmeasured"
+                out.append(dict(ref=ref(), uprn=uprn(), code=code_of(i), cls="household", sp=sp, basis=basis,
+                                connected="", disconnected="", flat=size > 1))
+                i += 1
+
+    for p in T["P"]:
+        c = p["code"]
+        D = T[c]
+        upper = int(round(0.37 * p["households"])) if c == "NZ04" else 0
+        first = len(out)
+        homes(lambda i: "NZ04A" if i < upper else c, p["households"], p["phase"] == 4, 0.61)
+        single = [x for x in out[first:] if not x["flat"] and x["basis"] == "metered"]
+        for x, d in zip(r.choice(single, size=len(D["demol_days"]), replace=False), D["demol_days"]):
+            x["disconnected"] = (W.START.date() + dt.timedelta(d)).isoformat()          # demolished or merged
+        for d in D["infill_days"]:
+            k += 1
+            out.append(dict(ref=ref(), uprn=uprn(), code=c, cls="household", sp="SP%08d" % (40000000 + k),
+                            basis="metered", connected=(W.START.date() + dt.timedelta(d)).isoformat(), disconnected="",
+                            flat=False))
+        plots = r.choice(np.arange(1, 900), size=len(D["conn_days"]), replace=False) if D["conn_days"] else []
+        for d, num in zip(D["conn_days"], plots):
+            k += 1
+            day = W.START.date() + dt.timedelta(d)
+            sp = "SP%08d" % (40000000 + k)
+            addr_day = day + dt.timedelta(int(r.integers(45, 151)))
+            closed = r.random() < 0.15
+            out.append(dict(ref="PL-%s-%04d" % (c, num), uprn="", code=c, cls="household", sp=sp, basis="metered",
+                            connected=day.isoformat(), disconnected=addr_day.isoformat() if closed else "", flat=False,
+                            handover=addr_day))
+            out.append(dict(ref=ref(), uprn=uprn(), code=c, cls="household", sp=sp, basis="metered",
+                            connected=addr_day.isoformat(), disconnected="", flat=False))
+        for i in range(p["nonhh"]):
+            k += 1
+            out.append(dict(ref=ref(), uprn=uprn(), code=("NZ04A" if (c == "NZ04" and i < 9) else c),
+                            cls="non-household", sp="SP%08d" % (40000000 + k), basis="metered", connected="",
+                            disconnected="", flat=False))
+    k += 1
+    out.append(dict(ref=ref(), uprn="%012d" % 10094417730, code="NZ-TM", cls="non-household", sp="SP90000001",
+                    basis="metered", connected="", disconnected="", flat=False))      # the mill, on its own off-take
+    for j in range(1, 9):
+        c = "WZ%02d" % j
+        homes(lambda i: c, int(r.integers(500, 1100)), True, 0.58)
+        for i in range(int(r.integers(10, 40))):
+            k += 1
+            out.append(dict(ref=ref(), uprn=uprn(), code=c, cls="non-household", sp="SP%08d" % (40000000 + k),
+                            basis="metered", connected="", disconnected="", flat=False))
+    # the systems' own identifiers: property references, UPRNs and supply point references issued over decades, so
+    # none runs in district order or at a fixed step (the working numbers above only keep the records apart)
+    q = K.rng("identifiers")
+
+    def issue(n, lo, hi, taken=()):
+        got, seen = [], set(taken)
+        while len(got) < n:
+            v = int(q.integers(lo, hi))
+            if v not in seen:
+                seen.add(v)
+                got.append(v)
+        return got
+
+    mill = out[[x["sp"] for x in out].index("SP90000001")]
+    refs = iter(issue(sum(1 for x in out if x["ref"].startswith("P") and not x["ref"].startswith("PL-")),
+                      1000000, 9999999))
+    uprns = iter(issue(sum(1 for x in out if x["uprn"] and x is not mill), 10090000000, 10099999999, {10094417730}))
+    sps = sorted({x["sp"] for x in out} - {"SP90000001"})
+    spmap = dict(zip(sps, ("SP%08d" % v for v in issue(len(sps), 30000000, 79999999))))
+    for x in out:
+        if x["ref"].startswith("P") and not x["ref"].startswith("PL-"):
+            x["ref"] = "P%07d" % next(refs)
+        if x["uprn"] and x is not mill:
+            x["uprn"] = "%012d" % next(uprns)
+        if x["sp"] != "SP90000001":
+            x["sp"] = spmap[x["sp"]]
+    out.sort(key=lambda x: (x["code"], x["ref"]))
+    return out
+
+
+def property_rows(props):
+    return [[x["ref"], x["uprn"], x["code"], x["cls"], x["sp"], x["basis"], x["connected"], x["disconnected"]] for x in props]
+
+
+ASSESSED_BANDS = (62, 89, 118, 146)            # Lynmere's assessed household volumes, m3 a year, by property band
+FLAT_BAND = 71                                 # the assessed volume for a flat
+BILLED_TO = dt.date(2026, 10, 30)              # the last read the extract of 2 November 2026 can carry
+
+
+def bills(T, props):
+    """Bills for the year and its edges: metered households read half-yearly on their own read cycle, unmeasured
+    households billed on an assessed volume a year (April to March), non-households monthly, the mill monthly from its
+    AMR. Volumes are the consumption the bill covers as the customer's meter registers it (metered), the assessed
+    volume (unmeasured), or the mill's AMR."""
+    r = K.rng("bills")
+    out = []
+    pc = {p["code"]: p for p in T["P"]}
+    pc["NZ04A"] = pc["NZ04"]
+    for j in range(1, 9):
+        pc["WZ%02d" % j] = dict(percap=310.0 + 6 * j, nhh_night=7.0)
+    y0, y1 = dt.date(2024, 10, 1), dt.date(2026, 9, 30)
+    cum = np.cumsum((0.18, 0.32 - W.BAND_SHIFT, 0.32 + W.BAND_SHIFT, 0.18))
+    for x in props:
+        if x["sp"] == "SP90000001":
+            continue
+        p = pc[x["code"]]
+        if x["cls"] == "household":
+            daily = p["percap"] * (0.75 + 0.5 * r.random()) / 1000.0 * W.METER_REG     # m3 a day as registered
+            if x["basis"] == "unmeasured":
+                if x["flat"] or r.random() < 0.10:
+                    band = FLAT_BAND
+                else:
+                    band = ASSESSED_BANDS[int(np.searchsorted(cum, r.random()))]
+                out.append([x["sp"], "2025-04-01", "2026-03-31", "%d" % band, "assessed", ""])
+                continue
+            if "handover" in x:                         # the developer's plot account, closed at the handover read
+                a = dt.date.fromisoformat(x["connected"])
+                out.append([x["sp"], a.isoformat(), (x["handover"] - dt.timedelta(1)).isoformat(),
+                            "%.0f" % (daily * (x["handover"] - a).days * (0.9 + 0.2 * r.random())), "metered", "actual"])
+                continue
+            start = dt.date.fromisoformat(x["connected"]) if x["connected"] else y0 + dt.timedelta(int(r.integers(0, 182)))
+            stop = dt.date.fromisoformat(x["disconnected"]) if x["disconnected"] else None   # the final read
+            prev = start
+            nxt = prev + dt.timedelta(int(r.integers(170, 196)))
+            while prev < (stop or y1):
+                end = nxt if stop is None or nxt < stop else stop
+                vol = daily * (end - prev).days * (0.9 + 0.2 * r.random())
+                est = r.random() < 0.08 and end != stop
+                if end <= BILLED_TO:                    # a read after the extract was taken is not billed yet
+                    out.append([x["sp"], prev.isoformat(), (end - dt.timedelta(1)).isoformat(), "%.0f" % vol,
+                                "metered", "estimated" if est else "actual"])
+                if end == stop:
+                    break
+                prev = nxt
+                nxt = prev + dt.timedelta(int(r.integers(170, 196)))
+        else:
+            daily = (p["nhh_night"] * 24 / 1000.0 + 0.010 * 3600 * 12 * 5 / 7 / 1000.0) * (0.6 + 0.8 * r.random()) \
+                * W.METER_REG
+            m = dt.date(2025, 4, 1)
+            while m <= dt.date(2026, 3, 1):
+                nm = dt.date(m.year + (m.month // 12), m.month % 12 + 1, 1)
+                out.append([x["sp"], m.isoformat(), (nm - dt.timedelta(1)).isoformat(),
+                            "%.0f" % (daily * (nm - m).days * (0.9 + 0.2 * r.random())), "metered", "actual"])
+                m = nm
+    # the mill from its AMR
+    mill = T["mill_lps"]
+    for mi, m in enumerate(K.MONTHS):
+        nm = K.MONTHS[mi + 1] if mi < 11 else K.YEAR_END
+        sel = np.array([m <= t < nm for t in T["idx"]])
+        vol = float(mill[sel].sum() * 3.6)
+        out.append(["SP90000001", m.date().isoformat(), (nm.date() - dt.timedelta(1)).isoformat(), "%.0f" % vol,
+                    "metered", "actual"])
+    return out
+
+
+def outlet_daily(T, bill_rows):
+    """The Thornholme outlet meter's daily volumes in Ml (local days), as recorded: 1.4 per cent low until its
+    recalibration on 12 November 2025. True input = every district's inflow plus the mill plus the trunk main's own
+    losses (about 0.31 Ml/d)."""
+    total = T["mill_lps"].copy()
+    for p in T["P"]:
+        D = T[p["code"]]
+        total = total + D["flow"]
+    days = {}
+    for h, t in enumerate(T["idx"]):
+        d = K.local(t).date()
+        days[d] = days.get(d, 0.0) + total[h] * 3.6 / 1000.0
+    out = []
+    r = K.rng("outlet")
+    for d in sorted(days):
+        if not (dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31)):
+            continue
+        true = days[d] + W.TRUNK_LOSS
+        rec = true * (1.0 + K.CERT_ERROR) if d < K.CERT_DATE else true
+        rec *= (1.0 + 0.002 * r.standard_normal())
+        out.append([d.isoformat(), "%.3f" % rec, "TH-OUT-0417"])
+    return out
+
+
+def mill_rows(T):
+    r = K.rng("mill_amr")
+    return [[stamp(t), "%.1f" % (T["mill_lps"][h] * (1.0 + 0.01 * r.standard_normal()))] for h, t in enumerate(T["idx"])]
+
+
+def contact_rows(T):
+    r = K.rng("contacts")
+    cats = ["low pressure", "no water", "discoloured water", "leak in the street", "billing query", "noisy pipes"]
+    out = []
+    k = 0
+    for p in T["P"]:
+        n = int(r.poisson(6 + p["households"] / 220))
+        for _ in range(n):
+            k += 1
+            d = W.START + dt.timedelta(hours=int(r.integers(0, W.HOURS)))
+            cat = cats[int(r.choice(len(cats), p=[0.18, 0.08, 0.14, 0.32, 0.18, 0.10]))]
+            out.append(["CC-%06d" % (520000 + k), stamp(d), p["code"], cat,
+                        ["advice given", "job raised", "no fault found", "referred"][int(r.integers(0, 4))]])
+    return sorted(out, key=lambda x: x[1])

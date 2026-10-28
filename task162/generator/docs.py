@@ -1,10 +1,10 @@
-"""task162 documents: the staffing-plan thread, the tracker cutover runbook, the triage team's working agreement for
-the new tracker, the release calendar, the old export's field notes and the pull's manifest. Their text is kept here as
-data so checks.py and verify.py can quote and execute it."""
+"""task162 documents: Lynmere's leakage assessment method LW-LA-04 (with Table C2 and the zone balance in section 8),
+the outcome contract's Schedule 4 for Phase 3, the planning note for the 2027-28 delivery plan, Coldbeck's Phase 3 valve
+schedule and the Thornholme outlet meter's calibration certificate. Their text is data here so checks.py and verify.py
+can quote and execute it."""
 from __future__ import annotations
 
 import datetime as dt
-import os
 import re
 
 from reportlab import rl_config
@@ -19,315 +19,252 @@ from reportlab.pdfbase.ttfonts import TTFont                                    
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
 import common as K          # noqa: E402
-import parallel as PR       # noqa: E402
-import postprocess as PP    # noqa: E402
-import records as R         # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/"
 for _n, _f in (("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
     pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-INK = colors.HexColor("#1f2328")
-GREY = colors.HexColor("#5b636b")
-ACCENT = colors.HexColor("#2b4f73")
-RULE = colors.HexColor("#b4bcc4")
-HEAD = colors.HexColor("#e6ebf0")
+INK = colors.HexColor("#1d2329")
+GREY = colors.HexColor("#5a6470")
+ACCENT = colors.HexColor("#1f5a7a")
+RULE = colors.HexColor("#b8c1c9")
+HEAD = colors.HexColor("#e5edf2")
 
-F_THREAD = "staffing_plan_q1_2027.eml"
-F_RUNBOOK = "tracker_cutover_runbook.docx"
-F_AGREEMENT = "triage_working_agreement.docx"
-F_CALENDAR = "release_calendar_2025_2027.pdf"
-DOMAIN = "usvasoftware.fi"
-
-
-def addr(name):
-    a = name.lower().replace("ä", "a").replace("ö", "o").replace("å", "a").split()
-    return "%s.%s@%s" % (a[0], a[-1], DOMAIN)
+F_METHOD = "LW-LA-04_DMA_leakage_assessment_method.pdf"
+F_SCHEDULE = "outcome_contract_schedule_4_phase3.pdf"
+F_NOTE = "2027-28_planning_assumptions.eml"
+F_VALVES = "phase3_prv_schedule_rev_C.xlsx"
+F_CERT = "TH-OUT-0417_calibration_certificate.pdf"
 
 
-def sentences(paras):
-    return [s for p in paras for s in re.split(r"(?<=\.)\s+(?=[A-Z0-9(])", p)]
+# ------------------------------------------------------------------------------------------------- LW-LA-04
+METHOD_TITLE = "District metered area leakage assessment method"
+METHOD_REF = "LW-LA-04 issue 6"
+METHOD = [
+    ("1 Scope", [
+        "This method sets how Lynmere Water assesses the leakage of each district metered area (district) from its "
+        "inlet meters and pressure loggers, month by month and for the year (1 April to 31 March). It is the "
+        "measure the leakage outcome contracts are paid on. Section 8 sets the top-down balance for a supply zone."]),
+    ("2 Records", [
+        "The assessment reads the hourly means the zone's loggers return to the telemetry archive. Times are "
+        "Greenwich Mean Time throughout the year, the loggers' own clock; each hourly mean is stamped with the start "
+        "of its hour. A district's inflow in an hour is the sum of its inlet meters' flows in that hour. Its inlet "
+        "pressure is the pressure at its principal inlet and its average zone pressure the pressure at its average "
+        "zone point, each in metres head.",
+        "Logger makes report pressure in their own unit; the logger register gives each serial's make, unit and "
+        "dates in service. A pressure of 1 bar is 10.197 metres head."]),
+    ("3 The night hour", [
+        "The night hour is 03:00 to 04:00 GMT, the hourly mean stamped 03:00. The minimum night flow is the "
+        "district's inflow in the night hour and the average zone night pressure (AZNP) its average zone pressure in "
+        "the night hour."]),
+    ("4 Night use allowance", [
+        "Legitimate night use is allowed at 1.7 litres an hour for each dwelling connected to the district that day "
+        "and 8.0 litres an hour for each non-household property connected to the district that day. The net night flow "
+        "is the minimum night flow less the allowance, in litres a second."]),
+    ("5 Valid days", [
+        "A day counts when the district's inlet and average zone point loggers each return all 24 hourly means and "
+        "the district was closed all day, every boundary valve shut so that its inlet meters carried its whole "
+        "supply. Other days are left out of the month."]),
+    ("6 The day's leakage, the month and the year", [
+        "The night-day factor of a day is the sum over its 24 hourly means of the average zone pressure divided by "
+        "that day's AZNP, each ratio raised to the district's N1 (Table C2); it is in hours. The day's leakage is "
+        "the net night flow times 3.6 times the night-day factor, in cubic metres a day, reported in megalitres a "
+        "day.",
+        "A month's leakage is the mean of its valid days. The year's leakage is the mean of its twelve months. A "
+        "group of districts is the sum of its districts."]),
+    ("7 N1", [
+        "N1 is the district's leakage exponent from Lynmere's 2023 step tests, in Table C2. It applies to the night-"
+        "day factor and to any change in a district's leakage with its pressure."]),
+    ("8 The zone's balance (top-down)", [
+        "The system input of a zone is the volume through its reservoir outlet meter, corrected by the meter's "
+        "calibration certificates for the readings before each calibration. Billed metered and billed unmetered "
+        "consumption are the volumes billed to the zone's customers, each bill apportioned to the year by days. The "
+        "zone's customers are the properties in its districts and the trunk main's direct supplies (code NZ-TM in "
+        "the property system).",
+        "Unbilled authorised use is 0.4 per cent of system input. Apparent losses are customer meter "
+        "under-registration at 2.5 per cent of billed metered consumption and unauthorised use at 0.3 per cent of "
+        "system input. Real losses are the system input less billed metered and billed unmetered consumption, "
+        "unbilled authorised use and apparent losses. Each component is reported in megalitres a day over the "
+        "year's days."]),
+]
 
 
-# ---------------------------------------------------------------------------------------------------- the thread
-THREAD_FIRST = [
-    "Hi all,",
-    "The staffing review is on Monday 21 December, so I need each team's Q1 headcount in the planning sheet by Friday "
-    "the 18th.",
-    "Ulla, triage the way we agreed in the spring: size for the expected load in the quarter's busiest week at 120 "
-    "triage items per triager-week, rounding up. Q1 for this plan is the 13 weeks Mon 4 Jan to Sun 4 Apr, weeks "
-    "Monday to Sunday, Helsinki time.",
+def method_sentences():
+    return [s for _, paras in METHOD for p in paras for s in re.split(r"(?<=\.)\s+(?=[A-Z0-9(])", p)]
+
+
+# ------------------------------------------------------------------------------------------------- Schedule 4
+SCHEDULE_TITLE = "Schedule 4: Performance, Phase 3 (Northern zone pressure management)"
+SCHEDULE = [
+    ("4.1 Districts", [
+        "Phase 3 covers the 22 district metered areas listed in Table 4.1, at the Brackenby end of the Thornholme to "
+        "Brackenby trunk main, each fitted with a pressure reducing valve at its inlet by 31 March 2027."]),
+    ("4.2 Measure", [
+        "The Phase 3 reduction is the Phase 3 districts' leakage in the 2025-26 assessment year less their leakage "
+        "in the 2027-28 assessment year (1 April 2027 to 31 March 2028), each assessed by method LW-LA-04 issue 6 "
+        "and each the sum of the districts' annual figures. The 2025-26 figures are those in Lynmere's assessment "
+        "export of 14 May 2026."]),
+    ("4.3 Target", [
+        "The Phase 3 target reduction is 0.48 Ml/d."]),
+    ("4.4 Shortfall", [
+        "Where the Partner's delivery plan forecasts a Phase 3 reduction under the target, the plan instructs "
+        "find-and-fix in the Phase 3 districts for 2027-28 to make up the shortfall, at 0.05 Ml/d of sustained "
+        "reduction for each find-and-fix gang-year, rounded up to whole gang-years. The 2027-28 delivery plan is "
+        "due to Lynmere by 30 November 2026."]),
+]
+
+
+def schedule_sentences():
+    return [s for _, paras in SCHEDULE for p in paras for s in re.split(r"(?<=\.)\s+(?=[A-Z0-9(])", p)]
+
+
+# ------------------------------------------------------------------------------------------------- the planning note
+NOTE_SUBJECT = "2027-28 delivery plan: planning assumptions"
+NOTE_DATE = dt.datetime(2026, 10, 19, 14, 6)
+NOTE_BODY = [
+    "Emily,",
+    "For the 2027-28 delivery plan please take each Phase 3 district's demand and pressures in each month of "
+    "2027-28 as they were recorded in the same month of 2025-26, the year of the assessment export, with no growth. "
+    "The valves are in service for the whole of 2027-28 at the settings in Annette's Phase 3 schedule (rev C).",
+    "Louis has sent the 2025-26 telemetry extract for the whole zone and the assessment export for the Phase 3 "
+    "districts. The property and billing extracts are the North region's as at 2 November.",
     "Thanks,",
-    "Juhani",
+    "",
+    "Clive Heath",
+    "Contract Manager, Leakage Outcome Contracts",
+    "Lynmere Water",
 ]
-THREAD_REPLY = [
-    "Juhani,",
-    "Will do. Remember the count changes at the cutover: triage items are counted the way Ritva's runbook sets out, so "
-    "the number won't line up with the old dashboard's new defects. You'll have it tomorrow.",
-    "Ulla",
+
+
+def note_sentences():
+    return [s for p in NOTE_BODY for s in re.split(r"(?<=\.)\s+(?=[A-Z0-9(])", p)]
+
+
+# ------------------------------------------------------------------------------------------------- the valve schedule
+VALVE_BASIS = ("Fixed-outlet pressure reducing valves at each district's principal inlet. Settings hold 20 m at the "
+               "district's critical point at its design peak hour (the 2025-26 peak hour flow grown to the 2035 "
+               "demand, with an 8 l/s fire flow drawn at the critical point). Settings are metres head at the valve "
+               "outlet, the point the district's inlet logger reads. Each valve is sized to pass its district's peak "
+               "hour flow with under 0.1 m head loss.")
+VALVE_COLS = ["District", "Name", "Valve", "Type", "Outlet setting (m)", "AZNP 2025-26 (m)",
+              "AZNP after commissioning (m)", "Commissioning week"]
+
+CERT_TEXT = [
+    "Instrument: electromagnetic flow meter TH-OUT-0417, DN600, Thornholme service reservoir outlet.",
+    "Calibration date: 12 November 2025. Method: in-situ verification against a clamp-on reference over 72 hours.",
+    "As found: reading 1.4 per cent low across the flow range. As left: within 0.5 per cent after re-zeroing and "
+    "coil re-calibration.",
+    "Readings from the last calibration (9 October 2024) to this one should be corrected for the as-found error.",
 ]
-THREAD_SENTENCES = sentences(THREAD_FIRST + THREAD_REPLY)
 
 
-def _wrap(p, width=76):
-    words, lines, cur = p.split(), [], ""
-    for w in words:
-        if cur and len(cur) + 1 + len(w) > width:
-            lines.append(cur)
-            cur = w
-        else:
-            cur = (cur + " " + w) if cur else w
-    if cur:
-        lines.append(cur)
-    return lines
+# ------------------------------------------------------------------------------------------------- PDF writing
+def _styles():
+    return dict(
+        title=ParagraphStyle("t", fontName="LibSans-Bold", fontSize=15, leading=19, textColor=INK, spaceAfter=4),
+        sub=ParagraphStyle("s", fontName="LibSans", fontSize=9, leading=12, textColor=GREY, spaceAfter=10),
+        h=ParagraphStyle("h", fontName="LibSans-Bold", fontSize=10.5, leading=14, textColor=ACCENT, spaceBefore=8,
+                         spaceAfter=3),
+        p=ParagraphStyle("p", fontName="LibSans", fontSize=9.5, leading=13.2, textColor=INK, spaceAfter=5),
+        cell=ParagraphStyle("c", fontName="LibSans", fontSize=8.5, leading=10.5, textColor=INK),
+    )
 
 
-def thread_text():
-    P = K.PEOPLE
-    import quopri
-    body = []
-    for p in THREAD_REPLY:
-        body += _wrap(p) + [""]
-    body += ["-- ", "Ulla Kauppinen", "Triage team lead, Usva Software Oy", ""]
-    body.append("On Mon, 7 Dec 2026 at 9.14, %s <%s> wrote:" % (P["director"], addr(P["director"])))
-    for p in THREAD_FIRST:
-        body += ["> " + ln for ln in _wrap(p, 74)] + [">"]
-    text = "\r\n".join(body[:-1]) + "\r\n"
-    qp = quopri.encodestring(text.encode("utf-8")).decode("ascii")
-    qp = qp.replace("\r\n", "\n").replace("\n", "\r\n")
-    hdr = [
-        "Return-Path: <%s>" % addr(P["lead"]),
-        "Message-ID: <CAF8u2Rk1qZt7wYd3pHn0vLs5mXe9cGb4Q@mail.%s>" % DOMAIN,
-        "In-Reply-To: <CAD4n6Vh2sPq8kLz5tWr1yNc7bJm3eFa0X@mail.%s>" % DOMAIN,
-        "References: <CAD4n6Vh2sPq8kLz5tWr1yNc7bJm3eFa0X@mail.%s>" % DOMAIN,
-        "Date: Thu, 17 Dec 2026 16:12:48 +0200",
-        "From: %s <%s>" % (P["lead"], addr(P["lead"])),
-        "To: %s <%s>" % (P["director"], addr(P["director"])),
-        "Cc: %s <%s>" % (P["migration"], addr(P["migration"])),
-        "Subject: Re: Q1 headcount for the staffing review",
-        "MIME-Version: 1.0",
-        "Content-Type: text/plain; charset=\"UTF-8\"",
-        "Content-Transfer-Encoding: quoted-printable",
-    ]
-    return "\r\n".join(hdr) + "\r\n\r\n" + qp
-
-
-# ---------------------------------------------------------------------------------------------------- the runbook
-RUNBOOK = [
-    ("Dates", [
-        "The old tracker stops taking reports at 23:59 on Sunday 3 January 2027 and is read-only from then. The new "
-        "tracker is the system of record from 00:00 on Monday 4 January 2027, Helsinki time, and the report form posts "
-        "to it from then.",
-    ]),
-    ("What is migrated", [
-        "Open reports migrate in the cutover night with their state, components, priority and links, and keep their old "
-        "bug number in Legacy bug. Migrated reports keep their state and are not new triage items. Closed reports stay "
-        "on the old tracker, read-only.",
-        "The trial migration of 23 October loaded the open reports of that day as BRW-1 to BRW-23460, so that the "
-        "parallel run's duplicates had reports to link to. The cutover load replaces them.",
-    ]),
-    ("Intake from the cutover", [
-        "The report form posts to the Browser intake project (BRW). Every report filed through the report form is a "
-        "triage item, duplicates included: a duplicate is triaged like any other report and closed with a duplicates "
-        "link to the report it repeats. A report is counted in the week it is filed.",
-        "Reports in the security group go to the security team's queue and are not triage items. Spam caught by the "
-        "form's filter never reaches the queue.",
-        "A report the team moves to another team's project during triage stays a triage item. The form takes reports "
-        "from release, beta and nightly builds, and each is a triage item whatever version the reporter runs.",
-        "Reports filed with the Report a site issue tool go to the web-compatibility team's project (WEBC), on the new "
-        "tracker since the April pilot, and are not triage items.",
-        "Until the cutover the team counts from the old tracker's weekly triage export: every report filed through the "
-        "form there and no other, wherever the report sits now.",
-    ]),
-    ("The parallel run, 2 to 29 November 2026", [
-        "Reporters kept filing on the old tracker. From 00:00 on Monday 2 November the bridge (service account "
-        "tracker-bridge) copied the reports into the new tracker, form reports to BRW and site reports to WEBC, each "
-        "with its old bug number. The triage team worked the run's reports on the new tracker.",
-        "On Monday 30 November the bridge was switched off, and the old tracker's copies of the run's reports were "
-        "closed RESOLVED MOVED and put in the Archive product. The run was exported from the new tracker on "
-        "4 December.",
-    ]),
-    ("Cutover night, 3 to 4 January", [
-        "22:00 Ritva Grönroos: last check of the component and version mapping against the old tracker.",
-        "23:59 Old tracker read-only; the bridge's last copy.",
-        "00:15 Load of the open reports; counts checked product by product against the old tracker.",
-        "02:30 The report form switched to the new tracker; test report filed and closed.",
-        "07:30 Triage team starts on the new tracker.",
-    ]),
-]
-RUNBOOK_SENTENCES = sentences([p for _, ps in RUNBOOK for p in ps])
-
-AGREEMENT = [
-    ("Duty", [
-        "Triage runs on weekdays from 08:00 to 16:30 with the people on the rota, and on Saturdays from 10:00 to 14:00 "
-        "with one person on cover. Sundays have no cover.",
-    ]),
-    ("The queue", [
-        "New reports come into Browser intake (BRW) in New. Take the oldest first. A report that needs another look can "
-        "wait, but try not to leave it past the next working day.",
-        "Set Triaged with a priority, P1 to P4, and the report's component. A report that spans two areas gets both "
-        "components.",
-        "Close a duplicate with a duplicates link to the report it repeats, and other reports with a resolution. Move "
-        "site problems to Web compatibility (WEBC). Reports restricted to the security team are theirs.",
-    ]),
-    ("What we measure", [
-        "A triage action is a change by one of the rota's triagers to a report's status, resolution, component or "
-        "priority, or a move of the report to another team's project. The target is a triage action on every report "
-        "within 24 hours of its filing.",
-        "A report is closed when it is in Resolved or Closed, or sits in another team's project.",
-        "Weeks run Monday to Sunday, Helsinki time, and a report belongs to the week it is filed in. The parallel run's "
-        "reports are those filed from 00:00 on Monday 2 November to 23:59 on Sunday 29 November.",
-        "Component groups are in the component register. A group's intake is the reports that arrive in its "
-        "components, each report counted once, in the group of the component it comes in with; a component set in "
-        "triage does not change where a report arrived.",
-    ]),
-]
-AGREEMENT_SENTENCES = sentences([p for _, ps in AGREEMENT for p in ps])
-
-
-def _page_field(par):
-    from docx.oxml import OxmlElement
-    from docx.oxml.ns import qn
-    for kind, text in (("begin", None), (None, " PAGE "), ("separate", None), (None, "1"), ("end", None)):
-        r = par.add_run()
-        if kind:
-            fc = OxmlElement("w:fldChar")
-            fc.set(qn("w:fldCharType"), kind)
-            r._r.append(fc)
-        elif text.strip() == "PAGE":
-            it = OxmlElement("w:instrText")
-            it.set(qn("xml:space"), "preserve")
-            it.text = text
-            r._r.append(it)
-        else:
-            r.text = text
-
-
-def _word(path, title, byline, sections, footer, steps_section=None):
-    import docx
-    from docx.shared import Cm, Pt, RGBColor
-    doc = docx.Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    st.paragraph_format.space_after = Pt(6)
-    sec = doc.sections[0]
-    sec.page_width, sec.page_height = Cm(21.0), Cm(29.7)
-    sec.left_margin = sec.right_margin = Cm(2.3)
-    sec.top_margin, sec.bottom_margin = Cm(2.0), Cm(2.0)
-    fp = sec.footer.paragraphs[0]
-    fp.text = footer + ", page "
-    _page_field(fp)
-    for r in fp.runs:
-        r.font.size = Pt(8)
-        r.font.color.rgb = RGBColor(0x5B, 0x63, 0x6B)
-    blue = RGBColor(0x2B, 0x4F, 0x73)
-    p = doc.add_paragraph()
-    r = p.add_run(title)
-    r.bold = True
-    r.font.size = Pt(15)
-    r.font.color.rgb = blue
-    p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(12)
-    r = p.add_run(byline)
-    r.font.size = Pt(9)
-    r.font.color.rgb = RGBColor(0x5B, 0x63, 0x6B)
-    for head, paras in sections:
-        p = doc.add_paragraph()
-        p.paragraph_format.space_before = Pt(8)
-        p.paragraph_format.space_after = Pt(3)
-        r = p.add_run(head)
-        r.bold = True
-        r.font.size = Pt(11)
-        r.font.color.rgb = blue
-        if head == steps_section:
-            t = doc.add_table(rows=0, cols=2)
-            t.style = "Table Grid"
-            for s in paras:
-                when, what = s.split(" ", 1)
-                row = t.add_row().cells
-                row[0].text = when
-                row[1].text = what
-                row[0].width = Cm(1.8)
-                row[1].width = Cm(14.6)
-            continue
-        for tx in paras:
-            doc.add_paragraph(tx)
-    doc.save(path)
-
-
-def write_runbook(path):
-    _word(path, "New tracker cutover runbook", "Tracker migration. Ritva Grönroos, version 1.5, 7 December 2026.",
-          RUNBOOK, "Usva Software Oy, tracker migration, cutover runbook", steps_section="Cutover night, 3 to 4 January")
-
-
-def write_agreement(path):
-    _word(path, "Triage on the new tracker", "Working agreement of the triage team, from the parallel run on. "
-          "Ulla Kauppinen, 28 October 2026.", AGREEMENT, "Usva Software Oy, triage team, working agreement")
-
-
-# ---------------------------------------------------------------------------------------------------- calendar
-def calendar_rows():
-    rows = []
-    for i, (m, d) in enumerate(K.RELEASES):
-        beta = K.RELEASES[i - 1][1] if i > 0 else dt.date(2025, 6, 17)
-        dots = ", ".join("%d.0.%d %s" % (m, n, K.fi_date(dd)) for n, dd in K.DOTS.get(m, []))
-        status = "planned" if d > K.AS_OF else "released"
-        rows.append((m, beta, d, dots, status))
-    return rows
-
-
-def write_calendar(path):
-    st = dict(
-        h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=15, leading=19, textColor=ACCENT, spaceAfter=3),
-        sub=ParagraphStyle("sub", fontName="LibSans", fontSize=8.8, leading=11.6, textColor=GREY, spaceAfter=10),
-        body=ParagraphStyle("b", fontName="LibSans", fontSize=9.6, leading=13, textColor=INK, spaceAfter=6),
-        cell=ParagraphStyle("c", fontName="LibSans", fontSize=8.4, leading=10.4, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName="LibSans-Bold", fontSize=8.4, leading=10.4, textColor=INK),
-        small=ParagraphStyle("sm", fontName="LibSans", fontSize=7.9, leading=10.2, textColor=GREY, spaceAfter=4))
-    s = [Paragraph("Usva release calendar 2025 to 2027", st["h1"]),
-         Paragraph("Release management, Timo Huttunen. Updated 3.12.2026.", st["sub"]),
-         Paragraph("Release builds go out on the release channel at 16:00 Helsinki time on the release day. A version "
-                   "is on the beta channel from the previous release day until its own release.", st["body"])]
-    head = ["Version", "Beta from", "Release", "Point releases", ""]
-    data = [[Paragraph(h, st["cellb"]) for h in head]]
-    for m, beta, d, dots, status in calendar_rows():
-        data.append([Paragraph("%d.0" % m, st["cell"]), Paragraph(K.fi_date(beta), st["cell"]),
-                     Paragraph(K.fi_date(d), st["cell"]), Paragraph(dots or "", st["cell"]),
-                     Paragraph(status if status == "planned" else "", st["cell"])])
-    t = Table(data, colWidths=[1.7 * cm, 2.3 * cm, 2.3 * cm, 7.4 * cm, 1.8 * cm], repeatRows=1)
-    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("BACKGROUND", (0, 0), (-1, 0), HEAD), ("TOPPADDING", (0, 0), (-1, -1), 2.2),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2)]))
-    s.append(t)
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Dates are d.m.yyyy. Planned dates can move; point releases are planned only for the next "
-                       "version.", st["small"]))
-
-    def foot(canvas, doc):
+def _footer(text):
+    def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFont("LibSans", 7.4)
+        canvas.setFont("LibSans", 7.5)
         canvas.setFillColor(GREY)
-        canvas.drawString(2.0 * cm, 1.2 * cm, "Usva Software Oy  |  Release management  |  Release calendar")
-        canvas.drawRightString(A4[0] - 2.0 * cm, 1.2 * cm, "Page %d" % doc.page)
+        canvas.drawString(2 * cm, 1.2 * cm, text)
+        canvas.drawRightString(A4[0] - 2 * cm, 1.2 * cm, "Page %d" % doc.page)
         canvas.restoreState()
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=2.0 * cm, rightMargin=2.0 * cm, topMargin=1.8 * cm,
-                            bottomMargin=1.8 * cm, title="Usva release calendar 2025 to 2027", author=K.PEOPLE["release"],
+    return draw
+
+
+def _table(rows, widths):
+    st = _styles()
+    data = [[Paragraph(str(c), st["cell"]) for c in r] for r in rows]
+    t = Table(data, colWidths=widths, repeatRows=1)
+    t.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), HEAD), ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE),
+                           ("LINEBELOW", (0, 1), (-1, -1), 0.25, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                           ("TOPPADDING", (0, 0), (-1, -1), 2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
+    return t
+
+
+def write_method(path, n1_rows):
+    st = _styles()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=2 * cm, rightMargin=2 * cm, topMargin=1.8 * cm,
+                            bottomMargin=1.8 * cm, title=METHOD_TITLE, author=K.PEOPLE["leakage"],
                             subject="", creator="", producer="")
-    doc.build(s, onFirstPage=foot, onLaterPages=foot)
+    flow = [Paragraph("Lynmere Water", st["sub"]), Paragraph(METHOD_TITLE, st["title"]),
+            Paragraph("%s, effective 1 April 2025. Owner: %s, Leakage Analysis." % (METHOD_REF, K.PEOPLE["leakage"]),
+                      st["sub"])]
+    for head, paras in METHOD:
+        flow.append(Paragraph(head, st["h"]))
+        for p in paras:
+            flow.append(Paragraph(p, st["p"]))
+        if head.startswith("7"):
+            flow.append(Spacer(1, 4))
+            flow.append(Paragraph("Table C2. N1 by district", st["cell"]))
+            rows = [["District", "Name", "N1", "District", "Name", "N1"]]
+            half = (len(n1_rows) + 1) // 2
+            for i in range(half):
+                a = n1_rows[i]
+                b = n1_rows[i + half] if i + half < len(n1_rows) else ["", "", ""]
+                rows.append([a[0], a[1], "%.2f" % a[2], b[0], b[1], ("%.2f" % b[2]) if b[0] else ""])
+            flow.append(_table(rows, [1.6 * cm, 3.9 * cm, 1.2 * cm, 1.6 * cm, 3.9 * cm, 1.2 * cm]))
+    doc.build(flow, onFirstPage=_footer("%s  |  Uncontrolled when printed" % METHOD_REF),
+              onLaterPages=_footer("%s  |  Uncontrolled when printed" % METHOD_REF))
 
 
-def write_all(out, n):
-    p = lambda f: os.path.join(out, f)
-    with open(p(F_THREAD), "w", encoding="utf-8", newline="") as fh:
-        fh.write(thread_text())
-    write_runbook(p(F_RUNBOOK))
-    write_agreement(p(F_AGREEMENT))
-    write_calendar(p(F_CALENDAR))
-    P = K.PEOPLE
-    PP.normalize_pdf(p(F_CALENDAR), b"D:20261203141100+02'00'", b"D:20261203141100+02'00'")
-    PP.normalize_docx(p(F_RUNBOOK), P["migration"], P["migration"], "2026-10-09T11:20:00Z", "2026-12-07T09:18:00Z",
-                      revision=15, total_time=431, seed="task162/runbook", title="New tracker cutover runbook",
-                      company=K.VENDOR)
-    PP.normalize_docx(p(F_AGREEMENT), P["lead"], P["lead"], "2026-10-27T13:05:00Z", "2026-10-28T08:31:00Z",
-                      revision=5, total_time=63, seed="task162/agreement", title="Triage on the new tracker",
-                      company=K.VENDOR)
+def write_schedule(path, districts):
+    st = _styles()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=2 * cm, rightMargin=2 * cm, topMargin=1.8 * cm,
+                            bottomMargin=1.8 * cm, title=SCHEDULE_TITLE, author=K.PEOPLE["contract"],
+                            subject="", creator="", producer="")
+    flow = [Paragraph("Leakage Outcome Contract LW/LOC/2024/07 between Lynmere Water and Coldbeck Network Partners Ltd",
+                      st["sub"]), Paragraph(SCHEDULE_TITLE, st["title"]),
+            Paragraph("Variation 3, signed 2 September 2026", st["sub"])]
+    for head, paras in SCHEDULE:
+        flow.append(Paragraph(head, st["h"]))
+        for p in paras:
+            flow.append(Paragraph(p, st["p"]))
+        if head.startswith("4.1"):
+            rows = [["District", "Name", "District", "Name"]]
+            half = (len(districts) + 1) // 2
+            for i in range(half):
+                b = districts[i + half] if i + half < len(districts) else ("", "")
+                rows.append([districts[i][0], districts[i][1], b[0], b[1]])
+            flow.append(Paragraph("Table 4.1. Phase 3 districts", st["cell"]))
+            flow.append(_table(rows, [1.8 * cm, 5.2 * cm, 1.8 * cm, 5.2 * cm]))
+    doc.build(flow, onFirstPage=_footer("LW/LOC/2024/07 Schedule 4 (Variation 3)"),
+              onLaterPages=_footer("LW/LOC/2024/07 Schedule 4 (Variation 3)"))
+
+
+def write_certificate(path):
+    st = _styles()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=2 * cm, rightMargin=2 * cm, topMargin=2 * cm,
+                            bottomMargin=2 * cm, title="Calibration certificate TH-OUT-0417", author="Fenwold Flow Services",
+                            subject="", creator="", producer="")
+    flow = [Paragraph("Fenwold Flow Services Ltd", st["sub"]), Paragraph("Certificate of verification FFS-25-1182",
+                                                                         st["title"]),
+            Paragraph("Customer: Lynmere Water, Northern zone operations", st["sub"])]
+    for line in CERT_TEXT:
+        flow.append(Paragraph(line, st["p"]))
+    flow.append(Spacer(1, 8))
+    flow.append(_table([["Test point", "Reference (l/s)", "Meter (l/s)", "Error"],
+                        ["Low", "112.40", "110.82", "-1.41%"], ["Mid", "236.90", "233.58", "-1.40%"],
+                        ["High", "389.10", "383.69", "-1.39%"]], [3.5 * cm, 3.5 * cm, 3.5 * cm, 3 * cm]))
+    doc.build(flow, onFirstPage=_footer("FFS-25-1182"), onLaterPages=_footer("FFS-25-1182"))
+
+
+def write_note(path):
+    frm = "%s <%s>" % (K.PEOPLE["contract"], K.addr(K.PEOPLE["contract"]))
+    to = "%s <%s>" % (K.PEOPLE["delivery"], K.addr(K.PEOPLE["delivery"], K.CB_DOMAIN))
+    cc = "%s <%s>" % (K.PEOPLE["leakage"], K.addr(K.PEOPLE["leakage"]))
+    body = "\r\n".join(NOTE_BODY) + "\r\n"
+    hdr = ["Message-ID: <%s.%s@%s>" % (K.token("note", n=12), K.token("note2", n=6), K.LW_DOMAIN),
+           "Date: Mon, 19 Oct 2026 14:06:41 +0100",
+           "From: %s" % frm, "To: %s" % to, "Cc: %s" % cc, "Subject: %s" % NOTE_SUBJECT,
+           "MIME-Version: 1.0", "Content-Type: text/plain; charset=\"utf-8\"", "Content-Transfer-Encoding: 8bit", ""]
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write("\r\n".join(hdr) + "\r\n" + body)

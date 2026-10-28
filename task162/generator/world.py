@@ -1,353 +1,241 @@
-"""task162 world: the browser's installs by platform, its adoption of every release (each install takes an update at
-its next browser restart; on Windows most installs restart in the two days after Patch Tuesday), the reports users file
-(a baseline that follows active installs, and first-use reports that follow the installs reaching a new version), the
-duplicates among them, and the record's weekly truth. The parallel run on the new tracker is built in parallel.py.
+"""task162 truth: the Northern zone hour by hour (GMT), 1 April 2025 to 31 March 2026. Nothing here is shipped.
 
-Everything here is the clean truth: the files are cut from it in records.py, docs.py and parallel.py, and the golden is
-computed from the shipped files in calc.py, never from these variables."""
+Thornholme service reservoir (top water level 128 m AOD) feeds the Thornholme to Brackenby trunk main. Each district's
+inlet pressure is the reservoir's head less the inlet's ground level less the trunk main's loss to the off-take, which
+grows with the main's flow (to its 1.85 power) and with the off-take's distance down the main. The main's flow is the
+zone's household demand plus Brackenby Paper Mill's two weekday shifts (06:00 to 22:00 local), so on working days the
+far districts' inlets sit well under their night level from the morning into the evening. Each district's average
+zone pressure and critical point pressure fall further with its own flow. Leakage follows FAVAD: background leakage
+and every running burst scale with the average zone pressure to the district's N1.
+
+Phase 3's 22 districts get fixed-outlet valves whose settings come from Coldbeck's design rule (20 m at the critical
+point at the design peak, the record's peak flow grown to 2035 with an 8 l/s fire flow drawn at the critical point).
+The twelve districts nearer Thornholme (outside Phase 3) carry the year's ordinary changes: new homes connected,
+NZ04's second inlet still logged under its retired code NZ04A, and nine January days when NZ09 was fed through NZ10."""
 from __future__ import annotations
 
 import datetime as dt
-import math
 
 import numpy as np
 
 import common as K
 
-PLATFORMS = ("Windows", "macOS", "Linux")
-# install base (installs active in a typical week) at the 1 March 2027 trend level, before seasonality
-BASE_INSTALLS = {"Windows": 5.10e6, "macOS": 1.30e6, "Linux": 0.46e6}
-GROWTH = 0.04                      # a year
-SEASON_AMP, SEASON_PEAK = 0.07, 75  # day of year
-ACTIVITY = (1.0, 1.0, 1.0, 1.0, 1.0, 0.80, 0.77)   # weekday shares of the base active on a day
-ORGANIC = {"Windows": 0.120, "macOS": 0.110, "Linux": 0.100}   # share of pending installs restarting into the update, a full weekday
-BURST = (0.55, 0.42)               # Windows: share of pending installs updating on the Wednesday and Thursday after Patch Tuesday
-KERNEL = (0.62, 0.22, 0.09, 0.04, 0.02, 0.01)   # first-use reports by days since the install reached the version
-FIRST_USE = 747.0                  # first-use reports if the whole 1 March 2027 base reached one release
-RHO_CV = 0.05
-BASELINE_WEEK = 333.0              # baseline reports in the week of 8 March 2027
-PROPENSITY = {"Windows": 1.00, "macOS": 1.15, "Linux": 2.10}   # baseline reports per active install, relative
-SECURITY_SHARE = 0.031
-HOUR_W = np.array([2.0, 1.4, 1.0, 0.8, 0.8, 1.0, 1.4, 2.0, 2.8, 3.4, 3.8, 4.0, 4.1, 4.2, 4.3, 4.4, 4.6, 4.9, 5.3, 5.6,
-                   5.6, 5.0, 4.0, 2.9])
-HOUR_W = HOUR_W / HOUR_W.sum()
+START = K.YEAR_START
+END = K.YEAR_END
+HOURS = int((END - START).total_seconds() // 3600)
+DAYS = HOURS // 24
+TWL = 128.0
+DESIGN_GROWTH = 1.10
+DESIGN_CP = 20.0
+EXISTING_MIN = 10.0
+OPEN_BOUNDARY = (dt.date(2026, 1, 12), dt.date(2026, 1, 21))   # NZ09 fed through NZ10 (repair at NZ09's inlet), days [a, b)
+METER_REG = 0.978         # customer meters' registration on the true use
+MILL_LPS = 167.804        # Brackenby Paper Mill's draw on shift, l/s       | the zone balance's three calibration
+TRUNK_LOSS = 0.3228       # the trunk main's own losses, Ml/d               | knobs, from tune.py's balance run
+BAND_SHIFT = 0.00595      # unmeasured households in band 3 not band 2      | (every Ask B figure mid-bin)
+LEAK_TUNE = {   # per-district multipliers on background leakage, from tune.py (every graded figure mid-bin)
+    "NZ01": 0.9997, "NZ02": 1.0008, "NZ03": 1.0002, "NZ04": 1.0008, "NZ05": 1.0034, "NZ06": 0.997,
+    "NZ07": 0.9992, "NZ08": 1.0048, "NZ09": 1.0034, "NZ10": 0.9975, "NZ11": 0.9997, "NZ12": 0.9965,
+    "NZ13": 1.0, "NZ14": 1.0, "NZ15": 1.0, "NZ16": 1.0, "NZ17": 1.0, "NZ18": 1.0,
+    "NZ19": 1.0, "NZ20": 1.0, "NZ21": 1.0, "NZ22": 1.0, "NZ23": 1.0, "NZ24": 1.0,
+    "NZ25": 1.0, "NZ26": 1.0, "NZ27": 1.0, "NZ28": 1.0, "NZ29": 1.0, "NZ30": 1.0,
+    "NZ31": 1.0, "NZ32": 1.0, "NZ33": 1.0, "NZ34": 1.0,
+}
 
-DAYS = [K.SIM_START + dt.timedelta(days=i) for i in range((K.SIM_END - K.SIM_START).days + 1)]
-IDX = {d: i for i, d in enumerate(DAYS)}
-
-
-def season(d):
-    doy = d.timetuple().tm_yday
-    s = 1 + SEASON_AMP * math.cos(2 * math.pi * (doy - SEASON_PEAK) / 365.25)
-    return s
-
-
-def trend(d):
-    return (1 + GROWTH) ** ((d - dt.date(2027, 3, 1)).days / 365.25)
-
-
-def base(d, p):
-    return BASE_INSTALLS[p] * trend(d) * season(d)
-
-
-def activity(d):
-    a = ACTIVITY[d.weekday()]
-    if K.year_end(d):
-        a *= 0.66
-    elif K.easter(d):
-        a *= 0.86
-    return a
-
-
-def dai(d, p):
-    return base(d, p) * activity(d)
-
-
-def restart_factor(d):
-    f = 0.8 if d.weekday() >= 5 else 1.0
-    if K.year_end(d):
-        f *= 0.6
-    return f
-
-
-def burst_today(d):
-    for pt in K.PATCH_TUESDAYS:
-        k = (d - pt).days
-        if k in (1, 2):
-            return BURST[k - 1]
-    return 0.0
-
-
-def version_events():
-    """(date, major, dot) for every release and dot release, in order."""
-    ev = [(d, m, 0) for m, d in K.RELEASES]
-    for m, dots in K.DOTS.items():
-        ev += [(d, m, n) for n, d in dots]
-    return sorted(ev)
-
-
-def vstr(m, n):
-    return "%d.0" % m if n == 0 else "%d.0.%d" % (m, n)
-
-
-class Adoption:
-    """Per platform and day: the share of the base on each version at the end of the day, and the share that reached
-    each major that day (installs moving from an older major; a dot update inside a major is not a new major)."""
-
-    def __init__(self):
-        ev = version_events()
-        self.share = {p: [] for p in PLATFORMS}        # list of dicts version -> share at end of day
-        self.reach = {p: {m: np.zeros(len(DAYS)) for m, _ in K.RELEASES} for p in PLATFORMS}
-        self.reach_hours = {}
-        for p in PLATFORMS:
-            state = {"30.0.2": 0.62, "30.0.1": 0.21, "29.0.1": 0.11, "28.0.1": 0.06}
-            newest = (30, 2)
-            for i, d in enumerate(DAYS):
-                todays = [(m, n) for (dd, m, n) in ev if dd == d]
-                half = False
-                for m, n in todays:
-                    newest = (m, n)
-                    half = True
-                nv = vstr(*newest)
-                pend = {v: s for v, s in state.items() if v != nv}
-                h = ORGANIC[p] * restart_factor(d) * (0.5 if half else 1.0)
-                keep = 1 - h
-                if p == "Windows":
-                    b = burst_today(d)
-                    if b:
-                        keep *= (1 - b)
-                conv = 1 - keep
-                moved_major = 0.0
-                for v, s in pend.items():
-                    a = s * conv
-                    state[v] = s - a
-                    state[nv] = state.get(nv, 0.0) + a
-                    if int(v.split(".")[0]) < newest[0]:
-                        moved_major += a
-                if newest[0] in self.reach[p]:
-                    self.reach[p][newest[0]][i] += moved_major
-                state = {v: s for v, s in state.items() if s > 1e-9}
-                self.share[p].append(dict(state))
-
-
-class Truth:
-    pass
-
-
-def simulate():
-    T = Truth()
-    T.adopt = Adoption()
-    r = K.rng("rho")
-    T.rho = {m: FIRST_USE / sum(BASE_INSTALLS.values()) * math.exp(r.normal(0, RHO_CV) - RHO_CV ** 2 / 2)
-             for m, _ in K.RELEASES}
-    # expected first-use reports per day and platform, by major
-    n = len(DAYS)
-    T.first_use = {p: {m: np.zeros(n) for m, _ in K.RELEASES} for p in PLATFORMS}
-    for p in PLATFORMS:
-        for m, _ in K.RELEASES:
-            reach = T.adopt.reach[p][m]
-            for i in np.nonzero(reach)[0]:
-                installs = reach[i] * base(DAYS[i], p)
-                for k, kv in enumerate(KERNEL):
-                    if i + k < n:
-                        T.first_use[p][m][i + k] += installs * T.rho[m] * kv
-    # baseline: scaled so the week of 8 March 2027 carries BASELINE_WEEK
-    wk = [dt.date(2027, 3, 8) + dt.timedelta(days=j) for j in range(7)]
-    raw = sum(dai(d, p) * PROPENSITY[p] for d in wk for p in PLATFORMS)
-    T.base_rate = BASELINE_WEEK / raw
-    T.baseline = {p: np.array([dai(d, p) * PROPENSITY[p] * T.base_rate for d in DAYS]) for p in PLATFORMS}
-    return T
-
-
-def weekly_expected(T, monday):
-    """Expected reports (security reports included) in the Monday-to-Sunday week."""
-    tot = 0.0
-    for j in range(7):
-        i = IDX[monday + dt.timedelta(days=j)]
-        for p in PLATFORMS:
-            tot += T.baseline[p][i] + sum(T.first_use[p][m][i] for m in T.first_use[p])
-    return tot
-
-
-if __name__ == "__main__":
-    T = simulate()
-    for wkday in [dt.date(2026, 1, 12), dt.date(2026, 3, 9), dt.date(2026, 11, 9), dt.date(2027, 1, 11),
-                  dt.date(2027, 2, 8), dt.date(2027, 3, 8)]:
-        print(wkday, round(weekly_expected(T, wkday) * (1 - SECURITY_SHARE), 1))
-
-
-# ------------------------------------------------------------------------------------------------- the old tracker
-# products and components as the old tracker files them, with the area the dashboard groups them in, the weight of
-# baseline reports landing there, and the weight of a release's regressions landing there
-COMPONENTS = [
-    # product, component, baseline weight, regression weight
-    ("Engine", "Layout", 9.0, 9.0), ("Engine", "CSS", 5.0, 5.0), ("Engine", "Fonts and Text", 3.0, 2.5),
-    ("Engine", "Graphics", 5.5, 7.0), ("Engine", "Images", 2.0, 1.5), ("Engine", "Audio and Video", 5.0, 5.5),
-    ("Engine", "WebRTC", 2.0, 2.0), ("Engine", "Networking", 5.0, 4.5), ("Engine", "DNS and Proxy", 1.5, 1.0),
-    ("Engine", "TLS and Certificates", 1.5, 1.0), ("Engine", "JavaScript", 4.5, 4.0), ("Engine", "WebAssembly", 1.0, 0.8),
-    ("Engine", "DOM", 4.0, 3.5),
-    ("Shell", "Tabs and Windows", 7.0, 8.0), ("Shell", "Address Bar", 6.0, 7.0), ("Shell", "Settings", 3.5, 3.5),
-    ("Shell", "Downloads", 2.5, 2.0), ("Shell", "Bookmarks and History", 3.0, 2.5), ("Shell", "Passwords", 2.0, 2.0),
-    ("Shell", "Privacy Protections", 3.0, 3.0), ("Shell", "Sync", 2.0, 1.5),
-    ("Extensions", "Extension API", 3.5, 4.0), ("Extensions", "Extension Store", 1.5, 1.0),
-    ("DevTools", "Inspector", 1.8, 1.5), ("DevTools", "Console and Debugger", 1.6, 1.2), ("DevTools", "Network Monitor", 0.9, 0.7),
-    ("Install and Update", "Installer", 1.2, 1.5), ("Install and Update", "Updater", 1.2, 2.0),
-    ("Install and Update", "Crash Reporter", 1.0, 1.2),
+# (code, name, chainage km, households on 1 April 2025, non-households, phase)
+DISTRICTS = [
+    ("NZ01", "Orlesby Village", 0.6, 1420, 38, 4), ("NZ02", "Kessington Lane", 1.4, 980, 21, 4),
+    ("NZ03", "Halverby Park", 2.1, 2310, 64, 4), ("NZ04", "Wrenfold", 2.9, 1170, 30, 4),
+    ("NZ05", "Stainmoor Ings", 3.6, 1640, 45, 4), ("NZ06", "Kestle Road", 4.4, 860, 17, 4),
+    ("NZ07", "Sorrelby End", 5.1, 2050, 52, 4), ("NZ08", "Cragthwaite Top", 5.9, 740, 12, 4),
+    ("NZ09", "Linmere Green", 6.6, 1310, 33, 4), ("NZ10", "Barrowside", 7.2, 1880, 47, 4),
+    ("NZ11", "Old Mill Fields", 7.9, 1020, 26, 4), ("NZ12", "Ravens Clough", 8.5, 1460, 35, 4),
+    ("NZ13", "Hepsley Moor", 9.2, 1190, 22, 3), ("NZ14", "Skelderby Bank", 9.8, 2240, 58, 3),
+    ("NZ15", "Fellstone", 10.3, 870, 14, 3), ("NZ16", "Jessop Bridge", 10.9, 1530, 39, 3),
+    ("NZ17", "Woolmere Town", 11.4, 2680, 81, 3), ("NZ18", "Hawkdale Edge", 11.9, 640, 9, 3),
+    ("NZ19", "Tolleby", 12.3, 1110, 23, 3), ("NZ20", "Underhow", 12.8, 1770, 44, 3),
+    ("NZ21", "Chapelrigg", 13.2, 980, 18, 3), ("NZ22", "Netherskell Rise", 13.7, 2390, 63, 3),
+    ("NZ23", "Thornsike Bridge", 14.1, 1650, 41, 3), ("NZ24", "Brockmere Lane", 14.6, 1240, 29, 3),
+    ("NZ25", "Hagg Wood", 15.0, 760, 11, 3), ("NZ26", "Fendyke", 15.4, 2060, 55, 3),
+    ("NZ27", "Holmwick", 15.9, 1380, 32, 3), ("NZ28", "Yarrowholme", 16.3, 590, 8, 3),
+    ("NZ29", "Austerby", 16.7, 1090, 21, 3), ("NZ30", "Wensike", 17.1, 1860, 47, 3),
+    ("NZ31", "Dimmock Edge", 17.4, 720, 13, 3), ("NZ32", "Brackenby South", 17.8, 2410, 70, 3),
+    ("NZ33", "Brackenby Moor", 18.1, 1330, 30, 3), ("NZ34", "Brackenby Town", 18.4, 3150, 96, 3),
 ]
-WEBCOMPAT_PRODUCT = ("Web Compatibility", "Site Reports")
-# share of reports in each component that the team moves to the web-compatibility team's product (site problems)
-MOVE_SHARE = {("Engine", "Layout"): 0.20, ("Engine", "CSS"): 0.22, ("Engine", "Fonts and Text"): 0.12,
-              ("Engine", "Graphics"): 0.06, ("Engine", "Images"): 0.10, ("Engine", "Audio and Video"): 0.11,
-              ("Engine", "WebRTC"): 0.07, ("Engine", "Networking"): 0.08, ("Engine", "DNS and Proxy"): 0.02,
-              ("Engine", "TLS and Certificates"): 0.06, ("Engine", "JavaScript"): 0.16, ("Engine", "WebAssembly"): 0.08,
-              ("Engine", "DOM"): 0.21, ("Shell", "Tabs and Windows"): 0.02, ("Shell", "Address Bar"): 0.03,
-              ("Shell", "Settings"): 0.01, ("Shell", "Downloads"): 0.05, ("Shell", "Bookmarks and History"): 0.01,
-              ("Shell", "Passwords"): 0.07, ("Shell", "Privacy Protections"): 0.10, ("Shell", "Sync"): 0.0,
-              ("Extensions", "Extension API"): 0.04, ("Extensions", "Extension Store"): 0.01,
-              ("DevTools", "Inspector"): 0.02, ("DevTools", "Console and Debugger"): 0.02,
-              ("DevTools", "Network Monitor"): 0.02, ("Install and Update", "Installer"): 0.0,
-              ("Install and Update", "Updater"): 0.0, ("Install and Update", "Crash Reporter"): 0.0}
-CLUSTER_SHARE = 0.56             # share of first-use reports that report one of the release's regressions
-BASE_DUP_SHARE = 0.13            # share of baseline reports duplicating a long-standing bug
-LONG_STANDING = 260              # long-standing open bugs filed before the record, drawing duplicates
-SPAM_SHARE = 0.03                # spam filed through the form, moved to the hidden product (not exported)
-WEBC_OWN_WEEK = 70.0             # reports filed directly into the web-compatibility product (its own intake; not exported)
-FIRST_ID = 1904117               # the old tracker's first bug id on 1 October 2025
-OS_MIX = {"Windows": (("Windows 11", 0.68), ("Windows 10", 0.32)),
-          "macOS": (("macOS 15", 0.55), ("macOS 14", 0.30), ("macOS 13", 0.15)),
-          "Linux": (("Linux", 1.0),)}
-SEVERITY = (("S1", 0.02), ("S2", 0.09), ("S3", 0.48), ("S4", 0.16), ("--", 0.25))
+PHASE3 = [d[0] for d in DISTRICTS if d[5] == 3]
+NEAR = [d[0] for d in DISTRICTS if d[5] == 4]
 
 
-def _pick(r, pairs):
-    names = [p[0] for p in pairs]
-    w = np.array([p[1] for p in pairs], dtype=float)
-    return names[int(r.choice(len(names), p=w / w.sum()))]
+def hour_index():
+    return [START + dt.timedelta(hours=h) for h in range(HOURS)]
 
 
-def _time_on(r, d):
-    h = int(r.choice(24, p=HOUR_W))
-    s = int(r.integers(0, 3600))
-    return dt.datetime.combine(d, dt.time(h, s // 60, s % 60))
+def diurnal(lh, weekend):
+    """Household demand shape by local hour."""
+    return (0.22 + 0.95 * np.exp(-((lh - (8.0 + 0.7 * weekend)) / 1.5) ** 2)
+            + 0.62 * np.exp(-((lh - 19.2) / 2.1) ** 2) + 0.30 * ((lh > 10) & (lh < 17)))
 
 
-def regressions(m):
-    """A release's regressions: component and reach weight."""
-    r = K.rng("regressions", m)
-    n = int(r.poisson(18))
-    comps = [(c[0], c[1]) for c in COMPONENTS]
-    w = np.array([c[3] for c in COMPONENTS])
+def district_params():
     out = []
-    for j in range(max(n, 6)):
-        k = int(r.choice(len(comps), p=w / w.sum()))
-        out.append(dict(m=m, j=j, product=comps[k][0], component=comps[k][1], reach=float(r.lognormal(0, 1.0))))
+    r = K.rng("districts")
+    for code, name, ch, hh, nhh, ph in DISTRICTS:
+        g = r.uniform(0, 1, 16)
+        p = dict(code=code, name=name, chainage=ch, households=hh, nonhh=nhh, phase=ph)
+        if ph == 3:
+            night = 62.0 + 22.0 * g[0]
+            group = "day" if int(code[2:]) % 2 == 1 or int(code[2:]) in (14, 22, 30) else "peak"
+            p["group"] = group
+            p["design_red"] = (8.0 + 3.5 * g[1]) if group == "day" else (12.0 + 6.0 * g[1])
+            p["trunk"] = None
+        else:
+            night = 46.0 + 24.0 * g[0]
+            p["group"] = None
+            p["design_red"] = None
+            p["trunk"] = 2.0 + 10.0 * (ch / 9.0) * (0.7 + 0.6 * g[2])
+        p["_g_trunk"] = g[2]
+        p["fire"] = 7.0 + 4.0 * g[3]
+        p["cp_loss"] = 4.0 + 5.0 * g[4]
+        p["ground"] = TWL - night
+        p["night_static"] = night
+        p["azp_dz"] = -4.0 + 8.0 * g[5]
+        p["azp_loss"] = 0.8 + 2.4 * g[6]
+        p["n1"] = round(0.90 + 0.70 * g[7], 2)
+        p["percap"] = 300.0 + 60.0 * g[9]            # litres a household a day
+        p["night_use"] = 1.45 + 0.5 * g[10]            # true household night use, l/h (the allowance is 1.7)
+        p["nhh_night"] = 5.0 + 6.0 * g[8]              # true non-household night use, l/h (the allowance is 8.0)
+        p["bg_leak"] = ((0.0010 + 0.0014 * g[11]) * hh ** 0.92 + 0.5 * g[12]) * LEAK_TUNE.get(code, 1.0)
+        p["_g_cp"] = g[13]
+        p["new_homes"] = int(120 + 200 * g[14]) if ph == 4 else 0
+        out.append(p)
     return out
 
 
-def realize(T):
-    """Every report filed on the old tracker from SIM_START to SIM_END (truth), with the attributes its export
-    carries; non-exported reports (spam, the web-compatibility product's own intake) are kept for the id sequence
-    and the parallel run."""
-    reps = []
-    comps = [(c[0], c[1]) for c in COMPONENTS]
-    wbase = np.array([c[2] for c in COMPONENTS])
-    regs = {m: regressions(m) for m, _ in K.RELEASES}
-    for i, d in enumerate(DAYS):
-        r = K.rng("reports", d.isoformat())
-        for p in PLATFORMS:
-            nb = int(r.poisson(T.baseline[p][i]))
-            for _ in range(nb):
-                reps.append(dict(kind="baseline", platform=p, opened=_time_on(r, d)))
-            for m, _ in K.RELEASES:
-                lam = T.first_use[p][m][i]
-                if lam <= 0:
-                    continue
-                nf = int(r.poisson(lam))
-                for _ in range(nf):
-                    reps.append(dict(kind="first_use", platform=p, major=m, opened=_time_on(r, d)))
-        # spam and the web-compatibility product's own intake: in the id sequence, never in the export
-        ns = int(r.poisson(SPAM_SHARE * sum(T.baseline[p][i] for p in PLATFORMS)))
-        for _ in range(ns):
-            reps.append(dict(kind="spam", platform=_pick(r, (("Windows", 0.8), ("macOS", 0.15), ("Linux", 0.05))),
-                             opened=_time_on(r, d)))
-        nw = int(r.poisson(WEBC_OWN_WEEK / 7 * activity(d) / 0.937))
-        for _ in range(nw):
-            reps.append(dict(kind="webcompat_own", platform=_pick(r, (("Windows", 0.7), ("macOS", 0.22), ("Linux", 0.08))),
-                             opened=_time_on(r, d)))
-    reps.sort(key=lambda x: (x["opened"], x["kind"], x["platform"], x.get("major", 0)))
-    # ids in filing order from the first id at the record start (earlier reports get earlier ids)
-    first = next(k for k, x in enumerate(reps) if x["opened"].date() >= K.RECORD_START)
-    for k, x in enumerate(reps):
-        x["bug_id"] = FIRST_ID + (k - first)
-    # attributes
-    ra = K.rng("attributes")
-    long_ids = sorted(set(int(v) for v in ra.integers(1612000, FIRST_ID - 4000, size=LONG_STANDING)))
-    long_w = ra.lognormal(0, 1.1, size=len(long_ids))
-    cluster_first = {}
-    for x in reps:
-        p = x["platform"]
-        d = x["opened"].date()
-        x["op_sys"] = _pick(ra, OS_MIX[p])
-        x["severity"] = _pick(ra, SEVERITY)
-        x["security"] = bool(ra.random() < SECURITY_SHARE) if x["kind"] in ("baseline", "first_use") else False
-        x["dupe_of"] = None
-        x["regression_key"] = None
-        if x["kind"] == "first_use":
-            m = x["major"]
-            # the version the install runs: the major's newest dot release at the filing time
-            n = 0
-            for dn, dd in K.DOTS.get(m, []):
-                if dt.datetime.combine(dd, dt.time(K.RELEASE_HOUR)) <= x["opened"]:
-                    n = dn
-            x["version"] = vstr(m, n)
-            if ra.random() < CLUSTER_SHARE:
-                rg = regs[m]
-                w = np.array([g["reach"] for g in rg])
-                g = rg[int(ra.choice(len(rg), p=w / w.sum()))]
-                x["product"], x["component"] = g["product"], g["component"]
-                key = (m, g["j"])
-                x["regression_key"] = key
-                if key in cluster_first:
-                    x["dupe_of"] = cluster_first[key]
-                else:
-                    cluster_first[key] = x["bug_id"]
-            else:
-                k = int(ra.choice(len(comps), p=wbase / wbase.sum()))
-                x["product"], x["component"] = comps[k]
-        elif x["kind"] == "baseline":
-            k = int(ra.choice(len(comps), p=wbase / wbase.sum()))
-            x["product"], x["component"] = comps[k]
-            x["version"] = baseline_version(T, ra, p, x["opened"])
-            if ra.random() < BASE_DUP_SHARE:
-                x["dupe_of"] = int(long_ids[int(ra.choice(len(long_ids), p=long_w / long_w.sum()))])
-        elif x["kind"] == "webcompat_own":
-            x["product"], x["component"] = WEBCOMPAT_PRODUCT
-            x["version"] = baseline_version(T, ra, p, x["opened"])
+def _new_connections(p, r):
+    """Dated new-build connections through the year (the near districts' estates), as day offsets from START."""
+    if not p["new_homes"]:
+        return np.zeros(DAYS, int), []
+    days = np.sort(r.integers(10, DAYS - 5, p["new_homes"]))
+    daily = np.zeros(DAYS, int)
+    for d in days:
+        daily[d:] += 1
+    return daily, [int(d) for d in days]
+
+
+def simulate():
+    T = {}
+    idx = hour_index()
+    n = len(idx)
+    hod = np.array([t.hour for t in idx])
+    summer = np.array([1 if K.bst(t) else 0 for t in idx])
+    lh = (hod + summer) % 24
+    dow = np.array([t.weekday() for t in idx])
+    day = np.array([(t.date() - START.date()).days for t in idx])
+    weekend = (dow >= 5).astype(float)
+    r = K.rng("weather")
+    heat = np.zeros(DAYS)
+    for k in range(DAYS):
+        d = START.date() + dt.timedelta(k)
+        seas = np.cos(2 * np.pi * (d.timetuple().tm_yday - 200) / 365.25)
+        heat[k] = max(0.0, seas) * (1.0 + (0.6 if (d.year == 2025 and d.month in (6, 7, 8)) else 0.15))
+    wx = np.clip(1.0 + 0.06 * r.standard_normal(DAYS), 0.85, 1.2)
+    garden = 0.55 * heat[day] * np.exp(-((lh - 19.0) / 1.8) ** 2)
+    resid = (diurnal(lh, weekend) + garden) * wx[day] * (1.0 - 0.04 * weekend)
+    resid = resid / np.percentile(resid, 99.5)
+    # Brackenby Paper Mill: two shifts on weekdays, shut at Christmas, the bank holidays and the August fortnight
+    shut = np.zeros(DAYS, bool)
+    for k in range(DAYS):
+        d = START.date() + dt.timedelta(k)
+        if (d.month == 12 and d.day >= 23) or (d.month == 1 and d.day <= 2) or (d.month == 8 and 4 <= d.day <= 17) \
+                or d in (dt.date(2025, 4, 18), dt.date(2025, 4, 21), dt.date(2025, 5, 5), dt.date(2025, 5, 26),
+                         dt.date(2025, 8, 25), dt.date(2026, 3, 30), dt.date(2026, 3, 31)):
+            shut[k] = True
+    ind = np.where((weekend == 0) & (lh >= 6) & (lh < 22), 1.0, 0.18)
+    ind = np.where(shut[day], 0.12, ind) * (1.0 + 0.04 * r.standard_normal(n))
+    Z = 0.55 * resid + 0.45 * ind
+    Z = Z / np.percentile(Z, 99.5)
+    res = TWL - 1.6 * np.convolve(Z, np.ones(6) / 6, mode="same") + 0.25 * K.rng("res").standard_normal(n)
+    T.update(idx=idx, hod=hod, lh=lh, day=day, summer=summer, weekend=weekend, Z=Z, res=res, ind=ind, shut=shut, wx=wx)
+    T["mill_lps"] = MILL_LPS * ind                                  # the mill's draw on its own off-take, l/s
+    P = district_params()
+    T["P"] = P
+    zmax = np.max(Z) ** 1.85
+    # background leakage rises through the winter (ground movement, frost) and eases in the summer
+    season = 1.0 + 0.07 * np.cos(2 * np.pi * (np.array([(START.date() + dt.timedelta(k)).timetuple().tm_yday
+                                                       for k in range(DAYS)]) - 25) / 365.25)
+    ob = np.array([OPEN_BOUNDARY[0] <= (START.date() + dt.timedelta(int(d))) < OPEN_BOUNDARY[1] for d in day])
+    T["open_boundary"] = ob
+    for p in P:
+        rr = K.rng("district", p["code"])
+        q_shape = np.clip(Z * (0.92 + 0.16 * rr.uniform()) + 0.03 * rr.standard_normal(n), 0.05, None)
+        noise_in = 0.18 * rr.standard_normal(n)
+        qpk = np.percentile(q_shape, 99.9)
+        if p["phase"] == 3:
+            red = p["design_red"]
+            slack = (DESIGN_CP - EXISTING_MIN) + p["fire"] + p["cp_loss"] * ((DESIGN_GROWTH * qpk) ** 1.85 - qpk ** 1.85)
+            hi = (red + slack) / zmax - 2.5
+            lo = (1.9 * red) if p["group"] == "day" else (red + 2.0)
+            hi = max(hi, lo + 0.5)
+            p["trunk"] = lo + (hi - lo) * p["_g_trunk"]
+            p["setting"] = float(round(p["night_static"] - red))
+            p["cp_dz"] = p["setting"] - DESIGN_CP - p["fire"] - p["cp_loss"] * (DESIGN_GROWTH * qpk) ** 1.85
         else:
-            x["product"], x["component"] = "Invalid Bugs", "Spam"
-            x["version"] = baseline_version(T, ra, p, x["opened"])
-        # the team moves some reports to the web-compatibility team's product during triage: site problems, most of
-        # them reported against page layout, scripts and media
-        x["moved_webcompat"] = (x["kind"] in ("baseline", "first_use") and not x["security"]
-                                and ra.random() < MOVE_SHARE.get((x["product"], x["component"]), 0.0))
-    T.long_ids = long_ids
-    T.long_w = long_w
-    T.regs = regs
-    return reps
+            p["setting"] = None
+            p["cp_dz"] = -2.0 + 10.0 * p["_g_cp"]
+        inlet = T["res"] - p["ground"] - p["trunk"] * Z ** 1.85 + noise_in
+        azp = inlet - p["azp_dz"] - p["azp_loss"] * q_shape ** 1.85 + 0.12 * rr.standard_normal(n)
+        cp = inlet - p["cp_dz"] - p["cp_loss"] * q_shape ** 1.85 + 0.15 * rr.standard_normal(n)
+        added, conn_days = _new_connections(p, K.rng("connections", p["code"]))
+        # the year's ordinary turnover: single infill houses connected in the far districts, a few demolitions anywhere
+        ri = K.rng("infill", p["code"])
+        infill_days = sorted(int(x) for x in ri.integers(15, DAYS - 10, int(ri.integers(2, 9)))) if p["phase"] == 3 else []
+        demol_days = sorted(int(x) for x in ri.integers(15, DAYS - 10, int(ri.integers(0, 4))))
+        turnover = np.zeros(DAYS, int)
+        for d in infill_days:
+            turnover[d:] += 1
+        for d in demol_days:
+            turnover[d:] -= 1
+        hh_day = p["households"] + added + turnover
+        hh = hh_day[day]
+        # household use by local hour: the night use through the small hours, the day's use on top of it, so a
+        # dwelling's mean is its per-household figure
+        excess = np.clip(diurnal(lh, weekend) + garden - 0.24, 0.0, None) * wx[day]
+        nu_lps = p["night_use"] / 3600.0
+        cons = hh * (nu_lps + (p["percap"] / 86400.0 - nu_lps) / excess.mean() * excess) \
+            * (1.0 + 0.08 * rr.standard_normal(n))
+        night = (hod == K.NIGHT_HOUR)
+        on_shift = ((lh >= 7) & (lh <= 18) & (weekend == 0)).astype(float)
+        nonhh = p["nonhh"] * (p["nhh_night"] / 3600.0 + 0.010 * on_shift)
+        ref = np.median(azp[night])
+        bursts = np.zeros(n)
+        rb = K.rng("bursts", p["code"])
+        t = 0
+        while True:
+            t += int(rb.exponential(24 * 365 / (5.0 + p["households"] / 350.0)))
+            if t >= n:
+                break
+            bursts[t:t + int(24 * rb.uniform(1, 20))] += rb.uniform(0.06, 0.7)
+        leak = (p["bg_leak"] * season[day] + bursts) * np.clip(azp / ref, 0.05, None) ** p["n1"]
+        flow = cons + nonhh + leak
+        T[p["code"]] = dict(inlet=inlet, azp=azp, cp=cp, flow=flow, leak=leak, cons=cons + nonhh, qshape=q_shape,
+                            hh_day=hh_day, conn_days=conn_days, infill_days=infill_days, demol_days=demol_days, ref=ref)
+    # NZ09 fed through NZ10 for nine January days: NZ09's inlet closed for a repair in its meter chamber, its whole
+    # demand coming in through the boundary valve and NZ10's inlet meter; NZ09's pressures fall with the longer path
+    a, b = T["NZ09"], T["NZ10"]
+    a["flow_inlet"] = np.where(ob, 0.02 * K.rng("ob").random(n), a["flow"])
+    b["flow_inlet"] = np.where(ob, b["flow"] + a["flow"], b["flow"])
+    a["azp"] = np.where(ob, a["azp"] - 4.5 - 2.0 * Z, a["azp"])
+    for p in P:
+        T[p["code"]].setdefault("flow_inlet", T[p["code"]]["flow"])
+    # NZ04's second inlet, still logged under its retired code NZ04A: 41 per cent of the district's inflow
+    d4 = T["NZ04"]
+    d4["flow_inlet_a"] = 0.41 * d4["flow_inlet"]
+    d4["flow_inlet"] = d4["flow_inlet"] - d4["flow_inlet_a"]
+    return T
 
 
-def baseline_version(T, r, p, t):
-    """The version a reporter not on a first-use visit runs: the release channel's mix that day (88 per cent), the
-    beta (8) or the nightly (4)."""
-    d = t.date()
-    u = r.random()
-    newest = max([30] + [m for m, dd in K.RELEASES if dt.datetime.combine(dd, dt.time(K.RELEASE_HOUR)) <= t])
-    if u < 0.08:
-        age = (d - K.MAJOR_DATE.get(newest, dt.date(2025, 6, 17))).days
-        return "%d.0b%d" % (newest + 1, 1 + min(9, age // 3))
-    if u < 0.12:
-        return "%d.0a1" % (newest + 2)
-    mix = T.adopt.share[p][IDX[d]]
-    vs = sorted(mix)
-    w = np.array([mix[v] for v in vs])
-    return vs[int(r.choice(len(vs), p=w / w.sum()))]
+def setting(T, p):
+    """Coldbeck's design rule, re-derived from the truth: the lowest whole-metre outlet setting that holds DESIGN_CP at
+    the critical point at the district's design peak with the fire flow drawn there."""
+    qd = np.percentile(T[p["code"]]["qshape"], 99.9) * DESIGN_GROWTH
+    return float(np.ceil(DESIGN_CP + p["cp_dz"] + p["cp_loss"] * qd ** 1.85 + p["fire"] - 1e-9))
