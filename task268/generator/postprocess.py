@@ -328,6 +328,24 @@ def word_parts(items, minutes=38):
     return [(n, word_app(doc, COMPANY, minutes) if n == "docProps/app.xml" else d) for n, d in out]
 
 
+def _pin_embedded(data, created, modified):
+    """A chart's embedded workbook, as python-pptx writes it, carries the build clock in its core properties: pinned to
+    the deck's own stamps, every entry to the 1980 stamp, so the deck is the same on whatever day it is built."""
+    import io
+    src = zipfile.ZipFile(io.BytesIO(data))
+    items = [(i.filename, src.read(i.filename), i.compress_type) for i in src.infolist()]
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for n, d, ct in items:
+            if n == "docProps/core.xml":
+                d = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)", lambda m: m.group(1) + created.encode() + m.group(2), d)
+                d = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)", lambda m: m.group(1) + modified.encode() + m.group(2), d)
+            zi = zipfile.ZipInfo(n, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = ct
+            z.writestr(zi, d)
+    return buf.getvalue()
+
+
 def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
@@ -349,6 +367,8 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
                     '<dcterms:created xsi:type="dcterms:W3CDTF">%s</dcterms:created>'
                     '<dcterms:modified xsi:type="dcterms:W3CDTF">%s</dcterms:modified></cp:coreProperties>'
                     % (t, creator, last_by, created, modified)).encode()
+        elif name.startswith("ppt/embeddings/") and name.endswith(".xlsx"):
+            data = _pin_embedded(data, created, modified)
         elif name == "docProps/app.xml":
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app_name.encode() + b"</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)

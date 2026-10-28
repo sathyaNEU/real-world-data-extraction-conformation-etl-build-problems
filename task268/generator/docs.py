@@ -98,7 +98,9 @@ def write_charter(path):
              "most to give.")
     C(K.CHARTER_CLAUSES["survival"], "Two-year survival is the share of the hospital's patients newly diagnosed with heart failure in 2022 and "
              "2023 who were alive two years after their diagnosis date. Every patient newly diagnosed at the hospital in "
-             "those years counts, including patients the registry no longer follows.")
+             "those years is in the share, alive or dead as they were at two years, including the patients who left the "
+             "registry's follow-up before their two-year date. The registry does not learn of those patients' deaths, so "
+             "the lack of a death on its files does not show that they were alive.")
     C("3.3", "The figures come from the %s, whose manual (section 2) sets out who is newly diagnosed and at which "
              "hospital." % K.REGISTRY)
     Hd("4. Timeline")

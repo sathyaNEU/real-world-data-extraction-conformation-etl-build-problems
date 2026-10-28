@@ -1,18 +1,17 @@
 {
   "task": "task268",
-  "architecture": "v3 (a Florida nonprofit health system's 2027 heart failure early-diagnosis programme among five hospitals, by each hospital's two-year survival from diagnosis for its 2022 and 2023 newly diagnosed patients, the patients the registry lost when they moved beyond its death linkage counted at the survival their heart failure class at the move implies)",
-  "drawn": "2026-10-18",
-  "slot_note": "",
-  "domain": "biomedical-clinical-research",
-  "subdomain": "survival-time-to-event-analysis",
-  "client_domain": "biomedical-clinical-research",
-  "niche": "a hospital system's heart failure registry whose death linkage reaches Florida certificates and a neighbouring-state records exchange only, in a retirement coast whose patients move back north to their families once their heart failure worsens, so their deaths never reach the registry",
+  "architecture": "v4",
+  "drawn": "2026-10-28",
+  "slot_note": "re-root after architecture 3's send-back",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "claims-frequency-severity",
+  "niche": "a regional motor insurer's 2025 private-car claim frequency by sales region for a 2027 telematics pilot, the injury claims that claims-management firms notify months and years after the accident still to come",
   "objective": "descriptive-distribution",
   "shape": "01",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "Gullhaven Hospital: two-year survival 58%, 3 points below Fennick General Hospital's 61%",
-  "answer_source": "submission.md (block 1) and generator/figures.json",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "time",
     "population"
@@ -21,83 +20,71 @@
     "none"
   ],
   "generators": [
+    "G16",
     "G6",
-    "G14",
-    "G12"
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "forecasting",
   "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": true,
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "none",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the committee's criterion correctly runs a Kaplan-Meier estimate for each hospital, ending each patient's follow-up at the move out of the death linkage's reach that the registry records, and names the urban hospital lowest; Kaplan-Meier credits the patients who moved north with the survival of those who stayed, but at the retirement-coast hospital they were almost all in NYHA class IV at their last visit, and carried at the survival their class implies its two-year survival is the lowest of the five.",
-  "domain_test": "The deciding quantity is each hospital's two-year survival from heart failure diagnosis, a time-to-event estimate whose loss to follow-up is driven by the patient's recorded NYHA class (frail retirees moving back to family beyond the registry's death linkage), the field's informative censoring, handled by carrying each lost patient's survival from the clinical state recorded at the loss; with another field's nouns the class progression, the class-specific death rates and the migration of the frail elderly do not exist and the task stops reading the same.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:informative-censoring-by-clinical-state",
+  "analyst_test": "A strong analyst who builds each region's 2025 earned car-years from the policy records and completes its 2025 claims still to be reported with the region's own report-lag pattern from the closed accident years, or with bodily injury and damage developed separately, names Metro, because both completions carry the old notifying mix into a year when Valley's injury claims came through claims-management firms three times as often.",
+  "domain_test": "The deciding quantity is each region's ultimate claim count for accident year 2025, the claims reported and those still to be notified, per earned car-year, which the field develops from reported counts with report-lag factors on segments whose lags are stable; here the lag is carried by the notifying channel (a claims-management firm notifies an injury claim months or years after the accident, inside the three-year limitation period), so swapping in another field's nouns loses the channel, the limitation that bounds the lag and the claims-farming wave that moved one region's mix.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:claim-count-development-by-notifying-channel",
   "layer1": [
-    "a registry export at visit grain whose NYHA class is written four ways across two EHR eras, with a medical record number crosswalk at the 2024 migration",
-    "Florida death certificates matched to the registry by the state's linkage file, and a quarterly neighbouring-state exchange file in its own layout",
-    "follow-up end reasons as coded text with a destination state, and a cardiology group's 2023 departure that ended follow-up for its patients",
-    "diagnosis dates against first clinic visit dates, and hospital codes that two campuses share before a 2024 split"
+    "a claims-system migration with legacy and new claim references",
+    "notification and accident dates in two formats across the migration",
+    "mid-term cancellations, adjustments and renewals in the policy records for earned exposure",
+    "claims closed nil without payment",
+    "windscreen-only claims kept in a separate cover file",
+    "postcode districts moved between sales regions in 2024"
   ],
-  "stakeholder_role": "the heart and vascular service line's outcomes epidemiologist, who proposes the 2027 programme hospital to the service line committee",
-  "role_family": "research_desk",
-  "scoring_unit": "per episode",
+  "stakeholder_role": "the motor portfolio actuary",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "hf_registry_visits_2022_2026.csv",
-    "rows": 104323,
-    "entity": "one heart failure clinic visit with the patient's NYHA class",
-    "grain": "visit",
+    "file": "motor_claims_notified_2019_2026.csv",
+    "rows": 0,
+    "entity": "one claim notification",
+    "grain": "claim",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "hospital_or_health_provider",
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "United States, Florida (the health system, its hospitals, registry, exchange and people are fictional; counties and states are real geography used descriptively)",
-    "currency": "USD",
-    "org_type": "nonprofit health system",
-    "invented_names": [
-      "Heronmere Health",
-      "Heronmere Heart Failure Registry",
-      "Fennick General Hospital",
-      "Linmoor Hospital",
-      "Brenmoor Regional Medical Center",
-      "Gullhaven Hospital",
-      "Wrenhaven Medical Center",
-      "Southeast Tri-State Vital Records Exchange"
-    ],
+    "geography": "England and Wales",
+    "currency": "GBP",
+    "org_type": "regional motor insurer",
+    "invented_names": [],
     "people": [
-      "Louis Harrington",
-      "Megan Swanson"
+      "Carol Thorpe",
+      "Damian Warren",
+      "Iain Ali"
     ]
   },
-  "people": [
-    "Louis Harrington",
-    "Megan Swanson"
-  ],
   "deliverables": [
-    "hf_programme_site_2027.xlsx",
-    "service_line_committee_hf_2027.pptx"
+    "telematics_pilot_region_2027.xlsx",
+    "exco_telematics_pilot_2027.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
-  "driver_concrete": "Each hospital's two-year survival from heart failure diagnosis for its 2022 and 2023 patients, the patients who moved beyond the registry's death linkage carried from their NYHA class at their last visit through the class changes and class-specific death rates of the patients still followed (equivalently, the followed patients weighted by the inverse of their chance of staying in reach given their class), not Kaplan-Meier with each move as ordinary censoring, which credits the retirement coast's frail movers with the survival of those who stayed.",
-  "stump": "A competent solver runs Kaplan-Meier for each hospital with follow-up ending at each recorded move beyond the death linkage and names the urban hospital lowest; the step that lands it there is treating those moves as uninformative, when at the retirement-coast hospital they are concentrated among patients whose class had worsened to IV, while the movers whose deaths the exchange does report are the healthier ones.",
+  "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting channel, because one channel reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, or with the standard split by event kind, under-counts that unit, and only the channel split reproduces earlier closed periods.",
+  "driver_concrete": "Each region's 2025 claim frequency counts the claims still to be notified, completed with report-lag factors by notifying channel, because claims-management firms notify injury claims months and years late and Valley's 2025 claims came through them three times as often as before; Valley's own past lags and the bodily-injury split both leave it below Metro, and only the channel split reproduces 2021 and 2022 as they finally came in.",
+  "stump": "The default path completes each region's 2025 claims still to be notified with the region's own report-lag pattern from the closed years, or develops bodily injury and damage separately, and names Metro, because claims-management firms notify injury claims months and years after the accident and Valley's 2025 injury claims came through them three times as often as before; completed by notifying channel, the split that reproduces 2021 and 2022 as they finally came in, Valley's 2025 frequency is the highest.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task453": "task453 v2 reads a measurement change's effect in a rotating panel occasion by occasion against the same occasion before the change; task268 v3 measures nothing that changes: the patients still followed thin out by clinical state as the frail move beyond the death linkage, and each lost patient's survival is carried from the class recorded at the loss",
-    "task267": "task267 inverse-weights a screen's capture rate where the reference test reached members by a known rule at one moment; task268 v3 has no verification design: the losses accrue visit by visit as the frail move beyond the death linkage, and the chance of loss is estimated from the clinical class each visit records",
-    "task266": "task266 counts spells that ended another way as if still open (competing endings); task268 v3's moves are true censoring, informative through the patient's worsening class",
-    "task263": "task263 apportions a level measured only in mixtures of running sources; task268 v3 estimates survival under follow-up that ends by clinical state",
-    "task459": "task459 reads an input-output ratio that bends with the operating level; task268 v3 carries each lost patient's survival from the class recorded at the loss",
-    "task127": "task127 sizes the part of a fused wait an intervention removes; task268 v3 estimates two-year survival under informative censoring",
-    "task150": "task150 projects counts from carry-on rates, steady arrivals and sibling transfers; task268 v3 is a time-to-event estimate whose risk set thins by clinical state",
-    "task455": "task455 resolves identifiers that continue an existing unit under a new number; task268 v3's record-number crosswalk is Layer 1 and its decisive step is the survival estimator"
+    "task194": "task194 v3 developed recent counts for a coding lag at all, measured from two vintages of one series; here every route develops the 2025 counts, and the decisive step is the reporting channel the lag lives in, whose mix shifted in one region, chosen by reproducing closed years",
+    "task127": "task127 v3 projected a bodily-injury paid reserve by restating its development at the latest settlement shares and was sent back because the reserving basis left the method open; here claim counts are developed for notification lag, the segment the lag lives in (the notifying channel) is chosen by reproducing closed accident years, and every reasonable channel development agrees",
+    "task145": "task145 re-converted only the own-denomination holders at the forward factors, each group's mix of holders estimated from the units seen in both periods; here a closed year's claims still to be notified are developed by notifying channel, whose lag holds within the channel while one region's channel mix moved",
+    "task160": "task160 timed a recurring wave by each group's lag behind the group it spreads from; here a closed year's late notifications are developed by the channel that carries the lag",
+    "task138": "task138 v1 rebuilt each unit's store at the forecast date from its replenishment record; here claim counts are developed for notification lag by the notifying channel",
+    "task446": "task446 v2 backed a base rate out of a screen's flag share through error rates that carry across years; here the quantity that carries across years is each notifying channel's report-lag pattern, and one region's channel mix moved"
   },
   "lineage": [
     {
@@ -157,9 +144,30 @@
       "architecture": "v2 (re-rooted 2026-10-18 after architecture 1's stage-4 reader landed the call)",
       "drawn": "2026-10-18",
       "fate": "spent 2026-10-18 at stage 4: the isolated reader went to the autumn survey first and weighted each depth band by its share of the stock area from plan 4.2's estimand and the manual's equal stations per band, committing Halmorie Deep at 63 per cent against Brettach Bank's 52 with every fall (score_reader.py exit 1); a survey whose own manual describes its strata under an estimand filed as a total over an area makes the design-based estimate the careful analyst's default; the judge found the call forced, DETERMINISTIC and APPROVE"
+    },
+    {
+      "architecture": "v3 (registry heart failure survival, the patients lost to a move north carried from their NYHA class at the move)",
+      "domain": "biomedical-clinical-research",
+      "subdomain": "survival-time-to-event-analysis",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G14",
+        "G12"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "population_selection",
+      "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
+      "fate": "spent 2026-10-28: the portal's determinism round failed it with both judges (charter 3.2 read as the deaths on file), and the re-judge after the WHAT repair sent it back: plain Kaplan-Meier a rule-compliant reading naming Fennick (Gate C), the mechanic classed single_conceptual_flip (Gate G); two corrections of one graded quantity"
     }
   ],
-  "architecture_spent": false,
-  "notes": "architecture 3 drawn 2026-10-18 after architecture 2 was spent at stage 4 (the reader weighted the survey's depth bands by area by reflex); the slot's last architecture before retirement. A first architecture-3 draft (claims completed by notification channel) was dropped before registration: it repeats task181 v2's per-route completion, which a solver landed once the estimand was filed.",
-  "registered": "2026-10-18T23:10:24Z"
+  "notes": "",
+  "registered": "2026-10-28T21:58:13Z"
 }
