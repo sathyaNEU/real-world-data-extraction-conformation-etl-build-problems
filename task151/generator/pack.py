@@ -37,11 +37,11 @@ def write_pack(L, out):
     rows[R.F_DC] = n
     rows[R.F_PROJ] = R.write_projections(L, out, hv)
     rows[R.F_DC27] = R.write_depth_chart_2027(L, out)
-    n, legacy, new, people = R.write_payroll(L, out)
+    n, legacy, new, people, migrated = R.write_payroll(L, out)
     rows[R.F_PAY] = n
-    rows[R.F_HRIS] = R.write_hris_map(L, out, legacy, new, people)
+    rows[R.F_HRIS] = R.write_hris_map(L, out, legacy, new, migrated)
     rows[R.F_CODES] = R.write_earning_codes(out)
-    rows[R.F_REG] = R.write_register(L, out, new, people)
+    rows[R.F_REG] = R.write_register(L, out, legacy, new, people, migrated)
     DOC.write_fin14(out)
     DOC.write_working_paper(out)
     DOC.write_term_sheets(L, out)

@@ -1,6 +1,6 @@
 {
  "task": "task151",
- "status": "RETURNED",
+ "status": "SHIPPED",
  "domain": "general-statistics-data-science/resampling-simulation-monte-carlo-methods",
  "objective": "forecasting",
  "stage": 5,
@@ -11,16 +11,16 @@
  "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17",
-  "checks": 49
+  "date": "2026-10-28",
+  "checks": 53
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-17, final rebuild, --asof 2026-12-11; every REVIEW line answered in the design note's Build record)",
-  "reader": "round 2 clean; targeted re-read of FIN-14 4.4 and CF-14.4 clean (an ordinary estimate review; the names read as a realistic league), coordinator relay"
+  "leak_py": "REVIEW, no LEAK (2026-10-28, rubric repair rebuild, --asof 2026-12-11; a first cut's $320,000 Reed row equalled a term-sheet line amount (LEAK) and moved; every REVIEW line answered in the design note's Build record)",
+  "reader": "CLEAN (2026-10-28, isolated sonnet reader at medium on a fresh unzip of target.zip f4bcf386 and prompt.txt): no sentence names either step, no file ranks, every REVIEW line harmless; it read the pay year against the season earned as two readings (the judge found the season earned forced) and, reading player by player, paired a pitcher's October OTHER BONUS line with his January PERF BONUS line, the open includer risk"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.objective, repeat.gate_g, people.first and people.last on one veteran's name; answered under Draw)",
-  "nearest": "heart 0.05 (task132; task105 v1 lineage), surface 0 promoted (nearest task38, task147, task32 at 0.100)"
+  "heart": "WARN, no BLOCK (2026-10-28; overuse.objective, repeat.gate_g, people WARNs on names the frozen files carry)",
+  "nearest": "surface: task155 and task472 at 0.101 (the shipped pack scores 0.1007, layout and format axes only), task184 and task158 on the card's structure, differentiated"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -28,26 +28,36 @@
   "report": "determinism_check_report.md",
   "earlier": "round 1 NOT_DETERMINISTIC, SEND_BACK, repaired inside architecture 1 (determinism_check_report_round1.md); round 2 DETERMINISTIC, APPROVE (determinism_check_report_round2.md)",
   "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "rubric_repair_10_28": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE (2026-10-28 pass on the rubric reship; every ask figure reproduced, no competing answer survived; determinism_check_report_pass2.md)",
+   "report": "determinism_check_report.md",
+   "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+   "gate_h": "domain pass, layers pass, decisive_step analytical"
+  }
  },
  "returned": [
   {
    "date": "2026-10-16",
    "by": "determinism judge round 1 and the rule 3 audit (coordinator)",
    "finding": "no filed preference among the bases (vendor band, vendor residuals, own seasons defensible); the starting nines' raw seasons landing the call; 4.3's health reading; Ask B population and attribution; rounding path; Ask A effective date; the manifest's name",
-   "repair": "FIN-14 4.4 filed look-back (selection criterion, no method named), lineup fifth to ninth with terms re-searched, world redrawn (seed 1539), 4.3 restated, register notes, FIN-14 6 rounding, rules 22.1 backdating, close-file index; golden re-derived $4,250,000"
+   "repair": "FIN-14 4.4 filed look-back (selection criterion, no method named), lineup fifth to ninth with terms re-searched, world redrawn (seed 1539), 4.3 restated, register notes, FIN-14 6 rounding, rules 22.1 backdating, close-file index; golden re-derived $4,250,000",
+   "commit": "5a71a648"
   },
   {
    "date": "2026-10-17",
    "by": "re-judge round 2 (DETERMINISTIC, APPROVE) and the rule 3 re-audit (AT_RISK), coordinator loop 2",
    "finding": "realism: the record carries no persistence (vendor projection 0.005, last season -0.04) and the seed search is noise-picking; the look-back's catcher pricing fork in step 4; Ask B's 2026 'paid' fork; the league's names (the signings' surnames recurring, near-duplicates); 4.4 over-specified in the policy",
-   "repair": "honest persistence tried under a seed rule written first (seed 1601): the look-back's credibility blends tie at $5,250,000 and $5,500,000, total not determinate, stopped and reverted under the coordinator's rule; the 5a71a64 world kept (seed 1539); step 4 prices catchers from catchers' seasons; prompt 'paid to date' (SF15); league renamed from wider pools; FIN-14 4.4 cut to the principle with working paper CF-14.4 holding the test; the 2027 pitching staff carried over from 2026"
+   "repair": "honest persistence tried under a seed rule written first (seed 1601): the look-back's credibility blends tie at $5,250,000 and $5,500,000, total not determinate, stopped and reverted under the coordinator's rule; the 5a71a64 world kept (seed 1539); step 4 prices catchers from catchers' seasons; prompt 'paid to date' (SF15); league renamed from wider pools; FIN-14 4.4 cut to the principle with working paper CF-14.4 holding the test; the 2027 pitching staff carried over from 2026",
+   "commit": "97c71593"
   },
   {
    "date": "2026-10-17",
    "by": "re-judge round 3 (DETERMINISTIC, APPROVE), coordinator",
    "finding": "step 4's grouping parenthetical wrong for the nines-whole rival (0.2182 needs catchers pooled); rival scores built on constructions the files do not fix (0.2254, 0.2698); the thin rival (slot plate appearances with substitutes per start, 0.17359 against 0.17301, $4.50M); the CF-14.4 window reading 2022 to 2025",
-   "repair": "write-up and record only: step 4 states the golden's grouping and drops rival scores, block 1 and the memo drop rival figures; LB9 asserts the near rival losing on every reading (checks and verify); SF11 asserts 2022 to 2025; the design note's Residual and Pre-ship check; pack unchanged (target.zip 83bf068f)"
+   "repair": "write-up and record only: step 4 states the golden's grouping and drops rival scores, block 1 and the memo drop rival figures; LB9 asserts the near rival losing on every reading (checks and verify); SF11 asserts 2022 to 2025; the design note's Residual and Pre-ship check; pack unchanged (target.zip 83bf068f)",
+   "commit": "e93c6561"
   },
   {
    "date": "2026-10-27",
@@ -56,7 +66,7 @@
    "repair": "rubric",
    "finding": "generator/ceiling.py on the shipped pack: the cracker (22.1 to 22.9 and the register's Notes executed) keeps 28 of 28 ask figures, the mirror 0 of 28; pair 67.0 on Part 0's weights with both off the call, 81.5 at the portal",
    "outcome": "blocked, handed back: no device holds either ask (design note, Tried and rejected, the 10-27 lines); prompt, pack and every figure unchanged; freeze.py check --mode rubric PASS",
-   "commit": ""
+   "commit": "0baf433a"
   },
   {
    "date": "2026-10-28",
@@ -64,23 +74,31 @@
    "repair": "rubric",
    "finding": "generator/ceiling.py on the shipped pack: both asks are pinned by the frozen main-call files, so no new ask-only source can move a figure. Ask A with no weekly report, each date read from the batting lines (the day after the last batting line before the move, at most three days back under 22.1), lands 18 of 18, and Medina's first 2024 stint is forced by 22.2 (last line May 18, activated May 29, 10-day list); Ask B, 11 of 12 playing-time payroll lines equal half the plate-appearance and games-started lines reached for the Club to the dollar, the twelfth by Cedeno's filed All-Star term, and the cracker's route reads no payment amount",
    "outcome": "blocked, handed back: holding the asks needs a re-site onto quantities the main files do not pin, which changes the asks' figure shapes (design note, Ask sheet revision of 10-28, Tried and rejected, the 10-28 lines); no file added, no pack cut; prompt, pack and every figure unchanged; freeze.py check --mode rubric PASS",
+   "commit": "677ecfbd"
+  },
+  {
+   "date": "2026-10-28",
+   "by": "/fix-rubric, the author's decision to re-site the asks (every ask figure, unit and rounding waived; the call and every file it reads frozen)",
+   "repair": "rubric",
+   "finding": "the shipped asks were pinned by the frozen batting lines and Article 22 (cracker 28 of 28, portal case 67.0); re-sited onto the playing-time bonuses other than plate-appearance bonuses the club paid for 2023 to 2025 (18 player rows and 3 totals), which no batting line pins because pitchers do not bat",
+   "outcome": "reshipped: primary D2, the legacy payroll's catch-all E45 OTHER BONUS (migrated as other bonus) carrying the pitchers' season-end halves, so the careful path files every row at half and each half is a full bonus the pitcher's own terms allow; hazards an All-Star bonus inside three season-end lines, a Cy Young bonus on the catch-all, a reissued legacy number, a void and reissue, a 2022 half paid in January 2023. ceiling.py on target.zip f4bcf386: cracker 0 of 21, mirror 0 of 21, pair 28.5 one on the call and 12.0 both off it (36.0 and 27.0 on the portal's calibration); the open risk, a solver who reads each pitcher's payments and adds the catch-all lines with the awards taken out, keeps 21 of 21. freeze.py check --mode rubric PASS with deliverables.paid.1.total and deliverables.paid.2.season allowed (ask keys whose old values equalled block 1 and 2 numbers); --mode determinism FAIL on the 48 moved ask items, recorded only",
    "commit": ""
   }
  ],
- "resume": "the author's decision (design note, Ask sheet revision of 10-28): re-site the ask layer onto quantities the frozen main-call files do not pin, which changes the asks' figure shapes and waives 'every figure kept' (the five's injury record has no unpinned form; the club's own cash where no box-score formula reaches it does), or re-root; /fix-rubric task151 then starts from generator/ceiling.py's measured baseline (cracker 28 of 28; Ask A 18 of 18 from the batting lines with no report; Ask B 11 of 12 payroll lines on the contract formula, the twelfth by the filed All-Star term)",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-17",
- "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70",
+ "delivered": "2026-10-28",
+ "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70; reshipped 10-28 with the asks re-sited",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
  "build": {
-  "checks": 282,
+  "checks": 274,
   "verify": "agreeing",
   "byte_identical": true,
   "figures_check": "82 of 82",
-  "target_zip_sha256": "83bf068ff78b0077586aab20b9fd924c67131c6ba720ef45aae7951ca36d483b",
+  "target_zip_sha256": "f4bcf386b7171226e5a20fc239a8895bc269ea63bd89e3da61d2d459b2769294",
   "world_seed": 1539,
   "files": 21
  }

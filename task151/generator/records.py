@@ -33,7 +33,7 @@ F_SCHED27 = "league_schedule_2027.csv"
 F_DC = "hvbd_winter_depth_charts_2021_2026.xlsx"
 F_PROJ = "hvbd_hitter_projections_2022_2027.csv"
 F_DC27 = "ral_depth_chart_2027.xlsx"
-F_REG = "ral_player_contract_register_2024_2026.xlsx"
+F_REG = "ral_player_contract_register_2023_2026.xlsx"
 F_PAY = "ral_payroll_player_earnings_2023_2026.csv"
 F_HRIS = "ral_hris_legacy_employee_map.csv"
 F_CODES = "ral_payroll_earning_codes.csv"
@@ -490,34 +490,78 @@ def write_depth_chart_2027(L, out):
 
 
 # ---------------------------------------------------------------------------------------- contracts, payroll, HRIS
-# The club's own veterans' contracts with plate-appearance bonuses (2023 to 2027), and the award terms the payroll
-# carries. Keys are the generator's; every amount is the contract's.
+# The club's veterans' contracts (2023 to 2027) with plate-appearance bonuses and award terms, and the club's pitchers'
+# contracts with their other playing-time bonuses (FIN-14 4.1's innings pitched, games started, relief appearances and
+# days on the Active List) and award terms. Keys are the generator's; every amount is the contract's, and the lines a
+# pitcher reached each season are the season as it happened (nothing keyed ships; the payroll and the register do).
 VET_CONTRACTS = {
     "V1": dict(signed=dt.date(2022, 12, 14), seasons=(2023, 2024), salary=9_500_000, signing_bonus=1_000_000,
-               pa=(140_000, (500, 550, 600, 650)), gs=(50_000, 130), awards=[("Silver Slugger Award", 75_000)]),
+               pa=(140_000, (500, 550, 600, 650)), awards=[("Silver Slugger Award", 75_000)]),
     "V3": dict(signed=dt.date(2022, 11, 30), seasons=(2023, 2024), salary=6_000_000, signing_bonus=0,
-               pa=(100_000, (450, 500, 550)), gs=(40_000, 140), awards=[("All-Star selection", 50_000)]),
+               pa=(100_000, (450, 500, 550)), awards=[("All-Star selection", 50_000)]),
     "V2": dict(signed=dt.date(2023, 12, 6), seasons=(2024, 2025, 2026), salary=8_000_000, signing_bonus=2_000_000,
-               pa=(125_000, (500, 550, 600)), gs=(45_000, 110), awards=[("All-Star selection", 50_000)]),
+               pa=(125_000, (500, 550, 600)), awards=[("All-Star selection", 50_000)]),
     "V4": dict(signed=dt.date(2024, 12, 12), seasons=(2025,), salary=7_250_000, signing_bonus=500_000,
-               pa=(225_000, (375, 475, 575)), gs=(50_000, 90), awards=[]),
+               pa=(225_000, (375, 475, 575)), awards=[]),
     "INC": dict(signed=dt.date(2024, 12, 19), seasons=(2025, 2026, 2027), salary=5_500_000, signing_bonus=1_500_000,
-                pa=(100_000, (450, 525, 600)), gs=(30_000, 105), awards=[("All-Star selection", 50_000)]),
+                pa=(100_000, (450, 525, 600)), awards=[("All-Star selection", 50_000)]),
     "V5": dict(signed=dt.date(2026, 1, 13), seasons=(2026,), salary=6_500_000, signing_bonus=750_000,
-               pa=(175_000, (400, 475, 550)), gs=(35_000, 100), awards=[]),
+               pa=(175_000, (400, 475, 550)), awards=[]),
+}
+IP, GS, RA, DAL = "innings pitched", "games started", "relief appearances", "days on the Active List"
+CY5 = "finishing in the top five of the Cy Young Award voting"
+# per pitcher (staff key), his contracts: seasons, salary, terms (measure, amount per line, lines), award terms, and the
+# number of lines of each measure he reached each season (lowest lines first)
+PITCHER_CONTRACTS = {
+    "qRAL202301": [dict(signed=dt.date(2021, 12, 2), seasons=(2022, 2023), salary={2022: 11_500_000, 2023: 12_000_000},
+                        terms=[(IP, 70_000, (150, 170, 190))], awards=[],
+                        reached={2022: {IP: 1}, 2023: {IP: 2}}),
+                   dict(signed=dt.date(2023, 12, 12), seasons=(2024, 2025, 2026), salary=14_500_000,
+                        terms=[(IP, 100_000, (150, 165, 180)), (GS, 50_000, (25, 30))], awards=[],
+                        reached={2024: {IP: 2, GS: 2}, 2025: {IP: 2, GS: 0}, 2026: {IP: 1, GS: 2}})],
+    "qRAL202304": [dict(signed=dt.date(2022, 11, 21), seasons=(2023, 2024, 2025), salary=8_250_000,
+                        terms=[(IP, 60_000, (160, 180)), (GS, 60_000, (28, 32))], awards=[(CY5, 75_000)],
+                        reached={2023: {IP: 2, GS: 0}, 2024: {IP: 2, GS: 0}, 2025: {IP: 2, GS: 2}})],
+    "qRAL202303": [dict(signed=dt.date(2023, 11, 26), seasons=(2024, 2025), salary=6_750_000,
+                        terms=[(IP, 85_000, (150, 175)), (GS, 85_000, (28, 32))], awards=[],
+                        reached={2024: {IP: 2, GS: 0}, 2025: {IP: 2, GS: 2}})],
+    "qRAL202312": [dict(signed=dt.date(2023, 11, 3), seasons=(2024, 2025, 2026), salary=1_600_000,
+                        terms=[(RA, 50_000, (50, 60, 70))], awards=[("All-Star selection", 40_000)],
+                        reached={2024: {RA: 2}, 2025: {RA: 2}, 2026: {RA: 1}})],
+    "qRAL202309": [dict(signed=dt.date(2023, 11, 19), seasons=(2024, 2025), salary=3_100_000,
+                        terms=[(RA, 45_000, (50, 60))], awards=[],
+                        reached={2024: {RA: 2}, 2025: {RA: 2}})],
+    "qRAL202310": [dict(signed=dt.date(2022, 12, 16), seasons=(2023, 2024), salary=4_200_000,
+                        terms=[(DAL, 75_000, (120, 150)), (RA, 75_000, (45, 55))], awards=[("All-Star selection", 50_000)],
+                        reached={2023: {DAL: 2, RA: 0}, 2024: {DAL: 2, RA: 2}})],
+    "qRAL202313": [dict(signed=dt.date(2022, 12, 5), seasons=(2023,), salary=1_150_000,
+                        terms=[(RA, 30_000, (40, 50, 60))], awards=[],
+                        reached={2023: {RA: 2}})],
+    "qRAL202305": [dict(signed=dt.date(2022, 12, 20), seasons=(2023,), salary=5_500_000,
+                        terms=[(IP, 55_000, (140, 160))], awards=[],
+                        reached={2023: {IP: 2}})],
+    "qRAL202404": [dict(signed=dt.date(2024, 11, 15), seasons=(2025, 2026, 2027), salary=9_000_000,
+                        terms=[(GS, 70_000, (28, 32))], awards=[],
+                        reached={2025: {GS: 2}, 2026: {GS: 1}})],
+    "qRAL202504": [dict(signed=dt.date(2024, 12, 3), seasons=(2025, 2026), salary=2_400_000,
+                        terms=[(RA, 60_000, (55, 65))], awards=[("All-Star selection", 50_000)],
+                        reached={2025: {RA: 2}, 2026: {RA: 1}})],
 }
 AWARDS_WON = {("V1", 2024): "Silver Slugger Award", ("V3", 2024): "All-Star selection",
-              ("INC", 2026): "All-Star selection"}
-# two pitchers' playing-time bonuses (paid in full after the season; the payroll codes them with the hitters'):
-# (season, index on the staff list): measure, amount per line, lines, amount earned
-PITCHER_BONUS = {(2025, 5): ("games finished", 75_000, (35, 45), 75_000),
-                 (2026, 0): ("innings pitched", 100_000, (150, 165, 180), 200_000)}
+              ("INC", 2026): "All-Star selection", ("qRAL202310", 2023): "All-Star selection",
+              ("qRAL202312", 2024): "All-Star selection", ("qRAL202304", 2024): CY5,
+              ("qRAL202504", 2025): "All-Star selection"}
+# the legacy payroll reissued a departed player's employee number to a later signing (the departed pitcher, the later)
+REISSUED = ("qRAL202305", "qRAL202504")
+VOID_REISSUE = ("qRAL202303", dt.date(2025, 10, 15))    # a season-end payment voided (bank details) and reissued
 
 
-def pitcher_bonus_rows(L):
+def award_terms(L, k):
+    if k in VET_CONTRACTS:
+        return dict(VET_CONTRACTS[k]["awards"])
     out = {}
-    for (y, i), v in PITCHER_BONUS.items():
-        out[pitchers_of_club(L, y)[i]] = (y,) + v
+    for c in PITCHER_CONTRACTS.get(k, []):
+        out.update(dict(c["awards"]))
     return out
 
 
@@ -539,22 +583,12 @@ def pa_reached_with(L, k, y, T):
     return None, None
 
 
-def gs_reached_with(L, k, y, T):
-    cum = 0
-    for ln in sorted((l for l in L.lines[y] if l["key"] == k and l["seq"] == 0), key=lambda l: (l["date"], l["gnum"], l["pk"])):
-        cum += 1
-        if cum >= T:
-            return ln["club"], ln["date"]
-    return None, None
-
-
 def vet_bonuses(L):
-    """Every playing-time bonus line each veteran reached (plate appearances and games started), the club holding the
-    contract when he reached it, and the line's amount; the club pays only the lines reached while he was its player."""
+    """Every plate-appearance bonus line each veteran reached, the club holding the contract when he reached it, and the
+    line's amount; the club pays only the lines reached while he was its player."""
     out = []
     for k, c in VET_CONTRACTS.items():
         amt, lines = c["pa"]
-        gamt, gT = c["gs"]
         for y in c["seasons"]:
             if y > 2026:
                 continue
@@ -562,15 +596,33 @@ def vet_bonuses(L):
                 club, d = pa_reached_with(L, k, y, T)
                 if club is not None:
                     out.append(dict(k=k, season=y, T=T, amount=amt, club=club, date=d, kind="PA"))
-            club, d = gs_reached_with(L, k, y, gT)
-            if club is not None:
-                out.append(dict(k=k, season=y, T=gT, amount=gamt, club=club, date=d, kind="GS"))
     return out
+
+
+def pitcher_bonuses():
+    """(pitcher, season) -> the other playing-time bonuses he earned for the season (the truth the payroll pays)."""
+    out = {}
+    for k, cs in PITCHER_CONTRACTS.items():
+        for c in cs:
+            for y, rch in c["reached"].items():
+                out[(k, y)] = sum(a * rch.get(m, 0) for m, a, lines in c["terms"])
+    return out
+
+
+def contract_salary(k, y):
+    for c in PITCHER_CONTRACTS.get(k, []):
+        if y in c["seasons"]:
+            s = c["salary"]
+            return s[y] if isinstance(s, dict) else s
+    return None
 
 
 def salary_of(L, k, y, r):
     if k in VET_CONTRACTS and y in VET_CONTRACTS[k]["seasons"]:
         return VET_CONTRACTS[k]["salary"]
+    explicit = contract_salary(k, y)
+    if explicit is not None:
+        return explicit
     core = {"RC": (2_150_000, 3_400_000, 4_900_000, 6_100_000), "RSS": (1_100_000, 3_250_000, 5_600_000, 7_400_000),
             "RCF": (745_000, 2_600_000, 4_350_000, 5_800_000), "RRF": (4_800_000, 6_900_000, 8_200_000, 9_100_000)}
     if k in core:
@@ -609,6 +661,8 @@ def club_people(L):
 
 
 def employee_numbers(L, people):
+    """Legacy payroll numbers and HRIS IDs. The legacy system reissued a departed pitcher's number to a later signing,
+    so one legacy number carries two players' lines."""
     r = K.rng("hris")
     legacy, new = {}, {}
     nums = r.choice(np.arange(1200, 4800), len(people), replace=False)
@@ -616,13 +670,15 @@ def employee_numbers(L, people):
     for (k, first), a, b in zip(sorted(people.items(), key=lambda kv: (kv[1], L.players[kv[0]].pid)), nums, ids):
         legacy[k] = "%05d" % int(a)
         new[k] = "E10%03d%02d" % (int(b), int(r.integers(10, 99)))
+    legacy[REISSUED[1]] = legacy[REISSUED[0]]
     return legacy, new
 
 
 def payroll(L):
-    """The payroll register rows the HRIS export carries for players, January 2023 to December 11, 2026. Rows paid
-    before the January 1, 2025 migration keep the legacy employee number, the legacy earning code and the legacy name
-    format."""
+    """The payroll rows the HRIS export carries for players, January 2023 to December 11, 2026. Rows paid before the
+    January 1, 2026 migration keep the legacy employee number, name format and earning code. Internal codes: SAL salary,
+    SGN signing bonus, PA a plate-appearance bonus, PT a pitcher's playing-time bonus paid in the season-end run, PT2 a
+    second half paid in the January run, AW an award bonus, AS an All-Star bonus."""
     people = club_people(L)
     legacy, new = employee_numbers(L, people)
     rows = []
@@ -645,47 +701,54 @@ def payroll(L):
         if c["signing_bonus"]:
             d = dt.date(c["signed"].year + 1, 1, 15) if c["signed"].month >= 11 else dt.date(c["signed"].year, 2, 13)
             add(d, k, "SGN", c["signing_bonus"])
-    # playing-time bonuses (plate appearances and games started), one line a player: half on October 15 after the
-    # season, half on the following January 15
+    # playing-time bonuses through the 2025 season: the hitters' plate-appearance bonuses in full in the season-end run
+    # (October 15), the pitchers' half in it and half in the January 15 run after it; the 2026 season's are payable in
+    # full on January 15, 2027
     earned = defaultdict(int)
     for b in vet_bonuses(L):
         if b["club"] == K.CLUB:
             earned[(b["k"], b["season"])] += b["amount"]
-    combined = {}
+    for (k, y), amt in sorted(earned.items()):
+        if y <= 2025:
+            add(dt.date(y, 10, 15), k, "PA", amt)
+    star = {}
     for (k, y), award in sorted(AWARDS_WON.items()):
-        amt = dict(VET_CONTRACTS[k]["awards"])[award]
-        if "All-Star" in award and dt.date(y, 10, 15) < K.HRIS_LIVE:
-            combined[(k, y)] = amt          # the legacy payroll paid it with the season-end bonus line
+        amt = award_terms(L, k)[award]
+        if y >= 2026:
+            add(dt.date(y, 7, 31), k, "AS" if "All-Star" in award else "AW", amt)
+        elif "All-Star" in award and k in PITCHER_CONTRACTS:
+            star[(k, y)] = amt                 # the legacy season-end run, one line a code, with his playing-time half
         elif "All-Star" in award:
-            add(dt.date(y, 7, 31), k, "AS", amt)
+            add(dt.date(y, 10, 15), k, "AS", amt)
         else:
             add(dt.date(y, 11, 15), k, "AW", amt)
-    for (k, y), amt in sorted(earned.items()):
-        add(dt.date(y, 10, 15), k, "PA", amt / 2 + combined.pop((k, y), 0))
-        if dt.date(y + 1, 1, 15) <= K.ASOF:
-            add(dt.date(y + 1, 1, 15), k, "PA", amt / 2)
-    for (k, y), amt in sorted(combined.items()):
-        add(dt.date(y, 10, 15), k, "AS", amt)
-    for k, (y, measure, per, lines, paid) in sorted(pitcher_bonus_rows(L).items()):
-        add(dt.date(y, 10, 15), k, "PT", paid)
-    # the October 2026 payment to the incumbent first baseman, voided (bank details changed) and reissued
+    for (k, y), amt in sorted(pitcher_bonuses().items()):
+        if y >= 2026 or not amt:
+            continue
+        if y >= 2023:
+            add(dt.date(y, 10, 15), k, "PT", amt / 2 + star.pop((k, y), 0))
+        add(dt.date(y + 1, 1, 15), k, "PT2", amt / 2)
+    assert not star
     for x in list(rows):
-        if x["k"] == "INC" and x["code"] == "PA" and x["date"] == dt.date(2026, 10, 15):
+        if x["k"] == VOID_REISSUE[0] and x["code"] == "PT" and x["date"] == VOID_REISSUE[1]:
             x["status"] = "VOIDED"
-            add(dt.date(2026, 10, 20), "INC", "PA", -x["amount"], "VOID REVERSAL")
-            add(dt.date(2026, 10, 22), "INC", "PA", x["amount"])
+            add(VOID_REISSUE[1] + D(days=5), x["k"], "PT", -x["amount"], "VOID REVERSAL")
+            add(VOID_REISSUE[1] + D(days=7), x["k"], "PT", x["amount"])
     rows.sort(key=lambda x: (x["date"], x["code"], L.players[x["k"]].pid, x["amount"]))
     pid = 400000
     for x in rows:
         pid += int(r.integers(1, 9))
         x["pay_id"] = pid
-    return rows, legacy, new, people
+    migrated = {x["k"] for x in rows if x["date"] >= dt.date(2025, 1, 1)}
+    return rows, legacy, new, people, migrated
 
 
 LEGACY_CODE = {"SAL": ("E01", "SALARY-PLAYER"), "SGN": ("E10", "SIGNING BONUS"), "PA": ("E40", "PERF BONUS"),
-               "AW": ("E40", "PERF BONUS"), "AS": ("E40", "PERF BONUS"), "PT": ("E40", "PERF BONUS")}
+               "PT": ("E45", "OTHER BONUS"), "PT2": ("E40", "PERF BONUS"), "AW": ("E45", "OTHER BONUS"),
+               "AS": ("E45", "OTHER BONUS")}
 NEW_CODE = {"SAL": ("SAL", "Player salary"), "SGN": ("SGN", "Signing bonus"), "PA": ("BPA", "Playing-time bonus"),
-            "AW": ("BAW", "Award bonus"), "AS": ("BAS", "All-Star bonus"), "PT": ("BPA", "Playing-time bonus")}
+            "PT": ("BPA", "Playing-time bonus"), "PT2": ("BPA", "Playing-time bonus"), "AW": ("BAW", "Award bonus"),
+            "AS": ("BAS", "All-Star bonus")}
 
 
 def legacy_name(name):
@@ -700,7 +763,7 @@ def hris_name(name):
 
 
 def write_payroll(L, out):
-    rows, legacy, new, people = payroll(L)
+    rows, legacy, new, people, migrated = payroll(L)
     w = []
     for x in rows:
         p = L.players[x["k"]]
@@ -710,12 +773,12 @@ def write_payroll(L, out):
                   code, desc, "%.2f" % x["amount"], x["pay_id"], x["status"]])
     K.write_csv(os.path.join(out, F_PAY), ["pay_date", "employee_id", "employee_name", "earning_code",
                                            "earning_description", "amount", "payment_id", "status"], w)
-    return len(w), legacy, new, people
+    return len(w), legacy, new, people, migrated
 
 
-def write_hris_map(L, out, legacy, new, people):
+def write_hris_map(L, out, legacy, new, migrated):
     rows = []
-    for k in sorted(people, key=lambda q: legacy[q]):
+    for k in sorted(migrated, key=lambda q: legacy[q]):
         p = L.players[k]
         rows.append([legacy[k], new[k], hris_name(p.name), K.iso(K.HRIS_LIVE)])
     K.write_csv(os.path.join(out, F_HRIS), ["legacy_employee_no", "employee_id", "employee_name", "migrated"], rows)
@@ -723,111 +786,114 @@ def write_hris_map(L, out, legacy, new, people):
 
 
 def write_earning_codes(out):
-    rows = [["E01", "SALARY-PLAYER", "legacy payroll", "2009-01-01", "2024-12-31", "SAL"],
-            ["E10", "SIGNING BONUS", "legacy payroll", "2009-01-01", "2024-12-31", "SGN"],
-            ["E40", "PERF BONUS", "legacy payroll", "2009-01-01", "2024-12-31", "BOT"],
-            ["E55", "MOVING ALLOW", "legacy payroll", "2011-03-01", "2024-12-31", "MOV"],
-            ["E70", "POSTSEASON SHARE", "legacy payroll", "2009-01-01", "2024-12-31", "PSS"],
-            ["SAL", "Player salary", "HRIS", "2025-01-01", "", ""],
-            ["SGN", "Signing bonus", "HRIS", "2025-01-01", "", ""],
-            ["BPA", "Playing-time bonus", "HRIS", "2025-01-01", "", ""],
-            ["BAW", "Award bonus", "HRIS", "2025-01-01", "", ""],
-            ["BAS", "All-Star bonus", "HRIS", "2025-01-01", "", ""],
-            ["BOT", "Other bonus", "HRIS", "2025-01-01", "", ""],
-            ["MOV", "Relocation allowance", "HRIS", "2025-01-01", "", ""],
-            ["PSS", "Postseason share", "HRIS", "2025-01-01", "", ""]]
+    rows = [["E01", "SALARY-PLAYER", "legacy payroll", "2009-01-01", "2025-12-31", "SAL"],
+            ["E10", "SIGNING BONUS", "legacy payroll", "2009-01-01", "2025-12-31", "SGN"],
+            ["E40", "PERF BONUS", "legacy payroll", "2009-01-01", "2025-12-31", "BPA"],
+            ["E45", "OTHER BONUS", "legacy payroll", "2009-01-01", "2025-12-31", "BOT"],
+            ["E55", "MOVING ALLOW", "legacy payroll", "2011-03-01", "2025-12-31", "MOV"],
+            ["E70", "POSTSEASON SHARE", "legacy payroll", "2009-01-01", "2025-12-31", "PSS"],
+            ["SAL", "Player salary", "HRIS", "2026-01-01", "", ""],
+            ["SGN", "Signing bonus", "HRIS", "2026-01-01", "", ""],
+            ["BPA", "Playing-time bonus", "HRIS", "2026-01-01", "", ""],
+            ["BAW", "Award bonus", "HRIS", "2026-01-01", "", ""],
+            ["BAS", "All-Star bonus", "HRIS", "2026-01-01", "", ""],
+            ["BOT", "Other bonus", "HRIS", "2026-01-01", "", ""],
+            ["MOV", "Relocation allowance", "HRIS", "2026-01-01", "", ""],
+            ["PSS", "Postseason share", "HRIS", "2026-01-01", "", ""]]
     K.write_csv(os.path.join(out, F_CODES), ["earning_code", "description", "system", "valid_from", "valid_to",
                                              "migrated_as"], rows)
     return len(rows)
 
 
-def register_rows(L, new, people):
-    """The club's player contract register, one row per contract in force in any of the 2024 to 2026 seasons (a
-    veteran kept on a new contract after his bonus contract ran out has a second row)."""
+def money_terms(amt, lines):
+    if len(lines) == 1:
+        return "$%s for %d" % ("{:,}".format(amt), lines[0])
+    return "$%s each for %s and %d" % ("{:,}".format(amt), ", ".join(str(t) for t in lines[:-1]), lines[-1])
+
+
+def other_terms_text(terms):
+    bits = []
+    for i, (m, a, lines) in enumerate(terms):
+        lab = m[0].upper() + m[1:] if i == 0 else m
+        bits.append("%s: %s" % (lab, money_terms(a, lines)))
+    return "; ".join(bits)
+
+
+def award_text(awards):
+    return "; ".join("$%s for %s" % ("{:,}".format(a), nm) for nm, a in awards)
+
+
+def register_rows(L, legacy, new, people, migrated):
+    """The club's player contract register, one row per contract in force in any of the 2023 to 2026 seasons. A
+    player's Employee ID is his HRIS ID, or his legacy payroll number if the club has not paid him since 2024."""
     rows = []
-    pbon = pitcher_bonus_rows(L)
+    staff27 = set(pitchers_of_club(L, 2027))
+    plan27 = {k for _, _, k in L.plan["lineup"]} | set(L.plan["bench"])
     for k in sorted(people, key=lambda q: hris_name(L.players[q].name)):
         p = L.players[k]
-        on = [y for y in (2024, 2025, 2026) if k in ral_roster(L, y)[0] + ral_roster(L, y)[1]]
+        on = [y for y in (2023, 2024, 2025, 2026) if k in ral_roster(L, y)[0] + ral_roster(L, y)[1]]
         contracts = []
         if k in VET_CONTRACTS:
             c = VET_CONTRACTS[k]
             seasons = list(c["seasons"])
-            if any(y in (2024, 2025, 2026) for y in seasons):
-                amt, lines = c["pa"]
-                pa_terms = "$%s each for %s and %d plate appearances" % (
-                    "{:,}".format(amt), ", ".join(str(t) for t in lines[:-1]), lines[-1])
-                aw = "; ".join(["$%s for %d games started" % ("{:,}".format(c["gs"][0]), c["gs"][1])] +
-                               ["$%s for %s" % ("{:,}".format(a), nm) for nm, a in c["awards"]])
-                status = "Expired"
-                if k == "V4":
-                    status = "Assigned to New Orleans Levees 07/28/2025"
-                elif 2027 in seasons:
-                    status = "Active"
-                contracts.append(dict(signed=c["signed"], seasons=seasons, sal={y: c["salary"] for y in seasons},
-                                      sb=c["signing_bonus"], pa_terms=pa_terms, awards=aw, status=status))
+            amt, lines = c["pa"]
+            status = "Active" if seasons[-1] >= 2027 else "Expired"
+            if k == "V4":
+                status = "Assigned to New Orleans Levees 07/28/2025"
+            contracts.append(dict(signed=c["signed"], seasons=seasons, sal={y: c["salary"] for y in seasons},
+                                  sb=c["signing_bonus"], pa_terms=money_terms(amt, lines) + " plate appearances",
+                                  other="", awards=award_text(c["awards"]), status=status))
+            on = [y for y in on if y not in seasons]
+        for c in PITCHER_CONTRACTS.get(k, []):
+            seasons = list(c["seasons"])
+            contracts.append(dict(signed=c["signed"], seasons=seasons,
+                                  sal={y: contract_salary(k, y) for y in seasons}, sb=0, pa_terms="",
+                                  other=other_terms_text(c["terms"]), awards=award_text(c["awards"]),
+                                  status="Active" if seasons[-1] >= 2027 else "Expired"))
             on = [y for y in on if y not in seasons]
         if on:
-            r = K.rng("signed", k, on[0])
-            signed = dt.date(on[0] - 1, int(r.integers(10, 13)), int(r.integers(1, 29)))
-            other = ""
-            if k in pbon:
-                y, measure, per, lines, paid = pbon[k]
-                other = "%s: $%s each for %s and %d (%d)" % (measure[0].upper() + measure[1:], "{:,}".format(per),
-                                                          ", ".join(str(t) for t in lines[:-1]), lines[-1], y)
-            contracts.append(dict(signed=signed, seasons=on, sb=0, pa_terms="", awards=other,
+            rr = K.rng("signed", k, on[0])
+            signed = dt.date(on[0] - 1, int(rr.integers(10, 13)), int(rr.integers(1, 29)))
+            seasons = list(on)
+            if 2026 in on and (k in staff27 or k in plan27):
+                seasons.append(2027)
+            contracts.append(dict(signed=signed, seasons=seasons, sb=0, pa_terms="", other="", awards="",
                                   sal={y: salary_of(L, k, y, K.rng("salary", y, k)) for y in on},
-                                  status="Active" if 2026 in on else "Expired"))
+                                  status="Active" if seasons[-1] >= 2027 else "Expired"))
         for c in contracts:
             s = c["seasons"]
-            rows.append(dict(k=k, name=hris_name(p.name), emp=new[k], pos=("P" if p.pos == "P" else p.pos),
-                             signed=c["signed"], seasons="%d-%d" % (s[0], s[-1]) if len(s) > 1 else str(s[0]),
-                             sal=c["sal"], sb=c["sb"], pa_terms=c["pa_terms"], awards=c["awards"], status=c["status"]))
+            rows.append(dict(k=k, name=hris_name(p.name), emp=new[k] if k in migrated else legacy[k],
+                             pos=("P" if p.pos == "P" else p.pos), signed=c["signed"],
+                             seasons="%d-%d" % (s[0], s[-1]) if len(s) > 1 else str(s[0]), sal=c["sal"], sb=c["sb"],
+                             pa_terms=c["pa_terms"], other=c["other"], awards=c["awards"], status=c["status"]))
     return rows
 
 
-def write_register(L, out, new, people):
+def write_register(L, out, legacy, new, people, migrated):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Register"
-    ws.append(["Raleigh Oaks: player contract register, 2024 to 2026 seasons (extract)"])
-    ws.append(["Maintained by Baseball Operations and Finance. Amounts in US dollars."])
+    ws.append(["Raleigh Oaks: player contract register, 2023 to 2026 seasons (extract)"])
+    ws.append(["Maintained by Baseball Operations and Finance; payroll contact %s. Amounts in US dollars. Employee ID: "
+               "HRIS ID, or the legacy payroll number for a player not paid since 2024." % K.PEOPLE["payroll"]])
     ws.append([])
-    hdr = ["Player", "Employee ID", "Pos", "Signed", "Seasons", "Salary 2024", "Salary 2025", "Salary 2026",
-           "Signing bonus", "Plate-appearance bonuses (each season)", "Other bonuses", "Status"]
+    hdr = ["Player", "Employee ID", "Pos", "Signed", "Seasons", "Salary 2023", "Salary 2024", "Salary 2025",
+           "Salary 2026", "Signing bonus", "Plate-appearance bonuses (each season)",
+           "Other playing-time bonuses (each season)", "Award bonuses", "Status"]
     ws.append(hdr)
-    rr = register_rows(L, new, people)
+    rr = register_rows(L, legacy, new, people, migrated)
     for x in rr:
         ws.append([x["name"], x["emp"], x["pos"], K.us(x["signed"]) if x["signed"] else "", x["seasons"],
-                   x["sal"].get(2024), x["sal"].get(2025), x["sal"].get(2026), x["sb"] or None, x["pa_terms"] or None,
-                   x["awards"] or None, x["status"]])
-    for i, w in enumerate([24, 12, 5, 11, 10, 12, 12, 12, 12, 46, 36, 34]):
+                   x["sal"].get(2023), x["sal"].get(2024), x["sal"].get(2025), x["sal"].get(2026), x["sb"] or None,
+                   x["pa_terms"] or None, x["other"] or None, x["awards"] or None, x["status"]])
+    for i, w in enumerate([24, 12, 5, 11, 10, 12, 12, 12, 12, 12, 40, 60, 44, 34]):
         ws.column_dimensions[get_column_letter(i + 1)].width = w
-    for row in ws.iter_rows(min_row=5, min_col=6, max_col=9):
+    for row in ws.iter_rows(min_row=5, min_col=6, max_col=10):
         for c in row:
             c.number_format = "#,##0"
     ws["A1"].font = Font(bold=True)
-    ns = wb.create_sheet("Notes")
-    for line in [
-        "Plate-appearance and games-started bonuses are earned in the championship season and paid half in the first "
-        "payroll after the season ends and half on the following January 15. Both halves are the bonus of the season "
-        "in which it was earned.",
-        "Every plate-appearance bonus the Club paid for the 2024 to 2026 seasons was paid to a player under a contract "
-        "in this register that carries plate-appearance terms.",
-        "A payment voided and reissued (the VOIDED line, its VOID REVERSAL and the new payment) is one payment.",
-        "Until the HRIS migration on January 1, 2025 the payroll paid every performance and award bonus under the "
-        "legacy code E40 (PERF BONUS); one E40 line can carry more than one bonus.",
-        "Pitchers' playing-time bonuses (games finished, innings pitched) are paid in full in the first payroll after "
-        "the season ends.",
-        "Award and All-Star bonuses are paid in the payroll after the award is announced.",
-        "Signing bonuses are paid on January 15 after signing, or within 30 days of signing for contracts signed after "
-        "January 1.",
-        "Salaries are paid in twelve semi-monthly installments from April 15 to September 30.",
-        "Employee IDs are the HRIS IDs from January 1, 2025.",
-        "Payroll contact: %s." % K.PEOPLE["payroll"],
-    ]:
-        ns.append([line])
-    ns.column_dimensions["A"].width = 120
+    for c in ws[4]:
+        c.font = Font(bold=True)
     K.save_workbook(wb, os.path.join(out, F_REG), dt.datetime(2026, 12, 8, 11, 25), K.PEOPLE["payroll"],
                     "Player contract register")
     return len(rr)

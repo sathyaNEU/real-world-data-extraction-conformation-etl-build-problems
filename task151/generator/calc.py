@@ -648,59 +648,14 @@ def bootstrap(P, T=None, n=300, seed=151):
     return float(np.std(tot)), {k: float(np.std(v)) for k, v in per.items()}
 
 
-# ---------------------------------------------------------------------------------------------------- Ask A (stints)
-def ask_a(P, mode="golden"):
-    """Every injured-list stint of the five since the start of 2024: the date each took effect and the regular-season
-    days it covered. Modes give the stops: 'move' (the transaction date as the date it took effect), 'split' (every
-    placement a stint), 'merge' (stints a week apart joined), 'by_name' (the moves found by name), 'golden'."""
-    tx = json.load(open(os.path.join(P.target, "lsf_transactions_2024_2026.json"), encoding="utf-8"))["transactions"]
-    rep = read_csv(os.path.join(P.target, "league_office_il_report_2024_2026.csv"))
-    F = five(P)
-    names = {f["name"] for f in F}
-    out = []
-    for f in F:
-        mine = (lambda t: t["player"] == f["name"]) if mode == "by_name" else (lambda t: t["player_id"] == f["lg"])
-        mv = sorted((t for t in tx if mine(t) and t["type"] in (
-            "IL_PLACEMENT", "IL_ACTIVATION", "IL_REINSTATEMENT")), key=lambda t: (t["date"], t["transaction_id"]))
-        stints, cur = [], None
-        for t in mv:
-            d = ymd(t["date"])
-            lst = re.search(r"the (\d+-day) injured list", t["description"]).group(1)
-            if t["type"] == "IL_PLACEMENT":
-                if cur is None or mode == "split":
-                    if cur is not None:
-                        cur["end"] = d
-                        stints.append(cur)
-                    cur = dict(placed=d, list=lst, end=None)
-                else:
-                    cur["list"] = lst
-            else:
-                cur["end"] = d
-                stints.append(cur)
-                cur = None
-        if mode == "merge":
-            merged = []
-            for s in stints:
-                if merged and (s["placed"] - merged[-1]["end"]).days <= 7:
-                    merged[-1]["end"] = s["end"]
-                else:
-                    merged.append(dict(s))
-            stints = merged
-        rname = report_name(f["name"])
-        for s in stints:
-            if mode in ("move", "split", "merge", "by_name"):
-                eff = s["placed"]
-            else:
-                rows = [r for r in rep if r["player"] == rname and mdy(r["placed"]) == s["placed"]]
-                r0 = rows[0]
-                eff = mdy(r0["eligible"]) - dt.timedelta(days=MIN_DAYS[r0["injured_list"]])
-            od, last = P.season[s["placed"].year]
-            start = max(eff, od)
-            stop = min(s["end"] - dt.timedelta(days=1), last)
-            days = (stop - start).days + 1
-            out.append(dict(player=f["name"], eff=eff, days=days, season=s["placed"].year))
-    out.sort(key=lambda x: (x["eff"], x["player"]))
-    return out
+# ---------------------------------------------------------------------------------------------------------- the ask
+F_PAY = "ral_payroll_player_earnings_2023_2026.csv"
+F_HRIS = "ral_hris_legacy_employee_map.csv"
+F_REG = "ral_player_contract_register_2023_2026.xlsx"
+OTHER_COL = "Other playing-time bonuses (each season)"
+AWARD_COL = "Award bonuses"
+ASK_SEASONS = (2023, 2024, 2025)
+ASK_MODES = ("cracker", "payyear", "e45_whole", "e45_all", "map", "register_id", "gross")
 
 
 def report_name(name):
@@ -709,119 +664,128 @@ def report_name(name):
     return "%s, %s" % (last.upper(), first.upper())
 
 
-# --------------------------------------------------------------------------------------------- Ask B (bonuses paid)
-def ask_b(P, mode="golden"):
-    """The plate-appearance bonuses the club paid for each of the 2024, 2025 and 2026 seasons, player by player.
-    The payroll pays each player's playing-time bonuses for a season (plate appearances and games started) together,
-    half after the season and half on the following January 15; the plate-appearance part of each payment is half the
-    plate-appearance lines the player reached while he was the club's. Modes give the stops: 'face' (the payroll's
-    playing-time and legacy season-end lines at face value, each half to its season, voids netted, pitchers dropped),
-    'code_payyear' (the playing-time code by pay year), 'code_season' (the playing-time code, each half to its season,
-    pitchers in), 'register' (the register's plate-appearance terms against the season's plate appearances),
-    'gross' (the face-value lines with the void reversal ignored), 'payyear' (each half under the year it was paid),
-    'five' (the five signings only), 'earned' (each season's bonus as earned, the half not yet paid included),
-    'golden'."""
-    pay = read_csv(os.path.join(P.target, "ral_payroll_player_earnings_2023_2026.csv"))
-    hmap = {r["legacy_employee_no"]: r["employee_id"] for r in read_csv(os.path.join(P.target, "ral_hris_legacy_employee_map.csv"))}
-    wb = openpyxl.load_workbook(os.path.join(P.target, "ral_player_contract_register_2024_2026.xlsx"), read_only=True)
-    ws = wb["Register"]
-    hdr, reg = None, []
-    for row in ws.iter_rows(values_only=True):
+def register(target):
+    """The contract register's rows as dicts (the header row is the one that starts with Player)."""
+    wb = openpyxl.load_workbook(os.path.join(target, F_REG), read_only=True)
+    hdr, out = None, []
+    for row in wb["Register"].iter_rows(values_only=True):
         if row and row[0] == "Player":
             hdr = list(row)
             continue
         if hdr and row and row[0]:
-            reg.append(dict(zip(hdr, row)))
-    terms = {}
+            out.append(dict(zip(hdr, row)))
+    return out
+
+
+def parse_terms(text):
+    """'Innings pitched: $100,000 each for 150, 165 and 180; games started: $45,000 for 30' as
+    [(measure, amount, (lines))]."""
+    out = []
+    for part in (text or "").split(";"):
+        m = re.match(r"\s*([A-Za-z ]+): \$([\d,]+) (?:each )?for ([\d, and]+)\s*$", part)
+        if m:
+            out.append((m.group(1).strip().lower(), int(m.group(2).replace(",", "")),
+                        tuple(int(x) for x in re.findall(r"\d+", m.group(3)))))
+    return out
+
+
+def parse_awards(text):
+    return [int(a.replace(",", "")) for a in re.findall(r"\$([\d,]+) for", text or "")]
+
+
+def seasons_of(text):
+    a, b = (str(text).split("-") + [str(text)])[:2]
+    return set(range(int(a), int(b) + 1))
+
+
+def legacy_key(name_hris):
+    """The register's 'Last, First' as the legacy payroll writes it: 'LAST FIRST', upper case, no accents."""
+    last, first = name_hris.split(", ")
+    return "%s %s" % (fold(last).upper(), fold(first).upper())
+
+
+def ask(P, mode="golden", detail=False):
+    """The playing-time bonuses other than plate-appearance bonuses the club paid for each of the 2023, 2024 and 2025
+    seasons, by player (the register's name) and season. The golden: every playing-time payment to a player whose
+    contract carries other playing-time terms, the season-end (October) payment to its season and the January payment
+    to the season before, whatever the payroll code (the legacy payroll paid the season-end halves of the pitchers'
+    bonuses on its catch-all code), net of voids, less an award bonus the legacy season-end line carries (the October
+    payment exceeding the January one by an award term of his); each legacy line is the player its legacy name gives.
+    Modes give the stops: 'cracker' (the playing-time codes the earning-code table gives, E40 and BPA, each legacy
+    line the player its legacy name gives, as a key-uniqueness sweep finds), 'payyear' (the same by the year paid), 'e45_whole' (the catch-all lines taken whole),
+    'e45_all' (every bonus line to those players, any month, taken whole), 'map' (every legacy number through the HRIS
+    map), 'register_id' (every legacy number to the register's own Employee ID), 'gross' (the void's reversal left out),
+    'golden'."""
+    pay = read_csv(os.path.join(P.target, F_PAY))
+    hmap = {r["legacy_employee_no"]: r["employee_id"] for r in read_csv(os.path.join(P.target, F_HRIS))}
+    reg = register(P.target)
+    other, awards, by_id, by_legacy_name = defaultdict(set), defaultdict(set), {}, {}
     for r in reg:
-        t = r["Plate-appearance bonuses (each season)"]
-        if t:
-            m = re.match(r"\$([\d,]+) each for ([\d, and]+) plate appearances", t)
-            a, b = r["Seasons"].split("-") if "-" in r["Seasons"] else (r["Seasons"], r["Seasons"])
-            terms[r["Employee ID"]] = dict(name=r["Player"], amount=int(m.group(1).replace(",", "")),
-                                           lines=[int(x) for x in re.findall(r"\d+", m.group(2))],
-                                           seasons=range(int(a), int(b) + 1), status=r["Status"])
-    emp = lambda r: hmap.get(r["employee_id"], r["employee_id"])
-    name_of = {r["Employee ID"]: r["Player"] for r in reg}
-    T = seasons(P)
-    pa_club = defaultdict(int)
-    for (y, g, d, club, pid, slot, st, pa, pos) in P.lines:
-        pa_club[(y, pid, club)] += pa
-    lg_of = {}
-    for r in P.plan:
-        first, last = r["name"].split(" ", 1)
-        lg_of["%s, %s" % (last, first)] = r["lg"]
+        name = r["Player"]
+        by_id.setdefault(str(r["Employee ID"]), name)
+        by_legacy_name[legacy_key(name)] = name
+        if parse_terms(r[OTHER_COL]):
+            other[name] |= seasons_of(r["Seasons"])
+        for a in parse_awards(r[AWARD_COL]):
+            awards[name].add(a)
+
+    def who(r):
+        e = r["employee_id"]
+        if not e.isdigit():                       # an HRIS line
+            return by_id.get(e)
+        if mode == "register_id":
+            return by_id.get(e) or by_id.get(hmap.get(e, ""))
+        if mode in ("e45_whole", "e45_all", "map"):
+            return by_id.get(hmap.get(e, "")) or by_id.get(e)
+        return by_legacy_name.get(r["employee_name"])
 
     def season_of(d):
         return d.year if d.month >= 7 else d.year - 1
 
-    def playing_time(r):
-        d = ymd(r["pay_date"])
-        return r["earning_code"] == "BPA" or (r["earning_code"] == "E40" and d.month in (10, 1))
-
-    out = defaultdict(float)
-    if mode == "register":
-        for e, t in terms.items():
-            for y in (2024, 2025, 2026):
-                if y in t["seasons"]:
-                    pa = T.pa[(y, lg_of[t["name"]])]
-                    out[(y, t["name"])] += t["amount"] * sum(1 for x in t["lines"] if pa >= x)
-        return dict(out)
-    if mode in ("face", "code_payyear", "code_season", "gross"):
-        for r in pay:
-            d = ymd(r["pay_date"])
-            e = emp(r)
-            if mode == "gross" and float(r["amount"]) < 0:
-                continue
-            if mode == "code_payyear":
-                if r["earning_code"] == "BPA":
-                    out[(d.year, name_of.get(e, e))] += float(r["amount"])
-                continue
-            if mode == "code_season":
-                if r["earning_code"] == "BPA":
-                    out[(season_of(d), name_of.get(e, e))] += float(r["amount"])
-                continue
-            if playing_time(r) and e in terms:
-                out[(season_of(d), terms[e]["name"])] += float(r["amount"])
-        return {k: v for k, v in out.items() if k[0] in (2024, 2025, 2026)}
-    # golden (and 'gross'): the halves each season's playing-time payments made, times half the plate-appearance
-    # lines the player reached for the club
-    if mode == "five":
-        # 'player by player' read as the five signings: none of them was the Club's player in 2024 to 2026
-        return {}
-    halves = defaultdict(lambda: defaultdict(float))
-    paid_in = defaultdict(lambda: defaultdict(int))
+    parts = defaultdict(lambda: defaultdict(float))
     for r in pay:
-        e = emp(r)
-        if e not in terms or not playing_time(r):
+        name = who(r)
+        if name not in other:
             continue
-        amt = float(r["amount"])
         d = ymd(r["pay_date"])
-        y = season_of(d)
-        half = "first" if d.month >= 7 else "second"
-        halves[(y, e)][half] += amt
-        if amt > 0:
-            paid_in[(y, e)][half] = d.year
-    for (y, e), parts in halves.items():
-        t = terms[e]
-        lg = lg_of[t["name"]]
-        pa = pa_club[(y, lg, "RAL")]
-        earned = t["amount"] * sum(1 for x in t["lines"] if pa >= x)
-        if mode == "earned":
-            # the season's bonus as earned, both halves, whether or not the second has been paid yet
-            if any(v > 0.5 for v in parts.values()) and y in (2024, 2025, 2026):
-                out[(y, t["name"])] += earned
+        amt = float(r["amount"])
+        code = r["earning_code"]
+        if mode == "gross" and amt < 0:
             continue
-        for half, v in parts.items():
-            if v <= 0.5:
+        if mode in ("cracker", "payyear"):
+            if code not in ("E40", "BPA"):
                 continue
-            yy = paid_in[(y, e)][half] if mode == "payyear" else y
-            if yy in (2024, 2025, 2026):
-                out[(yy, t["name"])] += earned / 2
-    return {k: v for k, v in out.items() if v}
+            y = d.year if mode == "payyear" else season_of(d)
+            parts[(y, name)]["all"] += amt
+            continue
+        if code not in ("E40", "E45", "BPA"):
+            continue
+        if mode == "e45_all":
+            parts[(season_of(d), name)]["all"] += amt
+            continue
+        if d.month == 10:
+            parts[(d.year, name)]["oct"] += amt
+        elif d.month == 1:
+            parts[(d.year - 1, name)]["jan"] += amt
+    out = {}
+    for (y, name), p in parts.items():
+        if y not in ASK_SEASONS or y not in other[name]:
+            continue
+        award = 0.0
+        if "all" in p:
+            v = p["all"]
+        else:
+            v = p["oct"] + p["jan"]
+            diff = round(p["oct"] - p["jan"], 2)
+            if mode != "e45_whole" and diff > 0.5 and diff in awards[name]:
+                award = diff
+                v -= diff
+        if abs(v) > 0.5:
+            out[(y, name)] = dict(oct=p["oct"], jan=p["jan"], award=award, paid=v) if detail else v
+    return out
 
 
-def ask_b_totals(d):
+def ask_totals(d):
     tot = defaultdict(float)
     for (y, n), v in d.items():
         tot[y] += v

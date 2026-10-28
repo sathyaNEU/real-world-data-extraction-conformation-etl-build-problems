@@ -2,8 +2,9 @@
 mess item neutral, R3a the analyst test on the clean truth and the pack, R3b the decisive step alone, R3c no plant,
 R3s the strict rule 3 test on every shipped sentence that bears on how the figure is computed); the bins and the
 one-sigma test; every construction of the golden; the out-of-sample back-test; every rival by name; every semantic
-fork row (SF1 to SF10) and closure axis (C1 to C22); both asks with every stop, hazard and the cracker's path; the
-separation line and the distractors; the realism sweep; the goldens and the prompt. Any failure stops the build."""
+fork row (SF1 to SF19) and closure axis (C1 to C22); the ask with every stop, hazard and the cracker's path; the
+separation line (the call's files byte-identical to the shipped commit) and the distractors; the realism sweep; the
+goldens and the prompt. Any failure stops the build."""
 from __future__ import annotations
 
 import csv
@@ -33,8 +34,23 @@ DASH = re.compile("[%s%s]" % (chr(0x2013), chr(0x2014)))
 TASK = K.TASK
 MAIN_FILES = [REC.F_LEGACY, REC.F_BAT, REC.F_XWALK, REC.F_CLUBS, REC.F_DC, REC.F_DC27, DOC.F_TERMS, DOC.F_FIN14,
               DOC.F_WP, DOC.F_NOTES]
-ASK_FILES = [REC.F_TRANS, REC.F_ILREP, DOC.F_ILRULES, REC.F_CAL, REC.F_PAY, REC.F_HRIS, REC.F_CODES, REC.F_REG]
-DISTRACTORS = [REC.F_PROJ, REC.F_SCHED27]
+ASK_FILES = [REC.F_PAY, REC.F_HRIS, REC.F_CODES, REC.F_REG]
+DISTRACTORS = [REC.F_PROJ, REC.F_SCHED27, REC.F_TRANS, REC.F_ILREP, DOC.F_ILRULES]
+# every file the call reads, as shipped at e93c6561 (target.zip 83bf068f): the rubric repair moves none of them
+SHIPPED_CALL_FILES = {
+    "lsf_batting_2021_2024.txt": "f5ae0bee4447473a827dcaa694a782ef44e5de0351f39efdf3094bb54ed83689",
+    "lsf_batting_2025_2026.csv": "56f1b187c3f7a13cea32e2f11c9b98092be4ce100c5095ead5a78533783229ea",
+    "lsf_player_id_crosswalk.csv": "ceca79b6f4cc3ea2246035e414e17860d0e2acb59d0f1ed6b2eb4afce3f85d0f",
+    "league_club_directory.csv": "de5efc944a881b2ffb35bb1f6c31ad6dd6f952330d401cdad217cb6adfb84684",
+    "hvbd_winter_depth_charts_2021_2026.xlsx": "e351a59f7c395394b5aecbb948f59ddcff2d9c97fd922210d9882b81afb17df3",
+    "ral_depth_chart_2027.xlsx": "d053dbed8c291d3f17fe290aff577e4d4231102e6ef1e22c77f8828fd4d7abdf",
+    "term_sheets_2027_free_agent_hitters.pdf": "524373318a4256e5f9a37dc5ccae2a6610a948c435bfbab70b656f1fd0875a65",
+    "FIN-14_player_compensation_accounting_policy.pdf": "c6a49bc369f66930f0db84152b49ed01fdd527c923c437b4636ed6fbd785215c",
+    "CF-14.4_look-back_working_paper.pdf": "c55637fcd94f20b704b9c780e554f2ecf6554503e9917fafc164699f67e0f3a3",
+    "lsf_feed_notes.txt": "9c7c155442788ff4c81a19cc2d8b1cfe4fa25e6d142303da315d26f32ed9b746",
+    "league_calendar_2021_2027.csv": "42e999b3c2e71e5518144cb335808dd1c60ce1385193941a11ec4ff2a5d648c2",
+    "hvbd_hitter_projections_2022_2027.csv": "4ad50fe25fe383372b8c8a0c49aa5c044074af50b3476c5a7cf633662d965827",
+}
 METHOD = (r"per start|comparab|distribution|percentile|share of|simulat|resampl|bootstrap|regulars' seasons|"
           r"winter-planned|planned regulars")
 SOFT = ("hitters with 81 or more starts", "hitters with 300 or more plate appearances")
@@ -154,7 +170,7 @@ def bins(a, b):
 def run(target, golden, W, R, meta_path):
     C = Checks()
     L = W
-    P, T, G, RV, A, B = R["P"], R["T"], R["G"], R["R"], R["A"], R["B"]
+    P, T, G, RV, B = R["P"], R["T"], R["G"], R["R"], R["B"]
     F = G["five"]
     key_of = {L.players[k].name: k for k in K.SIGN_ORDER}
     files = sorted(os.listdir(target))
@@ -520,142 +536,126 @@ def run(target, golden, W, R, meta_path):
     C("C22 forward window: 162 games a club in 2027 and nine in the club's lineup", set(cnt.values()) == {162} and
       len(P.lineup27) == 9)
 
-    # ---- Ask A: injured-list stints
+    # ---- the ask: playing-time bonuses other than plate-appearance bonuses paid, 2023 to 2025
     rep = list(csv.DictReader(open(os.path.join(target, REC.F_ILREP), encoding="utf-8")))
-    C("A1 nine stints since Opening Day 2024, each with its date and days", len(A) == 9 and all(a["days"] > 0 for a in A),
-      [(a["player"], str(a["eff"]), a["days"]) for a in A])
-    true_eff = sorted((s["eff"], L.players[s["key"]].name) for s in L.stints if s["key"] in K.SIGN_ORDER and
-                      s["season"] >= 2024)
-    C("A2 the golden dates are the dates the stints took effect", [(a["eff"], a["player"]) for a in A] == true_eff)
-    for mode, what in (("move", "the move's date as the date it took effect"), ("split", "every placement a stint"),
-                       ("merge", "stints a week apart merged"), ("by_name", "the moves found by name")):
-        S2 = calc.ask_a(P, mode)
-        hit = sum(1 for a in A for s in S2 if s["player"] == a["player"] and s["eff"] == a["eff"]) + sum(
-            1 for a in A for s in S2 if s["player"] == a["player"] and s["eff"] == a["eff"] and s["days"] == a["days"])
-        C("A3 stop '%s' (%d rows) misses the golden's rows" % (what, len(S2)), len(S2) != 9 or hit == 0,
-          [(s["player"], str(s["eff"]), s["days"]) for s in S2])
-    mv = calc.ask_a(P, "move")
-    C("A3b the move-date path misses all 18 figures", sum(1 for a, s in zip(A, mv) if a["eff"] == s["eff"]) == 0 and
-      sum(1 for a, s in zip(A, mv) if a["days"] == s["days"]) == 0)
-    hp = [a for a in A if a["player"] == L.players["P5"].name and a["eff"].year == 2025][0]
-    sp = [s_ for s_ in L.stints if s_["key"] == "P5" and s_["season"] == 2025][0]
-    C("HA1 the spring placement took effect before Opening Day; its days run from Opening Day",
-      hp["eff"] < K.SEASON[2025][0] and hp["days"] == (sp["reinst"] - K.SEASON[2025][0]).days, (hp, sp["reinst"]))
-    rules = texts[DOC.F_ILRULES]
-    C("HA7 the rules date a placement from the day it takes effect, up to three days before its transaction",
-      "may be up to three days before the date of the transaction" in rules and "after his placement takes effect" in
-      rules and "the date of the transaction that placed him on it" in rules)
-    op = [a for a in A if a["player"] == L.players["P4"].name and a["eff"].year == 2026][0]
-    C("HA2 the stint open at the 2026 season's end runs through the last scheduled day",
-      op["days"] == (K.SEASON[2026][1] - op["eff"]).days + 1 and any(
-          t["type"] == "IL_REINSTATEMENT" and t["player_id"] == key_lg(F, op["player"]) for t in tx))
-    rehab = [t for t in tx if t["type"] == "REHAB_ASSIGNMENT" and t["player_id"] in {f["lg"] for f in F}]
-    C("HA3 two of the stints carry a rehabilitation assignment inside them", len(rehab) == 2)
-    pat = [t for t in tx if t["type"] == "LIST_PLACEMENT" and t["player_id"] in {f["lg"] for f in F}]
-    C("HA4 the paternity list is not a stint", len(pat) == 1 and "paternity" in pat[0]["description"])
-    C("HA5 the 7-day concussion list is a stint", any(a["player"] == L.players["P5"].name and a["eff"].year == 2024
-                                                      for a in A))
-    trade = [t for t in tx if t["type"] == "TRADE" and t["player_id"] == key_lg(F, L.players["P2"].name)]
-    C("HA6 a trade while on the list continues the stint", len(trade) == 1 and sum(
-        1 for a in A if a["player"] == L.players["P2"].name and a["eff"].year == 2026) == 1)
-    true_by = {(REC.report_name(L.players[s["key"]].name), s["eff"]) for s in L.stints}
-    derived = {(r["player"], calc.mdy(r["eligible"]) - dt.timedelta(days=calc.MIN_DAYS[r["injured_list"]])) for r in rep}
-    C("A4 fair: every report row's first date of reinstatement less the list's minimum is the true date the stint took "
-      "effect (%d rows, %d stints)" % (len(rep), len(derived)), derived <= true_by, sorted(derived - true_by)[:5])
-    rows5 = [r for r in rep if r["player"] in {calc.report_name(f["name"]) for f in F} and not r["pos"].endswith("HP")]
-    placed5 = {(r["player"], calc.mdy(r["placed"])) for r in rows5}
-    feed5 = {(calc.report_name(t["player"]), calc.ymd(t["date"])) for t in tx if t["type"] == "IL_PLACEMENT" and
-             t["player_id"] in {f["lg"] for f in F}}
-    C("A5 the report's placement dates are the feed's transaction dates (both sources agree on the move)",
-      placed5 <= feed5 and len(feed5) == 11)
-    early = [r for r in rep if calc.mdy(r["placed"]) > calc.ymd(r["report_date"])]
-    C("A6 no report lists a placement before its transaction", not early, early[:3])
-    twin = [t for t in tx if t["player"] == L.players["P1"].name and t["player_id"] != key_lg(F, L.players["P1"].name)]
-    C("A7 a pitcher shares one signing's name; the feed tells them apart only by ID and position", len(twin) >= 4)
-
-    # ---- Ask B: plate-appearance bonuses paid
-    BT = calc.ask_b_totals(B)
-    C("B1 paid for 2024, 2025, 2026: $325,000, $900,000, $412,500", {y: round(v) for y, v in BT.items()} ==
-      {2024: 325000, 2025: 900000, 2026: 412500}, BT)
-    notes = texts[REC.F_REG]
-    C("B1b the register's notes file the population, the season, the reissue and the legacy code",
-      "was paid to a player under a contract in this register that carries plate-appearance terms" in notes and
-      "Both halves are the bonus of the season in which it was earned" in notes and
-      "is one payment" in notes and "one E40 line can carry more than one bonus" in notes)
-    for mode in ("face", "code_payyear", "code_season", "register", "gross", "payyear", "five", "earned"):
-        B2 = calc.ask_b(P, mode)
-        T2 = calc.ask_b_totals(B2)
-        same = sum(1 for k2, v in B.items() if abs(B2.get(k2, 0) - v) < 0.5) + sum(
-            1 for y in BT if abs(T2.get(y, 0) - BT[y]) < 0.5)
-        C("B2 stop '%s' misses (totals %s)" % (mode, {y: round(v) for y, v in sorted(T2.items())}),
-          any(abs(T2.get(y, 0) - BT[y]) >= 0.5 for y in BT), (same, T2))
+    BT = calc.ask_totals(B)
+    GT_ASK = {2023: 580000, 2024: 1080000, 2025: 1230000}
+    C("AK1 paid for 2023, 2024, 2025: %s (%d player rows)" % (", ".join(K.money(GT_ASK[y]) for y in sorted(GT_ASK)),
+                                                              len(B)),
+      {y: round(v) for y, v in BT.items()} == GT_ASK and len(B) == 18, ({y: round(v) for y, v in BT.items()}, len(B)))
+    truth_ask = {(y, REC.hris_name(L.players[k].name)): v for (k, y), v in REC.pitcher_bonuses().items()
+                 if y in calc.ASK_SEASONS}
+    C("AK2 fair: the golden is the season as it happened, every row (the generator's lines reached, priced by the "
+      "contract)", {k2: round(v) for k2, v in B.items()} == {k2: round(v) for k2, v in truth_ask.items()},
+      sorted(set(B) ^ set(truth_ask)))
     pay = list(csv.DictReader(open(os.path.join(target, REC.F_PAY), encoding="utf-8")))
-    e40 = [r for r in pay if r["earning_code"] == "E40" and r["pay_date"] == "2024-10-15"]
-    expect = {}
-    for b in REC.vet_bonuses(L):
-        if b["club"] == K.CLUB:
-            expect[(b["k"], b["season"])] = expect.get((b["k"], b["season"]), 0) + b["amount"]
-    star = {(k, y): dict(REC.VET_CONTRACTS[k]["awards"])[a] for (k, y), a in REC.AWARDS_WON.items()
-            if "All-Star" in a and y == 2024 and (k, y) in expect}
-    want_e40 = sorted(expect[(k, y)] / 2 + star.get((k, y), 0) for (k, y) in expect if y == 2024)
-    C("B3 the legacy season-end lines hold each 2024 first half (%d of them carrying the season's All-Star bonus)" %
-      len(star), sorted(float(r["amount"]) for r in e40) == want_e40 and len(star) == 1, (sorted(
-          float(r["amount"]) for r in e40), want_e40))
-    pt_lines = [r for r in pay if r["earning_code"] in ("BPA", "E40") and r["status"] == "PAID" and
-                float(r["amount"]) > 0 and r["pay_date"][5:7] in ("10", "01") and r["pay_date"] >= "2024-10-01"]
-    def legacy_or_hris(k):
-        return {REC.hris_name(L.players[k].name), REC.legacy_name(L.players[k].name)}
-    ok_lines = 0
-    for (k, y), amt in expect.items():
-        for r in pt_lines:
-            if r["employee_name"] in legacy_or_hris(k):
-                d = calc.ymd(r["pay_date"])
-                season = d.year if d.month >= 7 else d.year - 1
-                extra = star.get((k, y), 0) if d.month == 10 else 0
-                if season == y and abs(float(r["amount"]) - amt / 2 - extra) < 0.5:
-                    ok_lines += 1
-    n_halves = sum(1 + (y <= 2025) for (k, y) in expect if 2024 <= y <= 2026)
-    C("B3c every 2024-2026 playing-time line is half the season's plate-appearance and games-started lines reached for "
-      "the club (the legacy October 2024 line to one player also carries his All-Star bonus): %d lines" % ok_lines,
-      ok_lines == len([r for r in pt_lines if any(r["employee_name"] in legacy_or_hris(k) for k in REC.VET_CONTRACTS)])
-      and ok_lines == n_halves, (ok_lines, n_halves))
-    codes = list(csv.DictReader(open(os.path.join(target, REC.F_CODES), encoding="utf-8")))
-    C("B3b the legacy performance-bonus code migrated as other bonus", any(r["earning_code"] == "E40" and
-                                                                           r["migrated_as"] == "BOT" for r in codes))
-    pt = [r for r in pay if r["earning_code"] == "BPA" and r["employee_name"] in
-          {REC.hris_name(L.players[k].name) for k in REC.pitcher_bonus_rows(L)}]
-    C("B4 the playing-time code also carries two pitchers' bonuses", len(pt) == 2)
-    reg = calc.ask_b(P, "register")
-    v4 = REC.hris_name(L.players["V4"].name)
-    a4, l4 = REC.VET_CONTRACTS["V4"]["pa"]
-    with_club = sum(a4 for b in REC.vet_bonuses(L) if b["k"] == "V4" and b["kind"] == "PA" and b["club"] == K.CLUB)
-    C("B5 the assigned contract's later lines were not the club's to pay (register reading %s, paid %s)" % (
-        K.money(reg[(2025, v4)]), K.money(B.get((2025, v4), 0))), reg[(2025, v4)] > B.get((2025, v4), 0) and
-      abs(B.get((2025, v4), 0) - with_club) < 0.5 and with_club > 0, (reg[(2025, v4)], B.get((2025, v4)), with_club))
-    C("B6 the 2026 second halves are not paid by December 11, 2026", not any(r["pay_date"] > "2026-12-11" for r in pay)
-      and not any(r["pay_date"].startswith("2027") for r in pay))
-    earned = calc.ask_b_totals(calc.ask_b(P, "earned"))
-    ptxt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
-    C("SF15 the prompt asks for the bonuses paid to date: the 2026 second halves fall after the pull, and the season's "
-      "bonus as earned (both halves) files 2026 at %s, not %s" % (K.money(earned.get(2026, 0)), K.money(BT[2026])),
-      "we have paid to date for each of the 2024, 2025 and 2026 seasons" in ptxt and
-      abs(earned.get(2026, 0) - BT[2026]) >= 0.5 and all(abs(earned[y] - BT[y]) < 0.5 for y in (2024, 2025)), earned)
+    codes = {r["earning_code"]: r for r in csv.DictReader(open(os.path.join(target, REC.F_CODES), encoding="utf-8"))}
+    pnames = {REC.legacy_name(L.players[k].name) for k in REC.PITCHER_CONTRACTS}
+    pre_oct = [r for r in pay if r["employee_name"] in pnames and r["pay_date"][5:] == "10-15" and
+               r["pay_date"] < "2026-01-01" and r["status"] == "PAID"]
+    pre_jan = [r for r in pay if r["employee_name"] in pnames and r["pay_date"][5:] == "01-15" and
+               r["pay_date"] < "2026-01-01"]
+    C("AK3 the primary: every pitcher's season-end half before the HRIS cutover is a legacy E45 OTHER BONUS line (%d), "
+      "the code the earning-code table migrates as other bonus, and every legacy January half is E40 PERF BONUS (%d), "
+      "the code it migrates as the playing-time bonus" % (len(pre_oct), len(pre_jan)),
+      pre_oct and all(r["earning_code"] == "E45" and r["earning_description"] == "OTHER BONUS" for r in pre_oct) and
+      pre_jan and all(r["earning_code"] == "E40" for r in pre_jan) and codes["E45"]["migrated_as"] == "BOT" and
+      codes["E40"]["migrated_as"] == "BPA" and codes["BPA"]["description"] == "Playing-time bonus" and
+      codes["BOT"]["description"] == "Other bonus", (len(pre_oct), len(pre_jan)))
+    twins = [r for r in pay if r["earning_code"] == "E45" and r["employee_name"] not in pnames]
+    C("AK3b the catch-all code has benign twins: E45 also carries award bonuses to hitters (%d lines)" % len(twins),
+      len(twins) >= 2 and all(r["pay_date"][5:] in ("10-15", "11-15") for r in twins), len(twins))
+    pnames_all = pnames | {REC.hris_name(L.players[k].name) for k in REC.PITCHER_CONTRACTS}
+    hitters_pt = [r for r in pay if r["earning_code"] in ("E40", "BPA") and r["employee_name"] not in pnames_all]
+    C("AK3c the playing-time code carries the hitters' plate-appearance bonuses in the season-end run (%d lines), so "
+      "the code reads as the playing-time code" % len(hitters_pt), len(hitters_pt) >= 5 and
+      all(r["pay_date"][5:] == "10-15" for r in hitters_pt))
+    terms_of = defaultdict(list)
+    for r in calc.register(target):
+        for m_, a_, l_ in calc.parse_terms(r[calc.OTHER_COL]):
+            terms_of[(r["Player"], r["Seasons"])].append((a_, len(l_)))
+    def valid_full(name, y, amount):
+        for (nm, ss), tt in terms_of.items():
+            if nm == name and y in calc.seasons_of(ss):
+                sums = {0}
+                for a_, n_ in tt:
+                    sums = {s + a_ * j for s in sums for j in range(n_ + 1)}
+                return round(amount) in sums
+        return False
+    C("AK3d the wrong reading is complete: every half the playing-time codes carry is itself a full bonus the player's "
+      "own terms allow, so no row fails a check against the register", all(valid_full(n, y, B[(y, n)] / 2)
+                                                                          for (y, n) in B))
+    cr = calc.ask(P, "cracker")
+    crt = calc.ask_totals(cr)
+    hit_rows = [k2 for k2 in B if abs(cr.get(k2, 0) - B[k2]) < 0.5]
+    hit_tot = [y for y in BT if abs(crt.get(y, 0) - BT[y]) < 0.5]
+    C("AK4 the cracker (the earning-code table's playing-time codes, each legacy line by its name, voids netted, each "
+      "half to its season) misses all %d figures, every row at exactly half its golden" % (len(B) + len(BT)),
+      not hit_rows and not hit_tot and all(abs(cr.get(k2, 0) - B[k2] / 2) < 0.5 for k2 in B), (hit_rows, hit_tot))
+    designed = {"payyear": (18, 3), "e45_whole": (3, 3), "e45_all": (4, 3), "map": (1, 1), "register_id": (1, 1),
+                "gross": (1, 1)}
+    for mode, (rows_min, tot_min) in designed.items():
+        S2 = calc.ask(P, mode)
+        T2 = calc.ask_totals(S2)
+        miss_rows = [k2 for k2 in B if abs(S2.get(k2, 0) - B[k2]) >= 0.5]
+        miss_tot = [y for y in BT if abs(T2.get(y, 0) - BT[y]) >= 0.5]
+        C("AK5 stop '%s' misses %d rows and %d totals (designed at least %d and %d), each outside its bin" % (
+            mode, len(miss_rows), len(miss_tot), rows_min, tot_min),
+          len(miss_rows) >= rows_min and len(miss_tot) >= tot_min, (miss_rows, {y: round(v) for y, v in T2.items()}))
+    mp = {r["legacy_employee_no"]: r for r in csv.DictReader(open(os.path.join(target, REC.F_HRIS), encoding="utf-8"))}
+    reg_rows = calc.register(target)
+    reg_ids = {str(r["Employee ID"]): r["Player"] for r in reg_rows}
+    names_of = defaultdict(set)
+    for r in pay:
+        if r["employee_id"].isdigit():
+            names_of[r["employee_id"]].add(r["employee_name"])
+    multi = {e: n for e, n in names_of.items() if len(n) > 1}
+    old_k, new_k = REC.REISSUED
+    C("AK6 one legacy number carries two players (%s), the HRIS map gives it to the later one and the register to the "
+      "earlier one" % sorted(multi), len(multi) == 1 and list(multi.values())[0] == {
+          REC.legacy_name(L.players[old_k].name), REC.legacy_name(L.players[new_k].name)} and
+      mp[list(multi)[0]]["employee_name"] == REC.hris_name(L.players[new_k].name) and
+      reg_ids.get(list(multi)[0]) == REC.hris_name(L.players[old_k].name), multi)
+    D_ = calc.ask(P, detail=True)
+    carried = sorted((y, n, round(v["award"])) for (y, n), v in D_.items() if v["award"])
+    C("AK7 three legacy season-end lines carry the player's All-Star bonus beside his playing-time half %s" % carried,
+      len(carried) == 3 and {y for y, _, _ in carried} == {2023, 2024, 2025}, carried)
     void = [r for r in pay if r["status"] in ("VOIDED", "VOID REVERSAL")]
-    C("B7 one void and reissue nets to one payment", len(void) == 2 and sum(float(r["amount"]) for r in void) == 0)
-    hm = {r["legacy_employee_no"] for r in csv.DictReader(open(os.path.join(target, REC.F_HRIS), encoding="utf-8"))}
-    C("B8 every legacy employee number in the payroll is in the HRIS map", {
-        r["employee_id"] for r in pay if r["pay_date"] < "2025-01-01"} <= hm)
-
-    # ---- the cracker sheet
-    cr_a = sum(1 for a, s in zip(A, calc.ask_a(P, "move")) if a["eff"] == s["eff"]) + sum(
-        1 for a, s in zip(A, calc.ask_a(P, "move")) if a["days"] == s["days"])
-    C("CR1 the cracker's Ask A path (the filed definition run on the feed and the report's placement dates) misses all "
-      "18 figures", cr_a == 0, cr_a)
-    crb = calc.ask_b(P, "face")
-    crt = calc.ask_b_totals(crb)
-    hit_b = [k2 for k2 in B if abs(crb.get(k2, 0) - B[k2]) < 0.5] + [y for y in BT if abs(crt.get(y, 0) - BT[y]) < 0.5]
-    C("CR2 the cracker's Ask B path (the payroll's playing-time and legacy season-end lines at face value, each half to "
-      "its season, voids netted, pitchers dropped) misses all %d figures" % (len(B) + len(BT)), not hit_b, hit_b)
+    C("AK8 one void and reissue nets to one payment", len(void) == 2 and sum(float(r["amount"]) for r in void) == 0)
+    jan23 = [r for r in pay if r["pay_date"] == "2023-01-15" and r["earning_code"] == "E40"]
+    C("AK9 the January 2023 line is the 2022 season's second half (the pay-year reading moves it into 2023)",
+      len(jan23) == 1 and jan23[0]["employee_name"] in pnames, jan23)
+    main_figs = {GOLD_TOTAL} | set(GOLD_PER.values())
+    C("AK10 no ask figure equals a figure of the call", not ({round(v) for v in B.values()} | set(GT_ASK.values())) &
+      main_figs)
+    C("AK11 every ask figure is whole dollars", all(abs(v - round(v)) < 1e-6 for v in list(B.values()) + list(BT.values())))
+    doc_text = " ".join(t for f, t in texts.items() if f.endswith((".pdf", ".txt")) and not f.startswith("lsf_batting"))
+    shown = [K.money(v)[1:] for v in list(B.values()) + list(BT.values())
+             if re.search(r"(?<![\d,])" + re.escape(K.money(v)[1:]) + r"(?![\d,])", doc_text)]
+    C("AK12 no ask figure stands in a shipped document (the term sheets, FIN-14, CF-14.4, the rules, the feed notes; "
+      "positive control: the term sheets' $320,000 line is found)", not shown and "320,000" in doc_text, shown)
+    fin_txt = texts[DOC.F_FIN14]
+    measures = {m for r in reg_rows for m, _, _ in calc.parse_terms(r[calc.OTHER_COL])}
+    C("SF15 'playing-time bonuses other than plate-appearance bonuses' is FIN-14 4.1's class: every measure the register "
+      "carries is one 4.1 names (%s), and no hitter's contract carries one" % sorted(measures),
+      measures and all(m in fin_txt.lower() for m in measures) and not any(
+          calc.parse_terms(r[calc.OTHER_COL]) for r in reg_rows if r["Pos"] != "P"), measures)
+    ptxt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
+    py = calc.ask_totals(calc.ask(P, "payyear"))
+    opening = {y: K.SEASON[y][0] for y in K.SEASON}
+    C("SF16 'paid for each season' is the season earned: every January payment falls before that year's Opening Day, "
+      "and the pay-year reading files %s" % {y: round(v) for y, v in sorted(py.items())},
+      "that we paid for each of the 2023, 2024 and 2025 seasons" in ptxt and all(
+          calc.ymd(r["pay_date"]) < opening[int(r["pay_date"][:4])] for r in pay if r["pay_date"][5:7] == "01") and
+      all(abs(py.get(y, 0) - BT[y]) >= 0.5 for y in BT), py)
+    C("SF17 'paid' is through the pull: every half of the 2023 to 2025 bonuses is paid by January 15, 2026, and nothing "
+      "is dated after December 11, 2026", not any(r["pay_date"] > K.ASOF.isoformat() for r in pay) and
+      all(r["pay_date"] <= "2026-01-15" for r in pay if r["employee_name"] in pnames_all and r["earning_code"] in (
+          "E40", "E45", "BPA") and r["pay_date"][5:7] in ("10", "01")))
+    C("SF18 award bonuses are not playing time: FIN-14 5 treats them apart from 4.1",
+      "5. Award bonuses" in fin_txt and "relief appearances and days on the Active List" in fin_txt)
+    C("SF19 the register is the only population: no 2026 season bonus is paid by the pull (due January 15, 2027)",
+      not any(r["pay_date"] >= "2026-10-01" and r["earning_code"] in ("BPA", "BOT") for r in pay))
 
     # ---- the separation line and the distractors
     tmp = tempfile.mkdtemp(prefix="t151sep", dir=os.path.dirname(target))
@@ -669,12 +669,20 @@ def run(target, golden, W, R, meta_path):
         for f in ASK_FILES:
             shutil.copy(os.path.join(target, f), tmp)
         Pa = calc.load(tmp)
-        C("SEP2 both asks unchanged with the distractors deleted", calc.ask_a(Pa) == A and calc.ask_b(Pa) == B)
+        C("SEP2 the ask unchanged with the distractors deleted", calc.ask(Pa) == B)
     finally:
         shutil.rmtree(tmp)
     main_docs = " ".join(texts[f] for f in (DOC.F_FIN14, DOC.F_WP, DOC.F_TERMS, REC.F_DC27, DOC.F_NOTES))
-    C("SEP3 no main-call document carries an ask's organ (payroll timing, earning codes, injured-list dates)",
-      not re.search(r"January 15|earning code|E40|BPA|eligible|retroactive|half in the first payroll", main_docs))
+    C("SEP3 no main-call document carries an ask's organ (payroll codes, payment runs, employee numbers)",
+      not re.search(r"January 15|October 15|earning code|E40|E45|BPA|OTHER BONUS|PERF BONUS|employee number|"
+                    r"legacy payroll|HRIS|migrat", main_docs) and "plate appearances" in main_docs)
+    import hashlib
+    moved = [f for f, h in SHIPPED_CALL_FILES.items() if
+             hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest() != h]
+    C("SEP4 every file the call reads is byte-identical to the shipped commit e93c6561 (%d files)" %
+      len(SHIPPED_CALL_FILES), not moved, moved)
+    C("SEP5 the ask reads no file the call reads, and the call none of the ask's", not set(ASK_FILES) &
+      set(SHIPPED_CALL_FILES))
     for f in DISTRACTORS:
         tmp = tempfile.mkdtemp(prefix="t151dis", dir=os.path.dirname(target))
         try:
@@ -683,8 +691,8 @@ def run(target, golden, W, R, meta_path):
                     shutil.copy(os.path.join(target, g2), tmp)
             Pd = calc.load(tmp)
             Gd = calc.golden(Pd)
-            C("D1 deleting %s leaves the golden and both asks" % f, abs(Gd["total"] - G["total"]) < 0.01 and
-              calc.ask_a(Pd) == A and calc.ask_b(Pd) == B)
+            C("D1 deleting %s leaves the golden and the ask" % f, abs(Gd["total"] - G["total"]) < 0.01 and
+              calc.ask(Pd) == B)
         finally:
             shutil.rmtree(tmp)
 
@@ -737,14 +745,18 @@ def run(target, golden, W, R, meta_path):
       len({tuple(t for _, t in f["lines"]) for f in F}) == 5)
 
     # ---- house fixes: payment dates the stated rule predicts (H6), citations (H8), the manifest (H9), dates (H16)
-    pa_pay = [r for r in pay if r["earning_code"] in ("BPA", "E40") and r["employee_name"] in
-              {REC.hris_name(L.players[k].name) for k in REC.VET_CONTRACTS} | {REC.legacy_name(L.players[k].name)
-                                                                              for k in REC.VET_CONTRACTS}
-              and r["status"] == "PAID" and float(r["amount"]) > 0]
-    off_rule = [r for r in pa_pay if r["pay_date"][5:] not in ("10-15", "01-15", "11-15") and
-                not (r["pay_date"] == "2026-10-22")]
-    C("H6 every veteran's bonus payment falls on a date the register's notes give (one reissue apart)", not off_rule,
-      off_rule[:3])
+    bonus_pay = [r for r in pay if r["earning_code"] not in ("E01", "SAL", "E10", "SGN") and r["status"] == "PAID"
+                 and float(r["amount"]) > 0]
+    off_rule = [r for r in bonus_pay if r["pay_date"][5:] not in ("10-15", "01-15", "11-15", "07-31") and
+                r["pay_date"] != (REC.VOID_REISSUE[1] + dt.timedelta(days=7)).isoformat()]
+    C("H6 every bonus payment falls in a bonus run (October 15, January 15, November 15 for awards, July 31 for an "
+      "All-Star from 2026), one reissue apart", not off_rule, off_rule[:3])
+    wb_reg = openpyxl.load_workbook(os.path.join(target, REC.F_REG), read_only=True)
+    C("H9b no notes, readme or dictionary sheet or file ships: the register is one sheet", wb_reg.sheetnames ==
+      ["Register"] and not [f for f in files if re.search(r"readme|notes?\b|dictionary|manifest", f, re.I) and
+                            f not in (DOC.F_NOTES,)], wb_reg.sheetnames)
+    resolvable = all(r["employee_id"] in mp or r["employee_id"] in reg_ids for r in pay if r["employee_id"].isdigit())
+    C("B8 every legacy employee number in the payroll is in the HRIS map or the register", resolvable)
     gold_txt = xlsx_strings(os.path.join(golden, DL.F_BOOK)) + " " + memo + " " + sub_text()
     cited = set(re.findall(r"[\w.-]+\.(?:csv|txt|xlsx|pdf|json)", gold_txt)) - {DL.F_BOOK}
     C("H8 every file the goldens and the write-up cite ships", cited <= set(files), cited - set(files))
@@ -768,16 +780,17 @@ def run(target, golden, W, R, meta_path):
         if row[0] == "Total":
             tot_cell = row[7]
     C("GD1 the workbook's accruals equal the golden", acc == G["per_r"] and tot_cell == GOLD_TOTAL, (acc, tot_cell))
-    ws2 = wb["IL stints since 2024"]
-    st_rows = [(r[0], r[4].date() if hasattr(r[4], "date") else r[4], r[7]) for r in ws2.iter_rows(min_row=4, values_only=True)
-               if r[0] and r[7] is not None]
-    C("GD2 the workbook's stints equal Ask A", st_rows == [(a["player"], a["eff"], a["days"]) for a in A], st_rows)
-    ws3 = wb["PA bonuses paid 2024-2026"]
-    pb = {}
+    ws3 = wb["Other PT bonuses 2023-2025"]
+    pb, ptot, yy = {}, {}, None
     for r in ws3.iter_rows(min_row=4, values_only=True):
-        if isinstance(r[0], int) and r[1] and not str(r[1]).startswith("Total"):
-            pb[(r[0], r[1])] = r[2]
-    C("GD3 the workbook's payments equal Ask B", pb == {(y, DL.plain(n)): round(v) for (y, n), v in B.items() if v}, pb)
+        if isinstance(r[0], int) and r[1]:
+            yy = r[0]
+            pb[(r[0], r[1])] = r[6]
+        elif r[1] and str(r[1]).startswith("Total"):
+            ptot[int(str(r[1]).split()[-1])] = r[6]
+    C("GD3 the workbook's payments equal the ask, row by row and in total", pb == {
+        (y, DL.plain(n)): round(v) for (y, n), v in B.items() if v} and ptot == {y: round(v) for y, v in BT.items()},
+      (pb, ptot))
     C("GD4 figures.json carries the call", figs["call"]["total"] == K.money(GOLD_TOTAL))
     C("GD5 two goldens, both named in the prompt", sorted(os.listdir(golden)) == sorted([DL.F_BOOK, DL.F_MEMO]))
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()

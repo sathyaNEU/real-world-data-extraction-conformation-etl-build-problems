@@ -5,7 +5,7 @@
   "client_domain": "General Statistics & Data Science",
   "subdomain": "resampling-simulation-monte-carlo-methods (the expected value of stepped plate-appearance bonuses from the distribution of comparable whole seasons: the winter-planned regulars' seasons of starts, each read at the signing's 2027 lineup slot's plate appearances per start)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a total accrual built from five players' accruals (fifteen bonus lines), a table of nine injured-list stints (date taken effect and regular-season days), a table of the plate-appearance bonuses paid for three seasons by player and in total, and a one-page memo",
+  "prompt_shape": "a total accrual built from five players' accruals (fifteen bonus lines), a table of the playing-time bonuses other than plate-appearance bonuses the club paid for each of three seasons, player by player and in total, and a one-page memo",
   "as_of": "2026-12-11",
   "deliverables": [
     "pa_bonus_accrual_2027.xlsx",
@@ -13,7 +13,10 @@
   ],
   "distractor_files": [
     "hvbd_hitter_projections_2022_2027.csv",
-    "league_schedule_2027.csv"
+    "league_schedule_2027.csv",
+    "lsf_transactions_2024_2026.json",
+    "league_office_il_report_2024_2026.csv",
+    "league_rules_art22_injured_lists_excerpt.pdf"
   ],
   "stated_inputs": [],
   "input_gates": {
@@ -168,7 +171,7 @@
     {
       "path": "ral_close_file_index_2026-12-11.csv",
       "format": "csv",
-      "bytes": 2542,
+      "bytes": 2551,
       "rows": 21,
       "source": "Constructed: Raleigh Oaks Finance, index of the December 2026 close file as pulled December 11, 2026",
       "date": "2026-12-11",
@@ -186,17 +189,17 @@
     {
       "path": "ral_hris_legacy_employee_map.csv",
       "format": "csv",
-      "bytes": 2494,
-      "rows": 57,
-      "source": "Constructed: Raleigh Oaks HRIS, legacy employee number map from the January 2025 migration",
+      "bytes": 1680,
+      "rows": 38,
+      "source": "Constructed: Raleigh Oaks HRIS, legacy employee number map from the January 2026 migration",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "ral_payroll_earning_codes.csv",
       "format": "csv",
-      "bytes": 658,
-      "rows": 13,
+      "bytes": 715,
+      "rows": 14,
       "source": "Constructed: Raleigh Oaks HRIS payroll, earning codes (legacy payroll and HRIS)",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -204,18 +207,18 @@
     {
       "path": "ral_payroll_player_earnings_2023_2026.csv",
       "format": "csv",
-      "bytes": 100459,
-      "rows": 1364,
+      "bytes": 100268,
+      "rows": 1393,
       "source": "Constructed: Raleigh Oaks HRIS payroll, player earnings register, pay dates January 2023 to December 11, 2026",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "ral_player_contract_register_2024_2026.xlsx",
+      "path": "ral_player_contract_register_2023_2026.xlsx",
       "format": "xlsx",
-      "bytes": 9825,
+      "bytes": 10113,
       "rows": null,
-      "source": "Constructed: Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2024 to 2026 seasons",
+      "source": "Constructed: Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2023 to 2026 seasons",
       "date": "2026-12-11",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },

@@ -1,6 +1,6 @@
 """The golden deliverables, computed from the shipped pack only (calc): pa_bonus_accrual_2027.xlsx (the accrual by
-bonus line, player and in total; the injured-list stints since 2024; the plate-appearance bonuses paid for 2024 to
-2026) and pa_bonus_accrual_memo_2027.docx (the one-page note for the audit file), with generator/figures.json and
+bonus line, player and in total; the playing-time bonuses other than plate-appearance bonuses paid for the 2023 to 2025
+seasons) and pa_bonus_accrual_memo_2027.docx (the one-page note for the audit file), with generator/figures.json and
 submission.md written from the same objects."""
 from __future__ import annotations
 
@@ -32,7 +32,13 @@ def compute(target):
     T = calc.seasons(P)
     R, G, NEAR, ACC = calc.rivals(P, T)
     LB, n_lb, _ = calc.lookback(P, T)
-    return dict(P=P, T=T, G=G, R=R, NEAR=NEAR, ACC=ACC, LB=LB, n_lb=n_lb, A=calc.ask_a(P), B=calc.ask_b(P))
+    names = {}
+    for r in calc.read_csv(os.path.join(target, calc.F_PAY)):
+        if r["employee_id"].isdigit():
+            names.setdefault(r["employee_id"], set()).add(r["employee_name"])
+    reissued = sorted(e for e, n in names.items() if len(n) > 1)
+    return dict(P=P, T=T, G=G, R=R, NEAR=NEAR, ACC=ACC, LB=LB, n_lb=n_lb, B=calc.ask(P),
+                BD=calc.ask(P, detail=True), reissued=reissued)
 
 
 def usd(x):
@@ -48,43 +54,21 @@ def club_name(P, code):
     return [r["club_name"] for r in rows if r["abbrev"] == code][0]
 
 
-def stint_rows(R):
-    """Ask A with each stint's club and list (from the transactions feed) and reinstatement date."""
-    P = R["P"]
-    tx = json.load(open(os.path.join(P.target, "lsf_transactions_2024_2026.json"), encoding="utf-8"))["transactions"]
-    out = []
-    for a in R["A"]:
-        lg = [f["lg"] for f in R["G"]["five"] if f["name"] == a["player"]][0]
-        mv = sorted((t for t in tx if t["player_id"] == lg and t["type"] in (
-            "IL_PLACEMENT", "IL_ACTIVATION", "IL_REINSTATEMENT") and t["date"] >= a["eff"].isoformat()),
-            key=lambda t: (t["date"], t["transaction_id"]))
-        first = mv[0]
-        lists, end, clubs = [], None, []
-        for t in mv:
-            m = re.search(r"the (\d+-day) injured list", t["description"])
-            if t["type"] == "IL_PLACEMENT":
-                if m.group(1) not in lists:
-                    lists.append(m.group(1))
-                if t["team"] not in clubs:
-                    clubs.append(t["team"])
-            else:
-                end = t
-                if t["team"] not in clubs:
-                    clubs.append(t["team"])
-                break
-        out.append(dict(a, club=" / ".join(clubs), lists=" to ".join(lists), end=calc.ymd(end["date"]),
-                        placed=calc.ymd(first["date"]),
-                        end_type="reinstated" if end["type"] == "IL_REINSTATEMENT" else "activated"))
-    return out
-
-
 def paid_rows(R):
+    """Each season's rows in the register's order (surname), and the season's total."""
     B = R["B"]
     out = []
-    for y in (2024, 2025, 2026):
-        rows = sorted(((n, v) for (yy, n), v in B.items() if yy == y and v), key=lambda kv: (-kv[1], kv[0]))
+    for y in calc.ASK_SEASONS:
+        rows = sorted(((n, v) for (yy, n), v in B.items() if yy == y and v), key=lambda kv: kv[0])
         out.append((y, rows, sum(v for _, v in rows)))
     return out
+
+
+def terms_for(R, name, y):
+    for r in calc.register(R["P"].target):
+        if r["Player"] == name and r[calc.OTHER_COL] and y in calc.seasons_of(r["Seasons"]):
+            return r[calc.OTHER_COL]
+    return ""
 
 
 def plain(name_hris):
@@ -132,10 +116,9 @@ def figures(R):
             opening_day=usd(calc.r250(rv["opening-day lineups"])),
             old_slot=usd(calc.r250(rv["regulars at the old slot's rate"]))),
         deliverables=dict(
-            stints=[dict(player=s["player"], took_effect=s["eff"].strftime("%B %-d, %Y"), days=str(s["days"]))
-                    for s in stint_rows(R)],
             paid=[dict(season=str(y), rows=[(plain(n), usd(v)) for n, v in rows], total=usd(tot))
-                  for y, rows, tot in paid_rows(R)]),
+                  for y, rows, tot in paid_rows(R)],
+            reissued_legacy_numbers=R["reissued"]),
     )
     return f
 
@@ -268,64 +251,55 @@ def write_book(R, path):
     for col, w in zip("ABCD", (66, 10, 14, 18)):
         wl.column_dimensions[col].width = w
     wl.freeze_panes = "A5"
-    # injured-list stints
-    ws2 = wb.create_sheet("IL stints since 2024")
-    ws2["A1"] = "Injured-list stints of the five since Opening Day 2024: nine stints, %d regular-season days" % sum(
-        s["days"] for s in stint_rows(R))
-    ws2["A1"].font = Font(bold=True)
-    _hdr(ws2, 3, ["Player", "Club", "List", "Placed (transaction)", "Took effect", "Ended", "Date ended",
-                  "Regular-season days"])
-    for i, s in enumerate(stint_rows(R)):
-        r = 4 + i
-        ws2.cell(row=r, column=1, value=s["player"])
-        ws2.cell(row=r, column=2, value=s["club"])
-        ws2.cell(row=r, column=3, value=s["lists"])
-        ws2.cell(row=r, column=4, value=s["placed"]).number_format = "mm/dd/yyyy"
-        ws2.cell(row=r, column=5, value=s["eff"]).number_format = "mm/dd/yyyy"
-        ws2.cell(row=r, column=6, value=s["end_type"].capitalize())
-        ws2.cell(row=r, column=7, value=s["end"]).number_format = "mm/dd/yyyy"
-        ws2.cell(row=r, column=8, value=s["days"])
-    n = 4 + len(stint_rows(R)) + 1
-    ws2.cell(row=n, column=1, value="Took effect: the report's first date of reinstatement less the list's minimum "
-                                    "period (League Rules 22.2). Days counted from the later of that date and Opening "
-                                    "Day through the day before reinstatement, or the last scheduled day (22.7).")
-    ws2.cell(row=n + 1, column=1, value="Sources: lsf_transactions_2024_2026.json; league_office_il_report_2024_2026.csv; "
-                                        "league_calendar_2021_2027.csv.")
-    for col, w in zip("ABCDEFGH", (20, 40, 17, 13, 12, 12, 12, 12)):
-        ws2.column_dimensions[col].width = w
-    ws2.freeze_panes = "B4"
-    # bonuses paid
-    ws3 = wb.create_sheet("PA bonuses paid 2024-2026")
-    ws3["A1"] = "Plate-appearance bonuses paid by the Club, by the season they were earned (payroll register through " \
-                "December 11, 2026)"
+    # the other playing-time bonuses paid
+    ws3 = wb.create_sheet("Other PT bonuses 2023-2025")
+    ws3["A1"] = ("Other playing-time bonuses paid: %s for 2023, %s for 2024, %s for 2025 (payroll register through "
+                 "December 11, 2026)" % tuple(usd(tot) for _, _, tot in paid_rows(R)))
     ws3["A1"].font = Font(bold=True)
-    _hdr(ws3, 3, ["Season", "Player", "Paid"])
+    _hdr(ws3, 3, ["Season", "Player", "Contract terms (each season)", "Season-end payment", "January payment",
+                  "Award in season-end line", "Paid for the season"])
     r = 4
     for y, rows, tot in paid_rows(R):
         for n, v in rows:
+            dd = R["BD"][(y, n)]
             ws3.cell(row=r, column=1, value=y)
             ws3.cell(row=r, column=2, value=plain(n))
-            ws3.cell(row=r, column=3, value=round(v)).number_format = "$#,##0"
+            ws3.cell(row=r, column=3, value=terms_for(R, n, y))
+            ws3.cell(row=r, column=4, value=round(dd["oct"])).number_format = "$#,##0"
+            ws3.cell(row=r, column=5, value=round(dd["jan"])).number_format = "$#,##0"
+            c = ws3.cell(row=r, column=6, value=-round(dd["award"]) if dd["award"] else None)
+            c.number_format = "$#,##0;($#,##0)"
+            ws3.cell(row=r, column=7, value=round(v)).number_format = "$#,##0"
             r += 1
-        ws3.cell(row=r, column=1, value=y)
         ws3.cell(row=r, column=2, value="Total %d" % y).font = Font(bold=True)
-        c = ws3.cell(row=r, column=3, value=round(tot))
-        c.number_format = "$#,##0"
-        c.font = Font(bold=True)
+        parts = [R["BD"][(y, n)] for n, _ in rows]
+        for col, v in ((4, sum(p["oct"] for p in parts)), (5, sum(p["jan"] for p in parts)),
+                       (6, -sum(p["award"] for p in parts) or None), (7, tot)):
+            c = ws3.cell(row=r, column=col, value=round(v) if v is not None else None)
+            c.number_format = "$#,##0;($#,##0)"
+            c.font = Font(bold=True)
+            c.border = Border(top=THIN)
         r += 2
-    ws3.cell(row=r, column=1, value="2026: the second halves are payable on January 15, 2027.")
-    ws3.cell(row=r + 1, column=1, value="Each playing-time payment carries a season's plate-appearance and games-started "
-                                        "bonuses together; the plate-appearance part is half the plate-appearance lines "
-                                        "the player reached for the Club, for each payment made.")
-    ws3.cell(row=r + 2, column=1, value="2024 first halves are inside the legacy PERF BONUS lines of October 15, 2024, "
-                                        "which carry every performance bonus paid that day. Pitchers' games and innings "
-                                        "bonuses on the playing-time code are excluded.")
+    ws3.cell(row=r, column=1, value="The pitchers' bonuses are paid half in the season-end run (October 15) and half "
+                                    "on the following January 15. Before the January 2026 HRIS cutover the legacy "
+                                    "payroll put the season-end halves on E45 OTHER BONUS and the January halves on E40 "
+                                    "PERF BONUS; from January 2026 both are BPA.")
+    ws3.cell(row=r + 1, column=1, value="An All-Star bonus paid in the same legacy season-end line is taken out (Ruiz "
+                                        "2023, Livingston 2024, Pietersz 2025). White's Cy Young bonus (November 15, "
+                                        "2024) is an award, not playing time.")
+    ws3.cell(row=r + 2, column=1, value="Legacy number %s was reissued: Yordy Benítez's lines to January 2024, Gilmar "
+                                        "Pietersz's from 2025; legacy lines are taken by the name on the line. The "
+                                        "October 2025 void and reissue to Reed counts once." % R["reissued"][0])
     ws3.cell(row=r + 3, column=1, value="Sources: ral_payroll_player_earnings_2023_2026.csv; "
-                                        "ral_player_contract_register_2024_2026.xlsx; the batting lines for plate "
-                                        "appearances by club.")
-    for col, w in zip("ABC", (10, 24, 14)):
+                                        "ral_hris_legacy_employee_map.csv; ral_player_contract_register_2023_2026.xlsx.")
+    for col, w in zip("ABCDEFG", (8, 20, 62, 14, 14, 14, 14)):
         ws3.column_dimensions[col].width = w
-    ws3.freeze_panes = "A4"
+    ws3.row_dimensions[3].height = 30
+    ws3.freeze_panes = "C4"
+    ws3.page_setup.orientation = "landscape"
+    ws3.page_setup.fitToWidth = 1
+    ws3.sheet_properties.pageSetUpPr.fitToPage = True
+    ws3.print_title_rows = "3:3"
     # notes
     wn = wb.create_sheet("Notes")
     for line in [
@@ -513,6 +487,15 @@ def submission(R, fig, path):
         "; ".join("%s %s" % (f_["name"], per[f_["name"]]) for f_ in F)))
     lines.append("7. Summed the five players' unrounded amounts and rounded to the nearest $250,000 (FIN-14 6): %s; the "
                  "rounded player figures add to %s." % (fig["call"]["total"], usd(sum(G["per_r"].values()))))
+    pd_ = fig["deliverables"]["paid"]
+    lines.append("8. For each player whose contract in ral_player_contract_register_2023_2026.xlsx carries other "
+                 "playing-time terms, added the season-end payment (October 15) and the January 15 payment after it in "
+                 "ral_payroll_player_earnings_2023_2026.csv, whatever the code (the legacy payroll paid the pitchers' "
+                 "season-end halves on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star "
+                 "bonus a legacy season-end line carries, each legacy line read by its name (number %s is Yordy "
+                 "Benítez in 2023 and Gilmar Pietersz in 2025): %s." % (
+                     fig["deliverables"]["reissued_legacy_numbers"][0],
+                     "; ".join("%s %s" % (b["season"], b["total"]) for b in pd_)))
     lines.append("")
     lines.append("## 4. Deliverable Answers\n")
     lines.append("### %s\n" % F_BOOK)
@@ -520,11 +503,8 @@ def submission(R, fig, path):
     for f_ in F:
         lines.append("   - %s: %s" % (f_["name"], per[f_["name"]]))
     lines.append("   - Total: %s" % fig["call"]["total"])
-    lines.append("2. Injured-list stints since the start of the 2024 season, date each took effect and regular-season "
-                 "days covered:")
-    for s in fig["deliverables"]["stints"]:
-        lines.append("   - %s: took effect %s, %s days" % (s["player"], s["took_effect"], s["days"]))
-    lines.append("3. Plate-appearance bonuses paid for each season, player by player and in total:")
+    lines.append("2. Playing-time bonuses other than plate-appearance bonuses paid for each season, player by player "
+                 "and in total:")
     for blk in fig["deliverables"]["paid"]:
         for n, v in blk["rows"]:
             lines.append("   - %s season, %s: %s" % (blk["season"], n, v))

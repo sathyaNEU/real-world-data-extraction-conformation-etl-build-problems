@@ -161,100 +161,100 @@
   "old_slot": "$6,000,000"
  },
  "deliverables": {
-  "stints": [
-   {
-    "player": "Sawyer Lusk",
-    "took_effect": "May 4, 2024",
-    "days": "68"
-   },
-   {
-    "player": "Ángel Medina",
-    "took_effect": "May 19, 2024",
-    "days": "10"
-   },
-   {
-    "player": "Ángel Medina",
-    "took_effect": "June 2, 2024",
-    "days": "14"
-   },
-   {
-    "player": "Mike Meeks",
-    "took_effect": "August 9, 2024",
-    "days": "8"
-   },
-   {
-    "player": "Drew Brock",
-    "took_effect": "August 14, 2024",
-    "days": "13"
-   },
-   {
-    "player": "Mike Meeks",
-    "took_effect": "March 25, 2025",
-    "days": "13"
-   },
-   {
-    "player": "Drew Brock",
-    "took_effect": "June 13, 2026",
-    "days": "76"
-   },
-   {
-    "player": "Andres Rivas",
-    "took_effect": "July 8, 2026",
-    "days": "14"
-   },
-   {
-    "player": "Sawyer Lusk",
-    "took_effect": "September 11, 2026",
-    "days": "17"
-   }
-  ],
   "paid": [
+   {
+    "season": "2023",
+    "rows": [
+     [
+      "Yordy Benítez",
+      "$110,000"
+     ],
+     [
+      "Julio Casilla",
+      "$60,000"
+     ],
+     [
+      "Carlos Lara",
+      "$140,000"
+     ],
+     [
+      "Santiago Ruiz",
+      "$150,000"
+     ],
+     [
+      "Max White",
+      "$120,000"
+     ]
+    ],
+    "total": "$580,000"
+   },
    {
     "season": "2024",
     "rows": [
      [
-      "Edwin Cedeno",
-      "$200,000"
+      "Carlos Lara",
+      "$300,000"
      ],
      [
-      "Jonathan Vasquez",
-      "$125,000"
+      "Joe Livingston",
+      "$100,000"
+     ],
+     [
+      "Tyler Reed",
+      "$170,000"
+     ],
+     [
+      "Sam Robertson",
+      "$90,000"
+     ],
+     [
+      "Santiago Ruiz",
+      "$300,000"
+     ],
+     [
+      "Max White",
+      "$120,000"
      ]
     ],
-    "total": "$325,000"
+    "total": "$1,080,000"
    },
    {
     "season": "2025",
     "rows": [
      [
-      "Jonathan Vasquez",
-      "$375,000"
+      "Johnny Blair",
+      "$140,000"
      ],
      [
-      "Gregorio Candelario",
-      "$300,000"
+      "Carlos Lara",
+      "$200,000"
      ],
      [
-      "Juan Nunez",
-      "$225,000"
+      "Joe Livingston",
+      "$100,000"
+     ],
+     [
+      "Gilmar Pietersz",
+      "$120,000"
+     ],
+     [
+      "Tyler Reed",
+      "$340,000"
+     ],
+     [
+      "Sam Robertson",
+      "$90,000"
+     ],
+     [
+      "Max White",
+      "$240,000"
      ]
     ],
-    "total": "$900,000"
-   },
-   {
-    "season": "2026",
-    "rows": [
-     [
-      "Jacob Briggs",
-      "$262,500"
-     ],
-     [
-      "Gregorio Candelario",
-      "$150,000"
-     ]
-    ],
-    "total": "$412,500"
+    "total": "$1,230,000"
    }
+  ],
+  "reissued_legacy_numbers": [
+   "01661"
   ]
  }
 }

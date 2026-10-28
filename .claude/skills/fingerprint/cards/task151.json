@@ -72,7 +72,17 @@
       "Néstor Cabrera",
       "Gilberto Polanco",
       "Josh Atwell",
-      "Parker Burkett"
+      "Parker Burkett",
+      "Carlos Lara",
+      "Max White",
+      "Tyler Reed",
+      "Joe Livingston",
+      "Sam Robertson",
+      "Santiago Ruiz",
+      "Julio Casilla",
+      "Yordy Benítez",
+      "Johnny Blair",
+      "Gilmar Pietersz"
     ]
   },
   "deliverables": [
@@ -95,9 +105,9 @@
     "players traded mid-season appearing for two clubs in one season",
     "the vendor's winter depth-chart archive, one sheet per season with its own club abbreviations, positions with DH, batting order and bench rows",
     "contract terms in a PDF of term sheets",
-    "the transaction wire dating each move the day it was made, a 60-day transfer written as a placement, beside the League office's weekly injured-list report with placement and first-eligible dates and upper-case unaccented names (a pitcher sharing one signing's name)",
-    "a payroll export across a January 2025 HRIS migration (legacy employee numbers, legacy name format and one legacy code for every performance bonus, mapped as other bonus), a playing-time code shared with pitchers' bonuses, a void and reissue",
-    "a contract register with a re-signed veteran on a second row and a contract assigned at the deadline"
+    "the transaction wire dating each move the day it was made, a 60-day transfer written as a placement, beside the League office's weekly injured-list report with placement and first-eligible dates and upper-case unaccented names (a pitcher sharing one signing's name) (shipped as distractors since the 10-28 rubric repair)",
+    "a payroll export across a January 2026 HRIS migration (legacy employee numbers, legacy name format and legacy codes on legacy history; a legacy performance-bonus code migrated as the playing-time bonus beside a legacy catch-all migrated as other bonus, on which the legacy season-end run paid the pitchers' playing-time halves; one legacy number reissued to a later player; only the employees paid in its last year migrated), award bonuses inside season-end lines, a void and reissue",
+    "a contract register with two contracts for one pitcher, a contract assigned at the deadline and legacy payroll numbers for players not paid since 2024"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

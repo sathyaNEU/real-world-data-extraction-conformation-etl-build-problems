@@ -39,7 +39,7 @@ PEOPLE = {
 ASOF = dt.date(2026, 12, 11)
 PULL_STAMP = dt.datetime(2026, 12, 11, 16, 5, 0)
 STAMP = dt.datetime(2026, 12, 11, 15, 40, 0)
-HRIS_LIVE = dt.date(2025, 1, 1)          # the club's HRIS migration (payroll history before it keeps legacy codes)
+HRIS_LIVE = dt.date(2026, 1, 1)          # the club's HRIS migration (payroll history before it keeps legacy codes)
 STATS_PLATFORM = 2025                    # the League's statistics platform change (box-score layout)
 
 HIST = [2021, 2022, 2023, 2024, 2025, 2026]

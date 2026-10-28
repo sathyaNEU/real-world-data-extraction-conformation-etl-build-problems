@@ -1,6 +1,7 @@
 """Independent verifier for task151: reads only the shipped bundle (target/), the goldens and figures.json, on its own
 code path (pandas frames, pdftotext, no generator module), and recomputes the accrual and each player's figure, the
-default path's figure, the write-up's step figures, the look-back for four bases, and both asks."""
+default path's figure, the write-up's step figures, the look-back for four bases, and the ask (the playing-time bonuses
+other than plate appearances paid for 2023 to 2025)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -127,88 +128,47 @@ def default(target, D):
     return tot
 
 
-def stints(target, F, pl):
-    tx = pd.DataFrame(json.load(open(os.path.join(target, "lsf_transactions_2024_2026.json"),
-                                    encoding="utf-8"))["transactions"])
-    rep = pd.read_csv(os.path.join(target, "league_office_il_report_2024_2026.csv"), dtype=str)
-    cal = pd.read_csv(os.path.join(target, "league_calendar_2021_2027.csv"), dtype=str).set_index("season")
-    out = []
-    for f in F:
-        pid = int(pl[(pl.season == 2026) & (pl.name == f["name"])].pid.iloc[0])
-        mv = tx[(tx.player_id == pid) & tx.type.isin(["IL_PLACEMENT", "IL_ACTIVATION", "IL_REINSTATEMENT"])]
-        mv = mv.sort_values(["date", "transaction_id"])
-        open_ = None
-        for _, t in mv.iterrows():
-            if t.type == "IL_PLACEMENT":
-                if open_ is None:
-                    open_ = t.date
-            else:
-                y = open_[:4]
-                r = rep[(rep.player.str.split(", ").str[1] + " " + rep.player.str.split(", ").str[0] ==
-                         ascii_upper(f["name"])) & (pd.to_datetime(rep.placed, format="%m/%d/%Y") ==
-                                                    pd.Timestamp(open_))].iloc[0]
-                eff = (pd.to_datetime(r.eligible, format="%m/%d/%Y") - pd.Timedelta(days=MIN[r.injured_list])).date()
-                od = dt.date.fromisoformat(cal.loc[y, "opening_day"])
-                last = dt.date.fromisoformat(cal.loc[y, "last_scheduled_day"])
-                a = max(eff, od)
-                b = min(dt.date.fromisoformat(t.date) - dt.timedelta(days=1), last)
-                out.append((f["name"], eff, (b - a).days + 1))
-                open_ = None
-    return sorted(out, key=lambda x: (x[1], x[0]))
-
-
-def paid(target, D):
-    """Plate-appearance bonuses paid by season: each playing-time payment (the HRIS playing-time code, or the legacy
-    performance line of a season-end or January payroll) to a player with plate-appearance terms is one half; the
-    plate-appearance part of a half is half the lines he reached with the Club."""
+def paid(target):
+    """The playing-time bonuses other than plate appearances the club paid for 2023 to 2025, by player and season: for
+    every player whose register row carries other playing-time terms, the season-end (October) payments and the
+    January payments after them, any bonus code, all statuses summed, less an award term the October side exceeds the
+    January side by; a legacy line is the player whose name it carries, an HRIS line the register's ID."""
     pay = pd.read_csv(os.path.join(target, "ral_payroll_player_earnings_2023_2026.csv"), dtype={"employee_id": str})
-    hm = pd.read_csv(os.path.join(target, "ral_hris_legacy_employee_map.csv"), dtype=str)
-    pay["emp"] = pay.employee_id.map(dict(zip(hm.legacy_employee_no, hm.employee_id))).fillna(pay.employee_id)
-    wb = openpyxl.load_workbook(os.path.join(target, "ral_player_contract_register_2024_2026.xlsx"), data_only=True)
+    wb = openpyxl.load_workbook(os.path.join(target, "ral_player_contract_register_2023_2026.xlsx"), data_only=True)
     rows = list(wb["Register"].iter_rows(values_only=True))
     h = next(i for i, r in enumerate(rows) if r and r[0] == "Player")
-    hdr = list(rows[h])
-    reg = pd.DataFrame([dict(zip(hdr, r)) for r in rows[h + 1:] if r and r[0]])
-    reg = reg[reg["Plate-appearance bonuses (each season)"].notna()]
-    terms = {}
+    reg = pd.DataFrame([dict(zip(rows[h], r)) for r in rows[h + 1:] if r and r[0]])
+    oth = reg[reg["Other playing-time bonuses (each season)"].notna()].copy()
+    def span(s):
+        a = str(s).split("-")
+        return set(range(int(a[0]), int(a[-1]) + 1))
+    seasons = {}
+    for _, r in oth.iterrows():
+        seasons.setdefault(r["Player"], set()).update(span(r["Seasons"]))
+    award = {}
     for _, r in reg.iterrows():
-        m = re.match(r"\$([\d,]+) each for ([\d, and]+) plate", r["Plate-appearance bonuses (each season)"])
-        terms[r["Employee ID"]] = (r["Player"], int(m.group(1).replace(",", "")), [int(x) for x in re.findall(r"\d+", m.group(2))])
-    bl = batting(target)
-    new = pd.read_csv(os.path.join(target, "lsf_batting_2025_2026.csv"))
-    clubs = pd.read_csv(os.path.join(target, "league_club_directory.csv"))
-    leg = pd.read_csv(os.path.join(target, "lsf_batting_2021_2024.txt"), sep="|", dtype=str, keep_default_na=False)
-    xw = pd.read_csv(os.path.join(target, "lsf_player_id_crosswalk.csv"), dtype=str)
-    leg = leg.merge(xw[["legacy_id", "player_id"]], left_on="PLAYER_CD", right_on="legacy_id")
-    leg["club"] = leg.TEAM_CD.map(dict(zip(clubs.legacy_code, clubs.abbrev)))
-    for c in ("AB", "BB", "HBP", "SH", "SF", "CI"):
-        leg[c] = leg[c].astype(int)
-    leg["pa"] = leg.AB + leg.BB + leg.HBP + leg.SH + leg.SF + leg.CI
-    leg["season"] = pd.to_datetime(leg.GAME_DT, format="%m/%d/%Y").dt.year
-    leg["pid"] = leg.player_id.astype(int)
-    new["club"] = new.team_id.map(dict(zip(clubs.team_id, clubs.abbrev)))
-    new["season"] = pd.to_datetime(new.official_date).dt.year
-    new["pid"] = new.player_id
-    byclub = pd.concat([leg[["season", "pid", "club", "pa"]], new[["season", "pid", "club", "pa"]]]).groupby(
-        ["season", "pid", "club"]).pa.sum()
-    lg = {}
-    for _, r in D["pl"].iterrows():
-        first, last = r["name"].split(" ", 1)
-        lg["%s, %s" % (last, first)] = r["pid"]
+        if isinstance(r["Award bonuses"], str):
+            award.setdefault(r["Player"], set()).update(
+                float(x.replace(",", "")) for x in re.findall(r"\$([\d,]+) for", r["Award bonuses"]))
+    by_legacy = {ascii_upper(n.split(", ")[0] + " " + n.split(", ")[1]): n for n in reg["Player"]}
+    by_id = dict(zip(reg["Employee ID"].astype(str), reg["Player"]))
+    legacy_line = pay.employee_id.str.fullmatch(r"\d+")
+    pay["player"] = np.where(legacy_line, pay.employee_name.map(by_legacy), pay.employee_id.map(by_id))
     pay["date"] = pd.to_datetime(pay.pay_date)
-    pay["season"] = np.where(pay.date.dt.month >= 7, pay.date.dt.year, pay.date.dt.year - 1)
-    pt = pay[pay.emp.isin(terms) & ((pay.earning_code == "BPA") | ((pay.earning_code == "E40") &
-                                                                    pay.date.dt.month.isin([10, 1])))].copy()
-    pt["half"] = np.where(pt.date.dt.month >= 7, "first", "second")
-    net = pt.groupby(["season", "emp", "half"]).amount.sum()
+    pt = pay[pay.player.isin(seasons) & pay.earning_code.isin(["E40", "E45", "BPA"]) &
+             pay.date.dt.month.isin([10, 1])].copy()
+    pt["season"] = np.where(pt.date.dt.month == 10, pt.date.dt.year, pt.date.dt.year - 1)
+    pt["side"] = np.where(pt.date.dt.month == 10, "oct", "jan")
+    g = pt.groupby(["season", "player", "side"]).amount.sum().unstack(fill_value=0.0)
     out = {}
-    for (season, e, half), v in net.items():
-        if season not in (2024, 2025, 2026) or v <= 0.5:
+    for (season, player), r in g.iterrows():
+        if season not in (2023, 2024, 2025) or season not in seasons[player]:
             continue
-        name, amt, lines = terms[e]
-        pa = byclub.get((season, lg[name], "RAL"), 0)
-        out[(int(season), name)] = out.get((int(season), name), 0) + amt * sum(1 for x in lines if pa >= x) / 2
-    return {k: v for k, v in out.items() if v}
+        diff = round(r.get("oct", 0.0) - r.get("jan", 0.0), 2)
+        v = r.get("oct", 0.0) + r.get("jan", 0.0) - (diff if diff > 0.5 and diff in award.get(player, set()) else 0.0)
+        if abs(v) > 0.5:
+            out[(int(season), player)] = v
+    return out
 
 
 def lookback(target, D):
@@ -278,24 +238,19 @@ def main(target, golden, fig_path):
     dft = default(target, D)
     if "$%s" % format(r(dft, 250000), ",") != fig["rivals"]["default"]:
         bad.append(("default", dft))
-    S = stints(target, D["F"], D["pl"])
-    want = [(s["player"], s["took_effect"], s["days"]) for s in fig["deliverables"]["stints"]]
-    got = [(a, b.strftime("%B %-d, %Y"), str(c)) for a, b, c in S]
-    if got != want:
-        bad.append(("stints", got, want))
-    B = paid(target, D)
+    B = paid(target)
     want_b = {}
     for blk in fig["deliverables"]["paid"]:
-        for n, v in blk["rows"]:
-            want_b[(int(blk["season"]), n)] = v
+        for n, val in blk["rows"]:
+            want_b[(int(blk["season"]), n)] = val
     got_b = {}
-    for (y, n), v in B.items():
+    for (y, n), val in B.items():
         last, first = n.split(", ")
-        got_b[(y, "%s %s" % (first, last))] = "$%s" % format(int(round(v)), ",")
+        got_b[(y, "%s %s" % (first, last))] = "$%s" % format(int(round(val)), ",")
     if got_b != want_b:
         bad.append(("paid", got_b, want_b))
     for blk in fig["deliverables"]["paid"]:
-        t = sum(v for (y, n), v in B.items() if y == int(blk["season"]))
+        t = sum(val for (y, n), val in B.items() if y == int(blk["season"]))
         if "$%s" % format(int(round(t)), ",") != blk["total"]:
             bad.append(("paid total", blk["season"], t))
     bl = batting(target)
@@ -324,8 +279,8 @@ def main(target, golden, fig_path):
         raise SystemExit(1)
     print("verify.py: the accrual %s (unrounded %.0f), five player figures, the vendor's band %s, the look-back's pick "
           "among the bases at hand %s, the step figures, the FIN-14 4.4 look-back for four bases (%s hitter-seasons; the "
-          "substitutes' slot rate loses, %.5f against %.5f), nine stints and the bonuses paid reproduce from the bundle "
-          "on an independent path" % (fig["call"]["total"], tot, fig["rivals"]["default"], fig["rivals"]["default_at_hand"],
+          "substitutes' slot rate loses, %.5f against %.5f) and the other playing-time bonuses paid for 2023 to 2025 "
+          "reproduce from the bundle on an independent path" % (fig["call"]["total"], tot, fig["rivals"]["default"], fig["rivals"]["default_at_hand"],
                                       fig["lookback"]["hitter_seasons"], LB["thin"], LB["golden"]))
 
 

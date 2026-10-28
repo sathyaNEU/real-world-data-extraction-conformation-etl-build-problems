@@ -85,13 +85,13 @@ after his trade, checked).
 | Card | `.claude/skills/fingerprint/cards/task151.json`, architecture v1, registered 2026-10-16, updated at the stage 4 repair; `guard.py check` and `heart` WARN (overuse.objective, repeat.gate_g), answered below; nearest drivers 0.06 (task105 v1 lineage), 0.05 (task132) and under |
 | Domain / task type | `general-statistics-data-science` (client domain), task type `resampling-simulation-monte-carlo-methods` (serves Forecasting): the bonus accrual is the expectation of a stepped payout, worked by resampling comparable seasons, and the step is which unit is resampled (a whole season of a regular planned in the winter, injured-list blocks included) and at what rate its starts are read (the new lineup slot's). Economics is not the owner (the call is a club's accrual, corporate finance, and the economics task types are macro, choice and causal designs); the seed's Economics label is a house domain that maps to Economics & Econometrics |
 | Objective | Forecasting & Predictive Modeling: the expected bonus payments for the 2027 regular season, a season not begun at the decision (the contracts were signed between November 24 and December 10, 2026, and the accrual is booked in the December close) |
-| Shape | `other`: one committed figure (the accrual) built from five players' accruals, each the sum of its bonuses' chances, plus two ask tables and a memo (arithmetic in `## Ask sheet`) |
+| Shape | `other`: one committed figure (the accrual) built from five players' accruals, each the sum of its bonuses' chances, plus one ask table (the other playing-time bonuses paid, 21 figures) and a memo (arithmetic in `## Ask sheet`) |
 | Decision | `quantity_figure`, answer unit `currency` (US dollars) |
 | Mechanism | gap population (decisive: the comparison seasons are whole seasons of every non-catcher regular planned in the winter, read at the new slot's rate, not the player's own seasons, not the starting nines taken whole, not the regulars who opened or completed the season) with time (the accrual is assessed at signing, so the injured-list blocks before opening day are in the window); pattern none; generators G1 (the payout is on steps of a bounded total, so its value is the chances of clearing each step), G9 (the regulars who opened the season or qualified are the survivors of the blocks), G13 (the window runs from signing, not from opening day); Gate G `forecasting`; strategy `other`. Selection organ: the filed look-back of FIN-14 4.4 (a selection criterion in general terms), card note |
 | Layer 2 family / pattern | `forecast_uncertainty`; `own:stepped-bonus-chances-from-winter-planned-regular-seasons-at-the-new-slot-rate`. The library line nearest it is the task type's first (resample the independent unit, not rows); here the unit is a planned regular's whole season and the reading rate is the slot's, so the line is a frame, not the step |
 | Furniture | forum `other` (the controller books it; no committee), forcing event `period_close` (the December close books the accrual at signing), organisation family `other` (a professional baseball club), role family `finance_controller` (the club's controller), context artifact `register` (the club's player contract register and term sheets), calibration `none`, opening `question-first`, question form `how-much` |
 | Spine | the League Statistics Feed's box-score batting lines, one row per player per championship-season game with his lineup slot and position, 2021 to 2026 in two layouts across the League's 2025 platform change: `lsf_batting_2021_2024.txt` (184,271 rows) and `lsf_batting_2025_2026.csv` (92,107 rows), 276,378 in all (constructed) |
-| Deliverables | `pa_bonus_accrual_2027.xlsx` (the accrual by line, player and in total, the look-back, the two ask tables, notes), `pa_bonus_accrual_memo_2027.docx` (one page for the audit file) |
+| Deliverables | `pa_bonus_accrual_2027.xlsx` (the accrual by line, player and in total, the look-back, the ask table, notes), `pa_bonus_accrual_memo_2027.docx` (one page for the audit file) |
 | People | drawn with `guard.py names --geo "United States" --seed 151` (first names checked clean): Harry Barnes (controller, author of FIN-14 and of the golden memo; not in the prompt), Steven Armstrong (assistant general manager, baseball operations, who updated the depth chart), Matthew Wallace (payroll contact in the contract register). The players' names come from the generator's origin-weighted pools and are on the card (`guard.py surface`) |
 
 **Guard.** `guard.py check` and `heart` on the card: WARN `overuse.objective` (Forecasting in 7 of the last 12: this is
@@ -211,9 +211,11 @@ included): the basis that scores lowest in the same look-back and accrues $4,250
   (names without accents); doubleheaders as two games on one date; suspended games carried under the date they began
   with a completion date; postponed games played on make-up dates; players traded mid-season appearing for two clubs;
   the vendor's winter depth-chart archive (one sheet per season, its own club abbreviations for seven clubs, positions
-  with DH, batting order, bench rows); the term sheets and the policy as PDFs; on the ask side, the transaction wire, the
-  weekly injured-list report, the payroll export across the January 2025 HRIS migration, the earning codes and the
-  contract register (Ask sheet). Each is what these systems write; none moves the call or a player figure (R2: legacy
+  with DH, batting order, bench rows); the term sheets and the policy as PDFs; the transaction wire and the weekly
+  injured-list report beside the Article 22 excerpt (distractors); on the ask side, the payroll export across the
+  January 2026 HRIS migration (legacy numbers, names and codes on legacy history, a reissued legacy number, a void and
+  reissue), the earning codes and the contract register (Ask sheet). Each is what these systems write; none moves the
+  call or a player figure (R2: legacy
   PA without CI, doubleheaders merged to one start a date, accented names dropped, traded regulars cut to the planning
   club, each asserted).
 - **Layer 2:** `forecast_uncertainty`, the expectation of a stepped payout from the right predictive distribution: each
@@ -310,7 +312,11 @@ Every row is asserted in `generator/checks.py` under its id.
 | SF12 | CF-14.4's "every hitter in a starting lineup" | the lineup rows of each January 31 depth chart, catchers in | the non-catchers only | same call (asserted) | CF-14.4; the depth charts' legend |
 | SF13 | CF-14.4's "100 plate appearances in each of the two seasons before" | as the League counts them, every club | with the planning club only | same call (asserted) | CF-14.4 ("counting his plate appearances for every club") |
 | SF14 | CF-14.4's "reached the threshold" | plate appearances at or above it | above it only | same call (asserted) | CF-14.4; the term sheets ("when the Player reaches its threshold") |
-| SF15 | Ask B's "bonuses we have paid to date" for 2026 | the payroll's payments through the December 11 pull (the October 15 first halves) | the season's bonus as earned, both halves (the January 15, 2027 half included) | the ask's 2026 figures: $825,000 against $412,500 (Briggs $525,000, Candelario $300,000), asserted (B2 'earned') | the prompt ("paid to date"); the register's notes (half on the following January 15); the payroll ends December 11 (B6) |
+| SF15 | the ask's "playing-time bonuses other than plate-appearance bonuses" | FIN-14 4.1's class less plate appearances: the innings, starts, relief-appearance and Active List terms in the register's "Other playing-time bonuses" column, the pitchers' | award bonuses counted in, or hitters' games-started bonuses | the award reading adds $75,000 to 2024 and the All-Star amounts (AK5 'e45_all'); no hitter carries other terms | FIN-14 4.1 and 5; the register's column (asserted, SF15) |
+| SF16 | the ask's "paid for each of the 2023, 2024 and 2025 seasons" | the season the bonus was earned: an October payment to its season, a January payment to the season before | the year paid | the pay-year reading files $35,000, $205,000 and $385,000 (asserted) | every January payment falls before that year's Opening Day (SF16) |
+| SF17 | the ask's "paid" | paid through the December 11 pull, voids netted | earned, or gross of the void | same figures: every half of 2023 to 2025 is paid by January 15, 2026; gross adds $160,000 to 2025 (AK8) | the payroll register; SF17 |
+| SF18 | an award bonus inside a playing-time payment | not a playing-time bonus | counted in | +$50,000, +$40,000, +$50,000 on three rows (AK7) | FIN-14 5 (asserted, SF18) |
+| SF19 | "player by player" | the player paid, by the name each legacy line carries | the legacy number through the HRIS map, or to the register's ID | moves Benítez 2023 or Pietersz 2025 (AK5, AK6) | the payroll's own name on each line |
 
 ## Ladder
 
@@ -417,7 +423,7 @@ bonus's amount times the probability, as at signing, that the player reaches its
 the contract standing all season with the player in his planned role and his health inside the probability), the rule
 that chooses the basis (4.4's look-back, its population, window, thresholds and score set in working paper CF-14.4)
 and the arithmetic from the probabilities to the rounded totals; it leaves only which basis to build, and every reading
-of every term converges on the golden or violates a quoted line (SF1 to SF15). The literal executor of 4.4 and CF-14.4
+of every term converges on the golden or violates a quoted line (SF1 to SF14 for the call, SF15 to SF19 for the ask). The literal executor of 4.4 and CF-14.4
 still has to bring bases to rank; the one basis the paper's words suggest (its own hitters' seasons) files $4,500,000. The easy answers come from easy bases
 ranked by the same look-back, never from another reading.
 
@@ -425,7 +431,7 @@ ranked by the same look-back, never from another reading.
 
 - The vendor's 2027 projections and its past projections: a mean playing-time forecast per hitter; the look-back scores
   the bases built on them 25 to 104 per cent worse than the basis used; they confirm only that the five project to 578
-  to 697 plate appearances; deleting the file leaves the golden and both asks (D1; a declared distractor, though the
+  to 697 plate appearances; deleting the file leaves the golden and the ask (D1; a declared distractor, though the
   look-back reads it to score the vendor's bases).
 - The box scores and the winter depth charts themselves: the history every basis fits and the look-back scores; nothing
   in them ties only under the golden.
@@ -434,142 +440,103 @@ ranked by the same look-back, never from another reading.
 
 ## Ask sheet
 
-**Revision, 2026-10-27, portal return on the rubric.** Both top responses filed USD 4,000,000 at signing (the call
-held) and landed every ask figure, 84 and 79 per cent against the bar of 70. The sheet below shipped with a prose
-cracker that was the mirror's path; `generator/ceiling.py` now runs the careful solver on the pack and measures the
-cracker at 28 of 28 ask figures and the mirror at 0 of 28, so the gated fields carry those numbers and the gate fails,
-as a returned build's should. Neither ask can be re-sited onto a device that holds every row (`## Tried and rejected`,
-the 10-27 lines): Ask A's date is forced through 22.2 and 22.9, Ask B's split through the pristine batting lines, and
-every other quantity the ask-only files yield is either filed or a fork. The prompt, the pack and every figure are
-unchanged; the main side is untouched (`freeze.py check --mode rubric`).
-
-**Revision, 2026-10-28, the author's new ask-only source.** The author authorised one or more new data files used only
-by the asks. Measured first, on the shipped pack with `generator/ceiling.py`: no new source can move a figure, because
-both asks' figures are pinned by the frozen main-call files. Ask A with no weekly report at all, each date read as the
-day after the player's last batting line before the move but never more than three days back (22.1's limit), lands 18
-of 18 figures, and Medina's first 2024 stint is forced outright (last line May 18, activated May 29, a 10-day list: May
-19 is the only date 22.2 allows), so no League-side file can hold a row. Ask B: 11 of the 12 playing-time payroll lines
-for 2024 to 2026 equal half the plate-appearance and games-started lines the player reached for the Club to the dollar,
-and the twelfth differs by Cedeno's filed All-Star term; the cracker's route (the register's terms against the batting
-lines, per half paid) reads no payment amount, so only off-contract payments on every player-season would move every
-row, which is a plant, not mess. No file was added and no pack cut; the prompt, the pack and every figure are unchanged
-(`freeze.py check --mode rubric` PASS). Holding the asks needs a re-site onto quantities the frozen main files do not
-pin, which changes the asks' figure shapes and is the author's decision (`## Tried and rejected`, the 10-28 lines).
+**Revision, 2026-10-28, the author's re-site.** The shipped asks (the five's injured-list stints since 2024; the club's
+plate-appearance bonuses paid for 2024 to 2026) were landed by both top responses at the portal, which missed the call
+and still scored 84 and 79, because the frozen batting lines and Article 22 pinned every one of their figures
+(`## Tried and rejected`, the 10-27 and 10-28 lines). The author re-sited the ask layer onto quantities no main-call file
+pins and waived every ask figure, unit and rounding. The prompt's ask sentence now asks for the playing-time bonuses
+other than plate-appearance bonuses the club paid for each of the 2023, 2024 and 2025 seasons, player by player and in
+total: 18 player rows and 3 totals, whole dollars. No new file ships. Every file the call reads is byte-identical to
+e93c6561 (SEP4, twelve files hashed); the payroll export, the HRIS map, the earning codes, the contract register (now
+covering 2023 to 2026, its Notes sheet gone) and the close-file index moved; the transaction wire, the weekly report and
+the Article 22 excerpt ship unchanged as distractors. `freeze.py check --mode rubric` passes with `--allow
+deliverables.paid.1.total,deliverables.paid.2.season`: two ask keys whose old values ($900,000 and 2026) happened to
+equal numbers in blocks 1 and 2, both ask figures the author waived. `--mode determinism` fails on the 48 moved ask
+items, as a re-site must, and is recorded only.
 
 **Main call's declared row population:** the two box-score files (every row and column the golden reads: player, game,
 date, club, lineup slot, starter, plate appearances or their components), the crosswalk, the club directory, the
-vendor's winter depth charts, the five term sheets, the 2027 depth chart, FIN-14 and the feed notes (the look-back also
-reads the vendor's projections to score the vendor's bases). Device and hazard rows in it: 0 (asserted, SEP1 to SEP3:
-the call computed from those files alone is the golden; the transaction wire, the weekly report, the rules excerpt, the
-calendar, the payroll export, the HRIS map, the earning codes and the contract register are read only by the asks; no
-main-call document carries an ask's organ). Neither ask is keyed to the call, its construction or its figures; they
-share no primary device.
+vendor's winter depth charts, the five term sheets, the 2027 depth chart, FIN-14, CF-14.4, the feed notes and the
+calendar (the look-back also reads the vendor's projections to score the vendor's bases). Device and hazard rows in it:
+0, asserted: the call computed from those files alone is the golden (SEP1); the ask is unchanged with every distractor
+deleted (SEP2, D1); no main-call document carries a payroll code, a payment run, an employee number or the legacy
+payroll (SEP3); every file the call reads hashes as shipped at e93c6561 (SEP4); the ask reads none of them (SEP5). The
+ask is not keyed to the call, its construction or its figures: it reads pitchers' payments, and pitchers do not bat.
 
-**Ask A. Every injured-list stint the five have had since the start of the 2024 season: the date it took effect and the
-regular-season days it covered** (nine stints, 18 figures).
-- H18 home: the injury record behind the accrual, in the audit file beside it: a measure every signing carries that
-  the call does not turn on (the golden reads other players' seasons, never the five's injuries).
-- The unit, filed once in the League's rules excerpt (Article 22), in the League's voice: a placement takes effect on the
-  date the club designates, up to three days before the transaction (22.1); the minimum periods run from the date the
-  placement takes effect (22.2); a transfer, a rehabilitation assignment or an assignment of the contract does not end
-  the placement (22.3 to 22.5); reinstatement ends it (22.6); days counted from the date it takes effect through the day
-  before reinstatement (22.7); the paternity and bereavement lists not injured lists (22.8); the weekly report's
-  contents, the transaction date and the first date of reinstatement (22.9); the championship season from Opening Day
-  through the last scheduled day (the feed notes and the calendar).
-- Primary device A1 (D7, the true key in another field, split evidence): the transaction wire dates each move on the
-  day the club made it, and the weekly report's "placed" column carries the same transaction date; every one of the
-  five's placements took effect one to three days earlier (22.1 allows it), a date only the report's first date of
-  reinstatement less the list's minimum period (22.2) gives. The natural path and the cracker's (the move's date as the
-  date it took effect) miss every date and every day count (A3b, CR1). Fair: for all 7,389 report rows the derived date
-  is the true date the stint took effect (A4). The internal inconsistency that finds it: a 10-day placement whose first
-  date of reinstatement is eight or nine days after it.
-- Hazards: HA1 a spring placement (took effect March 25, 2025, two days before Opening Day; days from Opening Day);
-  HA2 a stint open at the 2026 season's end, reinstated November 3 (days through the last scheduled day); HA3
-  rehabilitation assignments inside two stints; HA4 a paternity-list move (not an injured list); HA5 the 7-day concussion
-  list (an injured list); HA6 a trade while on the list (one stint); HA7 a 10-day to 60-day transfer written on the wire
-  as a fresh placement (splitting it adds rows); HA8 two stints five days apart (merging them drops one); HA9 a pitcher
-  who shares one signing's name (found by name, his stints join the table).
-- Stops (measured): the move dates (9 rows, every figure off); every placement a stint (11 rows); stints a week apart
-  merged (8 rows); the moves found by name (11 rows); the golden.
-- Span: the transaction wire, the weekly report, the rules excerpt, the calendar, the vendor charts (the five's League
-  IDs), the term sheets (the five's names) (6 files); about 12 columns.
-- Realism: a transaction wire records the day a club makes a move; an injured-list placement can be backdated; the
-  League office's report lists the transaction and the first date of eligibility; a legacy roster system logged a list
-  change as a new placement.
-
-**Ask B. The plate-appearance bonuses the club paid for each of the 2024, 2025 and 2026 seasons, player by player and in
-total** (seven player rows and three totals, 10 figures).
-- H18 home: the club's own record on the bonuses it accrues, an audit trail of the same liability, rows the call never
-  reads; in payroll's words.
-- The unit, filed in the contract register's notes, in the system owner's voice: plate-appearance and games-started
-  bonuses are earned in the championship season and paid half in the first payroll after the season ends and half on
-  the following January 15, both halves the bonus of the season earned; every plate-appearance bonus the club paid for
-  2024 to 2026 went to a player under a contract in the register with plate-appearance terms (the population: the club's
-  own players, not the five); a voided and reissued payment is one payment; until the January 2025 migration every
-  performance and award bonus went on the legacy code E40, one line able to carry more than one bonus; pitchers'
-  playing-time bonuses in full after the season.
-- Primary device B1 (D5, a category crossed by label): the payroll pays a player's playing-time bonuses for a season
-  in one line (the HRIS playing-time code, and before the migration the legacy performance-bonus line), so every
-  payment carries the season's plate-appearance and games-started bonuses together; the plate-appearance part is half
-  the plate-appearance lines the player reached for the Club, which only the register's terms against the box scores
-  separate. The payroll lines at face value miss all ten figures (CR2). Fair: every 2024-2026 playing-time line equals
-  half the season's plate-appearance and games-started lines reached for the Club, the legacy October 2024 line to one
-  player also carrying his All-Star bonus (B3c, 12 lines).
-- Second device B2 (D2, a label stored before a silent switch): before the January 2025 HRIS migration every
-  performance bonus went on one legacy code, migrated as "other bonus"; the October 2024 first halves sit there, one of
-  them with the season's All-Star bonus in it, a veteran's November Silver Slugger bonus on the same code.
-- Hazards: HB1 a void and reissue in October 2026 (net once); HB2 legacy employee numbers mapped through the HRIS map;
-  HB3 the playing-time code also carries two pitchers' games and innings bonuses; HB4 a contract assigned at the 2025
-  deadline (the register's lines against the season's plate appearances give $675,000 for a player the club paid
-  $225,000); HB5 the 2026 second halves are payable January 15, 2027 (not paid at December 11); HB6 the January 2024
-  halves of the 2023 season (a pay-year grouping moves them into 2024).
-- Stops (measured): the lines at face value ($420,000, $1,025,000, $445,000); the playing-time code by pay year (none for
-  2024, $772,500, $1,157,500); the playing-time code by season ($185,000, $1,100,000, $645,000); the register's terms
-  against plate appearances ($325,000, $1,350,000, $825,000); face value with the void reversal ignored ($420,000,
-  $1,025,000, $610,000); each half under the year it was paid ($372,500, $612,500, $862,500); the five signings only
-  (nothing); the golden ($325,000, $900,000, $412,500).
-- Span: the payroll export, the HRIS map, the earning codes, the contract register, the box scores and crosswalk
-  (plate appearances and starts by club), the vendor charts (the veterans' League IDs) (8 files); about 14 columns.
-- Realism: a club pays a season's playing-time bonuses on one line a payroll; an HRIS migration keeps the legacy earning
-  codes on migrated history and maps them to the nearest new code; an assigned contract's later bonuses are the
-  assignee's.
+**The ask. The playing-time bonuses other than plate-appearance bonuses the club paid for each of the 2023, 2024 and
+2025 seasons, player by player and in total** (18 rows and 3 totals, 21 figures).
+- H18 home: the club's own record on the other playing-time bonuses FIN-14 section 4 accrues, the same liability's other
+  measures, kept in the controller's file beside the plate-appearance accrual for the auditors: rows the call never
+  reads, and nothing estimated, decided or booked from them, so a component of the accrual file and not a second
+  decision.
+- The unit, filed: FIN-14 4.1 names the playing-time bonuses (plate appearances, games played, games started, innings
+  pitched, relief appearances and days on the Active List) and FIN-14 5 sets award bonuses apart; the register's "Other
+  playing-time bonuses (each season)" column carries each pitcher's terms and no hitter's (SF15); a bonus paid for a
+  season is the season it was earned, every January payment falling before that year's Opening Day (SF16); paid means
+  paid by the pull, every half of 2023 to 2025 paid by January 15, 2026 (SF17).
+- Primary device (D2, a label stored before a silent switch): until the January 2026 HRIS cutover the legacy payroll
+  paid the pitchers' season-end halves (October 15) on its catch-all E45 OTHER BONUS, which the earning-code table
+  migrates as BOT Other bonus, and their January halves on E40 PERF BONUS, which it migrates as BPA Playing-time bonus;
+  the hitters' plate-appearance bonuses ran in full on E40 in October, so E40 and BPA read as the playing-time code
+  (AK3, AK3c). The careful path executes the table and reads each line for what it says, and files every pitcher-season
+  at exactly half (AK4). The wrong reading is complete: each half is itself a full bonus the pitcher's own terms allow
+  (AK3d), so no check against the register fails, and nothing ties only under the golden. What finds it: a pitcher's
+  OTHER BONUS line on October 15 equal to his PERF BONUS line the next January 15, in every legacy season, with no
+  filed sentence, column name or battery sweep pointing at it. Work left after noticing: the All-Star bonus inside three
+  season-end lines, the reissued legacy number, the void, each half to its season (Fair: the golden equals the season
+  as it happened, every row, AK2).
+- Hazards: HZ1 an All-Star bonus inside the legacy season-end line (Ruiz 2023, $50,000; Livingston 2024, $40,000;
+  Pietersz 2025, $50,000; the line taken whole adds it, AK7); HZ2 a Cy Young bonus on the same catch-all in November
+  (White 2024, $75,000; every catch-all line taken adds it); HZ3 legacy number 01661 reissued (Yordy Benítez's lines to
+  January 2024, Gilmar Pietersz's from 2025: the HRIS map gives it to Pietersz and the register to Benítez, so either
+  join moves a row, and the name on each line settles it, AK6); HZ4 a season-end payment voided and reissued (Reed,
+  October 2025: summing gross adds $170,000, AK8); HZ5 the 2022 season's second half paid January 15, 2023 (Lara: the
+  pay-year reading moves it into 2023, AK9); HZ6 benign twins (award bonuses to hitters on E45; the hitters'
+  plate-appearance bonuses on E40, outside the ask by its words).
+- Stops (measured, AK4, AK5 and `ceiling.py`): the earning-code table's playing-time codes by season, every row at half
+  ($290,000, $540,000, $615,000); the same codes by the year paid ($35,000, $205,000, $390,000); the catch-all lines
+  taken whole (4 rows and every total off: $520,000, $1,120,000, $1,280,000); every catch-all line in any month (5 rows,
+  2024 at $1,195,000); every legacy number through the HRIS map (Benítez's 2023 row to Pietersz, 2023 at $470,000);
+  every legacy number to the register's own ID (Pietersz's 2025 row to Benítez, 2025 at $1,170,000); the void's reversal
+  left out (2025 at $1,400,000); the golden ($580,000, $1,080,000, $1,230,000).
+- Span: the payroll export, the HRIS map, the earning codes and the contract register (4 files, 14 columns on the
+  golden's path); FIN-14 4.1 and 5 for the class.
+- Realism: a legacy payroll with few earning codes, its catch-all carrying what its clause types did not cover; an HRIS
+  migration mapping legacy codes one to one and keeping legacy history under legacy numbers and names, and migrating
+  only the employees paid in its last year; a legacy system reissuing a departed employee's number; one payroll line a
+  code a run; a void and reissue after changed bank details. None was placed to be caught: each moves no amount.
 
 **Hazard table**
 
-| Hazard | Root cause | Moves | Per-ask delta |
+| Hazard | Root cause | Moves | Delta |
 |---|---|---|---|
-| HA1 a spring placement | an injury in spring training | Ask A, one stint | +2 days if counted from the date it took effect |
-| HA2 a stint open at season's end | a September injury | Ask A, one stint | +36 days if counted to the November reinstatement |
-| HA7 a transfer written as a placement | the legacy roster system | Ask A, two stints | splits each into two rows |
-| HA8 two stints five days apart | a re-aggravated hamstring | Ask A, one player | merging drops a row |
-| HA9 a namesake pitcher | a common name | Ask A, one player | extra rows if matched by name |
-| HB1 a void and reissue | changed bank details | Ask B, 2026 | +$165,000 if summed gross |
-| HB3 pitchers on the playing-time code | one code for all playing-time bonuses | Ask B, 2025 and 2026 totals | +$75,000 and +$200,000 |
-| HB4 an assigned contract | the 2025 deadline trade | Ask B, 2025 | +$450,000 on the register path |
-| HB5 the 2026 second halves | January payment | Ask B, 2026 | doubles each row on the register path |
+| D2 the season-end halves on the catch-all code | the legacy payroll's clause types | every row and total | each figure halved on the careful path |
+| HZ1 an All-Star bonus inside the season-end line | one legacy line a code a run | 3 rows, every total | +$50,000, +$40,000, +$50,000 if taken whole |
+| HZ2 a Cy Young bonus on the catch-all | award bonuses on the catch-all | White 2024, 2024 total | +$75,000 if every catch-all line is taken |
+| HZ3 a reissued legacy number | the legacy system's number reuse | Benítez 2023 or Pietersz 2025, a total | -$110,000 from 2023 or -$60,000 from 2025 |
+| HZ4 a void and reissue | changed bank details | Reed 2025, 2025 total | +$170,000 if summed gross |
+| HZ5 a 2022 half paid in January 2023 | the January run | 2023 on the pay-year reading | +$35,000 |
 
-**Referee.** For Ask A, the weekly report's first dates of reinstatement and the rules' minimum periods; for Ask B, the
-register's terms and the box scores' plate appearances and starts by club. Each is a field the golden reads, not a
-control: no file ties only under the golden.
+**Referee.** The register's terms (each half is a full bonus on the careful path, so they arbitrate nothing) and each
+season-end line's January twin (equal except where an award sits inside). No file ties only under the golden.
 
 | Ask figures | Cracker's path (`ceiling.py`, measured) | Cracker's value | Verdict |
 |---|---|---|---|
-| A stints: date taken effect and regular-season days (18) | 22.1 to 22.9 executed: the wire's moves by League ID with a transfer, rehabilitation or trade inside the stint, the first report row's first date of reinstatement less the list's minimum, days through the day before reinstatement clipped to the calendar's season | every date and day count the golden's, 18 of 18 | hit |
-| B 2024 player rows and total (3) | the register's Notes executed: playing-time and legacy October and January lines through the HRIS map, voids netted, each half to its season, the plate-appearance half of the lines reached for the Club in the batting lines | 3 of 3 | hit |
-| B 2025 player rows and total (4) | the same path | 4 of 4 | hit |
-| B 2026 player rows and total (3) | the same path | 3 of 3 | hit |
+| 2023 player rows (5) | the earning-code table's playing-time codes (E40, BPA), each legacy line by its name, voids netted, each half to its season | each row at half the golden | miss |
+| 2023 total (1) | the same | $290,000 against $580,000 | miss |
+| 2024 player rows (6) | the same | each row at half the golden | miss |
+| 2024 total (1) | the same | $540,000 against $1,080,000 | miss |
+| 2025 player rows (7) | the same | each row at half the golden | miss |
+| 2025 total (1) | the same | $615,000 against $1,230,000 | miss |
 
-Pinned without the weekly report: Ask A from the batting lines alone (the day after the last batting line before the
-move, at most three days back), 18 of 18 figures. Pinned against the contracts: Ask B, 11 of 12 playing-time lines
-equal to the dollar half the plate-appearance and games-started lines reached for the Club, the twelfth (October 15,
-2024, Cedeno) by his filed All-Star term, +50,000.
-Mirror leakage: 0.0 per cent of the ask weight (the mirror stops at the move's own date and at the payroll's
-playing-time lines at face value, 0 of 28; the shipped sheet called these the cracker's path).
-Pair ceiling: 67.0 (Part 0's weights, neither top response on the call and both on the cracker's ask path, the
-portal's case; one cracker on the call with the mirror off it, 56.0; the portal measured 84 and 79 because its main
-side left a response off the call about 20 points rather than 5).
-Measured by: `generator/ceiling.py`, on the shipped target.zip (sha256 83bf068f), the pair and both pinning
-measurements (10-28).
+The includers, the risk this gate does not price (`ceiling.py`): a solver who notices the catch-all lines and adds them
+whole keeps 15 of 21 (both such responses off the call: pair 51.3, or 66.3 on the portal's calibration of an off-call
+response at 20); every catch-all line, 14 of 21 (48.7, 63.7); the full handling (the All-Star bonuses out, the name on
+each legacy line, the void netted), 21 of 21 (67.0, 82.0). The portal measures whether its top responses notice.
+Mirror leakage: 0.0 per cent of the ask weight (the mirror stops at the same codes by the year paid, 0 of 21).
+Pair ceiling: 28.5 (Part 0's weights, the cracker on the call and the mirror off it; neither on the call and both on the
+cracker's ask path, the portal's case, 12.0; on the portal's calibration, 36.0 and 27.0).
+Measured by: `generator/ceiling.py`, on the cut target.zip (sha256 f4bcf386), 10-28.
 
 ## Residual
 
@@ -588,6 +555,12 @@ What the shipped build still carries, each item measured and none moving a commi
   Outcome); the world keeps seed 1539, which a search over seeds chose.
 - **Strength.** P(one strong solver lands) about 0.2 to 0.25 and P(both of two land) about 0.07 to 0.11 (the rule 3
   re-audit's outside read, Ladder).
+- **The ask's open risk.** The gate prices the careful path, which files every row at half; a solver who reads each
+  pitcher's payments rather than the playing-time codes sees an OTHER BONUS line beside each PERF BONUS line of the same
+  amount and can add it. Measured (`ceiling.py`): adding the catch-all lines whole keeps 15 of 21 figures, the full
+  handling 21 of 21, so two full-handling responses off the call put the pair at 67.0 on Part 0's weights and 82.0 on
+  the portal's calibration. The device's strength is whether the top responses read by code or by player, which only
+  the portal measures.
 
 ## Pre-ship check
 
@@ -597,10 +570,18 @@ What the shipped build still carries, each item measured and none moving a commi
   $4,500,000 (R3a, LB7); only the planned non-catcher regulars' starts at the new slot's rate win the look-back on every
   reading (LB1, SF11 to SF14, LB9). Layer 1 (two layouts and the crosswalk, catcher's interference, substitute lines,
   doubleheaders, suspended games, accents, traded regulars) is neutral: every mishandled reading leaves the call (R2).
-- **Free gates on the final rebuild.** `checks.py` 282 assertions, 0 failed; `verify.py` agrees on its own path
-  (the near rival included); two builds byte-identical, target.zip sha256 83bf068f (the pack untouched since loop 2);
-  `figures_check.py` 82 figures, 0 absent; `precut.py` exit 0; `voice-check.py` PASS (779 characters); container audit clean on
-  the pack and the goldens; `guard.py validate` clean, `heart` WARN (answered under Draw), `surface` promotes nothing.
+- **Free gates on the final rebuild (rubric repair, 10-28).** `checks.py` 274 assertions, 0 failed (the ask's AK1 to
+  AK12 and SF15 to SF19; SEP4 hashes the twelve files the call reads against e93c6561); `verify.py` agrees on its own
+  path for the call and the 21 ask figures; two builds byte-identical, target.zip sha256 f4bcf386; `figures_check.py`
+  82 figures, 0 absent; `precut.py` exit 0 (53 checks); `voice-check.py` PASS (609 characters); container audit clean
+  on the pack and the goldens; `leak.py` REVIEW, no LEAK (answered in the Build record); `guard.py validate` clean,
+  `heart` WARN (no BLOCK), `surface` four promoted pairs answered in the Build record; `freeze.py check --mode rubric`
+  PASS with the two waived ask keys allowed (the main call, the stump, the card's stump and driver, the ladder, the
+  default path and the call sentence unchanged).
+- **The 10/10 rules after the repair.** The call's decisive step and every file it reads are untouched (SEP4), so the
+  three rules read as at ship. The ask's device turns on reading a legacy code against its substance, which 2.1 of
+  `supplemental-stumping` licenses for an ask; nothing in it is planted (each payment is real, its amount the
+  contract's, its code the legacy system's).
 - **Stage 4.** Judge round 3 DETERMINISTIC, APPROVE (`determinism_check_report.md`), every figure reproduced; its
   optional wording finding taken (step 4 states the golden's grouping, rival scores out of blocks 1 and 3, the memo's
   rival figures out); the leak reader clean and its targeted re-read of 4.4 and CF-14.4 clean (an ordinary estimate
@@ -729,6 +710,31 @@ What the shipped build still carries, each item measured and none moving a commi
   their figure shapes onto quantities the main files do not pin (the club's own cash where no box-score formula
   reaches it), the author's decision; nothing was cut.
 
+- Ask A replaced (the author's re-site, 10-28): what the responses did to it is in the 10-27 and 10-28 lines above (the
+  report's first date of reinstatement less the 22.2 minimum, and the batting lines alone, file all 18 figures). Every
+  quantity about the five's injuries is fixed by the frozen batting lines or read off the wire, so no device moves it;
+  the wire, the weekly report and the Article 22 excerpt now ship unchanged as distractors.
+- Ask B replaced (10-28): both top responses filed every figure, the club having paid its hitters exactly to contract on
+  batting lines the call freezes (11 of 12 lines to the dollar). Re-sited onto the pitchers' playing-time bonuses, which
+  no batting line can pin because pitchers do not bat; the hitters' plate-appearance bonuses stay in the payroll as the
+  lines that make E40 read as the playing-time code, outside the ask by its words.
+- Screened for the re-site on paper before anything was cut (10-28), each landed by the careful path: the pitchers'
+  bonuses earned from a League pitching file (a formula over clean innings and appearances, and its layout could only
+  go in the frozen feed notes, H9); days on the Active List (whether a backdated placement leaves the Active List from
+  the date it takes effect or from the transaction needs a pin that hands the device over); the 2027 pitching staff's
+  injured-list stints (the report and 22.2 file every date, and the injury record of players outside the five is not
+  behind the call); a ledger roll-forward of the accrued bonuses (every figure a journal line read or summed); award and
+  escalator bonuses (FIN-14 5 sets awards outside the accrual, and each is an announcement read against a term);
+  pitchers' 2027 bonuses as expected amounts (a second forecast, and CF-14.4 sets a look-back for plate-appearance
+  bonuses only); the five's signing-bonus and deferral entries (pinned by the frozen term sheets, and outside the
+  bonus accrual).
+- The first draft of the re-site (10-28) left a tell on the careful path: 9 of its 18 January halves were not a full
+  bonus any combination of the pitcher's own terms gives (White's $52,500 against $60,000 and $45,000 lines), and the
+  hitters' bonuses ran in two halves beside the pitchers' one, so a check of payments against the register pointed at
+  the missing season-end halves. Each pitcher-season now reaches an even count of equal lines, so every half is itself a
+  full bonus (AK3d), and the hitters' plate-appearance bonuses run in full in October. The same pass moved two outcomes
+  whose 2024 half equalled the 2025 total (Lara, Livingston), which had let the pay-year reading hit two rows.
+
 ## Build record
 
 Stage 3, built 2026-10-16 (world seed 1511), PAUSED at 5e385a0. Stage 4 repair, built 2026-10-16 (world seed 1539),
@@ -782,3 +788,42 @@ recorded); the pack unchanged (target.zip 83bf068f).
   (forward-looking by nature). A first cut carried a $1,000,000 signing bonus and salaries ending in 500,000 beside the
   $1,000,000 and $500,000 player accruals (LEAK); the signing bonuses and salaries moved ($1,250,000, $1,750,000,
   $9,750,000, $15,750,000, $9,250,000).
+
+Rubric repair, 2026-10-28 (the author's re-site): the ask layer re-sited onto the playing-time bonuses other than
+plate-appearance bonuses the club paid for 2023 to 2025 (21 figures), the main side frozen. Generator: `records.py`
+(the pitchers' contracts and their lines reached each season, the hitters' games-started terms dropped, the HRIS cutover
+moved to January 1, 2026, the legacy catch-all E45 for the pitchers' season-end halves, the reissued number, the void
+and reissue, the register to 2023 to 2026 with no Notes sheet), `calc.py` (the ask and its stops), `checks.py` (AK1 to
+AK11, SF15 to SF19, SEP4 and SEP5 against e93c6561, H6, H9b, B8, GD3), `verify.py` (its own pandas path for the ask),
+`deliver.py` (the ask sheet, step 8 and block 4), `metadata.py` and `docs.py` (distractors, coverage), `ceiling.py`
+rewritten. Gates: `checks.py` 274 assertions, 0 failed; `verify.py` agrees; two builds byte-identical (target.zip
+f4bcf386); `figures_check.py` 82 of 82; `voice-check.py` PASS (609 characters); `precut.py` exit 0 (53 checks);
+`leak.py` REVIEW, no LEAK (answered below); container audit clean; `guard.py validate` clean, `heart` WARN (no BLOCK),
+`surface` four promoted pairs (answered below); `freeze.py check --mode rubric` PASS with the two waived ask keys
+allowed.
+- `leak.py` REVIEW lines new at this repair: the register's "$140,000 each" (a hitter's plate-appearance term) and
+  "$60,000 each" (a pitcher's relief-appearance term) beside ask figures of $140,000 (Lara 2023, Blair 2025) and $60,000
+  (Casilla 2023): the register is the ask's input, and each figure is two lines of another amount. Every other REVIEW
+  line is the shipped build's, answered above. A first cut put Reed's 2025 row at $320,000, which the frozen term
+  sheets carry as one signing's line amount (LEAK); his line amount moved to $85,000 and AK12 now asserts no ask figure
+  stands in a shipped document.
+- `guard.py surface` promotes task155 and task472 at 0.101 and task184 and task158 on card structure. The shipped pack
+  scores the same against the first two (0.1007, computed from the e93c6561 zip with the same weights): the layout and
+  format axes alone, no shared file name, wording or entity, both builds delivered after task151's last surface read
+  (H31). The structural pair is the call's own card, differentiated against both (heart's notes), and untouched here.
+- Stage 4 (10-28): determinism judge DETERMINISTIC, APPROVE (`determinism_check_report_pass2.md`): every ask figure
+  reproduced and no competing answer survived (the 01661 reuse closed by the name on each line, the three All-Star
+  amounts by the register's award column, White's November line apart, the void netted); Gate G method_or_model_selection,
+  analytical_non_defect, surface_read_dependency no; Gate H domain pass, layers pass, decisive step analytical. Its
+  thread had step 8 in hand and recomputed player by player, so the pass shows the ask forced, not how strong it is.
+  Its two notes: the transaction wire, the weekly report and the Article 22 excerpt stay as distractors because they
+  carry the five's own injury record, which a solver weighing FIN-14 4.3's health clause or the players' own seasons
+  (rung R0b) reads, and deleting each leaves the call and the ask (D1); the rubric's criteria come from the prompt's
+  shape: the total and five player accruals (6), 18 player rows and 3 season totals (21), the memo (1), 28 before the
+  instruction-following lines.
+- Stage 4 (10-28): leak reader CLEAN (`leak_check_report.md`, Solver's-eye read): no sentence names either step, no
+  file ranks, every REVIEW line harmless. Two of its notes are the open risk stated in Residual: it read the pay year
+  against the season earned as two readings (the judge, who recomputed, found the season earned forced), and, reading
+  player by player, it paired a pitcher's October OTHER BONUS line with his January PERF BONUS line unprompted, which
+  is the full includer's route. Its other notes sit in frozen main-call files (the vendor's December 1 projection after
+  two signings, which the golden basis does not read; the five's signing order equalling their lineup order).

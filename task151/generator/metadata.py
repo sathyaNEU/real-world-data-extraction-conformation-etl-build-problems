@@ -27,9 +27,9 @@ SOURCES = {
     R.F_DC: "Harlan Voss Baseball Data (fictional vendor), projected depth charts, January 31 snapshots 2021 to 2026",
     R.F_PROJ: "Harlan Voss Baseball Data (fictional vendor), preseason hitter projections 2022 to 2027",
     R.F_DC27: "Raleigh Oaks Baseball Operations, 2027 depth chart as of December 10, 2026",
-    R.F_REG: "Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2024 to 2026 seasons",
+    R.F_REG: "Raleigh Oaks Finance and Baseball Operations, player contract register extract, 2023 to 2026 seasons",
     R.F_PAY: "Raleigh Oaks HRIS payroll, player earnings register, pay dates January 2023 to December 11, 2026",
-    R.F_HRIS: "Raleigh Oaks HRIS, legacy employee number map from the January 2025 migration",
+    R.F_HRIS: "Raleigh Oaks HRIS, legacy employee number map from the January 2026 migration",
     R.F_CODES: "Raleigh Oaks HRIS payroll, earning codes (legacy payroll and HRIS)",
     DOC.F_FIN14: "Triangle Baseball Club, LLC Finance Department, Accounting Policy FIN-14 Player Compensation "
                  "(effective January 1, 2025)",
@@ -40,7 +40,7 @@ SOURCES = {
     DOC.F_NOTES: "League Statistics, field notes for the batting lines, crosswalk, club directory and calendar",
     DOC.F_MANIFEST: "Raleigh Oaks Finance, index of the December 2026 close file as pulled December 11, 2026",
 }
-DISTRACTORS = [R.F_PROJ, R.F_SCHED27]
+DISTRACTORS = [R.F_PROJ, R.F_SCHED27, R.F_TRANS, R.F_ILREP, DOC.F_ILRULES]
 
 
 def rows_of(path):
@@ -70,9 +70,9 @@ def write(target, out_path):
                      "bonuses from the distribution of comparable whole seasons: the winter-planned regulars' seasons "
                      "of starts, each read at the signing's 2027 lineup slot's plate appearances per start)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a total accrual built from five players' accruals (fifteen bonus lines), a table of nine "
-                        "injured-list stints (date taken effect and regular-season days), a table of the "
-                        "plate-appearance bonuses paid for three seasons by player and in total, and a one-page memo",
+        "prompt_shape": "a total accrual built from five players' accruals (fifteen bonus lines), a table of the "
+                        "playing-time bonuses other than plate-appearance bonuses the club paid for each of three "
+                        "seasons, player by player and in total, and a one-page memo",
         "as_of": ASOF,
         "deliverables": [DL.F_BOOK, DL.F_MEMO],
         "distractor_files": DISTRACTORS,
