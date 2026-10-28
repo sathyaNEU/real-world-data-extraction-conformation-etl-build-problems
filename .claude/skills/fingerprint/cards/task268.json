@@ -5,7 +5,7 @@
   "slot_note": "re-root after architecture 3's send-back",
   "domain": "actuarial-science-insurance",
   "subdomain": "claims-frequency-severity",
-  "niche": "a regional motor insurer's 2025 private-car claim frequency by sales region for a 2027 telematics pilot, the injury claims that claims-management firms notify months and years after the accident still to come",
+  "niche": "a motor insurer's 2025 private-car claim frequency by sales region for a 2027 telematics pilot, the injury claims that claims-management companies notify months and years after the accident still to come",
   "objective": "descriptive-distribution",
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
@@ -13,7 +13,7 @@
   "answer": "",
   "answer_source": "",
   "gap": [
-    "time",
+    "rule",
     "population"
   ],
   "pattern": [
@@ -24,16 +24,16 @@
     "G6",
     "G13"
   ],
-  "gate_g": "forecasting",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds each region's 2025 earned car-years from the policy records and completes its 2025 claims still to be reported with the region's own report-lag pattern from the closed accident years, or with bodily injury and damage developed separately, names Metro, because both completions carry the old notifying mix into a year when Valley's injury claims came through claims-management firms three times as often.",
-  "domain_test": "The deciding quantity is each region's ultimate claim count for accident year 2025, the claims reported and those still to be notified, per earned car-year, which the field develops from reported counts with report-lag factors on segments whose lags are stable; here the lag is carried by the notifying channel (a claims-management firm notifies an injury claim months or years after the accident, inside the three-year limitation period), so swapping in another field's nouns loses the channel, the limitation that bounds the lag and the claims-farming wave that moved one region's mix.",
+  "analyst_test": "A strong analyst who reads every filed rule, builds each region's 2025 earned car-years and completes its 2025 claims still to be notified with the region's own development from the closed accident years, by head of claim, or by the claims system's notified-by field, names Mersey and Severn, because each of those developments carries the notifying mix of the years it was measured on, and Pennine's 2025 injury claims came through claims-management companies, which notify far later than solicitors, about three times as often as before; only the development split by the representative's firm type, built from the representatives register, reproduces accident year 2022 in every region as the reserving standard requires, and it puts Pennine second.",
+  "domain_test": "The deciding quantity is each region's ultimate claim count for accident year 2025, the claims notified and those incurred but not yet notified, per earned car-year, which the field develops from notified counts with report-lag factors on groups whose lags are stable and validates against closed accident years; here the lag is carried by who notifies the claim, a claims-management company notifying injury claims near the three-year limitation period, and a noun swap to another field loses the notification route, the limitation period and the accident-year development the call rests on.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:claim-count-development-by-notifying-channel",
   "layer1": [
@@ -54,14 +54,21 @@
     "grain": "claim",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "committee_or_panel",
   "forcing_event": "purchase_order_or_contract",
   "org_family": "financial_institution",
   "world": {
     "geography": "England and Wales",
     "currency": "GBP",
-    "org_type": "regional motor insurer",
-    "invented_names": [],
+    "org_type": "motor insurer",
+    "invented_names": [
+      "Corriven Insurance",
+      "Mersey",
+      "Pennine",
+      "Wessex",
+      "Fenland",
+      "Severn"
+    ],
     "people": [
       "Carol Thorpe",
       "Damian Warren",
@@ -69,14 +76,14 @@
     ]
   },
   "deliverables": [
-    "telematics_pilot_region_2027.xlsx",
-    "exco_telematics_pilot_2027.pptx"
+    "telematics_pilot_regions_2027.xlsx",
+    "pricing_committee_telematics_pilot.pptx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting channel, because one channel reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, or with the standard split by event kind, under-counts that unit, and only the channel split reproduces earlier closed periods.",
-  "driver_concrete": "Each region's 2025 claim frequency counts the claims still to be notified, completed with report-lag factors by notifying channel, because claims-management firms notify injury claims months and years late and Valley's 2025 claims came through them three times as often as before; Valley's own past lags and the bodily-injury split both leave it below Metro, and only the channel split reproduces 2021 and 2022 as they finally came in.",
-  "stump": "The default path completes each region's 2025 claims still to be notified with the region's own report-lag pattern from the closed years, or develops bodily injury and damage separately, and names Metro, because claims-management firms notify injury claims months and years after the accident and Valley's 2025 injury claims came through them three times as often as before; completed by notifying channel, the split that reproduces 2021 and 2022 as they finally came in, Valley's 2025 frequency is the highest.",
+  "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting route, where the route is built by joining each report's representative to a register of firm types, because one route reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, by event kind or by the coarse reporter field under-counts that unit, and only the route split reproduces an earlier closed period that a past shift in another unit disturbed, as a filed back-test requires.",
+  "driver_concrete": "Each region's 2025 claim frequency counts the claims still to be notified, completed with report-lag factors by the notifying representative's firm type from the representatives register, because claims-management companies notify injury claims months and years late and Pennine's 2025 injury claims came through them about three times as often as before; Pennine's own past development, the head-of-claim split and the notified-by field each fail the reserving standard's back-test on accident year 2022, which a claims-management wave in Wessex disturbed, and only the firm-type split passes it.",
+  "stump": "The default path completes each region's 2025 claims still to be notified with the region's own development from the closed accident years, by head of claim or by the notified-by field, and names Mersey and Severn, because claims-management companies notify injury claims months and years after the accident and Pennine's 2025 injury claims came through them about three times as often as before; developed by the representative's firm type, the only split that reproduces accident year 2022 in every region, Pennine's 2025 frequency is the second highest.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task194": "task194 v3 developed recent counts for a coding lag at all, measured from two vintages of one series; here every route develops the 2025 counts, and the decisive step is the reporting channel the lag lives in, whose mix shifted in one region, chosen by reproducing closed years",
@@ -84,7 +91,12 @@
     "task145": "task145 re-converted only the own-denomination holders at the forward factors, each group's mix of holders estimated from the units seen in both periods; here a closed year's claims still to be notified are developed by notifying channel, whose lag holds within the channel while one region's channel mix moved",
     "task160": "task160 timed a recurring wave by each group's lag behind the group it spreads from; here a closed year's late notifications are developed by the channel that carries the lag",
     "task138": "task138 v1 rebuilt each unit's store at the forecast date from its replenishment record; here claim counts are developed for notification lag by the notifying channel",
-    "task446": "task446 v2 backed a base rate out of a screen's flag share through error rates that carry across years; here the quantity that carries across years is each notifying channel's report-lag pattern, and one region's channel mix moved"
+    "task446": "task446 v2 backed a base rate out of a screen's flag share through error rates that carry across years; here the quantity that carries across years is each notifying channel's report-lag pattern, and one region's channel mix moved",
+    "task457": "task457 v1 corrected each unit's own report by the understatement measured on the items its closed-period reports kept; here a unit's own past completion is the wrong route, because the lag lives in the notifying representative's firm type and one unit's mix of firm types moved",
+    "task185": "task185 converted readings between an old and a new measuring device sized at the value converted; here a closed year's claims still to be notified are completed by notifying route, selected by a filed back-test",
+    "task271": "task271 v4 carried a per-home claim rate to new towns from the model a filed hold-out selects, placing homes in supply zones by geometry; here no rate is carried to a new population: a closed year's own late notifications are completed by the notifying firm type, and the back-test is the same development re-run on a closed accident year",
+    "task80": "task80 dated a fixed-term status from the event that conferred it rather than from first operation; here claims still to be notified are completed by notifying route",
+    "task181": "task181's specimen architecture completed each area's arrivals by its own courier route against a pooled nowcast, the route fixed per area; here each region's own past development is the wrong route because the region's mix of notifying firm types moved, and the route is a firm type built from the representatives register and chosen by a filed back-test on a closed year"
   },
   "lineage": [
     {
@@ -169,5 +181,5 @@
     }
   ],
   "notes": "",
-  "registered": "2026-10-28T21:58:13Z"
+  "registered": "2026-10-28T22:14:55Z"
 }
