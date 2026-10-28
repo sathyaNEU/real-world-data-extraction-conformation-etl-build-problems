@@ -155,6 +155,25 @@ it: per-offer against per-attender measures zero hits across 304 cards, and effe
 
 ## Tried and rejected
 
+- **Architecture 6 is spent: the forward hardening fails the margin floor across the whole parameter space,
+  measured 2026-10-28.** The forward yield is `yield(A) = base + bonus/A` with `base = 100 e t` and
+  `bonus = 100 e (1-t) c P`, so the winner at an allocation A is the upper envelope of lines in `1/A`: the
+  largest base wins as A grows, the largest bonus wins as A shrinks, and any other partner can only win on an
+  interval between two envelope vertices. A winner of that kind ties with a neighbour at each end of its
+  interval, so its margin is small by construction and its neighbours are close to each other for the same
+  reason. Measured over 900,000 parameter draws inside the realism bounds (take-up 0.35 to 0.85, cascade 0.02 to
+  0.95, per-participant effect 0.09 to 0.28, raw enrolled-against-not gap at most 42 points, at most 3,200
+  re-offers of effort, a never-offered tail at every partner) and every allocation from 4,500 to 20,000 places
+  in steps of 500: the best margin available to a distinct intermediate winner is 1.182 at 7,000 places, the
+  next best 1.175 at 7,500 and 1.171 at 6,500, and NOT ONE draw cleared margin 1.15 together with a smallest
+  graded gap of 0.8 and a floor of 3.5 per 100 places. The two failure modes are now both measured and both
+  structural, not a matter of tuning: a decisive step that is a denominator or unit choice collapses to
+  execution once the estimand is filed literally, and a decisive step that is an intermediate point on a convex
+  hull cannot carry a margin. Architecture 6 is therefore spent at stage 3, before the documents, the asks or
+  the goldens were cut, and the slot re-roots to architecture 7.
+  Kept as reusable evidence rather than thrown away: the pack writers in `generator/pack.py`, the six-partner
+  ladder with three distinct wrong answers, and the pooling convergence of 0.0079 per 100 places.
+
 - **Architecture 6's decisive step is too thin as a measurement of the closed intakes, measured 2026-10-28.**
   Determinism requires the estimand filed literally, comparison included. Filed as "additional learners
   achieving the qualification per 100 places funded at the partner for the intake, measured against applicants
