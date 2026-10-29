@@ -433,6 +433,11 @@ def main(target):
           len(pre) == 18 and min(pre.values()) > 20, "min %d" % min(pre.values()))
     check("A4 device P4 (agency records naming a connecting journey's airports) on every route direction",
           len(journey) == 18 and min(journey.values()) > 20, "min %d" % min(journey.values()))
+    dd = re.sub(r"\s+", " ", [v for k, v in texts.items() if "dictionary" in k.lower()][0])
+    check("SF11 a refusal's route and direction is its departure: the dictionary files flight_no and dep_date as the "
+          "departure requested and orig and dest as the journey requested (positive control first)",
+          "the departure requested" in dd and "IATA airport codes of the journey requested" in dd and len(journey) == 18,
+          "%d agency records name a journey's airports" % sum(journey.values()))
     same_pax = all(len({x["pax"] for x in v}) == 1 for v in keys.values())
     check("A5 every record of one reference and departure carries the same pax (the unit has one weight)", same_pax,
           "%d references" % len(keys))

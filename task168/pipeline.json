@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-10-28",
  "stump": "A strong solver who sees the routes are full carries the 2025 gauge changes' 0.80 extra passengers per extra seat onto the 620,224 added seats and files 500,000 against the golden of 175,000, when each sold-out departure's demand has to be completed from the booking build of the departures of its own month that never sold out.",
  "architecture": 1,
  "loops": 2,
@@ -15,19 +15,27 @@
   "checks": 51
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 --asof 2025-12-12, no LEAK (232 seats and the estimand's wording in the planning basis; field definitions in the dictionary; planned dates in the fleet register, on the H16 allow-list; answered in the note's Leak sweep)",
-  "reader": "rounds 1 to 3: no leak; round 3 on 02b3b6bb Q1 none, Q6 analytical, the unit read as essentially unambiguous, missed both ask devices (LIN-CTA 5,353); its one residual, a lap infant in a request's pax, forced and recorded under Residual"
+  "leak_py": "LEAK on the file-name rule (data_dictionary_rev5.pdf, export_manifest.csv, shipped before the rule)",
+  "reader": "not re-run: the changed sentence is on the ask, not near the decisive step"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-18, no BLOCK (overuse.objective, repeat.deliverables against task166, same-puzzle NOTE against task70 differentiated on the card)",
   "nearest": "surface: task70 (0.079) and task167 back to back (0.087, the same decisive gap and decision type on the cards; different pattern, domain, Layer 2 family and strategy; task167 registered after this card), both left to the author's optional clone-check, each with a differentiation line on the card"
  },
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE, no fix (round 3 on 02b3b6bb); round 2 NOT_DETERMINISTIC, SEND_BACK on the 18 turn-away counts; round 1 DETERMINISTIC, APPROVE",
-  "disposition": "round 1's rule 3 audit AT_RISK repaired in one rebuild, recheck PASS; round 2's SEND_BACK repaired by filing the turn-away unit in the ask's sentence with the golden its literal execution and every main-side figure frozen, the recheck's optional fixes folded in; round 3 clean, its optional note taken (block 1 states the 0.80 on its basis, golden only, target.zip byte-identical); rule 3 recheck round 2 PASS, P(one) about 0.14, P(both) about 0.02 independent and 0.04 to 0.06 correlated",
-  "report": "judge-task168c/verdict.md and leak-task168c/reader_answers.md, relayed by the coordinator"
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (re-judge after the SF11 repair)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-10-28",
+   "portal": "determinism block, 1 of 2 judges failed: the turnaway attribution fork (flight_no and dep_date against the refusal's own orig and dest), competing_defensible_answer on the 18 turnaway asks; both responses filed 47,484 and the main call's bin",
+   "repair": "determinism",
+   "commit": "",
+   "move": "data_dictionary_rev5.pdf files orig and dest as the journey requested's airports; SF11 asserted; re-judge DETERMINISTIC, APPROVE"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-18",
