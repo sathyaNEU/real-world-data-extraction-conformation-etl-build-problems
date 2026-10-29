@@ -1,186 +1,465 @@
 {
- "ask_a": {
-  "P81066": {
-   "at_80": 562,
-   "patients": 694,
-   "pct": 81.0
+ "call": "Kestle",
+ "conventions": {
+  "ci_per_customers": 100,
+  "gbp_rounding": 100,
+  "v_kv": 11.0
+ },
+ "gap_mwh": 26.0,
+ "iis": {
+  "Ashlade": {
+   "ci": 138.7,
+   "cml": 241.9,
+   "customers": 667,
+   "raw": {
+    "ci": 138.6806596701649,
+    "cml": 241.87706146926536
+   }
   },
-  "P81177": {
-   "at_80": 420,
-   "patients": 523,
-   "pct": 80.3
+  "Copsewell Town": {
+   "ci": 18.9,
+   "cml": 45.8,
+   "customers": 3315,
+   "raw": {
+    "ci": 18.868778280542987,
+    "cml": 45.79426847662142
+   }
   },
-  "P81283": {
-   "at_80": 481,
-   "patients": 587,
-   "pct": 81.9
+  "Ingle Road": {
+   "ci": 45.5,
+   "cml": 94.5,
+   "customers": 2632,
+   "raw": {
+    "ci": 45.47872340425532,
+    "cml": 94.53229483282675
+   }
   },
-  "P81402": {
-   "at_80": 1114,
-   "patients": 1432,
-   "pct": 77.8
+  "Kestle": {
+   "ci": 105.1,
+   "cml": 55.8,
+   "customers": 632,
+   "raw": {
+    "ci": 105.0632911392405,
+    "cml": 55.77215189873418
+   }
   },
-  "P81555": {
-   "at_80": 897,
-   "patients": 1123,
-   "pct": 79.9
+  "Oxenford Lane": {
+   "ci": 29.4,
+   "cml": 95.1,
+   "customers": 2258,
+   "raw": {
+    "ci": 29.362267493356953,
+    "cml": 95.12976085031
+   }
   },
-  "P81719": {
-   "at_80": 507,
-   "patients": 669,
-   "pct": 75.8
+  "Pennick Hill": {
+   "ci": 48.8,
+   "cml": 81.4,
+   "customers": 2802,
+   "raw": {
+    "ci": 48.786581013561744,
+    "cml": 81.39186295503212
+   }
   },
-  "P81940": {
-   "at_80": 697,
-   "patients": 750,
-   "pct": 92.9
+  "Redburn": {
+   "ci": 19.1,
+   "cml": 30.2,
+   "customers": 4871,
+   "raw": {
+    "ci": 19.113118456169165,
+    "cml": 30.166906179429276
+   }
+  },
+  "Stowmere": {
+   "ci": 251.0,
+   "cml": 168.8,
+   "customers": 1046,
+   "raw": {
+    "ci": 251.0038240917782,
+    "cml": 168.76912045889102
+   }
   }
  },
- "ask_a_network": {
-  "at_80": 4678,
-  "patients": 5778,
-  "pct": 81.0
- },
- "ask_b": {
-  "P81066": {
-   "overrun": 8,
-   "pct": 80.0,
-   "started": 10
-  },
-  "P81177": {
-   "overrun": 4,
-   "pct": 80.0,
-   "started": 5
-  },
-  "P81283": {
-   "overrun": 9,
-   "pct": 82.0,
-   "started": 11
-  },
-  "P81402": {
-   "overrun": 20,
-   "pct": 74.0,
-   "started": 27
-  },
-  "P81555": {
-   "overrun": 15,
-   "pct": 83.0,
-   "started": 18
-  },
-  "P81719": {
-   "overrun": 7,
-   "pct": 64.0,
-   "started": 11
-  },
-  "P81940": {
-   "overrun": 6,
-   "pct": 60.0,
-   "started": 10
-  }
- },
- "ask_b_network": {
-  "overrun": 69,
-  "pct": 75.0,
-  "started": 92
- },
- "call": "P81555",
- "call_expected": 170,
- "call_name": "Marrick House Surgery",
- "default_km": {
-  "P81066": 48.35496685377526,
-  "P81177": 53.01492588926691,
-  "P81283": 50.37883317096916,
-  "P81402": 75.01761237434775,
-  "P81555": 45.76082293691223,
-  "P81719": 82.65818311435815,
-  "P81940": 60.626755568543054
- },
- "default_pick": "P81719",
- "default_pick_name": "Cobbet Street Surgery",
- "expected": {
-  "P81066": 56.34730463443356,
-  "P81177": 44.60087020565967,
-  "P81283": 51.89926399552104,
-  "P81402": 95.38360243210083,
-  "P81555": 170.31289708583702,
-  "P81719": 128.54701935849045,
-  "P81940": 71.53671085640453
- },
- "expected_rounded": {
-  "P81066": 60,
-  "P81177": 40,
-  "P81283": 50,
-  "P81402": 100,
-  "P81555": 170,
-  "P81719": 130,
-  "P81940": 70
- },
- "gap": 40,
- "largest_practice": "P81402",
- "last_year": {
-  "P81066": 67.26456071076011,
-  "P81177": 51.8760736196319,
-  "P81283": 56.908458864426414,
-  "P81402": 131.95134575569358,
-  "P81555": 94.04928664072632,
-  "P81719": 147.12342569269524,
-  "P81940": 82.58781362007169
- },
- "last_year_pick": "P81719",
- "pace_mean": 2.967063202322227,
- "population": {
-  "P81066": 1017,
-  "P81177": 829,
-  "P81283": 877,
-  "P81402": 1961,
-  "P81555": 1648,
-  "P81719": 1192,
-  "P81940": 1124
- },
- "population_total": 8648,
- "ranking": [
-  "P81555",
-  "P81719",
-  "P81402",
-  "P81940",
-  "P81066",
-  "P81283",
-  "P81177"
+ "losses_value_gbp_mwh": 64.8,
+ "order": [
+  "Kestle",
+  "Copsewell Town",
+  "Redburn",
+  "Pennick Hill",
+  "Stowmere",
+  "Oxenford Lane",
+  "Ashlade",
+  "Ingle Road"
  ],
- "reauth_fail_pct": 12.0,
- "reauth_fail_whole": 12,
- "reauth_follow_days": 60,
- "return_year": 2025,
- "reviews_measured": 13574,
- "reviews_not_renewed": 1632,
- "runner_up": "P81719",
- "runner_up_expected": 130,
- "runner_up_name": "Cobbet Street Surgery",
- "six_56day_feb_mar_2026": {
-  "P81066": 0,
-  "P81177": 0,
-  "P81283": 0,
-  "P81402": 0,
-  "P81555": 1232,
-  "P81719": 0,
-  "P81940": 195
+ "projects": {
+  "Ashlade": {
+   "breaker": "CB 4",
+   "dR_ohm": 0.17,
+   "km": 2.02,
+   "new": "UG-XLPE-300AL",
+   "new_desc": "300 mm2 aluminium, XLPE, triplex",
+   "old": "0.15 sq in copper, paper-insulated lead-covered, 3-core",
+   "raw": {
+    "q": [
+     1.7533438468359392,
+     1.4994497277798755,
+     2.2086706074494,
+     2.209341690542661
+    ],
+    "year": 7.670805872607876
+   },
+   "sections": [
+    "HV-21142",
+    "HV-21184"
+   ],
+   "value_gbp": 500,
+   "year_mwh": 7.7
+  },
+  "Copsewell Town": {
+   "breaker": "CB 3",
+   "dR_ohm": 0.208,
+   "km": 1.18,
+   "new": "UG-XLPE-300AL",
+   "new_desc": "300 mm2 aluminium, XLPE, triplex",
+   "old": "0.1 sq in copper, paper-insulated lead-covered, 3-core",
+   "raw": {
+    "q": [
+     9.021300086865716,
+     8.944281578754362,
+     14.975500194406203,
+     15.243632851132602
+    ],
+    "year": 48.18471471115888
+   },
+   "sections": [
+    "HV-20543",
+    "HV-20609"
+   ],
+   "value_gbp": 3100,
+   "year_mwh": 48.2
+  },
+  "Ingle Road": {
+   "breaker": "CB 13",
+   "dR_ohm": 0.072,
+   "km": 1.89,
+   "new": "UG-XLPE-300AL",
+   "new_desc": "300 mm2 aluminium, XLPE, triplex",
+   "old": "0.2 sq in copper, paper-insulated lead-covered, 3-core",
+   "raw": {
+    "q": [
+     0.7543958915908051,
+     0.752185826834658,
+     1.3554793623407586,
+     1.3716381093004097
+    ],
+    "year": 4.2336991900666305
+   },
+   "sections": [
+    "HV-23986",
+    "HV-24053"
+   ],
+   "value_gbp": 300,
+   "year_mwh": 4.2
+  },
+  "Kestle": {
+   "breaker": "CB 7",
+   "dR_ohm": 0.443,
+   "km": 3.95,
+   "new": "OH-AAAC-200",
+   "new_desc": "200 mm2 AAAC (Elm)",
+   "old": "0.1 sq in hard-drawn copper",
+   "raw": {
+    "q": [
+     32.79973585872586,
+     28.328760232435403,
+     4.778525604528049,
+     8.303305221552364
+    ],
+    "year": 74.21032691724167
+   },
+   "sections": [
+    "HV-21955",
+    "HV-22035",
+    "HV-22108"
+   ],
+   "value_gbp": 4800,
+   "year_mwh": 74.2
+  },
+  "Oxenford Lane": {
+   "breaker": "CB 6",
+   "dR_ohm": 1.966,
+   "km": 4.14,
+   "new": "OH-AAAC-150",
+   "new_desc": "150 mm2 AAAC (Ash)",
+   "old": "0.04 sq in hard-drawn copper",
+   "raw": {
+    "q": [
+     1.8516760384409017,
+     1.7744154302519217,
+     2.627117484523908,
+     2.6300234763324606
+    ],
+    "year": 8.88323242954919
+   },
+   "sections": [
+    "HV-21643",
+    "HV-21711"
+   ],
+   "value_gbp": 600,
+   "year_mwh": 8.9
+  },
+  "Pennick Hill": {
+   "breaker": "CB 9",
+   "dR_ohm": 0.722,
+   "km": 4.1,
+   "new": "UG-XLPE-300AL",
+   "new_desc": "300 mm2 aluminium, XLPE, triplex",
+   "old": "0.1 sq in copper, paper-insulated lead-covered, 3-core",
+   "raw": {
+    "q": [
+     4.444709516310966,
+     4.576337988647665,
+     5.405784171803195,
+     5.448120980518641
+    ],
+    "year": 19.874952657280467
+   },
+   "sections": [
+    "HV-22654",
+    "HV-22671"
+   ],
+   "value_gbp": 1300,
+   "year_mwh": 19.9
+  },
+  "Redburn": {
+   "breaker": "CB 10",
+   "dR_ohm": 0.713,
+   "km": 4.05,
+   "new": "UG-XLPE-300AL",
+   "new_desc": "300 mm2 aluminium, XLPE, triplex",
+   "old": "0.1 sq in copper, paper-insulated lead-covered, 3-core",
+   "raw": {
+    "q": [
+     3.0654030366138376,
+     3.0579960937176938,
+     7.607871995579094,
+     8.906509893030414
+    ],
+    "year": 22.63778101894104
+   },
+   "sections": [
+    "HV-23137",
+    "HV-23164"
+   ],
+   "value_gbp": 1500,
+   "year_mwh": 22.6
+  },
+  "Stowmere": {
+   "breaker": "CB 12",
+   "dR_ohm": 1.453,
+   "km": 4.43,
+   "new": "OH-AAAC-150",
+   "new_desc": "150 mm2 AAAC (Ash)",
+   "old": "50 mm2 ACSR (Rabbit)",
+   "raw": {
+    "q": [
+     3.8809954540372065,
+     3.9943646503044548,
+     4.636960184044877,
+     5.0058240206952185
+    ],
+    "year": 17.51814430908176
+   },
+   "sections": [
+    "HV-23616",
+    "HV-23664"
+   ],
+   "value_gbp": 1100,
+   "year_mwh": 17.5
+  }
  },
- "stay": 0.9873880043371569,
- "stay_pct": 98.7,
- "stop_gap_days": 150,
- "stop_rate_early_pct": 0.93,
- "stop_rate_early_per_28d": 0.009262662647945306,
- "stop_rate_late_pct": 0.2,
- "stop_rate_late_per_28d": 0.0020199230012257654,
- "stop_rate_supply_days": 28,
- "trailing": {
-  "P81066": 38.253708168834955,
-  "P81177": 31.45698043750916,
-  "P81283": 34.49745152613002,
-  "P81402": 75.06448595544485,
-  "P81555": 48.97461370550523,
-  "P81719": 77.10303992270799,
-  "P81940": 47.162507471425606
+ "rungs": {
+  "export_added": {
+   "kestle_rank": 1,
+   "margin": 1.917,
+   "mwh": {
+    "Ashlade": 13.0,
+    "Copsewell Town": 48.2,
+    "Ingle Road": 4.2,
+    "Kestle": 92.4,
+    "Oxenford Lane": 8.9,
+    "Pennick Hill": 19.9,
+    "Redburn": 22.6,
+    "Stowmere": 36.1
+   },
+   "second": "Copsewell Town",
+   "winner": "Kestle"
+  },
+  "head_current": {
+   "kestle_rank": 4,
+   "margin": 1.232,
+   "mwh": {
+    "Ashlade": 41.8,
+    "Copsewell Town": 101.1,
+    "Ingle Road": 15.8,
+    "Kestle": 350.1,
+    "Oxenford Lane": 558.2,
+    "Pennick Hill": 453.1,
+    "Redburn": 399.4,
+    "Stowmere": 62.1
+   },
+   "second": "Pennick Hill",
+   "winner": "Oxenford Lane"
+  },
+  "head_mw_mvar": {
+   "kestle_rank": 4,
+   "margin": 1.232,
+   "mwh": {
+    "Ashlade": 41.8,
+    "Copsewell Town": 101.1,
+    "Ingle Road": 15.8,
+    "Kestle": 350.1,
+    "Oxenford Lane": 558.2,
+    "Pennick Hill": 453.1,
+    "Redburn": 399.4,
+    "Stowmere": 62.1
+   },
+   "second": "Pennick Hill",
+   "winner": "Oxenford Lane"
+  },
+  "kva_share": {
+   "kestle_rank": 8,
+   "margin": 1.7,
+   "mwh": {
+    "Ashlade": 7.9,
+    "Copsewell Town": 46.9,
+    "Ingle Road": 4.5,
+    "Kestle": 2.1,
+    "Oxenford Lane": 10.5,
+    "Pennick Hill": 79.8,
+    "Redburn": 24.8,
+    "Stowmere": 10.6
+   },
+   "second": "Copsewell Town",
+   "winner": "Pennick Hill"
+  },
+  "kva_share_hv_all": {
+   "kestle_rank": 2,
+   "margin": 1.438,
+   "mwh": {
+    "Ashlade": 16.3,
+    "Copsewell Town": 46.9,
+    "Ingle Road": 4.5,
+    "Kestle": 55.5,
+    "Oxenford Lane": 10.5,
+    "Pennick Hill": 79.8,
+    "Redburn": 24.8,
+    "Stowmere": 15.7
+   },
+   "second": "Kestle",
+   "winner": "Pennick Hill"
+  },
+  "kva_share_hv_import": {
+   "kestle_rank": 8,
+   "margin": 1.7,
+   "mwh": {
+    "Ashlade": 13.3,
+    "Copsewell Town": 46.9,
+    "Ingle Road": 4.5,
+    "Kestle": 1.6,
+    "Oxenford Lane": 10.5,
+    "Pennick Hill": 79.8,
+    "Redburn": 24.8,
+    "Stowmere": 13.5
+   },
+   "second": "Copsewell Town",
+   "winner": "Pennick Hill"
+  },
+  "loads_only": {
+   "kestle_rank": 8,
+   "margin": 2.045,
+   "mwh": {
+    "Ashlade": 9.3,
+    "Copsewell Town": 48.2,
+    "Ingle Road": 4.2,
+    "Kestle": 1.4,
+    "Oxenford Lane": 8.9,
+    "Pennick Hill": 19.9,
+    "Redburn": 22.6,
+    "Stowmere": 23.6
+   },
+   "second": "Stowmere",
+   "winner": "Copsewell Town"
+  },
+  "monitors_only": {
+   "kestle_rank": 8,
+   "margin": 2.129,
+   "mwh": {
+    "Ashlade": 4.2,
+    "Copsewell Town": 48.2,
+    "Ingle Road": 4.2,
+    "Kestle": 1.4,
+    "Oxenford Lane": 8.9,
+    "Pennick Hill": 19.9,
+    "Redburn": 22.6,
+    "Stowmere": 9.8
+   },
+   "second": "Redburn",
+   "winner": "Copsewell Town"
+  },
+  "net": {
+   "kestle_rank": 1,
+   "margin": 1.54,
+   "mwh": {
+    "Ashlade": 7.7,
+    "Copsewell Town": 48.2,
+    "Ingle Road": 4.2,
+    "Kestle": 74.2,
+    "Oxenford Lane": 8.9,
+    "Pennick Hill": 19.9,
+    "Redburn": 22.6,
+    "Stowmere": 17.5
+   },
+   "second": "Copsewell Town",
+   "winner": "Kestle"
+  },
+  "net_active_only": {
+   "kestle_rank": 1,
+   "margin": 1.665,
+   "mwh": {
+    "Ashlade": 5.9,
+    "Copsewell Town": 44.5,
+    "Ingle Road": 3.9,
+    "Kestle": 74.1,
+    "Oxenford Lane": 7.7,
+    "Pennick Hill": 16.7,
+    "Redburn": 20.7,
+    "Stowmere": 12.8
+   },
+   "second": "Copsewell Town",
+   "winner": "Kestle"
+  },
+  "net_daily_mean": {
+   "kestle_rank": 2,
+   "margin": 1.393,
+   "mwh": {
+    "Ashlade": 5.8,
+    "Copsewell Town": 42.5,
+    "Ingle Road": 3.7,
+    "Kestle": 30.5,
+    "Oxenford Lane": 8.6,
+    "Pennick Hill": 16.2,
+    "Redburn": 19.7,
+    "Stowmere": 15.0
+   },
+   "second": "Kestle",
+   "winner": "Copsewell Town"
+  }
  },
- "trailing_pick": "P81719"
+ "runner_up": "Copsewell Town",
+ "storm_circuits": [
+  "Oxenford Lane",
+  "Kestle",
+  "Stowmere"
+ ]
 }

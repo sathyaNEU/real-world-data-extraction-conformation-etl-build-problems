@@ -1,667 +1,446 @@
-"""task464 architecture 9: every figure, computed from the shipped files under target/ and nothing else.
+"""task464 architecture 10: every graded figure, computed from the cut pack under target/.
 
-The main call: for each practice, the expected number of its patients issued a statin from 1 September to 30
-November 2026 who, still registered with it on 30 June 2027, will have had no statin issued from 1 March to 30
-June 2027. The golden runs each patient forward to the review their current repeat set reaches (the request
-after its last authorised issue) and applies the record's rates: the share of statin repeats that ran out and
-were not re-authorised, and the stops between reviews per 28 days of supply. The default path is a persistence
-curve on months since the patient's first statin issue.
-
-The asks: the 2025 return's ACE inhibitor and ARB adherence and its ticagrelor-after-a-heart-attack indicator.
+The call: each project's 2025/26 saving, the I2R losses its replaced sections would not have incurred on the new
+conductor, at each section's own half-hourly current, the net of every connection's metered flow beyond it. The asks:
+each feeder's 2025/26 CI and CML under the network's reporting definitions. figures.json carries every graded figure;
+ceiling.py and checks.py import the loaders and the routes from here.
 """
-import csv, json, os, re, collections, decimal, datetime as dt
+import csv
+import datetime as dt
+import json
+import os
+import re
+import numpy as np
+import openpyxl
+import pyarrow.parquet as pq
 import world as W
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-T = os.environ.get("T464_TARGET") or os.path.join(BASE, "target")
-FIG = os.path.join(BASE, "generator", "figures.json")
-
-CODE_KEY = {p["code"]: p["key"] for p in W.PRACTICES}
-
-
-def dnum(s):
-    if "/" in s:
-        d, m, y = s.split("/"); return (dt.date(int(y), int(m), int(d)) - W.D0).days
-    return (dt.date.fromisoformat(s) - W.D0).days
+HERE = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.dirname(HERE)
+TGT = os.path.join(BASE, "target")
+NHH = W.NHH
+UTC0 = W.UTC0
+CODE_OF = {v: k for k, v in W.MODEL_CODE.items()}
+FEEDER_ORDER = [f["name"] for f in W.FEEDERS]
 
 
-_LOOK = None
+def uk_offset(t):
+    def last_sunday(y, m):
+        d = dt.date(y, m, 31)
+        while d.weekday() != 6:
+            d -= dt.timedelta(days=1)
+        return dt.datetime(d.year, d.month, d.day, 1, 0)
+    return 1 if last_sunday(t.year, 3) <= t < last_sunday(t.year, 10) else 0
 
 
-def lookup():
-    global _LOOK
-    if _LOOK is None:
-        a, b = {}, {}
-        with open(os.path.join(T, "cvd_product_lookup.csv"), encoding="utf-8") as fh:
-            for r in csv.DictReader(fh):
-                rec = (r["vtm"], r["strength"], r["form"], r["bnf_class"])
-                a[r["system_a_drug"]] = rec; b[r["system_b_product"]] = rec
-        _LOOK = (a, b)
-    return _LOOK
+UTC = [UTC0 + dt.timedelta(minutes=30 * i) for i in range(NHH)]
+LOCAL = [t + dt.timedelta(hours=uk_offset(t)) for t in UTC]
+QUARTER = np.array([{4: 0, 5: 0, 6: 0, 7: 1, 8: 1, 9: 1, 10: 2, 11: 2, 12: 2, 1: 3, 2: 3, 3: 3}[l.month] for l in LOCAL])
 
 
-def load_issues():
-    la, lb = lookup()
-    out = []
-    with open(os.path.join(T, "repeat_issues_system_a_2024-01_to_2026-11.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            v, s, f, c = la[r["Drug"]]
-            out.append(dict(code=r["Practice Code"], pid=r["Patient Ref"], t=dnum(r["Issue Date"]), vtm=v, strength=s,
-                            form=f, cls=c, qty=int(r["Quantity"].split()[0]), acute=r["Course"] == "Acute",
-                            ref=r["Repeat Ref"] or None, eps=r["EPS Prescription ID"]))
-    with open(os.path.join(T, "repeat_issues_system_b_2024-01_to_2026-11.jsonl"), encoding="utf-8") as fh:
-        for line in fh:
-            r = json.loads(line)
-            v, s, f, c = lb[r["product"]]
-            out.append(dict(code=r["org"], pid=r["patient_pseudo"], t=dnum(r["issued"]), vtm=v, strength=s, form=f,
-                            cls=c, qty=int(r["qty"]), acute=r["course"] == "acute", ref=r["authorisation"],
-                            eps=r["eps_id"]))
-    return out
+# ---------------------------------------------------------------- loaders
+def load_network(tgt=TGT):
+    wb = openpyxl.load_workbook(os.path.join(tgt, "hv_network_model.xlsx"), read_only=True)
+    secs = []
+    for row in list(wb["Sections"].iter_rows(values_only=True))[1:]:
+        sid, circ, frm, to, metres, cond, cons, inst, state = row
+        secs.append(dict(id=sid, circuit=circ, frm=frm, to=to, metres=float(metres), code=CODE_OF[cond], state=state))
+    nodes = {}
+    for row in list(wb["Nodes"].iter_rows(values_only=True))[1:]:
+        nid, circ, kind, ref, desc = row
+        nodes[nid] = dict(circuit=circ, kind=kind, ref=ref, desc=desc)
+    return secs, nodes
 
 
-def load_templates():
-    la, lb = lookup()
+def asset_of(ref):
+    """('S', site_no) for a substation reference written either way, ('H', agreement) for an HV customer."""
+    if ref is None or str(ref).strip() == "":
+        return None
+    s = str(ref).strip()
+    if s.startswith("CA-"):
+        return ("H", s)
+    m = re.fullmatch(r"(?:SS\s*)?(\d{6})", s)
+    return ("S", int(m.group(1)))
+
+
+def load_monitors(tgt=TGT):
+    """site_no -> (P kW, Q kVAr) arrays over the 17,520 UTC half-hours; NaN where the monitor holds no record."""
+    t = pq.read_table(os.path.join(tgt, "lv_monitoring_2025-26.parquet")).to_pandas()
+    idx = ((t["period_start_utc"].dt.tz_convert(None) - np.datetime64(UTC0)) / np.timedelta64(30, "m")).astype(int).to_numpy()
+    kw, kvar, kva, pf = (t[c].to_numpy(dtype=float) for c in ("kw", "kvar", "kva", "pf"))
+    va = np.isnan(kw)
+    P = np.where(va, kva * pf, kw)
+    Q = np.where(va, kva * np.sqrt(np.clip(1 - pf ** 2, 0, None)), kvar)
     out = {}
-    with open(os.path.join(T, "repeat_authorisations_system_a.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            v, s, f, c = la[r["Drug"]]
-            q = int(r["Quantity"].split()[0])
-            out[r["Repeat Ref"]] = dict(code=r["Practice Code"], pid=r["Patient Ref"], ref=r["Repeat Ref"], vtm=v,
-                                        strength=s, form=f, cls=c, directions=r["Dosage"],
-                                        qty=q, L=int(round(q / doses_per_day(r["Dosage"], s))),
-                                        M=int(r["Authorised Issues"]), start=dnum(r["Authorised Date"]),
-                                        end=dnum(r["End Date"]) if r["End Date"] else None)
-    with open(os.path.join(T, "repeat_authorisations_system_b.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            v, s, f, c = lb[r["product"]]
-            q = int(r["qty_per_issue"])
-            out[r["authorisation"]] = dict(code=r["org"], pid=r["patient_pseudo"], ref=r["authorisation"], vtm=v,
-                                           strength=s, form=f, cls=c, directions=r["directions"],
-                                           qty=q, L=int(round(q / doses_per_day(r["directions"], s))),
-                                           M=int(r["issues_authorised"]), start=dnum(r["start_date"]),
-                                           end=dnum(r["end_date"]) if r["end_date"] else None)
+    site = t["site_no"].to_numpy()
+    for s in np.unique(site):
+        m = site == s
+        p, q = np.full(NHH, np.nan), np.full(NHH, np.nan)
+        p[idx[m]] = P[m]
+        q[idx[m]] = Q[m]
+        out[int(s)] = (p, q)
     return out
 
 
-def load_register():
-    eps = collections.defaultdict(list)
-    with open(os.path.join(T, "patient_register_2026-12-01.csv"), encoding="utf-8") as fh:
+def settlement_index(date_s, period):
+    d = dt.datetime.strptime(date_s, "%Y%m%d")
+    midnight_utc = d - dt.timedelta(hours=uk_offset(d - dt.timedelta(hours=1)))
+    t = midnight_utc + dt.timedelta(minutes=30 * (int(period) - 1))
+    return int((t - UTC0).total_seconds() // 1800)
+
+
+def load_settlement(tgt=TGT):
+    """mpan -> (kW, kVAr) average over each UTC half-hour."""
+    rows = {}
+    cache = {}
+    with open(os.path.join(tgt, "hv_settlement_2025-26.csv")) as fh:
+        rd = csv.reader(fh)
+        next(rd)
+        for mpan, d, sp, a, rq in rd:
+            k = (d, sp)
+            if k not in cache:
+                cache[k] = settlement_index(d, sp)
+            i = cache[k]
+            if mpan not in rows:
+                rows[mpan] = (np.zeros(NHH), np.zeros(NHH))
+            rows[mpan][0][i] = 2 * float(a)
+            rows[mpan][1][i] = 2 * float(rq)
+    return rows
+
+
+def load_registers(tgt=TGT):
+    subs = {}
+    with open(os.path.join(tgt, "secondary_substations.csv")) as fh:
         for r in csv.DictReader(fh):
-            eps[r["patient_ref"]].append((r["practice_code"], dnum(r["registered"]),
-                                          dnum(r["deregistered"]) if r["deregistered"] else None,
-                                          r["deregistration_reason"]))
-    return eps
-
-
-def load_cancellations():
-    s = set()
-    with open(os.path.join(T, "eps_item_cancellations_2024-2026.csv"), encoding="utf-8") as fh:
+            subs[int(r["site_no"])] = r
+    hv = {}
+    with open(os.path.join(tgt, "hv_connections.csv")) as fh:
         for r in csv.DictReader(fh):
-            s.add((r["prescription_id"], r["item"]))
-    return s
+            hv[r["agreement_ref"]] = r
+    return subs, hv
 
 
-def registered_at(eps, pid, code, t):
-    for c, a, b, why in eps.get(pid, []):
-        if c == code and a <= t and (b is None or t < b):
-            return True
-    return False
+def load(tgt=TGT):
+    secs, nodes = load_network(tgt)
+    subs, hv = load_registers(tgt)
+    return dict(secs=secs, nodes=nodes, subs=subs, hv=hv, mon=load_monitors(tgt), settle=load_settlement(tgt))
 
 
-class Data:
-    def __init__(self):
-        self.issues = load_issues()
-        self.tpl = load_templates()
-        self.reg = load_register()
-        canc = load_cancellations()
-        la, lb = lookup()
-        inv = {v: k for k, v in la.items()}
-        for r in self.issues:
-            name = inv.get((r["vtm"], r["strength"], r["form"], r["cls"]))
-            r["cancelled"] = (r["eps"], name) in canc
-        self.statin = [r for r in self.issues if r["cls"] == "Statin" and not r["cancelled"]]
-        by = collections.defaultdict(list)
-        for r in self.statin:
-            by[r["pid"]].append(r)
-        for v in by.values():
-            v.sort(key=lambda r: (r["t"], r["ref"] or ""))
-        self.statin_by = by
-        self.made = collections.Counter(r["ref"] for r in self.statin if r["ref"])
-        tb = collections.defaultdict(list)
-        for ref, tp in self.tpl.items():
-            if tp["cls"] == "Statin":
-                tb[tp["pid"]].append(tp)
-        for v in tb.values():
-            v.sort(key=lambda tp: (tp["start"], tp["ref"]))
-        self.statin_tpl = tb
+# ---------------------------------------------------------------- the network's topology and each section's flow
+def topology(pk):
+    closed = [s for s in pk["secs"] if s["state"] == "Closed"]
+    child = {}
+    for s in closed:
+        child.setdefault(s["frm"], []).append(s)
+    beyond = {}
+
+    def walk(n):
+        out = [n]
+        for s in child.get(n, []):
+            out += walk(s["to"])
+        return out
+    for s in closed:
+        beyond[s["id"]] = walk(s["to"])
+    return closed, beyond
 
 
-# ---------------------------------------------------------------------------------------------- the population
-def population(D):
-    pop = {}
-    for pid, rows in D.statin_by.items():
-        for c in sorted({r["code"] for r in rows}):
-            if any(r["code"] == c and W.POP_FROM <= r["t"] <= W.ASOF for r in rows) and registered_at(D.reg, pid, c, W.ASOF):
-                pop[pid] = c
-    return pop
+def connection_flows(pk, mode="net"):
+    """asset -> (P, Q) half-hourly at the connection.
 
-
-# ---------------------------------------------------------------------------------------------- the record's rates
-def reauth_rate(D, lo=None, hi=None, per=False, follow=60, drop_left=True):
-    lo = W.EXTRACT_FROM if lo is None else lo
-    hi = W.ASOF - 150 if hi is None else hi
-    n = collections.Counter(); f = collections.Counter()
-    for pid, tl in D.statin_tpl.items():
-        for i, tp in enumerate(tl):
-            if tp["start"] < W.EXTRACT_FROM or D.made[tp["ref"]] < tp["M"]:
-                continue
-            last = max(r["t"] for r in D.statin_by[pid] if r["ref"] == tp["ref"])
-            if not (lo <= last <= hi): continue
-            end = last + tp["L"]
-            if drop_left and not registered_at(D.reg, pid, tp["code"], end + follow):
-                continue
-            n[tp["code"]] += 1
-            nxt = [x for x in tl[i + 1:] if x["start"] >= last]
-            if not (nxt and nxt[0]["start"] <= end + follow):
-                f[tp["code"]] += 1
-    pool = sum(f.values()) / sum(n.values())
-    if per:
-        return {c: f[c] / n[c] for c in n}, n, f
-    return {c: pool for c in n}, n, f
-
-
-def reauth_groups(D, follow=60):
-    """The same share split by the patient's history: how many earlier statin repeats of theirs in the record ran
-    their authorised issues out (each one a review passed, since a later repeat followed it), and the issue length."""
-    n = collections.Counter(); f = collections.Counter()
-    for pid, tl in D.statin_tpl.items():
-        for i, tp in enumerate(tl):
-            if tp["start"] < W.EXTRACT_FROM or D.made[tp["ref"]] < tp["M"]:
-                continue
-            last = max(r["t"] for r in D.statin_by[pid] if r["ref"] == tp["ref"])
-            if not (W.EXTRACT_FROM <= last <= W.ASOF - 150): continue
-            end = last + tp["L"]
-            if not registered_at(D.reg, pid, tp["code"], end + follow): continue
-            passed = min(sum(1 for x in tl[:i] if D.made[x["ref"]] >= x["M"]), 2)
-            nxt = [x for x in tl[i + 1:] if x["start"] >= last]
-            fail = not (nxt and nxt[0]["start"] <= end + follow)
-            for k in (("passed", passed), ("days", tp["L"])):
-                n[k] += 1; f[k] += fail
-    return {k: (n[k], f[k] / n[k]) for k in n}
-
-
-def season_share(D, pop, year):
-    """A practice's share of an earlier year's statin patients (issued one from September to November, registered
-    on 30 November and on 30 June) with no statin from March to June, carried to every patient now in its population."""
-    A1, O1, W1 = W.day("%d-11-30" % year), W.day("%d-06-30" % (year + 1)), W.day("%d-03-01" % (year + 1))
-    num = collections.Counter(); den = collections.Counter()
-    for pid, rows in D.statin_by.items():
-        for c in sorted({r["code"] for r in rows}):
-            if not any(r["code"] == c and A1 - 90 < r["t"] <= A1 for r in rows): continue
-            if not registered_at(D.reg, pid, c, A1) or not registered_at(D.reg, pid, c, O1): continue
-            den[c] += 1
-            if not any(W1 <= r["t"] <= O1 for r in rows): num[c] += 1
-    return num, den
-
-
-SUPPLY_UNIT = 28   # stops between reviews are rated per this many days of statin supply
-
-
-def first_statin(D, pid):
-    return D.statin_by[pid][0]["t"]
-
-
-def stop_rates(D, per=False, split=True, gap=150):
-    """Stops between reviews: a statin repeat left with issues unused and no statin issued for 150 days after its
-    last issue, per 28 days of statin supply issued on repeats, early (first 182 days from the patient's first
-    statin issue in the extract, for a patient whose first issue there is acute) and late."""
-    ex = collections.defaultdict(lambda: [0.0, 0.0]); st = collections.defaultdict(lambda: [0, 0])
-    for pid, rows in D.statin_by.items():
-        new_start = rows[0]["acute"] and rows[0]["t"] >= W.EXTRACT_FROM + 30
-        t0 = rows[0]["t"]
-        for r in rows:
-            if r["acute"] or r["t"] > W.ASOF - gap: continue
-            k = 0 if (split and new_start and r["t"] - t0 < 182) else 1
-            ex[r["code"]][k] += D.tpl[r["ref"]]["L"] / SUPPLY_UNIT if r["ref"] in D.tpl else 1
-        for tp in D.statin_tpl.get(pid, []):
-            if tp["start"] < W.EXTRACT_FROM: continue
-            mm = D.made[tp["ref"]]
-            if mm == 0 or mm >= tp["M"]: continue
-            last = max(r["t"] for r in rows if r["ref"] == tp["ref"])
-            if last > W.ASOF - gap: continue
-            if any(last < r["t"] <= last + gap for r in rows): continue
-            if not registered_at(D.reg, pid, tp["code"], last + tp["L"] + 60): continue
-            k = 0 if (split and new_start and last - t0 < 182) else 1
-            st[tp["code"]][k] += 1
-    def rate(e, s):
-        return (s[0] / e[0] if e[0] else 0.0, s[1] / e[1] if e[1] else 0.0)
-    if per:
-        return {c: rate(ex[c], st[c]) for c in ex}
-    E = [sum(v[0] for v in ex.values()), sum(v[1] for v in ex.values())]
-    S = [sum(v[0] for v in st.values()), sum(v[1] for v in st.values())]
-    pr = rate(E, S)
-    if not split:
-        pr = ((S[0] + S[1]) / (E[0] + E[1]),) * 2
-    return {c: pr for c in ex}
-
-
-def pacing(D):
-    gaps = []
-    for pid, rows in D.statin_by.items():
-        for a, b in zip(rows, rows[1:]):
-            if a["ref"] and a["ref"] == b["ref"] and b["t"] <= W.ASOF:
-                g = b["t"] - a["t"] - D.tpl[a["ref"]]["L"]
-                if -10 < g < 40: gaps.append(g)
-    return sum(gaps) / len(gaps), sorted(gaps)[len(gaps) // 2]
-
-
-def stay_share(D):
-    """Share of the statin patients on a practice's register at the start of a seven-month window still on the
-    same register at its end, over the record's windows from January 2024."""
-    n = s = 0
-    starts = [W.day(x) for x in ("2024-01-01", "2024-04-01", "2024-07-01", "2024-10-01", "2025-01-01",
-                                "2025-04-01")]
-    span = W.OUT - W.ASOF
-    for t0 in starts:
-        t1 = t0 + span
-        for pid in D.statin_by:
-            for c, a, b, why in D.reg[pid]:
-                if a <= t0 and (b is None or t0 < b):
-                    n += 1
-                    if b is None or b > t1:
-                        s += 1
-    return s / n
-
-
-def current_state(D, pid, code):
-    """The patient's current statin repeat at the practice: its issues made, authorised issues, issue length and
-    the last statin issue; None when the patient's latest statin issue is acute (the repeat not yet set up)."""
-    rows = [r for r in D.statin_by[pid] if r["code"] == code and r["t"] <= W.ASOF]
-    last = rows[-1]
-    if last["acute"]:
-        return dict(kind="acute", last=last["t"], L=28, first=rows[0]["t"])
-    tp = D.tpl[last["ref"]]
-    made = sum(1 for r in rows if r["ref"] == tp["ref"])
-    return dict(kind="repeat", last=last["t"], L=tp["L"], M=tp["M"], made=made, start=tp["start"],
-                first=rows[0]["t"], new=rows[0]["acute"] and rows[0]["t"] >= W.EXTRACT_FROM + 30)
-
-
-def golden(D, pop, rate, bg, pace, stay, pending="lapsed"):
-    out = collections.Counter()
-    for pid, code in pop.items():
-        s = current_state(D, pid, code)
-        if s["kind"] == "acute":
-            # a new start waiting for its repeat: its review is a year away, only a stop can intervene
-            t = s["last"]; prob = 0.0; alive = 1.0; last_issue = t
-            while True:
-                req = t + 28 + pace
-                q = bg[code][0]
-                if last_issue < W.W0: prob += alive * q
-                alive *= 1 - q
-                if req >= W.W0: break
-                t = req; last_issue = req
-            out[code] += prob * stay
+    mode net: monitors as recorded (a monitor with no record carries nothing) and each HV customer's import less its
+    export; imports: HV customers' imports only; monitors: secondary substations only; absadd: export added to import."""
+    out = {}
+    for site, (p, q) in pk["mon"].items():
+        out[("S", site)] = (np.nan_to_num(p), np.nan_to_num(q))
+    if mode == "monitors":
+        return out
+    for ag, r in pk["hv"].items():
+        if r["primary"] != "COPSEWELL CROSS":
             continue
-        L = s["L"]; left = s["M"] - s["made"]
-        t = s["last"]; last_issue = t; prob = 0.0; alive = 1.0
-        while True:
-            req = t + L + pace
-            early = s["new"] and t - s["first"] < 182
-            q = (bg[code][0] if early else bg[code][1]) * L / SUPPLY_UNIT
-            if last_issue < W.W0: prob += alive * q
-            alive *= 1 - q
-            if left <= 0:
-                if req <= W.ASOF - 21:
-                    prob += alive * (1.0 if pending == "lapsed" else rate[code])
-                elif last_issue < W.W0:
-                    prob += alive * rate[code]
-                break
-            if req >= W.W0: break
-            t = req; last_issue = req; left -= 1
-        out[code] += min(prob, 1.0) * stay
+        pi, qi = pk["settle"][r["import_mpan"]]
+        pe, qe = pk["settle"][r["export_mpan"]] if r["export_mpan"] else (np.zeros(NHH), np.zeros(NHH))
+        if mode == "net":
+            out[("H", ag)] = (pi - pe, qi - qe)
+        elif mode == "imports":
+            out[("H", ag)] = (pi, np.clip(qi, 0, None))
+        elif mode == "absadd":
+            out[("H", ag)] = (pi + pe, np.abs(qi) + np.abs(qe))
     return out
 
 
-# ---------------------------------------------------------------------------------------------- the reflexes
-def km_reflex(D, pop, stay, gap=122):
-    """Kaplan-Meier on months since the patient's first statin issue in the record, a stop being a statin issue
-    followed by 122 days without one; each patient now on a statin carried to the end of February 2027."""
-    ev = collections.defaultdict(collections.Counter); ex = collections.defaultdict(collections.Counter)
-    for pid, rows in D.statin_by.items():
-        ts = [r["t"] for r in rows if r["t"] <= W.ASOF]
-        code = rows[-1]["code"]
-        if not ts: continue
-        a = ts[0]; epis = []
-        end_obs = W.ASOF - gap
-        for c, ra, rb, why in D.reg[pid]:
-            if c == code and rb is not None: end_obs = min(end_obs, rb)
-        stops = [ts[i] for i in range(len(ts) - 1) if ts[i + 1] - ts[i] >= gap]
-        if ts[-1] + gap <= end_obs + gap and ts[-1] <= end_obs: stops.append(ts[-1])
-        for s0 in stops:
-            epis.append((a, s0, 1)); nx = [t for t in ts if t > s0]
-            if not nx: a = None; break
-            a = nx[0]
-        if a is not None and end_obs > a: epis.append((a, end_obs, 0))
-        for (a0, b, e) in epis:
-            m1 = (b - a0) // 30
-            for m in range(0, m1 + 1):
-                sl, sh = a0 + m * 30, min(b, a0 + (m + 1) * 30)
-                if sh > sl: ex[code][min(m, 30)] += (sh - sl) / 30
-            if e: ev[code][min(m1, 30)] += 1
-    out = collections.Counter()
-    for pid, code in pop.items():
-        ts = [r["t"] for r in D.statin_by[pid] if r["t"] <= W.ASOF]
-        a = (W.ASOF - ts[0]) // 30; surv = 1.0
-        for m in range(a, a + (W.W0 - W.ASOF) // 30 + 1):
-            mm = min(m, 30)
-            e1 = ev[code][mm]; x1 = ex[code][mm]
-            surv *= 1 - (e1 / x1 if x1 else 0.0)
-        out[code] += (1 - surv) * stay
+_PROJ = None
+
+
+def projects():
+    """feeder name -> (breaker, [section ids], new conductor code, route km, existing conductor), as the brief prints."""
+    global _PROJ
+    if _PROJ is None:
+        import sim
+        feeders, nodes, sections, conns, neigh = sim.build_network()
+        _PROJ = {}
+        for f in feeders:
+            secs = [s for s in sections if s.feeder == f["code"] and s.project]
+            _PROJ[f["name"]] = (f["breaker"], [s.id for s in secs], f["new"], sum(s.metres for s in secs) / 1000.0,
+                                "; ".join(sorted(set(W.CONDUCTORS[s.code][0] for s in secs))))
+    return _PROJ
+
+
+def section_saving_kwh(P, Q, sec, new):
+    dR = (W.CONDUCTORS[sec["code"]][2] - W.CONDUCTORS[new][2]) * sec["metres"] / 1000.0
+    return (P ** 2 + Q ** 2) * dR / (W.V_NOM_KV ** 2) / 1000.0 * 0.5
+
+
+def savings(pk, mode="net", proj=None, reduce=None):
+    """feeder -> half-hourly kWh saved, every section's own flow the sum of the connections beyond it."""
+    proj = proj or projects()
+    closed, beyond = topology(pk)
+    byid = {s["id"]: s for s in pk["secs"]}
+    fl = connection_flows(pk, mode)
+    out = {}
+    for name, (brk, ids, new, km, old) in proj.items():
+        tot = np.zeros(NHH)
+        for sid in ids:
+            P, Q = np.zeros(NHH), np.zeros(NHH)
+            for n in beyond[sid]:
+                a = asset_of(pk["nodes"][n]["ref"])
+                if a is not None and a in fl:
+                    P = P + fl[a][0]
+                    Q = Q + fl[a][1]
+            if reduce is not None:
+                P, Q = reduce(P), reduce(Q)
+            tot += section_saving_kwh(P, Q, byid[sid], new)
+        out[name] = tot
     return out
 
 
-def last_year_rate(D, pop):
-    A1, O1, W1 = W.day("2025-11-30"), W.day("2026-06-30"), W.day("2026-03-01")
-    num = collections.Counter(); den = collections.Counter()
-    for pid, rows in D.statin_by.items():
-        for c in sorted({r["code"] for r in rows}):
-            if not any(r["code"] == c and A1 - 90 < r["t"] <= A1 for r in rows): continue
-            if not registered_at(D.reg, pid, c, A1): continue
-            if not registered_at(D.reg, pid, c, O1): continue
-            den[c] += 1
-            if not any(W1 <= r["t"] <= O1 for r in rows): num[c] += 1
-    npop = collections.Counter(pop.values())
-    return {c: num[c] / den[c] * npop[c] for c in den}
+def summarise(hh):
+    """feeder -> dict(q=[MWh x4], year MWh) from half-hourly kWh."""
+    return {k: dict(q=[float(v[QUARTER == i].sum() / 1000) for i in range(4)], year=float(v.sum() / 1000)) for k, v in hh.items()}
 
 
-def trailing_stops(D, pop, gap=122):
-    """Statin stops (an issue followed by 122 days without one) in the twelve months to the end of July 2026,
-    scaled to the patients now on a statin."""
-    lo, hi = W.ASOF - 365 - gap, W.ASOF - gap
-    st = collections.Counter(); base = collections.Counter()
-    for pid, rows in D.statin_by.items():
-        ts = [r["t"] for r in rows]
-        code = rows[-1]["code"]
-        if any(lo - 90 < t <= lo for t in ts): base[code] += 1
-        for i, t in enumerate(ts):
-            nxt = ts[i + 1] if i + 1 < len(ts) else None
-            if lo <= t <= hi and (nxt is None or nxt - t >= gap): st[code] += 1
-    npop = collections.Counter(pop.values())
-    return {c: st[c] / base[c] * npop[c] * (W.W0 - W.ASOF) / 365 for c in base}
+# ---------------------------------------------------------------- the routes a solver might take (ceiling.py, checks.py)
+def load_scada(tgt=TGT):
+    """circuit -> (mean phase current A, MW, MVAr) arrays in the file's row order, which is the UTC order."""
+    out = {}
+    with open(os.path.join(tgt, "copsewell_cross_scada_2025-26.csv")) as fh:
+        rd = csv.reader(fh)
+        next(rd)
+        for ts, circ, a, b, c, mw, mvar in rd:
+            out.setdefault(circ, []).append(((float(a) + float(b) + float(c)) / 3.0, float(mw), float(mvar)))
+    return {k: tuple(np.array(x) for x in zip(*v)) for k, v in out.items()}
 
 
-# ---------------------------------------------------------------------------------------------- the asks
-DOSE_WORDS = {"one": 1, "1": 1, "two": 2, "2": 2, "half": 0.5}
+def routes(pk, tgt=TGT):
+    """feeder -> year MWh under each construction of a replaced section's current."""
+    proj = projects()
+    byid = {s["id"]: s for s in pk["secs"]}
+    closed, beyond = topology(pk)
+    sc = load_scada(tgt)
+    circ_of = {}
+    for name, (brk, ids, new, km, old) in proj.items():
+        circ_of[name] = "%s %s" % (brk, name.upper())
+    kva = {("S", int(k)): float(v["transformer_kva"]) for k, v in pk["subs"].items()}
+    hv_imp = {("H", k): float(v["import_capacity_kva"] or 0) for k, v in pk["hv"].items()}
+    hv_exp = {("H", k): float(v["export_capacity_kw"] or 0) for k, v in pk["hv"].items()}
+    out = {}
+
+    def share_route(cap):
+        res = {}
+        for name, (brk, ids, new, km, old) in proj.items():
+            I = sc[circ_of[name]][0]
+            top = [s for s in closed if s["circuit"] == circ_of[name] and pk["nodes"][s["frm"]]["kind"] == "Busbar"][0]
+            def capof(sid):
+                return sum(cap.get(asset_of(pk["nodes"][n]["ref"]), 0.0) for n in beyond[sid])
+            tot = capof(top["id"])
+            v = 0.0
+            for sid in ids:
+                sec = byid[sid]
+                dR = (W.CONDUCTORS[sec["code"]][2] - W.CONDUCTORS[new][2]) * sec["metres"] / 1000.0
+                v += (3 * (I * capof(sid) / tot) ** 2 * dR * 0.5 / 1000.0).sum() / 1000.0
+            res[name] = float(v)
+        return res
+    head = {}
+    head_s = {}
+    for name, (brk, ids, new, km, old) in proj.items():
+        I, mw, mvar = sc[circ_of[name]]
+        Is = np.sqrt(mw ** 2 + mvar ** 2) * 1000 / (np.sqrt(3) * W.V_NOM_KV)
+        a = b = 0.0
+        for sid in ids:
+            sec = byid[sid]
+            dR = (W.CONDUCTORS[sec["code"]][2] - W.CONDUCTORS[new][2]) * sec["metres"] / 1000.0
+            a += (3 * I ** 2 * dR * 0.5 / 1000.0).sum() / 1000.0
+            b += (3 * Is ** 2 * dR * 0.5 / 1000.0).sum() / 1000.0
+        head[name], head_s[name] = float(a), float(b)
+    out["head_current"] = head
+    out["head_mw_mvar"] = head_s
+    out["kva_share"] = share_route(kva)
+    out["kva_share_hv_import"] = share_route({**kva, **hv_imp})
+    out["kva_share_hv_all"] = share_route({**kva, **{k: hv_imp[k] + hv_exp[k] for k in hv_imp}})
+    for mode, lab in (("monitors", "monitors_only"), ("imports", "loads_only"), ("absadd", "export_added"), ("net", "net")):
+        out[lab] = {k: float(v.sum() / 1000) for k, v in savings(pk, mode, proj).items()}
+    out["net_active_only"] = {k: float(v.sum() / 1000) for k, v in
+                              savings(pk, "net", proj, reduce=None).items()}
+    pk2 = dict(pk)
+    pk2["mon"] = {s: (p, np.zeros_like(q)) for s, (p, q) in pk["mon"].items()}
+    pk2["settle"] = {m: (p, np.zeros_like(q)) for m, (p, q) in pk["settle"].items()}
+    out["net_active_only"] = {k: float(v.sum() / 1000) for k, v in savings(pk2, "net", proj).items()}
+    day = np.repeat(np.arange(NHH // 48), 48)
+
+    def daily(x):
+        return np.repeat(np.bincount(day, weights=x) / 48.0, 48)
+    out["net_daily_mean"] = {k: float(v.sum() / 1000) for k, v in savings(pk, "net", proj, reduce=daily).items()}
+    return out
 
 
-MG_RE = re.compile(r"(\d+(?:\.\d+)?)mg\b")
+def winner(d):
+    o = sorted(d, key=lambda k: -d[k])
+    return o[0], o[1], d[o[0]] / d[o[1]]
 
 
-def doses_per_day(text, strength=None):
-    """Tablets or capsules a day from the directions; a dose written in milligrams is read against the product's
-    strength ("5mg once daily" on 2.5mg capsules is two a day)."""
-    s = text.lower()
-    m = MG_RE.search(s)
-    if m and strength:
-        n = float(m.group(1)) / float(strength[:-2])
-    else:
-        n = None
-        for w0, v in DOSE_WORDS.items():
-            if re.search(r"\b%s\b" % re.escape(w0), s):
-                n = v; break
-        if n is None: n = 1
-    if "twice" in s or re.search(r"\bbd\b", s): n *= 2
-    return n
-
-
-def directions_at(D, changes, ref, t):
-    """The directions in force for a repeat on a day. A repeat the change log shows changed carries the log's own
-    history: the first change's old value until that change, then each change's new value from its day."""
-    rows = changes.get(ref)
-    if not rows:
-        return D.tpl[ref]["directions"]
-    cur = rows[0][1]
-    for (when, old, new) in rows:
-        if when <= t:
-            cur = new
-    return cur
-
-
-def load_changes(D=None):
-    """The change log's dose rows, each attached to the repeat the patient held on the day it was made: the repeat
-    the row names when that repeat was in force that day, otherwise the patient's repeat of the same product that
-    was (system A's audit export files a change against the drug line's current repeat)."""
-    D = D or Data()
-    held = collections.defaultdict(list)
-    for ref, tp in D.tpl.items():
-        held[(tp["pid"], tp["vtm"], tp["strength"], tp["form"])].append(tp)
-    ch = collections.defaultdict(list)
-    with open(os.path.join(T, "repeat_changes_2024-01_to_2026-11.csv"), encoding="utf-8") as fh:
+# ---------------------------------------------------------------- the interruption record
+def load_interruptions(tgt=TGT):
+    incs = {}
+    with open(os.path.join(tgt, "interruptions_2023-2026.csv")) as fh:
         for r in csv.DictReader(fh):
-            if r["field"] != "Dosage":
+            i = incs.setdefault(r["reference"], dict(ref=r["reference"], circuit=r["circuit"], voltage=r["voltage"],
+                                                     category=r["category"], cause=r["cause"],
+                                                     start=dt.datetime.strptime(r["incident_start"], "%Y-%m-%d %H:%M"),
+                                                     steps=[]))
+            fmt = "%Y-%m-%d %H:%M:%S" if len(r["step_time"]) > 16 else "%Y-%m-%d %H:%M"
+            t = dt.datetime.strptime(r["step_time"], fmt)
+            n = int(r["customers_off"]) if r["customers_off"] else -int(r["customers_restored"])
+            i["steps"].append((t, int(r["site_no"]), n))
+    cust = {}
+    with open(os.path.join(tgt, "customers_by_substation_2023-2026.csv")) as fh:
+        for r in csv.DictReader(fh):
+            cust.setdefault(int(r["site_no"]), {})[r["month_end"]] = (int(r["customers"]), r["circuit"].replace(" (HV)", ""))
+    wb = openpyxl.load_workbook(os.path.join(tgt, "generator_hire_2025-26.xlsx"), read_only=True)
+    hires = []
+    for row in list(wb["Hire log"].iter_rows(values_only=True))[1:]:
+        hires.append(dict(site=int(row[4]), code=row[6], connected=dt.datetime.strptime(row[8], "%d/%m/%Y %H:%M"),
+                          disconnected=dt.datetime.strptime(row[9], "%d/%m/%Y %H:%M")))
+    return list(incs.values()), cust, hires
+
+
+STORM = (dt.datetime(2026, 1, 6, 15, 0), dt.datetime(2026, 1, 7, 23, 59))
+
+
+def interruption_measures(incs, cust, hires, storm_circuits, *, generators=True, dedupe=True, short_rule=True,
+                          prearranged_half=True, exceptional_rule=True, transmission_rule=True, denominator="2026-03-31"):
+    lo, hi = dt.datetime(2025, 4, 1), dt.datetime(2026, 4, 1)
+    site_circ = {s: v[max(v)][1] for s, v in cust.items()}
+    # each site's outage spans in the HV incidents (who was already off)
+    hv_off = {}
+    for inc in incs:
+        if inc["voltage"] == "LV":
+            continue
+        per = {}
+        for t, s, n in inc["steps"]:
+            per.setdefault(s, []).append((t, n))
+        for s, ev in per.items():
+            ev.sort()
+            on = [t for t, n in ev if n < 0][0]
+            hv_off.setdefault(s, []).append((ev[0][0], on))
+    ci, cml = {}, {}
+    for inc in incs:
+        if not (lo <= inc["start"] < hi):
+            continue
+        if transmission_rule and inc["voltage"] == "EHV":
+            continue
+        if exceptional_rule and STORM[0] <= inc["start"] <= STORM[1] and inc["circuit"] in storm_circuits:
+            continue
+        if dedupe and inc["voltage"] == "LV":
+            t0 = min(t for t, s, n in inc["steps"])
+            s0 = inc["steps"][0][1]
+            if any(a <= t0 < b for a, b in hv_off.get(s0, [])):
                 continue
-            when = dnum(r["changed_on"])
-            tp = D.tpl[r["repeat_ref"]]
-            if not (tp["start"] <= when and (tp["end"] is None or when <= tp["end"])):
-                cand = [x for x in held[(tp["pid"], tp["vtm"], tp["strength"], tp["form"])]
-                        if x["start"] <= when and (x["end"] is None or when <= x["end"])]
-                assert len(cand) == 1, (r, len(cand))
-                tp = cand[0]
-            ch[tp["ref"]].append((when, r["old_value"], r["new_value"]))
-    for v in ch.values():
-        v.sort()
-    return dict(ch)
-
-
-def change_rows():
-    with open(os.path.join(T, "repeat_changes_2024-01_to_2026-11.csv"), encoding="utf-8") as fh:
-        return [(dnum(r["changed_on"]), r["repeat_ref"], r["old_value"], r["new_value"])
-                for r in csv.DictReader(fh) if r["field"] == "Dosage"]
-
-
-def route_changes(D, join):
-    """The change log keyed the way a reading keys it: 'held' attaches each row to the repeat in force that day (the
-    golden), 'ref' to the repeat the row names, 'line' pools the patient's rows for the product."""
-    if join == "held":
-        return load_changes(D)
-    ch = collections.defaultdict(list)
-    if join == "ref":
-        for when, ref, o, n in change_rows():
-            ch[ref].append((when, o, n))
-    else:
-        by_line = collections.defaultdict(list)
-        for when, ref, o, n in change_rows():
-            tp = D.tpl[ref]
-            by_line[(tp["pid"], tp["vtm"], tp["strength"], tp["form"])].append((when, o, n))
-        for ref, tp in D.tpl.items():
-            k = (tp["pid"], tp["vtm"], tp["strength"], tp["form"])
-            if k in by_line:
-                ch[ref] = list(by_line[k])
-    for v in ch.values():
-        v.sort()
-    return dict(ch)
-
-
-def directions_back(D, changes, ref, t):
-    """The reading that takes a repeat's listed directions as they stand and walks the change log back from them."""
-    cur = D.tpl[ref]["directions"]
-    for (when, old, new) in sorted(changes.get(ref, []), reverse=True):
-        if when > t:
-            cur = old
-    return cur
-
-
-def ask_a(D, use_history=True, drop_cancelled=True, dedup_days=None, fixed_days=None, join="held", walk="log",
-          parse="mg", per_issue=None):
-    """ACE inhibitor or ARB adherence, 2025: patients registered with the practice throughout 2025 and issued one
-    in each quarter, and the share whose 2025 issues covered 80 per cent or more of the year's 365 days."""
-    changes = route_changes(D, join) if use_history else {}
-    dir_fn = directions_at if walk == "log" else directions_back
-    y0, y1 = W.day("2025-01-01"), W.day("2025-12-31")
-    qs = [(W.day("2025-01-01"), W.day("2025-03-31")), (W.day("2025-04-01"), W.day("2025-06-30")),
-          (W.day("2025-07-01"), W.day("2025-09-30")), (W.day("2025-10-01"), W.day("2025-12-31"))]
-    by = collections.defaultdict(list)
-    for r in D.issues:
-        if r["cls"] in ("ACE inhibitor", "Angiotensin II receptor antagonist") and r["t"] <= y1:
-            if drop_cancelled and r["cancelled"]: continue
-            by[(r["pid"], r["code"])].append(r)
-    res = collections.defaultdict(lambda: [0, 0, 0.0])
-    for (pid, code), rows in by.items():
-        if not any(c == code and a <= y0 and (b is None or b > y1) for c, a, b, why in D.reg[pid]):
-            continue
-        if not all(any(lo <= r["t"] <= hi for r in rows) for lo, hi in qs):
-            continue
-        rows.sort(key=lambda r: (r["t"], r["eps"]))
-        if dedup_days is not None:
-            # the hygiene reflex: a second issue of the same drug within a few days read as a duplicate
-            kept, last = [], {}
-            for r in rows:
-                if r["vtm"] in last and r["t"] - last[r["vtm"]] <= dedup_days:
+        w = 0.5 if (prearranged_half and inc["category"] == "Pre-arranged") else 1.0
+        per = {}
+        for t, s, n in inc["steps"]:
+            per.setdefault(s, []).append((t, n))
+        for s, ev in per.items():
+            ev.sort()
+            off_t, n = ev[0]
+            on_t = [t for t, x in ev if x < 0][0]
+            if generators:
+                held = False
+                for h in hires:
+                    if h["site"] != s:
+                        continue
+                    if h["connected"] <= off_t and h["disconnected"] >= on_t:
+                        held = True                       # kept on supply throughout: never lost it
+                    elif off_t <= h["connected"] < on_t:
+                        on_t = h["connected"]             # supply restored when the generator was connected
+                if held:
                     continue
-                kept.append(r); last[r["vtm"]] = r["t"]
-            rows = kept
-        covered = set(); run_end = {}
-        for r in rows:
-            if r["ref"] and r["ref"] in D.tpl:
-                d = dir_fn(D, changes, r["ref"], r["t"]) if use_history else D.tpl[r["ref"]]["directions"]
-            else:
-                d = "ONE daily"
-            per = doses_per_day(d, r["strength"]) if parse == "mg" else doses_per_day(d)
-            if per_issue is not None:
-                per = per_issue(r, per)
-            days = fixed_days if fixed_days else int(round(r["qty"] / per))
-            start = max(r["t"], run_end.get(r["vtm"], r["t"]))
-            end = start + days
-            run_end[r["vtm"]] = end
-            for x in range(max(start, y0), min(end, y1 + 1)):
-                covered.add(x)
-        res[code][0] += 1
-        if len(covered) >= 0.8 * 365:
-            res[code][1] += 1
-        res[code][2] += len(covered) / 365.0
-    return {c: (v[0], v[1], 100.0 * v[2] / v[0]) for c, v in res.items()}
+            mins = (on_t - off_t).total_seconds() / 60.0
+            if short_rule and mins < 3:
+                continue
+            c = site_circ[s]
+            ci[c] = ci.get(c, 0.0) + w * n
+            cml[c] = cml.get(c, 0.0) + w * n * mins
+    den = {}
+    for s, v in cust.items():
+        if denominator in v:
+            c = v[denominator][1]
+            den[c] = den.get(c, 0) + v[denominator][0]
+    return {c: dict(ci=100.0 * ci.get(c, 0.0) / den[c], cml=cml.get(c, 0.0) / den[c], customers=den[c]) for c in FEEDER_ORDER}
 
 
-def load_events():
-    ev = collections.defaultdict(list)
-    with open(os.path.join(T, "cvd_clinical_events_2023-2026.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            ev[r["patient_ref"]].append((dnum(r["event_date"]), r["practice_code"], r["snomed_concept_id"], r["term"]))
-    return ev
+def storm_circuits_from_pdf(tgt=TGT):
+    """The circuits the accepted exceptional event names, read from the definitions PDF."""
+    from pypdf import PdfReader
+    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(tgt, "iis_reporting_definitions_2025-26.pdf")).pages)
+    txt = re.sub(r"\s+", " ", txt)
+    return [n for n in FEEDER_ORDER if n in txt.split("Exceptional event accepted for 2025/26", 1)[1]]
 
 
-def anniversary(t):
-    d = W.date_of(t)
-    try:
-        a = d.replace(year=d.year + 1)
-    except ValueError:
-        a = d.replace(year=d.year + 1, day=28)
-    return (a - W.D0).days
-
-
-def ask_b(D, anchor="hospital", any_strength=False, mi="family"):
-    """Ticagrelor 90mg after a heart attack: patients who started it between 1 July 2024 and 30 June 2025, and how
-    many were issued it after the anniversary of the day they started it."""
-    lo, hi = W.day("2024-07-01"), W.day("2025-06-30")
-    tic = collections.defaultdict(list)
-    for r in D.issues:
-        if r["vtm"] == "Ticagrelor" and (any_strength or r["strength"] == "90mg") and not r["cancelled"]:
-            tic[r["pid"]].append(r)
-    res = collections.defaultdict(lambda: [0, 0])
-    if anchor == "hospital":
-        ev = load_events()
-        for pid, rows in ev.items():
-            starts = [(t, c) for (t, c, code, term) in rows if code == "1290071000000109"]
-            # the heart attack: the diagnosis's own concepts (the golden), the one concept 22298006, or any term
-            # naming an infarction; 'none' takes every start in the window
-            keep = {"family": lambda code, term: code in W.MI_FAMILY, "code": lambda code, term: code == "22298006",
-                    "term": lambda code, term: "myocardial infarction" in term.lower(),
-                    "none": lambda code, term: False}[mi]
-            mis = [t for (t, c, code, term) in rows if keep(code, term)]
-            for t, c in starts:
-                near = [m for m in mis if abs(t - m) <= 3]
-                if mi == "none":
-                    if not (lo <= t <= hi): continue
-                elif not (lo <= t <= hi) or not near or not (lo <= near[0] <= hi): continue
-                res[c][0] += 1
-                if any(r["t"] > anniversary(t) for r in tic.get(pid, [])): res[c][1] += 1
-    else:
-        for pid, rows in tic.items():
-            rows.sort(key=lambda r: r["t"])
-            t = rows[0]["t"]; c = rows[0]["code"]
-            if not (lo <= t <= hi): continue
-            res[c][0] += 1
-            if any(r["t"] > anniversary(t) for r in rows): res[c][1] += 1
-    return {c: tuple(v) for c, v in res.items()}
-
-
-# ---------------------------------------------------------------------------------------------- figures
-def rnd(v, u=W.ROUND_TO):
-    return int(round(v / u) * u)
-
-
-def pct(num, den, places):
-    """A percentage rounded half up, as a return's arithmetic does it, never to the even neighbour."""
-    q = decimal.Decimal(100 * num) / decimal.Decimal(den)
-    return float(q.quantize(decimal.Decimal(1).scaleb(-places), rounding=decimal.ROUND_HALF_UP))
-
-
-def figures(D=None, write=True):
-    D = D or Data()
-    pop = population(D)
-    npop = collections.Counter(pop.values())
-    rate, n_rev, f_rev = reauth_rate(D)
-    bg = stop_rates(D)
-    pace_mean, pace_med = pacing(D)
-    stay = stay_share(D)
-    g = golden(D, pop, rate, bg, pace_mean, stay)
-    order = sorted(g, key=lambda c: -g[c])
-    call, second = order[0], order[1]
-    km = km_reflex(D, pop, stay)
-    ly = last_year_rate(D, pop)
-    tr = trailing_stops(D, pop)
-    a = ask_a(D)
-    b = ask_b(D)
-    name = {p["code"]: p["name"] for p in W.PRACTICES}
-    pool_rate = list(rate.values())[0]
-    # the patients whose current statin repeat is six 56-day issues authorised in February or March 2026
-    six56 = collections.Counter()
-    for pid, c in pop.items():
-        s = current_state(D, pid, c)
-        if s["kind"] == "repeat" and s["M"] == 6 and s["L"] == 56 and W.day("2026-02-01") <= s["start"] <= W.day("2026-03-31"):
-            six56[c] += 1
-    F = dict(
-        call=call, call_name=name[call], runner_up=second, runner_up_name=name[second], ranking=order,
-        expected={c: g[c] for c in g}, expected_rounded={c: rnd(g[c]) for c in g},
-        call_expected=rnd(g[call]), runner_up_expected=rnd(g[second]), gap=rnd(g[call]) - rnd(g[second]),
-        population=dict(npop), reauth_fail_pct=round(100 * pool_rate, 1), reauth_fail_whole=int(round(100 * pool_rate)),
-        reviews_measured=sum(n_rev.values()), reviews_not_renewed=sum(f_rev.values()),
-        stop_rate_late_per_28d=list(bg.values())[0][1], stop_rate_early_per_28d=list(bg.values())[0][0],
-        pace_mean=pace_mean, stay=stay, stay_pct=round(100 * stay, 1),
-        stop_rate_early_pct=round(100 * list(bg.values())[0][0], 2), stop_rate_late_pct=round(100 * list(bg.values())[0][1], 2),
-        stop_gap_days=150, reauth_follow_days=60, stop_rate_supply_days=SUPPLY_UNIT, return_year=W.RETURN_YEAR, population_total=sum(npop.values()),
-        default_km={c: km[c] for c in km}, default_pick=max(km, key=km.get), default_pick_name=name[max(km, key=km.get)],
-        last_year={c: ly[c] for c in ly}, last_year_pick=max(ly, key=ly.get),
-        trailing={c: tr[c] for c in tr}, trailing_pick=max(tr, key=tr.get),
-        largest_practice=max(npop, key=npop.get), six_56day_feb_mar_2026={c: six56[c] for c in npop},
-        ask_a={c: dict(patients=a[c][0], at_80=a[c][1], pct=pct(a[c][1], a[c][0], 1)) for c in a},
-        ask_b={c: dict(started=b[c][0], overrun=b[c][1], pct=pct(b[c][1], b[c][0], 0)) for c in b},
-        ask_a_network=dict(patients=sum(v[0] for v in a.values()), at_80=sum(v[1] for v in a.values()),
-                           pct=pct(sum(v[1] for v in a.values()), sum(v[0] for v in a.values()), 1)),
-        ask_b_network=dict(started=sum(v[0] for v in b.values()), overrun=sum(v[1] for v in b.values()),
-                           pct=pct(sum(v[1] for v in b.values()), sum(v[0] for v in b.values()), 0)),
+# ---------------------------------------------------------------- the figures
+def figures(write=True, tgt=TGT):
+    pk = load(tgt)
+    proj = projects()
+    s = summarise(savings(pk, "net", proj))
+    order = sorted(s, key=lambda k: -s[k]["year"])
+    call, runner = order[0], order[1]
+    incs, cust, hires = load_interruptions(tgt)
+    sc = storm_circuits_from_pdf(tgt)
+    iis = interruption_measures(incs, cust, hires, sc)
+    rt = routes(pk, tgt)
+    rungs = {}
+    for lab, d in rt.items():
+        w0, w1, m = winner(d)
+        rungs[lab] = dict(winner=w0, second=w1, margin=round(m, 3), mwh={k: round(v, 1) for k, v in d.items()},
+                          kestle_rank=sorted(d, key=lambda k: -d[k]).index(call) + 1)
+    fig = dict(
+        rungs=rungs,
+        call=call, runner_up=runner,
+        gap_mwh=round(s[call]["year"], 1) - round(s[runner]["year"], 1),
+        losses_value_gbp_mwh=W.LOSSES_VALUE_GBP_MWH,
+        projects={k: dict(breaker=proj[k][0], sections=proj[k][1], new=proj[k][2], km=round(proj[k][3], 2), old=proj[k][4],
+                          new_desc=W.CONDUCTORS[proj[k][2]][0],
+                          year_mwh=round(s[k]["year"], 1),
+                          value_gbp=int(round(s[k]["year"] * W.LOSSES_VALUE_GBP_MWH, -2)),
+                          dR_ohm=round(sum((W.CONDUCTORS[x["code"]][2] - W.CONDUCTORS[proj[k][2]][2]) * x["metres"] / 1000.0
+                                           for x in pk["secs"] if x["id"] in proj[k][1]), 3),
+                          raw=dict(q=s[k]["q"], year=s[k]["year"]))
+                  for k in FEEDER_ORDER},
+        order=order,
+        iis={k: dict(ci=round(v["ci"], 1), cml=round(v["cml"], 1), customers=v["customers"],
+                     raw=dict(ci=v["ci"], cml=v["cml"])) for k, v in iis.items()},
+        storm_circuits=sc,
+        conventions=dict(gbp_rounding=100, ci_per_customers=100, v_kv=W.V_NOM_KV),
     )
     if write:
-        with open(FIG, "w", encoding="utf-8") as fh:
-            json.dump(F, fh, indent=1, sort_keys=True)
-    return F
-
-
-def main():
-    F = figures()
-    print("  figures.json: call %s %d, runner-up %s %d" % (F["call_name"], F["call_expected"], F["runner_up_name"],
-                                                         F["runner_up_expected"]))
+        json.dump(fig, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+    return fig
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    f = figures(write=False, tgt=sys.argv[1] if len(sys.argv) > 1 else TGT)
+    for k in f["order"]:
+        p = f["projects"][k]
+        print("%-14s %s  year %6.1f  GBP %d" % (k, p["q_mwh"], p["year_mwh"], p["value_gbp"]))
+    print("call", f["call"], "runner", f["runner_up"], "gap", f["gap_mwh"])
+    for k, v in f["iis"].items():
+        print("%-14s CI %6.1f  CML %6.1f  customers %d" % (k, v["ci"], v["cml"], v["customers"]))

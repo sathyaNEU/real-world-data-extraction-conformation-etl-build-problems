@@ -1,298 +1,413 @@
-"""task464 architecture 9: write the pack's data files from the clean truth.
+"""task464 architecture 10: write the data files of the pack as each system exports them.
 
-Each clinical system exports in its own layout. System A (Fennbridge, Thistlecombe, Larkspur Road, Pellow Green)
-writes UK dates, the product as its prescribers see it and the quantity with its unit word; system B (Cobbet
-Street, Marrick House, Wyndhollow) writes ISO dates, its own product strings and the quantity and unit apart, as
-JSON lines. The network's searches ran on 1 December 2026 and cover issues from 1 January 2024.
-
-Nothing written here states a rate, an expected count or a ranking of the practices.
+  copsewell_cross_scada_2025-26.csv          primary substation SCADA, feeder breakers, UK local time, half-hour ending
+  lv_monitoring_2025-26.parquet            secondary substation monitors (Copsewell Cross and Feltmoor), UTC period start
+  hv_settlement_2025-26.csv                half-hourly settlement data for HV-connected customers, settlement periods
+  hv_network_model.xlsx                    the network model: sections and nodes, normally-open points included
+  secondary_substations.csv                substation register
+  hv_connections.csv                       HV connections register
+  interruptions_2023-2026.csv              interruption log (control-system HV incidents and work-management LV jobs)
+  customers_by_substation_2023-2026.csv    customers connected at each substation at each month end
+  generator_hire_2025-26.xlsx              mobile generator hire and fuel log
 """
-import csv, json, os, collections, hashlib
+import csv
+import datetime as dt
+import io
+import os
 import numpy as np
+import pandas as pd
+import openpyxl
+from openpyxl.styles import Font, Alignment
+import pyarrow as pa
+import pyarrow.parquet as pq
 import world as W
+import sim as S
 
-OUT = os.environ.get("T464_TARGET") or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "target")
-
-SYS_A = [p["key"] for p in W.PRACTICES if p["system"] == "A"]
-SYS_B = [p["key"] for p in W.PRACTICES if p["system"] == "B"]
+OUT = None
 
 
-def uk(t):
-    d = W.date_of(t); return "%02d/%02d/%04d" % (d.day, d.month, d.year)
+def path(name):
+    return os.path.join(OUT, name)
 
 
-def product_a(r):
-    unit = "capsules" if r["form"] == "capsules" else "tablets"
-    return "%s %s %s" % (r["drug"], r["strength"], unit)
+def _r(tag):
+    return S.rng("pack:" + tag)
 
 
-def product_b(r):
-    unit = "caps" if r["form"] == "capsules" else "tabs"
-    return "%s %s %s" % (r["drug"].upper().replace(" ERBUMINE", " ERBUMINE"), unit, r["strength"])
+# ---------------------------------------------------------------- the network's identifiers as each system writes them
+def site_text(site, r):
+    return ("SS %d" % site) if r.random() < 0.55 else str(site)
 
 
-def unit_word(r):
-    return "capsule" if r["form"] == "capsules" else "tablet"
+def node_text(nid, r):
+    return nid if r.random() < 0.7 else nid[:2] + " " + nid[2:]
 
 
-REFS = {}
-MG = {}          # repeats written in milligrams, filled by write()
-CURRENT = {}     # a repeat's directions after a wording-only edit, filled by extras.reword_plan()
+ENERGISED = {"Hob Moor Solar Park": dt.date(2023, 6, 28), "Crane Hill wind turbine": dt.date(2019, 11, 4),
+             "Ashlade Community Hospital": dt.date(2012, 3, 19)}
 
 
-def assign_refs(templates):
-    """Each system numbers repeats as its prescribers add them: system A from one counter across its practices,
-    system B per practice, each step the repeats, acutes and other items written in between."""
-    REFS.clear()
-    r = np.random.default_rng([46993])
-    a = 3184207
-    b = {p["code"]: int(r.integers(20000, 60000)) for p in W.PRACTICES if p["system"] == "B"}
-    for tp in sorted(templates, key=lambda x: (x["authorised"], x["tid"])):
-        p = W.BY_KEY[tp["key"]]
-        if p["system"] == "A":
-            a += int(r.integers(1, 30))
-            REFS[tp["tid"]] = "R%07d" % a
-        else:
-            b[p["code"]] += int(r.integers(1, 12))
-            REFS[tp["tid"]] = "AU-%s-%06d" % (p["code"][-3:], b[p["code"]])
-
-
-def tref_a(tp):
-    return REFS[tp["tid"]]
-
-
-def tref_b(tp):
-    return REFS[tp["tid"]]
-
-
-def tref(tp):
-    return REFS[tp["tid"]]
-
-
-# ------------------------------------------------------------ how each system carries a repeat's dose (ask A)
-def dose_history(w):
-    """Each ACE inhibitor or ARB repeat's in-place dose edits, in order (the simulator's titrations)."""
-    out = collections.defaultdict(list)
-    for e in w.edits:
-        out[e["tid"]].append(e)
-    for v in out.values():
-        v.sort(key=lambda e: (e["t"], e["field"]))
-    return out
-
-
-def mg_repeats(w):
-    """The ACE inhibitor and ARB repeats whose prescriber writes the dose in milligrams: a share of them, chosen by
-    the repeat's own reference, among repeats whose every dose has a licensed milligram form."""
-    hist = dose_history(w)
+def hv_identity(w):
+    """Each HV customer's connection agreement reference and energisation date (the agreement is numbered in the year
+    the connection was offered, a year or two before it was energised)."""
+    r = _r("hv-identity")
     out = {}
-    for tp in w.templates:
-        if tp["slot"] != "raas":
+    used = set()
+    for c in w["conns"] + w["neigh"]:
+        if c.kind != "H":
             continue
-        texts = [tp["directions"]] + [x for e in hist.get(tp["tid"], []) if e["field"] == "Dosage" for x in (e["old"], e["new"])]
-        units = {W.units_per_dose(x) for x in texts}
-        if not units <= {1, 2} or (2 in units and (tp["drug"], tp["strength"]) not in W.MG_TWO_OK):
-            continue
-        hv = int(hashlib.sha256(("mg" + REFS[tp["tid"]]).encode()).hexdigest()[:12], 16)
-        if (hv % 10000) / 10000.0 < W.MG_SHARE:
-            out[tp["tid"]] = hv % 97
+        en = ENERGISED.get(c.name) or dt.date(int(r.integers(1998, 2016)), int(r.integers(1, 13)), int(r.integers(1, 28)))
+        yr = en.year - int(r.integers(1, 3))
+        while True:
+            num = int(r.integers(120, 2900))
+            if num not in used:
+                used.add(num)
+                break
+        out[c.key] = dict(agreement="CA-%d-%04d" % (yr, num), energised=en)
     return out
 
 
-def render(tp, text, mg, shift=0):
-    v = mg.get(tp["tid"])
-    return text if v is None else W.mg_text(text, tp["strength"], v + shift)
-
-
-def as_authorised(tp, hist):
-    """A repeat as it was authorised: the directions and quantity before any edit."""
-    dose = [e for e in hist.get(tp["tid"], []) if e["field"] == "Dosage"]
-    qty = [e for e in hist.get(tp["tid"], []) if e["field"] == "Quantity"]
-    return (dose[0]["old"] if dose else tp["directions"]), (int(qty[0]["old"]) if qty else tp["qty"])
-
-
-PLAN = []         # the change log's wording edits and notes, filled by reword_plan()
-PLAN_RNG = []     # the plan's random stream, which the change log carries on for the reassignments
-REWORD = {"ONE daily": "ONE in the morning", "1 daily": "ONE daily", "ONE at night": "Take ONE tablet at night",
-          "1 at night": "ONE at night", "one a day": "ONE daily", "1 nocte": "ONE at night",
-          "ONE twice a day": "ONE twice daily", "1 bd": "ONE twice a day", "TWO daily": "TWO to be taken each day"}
-
-
-def reword_plan(w):
-    """Wording-only edits (no change of dose) and notes, as the medicines safety search logs them. A wording edit
-    sits on a repeat after any change of its dose and rewords the directions the repeat then carried; statin
-    repeats carry none."""
-    PLAN.clear(); CURRENT.clear()
-    hist = dose_history(w)
-    r = np.random.default_rng([46991, 5])
-    tps = [tp for tp in w.templates if tp["authorised"] <= W.ASOF and (tp["ended"] is None or tp["ended"] >= W.EXTRACT_FROM)]
-    for tp in tps:
-        if r.random() < 0.035 and tp["directions"] in REWORD:
-            t = max(tp["authorised"], W.EXTRACT_FROM) + int(r.integers(1, 200))
-            last_dose = max([e["t"] for e in hist.get(tp["tid"], [])] or [-1])
-            if t <= min(W.ASOF, tp["ended"] or W.ASOF) and tp["slot"] != "statin" and t > last_dose:
-                PLAN.append([t, tp, "Dosage", tp["directions"], REWORD[tp["directions"]], "GP"])
-                CURRENT[tp["tid"]] = REWORD[tp["directions"]]
-        if r.random() < 0.02:
-            t = max(tp["authorised"], W.EXTRACT_FROM) + int(r.integers(1, 250))
-            if t <= min(W.ASOF, tp["ended"] or W.ASOF):
-                note = ["Pt prefers to collect from branch surgery", "Check BP before next issue",
-                        "Please synchronise with other repeats", "Pt has dosette - pharmacy aware",
-                        "Requested via NHS App"][int(r.integers(0, 5))]
-                PLAN.append([t, tp, "Notes", "", note, "Administrator"])
-    PLAN_RNG[:] = [r]
-    return PLAN
-
-
-# Item cancellations other than the 2025 out-of-stock re-sends, as the EPS tracker's item report carries them: an
-# item cancelled on the day it was signed and re-signed at once, on ACE inhibitor, ARB and DOAC repeats.
-OTHER_CANCEL = [("Prescribing error", 0.36), ("Change to medication treatment regime", 0.22),
-                ("Change to presentation", 0.12), ("At the Pharmacist's request", 0.14), ("Other", 0.16)]
-OTHER_CANCEL_P = 0.002
-
-
-def other_cancellations(rows):
-    import sim as _S
-    r = np.random.default_rng([46994])
-    reasons = [x[0] for x in OTHER_CANCEL]; wts = np.array([x[1] for x in OTHER_CANCEL]); wts = wts / wts.sum()
-    canc, extra = [], []
-    for x in rows:
-        if x["slot"] not in ("raas", "doac") or x["acute"] or x["cancelled"] or x["twin"] or x["reissue"]:
-            continue
-        if r.random() >= OTHER_CANCEL_P:
-            continue
-        why = reasons[int(r.choice(len(reasons), p=wts))]
-        canc.append(dict(token=x["eps"], pid=x["pid"], key=x["key"], t=x["t"], drug=x["drug"], strength=x["strength"],
-                         form=x["form"], qty=x["qty"], cancelled_on=x["t"], reason=why))
-        extra.append(dict(x, eps=_S.eps_id(r), reissue=True))
-    return canc, extra
-
-
-def write(w):
-    os.makedirs(OUT, exist_ok=True)
-    stats = {}
-    tps = w.templates
-    assign_refs(tps)
-    # ------------------------------------------------------------ issues
-    rows = [r for r in w.issues if W.EXTRACT_FROM <= r["t"] <= W.ASOF]
-    rows.sort(key=lambda r: (r["t"], W.BY_KEY[r["key"]]["code"], r["pid"], r["slot"], r["eps"]))
-    other_canc, resent = other_cancellations(rows)
-    rows += resent
-    rows.sort(key=lambda r: (r["t"], W.BY_KEY[r["key"]]["code"], r["pid"], r["slot"], r["eps"]))
-    pa = os.path.join(OUT, "repeat_issues_system_a_2024-01_to_2026-11.csv")
-    na = nb = 0
-    with open(pa, "w", newline="", encoding="utf-8") as fa, \
-            open(os.path.join(OUT, "repeat_issues_system_b_2024-01_to_2026-11.jsonl"), "w", encoding="utf-8") as fb:
-        wa = csv.writer(fa, lineterminator="\r\n")
-        wa.writerow(["Practice Code", "Patient Ref", "Issue Date", "Drug", "Quantity", "Course", "Repeat Ref",
-                     "EPS Prescription ID"])
-        for r in rows:
-            p = W.BY_KEY[r["key"]]
-            if p["system"] == "A":
-                wa.writerow([p["code"], r["pid"], uk(r["t"]), product_a(r), "%d %s" % (r["qty"], unit_word(r)),
-                             "Acute" if r["acute"] else "Repeat", "" if r["tid"] is None else tref_a(tps[r["tid"]]),
-                             r["eps"]])
-                na += 1
+def write_network(w):
+    r = _r("network")
+    names = {f["code"]: f["name"] for f in w["feeders"]}
+    brk = {f["code"]: f["breaker"] for f in w["feeders"]}
+    bykey = {c.key: c for c in w["conns"]}
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Sections"
+    hdr = ["Section ID", "Circuit", "From node", "To node", "Length (m)", "Conductor", "Construction", "Installed", "Normal state"]
+    ws.append(hdr)
+    yr = {}
+    rows = []
+    for s in w["sections"]:
+        code = W.CONDUCTORS[s.code]
+        old = ("PILC" in s.code) or s.code in ("OH-CU-0.04", "OH-CU-0.1", "OH-ACSR-50")
+        y = int(r.integers(1958, 1979)) if old else int(r.integers(1991, 2021))
+        if any(k == "S:Redburn Meadows" for k in s.down) and len(s.down) == 1:
+            y = 2025                                   # the new estate's spur
+        circ = "%s %s" % (brk[s.feeder], names[s.feeder].upper())
+        rows.append([s.id, circ, s.frm, s.to, s.metres, W.MODEL_CODE[s.code], "Underground cable" if code[1] == "UG" else "Overhead line",
+                     y, "Open" if getattr(s, "normally_open", False) else "Closed"])
+    order = list(range(len(rows)))
+    r.shuffle(order)
+    for i in sorted(order, key=lambda i: (rows[i][1], rows[i][0])):
+        ws.append(rows[i])
+    secmap = {s.id: s for s in w["sections"]}
+    ws2 = wb.create_sheet("Nodes")
+    ws2.append(["Node ID", "Circuit", "Node type", "Asset reference", "Description"])
+    for nid, n in w["nodes"].items():
+        circ = "%s %s" % (brk[n.feeder], names[n.feeder].upper())
+        ref, desc = "", ""
+        if n.kind == "Busbar":
+            desc = "Copsewell Cross 11kV board, %s" % brk[n.feeder]
+        elif getattr(n, "asset", None):
+            c = bykey[n.asset]
+            if c.kind == "S":
+                ref = site_text(c.site, r)
+                desc = c.name
             else:
-                fb.write(json.dumps({"org": p["code"], "patient_pseudo": r["pid"], "issued": W.iso(r["t"]),
-                                     "product": product_b(r), "qty": r["qty"], "qty_unit": unit_word(r),
-                                     "course": "acute" if r["acute"] else "repeat",
-                                     "authorisation": None if r["tid"] is None else tref_b(tps[r["tid"]]),
-                                     "eps_id": r["eps"]}, separators=(",", ":")) + "\n")
-                nb += 1
-    stats["issues_a"] = na; stats["issues_b"] = nb
-    # ------------------------------------------------------------ repeat authorisations
-    # a repeat is in the search when it was active at any point from 1 January 2024
-    successor = {}
-    by_pid_slot = collections.defaultdict(list)
-    for tp in tps:
-        by_pid_slot[(tp["pid"], tp["slot"])].append(tp)
-    keep = []
-    for tp in tps:
-        if tp["authorised"] > W.ASOF:
-            continue
-        end = tp["ended"]
-        if end is not None and end < W.EXTRACT_FROM:
-            continue
-        if tp["authorised"] < W.EXTRACT_FROM and tp["made"] == 0:
-            continue
-        keep.append(tp)
-    keep.sort(key=lambda tp: (W.BY_KEY[tp["key"]]["code"], tp["pid"], tp["authorised"], tp["slot"]))
-    mi_filed = {(e["pid"], e["t"]): e["filed"] for e in w.events if e["code"] == "22298006"}
-    hist = dose_history(w)
-    mg = mg_repeats(w)
-    MG.clear(); MG.update(mg)
-    reword_plan(w)
-    fa = open(os.path.join(OUT, "repeat_authorisations_system_a.csv"), "w", newline="", encoding="utf-8")
-    fbb = open(os.path.join(OUT, "repeat_authorisations_system_b.csv"), "w", newline="", encoding="utf-8")
-    wa = csv.writer(fa, lineterminator="\r\n"); wb = csv.writer(fbb, lineterminator="\n")
-    wa.writerow(["Practice Code", "Patient Ref", "Repeat Ref", "Drug", "Dosage", "Quantity",
-                 "Authorised Issues", "Authorised Date", "End Date", "Status"])
-    wb.writerow(["org", "patient_pseudo", "authorisation", "product", "directions", "qty_per_issue",
-                 "issues_authorised", "start_date", "end_date"])
-    nta = ntb = 0
-    for tp in keep:
-        p = W.BY_KEY[tp["key"]]
-        end = tp["ended"] if (tp["ended"] is not None and tp["ended"] <= W.ASOF) else None
-        # a repeat left running when a patient stops one medicine, or when a review is not done, stays active on the
-        # list until a clinician adds a new repeat of that medicine, which ends it
-        if tp["end_reason"] in ("stopped", "review not done", "course complete"):
-            end = None
-        # a repeat the hospital changed is ended when the practice files the discharge summary, not before
-        if tp["end_reason"] == "changed in hospital" and end is not None and \
-                mi_filed.get((tp["pid"], tp["ended"]), W.ASOF + 2) > W.ASOF + 1:
-            end = None
-        if end is None:
-            later = [x for x in by_pid_slot[(tp["pid"], tp["slot"])] if x["authorised"] > tp["authorised"]
-                     and x["authorised"] <= W.ASOF]
-            end = min(x["authorised"] for x in later) if later else None
-        if p["system"] == "A":
-            # system A lists each repeat as it stands, any wording change included
-            wa.writerow([p["code"], tp["pid"], tref_a(tp), product_a(tp), render(tp, CURRENT.get(tp["tid"], tp["directions"]), mg),
-                         "%d %s" % (tp["qty"], unit_word(tp)), tp["M"], uk(tp["authorised"]),
-                         "" if end is None else uk(end), "Active" if end is None else "Inactive"])
-            nta += 1
-        else:
-            # system B's search reads its current repeats as they were authorised, with changes made since in the
-            # change log; a repeat that has ended is archived as it stood when it ended
-            d0, q0 = as_authorised(tp, hist) if end is None else (CURRENT.get(tp["tid"], tp["directions"]), tp["qty"])
-            wb.writerow([p["code"], tp["pid"], tref_b(tp), product_b(tp), render(tp, d0, mg), q0,
-                         tp["M"], W.iso(tp["authorised"]), "" if end is None else W.iso(end)])
-            ntb += 1
-    fa.close(); fbb.close()
-    stats["templates_a"] = nta; stats["templates_b"] = ntb
-    # ------------------------------------------------------------ register
-    pids = set(r["pid"] for r in rows)
-    with open(os.path.join(OUT, "patient_register_2026-12-01.csv"), "w", newline="", encoding="utf-8") as fh:
-        wr = csv.writer(fh, lineterminator="\n")
-        wr.writerow(["patient_ref", "practice_code", "year_of_birth", "sex", "registered", "deregistered",
-                     "deregistration_reason"])
-        reg_rows = []
-        for pid in sorted(pids):
-            P = w.patients[pid]
-            for k, a, b, why in P["episodes"]:
-                if b is not None and b < W.EXTRACT_FROM:
+                ref = w["hv"][c.key]["agreement"]
+                desc = c.name
+        elif n.kind == "RMU":
+            par = secmap.get(n.parent_section)
+            oh = par is not None and W.CONDUCTORS[par.code][1] == "OH"
+            if oh:
+                desc = ["Pole-mounted switch", "Pole-mounted recloser", "Pole-mounted switch", "Air break switch"][int(r.integers(0, 4))]
+            else:
+                desc = ["Ring main unit", "Ring main unit", "Section switch", "Ring main unit (remote control)"][int(r.integers(0, 4))]
+        rows2 = [nid, circ, n.kind if n.kind != "RMU" else "Switching point", ref, desc]
+        ws2.append(rows2)
+    for wsx in (ws, ws2):
+        for c in wsx[1]:
+            c.font = Font(bold=True)
+        wsx.freeze_panes = "A2"
+        for col, wd in zip("ABCDEFGHI", [12, 22, 11, 11, 11, 18, 18, 10, 13]):
+            wsx.column_dimensions[col].width = wd
+    wb.save(path("hv_network_model.xlsx"))
+    return len(rows)
+
+
+def write_registers(w):
+    r = _r("registers")
+    names = {f["code"]: f["name"] for f in w["feeders"]}
+    subs = [c for c in w["conns"] + w["neigh"] if c.kind == "S"]
+    monitor_ids = sorted(set(int(x) for x in r.choice(np.arange(10000, 99999), len(subs) + 10, replace=False)))
+    r.shuffle(monitor_ids)
+    mids = {}
+    with open(path("secondary_substations.csv"), "w", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["site_no", "site_name", "primary", "circuit", "transformer_kva", "monitor_id", "monitor_installed", "network_node"])
+        rows = []
+        for i, c in enumerate(subs):
+            mid = "LVM-%05d" % monitor_ids[i]
+            mids[c.key] = mid
+            prim = "COPSEWELL CROSS" if c.feeder != "LUD" else "FELTMOOR"
+            if c.feeder == "LUD":
+                j = [x[0] for x in W.NEIGHBOUR_SUBS].index(c.name)
+                circ = "Feltmoor Town" if j < 5 else ("Furnace Lane" if j < 10 else "Saltbrook")
+            else:
+                circ = names[c.feeder]
+            inst = dt.date(2024, 1, 15) + dt.timedelta(days=int(r.integers(0, 210)))
+            if c.name == "Redburn Meadows":            # the new estate's monitor went in with its substation
+                inst = W.REDBURN_MEADOWS_ENERGISED
+            node = node_text(c.host, r) if c.host else ""
+            rows.append([c.site, c.name, prim, circ, c.kva, mid, inst.strftime("%d/%m/%Y"), node])
+        rows.sort(key=lambda x: x[0])
+        for row in rows:
+            wr.writerow(row)
+    hv = [c for c in w["conns"] + w["neigh"] if c.kind == "H"]
+    with open(path("hv_connections.csv"), "w", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["agreement_ref", "customer", "primary", "circuit", "connection_type", "technology",
+                     "import_capacity_kva", "export_capacity_kw", "import_mpan", "export_mpan", "energised", "network_node"])
+        rows = []
+        for c in hv:
+            k = c.hvkind
+            tech = {"solar": "Solar PV", "wind": "Wind", "chp": "Gas CHP", "demand": ""}[k]
+            ctype = {"solar": "Generation", "wind": "Generation", "chp": "Demand and generation", "demand": "Demand"}[k]
+            imp_kva = {"solar": 60, "wind": 40, "chp": 1500, "demand": int(round(c.params.get("mean_kw", 400) * 1.9, -1))}[k]
+            exp_kw = {"solar": c.params.get("cap_kw", 0), "wind": c.params.get("cap_kw", 0), "chp": 1000, "demand": ""}[k]
+            prim = "COPSEWELL CROSS" if c.feeder != "LUD" else "FELTMOOR"
+            circ = names.get(c.feeder, "Feltmoor Town")
+            en = w["hv"][c.key]["energised"].isoformat()
+            rows.append([w["hv"][c.key]["agreement"], c.name, prim, circ, ctype, tech, imp_kva, exp_kw, "%s" % ("40%011d" % c.mpan_import),
+                         ("40%011d" % c.mpan_export) if c.mpan_export else "", en, c.host or ""])
+        rows.sort(key=lambda x: x[0])
+        for row in rows:
+            wr.writerow(row)
+    return mids
+
+
+# ---------------------------------------------------------------- half-hourly records
+def write_monitors(w, mids):
+    r = _r("monitors")
+    fl = w["flows"]
+    subs = [c for c in w["conns"] + w["neigh"] if c.kind == "S"]
+    ts = np.array([np.datetime64(t) for t in S.UTC], dtype="datetime64[s]")
+    cols = {"monitor_id": [], "site_no": [], "period_start_utc": [], "kw": [], "kvar": [], "kva": [], "pf": []}
+    recorded = {}
+    for c in subs:
+        p, q = fl[c.key]["p"], fl[c.key]["q"]
+        keep = np.ones(S.N, bool)
+        if c.name in W.MONITOR_SWAPS:
+            d0, days = W.MONITOR_SWAPS[c.name]
+            lo = np.datetime64(dt.datetime(d0.year, d0.month, d0.day, 9, 30))
+            keep &= ~((ts >= lo) & (ts < lo + np.timedelta64(days * 86400 + 4 * 3600, "s")))
+        if c.name == "Redburn Meadows":
+            keep &= S.LOCAL_DATE >= W.REDBURN_MEADOWS_ENERGISED
+        if c.key in w["onf"]:
+            keep &= w["onf"][c.key] > 0          # a monitor off supply for the whole half-hour records nothing
+        kw = np.round(p, 1)
+        kvar = np.round(q, 1)
+        vendor_a = (c.name in W.VENDOR_A_SUBS) & (S.LOCAL_DATE < W.VENDOR_A_UNTIL)
+        kva = np.round(np.sqrt(p ** 2 + q ** 2), 1)
+        pf = np.round(np.where(kva > 0, np.abs(p) / np.maximum(kva, 1e-9), 1.0), 3)
+        recorded[c.key] = dict(keep=keep, vendor_a=vendor_a, kw=kw, kvar=kvar, kva=kva, pf=pf)
+        idx = np.nonzero(keep)[0]
+        cols["monitor_id"].extend([mids[c.key]] * len(idx))
+        cols["site_no"].extend([c.site] * len(idx))
+        cols["period_start_utc"].append(ts[idx])
+        va = vendor_a[idx]
+        cols["kw"].append(np.where(va, np.nan, kw[idx]))
+        cols["kvar"].append(np.where(va, np.nan, kvar[idx]))
+        cols["kva"].append(np.where(va, kva[idx], np.nan))
+        cols["pf"].append(np.where(va, pf[idx], np.nan))
+    tbl = pa.table({
+        "monitor_id": pa.array(cols["monitor_id"], pa.string()),
+        "site_no": pa.array(cols["site_no"], pa.int32()),
+        "period_start_utc": pa.array(np.concatenate(cols["period_start_utc"]), pa.timestamp("s", tz="UTC")),
+        "kw": pa.array(np.concatenate(cols["kw"]), pa.float32()),
+        "kvar": pa.array(np.concatenate(cols["kvar"]), pa.float32()),
+        "kva": pa.array(np.concatenate(cols["kva"]), pa.float32()),
+        "pf": pa.array(np.concatenate(cols["pf"]), pa.float32()),
+    })
+    pq.write_table(tbl, path("lv_monitoring_2025-26.parquet"), compression="zstd", row_group_size=250000,
+                   use_dictionary=["monitor_id"], write_statistics=False)
+    return tbl.num_rows, recorded
+
+
+def settlement_periods():
+    """Each UTC half-hour's settlement date and period (1 to 48, 46 or 50 on the clock-change days)."""
+    sd, sp = [], []
+    cur, k = None, 0
+    for l in S.LOCAL:
+        d = l.date()
+        if d != cur:
+            cur, k = d, 0
+        k += 1
+        sd.append(d)
+        sp.append(k)
+    return sd, sp
+
+
+def write_settlement(w):
+    fl = w["flows"]
+    sd, sp = settlement_periods()
+    hv = [c for c in w["conns"] + w["neigh"] if c.kind == "H"]
+    rows = []
+    for c in hv:
+        d = fl[c.key]
+        imp = d["imp"] if d["imp"] is not None else np.clip(d["p"], 0, None)
+        exp = d["exp"] if d.get("exp") is not None else np.zeros(S.N)
+        qimp = d.get("qimp", np.clip(d["q"], 0, None))
+        qexp = d.get("qexp", np.zeros(S.N))
+        m_i = "40%011d" % c.mpan_import
+        for i in range(S.N):
+            rows.append((m_i, sd[i].strftime("%Y%m%d"), sp[i], round(float(imp[i]) * 0.5, 2), round(float(qimp[i] - qexp[i]) * 0.5, 2)))
+        if c.mpan_export:
+            m_e = "40%011d" % c.mpan_export
+            for i in range(S.N):
+                rows.append((m_e, sd[i].strftime("%Y%m%d"), sp[i], round(float(exp[i]) * 0.5, 2), 0.0))
+    rows.sort(key=lambda x: (x[1], x[2], x[0]))
+    with open(path("hv_settlement_2025-26.csv"), "w", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["mpan", "settlement_date", "settlement_period", "active_kwh", "reactive_kvarh"])
+        for row in rows:
+            wr.writerow(["%s" % row[0], row[1], row[2], "%.2f" % row[3], "%.2f" % row[4]])
+    return len(rows)
+
+
+def write_scada(w):
+    """Feeder breaker metering: amps per phase, MW and MVAr, averaged over the half-hour, stamped at its end in local time."""
+    r = _r("scada")
+    fl = w["flows"]
+    out = []
+    for f in w["feeders"]:
+        top = [s for s in w["sections"] if s.feeder == f["code"] and s.frm == f["bus"]][0]
+        P = sum(fl[k]["p"] for k in top.down)
+        Q = sum(fl[k]["q"] for k in top.down)
+        loss_kw = np.zeros(S.N)
+        for s in w["sections"]:
+            if s.feeder != f["code"] or getattr(s, "normally_open", False):
+                continue
+            Ps = sum(fl[k]["p"] for k in s.down)
+            Qs = sum(fl[k]["q"] for k in s.down)
+            loss_kw += (Ps ** 2 + Qs ** 2) * S.ohms(s) / (W.V_NOM_KV ** 2) / 1000.0
+        tx = 0.0
+        for k in top.down:
+            c = [c for c in w["conns"] if c.key == k][0]
+            if c.kind == "S":
+                tx = tx + 0.0016 * c.kva + 0.011 * (fl[k]["p"] ** 2 + fl[k]["q"] ** 2) / c.kva
+        Pm = (P + loss_kw + tx) * (1 + r.normal(0, 0.009)) * (1 + r.normal(0, 0.004, S.N))
+        Qm = (Q + 0.6 * loss_kw) * (1 + r.normal(0, 0.012)) * (1 + r.normal(0, 0.006, S.N))
+        Sm = np.sqrt(Pm ** 2 + Qm ** 2)
+        Iavg = Sm / (np.sqrt(3) * W.V_NOM_KV)
+        imb = r.normal(0, 0.025, 3)
+        imb -= imb.mean()
+        circ = "%s %s" % (f["breaker"], f["name"].upper())
+        for i in range(S.N):
+            end_local = S.LOCAL[i] + dt.timedelta(minutes=30)
+            out.append((end_local, S.UTC[i], circ, Iavg[i] * (1 + imb[0]), Iavg[i] * (1 + imb[1]), Iavg[i] * (1 + imb[2]),
+                        Pm[i] / 1000, Qm[i] / 1000))
+    out.sort(key=lambda x: (x[1], x[2]))
+    with open(path("copsewell_cross_scada_2025-26.csv"), "w", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["timestamp", "circuit", "ia_a", "ib_a", "ic_a", "mw", "mvar"])
+        for row in out:
+            wr.writerow([row[0].strftime("%d/%m/%Y %H:%M"), row[2], "%.1f" % row[3], "%.1f" % row[4], "%.1f" % row[5],
+                         "%.3f" % row[6], "%.3f" % row[7]])
+    return len(out)
+
+
+# ---------------------------------------------------------------- the interruption record
+def write_reliability(w, rel):
+    r = _r("reliability")
+    conns = w["conns"]
+    site = {c.key: c.site for c in conns}
+    names = {f["code"]: f["name"] for f in w["feeders"]}
+    # customers at month end
+    months = sorted(next(iter(rel["counts"].values())).keys())
+    with open(path("customers_by_substation_2023-2026.csv"), "w", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["month_end", "site_no", "circuit", "connection", "customers"])
+        rows = []
+        for c in conns:
+            for m in months:
+                me = dt.date(m.year + (m.month == 12), m.month % 12 + 1, 1) - dt.timedelta(days=1)
+                n = rel["counts"][c.key][m]
+                if c.name == "Redburn Meadows" and n == 0:
                     continue
-                if a > W.ASOF:
-                    continue
-                bb = b if (b is not None and b <= W.ASOF) else None
-                reason = ""
-                if bb is not None:
-                    reason = {"death": "Death", "left": "Left practice area", "transferred": "Registered at another practice"}[why]
-                reg_rows.append([W.BY_KEY[k]["code"], pid, P["yob"], P["sex"], W.iso(a), "" if bb is None else W.iso(bb), reason])
-        reg_rows.sort(key=lambda r: (r[0], r[1], r[4]))
-        for r in reg_rows:
-            wr.writerow([r[1], r[0], r[2], r[3], r[4], r[5], r[6]])
-    stats["register"] = len(reg_rows)
-    # ------------------------------------------------------------ cancellations (the EPS tracker's item report)
-    canc = [c for c in w.cancellations if W.EXTRACT_FROM <= c["t"] <= W.ASOF] + other_canc
-    canc.sort(key=lambda c: (c["cancelled_on"], c["token"], c["drug"], c["strength"]))
-    with open(os.path.join(OUT, "eps_item_cancellations_2024-2026.csv"), "w", newline="", encoding="utf-8") as fh:
-        wr = csv.writer(fh, lineterminator="\n")
-        wr.writerow(["prescription_id", "ods_code", "patient_ref", "signed_date", "item", "quantity",
-                     "cancelled_date", "cancellation_reason"])
-        for c in canc:
-            r = dict(drug=c["drug"], strength=c["strength"], form=c["form"])
-            wr.writerow([c["token"], W.BY_KEY[c["key"]]["code"], c["pid"], W.iso(c["t"]), product_a(r), c["qty"],
-                         W.iso(c["cancelled_on"]), c["reason"]])
-    stats["cancellations"] = len(canc)
-    return stats
+                rows.append((me, c.site, names[c.feeder], "LV" if c.kind == "S" else "HV", n))
+        rows.sort(key=lambda x: (x[0], x[1]))
+        for row in rows:
+            wr.writerow([row[0].isoformat(), row[1], row[2], row[3], row[4]])
+    # interruption log: one row per site per step, in UK local time to the minute (seconds on the transient records)
+    with open(path("interruptions_2023-2026.csv"), "w", newline="") as fh:
+        wr = csv.writer(fh)
+        wr.writerow(["reference", "circuit", "voltage", "category", "cause", "incident_start", "step", "step_time",
+                     "site_no", "customers_off", "customers_restored"])
+        nrow = 0
+        for inc in rel["incidents"]:
+            steps = sorted(inc.steps, key=lambda s: (s[0], -s[2], site.get(s[1], 0)))
+            times = sorted(set(s[0] for s in steps))
+            for (tm, kk, ch) in steps:
+                stepno = times.index(tm)
+                fmt = "%Y-%m-%d %H:%M:%S" if inc.cause.startswith("Transient") else "%Y-%m-%d %H:%M"
+                wr.writerow([inc.ref, inc.circuit, inc.voltage, inc.category, inc.cause, inc.start.strftime("%Y-%m-%d %H:%M"),
+                             stepno, tm.strftime(fmt), site[kk], ch if ch > 0 else "", -ch if ch < 0 else ""])
+                nrow += 1
+    # generator hire and fuel log: a cost record kept by the network's generation team
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Hire log"
+    ws.append(["Hire order", "Unit", "Rating (kVA)", "Site", "Site no", "Deployment job", "Cost code", "On hire",
+               "Connected", "Disconnected", "Off hire", "Fuel (litres)", "Charge (GBP)"])
+    subs = {c.key: c for c in conns}
+    classes = [200, 315, 500, 800, 1000]
+    units = {}
+    for i, u in enumerate(sorted(rel["gen_units"])):
+        units[u] = classes[[0, 1, 2, 2, 3, 3, 4, 1, 2, 3, 4, 2, 3, 4][i % 14]]
+    busy = {u: [] for u in units}
+    gens = [g for g in rel["gens"] if dt.datetime(2025, 4, 1) <= g["connected"] < dt.datetime(2026, 4, 1)]
+    gens.sort(key=lambda g: (g["connected"], subs[g["site"]].site))
+    ho = sorted(set(int(x) for x in r.choice(np.arange(70000, 99999), len(gens) + 5, replace=False)))
+    jobs = sorted(set(int(x) for x in r.choice(np.arange(5100000, 5999999), len(gens) + 5, replace=False)))
+    rate = {200: 165, 315: 220, 500: 305, 800: 410, 1000: 495}
+    for i, g in enumerate(gens):
+        c = subs[g["site"]]
+        need = 1.45 * c.mean_kw
+        cls = next((k for k in classes if k >= need), 1000)
+        onh = g["connected"] - dt.timedelta(minutes=int(r.integers(40, 150)))
+        offh = g["disconnected"] + dt.timedelta(minutes=int(r.integers(30, 240)))
+        free = [u for u in sorted(units) if units[u] >= cls and all(offh <= a or onh >= b for a, b in busy[u])]
+        free.sort(key=lambda u: (units[u], u))
+        unit = free[int(r.integers(0, min(2, len(free))))]
+        busy[unit].append((onh, offh))
+        kva = units[unit]
+        hours = (g["disconnected"] - g["connected"]).total_seconds() / 3600
+        fuel = int(round(hours * kva * 0.19 * (0.8 + 0.35 * r.random())))
+        days = max(1, (offh.date() - onh.date()).days + 1)
+        charge = round(days * rate[kva] + fuel * 1.21, 2)
+        ws.append(["GH%d" % ho[i], unit, kva, c.name, c.site, "WO%d" % jobs[i], "FLT-HV" if g["kind"] == "fault" else "PLN-HV",
+                   onh.strftime("%d/%m/%Y %H:%M"), g["connected"].strftime("%d/%m/%Y %H:%M"),
+                   g["disconnected"].strftime("%d/%m/%Y %H:%M"), offh.strftime("%d/%m/%Y %H:%M"), fuel, charge])
+    for cc in ws[1]:
+        cc.font = Font(bold=True)
+    ws.freeze_panes = "A2"
+    for col, wd in zip("ABCDEFGHIJKLM", [11, 8, 11, 26, 9, 13, 10, 17, 17, 17, 17, 12, 12]):
+        ws.column_dimensions[col].width = wd
+    ws2 = wb.create_sheet("Units")
+    ws2.append(["Unit", "Rating (kVA)", "Supplier", "Fuel"])
+    sup = ["Marchmont Plant", "Severnside Hire", "Fenwick Generators"]
+    for i, u in enumerate(sorted(units)):
+        ws2.append([u, units[u], sup[int(r.integers(0, 3))], "HVO" if r.random() < 0.8 else "Diesel"])
+    for cc in ws2[1]:
+        cc.font = Font(bold=True)
+    wb.save(path("generator_hire_2025-26.xlsx"))
+    return nrow, len(gens)
+
+
+def write_all(w, rel, out):
+    global OUT
+    OUT = out
+    st = {}
+    w["hv"] = hv_identity(w)
+    st["sections"] = write_network(w)
+    mids = write_registers(w)
+    st["monitor_rows"], rec = write_monitors(w, mids)
+    st["settlement_rows"] = write_settlement(w)
+    st["scada_rows"] = write_scada(w)
+    st["interruption_rows"], st["hires"] = write_reliability(w, rel)
+    w["recorded"] = rec
+    w["monitor_ids"] = mids
+    return st

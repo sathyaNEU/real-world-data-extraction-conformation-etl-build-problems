@@ -1,89 +1,68 @@
-"""task464 architecture 9: submission.md, every figure emitted from figures.json."""
-import json, os
+"""task464 architecture 10: submission.md, every figure emitted from figures.json."""
+import os
 import world as W
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FIG = os.path.join(BASE, "generator", "figures.json")
 
 
-def fmt(n):
-    return "{:,}".format(n)
+def gbp(v):
+    return "GBP {:,}".format(v)
 
 
-def main():
-    F = json.load(open(FIG, encoding="utf-8"))
-    name = {p["code"]: p["name"] for p in W.PRACTICES}
-    order = F["ranking"]
-    call = F["call"]
-    second = order[1]
+def main(F):
+    P = F["projects"]
+    call, runner = F["call"], F["runner_up"]
+    c, r = P[call], P[runner]
+    order = [f["name"] for f in W.FEEDERS]
+    rung0 = F["rungs"]["head_current"]["winner"]
     L = []
     L += ["## Tags", "",
-          "**Domain:** Pharmacology, Pharmacoepidemiology & Safety (medication adherence and persistence).",
-          "**Analytical objective:** Descriptive & Distribution Analysis.", ""]
+          "**Domain:** Energy Systems & Utilities (asset condition and maintenance).",
+          "**Analytical objective:** Opportunity Sizing & Decision Support.", ""]
     L += ["## 1. Final Recommendation", "",
-          "**Place the 2027 statin continuity sessions at %s, with %s next in line.**" % (name[call], name[second]),
-          "%s of %s's %s patients in the brief's population have their latest statin issue on a repeat of six 56-day "
-          "issues authorised in February or March 2026, so their repeats run out together before March 2027, and %d%% of statin repeats that "
-          "run out are not re-authorised. Not %s, whose six-issue repeats bring its reviews round through the whole "
-          "year rather than together. Not %s, the largest list, whose summer switch to atorvastatin re-authorised most "
-          "of its statin patients for a year." % (fmt(F["six_56day_feb_mar_2026"][call]), name[call],
-                                                  fmt(F["population"][call]), F["reauth_fail_whole"], name[second],
-                                                  name[order[2]]), ""]
+          "**Fund the %s reconductoring from the 2027/28 losses programme.**" % call,
+          ("Its replacement conductor would have removed %.1f MWh of losses in 2025/26, worth %s at GBP %.2f per MWh, "
+           "%.1f MWh more than %s at %.1f MWh, because the Hob Moor Solar Park's export runs back through %s's old "
+           "overhead line to the Kestle Park estate near Copsewell Cross. Not %s, which leads only when every section is "
+           "charged with the feeder-head current. Not %s, whose replaced sections carry its whole load out of the "
+           "primary but less current than the solar farm's export." % (
+               c["year_mwh"], gbp(c["value_gbp"]), F["losses_value_gbp_mwh"], F["gap_mwh"], runner, r["year_mwh"], call,
+               rung0, runner)), ""]
     L += ["## 2. Critical Components", "",
-          "1. **%d%%** of statin repeats whose authorised issues were all issued were not re-authorised within 60 "
-          "days." % F["reauth_fail_whole"],
-          "2. %s has **%s** patients in the brief's population, **%s** of them with their latest statin issue on a "
-          "repeat of six 56-day issues authorised in February or March 2026." % (name[call], fmt(F["population"][call]),
-                                                     fmt(F["six_56day_feb_mar_2026"][call])), ""]
+          "1. %s's project replaces **%.2f km** of route and removes **%.3f ohm** per phase." % (call, c["km"], c["dR_ohm"]),
+          "2. %s's replaced sections would have lost **%.1f MWh** less in 2025/26." % (call, c["year_mwh"]),
+          "3. %s, the runner-up, would have saved **%.1f MWh**." % (runner, r["year_mwh"]), ""]
     L += ["## 3. Step-by-Step Solution", "",
-          "1. Stacked both systems' issue extracts through cvd_product_lookup.csv and took the patients registered "
-          "on 30 November 2026 in patient_register_2026-12-01.csv who were issued a statin by that practice from "
-          "1 September to 30 November 2026: %s patients across the seven practices." % fmt(F["population_total"]),
-          "2. Matched each statin repeat authorised from January 2024 in repeat_authorisations_system_a.csv and "
-          "repeat_authorisations_system_b.csv whose authorised issues were all issued, the last by 3 July 2026, to a "
-          "new statin repeat for the patient within 60 days of its supply running out: %d%% were not "
-          "re-authorised." % F["reauth_fail_whole"],
-          "3. Measured stops between reviews as statin repeats left with issues unused and no statin issued for "
-          "%d days, per %d days of statin supply, separately for a new start's first six months." % (F["stop_gap_days"],
-                                                                                              F["stop_rate_supply_days"]),
-          "4. Ran each patient's current repeat, the one their latest statin issue was on, forward from that issue at "
-          "the record's mean request interval to the request after its last authorised issue; where that last issue "
-          "falls before 1 March 2027 the patient is not issued in the window at the %d%% chance of no re-authorisation "
-          "or after a stop between reviews on the way, a repeat that ran out over three weeks before the searches with "
-          "no new repeat is not issued, and each chance is scaled by the record's seven-month stay on the "
-          "register." % F["reauth_fail_whole"],
-          "5. Summed by practice: %s has the largest expected number and %s the next." % (name[call], name[second]),
-          "6. R1: took each ACE inhibitor or ARB issue's dosage from repeat_changes_2024-01_to_2026-11.csv, each "
-          "change attached to the repeat the patient held for that product on its day (system A files a change "
-          "against the drug line's current repeat) and a changed repeat read from the log's own history, since "
-          "system B lists its current repeats as authorised; read a dose in milligrams against the product's "
-          "strength, dropped the items in eps_item_cancellations_2024-2026.csv, carried supply forward within the "
-          "drug and counted the days of %d covered per the return specification: each practice's R1 percentage "
-          "below." % F["return_year"],
-          "7. R2: took each start from the 'Ticagrelor 90mg twice daily started in secondary care' entries in "
-          "cvd_clinical_events_2023-2026.csv within three days of a myocardial infarction however the hospital coded "
-          "it (an infarction, a STEMI, an NSTEMI or 'Heart attack', not unstable angina or an old infarction), both "
-          "inside the window, at the practice coded on the entry, and counted the patients issued ticagrelor 90mg on "
-          "a day later than its first anniversary: each practice's R2 percentage below.",
-          "8. Placed the sessions at %s." % name[call], ""]
-    L += ["## 4. Deliverable Answers", "", "### statin_sessions_2027.xlsx", "",
-          "1. Patients in the brief's population, by practice:"]
-    for c in sorted(F["population"]):
-        L.append("   - %s (%s): %s" % (name[c], c, fmt(F["population"][c])))
-    L += ["2. Sessions placed at %s." % name[call],
-          "3. Runner-up: %s." % name[second],
-          "4. Bar chart of the seven practices on the brief's figure, %s highlighted, on the Placement sheet." % name[call], "",
-          "### cvd_repeat_returns_2025.csv", "",
-          "1. R1, ACE inhibitor or angiotensin II receptor blocker adherence in 2025, percentage to one decimal place:"]
-    for c in sorted(F["ask_a"]):
-        L.append("   - %s (%s): %.1f" % (name[c], c, F["ask_a"][c]["pct"]))
-    L.append("2. R2, ticagrelor 90mg issued after the first anniversary of starting it, percentage to a whole number:")
-    for c in sorted(F["ask_b"]):
-        L.append("   - %s (%s): %d" % (name[c], c, F["ask_b"][c]["pct"]))
+          ("1. Built each feeder's normal running arrangement from the closed sections in hv_network_model.xlsx and placed "
+           "every secondary substation (secondary_substations.csv, by site number) and HV customer (hv_connections.csv, "
+           "by agreement) on its node."),
+          ("2. Took each substation's half-hourly kW and kVAr from lv_monitoring_2025-26.parquet, as kVA times power factor "
+           "before its monitor's vendor change, and each HV customer's import less its export from "
+           "hv_settlement_2025-26.csv, settlement periods placed on the UTC half-hours."),
+          ("3. Summed the flows of every connection beyond each section the brief lists to get the section's current each "
+           "half-hour; %s's replaced sections carry the solar farm's export less the load beyond them." % call),
+          ("4. Took each replaced section's loss at that current on its existing and its replacement conductor, at 11 kV "
+           "and the resistances of hv_conductor_data_EDS-02-0310.pdf, per the brief: %s saves %.1f MWh and %s %.1f MWh."
+           % (call, c["year_mwh"], runner, r["year_mwh"])),
+          "5. Valued each project's year at GBP %.2f per MWh: %s for %s." % (F["losses_value_gbp_mwh"], gbp(c["value_gbp"]), call),
+          ("6. Counted 2025/26 CI and CML per iis_reporting_definitions_2025-26.pdf from interruptions_2023-2026.csv, "
+           "dropping the work-management LV jobs at sites already off in an HV incident, ending a site's minutes when "
+           "generator_hire_2025-26.xlsx shows a generator connected there, leaving out sites a generator kept on supply "
+           "through a planned outage, and dividing by customers_by_substation_2023-2026.csv at 31 March 2026: the "
+           "feeders' figures below."),
+          "7. Funded %s, with %s the runner-up." % (call, runner), ""]
+    L += ["## 4. Deliverable Answers", "", "### losses_programme_2027.xlsx", "",
+          "1. Saving in 2025/26 in MWh to one decimal place, and its value at the losses value to the nearest GBP 100:"]
+    for k in order:
+        L.append("   - %s: %.1f MWh, %s" % (k, P[k]["year_mwh"], gbp(P[k]["value_gbp"])))
+    L += ["2. Fund %s." % call, "3. Runner-up: %s." % runner, "",
+          "### losses_saving_2027.png", "",
+          "1. Bar chart of the eight projects' 2025/26 savings, each bar labelled with its MWh, %s highlighted." % call, "",
+          "### iis_feeders_2025-26.csv", "",
+          "1. 2025/26 customer interruptions per 100 customers and customer minutes lost per customer, one decimal place:"]
+    for k in order:
+        v = F["iis"][k]
+        L.append("   - %s: CI %.1f, CML %.1f" % (k, v["ci"], v["cml"]))
     L.append("")
-    open(os.path.join(BASE, "submission.md"), "w", encoding="utf-8").write("\n".join(L))
-    print("  submission.md, %d lines" % len(L))
-
-
-if __name__ == "__main__":
-    main()
+    open(os.path.join(BASE, "submission.md"), "w").write("\n".join(L))
+    return os.path.join(BASE, "submission.md")

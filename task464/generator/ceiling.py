@@ -1,140 +1,71 @@
-"""task464 architecture 9: the ask layer's ceiling, measured on the cut pack.
+"""task464 architecture 10: the cracker and mirror sheets, measured on the cut pack under target/.
 
-The cracker (supplemental-stumping Part 1.1) is the route the portal's responses showed: it lands the call, drops
-the cancelled items, keeps the duplicate requests that were dispensed, carries supply forward within the drug, reads
-every dose in the directions right (a dose written in milligrams against the product's strength), and rebuilds the
-directions on each issue by walking the change log back from the directions each repeat list gives, matching each
-change to the repeat its row names. On R2 it takes each start from the discharge summaries' coded entries, pairs it
-with the infarction coded within three days, counts it at the practice registered that day and its 90mg issues at
-any practice, and reads a term naming a myocardial infarction as the infarction.
+    python3 generator/ceiling.py        # prints the sheets and writes generator/ceiling.json
 
-  C = 38 + 7 + 55 * Lc     the landed call's score
-  S = 5  + 7 + 55 * Ls     the best response off the call
-  pair = (C + S) / 2       the ceiling precut.py reads
-
-The asks read no row the call reads (checks.py, the separation block), so a response off the call takes the same
-ask path as the cracker and Ls equals Lc by construction. The variants below are the other uniform readings a
-careful response could take; the worst of them is reported beside the cracker's, and the gated figure is the worse.
+The cracker lands the call (each replaced section's current as the net of every connection beyond it) and, on the asks,
+runs the hygiene battery and executes every rule the reporting definitions file: short interruptions out, pre-arranged
+interruptions at half weight, the transmission trip and the accepted storm out, customers at 31 March 2026. It does not
+treat a mobile generator as restoring or keeping supply (no filed sentence points at the hire log), and it keeps the
+work-management LV jobs, whose references, times and causes are their own. The mirror stops at the default path on the
+call (the feeder-head current) and handles the asks as the cracker does. A figure is kept when it rounds to the golden.
 """
-import json, os, hashlib
-import world as W
+import hashlib
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 import answers as A
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(BASE, "generator", "ceiling.json")
+BASE = os.path.dirname(HERE)
+TGT = os.path.join(BASE, "target")
 
 
 def digest():
-    h = hashlib.sha256()
-    t = os.path.join(BASE, "target")
-    for n in sorted(os.listdir(t)):
-        h.update(n.encode()); h.update(open(os.path.join(t, n), "rb").read())
-    return h.hexdigest()[:16]
+    h = hashlib.md5()
+    for n in sorted(os.listdir(TGT)):
+        h.update(n.encode())
+        h.update(open(os.path.join(TGT, n), "rb").read())
+    return h.hexdigest()
 
 
-VARIANTS = {
-    "cracker: walk back by repeat reference, infarction by term": (dict(join="ref", walk="back"), dict(mi="term")),
-    "walk forward through the log by repeat reference": (dict(join="ref", walk="log"), dict(mi="term")),
-    "walk back, the patient's changes pooled by product": (dict(join="line", walk="back"), dict(mi="term")),
-    "walk back by reference, infarction as the one concept": (dict(join="ref", walk="back"), dict(mi="code")),
-    "the listed directions, no log": (dict(use_history=False), dict(mi="term")),
-    "doses read as tablets a day, walk back": (dict(join="ref", walk="back", parse="words"), dict(mi="term")),
-}
-CRACKER = "cracker: walk back by repeat reference, infarction by term"
+def main():
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    pk = A.load(TGT)
+    rt = A.routes(pk, TGT)
+    incs, cust, hires = A.load_interruptions(TGT)
+    sc = A.storm_circuits_from_pdf(TGT)
+    crack = A.interruption_measures(incs, cust, hires, sc, generators=False, dedupe=False)
+    names = A.FEEDER_ORDER
+    gold_mwh = {k: F["projects"][k]["year_mwh"] for k in names}
+    gold_gbp = {k: F["projects"][k]["value_gbp"] for k in names}
 
+    def kept_mwh(route):
+        return sum(round(rt[route][k], 1) == gold_mwh[k] for k in names)
 
-def cracker(D, variant=CRACKER):
-    ka, kb = VARIANTS[variant]
-    return A.ask_a(D, **ka), A.ask_b(D, **kb)
-
-
-def rows(D=None, wide=False, variant=CRACKER):
-    D = D or A.Data()
-    F = A.figures(D, write=False)
-    a, b = cracker(D, variant)
-    out = []
-    for c in sorted(F["ask_a"]):
-        k = W.BY_CODE[c]["name"]
-        out.append(("R1 percent, %s" % k, F["ask_a"][c]["pct"], A.pct(a[c][1], a[c][0], 1), 0.05))
-        if wide:
-            out.append(("R1 denominator, %s" % k, F["ask_a"][c]["patients"], a[c][0], 0.5))
-            out.append(("R1 numerator, %s" % k, F["ask_a"][c]["at_80"], a[c][1], 0.5))
-    for c in sorted(F["ask_b"]):
-        k = W.BY_CODE[c]["name"]
-        cb = b.get(c, (0, 0))
-        out.append(("R2 percent, %s" % k, F["ask_b"][c]["pct"], A.pct(cb[1], cb[0], 0) if cb[0] else None, 0.5))
-        if wide:
-            out.append(("R2 denominator, %s" % k, F["ask_b"][c]["started"], cb[0], 0.5))
-            out.append(("R2 numerator, %s" % k, F["ask_b"][c]["overrun"], cb[1], 0.5))
-    return [(n, g, v, v is not None and abs(g - v) < tol) for n, g, v, tol in out]
-
-
-def hazards(D, F):
-    """Each hazard's move on the network's figures, the one handling changed and everything else golden."""
-    def net_a(x):
-        return A.pct(sum(v[1] for v in x.values()), sum(v[0] for v in x.values()), 1)
-
-    def net_b(x):
-        return A.pct(sum(v[1] for v in x.values()), sum(v[0] for v in x.values()), 0)
-    g_a, g_b = F["ask_a_network"]["pct"], F["ask_b_network"]["pct"]
-    out = {
-        "R1 the repeat lists' directions, no log": net_a(A.ask_a(D, use_history=False)) - g_a,
-        "R1 log rows matched by the reference they name": net_a(A.ask_a(D, join="ref")) - g_a,
-        "R1 walked back from the listed directions": net_a(A.ask_a(D, walk="back")) - g_a,
-        "R1 milligram doses read as tablets a day": net_a(A.ask_a(D, parse="words")) - g_a,
-        "R2 infarction as the one concept 22298006": net_b(A.ask_b(D, mi="code")) - g_b,
-        "R2 infarction as any term naming one": net_b(A.ask_b(D, mi="term")) - g_b,
-        "R1 cancelled items kept": net_a(A.ask_a(D, drop_cancelled=False)) - g_a,
-        "R1 second issue within 7 days dropped": net_a(A.ask_a(D, dedup_days=7)) - g_a,
-        "R1 every issue read as 28 days": net_a(A.ask_a(D, fixed_days=28)) - g_a,
-        "R2 first GP issue as the start (the device)": net_b(A.ask_b(D, anchor="gp")) - g_b,
-        "R2 ticagrelor 60mg counted": net_b(A.ask_b(D, any_strength=True)) - g_b,
-    }
-    return {k: round(v, 1) for k, v in out.items()}
-
-
-def pair_of(rs):
-    kept = sum(1 for r in rs if r[3])
-    Lc = kept / len(rs)
-    Ls = Lc
+    def kept_gbp(route):
+        return sum(int(round(rt[route][k] * A.W.LOSSES_VALUE_GBP_MWH, -2)) == gold_gbp[k] for k in names)
+    ci = sum(round(crack[k]["ci"], 1) == F["iis"][k]["ci"] for k in names)
+    cml = sum(round(crack[k]["cml"], 1) == F["iis"][k]["cml"] for k in names)
+    # ask criteria, one point each: eight savings, eight values, eight CI, eight CML, the chart's four named parts
+    # (a bar per project, each labelled with its MWh, the pick highlighted, the pick being the golden's)
+    n_ask = 8 + 8 + 8 + 8 + 4
+    crk = dict(mwh=kept_mwh("net"), gbp=kept_gbp("net"), ci=ci, cml=cml, chart=4)
+    mir = dict(mwh=kept_mwh("head_current"), gbp=kept_gbp("head_current"), ci=ci, cml=cml, chart=2)
+    Lc = sum(crk.values()) / n_ask
+    Ls = sum(mir.values()) / n_ask
     C = 38 + 7 + 55 * Lc
     S = 5 + 7 + 55 * Ls
-    return kept, Lc, Ls, (C + S) / 2
-
-
-def main(write=True):
-    D = A.Data()
-    rs = rows(D)
-    kept, Lc, Ls, pair = pair_of(rs)
-    wide = rows(D, wide=True)
-    kw, Lw, _, pw = pair_of(wide)
-    var = {}
-    for v in VARIANTS:
-        rv = rows(D, variant=v)
-        k2, L2, _, p2 = pair_of(rv)
-        var[v] = dict(kept=k2, L=round(L2, 4), pair=round(p2, 1), keeps=[r[0] for r in rv if r[3]])
-    worst = max(var, key=lambda v: var[v]["pair"])
-    res = dict(pack=digest(), asked_figures=len(rs), kept=kept, Lc=round(Lc, 4), Ls=round(Ls, 4), pair=round(pair, 1),
-               variants=var, worst_variant=worst, gated_pair=max(round(pair, 1), var[worst]["pair"]),
+    out = dict(pack_md5=digest(), cracker=crk, mirror=mir, ask_criteria=n_ask, Lc=round(Lc, 3), Ls=round(Ls, 3),
+               cracker_score=round(C, 1), mirror_score=round(S, 1), pair_ceiling=round((C + S) / 2, 1),
                mirror_leakage_pct=round(100 * Ls, 1),
-               every_return_column=dict(figures=len(wide), kept=kw, L=round(Lw, 4), pair=round(pw, 1)),
-               rows=[dict(figure=n, golden=g, cracker=v, kept=h) for n, g, v, h in rs],
-               hazards=hazards(D, A.figures(D, write=False)))
-    if write:
-        json.dump(res, open(OUT, "w"), indent=1)
-    return res
+               device_asks=dict(ci=dict(cracker=ci, of=8), cml=dict(cracker=cml, of=8)),
+               cracker_iis={k: [round(crack[k]["ci"], 1), round(crack[k]["cml"], 1)] for k in names})
+    json.dump(out, open(os.path.join(HERE, "ceiling.json"), "w"), indent=1, sort_keys=True)
+    print(json.dumps({k: v for k, v in out.items() if k != "cracker_iis"}, indent=1, sort_keys=True))
+    return out
 
 
 if __name__ == "__main__":
-    r = main()
-    for x in r["rows"]:
-        print("%-44s %8s %8s %s" % (x["figure"], x["golden"], x["cracker"], "KEEP" if x["kept"] else "miss"))
-    print("pack %s: cracker keeps %d of %d asked figures, Lc %.3f, pair ceiling %.1f, mirror leakage %.1f%%"
-          % (r["pack"], r["kept"], r["asked_figures"], r["Lc"], r["pair"], r["mirror_leakage_pct"]))
-    for k, v in r["variants"].items():
-        print("  variant %-58s keeps %2d, pair %.1f %s" % (k, v["kept"], v["pair"], ("(" + ", ".join(v["keeps"]) + ")") if v["keeps"] else ""))
-    print("gated pair ceiling %.1f (worst: %s)" % (r["gated_pair"], r["worst_variant"]))
-    for k, v in r["hazards"].items():
-        print("  hazard %-48s network move %+.1f points" % (k, v))
-    w = r["every_return_column"]
-    print("every return column graded: keeps %d of %d, pair %.1f" % (w["kept"], w["figures"], w["pair"]))
+    main()

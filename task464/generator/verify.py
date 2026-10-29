@@ -1,333 +1,255 @@
-"""task464 architecture 9: the independent verifier.
+"""task464 architecture 10: recompute every graded figure from target/ alone and check the goldens and the write-up.
 
-Reads every shipped format back (CSV and JSON lines with pandas, the workbooks with openpyxl, the PDFs' text with
-pypdf) and recomputes the graded figures by its own code, without importing answers.py: each practice's
-population, the pooled share of statin repeats not re-authorised, each practice's expected number and the
-ranking, and the two return measures. Exit 1 on any disagreement with figures.json or the goldens.
+    python3 generator/verify.py
+
+Reads only the shipped bundle (the brief, the conductor data sheet and the reporting definitions are read as PDFs) and
+shares no code with answers.py. Each reader is checked against a positive control before its output is used.
 """
-import json, os, re, sys, csv, datetime as dt
-import pandas as pd
+import csv
+import datetime as dt
+import json
+import os
+import re
+import sys
+import numpy as np
 import openpyxl
+import pyarrow.parquet as pq
 from pypdf import PdfReader
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 T = os.path.join(BASE, "target")
 G = os.path.join(BASE, "golden")
-D0 = dt.date(2019, 1, 1)
 FAIL = []
 
 
-def day(s):
-    return (dt.date.fromisoformat(s) - D0).days
-
-
-def ukday(s):
-    d, m, y = s.split("/")
-    return (dt.date(int(y), int(m), int(d)) - D0).days
-
-
-def ok(label, cond, detail=""):
-    print("%s %-70s %s" % ("PASS" if cond else "FAIL", label, detail))
+def ok(cond, msg):
+    print(("PASS  " if cond else "FAIL  ") + msg)
     if not cond:
-        FAIL.append(label)
+        FAIL.append(msg)
 
 
-def per_day(text, strength=None):
-    s = text.lower()
-    n = 1.0
-    mg = re.search(r"(\d+(?:\.\d+)?)mg\b", s)
-    if mg and strength:
-        n = float(mg.group(1)) / float(strength.replace("mg", ""))
-    else:
-        for w, v in (("half", 0.5), ("two", 2), ("2", 2), ("one", 1), ("1", 1)):
-            if (" %s " % w) in (" %s " % s.replace(",", " ")):
-                n = v
-                break
-    if "twice" in s or " bd" in (" " + s):
-        n *= 2
-    return n
+def pdf_text(name):
+    return re.sub(r"[ \t]+", " ", "\n".join(p.extract_text() for p in PdfReader(os.path.join(T, name)).pages))
 
 
-def anniv(t):
-    d = D0 + dt.timedelta(days=int(t))
-    try:
-        a = d.replace(year=d.year + 1)
-    except ValueError:
-        a = d.replace(year=d.year + 1, day=28)
-    return (a - D0).days
+def utc_index(t_utc, start):
+    return int((t_utc - start).total_seconds() // 1800)
+
+
+def bst(t):
+    """True when the UTC instant t falls in British Summer Time."""
+    def last_sun(y, m):
+        d = dt.date(y, m, 31)
+        while d.weekday() != 6:
+            d -= dt.timedelta(days=1)
+        return dt.datetime(d.year, d.month, d.day, 1)
+    return last_sun(t.year, 3) <= t < last_sun(t.year, 10)
 
 
 def main():
-    F = json.load(open(os.path.join(BASE, "generator", "figures.json")))
-    look = pd.read_csv(os.path.join(T, "cvd_product_lookup.csv"))
-    la = look.set_index("system_a_drug")[["vtm", "strength", "form", "bnf_class"]].to_dict("index")
-    lb = look.set_index("system_b_product")[["vtm", "strength", "form", "bnf_class"]].to_dict("index")
-    ia = pd.read_csv(os.path.join(T, "repeat_issues_system_a_2024-01_to_2026-11.csv"), dtype=str, keep_default_na=False)
-    ib = pd.read_json(os.path.join(T, "repeat_issues_system_b_2024-01_to_2026-11.jsonl"), lines=True, dtype=False)
-    iss = pd.DataFrame({
-        "code": list(ia["Practice Code"]) + list(ib["org"]),
-        "pid": list(ia["Patient Ref"]) + list(ib["patient_pseudo"]),
-        "t": [ukday(x) for x in ia["Issue Date"]] + [day(x) for x in ib["issued"]],
-        "vtm": [la[x]["vtm"] for x in ia["Drug"]] + [lb[x]["vtm"] for x in ib["product"]],
-        "strength": [la[x]["strength"] for x in ia["Drug"]] + [lb[x]["strength"] for x in ib["product"]],
-        "form": [la[x]["form"] for x in ia["Drug"]] + [lb[x]["form"] for x in ib["product"]],
-        "cls": [la[x]["bnf_class"] for x in ia["Drug"]] + [lb[x]["bnf_class"] for x in ib["product"]],
-        "qty": [int(x.split()[0]) for x in ia["Quantity"]] + [int(x) for x in ib["qty"]],
-        "acute": [x == "Acute" for x in ia["Course"]] + [x == "acute" for x in ib["course"]],
-        "ref": [x or None for x in ia["Repeat Ref"]] + [x if isinstance(x, str) else None for x in ib["authorisation"]],
-        "eps": list(ia["EPS Prescription ID"]) + list(ib["eps_id"]),
-    })
-    canc = pd.read_csv(os.path.join(T, "eps_item_cancellations_2024-2026.csv"), dtype=str)
-    cset = set(canc["prescription_id"])
-    inv = {(r["vtm"], r["strength"], r["form"]): k for k, r in la.items()}
-    citem = set(zip(canc["prescription_id"], canc["item"]))
-    iss["cancelled"] = [(e in cset) and ((e, inv.get((v, s, f))) in citem)
-                        for e, v, s, f in zip(iss["eps"], iss["vtm"], iss["strength"], iss["form"])]
-    ta = pd.read_csv(os.path.join(T, "repeat_authorisations_system_a.csv"), dtype=str, keep_default_na=False)
-    tb = pd.read_csv(os.path.join(T, "repeat_authorisations_system_b.csv"), dtype=str, keep_default_na=False)
-    tpl = {}
-    for _, r in ta.iterrows():
-        q = int(r["Quantity"].split()[0])
-        x = la[r["Drug"]]
-        tpl[r["Repeat Ref"]] = dict(pid=r["Patient Ref"], code=r["Practice Code"], cls=x["bnf_class"],
-                                    M=int(r["Authorised Issues"]), start=ukday(r["Authorised Date"]),
-                                    end=ukday(r["End Date"]) if r["End Date"] else None,
-                                    product=(x["vtm"], x["strength"], x["form"]),
-                                    L=int(round(q / per_day(r["Dosage"], x["strength"]))), dose=r["Dosage"], qty=q)
-    for _, r in tb.iterrows():
-        q = int(r["qty_per_issue"])
-        x = lb[r["product"]]
-        tpl[r["authorisation"]] = dict(pid=r["patient_pseudo"], code=r["org"], cls=x["bnf_class"],
-                                       M=int(r["issues_authorised"]), start=day(r["start_date"]),
-                                       end=day(r["end_date"]) if r["end_date"] else None,
-                                       product=(x["vtm"], x["strength"], x["form"]),
-                                       L=int(round(q / per_day(r["directions"], x["strength"]))), dose=r["directions"], qty=q)
-    reg = pd.read_csv(os.path.join(T, "patient_register_2026-12-01.csv"), dtype=str, keep_default_na=False)
-    episodes = {}
-    for _, r in reg.iterrows():
-        episodes.setdefault(r["patient_ref"], []).append((r["practice_code"], day(r["registered"]),
-                                                          day(r["deregistered"]) if r["deregistered"] else None))
+    # ---------------------------------------------------------------- the documents
+    cat = pdf_text("hv_conductor_data_EDS-02-0310.pdf")
+    lines = [l.strip() for l in cat.split("Conductors", 1)[1].split("Notes", 1)[0].splitlines() if l.strip()]
+    R20, DESC = {}, {}
+    i = 0
+    while i < len(lines):
+        if re.match(r"^(PILC|XLPE|OHL) ", lines[i]):
+            code = lines[i]
+            j = i + 1
+            desc = []
+            while not lines[j].startswith(("Cable,", "Overhead,")):
+                desc.append(lines[j])
+                j += 1
+            while not re.fullmatch(r"\d+\.\d+", lines[j]):
+                j += 1
+            R20[code] = float(lines[j])
+            DESC[code] = re.sub(r"\s+", " ", " ".join(desc))
+            i = j
+        i += 1
+    ok(len(R20) == 14 and R20.get("OHL 0.1 CU") == 0.276 and R20.get("PILC 0.3 CU") == 0.0915,
+       "conductor data sheet read: %d conductors, OHL 0.1 CU 0.276 and PILC 0.3 CU 0.0915 ohm/km at 20 C" % len(R20))
 
-    def registered(pid, code, t):
-        return any(c == code and a <= t and (b is None or t < b) for c, a, b in episodes.get(pid, []))
+    brief = pdf_text("losses_programme_2027-28_brief.pdf")
+    proj_txt = brief.split("The projects", 1)[1].split("How each project is sized", 1)[0]
+    flat = re.sub(r"\s+", " ", proj_txt)
+    feeders = ["Copsewell Town", "Ashlade", "Oxenford Lane", "Kestle", "Pennick Hill", "Redburn", "Stowmere", "Ingle Road"]
+    pos = [(flat.index(" %s CB " % f), f) for f in feeders]
+    pos.sort()
+    PROJ = {}
+    for n, (p, f) in enumerate(pos):
+        chunk = flat[p:pos[n + 1][0]] if n + 1 < len(pos) else flat[p:]
+        ids = re.findall(r"HV-\d+", chunk)
+        tail = chunk.split(ids[-1], 1)[1]
+        new = [c for c, d in DESC.items() if tail.rstrip().endswith(d)]
+        PROJ[f] = (ids, new[0] if len(new) == 1 else None)
+    ok(len(PROJ) == 8 and all(v[1] for v in PROJ.values()) and len(PROJ["Kestle"][0]) == 3,
+       "brief's project table read: 8 projects, each replacement conductor matched to one data sheet entry")
+    m = re.search(r"losses value of GBP (\d+\.\d+) per\s*MWh", brief)
+    VALUE = float(m.group(1))
+    ok(VALUE == 64.80 and "11 kV nominal" in re.sub(r"\s+", " ", brief) and "20°C" in brief,
+       "brief's conventions read: GBP %.2f per MWh, 11 kV nominal, resistances at 20 C" % VALUE)
 
-    ASOF, POP0, W0 = day("2026-11-30"), day("2026-09-01"), day("2027-03-01")
-    st = iss[(iss["cls"] == "Statin") & (~iss["cancelled"])].sort_values(["pid", "t", "ref"], na_position="first")
-    by = {pid: g for pid, g in st.groupby("pid")}
-    pop = {}
-    for pid, g in by.items():
-        for code in sorted(set(g["code"])):
-            w = g[(g["code"] == code) & (g["t"] >= POP0) & (g["t"] <= ASOF)]
-            if len(w) and registered(pid, code, ASOF):
-                pop[pid] = code
-    npop = pd.Series(pop).value_counts().to_dict()
-    ok("V1 each practice's population", npop == F["population"], str(sorted(npop.items())))
+    iis = re.sub(r"\s+", " ", pdf_text("iis_reporting_definitions_2025-26.pdf"))
+    ev = iis.split("Exceptional event accepted for 2025/26", 1)[1]
+    storm = [f for f in feeders if f in ev]
+    ok(storm == ["Oxenford Lane", "Kestle", "Stowmere"] and "3 minutes or longer" in iis and "half weight" in iis,
+       "reporting definitions read: storm circuits %s, 3-minute threshold, half weight for pre-arranged" % storm)
+    S0, S1 = dt.datetime(2026, 1, 6, 15, 0), dt.datetime(2026, 1, 7, 23, 59)
 
-    # the pooled share of statin repeats that ran out and were not re-authorised within 60 days
-    made = st[st["ref"].notna()].groupby("ref")["t"].agg(["count", "max"])
-    stpl = {}
-    for ref, tp in tpl.items():
-        if tp["cls"] == "Statin":
-            stpl.setdefault(tp["pid"], []).append((tp["start"], ref))
-    n = f = 0
-    gn, gf = {}, {}
-    for pid, lst in stpl.items():
-        lst.sort()
-        for i, (s0, ref) in enumerate(lst):
-            tp = tpl[ref]
-            if s0 < day("2024-01-01") or ref not in made.index or made.loc[ref, "count"] < tp["M"]:
-                continue
-            last = made.loc[ref, "max"]
-            if not (day("2024-01-01") <= last <= ASOF - 150):
-                continue
-            end = last + tp["L"]
-            if not registered(pid, tp["code"], end + 60):
-                continue
-            n += 1
-            nxt = [s for s, r2 in lst[i + 1:] if s >= last]
-            failed = not (nxt and nxt[0] <= end + 60)
-            f += failed
-            # the patient's earlier repeats in the record that ran their issues out: reviews already passed
-            passed = min(2, sum(1 for _, r0 in lst[:i] if r0 in made.index and made.loc[r0, "count"] >= tpl[r0]["M"]))
-            for k in ("passed %d" % passed, "%d-day issues" % tp["L"]):
-                gn[k] = gn.get(k, 0) + 1; gf[k] = gf.get(k, 0) + failed
-    rate = f / n
-    ok("V2 the pooled share not re-authorised", abs(100 * rate - F["reauth_fail_pct"]) < 0.05,
-       "%.2f%% of %d against %.1f%%" % (100 * rate, n, F["reauth_fail_pct"]))
-    dev = max(abs(gf[k] / gn[k] - rate) for k in gn)
-    ok("V12 the share agrees by earlier reviews passed and by issue length within 1.5 points", dev < 0.015,
-       ", ".join("%s %.1f%% of %d" % (k, 100 * gf[k] / gn[k], gn[k]) for k in sorted(gn)))
+    # ---------------------------------------------------------------- the network and its metering
+    wb = openpyxl.load_workbook(os.path.join(T, "hv_network_model.xlsx"), read_only=True)
+    secs = [dict(zip(["id", "circ", "a", "b", "m", "cond", "cons", "yr", "state"], r))
+            for r in list(wb["Sections"].iter_rows(values_only=True))[1:]]
+    nodes = {r[0]: r for r in list(wb["Nodes"].iter_rows(values_only=True))[1:]}
+    ok(sum(s["state"] == "Open" for s in secs) == 4 and all(s["cond"] in R20 for s in secs),
+       "network model read: %d sections, 4 normally open, every conductor in the data sheet" % len(secs))
+    down = {}
+    for s in secs:
+        if s["state"] == "Closed":
+            down.setdefault(s["a"], []).append(s["b"])
 
-    # each practice's expected number, run forward on the figures' rates
-    e0, e1 = F["stop_rate_early_per_28d"], F["stop_rate_late_per_28d"]
-    pace, stay = F["pace_mean"], F["stay"]
-    states = []
-    for pid, code in pop.items():
-        g = by[pid]
-        g = g[(g["code"] == code) & (g["t"] <= ASOF)]
-        lastrow = g.iloc[-1]
-        if lastrow["acute"]:
-            states.append((code, True, lastrow["t"], 28, 0, False, 0))
-        else:
-            tp = tpl[lastrow["ref"]]
-            first = g.iloc[0]
-            states.append((code, False, lastrow["t"], tp["L"], tp["M"] - int((g["ref"] == lastrow["ref"]).sum()),
-                           bool(first["acute"]) and first["t"] >= day("2024-01-01") + 30, first["t"]))
-
-    def project(rate, e0, e1, pace, stay, lapsed=True):
-        out = {}
-        for code, acute, t, L, left, new, first_t in states:
-            p = 0.0; alive = 1.0
-            if acute:
-                while True:
-                    req = t + 28 + pace
-                    if t < W0: p += alive * e0
-                    alive *= 1 - e0
-                    if req >= W0: break
-                    t = req
-            else:
-                while True:
-                    req = t + L + pace
-                    q = (e0 if (new and t - first_t < 182) else e1) * L / 28
-                    if t < W0: p += alive * q
-                    alive *= 1 - q
-                    if left <= 0:
-                        if req <= ASOF - 21:
-                            p += alive * (1.0 if lapsed else rate)
-                        elif t < W0:
-                            p += alive * rate
-                        break
-                    if req >= W0: break
-                    t = req; left -= 1
-            out[code] = out.get(code, 0.0) + min(p, 1.0) * stay
+    def beyond(node):
+        out, stack = [], [node]
+        while stack:
+            n = stack.pop()
+            out.append(n)
+            stack.extend(down.get(n, []))
         return out
 
-    exp = project(rate, e0, e1, pace, stay)
-    rank = sorted(exp, key=lambda c: -exp[c])
-    ok("V3 the ranking", rank == F["ranking"], " > ".join(rank))
-    top = rank[0]
-    ok("V4 the top practice's figure to the nearest 10", int(round(exp[top] / 10) * 10) == F["call_expected"],
-       "%.1f" % exp[top])
-    # the forecast's open choices swept wide: the share measured within 30, 60 or 120 days, the stop hazard at half,
-    # once or twice the record's, requests paced at the issue length, the record's mean or a week later, leavers
-    # counted out or not, and a review already passed read as lapsed or at the share
-    def share(follow):
-        n2 = f2 = 0
-        for pid, lst in stpl.items():
-            for i2, (s0, ref) in enumerate(lst):
-                tp = tpl[ref]
-                if s0 < day("2024-01-01") or ref not in made.index or made.loc[ref, "count"] < tp["M"]:
-                    continue
-                last = made.loc[ref, "max"]
-                if not (day("2024-01-01") <= last <= ASOF - 150):
-                    continue
-                end = last + tp["L"]
-                if not registered(pid, tp["code"], end + follow):
-                    continue
-                n2 += 1
-                nxt = [x for x, r2 in lst[i2 + 1:] if x >= last]
-                f2 += not (nxt and nxt[0] <= end + follow)
-        return f2 / n2
-    tops = set(); members = 0
-    for follow in (30, 60, 120):
-        sh = share(follow)
-        for k in (0.5, 1.0, 2.0):
-            for pc in (0, pace, pace + 7):
-                for st in (stay, 1.0):
-                    for lapsed in (True, False):
-                        e = project(sh, e0 * k, e1 * k, pc, st, lapsed)
-                        o = sorted(e, key=lambda c: -e[c])
-                        tops.add((o[0], o[1])); members += 1
-    ok("V15 the placement and the runner-up hold across the forecast's open choices",
-       tops == {(F["ranking"][0], F["ranking"][1])}, "%d settings, %s" % (members, sorted(tops)))
+    hvreg = {r["agreement_ref"]: r for r in csv.DictReader(open(os.path.join(T, "hv_connections.csv")))}
+    start = dt.datetime(2025, 3, 31, 23, 0)
+    N = 17520
+    tb = pq.read_table(os.path.join(T, "lv_monitoring_2025-26.parquet")).to_pydict()
+    mon = {}
+    for site, t, kw, kvar, kva, pf in zip(tb["site_no"], tb["period_start_utc"], tb["kw"], tb["kvar"], tb["kva"], tb["pf"]):
+        P, Q = mon.setdefault(site, (np.zeros(N), np.zeros(N)))
+        i = utc_index(t.replace(tzinfo=None), start)
+        if kw is None or (isinstance(kw, float) and np.isnan(kw)):
+            P[i], Q[i] = kva * pf, kva * (1 - pf * pf) ** 0.5
+        else:
+            P[i], Q[i] = kw, kvar
+    nreg = sum(1 for _ in csv.DictReader(open(os.path.join(T, "secondary_substations.csv"))))
+    ok(len(mon) == nreg and len(tb["site_no"]) > 1_000_000,
+       "monitoring read: %d monitors (every registered substation), %d rows" % (len(mon), len(tb["site_no"])))
+    st = {}
+    per_day = {}
+    for r in csv.DictReader(open(os.path.join(T, "hv_settlement_2025-26.csv"))):
+        d = dt.datetime.strptime(r["settlement_date"], "%Y%m%d")
+        per_day[d] = max(per_day.get(d, 0), int(r["settlement_period"]))
+        mid = d - dt.timedelta(hours=1 if bst(d - dt.timedelta(hours=1)) else 0)
+        i = utc_index(mid + dt.timedelta(minutes=30 * (int(r["settlement_period"]) - 1)), start)
+        A, Rq = st.setdefault(r["mpan"], (np.zeros(N), np.zeros(N)))
+        A[i] = 2 * float(r["active_kwh"])
+        Rq[i] = 2 * float(r["reactive_kvarh"])
+    ok(per_day[dt.datetime(2025, 10, 26)] == 50 and per_day[dt.datetime(2026, 3, 29)] == 46 and len(per_day) == 365,
+       "settlement periods: 50 on 26 October 2025, 46 on 29 March 2026, 365 settlement days")
 
-    # R1 with each issue's dosage taken from the change log: each change belongs to the repeat the patient held
-    # for that product on its day, and a changed repeat's directions are the log's own history
-    chg = pd.read_csv(os.path.join(T, "repeat_changes_2024-01_to_2026-11.csv"), dtype=str, keep_default_na=False)
-    chg = chg[chg["field"] == "Dosage"]
-    in_force = lambda tp, t: tp["start"] <= t and (tp["end"] is None or t <= tp["end"])
-    by_product = {}
-    for ref, tp in tpl.items():
-        by_product.setdefault((tp["pid"], tp["product"]), []).append(ref)
-    hist = {}
-    for _, r in chg.iterrows():
-        when, ref = day(r["changed_on"]), r["repeat_ref"]
-        if not in_force(tpl[ref], when):
-            held = [x for x in by_product[(tpl[ref]["pid"], tpl[ref]["product"])] if in_force(tpl[x], when)]
-            ref = held[0] if len(held) == 1 else None
-        hist.setdefault(ref, []).append((when, r["old_value"], r["new_value"]))
-    ok("V14 every dose change belongs to exactly one repeat in force on its day", None not in hist,
-       "%d changes" % sum(len(v) for v in hist.values()))
-    y0, y1 = day("2025-01-01"), day("2025-12-31")
-    qs = [(day("2025-01-01"), day("2025-03-31")), (day("2025-04-01"), day("2025-06-30")),
-          (day("2025-07-01"), day("2025-09-30")), (day("2025-10-01"), day("2025-12-31"))]
-    raas = iss[iss["cls"].isin(["ACE inhibitor", "Angiotensin II receptor antagonist"]) & (~iss["cancelled"]) & (iss["t"] <= y1)]
-    r1 = {}
-    for (pid, code), g in raas.groupby(["pid", "code"]):
-        if not any(c == code and a <= y0 and (b is None or b > y1) for c, a, b in episodes.get(pid, [])):
-            continue
-        if not all(((g["t"] >= lo) & (g["t"] <= hi)).any() for lo, hi in qs):
-            continue
-        cov = set(); run = {}
-        for _, r in g.sort_values(["t", "eps"]).iterrows():
-            dose = tpl[r["ref"]]["dose"] if r["ref"] in tpl else "ONE daily"
-            h = sorted(hist.get(r["ref"], []))
-            if h:
-                dose = h[0][1]
-                for when, old, new in h:
-                    if when <= r["t"]:
-                        dose = new
-            days = int(round(r["qty"] / per_day(dose, r["strength"])))
-            s0 = max(r["t"], run.get(r["vtm"], r["t"]))
-            run[r["vtm"]] = s0 + days
-            cov.update(range(max(s0, y0), min(s0 + days, y1 + 1)))
-        a, k = r1.get(code, (0, 0))
-        r1[code] = (a + 1, k + (len(cov) >= 0.8 * 365))
-    for code, (a, k) in sorted(r1.items()):
-        v = float(pd.Series([100 * k / a]).round(1).iloc[0])
-        ok("V5 R1 percentage, %s" % code, abs(100 * k / a - F["ask_a"][code]["pct"]) < 0.05 + 1e-9,
-           "%d of %d, %.2f against %.1f" % (k, a, 100 * k / a, F["ask_a"][code]["pct"]))
+    def flow(node):
+        ref = nodes[node][3]
+        if ref is None:
+            return None
+        ref = str(ref)
+        if ref.startswith("CA-"):
+            h = hvreg[ref]
+            pi, qi = st[h["import_mpan"]]
+            if h["export_mpan"]:
+                pe, qe = st[h["export_mpan"]]
+                return pi - pe, qi - qe
+            return pi, qi
+        return mon.get(int(ref.replace("SS", "").strip()))
 
-    # R2 from the discharge summaries' coded starts
-    ev = pd.read_csv(os.path.join(T, "cvd_clinical_events_2023-2026.csv"), dtype=str, keep_default_na=False)
-    ev["t"] = [day(x) for x in ev["event_date"]]
-    # a heart attack is the diagnosis itself, however the hospital coded it (an infarction, a STEMI, an NSTEMI);
-    # unstable angina is not one, and an old infarction is history, not an event
-    mi = ev[ev["snomed_concept_id"].isin(["22298006", "401303003", "401314000"])].groupby("patient_ref")["t"].apply(list).to_dict()
-    tic = iss[(iss["vtm"] == "Ticagrelor") & (iss["strength"] == "90mg") & (~iss["cancelled"])].groupby("pid")["t"].apply(list).to_dict()
-    r2 = {}
-    for _, r in ev[ev["snomed_concept_id"] == "1290071000000109"].iterrows():
-        t = r["t"]
-        near = [m for m in mi.get(r["patient_ref"], []) if abs(t - m) <= 3]
-        if not (day("2024-07-01") <= t <= day("2025-06-30")) or not near or not (day("2024-07-01") <= near[0] <= day("2025-06-30")):
-            continue
-        a, k = r2.get(r["practice_code"], (0, 0))
-        r2[r["practice_code"]] = (a + 1, k + any(x > anniv(t) for x in tic.get(r["patient_ref"], [])))
-    for code, (a, k) in sorted(r2.items()):
-        ok("V6 R2 percentage, %s" % code, int((200 * k + a) // (2 * a)) == F["ask_b"][code]["pct"],
-           "%d of %d against %d" % (k, a, F["ask_b"][code]["pct"]))
+    save = {}
+    for f, (ids, new) in PROJ.items():
+        tot = 0.0
+        for sid in ids:
+            s = [x for x in secs if x["id"] == sid][0]
+            P, Q = np.zeros(N), np.zeros(N)
+            for n in beyond(s["b"]):
+                fl = flow(n)
+                if fl is not None:
+                    P, Q = P + fl[0], Q + fl[1]
+            dR = (R20[s["cond"]] - R20[new]) * s["m"] / 1000
+            tot += float(((P ** 2 + Q ** 2) * dR / 121.0 / 1000 * 0.5).sum())
+        save[f] = tot / 1000
+    order = sorted(save, key=lambda k: -save[k])
 
-    # every format reads back, and the goldens carry the same figures
-    wb = openpyxl.load_workbook(os.path.join(T, "pcn_practice_profiles_2026.xlsx"), read_only=True)
-    ok("V7 the profiles workbook reads back", len(list(wb.active.iter_rows(values_only=True))) >= 10)
-    brief = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "statin_continuity_sessions_brief.pdf")).pages)
-    brief = " ".join(brief.split())
-    ok("V8 the brief files the window and the rounding", "1 March to 30 June 2027" in brief and "nearest 10" in brief)
-    ok("V13 the brief files the figure as each patient's own chance on that patient's record at the searches",
-       "each patient's own chance, on what that patient's record shows at the searches, added up over the practice's "
-       "patients" in brief)
-    spec = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "icb_cvd_repeat_return_2025_spec.pdf")).pages)
-    spec = " ".join(spec.split())
-    ok("V9 the specification defines both measures", "80 per cent" in spec and "first anniversary" in spec)
-    gw = openpyxl.load_workbook(os.path.join(G, "statin_sessions_2027.xlsx"))
-    ws = gw["Placement"]
-    rows = [r for r in ws.iter_rows(min_row=5, max_row=11, values_only=True)]
-    ok("V10 the golden workbook's placement, runner-up and populations", rows[0][0] == "Sessions" and rows[0][2] == F["call"]
-       and rows[1][0] == "Next" and rows[1][2] == F["runner_up"] and all(r[3] == F["population"][r[2]] for r in rows))
-    gc = list(csv.DictReader(open(os.path.join(G, "cvd_repeat_returns_2025.csv"), encoding="utf-8")))
-    ok("V11 the golden return carries the figures", all(float(r["r1_percent"]) == F["ask_a"][r["ods_code"]]["pct"]
-                                                        and int(r["r2_percent"]) == F["ask_b"][r["ods_code"]]["pct"] for r in gc))
-    print("%d failed" % len(FAIL))
+    # ---------------------------------------------------------------- the interruption measures
+    rows = list(csv.DictReader(open(os.path.join(T, "interruptions_2023-2026.csv"))))
+    cust = list(csv.DictReader(open(os.path.join(T, "customers_by_substation_2023-2026.csv"))))
+    circ = {int(r["site_no"]): r["circuit"].replace(" (HV)", "") for r in cust}
+    den = {}
+    for r in cust:
+        if r["month_end"] == "2026-03-31":
+            den[circ[int(r["site_no"])]] = den.get(circ[int(r["site_no"])], 0) + int(r["customers"])
+    hw = openpyxl.load_workbook(os.path.join(T, "generator_hire_2025-26.xlsx"), read_only=True)
+    hires = [(int(r[4]), dt.datetime.strptime(r[8], "%d/%m/%Y %H:%M"), dt.datetime.strptime(r[9], "%d/%m/%Y %H:%M"))
+             for r in list(hw["Hire log"].iter_rows(values_only=True))[1:]]
+    inc = {}
+    for r in rows:
+        t = dt.datetime.fromisoformat(r["step_time"])
+        inc.setdefault(r["reference"], dict(meta=r, ev={}))["ev"].setdefault(int(r["site_no"]), []).append(
+            (t, int(r["customers_off"] or 0) - int(r["customers_restored"] or 0)))
+    spans = {}
+    for ref, x in inc.items():
+        if x["meta"]["voltage"] != "LV":
+            for s, ev in x["ev"].items():
+                ev.sort()
+                spans.setdefault(s, []).append((ev[0][0], min(t for t, n in ev if n < 0)))
+    ci, cml = {f: 0.0 for f in feeders}, {f: 0.0 for f in feeders}
+    lo, hi = dt.datetime(2025, 4, 1), dt.datetime(2026, 4, 1)
+    dropped_dup = held = 0
+    for ref, x in inc.items():
+        m = x["meta"]
+        t0 = dt.datetime.fromisoformat(m["incident_start"])
+        if not (lo <= t0 < hi) or m["voltage"] == "EHV" or (S0 <= t0 <= S1 and m["circuit"] in storm):
+            continue
+        if m["voltage"] == "LV":
+            s0 = next(iter(x["ev"]))
+            a = min(t for t, n in x["ev"][s0])
+            if any(p <= a < q for p, q in spans.get(s0, [])):
+                dropped_dup += 1
+                continue
+        w = 0.5 if m["category"] == "Pre-arranged" else 1.0
+        for s, ev in x["ev"].items():
+            ev.sort()
+            a, n = ev[0]
+            b = min(t for t, k in ev if k < 0)
+            g = [h for h in hires if h[0] == s and (h[1] <= a and h[2] >= b or a <= h[1] < b)]
+            if g and g[0][1] <= a:
+                held += 1
+                continue
+            if g:
+                b = g[0][1]
+            mins = (b - a).total_seconds() / 60
+            if mins < 3:
+                continue
+            ci[circ[s]] += w * n
+            cml[circ[s]] += w * n * mins
+    IIS = {f: (round(100 * ci[f] / den[f], 1), round(cml[f] / den[f], 1)) for f in feeders}
+    ok(dropped_dup > 0 and held > 0, "devices present: %d work-management jobs inside HV outages, %d sites held on generator"
+       % (dropped_dup, held))
+
+    # ---------------------------------------------------------------- against figures.json, the goldens and the write-up
+    F = json.load(open(os.path.join(BASE, "generator", "figures.json")))
+    ok(order[0] == F["call"] and order[1] == F["runner_up"], "call %s, runner-up %s" % (order[0], order[1]))
+    for f in feeders:
+        ok(round(save[f], 1) == F["projects"][f]["year_mwh"], "%s saving %.1f MWh" % (f, save[f]))
+        ok(int(round(save[f] * VALUE, -2)) == F["projects"][f]["value_gbp"], "%s value GBP %d" % (f, round(save[f] * VALUE, -2)))
+        ok(IIS[f] == (F["iis"][f]["ci"], F["iis"][f]["cml"]), "%s CI %.1f CML %.1f" % (f, IIS[f][0], IIS[f][1]))
+    ok(round(save[order[0]], 1) - round(save[order[1]], 1) == F["gap_mwh"] or abs(round(save[order[0]] - save[order[1]], 1) - F["gap_mwh"]) < 1e-9,
+       "gap %.1f MWh" % F["gap_mwh"])
+    gw = openpyxl.load_workbook(os.path.join(G, "losses_programme_2027.xlsx"), read_only=True)
+    grows = [r for r in gw["Programme"].iter_rows(min_row=5, values_only=True) if r[1] in feeders]
+    ok(len(grows) == 8 and all(abs(r[7] - round(save[r[1]], 1)) < 1e-9 and r[8] == int(round(save[r[1]] * VALUE, -2)) for r in grows)
+       and [r[0] for r in grows if r[0]] == ["Fund", "Runner-up"] and grows[0][1] == order[0],
+       "golden workbook: eight rows agree, Fund and Runner-up marked")
+    gc = list(csv.DictReader(open(os.path.join(G, "iis_feeders_2025-26.csv"))))
+    ok(len(gc) == 8 and all((float(r["ci_per_100_customers"]), float(r["cml_per_customer"])) == IIS[r["feeder"]] for r in gc),
+       "golden CSV: eight feeders' CI and CML agree")
+    sub = open(os.path.join(BASE, "submission.md")).read()
+    ok(all("%s: %.1f MWh" % (f, round(save[f], 1)) in sub and "%s: CI %.1f, CML %.1f" % (f, *IIS[f]) in sub for f in feeders),
+       "submission.md block 4 carries every saving, CI and CML")
+    print("%s  verify: %d failures" % ("PASS" if not FAIL else "FAIL", len(FAIL)))
     return 1 if FAIL else 0
 
 

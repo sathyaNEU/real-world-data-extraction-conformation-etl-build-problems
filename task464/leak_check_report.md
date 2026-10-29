@@ -1,18 +1,29 @@
 # leak check, task464
 
-**Verdict: REVIEW.** 14 files read, 14 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 35 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: marrick, window, patient, architecture, issues, record, decisive, repeats, cobbet, street, months, family, measured, forward, persistence, authorisation, re-authorisation, method, register, current, authorised, reading, carried, re-authorised, fennbridge
+Stump terms swept: section, current, export, architecture, half-hour, kestle, decisive, sections, conductor, closed, nothing, beyond, primary, metered, monitors, silent, register, substation, estate, settlement, replaced, measured, reading, construction, carries
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `icb_cvd_repeat_return_2025_spec.pdf`: 5 of 25 stump-paragraph terms appear (patient, issues, months, register, carried); read whether the document names the move
-- **REVIEW** `statin_continuity_sessions_brief.pdf`: 3 of 25 stump-paragraph terms appear (patient, record, register); read whether the document names the move
+## 3 answer figures in the pack (REVIEW 5)
+- **REVIEW** `hv_conductor_data_EDS-02-0310.pdf`: golden figure 500 appears: ...Cable, 3-core belted, Cu 0.0915 0.114 0.076 445 / 500 XLPE 95 AL 95 mm2 aluminium, XLPE, triplex Cable,...
+- **REVIEW** `hv_conductor_data_EDS-02-0310.pdf`: golden figure 300 appears: ...2024. Supersedes issue 6 (2019); issue 7 adds the 300 mm2 triplex cable and corrects the 0.04 sq in rea...
+- **REVIEW** `losses_programme_2027-28_brief.pdf`: golden figure 300 appears: ...q in copper, paper-insulated lead-covered, 3-core 300 mm2 aluminium, XLPE, triplex Ashlade CB 4 HV-2114...
+- **REVIEW** `losses_programme_2027-28_brief.pdf`: candidate 'Copsewell Town' sits beside decision vocabulary: ...jects Feeder Breaker Sections replaced (network model IDs) Existing conductor Replacement Copsewell Town CB 3 HV-20543, HV-20609 0.1 sq in copper, paper-insulated lead-covered, 3-core 300 mm2 al...
+- **REVIEW** `losses_programme_2027-28_brief.pdf`: carries 4 of 5 distinctive words of the committed call: 'Fund the Kestle reconductoring from the 2027/28 losses programme.'
 
-## 6 ranking artifacts (REVIEW 2)
-- **REVIEW** `pcn_practice_profiles_2026.xlsx`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `qof_cvd_achievement_2025-26.csv`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `hv_conductor_data_EDS-02-0310.pdf`: 3 of 25 stump-paragraph terms appear (conductor, register, construction); read whether the document names the move
+- **REVIEW** `line_loss_factors_2025-26.pdf`: 5 of 25 stump-paragraph terms appear (export, metered, substation, settlement, measured); read whether the document names the move
+- **REVIEW** `losses_programme_2027-28_brief.pdf`: 11 of 25 stump-paragraph terms appear (section, current, half-hour, kestle, sections, conductor); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 4, INFO 1)
+- **REVIEW** `customers_by_substation_2023-2026.csv`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `hv_network_model.xlsx`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `interruptions_2023-2026.csv`: names 5 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `losses_programme_2027-28_brief.pdf`: names 5 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `secondary_substations.csv`: names 5 of 8 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -20,8 +31,6 @@ Stump terms swept: marrick, window, patient, architecture, issues, record, decis
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
-
-## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 
@@ -36,50 +45,16 @@ Stump terms swept: marrick, window, patient, architecture, issues, record, decis
 
 ## Solver's-eye read
 
-Isolated reader (general-purpose, sonnet, medium), read 5 of 5, on the final prompt and pack (target.zip
-b4b0fc88223e45b9a5097174052794cd). Reads 1 to 4 ran on earlier states of the same pack and returned the same
-answers; their realism notes were acted on in the generator.
+One isolated reader (general-purpose, sonnet, medium), 2026-10-28, on a fresh copy of prompt.txt and target/ only. It
+flagged that the session's startup context (the repository's recent commit subjects) named the build's feeder, the
+generation site and the mechanism before it opened a file, and that it cited only what it found in the copy.
 
-1. Decisive step stated: none. The brief's lines define the population and the outcome, not a method.
-2. A file ranking the candidates on the question: none.
-3. A file existing only to help: none; the product crosswalk is an ordinary join table.
-4. A figure or name reading as the answer: none.
-5. Literal reading: the brief's population (registered and issued a statin by the practice from 1 September to
-   30 November 2026, still registered on 30 June 2027) with no statin issued from 1 March to 30 June 2027, an
-   expected number rounded to 10 and compared before rounding; the specification's R1 and R2 definitions fix the
-   return literally, R2 counting 90mg issues at any practice. This is the golden's reading.
-6. What decides the main answer: an analytical choice, a forward expected count whose estimation method no file
-   states; not a field reading, a filed procedure or a planted defect.
+1. Decisive-step sentence: none. Closest: the brief's selection rule and "the section's I2R loss is worked out at the current that section carried in that half-hour", stated identically for all eight; no file says a section's current must be rebuilt from topology rather than read off the breaker.
+2. Ranking file: none.
+3. Help file: iis_reporting_definitions_2025-26.pdf (definitions, not raw data); hv_conductor_data_EDS-02-0310.pdf decodes the model's conductor codes. Ruled harmless: the first is the network performance team's governing definitions for the return (an organisation's own rule, cited by the brief), the second the asset policy's engineering data sheet; neither describes a column or how the files join.
+4. Answer-like figure or name: none.
+5. Literal sentence: the brief's sizing paragraph fixes the window, the per-section per-half-hour paired comparison, the phase balance, 20 C and no loss or voltage-drop add-on, and leaves open how a section's current is obtained where it is not the breaker's reading. Ruled: the golden is that sentence's only physical execution (the current each replaced section carried, from every connection beyond it), so the literal reading is the golden.
+6. What decides: an analytical choice; it falls out of combining the network model's topology with the generation connections in hv_connections.csv against a SCADA that meters only each breaker.
+7. Realism: none (SCADA distributions, the solar meter's day and night profile, the hire log's dates and the PDFs' metadata read as ordinary exports; the brief reads as committee prose).
 
-Prompt: names only the two deliverables, no input file and no method; presupposes nothing.
-
-REVIEW lines: the practice profiles, harmless (list size and staffing, no statin or lapse figure); the QOF file,
-harmless (a different measure and period, a declared distractor).
-
-Realism: minor notes only (the brief's timetable and the specification's version line read a little tidy; file
-names carry their date range).
-
-### Read 6, the reshipped pack
-Isolated reader (general-purpose, sonnet, medium), read 6, on the reshipped prompt and pack (target.zip
-ab3f7d9afa77303ad3b4b8888f1eda6c), run because the determinism repair added a sentence to the board brief. Reads
-1 to 5 ran on earlier packs.
-1. Decisive step stated: none. The reader quoted the brief's selection rule ("The board will place the sessions at
-   the practice with the largest expected number of patients who:"), the estimand the prompt points at, and said
-   it states the rule, not a result or a method.
-2. A file ranking the candidates on the question: none.
-3. A file existing only to help: the reader named cvd_product_lookup.csv, a drug-name crosswalk between the two
-   systems. Ruled harmless in the main thread: the network's own join table, used for every medicine on both
-   systems, carries no patient or practice row and says nothing about stopping, repeats or reviews.
-4. A figure or name reading as the answer: none.
-5. Literal reading of the brief's new sentence: each practice's patients meeting both bullets, the figure the sum of
-   each patient's own chance of no statin issued from March to June 2027, compared unrounded and reported to the
-   nearest 10; it fixes the WHAT and leaves how each patient's chance is modelled open. This is the golden's
-   reading.
-6. What decides the main answer: an analytical choice, a forward probability per patient built from the record,
-   with no field, code or stated procedure handing over the chance.
-REVIEW lines: the practice profiles, harmless (list size, staffing, systems, sessions); the QOF file, harmless
-(four unrelated indicators).
-Realism notes, ruled in the main thread: the PDFs' dates read US Eastern to the reader, but the raw metadata is
-D:20261203101500+00'00' and D:20260715143000+00'00', GMT, and the reader's tool printed them in its machine's
-zone; system B's pseudonym equals the register's, which is the network's one pseudonym across systems by design
-(and those files are byte-identical to the shipped pack); nothing else.
+a to h: all harmless (the data sheet's constants, the losses value the prompt itself applies, the project table treating all eight alike, the customer, model and interruption files holding no saving, CI, CML or ranking).

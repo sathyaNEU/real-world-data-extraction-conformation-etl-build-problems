@@ -1,4 +1,4 @@
-# task464 design note: the 2027/28 losses reconductoring at Wennock Cross (architecture 10)
+# task464 design note: the 2027/28 losses reconductoring at Copsewell Cross (architecture 10)
 
 Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the measured
 screens at the foot of this file before resuming. Architecture 1 (the Wendlemere building emissions slate) was
@@ -23,9 +23,9 @@ estimator, forces its construction.
   one shared meter: a meter shared by two supplies, nothing like a section's net flow).
 - **The WARNs answered.** `overuse.forum` (committee_or_panel in 47 builds): the operator's investment review
   panel is who decides a losses project, and the honest forum; forum, forcing event and organisation family are
-  all clear of the live window (task488, task270, task268). `overuse.shape` (07 in 3 of the last 12): each
-  project's saving in each quarter of the regulatory year is the grid the panel's paper carries, the pick the
-  project with the largest year. The structural NOTES are differentiated on the card: task101 (a threshold cut
+  all clear of the live window (task488, task270, task268). `overuse.shape` (07 in 3 of the last 12): the
+  panel paper's grid is the eight feeders by three measures (the losses each project removes and its value, the
+  feeder's CI and its CML), the pick the project with the largest saving. The structural NOTES are differentiated on the card: task101 (a threshold cut
   from a published total less the decision's own payments) and task121's second architecture (a unit
   re-attributed through a second party's identifier). Two axes were redrawn at the first check and the
   replacements are the honester labels: `context_artifact` monitoring_export (banned against task488) became
@@ -49,7 +49,7 @@ estimator, forces its construction.
   technical losses one passing task303 line; delay propagation and turnaround, screened for a rejected rail
   candidate, return task469's note (below).
 - **Niche:** a distribution network operator's 2027/28 losses programme funding one reconductoring project among
-  eight 11 kV feeders out of Wennock Cross primary, each project replacing its feeder's remaining old conductor,
+  eight 11 kV feeders out of Copsewell Cross primary, each project replacing its feeder's remaining old conductor,
   sized as the I2R technical losses the new conductor would have removed on the 2025/26 regulatory year's
   half-hourly flows and valued at the regulator's losses value.
 - **Strategy:** `decomposition_attribution` (the feeder's correctly metered flow split section by section, where
@@ -58,7 +58,7 @@ estimator, forces its construction.
   rule filed `false`, official decoy `false`, validated decoy `false`, `stump_class: analytical`.
 - **Data-native sentence.** The Hob Moor solar farm sits at the far end of Kestle feeder, beyond about 4 km of
   the feeder's original 0.1 sq in copper overhead line, and the Kestle Park estate that takes most of its export
-  on weekdays is fed from the first two kilometres out of Wennock Cross; so on a sunny day the old line carries up
+  on weekdays is fed from the first two kilometres out of Copsewell Cross; so on a sunny day the old line carries up
   to 5 MW back toward the estate while the feeder-head meter reads only the estate's load less the export, the
   estate's and the village's monitors read only their own loads, and no meter on the network reads the old line's
   flow at all.
@@ -70,26 +70,27 @@ estimator, forces its construction.
   structure is where along the line each flow runs, not when a device acts. task308 credits a unit with the hours
   it would really have been available; nothing here is about availability. task258 carries a measured effect only
   where its mechanism reaches; here no effect is carried onto any unit, the loss being physics on the record.
-- **Fiction.** An invented licence area in the English West Midlands, GBP, Marchway Power Networks and its Wennock
-  Cross 33/11 kV primary substation with eight 11 kV feeders (Wennock Town, Ashlade, Oxenford Lane, Kestle,
+- **Fiction.** An invented licence area in the English West Midlands, GBP, Marchway Power Networks and its Copsewell
+  Cross 33/11 kV primary substation with eight 11 kV feeders (Copsewell Town, Ashlade, Oxenford Lane, Kestle,
   Pennick Hill, Redburn, Stowmere and Ingle Road), the Hob Moor Solar Park (5 MW export, on Kestle), the Crane
   Hill wind turbine (1.5 MW, on Stowmere), the Ashlade Community Hospital's CHP (1.2 MW, on Ashlade) and the
   Kestle Park Industrial Estate. Forum `committee_or_panel` (the investment review panel), forcing event
   `vote_or_meeting` (the panel's 9 December 2026 meeting), org family `utility_or_infrastructure`. People drawn
   with `guard.py names --geo england --seed 464`: Gail Dobson (losses strategy lead), Ricky Fisher (network
   planning engineer), Tracy Parkes (network data lead).
-- **Deliverables:** `losses_programme_2027.xlsx` (each project's saving by quarter and year, in MWh and at the
-  losses value, and the pick), `losses_saving_2027.png` (the eight projects' savings, the pick marked) and
-  `iis_feeders_2025-26.csv` (each feeder's 2025/26 interruption measures and its worst-served customers).
+- **Deliverables:** `losses_programme_2027.xlsx` (each project's 2025/26 saving in MWh and its value at the
+  losses value, the pick and the runner-up), `losses_saving_2027.png` (the eight savings, one labelled bar each,
+  the pick highlighted) and `iis_feeders_2025-26.csv` (each feeder's 2025/26 CI per 100 customers and CML per
+  customer).
 - **The call faces forward:** the panel funds the 2027/28 project in December 2026; each project is sized on
   the latest complete regulatory year's metered flows, 1 April 2025 to 31 March 2026, which is closed history,
   so no forecast enters the graded figure.
 - **Measured at the draw** on the clean-truth prototype (scratch `a10/proto3.py`, three solar seeds, before any
-  row was cut; the cut pack's figures go in `## Ladder`). MWh of losses a year each project would have removed:
+  row was cut; superseded by the cut pack's figures in `## Ladder`). MWh of losses a year each project would have removed:
 
   | feeder | R0 head current through the replaced sections | R1 head current allocated by transformer kVA | R2 sections' flows from the substations' loads | R3 net of every load and generator beyond each section (golden) |
   |---|---|---|---|---|
-  | Wennock Town | 46 | 39 | 40 | 40 |
+  | Copsewell Town | 46 | 39 | 40 | 40 |
   | Ashlade | 59 | 21 | 20 | 14 |
   | Oxenford Lane | 596 | 23 | 14 | 14 |
   | Kestle | 394 to 400 | 5 | 2 | 51 to 59 |
@@ -98,9 +99,9 @@ estimator, forces its construction.
   | Stowmere | 48 to 52 | 14 to 16 | 19 | 14 to 15 |
   | Ingle Road | 20 | 6 | 6 | 6 |
 
-  Each rung names its own feeder (Oxenford Lane, Pennick Hill, Wennock Town, Kestle), and the golden reorders the
+  Each rung names its own feeder (Oxenford Lane, Pennick Hill, Copsewell Town, Kestle), and the golden reorders the
   whole slate: Kestle is second on the head current, last on both one-way constructions and first on the net flow,
-  1.27 to 1.47 times Wennock Town. Kestle's saving falls 82 per cent in the summer half, Wennock Town's 63 per cent
+  1.27 to 1.47 times Copsewell Town. Kestle's saving falls 82 per cent in the summer half, Copsewell Town's 63 per cent
   in the winter half. Stage 2 tunes the build so that rung 0's figures sit at plausible shares of each feeder's
   energy, the feeder head never reverses outside a handful of sunny holiday middays, and the golden margin clears
   1.30 on the cut pack's own weather.
@@ -109,25 +110,24 @@ estimator, forces its construction.
 
 A competent analyst builds this without hesitating, from the prompt's words and the files' grain.
 
-1. Conform the primary substation's SCADA (UK local time across both clock changes, amps per phase) into each
-   feeder's half-hourly current for 1 April 2025 to 31 March 2026.
-2. Read each project's replaced sections, their lengths and conductor codes from the network model, and the old
-   and new conductors' resistances from the conductor catalogue.
-3. Take each half-hour's losses removed as three times the feeder current squared times the change in the
-   replaced sections' resistance, sum by quarter and over the year, and value the year at the losses value.
+1. Conform the primary substation's SCADA (UK local time across both clock changes, half-hour ending, amps per
+   phase) into each feeder's half-hourly current for 1 April 2025 to 31 March 2026.
+2. Read each project's replaced sections (the brief's IDs), their lengths and conductors from the network model,
+   and the existing and replacement conductors' resistances at 20 C from the data sheet.
+3. Take each half-hour's loss removed as three times the feeder current squared times each replaced section's
+   change in resistance, sum over the year, and value it at GBP 64.80 per MWh.
 4. Fund the project with the largest year.
 
-- **Ends on:** Oxenford Lane, about 596 MWh a year (prototype; the cut pack's figure replaces it at stage 2).
-- **Golden:** Kestle, about 55 MWh a year, with Wennock Town next at about 40.
+- **Ends on:** Oxenford Lane, 558.2 MWh a year.
+- **Golden:** Kestle, 74.2 MWh a year, with Copsewell Town next at 48.2.
 
 ## Stump sentence
 
-A competent analyst carries each feeder's head current through the sections its project replaces and funds
-Oxenford Lane at about 596 MWh a year, charging its long old overhead line with a feeder current it never carries;
-rebuilt from the secondary substations' loads beyond each section the flows fund Wennock Town at about 40, because
-no load sits beyond Kestle's old line worth the name; but the Hob Moor solar farm beyond it exports up to 5 MW back
-through that line to the Kestle Park estate, and on the net of every load and generator beyond each section Kestle
-removes about 55 MWh a year, the most of the eight.
+A competent analyst carries each feeder's metered head current through the sections its project replaces and funds
+Oxenford Lane at 558.2 MWh a year, charging its old overhead line with a current that line never carries; rebuilt
+from the loads beyond each section, the flows fund Copsewell Town at 48.2, because almost no load lies beyond Kestle's
+old line; but the Hob Moor Solar Park beyond it exports up to 5 MW back through that line to the Kestle Park estate,
+and on the net of every load and generator beyond each section Kestle removes 74.2 MWh a year, the most of the eight.
 
 ## Three rules
 
@@ -169,28 +169,32 @@ removes about 55 MWh a year, the most of the eight.
 
 - **Not semantics:** every field is read correctly on the easy route: the SCADA's amps, the monitors' kW and kVAr,
   the export meters' kWh, the network model's sections and the catalogue's resistances all mean what they say, and
-  the route still files Oxenford Lane or Wennock Town, because what it omits is where along the line each flow runs,
+  the route still files Oxenford Lane or Copsewell Town, because what it omits is where along the line each flow runs,
   which no field states and no reading of a field supplies.
 
-- **Not rule application:** no shipped sentence says how a section's current is built; the losses programme files
-  the estimand (the I2R losses each project's new conductor removes, at each replaced section's own current, on the
-  2025/26 metered flows, at 11 kV nominal and the catalogue's 20 degree resistances) and nothing about the flow's
-  construction. The enumerated family (head current, kVA allocation, one-way loads, net flows) spreads Kestle's
-  figure from 2 to 400 MWh a year and names four feeders; the standing family, the net-flow constructions under the
-  filed conventions with every connection's flow taken as metered, spreads it by under one printed unit and names
-  one feeder; what rules the others out is no clause but Kirchhoff's current law on the network's own topology.
+- **Not rule application:** no shipped sentence says how a section's current is found; the brief files the
+  estimand (each replaced section's I2R loss at the current that section carried in each half-hour, on the existing
+  against the replacement conductor, balanced at 11 kV nominal, the data sheet's 20 C resistances, nothing added for
+  the network's own losses) and nothing about the current's construction (`checks.py` R3c greps it for beyond,
+  downstream, net, export, generation, solar, monitor and metered: none). The enumerated family (head current,
+  kVA allocation, one-way loads, net flows, daily means) spreads Kestle's figure from 1.4 to 350.1 MWh a year and
+  names four feeders; the standing family, the half-hourly net-flow constructions under the filed conventions,
+  spreads it by 0.1 MWh (74.1 on active power alone to 74.2) and names one feeder; what rules the others out is no
+  clause and no one-group-by comparison but Kirchhoff's current law on the network's own topology, which no file
+  states.
 
 - **Analyst test:** the easy route is the default path, the feeder head's current carried through every replaced
-  section, and it files Oxenford Lane at about 596 MWh a year; the careful one-way route, each section's flow from
-  the substations' loads beyond it, files Wennock Town at about 40. Changing the decisive step alone, the net of
-  every load and generator beyond each section, files Kestle at about 55.
+  section, and it files Oxenford Lane at 558.2 MWh a year; the careful one-way route, each section's flow from the
+  loads beyond it (the monitors and the HV customers' imports), files Copsewell Town at 48.2. Changing the decisive
+  step alone, the net of every load and generator beyond each section, files Kestle at 74.2.
 
-- **Estimand:** the losses programme brief files it: for each project, the energy in MWh that the I2R losses of
-  the sections it replaces would have been lower over the 17,520 half-hours of 1 April 2025 to 31 March 2026 had
-  those sections carried their metered half-hourly flows on the new conductor, at 11 kV nominal and the conductor
-  catalogue's resistances at 20 degrees, every connection's flow taken as metered at the connection and the
-  network's own losses left out of the flows, by quarter and for the year, rounded to the nearest MWh; the programme
-  funds the project with the largest year.
+- **Estimand:** `losses_programme_2027-28_brief.pdf` files it: each project on the half-hours from 00:00 on 1
+  April 2025 to 24:00 on 31 March 2026, UK time; for each half-hour and each section the project replaces, the
+  section's I2R loss at the current that section carried, once on its existing and once on its replacement
+  conductor, the saving the difference summed over the sections and the half-hours; the current balanced across the
+  three phases at 11 kV nominal, the data sheet's resistances at 20 C, nothing added for the network's own losses or
+  voltage drop; reported in MWh for the year and valued at GBP 64.80 per MWh; the panel funds the project with the
+  most losses removed. The prompt rounds MWh to one decimal place and values to the nearest GBP 100.
 
 - **No decoy:** nothing is planted to be caught. There is no memo, draft or stakeholder figure arguing for a
   feeder, no copied block and no hidden rule; the solar farm, the estate, the hospital CHP and the wind turbine are
@@ -205,6 +209,218 @@ removes about 55 MWh a year, the most of the eight.
   beyond them, and that an embedded generator large against the load beyond it raises the losses on the sections
   between it and the load it supplies; no build on file prices a loss on a network's flows or two-way flow through
   a line.
+
+
+## Readability screen
+
+Tests on paper, one row per rung (`stumping` 2.1): 1 filed sentence, 2 schema, 3 reflex, 4 control bench,
+5 hygiene battery, 6 linear, 7 dedicated organ. The reflex row is written from what the field does to the
+deciding quantity, a section's current: carry the metered feeder current, allocate it by connected capacity, or
+build it from the loads beyond.
+
+| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the feeder-head current through every replaced section (default path) | the brief's "current" with a file of currents beside it | SCADA carries amps per feeder | fires: the metered current is the field's first move | none | none | one square and a sum | none | readable |
+| R1 the head current allocated to each section by the transformer kVA beyond it | none | the register's kVA and the model's topology | fires: the planning approximation when sections are unmetered | none | none | a ratio of the head current | none | readable |
+| R2 each section's flow from the loads beyond it (the monitors and the HV customers' imports) | none | the monitors keyed to the model's nodes | fires for a careful solver who walks the topology | none | none | no | none | readable |
+| R3 (decisive) the net of every connection beyond each section, the generators' exports subtracted half-hour by half-hour | silent: the brief names the estimand, never how a section's current is found (R3c) | silent: the export runs in the settlement file's export MPAN rows, which R2 also reads for the imports; no column marks a direction | silent: the reflexes above all treat the current as load-driven, and a generator 4 km out cannot move a load-built current | silent: no control scores the constructions; the head SCADA ties to the connections under any accounting that keeps every meter, and no replaced section sits at a head | silent: no duplicate, key or count tie touches it | silent: a topology walk, a signed sum of eleven streams and a square every half-hour | silent: the monitors, the settlement data and the network model each serve R2 as much as R3, and the export MPANs are settlement's routine rows | silent |
+
+## Semantic fork table
+
+Every term in the main ask and every convention the main computation needs, each asserted in `generator/checks.py`
+under its id.
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the sections a project replaces | the brief's section IDs | every closed section of the same old conductor on the feeder, spurs included | same call (Kestle) | the brief's table, "Sections replaced (network model IDs)" |
+| SF2 | saving | existing-conductor loss less replacement-conductor loss | the existing conductor's whole loss | same call | "the project's saving is the difference" |
+| SF3 | current | apparent: active and reactive flow balanced over three phases at 11 kV | active power alone | same call (Kestle 74.1) | "the current is taken as balanced across the three phases at 11 kV nominal" |
+| SF4 | the year | 17,520 half-hours, UK time | the UTC year | same call, every saving to the same 0.1 MWh | "00:00 on 1 April 2025 to 24:00 on 31 March 2026, UK time" |
+| SF5 | resistance | the data sheet at 20 C | the data sheet at maximum conductor temperature | same call | "the conductor data sheet's values at 20°C" |
+| SF6 | the network's own losses | nothing added to a section's current | the downstream sections' and transformers' losses added | same call | "nothing is added to a section's current for the network's own losses" |
+| SF7 | a monitor half-hour with no record | the substation drew nothing (off supply, or Redburn Meadows before energisation) | interpolated across the gap | same call | "the current that section carried in that half-hour"; every gap on a replaced section's path is an outage (M5) |
+| SF8 | the feeder's arrangement | the closed sections, radial from each breaker | the normally-open points closed | same call (the closed graph is a forest; asserted) | the network model's "Normal state: Open" |
+| SF9 | the most losses | the largest year's saving | saving per pound | same call; no cost ships | the brief: "funds the project whose replacement conductor would have removed the most losses" |
+| SF10 | a project's value | the unrounded saving at GBP 64.80, to the nearest GBP 100 | the rounded saving at GBP 64.80 | same values, all eight | asserted identical |
+| SF11 | the gap | the difference of the two savings | the difference of the rounded savings | same figure, 26.0 | asserted identical |
+| SF12 | an HV customer's flow | its settlement import less its export | its import alone | the decisive step, not a reading: asserted that every import and export MPAN ships | settlement records both directions for every HV generator |
+| SF13 | a settlement period | the UK-time half-hour, 46 and 50 on the clock-change days | read as a UTC half-hour | same call | the periods' own count on 29 March and 26 October |
+| SF14 | a first-generation monitor's reading | kVA times power factor and its reactive complement | kVA read as kW | same call | the vendor's own columns |
+| SF15 | the shared monitoring export | Copsewell Cross's substations only | Feltmoor's rows summed in | same call; no Feltmoor site sits on a Copsewell Cross node | the register's primary column |
+
+## Ladder
+
+Measured on the cut pack by `generator/answers.py` (`figures.json` "rungs"), MWh a year each project removes:
+
+| Feeder | R0 head current | R1 kVA share | R2 loads beyond | R3 net beyond (golden) |
+|---|---|---|---|---|
+| Copsewell Town | 101.1 | 46.9 | 48.2 | 48.2 |
+| Ashlade | 41.8 | 7.9 | 9.3 | 7.7 |
+| Oxenford Lane | 558.2 | 10.5 | 8.9 | 8.9 |
+| Kestle | 350.1 | 2.1 | 1.4 | 74.2 |
+| Pennick Hill | 453.1 | 79.8 | 19.9 | 19.9 |
+| Redburn | 399.4 | 24.8 | 22.6 | 22.6 |
+| Stowmere | 62.1 | 10.6 | 23.6 | 17.5 |
+| Ingle Road | 15.8 | 4.5 | 4.2 | 4.2 |
+
+- **Rung winners and margins:** R0 Oxenford Lane over Pennick Hill 1.232, Kestle fourth; R1 Pennick Hill over
+  Copsewell Town 1.700, Kestle last; R2 Copsewell Town over Stowmere 2.045, Kestle last; R3 Kestle over Copsewell Town
+  1.540. Four rungs, four feeders, every margin over 1.15, the final 1.54.
+- **Dominance:** the golden's edge on the net flow, 1.540, against 1.2 times the decoy's edge on the head current,
+  1.478 (L6).
+- **Gate F, the cheap routes:** of the eleven constructions `answers.routes` enumerates (head current by phase
+  amps and by MW and MVAr, three capacity allocations, monitors alone, loads beyond, the net flow, the net flow on
+  active power alone, the export added as load, daily mean flows), three land Kestle and all three are the
+  half-hourly net-flow construction executed with or without its reactive part or with the export's sign wrong
+  (74.2, 74.1 and 92.4); every route that does not build a section's current from the connections beyond it with
+  the generators in, at the half-hour, misses (L7). The allocation that counts the solar farm's export capacity
+  as connected capacity names Pennick Hill (79.8 against Kestle's 55.5); daily mean flows name Copsewell Town (42.5
+  against 30.5).
+- **Clean truth:** on the generator's world before any file is cut the head current files Oxenford Lane and the
+  one-way flow Copsewell Town (R2 in `checks.py`); the pack's golden matches the clean truth to 0.0001 MWh (L0).
+- **Season:** Kestle's saving falls 82 per cent in the summer half-year, Copsewell Town's 63 per cent in the winter
+  half: the solar farm's export carries Kestle's.
+
+## Closure table
+
+| # | Axis | Reading here | Move |
+|---|---|---|---|
+| 1 | Population | the eight projects the brief lists, each its listed sections | filed in the brief's table; SF1 C1 |
+| 2 | Unit of account | the project, its sections summed | the brief: "summed over its sections" |
+| 3 | Attribution window | the half-hours of 1 April 2025 to 31 March 2026, UK time | filed; SF4 C1 |
+| 4 | As-of dating | the network model's normal arrangement at the extract, unchanged through the year | the model is the year's arrangement; no switching record moves a section; C1 |
+| 5 | Version basis | the one extract of 12 June 2026; no revised metering ships | C1 |
+| 6 | Denominator | none on the call; the asks' customers at 31 March 2026 | filed in the reporting definitions |
+| 7 | Weighting | every half-hour equally, summed | the estimand sums half-hours |
+| 8 | Window length | one regulatory year | filed |
+| 9 | Boundary inclusivity | the year's first and last half-hours carry night flows | SF4 asserts the UTC alternative lands every saving to the same 0.1 MWh |
+| 10 | Rounding path | savings rounded once at the end; values from the unrounded saving | SF10, SF11 C1 |
+| 11 | Tie-break | none needed: the final margin is 1.54 | L5 |
+| 12 | Maturity and censoring | closed history; no window past the extract | C1 |
+| 13 | Order of operations | sum the flows, then square each half-hour | the estimand: the loss at the current each half-hour; a daily mean first files Copsewell Town (L7) and is ruled out by "in that half-hour" |
+| 14 | Row order | no step depends on file order | C1 |
+| 15 | Duplicate resolution | none on the call's files (one row per monitor half-hour, one per MPAN period) | asserted by the readers' shapes |
+| 16 | Identity normalisation | site numbers written "SS 123456" and "123456", nodes "WX123" and "WX 123" | both forms resolve to one site; C1 |
+| 17 | Netting against gross | a section's current is the net of the flows beyond it, export against load | the decisive step; physics, not a filed rule |
+| 18 | Dimensional units | kW and kVAr, kVA and power factor, kWh per half-hour, amps per phase | units in the headers; SF14 |
+| 19 | Code and status semantics | conductor codes through the data sheet; Normal state Open | SF8; the data sheet's asset codes |
+| 20 | Integerisation | none | C1 |
+| 21 | Clause scope | "nothing added for the network's own losses" governs the current, not the resistance | SF6 same call |
+| 22 | Forward window contents | none: the call is sized on closed history for a 2027/28 decision | C1 |
+
+## Literal reader
+
+Executed word for word, the brief's estimand asks for each replaced section's current in each half-hour, and the
+pack meters no replaced section: every one sits beyond the first section out of its breaker, so the only literal
+execution builds each section's current from the connections beyond it on the normal arrangement, every metered
+flow in, and lands Kestle at 74.2 with Copsewell Town at 48.2. The head current is a different quantity (the first
+section's current), and carrying it into the far sections violates "the current that section carried"; the one-way
+construction leaves a metered flow out. Every convention the computation needs has a row in the fork table, each
+closed by a quoted sentence or a same-call assertion, and no reading difference moves the call.
+
+## Oracles
+
+- **The feeder-head SCADA** (a distractor): ties to the sum of the connections' metered flows plus the network's
+  own losses on every feeder, under any construction that keeps every meter; it never meters a replaced section,
+  so it confirms the accounting at the breaker and arbitrates no section's current. Its own route is rung 0.
+- **The HV connections register's capacities** (import kVA, export kW): describe the connections, not their
+  flows; the allocation that uses them names Pennick Hill.
+- **The line loss factor statement** (a distractor): area-wide averages by connection class, stated not to
+  describe any circuit; it names no feeder.
+- **The conductor data sheet's maximum-temperature column**: ruled out by the brief's 20 C (SF5, same call).
+- No figure in the pack ties only under the golden, no shipped file states a section's flow or loss, and nothing
+  ranks the projects (R3a).
+
+## Ask sheet
+
+Three asks, decoupled from the call (H18): each is a measure every feeder carries that the call does not turn on.
+
+1. **Each project's 2025/26 saving and its value** (eight MWh, eight GBP): the construction layer, the decisive
+   construction's own output on every project; the cracker has it, so it never stands alone.
+2. **Each feeder's CI per 100 customers** (eight figures) and 3. **each feeder's CML per customer** (eight
+   figures), as the network reports them for 2025/26 under `iis_reporting_definitions_2025-26.pdf`.
+
+**Devices (silent, on rows the call never reads):**
+- **D-A, mobile generation, `generator_hire_2025-26.xlsx`:** the control system logs every site on a switched-out
+  or faulted section as off supply until the network is restored; the generation team's hire log, a cost record of
+  units, fuel and charges keyed to its own deployment jobs, is the only record that a generator was connected at a
+  site. A site a generator kept on supply through a planned outage never lost supply (it leaves CI and CML); a site
+  a generator re-supplied during a fault was restored when it was connected (its minutes end there). Found only by
+  joining the hire log to the interruption log on site and time; no filed sentence names generators. Moves every
+  feeder's CI and CML (D1, D4).
+- **D-B, cross-system duplicates:** a work-management LV job raised at a site whose customers were already off in
+  an HV incident records the same customers again, opening inside the HV outage and closing after it; its
+  reference, cause and times are its own and no field links it. Found only by the cardinality the hygiene battery
+  does not run (customers off at a site at once exceeding the site's customers). Moves every feeder's CI and CML
+  (D1, D3: no job shares a bound with its outage).
+- **Hazards (filed rules the cracker executes):** short interruptions under 3 minutes, pre-arranged interruptions
+  at half weight, the transmission trip of 19 August 2025, the accepted storm of 6 to 7 January 2026 on three
+  circuits, customers at 31 March 2026, staged restoration; each moves several feeders' figures (D2).
+- **Separation line:** the call reads the network model, the registers, the monitors, the settlement data and two
+  documents; the asks read the interruption log, the customer counts, the hire log and the reporting definitions.
+  No device or hazard row sits in the call's files, and an outage reaches the call's meters only as the metering
+  the network really recorded (a site off supply draws nothing, with or without a generator on its LV board), so no
+  device moves a section's current (X1, X2).
+
+**Cracker sheet** (`generator/ceiling.py` on the cut pack, md5 recorded in `ceiling.json`):
+
+| Ask | The cracker's route | CI or CML kept | Verdict |
+|---|---|---|---|
+| CI per 100 customers, eight feeders | every filed rule executed, the hygiene battery run, the hire log unused, the LV jobs kept | 0 of 8 | miss |
+| CML per customer, eight feeders | the same | 0 of 8 | miss |
+
+**Mirror sheet:** the mirror stops at rung 0 (Oxenford Lane), keeps none of the sixteen construction figures and
+none of the sixteen interruption figures, and two of the chart's four named parts (a labelled bar per project).
+
+- **Pair ceiling:** 45.3 (the cracker 75.6 with 20 of 36 ask criteria, all of them construction and chart; the
+  mirror 15.1 with 2 of 36).
+- **Mirror leakage:** 5.6 per cent of ask weight.
+- **Measured by:** generator/ceiling.py
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack, 2026-10-28 (architecture 10, the pack of `generator/build.py`).
+
+- **Rule 1, the domain:** the deciding quantity on the pack is each replaced section's I2R loss at its own
+  half-hourly current, which the brief files and no file states; the swap test fails on the pack's own nouns
+  (no pipeline or road has a conductor resistance per kilometre, a source meter that nets an export against
+  draw-offs, or a loss in the square of a current).
+- **Rule 2, two layers:** Layer 1 on the pack is the SCADA's local half-hour-ending clock and phase amps, the
+  monitors' UTC and the first-generation monitors' kVA and power factor, the settlement periods with 46 and 50
+  on the clock-change days, the two spellings of site numbers and node IDs, the replaced monitor's gap, Redburn
+  Meadows energised in October and the shared Feltmoor rows; each is asserted neutral on the call (SF4, SF7,
+  SF13 to SF15, M1 to M5). Layer 2 is the net-flow construction (L1 to L8).
+- **Rule 3, the decisive step:** analytical. A strong analyst who cleans every clock and unit and reads every
+  rule still files Oxenford Lane on the head current or Copsewell Town on the loads beyond; only building each
+  section's current from every connection beyond it, the export subtracted, lands Kestle (R2, R3b, R3c, L7).
+  No decoy, no withheld rule (the brief files the estimand and no construction), no field reading decides it.
+- **The mess carries no stump:** with every Layer 1 item mishandled one at a time the call holds (M1, SF4,
+  SF13, SF14), and on the clean truth the easy routes still miss (R2).
+- **leak.py's design-note vocabulary lines, ruled here:** the data sheet's "conductor", "register" and
+  "construction" are its own column and scope words and name no move; the line loss factor statement's
+  "export", "metered", "substation", "settlement" and "measured" are its genre's words, and it states that its
+  factors describe no circuit; the brief's "section", "current", "half-hour", "Kestle" and "conductor" are the
+  estimand and the project table, and the brief says nothing of how a section's current is found (R3c).
+- **Stage 4, 2026-10-28:** the leak reader (sonnet, medium, a fresh copy of the prompt and the pack) found no
+  decisive-step sentence, no ranking file, no answer-like figure and no realism tell; its question 3 named the
+  reporting definitions and the conductor data sheet, ruled harmless (the organisation's governing definitions and
+  its engineering data sheet; neither describes a column or a join); its question 5 found the brief fixing
+  everything but how a section's current is obtained, whose only physical execution is the golden; its question 6
+  read the decisive step as an analytical choice. It flagged that the session's startup context named the
+  mechanism before it opened a file (the repository's commit subjects), so its read is not fully cold. The
+  determinism judge (pass 10, `determinism_check_report_pass10.md`) returned DETERMINISTIC and APPROVE, Gate G
+  method_or_model_selection analytical_non_defect (the card's decomposition_attribution, a naming difference
+  only), Gate H domain pass, layers pass, decisive step analytical; its thread rebuilt the topology and filed
+  Kestle at 73.9 against 74.2 and Copsewell Town at 48.18, and spot-checked Kestle's CI at about 105.4 against
+  105.1. The CI gap is exactly the denominator without Kestle's two HV-connected customers (630 against 632),
+  which the customer file then labelled under a separate "Kestle (HV)" circuit string while the definitions count
+  every HV-connected customer as one: the file now carries the plain circuit and a connection column (LV or HV),
+  a data-only fix that moves no graded figure. The 73.9 is a half-hour alignment or active-power-only slip (each
+  moves Kestle by 0.1 to 0.2 MWh; SF3, SF13), not a reading the shipped text licenses.
+- **Gates at the final rebuild:** generator checks 82 of 82, verify 0 failures, two byte-identical builds,
+  figures_check 47 of 47, precut 53 of 53, voice-check PASS, leak.py REVIEW (no LEAK), guard heart WARN (no
+  BLOCK, nearest driver 0.09), guard surface three pairs promoted for the author's adjudicated read only
+  (task308, task307, task101; none shares the mechanism), containers clean.
 
 ## Tried and rejected
 
@@ -808,6 +1024,7 @@ removes about 55 MWh a year, the most of the eight.
   architecture, landed by both portal responses. The I2R loss a reconductoring project removes on two-way flows
   survived the slot screens on the mechanism's and the setting's words and the clean-truth prototype (four rungs,
   four feeders, the golden reordering the whole slate) and is drawn as architecture 10.
+- **Architecture 10 names, 2026-10-28:** the primary was first called Wennock Cross and its neighbour Ludcombe; both sat one letter from real places (Much Wenlock in Shropshire, Luccombe in Somerset), the first in the very region the fiction is set in (reduce-house-fixes H21), so both were renamed in the generator (Copsewell Cross, Feltmoor) before the pack was read by anyone; every graded figure held to its printed decimal.
 
 ## Portal result and the diagnosis, 2026-10-27
 
