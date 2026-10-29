@@ -655,7 +655,7 @@ F_REG = "ral_player_contract_register_2023_2026.xlsx"
 OTHER_COL = "Other playing-time bonuses (each season)"
 AWARD_COL = "Award bonuses"
 ASK_SEASONS = (2023, 2024, 2025)
-ASK_MODES = ("cracker", "payyear", "e45_whole", "e45_all", "map", "register_id", "gross", "settle_whole", "double",
+ASK_MODES = ("no_catchup", "cracker", "payyear", "e45_whole", "e45_all", "map", "register_id", "gross", "settle_whole", "double",
              "cap", "roundest")
 ROUND_UNITS = (1000000, 500000, 250000, 100000, 50000, 25000, 10000, 5000, 1000)
 SALARY_CODES = ("E01", "SAL")
@@ -805,6 +805,25 @@ def ask(P, mode="golden", detail=False):
             parts[(d.year, name)]["oct"] += amt
         elif d.month == 1:
             parts[(d.year - 1, name)]["jan"] += amt
+    # a season whose January half never came, on a contract running on past it: the next season-end line exceeds the
+    # January half after it by exactly that half, so the excess goes back to the season it was earned in
+    if mode not in ("no_catchup", "settle_whole", "cap", "roundest", "e45_whole", "e45_all", "double", "cracker",
+                    "payyear", "gross", "map", "register_id"):
+        for name, ss, sal in contracts:
+            for y in sorted(ss):
+                if y == max(ss) or y + 1 not in ss:
+                    continue
+                a, b = parts.get((y, name)), parts.get((y + 1, name))
+                if not a or not b or a["jan"] > 0.5 or a["oct"] < 0.5:
+                    continue
+                last_next = (y + 1) == max(ss)
+                if last_next:
+                    continue
+                excess = round(b["oct"] - deferral.get((y + 1, name), 0.0) - b["jan"], 2)
+                half = next((a["oct"] - w for w in sorted(awards[name] | {0.0}) if abs(a["oct"] - w - excess) < 0.5), None)
+                if half is not None and excess > 0.5:
+                    b["oct"] -= excess
+                    a["jan"] += excess
     out = {}
     for (y, name), p in parts.items():
         if y not in ASK_SEASONS or y not in other[name]:

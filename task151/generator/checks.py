@@ -586,11 +586,18 @@ def run(target, golden, W, R, meta_path):
     cr = calc.ask(P, "cracker")
     last_rows = {(y, n) for (y, n) in B if any(r["Player"] == n and calc.parse_terms(r[calc.OTHER_COL]) and
                                                max(calc.seasons_of(r["Seasons"])) == y for r in calc.register(target))}
+    cu_rows = set()
+    cu_first = set()
+    for k_, y_ in REC.CATCH_UP:
+        nm_ = REC.hris_name(L.players[k_].name)
+        cu_rows |= {(y_, nm_), (y_ + 1, nm_)}
+        cu_first.add((y_, nm_))
     C("AK3d the wrong reading is complete: every amount the playing-time codes carry for a season is itself a full bonus "
-      "the player's own terms allow, and the %d seasons they carry nothing for (each a contract's last) read as seasons "
-      "with no line reached, so no row fails a check against the register" % len(last_rows),
-      all(valid_full(n, y, v) for (y, n), v in cr.items()) and set(B) - set(cr) == last_rows and len(last_rows) == 7,
-      sorted(set(B) - set(cr)))
+      "the player's own terms allow, and the %d seasons they carry nothing for (%d a contract's last, %d whose January "
+      "half the legacy run missed) read as seasons with no line reached, so no row fails a check against the register"
+      % (len(last_rows) + len(cu_first), len(last_rows), len(cu_first)),
+      all(valid_full(n, y, v) for (y, n), v in cr.items()) and set(B) - set(cr) == last_rows | cu_first
+      and len(last_rows) == 7 and len(cu_first) == 2, sorted(set(B) - set(cr)))
     crt = calc.ask_totals(cr)
     hit_rows = [k2 for k2 in B if abs(cr.get(k2, 0) - B[k2]) < 0.5]
     hit_tot = [y for y in BT if abs(crt.get(y, 0) - BT[y]) < 0.5]
@@ -664,10 +671,10 @@ def run(target, golden, W, R, meta_path):
     C("DF2 the full handling of the catch-all (both payments whatever the code, every All-Star taken out, the reissued "
       "number by name, the void netted, each payment to its season) misses the %d deferral rows and all three totals, "
       "keeping %d of %d figures" % (len(f1_miss), len(B) - len(f1_miss), len(B) + len(BT)),
-      f1_miss == set(dfr_rows) and all(abs(f1t[y] - BT[y]) >= 0.5 for y in BT), sorted(f1_miss))
+      f1_miss == set(dfr_rows) | cu_rows and all(abs(f1t[y] - BT[y]) >= 0.5 for y in BT), sorted(f1_miss))
     C("DF3 every deferral row's golden is below the largest bonus his terms allow, so cutting the line to his terms "
       "misses it too", all(B[k2] < tmax[k2] for k2 in dfr_rows) and
-      {k2 for k2 in B if abs(calc.ask(P, "cap").get(k2, 0) - B[k2]) >= 0.5} == set(dfr_rows))
+      {k2 for k2 in B if abs(calc.ask(P, "cap").get(k2, 0) - B[k2]) >= 0.5} == set(dfr_rows) | cu_rows)
     dbl = calc.ask(P, "double")
     C("DF4 twice the January half misses every contract's last season (no January payment follows it)",
       all(abs(dbl.get(k2, 0) - B[k2]) >= 0.5 for k2 in last_rows) and all(abs(dbl[k2] - B[k2]) < 0.5 for k2 in dbl
@@ -675,8 +682,39 @@ def run(target, golden, W, R, meta_path):
     rnd = calc.ask(P, "roundest")
     C("DF8 aimed: splitting a line his terms cannot hold into a bonus they allow and the roundest remainder (a guess at a "
       "round non-bonus payment, no reconciliation) misses every deferral row and every total",
-      {k2 for k2 in B if abs(rnd.get(k2, 0) - B[k2]) >= 0.5} == set(dfr_rows) and
+      {k2 for k2 in B if abs(rnd.get(k2, 0) - B[k2]) >= 0.5} == set(dfr_rows) | cu_rows and
       all(abs(calc.ask_totals(rnd)[y] - BT[y]) >= 0.5 for y in BT), sorted((k2, rnd.get(k2)) for k2 in dfr_rows))
+    # the third device: a January run that missed a half, settled inside the next season-end line
+    nc = calc.ask(P, "no_catchup")
+    nct = calc.ask_totals(nc)
+    nc_miss = {k2 for k2 in B if abs(nc.get(k2, 0) - B[k2]) >= 0.5}
+    gold_detail = calc.ask(P, "golden", detail=True)
+    exact = []
+    for k_, y_ in REC.CATCH_UP:
+        nm_ = REC.hris_name(L.players[k_].name)
+        a_, b_ = gold_detail[(y_, nm_)], gold_detail[(y_ + 1, nm_)]
+        exact.append(abs(a_["jan"] - (a_["oct"] - a_["award"])) < 0.5 and abs(b_["oct"] - b_["award"] - b_["jan"]) < 0.5)
+    C("CU1 the third device: the January run after %s missed the half it owed, and the next season-end line exceeds the "
+      "January half after it by exactly that season's October half (net of the All-Star bonus its line carries), to the "
+      "dollar; the golden puts it back in its season" % ", ".join("%s %d" % (REC.hris_name(L.players[k_].name), y_)
+                                                             for k_, y_ in REC.CATCH_UP),
+      all(exact) and len(exact) == 2, exact)
+    aw_of = defaultdict(set)
+    for r in calc.register(target):
+        for a_ in calc.parse_awards(r[calc.AWARD_COL]):
+            aw_of[r["Player"]].add(a_)
+    C("CU2 the full handling of every other device without it (each season-end line to its season, each January line to "
+      "the one before) misses the %d catch-up rows and all three totals, every wrong row a full bonus the player's terms "
+      "allow as read or once an award his register lists is taken out, so no check against the register fails"
+      % len(cu_rows),
+      nc_miss == cu_rows and all(abs(nct[y] - BT[y]) >= 0.5 for y in BT) and
+      all(valid_full(n, y, nc[(y, n)]) or any(valid_full(n, y, nc[(y, n)] - w) for w in aw_of[n])
+          for (y, n) in cu_rows if (y, n) in nc), sorted((k2, nc.get(k2)) for k2 in cu_rows))
+    pay_rows = calc.read_csv(os.path.join(target, calc.F_PAY))
+    oct_lines = [r for r in pay_rows if r["earning_code"] == "E45" and r["pay_date"].endswith("-10-15")]
+    C("CU3 no marker: every season-end catch-all line carries the same code, description and status, the catch-up "
+      "lines among them", len({(r["earning_code"], r["earning_description"], r["status"]) for r in oct_lines
+                                if r["status"] == "PAID"}) == 1, len(oct_lines))
     reg_text = " ".join(str(c) for r in reg_all for c in r.values() if c is not None)
     wbh = openpyxl.load_workbook(os.path.join(target, REC.F_REG), read_only=True)
     head_text = " ".join(str(c) for row in wbh["Register"].iter_rows(max_row=4, values_only=True) for c in row if c)

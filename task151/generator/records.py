@@ -784,6 +784,14 @@ def payroll(L):
             add(dt.date(y, 10, 15), k, "PT", amt / 2 + star.pop((k, y), 0))
         add(dt.date(y + 1, 1, 15), k, "PT2", amt / 2)
     assert not star
+    # a January run that missed one pitcher's half: the legacy payroll settled it in his next season-end run, on the
+    # catch-all line with that season's half (one line a code a run)
+    for k, y in CATCH_UP:
+        jan = [x for x in rows if x["k"] == k and x["code"] == "PT2" and x["date"] == dt.date(y + 1, 1, 15)]
+        nxt = [x for x in rows if x["k"] == k and x["code"] == "PT" and x["date"] == dt.date(y + 1, 10, 15)]
+        assert len(jan) == 1 and len(nxt) == 1, (k, y)
+        nxt[0]["amount"] += jan[0]["amount"]
+        rows.remove(jan[0])
     for x in list(rows):
         if x["k"] == VOID_REISSUE[0] and x["code"] == "PT" and x["date"] == VOID_REISSUE[1]:
             x["status"] = "VOIDED"
@@ -797,6 +805,9 @@ def payroll(L):
     migrated = {x["k"] for x in rows if x["date"] >= dt.date(2025, 1, 1)}
     return rows, legacy, new, people, migrated
 
+
+# (pitcher, season) whose January half the legacy run missed and settled in his next season-end run
+CATCH_UP = (("qRAL202304", 2023), ("qRAL202312", 2024))
 
 LEGACY_CODE = {"SAL": ("E01", "SALARY-PLAYER"), "SGN": ("E10", "SIGNING BONUS"), "PA": ("E40", "PERF BONUS"),
                "PT": ("E45", "OTHER BONUS"), "PT2": ("E40", "PERF BONUS"), "AW": ("E45", "OTHER BONUS"),

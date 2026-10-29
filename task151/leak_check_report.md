@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: season, regulars, starts, look-back, appearances, projection, planned, vendor, catchers, decisive, population, starting, non-catcher, contract, distribution, asserted, regular, readable, batting, sheets, scores, lineup, golden, window, forecasting
+Stump terms swept: season, regulars, starts, look-back, appearances, projection, planned, vendor, decisive, catchers, population, starting, non-catcher, contract, distribution, asserted, regular, readable, batting, sheets, record, method, lineup, nothing, selection
 
 ## 1 file names (REVIEW 2)
 - **REVIEW** `lsf_batting_2021_2024.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
@@ -13,15 +13,15 @@ Stump terms swept: season, regulars, starts, look-back, appearances, projection,
 ## 3 answer figures in the pack (REVIEW 7)
 - **REVIEW** `CF-14.4_look-back_working_paper.pdf`: golden figure 4.4 appears: ...ses Standing paper under Accounting Policy FIN-14 4.4. Prepared by Harry Barnes, Controller, November 1...
 - **REVIEW** `FIN-14_player_compensation_accounting_policy.pdf`: golden figure 4.4 appears: ...ys less than planned, is part of the probability. 4.4 The Controller chooses the basis for the probabil...
-- **REVIEW** `ral_player_contract_register_2023_2026.xlsx`: golden figure 225,000 appears: ...Juan E1096965 3B 12/12/2024 2025 7250000 500000 $225,000 each for 375, 475 and 575 plate appearances Assig...
 - **REVIEW** `ral_player_contract_register_2023_2026.xlsx`: golden figure 140,000 appears: ...1B 12/14/2022 2023-2024 9500000 9500000 1000000 $140,000 each for 500, 550, 600 and 650 plate appearances...
+- **REVIEW** `ral_player_contract_register_2023_2026.xlsx`: golden figure 225,000 appears: ...Juan E1096965 3B 12/12/2024 2025 7250000 500000 $225,000 each for 375, 475 and 575 plate appearances Assig...
 - **REVIEW** `ral_player_contract_register_2023_2026.xlsx`: golden figure 55,000 appears: ...01661 P 12/20/2022 2023 5500000 Innings pitched: $55,000 each for 140 and 160 Expired Blair, Johnny E10658...
 - **REVIEW** `ral_player_contract_register_2023_2026.xlsx`: golden figure 60,000 appears: ...24 2025-2026 2400000 2400000 Relief appearances: $60,000 each for 55 and 65 $50,000 for All-Star selection...
 - **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: carries 7 of 10 distinctive words of the committed call: "Accrue $4,250,000 at signing for the plate-appearance bonuses in the five free-agent hitters' 2027 contracts."
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `CF-14.4_look-back_working_paper.pdf`: 7 of 25 stump-paragraph terms appear (season, look-back, appearances, starting, contract, scores); read whether the document names the move
-- **REVIEW** `FIN-14_player_compensation_accounting_policy.pdf`: 6 of 25 stump-paragraph terms appear (season, look-back, appearances, planned, contract, scores); read whether the document names the move
+- **REVIEW** `CF-14.4_look-back_working_paper.pdf`: 6 of 25 stump-paragraph terms appear (season, look-back, appearances, starting, contract, lineup); read whether the document names the move
+- **REVIEW** `FIN-14_player_compensation_accounting_policy.pdf`: 7 of 25 stump-paragraph terms appear (season, look-back, appearances, planned, contract, record); read whether the document names the move
 - **REVIEW** `lsf_feed_notes.txt`: 5 of 25 stump-paragraph terms appear (season, appearances, catchers, batting, lineup); read whether the document names the move
 - **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: 3 of 25 stump-paragraph terms appear (season, appearances, contract); read whether the document names the move
 
@@ -32,9 +32,8 @@ Stump terms swept: season, regulars, starts, look-back, appearances, projection,
 - **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: names 4 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `ral_depth_chart_2027.xlsx`: names 9 of 13 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (REVIEW 2)
-- **REVIEW** `league_calendar_2021_2027.csv`: 5 ISO dates after 2026-12-11, e.g. 2027-03-25, 2027-07-12, 2027-07-15, 2027-09-26, 2027-09-29
-- **REVIEW** `league_schedule_2027.csv`: 2430 ISO dates after 2026-12-11, e.g. 2027-03-25, 2027-03-26, 2027-03-27, 2027-03-28, 2027-03-29
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

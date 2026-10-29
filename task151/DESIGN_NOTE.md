@@ -444,6 +444,8 @@ ranked by the same look-back, never from another reading.
 
 ## Ask sheet
 
+**Revision, 2026-10-28, the portal's third rubric return: a third device.** The portal scored the build at 72 per cent: both top responses missed the call (rows 1 to 6) and kept every other row, all 21 ask figures among them, so both earlier devices were handled in full (the catch-all's halves paired October to January, the contract-end lines reconciled against the register's salary). The third device is a catch-up transfer (D8, a settlement date for the event date): the legacy January run missed the half it owed Max White for 2023 and Joe Livingston for 2024, and the next season-end run settled it on the catch-all line with that season's half, one line a code a run. Read season by run, as both responses did, White files $60,000 for 2023 and $180,000 for 2024 and Livingston $50,000 for 2024 (his line's All-Star bonus taken out) and $150,000 for 2025, each a full bonus his terms allow, so no check against the register fails (CU2); what finds it is a contract season with no January half and the next season-end line exceeding the January half after it by exactly that season's October half, to the dollar (CU1), with no code, description or status marking the merged lines (CU3). Every ask golden is unchanged (the bonuses as earned), so `freeze.py check --mode rubric` passes with 0 ask figures moved: the device moved where the evidence sits, not what it sums to (H30); the payroll export lost the two January lines and the close-file index its row count, and no other file moved. The path both responses took now misses the three totals and four rows, 19 of the ask's 44 points on the portal's weights, so each sits near 53.
+
 **Revision, 2026-10-28, the author's hardening: a second device.** The re-sited ask shipped at f4bcf386 with one
 primary, the legacy catch-all carrying the pitchers' season-end halves. `ceiling.py` priced the careful path at 0 of 21,
 but a solver who reads each pitcher's payments and adds the catch-all lines with every hazard handled kept 21 of 21
@@ -592,9 +594,8 @@ at or under 60 and about 65; twice the January half, 11 (40.8; 55.8); the full h
 handling of both devices, the salary reconciliation included, 21 (67.0; 82.0), the fair handling. With one response on the call and both on the full handling of the first device the pair is 62.5 (70.0 on the
 portal's calibration): a call-lander and a second full includer together still reach the bar.
 Mirror leakage: 0.0 per cent of the ask weight (the mirror stops at the same codes by the year paid, 0 of 21).
-Pair ceiling: 28.5 (Part 0's weights, the cracker on the call and the mirror off it; neither on the call and both on the
-cracker's ask path, the portal's case, 12.0; on the portal's calibration, 36.0 and 27.0).
-Measured by: `generator/ceiling.py`, on the cut target.zip (sha256 3ded6ddd), 10-28.
+Pair ceiling: 53.0 (the portal's own weights from its 10-28 rubric, both responses off the call on the path both took there, every earlier device handled: rows 1 to 6 missed, rows 7, 8, 30 and 31 and the five instruction rows kept, and of the ask's 44 points the three season totals and the four catch-up rows, 19, lost; Part 0's weights give 28.5 for the cracker on the call and the mirror off it).
+Measured by: `generator/ceiling.py`, on the cut target.zip (sha256 64554e72), 10-28 (its 'full2' includer keeps 14 of 21).
 
 ## Residual
 
@@ -961,3 +962,4 @@ calibration), twice the January half 11, cut to the terms 13, split at the round
   its question 6 as an analytical choice: 4.4 is the filed selection criterion that names no basis, unchanged since the
   round 1 repair and judged so in every round. Its question 3 names the League's feed notes and the close-file index, both
   frozen main-call files carried since e93c6561.
+- The ask's two earlier devices, after the portal's third rubric return on 2026-10-28 (72 per cent, both responses off the call and holding all 21 ask figures): the catch-all's season-end halves were paired with the January halves after them, and the contract-end settlements were reconciled against the register's salary, by both responses in full. Kept as they stand, with a third device of another family beside them (the catch-up transfer, the ask sheet).

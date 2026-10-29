@@ -170,6 +170,24 @@ def paid(target):
     pt["season"] = np.where(pt.date.dt.month == 10, pt.date.dt.year, pt.date.dt.year - 1)
     pt["side"] = np.where(pt.date.dt.month == 10, "oct", "jan")
     g = pt.groupby(["season", "player", "side"]).amount.sum().unstack(fill_value=0.0)
+    # a contract season with an October side and no January side, on a contract running past the next season: the
+    # next October side exceeds the January side after it by this season's October half (net of a listed award), and
+    # that excess was this season's January half, paid late
+    g = g.copy()
+    for player, yrs in seasons.items():
+        for y in sorted(yrs):
+            if y == max(yrs) or y + 1 == max(yrs) or y + 1 not in yrs:
+                continue
+            if (y, player) not in g.index or (y + 1, player) not in g.index:
+                continue
+            a, b = g.loc[(y, player)], g.loc[(y + 1, player)]
+            if a.get("jan", 0.0) > 0.5 or a.get("oct", 0.0) < 0.5:
+                continue
+            excess = round(b.get("oct", 0.0) - held.get((y + 1, player), 0.0) - b.get("jan", 0.0), 2)
+            halves = {round(a.get("oct", 0.0) - w, 2) for w in award.get(player, set()) | {0.0}}
+            if excess > 0.5 and excess in halves:
+                g.loc[(y + 1, player), "oct"] = b.get("oct", 0.0) - excess
+                g.loc[(y, player), "jan"] = excess
     out = {}
     for (season, player), r in g.iterrows():
         if season not in (2023, 2024, 2025) or season not in seasons[player]:

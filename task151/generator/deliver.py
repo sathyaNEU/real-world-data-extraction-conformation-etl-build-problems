@@ -500,8 +500,10 @@ def submission(R, fig, path):
                  "season-end payments on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star "
                  "bonus a legacy season-end line carries and, in the line after a contract's last season, the salary "
                  "the contract deferred to its end (its register salary less the E01 salary lines paid, each season), "
-                 "each legacy line read by its name (number %s is Yordy Benítez in 2023 and Gilmar Pietersz in 2025): "
-                 "%s." % (fig["deliverables"]["reissued_legacy_numbers"][0],
+                 "each legacy line read by its name (number %s is Yordy Benítez in 2023 and Gilmar Pietersz in 2025), "
+                 "and where a January run paid no half on a contract running on (Max White's for 2023, Joe Livingston's "
+                 "for 2024) the next season-end line carries it, so its excess over the January half after it goes back "
+                 "to that season: %s." % (fig["deliverables"]["reissued_legacy_numbers"][0],
                           "; ".join("%s %s" % (b["season"], b["total"]) for b in pd_)))
     lines.append("")
     lines.append("## 4. Deliverable Answers\n")
