@@ -1,12 +1,12 @@
 {
  "task": "task273",
- "status": "PAUSED",
- "domain": "biomedical-clinical-research",
- "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
+ "status": "DESIGN",
+ "domain": "energy-systems-utilities",
+ "objective": "forecasting",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-28",
- "stump": "",
+ "stump": "A competent analyst moves every controlled-load tank's recovery into the solar-soak window from its group's release, adds it to each substation's reference-day demand with the connection pipeline's solar, and designates too few substations below their minimum-load threshold; the step that lands it there is reading the retiming as reaching every tank, when the tanks on meters with internal time switches keep heating overnight, which only the meter register's models show.",
  "architecture": 5,
  "loops": 0,
  "precut": {
@@ -46,7 +46,7 @@
    "commit": "DRAWN (task273) architecture 5"
   }
  ],
- "resume": "Architecture 5 is not drawn: nine directions were screened on paper on 2026-10-28 and every one died on a named screen in this repo (the screen record and the four-architecture pincer are the last two lines of DESIGN_NOTE.md's Tried and rejected). Read that record first, then the card's lineage (v1 to v4, all spent) and the neighbouring slots' notes. The next move is the author's call, which CLAUDE.md reserves to them: a ban or clone waiver that reopens adjacent ground (the task258 reach family carried by a different mechanism, or a control set used the way the client's own held tasks use one, which stumping 2.4 and readability test 4 currently bar), retirement after four architectures, or re-tasking the number to another objective. The design target the record leaves, for whoever takes it with a waiver: an internal contrast between two shipped records that refutes the easy count, whose repair is a nameless exact composition forced by a process identity at a finer grain rather than a published correction, because architecture 4 measured that a visible contrast plus a named correction is executed by frontier solvers and a hidden one forks the main call. Done already and committed: the portal return appended to returned, architecture 4's fate marked spent here and on the card (architecture_spent true), the ledger's lineage row 273 (v4) written and the main 273 row rewritten off delivered.",
+ "resume": "Architecture 5 drawn 2026-10-28 (card registered, DRAWN committed): stage 2 next. Write ## Three rules, ## Default path, ## Stump sentence, ## Readability screen, ## Deletion tests, ## Semantic fork table, ## Closure table, ## Literal reader, ## Oracles, ## Ladder and ## Ask sheet for the controlled-load solar-soak design, then the generator (task273/generator, v4 modules replaced in place) and precut.py.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -80,10 +80,12 @@
   },
   {
    "architecture": 5,
-   "drawn": null,
-   "fate": "not drawn: the draw screen of 2026-10-28 killed nine directions on paper (DESIGN_NOTE.md, Tried and rejected); the slot waits on the author's waiver, retirement or re-tasking decision"
+   "drawn": "2026-10-28",
+   "fate": "drawn 2026-10-28 after the author re-tasked the slot to Forecasting; live",
+   "registered": "2026-10-29T01:43:47Z",
+   "driver": "The decisive quantity is each area's lowest demand in a coming season once a scheduled move shifts a deferrable load into the low-demand hours, where the move reaches only the units whose switching device takes the operator's central signal, recorded only through each meter's model in a register kept for metering; moving every unit's load files a different set of areas below the limit, and spreading the moved energy evenly instead of replaying each unit's recovery from its release time misplaces the lowest interval."
   }
  ],
- "seed": "none: a fresh draw in a new client domain (architecture 4); the DA23 seed was set aside at architecture 1",
+ "seed": "none: a fresh draw in a new client domain (architecture 5, energy-systems-utilities / load-forecasting)",
  "answer": ""
 }

@@ -1,180 +1,200 @@
 {
- "task": "task273",
- "architecture": "v4",
- "drawn": "2026-10-28",
- "slot_note": "task273/DESIGN_NOTE.md",
- "domain": "biomedical-clinical-research",
- "subdomain": "statistical-genomics",
- "niche": "a health board's couples' carrier screening panel set from its population genome study, each condition's carrier frequency read through genotype calls whose chance of catching a heterozygous carrier depends on the read depth at the variant and the sequencing phase's calling rule",
- "objective": "descriptive-distribution",
- "shape": "07",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves.",
- "answer_source": "task273/submission.md block 1; golden/carrier_panel_review_2027-28.xlsx (Panel 2027-28)",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G6",
-  "G12",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "classification_error",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every file correctly counts, for each condition, the Study members called as carriers among those with at least 10 reads at the gene's register variants (the field's allele count over allele number after a depth filter) and files the current eleven unchanged, leaving ARSACS, Joubert syndrome type 2 and diastrophic dysplasia off at 2.3, 2.4 and 2.1 per 1,000, whose carriers sit almost all in the phase 1 island and glen communities, where the older capture kit read those variants at 8 to 17 reads and the phase 1 caller caught about half the heterozygotes.",
- "domain_test": "The deciding quantity is each condition's carrier frequency in the study, estimated from exome genotype calls whose sensitivity for a heterozygous carrier is the binomial chance that enough of the reads at the variant carry the alternate allele to pass the phase's calling rule at that member's depth; counting calls or filtering on depth estimates a different quantity, and another field's nouns lose the read sampling, the calling rule and the capture kit that set each member's chance of being seen.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:carrier-frequency-scaled-by-each-phase's-depth-dependent-calling-sensitivity",
- "layer1": [
-  "phase 1 calls exported on GRCh37 with legacy transcript names against the GRCh38 variant register",
-  "a register reclassification during 2026",
-  "consent withdrawals and QC-failed samples outside the reference cohort",
-  "a multi-allelic site exported one row per allele",
-  "the depth matrix keyed by register site id, one column per site"
- ],
- "stakeholder_role": "consultant clinical geneticist who leads the screening panel review",
- "role_family": "other",
- "scoring_unit": "other",
- "spine": {
-  "file": "study_depth_at_register_sites.csv",
-  "rows": 25864,
-  "entity": "one study member",
-  "grain": "member, one column per register site",
-  "source": "synthetic"
- },
- "forum": "line_manager_or_team",
- "forcing_event": "launch_or_rollout",
- "org_family": "government_agency",
- "world": {
-  "geography": "United Kingdom",
-  "currency": "GBP",
-  "org_type": "regional health board",
-  "invented_names": [
-   "Wardale and Isles Health Board",
-   "Wardale Genome Study",
-   "Fennick Isles",
-   "Upper Wardale",
-   "Calderwick"
+  "task": "task273",
+  "architecture": "v5",
+  "drawn": "2026-10-28",
+  "slot_note": "task273/DESIGN_NOTE.md",
+  "domain": "energy-systems-utilities",
+  "subdomain": "load-forecasting",
+  "niche": "a state energy department's spring 2027 minimum-load assessment of a distribution network's zone substations once the controlled-load hot water window moves into the middle of the day, the move reaching only the tanks whose meters take the network's load-control signal, which the meter register shows only through each meter's model",
+  "objective": "forecasting",
+  "shape": "13",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
   ],
-  "people": [
-   "Abbie North",
-   "Malcolm Lloyd"
-  ]
- },
- "deliverables": [
-  "carrier_panel_review_2027-28.xlsx",
-  "panel_recommendation_2027-28.docx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is the share of a population carrying a trait that each member's own measurement reveals only with a probability set by how much measurement that member received, where the least measured members are a subgroup whose share differs; each group's detections are scaled by the sum of its members' chances of detection, and counting detections, keeping only well-measured members, or scaling pooled detections by the pooled chance each loses that subgroup's carriers.",
- "driver_concrete": "Each condition's carrier frequency in the Wardale Genome Study as each phase's called carriers divided by the sum, over that phase's members, of the binomial chance that a heterozygote at their depth passes the phase's calling rule; not the called carriers over the study, not the allele count over members with 10 or 20 reads, and not the pooled calls over the pooled chance, each of which leaves ARSACS, Joubert syndrome type 2 and diastrophic dysplasia off the panel.",
- "stump": "A competent solver counts each condition's called carriers among the members whose depth passes the usual genotype filter and files the current eleven unchanged, the three founder conditions at 2.3, 2.4 and 2.1 per 1,000; the step that lands it there is reading a member with no call as a non-carrier, when the phase 1 caller caught a heterozygote at 8 to 17 reads only about half the time and the phase 1 members are the island and glen communities where those conditions are common.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task273": "architectures 1 to 3 rebuilt unsent requests, per-mile exposure and a burst's shut-off area; architecture 4 estimates a carrier share through calls whose sensitivity each member's depth sets, with no exposure, no unsent records and no network",
-  "task270": "task270's re-root screens set aside carrier frequencies from low-depth genotype likelihoods because summing reads is a licensed simple route there; here no read counts ship for members without a call, depth is floored at 8 by the laboratory's top-up rule, and the low-depth members are a founder subgroup, so no read sum exists and every route that drops or pools them files a different panel",
-  "task230": "task230 corrects a category count's net classification bias in a part still to be processed under a looser acceptance rule; task273 v4 has no later part and no acceptance rule, it scales each sequencing phase's carrier calls by the binomial chance its members' read depths gave a heterozygote of being called",
-  "task251": "task251 carries each unit's error over the conditions it ran in from checks taken where neither error effect occurred; task273 v4 checks nothing and carries no error forward, its members' chance of detection comes from their own depth at the variant",
-  "task269": "task269 rates units on occasions their own staff sampled mostly when capacity covered demand; task273 v4 has no sampled occasions and no observer, every member is sequenced and only the call's sensitivity varies with depth",
-  "task465": "task465 counts units carrying two traits no large source records together through a small source holding both; task273 v4 counts one trait in one source, carriers missed by low-depth calls",
-  "task253": "task253 counts units whose latent level is below a line from noisy small-sample averages by shrinkage; task273 v4 has no averages and no shrinkage, a carrier is either called or missed with a probability its depth fixes",
-  "task255": "task255 projects a size distribution's upper tail separately for two kinds of item; task273 v4 estimates a share, not a tail, and its two phases differ in detection, not in distribution shape",
-  "task265": "task265 estimates event-free survival from a record that began after many units started (left truncation); task273 v4 has no time axis and no entry, only depth-dependent detection of a fixed trait",
-  "task455": "task455 corrects a register count wrong in both directions through a full review that measures each class's chance of being filed in each category; task273 v4 has no review period and no false positives, each member's chance of being called comes from the binomial read sampling at their own depth under the phase's calling rule",
-  "task68": "task68 measures a like-for-like change on a panel matched across identity successions; task273 v4 has no change over time and no identity linkage"
- },
- "lineage": [
-  {
-   "architecture": "v1",
-   "drawn": "2026-10-22",
-   "niche": "a payroll platform's year-end readiness review from closed-loop load tests, the requests the blocked test clients never sent during each pod's garbage-collection pauses",
-   "driver": "The decisive quantity is a tail percentile of response times for requests arriving independently of the server's state, measured by clients that each send the next request only after the last returns, so a pause on one node behind a balancer leaves each blocked client one slow record where independent arrivals would have met the pause many times; each node's pause record rebuilds the missing arrivals, and the textbook back-fill, which credits each blocked client with every request it would have sent to that node, overstates nodes behind a balancer and requests that are slow on their own.",
-   "driver_concrete": "Each endpoint's p99 at the forecast peak as customers arriving independently would see it: the recorded response times outside each pod's garbage-collection pauses, and for the share of time each pod spends paused, the rest of the pause plus a service time, from the pod's GC log; not the recorded p99 (the clients stop sending during a pause), and not HdrHistogram's back-fill at the planned interval (each blocked client credited with every request it would have sent, all to the paused pod).",
-   "stump": "A competent solver takes each endpoint's 99th percentile of the recorded response times in the run of record and files the default list; the step that lands there is reading the closed-loop clients' requests as the requests customers would send, when each client sent nothing while its pod was paused, so a long pause counts once per blocked client instead of once per arrival.",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G12",
-    "G18",
-    "G17"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "designation_set",
-   "stump_strategy": "population_selection",
-   "analyst_test": "A strong analyst who reads every field correctly, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times files the default list; the test clients send each request only after the last returned, so a pod's pause leaves one slow record per blocked client where customers arriving independently would have met it many times, and the endpoints whose pods pause for long stretches pass at their recorded percentile while customers would see them breach.",
-   "domain_test": "The deciding quantity is each endpoint's 99th-percentile response time for requests that arrive independently of the platform's state at the forecast peak, estimated from a closed-loop test whose missing requests (those the blocked clients never sent during each pod's pauses) are missing because of the outcome, so the missing-data analysis rebuilds them from each pod's pause record; replacing it with the recorded percentile, or with the textbook back-fill that credits each blocked client with every request it would have sent to the paused pod, changes which endpoints are fixed.",
-   "layer2_pattern": "own:requests-a-closed-loop-client-never-sent-rebuilt-from-each-pods-pause-record",
-   "fate": "spent 2026-10-22 at stage 4 (Gate F): both isolated scored readers named the closed-loop test's coordinated omission from the standard's population and pause clauses, rebuilt open arrivals per pod from each GC log and landed the five; reader B every ask figure (48 of 48), reader A 36 of 48; judge DETERMINISTIC, APPROVE"
-  },
-  {
-   "architecture": "v2",
-   "drawn": "2026-10-22",
-   "niche": "a regional transportation commission's 2027 commercial fleet safety programme, each commercial vehicle use's crashes caused per mile driven, the miles read from the vehicles other drivers struck within each road class and hour",
-   "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel.",
-   "driver_concrete": "Each commercial use's crashes caused per mile against private drivers' over 2021 to 2025, its miles recovered as its share of the vehicles struck by the one at-fault driver of a crash between moving vehicles within each road class, day type and hour, times that stratum's miles from the Department's VMT and count-station hours; not crashes per registered or permitted vehicle, and not the pooled struck share, which over-weights the night streets and under-weights the freeways the shuttles drive.",
-   "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit (1.78 and 1.71); the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery. Per registered or permitted vehicle covers six; road class or hour alone leaves ride-hail or both delivery uses under the line.",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G14",
-    "G16"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "designation_set",
-   "stump_strategy": "population_selection",
-   "analyst_test": "A strong analyst who reads every field correctly and divides the crashes each use's drivers caused by the vehicles registered or permitted for that use files the default list, because a ride-hail car or a parcel van covers several private cars' mileage a year; one who knows the field's induced exposure and takes each use's share of the not-at-fault vehicles in two-vehicle crashes as its share of the miles files a second wrong list, because that sample is drawn where crashes happen and so over-counts the miles driven at night and on urban streets.",
-   "domain_test": "The deciding quantity is each use's crashes caused per mile driven against private vehicles, a rate whose denominator no record counts, so the missing-data analysis recovers each use's miles from its share of the not-at-fault vehicles within each road class and hour, scaled by that stratum's measured mileage; replacing it with registrations, with the crash-share ratio, or with the pooled not-at-fault share changes which uses the programme covers.",
-   "layer2_pattern": "own:induced exposure re-weighted to miles by each stratum's crash intensity",
-   "fate": "spent 2026-10-27 at the portal: both responses ran the field's own stratified induced exposure (each use's share of the vehicles struck by the at-fault driver within road class, day type and hour, scaled by the Department's miles) and filed the golden four (taxicabs, ride-hail, parcel delivery, app-based delivery); shipped 2026-10-23 with five in-house readers off the call and the judge DETERMINISTIC, APPROVE on pass 2; axes held at the draw: GSDS missing-data-censoring-measurement-error, shape 14, regulator_or_inspector, launch_or_rollout, government_agency, policy_adviser, filed_standard; portal determinism 2026-10-28 failed on both judge runs: run 1 underspecified_objective on the duplicate person records behind the KSI and cost asks, run 2 competing_defensible_answer on the main call (the unstratified induced exposure reverses the four)"
-  },
-  {
-   "architecture": "v3",
-   "drawn": "2026-10-27",
-   "niche": "a council-controlled water organisation's 2027 critical mains register, each main's burst consequence read off the district's pipe network as the properties left without water once the burst is shut off at the valves the crews can actually close",
-   "driver": "The deciding quantity is the demand a unit's failure leaves without any path to supply, where a failure takes out not the unit alone but the whole area bounded by the nearest boundary devices that can actually be operated, and which devices can operate is recorded only in a maintenance history kept for another purpose; removing the unit alone, or the area the as-drawn devices bound, files a smaller and different set.",
-   "driver_concrete": "Each main's 2027 burst consequence is the properties inside the nearest valves the crews can close, the exercising programme's latest visit deciding which valves are seized or missing, plus the properties that closing that area cuts off from both treatment plants and the reservoir; not the main's own properties, not the main removed alone with its unreachable demand (the field's link-removal criticality), and not the segment the GIS valves bound as drawn.",
-   "stump": "A competent solver removes each main's valve-bounded segment as the GIS draws it and counts the properties on it plus those cut off from supply, filing a register of about 93 mains and 15 km; the step that lands it there is taking every valve in the GIS as one the crews can close, when the exercising programme's latest visits found about one valve in six seized or missing, so a burst beside one of them takes out the next segment too and cuts off the estates behind it (golden about 173 mains, 21 km).",
-   "gap": [
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
+  ],
+  "generators": [
     "G8",
-    "G2",
-    "G5"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "designation_set",
-   "stump_strategy": "grain_or_unit",
-   "analyst_test": "A strong analyst who reads every field correctly takes the field's criticality route, removing each main (or its valve-bounded segment as the GIS draws it) and counting the properties on it plus those left with no open path to a treatment plant or the reservoir, and files a register of about 50 mains and 12 km (about 93 mains and 15 km on the drawn segments), where a burst takes out everything up to the valves the crews can actually close and the exercising programme's latest visits found about one valve in six seized or missing, so the register is about 173 mains and 21 km.",
-   "domain_test": "The deciding quantity is each main's consequence of failure in a water distribution network, the properties that lose supply while a burst is shut off: the area inside the nearest valves the crews can close, plus every area that closing it leaves with no open path to a treatment plant or reservoir (unreachable demand); removing the main alone, or the segment the drawn valves bound, changes the register, and with wards or megawatt-hours in place of mains there are no valves, segments or supply paths for the question to stand on.",
-   "layer2_pattern": "urban-regional-science/network-analysis/2",
-   "registered": "2026-10-27T06:38:27Z",
-   "fate": "spent on paper 2026-10-27 at stage 2, never cut: the decisive rung readable on tests 1 to 3 (the shut-off clause, the programme's operable flag, unreachable demand as the task type's own pattern), deletion tests 3 and 6 fire"
-  }
- ],
- "notes": "Architecture 4 drawn 2026-10-28 after architecture 2's portal determinism return (both judge runs failed, run 2 on the main call) and architecture 3's paper death. Domain moved from urban-regional-science to biomedical-clinical-research (statistical-genomics, a subdomain never drawn); strategy classification_error, never carded before. The author chose this design over retirement and a further search on 2026-10-28 with the task270 screen overlap disclosed (differentiation above). Built 2026-10-28 on seed 2907 after the first judge pass's SEND_BACK (the plain count read as a literal answer): the methods report's 'called reference' sentence deleted and a within-gene contrast added (Pompe c.-32-13T>G and Usher 2A c.2299del thinly read in phase 1 beside ordinary variants); golden 14 conditions (SACS 7, TMEM216 6, SLC26A2 6 per 1,000 joining); every easy route files the current 11. Forum redrawn at stage 4 (2026-10-28): executive_team BLOCKed on ban.forum once task270's card was marked spent and the window reached task174; the panel decision now sits with the Board's Director of Public Health under its scheme of delegation (policy 3.1), the accountable officer for screening, so line_manager_or_team is the plain label for the fiction as rewritten, and no figure moves.",
- "registered": "2026-10-28T12:43:45Z",
- "architecture_spent": true
+    "G7",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms every file and reads every notice correctly replays every controlled-load tank's recovery from its load-control group's release in the new window, adds it to each zone substation's spring reference-day demand with the solar the connection pipeline adds, and designates too few substations below their minimum-load threshold, because the tanks on meters with internal time switches cannot take the network's signal and keep heating overnight.",
+  "domain_test": "The deciding quantity is each zone substation's lowest midday demand under a controlled-load retiming, which minimum-load assessments build from the reference day's demand, the solar connection pipeline and each controlled-load tank's recovery replayed from its new release, a tank moving only if its switching device takes the network's load-control signal; in another field's nouns there is no ripple signal, no time switch inside a meter and no hot water recovery for the question to stand on.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:a-load-control-retiming-reaches-only-tanks-whose-meter-takes-the-network-signal",
+  "layer1": [
+    "SCADA in UTC against the department's local-time reference day across the October daylight-saving change",
+    "controlled-load channel data from two meter data providers with different interval conventions",
+    "a meter register carrying replaced and current meters on one NMI",
+    "the solar connection pipeline reporting inverter and panel capacity",
+    "zone substation renamings after a 2025 network reconfiguration"
+  ],
+  "stakeholder_role": "director of energy security at the state energy department, advising the minister on the spring minimum load directions",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "zone_substation_demand_2026_spring.csv",
+    "rows": 69888,
+    "entity": "one zone substation half-hour reading",
+    "grain": "zone substation x 30 minutes",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "season_or_peak",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "Australia",
+    "currency": "AUD",
+    "org_type": "state energy department (energy security division)",
+    "invented_names": [
+      "Tallowbark Networks",
+      "Saltgrass Coast",
+      "Kurrajine",
+      "Brindlemoor"
+    ],
+    "people": [
+      "Megan Robertson",
+      "Jacob Barnes"
+    ]
+  },
+  "deliverables": [
+    "minimum_load_spring_2027.xlsx",
+    "minimum_load_briefing_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is each area's lowest demand in a coming season once a scheduled move shifts a deferrable load into the low-demand hours, where the move reaches only the units whose switching device takes the operator's central signal, recorded only through each meter's model in a register kept for metering; moving every unit's load files a different set of areas below the limit, and spreading the moved energy evenly instead of replaying each unit's recovery from its release time misplaces the lowest interval.",
+  "driver_concrete": "Each zone substation's lowest half-hour demand between 10 am and 3 pm on a clear spring Sunday in October 2027 is the 2026 reference day's demand less the solar the connection pipeline adds, plus the controlled-load recovery of the tanks the retiming reaches (ripple receivers and network-programmable meter relays) replayed from their load-control group's release; tanks on meters with internal time switches keep heating overnight; not every controlled-load tank moved, and not the moved energy spread evenly over the window.",
+  "stump": "A competent analyst moves every controlled-load tank's recovery into the solar-soak window from its group's release, adds it to each substation's reference-day demand with the connection pipeline's solar, and designates too few substations below their minimum-load threshold; the step that lands it there is reading the retiming as reaching every tank, when the tanks on meters with internal time switches keep heating overnight, which only the meter register's models show.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task164": "task164 sets each plug-in vehicle's effect on a pole-top transformer's evening peak by the premise's tariff schedule; task273 v5 has no vehicles or peak: it moves controlled-load hot water into the midday trough and the move reaches only the tanks whose meters take the network's signal",
+    "task464": "task464 sizes conductor losses from currents rebuilt as the net of every load and generator beyond each section; task273 v5 sizes no losses and rebuilds no currents: it forecasts each substation's lowest midday demand after a controlled-load retiming whose reach a meter's model sets",
+    "task258": "task258 carries a validated intervention's effect only to units whose served document lets it act; task273 v5 has no validated effect and no back-test: a scheduled retiming of a central signal moves only the devices that take the signal, which a meter register kept for metering shows through each model",
+    "task162": "task162's valve holds its setting only while its inlet is above it; task273 v5 has no setting: a tank either takes the retimed signal or keeps its own clock",
+    "task273": "architecture 3 bounded a burst's shut-off area by the valves the crews can close; architecture 5 moves no network boundary: it forecasts a substation's lowest midday demand once a load-control retiming reaches the tanks whose meters take the signal"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-22",
+      "niche": "a payroll platform's year-end readiness review from closed-loop load tests, the requests the blocked test clients never sent during each pod's garbage-collection pauses",
+      "driver": "The decisive quantity is a tail percentile of response times for requests arriving independently of the server's state, measured by clients that each send the next request only after the last returns, so a pause on one node behind a balancer leaves each blocked client one slow record where independent arrivals would have met the pause many times; each node's pause record rebuilds the missing arrivals, and the textbook back-fill, which credits each blocked client with every request it would have sent to that node, overstates nodes behind a balancer and requests that are slow on their own.",
+      "driver_concrete": "Each endpoint's p99 at the forecast peak as customers arriving independently would see it: the recorded response times outside each pod's garbage-collection pauses, and for the share of time each pod spends paused, the rest of the pause plus a service time, from the pod's GC log; not the recorded p99 (the clients stop sending during a pause), and not HdrHistogram's back-fill at the planned interval (each blocked client credited with every request it would have sent, all to the paused pod).",
+      "stump": "A competent solver takes each endpoint's 99th percentile of the recorded response times in the run of record and files the default list; the step that lands there is reading the closed-loop clients' requests as the requests customers would send, when each client sent nothing while its pod was paused, so a long pause counts once per blocked client instead of once per arrival.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G18",
+        "G17"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "population_selection",
+      "analyst_test": "A strong analyst who reads every field correctly, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times files the default list; the test clients send each request only after the last returned, so a pod's pause leaves one slow record per blocked client where customers arriving independently would have met it many times, and the endpoints whose pods pause for long stretches pass at their recorded percentile while customers would see them breach.",
+      "domain_test": "The deciding quantity is each endpoint's 99th-percentile response time for requests that arrive independently of the platform's state at the forecast peak, estimated from a closed-loop test whose missing requests (those the blocked clients never sent during each pod's pauses) are missing because of the outcome, so the missing-data analysis rebuilds them from each pod's pause record; replacing it with the recorded percentile, or with the textbook back-fill that credits each blocked client with every request it would have sent to the paused pod, changes which endpoints are fixed.",
+      "layer2_pattern": "own:requests-a-closed-loop-client-never-sent-rebuilt-from-each-pods-pause-record",
+      "fate": "spent 2026-10-22 at stage 4 (Gate F): both isolated scored readers named the closed-loop test's coordinated omission from the standard's population and pause clauses, rebuilt open arrivals per pod from each GC log and landed the five; reader B every ask figure (48 of 48), reader A 36 of 48; judge DETERMINISTIC, APPROVE"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-22",
+      "niche": "a regional transportation commission's 2027 commercial fleet safety programme, each commercial vehicle use's crashes caused per mile driven, the miles read from the vehicles other drivers struck within each road class and hour",
+      "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel.",
+      "driver_concrete": "Each commercial use's crashes caused per mile against private drivers' over 2021 to 2025, its miles recovered as its share of the vehicles struck by the one at-fault driver of a crash between moving vehicles within each road class, day type and hour, times that stratum's miles from the Department's VMT and count-station hours; not crashes per registered or permitted vehicle, and not the pooled struck share, which over-weights the night streets and under-weights the freeways the shuttles drive.",
+      "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit (1.78 and 1.71); the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery. Per registered or permitted vehicle covers six; road class or hour alone leaves ride-hail or both delivery uses under the line.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "population_selection",
+      "analyst_test": "A strong analyst who reads every field correctly and divides the crashes each use's drivers caused by the vehicles registered or permitted for that use files the default list, because a ride-hail car or a parcel van covers several private cars' mileage a year; one who knows the field's induced exposure and takes each use's share of the not-at-fault vehicles in two-vehicle crashes as its share of the miles files a second wrong list, because that sample is drawn where crashes happen and so over-counts the miles driven at night and on urban streets.",
+      "domain_test": "The deciding quantity is each use's crashes caused per mile driven against private vehicles, a rate whose denominator no record counts, so the missing-data analysis recovers each use's miles from its share of the not-at-fault vehicles within each road class and hour, scaled by that stratum's measured mileage; replacing it with registrations, with the crash-share ratio, or with the pooled not-at-fault share changes which uses the programme covers.",
+      "layer2_pattern": "own:induced exposure re-weighted to miles by each stratum's crash intensity",
+      "fate": "spent 2026-10-27 at the portal: both responses ran the field's own stratified induced exposure (each use's share of the vehicles struck by the at-fault driver within road class, day type and hour, scaled by the Department's miles) and filed the golden four (taxicabs, ride-hail, parcel delivery, app-based delivery); shipped 2026-10-23 with five in-house readers off the call and the judge DETERMINISTIC, APPROVE on pass 2; axes held at the draw: GSDS missing-data-censoring-measurement-error, shape 14, regulator_or_inspector, launch_or_rollout, government_agency, policy_adviser, filed_standard; portal determinism 2026-10-28 failed on both judge runs: run 1 underspecified_objective on the duplicate person records behind the KSI and cost asks, run 2 competing_defensible_answer on the main call (the unstratified induced exposure reverses the four)"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-27",
+      "niche": "a council-controlled water organisation's 2027 critical mains register, each main's burst consequence read off the district's pipe network as the properties left without water once the burst is shut off at the valves the crews can actually close",
+      "driver": "The deciding quantity is the demand a unit's failure leaves without any path to supply, where a failure takes out not the unit alone but the whole area bounded by the nearest boundary devices that can actually be operated, and which devices can operate is recorded only in a maintenance history kept for another purpose; removing the unit alone, or the area the as-drawn devices bound, files a smaller and different set.",
+      "driver_concrete": "Each main's 2027 burst consequence is the properties inside the nearest valves the crews can close, the exercising programme's latest visit deciding which valves are seized or missing, plus the properties that closing that area cuts off from both treatment plants and the reservoir; not the main's own properties, not the main removed alone with its unreachable demand (the field's link-removal criticality), and not the segment the GIS valves bound as drawn.",
+      "stump": "A competent solver removes each main's valve-bounded segment as the GIS draws it and counts the properties on it plus those cut off from supply, filing a register of about 93 mains and 15 km; the step that lands it there is taking every valve in the GIS as one the crews can close, when the exercising programme's latest visits found about one valve in six seized or missing, so a burst beside one of them takes out the next segment too and cuts off the estates behind it (golden about 173 mains, 21 km).",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G8",
+        "G2",
+        "G5"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "grain_or_unit",
+      "analyst_test": "A strong analyst who reads every field correctly takes the field's criticality route, removing each main (or its valve-bounded segment as the GIS draws it) and counting the properties on it plus those left with no open path to a treatment plant or the reservoir, and files a register of about 50 mains and 12 km (about 93 mains and 15 km on the drawn segments), where a burst takes out everything up to the valves the crews can actually close and the exercising programme's latest visits found about one valve in six seized or missing, so the register is about 173 mains and 21 km.",
+      "domain_test": "The deciding quantity is each main's consequence of failure in a water distribution network, the properties that lose supply while a burst is shut off: the area inside the nearest valves the crews can close, plus every area that closing it leaves with no open path to a treatment plant or reservoir (unreachable demand); removing the main alone, or the segment the drawn valves bound, changes the register, and with wards or megawatt-hours in place of mains there are no valves, segments or supply paths for the question to stand on.",
+      "layer2_pattern": "urban-regional-science/network-analysis/2",
+      "registered": "2026-10-27T06:38:27Z",
+      "fate": "spent on paper 2026-10-27 at stage 2, never cut: the decisive rung readable on tests 1 to 3 (the shut-off clause, the programme's operable flag, unreachable demand as the task type's own pattern), deletion tests 3 and 6 fire"
+    },
+    {
+      "architecture": "v4",
+      "drawn": "2026-10-28",
+      "niche": "a health board's couples' carrier screening panel set from its population genome study, each condition's carrier frequency read through genotype calls whose chance of catching a heterozygous carrier depends on the read depth at the variant and the sequencing phase's calling rule",
+      "driver": "The decisive quantity is the share of a population carrying a trait that each member's own measurement reveals only with a probability set by how much measurement that member received, where the least measured members are a subgroup whose share differs; each group's detections are scaled by the sum of its members' chances of detection, and counting detections, keeping only well-measured members, or scaling pooled detections by the pooled chance each loses that subgroup's carriers.",
+      "driver_concrete": "Each condition's carrier frequency in the Wardale Genome Study as each phase's called carriers divided by the sum, over that phase's members, of the binomial chance that a heterozygote at their depth passes the phase's calling rule; not the called carriers over the study, not the allele count over members with 10 or 20 reads, and not the pooled calls over the pooled chance, each of which leaves ARSACS, Joubert syndrome type 2 and diastrophic dysplasia off the panel.",
+      "stump": "A competent solver counts each condition's called carriers among the members whose depth passes the usual genotype filter and files the current eleven unchanged, the three founder conditions at 2.3, 2.4 and 2.1 per 1,000; the step that lands it there is reading a member with no call as a non-carrier, when the phase 1 caller caught a heterozygote at 8 to 17 reads only about half the time and the phase 1 members are the island and glen communities where those conditions are common.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G12",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "classification_error",
+      "analyst_test": "A strong analyst who reads every file correctly counts, for each condition, the Study members called as carriers among those with at least 10 reads at the gene's register variants (the field's allele count over allele number after a depth filter) and files the current eleven unchanged, leaving ARSACS, Joubert syndrome type 2 and diastrophic dysplasia off at 2.3, 2.4 and 2.1 per 1,000, whose carriers sit almost all in the phase 1 island and glen communities, where the older capture kit read those variants at 8 to 17 reads and the phase 1 caller caught about half the heterozygotes.",
+      "domain_test": "The deciding quantity is each condition's carrier frequency in the study, estimated from exome genotype calls whose sensitivity for a heterozygous carrier is the binomial chance that enough of the reads at the variant carry the alternate allele to pass the phase's calling rule at that member's depth; counting calls or filtering on depth estimates a different quantity, and another field's nouns lose the read sampling, the calling rule and the capture kit that set each member's chance of being seen.",
+      "layer2_pattern": "own:carrier-frequency-scaled-by-each-phase's-depth-dependent-calling-sensitivity",
+      "registered": "2026-10-28T12:43:45Z",
+      "fate": "spent 2026-10-28 at the portal: both responses filed the golden 14 conditions (ARSACS, Joubert syndrome type 2 and diastrophic dysplasia joining), one saying it computed observed and sensitivity-adjusted frequencies; the within-gene contrast added for the first judge pass made the missed calls visible and the per-phase detection correction is a published estimator a solver enumerates; shipped 2026-10-28 on ea742c6b after judge pass 2 DETERMINISTIC, APPROVE"
+    }
+  ],
+  "notes": "Architecture 5, drawn 2026-10-28: the author re-tasked the slot from Descriptive & Distribution Analysis to Forecasting & Predictive Modeling after four descriptive architectures and a nine-direction screen (the coordinating session's decision of 2026-10-28, retirement not taken); the decisive step is a physical balance (a recycling plant's output set by its own users' sewage return, capped by its membranes), never a named statistical correction.",
+  "registered": "2026-10-29T01:43:47Z"
 }
