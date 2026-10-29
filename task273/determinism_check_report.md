@@ -1,106 +1,109 @@
-# determinism-check report, task273, 2026-10-28
+# determinism-check report, task273, 2026-10-28 (pass 3, architecture 5)
 
-Re-judge of architecture 4 after the first pass's SEND_BACK (Gate H/stump-family rework). The prior pass
-is kept separately as `determinism_check_report_a4_pass1.md`, which the judge thread run for this pass
-never saw (isolated scratch unzip only, no task-folder access).
+This is the first judge pass on architecture 5 (the Tallowbark Networks minimum-load substation
+designation, load-forecasting), run on target.zip 3d17e193; the judge wrote it as
+`determinism_check_report_pass3.md` and the build renamed it to this file, replacing architecture 4's final
+report, which stays in git history. `determinism_check_report_pass2.md`, `determinism_check_report_a4_pass1.md`
+and `determinism_check_report_portal.md` judge earlier architectures and are kept as history. The shipped
+target.zip is f641cf2c: after this pass the prompt's further-capacity clause was narrowed to "before any of
+those half-hours fell below its threshold", the solar outlook's header lost the reference day's date, the
+applications register's substation column was named `zone_substation_at_approval`, and the voltage
+enquiries' outcomes and the outlook's basis text were redrawn; no graded figure moved. The isolated judge
+thread saw only a fresh unzip of `target.zip` plus the five extracted blocks, and never opened
+`submission.md`, `DESIGN_NOTE.md`, `metadata.json`, `generator/`, or any earlier report.
 
 ## Verdict
 DETERMINISTIC
 **Disposition:** APPROVE
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Stumping type:** mechanism: decomposition_attribution (secondary: forecasting), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-The main call (14 conditions, +SACS/SLC26A2/TMEM216) is forced by a depth/detection-probability-corrected
-("Horvitz-Thompson-style") carrier-frequency estimator, pinned by the methods report's own stated,
-phase-specific calling thresholds (phase 1: >=5 alt reads and >=25%; phase 2: >=3 and >=20%) and the
-member-level depth file. The judge thread independently rebuilt this estimator from
-`ags_phase1_calls_grch37.tsv`, `ags_phase2_calls_grch38.tsv`, `ags_register_site_depth_2026-11-03.csv`
-and `kgl_variant_register_2026-11-03.xlsx` and reproduced the full 30-condition table, including
-SACS/SLC26A2/TMEM216 at 7/6/6 per 1,000 and the 14-vs-16 split at the panel's 5-per-1,000 line. It also
-independently reproduced the four rejected-method numbers the narrative cites as wrong routes (naive
-calls-over-cohort gives ~3.78/3.46/3.42, matching the stated 3.8/3.4/3.5), confirming the "easy route"
-wrong answer (11 conditions, no joiners) is real, not a strawman. Cohort size (25,694) and the CFTR
-half-year couple counts (88/98) both reproduce only once two documented, discoverable file behaviors are
-read correctly (a consent-withdrawal effective date after the census, and a classification column that
-silently carries a site's current rather than as-of-authorisation class from the August-2025 LIMS release)
--- both are facts stated or recoverable in the shipped files themselves, not external knowledge.
+The main call (7 of 16 substations designated: Gerrimbal, Kinnabar, Mundaree, Ondarra, Quorrabin,
+Tarravine, Wirrandel) and every figure in all four asks of `minimum_load_spring_2027.xlsx` were
+independently recomputed by the judge thread from the raw shipped files and matched exactly to the
+stated rounding, including the two thinnest margins (Gerrimbal 0.6 MW, Quorrabin 0.7 MW). The decisive
+step is forced by `approved_meter_models.xlsx`'s meter-model descriptions joined through
+`metering_installations_2026-12-11.csv` to `load_control_register_2026-12-10.csv`: 23,257 of 31,832
+controlled-load heaters sit on meters with an integral audio-frequency receiver (reached by
+`network_notice_NN-2027-02.pdf`'s new signal) and 8,575 sit on meters with an internal time switch
+(not reached, so they keep heating overnight). This join reproduces exactly and is not a toss-up: the
+"easy" route of applying the new switch-on times to every controlled-load heater gives a specific,
+different, named wrong answer (4 substations, clearing Kinnabar, Quorrabin and Gerrimbal), and the route
+of applying no soak load at all gives another named wrong answer (11 substations). No committed answer
+(main call or any of the four deliverable asks) is affected by any defect.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Reference cohort | 25,694 (7,945 + 17,749) | 25,694, only after correcting for in-force-on-census-date consent (22 members) | Yes |
-| SACS carrier frequency | 7 /1,000 | 6.81 -> 7 (depth-weighted estimator) | Yes |
-| SLC26A2 carrier frequency | 6 /1,000 | 6.13 -> 6 | Yes |
-| TMEM216 carrier frequency | 6 /1,000 | 6.20 -> 6 | Yes |
-| Full 30-condition table / 14-16 split | per submission | matches to rounded per-1,000 for all 30; HEXA=4.34 excluded, SLC26A2=6.13 included | Yes |
-| Rejected "calls over cohort" (narrative) | 3.8/3.4/3.5 | 3.78/3.46/3.42 | Yes |
-| CFTR couples told, H1/H2 2025/26 | 88 / 98 | 88 / 98, only after correcting the results export's classification field against the variant register's change history (naive export reading gives 87/86) | Yes |
-| Narrative's depth-filtered (>=10/>=20 reads) and "pooled" rejected-method figures | stated in FINAL_RECOMMENDATION prose | not reproduced to the exact stated values after several attempts | Not independently confirmed (narrative only, not a graded Critical Component or Supplementary Answer) |
-
-The one unreproduced item is explanatory narrative inside the main-call prose (the illustrative rejected
-alternatives), not a Critical Component or a graded Supplementary Answer, so it does not affect the
-verdict; worth a look only if the write-up prose is revisited for its own sake.
+| Reference day / lowest network half-hour | Sun 25 Oct 2026, -153.3 MW | -153.311 MW, same day, after UTC-to-local/DST conversion | Yes |
+| Heater reach split | 23,257 AF-receiver / 8,575 time-switch of 31,832 | 23,257 / 8,575 (meter-model join) | Yes |
+| All 16 substations' forecast lowest demand (ask 1) | per submission | all 16 match, incl. thresholds and designation flags | Yes |
+| Designated set | 7 (Gerrimbal, Kinnabar, Mundaree, Ondarra, Quorrabin, Tarravine, Wirrandel) | same 7 | Yes |
+| Curtailment, 7 designated substations (ask 2) | 0.6-1.1 MW | all 7 match exactly | Yes |
+| Further capacity, 9 cleared substations (ask 3) | per submission | all 9 match exactly | Yes |
+| In-service / backstop solar, all 16 (ask 4) | 254.64 MW / 32.50 MW total | matches exactly, after chaining `der_applications_2026-12-08.xlsx` through `prior_application` per independent root (the file holds up to three parallel "New connection" roots per NMI, not one linear history) | Yes |
+| Rejected "four" (every heater reached) | named in FINAL_RECOMMENDATION | reproduces as a specific wrong set, clearing Gerrimbal/Kinnabar/Quorrabin | Yes |
+| Rejected "eleven" (no soak load) | named in FINAL_RECOMMENDATION | reproduces as a specific wrong set | Yes |
+| Naive single-root DER chain (ask-4 undercount) | not committed | ~248.0 MW vs shipped 254.64 MW (~2.5% understatement), a real and distinct wrong answer | Confirms the parallel-root trap is load-bearing, not decorative |
 
 ## Competing answers that survived
-None. The 11-condition (no-join) answer only arises from not correcting for the documented depth-dependent
-ascertainment bias, which the shipped methods report and depth file make a computation error, not a
-licensed alternative reading of "carries." No fork in the main call or in either supplementary answer
-survived the judge thread's stress test; the margin at the panel line is comfortable (sensitivity to
-floor/ceil rounding in the binomial model moves every figure by <=0.003 per 1,000) and not a knife-edge.
+None. The judge thread enumerated the two named alternative heater-reach routes (every heater reached;
+no soak load at all) and the naive single-root DER chain, and all three reproduce as specific, different,
+wrong answers rather than defensible alternatives to the golden; none survives as a competing defensible
+answer to any committed figure.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| File count | >=10 | 11 shipped files | Pass |
-| Format mix | >=3 formats | csv, tsv, pdf, xlsx (4) | Pass |
-| Large file | >=1 file with >=25,000 rows or large DB | `ags_member_register_2026-11-03.csv` (25,997 rows), `ags_register_site_depth_2026-11-03.csv` (25,864 rows) | Pass |
-| Distractors named, not labelled | metadata.json names >=2, no filename labels one | `ccsp_referrals_2023-2026.csv`, `kgl_ccsp_turnaround_2025-26.csv` named in `metadata.json`; neither filename says "distractor" | Pass |
-| Distractor relevance/arithmetic-coincidence check | each distractor unused yet relevant; one answering a graded quantity reproduces arithmetically and is ruled out by a shipped fact | Both named distractors (referral volumes, lab turnaround times) are thematically relevant to the programme but neither numerically coincides with a graded quantity (carrier frequency or couple count); the design note's own "No decoy" section separately names the national-reference-panel frequencies (a field-level distractor inside the review context, declared at stage 2) as the item ruled out by the shipped depth data, not either named distractor file | Partial -- the two file-level distractors pass the relevance/unused test but neither is the arithmetic-coincidence item; that role is carried by an in-file distractor the design note documents separately. Not a blocking finding, flagged for visibility |
-| Deliverables | 1-3, all present in golden, no required format family | 2 (`carrier_panel_review_2027-28.xlsx`, `panel_recommendation_2027-28.docx`), both present under `golden/` | Pass |
-| Asks multi-dimensional, unit+rounding stated | not stacked lookups | Ask 1 is condition x frequency x panel-status (30 rows), rounding to nearest whole stated in the prompt; ask 2 is condition x half-year couple counts, a count needing no rounding | Pass |
-| Prompt shape + rubric >=25 criteria | shape identifiable | Card records shape `07`, decision_type `designation_set`; rubric itself is generated by the grading pipeline and is not shipped inside the task folder, so criterion count could not be directly verified here | Not independently verifiable from this folder; no finding raised |
-| Not LLM-generated, goldens realistic | — | Judge thread hygiene check: PASS, no LLM-authorship tells, no provenance/benchmark disclosures, temporal coherence held (LIMS classification-field shift lands consistently at Aug 2025 across genes, reading as a real system artifact) | Pass |
+| File count | >=10 | 12 files in `target/` | Yes |
+| Format mix | >=3 | csv x5, xlsx x3, pdf x3, json x1 (4 formats) | Yes |
+| Large file | >=25,000 rows, or large DB | `metering_installations_2026-12-11.csv` 114,571 rows; `cl_customer_reads_spring2026.csv` 78,047 rows; `zss_net_demand_spring2026.csv` 69,856 rows; `der_applications_2026-12-08.xlsx` 53,400 rows (design note) | Yes |
+| Distractors declared, unlabeled by filename | >=2, named in `metadata.json`, no filename gives it away | `summer_demand_outlook_2027-28.pdf`, `voltage_enquiries_2026.csv`; both named only in `metadata.json`, neither filename says "distractor" | Yes |
+| Distractor relevance / unused | relevant enough to weigh, unused by solution; one reproduces an answer to a graded quantity, ruled out by a shipped fact | Both are genuine, on-topic Tallowbark planning artifacts (summer peak-demand outlook; power-quality complaint log) a network planner's desk would hold; design note confirms deleting either leaves every golden and ask figure unchanged (`checks.py`). Neither file is shown, in the design note or by this pass, to *arithmetically reproduce* a graded figure before being ruled out by a shipped fact -- this specific sub-requirement is not documented. Not a determinism defect, but worth tightening for the author (see Findings). | Partial |
+| Deliverables | 1-3, present in golden, no format family required | 2 (`minimum_load_spring_2027.xlsx`, `minimum_load_briefing_2027.docx`), both present in `golden/` | Yes |
+| Asks multi-dimensional, unit + rounding stated | yes | all 4 asks are multi-row (16/7/9/16 rows) with unit and rounding stated in the prompt's closing sentence | Yes |
+| Prompt shape / rubric >=25 criteria | identifiable shape, rubric size | prompt shape (multi-candidate threshold screen + briefing) is identifiable; rubric criteria count not present in this task folder (no rubric file read by this pass) to verify numerically | Not verified |
+| Realism / not LLM-generated | yes | judge thread hygiene check: PASS, no README/benchmark/solver-facing language, dates internally coherent, no public/verbatim dataset | Yes |
 
 ## Gate G reconciliation
-The judge thread's classification (`mechanism: method_or_model_selection`, `stumping_family:
-analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`) matches the card's own
-`gate_g: "method_or_model_selection"` exactly, and matches the design note's "Not semantics" / "Not rule
-application" / "No decoy" lines: the three rejected-method readings are real, computable constructions on
-clean data (not a planted defect), no file ranks or pre-states the conditions' frequencies for the solver
-to catch-and-reject, and the policy files only the population, outcome, unit and threshold line, leaving
-the estimator choice open and data-settled. There is no mismatch between the thread's surface-read
-reading and the design note's declared distractor: the thread correctly did not name either declared
-distractor file (referrals, turnaround) as carrying the main call, and the national-reference-panel
-frequencies the design note calls out as the actual declared decoy are refuted by the depth data rather
-than treated as the surface read the solver must reject -- consistent with a FINE-numbers,
-method-selection stump, not surface-read-rejection.
+Judge's Gate G/H: `mechanism: decomposition_attribution` (secondary `forecasting`), `stumping_family:
+analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`; `domain: pass`, `layers:
+pass`, `decisive_step: analytical`. The card's `stump_class: analytical`, with `analyst_test` and
+`domain_test` (`.claude/skills/fingerprint/cards/task273.json` lines 34-35) and the design note's `##
+Three rules` (lines 21-35) name the identical mechanism in the same words the thread arrived at
+independently: the decisive join is "which controlled-load heaters the new signal times actually
+switch," found only through each heater's current meter and that meter's model, and the named easy-route
+wrong answer is the same 4-substation set (clearing Gerrimbal, Kinnabar, Quorrabin) in both the card and
+the judge's H3 line. The design note's "Not semantics" and "Not rule application" lines argue the same
+case the thread made unprompted: every field and register id can be read correctly and the easy route
+still lands on the wrong set, because no filed sentence says which heaters the signal reaches. This is a
+clean match, not a mismatch -- the thread was not told the design or the card, and converged on the same
+classification, which is itself evidence the H3 analytical call is sound rather than a self-serving
+author assertion. The library's load-forecasting method here (reference-day replay, solar-adjusted
+threshold comparison) is the field's standard route; the thread's finding that it took independent
+judgment (the device-reach join, the parallel DER-chain reconstruction) to execute it correctly, with no
+textbook shortcut, supports landing the call as `stumping` 1.3 intends.
 
-## Gate H reconciliation
-Thread: `domain: pass`, `layers: pass`, `decisive_step: analytical`. Card: `stump_class: analytical`, with
-`analyst_test` describing the exact easy route (counting calls among members read >=10 times, filing the
-current 11 conditions unchanged and missing SACS/TMEM216/SLC26A2 at ~2.3/2.4/2.1 per 1,000) and
-`domain_test` naming the binomial detection-probability structure as the field-specific quantity that a
-domain swap would destroy. These align point for point: the thread's named "easy route" (naive calls over
-cohort, giving 3.8/3.4/3.5 and the 11-condition answer) is a different but equally valid naive route from
-the card's depth-filter route, and both are explicitly enumerated and rejected in the design note's "Not
-semantics" paragraph (both naive families, among others, are itemized with their numbers). No instance of
-the thread naming the declared distractor as the surface read carrying the task; the decisive step is
-squarely the choice of detection-probability-weighted estimator, which both the card and the thread treat
-as analysis rather than rule application or data semantics. No reconciliation mismatch found.
+## Stump power (Gate F)
+The thread rates stump power "strong," citing four independently load-bearing difficulties: the
+device-reach join (not a flat read of the notice), manufacturer-specific controlled-load register codes,
+UTC/local/DST reference-day selection, and the non-linear (parallel-root) DER application chain for
+ask 4. Two margins are thin (Gerrimbal 0.6 MW, Quorrabin 0.7 MW) but fully and uniquely determined with
+no estimation freedom, so Gate C's margin-robustness test is satisfied rather than flagged. The three
+named wrong answers (4, 11, and the ask-4 undercount) are concrete, reachable failure modes for a
+competent but insufficiently careful analyst, consistent with the design note's enumerated family
+(designated sets of 4, 5, 7 and 11 across nine alternative constructions).
 
 ## Findings, ranked
-1. (Informational, non-blocking) The spec-gate's arithmetic-coincidence distractor requirement is
-   satisfied by an in-file distractor (national reference panel frequencies inside the review context)
-   documented in the design note, not by either file named in `metadata.json`'s `distractor_files`.
-   Visible for the author's awareness; does not affect the determinism verdict, disposition, or either
-   gate classification.
-2. (Informational, non-blocking) Two of FINAL_RECOMMENDATION's illustrative rejected-method figures (the
-   depth-filtered >=10/>=20-read numbers and the "pooled" numbers) were not independently reproduced to
-   their exact stated values by the judge thread after several attempts. These are explanatory narrative,
-   not a Critical Component or a graded Supplementary Answer, so this is not a SOLUTION_WRONG finding;
-   worth a look only if the write-up prose is revisited.
+1. (Minor, non-blocking) The design note documents that both distractors are deletable without moving
+   any figure, but does not show either one *arithmetically reproducing* a graded quantity before a
+   shipped fact rules it out -- the stronger form of the distractor-relevance gate. Not a determinism
+   defect; tighten the design note's distractor rationale if revisited, no rerun required.
+2. (Informational) The task folder does not contain a rubric artifact this pass could use to verify the
+   >=25-criteria floor numerically; nothing here suggests a problem, just unverified by this pass.
+3. No Gate A-E, F, G, or H finding. No fix location applies.
 
 ## Next action for the author
-None required for shipping; the task is DETERMINISTIC, APPROVE. If the write-up is touched again for any
-other reason, re-verify the two narrative-only rejected-method figures in finding 2 against the generator's
-exact construction.
+None required; ship as-is. If revisiting the design note, add one sentence showing one distractor's
+numbers plausibly answering a graded quantity and the shipped fact that rules it out, to make the
+stronger distractor-relevance gate explicit (optional, does not block shipping).

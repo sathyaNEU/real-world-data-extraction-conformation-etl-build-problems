@@ -1,88 +1,104 @@
 {
- "answer": "Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves.",
+ "answer": "Designate seven of Tallowbark Networks' sixteen zone substations for spring 2027: Gerrimbal, Kinnabar, Mundaree, Ondarra, Quorrabin, Tarravine and Wirrandel.",
  "deliverables": [
-  "carrier_panel_review_2027-28.xlsx",
-  "panel_recommendation_2027-28.docx"
+  "minimum_load_spring_2027.xlsx",
+  "minimum_load_briefing_2027.docx"
  ],
  "distractor_files": [
-  "target/kgl_ccsp_turnaround_2025-26.csv",
-  "target/ccsp_referrals_2023-2026.csv"
+  "target/summer_demand_outlook_2027-28.pdf",
+  "target/voltage_enquiries_2026.csv"
  ],
- "domain": "Biomedical & Clinical Research (statistical genomics)",
- "field_terms": [],
- "objective": "Descriptive & Distribution Analysis",
+ "domain": "Energy Systems & Utilities (load forecasting)",
+ "objective": "Forecasting & Predictive Modeling",
  "provenance": {
-  "ags_member_register_2026-11-03.csv": {
-   "date": "2026-11-03",
+  "approved_meter_models.xlsx": {
+   "date": "2026-11-02",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the Study's member register (phase, recruitment area, sample, genotype status, consent); constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' approved meter models list; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ags_methods_and_quality_report_issue6.pdf": {
-   "date": "2026-11-03",
+  "cl_customer_reads_spring2026.csv": {
+   "date": "2026-12-09",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the laboratory's methods and quality report for the Study's two phases; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' spring 2026 consumption by meter register for its controlled-load customers; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ags_phase1_calls_grch37.tsv": {
-   "date": "2026-11-03",
+  "der_applications_2026-12-08.xlsx": {
+   "date": "2026-12-08",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the phase 1 calling pipeline's non-reference calls at register sites, GRCh37, 2019 transcript names; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' rooftop solar connection applications register; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ags_phase2_calls_grch38.tsv": {
-   "date": "2026-11-03",
+  "load_control_register_2026-12-10.csv": {
+   "date": "2026-12-10",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the phase 2 calling pipeline's non-reference calls at register sites, GRCh38; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' load-control register of controlled-load installations; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ags_register_site_depth_2026-11-03.csv": {
-   "date": "2026-11-03",
+  "metering_installations_2026-12-11.csv": {
+   "date": "2026-12-11",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the laboratory's read counts at every register site for every released member; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' metering installations register, current and removed meters; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ccsp_panel_policy_v3.pdf": {
-   "date": "2026-11-03",
+  "minimum_load_framework_v2.pdf": {
+   "date": "2026-03-03",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the programme's panel policy, version 3; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "the Department's minimum-load framework, version 2; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ccsp_panel_review_2027-28_conditions.xlsx": {
-   "date": "2026-11-03",
+  "network_notice_NN-2027-02.pdf": {
+   "date": "2027-01-19",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the Panel Review Group's list of the 30 conditions under review; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' notice of new controlled-load switching times; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ccsp_referrals_2023-2026.csv": {
-   "date": "2026-11-03",
+  "rooftop_pv_monitoring_spring2026.json": {
+   "date": "2026-12-02",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the programme's monthly referrals by source; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "the Department's monitored sample of rooftop PV output per kW of inverter capacity, half-hourly; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "ccsp_results_2025-26.csv": {
-   "date": "2026-11-03",
+  "solar_connections_outlook_2027.xlsx": {
+   "date": "2027-01-29",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the programme's 2025/26 results export, one row per finding or per partner without one; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' forecast of rooftop solar connections to 1 October 2027 by zone substation; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "kgl_ccsp_turnaround_2025-26.csv": {
-   "date": "2026-11-03",
+  "summer_demand_outlook_2027-28.pdf": {
+   "date": "2026-11-06",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the laboratory's monthly turnaround statistics for the programme; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' summer 2027-28 zone substation demand outlook; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   },
-  "kgl_variant_register_2026-11-03.xlsx": {
-   "date": "2026-11-03",
+  "voltage_enquiries_2026.csv": {
+   "date": "2026-12-07",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the laboratory's variant register with its change history; constructed by the task generator (seeded); Ardvenny and Isles Health Board, the Ardvenny Genome Study, the Kilvenny Genomics Laboratory, the places, people and records are fictional; gene and variant names follow public nomenclature"
+   "source": "Tallowbark Networks' customer voltage enquiries, January to November 2026; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
+  },
+  "zss_net_demand_spring2026.csv": {
+   "date": "2026-12-04",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Tallowbark Networks' SCADA historian export of each zone substation's net demand, half-hourly, UTC; constructed by the task generator (seeded); the Department of Energy Security and Planning, Tallowbark Networks, the Saltgrass Coast, the places, people and records are fictional"
   }
  },
  "rows": {
-  "ags_member_register_2026-11-03.csv": 25997,
-  "ags_phase1_calls_grch37.tsv": 2691,
-  "ags_phase2_calls_grch38.tsv": 5232,
-  "ags_register_site_depth_2026-11-03.csv": 25864,
-  "ccsp_panel_review_2027-28_conditions.xlsx": 30,
-  "ccsp_referrals_2023-2026.csv": 168,
-  "ccsp_results_2025-26.csv": 5383,
-  "kgl_ccsp_turnaround_2025-26.csv": 12,
-  "kgl_variant_register_2026-11-03.xlsx": 125
+  "approved_meter_models.xlsx": 12,
+  "cl_customer_reads_spring2026.csv": 78047,
+  "der_applications_2026-12-08.xlsx": 53400,
+  "load_control_register_2026-12-10.csv": 31832,
+  "metering_installations_2026-12-11.csv": 114571,
+  "rooftop_pv_monitoring_spring2026.json": 4366,
+  "solar_connections_outlook_2027.xlsx": 16,
+  "voltage_enquiries_2026.csv": 1388,
+  "zss_net_demand_spring2026.csv": 69856
  },
  "stated_inputs": [
-  "200",
-  "1,000"
+  "-11.0",
+  "-12.5",
+  "-12.6",
+  "-14.2",
+  "-15.5",
+  "-5.6",
+  "-5.7",
+  "-7.0",
+  "-7.3",
+  "-7.6",
+  "-7.7",
+  "-8.5",
+  "-9.0",
+  "-9.9"
  ],
  "task": "task273",
- "title": "Ardvenny and Isles Health Board: the Couples Carrier Screening Programme's 2027/28 panel"
+ "title": "Department of Energy Security and Planning: minimum-load designations for spring 2027"
 }

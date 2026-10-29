@@ -1,6 +1,6 @@
 # task273 design note
 
-Architecture 5, drawn 2026-10-28 after the author re-tasked the slot from Descriptive & Distribution Analysis to Forecasting & Predictive Modeling (the coordinating session's decision of 2026-10-28, retirement not taken) and architecture 4 came back from the portal landed (both responses filed the golden 14 conditions, one by the published per-phase detection correction). The world is new and the domain moves to Energy Systems & Utilities. A state energy department prepares its spring 2027 minimum-load assessment of Tallowbark Networks' sixteen zone substations on the Saltgrass Coast: rooftop solar already drives every substation into reverse flow at the middle of a clear spring day, and from 1 September 2027 the network moves the controlled-load (off-peak hot water) window from 10.00 pm to 7.00 am into a solar-soak window from 10.00 am to 3.00 pm, released in five load-control groups between 10.00 am and noon. The department designates the substations whose lowest midday demand on a clear spring Sunday in October 2027 will still fall below their minimum-load threshold, and the minister directs emergency backstop arrangements for those substations before the season.
+Architecture 5, drawn 2026-10-28 after the author re-tasked the slot from Descriptive & Distribution Analysis to Forecasting & Predictive Modeling (the coordinating session's decision of 2026-10-28, retirement not taken) and architecture 4 came back from the portal landed (both responses filed the golden 14 conditions, one by the published per-phase detection correction). The world is new and the domain moves to Energy Systems & Utilities. A state energy department prepares its spring 2027 minimum-load assessment of Tallowbark Networks' sixteen zone substations on the Saltgrass Coast: rooftop solar already drives every substation into reverse flow at the middle of a clear spring day, and from 1 September 2027 the network moves the switching signals of its audio-frequency load-control system from the night (10.00 pm to 7.00 am) into a midday solar-soak window: switch-on signals to its five load-control groups from 10.00 am to noon, switch-off at 4.00 pm. The department designates the substations whose lowest midday demand on a clear spring Sunday in October 2027 will still fall below their minimum-load threshold, and the minister directs emergency backstop arrangements for those substations before the season.
 
 ## Draw
 
@@ -15,8 +15,171 @@ Architecture 5, drawn 2026-10-28 after the author re-tasked the slot from Descri
    - Load control in Australian distribution networks: off-peak hot water is switched by ripple receivers or meter relays that follow the network's signal, or by time switches inside older meters that keep their own clock until the meter is reprogrammed on site or replaced.
    - The client library's load-forecasting patterns (weather normalisation, peak decomposition) are not this step; this build's own pattern is `own:a-load-control-retiming-reaches-only-tanks-whose-meter-takes-the-network-signal`.
    - This lane: task258 carries a validated intervention only to units whose served document lets it act (the device, a reach read off a record kept for another purpose, is shared and licensed; nothing here is validated or back-tested); task164 sets plug-in vehicles' effect on transformer evening peaks by tariff schedule; task464 rebuilds conductor currents from loads and a solar farm's export; task230's first architecture held a counterfactual pool to phones that could take an app update.
-8. People, drawn with `guard.py names --geo australia --seed 273`: Megan Robertson (director of energy security, the department), Jacob Barnes (Tallowbark Networks' manager of network operations, signs the solar-soak notice). Invented names (Tallowbark Networks, Saltgrass Coast, Kurrajine, Brindlemoor) pass `guard.py check` (tell.names).
-9. Pack plan: the sixteen substations' half-hour demand for spring 2026 (CSV, the spine); the controlled-load channel summary by NMI (CSV); the meter register (CSV) and the meter model list (XLSX); the load-control group register (CSV); the solar connection register and pipeline (XLSX); the department's minimum-load framework (PDF); the network's solar-soak notice (PDF); distractors declared in `metadata.json` (the network's summer peak outlook and its customer voltage enquiries).
+8. People, drawn with `guard.py names --geo australia --seed 273`: Megan Robertson (director of energy security, the department), Jacob Barnes (Tallowbark Networks' manager of network operations, signs the solar-soak notice). Invented names (Tallowbark Networks, Saltgrass Coast, Quorrabin, Brindlemoor and the other fourteen zone substations) pass `guard.py check` (tell.names); the zone substation names drawn first (Kurrajine, Merrigal, Corrimba, Kalbarrup and others) sat within two letters of real places (Kurrajong, Merriwa, Corrimal, Kalbarri) and were redrawn at stage 3 (H21).
+9. Pack (twelve files, four formats): the sixteen substations' net demand from the SCADA historian, spring 2026, half-hourly in UTC (CSV, 69,856 rows, the spine); the Department's monitored sample of rooftop PV output per kW of inverter capacity (JSON, local time with offsets); Tallowbark's solar connections outlook to 1 October 2027 (XLSX); the metering installations register, current and removed meters for 91,000 NMIs (CSV, 114,571 rows); the approved meter models list (XLSX); spring 2026 consumption by meter register for the controlled-load customers (CSV, 78,047 rows); the load-control register (CSV, 31,832 heaters); the solar connection applications register (XLSX, 53,400 rows, the asks only); the Department's minimum-load framework v2 (PDF); network notice NN-2027-02 (PDF); distractors declared in `metadata.json`: the summer 2027-28 demand outlook (PDF) and the 2026 customer voltage enquiries (CSV).
+
+## Three rules
+
+- Task type: load-forecasting (Energy Systems & Utilities), serving Forecasting & Predictive Modeling: a zone substation's minimum demand for a coming season, built bottom up from a reference day, the rooftop solar forecast to connect and the load the network will move into the middle of the day.
+- Domain test: the deciding quantity is each zone substation's lowest half-hour demand on the 2027 reference Sunday, which network planners forecast from the reference day's metered demand, the solar connection pipeline at the day's output per kW, and the controlled load a load-control change moves, placed by replaying each moved water heater's recovery from its switch-on; the field's question about a retiming is which installations its signal actually switches.
+- Swap: "which hospitals will run short of beds on the reference Monday once elective lists move to weekends" keeps a forecast, a threshold and a scheduled move, but loses what decides here: a central signal that only some installations' switching devices obey, a water heater's element drawing its rating from switch-on until its daily energy is restored, and solar output per kW that sets each half-hour's depth, so neither the reach nor the replay stands for anything.
+- Layer 1: SCADA exported by the historian in UTC with interval-ending stamps across the 4 October daylight-saving change, and Tibbarin still under its pre-2019 point name (the historian); estimated rows where communications dropped on weekday nights (the historian); the monitored sample in local time with offsets (the Department's data programme); meters exchanged during spring 2026 so one customer's reads sit under two serials, and accumulation meters read on their own dates either side of spring (the meter data agent); register ids that differ by meter model (01/02, 11/41, E1/E2/E3, B1; the metering team's models list); removed meters kept beside current ones (the metering register); in the connections register only: zone substations as recorded at approval before the 2025 feeder transfers, withdrawn, lapsed and pending applications, and applications commissioned after the reference day (the connections system).
+- Layer 2: own:a-load-control-retiming-reaches-only-heaters-whose-meter-takes-the-network-signal; the population a scheduled retiming moves is the heaters whose switching device obeys the network's signal, then each moved heater's recovery is replayed from its group's new switch-on, and the forecast minimum is read where the recovered load has thinned under a still-high solar curve.
+- Decisive step: asking which controlled-load heaters the new signal times actually switch, and finding them by joining each heater to its current meter and that meter's model: 23,257 heaters sit on meters whose contactor is driven by an integral audio-frequency receiver and move to midday; 8,575 sit on meters whose contactor runs from an internal time switch and keep heating overnight, most of them behind Kinnabar, Quorrabin and Gerrimbal.
+- Not semantics: every field, register id, model description, date and stamp read correctly still leaves the easy route on the wrong set: the consumption data show every heater heating overnight, ripple and time-switched alike, the load-control register gives every heater a group, and the notice's signal table applies to every group; a solver who decodes "internal time switch" correctly but never asks which heaters the change reaches moves all 31,832 and files four substations.
+- Not rule application: the framework files what is forecast (the reference day, the window, the solar term, load "placed in the half-hours in which it will draw", a heater's draw from switch-on) and the notice files the signal times, but no sentence says which heaters the signal switches; executing every filed sentence over every heater files the default set. Enumerated family (no soak load, every heater replayed, every heater spread evenly, reached heaters spread evenly, interval meters only, every heater at the network reach share, the first meter on file, the current serial's reads only, whole half-hours, the golden): designated sets of 4, 5, 7 and 11, the three reach substations' minima moving 1.26 to 1.73 MW between every-heater and reached-heater routes; standing family (the reach read and every filed sentence held: current serial only, whole half-hours, first meter on file): one call, minima within 0.03 MW (0.14 MW for the first meter on file); loudness: nothing filed and no one-group-by comparison rules the all-heater route out, only the join of each heater to its meter's model.
+- Analyst test: a strong analyst converts the SCADA, finds the reference Sunday, prices the outlook's solar at the sample's output per kW, takes every heater in the load-control register with its group, element and daily energy and replays it from the notice's switch-on times, and designates Ondarra, Mundaree, Wirrandel and Tarravine, four substations, clearing Kinnabar, Quorrabin and Gerrimbal.
+- Estimand: framework 2.1 to 3.3 (minimum_load_framework_v2.pdf): the sixteen zone substations' forecast demand in each of the ten half-hours from 10.00 am to 3.00 pm on the coming spring's reference day, the preceding spring's lowest network Sunday carried forward with the solar forecast to connect by 1 October and the load notified to switch at different times placed where it will draw, against each substation's threshold in MW.
+- No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure states a designation, a soak load or a reach share; the notice is a true operational notice of signal times and the models list a true catalogue, neither written to carry the wrong answer.
+- No certified replay: no published figure, back-test or validated pilot exists for the solar soak; the method is not recovered by reproducing certified numbers, and the network's outlook carries only solar additions.
+- Lesson: a scheduled retiming of a central signal moves only the installations whose device obeys that signal, so a forecast of its effect starts from the device register rather than from the tariff or group lists; no build on file teaches a load-control retiming's reach through meter models, and task258's reach (a preload that only fetches what the server HTML names) is the nearest cousin in a different domain.
+
+## Default path
+
+1. Convert zss_net_demand_spring2026.csv to local time and take the Sunday whose lowest network half-hour between 10.00 am and 3.00 pm is lowest: 25 October 2026, -153.3 MW.
+2. Subtract the outlook's forecast inverter capacity at that day's output per kW from the monitored sample.
+3. Read every heater in load_control_register_2026-12-10.csv with its group and element, its daily energy from the controlled-load register reads.
+4. Replay every heater from its group's switch-on in the notice at its element rating until its daily energy is taken, sum by zone substation and take each substation's lowest half-hour.
+5. Compare with the framework's thresholds.
+
+Ends on: four substations, Ondarra, Mundaree, Wirrandel and Tarravine.
+
+Golden: seven substations, Kinnabar, Ondarra, Quorrabin, Gerrimbal, Mundaree, Wirrandel and Tarravine.
+
+## Stump sentence
+
+The default path moves every controlled-load heater into the midday window and ends on four substations, Ondarra, Mundaree, Wirrandel and Tarravine, because the 8,575 heaters whose meters switch from an internal time switch never see the new signal and keep heating overnight; at Kinnabar, Quorrabin and Gerrimbal, where 49 to 62 per cent of heaters are time-switched, their recovery is 1.26 to 1.73 MW of load the midday minimum does not have.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| Reference day and solar term | the framework files both | the outlook names the day | yes | none | the UTC conversion | no | no | readable |
+| Every heater replayed from the new signal (rung 1, the default) | the framework files the draw | the load-control register lists every heater with a group | yes, the field's own replay | none | nothing flags a heater | no | no | readable |
+| Only heaters on receiver-driven meters move (decisive) | no sentence names which heaters the signal switches | the switching arrangement sits only in the models list's description text, one join from the metering register and two from the heater | no: the opponent holds the pool to the tariff and group lists, which list every heater | no control or published figure ties to either route | every heater has a group, an element, reads and a current meter; no join fails | no: the reach effect is each time-switched heater's recovery at the minimum's half-hour | no: the metering register is needed by every route for each NMI's zone substation, and the models list for each meter's controlled-load register id | silent |
+
+## Deletion tests
+
+- Delete the models list's switching descriptions: the golden is no longer computable (the reach has no other source), so the decisive organ is load-bearing; the list stays in the pack regardless, because the register ids needed for every heater's daily energy are only there.
+- Delete the time-switched heaters from the world: the default path and the golden coincide (four substations would need re-thresholding), so the difficulty lives in the reach and nowhere else.
+- Delete every Layer 1 item (UTC, Tibbarin's point name, the EST rows, the two serials, the read dates, the register ids): the default path still files four substations and the golden seven; the call stays hard on clean data.
+- Delete the connections register (the asks): the call is untouched; no call file carries an ask device.
+- Delete either distractor: the golden and every ask figure are unchanged (`checks.py`).
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the reference day | the Sunday with the lowest network half-hour, 10.00 am to 3.00 pm | each substation's own lowest Sunday (Tibbarin 27 September, Ondarra 22 November) | asserted in checks.py | framework 2.2, "the total demand of the network's zone substations" |
+| SF2 | Sunday | Sundays only | any day | same call | 25 October is also the lowest day of all |
+| SF3 | the ten half-hours | starting 10.00 am to 2.30 pm | ending 10.00 am to 2.30 pm | same call | same call |
+| SF4 | SCADA stamp | interval ending, UTC | interval start | same call | the column is `interval_end_utc`; same call |
+| SF5 | solar additions | inverter capacity at output per kW of inverter capacity | panel capacity | same call | the outlook and the sample carry inverter capacity only |
+| SF6 | daily energy | all of a heater's meters' reads | the current serial's reads only | same call | framework 3.2 "the preceding spring's meter reads"; same call |
+| SF7 | days | the days the reads cover | 91 days of spring | same call | framework 3.2 "the number of days those reads cover" |
+| SF8 | the draw | continuous from switch-on | whole half-hours | same call | framework 3.2; same call |
+| SF9 | switch-off | 4.00 pm, after the window | 3.00 pm | same call | notice table; same call |
+| SF10 | which meter | the meter in service now | the meter on the reference day | same call | spring exchanges are like for like; same call |
+| SF11 | below | strictly below | at or below | same call | no forecast within 0.25 MW of its threshold |
+| SF12 | threshold sign | negative MW, below is more negative | magnitudes | same call | framework 2.3 and the table's minus signs |
+| SF13 | controlled-load register | the models list's controlled-load id | the larger non-general register | same call | one non-general, non-export register per meter |
+| SF14 | soak window against the assessment window | assessment 10.00 am to 3.00 pm | the soak's 10.00 am to 4.00 pm | same call | framework 2.1 |
+| SF15 | Tibbarin's point | TIBB_ZS_NET_MW is Tibbarin | dropped | same call | the only point off the code list |
+| SF16 | load switched at different times | the load whose switch-on moves with the signal | none: the term has one reading; which heaters it covers is found by the join, not read | one reading | framework 3.1(b) and the notice's signal table |
+
+## Ladder
+
+| Rung | Route | Designated | Wrong because |
+|---|---|---|---|
+| 0 | no soak load placed (solar term only) | 11: adds Brindlemoor, Wendimbra, Tibbarin, Wyndabar | leaves out the load the new signals do move |
+| 1 | every heater replayed from the new switch-on (the default) | 4: Ondarra, Mundaree, Wirrandel, Tarravine | moves 8,575 time-switched heaters that keep heating overnight |
+| side | every heater spread evenly over the soak window | 4 | violates framework 3.2 and the reach |
+| side | interval meters only | 5: adds Gerrimbal | the reach is the switching device, not the data type |
+| side | every heater at the network reach share (73 per cent) | 4 | the reach is concentrated behind three substations |
+| golden | heaters on receiver-driven meters replayed from their group's switch-on | 7 | |
+
+Margins: at each reach substation the threshold sits at least 0.3 MW from both the golden and the default minimum (Kinnabar -14.2 against -15.10 and -13.37, Quorrabin -9.9 against -10.60 and -9.13, Gerrimbal -12.5 against -13.11 and -11.85); every other substation's threshold clears the golden minimum by 0.3 MW or more; every printed minimum sits at least 0.02 MW inside its tenth.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | the sixteen zone substations; the heaters the signal switches are found, not filed | framework 2.1, C1 |
+| 2 Unit of account | zone substation; MW | the prompt and framework 2.3 |
+| 3 Attribution window | the ten half-hours from 10.00 am | framework 2.1; SF3 C1 |
+| 4 As-of dating | the reference day carried forward; meters as now | framework 3.3; SF10 C1 |
+| 5 Version basis | one version of every file | C1 |
+| 6 Denominator | days read (daily energy); kW of inverter capacity (output) | framework 3.2; sample measure |
+| 7 Weighting | none | C1 |
+| 8 Window length | the preceding spring | framework 2.2, 3.2 |
+| 9 Boundary inclusivity | below threshold | SF11, nothing within 0.25 MW |
+| 10 Rounding path | MW to one decimal at the end | prompt; edges 0.02 MW asserted |
+| 11 Tie-break | none needed | no tie within 0.25 MW |
+| 12 Maturity and censoring | spring complete | C1 |
+| 13 Order of operations | sum, then minimum | framework 2.1 |
+| 14 Row order | any | C1, the register lists the meter in service first |
+| 15 Duplicate resolution | two serials summed per heater | framework 3.2; SF6 C1 |
+| 16 Identity normalisation | TIBB to Tibbarin; heater to meter by NMI | SF15 C1 |
+| 17 Netting against gross | net demand | framework 2.3 |
+| 18 Dimensional units | kW to MW, kWh per day | units in headers |
+| 19 Code and status semantics | register ids from the models list | SF13 C1; never the stump |
+| 20 Integerisation | none | C1 |
+| 21 Clause scope | 3.1(b) covers notified switching changes | the notice |
+| 22 Forward window contents | October 2027 reference Sunday: the outlook's solar and the notice's signal times | shipped driver files |
+
+## Literal reader
+
+Executed word for word, the framework builds each substation's forecast from the 25 October 2026 half-hours, subtracts the outlook's inverter capacity at the sample's output per kW, and places "load the network has notified will be switched at different times" where it will draw; the notice says the system will send its switch-on signals at the new times, and the models list says which meters' contactors are driven by an audio-frequency receiver and which by an internal time switch, so the literal reader moves the receiver-switched heaters and leaves the time-switched ones overnight: seven substations. No sentence moves every heater, and every SF row's alternative either converges or violates a quotable sentence.
+
+## Oracles
+
+None. No shipped file carries a soak load, a forecast minimum, a reach share, a designation or a count of reached heaters; the summer outlook ranks peak demand (another question), and the outlook carries only solar additions.
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | Effect |
+|---|---|---|---|---|
+| UTC, interval ending, across the DST change | SCADA historian | zss_net_demand_spring2026.csv | day cut on the UTC date | none: the minima fall after 11.00 am local |
+| Tibbarin under TIBB | historian point list | the same | drop the point | loud: a substation missing |
+| EST rows on weekday nights | historian | the same | drop them | none: no Sunday window touched |
+| local time with offsets | data programme | rooftop_pv_monitoring_spring2026.json | none | none |
+| two serials for a spring exchange | meter data agent | cl_customer_reads_spring2026.csv | current serial only | none on any printed figure |
+| read dates either side of spring | meter data agent | the same | divide by 91 days | same call |
+| register ids by model | metering team | approved_meter_models.xlsx | assume E2/41 | loud: missing reads |
+| removed meters beside current ones | metering register | metering_installations_2026-12-11.csv | first row per NMI | none: the meter in service is listed first |
+| approval-time substation names, withdrawn, lapsed and pending applications, late commissioning | connections system | der_applications_2026-12-08.xlsx | ask hazards | asks only |
+
+## Ask sheet
+
+The asks sit on the connections register, which the call never reads, and on the metering register's dates, which the call reads only for each heater's meter: every device row is a solar system, none a controlled-load heater (asserted by count). A: rooftop solar inverter capacity in service behind each substation on 25 October 2026 (16 figures, MW to two decimals); primary D4 absence as the signal (knock-down rebuilds: 4 to 8 old NMIs a substation abolished before the reference day whose systems the register still shows commissioned, and 2 to 4 abolished after it whose systems were still in service that day, so dropping every NMI without a meter now is wrong too); hazards: alterations carried as levels on a chain of prior applications (keying on the NMI drops second connections), approval-time zone substations on the 2025 transferred feeders, withdrawn, lapsed, pending and late-commissioned applications. B: the part the emergency backstop can curtail (16 figures); primary D8 an anchor on the current record, not the first (panel additions and export-limit changes after 1 July 2025 leave the inverter in place, visible only as an unchanged inverter_serial, 4 to 9 a substation); shared hazards as A. Construction: forecast minima, curtailment and further capacity (32 figures) are the call's construction; the cracker has them and the mirror does not.
+
+| Ask figures | Device on the path | Cracker (chain keyed, as-of, status, metering location with the register's own name for an NMI without a meter now, anchor on the commissioning of the record in service) | Verdict |
+|---|---|---|---|
+| A, 16 substations | abolished NMIs (D4), with the over-clean half | 0 of 16 hit | miss |
+| B, 16 substations | serial anchor (D8) | 0 of 16 hit | miss |
+
+Variants measured on the same pack: unmatched NMIs dropped 0 and 0 of 16; the register's own zone substation 0 and 0; NMI keyed 0 and 0; the golden handling 16 and 16.
+
+Pair ceiling: 44.0 (cracker 74.5 with the 32 construction figures and five chart parts counted as ask weight, mirror 13.6 at the default path, which misses every minimum, curtailment and further-capacity figure).
+
+Mirror leakage: 2.9 per cent of ask weight (two chart parts).
+
+Measured by: generator/cracker.py on the cut pack (pack digest de71c20592ed, target.zip f641cf2c).
+
+## Build record
+
+- Generator: task273/generator (v4's modules replaced in place; v4's place-name reference list removed). `build.py` writes the pack, the goldens, `figures.json`, `submission.md` and `metadata.json`, runs `checks.py` (64 of 64) and `verify.py` (reads only the bundle: thresholds, window and backstop date off the framework PDF, signal times off the notice PDF; 0 failures), rebuilds into scratch and compares byte for byte (target and golden identical), then cuts target.zip.
+- Stage 4: the determinism judge (pass 1 on architecture 5, target.zip 3d17e193) DETERMINISTIC, APPROVE; Gate G mechanism decomposition_attribution (secondary forecasting), stumping_family analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive_step analytical; its isolated thread recomputed the call, the 23,257 against 8,575 reach split and every ask figure exactly. The leak reader (read 1) quoted no decisive sentence (question 1 none), no ranking file and no analyst-only file; question 4 flagged the outlook's header naming the reference day (removed); question 6 called the step closest to reading a field (the models list's switching descriptions read with the notice), which the judge's measurement overrules as the kind of step (determinism-check section 1) and which stands as the build's residual rule-3 risk. Fixed in one generator pass with the reader's realism notes (enquiry outcomes, the outlook's basis text) and two determinism clarifications of my own: the prompt's further capacity now reads "before any of those half-hours fell below its threshold" (three cleared substations print a tenth apart under the lowest-half-hour reading), and the applications register's substation column is named `zone_substation_at_approval`. Re-judge not required (APPROVE, no FIX_NOW); the reader re-read the changed prompt and outlook (read 2).
+- Free gates: precut.py 53 of 53; figures_check.py 119 figures, none absent; voice-check PASS (948 characters); leak.py REVIEW (no LEAK, after renaming the PV file away from `sample_` and declaring the thresholds as stated inputs); `scrub_producer_metadata.py` clean on target and golden; `guard.py heart` WARN (nearest driver 0.06, task230 v1 lineage), `check` WARN, no BLOCK; `guard.py surface` three promoted pairs on card axes only.
+- leak.py REVIEW lines ruled here: the framework's threshold table and the summer outlook list every zone substation by name, so each carries most names of the answer sentence (harmless: every candidate is named in any table of the sixteen, designated or not); the framework carries "heater", "recorded", "network", "change", "published" and "framework" and the notice "register", "signal", "network", "change" and "recorded" from the stump paragraph's vocabulary (harmless: the framework names the heater draw rule and the notice the signal table and the load-control register, and neither names which heaters the signal switches, a time switch or a reach).
+- Surface promoted pairs: task275 and task274 (survey-research calibration, Descriptive) share only the card axes gap `population` and decision `designation_set`; task271 (market-microstructure execution cost, Descriptive) shares the decision type and a top-3-per-cent surface score; heart puts every driver on file at 0.06 or under, so none shares the decisive move (shape echoes, not template findings).
+- Realism: substation names redrawn at stage 3 after an edit-distance screen against real places (Kurrajong, Merriwa, Corrimal, Kalbarri, Dunmarra, Marrabel, Tilba, Pindar, Yarra, Bungonia); the meter makers' names are generic geography at worst. Ask totals kept at least 0.5 kW from a printed hundredth so no rounding rule splits them.
+
+## Pre-ship check
+
+- **Rule 1, the domain:** the deciding quantity is each zone substation's lowest half-hour demand on the 2027 reference Sunday, forecast the way network planners build a spring minimum (reference day, solar connections at output per kW, the controlled load a load-control change moves replayed from switch-on); with hospitals and beds there is no signal some devices obey, no water heater recovering its daily energy and no solar curve setting each half-hour's depth.
+- **Rule 2, two layers:** every Layer 1 item in the inventory is produced by the network's or the Department's own systems and asserted neutral to the call in checks.py (the UTC day cut, the EST rows, the second serial, the days read, the first register row); the asks' devices sit only in the connections register and the metering register's dates, on solar systems, none on a controlled-load heater.
+- **Rule 3, the decisive step:** analytical (which heaters a scheduled retiming of a central signal reaches, found by joining 31,832 heaters to their current meter's model), executed in checks.py on the pack: every heater replayed files four substations (the default path), the reach files seven, no cheap route without the reach lands seven (0 of 5), every partial correction files another set, and no plant, decoy or narrated reach ships. Reading every field and executing every filed sentence still moves every heater.
 
 ## Architecture 4 record (spent 2026-10-28)
 

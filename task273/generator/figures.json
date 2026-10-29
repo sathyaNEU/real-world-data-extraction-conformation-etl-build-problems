@@ -1,324 +1,471 @@
 {
- "ask_b": {
-  "H1": {
-   "ACADM": 27,
-   "ATP7B": 37,
-   "CFTR": 88,
-   "DHCR7": 30,
-   "GAA": 37,
-   "GALT": 23,
-   "GJB2": 57,
-   "MMUT": 15,
-   "PAH": 34,
-   "PKHD1": 35,
-   "USH2A": 18
-  },
-  "H2": {
-   "ACADM": 37,
-   "ATP7B": 33,
-   "CFTR": 98,
-   "DHCR7": 43,
-   "GAA": 30,
-   "GALT": 22,
-   "GJB2": 58,
-   "MMUT": 27,
-   "PAH": 45,
-   "PKHD1": 30,
-   "USH2A": 10
-  }
- },
  "call": {
-  "joining": [
-   "SACS",
-   "SLC26A2",
-   "TMEM216"
+  "count": 7,
+  "default_path_set": [
+   "MDR",
+   "ODR",
+   "TRV",
+   "WRD"
   ],
-  "leaving": [],
-  "panel": [
-   "ACADM",
-   "ATP7B",
-   "CFTR",
-   "DHCR7",
-   "GAA",
-   "GALT",
-   "GJB2",
-   "MMUT",
-   "PAH",
-   "PKHD1",
-   "SACS",
-   "SLC26A2",
-   "TMEM216",
-   "USH2A"
+  "designated": [
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TRV",
+   "WRD"
   ],
-  "panel_size": 14,
-  "sentence": "Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves."
+  "designated_names": [
+   "Gerrimbal",
+   "Kinnabar",
+   "Mundaree",
+   "Ondarra",
+   "Quorrabin",
+   "Tarravine",
+   "Wirrandel"
+  ],
+  "no_soak_set": [
+   "BRM",
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TBN",
+   "TRV",
+   "WDB",
+   "WRD",
+   "WYB"
+  ],
+  "reach_flips": [
+   "GRB",
+   "KNB",
+   "QRB"
+  ],
+  "sentence": "Designate seven of Tallowbark Networks' sixteen zone substations for spring 2027: Gerrimbal, Kinnabar, Mundaree, Ondarra, Quorrabin, Tarravine and Wirrandel."
  },
- "called": {
-  "ACADM": {
-   "1": 129,
-   "2": 224
-  },
-  "AGA": {
-   "1": 3,
-   "2": 6
-  },
-  "ARSA": {
-   "1": 16,
-   "2": 59
-  },
-  "ASPA": {
-   "1": 6,
-   "2": 14
-  },
-  "ATP7B": {
-   "1": 89,
-   "2": 189
-  },
-  "BCKDHB": {
-   "1": 13,
-   "2": 19
-  },
-  "BLM": {
-   "1": 4,
-   "2": 3
-  },
-  "CFTR": {
-   "1": 323,
-   "2": 696
-  },
-  "DHCR7": {
-   "1": 96,
-   "2": 213
-  },
-  "ELP1": {
-   "1": 3,
-   "2": 4
-  },
-  "FANCC": {
-   "1": 6,
-   "2": 25
-  },
-  "G6PC1": {
-   "1": 17,
-   "2": 48
-  },
-  "GAA": {
-   "1": 45,
-   "2": 139
-  },
-  "GALT": {
-   "1": 68,
-   "2": 136
-  },
-  "GJB2": {
-   "1": 151,
-   "2": 311
-  },
-  "HEXA": {
-   "1": 61,
-   "2": 30
-  },
-  "IDUA": {
-   "1": 45,
-   "2": 27
-  },
-  "MCOLN1": {
-   "1": 4,
-   "2": 10
-  },
-  "MMUT": {
-   "1": 71,
-   "2": 142
-  },
-  "NPC1": {
-   "1": 36,
-   "2": 27
-  },
-  "NPHS1": {
-   "1": 5,
-   "2": 15
-  },
-  "PAH": {
-   "1": 131,
-   "2": 366
-  },
-  "PEX1": {
-   "1": 32,
-   "2": 54
-  },
-  "PKHD1": {
-   "1": 80,
-   "2": 185
-  },
-  "PMM2": {
-   "1": 39,
-   "2": 25
-  },
-  "SACS": {
-   "1": 92,
-   "2": 5
-  },
-  "SLC26A2": {
-   "1": 84,
-   "2": 4
-  },
-  "SMPD1": {
-   "1": 16,
-   "2": 39
-  },
-  "TMEM216": {
-   "1": 84,
-   "2": 5
-  },
-  "USH2A": {
-   "1": 44,
-   "2": 158
-  }
+ "designated_totals": {
+  "backstop_mw": 15.69,
+  "cap_mw": 121.6
  },
- "called_totals": {
-  "1": 1793,
-  "2": 3178
- },
- "caller": {
-  "1": {
-   "f_pct": 25,
-   "floor": 8,
-   "k": 5
-  },
-  "2": {
-   "f_pct": 20,
-   "floor": 20,
-   "k": 3
-  }
- },
- "cohort": 25694,
- "cohort_by_phase": {
-  "1": 7945,
-  "2": 17749
- },
- "freq_exact": {
-  "ACADM": 13.84,
-  "AGA": 0.3527,
-  "ARSA": 2.9314,
-  "ASPA": 0.7832,
-  "ATP7B": 10.8895,
-  "BCKDHB": 1.2557,
-  "BLM": 0.2756,
-  "CFTR": 39.911,
-  "DHCR7": 12.1015,
-  "ELP1": 0.2748,
-  "FANCC": 1.2112,
-  "G6PC1": 2.5432,
-  "GAA": 8.1745,
-  "GALT": 7.9922,
-  "GJB2": 18.098,
-  "HEXA": 4.343,
-  "IDUA": 3.7872,
-  "MCOLN1": 0.5481,
-  "MMUT": 8.3456,
-  "NPC1": 3.6379,
-  "NPHS1": 0.7823,
-  "PAH": 19.4438,
-  "PEX1": 3.3722,
-  "PKHD1": 10.3757,
-  "PMM2": 3.8012,
-  "SACS": 6.8127,
-  "SLC26A2": 6.1344,
-  "SMPD1": 2.153,
-  "TMEM216": 6.1956,
-  "USH2A": 8.7351
- },
- "freq_per_1000": {
-  "ACADM": 14,
-  "AGA": 0,
-  "ARSA": 3,
-  "ASPA": 1,
-  "ATP7B": 11,
-  "BCKDHB": 1,
-  "BLM": 0,
-  "CFTR": 40,
-  "DHCR7": 12,
-  "ELP1": 0,
-  "FANCC": 1,
-  "G6PC1": 3,
-  "GAA": 8,
-  "GALT": 8,
-  "GJB2": 18,
-  "HEXA": 4,
-  "IDUA": 4,
-  "MCOLN1": 1,
-  "MMUT": 8,
-  "NPC1": 4,
-  "NPHS1": 1,
-  "PAH": 19,
-  "PEX1": 3,
-  "PKHD1": 10,
-  "PMM2": 4,
-  "SACS": 7,
-  "SLC26A2": 6,
-  "SMPD1": 2,
-  "TMEM216": 6,
-  "USH2A": 9
- },
- "out_range": [
-  0,
-  4
- ],
- "panel_line": {
-  "one_in": 200,
-  "per": "1,000",
-  "per_1000": 5
- },
- "policy_clauses": [
+ "framework_clauses": [
   "2.1",
   "2.2",
   "2.3",
-  "2.4",
-  "4.1",
-  "4.2",
-  "4.3"
+  "3.1",
+  "3.2",
+  "5.2"
  ],
- "rungs_per_1000": {
-  "cc10": {
-   "SACS": 2.32,
-   "SLC26A2": 2.08,
-   "TMEM216": 2.36
+ "heaters": {
+  "reached": 23257,
+  "time_switch": 8575,
+  "total": 31832
+ },
+ "outlook_kw": {
+  "BRM": 2571,
+  "CRW": 1103,
+  "GNL": 1552,
+  "GRB": 2747,
+  "KLB": 1000,
+  "KNB": 2782,
+  "MDR": 1728,
+  "ODR": 1408,
+  "ORJ": 775,
+  "PLD": 946,
+  "QRB": 2140,
+  "TBN": 1861,
+  "TRV": 2215,
+  "WDB": 3662,
+  "WRD": 2445,
+  "WYB": 3103
+ },
+ "per_substation": {
+  "BRM": {
+   "backstop_exact": 2.4786,
+   "backstop_mw": 2.48,
+   "default_min_mw": -11.0,
+   "designated": false,
+   "forecast_min_exact": -11.1938,
+   "forecast_min_mw": -11.2,
+   "headroom_exact": 1.8977,
+   "headroom_mw": 1.9,
+   "heaters": 2000,
+   "heaters_reached": 1760,
+   "in_service_exact": 19.0562,
+   "in_service_mw": 19.06,
+   "name": "Brindlemoor",
+   "soak_mw_at_min": 1.394,
+   "threshold_mw": -12.6
   },
-  "cc20": {
-   "SACS": 0.31,
-   "SLC26A2": 0.27,
-   "TMEM216": 0.37
+  "CRW": {
+   "backstop_exact": 1.2638,
+   "backstop_mw": 1.26,
+   "default_min_mw": -4.9,
+   "designated": false,
+   "forecast_min_exact": -4.9962,
+   "forecast_min_mw": -5.0,
+   "headroom_exact": 3.6737,
+   "headroom_mw": 3.7,
+   "heaters": 1433,
+   "heaters_reached": 1333,
+   "in_service_exact": 11.4065,
+   "in_service_mw": 11.41,
+   "name": "Corrowie",
+   "soak_mw_at_min": 0.672,
+   "threshold_mw": -7.7
   },
-  "community": {
-   "SACS": 6.81,
-   "SLC26A2": 6.13,
-   "TMEM216": 6.2
+  "GNL": {
+   "backstop_exact": 2.3402,
+   "backstop_mw": 2.34,
+   "default_min_mw": -7.7,
+   "designated": false,
+   "forecast_min_exact": -7.9893,
+   "forecast_min_mw": -8.0,
+   "headroom_exact": 4.0232,
+   "headroom_mw": 4.0,
+   "heaters": 1884,
+   "heaters_reached": 1526,
+   "in_service_exact": 16.0857,
+   "in_service_mw": 16.09,
+   "name": "Goonellan",
+   "soak_mw_at_min": 1.191,
+   "threshold_mw": -11.0
   },
-  "golden": {
-   "SACS": 6.81,
-   "SLC26A2": 6.13,
-   "TMEM216": 6.2
+  "GRB": {
+   "backstop_exact": 2.8222,
+   "backstop_mw": 2.82,
+   "curtail_exact": 0.6073,
+   "curtail_mw": 0.6,
+   "default_min_mw": -11.9,
+   "designated": true,
+   "forecast_min_exact": -13.1073,
+   "forecast_min_mw": -13.1,
+   "heaters": 3261,
+   "heaters_reached": 1663,
+   "in_service_exact": 22.2235,
+   "in_service_mw": 22.22,
+   "name": "Gerrimbal",
+   "soak_mw_at_min": 2.085,
+   "threshold_mw": -12.5
   },
-  "ht": {
-   "SACS": 6.77,
-   "SLC26A2": 6.2,
-   "TMEM216": 6.13
+  "KLB": {
+   "backstop_exact": 1.3122,
+   "backstop_mw": 1.31,
+   "default_min_mw": -4.9,
+   "designated": false,
+   "forecast_min_exact": -5.1969,
+   "forecast_min_mw": -5.2,
+   "headroom_exact": 3.378,
+   "headroom_mw": 3.4,
+   "heaters": 1492,
+   "heaters_reached": 1134,
+   "in_service_exact": 12.1322,
+   "in_service_mw": 12.13,
+   "name": "Kellambie",
+   "soak_mw_at_min": 0.838,
+   "threshold_mw": -7.7
   },
-  "mle": {
-   "SACS": 6.81,
-   "SLC26A2": 6.13,
-   "TMEM216": 6.2
+  "KNB": {
+   "backstop_exact": 3.0163,
+   "backstop_mw": 3.02,
+   "curtail_exact": 0.8999,
+   "curtail_mw": 0.9,
+   "default_min_mw": -13.4,
+   "designated": true,
+   "forecast_min_exact": -15.0999,
+   "forecast_min_mw": -15.1,
+   "heaters": 2991,
+   "heaters_reached": 1137,
+   "in_service_exact": 23.5734,
+   "in_service_mw": 23.57,
+   "name": "Kinnabar",
+   "soak_mw_at_min": 1.389,
+   "threshold_mw": -14.2
   },
-  "naive": {
-   "SACS": 3.78,
-   "SLC26A2": 3.42,
-   "TMEM216": 3.46
+  "MDR": {
+   "backstop_exact": 1.861,
+   "backstop_mw": 1.86,
+   "curtail_exact": 1.105,
+   "curtail_mw": 1.1,
+   "default_min_mw": -8.0,
+   "designated": true,
+   "forecast_min_exact": -8.405,
+   "forecast_min_mw": -8.4,
+   "heaters": 1991,
+   "heaters_reached": 1453,
+   "in_service_exact": 15.6562,
+   "in_service_mw": 15.66,
+   "name": "Mundaree",
+   "soak_mw_at_min": 1.172,
+   "threshold_mw": -7.3
   },
-  "pooled": {
-   "SACS": 4.39,
-   "SLC26A2": 3.98,
-   "TMEM216": 4.03
+  "ODR": {
+   "backstop_exact": 1.4206,
+   "backstop_mw": 1.42,
+   "curtail_exact": 0.995,
+   "curtail_mw": 1.0,
+   "default_min_mw": -6.4,
+   "designated": true,
+   "forecast_min_exact": -6.695,
+   "forecast_min_mw": -6.7,
+   "heaters": 1629,
+   "heaters_reached": 1075,
+   "in_service_exact": 12.7108,
+   "in_service_mw": 12.71,
+   "name": "Ondarra",
+   "soak_mw_at_min": 0.883,
+   "threshold_mw": -5.7
+  },
+  "ORJ": {
+   "backstop_exact": 1.1055,
+   "backstop_mw": 1.11,
+   "default_min_mw": -3.6,
+   "designated": false,
+   "forecast_min_exact": -3.6911,
+   "forecast_min_mw": -3.7,
+   "headroom_exact": 2.5761,
+   "headroom_mw": 2.6,
+   "heaters": 1061,
+   "heaters_reached": 838,
+   "in_service_exact": 8.4622,
+   "in_service_mw": 8.46,
+   "name": "Orrinjal",
+   "soak_mw_at_min": 0.64,
+   "threshold_mw": -5.6
+  },
+  "PLD": {
+   "backstop_exact": 1.0568,
+   "backstop_mw": 1.06,
+   "default_min_mw": -4.5,
+   "designated": false,
+   "forecast_min_exact": -4.8081,
+   "forecast_min_mw": -4.8,
+   "headroom_exact": 2.8865,
+   "headroom_mw": 2.9,
+   "heaters": 1101,
+   "heaters_reached": 760,
+   "in_service_exact": 8.9899,
+   "in_service_mw": 8.99,
+   "name": "Pelladrin",
+   "soak_mw_at_min": 0.675,
+   "threshold_mw": -7.0
+  },
+  "QRB": {
+   "backstop_exact": 2.5586,
+   "backstop_mw": 2.56,
+   "curtail_exact": 0.7039,
+   "curtail_mw": 0.7,
+   "default_min_mw": -9.1,
+   "designated": true,
+   "forecast_min_exact": -10.6039,
+   "forecast_min_mw": -10.6,
+   "heaters": 2739,
+   "heaters_reached": 1150,
+   "in_service_exact": 18.6633,
+   "in_service_mw": 18.66,
+   "name": "Quorrabin",
+   "soak_mw_at_min": 1.458,
+   "threshold_mw": -9.9
+  },
+  "TBN": {
+   "backstop_exact": 1.7394,
+   "backstop_mw": 1.74,
+   "default_min_mw": -7.2,
+   "designated": false,
+   "forecast_min_exact": -7.3082,
+   "forecast_min_mw": -7.3,
+   "headroom_exact": 1.6084,
+   "headroom_mw": 1.6,
+   "heaters": 1768,
+   "heaters_reached": 1697,
+   "in_service_exact": 13.2761,
+   "in_service_mw": 13.28,
+   "name": "Tibbarin",
+   "soak_mw_at_min": 1.432,
+   "threshold_mw": -8.5
+  },
+  "TRV": {
+   "backstop_exact": 1.7926,
+   "backstop_mw": 1.79,
+   "curtail_exact": 0.8917,
+   "curtail_mw": 0.9,
+   "default_min_mw": -8.3,
+   "designated": true,
+   "forecast_min_exact": -8.4917,
+   "forecast_min_mw": -8.5,
+   "heaters": 1208,
+   "heaters_reached": 1015,
+   "in_service_exact": 12.7862,
+   "in_service_mw": 12.79,
+   "name": "Tarravine",
+   "soak_mw_at_min": 1.256,
+   "threshold_mw": -7.6
+  },
+  "WDB": {
+   "backstop_exact": 2.8718,
+   "backstop_mw": 2.87,
+   "default_min_mw": -13.4,
+   "designated": false,
+   "forecast_min_exact": -13.5887,
+   "forecast_min_mw": -13.6,
+   "headroom_exact": 2.5793,
+   "headroom_mw": 2.6,
+   "heaters": 2672,
+   "heaters_reached": 2432,
+   "in_service_exact": 22.5205,
+   "in_service_mw": 22.52,
+   "name": "Wendimbra",
+   "soak_mw_at_min": 2.124,
+   "threshold_mw": -15.5
+  },
+  "WRD": {
+   "backstop_exact": 2.2138,
+   "backstop_mw": 2.21,
+   "curtail_exact": 0.7941,
+   "curtail_mw": 0.8,
+   "default_min_mw": -9.7,
+   "designated": true,
+   "forecast_min_exact": -9.7941,
+   "forecast_min_mw": -9.8,
+   "heaters": 1774,
+   "heaters_reached": 1597,
+   "in_service_exact": 15.9869,
+   "in_service_mw": 15.99,
+   "name": "Wirrandel",
+   "soak_mw_at_min": 1.855,
+   "threshold_mw": -9.0
+  },
+  "WYB": {
+   "backstop_exact": 2.651,
+   "backstop_mw": 2.65,
+   "default_min_mw": -12.2,
+   "designated": false,
+   "forecast_min_exact": -12.2941,
+   "forecast_min_mw": -12.3,
+   "headroom_exact": 2.572,
+   "headroom_mw": 2.6,
+   "heaters": 2828,
+   "heaters_reached": 2687,
+   "in_service_exact": 21.1058,
+   "in_service_mw": 21.11,
+   "name": "Wyndabar",
+   "soak_mw_at_min": 2.164,
+   "threshold_mw": -14.2
   }
  },
- "stay_min": 8
+ "ref_day_of_month": 25,
+ "ref_network_min_mw": -153.3,
+ "reference_day": "2026-10-25",
+ "rungs": {
+  "G": [
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TRV",
+   "WRD"
+  ],
+  "R0": [
+   "BRM",
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TBN",
+   "TRV",
+   "WDB",
+   "WRD",
+   "WYB"
+  ],
+  "R1": [
+   "MDR",
+   "ODR",
+   "TRV",
+   "WRD"
+  ],
+  "R2": [
+   "MDR",
+   "ODR",
+   "TRV",
+   "WRD"
+  ],
+  "R3": [
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TRV",
+   "WRD"
+  ],
+  "R4": [
+   "GRB",
+   "MDR",
+   "ODR",
+   "TRV",
+   "WRD"
+  ],
+  "R5": [
+   "MDR",
+   "ODR",
+   "TRV",
+   "WRD"
+  ],
+  "R6": [
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TRV",
+   "WRD"
+  ],
+  "R7": [
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TRV",
+   "WRD"
+  ],
+  "R8": [
+   "GRB",
+   "KNB",
+   "MDR",
+   "ODR",
+   "QRB",
+   "TRV",
+   "WRD"
+  ]
+ },
+ "thresholds": {
+  "BRM": -12.6,
+  "CRW": -7.7,
+  "GNL": -11.0,
+  "GRB": -12.5,
+  "KLB": -7.7,
+  "KNB": -14.2,
+  "MDR": -7.3,
+  "ODR": -5.7,
+  "ORJ": -5.6,
+  "PLD": -7.0,
+  "QRB": -9.9,
+  "TBN": -8.5,
+  "TRV": -7.6,
+  "WDB": -15.5,
+  "WRD": -9.0,
+  "WYB": -14.2
+ },
+ "totals": {
+  "backstop_mw": 32.5,
+  "cap_mw": 254.64
+ },
+ "window_clock": [
+  "10.00",
+  "3.00"
+ ]
 }

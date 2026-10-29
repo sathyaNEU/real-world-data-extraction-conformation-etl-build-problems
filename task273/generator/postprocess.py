@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Ardvenny and Isles Health Board"
+COMPANY = "Tallowbark Networks"
 
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}
@@ -218,7 +218,7 @@ def _excel_sheet(data, key, first):
     return XML_DECL + s.encode()
 
 
-def excel_dialect(items, key, app_version="16.0300"):
+def excel_dialect(items, key, app_version="16.0300", company=None):
     """Rewrite a workbook's parts in the dialect Excel saves (not the writing library's): content types and
     relationships in Excel's order with relative targets, the workbook with its file version, window and current
     calculation id, the extended properties with the sheet titles, styles, worksheets and theme as above. Cell
@@ -275,7 +275,7 @@ def excel_dialect(items, key, app_version="16.0300"):
         '</vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="%d" baseType="lpstr">%s</vt:vector>'
         '</TitlesOfParts><Company>%s</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false'
         '</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>%s</AppVersion></Properties>' % (
-            n, n, "".join("<vt:lpstr>%s</vt:lpstr>" % nm for nm in names), COMPANY, app_version)).encode()
+            n, n, "".join("<vt:lpstr>%s</vt:lpstr>" % nm for nm in names), company or COMPANY, app_version)).encode()
     parts["xl/styles.xml"], _ = _excel_styles(parts["xl/styles.xml"])
     for k in range(1, n + 1):
         name = "xl/worksheets/sheet%d.xml" % k
@@ -312,7 +312,7 @@ def word_app(document_xml, company, minutes):
             'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' + body + "</Properties>").encode()
 
 
-def word_parts(items, minutes=38):
+def word_parts(items, minutes=38, company=None):
     """A document as Word saves it: no template thumbnail, no Word 2010 effects stylesheet, no SharePoint custom XML
     the writing library's template carries, their relationships and content types taken out with them, and Word's
     own XML declaration on every part."""
@@ -330,10 +330,10 @@ def word_parts(items, minutes=38):
             data = re.sub(rb"^<\?xml version='1\.0' encoding='UTF-8' standalone='yes'\?>\r?\n?", XML_DECL, data)
         out.append((name, data))
     doc = dict(out)["word/document.xml"]
-    return [(n, word_app(doc, COMPANY, minutes) if n == "docProps/app.xml" else d) for n, d in out]
+    return [(n, word_app(doc, company or COMPANY, minutes) if n == "docProps/app.xml" else d) for n, d in out]
 
 
-def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False):
+def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel=False, company=None):
     """created and modified as ISO stamps (UTC, ending Z). Entries keep their names and order (a workbook's
     take Excel's, with its strings shared and an XML declaration on every part); every entry gets the 1980
     stamp Office writes, so two builds of the same content are byte-identical. excel=True also rewrites a
@@ -360,14 +360,14 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             data = re.sub(rb"<Application>[^<]*</Application>", b"<Application>" + app_name.encode() + b"</Application>", data)
             data = re.sub(rb"<AppVersion>[^<]*</AppVersion>", b"<AppVersion>" + app_ver.encode() + b"</AppVersion>", data)
             if b"<Company>" not in data:
-                data = data.replace(b"</Properties>", b"<Company>" + COMPANY.encode() + b"</Company></Properties>")
+                data = data.replace(b"</Properties>", b"<Company>" + (company or COMPANY).encode() + b"</Company></Properties>")
         out.append((name, data))
     if ext == ".docx":
-        out = word_parts(out)
+        out = word_parts(out, company=company)
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") else XML_DECL + d) for n, d in share_strings(out)]
         if excel:
-            out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1])
+            out = excel_dialect(out, key=path.replace("\\", "/").rsplit("/", 1)[-1], company=company)
     with zipfile.ZipFile(path, "w") as z:
         for name, data in out:
             zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))

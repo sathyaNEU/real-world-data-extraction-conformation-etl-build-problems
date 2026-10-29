@@ -1,89 +1,110 @@
-"""task273 architecture 4: submission.md, every figure from figures.json."""
+"""task273 architecture 5: submission.md, every figure taken from generator/figures.json."""
 import os
 
 import params as P
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-NAMES = {g: c for g, c, *_ in P.CONDITIONS}
 
 
-def nm(g):
-    return "%s (%s)" % (NAMES[g], g)
+def _and(xs):
+    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
+
+
+def call_sentence(F):
+    return ("Designate %s of Tallowbark Networks' sixteen zone substations for spring 2027: %s."
+            % ({7: "seven"}.get(F["call"]["count"], str(F["call"]["count"])), _and(F["call"]["designated_names"])))
 
 
 def write(F):
-    j = F["call"]["joining"]
-    r = F["rungs_per_1000"]
-    fr = F["freq_per_1000"]
-    order = sorted(fr, key=lambda g: (-F["freq_exact"][g], g))
-    cur = [g for g, c, on, f, v in P.CONDITIONS if on]
+    ps = F["per_substation"]
+    by_name = sorted(ps, key=lambda c: ps[c]["name"])
+    des = [c for c in by_name if ps[c]["designated"]]
+    clr = [c for c in by_name if not ps[c]["designated"]]
+    flip = [ps[c]["name"] for c in F["call"]["reach_flips"]]
+    cur = [ps[c]["curtail_mw"] for c in des]
+    h = F["heaters"]
     L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Biomedical & Clinical Research (statistical genomics).  ")
-    L.append("**Analytical objective:** Descriptive & Distribution Analysis.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**%s**\n" % F["call"]["sentence"])
-    L.append("The three founder conditions sit at %s per 1,000 Study members, against the policy's line of one in "
-             "200, once each sequencing phase's calls are divided by its members' summed chance of a call. Not the "
-             "calls counted over the cohort (%s per 1,000), which reads a phase 1 member with no call as a "
-             "non-carrier; not the members read at least 10 or 20 times, which drops the island and glen members the "
-             "cohort counts; not the cohort's calls over its pooled chance of a call, which gives members read 8 to "
-             "17 times the mainland's chance of being called. Each of the three files the current eleven.\n" % (
-                 ", ".join("%d" % fr[g] for g in j),
-                 ", ".join("%.1f" % r["naive"][g] for g in j)))
-    L.append("## 2. Critical Components\n")
-    L.append("1. The reference cohort is **%s** members: %s from phase 1 and %s from phase 2." % (
-        format(F["cohort"], ","), format(F["cohort_by_phase"]["1"], ","), format(F["cohort_by_phase"]["2"], ",")))
-    for k, g in enumerate(j, start=2):
-        L.append("%d. %s carrier frequency is **%d per 1,000**." % (k, nm(g), fr[g]))
+    L.append("## Tags")
     L.append("")
-    L.append("## 3. Step-by-Step Solution\n")
-    steps = [
-        "Built the reference cohort from the member register, members with consent in force and a released genotype "
-        "on 1 November 2026 (policy 2.2): %s members." % format(F["cohort"], ","),
-        "Kept the variants the register classed pathogenic or likely pathogenic on 1 November 2026 from its change "
-        "history (policy 2.3), and matched the phase 1 calls to the register by their GRCh37 positions: %s and %s "
-        "called carriers in phase 1 and phase 2 across the 30 genes." % (
-            format(sum(v["1"] for v in F["called"].values()), ","), format(sum(v["2"] for v in F["called"].values()), ",")),
-        "Took, for every cohort member and register site, the binomial chance that a heterozygote read as many times as "
-        "the depth file gives passes the member's phase calling rule (methods report section 2: phase 1 at least %d "
-        "alternate reads and %d per cent, phase 2 at least %d and %d per cent)." % (
-            F["caller"]["1"]["k"], F["caller"]["1"]["f_pct"], F["caller"]["2"]["k"], F["caller"]["2"]["f_pct"]),
-        "For each variant and phase, estimated the carriers as the phase's calls divided by the sum of its members' "
-        "chances, times the phase's members; summed each gene's variants and phases and divided by the cohort.",
-        "Compared each condition with one in 200 (policy 2.1): %d conditions reach it, the eleven on the 2026/27 "
-        "panel (lowest %d per 1,000) and the three founder conditions at %s per 1,000; the other %d sit between %d and "
-        "%d per 1,000." % (F["call"]["panel_size"], F["stay_min"], ", ".join("%d" % fr[g] for g in j),
-                            30 - F["call"]["panel_size"], F["out_range"][0], F["out_range"][1]),
-        "For the programme's 2025/26 figures, dated each couple's report by the later of its partners' result "
-        "authorisations, or the first partner's alone where a sequential screen stopped (policy 4.1, 4.2); counted a "
-        "partner's carried-forward result again in the new couple's report; classed each finding as the register's "
-        "change history classed it on the day its result was authorised (policy 4.3), not by the export's "
-        "classification column, which from the August 2025 LIMS release carries the class on the day of the export; "
-        "and counted each couple once per condition.",
-        "Recommended the %d-condition panel: %s join and no condition leaves." % (
-            F["call"]["panel_size"], ", ".join(j)),
-    ]
-    for k, s in enumerate(steps, start=1):
-        L.append("%d. %s" % (k, s))
+    L.append("**Domain:** Energy Systems & Utilities (load forecasting).")
+    L.append("**Analytical objective:** Forecasting & Predictive Modeling.")
     L.append("")
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### carrier_panel_review_2027-28.xlsx\n")
-    L.append("1. Each condition's carrier frequency per 1,000 Study members and its place on the 2027/28 panel, in "
-             "the workbook's order:")
-    for g in order:
-        tag = "joins" if g in j else ("stays" if g in cur else "not on the panel")
-        L.append("   - %s: %d, %s" % (nm(g), fr[g], tag))
-    L.append("2. Couples told that one or both partners carry each condition on the 2026/27 panel, April to September "
-             "2025 and October 2025 to March 2026:")
-    for g in [g for g, *_ in P.CONDITIONS if g in cur]:
-        L.append("   - %s: %d and %d" % (nm(g), F["ask_b"]["H1"][g], F["ask_b"]["H2"][g]))
+    L.append("## 1. Final Recommendation")
     L.append("")
-    L.append("### panel_recommendation_2027-28.docx\n")
-    L.append("1. The recommendation: the %d-condition panel for 2027/28, the eleven current conditions kept and %s "
-             "joining, none leaving." % (F["call"]["panel_size"], ", ".join(nm(g) for g in j)))
-    L.append("2. A bar chart of all 30 conditions' carrier frequencies per 1,000 on a log scale against the one in "
-             "200 line, the three joining conditions marked and labelled with their frequency.")
+    L.append("**%s**" % F["call"]["sentence"])
+    L.append("Their forecast lowest demand between 10.00 am and 3.00 pm on the 2027 reference Sunday falls %.1f to "
+             "%.1f MW below threshold once the solar soak is placed on the %s controlled-load heaters whose meters "
+             "switch on the network's signal. Not the four of the forecast that moves every heater into the window, "
+             "which adds the %s heaters on internal time switches that keep heating overnight and so clears %s. Not "
+             "the eleven of a forecast with no soak load, which leaves out the heaters the new signal times do move."
+             % (min(cur), max(cur), format(h["reached"], ","), format(h["time_switch"], ","), _and(flip)))
     L.append("")
-    open(os.path.join(TASK, "submission.md"), "w").write("\n".join(L))
+    L.append("## 2. Critical Components")
+    L.append("")
+    L.append("1. The reference day is Sunday 25 October 2026, network demand **%.1f MW** at its lowest half-hour "
+             "between 10.00 am and 3.00 pm." % F["ref_network_min_mw"])
+    L.append("2. The new switch-on signals reach **%s** of the %s controlled-load heaters (meters with an integral "
+             "audio-frequency receiver); **%s** are on meters with an internal time switch."
+             % (format(h["reached"], ","), format(h["total"], ","), format(h["time_switch"], ",")))
+    L.append("3. Forecast lowest demand at the designated substations: %s."
+             % "; ".join("%s **%.1f MW** against %.1f MW" % (ps[c]["name"], ps[c]["forecast_min_mw"],
+                                                            ps[c]["threshold_mw"]) for c in des))
+    L.append("")
+    L.append("## 3. Step-by-Step Solution")
+    L.append("")
+    L.append("1. Converted zss_net_demand_spring2026.csv from UTC interval ends to local time (AEDT from 4 October "
+             "2026; TIBB is Tibbarin) and took the Sunday with the lowest network half-hour between 10.00 am and "
+             "3.00 pm (framework 2.2): 25 October 2026, %.1f MW." % F["ref_network_min_mw"])
+    L.append("2. Subtracted each substation's forecast inverter capacity in solar_connections_outlook_2027.xlsx at "
+             "that day's output per kW in rooftop_pv_monitoring_spring2026.json (framework 3.1a).")
+    L.append("3. Took each heater's daily energy as its controlled-load register kWh (register named in "
+             "approved_meter_models.xlsx) over the days read, all its meters, in cl_customer_reads_spring2026.csv "
+             "(framework 3.2).")
+    L.append("4. Read each heater's current meter in metering_installations_2026-12-11.csv against "
+             "approved_meter_models.xlsx: %s heaters have a contactor driven by an integral audio-frequency "
+             "receiver and take network_notice_NN-2027-02.pdf's new signals; %s run from an internal time switch "
+             "and keep heating overnight." % (format(h["reached"], ","), format(h["time_switch"], ",")))
+    L.append("5. Placed each reached heater at its element rating from its group's switch-on "
+             "(load_control_register_2026-12-10.csv, the notice) until its daily energy was taken, summed by the "
+             "metering register's zone substation, and took each substation's lowest half-hour: %d below their "
+             "framework section 4 thresholds." % F["call"]["count"])
+    L.append("6. Curtailment is the threshold less the forecast lowest demand; further capacity is the smallest, "
+             "over the ten half-hours, of forecast demand less the threshold divided by output per kW.")
+    L.append("7. For solar in service on 25 October 2026, chained der_applications_2026-12-08.xlsx through "
+             "prior_application, took the latest application commissioned by that day, kept NMIs with a meter in "
+             "service that day in the metering register and located them by it: %.2f MW; the backstop share takes "
+             "the commissioning of the first application carrying the inverter serial in service, on or after 1 "
+             "July 2025 (framework 5.2): %.2f MW." % (F["totals"]["cap_mw"], F["totals"]["backstop_mw"]))
+    L.append("8. Designated the %d substations whose forecast lowest demand falls below threshold." % F["call"]["count"])
+    L.append("")
+    L.append("## 4. Deliverable Answers")
+    L.append("")
+    L.append("### minimum_load_spring_2027.xlsx")
+    L.append("")
+    L.append("1. Forecast lowest half-hour demand between 10.00 am and 3.00 pm on the reference Sunday, MW to one "
+             "decimal:")
+    for c in by_name:
+        L.append("   - %s: %.1f (threshold %.1f, %s)" % (ps[c]["name"], ps[c]["forecast_min_mw"], ps[c]["threshold_mw"],
+                                                       "designated" if ps[c]["designated"] else "clears"))
+    L.append("2. Solar a designated substation would have to curtail at its lowest half-hour, MW to one decimal:")
+    for c in des:
+        L.append("   - %s: %.1f" % (ps[c]["name"], ps[c]["curtail_mw"]))
+    L.append("3. Further inverter capacity a cleared substation could take before any half-hour from 10.00 am to "
+             "3.00 pm fell below its threshold, MW to one decimal:")
+    for c in clr:
+        L.append("   - %s: %.1f" % (ps[c]["name"], ps[c]["headroom_mw"]))
+    L.append("4. Rooftop solar inverter capacity in service behind each substation on 25 October 2026, and the part "
+             "the emergency backstop can curtail, MW to two decimals:")
+    for c in by_name:
+        L.append("   - %s: %.2f in service, %.2f curtailable" % (ps[c]["name"], ps[c]["in_service_mw"],
+                                                                ps[c]["backstop_mw"]))
+    L.append("")
+    L.append("### minimum_load_briefing_2027.docx")
+    L.append("")
+    L.append("1. One-page briefing to the Minister recommending the %d designations, with a bar chart of each "
+             "substation's forecast lowest demand against its threshold, designated substations in amber."
+             % F["call"]["count"])
+    L.append("")
+    with open(os.path.join(TASK, "submission.md"), "w") as fh:
+        fh.write("\n".join(L))

@@ -1,80 +1,87 @@
 ## Tags
 
-**Domain:** Biomedical & Clinical Research (statistical genomics).  
-**Analytical objective:** Descriptive & Distribution Analysis.
+**Domain:** Energy Systems & Utilities (load forecasting).
+**Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Put 14 conditions on the 2027/28 panel: keep the eleven on the 2026/27 panel and add ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2) and Joubert syndrome type 2 (TMEM216); no condition leaves.**
-
-The three founder conditions sit at 7, 6, 6 per 1,000 Study members, against the policy's line of one in 200, once each sequencing phase's calls are divided by its members' summed chance of a call. Not the calls counted over the cohort (3.8, 3.4, 3.5 per 1,000), which reads a phase 1 member with no call as a non-carrier; not the members read at least 10 or 20 times, which drops the island and glen members the cohort counts; not the cohort's calls over its pooled chance of a call, which gives members read 8 to 17 times the mainland's chance of being called. Each of the three files the current eleven.
+**Designate seven of Tallowbark Networks' sixteen zone substations for spring 2027: Gerrimbal, Kinnabar, Mundaree, Ondarra, Quorrabin, Tarravine and Wirrandel.**
+Their forecast lowest demand between 10.00 am and 3.00 pm on the 2027 reference Sunday falls 0.6 to 1.1 MW below threshold once the solar soak is placed on the 23,257 controlled-load heaters whose meters switch on the network's signal. Not the four of the forecast that moves every heater into the window, which adds the 8,575 heaters on internal time switches that keep heating overnight and so clears Gerrimbal, Kinnabar and Quorrabin. Not the eleven of a forecast with no soak load, which leaves out the heaters the new signal times do move.
 
 ## 2. Critical Components
 
-1. The reference cohort is **25,694** members: 7,945 from phase 1 and 17,749 from phase 2.
-2. ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS) carrier frequency is **7 per 1,000**.
-3. Diastrophic dysplasia (SLC26A2) carrier frequency is **6 per 1,000**.
-4. Joubert syndrome type 2 (TMEM216) carrier frequency is **6 per 1,000**.
+1. The reference day is Sunday 25 October 2026, network demand **-153.3 MW** at its lowest half-hour between 10.00 am and 3.00 pm.
+2. The new switch-on signals reach **23,257** of the 31,832 controlled-load heaters (meters with an integral audio-frequency receiver); **8,575** are on meters with an internal time switch.
+3. Forecast lowest demand at the designated substations: Gerrimbal **-13.1 MW** against -12.5 MW; Kinnabar **-15.1 MW** against -14.2 MW; Mundaree **-8.4 MW** against -7.3 MW; Ondarra **-6.7 MW** against -5.7 MW; Quorrabin **-10.6 MW** against -9.9 MW; Tarravine **-8.5 MW** against -7.6 MW; Wirrandel **-9.8 MW** against -9.0 MW.
 
 ## 3. Step-by-Step Solution
 
-1. Built the reference cohort from the member register, members with consent in force and a released genotype on 1 November 2026 (policy 2.2): 25,694 members.
-2. Kept the variants the register classed pathogenic or likely pathogenic on 1 November 2026 from its change history (policy 2.3), and matched the phase 1 calls to the register by their GRCh37 positions: 1,793 and 3,178 called carriers in phase 1 and phase 2 across the 30 genes.
-3. Took, for every cohort member and register site, the binomial chance that a heterozygote read as many times as the depth file gives passes the member's phase calling rule (methods report section 2: phase 1 at least 5 alternate reads and 25 per cent, phase 2 at least 3 and 20 per cent).
-4. For each variant and phase, estimated the carriers as the phase's calls divided by the sum of its members' chances, times the phase's members; summed each gene's variants and phases and divided by the cohort.
-5. Compared each condition with one in 200 (policy 2.1): 14 conditions reach it, the eleven on the 2026/27 panel (lowest 8 per 1,000) and the three founder conditions at 7, 6, 6 per 1,000; the other 16 sit between 0 and 4 per 1,000.
-6. For the programme's 2025/26 figures, dated each couple's report by the later of its partners' result authorisations, or the first partner's alone where a sequential screen stopped (policy 4.1, 4.2); counted a partner's carried-forward result again in the new couple's report; classed each finding as the register's change history classed it on the day its result was authorised (policy 4.3), not by the export's classification column, which from the August 2025 LIMS release carries the class on the day of the export; and counted each couple once per condition.
-7. Recommended the 14-condition panel: SACS, SLC26A2, TMEM216 join and no condition leaves.
+1. Converted zss_net_demand_spring2026.csv from UTC interval ends to local time (AEDT from 4 October 2026; TIBB is Tibbarin) and took the Sunday with the lowest network half-hour between 10.00 am and 3.00 pm (framework 2.2): 25 October 2026, -153.3 MW.
+2. Subtracted each substation's forecast inverter capacity in solar_connections_outlook_2027.xlsx at that day's output per kW in rooftop_pv_monitoring_spring2026.json (framework 3.1a).
+3. Took each heater's daily energy as its controlled-load register kWh (register named in approved_meter_models.xlsx) over the days read, all its meters, in cl_customer_reads_spring2026.csv (framework 3.2).
+4. Read each heater's current meter in metering_installations_2026-12-11.csv against approved_meter_models.xlsx: 23,257 heaters have a contactor driven by an integral audio-frequency receiver and take network_notice_NN-2027-02.pdf's new signals; 8,575 run from an internal time switch and keep heating overnight.
+5. Placed each reached heater at its element rating from its group's switch-on (load_control_register_2026-12-10.csv, the notice) until its daily energy was taken, summed by the metering register's zone substation, and took each substation's lowest half-hour: 7 below their framework section 4 thresholds.
+6. Curtailment is the threshold less the forecast lowest demand; further capacity is the smallest, over the ten half-hours, of forecast demand less the threshold divided by output per kW.
+7. For solar in service on 25 October 2026, chained der_applications_2026-12-08.xlsx through prior_application, took the latest application commissioned by that day, kept NMIs with a meter in service that day in the metering register and located them by it: 254.64 MW; the backstop share takes the commissioning of the first application carrying the inverter serial in service, on or after 1 July 2025 (framework 5.2): 32.50 MW.
+8. Designated the 7 substations whose forecast lowest demand falls below threshold.
 
 ## 4. Deliverable Answers
 
-### carrier_panel_review_2027-28.xlsx
+### minimum_load_spring_2027.xlsx
 
-1. Each condition's carrier frequency per 1,000 Study members and its place on the 2027/28 panel, in the workbook's order:
-   - Cystic fibrosis (CFTR): 40, stays
-   - Phenylketonuria (PAH): 19, stays
-   - GJB2-related hearing loss (GJB2): 18, stays
-   - Medium-chain acyl-CoA dehydrogenase deficiency (ACADM): 14, stays
-   - Smith-Lemli-Opitz syndrome (DHCR7): 12, stays
-   - Wilson disease (ATP7B): 11, stays
-   - Autosomal recessive polycystic kidney disease (PKHD1): 10, stays
-   - Usher syndrome type 2A (USH2A): 9, stays
-   - Methylmalonic acidaemia, MMUT type (MMUT): 8, stays
-   - Pompe disease (GAA): 8, stays
-   - Classic galactosaemia (GALT): 8, stays
-   - ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS): 7, joins
-   - Joubert syndrome type 2 (TMEM216): 6, joins
-   - Diastrophic dysplasia (SLC26A2): 6, joins
-   - Tay-Sachs disease (HEXA): 4, not on the panel
-   - PMM2-congenital disorder of glycosylation (PMM2): 4, not on the panel
-   - Mucopolysaccharidosis type I (IDUA): 4, not on the panel
-   - Niemann-Pick disease type C1 (NPC1): 4, not on the panel
-   - Zellweger spectrum disorder (PEX1): 3, not on the panel
-   - Metachromatic leukodystrophy (ARSA): 3, not on the panel
-   - Glycogen storage disease type Ia (G6PC1): 3, not on the panel
-   - Acid sphingomyelinase deficiency (SMPD1): 2, not on the panel
-   - Maple syrup urine disease type 1B (BCKDHB): 1, not on the panel
-   - Fanconi anaemia type C (FANCC): 1, not on the panel
-   - Canavan disease (ASPA): 1, not on the panel
-   - Congenital nephrotic syndrome, Finnish type (NPHS1): 1, not on the panel
-   - Mucolipidosis type IV (MCOLN1): 1, not on the panel
-   - Aspartylglucosaminuria (AGA): 0, not on the panel
-   - Bloom syndrome (BLM): 0, not on the panel
-   - Familial dysautonomia (ELP1): 0, not on the panel
-2. Couples told that one or both partners carry each condition on the 2026/27 panel, April to September 2025 and October 2025 to March 2026:
-   - Cystic fibrosis (CFTR): 88 and 98
-   - Phenylketonuria (PAH): 34 and 45
-   - GJB2-related hearing loss (GJB2): 57 and 58
-   - Medium-chain acyl-CoA dehydrogenase deficiency (ACADM): 27 and 37
-   - Smith-Lemli-Opitz syndrome (DHCR7): 30 and 43
-   - Classic galactosaemia (GALT): 23 and 22
-   - Wilson disease (ATP7B): 37 and 33
-   - Autosomal recessive polycystic kidney disease (PKHD1): 35 and 30
-   - Methylmalonic acidaemia, MMUT type (MMUT): 15 and 27
-   - Pompe disease (GAA): 37 and 30
-   - Usher syndrome type 2A (USH2A): 18 and 10
+1. Forecast lowest half-hour demand between 10.00 am and 3.00 pm on the reference Sunday, MW to one decimal:
+   - Brindlemoor: -11.2 (threshold -12.6, clears)
+   - Corrowie: -5.0 (threshold -7.7, clears)
+   - Gerrimbal: -13.1 (threshold -12.5, designated)
+   - Goonellan: -8.0 (threshold -11.0, clears)
+   - Kellambie: -5.2 (threshold -7.7, clears)
+   - Kinnabar: -15.1 (threshold -14.2, designated)
+   - Mundaree: -8.4 (threshold -7.3, designated)
+   - Ondarra: -6.7 (threshold -5.7, designated)
+   - Orrinjal: -3.7 (threshold -5.6, clears)
+   - Pelladrin: -4.8 (threshold -7.0, clears)
+   - Quorrabin: -10.6 (threshold -9.9, designated)
+   - Tarravine: -8.5 (threshold -7.6, designated)
+   - Tibbarin: -7.3 (threshold -8.5, clears)
+   - Wendimbra: -13.6 (threshold -15.5, clears)
+   - Wirrandel: -9.8 (threshold -9.0, designated)
+   - Wyndabar: -12.3 (threshold -14.2, clears)
+2. Solar a designated substation would have to curtail at its lowest half-hour, MW to one decimal:
+   - Gerrimbal: 0.6
+   - Kinnabar: 0.9
+   - Mundaree: 1.1
+   - Ondarra: 1.0
+   - Quorrabin: 0.7
+   - Tarravine: 0.9
+   - Wirrandel: 0.8
+3. Further inverter capacity a cleared substation could take before any half-hour from 10.00 am to 3.00 pm fell below its threshold, MW to one decimal:
+   - Brindlemoor: 1.9
+   - Corrowie: 3.7
+   - Goonellan: 4.0
+   - Kellambie: 3.4
+   - Orrinjal: 2.6
+   - Pelladrin: 2.9
+   - Tibbarin: 1.6
+   - Wendimbra: 2.6
+   - Wyndabar: 2.6
+4. Rooftop solar inverter capacity in service behind each substation on 25 October 2026, and the part the emergency backstop can curtail, MW to two decimals:
+   - Brindlemoor: 19.06 in service, 2.48 curtailable
+   - Corrowie: 11.41 in service, 1.26 curtailable
+   - Gerrimbal: 22.22 in service, 2.82 curtailable
+   - Goonellan: 16.09 in service, 2.34 curtailable
+   - Kellambie: 12.13 in service, 1.31 curtailable
+   - Kinnabar: 23.57 in service, 3.02 curtailable
+   - Mundaree: 15.66 in service, 1.86 curtailable
+   - Ondarra: 12.71 in service, 1.42 curtailable
+   - Orrinjal: 8.46 in service, 1.11 curtailable
+   - Pelladrin: 8.99 in service, 1.06 curtailable
+   - Quorrabin: 18.66 in service, 2.56 curtailable
+   - Tarravine: 12.79 in service, 1.79 curtailable
+   - Tibbarin: 13.28 in service, 1.74 curtailable
+   - Wendimbra: 22.52 in service, 2.87 curtailable
+   - Wirrandel: 15.99 in service, 2.21 curtailable
+   - Wyndabar: 21.11 in service, 2.65 curtailable
 
-### panel_recommendation_2027-28.docx
+### minimum_load_briefing_2027.docx
 
-1. The recommendation: the 14-condition panel for 2027/28, the eleven current conditions kept and ARSACS, spastic ataxia of Charlevoix-Saguenay (SACS), Diastrophic dysplasia (SLC26A2), Joubert syndrome type 2 (TMEM216) joining, none leaving.
-2. A bar chart of all 30 conditions' carrier frequencies per 1,000 on a log scale against the one in 200 line, the three joining conditions marked and labelled with their frequency.
+1. One-page briefing to the Minister recommending the 7 designations, with a bar chart of each substation's forecast lowest demand against its threshold, designated substations in amber.

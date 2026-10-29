@@ -1,10 +1,10 @@
 {
  "task": "task273",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-28",
  "stump": "A competent analyst moves every controlled-load tank's recovery into the solar-soak window from its group's release, adds it to each substation's reference-day demand with the connection pipeline's solar, and designates too few substations below their minimum-load threshold; the step that lands it there is reading the retiming as reaching every tank, when the tanks on meters with internal time switches keep heating overnight, which only the meter register's models show.",
  "architecture": 5,
@@ -46,7 +46,7 @@
    "commit": "DRAWN (task273) architecture 5"
   }
  ],
- "resume": "Architecture 5 drawn 2026-10-28 (card registered, DRAWN committed): stage 2 next. Write ## Three rules, ## Default path, ## Stump sentence, ## Readability screen, ## Deletion tests, ## Semantic fork table, ## Closure table, ## Literal reader, ## Oracles, ## Ladder and ## Ask sheet for the controlled-load solar-soak design, then the generator (task273/generator, v4 modules replaced in place) and precut.py.",
+ "resume": "Shipped 2026-10-28 (architecture 5, Forecasting): seven of sixteen zone substations designated; target.zip f641cf2c. Next: the portal result, recorded in the ledger the day the author reports it.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -81,11 +81,12 @@
   {
    "architecture": 5,
    "drawn": "2026-10-28",
-   "fate": "drawn 2026-10-28 after the author re-tasked the slot to Forecasting; live",
+   "fate": "shipped 2026-10-28: judge pass 1 DETERMINISTIC, APPROVE (Gate G analytical_non_defect, Gate H analytical); leak reader 1 question 6 closest to reading a field; reader 2 analytical",
    "registered": "2026-10-29T01:43:47Z",
    "driver": "The decisive quantity is each area's lowest demand in a coming season once a scheduled move shifts a deferrable load into the low-demand hours, where the move reaches only the units whose switching device takes the operator's central signal, recorded only through each meter's model in a register kept for metering; moving every unit's load files a different set of areas below the limit, and spreading the moved energy evenly instead of replaying each unit's recovery from its release time misplaces the lowest interval."
   }
  ],
  "seed": "none: a fresh draw in a new client domain (architecture 5, energy-systems-utilities / load-forecasting)",
- "answer": ""
+ "answer": "",
+ "shipped": "2026-10-28"
 }
