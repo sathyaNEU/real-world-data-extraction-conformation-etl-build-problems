@@ -321,6 +321,7 @@ Every row is asserted in `generator/checks.py` under its id.
 | SF20 | the excess in the season-end line after a contract's last season | salary the contract deferred to its end, not a bonus: out of the row | a playing-time bonus paid, counted in | +$255,000, +$430,000, +$350,000, +$690,000, +$620,000 on five rows (DF2) | FIN-14 3.2 (deferred salary) apart from 4.1's class; each line less the deferral is a bonus his terms allow and the whole line is above the largest (asserted, SF20, DF1) |
 | SF21 | a contract's last season, paid in one season-end line | the whole season paid | a first half with the second unpaid | same figures: paid is paid, and the row is what the line carries less the deferral (asserted, SF21) | the payroll register (no later payment to those players for those seasons) |
 | SF22 | the register's salary for a season | the contract's salary, gross of the deferral | the salary paid, net of it | the net reading leaves no deferral to take out: the full includer's figures (DF2) | every other contract's salary lines add to its register salary to the cent, and the five fall short by their deferral exactly (asserted, SF22, DF7) |
+| SF23 | the season a payment counts to when a January run paid no half (White 2023, Livingston 2024) | the season the half was payable for, from the next October line, which exceeds the January half after it by exactly that half | each October line to its own season and each January line to the season before (both portal judges, 10-29) | White $60,000 for 2023 and $180,000 for 2024, Livingston $50,000 for 2024 and $150,000 for 2025; totals $465,000, $1,015,000, $1,135,000 | the register's header note (one half in the October 15 run after the season, one half in the January 15 run after that, in full after a contract's last season): the rival leaves 2023 and 2024 with no January half on a contract running on and pays 2024 and 2025 in unequal halves (asserted, SF23) |
 
 ## Ladder
 
@@ -427,7 +428,7 @@ bonus's amount times the probability, as at signing, that the player reaches its
 the contract standing all season with the player in his planned role and his health inside the probability), the rule
 that chooses the basis (4.4's look-back, its population, window, thresholds and score set in working paper CF-14.4)
 and the arithmetic from the probabilities to the rounded totals; it leaves only which basis to build, and every reading
-of every term converges on the golden or violates a quoted line (SF1 to SF14 for the call, SF15 to SF22 for the ask). The literal executor of 4.4 and CF-14.4
+of every term converges on the golden or violates a quoted line (SF1 to SF14 for the call, SF15 to SF23 for the ask). The literal executor of 4.4 and CF-14.4
 still has to bring bases to rank; the one basis the paper's words suggest (its own hitters' seasons) files $4,500,000. The easy answers come from easy bases
 ranked by the same look-back, never from another reading.
 
@@ -443,6 +444,8 @@ ranked by the same look-back, never from another reading.
 - Nothing ties only under the golden: no 2027 projection of starts, no control total and no certified figure ships.
 
 ## Ask sheet
+
+**Revision, 2026-10-29, the portal's determinism return: the payment schedule filed.** Both portal judges failed Gates C and D on the table alone (competing_defensible_answer): their models took each October line to its season and each January line to the season before, filing White $60,000 for 2023 and $180,000 for 2024 and Livingston $50,000 for 2024 and $150,000 for 2025 (totals $465,000, $1,015,000, $1,135,000), and no shipped file stated the equal halves the golden reads by (only the golden workbook did). Every other row and hazard they reproduced. The register's header now files the schedule once, as the contract terms: other playing-time bonuses for the 2025 season and earlier were payable one half in the October 15 payroll run after the season and one half in the January 15 run after that, or in full in the October 15 run after a contract's last season. The rival reading breaks it on all four catch-up rows (no January half on a contract running on, then unequal halves), so a quoted sentence rules it out (SF23); the note names no player, no late payment and no code. No payroll line, figure or other file moved (a Mac pack build matched the shipped zip in 20 of 21 files, the register differing only in that cell); `freeze.py check --mode determinism` PASS. The cost, stated plainly: the catch-up is now a check of each season's halves against a filed sentence, which an includer who pairs the halves (both top responses did) may run, as the 10-28 line in `## Tried and rejected` predicted (a delay past the next July is forced only by a filed schedule, which the includer executes); the first device's October halves are named with it, which the portal had already shown spent. The 40 per cent rested on the call and the catch-up; if the ask rises, the lever is a new device under `/fix-rubric`, never an unfiled convention.
 
 **Revision, 2026-10-28, the portal's third rubric return: a third device.** The portal scored the build at 72 per cent: both top responses missed the call (rows 1 to 6) and kept every other row, all 21 ask figures among them, so both earlier devices were handled in full (the catch-all's halves paired October to January, the contract-end lines reconciled against the register's salary). The third device is a catch-up transfer (D8, a settlement date for the event date): the legacy January run missed the half it owed Max White for 2023 and Joe Livingston for 2024, and the next season-end run settled it on the catch-all line with that season's half, one line a code a run. Read season by run, as both responses did, White files $60,000 for 2023 and $180,000 for 2024 and Livingston $50,000 for 2024 (his line's All-Star bonus taken out) and $150,000 for 2025, each a full bonus his terms allow, so no check against the register fails (CU2); what finds it is a contract season with no January half and the next season-end line exceeding the January half after it by exactly that season's October half, to the dollar (CU1), with no code, description or status marking the merged lines (CU3). Every ask golden is unchanged (the bonuses as earned), so `freeze.py check --mode rubric` passes with 0 ask figures moved: the device moved where the evidence sits, not what it sums to (H30); the payroll export lost the two January lines and the close-file index its row count, and no other file moved. The path both responses took now misses the three totals and four rows, 19 of the ask's 44 points on the portal's weights, so each sits near 53.
 
@@ -607,7 +610,13 @@ What the shipped build still carries, each item measured and none moving a commi
   plate appearances against the starter's start.
 - **The candidate set is not enumerated** (4.4 and CF-14.4 name no basis; the round 2 judge's fork 1): a pooled
   at-slot basis without catchers apart files $3,750,000 and the look-back separates it (0.1940 against 0.1730). The
-  exact-position variant sits $16,000 inside the $4,125,000 boundary and still rounds to $4,250,000.
+  exact-position variant sits $16,000 inside the $4,125,000 boundary and still rounds to $4,250,000. Portal judge 2
+  (10-29) failed the call on it: its model tried five bases of its own and kept a nearest-neighbour peer basis (0.1814,
+  $4,273,627, which still rounds to the golden total) with player figures that do not reproduce; judge 1 found the call
+  robust (its kernel basis $4,254,728, every player figure the golden's). Left open on purpose: the look-back is the
+  filed selection criterion (`determinism-check` 1; the client's judge prompt lists a method or model selection pinned
+  by out-of-sample validation among the legitimate shapes), the nearest-neighbour basis loses it to the golden basis
+  whenever both are tried, and listing the bases would file the method and hand the default path the golden (rule 3).
 - **Realism.** Player records carry little signal in this world: among the look-back's non-catcher hitters the
   vendor's projection correlates 0.005 with realised plate appearances and last season's plate appearances -0.04. Honest
   persistence was tried at loop 2 under a seed rule written first and made the total indeterminate (World seed rule,
@@ -665,6 +674,15 @@ What the shipped build still carries, each item measured and none moving a commi
   on) and the reader is not re-run (only a record file changed); `leak.py` and every free gate re-run on it.
 - **Personas in the pack.** Harry Barnes, Steven Armstrong and Matthew Wallace (drawn with `guard.py names`); the
   players from the generator's ranked pools, the designed names on the card.
+- **The determinism repair (10-29).** The register's header note is the only pack change; the call, its files (SEP4),
+  the ladder, the stump and every graded figure are untouched, so the three rules read as at ship. Free gates on the
+  rebuild: `checks.py` 293 assertions, 0 failed (SF23 new); `verify.py` agrees on its own path, reading the note
+  (positive control on the header's maintainer line) and failing on any season off its schedule; two builds
+  byte-identical, target.zip sha256 90a982cd; `figures_check.py` 82 of 82; `voice-check.py` PASS; `leak.py` REVIEW, no
+  LEAK (the as-of sweep now run: the 2027 calendar's and schedule's dates, forward-looking by nature); `guard.py
+  validate` clean, `heart` WARN (no BLOCK), `surface` the four promoted pairs of the last ship; `freeze.py check --mode
+  determinism` PASS. No judge re-run (the author's instruction) and no leak reader (an ask-side record's header changed,
+  no document near the decisive step).
 
 ## Tried and rejected
 
@@ -842,6 +860,13 @@ What the shipped build still carries, each item measured and none moving a commi
   guessed a round non-bonus payment instead of reconciling the salary kept 19 of 21 (`ceiling.py` 'round'). Re-aimed to
   amounts whose roundest split is a wrong bonus (Benítez $255,000; Lara $430,000; White $230,000 and Reed $310,000 a
   season; Ruiz's $175,000 a season already split wrong): the guess keeps 12 (DF8), and no graded figure moved.
+- The catch-up's season read off the pattern of the other pitchers' halves (shipped 10-28): both portal judges (10-29)
+  took each October line to its season and each January line to the season before, four rows and the three totals
+  apart, Gates C and D, because no shipped file stated the halves. Closed by the register's schedule note (SF23), at
+  the cost of the device's silence. Not taken: the judges' own wording (a half the January run missed is paid in the
+  next season-end run and belongs to the earlier season), which names the device; pitching statistics, which would let
+  the whole table be computed without the payroll; and, for judge 2's main-call point, listing FIN-14 4.4's bases,
+  which files the method.
 
 ## Build record
 
@@ -963,3 +988,9 @@ calibration), twice the January half 11, cut to the terms 13, split at the round
   round 1 repair and judged so in every round. Its question 3 names the League's feed notes and the close-file index, both
   frozen main-call files carried since e93c6561.
 - The ask's two earlier devices, after the portal's third rubric return on 2026-10-28 (72 per cent, both responses off the call and holding all 21 ask figures): the catch-all's season-end halves were paired with the January halves after them, and the contract-end settlements were reconciled against the register's salary, by both responses in full. Kept as they stand, with a third device of another family beside them (the catch-up transfer, the ask sheet).
+
+Determinism repair, 2026-10-29 (the portal's determinism block, two judges, Gates C and D on the ask's catch-up rows;
+judge 2 also on the open basis set, answered in Residual): the register's header carries the payment schedule
+(`records.py` PAY_NOTE), `checks.py` SF23, `verify.py` reads the note and checks every season against it, `deliver.py`
+step 8 cites the note and the workbook's ask sheet names its two payment columns for the season with the late halves
+in its note. Gates as in the Pre-ship check; target.zip sha256 90a982cd.

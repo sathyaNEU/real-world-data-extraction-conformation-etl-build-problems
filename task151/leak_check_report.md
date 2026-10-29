@@ -32,8 +32,9 @@ Stump terms swept: season, regulars, starts, look-back, appearances, projection,
 - **REVIEW** `term_sheets_2027_free_agent_hitters.pdf`: names 4 of 13 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `ral_depth_chart_2027.xlsx`: names 9 of 13 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `league_calendar_2021_2027.csv`: 5 ISO dates after 2026-12-11, e.g. 2027-03-25, 2027-07-12, 2027-07-15, 2027-09-26, 2027-09-29
+- **REVIEW** `league_schedule_2027.csv`: 2430 ISO dates after 2026-12-11, e.g. 2027-03-25, 2027-03-26, 2027-03-27, 2027-03-28, 2027-03-29
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

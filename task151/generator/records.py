@@ -809,6 +809,12 @@ def payroll(L):
 # (pitcher, season) whose January half the legacy run missed and settled in his next season-end run
 CATCH_UP = (("qRAL202304", 2023), ("qRAL202312", 2024))
 
+# the contract terms the register states for the pitchers' other playing-time bonuses, the schedule payroll() pays to
+# (the two January runs in CATCH_UP excepted, each half paid late)
+PAY_NOTE = ("Other playing-time bonuses for the 2025 season and earlier were payable one half in the October 15 "
+            "payroll run after the season and one half in the January 15 run after that, or in full in the October 15 "
+            "run after a contract's last season.")
+
 LEGACY_CODE = {"SAL": ("E01", "SALARY-PLAYER"), "SGN": ("E10", "SIGNING BONUS"), "PA": ("E40", "PERF BONUS"),
                "PT": ("E45", "OTHER BONUS"), "PT2": ("E40", "PERF BONUS"), "AW": ("E45", "OTHER BONUS"),
                "AS": ("E45", "OTHER BONUS"), "DEF": ("E45", "OTHER BONUS")}
@@ -941,7 +947,8 @@ def write_register(L, out, legacy, new, people, migrated):
     ws.title = "Register"
     ws.append(["Raleigh Oaks: player contract register, 2023 to 2026 seasons (extract)"])
     ws.append(["Maintained by Baseball Operations and Finance; payroll contact %s. Amounts in US dollars. Employee ID: "
-               "HRIS ID, or the legacy payroll number for a player not paid since 2024." % K.PEOPLE["payroll"]])
+               "HRIS ID, or the legacy payroll number for a player not paid since 2024. %s" % (K.PEOPLE["payroll"],
+                                                                                              PAY_NOTE)])
     ws.append([])
     hdr = ["Player", "Employee ID", "Pos", "Signed", "Seasons", "Salary 2023", "Salary 2024", "Salary 2025",
            "Salary 2026", "Signing bonus", "Plate-appearance bonuses (each season)",

@@ -753,6 +753,27 @@ def run(target, golden, W, R, meta_path):
       "the cent but the seven with a deferral (short by it) and the one assigned mid-season (short by the salary after "
       "its assignment)", set(short) == set(pit_short) | set(vet_short) | {k2 for k2 in short if k2[0] in assigned} and
       len(pit_short) == 5 and len(vet_short) == 2 and len(assigned) == 1, sorted(short))
+    # the portal's determinism return of 10-29: the payment schedule the golden reads each season's payments by is
+    # filed once, in the register's header, as the contract terms (never the late halves)
+    nd = calc.ask(P, "no_catchup", detail=True)
+
+    def on_schedule(d, k2):
+        v = d.get(k2)
+        if v is None:
+            return False
+        if k2 in last_rows:
+            return v["jan"] == 0
+        return v["jan"] > 0.5 and abs(v["oct"] - v["award"] - v["jan"]) < 0.5
+    C("SF23 'paid for each season' with a half paid late: the register's note files the schedule (one half in the "
+      "October 15 run after the season, one half in the January 15 run after that, in full in the October run after a "
+      "contract's last season); the golden keeps it on all %d rows, the season-by-run reading breaks it on each of the "
+      "%d catch-up rows (no January half on a contract running on, or unequal halves), so a quoted sentence rules it "
+      "out; the note names no player and no missed payment (positive control: the header's maintainer line read)"
+      % (len(B), len(cu_rows)),
+      "Maintained by Baseball Operations and Finance" in head_text and REC.PAY_NOTE in head_text and
+      all(on_schedule(D_, k2) for k2 in B) and not any(on_schedule(nd, k2) for k2 in cu_rows) and
+      not re.search(r"miss|late|catch|carr|White|Livingston", REC.PAY_NOTE, re.I),
+      ([k2 for k2 in B if not on_schedule(D_, k2)], [k2 for k2 in cu_rows if on_schedule(nd, k2)]))
     main_figs = {GOLD_TOTAL} | set(GOLD_PER.values())
     C("AK10 no ask figure equals a figure of the call", not ({round(v) for v in B.values()} | set(GT_ASK.values())) &
       main_figs)

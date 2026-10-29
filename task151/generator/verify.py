@@ -139,11 +139,17 @@ def paid(target):
     wb = openpyxl.load_workbook(os.path.join(target, "ral_player_contract_register_2023_2026.xlsx"), data_only=True)
     rows = list(wb["Register"].iter_rows(values_only=True))
     h = next(i for i, r in enumerate(rows) if r and r[0] == "Player")
+    note = " ".join(str(c) for r in rows[:h] for c in (r or ()) if c)
+    if "Maintained by Baseball Operations and Finance" not in note or not re.search(
+            r"one half in the October 15 payroll run after the season and one half in the January 15 run after that, "
+            r"or in full in the October 15 run after a contract's last season", note):
+        raise SystemExit("verify.py: FAIL, the register's payment note is not read")
     reg = pd.DataFrame([dict(zip(rows[h], r)) for r in rows[h + 1:] if r and r[0]])
     oth = reg[reg["Other playing-time bonuses (each season)"].notna()].copy()
     def span(s):
         a = str(s).split("-")
         return set(range(int(a[0]), int(a[-1]) + 1))
+    lasts = {(max(span(r["Seasons"])), r["Player"]) for _, r in oth.iterrows()}
     seasons = {}
     for _, r in oth.iterrows():
         seasons.setdefault(r["Player"], set()).update(span(r["Seasons"]))
@@ -188,16 +194,22 @@ def paid(target):
             if excess > 0.5 and excess in halves:
                 g.loc[(y + 1, player), "oct"] = b.get("oct", 0.0) - excess
                 g.loc[(y, player), "jan"] = excess
-    out = {}
+    out, off = {}, []
     for (season, player), r in g.iterrows():
         if season not in (2023, 2024, 2025) or season not in seasons[player]:
             continue
         o = r.get("oct", 0.0) - held.get((season, player), 0.0)
         j = r.get("jan", 0.0)
         diff = round(o - j, 2)
-        v = o + j - (diff if j > 0.5 and diff > 0.5 and diff in award.get(player, set()) else 0.0)
+        aw = diff if j > 0.5 and diff > 0.5 and diff in award.get(player, set()) else 0.0
+        v = o + j - aw
+        # the register's note: one half each run, or the whole in October after a contract's last season
+        if abs(v) > 0.5 and (j > 0.5 if (int(season), player) in lasts else abs(o - aw - j) > 0.5):
+            off.append((int(season), player))
         if abs(v) > 0.5:
             out[(int(season), player)] = v
+    if off:
+        raise SystemExit("verify.py: FAIL, seasons off the register's payment schedule %s" % off)
     return out
 
 

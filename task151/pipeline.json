@@ -5,22 +5,22 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "stump": "Running FIN-14 4.4's look-back on the bases at hand (the vendor's projection with a band from its past misses, the players' own seasons, the depth charts' starting nines' seasons taken whole) keeps the starting nines' seasons and accrues $4,500,000; the step that lands it there is reading each signing off seasons that keep the catchers in and ignore where each hitter bats, when his 2027 total is his new lineup slot's plate appearances per start times the starts a winter-planned non-catcher regular makes, the basis that scores lowest and accrues $4,250,000.",
  "architecture": 1,
  "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-28",
+  "date": "2026-10-29",
   "checks": 53
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-28, the hardening rebuild, --asof 2026-12-11; two REVIEW lines new, the register's $55,000 and $225,000 terms beside two ask rows, answered in the design note's Build record)",
+  "leak_py": "REVIEW, no LEAK (2026-10-29, the determinism repair, --asof 2026-12-11; the as-of sweep's 2027 calendar and schedule dates, forward-looking by nature; every other line the last ship's)",
   "reader": "CLEAN (2026-10-28, isolated sonnet reader at medium on a fresh unzip of target.zip 44480c2b and prompt.txt): no sentence names a step for the table, no file ranks, nothing planted, the payroll, register, HRIS map and code table one club's records; it did not surface the deferred salary. The shipped 3ded6ddd changed only a record file, so the read stands"
  },
  "duplicate_check": {
-  "heart": "BLOCK on people.last alone, an H27 artifact (2026-10-28): the register's payroll contact Matthew Wallace, drawn for this build on 10-16, was drawn again by task179 and task174 on 10-28; every other line the WARN or NOTE of the last ship",
-  "nearest": "surface: task155 and task472 at 0.101, task184 and task158 on the card's structure, the four promoted pairs of the last ship, differentiated"
+  "heart": "WARN, no BLOCK (2026-10-29)",
+  "nearest": "surface: task155 and task472 at 0.101, task184 and task158 on the card structure, the four promoted pairs of the last ship, differentiated"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -36,7 +36,8 @@
    "gate_g": "PASS: method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
    "gate_h": "domain pass, layers pass, decisive_step analytical"
   },
-  "rubric_hardening_10_28": "DETERMINISTIC, APPROVE (pass 3, 2026-10-28, determinism_check_report_pass3.md, on target.zip 44480c2b): every figure of the call and every row of the table reproduced, the contract-end deferred salary among them, no competing answer; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive step analytical. The shipped 3ded6ddd differs only in the payroll export's five deferral amounts (no graded figure, clause or document moved), so the APPROVE stands"
+  "rubric_hardening_10_28": "DETERMINISTIC, APPROVE (pass 3, 2026-10-28, determinism_check_report_pass3.md, on target.zip 44480c2b): every figure of the call and every row of the table reproduced, the contract-end deferred salary among them, no competing answer; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive step analytical. The shipped 3ded6ddd differs only in the payroll export's five deferral amounts (no graded figure, clause or document moved), so the APPROVE stands",
+  "portal_10_29": "the portal's determinism block failed (two judges, C and D on the ask's catch-up rows; judge 2 also on the open basis set); repaired 10-29 without a re-judge on the author's instruction"
  },
  "returned": [
   {
@@ -99,24 +100,34 @@
    "repair": "rubric",
    "commit": "",
    "move": "a third ask device (a January half the legacy run missed, settled in the next season-end catch-all line: Max White 2023, Joe Livingston 2024); every ask golden unchanged; the path both responses took now misses the three totals and four rows, 19 of 44 ask points, each near 53"
+  },
+  {
+   "date": "2026-10-29",
+   "by": "portal determinism block (the author's report), two judges",
+   "portal": "rubric 40 per cent with the call missed; determinism failed, both judges A, B and E pass, C and D fail, F plausible, G pass, competing_defensible_answer, fix_location input_files",
+   "repair": "determinism",
+   "finding": "both judges: the ask's catch-up rows, each October line taken to its season and each January line to the season before (White $60,000 for 2023 and $180,000 for 2024, Livingston $50,000 for 2024 and $150,000 for 2025; totals $465,000, $1,015,000, $1,135,000), no shipped file stating the equal halves the golden reads by; judge 2 also the main call's open basis set under FIN-14 4.4 (a nearest-neighbour peer basis, 0.1814, $4,273,627, still the golden total at the nearest $250,000), which judge 1 found robust",
+   "move": "the register's header files the payment schedule once, as contract terms (one half in the October 15 run after the season, one half in the January 15 run after that, in full in the October 15 run after a contract's last season), naming no player, late payment or code; SF23 asserts the golden on it and the season-by-run reading off it on all four catch-up rows; verify.py reads it; step 8 and the workbook cite it. The basis set is left open: the filed look-back is the selection criterion, and listing the bases would file the method (rule 3)",
+   "outcome": "reshipped: checks 293, 0 failed; verify agrees; two builds byte-identical; figures_check 82 of 82; precut 53, 0 FAIL; voice-check PASS; leak.py REVIEW, no LEAK; guard validate clean, heart WARN, surface the four promoted pairs of the last ship; freeze.py check --mode determinism PASS; the Mac pack build matched the shipped zip in 20 of 21 files, the register differing only in its header cell; no judge re-run (the author's instruction); the catch-up is now a check of each season's halves against the filed schedule",
+   "commit": ""
   }
  ],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-28",
- "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70; reshipped 10-28 with the asks re-sited, and again 10-28 with a second ask device",
+ "delivered": "2026-10-29",
+ "portal": "returned 10-27 on the rubric: both top responses missed the call (USD 4,000,000 at signing against USD 4,250,000) and landed every ask, 84 and 79 per cent against 70; reshipped 10-28 with the asks re-sited, and again 10-28 with a second and a third ask device; returned 10-29 on the determinism block (rubric 40 per cent, the call missed), reshipped 10-29 with the payment schedule filed",
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "wave": "wave 4 (new), seed FC22 (world, decision and quantity kept; the filed projection method and the shared-slot driver dropped; pitfall re-found)",
  "build": {
-  "checks": 289,
+  "checks": 293,
   "verify": "agreeing",
   "byte_identical": true,
   "figures_check": "82 of 82",
-  "target_zip_sha256": "3ded6ddd4f10b827264bb5244c604168e8b864ec8d334027bb0e31ece9c4fc1e",
+  "target_zip_sha256": "90a982cd642bc986d7bff95f81c7123ec99f99f4760299a29de75774252f8f9f",
   "world_seed": 1539,
   "files": 21
  },
- "zip_sha256": "64554e72f7fc4ebdbf9fe7cf5282b607a461889d7baae54f9b68fc59f9069814"
+ "zip_sha256": "90a982cd642bc986d7bff95f81c7123ec99f99f4760299a29de75774252f8f9f"
 }

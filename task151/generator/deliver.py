@@ -256,8 +256,9 @@ def write_book(R, path):
     ws3["A1"] = ("Other playing-time bonuses paid: %s for 2023, %s for 2024, %s for 2025 (payroll register through "
                  "December 11, 2026)" % tuple(usd(tot) for _, _, tot in paid_rows(R)))
     ws3["A1"].font = Font(bold=True)
-    _hdr(ws3, 3, ["Season", "Player", "Contract terms (each season)", "Season-end payment", "January payment",
-                  "Award in season-end line", "Deferred salary in season-end line", "Paid for the season"])
+    _hdr(ws3, 3, ["Season", "Player", "Contract terms (each season)", "Season-end payment for the season",
+                  "January half for the season", "Award in season-end line", "Deferred salary in season-end line",
+                  "Paid for the season"])
     r = 4
     for y, rows, tot in paid_rows(R):
         for n, v in rows:
@@ -283,11 +284,15 @@ def write_book(R, path):
             c.font = Font(bold=True)
             c.border = Border(top=THIN)
         r += 2
-    ws3.cell(row=r, column=1, value="The pitchers' bonuses are paid half in the season-end run (October 15) and half "
-                                    "on the following January 15; after the last season of a contract the season-end "
-                                    "run pays the whole season. Before the January 2026 HRIS cutover the legacy payroll "
-                                    "put the season-end payments on E45 OTHER BONUS and the January halves on E40 PERF "
-                                    "BONUS; from January 2026 both are BPA.")
+    ws3.cell(row=r, column=1, value="Payment terms per the contract register's note: one half in the October 15 run "
+                                    "after the season and one half in the January 15 run after that, the whole in the "
+                                    "October 15 run after a contract's last season. Before the January 2026 HRIS "
+                                    "cutover the legacy payroll put the season-end payments on E45 OTHER BONUS and the "
+                                    "January halves on E40 PERF BONUS; from January 2026 both are BPA. The January 2024 "
+                                    "run paid no half to White and the January 2025 run none to Livingston: each half "
+                                    "was paid in his next October line, which exceeds the January half after it by that "
+                                    "half, and is shown here in the season it was payable for (White 2023, Livingston "
+                                    "2024).")
     ws3.cell(row=r + 1, column=1, value="Taken out of the season-end line: an All-Star bonus paid in it (Ruiz 2023, "
                                         "Livingston 2024, Pietersz 2025), and after a contract's last season the salary "
                                         "the contract deferred to its end (the register's salary less the salary paid, "
@@ -495,15 +500,16 @@ def submission(R, fig, path):
                  "rounded player figures add to %s." % (fig["call"]["total"], usd(sum(G["per_r"].values()))))
     pd_ = fig["deliverables"]["paid"]
     lines.append("8. For each player whose contract in ral_player_contract_register_2023_2026.xlsx carries other "
-                 "playing-time terms, added the season-end payment (October 15) and the January 15 payment after it in "
-                 "ral_payroll_player_earnings_2023_2026.csv, whatever the code (the legacy payroll paid the pitchers' "
-                 "season-end payments on E45 OTHER BONUS), net of the October 2025 void and reissue, less the All-Star "
-                 "bonus a legacy season-end line carries and, in the line after a contract's last season, the salary "
+                 "playing-time terms, took each season's payments in ral_payroll_player_earnings_2023_2026.csv on the "
+                 "schedule the register's header note files (a half in the October 15 run and a half in the January 15 "
+                 "run after it, the whole in the October run after a contract's last season), whatever the code (the "
+                 "legacy payroll paid the October halves on E45 OTHER BONUS), net of the October 2025 void and reissue, "
+                 "less the All-Star bonus a legacy October line carries and, after a contract's last season, the salary "
                  "the contract deferred to its end (its register salary less the E01 salary lines paid, each season), "
                  "each legacy line read by its name (number %s is Yordy Benítez in 2023 and Gilmar Pietersz in 2025), "
-                 "and where a January run paid no half on a contract running on (Max White's for 2023, Joe Livingston's "
-                 "for 2024) the next season-end line carries it, so its excess over the January half after it goes back "
-                 "to that season: %s." % (fig["deliverables"]["reissued_legacy_numbers"][0],
+                 "and counted the half no January run paid (Max White's for 2023, Joe Livingston's for 2024) to its "
+                 "season from his next October line, which exceeds the January half after it by exactly that half: "
+                 "%s." % (fig["deliverables"]["reissued_legacy_numbers"][0],
                           "; ".join("%s %s" % (b["season"], b["total"]) for b in pd_)))
     lines.append("")
     lines.append("## 4. Deliverable Answers\n")
