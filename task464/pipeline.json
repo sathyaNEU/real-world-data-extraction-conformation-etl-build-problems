@@ -1,31 +1,31 @@
 {
  "task": "task464",
  "status": "DESIGN",
- "domain": "pharmacology-pharmacoepidemiology-safety",
- "objective": "descriptive-distribution",
+ "domain": "energy-systems-utilities/asset-condition-maintenance",
+ "objective": "opportunity-sizing-decision",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-28",
- "stump": "A competent analyst fits each practice's persistence curve on months since its patients started a statin, carries every patient now on one forward on it and sends the pharmacist to Cobbet Street Surgery at about 83, because the curve spreads over the year the losses that sit at the end of each repeat authorisation; Marrick House moved its stable repeat patients to 56-day issues in February and March 2026 and re-authorised each repeat as six issues, so they run out together before March 2027, and run to each patient's own re-authorisation Marrick House has about 170 against Cobbet Street's about 129.",
- "architecture": 9,
+ "stump": "A competent analyst carries each feeder's head current through the sections its project replaces and funds Oxenford Lane, charging its long old overhead line with a feeder current it never carries; rebuilt from the secondary substations' loads beyond each section the flows fund Wennock Town; but the Hob Moor solar farm beyond Kestle's old line exports up to 5 MW back through it to the Kestle Park estate, and on the net of every load and generator beyond each section Kestle removes the most losses.",
+ "architecture": 10,
  "loops": 0,
- "architecture_spent": "9, at the portal's second determinism return on the forecast's estimator (the stump lived in the fork; see the design note's last Tried and rejected line). 8, at stage 4 on the judge's Gate H3 SEND_BACK (decisive_step planted: correcting the coded shares is the retired surface-read flip), report determinism_check_report_pass5.md. Earlier: 3, on the re-judge's Gate C finding; 4 refused across the education-learning-sciences / item-response-theory-test-equating cell; 5 refused all six ETL cells; 6 refused twice on arithmetic; 7's two candidates refused. See DESIGN_NOTE.md, '## Tried and rejected'.",
+ "architecture_spent": "9, at the portal's second determinism return on the forecast's estimator (the stump lived in the fork; the call itself held, rubric 72 with the call held), its card identity moved into lineage at the architecture 10 draw. 9, at the portal's second determinism return on the forecast's estimator (the stump lived in the fork; see the design note's last Tried and rejected line). 8, at stage 4 on the judge's Gate H3 SEND_BACK (decisive_step planted: correcting the coded shares is the retired surface-read flip), report determinism_check_report_pass5.md. Earlier: 3, on the re-judge's Gate C finding; 4 refused across the education-learning-sciences / item-response-theory-test-equating cell; 5 refused all six ETL cells; 6 refused twice on arithmetic; 7's two candidates refused. See DESIGN_NOTE.md, '## Tried and rejected'.",
  "precut": {
-  "exit": 0,
-  "date": "2026-10-28"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, four lines ruled harmless in the design note",
-  "reader": "read 6 on ab3f7d9a (the brief's new sentence): no decisive-step sentence, no ranking file, question 5 the golden's reading with the method open, question 6 analytical"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK), nearest driver 0.09 task468 v2",
-  "surface": "exit 0; task33 and task114 promoted at history severity on shared card labels, differentiated on the card"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK label, read as a repair against the gate table (G and H pass)",
-  "report": "determinism_check_report_pass9.md; its Gate C/E risk on the forecast's open choices closed by C15 and V15 (1,600 and 108 settings, placement and runner-up never move) and its critical component 2 count by SF30's wording; pack unchanged from the judged ab3f7d9a; no third judge"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -62,14 +62,28 @@
    "commit": ""
   }
  ],
- "resume": "/build task464 from 2: re-root to architecture 10 (a new draw, dataset and generator under Descriptive & Distribution); the reshipped pack cfaf9a21 is not to be resubmitted",
+ "resume": "/build task464 from 2: architecture 10 drawn and registered 2026-10-28 (energy-systems-utilities / asset-condition-maintenance, Opportunity Sizing; Marchway Power Networks' 2027/28 losses reconductoring at Wennock Cross primary, the golden Kestle on section net flows with the Hob Moor solar farm's export). Next: write the new generator (sim, pack, goldens, checks with every SF id, verify), the stage 2 sections (readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet) on its clean truth, prompt.txt, then precut. The architecture 9 files in the folder (generator/, target/, golden/, target.zip, submission.md, prompt.txt, metadata.json) are dead and are replaced by the architecture 10 build.",
  "approved": null,
- "delivered": "2026-10-28",
+ "delivered": null,
  "portal": null,
- "source_note": "architecture 2 drawn afresh after architecture 1's SEND_BACK: the 2027 adolescent literacy grants on grade 9 and 10 students at the new state reading test's Level 1, the retiring test's 2025 scores placed on the new scale through the 2026 bridge study",
+ "source_note": "architecture 10 drawn afresh after architecture 9 was spent: the pharmacology adherence ground is spent for this number, so the draw moved to energy-systems-utilities under Opportunity Sizing with a records-fixed quantity forced by physics (I2R on metered flows)",
  "portal_status": "",
  "portal_status_date": "",
  "portal_id": "",
- "target_zip_md5": "ab3f7d9afa77303ad3b4b8888f1eda6c",
- "shipped_call": "Marrick House Surgery hosts the 2027 statin continuity sessions, Cobbet Street Surgery next"
+ "target_zip_md5": "",
+ "shipped_call": "",
+ "history": [
+  {
+   "architecture": 9,
+   "shipped_call": "Marrick House Surgery hosts the 2027 statin continuity sessions, Cobbet Street Surgery next",
+   "target_zip_md5": "ab3f7d9afa77303ad3b4b8888f1eda6c",
+   "delivered": "2026-10-28",
+   "judge": {
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK label, read as a repair against the gate table (G and H pass)",
+    "report": "determinism_check_report_pass9.md; its Gate C/E risk on the forecast's open choices closed by C15 and V15 (1,600 and 108 settings, placement and runner-up never move) and its critical component 2 count by SF30's wording; pack unchanged from the judged ab3f7d9a; no third judge"
+   },
+   "fate": "spent 2026-10-28 at the portal determinism block (second return)"
+  }
+ ]
 }

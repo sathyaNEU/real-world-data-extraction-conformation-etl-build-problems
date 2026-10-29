@@ -1,4 +1,4 @@
-# task464 design note: the 2027 statin continuity sessions (architecture 9)
+# task464 design note: the 2027/28 losses reconductoring at Wennock Cross (architecture 10)
 
 Status lives in `pipeline.json`; this note holds the design. Read `## Tried and rejected` and the measured
 screens at the foot of this file before resuming. Architecture 1 (the Wendlemere building emissions slate) was
@@ -7,520 +7,204 @@ was solved on the portal because its decisive step was psychometrics' own named 
 outpatient capacity register) was sent back at the stage 4 re-judge on Gate C and its world then measured
 closed. Architecture 4 screened the author's fixed education and ETL pairing and refused all four candidates.
 Architecture 5 screened all six ETL cells and refused or barred every one, closing the ETL objective for this
-number. Architecture 6 (the adult skills place slate) was refused twice on measured arithmetic and is the source
-of laws 2 and 3 below. Architecture 7's two candidates, attenuation and the winner's curse, were refused on the
-ledger and on arithmetic, giving laws 1 and 4. Architecture 8 (the adult education withdrawal reasons) was sent
-back at stage 4 on Gate H3: correcting reported labels is a surface-read flip. Architecture 9 keeps every
-recorded figure right and puts the difficulty in which clock a forward persistence estimate runs on.
+number. Architecture 6 (the adult skills place slate) was refused twice on measured arithmetic. Architecture 7's
+two candidates were refused on the ledger and on arithmetic. Architecture 8 (the adult education withdrawal
+reasons) was sent back at stage 4 on Gate H3. Architecture 9 (a primary care network's statin continuity
+sessions) held its call on the portal and died twice at the determinism block, because its decisive step was a
+forecast's estimator. Architecture 10 leaves forecasting and estimation behind: the graded quantity is the
+technical loss each project would have removed on flows the network metered, and physics, not a choice of
+estimator, forces its construction.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 9; architectures 1, 2, 3, 6 and 8 in
-  `lineage`), registered 2026-10-28, guard WARN only, nearest driver on file 0.11 (task157's architecture 1, a
-  return wave of members who stopped together), 304 cards validated.
-- **The WARNs answered.** `three_rules.strategy_risk` (time_semantics): the analyst test below is the easy route
-  that still fails with every field and rule read correctly; no field states when patients stop and no rule
-  says how to forecast it. `people.last`: Mitchell appears in task473, an older build, and every name is drawn
-  from `guard.py names --geo england --seed 4649`, never typed. `repeat.gate_g` against task174's architecture 2
-  (drawn minutes earlier): its driver is a mastery-stop homework set length, nothing like a renewal clock.
-- **The window moved at the last check, and the axis was redrawn.** Re-checked after the DRAWN push, the context
-  artifact `planning_thread` was banned against task174, drawn by another session in the same hour. The card now
-  carries `register`, which is the honester label anyway: the file the network's decision turns on is its
-  register of repeat authorisations, and the programme brief is only the cover sheet that files the estimand.
-- **One label redrawn, and why the replacement is the honester one.** The first draft carried Gate G
-  `forecasting` with gap `time` and pattern `A`, and `test.same_driver` blocked it against task281's
-  architecture 1 inside the batch. The card now carries `method_or_model_selection`: the trailing and recorded
-  figures are all right, and what the solver has to choose is the clock the stopping hazard runs on (months since
-  the patient started against the run to the end of the patient's current repeat authorisation), which is a
-  model choice inside the forecast. The older repeats of the signature (task33, task41, task55, task89, task114,
-  task230) carry one differentiation line each on the card.
-- **Pairing:** pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence, objective Descriptive &
-  Distribution, prompt shape 01 (a ranked list under a cap of one). The task type serves Descriptive &
-  Distribution only, and pharmacology against this objective is a never-built pairing on a live card.
-- **Why this ground, measured.** Education is spent for this number (architectures 2, 4 and 8). The only earlier
-  draw in this task type is task270's architecture 8, spent at stage 4 on a different driver (compliance-aid
-  patients dispensed on the pharmacy's own cycle, a code marking some of them); nothing here is coded and the
-  decisive step is a clock, not a population a code leaves in. Screened in slot notes before drawing, on the
-  mechanism's words and the setting's: repeat authorisation, re-authorisation, authorised issues, refills
-  remaining, renewal hurdle and benefit exhaustion return no screen anywhere; repeat prescription, medication
-  review and repeat dispensing return only passing mentions in task230, task309 and task193 on other drivers.
-- **Niche:** a primary care network placing its clinical pharmacist's statin continuity sessions for January to
-  June 2027 at one of its seven general practices, read from the practices' statin issue records, their repeat
-  authorisations and the patient register.
-- **Strategy:** `time_semantics` (the F1 family's current legal form: a clock process already in the data,
-  estimated by the field's method from every unit that went through it, with no closed figure blessing the wrong
-  method; F1's own examples include a lapsing term), gap `time` then `population`, pattern `A` (past exceedance
-  against forward yield: the candidates resolve for an ordinary reason the series shows, a filed fact pins the
-  horizon, and no past ranking ships), generators `G7` then `G13`, Gate G `method_or_model_selection`,
-  calibration organ none, decisive rule filed `false`, official decoy `false`, validated decoy `false`,
-  `stump_class: analytical`.
-- **Data-native sentence.** A repeat statin in general practice runs on an authorisation of a fixed number of
-  issues, and when the last one is used the next request waits for a clinician to re-authorise the repeat, which
-  is where nearly every patient who stops a statin stops; Marrick House moved its stable repeat patients to
-  56-day issues in February and March 2026 and re-authorised each converted repeat as six issues, so those
-  repeats run out together in January and February 2027, inside the window the decision bets on.
-- **Sources, one line each.** task270's architecture 8 (spent) read statin cover from community pharmacy
-  dispensing with a compliance-aid cycle masking short supply; here supply is read from practice issues and no
-  patient is masked. task132 (approved) restarts a physical wear curve at each recorded replacement; here the
-  restart is an authorisation and what the forecast counts is failure at the next renewal, not a lower hazard
-  after the restart. task134's architecture 2 ran a conversion hazard by time since entry after an intake surge;
-  here the hazard is not on time since entry at all, and the bunching is a re-authorisation, not an intake.
-  task107 (approved, a validated decoy then) lifted an entry rate at a service anniversary bunched before its
-  window; here no closed figure reproduces the wrong method. task265, task266 and task268 (the Descriptive
-  survival builds: left truncation, competing exits, informative loss) are handled correctly on the default path
-  here and decide nothing.
-- **Fiction.** An unnamed integrated care board area in England, GBP, the Hensey Vale Primary Care Network and its
-  seven practices, forum `committee_or_panel` (the network board), forcing event `vote_or_meeting` (the board's
-  10 December 2026 meeting), org family `hospital_or_health_provider`. People drawn with `guard.py names --geo
-  england --seed 4649`: Dorothy Mitchell (clinical director), Hollie Kirk (lead clinical pharmacist), Stuart
-  Newman (digital and data lead).
-- **Deliverables:** `statin_sessions_2027.xlsx` (each practice's expected count, the placement and the chart)
-  and `cvd_repeat_returns_2025.csv` (the network's 2025 repeat returns, one row per practice).
-- **The call faces forward:** the outcome window, 1 March to 30 June 2027, has not opened at the 30 November
-  2026 extract.
-- **Measured at the draw** on the clean-truth harness (scratch, seed 1, before any row was cut; the cut pack's
-  figures go in `## Ladder`). Expected patients now on a statin who, still registered on 30 June 2027, will have
-  had no statin issued from 1 March to 30 June 2027:
+- **Card:** `.claude/skills/fingerprint/cards/task464.json` (architecture 10; architectures 1, 2, 3, 6, 8 and 9 in
+  `lineage`, architecture 9 carrying its fate), registered 2026-10-28, guard WARN only, 306 cards validated,
+  nearest driver on file 0.09 (task173's architecture 2, a cut group replacing volume from a second source behind
+  one shared meter: a meter shared by two supplies, nothing like a section's net flow).
+- **The WARNs answered.** `overuse.forum` (committee_or_panel in 47 builds): the operator's investment review
+  panel is who decides a losses project, and the honest forum; forum, forcing event and organisation family are
+  all clear of the live window (task488, task270, task268). `overuse.shape` (07 in 3 of the last 12): each
+  project's saving in each quarter of the regulatory year is the grid the panel's paper carries, the pick the
+  project with the largest year. The structural NOTES are differentiated on the card: task101 (a threshold cut
+  from a published total less the decision's own payments) and task121's second architecture (a unit
+  re-attributed through a second party's identifier). Two axes were redrawn at the first check and the
+  replacements are the honester labels: `context_artifact` monitoring_export (banned against task488) became
+  `register`, since the file the analysis turns on is the network model the operator keeps, not the monitoring
+  platform's export; and the pattern moved from D to none with G3 first, since the decisive structure is the
+  head meter's net against what each section carries in operation (record against operation), which is truer than
+  "two flawless grains" and clears five spent (population, D, decomposition) signatures.
+- **Pairing:** energy-systems-utilities / asset-condition-maintenance (serves Forecasting and Opportunity Sizing),
+  objective Opportunity Sizing & Decision Support, prompt shape 07 (a grid of cells). The objective is the honest
+  one: the headline is a sized opportunity, the losses on the old sections (the pool) to what the new conductor
+  removes (the realisable), and it drives a one-project call. Forecasting is not drawn: the slot's architecture 9
+  died because a forecast's estimator can always be re-validated into a rival, and this quantity is closed
+  history on metered flows.
+- **Why this ground, measured.** Pharmacology's adherence ground is spent for this number (architecture 9) and
+  education for this number (architectures 2, 4 and 8). The energy OS builds on file size outages (task303,
+  customer-minutes at feeder breakers), unserved energy (task308) and a battery's yield under an export hold
+  (task310); none sizes technical losses. Screened in slot notes before drawing, on the mechanism's words and the
+  setting's: reverse power, reverse flow, two-way flow, I2R, square of the current, reconductoring, technical
+  losses, feeder losses, loss load factor, secondary substation, primary substation, normally open and solar farm
+  return nothing; embedded generation returns task136's connection register (a forecast of new connections) and
+  technical losses one passing task303 line; delay propagation and turnaround, screened for a rejected rail
+  candidate, return task469's note (below).
+- **Niche:** a distribution network operator's 2027/28 losses programme funding one reconductoring project among
+  eight 11 kV feeders out of Wennock Cross primary, each project replacing its feeder's remaining old conductor,
+  sized as the I2R technical losses the new conductor would have removed on the 2025/26 regulatory year's
+  half-hourly flows and valued at the regulator's losses value.
+- **Strategy:** `decomposition_attribution` (the feeder's correctly metered flow split section by section, where
+  the loads and the solar farm's export overlapping on the same sections decide the split), gap `population`,
+  pattern none with generators `G3` then `G2`, Gate G `decomposition_attribution`, calibration organ none, decisive
+  rule filed `false`, official decoy `false`, validated decoy `false`, `stump_class: analytical`.
+- **Data-native sentence.** The Hob Moor solar farm sits at the far end of Kestle feeder, beyond about 4 km of
+  the feeder's original 0.1 sq in copper overhead line, and the Kestle Park estate that takes most of its export
+  on weekdays is fed from the first two kilometres out of Wennock Cross; so on a sunny day the old line carries up
+  to 5 MW back toward the estate while the feeder-head meter reads only the estate's load less the export, the
+  estate's and the village's monitors read only their own loads, and no meter on the network reads the old line's
+  flow at all.
+- **Sources, one line each.** task303 (approved ground, shipped) attributes customer-minutes logged at feeder
+  breakers to a shared substation supply; here nothing is re-attributed and the quantity is an energy loss built
+  from metered flows by the line's own topology. task310 rebuilds the output a constrained site's equipment
+  discarded; here no output is rebuilt and every flow the construction uses is metered. task162 replays a pressure
+  valve's setting through a steep leakage law; here the steep law is the square of the current and the decisive
+  structure is where along the line each flow runs, not when a device acts. task308 credits a unit with the hours
+  it would really have been available; nothing here is about availability. task258 carries a measured effect only
+  where its mechanism reaches; here no effect is carried onto any unit, the loss being physics on the record.
+- **Fiction.** An invented licence area in the English West Midlands, GBP, Marchway Power Networks and its Wennock
+  Cross 33/11 kV primary substation with eight 11 kV feeders (Wennock Town, Ashlade, Oxenford Lane, Kestle,
+  Pennick Hill, Redburn, Stowmere and Ingle Road), the Hob Moor Solar Park (5 MW export, on Kestle), the Crane
+  Hill wind turbine (1.5 MW, on Stowmere), the Ashlade Community Hospital's CHP (1.2 MW, on Ashlade) and the
+  Kestle Park Industrial Estate. Forum `committee_or_panel` (the investment review panel), forcing event
+  `vote_or_meeting` (the panel's 9 December 2026 meeting), org family `utility_or_infrastructure`. People drawn
+  with `guard.py names --geo england --seed 464`: Gail Dobson (losses strategy lead), Ricky Fisher (network
+  planning engineer), Tracy Parkes (network data lead).
+- **Deliverables:** `losses_programme_2027.xlsx` (each project's saving by quarter and year, in MWh and at the
+  losses value, and the pick), `losses_saving_2027.png` (the eight projects' savings, the pick marked) and
+  `iis_feeders_2025-26.csv` (each feeder's 2025/26 interruption measures and its worst-served customers).
+- **The call faces forward:** the panel funds the 2027/28 project in December 2026; each project is sized on
+  the latest complete regulatory year's metered flows, 1 April 2025 to 31 March 2026, which is closed history,
+  so no forecast enters the graded figure.
+- **Measured at the draw** on the clean-truth prototype (scratch `a10/proto3.py`, three solar seeds, before any
+  row was cut; the cut pack's figures go in `## Ladder`). MWh of losses a year each project would have removed:
 
-  | practice | now on a statin | golden: run to re-authorisation | persistence curve on months since starting | last year's rate | trailing 12 months of stops |
-  |---|---|---|---|---|---|
-  | Fennbridge Medical Centre | 2,163 | 73 | 128 | 138 | 295 |
-  | Cobbet Street Surgery | 1,164 | 109 | 137 | 152 | 351 |
-  | Thistlecombe Surgery | 1,160 | 59 | 73 | 81 | 181 |
-  | Marrick House Surgery | 1,767 | 182 | 92 | 104 | 180 |
-  | Larkspur Road Practice | 915 | 50 | 55 | 60 | 158 |
-  | Wyndhollow Health Centre | 1,242 | 84 | 81 | 104 | 228 |
-  | Pellow Green Surgery | 877 | 45 | 49 | 62 | 117 |
+  | feeder | R0 head current through the replaced sections | R1 head current allocated by transformer kVA | R2 sections' flows from the substations' loads | R3 net of every load and generator beyond each section (golden) |
+  |---|---|---|---|---|
+  | Wennock Town | 46 | 39 | 40 | 40 |
+  | Ashlade | 59 | 21 | 20 | 14 |
+  | Oxenford Lane | 596 | 23 | 14 | 14 |
+  | Kestle | 394 to 400 | 5 | 2 | 51 to 59 |
+  | Pennick Hill | 192 | 69 | 3 | 3 |
+  | Redburn | 97 | 10 | 10 | 10 |
+  | Stowmere | 48 to 52 | 14 to 16 | 19 | 14 to 15 |
+  | Ingle Road | 20 | 6 | 6 | 6 |
 
-  Every reflex names Cobbet Street and the golden names Marrick House, 1.67 times Cobbet Street's figure; the
-  oracle forward simulation on the true parameters gives Marrick House 176 against 107. The decisive step moves
-  Marrick House's own figure from 92 to 182. The golden family is not yet closed at the draw: across the
-  re-authorisation rate pooled or by practice, the full record or the last twelve months, and pacing at the mean,
-  the median or the issue length, Marrick House runs 176 to 191 against a printed unit of 10, because returns
-  inside the window and one practice's own rate move it; stage 2 closes it on the harness before any data is cut
-  (returns held past the window, the record's rate homogeneous across practices, the seed aligned), and the
-  closure is measured, not argued.
+  Each rung names its own feeder (Oxenford Lane, Pennick Hill, Wennock Town, Kestle), and the golden reorders the
+  whole slate: Kestle is second on the head current, last on both one-way constructions and first on the net flow,
+  1.27 to 1.47 times Wennock Town. Kestle's saving falls 82 per cent in the summer half, Wennock Town's 63 per cent
+  in the winter half. Stage 2 tunes the build so that rung 0's figures sit at plausible shares of each feeder's
+  energy, the feeder head never reverses outside a handful of sunny holiday middays, and the golden margin clears
+  1.30 on the cut pack's own weather.
 
 ## Default path
 
 A competent analyst builds this without hesitating, from the prompt's words and the files' grain.
 
-1. Stack the two clinical systems' issue extracts through the product lookup, conforming their layouts (dates,
-   drug and strength written two ways, quantity with and without its unit), and keep the statin issues.
-2. Rebuild each patient's statin supply from the issues, each issue's days from its quantity and the dose text on
-   its repeat, and call a patient stopped when 122 days pass with no statin issued.
-3. Fit each practice's persistence curve (Kaplan-Meier) on months since the patient's first statin issue in the
-   record, re-entering a patient who restarts and censoring at deregistration and at the extract's end.
-4. For each patient in the brief's population, take the curve's chance of stopping between 30 November 2026 and
-   the end of February 2027, so that no statin is issued from March to June, times the record's 98.7 per cent
-   chance of staying registered to 30 June 2027.
-5. Sum by practice, rank, and send the pharmacist to the practice with the largest expected number.
+1. Conform the primary substation's SCADA (UK local time across both clock changes, amps per phase) into each
+   feeder's half-hourly current for 1 April 2025 to 31 March 2026.
+2. Read each project's replaced sections, their lengths and conductor codes from the network model, and the old
+   and new conductors' resistances from the conductor catalogue.
+3. Take each half-hour's losses removed as three times the feeder current squared times the change in the
+   replaced sections' resistance, sum by quarter and over the year, and value the year at the losses value.
+4. Fund the project with the largest year.
 
-- **Ends on:** Cobbet Street Surgery, about 83 patients, with Fennbridge second at 75 and Marrick House last of
-  seven at 46 (cut pack, seed 46906).
-- **Golden:** Marrick House Surgery, 170 to the nearest 10 (170.3), with Cobbet Street second at 128.5.
+- **Ends on:** Oxenford Lane, about 596 MWh a year (prototype; the cut pack's figure replaces it at stage 2).
+- **Golden:** Kestle, about 55 MWh a year, with Wennock Town next at about 40.
 
 ## Stump sentence
 
-A competent analyst fits each practice's persistence curve on months since its patients started a statin, carries
-every patient now on one forward on it and sends the pharmacist to Cobbet Street Surgery at about 83, because the
-curve spreads over the year the losses that sit at the end of each repeat authorisation; Marrick House moved its
-stable repeat patients to 56-day issues in February and March 2026 and re-authorised each repeat as six issues, so
-they run out together before March 2027, and run to each patient's own re-authorisation Marrick House has about 170
-against Cobbet Street's about 129.
+A competent analyst carries each feeder's head current through the sections its project replaces and funds
+Oxenford Lane at about 596 MWh a year, charging its long old overhead line with a feeder current it never carries;
+rebuilt from the secondary substations' loads beyond each section the flows fund Wennock Town at about 40, because
+no load sits beyond Kestle's old line worth the name; but the Hob Moor solar farm beyond it exports up to 5 MW back
+through that line to the Kestle Park estate, and on the net of every load and generator beyond each section Kestle
+removes about 55 MWh a year, the most of the eight.
 
 ## Three rules
 
-- **Task type:** medication-adherence-persistence, which serves Descriptive & Distribution in the client taxonomy
-and no other objective.
+- **Task type:** asset-condition-maintenance (energy-systems-utilities), which serves Forecasting and Opportunity
+  Sizing & Decision Support in the client taxonomy; this build is the latter, a reconductoring programme's project
+  sized by the losses it removes.
 
-- **Domain test:** the deciding quantity is a persistence forecast, the task type's own estimate worked on issue
-records with carried-forward supply and a gap rule, and what decides it is how repeat prescribing works: a
-prescriber authorises a fixed number of issues, the request after the last one waits for a clinician to
-re-authorise the repeat, and that is where patients who stop, stop.
+- **Domain test:** the deciding quantity is the technical loss each reconductoring project removes, three times
+  each replaced section's current squared times the change in its resistance, which distribution network
+  engineers estimate from the network's own metering through the feeder's metered current and its loss load
+  factor; what decides it is how power runs on a radial feeder carrying embedded generation, where each section
+  carries the net of every load and generator beyond it.
 
-- **Swap:** put another field's nouns in and the call stops reading the same, because the authorised issue count,
-the clinician's re-authorisation, the days each issue covers and a practice moving its repeats to 56-day issues
-are prescribing's own mechanics; with subscribers or contracts there is no issue length, no dose text to carry
-supply forward on and no prescriber standing between the last issue and the next.
+- **Swap:** put a pipeline's or a road's nouns in and the call stops reading the same, because there is no loss
+  that grows with the square of an electric current through a conductor's resistance per kilometre, no radial
+  feeder metered only at its source and at each substation, no secondary substation monitor that reads only its
+  own load, and no generator whose export runs back through part of the line while the source meter reads the net.
 
-- **Layer 1:** two clinical systems' exports in different layouts (UK against ISO dates, drug and strength written
-two ways and joined through the network's product crosswalk, quantity with and without its unit, CSV against JSON
-lines), acute statin issues beside the repeats, free dose text ('ONE at night', '1 nocte'), 92 patients in the
-population who moved between the network's practices under one pseudonym, deregistrations dated weeks after the
-last issue, and blank end dates on repeats that stopped. Each is produced by the practices' own systems, each is
-asserted neutral on the call in `checks.py` (block L1), and none carries the stump.
+- **Layer 1:** the primary SCADA in UK local time with a 23-hour March day and a 25-hour October day, the
+  substation monitors in UTC and the generators' export meters in settlement periods 1 to 48 (46 and 50 on the
+  clock-change days); amps per phase at the primary against kW and kVAr at the monitors and kWh at the export
+  meters; old conductors written imperially (0.1 sq in, 0.04 sq in) and new ones metrically, read through the
+  catalogue PDF's table; the network model's node identifiers against the substation register's site numbers and
+  names; a monitoring vendor change part-way through the year on some substations (kVA and power factor before, kW
+  and kVAr after); a replaced monitor's few-day gap on a spur no project section carries; rooftop solar netted
+  inside residential monitors. Each is produced by the operator's own systems, each is asserted neutral on the call
+  in `checks.py`, and none carries the stump.
 
-- **Layer 2:** family `field_method`. The decisive choice is the clock the forward window's losses run on: each
-patient's own run to the request after the last authorised issue on their current repeat, priced at the record's
-measured share of repeats that ran out and were not re-authorised, rather than a curve that spreads stopping over
-time since starting.
+- **Layer 2:** family `field_method`, the network's losses worked the way the field works them on measured flows:
+  each replaced section's current rebuilt, half-hour by half-hour, as the net of every substation's metered flow and
+  every generator's metered export beyond it on the feeder's topology, so that two-way flow is seen where an export
+  beyond a section exceeds the load beyond it.
 
-- **Decisive step:** run each patient now on a statin forward to the end of their current repeat authorisation and
-apply the record's share of statin repeats that ran out and were not re-authorised, instead of a persistence curve
-on months since the patient started, because the record shows nearly every stop at the request after an
-authorisation's last issue.
+- **Decisive step:** recognising that Kestle's old overhead sections lie between the Hob Moor solar farm and the
+  estate the farm's export supplies, so the flow through them is the farm's export less the little load beyond,
+  running toward the primary for most of every sunny day; the feeder-head reading nets that export against the
+  estate and the one-way construction from the substations' loads cannot see it, so the section's current is
+  rebuilt from every connection beyond it, generators included, before its square is taken.
 
-- **Not semantics:** every field is read correctly on the easy route. The issue dates, quantities and dose text,
-the authorisations' issue counts and dates and the register's dates are all understood exactly as recorded, and
-the route still files Cobbet Street, because what it omits is when patients stop, which no field states and no
-reading of a field supplies.
+- **Not semantics:** every field is read correctly on the easy route: the SCADA's amps, the monitors' kW and kVAr,
+  the export meters' kWh, the network model's sections and the catalogue's resistances all mean what they say, and
+  the route still files Oxenford Lane or Wennock Town, because what it omits is where along the line each flow runs,
+  which no field states and no reading of a field supplies.
 
-- **Not rule application:** no shipped sentence says when patients stop or how to forecast it; the brief files the
-population, the outcome, the window, the unit and the rounding, and nothing else. The estimator family it leaves
-open is measured on the cut pack, eleven forms from 168.5 to 171.8 for Marrick House, all printing 170 (`## Ladder`).
+- **Not rule application:** no shipped sentence says how a section's current is built; the losses programme files
+  the estimand (the I2R losses each project's new conductor removes, at each replaced section's own current, on the
+  2025/26 metered flows, at 11 kV nominal and the catalogue's 20 degree resistances) and nothing about the flow's
+  construction. The enumerated family (head current, kVA allocation, one-way loads, net flows) spreads Kestle's
+  figure from 2 to 400 MWh a year and names four feeders; the standing family, the net-flow constructions under the
+  filed conventions with every connection's flow taken as metered, spreads it by under one printed unit and names
+  one feeder; what rules the others out is no clause but Kirchhoff's current law on the network's own topology.
 
-- **Analyst test:** the easy route is steps 3 and 4 of the default path, a persistence curve on months since
-starting carried forward per patient, and it files Cobbet Street Surgery at about 83 on the cut pack, with
-Marrick House last at 46. Changing the decisive step alone, to each patient's run to re-authorisation, files
-Marrick House at 170.
+- **Analyst test:** the easy route is the default path, the feeder head's current carried through every replaced
+  section, and it files Oxenford Lane at about 596 MWh a year; the careful one-way route, each section's flow from
+  the substations' loads beyond it, files Wennock Town at about 40. Changing the decisive step alone, the net of
+  every load and generator beyond each section, files Kestle at about 55.
 
-- **Estimand:** for each practice, the expected number of patients registered there on 30 November 2026 who were
-issued a statin by it from 1 September to 30 November 2026 and who, still registered with the same practice on 30
-June 2027, will have had no statin issued to them from 1 March to 30 June 2027, rounded to the nearest 10, filed in
-the board brief; leavers and deaths are not counted and later starters are not in the figure; the sessions go to
-the practice with the largest.
+- **Estimand:** the losses programme brief files it: for each project, the energy in MWh that the I2R losses of
+  the sections it replaces would have been lower over the 17,520 half-hours of 1 April 2025 to 31 March 2026 had
+  those sections carried their metered half-hourly flows on the new conductor, at 11 kV nominal and the conductor
+  catalogue's resistances at 20 degrees, every connection's flow taken as metered at the connection and the
+  network's own losses left out of the flows, by quarter and for the year, rounded to the nearest MWh; the programme
+  funds the project with the largest year.
 
-- **No decoy:** nothing is planted to be caught. There is no copied block, no hidden rule, no memo arguing for a
-practice and no stakeholder figure written to carry the wrong answer; Marrick House's move to 56-day issues and
-Fennbridge's summer statin switch are ordinary practice decisions recorded in the authorisations.
+- **No decoy:** nothing is planted to be caught. There is no memo, draft or stakeholder figure arguing for a
+  feeder, no copied block and no hidden rule; the solar farm, the estate, the hospital CHP and the wind turbine are
+  ordinary connections in the operator's registers, and the feeder-head SCADA is true metering.
 
-- **No certified replay:** the method is not hidden and recovered by reproducing certified figures. No persistence
-figure, dashboard or past ranking of the practices ships, and no figure in the pack ties only under the golden.
+- **No certified replay:** no shipped figure states any section's flow or loss, no losses report ranks the
+  projects, and no figure in the pack ties only under the golden; the method is not recovered by reproducing
+  anything.
 
-- **Lesson:** a model learns that a forward count of patients who stop a repeat medicine runs on the repeat's own
-authorisation clock, so a persistence curve on time since starting ranks practices by their past while the
-window's losses sit wherever the authorisations run out, and that one practice's batch re-authorisation a year
-earlier puts its whole list at the renewal inside the window. No build on file teaches it: no slot note or card
-screens a repeat-authorisation clock.
-
-## Readability screen
-
-Tests: 1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear, 7 dedicated organ. The reflex
-row is written from what pharmacoepidemiology does to the deciding quantity, persistence: a Kaplan-Meier curve on
-time since initiation with a permissible gap (the field's standard, and the default path), a refill-gap rate, or
-last year's same-window share.
-
-| Rung | 1 | 2 | 3 | 4 | 5 | 6 | 7 | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| 0 Persistence curve on months since the first statin issue (Kaplan-Meier, 122-day gap), carried per patient | no | no | fires: the field's standard persistence analysis | no | no | no | no | readable |
-| 1 Last year's same window: the share of 2025's statin patients with no statin from March to June 2026, scaled to this year's population | no | no | fires: the analogue reflex | no | no | fires: one ratio | no | readable |
-| 2 Trailing twelve months of stops, scaled to the window and the population | no | no | fires: a run-rate | no | no | fires: one ratio | no | readable |
-| 3 (decisive) Each patient run from the last issue to the request after the last authorised issue on their current repeat, at the record's share of statin repeats that ran out and were not re-authorised | no: the brief names the window and the population, never a review or a re-authorisation, and the return specification is about other medicines | no: the authorised issue count is the register's native column, read by every repeat search, and the step needs the failure share measured from the record by matching repeats that ran out to the next repeat authorised | no: persistence studies run on time since initiation, not on the prescriber's authorisation | no: no control, corpus or certified figure scores it | no: the battery finds nothing to fix | no: the failure share is reconstructed from 13,574 repeats and applied patient by patient | no: the authorisation register ships for the dose text every supply calculation needs and for the 2025 return | silent |
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call and figure under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | registered on 30 November 2026 | a registration covering that day | a registration ending that day counted | same call: no registration of a population patient ends on 30 November (0) | `same call` |
-| SF2 | issued a statin by it | by the practice the patient is registered with | by any network practice (one patient more) | same call, 170 | the brief: "issued a statin by it" |
-| SF3 | statin | the five named drugs, acute or repeat (96 patients on acute issues only) | repeat issues only | moves the population | the brief: "on an acute or a repeat prescription" |
-| SF4 | ezetimibe | not a statin | read with the lipid drugs | no ezetimibe issue ships (0) | the brief: "Ezetimibe is not a statin" |
-| SF5 | still registered on 30 June 2027 | leavers and deaths not counted (98.7 per cent stay) | leavers ignored | same call, Marrick House 172.5, prints 170 | the brief: "is not counted" |
-| SF6 | as-of | the searches' cover, to the end of 30 November 2026 | the pull date | same call: no issue after 30 November | `same call` |
-| SF7 | nearest 10 | 170.3 to 170 | half up against half even | same figure: 4.7 from the nearest edge | `same call` |
-| SF8 | largest | the single top practice | a tie | margin 1.32x, no tie | `same call` |
-| SF9 | from 1 September to 30 November 2026 | inclusive | the end days left out (8 patients) | same call, 170 | `same call` |
-| SF10 | a patient who moved | counted once, at the practice registered on 30 November (92 moved) | counted at a former practice too | each patient sits in one practice's population | the brief: "registered with the practice on 30 November 2026" |
-| SF11 | issued | an issue recorded in the practice's system | an issue less its cancellations | same call: no statin item was cancelled (0) | `same call` |
-| SF12 | dies | a death leaves the register like any other leaver | deaths kept | inside SF5 | the brief: "leaves the practice or dies" |
-| SF13 | first issued after 30 November | outside the figure | new starters projected in | outside the estimand | the brief: "is not in the figure" |
-| SF14 | R1, registered throughout 2025 | 1 January to 31 December inclusive | strict ends | same figures: no R1 registration starts or ends on the year's edge (0) | `same call` |
-| SF15 | R1, the dose in the directions on that prescription | the dosage in force when the item was issued | the directions the repeat lists show | moves every practice 4.2 to 7.1 points | the specification: "the directions on that prescription" |
-| SF16 | R1, a changed repeat's directions on a day | the change log's own history, each change attached to the repeat the patient held for that product that day | walked back from the listed directions, by the reference each row names | the devices: every practice missed (D4, D5, D7) | the log's own chain (SF29) and the one repeat in force on each change's day (V14) |
-| SF17 | R1, an item cancelled before it was dispensed | not issued | kept | network 81.0 to 82.4 | the specification: "was not issued" |
-| SF18 | R2, the day they started it | the start coded from the discharge summary | the practice's first issue | the device, every practice missed | the specification: "the day they started it" |
-| SF19 | R2, later than the first anniversary | a day after the anniversary day (10 issues fall on it) | on or after | moves several practices | the specification: "on a day later than the first anniversary" |
-| SF20 | R2, both between 1 July 2024 and 30 June 2025 | the infarction and the start both inside (1 start straddles) | the start alone | one patient at one practice | the specification: "both between" |
-| SF21 | R1 and R2 rounding | half up | half even | same figures: no percentage sits on a half | `same call` |
-| SF22 | R2, attribution | the practice registered on the day of the start (6 patients moved later) | the practice now | moves the moved patients | the specification: "counted at the practice they were registered with on the day they started it" |
-| SF23 | the outcome's cause | any reason: a stop between reviews, a repeat not renewed, a leaver excluded by SF5 | review failures alone | Marrick House 157.4, prints 160 | the brief: "for whatever reason" |
-| SF24 | R2, issued after the anniversary | at any practice (6 patients moved after their start) | at the starting practice alone | moves two practices | the specification: "at any practice" |
-| SF25 | largest, and next | the practices compared on unrounded figures | compared after rounding to the nearest 10 | ties possible below the top two | the brief: "compared on their figures before rounding" |
-| SF26 | an expected number of patients | each patient's own chance, on what that patient's record shows at the searches, added up by practice | a practice's share of an earlier year's statin patients with no statin in the same months, carried to its patients (Cobbet Street first in 2024-25, in 2025-26 and pooled) | the portal's empirical route: Cobbet Street, Fennbridge, Marrick House third | the brief: "each patient's own chance, on what that patient's record shows at the searches" |
-| SF27 | R1, an issue on the day of a dose change to its repeat | the change read as made before the issue | read as made after it (52 such issues) | same figures, all seven practices | `same call` |
-| SF28 | R2, a myocardial infarction | the diagnosis however the hospital coded it: 22298006 under either term, STEMI 401303003, NSTEMI 401314000 | the one concept 22298006, or any term naming an infarction (which takes in 'Old myocardial infarction', 1755008) | the device: every practice missed either way (D8) | the codes' own meaning: STEMI and NSTEMI are infarctions, 1755008 is a history finding dated when it was coded, 4557003 is angina |
-| SF29 | R1, which record carries a changed repeat's dose | the change log, whose rows carry each change's old and new value | the repeat lists, which differ by system (system A as each repeat stands, system B's current repeats as authorised) | the device (D5) | the log's own chain: every changed repeat's rows run old to new without a gap (asserted) |
-| SF30 | critical component 2, patients "on" a February or March six-issue 56-day repeat | the repeat each patient's latest statin issue was made on (1,232) | every population patient who has held such a repeat, 11 of whom have since moved to a later one (1,243, the stage 4 judge's pass 9 count) | moves the component only | the write-up: "with their latest statin issue on a repeat of six 56-day issues" |
-
-## Ladder
-
-Cut pack, seed 46906. Each practice's expected number of patients in the brief's population with no statin issued
-from 1 March to 30 June 2027.
-
-| Rung | Route | Winner | Marrick House (position) | Margin |
-|---|---|---|---|---|
-| 0 | persistence curve on months since starting | Cobbet Street 82.7 | 45.8 (seventh) | 1.10x over Fennbridge 75.0 |
-| 1 | last year's same window | Cobbet Street 147.1 | 94.0 (third) | 1.11x over Fennbridge 132.0 |
-| 2 | trailing twelve months of stops | Cobbet Street 77.1 | 49.0 (third) | 1.03x over Fennbridge 75.1 |
-| 3 (decisive) | each patient to their own re-authorisation | Marrick House 170.3 | 170.3 (first) | 1.32x over Cobbet Street 128.5 |
-
-- **What is graded on the main side:** the placement (Marrick House), the runner-up (Cobbet Street) and each
-  practice's population (Marrick House 1,648; 8,648 in all), with the 12 per cent share and Marrick House's 1,232
-  patients on six 56-day issues authorised in February or March 2026 as the critical components. The expected
-  numbers appear in the golden workbook and chart, rounded as the brief asks, and are not asked: the stage 4 judge's
-  own structural model put Marrick House at 153 to 160, so the figure is not forced to one bin, while the placement
-  and the runner-up held under every variant it ran.
-- **Golden ranking:** Marrick House 170.3, Cobbet Street 128.5, Fennbridge 95.4, Wyndhollow 71.5, Thistlecombe
-  56.3, Larkspur Road 51.9, Pellow Green 44.6. The full ranking is the same under every member of the family below.
-- **The record's rates:** 1,632 of 13,574 statin repeats that ran out from January 2024 to 3 July 2026 were not
-  re-authorised within 60 days (12.0 per cent; every practice and window 11.8 to 12.2, `checks.py` C12); stops
-  between reviews 0.93 per cent per 28 days of supply in a new start's first six months and 0.20 after; the
-  record's mean request interval 3.0 days after supply runs out.
-- **Closure, the estimator family on the cut pack** (`family.py`, Marrick House): golden 170.3; rate by practice
-  170.3; rate over the last 14 months 170.4, by practice 168.5; re-authorised within 90 days 170.4; stops by
-  practice 169.9, flat 169.8; paced at the issue length 171.8, at the median 171.2; a review already passed read at
-  the rate rather than lapsed 168.6; stops defined at a 90-day gap 170.5. Spread 3.3 against the 4.0 the rule
-  allows; every form prints 170, the tightest 3.2 from an edge. Sensitivities outside the family, each still or
-  never a reading: a 60-day gap for a stop 173.1 (prints 170); the stops between reviews left out 157.4 (160), ruled
-  out by the brief's "for whatever reason" (SF23); a repeat left with issues unused counted as a stop even when the
-  patient carried on under another statin repeat 216.0, a mismeasurement that books Fennbridge's switch, hospital
-  changes and moves as stops. A review already passed with no new repeat is read as lapsed because the record shows
-  its outcome; reading it at the rate keeps 170.
-- **Separation:** the call's weakest member (168.5) clears the runner-up's strongest (137.2, paced at the issue
-  length) by 1.23x; Cobbet Street is second under every member, its weakest (103.4) above Fennbridge's strongest
-  (101.6).
-- **Dominance:** Marrick House's edge on the decisive axis (170.3 run to re-authorisation against 45.8 on the
-  persistence curve, 124.5) is 3.4 times Cobbet Street's advantage on the carried axis (82.7 against 45.8, 36.9).
-- **The bin test, in bins of 10:** (a) the decisive step's worth 12.5 bins (45.8 to 170.3); (b) the family's
-  spread 0.33 bins; (c) the pooled share's 95 per cent interval, 12.0 plus or minus 0.55 points, carried to
-  Marrick House 163.3 to 177.3, plus or minus 0.7 bins. (a) exceeds (b) plus the whole of (c), 1.7 bins, about
-  sevenfold; (c) is the figure's honest uncertainty, not a fork, because every grouping of the share agrees (C12).
-- **Grid:** the decisive step moves only Marrick House's figure by its own size; on every rung below it Marrick
-  House sits third to seventh, never first, and Cobbet Street wins rungs 0 to 2.
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | registered with the practice on 30 November 2026 and issued a statin by it from 1 September to 30 November 2026, no later starter | filed in the brief; C1 on its edges (SF1, SF2, SF9) |
-| 2 Unit of account | patients, each once | the brief names patients; a mover counts once (SF10) |
-| 3 Attribution window | the outcome window 1 March to 30 June 2027; the population window | filed; C1 on the end days (SF9) |
-| 4 As-of dating | the searches' cover to the end of 30 November 2026 | filed in the brief's timetable; no issue after it (SF6) |
-| 5 Version basis | authorisations as they stand at the searches | C1: no statin repeat carries a dose edit (S1), so current and historical dose text agree |
-| 6 Denominator | the population is filed; the record's share is over statin repeats whose issues were all issued | C1 across groupings (C12) |
-| 7 Weighting | the share pooled or by practice | C1: 170.3 either way (family) |
-| 8 Window length | the share over the whole record or its last 14 months | C1: 170.4 and 168.5, both 170 |
-| 9 Boundary inclusivity | "from ... to" inclusive; registration covering 30 November | C1 (SF1, SF9) |
-| 10 Rounding path | once, to the nearest 10, on each practice's expected number | filed in the brief; 4.7 from the edge (C5) |
-| 11 Tie-break | none needed | margin 1.32x (C8) |
-| 12 Maturity and censoring | repeats whose run-out is too recent to show a re-authorisation are left out of the share; a review already passed with no new repeat is lapsed | C1: the share is the same with 90 days of follow-up (170.4); the lapsed reading and the at-the-rate reading both print 170 |
-| 13 Order of operations | the stay share applied after the run | commutes, one constant factor |
-| 14 Row order | issues sorted by date | C1, order-free |
-| 15 Duplicate resolution | no duplicate statin rows; twins and re-sent items sit on ACE inhibitor, ARB and DOAC rows only | C1 (S2) |
-| 16 Identity normalisation | one network pseudonym across practices and systems; product strings through the crosswalk | the systems' own keys and the network's crosswalk, every product mapped |
-| 17 Netting against gross | nothing offsets | `same call` |
-| 18 Dimensional units | days per issue from the quantity and the dose text; every statin dose text is one a day | C1 (L1 check) |
-| 19 Code and status semantics | Status and blank end dates are not read; issues made are counted against authorised issues | the register's own columns; same call |
-| 20 Integerisation | expected numbers summed, rounded once | C1 by construction |
-| 21 Clause scope | "still registered with the same practice on 30 June 2027" | filed; ignoring leavers keeps 170 (SF5) |
-| 22 Forward window contents | the reviews the current authorisations reach before and inside the window, each patient's own chance on what the record shows at the searches | the brief files the figure as each patient's own chance added up (SF26); the authorisations themselves are the shipped driver for the uncovered span: each repeat's remaining issues |
-
-## Literal reader
-
-Executed word for word, the brief selects 8,648 patients (Marrick House 1,648) and asks for an expected number
-with no statin issued from 1 March to 30 June 2027; every reading the text leaves open (SF1 to SF13) selects the
-same patients or prints the same figure, and the brief's own sentences rule out the rest. The method is open only
-where the data separate the candidates: the persistence curve files Cobbet Street, the run to re-authorisation
-files Marrick House, and the eleven competent forms of the latter all print 170 for Marrick House with the same full
-ranking. The return measures read literally (SF14 to SF22) give the golden percentages; the specification's
-sentences rule out every alternative that moves a figure. The brief files the figure as each patient's own chance on what that patient's record shows at the searches, added up by practice, so a practice's share from an earlier year carried to its patients (the portal's empirical route, Cobbet Street first) is not the figure; it names no part of the record and no method, and the persistence curve on months since starting, a chance read from each patient's own record, still files Cobbet Street. R1 read literally takes each issue's dose from the directions in force when it was issued, which the change log records change by change for every repeat it changed; R2's infarction is the diagnosis, whatever code the hospital chose.
-
-## Oracles
-
-None. No control ties only under the golden and no file ranks the practices on the brief's figure. The QOF
-achievement file and the dispensed-items file are declared distractors: neither is read by the solution and both
-tie under every reading.
-
-## Ask sheet
-
-**Main call's declared row population:** the statin issues in both systems' extracts, the statin repeat
-authorisations, the register and the brief. Device and hazard rows in it: 0, asserted: no dose edit sits on a
-statin repeat (S1), no cancelled item is a statin (S2), the asks' medicines are no statin (S3), and the call reads
-no change log, no clinical event and no cancellation (S4). The asks read ACE inhibitor, ARB and ticagrelor rows in
-2024 and 2025, rows the call never reads, and neither is keyed to the call or its construction.
-
-**Ask R1. Each practice's ACE inhibitor or angiotensin II receptor blocker adherence percentage for 2025, one
-decimal** (7 figures).
-- H18 home: the network's own 2025 return to the integrated care board, a measure every practice carries that the
-  call does not turn on.
-- The unit, filed: the specification's R1 (registered throughout 2025, issued in each quarter, days covered at
-  the dose in the directions on each prescription, supply carried forward within the drug, cancelled items not
-  issued, 80 per cent of 365 days).
-- Primary device 1 (D2, a label stored before a silent switch): system B's search reads its current repeats as they
-  were authorised, with a dose changed in place since only in the change log; an ended repeat is archived as it
-  stood when it ended. 129 current system B repeats carry a changed dose. The careful path walks the log back from
-  the listed directions, taken as they stand, and files every system B practice a patient off (Marrick House 896
-  against 897, Cobbet Street 506 against 507, Wyndhollow 698 against 697). What finds it: on a changed current
-  repeat the listing equals the log's first old value, never its last new one, and its quantity per issue
-  disagrees with the issues made since. Work left: rebuild each changed repeat's directions from the log's own
-  chain. Fair: the rebuilt dose is the simulator's own on every issue but three copies, and R1 is the same either
-  way (`checks.py` D9).
-- Primary device 2 (D7, a field overwritten later): system A's audit export files every change against the drug
-  line's current repeat, so a change made on a repeat later re-authorised names the successor and is dated before
-  that repeat existed (2,055 rows, 663 of them dose changes). The careful path matches each change to the repeat
-  its row names and files every system A practice 4.6 to 6.4 points low (D4). What finds it: a change dated before
-  the authorised date of the repeat it names. Work left: attach each change to the patient's repeat of that
-  product in force on its day (exactly one, `verify.py` V14), then rebuild the dose.
-- Primary device 3 (D3, units written per row): about 30 per cent of ACE inhibitor and ARB repeats (7,932 of
-  27,343) carry the dose in milligrams, as prescribers working from hospital letters write it; on 1,270 the dose is
-  twice the product's strength, two a day, and on the rest it equals the strength (the benign twin). Reading
-  tablets a day from the words misses every practice by 16 patients or more (D6). What finds it: a dose in
-  milligrams beside the product's strength in the lookup. Work left: units a day as the dose over the strength.
-- Hazards: HZ1 out-of-stock items cancelled and re-sent to another pharmacy during the losartan and ramipril
-  shortages; HZ2 duplicate requests both dispensed; HZ3 wording-only dosage edits, notes and an authorising
-  clinician's reassignment in the change log (benign twins of the device), now only after a repeat's last change of
-  dose; HZ4 patients on an ACE inhibitor or ARB alone issued 56 or 84 days at a time.
-- Span: both issue extracts, both repeat lists, the change log, the cancellation report, the register, the product
-  lookup and the specification (9 files, 16 columns on the golden's path).
-- Realism: the two systems' repeat searches read different tables (system A the repeat as it stands, system B the
-  authorisation record with amendments in the audit trail), system A's audit export is keyed by the drug line, and
-  doses in milligrams come from hospital letters; none is placed to be caught.
-
-**Ask R2. Each practice's ticagrelor percentage, whole number** (7 figures).
-- H18 home: the same return's second measure.
-- The unit, filed: the specification's R2 (infarction and start both inside the year to 30 June 2025, counted at
-  the practice registered on the day of the start, issued 90mg on a day later than the first anniversary).
-- Primary device (D5, a category crossed by label): the discharge summaries code the event as the hospital
-  diagnosed it, an infarction (22298006, some under the synonym 'Heart attack'), a STEMI (401303003) or an NSTEMI
-  (401314000), and unstable angina (4557003), which is not an infarction and whose summary often carries the
-  patient's earlier infarction as an 'Old myocardial infarction' history code (1755008) dated the day it was coded.
-  In the return's year: 42, 25 and 25 infarction entries (13 under 'Heart attack'), 7 unstable angina, 7 old
-  infarctions. The careful path reads the infarction as the one concept 22298006 (every practice missed: 33, 50,
-  67, 71, 88, 50, 40) or as any term naming a myocardial infarction (every practice missed: 90, 100, 100, 72, 81,
-  55, 50), and taking every start misses too (D8). What finds it: the concepts the events search lists. Work left:
-  the infarction family, unstable angina and an old infarction out. Each practice's mix is aimed so that no reading
-  short of the diagnosis lands its percentage.
-- Kept as a hazard: the start from the discharge summary's coded entry, not the practice's first issue (both
-  portal responses executed it; a work order now, moving the network 30 points).
-- Hazards: HZ5 ticagrelor 60mg continued after twelve months; HZ6 patients who moved practice after their start;
-  HZ7 one start whose infarction falls before the window.
-- Span: both issue extracts, the clinical events search, the register, the product lookup and the specification
-  (6 files, 10 columns on the golden's path).
-- Realism: discharge summaries arrive with the hospital's coded diagnosis and past history; practices authorise
-  thirteen 28-day issues from the first GP issue (seven 56-day issues at Wyndhollow) without netting the hospital's
-  supply. None is placed to be caught.
-
-**Hazard table** (network figures, the one handling changed, `ceiling.py`)
-
-| Hazard | Root cause | Moves | Delta |
-|---|---|---|---|
-| R1, the repeat lists' directions, no log | doses changed in place | every R1 figure | network -6.1 points |
-| R1, log rows matched by the reference they name | system A's audit keyed by the drug line | every system A figure | -3.3 points |
-| R1, walked back from the listed directions | system B lists current repeats as authorised | every system B figure | -0.1 points (a patient each) |
-| R1, milligram doses read as tablets a day | doses written from hospital letters | every R1 figure | -3.0 points |
-| HZ1 cancelled items kept | shortages, items re-sent | every R1 figure a little | +1.5 points |
-| HZ2 a second item within 7 days dropped | duplicate requests dispensed twice | every R1 figure a little | -1.3 points |
-| HZ4 every item read as 28 days | own issue lengths, Wyndhollow's 56-day issues | every R1 figure | -17.6 points |
-| R2, the infarction as the one concept 22298006 | the hospitals' coded diagnoses | every R2 figure | -11.0 points |
-| R2, the infarction as any term naming one | unstable angina with an old infarction | every R2 figure | +1.0 points |
-| R2, the first GP issue as the start | the hospital's supply before the first GP issue | every R2 figure | -30.0 points |
-| HZ5 ticagrelor 60mg counted | 60mg continuation | R2 figures | +5.0 points |
-
-**Referee.** None: the dispensed-items file aggregates by practice, month and chemical and ties under every
-handling of R1; no file ties only under the golden.
-
-| Ask figures | Cracker's path (`ceiling.py`, measured on pack a886d6d019c93f4b) | Cracker's value | Verdict |
-|---|---|---|---|
-| R1 percent, Thistlecombe Surgery | walk back by repeat reference, every dose read right | 76.2 against 81.0 | miss |
-| R1 percent, Pellow Green Surgery | walk back by repeat reference, every dose read right | 74.4 against 80.3 | miss |
-| R1 percent, Larkspur Road Practice | walk back by repeat reference, every dose read right | 75.5 against 81.9 | miss |
-| R1 percent, Fennbridge Medical Centre | walk back by repeat reference, every dose read right | 71.7 against 77.8 | miss |
-| R1 percent, Marrick House Surgery | walk back by repeat reference, every dose read right | 79.8 against 79.9 | miss |
-| R1 percent, Cobbet Street Surgery | walk back by repeat reference, every dose read right | 75.6 against 75.8 | miss |
-| R1 percent, Wyndhollow Health Centre | walk back by repeat reference, every dose read right | 93.1 against 92.9 | miss |
-| R2 percent, Thistlecombe Surgery | discharge-coded start, infarction by term, registered practice, any practice's issues | 90.0 against 80.0 | miss |
-| R2 percent, Pellow Green Surgery | discharge-coded start, infarction by term, registered practice, any practice's issues | 100.0 against 80.0 | miss |
-| R2 percent, Larkspur Road Practice | discharge-coded start, infarction by term, registered practice, any practice's issues | 100.0 against 82.0 | miss |
-| R2 percent, Fennbridge Medical Centre | discharge-coded start, infarction by term, registered practice, any practice's issues | 72.0 against 74.0 | miss |
-| R2 percent, Marrick House Surgery | discharge-coded start, infarction by term, registered practice, any practice's issues | 81.0 against 83.0 | miss |
-| R2 percent, Cobbet Street Surgery | discharge-coded start, infarction by term, registered practice, any practice's issues | 55.0 against 64.0 | miss |
-| R2 percent, Wyndhollow Health Centre | discharge-coded start, infarction by term, registered practice, any practice's issues | 50.0 against 60.0 | miss |
-
-- **Measured by:** `generator/ceiling.py` on the cut pack (`ceiling.json`).
-- **Pair ceiling:** 44.2, the worst uniform reading a careful response could take (the patient's changes pooled by
-  product, which keeps the four system A figures); the cracker's own route keeps 0 of 14 asked figures and gives
-  28.5 (`C = 38 + 7 + 55 x 0`, `S = 5 + 7 + 55 x 0`). The main side's seven population counts are reached on the
-  default path too, so if they carry about 8 of the 38 points the response off the call keeps 13 and the worst
-  reading's pair is 48.2. Every variant measured:
-  - cracker: walk back by repeat reference, infarction by term: keeps 0 of 14, pair 28.5
-  - walk forward through the log by repeat reference: keeps 3 of 14, pair 40.3 (R1 percent, Marrick House Surgery; R1 percent, Cobbet Street Surgery; R1 percent, Wyndhollow Health Centre)
-  - walk back, the patient's changes pooled by product: keeps 4 of 14, pair 44.2 (R1 percent, Thistlecombe Surgery; R1 percent, Pellow Green Surgery; R1 percent, Larkspur Road Practice; R1 percent, Fennbridge Medical Centre)
-  - walk back by reference, infarction as the one concept: keeps 0 of 14, pair 28.5
-  - the listed directions, no log: keeps 0 of 14, pair 28.5
-  - doses read as tablets a day, walk back: keeps 0 of 14, pair 28.5
-- **Mirror leakage:** 28.6 per cent of ask weight under the worst reading (4 of 14), 0.0 under the cracker's own
-  route: the asks read no row the call reads, so a response off the call takes the cracker's ask path.
-
-## Leak sweep rulings
-
-`leak.py --asof 2026-12-03` on the final pack returns REVIEW on four lines and no LEAK; each is ruled here, the
-stump-vocabulary line in this thread and never handed to the reader. (An earlier line, the brief sharing words
-with the committed call, fell away when block 1 was rewritten around the forced answers; it was ruled harmless:
-the shared words were the decision's own furniture and the brief names no practice.)
-
-- `icb_cvd_repeat_return_2025_spec.pdf` carries 5 of 25 stump-paragraph terms (patient, issues, months, register,
-  carried): harmless. They are the return's ordinary vocabulary for its ACE inhibitor, ARB and ticagrelor measures
-  ("supply carried into 2025"); nothing in the specification touches statins, reviews or re-authorisation.
-- `statin_continuity_sessions_brief.pdf` carries 3 of 25 stump-paragraph terms (patient, record, register), "record"
-  new with the determinism repair's sentence ("each patient's own chance, on what that patient's record shows at
-  the searches"): harmless. The sentence files what the expected number is conditioned on and names no part of the
-  record, no repeat, no review and no method; the persistence curve read per patient satisfies it and still files
-  Cobbet Street, and "register" is the brief's own "still registered".
-- `pcn_practice_profiles_2026.xlsx` names the practices beside numbers: harmless. List sizes, staffing, clinical
-  systems and current pharmacist sessions; nothing ranks the practices on the brief's figure.
-- `qof_cvd_achievement_2025-26.csv` names the practices beside numbers: harmless. A declared distractor of
-  published QOF achievement on four CVD indicators; none measures stopping a statin.
-
-## Pre-ship check
-
-Reship of 2026-10-28 after the portal's two returns (the determinism block's fork on the forecast, the rubric at
-72 with the call held), on target.zip ab3f7d9a (seed 46906).
-
-- Free gates: generator checks 87 of 87 (the earlier 70 plus SF26 to SF30, C14, C15, D4 to D9, S5 and S6); verify.py
-  0 failed, recomputing all 14 return figures by its own code (V5, V6), the share by history (V12), the brief's
-  sentence (V13), every dose change's one repeat in force (V14) and the corridor over the forecast's open choices (V15); two builds byte-identical under different hash
-  seeds (pack, goldens, write-up, zip and the three generator JSON files); figures_check 36 of 36; precut 53 PASS,
-  voice-check PASS (the prompt unchanged); leak.py REVIEW on four lines, no LEAK, each ruled above.
-- Ceiling (`ceiling.py` on pack a886d6d019c93f4b): the cracker keeps 0 of 14 asked figures (pair 28.5); the worst
-  uniform reading keeps 4 of 14 (pair 44.2, 48.2 with the populations both responses reach); mirror leakage 28.6
-  per cent under that reading.
-- Separation: the issue extracts, the register and the lookup byte-identical to the shipped pack (S5); both repeat
-  lists keep every statin row as shipped and no column (S6); the call, the runner-up, every population, the 12 per
-  cent share and the 1,232 unchanged.
-- Freeze (`freeze.py`, snapshot taken before the first edit): `check task464 --mode determinism` PASS after the
-  determinism repair and before any ask edit; after the rubric repair `--mode rubric --allow
-  ask_b.P81283.started,ask_b.P81719.started` PASS. The two allowed keys are R2 denominators (Larkspur Road's and
-  Cobbet Street's 12 starts, now 11) that the snapshot froze only because their value equals the 12 per cent share
-  in block 2; the share itself is unchanged. Without the allowance rubric mode fails on those two keys alone, and
-  determinism mode after the rubric repair fails on the 20 R2 ask figures the rubric repair moved, as it must.
-- Guard: validate 306 cards, 0 invalid; heart WARN (no BLOCK, nearest driver 0.09, task468 v2); people WARN on a surname shared
-  with an older build, the names drawn by `guard.py names`.
-- Leak reader (read 6, isolated, on ab3f7d9a, run because the brief's wording changed): no decisive-step sentence
-  (it quoted the selection rule, the estimand the prompt points at), no ranking file, no answer figure; question 5's
-  literal reading of the new sentence is the golden's population and quantity with the method left open; question
-  6 analytical. Its question 3 (the product crosswalk) and its realism notes (PDF dates its tool showed in US
-  Eastern time, raw +00'00'; one network pseudonym across systems) ruled harmless in `leak_check_report.md`.
-- Determinism judge, pass 9 (the one re-judge /fix-determinism licenses, on ab3f7d9a; derive-before-reading kept
-  except for one cross-check, disclosed): NOT_DETERMINISTIC with a SEND_BACK label, Gate G forecasting and
-  analytical_non_defect, Gate H domain, layers and decisive step pass; Ask 1's seven populations reproduced exactly.
-  Its one finding is Gate C/E on the forecast's open choices (the share's 60-day window, the 150-day stop gap, the
-  mean request interval, the seven-month stay), flagged as "a named risk, not a demonstrated fork": it computed no
-  second construction. Read against the gate table (G and H pass), this is a repair, not a re-root. Closed without
-  filing a method: C15 sweeps 1,600 settings of exactly those choices (share window 30 to 120 days pooled or by
-  practice, stop gap 60 to 180 days split or flat, pacing from the issue length to the mean plus a week, leavers
-  counted out or not, a passed review lapsed or at the share) and Marrick House is first and Cobbet Street second in
-  every one, the tightest margins 1.249x and 1.291x; `verify.py` V15 repeats it by its own code over 108 settings.
-  Its count of 1,243 against critical component 2's 1,232 is a reading of "on a repeat" (patients who once held
-  such a repeat), closed by the write-up's wording, the figure unchanged (SF30). Filing the parameters in the brief,
-  as the thread suggested, would file the HOW and make the decisive step rule application, so it was not done; the
-  pack is the judged pack byte for byte, and no third judge was run, the finding being the same fork closed
-  further.
-- The 10/10 rules re-read on the rebuilt pack: the deciding quantity is still the persistence forecast run on the
-  repeat's authorisation clock; the brief's new sentence files what the expected number is conditioned on and no
-  method; the mess still moves no call; every reflex (the persistence curve read per patient, last year's window,
-  the trailing year) files Cobbet Street. The asks' devices are presentation of ask-only rows: how each system
-  lists a repeat, how system A's audit is keyed, doses written in milligrams, and the hospitals' coded diagnosis.
+- **Lesson:** a model learns that a radial line's technical losses live in each section's own net flow, so the
+  source meter's current overstates the far sections and a construction from the loads alone misses an injection
+  beyond them, and that an embedded generator large against the load beyond it raises the losses on the sections
+  between it and the load it supplies; no build on file prices a loss on a network's flows or two-way flow through
+  a line.
 
 ## Tried and rejected
 
@@ -1105,6 +789,25 @@ Reship of 2026-10-28 after the portal's two returns (the determinism block's for
   stump lived in the fork. A decisive step that is a forecast's estimator, left open in the brief and forced only by
   the analyst noticing the clock, cannot pass a literal judge; a redraw needs a decisive step the filed estimand
   forces once noticed (a reconstruction over rows the record supplies), not a choice among estimators.
+
+- **Architecture 10 draw screens, 2026-10-28, each set aside before a harness except the last.** A terminus
+  standby unit on a rail network, priced by the lateness it removes along each late unit's diagram: the standby's
+  deployment rule must be filed for the replay to be determinate and replaying a filed rule over the record is
+  rule application, while lengthening a turnaround instead retimes the timetable and leaves the counterfactual open
+  (task469's note had already set aside delay propagation through aircraft rotations on the WHAT screen); a second
+  fire appliance at a station, priced by the incidents its availability would have covered: the counterfactual
+  arrival mixes modelled and recorded travel times, two defensible readings; an offshore wind service vessel's
+  recovered downtime: a replay of filed sea-state and daylight limits on the met-ocean record, rule application with
+  a reflex construction; a per-event reinsurance layer against an aggregate cover on a clustered windstorm year
+  table: the per-year net computation is the reflex once the year-event table ships; pressure management limited by
+  a district's critical point: task162's ground; managed EV charging's rebound peak: a filed service rule replayed;
+  a heat pump fleet's winter demand through the COP curve: a model's parameters; DC risk pooling on correlated
+  demand: the standard deviation of the summed series is one line; verification bias in a screening test, immortal
+  time in a programme cohort and non-concurrent controls in a platform trial: each settles the estimand's
+  comparison or population, so the WHAT screen kills it; contraction on judge leniency: task141's first
+  architecture, landed by both portal responses. The I2R loss a reconductoring project removes on two-way flows
+  survived the slot screens on the mechanism's and the setting's words and the clean-truth prototype (four rungs,
+  four feeders, the golden reordering the whole slate) and is drawn as architecture 10.
 
 ## Portal result and the diagnosis, 2026-10-27
 

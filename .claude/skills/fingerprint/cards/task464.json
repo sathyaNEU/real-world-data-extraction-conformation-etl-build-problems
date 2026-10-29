@@ -1,98 +1,94 @@
 {
   "task": "task464",
-  "architecture": 9,
+  "architecture": 10,
   "drawn": "2026-10-28",
-  "slot_note": "wave 4 re-root, architecture 9: architecture 8 (coded withdrawal reasons corrected by a moderation sample) was sent back at stage 4 on Gate H3 as a surface-read flip, and education is spent for this number, so the draw moves to pharmacology-pharmacoepidemiology-safety under the same objective: a forward persistence forecast whose decisive step is the clock the hazard runs on, with every recorded figure in the pack correct",
-  "domain": "pharmacology-pharmacoepidemiology-safety",
-  "client_domain": "pharmacology-pharmacoepidemiology-safety",
-  "subdomain": "medication-adherence-persistence",
-  "niche": "a primary care network placing its clinical pharmacist's statin continuity sessions for January to June 2027 at one of seven general practices, read from the practices' repeat statin issue records, their repeat authorisations and the patient register",
-  "objective": "descriptive-distribution",
-  "shape": "01",
+  "slot_note": "re-root, architecture 10: architecture 9 (pharmacology, a statin persistence forecast) was spent at the portal's second determinism return because its decisive step was a forecast's estimator; the pharmacology adherence ground is spent for this number, so the draw moves to energy-systems-utilities / asset-condition-maintenance under Opportunity Sizing & Decision Support, with a records-fixed graded quantity (technical losses removed on recorded half-hourly flows) whose construction physics forces, no estimator and no forecast.",
+  "domain": "energy-systems-utilities",
+  "client_domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "niche": "a distribution network operator's 2027/28 losses programme choosing which of eight 11 kV feeders out of one primary substation gets its old-conductor sections replaced, each project sized as the I2R technical losses the new conductor would have removed on the 2025/26 half-hourly flows, when a solar farm at the far end of one feeder exports back through its old overhead sections to an industrial estate near the primary",
+  "objective": "opportunity-sizing-decision",
+  "shape": "07",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "Marrick House Surgery hosts the 2027 statin continuity sessions, Cobbet Street Surgery next in line (expected patients with no statin issued from March to June 2027: 170 against 129, shown and not graded)",
-  "answer_source": "submission.md block 1 and golden/statin_sessions_2027.xlsx, from generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
     "population"
   ],
   "pattern": [
-    "A"
+    "none"
   ],
   "generators": [
-    "G7",
-    "G13"
+    "G3",
+    "G2"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "time_semantics",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two clinical systems' issue extracts, rebuilds each patient's statin supply with carryover, fits each practice's persistence on time since the patient started and carries every patient now on a statin forward on that curve sends the pharmacist to Cobbet Street at about 83, whose six-issue repeats give it the steepest curve; last year's same window and the trailing year's stops also file Cobbet Street. The golden is Marrick House at 170, whose patients' repeats were re-authorised together in its spring 2026 move to 56-day issues and all run out before March 2027.",
-  "domain_test": "The deciding quantity is a persistence forecast, the medication-adherence-persistence task type's own estimate worked on issue records with carried-forward supply and a gap rule, and what decides it is the repeat authorisation: a prescriber authorises a fixed number of issues, the request after the last one waits for a clinician to re-authorise the repeat, and that is where patients who stop, stop. Swap in another field's nouns and the authorised issue count, the clinician's re-authorisation and a practice moving its repeats to 56-day issues have no counterpart, so the task no longer reads the same",
+  "analyst_test": "A strong analyst who conforms the clocks and units, reads every replaced section's resistance from the catalogue and carries each feeder's head current through its project's sections picks Oxenford Lane, and even rebuilding each section's flow from the secondary substations' monitored loads beyond it picks Wennock Town, because only the net of every load and generator beyond each section shows the Hob Moor solar farm's export running back through Kestle's old overhead sections to the estate by the primary.",
+  "domain_test": "The deciding quantity is the I2R technical loss a reconductoring project removes, which distribution network engineers estimate from the current each replaced section carries on the network's own metering, and what decides it is how power flows on a radial feeder with embedded generation: each section carries the net of every load and generator beyond it, so a far-end solar farm sends its export back through old sections that the feeder-head meter sees only as a quiet daytime reading; with a pipeline's or a road's nouns there is no square-of-current loss, no conductor resistance per kilometre and no export reversing part of a line while the source meter reads the net.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:persistence on the repeat-authorisation clock",
+  "layer2_pattern": "own:section net flows with embedded generation",
   "layer1": [
-    "two clinical systems' exports in different layouts (UK against ISO dates, CSV against JSON lines, drug and strength written two ways and joined through the network's crosswalk, quantity with and without its unit)",
-    "acute statin issues beside the repeats, and dose text written freely ('ONE at night', '1 nocte')",
-    "patients who moved between the network's practices, carried under one network-wide pseudonym",
-    "deregistrations recorded with a reason and a date that can follow the last issue by weeks; blank end dates on repeats that stopped",
-    "out-of-stock items cancelled and re-sent, and duplicate requests dispensed twice, on the ACE inhibitor and ARB repeats"
+    "the primary substation's SCADA in UK local time with the March and October clock changes (a 23-hour and a 25-hour day), the secondary substation monitors in UTC and the generators' export meters in 48 settlement periods a local day (46 and 50 on clock-change days)",
+    "flows in amps per phase at the primary against kW and kVAr at the monitors and kWh per settlement period at the export meters",
+    "conductor sizes written imperially for the old cable and line (0.1 sq in, 0.04 sq in) and metrically for the new, read through the conductor catalogue PDF's table",
+    "the network model's node identifiers against the substation register's site numbers and names, joined through the register's node column with spellings that differ",
+    "a monitoring vendor change part-way through the year (kVA and power factor before, kW and kVAr after) on some substations",
+    "a substation monitor replaced with a gap of a few days on a spur no project section carries",
+    "rooftop solar netted inside residential substations' monitored flow, negative on summer middays"
   ],
-  "stakeholder_role": "the network's lead clinical pharmacist, who puts the placement of the statin continuity sessions to the network board",
-  "role_family": "programme_officer",
-  "scoring_unit": "per covered member",
+  "stakeholder_role": "the losses strategy lead in the operator's asset management team, who brings the 2027/28 losses programme to the investment review panel",
+  "role_family": "other",
+  "scoring_unit": "other",
   "spine": {
-    "file": "repeat_issues_system_a_2024-01_to_2026-11.csv and repeat_issues_system_b_2024-01_to_2026-11.jsonl",
-    "rows": 502516,
-    "entity": "one prescription issue of one drug to one patient",
-    "grain": "issue",
+    "file": "lv_monitoring_2025-26.parquet",
+    "rows": 0,
+    "entity": "one secondary substation's metered flow in one half-hour",
+    "grain": "substation x half-hour",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
   "forcing_event": "vote_or_meeting",
-  "org_family": "hospital_or_health_provider",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "England (an unnamed integrated care board area)",
+    "geography": "England (the West Midlands, an invented licence area)",
     "currency": "GBP",
-    "org_type": "a primary care network of seven general practices",
+    "org_type": "a distribution network operator",
     "invented_names": [
-      "Hensey Vale Primary Care Network",
-      "Marrick House Surgery",
-      "Cobbet Street Surgery",
-      "Fennbridge Medical Centre",
-      "Thistlecombe Surgery",
-      "Larkspur Road Practice",
-      "Wyndhollow Health Centre",
-      "Pellow Green Surgery"
+      "Marchway Power Networks",
+      "Wennock Cross primary",
+      "Hob Moor Solar Park",
+      "Kestle Park Industrial Estate",
+      "Crane Hill wind turbine",
+      "Ashlade Community Hospital"
     ],
     "people": [
-      "Dorothy Mitchell",
-      "Hollie Kirk",
-      "Stuart Newman"
+      "Gail Dobson",
+      "Ricky Fisher",
+      "Tracy Parkes"
     ]
   },
   "deliverables": [
-    "statin_sessions_2027.xlsx",
-    "cvd_repeat_returns_2025.csv"
+    "losses_programme_2027.xlsx",
+    "losses_saving_2027.png",
+    "iis_feeders_2025-26.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is how many members of each group will have stopped by a date when a member keeps going only through a renewal reached after a fixed run of uses and nearly all stopping happens at a renewal; a curve on time since each member began, or any trailing rate, spreads those losses evenly and ranks the groups by their history, while running each member forward to its own next renewal shows that one group's members were all restarted together a year earlier, so their renewals fall inside the window.",
-  "driver_concrete": "Statin repeats in the seven practices run on authorisations of a fixed number of issues, and nearly every patient who stops does so when the last issue is used and the repeat waits for a clinician to re-authorise it; Marrick House moved most of its stable repeat patients to 56-day issues in February and March 2026, re-authorising each repeat as six issues, so those repeats run out together in January and February 2027 and Marrick House has the most patients with no statin from March to June 2027 (170), while the persistence curve on time since starting, last year's same window and the trailing year's stops all put Cobbet Street first.",
-  "stump": "A competent analyst fits each practice's persistence curve on months since starting the statin, carries each patient now on a statin forward on it and sends the pharmacist to Cobbet Street at about 83, whose six-issue repeats give it the steepest curve, with Marrick House last at 46; the losses sit at the end of each repeat authorisation, and Marrick House's spring 2026 move to 56-day issues re-authorised most of its patients' repeats at once, so they run out together before March 2027 and Marrick House has about 170 against Cobbet Street's 129.",
+  "question_form": "how-much",
+  "driver": "The decisive quantity is what replacing part of a branching line removes from a loss that grows with the square of the flow through that part, when flow is metered only at the line's source and at each draw-off point and a large injection near the line's end sends flow back through the replaced part toward draw-offs near the source; the source meter nets the injection against those draw-offs and the draw-off meters never see it, so the flow through each part has to be rebuilt period by period as the net of every draw-off and injection beyond it, and the line whose source reading looks quietest carries the largest flows where it is replaced.",
+  "driver_concrete": "Each project's saving is the I2R loss its new conductor removes on the sections it replaces over 2025/26's half-hours; the Hob Moor solar farm exports up to 5 MW back along Kestle feeder's old 0.1 sq in copper overhead sections to the Kestle Park estate near Wennock Cross primary, so the feeder-head SCADA shows only the estate's daytime load net of the export and the substation monitors show only their own loads, and rebuilt half-hour by half-hour as the net of every substation's flow and every generator's export beyond each section, Kestle's project removes the most losses.",
+  "stump": "A competent analyst carries each feeder's head current through the sections its project replaces and files Oxenford Lane, whose long old overhead line is charged with a full feeder current it never carries; rebuilt from the substations' loads alone the flows pick Wennock Town; only the net flow with the solar farm's export puts Kestle first.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task33": "task33 projects a measured elevation's forward yield and truncates it at a filed intervention, recovered by back-testing closed actions against an acceptance bar; nothing here is an elevation or an intervention and no closed action is back-tested: the forward count is each patient run to the end of a recorded repeat authorisation.",
-    "task41": "task41 recovers an unstated eligibility rule from a corpus of determinations (its lineage aggregates a per-person effect under displacement); no rule is recovered and nothing is displaced here: the forecast runs each patient to the end of a recorded authorisation, where stopping happens.",
-    "task55": "task55 finds which date each unit's expiry runs from, an unstated anchoring convention pinned by identity across lots; here the run length is recorded on every authorisation and the step is which clock the stopping hazard runs on, not which date a recorded term counts from.",
-    "task89": "task89 rolls a stock forward against a dated inflow schedule to a first passage through zero; no stock is rolled here: the quantity is a count of patients failing a re-authorisation reached at the end of each patient's own recorded run of issues.",
-    "task114": "task114 counts demand that arises only when two parties share a site on a day; no co-presence or site rule is involved here: the count is of patients whose repeat runs out inside the window and is not re-authorised.",
-    "task230": "task230 forecasts a classification bias in output still to be processed under a looser rule (its lineage a detection rate falling with target rarity); nothing is classified or detected here: the forecast is of patients failing a re-authorisation, timed by each patient's recorded run of issues."
+    "task101": "task101 cuts a threshold from a published distribution less the decision's own earlier payments, a component taken off a total; here nothing is taken off a total: each section's flow is rebuilt as the net of every metered load and export beyond it on the network's topology, and the loss the project removes is the square of that net, which neither the source meter's total nor any draw-off meter gives.",
+    "task121": "task121's second architecture follows each unit's reference through a second party's report to an identifier on a different entity to find the loss its channel carries; here no unit is re-attributed through an identifier: every flow is metered where it is drawn or injected, the bridge is the line's topology, and the decision turns on the square of the net flow through the replaced sections, which reverses when an injection beyond them exceeds the draw beyond them."
   },
   "lineage": [
     {
@@ -192,9 +188,40 @@
       "architecture": "v8 (Thornmere adult education withdrawal reasons, education x descriptive-distribution)",
       "drawn": "2026-10-28",
       "fate": "spent 2026-10-28 at stage 4: the determinism judge returned DETERMINISTIC with disposition SEND_BACK on Gate H3 (decisive_step planted: correcting the coded shares by the moderation return is the retired surface-read flip, Gate G planted_defect_flip and surface_read_rejection) and the leak reader's question 6 read the same; education-learning-sciences is spent for this number at architectures 2, 4 and 8"
+    },
+    {
+      "architecture": "v9 (pharmacology medication-adherence-persistence, Descriptive & Distribution: a PCN placing statin continuity sessions on the expected number of patients with no statin issued March to June 2027)",
+      "domain": "pharmacology-pharmacoepidemiology-safety",
+      "subdomain": "medication-adherence-persistence",
+      "client_domain": "pharmacology-pharmacoepidemiology-safety",
+      "niche": "a primary care network placing its clinical pharmacist's statin continuity sessions for January to June 2027 at one of seven general practices, read from the practices' repeat statin issue records, their repeat authorisations and the patient register",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "A"
+      ],
+      "generators": [
+        "G7",
+        "G13"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "time_semantics",
+      "layer2_pattern": "own:persistence on the repeat-authorisation clock",
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "hospital_or_health_provider",
+      "driver": "The decisive quantity is how many members of each group will have stopped by a date when a member keeps going only through a renewal reached after a fixed run of uses and nearly all stopping happens at a renewal; a curve on time since each member began, or any trailing rate, spreads those losses evenly and ranks the groups by their history, while running each member forward to its own next renewal shows that one group's members were all restarted together a year earlier, so their renewals fall inside the window.",
+      "driver_concrete": "Statin repeats in the seven practices run on authorisations of a fixed number of issues, and nearly every patient who stops does so when the last issue is used and the repeat waits for a clinician to re-authorise it; Marrick House moved most of its stable repeat patients to 56-day issues in February and March 2026, re-authorising each repeat as six issues, so those repeats run out together in January and February 2027 and Marrick House has the most patients with no statin from March to June 2027 (170), while the persistence curve on time since starting, last year's same window and the trailing year's stops all put Cobbet Street first.",
+      "stump": "A competent analyst fits each practice's persistence curve on months since starting the statin, carries each patient now on a statin forward on it and sends the pharmacist to Cobbet Street at about 83, whose six-issue repeats give it the steepest curve, with Marrick House last at 46; the losses sit at the end of each repeat authorisation, and Marrick House's spring 2026 move to 56-day issues re-authorised most of its patients' repeats at once, so they run out together before March 2027 and Marrick House has about 170 against Cobbet Street's 129.",
+      "fate": "spent 2026-10-28 at the portal's second determinism return on the same fork (Gate C/D, competing_defensible_answer, golden_wrong): the per-patient chance's estimator was unpinned and a joint-outcome model fitted and validated on the 2024 and 2025 cohorts filed Cobbet Street then Fennbridge; the estimator was the decisive step, so filing it was rule application and a filed back-test handed the clock over; the call itself held on the portal (rubric 72 with the call held)."
     }
   ],
-  "notes": "gate_g method_or_model_selection: the decisive step is which clock the stopping hazard runs on (time since starting against the run to the end of the current repeat authorisation), a model choice inside the forecast; forecasting also fits, and its (time, A, forecasting) signature repeats task281's architecture 1 inside the batch",
+  "notes": "gate_g decomposition_attribution and stump_strategy decomposition_attribution: the feeder's metered flow is a correctly reported total that the decision needs split section by section, where the export and the loads overlapping on the same sections decide the split; pattern none with G3 first (record against operation: the feeder-head record is the net of the loads and the export, while each replaced section operates on its own net flow, two-way where the export exceeds the load beyond it) and G2 (the head's feeder grain against the section the project funds). context_artifact register: the network model and the substation and generation registers the operator keeps. role_family other: a losses strategy lead is none of the families. scoring_unit other: MWh of technical losses a year. shape 07: each project's saving in each quarter of the 2025/26 regulatory year is a graded cell, the pick the project with the largest year.",
   "architecture_spent": false,
-  "registered": "2026-10-28T07:10:42Z"
+  "registered": "2026-10-29T01:27:47Z"
 }
