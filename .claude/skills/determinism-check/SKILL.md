@@ -56,6 +56,26 @@ of that centre's traffic. A per-unit fit also absorbs exactly the cross-unit var
 on, which is why no across-unit test touches it. Run the profile before building a pack whose forcing is
 meant to come from the data.
 
+**What the portal's judges sent back, and the closures that held** (the 10-30 record; `stumping` Part 4 carries the
+pin rule). Nine of eighteen portal returns on builds later approved were determinism returns, in two shapes with
+opposite remedies. **(a) A judge reading an inert convention as a fork** (a raising basis in hours against landed
+weight, task275; a report arriving in its components, task162; class- and age-adjusted transport on 60-day bands,
+task141; the season of a catch-up row, task151): closed by asserting in `checks.py` that the convention never moves
+the call, or by one WHAT sentence in the organisation's voice (162's working agreement counts a report once; 151's
+register header files the payment schedule), with every graded figure frozen (`freeze.py` PASS). The judge's own
+suggested pin named the method or the clock every time and was refused every time (169 four rounds, 309's class
+grouping, 162's "a dwelling counts once", 141's review sentence); the one build that took such a pin had both
+responses land the call the next round. **(b) A genuinely open method whose deciding configuration is out of
+sample** (162 architecture 1: both portal judges and then three in-house passes each found a competing model, the
+golden family's own spread 848 to 977 against a 120-item band): no filing short of the HOW closes it, so the build
+re-roots into a world where **the deciding configuration occurs in the record** and the construction is a replay of
+recorded facts (162 architecture 2, approved). **Grade the decision unit or the precision the data carry, never a
+filed grouping**: a nearest-100 figure 33 over its rounding line while judge rebuilds spread about 115 is fixed by
+grading the pods alone and giving the projection as a band (141); 16,365 passing groupings spanning 2.59 to 2.94 are
+fixed by grading whole millions (309); per-area figures are dropped and the total graded to the nearest 50 (175).
+WHAT pins approved (169, 135, 151, 162); pins naming the clock, window, grouping or test the stump rides on landed the
+call (141, 179 v3, 181 v2, 118 v2).
+
 **HOW** may stay open only when something forces it (`references/forcing-the-answer.md` Part 5): the
 design (the data's structure rules out every other method; preferred), a governing standard's general
 method, or a filed selection criterion in general terms that never names the method (a recognisable
@@ -180,6 +200,16 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   **C2 confirm** (a filed criterion shown on closed data to select one candidate, never recovering an
   unfiled rule); **C3 corridor** (the parameter unrecoverable, the answer identical across its range);
   **C4 separate** (every cell mapped to the sentence it violates, nearest wrong cell at least 6 per cent).
+- **An inert convention is closed by showing it inert, never by filing a method or a clock**: an assertion that
+  every licensed reading of the convention prints the same call (275's SF14, 141's SF31 and SF32), or one WHAT
+  sentence at authority (162's SF15, 151's SF23). A closure that would name the thing the decisive step recognises
+  is the fork-is-the-stump case (section 1) and re-roots the build instead.
+- **The deciding configuration must be in the record.** A forecast or model whose deciding configuration is out of
+  sample cannot be forced by any filing short of the HOW; where the golden family's own spread exceeds the graded
+  band, re-root into a world where that configuration is recorded and the construction replays it.
+- **Grade the decision unit or the precision the data carry.** Where an open method's honest family spreads past a
+  graded figure's bin, the figure moves to the unit the decision is made in (the set, the pods, a band, whole
+  millions) rather than the method being filed or the world re-centred.
 - **When the rival route is another correction of the same graded quantity, all four closure moves are
   exhausted and none of them closes it.** Worked on a build whose decisive step corrects a classifier's
   marks with its recall and false-mark rate, and whose open seventh cell is a calibration of the hand code
@@ -427,6 +457,11 @@ The judge's own text: `guidelines/determinism_judge_system_prompt.md`.
   call reproducing exactly, and ask 4 alone failing C and E. Re-rooting that throws away a world, a pack
   and a forced call to repair one sentence. Before spending an architecture, name the gate that failed and
   check it is G or H.
+
+**The reader and the judge disagree on Gate H.** A leak reader's question 6 answer and the judge's Gate H line are
+resolved before the ship, by the measurement of the alternatives (section 1): the main thread recomputes the easy
+routes on the clean truth and files which kind of step decides. A split filed as "an open concern for the author"
+shipped twice and neither build was approved (447, 306).
 
 ## Checklist
 
