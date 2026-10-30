@@ -58,8 +58,9 @@ changes, revisions), a dimension the decision grain can differ from. Check the v
 | Voices | 0-1 | §8.4 |
 | Lookup tables | 3-6 | small, boring, force joins |
 
-**No shipped file describes the data.** A data dictionary, field notes, a schema or column description, a
-readme, an extract manifest, a notes sheet or a "how to read this" tab: any file or sheet whose job is to
+**No shipped file describes the data.** A data dictionary, field notes, a field guide, export or extract notes,
+a schema or column description, a readme, an extract manifest, a notes sheet or a "how to read this" tab: any
+file or sheet whose job is to
 tell the analyst what the data is, what a column means or how the files fit together is a leak, because it
 hands over the structure the analyst is paid to find and sets its definitions beside the very columns the
 decisive step joins. task144's first architecture shipped field notes defining the feed surface a few lines
@@ -298,7 +299,11 @@ concrete, dates reconciling with the data; never a generator's voice or a task s
 
 - **Provenance in `metadata.json`** in the task folder, outside `target/`: per file its source, date,
   licence, what it covers and how it was made, beside the distractors and the portal's keys. Nothing under
-  `target/` describes the pack (§3).
+  `target/` describes the pack (§3). **`metadata.json` travels with the pack, so it names the decision, the
+  deliverables, the distractors and the provenance and never the method, the link or the mechanism**: no
+  title, subdomain or prompt-shape text that narrates the decisive step, no figure from the graded blocks, none
+  of the design note's vocabulary (`leak.py` sweep 13 fails it). A reader holding it learns what the task is
+  about, not what the data is about or how the answer is reached.
 - **Timestamps:** every mtime normalised to one in-fiction export date after the latest record.
 - **Identifiers** structured (blocks, check digits, prefixes), never `id_001`; **scale** varies naturally.
 - **A forced-implausible parameter** is stated in the design note with its arithmetic and mitigation.

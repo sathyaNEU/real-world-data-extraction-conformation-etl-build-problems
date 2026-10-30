@@ -9,7 +9,7 @@ the scratch dir when target/ is absent), and writes <task>/leak_check_report.md.
 LEAK, 1 on REVIEW, 0 on CLEAN. Spawns nothing. The solver's-eye read that only a reader can do is
 the second half of the /leak-check command and is appended to the same report.
 
-Eleven sweeps, each a function below, each tagged LEAK (ship-stopping), REVIEW (a reader decides) or
+Thirteen sweeps, each a function below, each tagged LEAK (ship-stopping), REVIEW (a reader decides) or
 INFO. Sweep 11 is the prompt gate from guide-to-prompt/references/voice-check.py, run on the prompt the
 solver reads. The design of every sweep is the same: the thing it hunts is something the author knows and the
 solver must not be told, so the sweep takes the author's own text (the submission's answers, the
@@ -39,8 +39,9 @@ IMG_EXT = {".png", ".jpg", ".jpeg", ".svg"}
 # field notes, a readme, a manifest, a codebook. task144's first architecture shipped field notes and a manifest, and
 # both portal responses built the decisive step from them.
 DESCRIBE_NAME = re.compile(
-    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|fields?_(guide|notes|list|descriptions?)|"
-    r"\w*_fields|manifest|extract_contents|file_list|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this)(?![a-z])",
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|list|descriptions?)|"
+    r"\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|"
+    r"export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])",
     re.I,
 )
 DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
@@ -482,6 +483,103 @@ def sweep_columns(files, rep):
                 rep.add("8 column names", "REVIEW", f["rel"], "Python-style nulls or booleans (nan/None/True/False) in the first rows")
 
 
+def sweep_describing_content(files, rep):
+    """A document that lists the data's columns is a dictionary whatever its name. The approved packs' helper
+    documents that stated field meanings were named by every leak reader as the most helper-like file, and the one
+    that narrated how records came to be verified was solved the next day (task124 loop 0); task144's field notes
+    and manifest were built from by both portal responses. Rule: a text, docx or pdf file in the pack naming eight
+    or more distinct column names of the data files, or two fifths of one data file's columns (five or more), is a
+    describing file (LEAK); four to seven is a reader's call (REVIEW)."""
+    data_cols = {}
+    for f in files:
+        if f["ext"] in (".csv", ".tsv", ".xlsx", ".json"):
+            cols = [c.strip() for c in columns_of(f["path"], f["text"] or "") if c and len(c.strip()) >= 4]
+            cols = [c for c in cols if re.match(r"^[A-Za-z][A-Za-z0-9_ ]*$", c) and c.lower() not in STOP]
+            if cols:
+                data_cols[str(f["rel"])] = set(cols)
+    if not data_cols:
+        return
+    all_cols = set().union(*data_cols.values())
+    for f in files:
+        if f["ext"] not in (".md", ".txt", ".docx", ".pdf", ".rtf", ".html"):
+            continue
+        text = f["text"] or ""
+        if len(text) < 80:
+            continue
+        found = {c for c in all_cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+        if not found:
+            continue
+        worst = 0.0
+        worst_file = ""
+        for name, cols in data_cols.items():
+            if len(cols) >= 5:
+                share = len(found & cols) / len(cols)
+                if share > worst:
+                    worst, worst_file = share, name
+        if len(found) >= 8 or worst >= 0.4:
+            rep.add("12 describing content", "LEAK", f["rel"],
+                    "names %d column(s) of the data files verbatim%s: a document that lists the data's columns describes the "
+                    "data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the "
+                    "organisation's own genre, which names observables and never the files' fields"
+                    % (len(found), (", %d%% of %s" % (round(worst * 100), worst_file)) if worst_file else ""))
+        elif len(found) >= 4:
+            rep.add("12 describing content", "REVIEW", f["rel"],
+                    "names %d column(s) of the data files verbatim (%s): confirm it is the organisation's own record and not a note "
+                    "written for the analyst" % (len(found), ", ".join(sorted(found)[:6])))
+
+
+AUTHOR_META = re.compile(r"\b(stump\w*|rungs?|ladder|golden|decoys?|default path|decisive|mechanism|reflex\w*|pincer|wrong answer|"
+                         r"easy route|the solver|trap|naive|cracker|mirror|device|silent|hidden|pin(?:ned|s)?\b|closure|fork)\b", re.I)
+
+
+def sweep_task_metadata(task, rep, vocab, nums):
+    """metadata.json travels with the pack. It names the distractors, the provenance and the portal's keys, and nothing
+    about the method, the link or the mechanism: a title, subdomain or prompt_shape that narrates the decisive step,
+    or any string carrying a golden figure or the design note's own vocabulary, hands the reader the author's intent."""
+    meta_p = task / "metadata.json"
+    if not meta_p.exists():
+        rep.add("13 task metadata", "INFO", "metadata.json", "no metadata.json in the task folder")
+        return
+    try:
+        meta = json.loads(meta_p.read_text())
+    except Exception as e:
+        rep.add("13 task metadata", "REVIEW", "metadata.json", "unreadable: %s" % e)
+        return
+    strings = []
+
+    def walk(x, path):
+        if isinstance(x, dict):
+            for k, v in x.items():
+                walk(v, path + "." + str(k))
+        elif isinstance(x, list):
+            for i, v in enumerate(x):
+                walk(v, "%s[%d]" % (path, i))
+        elif isinstance(x, str):
+            strings.append((path.lstrip("."), x))
+    walk(meta, "")
+    safe_keys = ("distractor", "field_terms", "stated_inputs", "licen", "source", "url", "date", "provenance")
+    for path, text in strings:
+        low = text.lower()
+        if any(k in path.lower() for k in ("distractor",)) and len(text) < 200:
+            continue  # the distractors are named here by design
+        for n in sorted(nums, key=len, reverse=True):
+            if re.fullmatch(r"1(?:,?0)+", n):
+                continue  # a power of ten is a unit ("per 100,000"), not a graded figure
+            if len(n.replace(",", "")) >= 3 and re.search(r"(?<![\d.])%s(?![\d])" % re.escape(n), text):
+                rep.add("13 task metadata", "LEAK", "metadata.json", "%s carries a figure from the submission's graded blocks (%s)" % (path, n))
+                break
+        hit = AUTHOR_META.search(text)
+        if hit and not any(k in path.lower() for k in safe_keys):
+            rep.add("13 task metadata", "LEAK", "metadata.json",
+                    "%s uses the author's vocabulary (%r): metadata.json names the decision, the deliverables, the distractors "
+                    "and the provenance, never the method, the link or the mechanism" % (path, hit.group(0)))
+            continue
+        words = [w for w in vocab if re.search(r"\b%s\b" % re.escape(w), low)]
+        if len(words) >= 3 and not any(k in path.lower() for k in safe_keys):
+            rep.add("13 task metadata", "REVIEW", "metadata.json",
+                    "%s shares the design note's stump vocabulary (%s): say what the task decides, not how" % (path, ", ".join(words[:5])))
+
+
 def sweep_dates(files, rep, asof, prompt_text):
     if not asof:
         rep.add("9 dates after the setting", "INFO", "-", "no --asof given, sweep skipped (pass the fiction's as-of date)")
@@ -598,9 +696,11 @@ def main():
     sweep_rank_artifact(files, rep, names)
     sweep_hidden(files, rep)
     sweep_columns(files, rep)
+    sweep_describing_content(files, rep)
     sweep_dates(files, rep, a.asof, prompt_text)
     sweep_metadata(target, rep)
     sweep_prompt(prompt_text, rep, task.name, legacy_prompt)
+    sweep_task_metadata(task, rep, vocab, nums)
 
     level = rep.level()
     lines = ["# leak check, %s" % task.name, "",

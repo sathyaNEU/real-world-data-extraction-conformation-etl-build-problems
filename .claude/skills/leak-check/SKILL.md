@@ -40,7 +40,7 @@ python3 .claude/skills/leak-check/leak.py task100 --asof 2027-05-14
 
 | Sweep | Hunts |
 |---|---|
-| 1 file names | author nouns (`trap`, `golden`, `clean_`, `_v2`, `answer`), dot and system files, code in the pack; a file that describes the data (a dictionary, field notes, a readme, a manifest, a codebook) is LEAK, a text file or a sheet named for notes or definitions REVIEW (`dataset-generation` section 3) |
+| 1 file names | author nouns (`trap`, `golden`, `clean_`, `_v2`, `answer`), dot and system files, code in the pack; a file that describes the data (a dictionary, field notes, a field guide, export or extract notes, a readme, a manifest, a codebook, a schema, definitions) is LEAK, a text file or a sheet named for notes or definitions REVIEW (`dataset-generation` section 3) |
 | 2 author vocabulary | `rung`, `decoy`, `the solver`, `rubric`, `placeholder`, library names, home paths, `claude`, em dashes (data files: toolchain terms only); a sentence saying the pack was built (`constructed for this exercise`, `are invented`, `are fictional`) is LEAK in any file, the bare words `fictional`, `fictitious`, `this exercise` REVIEW in documents (`reduce-house-fixes` H24) |
 | 3 answer figures | a golden figure (4+ digits) from blocks 1 and 4 in a document is LEAK; a candidate beside decision vocabulary, or a long figure in data, is REVIEW |
 | 4 design-note vocabulary | a document with 3+ of the stump paragraph's distinctive terms, a prompt sentence with 2 |
@@ -51,6 +51,8 @@ python3 .claude/skills/leak-check/leak.py task100 --asof 2027-05-14
 | 9 dates | ISO dates after `--asof` that the prompt does not carry |
 | 10 container | writer signature or out-of-band timestamp (`reduce-house-fixes` H1 script) |
 | 11 prompt gate | `voice-check.py` on `prompt.txt`: a markdown character or line break is LEAK, any other failing rule REVIEW (all REVIEW on legacy `prompt.md`) |
+| 12 describing content | a text, docx or pdf file in the pack naming eight or more of the data files' column names verbatim, or two fifths of one data file's columns, is a dictionary whatever its name (LEAK; four to seven REVIEW): the approved packs' helper documents were named by every reader as the most helper-like file, and the one that narrated process was solved the next day (task124 loop 0) |
+| 13 task metadata | `metadata.json` strings carrying a graded figure or the author's vocabulary (`stump`, `rung`, `decisive`, `mechanism`, `easy route`) are LEAK; three or more of the design note's stump terms in a title, subdomain or prompt shape REVIEW. It names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism (`dataset-generation` §9) |
 
 `leak.py` **carries the reader's section across a rewrite**: anything from the `## Solver's-eye read`
 heading onward in the existing report is preserved, because the sweeps are this script's output while the
