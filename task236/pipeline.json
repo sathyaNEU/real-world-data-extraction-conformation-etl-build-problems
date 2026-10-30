@@ -1,11 +1,11 @@
 {
  "task": "task236",
- "status": "SHIPPED",
+ "status": "SHIPPED_APPROVED",
  "domain": "epidemiology-public-health",
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-28",
+ "updated": "2026-10-30",
  "stump": "A competent solver adjusts for testing by comparing each region's positivity in the four weeks from its testing change with the four weeks before and files 5 of the 8 regions wrong (North Coast, Tablelands, Central West and Metropolitan North flagged, Far North missed); the step that lands it there is reading the share of infections notified off the tests the region's own services ran, which the testing change itself moved, instead of off the sentinel practices' influenza-like-illness consultations attributed to influenza by their protocol swabs, which no testing change reaches.",
  "architecture": 1,
  "loops": 1,
@@ -39,6 +39,6 @@
  "delivered": "2026-10-28",
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": ""
+ "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+ "portal_status_date": "2026-10-30"
 }

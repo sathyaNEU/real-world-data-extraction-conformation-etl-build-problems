@@ -4,7 +4,7 @@
   "objective": "root-cause",
   "stage": "B",
   "stage_name": "checkpoint B: /approve (v2 re-root built; ask layer rebuilt 2026-10-09 after the v2 portal round)",
-  "updated": "2026-10-11",
+  "updated": "2026-10-30",
   "stump": "A competent solver traces each July to September missed appointment across the day boundary to the previous evening's out-of-hours call-out, charges the largest share to Rota & cover, and names it for the January peak because winter out-of-hours demand runs half as high again as the summer's while the standby pool is down to six; the step that lands it there is never asking where last winter's evening overflow went, which the out-of-hours log answers: from October to May the calls standby could not reach went to the contractor panel, no day-roster engineer cleared a call-out after 20:40, and the rest never moved a log-on.",
   "harden_loops": 0,
   "solver_rounds": [],
@@ -20,6 +20,6 @@
   },
   "status": "SHIPPED_APPROVED",
   "portal_id": "34355e43-f330-4812-91ff-c9e3f37e920a",
-  "portal_status": "APPROVED",
-  "portal_status_date": "2026-10-11"
+  "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+  "portal_status_date": "2026-10-30"
 }

@@ -1,11 +1,11 @@
 {
  "task": "task175",
- "status": "SHIPPED",
+ "status": "SHIPPED_APPROVED",
  "domain": "urban-regional-science/land-use-spatial-development-modeling",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-23",
+ "updated": "2026-10-30",
  "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas to the 2027 areas' vacant lots and files 500 permits for 2027 against 300, because it never reads each vacant lot's chance at the homes standing on the street it faces",
  "architecture": 1,
  "loops": 4,
@@ -91,8 +91,8 @@
  "delivered": "2026-10-23",
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
+ "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+ "portal_status_date": "2026-10-30",
  "reopened": "2026-10-23: the author's rule that no number stays retired; rebuilt from scratch as architecture 1",
  "target_zip_md5": "e478f14b087f32cbfe5d2297a8af7515"
 }

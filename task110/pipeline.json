@@ -4,7 +4,7 @@
   "objective": "etl",
   "stage": "harden",
   "stage_name": "harden loop 3 built (334 assertions, verifier green, byte-identical builds, leak REVIEW only, golden-realism and house fixes run); next: solver round via /solve, then the portal",
-  "updated": "2026-10-11",
+  "updated": "2026-10-30",
   "stump": "A competent solver finds that five years for the unrated upgrades (the card's options rate, Bremer's precedent, the only single life that does) replays all 90 account-months and ties both trial balance runs to the cent, stops there and files $1,133,471 (+22 per cent); only note 9's 2024 comparative refuses five years ($8,901 short on imaging) and only the host's remaining months reproduce it ($931,458).",
   "harden_loops": 3,
   "solver_rounds": [
@@ -54,7 +54,8 @@
       "note": "grader tolerance +/-1.5 per cent on the main figure; both landed"
     }
   ],
-  "status": "SHIPPED",
+  "status": "SHIPPED_APPROVED",
   "portal_id": "5a548639-10a4-49ba-93b3-3bd5d35b7894",
-  "portal_status": "PENDING_REVIEW"
+  "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+  "portal_status_date": "2026-10-30"
 }

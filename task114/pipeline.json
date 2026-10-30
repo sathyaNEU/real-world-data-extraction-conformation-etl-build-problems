@@ -4,7 +4,7 @@
   "objective": "descriptive-distribution",
   "stage": "B",
   "stage_name": "approve",
-  "updated": "2026-10-11",
+  "updated": "2026-10-30",
   "stump": "A competent solver builds the booking pipeline that reproduces every busiest moment in both offices' quarterly close-outs, puts both offices' meeting-room bookings on one timeline, sets the solo calls aside for the booths, takes each working day's peak and files 24 rooms, the fewest short on no more than twelve working days; the step that lands it there is never asking which meetings booked no room only because their people were in different offices that day (9,144 of them), when on one floor every meeting with two or more of its people in takes a room, as the records show without exception wherever two of a meeting's people were in the same office.",
   "harden_loops": 3,
   "solver_rounds": [],
@@ -35,7 +35,8 @@
       "followed_by": "G1 added (calls with an outside party on the line, people read from the headcount); prompt, main call and stump unchanged"
     }
   ],
-  "status": "SHIPPED",
+  "status": "SHIPPED_APPROVED",
   "portal_id": "d01e4abc-d188-424e-a322-c6fe043b29fd",
-  "portal_status": "PENDING_REVIEW"
+  "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+  "portal_status_date": "2026-10-30"
 }

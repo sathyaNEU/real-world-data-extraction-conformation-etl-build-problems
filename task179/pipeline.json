@@ -1,11 +1,11 @@
 {
  "task": "task179",
- "status": "SHIPPED",
+ "status": "SHIPPED_APPROVED",
  "domain": "criminology-justice",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-28",
+ "updated": "2026-10-30",
  "architecture": 5,
  "stump": "A competent analyst fits the region's Category V booking model on the caseload's own risk score, history and supervision terms, back-tests it cleanly on the 2024 and 2025 year ends, scores the 31 December 2026 caseload and files 400 against 500, because it never links the city police's victim records to the caseload by name and date of birth and so never carries the autumn 2026 rise in victimization into 2027.",
  "loops": 0,
@@ -225,5 +225,8 @@
  "leak": {
   "leak_py": "REVIEW 2026-10-28 --asof 2027-01-08 on f02cc3ff, four lines, no LEAK, each ruled harmless",
   "reader": "two isolated leak reads, neither solving (STOP rule): questions 1 to 4 none and question 6 analytical at both, the victim records never named; their realism tells fixed in the generator"
- }
+ },
+ "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+ "portal_status_date": "2026-10-30",
+ "portal_note": "the folder holds architecture 5, shipped 16854efc on 10-28, after the portal returned version 391 (architecture 3) on Duplicate on 10-25; which version the portal holds waits on the author"
 }

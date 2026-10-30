@@ -38,7 +38,7 @@
  "loops": 0,
  "objective": "anomaly-detection",
  "portal": null,
- "resume": "architecture 10. Architecture 9's candidate 2 refused the CELL, not a mechanism, and it corrected two premises I had put in its brief. First, human-factors-ergonomics/alarm-interface-evaluation is NOT drawable on this objective: guard.py check BLOCKs on three_rules.task_type because the task type serves experiment-causal only, and the same BLOCK returns on a sweep of anomaly-detection, root-cause, forecasting and descriptive-distribution. It is never-drawn BECAUSE it cannot be drawn here, which is fingerprint Part 4's never-built-pairing-read-as-a-menu hazard, and this slot recorded the identical hazard for urban-regional-science five days earlier. So candidate 1 was screened on an illegal cell: its arithmetic refusal at the multiplicative-correction floor (rho 0.480) stands and keeps its place in stumping, but no ground survived it. Second, composition_mix is BLOCKED, not legal: ban.strategy fires against task179 (v3), registered 2026-10-23T11:02:26 and in the live three alongside task275 and task483, and task183's ship does not license it because task183's card carries NO registration stamp, so it is not in the window by filing time. Of the six task types in human-factors-ergonomics exactly one serves anomaly-detection, safety-incident-error-analysis, which is architecture 5's measured-dead ground carrying task181's v4 card, so keeping both the lane and the domain means returning to a cell whose reflex sweep this slot already failed. Free artifacts measured today: monitoring_export, published_series, capacity_report, close_out_summary, planning_thread, filed_model, other, none. Free strategies on a legal cell: decomposition_attribution, forecast_method_backtest, maturity_censoring, causal_design, uncertainty_hold, binding_constraint, other. The paper_screen line's claims that maturity_censoring and causal_design are blocked are STALE and both measure free.",
+ "resume": "",
  "returned": [
   {
    "commit": "",
@@ -99,7 +99,7 @@
  ],
  "stage": 1,
  "stage_name": "draw",
- "status": "PAUSED",
+ "status": "SHIPPED_APPROVED",
  "stump": "Architecture 5 as screened: the wrong committed slate is the three plants with the highest recorded operator-error events per 100,000 rostered duty-hours, the correction being each plant's own count against what the group's experience of the duties that plant actually worked implies. The reflex sweep falsifies it: see the blocked record",
  "task": "task182",
  "three_rules": {
@@ -110,9 +110,12 @@
   "layers": "pass at the draw: Layer 1 is the roster and register mess, Layer 2 is the conditioned rate",
   "screen_result": "FAIL on the stump. The crude route reaches the golden slate 20 of 20 in both credible models, and the one model with a ladder needs a positional error-rate spread of 9 to 16 where the shift-work literature gives 2 to 3. PASS on the determinacy: every graded figure is records-fixed, the estimator family closes on the data's structure, and the slate is invariant to all six bandings and all eight licensed forms, 20/20."
  },
- "updated": "2026-10-24",
+ "updated": "2026-10-30",
  "wave6_cell": "healthcare-delivery-health-economics/payment-claims-health-plan-analytics",
  "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
  "wave7_cell": "criminology-justice/crime-incidence-hotspot-analysis",
- "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard.",
+ "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+ "portal_status_date": "2026-10-30",
+ "portal_note": "the folder holds a paused re-root (architecture 9, PAUSED since 10-24), so the portal holds an earlier shipped architecture; the re-root is not needed for this number unless the author says otherwise"
 }

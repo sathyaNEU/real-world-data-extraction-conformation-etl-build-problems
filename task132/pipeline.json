@@ -4,7 +4,7 @@
   "objective": "forecasting",
   "stage": 8,
   "stage_name": "shipped",
-  "updated": "2026-10-11",
+  "updated": "2026-10-30",
   "branch": "sathya8571/task132-relay-final-buy",
   "stump": "A competent solver completes every lower rung (module age from the fitted date, support by bay to each scheme's commissioning month, exposure over the work-order history's own period, 15 available modules), ages each relay's current module forward with no replacement after a failure, expects 431.4 failures and orders 19 lots; the step that lands it there is projecting failures as if a failed module stayed in service, when it is replaced from the buy by a new one: the answer is 13 lots on 298.6 expected failures.",
   "architecture": 1,
@@ -119,6 +119,6 @@
   },
   "status": "SHIPPED_APPROVED",
   "portal_id": "4a42e005-f62d-469b-96cc-8a21e53b1953",
-  "portal_status": "APPROVED",
-  "portal_status_date": "2026-10-11"
+  "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+  "portal_status_date": "2026-10-30"
 }

@@ -4,7 +4,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-10-30",
  "stump": "A competent solver builds each holding's daily total return from the prices it is valued at, estimates the two-year covariance of daily returns, scales the portfolio's daily standard deviation by the square root of 252 at each step and sets the 2027 growth share at 70 per cent against 60: the same-day covariance misses the covariance that lands a day apart, because the Kestwick funds are struck at noon from each market's last available price and the London-close UK shares have already priced the New York session the North American fund carries.",
  "architecture": 2,
  "loops": 1,
@@ -32,7 +32,7 @@
  "approved": null,
  "delivered": "2026-10-13",
  "portal": null,
- "status": "SHIPPED",
+ "status": "SHIPPED_APPROVED",
  "resume": "",
  "builder": "2026-10-12, build session (wave 1, resume 3): stage 3 finished on the stopped builder's generator without redesign; world seed 11480 from a fresh seed scan (golden family 26 members, 8.96 to 9.72 at 60 and 10.33 to 11.11 at 70; default 9.41 at 70 and 10.63 at 80); asks re-sized with tune_asks.py (every one of 146 composed mishandlings at least 759 pounds from a stated golden); ask A's span stays at seven files, reason recorded; checks.py 259 assertions 0 failed; verify.py 0 failed; two builds byte-identical; figures_check 92 figures 0 absent; precut exit 0; leak.py REVIEW; surface 0 promoted; heart WARN. Holiday repair (same day, main session's decision): every holding already priced on every UK business day, so the routes landing 60 were an inner join with the benchmark index file and the deliberate stale-day filter; the index file now carries the custodian's valuation dates with each index's last available level (the join keeps 506 of 506 dates and the default's 70, asserted in checks.py and verify.py; R2 and every other file unchanged), and the stale-day filter is accepted as a lower rung that policy 4.3 refuses, recorded in the grid; checks.py 281 assertions 0 failed; verify.py 0 failed; two builds byte-identical (target.zip 550f9762...f67330); figures_check 92 figures 0 absent; precut exit 0; leak.py REVIEW; surface 0 promoted; heart WARN; freeze determinism: only the design note's ladder text; stage 4 and 5 (2026-10-12, ship session): reader clean and judge DETERMINISTIC, APPROVE on the stage 3 cut; the reader's three readings answered in the design note without a pin; the cap reading asserted in checks.py and verify.py (expendable endowment 11,002,669 against the largest release 735,262), asks.py's fund loop in a fixed order so figures.json writes the same bytes every run; no document under target/ changed (target.zip 550f9762...f67330 on two rebuilds), freeze determinism PASS; every free gate green; shipped",
  "returned": [
@@ -48,5 +48,7 @@
    "repair": "write-up wording only: block 1 and steps 2 and 4 name the estimator choice (the same-day covariance scaled by the square root of 252 leaves out the covariance that lands a day apart); stump sentence, card stump and the Not semantics line framed the same way; the thirteen Three rules lines were already present; no pack, golden, prompt or figure change (target.zip unchanged)",
    "commit": ""
   }
- ]
+ ],
+ "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+ "portal_status_date": "2026-10-30"
 }

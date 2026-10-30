@@ -4,7 +4,7 @@
   "objective": "forecasting",
   "stage": "B",
   "stage_name": "checkpoint: /approve (harden loop 1 cut)",
-  "updated": "2026-10-11",
+  "updated": "2026-10-30",
   "stump": "A competent solver either never finds the switch, fits Delahunt's own Save 20% and Save 25% deals and sits March out, or finds it the way the data shows it first, own-label 160s sales falling by about a third wherever another brand's 160s deal undercut the store's own-label price, credits those lost packs to the deal line one for one, forecasts Save 40% at 2.2 times base and offers half price; the step that lands it there is never measuring the response on the deal line itself, which in those store-weeks sold twice the packs own label lost, enough to put Save 40% at 2.7 in the stores whose own-label price is highest.",
   "harden_loops": 1,
   "solver_rounds": [],
@@ -24,6 +24,6 @@
   },
   "status": "SHIPPED_APPROVED",
   "portal_id": "6e962c38-379f-4c7a-97c7-7d38e6fed366",
-  "portal_status": "APPROVED",
-  "portal_status_date": "2026-10-11"
+  "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+  "portal_status_date": "2026-10-30"
 }

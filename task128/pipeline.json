@@ -1,11 +1,11 @@
 {
  "task": "task128",
- "status": "SHIPPED",
+ "status": "SHIPPED_APPROVED",
  "domain": "banking-credit-financial-risk",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "shipped (architecture 3)",
- "updated": "2026-10-12",
+ "updated": "2026-10-30",
  "stump": "The default path compares the called with the uncalled 30-day entries, adjusted for the behaviour score and pooled over the year, and funds London at about 2,315 rolls prevented a year; the cleaner same-day comparison on the over-capacity lists with the skipped records set aside still funds London at 981; kept on the reached side, scaled to a dial and sized on the new team's 400 dials a day, London's team prevents about 495 against the policy's 700, so no centre gets the team.",
  "architecture": 3,
  "loops": 0,
@@ -80,5 +80,7 @@
   "byte_identical": true,
   "figures_check": "PASS",
   "zip_mb": 20.1
- }
+ },
+ "portal_status": "STUMPED_IN_PORTAL_AND_READY_TO_LEARN",
+ "portal_status_date": "2026-10-30"
 }
