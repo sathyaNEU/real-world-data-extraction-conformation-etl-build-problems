@@ -24,13 +24,19 @@ REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 VOICE = os.path.join(REPO, ".claude", "skills", "guide-to-prompt", "references", "voice-check.py")
 CARDS = os.path.join(REPO, ".claude", "skills", "fingerprint", "cards")
 
-REQUIRED = ["Draw", "Default path", "Stump sentence", "Three rules", "Readability screen",
+REQUIRED = ["Draw", "Default path", "Stump sentence", "Three rules", "Survivor anatomy", "Readability screen",
             "Semantic fork table", "Ladder", "Closure table", "Literal reader", "Oracles", "Ask sheet",
             "Tried and rejected"]
+# Sections a build that has already shipped may lack (added to the gate after it shipped): a WARN there, a FAIL
+# on a build in design or repair.
+LATER = {"Survivor anatomy"}
 VOCAB = os.path.join(REPO, ".claude", "skills", "fingerprint", "vocab.json")
 # The client's check before a build ships, one label per point (stumping 1.1).
 THREE_RULES = ("Task type", "Domain test", "Swap", "Layer 1", "Layer 2", "Decisive step", "Not semantics",
                "Not rule application", "Analyst test", "Estimand", "No decoy", "No certified replay", "Lesson")
+# The survivor anatomy (stumping 1.4): the properties every portal-approved main call shares, one labelled line
+# each, each a test answered on this build before the default path is written.
+ANATOMY = ("Actor", "Link", "Reflex", "Back-test", "Second use", "Shock", "Pins")
 PAIR_CEILING = 60.0    # the build target under the bar of 70 (supplemental Part 0)
 MIRROR_CEILING = 50.0   # per cent of ask weight the best response off the call may keep, target two fifths (supplemental Part 1.1)
 AXES = set(range(1, 23))
@@ -233,9 +239,11 @@ def check_note(task_dir, note_text):
         else "repeated, so the earlier copy is unread and unchecked: %s"
              % ", ".join(sorted(set(dupes))))
 
+    shipped = build_status(task_dir) in ("SHIPPED", "SHIPPED_APPROVED", "RETIRED")
     for name in REQUIRED:
         row("section %s" % name, section(secs, name) is not None,
-            "## %s present" % name if section(secs, name) is not None else "## %s missing" % name)
+            "## %s present" % name if section(secs, name) is not None else "## %s missing" % name,
+            warn=shipped and name in LATER)
 
     # Draw: the card exists, and the data-native sentence is written somewhere in the note.
     card = os.path.join(CARDS, task + ".json")
@@ -287,7 +295,6 @@ def check_note(task_dir, note_text):
     # Three rules: one labelled line per point of the client's own pre-ship check (stumping 1.1). A build that
     # has shipped meets a missing line as a WARN; a build being designed or repaired is refused.
     tr = section(secs, "Three rules") or ""
-    shipped = build_status(task_dir) in ("SHIPPED", "SHIPPED_APPROVED", "RETIRED")
     for label in THREE_RULES:
         v = labelled(tr, label)
         ok = bool(v) and len(v) >= 20
@@ -313,8 +320,18 @@ def check_note(task_dir, note_text):
             "the Domain test and Decisive step lines share no method term"
             if not shared else
             "both lines name %s: if the field's own method for the deciding quantity is the golden, a competent "
-            "analyst applies it by reflex and the screen's test 3 cannot be silent"
-            % ", ".join(sorted(shared)), warn=True)
+            "analyst applies it by reflex and the screen's test 3 cannot be silent (stumping 1.1b: the field's "
+            "method sits at rung 0 or 1 and the decisive step is the precondition this dataset violates)"
+            % ", ".join(sorted(shared)), warn=shipped)
+
+    # Survivor anatomy (stumping 1.4): one labelled line per property every approved main call shares. A build
+    # that shipped before the section existed meets a missing line as a WARN; a build in design is refused.
+    sa = section(secs, "Survivor anatomy") or ""
+    for label in ANATOMY:
+        v = labelled(sa, label)
+        ok = bool(v) and len(v) >= 20
+        row("survivor anatomy: %s" % label, ok,
+            (v or "missing")[:120] if ok else (v or "missing") + " (one line, 20 characters or more)", warn=shipped)
 
     # Readability screen.
     rs = section(secs, "Readability screen") or ""
