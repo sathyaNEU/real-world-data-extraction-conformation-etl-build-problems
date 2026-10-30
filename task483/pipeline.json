@@ -1,14 +1,14 @@
 {
  "task": "task483",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-23",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-28",
  "stump": "The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the designation at 84 per cent; Medical Assisting's pooled median (33 thousand dollars) and the CDL program's jobs dated from their own pay (63 per cent) put the share at 71 per cent, and either correction alone leaves it at 77 or 78.",
  "architecture": 1,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-23"
@@ -31,8 +31,23 @@
   "pass3": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-150426): Gate G method_or_model_selection and analytical_non_defect, Gate H analytical; residual: parametric fits per cell move some whole-thousand figures (Business Administration 40, 38 or 37) while every interpolation through the percentiles files one",
   "pass4": "DETERMINISTIC, APPROVE (2026-10-23, brief /tmp/determinism-check-task483-r41792769182, zip 7d3d1845): no competing answer survived; minor: the attendance export's hours unlabelled (the data forces hours and minutes, SF17), the dating step near data semantics (a unit-of-analysis choice)"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-10-28",
+   "portal": "prompt check P6 FAIL: the prompt defines neither a program's pass line on earnings or placement, nor the share of completers in passing programs the designation needs, nor how the designation renews (the reviewer saw no input files)",
+   "repair": "prompt: the question cites the State Workforce Development Board's Workforce Value Designation Standard by its title (in the pack as workforce_value_designation_standard_2027-28.pdf, which files the earnings line, the placement line and the 75 per cent rule); the thresholds stay in the standard; every ask, file name, unit and rounding, the pack (target.zip unchanged) and every graded figure as shipped",
+   "gates": "voice-check PASS (964 characters); no 5-gram of the new clause in another prompt; precut 53 checks, 0 FAIL; leak.py --asof 2026-10-16 REVIEW, no LEAK, the prompt gate clean",
+   "repair_kind": "prompt",
+   "commit": ""
+  },
+  {
+   "date": "2026-10-28",
+   "portal": "determinism block failed (response 2: Gates C, D and E, underspecified_objective, fix_location input_files, model_response semantic_fork): the CDL program's day-180 status is read from quarterly wage records by four constructions the standard does not choose between, both neighbours paid 47 of 79, the golden's dated jobs 50, the adjacent quarter on day 180's side 65, any pay in the quarter 72; 65 or 72 pass and the designation renews (1,108 of 1,441, 76.9 per cent); Medical Assisting's pooled median forced by standard 3.1",
+   "repair": "design: the fork is the stump (fix-determinism step 3). The eight in-house readers and the portal's judge pooled Medical Assisting correctly and missed only the dating, so any closure (the judge's both-neighbours rule, which also moves CDL to 59 per cent; the golden's dating filed; a definition ruling out the quarter's pay) lets that path land the call; not repaired, back to stage 2",
+   "commit": ""
+  }
+ ],
+ "resume": "redesign at stage 2 (/build task483 from 2): the CDL dating carried the whole stump and cannot be filed or left open; either a decisive step whose method the records force (the pooled medians are landed by every reader), or a re-root; the P6 prompt clause naming the board's standard stays. The other route, the golden's dating filed in standard 4.2 (determinism passes, every figure unchanged), ships a call the readers' own path lands",
  "approved": null,
  "delivered": "2026-10-23",
  "portal": null,
