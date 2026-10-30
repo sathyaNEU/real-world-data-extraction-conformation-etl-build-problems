@@ -44,7 +44,9 @@ only when its gate holds.
    describes, `model: sonnet`, `effort: medium`) and the `determinism-judge` agent (medium in its
    definition). This invocation licenses both. While they run, bring the card current and write the
    pre-ship check. Fix every finding from both in one generator pass; re-judge once on FIX_NOW; re-read only
-   if a document or the prompt changed. No clone pre-flight runs here; `/clone-check` is the author's call.
+   if a document or the prompt changed. Where the reader and the judge split on Gate H, recompute the easy
+   routes on the clean truth and settle which kind of step decides before anything ships; a split is never
+   filed as an open concern. No clone pre-flight runs here; `/clone-check` is the author's call.
 5. **Repairs run in this thread.** Spawn a fresh agent only near the context limit, briefed with
    `pipeline.json`, the design note and the findings.
 
@@ -53,7 +55,8 @@ status changes** `build-pipeline` names: `DRAWN`, `SHIPPED`, `PAUSED`, `RETIRED`
 session (redraw the axis, re-root into another domain and dataset, fix the generator), never left as a pause;
 `PAUSED` is only for a session that ends mid-stage (`CLAUDE.md`, A stuck build is unblocked, never parked).
 
-**At ship**, report in this order: the committed answer, the stump sentence and the default path's answer,
+**At ship, every gate re-runs on the final cut** (`precut.py`, `voice-check.py`, `leak.py`, `guard.py heart` and
+`surface`, `figures_check.py`); a build never ships on a skipped gate. Then report in this order: the committed answer, the stump sentence and the default path's answer,
 the three-rules line, the leak line (`leak.py` verdict and the reader's question 1), the duplicate line (heart
 verdict, nearest build), the judge's verdict and Gate G line, the zip path. Then **start the next open task
 at once**. A retired build is reported in one line with the reason.

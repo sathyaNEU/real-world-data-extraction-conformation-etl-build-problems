@@ -142,15 +142,18 @@ No isolated thread runs on the model's own initiative; the commands above licens
             prompt.txt                                                        gate: precut.py exit 0
 3 BUILD     generator, pack, goldens, submission.md
             gate: generator checks, verify, two byte-identical rebuilds, figures_check.py, realism sweep,
-            golden-realism, reduce-house-fixes, leak.py, guard.py surface and heart
+            golden-realism, reduce-house-fixes, leak.py (no file or sentence describing the data),
+            guard.py surface and heart (the driver and the shell against every approved build)
 4 CHECK     the leak reader and the determinism judge spawned together in the background (both medium);
             the card and the pre-ship check proceed meanwhile; every finding fixed in the generator in one
             pass; a FIX_NOW is re-judged once
-5 SHIP      target.zip from the final rebuild, ledger row, card current       COMMIT "SHIPPED (taskNN): <call>"
+5 SHIP      every gate re-run on the final cut (no skipped gate ships), target.zip from the final
+            rebuild, ledger row, card current                                 COMMIT "SHIPPED (taskNN): <call>"
             then the next open number at once
 6 PORTAL    the author's list: APPROVED is SHIPPED_APPROVED, PENDING_REVIEW stays SHIPPED, a shipped build
-            left off it is FAILED_TO_STUMP and joins the backlog; a determinism finding goes
-            to /fix-determinism, a rubric at or over 70 with the call held to /fix-rubric
+            left off it stays SHIPPED, pending (absence is not a result; FAILED_TO_STUMP only when the
+            portal's responses landed the call); a determinism finding goes to /fix-determinism, a
+            rubric at or over 70 with the call held to /fix-rubric, a landed call to /build taskNN from 2
 ```
 
 One session runs the whole build in its main thread at max effort: design and build are the same hand, and
@@ -258,7 +261,9 @@ rule application, and each carries its own silent device against the careful sol
 (`supplemental-stumping` Part 2.1).
 
 **Prompt:** `prompt.txt`, one plain paragraph, question first, under 1,000 characters, no persona,
-roll call or bullets, gated by `voice-check.py` (`guide-to-prompt`).
+roll call or bullets, **no count the data hold** (the candidate set's size, a population, a derivable count
+are the model's to find) and no sentence explaining the data, the shell (question form, openers,
+deliverable set) drawn with the world under corpus quotas, gated by `voice-check.py` (`guide-to-prompt`).
 
 **Rubric:** generated, 25 or more criteria, supplied by the prompt shape (every candidate, period, cell
 or reconciling item graded), never by stacking simple asks. Weights: 30 to 40 percent recommendation and

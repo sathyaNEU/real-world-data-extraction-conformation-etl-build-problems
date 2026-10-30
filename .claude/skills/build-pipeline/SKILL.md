@@ -20,8 +20,8 @@ judge's Gate F, and measured by the portal.
 | 2 | design | `stumping` (screen, fork table, 3 to 5 rungs), `determinism-check` (closure), `supplemental-stumping`, `guide-to-prompt` | **`precut.py taskNN` exit 0** (runs `voice-check.py`) |
 | 3 | build | `dataset-generation`, `determinism-check`, `submission-writeup`, `golden-realism`, `reduce-house-fixes`, `leak-check`, `fingerprint` | generator green, every fork asserted, the three-rules block (`dataset-generation` §7.1) green; `verify`; two byte-identical builds; input gates; `metadata.json`; `figures_check.py` exit 0; realism sweep; house-fix register; `leak.py` not LEAK; `guard.py surface` clean and `heart` not BLOCK |
 | 4 | check | `leak-check` (reader), `determinism-check` (judge) | both spawned in one message, in the background. Reader: no decisive-step sentence, no helping file, quoted sentences execute to the golden, no main-call fork. Judge: APPROVE. Every finding fixed in the generator in one pass, stage 3 gates re-run; FIX_NOW re-judged once; the reader re-runs only if a document or the prompt changed. SEND_BACK: re-root |
-| 5 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note, the 10/10 rules re-read against the built pack (the decisive step still analytical, the mess still only Layer 1); `target.zip` from the final rebuild; card current; ledger row `SHIPPED, delivered MM-DD, pending review`; `status` `SHIPPED`; commit `SHIPPED (taskNN): <the call>` with the zip and `golden/` force-added; the author handed the bundle and the stump, leak and judge lines. **Then the next task** |
-| 6 | portal | the author | the author's portal list rewrites the ledger's portal record: APPROVED is `SHIPPED_APPROVED`, PENDING_REVIEW stays `SHIPPED`, a shipped build missing from the list is `FAILED_TO_STUMP` and joins the backlog; a determinism or rubric return is routed (Returned tasks) |
+| 5 | ship | `fingerprint`, `reduce-house-fixes` | pre-ship check in the design note, the 10/10 rules re-read against the built pack (the decisive step still analytical, the mess still only Layer 1); **every gate re-run on the final cut** (`precut.py`, `voice-check.py`, `leak.py`, `guard.py heart` and `surface`, `figures_check.py`; a build never ships on a skipped gate, and a reader and judge split on Gate H is resolved first, never filed as an open concern); `target.zip` from the final rebuild; card current; ledger row `SHIPPED, delivered MM-DD, pending review`; `status` `SHIPPED`; commit `SHIPPED (taskNN): <the call>` with the zip and `golden/` force-added; the author handed the bundle and the stump, leak and judge lines. **Then the next task** |
+| 6 | portal | the author | the author's portal list rewrites the ledger's portal record: APPROVED is `SHIPPED_APPROVED`, PENDING_REVIEW stays `SHIPPED`, **a shipped build missing from the list stays `SHIPPED`, pending** (absence is not a result); a landed call, a determinism return or a rubric return is routed (Returned tasks) |
 
 Back to design: a reader finding a decisive-step sentence or a main-call fork; a FIX_NOW that moves the
 decisive path; a portal return where the call landed.
@@ -93,9 +93,20 @@ gate (generator checks, `verify`, byte-identical rebuilds, `leak.py`, `guard.py 
 Each attempt gets a `## Tried and rejected` line. A repair re-cuts `target.zip`, appends to `returned`, sets
 `status` `SHIPPED`, commits `RESHIPPED (taskNN)`, and counts as a loop against the architecture.
 
-**Failed to stump.** A shipped build the portal list leaves out is `FAILED_TO_STUMP`: it goes into the
-backlog as a rework (redesign when the portal solved it, re-root when the architecture is spent),
-and `/build taskNN` picks it up from its `pipeline.json` when its wave comes round.
+**A portal result is the only return.** `FAILED_TO_STUMP` is set only when the author reports that the
+portal's responses landed the call on a shipped version; a shipped build missing from a results list stays
+`SHIPPED`, pending, until a result names it. task182 was filed failed from absence on an interim list,
+re-rooted eight times without shipping, and approved as shipped on the next list; thirteen more numbers
+carried in-house judgements filed as portal outcomes until 10-25. A `FAILED_TO_STUMP` rework (redesign when
+the portal solved it, re-root when the architecture is spent) joins the backlog and `/build taskNN` picks it
+up from its `pipeline.json`.
+
+**Before any determinism repair, the fork-is-the-stump test** (`/fix-determinism` step 3; `stumping` 1.2): if
+the sentence that would close the judges' fork names the thing the decisive step recognises, the fork is the
+stump and the build goes to stage 2, never to a pin. Pins that fixed population, window, unit or schedule and
+named no method turned returns into approvals (169, 135, 151, 162); pins naming the clock, window or test the
+stump rides on landed the call on the next round (141, 179 v3, 181 v2, 118 v2). No approved build was ever
+repaired by hardening the asks alone after a landed call, and a rung stacked above the solved step never held.
 
 **The 10/10 gate on every rework, before any resume** (`CLAUDE.md`, first section). The card carries
 `stump_class: analytical`, `analyst_test` and `domain_test`, with no official or validated decoy flag; the
@@ -168,10 +179,14 @@ hardening deepens Layer 2 or Layer 1 and never plants; if only a plant would hol
 
 **Re-root:** a new draw at stage 1 in the same objective and number, `architecture` incremented, `loops`
 reset, the old card's lineage saying spent and why, one line in `## Tried and rejected`, committed `DRAWN`.
-A re-root follows a spent architecture in the same session; when the domain or the seed's world is what keeps
-failing, the new draw moves to another client domain and dataset. A slot whose third architecture is spent is
-re-rooted again without a checkpoint; it is **retired** only on the user's word: a `## Retired` section in the
-design note, `status` `RETIRED`, every card kept, committed `RETIRED`.
+**One architecture per world:** once a world's decisive step is spent the next draw moves to another world,
+another dataset and another shell (251, 249 and 269 each spent two architectures in one world where one
+would have; 118, 305 and 273 kept one prompt shell across every re-root and `guard.py check` now blocks it).
+**No same-day serial re-roots without new evidence:** a re-root waits for the portal's word on the version it
+replaces unless the judge or the leak reader has already killed that version (118 ran three architectures in
+one day and the two with a result failed within a day; 166 v2 the same). A slot whose third architecture is
+spent is re-rooted again without a checkpoint; it is **retired** only on the user's word: a `## Retired`
+section in the design note, `status` `RETIRED`, every card kept, committed `RETIRED`.
 
 ## Throughput
 
