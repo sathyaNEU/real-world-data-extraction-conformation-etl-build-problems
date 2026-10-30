@@ -77,6 +77,28 @@ NOT_NAMES = {"January", "February", "March", "April", "May", "June", "July", "Au
              "November", "December", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
              "Attachment", "Schedule", "Section", "Appendix", "Table", "Figure", "Part", "Chapter", "Order", "Act",
              "Reservoir", "Creek", "River", "County", "District", "Services", "Committee", "Board", "Council", "Street"}
+# A count the data hold, stated in the prompt. The portal's models are handed the size of the candidate set, the
+# population or a derivable count ("which four of the eight", "each of our twelve zones", "we run 264 schools"), and
+# what the model should find on its own is read off the prompt instead. A filed decision parameter stays legal
+# where it is not tied to a count the data hold ("designate seven" passes; "seven of the sixteen" fails). Years,
+# money, physical and time units and the deliverable's own parts are not counts of the data.
+NUM = r"(?:\d{1,3}(?:,\d{3})*|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|dozen)"
+UNIT_NOUNS = {"decimals", "places", "days", "weeks", "months", "quarters", "years", "hours", "minutes", "seconds", "characters",
+              "files", "sheets", "tabs", "pages", "charts", "figures", "dollars", "euros", "pounds", "cents", "pence", "kronor",
+              "francs", "yen", "rupees", "tonnes", "tons", "kilograms", "kilos", "grams", "litres", "liters", "gallons", "barrels",
+              "megawatts", "kilowatts", "gigawatts", "miles", "kilometres", "kilometers", "metres", "meters", "feet", "inches",
+              "hectares", "acres", "degrees", "points", "percent", "bins", "decimal", "seasons", "terms", "fortnights", "nights",
+              "shifts", "rounds", "cycles", "halves", "thirds"}
+COUNT_DISCLOSURE = [
+    ("N of the M", r"\b%s\s+of\s+(?:the|our|its|their|these|those)\b" % NUM),
+    ("each of the N", r"\b(?:each|every one|all|any|which|how many|most)\s+of\s+(?:the|our|its|their|these|those)\s+(?:about\s+|some\s+)?%s\b" % NUM),
+    ("the N things", r"\b(?:the|our|its|their|all|these|those)\s+(?:about\s+|some\s+|roughly\s+)?%s\s+([a-z][a-z\-]+(?:s|es))\b" % NUM),
+    ("we have N", r"\bwe\s+(?:have|run|operate|serve|cover|track|hold|manage|own|list|field)\s+(?:about\s+|some\s+|roughly\s+|around\s+|just\s+over\s+|just\s+under\s+)?%s\s+[a-z]" % NUM),
+]
+# The shell a reviewer reads across the corpus, and the share of shipped prompts any one class may hold. The portal
+# holds every accepted task with no window, so the quotas run over every prompt on file, not the last twelve.
+QUOTAS = {"question form": 0.30, "second-sentence opener": 0.20, "rounding opener": 0.20, "deliverable set": 0.20}
+
 ROUNDING = (r"to the nearest \w+|to (?:one|two|three|\d) decimal(?: place)?s?|a decimal place|whole (?:number|unit|count|dollar|pound|euro|case|household|record|release|day|cubic yard|ton)s?|"
             r"significant figures?|rounded? (?:up|down|to)|no decimals?|as (?:a )?whole numbers?|in whole \w+")
 
@@ -148,6 +170,75 @@ def people_of(task):
         if isinstance(x, str) and x.strip():
             out.append(x.strip())
     return out
+
+
+def task_status(task):
+    """The build's pipeline.json status, or '' when it cannot be read."""
+    if not task:
+        return ""
+    try:
+        import json
+        d = os.path.join(REPO, task if str(task).startswith("task") else "task%s" % re.sub(r"[^0-9]", "", str(task)))
+        return json.load(open(os.path.join(d, "pipeline.json"))).get("status") or ""
+    except Exception:
+        return ""
+
+
+def count_disclosures(text):
+    """Every count of the data the prompt states (see COUNT_DISCLOSURE)."""
+    masked = FILE_TOKEN.sub(" FILE ", text)
+    hits = []
+    for name, pat in COUNT_DISCLOSURE:
+        for m in re.finditer(pat, masked, re.I):
+            if name == "the N things" and m.group(1).lower() in UNIT_NOUNS:
+                continue
+            hits.append("%s: \"%s\"" % (name, re.sub(r"\s+", " ", m.group(0)).strip()))
+    return hits
+
+
+def opener(sentence, words=1):
+    ws = re.findall(r"[A-Za-z']+", sentence)
+    return " ".join(w.lower() for w in ws[:words]) if ws else ""
+
+
+def shell_of(text):
+    """The prompt's shell classes: question form, the second sentence's opening word, the rounding sentence's opening
+    word and the deliverable set (sorted extensions)."""
+    sents = sentences(text)
+    r_sents = [s for s in sents if re.search(ROUNDING, s, re.I)]
+    return {
+        "question form": question_form(text),
+        "second-sentence opener": opener(sents[1]) if len(sents) > 1 else "",
+        "rounding opener": opener(r_sents[-1]) if r_sents else "",
+        "deliverable set": "+".join(sorted(f.rsplit(".", 1)[-1].lower() for f in deliverables(text))),
+    }
+
+
+_SHARES = {}
+
+
+def corpus_shares():
+    """Share of every shell class over every prompt on file, computed once per run."""
+    if _SHARES:
+        return _SHARES
+    folders = [d for d in glob.glob(os.path.join(REPO, "task*")) if os.path.isdir(d)]
+    counts = {k: collections.Counter() for k in QUOTAS}
+    n = 0
+    for d in folders:
+        path, legacy = find_prompt(d)
+        if not path:
+            continue
+        try:
+            sh = shell_of(body(path, legacy))
+        except Exception:
+            continue
+        n += 1
+        for k, v in sh.items():
+            counts[k][v] += 1
+    _SHARES["n"] = n
+    for k in QUOTAS:
+        _SHARES[k] = {v: c / max(n, 1) for v, c in counts[k].items()}
+    return _SHARES
 
 
 def gate(text, task=None, legacy=False):
@@ -226,6 +317,24 @@ def gate(text, task=None, legacy=False):
     else:
         rows.append(("rounding at the close", "PASS", "rounding stated once, at the close"))
 
+    counts = count_disclosures(text)
+    shipped = task_status(task) in ("SHIPPED", "SHIPPED_APPROVED", "RETIRED")
+    rows.append(("no data count disclosed", ("WARN" if shipped else "FAIL") if counts else "PASS",
+                 ("; ".join(counts) + " (a count the data hold is the model's to find; drop it or keep only the "
+                  "decision parameter)") if counts else "no candidate-set size, population or derivable count stated"))
+
+    sh = shell_of(text)
+    shares = corpus_shares()
+    over = []
+    for k, cap in QUOTAS.items():
+        v = sh.get(k) or ""
+        share = shares.get(k, {}).get(v, 0.0)
+        if v and v != "none" and share > cap:
+            over.append("%s %r at %d%% of %d prompts (cap %d%%)" % (k, v, round(share * 100), shares.get("n", 0), round(cap * 100)))
+    rows.append(("shell quota", "WARN" if over else "PASS",
+                 "; ".join(over) + "; reword at the role level, not the verb" if over else
+                 "question form, second-sentence opener, rounding opener and deliverable set all under their corpus caps"))
+
     files = deliverables(text)
     if not files:
         rows.append(("deliverables named", "FAIL", "no output file name with an extension"))
@@ -300,6 +409,17 @@ def batch(paths):
     else:
         print("  none")
     print()
+
+    print("SHELL QUOTAS (share of every prompt on file; the portal has no window)")
+    shares = corpus_shares()
+    for k, cap in QUOTAS.items():
+        top = sorted(shares.get(k, {}).items(), key=lambda kv: -kv[1])[:4]
+        line = ", ".join("%s %d%%" % (v or "(none)", round(sh * 100)) for v, sh in top)
+        worst = top[0][1] if top else 0.0
+        flag = "  <-- over the %d%% cap" % round(cap * 100) if worst > cap else ""
+        print("  %-24s %s%s" % (k, line, flag))
+    disclosed = sum(1 for t, _ in texts.values() if count_disclosures(t))
+    print("  %d of %d prompts in this batch disclose a count the data hold\n" % (disclosed, len(texts)))
 
     print("SHAPE AND SIZE".ljust(12) + "   chars  words  sents  w/sent  files")
     ext_counter = collections.Counter()

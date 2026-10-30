@@ -100,7 +100,12 @@ call runs on only where the pack lacks it; a generic threat to validity ("partic
 **Never says:** anything that fixes the basis, window, convention or population; the deciding metric, eligibility rule
 or fee schedule; an input file name; a standard by acronym; a method hint ("compare A against B"); a trap word (clean,
 unduplicated, reconcile, attribution, mix, standardise, grain); two metrics named as valid; a warning that a view
-might mislead; a **presupposition**, an ask that only parses if a subset is non-empty or a move happened ("how many
+might mislead; **a count the data hold** (the candidate set's size, a population count, a derivable count: "which four
+of the eight", "each of our twelve zones", "we run 264 schools"; the model finds what the files hold, and
+`voice-check.py` fails the prompt; a decision parameter stays where it is not tied to such a count, "designate seven"
+and never "seven of the sixteen"); **a sentence that explains the data** (what a file is, how a field is coded, which
+system produced a column: the pack's own documents say that in the organisation's voice or nothing does); a
+**presupposition**, an ask that only parses if a subset is non-empty or a move happened ("how many
 and what they cost", "the sites where it fell"), which the client's prompt review fails as a leak: make "none" a
 grammatical answer ("whether any and, if so, how many and what they cost") with every figure, unit and rounding kept,
 while a fact the requester knows before any analysis stays (`reduce-house-fixes` H23).
@@ -112,9 +117,16 @@ meeting or pack inventory; ask rather than specify. Never cut the repeated unit,
 chart's named parts, a unit, a derived figure's rounding, or the forcing fact. After each pass walk the figure list,
 recount the criteria and rerun the gate.
 
-**Variety.** Take the question's form from the decision (a count asks how many, a pick which, a gate whether, an amount
-how much, a date when); the batch report flags a form above a third of the window, and a window shipping one format
-or pairing reads as a template.
+**Variety, over the whole corpus.** The portal holds every accepted task with no window, and the one Duplicate it
+returned named the prompt's shell (how many, a workbook with a count-once side table, one labelled stacked bar, nearest
+N), not its nouns: 182 of 186 prompts on file run question, deliverable, side table, chart, rounding. So the shell is
+drawn with the world. Take the question's form from the decision (a count asks how many, a pick which, a gate whether,
+an amount how much, a date when); lead the second sentence with the deliverable, the rule, the date or the use rather
+than "Put ... in" every time; put a rounding inside its asking sentence where the asks spec allows it rather than
+"Give ... to the nearest" last every time; vary the deliverable set and the chart's species. `voice-check.py` holds
+corpus quotas (no question form over 30 per cent of prompts on file, no second-sentence opener, rounding opener or
+deliverable set over 20 per cent) as a WARN the build answers at the role level, never at the verb, and the batch
+report prints the shares. A re-root redraws the shell with the world (`stumping` Part 6).
 
 **The call and the asks.** The call is one quotable sentence with its unit. Every ask is a component, qualifier
 (sensitivity, flip, reconciliation) or audit trail of it; an ask a person could act on with the call unmade is a
@@ -136,10 +148,13 @@ name; a line break; no question mark in the first two sentences; 1,000 character
 from the card's `world.people`, a title, sign-off, board vote or reader; a sentence opening Then, Next, First, Second,
 Last, Finally, After that; an LLM tell (leverage, robust, comprehensive, seamless, delve, ensure, note that, in order
 to, furthermore, stakeholders); two attributed opinions; rounding outside the last sentence; zero or more than three
-files. `leak.py` sweep 11 and `precut.py` run the same gate. A failing draft is not done.
+files; a count the data hold (FAIL on a build in design, WARN once shipped). It warns on a shell class over its corpus
+quota and on a missing rounding sentence. `leak.py` sweep 11 and `precut.py` run the same gate. A failing draft is not
+done.
 
 ## Checklist
 
 - [ ] Domain, task type, objective and `domain_test` fixed; shape arithmetic at 25 or more before any file exists
 - [ ] The call is one quotable sentence; every ask passes H18 and the six tests; `voice-check.py taskNN` exits 0
 - [ ] No ask presupposes what the data holds: every ask about a subset still reads with "none" as its answer
+- [ ] No count the data hold and no sentence explaining the data; the shell (question form, openers, deliverable set) under its corpus quota or reworded at the role level
