@@ -297,6 +297,48 @@ def drivers_of(c):
     return out
 
 
+_VOICE_MOD = None
+_SHELL_CACHE = {}
+
+
+def voice_mod():
+    """voice-check.py as a module, for its shell reader (one definition of the shell, two tools)."""
+    global _VOICE_MOD
+    if _VOICE_MOD is None:
+        spec = importlib.util.spec_from_file_location("voice_check", str(VOICE))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _VOICE_MOD = mod
+    return _VOICE_MOD
+
+
+def shell_of_task(task):
+    """The prompt's shell read off taskNN/prompt.txt: question form, second-sentence opener, deliverable set.
+    The portal's one Duplicate finding named exactly these beside the driver (task179 v3 against task175), so the
+    shell is a component the guard screens, corpus-wide and with no window."""
+    if task in _SHELL_CACHE:
+        return _SHELL_CACHE[task]
+    sh = None
+    p = REPO / task / "prompt.txt"
+    if p.exists():
+        try:
+            sh = voice_mod().shell_of(p.read_text(errors="ignore"))
+        except Exception:
+            sh = None
+    _SHELL_CACHE[task] = sh
+    return sh
+
+
+def shell_key(sh):
+    if not sh:
+        return None
+    return (sh.get("question form") or "", sh.get("second-sentence opener") or "", sh.get("deliverable set") or "")
+
+
+def shell_text(key):
+    return " | ".join(k or "-" for k in key)
+
+
 def norm_names(c):
     names = (c.get("world") or {}).get("invented_names") or []
     return {re.sub(r"\s+", " ", n.strip().lower()) for n in names if n and len(n.strip()) > 3 and " " in n.strip()}
@@ -707,6 +749,34 @@ def check(cand, cards, vocab, status=None):
                 lambda c: (first(c.get("gap")), decisive_mech(c), c.get("decision_type") or None))
     struct_test("test.same_driver", "decisive gap, decisive pattern and Gate G mechanism",
                 lambda c: (first(c.get("gap")), decisive_mech(c), c.get("gate_g") or None))
+
+    # The shell (stumping Part 6). A reviewer reads the prompt's role sequence and the deliverable set beside the
+    # driver, and the portal holds every accepted task with no window: the same shell on the same structural
+    # driver as an approved or delivered build is the Duplicate finding on record, and no differentiation line
+    # clears it. The shell alone repeating is a WARN the build answers at the role level, never the verb.
+    mine_sh = shell_key(cand.get("shell") or shell_of_task(me))
+    if mine_sh and all(mine_sh):
+        mine_drv = (first(cand.get("gap")), decisive_mech(cand), cand.get("gate_g") or None)
+        for c in others:
+            st = status.get(c.get("task")) or ""
+            if st not in ("approved", "delivered or approved", "delivered"):
+                continue
+            sh = shell_key(c.get("shell") or shell_of_task(c.get("task")))
+            if sh != mine_sh:
+                continue
+            if (first(c.get("gap")), decisive_mech(c), c.get("gate_g") or None) == mine_drv and all(mine_drv):
+                add("BLOCK", "shell.template", "the prompt's shell (%s) and the structural driver (%s) both repeat a build the "
+                    "portal holds; a differentiation line does not clear this, the portal has no window"
+                    % (shell_text(mine_sh), ", ".join(str(x) for x in mine_drv)), [label(c)],
+                    "redraw the gap or the pattern, and reword the prompt at the role level (question form, second sentence, deliverable set)")
+            else:
+                add("WARN", "shell.repeat", "the prompt's shell (%s) repeats a build the portal holds" % shell_text(mine_sh),
+                    [label(c)], "reword at the role level: lead the second sentence with the rule, the date or the use; vary the deliverable set")
+        for old in cand.get("lineage_shells") or []:
+            if shell_key(old) == mine_sh:
+                add("BLOCK", "shell.lineage", "a re-root keeps a dead architecture's prompt shell (%s)" % shell_text(mine_sh), [me],
+                    "redraw the shell with the world: question form, second sentence, deliverable set")
+                break
 
     # Driver sentences, the reskinned clone that no axis can see.
     corpus = []
@@ -1162,6 +1232,17 @@ def cmd_register(args):
     out = CARDS_DIR / ("%s.json" % cand["task"])
     clean = {k: v for k, v in cand.items() if not k.startswith("_")}
     clean["registered"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    sh = shell_of_task(cand["task"])
+    if sh:
+        clean["shell"] = sh
+    if out.exists():
+        try:
+            old = json.loads(out.read_text())
+        except Exception:
+            old = {}
+        if old.get("shell") and old.get("architecture") != clean.get("architecture"):
+            prior = [x for x in (old.get("lineage_shells") or []) if x] + [old["shell"]]
+            clean["lineage_shells"] = prior
     out.write_text(json.dumps(clean, indent=2, ensure_ascii=False) + "\n")
     print("\nfiled %s" % out)
     return 0
@@ -1278,7 +1359,9 @@ def cmd_heart(args):
     scored = sorted(((tf.sim(heart, t), kind, who, t) for kind, who, t in corpus), key=lambda x: -x[0])
     print("== HEART OF THE STUMP, %s ==" % cand.get("task"))
     print("driver: %s" % (cand.get("driver") or "")[:300])
-    print("stump:  %s\n" % (cand.get("stump") or "")[:300])
+    print("stump:  %s" % (cand.get("stump") or "")[:300])
+    sh = shell_key(shell_of_task(cand.get("task")) or cand.get("shell"))
+    print("shell:  %s\n" % (shell_text(sh) if sh else "(no prompt.txt yet)"))
     print("nearest on file (driver + stump text against every card, lineage and ledger row):")
     worst = 0.0
     for s, kind, who, t in scored[:args.n]:

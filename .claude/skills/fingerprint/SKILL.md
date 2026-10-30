@@ -46,6 +46,7 @@ anything else.
 | `answer`, `answer_source` | the committed answer verbatim, its source |
 | `lineage`, `differentiation` | earlier architectures with fate and driver; `{taskNN: one line}` against a flagged build |
 | `architecture_spent` | `true` when this card's own draw is dead and the slot has moved past it: the card then holds no axis ban, while its driver, stump and lineage are still screened against |
+| `shell`, `lineage_shells` | the prompt's shell as `guard.py register` reads it off `prompt.txt` (question form, second-sentence opener, deliverable set), and the shells of this slot's dead architectures; the portal reads the shell beside the driver (`stumping` Part 6) |
 
 **The driver catches the reskin.** Strip industry, organisation, metric names and figures; keep what
 quantity decides, where it comes from and what it does to the naive answer, so one insight in two
@@ -175,6 +176,9 @@ BLOCK if any rule blocks, else WARN, else PASS; exit 1 on BLOCK.
 | `test.same_driver` | BLOCK | gap, pattern and Gate G equal, last twelve, lineage included (older: unless differentiated) |
 | `test.own_lineage` | BLOCK unless differentiated | the slot's earlier architectures |
 | `driver.text` / `driver.near` | BLOCK unless differentiated / WARN | driver similarity 0.30 and up / 0.12 to 0.30, every driver on file |
+| `shell.template` | BLOCK, never cleared by differentiation | the prompt's shell (question form, second-sentence opener, deliverable set) and the structural driver (gap, pattern, Gate G) both repeat an approved or delivered build, anywhere on file: the combination the portal's Duplicate finding named (task179 v3 against task175) |
+| `shell.repeat` | WARN | the prompt's shell alone repeats an approved or delivered build; reword at the role level, never the verb |
+| `shell.lineage` | BLOCK | a re-root keeps a dead architecture's shell (task118 kept one across four worlds) |
 | `tell.names` | BLOCK | a shared multi-word invented name |
 | `people.full`, `people.inside` | BLOCK | a full name reused anywhere; two personas in one build sharing a first name or surname |
 | `people.first` / `people.last` | BLOCK, else WARN | first name in 3+ builds or the last twelve / surname in 2+ or the last twelve; else one older build |
@@ -186,8 +190,13 @@ BLOCK if any rule blocks, else WARN, else PASS; exit 1 on BLOCK.
   similarity rules and `slots` still see it, since a spent driver is the one most expensive to repeat.
 - **Two structural tests:** the Template clone on record (task86 v1, task72 v2) differed only in decision
   type, so `test.same_puzzle` alone passed it.
-- **Differentiation** clears only similarity rules, never axis bans. A line that cannot be written is the
-  finding.
+- **Differentiation** clears only similarity rules, never axis bans, and never a BLOCK whose shell half
+  matches an approved or delivered build: the portal holds every accepted task with no window, and the one
+  build ruled past a heart BLOCK against an approved build ("window fixed at draw", task179 v3 against
+  task175) came back as a Duplicate. A line that cannot be written is the finding.
+- **The shell is read at register and at heart** from `prompt.txt`, so a card registered before the prompt
+  is written carries no shell until `heart` or `/approve` re-reads it; `voice-check.py` holds the corpus
+  quotas on the same classes (`guide-to-prompt` §3).
 - **Drawn, never typed:** personas (one first name stood in 23 builds), furniture (committees and boards
   decided 49 prompts, regulators none), and pack file names in the organisation's idiom.
 
