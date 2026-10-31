@@ -21,7 +21,6 @@
    "csv",
    "docx",
    "pdf",
-   "txt",
    "xlsx"
   ],
   "largest_file": "epd_nibrs_offense_extract_2024-10_to_2026-09.csv",
@@ -35,8 +34,8 @@
    "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
   },
   {
-   "file": "epd_nibrs_extract_dictionary.pdf",
-   "source": "Ellsmere Police Department, Records Division: extract data dictionary",
+   "file": "epd_rms_nibrs_code_values.csv",
+   "source": "Ellsmere Police Department, Records Division: NIBRS code values for the extract",
    "date": "2026-10-05",
    "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
   },
@@ -71,15 +70,15 @@
    "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
   },
   {
-   "file": "dvu_case_log_fields.txt",
-   "source": "Ellsmere Police Department, Domestic Violence Unit: case log field notes",
-   "date": "2026-10-02",
+   "file": "epd_general_order_417_domestic_violence.pdf",
+   "source": "Ellsmere Police Department: General Order 417, domestic violence (revised 1 October 2024)",
+   "date": "2024-09-23",
    "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
   },
   {
    "file": "scorecard_crime_chapter_methods_2026.docx",
    "source": "University of Ellsmere Public Safety Lab: scorecard crime chapter methods (draft)",
-   "date": "2026-09-29",
+   "date": "2026-10-06",
    "license": "Synthetic data generated for this task; no real records. CC BY 4.0."
   },
   {

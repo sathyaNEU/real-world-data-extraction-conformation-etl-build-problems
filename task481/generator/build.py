@@ -25,7 +25,7 @@ TASK = os.path.dirname(HERE)
 LOCAL = dt.timezone(dt.timedelta(hours=-5))
 
 PDF_STAMPS = {
-    "dictionary": (b"D:20261005084410-05'00'", b"D:20261005091236-05'00'"),
+    "order": (b"D:20240923143012-05'00'", b"D:20240923143012-05'00'"),
     "cert": (b"D:20250122101503-06'00'", b"D:20250122101503-06'00'"),
     "state_table": (b"D:20260914131022-05'00'", b"D:20260915090418-05'00'"),
 }
@@ -34,13 +34,13 @@ OOXML = {   # creator, last modified by, created, modified, company, excel
     "ra_2022": ("Records Division", "Records Division", "2022-02-02T14:55:00Z", "2023-01-19T21:03:12Z", W.DEPT, True),
     "ra_2023": ("Records Division", "Records Division", "2023-02-06T16:20:00Z", "2024-01-23T15:41:08Z", W.DEPT, True),
     "ra_2024": ("Records Division", "Records Division", "2024-02-05T15:02:00Z", "2025-01-28T20:17:55Z", W.DEPT, True),
-    "method": (W.PEOPLE["lab"], W.PEOPLE["lab"], "2026-08-27T14:30:00Z", "2026-09-29T21:08:42Z",
+    "method": (W.PEOPLE["lab"], W.PEOPLE["lab"], "2026-08-27T14:30:00Z", "2026-10-06T20:41:17Z",
                "University of Ellsmere", False),
 }
 AS_OF = {
-    "extract": "2026-10-05", "dictionary": "2026-10-05", "ra_2021": "2022-01-21", "ra_2022": "2023-01-19",
-    "ra_2023": "2024-01-23", "ra_2024": "2025-01-28", "dvu": "2026-10-02", "dvu_notes": "2026-10-02",
-    "method": "2026-09-29", "cert": "2025-01-22", "state_table": "2026-09-15", "state_repo": "2026-09-18",
+    "extract": "2026-10-05", "codes": "2026-10-05", "ra_2021": "2022-01-21", "ra_2022": "2023-01-19",
+    "ra_2023": "2024-01-23", "ra_2024": "2025-01-28", "dvu": "2026-10-02", "order": "2024-09-23",
+    "method": "2026-10-06", "cert": "2025-01-22", "state_table": "2026-09-15", "state_repo": "2026-09-18",
     "gvr": "2026-10-01", "me": "2026-10-06", "population": "2026-06-26", "cad": "2026-01-12",
 }
 
@@ -117,8 +117,8 @@ def build(out, x=None, quiet=False):
     x["ra"] = ra
     for y in (2021, 2022, 2023, 2024):
         DC.write_return_a(f("ra_%d" % y), y, ra, old_layout=(y == 2021))
-    DC.write_dictionary(f("dictionary"), n["extract"])
-    DC.write_dvu_notes(f("dvu_notes"))
+    DC.write_codes(f("codes"))
+    DC.write_order(f("order"))
     DC.write_methods(f("method"))
     DC.write_cert(f("cert"), cert_rows(x))
     DC.write_state_table(f("state_table"), state_table_rows(x))

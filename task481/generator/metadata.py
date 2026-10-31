@@ -7,14 +7,14 @@ import pack as P
 
 SOURCES = {
     "extract": ("Ellsmere Police Department, Records Division: NIBRS offense extract", "2026-10-05"),
-    "dictionary": ("Ellsmere Police Department, Records Division: extract data dictionary", "2026-10-05"),
+    "codes": ("Ellsmere Police Department, Records Division: NIBRS code values for the extract", "2026-10-05"),
     "ra_2021": ("Ellsmere Police Department: Return A workbook, 2021", "2022-01-21"),
     "ra_2022": ("Ellsmere Police Department: Return A workbook, 2022", "2023-01-19"),
     "ra_2023": ("Ellsmere Police Department: Return A workbook, 2023", "2024-01-23"),
     "ra_2024": ("Ellsmere Police Department: Return A workbook, 2024", "2025-01-28"),
     "dvu": ("Ellsmere Police Department, Domestic Violence Unit: case log", "2026-10-02"),
-    "dvu_notes": ("Ellsmere Police Department, Domestic Violence Unit: case log field notes", "2026-10-02"),
-    "method": ("University of Ellsmere Public Safety Lab: scorecard crime chapter methods (draft)", "2026-09-29"),
+    "order": ("Ellsmere Police Department: General Order 417, domestic violence (revised 1 October 2024)", "2024-09-23"),
+    "method": ("University of Ellsmere Public Safety Lab: scorecard crime chapter methods (draft)", "2026-10-06"),
     "cert": ("State UCR Program: NIBRS certification letter", "2025-01-22"),
     "state_table": ("State UCR Program: Crime in the State 2025, table 8", "2026-09-15"),
     "state_repo": ("State UCR Program: repository download for Ellsmere, assault offenses, incident year 2025, at the "

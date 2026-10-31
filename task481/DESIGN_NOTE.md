@@ -65,6 +65,38 @@ department's own figures moving less), taking the world, the decision and the qu
 - **Personas** (`guard.py names --geo "United States" --seed 481`): Darlene Ford (the lab's director of the city
   partnership), Steven Barnett (NIBRS coordinator, the police department's Records Division).
 
+## Survivor anatomy
+
+Actor: the deciding property, each January to September month's domestic share of its other-assaults victims, has no
+column: Return A's line 4e carries no domestic split, the extract's relationship codes start in October 2024, and the
+month's domestic count lives in the Domestic Violence Unit's case log, another unit's record.
+
+Link: the signal is read by rebuilding each month's line 4e victims as domestic and other from the unit's log (its
+Return A line and report month, unfounded cases out) against the workbook's 4e count, a reconstruction across two
+systems that share no identifier, which no key offers and no sentence invites; the methods file only the target.
+
+Reflex: the statistical producer's named method for a coding break, conversion rates per published line measured where
+both codings exist (October to December 2024) and applied to each line's January to September counts, sits at rung 1
+and files a fall of 3 per cent.
+
+Back-test: what a solver validates the easy route against agrees with it: every per-line rate reproduces the
+dual-coded months exactly by construction, the certification letter's October to December comparison ties to the
+extract and the workbooks, and no record scores a restatement against an outcome.
+
+Second use: the extract, the workbooks and the certification letter carry the call's own construction; the unit's case
+log is named among the chapter's sources and is the unit's own record of every domestic case since 2021, and it is the
+one file only the decisive step reads beyond the default path, a risk recorded rather than designed away.
+
+Shock: the movement the step recovers reads as ordinary: the domestic share of line 4e runs 29.1 per cent from January
+to September and 35.8 per cent from October to December, the holiday season's usual mix, and the golden's restated
+2024 sits between the published Return A figure and the default path's, the pack's largest movement being the
+published rise itself.
+
+Pins: the chapter methods file the WHAT (offense 13A, one per victim, by month reported in local time, 2024 restated as
+NIBRS would have recorded it, the rounding); no filed sentence names a domestic split, a seasonal mix or the unit's log
+as a weight (readability screen R3, silent), and deleting the methods' restatement sentence unforces the target, never
+the method.
+
 ## Default path
 
 1. Read the scorecard's crime chapter methods: from the 2026 edition the chapter reports aggravated assault as NIBRS
@@ -161,9 +193,9 @@ domestic count from the Domestic Violence Unit's case log, gives about 5,200 and
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | month reported | the report stamp in Ellsmere local time | the stamp as stored (UTC) | another figure (asserted) | methods 2: "in Ellsmere local time"; dictionary: report_datetime_utc "in UTC" with the offsets |
-| SF2 | domestic victim of line 4e | relationship_1 a family or intimate partner code; in January to September the unit's log | another split | same call (asserted: the codes give the log's count in every dual-coded month, and the log's monthly 4e counts equal the records) | the unit's field notes: the log takes every domestic victim the department receives |
-| SF3 | the log's cases counted | case_status not UNFOUNDED | every case | another figure (asserted) | Return A's column 4 counts actual offenses, unfounded excluded; the field notes' status codes |
+| SF1 | month reported | the report stamp in Ellsmere local time | the stamp as stored (UTC) | another figure (asserted) | methods 2: "in Ellsmere local time"; methods 1: the extract stores the report time in UTC and Ellsmere keeps Central times |
+| SF2 | domestic victim of line 4e | relationship_1 a family or intimate partner code; in January to September the unit's log | another split | same call (asserted: the codes give the log's count in every dual-coded month, and the log's monthly 4e counts equal the records) | General Order 417.2 and 417.4: the definition, and every domestic report referred to the unit, one case per victim |
+| SF3 | the log's cases counted | case_status not UNFOUNDED | every case | another figure (asserted) | Return A's column 4 counts actual offenses, unfounded excluded; General Order 417.5: an unfounded incident is deleted and not counted |
 | SF4 | the log's month | report_date | case_opened | another figure or the same (asserted) | methods 2: "the month the offense was reported" |
 | SF5 | victim | individual victims; every 13A row is one | officers and businesses | same call (asserted) | NIBRS: 13A has individual victims only |
 | SF6 | 2024 as published | Return A column 4, actual offenses, lines 4a to 4d | column 2, offenses reported | another published figure (asserted) | the state table's 2024 figure, 4,829, is column 4's |
@@ -216,7 +248,7 @@ from the nearest bin edge), with the restated total to the nearest hundred (5,19
 | 5 | Version basis | one extract, one Return A workbook a year, one log of each; nothing superseded ships |
 | 6 | Denominator | each dual-coded line's victims (the rates); the domestic and other victims of 4e separately |
 | 7 | Weighting | each January to September month at its own line counts and its own domestic count (the decisive step, an estimation choice no filed rule makes) |
-| 8 | Window length | twelve months a year; the dual-coded quarter October to December 2024 (dictionary, certification letter) |
+| 8 | Window length | twelve months a year; the dual-coded quarter October to December 2024 (the chapter methods, the certification letter) |
 | 9 | Boundary inclusivity | local calendar months and quarters, the shooting log's records-system rows converted from UTC (SF1, SF15) |
 | 10 | Rounding path | 2024 restated summed unrounded and rounded once, to the nearest hundred; the change from the unrounded total to the whole per cent (methods 5) |
 | 11 | Tie-break | none: the golden sits 0.325 from its bin's edge and the restated total 43 from its hundred's |
@@ -234,7 +266,7 @@ from the nearest bin edge), with the restated total to the nearest hundred (5,19
 
 ## Literal reader
 
-Executing the prompt, the chapter methods and the dictionary word for word fixes the target, the window, the unit and
+Executing the prompt, the chapter methods, the code values and General Order 417 word for word fixes the target, the window, the unit and
 the dual-coded months, and leaves one place open, how January to September 2024 are converted; every conversion that
 uses all the shipped evidence (the unit's log for the domestic count) files the golden, every conversion that does not
 files a fall (asserted), every finer grain of the conversion the log supports lands in the same hundred and the same
@@ -268,7 +300,7 @@ records system's UTC times put in local time, give the golden's 24 cells (assert
   every quarter before the move. Only a cut by block across the move shows it; trusting the flag keeps them in every
   quarter from 2023 to the third quarter of 2024.
   Primary device 2: D8, a clock on the rows the records system wrote. The log moved into the records system on 1
-  October 2024, and that system stores every time in UTC (the extract's dictionary says so of its own stamps); the rows
+  October 2024, and that system stores every time in UTC (the chapter methods say so of the extract's own stamps); the rows
   it entered carry shot_datetime in UTC, the old database's rows local time. The records system also keeps the outcome
   entered with the shooting, so a victim who died days later stays WOUNDED and only the Medical Examiner's list, which
   dates the injury in local time, shows the death. A join of the list on the date as stored misses every victim shot
@@ -319,7 +351,7 @@ records system's UTC times put in local time, give the golden's 24 cells (assert
   step alone a rise of 2.1). Layers: the Return A layout change, the summary class filled only in the dual-coded months,
   the renumbering, UTC against local time, the state repository's freeze and the shooting log's carry-over across the
   records move are the department's, the unit's and the state program's own systems and are neutral on the call; the
-  call opens neither the shooting log nor the Medical Examiner's list, and the extract's dictionary names neither
+  call opens neither the shooting log nor the Medical Examiner's list, and General Order 417 and the code values name neither
   (asserted). Three rules: no decoy, memo or earlier
   restatement ships; no field reading decides; executing every filed rule files the per-line fall.
 - **Judge:** round 1 on a17767bf7704a407 DETERMINISTIC, SOLUTION_WRONG minor and FIX_NOW (step 6's township wording,
@@ -344,6 +376,23 @@ records system's UTC times put in local time, give the golden's 24 cells (assert
   codes, not as shooting counts; the methods docx carries the chapter's own wording of the comparison and none of its
   figures; five documents use the program's words (months, October, offense, return) without naming a domestic share,
   a mix or a weighting.
+
+- **Reship of 2026-10-31 under the 10-30 gates.** The extract dictionary and the unit's field notes no longer ship
+  (describing files). The NIBRS codes ship as the Records Division's plain code values (by data element, with the
+  department's clearance and Return A line codes, NS and P2 included); the domestic definition, the referral of every
+  domestic report and the case outcomes are General Order 417 (an unfounded incident deleted and not counted); the
+  extract's scope, its UTC report time, the March 2025 renumbering and the dual-coded months are the chapter methods'
+  sources paragraph, with no field names; the methods are dated October 2026, after the extract they cite, and the
+  docx carries no template thumbnail; the prompt's rounding sentence opens on round. figures.json identical; checks
+  117; the verifier agrees; two builds byte-identical; ceiling.py 30.0 on the careful reading (sensitivity unchanged);
+  precut 61 clean; leak.py REVIEW (no LEAK; stump-vocabulary lines on the state table, the order, the methods and the
+  letter ruled harmless: each states its own scope or the target and none names a domestic split, a mix or a weight);
+  reader clean (question 6 analytical; its question 3 note on the code values ruled harmless, a plain code list).
+  Heart BLOCKs on axis bans alone against task477 and task471 v5, both filed the same day before this draw (heart read
+  WARN at the 10-21 ship): a delivered build keeps its labels and the bans are flagged to the author. Surface promotes
+  seven pairs for the author's read, each differentiated on the card. Judge pass 3 (isolated thread on the cut pack):
+  DETERMINISTIC, APPROVE; every committed figure reproduced, the main call forced by the data; its optional pin on the
+  shooting log's clock is Ask A's silent device (D8), forced by the log's own re-entered rows, and is not filed.
 
 ## Tried and rejected
 
@@ -372,3 +421,4 @@ records system's UTC times put in local time, give the golden's 24 cells (assert
 - Split reports numbered as the original report plus a few: in the records system those numbers belonged to unrelated
   incidents in the extract; a split victim now carries the number of the hospital notification report, which the
   system numbers in the same sequence and which holds no offense.
+- Shipping the extract's data dictionary and the unit's field notes beside the governing documents: dropped at the 10-31 reship, a file that describes the data is a leak under the 10-30 gates; the codes went to a plain code list, the unit's rules to General Order 417 and the extract's conventions to the chapter methods, and judge pass 3 reproduced every figure without them.

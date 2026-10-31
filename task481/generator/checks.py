@@ -224,7 +224,7 @@ def run(target, gdir, x, meta_path, fig_path):
              and gg[M.G["shot_datetime"]] < "2024-10-01"}
     ok("device: a township shooting in every quarter before October 2024", all(q in pre_q for q in M.QUARTERS[:7]))
     ok("separation: no shooting-log or Medical Examiner organ in a main-call document",
-       not any(w in _text(f("dictionary")).lower() for w in ("shooting log", "medical examiner", "township")))
+       not any(w in (_text(f("order")) + _text(f("codes"))).lower() for w in ("shooting log", "medical examiner", "township")))
 
     # ---------------------------------------------------------------- the three rules, executed (R1 to R3)
     filled = sum(1 for r in rows if r[M.E["ucr_summary_class"]])
@@ -283,7 +283,7 @@ def run(target, gdir, x, meta_path, fig_path):
         if n.endswith((".csv", ".txt")):
             t = open(os.path.join(target, n), encoding="utf-8").read()
             ok("no long dashes in %s" % n, "\u2014" not in t and "\u2013" not in t)
-    for n in ("method", "dictionary", "cert", "state_table"):
+    for n in ("method", "order", "cert", "state_table"):
         t = _text(f(n))
         ok("no long dashes in %s" % P.FILES[n], "\u2014" not in t and "\u2013" not in t)
     sub = open(os.path.join(os.path.dirname(target), "submission.md"), encoding="utf-8").read()

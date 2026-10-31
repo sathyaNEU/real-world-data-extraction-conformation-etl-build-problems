@@ -1,6 +1,6 @@
-"""task481 documents and workbooks: the extract's dictionary, the Return A workbooks, the Domestic Violence Unit's
-field notes, the Lab's methods note for the scorecard's crime chapter, the State UCR Program's certification letter
-and its 2025 agency table."""
+"""task481 documents and workbooks: the Records Division's code values for the extract, the Return A workbooks, the
+department's general order on domestic violence, the Lab's methods note for the scorecard's crime chapter, the State
+UCR Program's certification letter and its 2025 agency table."""
 import docx
 import openpyxl
 from docx.shared import Pt, RGBColor
@@ -82,7 +82,7 @@ def _n(v):
     return "{:,}".format(int(v))
 
 
-# ------------------------------------------------------------------------------------------------ the extract dictionary
+# ------------------------------------------------------------------------------------------------ the Records Division's code values
 OFFENSES = [("09A", "Murder and nonnegligent manslaughter"), ("100", "Kidnapping/abduction"), ("11A", "Rape"),
             ("11D", "Fondling"), ("120", "Robbery"), ("13A", "Aggravated assault"), ("13B", "Simple assault"),
             ("13C", "Intimidation"), ("200", "Arson"), ("220", "Burglary/breaking and entering"),
@@ -96,9 +96,9 @@ OFFENSES = [("09A", "Murder and nonnegligent manslaughter"), ("100", "Kidnapping
 WEAPONS = [("11", "Firearm (type not stated)"), ("12", "Handgun"), ("13", "Rifle"), ("15", "Other firearm"),
            ("20", "Knife/cutting instrument"), ("30", "Blunt object"), ("35", "Motor vehicle/vessel"),
            ("40", "Personal weapons (hands, fists, feet, teeth)"), ("85", "Asphyxiation (drowning, strangulation, "
-           "suffocation)"), ("90", "Other"), ("99", "None")]
+           "suffocation)"), ("90", "Other"), ("99", "No weapon or force")]
 INJURIES = [("B", "Apparent broken bones"), ("I", "Possible internal injury"), ("L", "Severe laceration"),
-            ("M", "Apparent minor injury"), ("N", "None"), ("O", "Other major injury"), ("T", "Loss of teeth"),
+            ("M", "Apparent minor injury"), ("N", "No injury"), ("O", "Other major injury"), ("T", "Loss of teeth"),
             ("U", "Unconsciousness")]
 RELS = [("SE", "Spouse"), ("CS", "Common-law spouse"), ("PA", "Parent"), ("SB", "Sibling"), ("CH", "Child"),
         ("GP", "Grandparent"), ("GC", "Grandchild"), ("IL", "In-law"), ("SP", "Stepparent"), ("SC", "Stepchild"),
@@ -112,62 +112,38 @@ PLACES = [("03", "Bar/nightclub"), ("05", "Commercial/office building"), ("07", 
           ("24", "Specialty store"), ("25", "Other/unknown")]
 
 
-def write_dictionary(path, n_rows):
-    h1, h1s, h2 = _styles(NAVY)
-    d, frame = _doc(path, "NIBRS offense extract: data dictionary", W.DEPT,
-                    "%s, Records Division. NIBRS offense extract for the University of Ellsmere Public Safety Lab." % W.DEPT)
-    s = [Paragraph("NIBRS offense extract: data dictionary", h1),
-         Paragraph("Records Division, %s. Extract run 5 October 2026 for the University of Ellsmere Public Safety Lab "
-                   "under the data-sharing agreement of 12 February 2025." % W.DEPT, h1s),
-         Paragraph("Scope", h2),
-         Paragraph("The extract holds every offense the department submitted to the State UCR Program in incidents "
-                   "reported from 1 October 2024, when the department's new records system went live, to 30 September "
-                   "2026: %s rows, one for each offense against each victim. An incident the department has deleted "
-                   "(an unfounded report, or a record entered in error) is not in the extract. Incident numbers are the "
-                   "records system's current numbers: the system's March 2025 upgrade renumbered every incident it "
-                   "held from the form EPyy-nnnnn to yyyy-nnnnnn, keeping the sequence number." % _n(n_rows), SANS),
-         Paragraph("Times", h2),
-         Paragraph("report_datetime_utc is the date and time the offense was reported to the department, stored in "
-                   "UTC (Coordinated Universal Time). Ellsmere is on Central time: six hours behind UTC in standard "
-                   "time and five hours behind in daylight saving time. incident_date and incident_hour are the date "
-                   "and hour the incident occurred, in local time.", SANS),
-         Paragraph("Summary class", h2),
-         Paragraph("From October to December 2024 the Records Division produced the monthly Return A from the new "
-                   "records system as well as the NIBRS submission, and recorded for each offense against each victim "
-                   "the Return A line it was scored under. ucr_summary_class carries that line for the incidents "
-                   "reported in those three months and is blank for later incidents. NS marks an offense not scored "
-                   "on Return A under the hierarchy rule (the incident was scored under a higher offense); P2 marks an "
-                   "offense outside the Return A lines.", SANS),
-         Paragraph("Columns", h2)]
-    cols = [("incident_number", "Records system incident number"),
-            ("report_datetime_utc", "Date and time reported, UTC"),
-            ("incident_date, incident_hour", "Date and hour the incident occurred, local time"),
-            ("offense_seq", "Offense within the incident"),
-            ("offense_code", "NIBRS offense code (table 1)"),
-            ("attempt_complete", "A attempted, C completed"),
-            ("location_code", "NIBRS location type (table 5)"),
-            ("weapon_force_1", "First weapon or force involved (table 2); blank where NIBRS takes none"),
-            ("victim_seq", "Victim within the incident"),
-            ("victim_type", "I individual, B business, S society/public"),
-            ("victim_age, victim_sex", "Individual victims only"),
-            ("injury_1", "First injury the victim suffered (table 3), assault and robbery victims"),
-            ("relationship_1", "Victim's relationship to the first offender (table 4), crimes against persons and "
-                               "robbery"),
-            ("ucr_summary_class", "Return A line, October to December 2024 (see above)"),
-            ("cleared_by, clearance_date", "A arrest, E exceptional means; date of clearance")]
-    s.append(_table([("Column", "Content")] + cols, [2.0 * inch, 4.6 * inch]))
-    for title, rows in (("Table 1. Offense codes in the extract", OFFENSES), ("Table 2. Weapon or force", WEAPONS),
-                        ("Table 3. Injury", INJURIES), ("Table 4. Relationship of victim to offender", RELS),
-                        ("Table 5. Location type (codes in use)", PLACES)):
-        s.append(Paragraph(title, h2))
-        s.append(_table([("Code", "Description")] + rows, [0.8 * inch, 5.8 * inch]))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Codes follow the FBI's NIBRS technical specification. Return A lines: 1A murder, 1B "
-                       "manslaughter by negligence, 2 rape, 3A to 3D robbery (firearm, knife, other weapon, strong-arm), "
-                       "4A to 4D aggravated assault (firearm, knife, other weapon, hands, fists or feet), 4E other "
-                       "assaults (simple, not aggravated), 5A to 5C burglary, 6 larceny-theft, 7A to 7C motor vehicle "
-                       "theft.", SMALL))
-    d.build(s, onFirstPage=frame, onLaterPages=frame)
+RA_LINES = [("1A", "Murder and nonnegligent homicide"), ("1B", "Manslaughter by negligence"), ("2", "Rape"),
+            ("3A", "Robbery, firearm"), ("3B", "Robbery, knife or cutting instrument"),
+            ("3C", "Robbery, other dangerous weapon"), ("3D", "Robbery, strong-arm (hands, fists, feet, etc.)"),
+            ("4A", "Aggravated assault, firearm"), ("4B", "Aggravated assault, knife or cutting instrument"),
+            ("4C", "Aggravated assault, other dangerous weapon"),
+            ("4D", "Aggravated assault, hands, fists, feet, etc. (aggravated injury)"),
+            ("4E", "Other assaults (simple, not aggravated)"), ("5A", "Burglary, forcible entry"),
+            ("5B", "Burglary, unlawful entry (no force)"), ("5C", "Burglary, attempted forcible entry"),
+            ("6", "Larceny-theft"), ("7A", "Motor vehicle theft, autos"), ("7B", "Motor vehicle theft, trucks and buses"),
+            ("7C", "Motor vehicle theft, other vehicles"),
+            ("NS", "Not scored on Return A under the hierarchy rule (the incident was scored under a higher offense)"),
+            ("P2", "Outside the Return A lines")]
+
+
+def write_codes(path):
+    """The Records Division's code values for the NIBRS extract, by NIBRS data element, with the department's own
+    elements after them."""
+    rows = [("6", "UCR Offense Code", c, v) for c, v in OFFENSES]
+    rows += [("7", "Offense Attempted/Completed", "A", "Attempted"), ("7", "Offense Attempted/Completed", "C", "Completed")]
+    rows += [("9", "Location Type", c, v) for c, v in PLACES]
+    rows += [("13", "Type Weapon/Force Involved", c, v) for c, v in WEAPONS]
+    rows += [("25", "Type of Victim", "I", "Individual"), ("25", "Type of Victim", "B", "Business"),
+             ("25", "Type of Victim", "S", "Society/public")]
+    rows += [("33", "Type Injury", c, v) for c, v in INJURIES]
+    rows += [("35", "Relationship of Victim to Offender", c, v) for c, v in RELS]
+    rows += [("EPD-1", "Clearance", "A", "Cleared by arrest"), ("EPD-1", "Clearance", "E", "Cleared by exceptional means")]
+    rows += [("EPD-2", "Return A line scored, October to December 2024", c, v) for c, v in RA_LINES]
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write("data_element,element_name,code,value\r\n")
+        for r in rows:
+            fh.write(",".join('"%s"' % x if ("," in x or '"' in x) else x for x in r) + "\r\n")
+    return len(rows)
 
 
 # ------------------------------------------------------------------------------------------------ the Return A workbooks
@@ -254,43 +230,39 @@ def write_return_a(path, year, table, old_layout):
 
 
 # ------------------------------------------------------------------------------------------------ DVU field notes
-DVU_NOTES = """DOMESTIC VIOLENCE UNIT - CASE LOG (dvu_case_log_2021_2026.csv)
-Special Victims Section, Ellsmere Police Department. Exported 2 October 2026 for the University of Ellsmere Public
-Safety Lab.
-
-What the log holds
-  One row for each victim of a domestic incident reported to the department from 1 January 2021 to 30 September 2026.
-  A domestic incident is an offense between family or household members or between current or former intimate
-  partners (dating, married, living together, or having a child in common). The unit receives every such report from
-  the Records Division, whether or not a detective is assigned.
-
-Fields
-  case_no           Unit case number, DVU-yyyy-nnnnn, numbered in the order cases reach the unit each year.
-  rms_incident      The records system incident number when the case was logged: yy-nnnnnn in the former system
-                    (to September 2024), EPyy-nnnnn in the new system until its March 2025 upgrade, yyyy-nnnnnn after.
-  report_date       Date the offense was reported to the department.
-  case_opened       Date the unit opened the case.
-  offense_category  The unit's own category for the case.
-  ucr_line          The Return A line the Records Division scored the victim under, for cases reported to
-                    December 2024 (Return A lines 4A to 4E for assaults; 5A burglary; blank for offenses outside
-                    Return A).
-  nibrs_offense     The NIBRS offense, for cases reported from October 2024.
-  relationship      Victim to offender: intimate partner (current or former), parent or guardian, child, sibling,
-                    other family or household member.
-  victim_sex, victim_age
-  lethality_screen  Y where the responding officer completed the lethality screen (intimate partner cases), N where
-                    the victim declined; blank otherwise.
-  case_status       OPEN, CLOSED, REFERRED TO PROSECUTOR, or UNFOUNDED (the report was found false or baseless and
-                    the incident was deleted from the records system).
-
-Notes
-  The log is the unit's working record; the department's published counts are the Records Division's returns. Report dates are local.
-"""
-
-
-def write_dvu_notes(path):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        fh.write(DVU_NOTES.replace("\n", "\r\n"))
+def write_order(path):
+    """General Order 417, the department's order on domestic violence, as revised for the new records system."""
+    h1, h1s, h2 = _styles(NAVY, serif=True)
+    d, frame = _doc(path, "General Order 417: Domestic violence", W.DEPT,
+                    "%s | General Order 417 | Domestic violence" % W.DEPT, serif=True)
+    s = [Paragraph("General Order 417: Domestic violence", h1),
+         Paragraph("%s, Office of the Chief of Police. Revised and effective 1 October 2024; supersedes the order of "
+                   "4 March 2019." % W.DEPT, h1s),
+         Paragraph("417.1 Purpose", h2),
+         Paragraph("This order sets how the department responds to domestic incidents, how it records them and how the "
+                   "Special Victims Section follows them up.", SERIF),
+         Paragraph("417.2 Definitions", h2),
+         Paragraph("A domestic incident is an offense between family or household members, or between current or "
+                   "former intimate partners. Intimate partners are persons who are or were dating, married or living "
+                   "together, or who have a child in common.", SERIF),
+         Paragraph("417.3 Response", h2),
+         Paragraph("The responding officer offers every victim of an intimate partner incident the lethality screen and "
+                   "completes it with the victim's agreement; a victim may decline the screen. Every domestic incident "
+                   "is written up as an incident report in the records system, whatever the offense.", SERIF),
+         Paragraph("417.4 Referral to the Domestic Violence Unit", h2),
+         Paragraph("The Records Division refers every report of a domestic incident to the Domestic Violence Unit, "
+                   "whether or not a detective is assigned. The unit opens one case for each victim, numbered in the "
+                   "order its cases reach it each year, and keeps against the case the incident number the report was "
+                   "referred under and the offense as the Records Division classified it for the department's crime "
+                   "returns.", SERIF),
+         Paragraph("417.5 Case outcomes", h2),
+         Paragraph("A case is closed, referred to the prosecutor, or unfounded where the investigation finds the report "
+                   "false or baseless. The Records Division deletes an unfounded incident from the records system, and "
+                   "it is not counted in the department's crime returns.", SERIF),
+         Paragraph("417.6 Records", h2),
+         Paragraph("The unit's case log is its working record of cases and outcomes. The department's published crime "
+                   "counts are the Records Division's returns.", SERIF)]
+    d.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
 # ------------------------------------------------------------------------------------------------ the Lab's methods note
@@ -314,13 +286,23 @@ def write_methods(path):
     para("Public Safety Scorecard, 2026 edition", bold=True, size=15, color="1F3A5F")
     para("Crime chapter: methods", bold=True, size=12, color="1F3A5F")
     para("University of Ellsmere Public Safety Lab, for the City of Ellsmere. Draft for the executive team, "
-         "September 2026.", italic=True, size=9.5)
+         "October 2026.", italic=True, size=9.5)
     para("1. Sources", bold=True, size=11)
     para("The chapter uses the police department's records under the data-sharing agreement of 12 February 2025: the "
          "NIBRS offense extract run on 5 October 2026, the department's Return A workbooks for 2021 to 2024, and the "
          "Domestic Violence Unit's case log; the Gun Violence Reduction Unit's shooting log and the county Medical "
          "Examiner's homicide list; and the State UCR Program's published tables and repository download for "
          "Ellsmere.")
+    para("The NIBRS offense extract holds every offense the department submitted to the State UCR Program for "
+         "incidents reported from 1 October 2024, when its new records system went live, to 30 September 2026, one "
+         "row for each offense against each victim; an incident the department has deleted, an unfounded report or a "
+         "record entered in error, is not in it. The extract stores the time each offense was reported in UTC "
+         "(Ellsmere keeps Central time) and the incident's own date and hour in local time. Its incident numbers are "
+         "the records system's current ones: the system's March 2025 upgrade renumbered every incident it held from "
+         "EPyy-nnnnn to yyyy-nnnnnn, keeping the sequence number. For the incidents reported from October to December "
+         "2024, the three months in which the Records Division produced the monthly Return A from the new system as "
+         "well as the NIBRS submission, the extract also carries the Return A line each offense against each victim "
+         "was scored under. The Records Division's code values for the extract come with it.")
     para("2. Aggravated assault", bold=True, size=11)
     para("From this edition the scorecard reports aggravated assault as NIBRS offense 13A: one offense for each "
          "victim, counted in the month the offense was reported to the department, in Ellsmere local time, from the "

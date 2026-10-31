@@ -11,13 +11,13 @@ import world as W
 
 FILES = {
     "extract": "epd_nibrs_offense_extract_2024-10_to_2026-09.csv",
-    "dictionary": "epd_nibrs_extract_dictionary.pdf",
+    "codes": "epd_rms_nibrs_code_values.csv",
     "ra_2021": "return_a_2021.xlsx",
     "ra_2022": "return_a_2022.xlsx",
     "ra_2023": "return_a_2023.xlsx",
     "ra_2024": "return_a_2024.xlsx",
     "dvu": "dvu_case_log_2021_2026.csv",
-    "dvu_notes": "dvu_case_log_fields.txt",
+    "order": "epd_general_order_417_domestic_violence.pdf",
     "method": "scorecard_crime_chapter_methods_2026.docx",
     "cert": "state_ucr_nibrs_certification_letter.pdf",
 }

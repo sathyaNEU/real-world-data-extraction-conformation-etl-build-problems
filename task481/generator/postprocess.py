@@ -330,6 +330,14 @@ def normalize_ooxml(path, creator, last_by, created, modified, title=None, excel
             if b"<Company>" not in data:
                 data = data.replace(b"</Properties>", b"<Company>" + _x(company or COMPANY).encode() + b"</Company></Properties>")
         out.append((name, data))
+    if ext == ".docx":
+        # the library's template carries a blank-page thumbnail; Word saves none unless asked to
+        out = [(n, d) for n, d in out if n != "docProps/thumbnail.jpeg"]
+        out = [(n, re.sub(rb'<Relationship [^>]*metadata/thumbnail[^>]*/>', b"", d) if n == "_rels/.rels" else d)
+               for n, d in out]
+        if not any(n.endswith((".jpeg", ".jpg")) for n, _ in out):
+            out = [(n, re.sub(rb'<Default Extension="jpeg"[^>]*/>', b"", d) if n == "[Content_Types].xml" else d)
+                   for n, d in out]
     if ext == ".xlsx":
         out = [(n, d if d.startswith(b"<?xml") or not n.endswith((".xml", ".rels")) else XML_DECL + d)
                for n, d in share_strings(out)]
