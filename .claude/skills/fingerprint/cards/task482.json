@@ -1,92 +1,87 @@
 {
   "task": "task482",
-  "architecture": "v15 (re-root into a Missouri manufacturer's self-insured employee dental plan: the 2027 annual maximum priced on the 2025 plan year, with the predetermined work members at the maximum put off to the next plan year read from the predeterminations and the claims after the January reset)",
+  "architecture": "v16 (re-root into a UK secondary aluminium works' 2026 product-family carbon intensities for a car maker's 2027 low-carbon premium: each family's direct emissions read from the gas each process burned, the shared site meter attributed to melting by the tonnes melted and to the homogenizing furnace and the solution oven by the hours they fired)",
   "drawn": "2026-10-31",
-  "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 14 (the clinically integrated network's two-sided track) spent when a FIX_NOW failed its second judge pass; architectures 5 to 13 recorded in the note; new world (a Missouri manufacturer's employee dental plan), new dataset, new shell",
-  "domain": "healthcare-delivery-health-economics",
-  "client_domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a foundry and machining company's self-insured employee dental plan costing the union's bargaining proposal of a higher per-person annual benefit maximum for its 2027 plan year from the 2025 plan year's claims, predeterminations and accumulators, after its administrator moved the plan's claims to a new adjudication platform in July 2025",
+  "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 15 (the Missouri foundry's employee dental maximum) spent at stage 4 when the judge sent it back on a withheld costing rule; architectures 5 to 14 recorded in the note; new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell",
+  "domain": "physical-environmental-sciences",
+  "client_domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a UK secondary aluminium works' 2026 direct emissions per tonne of each product family (two extrusion billet alloys, foundry ingot, heat-treated castings), conformed from the site gas meter's 15-minute export, the gas supplier's invoices, the melting furnaces' charge logs, the homogenizing furnace and solution oven logs and the production records, for a car maker's 2027 low-carbon premium",
   "objective": "etl",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "named_option",
-  "answer": "Agree a 2,000 dollar annual maximum for 2027, not the union's 3,000: under Finance Policy F-17 2,000 dollars adds 1.55 dollars per covered person month, inside Board Resolution 2026-31's 1.90, and 3,000 dollars adds 2.34",
+  "shape": "05",
+  "decision_type": "quantity_figure",
+  "answer_unit": "currency",
+  "answer": "TBD at build",
   "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
   "gap": [
     "objective",
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
-    "G13",
-    "G9"
+    "G2",
+    "G7",
+    "G14"
   ],
-  "gate_g": "etl_conformance",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_model",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two claims platforms, reads every plan rule correctly and prices each maximum on a continuance of the 2025 members' plan-paid charges before the maximum (the lines the maximum cut included), trended line by line to the 2027 fee schedule, files a 3,000 dollar maximum; members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists' predeterminations had priced until the January reset, so at any higher maximum that work comes back into the year and only 2,000 dollars stays inside the bargaining mandate's limit.",
-  "domain_test": "The deciding quantity is the plan's 2027 cost at each annual maximum, the benefit-change pricing a health plan's claims analytics works from a continuance table of its members' annual plan-paid charges; put megawatt-hours or library loans in for dental claims and there is no predetermination, no coinsurance tier and no plan-year reset of a per-person benefit maximum, and the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:benefit-ceiling-deferred-work",
+  "analyst_test": "A strong analyst who conforms the meter export (UTC, the imperial meter's hundreds of cubic feet before the meter exchange), converts it to energy at each invoice period's calorific value, dedupes the production lots and reads the car maker's requirement correctly shares the works' gas over the families by the tonnes each produced, the field's mass allocation, and puts every family under the limit; the call is wrong because the homogenizing furnace and the solution oven burn gas by the hours they fire, not the tonnes they hold, and the castings melt far more metal than they ship, so the long-soak billet alloy and the castings carry well over the works' average.",
+  "domain_test": "The deciding quantity is each product family's specific direct emissions, tonnes of CO2 per tonne, the product carbon footprint an emissions inventory attributes from shared combustion to the processes that burn the fuel, with melting energy scaling with the mass melted and soaking energy with time at temperature; put hospital wards or library loans in and there is no furnace, no soak and no melt yield, so the task stops making sense.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:shared-meter-process-attribution",
   "layer1": [
-    "two claims platforms across the July 2025 migration (Classic voiding and replacing an adjusted claim, Nexus restating it under a new claim number and superseding the old lines, a Classic claim adjusted after the move restated on Nexus)",
-    "member identifiers renumbered at the migration, joined through the administrator's crosswalk",
-    "Classic procedure codes without the leading D and US-format dates beside Nexus ISO dates",
-    "reduction reasons in two vocabularies (Classic MX, DD and FQ; Nexus CARC 119, 1 and 151)",
-    "a fee schedule workbook with one sheet per year under a title block",
-    "eligibility spans written with an open end as 12/31/9999 on Classic and left blank on Nexus",
-    "Nexus estimate timestamps in UTC beside Classic local times",
-    "Nexus tooth numbers stored as text with a leading zero",
-    "Nexus predeterminations issued in parts, one estimate per tooth group"
+    "the site gas meter exported in UTC at 15-minute intervals, the imperial meter's hundreds of cubic feet until the meter exchange and cubic metres after it",
+    "the gas supplier's invoices by meter-read period, each with its own calorific value and the volume correction factor",
+    "melting furnace charge logs in local time with re-charged and aborted heats",
+    "production lots re-inspected under the same lot number and rejected lots returned to the furnace",
+    "the homogenizing furnace's loads straddling midnight and month ends"
   ],
-  "stakeholder_role": "the company's benefits manager, who costs the union's dental proposal for the company's bargaining committee",
-  "role_family": "finance_controller",
-  "scoring_unit": "per covered member",
+  "stakeholder_role": "the car maker's purchasing lead for aluminium semi-finished goods, who awards the 2027 low-carbon premium under the supplier carbon requirement",
+  "role_family": "procurement_lead",
+  "scoring_unit": "per certified output",
   "spine": {
-    "file": "rba_classic_claims_2024-01_2025-06.csv + rba_nexus_claim_lines_2025-07_2026-10.csv",
-    "rows": 90899,
-    "entity": "one adjudicated dental claim line (procedure, tooth, allowed, paid, deductible, reason)",
-    "grain": "claim line",
+    "file": "brackwell_site_gas_meter_2026.csv",
+    "rows": 35040,
+    "entity": "one 15-minute interval of the works' gas meter (volume, unit, meter serial)",
+    "grain": "15-minute interval",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "other",
   "forcing_event": "purchase_order_or_contract",
   "org_family": "manufacturer",
   "world": {
-    "geography": "United States, Missouri (a fictional iron foundry and machining company of about 2,300 employees; the company, its plan, its administrator, the union local and the people are fictional)",
-    "currency": "USD",
-    "org_type": "a manufacturer's self-insured employee dental plan administered by a third-party administrator",
-    "invented_names": [
-      "Pembrook Castings Company",
-      "Ridgeline Benefit Administrators"
-    ],
+    "geography": "United Kingdom, West Midlands (a fictional secondary aluminium works with a casthouse and a sand foundry, and a fictional German car maker; the companies and people are fictional)",
+    "currency": "GBP",
+    "org_type": "a secondary aluminium works supplying a car maker under its supplier carbon requirement",
     "people": [
-      "Audrey Bautista",
-      "Marvin Jordan",
-      "Barry Rowland"
+      "Rosemary Kent",
+      "Tony Coleman",
+      "Reece Parker"
     ]
   },
   "deliverables": [
-    "pembrook_dental_member_year_2025.csv",
-    "pembrook_dental_maximum_2027.pdf",
-    "pembrook_dental_maximum_2027.svg"
+    "velden_low_carbon_premium_2027.docx",
+    "brackwell_scr2_figures_2026.csv"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
-  "driver": "The decisive quantity is what each member's yearly amount would be under a higher per-member ceiling when the records stop at the current one: members who reach it put off work their providers had already priced in advance until the ceiling resets, so that work shows only in the advance estimates and among the next period's first records, and a higher ceiling's cost read from the period's own records misses it and comes out at about half.",
-  "driver_concrete": "Each 2025 member's plan-paid amount before the maximum is the 2025 claims (the lines the maximum cut included) plus the predetermined major work the member put off once the estimate showed the 1,500 dollar maximum would cut the payment, read as the 2025 estimate lines whose member, procedure and tooth are not claimed in 2025 and are claimed after 1 January 2026 within the estimate's twelve months; at the 2027 fees that work puts the 3,000 dollar maximum over the board's 1.90 dollars per covered person month and leaves 2,000 dollars inside it.",
-  "stump": "A competent solver prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files 3,000 dollars (1.23 per covered person month); members at the 1,500 dollar maximum put off their predetermined crowns, bridges and implants to the January reset, so at a higher maximum the plan pays for that work in the year and only 2,000 dollars (1.55; 3,000 at 2.34) fits the board's 1.90.",
+  "driver": "The decisive quantity is each product's share of fuel burned by shared equipment, recorded only by one meter, where one process burns fuel by the mass it melts and others by the hours they hold heat whatever they hold; spreading the meter's fuel over the products by their output mass gives every product the plant's average, while the processes' own fuel, read from the meter's response to when each process runs and how much it melts, puts the long-soaked product and the low-yield product well above it.",
+  "driver_concrete": "Each family's 2026 direct emissions are the gas its processes burned: melting attributed by the tonnes melted for the family (castings melt about 1.6 tonnes per tonne shipped), the homogenizing furnace by its firing hours on the family's loads (6082 billet soaks about twice as long as 6063), the solution oven only to the castings, and the gas burned with no process running shared by tonnes; each process's gas is read from the site meter's 15-minute record against the charge and furnace logs, since no process is sub-metered.",
+  "stump": "TBD at design",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task65": "task65 regroups child emission units into sources under a per-entity fee cap, so the total moves through the cap without any child's value changing; here no record is regrouped and nothing is capped: the site meter's fuel is split among processes by each process's own physical driver (mass melted against hours at temperature), which the meter's response to the process logs reveals, and the product families' intensities move because the time-driven furnaces' fuel follows hours, not output",
+    "task67": "task67 constitutes entities from child records by location under a cap, read through a filed grouping rule; here the attribution rule is filed only as its WHAT (each process carries the fuel it burned) and the work is estimating each process's fuel from one meter's interval record against the logs, an estimation from the data's structure with no grouping and no cap",
+    "task84": "task84 groups concurrently live campaigns on a composite key and prices the copies' premium from removal episodes; here there is no duplicate entity and no key to group on: one meter's interval series is decomposed into the fuel of processes that run at different times and burn by different drivers, and the products carry their processes' fuel"
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -356,6 +351,104 @@
       "architecture": 14,
       "drawn": "2026-10-25",
       "fate": "spent 2026-10-31 at stage 4: the determinism judge's pass 2 returned FIX_NOW (two graded thresholds a cent off, the 2025 measures within a third of a cent of a rounding edge), and the re-judge of the repair found the write-up's claim that all seven stay members were past the cap by 31 August false under a pooled per-day reading (4,535.53 a day against the per-kind 6,380), the call's margins thin and the stay amount unfiled: a FIX_NOW that failed its second pass"
+    },
+    {
+      "architecture": "v15 (re-root into a Missouri manufacturer's self-insured employee dental plan: the 2027 annual maximum priced on the 2025 plan year, with the predetermined work members at the maximum put off to the next plan year read from the predeterminations and the claims after the January reset)",
+      "drawn": "2026-10-31",
+      "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 14 (the clinically integrated network's two-sided track) spent when a FIX_NOW failed its second judge pass; architectures 5 to 13 recorded in the note; new world (a Missouri manufacturer's employee dental plan), new dataset, new shell",
+      "domain": "healthcare-delivery-health-economics",
+      "client_domain": "healthcare-delivery-health-economics",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "niche": "a foundry and machining company's self-insured employee dental plan costing the union's bargaining proposal of a higher per-person annual benefit maximum for its 2027 plan year from the 2025 plan year's claims, predeterminations and accumulators, after its administrator moved the plan's claims to a new adjudication platform in July 2025",
+      "objective": "etl",
+      "shape": "04",
+      "decision_type": "dial_setting",
+      "answer_unit": "named_option",
+      "answer": "Agree a 2,000 dollar annual maximum for 2027, not the union's 3,000: under Finance Policy F-17 2,000 dollars adds 1.55 dollars per covered person month, inside Board Resolution 2026-31's 1.90, and 3,000 dollars adds 2.34",
+      "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G13",
+        "G9"
+      ],
+      "gate_g": "etl_conformance",
+      "calibration_form": "none",
+      "stump_strategy": "other",
+      "decisive_rule_filed": false,
+      "official_decoy": false,
+      "validated_decoy": false,
+      "context_artifact": "filed_model",
+      "stump_class": "analytical",
+      "analyst_test": "A strong analyst who conforms the two claims platforms, reads every plan rule correctly and prices each maximum on a continuance of the 2025 members' plan-paid charges before the maximum (the lines the maximum cut included), trended line by line to the 2027 fee schedule, files a 3,000 dollar maximum; members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists' predeterminations had priced until the January reset, so at any higher maximum that work comes back into the year and only 2,000 dollars stays inside the bargaining mandate's limit.",
+      "domain_test": "The deciding quantity is the plan's 2027 cost at each annual maximum, the benefit-change pricing a health plan's claims analytics works from a continuance table of its members' annual plan-paid charges; put megawatt-hours or library loans in for dental claims and there is no predetermination, no coinsurance tier and no plan-year reset of a per-person benefit maximum, and the task stops making sense.",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:benefit-ceiling-deferred-work",
+      "layer1": [
+        "two claims platforms across the July 2025 migration (Classic voiding and replacing an adjusted claim, Nexus restating it under a new claim number and superseding the old lines, a Classic claim adjusted after the move restated on Nexus)",
+        "member identifiers renumbered at the migration, joined through the administrator's crosswalk",
+        "Classic procedure codes without the leading D and US-format dates beside Nexus ISO dates",
+        "reduction reasons in two vocabularies (Classic MX, DD and FQ; Nexus CARC 119, 1 and 151)",
+        "a fee schedule workbook with one sheet per year under a title block",
+        "eligibility spans written with an open end as 12/31/9999 on Classic and left blank on Nexus",
+        "Nexus estimate timestamps in UTC beside Classic local times",
+        "Nexus tooth numbers stored as text with a leading zero",
+        "Nexus predeterminations issued in parts, one estimate per tooth group"
+      ],
+      "stakeholder_role": "the company's benefits manager, who costs the union's dental proposal for the company's bargaining committee",
+      "role_family": "finance_controller",
+      "scoring_unit": "per covered member",
+      "spine": {
+        "file": "rba_classic_claims_2024-01_2025-06.csv + rba_nexus_claim_lines_2025-07_2026-10.csv",
+        "rows": 90899,
+        "entity": "one adjudicated dental claim line (procedure, tooth, allowed, paid, deductible, reason)",
+        "grain": "claim line",
+        "source": "synthetic"
+      },
+      "forum": "committee_or_panel",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "manufacturer",
+      "world": {
+        "geography": "United States, Missouri (a fictional iron foundry and machining company of about 2,300 employees; the company, its plan, its administrator, the union local and the people are fictional)",
+        "currency": "USD",
+        "org_type": "a manufacturer's self-insured employee dental plan administered by a third-party administrator",
+        "invented_names": [
+          "Pembrook Castings Company",
+          "Ridgeline Benefit Administrators"
+        ],
+        "people": [
+          "Audrey Bautista",
+          "Marvin Jordan",
+          "Barry Rowland"
+        ]
+      },
+      "deliverables": [
+        "pembrook_dental_member_year_2025.csv",
+        "pembrook_dental_maximum_2027.pdf",
+        "pembrook_dental_maximum_2027.svg"
+      ],
+      "opening_move": "question-first",
+      "question_form": "how-much",
+      "driver": "The decisive quantity is what each member's yearly amount would be under a higher per-member ceiling when the records stop at the current one: members who reach it put off work their providers had already priced in advance until the ceiling resets, so that work shows only in the advance estimates and among the next period's first records, and a higher ceiling's cost read from the period's own records misses it and comes out at about half.",
+      "driver_concrete": "Each 2025 member's plan-paid amount before the maximum is the 2025 claims (the lines the maximum cut included) plus the predetermined major work the member put off once the estimate showed the 1,500 dollar maximum would cut the payment, read as the 2025 estimate lines whose member, procedure and tooth are not claimed in 2025 and are claimed after 1 January 2026 within the estimate's twelve months; at the 2027 fees that work puts the 3,000 dollar maximum over the board's 1.90 dollars per covered person month and leaves 2,000 dollars inside it.",
+      "stump": "A competent solver prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files 3,000 dollars (1.23 per covered person month); members at the 1,500 dollar maximum put off their predetermined crowns, bridges and implants to the January reset, so at a higher maximum the plan pays for that work in the year and only 2,000 dollars (1.55; 3,000 at 2.34) fits the board's 1.90.",
+      "mechanism_source": "design_note",
+      "differentiation": {},
+      "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a Missouri manufacturer's employee dental plan), new dataset, new shell (how-much | csv+pdf+svg); stump_strategy other: a member's year of demand is cut off by a per-person benefit ceiling, and the decisive move recovers the work put off above it from the providers' advance estimates and the claims after the ceiling resets; not maturity_censoring (no open period is completed: the 2025 plan year is closed and every record of it is final), not binding_constraint (the ceiling removes no candidate, it hides the demand that prices one), not population_selection (every member is priced; nothing selects who is in the denominator)",
+      "shell": {
+        "question form": "how-much",
+        "second-sentence opener": "price",
+        "rounding opener": "round",
+        "deliverable set": "csv+pdf+svg"
+      },
+      "version": "v15",
+      "spent": "2026-10-31: stage 4 judge NOT_DETERMINISTIC, SEND_BACK, the reconciliation confirmed a withheld rule (F-17 executed word for word files 3,000; the golden's 2,000 needed the put-off work added back, filed nowhere)"
     }
   ],
   "lineage_shells": [
@@ -364,10 +457,16 @@
       "second-sentence opener": "build",
       "rounding opener": "give",
       "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "price",
+      "rounding opener": "round",
+      "deliverable set": "csv+pdf+svg"
     }
   ],
-  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a Missouri manufacturer's employee dental plan), new dataset, new shell (how-much | csv+pdf+svg); stump_strategy other: a member's year of demand is cut off by a per-person benefit ceiling, and the decisive move recovers the work put off above it from the providers' advance estimates and the claims after the ceiling resets; not maturity_censoring (no open period is completed: the 2025 plan year is closed and every record of it is final), not binding_constraint (the ceiling removes no candidate, it hides the demand that prices one), not population_selection (every member is priced; nothing selects who is in the denominator)",
-  "registered": "2026-10-31T19:34:15Z",
+  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell (which | docx+csv); stump_strategy decomposition_attribution: a shared site meter's gas attributed to processes by their own drivers (mass melted, hours fired) rather than by output mass; the slot's lesson filed: the requirement's word-for-word execution (each process attributed the gas it burned) is the golden, and the difficulty is computing it from the meter's record",
+  "registered": "2026-10-31T21:50:49Z",
   "shell": {
     "question form": "how-much",
     "second-sentence opener": "price",
