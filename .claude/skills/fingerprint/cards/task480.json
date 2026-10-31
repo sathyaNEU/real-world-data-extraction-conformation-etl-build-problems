@@ -1,127 +1,145 @@
 {
- "task": "task480",
- "architecture": "v2",
- "drawn": "2026-10-21",
- "slot_note": "seed ET37 (EU cohesion region category by GDP per head in PPS): the decision form kept (which territorial units a funded program designates, one unit at a time against a filed threshold); the world and the quantity replaced: architecture 1 (a water utility's zone leakage index) spent at stage 4, architecture 2 a state environmental department's CMAQ-funded vehicle retirement program, each county's 2027 NOx from its eligible vehicles, an estimate",
- "domain": "physical-environmental-sciences",
- "subdomain": "emissions-inventory",
- "client_domain": "physical-environmental-sciences",
- "niche": "a state environmental quality department's 2027 Vehicle Retirement Program in a twelve-county ozone nonattainment area, which holds intake events in each county whose registered gasoline cars and light trucks of model years 2005 to 2014 will emit at least 10 short tons of NOx in 2027, each vehicle's 2027 miles expected from its own odometer reading at the area's first biennial inspection cycle (2024 and 2025)",
- "objective": "etl",
- "shape": "other",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Wexmoor, Halvering, Linnmere, Elkhollow, Marlbank",
- "answer_source": "submission.md block 1",
- "gap": [
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G17",
-  "G13",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "close_out_summary",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms the registrations, the inspection records and the rate table and reads the guidelines correctly takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf; no filed rule is broken, but a car travels fewer miles each year as it ages, so a reading's per-year average is the average of its younger, longer years and overstates the eligible fleet's 2027 NOx by about 43 per cent; only each vehicle's level against the inspected fleet's cumulative miles by age, times that curve's rise over 2027, files the golden five.",
- "domain_test": "The deciding quantity is each county's 2027 on-road NOx from its eligible vehicles, the activity-times-rate sum a mobile source emissions inventory builds, and the step that decides it is the inventory's mileage accumulation by age, estimated from inspection odometer readings; with another field's nouns (a clinic's cumulative visit counts, a pump's run hours) the model-year emission rates and the inspection program have no counterpart and the task does not read the same.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:this-year's-miles-at-a-future-age-from-one-cumulative-odometer-reading-per-vehicle",
- "layer1": [
-  "the first cycle's inspection year set by the last digit of the VIN, the four newest model years exempt",
-  "retests and aborted attempts beside each initial test",
-  "VINs keyed by hand when the OBD read fails, joined back through the plate and model year",
-  "odometer placeholders (0, 999999) for unreadable odometers and readings in kilometres",
-  "registrations superseded by a transfer to another county left on file with a transferred status",
-  "tests run at stations in another county than the vehicle's registration",
-  "vehicles registered after their cycle year with no reading yet"
- ],
- "stakeholder_role": "the state environmental quality department's Mobile Sources Section chief, who runs the area's inspection program and its Vehicle Retirement Program and files the 2027 intake county list with the program's CMAQ funding request",
- "role_family": "operations_director",
- "scoring_unit": "other",
- "spine": {
-  "file": "eip_inspections_2024_2025.csv",
-  "rows": 197738,
-  "entity": "one inspection of one vehicle",
-  "grain": "vehicle x inspection",
-  "source": "synthetic"
- },
- "forum": "funder_or_donor",
- "forcing_event": "budget_or_appropriation",
- "org_family": "government_agency",
- "world": {
-  "geography": "United States, a fictional twelve-county ozone nonattainment area in an unnamed state (the department, its programs, the counties and the people are fictional)",
-  "currency": "USD",
-  "org_type": "state environmental quality department (Mobile Sources Section)",
-  "invented_names": [
-   "Wexmoor",
-   "Linnmere",
-   "Halvering",
-   "Elkhollow",
-   "Dunmarsh",
-   "Quarrybrook",
-   "Marlbank",
-   "Larkhaven",
-   "Copperleaf",
-   "Thorncastle",
-   "Sallowford",
-   "Kinnard"
+  "task": "task480",
+  "architecture": "v3",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of architecture 2 (emissions inventory, spent at its reship's stage 4); seed ET37's world (official regional statistics feeding a funding category) kept in spirit, the pitfall re-found in how a dwelling stock carries people",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a state data center's 1 July 2026 municipal population estimates by the housing unit method, built from the county address points, certificates of occupancy and the 2020 census block groups, the estimates that set which municipalities reach the 10,000 residents the state's municipal road aid formula moves to its urban tier",
+  "objective": "etl",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
   ],
-  "people": [
-   "Bridget Palmer",
-   "Jacqueline Aguilar"
-  ]
- },
- "deliverables": [
-  "retirement_program_county_nox_2027.xlsx",
-  "intake_counties_2027_memo.docx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "Each unit's amount in a future period is read from one cumulative total per unit observed once at a past date, and the yearly increment of that total falls as the unit ages; a unit's total over its age is the average of every year it has lived, which overstates its increment at the older age the period finds it at, so each unit's level is taken from its own total against the cumulative curve the cross-section of all units traces by age, and its amount from that curve's rise over the period.",
- "driver_concrete": "Each eligible vehicle's 2027 miles are its own odometer reading at its 2024 or 2025 inspection set against the cumulative miles the inspected fleet has travelled by each age, times that curve's rise over the ages the vehicle passes through in 2027; the reading over the vehicle's age is the miles it averaged over its life, which for the program's 13 to 22 year old cars runs about 1.4 times what they travel now.",
- "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties at the 10-ton line; a car's yearly miles fall with age, so the reading's per-year average overstates the fleet's 2027 NOx by about 43 per cent, and each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files five; the fleet's curve without each vehicle's own level files four, dropping the two counties whose drivers run long and adding the one whose drivers run short.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task196": "task196 v1 carries a per-exposure rate forward from a panel in which one of its two factors repeats from period to period and the other does not; here each unit is seen once, as a cumulative total, and its yearly amount at a future age is recovered from the cross-section's cumulative curve by age set against the unit's own level, with no panel and no second factor"
- },
- "lineage": [
-  {
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G16",
-    "G3",
-    "G6"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "designation_set",
-   "stump_strategy": "causal_design",
-   "layer2_pattern": "own:old-meter under-registration read across a staggered meter exchange against premises of the same type whose meters did not change over the same quarters",
-   "driver": "Each old instrument under-records by a share of what passes through it and shows that share only when it is replaced, and the replacements ran through a year in which one kind of unit used far more than the year before while the others did not; a unit's own change across its replacement carries that rise, and so does a comparison pooled over kinds, so the instrument's error is read against units of the same kind whose instrument did not change over the same periods, as a share of the volume delivered.",
-   "niche": "a Portuguese intermunicipal water utility's 2025 water balance by metering zone, with the old customer meters' under-registration measured in service from its own smart-meter rollout, deciding which zones' infrastructure leakage index qualifies them for a cohesion-funded network renewal application",
-   "subdomain": "field-service-maintenance",
-   "domain": "business-operations-analytics",
-   "architecture": "v1",
-   "drawn": "2026-10-20",
-   "stump": "The default path measures each exchanged meter's under-registration as its own step from the same quarters a year earlier (10.5 per cent), which carries 2025's rise in houses' use into the meters' error and files five zones; netting the step against every unchanged premises or those on the same tariff files seven; only the step net of same-type premises whose meters did not change (4.3 per cent) files the golden eight.",
-   "fate": "spent at stage 4 on 2026-10-20: scored leak reader 2 (target.zip on the v1 pack) landed the call, eight zones at 4.3 per cent, by netting each exchanged meter's step against unchanged premises of the same type with a placebo; reader 1 filed seven with type controls stratified by consumption band; both readers kept all 32 ask figures (the SCADA UTC stamps from the daylight-saving shift of the night profile, the GIS 2008 placeholder from its spike and the works register); judge DETERMINISTIC but FIX_NOW on the 4.3 per cent figure (its estimator family spans 3.5 to 4.5); re-rooted fresh by the author's rule (no retirement)"
+  ],
+  "generators": [
+    "G13",
+    "G6",
+    "G14"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the address points, the certificates of occupancy and the census and applies the housing unit method with each municipality's 2020 persons per occupied dwelling names the wrong municipalities, because persons per dwelling falls as a dwelling ages and the subdivisions built since 2020 sit in a few municipalities while others hold aging ones.",
+  "domain_test": "The deciding quantity is each municipality's resident population by the housing unit method, the official subcounty estimator, with persons per occupied dwelling modelled on dwelling age across the 2020 block groups; with any other field's nouns there is no dwelling stock aging through a household life cycle for the per-unit yield to follow.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:persons-per-dwelling-by-dwelling-age-in-the-housing-unit-method",
+  "layer1": [
+    "municipal consolidation boundaries against the census's old townships",
+    "address points with several points per building and retired points",
+    "group quarters counted apart",
+    "certificates of occupancy against permits and demolitions",
+    "seasonal and vacant units"
+  ],
+  "stakeholder_role": "the state demographer",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "county_address_points",
+    "rows": 0,
+    "entity": "one row is one address point",
+    "grain": "address point",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "United States",
+    "currency": "USD",
+    "org_type": "state data center",
+    "invented_names": [],
+    "people": [
+      "Laura Rubio",
+      "Chad Neal"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is a count carried from the units of a stock by a per-unit yield measured at the last census, but the yield falls as each unit ages, so the units added since and the units now older do not carry the census average; the yield has to be modelled on unit age across the census's small areas and applied to the current stock by age, while the place's census average puts the newest units at the old stock's yield.",
+  "driver_concrete": "Each municipality's 1 July 2026 residents are its occupied dwellings times persons per occupied dwelling, and persons per dwelling falls as a dwelling ages (young households fill new subdivisions and shrink as children leave), so the 2020 census average of a municipality understates its new subdivisions and overstates its aging ones; persons per dwelling has to be estimated by dwelling age across the 2020 block groups and applied to the 2026 stock by age.",
+  "stump": "A competent analyst applies the housing unit method with each municipality's 2020 persons per occupied dwelling to its 2026 occupied dwellings and names the wrong municipalities at 10,000 residents or more; the step that lands it there is reading persons per dwelling as a property of the place when it is a property of the dwelling's age.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task229": "task229 v2 reads a state's share through checks that see units just before setting them right, scheduled at interval ends or led by symptoms; nothing here is checked or corrected: every dwelling is counted, and the yield each carries is modelled on its age across the census's small areas",
+    "task242": "task242 corrects an event share for a detector whose sensitivity fades with time since the event; nothing here is detected: the count is complete and the per-dwelling yield falls with the dwelling's age, so the stock's age mix sets each place's total",
+    "task476": "task476 v2 places an unrecorded start time inside an inspection interval with seasonal starts; no event is timed here: each dwelling's completion year is recorded, and the decisive move is the occupancy each age carries, not when anything began",
+    "task174": "task174 v2 recovers a per-repetition gain from stopped runs with an overnight decay; nothing here repeats or stops: the yield per dwelling follows the household life cycle of the stock as it ages, estimated across small areas at one census",
+    "task461": "task461 carries a short record's low quantile through an auxiliary series' overlap; nothing here is a tail or an auxiliary record: the census's per-dwelling yield, measured on the 2020 stock, is modelled on dwelling age and applied to the 2026 stock",
+    "task501": "task501 v4 sets a chain process's sustainability by a mixing matrix's dominant eigenvalue measured over two pooled regimes; nothing here passes between units or pools regimes: a complete count of dwellings carries people at a yield that falls with each dwelling's age"
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G3",
+        "G6"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "causal_design",
+      "layer2_pattern": "own:old-meter under-registration read across a staggered meter exchange against premises of the same type whose meters did not change over the same quarters",
+      "driver": "Each old instrument under-records by a share of what passes through it and shows that share only when it is replaced, and the replacements ran through a year in which one kind of unit used far more than the year before while the others did not; a unit's own change across its replacement carries that rise, and so does a comparison pooled over kinds, so the instrument's error is read against units of the same kind whose instrument did not change over the same periods, as a share of the volume delivered.",
+      "niche": "a Portuguese intermunicipal water utility's 2025 water balance by metering zone, with the old customer meters' under-registration measured in service from its own smart-meter rollout, deciding which zones' infrastructure leakage index qualifies them for a cohesion-funded network renewal application",
+      "subdomain": "field-service-maintenance",
+      "domain": "business-operations-analytics",
+      "architecture": "v1",
+      "drawn": "2026-10-20",
+      "stump": "The default path measures each exchanged meter's under-registration as its own step from the same quarters a year earlier (10.5 per cent), which carries 2025's rise in houses' use into the meters' error and files five zones; netting the step against every unchanged premises or those on the same tariff files seven; only the step net of same-type premises whose meters did not change (4.3 per cent) files the golden eight.",
+      "fate": "spent at stage 4 on 2026-10-20: scored leak reader 2 (target.zip on the v1 pack) landed the call, eight zones at 4.3 per cent, by netting each exchanged meter's step against unchanged premises of the same type with a placebo; reader 1 filed seven with type controls stratified by consumption band; both readers kept all 32 ask figures (the SCADA UTC stamps from the daylight-saving shift of the night profile, the GIS 2008 placeholder from its spike and the works register); judge DETERMINISTIC but FIX_NOW on the 4.3 per cent figure (its estimator family spans 3.5 to 4.5); re-rooted fresh by the author's rule (no retirement)"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-21",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "niche": "a state environmental quality department's 2027 Vehicle Retirement Program in a twelve-county ozone nonattainment area, which holds intake events in each county whose registered gasoline cars and light trucks of model years 2005 to 2014 will emit at least 10 short tons of NOx in 2027, each vehicle's 2027 miles expected from its own odometer reading at the area's first biennial inspection cycle (2024 and 2025)",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "decomposition_attribution",
+      "driver": "Each unit's amount in a future period is read from one cumulative total per unit observed once at a past date, and the yearly increment of that total falls as the unit ages; a unit's total over its age is the average of every year it has lived, which overstates its increment at the older age the period finds it at, so each unit's level is taken from its own total against the cumulative curve the cross-section of all units traces by age, and its amount from that curve's rise over the period.",
+      "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties at the 10-ton line; a car's yearly miles fall with age, so the reading's per-year average overstates the fleet's 2027 NOx by about 43 per cent, and each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files five; the fleet's curve without each vehicle's own level files four, dropping the two counties whose drivers run long and adding the one whose drivers run short.",
+      "shell": null,
+      "fate": "spent 2026-10-31 at stage 4 of its 10-30 reship: judge pass 2 NOT_DETERMINISTIC, SEND_BACK (the cumulative mileage curve's form selected by no filed criterion; the pilot ask's retired basis); shipped 10-21, pending review"
+    }
+  ],
+  "notes": "architecture 3 drawn 2026-10-31 after architecture 2's judge SEND_BACK",
+  "registered": "2026-10-31T19:27:22Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "send",
+    "rounding opener": "give",
+    "deliverable set": "docx+xlsx"
   }
- ],
- "notes": "",
- "registered": "2026-10-21T00:40:42Z"
 }

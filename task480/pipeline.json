@@ -1,36 +1,31 @@
 {
  "task": "task480",
- "status": "SHIPPED",
- "domain": "physical-environmental-sciences",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-21",
- "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf; a car's yearly miles fall with age, so each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files the golden five (Wexmoor, Halvering, Linnmere, Elkhollow, Marlbank); the fleet's curve without each vehicle's own level files four.",
- "architecture": 2,
- "loops": 2,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-21 (no LEAK; author vocabulary, the guidelines' rule words, design-note terms in three documents, forward reg_expires dates)",
-  "reader": "round 1 (2026-10-21): readers A and B both missed the call on the default path (nine counties); both kept all 12 station figures through licensed_since (score_reader 20 of 44, exit 1 on the ask bar); ask A held. Station register re-sited (no licence date); round 2 readers C and D on target.zip sha256 d7873d01d71b8475; round 2: C and D missed the call, C kept 12 and D 7 station figures, pilot 0 of 8 for both; station ask retired (register a declared distractor); round 3 readers E and F on the final prompt; round 3: E and F missed the call, pilot 0 of 8 each (score_reader exit 2 only on the eight qualify flags the nine-county answer shares)"
- },
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "",
+ "architecture": 3,
+ "loops": 0,
+ "precut": {},
+ "leak": {},
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-21 (driver.near task133 v1 at 0.12, overuse.org_family, overuse.objective, repeat.gate_g and repeat.question_form against task251 v4, overuse.gate_g; same_driver_older differentiated against task196 v1)",
-  "nearest": "task133 v1 at 0.12",
-  "heart": "BLOCK at ship 2026-10-21 against task474 v6 (ban.pairing, ban.subdomain, ban.forcing_event), a window artifact: WARN at the draw; task479, task251 v4 and task486 re-rooted after the draw and left task474 v6 as the nearest live predecessor; flagged to the author"
+  "check": "WARN only 2026-10-31 at registration (shell.repeat reads architecture 2's prompt)"
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task480/determinism_check_report.md (Gate G method_or_model_selection, analytical_non_defect; Gate H analytical)"
- },
+ "judge": {},
  "returned": [],
- "resume": "shipped; portal result pending",
+ "resume": "architecture 3 drawn and registered 2026-10-31T19:27:22Z; next: stage 2 design (default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, asks, prompt) and precut.py exit 0, then the generator",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,
- "source_note": "seed ET37 (EU cohesion region category): the decision form kept (which territorial units a funded program designates, one unit at a time against a filed threshold); architecture 1's water utility spent at stage 4 on 2026-10-20; architecture 2 is a state environmental department's CMAQ-funded vehicle retirement program in a twelve-county ozone nonattainment area, each county's 2027 NOx from its eligible vehicles with each vehicle's 2027 miles estimated from one cumulative odometer reading"
+ "source_note": "seed ET37 (EU cohesion region category): the decision form kept (which territorial units a funded program designates, one unit at a time against a filed threshold); architecture 1's water utility spent at stage 4 on 2026-10-20; architecture 2 is a state environmental department's CMAQ-funded vehicle retirement program in a twelve-county ozone nonattainment area, each county's 2027 NOx from its eligible vehicles with each vehicle's 2027 miles estimated from one cumulative odometer reading",
+ "architecture_2": {
+  "fate": "spent 2026-10-31 at stage 4 of its 10-30 reship: judge pass 2 NOT_DETERMINISTIC, SEND_BACK (the mileage curve's form selected by no filed criterion, linear filing six counties against the golden's five; the pilot ask's 'retired' basis unfiled); the closing sentence would name the decisive step, so the fork is the stump",
+  "report": "determinism_check_report_pass2.md",
+  "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties, the golden five plus Dunmarsh, Larkhaven, Quarrybrook and Copperleaf; a car's yearly miles fall with age, so each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files the golden five (Wexmoor, Halvering, Linnmere, Elkhollow, Marlbank); the fleet's curve without each vehicle's own level files four.",
+  "delivered": "2026-10-21"
+ },
+ "card_registered": "2026-10-31T19:27:22Z"
 }
