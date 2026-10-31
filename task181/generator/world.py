@@ -1,280 +1,304 @@
-"""The clean truth: Dalisay City's barangays, the CBMS 2025 tables, weekly dengue transmission by place,
-and every notified case with the barangay it was infected in (which no shipped file carries).
+"""The truth: Kooralong Hospital's general surgery operations 2022 to September 2027, the instrument trays and
+sets they used in 2027, the CSSD's steriliser loads, and the site infections that followed.
 
-Exposure. Children, residents not working and the elderly are exposed in their home barangay. A working
-resident is exposed at the place of work for a share PHI of the mosquito's feeding hours and at home for
-the rest. Work in San Roque is work at the Dalisay Industrial Estate (an export processing zone inside the
-barangay) except for San Roque's own residents, a part of whom work in the old village.
+Generating process (what the pack's records come from):
+- each consultant holds two or three elective lists a week, morning (08:15) or afternoon (13:45), three to four
+  operations a list, and takes the on-call day in rotation, when emergency operations run at any hour;
+- every elective operation opens one of the consultant's four preference trays (rigid containers) and one light
+  wrapped set; after the list they go to the CSSD, are washed and packed and go into the next cycle of the steriliser
+  that takes them: steriliser 3, the one chamber validated for containers over 10 kg, cycles round the clock;
+  steriliser 1 and 2 take wrapped sets and lighter containers by day; steriliser 4 in the theatre suite takes the
+  emergency theatre's wrapped trays;
+- from the 12 May 2027 repair, steriliser 3's drying stage runs short on heavy containers; every cycle still prints
+  a pass, and an operation that opens a tray from such a load carries EXP_RR times the risk;
+- infection risk is the Centre's published rate for the procedure and risk index, times the consultant's own
+  effect where there is one (PRACTICE), times EXP_RR for an exposed tray.
 """
 import datetime as dt
+import math
 
 import numpy as np
 
-from common import rng, mw_start, all_weeks, MW1_START, WEEKS_IN
+import common as C
 
-PHI = 0.60                     # a working resident's share of exposure spent at the workplace
-REP = {"child": 0.30, "employed": 0.24, "other": 0.24, "elderly": 0.30}   # notified share of infections
-GROUPS = ("child", "employed", "other", "elderly")
-LAMBDA0 = 0.00058              # infections per person-week of full exposure at a season's peak, base 1.0
+DAY = dt.timedelta(days=1)
+MIN = dt.timedelta(minutes=1)
 
-# name, role, population 2025, share of working residents employed in San Roque (the estate),
-# share employed in the Poblacion, baseline multiplier
-BARANGAYS = [
-    ("San Roque", "estate_host", 8150, 0.18, 0.07, 0.95),
-    ("Poblacion", "cbd", 9420, 0.04, 0.00, 0.70),
-    ("Bagumbayan", "loc1", 46780, 0.04, 0.035, 1.00),
-    ("Maligaya", "loc2", 30640, 0.03, 0.035, 1.00),
-    ("Tabing-Ilog", "dorm", 22410, 0.313, 0.020, 0.70),
-    ("Pulong Bayabas", "dorm", 19060, 0.381, 0.020, 0.68),
-    ("Malinta", "dorm", 25330, 0.291, 0.020, 0.70),
-    ("Kanluran", "dorm", 18240, 0.388, 0.020, 0.72),
-    ("Burol", "dorm", 21290, 0.356, 0.020, 0.69),
-    ("Silangan", "dorm", 24570, 0.296, 0.020, 0.68),
-    ("San Isidro", "ordinary", 27310, 0.05, 0.042, 1.10),
-    ("San Jose", "ordinary", 31480, 0.04, 0.038, 1.12),
-    ("Santa Cruz", "ordinary", 23960, 0.03, 0.045, 1.05),
-    ("San Antonio", "ordinary", 29870, 0.06, 0.035, 1.00),
-    ("Rizal", "ordinary", 15420, 0.05, 0.042, 0.95),
-    ("Mabini", "ordinary", 21170, 0.04, 0.038, 1.15),
-    ("Bonifacio", "ordinary", 18830, 0.03, 0.032, 1.20),
-    ("Masagana", "ordinary", 34650, 0.06, 0.028, 0.98),
-    ("Pag-asa", "ordinary", 26210, 0.05, 0.035, 1.08),
-    ("Sampaloc", "ordinary", 12940, 0.04, 0.045, 0.92),
-    ("Dila", "ordinary", 20760, 0.07, 0.025, 1.02),
-    ("Lumbia", "ordinary", 33190, 0.06, 0.032, 1.06),
-    ("Parian", "ordinary", 16580, 0.03, 0.045, 1.25),
-    ("Tagumpay", "ordinary", 28940, 0.05, 0.038, 0.97),
-    ("Liwayway", "ordinary", 22330, 0.04, 0.035, 1.04),
-    ("Bayanihan", "ordinary", 30120, 0.06, 0.032, 1.01),
-    ("Santo Tomas", "ordinary", 17860, 0.04, 0.042, 0.99),
-    ("Santo Tomas Norte", "ordinary", 11420, 0.05, 0.038, 1.09),
-    ("Mangga", "ordinary", 24890, 0.03, 0.035, 0.93),
-    ("Ilaya", "ordinary", 26740, 0.02, 0.028, 1.16),
-    ("Malanday", "ordinary", 19480, 0.04, 0.032, 1.03),
-    ("Talon", "ordinary", 25660, 0.05, 0.035, 0.96),
-    ("Bulihan", "ordinary", 31950, 0.03, 0.038, 1.07),
-    ("Halang", "ordinary", 14370, 0.06, 0.042, 1.12),
-    ("Concepcion", "ordinary", 27820, 0.04, 0.045, 0.94),
-    ("Santo Nino", "ordinary", 22190, 0.05, 0.035, 1.01),
-]
-NAMES = [b[0] for b in BARANGAYS]
-N = len(NAMES)
-IDX = {n: i for i, n in enumerate(NAMES)}
-SR, POB = IDX["San Roque"], IDX["Poblacion"]
-LOC1, LOC2 = IDX["Bagumbayan"], IDX["Maligaya"]
-DORMS = [i for i, b in enumerate(BARANGAYS) if b[1] == "dorm"]
-SPLIT_FROM, SPLIT_NEW = IDX["Santo Tomas"], IDX["Santo Tomas Norte"]
-SPLIT_DATE = dt.date(2025, 3, 17)
-
-GROUP_SHARE = {"child": 0.286, "employed": 0.402, "other": 0.247, "elderly": 0.065}
-# the barangays of boarding houses beside the estate: young working residents, fewer children
-GROUP_SHARE_DORM = {"child": 0.200, "employed": 0.605, "other": 0.115, "elderly": 0.050}
-
-# the season: amplitude, peak week and width by year
-SEASON = {2022: (1.05, 34, 7.0), 2023: (0.62, 36, 6.5), 2024: (0.92, 33, 7.5),
-          2025: (0.78, 35, 7.0), 2026: (0.88, 34, 6.8), 2027: (1.18, 31, 6.2)}
+MIX_COLO = {"COLO": 0.36, "SB": 0.10, "XLAP": 0.08, "APPY": 0.12, "CHOL": 0.18, "HER": 0.16}
+MIX_GEN = {"COLO": 0.10, "SB": 0.06, "XLAP": 0.06, "APPY": 0.18, "CHOL": 0.32, "HER": 0.28}
+EMERG_MIX = {"APPY": 0.42, "XLAP": 0.22, "CHOL": 0.18, "SB": 0.12, "COLO": 0.06}
+DUR = {"COLO": (165, 45), "SB": (140, 40), "XLAP": (120, 35), "APPY": (62, 18), "CHOL": (88, 25), "HER": (92, 28)}
+WOUND_DIRTY = {"COLO": 0.30, "SB": 0.30, "XLAP": 0.45, "APPY": 0.40, "CHOL": 0.10, "HER": 0.03}
+GENERIC = {"COLO": "Bowel set", "SB": "Bowel set", "XLAP": "Major laparotomy set", "APPY": "Laparoscopic general set",
+           "CHOL": "Laparoscopic general set", "HER": "Hernia set"}
+GENERIC_COPIES = {"Bowel set": 9, "Major laparotomy set": 8, "Laparoscopic general set": 16, "Hernia set": 8}
 
 
-def season(year, week):
-    a, c, s = SEASON[year]
-    return a * (0.16 + 0.84 * np.exp(-0.5 * ((week - c) / s) ** 2))
+def _pick(r, mix):
+    keys = list(mix)
+    p = np.array([mix[k] for k in keys])
+    return keys[int(r.choice(len(keys), p=p / p.sum()))]
 
 
-def population_tables():
-    """CBMS 2025: residents by barangay and group, and the place-of-work matrix of working residents."""
-    r = rng("cbms")
-    pop = np.array([b[2] for b in BARANGAYS], dtype=float)
-    grp = np.zeros((N, 4))
-    for i in range(N):
-        base_sh = GROUP_SHARE_DORM if BARANGAYS[i][1] == "dorm" else GROUP_SHARE
-        sh = np.array([base_sh[g] for g in GROUPS]) * r.uniform(0.94, 1.06, 4)
-        sh /= sh.sum()
-        grp[i] = np.round(pop[i] * sh)
-    # place of work, columns 0..N-1 the city's barangays, column N outside the city
-    OWN = {"dorm": (0.03, 0.06), "ordinary": (0.18, 0.28), "loc1": (0.20, 0.26), "loc2": (0.20, 0.26),
-           "estate_host": (0.10, 0.14), "cbd": (0.30, 0.34)}
-    OUT = {"dorm": (0.15, 0.22), "ordinary": (0.30, 0.40), "loc1": (0.22, 0.28), "loc2": (0.22, 0.28),
-           "estate_host": (0.14, 0.18), "cbd": (0.24, 0.28)}
-    W = np.zeros((N, N + 1))
-    for i, b in enumerate(BARANGAYS):
-        role, est, cbd = b[1], b[3], b[4]
-        own = r.uniform(*OWN[role])
-        out = r.uniform(*OUT[role])
-        W[i, SR] += est
-        W[i, POB] += cbd
-        if i not in (SR, POB):
-            W[i, i] += own
+def schedule():
+    """Every operation 2022-01-03 to 2027-09-30, in time order."""
+    r = C.rng("schedule")
+    ops = []
+    # elective templates: each consultant's weekday lists
+    tmpl = {}
+    for k, c in enumerate(C.CONSULTANTS):
+        days = sorted(r.choice(5, size=4, replace=False).tolist())
+        tmpl[c] = days
+    leave = {(c, y): set(r.choice(52, size=6, replace=False).tolist()) for c in C.CONSULTANTS
+             for y in range(2022, 2028)}
+    d = C.HIST0
+    ur_next = 4_100_000
+    oncall_i = 0
+    while d <= C.WIN1:
+        wk = d.isocalendar()[1] - 1
+        if d.weekday() < 5:
+            for c in C.CONSULTANTS:
+                if d.weekday() not in tmpl[c] or wk in leave[(c, d.year)]:
+                    continue
+                aft = r.random() < C.AFTERNOON[c]
+                t = dt.datetime.combine(d, dt.time(13, 45) if aft else dt.time(8, 15))
+                last = dt.datetime.combine(d, dt.time(17, 30) if aft else dt.time(12, 0))
+                mix = MIX_COLO if c in C.COLORECTAL else MIX_GEN
+                for j in range(6):
+                    if j and t > last:
+                        break
+                    proc = _pick(r, mix)
+                    mu, sd = DUR[proc]
+                    mins = int(max(25, r.normal(mu, sd)))
+                    ur_next += int(r.integers(1, 40))
+                    ops.append(dict(consultant=c, start=t, minutes=mins, proc=proc, emergency=False,
+                                    list_id="%s-%s-%s" % (c, d.isoformat(), "PM" if aft else "AM"),
+                                    asa=int(r.choice([1, 2, 3, 4], p=[0.18, 0.55, 0.23, 0.04])),
+                                    wound=int(3 + (r.random() < 0.3)) if r.random() < WOUND_DIRTY[proc]
+                                    else int(r.choice([1, 2], p=[0.35, 0.65])),
+                                    ur=ur_next, mesh=(proc == "HER" and r.random() < 0.85)))
+                    t = t + dt.timedelta(minutes=mins + int(r.integers(20, 40)))
+        # emergency operations by the day's on-call consultant
+        oc = C.CONSULTANTS[oncall_i % len(C.CONSULTANTS)]
+        oncall_i += 1
+        for j in range(int(r.poisson(3.4))):
+            proc = _pick(r, EMERG_MIX)
+            hour = float(r.choice([9, 11, 14, 16, 18, 20, 21, 22, 23, 1, 3],
+                                  p=[.06, .08, .10, .12, .14, .14, .11, .09, .07, .05, .04]))
+            t = dt.datetime.combine(d, dt.time(0, 0)) + dt.timedelta(hours=hour, minutes=int(r.integers(0, 59)))
+            if hour < 7:
+                t = t + DAY
+            mu, sd = DUR[proc]
+            mins = int(max(25, r.normal(mu, sd)))
+            ur_next += int(r.integers(1, 40))
+            ops.append(dict(consultant=oc, start=t, minutes=mins, proc=proc, emergency=True,
+                            list_id="%s-%s-EM" % (oc, d.isoformat()),
+                            asa=int(r.choice([1, 2, 3, 4], p=[0.10, 0.42, 0.38, 0.10])),
+                            wound=int(3 + (r.random() < 0.4)) if r.random() < WOUND_DIRTY[proc] + 0.15
+                            else int(r.choice([1, 2], p=[0.2, 0.8])),
+                            ur=ur_next, mesh=False))
+        d += DAY
+    ops = [o for o in ops if o["start"].date() <= C.WIN1]
+    ops.sort(key=lambda o: (o["start"], o["consultant"]))
+    for i, o in enumerate(ops):
+        o["id"] = i
+        o["end"] = o["start"] + dt.timedelta(minutes=o["minutes"])
+        o["idx"] = C.risk_index(o["asa"], o["wound"], o["minutes"], o["proc"])
+    return ops
+
+
+class Steriliser:
+    """A steriliser's cycle slots; a set joins the first slot at or after it is packed."""
+
+    def __init__(self, name, r):
+        self.name = name
+        self.r = r
+        self.next_no = {"S1": 41_200, "S2": 38_950, "S3": 8_311, "S4": 12_604}[name]
+        self.loads = {}          # slot start -> list of set barcodes
+
+    def slot_after(self, t):
+        night = self.name == "S3"
+        d = t.date()
+        while True:
+            if night:                                  # the container steriliser cycles round the clock
+                base = dt.datetime.combine(d, dt.time(0, 25))
+                slots = [base + k * dt.timedelta(minutes=80) for k in range(18)]
+            else:
+                base = dt.datetime.combine(d, dt.time(7, 40) if self.name != "S4" else dt.time(9, 10))
+                n = 9 if self.name != "S4" else 6
+                slots = [base + k * dt.timedelta(minutes=70 if self.name != "S4" else 95) for k in range(n)]
+            for s in slots:
+                if s >= t:
+                    return s
+            d += DAY
+
+
+def instruments(ops):
+    """2027: each operation's tray and set, their CSSD passes and the steriliser loads (with tests and aborts)."""
+    r = C.rng("instruments")
+    sts = {n: Steriliser(n, r) for n in C.STERILISERS}
+    trays = {}
+    for c in C.CONSULTANTS:
+        heavy = C.HEAVY_TRAYS.get(c, 0)
+        trays[c] = [dict(barcode="KH%05d" % int(r.integers(20000, 99999)), owner=c, kind="tray",
+                         name="%s preference tray %s" % (c, "ABCD"[k]), container="Rigid container",
+                         kg=round(float(r.uniform(10.6, 12.6) if k < heavy else r.uniform(6.8, 9.6)), 1),
+                         ready=dt.datetime(2026, 12, 20), last=None)
+                    for k in range(4)]
+    trays["EMERGENCY"] = [dict(barcode="KH%05d" % int(r.integers(20000, 99999)), owner="", kind="tray",
+                               name="Emergency general tray %d" % (k + 1), container="Wrapped tray",
+                               kg=round(float(r.uniform(6.2, 7.8)), 1), ready=dt.datetime(2026, 12, 20), last=None)
+                          for k in range(6)]
+    sets = {}
+    for g, n in GENERIC_COPIES.items():
+        sets[g] = [dict(barcode="KH%05d" % int(r.integers(20000, 99999)), owner="", kind="set",
+                        name="%s %d" % (g, k + 1), container="Wrapped tray", kg=round(float(r.uniform(2.1, 4.4)), 1),
+                        ready=dt.datetime(2026, 12, 20), last=None) for k in range(n)]
+    seen = set()
+    for pool in list(trays.values()) + list(sets.values()):
+        for s in pool:
+            while s["barcode"] in seen:
+                s["barcode"] = "KH%05d" % int(r.integers(20000, 99999))
+            seen.add(s["barcode"])
+    uses, passes = [], []
+    pending = {}                  # list_id -> [(item, ...)] returned together at the list's end
+    ops27 = [o for o in ops if o["start"].date() >= C.TRACK0]
+    list_end = {}
+    for o in ops27:
+        list_end[o["list_id"]] = max(list_end.get(o["list_id"], o["end"]), o["end"])
+
+    def reprocess(item, back):
+        recv = back + dt.timedelta(minutes=int(r.integers(20, 55)))
+        wash = recv + dt.timedelta(minutes=int(r.integers(55, 85)))
+        pack = wash + dt.timedelta(minutes=int(r.integers(18, 40)))
+        h = pack.hour
+        night = h >= 19 or h < 7
+        if item["name"].startswith("Emergency"):
+            st = "S4"                                  # the theatre suite's steriliser, round the clock
+        elif item["container"] == "Rigid container" and item["kg"] > 10.0:
+            st = "S3"                                  # the one chamber validated for containers over 10 kg
         else:
-            W[i, i] += own
-        rest = max(0.02, 1.0 - W[i].sum() - out)
-        # the dormitory barangays near the estate are residential and hold few jobs for anyone else
-        others = [j for j in range(N) if j not in (SR, POB, i) and BARANGAYS[j][1] != "dorm"]
-        W[i, others] += r.dirichlet(np.full(len(others), 0.7)) * rest
-        W[i, N] = out
-        W[i] /= W[i].sum()
-    workers = np.round(grp[:, 1][:, None] * W)
-    return pop, grp, W, workers
+            if night:                                  # wrapped sets wait for the morning's first day load
+                pack = dt.datetime.combine(pack.date() + (DAY if h >= 19 else dt.timedelta(0)), dt.time(7, 35))
+            st = "S1" if r.random() < 0.5 else "S2"
+        slot = sts[st].slot_after(pack)
+        sts[st].loads.setdefault(slot, []).append(item["barcode"])
+        item["ready"] = slot + dt.timedelta(minutes=int(r.integers(95, 130)))
+        passes.append(dict(barcode=item["barcode"], recv=recv, wash=wash, pack=pack, st=st, slot=slot))
+        item["last"] = (st, slot)
+
+    for o in ops27:
+        owner = "EMERGENCY" if o["emergency"] else o["consultant"]
+        tray_pool = [t for t in trays[owner] if t["ready"] <= o["start"] - dt.timedelta(minutes=30)]
+        tray = min(tray_pool, key=lambda t: t["ready"]) if tray_pool else min(trays[owner], key=lambda t: t["ready"])
+        g = GENERIC[o["proc"]]
+        set_pool = [s for s in sets[g] if s["ready"] <= o["start"] - dt.timedelta(minutes=30)]
+        gset = min(set_pool, key=lambda s: s["ready"]) if set_pool else min(sets[g], key=lambda s: s["ready"])
+        for item in (tray, gset):
+            uses.append(dict(op=o["id"], barcode=item["barcode"], kind=item["kind"], last=item["last"],
+                             scan=o["start"] - dt.timedelta(minutes=int(r.integers(8, 28)))))
+            item["ready"] = dt.datetime(2100, 1, 1)
+        back = list_end[o["list_id"]] if not o["emergency"] else o["end"]
+        pending.setdefault(o["list_id"], []).append((tray, back))
+        pending[o["list_id"]].append((gset, back))
+        if o["emergency"] or o["end"] >= list_end[o["list_id"]]:
+            for item, b in pending.pop(o["list_id"]):
+                reprocess(item, b)
+    # cycles: loads, the daily air-removal (Bowie-Dick) test, the weekly leak test, aborts re-run in the next slot
+    cycles = []
+    for name, s in sts.items():
+        slots = sorted(s.loads)
+        days = sorted({sl.date() for sl in slots})
+        tests = []
+        for d in days:
+            t0 = dt.datetime.combine(d, dt.time(0, 5) if name == "S3" else dt.time(7, 5))
+            tests.append((t0, "Bowie-Dick test"))
+            if d.weekday() == 0:
+                tests.append((t0 - dt.timedelta(minutes=40), "Vacuum leak test"))
+        events = [(sl, "Load") for sl in slots] + tests
+        events.sort()
+        for t, kind in events:
+            if kind == "Load":
+                contents = list(s.loads[t])
+                if r.random() < 0.015:
+                    cycles.append(dict(st=name, no=s.next_no, start=t, end=t + dt.timedelta(minutes=19),
+                                       kind=kind, result="Aborted", contents=contents))
+                    s.next_no += 1
+                    t = t + dt.timedelta(minutes=24)
+                cycles.append(dict(st=name, no=s.next_no, start=t, end=t + dt.timedelta(minutes=int(r.integers(54, 63))),
+                                   kind=kind, result="Pass", contents=contents))
+            else:
+                cycles.append(dict(st=name, no=s.next_no, start=t, end=t + dt.timedelta(minutes=17 if
+                                   kind.startswith("Bowie") else 26), kind=kind, result="Pass", contents=[]))
+            s.next_no += 1
+            if name == "S3" and t < C.REPAIR <= t + dt.timedelta(days=1) and s.next_no > 1000:
+                pass
+    # the controller board fitted at the repair restarts steriliser 3's cycle counter
+    cycles.sort(key=lambda c: (c["st"], c["start"]))
+    k = 0
+    for c in cycles:
+        if c["st"] == "S3" and c["start"] >= C.REPAIR:
+            k += 1
+            c["no"] = k
+    return dict(trays=trays, sets=sets, uses=uses, passes=passes, cycles=cycles)
 
 
-def past_outbreaks():
-    """Residential outbreaks of earlier seasons: (year, barangay, peak week, peak multiplier)."""
-    r = rng("outbreaks")
+def exposure(ops, inst):
+    """The truth: an operation is exposed when its heavy tray came from a steriliser 3 load after the repair."""
+    exp = {}
+    for u in inst["uses"]:
+        if u["kind"] != "tray" or u["last"] is None:
+            continue
+        st, slot = u["last"]
+        if st == "S3" and slot >= C.REPAIR:
+            exp[u["op"]] = True
+    return exp
+
+
+def infections(ops, exp):
+    r = C.rng("infections")
     out = []
-    pool = [i for i in range(N) if i not in (SR,)]
-    for y in (2022, 2023, 2024, 2025, 2026):
-        k = int(r.integers(2, 4))
-        for i in r.choice(pool, size=k, replace=False):
-            out.append((y, int(i), int(r.integers(31, 39)), float(r.uniform(2.6, 4.4))))
-    out.append((2027, LOC1, 37, 6.2))
-    out.append((2027, LOC2, 38, 9.2))
+    for o in ops:
+        y = o["start"].year
+        p = C.expected_rate(o["proc"], o["idx"])
+        p *= C.PRACTICE.get(o["consultant"], {}).get(y, 1.0)
+        if exp.get(o["id"]):
+            p *= C.EXP_RR
+        if r.random() >= min(p, 0.6):
+            continue
+        depth = str(r.choice(["Superficial incisional", "Deep incisional", "Organ/space"],
+                             p=[0.46, 0.30, 0.24] if o["proc"] in ("COLO", "SB", "XLAP") else [0.60, 0.28, 0.12]))
+        if o["mesh"] and depth != "Superficial incisional" and r.random() < 0.35:
+            day = int(r.integers(31, 86))
+        else:
+            day = int(r.integers(3, 15)) if depth.startswith("Superficial") else int(r.integers(5, 29))
+        out.append(dict(op=o["id"], depth=depth, onset=(o["start"] + dt.timedelta(days=day)).date(),
+                        post_discharge=bool(r.random() < 0.32)))
     return out
 
 
-def estate_multiplier(year, week):
-    """The estate's own transmission relative to San Roque's village: ordinary until the 2027 works."""
-    if year < 2027 or week < 29:
-        return 0.8
-    # the Phase 3 works' excavations hold water from July 2027
-    ramp = {29: 3.0, 30: 5.6, 31: 9.7, 32: 14.2, 33: 20.5, 34: 27.5, 35: 35.8, 36: 44.7,
-            37: 53.8, 38: 59.4, 39: 61.9, 40: 58.9}
-    return ramp.get(week, 58.9)
+def build_truth():
+    ops = schedule()
+    inst = instruments(ops)
+    exp = exposure(ops, inst)
+    inf = infections(ops, exp)
+    return dict(ops=ops, inst=inst, exp=exp, inf=inf)
 
 
-def place_rates():
-    """lam_home[w, j]: the rate of a person exposed all day in barangay j's homes;
-    lam_work[w, j]: the rate at a workplace in j (the estate for j = San Roque)."""
-    r = rng("rates")
-    weeks = all_weeks()
-    base = np.array([b[5] for b in BARANGAYS])
-    noise = r.lognormal(0.0, 0.10, (len(weeks), N))
-    ob = past_outbreaks()
-    lam_home = np.zeros((len(weeks), N))
-    lam_work = np.zeros((len(weeks), N))
-    for t, (y, w) in enumerate(weeks):
-        mult = np.ones(N)
-        for (oy, i, pw, pm) in ob:
-            if oy == y:
-                mult[i] *= 1.0 + (pm - 1.0) * np.exp(-0.5 * ((w - pw) / 2.6) ** 2)
-        lam_home[t] = LAMBDA0 * season(y, w) * base * mult * noise[t]
-        lam_work[t] = lam_home[t] / mult * 0.85          # workplaces do not share a village's outbreak
-        lam_work[t, SR] = LAMBDA0 * season(y, w) * base[SR] * noise[t, SR] * estate_multiplier(y, w)
-    lam_out = LAMBDA0 * np.array([season(y, w) for (y, w) in weeks]) * 1.0
-    return weeks, lam_home, lam_work, lam_out
-
-
-def simulate_cases(world_seed=0):
-    """Every notified case, 2022 week 1 to 2027 week 40, with its true place of infection.
-
-    Returns a list of dicts: year, week, home (barangay index), group, place (barangay index or -1 for
-    outside the city), and the person's attributes drawn later."""
-    pop, grp, W, workers = population_tables()
-    weeks, lam_home, lam_work, lam_out = place_rates()
-    r = rng("cases%d" % world_seed)
-    cases = []
-    for t, (y, w) in enumerate(weeks):
-        for i in range(N):
-            # before the 2025 split the two Santo Tomas barangays were one; people lived in both parts
-            for gi, g in enumerate(GROUPS):
-                n_i = grp[i, gi]
-                if g == "employed":
-                    # home part
-                    m_home = n_i * REP[g] * (1 - PHI) * lam_home[t, i]
-                    k = r.poisson(m_home)
-                    cases += [(y, w, i, g, i)] * int(k)
-                    # work parts
-                    shares = W[i, :N]
-                    if i == SR:
-                        # San Roque's own workers: 70 per cent at the estate, the rest in the village
-                        m_est = n_i * REP[g] * PHI * shares[SR] * 0.70 * lam_work[t, SR]
-                        m_vil = n_i * REP[g] * PHI * shares[SR] * 0.30 * lam_home[t, SR]
-                        ks = r.poisson([m_est, m_vil])
-                        cases += [(y, w, i, g, SR)] * int(ks[0] + ks[1])
-                        shares = shares.copy()
-                        shares[SR] = 0.0
-                    m_work = n_i * REP[g] * PHI * shares * lam_work[t]
-                    kw = r.poisson(m_work)
-                    for j in np.nonzero(kw)[0]:
-                        cases += [(y, w, i, g, int(j))] * int(kw[j])
-                    m_out = n_i * REP[g] * PHI * W[i, N] * lam_out[t]
-                    ko = r.poisson(m_out)
-                    cases += [(y, w, i, g, -1)] * int(ko)
-                else:
-                    m = n_i * REP[g] * lam_home[t, i]
-                    k = r.poisson(m)
-                    cases += [(y, w, i, g, i)] * int(k)
-    return cases, (pop, grp, W, workers), (weeks, lam_home, lam_work, lam_out)
-
-
-AGE_BANDS = {
-    "child": ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-              [2, 3, 4, 5, 6, 8, 9, 10, 10, 10, 10, 9, 9, 8, 7]),
-    "employed": (list(range(17, 65)), None),
-    "other": (list(range(15, 65)), None),
-    "elderly": (list(range(65, 92)), None),
-}
-
-
-def draw_age(r, g):
-    ages, wts = AGE_BANDS[g]
-    if wts is None:
-        if g == "employed":
-            wts = [np.exp(-0.5 * ((a - 31) / 10.5) ** 2) for a in ages]
-        elif g == "other":
-            wts = [3.0 if a < 22 else (1.0 if a < 50 else 1.4) for a in ages]
-        else:
-            wts = [np.exp(-(a - 65) / 9.0) for a in ages]
-    p = np.array(wts, dtype=float)
-    p /= p.sum()
-    return int(r.choice(ages, p=p))
-
-
-# ---- the notification process: who saw each case, and when it reached the line list ----
-DRUS = [
-    ("Dalisay Medical Center", "hospital"),
-    ("Dalisay Doctors' Hospital", "hospital"),
-    ("City Health Center I", "rhu"), ("City Health Center II", "rhu"), ("City Health Center III", "rhu"),
-    ("City Health Center IV", "rhu"), ("City Health Center V", "rhu"), ("City Health Center VI", "rhu"),
-    ("Dalisay Family Clinic", "clinic"), ("Dalisay East Medical Clinic", "clinic"),
-    ("Dalisay Diagnostic and Wellness Center", "clinic"),
-]
-
-
-def health_center_of(i):
-    return 2 + (i * 7 + 3) % 6
-
-
-def assign_attributes(cases, world_seed=0):
-    """Attach to each case its person, dates, reporting unit, admission, classification and travel."""
-    r = rng("attrs%d" % world_seed)
-    out = []
-    for k, (y, w, i, g, j) in enumerate(cases):
-        age = draw_age(r, g)
-        sex = "F" if r.random() < (0.47 if g == "employed" else 0.50) else "M"
-        onset = mw_start(y, w) + dt.timedelta(days=int(r.integers(0, 7)))
-        consult = onset + dt.timedelta(days=int(1 + r.poisson(2.1)))
-        u = r.random()
-        p_dmc = 0.30 if g != "employed" else 0.24
-        p_ddh = 0.12 if g != "employed" else 0.24
-        if u < p_dmc:
-            dru = 0
-        elif u < p_dmc + p_ddh:
-            dru = 1
-        elif u < p_dmc + p_ddh + 0.10:
-            dru = 8 + int(r.integers(0, 3))
-        else:
-            dru = health_center_of(i)
-        kind = DRUS[dru][1]
-        if kind == "hospital":
-            rep = consult + dt.timedelta(days=int(r.integers(0, 3) if dru == 0 else r.integers(1, 5)))
-        elif kind == "rhu":
-            # the centres send their week's notifications every Friday
-            days_to_friday = (4 - consult.weekday()) % 7
-            rep = consult + dt.timedelta(days=days_to_friday + (7 if r.random() < 0.18 else 0))
-        else:
-            rep = consult + dt.timedelta(days=int(r.integers(3, 13)))
-        admitted = kind == "hospital" and r.random() < (0.78 if dru == 0 else 0.62)
-        travel = r.random() < 0.028
-        out.append({"k": k, "year": y, "week": w, "home": i, "group": g, "place": j, "age": age, "sex": sex,
-                    "onset": onset, "consult": consult, "dru": dru, "reported": rep, "admitted": admitted,
-                    "travel": travel})
-    return out
+if __name__ == "__main__":
+    T = build_truth()
+    ops, exp, inf = T["ops"], T["exp"], T["inf"]
+    win = [o for o in ops if C.WIN0 <= o["start"].date() <= C.WIN1]
+    infd = {i["op"]: i for i in inf}
+    print("ops", len(ops), "window", len(win), "infections", len(inf), "cycles", len(T["inst"]["cycles"]),
+          "uses", len(T["inst"]["uses"]))
+    for c in C.CONSULTANTS:
+        w = [o for o in win if o["consultant"] == c]
+        E = sum(C.expected_rate(o["proc"], o["idx"]) for o in w)
+        O = sum(o["id"] in infd for o in w)
+        we = [o for o in w if exp.get(o["id"])]
+        wu = [o for o in w if not exp.get(o["id"])]
+        Eu = sum(C.expected_rate(o["proc"], o["idx"]) for o in wu)
+        Ou = sum(o["id"] in infd for o in wu)
+        print("%s n=%d E=%.1f O=%d lim=%d | exposed %d | unexposed E=%.1f O=%d lim=%d" % (
+            c, len(w), E, O, C.poisson_upper(E), len(we), Eu, Ou, C.poisson_upper(Eu)))

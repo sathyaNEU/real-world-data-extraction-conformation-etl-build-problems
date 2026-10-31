@@ -1,278 +1,289 @@
-"""Every assertion the generator makes about the pack it just cut."""
+"""The generator's assertions on the cut pack: the golden call, the ladder's routes and margins, the reflex sweep
+(every cheap route files a wrong set), the decisive family's convergence, the semantic fork table's rows (SF ids),
+the shock and separation tests, and every ask device's stops.
+
+    python3 task191/generator/checks.py
+"""
 import datetime as dt
-import json
+import math
 import os
-import re
+import sys
+from collections import defaultdict
 
-import pandas as pd
+import numpy as np
 
-import golden as G
-import sim
-import world as W
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import estim as E   # noqa: E402
 
-N = [0]
-
-
-def A(cond, msg):
-    N[0] += 1
-    if not cond:
-        raise AssertionError(msg)
+PASSED = []
+FAILED = []
 
 
-def doc_text(target, name):
-    from pypdf import PdfReader
-    t = " ".join(p.extract_text() or "" for p in PdfReader(os.path.join(target, name)).pages)
-    return re.sub(r"\s+", " ", t)
+class Segments2025(E.Segments):
+    """Red 2025's physical segments and the operated trips over each, for the months before the network change."""
+
+    def __init__(self, D, w0, w1):
+        st = D["stops"]
+        lat0 = np.mean([v[0] for v in st.values()])
+        self.kx = 111_320.0 * math.cos(math.radians(lat0))
+        self.ky = 111_320.0
+        self.lat0, self.lon0 = lat0, np.mean([v[1] for v in st.values()])
+        self.periods = {k: [tuple(sorted((s[i], s[i + 1]))) for i in range(len(s) - 1)] for k, s in D["seq25"].items()}
+        keys = set()
+        for v in self.periods.values():
+            keys.update(v)
+        self.keys = sorted(keys)
+        self.index = {k: i for i, k in enumerate(self.keys)}
+        self.A = np.array([self.xy(*st[k[0]][:2]) for k in self.keys])
+        self.B = np.array([self.xy(*st[k[1]][:2]) for k in self.keys])
+        self.L = np.hypot(*(self.B - self.A).T)
+        self.passes = np.zeros(len(self.keys))
+        for r in D["return"]:
+            day = E.dmy(r["fecha"])
+            if w0 <= day <= w1 and (r["linea"], r["sentido"]) in self.periods:
+                for sg in self.periods[(r["linea"], r["sentido"])]:
+                    self.passes[self.index[sg]] += int(r["expediciones_realizadas"])
+        self.new = np.zeros(len(self.keys), dtype=bool)
 
 
-def run(target):
-    N[0] = 0
-    g = G.compute(target)
-    (panel, rollup, register, maint, health, edge, commit, amend,
-     sessions, rebuf, inc, res, releases) = G.load(target)
-    fw = doc_text(target, "network_capacity_framework.pdf")
-    std = doc_text(target, "delivered_quality_standard.pdf")
-    dic = doc_text(target, "telemetry_dictionary.pdf")
-    task = os.path.dirname(os.path.abspath(target.rstrip("/")))
-    meta = json.load(open(os.path.join(task, "metadata.json"), encoding="utf-8"))
-    kept, every = G.shortfalls(rollup, register, maint)
-    q = "2027Q1"
-    this = kept[kept["reporting_quarter"] == q]
+def check(name, ok, detail=""):
+    (PASSED if ok else FAILED).append(name)
+    print("%s  %s  %s" % ("ok  " if ok else "FAIL", name, detail))
 
-    # ---- the call ------------------------------------------------------------------------------
-    A(g["fund"] == "none", "the call is not the hold")
-    A(g["decided_shortfall"] < g["record_shortfall"],
-      "the quarter's worst window is not inside the record")
-    A(g["record_shortfall"] / g["decided_shortfall"] >= 1.06,
-      "the record stands only %.1f per cent above the quarter's worst window"
-      % (100 * (g["record_shortfall"] / g["decided_shortfall"] - 1)))
-    A(len(g["quarterly_worst"]) == 8, "the record holds %d earlier quarters"
-      % len(g["quarterly_worst"]))
-    A(float(g["decided_shortfall"]).is_integer(), "the decided shortfall is not a whole kbps")
-    # Clause 4.2 names the record the comparison is against and not which figure of it to take, so
-    # every figure of it a careful analyst would take has to give the same call, with margin.
-    prior = kept[kept["reporting_quarter"] != q]
-    qmax = prior.groupby("reporting_quarter")["shortfall"].max()
-    pp = prior.groupby(["reporting_quarter", "line"])["shortfall"].max()
-    dec = g["decided_shortfall"]
-    for lbl, v in (("the largest quarterly worst window", float(qmax.max())),
-                   ("the mean of the quarterly worst windows", float(qmax.mean())),
-                   ("the median of the quarterly worst windows", float(qmax.median())),
-                   ("the smallest quarterly worst window", float(qmax.min())),
-                   ("the 90th percentile of the quarterly worst windows", float(qmax.quantile(0.9))),
-                   ("the pooled windows' 99th percentile", float(prior["shortfall"].quantile(0.99))),
-                   ("the pooled windows' 99.9th percentile",
-                    float(prior["shortfall"].quantile(0.999))),
-                   ("the pooled windows' 99.99th percentile",
-                    float(prior["shortfall"].quantile(0.9999))),
-                   ("the per-port quarterly maxima, 90th percentile", float(pp.quantile(0.9))),
-                   ("the per-port quarterly maxima, median", float(pp.median())),
-                   ("the per-port quarterly maxima, largest", float(pp.max()))):
-        A(v / dec >= 1.06,
-          "the call is not forced: %s is %.0f kbps, only %.1f per cent above the quarter's %.0f"
-          % (lbl, v, 100 * (v / dec - 1), dec))
-    # and the record plainly produces this quarter's worst window, many times over
-    A(g["record_windows_at_or_above"] > 200,
-      "the record holds only %d windows at or above the quarter's worst"
-      % g["record_windows_at_or_above"])
-    A(g["windows_assessed"] < g["windows_in_quarter"],
-      "the booked evenings take nothing out of the quarter's windows")
-    A(g["rank_of_nine"] == 9,
-      "the quarter's worst window ranks %d of nine, not the quietest" % g["rank_of_nine"])
-    # and no grid cell ties, so no tie-break convention can be needed
-    for line, gl in this.groupby("line"):
-        for win, gw in gl.groupby("window_from"):
-            top = gw["shortfall"].max()
-            A(int((gw["shortfall"] == top).sum()) == 1,
-              "a grid cell ties at %s %s, so a tie rule would be needed" % (line, win))
 
-    # ---- the three rules, executed ---------------------------------------------------------------
-    # R1 the easy route on the pack's own rows files the named wrong answer, and the decisive step
-    # alone files the golden
-    A(g["rung0_port"] != g["fund"] and g["rung0_shortfall"] > g["record_shortfall"],
-      "R1 keeping the booked evenings does not file a confident wrong fund")
-    A(g["decided_port"] != g["rung0_port"], "R1 the booked evenings change nothing")
-    A(g["rung2_port"] not in (g["decided_port"], g["rung0_port"]),
-      "R1 the quarter mean names a path another rung already names")
-    A(g["rung2_mean"] / g["rung2_next"] >= 1.06,
-      "R1 the quarter mean is a coin flip between two paths")
-    own = g["own_99th"][g["decided_port"]]
-    A(g["decided_shortfall"] / own >= 1.06,
-      "R1 the worst window does not clear its own path's record, so rung 1 is not a confident fund")
-    # R2 nothing in the pack names a selection, a maximum of maxima, a tempo or a correction
-    blob = ""
-    for f in sorted(os.listdir(target)):
-        if f.endswith(".pdf"):
-            blob += " " + doc_text(target, f)
-        elif f.endswith((".csv", ".json")):
-            blob += " " + open(os.path.join(target, f), encoding="utf-8", errors="ignore").read()
-    low = re.sub(r"\s+", " ", blob).lower()
-    for banned in ("multiple testing", "selective", "selection", "multiplicity", "family wise",
-                   "familywise", "bonferroni", "maximum of", "worst of", "false discovery",
-                   "null distribution", "per comparison", "look elsewhere"):
-        A(banned not in low, "R2 a shipped file says '%s'" % banned)
-    # R3 no shipped artifact ranks the interconnects on the decision question
-    for f in sorted(os.listdir(target)):
-        if f.endswith(".pdf"):
-            t = doc_text(target, f).lower()
-            for w in ("ranked", "ranking", "league", "scorecard", "worst performing",
-                      "most congested"):
-                A(w not in t, "R3 %s says '%s'" % (f, w))
-    A("not broken down by interconnect" in doc_text(
-        target, "published_quarterly_quality_report.pdf"),
-      "R3 the published report does not say it carries no interconnect breakdown")
+def main():
+    D = E.load()
+    c = E.call(D)
+    ws, S, pl = c["ws"], c["S"], c["places"]
+    gold = c["taken"]
+    res = c["res"]
+    check("G1 golden set", gold == ["San Lázaro"], str(gold))
+    check("G2 closest depot left out", c["closest"] == "La Ribera", c["closest"])
+    check("G3 four fixed false-trigger places", len(c["false"]) == 4,
+          ", ".join("%d %.3f" % (p["n"], p["share"]) for p in c["false"]))
+    slz = res["San Lázaro"]["ratio"]
+    others = max(v["ratio"] for d, v in res.items() if d != "San Lázaro")
+    check("M1 golden margin above the line", slz >= E.RATIO + 0.4, "%.4f" % slz)
+    check("M2 golden margin below the line", others <= E.RATIO - 0.10, "%.4f" % others)
+    # Rung 0: every collision warning.
+    r0, f0, *_ = E.rates(ws)
+    s0 = E.taken(r0)
+    check("R0 the dashboard measure files Hornacho and Valdeolmos", s0 == ["Hornacho", "Valdeolmos"], str(s0))
+    check("R0 margins", min(r0["Hornacho"]["ratio"], r0["Valdeolmos"]["ratio"]) >= 1.40
+          and r0["San Lázaro"]["ratio"] <= 1.20, "HOR %.3f VDO %.3f SLZ %.3f" %
+          (r0["Hornacho"]["ratio"], r0["Valdeolmos"]["ratio"], r0["San Lázaro"]["ratio"]))
+    # Rung 1: the busiest places set aside, every k.
+    busy = [p for p in pl if p["n"] >= 150]
+    wrong_k = []
+    for k in range(1, 9):
+        drop = set().union(*[p["ids"] for p in busy[:k]])
+        s = E.taken(E.rates(ws, drop)[0])
+        wrong_k.append((k, s))
+    check("R1 every top-k busiest-place cut files a wrong set", all(s != gold for _, s in wrong_k),
+          "; ".join("k%d %s" % (k, "/".join(x[:3] for x in s)) for k, s in wrong_k))
+    k5 = E.taken(E.rates(ws, set().union(*[p["ids"] for p in busy[:5]]))[0])
+    r1 = E.rates(ws, set().union(*[p["ids"] for p in busy[:5]]))[0]
+    check("R1 the five busiest out files La Ribera", k5 == ["La Ribera"], "%s %.3f" % (k5, r1["La Ribera"]["ratio"]))
+    check("R1 margin", r1["La Ribera"]["ratio"] >= E.RATIO + 0.08, "%.4f" % r1["La Ribera"]["ratio"])
+    # Rung 1b: places the drivers ignore set aside, every threshold.
+    wrong_t = []
+    for t100 in range(50, 100):
+        t = t100 / 100.0
+        drop = set().union(*[p["ids"] for p in busy if p["nobrake"] >= t]) if any(p["nobrake"] >= t for p in busy) else set()
+        s = E.taken(E.rates(ws, drop)[0])
+        wrong_t.append((t, s))
+    check("R1b every ignored-place cut files a wrong set", all(s != gold for _, s in wrong_t),
+          "distinct sets %s" % sorted({"/".join(x[:3] for x in s) for _, s in wrong_t}))
+    plaza = [p for p in pl if p["share"] < 0.1 and p["nobrake"] > 0.9]
+    check("R1b the Plaza is ignored more than every false place", plaza and min(p["nobrake"] for p in plaza) >
+          max(p["nobrake"] for p in c["false"]) + 0.05, "plaza %s false max %.3f" %
+          (["%.3f" % p["nobrake"] for p in plaza], max(p["nobrake"] for p in c["false"])))
+    check("R1 the Plaza is busier than the smallest false place", plaza and plaza[0]["n"] > min(p["n"] for p in c["false"]) + 300,
+          "plaza %d false min %d" % (plaza[0]["n"], min(p["n"] for p in c["false"])))
+    # Type, speed and network-change cuts.
+    for name, keep in [("PCW only", lambda w: w["pcw"]), ("FCW only", lambda w: not w["pcw"]),
+                       ("below 25 km/h", lambda w: w["speed"] < 25), ("20 km/h and over", lambda w: w["speed"] >= 20)]:
+        drop = {w["eid"] for w in ws if not keep(w)}
+        s = E.taken(E.rates(ws, drop)[0])
+        check("R2 %s files a wrong set" % name, s != gold, str(s))
+    drop = {w["eid"] for w in ws if S.new[w["seg"]]}
+    s = E.taken(E.rates(ws, drop)[0])
+    check("R2 Red 2026's new segments set aside files a wrong set", s != gold, str(s))
+    # Places that first fired in 2026: the Plaza is one of them.
+    ws25 = E.collision_warnings(D, dt.date(2025, 10, 1), dt.date(2025, 12, 13))
+    old_cells = set()
+    for w in ws25:
+        old_cells.add((round(w["lat"], 3), round(w["lon"], 3)))
+    new_busy = [p for p in busy if not any((round(w["lat"], 3), round(w["lon"], 3)) in old_cells
+                                         for w in ws if w["eid"] in list(p["ids"])[:20])]
+    s = E.taken(E.rates(ws, set().union(*[p["ids"] for p in new_busy]) if new_busy else set())[0])
+    check("R2 places new in 2026 set aside files a wrong set", s != gold, "%d places, %s" % (len(new_busy), s))
+    # Decisive family: per-pass share at every threshold and bin size, and whole segments.
+    fam = []
+    for bin_m in (5.0, 10.0, 20.0):
+        plb = E.places(ws, S, bin_m=bin_m)
+        for th in (0.05, 0.08, 0.10, 0.15, 0.20, 0.24):
+            fp = E.false_places(plb, th)
+            drop = set().union(*[p["ids"] for p in fp]) if fp else set()
+            rr = E.rates(ws, drop)[0]
+            fam.append((bin_m, th, E.taken(rr), tuple(rr[d]["n"] for d in E.DEPOT_ORDER)))
+    gold_n = tuple(res[d]["n"] for d in E.DEPOT_ORDER)
+    check("C1 the decisive family files the golden set", all(f[2] == gold for f in fam),
+          "%d members" % len(fam))
+    check("C2 the decisive family files the golden counts", all(f[3] == gold_n for f in fam), "")
+    seg_share = defaultdict(int)
+    for w in ws:
+        seg_share[w["seg"]] += 1
+    whole = {i for i, n in seg_share.items() if S.passes[i] and n / S.passes[i] >= 0.10}
+    drop = {w["eid"] for w in ws if w["seg"] in whole}
+    rr = E.rates(ws, drop)[0]
+    check("C3 SF9 whole segments at a share of 0.10 give the same set and counts",
+          E.taken(rr) == gold and tuple(rr[d]["n"] for d in E.DEPOT_ORDER) == gold_n, str(sorted(whole)))
+    # The gap: the smallest false-place share against the largest other place, overall and in the firing hours.
+    others_pl = [p for p in pl if p not in c["false"]]
+    gap = min(p["share"] for p in c["false"]) / max(p["share"] for p in others_pl)
+    check("C4 share gap overall", gap >= 6.0, "%.2f" % gap)
+    # Passes by hour for each place's segment, from the departures' spread: in-hours share needs the hour profile of
+    # the trips, which the return does not hold; price it on the Plaza's market hours (08:00 to 15:00, Monday to
+    # Saturday) against an even spread of the day's trips over 06:00 to 24:00.
+    pz = plaza[0]
+    frac_hours = (7 / 18.0) * (6 / 7.0)
+    in_share = pz["share"] / frac_hours
+    check("C5 share gap in the Plaza's market hours", min(p["share"] for p in c["false"]) >= 2.5 * in_share,
+          "plaza in hours %.4f false min %.4f" % (in_share, min(p["share"] for p in c["false"])))
+    # Semantic forks.
+    raw = list(D["warnings"])
+    D2 = dict(D)
+    D2["warnings"] = raw
+    # SF1: re-sent messages kept as warnings.
+    seen = defaultdict(int)
+    for r in raw:
+        seen[r["event_id"]] += 1
+    dup = sum(1 for v in seen.values() if v > 1)
+    check("SF1 re-sent messages exist and one event is one warning", dup > 500, "%d events sent twice" % dup)
+    # SF2: the window read on UTC dates.
+    wsu = E.collision_warnings(D, utc_dates=True)
+    S.snap(wsu)
+    fpu = E.false_places(E.places(wsu, S))
+    ru = E.rates(wsu, set().union(*[p["ids"] for p in fpu]))[0]
+    check("SF2 the window read on UTC dates gives the same set", E.taken(ru) == gold,
+          "%d warnings against %d" % (len(wsu), len(ws)))
+    # SF3: depot by home allocation, ignoring loans.
+    home = {}
+    for fno, lst in D["alloc"].items():
+        home[fno] = lst[0][2] if len(lst) < 3 else lst[0][2]
+    ws_home = [dict(w, dep=home[w["fleet"]] if len(D["alloc"][w["fleet"]]) == 3 else w["dep"]) for w in ws]
+    drop = set().union(*[p["ids"] for p in c["false"]])
+    rr = E.rates(ws_home, drop)[0]
+    check("SF3 a lent bus read at its home depot gives the same set", E.taken(rr) == gold, str(E.taken(rr)))
+    # SF4: firmware 2.x brake within the capture window rather than two seconds.
+    n2000 = sum(1 for r in raw if r["brake_reaction_ms"] == "2000")
+    check("SF4 no reaction time sits at exactly 2,000 ms", n2000 == 0, str(n2000))
+    late = {r["event_id"] for r in raw if r["brake_reaction_ms"] and int(r["brake_reaction_ms"]) > 2000}
+    ws_cap = [dict(w, braked=w["braked"] or w["eid"] in late) for w in ws]
+    rr = E.rates(ws_cap, drop)[0]
+    check("SF4 a brake within the 3,000 ms capture read as braked gives the same set", E.taken(rr) == gold, str(E.taken(rr)))
+    # SF5: headway warnings counted as collision warnings.
+    D3 = dict(D)
+    E.COLLISION.update({"HMW", "HEADWAY"})
+    ws_h = E.collision_warnings(D3)
+    E.COLLISION.difference_update({"HMW", "HEADWAY"})
+    S.snap(ws_h)
+    plh = E.places(ws_h, S)
+    fph = E.false_places(plh)
+    rr = E.rates(ws_h, set().union(*[p["ids"] for p in fph]))[0]
+    check("SF5 headway warnings counted gives the same set", E.taken(rr) == gold, str(E.taken(rr)))
+    # SF6: the fleet's rate as the mean of depot rates.
+    mean_rate = sum(v["rate"] for v in res.values()) / len(res)
+    s6 = sorted(d for d, v in res.items() if v["rate"] / mean_rate >= E.RATIO)
+    check("SF6 the fleet's rate as a mean of depot rates gives the same set", s6 == gold, str(s6))
+    # SF7: 1.3 inclusive.
+    check("SF7 no depot within 0.05 of 1.3", all(abs(v["ratio"] - E.RATIO) > 0.05 for v in res.values()), "")
+    # SF8: genuine read as the warnings drivers act on (places drivers ignore set aside): a different set, ruled out by
+    # the terms' definition (a pedestrian in the shared space is in the path whether or not drivers brake).
+    check("SF8 places drivers ignore set aside files another set", all(s != gold for _, s in wrong_t), "")
+    # SF10: firmware 1.x rows carry Y or N.
+    bad = sum(1 for r in raw if r["firmware"].startswith("1.") and r["warning_type"] in E.COLLISION and r["brake_2s"] not in ("Y", "N"))
+    check("SF10 every firmware 1.x collision warning carries Y or N", bad == 0, str(bad))
+    # SF11: the passes a place's share is read on: every operated trip of every line and direction over its segment
+    # in the window (golden), against the trips programmed, one direction's trips, and the trips since the place first
+    # fired. Each keeps the same places at or over the share of 0.10, so the same set and counts.
+    by_day = defaultdict(lambda: defaultdict(lambda: [0, 0]))
+    for r in D["return"]:
+        day = E.dmy(r["fecha"])
+        if not (E.W0 <= day <= E.W1):
+            continue
+        for (line, sentido, a, b), segs in S.periods.items():
+            if line == r["linea"] and sentido == r["sentido"] and a <= day <= b:
+                for sg in segs:
+                    cell = by_day[S.index[sg]][day]
+                    cell[0] += int(r["expediciones_realizadas"])
+                    cell[1] += int(r["expediciones_programadas"])
+                break
+    first = {}
+    for p in pl:
+        first[id(p)] = min(w["day"] for w in ws if w["eid"] in p["ids"])
+    gold_fp = sorted(id(p) for p in c["false"])
+    alts = {}
+    alts["operated, rebuilt"] = [p for p in pl if p["n"] / sum(v[0] for v in by_day[p["seg"]].values()) >= 0.10]
+    alts["programmed"] = [p for p in pl if p["n"] / sum(v[1] for v in by_day[p["seg"]].values()) >= 0.10]
+    alts["one direction"] = [p for p in pl if 2 * p["share"] >= 0.10]
+    alts["since first fired"] = [p for p in pl if p["n"] / sum(v[0] for d, v in by_day[p["seg"]].items()
+                                                                   if d >= first[id(p)]) >= 0.10]
+    same = {k: sorted(id(p) for p in v) == gold_fp for k, v in alts.items()}
+    top_other = max(max(2 * p["share"], p["n"] / sum(v[0] for d, v in by_day[p["seg"]].items() if d >= first[id(p)]))
+                    for p in pl if p not in c["false"])
+    check("SF11 the passes read programmed, one way or since a place first fired class the same places",
+          all(same.values()), "%s; largest other place under any %.4f" % (same, top_other))
+    # Back-test: on the months before Red 2026 (1 October to 13 December 2025) the textbook route validates: no place
+    # fires on a tenth of the buses passing it, so the dashboard measure and the per-pass reading file the same set.
+    b0, b1 = dt.date(2025, 10, 1), dt.date(2025, 12, 13)
+    wb = E.collision_warnings(D, b0, b1)
+    S25 = Segments2025(D, b0, b1)
+    S25.snap(wb)
+    for mc in (10, 30):
+        plb = E.places(wb, S25, min_count=mc)
+        fpb = E.false_places(plb)
+        rb0 = E.taken(E.rates(wb)[0])
+        rb3 = E.taken(E.rates(wb, set().union(*[p["ids"] for p in fpb]) if fpb else set())[0])
+        check("B1 back-test before Red 2026 (places of %d or more): no place at a tenth of passes, both routes agree" % mc,
+              not fpb and rb0 == rb3, "largest share %.4f, %s and %s" % (max(p["share"] for p in plb), rb0, rb3))
+    # Shock: San Lázaro tops no simple statistic.
+    stats = {}
+    n_all = defaultdict(int)
+    nb_all = defaultdict(int)
+    pc = defaultdict(int)
+    for w in ws:
+        n_all[w["dep"]] += 1
+        nb_all[w["dep"]] += 0 if w["braked"] else 1
+        pc[w["dep"]] += 1 if w["pcw"] else 0
+    stats["warnings"] = n_all
+    stats["not braked"] = nb_all
+    stats["no-brake share"] = {d: nb_all[d] / n_all[d] for d in n_all}
+    stats["pedestrian share"] = {d: pc[d] / n_all[d] for d in n_all}
+    tops = {k: max(v, key=v.get) for k, v in stats.items()}
+    check("S1 San Lázaro tops no single depot statistic", all(t != "San Lázaro" for t in tops.values()), str(tops))
+    # Ask devices.
+    ga, _ = E.ask_a(D)
+    for name, kw, need in [("DST", dict(dst=False), 7), ("relief overlap", dict(overlap=False), 28)]:
+        a, _ = E.ask_a(D, **kw)
+        moved = sum(1 for d in a for i in range(4) if a[d][i] != ga[d][i])
+        check("A %s moves %d figures" % (name, need), moved >= need, str(moved))
+    a, _ = E.ask_a(D, dst=False, overlap=False)
+    kept = sum(1 for d in a for i in range(4) if a[d][i] == ga[d][i])
+    check("A the cracker keeps no figure", kept == 0, str(kept))
+    cb, pb, _ = E.ask_b(D)
+    c1, p1, _ = E.ask_b(D, dedupe=False, chains=False)
+    keep_b = sum(c1[d] == cb[d] for d in cb) + sum(p1[d] == pb[d] for d in pb)
+    check("B the cracker keeps at most two figures", keep_b <= 2, str(keep_b))
+    gc, _ = E.ask_c(D)
+    c2, _ = E.ask_c(D, diversions=False)
+    keep_c = sum(1 for d in c2 for i in range(4) if c2[d][i] == gc[d][i])
+    check("C the cracker keeps at most two figures", keep_c <= 2, str(keep_c))
+    print("\n%d checks, %d FAIL" % (len(PASSED) + len(FAILED), len(FAILED)))
+    return 1 if FAILED else 0
 
-    # ---- the semantic fork table -----------------------------------------------------------------
-    # SF1 the interconnect: the renamed port is one interconnect
-    nm = G.port_now(register)
-    A(W.RENAMED[0] in nm and nm[W.RENAMED[0]] == W.RENAMED[1],
-      "SF1 the renamed port does not resolve to the interconnect in service")
-    A(len(set(nm.values())) == len(W.PATHS), "SF1 the register resolves to %d interconnects"
-      % len(set(nm.values())))
-    A((rollup["port_code"] == W.RENAMED[0]).any() and (rollup["port_code"] == W.RENAMED[1]).any(),
-      "SF1 the record carries only one of the two codes")
-    # SF2 the evening windows, filed
-    A("19:00 to 19:59, 20:00 to 20:59 and 21:00 to 21:59, each in local time" in fw,
-      "SF2 clause 4.3 does not file the three windows")
-    for win in ("19:00", "20:00", "21:00"):
-        s = this[this["window_from"] == win]
-        A(float(s["shortfall"].max()) <= g["record_shortfall"],
-          "SF2 the %s window on its own would fund an augment" % win)
-    # SF3 the shortfall's sign and basis, filed
-    A("less the median of the evening window" in std, "SF3 the standard does not file the shortfall")
-    A("The reference band is 12:00 to 14:59 local time" in std, "SF3 the reference band is not filed")
-    # SF4 the clock: the windows are local and the stamps are UTC, both filed
-    A("in UTC" in dic and "summer time on the last Sunday in March" in dic,
-      "SF4 the dictionary does not file the clock")
-    A("each in local time" in fw, "SF4 the framework does not file the windows as local")
-    # the rollup already carries local evenings, so the two readings of the panel converge on it
-    A(set(rollup["window_from"]) == {"19:00", "20:00", "21:00"},
-      "SF4 the rollup's windows are not the framework's")
-    # SF7 the booked evenings, filed, and they are the only ones dropped
-    A("is not evidence of congestion there, and the planning desk leaves those evenings out" in fw,
-      "SF7 clause 4.4 is not filed")
-    booked = set()
-    for r in maint.itertuples():
-        if int(r.window_to[:2]) > W.EVENING_BAND[0] and int(r.window_from[:2]) < W.EVENING_BAND[1]:
-            booked.add((r.port_code, r.work_date_local))
-    A(len(every) - len(kept) == len(booked) * len(W.WINDOWS),
-      "SF7 %d window rows were dropped against %d booked evenings"
-      % (len(every) - len(kept), len(booked)))
-    A(len({p for p, d in booked}) >= 4,
-      "SF7 the booked evenings sit on %d ports, so the exclusion reads as a pointer"
-      % len({p for p, d in booked}))
-    # SF8 the quarter, filed
-    A("the reporting quarters are the calendar quarters" in fw, "SF8 clause 4.1 is not filed")
-    A(set(this["evening_date_local"].str[:7]) == {"2027-01", "2027-02", "2027-03"},
-      "SF8 the quarter's evenings are not the calendar quarter's")
-    # SF11 ties: the nine quarterly worst windows are distinct
-    vals = list(g["quarterly_worst"].values()) + [int(g["decided_shortfall"])]
-    A(len(set(vals)) == 9, "SF11 two quarters share a worst window")
-    # SF12 the flag: there is no flag file in this build, and no artifact scores a path
-    A(not any("flag" in f for f in os.listdir(target)), "SF12 the pack ships a flag file")
-    # SF5 every interconnect is in service across the whole quarter
-    A(set(this["line"]) == set(nm.values()), "SF5 an interconnect is missing from the quarter")
 
-    # SF6 a usable evening: a collector loss takes a whole band, so every band the panel holds is
-    # whole and no completeness rule can select a different set of evenings
-    p = panel.copy()
-    p["t"] = pd.to_datetime(p["measured_at_utc"].str[:19])
-    off = p["t"].dt.date.map(lambda x: 2 if x >= W.DST_SPRING else 1)
-    p["lh"] = (p["t"] + pd.to_timedelta(off, unit="h")).dt.hour
-    p["lday"] = (p["t"] + pd.to_timedelta(off, unit="h")).dt.date.astype(str)
-    p["band"] = ["evening" if h >= W.EVENING_BAND[0] else "day" for h in p["lh"]]
-    sizes = p.groupby(["port_code", "lday", "band"]).size()
-    A(set(sizes) == {180}, "SF6 a band in the panel is not whole: sizes %s" % sorted(set(sizes)))
-    A(int(health["minutes_missing"].astype(int).sum()) % 180 == 0,
-      "SF6 the collector lost part of a band")
-    # SF9 worst: clause 4.2 files the largest shortfall, and ranking on the lowest evening bitrate
-    # names a different interconnect
-    A("the largest any interconnect in service at the quarter end shows in any evening window" in fw,
-      "SF9 clause 4.2 does not file which figure the decision is taken on")
-    low = this.loc[this["evening_median_kbps"].astype(float).idxmin()]
-    A(low["line"] != g["decided_port"],
-      "SF9 the lowest evening bitrate names the same interconnect as the largest shortfall")
-    # SF10 comes closest: the mean reading names another interconnect, which clause 4.2 rules out
-    A(g["rung2_port"] != g["closest_port"],
-      "SF10 the quarter mean names the interconnect that comes closest anyway")
-    # SF13 the earlier quarters: the record is the eight whole quarters before this one, and the
-    # trailing eight ending with this one give the same call
-    qs = sorted(set(rollup["reporting_quarter"]))
-    A(len(qs) == 9 and qs[-1] == q, "SF13 the rollup covers %d quarters" % len(qs))
-    trailing = kept[kept["reporting_quarter"].isin(qs[1:])]
-    tw = trailing.groupby("reporting_quarter")["shortfall"].max()
-    A(float(tw.drop(q).max()) > g["decided_shortfall"],
-      "SF13 the trailing eight quarters move the call")
-    # SF14 the reference band: the panel retains nothing outside the two bands, so the wider
-    # reading cannot be computed at all
-    A(set(p["lh"]) == set(range(W.DAY_BAND[0], W.DAY_BAND[1])) |
-      set(range(W.EVENING_BAND[0], W.EVENING_BAND[1])),
-      "SF14 the panel retains a minute outside the two bands")
-    A("The reference band is 12:00 to 14:59 local time" in std,
-      "SF14 the standard does not name the reference band")
-
-    # ---- the asks --------------------------------------------------------------------------------
-    # A1 the percentile rank and the accepted commitment are filed
-    A("the 1,296th highest sample of the quarter" in fw, "A1 clause 7.1 does not file the rank")
-    A("an amendment the peer has not accepted is not billed on" in fw,
-      "A1 clause 7.2 does not file which commitment is billed")
-    A("that is in force on the last day of the quarter" in fw,
-      "A1 clause 7.2 does not pin which date an amendment inside the quarter is read at")
-    A(any(a.effective_from > W.Q_FROM.isoformat() and a.effective_from <= W.Q_TO.isoformat()
-          and a.status.startswith("accepted") for a in amend.itertuples()),
-      "A1 no accepted amendment falls inside the quarter, so the pin is idle")
-    A("taken over the peer's traffic and not over one port of it" in fw,
-      "A1 clause 7.1 does not file the grain")
-    A(len(g["a1_peers"]) == 7, "A1 covers %d peers" % len(g["a1_peers"]))
-    A(sum(1 for v in g["a1_peers"].values() if v["overage_eur"] > 0) >= 5,
-      "A1 too few peers run over their commitment")
-    two = [p for p in set(register["peer"]) if
-           len([r for r in register.itertuples() if r.peer == p and r.status == "in service"]) > 1]
-    A(len(two) == 2, "A1 %d peers hold more than one port" % len(two))
-    A((amend["status"] == "delivered, not accepted").any(),
-      "A1 no amendment is unaccepted, so the version device is absent")
-    # A2 one version number covers two builds
-    vs = [b["build_version"] for b in releases["builds"]]
-    A(len(vs) != len(set(vs)), "A2 no version number is reissued")
-    A(len(g["a2_builds"]) == len(releases["builds"]), "A2 does not cover every build")
-    A(len(set(sessions["build_version"])) < len(releases["builds"]),
-      "A2 the sessions file already separates the builds")
-    # A3 the restoration standard and the causes are filed
-    A("four hours from the time an incident was opened to the time service was restored" in fw,
-      "A3 clause 5.1 does not file the standard")
-    A("an incident for which no restoration time was recorded is not counted as restored" in fw,
-      "A3 clause 5.1 does not file the absent restoration")
-    A("sit outside the platform" in dic, "A3 the dictionary does not say which causes are outside")
-    A(len(res) < len(inc), "A3 every incident carries a restoration time")
-    for k, v in g["a3_incidents"].items():
-        A(0 < v["restored_inside_standard"] < v["opened"], "A3 %s is degenerate" % k)
-        A(0 < v["cause_outside_platform"] < v["opened"], "A3 %s has no split of causes" % k)
-
-    # ---- closure axes ----------------------------------------------------------------------------
-    for perm in (1, 2, 3):
-        sh = rollup.sample(frac=1.0, random_state=perm).reset_index(drop=True)
-        k2, _ = G.shortfalls(sh, register, maint)
-        A(len(k2) == len(kept), "axis 14 row order changes the population")
-        A(float(k2[k2["reporting_quarter"] == q]["shortfall"].max()) == g["decided_shortfall"],
-          "axis 14 row order changes the decided figure")
-    A((pd.to_numeric(rollup["evening_median_kbps"]) % 1 == 0).all(),
-      "axis 10 a band median is not a whole kbps")
-    A(not panel["measured_at_utc"].duplicated().any() or True, "axis 15 placeholder")
-    A(len(panel.drop_duplicates(subset=["measured_at_utc", "port_code"])) == len(panel),
-      "axis 15 the panel holds a repeated minute for one port")
-    A(W.AS_OF > W.Q_TO and W.COMMITTEE > W.AS_OF, "axis 4 the dates do not run extract then board")
-    A(int(health["minutes_missing"].astype(int).sum()) > 0,
-      "axis 12 the collector lost nothing, so the panel has no gaps")
-    A(int(health["minutes_captured"].astype(int).sum()) == len(panel),
-      "axis 12 the health log and the panel disagree on what was captured")
-
-    # ---- input gates -----------------------------------------------------------------------------
-    files = sorted(os.listdir(target))
-    A(len(files) >= 10, "input gate: %d files" % len(files))
-    exts = {os.path.splitext(f)[1] for f in files}
-    A(len(exts) >= 3, "input gate: %d formats" % len(exts))
-    A(len(panel) >= W.TARGET_ROWS, "input gate: the largest file holds %d rows" % len(panel))
-    A(len(meta["distractor_files"]) >= 2, "input gate: too few declared distractors")
-    for d in meta["distractor_files"]:
-        A(d["file"] in files, "input gate: declared distractor %s is not in the pack" % d["file"])
-    return N[0]
+if __name__ == "__main__":
+    sys.exit(main())

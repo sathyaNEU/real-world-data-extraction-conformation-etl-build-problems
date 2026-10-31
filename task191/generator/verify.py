@@ -1,171 +1,213 @@
-"""An independent reader of the shipped bundle: it knows figures.json and target/ and nothing else."""
+"""The independent verifier: every graded figure recomputed from target/ by a second route, with pandas and a
+KD-tree over points sampled along each stop-to-stop segment, never importing estim.py, and compared with the
+figures the golden carries (figures.json).
+
+    python3 task191/generator/verify.py
+"""
 import datetime as dt
 import json
+import math
 import os
+import sys
 
+import numpy as np
 import pandas as pd
+from scipy.spatial import cKDTree
 
-K = [0]
-STANDARD_HOURS = 4
-OUTSIDE = ("access network", "transit provider", "customer premises", "power or facility")
-RANK = 1296
-WINDOWS = ("19:00", "20:00", "21:00")
-BAND = (19, 22)
-
-
-def ok(cond, msg):
-    K[0] += 1
-    if not cond:
-        raise AssertionError("verify: " + msg)
+HERE = os.path.dirname(os.path.abspath(__file__))
+TARGET = os.path.join(os.path.dirname(HERE), "target")
+FIG = os.path.join(HERE, "figures.json")
+DEPOTS = ["San Lázaro", "Hornacho", "Valdeolmos", "El Quiñón", "Las Tenerías", "La Ribera", "Santa Clara"]
+OK = []
+BAD = []
 
 
-def run(target, figures):
-    K[0] = 0
-    fig = json.load(open(figures, encoding="utf-8"))
-    rd = lambda n: pd.read_csv(os.path.join(target, n), dtype=str, keep_default_na=False)
-    rollup = rd("evening_quality_daily.csv")
-    panel = rd("panel_throughput_minutes.csv")
-    register = rd("interconnect_register.csv")
-    maint = rd("maintenance_windows.csv")
-    edge = rd("edge_traffic_5min.csv")
-    commit = rd("peering_commitments.csv")
-    amend = rd("commitment_amendments.csv")
-    sess = rd("client_sdk_sessions.csv")
-    reb = rd("rebuffer_events_daily.csv")
-    inc = rd("incident_log.csv")
-    res = rd("incident_restoration_extract.csv")
-    man = rd("telemetry_handover_inventory.csv")
-    rel = json.load(open(os.path.join(target, "sdk_release_log.json"), encoding="utf-8"))
+def same(name, a, b):
+    (OK if a == b else BAD).append(name)
+    if a != b:
+        print("MISMATCH %s: %r against %r" % (name, a, b))
 
-    ok(len(panel) >= 25000, "the panel holds %d rows" % len(panel))
-    ok(int(man.loc[man["extract"] == "panel_throughput_minutes.csv",
-                   "rows_handed_over"].iloc[0]) == len(panel),
-       "the handover inventory disagrees on the panel")
 
-    # the interconnect in service at the quarter end, for every code the records carry
-    live = {r.port_code for r in register.itertuples()
-            if r.status == "in service" and r.port_type != "transit"}
-    now = {r.port_code: r.current_port_code for r in register.itertuples()
-           if r.current_port_code in live}
-    ok(len(set(now.values())) == 7, "%d interconnects resolve" % len(set(now.values())))
-
-    booked = set()
-    for r in maint.itertuples():
-        if int(r.window_to[:2]) > BAND[0] and int(r.window_from[:2]) < BAND[1]:
-            booked.add((now.get(r.port_code, r.port_code), r.work_date_local))
-    ok(len(booked) >= 9, "%d booked evenings reach an evening window" % len(booked))
-
-    d = rollup[rollup["port_code"].isin(now)].copy()
-    d["line"] = [now[x] for x in d["port_code"]]
-    d["s"] = pd.to_numeric(d["reference_median_kbps"]) - pd.to_numeric(d["evening_median_kbps"])
-    d = d[[(a, b) not in booked for a, b in zip(d["line"], d["evening_date_local"])]]
-
-    this = d[d["reporting_quarter"] == "2027Q1"]
-    prior = d[d["reporting_quarter"] != "2027Q1"]
-    w = this.loc[this["s"].idxmax()]
-    ok(int(w["s"]) == fig["decided_shortfall_kbps"], "the decided shortfall")
-    ok(w["line"] == fig["decided_port"], "the decided interconnect")
-    ok(w["evening_date_local"] == fig["decided_evening"], "the decided evening")
-    ok(w["window_from"] == fig["decided_window"], "the decided window")
-    by_q = prior.groupby("reporting_quarter")["s"].max().sort_values(ascending=False)
-    ok(int(by_q.iloc[0]) == fig["flip_shortfall_kbps"], "the flip figure")
-    ok(by_q.index[0] == fig["flip_quarter"], "the quarter the record comes from")
-    ok(int((by_q > int(w["s"])).sum()) + 1 == fig["rank_of_nine"], "the rank of nine")
-    ok(fig["call"] == ("none" if int(w["s"]) <= int(by_q.iloc[0]) else w["line"]), "the call")
-    for qq, v in fig["quarterly_worst_kbps"].items():
-        ok(int(by_q[qq]) == int(v), "the worst window of %s" % qq)
-
-    # the grid the deliverable carries
-    seen = 0
-    for line, gl in this.groupby("line"):
-        for win, gw in gl.groupby("window_from"):
-            r = gw.loc[gw["s"].idxmax()]
-            want = fig["grid"]["%s %s" % (line, win)]
-            ok(int(r["s"]) == want["worst_kbps"], "the grid at %s %s" % (line, win))
-            ok(r["evening_date_local"] == want["evening"], "the grid evening at %s %s" % (line, win))
-            seen += 1
-    ok(seen == 21, "the grid holds %d cells" % seen)
-
-    # the panel's own medians agree with the rollup for the quarter it covers
-    p = panel.copy()
-    p["t"] = pd.to_datetime(p["measured_at_utc"].str[:19])
-    p["v"] = pd.to_numeric(p["median_kbps"])
-    off = p["t"].dt.date.map(lambda x: 2 if x >= dt.date(2027, 3, 28) else 1)
-    p["local"] = p["t"] + pd.to_timedelta(off, unit="h")
-    p["lday"] = p["local"].dt.date.astype(str)
-    p["lh"] = p["local"].dt.hour
-    p["line"] = [now.get(x, x) for x in p["port_code"]]
-    checked = 0
-    for (line, day, hr), gg in p[p["lh"].isin([19, 20, 21])].groupby(["line", "lday", "lh"]):
-        if checked >= 60:
-            break
-        row = rollup[(rollup["evening_date_local"] == day) &
-                     (rollup["window_from"] == "%02d:00" % hr) &
-                     (rollup["port_code"].isin([k for k, v in now.items() if v == line] + [line]))]
-        if len(row) != 1:
+def main():
+    fig = json.load(open(FIG))
+    # ---- the call
+    w = pd.read_csv(os.path.join(TARGET, "adas_collision_warnings_2025-10_2026-10.csv"), dtype=str, keep_default_na=False)
+    w = w[w.warning_type.isin(["FCW", "PCW", "FWD_COLL", "PED_COLL"])].drop_duplicates("event_id", keep="first")
+    t = pd.to_datetime(w.event_time_utc, utc=True).dt.tz_convert("Europe/Madrid")
+    w = w.assign(local_day=t.dt.date)
+    w = w[(w.local_day >= dt.date(2026, 1, 1)) & (w.local_day <= dt.date(2026, 10, 31))].copy()
+    ms = pd.to_numeric(w.brake_reaction_ms, errors="coerce")
+    w["braked"] = np.where(w.firmware.str.startswith("1."), w.brake_2s == "Y", ms.le(2000).fillna(False))
+    alloc = pd.read_excel(os.path.join(TARGET, "fleet_register_2026.xlsx"), sheet_name="Allocations", dtype=str)
+    alloc["a"] = pd.to_datetime(alloc["from"], format="%d/%m/%Y").dt.date
+    alloc["b"] = pd.to_datetime(alloc["to"].fillna("31/12/2099"), format="%d/%m/%Y").dt.date
+    amap = {}
+    for r in alloc.itertuples():
+        amap.setdefault(r.fleet_no, []).append((r.a, r.b, r.depot))
+    w["depot"] = [next(dep for a, b, dep in amap[f] if a <= d <= b) for f, d in zip(w.fleet_no, w.local_day)]
+    stops = pd.read_excel(os.path.join(TARGET, "red_paradas_recorridos_2025_2026.xlsx"), sheet_name="Paradas", dtype=str)
+    sq = pd.read_excel(os.path.join(TARGET, "red_paradas_recorridos_2025_2026.xlsx"), sheet_name="Recorridos Red 2026",
+                       dtype=str)
+    sq["orden"] = sq.orden.astype(int)
+    sq["a"] = pd.to_datetime(sq.vigente_desde, format="%d/%m/%Y").dt.date
+    sq["b"] = pd.to_datetime(sq.vigente_hasta.fillna("31/12/2099"), format="%d/%m/%Y").dt.date
+    xy = {r.codigo_2026: (float(r.latitud), float(r.longitud)) for r in stops.itertuples()}
+    lat0 = np.mean([v[0] for v in xy.values()])
+    kx, ky = 111_320.0 * math.cos(math.radians(lat0)), 111_320.0
+    segs = {}
+    periods = []
+    for (line, sentido, a, b), g in sq.sort_values("orden").groupby(["linea", "sentido", "a", "b"]):
+        if b < dt.date(2026, 1, 1):
             continue
-        ok(abs(gg["v"].median() - float(row["evening_median_kbps"].iloc[0])) <= 1.0,
-           "the panel and the rollup disagree at %s %s %02d" % (line, day, hr))
-        checked += 1
-    ok(checked >= 40, "only %d window medians were cross checked" % checked)
+        codes = list(g.codigo_parada)
+        sl = [tuple(sorted(p)) for p in zip(codes, codes[1:])]
+        periods.append((line, sentido, a, b, sl))
+        for s in sl:
+            segs[s] = True
+    seg_list = sorted(segs)
+    pts, owner, along = [], [], []
+    for i, (p, q) in enumerate(seg_list):
+        (la1, lo1), (la2, lo2) = xy[p], xy[q]
+        x1, y1, x2, y2 = lo1 * kx, la1 * ky, lo2 * kx, la2 * ky
+        L = math.hypot(x2 - x1, y2 - y1)
+        n = max(2, int(L // 1.0))
+        for k in range(n + 1):
+            f = k / n
+            pts.append((x1 + f * (x2 - x1), y1 + f * (y2 - y1)))
+            owner.append(i)
+            along.append(f * L)
+    tree = cKDTree(np.array(pts))
+    P = np.column_stack([w.longitude.astype(float) * kx, w.latitude.astype(float) * ky])
+    _, idx = tree.query(P)
+    w["seg"] = np.array(owner)[idx]
+    w["pos"] = np.array(along)[idx]
+    # Passes over each segment from the return.
+    ret = pd.read_csv(os.path.join(TARGET, "service_return_2025-10_2026-10.csv"), sep=";", dtype=str)
+    ret["day"] = pd.to_datetime(ret.fecha, format="%d/%m/%Y").dt.date
+    ret = ret[(ret.day >= dt.date(2026, 1, 1)) & (ret.day <= dt.date(2026, 10, 31))]
+    ret["op"] = ret.expediciones_realizadas.astype(int)
+    passes = np.zeros(len(seg_list))
+    sidx = {s: i for i, s in enumerate(seg_list)}
+    for line, sentido, a, b, sl in periods:
+        n = ret[(ret.linea == line) & (ret.sentido == sentido) & (ret.day >= a) & (ret.day <= b)].op.sum()
+        for s in sl:
+            passes[sidx[s]] += n
+    # Places: 25 m windows centred on the densest 5 m cell of each segment, repeated while any window fires on a
+    # tenth of the segment's passes.
+    w["cell"] = (w.pos // 5).astype(int)
+    drop = set()
+    for s, g in w.groupby("seg"):
+        cells = g.cell.value_counts()
+        while len(cells):
+            c = cells.index[0]
+            win = g[(g.cell >= c - 2) & (g.cell <= c + 2)]
+            if len(win) / passes[s] < 0.10:
+                break
+            drop.update(win.event_id)
+            g = g[~g.event_id.isin(win.event_id)]
+            cells = g.cell.value_counts()
+    k = w[~w.event_id.isin(drop)]
+    fleet = (~k.braked).sum() / len(k)
+    for d in DEPOTS:
+        g = k[k.depot == d]
+        same("call %s warnings" % d, int(len(g)), fig["depots"][d]["warnings"])
+        same("call %s not braked" % d, int((~g.braked).sum()), fig["depots"][d]["not_braked"])
+        same("call %s rate" % d, round(100 * (~g.braked).mean(), 1), fig["depots"][d]["rate_pct"])
+        same("call %s ratio" % d, round((~g.braked).mean() / fleet, 2), fig["depots"][d]["ratio"])
+    same("fleet rate", round(100 * fleet, 1), fig["fleet_rate_pct"])
+    taken = sorted(d for d in DEPOTS if (~k[k.depot == d].braked).mean() / fleet >= 1.3)
+    same("depots taken", taken, fig["call"]["depots"])
+    # ---- ask A: hours on service by depot and week
+    e = pd.read_csv(os.path.join(TARGET, "etm_logons_2026-10.csv"), sep=";", dtype=str).drop_duplicates()
+    e = e[~e.linea.isin(["000", "ESC"])].copy()
+    e["on"] = pd.to_datetime(e.inicio_local)
+    e["off"] = pd.to_datetime(e.fin_local)
+    e = e.sort_values(["empleado", "on"])
+    nxt = e.groupby("empleado").on.shift(-1)
+    e["end"] = np.where(nxt.notna() & (nxt < e.off), nxt, e.off)
+    e["end"] = pd.to_datetime(e["end"])
+    h = (e.end - e.on).dt.total_seconds() / 3600
+    change = pd.Timestamp("2026-10-25 03:00:00")
+    h = h + np.where((e.on < change) & (e.end >= change), 1.0, 0.0)
+    e["h"] = h
+    hr = pd.read_csv(os.path.join(TARGET, "hr_depot_assignments_2026.csv"), sep=";", dtype=str)
+    hr["a"] = pd.to_datetime(hr.desde, format="%d/%m/%Y").dt.date
+    hr["b"] = pd.to_datetime(hr.hasta.fillna("31/12/2099"), format="%d/%m/%Y").dt.date
+    hmap = {}
+    for r in hr.itertuples():
+        hmap.setdefault(r.empleado, []).append((r.a, r.b, r.cochera))
+    e["day"] = e.on.dt.date
+    e["depot"] = [next(dep for a, b, dep in hmap[x] if a <= d <= b) for x, d in zip(e.empleado, e.day)]
+    weeks = [dt.date(2026, 10, 5) + dt.timedelta(days=7 * i) for i in range(4)]
+    for d in DEPOTS:
+        for i, w0 in enumerate(weeks):
+            v = e[(e.depot == d) & (e.day >= w0) & (e.day <= w0 + dt.timedelta(days=6))].h.sum()
+            same("A %s week %d" % (d, i + 1), int(math.floor(v + 0.5)), fig["hours_on_service"][d][i])
+    # ---- ask C: kilometres in service by depot and month
+    ret = pd.read_csv(os.path.join(TARGET, "service_return_2025-10_2026-10.csv"), sep=";", dtype=str)
+    ret["day"] = pd.to_datetime(ret.fecha, format="%d/%m/%Y").dt.date
+    ret = ret[(ret.day >= dt.date(2026, 7, 1)) & (ret.day <= dt.date(2026, 10, 31))].copy()
+    km = ret.km_realizados.str.replace(",", ".").astype(float)
+    km = np.where(ret.linea.isin(["40", "41", "44", "46"]), km / 1000.0, km)
+    ret["km"] = km
+    lines = {"San Lázaro": "1 3 7 9 N1", "Hornacho": "12 14 27 33 N2", "Valdeolmos": "40 41 44 46 N3",
+             "El Quiñón": "5 16 21 N4", "Las Tenerías": "2 8 19 23 25 N5", "La Ribera": "4 10 17 29 N6",
+             "Santa Clara": "6 11 31 35 N7"}
+    l2d = {ln: d for d, s in lines.items() for ln in s.split()}
+    ret["depot"] = ret.linea.map(l2d)
+    ret["op"] = ret.expediciones_realizadas.astype(int)
+    dv = pd.read_csv(os.path.join(TARGET, "mobility_diversions_register_2026.csv"), sep=";", dtype=str)
+    extra = np.zeros(len(ret))
+    rk = ret.reset_index(drop=True)
+    for r in dv.itertuples():
+        a = dt.datetime.strptime(r.desde, "%d/%m/%Y").date()
+        b = dt.datetime.strptime(r.hasta, "%d/%m/%Y").date()
+        m = (rk.linea.isin(r.lineas.split("/")) & rk.sentido.isin(r.sentidos.split("/")) & (rk.day >= a) & (rk.day <= b))
+        extra += np.where(m, rk.op * float(r.km_por_expedicion.replace(",", ".")), 0.0)
+    rk["km"] = rk.km + extra
+    rk["month"] = [d.month for d in rk.day]
+    for d in DEPOTS:
+        for i, m in enumerate([7, 8, 9, 10]):
+            v = rk[(rk.depot == d) & (rk.month == m)].km.sum()
+            same("C %s month %d" % (d, m), int(math.floor(v + 0.5)), fig["kilometres_in_service"][d][i])
+    # ---- ask B: at-fault collisions and claims paid
+    inc = pd.read_excel(os.path.join(TARGET, "incident_register_2026.xlsx"), dtype=str)
+    inc["t"] = pd.to_datetime(inc.fecha + " " + inc.hora_local, format="%d/%m/%Y %H:%M")
+    inc = inc.sort_values(["coche", "t"]).reset_index(drop=True)
+    keep = []
+    last = None
+    for r in inc.itertuples():
+        if last is not None and last.coche == r.coche and last.culpa == r.culpa and \
+                abs((r.t - last.t).total_seconds()) <= 1200:
+            continue
+        keep.append(r.Index)
+        last = r
+    inc = inc.loc[keep].copy()
+    inc["day"] = inc.t.dt.date
+    inc["depot"] = [next(dep for a, b, dep in amap[f] if a <= d <= b) for f, d in zip(inc.coche, inc.day)]
+    regs = pd.read_excel(os.path.join(TARGET, "fleet_register_2026.xlsx"), sheet_name="Registrations", dtype=str)
+    p2f = dict(zip(regs.plate, regs.fleet_no))
+    bd = pd.read_csv(os.path.join(TARGET, "insurer_bordereau_2026-01_2026-10.csv"), dtype=str, keep_default_na=False)
+    bd = bd[bd.snapshot == "2026-10-31"].copy()
+    bd = bd[~bd.claim_no.isin(set(bd.reopened_from) - {""})]
+    bd["fleet"] = bd.vehicle_plate.map(p2f)
+    bd["it"] = pd.to_datetime(bd.incident_date + " " + bd.incident_time_local)
+    paid = {}
+    for r in bd.itertuples():
+        c = inc[(inc.coche == r.fleet) & (inc.day == r.it.date())]
+        if not len(c):
+            continue
+        j = (c.t - r.it).abs().idxmin()
+        paid[j] = paid.get(j, 0.0) + float(r.paid_to_date_eur)
+    inc["paid"] = [paid.get(i, 0.0) for i in inc.index]
+    af = inc[inc.culpa.isin(["A", "C"])]
+    for d in DEPOTS:
+        g = af[af.depot == d]
+        same("B %s at-fault collisions" % d, int(len(g)), fig["at_fault_collisions"][d])
+        same("B %s claims paid" % d, int(math.floor(g.paid.sum() + 0.5)), fig["claims_paid_eur"][d])
+    print("verify: %d figures agree, %d differ" % (len(OK), len(BAD)))
+    return 1 if BAD else 0
 
-    # A1
-    ports = {}
-    for r in register.itertuples():
-        if r.status == "in service":
-            ports.setdefault(r.peer, []).append(r.port_code)
-    billed = {r.peer: (float(r.commitment_mbps), float(r.rate_eur_per_mbps))
-              for r in commit.itertuples() if r.basis == "billed"}
-    ok(len(billed) == 7, "%d peers are billed" % len(billed))
-    ok(any(r.basis == "settlement free" for r in commit.itertuples()),
-       "no peer is marked settlement free")
-    for a in amend.itertuples():
-        if a.status.startswith("accepted") and a.effective_from <= "2027-03-31" and a.peer in billed:
-            billed[a.peer] = (float(a.commitment_mbps_after), billed[a.peer][1])
-    e = edge.copy()
-    e["m"] = pd.to_numeric(e["out_mbps"])
-    for peer, (c, rate) in billed.items():
-        own = e[e["port_code"].isin(ports.get(peer, []))]
-        per = own.groupby("sampled_at_utc")["m"].sum().sort_values(ascending=False)
-        p95 = int(round(float(per.iloc[RANK - 1])))
-        want = fig["a1_peers"][peer]
-        ok(p95 == want["percentile_mbps"], "A1 percentile at %s" % peer)
-        ok(int(round(c)) == want["commitment_mbps"], "A1 commitment at %s" % peer)
-        ok(int(round(max(0, p95 - int(round(c))) * rate)) == want["overage_eur"],
-           "A1 overage at %s" % peer)
 
-    # A2
-    s = sess.copy(); s["n"] = pd.to_numeric(s["sessions"])
-    rb = reb.copy(); rb["n"] = pd.to_numeric(rb["sessions_with_rebuffer"])
-    for b in rel["builds"]:
-        sel = s[(s["build_version"] == b["build_version"]) &
-                (s["session_date_local"] >= b["rolled_out_from"]) &
-                (s["session_date_local"] <= b["rolled_out_to"])]
-        rs = rb[(rb["build_version"] == b["build_version"]) &
-                (rb["session_date_local"] >= b["rolled_out_from"]) &
-                (rb["session_date_local"] <= b["rolled_out_to"])]
-        want = fig["a2_builds"][b["build_ref"]]
-        ok(int(sel["n"].sum()) == want["sessions"], "A2 sessions at %s" % b["build_ref"])
-        ok(round(100.0 * int(rs["n"].sum()) / int(sel["n"].sum()), 1) == want["rebuffered_pct"],
-           "A2 rebuffer share at %s" % b["build_ref"])
-
-    # A3
-    rest = {r.incident_ref: r.service_restored_at_utc for r in res.itertuples()}
-    for m in (1, 2, 3):
-        key = "2027-%02d" % m
-        g = inc[inc["opened_at_utc"].str[:7] == key]
-        inside = 0
-        for r in g.itertuples():
-            t = rest.get(r.incident_ref)
-            if not t:
-                continue
-            a = dt.datetime.strptime(r.opened_at_utc, "%Y-%m-%dT%H:%M:%SZ")
-            b = dt.datetime.strptime(t, "%Y-%m-%dT%H:%M:%SZ")
-            if (b - a).total_seconds() <= STANDARD_HOURS * 3600:
-                inside += 1
-        want = fig["a3_incidents"][key]
-        ok(len(g) == want["opened"], "A3 opened in %s" % key)
-        ok(inside == want["restored_inside_standard"], "A3 inside the standard in %s" % key)
-        ok(int(g["cause_category"].isin(OUTSIDE).sum()) == want["cause_outside_platform"],
-           "A3 causes outside in %s" % key)
-    return K[0]
+if __name__ == "__main__":
+    sys.exit(main())

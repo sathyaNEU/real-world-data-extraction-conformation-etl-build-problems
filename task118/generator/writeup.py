@@ -60,16 +60,16 @@ def write(path, fig):
                  _kw(pu["Home Battery Network"], 2), mw["Home Battery Network"], mw["Peak Time Rewards"],
                  mw["Cool Credit"], mw["Business Demand Partners"]),
               "5. Counted, for each 2026 event day, the premises in cool_credit_enrolments_cis_2026-10-16.csv "
-              "enrolled that day with a thermostat online at 23:00 UTC: the enrolled serial or a device registered "
-              "in halvern_device_registry_2026-10-16.json at the same address once both are normalised, "
-              "its last row in halvern_status_changes_2026.csv ONLINE, or IDLE from 7 July 2026, the first event "
-              "on which halvern_unreachable_devices_2026.csv stops listing idle devices.",
+              "enrolled that day with a thermostat ready at 23:00 UTC under OP-7 section 6: the enrolled serial or "
+              "a device in halvern_device_registry_2026-10-16.json at the same address once both are normalised, "
+              "registered and not retired by then, its last row in halvern_status_changes_2026.csv ONLINE, or "
+              "IDLE reported after the firmware 6.0 push of 6 July 2026.",
               "6. Dropped exact repeats from brightwell_dispatch_records_2026.csv, added each battery's record hours "
               "for an event (the MST date of the dispatch start), counted a premise in "
               "battery_interconnection_register_2026-10-16.csv once per event when any of its batteries reached "
               "three hours, and paid USD 15 an event in event order up to USD 255.",
-              "7. Kept the latest submitted row per meter and month in arroyo_nominations_2026.csv for meters in "
-              "cbmu_commercial_meters_2026-10-16.csv and summed nominated kW by month.",
+              "7. Kept the latest submitted row per meter and month in arroyo_nominations_2026.csv for the "
+              "utility's meters, those in cbmu_commercial_meters_2026-10-16.csv, and summed nominated kW by month.",
               "8. Recommended the Home Battery Network, %d MW ahead of Peak Time Rewards."
               % (mw["Home Battery Network"] - mw["Peak Time Rewards"]), ""]
     lines += ["## 4. Deliverable Answers", "", "### dr_capacity_note_2027.docx", "",

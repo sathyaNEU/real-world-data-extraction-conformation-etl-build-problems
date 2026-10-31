@@ -1,302 +1,255 @@
-# task181 design note (architecture 5: where the city's dengue is caught)
+# task181 design note (architecture 6: who goes to professional practice review)
 
-Architectures 1 to 4 are spent and in the card's lineage, with the weather draw that opened this re-root (v5a,
-killed at the draw). This architecture leaves criminology: the cell's decisive-step space was enumerated closed
-by task182's architecture 8 (sixteen candidates, each dead to a standing screen) and this pass added the
-weather-conditioned violence draw to that list. The re-root directive's fallback moves the build to another
-anomaly-detection client domain, and epidemiology carries an honest stump here.
+Architectures 1 to 5 are spent and in the card's lineage. Architecture 5 (the dengue hotspots placed by the
+place-of-work table) was sent back by the FIX_NOW's second judge pass, and epidemiology is spent for this slot after
+five architectures, so this draw moves to another client domain whose task type serves anomaly detection: Healthcare
+Delivery & Health Economics, provider quality and risk adjustment. New world, new dataset, new generator, new shell.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task181.json` (v5), registered 2026-10-31. `guard.py check` on the
-  registered card: PASS, one NOTE (test.same_driver_older, differentiated against task487, whose driver dates
-  inspection-found events inside their windows); nearest driver 0.08 (task121 v3, lineage).
-- **Pairing.** `epidemiology-public-health` / `disease-surveillance-outbreak-anomaly-detection` (serves AD and DQ),
-  objective Anomaly Detection & Diagnostics: a real outbreak separated from the place the records put it. Client
-  domain epidemiology-public-health. The task type carries one anomaly-detection card on file (task188, West Nile
-  pools) and this slot's own architecture 2 (pertussis, another world and dataset).
-- **World.** Dalisay City, a component city in Laguna province, Philippines (PHP), about 840,000 residents in 36
-  barangays (Santo Tomas Norte split from Santo Tomas in March 2025). The City Health Office's epidemiology and
-  surveillance unit (CESU) keeps the dengue line list fed by two hospitals, six city health centres and three
-  private clinics. The Dalisay Industrial Estate, an export processing zone inside Barangay San Roque, employs a
-  large share of the working residents of six barangays of boarding houses beside it and houses almost nobody;
-  San Roque's own residents live in its old village. Neighbouring towns (Pinagbuklod, Kalinaw, Sinagtala,
-  Masilaw), the two hospitals, the three clinics and the Laguna Bay Inter-Local Health Zone are invented. People drawn with `guard.py names --geo PH
-  --seed 181`: John Figueroa (city health officer), Tammy Orozco (CESU head).
-- **Decision.** On Monday 11 October 2027, the start of morbidity week 41, the city health officer sends the
-  hotspot response (search-and-destroy, larviciding, targeted space spraying, case finding, clean-up) for weeks 41
-  to 44 to every barangay that meets the plan's trigger: 40 or more of the city's notified cases with onset in
-  weeks 37 to 40 infected in the barangay. The decision faces forward (the next four weeks' response); the
-  quantity is the closed window just behind it, because the plan triggers on the latest four complete weeks.
-- **Quantity.** Each barangay's count of the window's notified cases that were infected there.
-- **Data-native sentence.** A dengue notification records the barangay the patient sleeps in, because the case
-  investigation form takes the home address, while Aedes aegypti feeds in daylight, so a working adult's infection
-  is caught where the working day is spent; in a city whose export zone employs a large share of several
-  barangays' residents and houses almost none, an outbreak at the estate is recorded in the barangays its
-  workforce sleeps in.
-- **Default path's answer:** the two outbreak barangays and the six barangays beside the estate (eight by home
-  address at 47 to 86 cases). **Golden:** San Roque, Bagumbayan and Maligaya.
-- **Shape.** `other`: a designation over every barangay. Criteria: each barangay sent the response (3), each of
-  the six beside the estate correctly left out although over the trigger by home address (6), the rest left out
-  (1), the chart's named parts (bars per barangay, the trigger line, the three in red: 3 to 4), the two files (2),
-  and the asks' 40 figures (hospital admissions 16, house indices 12, laboratory first positives 12).
-- **Strategy and family.** `causal_design` (interference between units: outcomes recorded in one barangay caused by
-  exposure in another through daily travel); Layer 2 family `estimand_identification`; Gate G
-  `decomposition_attribution` (each barangay's correctly reported cases assigned to the barangay where they were
-  caught); gap population then objective; generators G7 (the vector's feeding hours decide where a case is
-  caught) and G6 (the working-age band moves against the rest).
-- **Axis values drawn against the window** (tasks 464, 273, 268): forum operations_desk (the dengue desk dispatches
-  the teams), forcing_event period_close (the four-week window closes), org_family local_government, role
-  operations_director (the city health officer), context artifact monitoring_export (the line list export).
-  season_or_peak was the first forcing value and is banned by task273; the window closing is the honester label,
-  since the trigger is read the Monday a window closes.
-- **Abstraction sentence.** Written against every approved build, no shared sentence holds: task175 reads a unit's
-  attribute at the neighbours it faces, task179 links two bodies' records person by person, task182 conditions
-  each unit on its own response to an outside driver, task236 reads a notified share against a sentinel rate,
-  task275 raises observed catch by unobserved effort, task303 removes events every sibling opened in one minute.
-  Here the recorded unit is not where the event was caused, and the place is recovered through the daily travel
-  of the people the events happen to. The spent family nearest it is task268's (people present against
-  residents), which died because there the estimand named presence; here it names the place of infection, and
-  no file says where any infection happened.
-- **World selection.** The generator takes world seeds in order and keeps the first whose clean truth meets the
-  design (`generator/design.py`: every placement that puts working residents' exposure at work files the golden,
-  each easy route misses, no shock-sort interval) and whose cut pack keeps margins of 12 inside and 6 outside the
-  trigger (3.5 at a half share). Seed 0 met the truth and missed the cut-pack half-share margin (1.8), seeds 1 and 2
-  fail the clean truth (a barangay beside the estate under 40 by home address) and seed 3 is the first to meet both;
-  `generator/seeds.py 0 1 2 3` prints the screen.
-- **Sources.** All data synthetic, generated by `generator/` (CC0 for this pack). The world follows the Philippine
-  notification practice for dengue, the Community-Based Monitoring System tables an LGU holds and the barangay
-  response of the dengue programme; no real person, office, zone or town of the pack is represented.
+- **Card:** `.claude/skills/fingerprint/cards/task181.json`, architecture v6, registered 2026-10-31T20:04:09Z;
+  `guard.py check` on the filed card WARN only (people.first Jacqueline and Todd in one older build each, a first
+  name and not a full name, kept; repeat.gate_g decomposition_attribution against task191, answered below).
+- **Pairing:** healthcare-delivery-health-economics / provider-quality-risk-adjustment (serves DD and AD), objective
+  Anomaly Detection & Diagnostics: the anomaly is a consultant whose own practice raised the infection risk,
+  separated from the excess a fault in the hospital's instrument reprocessing produced.
+- **World:** Kooralong Health, a metropolitan public health service in Victoria, Australia; its general surgery
+  department at Kooralong Hospital; the state's Healthcare-Associated Infection Surveillance Centre (the Centre),
+  which sent an outlier notice on the department's second-quarter 2027 site infections; the hospital's central
+  sterile services department (CSSD) with four steam sterilisers.
+- **Shape 10, scorecard against a threshold:** every consultant against the Centre's control limit is one check;
+  the call, the steriliser finding and the chart's parts add to them, and the three asks carry the rest.
+- **Strategy:** decomposition_attribution (an outcome excess assigned to the resource that produced it, not to the
+  units it fell on); Gate G decomposition_attribution, the same mechanism family as task191, which judged depots on
+  genuine warnings; the driver here is a shared upstream resource reached through a time-ordered trace, and no
+  build on file decomposes a provider comparison that way.
+- **Shell (redrawn with the world):** question form who, second sentence opening on the answer to the Centre,
+  deliverables docx and csv; architecture 5's shell (where, make, csv and pdf) is in `lineage_shells`.
+- **Data-native sentence:** a consultant's preference trays go back to the CSSD after every list, and a rigid
+  container over 10 kg can only go into steriliser 3, the one chamber validated for it, so the consultants whose
+  colorectal trays are heavy have nearly every tray sterilised by steriliser 3, whose drying stage ran short after its
+  12 May repair while every cycle printed a pass.
+- **Abstraction sentence (tested against every approved build):** units judged on their cases' outcomes against a
+  case-mix expectation carry the excess of a shared upstream resource that handled their cases unequally because of
+  when the units work, and only a time-ordered trace from each case through a second system to the resource
+  separates the units' own effect. No approved build's abstraction is that sentence: task271 v1 rebuilt a case-level
+  risk property from earlier admissions (an attribute of the patient), task194 developed a coding lag, task269
+  sampled hand hygiene occasions, and task191 kept the genuine warnings; none removes a resource's exposure from a
+  provider comparison.
+- **Same-puzzle and same-driver tests:** gap objective, decisive generator G6 (each consultant's operations shifted
+  in composition between exposed and unexposed sets), decision designation_set; the guard's structural tests clear on
+  the filed card, with differentiation against the slot's own architecture 5 and task121 v5 on the card.
+- **Sources (all synthetic, license-clean, generated by `generator/`):** the theatre system's operations export; the
+  infection prevention team's surveillance export; the instrument tracking system's scan export; the steriliser cycle
+  records; the CSSD equipment maintenance log; the Centre's published procedure rates and the outlier notice; the
+  Centre's outlier response guide; two distractors (the wards' hand hygiene audits and the theatres' air sampling).
 
 ## Default path
 
-1. Read the plan's trigger: 40 or more of the window's notified cases infected in the barangay.
-2. Load the line list (2022 to 2027), keep each case number's latest row, drop the notifications classified Not a
-   case and the residents of other towns, merge the patients notified by two units, map the barangay spellings and
-   the Santo Tomas split, date each case by onset (consultation where onset is blank).
-3. Count each barangay's cases with onset in morbidity weeks 37 to 40 by the barangay the notification records,
-   the surveillance system's place of a case and the field's reading of where a locally acquired case was caught.
-4. Flag every barangay at or over 40.
+1. Read the Centre's outlier response guide: the response names the consultants whose own practice raised their
+   patients' risk of a surgical site infection above the upper control limit (the 97.5th centile of a Poisson count at
+   the expected number), with procedures and infections counted as section 3 counts them.
+2. From the theatre export keep completed procedures in the six categories on their principal line, drop returns to
+   theatre, read GS-41 as GS-14, and give each procedure its risk index (ASA 3 or more, a contaminated or dirty wound,
+   incision to closure past the cut-point) and its expected infection from the Centre's 2026 rates.
+3. From the surveillance export keep each infection's latest confirmed record, link it to its procedure by booking,
+   inside 30 days or 90 with an implant, once per procedure at its deepest level.
+4. Count each consultant's April to September 2027 infections against the limit for their expected number, the
+   standardised infection ratio and its funnel, the field's own provider comparison.
 
-Ends on: Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan
-Golden: San Roque, Bagumbayan and Maligaya
+Ends on: GS-05, GS-12, GS-16 and GS-21
+Golden: GS-16 and GS-21
 
 ## Stump sentence
 
-The default path counts each barangay's notified cases by the barangay of residence and presents Bagumbayan,
-Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; the step that lands it there is
-taking the home barangay as the place of infection, when Aedes aegypti bites by day and the six barangays' rise is
-all among working-age residents, the six barangays sending the most workers to the estate in San Roque, so those cases
-were caught in San Roque, whose own residents number 14 of the window's cases.
+The default path counts each consultant's April to September 2027 infections against the Centre's control limit and
+refers GS-05, GS-12, GS-16 and GS-21; the step that lands it there is reading each consultant's excess over the
+case-mix expectation as the consultant's own, when every operation that opened a tray steriliser 3 had sterilised
+after its 12 May repair carried 4.3 times the rate, and steriliser 3, the one chamber for containers over 10 kg,
+reprocesses every tray GS-05 and GS-12 own and half of GS-21's.
 
 ## Three rules
 
-Task type: disease-surveillance-outbreak-anomaly-detection (Epidemiology & Public Health), which serves anomaly detection: a real outbreak separated from the place the records put it.
-Domain test: the quantity that decides is each barangay's count of the window's notified dengue cases infected there, and vector-borne disease surveillance places an infection where the person was while the vector feeds; Aedes aegypti feeds in daylight, so a working adult is exposed mostly where the working day is spent.
-Swap: "Which barangays need the malaria response?" reads differently, because Anopheles feeds at night and the home is then the place of infection; put influenza or road injuries in and there is no feeding window to place an infection at all, so the task stops making sense.
-Layer 1: the online system's export with migrated 2022 to 2024 rows (codes S, P, C, X and blank travel fields), Update rows under a case number, patients notified by two units under two case numbers, barangay names as each unit spells them, Santo Tomas Norte written under its parent barangay before and sometimes after the 2025 split, dates day-month-year from the centres and year-month-day from the hospitals' online submissions, residents of other towns not yet forwarded, blank onsets, the CBMS workbook's multi-row headers, merged cells, dashes for zero and footnotes; each is produced by the system that records it and none is placed to be caught.
-Layer 2: estimand_identification, the place of infection: each barangay's record is contaminated by infections caught in another barangay, and the choice that flips the call is placing the working residents' excess where they spend the day.
-Decisive step: placing each barangay's cases where the patients were during the mosquito's daylight feeding, through the CBMS place-of-work table, instead of at the home address the notification carries.
-Not semantics: reading every field and the plan's "infected in that barangay" correctly still leaves the easy route on the home-address counts, because no file records where any infection happened; the line list carries only the home barangay, and the place has to be estimated from the vector's feeding hours, the working-age band of the rise and the place-of-work table.
-Not rule application: no filed rule says where an infection was caught, so executing the plan's trigger on any placement files whatever that placement gives; the enumerated family (home barangay; home with travellers out; by consultation week; the children's and older residents' rate as a home-transmission marker; place-of-work placements at a half, 0.6, 0.7, 0.8 and all of a working resident's exposure, with the outside-city share kept or dropped; the excess spread by the place-of-work shares; the inversion of the place-of-work table) files three different sets (the eight by home address, the two outbreaks alone, San Roque with the two outbreaks), the standing family (the placements that put working residents' exposure where they work, which daylight feeding requires) files San Roque, Bagumbayan and Maligaya at every member measured, its cheapest member (each working-age case split by the CBMS employment rate and place-of-work shares) included, and no clause or column does the ruling-out, only the biting hours and the rise's proportion to each barangay's estate workforce.
-Analyst test: a strong analyst merges the re-notified patients, sets non-cases and residents of other towns aside, maps the spellings, counts each barangay's cases with onset in weeks 37 to 40 by home address and flags Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; every field is read and the trigger executed, and the call is wrong because the cases are counted where people sleep while they were caught at the estate.
-Estimand: dalisay_dengue_plan_2027_section4.pdf, section 4.3 with 4.1 and 4.2: population, the city's notified dengue cases (residents, not classified Not a case, one case per patient) with onset in morbidity weeks 37 to 40 as notified by 08:00 on Monday 11 October 2027; outcome, the barangay where each was infected; window, weeks 37 to 40 of the calendar the plan files; unit, the barangay; comparison, 40 or more.
-No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure argues the home-address count, the vector control log ends before any residence-based assignment of 2027, and the line list's home barangay is what the notification form records.
-No certified replay: no certified or published figure reproduces the method; no file carries any barangay's infections by place, and the zone bulletin carries only city totals.
-Lesson: a case record's location is where a person sleeps, and for a day-biting vector the place of infection is where the person spends the day; a model that gets this right learns to ask where exposure happens before reading a surveillance map, which no build on file teaches (task268 was about the people present, task188 about pooled mosquito tests).
+Task type: provider-quality-risk-adjustment (Healthcare Delivery & Health Economics), which serves anomaly detection: a real provider outlier separated from an excess a shared system put on the providers.
+Domain test: the quantity that decides is each consultant's own effect on their patients' surgical site infection risk, the observed infections against the risk-index expectation that infection surveillance computes, once the infections a common source in the instrument reprocessing chain produced are separated from it; the field's provider comparison (the standardised ratio against its funnel) is rung 0 and its precondition, outcomes independent of any shared resource beyond case mix, is what this record breaks.
+Swap: "Which head teachers go to performance review for their schools' exam results?" keeps a ratio against an expectation and a funnel, but no sterile instrument chain carries a hidden exposure from one school to another through a shared machine, so the decisive step has nothing to act on; put sales branches or call centres in and the same holds.
+Layer 1: the theatre system's export (local times, cancelled bookings, returns to theatre listed as procedures, an add-on procedure as its own booking before the 2025 upgrade and as a second line after it, the booked and the responsible consultant in two columns, GS-41 renamed GS-14 in July 2025); the surveillance database (record versions after a reclassification, a second nurse's entry of the same infection, suspected infections found not to meet the definition, before 2025 the operation date typed from the notes and the consultant from the discharge summary); the tracking system (UTC scans keyed by barcode); the steriliser records (test cycles, aborted cycles re-run, loads as barcode lists with other specialties' sets, steriliser 3's cycle counter restarted by the new controller board); the Centre's rates as a PDF table with a footnoted cut-point rule. Each is produced by the system that keeps it and none is placed to be caught.
+Layer 2: estimand_identification, the right counterfactual for a provider: the excess a common-source exposure puts on the providers it served most is confounding, and the choice that flips the call is setting the exposed operations aside before any consultant is judged.
+Decisive step: tracing each operation's instrument tray, through the tracking system's theatre scan and the steriliser cycle records, to the load that last sterilised it, and judging each consultant on the procedures no post-repair steriliser 3 load reached.
+Not semantics: reading every field and the guide's "own practice" correctly still leaves the easy route on the ratio against the limit, because no file records which operations were exposed; the theatre export carries no tray, the surveillance export no steriliser, and the exposure exists only as a time-ordered relation across the tracking scans and the cycle records.
+Not rule application: no filed rule names a steriliser, a tray or a trace, so executing the guide's sections 2 to 4 on every procedure files the four consultants; the enumerated family (the raw ratio; the department's post-repair rise taken out; afternoon lists given their own rate; each consultant against their own 2022 to 2026 ratio; the window before the repair alone; the traced exposure set aside, with exposure read on any item, on rigid containers only or on every steriliser 3 load of the year; the traced exposure as its own stratum) files four sets (the four, GS-05 GS-12 and GS-21, too few procedures to judge, GS-16 and GS-21), the standing family (every route that sets the traced exposure aside or prices it) files GS-16 and GS-21 at every member measured with margins of at least 6 counts, and the ruling-out is done by the trace alone: no column, clause or code marks an exposed operation.
+Analyst test: a strong analyst keeps the principal procedures, drops returns to theatre and cancelled bookings, merges the renamed consultant code, takes each infection's latest confirmed record once per procedure, applies the Centre's risk index and rates and refers every consultant above the 97.5th-centile limit, filing GS-05, GS-12, GS-16 and GS-21; every field is read and the guide executed, and the call is wrong because GS-05's and GS-12's excess sits in the operations whose trays steriliser 3 sterilised after its repair.
+Estimand: haisc_outlier_response_guide_2027.pdf sections 2 to 4 with the notice: population, the consultants' general surgery procedures from 1 April to 30 September 2027 as the Centre counts them; outcome, the surgical site infections their own practice produced; comparison, the upper control limit for the procedures' expected number; unit, the consultant; window, each procedure's 30 or 90 days.
+No decoy: nothing is planted to be caught; no memo, draft or figure argues for the four, the equipment log records a routine repair with passed tests, every steriliser cycle prints a pass, and the hand hygiene and air sampling records are the service's ordinary monitoring, flat across the window.
+No certified replay: no certified or published figure reproduces the method; the notice carries a department total for one quarter and the rates table carries no hospital's figures.
+Lesson: a provider comparison against case mix assumes the providers share nothing else; a model that gets this right learns to ask what upstream resource the providers' cases pass through before reading a funnel, which no build on file teaches (task271 rebuilt a patient risk property, task194 developed a coding lag, task269 sampled hand hygiene).
 
 ## Survivor anatomy
 
-Actor: the deciding property, where each case was infected, has no column in any file; the line list carries the home barangay and the age, the CBMS table carries where each barangay's working residents work as counts and never per case, and the property is a relation between the cases' age band and home and the place-of-work flows.
-Link: no key ties a case to a workplace, and the comparison that finds the place (each barangay's working-age excess against its estate workforce in the CBMS table) is one the residence-based surveillance method never asks for; no sentence invites it.
-Reflex: the field's method, cases by barangay of residence against the trigger (the surveillance system's place of a case), is rung 0 and files Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan.
-Back-test: the textbook route validates; in every season 2022 to 2026 the barangays the residence count put over the trigger had surges across every age band, and the vector control log records the hotspot responses there, because transmission then was residential.
-Second use: every file the decisive step reads has its own reason to be in the pack; the line list is the surveillance record, the CBMS workbook carries the population by age the plan's rates and the home-transmission comparisons need (its place-of-work sheet is part of the same LGU release), and the plan files the trigger.
-Shock: San Roque's home-address count is ordinary (14 cases), nowhere near the pack's largest, and the golden set is not an interval of any sort of the barangays (home-address count, rate per resident, working-age share of cases, week-on-week growth, children's cases), asserted in checks.py.
-Pins: the WHAT sits in the dengue plan (population, place of infection, window, unit, trigger) and no filed sentence names where infections happen, the vector's biting hours, workplaces, the place-of-work table or any placement method; deleting the trigger sentence unforces the call and that sentence names no step.
+Actor: the deciding property, whether an operation opened a tray from a post-repair steriliser 3 load, has no column in any file; the theatre export holds no tray, the surveillance export no steriliser, and the property is a relation between a theatre scan and the last cycle that held its barcode.
+Link: no key ties an operation to a load; the operation is found from the scan by patient, theatre and the minutes between anaesthetic start and closure (UTC against local time), and the load from the barcode's last passed cycle before the scan; no sentence invites either join.
+Reflex: the field's method, the standardised infection ratio against the Centre's funnel per consultant, is rung 0 and files GS-05, GS-12, GS-16 and GS-21.
+Back-test: the textbook route validates; from 2022 to 2026 every consultant's ratio sits inside the limit except GS-08 in 2025 and GS-16 in 2026, two genuine practice excesses the record carries year after year with no shared exposure behind them.
+Second use: every file the decisive step reads has its own reason to be in the review folder; the tracking scans and cycle records are the CSSD's mandatory traceability, the equipment log its maintenance record, the register its set inventory, and the guide asks the response to state any cause found outside the consultants' practice, for which the folder also carries the wards' hand hygiene audits and the theatres' air sampling.
+Shock: GS-16's and GS-21's excess is not the pack's largest anomaly on any shipped sort (raw ratio, infections, afternoon share, procedures): on the raw ratio the golden is the first and fourth of four above the limit, asserted in checks.py.
+Pins: the WHAT sits in the Centre's guide (who is named, what is counted, the limit) and the notice (the window); no filed sentence names a steriliser, an instrument tray, a trace, a repair or a date the stump rides on; deleting the guide's "own practice" leaves the ratio reading and names no step.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| 0 home-address count | 4.3 is the trigger | the barangay column | the field's method | none refutes it | the battery runs it | one group-by | none | readable |
-| 1 travellers and other towns out, onset dating | 4.1 and 4.2 file them | travel and town columns | battery item | none | yes | filter | none | readable |
-| 2 children's and older residents' rate as a home marker | none | age column | an epidemiologist's check | none | a by-age table | one ratio | none | readable |
-| 3 (decisive) working residents placed at their workplaces | none names a place, a workplace or biting hours | no column holds a place of infection | not the surveillance reflex | no file ties a barangay's infections by place | no battery item | not affine in a shipped column | the CBMS table carries the plan's denominators | silent |
+| 0 raw ratio against the limit | guide sections 2 to 4 | every column it needs | the field's method | none refutes it | the battery runs it | one group-by | none | readable |
+| 1 the department's post-repair rise taken out | none, but the rise is visible by month | the knife-to-skin date | an epidemiologist's period adjustment | none | no | one ratio | none | readable |
+| 2 afternoon lists given their own rate | none | the session column | a case-mix extension | none | no | one ratio | none | readable |
+| 3 (decisive) the traced exposure set aside | none names a steriliser, tray or trace | no column holds an exposure; two time-ordered joins across systems with no key | not the surveillance reflex | no file ties infections to a load | no battery item | not affine in a shipped column | the CSSD's traceability records, kept for their own reason | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | notified dengue cases | suspect, probable and confirmed | confirmed only | different counts | plan 4.1: "A notification the CESU has classified Not a case is not a case" |
-| SF2 | a patient notified by two units | one case | two cases | same call (asserted) | plan 4.1: "A patient notified by two units is one case" |
-| SF3 | residents of other towns on the export | not the city's cases | counted at a same-named barangay | same call (asserted) | plan 4.1: "Cases among residents of other cities and municipalities ... are not the city's cases" |
-| SF4 | the week of a case | onset week | consultation or report week | same call (asserted for consultation week) | plan 4.2: "A case belongs to the week of its onset of fever" |
-| SF5 | blank onset | dated by first consultation | dropped | same call (asserted) | plan 4.2: "a case whose onset is not recorded is dated by its first consultation" |
-| SF6 | as notified by 08:00 Monday | the export of 11 October | a later extract | not shipped | plan 4.3 and the export's last report date, 10 October |
-| SF7 | morbidity week calendar | Sunday to Saturday, week 1 from 3 January 2027 | ISO weeks from Monday | same call (asserted) | plan 4.2 |
-| SF8 | 40 or more | at least 40 | more than 40 | same call (asserted: no barangay at 40 under any placement) | plan 4.3 |
-| SF9 | cases that travelled outside the city | placed with the rest | set aside | same call (asserted) | none needed |
-| SF10 | Santo Tomas rows of Puroks 5 to 8 | Santo Tomas Norte | Santo Tomas | same call (asserted) | the register: Norte created from Puroks 5 to 8 |
-| SF11 | infected in that barangay | the barangay where the infection happened | the barangay the notification records | the home barangay is where a case lives; 4.1 calls the line list's cases the city's residents and 4.3 counts where they were infected | plan 4.1 and 4.3 |
-| SF12 | the CBMS outside-city column | kept as a share no city barangay receives | dropped and the rest renormalised | same call (asserted) | none needed |
-| SF13 | a working resident's share of exposure at work | any from a half to all of it | none | same call (asserted at 0.5, 0.6, 0.7, 0.8, 1.0) | none needed |
-| SF14 | the working-age band | 15 to 64 | 20 to 64 | same call (asserted) | CBMS Table 1 bands |
-| SF15 | the history behind a barangay's usual age mix | 2022 to 2026, all weeks | the same weeks 37 to 40 of each year | same call (asserted) | none needed |
-| SF16 | the window's cases that are not dengue after all (suspects not yet classified) | counted, as notified | dropped | same call (asserted, none identifiable) | plan 4.1 counts every notification not classified Not a case |
+| SF1 | "whose own practice raised their patients' risk" | the excess left once the exposed operations are set aside | the raw ratio against the limit | the four (the default path) | guide section 2: own practice, and a cause outside it stated as a finding; the exposure ratio 4.3 asserted |
+| SF2 | which items count as exposed | any item last sterilised in steriliser 3 after the repair | rigid containers only; every steriliser 3 load of 2027 | same call (asserted) | none needed |
+| SF3 | setting the exposure aside | excluding the exposed operations | the exposed operations at their own rate (a stratum) | same call (asserted, margins 13 and 6) | none needed |
+| SF4 | the upper control limit | the 97.5th centile of a Poisson count | the 95th centile | same call and default (asserted) | guide section 4 |
+| SF5 | an operation's duration for the risk index | incision to closure | anaesthetic start to leaving theatre | same call (asserted) | the rates table's definition |
+| SF6 | a duration exactly at the cut-point | no duration point | a point | same call | the rates table's note |
+| SF7 | the window | knife-to-skin from 1 April to 30 September 2027 | the list date | same call | the notice |
+| SF8 | an infection's surveillance period | 30 days, 90 with an implant | every recorded infection | same call (asserted) | guide section 3 |
+| SF9 | a return to theatre | not a new procedure | a procedure | same call (asserted) | guide section 3 |
+| SF10 | an add-on's second line | not a procedure of its own | a procedure | same call (asserted) | guide section 3, the principal procedure |
+| SF11 | when the fault began | the return to service at 14:40 on 12 May | the start of 12 May | same call (asserted) | the equipment log |
+| SF12 | an item's last load | the last passed load before the theatre scan | any load, aborted included | same call | the cycle records' result |
+| SF13 | the 2025 code change | GS-41 is GS-14 | two consultants | no 2027 procedure under GS-41 | the export from July 2025 |
+| SF14 | the consultant a procedure belongs to | the responsible consultant | the booked consultant | same call (asserted) | guide section 3 |
 
 ## Ladder
 
 | Rung | Construction | Files | Dies to |
 |---|---|---|---|
-| 0 | each barangay's window cases by the barangay the notification records (the surveillance system's place of a case) | Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol, Silangan | the six beside the estate rose only in working-age residents (1 to 4 children's cases each against 44 to 57 working-age), and they send San Roque the most workers in CBMS Tables 3 and 4 (4,437 to 4,626 each, 29 to 39 per cent of their employed residents; the next barangay 864) |
-| 1 | rung 0 with travellers set aside and cases dated by consultation | the same eight | the same fact |
-| 2 | the children's and older residents' rate carried to each barangay's population (a home-transmission marker) | Bagumbayan, Maligaya | the working-age excess of the six has to be placed somewhere, and Table 4 puts their workers in San Roque |
-| 3 (decisive) | each barangay's working-age cases placed where its workers work (any share of the day from a half to all of it, the excess spread by the shares, or the inversion of Table 4) | San Roque, Bagumbayan, Maligaya | the golden |
+| 0 | each consultant's infections against the limit for their expected number (the field's ratio and funnel) | GS-05, GS-12, GS-16, GS-21 | the 362 operations with a post-repair steriliser 3 tray carried 115 infections against 21.7 expected, 4.3 times the department's other procedures (120 against 96.5) |
+| 1 | rung 0 with the department's post-repair rise (2.17 times) taken out of every expectation | GS-05, GS-12, GS-21 | the rise is not the department's: it sits on the operations one steriliser reached, and spreading it drops GS-16, whose excess has no exposure behind it |
+| 2 | rung 0 with afternoon lists given their own rate (1.66 times), or each consultant against their own 2022 to 2026 ratio | the four | the exposure follows the tray's weight, not the list's hour: GS-05 and GS-12 run afternoon lists no more often than GS-16 |
+| 3 (decisive) | the traced exposure set aside, each consultant judged on the procedures no post-repair steriliser 3 load reached | GS-16, GS-21 | the golden |
 
-- **Margins on the cut pack** (asserted in checks.py): under every standing member the three are at least 17.0 cases
-  over the trigger (Maligaya at 57.0, the whole working day at work with the outside-city share dropped) and every
-  other barangay at least 8.8 under it (Silangan at 31.2, a share of 0.6), 4.4 under it at a half share (Silangan at
-  35.6, the weakest member); San Roque's count runs 67.7 (a share of 0.6, the outside-city share dropped) to 465.2
-  (inversion). checks.py prints each of these figures after its assertions. By home address the eight sit 7 to 46
-  over the trigger and San Roque 26 under it.
-- **Pricing sequence.** (1) The residue the filed WHAT leaves is the place of infection, a method rather than a
-  knob. (2) San Roque has to move from 14 to over 40 and the six beside the estate from 47 to 58 down to under 40;
-  the working-age excess the placement moves is 388 cases city-wide, 270 of them in the six, far past both. (3) The one-group-by route
-  (cases by barangay and age band) shows the six barangays' working-age rise and does not produce San Roque, whose
-  count comes only through Table 4; no route is affine in a shipped column. (4) Across the standing family San
-  Roque's count spreads 67.7 to 465.2 and the six's 3.3 to 35.6, every member on the same side of 40; a
-  barangay's working-age count has a Poisson spread of about 7 against outside margins of at least 8.8 from a share of 0.6 up (4.4 at a half share).
-  (5) and (6) No variance is corrected. (7) No subset of rows prints a place of infection: the children's and older
-  residents' rate gives each barangay's home transmission and misses San Roque (rung 2). (8) The reflex sweep runs
-  as code: rungs 0 to 2, the five shares with the outside column kept and dropped, the excess spread and the
-  inversion (checks.py R3 block).
-- **Separation.** The default path is wrong on the clean truth (R3a) and the default path with only the placement
-  changed files the golden (R3b); the children's marker, the one obvious correction, files the two outbreaks
-  alone.
+- **Margins on the cut pack** (asserted in checks.py): GS-16 35 infections against a limit of 22 and GS-21 26 against
+  16 (10 counts inside at the least); GS-05 4 against 11, GS-12 5 against 12 and every other consultant at least 6
+  inside; with the exposure as a stratum the same set at margins of 13 and 6; on the default path the four sit 13 or
+  more above and the rest 6 or more below.
+- **Pricing sequence.** (1) The residue the filed WHAT leaves is the exposure, a reconstruction, not a knob. (2) GS-05
+  and GS-12 must move from 21 and 22 counts over their limits to inside them, and the exposed operations carry about
+  93 excess infections, far past both. (3) The one-group-by routes (by month, by session, by year) each file a wrong
+  set; no route is affine in a shipped column, since the exposure follows a tray's previous load. (4) The trace is
+  exact (every window procedure links to its theatre scans, asserted), so no estimator variance enters. (5) and (6) No
+  variance is corrected. (7) No subset of rows prints the exposure. (8) The reflex sweep runs as code in checks.py:
+  rungs 0 to 2, the pre-repair window alone, each exposure reading and the stratum.
+- **No free parameter.** The decisive estimate has nothing to set: an operation is exposed or not by its tray's last
+  load, and every reading of "exposed" and both ways of pricing it file the same consultants with margins of at least
+  6 counts; this is the property architecture 5 lacked.
 
 ## Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
-| 1 Population | the city's notified cases, residents only, one per patient, not classified Not a case | filed in plan 4.1 and 4.3; C1 for re-notifications and other towns (asserted) |
-| 2 Unit of account | a case (a patient) | filed in plan 4.1 |
-| 3 Attribution window | onset in weeks 37 to 40 | filed in plan 4.2 and 4.3 |
-| 4 As-of dating | notified by 08:00 Monday 11 October | filed in 4.3; the export ends at 10 October |
-| 5 Version basis | each case number's latest row | the export's report order; C1 (classification changes move no barangay across 40) |
-| 6 Denominator | none (a count) | the trigger is a count |
-| 7 Weighting | none | the trigger is a count |
-| 8 Window length | four weeks | filed in 4.3 |
-| 9 Boundary inclusivity | 40 or more | C1: no barangay at 40 under any placement |
-| 10 Rounding path | placed counts compared unrounded | C1: no placed count within 4 of 40 |
-| 11 Tie-break | none needed | no ties at the trigger |
-| 12 Maturity and censoring | cases not yet notified by the extract are out | filed in 4.3 |
-| 13 Order of operations | clean, then place, then count | C1: placing before or after merging re-notifications gives the same set (asserted) |
-| 14 Row order | export order | C1 over permutations (latest row by report date) |
-| 15 Duplicate resolution | a patient notified twice is one case | filed in 4.1; C1 (asserted) |
-| 16 Identity normalisation | barangay spellings, the Santo Tomas split | the register and the purok; C1 (asserted) |
+| 1 Population | the consultants' general surgery procedures, April to September 2027 | filed in the notice and guide section 3 |
+| 2 Unit of account | a procedure, its consultant | guide section 3 |
+| 3 Attribution window | knife-to-skin in the window | the notice; C1 for the list date (SF7) |
+| 4 As-of dating | the export of 4 January 2028, every surveillance period closed | the notice asks for closed periods |
+| 5 Version basis | each infection's latest record | C1 (asserted on the call) |
+| 6 Denominator | the expected number from the Centre's rates | guide section 4 |
+| 7 Weighting | none | a count against a limit |
+| 8 Window length | six months | the notice |
+| 9 Boundary inclusivity | infections above the limit | guide section 4; no consultant within 6 of a limit on the traced route |
+| 10 Rounding path | whole infections against an integer limit | guide section 4 |
+| 11 Tie-break | none needed | no consultant at a limit |
+| 12 Maturity and censoring | every procedure's 30 or 90 days closed by the extract | filed in the notice |
+| 13 Order of operations | count, trace, set aside, compare | C1: the stratum gives the same set (SF3) |
+| 14 Row order | export order | C1 over permutations (latest version by number) |
+| 15 Duplicate resolution | an infection once per procedure at its deepest | guide section 3; C1 |
+| 16 Identity normalisation | GS-41 is GS-14; an add-on booked alone is its operation | the export; C1 for 2027 (SF13) |
 | 17 Netting against gross | none | not applicable |
 | 18 Dimensional units | counts | not applicable |
-| 19 Code and status semantics | S, P, C and X in migrated rows | the classification words in later rows; X is Not a case (plan 4.1) |
-| 20 Integerisation | placed counts are fractional | C1: the set is the same rounded or not |
-| 21 Clause scope | 4.3 applies to every barangay | filed |
-| 22 Forward window contents | the response runs weeks 41 to 44 | the call is the set; nothing forward is graded |
+| 19 Code and status semantics | Confirmed against Not SSI; wound classes; Load against test cycles | the exports' own values |
+| 20 Integerisation | the limit is an integer by construction | guide section 4 |
+| 21 Clause scope | section 2 applies to every consultant | filed |
+| 22 Forward window contents | the professional practice review in 2028 | the call is the set; nothing forward is graded |
 
 ## Literal reader
 
-Executing plan 4.1 to 4.3 word for word gives the city's notified dengue cases (residents, one per patient, none
-classified Not a case) with onset in weeks 37 to 40 as notified by 08:00 on 11 October 2027, counted by the
-barangay where each was infected; no file records a place of infection, so every literal reading has to estimate
-it, and every estimate that puts a working resident's exposure where the resident works files San Roque,
-Bagumbayan and Maligaya, while taking the home as the place (an easy method on the same literal estimand, not a
-reading of the sentence) files the eight by home address.
+Executing the guide's sections 2 to 4 and the notice word for word gives each consultant's general surgery procedures
+from 1 April to 30 September 2027 and the infections their own practice produced, against the upper control limit for
+the procedures' expected number; no file records which infections a shared system produced, so every literal reading
+has to find out, and every reading that traces the trays to the steriliser that last sterilised them files GS-16 and
+GS-21, while reading the raw ratio as the consultant's own (an easy method on the same literal estimand, not a reading
+of the sentence) files the four.
 
 ## Oracles
 
-- The CBMS place-of-work table is the decisive input, not a control: it ties no barangay's infections to a place.
-- The larval survey covers twelve ordinary barangays in September and none of the six beside the estate, the two
-  outbreaks or San Roque, so no house index confirms or refutes a placement.
-- The zone bulletin carries city totals only; the vector control log ends on 31 August 2027, before any 2027
-  window put a barangay at 40 by home address, so it records no assignment for this decision.
+- The equipment log records the repair and its passed tests; it confirms nothing about infections on either path.
+- The steriliser cycle records print a pass for every load; they tie on both paths.
+- The notice's department total for the second quarter is one figure, consistent with both readings.
+- The hand hygiene audits and the air sampling are flat across the window; they refute no path.
 - none ties only under the golden.
 
 ## Ask sheet
 
-| Ask | Figures | H18 home and use | Primary devices (block) | Hazards | Files and columns on the path |
-|---|---|---|---|---|---|
-| A | each hospital's dengue admissions, weeks 33 to 40 (16, whole numbers) | the city's bed planning beside the response (plan 4.4) | D6/D1 a stay's ward segments under one hospital number with the disposition only on the last segment, readmissions as new stays (DMC block); D7 a patient moved from DMC to DDH admitted again under an DDH number with no shared key, matched by age, sex, address and hours (DDH block) | DDH's dates month first; DDH's weekly sheets closed at 17:00 Saturday | dmc_dengue_inpatient_census_2027.csv (hospital_no, ward_in, ward_out, disposition, age, sex, barangay, city), ddh_dengue_admissions_2027.xlsx (every sheet: Patient No., Age, Sex, Address, Date and Time Admitted), plan 4.4 |
-| B | each surveyed barangay's house index, September 2027 round (12, per cent to one decimal) | a measure every barangay carries that the call does not turn on | D6 the VCU tablet's one row per container (VCU block); D7 the health workers' house numbers restarting in each purok, follow-up visits under the same number (BHW block) | follow-ups mostly negative after search-and-destroy | larval_survey_2027_09.csv (team, barangay, purok, household_code, larvae, pupae, containers_positive), plan 4.6 |
-| C | patients whose first positive dengue test was an NS1, and an IgM, weeks 35 to 40 (12, whole numbers) | the laboratory's confirmations beside the response (plan 4.5) | D2 four NS1 runs rejected for a high negative control, their results left in the export beside the repeats (NS1 block); D7 a follow-up specimen from another facility under a new laboratory reference, the person known by initials, birth date and sex (IgM block) | equivocal IgM results | cho_lab_dengue_results_2027.csv (patient_ref, patient_initials, date_of_birth, sex, collected_on, test, result, run_id), cho_lab_run_log_2027.json (run_id, qc), plan 4.5 |
+Two asks, on 2022 to 2024, outside the call's window, each rebuilt across two systems by a reconstruction no
+sentence states. The figures are the generator's (`generator/figures.json`, `ask_a` and `ask_b`); stops and deltas
+are asserted in `checks.py`.
 
-- **Stops (cut pack; each verdict is a checks.py assertion).** A, DMC: every segment an admission (misses every
-  week), a patient once by hospital number (misses most weeks, readmissions lost), the golden stitch. A, DDH: every
-  row by date admitted (moved patients counted twice, misses most weeks), the rows by sheet week, the golden match.
-  B, VCU: rows as houses (a container index), houses by number (golden). B, BHW: houses by number across puroks
-  (misses every barangay), the last visit kept, houses by purok and number (golden). C, NS1: every positive row with
-  the rejected runs left in (misses at least four weeks), first positive with the run log applied (golden). C, IgM:
-  every positive IgM specimen, first by laboratory reference (misses every week), first by person (golden). The
-  ceiling (generator/ceiling.py) scores the cracker's stop per ask on the cut pack.
-- **Pin test.** A's sentence carries the window and the hospitals; plan 4.4 files the WHAT (a patient moved between
-  the hospitals is one admission at the first) and the device lives in which records are one patient, which no
-  key settles. B's sentence carries the round; plan 4.6 files the house index, and the devices live in the grain
-  and in which number is the house. C's sentence carries the window and the two tests; plan 4.5 files the week of a
-  result, and the devices live in which runs reached the export validly and which references are one person.
-- **Realism.** Each device is how the producing system writes its records: a census row per ward segment, a records
-  clerk logging a transferred patient as a new admission, a tablet form with a row per container, health workers
-  numbering houses within their purok, an ELISA plate repeated after failed controls, and a request form issued
-  per facility.
-- **Separation.** No ask file is read by the call; the line list's admitted and laboratory columns cannot rebuild
-  any ask figure (the hospitals admit residents of other towns, the laboratory tests patients the line list does
-  not hold), asserted in checks.py.
+**Ask A, each consultant's procedures in each year from 2022 to 2024 (30 figures).**
+- H18 home: the record behind the response, each consultant's volume in the three years before the 2025 systems.
+- Files and columns: `theatre_operations_2022_2027.csv` (booking, sequence, patient, theatre, knife-to-skin,
+  responsible consultant, category, status, return to theatre).
+- Primary (D1, one operation under two bookings): before the 2025 theatre system upgrade an add-on procedure was
+  booked on its own, the same patient, theatre and incision under a second booking; the Centre counts the operation
+  once, so the second booking is found only by its cardinality (two bookings, one incision).
+- Hazards: the GS-41 code (July 2025), returns to theatre, cancelled bookings.
+- Pin test: the sentence pins the consultant, the year and "procedures" (the guide's count); the device sits in which
+  bookings are one operation, a dimension the pins leave open.
 
-| Ask | Cracker (lands the call, runs the battery, reads the plan's definitions; hospital numbers as given, the hospitals' moved patients kept at both, the form's house numbers, the laboratory's references) | Verdict |
-|---|---|---|
-| A | counts each patient once by hospital number and every DDH row by its admission date: 1 of 16 figures kept | miss |
-| B | groups the rows by household number within a barangay: the six VCU barangays kept, the six BHW barangays missed | miss |
-| C | applies the run log at best and reads a patient by the laboratory reference: the NS1 block kept, every IgM figure missed | miss |
+**Ask B, the infections after each consultant's procedures in each year from 2022 to 2024 (30 figures).**
+- H18 home: the same record, each consultant's infections.
+- Files and columns: `ssi_surveillance_2022_2027.csv` (infection, version, booking, patient, operation date,
+  category, consultant, onset, status) and the theatre export's procedures.
+- Primary (D7, the true key elsewhere): before the 2025 database the nurses typed the operation date from the notes,
+  an emergency's admission date at times, and the consultant from the discharge summary, the admitting consultant;
+  the infection belongs to its procedure and the procedure to its responsible consultant, so each record is linked to
+  the procedure up to three days after its recorded date.
+- Hazards: record versions, a second nurse's entry, Not SSI records, the surveillance period.
+- Pin test: the sentence pins the consultant, the year and "infections after them"; the device sits in which
+  procedure a record belongs to, a dimension the pins leave open.
 
-- Mirror leakage: 32.5 per cent of ask weight, measured on the cut pack (the residence-count response runs the same
-  battery and keeps the same 13 of 40 ask figures).
-- Pair ceiling: 46.4 (cracker 38 + 7 + 55 x 0.325 = 62.9; mirror 5 + 7 + 55 x 0.325 = 29.9), each response under
-  two fifths of the ask weight.
-- Measured by: generator/ceiling.py on the cut pack: each response's ask figures recomputed from target/ with its
-  handling and scored against the golden handling on the same files; the full includer, resolving every device,
-  keeps 40 of 40.
+**Main population zero-counts (asserted):** no 2027 operation is split across two bookings; every surveillance record
+from 2025 carries its booking, so the call's rows carry neither primary.
+
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at rung 0) | Verdict |
+|---|---|---|---|
+| A, 30 consultant-years | counts each booking as a procedure: 0 of 30 kept | the same | miss |
+| B, 30 consultant-years | counts the export under its own consultant and date: 5 of 30 kept | the same | miss |
+
+The full includer (the add-ons merged, each infection linked to its procedure) keeps 61 of 61; it is a stress row, not
+the gate.
+
+Pair ceiling: 33.9 (the cracker on the call at 50.4, the mirror off it at 17.4, each keeping 6 of 61 ask criteria,
+the chart's structure among them).
+Mirror leakage: 9.8 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Leak review
 
-`leak.py task181 --asof 2027-10-11` on the final cut: REVIEW, no LEAK. Each line is ruled here; the stage 4 reader's
-verdicts go to leak_check_report.md under its own heading.
-- Sweep 3, a figure in the plan PDF: the number of the plan's laboratory section (4.5), which coincides with one house
-  index; not a figure.
-- Sweep 3, words of the call in the plan PDF: hotspot response, morbidity weeks and barangay are the plan's own terms
-  for the response it governs; the plan names no barangay.
-- Sweep 4, stump-paragraph words in the plan PDF (window, residents, record, records, vector, health): the plan's
-  operational language (the case window, the residents it counts, the Vector Control Unit, the City Health Office);
-  it names no move and never mentions work, travel, the estate or a home address.
-- Sweep 6, barangays beside numbers in the PSGC register, the CBMS workbook, the DDH log, the line list and the VCU
-  log: each carries its own quantity (codes and populations, census tables, admissions, notifications, operations to
-  31 August); none counts the window's cases by barangay or ranks the barangays on where cases were infected.
-- Sweep 12, column words in the plan PDF (Barangay, admitted, laboratory, larvae, pupae): the plan's definitions of
-  the response, an admission, a result's week and the house index, in the organisation's governing document; it
-  glosses no column.
-- Single-use test: every file has its genre's other uses (the register its codes and boundary notes, the CBMS
-  workbook its population, employment and place-of-work tables, the plan its six sections). Plan 4.3 files the WHAT
-  (cases infected in the barangay), which the fork table needs: deleting it leaves the residence count a literal
-  reading of the trigger (SF11).
+`leak.py task181 --asof 2028-01-04` on the final cut: REVIEW, no LEAK; each line ruled.
+- Sweep 4 on `haisc_outlier_response_guide_2027.pdf` (theatre, infection, counts, surveillance): harmless; the words
+  are the guide's own (what the Centre counts and how a theatre record attributes a procedure), and the guide names
+  no steriliser, tray, trace or repair.
+- Earlier passes' REVIEW lines (the cycle records' temperature column named as a generator would, and the metadata's
+  file descriptions in the note's vocabulary) were fixed in the generator before this run: the column is
+  `sterilising_temperature` and metadata.json states each file's format only.
 
 ## Pre-ship check
 
-- **The three rules against the built pack.** The deciding quantity is each barangay's window cases placed where they
-  were infected, worked as vector-borne surveillance works it (a day-biting vector, the census place-of-work flows).
-  The mess is the online system's export and the CBMS workbook's form; cleaned, the residence count still files the
-  eight (rung 1), so the stump is not Layer 1. The decisive step is the placement, an analytical choice (R1 to R3 in
-  checks.py).
-- **Gates on the final cut.** Generator checks 73 of 73, verifier 16 of 16, two byte-identical builds, figures_check
-  81 of 81, precut 61 checks with 0 FAIL, voice-check PASS, leak.py REVIEW with every line ruled above,
-  guard.py heart PASS (one NOTE, differentiated against task487), surface with one NOTE (Santo Tomas, a barangay, read
-  as a persona), ceiling 46.4 for the pair with 32.5 per cent mirror leakage, target.zip cut by generator/zipcut.py.
-- **Stage 4** (the leak reader and the determinism judge) runs from the main thread, because a fork cannot spawn them.
+- Generator checks, the independent verifier and two byte-identical builds: `python3 task181/generator/make.py`.
+- figures_check.py, precut.py, voice-check.py, leak.py, guard.py surface and heart on the final cut.
+- Stage 4 (the leak reader and the determinism judge) from the main thread.
 
 ## Tried and rejected
 
@@ -433,3 +386,7 @@ verdicts go to leak_check_report.md under its own heading.
   13 September, an official record of the wrong basis; the log ends on 31 August 2027, before any 2027 window put
   a barangay at 40 by home address.
 - The plan's sentence giving the number of hotspot teams: it reads as a cap and invites a ranking; cut.
+- Architecture 5 (Dalisay City's dengue hotspots placed by the place-of-work table): the re-judge sent it back. The
+  call held only from about a 0.45 share of the working day spent at work, the 8-hour clock share (0.33) filed seven
+  barangays, and no shipped fact fixed the exposure basis; a decisive estimate with a free parameter has to hold at
+  every value a reader can defend, the naive one included, or the design must force the method.

@@ -1,38 +1,41 @@
 {
  "task": "task482",
- "status": "SHIPPED",
+ "status": "DESIGN",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-25",
- "stump": "The default path conforms the three payers' feeds, computes each practice's October interim measure (section 4.1, the payers' completion factors) and carries it to the year by the practice's own 2025 run-out at the same cut, entering ten practices; but the stays still open on 31 August are billed at discharge and show only as their physicians' daily professional claims, and the members in them (premature triplets in a neonatal unit at Mallowcrest Pediatrics, a crash family in trauma intensive care at Garrowdale Family Practice) are each already past the USD 250,000 member cap, so both practices come in over their thresholds and eight enter.",
- "architecture": 14,
- "loops": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "A competent solver prices each maximum on a continuance of the 2025 covered persons' plan-paid charges re-priced at the 2027 fees and files a 3,000 dollar maximum; the members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists had predetermined until the January reset, so with that work back in the year only 2,000 dollars stays inside the bargaining mandate's 3.0 per cent.",
+ "architecture": 15,
+ "loops": 0,
  "precut": {
-  "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, final pack)",
-  "pair_ceiling": 28.5,
-  "mirror_leakage": 0.0
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-25, no LEAK; zip 2c0f8d35561fc8c2)",
-  "reader": "round 1 (zip cc4a6fbd): readers A and B both filed the default ten and missed the call; reader A rebuilt every payer's runs and kept all 52 ask figures (score FAIL), reader B 0 of 52. Fix pass: Kesselcrest's level review moved onto a claim adjustment line, one visit a member a day, the fee ask withdrawn (precut's cracker kept it whole). Round 2 (zip 04486b1a): readers C and D both filed the default ten again and kept 0 of 13 ask figures (score_reader PASS, exit 0 twice); every REVIEW line answered harmless by all four readers. Their realism tells (claim numbers in one scheme across the payers, roster NPIs rising by practice) fixed in the generator for the shipped cut, every figure unchanged (figures.json identical)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (2026-10-25)",
-  "surface": "4 pairs promoted for adjudication (task484, task480, task231, task234 on card axes); the adjudicated clone-check is author-triggered"
+  "guard_check": "PASS 2026-10-31 on the registered card",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "pass 1 (v14r1, zip cc4a6fbd) DETERMINISTIC, FIX_NOW (Callowglen's share at its rounding boundary under same-day duplicate visits, the chart graded on sign); pass 2 (v14r2, zip 04486b1a) DETERMINISTIC, APPROVE, Gate G forecasting and analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "shipped 2026-10-25 (zip 2c0f8d35, judged on 04486b1a with every graded figure identical): wait for the author's portal list; a determinism finding goes to /fix-determinism, a rubric over 50 with the call held to /fix-rubric",
+ "resume": "Stage 2: the readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet with the measured ceiling, prompt.txt; then the generator (claims on two platforms, predeterminations, accumulators, eligibility, crosswalk, fee workbook, documents) with the screens as code.",
  "approved": null,
- "delivered": "2026-10-25",
+ "delivered": null,
  "portal": null,
- "source_note": "re-root keeping architecture 13's world; architectures 1 to 13 spent at stage 4",
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "source_note": "re-root into a new world (a Missouri manufacturer's employee dental plan, costing the union's proposal); architectures 1 to 14 spent",
  "lineage_v11": {
   "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7",
   "leak": {
@@ -69,5 +72,27 @@
    "report": ""
   }
  },
- "zip": "2c0f8d35561fc8c2a2d88e6ae2995fae"
+ "lineage_v14": {
+  "zip": "2c0f8d35561fc8c2a2d88e6ae2995fae",
+  "delivered": "2026-10-25",
+  "precut": {
+   "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, final pack)",
+   "pair_ceiling": 28.5,
+   "mirror_leakage": 0.0
+  },
+  "leak": {
+   "leak_py": "REVIEW (2026-10-25, no LEAK; zip 2c0f8d35561fc8c2)",
+   "reader": "round 1 (zip cc4a6fbd): readers A and B both filed the default ten and missed the call; reader A rebuilt every payer's runs and kept all 52 ask figures (score FAIL), reader B 0 of 52. Fix pass: Kesselcrest's level review moved onto a claim adjustment line, one visit a member a day, the fee ask withdrawn (precut's cracker kept it whole). Round 2 (zip 04486b1a): readers C and D both filed the default ten again and kept 0 of 13 ask figures (score_reader PASS, exit 0 twice); every REVIEW line answered harmless by all four readers. Their realism tells (claim numbers in one scheme across the payers, roster NPIs rising by practice) fixed in the generator for the shipped cut, every figure unchanged (figures.json identical)"
+  },
+  "duplicate_check": {
+   "heart": "WARN (2026-10-25)",
+   "surface": "4 pairs promoted for adjudication (task484, task480, task231, task234 on card axes); the adjudicated clone-check is author-triggered"
+  },
+  "judge": {
+   "verdict": "pass 1 (v14r1, zip cc4a6fbd) DETERMINISTIC, FIX_NOW (Callowglen's share at its rounding boundary under same-day duplicate visits, the chart graded on sign); pass 2 (v14r2, zip 04486b1a) DETERMINISTIC, APPROVE, Gate G forecasting and analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report.md"
+  },
+  "fate": "spent 2026-10-31: the repair's judge pass 2 FIX_NOW (two thresholds a cent off) and the re-judge (the cap claim false under a pooled per-day reading, thin margins, the stay amount unfiled); a FIX_NOW that failed its second pass"
+ }
 }

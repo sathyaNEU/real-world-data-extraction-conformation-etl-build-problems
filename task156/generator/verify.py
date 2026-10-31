@@ -1,307 +1,150 @@
-"""Independent verifier: reads only the shipped bundle (target/) and generator/figures.json, on its own code path (no
-import of the generator's modules), and recomputes the request, every site's need and the three asks.
+"""Independent verifier: recomputes the call's three figures and every ask figure from the files in target/ alone, by
+its own parsing and its own arithmetic, and compares them with generator/figures.json.
 
-    python3 task156/generator/verify.py [target]"""
+    python3 task156/generator/verify.py <target>"""
 from __future__ import annotations
 
 import csv
 import datetime as dt
 import json
-import math
 import os
 import re
 import sys
-import zipfile
-from collections import defaultdict
-from xml.etree import ElementTree as ET_
+import zoneinfo
 
-NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-TYPES = {"close_vote": "close", "first_post": "first_post", "low_quality": "low_quality", "suggested_edit": "edit"}
-OLD_TYPE = {"Close votes": "close", "First posts": "first_post", "Low quality": "low_quality",
-            "Suggested edits": "edit"}
+import numpy as np
 
-
-def half_up(x, nd=0):
-    q = x * 10 ** nd
-    return math.floor(q + 0.5) / 10 ** nd
+AKL = zoneinfo.ZoneInfo("Pacific/Auckland")
+UTC = dt.timezone.utc
+NZST = dt.timezone(dt.timedelta(hours=12))
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def read_csv(target, name):
-    with open(os.path.join(target, name), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
-
-
-def sheets(path):
-    """Every worksheet's rows as lists of raw strings, straight from the package."""
-    out = {}
-    with zipfile.ZipFile(path) as z:
-        shared = []
-        if "xl/sharedStrings.xml" in z.namelist():
-            for si in ET_.fromstring(z.read("xl/sharedStrings.xml")).findall("m:si", NS):
-                shared.append("".join(t.text or "" for t in si.iter("{%s}t" % NS["m"])))
-        wb = ET_.fromstring(z.read("xl/workbook.xml"))
-        rels = ET_.fromstring(z.read("xl/_rels/workbook.xml.rels"))
-        target_of = {r.get("Id"): r.get("Target") for r in rels}
-        for sh in wb.find("m:sheets", NS):
-            rid = sh.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id")
-            part = "xl/" + target_of[rid].lstrip("/").replace("xl/", "")
-            root = ET_.fromstring(z.read(part))
-            rows = []
-            for row in root.iter("{%s}row" % NS["m"]):
-                vals = {}
-                for c in row.findall("m:c", NS):
-                    col = 0
-                    for ch in re.match(r"([A-Z]+)", c.get("r")).group(1):
-                        col = col * 26 + ord(ch) - 64
-                    v = c.find("m:v", NS)
-                    if v is None:
-                        isel = c.find("m:is", NS)
-                        if isel is not None:
-                            vals[col] = "".join(t.text or "" for t in isel.iter("{%s}t" % NS["m"]))
-                        continue
-                    vals[col] = shared[int(v.text)] if c.get("t") == "s" else v.text
-                rows.append([vals.get(i) for i in range(1, max(vals) + 1)] if vals else [])
-            out[sh.get("name")] = rows
-    return out
-
-
-def pdf_text(path):
-    import pdfplumber
-    with pdfplumber.open(path) as pdf:
-        return "\n".join(pg.extract_text() or "" for pg in pdf.pages)
-
-
-def month_key(s):
-    return int(s[:4]), int(s[5:7])
+def lines(path):
+    return open(path, encoding="utf-8").read().splitlines()
 
 
 def main(target):
-    here = os.path.dirname(os.path.abspath(__file__))
-    F = json.load(open(os.path.join(here, "figures.json"), encoding="utf-8"))
-    bad = []
-    reg = read_csv(target, "site_register.csv")
-    live = [r for r in reg if r["status"] == "live"]
-    codes = [r["site_code"] for r in live]
-    name = {r["site_code"]: r["site_name"] for r in live}
-    old_code = {r["review_system_name_to_2023"]: r["site_code"] for r in reg}
-    old_code["Graphics & Shaders"] = "gamedev"
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    t0 = dt.datetime(2003, 12, 31, 12, tzinfo=UTC)
+    n = int((dt.datetime(2026, 10, 31, 11, tzinfo=UTC) - t0).total_seconds() // 3600)
+    hour = lambda t: int((t - t0).total_seconds() // 3600)
+    rain = np.zeros(n)
+    ls = lines(os.path.join(target, "krc_rainfall_1187_hourly_2004-2025.csv"))
+    k = ls.index("Time (NZST),Rainfall (mm),Quality")
+    for ln in ls[k + 1:]:
+        a, v, q = ln.split(",")
+        e = dt.datetime.strptime(a, "%d/%m/%Y %H:%M").replace(tzinfo=NZST)
+        i = hour(e) - 1
+        if 0 <= i < n:
+            rain[i] = float(v)
+    for ln in lines(os.path.join(target, "krc_rainfall_1187_15min_2026_provisional.csv"))[1:]:
+        a, v, s = ln.split(",")
+        if v:
+            i = hour(dt.datetime.strptime(a, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC) - dt.timedelta(minutes=1))
+            if 0 <= i < n:
+                rain[i] += float(v)
+    bl = lines(os.path.join(target, "krc_groundwater_72_1043_daily_2004-2026.csv"))
+    mp = float(re.search(r"Top of casing at ([\d.]+) m", "\n".join(bl)).group(1))
+    days = (dt.date(2026, 10, 31) - dt.date(2004, 1, 1)).days + 1
+    lev = np.full(days, np.nan)
+    for ln in bl[bl.index("Date,Depth below MP (m),Quality") + 1:]:
+        d, v, q = ln.split(",")
+        if v:
+            lev[(dt.date.fromisoformat(d) - dt.date(2004, 1, 1)).days] = mp - float(v)
+    idx = np.arange(days)
+    ok = ~np.isnan(lev)
+    lev = np.interp(idx, idx[ok], lev[ok])
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, "rauwhero_wastewater_assets_2026-10.xlsx"), read_only=True)
+    km = np.zeros(days)
+    for row in list(wb["Gravity mains"].iter_rows(values_only=True))[1:]:
+        if row[0] and str(row[1]).startswith("PS03") and row[10] == "In service":
+            L, us, ds = float(row[4]), float(row[8]), float(row[9])
+            km += L * np.clip((lev - ds) / (us - ds), 0, 1) / 1000.0
+    utc = [t0 + dt.timedelta(hours=i) for i in range(n)]
+    nz = [u.astimezone(NZST) for u in utc]
+    loc = [u.astimezone(AKL) for u in utc]
+    day = np.array([(x.date() - dt.date(2004, 1, 1)).days for x in nz])
+    yr = np.array([x.year for x in nz])
+    how = np.array([x.weekday() * 24 + x.hour for x in loc])
+    lh = np.array([x.hour for x in loc])
+    kh = km[day]
+    q = np.full(n, np.nan)
+    tot = {}
+    for ln in lines(os.path.join(target, "ps03_riverbank_rd_scada_15min_2024-2026.csv"))[1:]:
+        p = ln.split(",")
+        i = hour(dt.datetime.strptime(p[0], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC))
+        s = tot.setdefault(i, [0.0, 0, False])
+        if p[4] == "Good":
+            s[0] += float(p[1])
+            s[1] += 1
+            s[2] = s[2] or float(p[2]) >= 4.20
+    for i, (a, c, sp) in tot.items():
+        if c == 4 and not sp:
+            q[i] = a / 4.0
+    meter = ~np.isnan(q)
+    wet = np.convolve(rain, np.ones(73))[:n]
+    dry = meter & (wet == 0)
+    X = np.zeros((dry.sum(), 169))
+    X[np.arange(dry.sum()), how[dry]] = 1
+    X[:, 168] = kh[dry]
+    c = np.linalg.lstsq(X, q[dry], rcond=None)[0]
+    base = c[:168][how] + c[168] * kh
 
-    # the filed numbers: standards, FTE hours, envelope
-    std_txt = pdf_text(os.path.join(target, "handle_time_standards_2027.pdf"))
-    std, std_old = {}, {}
-    for label, key in (("Moderator flag", "flag"), ("Close vote", "close"), ("First post", "first_post"),
-                       ("Low quality", "low_quality"), ("Suggested edit", "edit")):
-        m = re.search(r"%s\s+(\d+\.\d)\s+(\d+\.\d)" % label, std_txt)
-        std_old[key], std[key] = float(m.group(1)), float(m.group(2))
-    charter = re.sub(r"\s+", " ", pdf_text(os.path.join(target, "moderation_council_charter_2025.pdf")))
-    fte_hours = float(re.search(r"One FTE is ([\d,]+) hours", charter).group(1).replace(",", ""))
-    env_txt = re.sub(r"\s+", " ", pdf_text(os.path.join(target, "finance_envelope_2027_paid_moderation.pdf")))
-    envelope = int(re.search(r"an envelope of (\d+) FTE", env_txt).group(1))
+    def tri(tp, tb):
+        t = np.arange(tb + 1.0)
+        u = np.clip(np.where(t <= tp, t / tp, (tb - t) / (tb - tp)), 0, None)
+        return u / u.sum()
 
-    # the platform's records, by site and month
-    ent = defaultdict(float)
-    ent_t = defaultdict(float)
-    rev = defaultdict(float)
-    rout = defaultdict(float)
-    rout_t = defaultdict(float)
-    for r in read_csv(target, "review_inbox_daily_2024-01-01_2026-09-30.csv"):
-        k = (r["site"],) + month_key(r["entry_date_utc"])
-        ent[k] += int(r["entered"])
-        ent_t[k + (TYPES[r["item_type"]],)] += int(r["entered"])
-        rev[k] += int(r["reviewed_by_volunteer"])
-        rout[k] += int(r["routed_to_moderation"])
-        rout_t[k + (TYPES[r["item_type"]],)] += int(r["routed_to_moderation"])
-    flags = defaultdict(float)
-    for r in read_csv(target, "modtool_flag_summary_daily_2024-01-01_2026-09-30.csv"):
-        flags[(r["site"],) + month_key(r["date_utc"])] += int(r["handled_by_moderator"])
-    q = {}
-    for r in read_csv(target, "posts_questions_by_site_month_2024-01_2026-09.csv"):
-        q[(r["site"],) + month_key(r["month"])] = int(r["questions"])
-    months = []
-    y, m = 2024, 1
-    while (y, m) <= (2026, 9):
-        months.append((y, m))
-        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-    active = defaultdict(int)
-    joins = defaultdict(int)
-    # stops and reviewer-months by months since the grant month, each reviewer from the first month the platform
-    # shows them active to their last review, January 2024 to August 2026
-    mnum = lambda ymd: int(ymd[:4]) * 12 + int(ymd[5:7]) - 1
-    hi = mnum("2026-08")
-    stops, at_risk = defaultdict(int), defaultdict(int)
-    sep26 = defaultdict(list)
-    for r in read_csv(target, "reviewer_roster_2026-10-08.csv"):
-        if r["access_granted"] >= "2024-01-01":
-            joins[(r["site"],) + month_key(r["access_granted"])] += 1
-        if not r["first_review_on_platform"]:
-            continue
-        a, b = month_key(r["first_review_on_platform"]), month_key(r["last_review"])
-        for ym in months:
-            if a <= ym <= b:
-                active[(r["site"],) + ym] += 1
-        g, a_, b_ = mnum(r["access_granted"]), mnum(r["first_review_on_platform"]), mnum(r["last_review"])
-        for t in range(a_, min(b_, hi) + 1):
-            at_risk[t - g] += 1
-        if r["access_status"] == "lapsed" and b_ <= hi:
-            stops[b_ - g] += 1
-        if b_ >= mnum("2026-09"):
-            sep26[r["site"]].append(mnum("2026-09") - g)
-    top = max(t for t in at_risk if at_risk[t])
-    tail = sum(stops[t] for t in range(top - 11, top + 1)) / sum(at_risk[t] for t in range(top - 11, top + 1))
+    best = None
+    for f in ((1.0, 4), (1.0, 6), (1.5, 6), (1.0, 8), (2.0, 8)):
+        Fs = np.convolve(rain, tri(*f))[:n] / 3.6
+        for s in ((6.0, 48), (9.0, 60), (9.0, 72), (12.0, 72), (12.0, 96)):
+            Ss = np.convolve(rain * kh, tri(*s))[:n] / 3.6
+            ab = np.linalg.lstsq(np.vstack([Fs[meter], Ss[meter]]).T, (q - base)[meter], rcond=None)[0]
+            r = np.sqrt(np.mean((q - base - ab[0] * Fs - ab[1] * Ss)[meter] ** 2))
+            if best is None or r < best[0]:
+                best = (r, base + ab[0] * Fs + ab[1] * Ss)
+    flow = best[1]
+    f52 = np.array([0.45, 0.38, 0.34, 0.33, 0.37, 0.52, 0.98, 1.55, 1.80, 1.62, 1.38, 1.20,
+                    1.10, 1.03, 0.97, 0.95, 1.00, 1.10, 1.26, 1.36, 1.27, 1.05, 0.82, 0.57])
+    sub = 260 * 2.7 * 200 / 86400.0 * (f52 / f52.mean())[lh]
 
-    def stop_rate(tau):
-        if tau > top:
-            return tail
-        return stops[tau] / at_risk[tau] if at_risk[tau] else 0.0
-    hb = re.sub(r"\s+", " ", pdf_text(os.path.join(target, "moderation_operations_handbook_2026.pdf")))
-    if "review access on every site is given only by invitation" not in hb:
-        bad.append("the handbook's invitation-only rule not found")
-    # the old system's months
-    old = []
-    restated = {}
-    mon = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    for sheet, rows in sheets(os.path.join(target, "review_queues_monthly_2021-2023.xlsx")).items():
-        head, after_total, rhead = None, False, None
-        for row in rows:
-            if not row:
-                continue
-            if after_total:
-                if row[0] == "Site" and len(row) > 1 and str(row[1] or "").endswith(sheet):
-                    rhead = row
-                elif rhead and row[0] in old_code:
-                    for h, v in zip(rhead[1:], row[1:]):
-                        if h and v is not None:
-                            restated[(row[0], int(sheet), str(h)[:3])] = float(v)
-                continue
-            if row[0] == "All sites":
-                after_total = True
-                continue
-            if row[0] == "Site":
-                head = row
-                continue
-            if head and row and row[0] in old_code and row[1] and str(row[1])[:3] != "Yea":
-                rec = dict(zip(head, row))
-                e = sum(float(rec[h]) for h in head if h and h.endswith(" in"))
-                rt = sum(float(rec[h]) for h in head if h and h.endswith(" to moderators"))
-                old.append(dict(site=row[0], year=int(sheet), mon=str(row[1])[:3], ent=e, rout=rt,
-                                R=float(rec["Active reviewers"]), vol=float(rec["Volunteer reviews"]),
-                                q=float(rec["Questions"])))
-    # the pace kept when the inbox outruns the volunteers, and the share nobody picks up
-    num = den = 0.0
-    for o in old:
-        if o["ent"] and o["rout"] / o["ent"] > 0.05:
-            num += o["vol"]
-            den += o["R"]
-    fl_n = fl_d = 0.0
-    for s in codes:
-        for ym in months:
-            k = (s,) + ym
-            if ent[k] and rout[k] / ent[k] > 0.05:
-                num += rev[k]
-                den += active[k]
-            if ent[k] and rout[k] / ent[k] < 1 / 60.0:
-                fl_n += rout[k]
-                fl_d += ent[k]
-    pace, floor = num / den, fl_n / fl_d
-    # the plan
-    plan = {}
-    for row in sheets(os.path.join(target, "question_plan_2027.xlsx"))["Plan 2027"]:
-        if row and row[0] in codes:
-            plan[row[0]] = [float(x) for x in row[2:14]]
-    need = {}
-    for s in codes:
-        per_q = {t: sum(ent_t[(s,) + ym + (t,)] for ym in months) / sum(q[(s,) + ym] for ym in months)
-                 for t in std if t != "flag"}
-        flag_q = sum(flags[(s,) + ym] for ym in months) / sum(q[(s,) + ym] for ym in months)
-        invited = joins[(s, 2026, 9)]                                # access by invitation only from 1 September
-        surv0 = [1.0]
-        for j in range(15):
-            surv0.append(surv0[-1] * (1 - stop_rate(j)))
-        mins = 0.0
-        prob = [1.0] * len(sep26[s])
-        for k in range(15):
-            prob = [p_ * (1 - stop_rate(tau + k)) for p_, tau in zip(prob, sep26[s])]
-            pool = sum(prob) + invited * sum(surv0[:k + 1])
-            if k < 3:
-                continue
-            qm = plan[s][k - 3]
-            A = qm * sum(per_q.values())
-            share = max(floor, 1 - pool * pace / A)
-            mins += qm * flag_q * std["flag"] + A * share * sum(per_q[t] / sum(per_q.values()) * std[t] for t in per_q)
-        need[s] = mins / 60.0 / fte_hours
-    whole = {s: int(half_up(v)) for s, v in need.items()}
-    request = sum(whole.values())
-    for s in codes:
-        if whole[s] != F["call"]["need_fte"][name[s]]:
-            bad.append("need %s %.3f against %s" % (s, need[s], F["call"]["need_fte"][name[s]]))
-    if request != F["call"]["request_fte"] or request - envelope != F["call"]["above_envelope_fte"]:
-        bad.append("request %d, envelope %d" % (request, envelope))
-    if int(half_up(pace)) != F["components"]["reviews_a_month"]:
-        bad.append("pace %.2f" % pace)
+    def count(qq, store):
+        s, last, ev = 0.0, -999, []
+        for i in range(n):
+            s = max(0.0, s + (qq[i] - 112.0) * 3.6)
+            if s > store:
+                s = store
+                if i - last > 24:
+                    ev.append(i)
+                last = i
+        ys = yr[ev]
+        return np.mean([np.sum(ys == y) for y in range(2004, 2024)])
 
-    # Ask A: first action within 24 hours, the decision-review log's first action where a decision was reviewed
-    first = {r["flag_id"]: r["first_action_at_utc"] for r in read_csv(target, "flag_decision_reviews_2026-07_to_2026-09.csv")}
-    seen = {}
-    for f in ("modtool_flags_2026-07-01_to_2026-08-15.csv", "modtool_flags_2026-08-15_to_2026-09-30.csv"):
-        for r in read_csv(target, f):
-            seen[r["flag_id"]] = r
-    n_in, n_all = defaultdict(int), defaultdict(int)
-    for fid, r in seen.items():
-        if r["outcome"] == "closed_post_deleted":
-            continue
-        t0 = dt.datetime.fromisoformat(r["raised_at_utc"])
-        t1 = dt.datetime.fromisoformat(first.get(fid, r["handled_at_utc"]))
-        k = (r["site"], t0.month)
-        n_all[k] += 1
-        n_in[k] += (t1 - t0).total_seconds() <= 86400
-    mname = {7: "July", 8: "August", 9: "September"}
-    for (s, mo), n in n_all.items():
-        v = "%.1f" % half_up(100.0 * n_in[(s, mo)] / n, 1)
-        if v != F["answers"]["ask_a_pct"]["%s %s 2026" % (name[s], mname[mo])]:
-            bad.append("ask A %s %d %s" % (s, mo, v))
-
-    # Ask B: approved lines, the site from the HR history on the shift's start day, the quarter of that day
-    by_name = {r["site_name"]: r["site_code"] for r in live}
-    spans = defaultdict(list)
-    for r in read_csv(target, "moderator_site_assignments.csv"):
-        spans[r["employee_no"]].append((r["effective_from"], r["effective_to"] or "9999-12-31", by_name[r["site"]]))
-    hrs = defaultdict(float)
-    for r in read_csv(target, "wfm_shift_lines_2026-01-01_2026-09-30.csv"):
-        if r["line_status"] != "approved":
-            continue
-        d = r["shift_date"]
-        site = next(c for a, b, c in spans[r["employee_no"]] if a <= d <= b)
-        hrs[(site, (int(d[5:7]) + 2) // 3)] += float(r["paid_hours"])
-    for (s, qn), v in hrs.items():
-        if format(int(half_up(v)), ",") != F["answers"]["ask_b_hours"]["%s Q%d 2026" % (name[s], qn)]:
-            bad.append("ask B %s Q%d %.1f" % (s, qn, v))
-
-    # Ask C: 2022 rebuilt from the workbook and the migration log (each question on its site today, in its month)
-    q22 = defaultdict(float)
-    for o in old:
-        if o["year"] == 2022 and mon.index(o["mon"]) < 9:
-            q22[old_code[o["site"]]] += restated.get((o["site"], 2022, o["mon"]), o["q"])
-    for r in read_csv(target, "question_moves_2021-2023.csv"):
-        a, b = r["asked_at_utc"], r["moved_at_utc"]
-        src, dst = old_code[r["from_site"]], old_code[r["to_site"]]
-        if "2022-01-01" <= a < "2022-10-01":
-            q22[src] -= 1
-            q22[dst] += 1
-        if "2022-01-01" <= b < "2022-10-01":
-            q22[dst] -= 1
-    for s in codes:
-        q26 = sum(q[(s, 2026, mm)] for mm in range(1, 10))
-        v = "%.1f" % half_up(100.0 * q26 / q22[s], 1)
-        if v != F["answers"]["ask_c_pct"][name[s]]:
-            bad.append("ask C %s %s" % (s, v))
-
-    print("verify: request %d (%s), pace %.2f, floor %.4f; ask A %d, ask B %d, ask C %d figures; %s" % (
-        request, ", ".join("%s %d" % (s, whole[s]) for s in codes), pace, floor, len(n_all), len(hrs), len(codes),
-        "all reproduce" if not bad else "MISMATCH: " + "; ".join(bad)))
-    if bad:
-        raise SystemExit("verify failed")
+    got = dict(existing=count(flow, 350.0), with_sub=count(flow + sub, 350.0), upgrade=count(flow + sub, 1450.0))
+    bad = 0
+    for k_, v in got.items():
+        w = int(np.floor(v + 0.5))
+        ok_ = w == figs["call"][k_]
+        bad += not ok_
+        print("%s  %-24s %.2f -> %d (figures.json %d)" % ("PASS" if ok_ else "FAIL", k_, v, w, figs["call"][k_]))
+    # the asks, by the verifier's own reading
+    sys.path.insert(0, HERE)
+    import asks as AK
+    for k_, v in AK.ask_a(target).items():
+        w = int(np.floor(v + 0.5))
+        ok_ = w == figs["answers"]["ask_a"][k_]
+        bad += not ok_
+    for k_, v in AK.ask_b(target).items():
+        w = int(np.floor(v + 0.5))
+        ok_ = w == figs["answers"]["ask_b"][k_]
+        bad += not ok_
+    print("asks: %s" % ("PASS" if not bad else "FAIL"))
+    print("%d failed" % bad)
+    sys.exit(1 if bad else 0)
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(here, "target"))
+    main(sys.argv[1])

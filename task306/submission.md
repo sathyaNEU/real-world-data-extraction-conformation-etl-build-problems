@@ -1,60 +1,49 @@
 ## Tags
 
-**Domain:** Energy systems and utilities (asset condition and maintenance).
-**Analytical objective:** Opportunity sizing and decision support.
+**Domain:** Actuarial Science & Insurance (reinsurance and capital: a county farm-and-home mutual's 2027 windstorm reinsurance, a cover bought when the capital it releases is worth more than it costs).
+**Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**Tool 2027 as Mira city car 1,450, Volta hatch 900, Plover saloon 350, Kestrel SUV 250, Tern van 50 slots: the 3,000 slots in proportion to the 3,800 pack failures outside the OEM warranty forecast for the five platforms in the Netherlands in 2027.**
-The packs that fail in 2027 are those of the cars in use in the Netherlands in 2027: the register of 30 June 2026 and the used imports that keep arriving after it. The Mira city car's imports arrive about 8.1 years old, past its five-year pack warranty, and fail in their first months here: 360 of its 1,829 forecast failures are theirs. Summed over the register alone, the Mira city car would get 1,250 slots, the Volta hatch 1,000, the Kestrel SUV 300 and the Tern van 100.
+**We should add Penwarden's second-event cover to the 2027 windstorm programme.**
+It releases £7 million of 1-in-200 windstorm capital, worth £0.8 million a year at 12 per cent against a margin of £0.7 million, so it adds £0.1 million a year. Not on one incurred-over-hindcast ratio for every storm of record, which undercosts the storms that strike within weeks of the one before and leaves the cover looking dearer than its release is worth. Not on each storm's place in its year or season, which the record's later storms on quiet seasons, costing what the model says, rule out.
 
 ## 2. Critical Components
 
-1. The population whose packs fall due in 2027 is every car in use in the Netherlands in 2027: the register of 30 June 2026 holds the cars that had arrived by then, and the used imports registered after it are in the fleet of 2027 too. Cars registered new after it are inside their warranty all year.
-2. The register shows the arrivals: in the twelve months to 30 June 2026, **1,394** Mira city cars were first registered here after a first admission abroad, about **116** a month at **8.1** years old on average, past the Mira's **5**-year warranty; the other platforms' imports arrive inside their **8** years.
-3. The 2027 forecast is **3,448** failures for the cars on the register and **363** for the imports still to arrive (**360** of them Mira city cars): **3,800** to the nearest hundred.
-4. In lots of 50 the shares give Mira city car 28, Volta hatch 18, Plover saloon 6, Kestrel SUV 5, Tern van 1 whole lots; the **2** lots left go to the two largest remainders, the Mira city car's **0.79** and the Plover saloon's **0.70**, ahead of the Tern van's **0.42**.
+1. Storms of record that struck within six weeks of the storm before cost **1.62** times their hindcast, every other storm **0.98** times.
+2. The 1-in-200 annual windstorm loss is **£113 million** gross, **£94 million** net of the occurrence cover and **£87 million** net of both covers.
+3. The second-event cover's margin is **£0.7 million** a year: its premium of **£1.3 million** and expected reinstatement premium of **£0.1 million**, less expected recoveries of **£0.7 million**.
 
 ## 3. Step-by-Step Solution
 
-1. Took each car on rdw_gekentekende_voertuigen_20260630.csv (its make is its platform) with the pack it carried at the end of 30 June 2026 from accuvervangingen_2014_2026.csv, one pack per car as the plan's section 3 files it: its last replacement on or before that day (an OEM nieuw pack on the platform's curve, a Voltwerk revisie pack on the refurbished curve), else the pack it was built with from its datum eerste toelating; the OEM warranty ends 8 years after datum eerste toelating, 5 for the Mira city car (garantievoorwaarden_tractieaccu_2026.pdf), whatever was fitted since.
-2. Gave each car the chance its pack fails in 2027 after the warranty, given it works on 30 June 2026: F(a1) less F(a0), over 1 less F(a) on 30 June 2026, pack ages in days since fitting over 365.25, F the curve in levensduurcurves_tractieaccu.csv read by straight lines, a0 at the later of 1 January 2027 and the warranty's end, a1 at 1 January 2028 (a pack fitted in its place after 30 June 2026 is left out); summed by platform, 3,448 in all.
-3. The plan's fleet of 2027 also holds the cars first registered here from 1 July 2026 to the end of 2027, each from the day it is registered; the new cars among them stay inside their warranty all year. Took the used imports first registered here from 1 July 2025 to 30 June 2026 (datum eerste toelating before datum eerste tenaamstelling in Nederland), each with the pack the log shows it arrived with (its last replacement before that registration, else its original pack), and carried them into July 2026 to December 2027 at that rate and mix: each month takes in a twelfth of them on the same day of the month (the month's last day if shorter), at the same age, pack age and warranty, each at its chance of failing in 2027 after its warranty given its pack works on arrival; 363 in all.
-4. Added the two by platform (Mira city car 1,829, Volta hatch 1,144, Plover saloon 425, Kestrel SUV 322, Tern van 91; 3,800 to the nearest hundred) and split the 3,000 slots in proportion: 60 lots of 50, each platform's whole lots first and the lots left to the largest remainders (the plan, tooling_plan_2027_draft.docx, section 2).
-5. Modules: took the stores movements booked from 1 July 2025 to 30 June 2026 in magazijn_mutaties_2025-26.csv, issues less returns, each line in modules by artikelstam_modules.xlsx (a Kestrel carrier is 2) and on its work order's platform; no lot's stock goes below zero (lijn_exports_toelichting.md), so on a supplier lot whose lines add up to more than magazijn_ontvangsten_2025-26.csv shows it received (the replacement lots for held packs), the one quantity a pick list carries against several work orders went out once, which brings the lot back to what it received; divided by the packs shipped in those months in verzendingen_2025-26.csv and multiplied by 50.
-6. First-run passes: followed each pakket_id in eol_testlog_2025-26.csv to its work order through mes_bms_koppelingen_2025-26.csv (a BMS replaced on rework gives the pack a new pakket_id), took each work order's first run that was not an ABORT, kept the packs whose first run started from 1 July 2025 to 30 June 2026 and took the share that passed.
-7. Intake rejects: took the cores received from 1 July 2025 to 30 June 2026 in kernen_inname_2025-26.csv at either dock; a core with a work order in mes_werkorders_2025-26.csv was built on, so it passed intake, and its AFGEKEURD is the grade its scrapped pack left on 1 July 2026 (its quarantine tag in afvoer_recycler_2025-26.xlsx is dated the day the line scrapped it, an intake reject's the day it arrived); the share rejected is the AFGEKEURD rows with no work order over all the cores received.
+1. Linked each storm in windstorm_experience_2001-2025.xlsx to the storm in seaborne_windstorm_hindcast_2001-2025.csv whose peak falls on its first damage date or the day after, all 43 storms of record, and classed each by the days since the storm before it (every gap is 24 days or less, or 70 or more): the 9 within six weeks cost 1.62 times their hindcast and the rest 0.98, incurred over hindcast for the storms like it per CP-04 section 2.
+2. Classed each storm of seaborne_windstorm_ylt_2027_portfolio.csv the same way against the storm before it in its simulated year and costed it at its class's ratio.
+3. Netted each simulated year of the occurrence cover (quotation A, 18,000,000 xs 12,000,000 each loss occurrence, one reinstatement at 100 per cent pro rata as to amount), each storm one loss occurrence per CP-04: the 1-in-200, the average of the 50 worst of the 10,000 years, is £113 million gross and £94 million net.
+4. Added the second-event cover (quotation B, 7,500,000 xs 4,000,000 of the loss retained under the occurrence cover on each year's second and later loss occurrences, one reinstatement): the 1-in-200 falls to £87 million, a release of £7 million.
+5. Took the cover's margin per CP-04 section 3 over the 10,000 years: £0.7 million.
+6. Dated each 2026 storm claim line in claims_extract_2026-10-31.csv by date_of_damage in loss_adjuster_instructions_2026.csv (insurer_ref without its spaces), a reopened claim's lines in notification order against its instructions in instruction order, and grouped the days into the 72-hour loss occurrences that maximise the expiring cover's recovery (wording clause 3): it recovers £12,015,000 and calls £1,402,000 of reinstatement premium.
+7. Summed the Holdings sheet of farm_policies_and_locations_2026-10-31.xlsx by each holding's county, each coinsured policy at its share in coinsurance_register_2026.csv, matched on its main holding's CPH or, for a renumbered holding, its previous_cph, and applied to every holding on the policy.
+8. Valued the cover at 12 per cent of the release, £0.8 million, less the margin: it adds £0.1 million a year, so it is added to the programme.
 
 ## 4. Deliverable Answers
 
-### voltwerk_tooling_2027.xlsx
+### windstorm_programme_board_paper_2027.pdf
 
-1. Slots in 2027, by platform:
-   - Mira city car: 1,450
-   - Volta hatch: 900
-   - Plover saloon: 350
-   - Kestrel SUV: 250
-   - Tern van: 50
-2. Pack failures outside the OEM warranty forecast for 2027, all five platforms: 3,800
-3. Modules a lot of 50 should carry, by platform:
-   - Volta hatch: 167
-   - Kestrel SUV: 274
-   - Plover saloon: 190
-   - Mira city car: 149
-   - Tern van: 224
-4. Share of the packs with a first end-of-line run from July 2025 to June 2026 that passed it, by platform:
-   - Volta hatch: 92.6 per cent
-   - Kestrel SUV: 88.2 per cent
-   - Plover saloon: 94.0 per cent
-   - Mira city car: 88.3 per cent
-   - Tern van: 90.5 per cent
-5. Share of the cores received from July 2025 to June 2026 that were rejected at intake, by platform:
-   - Volta hatch: 8.9 per cent
-   - Kestrel SUV: 5.9 per cent
-   - Plover saloon: 11.0 per cent
-   - Mira city car: 14.7 per cent
-   - Tern van: 8.3 per cent
+1. Recommendation: add the second-event cover to the 2027 programme.
+2. Bar chart on page 1 of the 1-in-200 annual windstorm loss: £113 million gross, £94 million net of the occurrence cover, £87 million net of both covers.
+3. Capital the second-event cover releases: £7 million.
+4. The cover's margin £0.7 million; its worth to us a year £0.1 million.
+5. 2026 loss occurrences of £1 million or more, home and farm policies:
+   - 11 to 13 January: home £13,067,000, farm £2,510,000
+   - 8 to 9 February: home £16,898,000, farm £3,541,000
+   - 15 to 16 February: home £3,943,000, farm £931,000
+6. The expiring cover recovers £12,015,000 on 2026 and calls a reinstatement premium of £1,402,000.
+7. Our share of the farm sums insured, buildings and farm contents:
+   - Cornwall: buildings £1,302.1 million, farm contents £618.2 million
+   - Devon: buildings £1,502.4 million, farm contents £746.3 million
+   - Somerset: buildings £863.7 million, farm contents £396.8 million
+   - Dorset: buildings £389.0 million, farm contents £184.3 million
 
-### voltwerk_tooling_2027.png
+### windstorm_programme_2027.xlsx
 
-1. Each platform's 2027 forecast beside its slots, the Mira city car's 1,450 slots the largest.
+1. The same figures: sheet Capital 2027 carries the call, the three 1-in-200 losses, the release, the margin and the worth; Storms 2026 each occurrence's home and farm cost, the recovery and the reinstatement premium; Farm sums insured each county's buildings and farm contents; Record the storms of record with their ratios.

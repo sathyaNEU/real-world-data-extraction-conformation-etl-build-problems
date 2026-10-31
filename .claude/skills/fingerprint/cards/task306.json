@@ -1,164 +1,172 @@
 {
-  "task": "task306",
-  "architecture": "v3 (re-root at stage 2: a county farm-and-home mutual's 2027 windstorm reinsurance, the 1-in-200 capital each quoted programme releases once a storm that follows another inside the same season is costed at what the mutual's claims show)",
-  "drawn": "2026-10-31",
-  "slot_note": "re-root of task306 in the same objective (Opportunity Sizing), batch 1",
-  "domain": "actuarial-science-insurance",
-  "subdomain": "reinsurance-capital",
-  "client_domain": "actuarial-science-insurance",
-  "niche": "a regional farm and rural home mutual's 2027 windstorm programme, an occurrence cover against an annual aggregate cover, its own storms' claims set against the catastrophe model's as-if losses, the storms that follow another inside a season costing more",
-  "objective": "opportunity-sizing-decision",
-  "shape": "07",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task306",
+ "architecture": "v3 (re-root at stage 2: a county farm-and-home mutual's 2027 windstorm reinsurance, whether to add the second-event cover the broker quoted, valued by the 1-in-200 capital it releases once each simulated storm is costed at what the mutual's claims show for storms like it)",
+ "drawn": "2026-10-31",
+ "slot_note": "re-root of task306 in the same objective (Opportunity Sizing), batch 1",
+ "domain": "actuarial-science-insurance",
+ "subdomain": "reinsurance-capital",
+ "client_domain": "actuarial-science-insurance",
+ "niche": "a regional farm and rural home mutual's 2027 windstorm programme, whether to add a second-event cover on the occurrence cover's retained band, its own storms' claims set against the catastrophe model's hindcast, the storms that strike within weeks of the storm before costing more",
+ "objective": "opportunity-sizing-decision",
+ "shape": "07",
+ "decision_type": "go_hold_or_stop",
+ "answer_unit": "currency",
+ "answer": "Add the second-event cover: it releases GBP 7 million of 1-in-200 windstorm capital, worth GBP 0.8 million a year at 12 per cent against a margin of GBP 0.7 million, so it adds GBP 0.1 million a year.",
+ "answer_source": "task306/submission.md block 1, from generator/figures.json",
+ "gap": [
+  "objective",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G6",
+  "G16"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "existing_book_actuals",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_model",
+ "stump_class": "analytical",
+ "analyst_test": "An analyst who reads every field and rule correctly runs the field's model adjustment on the record as one population (total incurred over total hindcast, 1.06, which reproduces the record's total exactly and shows no trend with storm size), costs every simulated storm at it, and files that the second-event cover releases 5 million of 1-in-200 capital and is worth minus 0.3 million a year, so it is not bought.",
+ "domain_test": "Reinsurance capital relief is the field's own 1-in-200 on simulated years net of the covers in force, and the catastrophe model adjustment to the company's claims against the vendor's hindcast is the field's own calibration; with another field's nouns there is no year loss table, no hindcast, no retained band a second-event cover sits on and no storms whose cost rises because the last storm's repairs are still under way.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:follow-on-storm-costing-for-a-second-event-cover",
+ "layer1": [
+  "the web form recording the day it is sent as a claim's loss date",
+  "the loss adjusters' portal spacing the insurer's claim number",
+  "reopened claims carrying a supplementary payment on a suffixed line",
+  "the model's hindcast peaks in UTC against claims dated by local damage day",
+  "sums insured in thousands of pounds",
+  "holdings renumbered by the Rural Payments Agency, the old CPH kept beside the new",
+  "a coinsurance register keyed by the CPH as it stood at the arrangement's last renewal",
+  "policy renewals under new numbers and lapsed records in the home extract",
+  "storm names only from the 2015 season, two claims systems across a 2014 migration"
+ ],
+ "stakeholder_role": "the mutual's head of reinsurance, who places the 2027 windstorm programme",
+ "role_family": "procurement_lead",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "seaborne_windstorm_ylt_2027_portfolio.csv",
+  "rows": 14436,
+  "entity": "one simulated storm in a simulated year",
+  "grain": "simulated year x storm",
+  "source": "synthetic"
+ },
+ "forum": "board_of_directors",
+ "forcing_event": "vote_or_meeting",
+ "org_family": "cooperative_or_member_body",
+ "world": {
+  "geography": "United Kingdom (South West England)",
+  "currency": "GBP",
+  "org_type": "a county farm and rural home mutual insurer",
+  "invented_names": [
+   "Hartcombe Mutual",
+   "Seaborne Risk",
+   "Penwarden Reinsurance Brokers",
+   "Penhallow Loss Adjusters"
+  ],
+  "people": [
+   "Mandy George",
+   "Arthur Begum",
+   "Elizabeth Farmer"
+  ]
+ },
+ "deliverables": [
+  "windstorm_programme_board_paper_2027.pdf",
+  "windstorm_programme_2027.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "how-much",
+ "driver": "The decisive quantity is the tail of a forward loss distribution built from simulated years of events and calibrated to the organisation's own recorded losses, when an event that strikes within weeks of the event before it costs more per unit of modelled loss than an event on a quiet spell, a class no column marks and only the order of the record's events rebuilds; one pooled calibration across all events undercosts the later events of a run, which are the only ones a cover on second and later events pays on, and values that cover below its cost.",
+ "driver_concrete": "A windstorm that strikes within weeks of the storm before it, roofs still sheeted and builders still booked, costs the mutual 1.62 times the model's hindcast against 0.98 for every other storm, so each simulated storm that follows another in its year is costed at its class's ratio before the 1-in-200 is read net of the occurrence cover and of both covers; the one ratio over the record, 1.06, undercosts exactly the later storms the second-event cover pays on and values it at minus 0.3 million a year instead of plus 0.1 million.",
+ "stump": "A competent solver costs every storm in the 2027 year loss table at the record's one incurred-over-hindcast ratio, 1.06, and files that the second-event cover releases 5 million and is worth minus 0.3 million a year, so it is not bought; the step that lands it there is reading the record as one population, when the storms that strike within weeks of the storm before cost 1.62 times the model and the rest 0.98, and the cover pays on exactly those later storms in the years that set the capital.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task309": "task309 reads one FORTIFIED roof cut ratio by each storm's own local gust class, a column on every claim, carried event by event; here the ratio does not move with a storm's size or intensity at all, and the class that moves it is a storm's place in its season's sequence, rebuilt only by ordering the season's storms by date, and the decision turns on an annual aggregate cover against an occurrence cover in the clustered seasons.",
+  "task302": "task302 nets a unit's lost output against substitutes its group takes while it is out; here nothing is substituted: each storm's own cost rises when it follows another inside a season, and the decisive split is of the record's storms by their place in their season.",
+  "task120": "task120 v3 reads a population's peak draw as inflow less a reserve drawn down; here there is no stock or reserve, and the decisive move is loading the follow-on storms of each simulated season by what the record's own follow-on storms cost.",
+  "task271": "task271 v5 nets each fill's adverse move against the actor's own later child orders inside one parent order, a market-impact window measured in seconds; here no actor trades against itself: a storm's claims cost more when it strikes while an earlier storm's repairs are still open, and the decision is an aggregate against an occurrence reinsurance cover on simulated seasons."
+ },
+ "lineage": [
+  {
+   "domain": "urban-regional-science",
+   "subdomain": "regional-input-output-economic-impact",
+   "objective": "opportunity-sizing-decision",
+   "shape": "07",
+   "decision_type": "pick_one_of_n",
+   "answer_unit": "currency",
+   "gap": [
     "objective",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "generators": [
+    "G5",
+    "G14"
+   ],
+   "gate_g": "decomposition_attribution",
+   "driver": "The decisive quantity is the part of a candidate's second-round effect that stays inside the area, when that round runs through the incomes the candidate pays and a published multiplier carries the area's average share of those incomes spent at home; one candidate's earners mostly live outside the area, which only its operator's roster joined to a location lookup shows, so the multiplier credits it with spending that happens elsewhere and ranks it first.",
+   "stump_strategy": "composition_mix",
+   "forum": "committee_or_panel",
+   "forcing_event": "vote_or_meeting",
+   "org_family": "government_agency",
+   "role_family": "programme_officer",
+   "architecture": "v2 (re-root: a development corporation's 2027 inward investment fund award between two projects, the regional GVA each adds once its induced round is read where its staff live)",
+   "drawn": "2026-10-31",
+   "fate": "spent 2026-10-31 at stage 2, before any data was cut: the survivor anatomy's Actor test failed on paper, since the deciding property (where the distribution centre's staff live) is one join from a column (the roster's postcode against the postcode directory's local authority) and any shipped residence datum is a column or a sentence, so the decisive rung would be readable; re-rooted into actuarial reinsurance capital"
+  },
+  {
+   "domain": "energy-systems-utilities",
+   "subdomain": "asset-condition-maintenance",
+   "objective": "opportunity-sizing-decision",
+   "shape": "other",
+   "decision_type": "allocation_to_total",
+   "answer_unit": "count",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G13",
     "G6",
-    "G16"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "existing_book_actuals",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_model",
-  "stump_class": "analytical",
-  "analyst_test": "An analyst who reads every field and rule correctly sets each past storm's claims against the catastrophe model's as-if loss for it, scales the year loss table by the one pooled ratio of the two (which reproduces the record's total exactly), takes each programme's capital relief at the 1-in-200 annual net loss less its margin, and buys the occurrence cover, because the pooled ratio is set by a record of mostly lone storms and leaves the clustered seasons that set the capital too light for the aggregate cover to pay.",
-  "domain_test": "Reinsurance capital relief is the field's own gross-against-net 1-in-200 on simulated years, and demand surge, the rise in the cost of a storm's claims when builders and roofers are still on the last storm's repairs, is the field's own post-event loss amplification; with another field's nouns there is no season of events whose later members cost more because the earlier ones are still being repaired, and no cover that pays on a season's total, so the task stops reading the same.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:follow-on-storm-loading-in-clustered-seasons",
-  "layer1": [
-    "claims from a system migration with two claim-number formats",
-    "storms named in the claims and numbered in the model catalogue, joined by date",
-    "the model catalogue's event times in UTC against claims dated by local loss date",
-    "sums insured in pounds and in thousands of pounds",
-    "policy renewals under new numbers",
-    "reopened claims carrying a supplementary payment under a new line",
-    "a preliminary and a final release of the model's year loss table"
-  ],
-  "stakeholder_role": "the mutual's head of reinsurance, who places the 2027 windstorm programme",
-  "role_family": "procurement_lead",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one claim payment or one simulated storm in a season",
-    "grain": "claim payment; simulated season x storm",
-    "source": "synthetic"
-  },
-  "forum": "board_of_directors",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "cooperative_or_member_body",
-  "world": {
-    "geography": "United Kingdom (South West England)",
-    "currency": "GBP",
-    "org_type": "a county farm and rural home mutual insurer",
-    "invented_names": [],
-    "people": [
-      "Mandy George",
-      "Arthur Begum"
-    ]
-  },
-  "deliverables": [
-    "windstorm_programme_2027.xlsx",
-    "windstorm_programme_board_paper_2027.pdf"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is the tail of a forward loss distribution built from simulated seasons of events and calibrated to the organisation's own recorded losses, when an event that follows another inside the same season costs more than its modelled loss because the earlier event's work is still under way, a class no column marks and only the order of each season's events rebuilds; one pooled calibration, set by a record of mostly lone events, leaves the clustered seasons that set the requirement too light and undervalues the cover that pays on a season's total.",
-  "driver_concrete": "A windstorm that strikes while the last storm's roofs are still sheeted and the builders still booked costs the mutual about two fifths more per pound of the model's as-if loss than a storm on a quiet season, so each simulated storm that follows another inside its season is loaded before the 1-in-200 annual loss is read gross and net; the one model-to-claims ratio over the past storms, set by the lone storms that make up most of the record, leaves the clustered seasons light and the annual aggregate cover, which pays only in them, looking weaker than the occurrence cover.",
-  "stump": "A competent solver scales the year loss table by the one pooled ratio of the mutual's storm claims to the model's as-if losses, values each programme at its 1-in-200 annual capital relief less its margin, and buys the occurrence cover, where loading the storms that follow another inside a season lifts the clustered seasons that set the capital and makes the annual aggregate cover the programme to buy; the step that lands it there is calibrating the model with one ratio over a record of mostly lone storms.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task309": "task309 reads one FORTIFIED roof cut ratio by each storm's own local gust class, a column on every claim, carried event by event; here the ratio does not move with a storm's size or intensity at all, and the class that moves it is a storm's place in its season's sequence, rebuilt only by ordering the season's storms by date, and the decision turns on an annual aggregate cover against an occurrence cover in the clustered seasons.",
-    "task302": "task302 nets a unit's lost output against substitutes its group takes while it is out; here nothing is substituted: each storm's own cost rises when it follows another inside a season, and the decisive split is of the record's storms by their place in their season.",
-    "task120": "task120 v3 reads a population's peak draw as inflow less a reserve drawn down; here there is no stock or reserve, and the decisive move is loading the follow-on storms of each simulated season by what the record's own follow-on storms cost.",
-    "task271": "task271 v5 nets each fill's adverse move against the actor's own later child orders inside one parent order, a market-impact window measured in seconds; here no actor trades against itself: a storm's claims cost more when it strikes while an earlier storm's repairs are still open, and the decision is an aggregate against an occurrence reinsurance cover on simulated seasons."
-  },
-  "lineage": [
-    {
-      "domain": "urban-regional-science",
-      "subdomain": "regional-input-output-economic-impact",
-      "objective": "opportunity-sizing-decision",
-      "shape": "07",
-      "decision_type": "pick_one_of_n",
-      "answer_unit": "currency",
-      "gap": [
-        "objective",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G5",
-        "G14"
-      ],
-      "gate_g": "decomposition_attribution",
-      "driver": "The decisive quantity is the part of a candidate's second-round effect that stays inside the area, when that round runs through the incomes the candidate pays and a published multiplier carries the area's average share of those incomes spent at home; one candidate's earners mostly live outside the area, which only its operator's roster joined to a location lookup shows, so the multiplier credits it with spending that happens elsewhere and ranks it first.",
-      "stump_strategy": "composition_mix",
-      "forum": "committee_or_panel",
-      "forcing_event": "vote_or_meeting",
-      "org_family": "government_agency",
-      "role_family": "programme_officer",
-      "architecture": "v2 (re-root: a development corporation's 2027 inward investment fund award between two projects, the regional GVA each adds once its induced round is read where its staff live)",
-      "drawn": "2026-10-31",
-      "fate": "spent 2026-10-31 at stage 2, before any data was cut: the survivor anatomy's Actor test failed on paper, since the deciding property (where the distribution centre's staff live) is one join from a column (the roster's postcode against the postcode directory's local authority) and any shipped residence datum is a column or a sentence, so the decisive rung would be readable; re-rooted into actuarial reinsurance capital"
-    },
-    {
-      "domain": "energy-systems-utilities",
-      "subdomain": "asset-condition-maintenance",
-      "objective": "opportunity-sizing-decision",
-      "shape": "other",
-      "decision_type": "allocation_to_total",
-      "answer_unit": "count",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G13",
-        "G6",
-        "G12"
-      ],
-      "gate_g": "forecasting",
-      "driver": "The decisive quantity is next year's failures in an asset base that keeps taking in old units the current roll does not hold yet: a forecast summed over today's roll leaves out the units still to arrive, which arrive past their cover and fail in their first months, so one segment's demand runs a fifth short and its share of a fixed capacity goes to the segments the roll overstates.",
-      "stump_strategy": "maturity_censoring",
-      "forum": "line_manager_or_team",
-      "forcing_event": "purchase_order_or_contract",
-      "org_family": "manufacturer",
-      "role_family": "capacity_planner",
-      "architecture": "v1 (Voltwerk's 2027 EV pack refurbishment slots across five platforms, the used imports still to arrive)",
-      "drawn": "2026-10-24",
-      "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-24, determinism repair reshipped 10-26; its isolated cold reader landed the call (all five slots and the 3,800 total), and the design note named the decisive step reflex reachable (conditioning a survival curve on survival to the as-of date); re-rooted in a new world"
-    }
-  ],
-  "notes": "",
-  "registered": "2026-10-31T17:39:59Z",
-  "shell": {
-    "question form": "whether",
-    "second-sentence opener": "i",
-    "rounding opener": "the",
-    "deliverable set": "png+xlsx"
-  },
-  "lineage_shells": [
-    {
-      "question form": "whether",
-      "second-sentence opener": "i",
-      "rounding opener": "the",
-      "deliverable set": "png+xlsx"
-    }
-  ]
+    "G12"
+   ],
+   "gate_g": "forecasting",
+   "driver": "The decisive quantity is next year's failures in an asset base that keeps taking in old units the current roll does not hold yet: a forecast summed over today's roll leaves out the units still to arrive, which arrive past their cover and fail in their first months, so one segment's demand runs a fifth short and its share of a fixed capacity goes to the segments the roll overstates.",
+   "stump_strategy": "maturity_censoring",
+   "forum": "line_manager_or_team",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "manufacturer",
+   "role_family": "capacity_planner",
+   "architecture": "v1 (Voltwerk's 2027 EV pack refurbishment slots across five platforms, the used imports still to arrive)",
+   "drawn": "2026-10-24",
+   "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-24, determinism repair reshipped 10-26; its isolated cold reader landed the call (all five slots and the 3,800 total), and the design note named the decisive step reflex reachable (conditioning a survival curve on survival to the as-of date); re-rooted in a new world"
+  }
+ ],
+ "notes": "",
+ "registered": "2026-10-31T17:39:59Z",
+ "shell": {
+  "question form": "how-much",
+  "second-sentence opener": "my",
+  "rounding opener": "capital",
+  "deliverable set": "pdf+xlsx"
+ },
+ "lineage_shells": [
+  {
+   "question form": "whether",
+   "second-sentence opener": "i",
+   "rounding opener": "the",
+   "deliverable set": "png+xlsx"
+  }
+ ]
 }

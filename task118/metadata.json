@@ -57,7 +57,7 @@
     {
       "path": "op7_demand_response_dispatch_rev3.pdf",
       "format": "pdf",
-      "bytes": 3346,
+      "bytes": 3763,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of a system operator's demand response dispatch procedure",
       "date": "2026-10-19",
@@ -120,7 +120,7 @@
     {
       "path": "dr_expansion_costs_2027.xlsx",
       "format": "xlsx",
-      "bytes": 5668,
+      "bytes": 5674,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of a utility budget office's programme cost workbook",
       "date": "2026-10-19",
@@ -219,7 +219,7 @@
     {
       "path": "dr_customer_survey_2026.xlsx",
       "format": "xlsx",
-      "bytes": 5623,
+      "bytes": 5628,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of a utility's programme customer survey results",
       "date": "2026-10-19",

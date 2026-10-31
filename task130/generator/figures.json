@@ -1,131 +1,68 @@
 {
- "call": {
-  "contribution": "1,250,000",
-  "contribution_usd": "$1,250,000"
+ "call": "Add the third return-inspection officer for 2027: the routine inspections in the 2027 schedule are forecast to produce about 700 unsatisfactory inspections, above the plan's 540.",
+ "forecast_total": "700",
+ "forecast_unrounded": "693.4",
+ "threshold": "540",
+ "scheduled_routine_inspections": "5,512",
+ "first_visits_2027": "1,277",
+ "second_visits_2027": "1,031",
+ "later_visits_2027": "3,204",
+ "rate_first_visit": {
+  "1": "14.4",
+  "2": "28.2",
+  "3": "32.4"
  },
- "components": {
-  "experience_claims": "3,043",
-  "experience_fte_years": "13,747.1"
+ "rate_second_visit": {
+  "1": "5.6",
+  "2": "10.2",
+  "3": "18.9"
  },
- "entities": {
-  "TFH": {
-   "name": "Tolliver Falls Hospital",
-   "transition": "1 January 2027",
-   "months_in_2027": 12
-  },
-  "AMC": {
-   "name": "Alderwick Medical Center",
-   "transition": "1 April 2027",
-   "months_in_2027": 9
-  },
-  "CMG": {
-   "name": "Corvane Medical Group",
-   "transition": "1 July 2027",
-   "months_in_2027": 6
-  },
-  "BCH": {
-   "name": "Brennick Community Hospital",
-   "transition": "1 October 2027",
-   "months_in_2027": 3
-  }
+ "rate_later_visit": {
+  "1": "2.9",
+  "2": "4.8",
+  "3": "8.4"
  },
- "ask_a": {
-  "TFH": {
-   "name": "Tolliver Falls Hospital",
-   "any_missing": "no",
-   "count": 0,
-   "reserves": "0",
-   "carrier": "Quillan Mutual Professional Liability Company",
-   "carrier_since": "1 January 2021"
-  },
-  "AMC": {
-   "name": "Alderwick Medical Center",
-   "any_missing": "yes",
-   "count": 4,
-   "reserves": "839,000",
-   "carrier": "Quillan Mutual Professional Liability Company",
-   "carrier_since": "1 April 2019"
-  },
-  "CMG": {
-   "name": "Corvane Medical Group",
-   "any_missing": "yes",
-   "count": 5,
-   "reserves": "16,000",
-   "carrier": "Stoneleigh Casualty Insurance Company",
-   "carrier_since": "1 July 2019"
-  },
-  "BCH": {
-   "name": "Brennick Community Hospital",
-   "any_missing": "no",
-   "count": 0,
-   "reserves": "0",
-   "carrier": "Stoneleigh Casualty Insurance Company",
-   "carrier_since": "1 October 2022"
-  }
+ "rung_category": "437",
+ "rung_own_history": "458",
+ "rung_inspector": "451",
+ "ask_a_median_working_days": {
+  "1": "10.0",
+  "2": "10.0",
+  "3": "9.0",
+  "4": "9.0",
+  "5": "11.0",
+  "6": "8.5",
+  "7": "10.0",
+  "8": "9.0",
+  "9": "9.0",
+  "10": "8.5",
+  "11": "13.0"
  },
- "ask_b": {
-  "TFH": {
-   "2026-07": "188.6",
-   "2026-08": "187.1",
-   "2026-09": "188.0"
-  },
-  "AMC": {
-   "2026-07": "464.5",
-   "2026-08": "463.6",
-   "2026-09": "465.4"
-  },
-  "CMG": {
-   "2026-07": "1037.1",
-   "2026-08": "1036.8",
-   "2026-09": "1040.6"
-  },
-  "BCH": {
-   "2026-07": "105.5",
-   "2026-08": "106.7",
-   "2026-09": "108.2"
-  }
+ "ask_b_median_hours": {
+  "1": "71.9",
+  "2": "89.8",
+  "3": "80.2",
+  "4": "69.1",
+  "5": "124.6",
+  "6": "60.3",
+  "7": "98.4",
+  "8": "63.1",
+  "9": "155.5",
+  "10": "63.3",
+  "11": "66.3"
  },
- "ask_b_total": {
-  "2026-07": "1795.8",
-  "2026-08": "1794.1",
-  "2026-09": "1802.1"
+ "ask_c_fees_usd": {
+  "1": "1,416",
+  "2": "2,624",
+  "3": "2,544",
+  "4": "3,200",
+  "5": "4,376",
+  "6": "2,576",
+  "7": "2,024",
+  "8": "3,792",
+  "9": "2,528",
+  "10": "2,544",
+  "11": "2,424"
  },
- "conventions": {
-  "contribution_rounded_to": "250,000",
-  "trend_pct": "5.0",
-  "hours_per_fte_month": "173.33"
- },
- "routes": {
-  "golden": "1,250,000",
-  "R1_count_x_class_average": "2,500,000",
-  "R1m_count_x_mature_average": "2,750,000",
-  "R1g_count_x_lognormal_mean": "1,500,000",
-  "R1p_count_x_pooled_average": "2,500,000",
-  "R1y_count_x_average_made_within_year": "750,000",
-  "R1c_count_x_average_same_year": "1,000,000",
-  "R1w_count_x_average_within_entity_window": "750,000",
-  "R1t_count_x_average_by_matter_type": "1,750,000",
-  "R1a_count_x_average_by_allegation": "2,500,000",
-  "F1_loglog_by_class": "2,750,000",
-  "F2_loglinear_by_class": "1,000,000",
-  "F3_loglog_pooled": "2,500,000",
-  "F4_gamma_loglag_class_factors": "1,500,000",
-  "F5_gamma_lag_class_factors": "1,000,000",
-  "F6_gamma_quadratic_by_class": "1,000,000",
-  "S1_gamma_spline_by_class": "1,250,000",
-  "S2_quadratic_log_ols_by_class": "1,250,000",
-  "B1_half_year_bands": "1,000,000",
-  "E1_30_day_bands": "1,250,000",
-  "E2_bands_30_90_180_365": "1,250,000",
-  "E3_bands_90_180_365": "1,250,000",
-  "E4_quarter_bands": "1,250,000",
-  "E5_bands_120_365": "1,250,000",
-  "P1_pooled_lag_share_x_class_rate": "1,250,000",
-  "P2_all_classes_pooled": "1,250,000",
-  "P3_pooled_band_severity_x_class_counts": "1,250,000",
-  "R0_mature_year": "13,000,000",
-  "R2_full_year_share_prorated": "1,750,000",
-  "R2b_same_year_prorated": "1,750,000",
-  "R3_window_length_filter": "2,000,000"
- }
+ "checks": 245
 }

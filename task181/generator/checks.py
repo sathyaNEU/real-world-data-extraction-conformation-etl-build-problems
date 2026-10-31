@@ -1,426 +1,257 @@
-"""task181's assertions, run on the cut pack after build.py: the three rules (R1 to R3c), every semantic
-fork row, the routes and their margins, the shock sorts, separation, the asks' stops and bins, the input
-gates, the documents read back with positive controls, and the realism sweep.
+"""Assertions on the cut pack: the call, every route the ladder prices, the fork rows, the asks' devices, the
+separation of the asks from the call, and the input gates.
 
     python3 task181/generator/checks.py
 """
-import csv
 import datetime as dt
 import json
 import os
 import re
 import sys
-from collections import Counter
-
-import numpy as np
-import pdfplumber
-from openpyxl import load_workbook
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as B  # noqa: E402
-import ceiling as CE  # noqa: E402
-import design as D  # noqa: E402
-import reader as RD  # noqa: E402
-import routes as R  # noqa: E402
-import world as Wd  # noqa: E402
-from common import TARGET, TRIGGER, mw_of  # noqa: E402
+import common as C   # noqa: E402
+import solve as S    # noqa: E402
 
-RESULTS = []
-GOLD_NAMES = {"San Roque", "Bagumbayan", "Maligaya"}
-BESIDE = ["Tabing-Ilog", "Pulong Bayabas", "Malinta", "Kanluran", "Burol", "Silangan"]
-DEFAULT_NAMES = GOLD_NAMES - {"San Roque"} | set(BESIDE)
+GOLD = ["GS-16", "GS-21"]
+DEFAULT = ["GS-05", "GS-12", "GS-16", "GS-21"]
+FAILS = []
+N = [0]
 
 
 def check(label, ok, detail=""):
-    RESULTS.append((label, bool(ok), detail))
+    N[0] += 1
+    print(("PASS  " if ok else "FAIL  ") + label + ("" if ok else "   " + str(detail)))
+    if not ok:
+        FAILS.append(label)
 
 
-def p(k):
-    return os.path.join(TARGET, B.FILES[k])
+def margins(table, gold):
+    m_in = min(table[c]["observed"] - table[c]["limit"] for c in gold)
+    m_out = min(table[c]["limit"] - table[c]["observed"] for c in table if c not in gold)
+    return m_in, m_out
 
 
-# ------------------------------------------------------------------ variant readings of the line list
-def cases_variant(rows, canon, merge=True, other_towns=False, not_a_case=False, week_by="onset", drop_blank=False,
-                  split=True, latest=True, drop_travel=False):
-    pick = {}
-    for r in rows:
-        if latest or r["case_no"] not in pick:
-            pick[r["case_no"]] = r
-    out = []
-    for no, r in pick.items():
-        if r["case_classification"] in ("Not a case", "X") and not not_a_case:
-            continue
-        town = r["city_municipality"].strip()
-        b = RD.norm(r["barangay"])
-        if town != "Dalisay City":
-            if not other_towns or b not in canon:
-                continue
-        if b not in canon:
-            raise KeyError(r["barangay"])
-        if drop_travel and r["travel_14d"] == "Y":
-            continue
-        name = canon[b]
-        pk = RD.purok_no(r["street_purok"])
-        if split and name == "Santo Tomas" and pk is not None and pk >= 5:
-            name = "Santo Tomas Norte"
-        onset = RD.parse_date(r["date_onset"])
-        if onset is None and drop_blank:
-            continue
-        d = onset or RD.parse_date(r["date_consult"])
-        if week_by == "consult":
-            d = RD.parse_date(r["date_consult"])
-        out.append({"case_no": no, "barangay": name, "age": int(r["age_years"]), "onset": d,
-                    "initials": r["patient_initials"], "sex": r["sex"], "reported": RD.parse_date(r["date_reported"]),
-                    "onset_key": onset or RD.parse_date(r["date_consult"])})
-    if merge:
-        seen, kept = set(), []
-        for c in sorted(out, key=lambda c: (c["reported"], c["case_no"])):
-            k = (c["initials"], c["sex"], c["age"], c["barangay"], c["onset_key"])
-            if k in seen:
-                continue
-            seen.add(k)
-            kept.append(c)
-        out = kept
-    return out
-
-
-def iso_aggregates(cases, names):
-    idx = {n: k for k, n in enumerate(names)}
-    res = np.zeros((len(names), 3))
-    hist = np.zeros((len(names), 3))
-    for c in cases:
-        y, w, _ = c["onset"].isocalendar()
-        i = idx[c["barangay"]]
-        if y == 2027 and 37 <= w <= 40:
-            res[i, RD.band(c["age"])] += 1
-        if y <= 2026:
-            hist[i, RD.band(c["age"])] += 1
-    return res, hist
-
-
-def sets_of(res, hist, L):
-    pop, emp, W, names = L["pop"], L["emp"], L["W"], L["names"]
+def period_adjusted(P, inf, repair):
+    """Rung 1: the expectation scaled for the department's own rise after the repair date (the period effect)."""
+    win = P[(P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+    post = win["knife"] >= repair
+    f = (sum(i in inf for i in win.index[post]) / win["expected"][post].sum()) / \
+        (sum(i in inf for i in win.index[~post]) / win["expected"][~post].sum())
     out = {}
-    for k, f in list(R.ROUTES_STEP.items()) + list(R.ROUTES_EASY.items()):
-        out[k] = {names[i] for i in R.flagged(f(res, hist, pop, emp, W))}
+    for c in C.CONSULTANTS:
+        w = win[win["consultant"] == c]
+        pp = w["knife"] >= repair
+        e = float(w["expected"][~pp].sum() + w["expected"][pp].sum() * f)
+        o = int(sum(i in inf for i in w.index))
+        out[c] = dict(expected=e, observed=o, limit=C.poisson_upper(e))
+    return out, f
+
+
+def session_adjusted(P, inf, D):
+    """Rung 2: afternoon-list procedures carry their own department rate (a visible attribute of the operation)."""
+    ops = D["ops"].set_index("booking_no")
+    win = P[(P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+    pm = win["session"] == "PM"
+    f = (sum(i in inf for i in win.index[pm]) / win["expected"][pm].sum()) / \
+        (sum(i in inf for i in win.index[~pm]) / win["expected"][~pm].sum())
+    out = {}
+    for c in C.CONSULTANTS:
+        w = win[win["consultant"] == c]
+        p = w["session"] == "PM"
+        e = float(w["expected"][~p].sum() + w["expected"][p].sum() * f)
+        out[c] = dict(expected=e, observed=int(sum(i in inf for i in w.index)), limit=C.poisson_upper(e))
+    return out, f
+
+
+def own_history(P, inf):
+    """A consultant judged against their own 2022 to 2026 ratio of observed to expected."""
+    out = {}
+    for c in C.CONSULTANTS:
+        h = P[(P["consultant"] == c) & (P["knife"].dt.year <= 2026)]
+        ratio = sum(i in inf for i in h.index) / h["expected"].sum()
+        w = P[(P["consultant"] == c) & (P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+        e = float(w["expected"].sum() * ratio)
+        out[c] = dict(expected=e, observed=int(sum(i in inf for i in w.index)), limit=C.poisson_upper(e))
     return out
 
 
 def main():
-    L = RD.load()
-    names, res, hist, pop, emp, W = L["names"], L["res"], L["hist"], L["pop"], L["emp"], L["W"]
-    canon = {RD.norm(n): n for n in names}
-    rows = L["rows"]
+    R = S.solve()
+    D, P, inf, exposed, rep = R["D"], R["P"], R["inf"], R["exposed"], R["repair"]
     fig = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
-
-    # ---------------- R1: the field's raw material ships, the deciding quantity does not
-    headers = {}
-    for k, fn in B.FILES.items():
-        if fn.endswith(".csv"):
-            with open(p(k), encoding="utf-8") as f:
-                headers[k] = next(csv.reader(f))
-    banned = re.compile(r"infect|acquir|workplace|place_of|exposure|commut", re.I)
-    check("R1 no column of any csv holds a place of infection or a workplace",
-          not any(banned.search(h) for hs in headers.values() for h in hs), str(headers.get("line_list")))
-    check("R1 the line list carries each case's age and home barangay at case grain",
-          {"age_years", "barangay", "date_onset"} <= set(headers["line_list"]))
-    wb = load_workbook(p("cbms"), read_only=True)
-    check("R1 the CBMS workbook carries the place-of-work table at barangay grain", "Table 4" in wb.sheetnames)
-    check("R1 the golden's decisive computation reads the case rows and Table 4",
-          res.sum() > 600 and W[:, :len(names)].sum() > 0)
-
-    # ---------------- the routes on the cut pack
-    sets = sets_of(res, hist, L)
-    for k in R.ROUTES_STEP:
-        c = R.ROUTES_STEP[k](res, hist, pop, emp, W)
-        mi, mo = R.margins(c, {names.index(n) for n in GOLD_NAMES})
-        need = 3.5 if k == "fractional_0.5" else 6.0
-        check("route %s files the golden with margins (inside %.1f, outside %.1f)" % (k, mi, mo),
-              sets[k] == GOLD_NAMES and mi >= 12 and mo >= need)
-    check("R3a the default path (home address) files the eight", sets["residence"] == DEFAULT_NAMES,
-          str(sorted(sets["residence"])))
-    check("R3a the default path's answer is not the golden", sets["residence"] != GOLD_NAMES)
-    check("rung 2 the home-transmission marker files the two outbreaks alone",
-          sets["local_marker"] == {"Bagumbayan", "Maligaya"}, str(sorted(sets["local_marker"])))
-    # R3b: the default path with only the decisive step changed
-    rows_ = cases_variant(rows, canon)
-    r0, h0 = RD.aggregates(rows_, names)
-    check("R3b the default's cleaning with only the placement changed files the golden",
-          {names[i] for i in R.flagged(R.fractional(r0, h0, pop, emp, W, 0.6))} == GOLD_NAMES)
-    rt = cases_variant(rows, canon, drop_travel=True)
-    r1, h1 = RD.aggregates(rt, names)
-    check("R3b rung 1 (travellers out) alone leaves the default's answer",
-          {names[i] for i in R.flagged(R.residence(r1, h1, pop, emp, W))} == DEFAULT_NAMES)
-
-    # R3a on the clean truth (the generator's world before any mess)
-    cases, tables, rates = Wd.simulate_cases(B.WORLD_SEED)
-    people = Wd.assign_attributes(cases, B.WORLD_SEED)
-    ev = D.evaluate(people, tables)
-    check("R3a on the clean truth: the design holds (every placement golden, easy routes off it, no shock interval)",
-          not ev["fails"], str(ev["fails"][:3]))
-    tr_res, tr_place = ev["res"], ev["place"]
-    check("R3a on the clean truth: the true place-of-infection set is the golden",
-          {Wd.NAMES[i] for i in R.flagged(tr_place)} == GOLD_NAMES)
-    check("R3a on the clean truth: the home-address count misses San Roque",
-          tr_res[Wd.SR].sum() < TRIGGER and tr_place[Wd.SR] > TRIGGER)
-
-    # ---------------- R2: each Layer 1 item mishandled leaves the call
-    variants = {
-        "re-notified patients counted twice (SF2)": dict(merge=False),
-        "other towns' residents kept at same-named barangays (SF3)": dict(other_towns=True),
-        "classification by the first row, not the latest (axis 5)": dict(latest=False),
-        "blank onsets dropped (SF5)": dict(drop_blank=True),
-        "Santo Tomas Puroks 5 to 8 left under Santo Tomas (SF10)": dict(split=False),
-        "travellers set aside (SF9)": dict(drop_travel=True),
-        "cases dated by consultation week (SF4)": dict(week_by="consult"),
-    }
-    for label, kw in variants.items():
-        cs = cases_variant(rows, canon, **kw)
-        rr, hh = RD.aggregates(cs, names)
-        st = sets_of(rr, hh, L)
-        # the golden method and every member from a 0.6 share up; the half share is the family's weakest
-        # member and is asserted on the plan's own readings above
-        members = [k for k in R.ROUTES_STEP if k != "fractional_0.5"]
-        ok = all(st[k] == GOLD_NAMES for k in members) and st["residence"] != GOLD_NAMES
-        check("R2 %s: the inversion, the excess spread and every share from 0.6 still file the golden" % label, ok,
-              str({k: sorted(v) for k, v in st.items() if v != GOLD_NAMES and k in members}))
-    cs = cases_variant(rows, canon, not_a_case=True)
-    rr, hh = RD.aggregates(cs, names)
-    st = sets_of(rr, hh, L)
-    check("SF1 Not a case counted as cases: the placements still file the golden (the plan rules it out anyway)",
-          all(st[k] == GOLD_NAMES for k in R.ROUTES_STEP))
-    ri, hi_ = iso_aggregates(rows_, names)
-    st = sets_of(ri, hi_, L)
-    check("SF7 ISO weeks instead of the plan's calendar: same call", all(st[k] == GOLD_NAMES for k in R.ROUTES_STEP))
-
-    # ---------------- the fork rows that close by convergence
-    for k in R.ROUTES_STEP:
-        c = R.ROUTES_STEP[k](res, hist, pop, emp, W)
-        if np.any(np.abs(c - TRIGGER) < 1.0):
-            break
-    else:
-        k = None
-    check("SF8 no barangay sits within one case of 40 under any placement (at least 40 and over 40 agree)", k is None)
-    plan_txt = _pdf_text(p("plan"))
-    check("SF11 the plan counts where cases were infected (4.3) and calls the line list's cases the city's residents (4.1)",
-          "were infected in that barangay" in plan_txt and "dengue cases among the city's residents" in plan_txt)
-    check("SF12 the outside-city column kept or dropped: same call",
-          sets["fractional_0.6_outside_dropped"] == GOLD_NAMES and sets["fractional_1.0_outside_dropped"] == GOLD_NAMES)
-    check("SF13 a working resident's share at work from a half to all of it: same call",
-          all(sets["fractional_%s" % s] == GOLD_NAMES for s in ("0.5", "0.6", "0.7", "0.8", "1.0")))
-    # SF14: working age 20 to 64 rather than 15 to 64
-    res2 = np.zeros_like(res)
-    hist2 = np.zeros_like(hist)
-    idx = {n: k for k, n in enumerate(names)}
-    for c in rows_:
-        y, w = mw_of(c["onset"])
-        b2 = 0 if c["age"] < 20 else (1 if c["age"] < 65 else 2)
-        if y == 2027 and 37 <= w <= 40:
-            res2[idx[c["barangay"]], b2] += 1
-        if y <= 2026:
-            hist2[idx[c["barangay"]], b2] += 1
-    wbk = load_workbook(p("cbms"), data_only=True)["Table 1"]
-    pop2 = []
-    for row in wbk.iter_rows(min_row=6, values_only=True):
-        if row[0] == "Dalisay City":
-            break
-        if row[0] and row[1] is not None:
-            a = [0 if v in (None, "-") else int(v) for v in row[2:16]]
-            pop2.append([sum(a[0:4]), sum(a[4:13]), a[13]])
-    pop2 = np.array(pop2, dtype=float)
-    st = {k: {names[i] for i in R.flagged(f(res2, hist2, pop2, emp, W))} for k, f in R.ROUTES_STEP.items()}
-    check("SF14 working age from 20 rather than 15: same call", all(v == GOLD_NAMES for v in st.values()),
-          str({k: sorted(v) for k, v in st.items() if v != GOLD_NAMES}))
-    # SF15: the history behind the usual age mix taken from the same weeks only
-    hist3 = np.zeros_like(hist)
-    for c in rows_:
-        y, w = mw_of(c["onset"])
-        if y <= 2026 and 37 <= w <= 40:
-            hist3[idx[c["barangay"]], RD.band(c["age"])] += 1
-    check("SF15 the usual age mix from weeks 37 to 40 of 2022 to 2026 only: same call",
-          {names[i] for i in R.flagged(R.excess_spread(res, hist3, pop, emp, W))} == GOLD_NAMES and
-          {names[i] for i in R.flagged(R.inversion(res, hist3, pop, emp, W))} == GOLD_NAMES)
-    latest = {}
-    for r in rows:
-        latest[r["case_no"]] = r
-    sus = [c for c in rows_ if latest[c["case_no"]]["case_classification"] in ("Suspect", "S")
-           and mw_of(c["onset"])[0] == 2027 and 37 <= mw_of(c["onset"])[1] <= 40]
-    check("SF16 the window's unclassified suspects are counted, as plan 4.1 counts every notification not classified "
-          "Not a case (%d of them)" % len(sus), len(sus) > 0 and sum(res.sum(1)) == len([c for c in rows_ if mw_of(c["onset"])[0] == 2027 and 37 <= mw_of(c["onset"])[1] <= 40]))
-    check("SF6 the export holds no report after 10 October 2027",
-          max(RD.parse_date(r["date_reported"]) for r in rows) <= dt.date(2027, 10, 10))
-
-    # ---------------- shock: the golden set is not an interval of any sort
-    tot = res.sum(1)
-    gidx = {names.index(n) for n in GOLD_NAMES}
-    prev, _ = RD.aggregates(rows_, names, weeks=(33, 36))
-    sorts = {"home-address count": tot, "rate per resident": tot / pop.sum(1),
-             "working-age share": res[:, 1] / np.maximum(tot, 1), "growth on weeks 33 to 36": (tot + 1) / (prev.sum(1) + 1),
-             "children's cases": res[:, 0]}
-    for nm, v in sorts.items():
-        check("shock: the golden set is not an interval of the %s" % nm,
-              not D.is_interval(v, gidx) and not D.is_interval(-np.asarray(v, dtype=float), gidx))
-
-    # ---------------- separation: the ask files are not the call's, the call's files cannot rebuild the asks
-    check("separation: the line list cannot rebuild ask A (admissions by hospital and week)",
-          _linelist_admissions(rows) != (fig["dmc_admissions"], fig["ddh_admissions"]))
-    src = open(os.path.join(HERE, "reader.py"), encoding="utf-8").read()
-    opened = [fn for fn in B.FILES.values() if fn in src]
-    check("separation: the call's reader opens only the line list and the CBMS workbook, never an ask file",
-          sorted(opened) == sorted([B.FILES["line_list"], B.FILES["cbms"]]), str(opened))
-
-    # ---------------- the asks: golden equals the generator's truth, every wrong stop misses
-    gd, go, gl, gb = CE.gold()
-    check("ask A golden equals the figures (DMC)", {str(k): v for k, v in gd.items()} == fig["dmc_admissions"])
-    check("ask A golden equals the figures (DDH)", {str(k): v for k, v in go.items()} == fig["ddh_admissions"])
-    seg = CE.dmc_by_segment()
-    once = CE.dmc_by_patient()
-    check("ask A DMC: every segment an admission misses every week", all(seg[w] != gd[w] for w in gd))
-    check("ask A DMC: a patient once by hospital number misses most weeks", sum(once[w] != gd[w] for w in gd) >= 5)
-    ddh_all = CE.ddh_all_by_date()
-    check("ask A DDH: every row by its date misses most weeks", sum(ddh_all[w] != go[w] for w in go) >= 6)
-    bh = [b for b in gl if b in __import__("asks").TEAM_B]
-    lv = CE.larval(False)
-    check("ask B BHW: houses by number across puroks miss every barangay", all(abs(lv[b] - gl[b]) >= 0.05 for b in bh))
-    check("ask B golden equals the figures", gl == fig["house_index"])
-    lab0 = CE.lab(True, False)
-    check("ask C IgM: first positive by laboratory reference misses every week",
-          all(lab0[("IgM", w)] != gb[("IgM", w)] for w in CE.LW))
-    lab1 = CE.lab(False, True)
-    check("ask C NS1: rejected runs left in miss at least four weeks", sum(lab1[("NS1", w)] != gb[("NS1", w)] for w in CE.LW) >= 4)
-    # bins: house indices away from their rounding edges
-    raw = _larval_raw()
-    edge = min(0.05 - abs(v - round(v, 1)) for v in raw.values())
-    check("bins: every house index at least 0.005 from a rounding edge (tightest %.4f)" % edge, edge >= 0.005)
-    pc, ml, kept, n = _ceiling_quiet()
-    check("ask layer: pair ceiling at or under 60 (%.1f) and mirror leakage under 50 per cent (%.1f)" % (pc, ml),
-          pc <= 60 and ml < 50)
-
+    # ---------------- the call
+    check("call: the golden refers %s" % ", ".join(GOLD), S.referred(R["gold"]) == GOLD, S.referred(R["gold"]))
+    check("call: figures.json carries the same set", fig["call"]["referred"] == GOLD, fig["call"])
+    mi, mo = margins(R["gold"], GOLD)
+    check("call: the golden's margins (inside %d, outside %d) are at least 4 counts" % (mi, mo), mi >= 4 and mo >= 4)
+    check("default path (R0, the raw ratio against the limit) refers %s" % ", ".join(DEFAULT),
+          S.referred(R["naive"]) == DEFAULT, S.referred(R["naive"]))
+    mi0, mo0 = margins(R["naive"], DEFAULT)
+    check("default path's margins (inside %d, outside %d) are at least 4" % (mi0, mo0), mi0 >= 4 and mo0 >= 4)
+    check("SF3 stratified by exposure (expected times the exposed ratio %.2f): same call" % R["rr"][0],
+          S.referred(R["strat"]) == GOLD, S.referred(R["strat"]))
+    ms = margins(R["strat"], GOLD)
+    check("SF3 the stratified route's margins (%d, %d) are at least 4" % ms, min(ms) >= 4)
+    check("the exposure carries several times the risk (ratio %.2f on %d operations)" % (R["rr"][0], R["rr"][1]),
+          R["rr"][0] > 2.5 and R["rr"][1] > 150)
+    check("every window procedure is traced to its theatre scans", len(R["linked"]) ==
+          int(((P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)).sum()), len(R["linked"]))
+    # ---------------- the ladder's other rungs
+    pa, f = period_adjusted(P, inf, rep)
+    check("R1 the department's own rise after the repair taken out (factor %.2f) files another set (%s)" %
+          (f, ", ".join(S.referred(pa)) or "none"), S.referred(pa) != GOLD, S.referred(pa))
+    sa, g = session_adjusted(P, inf, D)
+    check("R2 afternoon lists given their own rate (factor %.2f) files another set" % g, S.referred(sa) != GOLD,
+          S.referred(sa))
+    oh = own_history(P, inf)
+    check("R2b each consultant against their own 2022 to 2026 ratio files another set", S.referred(oh) != GOLD,
+          S.referred(oh))
+    pre = P[(P["day"] >= C.WIN0) & (P["knife"] < rep)]
+    pre_tab = {}
+    for c in C.CONSULTANTS:
+        w = pre[pre["consultant"] == c]
+        e = float(w["expected"].sum())
+        pre_tab[c] = dict(expected=e, observed=int(sum(i in inf for i in w.index)), limit=C.poisson_upper(e))
+    check("the window before the repair alone (six weeks) does not file the golden", S.referred(pre_tab) != GOLD,
+          S.referred(pre_tab))
+    # ---------------- fork rows
+    ex_tray, _ = S.trace(D, P, rep, rule="tray")
+    t2 = S.consultant_table(P, inf, ex_tray, "exclude")
+    check("SF2 exposure read on rigid containers only: same call", S.referred(t2) == GOLD, S.referred(t2))
+    ex_all, _ = S.trace(D, P, rep, rule="s3_all")
+    t3 = S.consultant_table(P, inf, ex_all, "exclude")
+    check("SF2 exposure read on every steriliser 3 load of the year: same call", S.referred(t3) == GOLD, S.referred(t3))
+    rep_day = dt.datetime.combine(rep.date(), dt.time(0, 0))
+    ex_d, _ = S.trace(D, P, rep_day)
+    check("SF11 the repair taken from the start of 12 May: same call",
+          S.referred(S.consultant_table(P, inf, ex_d, "exclude")) == GOLD)
+    q95 = lambda tab: sorted(c for c, v in tab.items() if v["observed"] > C.poisson_upper(v["expected"], 0.95))
+    check("SF4 the limit read as the 95th centile: same call and default", q95(R["gold"]) == GOLD and
+          q95(R["naive"]) == DEFAULT, (q95(R["gold"]), q95(R["naive"])))
+    # duration from anaesthetic start to leaving theatre
+    P2 = P.copy()
+    P2["minutes"] = (pd_to(P2["out_of_theatre"]) - P2["anaes"]).dt.total_seconds() / 60
+    P2["idx"] = [C.risk_index(int(a), {"Clean": 1, "Clean-contaminated": 2, "Contaminated": 3, "Dirty": 4}[w], m, k)
+                 for a, w, m, k in zip(P2["asa_class"], P2["wound_class"], P2["minutes"], P2["surveillance_category"])]
+    P2["expected"] = [C.expected_rate(k, i) for k, i in zip(P2["surveillance_category"], P2["idx"])]
+    t5 = S.consultant_table(P2, inf, exposed, "exclude")
+    check("SF5 duration read from anaesthetic start to leaving theatre: same call", S.referred(t5) == GOLD,
+          S.referred(t5))
+    inf30 = S.infections(D, P, window=False)
+    check("SF8 every infection kept whatever its day: same call",
+          S.referred(S.consultant_table(P, inf30, exposed, "exclude")) == GOLD)
+    Pr = S.procedures(D, drop_returns=False)
+    infr = S.infections(D, Pr)
+    exr, _ = S.trace(D, Pr, rep)
+    check("SF9 returns to theatre kept as procedures: same call",
+          S.referred(S.consultant_table(Pr, infr, exr, "exclude")) == GOLD)
+    Ps = S.procedures(D, seq1=False)
+    infs = S.infections(D, Ps)
+    exs, _ = S.trace(D, Ps, rep)
+    check("SF10 an add-on's second line kept as a procedure: same call",
+          S.referred(S.consultant_table(Ps, infs, exs, "exclude")) == GOLD)
+    Pb = P.copy()
+    ops = D["ops"].drop_duplicates("booking_no").set_index("booking_no")
+    Pb["consultant"] = [S.CODE_MAP.get(ops.loc[b, "booked_consultant"], ops.loc[b, "booked_consultant"])
+                        for b in Pb["booking_no"]]
+    check("SF14 the booked consultant in place of the responsible one: same call",
+          S.referred(S.consultant_table(Pb, inf, exposed, "exclude")) == GOLD,
+          S.referred(S.consultant_table(Pb, inf, exposed, "exclude")))
+    check("SF1 the raw ratio read as each consultant's own practice files the default path's four",
+          S.referred(R["naive"]) == DEFAULT and S.referred(R["naive"]) != GOLD)
+    P6 = P.copy()
+    P6["idx"] = [int(int(a) >= 3) + int({"Clean": 1, "Clean-contaminated": 2, "Contaminated": 3, "Dirty": 4}[w] >= 3)
+                 + int(m >= C.CUT_MIN[k]) for a, w, m, k in zip(P6["asa_class"], P6["wound_class"], P6["minutes"],
+                                                                P6["surveillance_category"])]
+    P6["expected"] = [C.expected_rate(k, i) for k, i in zip(P6["surveillance_category"], P6["idx"])]
+    check("SF6 a duration at the cut-point taking a point: same call",
+          S.referred(S.consultant_table(P6, inf, exposed, "exclude")) == GOLD)
+    P7 = P.copy()
+    P7["day"] = [dt.date.fromisoformat(x) for x in P7["list_date"]]
+    check("SF7 the window read on the list date: same call",
+          S.referred(S.consultant_table(P7, inf, exposed, "exclude")) == GOLD)
+    ex12, _ = S.trace(D, P, rep, aborted=True)
+    check("SF12 an item's last load read with aborted cycles included: same call",
+          S.referred(S.consultant_table(P, inf, ex12, "exclude")) == GOLD)
+    w27 = D["ops"][(D["ops"]["list_date"] >= "2027-01-01")]
+    check("SF13 no 2027 procedure carries the retired code GS-41",
+          not ((w27["responsible_consultant"] == "GS-41") | (w27["booked_consultant"] == "GS-41")).any())
+    # ---------------- shock: the golden is no interval of any one-number sort
+    win = P[(P["day"] >= C.WIN0) & (P["day"] <= C.WIN1)]
+    sorts = {"raw ratio": {c: R["naive"][c]["observed"] / R["naive"][c]["expected"] for c in C.CONSULTANTS},
+             "infections": {c: R["naive"][c]["observed"] for c in C.CONSULTANTS},
+             "afternoon share": {c: float((win[win["consultant"] == c]["session"] == "PM").mean()) for c in C.CONSULTANTS},
+             "procedures": {c: int((win["consultant"] == c).sum()) for c in C.CONSULTANTS}}
+    for k, v in sorts.items():
+        order = sorted(v, key=lambda c: -v[c])
+        pos = sorted(order.index(c) for c in GOLD)
+        check("shock: the golden is not an interval of the %s sort" % k, pos[1] - pos[0] != 1 or pos[0] not in (0, 8))
+    # ---------------- the asks: devices and separation
+    a, b = R["ask_a"], R["ask_b"]
+    check("ask A figures match figures.json", {k: v for k, v in a.items()} == fig["ask_a"])
+    check("ask B figures match figures.json", {k: v for k, v in b.items()} == fig["ask_b"])
+    pa_raw = S.ask_procedures(S.procedures(D, merge_addons=False))
+    check("ask A device: counting bookings moves at least 20 of 30 cells",
+          sum(pa_raw[k] != a[k] for k in a) >= 20, sum(pa_raw[k] != a[k] for k in a))
+    pa_codes = S.ask_procedures(S.procedures(D, map_codes=False))
+    check("ask A hazard: the 2025 code change unmerged moves GS-14's cells", all(pa_codes["GS-14 %d" % y] != a["GS-14 %d" % y]
+                                                                               for y in (2022, 2023, 2024)))
+    raw_b = cracker_infections(D)
+    check("ask B device: counting the export by its own consultant and date moves at least 20 of 30 cells",
+          sum(raw_b.get(k, 0) != b[k] for k in b) >= 20, sum(raw_b.get(k, 0) != b[k] for k in b))
+    ex_link = S.infections(D, P, link="exact")
+    b_exact = S.ask_infections(P, ex_link)
+    check("ask B device: joining on the recorded date exactly moves cells", sum(b_exact[k] != b[k] for k in b) >= 8,
+          sum(b_exact[k] != b[k] for k in b))
+    # separation: the window's rows carry neither ask device
+    o = D["ops"]
+    w27 = o[o["list_date"] >= "2027-01-01"]
+    dup = w27[w27["status"] == "Completed"].groupby(["ur_number", "theatre", "knife_to_skin"])["booking_no"].nunique()
+    check("separation: no 2027 operation is split across two bookings", int((dup > 1).sum()) == 0, int((dup > 1).sum()))
+    s27 = D["ssi"][D["ssi"]["operation_date"] >= "2025-01-01"]
+    check("separation: every surveillance record from 2025 carries its booking", s27["booking_no"].notna().all())
     # ---------------- input gates
-    files = sorted(os.listdir(TARGET))
-    check("gate: 10 or more files (%d)" % len(files), len(files) >= 10)
-    check("gate: 3 or more formats", len({f.rsplit(".", 1)[1] for f in files}) >= 3)
-    check("gate: one file of 25,000 rows or more (line list %d)" % len(rows), len(rows) >= 25000)
-    meta = json.load(open(os.path.join(os.path.dirname(HERE), "metadata.json"), encoding="utf-8"))
-    check("gate: two or more distractors named in metadata.json", len(meta["distractor_files"]) >= 2)
-    import inspect
-    golden_src = src + open(os.path.join(HERE, "ceiling.py"), encoding="utf-8").read() + "".join(
-        inspect.getsource(f) for f in (B.golden_dmc, B.golden_ddh, B.golden_larval, B.golden_lab, B.dmc_transfers_out))
-    check("gate: no distractor is read by the golden or any ask (and deleting them moves nothing)",
-          not any(('"%s"' % k) in golden_src or B.FILES[k] in golden_src for k in B.DISTRACTORS))
-    check("gate: no file under target/ describes the data", not any(re.search(r"readme|dictionary|manifest|notes|codebook", f, re.I)
-                                                                     for f in files))
-
-    # ---------------- documents read back, with positive controls on the same path
-    plan = _pdf_text(p("plan"))
-    check("plan: positive control, the trigger sentence is read", "40 or more of those cases were infected in that barangay" in plan)
-    check("plan: positive control, the house index definition is read", "larvae or pupae were found in at least one container" in plan)
-    check("plan: names no workplace, travel, biting hours or place-of-work table",
-          not re.search(r"workplace|place of work|commut|bite|biting|daytime|daylight|estate", plan, re.I))
-    bull = _pdf_text(p("bulletin"))
-    check("bulletin: positive control read, and it carries no barangay", "Dalisay City" in bull and
-          not any(n in bull for n in BESIDE + ["San Roque", "Bagumbayan", "Maligaya"]))
-
-    # ---------------- the goldens read back
-    gb_txt = _pdf_text(os.path.join(B.GOLDEN, "dengue_hotspots_mw41_44_2027.pdf"))
-    check("golden brief: positive control, the decision sentence is read",
-          "Send the hotspot response to San Roque, Bagumbayan and Maligaya" in gb_txt)
-    gcsv = list(csv.DictReader(open(os.path.join(B.GOLDEN, "response_figures_2027.csv"), encoding="utf-8")))
-    check("golden csv: 40 figures, each equal to figures.json", len(gcsv) == 40 and all(
-        (fig["dmc_admissions"] if r["item"] == "Dalisay Medical Center" else fig["ddh_admissions"])[r["morbidity_week"]] == int(r["value"])
-        for r in gcsv if r["figure"] == "dengue_admissions"))
-
-    # ---------------- realism sweep
-    hn = sorted({int(r["hospital_no"]) for r in csv.DictReader(open(p("dmc"), encoding="utf-8"))})
-    check("realism: DMC hospital numbers are not an arithmetic sequence", len(set(np.diff(hn))) > 5)
-    sp = sorted(int(r["specimen_id"][2:]) for r in csv.DictReader(open(p("lab"), encoding="utf-8")))
-    check("realism: specimen numbers are not an arithmetic sequence", len(set(np.diff(sorted(set(sp))))) > 2)
-    weekly = Counter((mw_of(c["onset"])) for c in rows_)
-    check("realism: no two morbidity weeks share an identical count across the whole 2027 season run",
-          len({weekly[(2027, w)] for w in range(28, 41)}) >= 9)
-    check("realism: the CBMS city totals are not round", int(pop.sum()) % 100 != 0)
-    order_codes = [r["barangay"] for r in csv.DictReader(open(p("register"), encoding="utf-8"))]
-    check("realism: the register's code order is not the alphabet", order_codes != sorted(order_codes))
-
-    bad = [r for r in RESULTS if not r[1]]
-    for label, ok, detail in RESULTS:
-        print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  [" + detail + "]") if (detail and not ok) else ""))
-    print("%d of %d checks pass" % (len(RESULTS) - len(bad), len(RESULTS)))
-    return 1 if bad else 0
+    files = sorted(os.listdir(C.TARGET))
+    exts = {f.rsplit(".", 1)[1] for f in files}
+    check("input: 10 or more files (%d)" % len(files), len(files) >= 10)
+    check("input: 3 or more formats (%s)" % ", ".join(sorted(exts)), len(exts) >= 3)
+    big = max(sum(1 for _ in open(os.path.join(C.TARGET, f), encoding="utf-8")) for f in files if f.endswith(".csv"))
+    check("input: a file of 25,000 or more rows (%d)" % big, big >= 25000)
+    meta = json.load(open(os.path.join(C.TASK, "metadata.json"), encoding="utf-8"))
+    check("input: two or more distractors named in metadata.json", len(meta.get("distractors", [])) >= 2)
+    names = " ".join(files).lower()
+    check("input: no file name labels a distractor or the step", not re.search(r"distract|decoy|fault|exposure|trace",
+                                                                             names))
+    zp = os.path.join(C.TASK, "target.zip")
+    if os.path.exists(zp):
+        check("target.zip holds exactly target/", sorted(zipfile.ZipFile(zp).namelist()) == files)
+    print("%d checks, %d failed" % (N[0], len(FAILS)))
+    return 1 if FAILS else 0
 
 
-def _linelist_admissions(rows):
-    c = {"Dalisay Medical Center": Counter(), "Dalisay Doctors' Hospital": Counter()}
-    for r in rows:
-        if r["admitted"] == "Y" and r["report_status"] == "New" and r["reporting_unit"] in c:
-            d = RD.parse_date(r["date_admitted"]) or RD.parse_date(r["date_consult"])
-            y, w = mw_of(d)
-            if y == 2027 and 33 <= w <= 40:
-                c[r["reporting_unit"]][w] += 1
-    return ({str(w): c["Dalisay Medical Center"][w] for w in range(33, 41)},
-            {str(w): c["Dalisay Doctors' Hospital"][w] for w in range(33, 41)})
+def pd_to(series):
+    import pandas as pd
+    return pd.to_datetime(series)
 
 
-def _larval_raw():
-    rows = list(csv.DictReader(open(p("larval"), encoding="utf-8")))
-    houses = {}
-    for r in rows:
-        key = (r["barangay"], r["purok"], r["household_code"])
-        pos = (r["larvae"] == "Y" or r["pupae"] == "Y") if r["team"] == "VCU" else int(r["containers_positive"] or 0) > 0
-        houses[key] = houses.get(key, False) or pos
+def cracker_infections(D):
+    """The careful solver's reading of the export: latest record, confirmed, its own consultant code and date."""
+    s = D["ssi"].copy()
+    s["record_version"] = s["record_version"].astype(int)
+    s = s.sort_values(["infection_id", "record_version"]).drop_duplicates("infection_id", keep="last")
+    s = s[s["status"] == "Confirmed"]
+    s = s.drop_duplicates(["ur_number", "operation_date", "surveillance_category"])
     out = {}
-    for b in sorted(set(k[0] for k in houses)):
-        hs = [v for k, v in houses.items() if k[0] == b]
-        out[b] = 100.0 * sum(hs) / len(hs)
+    for c, d in zip(s["consultant_code"], s["operation_date"]):
+        c = S.CODE_MAP.get(c, c)
+        y = int(d[:4])
+        if 2022 <= y <= 2024:
+            out["%s %d" % (c, y)] = out.get("%s %d" % (c, y), 0) + 1
     return out
 
 
-def _ceiling_quiet():
-    import contextlib
-    import io
-    with contextlib.redirect_stdout(io.StringIO()):
-        return CE.main()
-
-
-def _pdf_text(path):
-    with pdfplumber.open(path) as pdf:
-        text = " ".join((pg.extract_text() or "") for pg in pdf.pages)
-    return re.sub(r"\s+", " ", text)
-
-
-def note_figures():
-    """The design note's derived figures, printed from the cut pack (no assertion, so the check count is unchanged)."""
-    L = RD.load()
-    names, res, hist, pop, emp, W = L["names"], L["res"], L["hist"], L["pop"], L["emp"], L["W"]
-    six = [names.index(n) for n in ("Tabing-Ilog", "Pulong Bayabas", "Malinta", "Kanluran", "Burol", "Silangan")]
-    sr = names.index("San Roque")
-    gold = {names.index(n) for n in GOLD_NAMES}
-    tot = res.sum(1)
-    over = sorted((i for i in range(len(names)) if tot[i] >= TRIGGER), key=lambda i: -tot[i])
-    print("note: by home address %d barangays at %d or more (%d to %d): %s; the six beside the estate %d to %d" % (
-        len(over), TRIGGER, min(tot[over]), max(tot[over]), ", ".join(names[i] for i in over),
-        min(tot[six]), max(tot[six])))
-    fam = {k: f(res, hist, pop, emp, W) for k, f in R.ROUTES_STEP.items()}
-    for k, c in fam.items():
-        lo = min(gold, key=lambda i: c[i])
-        hi = max((i for i in range(len(names)) if i not in gold), key=lambda i: c[i])
-        print("note: %-31s San Roque %.1f; lowest in %s %.1f; highest out %s %.1f" % (
-            k, c[sr], names[lo], c[lo], names[hi], c[hi]))
-    print("note: across the step family San Roque %.1f to %.1f, the six %.1f to %.1f" % (
-        min(c[sr] for c in fam.values()), max(c[sr] for c in fam.values()),
-        min(c[i] for c in fam.values() for i in six), max(c[i] for c in fam.values() for i in six)))
-    print("note: the six's window cases aged 0 to 14 run %d to %d, aged 15 to 64 %d to %d" % (
-        res[six, 0].min(), res[six, 0].max(), res[six, 1].min(), res[six, 1].max()))
-    send = sorted((i for i in range(len(names)) if i != sr), key=lambda i: -emp[i] * W[i, sr])[:7]
-    print("note: the barangays sending the most employed residents to San Roque (CBMS Tables 3 and 4): %s" % (
-        ", ".join("%s %d (%.0f per cent)" % (names[i], round(emp[i] * W[i, sr]), 100 * W[i, sr]) for i in send)))
-    ex = R._excess(res, hist)
-    print("note: working-age excess %.0f cases city-wide, %.0f in the six; the six's working-age cases %d, "
-          "Poisson spread %.1f a barangay" % (ex.sum(), ex[six].sum(), res[six, 1].sum(), np.sqrt(res[six, 1].mean())))
-
-
 if __name__ == "__main__":
-    rc = main()
-    note_figures()
-    sys.exit(rc)
+    sys.exit(main())

@@ -1,483 +1,174 @@
-"""The pack's documents: the trust agreement (executed extract), the trustees' funding policy, the 2027 clinician
-staffing plan, Quillan Mutual's two loss runs, the premium history and the data dictionary for the risk management
-extracts."""
-from __future__ import annotations
+"""The governing documents: the 2027 Food Safety Program Plan and the 2026 environmental health fee schedule."""
+import io
 
-import datetime as dt
-
-import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
 from reportlab import rl_config
 
 rl_config.invariant = 1
-from reportlab.lib import colors                                                      # noqa: E402
-from reportlab.lib.pagesizes import LETTER                                            # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                       # noqa: E402
-from reportlab.lib.units import inch                                                  # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
-from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-import common as K   # noqa: E402
+import postprocess as PP
+import world as W
 
-FONT_DIR = "/usr/share/fonts/truetype/liberation/"
-for _n, _f in (("LiberationSerif", "LiberationSerif-Regular.ttf"), ("LiberationSerif-Bold", "LiberationSerif-Bold.ttf"),
-               ("LiberationSerif-Italic", "LiberationSerif-Italic.ttf"),
-               ("LiberationSans", "LiberationSans-Regular.ttf"), ("LiberationSans-Bold", "LiberationSans-Bold.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-SERIF, SERIF_B, SERIF_I, SANS, SANS_B = ("LiberationSerif", "LiberationSerif-Bold", "LiberationSerif-Italic",
-                                         "LiberationSans", "LiberationSans-Bold")
-INK = colors.HexColor("#1b2127")
-GREY = colors.HexColor("#5b636b")
-RULE = colors.HexColor("#97a1ab")
-BODY = ParagraphStyle("body", fontName=SERIF, fontSize=10.4, leading=13.9, textColor=INK, spaceAfter=5)
-CLAUSE = ParagraphStyle("clause", parent=BODY, leftIndent=30, firstLineIndent=-30)
-SUB = ParagraphStyle("sub", parent=BODY, leftIndent=48, firstLineIndent=-18)
-TITLE = ParagraphStyle("title", fontName=SERIF_B, fontSize=15, leading=19, textColor=INK, alignment=1, spaceAfter=3)
-SUBTITLE = ParagraphStyle("subtitle", fontName=SERIF, fontSize=10.5, leading=13.5, textColor=INK, alignment=1,
-                          spaceAfter=12)
-H2 = ParagraphStyle("h2", fontName=SERIF_B, fontSize=11.2, leading=14.5, textColor=INK, spaceBefore=9, spaceAfter=4)
-NOTE = ParagraphStyle("note", fontName=SERIF_I, fontSize=9.2, leading=11.8, textColor=GREY, spaceBefore=2,
-                      spaceAfter=6)
-CELL = ParagraphStyle("cell", fontName=SANS, fontSize=8.3, leading=10.1, textColor=INK)
-CELLB = ParagraphStyle("cellb", parent=CELL, fontName=SANS_B)
+GREEN = colors.HexColor("#1F5E3B")
 
 
-def _frame(left, right):
+def _styles():
+    ss = getSampleStyleSheet()
+    return dict(
+        body=ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=10, leading=13.4, spaceAfter=7),
+        head=ParagraphStyle("h", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+                            spaceBefore=6, spaceAfter=3, textColor=GREEN),
+        title=ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=4),
+        small=ParagraphStyle("s", parent=ss["Normal"], fontName="Helvetica-Oblique", fontSize=8.8, leading=11.5,
+                             spaceAfter=12),
+        lh=ParagraphStyle("lh", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10, leading=12,
+                          textColor=GREEN, alignment=2),
+        lh2=ParagraphStyle("lh2", parent=ss["Normal"], fontName="Helvetica", fontSize=8.5, leading=10.5,
+                           textColor=GREEN, alignment=2, spaceAfter=14),
+        cell=ParagraphStyle("c", parent=ss["Normal"], fontName="Helvetica", fontSize=9, leading=11),
+    )
+
+
+def _footer(text):
     def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFont(SANS, 7.6)
-        canvas.setFillColor(GREY)
-        canvas.drawString(1.0 * inch, 0.58 * inch, left)
-        canvas.drawRightString(LETTER[0] - 1.0 * inch, 0.58 * inch, "%s  |  Page %d" % (right, doc.page))
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(0.9 * inch, 0.6 * inch, text)
+        canvas.drawRightString(letter[0] - 0.9 * inch, 0.6 * inch, "Page %d" % doc.page)
         canvas.restoreState()
     return draw
 
 
-def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=LETTER, leftMargin=1.0 * inch, rightMargin=1.0 * inch,
-                             topMargin=0.85 * inch, bottomMargin=0.9 * inch, title=title, author=author,
-                             subject="", creator="", producer="")
+def _build(path, title, story, foot, stamp, producer):
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch,
+                            topMargin=0.75 * inch, bottomMargin=0.9 * inch, title=title, author=producer,
+                            creator=producer, producer=producer)
+    doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
+    open(path, "wb").write(buf.getvalue())
+    PP.normalize_pdf(path, stamp, producer)
 
 
-def _table(rows, widths, head=1):
-    data = [[Paragraph(str(c), CELLB if i < head else CELL) for c in r] for i, r in enumerate(rows)]
-    t = Table(data, colWidths=widths, repeatRows=head)
-    t.setStyle(TableStyle([("LINEBELOW", (0, head - 1), (-1, head - 1), 0.6, RULE),
-                           ("LINEBELOW", (0, -1), (-1, -1), 0.4, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2.0), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.0),
-                           ("LEFTPADDING", (0, 0), (-1, -1), 3)]))
-    return t
+def plan_paragraphs(insp27):
+    return [
+        ("t", "Food Safety Program Plan 2027"),
+        ("s", "Issued 11 January 2027 by Valerie Wood, Food Safety Program Manager, and approved by Teresa Hansen, "
+              "Environmental Health Director. Supersedes the 2026 plan."),
+        ("h", "1. The program"),
+        ("p", "Elkhorn County Public Health permits and inspects the county's food establishments under the "
+              "Washington State Retail Food Code (chapter 246-215 WAC) and the county's food service code. Each "
+              "permitted establishment receives one, two or three routine inspections a year according to its risk "
+              "category (1, 2 or 3). An establishment that operates for part of the year receives one routine "
+              "inspection, in its operating months."),
+        ("p", "A routine inspection is unsatisfactory when it records 25 red points or more, or when the inspector "
+              "closes the establishment for an imminent health hazard. Every unsatisfactory routine inspection is "
+              "followed by a return inspection."),
+        ("h", "2. Districts and inspectors in 2027"),
+        ("p", "Erik Mayer and Andrew Mason retire on 31 December 2026, and their positions will not be refilled in "
+              "2027. From 1 January 2027 the program inspects in nine districts in place of eleven. The nine "
+              "districts are drawn afresh on drive time from each inspector's base and on the 2027 schedule's "
+              "inspection hours, so that each district carries close to one ninth of the year's routine inspection "
+              "hours. Table 1 names the inspector for each district. The schedule workbook issued with this plan "
+              "lists every permitted establishment, its 2027 district and its routine inspections for 2027."),
+        ("table1", None),
+        ("h", "3. Return inspections"),
+        ("p", "Since February 2022 return inspections have been made by a return team of two officers, one for the "
+              "north districts and one for the south, rather than by the district inspectors. The team's capacity is "
+              "270 return inspections per officer per year, from the 2024 time study."),
+        ("p", "A third return-inspection officer is added for 2027 if the routine inspections in the 2027 schedule "
+              "that will be marked unsatisfactory exceed 540, the two officers' capacity. The forecast counts each "
+              "scheduled routine inspection as the inspector named in Table 1 for its district will make it. The "
+              "decision is taken by 29 January 2027, so that a third officer can start in March."),
+        ("h", "4. Measures the program reports"),
+        ("p", "Return timeliness is the number of county working days from an unsatisfactory routine inspection to "
+              "the first return inspection at which the officer inspects the premises; a return visit that finds the "
+              "premises closed does not end the count. Saturdays, Sundays and county holidays are not working days."),
+        ("p", "Complaint response time is the number of hours from the program's first notice of the conditions a "
+              "complaint reports, by telephone, online form, email or referral, to the inspector's arrival at the "
+              "establishment."),
+        ("p", "Return visit fees are charged under the county's environmental health fee schedule."),
+        ("h", "5. Review"),
+        ("p", "The program reviews the districts at the end of June 2027 against the first half-year's inspection "
+              "hours, and reports the measures in section 4 to the Board of Health each quarter."),
+    ]
 
 
-def long_date(d):
-    return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
+def plan_pdf(path, insp27):
+    st = _styles()
+    story = [Paragraph("Elkhorn County Public Health", st["lh"]),
+             Paragraph("Environmental Health Division, 1120 Courthouse Square, Marlow, WA 98362", st["lh2"])]
+    for kind, text in plan_paragraphs(insp27):
+        if kind == "table1":
+            data = [["District", "Area", "Inspector"]] + [
+                [d, W.DISTRICT_2027_NAME[d], W.full_name(insp27[d])] for d in sorted(insp27)]
+            t = Table(data, colWidths=[0.8 * inch, 3.3 * inch, 2.0 * inch])
+            t.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 9),
+                                   ("FONT", (0, 1), (-1, -1), "Helvetica", 9),
+                                   ("LINEBELOW", (0, 0), (-1, 0), 0.6, GREEN),
+                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
+            story += [Paragraph("Table 1. Districts and inspectors from 1 January 2027", st["cell"]), Spacer(1, 3), t,
+                      Spacer(1, 9)]
+            continue
+        story.append(Paragraph(text, {"t": st["title"], "s": st["small"], "h": st["head"]}.get(kind, st["body"])))
+    _build(path, "Food Safety Program Plan 2027", story,
+           "Elkhorn County Public Health, Food Safety Program Plan 2027, issued 11 January 2027",
+           b"D:20270111094512-08'00'", "Elkhorn County Public Health")
 
 
-def expiring_policy(e):
-    t = K.ENTITIES[e]["transition"]
-    last = t - dt.timedelta(days=1)
-    return K.policy_number(e, last), K.policy_period(e, last)
+FEE_ROWS = [
+    ("Annual food establishment permit, risk category 1", "$295"),
+    ("Annual food establishment permit, risk category 2", "$520"),
+    ("Annual food establishment permit, risk category 3", "$745"),
+    ("Seasonal establishment (operating six months or less), any category", "half the annual fee"),
+    ("Plan review, new or remodeled establishment", "$410"),
+    ("Pre-opening inspection", "$180"),
+    ("Change of ownership, new permit", "$160 plus the annual fee"),
+    ("Temporary food event, per vendor per event", "$95"),
+    ("Late renewal (permit fee unpaid on 1 February)", "$75"),
+]
 
 
-# ------------------------------------------------------------------------------------------------ trust agreement
-def write_agreement(path):
-    doc = _doc(path, "Corvane Professional Liability Trust Agreement", "Corvane Health")
-    s = [Paragraph("CORVANE PROFESSIONAL LIABILITY TRUST", TITLE),
-         Paragraph("Trust Agreement between Corvane Health and the Trustees, executed 14 August 2026<br/>"
-                   "Extract: Articles 1, 2 and 5 and Schedules A and B", SUBTITLE)]
-    s.append(Paragraph("Article 1. Definitions", H2))
-    for no, text in [
-        ("1.1", "<b>System</b> means Corvane Health, an Oregon nonprofit corporation, and the Participating Entities."),
-        ("1.2", "<b>Participating Entity</b> means each entity listed in Schedule A."),
-        ("1.3", "<b>Claim</b> means (a) a written demand against a Covered Clinician for money or services arising "
-                "from a Medical Incident, (b) a request for compensation made through the System's Early Resolution "
-                "Program arising from a Medical Incident, or (c) the service of a civil proceeding against a Covered "
-                "Clinician arising from a Medical Incident. All Claims arising from the same Medical Incident are one "
-                "Claim, first made on the date the earliest of them was made. A Claim is made on the date it is first "
-                "received by the System's Risk Management and Insurance department."),
-        ("1.4", "<b>Medical Incident</b> means an act or omission in the rendering of, or failure to render, "
-                "professional health care services."),
-        ("1.5", "<b>Covered Clinician</b> means a physician or advanced practice clinician employed by a Participating "
-                "Entity in a job listed in Schedule B, while so employed. Residents, fellows and other trainees, and "
-                "clinicians engaged by contract or as locum tenens, are not Covered Clinicians."),
-        ("1.6", "<b>Transition Date</b> and <b>Retroactive Date</b> mean, for each Participating Entity, the date "
-                "shown for it in Schedule A."),
-        ("1.7", "<b>Plan Year</b> means a calendar year. The first Plan Year is 2027."),
-        ("1.8", "<b>Trustees</b> means the board of trustees of the Trust appointed under Article 3."),
-    ]:
-        s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
-    s.append(Paragraph("Article 2. Coverage", H2))
-    for no, text in [
-        ("2.1", "The Trust will pay on behalf of a Covered Clinician the damages and defence costs the Covered "
-                "Clinician becomes legally obligated to pay by reason of a Claim first made against the Covered "
-                "Clinician during a Plan Year, arising from a Medical Incident that occurred on or after the "
-                "Retroactive Date of the Participating Entity that employed the Covered Clinician when the Medical "
-                "Incident occurred."),
-        ("2.2", "A Medical Incident that occurred before a Participating Entity's Transition Date remains insured "
-                "under the occurrence policy in force on the date it occurred. Schedule A lists each Participating "
-                "Entity's expiring policy. The Trust provides no prior acts coverage."),
-        ("2.3", "The Trust's limits are $2,000,000 each Claim and $4,000,000 in the aggregate for each Covered "
-                "Clinician in each Plan Year, defence costs included."),
-        ("2.4", "A Claim first made after the end of a Plan Year is not covered by that Plan Year. The Trust provides "
-                "an extended reporting period only on termination under Article 9."),
-    ]:
-        s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
-    s.append(Paragraph("Article 5. Claims administration", H2))
-    for no, text in [
-        ("5.1", "The System's Risk Management and Insurance department administers Claims for the Trust, keeps the "
-                "claims register and reports to the Trustees each quarter."),
-        ("5.2", "Defence counsel is appointed from the panel the Trustees approve. No settlement above $250,000 is made "
-                "without the consent of the Trustees' claims committee."),
-    ]:
-        s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
-    s.append(Paragraph("Schedule A. Participating Entities", H2))
-    rows = [["Participating Entity", "Code", "Transition Date and Retroactive Date", "Expiring occurrence policy",
-             "Policy period"]]
-    for e in sorted(K.ENTITY_ORDER, key=lambda x: K.ENTITIES[x]["transition"]):
-        ent = K.ENTITIES[e]
-        pol, (a, b) = expiring_policy(e)
-        rows.append([ent["name"], e, long_date(ent["transition"]), "%s, %s" % (K.CARRIERS[ent["carrier"]], pol),
-                     "%s to %s" % (long_date(a), long_date(b))])
-    s.append(_table(rows, [1.35 * inch, 0.45 * inch, 1.2 * inch, 1.85 * inch, 1.65 * inch]))
-    s.append(Paragraph("Each expiring policy is the last term of the entity's annual occurrence programme with its "
-                       "carrier and is not renewed. A policy period ends at 12:01 a.m. on its last date.", NOTE))
-    s.append(Paragraph("Schedule B. Covered jobs and specialty classes", H2))
-    rows = [["Specialty class", "Job code to June 2020", "Job code from July 2020", "Job title"]]
-    for cls in K.CLASSES:
-        for j in K.JOBS:
-            if j[4] == cls:
-                rows.append([K.CLASS_NAME[cls], j[1], j[2], j[3]])
-    s.append(_table(rows, [1.85 * inch, 1.15 * inch, 1.2 * inch, 2.3 * inch]))
-    s.append(Paragraph("Note 1. Jobs not listed are not covered, among them resident physicians (25010, GME-RES), "
-                       "clinical fellows (25020, GME-FEL) and psychologists (32110, BHV-PSY).", NOTE))
-    s.append(Paragraph("Note 2. A Claim takes the specialty class of the first Covered Clinician named in it, by that "
-                       "clinician's job in the month of the Medical Incident.", NOTE))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Executed for Corvane Health by %s, Chief Financial Officer, and for the Trustees by %s, Chair, "
-                       "on 14 August 2026." % (K.PEOPLE["cfo"], K.PEOPLE["chair"]), BODY))
-    frame = _frame("Corvane Professional Liability Trust Agreement (extract)", "Executed 14 August 2026")
-    doc.build(s, onFirstPage=frame, onLaterPages=frame)
+def fee_paragraphs():
+    return [
+        ("t", "Environmental Health Fee Schedule 2026"),
+        ("s", "Adopted by the Board of Health in Resolution 2025-117, effective 1 January 2026, and amended by "
+              "Resolution 2026-048 effective 1 July 2026. Fees are payable to Elkhorn County Public Health."),
+        ("h", "Food establishments"),
+        ("fees", None),
+        ("h", "Return visits"),
+        ("p", "The first return visit after an unsatisfactory routine inspection is included in the annual permit "
+              "fee. Each further return visit for the same routine inspection, whether the inspection is made or the "
+              "premises are found closed, is charged at the rate in force on the day of the visit: $152 for visits "
+              "made up to 30 June 2026 and $168 for visits made on or after 1 July 2026 (Resolution 2026-048)."),
+        ("h", "Payment"),
+        ("p", "Permit fees are invoiced in November for the following calendar year and are due on 31 January. Return "
+              "visit charges are invoiced at the end of the month in which the visit is made and are due in 30 days."),
+    ]
 
 
-# ------------------------------------------------------------------------------------------------ funding policy
-def write_policy(path):
-    doc = _doc(path, "Corvane Professional Liability Trust Funding Policy", "Corvane Professional Liability Trust")
-    s = [Paragraph("CORVANE PROFESSIONAL LIABILITY TRUST", TITLE),
-         Paragraph("Funding Policy, adopted by the Trustees on 22 September 2026", SUBTITLE)]
-    s.append(Paragraph("1. Purpose", H2))
-    s.append(Paragraph("This policy sets how the Trustees fix the contributions the Participating Entities make to the "
-                       "Trust for each Plan Year. Capitalised terms have the meanings given in the Trust Agreement.",
-                       BODY))
-    s.append(Paragraph("2. Timing", H2))
-    s.append(Paragraph("The Trustees fix the Contribution for a Plan Year at their November meeting in the year before "
-                       "it, on the recommendation of the System's Vice President, Risk Management and Insurance. The "
-                       "Participating Entities pay it in equal quarterly instalments, each in proportion to its share "
-                       "of the Plan Year's exposure under 3.2.", BODY))
-    s.append(Paragraph("3. The Contribution", H2))
-    for no, text in [
-        ("3.1", "For each Plan Year the Participating Entities together contribute the expected cost, at the Plan "
-                "Year's cost level, of the Claims that will be first made against the Trust during the Plan Year "
-                "(the Contribution)."),
-        ("3.2", "Exposure is measured in Covered Clinician FTE-years. The experience's exposure is the Covered "
-                "Clinicians' paid FTE in the System's payroll over the experience period. The Plan Year's exposure is "
-                "the Covered Clinician FTE in the System's staffing plan for the Plan Year, for each Participating "
-                "Entity, specialty class and month from the entity's Transition Date."),
-        ("3.3", "The experience is the Claims arising from Medical Incidents from 1 January 2016 to 31 December 2024 "
-                "against Covered Clinicians, pooled within each specialty class of Schedule B."),
-        ("3.4", "Each experience Claim is valued at the indemnity and defence paid and the case reserves recorded "
-                "against its Covered Clinicians in the risk management claims register extract valued 30 September "
-                "2026, and brought to the Plan Year's cost level at 5.0 per cent a year compounded from the calendar "
-                "year of its Medical Incident."),
-        ("3.5", "The first Plan Year's Contribution carries no provision for the Trust's administrative expenses, "
-                "investment income, excess insurance or a margin; the Trustees budget those separately."),
-        ("3.6", "Figures reported to the Trustees are rounded once, from unrounded amounts."),
-    ]:
-        s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (no, text), CLAUSE))
-    s.append(Paragraph("4. Review", H2))
-    s.append(Paragraph("After each Plan Year closes, the Trust's consulting actuary reviews the Claims made in it "
-                       "against the Contribution and reports to the Trustees by 30 June. The Trustees review this "
-                       "policy every two years, and when a Participating Entity joins or leaves the Trust.", BODY))
-    s.append(Paragraph("5. Investment of contributions", H2))
-    s.append(Paragraph("Contributions are held in the Trust's operating account and its short-term investment pool "
-                       "under the System's investment policy for operating funds. No contribution is invested for a "
-                       "term longer than two years.", BODY))
-    s.append(Spacer(1, 10))
-    s.append(Paragraph("Adopted by the Trustees on 22 September 2026. %s, Chair." % K.PEOPLE["chair"], BODY))
-    frame = _frame("Corvane Professional Liability Trust Funding Policy", "Adopted 22 September 2026")
-    doc.build(s, onFirstPage=frame, onLaterPages=frame)
+def fees_pdf(path):
+    st = _styles()
+    story = [Paragraph("Elkhorn County Public Health", st["lh"]),
+             Paragraph("Environmental Health Division, 1120 Courthouse Square, Marlow, WA 98362", st["lh2"])]
+    for kind, text in fee_paragraphs():
+        if kind == "fees":
+            t = Table([["Item", "Fee"]] + [list(r) for r in FEE_ROWS], colWidths=[4.6 * inch, 1.6 * inch])
+            t.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 9),
+                                   ("FONT", (0, 1), (-1, -1), "Helvetica", 9),
+                                   ("LINEBELOW", (0, 0), (-1, 0), 0.6, GREEN),
+                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
+            story += [t, Spacer(1, 9)]
+            continue
+        story.append(Paragraph(text, {"t": st["title"], "s": st["small"], "h": st["head"]}.get(kind, st["body"])))
+    _build(path, "Environmental Health Fee Schedule 2026", story,
+           "Elkhorn County Public Health, Environmental Health Fee Schedule 2026 (as amended 1 July 2026)",
+           b"D:20260612143005-07'00'", "Elkhorn County Public Health")
 
 
-# ------------------------------------------------------------------------------------------------ workbooks
-HEAD_FILL = PatternFill("solid", fgColor="D9E1EA")
-BOLD = Font(name="Calibri", size=11, bold=True)
-TITLE_FONT = Font(name="Calibri", size=13, bold=True)
-MONTHS = ["Jan-27", "Feb-27", "Mar-27", "Apr-27", "May-27", "Jun-27", "Jul-27", "Aug-27", "Sep-27", "Oct-27", "Nov-27",
-          "Dec-27"]
-
-
-def write_plan(path, plan):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Covered FTE 2027"
-    ws["A1"] = "Corvane Health, clinician staffing plan 2027"
-    ws["A1"].font = TITLE_FONT
-    ws["A2"] = "Covered Clinician FTE by Participating Entity and specialty class (Trust Agreement Schedule B), budgeted " \
-               "FTE for each month"
-    ws["A3"] = "Financial Planning and Analysis, plan version 2026-09-29"
-    hdr = ["Entity", "Entity name", "Specialty class"] + MONTHS
-    for c, h in enumerate(hdr, start=1):
-        cell = ws.cell(row=5, column=c, value=h)
-        cell.font = BOLD
-        cell.fill = HEAD_FILL
-    r = 6
-    for e in K.ENTITY_ORDER:
-        for cls in K.CLASSES:
-            if (e, cls) not in plan:
-                continue
-            ws.cell(row=r, column=1, value=e)
-            ws.cell(row=r, column=2, value=K.ENTITIES[e]["name"])
-            ws.cell(row=r, column=3, value=K.CLASS_NAME[cls])
-            for k, v in enumerate(plan[(e, cls)]):
-                cell = ws.cell(row=r, column=4 + k, value=float(v))
-                cell.number_format = "0.0"
-            r += 1
-    for c, w in zip(range(1, 16), [8, 28, 32] + [8.5] * 12):
-        ws.column_dimensions[get_column_letter(c)].width = w
-    ws.freeze_panes = "D6"
-    ns = wb.create_sheet("Notes")
-    notes = ["Plan FTE are the budgeted covered FTE for each month, held through the month; a vacancy is carried from "
-             "the month the plan expects it filled, and per-diem clinicians at their budgeted average FTE.",
-             "Covered Clinician FTE only: resident physicians, clinical fellows, psychologists and contracted or locum "
-             "clinicians are not included.",
-             "Entity codes as in the general ledger: TFH Tolliver Falls Hospital, AMC Alderwick Medical Center, CMG "
-             "Corvane Medical Group, BCH Brennick Community Hospital.",
-             "Approved with the 2027 operating budget by the Finance Committee on 29 September 2026."]
-    ns["A1"] = "Notes"
-    ns["A1"].font = BOLD
-    for k, t in enumerate(notes, start=2):
-        ns.cell(row=k, column=1, value=t)
-    ns.column_dimensions["A"].width = 120
-    wb.save(path)
-
-
-QM_HEADER = ["Policy Number", "Policy Period", "Named Insured", "Claim Number", "Insured Reference", "Date of Loss",
-             "Date Reported", "Claim Type", "Status", "Indemnity Paid", "Expense Paid", "Indemnity Reserve",
-             "Expense Reserve", "Total Incurred"]
-
-
-def write_qm_run(path, recs, nums, valued, run_date, revision=None):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Loss Run"
-    ws["A1"] = K.CARRIERS["QM"]
-    ws["A1"].font = TITLE_FONT
-    ws["A2"] = "Hospital Professional Liability, Loss Run Report"
-    ws["A3"] = "Account: Corvane Health (Tolliver Falls Hospital; Alderwick Medical Center)"
-    ws["A4"] = "Valuation Date: %s" % valued.strftime("%m/%d/%Y")
-    ws["A5"] = "Run Date: %s%s" % (run_date.strftime("%m/%d/%Y"), ("    " + revision) if revision else "")
-    for c, h in enumerate(QM_HEADER, start=1):
-        cell = ws.cell(row=7, column=c, value=h)
-        cell.font = BOLD
-        cell.fill = HEAD_FILL
-    r = 8
-    names = {"TFH": "Tolliver Falls Hospital", "AMC": "Alderwick Medical Center"}
-    for e in ("AMC", "TFH"):
-        block = sorted((x for x in recs if x["entity"] == e), key=lambda x: (x["policy"], nums[x["incident_no"]]))
-        tot = [0.0] * 5
-        for x in block:
-            a, b = x["period"]
-            vals = [x["policy"], "%s-%s" % (a.strftime("%m/%d/%Y"), b.strftime("%m/%d/%Y")), names[e],
-                    nums[x["incident_no"]], x["ref"] or None, x["date_of_loss"], x["created"], x["ctype"], x["status"],
-                    x["paid_ind"], x["paid_exp"], x["res_ind"], x["res_exp"],
-                    round(x["paid_ind"] + x["paid_exp"] + x["res_ind"] + x["res_exp"], 2)]
-            for c, v in enumerate(vals, start=1):
-                cell = ws.cell(row=r, column=c, value=v)
-                if c in (6, 7):
-                    cell.number_format = "mm/dd/yyyy"
-                if c >= 10:
-                    cell.number_format = "#,##0.00"
-            for k in range(5):
-                tot[k] += vals[9 + k]
-            r += 1
-        ws.cell(row=r, column=3, value="Total %s (%d claims and incidents)" % (names[e], len(block))).font = BOLD
-        for k in range(5):
-            cell = ws.cell(row=r, column=10 + k, value=round(tot[k], 2))
-            cell.number_format = "#,##0.00"
-            cell.font = BOLD
-        r += 2
-    for c, w in zip(range(1, 15), [17, 23, 24, 13, 17, 12, 13, 11, 10, 15, 14, 16, 15, 15]):
-        ws.column_dimensions[get_column_letter(c)].width = w
-    ws.freeze_panes = "A8"
-    wb.save(path)
-
-
-def write_premiums(path, W):
-    """Each entity's clinician occurrence policies from the term in force on 1 January 2016 (Brennick's from the term in
-    force when it affiliated) to the expiring term, with the carrier that wrote each, the physician and advanced
-    practice FTE the carrier rated at inception and the premium billed."""
-    rng = K.stream("premiums")
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Premium history"
-    ws["A1"] = "Corvane Health, clinician professional liability premium history 2016 to 2026"
-    ws["A1"].font = TITLE_FONT
-    ws["A2"] = "Risk Management and Insurance; occurrence policies by entity and term, annual premiums as billed at " \
-               "inception, before audit adjustments"
-    hdr = ["Entity", "Carrier", "Policy number", "Policy period start", "Policy period end", "Limits",
-           "Rated physician FTE", "Rated APC FTE", "Annual premium ($)"]
-    for c, h in enumerate(hdr, start=1):
-        cell = ws.cell(row=4, column=c, value=h)
-        cell.font = BOLD
-        cell.fill = HEAD_FILL
-    rate = {"TFH": 30500.0, "AMC": 33800.0, "CMG": 11900.0, "BCH": 24600.0}     # 2026 premium per rated physician FTE
-    apc = {"TFH": 0.32, "AMC": 0.31, "CMG": 0.29, "BCH": 0.30}                   # an APC FTE rated as this share
-    r = 5
-    for e in K.ENTITY_ORDER:
-        ent = K.ENTITIES[e]
-        first = ent["joined"] or dt.date(2016, 1, 1)
-        y0 = first.year if first.month >= ent["anniv"] else first.year - 1
-        for y in range(y0, 2027):
-            start = dt.date(y, ent["anniv"], 1)
-            on = max(start, ent["joined"] or start)
-            phys = sum(p.fte_in(on.year, on.month) for p in W.positions if p.entity == e and not p.moonlight and
-                       not p.per_diem and K.CLASS_OF_JOB.get(p.job) and p.job not in ("NP", "PA", "CRNA", "CNM") and
-                       p.start <= on and (p.end is None or p.end >= on))
-            apcs = sum(p.fte_in(on.year, on.month) for p in W.positions if p.entity == e and not p.moonlight and
-                       not p.per_diem and p.job in ("NP", "PA", "CRNA", "CNM") and p.start <= on and
-                       (p.end is None or p.end >= on))
-            rated_p = round(phys * float(rng.uniform(0.97, 1.03)), 1)
-            rated_a = round(apcs * float(rng.uniform(0.95, 1.05)), 1)
-            premium = round((rated_p + apc[e] * rated_a) * rate[e] * (1.045 ** (y - 2026)) *
-                            float(rng.uniform(0.96, 1.05)), -2)
-            vals = [ent["name"], K.CARRIERS[K.carrier_on(e, start)], K.policy_number(e, start), start,
-                    dt.date(y + 1, ent["anniv"], 1), "$1,000,000 / $3,000,000", rated_p, rated_a, premium]
-            for c, v in enumerate(vals, start=1):
-                cell = ws.cell(row=r, column=c, value=v)
-                if c in (4, 5):
-                    cell.number_format = "yyyy-mm-dd"
-                if c in (7, 8):
-                    cell.number_format = "0.0"
-                if c == 9:
-                    cell.number_format = "#,##0"
-            r += 1
-    for c, w in zip(range(1, 10), [30, 44, 20, 18, 18, 22, 18, 14, 18]):
-        ws.column_dimensions[get_column_letter(c)].width = w
-    ws.freeze_panes = "A5"
-    wb.save(path)
-
-
-# ------------------------------------------------------------------------------------------------ data dictionary
-def write_dictionary(path, counts):
-    t = []
-    a = t.append
-    a("# Risk management extracts: data dictionary")
-    a("")
-    a("Corvane Health, Risk Management and Insurance. Field definitions for the files extracted on 2 October 2026 for "
-      "the 2027 trust contribution. Maintained by %s's claims team; questions to the RMI analytics mailbox." %
-      K.PEOPLE["claims"])
-    a("")
-    a("## %s" % K.REGISTER)
-    a("")
-    a("One row per clinician named as a defendant on a claim number. The register holds every claim naming a clinician "
-      "who practised at a Corvane entity, whoever insures the clinician; claims against the entities alone are kept "
-      "in the general liability register. Valued at 30 September 2026; %d rows." % counts[K.REGISTER])
-    a("")
-    for f, d in [
-        ("claim_no", "Risk management claim number, CL-year-sequence, given when the claim is received."),
-        ("incident_no", "Risk management incident number of the event the claim arises from, IR-year-sequence."),
-        ("defendant_seq", "Order in which the clinician is named on the claim number."),
-        ("clinician_id", "Payroll employee id for employed clinicians, residents and fellows; CTR- credentialing number "
-                         "for contracted and locum clinicians."),
-        ("defendant_role", "Attending physician, Advanced practice clinician, Resident physician, Clinical fellow or "
-                           "Contracted physician."),
-        ("specialty", "Specialty as entered by the claims analyst."),
-        ("coverage_line", "The entity insurance programme line the claims system holds for this defendant: carrier "
-                          "code and entity (QM-TFH, QM-AMC, SC-CMG, SC-BCH); CONTRACT where the clinician's own group "
-                          "insures them."),
-        ("entity_at_incident", "Entity where the care was given."),
-        ("incident_date", "Date of the care the claim arises from."),
-        ("claim_made_date", "Date risk management received the claim under this claim number."),
-        ("matter_type", "Claim (a demand or request for compensation) or Suit (a civil proceeding served)."),
-        ("allegation", "Principal allegation."),
-        ("status", "OPEN, CLOSED or REOPENED at the valuation date. A reopened claim keeps its earlier closing date."),
-        ("closed_date", "Date the claim number was last closed."),
-        ("indemnity_paid, defense_paid", "Payments to date on this defendant, in dollars. Blank on CONTRACT rows."),
-        ("indemnity_reserve, defense_reserve", "Case reserves on this defendant at the valuation date. Blank on "
-                                               "CONTRACT rows."),
-        ("prior_claim_no", "Where the claim number was opened from an earlier claim number for the same matter, the "
-                           "earlier claim number."),
-        ("valuation_date", "Valuation date of the extract."),
-    ]:
-        a("- `%s`: %s" % (f, d))
-    a("")
-    a("## %s" % K.PAYROLL)
-    a("")
-    a("Legacy payroll history for employed clinicians, residents, fellows and psychologists, January 2016 to December "
-      "2025 (the legacy payroll closed with the December 2025 pay run). One row per employee, month and cost centre; "
-      "%d rows." % counts[K.PAYROLL])
-    a("")
-    for f, d in [
-        ("pay_month", "Month paid, YYYY-MM."),
-        ("employee_id", "Payroll employee id."),
-        ("job_code, job_title", "Job held in the month. Codes changed with the job architecture project on 1 July 2020."),
-        ("cost_centre", "Company and department, ccc-dddd."),
-        ("entity_code", "Entity of the cost centre."),
-        ("fte", "Paid FTE for the month on this cost centre."),
-        ("emp_status", "A active, L leave of absence, T terminated in the month."),
-    ]:
-        a("- `%s`: %s" % (f, d))
-    a("")
-    a("## %s" % K.HCM)
-    a("")
-    a("Pay lines from the HCM system that replaced the legacy payroll on 1 January 2026, work months January to "
-      "September 2026. One row per worker, position, work month and earning code; %d rows." % counts[K.HCM])
-    a("")
-    for f, d in [
-        ("worker_id", "Employee id (carried over from the legacy payroll)."),
-        ("position_id", "HCM position."),
-        ("work_month", "Month worked, YYYY-MM; a termination payout carries the month it is paid."),
-        ("earning_code, earning_description", "REG, PDM, PTO, CALL, ADMIN, LOA or TRM."),
-        ("hours", "Hours paid on the line. Positions are scheduled 173.33 hours a month at 1.0 FTE."),
-        ("fte", "FTE of the position."),
-        ("job_profile_code, job_profile", "HCM job profile of the position; legacy job codes through the crosswalk."),
-        ("cost_centre", "Cost centre the line is charged to."),
-        ("pay_group", "PHYS, APC or GME."),
-    ]:
-        a("- `%s`: %s" % (f, d))
-    a("")
-    a("## %s and %s" % (K.CROSSWALK, K.DIRECTORY))
-    a("")
-    a("The HCM job profile crosswalk maps each HCM job profile to the legacy job code (2020 code set) it replaced. The "
-      "cost centre directory gives each cost centre's company, entity and department with the dates it is effective.")
-    a("")
-    a("## %s" % K.NOTICES)
-    a("")
-    a("One row per precautionary notice risk management sent to a carrier about an incident that might lead to a claim; "
-      "%d rows, January 2012 to September 2026." %
-      counts[K.NOTICES])
-    a("")
-    a("## Carrier loss runs")
-    a("")
-    a("%s, %s and %s are the carriers' files as received, in their own layouts and field names. Quillan Mutual insures "
-      "Tolliver Falls Hospital and Alderwick Medical Center; Stoneleigh Casualty insures Corvane Medical Group and "
-      "Brennick Community Hospital." % (K.QM_SEP, K.QM_JUN, K.SC_SEP))
-    a("")
-    a("## %s" % K.SAFETY)
-    a("")
-    a("Patient safety event reports from the safety reporting system, January 2019 to September 2026, one row per "
-      "report; %d rows. Harm level as assigned at the quality team's review." % counts[K.SAFETY])
-    a("")
-    a("## %s" % K.INVOICES)
-    a("")
-    a("Defence panel invoices received for service from July to September 2026, one row per invoice; %d rows. "
-      "Approved invoices are paid by the carrier or, within a retention, by the System." % counts[K.INVOICES])
-    a("")
-    a("## %s" % K.PREMIUMS)
-    a("")
-    a("Each entity's clinician occurrence policies by term since 2016: carrier, policy number, period, limits, rated "
-      "FTE and the annual premium billed at inception.")
-    a("")
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(t))
+def text_of(kind_list):
+    return "\n".join(t for k, t in kind_list if t)

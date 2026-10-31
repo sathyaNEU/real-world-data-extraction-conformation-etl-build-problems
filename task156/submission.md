@@ -1,77 +1,68 @@
 ## Tags
 
-**Domain:** Product Analytics (retention, cohort and lifetime value modeling: a Q&A platform's volunteer reviewers as a retained-user cohort that has stopped taking in members, carried forward on survival by tenure, times the activity a retained reviewer delivers, seen only where work outran the pool).
-**Analytical objective:** Forecasting & Predictive Modeling.
+**Domain:** Physical and environmental sciences (hydrology and flood frequency).
+**Analytical objective:** Forecasting and predictive modelling.
 
 ## 1. Final Recommendation
 
-**The council should request 32 paid moderator FTE for 2027, 6 above finance's 26-FTE envelope: Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3 and Scientific Computing 2.**
-Items reach the paid team only when the volunteers fall short, and since review access became invitation-only on 1 September 2026 each site's pool only shrinks, fastest among its newest reviewers, so the network's 10,607 active reviewers of September 2026 average about 8,800 a month in 2027 and Data & ML, Databases, Infrastructure & DevOps and Game Development fall short of their inbox after routing almost nothing since January 2024. Not the pool's overall lapse rate of the last two years carried forward, which was the rate of a pool still taking in newcomers and overstates how fast a closed pool loses reviewers; not the new reviewers of the last year carried on, which the invitation-only rule ended; not a tenure curve that counts every reviewer from the day access was granted, which reads the roster's survivors as whole cohorts; and not the last twelve months' paid hours per question carried onto the plan, which prices only what those sites routed while their pools covered the inbox.
+**Hold the Ngaio Road connection until the PS03 storage upgrade is commissioned: replayed through 2004 to 2023 each day as it occurred, PS03 overflows about 3 times a year with the subdivision, above the consent's limit of 2.**
+Not the station's own record of 2 overflows since 2024, nor one response per millimetre fitted on the meter (about 1 a year): both carry the meter's low water table into years when it stood far higher. After the upgrade the station overflows about 1 a year with the subdivision.
 
 ## 2. Critical Components
 
-1. A volunteer reviewer completes about **40** reviews a month when the inbox outruns the site's pool, measured in the site-months in which more than 5 per cent of entering items reached the paid team.
-2. The network's **10,607** reviewers active in September 2026 average about **8,800** active reviewers a month in 2027, each carried on the stop rate of their own tenure with no new reviewers.
-3. Data & ML, Databases, Infrastructure & DevOps and Game Development fall short of their inbox in 2027, joining Security, Embedded & Hardware and Scientific Computing; Frontend & Web and Mobile Apps stay covered.
+1. PS03's dry weather infiltration rises by **4.2 L/s** for each kilometre of its sewer below the water table.
+2. The median day had **0.2 km** of sewer below the water table in 2024 to 2026 against **2.1 km** in 2004 to 2023, with about **21 km** at the wettest in both.
+3. The station overflows about **3** times a year as connected now, **3** with Ngaio Road and **1** with Ngaio Road after the upgrade.
+4. Held out of each fit, the June 2025 high-river weeks are missed by **43 L/s** on average by one response per millimetre and by **0.2 L/s** by the conditioned model.
 
 ## 3. Step-by-Step Solution
 
-1. Stacked review_queues_monthly_2021-2023.xlsx (old site names through site_register.csv) with review_inbox_daily_2024-01-01_2026-09-30.csv and the active reviewers in reviewer_roster_2026-10-08.csv: over the site-months in which more than 5 per cent of entering items were routed to moderation, volunteer reviews over active reviewers give about 40 reviews a month.
-2. In reviewer_roster_2026-10-08.csv, counted each reviewer from the first month the platform shows them active (January 2024 for those granted earlier, at their tenure then) to their last review, and divided stops by reviewer-months at each month of tenure since access was granted, January 2024 to August 2026: about 9 per cent a month in the first year, under one per cent from the fourth.
-3. Carried each of the 10,607 reviewers active in September 2026 on that rate from their own tenure, with no new reviewers since access became invitation-only on 1 September 2026 (moderation_operations_handbook_2026.pdf) and none invited in September: about 8,800 active a month on average in 2027.
-4. At about 40 reviews a reviewer a month against the inbox of each month of 2027 (the questions in question_plan_2027.xlsx times the site's inbox items per question since January 2024), routed the items beyond that capacity to the paid team (where a pool has room, the 0.6 per cent no volunteer picks up), priced them and each site's handled flags per question since January 2024 (modtool_flag_summary_daily_2024-01-01_2026-09-30.csv) at handle_time_standards_2027.pdf, and divided by the charter's 1,600 hours, each site to the nearest whole FTE: 32 FTE, 6 above the 26-FTE envelope in finance_envelope_2027_paid_moderation.pdf.
-5. For the 24-hour flag response, counted each flag once across the two parts of the moderator tool's export, left out the post-deleted closures and took the first action from flag_decision_reviews_2026-07_to_2026-09.csv where a decision was reviewed (flag_service_standard.pdf): the shares in table 4 of the deliverable answers.
-6. For the hours worked, kept the approved lines of wfm_shift_lines_2026-01-01_2026-09-30.csv and put each shift on the site moderator_site_assignments.csv gives for its start day, in the quarter it started on Toronto time (moderation_operations_handbook_2026.pdf): the totals in table 5.
-7. For the questions, restated January to September 2022 on the warehouse's basis (question_count_standard_2024.pdf) from review_queues_monthly_2021-2023.xlsx, its March 2023 rerun replacing May to August, and question_moves_2021-2023.csv, with Graphics & Shaders in Game Development: the percentages in table 6.
+1. Averaged the SCADA export's good 15-minute inflow into UTC hours, setting aside hours with the wet well at the weir crest, beside the climate station's hourly rain (archive NZST hour ending, 2026 provisional 15-minute UTC).
+2. Turned bore 72_1043's depth below its measuring point into the water level and, against the asset register's PS03 in-service mains, into each day's kilometres of sewer below it: medians 0.2 km (2024 to 2026) and 2.1 km (2004 to 2023).
+3. Fitted the dry hours (no rain in the previous 72 hours) as a weekly domestic pattern plus 4.2 L/s per km below the water table, then the rest as a fast rain response (30 m3 per mm) and a slow one scaled by those kilometres (6.0 m3 per mm per km).
+4. Refitted both models without the June 2025 high-river weeks and scored them there and on 2026: mean errors 0.2 and 0.0 L/s for the conditioned model, 43 and 1.1 L/s for one response per millimetre.
+5. Ran the model through every hour of 2004 to 2023, each day with its own water table, at the data sheet's 112.0 L/s and 350 m3, counting overflows under consent condition 3: 58 in 20 years as connected now, 64 with the subdivision's 260 dwellings at the code of practice's 2.7 persons, 200 litres and Table 5.2, 15 after adding the upgrade's 1,100 m3.
+6. Water use per dwelling per the billing policy's section 4, each rating unit's dwellings dated by the building consents' code compliance certificates rather than carried back from the 31 October 2026 rating snapshot.
+7. Other stations from the monitors' own NZST message times, each serial placed by the monitor installation history, an overflow emergency where it began inside an outage at any ICP the council's electricity site list gives the station's address.
+8. With the subdivision the replay averages 3.20 overflows a year against condition 6's limit of 2, so condition 8 bars the connection until the upgrade, which brings it to about 1.
 
 ## 4. Deliverable Answers
 
-### moderation_pool_2027.xlsx
+### ps03_ngaio_road_connection_2027.xlsx
 
-1. 2027 need by site, whole FTE:
-   - Frontend & Web: 5
-   - Mobile Apps: 2
-   - Data & ML: 6
-   - Databases: 4
-   - Infrastructure & DevOps: 4
-   - Game Development: 2
-   - Security: 4
-   - Embedded & Hardware: 3
-   - Scientific Computing: 2
-2. Council request for 2027: 32 FTE.
-3. Above finance's 26-FTE envelope by 6 FTE.
-4. 24-hour flag response by site and month:
-   - Frontend & Web: July 2026 97.9%, August 2026 97.0%, September 2026 97.1%
-   - Mobile Apps: July 2026 97.2%, August 2026 96.4%, September 2026 96.3%
-   - Data & ML: July 2026 97.8%, August 2026 97.3%, September 2026 97.4%
-   - Databases: July 2026 97.1%, August 2026 97.5%, September 2026 96.4%
-   - Infrastructure & DevOps: July 2026 98.0%, August 2026 96.8%, September 2026 96.7%
-   - Game Development: July 2026 97.6%, August 2026 96.8%, September 2026 96.2%
-   - Security: July 2026 91.8%, August 2026 89.3%, September 2026 88.1%
-   - Embedded & Hardware: July 2026 91.4%, August 2026 87.7%, September 2026 87.1%
-   - Scientific Computing: July 2026 85.6%, August 2026 90.0%, September 2026 81.4%
-5. Hours each site's paid moderators worked:
-   - Frontend & Web: Q1 2026 2,475 hours, Q2 2026 2,893 hours, Q3 2026 2,260 hours
-   - Mobile Apps: Q1 2026 879 hours, Q2 2026 827 hours, Q3 2026 540 hours
-   - Data & ML: Q1 2026 1,725 hours, Q2 2026 1,719 hours, Q3 2026 1,509 hours
-   - Databases: Q1 2026 1,643 hours, Q2 2026 1,631 hours, Q3 2026 1,280 hours
-   - Infrastructure & DevOps: Q1 2026 1,624 hours, Q2 2026 1,616 hours, Q3 2026 1,352 hours
-   - Game Development: Q1 2026 751 hours, Q2 2026 622 hours, Q3 2026 535 hours
-   - Security: Q1 2026 1,220 hours, Q2 2026 1,387 hours, Q3 2026 2,104 hours
-   - Embedded & Hardware: Q1 2026 898 hours, Q2 2026 870 hours, Q3 2026 1,531 hours
-   - Scientific Computing: Q1 2026 706 hours, Q2 2026 683 hours, Q3 2026 1,382 hours
-6. January to September 2026 questions as a percentage of January to September 2022:
-   - Frontend & Web: 39.7%
-   - Mobile Apps: 42.1%
-   - Data & ML: 55.5%
-   - Databases: 58.4%
-   - Infrastructure & DevOps: 60.2%
-   - Game Development: 53.8%
-   - Security: 72.0%
-   - Embedded & Hardware: 76.0%
-   - Scientific Computing: 76.8%
+1. Average wet weather overflows a year over the consent's 2004 to 2023 replay, whole numbers:
+   - Without the subdivision: 3
+   - With the subdivision: 3
+   - With the subdivision after the upgrade: 1
+2. Residential water use per dwelling per day, litres:
+   - 2024 Q1: 448
+   - 2024 Q2: 381
+   - 2024 Q3: 340
+   - 2024 Q4: 414
+   - 2025 Q1: 456
+   - 2025 Q2: 394
+   - 2025 Q3: 315
+   - 2025 Q4: 419
+   - 2026 Q1: 477
+   - 2026 Q2: 374
+   - 2026 Q3: 313
+3. Other stations' wet weather overflows and spill hours (whole hours):
+   - PS01 2024: 3 overflows, 9 spill hours
+   - PS01 2025: 2 overflows, 7 spill hours
+   - PS02 2024: 6 overflows, 16 spill hours
+   - PS02 2025: 5 overflows, 16 spill hours
+   - PS04 2024: 2 overflows, 6 spill hours
+   - PS04 2025: 2 overflows, 6 spill hours
+   - PS05 2024: 4 overflows, 11 spill hours
+   - PS05 2025: 5 overflows, 13 spill hours
+   - PS06 2024: 1 overflows, 2 spill hours
+   - PS06 2025: 2 overflows, 6 spill hours
+4. Network emergency overflows: 2024: 3; 2025: 3
 
-### council_pool_request_2027.pptx
+### council_report_ngaio_road_2027.docx
 
-7. Slide 1 states the request: 32 paid moderator FTE for 2027, 6 above the 26-FTE envelope, with each site's need.
-8. Slide 2 charts the network's monthly paid review hours, as the operations handbook defines them, from January 2024 to December 2027, one stacked band per site, the forecast from October 2026 shaded, with finance's envelope drawn across at 3,467 hours a month (26 FTE); the plotted months are on the workbook's Monthly hours sheet.
+1. Recommends deferring the Ngaio Road connection until the PS03 storage upgrade is commissioned, with the three replay figures (about 3, 3 and 1 a year) and the chart.
+
+### replay_overflows_2004-2023.png
+
+1. Bars for each year 2004 to 2023, PS03 as connected now and with Ngaio Road, the consent limit of 2 drawn across, titled with the 3.2 a year the subdivision brings.

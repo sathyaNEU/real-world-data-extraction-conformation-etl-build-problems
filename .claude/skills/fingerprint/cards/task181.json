@@ -1,151 +1,161 @@
 {
-  "task": "task181",
-  "architecture": "v5",
-  "drawn": "2026-10-31",
-  "slot_note": "re-root after architecture 4; the criminology cell closed at the draw (see lineage v5a), moved to epidemiology under the directive's fallback; new world (a city health office's barangay dengue hotspot response), new dataset, new generator, new shell",
-  "domain": "epidemiology-public-health",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
-  "client_domain": "epidemiology-public-health",
-  "niche": "a Philippine city health office's barangay dengue hotspot response for the four weeks after the season's peak, where an export processing zone with few residents employs a large workforce that sleeps in the surrounding barangays",
-  "objective": "anomaly-detection",
-  "shape": "other",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "San Roque, Bagumbayan and Maligaya go under the hotspot response for morbidity weeks 41 to 44, and no other barangay; by home address eight barangays are over the trigger of 40 (Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan) and San Roque's own residents account for 14 of the window's cases",
-  "answer_source": "submission.md block 1 and generator/figures.json call.hotspots (cut target.zip md5 c6dd178bcc6f724315f6b2c3ad3be858)",
-  "gap": [
-    "population",
-    "objective"
+ "task": "task181",
+ "architecture": "v6",
+ "drawn": "2026-10-31",
+ "slot_note": "re-root after architecture 5 (judge SEND_BACK on the FIX_NOW's second pass: the decisive placement carried a free share a naive value flipped); epidemiology is spent for this slot after five architectures, so the draw moves to healthcare-delivery-health-economics (provider-quality-risk-adjustment, which serves anomaly detection); new world, dataset, generator and shell",
+ "domain": "healthcare-delivery-health-economics",
+ "subdomain": "provider-quality-risk-adjustment",
+ "client_domain": "healthcare-delivery-health-economics",
+ "niche": "a metropolitan health service answering the state surveillance centre's outlier notice on its general surgery site infections by naming the consultants who go to professional practice review, when the one steriliser validated for heavy instrument containers ran an undetected drying fault after a May repair and seeded infections in the operations that opened the trays it sterilised",
+ "objective": "anomaly-detection",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "GS-16 and GS-21 go to professional practice review for the site infections after their April to September 2027 operations, and no other consultant; on the raw ratio against the Centre's limit GS-05, GS-12, GS-16 and GS-21 are above it, and with the operations whose tray steriliser 3 sterilised after its 12 May repair set aside, GS-05 (4 against 11) and GS-12 (5 against 12) fall inside it",
+ "answer_source": "submission.md block 1 and generator/figures.json call.referred (target.zip sha256 2ba1a5636e3a2bf7)",
+ "gap": [
+  "objective",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G6",
+  "G5",
+  "G3"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "decomposition_attribution",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "monitoring_export",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst links the surveillance centre's infections to their operations, applies the centre's risk index and procedure rates to every consultant's April to September 2027 operations and refers each consultant whose observed infections sit above the centre's 95 per cent control limit, filing four consultants; every field is read and the policy's comparison executed, and the call is wrong because two consultants' excess came from instrument sets reprocessed in a steriliser running a drying fault after its May repair, an exposure no consultant's practice caused.",
+ "domain_test": "The deciding quantity is each consultant's own effect on their patients' risk of a surgical site infection, worked the way infection surveillance works it (observed infections against a risk-index expectation) once a common-source exposure in the instrument reprocessing chain is separated out by tracing each operation's instrument sets to the steriliser load that last reprocessed them; put a school for the hospital and there is no sterile instrument chain and no infection to trace, so the task stops making sense.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:common-source-exposure-confounding-a-provider-comparison",
+ "layer1": [
+  "the theatre system's export with local times, re-booked and cancelled cases and returns to theatre listed as operations",
+  "the surveillance database's infections keyed by patient record number and operation date, with no operation key, post-discharge detections and reclassifications",
+  "the instrument tracking system's scans keyed by set barcode in UTC, with sets re-labelled when a tray is rebuilt",
+  "the steriliser cycle records with test cycles, aborted and re-run cycles and each load's contents as a barcode list",
+  "the centre's procedure rates as a published table by procedure and risk index with a footnoted duration cut-point",
+  "two consultant codes merged in a 2025 rostering change"
+ ],
+ "stakeholder_role": "the executive director of medical services",
+ "role_family": "other",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "theatre_operations_2022_2027.csv",
+  "rows": 32036,
+  "entity": "one operation",
+  "grain": "operation",
+  "source": "synthetic"
+ },
+ "forum": "regulator_or_inspector",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "hospital_or_health_provider",
+ "world": {
+  "geography": "Victoria, Australia",
+  "currency": "AUD",
+  "org_type": "metropolitan public health service",
+  "invented_names": [
+   "Kooralong Health",
+   "Kooralong Hospital",
+   "Healthcare-Associated Infection Surveillance Centre"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G7",
-    "G6"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst keeps each case number's latest row, drops the notifications classified Not a case and the residents of other towns, merges patients notified by two units, dates each case by onset, counts each barangay's cases with onset in weeks 37 to 40 and applies the plan's trigger of 40 cases infected in the barangay, filing Bagumbayan, Maligaya and the six barangays beside the estate; every field is read correctly and the trigger executed, and the call is wrong because the line list places each case where the patient sleeps while the six barangays' excess was caught where their working residents work, at the estate in San Roque.",
-  "domain_test": "The deciding quantity is the number of dengue infections caught in each barangay, worked the way vector-borne disease surveillance works it: Aedes aegypti bites by day, so a working adult is exposed mostly where they spend the working day; put malaria's night-biting Anopheles or a non-vector disease in and the home is again the place of infection, so the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:day-biting-exposure-filed-at-the-home-barangay",
-  "layer1": [
-    "the online system's export with migrated 2022 to 2024 rows (codes S, P, C, X and blank travel fields)",
-    "Update rows under a case number",
-    "patients notified by two units under two case numbers",
-    "barangay names as each unit spells them",
-    "Santo Tomas Norte written under its parent barangay before and sometimes after the 2025 split",
-    "dates day-month-year from the centres and year-month-day from the hospitals' online submissions",
-    "residents of other towns not yet forwarded",
-    "blank onsets",
-    "the CBMS workbook's multi-row headers, merged cells, dashes for zero and footnotes"
-  ],
-  "stakeholder_role": "the city health officer",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "dengue_line_list_2022_2027.csv",
-    "rows": 26205,
-    "entity": "one notified dengue case",
-    "grain": "case",
-    "source": "synthetic"
+  "people": [
+   "Jacqueline Roberts",
+   "Todd Lam"
+  ]
+ },
+ "deliverables": [
+  "ssi_review_response_2027.docx",
+  "ssi_review_figures_2027.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "who",
+ "driver": "Units are judged on their cases' outcomes against what the cases' recorded risk predicts, but for a stretch of the window a shared upstream resource that serves every unit added a large outcome risk to the cases it handled, and it handled more of some units' cases because of when those units work; the excess belongs to the resource, and only tracing each case through two time-ordered records to the resource that handled it separates it, so every unit-level comparison, its expectation adjusted for case mix or for the period, lays the resource's excess on the units it served most.",
+ "driver_concrete": "Trace each operation's reusable instrument tray (the tracking system's theatre scan) to the steriliser load that last sterilised it, see that operations with a tray from steriliser 3 after its 12 May repair carried several times the infection rate, and judge each consultant on the infections their unexposed operations had against the Centre's expectation: the two consultants whose heavy colorectal trays all go through steriliser 3 fall back inside the limit, and the two with a practice excess stay above it.",
+ "stump": "The default path applies the Centre's risk index to each consultant's April to September 2027 operations and refers GS-05, GS-12, GS-16 and GS-21; the step that lands it there is reading each consultant's excess over the expectation as the consultant's own, when operations that opened a tray steriliser 3 had sterilised after its 12 May repair carried several times the rate and steriliser 3, the one chamber for containers over 10 kg, sterilises every tray GS-05 and GS-12 own.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task181 v5": "Architecture 5 placed observed cases at a place of exposure by a probabilistic share of each person's day, a free parameter; this build separates an outcome excess by an exact time-ordered trace from each case to the one resource that handled it, with nothing to apportion, and the candidates are the units judged, not places.",
+  "task121": "task121 v5 judged schools' value added against the primary schools their pupils came from, an intake attribute of each case; this build removes a shared reprocessing resource's exposure, reached by a time-ordered trace through two systems, from each consultant's own effect, and no attribute of the patients carries it."
+ },
+ "lineage": [
+  {
+   "architecture": "draft (never registered): which merchant location gets the acquirer's forensic inspection, exposure counted on contact reads at the device",
+   "fate": "redrawn before registration: pick-one-of-N is the spent decision shape on this objective, and the device (contact reads only expose a card) is applied by reflex by a fraud-literate solver",
+   "driver": "Exposure to a compromised device happens only on the channels that pass a unit's data through that device, so a common-source screen that counts every visit at the site grain dilutes one compromised device among the site's untouched channels."
   },
-  "forum": "operations_desk",
-  "forcing_event": "period_close",
-  "org_family": "local_government",
-  "world": {
-    "geography": "Philippines",
-    "currency": "PHP",
-    "org_type": "city health office",
-    "invented_names": [
-      "Dalisay City",
-      "Dalisay Industrial Estate",
-      "Dalisay Medical Center",
-      "Dalisay Doctors' Hospital",
-      "Dalisay Family Clinic",
-      "Dalisay East Medical Clinic",
-      "Dalisay Diagnostic and Wellness Center",
-      "Laguna Bay Inter-Local Health Zone",
-      "Pinagbuklod",
-      "Kalinaw",
-      "Sinagtala",
-      "Masilaw"
-    ],
-    "people": [
-      "John Figueroa",
-      "Tammy Orozco"
-    ]
+  {
+   "architecture": "v1 (a credit union's counterfeit wave traced to two skimmed terminals behind a dominant common point; reissue count)",
+   "fate": "spent at in-house solver round 1 (2026-10-11): one solver, proxy 94.5, landed 387 by explaining the co-visited plaza sites away as subsets of the pump's victims and re-screening the residual; any further rung is dismissed by the same subset check or opens a fork",
+   "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures."
   },
-  "deliverables": [
-    "dengue_hotspots_mw41_44_2027.pdf",
-    "response_figures_2027.csv"
-  ],
-  "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "A unit's recorded events are filed under the unit where each member lives, while the exposure that produces them falls where the member spends the active hours of the day, so a rise in one destination's exposure surfaces as rises in every origin whose members travel there, in proportion to the members each sends, and leaves the destination quiet in the record because few members live in it; only carrying each origin's excess back through the travel flows finds the unit where the exposure rose.",
-  "driver_concrete": "Dengue cases are notified by home barangay, but Aedes aegypti bites by day, so the 2027 outbreak at the Dalisay Industrial Estate surfaces as working-age rises in the six barangays that send it the most workers in the census place-of-work table, while San Roque, the estate's barangay and home to few of its workers, stays under the plan's trigger; only carrying each barangay's working-age excess back through the place-of-work flows puts the transmission at the estate.",
-  "stump": "The default path counts each barangay's notified cases by the barangay of residence and presents Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; the step that lands it there is taking the home barangay as the place of infection, when Aedes aegypti bites by day and the six barangays' rise is all among working-age residents, the six barangays sending the most workers to the estate in San Roque, so those cases were caught in San Roque, whose own residents number 14 of the window's cases.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task487": "task487 dates each inspection-found event inside its window by the share the previous inspection itself started; this build moves each recorded event to the unit where its member spends the vector's feeding hours, through the census place-of-work flows, and nothing is dated or timed inside a window."
+  {
+   "architecture": "v2 (a regional public health unit's pertussis line list: which local government area the outbreak response team goes to, the fortnight's count completed by each laboratory route's specimen-to-notification delay)",
+   "fate": "spent 2026-10-11: missed at in-house rounds 2 and 3 only while the estimand was open; the portal's determinism QC called the cases-on-file against eventual-count reading a fork, and once PR-07 4.2 filed the eventual count literally, round 4 landed (96.8) by completing each case on its own laboratory's delay; hardening loop 1 (a dated change in the slow laboratory's process) found that any filed criterion choosing the delay history names the step, so the architecture cannot be both literally deterministic and stumped; re-rooted to architecture 3",
+   "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units."
   },
-  "lineage": [
-    {
-      "architecture": "draft (never registered): which merchant location gets the acquirer's forensic inspection, exposure counted on contact reads at the device",
-      "fate": "redrawn before registration: pick-one-of-N is the spent decision shape on this objective, and the device (contact reads only expose a card) is applied by reflex by a fraud-literate solver",
-      "driver": "Exposure to a compromised device happens only on the channels that pass a unit's data through that device, so a common-source screen that counts every visit at the site grain dilutes one compromised device among the site's untouched channels."
-    },
-    {
-      "architecture": "v1 (a credit union's counterfeit wave traced to two skimmed terminals behind a dominant common point; reissue count)",
-      "fate": "spent at in-house solver round 1 (2026-10-11): one solver, proxy 94.5, landed 387 by explaining the co-visited plaza sites away as subsets of the pump's victims and re-screening the residual; any further rung is dismissed by the same subset check or opens a fork",
-      "driver": "Victims of two independent sources are pooled, so the dominant source's victims make the places they also passed look like sources and pull the second source down among ordinary places; only attributing victims to the strongest source first and screening the victims it leaves unexplained separates the second source from the co-visited places, and the exposed population is the union of both sources' exposures."
-    },
-    {
-      "architecture": "v2 (a regional public health unit's pertussis line list: which local government area the outbreak response team goes to, the fortnight's count completed by each laboratory route's specimen-to-notification delay)",
-      "fate": "spent 2026-10-11: missed at in-house rounds 2 and 3 only while the estimand was open; the portal's determinism QC called the cases-on-file against eventual-count reading a fork, and once PR-07 4.2 filed the eventual count literally, round 4 landed (96.8) by completing each case on its own laboratory's delay; hardening loop 1 (a dated change in the slow laboratory's process) found that any filed criterion choosing the delay history names the step, so the architecture cannot be both literally deterministic and stumped; re-rooted to architecture 3",
-      "driver": "When a count is read before its records have finished arriving, the units whose records arrive slowest look quiet exactly while they are surging, so the comparison has to be made on the complete count each unit's own arrival history implies, not on what has arrived, and not on an arrival speed pooled across units."
-    },
-    {
-      "architecture": "v3 (a housing association's community safety log: which estate's winter target-hardening grant, near-repeat burglary runs against each estate's background rate)",
-      "fate": "spent 2026-10-11 at design, never built: the filed back-test that had to select the background projection does not select it on honest data (about ten break-ins per estate-quarter; the usual winter wins the back-test in most seeds, the golden cell in 8 per cent), so no criterion, window or volume closes the method without planting",
-      "driver": "When events arrive both from a steady background and in short self-exciting runs, each run a burst of events close in place and time that ends once it has played out, a unit's recent count overstates its coming count exactly where a run has just passed, so the coming count follows the unit's background rate, which only separating the run events (each within a short distance and interval of an earlier one) from the rest recovers; projecting whole counts by any persistence, seasonal or smoothing rule names a unit whose run is over instead of the unit whose background has risen."
-    },
-    {
-      "architecture": "v4",
-      "fate": "spent 2026-10-21 on measurement at stage 2, after the shipped pack failed Gate F in a blind read",
-      "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
-      "why": "The dial is one-ended: across six settings of the new base's flights a day the golden moves 2.4-fold and every easy route moves with it, holding the separation flat at about 0.74 against the 1.3225 two 1.15x floors need. Gate F fails because pooling each sector's losses over its level-changing traversals, one group-by and one divide, names the committed sector alone over the tolerance on every seasonal window, and only the hours form of that reflex was ever asserted. Gate C fails because the fork table's two live rows were asserted separately and their product forks the call 32 cells to 3. The escape, narrowing the pair definition from the record, is closed: the two candidate denominators' monthly profiles correlate 0.9994 and separating them needs about 425 times the record's losses."
-    },
-    {
-      "architecture": "v4 (an air navigation service's summer 2027 losses of separation by sector, forecast against the safety plan's 40.0 per 100,000 flight hours; Tarvik over the line once the Brekka flights' level crossings are counted)",
-      "fate": "spent 2026-10-31 at the re-root: exposure by crossings rather than flight hours is the field's own collision-risk reasoning and an isolated in-house reader landed the call (Tarvik) on it; one portal determinism return (delay population, pooled-rate grading) on the record",
-      "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
-      "shell": {
-        "question form": "which",
-        "second-sentence opener": "put",
-        "deliverable set": "pptx+csv"
-      }
-    },
-    {
-      "architecture": "v5a (a county constabulary's July to September 2027 violence exceptions, judged against each area's own record for the weather the quarter brought; never built)",
-      "fate": "killed at the draw on 2026-10-31 before any data was cut: its abstraction is task182's approved driver (each unit's level follows a shared outside driver through its own response, and the effect is the gap to that path), and the separation it needed was unrealistic, a doubling of weekend-night violence per 4.6 degrees and a weather anomaly falling on weekends week after week, which reads as planted. The criminology cell itself was then closed: task182's architecture 8 had enumerated sixteen decisive steps there and found every one dead to a standing screen.",
-      "driver": "A unit's expected count, where its events come from a crowd that gathers on only two nights of the week and stays out only while the late evening is warm, is the record's response to the warmth of those nights, so a period of ordinary days and warm weekend nights lifts such units above their own record with nothing changed in them, while every reading of the period's warmth by its days, or by every night alike, leaves them over the line.",
-      "stump": "The default path predicts each area's quarter from its own 2022 to 2026 quarters with the weather read off the days (each day's maximum or mean temperature, or every night's temperature alike) and presents Castle Quarter, Riverside, the University Quarter and Millbrook; the step that lands it there is reading the weather where the violence does not happen, when the violence the weather moves is the night-time economy's on Friday and Saturday nights and the quarter's warmth was in exactly those nights."
-    }
-  ],
-  "notes": "Drawn at the re-root's second pass on 2026-10-31 after the criminology cell closed (lineage v5a). stump_strategy causal_design: the decisive move is interference between units, outcomes recorded in one unit caused by exposure in another through daily travel. gate_g decomposition_attribution: each barangay's correctly reported cases assigned to the barangay where they were caught. Axis values drawn against the window (tasks 464, 273, 268): operations_desk, period_close, local_government, operations_director, monitoring_export. Renamed at the house-fix pass (H21): the private hospital, the clinics and the neighbouring towns, figures unchanged. guard.py surface reads Santo Tomas, a barangay, as a persona.",
-  "registered": "2026-10-31T17:12:15Z",
-  "shell": {
+  {
+   "architecture": "v3 (a housing association's community safety log: which estate's winter target-hardening grant, near-repeat burglary runs against each estate's background rate)",
+   "fate": "spent 2026-10-11 at design, never built: the filed back-test that had to select the background projection does not select it on honest data (about ten break-ins per estate-quarter; the usual winter wins the back-test in most seeds, the golden cell in 8 per cent), so no criterion, window or volume closes the method without planting",
+   "driver": "When events arrive both from a steady background and in short self-exciting runs, each run a burst of events close in place and time that ends once it has played out, a unit's recent count overstates its coming count exactly where a run has just passed, so the coming count follows the unit's background rate, which only separating the run events (each within a short distance and interval of an earlier one) from the rest recovers; projecting whole counts by any persistence, seasonal or smoothing rule names a unit whose run is over instead of the unit whose background has risen."
+  },
+  {
+   "architecture": "v4",
+   "fate": "spent 2026-10-21 on measurement at stage 2, after the shipped pack failed Gate F in a blind read",
+   "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
+   "why": "The dial is one-ended: across six settings of the new base's flights a day the golden moves 2.4-fold and every easy route moves with it, holding the separation flat at about 0.74 against the 1.3225 two 1.15x floors need. Gate F fails because pooling each sector's losses over its level-changing traversals, one group-by and one divide, names the committed sector alone over the tolerance on every seasonal window, and only the hours form of that reflex was ever asserted. Gate C fails because the fork table's two live rows were asserted separately and their product forks the call 32 cells to 3. The escape, narrowing the pair definition from the record, is closed: the two candidate denominators' monthly profiles correlate 0.9994 and separating them needs about 425 times the record's losses."
+  },
+  {
+   "architecture": "v4 (an air navigation service's summer 2027 losses of separation by sector, forecast against the safety plan's 40.0 per 100,000 flight hours; Tarvik over the line once the Brekka flights' level crossings are counted)",
+   "fate": "spent 2026-10-31 at the re-root: exposure by crossings rather than flight hours is the field's own collision-risk reasoning and an isolated in-house reader landed the call (Tarvik) on it; one portal determinism return (delay population, pooled-rate grading) on the record",
+   "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
+   "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "deliverable set": "pptx+csv"
+   }
+  },
+  {
+   "architecture": "v5a (a county constabulary's July to September 2027 violence exceptions, judged against each area's own record for the weather the quarter brought; never built)",
+   "fate": "killed at the draw on 2026-10-31 before any data was cut: its abstraction is task182's approved driver (each unit's level follows a shared outside driver through its own response, and the effect is the gap to that path), and the separation it needed was unrealistic, a doubling of weekend-night violence per 4.6 degrees and a weather anomaly falling on weekends week after week, which reads as planted. The criminology cell itself was then closed: task182's architecture 8 had enumerated sixteen decisive steps there and found every one dead to a standing screen.",
+   "driver": "A unit's expected count, where its events come from a crowd that gathers on only two nights of the week and stays out only while the late evening is warm, is the record's response to the warmth of those nights, so a period of ordinary days and warm weekend nights lifts such units above their own record with nothing changed in them, while every reading of the period's warmth by its days, or by every night alike, leaves them over the line.",
+   "stump": "The default path predicts each area's quarter from its own 2022 to 2026 quarters with the weather read off the days (each day's maximum or mean temperature, or every night's temperature alike) and presents Castle Quarter, Riverside, the University Quarter and Millbrook; the step that lands it there is reading the weather where the violence does not happen, when the violence the weather moves is the night-time economy's on Friday and Saturday nights and the quarter's warmth was in exactly those nights."
+  },
+  {
+   "architecture": "v5 (a Philippine city health office's barangay dengue hotspot response for weeks 41 to 44 of 2027, cases placed where the working residents work through the CBMS place-of-work table)",
+   "fate": "spent 2026-10-31 at stage 4: the FIX_NOW's second judge pass returned NOT_DETERMINISTIC with SEND_BACK; the call (San Roque, Bagumbayan, Maligaya) held only from about a 0.45 share of the day at work, the 8-hour clock share (0.33) filed seven barangays, no shipped fact fixed the exposure basis, and the chart's bars moved with the placement method",
+   "driver": "A unit's recorded events are filed under the unit where each member lives, while the exposure that produces them falls where the member spends the active hours of the day, so a rise in one destination's exposure surfaces as rises in every origin whose members travel there, in proportion to the members each sends, and leaves the destination quiet in the record because few members live in it; only carrying each origin's excess back through the travel flows finds the unit where the exposure rose.",
+   "stump": "The default path counts each barangay's notified cases by the barangay of residence and presents Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; the step that lands it there is taking the home barangay as the place of infection, when Aedes aegypti bites by day and the six barangays' rise is all among working-age residents, the six barangays sending the most workers to the estate in San Roque, so those cases were caught in San Roque, whose own residents number 14 of the window's cases.",
+   "shell": {
     "question form": "where",
     "second-sentence opener": "make",
     "rounding opener": "admissions",
     "deliverable set": "csv+pdf"
+   }
   }
+ ],
+ "notes": "role_family other: the executive director of medical services decides who goes to professional practice review, and no listed family is that office. Shell redrawn with the world: question form who, deliverables docx and csv.",
+ "lineage_shells": [
+  {
+   "question form": "where",
+   "second-sentence opener": "make",
+   "rounding opener": "admissions",
+   "deliverable set": "csv+pdf"
+  }
+ ],
+ "registered": "2026-10-31T20:04:09Z",
+ "shell": {
+  "question form": "who",
+  "second-sentence opener": "answer",
+  "rounding opener": "loads",
+  "deliverable set": "csv+docx"
+ }
 }

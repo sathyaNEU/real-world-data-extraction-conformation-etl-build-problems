@@ -1,10 +1,10 @@
 {
  "task": "task118",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities / generation-capacity-planning (client energy-systems-utilities)",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "each programme's 18:00 reduction read on the record's fourth consecutive event days, the design peak hour being the fourth weekday OP-7 calls (default: Cool Credit about 11 MW on the average or weather-matched reduction; golden: Home Battery Network about 6 MW)",
  "architecture": 5,
@@ -14,17 +14,17 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 26845106, every line ruled in the design note's Leak sweep",
-  "reader": ""
+  "leak_py": "REVIEW on target.zip 1b48e1a3, every line ruled in the design note's Leak sweep",
+  "reader": "read 2 on 90561f0e after OP-7 section 6: no leak, question 6 analytical; the workbooks' save history fixed on 1b48e1a3"
  },
  "duplicate_check": {
   "heart": "PASS (2026-10-31, after the pull at 34adde5e)",
   "surface": "exit 0; promoted task120, task119, task462 for adjudication (see the card's notes)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report_pass10.md (pass 9 FIX_NOW: the ready thermostat and the commercial meters filed in OP-7 section 6)"
  },
  "returned": [
   {
@@ -64,12 +64,12 @@
    "commit": "DRAWN (task118) architecture 5"
   }
  ],
- "resume": "stage 4: the build's fork could not spawn the isolated leak reader and determinism judge (subagent nesting limit), so the main session spawns both together in the background from the briefs at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/w118/stage4_leak_reader_brief.md and /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/w118/stage4_judge_brief.md, on the pack at /home/user/w118/task118 (python3 task118/generator/make.py rebuilds it byte-identically; target.zip 26845106); every finding is fixed in task118/generator and the free gates re-run; then stage 5: ledger row, SHIPPED commit with target.zip and golden/ force-added",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 3): both responses filed the golden, Saltreach Coast at 19, runner-up Hethermoss 4 fewer",
  "portal_status": "",
  "portal_status_date": "",
  "source_note": "",
- "zip_sha256_16": "268451062d10f258"
+ "zip_sha256_16": "1b48e1a3deae2619"
 }

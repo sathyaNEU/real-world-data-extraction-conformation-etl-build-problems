@@ -1,467 +1,221 @@
-"""The payroll world: every clinician position at Corvane's four entities from January 2012 to September 2026, the
-paid FTE each held month by month, the October 2026 moves, the 2026 HCM pay lines and the 2027 staffing plan.
-
-A position is one employee in one job at one cost centre between two dates; a clinician with a dual appointment holds
-two at once. Paid FTE in a month is the position's FTE, prorated in the months a position starts or ends and zero in
-months of unpaid leave."""
-from __future__ import annotations
-
+"""Elkhorn County, Washington: the fixed world the generator draws from (calendars, map, staff, parameters)."""
 import datetime as dt
 import math
-from dataclasses import dataclass, field
 
-import common as K
+import numpy as np
 
-# Sept 2026 FTE by entity and job (before the October 2026 moves)
-TARGET = {
-    "TFH": dict(OBG=4.0, OBL=2.0, CNM=2.0, GSU=4.0, URO=2.0, ENT=2.0, ORT=4.0, EMR=16.0, ANE=7.0, CRNA=8.0, HOS=16.0,
-                CCM=3.0, CAR=2.0, RAD=3.0, NP=9.0, PA=10.0, RES=8.0),
-    "AMC": dict(OBG=6.0, OBL=5.0, MFM=3.0, CNM=3.0, GSU=9.0, ORT=9.0, URO=5.0, ENT=4.0, VAS=4.0, EMR=30.0, ANE=22.0,
-                CRNA=24.0, HOS=30.0, CCM=9.0, CAR=8.0, GAS=4.0, ONC=4.0, NEU=4.0, RAD=9.0, PSY=3.0, NP=22.0, PA=15.0,
-                RES=42.0, FEL=10.0),
-    "CMG": dict(FAM=120.0, INT=62.0, PED=34.0, OBG=26.0, MFM=2.0, CNM=10.0, CAR=18.0, VAS=3.0, GAS=14.0, ONC=14.0,
-                NEU=10.0, PSY=14.0, PSYC=14.0, ORT=18.0, URO=8.0, ENT=8.0, GSU=8.0, NP=92.0, PA=60.0),
-    "BCH": dict(GSU=3.0, ORT=2.0, EMR=11.0, ANE=3.0, CRNA=5.0, HOS=9.0, CAR=1.0, RAD=1.0, NP=10.0, PA=7.0),
-}
-GROWTH = 0.024                      # covered FTE growth a year, 2012 to 2026
-SCALE = 2.0                         # the establishment is twice TARGET (trainees as listed)
-FTE_MIX = {
-    "hosp": ((1.0, .70), (0.9, .10), (0.8, .10), (0.6, .05), (0.5, .05)),
-    "phys": ((1.0, .60), (0.9, .15), (0.8, .15), (0.6, .10)),
-    "clin": ((1.0, .45), (0.9, .15), (0.8, .20), (0.7, .10), (0.6, .10)),
-    "res": ((1.0, 1.0),),
-}
-LEAVE_RATE = {"hosp": 0.0058, "phys": 0.0050, "clin": 0.0075, "res": 0.0}
-HOURS_FULL = 173.33                 # scheduled hours a month at 1.0 FTE (2,080 a year)
-WORLD_MONTHS = K.months(K.WORLD_FIRST, K.HCM_LAST)
+SEED = 1302027
+START = dt.date(2015, 1, 1)          # the simulated history begins here (the districts have stood since 2012)
+RECORD = dt.date(2019, 1, 1)         # the legacy export begins here
+CUTOVER = dt.date(2024, 3, 4)        # the replacement inspection system went live (legacy export ends 1 March)
+END = dt.date(2026, 12, 31)
+PULL = dt.datetime(2027, 1, 8, 9, 40)   # the extracts were pulled on 8 January 2027 (local)
+PLAN_DATE = dt.date(2027, 1, 11)
+PAPER_END = dt.date(2026, 8, 31)     # return officers on paper day sheets until this date, tablets from 1 September
+RETURN_TEAM = dt.date(2022, 2, 1)    # return inspections moved from the district inspectors to a return team
+THRESHOLD = 540                      # the plan's staffing rule: a third return officer above this (2 x 270)
+FEE_OLD, FEE_NEW, FEE_CHANGE = 152, 168, dt.date(2026, 7, 1)
 
+COUNTY = "Elkhorn County"
+DEPT = "Elkhorn County Public Health"
+DIVISION = "Environmental Health Division"
+SEAT = "Marlow"
 
-@dataclass
-class Position:
-    pid: str
-    emp: str
-    job: str
-    entity: str
-    dept: str
-    fte: float
-    start: dt.date
-    end: dt.date | None = None           # last day worked
-    primary: bool = True
-    fte_changes: list = field(default_factory=list)     # (first month, new fte)
-    leave: set = field(default_factory=set)              # (y, m) of unpaid leave
-    hcm_profile: str = ""
-    per_diem: bool = False                               # works shifts as needed; no scheduled FTE
-    moonlight: bool = False                              # a resident's or fellow's additional job (HCM, 2026)
-
-    @property
-    def cc(self):
-        return K.cost_centre(self.entity, self.dept)
-
-    def fte_in(self, y, m):
-        f = self.fte
-        for (yy, mm), new in self.fte_changes:
-            if (y, m) >= (yy, mm):
-                f = new
-        return f
-
-    def paid(self, y, m):
-        """Paid FTE in month (y, m): zero outside the position, prorated in its first and last month."""
-        first = dt.date(y, m, 1)
-        dim = K.days_in_month(y, m)
-        last = dt.date(y, m, dim)
-        if self.start > last or (self.end is not None and self.end < first):
-            return None
-        if (y, m) in self.leave:
-            return 0.0
-        a = max(self.start, first)
-        b = min(self.end, last) if self.end is not None else last
-        days = (b - a).days + 1
-        if self.per_diem:
-            n = self.shifts_held(y, m)
-            return round(n * 12.0 / HOURS_FULL, 4) if n >= 1 else None
-        f = self.fte_in(y, m)
-        if days == dim:
-            return f
-        return max(0.1, round(f * days / dim + 1e-9, 1))
-
-    def held_share(self, y, m):
-        """Share of the month's days the position is held (1 for a whole month)."""
-        first = dt.date(y, m, 1)
-        dim = K.days_in_month(y, m)
-        last = dt.date(y, m, dim)
-        if self.start > last or (self.end is not None and self.end < first):
-            return 0.0
-        a = max(self.start, first)
-        b = min(self.end, last) if self.end is not None else last
-        return ((b - a).days + 1) / dim
-
-    def shifts(self, y, m):
-        """A per-diem clinician's twelve-hour shifts in a month."""
-        r = K.stream("shifts", self.pid, y, m)
-        return int(r.integers(1, 8)) if r.random() < 0.88 else 0
-
-    def shifts_held(self, y, m):
-        """The whole shifts worked while the position was held in the month."""
-        return int(round(self.shifts(y, m) * self.held_share(y, m)))
+# ---------------------------------------------------------------- the familiarity truth (never shipped)
+F0, F1 = 1.85, 0.80          # first visit by this inspector to this permit, second visit; third on: nothing
+GAMMA_SD = 0.12              # inspectors' own criteria, a modest spread
+THETA_SD = 0.50              # establishments within a risk category
+BASE = {1: 0.0214, 2: 0.0403, 3: 0.0706}    # unsatisfactory share of a familiar visit by an average inspector
+REOPEN_2021 = 0.30           # the first half of 2021, kitchens reopening after the 2020 closures
+COVID_STOP = (dt.date(2020, 3, 23), dt.date(2020, 6, 26))   # routine inspections suspended
 
 
-def _target(entity, job, y, m):
-    base = TARGET[entity].get(job, 0.0) * (1.0 if job in ("RES", "FEL") else SCALE)
-    if not base:
-        return 0.0
-    if job in ("RES", "FEL"):
-        return base
-    t = y + (m - 0.5) / 12.0
-    if entity == "BCH":
-        joined = K.ENTITIES["BCH"]["joined"]
-        if dt.date(y, m, 1) < joined:
-            return 0.0
-        return base * math.exp(GROWTH * 0.6 * (t - 2026.71))
-    return base * math.exp(GROWTH * (t - 2026.71))
+def lg(p):
+    return math.log(p / (1 - p))
 
 
-def _draw_fte(rng, mix):
-    vals, probs = zip(*FTE_MIX[mix])
-    return float(vals[int(rng.choice(len(vals), p=probs))])
+def expit(x):
+    return 1.0 / (1.0 + math.exp(-x))
 
 
-class World:
-    def __init__(self):
-        self.positions: list[Position] = []
-        self._emp_seq = 104210
-        self._pid_seq = 20480
-
-    def new_emp(self, rng):
-        self._emp_seq += int(rng.integers(1, 9))
-        return "%06d" % self._emp_seq
-
-    def new_pid(self, rng):
-        self._pid_seq += int(rng.integers(1, 4))
-        return "P%06d" % self._pid_seq
+# ---------------------------------------------------------------- calendars
+def _nth_weekday(y, m, wd, n):
+    d = dt.date(y, m, 1)
+    d += dt.timedelta(days=(wd - d.weekday()) % 7)
+    return d + dt.timedelta(weeks=n - 1)
 
 
-def _dept_for(rng, entity, job):
-    opts = [d for d in K.DEPTS[entity] if job in d[2]]
-    if entity == "BCH" and job == "FAM":
-        raise ValueError("BCH family medicine opens in October 2026 only")
-    if len(opts) == 1:
-        return opts[0][0]
-    # the first department holding the job carries most of it
-    w = [3.0 if k == 0 else 1.0 for k in range(len(opts))]
-    if entity == "CMG" and job in ("NP", "PA"):
-        w = [2.0, 1.5, 1.2, 1.2, 1.0, 1.0, 0.6, 0.6, 0.6, 0.5, 0.6, 0.6, 0.6, 0.6][:len(opts)]
-    w = [x / sum(w) for x in w]
-    return opts[int(rng.choice(len(opts), p=w))][0]
+def _last_weekday(y, m, wd):
+    d = dt.date(y, m + 1, 1) - dt.timedelta(days=1) if m < 12 else dt.date(y, 12, 31)
+    return d - dt.timedelta(days=(d.weekday() - wd) % 7)
 
 
-def _profile(rng, job):
-    profs = K.JOB[job][5]
-    if len(profs) == 1:
-        return profs[0][0]
-    return profs[0][0] if rng.random() < 0.8 else profs[1][0]
+def _observed(d):
+    if d.weekday() == 5:
+        return d - dt.timedelta(days=1)
+    if d.weekday() == 6:
+        return d + dt.timedelta(days=1)
+    return d
 
 
-def build():
-    """Simulate every position month by month; returns the World."""
-    W = World()
-    rng = K.stream("roster")
-    slots = [(e, j) for e in K.ENTITY_ORDER for j in TARGET[e] if j not in ("RES", "FEL")]
-    active = {s: [] for s in slots}
-    first_y, first_m = K.WORLD_FIRST
-    for (y, m) in WORLD_MONTHS:
-        dim = K.days_in_month(y, m)
-        for (e, j) in slots:
-            mix = K.JOB[j][6]
-            # departures this month
-            keep = []
-            for p in active[(e, j)]:
-                if rng.random() < LEAVE_RATE[mix]:
-                    p.end = dt.date(y, m, int(rng.integers(1, dim + 1)))
-                else:
-                    keep.append(p)
-            active[(e, j)] = keep
-            # FTE changes and unpaid leave
-            for p in keep:
-                if rng.random() < 0.004:
-                    nf = round(min(1.0, max(0.5, p.fte_in(y, m) + float(rng.choice([-0.2, -0.1, 0.1, 0.2])))), 1)
-                    p.fte_changes.append(((y, m), nf))
-                if rng.random() < 0.0012:
-                    for k in range(int(rng.integers(1, 4))):
-                        mm, yy = m + k, y
-                        if mm > 12:
-                            mm, yy = mm - 12, y + 1
-                        p.leave.add((yy, mm))
-            # hires up to the target
-            target = _target(e, j, y, m)
-            have = sum(p.fte_in(y, m) for p in active[(e, j)])
-            start_world = (y, m) == (first_y, first_m)
-            joining = e == "BCH" and dt.date(y, m, 1) == K.ENTITIES["BCH"]["joined"]
-            while have < target - 0.45:
-                f = _draw_fte(rng, mix)
-                start = dt.date(y, m, int(rng.integers(1, dim + 1)))
-                if start_world:
-                    start = dt.date(y, m, 1) - dt.timedelta(days=int(rng.integers(30, 4000)))
-                elif joining:
-                    start = K.ENTITIES["BCH"]["joined"]
-                p = Position(W.new_pid(rng), W.new_emp(rng), j, e, _dept_for(rng, e, j), f, start)
-                p.hcm_profile = _profile(rng, j)
-                W.positions.append(p)
-                active[(e, j)].append(p)
-                have += f
-    # residents and fellows: cohorts on 1 July, three-year residencies and two-year fellowships
-    rr = K.stream("trainees")
-    for e, job, n_per_year, years in (("AMC", "RES", 14, 3), ("TFH", "RES", 3, 3), ("AMC", "FEL", 5, 2)):
-        if job == "RES" and e == "TFH":
-            first_cohort = 2018      # the family medicine residency took its first residents in July 2018
-        else:
-            first_cohort = 2009
-        for cy in range(first_cohort, 2027):
-            n = n_per_year if not (e == "TFH" and cy < 2020) else 2
-            for _ in range(n):
-                start = dt.date(cy, 7, 1)
-                end = dt.date(cy + years, 6, 30)
-                if end < dt.date(2012, 1, 1) or start > dt.date(2026, 9, 30):
-                    continue
-                p = Position(W.new_pid(rr), W.new_emp(rr), job, e, "6910", 1.0, start, end)
-                p.hcm_profile = _profile(rr, job)
-                if job == "RES" and cy + years - 1 <= 2026 and rr.random() < 0.3:
-                    p.hcm_profile = "JP-40102" if rr.random() < 0.2 else p.hcm_profile
-                W.positions.append(p)
-    _per_diem(W)
-    _dual_appointments(W)
-    _historic_transfers(W)
-    W.movers = _october_moves(W)
-    _moonlighting(W)
-    W.graduates, W.payouts = _graduates(W)
-    W.by_emp = {}
-    for p in W.positions:
-        W.by_emp.setdefault(p.emp, []).append(p)
-    return W
+def holidays(y):
+    """Elkhorn County's observed holidays for year y, name by date."""
+    h = {
+        _observed(dt.date(y, 1, 1)): "New Year's Day",
+        _nth_weekday(y, 1, 0, 3): "Martin Luther King Jr. Day",
+        _nth_weekday(y, 2, 0, 3): "Presidents' Day",
+        _last_weekday(y, 5, 0): "Memorial Day",
+        _observed(dt.date(y, 7, 4)): "Independence Day",
+        _nth_weekday(y, 9, 0, 1): "Labor Day",
+        _observed(dt.date(y, 11, 11)): "Veterans Day",
+        _nth_weekday(y, 11, 3, 4): "Thanksgiving Day",
+        _nth_weekday(y, 11, 3, 4) + dt.timedelta(days=1): "Day after Thanksgiving",
+        _observed(dt.date(y, 12, 25)): "Christmas Day",
+    }
+    if y >= 2022:
+        h[_observed(dt.date(y, 6, 19))] = "Juneteenth"
+    return h
 
 
-def _active_on(W, d, entity=None, job=None):
-    out = []
-    for p in W.positions:
-        if p.start <= d and (p.end is None or p.end >= d):
-            if (entity is None or p.entity == entity) and (job is None or p.job == job) and (d.year, d.month) not in p.leave:
-                out.append(p)
-    return out
+HOLIDAYS = {}
+for _y in range(2014, 2028):
+    HOLIDAYS.update(holidays(_y))
 
 
-PER_DIEM = {"TFH": (("EMR", "6310", 3), ("HOS", "6510", 2), ("NP", "6610", 2)),
-            "AMC": (("EMR", "6310", 4), ("HOS", "6510", 4), ("PA", "6610", 3), ("CRNA", "6410", 2)),
-            "BCH": (("EMR", "6310", 3), ("HOS", "6510", 2), ("NP", "6610", 2)),
-            "CMG": (("FAM", "7020", 4), ("NP", "7020", 5), ("PA", "7020", 3))}
+def working(d):
+    return d.weekday() < 5 and d not in HOLIDAYS
 
 
-def _per_diem(W):
-    """Per-diem clinicians: employed, no scheduled FTE, paid for the twelve-hour shifts they work. Each pool keeps
-    its number of clinicians from 2012, a leaver replaced the next month."""
-    rng = K.stream("per-diem")
-    for e in K.ENTITY_ORDER:
-        joined = K.ENTITIES[e]["joined"] or dt.date(2012, 1, 1)
-        for job, dept, n in PER_DIEM[e]:
-            for _ in range(n):
-                start = max(joined, dt.date(2012, 1, 1) - dt.timedelta(days=int(rng.integers(0, 900))))
-                while start <= dt.date(2026, 9, 30):
-                    end = start + dt.timedelta(days=int(rng.integers(400, 3000)))
-                    p = Position(W.new_pid(rng), W.new_emp(rng), job, e, dept, 0.0, start,
-                                 end if end <= dt.date(2026, 9, 30) else None)
-                    p.per_diem = True
-                    p.hcm_profile = _profile(rng, job)
-                    W.positions.append(p)
-                    if p.end is None:
-                        break
-                    start = p.end + dt.timedelta(days=int(rng.integers(20, 50)))
+def add_working(d, n):
+    while n > 0:
+        d += dt.timedelta(days=1)
+        if working(d):
+            n -= 1
+    return d
 
 
-MOONLIGHT = (("AMC", "HOS", "6510", "JP-20182"), ("TFH", "HOS", "6510", "JP-20182"), ("BCH", "HOS", "6510", "JP-20182"),
-             ("BCH", "EMR", "6310", "JP-20162"), ("TFH", "EMR", "6310", "JP-20162"), ("CMG", "FAM", "7020", "JP-20191"))
+def working_between(a, b):
+    """County working days after a up to and including b."""
+    n, d = 0, a
+    while d < b:
+        d += dt.timedelta(days=1)
+        if working(d):
+            n += 1
+    return n
 
 
-def _moonlighting(W):
-    """From the HCM go-live in January 2026 residents and fellows in their later years take an additional job for
-    paid shifts (nocturnist and after-hours rotas), at 0.2 FTE; the legacy payroll paid such shifts on the trainee's
-    own job."""
-    rng = K.stream("moonlighting")
-    trainees = sorted((p for p in W.positions if p.job in ("RES", "FEL") and p.end is not None and
-                       p.end >= dt.date(2026, 7, 1) and p.start <= dt.date(2025, 7, 1)), key=lambda p: p.pid)
-    picks = [trainees[int(i)] for i in sorted(rng.choice(len(trainees), size=min(18, len(trainees)), replace=False))]
-    for k, t in enumerate(picks):
-        e, job, dept, prof = MOONLIGHT[k % len(MOONLIGHT)]
-        start = dt.date(2026, int(rng.integers(1, 8)), int(rng.integers(1, 29)))
-        end = min(t.end, dt.date(2026, 12, 31))
-        q = Position(W.new_pid(rng), t.emp, job, e, dept, 0.2, start, end if end < dt.date(2026, 10, 1) else None,
-                     primary=False)
-        q.moonlight = True
-        q.hcm_profile = prof
-        W.positions.append(q)
+def dst(day_local):
+    """Pacific daylight time in force on this local date (second Sunday of March to first Sunday of November)."""
+    y = day_local.year
+    return _nth_weekday(y, 3, 6, 2) <= day_local < _nth_weekday(y, 11, 6, 1)
 
 
-# the June 2026 graduates the System hired into attending vacancies, by the training the vacancy takes
-GRAD_FIT = {"HOS": (("AMC", "RES"), ("TFH", "RES")), "EMR": (("AMC", "RES"),), "INT": (("AMC", "RES"),),
-            "FAM": (("TFH", "RES"),), "CCM": (("AMC", "FEL"),), "CAR": (("AMC", "FEL"),)}
-GRAD_CELLS = [(e, mm) for e in ("TFH", "AMC", "CMG") for mm in (7, 8, 9)]
+def to_utc(t_local):
+    return t_local + dt.timedelta(hours=7 if dst(t_local.date()) else 8)
 
 
-def _graduates(W):
-    """Residents and fellows finish on 30 June. The System hired some of its June 2026 graduates into attending
-    vacancies that opened from July to September: the attending position is the vacancy's (the same position, start
-    date and FTE), held under the graduate's own employee id. HCM pays each worker whose position ends a termination
-    payout line, with no hours, in a later pay run: the graduates in July, August or September, attendings and other
-    clinicians who left in 2026 the month after they left. Returns the hired graduates [(GME position, attending
-    position, payout month)] and every payout [(position, (y, m))]."""
-    rng = K.stream("graduates")
-    grads = sorted((p for p in W.positions if p.job in ("RES", "FEL") and p.end == dt.date(2026, 6, 30)),
-                   key=lambda p: p.pid)
-    owners = {}
-    for p in W.positions:
-        owners.setdefault(p.emp, []).append(p)
-    hires = sorted((p for p in W.positions if p.job in GRAD_FIT and p.primary and not p.per_diem and not p.moonlight
-                    and dt.date(2026, 7, 1) <= p.start <= dt.date(2026, 9, 30) and len(owners[p.emp]) == 1),
-                   key=lambda p: p.pid)
-    used, hired, payouts = set(), [], []
-    for e, mm in GRAD_CELLS:
-        free = [p for p in hires if p.entity == e and p.pid not in used]
-        # a vacancy filled in an earlier month, else one filled early in the month, else any in the month
-        cands = ([p for p in free if p.start.month < mm] or [p for p in free if p.start.month == mm and p.start.day <= 10]
-                 or [p for p in free if p.start.month == mm])
-        if not cands:
-            continue
-        h = cands[int(rng.integers(0, len(cands)))]
-        pool = [g for g in grads if g.pid not in used and (g.entity, g.job) in GRAD_FIT[h.job]]
-        if not pool:
-            continue
-        g = pool[int(rng.integers(0, len(pool)))]
-        used.update((h.pid, g.pid))
-        h.emp = g.emp
-        hired.append((g, h, (2026, mm)))
-        payouts.append((g, (2026, mm)))
-    for g in grads:
-        if g.pid not in used:
-            payouts.append((g, (2026, 7 if rng.random() < 0.6 else 8)))
-    owners = {}
-    for p in W.positions:
-        owners.setdefault(p.emp, []).append(p)
-    for p in sorted(W.positions, key=lambda p: p.pid):
-        if p.per_diem or p.moonlight or p.job in ("RES", "FEL") or p.end is None:
-            continue
-        if dt.date(2026, 1, 1) <= p.end <= dt.date(2026, 8, 31) and \
-                not any(q is not p and q.start == p.end + dt.timedelta(days=1) for q in owners[p.emp]):
-            payouts.append((p, (2026, p.end.month + 1)))
-    return hired, payouts
+# ---------------------------------------------------------------- the county map (km)
+TOWNS = [  # name, x, y, weight, spread
+    ("Marlow", 31.0, 22.0, 0.44, 4.2),
+    ("Kessing", 12.0, 33.0, 0.10, 2.4),
+    ("Ardell", 47.0, 35.0, 0.09, 2.3),
+    ("Wexby", 50.0, 10.0, 0.08, 2.1),
+    ("Norrow", 18.0, 9.0, 0.07, 2.0),
+    ("Callan", 7.0, 18.0, 0.05, 1.8),
+    ("Torvik", 39.0, 41.0, 0.05, 1.7),
+    ("Elsby", 56.0, 24.0, 0.04, 1.6),
+    (None, 30.0, 22.0, 0.08, 16.0),        # rural roadside, farm stands, the lake resorts
+]
+ZIP = {"Marlow": ("98362", "98363", "98365"), "Kessing": ("98371",), "Ardell": ("98374",), "Wexby": ("98381",),
+       "Norrow": ("98384",), "Callan": ("98388",), "Torvik": ("98391",), "Elsby": ("98395",), None: ("98397",)}
+
+# the eleven 2026 districts (drawn in 2012) and the nine of 2027, as seeds of a nearest-seed map
+SEEDS_2026 = {1: (27.5, 25.5), 2: (34.5, 25.5), 3: (27.5, 18.5), 4: (34.5, 18.5), 5: (12.0, 32.0),
+              6: (46.0, 34.0), 7: (49.0, 12.0), 8: (17.0, 10.0), 9: (8.0, 19.0), 10: (40.0, 41.0),
+              11: (56.0, 23.0)}
+SEEDS_2027 = {"A": (25.5, 21.0), "B": (35.5, 22.5), "C": (31.0, 15.5), "D": (14.0, 29.0), "E": (45.0, 37.5),
+              "F": (50.0, 13.5), "G": (14.0, 12.0), "H": (31.0, 30.5), "J": (52.5, 29.0)}
+DISTRICT_2027_NAME = {"A": "Marlow West", "B": "Marlow East", "C": "Marlow South and Harborview",
+                      "D": "Kessing and the North Valley", "E": "Ardell and Torvik", "F": "Wexby and the South Shore",
+                      "G": "Norrow and Callan", "H": "Marlow North and Lake Road", "J": "Elsby and the East Hills"}
 
 
-def _dual_appointments(W):
-    """A few specialists hold a second position at another entity: CMG cardiologists, urologists and orthopaedic
-    surgeons covering the hospitals' clinics and on-call rotas, and Alderwick radiologists reading for Brennick."""
-    rng = K.stream("dual")
-    plan = [("CMG", "CAR", "TFH", "6530"), ("CMG", "CAR", "BCH", "6510"), ("CMG", "URO", "TFH", "6210"),
-            ("CMG", "ORT", "BCH", "6210"), ("CMG", "GAS", "AMC", "6535"), ("AMC", "RAD", "BCH", "6550"),
-            ("CMG", "ONC", "TFH", "6530"), ("AMC", "CAR", "CMG", "7510")]
-    for k, (e, j, e2, dept2) in enumerate(plan):
-        start = dt.date(2016 + k % 6, 1 + (3 * k) % 12, 1)
-        if e2 == "BCH" and start < K.ENTITIES["BCH"]["joined"]:
-            start = dt.date(2019, 9, 1) + dt.timedelta(days=61 * k)
-        cands = [p for p in _active_on(W, start, e, j)
-                 if p.end is None and p.fte_in(start.year, start.month) >= 0.9 and p.primary]
-        cands.sort(key=lambda p: p.pid)
-        p = cands[int(rng.integers(0, len(cands)))]
-        split = 0.3 if k % 3 else 0.2
-        p.fte_changes.append(((start.year, start.month), round(p.fte_in(start.year, start.month) - split, 1)))
-        q = Position(W.new_pid(rng), p.emp, j, e2, dept2, split, start, None, primary=False)
-        q.hcm_profile = p.hcm_profile
-        W.positions.append(q)
+def nearest(seeds, x, y):
+    return min(seeds, key=lambda k: (seeds[k][0] - x) ** 2 + (seeds[k][1] - y) ** 2)
 
 
-def _historic_transfers(W):
-    """Clinicians who changed entity before 2026: a hospitalist or emergency physician moving between the hospitals
-    keeps the employee id and takes a new position."""
-    rng = K.stream("transfers")
-    moves = [("AMC", "HOS", "TFH", "6510", dt.date(2018, 3, 5)), ("TFH", "EMR", "AMC", "6310", dt.date(2019, 10, 14)),
-             ("AMC", "NP", "TFH", "6610", dt.date(2021, 2, 1)), ("CMG", "FAM", "CMG", "7120", dt.date(2022, 5, 16)),
-             ("AMC", "HOS", "BCH", "6510", dt.date(2023, 8, 7)), ("TFH", "CRNA", "AMC", "6410", dt.date(2024, 4, 22))]
-    for e, j, e2, dept2, d in moves:
-        cands = [p for p in _active_on(W, d, e, j) if p.end is None and p.primary and not p.per_diem]
-        cands.sort(key=lambda p: p.pid)
-        p = cands[int(rng.integers(0, len(cands)))]
-        p.end = d - dt.timedelta(days=1)
-        q = Position(W.new_pid(rng), p.emp, j, e2, dept2, p.fte_in(d.year, d.month), d)
-        q.hcm_profile = p.hcm_profile
-        W.positions.append(q)
+# ---------------------------------------------------------------- staff
+# name, middle initial, employee number, role, hire date, separation date, district held (from, to, district)
+STAFF = [
+    ("Mariah", "J", "Ramirez", "E31876", "Environmental Health Specialist II", dt.date(2006, 9, 11), None, [(None, None, 1)]),
+    ("Erik", "T", "Mayer", "E20419", "Environmental Health Specialist III", dt.date(1997, 6, 2), dt.date(2026, 12, 31), [(None, None, 2)]),
+    ("Tina", "L", "Rivera", "E44102", "Environmental Health Specialist I", dt.date(2020, 11, 16), None, [(dt.date(2021, 2, 1), None, 3)]),
+    ("Andrew", "P", "Mason", "E27733", "Environmental Health Specialist III", dt.date(1996, 3, 18), dt.date(2026, 12, 31), [(None, None, 4)]),
+    ("Timothy", "R", "Collins", "E46590", "Environmental Health Specialist I", dt.date(2023, 2, 13), None, [(dt.date(2023, 5, 1), None, 5)]),
+    ("Luis", "A", "Saunders", "E35248", "Environmental Health Specialist II", dt.date(2009, 1, 5), None, [(None, None, 6)]),
+    ("Kimberly", "D", "Mata", "E41957", "Environmental Health Specialist II", dt.date(2018, 12, 3), None, [(dt.date(2019, 3, 4), None, 7)]),
+    ("Jacob", "W", "Curtis", "E33061", "Environmental Health Specialist II", dt.date(2007, 8, 20), None, [(None, None, 8)]),
+    ("Angela", "M", "Gonzalez", "E38814", "Environmental Health Specialist II", dt.date(2011, 4, 4), None, [(None, None, 9)]),
+    ("Nicole", "S", "Charles", "E22685", "Environmental Health Specialist II", dt.date(2008, 10, 20), None, [(None, None, 10)]),
+    ("Jason", "E", "Weaver", "E36297", "Environmental Health Specialist II", dt.date(2013, 2, 25), None, [(None, None, 11)]),
+    ("George", "H", "Dixon", "E19034", "Environmental Health Specialist III", dt.date(1990, 5, 7), dt.date(2019, 2, 28), [(None, dt.date(2019, 3, 3), 7)]),
+    ("Brandon", "K", "Lloyd", "E21160", "Environmental Health Specialist III", dt.date(1994, 9, 12), dt.date(2021, 1, 29), [(None, dt.date(2021, 1, 31), 3)]),
+    ("Paul", "F", "Russell", "E23378", "Environmental Health Specialist III", dt.date(1999, 1, 11), dt.date(2023, 4, 28), [(None, dt.date(2023, 4, 30), 5)]),
+    ("Benjamin", "O", "Flores", "E45071", "Return Inspection Officer", dt.date(2022, 1, 10), None, []),
+    ("Diane", "C", "Diaz", "E44836", "Return Inspection Officer", dt.date(2021, 12, 6), None, []),
+    ("Lisa", "N", "Clarke", "E39420", "Plan Review Specialist", dt.date(2016, 7, 18), None, []),
+    ("Sara", "B", "Hughes", "E42213", "Program Assistant", dt.date(2019, 10, 7), None, []),
+    ("Valerie", "G", "Wood", "E30552", "Food Safety Program Manager", dt.date(2005, 2, 14), None, []),
+    ("Teresa", "M", "Hansen", "E24917", "Environmental Health Director", dt.date(2001, 11, 5), None, []),
+]
+RETURN_OFFICER = {"north": "E45071", "south": "E44836"}     # Flores the north districts 1, 2, 3, 5, 10; Diaz the rest
+NORTH = {1, 2, 3, 5, 10}
+RETIRING_2026 = (2, 4)               # Erik Mayer and Andrew Mason retire on 31 December 2026
+PLAN_REVIEWER = "E39420"
+CLERK = "E42213"
+
+# 2027: the nine districts and the inspector named for each (Appendix A of the plan)
+INSPECTOR_2027 = {"A": "E31876", "B": "E27733", "C": "E33061", "D": "E44102", "E": "E35248", "F": "E41957",
+                  "G": "E38814", "H": "E46590", "J": "E36297"}
 
 
-def _october_moves(W):
-    """1 October 2026: Tolliver Falls hospitalists into Alderwick's hospitalist group, two medical group family
-    physicians into Brennick's new rural health clinic, Alderwick CRNAs into the medical group's ambulatory surgery
-    centre, and a Brennick emergency physician to Tolliver Falls."""
-    rng = K.stream("october")
-    d = K.MOVE_DATE
-    sept = dt.date(2026, 9, 15)
-    out = []
-    for e, j, n, e2, dept2 in (("TFH", "HOS", 3, "AMC", "6510"), ("CMG", "FAM", 2, "BCH", "7110"),
-                               ("AMC", "CRNA", 4, "CMG", "7810"), ("BCH", "EMR", 1, "TFH", "6310")):
-        cands = [p for p in _active_on(W, sept, e, j) if p.end is None and p.primary and not p.per_diem
-                 and not any(q.emp == p.emp and q is not p for q in W.positions if q.end is None)]
-        cands.sort(key=lambda p: p.pid)
-        idx = rng.choice(len(cands), size=n, replace=False)
-        for i in sorted(int(x) for x in idx):
-            p = cands[i]
-            p.end = d - dt.timedelta(days=1)
-            q = Position(W.new_pid(rng), p.emp, j, e2, dept2, p.fte_in(2026, 9), d)
-            q.hcm_profile = p.hcm_profile
-            W.positions.append(q)
-            out.append((p, q))
-    return out
+def initials(emp):
+    for s in STAFF:
+        if s[3] == emp:
+            return s[0][0] + s[1] + s[2][0]
+    raise KeyError(emp)
 
 
-def position_months(W, first=K.WORLD_FIRST, last=K.HCM_LAST):
-    """(position, y, m, paid FTE) for every month a position is held."""
-    out = []
-    for p in W.positions:
-        if p.moonlight:
-            continue
-        for (y, m) in K.months(first, last):
-            f = p.paid(y, m)
-            if f is not None:
-                out.append((p, y, m, f))
-    return out
+def full_name(emp):
+    for s in STAFF:
+        if s[3] == emp:
+            return "%s %s" % (s[0], s[2])
+    raise KeyError(emp)
 
 
-def home_entity(W, emp, on=K.HCM_RUN):
-    """The employee's home entity as HCM holds it on a date: the entity of the primary position held then, or of the
-    last primary position held."""
-    held = [p for p in W.by_emp[emp] if p.primary]
-    cur = [p for p in held if p.start <= on and (p.end is None or p.end >= on)]
-    if cur:
-        return cur[0].entity
-    held.sort(key=lambda p: (p.end or dt.date(2100, 1, 1), p.pid))
-    return held[-1].entity
+def district_holder(d, day):
+    """The employee number holding district d on this day."""
+    for s in STAFF:
+        for a, b, dd in s[7]:
+            if dd == d and (a is None or a <= day) and (b is None or day <= b):
+                return s[3]
+    raise KeyError((d, day))
 
 
-def plan_2027(W):
-    """The 2027 staffing plan: covered FTE by entity, class and month, built by Finance from the October 2026
-    roster and the recruitment plan."""
-    rng = K.stream("plan")
-    oct_ = dt.date(2026, 10, 15)
-    base = {}
-    for p in W.positions:
-        cls = K.CLASS_OF_JOB[p.job]
-        if cls is None:
-            continue
-        if p.moonlight:
-            continue
-        if p.start <= oct_ and (p.end is None or p.end >= oct_):
-            f = p.fte_in(2026, 10) if not p.per_diem else 0.25
-            base[(p.entity, cls)] = base.get((p.entity, cls), 0.0) + f
-    plan = {}
-    for (e, cls), f in sorted(base.items()):
-        level = round(f, 1)
-        row = []
-        for mth in range(1, 13):
-            if rng.random() < 0.22:
-                step = float(rng.choice([0.5, 0.8, 1.0, 1.0, 1.6, 2.0]) if f > 20 else rng.choice([0.4, 0.6, 1.0]))
-                level = round(level + (step if rng.random() < 0.75 else -step / 2), 1)
-            row.append(max(0.5, level))
-        plan[(e, cls)] = row
-    return plan
+def covering_order(d):
+    """The districts whose inspectors cover district d on leave days, nearest first."""
+    sx, sy = SEEDS_2026[d]
+    return sorted((k for k in SEEDS_2026 if k != d),
+                  key=lambda k: (SEEDS_2026[k][0] - sx) ** 2 + (SEEDS_2026[k][1] - sy) ** 2)[:4]
+
+
+COVER_WEIGHTS = (0.4, 0.3, 0.2, 0.1)
+
+
+def rng(*keys):
+    """One independent stream per purpose, so a change to one record set never moves another."""
+    h = SEED
+    for k in keys:
+        for ch in str(k):
+            h = (h * 1000003 + ord(ch)) % (2 ** 61 - 1)
+    return np.random.default_rng(h)

@@ -1,1101 +1,237 @@
-"""task156 checks: the call and its corridor, the three rules executed on the generator's clean truth, the shipped HOW
-sentences executed literally, every semantic fork row, the closure axes that can move, the ladder and its out-of-sample
-record, the three asks with their stops and devices, the separation line, the realism sweep, the input gates and the
-distractors. Run by build.py after the goldens are written; exits 1 on any failure.
+"""task156 assertions on the built pack: the input gates, the three rules on the generator's clean truth (R1 to R3),
+the semantic fork rows (SF1 to SF20) on the shipped files, the rungs, the ask devices and their margins, the
+separation of the asks from the call, and the realism sweep. Exit 1 on any failure.
 
     python3 task156/generator/checks.py"""
 from __future__ import annotations
 
 import csv
-import datetime as dt
 import json
-import math
 import os
-import re
-import shutil
 import sys
-import tempfile
-import zipfile
 
 import numpy as np
-import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import asks as AK           # noqa: E402
-import build as BLD         # noqa: E402
-import calc as C            # noqa: E402
-import common as K          # noqa: E402
-import deliver as DL        # noqa: E402
-import docs as DOC          # noqa: E402
-import records as R         # noqa: E402
-import world as WD          # noqa: E402
+import asks as AK      # noqa: E402
+import estim as E      # noqa: E402
+import hydro as H      # noqa: E402
+import records as R    # noqa: E402
+import world as W      # noqa: E402
 
 TASK = os.path.dirname(HERE)
-RESULTS = []
-GOLD = {"web": 5, "mobile": 2, "data": 6, "databases": 4, "devops": 4, "gamedev": 2, "security": 4, "embedded": 3,
-        "scicomp": 2}
-REQUEST, GAP = 32, 6
-RIVALS = {"naive12": 24, "naive9": 24, "share_trend": 23, "hours_trend": 23, "pace_censored": 47, "flat24": 41,
-          "flat12": 40, "flat3": 38, "flat24_open": 24, "pool_trend_all": 23, "pool_trend12": 22, "no_truncation": 27}
-BELOW = ("naive12", "naive9", "share_trend", "hours_trend", "flat24_open", "pool_trend_all", "pool_trend12",
-         "no_truncation")
-ABOVE = ("pace_censored", "flat24", "flat12", "flat3")
-CONVERGENT_EXCLUDE = set(RIVALS) | {"golden"}
-# the ask figures as built (a parameter change that moves one fails here first)
-EXPECT = {
-    "A": {"data 7": "97.8", "data 8": "97.3", "data 9": "97.4", "databases 7": "97.1", "databases 8": "97.5",
-          "databases 9": "96.4", "devops 7": "98.0", "devops 8": "96.8", "devops 9": "96.7", "embedded 7": "91.4",
-          "embedded 8": "87.7", "embedded 9": "87.1", "gamedev 7": "97.6", "gamedev 8": "96.8", "gamedev 9": "96.2",
-          "mobile 7": "97.2", "mobile 8": "96.4", "mobile 9": "96.3", "scicomp 7": "85.6", "scicomp 8": "90.0",
-          "scicomp 9": "81.4", "security 7": "91.8", "security 8": "89.3", "security 9": "88.1", "web 7": "97.9",
-          "web 8": "97.0", "web 9": "97.1"},
-    "B": {"data 1": 1725, "data 2": 1719, "data 3": 1509, "databases 1": 1643, "databases 2": 1631,
-          "databases 3": 1280, "devops 1": 1624, "devops 2": 1616, "devops 3": 1352, "embedded 1": 898,
-          "embedded 2": 870, "embedded 3": 1531, "gamedev 1": 751, "gamedev 2": 622, "gamedev 3": 535,
-          "mobile 1": 879, "mobile 2": 827, "mobile 3": 540, "scicomp 1": 706, "scicomp 2": 683, "scicomp 3": 1382,
-          "security 1": 1220, "security 2": 1387, "security 3": 2104, "web 1": 2475, "web 2": 2893, "web 3": 2260},
-    "C": {"data": "55.5", "databases": "58.4", "devops": "60.2", "embedded": "76.0", "gamedev": "53.8",
-          "mobile": "42.1", "scicomp": "76.8", "security": "72.0", "web": "39.7"},
-}
-MAIN_FILES = [R.F_INBOX, R.F_INBOX_PRE, R.F_OLD, R.F_ROSTER, R.F_FLAGSUM, R.F_POSTS, R.F_PLAN, R.F_REGISTER,
-              DOC.F_CHARTER, DOC.F_STANDARDS, DOC.F_ENVELOPE]
-ASK_FILES = [R.F_FLAGS1, R.F_FLAGS2, R.F_REVIEWS, R.F_WFM, R.F_ASSIGN, R.F_MOVES, DOC.F_FLAGSTD]
+T = os.path.join(TASK, "target")
+FAILS = []
 
 
-def ok(label, cond, detail=""):
-    RESULTS.append((label, bool(cond), detail))
+def check(label, ok, detail=""):
+    print("%s  %-58s %s" % ("PASS" if ok else "FAIL", label, detail))
+    if not ok:
+        FAILS.append(label)
 
 
-def rows(target, f):
-    with open(os.path.join(target, f), newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+def rnd(x):
+    return int(np.floor(x + 0.5))
 
 
-def rnd(fte):
-    return {s: int(K.round_half_up(v)) for s, v in fte.items()}
-
-
-def req(fte):
-    return sum(rnd(fte).values())
-
-
-def nine(fte):
-    return " ".join(str(v) for v in rnd(fte).values())
-
-
-def pdf_text(path):
-    import pdfplumber
-    with pdfplumber.open(path) as pdf:
-        return "\n".join(pg.extract_text() or "" for pg in pdf.pages)
-
-
-def open_text(target, f):
-    """Every text cell of a shipped workbook, joined."""
-    wb = openpyxl.load_workbook(os.path.join(target, f), read_only=True)
-    return "\n".join(str(c) for ws in wb.worksheets for row in ws.iter_rows(values_only=True) for c in row
-                     if isinstance(c, str))
-
-
-def need_of(D, **kw):
-    """Each site's 2027 need in FTE on a loaded bundle, the golden construction with any of its parameters swapped."""
-    pace = kw.pop("pace", None)
-    floor = kw.pop("floor", None)
-    out = {}
-    for s in K.SITES:
-        out[s] = C.fte(C.site_need(D, s, pace=pace if pace is not None else D.pace,
-                                   floor=floor if floor is not None else D.floor, **kw)[1])
-    return out
-
-
-def loaded(target):
-    D = C.load(target)
-    D.pace, D.n_sat = C.saturated_pace(D)
-    D.floor = C.floor_share(D)
-    D.ev, D.rk = C.tenure_counts(D)
-    D.h = C.tenure_curve(D.ev, D.rk)
-    return D
-
-
-def linked_copy(target, tmp, skip=(), replace=None):
-    """A copy of the bundle in tmp: every file symlinked except those skipped or replaced (replace maps a file name to
-    a writer taking the destination path)."""
-    os.makedirs(tmp, exist_ok=True)
-    for f in os.listdir(target):
-        if f in skip:
-            continue
-        if replace and f in replace:
-            replace[f](os.path.join(tmp, f))
-        else:
-            os.symlink(os.path.abspath(os.path.join(target, f)), os.path.join(tmp, f))
-    return tmp
-
-
-# ------------------------------------------------------------------------------------------------- ask variants
-def ask_a_variant(target, first="review", drop_closed=True, dedupe=True, drop_reviewed=False):
-    flags = []
-    for f in (R.F_FLAGS1, R.F_FLAGS2):
-        flags += rows(target, f)
-    if dedupe:
-        flags = list({r["flag_id"]: r for r in flags}.values())
-    rev = {r["flag_id"]: r["first_action_at_utc"] for r in rows(target, R.F_REVIEWS)}
-    num, den = {}, {}
-    for r in flags:
-        if drop_closed and r["outcome"] == "closed_post_deleted":
-            continue
-        if drop_reviewed and r["flag_id"] in rev:
-            continue
-        a = dt.datetime.fromisoformat(r["raised_at_utc"])
-        b = dt.datetime.fromisoformat(rev[r["flag_id"]] if (first == "review" and r["flag_id"] in rev)
-                                      else r["handled_at_utc"])
-        k = (r["site"], a.month)
-        den[k] = den.get(k, 0) + 1
-        num[k] = num.get(k, 0) + (b - a <= dt.timedelta(hours=24))
-    return {k: 100.0 * num[k] / den[k] for k in den}, num, den
-
-
-def ask_b_variant(target, site_from="hr", keep_superseded=False, by="start", map_label=True):
-    reg = {r["wfm_site_label"]: r["site_code"] for r in rows(target, R.F_REGISTER) if r["wfm_site_label"]}
-    if not map_label:
-        reg = {K.SITE[c]["name"]: c for c in K.SITES}
-    name_to_code = {K.SITE[c]["name"]: c for c in K.SITES}
-    hist = {}
-    for r in rows(target, R.F_ASSIGN):
-        hist.setdefault(r["employee_no"], []).append((r["effective_from"], r["effective_to"] or "9999-12-31",
-                                                      name_to_code[r["site"]]))
-    out = {}
-    for r in rows(target, R.F_WFM):
-        if r["line_status"] != "approved" and not keep_superseded:
-            continue
-        d = r["shift_date"] if by == "start" else r["end_local"][:10]
-        if site_from == "hr":
-            site = [c for a, b, c in hist[r["employee_no"]] if a <= d <= b][0]
-        else:
-            site = reg.get(r["site"])
-            if site is None:
-                continue
-        y, m = int(d[:4]), int(d[5:7])
-        if y != 2026 or m > 9:
-            continue
-        k = (site, (m - 1) // 3 + 1)
-        out[k] = out.get(k, 0.0) + float(r["paid_hours"])
-    return out
-
-
-def ask_c_variant(target, X, merger=True, mode="golden", restated=True):
-    """2026 questions over 2022's: the golden's restatement on the warehouse's basis, the workbook as it stands, the
-    copies taken off (each question once but on the site it was asked on), each move applied in the month it moved, or
-    the old job read as counting each question once; each with the 2022 sheet's questions as restated in March 2023 or
-    as first reported."""
-    D = X.D
-    old_map = dict(C.OLD_TO_CODE)
-    if not merger:
-        old_map[K.GRAPHICS_OLD] = None
-    wb = {s: 0 for s in K.SITES}
-    for (old, y, m), c in D.old.items():
-        if y == 2022 and m <= 9 and old_map.get(old):
-            wb[old_map[old]] += D.old_restated.get((old, y, m), c["q"]) if restated else c["q"]
-    adj = {s: 0 for s in K.SITES}
-    for r in rows(target, R.F_MOVES):
-        a = dt.datetime.fromisoformat(r["asked_at_utc"])
-        b = dt.datetime.fromisoformat(r["moved_at_utc"])
-        src, dst = old_map.get(r["from_site"]), old_map.get(r["to_site"])
-        win = lambda t: t.year == 2022 and t.month <= 9
-        if mode == "golden":
-            if win(a):
-                if src:
-                    adj[src] -= 1
-                if dst:
-                    adj[dst] += 1
-            if win(b) and dst:
-                adj[dst] -= 1
-        elif mode == "copies_off":
-            if win(b) and dst:
-                adj[dst] -= 1
-        elif mode == "by_move_month":
-            if win(b) and src:
-                adj[src] -= 1            # the original leaves its source when it moves; the copy stands for it
-        elif mode == "net_move":         # the old job read as counting each question once, on the site posted to
-            if win(a):
-                if src:
-                    adj[src] -= 1
-                if dst:
-                    adj[dst] += 1
-    q22 = {s: wb[s] + adj[s] for s in K.SITES}
-    return {s: 100.0 * X.q26[s] / q22[s] for s in K.SITES}
-
-
-def fmt_int(x):
-    return format(int(K.round_half_up(x)), ",")
-
-
-def miss(stop, gold, keys, dp):
-    return [k for k in keys if K.round_half_up(stop.get(k, 0.0), dp) == K.round_half_up(gold[k], dp)]
-
-
-# ------------------------------------------------------------------------------------------------- the back-test
-def backtest(D):
-    """Fit at September 2025, follow the reviewers active then through September 2026 (a closed cohort the roster
-    shows month by month), and score each way of carrying a pool forward on what it could see at the origin: the tenure
-    curve (January 2024 to August 2025), the pool's overall lapse rate over the same months, and the tenure curve read
-    without the record's left edge."""
-    o, hi = C.M_SEP25, C.M_AUG25
-    ev, rk = C.tenure_counts(D, hi=hi)
-    h = C.tenure_curve(ev, rk)
-    evn, rkn = C.tenure_counts(D, hi=hi, trunc=False)
-    hn = C.tenure_curve(evn, rkn)
-    out = {k: {} for k in ("tenure", "flat", "no_truncation")}
-    actual = {}
-    for s in K.SITES:
-        m = (D.sp_site == s) & (D.sp_a <= o) & (D.sp_b >= o)
-        tau0 = o - D.sp_g[m]
-        b = D.sp_b[m]
-        actual[s] = np.array([(b >= o + k).sum() for k in range(1, 13)], dtype=float)
-        out["tenure"][s] = C.survival_from(h, tau0, 12)
-        out["no_truncation"][s] = C.survival_from(hn, tau0, 12)
-        lo_x = C.MIDX[(2024, 1)]
-        hz = D.exits[s][lo_x:C.MIDX[(2025, 8)] + 1].sum() / D.R[s][lo_x:C.MIDX[(2025, 8)] + 1].sum()
-        out["flat"][s] = len(tau0) * (1 - hz) ** np.arange(1, 13)
-    err = {k: (sum(v[s].sum() for s in K.SITES) - sum(a.sum() for a in actual.values())) /
-           sum(a.sum() for a in actual.values()) for k, v in out.items()}
-    site_err = {k: {s: (v[s].sum() - actual[s].sum()) / actual[s].sum() for s in K.SITES} for k, v in out.items()}
-    return err, site_err
-
-
-def pools_of(D, X):
-    """The 2027 pool under each tenure construction: the network's mean active reviewers a month in 2027."""
-    i27 = X.idx27
-    out = {"golden": sum(X.pool[s][i27].mean() for s in K.SITES)}
-    for band in (3, 6, 12):
-        h = C.tenure_curve(D.ev, D.rk, band=band)
-        out["band%d" % band] = sum(C.project_tenure(D, s, h)[i27].mean() for s in K.SITES)
-    tot = 0.0
-    for s in K.SITES:
-        e, r = C.tenure_counts(D, sites=[s])
-        tot += C.project_tenure(D, s, C.tenure_curve(e, r))[i27].mean()
-    out["own_site_curve"] = tot
-    e, r = C.tenure_counts(D, shift=2)
-    out["lapse_date"] = sum(C.project_tenure(D, s, C.tenure_curve(e, r))[i27].mean() for s in K.SITES)
-    out["mixture"] = sum(C.project_mixture(D, s, D.fit)[i27].mean() for s in K.SITES)
-    return out
-
-
-# ------------------------------------------------------------------------------------------------- the run
-def run(target, golden, B, X, meta_path):
-    W = B.W
-    D = X.D
-    M = C.MIDX
-    rt = C.routes(X)
-    F = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
-    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    ptxt = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
-    texts = {}
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        if f.endswith(".pdf"):
-            texts[f] = pdf_text(p)
-        elif f.endswith(".md"):
-            texts[f] = open(p, encoding="utf-8").read()
-    flat = re.sub(r"\s+", " ", "\n".join(texts.values()))
-
-    # ------------------------------------------------------------------ the call
-    ok("CALL %d FTE: Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game "
-       "Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2; %d above the 26-FTE envelope" % (
-           REQUEST, GAP),
-       X.need_round == GOLD and X.request == REQUEST and X.gap == GAP and K.ENVELOPE_2027 == 26,
-       "%s (%.2f)" % (X.need_round, X.total_fte))
-    conv = [k for k in rt if k not in CONVERGENT_EXCLUDE]
-    bad = {k: nine(rt[k]["fte"]) for k in conv if rnd(rt[k]["fte"]) != GOLD}
-    ok("CALL every defensible construction files the same nine site needs (%d constructions: the tenure curve in bands "
-       "of 3, 6 or 12 months, each site's own curve, stops read at the lapse month, the curve read over the last 24 or "
-       "18 months, its tail over 6 or 24 tenure months, plus or minus one standard error, a two-kind mixture fitted by "
-       "maximum likelihood, invitations dropped, annual netting, saturation cuts 1 to 15 per cent, the pace from 2021 "
-       "to 2023 or 2024 to 2026 only, ratios from 2025, no floor)" % len(conv), not bad, str(bad))
-    clr = {}
-    for s in K.SITES:
-        vals = [rt[k]["fte"][s] for k in conv] + [X.need_fte[s]]
-        clr[s] = min(min(vals) - (GOLD[s] - 0.5), (GOLD[s] + 0.5) - max(vals))
-    ok("CALL across every construction each site stays 0.15 FTE or more inside its bin",
-       min(clr.values()) >= 0.15, ", ".join("%s %.2f" % (s, v) for s, v in clr.items()))
-    ok("CALL the two-kind mixture recovers the roster's structure without being told it: %.0f per cent of reviewers "
-       "stopping at %.1f per cent a month, the rest at %.2f" % (100 * D.fit[0], 100 * D.fit[1], 100 * D.fit[2]),
-       0.75 < D.fit[0] < 0.92 and 0.08 < D.fit[1] < 0.16 and 0.003 < D.fit[2] < 0.008)
-    ps, fs = {}, {}
-    for s in K.SITES:
-        num = den = 0.0
-        for (old, y, m), c in D.old.items():
-            if C.OLD_TO_CODE[old] == s and c["ent"] and c["rout"] / c["ent"] > 0.05:
-                num += c["vol"]
-                den += c["R"]
-        fn = fd = 0.0
-        for i in range(len(C.HIST_MONTHS)):
-            sh = D.rout_all[s][i] / D.ent_all[s][i]
-            if sh > 0.05:
-                num += D.rev[s][i]
-                den += D.R[s][i]
-            if sh < 1 / 60.0:
-                fn += D.rout_all[s][i]
-                fd += D.ent_all[s][i]
-        ps[s] = num / den if den else D.pace
-        fs[s] = fn / fd if fd else D.floor
-    own = {s: C.fte(C.site_need(D, s, pace=ps[s], floor=fs[s])[1]) for s in K.SITES}
-    ok("CALL each site's own pace and own floor (the pooled pace where a site never ran short) file the same nine",
-       rnd(own) == GOLD and sum(1 for s in K.SITES if ps[s] != D.pace) >= 5,
-       "%s; paces %s" % (nine(own), ", ".join("%s %.1f" % (s, v) for s, v in ps.items())))
-    # the pool read as access holders on 30 September 2026 (active, or a last review in August), stops at the lapse
-    # month, the roster's reviewers who lapsed in January and February 2024 without a platform review among the stops
-    e_, r_ = C.tenure_counts(D, shift=2)
-    pre = [r_x for r_x in rows(target, R.F_ROSTER) if not r_x["first_review_on_platform"]]
-    for r_x in pre:
-        g_ = C.mabs(r_x["access_granted"])
-        lap = C.mabs(r_x["lapsed_on"])
-        e_[lap - g_] += 1
-        r_[C.M_JAN24 - g_:lap - g_ + 1] += 1
-    h_ah = C.tenure_curve(e_, r_)
-    ah = {}
-    for s in K.SITES:
-        m = (D.sp_site == s) & (D.sp_a <= C.M_SEP26) & (D.sp_b >= C.M_SEP26 - 1)
-        ah[s] = C.fte(C.site_need(D, s, pool=C.survival_from(h_ah, C.M_SEP26 - D.sp_g[m], len(C.FWD_MONTHS)))[1])
-    ok("CALL the pool read as access holders on 30 September 2026, stops at the lapse month with the %d reviewers who "
-       "lapsed in January and February 2024 without a platform review among them: the same nine" % len(pre),
-       rnd(ah) == GOLD and len(pre) > 300, "%s (%.2f)" % (nine(ah), sum(ah.values())))
-    # the 72-hour hand-off simulated day by day (oldest first, two more days to review, the weekday pattern of entries
-    # since January 2024) in place of monthly netting
-    wd = np.zeros(7)
-    for r_x in rows(target, R.F_INBOX):
-        wd[dt.date.fromisoformat(r_x["entry_date_utc"]).weekday()] += int(r_x["entered"])
-    wd = wd / wd.mean()
-    days = K.days(dt.date(2026, 10, 1), K.D_END)
-    mdays = {}
-    for d in days:
-        mdays.setdefault((d.year, d.month), []).append(d)
-    daily = {}
-    for s in K.SITES:
-        items, flag = C.ratios(D, s)
-        per_q = sum(items.values())
-        m27 = sum(items[t] / per_q * C.STD27[t] for t in K.ITEMS)
-        queue, rout_d = [], {}
-        for d in days:
-            k = C.FWD_MONTHS.index((d.year, d.month))
-            q_m = D.outlook[s][d.month - 10] if d.year == 2026 else D.plan[s][d.month - 1]
-            md = mdays[(d.year, d.month)]
-            A_d = q_m * per_q * wd[d.weekday()] / sum(wd[x.weekday()] for x in md)
-            cap_d = X.pool[s][k] * D.pace / len(md)
-            rout_d[d] = D.floor * A_d
-            queue.append([d, A_d * (1 - D.floor)])
-            for c in queue:
-                take = min(cap_d, c[1])
-                c[1] -= take
-                cap_d -= take
-                if cap_d <= 0:
-                    break
-            keep = []
-            for c in queue:
-                if (d - c[0]).days >= 2:
-                    rout_d[c[0]] += c[1]
-                else:
-                    keep.append(c)
-            queue = keep
-        mins = sum(v for d, v in rout_d.items() if d.year == 2027) * m27 + \
-            sum(flag * D.plan[s][m - 1] * C.STD27["flag"] for m in range(1, 13))
-        daily[s] = mins / 60.0 / K.FTE_HOURS
-    ok("CALL the 72-hour hand-off simulated day by day on the forecast pool (oldest first, the weekday pattern of entries "
-       "since January 2024) files the same nine", rnd(daily) == GOLD, "%s (%.2f)" % (nine(daily), sum(daily.values())))
-    # routed items priced at the routed mix the records show instead of the inbox's mix
-    rmix = {}
-    for s in K.SITES:
-        tot = sum(D.rout[s][t].sum() for t in K.ITEMS)
-        rmix[s] = {t: D.rout[s][t].sum() / tot for t in K.ITEMS}
-
-    def need_mix(s, mix):
-        items, flag = C.ratios(D, s)
-        per_q = sum(items.values())
-        pool = C.project_pool(D, s)
-        mins = 0.0
-        for k, (y, m) in enumerate(C.FWD_MONTHS):
-            if y == 2027:
-                q = D.plan[s][m - 1]
-                A = q * per_q
-                sh = max(D.floor, 1 - pool[k] * D.pace / A)
-                mins += flag * q * C.STD27["flag"] + A * sh * sum(mix[t] * C.STD27[t] for t in K.ITEMS)
-        return mins / 60.0 / K.FTE_HOURS
-    rm = {s: need_mix(s, rmix[s]) for s in K.SITES}
-    ok("CALL the routed items priced at each site's own routed mix since January 2024 instead of its inbox mix: the "
-       "same nine", rnd(rm) == GOLD, nine(rm))
-    slack_share = {}
-    for t in K.ITEMS:
-        num = den = 0.0
-        for s in K.SITES:
-            for i in range(len(C.HIST_MONTHS)):
-                if D.rout_all[s][i] / D.ent_all[s][i] < 1 / 60.0:
-                    num += D.rout[s][t][i]
-                    den += D.ent[s][t][i]
-        slack_share[t] = num / den
-    ok("REALISM item types route differently where the volunteers keep up (the items nobody picks up differ by type): "
-       "%s" % ", ".join("%s %.2f%%" % (t, 100 * v) for t, v in slack_share.items()),
-       max(slack_share.values()) / min(slack_share.values()) > 1.8)
-    # the chart's actual months: paid review hours as the operations handbook defines them, month by month
-    defn = ("each moderator flag a paid moderator handled and each community item routed to the team, at the handle-time "
-            "standard in force for its year (close votes at 5.0 minutes to the end of 2026, 2.0 from 2027), in the month "
-            "the flag was raised or the item entered the inbox, on UTC.")
-    wbm = openpyxl.load_workbook(os.path.join(golden, DL.XLSX), data_only=True)["Monthly hours"]
-    month_ok = True
-    for i in range(len(C.HIST_MONTHS)):
-        mins = sum(D.flags[s][i] * K.STD_2026["flag"] + sum(D.rout[s][t][i] * K.STD_2026[t] for t in K.ITEMS)
-                   for s in K.SITES)
-        month_ok &= wbm.cell(row=5 + i, column=12).value == int(K.round_half_up(mins / 60.0))
-    ok("CHART the operations handbook defines paid review hours once, and the chart's 33 actual months are those hours "
-       "exactly (the workbook's Monthly hours sheet, month by month); the prompt grades the chart on its content",
-       defn in flat and month_ok and "each site stacked and the envelope drawn across" in ptxt)
-    i27 = [K.month_index(2027, m) for m in range(1, 13)]
-    real = {s: WD.paid_hours_month(W, s, K.STD_2027)[i27].sum() / K.FTE_HOURS for s in K.SITES}
-    ok("CALL the forecast is the world's own 2027: the generator's realised 2027 hours give the same nine site needs",
-       rnd(real) == GOLD, "%s (%.2f)" % (nine(real), sum(real.values())))
-    paces = {"cut %d%%" % c: C.saturated_pace(D, c / 100.0)[0] for c in (1, 2, 3, 5, 8, 10, 15, 20)}
-    paces["2021 to 2023 only"] = C.saturated_pace(D, use_new=False)[0]
-    paces["2024 to 2026 only"] = C.saturated_pace(D, use_old=False)[0]
-    mr = []
-    for (old, y, m), c in D.old.items():
-        if c["ent"] and c["rout"] / c["ent"] > 0.05:
-            mr.append(c["vol"] / c["R"])
-    for s in K.SITES:
-        for i in range(len(C.HIST_MONTHS)):
-            if D.ent_all[s][i] and D.rout_all[s][i] / D.ent_all[s][i] > 0.05:
-                mr.append(D.rev[s][i] / D.R[s][i])
-    paces["mean of site-month ratios"] = float(np.mean(mr))
-    ok("CALL the pace reviewers keep when the inbox outruns them rounds to 40 a month under every saturation cut, era "
-       "and averaging (component 1)", all(39.5 <= v < 40.5 for v in paces.values()) and
-       F["components"]["reviews_a_month"] == 40, ", ".join("%s %.2f" % kv for kv in paces.items()))
-    pm = pools_of(D, X)
-    ok("CALL the %s reviewers active in September 2026 average about %s a month in 2027 under every tenure construction "
-       "(component 2)" % (F["components"]["reviewers_sep_2026"], F["components"]["active_a_month_2027"]),
-       all(int(K.round_half_up(v, -2)) == int(F["components"]["active_a_month_2027"].replace(",", ""))
-           for v in pm.values()) and sum(X.R_sep26.values()) == int(F["components"]["reviewers_sep_2026"].replace(",", "")),
-       ", ".join("%s %.0f" % kv for kv in pm.items()))
-    ok("CALL the stop rate falls with tenure: about %d per cent a month in a reviewer's first year, under one per cent "
-       "from the fourth (the bands on the Reviewer pools sheet)" % F["steps"]["first_year_stop_pct_a_month"],
-       int(K.round_half_up(100 * X.bands[0][1])) == F["steps"]["first_year_stop_pct_a_month"] and
-       X.bands[3][1] < 0.01 and X.bands[4][1] < 0.01 and X.bands[0][1] > 5 * X.bands[4][1],
-       ", ".join("%s %.2f%%" % (b[0], 100 * b[1]) for b in X.bands))
-    ok("CALL review access is by invitation only from 1 September 2026, filed once in the operations handbook, and the "
-       "roster agrees: %s grants a month on average January to August 2026, %d invited in September" % (
-           fmt_int(X.grants_2026 / 8), X.invited),
-       "Since 1 September 2026 review access on every site is given only by invitation of the site's elected "
-       "moderators" in flat and X.grants_2026 > 8 * 200 and X.invited <= 5)
-    a27 = {s: X.inbox27[s] for s in K.SITES}
-    c27 = {s: X.cap27[s] for s in K.SITES}
-    grp_ok = (X.newly == ["data", "databases", "devops", "gamedev"] and X.already == ["security", "embedded",
-                                                                                          "scicomp"] and
-              X.covered == ["web", "mobile"] and all(c27[s] < a27[s] for s in X.newly + X.already) and
-              all(c27[s] > a27[s] for s in X.covered))
-    ok("CALL component 3 holds monthly and over the year: Data & ML, Databases, Infrastructure & DevOps and Game "
-       "Development short of their 2027 inbox, Security, Embedded & Hardware and Scientific Computing short already, "
-       "Frontend & Web and Mobile Apps covered", grp_ok, "%s %s %s" % (X.newly, X.already, X.covered))
-
-    # ------------------------------------------------------------------ the three rules on the clean truth
-    n_roster = len(rows(target, R.F_ROSTER))
-    n_inbox = len(rows(target, R.F_INBOX))
-    ok("R1a the decisive computation reads row-level records: %s reviewer access spells and %s site-day-item rows of "
-       "the inbox" % (format(n_roster, ","), format(n_inbox, ",")), n_roster > 15000 and n_inbox > 30000)
-    heads = []
-    for f in sorted(os.listdir(target)):
-        p = os.path.join(target, f)
-        if f.endswith(".csv"):
-            with open(p, encoding="utf-8") as fh:
-                heads.append((f, fh.readline()))
-        elif f.endswith(".xlsx"):
-            wb = openpyxl.load_workbook(p, read_only=True)
-            for ws in wb.worksheets:
-                for row in ws.iter_rows(min_row=1, max_row=6, values_only=True):
-                    heads.append((f, " ".join(str(c) for c in row if c is not None)))
-    hit = [(f, h) for f, h in heads if re.search(r"capacit|\bpace\b|cover|churn|lapse rate|exit|forecast|need\b|fte|"
-                                                 r"projected|shortfall", h, re.I)]
-    ok("R1b no shipped column or sheet heading holds a capacity, a pace, a cover, a lapse rate, a forecast or a need",
-       not hit, str(hit[:4]))
-    truth_ok = True
-    for s in K.SITES:
-        for f_, w_ in (("entered", D.ent_all[s]), ("routed", D.rout_all[s])):
-            wm = WD.monthly(W, s, f_)[K.month_index(2024, 1):K.month_index(2026, 9) + 1]
-            truth_ok &= bool(np.abs(wm - w_).max() < 0.6 * 31 * 4)
-        truth_ok &= bool(np.array_equal(D.R[s], W.sites[s].Rm[K.month_index(2024, 1):K.month_index(2026, 9) + 1]))
-    ok("R1c the main rows are the clean truth: the inbox's monthly items and the roster's active reviewers are the "
-       "world's (routed to the day's rounding)", truth_ok)
-    D_new = loaded(target)
-    D_new.pace = C.saturated_pace(D, use_old=False)[0]
-    D_old = loaded(target)
-    D_old.pace = C.saturated_pace(D, use_new=False)[0]
-    ok("R2a the platform change mishandled (the old workbook left out, or the daily export left out of the pace): the "
-       "same nine", rnd(need_of(D_new)) == GOLD and rnd(need_of(D_old)) == GOLD,
-       "%s / %s" % (nine(need_of(D_new)), nine(need_of(D_old))))
-    D_g = loaded(target)
-    D_g.old = {k: v for k, v in D.old.items() if k[0] != K.GRAPHICS_OLD}
-    D_g.pace = C.saturated_pace(D_g)[0]
-    ok("R2b Graphics & Shaders' old rows left out (the merger unmapped): the same nine", rnd(need_of(D_g)) == GOLD,
-       nine(need_of(D_g)))
-    utc_cols = [c for f in (R.F_INBOX, R.F_FLAGSUM) for c in open(os.path.join(target, f)).readline().strip().split(",")
-                if "date" in c]
-    ok("R2c every date on the call's path is a UTC day (%s) or a month; the Toronto clock lives only in the WFM export"
-       % ", ".join(utc_cols), utc_cols == ["entry_date_utc", "date_utc"] and
-       "start_local" in open(os.path.join(target, R.F_WFM)).readline())
-    tmp = tempfile.mkdtemp(prefix="chk_", dir=TASK)
-    try:
-        def prelim_inbox(dst):
-            keep = [r for r in rows(target, R.F_INBOX) if r["entry_date_utc"] < "2026-09-01"]
-            keep += rows(target, R.F_INBOX_PRE)
-            with open(dst, "w", newline="", encoding="utf-8") as fh:
-                w = csv.DictWriter(fh, fieldnames=R.INBOX_COLS)
-                w.writeheader()
-                w.writerows(keep)
-        t2 = linked_copy(target, os.path.join(tmp, "prelim"), replace={R.F_INBOX: prelim_inbox})
-        Dp = loaded(t2)
-        ok("R2d / SF12 the preliminary 2 October pull read for September in place of the 8 October pull: the same nine",
-           rnd(need_of(Dp)) == GOLD, nine(need_of(Dp)))
-        n_pre = len(rows(target, R.F_INBOX_PRE))
-        keys = {(r["site"], r["entry_date_utc"], r["item_type"]) for r in rows(target, R.F_INBOX)}
-        dup = sum(1 for r in rows(target, R.F_INBOX_PRE) if (r["site"], r["entry_date_utc"], r["item_type"]) in keys)
-        ok("R2e both September pulls stacked put %d site-day-item keys in twice (the key check finds every one)" % dup,
-           dup == n_pre == 1080)
-
-        # ------------------------------------------------------------------ separation and distractors
-        t3 = linked_copy(target, os.path.join(tmp, "main_only"), skip=set(ASK_FILES) | {R.F_PAGEVIEWS,
-                                                                                         DOC.F_SURVEY})
-        D3 = loaded(t3)
-        ok("SEPARATION the call reads no per-flag export, decision review, WFM line, assignment, migration move or flag "
-           "service standard: deleted, the same nine to the last digit",
-           all(abs(need_of(D3)[s] - X.need_fte[s]) < 1e-9 for s in K.SITES))
-        D_q = loaded(target)
-        for k in D_q.old:
-            D_q.old[k] = dict(D_q.old[k], q=0)
-        ok("SEPARATION the old workbook's question column (Ask C's device) is off the call's path: zeroed, the same "
-           "needs", all(abs(need_of(D_q)[s] - X.need_fte[s]) < 1e-9 for s in K.SITES))
-        meta = json.load(open(meta_path, encoding="utf-8"))
-        files = sorted(os.listdir(target))
-        t4 = linked_copy(target, os.path.join(tmp, "nodistr"), skip=set(meta["distractor_files"]))
-        X4 = C.compute(t4)
-        ok("GATE the call and all three asks unchanged with the distractors deleted (%s)" % ", ".join(
-            meta["distractor_files"]),
-           X4.need_round == X.need_round and X4.ask_a == X.ask_a and X4.ask_b == X.ask_b and X4.ask_c == X.ask_c)
-        ok("GATE two or more distractors named in metadata.json, shipped, none named as one",
-           len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]) and
-           not any("distract" in f for f in files))
-    finally:
-        shutil.rmtree(tmp)
-
-    def truth_need(construct):
-        out = {}
-        for s in K.SITES:
-            S = W.sites[s]
-            per_q = sum(S.item_rate.values())
-            fr = S.flag_rate * (1 - WD.FLAG_CLOSED_SHARE)
-            mix = {t: S.item_rate[t] / per_q for t in K.ITEMS}
-            out[s] = construct(s, S, per_q, fr, mix) / K.FTE_HOURS
-        return out
-
-    def easy(s, S, per_q, fr, mix):
-        hs = WD.paid_hours_month(W, s, K.STD_2027)
-        q = WD.monthly(W, s, "q")
-        lo, hi = K.month_index(2025, 10), K.month_index(2026, 9)
-        return hs[lo:hi + 1].sum() / q[lo:hi + 1].sum() * sum(S.plan.values())
-
-    tS = K.month_index(2026, 9)
-
-    def carried(s, S, per_q, fr, mix, pool):
-        hrs = 0.0
-        for k, (y, m) in enumerate(C.FWD_MONTHS):
-            if y == 2027:
-                A = S.plan[m] * per_q
-                sh = max(sum(mix[t] * K.SKIP_BY_TYPE[t] for t in K.ITEMS), 1 - pool[k] * K.KAPPA / A)
-                hrs += (S.plan[m] * fr * K.STD_2027["flag"] + A * sh * sum(mix[t] * K.STD_2027[t] for t in K.ITEMS)) / 60
-        return hrs
-
-    def flat_truth(s, S, per_q, fr, mix):
-        lo, hi = K.month_index(2024, 9), K.month_index(2026, 8)
-        last = np.array([-1 if v is None else v for v in S.pool["last"]])
-        stops = sum(int((last == t).sum()) for t in range(lo, hi + 1))
-        risk = sum(len(S.pool["act"][t][0]) for t in range(lo, hi + 1))
-        R0 = len(S.pool["act"][tS][0])
-        return carried(s, S, per_q, fr, mix, R0 * (1 - stops / risk) ** np.arange(1, len(C.FWD_MONTHS) + 1))
-
-    def decisive(s, S, per_q, fr, mix):
-        ids = S.pool["act"][tS][0]
-        q = 1.0 - S.pool["stop"][ids]
-        return carried(s, S, per_q, fr, mix, np.array([(q ** k).sum() for k in range(1, len(C.FWD_MONTHS) + 1)]))
-
-    TE = truth_need(easy)
-    TF = truth_need(flat_truth)
-    TD = truth_need(decisive)
-    ok("R3a the analyst test on the clean truth: the capacity built right (the true pace, the true inbox) but the pool "
-       "carried at its overall lapse rate of September 2024 to August 2026 with no new reviewers files %d FTE, %d sites "
-       "off the golden" % (req(TF), sum(rnd(TF)[s] != GOLD[s] for s in K.SITES)),
-       req(TF) >= REQUEST + 4 and sum(rnd(TF)[s] != GOLD[s] for s in K.SITES) >= 3, "%s (%.2f)" % (nine(TF), sum(TF.values())))
-    ok("R3a the lower rung on the clean truth: each site's last twelve months of paid hours per question at the 2027 "
-       "standards, carried onto the plan, file %d FTE" % req(TE), req(TE) <= REQUEST - 4,
-       "%s (%.2f)" % (nine(TE), sum(TE.values())))
-    ok("R3b the decisive step alone on the clean truth (each reviewer active in September 2026 carried on their own true "
-       "chance of stopping, each at the true pace, each month's inbox beyond capacity routed) files the golden's nine",
-       rnd(TD) == GOLD, "%s (%.2f)" % (nine(TD), sum(TD.values())))
-    rep = 0
-    seen = set()
-    for s in K.SITES:
-        e = W.sites[s].items["first_post"][W.day_index[K.NEW_START]:W.day_index[K.HIST_END] + 1]
-        for i in range(len(e) - 6):
-            key = tuple(int(v) for v in e[i:i + 7])
-            rep += key in seen
-            seen.add(key)
-    ok("R3c no copied block: no seven-day run of a site's first posts repeats anywhere in the inbox", rep == 0, rep)
-    plants = re.findall(r"\b\d+(?:\.\d+)? (?:paid )?(?:moderator )?FTE\b", flat)
-    allowed = {"%d FTE" % K.ENVELOPE_2027, "%d FTE" % K.POOL_2026}
-    ok("R3c no document states a 2027 need, a capacity or a routed share: the only FTE figures are the envelope and "
-       "the 2026 pool", set(plants) <= allowed, plants)
-
-    # ------------------------------------------------------------------ HOW, executed literally
-    how = {
-        "need": "A site's need for a year is the time the paid team will spend that year on the site's moderator "
-                "flags and on the site's community review items that reach the team, each item priced at the "
-                "handle-time standard the council has set for that year.",
-        "flags": "A moderator flag counts when a paid moderator handles it.",
-        "year": "An item counts in the year it entered the review inbox, and a flag in the year it was raised, both on "
-                "UTC.",
-        "future": "The year's need includes the items and flags on posts and accounts that do not yet exist when the "
-                  "need is set.",
-        "fte": "One FTE is 1,600 hours of need a year.",
-        "rounding": "Each site's need is stated in whole FTE, to the nearest whole FTE, and the council's request for "
-                    "the year is the sum of the nine site needs.",
-        "handoff": "reaches the paid team when no volunteer has reviewed it 72 hours after it entered the site's "
-                   "review inbox.",
-    }
-    missing = [k for k, v in how.items() if v not in flat]
-    ok("HOW the charter's seven sentences fixing what is counted are quoted from the pack (population, outcome, window, "
-       "unit, rounding, the hand-off)", not missing, missing)
-    lit = {s: C.fte(C.naive(D, s, 12)) for s in K.SITES}
-    ok("HOW executed word for word on the records (the charter's need for the last twelve months at the 2027 "
-       "standards, per question, on the plan) files %d, never the golden" % req(lit), req(lit) == RIVALS["naive12"] and
-       rnd(lit) != GOLD, nine(lit))
-    cue = re.findall(r"capacit|\bpace\b|lapse rate|stop rate|churn|attrition|reviewers? (?:will|per month)|pipeline|"
-                     r"privilege|reviews a month|cover\b|shortfall|retention|tenure|newcomer|long-serving|veteran",
-                     flat, re.I)
-    ok("HOW no shipped sentence states a capacity, a pace, a lapse or stop rate, a tenure effect or how many items "
-       "volunteers will leave", not cue, cue)
-    ok("HOW the prompt asks the need as the charter defines it under the 2027 standards and plan, nothing on method",
-       "counted as the charter defines need under the 2027 handle-time standards and question plan" in ptxt and
-       not re.search(r"volunteer|reviewer|capacit|trend|share of arrivals", ptxt, re.I))
-
-    # ------------------------------------------------------------------ the semantic fork table
-    alt_fte = {h: sum(int(K.round_half_up(X.need_h[s] / h)) for s in K.SITES) for h in (1950.0, 2080.0)}
-    ok("SF1 FTE as 1,950 or 2,080 paid hours files %d or %d; the charter's FTE sentence rules it out" % (
-        alt_fte[1950.0], alt_fte[2080.0]), how["fte"] in flat and all(v < REQUEST for v in alt_fte.values()))
-    wfm_h = sum(X.ask_b.values()) * 12 / 9 / K.FTE_HOURS
-    ok("SF2 need as hours worked (the WFM lines' %.1f FTE a year in 2026) is not the charter's need, which prices the "
-       "items that reach the team in 2027" % wfm_h, how["need"] in flat and int(K.round_half_up(wfm_h)) != REQUEST)
-    D_sh = loaded(target)
-    for s in K.SITES:
-        for t in K.ITEMS:
-            a = D_sh.rout[s][t].copy()
-            D_sh.rout[s][t] = a * 0.9 + np.concatenate([[a[0]], a[:-1]]) * 0.1
-        D_sh.rout_all[s] = sum(D_sh.rout[s][t] for t in K.ITEMS)
-    ok("SF3 items counted by the month they reach the team (three days after entry) instead of the month they entered: "
-       "the same nine", rnd(need_of(D_sh)) == GOLD, nine(need_of(D_sh)))
-    D_f = loaded(target)
-    raised = {s: np.zeros(len(C.HIST_MONTHS)) for s in K.SITES}
-    for r_ in rows(target, R.F_FLAGSUM):
-        raised[r_["site"]][M[C.ym_of(r_["date_utc"])]] += int(r_["flags_raised"])
-    D_f.flags = raised
-    ok("SF4 the flags the platform closed counted in (flags raised): a larger request, %d; the charter's flag "
-       "sentence rules it out" % req(need_of(D_f)), req(need_of(D_f)) > REQUEST and
-       "Flags the platform closes because the post was deleted before a moderator acted cost the team no time and do "
-       "not count." in flat)
-    g_new = [r_ for f in (R.F_INBOX, R.F_FLAGSUM, R.F_POSTS, R.F_ROSTER) for r_ in rows(target, f)
-             if r_["site"] in ("graphics", K.GRAPHICS_OLD)]
-    ok("SF5 Graphics & Shaders has no row after June 2023 in any 2024 to 2026 file, so a tenth site changes nothing",
-       not g_new)
-    D_26 = loaded(target)
-    std_keep = dict(C.STD27)
-    C.STD27.update(K.STD_2026)
-    try:
-        n26 = req(need_of(D_26))
-    finally:
-        C.STD27.clear()
-        C.STD27.update(std_keep)
-    ok("SF6 the 2026 standards (close 5.0 minutes) file %d; the prompt and the standards' effective dates rule them out"
-       % n26, n26 > REQUEST and "From 1 January 2027" in flat)
-    D_tr = loaded(target)
-    tr_plan = {}
-    for s in K.SITES:
-        lo, hi = M[(2025, 1)], M[(2026, 9)]
-        y_ = np.array([D.q[s][i] / K.SEAS[C.HIST_MONTHS[i][1]] for i in range(lo, hi + 1)])
-        b = np.polyfit(np.arange(lo, hi + 1), np.log(y_), 1)
-        tr_plan[s] = np.array([math.exp(np.polyval(b, M[(2026, 9)] + 3 + m)) * K.SEAS[m] for m in range(1, 13)])
-    D_tr.plan = tr_plan
-    sf7 = need_of(D_tr)
-    ok("SF7 a trend of each site's own questions in place of the plan: %d (%s); the prompt names the plan" % (
-        req(sf7), nine(sf7)), "question plan" in ptxt and R.F_PLAN in os.listdir(target))
-    once = int(K.round_half_up(sum(X.need_h.values()) / K.FTE_HOURS))
-    ok("SF8 the network's hours over 1,600 rounded once: %d; the charter's request sentence (each site to the nearest "
-       "whole FTE, the request their sum) rules it out" % once, once == REQUEST + 1 and how["rounding"] in flat)
-    ok("SF9 how far from the envelope: the request less the envelope, %d FTE above, whole FTE by the prompt's rounding "
-       "sentence; the prompt asks how far above or below it sits" % GAP,
-       X.gap == GAP and "Give FTE in whole numbers" in ptxt and "how far above or below finance's envelope" in ptxt and
-       "Above finance's 26-FTE envelope by %d FTE." % GAP in sub)
-    ok("SF10 the items on posts and accounts not yet written are in the need: the charter says so and the plan's "
-       "questions carry them", how["future"] in flat)
-    ok("SF11 the chart's history at the standards in force then: the request is computed on 2027 only, so restating the "
-       "history moves no FTE", all(abs(C.fte(C.site_need(D, s)[1]) - X.need_fte[s]) < 1e-12 for s in K.SITES))
-    stamps = {r_["pulled_at_utc"][:10] for r_ in rows(target, R.F_INBOX)}
-    stamps_pre = {r_["pulled_at_utc"][:10] for r_ in rows(target, R.F_INBOX_PRE)}
-    open_pre = sum(int(r_["open_at_pull"]) for r_ in rows(target, R.F_INBOX_PRE))
-    ok("SF12 see R2d: the full export was pulled on 8 October and the 2 October pull of September still holds %d items "
-       "open at the pull; read in its place it files the same nine" % open_pre,
-       stamps == {"2026-10-08"} and stamps_pre == {"2026-10-02"} and open_pre > 0)
-    ok("SF13 the pool read as access holders and stops read at the lapse month: see the CALL row, the same nine; tenure "
-       "is months since the grant month, and the bands of 3, 6 and 12 months file the same nine", True)
-    ok("SF14 who reviews in 2027: the reviewers active in September 2026 and anyone invited, review access being by "
-       "invitation only from 1 September 2026 (the handbook); carrying the last twelve months' new reviewers instead "
-       "files %d" % req(rt["flat24_open"]["fte"]), req(rt["flat24_open"]["fte"]) <= REQUEST - 4 and
-       "review access on every site is given only by invitation" in flat)
-
-    # ------------------------------------------------------------------ closure axes that can move
-    inbox = rows(target, R.F_INBOX)
-    ok("CLOSURE 15 no duplicate key in the inbox export, the flag summary, the posts warehouse or the roster",
-       len({(r_["site"], r_["entry_date_utc"], r_["item_type"]) for r_ in inbox}) == len(inbox) and
-       len({(r_["site"], r_["date_utc"]) for r_ in rows(target, R.F_FLAGSUM)}) == len(rows(target, R.F_FLAGSUM)) and
-       len({(r_["account_id"], r_["site"], r_["access_granted"]) for r_ in rows(target, R.F_ROSTER)}) == n_roster)
-    ok("CLOSURE 12 the 8 October pull is complete: no item open on any row, and entered is reviewed plus routed plus "
-       "open on every row", all(r_["open_at_pull"] == "0" and int(r_["entered"]) == int(r_["reviewed_by_volunteer"]) +
-                                int(r_["routed_to_moderation"]) for r_ in inbox))
-    bad19 = []
-    for r_ in rows(target, R.F_ROSTER):
-        y, m = int(r_["last_review"][:4]), int(r_["last_review"][5:7])
-        lap = dt.date(y + (m + 1) // 12, (m + 1) % 12 + 1, 1)
-        if r_["access_status"] == "lapsed" and r_["lapsed_on"] != lap.isoformat():
-            bad19.append(r_["account_id"])
-        if r_["access_status"] == "active" and (r_["lapsed_on"] or r_["last_review"] < "2026-09-01"):
-            bad19.append(r_["account_id"])
-    ok("CLOSURE 19 the roster's status and dates agree on every row (lapsed on the first day of the second month after "
-       "the last review; active only with a review in September 2026 or later)", not bad19, bad19[:5])
-    ok("CLOSURE 13 monthly and annual netting of the inbox against capacity file the same nine",
-       rnd(rt["annual"]["fte"]) == GOLD)
-
-    # ------------------------------------------------------------------ the ladder
-    lad = {k: req(rt[k]["fte"]) for k in RIVALS}
-    ok("LADDER the rivals file their named requests: %s" % ", ".join("%s %d" % kv for kv in RIVALS.items()),
-       lad == RIVALS, str(lad))
-    ok("LADDER every rival sits 4 FTE or more from the golden and differs from it at three sites or more",
-       all(abs(v - REQUEST) >= 4 for v in lad.values()) and
-       all(sum(rnd(rt[k]["fte"])[s] != GOLD[s] for s in K.SITES) >= 3 for k in RIVALS),
-       ", ".join("%s %s" % (k, nine(rt[k]["fte"])) for k in RIVALS))
-    ok("LADDER the golden is bracketed: the per-question, trend, open-pool and whole-cohort routes below it, the "
-       "closed pool at its overall lapse rate and the censored pace above",
-       max(lad[k] for k in BELOW) < REQUEST < min(lad[k] for k in ABOVE))
-    ok("LADDER without the capacity no share or trend moves Data & ML, Databases, Infrastructure & DevOps or Game "
-       "Development off its last twelve months' rate by a whole FTE",
-       all(abs(rt[k]["fte"][s] - rt["naive12"]["fte"][s]) < 1.0 for k in ("share_trend", "hours_trend")
-           for s in ("data", "databases", "devops", "gamedev")))
-    err, site_err = backtest(D)
-    ok("BACKTEST fitted at September 2025 and scored on the reviewers active then, month by month to September 2026: "
-       "the tenure curve misses their reviewer-months by %+.1f per cent network-wide (worst site %.1f per cent)" % (
-           100 * err["tenure"], 100 * max(abs(v) for v in site_err["tenure"].values())),
-       abs(err["tenure"]) < 0.015 and max(abs(v) for v in site_err["tenure"].values()) < 0.05)
-    ok("BACKTEST the pool's overall lapse rate misses the same cohort by %+.1f per cent and the curve read without the "
-       "record's left edge by %+.1f per cent" % (100 * err["flat"], 100 * err["no_truncation"]),
-       err["flat"] < -0.04 and err["no_truncation"] > 0.04)
-
-    # ------------------------------------------------------------------ Ask A
-    A = X.ask_a
-    keysA = sorted(A)
-    clrA = min(K.bin_clearance(v, 0.1) for v in A.values())
-    _, numA0, denA0 = ask_a_variant(target)
-    ties = [k for k in keysA if (1000 * numA0[k]) % denA0[k] == 0 and ((1000 * numA0[k]) // denA0[k]) % 10 == 5]
-    if EXPECT:
-        ok("ASK A the 27 shares as built", all("%.1f" % K.round_half_up(A[k], 1) == EXPECT["A"]["%s %d" % k]
-                                               for k in keysA))
-    ok("ASK A every share is an exact ratio of counts the filed basis fixes, and none falls on a half step, so half-up "
-       "and half-even rounding agree (nearest edge %.3f of a step)" % clrA,
-       not ties and all(abs(100.0 * numA0[k] / denA0[k] - A[k]) < 1e-9 for k in keysA), str(ties))
-    exact24 = 0
-    rev = {r_["flag_id"]: r_ for r_ in rows(target, R.F_REVIEWS)}
-    flags = {r_["flag_id"]: r_ for f in (R.F_FLAGS1, R.F_FLAGS2) for r_ in rows(target, f)}
-    for fid, r_ in flags.items():
-        b = rev[fid]["first_action_at_utc"] if fid in rev else r_["handled_at_utc"]
-        exact24 += dt.datetime.fromisoformat(b) - dt.datetime.fromisoformat(r_["raised_at_utc"]) == dt.timedelta(
-            hours=24)
-    ok("ASK A no flag's first action falls exactly 24 hours after it was raised, so within and inside agree",
-       exact24 == 0)
-    s1, _, _ = ask_a_variant(target, first="export", drop_closed=False, dedupe=False)
-    s2, _, _ = ask_a_variant(target, first="export")
-    s3, _, _ = ask_a_variant(target, drop_reviewed=True)
-    s4, _, _ = ask_a_variant(target, drop_closed=False)
-    s5, _, _ = ask_a_variant(target, dedupe=False)
-    ok("ASK A S1 every exported row as it stands (duplicates and closed flags in, the export time as first action) "
-       "misses all 27", not miss(s1, A, keysA, 1))
-    ok("ASK A S2 the cracker (duplicates and closed flags out, the export time as first action) misses all 27",
-       not miss(s2, A, keysA, 1), "min gap %.2f" % min(abs(s2[k] - A[k]) for k in keysA))
-    hit3 = miss(s3, A, keysA, 1)
-    ok("ASK A S3 the reviewed flags dropped from both counts (the over-correction) misses %d of 27" % (27 - len(hit3)),
-       27 - len(hit3) >= 12, str(hit3))
-    ok("ASK A HA1 the closed flags kept raises every share (all 27 miss)", not miss(s4, A, keysA, 1) and
-       all(s4[k] > A[k] for k in keysA))
-    hit5 = miss(s5, A, keysA, 1)
-    ok("ASK A HA2 the 15 August rows counted twice moves only August figures, and only where they fall across a "
-       "rounding edge (%d of 9 August figures move)" % (9 - len([k for k in hit5 if k[1] == 8])),
-       all(k[1] == 8 for k in set(keysA) - set(hit5)))
-    closed_r = {fid: r_ for fid, r_ in rev.items() if r_["review_closed_at_utc"]}
-    open_r = {fid: r_ for fid, r_ in rev.items() if not r_["review_closed_at_utc"]}
-    re_ok = all(flags[fid]["handled_at_utc"] == r_["review_closed_at_utc"] and r_["first_action_at_utc"] <
-                r_["review_closed_at_utc"] for fid, r_ in closed_r.items())
-    re_ok &= all(flags[fid]["handled_at_utc"] == r_["first_action_at_utc"] for fid, r_ in open_r.items())
-    ok("ASK A fair: every closed review's flag carries the review's close as its export time, every review still open "
-       "at the export its first action, and the review log keeps the first action (%d reviews, %d open)" % (
-           len(rev), len(open_r)), re_ok and len(closed_r) > 1000)
-    late_t = [r_ for f in (R.F_FLAGS1, R.F_FLAGS2, R.F_REVIEWS) for r_ in rows(target, f)
-              if max(v for k, v in r_.items() if k.endswith("_utc") and v) > "2026-10-08 05:38:21"]
-    ok("ASK A every time in the flag exports and the review log precedes the export run on 8 October", not late_t,
-       str(late_t[:2]))
-    ok("ASK A the 24-hour flag response is the standard's share, the post-deleted closures out of both counts; the "
-       "prompt names the measure",
-       "for each site and month, the share of the flags raised in the month, on UTC, that were answered within 24 hours."
-       in flat and "left out of both counts." in flat and "24-hour flag response" in ptxt)
-    ok("ASK A the flag service standard files the basis once, and no file says the export time moves on review",
-       "first action on it came within 24 hours of the flag being raised" in flat and
-       not re.search(r"marked handled again|re-?stamp|overwrit", flat, re.I))
-
-    # ------------------------------------------------------------------ Ask B
-    Bh = X.ask_b
-    keysB = sorted(Bh)
-    if EXPECT:
-        ok("ASK B the 27 quarter totals as built", all(int(K.round_half_up(Bh[k])) == EXPECT["B"]["%s %d" % k]
-                                                       for k in keysB))
-    ok("ASK B every quarter total is a whole number of hours (whole-hour shift lines), so no total sits on a rounding "
-       "edge", all(abs(v - round(v)) < 1e-9 for v in Bh.values()))
-    b1 = ask_b_variant(target, site_from="export", keep_superseded=True)
-    b2 = ask_b_variant(target, site_from="export")
-    b3 = ask_b_variant(target, by="end")
-    b4 = ask_b_variant(target, keep_superseded=True)
-    b5 = ask_b_variant(target, site_from="export", map_label=False)
-    ok("ASK B S1 the export's site with the superseded lines kept misses all 27", not miss(b1, Bh, keysB, 0))
-    ok("ASK B S2 the cracker (superseded out, Ops & Cloud mapped, by start day, the export's site) misses all 27",
-       not miss(b2, Bh, keysB, 0), "min gap %.0f" % min(abs(b2.get(k, 0) - Bh[k]) for k in keysB))
-    moved3 = [k for k in keysB if round(b3.get(k, 0)) != round(Bh[k])]
-    ok("ASK B S3 shifts put on their end day move the quarter-end nights (%d figures miss)" % len(moved3),
-       len(moved3) >= 4, str(moved3))
-    moved4 = [k for k in keysB if round(b4.get(k, 0)) != round(Bh[k])]
-    ok("ASK B HB2 the superseded May lines kept move the second quarter at the corrected moderators' sites only",
-       moved4 and all(k[1] == 2 for k in moved4), str(moved4))
-    ok("ASK B HB1 the WFM label Ops & Cloud left unmapped drops Infrastructure & DevOps' three quarters",
-       all(("devops", q) not in b5 for q in (1, 2, 3)))
-    hist = {}
-    for r_ in rows(target, R.F_ASSIGN):
-        hist.setdefault(r_["employee_no"], []).append((r_["effective_from"], r_["effective_to"] or "9999-12-31"))
-    cover = all(sum(a <= r_["shift_date"] <= b for a, b in hist[r_["employee_no"]]) == 1
-                for r_ in rows(target, R.F_WFM))
-    movers = sum(1 for v in hist.values() if len(v) > 1)
-    ok("ASK B fair: every shift line's start day falls in exactly one assignment of its moderator (%d moved in July and "
-       "August)" % movers, cover and movers == 6)
-    ok("ASK B the operations handbook files the basis once (the site worked for on the shift, the quarter it started, "
-       "Toronto time) and nothing says the export's site is the current one",
-       "A shift's hours belong to the site the moderator worked for on that shift, and to the quarter in which the "
-       "shift started, on Toronto time." in flat and not re.search(
-           r"current (?:site|record)|moderators? (?:were |was )?(?:moved|reassigned)|changed site|site column", flat,
-           re.I))
-
-    # ------------------------------------------------------------------ Ask C
-    Cq = X.ask_c
-    if EXPECT:
-        ok("ASK C the nine percentages as built", all("%.1f" % K.round_half_up(Cq[s], 1) == EXPECT["C"][s]
-                                                      for s in K.SITES))
-    clrC = min(K.bin_clearance(v, 0.1) for v in Cq.values())
-    ok("ASK C every percentage sits 0.1 of its rounding step or more from the edge", clrC >= 0.1, "%.3f" % clrC)
-    c1 = ask_c_variant(target, X, merger=False, mode="workbook")
-    c2 = ask_c_variant(target, X, mode="workbook")
-    c3 = ask_c_variant(target, X, mode="copies_off")
-    c4 = ask_c_variant(target, X, mode="by_move_month")
-    ok("ASK C S1 the workbook as it stands, Graphics left out, misses all nine", not miss(c1, Cq, K.SITES, 1))
-    ok("ASK C S2 the workbook's 2022 used as it stands on the old job's basis (the merger applied, no restatement on "
-       "the warehouse's basis) misses all nine",
-       not miss(c2, Cq, K.SITES, 1), "min gap %.2f" % min(abs(c2[s] - Cq[s]) for s in K.SITES))
-    h3 = miss(c3, Cq, K.SITES, 1)
-    h4 = miss(c4, Cq, K.SITES, 1)
-    ok("ASK C S3 the copies taken off (each question once, but on the site it was asked on) misses %d of 9" % (
-        9 - len(h3)), 9 - len(h3) >= 6, str(h3))
-    ok("ASK C C1 each move applied in the month it moved instead of the month asked files the same nine figures (no "
-       "move straddles the window's edges enough to cross a rounding step)", len(h4) == 9, str(h4))
-    truth22 = {s: 0 for s in K.SITES}
-    for s in K.SITES:
-        Sx = W.sites[s]
-        truth22[s] = int(sum(Sx.q[W.day_index[d]] for d in K.days(dt.date(2022, 1, 1), dt.date(2022, 9, 30))))
-    ok("ASK C fair: the 2022 counts rebuilt from the workbook and the migration log are the world's questions by the "
-       "site they live on, to the question", all(X.q22[s] == truth22[s] for s in K.SITES),
-       str({s: X.q22[s] - truth22[s] for s in K.SITES}))
-    ok("ASK C the question count standard files the basis once and the workbook's own note says what it counted",
-       "Questions are counted once each, in the month the question was first asked (UTC), on the site the question is "
-       "on today." in flat)
-    old_job = ("The old statistics job counted a question on every site it was posted to. A question moved to another "
-               "site is posted there anew under a new question id, so the job counted it on its first site in the month "
-               "it was asked and on its new site in the month it moved.")
-    c5 = ask_c_variant(target, X, mode="net_move")
-    ok("ASK C the reading that the old job counted each question once on the site it was posted to (moves netted in "
-       "the month asked, no copies taken off) misses all nine, and the warehouse notes' sentence on the old job rules "
-       "it out", not miss(c5, Cq, K.SITES, 1) and old_job in flat, "min gap %.2f" % min(abs(c5[s] - Cq[s])
-                                                                                   for s in K.SITES))
-    ok("ASK C the reading with no restatement (the workbook's 2022 as reported, S2) is ruled out by the warehouse "
-       "notes: comparisons with 2021 to 2023 are made on the warehouse's basis",
-       "Comparisons with 2021 to 2023 are made on the warehouse's basis." in flat and not miss(c2, Cq, K.SITES, 1))
-    cg = ask_c_variant(target, X, mode="golden")
-    ok("ASK C the golden's construction (restated 2022 sheet, the old job's double count undone on the warehouse's "
-       "basis, the merger) reproduces the nine figures exactly", all(abs(cg[s] - Cq[s]) < 1e-9 for s in K.SITES))
-    cl = ask_c_variant(target, X, mode="golden", restated=False)
-    hl = miss(cl, Cq, K.SITES, 1)
-    ok("ASK C C2 device: the careful-but-literal path (the counting rule, the comparison basis, the merger and the "
-       "migration log all applied, the 2022 sheet's questions as first reported) misses %d of 9 (nearest %.2f points)"
-       % (9 - len(hl), min(abs(cl[s] - Cq[s]) for s in K.SITES)), len(hl) == 0 and
-       min(abs(cl[s] - Cq[s]) for s in K.SITES) >= 0.15, str(hl))
-    shares = {}
-    for (old, y, m), v in X.D.old_restated.items():
-        shares.setdefault(old, [0, 0])
-        shares[old][0] += v - X.D.old[(old, y, m)]["q"]
-        shares[old][1] += v
-    sh = {o: a / b for o, (a, b) in shares.items()}
-    ok("ASK C C2 fair and honest: the March 2023 rerun restates May to August 2022 for every old site, by %.1f to %.1f "
-       "per cent of their questions (the API's share differs by site), on the job's own basis, and touches no review "
-       "item, reviewer or flag" % (100 * min(sh.values()), 100 * max(sh.values())),
-       len(sh) == 10 and max(sh.values()) / min(sh.values()) > 1.6 and all(v > 0 for v in sh.values()) and
-       "its questions replace those above for these months" in open_text(target, R.F_OLD))
-
-    # ------------------------------------------------------------------ realism sweep
-    by_site = {}
-    for r_ in rows(target, R.F_POSTS):
-        by_site.setdefault(r_["site"], []).append(int(r_["questions"]))
-    runs = [s for s, v in by_site.items() if any(v[i] == v[i + 1] for i in range(len(v) - 1)) or
-            len({(v[i], v[i + 1]) for i in range(len(v) - 1)}) < len(v) - 1]
-    heads_ = [int(sum(v[-9:])) for v in by_site.values()] + [int(sum(D.plan[s])) for s in K.SITES] + \
-        [sum(X.R_sep26.values()), n_roster]
-    allq = [x for v in by_site.values() for x in v]
-    ok("REALISM no site's monthly question count repeats month to month or in a two-month run, and no headline total "
-       "(each site's January to September 2026 questions, its 2027 plan, the reviewer counts) is a round thousand",
-       not runs and not any(h % 1000 == 0 for h in heads_),
-       "%d coincident values among %d site-months, as Poisson counts of this size give" % (
-           len(allq) - len(set(allq)), len(allq)))
-    figsB = [int(round(v)) for v in Bh.values()]
-    ok("REALISM the 27 quarter totals are all different", len(set(figsB)) == len(figsB))
-    _, numA, denA = ask_a_variant(target)
-    ok("REALISM the 27 flag counts behind Ask A are all different", len(set(denA.values())) == len(denA))
-    persons = set(re.findall(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b", "\n".join(texts.values())))
-    firsts = {n.split()[0] for n in K.PEOPLE.values()}
-    named = {n for n in persons if n.split()[0] in firsts}
-    ok("REALISM every person named in the documents is a drawn persona", named <= set(K.PEOPLE.values()),
-       sorted(named - set(K.PEOPLE.values())))
-    dash = [f for f in os.listdir(target) if f.endswith((".csv", ".md")) and re.search(
-        "[—–]", open(os.path.join(target, f), encoding="utf-8").read())]
-    dash += [f for f, t in texts.items() if re.search("[—–]", t)]
-    gtext = ""
-    for f in os.listdir(golden):
-        with zipfile.ZipFile(os.path.join(golden, f)) as z:
-            for n in z.namelist():
-                if re.match(r"(ppt/slides/slide\d+|xl/sharedStrings|xl/worksheets/sheet\d+)\.xml$", n):
-                    gtext += " ".join(re.findall(r"<(?:a:t|t)(?: [^>]*)?>([^<]*)<", z.read(n).decode("utf-8")))
-    ok("REALISM no em or en dash in the pack, the goldens or the submission",
-       not dash and not re.search("[—–]", sub + gtext + ptxt), dash)
-    ok("REALISM every shipped file carries the pack's morning (9 October 2026) as its time",
-       all(abs(os.path.getmtime(os.path.join(target, f)) - BLD.MTIME) < 1 for f in os.listdir(target)))
-    late = []
-    for f in os.listdir(target):
-        p = os.path.join(target, f)
-        if f.endswith(".xlsx"):
-            with zipfile.ZipFile(p) as z:
-                core = z.read("docProps/core.xml").decode()
-            if re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)[:10] > K.ASOF.isoformat():
-                late.append(f)
-        elif f.endswith(".pdf"):
-            raw = open(p, "rb").read()
-            m_ = re.search(rb"/CreationDate \(D:(\d{8})", raw)
-            if not m_ or m_.group(1).decode() > K.ASOF.strftime("%Y%m%d"):
-                late.append(f)
-    dated = re.findall(r"\b(\d{1,2}) (October|November|December) 2026\b", flat)
-    late += ["text: %s %s 2026" % d for d in dated if (d[1] != "October" or int(d[0]) > K.ASOF.day)]
-    ok("REALISM no document, workbook or sentence is dated after the pack (9 October 2026)", not late, late)
-    describe = [f for f in os.listdir(target) if f.endswith((".md", ".txt")) or re.search(
-        r"dictionar|readme|manifest|field_notes|codebook|file_list|_files_|notes", f, re.I)]
-    ok("NO DESCRIPTION no shipped file describes the data: no dictionary, manifest, field notes, readme, file list or "
-       "text notes; every export names its own columns", not describe, describe)
-
-    # ------------------------------------------------------------------ input gates
-    files = sorted(os.listdir(target))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    big = max(B.n.values())
-    ok("GATE 10 or more files, 3 or more formats, one of 25,000 or more rows",
-       len(files) >= 10 and len(fmts) >= 3 and big >= 25000, "%d files, %s, %d rows" % (len(files), sorted(fmts), big))
-
-    # ------------------------------------------------------------------ the goldens agree with figures.json
-    wb = openpyxl.load_workbook(os.path.join(golden, DL.XLSX), data_only=True)
-    ws = wb["Need 2027"]
-    need_rows = {ws.cell(row=i, column=1).value: ws.cell(row=i, column=8).value for i in range(6, 16)}
-    tail = {ws.cell(row=i, column=1).value: ws.cell(row=i, column=8).value for i in range(17, 21)}
-    ok("GOLDEN the workbook's site needs, request and distance from the envelope are the figures'",
-       all(need_rows[DL.NAME[s]] == F["call"]["need_fte"][DL.NAME[s]] for s in K.SITES) and
-       need_rows["Network"] == F["call"]["request_fte"] and
-       tail["Request above the envelope (FTE)"] == F["call"]["above_envelope_fte"])
-    wa, wbb, wc = wb["Flag response"], wb["Hours worked"], wb["Questions vs 2022"]
-    okA = all("%.1f" % wa.cell(row=5 + i, column=2 + j).value ==
-              F["answers"]["ask_a_pct"]["%s %s 2026" % (DL.NAME[s], K.MONTH_NAMES[m])]
-              for i, s in enumerate(K.SITES) for j, m in enumerate((7, 8, 9)))
-    okB = all(format(wbb.cell(row=5 + i, column=2 + j).value, ",") ==
-              F["answers"]["ask_b_hours"]["%s Q%d 2026" % (DL.NAME[s], q)]
-              for i, s in enumerate(K.SITES) for j, q in enumerate((1, 2, 3)))
-    okC = all("%.1f" % wc.cell(row=5 + i, column=2).value == F["answers"]["ask_c_pct"][DL.NAME[s]]
-              for i, s in enumerate(K.SITES))
-    ok("GOLDEN the workbook's three tables are the figures'", okA and okB and okC)
-    with zipfile.ZipFile(os.path.join(golden, DL.PPTX)) as z:
-        s1x = z.read("ppt/slides/slide1.xml").decode()
-        media = [n for n in z.namelist() if n.startswith("ppt/media/")]
-        big_png = max((z.getinfo(n).file_size for n in media), default=0)
-    ok("GOLDEN slide 1 states the request and its distance from the envelope; slide 2 carries the rendered chart",
-       "Request %d paid moderator FTE for 2027" % REQUEST in s1x and "%d FTE above finance" % GAP in s1x and
-       big_png > 50000)
-    ok("GOLDEN the submission states the call and every figure from figures.json (figures_check runs separately)",
-       "**The council should request %d paid moderator FTE for 2027, %d above finance's 26-FTE envelope" % (
-           REQUEST, GAP) in sub)
-
-    # the pace stated loosely everywhere a grader reads it; the envelope compared network-wide only
-    blocks = sub.split("## 4. Deliverable Answers")[0]
-    gold_txt = gtext + "\n" + "\n".join(str(c) for ws in wb.worksheets for row in ws.iter_rows(values_only=True)
-                                         for c in row if isinstance(c, str))
-    paces_said = re.findall(r"(about )?\b40(?:\.\d+)? (?:reviews|items)", blocks + gold_txt, re.I)
-    ok("WRITEUP the volunteer pace appears only as about 40 reviews a month, never a finer figure, in the graded blocks "
-       "and both goldens",
-       paces_said and all(a for a in paces_said) and not re.search(r"\b(?:39|40|41)\.\d+ reviews", blocks + gold_txt),
-       str(len(paces_said)))
-    ws_need = wb["Need 2027"]
-    need_heads = [ws_need.cell(row=5, column=c).value for c in range(1, 9)]
-    env_cells = [c for ws in wb.worksheets for row in ws.iter_rows(values_only=True) for c in row
-                 if isinstance(c, str) and "envelope" in c.lower()]
-    ok("WRITEUP the envelope is compared network-wide only: request less 26 is %d above; no per-site envelope column "
-       "or share in either golden" % GAP,
-       not any("envelope" in str(h).lower() for h in need_heads) and X.gap == X.request - K.ENVELOPE_2027 == GAP and
-       "Request above the envelope (FTE)" in env_cells and "%d FTE above finance's 2027 envelope of 26 FTE" % GAP in s1x and
-       not any(re.search(r"envelope (?:share|by site|per site)|site'?s? (?:share of the )?envelope", c, re.I)
-               for c in env_cells), str(env_cells))
-    fails = [x for x in RESULTS if not x[1]]
-    for label, good, detail in RESULTS:
-        print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [%s]" % detail) if detail else ""))
-    ids = set(re.findall(r"\bSF\d+\b", " ".join(x[0] for x in RESULTS)))
-    print("checks: %d assertions, %d failed; fork rows asserted: %s" % (len(RESULTS), len(fails),
-                                                                       ", ".join(sorted(ids, key=lambda x: int(x[2:])))))
-    return fails
-
-
-DLX = None
+def edge(x, unit=1.0):
+    return abs((x / unit) % 1.0 - 0.5)
 
 
 def main():
-    global DLX
-    target = os.path.join(TASK, "target")
-    golden = os.path.join(TASK, "golden")
-    B = BLD.world()
-    B.n = {f: len(rows(target, f)) for f in os.listdir(target) if f.endswith(".csv")}
-    DLX = DL.compute(target)
-    X = DLX
-    fails = run(target, golden, B, X, os.path.join(TASK, "metadata.json"))
-    if fails:
-        raise SystemExit(1)
+    files = sorted(os.listdir(T))
+    meta = json.load(open(os.path.join(TASK, "metadata.json")))
+    # ------------------------------------------------------------------ input gates
+    check("gate: 10 or more files", len(files) >= 10, "%d files" % len(files))
+    fmts = {f.rsplit(".", 1)[-1] for f in files}
+    check("gate: 3 or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    big = [f for f in files if f.endswith(".csv") and sum(1 for _ in open(os.path.join(T, f), encoding="utf-8")) >= 25000]
+    check("gate: a 25,000-row file", bool(big), ", ".join(big))
+    check("gate: 2 or more distractors in metadata", len(meta["distractor_files"]) >= 2, ", ".join(meta["distractor_files"]))
+    bad = [f for f in files if any(w in f.lower() for w in ("readme", "dictionary", "notes", "manifest", "distractor",
+                                                            "schema", "codebook"))]
+    check("gate: no file describes the data or names its role", not bad, ", ".join(bad) or "none")
+    mtxt = json.dumps({k: v for k, v in meta.items() if k not in ("files", "distractor_files")}).lower()
+    mtxt += " ".join(f["source"] for f in meta["files"]).lower()
+    leaks = [w for w in ("water table", "groundwater", "infiltration", "below the", "submerged", "invert") if w in mtxt]
+    check("gate: metadata.json names no method word", not leaks, ", ".join(leaks) or "none")
+
+    # ------------------------------------------------------------------ the golden and the rungs
+    G = E.golden(T)
+    sub = E.subdivision()
+    ex, su, up = G["existing"]["mean"], G["with_sub"]["mean"], G["with_upgrade"]["mean"]
+    check("call: with the subdivision above the limit (hold)", su > 2.0, "%.2f a year" % su)
+    check("call: as connected now above the limit", ex > 2.0, "%.2f" % ex)
+    check("call: after the upgrade inside the limit", up < 2.0, "%.2f" % up)
+    for name, v in (("existing", ex), ("with_sub", su), ("upgrade", up)):
+        check("margin: %s a quarter of a whole overflow from an edge" % name, edge(v) >= 0.249, "%.2f, %.2f" % (v, edge(v)))
+    check("call: margin over the limit at least 40 per cent", su >= 2.8, "%.2f" % su)
+    N = G["naive"]
+    check("R3a: the single response files connect (default path)", G["naive_sub"]["mean"] < 1.5,
+          "%.2f a year with the subdivision" % G["naive_sub"]["mean"])
+    check("R3a: the single response reproduces the meter's logged overflows", G["naive_sub"]["meter"] == [0, 0, 2]
+          and G["existing"]["meter"] == [0, 0, 2], "%s / %s" % (G["naive_existing"]["meter"], G["existing"]["meter"]))
+    # rung 0: the station's own record carried forward
+    logged = sum(G["existing"]["meter"])
+    years = (E.H1 - E.dt.datetime(2023, 12, 31, 11, tzinfo=E.UTC)).total_seconds() / (365.25 * 86400)
+    check("rung 0: the meter's own rate files connect", logged / years < 1.5, "%.2f a year" % (logged / years))
+    # rung 2: one set of responses per season and the dry weather flow by month
+    seas = seasonal(T)
+    check("rung 2: seasonal responses and monthly base file connect", seas < 1.5, "%.2f a year" % seas)
+    # the bore read as a level, straight
+    lin = level_linear(T)
+    check("rung 3a: the bore as a straight level files connect (the inverts are needed)", lin < 2.0, "%.2f" % lin)
+    # R3b: the decisive step alone
+    check("R3b: conditioning on the length below the water table alone files hold", su > 2.0, "%.2f" % su)
+
+    # ------------------------------------------------------------------ the deciding configuration is in the record
+    check("record: the meter's wettest day reaches the replay's", G["lsub_meter_max"] >= 0.97 * G["lsub_replay_max"],
+          "%.2f against %.2f km" % (G["lsub_meter_max"], G["lsub_replay_max"]))
+    C = E.clock()
+    ls = G["model"]["ls_d"]
+    import datetime as dt
+    rd = np.array([dt.date(2004, 1, 1) + dt.timedelta(days=int(k)) <= dt.date(2023, 12, 31) for k in range(C.nd)])
+    above = int(np.sum(ls[rd] > G["lsub_meter_max"]))
+    check("record: replay days above the meter's maximum", above <= 5, "%d days" % above)
+    capped = dict(G["model"])
+    capped["ls_d"] = np.minimum(ls, G["lsub_meter_max"])
+    cv = E.replay(T, capped, sub)["mean"]
+    check("record: capping at the meter's maximum leaves the figure", rnd(cv) == rnd(su), "%.2f" % cv)
+
+    # ------------------------------------------------------------------ semantic forks
+    def same(label, M=None, extra=sub, store=E.STORE, call_only=False, note=""):
+        M = M or G["model"]
+        v = E.replay(T, M, extra, store)["mean"]
+        ok = (v > 2.0) if call_only else (rnd(v) == rnd(su))
+        check(label, ok, "%.2f %s" % (v, note))
+        return v
+
+    check("SF1 average a year is the twenty years' overflows over twenty",
+          abs(su - G["with_sub"]["per_year"].sum() / 20) < 1e-9, "%d / 20" % G["with_sub"]["per_year"].sum())
+    q = E.model_flow(T, G["model"], sub)
+    for sep, lab in ((12, "12 hours"), (0, "no merging")):
+        ev = E.overflows(q, sep=sep)
+        yrs = C.year[ev]
+        v = float(np.mean([np.sum(yrs == y) for y in range(2004, 2024)]))
+        check("SF2 overflow separation %s keeps the call" % lab, v > 2.0, "%.2f" % v)
+    ev = E.overflows(q)
+    yrs = C.year[ev]
+    v22 = float(np.mean([np.sum(yrs == y) for y in range(2004, 2026)]))
+    check("SF3 the archive's 22 years in place of the consent's 20 keep the call", v22 > 2.0, "%.2f" % v22)
+    same("SF4 the catchment's dwellings scaled to the snapshot keep the figure",
+         extra=sub + 0.014 * G["model"]["base"][C.how])
+    same("SF5 stage 1 alone keeps the call", extra=E.subdivision(96), call_only=True)
+    same("SF6 the subdivision's flow flat through the day keeps the figure", extra=E.subdivision(profile="flat"))
+    v = E.replay(T, G["model"], sub)
+    s1 = E.overflows(E.model_flow(T, G["model"], sub), qp=61.8)
+    check("SF7 one pump in place of both keeps the call", float(np.mean([np.sum(C.year[s1] == y) for y in range(2004, 2024)])) > 2.0)
+    same("SF8 the chamber's 312 m3 alone keeps the call", store=312.0, call_only=True)
+    check("SF9 the upgrade's tank fills before the weir (the brief): its 1,100 m3 add to the 350", up < 2.0, "%.2f" % up)
+    same("SF10 the archive read as hour beginning keeps the figure", M=E.fit(T, True, rain_shift=-1))
+    cen = E.fit(T, True, ref="centre")
+    cro = E.fit(T, True, ref="crown")
+    check("SF11 the centreline reference fits the meter worse", cen["rmse"] > 1.3 * G["model"]["rmse"],
+          "%.2f against %.2f" % (cen["rmse"], G["model"]["rmse"]))
+    check("SF11 the crown reference fits the meter worse", cro["rmse"] > 1.3 * G["model"]["rmse"],
+          "%.2f against %.2f" % (cro["rmse"], G["model"]["rmse"]))
+    same("SF12 the abandoned mains counted keep the figure", M=E.fit(T, True, include_abandoned=True))
+    same("SF13 the PE mains left out keep the figure", M=E.fit(T, True, skip_pe=True))
+    same("SF14 the domestic pattern on NZST keeps the figure", M=E.fit(T, True, profile_clock="nzst"))
+    same("SF15 a 48-hour dry window keeps the figure", M=E.fit(T, True, dry_h=48))
+    same("SF16 the weir-crest hours kept in the fit keep the figure", M=E.fit(T, True, keep_spill=True))
+    near = []
+    for sf in E.SHAPES_F:
+        for ss in E.SHAPES_S:
+            Mx = E.fit(T, True, shapes=(sf, ss))
+            if Mx["rmse"] <= 1.05 * G["model"]["rmse"] and (sf, ss) != (G["model"]["sf"], G["model"]["ss"]):
+                near.append((sf, ss, E.replay(T, Mx, sub)["mean"]))
+    check("SF17 every shape within 5 per cent of the best fit keeps the figure", all(rnd(v) == rnd(su) for *_, v in near),
+          "; ".join("%s %s %.2f" % (a, b, v) for a, b, v in near) or "no other shape that close")
+    nv = E.replay(T, dict(G["model"], ls_d=np.where(rd, np.median(ls[~rd]), ls)), sub)["mean"]
+    check("SF18 holding the meter's water table through the replay is the naive reading (condition 7 closes it)",
+          nv < 2.0, "%.2f" % nv)
+    lvl = E.water_level(T)
+    check("SF19 bore gaps are short", int(np.isnan(lvl).sum()) == 0, "joined")
+    check("SF20 the 2026 provisional gap sits in dry weather", gap_dry(), "")
+
+    # ------------------------------------------------------------------ the asks
+    A = AK.ask_a(T)
+    As = AK.ask_a(T, dwellings="snapshot")
+    check("Ask A: every quarter clear of its rounding edge", all(edge(v) >= 0.25 for v in A.values()),
+          "min %.2f" % min(edge(v) for v in A.values()))
+    check("Ask A: the snapshot's dwellings miss every quarter", all(rnd(A[k]) != rnd(As[k]) for k in A),
+          "%d of %d" % (sum(rnd(A[k]) != rnd(As[k]) for k in A), len(A)))
+    Ae = AK.ask_a(T, estimates=True)
+    check("Ask A hazard: the estimates moved", sum(rnd(A[k]) != rnd(Ae[k]) for k in A) >= 1)
+    B = AK.ask_b(T)
+    Bc = AK.ask_b(T, icps="current")
+    hrs = [v for k, v in B.items() if "hours" in k]
+    check("Ask B: spill hours clear of the half hour", all(edge(v) >= 0.25 for v in hrs), "min %.2f" % min(edge(v) for v in hrs))
+    miss = sum(rnd(B[k]) != rnd(Bc[k]) for k in B)
+    check("Ask B: the register's current ICPs miss ten figures", miss == 10, "%d of %d" % (miss, len(B)))
+    Bl = AK.ask_b(T, attribution="latest")
+    check("Ask B hazard: monitors placed at their latest station", sum(rnd(B[k]) != rnd(Bl[k]) for k in B) >= 4)
+    # separation: no device row in the call's population
+    sms = [r for r in csv.reader(open(os.path.join(T, R.F_MONITOR), encoding="utf-8"))][1:]
+    ps03 = [r for r in sms if r[2].startswith("OM-2971") and "SPILL" in r[2]]
+    check("separation: PS03's monitor carries only its two 2026 overflows", len(ps03) == 4, "%d messages" % len(ps03))
+    check("separation: PS03's ICP never changed", "PS03" not in R.ICP_OLD)
+    check("separation: no PS03 emergency overflow", not any(s == "PS03" and k == "emergency" for s, *_, k in R.spills()))
+    call_files = {E.F_SCADA, E.F_RAIN, E.F_RAIN26, E.F_BORE, E.F_ASSETS}
+    ask_files = {R.F_READS, R.F_ACCOUNTS, R.F_RATING, R.F_BC, R.F_MONITOR, R.F_OUTAGES, R.F_ICPS}
+    check("separation: the call reads no ask file", not (call_files & ask_files))
+    # ------------------------------------------------------------------ realism
+    tr = H.truth()
+    check("realism: the annual rain is ordinary", 1050 < np.mean([tr.rain[H.clock().year == y].sum() for y in range(2004, 2024)]) < 1450)
+    pipes = E.ps03_pipes(T)
+    check("realism: every PS03 main falls downstream", all(u > d for _, d, u, *_ in pipes))
+    print("%d failed" % len(FAILS))
+    sys.exit(1 if FAILS else 0)
+
+
+def seasonal(target):
+    """Rung 2: the dry weather flow by month and hour of the week, and one fast and one slow response per millimetre
+    for May to October and another for November to April, all as the meter ran."""
+    C = E.clock()
+    rain = E.rainfall(target)
+    q, spill = E.scada_hourly(target)
+    import datetime as dt
+    month = np.array([(E.H0 + dt.timedelta(hours=i)).astimezone(E.NZST).month for i in range(E.NH)])
+    good = C.meter & ~np.isnan(q) & ~spill
+    dry = good & (np.convolve(rain, np.ones(73))[:E.NH] == 0)
+    base = np.zeros((13, 168))
+    flat = np.array([q[dry & (C.how == k)].mean() for k in range(168)])
+    for m in range(1, 13):
+        for k in range(168):
+            s = dry & (C.how == k) & (month == m)
+            base[m, k] = q[s].mean() if s.sum() >= 2 else flat[k]
+    bh = base[month, C.how]
+    F = np.convolve(rain, E.uh(1.0, 6))[:E.NH] / 3.6
+    S = np.convolve(rain, E.uh(9.0, 72))[:E.NH] / 3.6
+    win = (month >= 5) & (month <= 10)
+    pred = bh.copy()
+    for sel in (win, ~win):
+        A = np.vstack([F[good & sel], S[good & sel]]).T
+        a, b = np.linalg.lstsq(A, (q - bh)[good & sel], rcond=None)[0]
+        pred = np.where(sel, bh + a * F + b * S, pred)
+    ev = E.overflows(pred + E.subdivision())
+    yrs = C.year[ev]
+    return float(np.mean([np.sum(yrs == y) for y in range(2004, 2024)]))
+
+
+def level_linear(target):
+    """The bore's level itself, above its lowest meter reading, in place of the length below the water table."""
+    lv = E.water_level(target)
+    x = np.maximum(lv - np.percentile(lv[-1035:], 5), 0)
+    M2 = E.fit(target, True, exposure=x)
+    return E.replay(target, M2, E.subdivision())["mean"]
+
+
+def gap_dry():
+    g0, n = R.RAIN26_GAP
+    i0 = int((g0 - W.H0).total_seconds() // 3600)
+    return float(H.truth().rain[i0:i0 + n // 4 + 2].sum()) < 1.0
 
 
 if __name__ == "__main__":

@@ -171,6 +171,6 @@ def request_eml(path):
         "cover, and what it does to the windstorm capital we hold under CP-04, set out on the policy's own terms.\n\n"
         "Arthur's team has refreshed the year loss table for the 2027 portfolio, the hindcast and the storm "
         "experience, all in the folder. The Board will also want this year's storms against the expiring cover, and "
-        "where our sums insured sit going into 2027.\n\n"
-        "Elizabeth\n\nElizabeth Farmer\nChief Executive\n%s\n" % W.ORG)
+        "where our farm sums insured sit now that more of the bigger farms are shared with other insurers.\n\n"
+        "Elizabeth Farmer\nChief Executive\n%s\n" % W.ORG)
     open(path, "wb").write(bytes(m))

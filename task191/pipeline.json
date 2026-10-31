@@ -1,25 +1,25 @@
 {
  "task": "task191",
- "status": "DESIGN",
- "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
+ "status": "PAUSED",
+ "domain": "human-factors-ergonomics/safety-incident-error-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "each gene's guide-level depletion scaled on the reference genes and read against the standard's line without the copy-number cutting effect: the amplicons' passenger genes join the slate and a single-copy segment's dependency drops off (default: the scaled depletion; golden: the effect net of the cutting effect measured on the non-essential reference genes by copy-number state)",
- "architecture": 2,
+ "stump": "each depot's no-brake share of every collision warning against the fleet's (the dashboard's measure) counts the warnings four fixed structures of the new network raise on a quarter or more of the buses passing them, with nothing in the path, and files Hornacho and Valdeolmos; setting aside the busiest or most ignored places also drops the Plaza de Abastos, where pedestrians are really in the path, and files La Ribera (golden: the share of genuine warnings, the places classed by warnings per bus pass, files San Lázaro at 2.00 times the fleet's rate)",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK) on target.zip 4cd23ce6, 2026-10-31; every REVIEW line ruled in the design note's ## Leak review",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "PASS 2026-10-31",
+  "surface": "exit 0 on the final cut 2026-10-31: two pairs promoted for the author's adjudication (task193, task470: gap objective and designation_set on the cards), no hard tell; differentiation on the card"
  },
  "judge": {
   "verdict": "",
@@ -32,9 +32,15 @@
    "portal": "none: batch 1 re-root; architecture 1's decisive step measured as landed in-house, never a portal result",
    "repair": "re-root",
    "commit": "DRAWN (task191) architecture 2"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "none: architecture 2 spent at stage 2 with no data cut (the drafting was interrupted by a safety classifier)",
+   "repair": "re-root",
+   "commit": "DRAWN (task191) architecture 3"
   }
  ],
- "resume": "Architecture 2 drawn 2026-10-31 (OSR-7 genome-wide knockout screen, the 2027 arrayed validation slate net of the copy-number cutting effect). Next: stage 2 design (default path, stump sentence, ladder, fork table, asks, prompt) gated by precut.py.",
+ "resume": "stage 4: leak reader and judge from the main thread. Every free gate is green on the final cut (precut 61/61, checks 43/43, verify 100/100, figures_check 0 absent, voice-check PASS, leak.py REVIEW with every line ruled, heart PASS, surface exit 0). Rebuild byte-identically first (python3 task191/generator/build.py && python3 task191/generator/deliver.py && python3 task191/generator/zipcut.py; target.zip sha256 4cd23ce6...af24a); target.zip and golden/ are not committed until ship. The reader's fresh copy is scratchpad/leak-task191/ (prompt.txt plus the unzipped target.zip) and its brief scratchpad/task191_stage4_leak_brief.md; spawn the leak reader and the determinism judge together at medium, fix every finding in the generator in one pass, then ship (ledger row, card current, git add -f target.zip and golden/).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -50,5 +56,16 @@
   "cheapest_construction": "max over the eight quarterly worst windows equals one column maximum of the same rows, difference 0.000e+00, an identity; the one-group-by route is one idxmax over 17,139 kept rollup rows",
   "lever_vs_ceiling": "the ladder needs the decided figure above 248.0 kbps and Gate C needs it at or below the same 248.0 kbps; admissible window [262.9, 234.0], empty by 28.9 kbps",
   "verdict": "the decisive step has no estimator content; architecture 1 refused"
+ },
+ "gates": {
+  "date": "2026-10-31",
+  "checks": "43 checks, 0 FAIL",
+  "verify": "100 figures agree, 0 differ",
+  "rebuilds": "two byte-identical rebuilds of target/, golden/, submission.md, metadata.json, figures.json and target.zip",
+  "figures_check": "118 figures in blocks 1 to 4, 0 absent",
+  "voice_check": "PASS",
+  "ceiling": "pair ceiling 32.4, mirror leakage 7.0 per cent (generator/ceiling.py)",
+  "target_zip_sha256": "4cd23ce605e507d6419f37107ab911ab0e9545b465ad5df861c239abc15af24a",
+  "rebuild": "python3 task191/generator/build.py && python3 task191/generator/deliver.py && python3 task191/generator/zipcut.py"
  }
 }

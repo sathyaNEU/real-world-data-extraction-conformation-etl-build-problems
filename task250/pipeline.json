@@ -1,33 +1,33 @@
 {
  "task": "task250",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "supply-chain-logistics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
- "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the trailer each unscanned parcel came off at its delivery depot fires Strykow as well.",
+ "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery depot fires Strykow as well.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW on target.zip 1b8dcbc7, every line ruled",
+  "reader": "reads 1 and 2: no leak; question 6 ruled analytical"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "WARN (2026-10-31): repeat.decision and repeat.question_form only, after the redraw of the decisive generator (G17) and the requester (operations_director)",
+  "surface": "exit 0 (2026-10-31): no surface overlap; one card-axis pair promoted against task480 (gap time, G17, designation_set), the card's differentiation line names how the driver differs"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md and determinism_check_report_pass2.md (the courier-event window pinned in the prompt)"
  },
  "returned": [],
- "resume": "stage 2: readability screen, fork table, ladder, closure, ask sheet; then the generator",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -58,6 +58,15 @@
   {
    "date": "2026-10-31",
    "event": "DRAWN architecture 3: a regional parcel carrier's October missed sort scans by hub (Poland), supply-chain-logistics in general-statistics-data-science, missing-data-censoring-measurement-error; guard WARN only"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "stage 3 complete: generator rebuilt (sim, pack, docs, golden, rungs, checks, verify, ceiling, writeup, make), 157 checks, the verifier, two byte-identical builds, figures_check, precut 61 of 61, voice-check, leak.py REVIEW, guard heart WARN and surface exit 0; heart first BLOCKed G3 and statistical_office_head against task470's later re-draw, cleared by re-reading the decisive generator as G17 and redrawing the requester"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "PAUSED at stage 4 for the main thread: the leak reader and the determinism judge cannot be spawned from a fork"
   }
- ]
+ ],
+ "zip_sha256_16": "1b8dcbc76a43565c"
 }

@@ -1,226 +1,231 @@
 {
- "a1_peers": {
-  "Delfzicht Breedband": {
-   "commitment_mbps": 124,
-   "overage_eur": 236,
-   "percentile_mbps": 159
-  },
-  "Grensweg Carrier": {
-   "commitment_mbps": 326,
-   "overage_eur": 79,
-   "percentile_mbps": 337
-  },
-  "Kabelnet Zuid": {
-   "commitment_mbps": 196,
-   "overage_eur": 246,
-   "percentile_mbps": 238
-  },
-  "Noordlijn Transit": {
-   "commitment_mbps": 540,
-   "overage_eur": 583,
-   "percentile_mbps": 648
-  },
-  "Rhenia Telecom": {
-   "commitment_mbps": 130,
-   "overage_eur": 85,
-   "percentile_mbps": 142
-  },
-  "Vastnet": {
-   "commitment_mbps": 183,
-   "overage_eur": 92,
-   "percentile_mbps": 198
-  },
-  "Zandpoort IX": {
-   "commitment_mbps": 72,
-   "overage_eur": 158,
-   "percentile_mbps": 89
+ "at_fault_collisions": {
+  "El Quiñón": 19,
+  "Hornacho": 25,
+  "La Ribera": 22,
+  "Las Tenerías": 25,
+  "San Lázaro": 20,
+  "Santa Clara": 21,
+  "Valdeolmos": 19
+ },
+ "call": {
+  "closest": "La Ribera",
+  "closest_ratio": 1.14,
+  "depots": [
+   "San Lázaro"
+  ],
+  "line_ratio": 1.3
+ },
+ "claims_paid_eur": {
+  "El Quiñón": 33737,
+  "Hornacho": 25850,
+  "La Ribera": 22579,
+  "Las Tenerías": 29216,
+  "San Lázaro": 24207,
+  "Santa Clara": 17280,
+  "Valdeolmos": 20517
+ },
+ "conventions": {
+  "bin_m": 10,
+  "brake_window_ms": 2000,
+  "chart_line_rate_pct": 29.4,
+  "lines_in_metres_from_july": [
+   40,
+   41,
+   44,
+   46
+  ],
+  "share_set_aside_pct": 10,
+  "week_starts_october": [
+   5,
+   12,
+   19,
+   26
+  ]
+ },
+ "default_path": {
+  "depots": [
+   "Hornacho",
+   "Valdeolmos"
+  ],
+  "fleet_rate_pct": 38.9,
+  "ratios": {
+   "El Quiñón": 0.43,
+   "Hornacho": 1.41,
+   "La Ribera": 0.66,
+   "Las Tenerías": 0.45,
+   "San Lázaro": 1.16,
+   "Santa Clara": 0.42,
+   "Valdeolmos": 1.48
   }
  },
- "a2_builds": {
-  "b-41600": {
-   "build_version": "4.16.0",
-   "rebuffered_pct": 3.0,
-   "sessions": 9853791
+ "depots": {
+  "El Quiñón": {
+   "not_braked": 981,
+   "rate_pct": 16.6,
+   "ratio": 0.73,
+   "warnings": 5913
   },
-  "b-41700": {
-   "build_version": "4.17.0",
-   "rebuffered_pct": 2.8,
-   "sessions": 10484730
+  "Hornacho": {
+   "not_braked": 889,
+   "rate_pct": 15.6,
+   "ratio": 0.69,
+   "warnings": 5700
   },
-  "b-41800": {
-   "build_version": "4.18.0",
-   "rebuffered_pct": 5.8,
-   "sessions": 7300481
+  "La Ribera": {
+   "not_braked": 2139,
+   "rate_pct": 25.8,
+   "ratio": 1.14,
+   "warnings": 8280
   },
-  "b-41806": {
-   "build_version": "4.18.0",
-   "rebuffered_pct": 3.2,
-   "sessions": 6389401
+  "Las Tenerías": {
+   "not_braked": 1877,
+   "rate_pct": 17.5,
+   "ratio": 0.77,
+   "warnings": 10744
   },
-  "b-41810": {
-   "build_version": "4.18.1",
-   "rebuffered_pct": 3.1,
-   "sessions": 5660060
+  "San Lázaro": {
+   "not_braked": 3868,
+   "rate_pct": 45.2,
+   "ratio": 2.0,
+   "warnings": 8557
   },
-  "b-41900": {
-   "build_version": "4.19.0",
-   "rebuffered_pct": 3.2,
-   "sessions": 7387510
+  "Santa Clara": {
+   "not_braked": 1008,
+   "rate_pct": 16.3,
+   "ratio": 0.72,
+   "warnings": 6190
+  },
+  "Valdeolmos": {
+   "not_braked": 1273,
+   "rate_pct": 16.1,
+   "ratio": 0.71,
+   "warnings": 7895
   }
  },
- "a3_incidents": {
-  "2027-01": {
-   "cause_outside_platform": 20,
-   "opened": 47,
-   "restored_inside_standard": 26
+ "false_place_warnings": 17968,
+ "false_places": [
+  {
+   "name": "the Glorieta del Olivo (line 44, outbound to its terminus)",
+   "passes": 27808,
+   "share_pct": 26.6,
+   "warnings": 7405
   },
-  "2027-02": {
-   "cause_outside_platform": 13,
-   "opened": 44,
-   "restored_inside_standard": 30
+  {
+   "name": "the bus-only underpass beneath the railway at Almadraba (line 27)",
+   "passes": 17266,
+   "share_pct": 25.0,
+   "warnings": 4322
   },
-  "2027-03": {
-   "cause_outside_platform": 30,
-   "opened": 57,
-   "restored_inside_standard": 37
+  {
+   "name": "the bollard gate on the Vía Verde busway (line 40)",
+   "passes": 14107,
+   "share_pct": 27.9,
+   "warnings": 3936
+  },
+  {
+   "name": "the bend on the Los Molinos link road (line 33)",
+   "passes": 7599,
+   "share_pct": 30.3,
+   "warnings": 2305
   }
- },
- "call": "none",
- "closest_below_record_pct": 35,
- "closest_over_own_99th_pct": 28,
- "closest_port": "HVT-01",
- "closest_shortfall_kbps": 318,
- "decided_evening": "2027-02-17",
- "decided_port": "HVT-01",
- "decided_shortfall_kbps": 318,
- "decided_window": "19:00",
- "evenings_in_quarter": 90,
- "evenings_left_out": 14,
- "flip_quarter": "2026Q1",
- "flip_shortfall_kbps": 489,
- "framework_clauses": [
-  "4.1",
-  "4.2",
-  "4.3",
-  "4.4",
-  "4.5",
-  "5.1",
-  "7.1",
-  "7.2"
  ],
- "grid": {
-  "DLF-01 19:00": {
-   "evening": "2027-03-18",
-   "worst_kbps": 246
-  },
-  "DLF-01 20:00": {
-   "evening": "2027-02-14",
-   "worst_kbps": 303
-  },
-  "DLF-01 21:00": {
-   "evening": "2027-01-22",
-   "worst_kbps": 250
-  },
-  "HVT-01 19:00": {
-   "evening": "2027-02-17",
-   "worst_kbps": 318
-  },
-  "HVT-01 20:00": {
-   "evening": "2027-03-22",
-   "worst_kbps": 248
-  },
-  "HVT-01 21:00": {
-   "evening": "2027-03-19",
-   "worst_kbps": 269
-  },
-  "KZD-01 19:00": {
-   "evening": "2027-03-20",
-   "worst_kbps": 285
-  },
-  "KZD-01 20:00": {
-   "evening": "2027-03-03",
-   "worst_kbps": 278
-  },
-  "KZD-01 21:00": {
-   "evening": "2027-02-08",
-   "worst_kbps": 247
-  },
-  "OPL-01 19:00": {
-   "evening": "2027-02-25",
-   "worst_kbps": 311
-  },
-  "OPL-01 20:00": {
-   "evening": "2027-03-21",
-   "worst_kbps": 268
-  },
-  "OPL-01 21:00": {
-   "evening": "2027-01-21",
-   "worst_kbps": 301
-  },
-  "RHN-01 19:00": {
-   "evening": "2027-02-24",
-   "worst_kbps": 263
-  },
-  "RHN-01 20:00": {
-   "evening": "2027-01-09",
-   "worst_kbps": 307
-  },
-  "RHN-01 21:00": {
-   "evening": "2027-01-19",
-   "worst_kbps": 306
-  },
-  "STR-01 19:00": {
-   "evening": "2027-01-17",
-   "worst_kbps": 290
-  },
-  "STR-01 20:00": {
-   "evening": "2027-03-31",
-   "worst_kbps": 265
-  },
-  "STR-01 21:00": {
-   "evening": "2027-03-06",
-   "worst_kbps": 312
-  },
-  "VSN-01 19:00": {
-   "evening": "2027-02-14",
-   "worst_kbps": 249
-  },
-  "VSN-01 20:00": {
-   "evening": "2027-01-08",
-   "worst_kbps": 241
-  },
-  "VSN-01 21:00": {
-   "evening": "2027-01-01",
-   "worst_kbps": 237
-  }
+ "fleet_not_braked": 12035,
+ "fleet_rate_pct": 22.6,
+ "fleet_warnings": 53279,
+ "gap_to_line": 0.16,
+ "hours_on_service": {
+  "El Quiñón": [
+   3398,
+   3395,
+   3378,
+   3381
+  ],
+  "Hornacho": [
+   3521,
+   3493,
+   3519,
+   3498
+  ],
+  "La Ribera": [
+   4507,
+   4516,
+   4494,
+   4510
+  ],
+  "Las Tenerías": [
+   5621,
+   5614,
+   5643,
+   5617
+  ],
+  "San Lázaro": [
+   4493,
+   4481,
+   4514,
+   4501
+  ],
+  "Santa Clara": [
+   4502,
+   4489,
+   4492,
+   4513
+  ],
+  "Valdeolmos": [
+   4496,
+   4507,
+   4510,
+   4486
+  ]
  },
- "own_99th_kbps": {
-  "DLF-01": 253,
-  "HVT-01": 248,
-  "KZD-01": 272,
-  "OPL-01": 267,
-  "RHN-01": 268,
-  "STR-01": 262,
-  "VSN-01": 239
+ "kilometres_in_service": {
+  "El Quiñón": [
+   59390,
+   55796,
+   56939,
+   57969
+  ],
+  "Hornacho": [
+   66213,
+   63634,
+   60226,
+   62999
+  ],
+  "La Ribera": [
+   84360,
+   80946,
+   79839,
+   81039
+  ],
+  "Las Tenerías": [
+   105247,
+   101901,
+   101253,
+   107135
+  ],
+  "San Lázaro": [
+   75127,
+   72183,
+   70694,
+   74009
+  ],
+  "Santa Clara": [
+   82443,
+   80731,
+   84145,
+   78799
+  ],
+  "Valdeolmos": [
+   93313,
+   93247,
+   90820,
+   93543
+  ]
  },
- "quarterly_worst_kbps": {
-  "2025Q1": 424,
-  "2025Q2": 398,
-  "2025Q3": 411,
-  "2025Q4": 458,
-  "2026Q1": 489,
-  "2026Q2": 436,
-  "2026Q3": 447,
-  "2026Q4": 471
- },
- "rank_of_nine": 9,
- "record_windows": 15330,
- "record_windows_at_or_above": 282,
- "rung0_port": "STR-01",
- "rung0_shortfall_kbps": 569,
- "rung2_mean_kbps": 129.1,
- "rung2_next_kbps": 112.0,
- "rung2_port": "DLF-01",
- "windows_assessed": 1809,
- "windows_in_quarter": 1851
+ "plaza": {
+  "not_braked_pct": 96.9,
+  "passes": 113716,
+  "share_pct": 2.6,
+  "warnings": 2970
+ }
 }

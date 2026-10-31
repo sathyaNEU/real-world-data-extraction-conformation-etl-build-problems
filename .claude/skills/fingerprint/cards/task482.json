@@ -1,20 +1,21 @@
 {
   "task": "task482",
-  "architecture": "v14",
-  "drawn": "2026-10-25",
-  "slot_note": "architecture 14, re-rooted after architecture 13 was spent at stage 4 (both readers carried the interim measure by each practice's own 2025 run-out and landed the call); the run-out is now the default path's last step (stumping 1.1b) and the decisive step is the stays still open at the cut",
+  "architecture": "v15 (re-root into a Missouri manufacturer's self-insured employee dental plan: the 2027 annual maximum priced on the 2025 plan year, with the predetermined work members at the maximum put off to the next plan year read from the predeterminations and the claims after the January reset)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task482 in the same objective (Data Extraction & Conformation), batch 1; architecture 14 (the clinically integrated network's two-sided track) spent when a FIX_NOW failed its second judge pass; architectures 5 to 13 recorded in the note; new world (a Missouri manufacturer's employee dental plan), new dataset, new shell",
   "domain": "healthcare-delivery-health-economics",
+  "client_domain": "healthcare-delivery-health-economics",
   "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month projected to the payers' year-end attribution from the October interim run, where the members still in hospital at the cut carry stays the hospitals bill only at discharge, visible only through the daily professional claims and already past the member cap",
+  "niche": "a foundry and machining company's self-insured employee dental plan costing the union's bargaining proposal of a higher per-person annual benefit maximum for its 2027 plan year from the 2025 plan year's claims, predeterminations and accumulators, after its administrator moved the plan's claims to a new adjudication platform in July 2025",
   "objective": "etl",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided.",
-  "answer_source": "submission.md block 1; generator/figures.json call.enter",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "named_option",
+  "answer": "Raise the annual maximum to 2,000 dollars (design; to be confirmed by the generator)",
+  "answer_source": "design (to be confirmed by the generator)",
   "gap": [
-    "time",
-    "population"
+    "objective",
+    "time"
   ],
   "pattern": [
     "none"
@@ -22,90 +23,69 @@
   "generators": [
     "G12",
     "G13",
-    "G16"
+    "G9"
   ],
   "gate_g": "etl_conformance",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "maturity_censoring",
+  "calibration_form": "none",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three payers' feeds, reads every rule and carries each practice's October interim measure by its own 2025 run-out at the same cut (the field's projection of a retrospective attribution) enters ten practices; the members still in hospital at the cut, whose stays the hospitals bill at discharge, are past the member cap, and only counting each at the cap moves Mallowcrest Pediatrics and Garrowdale Family Practice over their thresholds.",
-  "domain_test": "The deciding quantity is each practice's 2026 total cost of care per attributed member month on the payers' final runs, which a value-based finance team projects from the interim run by completion factors and the attribution's own run-out, with the large claims it already knows of carried separately at the stop-loss; swap the hospital for a school and there is no stay billed at its end and no member cap, so the step has nothing to act on.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a stay billed at its end carried at the member cap from its daily professional charges",
+  "analyst_test": "A strong analyst who conforms the two claims platforms, reads every plan rule correctly and prices each maximum on a continuance of the 2025 members' plan-paid charges before the maximum (the lines the maximum cut included), trended line by line to the 2027 fee schedule, files a 3,000 dollar maximum; members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists' predeterminations had priced until the January reset, so at any higher maximum that work comes back into the year and only 2,000 dollars stays inside the bargaining mandate's limit.",
+  "domain_test": "The deciding quantity is the plan's 2027 cost at each annual maximum, the benefit-change pricing a health plan's claims analytics works from a continuance table of its members' annual plan-paid charges; put megawatt-hours or library loans in for dental claims and there is no predetermination, no coinsurance tier and no plan-year reset of a per-person benefit maximum, and the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:benefit-ceiling-deferred-work",
   "layer1": [
-    "three payers' claim feeds in three layouts (csv voiding and replacing reprocessed claims, pipe-delimited lines in cents with adjusted status, JSON claim versions)",
-    "open coverage spans written as 9999-12-31 or left blank",
-    "a title block above the header in a payer's attribution workbook",
-    "TINs with and without a hyphen across the payers' files",
-    "member identifiers that differ by payer, joined through the network's master patient index",
-    "clinicians who moved between practices, with effective dates in the network's roster",
-    "2025 claims paid after the 31 March cut-off still in the October feeds"
+    "two claims platforms across the July 2025 migration (the legacy one voiding and replacing an adjusted claim, the new one restating it in place under a new claim number)",
+    "member identifiers renumbered at the migration, joined through the administrator's crosswalk",
+    "CDT procedure codes revised on 1 January 2026, a few legacy codes still on late-adjudicated 2025 lines",
+    "a fee schedule workbook with one sheet per year and a title block above the header",
+    "eligibility spans written with an open end date as 9999-12-31 or left blank",
+    "predetermination timestamps in UTC beside local-time claim dates",
+    "tooth numbers stored as text with a leading zero on one platform",
+    "coordination-of-benefits lines where the plan paid second"
   ],
-  "stakeholder_role": "the network's director of payer performance analytics",
-  "role_family": "portfolio_manager",
+  "stakeholder_role": "the company's benefits manager, who costs the union's dental proposal for the company's bargaining committee",
+  "role_family": "finance_controller",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
-    "rows": 283413,
-    "entity": "one claim, void or replacement line of Merrinlake's value-based partner claims extract",
-    "grain": "claim x version",
+    "file": "dental_claim_lines_2024-2026.csv",
+    "rows": 0,
+    "entity": "one adjudicated dental claim line (procedure, tooth, fee, allowed, paid, reason)",
+    "grain": "claim line",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "committee_or_panel",
   "forcing_event": "purchase_order_or_contract",
-  "org_family": "hospital_or_health_provider",
+  "org_family": "manufacturer",
   "world": {
-    "geography": "United States, Wisconsin (a fictional clinically integrated network of thirteen independent primary care practices in the east-central counties; the network, its practices, the three payers and the people are fictional, the names screened before the pack is cut)",
+    "geography": "United States, Missouri (a fictional iron foundry and machining company of about 2,300 employees; the company, its plan, its administrator, the union local and the people are fictional)",
     "currency": "USD",
-    "org_type": "a physician-led clinically integrated network holding three commercial payers' total cost of care contracts",
+    "org_type": "a manufacturer's self-insured employee dental plan administered by a third-party administrator",
     "invented_names": [
-      "Larrowbrook Physician Network",
-      "Merrinlake Health Plan",
-      "Kesselcrest Benefit Partners",
-      "Pemberglen Mutual Health",
-      "Ostrelwood Internal Medicine",
-      "Callowglen Family Practice",
-      "Thornelfield Family Medicine",
-      "Haddelcrest Internal Medicine",
-      "Birrelhaven Children's Clinic",
-      "Raddelview Family Physicians",
-      "Jesselford Family Medicine",
-      "Nerrincreek Family Practice",
-      "Wexelmoor Internal Medicine",
-      "Torrinridge Family Medicine",
-      "Mallowcrest Pediatrics",
-      "Prestelglen Internal Medicine",
-      "Garrowdale Family Practice"
+      "Pembrook Castings Company",
+      "Ridgeline Benefit Administrators"
     ],
     "people": [
-      "Andre O'Connor",
-      "Joel Brewer",
-      "Carlos Howard"
+      "Audrey Bautista",
+      "Marvin Jordan",
+      "Barry Rowland"
     ]
   },
   "deliverables": [
-    "two_sided_track_elections_2027.xlsx",
-    "practice_cost_vs_benchmark_2026.png"
+    "pembrook_dental_member_year_2025.csv",
+    "pembrook_dental_maximum_2027.pdf",
+    "pembrook_dental_maximum_2027.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A per-member rate for a period still running is carried to the period's end by the last period's own relation at the same cut, but a few members are inside episodes whose amount is recorded only when the episode ends; the episodes show only through the small charges recorded day by day while they run, and they are already past the per-member cap, so each such member's amount for the period is the cap however the episode ends, while the carried rate, built on members whose later amounts are small, leaves it out.",
-  "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the four members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
-  "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters ten practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the seven members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and eight practices enter.",
-  "mechanism_source": "stumping 1.1b (the field's own method, the attribution run-out, placed on the default path) and the rigor library's judgment list ('what a cap truncates'); a hospital's discharge billing of long stays and an ACO's large-claim handling at the stop-loss",
-  "differentiation": {
-    "task451": "task451 completes a closed year's unpaid claims by a lag history whose handling sped up; here the completion factors are right on average and what they cannot carry is a few known stays billed at their end, each already past the cap.",
-    "task458": "task458 counts a lasting trait seen only through events while each member is observed; here no trait is counted: the population is defined by the year's own visits, and the late-assigned members' small amounts and whole year of exposure carry the rate.",
-    "task130": "task130's lineage forecasts a group chosen on an extreme outcome by a group chosen the same way a period earlier; here nobody is chosen on the outcome: the population grows inside the period by contact, and the run-out is measured on last year's same cut.",
-    "task482": "architecture 13 carried the interim measure by each practice's own run-out of the attribution, and that run-out is now the default path's last step; architecture 10 summed each member's share of a lifetime total that later spells add to; here the members are already attributed and what is still to come is a bill for a stay open at the cut, fixed at the member cap.",
-    "task231": "task231 recovers the exited share of silent units from older rounds whose record of exits has caught up; here nobody is silent or exited: the members are attributed and present in the claims, and what the record lacks is the amount of a stay still running, fixed at the member cap.",
-    "task234": "task234 reads each source's current output from a share a loss in transit cannot move; here nothing is lost: every claim arrives, and the stays open at the cut have not been billed yet because a hospital bills a stay at its end.",
-    "task445": "task445 completes holders whose reports have not arrived from each holder's last report; here every report has arrived, the averages the completion factors and run-out carry are right, and the step is the few members whose open stays are already past the cap, read from their daily professional claims."
-  },
+  "question_form": "how-much",
+  "driver": "The decisive quantity is what each member's yearly amount would be under a higher per-member ceiling when the records stop at the current one: members who reach it put off work their providers had already priced in advance until the ceiling resets, so that work shows only in the advance estimates and among the next period's first records, and a higher ceiling's cost read from the period's own records misses it and comes out at about half.",
+  "driver_concrete": "Each 2025 member's plan-paid amount before the maximum is the 2025 claims (the lines the maximum cut included) plus the predetermined major work the member put off once the estimate showed the 1,500 dollar maximum would cut the payment, read as the predetermination lines whose member, procedure and tooth reappear in the claims of January to June 2026; at the 2027 fees that work puts the 2,500 and 3,000 dollar maximums over the bargaining mandate's limit and leaves 2,000 dollars inside it.",
+  "stump": "A competent solver prices each maximum on a continuance of the 2025 claims trended to the 2027 fees and files 3,000 dollars; members at the 1,500 dollar maximum put off their predetermined crowns, bridges and implants to the January reset, so at a higher maximum the plan pays for that work in the year and only 2,000 dollars fits.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1",
@@ -342,9 +322,55 @@
       "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor and Prestelglen one-sided.",
       "architecture": 13,
       "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers re-ran the October 2025 interim run from the 2025 claims and carried each practice's interim measure by its own 2025 final-to-interim ratio, landing the call (the nine), asks 78 and 65 of 78 (exit 1); the judge thread was stopped at the spend"
+    },
+    {
+      "subdomain": "payment-claims-health-plan-analytics",
+      "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month projected to the payers' year-end attribution from the October interim run, where the members still in hospital at the cut carry stays the hospitals bill only at discharge, visible only through the daily professional claims and already past the member cap",
+      "objective": "etl",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G12",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "etl_conformance",
+      "stump_strategy": "maturity_censoring",
+      "driver": "A per-member rate for a period still running is carried to the period's end by the last period's own relation at the same cut, but a few members are inside episodes whose amount is recorded only when the episode ends; the episodes show only through the small charges recorded day by day while they run, and they are already past the per-member cap, so each such member's amount for the period is the cap however the episode ends, while the carried rate, built on members whose later amounts are small, leaves it out.",
+      "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the four members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
+      "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters ten practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the seven members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and eight practices enter.",
+      "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided.",
+      "deliverables": [
+        "two_sided_track_elections_2027.xlsx",
+        "practice_cost_vs_benchmark_2026.png"
+      ],
+      "question_form": "which",
+      "architecture": 14,
+      "drawn": "2026-10-25",
+      "fate": "spent 2026-10-31 at stage 4: the determinism judge's pass 2 returned FIX_NOW (two graded thresholds a cent off, the 2025 measures within a third of a cent of a rounding edge), and the re-judge of the repair found the write-up's claim that all seven stay members were past the cap by 31 August false under a pooled per-day reading (4,535.53 a day against the per-kind 6,380), the call's margins thin and the stay amount unfiled: a FIX_NOW that failed its second pass"
     }
   ],
-  "notes": "stump_strategy maturity_censoring: a member's year is censored at the cut wherever a hospital has yet to bill a stay still running, and the decisive move is reading the members in such stays, already past the member cap, at the cap; not population_selection (the population is filed in full by the attribution clause) and not binding_constraint (the cap fixes the size of the step, it removes no pick by itself). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
-  "client_domain": "healthcare-delivery-health-economics",
-  "registered": "2026-10-25T01:34:36Z"
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "build",
+      "rounding opener": "give",
+      "deliverable set": "png+xlsx"
+    }
+  ],
+  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a Missouri manufacturer's employee dental plan), new dataset, new shell (how-much | csv+pdf+svg); stump_strategy other: a member's year of demand is cut off by a per-person benefit ceiling, and the decisive move recovers the work put off above it from the providers' advance estimates and the claims after the ceiling resets; not maturity_censoring (no open period is completed: the 2025 plan year is closed and every record of it is final), not binding_constraint (the ceiling removes no candidate, it hides the demand that prices one), not population_selection (every member is priced; nothing selects who is in the denominator)",
+  "registered": "2026-10-31T19:34:15Z",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "price",
+    "rounding opener": "round",
+    "deliverable set": "csv+pdf+svg"
+  }
 }

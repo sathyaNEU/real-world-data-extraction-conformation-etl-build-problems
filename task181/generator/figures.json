@@ -1,196 +1,211 @@
 {
+ "ask_a": {
+  "GS-03 2022": 552,
+  "GS-03 2023": 556,
+  "GS-03 2024": 525,
+  "GS-05 2022": 501,
+  "GS-05 2023": 489,
+  "GS-05 2024": 526,
+  "GS-08 2022": 563,
+  "GS-08 2023": 536,
+  "GS-08 2024": 563,
+  "GS-11 2022": 536,
+  "GS-11 2023": 540,
+  "GS-11 2024": 573,
+  "GS-12 2022": 515,
+  "GS-12 2023": 536,
+  "GS-12 2024": 505,
+  "GS-14 2022": 556,
+  "GS-14 2023": 561,
+  "GS-14 2024": 550,
+  "GS-16 2022": 515,
+  "GS-16 2023": 513,
+  "GS-16 2024": 528,
+  "GS-19 2022": 561,
+  "GS-19 2023": 566,
+  "GS-19 2024": 550,
+  "GS-21 2022": 497,
+  "GS-21 2023": 484,
+  "GS-21 2024": 530,
+  "GS-23 2022": 541,
+  "GS-23 2023": 560,
+  "GS-23 2024": 542
+ },
+ "ask_b": {
+  "GS-03 2022": 17,
+  "GS-03 2023": 17,
+  "GS-03 2024": 14,
+  "GS-05 2022": 28,
+  "GS-05 2023": 29,
+  "GS-05 2024": 26,
+  "GS-08 2022": 16,
+  "GS-08 2023": 24,
+  "GS-08 2024": 22,
+  "GS-11 2022": 18,
+  "GS-11 2023": 17,
+  "GS-11 2024": 17,
+  "GS-12 2022": 27,
+  "GS-12 2023": 26,
+  "GS-12 2024": 34,
+  "GS-14 2022": 26,
+  "GS-14 2023": 15,
+  "GS-14 2024": 15,
+  "GS-16 2022": 28,
+  "GS-16 2023": 30,
+  "GS-16 2024": 36,
+  "GS-19 2022": 16,
+  "GS-19 2023": 22,
+  "GS-19 2024": 26,
+  "GS-21 2022": 33,
+  "GS-21 2023": 29,
+  "GS-21 2024": 23,
+  "GS-23 2022": 15,
+  "GS-23 2023": 20,
+  "GS-23 2024": 11
+ },
  "call": {
-  "hotspots": [
-   "Bagumbayan",
-   "Maligaya",
-   "San Roque"
+  "default_path": [
+   "GS-05",
+   "GS-12",
+   "GS-16",
+   "GS-21"
   ],
-  "response": "weeks 41 to 44",
-  "trigger": 40,
-  "window": "morbidity weeks 37 to 40, 2027"
- },
- "ddh_admissions": {
-  "33": 33,
-  "34": 31,
-  "35": 58,
-  "36": 39,
-  "37": 42,
-  "38": 27,
-  "39": 40,
-  "40": 32
- },
- "default_path": [
-  "Bagumbayan",
-  "Burol",
-  "Kanluran",
-  "Maligaya",
-  "Malinta",
-  "Pulong Bayabas",
-  "Silangan",
-  "Tabing-Ilog"
- ],
- "dmc_admissions": {
-  "33": 54,
-  "34": 65,
-  "35": 68,
-  "36": 79,
-  "37": 80,
-  "38": 68,
-  "39": 53,
-  "40": 60
- },
- "first_positive_igm": {
-  "35": 7,
-  "36": 10,
-  "37": 9,
-  "38": 10,
-  "39": 10,
-  "40": 5
- },
- "first_positive_ns1": {
-  "35": 52,
-  "36": 60,
-  "37": 52,
-  "38": 57,
-  "39": 68,
-  "40": 31
- },
- "house_index": {
-  "Bayanihan": 15.4,
-  "Dila": 24.1,
-  "Liwayway": 13.1,
-  "Lumbia": 18.8,
-  "Mabini": 12.7,
-  "Mangga": 25.8,
-  "Parian": 17.0,
-  "Rizal": 4.5,
-  "San Isidro": 4.9,
-  "Santa Cruz": 15.1,
-  "Tagumpay": 20.9,
-  "Talon": 20.7
- },
- "over_trigger_by_home_address": 8,
- "placement_by_inversion": {
-  "Bagumbayan": 85.8,
-  "Bayanihan": 11.8,
-  "Bonifacio": 10.2,
-  "Bulihan": 7.4,
-  "Burol": 7.6,
-  "Concepcion": 4.7,
-  "Dila": 18.0,
-  "Halang": 4.5,
-  "Ilaya": 16.0,
-  "Kanluran": 12.3,
-  "Liwayway": 2.9,
-  "Lumbia": 2.3,
-  "Mabini": 15.0,
-  "Malanday": 11.4,
-  "Maligaya": 66.0,
-  "Malinta": 9.8,
-  "Mangga": 13.0,
-  "Masagana": 2.6,
-  "Pag-asa": 6.8,
-  "Parian": 16.0,
-  "Poblacion": 0.0,
-  "Pulong Bayabas": 4.7,
-  "Rizal": 5.2,
-  "Sampaloc": 6.0,
-  "San Antonio": 12.9,
-  "San Isidro": 7.1,
-  "San Jose": 8.8,
-  "San Roque": 465.2,
-  "Santa Cruz": 5.9,
-  "Santo Niño": 4.3,
-  "Santo Tomas": 0.0,
-  "Santo Tomas Norte": 2.7,
-  "Silangan": 3.3,
-  "Tabing-Ilog": 8.6,
-  "Tagumpay": 11.6,
-  "Talon": 6.9
- },
- "plan_sections": [
-  "4.1",
-  "4.2",
-  "4.3",
-  "4.4",
-  "4.5",
-  "4.6"
- ],
- "residence_counts": {
-  "Bagumbayan": 86,
-  "Bayanihan": 19,
-  "Bonifacio": 11,
-  "Bulihan": 17,
-  "Burol": 54,
-  "Concepcion": 12,
-  "Dila": 22,
-  "Halang": 6,
-  "Ilaya": 16,
-  "Kanluran": 55,
-  "Liwayway": 4,
-  "Lumbia": 8,
-  "Mabini": 15,
-  "Malanday": 12,
-  "Maligaya": 66,
-  "Malinta": 47,
-  "Mangga": 13,
-  "Masagana": 13,
-  "Pag-asa": 10,
-  "Parian": 17,
-  "Poblacion": 3,
-  "Pulong Bayabas": 54,
-  "Rizal": 6,
-  "Sampaloc": 6,
-  "San Antonio": 15,
-  "San Isidro": 12,
-  "San Jose": 11,
-  "San Roque": 14,
-  "Santa Cruz": 14,
-  "Santo Niño": 12,
-  "Santo Tomas": 11,
-  "Santo Tomas Norte": 4,
-  "Silangan": 58,
-  "Tabing-Ilog": 48,
-  "Tagumpay": 21,
-  "Talon": 15
- },
- "shares_at_work": [
-  0.5,
-  0.6,
-  0.7,
-  0.8,
-  1.0
- ],
- "weeks": {
-  "admissions": [
-   33,
-   34,
-   35,
-   36,
-   37,
-   38,
-   39,
-   40
-  ],
-  "laboratory": [
-   35,
-   36,
-   37,
-   38,
-   39,
-   40
-  ],
-  "response": [
-   41,
-   44
-  ],
-  "window": [
-   37,
-   40
+  "referred": [
+   "GS-16",
+   "GS-21"
   ]
  },
- "working_age_band": [
-  15,
-  64
- ]
+ "conventions": {
+  "heavy_container_kg": 10,
+  "implant_days": 90,
+  "limit_centile": 97.5,
+  "link_days": 3,
+  "surveillance_days": 30
+ },
+ "exposed": {
+  "expected": 21.7,
+  "observed": 115
+ },
+ "exposed_procedures": 362,
+ "exposed_ratio": 4.3,
+ "naive": {
+  "GS-03": {
+   "expected": 10.2,
+   "limit": 17,
+   "observed": 6
+  },
+  "GS-05": {
+   "expected": 14.1,
+   "limit": 22,
+   "observed": 43
+  },
+  "GS-08": {
+   "expected": 9.9,
+   "limit": 17,
+   "observed": 10
+  },
+  "GS-11": {
+   "expected": 10.1,
+   "limit": 17,
+   "observed": 6
+  },
+  "GS-12": {
+   "expected": 15.4,
+   "limit": 23,
+   "observed": 45
+  },
+  "GS-14": {
+   "expected": 10.7,
+   "limit": 18,
+   "observed": 12
+  },
+  "GS-16": {
+   "expected": 14.4,
+   "limit": 22,
+   "observed": 35
+  },
+  "GS-19": {
+   "expected": 9.8,
+   "limit": 16,
+   "observed": 9
+  },
+  "GS-21": {
+   "expected": 13.7,
+   "limit": 21,
+   "observed": 62
+  },
+  "GS-23": {
+   "expected": 9.8,
+   "limit": 16,
+   "observed": 7
+  }
+ },
+ "repair": "2027-05-12 14:40",
+ "traced": {
+  "GS-03": {
+   "expected": 10.2,
+   "limit": 17,
+   "observed": 6,
+   "procedures": 285
+  },
+  "GS-05": {
+   "expected": 5.6,
+   "limit": 11,
+   "observed": 4,
+   "procedures": 113
+  },
+  "GS-08": {
+   "expected": 9.9,
+   "limit": 17,
+   "observed": 10,
+   "procedures": 263
+  },
+  "GS-11": {
+   "expected": 10.1,
+   "limit": 17,
+   "observed": 6,
+   "procedures": 265
+  },
+  "GS-12": {
+   "expected": 6.3,
+   "limit": 12,
+   "observed": 5,
+   "procedures": 110
+  },
+  "GS-14": {
+   "expected": 10.7,
+   "limit": 18,
+   "observed": 12,
+   "procedures": 261
+  },
+  "GS-16": {
+   "expected": 14.4,
+   "limit": 22,
+   "observed": 35,
+   "procedures": 270
+  },
+  "GS-19": {
+   "expected": 9.8,
+   "limit": 16,
+   "observed": 9,
+   "procedures": 267
+  },
+  "GS-21": {
+   "expected": 9.5,
+   "limit": 16,
+   "observed": 26,
+   "procedures": 177
+  },
+  "GS-23": {
+   "expected": 9.8,
+   "limit": 16,
+   "observed": 7,
+   "procedures": 267
+  }
+ },
+ "unexposed": {
+  "expected": 96.5,
+  "observed": 120
+ },
+ "window_procedures": 2640
 }

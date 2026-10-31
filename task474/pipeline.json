@@ -1,36 +1,43 @@
 {
  "task": "task474",
- "status": "SHIPPED",
- "domain": "physical-environmental-sciences",
+ "status": "DESIGN",
+ "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-20",
- "stump": "The default path expands every link class by class with the classifying stations' factors; the terminal access roads' trucks follow vessel calls the stations never see, and only the terminal's own gate record expands their count days to the year.",
- "architecture": 6,
- "loops": 2,
- "precut": "PASS 2026-10-20 (51 checks)",
- "leak": "leak.py REVIEW (program words in the rules and notes, carriers in the registry); three isolated readers question 1: none or rule 2.2's 'in those twelve months', no sentence names the step",
- "duplicate_check": {
-  "guard_check": "WARN 2026-10-20 (architecture 6)",
-  "heart": "WARN, nearest task452 v1 at 0.06",
-  "surface": "WARN (first names)"
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "the raw pass mark on the new 60-question theory paper that holds the old paper's standard of 65, read through the candidates who failed the old paper and sat the new one, their second attempt set against the retest gain the old paper's own retakes measure, matched on the first result (default: the 2025 first-time pass rate held on the 2026 first-timers, a cohort changed by experienced gas engineers)",
+ "architecture": 7,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
  },
- "judge": "pass 1 DETERMINISTIC FIX_NOW (registered_to pinned); pass 2 DETERMINISTIC APPROVE, Gate G method_or_model_selection analytical_non_defect, Gate H analytical",
- "returned": [],
- "resume": "shipped; the portal result goes into the ledger the day the author reports it",
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "guard_check": "PASS 2026-10-31 (architecture 7)",
+  "heart": "",
+  "surface": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "not a portal return: the repair of architecture 6 went to its determinism judge, which returned SEND_BACK (the year's carrying rule for the terminal access roads and the fleet's VIN rule filed nowhere)",
+   "repair": "re-root",
+   "commit": "DRAWN (task474) architecture 7"
+  }
+ ],
+ "resume": "stage 2: design the ladder and the asks, then the generator (stage 3)",
  "approved": null,
- "delivered": "2026-10-20",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET31's number; architecture 4 in a fresh world (a Medicaid managed care plan's provider group cost per member-month)",
- "nearest": null,
- "readers": {
-  "round1": [
-   "r1 missed the call (L03, L04, L06, L07, L11, L12)",
-   "r2 missed the call (L01, L03, L05, L06), asks 20 of 24 before the re-site"
-  ],
-  "round2": [
-   "r3 missed the call (L01, L03, L05, L06), asks 4 of 24, score_reader exit 0"
-  ]
- }
+ "source_note": "seed ET31's number; architecture 7 in a fresh world (an awarding body's pass mark across a test-vendor change)"
 }

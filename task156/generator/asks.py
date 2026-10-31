@@ -1,297 +1,201 @@
-"""task156 ask worlds: the records only the supplemental asks read.
+"""The asks, computed from target/ alone, with a switch for each handling a response might take.
 
-- The paid moderation team's 2026 shifts (the WFM system), its assignment history and the six moves of July and August
-  2026 (Ask B).
-- Every moderator flag raised in July, August and September 2026 (the moderator tool), with the decision reviews of
-  the quarter (Ask A).
-- Every question moved between sites in 2021 to 2023 (the moderators' migration log), which the old monthly workbook
-  counted on both sites (Ask C).
+Ask A, the catchment's residential water use per dwelling per day in each quarter, January 2024 to September 2026:
+the Water Metering and Billing Policy's measure, each meter's consumption between consecutive actual readings spread
+evenly over the days between them, over the quarter's days and the dwellings the meters supplied on average over the
+quarter. dwellings="dated" counts each rating unit's separately used or inhabited parts as they stood each day (the
+rating snapshot less the parts whose code compliance certificate came later); "snapshot" carries the 31 October 2026
+counts back over every quarter.
 
-The main call reads none of these records; its flags are the moderator tool's daily summary, built from the same
-daily counts the per-flag records expand."""
+Ask B, each pump station's wet weather overflows and spill hours in 2024 and 2025 apart from PS03, and the network's
+emergency overflows in each year: the consent's conditions 3 and 5 executed on the overflow monitors' messages, the
+monitors' installation history and the lines company's outages. icps="all" matches outages to a station through every
+ICP the council's electricity site list gives its address; "current" through the asset register's current ICP."""
 from __future__ import annotations
 
+import csv
 import datetime as dt
-import math
+import functools
+import os
+import re
+import zoneinfo
 
 import numpy as np
 
-import common as K
-
-TORONTO_OFFSET = {}   # filled lazily: UTC offset hours on a date (EST -5, EDT -4)
-
-
-def toronto_offset(d):
-    """Hours behind UTC in Toronto on date d (DST from the second Sunday of March to the first Sunday of November)."""
-    y = d.year
-    mar = dt.date(y, 3, 8)
-    while mar.weekday() != 6:
-        mar += dt.timedelta(days=1)
-    nov = dt.date(y, 11, 1)
-    while nov.weekday() != 6:
-        nov += dt.timedelta(days=1)
-    return 4 if mar <= d < nov else 5
+AKL = zoneinfo.ZoneInfo("Pacific/Auckland")
+UTC = dt.timezone.utc
+NZST = dt.timezone(dt.timedelta(hours=12))
+QUARTERS = [(y, q) for y in (2024, 2025, 2026) for q in (1, 2, 3, 4) if (y, q) <= (2026, 3)]
+STATIONS_B = ["PS01", "PS02", "PS04", "PS05", "PS06"]
+YEARS_B = (2024, 2025)
 
 
-# ------------------------------------------------------------------------------------------------- the paid team
-# 2026 allocation by site (FTE the council funded for 2026, from its 2025 figures) and the moves of summer 2026
-ALLOC_2026 = {"web": 6.0, "mobile": 2.0, "data": 4.0, "databases": 3.5, "devops": 3.5, "gamedev": 1.5,
-              "security": 3.0, "embedded": 2.0, "scicomp": 1.5}
-MOVES = [  # (from, to, effective date) six moderators moved to the sites whose queues grew
-    ("web", "security", dt.date(2026, 7, 6)),
-    ("mobile", "embedded", dt.date(2026, 7, 13)),
-    ("data", "scicomp", dt.date(2026, 7, 20)),
-    ("databases", "security", dt.date(2026, 8, 3)),
-    ("devops", "embedded", dt.date(2026, 8, 10)),
-    ("gamedev", "scicomp", dt.date(2026, 8, 17)),
-]
-WFM_SITE_LABEL = {"web": "Frontend & Web", "mobile": "Mobile Apps", "data": "Data & ML", "databases": "Databases",
-                  "devops": "Ops & Cloud", "gamedev": "Game Development", "security": "Security",
-                  "embedded": "Embedded & Hardware", "scicomp": "Scientific Computing"}
-SHIFT_KINDS = {"day": (8, 0), "late": (15, 30), "night": (23, 0)}    # local start; every shift 8 paid hours
-CORRECTED_WEEK = (dt.date(2026, 5, 4), dt.date(2026, 5, 10))
-HOLIDAYS_ON = {dt.date(2026, 1, 1), dt.date(2026, 2, 16), dt.date(2026, 4, 3), dt.date(2026, 5, 18),
-               dt.date(2026, 7, 1), dt.date(2026, 8, 3), dt.date(2026, 9, 7)}
+def rows(path):
+    with open(path, encoding="utf-8") as f:
+        return list(csv.reader(f))
 
 
-class Moderator:
-    pass
+def qbounds(y, q):
+    a = dt.date(y, 3 * q - 2, 1)
+    b = dt.date(y + (q == 4), 1 if q == 4 else 3 * q + 1, 1)
+    return a, b
 
 
-def paid_team():
-    """The moderators on the paid team during 2026: employee number, contract (full or part time), shift kind, the
-    site they were assigned to on each day, and their worked shifts from January to September 2026."""
-    r = K.rng("team")
-    mods = []
-    num = 4100 + int(r.integers(10, 60))
-    for site in K.SITES:
-        fte = ALLOC_2026[site]
-        n_full = int(math.floor(fte))
-        parts = int(round((fte - n_full) / 0.5))
-        for k in range(n_full + parts):
-            m = Moderator()
-            num += int(r.integers(3, 29))
-            m.emp = "QM%05d" % num
-            m.home = site
-            m.contract = 1.0 if k < n_full else 0.5
-            m.kind = ["day", "late", "night"][k % 3]
-            m.moves = []
-            mods.append(m)
-    # the six moves: the first full-time moderator of each source site moves
-    for src, dst, eff in MOVES:
-        cand = [m for m in mods if m.home == src and m.contract == 1.0 and not m.moves]
-        m = cand[0]
-        m.moves.append((eff, dst))
-    for m in mods:
-        m.assign = [(dt.date(2023, 1, 1) if True else None, m.home)]
-        for eff, dst in m.moves:
-            m.assign.append((eff, dst))
-    # shifts
-    start, end = dt.date(2026, 1, 1), K.HIST_END
-    for m in mods:
-        rr = K.rng("shifts", m.emp)
-        week_days = [0, 1, 2, 3, 4] if m.contract == 1.0 else [0, 2, 4]
-        if m.kind == "night":
-            week_days = [6, 0, 1, 2, 3] if m.contract == 1.0 else [6, 1, 3]
-        leave = set()
-        for _ in range(3):   # three one-week blocks of leave, not in the corrected week
-            while True:
-                w0 = start + dt.timedelta(days=int(rr.integers(14, 250)))
-                w0 -= dt.timedelta(days=w0.weekday())
-                if not (w0 <= CORRECTED_WEEK[1] and w0 + dt.timedelta(days=6) >= CORRECTED_WEEK[0]):
-                    break
-            for k in range(7):
-                leave.add(w0 + dt.timedelta(days=k))
-        m.shifts = []
-        d = start
-        while d <= end:
-            if d.weekday() in week_days and d not in leave and d not in HOLIDAYS_ON:
-                if rr.random() > 0.035:          # sick days and swaps
-                    h0, mi = SHIFT_KINDS[m.kind]
-                    st = dt.datetime(d.year, d.month, d.day, h0, mi)
-                    hrs = 8.0
-                    if rr.random() < 0.06:
-                        hrs = float(rr.choice([4.0, 6.0, 9.0, 10.0]))   # short days and overtime
-                    m.shifts.append(dict(day=d, start=st, end=st + dt.timedelta(hours=hrs + 0.5), hours=hrs))
-            d += dt.timedelta(days=1)
-    # every quarter-end night must be worked by someone on a night pattern at every site with a night moderator
-    return mods
+@functools.lru_cache(maxsize=8)
+def ask_a(target, dwellings="dated", spread="from_read_day", estimates=False):
+    return water_use(rows(os.path.join(target, "water_accounts_2026-11.csv"))[1:],
+                     rows(os.path.join(target, "rating_information_2026-10-31.csv"))[1:],
+                     rows(os.path.join(target, "building_consents_2023-2026.csv"))[1:],
+                     rows(os.path.join(target, "water_meter_reads_2023-2026.csv"))[1:],
+                     dwellings=dwellings, spread=spread, estimates=estimates)
 
 
-def site_on(m, d):
-    s = m.home
-    for eff, dst in m.assign[1:]:
-        if d >= eff:
-            s = dst
-    return s
-
-
-def corrected_lines(mods):
-    """The May corrections: eight moderators' week of 4 to 10 May re-sent after a payroll query. Returns, per
-    moderator employee number, the corrected hours of each shift in the week (some shifts change by an hour or two)."""
-    r = K.rng("corrections")
-    pick = [m for m in mods if any(CORRECTED_WEEK[0] <= s["day"] <= CORRECTED_WEEK[1] for s in m.shifts)]
-    pick = sorted(pick, key=lambda m: m.emp)
-    idx = sorted(r.choice(len(pick), size=8, replace=False))
+def water_use(accts, rating_rows, bcs, read_rows, dwellings="dated", spread="from_read_day", estimates=False,
+              with_dwellings=False):
+    rating = {r[0]: (r[2], int(r[3])) for r in rating_rows}
+    later = {}
+    for c, v, a, w, n, gr, ccc in bcs:
+        if n == "1" and ccc:
+            later.setdefault(v, []).append(dt.date.fromisoformat(ccc))
+    meter_rus = {}
+    for a, v, m, s, o, c in accts:
+        meter_rus.setdefault(m, set()).add(v)
+    res_meters = {m for m, vs in meter_rus.items() if all(rating.get(v, ("", 0))[0] == "Residential" for v in vs)}
+    reads = {}
+    for no, serial, d, val, t in read_rows:
+        if no not in res_meters:
+            continue
+        if t == "E" and not estimates:
+            continue
+        reads.setdefault(no, []).append((dt.datetime.strptime(d, "%d/%m/%Y").date(), t, float(val)))
+    d0 = dt.date(2024, 1, 1)
+    d1 = dt.date(2026, 10, 1)
+    n = (d1 - d0).days
+    use = np.zeros(n)
+    for no, rs in reads.items():
+        rs.sort(key=lambda r: (r[0], {"A": 0, "E": 0, "R": 1, "I": 2}[r[1]]))
+        for (da, ta, va), (db, tb, vb) in zip(rs, rs[1:]):
+            if ta == "R" and tb == "I":
+                continue
+            days = (db - da).days
+            if days <= 0:
+                continue
+            per = (vb - va) * 1000.0 / days
+            a0, b0 = (da, db) if spread == "from_read_day" else (da + dt.timedelta(days=1), db + dt.timedelta(days=1))
+            i0 = max(0, (a0 - d0).days)
+            i1 = min(n, (b0 - d0).days)
+            if i1 > i0:
+                use[i0:i1] += per
+    dw = np.zeros(n)
+    for m in res_meters:
+        for v in meter_rus[m]:
+            s_now = rating[v][1]
+            adds = sorted(later.get(v, []))
+            if dwellings == "snapshot":
+                dw += s_now
+            else:
+                arr = np.full(n, float(s_now))
+                for a in adds:
+                    j = (a - d0).days
+                    if j > 0:
+                        arr[:min(j, n)] -= 1
+                dw += np.maximum(arr, 0)
     out = {}
-    for i in idx:
-        m = pick[int(i)]
-        fix = {}
-        for s in m.shifts:
-            if CORRECTED_WEEK[0] <= s["day"] <= CORRECTED_WEEK[1]:
-                fix[s["day"]] = s["hours"] + float(r.choice([1.0, -1.0, 1.0, 0.0, 2.0]))
-        out[m.emp] = fix
+    for y, q in QUARTERS:
+        a, b = qbounds(y, q)
+        i0, i1 = (a - d0).days, (b - d0).days
+        val = float(use[i0:i1].sum() / (i1 - i0) / dw[i0:i1].mean())
+        out["%d Q%d" % (y, q)] = (val, i1 - i0, float(dw[i0:i1].mean()), a, b) if with_dwellings else val
     return out
 
 
-# ------------------------------------------------------------------------------------------------- Q3 flags
-REASONS = [("spam", 0.31), ("rude_or_abusive", 0.08), ("not_an_answer", 0.22), ("very_low_quality", 0.14),
-           ("ai_generated", 0.11), ("plagiarism", 0.03), ("needs_moderator", 0.11)]
-# median hours to a paid moderator's first action in Q3 2026, by site and month (the three short sites slower)
-MEDIAN_H = {"web": 3.1, "mobile": 3.4, "data": 3.0, "databases": 3.3, "devops": 3.2, "gamedev": 3.6,
-            "security": 6.2, "embedded": 6.8, "scicomp": 7.4}
-MONTH_DRIFT = {7: 0.94, 8: 1.00, 9: 1.07}
-REVIEW_SHARE = 0.042
-ESCALATE_H = 90.0
-TOOL_PULL = dt.datetime(2026, 10, 8, 5, 38, 21)     # the moderator tool's export run, UTC
-CLOSED_SHARE = 0.062
-Q3 = (dt.date(2026, 7, 1), dt.date(2026, 9, 30))
+SMS_RE = re.compile(r"^(OM-\d{4}) (SPILL START|SPILL STOP) EO (\d\d:\d\d) (\d\d/\d\d/\d\d)$")
 
 
-def flags_q3(W, mods):
-    """Every flag raised in July to September 2026: the daily counts are the world's (the summary the main call reads
-    is built from the same counts), each flag's raise time, first action, decision review and export time."""
-    first_id = 51000000 + int(K.rng("flagbase").integers(1000, 90000))
-    rows, reviews = [], []
-    fid = first_id
-    q3_days = [d for d in K.days(*Q3)]
-    by_site_mods = {}
-    for d in q3_days:
-        for s in K.SITES:
-            by_site_mods.setdefault((s, d), [m.emp for m in mods if site_on(m, d) == s])
-    for d in q3_days:
-        di = W.day_index[d]
-        day_rows = []
-        for s in K.SITES:
-            S = W.sites[s]
-            n = int(S.flags[di])
-            r = K.rng("flagday", s, d.isoformat())
-            n_closed = int(S.flag_closed[di])
-            secs = np.sort(r.choice(86400, size=n, replace=True)) if n else []
-            kinds = np.array([0] * n)
-            closed_idx = set(r.choice(n, size=n_closed, replace=False).tolist()) if n_closed else set()
-            reasons = r.choice(len(REASONS), size=n, p=[p for _, p in REASONS]) if n else []
-            for j in range(n):
-                raised = dt.datetime(d.year, d.month, d.day) + dt.timedelta(seconds=int(secs[j]))
-                rec = dict(site=s, raised=raised, reason=REASONS[int(reasons[j])][0],
-                           post_type="answer" if r.random() < 0.62 else ("question" if r.random() < 0.8 else "comment"),
-                           post_id=int(r.integers(78_000_000, 79_400_000)),
-                           flagger=int(r.integers(120_000, 31_000_000)))
-                if j in closed_idx:
-                    rec["first"] = raised + dt.timedelta(minutes=float(r.exponential(85.0)) + 1.0)
-                    rec["by"] = "system"
-                    rec["outcome"] = "closed_post_deleted"
-                    rec["review"] = None
-                else:
-                    med = MEDIAN_H[s] * MONTH_DRIFT[d.month]
-                    hrs = math.exp(math.log(med) + float(r.normal(0.0, 1.05)))
-                    if hrs > ESCALATE_H:         # a flag left this long is escalated to the shift lead and taken
-                        hrs = ESCALATE_H + hrs % 7.0
-                    rec["first"] = raised + dt.timedelta(hours=hrs)
-                    pool = by_site_mods[(s, d)] or by_site_mods[(s, d)]
-                    rec["by"] = pool[int(r.integers(0, len(pool)))] if pool else "QM04999"
-                    rec["outcome"] = "helpful" if r.random() < 0.83 else "declined"
-                    if r.random() < REVIEW_SHARE:
-                        opened = rec["first"] + dt.timedelta(hours=float(r.uniform(6.0, 60.0)))
-                        closed = opened + dt.timedelta(hours=float(r.uniform(18.0, 110.0)))
-                        final = rec["outcome"]
-                        if r.random() < 0.31:
-                            final = "declined" if final == "helpful" else "helpful"
-                        rec["review"] = dict(opened=opened, closed=closed, first_outcome=rec["outcome"], final=final,
-                                             why=str(r.choice(["flagger appeal", "post owner appeal", "quality sample"],
-                                                              p=[0.38, 0.27, 0.35])),
-                                             reviewer=None)
-                        rec["outcome"] = final
-                    else:
-                        rec["review"] = None
-                day_rows.append(rec)
-        day_rows.sort(key=lambda x: (x["raised"], x["site"]))
-        for rec in day_rows:
-            fid += int(1 + (rec["post_id"] % 3 == 0))
-            rec["flag_id"] = fid
-            rows.append(rec)
-            if rec["review"]:
-                reviews.append(rec)
-    # reviewers are senior moderators: the longest-serving full-time moderator at each of three sites
-    seniors = [m.emp for m in sorted(mods, key=lambda m: m.emp)[:3]]
-    for k, rec in enumerate(reviews):
-        rec["review"]["reviewer"] = seniors[k % 3]
-    # the export ran on the morning of 8 October: a review opened after it does not exist yet, and one still open has
-    # no close, no final outcome and has not re-marked its flag
-    for rec in reviews:
-        R = rec["review"]
-        if R["opened"] > TOOL_PULL:
-            rec["review"] = None
-            rec["outcome"] = R["first_outcome"]
-        elif R["closed"] > TOOL_PULL:
-            R["closed"] = None
-            R["final"] = None
-            R["reviewer"] = None
-            rec["outcome"] = R["first_outcome"]
-    return rows
+@functools.lru_cache(maxsize=8)
+def ask_b(target, icps="all", attribution="dated", clock="message"):
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, "rauwhero_wastewater_assets_2026-10.xlsx"), read_only=True)
+    mons = []
+    cur_icp, addr = {}, {}
+    for i, r in enumerate(wb["Overflow monitors"].iter_rows(values_only=True)):
+        if i and r[0]:
+            mons.append((r[0], r[1], dt.date.fromisoformat(r[2]), dt.date.fromisoformat(r[3]) if r[3] else None))
+    for i, r in enumerate(wb["Pump stations"].iter_rows(values_only=True)):
+        if i and r[0]:
+            cur_icp[r[0]] = r[4]
+            addr[r[0]] = r[2]
+    site_icps = {s: {cur_icp[s]} for s in cur_icp}
+    if icps == "all":
+        for icp, site, ad, a, b, cat in rows(os.path.join(target, "council_electricity_sites_2026-10.csv"))[1:]:
+            for s, a_ in addr.items():
+                if ad.startswith(a_ + ","):
+                    site_icps[s].add(icp)
+    outages = []
+    for nid, icp, typ, a, b, cause in rows(os.path.join(target, "kahuwera_lines_outage_notices_2024-2026.csv"))[1:]:
+        ta = dt.datetime.strptime(a, "%Y-%m-%d %H:%M").replace(tzinfo=AKL).astimezone(UTC)
+        tb = dt.datetime.strptime(b, "%Y-%m-%d %H:%M").replace(tzinfo=AKL).astimezone(UTC)
+        for s, ic in site_icps.items():
+            if icp in ic:
+                outages.append((s, ta, tb))
 
+    def station_of(serial, d):
+        if attribution == "dated":
+            for ser, s, a, b in mons:
+                if ser == serial and a <= d and (b is None or d < b):
+                    return s
+        else:
+            cands = [m for m in mons if m[0] == serial]
+            return cands[-1][1]
+        return None
 
-# ------------------------------------------------------------------------------------------------- question moves
-# per destination (the old system's site), the share of the questions living there now that were asked on another
-# site and moved in, and where they came from
-IN_SHARE = {"web": 0.0056, "mobile": 0.0068, "data": 0.0060, "databases": 0.0064, "devops": 0.0062,
-            "gamedev": 0.0060, "graphics": 0.0072, "security": 0.0067, "embedded": 0.0065, "scicomp": 0.0070}
-IN_FROM = {
-    "web": [("mobile", 0.36), ("devops", 0.22), ("security", 0.20), ("data", 0.12), ("gamedev", 0.10)],
-    "mobile": [("web", 0.62), ("gamedev", 0.20), ("embedded", 0.18)],
-    "data": [("databases", 0.44), ("scicomp", 0.36), ("web", 0.20)],
-    "databases": [("data", 0.50), ("devops", 0.50)],
-    "devops": [("databases", 0.36), ("security", 0.34), ("web", 0.30)],
-    "gamedev": [("graphics", 0.48), ("web", 0.30), ("mobile", 0.22)],
-    "graphics": [("gamedev", 0.68), ("scicomp", 0.32)],
-    "security": [("devops", 0.55), ("web", 0.45)],
-    "embedded": [("scicomp", 0.42), ("devops", 0.30), ("mobile", 0.28)],
-    "scicomp": [("data", 0.56), ("embedded", 0.30), ("graphics", 0.14)],
-}
-
-
-def question_moves(W):
-    """Questions moved between sites from 2021 to 2023. The world's daily questions are the questions that live on
-    each site now, by the day first asked (the posts warehouse's basis); a moved question was asked on another site and
-    lives on the site it moved to, so the moves are drawn into each destination from the questions living there."""
-    r = K.rng("moves")
-    moves = []
-    for d in K.days(K.D0, K.OLD_END):
-        di = W.day_index[d]
-        for s in K.SITES:
-            live = W.sites[s].q[di]
-            dests = [(s, 1.0)]
-            if s == "gamedev" and d < K.MERGER:
-                dests = [("gamedev", 1.0 - K.GRAPHICS_SHARE), ("graphics", K.GRAPHICS_SHARE)]
-            for dst, share in dests:
-                k = int(r.poisson(live * share * IN_SHARE[dst]))
-                srcs = [x for x in IN_FROM[dst] if not (x[0] == "graphics" and d >= K.MERGER)]
-                tot = sum(p for _, p in srcs)
-                for _ in range(k):
-                    src = srcs[int(r.choice(len(srcs), p=[p / tot for _, p in srcs]))][0]
-                    u = r.random()
-                    lag = 0 if u < 0.58 else (int(r.integers(1, 4)) if u < 0.89 else int(r.integers(4, 46)))
-                    t_ask = dt.datetime(d.year, d.month, d.day) + dt.timedelta(seconds=int(r.integers(0, 86400)))
-                    t_move = t_ask + dt.timedelta(days=lag, seconds=int(r.integers(1800, 30000)))
-                    moves.append(dict(src=src, dst=dst, live=s, asked=t_ask, moved=t_move))
-    moves.sort(key=lambda m: (m["asked"], m["src"]))
-    qid = 40_000_000 + int(r.integers(1000, 50000))
-    for m in moves:
-        qid += int(r.integers(30, 260))
-        m["qid_old"] = qid
-    moves.sort(key=lambda m: (m["moved"], m["qid_old"]))
-    nid = 52_000_000 + int(r.integers(1000, 9000))
-    for m in moves:
-        nid += int(r.integers(1, 9))
-        m["qid_new"] = nid
-    return moves
+    events = {}
+    for rec, frm, msg in rows(os.path.join(target, "overflow_monitor_sms_log_2024-2026.csv"))[1:]:
+        m = SMS_RE.match(msg)
+        if not m:
+            continue
+        if clock == "message":
+            t = dt.datetime.strptime(m.group(3) + " " + m.group(4), "%H:%M %d/%m/%y").replace(tzinfo=NZST).astimezone(UTC)
+        else:
+            t = dt.datetime.strptime(rec, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+        s = station_of(m.group(1), t.astimezone(NZST).date())
+        events.setdefault(s, []).append((t, m.group(2)))
+    runs = {}
+    for s, evs in events.items():
+        evs.sort()
+        cur = None
+        for t, w in evs:
+            if w == "SPILL START":
+                cur = t
+            elif cur is not None:
+                runs.setdefault(s, []).append((cur, t))
+                cur = None
+    res = {}
+    emerg = {y: 0 for y in YEARS_B}
+    for s, rs in runs.items():
+        ovf = []
+        for a, b in rs:
+            if ovf and (a - ovf[-1]["end"]) < dt.timedelta(hours=24):
+                ovf[-1]["end"] = max(ovf[-1]["end"], b)
+                ovf[-1]["hours"] += (b - a).total_seconds() / 3600
+            else:
+                ovf.append(dict(start=a, end=b, hours=(b - a).total_seconds() / 3600))
+        for o in ovf:
+            o["emergency"] = any(x == s and ta <= o["start"] < tb for x, ta, tb in outages)
+            y = o["start"].astimezone(NZST).year
+            if y in YEARS_B:
+                if o["emergency"]:
+                    emerg[y] += 1
+                elif s in STATIONS_B:
+                    k = (s, y)
+                    c, h = res.get(k, (0, 0.0))
+                    res[k] = (c + 1, h + o["hours"])
+    out = {}
+    for s in STATIONS_B:
+        for y in YEARS_B:
+            c, h = res.get((s, y), (0, 0.0))
+            out["%s %d overflows" % (s, y)] = c
+            out["%s %d spill hours" % (s, y)] = h
+    for y in YEARS_B:
+        out["network %d emergency overflows" % y] = emerg[y]
+    return out

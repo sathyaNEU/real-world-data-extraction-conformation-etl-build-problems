@@ -105,7 +105,7 @@ def main(target=TARGET):
     docs_text = " ".join(pdf_text(os.path.join(target, B.FILES[k])) for k in ("plan", "op7", "hbn_terms"))
     ok("R3c the documents carry text (positive control for every absence check below)",
        "expected load reduction in the system peak hour" in docs_text and len(docs_text) > 2000)
-    plant = re.compile(r"consecutive|in a row|fatigue|recover|depletion|buffer|run of|wears off|tired|snapback|rebound",
+    plant = re.compile(r"consecutive|in a row|fatigue|recover|depletion|buffer|run of|wears off|\btired\b|snapback|rebound",
                        re.I)
     ok("R3c no document names consecutive days, fatigue, recovery or a buffer", not plant.findall(docs_text),
        plant.findall(docs_text))
@@ -246,6 +246,21 @@ def main(target=TARGET):
     sw = F.idle_switch(target, data["st"])
     ok("ask A the unreachable report dates IDLE's change of meaning on the first event after 6 July 2026",
        sw == dt.date(2026, 7, 7), sw)
+    op7 = re.sub(r"\s+", " ", pdf_text(os.path.join(target, B.FILES["op7"])))
+    ok("SF15 OP-7 section 6 files a ready thermostat (registered, not retired, ONLINE, or IDLE under firmware 6.0 "
+       "from 6 July 2026)",
+       all(w in op7 for w in ("6. Readiness", "registered with Halvern Controls, not retired", "is ONLINE, or is IDLE "
+                              "reported under Halvern's firmware 6.0", "Firmware 6.0 reached every registered "
+                              "thermostat on 6 July 2026")), op7[-500:])
+    ok("SF16 OP-7 section 6 counts Business Demand Partners' nominations on the utility's commercial meters",
+       "nominated for that month on the utility's commercial meters" in op7, op7[-200:])
+    gap = [ts for q in data["st"].values() for ts, v in q
+           if v == "IDLE" and dt.datetime(2026, 6, 30, 21) <= ts < dt.datetime(2026, 7, 7)]
+    ok("SF15 no IDLE report falls between 21:00 UTC on 30 June and 00:00 UTC on 7 July, so the push day reads the "
+       "same in either zone at any hour", not gap, len(gap))
+    push = {d: v for d, v in F.ask_a(target, "address", "online", data).items() if d < dt.date(2026, 7, 6)}
+    ok("SF15 IDLE read as connected before the push moves every June event day (the clause decides figures)",
+       all(push[d] != gold[d] for d in push) and len(push) == 3, push)
     bm, bc = F.ask_b(target)
     b_stops = {"each record tested alone": F.ask_b(target, split="per_record"),
                "the first record kept": F.ask_b(target, split="keep_first"),
@@ -337,6 +352,13 @@ def main(target=TARGET):
         with pdfplumber.open(p) as doc:
             plumb = re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in doc.pages))
         ok("H25 %s reads under a strict parser and a second extractor" % k, want in strict and want in plumb)
+    # H26: each workbook's save history runs forward (created, then last modified, both before the extract)
+    import zipfile as _zf
+    for k in ("costs", "satisfaction"):
+        core = _zf.ZipFile(os.path.join(target, B.FILES[k])).read("docProps/core.xml").decode()
+        cr = re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+        md = re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+        ok("H26 %s was last saved after it was created and before the extract" % k, cr < md < "2026-10-16", (cr, md))
     # H4: the archive, when cut, holds exactly the declared files
     zp = os.path.join(TASK, "target.zip")
     if os.path.exists(zp) and target == TARGET:
