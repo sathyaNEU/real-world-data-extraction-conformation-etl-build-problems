@@ -6,11 +6,11 @@
 ## 1. Final Recommendation
 
 **Velden pays Brackwell Alloys EUR 342,000 in low-carbon premium on its 2027 call-offs: EUR 38 a tonne on 7,200 t of 6063 extrusion billet and 1,800 t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 t CO2/t in 2026.**
-6082 extrusion billet (0.26 t CO2/t) and the LM25-TF sand castings (0.50) are over the limit and earn nothing on their 3,000 t and 650 t. The homogenizing furnace burns gas by the hours its loads soak, and a 6082 load soaks about 15 hours against about 6 for 6063; shared by tonnes, the two billet alloys come out level and 6082 would wrongly qualify.
+6082 extrusion billet and the LM25-TF sand castings are over the limit and earn nothing on their 3,000 t and 650 t. The homogenizing furnace burns gas by the hours its loads soak, and a 6082 load soaks about 15 hours against about 6 for 6063; shared by tonnes, the two billet alloys come out level and 6082 would wrongly qualify.
 
 ## 2. Critical Components
 
-1. 2026 specific direct emissions, t CO2 per tonne produced: 6063 billet **0.21** and LM25 ingot **0.17**, at or under 0.235; 6082 billet **0.26** and LM25-TF castings **0.50**, over it.
+1. 2026 specific direct emissions against SCR-2's 0.235 t CO2 per tonne produced: 6063 billet and LM25 ingot **at or under it**; 6082 billet and LM25-TF castings **over it**.
 2. The homogenizing furnace's gas follows its firing hours, not its tonnes: 6082 loads take **47 per cent** of its hours on 26 per cent of its billet.
 3. 2026 production, tonnes that passed final inspection (each lot at its last result): 6063 billet 22,897, 6082 billet 8,205, LM25 ingot 12,816, LM25-TF castings 2,044.
 4. 2027 call-offs: 6063 billet 7,200 t, 6082 billet 3,000 t, LM25 ingot 1,800 t, castings 650 t; premium EUR 38 x 9,000 t = EUR 342,000.
@@ -32,9 +32,8 @@
 
 1. Premium on the 2027 call-offs: EUR 342,000.
 2. Families earning it: 6063 extrusion billet (7,200 t) and LM25 foundry ingot (1,800 t).
-3. Families over the limit: 6082 extrusion billet and LM25-TF sand castings.
-4. 2026 specific direct emissions, t CO2/t: 6063 extrusion billet 0.21, 6082 extrusion billet 0.26, LM25 foundry ingot 0.17, LM25-TF sand castings 0.50.
-5. Chart of each family's 2026 emissions per tonne against the 0.235 limit.
+3. Each family's 2026 emissions per tonne against the 0.235 t CO2/t limit: 6063 extrusion billet and LM25 foundry ingot at or under it; 6082 extrusion billet and LM25-TF sand castings over it.
+4. Chart of each family's 2026 emissions per tonne against the 0.235 limit.
 
 ### brackwell_scr2_figures_2026.csv
 
