@@ -1,18 +1,18 @@
 {
  "task": "task306",
  "status": "DESIGN",
- "domain": "urban-regional-science",
+ "domain": "actuarial-science-insurance",
  "objective": "opportunity-sizing-decision",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-31",
  "stump": "",
- "architecture": 2,
+ "architecture": 3,
  "loops": 0,
  "precut": null,
  "leak": null,
  "duplicate_check": {
-  "check": "WARN at registration 2026-10-31T17:27:22Z (overuse.org_family, repeat.gate_g against task181 v5, repeat.decision against task118 v5; test.same_puzzle_older and test.same_driver_older against task302 and task120 v3 answered by differentiation)"
+  "check": "WARN at registration 2026-10-31 (repeat.decision against task118 v5); differentiation lines for task309, task271, task302 and task120"
  },
  "judge": null,
  "returned": [
@@ -23,7 +23,7 @@
    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "Architecture 2 drawn and registered 2026-10-31: the development corporation's 2027 inward investment fund award, the regional GVA each project adds once its induced round is read where its staff live. Next: stage 2 design (default path, stump sentence, three rules, ladder, fork table, asks, prompt) to precut.py exit 0.",
+ "resume": "Architecture 3 drawn and registered 2026-10-31: Hartcombe Mutual's 2027 windstorm programme, an occurrence cover against an annual aggregate cover, each simulated storm costed at what the mutual's claims show, the storms that follow another inside a season costing more. Next: stage 2 design to precut.py exit 0.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -79,6 +79,14 @@
   {
    "date": "2026-10-31",
    "event": "DRAWN: architecture 2, regional-input-output-economic-impact x opportunity sizing, registered 2026-10-31T17:27:22Z"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "architecture 2 (regional input-output, the development corporation's award) spent at stage 2 on the survivor anatomy's Actor test, before any data was cut"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "DRAWN: architecture 3, reinsurance-capital x opportunity sizing"
   }
  ]
 }

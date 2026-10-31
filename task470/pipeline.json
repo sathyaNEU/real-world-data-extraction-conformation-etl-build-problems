@@ -1,43 +1,65 @@
 {
  "task": "task470",
- "status": "SHIPPED",
- "domain": "physical-environmental-sciences",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-18",
- "stump": "The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most instead of with the based airplanes that never broadcast, so it drops the three vintage fields O16, U44 and W33.",
- "architecture": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "A competent solver conforms the cadastre, the population register and the hub's hourly reads, counts as vacant the dwellings whose average daily consumption over the fortnight sits under a floor, and designates one municipality; an empty dwelling in a Norwegian November is heated, so only a household's morning and evening rise over the dwelling's own night-time load shows that someone lived there, which designates four.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-18"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18 on the final build (target.zip e7020bf9dcfe1912): the guidelines' 12.5 kg; generic inventory words in the method, network and register notes and two count reports; the 5010 records (declared wrong-basis distractor), the directory and the based list name the fields; no LEAK",
-  "reader": "round 1: stumped (four fields on the never-recorded-share route), all twelve towered figures missed through today's register; realism fixed. Round 2: no leak, question 6 analytical, landed the call and all twelve towered figures by reading DEREG by cancel date: the ask's device rebuilt (the Registry's move leading each swap by 30 to 150 days, the old airplane flying on under its old address with its new number as flight ID), the register given a 141-model catalogue. Round 3 (rerun after a first attempt stopped): no leak, question 6 analytical, landed the call, read the register by its own dates and missed all twelve towered figures; two data-only realism fixes (validation days to the month's end, 5010 rounding)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "PASS 2026-10-18 after redrawing the context artifact (operations_log) and the organisation family (local_government); same-driver older matches differentiated (task107, task129, task36, task44)"
+  "guard_check": "PASS 2026-10-31 on the registered card (task477 differentiated)",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "pass 1 DETERMINISTIC; pass 2 (the one re-judge, fix-pass build) DETERMINISTIC",
-  "disposition": "pass 1 APPROVE; pass 2 APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H pass, decisive step analytical); the ask's device rebuilt after pass 2 with every main figure byte-identical",
-  "report": "task470/determinism_check_report.md, task470/determinism_check_report_pass2.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "Stage 2: the design sections, the asks, the generator's screens as code.",
  "approved": null,
- "delivered": "2026-10-18",
+ "delivered": null,
  "portal": null,
- "source_note": "seed ET27 (historical fleet mix by tail number; a state funds first the airport most dependent on small aircraft): the world, the funding of fields first on a class of aircraft's activity and the register read through changing identifiers kept; the call made forward facing on the 2027 grant round; the seed's register reading kept as Layer 1; the pitfall re-found in how a transponder network misses general aviation activity",
- "ceiling": {
-  "pair": 39.1,
-  "cracker": 45.0,
-  "cracker_path": "the register by its own dates (reader round 2's route), 0 of 12",
-  "best_mirror": "33.2 on R4",
-  "mirror_leakage": 0.0,
-  "script": "generator/ceiling.py"
- },
- "target_zip_sha256_16": "e7020bf9dcfe1912"
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "history": [
+  {
+   "architecture": 1,
+   "domain": "physical-environmental-sciences",
+   "objective": "etl",
+   "stump": "The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most instead of with the based airplanes that never broadcast, so it drops the three vintage fields O16, U44 and W33.",
+   "delivered": "2026-10-18",
+   "leak": {
+    "leak_py": "REVIEW 2026-10-18 on the final build (target.zip e7020bf9dcfe1912): the guidelines' 12.5 kg; generic inventory words in the method, network and register notes and two count reports; the 5010 records (declared wrong-basis distractor), the directory and the based list name the fields; no LEAK",
+    "reader": "round 1: stumped (four fields on the never-recorded-share route), all twelve towered figures missed through today's register; realism fixed. Round 2: no leak, question 6 analytical, landed the call and all twelve towered figures by reading DEREG by cancel date: the ask's device rebuilt (the Registry's move leading each swap by 30 to 150 days, the old airplane flying on under its old address with its new number as flight ID), the register given a 141-model catalogue. Round 3 (rerun after a first attempt stopped): no leak, question 6 analytical, landed the call, read the register by its own dates and missed all twelve towered figures; two data-only realism fixes (validation days to the month's end, 5010 rounding)"
+   },
+   "judge": {
+    "verdict": "pass 1 DETERMINISTIC; pass 2 (the one re-judge, fix-pass build) DETERMINISTIC",
+    "disposition": "pass 1 APPROVE; pass 2 APPROVE (Gate G method_or_model_selection, analytical_non_defect; Gate H pass, decisive step analytical); the ask's device rebuilt after pass 2 with every main figure byte-identical",
+    "report": "task470/determinism_check_report.md, task470/determinism_check_report_pass2.md"
+   },
+   "ceiling": {
+    "pair": 39.1,
+    "cracker": 45.0,
+    "cracker_path": "the register by its own dates (reader round 2's route), 0 of 12",
+    "best_mirror": "33.2 on R4",
+    "mirror_leakage": 0.0,
+    "script": "generator/ceiling.py"
+   },
+   "fate": "spent 2026-10-31 at the batch 1 repair: guard.py heart BLOCK against task242 on strategy, calibration, forum, forcing event and organisation family, and on pattern against task197; superseded before any portal result"
+  }
+ ]
 }

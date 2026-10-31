@@ -200,14 +200,8 @@ def run(target, world, fig, golden):
     ok(set(solve.gauge_swaps(target, F).values()) == {P.GAUGE_SWITCH}, "B the referee: every gauge swapped at the June exchange")
     ok(_xlsx_text(os.path.join(target, F["deposit"])).count("0.0731") >= 60, "B the laboratory keeps the funnel gauge's area")
     # ---------------------------------------------------------------- the pack's own registers (H9)
-    readme = open(os.path.join(target, F["readme"]), encoding="utf-8").read()
-    dic = open(os.path.join(target, F["dict"]), encoding="utf-8").read()
     ok({f for f in os.listdir(target)} == {F[k] for k in B.PACK}, "H9 the target holds the pack and nothing else")
-    for k in B.PACK:
-        if k != "readme":
-            ok(F[k] in readme, "H9 README lists %s" % F[k])
-    for k in ("council", "operator", "met", "register", "servicelog", "deposit", "asr2026", "bgmap"):
-        ok(F[k] in dic, "H9 the dictionary covers %s" % F[k])
+    ok(not [f for f in os.listdir(target) if f.endswith(".md")], "H9 no file describing the data ships (no dictionary or readme)")
     # ---------------------------------------------------------------- input gates and realism
     files = [F[k] for k in B.PACK]
     ok(len(files) >= 10, "gate: %d files" % len(files))

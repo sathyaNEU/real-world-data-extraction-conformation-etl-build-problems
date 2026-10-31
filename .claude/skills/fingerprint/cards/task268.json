@@ -1,225 +1,232 @@
 {
-  "task": "task268",
-  "architecture": "v5",
-  "drawn": "2026-10-31",
-  "slot_note": "",
-  "domain": "marketing-consumer-research",
-  "subdomain": "segmentation-market-structure",
-  "client_domain": "marketing-consumer-research",
-  "niche": "a regional grocer's coffee aisle: which rival brand's buyer homes its own-label roastery's 2027 sampling targets, read from loyalty cards, online accounts and the acquirer's card settlement file",
-  "objective": "descriptive-distribution",
-  "shape": "14",
-  "decision_type": "pick_one_of_n",
-  "answer_unit": "named_option",
-  "answer": "TBD at stage 3",
-  "answer_source": "task268/submission.md block 1; task268/generator/figures.json",
-  "gap": [
+ "task": "task268",
+ "architecture": "v5",
+ "drawn": "2026-10-31",
+ "slot_note": "",
+ "domain": "marketing-consumer-research",
+ "subdomain": "segmentation-market-structure",
+ "client_domain": "marketing-consumer-research",
+ "niche": "a regional grocer's coffee aisle: which rival brand's buyer homes its own-label roastery's 2027 sampling targets, read from loyalty cards, online accounts and the acquirer's card settlement file",
+ "objective": "descriptive-distribution",
+ "shape": "14",
+ "decision_type": "pick_one_of_n",
+ "answer_unit": "named_option",
+ "answer": "Oro Rosso's homes get the 2027 Roastery sampling",
+ "answer_source": "submission.md block 1; golden roastery_sampling_2027.pptx slide 1",
+ "gap": [
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G10",
+  "G2",
+  "G6"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "grain_or_unit",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "other",
+ "stump_class": "analytical",
+ "analyst_test": "With every file conformed and every rule read, the easy route takes each Rewards card as one buyer, as the chain's own supplier scorecards do, measures the share of each rival brand's 2026 buying cards that also bought Corcally's Roastery and files Nordhavn as the least overlapped rival, when Nordhavn's capsule buyers are mostly the second card in a home whose other member buys the Roastery on their own card.",
+ "domain_test": "The deciding quantity is the duplication of purchase between brands' buyer bases at the unit that buys for a household, the market-structure measure a segmentation analyst reads to place a brand among its rivals; with another field's nouns (patients and clinics) there is no household repertoire split between members' cards, which is what moves the overlap and the pick.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:buyer-home-assembled-from-cards-and-accounts-sharing-a-payment-card",
+ "layer1": [
+  "till lines, online orders, the Rewards register and the acquirer's settlement file kept by four systems with four identifiers",
+  "a lost card's replacement issued under a new number",
+  "the stores' house card swiped for customers without a card of their own",
+  "settlement dated one or two banking days after the sale",
+  "brand names spelt three ways across the product master's SKUs",
+  "refunds as negative lines on a later transaction",
+  "online orders amended before their cut-off, each amendment a new version of the order",
+  "loose deli coffee rung through one generic code with the roaster only on the scale's label"
+ ],
+ "stakeholder_role": "customer insight lead for the coffee aisle at a regional grocery chain",
+ "role_family": "research_desk",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "coffee_till_lines_2026.csv",
+  "rows": 73375,
+  "entity": "one coffee item line on one till transaction, with the Rewards card presented if any",
+  "grain": "transaction line",
+  "source": "synthetic (the chain's point-of-sale line export for the coffee aisle and the deli counter, calendar 2026)"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "launch_or_rollout",
+ "org_family": "retailer_or_ecommerce",
+ "world": {
+  "geography": "Ireland (a fictional Midlands market town and its hinterland)",
+  "currency": "EUR",
+  "org_type": "a family-owned regional grocery chain with an own-label coffee range, a loyalty programme and online delivery",
+  "invented_names": [
+   "Corcally's",
+   "Corcally's Roastery",
+   "Corcally's Rewards",
+   "Drumsallagh",
+   "Lisgarvan",
+   "Kilbrannagh",
+   "Faircourt Merchant Services",
+   "Nordhavn",
+   "Oro Rosso",
+   "Halloran's",
+   "Bellvale",
+   "Cafetto",
+   "Westquay",
+   "Kinvara Hills",
+   "Glenmore Roasters",
+   "Ardcath Coffee Co.",
+   "Inish Bean",
+   "Lisnagree Research"
+  ],
+  "people": [
+   "Cal Monaghan",
+   "Alix Fennell",
+   "Katy Kinnegan"
+  ]
+ },
+ "deliverables": [
+  "roastery_sampling_2027.pptx",
+  "rival_home_overlap_2026.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "other",
+ "driver": "The buying unit is a group of member records that no key joins, linked only by a payment card they share in a separate settlement record; read record by record, the share of each rival's buyers who also buy the house offer is lowest for the rival bought mostly by a group's second member, whose partner buys the house offer on another record, while built from the linked groups the lowest share falls on a rival bought by one-member groups.",
+ "driver_concrete": "Homes are assembled from Rewards cards and online accounts that pay with the same bank-card token in Faircourt's settlement file; card by card Nordhavn capsule buyers look least likely to buy Corcally's Roastery because their partners buy it on another card, while home by home the lowest overlap is Oro Rosso's, bought by one-person homes.",
+ "stump": "A competent analyst takes each Rewards card as one buyer, measures the share of each rival brand's 2026 buying cards that also bought Corcally's Roastery and names Nordhavn, where Nordhavn's capsule buyers are mostly a home's second card whose other member buys the Roastery; assembled from the cards and online accounts that share a payment card in the acquirer's settlement file, homes put Oro Rosso lowest and Nordhavn mid-table.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task126": "task126 splits one docket chain into applications by an examiner credit class in a production ledger; task268 assembles homes from several member records that share nothing but a payment card in a third system, and the decided quantity is a duplication of purchase, not a duration.",
+  "task114": "task114 builds a meeting from invitees matched to two badge systems to size rooms; task268 builds a buying home from cards and accounts paying with one bank card to read brand overlap.",
+  "task179": "task179 links a second agency's victim records by name and birth date to add a predictor; task268 links nothing to add a variable: it changes the counting unit from the card to the home.",
+  "task131": "task131 v1 reads a card-randomised offer's effect where a household's cards share the offer, with the membership on file as a key; task268 reads no experiment and has no household key: homes are assembled from cards and online accounts that pay with one bank card in the acquirer's settlement file, and the decided quantity is the duplication of purchase between brands' buyer homes.",
+  "task264": "task264 counts distinct members from events sampled in proportion to each member's activity (size bias); task268 samples nothing and counts the buying unit that several records make up.",
+  "task267": "task267 reweights a screened population's checked members by their group's checking rate (verification bias in a diagnostic capture rate); this build rebuilds a buying unit from loyalty cards and shop accounts that share a payment card in an acquirer's settlement file: no shared mechanism, domain or data structure, only the gap label and a pick"
+ },
+ "lineage": [
+  {
+   "domain": "survey-research-official-statistics",
+   "subdomain": "small-area-estimation",
+   "objective": "descriptive-distribution",
+   "shape": "14",
+   "decision_type": "pick_one_of_n",
+   "answer_unit": "named_option",
+   "gap": [
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
+    "E"
+   ],
+   "generators": [
+    "G14",
+    "G6",
+    "G2"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "composition_mix",
+   "role_family": "operations_director",
+   "forum": "board_of_directors",
+   "forcing_event": "launch_or_rollout",
+   "org_family": "retailer_or_ecommerce",
+   "driver": "The decisive quantity is how many people are at each small area on a typical day, known completely only as the members attached to each area and observed day by day only in a broad sample whose on-site rate falls with how far a member lives from the area; carrying the sample's rate for each kind of member onto the complete attachments credits the areas that draw their members from far away with too many present, so the rate has to be carried within the groups it varies across.",
+   "architecture": "v1 (a quick-commerce grocer's 2027 weekday dark-store pilot among six metros, by each core's delivery-weighted density of people present, the commuting table's flows carried at a national survey's days on the premises)",
+   "drawn": "2026-10-18",
+   "fate": "spent 2026-10-18 at stage 4: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call, Tessavon at 28,805 against Corrisford's 21,709 (score_reader.py exit 1); the stratum was a classifier both sources share, so the careful analyst's first group-by; the judge found the call forced, Gate H passing, and two ask forks"
+  },
+  {
+   "domain": "general-statistics-data-science",
+   "subdomain": "missing-data-censoring-measurement-error",
+   "objective": "descriptive-distribution",
+   "shape": "01",
+   "decision_type": "pick_one_of_n",
+   "answer_unit": "named_option",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G10",
-    "G2",
-    "G6"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "other",
-  "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route takes each Rewards card as one buyer, as the chain's own supplier scorecards do, measures the share of each rival brand's 2026 buying cards that also bought Corcally's Roastery and files Nordhavn as the least overlapped rival, when Nordhavn's capsule buyers are mostly the second card in a home whose other member buys the Roastery on their own card.",
-  "domain_test": "The deciding quantity is the duplication of purchase between brands' buyer bases at the unit that buys for a household, the market-structure measure a segmentation analyst reads to place a brand among its rivals; with another field's nouns (patients and clinics) there is no household repertoire split between members' cards, which is what moves the overlap and the pick.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:buyer-home-assembled-from-cards-and-accounts-sharing-a-payment-card",
-  "layer1": [
-    "till lines, online orders, the Rewards register and the acquirer's settlement file kept by four systems with four identifiers",
-    "a lost card's replacement issued under a new number",
-    "the stores' house card swiped for customers without a card of their own",
-    "settlement dated one or two banking days after the sale",
-    "brand names spelt three ways across the product master's SKUs",
-    "refunds as negative lines on a later transaction",
-    "online orders amended before their cut-off, each amendment a new version of the order",
-    "loose deli coffee rung through one generic code with the roaster only on the scale's label"
-  ],
-  "stakeholder_role": "customer insight lead for the coffee aisle at a regional grocery chain",
-  "role_family": "research_desk",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "coffee_till_lines_2026.csv",
-    "rows": 90000,
-    "entity": "one coffee item line on one till transaction, with the Rewards card presented if any",
-    "grain": "transaction line",
-    "source": "synthetic (the chain's point-of-sale line export for the coffee aisle and the deli counter, calendar 2026)"
+   ],
+   "generators": [
+    "G12",
+    "G3",
+    "G16"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "population_selection",
+   "role_family": "research_desk",
+   "forum": "committee_or_panel",
+   "forcing_event": "vote_or_meeting",
+   "org_family": "cooperative_or_member_body",
+   "driver": "The decisive quantity is how far each area's stock has fallen, observable either through the records of collectors who choose where to sample by how much they find there or through a fixed probability sample of the whole area; as a stock shrinks it retreats into the best part of its area and the collectors follow it, so their catch per unit of effort holds up while the stock falls and the parts they abandon drop out of their record, and only the fixed sample, weighted over the whole area, shows the fall.",
+   "architecture": "v2 (re-rooted 2026-10-18 after architecture 1's stage-4 reader landed the call)",
+   "drawn": "2026-10-18",
+   "fate": "spent 2026-10-18 at stage 4: the isolated reader went to the autumn survey first and weighted each depth band by its share of the stock area from plan 4.2's estimand and the manual's equal stations per band, committing Halmorie Deep at 63 per cent against Brettach Bank's 52 with every fall (score_reader.py exit 1); a survey whose own manual describes its strata under an estimand filed as a total over an area makes the design-based estimate the careful analyst's default; the judge found the call forced, DETERMINISTIC and APPROVE"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "retailer_or_ecommerce",
-  "world": {
-    "geography": "Ireland (a fictional Midlands market town and its hinterland)",
-    "currency": "EUR",
-    "org_type": "a family-owned regional grocery chain with an own-label coffee range, a loyalty programme and online delivery",
-    "invented_names": [
-      "Corcally's",
-      "Corcally's Roastery",
-      "Corcally's Rewards",
-      "Drumsallagh",
-      "Ballinroe Merchant Services",
-      "Nordhavn",
-      "Rossa Gold",
-      "Halloran's",
-      "Bellvale",
-      "Cafetto",
-      "Westquay",
-      "Kinvara Hills"
-    ],
-    "people": [
-      "Cal Monaghan",
-      "Alix Fennell",
-      "Katy Kinnegan"
-    ]
+  {
+   "architecture": "v3 (registry heart failure survival, the patients lost to a move north carried from their NYHA class at the move)",
+   "domain": "biomedical-clinical-research",
+   "subdomain": "survival-time-to-event-analysis",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G6",
+    "G14",
+    "G12"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "pick_one_of_n",
+   "stump_strategy": "population_selection",
+   "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
+   "fate": "spent 2026-10-28: the portal's determinism round failed it with both judges (charter 3.2 read as the deaths on file), and the re-judge after the WHAT repair sent it back: plain Kaplan-Meier a rule-compliant reading naming Fennick (Gate C), the mechanic classed single_conceptual_flip (Gate G); two corrections of one graded quantity"
   },
-  "deliverables": [
-    "roastery_sampling_2027.pptx",
-    "rival_home_overlap_2026.csv"
-  ],
-  "opening_move": "question-first",
-  "question_form": "other",
-  "driver": "The buying unit is a group of member records that no key joins, linked only by a payment card they share in a separate settlement record; read record by record, the share of each rival's buyers who also buy the house offer is lowest for the rival bought mostly by a group's second member, whose partner buys the house offer on another record, while built from the linked groups the lowest share falls on a rival bought by one-member groups.",
-  "driver_concrete": "Homes are assembled from Rewards cards and online accounts that pay with the same bank-card token in Ballinroe's settlement file; card by card Nordhavn capsule buyers look least likely to buy Corcally's Roastery because their partners buy it on another card, while home by home the lowest overlap is Rossa Gold's, bought by one-person homes.",
-  "stump": "A competent analyst takes each Rewards card as one buyer, measures the share of each rival brand's 2026 buying cards that also bought Corcally's Roastery and names Nordhavn, where Nordhavn's capsule buyers are mostly a home's second card whose other member buys the Roastery; assembled from the cards and online accounts that share a payment card in the acquirer's settlement file, homes put Rossa Gold lowest and Nordhavn mid-table.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task126": "task126 splits one docket chain into applications by an examiner credit class in a production ledger; task268 assembles homes from several member records that share nothing but a payment card in a third system, and the decided quantity is a duplication of purchase, not a duration.",
-    "task114": "task114 builds a meeting from invitees matched to two badge systems to size rooms; task268 builds a buying home from cards and accounts paying with one bank card to read brand overlap.",
-    "task179": "task179 links a second agency's victim records by name and birth date to add a predictor; task268 links nothing to add a variable: it changes the counting unit from the card to the home.",
-    "task131": "task131 v1 reads a card-randomised offer's effect where a household's cards share the offer, with the membership on file as a key; task268 reads no experiment and has no household key: homes are assembled from cards and online accounts that pay with one bank card in the acquirer's settlement file, and the decided quantity is the duplication of purchase between brands' buyer homes.",
-    "task264": "task264 counts distinct members from events sampled in proportion to each member's activity (size bias); task268 samples nothing and counts the buying unit that several records make up."
-  },
-  "lineage": [
-    {
-      "domain": "survey-research-official-statistics",
-      "subdomain": "small-area-estimation",
-      "objective": "descriptive-distribution",
-      "shape": "14",
-      "decision_type": "pick_one_of_n",
-      "answer_unit": "named_option",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "E"
-      ],
-      "generators": [
-        "G14",
-        "G6",
-        "G2"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "composition_mix",
-      "role_family": "operations_director",
-      "forum": "board_of_directors",
-      "forcing_event": "launch_or_rollout",
-      "org_family": "retailer_or_ecommerce",
-      "driver": "The decisive quantity is how many people are at each small area on a typical day, known completely only as the members attached to each area and observed day by day only in a broad sample whose on-site rate falls with how far a member lives from the area; carrying the sample's rate for each kind of member onto the complete attachments credits the areas that draw their members from far away with too many present, so the rate has to be carried within the groups it varies across.",
-      "architecture": "v1 (a quick-commerce grocer's 2027 weekday dark-store pilot among six metros, by each core's delivery-weighted density of people present, the commuting table's flows carried at a national survey's days on the premises)",
-      "drawn": "2026-10-18",
-      "fate": "spent 2026-10-18 at stage 4: the isolated reader carried the survey's share by industry group and HOMEREL onto every flow by reflex and committed the golden call, Tessavon at 28,805 against Corrisford's 21,709 (score_reader.py exit 1); the stratum was a classifier both sources share, so the careful analyst's first group-by; the judge found the call forced, Gate H passing, and two ask forks"
-    },
-    {
-      "domain": "general-statistics-data-science",
-      "subdomain": "missing-data-censoring-measurement-error",
-      "objective": "descriptive-distribution",
-      "shape": "01",
-      "decision_type": "pick_one_of_n",
-      "answer_unit": "named_option",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G3",
-        "G16"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "population_selection",
-      "role_family": "research_desk",
-      "forum": "committee_or_panel",
-      "forcing_event": "vote_or_meeting",
-      "org_family": "cooperative_or_member_body",
-      "driver": "The decisive quantity is how far each area's stock has fallen, observable either through the records of collectors who choose where to sample by how much they find there or through a fixed probability sample of the whole area; as a stock shrinks it retreats into the best part of its area and the collectors follow it, so their catch per unit of effort holds up while the stock falls and the parts they abandon drop out of their record, and only the fixed sample, weighted over the whole area, shows the fall.",
-      "architecture": "v2 (re-rooted 2026-10-18 after architecture 1's stage-4 reader landed the call)",
-      "drawn": "2026-10-18",
-      "fate": "spent 2026-10-18 at stage 4: the isolated reader went to the autumn survey first and weighted each depth band by its share of the stock area from plan 4.2's estimand and the manual's equal stations per band, committing Halmorie Deep at 63 per cent against Brettach Bank's 52 with every fall (score_reader.py exit 1); a survey whose own manual describes its strata under an estimand filed as a total over an area makes the design-based estimate the careful analyst's default; the judge found the call forced, DETERMINISTIC and APPROVE"
-    },
-    {
-      "architecture": "v3 (registry heart failure survival, the patients lost to a move north carried from their NYHA class at the move)",
-      "domain": "biomedical-clinical-research",
-      "subdomain": "survival-time-to-event-analysis",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G6",
-        "G14",
-        "G12"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "pick_one_of_n",
-      "stump_strategy": "population_selection",
-      "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
-      "fate": "spent 2026-10-28: the portal's determinism round failed it with both judges (charter 3.2 read as the deaths on file), and the re-judge after the WHAT repair sent it back: plain Kaplan-Meier a rule-compliant reading naming Fennick (Gate C), the mechanic classed single_conceptual_flip (Gate G); two corrections of one graded quantity"
-    },
-    {
-      "domain": "actuarial-science-insurance",
-      "subdomain": "claims-frequency-severity",
-      "objective": "descriptive-distribution",
-      "shape": "01",
-      "decision_type": "ranked_slate_under_cap",
-      "answer_unit": "set_of_items",
-      "gap": [
-        "rule",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G16",
-        "G6",
-        "G13"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "forecast_method_backtest",
-      "role_family": "portfolio_manager",
-      "forum": "line_manager_or_team",
-      "forcing_event": "purchase_order_or_contract",
-      "org_family": "financial_institution",
-      "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting route, where the route is built by joining each report's representative to a register of firm types, because one route reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, by event kind or by the coarse reporter field under-counts that unit, and only the route split reproduces an earlier closed period that a past shift in another unit disturbed, as a filed back-test requires.",
-      "architecture": "v4 (a motor insurer's 2027 telematics pilot regions by accident-year 2025 claim frequency, the claims not yet notified developed by notifying route, the route built by joining each claim's representative to the representatives table)",
-      "drawn": "2026-10-28",
-      "fate": "spent 2026-10-31 on the learning loop's paper screen: the route split sits one join away (the notified-by field plus the representatives table) and development by notification channel is the field's own reserving refinement, so the decisive rung is a reflex; one portal determinism return on architecture 3 before it; shipped 2026-10-28 and superseded before a portal result on the author's instruction to rebuild the batch under the survivor anatomy"
-    }
-  ],
-  "lineage_shells": [
-    {
-      "question form": "which",
-      "second-sentence opener": "for",
-      "rounding opener": "put",
-      "deliverable set": "pptx+xlsx"
-    }
-  ],
-  "notes": "Architecture 5, re-root 2026-10-31 under the survivor anatomy (stumping 1.4); MCR has never carried a descriptive build. The dead architecture's prompt shell is in lineage_shells.",
-  "registered": "2026-10-31T16:14:11Z"
+  {
+   "domain": "actuarial-science-insurance",
+   "subdomain": "claims-frequency-severity",
+   "objective": "descriptive-distribution",
+   "shape": "01",
+   "decision_type": "ranked_slate_under_cap",
+   "answer_unit": "set_of_items",
+   "gap": [
+    "rule",
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G16",
+    "G6",
+    "G13"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "forecast_method_backtest",
+   "role_family": "portfolio_manager",
+   "forum": "line_manager_or_team",
+   "forcing_event": "purchase_order_or_contract",
+   "org_family": "financial_institution",
+   "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting route, where the route is built by joining each report's representative to a register of firm types, because one route reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, by event kind or by the coarse reporter field under-counts that unit, and only the route split reproduces an earlier closed period that a past shift in another unit disturbed, as a filed back-test requires.",
+   "architecture": "v4 (a motor insurer's 2027 telematics pilot regions by accident-year 2025 claim frequency, the claims not yet notified developed by notifying route, the route built by joining each claim's representative to the representatives table)",
+   "drawn": "2026-10-28",
+   "fate": "spent 2026-10-31 on the learning loop's paper screen: the route split sits one join away (the notified-by field plus the representatives table) and development by notification channel is the field's own reserving refinement, so the decisive rung is a reflex; one portal determinism return on architecture 3 before it; shipped 2026-10-28 and superseded before a portal result on the author's instruction to rebuild the batch under the survivor anatomy"
+  }
+ ],
+ "lineage_shells": [
+  {
+   "question form": "which",
+   "second-sentence opener": "for",
+   "rounding opener": "put",
+   "deliverable set": "pptx+xlsx"
+  }
+ ],
+ "notes": "Architecture 5, re-root 2026-10-31 under the survivor anatomy (stumping 1.4); MCR has never carried a descriptive build. The dead architecture's prompt shell is in lineage_shells.",
+ "registered": "2026-10-31T16:14:11Z"
 }

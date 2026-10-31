@@ -1,12 +1,12 @@
 {
   "task": "task306",
-  "architecture": "v2 (re-root: a development corporation's 2027 inward investment fund award between two projects, the regional GVA each adds once its induced round is read where its staff live)",
+  "architecture": "v3 (re-root at stage 2: a county farm-and-home mutual's 2027 windstorm reinsurance, the 1-in-200 capital each quoted programme releases once a storm that follows another inside the same season is costed at what the mutual's claims show)",
   "drawn": "2026-10-31",
   "slot_note": "re-root of task306 in the same objective (Opportunity Sizing), batch 1",
-  "domain": "urban-regional-science",
-  "subdomain": "regional-input-output-economic-impact",
-  "client_domain": "urban-regional-science",
-  "niche": "a development corporation's inward investment fund choosing between a logistics hub on the city region's boundary and a food processing plant inland, each project's induced round read through where its own staff live",
+  "domain": "actuarial-science-insurance",
+  "subdomain": "reinsurance-capital",
+  "client_domain": "actuarial-science-insurance",
+  "niche": "a regional farm and rural home mutual's 2027 windstorm programme, an occurrence cover against an annual aggregate cover, its own storms' claims set against the catastrophe model's as-if losses, the storms that follow another inside a season costing more",
   "objective": "opportunity-sizing-decision",
   "shape": "07",
   "decision_type": "pick_one_of_n",
@@ -21,47 +21,47 @@
     "none"
   ],
   "generators": [
-    "G5",
-    "G14"
+    "G6",
+    "G16"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "realised_outcome_roster",
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
   "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "An analyst who reads every field and rule correctly takes each project's direct output from its business case, carries it through the region's published Type II GVA multiplier for its sector, and backs the logistics hub, because the multiplier's induced round carries the region's own share of earners living and spending in the region, a share the hub's staff, mostly commuting in from across the border, do not have.",
-  "domain_test": "Regional impact appraisal is the field's own input-output analysis, a direct, a supply-chain and an induced round, and the induced round runs through where the earners live and spend; with another field's nouns there is no workforce whose incomes cross a boundary the multiplier assumes they are spent inside, so the task stops reading the same.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:induced-round-by-place-of-residence",
+  "analyst_test": "An analyst who reads every field and rule correctly sets each past storm's claims against the catastrophe model's as-if loss for it, scales the year loss table by the one pooled ratio of the two (which reproduces the record's total exactly), takes each programme's capital relief at the 1-in-200 annual net loss less its margin, and buys the occurrence cover, because the pooled ratio is set by a record of mostly lone storms and leaves the clustered seasons that set the capital too light for the aggregate cover to pay.",
+  "domain_test": "Reinsurance capital relief is the field's own gross-against-net 1-in-200 on simulated years, and demand surge, the rise in the cost of a storm's claims when builders and roofers are still on the last storm's repairs, is the field's own post-event loss amplification; with another field's nouns there is no season of events whose later members cost more because the earlier ones are still being repaired, and no cover that pays on a season's total, so the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:follow-on-storm-loading-in-clustered-seasons",
   "layer1": [
-    "a regional input-output table published in basic prices beside a combined-use release",
-    "industry codes in SIC 2007 against the table's own product groups through a crosswalk",
-    "staff postcodes written with and without the space and in lower case",
-    "a postcode directory with terminated and re-used postcodes",
-    "business case figures in thousands of pounds against a table in millions",
-    "financial years against calendar years",
-    "a preliminary and a revised release of the regional accounts"
+    "claims from a system migration with two claim-number formats",
+    "storms named in the claims and numbered in the model catalogue, joined by date",
+    "the model catalogue's event times in UTC against claims dated by local loss date",
+    "sums insured in pounds and in thousands of pounds",
+    "policy renewals under new numbers",
+    "reopened claims carrying a supplementary payment under a new line",
+    "a preliminary and a final release of the model's year loss table"
   ],
-  "stakeholder_role": "the development corporation's investment fund manager, who takes the award to its investment committee",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the mutual's head of reinsurance, who places the 2027 windstorm programme",
+  "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
     "file": "",
     "rows": 0,
-    "entity": "one postcode, one business local unit or one staff member",
-    "grain": "postcode; local unit; employee",
+    "entity": "one claim payment or one simulated storm in a season",
+    "grain": "claim payment; simulated season x storm",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "board_of_directors",
   "forcing_event": "vote_or_meeting",
-  "org_family": "government_agency",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United Kingdom (northern England)",
+    "geography": "United Kingdom (South West England)",
     "currency": "GBP",
-    "org_type": "a development corporation's inward investment fund",
+    "org_type": "a county farm and rural home mutual insurer",
     "invented_names": [],
     "people": [
       "Mandy George",
@@ -69,20 +69,51 @@
     ]
   },
   "deliverables": [
-    "growth_fund_appraisal_2027.xlsx",
-    "growth_fund_panel_paper_2027.pdf"
+    "windstorm_programme_2027.xlsx",
+    "windstorm_programme_board_paper_2027.pdf"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "The decisive quantity is the part of a candidate's second-round effect that stays inside the area, when that round runs through the incomes the candidate pays and a published multiplier carries the area's average share of those incomes spent at home; one candidate's earners mostly live outside the area, which only its operator's roster joined to a location lookup shows, so the multiplier credits it with spending that happens elsewhere and ranks it first.",
-  "driver_concrete": "Each inward investment's induced GVA runs through its payroll spent where its staff live; the logistics hub's staff mostly live across the border, which shows only by joining the operator's staff postcodes to the postcode directory, so the region's Type II multiplier, which carries the region's own resident share, credits the hub with induced spending that happens outside the region and puts it ahead of the food processing plant.",
-  "stump": "A competent solver carries each project's direct output through the region's published Type II GVA multipliers and backs the logistics hub, where reading the induced round through each project's own staff residence leaves most of the hub's payroll spending outside the region and makes the food processing plant the project to back; the step that lands it there is taking the multiplier's built-in resident share for a workforce that mostly commutes in.",
+  "question_form": "whether",
+  "driver": "The decisive quantity is the tail of a forward loss distribution built from simulated seasons of events and calibrated to the organisation's own recorded losses, when an event that follows another inside the same season costs more than its modelled loss because the earlier event's work is still under way, a class no column marks and only the order of each season's events rebuilds; one pooled calibration, set by a record of mostly lone events, leaves the clustered seasons that set the requirement too light and undervalues the cover that pays on a season's total.",
+  "driver_concrete": "A windstorm that strikes while the last storm's roofs are still sheeted and the builders still booked costs the mutual about two fifths more per pound of the model's as-if loss than a storm on a quiet season, so each simulated storm that follows another inside its season is loaded before the 1-in-200 annual loss is read gross and net; the one model-to-claims ratio over the past storms, set by the lone storms that make up most of the record, leaves the clustered seasons light and the annual aggregate cover, which pays only in them, looking weaker than the occurrence cover.",
+  "stump": "A competent solver scales the year loss table by the one pooled ratio of the mutual's storm claims to the model's as-if losses, values each programme at its 1-in-200 annual capital relief less its margin, and buys the occurrence cover, where loading the storms that follow another inside a season lifts the clustered seasons that set the capital and makes the annual aggregate cover the programme to buy; the step that lands it there is calibrating the model with one ratio over a record of mostly lone storms.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task302": "task302 nets a unit's lost output against the substitutes its group's members take from the same group while it is out; here nothing is substituted or lost: each candidate's whole output counts, and the decisive split is of its induced round between the incomes spent inside the boundary and those spent where its earners live outside it.",
-    "task120": "task120 v3 reads a population's peak draw as inflow less the reserve drawn down inside a supply system; here there is no stock or reserve, and the decisive move is a place-of-residence split of a multiplier's induced round, read off the operator's own staff roster."
+    "task309": "task309 reads one FORTIFIED roof cut ratio by each storm's own local gust class, a column on every claim, carried event by event; here the ratio does not move with a storm's size or intensity at all, and the class that moves it is a storm's place in its season's sequence, rebuilt only by ordering the season's storms by date, and the decision turns on an annual aggregate cover against an occurrence cover in the clustered seasons.",
+    "task302": "task302 nets a unit's lost output against substitutes its group takes while it is out; here nothing is substituted: each storm's own cost rises when it follows another inside a season, and the decisive split is of the record's storms by their place in their season.",
+    "task120": "task120 v3 reads a population's peak draw as inflow less a reserve drawn down; here there is no stock or reserve, and the decisive move is loading the follow-on storms of each simulated season by what the record's own follow-on storms cost.",
+    "task271": "task271 v5 nets each fill's adverse move against the actor's own later child orders inside one parent order, a market-impact window measured in seconds; here no actor trades against itself: a storm's claims cost more when it strikes while an earlier storm's repairs are still open, and the decision is an aggregate against an occurrence reinsurance cover on simulated seasons."
   },
   "lineage": [
+    {
+      "domain": "urban-regional-science",
+      "subdomain": "regional-input-output-economic-impact",
+      "objective": "opportunity-sizing-decision",
+      "shape": "07",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "currency",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G5",
+        "G14"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive quantity is the part of a candidate's second-round effect that stays inside the area, when that round runs through the incomes the candidate pays and a published multiplier carries the area's average share of those incomes spent at home; one candidate's earners mostly live outside the area, which only its operator's roster joined to a location lookup shows, so the multiplier credits it with spending that happens elsewhere and ranks it first.",
+      "stump_strategy": "composition_mix",
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "government_agency",
+      "role_family": "programme_officer",
+      "architecture": "v2 (re-root: a development corporation's 2027 inward investment fund award between two projects, the regional GVA each adds once its induced round is read where its staff live)",
+      "drawn": "2026-10-31",
+      "fate": "spent 2026-10-31 at stage 2, before any data was cut: the survivor anatomy's Actor test failed on paper, since the deciding property (where the distribution centre's staff live) is one join from a column (the roster's postcode against the postcode directory's local authority) and any shipped residence datum is a column or a sentence, so the decisive rung would be readable; re-rooted into actuarial reinsurance capital"
+    },
     {
       "domain": "energy-systems-utilities",
       "subdomain": "asset-condition-maintenance",
@@ -115,11 +146,19 @@
     }
   ],
   "notes": "",
-  "registered": "2026-10-31T17:27:22Z",
+  "registered": "2026-10-31T17:39:59Z",
   "shell": {
     "question form": "whether",
     "second-sentence opener": "i",
     "rounding opener": "the",
     "deliverable set": "png+xlsx"
-  }
+  },
+  "lineage_shells": [
+    {
+      "question form": "whether",
+      "second-sentence opener": "i",
+      "rounding opener": "the",
+      "deliverable set": "png+xlsx"
+    }
+  ]
 }

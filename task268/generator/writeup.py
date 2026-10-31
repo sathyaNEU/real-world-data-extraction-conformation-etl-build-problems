@@ -1,103 +1,74 @@
-"""submission.md from the golden's own run: every figure it states is taken from R and recorded in figures.json."""
-import datetime as dt
-
+"""submission.md, drafted from the figures the golden computed (figures.json): tags, the recommendation, the critical
+components, the steps and the deliverable answers."""
 import common as K
 
-ROUTES = ["Policyholder", "Third party", "Third-party insurer", "Solicitor practice", "Claims management company"]
+RN = K.BRAND_NAME
 
 
-def fmt(v, d=0):
-    return format(v, ",.%df" % d)
+def _n(x):
+    return "{:,}".format(int(x))
 
 
 def write(R, F):
-    f, o = R["freq"]["route"], R["order"]
-    G = R["_G"]
-    cmc = {}
-    for reg in ("Pennine", "Wessex"):
-        v = {}
-        for ay in list(K.CLOSED) + [K.OPEN_YEAR]:
-            pos = G.position(ay)
-            v[ay] = int(((pos.region == reg) & (pos.head_of_claim == "TPI") & (pos.route == "Claims management company")).sum())
-        cmc[reg] = v
-    lo = min(cmc["Pennine"][a] for a in K.CLOSED)
-    hi = max(cmc["Pennine"][a] for a in K.CLOSED)
-    bt = R["bt"]
-    worst = lambda h: max(abs(x[2]) for x in bt[h].values())
-    wreg = lambda h: max(K.REG, key=lambda r: abs(bt[h][r][2]))
-    fac = R["factors_route"]
-    nyn = {r: R["est"]["route"][r] - R["notified"][r] for r in K.REG}
-    ult = R["est"]["route"]
-    A = R["ask_a"]
-    CV = ("COMP", "TPFT", "TPO")
-    extras = {"cmc_tpi_21m": cmc, "cmc_closed_range": [lo, hi],
-              "bt_route_worst": round(worst("route"), 2), "bt_cmc_rest_worst": round(worst("cmc_rest"), 2),
-              "bt_pooled": round(bt["pooled"][wreg("pooled")][2], 2), "bt_head": round(bt["head"][wreg("head")][2], 2),
-              "bt_notified_by": round(bt["notified_by"][wreg("notified_by")][2], 2),
-              "bt_representative": round(bt["representative"][wreg("representative")][2], 2),
-              "bt_region": round(bt["region"][wreg("region")][2], 2),
-              "tolerance": K.TOLERANCE, "totals_a": [sum(A[(r, c)] for r in K.REG) for c in CV],
-              "cars_by_region": {r: sum(A[(r, c)] for c in CV) for r in K.REG}, "cy_total": round(sum(R["cy"].values()), 2),
-              "notified_total_2025": sum(R["notified"].values()), "per_car_years": 100,
-              "standard_clauses": ["2.1", "2.2", "2.3", "3.1", "3.2", "3.3"]}
-    pd_ = lambda h, r: "%.1f" % R["freq"][h][r]
-    g1 = "%.1f" % (R["gap"] + 1e-12)
-    cells_a = "; ".join("%s %s COMP, %s TPFT and %s TPO" % (r, fmt(A[(r, "COMP")]), fmt(A[(r, "TPFT")]), fmt(A[(r, "TPO")]))
-                        for r in K.REG)
+    ov = R["overlap"]
+    call, runner = R["call"], R["runner"]
+    rows = sorted(K.RIVALS, key=lambda b: ov[b][2])
+    wes = "WES"
     L = []
-    L += ["## Tags", "", "**Domain:** Actuarial Science & Insurance (claims frequency and severity).",
+    L += ["## Tags", "",
+          "**Domain:** Marketing & Consumer Research (segmentation and market structure).",
           "**Analytical objective:** Descriptive & Distribution Analysis.", ""]
     L += ["## 1. Final Recommendation", "",
-          "**Put the 2027 telematics pilot in %s and %s.**" % (o[0], o[1]),
-          "Their private cars had the two highest claim frequencies in accident year 2025, %s and %s claims per 100 "
-          "car-years, and %s, third at %s, is %s below %s. Not %s and %s, which the whole book's development gives "
-          "pooled, by head of claim or by the notified-by field: each blends the claims-management companies that "
-          "notify Pennine's 2025 injury claims late with faster notifiers, and each misses 2022 in Wessex by %s to %s "
-          "per cent, outside the Reserving Standard's two."
-          % (pd_("route", o[0]), pd_("route", o[1]), o[2], pd_("route", o[2]), g1, o[1], o[0], o[2],
-             "%.1f" % abs(extras["bt_notified_by"]), "%.1f" % abs(extras["bt_pooled"])), ""]
+          "**The 2027 Roastery sampling goes to %s's homes.**" % RN[call],
+          "",
+          "Of the %s homes that bought %s in 2026, %s also bought Corcally's Roastery (%d%%), the lowest share of the "
+          "rivals and %d points under %s (%d%%). Not %s, the least overlapped rival read card by card (%d%%), because "
+          "its capsule buyers are mostly a home's second card while another member buys the Roastery. Not %s, whose "
+          "homes buy their Roastery through the online shop (%d%%)." % (
+              _n(ov[call][0]), RN[call], _n(ov[call][1]), F["call_share"], F["gap_points"], RN[runner],
+              F["runner_share"], RN[R["default"][0]], F["default_share"], RN[wes], F["rivals"][RN[wes]]["share"]), ""]
     L += ["## 2. Critical Components", "",
-          "1. Claim frequency, accident year 2025, per 100 car-years earned in 2025: " +
-          "; ".join("%s **%s**" % (r, pd_("route", r)) for r in o) + "; gap from %s to %s **%s**." % (o[1], o[2], g1),
-          "2. Car-years earned in 2025, private cars: " + "; ".join("%s **%s**" % (r, fmt(R["cy"][r], 2)) for r in o) + ".",
-          "3. Claims from 2025 accidents notified by 30 September 2026: " +
-          "; ".join("%s **%s**" % (r, fmt(R["notified"][r])) for r in o) + ".",
-          "4. The development by notifying route reproduces accident year 2022 within **%.1f** per cent in every "
-          "region, as the Standard's 3.3 requires." % worst("route"), ""]
+          "1. %s: **%s** buying homes, **%s** of them also bought the Roastery, **%d%%**." % (
+              RN[call], _n(ov[call][0]), _n(ov[call][1]), F["call_share"]),
+          "2. Runner-up %s: **%s** buying homes, **%s** also bought the Roastery, **%d%%**." % (
+              RN[runner], _n(ov[runner][0]), _n(ov[runner][1]), F["runner_share"]),
+          "3. Gap between them: **%d points**." % F["gap_points"], ""]
     L += ["## 3. Step-by-Step Solution", "",
-          "1. Summed the private-car rows of the 2025 sheet of earned_exposure_2019_2025.xlsx, the earned exposure "
-          "telematics_pilot_terms_2027.pdf term 3 names: %s car-years in all." % fmt(sum(R["cy"].values()), 2),
-          "2. Counted private-car claims in motor_claims_notified_2019_2026.csv by the Standard's 2.1, each in its "
-          "region from postcode_district_sales_regions.csv and notified on its UK date: %s claims from 2025 accidents "
-          "by 30 September 2026." % fmt(sum(R["notified"].values())),
-          "3. Gave each claim its notifying route, the notified-by field with representatives split by the firm type in "
-          "claimant_representatives.csv, and measured the whole book's factors from 21 months to final on the closed "
-          "years 2019 to 2022 (Standard 3.1, 3.2): %.1f for claims-management companies against %.1f for solicitors."
-          % (fac["Claims management company"], fac["Solicitor practice"]),
-          "4. Re-ran each development on accident year 2022 from 30 September 2023 with 2019 to 2021 (Standard 3.3): "
-          "the route development is within %.1f per cent in every region, while pooled, by head of claim and by "
-          "notified-by field miss Wessex by %.1f to %.1f per cent."
-          % (worst("route"), abs(extras["bt_notified_by"]), abs(extras["bt_pooled"])),
-          "5. For cars on cover, applied the address and cover changes in policy_changes_2025_2026.csv effective from "
-          "each term's start to 30 September 2026 to the private cars on cover that day in "
-          "policy_vehicles_in_force_20260930.csv, whose rows carry the district and cover at the term's start: %s."
-          % cells_a,
-          "6. Applied the route factors to each region's 2025 notified claims and divided by its car-years: %s; %s and %s "
-          "host the pilot." % ("; ".join("%s %s" % (r, pd_("route", r)) for r in o), o[0], o[1]), ""]
-    L += ["## 4. Deliverable Answers", "", "### %s" % K.GOLDEN, "",
-          "1. Pilot regions: %s and %s." % (o[0], o[1]),
-          "2. Claim frequency, accident year 2025, per 100 car-years, one decimal:"]
-    for r in o:
-        L.append("   - %s: %s" % (r, pd_("route", r)))
-    L.append("3. Gap between the second region and the third, %s to %s: %s" % (o[1], o[2], g1))
-    L.append("4. Private cars on cover on 30 September 2026, by cover, whole cars:")
-    for r in K.REG:
-        L.append("   - %s: %s COMP, %s TPFT, %s TPO" % (r, fmt(A[(r, "COMP")]), fmt(A[(r, "TPFT")]), fmt(A[(r, "TPO")])))
-    L += ["", "### %s" % K.DECK, "",
-          "1. Slide 1 names %s and %s as the pilot regions, at %s and %s claims per 100 car-years." % (
-              o[0], o[1], pd_("route", o[0]), pd_("route", o[1])),
-          "2. Slide 2 charts the five regions' 2025 frequency as stacked columns, claims notified by 30 September 2026 "
-          "and claims still to come, the two pilot regions named and the gap of %s stated." % g1,
-          "3. Slide 3 sets each development's 2022 back-test beside the Pennine and Severn frequency it gives.",
-          "4. Slide 4 carries the cars on cover by region and cover as in the workbook.", ""]
-    return "\n".join(L), extras
+          "1. Mapped each PLU in coffee_till_lines_2026.csv to its brand through product_master_coffee.xlsx (one "
+          "brand per supplier and range, its spellings folded), kept the 2026 pack lines on Rewards cards, dropped the "
+          "cards rewards_cards_2026.csv types STORE and folded each REPLACED card into its replaced_by card.",
+          "2. Matched every card-paid receipt to its SALE row in faircourt_settlement_2026.parquet on terminal "
+          "(faircourt_merchant_agreement_2026.pdf, Schedule 2, by installed and removed dates), amount and time "
+          "(txn_time_utc converted to Irish time, the row up to two minutes before the receipt): %s receipts, one row "
+          "each." % _n(F["receipts_matched"]),
+          "3. Took each online order in online_orders_2026.json delivered in 2026, its last version's coffee lines, and "
+          "its card_ref from the settlement row whose merchant_ref is the order number.",
+          "4. Joined the Rewards cards and online accounts that share a card_ref into homes (%s homes bought coffee), "
+          "and for each rival counted the homes that bought it and those that also bought Roastery packs: %s lowest at "
+          "%d%%, %s next at %d%%." % (_n(F["homes_total"]), RN[call], F["call_share"], RN[runner], F["runner_share"]),
+          "5. Counter: matched each label in counter_scale_labels_2026.csv to a SALE on terminal %s (labels printed in "
+          "the 25 minutes before, plus accessories at coffee_counter_price_board_2026.pdf prices) or to a COUNTER "
+          "COFFEE LOOSE till line of its price; scale 2's labels %s to %s, printed under January dates, re-dated by the "
+          "offset that lines them up with those payments; S2 weights read as grams; unpaid labels left out." % (
+              K.COUNTER_TID, F["clock_block"][0], F["clock_block"][1]),
+          "6. Funding: each MULTIBUY SAVING line in a deal's dates at the multibuy_deals_2026.xlsx rate in force on the "
+          "sale day, each reversal netted against the receipt its refund cites, and each MULTIBUY ADJ line added at the "
+          "date of the receipt its note cites, one multibuy per missed pair on that receipt.",
+          "7. The sampling goes to %s's homes." % RN[call], ""]
+    L += ["## 4. Deliverable Answers", "", "### %s" % K.DECK, "",
+          "1. The 2027 sampling goes to %s's homes." % RN[call],
+          "2. Bar chart on slide 2 of every rival's share of buying homes that also bought the Roastery, lowest first, "
+          "%s highlighted." % RN[call],
+          "3. Runner-up %s at %d%%; gap %d points." % (RN[runner], F["runner_share"], F["gap_points"]),
+          "4. Loose coffee the Drumsallagh counter sold, kilograms to one decimal:"]
+    for rid, name, _ in K.ROASTERS:
+        L.append("   - %s: Q1 %.1f, Q2 %.1f, Q3 %.1f, Q4 %.1f" % ((name,) + tuple(R["ask_a"][(name, q)] for q in (1, 2, 3, 4))))
+    L.append("5. Multibuy funding owed by each supplier, whole euros:")
+    for sp in sorted(set(k[0] for k in R["ask_b"])):
+        L.append("   - %s: Q1 %s, Q2 %s, Q3 %s, Q4 %s" % ((sp,) + tuple(_n(round(R["ask_b"][(sp, q)])) for q in (1, 2, 3, 4))))
+    L += ["", "### %s" % K.CSV_OUT, "", "1. One row per rival, lowest share first, whole numbers and whole per cents:"]
+    for b in rows:
+        L.append("   - %s: %s buying homes, %s also bought the Roastery, %d%%" % (
+            RN[b], _n(ov[b][0]), _n(ov[b][1]), int(round(ov[b][2]))))
+    L.append("")
+    return "\n".join(L), {}

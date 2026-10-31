@@ -1,36 +1,35 @@
 {
  "task": "task250",
- "status": "SHIPPED",
- "domain": "physical-environmental-sciences",
+ "status": "DESIGN",
+ "domain": "supply-chain-logistics",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-20",
- "stump": "A competent solver re-runs the filed quality control on the 2025 to 2027 export (with or without the 2028 network) and files 3.5, inside the field plan's visits; every drift in the record was repaired within days of the 3.0 alert that found it, so at 3.5 those drifts would have kept growing until they crossed the wider limit, one alert each, which with the network re-run puts 3.5 over the visits and files 4.0.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the trailer each unscanned parcel came off at its delivery depot fires Strykow as well.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on target.zip 19727806: the filed menu of settings, the setting in force in the 2027 summary, ordinary field vocabulary; numeric false positives in the ET0 bulletin and the register",
-  "reader": "ten scored readers over five rounds, all missed the call; round 5 on the shipped pack: I 3.5 at 17 (asks 4 of 24), J 3.5 at 12 (asks 2 of 24), both exit 0"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.question_form against task476 v2 and task477)",
-  "surface": "3 promoted pairs for the author's optional adjudication (task249 v5 spent, task157, task231)",
-  "nearest": "task250 v1 (this slot, lineage) 0.13; task189 0.07"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC (pass 6 on target.zip 19727806: 4.0 at 18 forced; a plain re-run files 3.5 at 23)",
-  "disposition": "APPROVE (optional notes: the peak year against the three-year mean, the reach window ending at the alert day; neither moves the call)",
-  "report": "determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Shipped on target.zip 19727806. Next: the portal result.",
+ "resume": "stage 2: readability screen, fork table, ladder, closure, ask sheet; then the generator",
  "approved": null,
- "delivered": "2026-10-20",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -51,6 +50,14 @@
   {
    "date": "2026-10-20",
    "event": "SHIPPED: run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "architecture 2 spent at the batch 1 repair: determinism judge NOT_DETERMINISTIC, SEND_BACK (the 4.0 call's one-alert-per-cut-short-drift count unforced by the shipped files; the new contractor's visit day an inference)"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "DRAWN architecture 3: a regional parcel carrier's October missed sort scans by hub (Poland), supply-chain-logistics in general-statistics-data-science, missing-data-censoring-measurement-error; guard WARN only"
   }
  ]
 }

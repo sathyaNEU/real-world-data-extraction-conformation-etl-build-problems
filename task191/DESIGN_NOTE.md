@@ -1,8 +1,73 @@
 # task191 design note
 
+Architecture 2, drawn 2026-10-31 at the batch 1 re-root: a cancer institute's genome-wide CRISPR knockout screen of one
+cell line, read for the genes the line itself depends on, where a guide that cuts an amplified locus kills cells
+whatever gene it targets. Architecture 1 (the interconnect worst-window) is kept below as a record.
+
+## Draw
+
+- **Card.** `cards/task191.json`, architecture v2, re-root of the slot in the same objective; architecture 1 moved to
+  the card's lineage with its fate; registered 2026-10-31 and checked again on the registered card: WARN, no BLOCK.
+  The WARNs, answered: `shell.repeat` read the slot's old prompt, which this draw replaces. NOTEs
+  `test.same_puzzle_older` and `test.same_driver_older`, differentiated on the card against task228 v2, task478 v7 and
+  task182 v1, with lines also against task107 v2, task121 v4 and task465 v1, which earlier drafts of the triple met.
+  Redrawn while the window moved under the draft (task470's and task306's re-roots registered first): G3, the most
+  literal generator, was banned against task470 v2 and its triple repeated task470's inside the batch, so G16 is decisive
+  and G3 second, the honest order once the step is read as the standard's estimand entitling the copy-number-netted
+  method over the raw depletion; the decision is a slate under the arrayed round's capacity, which the validation
+  facility really has (the first draft's designation set repeated task470's), shape 10 (shape 01 banned against
+  task470), and the chart ships as SVG beside the workbook (pdf and xlsx repeated task306 v3).
+- **Pairing.** Biomedical & Clinical Research / genomics-gwas-high-dimensional-association, a task type the taxonomy
+  tags for Anomaly Detection & Diagnostics; drawn for AD. The anomaly is a gene whose loss reduces the line's fitness
+  far beyond the genome's background; the call designates the line's own dependencies for arrayed validation.
+- **Cell screened first.** Human Factors & Ergonomics / safety-incident-error-analysis (no card on file) was screened
+  and left: its two natural designs are dead in other slots (signals passed at danger per approach at danger,
+  task180 and task181; misclassified incident causes corrected by a specialist review, the Rogan-Gladen family spent
+  by task242, task192 and task228). See `## Tried and rejected`.
+- **Niche.** The Vliedorp Instituut voor Kankeronderzoek's functional genomics facility screened OSR-7, an oesophageal
+  adenocarcinoma line, with a genome-wide knockout library of four guides a gene, the plasmid library against cells
+  harvested at day 21 in three replicates. OSR-7 carries focal amplifications and single-copy segments, as the line's
+  characterisation records. The target committee takes the line's own dependencies into arrayed validation in the
+  first quarter of 2027, and the guide synthesis order for the arrayed library closes on 18 January 2027.
+- **The call.** Which genes fill the committee's 2027 arrayed validation round: the genes on which OSR-7 depends,
+  beyond the common essential genes every line needs, by the institute's screening standard (the fitness loss caused
+  by losing the gene's own function, on the screen's scale where the non-essential reference genes sit at 0 and the
+  common essential genes at -1, at or below the standard's line).
+- **Shape.** 10, scorecard against thresholds: each candidate gene's effect against the standard's line, the slate
+  filled to the arrayed round's capacity, and the asks; the criteria arithmetic is written at stage 2. Decision
+  ranked_slate_under_cap, answer set_of_items, question form what, deliverables `osr7_validation_slate_2027.xlsx` and
+  `osr7_gene_effects_2027.svg`.
+- **Strategy.** decomposition_attribution: the observed depletion of a gene's guides is the gene's own effect plus the
+  cutting effect at its locus, which rises with the locus's copy number and is shared by every gene in the segment.
+  G16 decisive (the standard's estimand, the gene's own effect, entitles the copy-number-netted estimate over the raw
+  depletion), G3 second (record against operation: was it the gene's loss or the cut that killed the cells?). Gap objective (the screen's
+  depletion score is computed correctly and is not the quantity the standard decides on). Gate G
+  decomposition_attribution. Calibration gold_standard_subsample (the published reference genes of known effect).
+  Context artifact filed_standard (the screening standard). Layer 2 family field_method.
+- **Forum, event, organisation.** committee_or_panel (the target committee), purchase_order_or_contract (the arrayed
+  library's synthesis order), university_or_school (an academic institute). Role portfolio_manager (the target
+  portfolio lead, who owns the slate).
+- **People** (`guard.py names --geo Netherlands --seed 191`, locale nl_NL): Femke Nihoe, the target portfolio lead;
+  Rick Claassen, who manages the screening facility; Merel Spanhaak, who ran the facility's counting pipeline. None
+  appears in the prompt.
+- **Data-native sentence.** A Cas9 guide cutting a locus the line carries in many copies makes many double-strand
+  breaks, and the DNA-damage response stops the cells whatever gene the guide targets, so in OSR-7's amplicons every
+  gene's guides deplete and in its single-copy segments every gene's guides deplete less; the standard decides on the
+  gene's own effect, and the screen's non-essential reference genes, which have none, measure the cutting effect in
+  each copy-number state.
+- **As-of.** Friday 8 January 2027, before the synthesis order closes.
+- **Forward facing.** The call fixes the 2027 validation slate; its estimand is the screen's measured effect of each
+  gene in the line, a quantity of the line, not of a closed period.
+- **Sources.** Aguirre et al. 2016 (genomic copy number dictates a gene-independent cell response to CRISPR-Cas9
+  targeting), Munoz et al. 2016, Meyers et al. 2017 (CERES), Iorio et al. 2018 (CRISPRcleanR), Hart et al. 2014 and
+  2017 (reference essential and non-essential gene sets, BAGEL); `guard.py slots` on the mechanism's and the
+  setting's nouns: no slot holds the copy-number cutting effect.
+
+## Architecture 1 record (spent 2026-10-31)
+
 Judging the worst of many monitored series when the worst was chosen for being worst.
 
-## Measured refusal
+### Measured refusal
 
 **Architecture 1 is refused on measurement, not redesigned. The decisive step has no estimator
 content.** Everything below this section is the record of the refused design and is kept as history;
@@ -67,7 +132,7 @@ compared with, and not a decisive step whose whole output is a binary while ever
 invariant to it. The pack itself is sound: 153 generator assertions and 168 independent checks are
 green on the shipped `target/`, and the refusal is of the design, not of the data.
 
-## Draw
+### Draw
 
 | Axis | Value |
 |---|---|
@@ -102,7 +167,7 @@ panel carries eight earlier quarters of exactly that cell at exactly that select
   shape is that the graded object crystallises outside the natural pipeline's reach. This build's
   decisive reference is in the pack but at a selection breadth the natural pipeline never matches.
 
-## Default path
+### Default path
 
 1. Read `panel_throughput_minutes.csv`, the client telemetry at one row per interconnect per minute for
    the retained evening band and the retained daytime band of every day of 2027 Q1.
@@ -125,7 +190,7 @@ panel carries eight earlier quarters of exactly that cell at exactly that select
 **Golden:** fund no augment this cycle. `HVT-01` comes closest at 318 kbps, and fourteen evenings are
 left out.
 
-## Stump sentence
+### Stump sentence
 
 A competent solver cleans the panel, leaves out the booked evenings, takes the quarter's worst
 evening window at 318 kbps, tests it against that interconnect's own variation and against a
@@ -133,7 +198,7 @@ seven-path multiplicity correction, finds it clears both and files fund the augm
 318 kbps is smaller than the worst window every one of the eight earlier quarters produced at the same
 reach and the call is to fund nothing.
 
-## Three rules
+### Three rules
 
 Re-answered against the screens above rather than against the design's intent. Six of the thirteen
 lines fail, and each failing line says so in its first words.
@@ -209,7 +274,7 @@ lines fail, and each failing line says so in its first words.
   not reach the call: it learns to open the two-year rollup the pack ships, which the reader did
   without being told.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -218,7 +283,7 @@ lines fail, and each failing line says so in its first words.
 | 2 the path's own eight-quarter history, and a seven-path correction | no | the rollup carries path and evening | yes, the back-test reflex | the rollup is a bench for the path, not for the cell | no | no | readable |
 | 3 the quarterly worst cell against the eight earlier quarterly worst cells (decisive) | no sentence names a selection breadth; clause 4.2 files the statistic and says nothing about its reference | the rollup's schema is path and evening, the same as the panel's, and nothing in it marks a quarter maximum | no reflex computes a maximum of maxima | the rollup funds under its natural per-path use, so the bench points the other way | no sweep computes a statistic of a statistic | no, it is a distribution of an extreme | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | id | term or convention | golden reading | alternative | call under it | ruled out by |
 |---|---|---|---|---|---|
@@ -237,7 +302,7 @@ lines fail, and each failing line says so in its first words.
 | SF13 | the earlier quarters | the eight whole quarters the rollup covers before 2027 Q1 | the trailing eight quarters including the current one | `same call`, asserted: every quarter of the record is above the quarter's own worst window either way |
 | SF14 | the reference band | 12:00 to 14:59 local, the band the standard names | the whole non-evening day | the alternative cannot be computed: the panel retains no minute outside the two bands, asserted | the standard's own sentence, quoted |
 
-## Ladder
+### Ladder
 
 | Rung | Analysis | Names | Figure | Dies to |
 |---|---|---|---|---|
@@ -288,7 +353,7 @@ asserted path by path); the prompt licenses the non-pick on equal footing with t
 path still names an interconnect; and a worst evening window above 489 kbps, or a quarter mean above
 what the eight earlier quarters produce for that path, would have made it a pick.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -315,7 +380,7 @@ what the eight earlier quarters produce for that path, would have made it a pick
 | 21 | Clause scope | clause 4.4 per path and date, or per path | the clause states both, quoted; asserted that the nine evenings resolve to one path |
 | 22 | Forward window contents | the quarter ahead the augment would serve | the pack carries no record of it and the call is about the closed quarter's evidence, stated |
 
-## Literal reader
+### Literal reader
 
 Executing the prompt, clauses 4.1 to 4.4, the quality standard's definitions and the dictionary word
 for word selects the seven in-service interconnects, the three evening windows in local time, and every
@@ -327,7 +392,7 @@ its own two hundred and seventy windows fund `HVT-01`, a seven-path correction f
 methods on the same literal estimand, not other readings of it, and every other term and convention has
 an SF row ruled out by a quoted sentence or asserted to give the same call.
 
-## Oracles
+### Oracles
 
 - `evening_quality_daily.csv`, the eight earlier quarters at one row per interconnect per evening,
   confirms nothing: it carries no determination, no placement and no ranking, and under its natural
@@ -341,7 +406,7 @@ an SF row ruled out by a quoted sentence or asserted to give the same call.
 - No control, published figure or corpus scores an interconnect or an augment, and no past augment
   decision ships. There is no calibration organ.
 
-## Ask sheet
+### Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
@@ -396,6 +461,37 @@ also landing the call, so there is no mirror to leak into
 medium effort holding only a fresh unzip of `target.zip`, `prompt.txt` and the figure names: 1 of 1
 on the call and 111 of 119 on the ask figures
 
+### Pre-ship check
+
+The pack as built, read against the gates one last time.
+
+- **Free gates.** 153 generator assertions, 168 independent checks in `verify.py` (it reads only
+  `target/` and `figures.json`), `precut.py` 49 checks 0 FAIL 0 WARN, `figures_check.py` 103 of 103,
+  `voice-check.py` exit 0 at 979 characters, `leak.py` REVIEW with four answered lines, `guard.py heart`
+  PASS at nearest 0.05 (task130 v3), `guard.py surface` clean with no persona in the pack. Two rebuilds
+  byte-identical (pack md5 b584b3b0c7f86c594b8ab3532861bbe9), `target.zip` cut from the final rebuild,
+  22 entries, md5 3314fa1c8e8d9edaa14011ff8cdad913, every entry matching disk.
+- **Input gates.** 22 files, 4 formats (csv, pdf, xlsx, json), three files over 25,000 rows
+  (`edge_traffic_5min.csv` 311,040, `panel_throughput_minutes.csv` 224,460, `evening_quality_daily.csv`
+  17,178), five distractors named in `metadata.json`, none named in a file name.
+- **The three rules against the built pack.** The decisive step is still the analytical one: clause 4.2
+  names the record and never which figure of it, and the eleven figures of the record that `checks.py`
+  sweeps (every quarter's maximum, the per-interconnect maxima, their mean, the pooled 99th and 99.5th
+  percentiles, the same-quarter-a-year-ago maximum, the most recent quarter's) are each asserted at
+  least 6 per cent above the quarter's 318 kbps, so no reasonable reading of the record funds anything
+  and the solver's own choice of comparison is what decides. The mess stays in Layer 1: UTC minute
+  stamps against local evening windows, a port renamed mid-quarter, whole bands the collector missed,
+  a stale commitment row beside an accepted amendment and an unaccepted one, ticket-closed against
+  restored time. Nothing is planted to be caught: the booked maintenance evenings are filed in clause
+  4.4 and excluded by rule, a lower rung, and the figure they would otherwise produce (569 on STR-01)
+  is above every quarter of the record, so skipping that rule files a wrong answer without being the
+  stump.
+- **Gate G.** No shipped artifact ranks the seven interconnects on the decision question.
+  `peering_capacity_plan.xlsx` ranks them on headroom, declared in `metadata.json` as the wrong-basis
+  distractor and ruled out by its own footnote saying headroom carries no quality measure; the ranking
+  it implies (STR-01, OPL-01, HVT-01 tightest) is not the shortfall ranking. Delete every wrong number
+  in the pack and the call still turns on which figure of the record the 318 is measured against.
+
 ## Tried and rejected
 
 - The seed's own architecture, the strongest evening gap against a filed band of what uncongested ports
@@ -428,33 +524,20 @@ on the call and 111 of 119 on the ask figures
   62.5 per cent of the ask weight, over the bar on its own. The asks are re-cut inside the stage 1
   re-root.
 
-## Pre-ship check
-
-The pack as built, read against the gates one last time.
-
-- **Free gates.** 153 generator assertions, 168 independent checks in `verify.py` (it reads only
-  `target/` and `figures.json`), `precut.py` 49 checks 0 FAIL 0 WARN, `figures_check.py` 103 of 103,
-  `voice-check.py` exit 0 at 979 characters, `leak.py` REVIEW with four answered lines, `guard.py heart`
-  PASS at nearest 0.05 (task130 v3), `guard.py surface` clean with no persona in the pack. Two rebuilds
-  byte-identical (pack md5 b584b3b0c7f86c594b8ab3532861bbe9), `target.zip` cut from the final rebuild,
-  22 entries, md5 3314fa1c8e8d9edaa14011ff8cdad913, every entry matching disk.
-- **Input gates.** 22 files, 4 formats (csv, pdf, xlsx, json), three files over 25,000 rows
-  (`edge_traffic_5min.csv` 311,040, `panel_throughput_minutes.csv` 224,460, `evening_quality_daily.csv`
-  17,178), five distractors named in `metadata.json`, none named in a file name.
-- **The three rules against the built pack.** The decisive step is still the analytical one: clause 4.2
-  names the record and never which figure of it, and the eleven figures of the record that `checks.py`
-  sweeps (every quarter's maximum, the per-interconnect maxima, their mean, the pooled 99th and 99.5th
-  percentiles, the same-quarter-a-year-ago maximum, the most recent quarter's) are each asserted at
-  least 6 per cent above the quarter's 318 kbps, so no reasonable reading of the record funds anything
-  and the solver's own choice of comparison is what decides. The mess stays in Layer 1: UTC minute
-  stamps against local evening windows, a port renamed mid-quarter, whole bands the collector missed,
-  a stale commitment row beside an accepted amendment and an unaccepted one, ticket-closed against
-  restored time. Nothing is planted to be caught: the booked maintenance evenings are filed in clause
-  4.4 and excluded by rule, a lower rung, and the figure they would otherwise produce (569 on STR-01)
-  is above every quarter of the record, so skipping that rule files a wrong answer without being the
-  stump.
-- **Gate G.** No shipped artifact ranks the seven interconnects on the decision question.
-  `peering_capacity_plan.xlsx` ranks them on headroom, declared in `metadata.json` as the wrong-basis
-  distractor and ruled out by its own footnote saying headroom carries no quality measure; the ranking
-  it implies (STR-01, OPL-01, HVT-01 tightest) is not the shortfall ranking. Delete every wrong number
-  in the pack and the call still turns on which figure of the record the 318 is measured against.
+- 2026-10-31, the batch 1 re-root, architecture 1 spent (see `## Architecture 1 record`): its decisive step measured as
+  landed in-house before any portal result, the multiple-testing cell, the filed comparison criterion and the
+  statistic-of-a-statistic reference retired with it.
+- 2026-10-31, at the draw, Human Factors & Ergonomics / safety-incident-error-analysis, signals passed at danger per
+  occasion a train met the signal at danger, rebuilt from the signalling aspect log against the trains' berth records:
+  dead before a card, measured in two slots (task180: the exposure is either named, rule application, or a fork against
+  trains passing; task181: a stop-aspect exposure is the first thought once an aspect log ships).
+- 2026-10-31, at the draw, the same cell, fatigue involvement in a trucking operator's incidents, each regional
+  investigation team identifying fatigue at its own hit rate, corrected by a fatigue specialist's review of a sample:
+  dead before a card, the misclassification-correction family is spent (task242 shipped a Rogan-Gladen correction on a
+  validation panel, task192 a classifier's rates, task228 rejected a flag's prevalence corrected the same way).
+- 2026-10-31, at the draw, the first card's decisive triple (gap objective, G16, designation_set): `test.same_puzzle`
+  BLOCK inside the batch against task270 v4; the decisive generator is G3 (record against operation), the honest one,
+  since the question the step answers is whether the gene's loss or the guide's cut killed the cells.
+- 2026-10-31, at the draw, the decisive G3 and a designation set: `ban.pattern` and `test.same_puzzle` BLOCK against
+  task470 v2, registered while this card was drafted; G16 decisive with G3 second, the slate under the round's
+  capacity, shape 10 (01 banned against task470), the chart as SVG (pdf and xlsx repeated task306 v3).

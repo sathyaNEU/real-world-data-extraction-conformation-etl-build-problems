@@ -1,25 +1,25 @@
 {
  "task": "task268",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "marketing-consumer-research",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "A competent analyst takes each Rewards card as one buyer and names Nordhavn as the rival least overlapped with Corcally's Roastery; homes assembled from the cards and online accounts that share a payment card in the acquirer's settlement file put Rossa Gold lowest.",
+ "stump": "A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names Nordhavn; homes assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file put Oro Rosso lowest.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-31 (five lines, each ruled harmless in the design note's ## Leak check)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-31 (three_rules.strategy_risk; older same-puzzle and same-driver notes differentiated)",
+  "nearest": "surface 2026-10-31: task267 and task264 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
   "verdict": "",
@@ -34,7 +34,7 @@
    "commit": ""
   }
  ],
- "resume": "architecture 5 drawn 2026-10-31; stage 2 design (default path, ladder, fork table, closure, asks, prompt) then precut.py",
+ "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn agents). Rebuild first with python3 task268/generator/build.py (seed 263; checks 80 of 80, verify PASS, byte-identical; target.zip sha256 8783d4958c4e4614b83cb6d63c5bba99e01e9b2477639dd8946946b336087f4b), then spawn the leak reader from scratchpad/task268_stage4_leak_brief.md (copy at scratchpad/leak-task268/) and the determinism-judge agent on task268 together; fix findings in the generator, then ship (git rm the arch 4 goldens, force-add target.zip and golden/, ledger row, card current).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -43,5 +43,5 @@
  "portal_status_date": "",
  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
  "seed_world": 273,
- "zip_md5": ""
+ "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30"
 }

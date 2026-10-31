@@ -1,5 +1,5 @@
-"""task234 documents: the feed completeness protocol FCP-2 (pdf), the stream register (xlsx), the platform change log
-(csv), the data dictionary and the readme (md)."""
+"""task234 documents: the feed completeness protocol FCP-2 (pdf), the stream register (xlsx) and the platform change
+log (csv)."""
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill
@@ -166,79 +166,3 @@ def change_log():
     ]
     return pd.DataFrame(rows, columns=["change_id", "implemented_at", "system", "change", "requested_by"])
 
-
-DICTIONARY = """# Data dictionary
-
-%s, %s. Files for the respiratory feed escalations of MMWR week 3 of 2027 (17 to 23 January). County time is
-America/Chicago (UTC-6 in January). MMWR weeks run Sunday to Saturday.
-
-## elr_respiratory_results_extract_2027-01-25.csv
-Every respiratory result message the surveillance platform holds for results released in MMWR weeks 2 and 3 of 2027
-(10 to 23 January, county dates), extracted at 08:00 county time on Monday 25 January 2027. One row per message.
-
-| Column | Meaning |
-|---|---|
-| message_id | platform message identifier |
-| sending_facility | facility identifier of the sending laboratory (respiratory_stream_register.xlsx) |
-| accession | the laboratory's accession number |
-| patient_mrn | the patient's number at the laboratory |
-| specimen_collected | time the specimen was collected, UTC |
-| test_code | elr_result_codes.csv |
-| target | analyte |
-| result | DETECTED, NOT DETECTED or INCONCLUSIVE; blank for a cancelled order |
-| result_status | F final, C corrected, X cancelled |
-| released | time the laboratory released the result, UTC |
-| received | time the platform received the message, as the state hub's message broker stamped it |
-
-## lab_weekly_aggregate_reports.csv
-Each laboratory's weekly aggregate reports, MMWR 2022 week 40 to 2027 week 2, as filed. One row per submission.
-
-| Column | Meaning |
-|---|---|
-| lab_id | laboratory (respiratory_stream_register.xlsx) |
-| virus | Influenza, RSV or SARS-CoV-2 |
-| mmwr_year, mmwr_week | the MMWR week reported |
-| tests | tests the laboratory ran for the virus in the week |
-| positives | of them, tests with the virus detected |
-| submitted | date the report was filed |
-| version | 1 for the first submission; a resubmission takes the next number and is the report of record |
-
-## respiratory_stream_register.xlsx
-Sheet Laboratories: each laboratory, its setting, its sending facility identifiers and its streams. Sheet Streams: the
-result streams under FCP-2 and the test codes each laboratory sends for them.
-
-## elr_result_codes.csv
-The platform's respiratory test codes and the virus each reports.
-
-## surveillance_platform_change_log.csv
-Changes to the surveillance platform, the county's ELR inbound service and the state ELR hub since September 2026,
-county time.
-
-## ed_syndromic_ili_weekly.csv
-Emergency department visits and influenza-like-illness visits at the county's emergency departments by MMWR week and
-age group, from the syndromic surveillance feed.
-
-## state_respiratory_positivity_by_region.csv
-The state health department's published weekly per cent positive by region and virus from its sentinel laboratory
-network, MMWR 2025 week 40 to 2027 week 2.
-
-## county_respiratory_admissions_weekly.csv
-New hospital admissions with influenza, RSV and COVID-19 reported by the county's hospitals, by MMWR week, to 2027
-week 2.
-""" % (P.DEPT, P.UNIT)
-
-README = """# Respiratory feed escalations, MMWR week 3 of 2027
-
-| File | What it is |
-|---|---|
-| elr_respiratory_results_extract_2027-01-25.csv | the platform's respiratory result messages for weeks 2 and 3, extracted Monday 25 January 08:00 |
-| lab_weekly_aggregate_reports.csv | the laboratories' weekly aggregate reports since October 2022 |
-| respiratory_stream_register.xlsx | the laboratories, their facility identifiers and the 29 result streams |
-| elr_result_codes.csv | respiratory test codes |
-| FCP-2_feed_completeness_protocol.pdf | the feed completeness protocol |
-| surveillance_platform_change_log.csv | platform and ELR changes since September 2026 |
-| ed_syndromic_ili_weekly.csv | emergency department ILI visits by week and age group |
-| state_respiratory_positivity_by_region.csv | the state's weekly per cent positive by region |
-| county_respiratory_admissions_weekly.csv | weekly respiratory hospital admissions in the county |
-| DATA_DICTIONARY.md | column definitions |
-"""

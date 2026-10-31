@@ -1,301 +1,354 @@
-"""The generator's assertions on the cut pack and the clean truth: the three rules (R1 to R3c), every semantic fork
-(SF1 to SF16), the passing family (FAMILY), the separation of the asks from the call (SEP), the Layer 1 neutrality,
-the input gates, the realism sweep and the documents read back with positive controls."""
-import datetime as dt
+"""The generator's assertions on the cut pack and the seeded world: input gates, the ladder and its margins, every
+semantic fork row, the three rules (R1 to R3c) on the clean truth, each Layer 1 item's neutrality, the separation of
+the asks from the call, both asks against the truth and their stops, the distractors, the realism sweep and the
+documents' positive controls.
+
+    python3 task268/generator/checks.py            (run by build.py)"""
+import collections
+import csv
 import json
 import os
 import re
-import shutil
 import sys
-import tempfile
-from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import analysis as A   # noqa: E402
 import common as K     # noqa: E402
-import world as W      # noqa: E402
 
-ROWS = []
-
-
-def ok(name, cond, detail=""):
-    ROWS.append((name, bool(cond), detail))
+TASK = os.path.dirname(HERE)
 
 
-def r1(x):
-    return "%.1f" % (x + 1e-12)
+def text_of(path):
+    """Text of a shipped document through the same extractors verify.py uses."""
+    if path.endswith(".pdf"):
+        from pypdf import PdfReader
+        return "\n".join((p.extract_text() or "") for p in PdfReader(path).pages)
+    if path.endswith(".docx"):
+        import docx
+        return "\n".join(p.text for p in docx.Document(path).paragraphs)
+    if path.endswith(".xlsx"):
+        from openpyxl import load_workbook
+        wb = load_workbook(path, read_only=True)
+        return "\n".join(" ".join(str(c) for c in r if c is not None) for ws in wb for r in ws.iter_rows(values_only=True))
+    if path.endswith(".parquet"):
+        import pyarrow.parquet as pq
+        t = pq.read_table(path)
+        return " ".join(t.column_names)
+    return open(path, encoding="utf-8").read()
 
 
-def pair(fr):
-    o = sorted(K.REG, key=lambda r: -fr[r])
-    return o[:2]
+def same(a, b):
+    return all(a[x][:2] == b[x][:2] for x in K.RIVALS)
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(p.extract_text() or "" for p in PdfReader(path).pages))
+def rounded(ov):
+    return {b: (ov[b][0], ov[b][1], int(round(ov[b][2]))) for b in K.RIVALS}
 
 
-def truth_dev(w, how, ay, years):
-    """the developments on the generator's clean truth (no file read): R3a and R3b"""
-    pc = [c for c in w.all_claims if c["product"] == "PC"]
-    def key(c):
-        nb = {"PH": "P", "TPD": "T", "INS": "I", "SOL": "R", "CMC": "R"}[c["route"]]
-        return {"pooled": 0, "head": c["head"], "notified_by": nb, "route": c["route"]}[how]
-    def pos(a):
-        return [c for c in pc if c["ay"] == a and c["notified"] <= dt.date(a + 1, 9, 30)]
-    num, den = Counter(), Counter()
-    for a in years:
-        num.update(key(c) for c in pc if c["ay"] == a)
-        den.update(key(c) for c in pos(a))
-    f = {k: num[k] / den[k] for k in num if den[k]}
-    est = Counter()
-    for c in pos(ay):
-        est[c["region"]] += f.get(key(c), 1.0)
-    return est
+def run(task=TASK, world=None):
+    T = os.path.join(task, "target")
+    rows = []
 
+    def ok(name, cond, detail=""):
+        rows.append((name, bool(cond), detail))
 
-def run(task):
-    ROWS.clear()
-    tgt = os.path.join(task, "target")
-    G = A.Golden(tgt)
+    G = A.Golden(T)
     R = G.run()
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    gold = R["freq"]["route"]
-    GOLD_PAIR = ["Mersey", "Pennine"]
-
-    # ---------------------------------------------------------------- the call
-    ok("CALL pair", R["call"] == GOLD_PAIR, R["call"])
-    ok("CALL third", R["third"] == "Severn", R["third"])
-    ok("CALL printed", [r1(gold[r]) for r in K.REG] == ["8.9", "8.2", "7.3", "5.9", "8.0"], [r1(gold[r]) for r in K.REG])
-    ok("CALL gap", r1(R["gap"]) == "0.2" and r1(gold["Pennine"] - gold["Severn"]) == "0.2", "%.3f" % R["gap"])
-    edges = {r: 0.05 - abs(gold[r] - round(gold[r], 1)) for r in K.REG}
-    ok("CALL mid-bin", min(edges.values()) >= 0.03, {r: round(v, 3) for r, v in edges.items()})
-    ok("CALL figures.json", F["frequency"] == {r: float(r1(gold[r])) for r in K.REG} and F["call"] == GOLD_PAIR)
-
-    # ---------------------------------------------------------------- R1: the field's raw material ships
-    c = G.B.claims
-    ok("R1 claim rows", len(c) > 100000 and c.claim_ref.is_unique, len(c))
-    ok("R1 dates at row level", c.accident_date.str.match(r"^\d{4}-\d{2}-\d{2}$").all() and
-       (c.notified_at.str.len() >= 10).all())
-    header = open(os.path.join(tgt, K.FILES["claims"]), encoding="utf-8").readline().strip().split(",")
-    banned_cols = [x for x in header if re.search(r"freq|factor|ultimate|ibnr|lag|route|channel|firm", x, re.I)]
-    ok("R1 no deciding column", not banned_cols, banned_cols)
-    ok("R1 firm type off the extract", "firm_type" not in header and set(G.B.reps.firm_type) ==
-       {"Solicitor practice", "Claims management company"})
-
-    # ---------------------------------------------------------------- R3: the analyst test on the clean truth
-    w = W.World(K.SEED)
-    cy = {r: R["cy"][r] for r in K.REG}
-    tr = {h: {r: 100 * v / cy[r] for r, v in truth_dev(w, h, 2025, K.CLOSED).items()} for h in
-          ("pooled", "head", "notified_by", "route")}
-    for h in ("pooled", "head", "notified_by"):
-        ok("R3a default %s on the truth" % h, pair(tr[h]) == ["Mersey", "Severn"], {r: round(v, 2) for r, v in tr[h].items()})
-    ok("R3b the decisive step alone", pair(tr["route"]) == GOLD_PAIR, {r: round(v, 2) for r, v in tr["route"].items()})
-    ult = Counter(c_["region"] for c_ in w.all_claims if c_["product"] == "PC" and c_["ay"] == 2025)
-    ok("R3b the truth agrees", pair({r: ult[r] / cy[r] for r in K.REG}) == GOLD_PAIR)
-    th = open(os.path.join(tgt, K.FILES["thread"]), encoding="utf-8").read()
-    ok("R3c no plant", not re.search(r"\d+(\.\d+)? (claims )?per 100|frequenc\w* (of|at|is|was) \d", th, re.I) and
-       not any(x in th for x in ("Pennine", "Severn", "Mersey", "Wessex", "Fenland")), "the thread states no frequency or region")
-
-    # ---------------------------------------------------------------- SF rows
-    ok("SF1 notified only names the default pair", pair(R["raw"]) == ["Mersey", "Severn"])
-    ok("SF2 the 2.1 count leaves the call's population as it is", len(G.main_counted) == len(G.main))
-    m = G.main
-    nonil = {r: 0.0 for r in K.REG}
-    sub = m[(m.ay == 2025) & (m.status != "Closed nil")]
-    f_r = R["factors_route"]
-    for reg, rt in zip(sub[sub.note <= dt.date(2026, 9, 30)].region, sub[sub.note <= dt.date(2026, 9, 30)].route):
-        nonil[reg] += f_r[rt]
-    ok("SF3 nil claims dropped keep the pair", pair({r: nonil[r] / cy[r] for r in K.REG}) == GOLD_PAIR)
-    ok("SF4 every district on the 2025 drawing", c.region.notna().all())
-    allp = c[c.ay == 2025]
-    ok("SF5 vans in keep the pair", pair({r: int((allp.region == r).sum()) for r in K.REG}) == ["Mersey", "Severn"] and True)
-    # SF6: the UTC calendar date of each timestamp read as the notification date
-    c2 = c.copy()
-    c2["note"] = [dt.date.fromisoformat(s[:10]) for s in c2.notified_at]
-    moved = int((c2.note != c.note).sum())
-    G2 = A.Golden.__new__(A.Golden)
-    G2.B = G.B
-    pc2 = c2[c2["product"] == "PC"]
-    G2.main = pc2[pc2.ay.isin(list(K.CLOSED) + [K.OPEN_YEAR])].copy()
-    G2.main_counted = A.count_rule(G2.main)
-    G2.pc = pc2
-    f6, _ = G2.frequency("route")
-    ok("SF6 the UTC date gives the same figures", [r1(f6[r]) for r in K.REG] == [r1(gold[r]) for r in K.REG],
-       "%d timestamps change date" % moved)
-    # SF7: completion by each claim's own age in days, route by route (the accident-date grain)
-    lagf = {}
-    for rt in set(G.main_counted.route):
-        lags = []
-        for ay in K.CLOSED:
-            fn = G.final(ay)
-            fn = fn[fn.route == rt]
-            lags += [(n - a).days for n, a in zip(fn.note, fn.acc)]
-        lagf[rt] = sorted(lags)
-    import bisect
-    p25 = G.position(2025)
-    e7 = Counter()
-    for reg, rt, a in zip(p25.region, p25.route, p25.acc):
-        age = (dt.date(2026, 9, 30) - a).days
-        L = lagf[rt]
-        e7[reg] += len(L) / max(bisect.bisect_right(L, age), 1)
-    ok("SF7 completion by age in days keeps the pair", pair({r: e7[r] / cy[r] for r in K.REG}) == GOLD_PAIR,
-       {r: round(100 * e7[r] / cy[r], 3) for r in K.REG})
-    f8, _ = G.frequency("route", years=(2020, 2021, 2022))
-    ok("SF8 closed years 2020 to 2022", [r1(f8[r]) for r in K.REG] == [r1(gold[r]) for r in K.REG])
-    ok("SF9 simple-average factors", [r1(R["freq"]["route_simple"][r]) for r in K.REG] == [r1(gold[r]) for r in K.REG])
-    for h in ("pooled", "head", "notified_by", "representative", "region"):
-        worst = max(abs(v[2]) for v in R["bt"][h].values())
-        ok("SF10 %s fails the back-test and names the default pair" % h,
-           worst > 2 * K.TOLERANCE and pair(R["freq"][h]) == ["Mersey", "Severn"], "%.2f" % worst)
-    ok("SF11 the family passes", set(R["passing"]) == {"route", "route_head", "cmc_rest", "route_simple"}, R["passing"])
-    # SF12: a car count at 30 September 2026 for the denominator
-    cars = R["ask_a"]
-    ok("SF12 a car count keeps the pair", pair({r: R["est"]["route"][r] / sum(cars[(r, cv)] for cv in ("COMP", "TPFT", "TPO"))
-                                               for r in K.REG}) == GOLD_PAIR)
-    ok("SF13 the gap rounded either way", r1(R["gap"]) == "%.1f" % (float(r1(gold["Pennine"])) - float(r1(gold["Severn"]))))
-    ok("SF14 no tie", R["gap"] >= 0.1, "%.3f" % R["gap"])
-    # SF15: the in-force row carries the district and cover at the term's start
-    inf, ch = G.B.inforce, G.B.changes
-    dmap = dict(zip(inf.policy_ref, inf.risk_postcode_district))
-    smap = dict(zip(inf.policy_ref, inf.term_start))
-    adr = ch[(ch.change_type == "ADDRESS")]
-    first_new = {}
-    for p_, eff, nd in sorted(zip(adr.policy_ref, adr.effective_from, adr.new_postcode_district)):
-        first_new.setdefault(p_, nd)
-    stale = sum(1 for p_ in first_new if p_ in dmap and dmap[p_] != first_new[p_])
-    ok("SF15 the in-force district is the term's start", stale == len([p for p in first_new if p in dmap]), stale)
-    naive_a = G.ask_a(apply_changes=False)
-    ok("SF15 every ask cell moves", all(abs(naive_a[k] - cars[k]) >= 10 for k in cars),
-       {"%s %s" % k: naive_a[k] - cars[k] for k in cars})
-    # SF16: the cover on the in-force row is the cover at the term's start; a later cover change sets the cover that day
-    cvc = ch[(ch.change_type == "COVER")]
-    cmap = dict(zip(inf.policy_ref, inf.cover))
-    first_cov = {}
-    for p_, eff, nc in sorted(zip(cvc.policy_ref, cvc.effective_from, cvc.new_cover)):
-        first_cov.setdefault(p_, nc)
-    held = [p_ for p_ in first_cov if p_ in cmap]
-    ok("SF16 the in-force cover is the term's start", all(cmap[p_] != first_cov[p_] for p_ in held) and len(held) > 100, len(held))
-    mir = G.ask_a(apply_changes=True, effective_only=False)
-    ok("SF16 changes dated after 30 September move the ask", sum(abs(mir[k] - cars[k]) for k in cars) >= 15,
-       sum(abs(mir[k] - cars[k]) for k in cars))
-
-    # ---------------------------------------------------------------- FAMILY
-    fam = [R["freq"][h] for h in ("route", "route_head", "cmc_rest", "route_simple")] + [f8]
-    ok("FAMILY same printed figures", all([r1(x[r]) for r in K.REG] == [r1(gold[r]) for r in K.REG] for x in fam))
-    ok("FAMILY within 1.2 per cent", all(max(abs(v[2]) for v in R["bt"][h].values()) <= 1.2
-                                         for h in ("route", "route_head", "cmc_rest", "route_simple")))
-
-    # ---------------------------------------------------------------- SEP: the asks off the call's population
-    twins = c[(c.status == "Closed nil")]
-    tw_main = 0
-    pcm = c[(c["product"] == "PC") & (c.ay <= 2025)]
-    key = ["policy_ref", "vrm", "accident_date", "head_of_claim"]
-    dupe = pcm.duplicated(key, keep=False) & (pcm.claimant_no == "")
-    ok("SEP no twin in the call's years", int(dupe.sum()) == 0 and tw_main == 0, int(dupe.sum()))
-    ok("SEP no blank pair in the call's years", int((pcm[pcm.claimant_no == ""].duplicated(key)).sum()) == 0)
-    src = open(os.path.join(HERE, "analysis.py")).read()
-    call_part = src[src.index("class Golden"):src.index("# ------------------------------------------------------------------ the ask")]
-    ok("SEP the call reads no policy file", "inforce" not in call_part and "changes" not in call_part)
-
-    # ---------------------------------------------------------------- Layer 1 neutrality (R2)
-    legacy = c[c.notified_at.str.len() == 10]
-    ok("R2 LAYER1 migration: legacy dates before the go-live, timestamps after",
-       (legacy.note < K.MIGRATION).all() and (c[c.notified_at.str.len() > 10].note >= K.MIGRATION - dt.timedelta(days=1)).all()
-       and (legacy.legacy_claim_ref != "").all())
-    ok("R2 LAYER1 migration neutral (the UTC date read)", True if [r1(f6[r]) for r in K.REG] == [r1(gold[r]) for r in K.REG] else False)
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(tgt, K.FILES["exposure"]), read_only=True)
-    old_hdr = next(wb["2021"].iter_rows(values_only=True))
-    new_hdr = next(wb["2025"].iter_rows(values_only=True))
-    ok("R2 LAYER1 mart layout change, the call reads 2025 only", old_hdr[0] == "period" and new_hdr[0] == "month")
-    ok("R2 LAYER1 open years present and unread", set(c.ay) == set(K.ACCIDENT_YEARS) and
-       set(G.main.ay) == set(K.CLOSED) | {K.OPEN_YEAR})
-
+    ov, call, runner = R["overlap"], R["call"], R["runner"]
+    files = sorted(os.listdir(T))
     # ---------------------------------------------------------------- input gates
-    files = sorted(os.listdir(tgt))
-    exts = Counter(f.rsplit(".", 1)[1] for f in files)
-    ok("GATE files", len(files) >= 10, len(files))
-    ok("GATE formats", len(exts) >= 3, dict(exts))
-    ok("GATE a 25,000-row file", len(c) >= 25000)
+    ok("gate files", len(files) >= 10, "%d files" % len(files))
+    fmts = sorted(set(f.rsplit(".", 1)[1] for f in files))
+    ok("gate formats", len(fmts) >= 3, ", ".join(fmts))
+    n_till = sum(1 for _ in open(os.path.join(T, K.FILES["till"]), encoding="utf-8")) - 1
+    ok("gate large file", n_till >= 25000 and len(G.rows) >= 25000, "%d till lines, %d settlement rows" % (n_till, len(G.rows)))
     meta = json.load(open(os.path.join(task, "metadata.json")))
-    ok("GATE distractors", len(meta["distractor_files"]) >= 2 and not any("distract" in f for f in files))
-    ok("GATE no file describes the data", not any(re.search(r"readme|dictionary|manifest|notes|contents", f, re.I) for f in files))
-    # each distractor deleted: the golden is the same
-    tmp = tempfile.mkdtemp(dir=task)
-    try:
-        for f in files:
-            if "target/" + f not in meta["distractor_files"]:
-                shutil.copy(os.path.join(tgt, f), tmp)
-        R2 = A.Golden(tmp).run()
-        ok("GATE distractors deleted, the golden holds", R2["call"] == R["call"] and R2["ask_a"] == R["ask_a"] and
-           all(r1(R2["freq"]["route"][r]) == r1(gold[r]) for r in K.REG))
-    finally:
-        shutil.rmtree(tmp)
-
-    # ---------------------------------------------------------------- the documents, read back (positive controls first)
-    terms, std = pdf_text(os.path.join(tgt, K.FILES["terms"])), pdf_text(os.path.join(tgt, K.FILES["standard"]))
-    quote = pdf_text(os.path.join(tgt, K.FILES["quote"]))
-    ok("DOC terms readable", "whether or not they had been notified to Corriven by the end of 30 September 2026" in terms)
-    ok("DOC standard 3.3 readable", "reproduces that year's final count in every sales region to within two per cent" in std)
-    ok("DOC standard 2.1 readable", "one claimant's claim under one head of claim" in std and "arising from one accident" in std)
-    ok("DOC standard 3.2 readable", "apply the whole book's factors to each region's notified claims" in std)
-    ok("DOC quote readable", "Q-26-1184" in quote)
-    from pypdf import PdfReader
-    import io
-    import logging
-    import subprocess
-    logging.getLogger("pypdf").setLevel(logging.WARNING)
-    log = io.StringIO()
-    h = logging.StreamHandler(log)
-    logging.getLogger("pypdf").addHandler(h)
-    for k in ("terms", "standard", "quote"):
-        pth = os.path.join(tgt, K.FILES[k])
-        strict = re.sub(r"\s+", " ", " ".join(p.extract_text() or "" for p in PdfReader(pth, strict=True).pages))
-        ok("H25 %s strict reader" % k, strict == pdf_text(pth) and len(strict) > 500)
-        if shutil.which("pdftotext"):
-            out = subprocess.run(["pdftotext", "-layout", pth, "-"], capture_output=True, text=True)
-            pt = re.sub(r"\s+", " ", out.stdout)
-            key = {"terms": "whether or not they had been notified to Corriven", "standard": "to within two per cent",
-                   "quote": "Q-26-1184"}[k]
-            ok("H25 %s pdftotext" % k, out.returncode == 0 and not out.stderr.strip() and key in pt, out.stderr[:80])
-    logging.getLogger("pypdf").removeHandler(h)
-    ok("H25 no parser warnings", not log.getvalue().strip(), log.getvalue()[:120])
-    thread = open(os.path.join(tgt, K.FILES["thread"]), encoding="utf-8").read()
-    docs = terms + " " + std + " " + thread
-    leak = [x for x in ("claims management", "claims-management", "firm type", "representative", "solicitor",
-                        "notifying route", "notified late", "late notification", "Pennine", "Severn")
-            if x.lower() in docs.lower()]
-    ok("LEAK no document names the decisive split or a region's standing", not leak, leak)
-    ok("LEAK the terms carry no pin on the grouping", "group" not in terms.lower() and "segment" not in std.lower())
-
+    dis = meta.get("distractor_files", [])
+    ok("gate distractors", len(dis) >= 2 and all(os.path.exists(os.path.join(task, d)) for d in dis), ", ".join(dis))
+    bad = [f for f in files if re.search(r"readme|dictionary|manifest|notes|field|schema|distractor", f, re.I)]
+    sheets = []
+    from openpyxl import load_workbook
+    for f in files:
+        if f.endswith(".xlsx"):
+            for ws in load_workbook(os.path.join(T, f), read_only=True).worksheets:
+                if re.search(r"readme|notes|dictionary|about|how to|fields", ws.title, re.I):
+                    sheets.append(f + ":" + ws.title)
+    ok("gate no file or sheet describes the data", not bad and not sheets, ", ".join(bad + sheets) or "none")
+    # ---------------------------------------------------------------- the ladder
+    L = G.ladder()
+    picks = {k: G.pick(v) for k, v in L.items()}
+    for k, want, floor in (("R1 cards", "NOR", 1.15), ("R1 members", "NOR", 1.15), ("R1 members and accounts", "NOR", 1.15),
+                           ("R2 homes from store cards", "WES", 1.15), ("R2 accounts kept apart", "WES", 1.15),
+                           ("R3 homes", "ROS", 1.2)):
+        c, r, m = picks[k]
+        ok("rung %s names %s" % (k, K.BRAND_NAME[want]), c == want and m >= floor,
+           "%s %.1f, next %s %.1f, x%.2f" % (c, L[k][c][2], r, L[k][r][2], m))
+    ok("rung R0 baskets not the golden", picks["R0 baskets"][0] != "ROS", picks["R0 baskets"][0])
+    third = sorted(K.RIVALS, key=lambda b: ov[b][2])[2]
+    ok("runner-up separated from third", ov[third][2] - ov[runner][2] >= 1.0,
+       "%s %.2f, %s %.2f" % (runner, ov[runner][2], third, ov[third][2]))
+    edges = {b: abs(ov[b][2] - int(ov[b][2]) - 0.5) for b in K.RIVALS}
+    ok("every share mid-bin", min(edges.values()) >= 0.03 and edges[call] >= 0.15 and edges[runner] >= 0.15,
+       "closest %.2f; call %.2f, runner-up %.2f" % (min(edges.values()), edges[call], edges[runner]))
+    ok("gap rounds alike from unrounded and rounded shares",
+       int(round(R["gap"])) == int(round(ov[runner][2])) - int(round(ov[call][2])) and abs(R["gap"] % 1 - 0.5) >= 0.1,
+       "%.2f" % R["gap"])
+    ok("match unique", R["match_stats"][1] == 0 and R["match_stats"][2] == 0, str(R["match_stats"]))
+    # reflex sweep
+    online_only = G.overlap(_accounts(G))
+    ok("reflex online accounts alone not the golden", G.pick(online_only)[0] != "ROS", G.pick(online_only)[0])
+    heavy = G.overlap(_heavy(G))
+    ok("reflex heavy cards not the golden", G.pick(heavy)[0] != "ROS", G.pick(heavy)[0])
+    rev = G.reverse(G.units("homes"))
+    rmin = min(K.RIVALS, key=lambda b: rev[b][2])
+    ok("SF14 reverse duplication names another brand", rmin != "ROS", rmin)
+    # ---------------------------------------------------------------- semantic fork rows
+    H = G.hazards()
+    ok("SF1 a card as the home files another brand", picks["R1 cards"][0] != call, picks["R1 cards"][0])
+    ok("SF2 store-card and anonymous lines put to homes keep the call", G.pick(H["store-card lines put to homes"])[0] == call)
+    ok("SF3 the counter's PLUs map to no brand", K.COUNTER_PLU not in G.brand_of and K.ACCESSORY_PLU not in G.brand_of)
+    split = _split(G)
+    ok("SF4 spellings kept apart leave the call and its components", split[0] == call and split[1] == rounded(ov)[call]
+       and split[2] == rounded(ov)[runner], str(split))
+    ok("SF5 online orders by order date leave every figure", same(H["online by order date"], ov))
+    ok("SF6 every version and cancelled orders leave every figure",
+       same(H["every version counted"], ov) and same(H["cancelled orders counted"], ov))
+    sk = H["store cards kept"]
+    ok("SF7 store cards kept leave the call and its components", G.pick(sk)[0] == call and
+       rounded(sk)[call][2] == rounded(ov)[call][2] and rounded(sk)[runner][2] == rounded(ov)[runner][2],
+       "%s %.2f" % (G.pick(sk)[0], sk[call][2]))
+    ok("SF8 replaced cards kept apart leave every figure", same(H["replaced cards kept apart"], ov))
+    ok("SF9 two or three shared payments leave every figure",
+       same(H["two shared payments"], ov) and same(H["three shared payments"], ov))
+    ok("SF10 the settlement clock: matched on the day leaves every figure", same(H["matched on the day"], ov))
+    ok("SF10 the settlement clock read as Irish time keeps the call", G.pick(H["clock read as Irish time"])[0] == call)
+    ok("SF11 the current terminal only leaves the call", G.pick(H["current terminal only"])[0] == call)
+    ok("SF12 unlinked online accounts dropped keep the call", G.pick(H["unlinked accounts dropped"])[0] == call)
+    ok("SF13 refunded packs removed leave every figure", same(H["refunded packs removed"], ov))
+    ok("SF15 the call's share 0.15 or more from its rounding edge", edges[call] >= 0.15, "%.2f" % edges[call])
+    ok("SF16 every rung margin 1.15 or more", all(p[2] >= 1.15 for k, p in picks.items() if k != "R0 baskets"))
+    # ---------------------------------------------------------------- the three rules on the clean truth
+    from world import World
+    w = world or World(K.SEED)
+    truth = _truth(w)
+    ok("R1 no shipped column holds a home or household", not any(
+        re.search(r"^(home|household|hh|family)(_?(id|no|ref|key))?$|home_?id|household_?id", h, re.I)
+        for h in _headers(T)), "%d headers read" % len(_headers(T)))
+    ok("R1 the decisive computation reads row-level receipts and settlement rows", R["match_stats"][0] > 25000)
+    ok("R2 brand spellings: the call and its components hold when kept apart", split[0] == call)
+    ok("R2 lost-card replacements: every figure holds unfolded", same(H["replaced cards kept apart"], ov))
+    ok("R2 store cards: the call holds when kept", G.pick(sk)[0] == call)
+    ok("R2 settlement in UTC: every figure holds matched on the day", same(H["matched on the day"], ov))
+    ok("R2 the replaced Lisgarvan terminal: the call holds on the current terminal",
+       G.pick(H["current terminal only"])[0] == call)
+    ok("R2 amended and cancelled online orders: every figure holds", same(H["every version counted"], ov))
+    ok("R2 refunds: every figure holds", same(H["refunded packs removed"], ov))
+    ok("R3a the easy route on the clean truth files Nordhavn", truth["members"] == "NOR", truth["members"])
+    ok("R3b only the unit changed (true homes) files Oro Rosso", truth["homes"] == "ROS", truth["homes"])
+    ok("R3b homes from store cards alone stay wrong", picks["R2 homes from store cards"][0] not in ("ROS", "NOR"))
+    ok("R3c no duplicated till line", _no_dupes(T))
+    # ---------------------------------------------------------------- asks
+    ta = truth["ask_a"]
+    ok("ask A golden equals the truth", all(abs(R["ask_a"][k] - ta[k]) < 1e-6 for k in ta),
+       "; ".join("%s %.3f/%.3f" % (k, R["ask_a"][k], ta[k]) for k in ta if abs(R["ask_a"][k] - ta[k]) >= 1e-6))
+    ok("ask A matching unambiguous", R["counter_ambiguous"] == 0, str(R["counter_ambiguous"]))
+    for mode in ("every", "every_fixed", "noclock", "cardonly", "overclean", "grams"):
+        m = G.ask_a(mode)
+        miss = sum(1 for k in ta if abs(round(m[k], 1) - round(ta[k], 1)) >= 0.05)
+        ok("ask A stop %s misses" % mode, miss >= 6, "%d of 12" % miss)
+    ok("ask A figures mid-bin", min(abs((v * 10) % 1 - 0.5) for v in ta.values()) >= 0.02,
+       "%.3f" % min(abs((v * 10) % 1 - 0.5) for v in ta.values()))
+    tb = truth["ask_b"]
+    gb = R["ask_b"]
+    ok("ask B golden equals the truth", all(abs(gb[k] - tb.get(k, 0.0)) < 0.005 for k in gb))
+    cr = G.ask_b("savings")
+    ok("ask B the cracker misses every cell", all(round(cr[k]) != round(gb[k]) for k in gb),
+       "%d kept" % sum(1 for k in gb if round(cr[k]) == round(gb[k])))
+    for mode in ("count_lines", "adj_own_date", "adj_one", "latest_rate"):
+        m = G.ask_b(mode)
+        miss = sum(1 for k in gb if round(m[k]) != round(gb[k]))
+        ok("ask B stop %s misses" % mode, miss >= 3, "%d of 20" % miss)
+    ok("ask B figures mid-bin", min(abs(v % 1 - 0.5) for v in gb.values()) >= 0.015,
+       "%.2f" % min(abs(v % 1 - 0.5) for v in gb.values()))
+    # ---------------------------------------------------------------- separation
+    dev = 0
+    for t in G.txs:
+        for ln in t["lines"]:
+            if ln["plu"] in (K.COUNTER_PLU, K.ACCESSORY_PLU, K.ADJ_PLU) or ln["desc"] == "MULTIBUY SAVING":
+                dev += ln["plu"] in G.brand_of
+    ok("separation: no device or hazard row is a brand pack line", dev == 0, str(dev))
+    # ---------------------------------------------------------------- distractors
+    src = open(os.path.join(HERE, "analysis.py"), encoding="utf-8").read()
+    ok("distractors unread by the golden", all(K.FILES[k] not in src and ('"%s"' % k) not in src for k in K.DISTRACTORS))
     # ---------------------------------------------------------------- realism sweep
-    def steps(col):
-        nums = sorted(int(re.sub(r"\D", "", x)) for x in col if x)
-        d = {b - a for a, b in zip(nums, nums[1:])}
-        return len(d)
-    ok("REAL claim refs not a constant step", steps(c.claim_ref) > 1)
-    ok("REAL legacy refs not a constant step", steps(c.legacy_claim_ref) > 1)
-    ok("REAL change refs not a constant step", steps(ch.change_ref) > 1)
-    ok("REAL representative refs not a constant step", steps(G.B.reps.representative_ref) > 1)
-    shapes = Counter(n.split()[-1] for n in G.B.reps.firm_name)
-    ok("REAL firm names take several shapes", len(shapes) > 4, dict(shapes))
-    ok("REAL earned car-years not round", all(abs(v - round(v, -1)) > 0.5 for v in R["cy"].values()), R["cy"])
-    ok("REAL notified counts distinct", len(set(R["notified"].values())) == 5)
-    ok("REAL no date after the pull", (c.note <= K.EXTRACT).all() and (c[c.closed_on != ""].closed_on <= K.EXTRACT.isoformat()).all()
-       and (ch.processed_on <= K.EXTRACT.isoformat()).all())
-    ok("REAL no claim before its accident", (c.note >= c.acc).all())
-    ok("REAL personas drawn", all(p in thread for p in K.PEOPLE.values()))
-    ok("REAL region codes not alphabetical", [r[0] for r in K.REGIONS] != sorted(r[0] for r in K.REGIONS))
-    return ROWS
+    ok("realism no arithmetic id column", _no_arith(T))
+    counts = [ov[b][0] for b in K.RIVALS]
+    ok("realism distinct buying-home counts", len(set(counts)) == len(counts))
+    ok("realism no round headline", all(c % 100 for c in counts) and ov[call][1] % 10)
+    late = [r for r in G.rows if r["utc"].year != K.YEAR]
+    ok("realism settlement inside 2026", not late, "%d rows outside" % len(late))
+    ok("realism till lines inside 2026", all(t["when"].year == K.YEAR for t in G.txs))
+    em = [f for f in files if f.endswith((".csv", ".json")) and ("—" in open(os.path.join(T, f), encoding="utf-8").read()
+                                                               or "–" in open(os.path.join(T, f), encoding="utf-8").read())]
+    ok("realism no em or en dash in text files", not em, ", ".join(em))
+    # ---------------------------------------------------------------- documents: positive controls
+    brief = text_of(os.path.join(T, K.FILES["brief"]))
+    ok("doc brief carries the estimand", "if anyone in it bought a pack of that brand" in brief and
+       "An online order counts on the day it was delivered" in brief)
+    terms = text_of(os.path.join(T, K.FILES["terms"]))
+    ok("doc terms carry the personal card", "Each card is issued to one member" in terms.replace("\n", " "))
+    agr = text_of(os.path.join(T, K.FILES["agreement"]))
+    ok("doc agreement carries UTC and the replaced terminal", "UTC" in agr and "41023212" in agr and "41023202" in agr
+       and K.COUNTER_TID in agr)
+    board = text_of(os.path.join(T, K.FILES["board"]))
+    ok("doc price board carries accessories and the cash route", all("%.2f" % p in board for _, p in K.ACCESSORIES)
+       and "checkout" in board)
+    for k in ("brief", "terms", "agreement", "board"):
+        t = text_of(os.path.join(T, K.FILES[k]))
+        ok("doc %s names no payment link" % k, not re.search(r"household|same (bank )?card|shared card|link", t, re.I))
+    return rows
+
+
+def _accounts(G):
+    acc = collections.defaultdict(set)
+    for a, no, bs in G.online_purchases():
+        acc[a] |= bs
+    return list(acc.values())
+
+
+def _heavy(G):
+    sp = G.store_purchases()
+    per = collections.defaultdict(list)
+    for k, bs in sp.items():
+        c = G.tx[k]["card"]
+        if c and c not in G.store_cards:
+            per[G.fold(c)].append(bs)
+    return [set().union(*v) for v in per.values() if len(v) >= 8]
+
+
+def _split(G):
+    """The golden with each master spelling a brand of its own."""
+    from openpyxl import load_workbook
+    ws = load_workbook(os.path.join(G.t, K.FILES["master"]), read_only=True).active
+    spell = {}
+    for r in list(ws.iter_rows(values_only=True))[1:]:
+        if r[3] in A.PACK_FORMATS:
+            spell[str(r[0])] = r[2]
+    saved = dict(G.brand_of)
+    canon = {"OL": "Corcally's Roastery", "ROS": "Oro Rosso", "NOR": "Nordhavn"}
+    for plu, b in saved.items():
+        if spell[plu] != canon.get(b, spell[plu]) or (b not in canon and spell[plu] != K.BRAND_NAME[b]):
+            G.brand_of[plu] = b + "*" if b not in canon else b
+    try:
+        units = G.units("homes")
+    finally:
+        G.brand_of = saved
+    ov = G.overlap(units)
+    extra = set().union(*units) - set(K.B)
+    allb = list(K.RIVALS) + sorted(extra)
+    shares = {}
+    for b in allb:
+        buyers = [s for s in units if b in s]
+        if buyers:
+            shares[b] = 100.0 * sum(1 for s in buyers if "OL" in s) / len(buyers)
+    low = min(shares, key=shares.get)
+    return low, (ov["ROS"][0], ov["ROS"][1], int(round(ov["ROS"][2]))), (ov["NOR"][0], ov["NOR"][1], int(round(ov["NOR"][2])))
+
+
+def _truth(w):
+    """The clean truth: the easy route and the true homes on the world before any file, and both asks."""
+    out = {}
+    fold = {c: m["card"] for m in w.members for c in m["cards"]}
+    mem, home = collections.defaultdict(set), collections.defaultdict(set)
+    for t in w.tx:
+        if t["kind"] == 'sale' and t["card"] == 'MEMBER':
+            bs = {ln["brand"] for ln in t["lines"] if ln["qty"] > 0}
+            mem[fold[t["card_no"]]] |= bs
+            home[t["home"]] |= bs
+    for o in w.orders:
+        if o["status"] == 'delivered' and o["delivery"].year == K.YEAR:
+            bs = {K.SKU[c["plu"]][1] for c in o["versions"][-1]["coffee"]}
+            mem[("acc", o["account"])] |= bs
+            home[o["home"]] |= bs
+    out["members"] = A.Golden.pick(A.Golden.overlap(list(mem.values())))[0]
+    out["homes"] = A.Golden.pick(A.Golden.overlap(list(home.values())))[0]
+    ta = {(n, q): 0.0 for _, n, _ in K.ROASTERS for q in (1, 2, 3, 4)}
+    for lb in w.labels:
+        if lb["sold"]:
+            ta[(K.ROASTER_NAME[lb["roaster"]], K.quarter(lb["when"].date()))] += lb["kg"]
+    out["ask_a"] = ta
+
+    def rate(d, day):
+        r = d[6]
+        for eff, f in d[7]:
+            if eff <= day:
+                r = f
+        return r
+    tb = collections.defaultdict(float)
+    for t in w.tx:
+        if t["kind"] == 'sale':
+            for s in t["saving"]:
+                d = K.DEAL[s["deal"]]
+                tb[(K.SUPPLIER[d[1]], K.quarter(t["when"].date()))] += rate(d, t["when"].date())
+        elif t["kind"] == 'refund':
+            for s in t["saving"]:
+                d = K.DEAL[s["deal"]]
+                o = t["orig"]
+                tb[(K.SUPPLIER[d[1]], K.quarter(o["when"].date()))] -= rate(d, o["when"].date())
+    for a in w.adjust:
+        for c in a["claims"]:
+            d = K.DEAL[c["deal"]]
+            o = c["tx"]
+            tb[(K.SUPPLIER[d[1]], K.quarter(o["when"].date()))] += c["pairs"] * rate(d, o["when"].date())
+    out["ask_b"] = {k: round(v, 2) for k, v in tb.items()}
+    return out
+
+
+def _headers(T):
+    hs = []
+    for f in os.listdir(T):
+        p = os.path.join(T, f)
+        if f.endswith(".csv"):
+            hs += next(csv.reader(open(p, encoding="utf-8")))
+        elif f.endswith(".parquet"):
+            import pyarrow.parquet as pq
+            hs += pq.read_schema(p).names
+        elif f.endswith(".json"):
+            d = json.load(open(p, encoding="utf-8"))
+            hs += list(d.keys()) + list(d["orders"][0].keys())
+    return hs
+
+
+def _no_dupes(T):
+    seen = set()
+    with open(os.path.join(T, K.FILES["till"]), encoding="utf-8") as f:
+        for line in f:
+            if line in seen:
+                return False
+            seen.add(line)
+    return True
+
+
+def _no_arith(T):
+    for f, col in ((K.FILES["register"], "card_no"), (K.FILES["register"], "member_no"),
+                   (K.FILES["till"], "receipt")):
+        vals = []
+        with open(os.path.join(T, f), encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                v = re.sub(r"\D", "", r[col])
+                if v:
+                    vals.append(int(v))
+        vals = sorted(set(vals))
+        if len(vals) > 3 and len(set(b - a for a, b in zip(vals, vals[1:]))) == 1:
+            return False
+    return True
 
 
 if __name__ == "__main__":
-    task = os.path.dirname(HERE)
-    rows = run(task)
-    for n, good, d in rows:
-        print("%s  %-60s %s" % ("PASS" if good else "FAIL", n, str(d)[:120] if (not good or d) else ""))
-    print("%d assertions, %d failed" % (len(rows), sum(1 for r in rows if not r[1])))
-    sys.exit(1 if any(not r[1] for r in rows) else 0)
+    rs = run()
+    bad = [r for r in rs if not r[1]]
+    for r in rs:
+        print("%s  %-70s %s" % ("PASS" if r[1] else "FAIL", r[0], r[2]))
+    print("checks: %d assertions, %d failed" % (len(rs), len(bad)))
+    sys.exit(1 if bad else 0)

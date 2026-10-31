@@ -13,13 +13,12 @@ FILES = {
     "codes": "elr_result_codes.csv",
     "fcp": "FCP-2_feed_completeness_protocol.pdf",
     "log": "surveillance_platform_change_log.csv",
-    "dict": "DATA_DICTIONARY.md",
-    "readme": "README.md",
     "ili": "ed_syndromic_ili_weekly.csv",
     "state": "state_respiratory_positivity_by_region.csv",
     "adm": "county_respiratory_admissions_weekly.csv",
+    "vax": "county_influenza_vaccination_coverage_2026-27.csv",
 }
-DISTRACTORS = ["ili", "state", "adm"]
+DISTRACTORS = ["ili", "state", "adm", "vax"]
 
 
 def run(target):
@@ -38,11 +37,8 @@ def run(target):
     R.ed_ili().to_csv(p("ili"), index=False, lineterminator="\n")
     R.state_positivity().to_csv(p("state"), index=False, lineterminator="\n")
     R.admissions().to_csv(p("adm"), index=False, lineterminator="\n")
+    R.vaccination().to_csv(p("vax"), index=False, lineterminator="\n")
     docs.change_log().to_csv(p("log"), index=False, lineterminator="\n")
     docs.register(p("reg"), labs, streams)
     docs.protocol(p("fcp"))
-    with open(p("dict"), "w") as fh:
-        fh.write(docs.DICTIONARY)
-    with open(p("readme"), "w") as fh:
-        fh.write(docs.README)
     return dict(W=W, R=R, res=res)

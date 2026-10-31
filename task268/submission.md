@@ -1,51 +1,55 @@
 ## Tags
 
-**Domain:** Actuarial Science & Insurance (claims frequency and severity).
+**Domain:** Marketing & Consumer Research (segmentation and market structure).
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Put the 2027 telematics pilot in Mersey and Pennine.**
-Their private cars had the two highest claim frequencies in accident year 2025, 8.9 and 8.2 claims per 100 car-years, and Severn, third at 8.0, is 0.2 below Pennine. Not Mersey and Severn, which the whole book's development gives pooled, by head of claim or by the notified-by field: each blends the claims-management companies that notify Pennine's 2025 injury claims late with faster notifiers, and each misses 2022 in Wessex by 6.8 to 8.5 per cent, outside the Reserving Standard's two.
+**The 2027 Roastery sampling goes to Oro Rosso's homes.**
+
+Of the 1,857 homes that bought Oro Rosso in 2026, 741 also bought Corcally's Roastery (40%), the lowest share of the rivals and 9 points under Nordhavn (49%). Not Nordhavn, the least overlapped rival read card by card (17%), because its capsule buyers are mostly a home's second card while another member buys the Roastery. Not Westquay, whose homes buy their Roastery through the online shop (79%).
 
 ## 2. Critical Components
 
-1. Claim frequency, accident year 2025, per 100 car-years earned in 2025: Mersey **8.9**; Pennine **8.2**; Severn **8.0**; Wessex **7.3**; Fenland **5.9**; gap from Pennine to Severn **0.2**.
-2. Car-years earned in 2025, private cars: Mersey **61,924.81**; Pennine **40,568.81**; Severn **47,215.47**; Wessex **38,108.96**; Fenland **23,927.05**.
-3. Claims from 2025 accidents notified by 30 September 2026: Mersey **5,297**; Pennine **2,991**; Severn **3,713**; Wessex **2,681**; Fenland **1,374**.
-4. The development by notifying route reproduces accident year 2022 within **1.1** per cent in every region, as the Standard's 3.3 requires.
+1. Oro Rosso: **1,857** buying homes, **741** of them also bought the Roastery, **40%**.
+2. Runner-up Nordhavn: **1,568** buying homes, **764** also bought the Roastery, **49%**.
+3. Gap between them: **9 points**.
 
 ## 3. Step-by-Step Solution
 
-1. Summed the private-car rows of the 2025 sheet of earned_exposure_2019_2025.xlsx, the earned exposure telematics_pilot_terms_2027.pdf term 3 names: 211,745.10 car-years in all.
-2. Counted private-car claims in motor_claims_notified_2019_2026.csv by the Standard's 2.1, each in its region from postcode_district_sales_regions.csv and notified on its UK date: 16,056 claims from 2025 accidents by 30 September 2026.
-3. Gave each claim its notifying route, the notified-by field with representatives split by the firm type in claimant_representatives.csv, and measured the whole book's factors from 21 months to final on the closed years 2019 to 2022 (Standard 3.1, 3.2): 3.7 for claims-management companies against 1.2 for solicitors.
-4. Re-ran each development on accident year 2022 from 30 September 2023 with 2019 to 2021 (Standard 3.3): the route development is within 1.1 per cent in every region, while pooled, by head of claim and by notified-by field miss Wessex by 6.8 to 8.5 per cent.
-5. For cars on cover, applied the address and cover changes in policy_changes_2025_2026.csv effective from each term's start to 30 September 2026 to the private cars on cover that day in policy_vehicles_in_force_20260930.csv, whose rows carry the district and cover at the term's start: Mersey 44,743 COMP, 11,434 TPFT and 4,925 TPO; Pennine 30,213 COMP, 7,051 TPFT and 2,831 TPO; Wessex 30,001 COMP, 5,746 TPFT and 2,037 TPO; Fenland 19,421 COMP, 3,243 TPFT and 1,003 TPO; Severn 36,590 COMP, 7,448 TPFT and 2,919 TPO.
-6. Applied the route factors to each region's 2025 notified claims and divided by its car-years: Mersey 8.9; Pennine 8.2; Severn 8.0; Wessex 7.3; Fenland 5.9; Mersey and Pennine host the pilot.
+1. Mapped each PLU in coffee_till_lines_2026.csv to its brand through product_master_coffee.xlsx (one brand per supplier and range, its spellings folded), kept the 2026 pack lines on Rewards cards, dropped the cards rewards_cards_2026.csv types STORE and folded each REPLACED card into its replaced_by card.
+2. Matched every card-paid receipt to its SALE row in faircourt_settlement_2026.parquet on terminal (faircourt_merchant_agreement_2026.pdf, Schedule 2, by installed and removed dates), amount and time (txn_time_utc converted to Irish time, the row up to two minutes before the receipt): 50,047 receipts, one row each.
+3. Took each online order in online_orders_2026.json delivered in 2026, its last version's coffee lines, and its card_ref from the settlement row whose merchant_ref is the order number.
+4. Joined the Rewards cards and online accounts that share a card_ref into homes (3,802 homes bought coffee), and for each rival counted the homes that bought it and those that also bought Roastery packs: Oro Rosso lowest at 40%, Nordhavn next at 49%.
+5. Counter: matched each label in counter_scale_labels_2026.csv to a SALE on terminal 41023121 (labels printed in the 25 minutes before, plus accessories at coffee_counter_price_board_2026.pdf prices) or to a COUNTER COFFEE LOOSE till line of its price; scale 2's labels S2-006398 to S2-006970, printed under January dates, re-dated by the offset that lines them up with those payments; S2 weights read as grams; unpaid labels left out.
+6. Funding: each MULTIBUY SAVING line in a deal's dates at the multibuy_deals_2026.xlsx rate in force on the sale day, each reversal netted against the receipt its refund cites, and each MULTIBUY ADJ line added at the date of the receipt its note cites, one multibuy per missed pair on that receipt.
+7. The sampling goes to Oro Rosso's homes.
 
 ## 4. Deliverable Answers
 
-### telematics_pilot_regions_2027.xlsx
+### roastery_sampling_2027.pptx
 
-1. Pilot regions: Mersey and Pennine.
-2. Claim frequency, accident year 2025, per 100 car-years, one decimal:
-   - Mersey: 8.9
-   - Pennine: 8.2
-   - Severn: 8.0
-   - Wessex: 7.3
-   - Fenland: 5.9
-3. Gap between the second region and the third, Pennine to Severn: 0.2
-4. Private cars on cover on 30 September 2026, by cover, whole cars:
-   - Mersey: 44,743 COMP, 11,434 TPFT, 4,925 TPO
-   - Pennine: 30,213 COMP, 7,051 TPFT, 2,831 TPO
-   - Wessex: 30,001 COMP, 5,746 TPFT, 2,037 TPO
-   - Fenland: 19,421 COMP, 3,243 TPFT, 1,003 TPO
-   - Severn: 36,590 COMP, 7,448 TPFT, 2,919 TPO
+1. The 2027 sampling goes to Oro Rosso's homes.
+2. Bar chart on slide 2 of every rival's share of buying homes that also bought the Roastery, lowest first, Oro Rosso highlighted.
+3. Runner-up Nordhavn at 49%; gap 9 points.
+4. Loose coffee the Drumsallagh counter sold, kilograms to one decimal:
+   - Glenmore Roasters: Q1 514.0, Q2 503.0, Q3 521.2, Q4 541.9
+   - Ardcath Coffee Co.: Q1 441.4, Q2 464.3, Q3 469.5, Q4 470.8
+   - Inish Bean: Q1 360.8, Q2 363.1, Q3 374.9, Q4 347.0
+5. Multibuy funding owed by each supplier, whole euros:
+   - Bellvale Foods Ireland Ltd: Q1 140, Q2 24, Q3 210, Q4 71
+   - Cafetto Brands Ireland Ltd: Q1 30, Q2 164, Q3 30, Q4 155
+   - Halloran & Sons Coffee Ltd: Q1 259, Q2 139, Q3 174, Q4 388
+   - Nordhavn Coffee Ireland Ltd: Q1 259, Q2 43, Q3 233, Q4 53
+   - Oro Rosso Caffe Ireland Ltd: Q1 22, Q2 188, Q3 90, Q4 207
 
-### telematics_pilot_regions_2027.pptx
+### rival_home_overlap_2026.csv
 
-1. Slide 1 names Mersey and Pennine as the pilot regions, at 8.9 and 8.2 claims per 100 car-years.
-2. Slide 2 charts the five regions' 2025 frequency as stacked columns, claims notified by 30 September 2026 and claims still to come, the two pilot regions named and the gap of 0.2 stated.
-3. Slide 3 sets each development's 2022 back-test beside the Pennine and Severn frequency it gives.
-4. Slide 4 carries the cars on cover by region and cover as in the workbook.
+1. One row per rival, lowest share first, whole numbers and whole per cents:
+   - Oro Rosso: 1,857 buying homes, 741 also bought the Roastery, 40%
+   - Nordhavn: 1,568 buying homes, 764 also bought the Roastery, 49%
+   - Halloran's: 2,436 buying homes, 1,244 also bought the Roastery, 51%
+   - Cafetto: 1,816 buying homes, 950 also bought the Roastery, 52%
+   - Bellvale: 1,696 buying homes, 889 also bought the Roastery, 52%
+   - Kinvara Hills: 1,325 buying homes, 744 also bought the Roastery, 56%
+   - Westquay: 472 buying homes, 372 also bought the Roastery, 79%

@@ -1,91 +1,133 @@
 {
- "task": "task470",
- "architecture": "v1",
- "drawn": "2026-10-18",
- "slot_note": "seed ET27 (historical fleet mix by tail number: the registry tells you who holds the N-number today); the world, the funding of airports first by a fleet-class activity quantity, and the tail-number register kept; the pitfall re-found in how a transponder network misses general aviation activity",
- "domain": "physical-environmental-sciences",
- "subdomain": "emissions-inventory",
- "client_domain": "physical-environmental-sciences",
- "niche": "an air district's 2027 unleaded avgas transition grants for non-towered general aviation fields, qualified on each field's 2026 lead from piston aircraft, built from the district's transponder receiver network, the aircraft register, tower counts and field count studies",
- "objective": "etl",
- "shape": "01",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Seven of the 24 fields without a tower qualify: Thornacre Regional (T13), Ambrell County Airport (A71), Lanthorne Field (L08), Umber Creek Airport (U44), Orrin Flats Airport (O16), Fennick Airpark (F37) and Wickrow Airfield (W33)",
- "answer_source": "task470/submission.md block 1; golden/cvaqd_2027_unleaded_grant_qualification.docx",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "E"
- ],
- "generators": [
-  "G14",
-  "G12",
-  "G6"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "gold_standard_subsample",
- "stump_strategy": "composition_mix",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "operations_log",
- "stakeholder_role": "the district's air toxics planner",
- "role_family": "policy_adviser",
- "scoring_unit": "per active unit per period",
- "spine": {
-  "file": "field receiver network detections export, 2026",
-  "rows": 187609,
-  "entity": "one piston or turbine aircraft operation (takeoff, landing or touch-and-go) the district's receiver at a field recorded",
-  "grain": "aircraft operation",
-  "source": "synthetic (constructed in the layout of an ADS-B receiver network's airport operations export)"
- },
- "forum": "council_or_assembly",
- "forcing_event": "budget_or_appropriation",
- "org_family": "local_government",
- "world": {
-  "geography": "United States",
-  "currency": "USD",
-  "org_type": "regional air quality district",
-  "invented_names": [],
-  "people": [
-   "Jeanette Steele",
-   "Yolanda Cortez",
-   "Tonya Krause"
-  ]
- },
- "deliverables": [
-  "corrisan_2026_field_piston_lead.csv",
-  "cvaqd_2027_unleaded_grant_qualification.docx"
- ],
- "opening_move": "question-first",
- "question_form": "how-many",
- "driver": "Activity at each site is seen through a sensor that records every event of some units and none of others, and the units it never records are spread unevenly across sites, so the missing activity is not a fixed share of what the sensor saw: it is rebuilt as the never-recorded units based at each site times the activity per such unit that the fully counted sites show, while one seen-to-counted ratio moves the missing activity from the sites holding those units to the sites whose units are all recorded.",
- "driver_concrete": "Each non-towered field's 2026 piston operations are the receiver network's detections plus the operations of its based aircraft that never broadcast, at the rate per never-detected based aircraft the counted fields show, not the detections scaled by the counted fields' overall detection rate nor operations per based aircraft at those busier, counted fields.",
- "stump": "The default path scales every field's recorded operations by the counted fields' 0.815 share and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61, putting the missed operations where the network already hears the most (the flight-school fields, whose rental fleets all broadcast) instead of with the based airplanes that never broadcast, so it drops the three vintage fields O16, U44 and W33 whose missed operations are a third of their lead.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms the events to aircraft through the register, reads every file and applies the district's method scales each uncounted field's recorded piston operations by the counted fields' recorded share (0.815) and qualifies eight fields, A71 F37 K58 L08 P05 S27 T13 T61; split by flight training it qualifies nine; only the unrecorded operations per never-recorded based airplane at the counted fields (69.2) qualify the seven.",
- "domain_test": "The deciding quantity is each field's 2026 lead from piston aircraft, which airport lead inventories build from piston operations by engine class and operation type times lead per operation, the operations at a field without a count taken from the transponder network, whose misses are the operations of aircraft that never broadcast and sit where old, privately flown piston aircraft are based; with a clinic's or a depot's nouns there is no piston engine, no leaded avgas, no broadcast equipage and no tower count, so the task stops reading.",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:missed-activity-by-never-detected-units",
- "layer1": [
-  "receiver detections stamped in UTC against tower counts kept by local day and only for the tower's hours",
-  "aircraft identified by a 24-bit transponder address whose N-number and register entry change when an N-number is reissued or an aircraft re-registered, read against the register as it stands today",
-  "the FAA aircraft register's fixed-width master, deregistered, aircraft reference and engine reference files",
-  "based aircraft lists keyed by N-number with and without the N prefix, with dashes and lowercase, one aircraft listed at two fields",
-  "count studies in each consultant's own layout, operations by aircraft class, a touch-and-go counted as two operations",
-  "airport master record annual operations estimates carried unchanged for years",
-  "fuel flowage reports by fixed base operator and month"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task107": "107's first architecture asked what share of past failures a new check could have stopped, with visibility set by each source's delivery kind and measured on a one-kind shadow trial; here the quantity is activity a sensor misses at each site, the misses belong to units that never broadcast anywhere, and the rate per such unit is measured where full counts exist.",
-  "task129": "129 separates two causes that switched on together through a per-record state; here no cause is separated: the missing activity is placed with the units that generate it, rebuilt from a year of detections across every site.",
-  "task36": "36 excludes a candidate by a filed remedy and conditions a dated candidate's counterfactual; here nothing is excluded by rule and nothing is dated: each site's total is completed from its never-seen units.",
-  "task44": "44 splits a pilot's pooled effect by a behavioural moderator measured over a prior instance of the window; here the pooled quantity is a sensor's seen-to-counted ratio, the split is whether each unit broadcasts at all, and it is rebuilt from where each unit was never seen."
- },
- "lineage": [],
- "notes": "",
- "registered": "2026-10-18T00:06:07Z"
+  "task": "task470",
+  "architecture": "v2 (re-root after the heart BLOCK against task242: a pilot county's municipalities qualifying for a 2027 vacant-dwelling activation grant, each dwelling's occupancy in a November fortnight read from its own hourly electricity load beside the population register)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task470 in the same objective (Data Extraction & Conformation), batch 1",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "register-based dwelling occupancy certified for a grant from the electricity hub's hourly meter loads beside the population register, in a heated Norwegian November",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G12"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "classification_error",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the registers and the meter reads correctly and reads the scheme's definition takes each dwelling's average daily consumption over the reference fortnight and counts as vacant the dwellings under a consumption floor (the utility-data vacancy rule official statisticians use), or checks only the population register's empty dwellings against their meters, and designates the wrong municipalities, because an empty Norwegian dwelling is heated through November and draws more than many lived-in ones, and dwellings whose registered residents have left still sit on the register.",
+  "domain_test": "The deciding quantity is each municipality's share of dwellings nobody lived in, the register-based dwelling statistic official statistics builds from administrative sources, read here as the presence of a household's daily routine in each dwelling's own hourly load against the heating that runs in an empty home in a Norwegian November; with another field's nouns there is no heated empty dwelling, no population register and no household rhythm inside a meter load, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:occupancy-from-the-household-daily-cycle-against-a-heating-load",
+  "layer1": [
+    "hourly reads in UTC against a local-time household day",
+    "meter replacements splitting a dwelling's fortnight across two meter point IDs",
+    "estimated hours replaced by measured ones in a later delivery",
+    "missing hours from communication gaps",
+    "meter points keyed to addresses with unit numbers written differently from the cadastre's",
+    "a municipality renumbered after a boundary change in one register only",
+    "holiday homes and dwellings under construction on the cadastre",
+    "communal and non-dwelling meter points in the hub's extract"
+  ],
+  "stakeholder_role": "the head of the national statistics office's dwelling statistics section, who certifies the pilot county's municipal vacancy shares to the ministry for the 2027 grant",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "hourly meter reads (parquet)",
+    "rows": 0,
+    "entity": "one meter point and hour",
+    "grain": "meter point x hour",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "Norway (a fictional county of ten municipalities)",
+    "currency": "NOK",
+    "org_type": "national statistics office",
+    "invented_names": [],
+    "people": [
+      "Martine Strøm",
+      "Eirik Haug"
+    ]
+  },
+  "deliverables": [
+    "county_dwelling_occupancy_2026-11.xlsx",
+    "vacancy_grant_certification_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is whether each unit was in use during a window, seen only through a continuous meter whose level is dominated by a load that runs whether or not anyone uses the unit, so use is the presence of the users' daily rhythm in the unit's own record, not the record's level and not an official roll of users, and checking only the roll's empty units misses the units the roll still lists after their users left.",
+  "driver_concrete": "A dwelling counts as vacant when nobody lived in it in the reference fortnight, whatever the population register shows; an empty Norwegian dwelling is heated through November, so its hourly load runs with the outdoor temperature at levels many lived-in flats never reach, and only a household's daily cycle (the morning and evening rise over the night's level) in its own hourly reads shows that someone lived there; the field's consumption floor finds almost none of the heated empties, and the register's empty dwellings checked against their meters miss the dwellings whose registered residents have moved to care or left.",
+  "stump": "A competent solver conforms the cadastre, the population register and the hub's hourly reads, takes each dwelling's average daily consumption over the fortnight and counts as vacant the dwellings under a consumption floor, which finds only the unheated empties and designates one municipality; an empty dwelling in a Norwegian November is heated, so its load runs with the outdoor temperature at levels many lived-in flats never reach, and only a household's morning and evening rise over its own night-time level shows that someone lived there, which designates four.",
+  "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "shape": "01",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G12",
+        "G6"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "composition_mix",
+      "role_family": "policy_adviser",
+      "forum": "council_or_assembly",
+      "forcing_event": "budget_or_appropriation",
+      "org_family": "local_government",
+      "driver": "Activity at each site is seen through a sensor that records every event of some units and none of others, and the units it never records are spread unevenly across sites, so the missing activity is not a fixed share of what the sensor saw: it is rebuilt as the never-recorded units based at each site times the activity per such unit that the fully counted sites show, while one seen-to-counted ratio moves the missing activity from the sites holding those units to the sites whose units are all recorded.",
+      "calibration_form": "gold_standard_subsample",
+      "context_artifact": "operations_log",
+      "architecture": "v1 (the Corrisan Valley's untowered airfields qualifying for the district's 2027 Unleaded Avgas Transition Grants, each field's missed piston operations completed by the counted fields' unrecorded operations per never-broadcasting based airplane)",
+      "drawn": "2026-10-18",
+      "fate": "spent 2026-10-31 at the batch 1 repair: guard.py heart BLOCKed it against task242, registered ninety minutes earlier in another session, on strategy composition_mix, calibration gold_standard_subsample, forum council_or_assembly, forcing event budget_or_appropriation and organisation family local_government, and on pattern E against task197: the same core puzzle (a detector's capture calibrated on a gold-standard subsample and corrected by the composition of what it misses); shipped 2026-10-18, superseded before any portal result"
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "csv+docx"
+    }
+  ],
+  "differentiation": {
+    "task477": "task477 measures growth on work done by estimating each unit's exposure to payment schedules from how its sub-period totals move with the payment dates; here nothing is an exposure or a calendar effect: each dwelling's own hourly load is read for a household's daily cycle against the heating that runs in an empty home, to say whether anyone lived there in the fortnight."
+  },
+  "notes": "re-rooted 2026-10-31 (batch 1)",
+  "registered": "2026-10-31T17:41:05Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "the",
+    "rounding opener": "shares",
+    "deliverable set": "docx+xlsx"
+  }
 }

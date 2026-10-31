@@ -34,6 +34,7 @@ def holiday_week(label):
 def load(target, files):
     p = lambda k: os.path.join(target, files[k])
     res = pd.read_csv(p("results"), dtype=str, keep_default_na=False)
+    res = res.rename(columns={"released_utc": "released", "specimen_collected_utc": "specimen_collected"})   # the extract names its UTC columns
     agg = pd.read_csv(p("agg"))
     labs = pd.read_excel(p("reg"), sheet_name="Laboratories", dtype=str)
     streams = pd.read_excel(p("reg"), sheet_name="Streams", dtype=str)
@@ -50,7 +51,7 @@ def conform(D, receipt_clock="switch"):
     """collapse the result messages to tests (FCP-2 s.2): one per laboratory, accession and virus; influenza A and B
     rows one influenza test; the corrected result in place of the one it corrects; cancelled orders out; the week by
     the county date of the first release. receipt_clock: 'switch' reads receipt times as county time before the state
-    hub's broker migration and UTC from it; 'utc' reads every receipt time as the dictionary states."""
+    hub's broker migration and UTC from it; 'utc' reads every receipt time as UTC, like the extract's two _utc columns."""
     res, labs, codes = D["res"], D["labs"], D["codes"]
     fac = {}
     for r in labs.itertuples():

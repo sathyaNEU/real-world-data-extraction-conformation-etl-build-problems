@@ -1,319 +1,228 @@
 {
- "asks_exact": {
-  "BEER": {
-   "2025Q4": 916799.04,
-   "2026Q1": 720918.13,
-   "2026Q2": 866542.4,
-   "2026Q3": 1006581.6
-  },
-  "CIDR": {
-   "2025Q4": 469946.24,
-   "2026Q1": 424054.4,
-   "2026Q2": 560034.56,
-   "2026Q3": 650768.64
-  },
-  "FUEL": {
-   "2025Q4": 9395030.89,
-   "2026Q1": 10062645.32,
-   "2026Q2": 10492832.8,
-   "2026Q3": 10775326.4
-  },
-  "SPIR": {
-   "2025Q4": 1829921.14,
-   "2026Q1": 1311403.46,
-   "2026Q2": 1476688.5,
-   "2026Q3": 1515234.0
-  },
-  "WINE": {
-   "2025Q4": 1460092.81,
-   "2026Q1": 1189021.42,
-   "2026Q2": 1247276.2,
-   "2026Q3": 1270632.7
-  }
+ "budget_usd": 3200000,
+ "budget_usd_millions": 3.2,
+ "hbn_incentive_usd": 15,
+ "hbn_cap_usd": 255,
+ "cost_usd": {
+  "Cool Credit": 260,
+  "Peak Time Rewards": 64,
+  "Business Demand Partners": 24000,
+  "Home Battery Network": 1500
  },
- "asks_k": {
-  "BEER": {
-   "2025Q4": 916.8,
-   "2026Q1": 720.9,
-   "2026Q2": 866.5,
-   "2026Q3": 1006.6
-  },
-  "CIDR": {
-   "2025Q4": 469.9,
-   "2026Q1": 424.1,
-   "2026Q2": 560.0,
-   "2026Q3": 650.8
-  },
-  "FUEL": {
-   "2025Q4": 9395.0,
-   "2026Q1": 10062.6,
-   "2026Q2": 10492.8,
-   "2026Q3": 10775.3
-  },
-  "SPIR": {
-   "2025Q4": 1829.9,
-   "2026Q1": 1311.4,
-   "2026Q2": 1476.7,
-   "2026Q3": 1515.2
-  },
-  "WINE": {
-   "2025Q4": 1460.1,
-   "2026Q1": 1189.0,
-   "2026Q2": 1247.3,
-   "2026Q3": 1270.6
-  }
+ "units": {
+  "Cool Credit": 12307,
+  "Peak Time Rewards": 50000,
+  "Business Demand Partners": 133,
+  "Home Battery Network": 2133
  },
- "codes": [
-  4071,
-  6171,
-  7171
+ "design_peak": "2027-07-23 18:00",
+ "design_peak_load_mw": 1452,
+ "design_peak_temp_f": 114.6,
+ "design_day_high_f": 117.5,
+ "design_run_day": 4,
+ "design_called_days": [
+  "2027-07-20",
+  "2027-07-21",
+  "2027-07-22",
+  "2027-07-23"
  ],
- "duties": {
-  "BEER": {
-   "beta": -0.275,
-   "cut": 0.2312,
-   "cut_1dp": 0.2,
-   "eb": 199784.5551209523,
-   "eb_k": 200,
-   "eb_m": 0.2,
-   "eps": [
-    -0.275,
-    -0.418,
-    -0.493,
-    -0.532
-   ],
-   "extra_litres_k": 234.4,
-   "lam": 0.521,
-   "litres_k": 6885.7,
-   "name": "Beer",
-   "new_rate": 0.5888,
-   "new_rate_2dp": 0.59,
-   "producer": 2.3,
-   "rate27": 0.82,
-   "rate27_2dp": 0.82,
-   "shelf": 3.28,
-   "wedge_share": 0.298
+ "fourth_days": {
+  "Cool Credit": [
+   "2024-07-12",
+   "2025-07-18",
+   "2026-07-24"
+  ],
+  "Peak Time Rewards": [
+   "2024-07-12",
+   "2025-07-18",
+   "2026-07-24"
+  ],
+  "Business Demand Partners": [
+   "2024-07-12",
+   "2025-07-18",
+   "2026-07-24"
+  ],
+  "Home Battery Network": [
+   "2025-07-18",
+   "2026-07-24"
+  ]
+ },
+ "per_unit_kw_fourth_day": {
+  "Cool Credit": 0.2481,
+  "Peak Time Rewards": 0.0753,
+  "Business Demand Partners": 14.6042,
+  "Home Battery Network": 2.8952
+ },
+ "per_unit_kw_first_day": {
+  "Cool Credit": 1.1207,
+  "Peak Time Rewards": 0.1927,
+  "Business Demand Partners": 50.8253,
+  "Home Battery Network": 2.7536
+ },
+ "fourth_over_first": {
+  "Cool Credit": 0.221,
+  "Peak Time Rewards": 0.391,
+  "Business Demand Partners": 0.287,
+  "Home Battery Network": 1.051
+ },
+ "mw_exact": {
+  "Cool Credit": 3.054,
+  "Peak Time Rewards": 3.763,
+  "Business Demand Partners": 1.942,
+  "Home Battery Network": 6.176
+ },
+ "mw": {
+  "Cool Credit": 3,
+  "Peak Time Rewards": 4,
+  "Business Demand Partners": 2,
+  "Home Battery Network": 6
+ },
+ "call": "Home Battery Network",
+ "runner_up": "Peak Time Rewards",
+ "lead": 1.641,
+ "gap_mw": 2,
+ "ladder": {
+  "R0 ex post, every event": {
+   "Cool Credit": 11.38,
+   "Peak Time Rewards": 8.54,
+   "Business Demand Partners": 5.86,
+   "Home Battery Network": 5.38
   },
-  "CIDR": {
-   "beta": -0.578,
-   "cut": 0.3289,
-   "cut_1dp": 0.3,
-   "eb": 408470.9623211083,
-   "eb_k": 408,
-   "eb_m": 0.4,
-   "eps": [
-    -0.578,
-    -0.776,
-    -0.844,
-    -0.867
-   ],
-   "extra_litres_k": 692.9,
-   "lam": 0.343,
-   "litres_k": 5196.1,
-   "name": "Cider",
-   "new_rate": 0.3311,
-   "new_rate_2dp": 0.33,
-   "producer": 1.55,
-   "rate27": 0.66,
-   "rate27_2dp": 0.66,
-   "shelf": 2.32,
-   "wedge_share": 0.332
+  "R0b ex post, rows in force": {
+   "Cool Credit": 11.38,
+   "Peak Time Rewards": 8.54,
+   "Business Demand Partners": 5.86,
+   "Home Battery Network": 5.98
   },
-  "FUEL": {
-   "beta": -0.062,
-   "cut": 0.026,
-   "cut_1dp": 0.0,
-   "eb": 149642.14308640512,
-   "eb_k": 150,
-   "eb_m": 0.1,
-   "eps": [
-    -0.062,
-    -0.121,
-    -0.176,
-    -0.229
-   ],
-   "extra_litres_k": 170.2,
-   "lam": 0.946,
-   "litres_k": 60239.8,
-   "name": "Road fuel",
-   "new_rate": 0.798,
-   "new_rate_2dp": 0.8,
-   "producer": 0.55,
-   "rate27": 0.824,
-   "rate27_2dp": 0.82,
-   "shelf": 1.44,
-   "wedge_share": 0.619
+  "R1 ex ante on the day's high": {
+   "Cool Credit": 9.87,
+   "Peak Time Rewards": 7.83,
+   "Business Demand Partners": 5.13,
+   "Home Battery Network": 5.96
   },
-  "SPIR": {
-   "beta": -0.527,
-   "cut": 2.2593,
-   "cut_1dp": 2.3,
-   "eb": 882404.9965750074,
-   "eb_k": 882,
-   "eb_m": 0.9,
-   "eps": [
-    -0.527,
-    -0.688,
-    -0.736,
-    -0.751
-   ],
-   "extra_litres_k": 83.4,
-   "lam": 0.305,
-   "litres_k": 964.0,
-   "name": "Spirits",
-   "new_rate": 8.5607,
-   "new_rate_2dp": 8.56,
-   "producer": 9.0,
-   "rate27": 10.82,
-   "rate27_2dp": 10.82,
-   "shelf": 20.81,
-   "wedge_share": 0.568
+  "R1b ex ante on the 18:00 temperature proxy (high)": {
+   "Cool Credit": 9.87,
+   "Peak Time Rewards": 7.83,
+   "Business Demand Partners": 5.13,
+   "Home Battery Network": 5.96
   },
-  "WINE": {
-   "beta": -0.291,
-   "cut": 0.4343,
-   "cut_1dp": 0.4,
-   "eb": 209410.66820561813,
-   "eb_k": 209,
-   "eb_m": 0.2,
-   "eps": [
-    -0.291,
-    -0.438,
-    -0.513,
-    -0.551
-   ],
-   "extra_litres_k": 80.1,
-   "lam": 0.507,
-   "litres_k": 3709.1,
-   "name": "Wine",
-   "new_rate": 1.9357,
-   "new_rate_2dp": 1.94,
-   "producer": 7.1,
-   "rate27": 2.37,
-   "rate27_2dp": 2.37,
-   "shelf": 9.94,
-   "wedge_share": 0.286
+  "R2 ex ante with the low and three days' heat": {
+   "Cool Credit": 9.8,
+   "Peak Time Rewards": 7.73,
+   "Business Demand Partners": 5.07,
+   "Home Battery Network": 5.83
+  },
+  "R2b ex ante with the low": {
+   "Cool Credit": 10.15,
+   "Peak Time Rewards": 7.93,
+   "Business Demand Partners": 5.2,
+   "Home Battery Network": 5.83
+  },
+  "R2c ex ante with the three days' heat": {
+   "Cool Credit": 9.31,
+   "Peak Time Rewards": 7.5,
+   "Business Demand Partners": 4.9,
+   "Home Battery Network": 5.91
+  },
+  "X hottest event days (115F and over)": {
+   "Cool Credit": 10.45,
+   "Peak Time Rewards": 8.02,
+   "Business Demand Partners": 5.37,
+   "Home Battery Network": 5.85
+  },
+  "X day after an event": {
+   "Cool Credit": 7.21,
+   "Peak Time Rewards": 6.62,
+   "Business Demand Partners": 4.15,
+   "Home Battery Network": 6.09
+  },
+  "X tenth percentile of events": {
+   "Cool Credit": 6.06,
+   "Peak Time Rewards": 5.97,
+   "Business Demand Partners": 3.83,
+   "Home Battery Network": 5.64
+  },
+  "X most recent season": {
+   "Cool Credit": 11.69,
+   "Peak Time Rewards": 8.75,
+   "Business Demand Partners": 6.02,
+   "Home Battery Network": 6.0
+  },
+  "F run day as a count": {
+   "Cool Credit": 3.04,
+   "Peak Time Rewards": 4.44,
+   "Business Demand Partners": 2.41,
+   "Home Battery Network": 6.25
+  },
+  "F run-day indicators with the high": {
+   "Cool Credit": 3.28,
+   "Peak Time Rewards": 3.92,
+   "Business Demand Partners": 2.03,
+   "Home Battery Network": 6.16
+  },
+  "F ratio model on run days": {
+   "Cool Credit": 3.09,
+   "Peak Time Rewards": 3.8,
+   "Business Demand Partners": 1.97,
+   "Home Battery Network": 6.16
+  },
+  "G fourth-day mean (golden)": {
+   "Cool Credit": 3.05,
+   "Peak Time Rewards": 3.76,
+   "Business Demand Partners": 1.94,
+   "Home Battery Network": 6.18
+  },
+  "F fourth-day mean, rows in force pooled for the batteries": {
+   "Cool Credit": 3.05,
+   "Peak Time Rewards": 3.76,
+   "Business Demand Partners": 1.94,
+   "Home Battery Network": 5.98
   }
  },
- "envelope_m": 1.5,
- "first_quarter": [
-  2008,
-  1
- ],
- "gst_pct": 5,
- "order": [
-  "SPIR",
-  "CIDR",
-  "WINE",
-  "BEER",
-  "FUEL"
- ],
- "quarters": 75,
- "routes": {
-  "duty_only": {
-   "BEER": 0.169,
-   "CIDR": 0.341,
-   "FUEL": 0.144,
-   "SPIR": 0.823,
-   "WINE": 0.177
-  },
-  "family_adl11": {
-   "BEER": 0.199,
-   "CIDR": 0.409,
-   "FUEL": 0.168,
-   "SPIR": 0.885,
-   "WINE": 0.208
-  },
-  "family_linear": {
-   "BEER": 0.2,
-   "CIDR": 0.414,
-   "FUEL": 0.15,
-   "SPIR": 0.886,
-   "WINE": 0.21
-  },
-  "family_trend": {
-   "BEER": 0.205,
-   "CIDR": 0.402,
-   "FUEL": 0.146,
-   "SPIR": 0.895,
-   "WINE": 0.21
-  },
-  "golden": {
-   "BEER": 0.2,
-   "CIDR": 0.408,
-   "FUEL": 0.15,
-   "SPIR": 0.882,
-   "WINE": 0.209
-  },
-  "golden_static_revenue": {
-   "BEER": 0.181,
-   "CIDR": 0.35,
-   "FUEL": 0.136,
-   "SPIR": 0.581,
-   "WINE": 0.187
-  },
-  "impact_full": {
-   "BEER": 0.121,
-   "CIDR": 0.288,
-   "FUEL": 0.059,
-   "SPIR": 0.602,
-   "WINE": 0.128
-  },
-  "longrun_full": {
-   "BEER": 0.274,
-   "CIDR": 0.476,
-   "FUEL": 3.516,
-   "SPIR": 1.035,
-   "WINE": 0.282
-  },
-  "longrun_triangle": {
-   "BEER": 0.041,
-   "CIDR": 0.144,
-   "FUEL": 0.166,
-   "SPIR": 0.123,
-   "WINE": 0.026
-  },
-  "static_full": {
-   "BEER": 0.263,
-   "CIDR": 0.626,
-   "FUEL": 1.945,
-   "SPIR": 1.108,
-   "WINE": 0.283
-  },
-  "static_triangle": {
-   "BEER": 0.039,
-   "CIDR": 0.204,
-   "FUEL": 0.063,
-   "SPIR": 0.136,
-   "WINE": 0.026
-  },
-  "static_triangle_static_revenue": {
-   "BEER": 0.029,
-   "CIDR": 0.117,
-   "FUEL": 0.012,
-   "SPIR": 0.047,
-   "WINE": 0.019
-  },
-  "triangle_year": {
-   "BEER": 0.028,
-   "CIDR": 0.12,
-   "FUEL": 0.002,
-   "SPIR": 0.099,
-   "WINE": 0.018
-  },
-  "yearend_full": {
-   "BEER": 0.251,
-   "CIDR": 0.468,
-   "FUEL": 0.245,
-   "SPIR": 1.02,
-   "WINE": 0.26
-  }
+ "ask_a": {
+  "2026-06-17": 8696,
+  "2026-06-23": 8743,
+  "2026-06-30": 9054,
+  "2026-07-07": 9095,
+  "2026-07-08": 9131,
+  "2026-07-13": 9247,
+  "2026-07-15": 9292,
+  "2026-07-21": 9278,
+  "2026-07-22": 9286,
+  "2026-07-23": 9305,
+  "2026-07-24": 9315,
+  "2026-07-31": 9319,
+  "2026-08-04": 9366,
+  "2026-08-05": 9400,
+  "2026-08-06": 9375,
+  "2026-08-17": 9450,
+  "2026-08-26": 9475,
+  "2026-08-31": 9514,
+  "2026-09-09": 9545
  },
- "runner": "CIDR",
- "runner_m": 0.4,
- "runner_name": "Cider",
- "uprate_pct": 3,
- "winner": "SPIR",
- "winner_m": 0.9,
- "winner_name": "Spirits"
+ "ask_b_months": {
+  "2026-06": 132735,
+  "2026-07": 399825,
+  "2026-08": 248790,
+  "2026-09": 9480
+ },
+ "ask_b_capped": 2939,
+ "ask_c_months": {
+  "2026-06": 14903.1,
+  "2026-07": 16438.1,
+  "2026-08": 17324.4,
+  "2026-09": 17829.7
+ },
+ "ask_c_months_whole": {
+  "2026-06": 14903,
+  "2026-07": 16438,
+  "2026-08": 17324,
+  "2026-09": 17830
+ },
+ "events_by_season": {
+  "2024": 18,
+  "2025": 19,
+  "2026": 19
+ },
+ "battery_pooled_kw": 2.8056
 }

@@ -1,57 +1,72 @@
 ## Tags
 
-**Domain:** Economics & Econometrics (elasticity, welfare and policy impact estimation: a fixed Budget envelope given to the excise duty whose cut removes the most excess burden in the Budget year).
+**Domain:** Energy Systems & Utilities (generation capacity planning).
 **Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**Give the 2027 Budget's GBP 1.5 million envelope to spirits duty, cutting its 2027 rate of GBP 10.82 a litre by about a fifth from 1 January 2027, which removes about GBP 0.9 million of excess burden in 2027; the next best, cider, would remove about GBP 0.4 million.**
-Not road fuel, whose duty and GST are the largest share of its price but whose drivers make under a third of their response to a price cut within 2027. Not cider, the most price-responsive duty, whose small wedge leaves little gain on the extra litres a cut buys. Not beer or wine, each about a quarter of the spirits figure.
+**The USD 3.2 million expansion line should go to the Home Battery Network, which adds 6 MW to the 2027 accredited capacity against 4 MW for Peak Time Rewards, the runner-up.** The deciding figure is each programme's 18:00 reduction on the fourth consecutive event day, where the design year's peak hour falls. Not Cool Credit, which leads on the record's average event at 11 MW but adds 3 MW in that hour; not Business Demand Partners, at 2 MW.
 
 ## 2. Critical Components
 
-1. Excess burden removed in 2027 by the envelope: **spirits about GBP 0.9 million**, cider about GBP 0.4 million
-2. The gain is counted on every extra litre at the whole of the duty and GST still charged on it, not only on the cut itself
-3. Buyers' response is the part made within 2027 from a demand model with lagged adjustment: spirits nearly all of their long-run response by the fourth quarter, road fuel under a third
+1. The system peak hour of the design year, the hour beginning 18:00 MST on 23 July 2027, is the **fourth** consecutive weekday OP-7 calls.
+2. The budget buys **2,133** batteries, **50,000** rebate customers, **12,307** thermostat premises or **133** commercial sites.
+3. Accredited capacity added: Home Battery Network **6 MW**, Peak Time Rewards **4 MW**, Cool Credit **3 MW**, Business Demand Partners **2 MW**.
 
 ## 3. Step-by-Step Solution
 
-1. Stacked excise_clearances_prices_quarterly_2008-2011.xlsx (2008 to 2011, one sheet per duty) and excise_clearances_prices_quarterly_2012-2026.csv (2012 to 2026 Q3, preliminary quarters included) into one quarterly series per duty, 75 quarters at constant 2026 prices.
-2. For each duty fitted least squares of log clearances on four quarter dummies, log shelf price and the previous quarter's log clearances; the response to a price change from 1 January 2027 by quarter k is the first-quarter coefficient times (1 - adjustment^k) / (1 - adjustment).
-3. Baseline (manual, section 5): the four quarters 2025 Q4 to 2026 Q3, each standing for its quarter of 2027; producer price = the 2026 Q3 shelf price net of 5 per cent GST less the duty then in force; the 2027 rate from excise_duty_rates_2008-2027.xlsx.
-4. For each duty solved for the cut at which duty and GST received in 2027, on the litres bought each quarter after the response, fall by GBP 1.5 million (spirits by about a fifth of its rate).
-5. Excess burden removed: each quarter, the area between the fitted constant-elasticity demand curve and the producer price over the extra litres, summed over 2027: spirits 0.9, cider 0.4 GBP million.
-6. Excise on releases (customs_excise_declarations_2025-07_2026-09.csv, CE14): exact duplicate rows dropped; procedure 4071 not cancelled; a declaration that a later one names as its related declaration is replaced by it, so each release counts once, as the last declaration of its chain, in the quarter the chain's first declaration was accepted (Eskerholm date, UTC to UK time).
-7. Each item priced at quantity times the rate in force on that first day (duty_gbp repeats the declaration's total on every item row); less 6171 repayments (duty_gbp) in the quarter accepted; plus 7171 removals to premises with no approval in force that day (EKW171 from 14 November 2025, EKW157 from 9 October 2025) at that day's rate; GBP thousand to one decimal.
+1. Took the hour of highest forecast load in appendix_b_design_year_2027.csv (the hour beginning 18:00 on 23 July 2027) and applied OP-7's trigger (a weekday whose forecast high reaches 110F) to the design year's daily highs: 20 to 23 July are called, so the peak hour is the fourth event day in a row.
+2. Rebuilt each event date's run day from dr_event_log_2024-2026.csv as consecutive calendar days with an event: the record's fourth days are 12 July 2024, 18 July 2025 and 24 July 2026.
+3. Read each programme's reduction per enrolled unit in the hour beginning 18:00 MST: holdout less treatment mean kWh in ridgeway_cool_credit_panel_2024-2026.csv (UTC less seven hours), holdout less alerted mean kW in ridgeway_peak_time_rewards_2024-2026.csv, the mean verified site reduction in ridgeway_business_demand_partners_2024-2026.csv, and discharge over enrolled batteries in brightwell_fleet_event_summary_2024-2026.csv under the 3.0 kW setting of schedule 2.
+4. Averaged each over its fourth days (0.248 kW a Cool Credit premise, 0.0753 kW a rebate customer, 14.6 kW a site, 2.90 kW a battery) and multiplied by the whole units dr_expansion_costs_2027.xlsx's all-in costs buy: the Home Battery Network 6 MW, Peak Time Rewards 4, Cool Credit 3, Business Demand Partners 2.
+5. Counted, for each 2026 event day, the premises in cool_credit_enrolments_cis_2026-10-16.csv enrolled that day with a thermostat online at 23:00 UTC: the enrolled serial or a device registered in halvern_device_registry_2026-10-16.json at the same address once both are normalised, its last row in halvern_status_changes_2026.csv ONLINE, or IDLE from 7 July 2026, the first event on which halvern_unreachable_devices_2026.csv stops listing idle devices.
+6. Dropped exact repeats from brightwell_dispatch_records_2026.csv, added each battery's record hours for an event (the MST date of the dispatch start), counted a premise in battery_interconnection_register_2026-10-16.csv once per event when any of its batteries reached three hours, and paid USD 15 an event in event order up to USD 255.
+7. Kept the latest submitted row per meter and month in arroyo_nominations_2026.csv for meters in cbmu_commercial_meters_2026-10-16.csv and summed nominated kW by month.
+8. Recommended the Home Battery Network, 2 MW ahead of Peak Time Rewards.
 
 ## 4. Deliverable Answers
 
-### budget_2027_duty_cut_paper.docx
+### dr_capacity_note_2027.docx
 
-1. The duty: spirits, its 2027 rate of GBP 10.82 a litre cut by about a fifth, removing about GBP 0.9 million of excess burden in 2027.
-2. The next best: cider, about GBP 0.4 million.
-3. A bar chart of the excess burden each duty's cut would remove in 2027, spirits marked.
+1. Recommendation: expand the Home Battery Network with the USD 3.2 million.
+2. Accredited capacity each programme's expansion adds in the 2027 system peak hour, whole megawatts:
+   - Home Battery Network: 6 MW
+   - Peak Time Rewards: 4 MW
+   - Cool Credit: 3 MW
+   - Business Demand Partners: 2 MW
+3. Runner-up: Peak Time Rewards.
+4. A bar chart of each programme's megawatts sits under the table on page 1 of the note.
 
-### budget_2027_duty_envelope.xlsx
+### dr_programme_audit_2026.csv
 
-1. Excise accounted for on releases from bonded warehouses, GBP thousand:
-   - Beer, October to December 2025: 916.8
-   - Beer, January to March 2026: 720.9
-   - Beer, April to June 2026: 866.5
-   - Beer, July to September 2026: 1,006.6
-   - Cider, October to December 2025: 469.9
-   - Cider, January to March 2026: 424.1
-   - Cider, April to June 2026: 560.0
-   - Cider, July to September 2026: 650.8
-   - Wine, October to December 2025: 1,460.1
-   - Wine, January to March 2026: 1,189.0
-   - Wine, April to June 2026: 1,247.3
-   - Wine, July to September 2026: 1,270.6
-   - Spirits, October to December 2025: 1,829.9
-   - Spirits, January to March 2026: 1,311.4
-   - Spirits, April to June 2026: 1,476.7
-   - Spirits, July to September 2026: 1,515.2
-   - Road fuel, October to December 2025: 9,395.0
-   - Road fuel, January to March 2026: 10,062.6
-   - Road fuel, April to June 2026: 10,492.8
-   - Road fuel, July to September 2026: 10,775.3
+5. Cool Credit enrolled premises with a thermostat online at 16:00, each 2026 event day, whole premises:
+   - 17 June 2026: 8,696
+   - 23 June 2026: 8,743
+   - 30 June 2026: 9,054
+   - 7 July 2026: 9,095
+   - 8 July 2026: 9,131
+   - 13 July 2026: 9,247
+   - 15 July 2026: 9,292
+   - 21 July 2026: 9,278
+   - 22 July 2026: 9,286
+   - 23 July 2026: 9,305
+   - 24 July 2026: 9,315
+   - 31 July 2026: 9,319
+   - 4 August 2026: 9,366
+   - 5 August 2026: 9,400
+   - 6 August 2026: 9,375
+   - 17 August 2026: 9,450
+   - 26 August 2026: 9,475
+   - 31 August 2026: 9,514
+   - 9 September 2026: 9,545
+6. Home Battery Network incentive owed by 2026 event month, nearest dollar:
+   - June: USD 132,735
+   - July: USD 399,825
+   - August: USD 248,790
+   - September: USD 9,480
+7. Home Battery Network premises that reached the season cap: 2,939
+8. Business Demand Partners nominated capacity by month, whole kilowatts:
+   - June 2026: 14,903 kW
+   - July 2026: 16,438 kW
+   - August 2026: 17,324 kW
+   - September 2026: 17,830 kW

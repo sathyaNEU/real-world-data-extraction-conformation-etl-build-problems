@@ -55,10 +55,10 @@
   },
   "deliverables": [
     "respiratory_feed_escalations_2027-W03.xlsx",
-    "respiratory_feed_completeness_2027-W03.png"
+    "respiratory_feed_completeness_2027-W03.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "whether",
   "driver": "The decisive quantity is what each source produced in the current period, read from a share in its own output that a loss in transit cannot move and that follows the driver of its output; a filed check against the last closed period, when one source lost half its items, keeps that reading over the last period, the calendar, the other sources and the received count, each of which misses some source by more than two fifths.",
   "driver_concrete": "Each laboratory's weekly respiratory test count rises and falls with the epidemics among its own patients, on different clocks in MMWR week 3; the protocol judges the week's escalations against tests estimated the way that missed week 2's aggregate reports least, a week in which Brandmoor's interface lost half its results and never resent them; each stream's test positivity, which no lost message moves, predicts through the laboratory's testing response the tests it ran (largest week-2 miss 7.8 per cent), while last week's count, the seasonal baseline, last week's growth, the other laboratories' change and the received count miss some stream by 44.5 to 111.7 per cent.",
   "stump": "A competent solver estimates each stream's week-3 tests from its own reports with the textbook baselines, keeps last week's report as the one that missed week 2 least among them (54.0 per cent at worst), and escalates 15 streams, 9 of them complete streams whose epidemic fell in the week; the step that lands it there is taking the week's tests from the past instead of from the stream's own positivity, which moves with its patients' epidemic and not with a lost message.",
@@ -69,7 +69,8 @@
   "differentiation": {
     "task231": "task231 takes the closed share of a round's silent firms from earlier rounds the business register has caught up with (exits recorded a year late); this build has no late register and no silent units to classify: every laboratory reports, and a stream's missing results this week are told apart from tests never run through the stream's own test positivity, a ratio no lost message moves, which predicts the tests its laboratory ran.",
     "task445": "task445's first loop completes a still-open period reporter by reporter from each one's last report, slow reporters concentrated in some units; this build carries no last report forward: last week's count is the wrong route here, because each laboratory's tests move with its own patients' epidemic, read in the current week through positivity, and the aggregate report is the outcome being predicted, not a stale input to carry.",
-    "task234": "v1 left the estimator of the week's tests to the data, and the judge's second round found it open; v2 files the week-by-week check the protocol runs on the last closed week and gives week 2 an interface outage, so the check itself separates the ways: the decisive step (the stream's own positivity as the estimator) is unchanged and still unfiled."
+    "task234": "v1 left the estimator of the week's tests to the data, and the judge's second round found it open; v2 files the week-by-week check the protocol runs on the last closed week and gives week 2 an interface outage, so the check itself separates the ways: the decisive step (the stream's own positivity as the estimator) is unchanged and still unfiled.",
+    "task482": "task482 v14 carries a running period's per-member rate to the period's end by the last period's own relation at the same cut and adds the members inside unbilled episodes at the cap; here no period is carried to its end and no episode is open: each laboratory's week of tests is estimated from a share in its own output (positivity) that a loss in transit cannot move, the filed check on the last closed week choosing that reading over the calendar, the peers and the received count."
   },
   "lineage": [
     {

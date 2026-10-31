@@ -1,22 +1,49 @@
-"""Write the pack: the Statistics Office's quarterly series (two layouts), the duty and GST rates, the Treasury's
-appraisal manual, the thread, Customs' declarations with the procedure codes, CE14 and the warehouse register, and three
-files the solution never uses."""
+"""Write task118's pack into a folder: every file under target/, in the layout each producing system exports.
+
+    import build; build.build("task118/target")
+"""
 import csv
 import datetime as dt
+import io
+import json
 import os
 
-import numpy as np
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+import openpyxl
+from openpyxl.styles import Font
 
-import docs
+import docs as D
 import params as P
-import postprocess
 import world as W
 
-FILES = P.FILES
+FILES = {
+    "plan": "ra_plan_2027_capacity_accreditation.pdf",
+    "design": "appendix_b_design_year_2027.csv",
+    "op7": "op7_demand_response_dispatch_rev3.pdf",
+    "log": "dr_event_log_2024-2026.csv",
+    "weather": "cbx_daily_weather_jun-sep_2024-2026.csv",
+    "cc_panel": "ridgeway_cool_credit_panel_2024-2026.csv",
+    "ptr": "ridgeway_peak_time_rewards_2024-2026.csv",
+    "bdp": "ridgeway_business_demand_partners_2024-2026.csv",
+    "fleet": "brightwell_fleet_event_summary_2024-2026.csv",
+    "costs": "dr_expansion_costs_2027.xlsx",
+    "hbn_terms": "hbn_participation_agreement_schedule2.pdf",
+    "cis": "cool_credit_enrolments_cis_2026-10-16.csv",
+    "registry": "halvern_device_registry_2026-10-16.json",
+    "status": "halvern_status_changes_2026.csv",
+    "unreachable": "halvern_unreachable_devices_2026.csv",
+    "dispatch": "brightwell_dispatch_records_2026.csv",
+    "interconnect": "battery_interconnection_register_2026-10-16.csv",
+    "nominations": "arroyo_nominations_2026.csv",
+    "meters": "cbmu_commercial_meters_2026-10-16.csv",
+    "capacity_prices": "regional_capacity_price_outlook_2025-2027.csv",
+    "satisfaction": "dr_customer_survey_2026.xlsx",
+}
 PACK = list(FILES)
+XLSX_STAMP = dt.datetime(2026, 10, 19, 8, 40, 0)
+
+
+def _iso(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _csv(path, header, rows):
@@ -26,123 +53,144 @@ def _csv(path, header, rows):
         w.writerows(rows)
 
 
-def _xlsx(path, sheets, made, saved, person, fmts=None):
-    wb = Workbook()
-    for i, (title, header, rows, widths) in enumerate(sheets):
-        ws = wb.active if i == 0 else wb.create_sheet()
-        ws.title = title
-        if header:
-            ws.append(header)
-            for c in ws[1]:
-                c.font = Font(bold=True)
-                c.fill = PatternFill("solid", fgColor="DCE3EC")
-                c.alignment = Alignment(vertical="top", wrap_text=True)
+def _xlsx(path, sheets, creator):
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    for title, rows, bold in sheets:
+        ws = wb.create_sheet(title)
         for r in rows:
             ws.append(list(r))
-        for j, w in enumerate(widths, 1):
-            ws.column_dimensions[get_column_letter(j)].width = w
-        if header:
-            ws.freeze_panes = "A2"
-    wb.properties.creator = person
-    wb.properties.lastModifiedBy = person
-    wb.save(path)
-    postprocess.scrub(path, P.ORG, saved[:10])
-    postprocess.finish_office(path, made, saved, P.ORG, person=person)
+        for i in bold:
+            for c in ws[i]:
+                c.font = Font(bold=True)
+        for col, width in zip("ABCDEFG", (34, 30, 44, 18, 16, 16, 16)):
+            ws.column_dimensions[col].width = width
+    wb.properties.creator = creator
+    wb.properties.lastModifiedBy = creator
+    wb.properties.created = XLSX_STAMP
+    wb.properties.modified = XLSX_STAMP
+    wb.properties.title = None
+    buf = io.BytesIO()
+    wb.save(buf)
+    # openpyxl writes the zip members with the current time; rewrite them at a fixed stamp for identical rebuilds
+    import zipfile
+    src = zipfile.ZipFile(io.BytesIO(buf.getvalue()))
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for info in src.infolist():
+            data = src.read(info.filename)
+            zi = zipfile.ZipInfo(info.filename, date_time=XLSX_STAMP.timetuple()[:6])
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data)
 
 
-def iso(d):
-    return d.isoformat() if d else ""
+def build(folder):
+    os.makedirs(folder, exist_ok=True)
+    f = lambda k: os.path.join(folder, FILES[k])
+    wx = W.weather()
+    evs = [w for w in wx if w["event"]]
+
+    D.plan(f("plan"))
+    D.op7(f("op7"))
+    D.hbn(f("hbn_terms"))
+    for k, when in (("plan", b"20261012091500"), ("op7", b"20240424143000"), ("hbn_terms", b"20250314110500")):
+        raw = open(f(k), "rb").read()
+        assert raw.count(b"D:20000101000000") == 2
+        open(f(k), "wb").write(raw.replace(b"D:20000101000000", b"D:" + when))
+
+    dy = W.design_year()
+    _csv(f("design"), ["hour_beginning_mst", "dry_bulb_f", "forecast_system_load_mw"],
+         [(r["ts"].strftime("%Y-%m-%d %H:%M"), "%.1f" % r["temp"], r["load"]) for r in dy])
+
+    _csv(f("weather"), ["STATION", "NAME", "DATE", "TMAX", "TMIN"],
+         [("USW00093118", "CHOLLA BASIN INTERNATIONAL AIRPORT, AZ US", w["date"].isoformat(), "%.0f" % w["high"],
+           "%.0f" % w["low"]) for w in wx])
+
+    log = W.event_log(evs)
+    _csv(f("log"), ["ticket", "programme", "event_date", "window_mst", "forecast_high_f", "notice_issued_mst"],
+         [(x["ticket"], x["programme"], x["date"].isoformat(), "16:00-20:00", x["forecast"],
+           x["notice"].strftime("%Y-%m-%d %H:%M")) for x in log])
+
+    _csv(f("cc_panel"), ["season", "premise_key", "assigned_group", "interval_start_utc", "kwh"],
+         [(s, k, g, _iso(t), "%.3f" % v) for (s, k, g, t, v) in W.cc_panel(evs)])
+
+    _csv(f("ptr"), ["season", "event_date", "hour_beginning_mst", "group", "customers", "mean_kw"],
+         [(s, d.isoformat(), "%02d:00" % h, g, n, "%.4f" % m) for (s, d, h, g, n, m) in W.ptr_means(evs)])
+
+    _csv(f("bdp"), ["season", "event_date", "site_key", "hour_beginning_mst", "verified_reduction_kw"],
+         [(s, d.isoformat(), k, "%02d:00" % h, "%.1f" % v) for (s, d, k, h, v) in W.bdp_verified(evs)])
+
+    _csv(f("fleet"), ["event_date", "hour_beginning_mst", "batteries_enrolled", "batteries_dispatching",
+                      "dispatch_setting_kw", "discharge_kw_ac"],
+         [(d.isoformat(), "%02d:00" % h, e, n, "%.1f" % s, "%.1f" % kw) for (d, h, e, n, s, kw) in W.hbn_fleet(evs)])
+
+    cost_rows = [("2027 demand response expansion: cost per added enrolled unit", "", "", ""),
+                 ("Budget and Rates, for the 2027 budget round. Updated 2 October 2026.", "", "", ""),
+                 ("", "", "", ""),
+                 ("Programme", "Unit added", "Cost component", "USD per added unit")]
+    for p in P.PROGRAMS:
+        for comp, usd in P.COST_PARTS[p]:
+            cost_rows.append((P.NAME[p], P.UNIT[p], comp, usd))
+        cost_rows.append((P.NAME[p], P.UNIT[p], "Total, all in", P.COST[p]))
+    cost_rows += [("", "", "", ""), ("2027 expansion line in the draft budget", "", "", P.BUDGET_USD)]
+    _xlsx(f("costs"), [("2027 expansion", cost_rows, [4])], "CBMU Budget and Rates")
+
+    th = W.thermostats()
+    _csv(f("cis"), ["premise_id", "service_address", "account_no", "thermostat_serial", "enrolled_on",
+                    "unenrolled_on"],
+         [(c["premise_id"], c["service_address"], c["account_no"], c["enrolled_serial"], c["enrolled_on"].isoformat(),
+           c["unenrolled_on"].isoformat() if c["unenrolled_on"] else "") for c in th["cis"]])
+    reg = []
+    for d in sorted(th["devices"], key=lambda d: d["registered"]):
+        fw = "6.0.%d" % (3 if d["retired"] is None else 2) if (d["retired"] is None or d["retired"].date() >= P.HALVERN_IDLE_SWITCH) \
+            else ("5.8.1" if d["model"] == "HC-100" else "5.9.4")
+        reg.append({"serial": d["serial"], "model": d["model"], "install_address": d["addr"],
+                    "registered_at": _iso(d["registered"]), "retired_at": _iso(d["retired"]) if d["retired"] else None,
+                    "firmware": fw})
+    with open(f("registry"), "w", encoding="utf-8") as fh:
+        json.dump({"account": "Cholla Basin Municipal Utility (Cool Credit)", "exported_at": "2026-10-16T14:02:11Z",
+                   "devices": reg}, fh, indent=1)
+        fh.write("\n")
+    _csv(f("status"), ["serial", "status", "changed_at_utc"],
+         [(s, st, _iso(t)) for (s, st, t) in sorted(th["status"], key=lambda x: (x[2], x[0]))])
+    un, _hold = W.cc_acks(th, evs)
+    _csv(f("unreachable"), ["event_date", "serial", "command", "logged_at_utc"],
+         [(d.isoformat(), s, "PRECOOL", _iso(t)) for (d, s, t) in sorted(un, key=lambda x: (x[2], x[1]))])
+
+    ireg, recs = W.batteries(evs)
+    _csv(f("interconnect"), ["premise_id", "meter_no", "battery_serial", "inverter_make", "usable_kwh",
+                             "hbn_enrolment_no", "energised_on"],
+         [(b["premise"], b["meter"], b["serial"], b["make"], "%.1f" % b["usable_kwh"], b["enrolment"],
+           b["energised"].isoformat()) for b in sorted(ireg, key=lambda b: (b["energised"], b["serial"]))])
+    rows = [("BW%d" % x["rid"], x["enrolment"], x["serial"], _iso(x["start"]), _iso(x["end"]), "%.2f" % x["kwh"],
+             x["settled"].isoformat()) for x in recs]
+    resent = [r for r, x in zip(rows, recs) if x["settled"] == dt.date(2026, 8, 6)]
+    _csv(f("dispatch"), ["record_id", "enrolment_no", "battery_serial", "dispatch_start_utc", "dispatch_end_utc",
+                         "delivered_kwh", "settled_on"], rows + resent)
+
+    meters, noms = W.nominations()
+    _csv(f("meters"), ["meter_no", "premise_id", "rate_class", "service_address"],
+         [(m["meter"], m["premise"], m["rate"], m["addr"]) for m in sorted(meters, key=lambda m: m["premise"])])
+    _csv(f("nominations"), ["month", "arroyo_site_ref", "site_name", "service_address", "meter_no", "nominated_kw",
+                            "submitted_at_utc"],
+         [("2026-%02d" % x["month"], x["ref"], x["name"], x["addr"], x["meter"], "%.1f" % x["kw"], _iso(x["sub"]))
+          for x in sorted(noms, key=lambda x: (x["month"], x["sub"]))])
+
+    _csv(f("capacity_prices"), ["year", "month", "bilateral_on_peak_usd_per_kw_month", "bilateral_off_peak_usd_per_kw_month"],
+         W.capacity_prices())
+    sv = [("2026 demand response customer survey", "", "", ""), ("CBMU Customer Programs, fielded 12 to 30 September 2026", "", "", ""),
+          ("", "", "", ""), ("Programme", "Question", "Respondents", "Mean score")] + W.satisfaction()
+    _xlsx(f("satisfaction"), [("Results", sv, [4])], "CBMU Customer Programs")
+    scrub(folder)
+    return evs
 
 
-def build(target):
-    os.makedirs(target, exist_ok=True)
-    F = {k: os.path.join(target, v) for k, v in FILES.items()}
-    S = W.series()
-    rates = W.rate_history(S)
-    names = {c: n for c, n, *_ in P.DUTIES}
-    # the Statistics Office: 2012 onwards as published (long), the 2008-2011 back series (one sheet per duty)
-    new = []
-    for t in range(P.NEW_FROM, P.QUARTERS):
-        for code, *_ in P.DUTIES:
-            status = "Preliminary" if t >= P.QUARTERS - 2 else "Revised"
-            new.append([W.qlabel(t), names[code], "%.1f" % (S[code]["volume"][t] / 1000.0),
-                        "%.3f" % S[code]["price"][t], status])
-    _csv(F["series_new"], ["quarter", "duty", "duty_paid_clearances_thousand_litres",
-                           "average_shelf_price_gbp_per_litre_2026_prices", "status"], new)
-    sheets = []
-    for code, *_ in P.DUTIES:
-        rows = [["%d Q%d" % (P.FIRST_YEAR + t // 4, t % 4 + 1), round(S[code]["volume"][t] / 1000.0, 1),
-                 round(float(S[code]["price"][t]), 3)] for t in range(0, P.NEW_FROM)]
-        sheets.append((names[code], ["Quarter", "Duty-paid clearances (000 litres)",
-                                     "Average shelf price (GBP per litre, 2026 prices)"], rows, [12, 22, 26]))
-    _xlsx(F["series_old"], sheets, "2026-04-08T09:20:00Z", "2026-04-09T14:05:00Z", P.PEOPLE["stats"])
-    # rates
-    _xlsx(F["rates"], [("Duty rates", ["Duty", "Effective from", "Rate (GBP per litre)", "Set in"],
-                        [[names[c], d, r, "Budget %d" % (d.year - 1 if d.month == 1 else d.year)] for c, d, r in rates],
-                        [14, 14, 18, 14]),
-                       ("GST", ["Effective from", "Rate"], [[dt.date(2008, 6, 1), 0.03], [dt.date(2011, 4, 1), 0.05]],
-                        [14, 10])],
-          "2019-03-11T10:00:00Z", "2026-03-04T16:30:00Z", P.TREASURY_UNIT)
-    # documents
-    docs.manual(F["manual"])
-    postprocess.scrub(F["manual"], "Microsoft Word 2016", "2026-04-14T11:10:00")
-    docs.ce14(F["cpc_note"])
-    postprocess.scrub(F["cpc_note"], "Microsoft Word 2016", "2025-01-20T09:45:00")
-    with open(F["thread"], "w", encoding="utf-8", newline="\n") as fh:
-        fh.write(docs.thread())
-    # the declarations
-    lines, truth, whs = W.declarations(S, rates)
-    _csv(F["declarations"], ["declaration_no", "item_no", "cpc", "duty_code", "accepted_at_utc", "trader",
-                             "warehouse_from", "warehouse_to", "quantity_litres", "method_of_payment", "duty_gbp",
-                             "related_declaration", "status"],
-         [[x["declaration"], x["item"], x["cpc"], x["duty_code"],
-           x["accepted_utc"].strftime("%Y-%m-%dT%H:%M:%SZ"), x["trader"], x["warehouse_from"], x["warehouse_to"],
-           x["quantity_litres"], x["method_of_payment"], "%.2f" % x["duty_gbp"], x["reference"], x["status"]]
-          for x in lines])
-    _csv(F["cpc"], ["cpc", "description", "duty"], [list(x) for x in W.CPC])
-    _xlsx(F["warehouses"], [("Approved warehouses", ["Warehouse", "Name", "Premises", "Goods", "Approved from",
-                                                     "Approval ended"],
-                             [[w["id"], w["name"], w["premises"], w["goods"], w["approved"], w["ended"] or ""]
-                              for w in whs], [11, 30, 44, 11, 14, 15]),
-                            ("Duty codes", ["Code", "Duty"], [[c, names[c]] for c, *_ in P.DUTIES] +
-                             [["REBF", "Marked gas oil (rebated)"]], [8, 26])],
-          "2018-05-02T09:00:00Z", "2026-09-29T15:40:00Z", P.PEOPLE["customs"])
-    # distractors: monthly cash receipts, the retail price survey's shop quotes, travellers' allowance declarations
-    rs = np.random.default_rng(P.SEED + 50)
-    rec = []
-    for y in range(2020, 2027):
-        for m in range(1, 13):
-            if (y, m) > (2026, 9):
-                break
-            t = (y - P.FIRST_YEAR) * 4 + (m - 1) // 3
-            for code, *_ in P.DUTIES:
-                vol = S[code]["volume"][min(t, P.QUARTERS - 1)] / 3.0
-                cash = vol * S[code]["duty"][min(t, P.QUARTERS - 1)] * rs.normal(1.0, 0.04)
-                rec.append(["%d-%02d" % (y, m), names[code], "%.0f" % cash])
-    _csv(F["receipts"], ["month_received", "duty", "receipts_gbp"], rec)
-    quotes = []
-    shops = ["Harbour Stores", "Quayside Wines", "Ardvane Stores", "Northgate Superstore", "Port Haverel Market",
-             "Mill Lane Off Licence", "Moorside Garage", "Eastquay Fuels", "Ropewalk Deli", "Marine Parade Stores"]
-    items = {"BEER": ["Lager 4 x 440ml", "Bitter 500ml", "Pilsner 6 x 330ml"], "CIDR": ["Cider 500ml", "Cider 4 x 440ml"],
-             "WINE": ["Red wine 75cl", "White wine 75cl", "Rose wine 75cl"], "SPIR": ["Whisky 70cl", "Gin 70cl", "Vodka 70cl"],
-             "FUEL": ["Unleaded petrol (litre)", "Diesel (litre)"]}
-    for mo in range(1, 10):
-        for sh in shops:
-            for code, its in items.items():
-                if code == "FUEL" and "Garage" not in sh and "Fuels" not in sh:
-                    continue
-                for it in its:
-                    base = {"BEER": 5.6, "CIDR": 2.4, "WINE": 7.4, "SPIR": 14.3, "FUEL": 1.42}[code]
-                    quotes.append(["2026-%02d" % mo, sh, names[code], it, "%.2f" % (base * rs.normal(1.0, 0.07))])
-    _csv(F["price_quotes"], ["month", "shop", "duty", "item", "price_gbp"], quotes)
-    pas = []
-    d0 = dt.date(2025, 1, 1)
-    for k in range(5200):
-        day = d0 + dt.timedelta(days=int(rs.integers(0, 638)))
-        port = ["Port Haverel ferry", "Eskerholm Airport"][int(rs.random() < 0.45)]
-        pas.append(["PA%07d" % (2100000 + k * 3), iso(day), port, int(rs.integers(1, 5)),
-                    "%.1f" % max(0.0, rs.normal(1.1, 0.9)), "%.1f" % max(0.0, rs.normal(2.8, 2.0)),
-                    "%.0f" % max(0, rs.normal(160, 120))])
-    _csv(F["passengers"], ["declaration_ref", "arrival_date", "port", "travellers", "spirits_litres", "wine_litres",
-                           "cigarettes"], pas)
-    return dict(S=S, rates=rates, lines=lines, truth=truth, whs=whs)
+def scrub(folder):
+    """House fix H1: no writing library's signature or build-clock date in any shipped container."""
+    import subprocess
+    import sys
+    here = os.path.dirname(os.path.abspath(__file__))
+    script = os.path.join(here, "..", "..", ".claude", "skills", "reduce-house-fixes", "scripts",
+                          "scrub_producer_metadata.py")
+    r = subprocess.run([sys.executable, script, folder, "--apply", "--producer", "CBMU", "--stamp",
+                        P.EXPORT_DATE.isoformat()], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
