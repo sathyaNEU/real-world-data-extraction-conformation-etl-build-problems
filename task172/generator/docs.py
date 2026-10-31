@@ -89,7 +89,7 @@ def charter(path):
         ("head", "2. Membership and independence"),
         ("body", "The DMC has three voting members: an oncologist (chair), a second oncologist and a statistician, none of "
                  "whom has any involvement in the trial or any interest in its outcome. The unblinded independent "
-                 "statistician at KUCTU, Dr Beverley Shaw, prepares the closed reports and attends closed sessions without "
+                 "statistician at KUCTU, Dr Rachel Savage, prepares the closed reports and attends closed sessions without "
                  "a vote. The trial management group, the Chief Investigator and the funder remain blind to results by "
                  "arm until the final analysis."),
         ("head", "3. Meetings and reports"),

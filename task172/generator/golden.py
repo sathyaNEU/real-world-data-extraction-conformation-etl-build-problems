@@ -123,7 +123,7 @@ def pdf(F, path):
                             ("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story = [
         Paragraph("TALON-2 interim analysis: recommendation to the DMC", title),
-        Paragraph("Closed session, 9 December 2026. Prepared by Dr Beverley Shaw, independent statistician, KUCTU. "
+        Paragraph("Closed session, 9 December 2026. Prepared by Dr Rachel Savage, independent statistician, KUCTU. "
                   "Data cut-off %s (the 165th BICR-confirmed event); database snapshot %s." %
                   (F["cut"].strftime("%-d %B %Y"), "1 December 2026"), small),
         Spacer(1, 4),
@@ -163,8 +163,8 @@ def pdf(F, path):
     ]
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=15 * mm,
-                            bottomMargin=16 * mm, title="TALON-2 interim recommendation", author="Beverley Shaw",
-                            creator="Beverley Shaw", producer="Beverley Shaw")
+                            bottomMargin=16 * mm, title="TALON-2 interim recommendation", author="Rachel Savage",
+                            creator="Rachel Savage", producer="Rachel Savage")
 
     def deco(canvas, doc):
         canvas.saveState()
@@ -176,7 +176,7 @@ def pdf(F, path):
 
     doc.build(story, onFirstPage=deco, onLaterPages=deco)
     open(path, "wb").write(buf.getvalue())
-    PP.normalize_pdf(path, b"D:20261203154210+00'00'", b"D:20261204092633+00'00'", "Beverley Shaw")
+    PP.normalize_pdf(path, b"D:20261203154210+00'00'", b"D:20261204092633+00'00'", "Rachel Savage")
     return hr_e, hr_l
 
 
