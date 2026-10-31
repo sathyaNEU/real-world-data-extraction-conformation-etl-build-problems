@@ -149,6 +149,7 @@
  "margin": 0.217,
  "national": {
   "dse_adults": 3593178,
+  "dse_adults_million": 3.59,
   "electors": 3329031,
   "golden_adults_million": 3.63
  },

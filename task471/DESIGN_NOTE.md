@@ -105,6 +105,22 @@ No certified replay: no published coverage estimate, earlier enrolment gap or ce
 
 Lesson: a dual-system estimate is only as good as the independence of its two counts, and where the same people evade both, demographic analysis's sex ratio measures what neither count can see; no build on file corrects a capture-recapture estimate for correlation bias against an outside demographic benchmark.
 
+## Survivor anatomy
+
+Actor: the deciding property is a dependence between two counts of the same people, the census and its coverage survey missing the same men aged 18 to 49, and no column in any file holds it: MATCH and STATUS record what each count found, and the men both counts missed appear in no record at all.
+
+Link: the shortfall is read through a comparison the dual-system estimator never asks for, its men per woman by age group against the men per woman that births, deaths in two layouts and long-term movements fix cohort by cohort; no key joins the survey to the vital and border series, which meet it only by sex and year of birth, nationally.
+
+Reflex: the field's named method for the deciding quantity, dual-system estimation within the survey's cells, is the default path (R2) and ends on Westerby 26, Larchfield 28 and Glenwhite 31; risk recorded: demographic analysis's sex ratio is census coverage evaluation's own check on correlation bias, so a census specialist may reach for it, though no shipped sentence names either.
+
+Back-test: the textbook route validates on what a solver would check it against: the dual-system adults stand above the census count in 15 of 16 regions, as a net undercount does, every survey case is resolved, and its men per woman at 25 to 49 (0.99 and 0.97) sit where the Office's own 2018-base estimates put them (0.98 at 25 to 44).
+
+Second use: the census workbook, the survey's files and the roll serve the default path and the asks; the vital and border series are read by the decisive step alone, their reason for shipping being the population statistics they are, and no ask reads them (risk recorded).
+
+Shock: the correction raises one group by 3.6 to 4.8 per cent in every region alike, no file's outlier and no region's alone; its one visible trace is the dual-system men per woman falling below one from age 25 (0.99, 0.97), a shape the Office's published estimates share.
+
+Pins: the WHAT is filed in the Commission's field plan (the adults usually resident on census day whether or not the census counted them, the residential roll at the close of census day, the organisers by largest remainders with a floor of two) and the survey's methods report (its sample, matching and cells); no filed sentence names a dual-system estimator, a dependence, demographic analysis or a sex ratio, and the one sentence whose deletion unforces the call, "whether or not the census counted them", is the estimand (SF2).
+
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
@@ -133,11 +149,11 @@ Lesson: a dual-system estimate is only as good as the independence of its two co
 | SF13 | the target | the men's estimate at demographic analysis's sex ratio against the women's | demographic analysis's male total | same call (asserted) | the women's estimates agree with demographic analysis within 0.2 per cent |
 | SF14 | the ages corrected | 18 to 49, where the two disagree | 18 to 64, or every adult age, by ratio, by total or with both sexes raked | same call (asserted, also with the deaths workbook missed) | the 50 to 64 and 65 and over ratios agree within 0.2 per cent |
 | SF15 | birth timing | the share born before 4 March in each year of birth (62 of 365) | none of them | same call (asserted) | the notes: births by calendar year |
-| SF16 | the asks' window | after the close of census day to the end of 30 June 2026, the country's time, in an extract that runs to 30 September 2026 | the stamps as stored; the extract's whole span | another count | specification 2: "Dates and times are the country's time." and the reporting period; the dictionary's PROCESSED: "the old platform's in the country's time, the new platform's in UTC" with the offset and the daylight saving period |
-| SF17 | new electors: who a person is, and whether they were on the roll | each elector number once, a record being a PERSON_REF; on the roll at the close of census day if a removal in the window takes off a record nothing in the window had put on it | one person a reference; references tied by REF_TXN; a first transaction that is a removal; any removal; a number issued before census day | another count each | specification 3: "not on the roll at the close of census day", "each person once"; the dictionary: PERSON_REF "The platform's reference for the person's record", ELECTOR_NO "The elector number"; the records: every old-platform enrolment under a number issued before census day names the removal it puts right or is followed overnight by the removal of the elector's other record |
-| SF18 | removed because they had died | deaths under each platform's code, less removals a later accepted transaction anywhere in the extract reverses: a reinstatement of the same record or an enrolment naming the removal | 01 read one way throughout; only removals REF_TXN names; reversals inside the window only | another count | the dictionary (11, 12, REF_TXN), the migration notes (legacy 01), specification 4: "A removal later reversed was not a removal."; the records: each reinstatement of an old-platform removal carries the removed record's reference and elector number |
+| SF16 | the asks' window | after the close of census day to the end of 30 June 2026, the country's time, in an extract that runs to 30 September 2026 | the stamps as stored; the extract's whole span | another count | specification 2: "Dates and times are the country's time, which is 12 hours ahead of UTC, and 13 hours ahead in daylight saving time, from the last Sunday in September to the first Sunday in April." and the reporting period; the export's own format: every new-platform stamp carries its UTC mark (Z) and no old-platform stamp carries one |
+| SF17 | new electors: who a person is, and whether they were on the roll | each elector number once, a record being a RECORD_REF; on the roll at the close of census day if a removal in the window takes off a record nothing in the window had put on it | one person a record reference; references tied by CORRECTS_TXN; a first transaction that is a removal; any removal; a number issued before census day | another count each | specification 3: "not on the roll at the close of census day", "each person once"; the extract's own labels, RECORD_REF beside ELECTOR_NO, and the migration notes: "Record references and elector numbers were carried over unchanged."; the records: every old-platform enrolment under a number issued before census day names the removal it puts right or is followed overnight by the removal of the elector's other record |
+| SF18 | removed because they had died | deaths under each platform's code, less removals a later accepted transaction anywhere in the extract reverses: a reinstatement of the same record or an enrolment naming the removal | 01 read one way throughout; only removals CORRECTS_TXN names; reversals inside the window only | another count | the code list (11, 12), the extract's label CORRECTS_TXN, the migration notes (legacy 01; the new platform's codes in the code list), specification 4: "A removal later reversed was not a removal."; the records: each reinstatement of an old-platform removal carries the removed record's reference and elector number |
 | SF19 | the region of a transaction | the electorate number on the old platform's transactions is the 2020 review's, as on roll_at_2023_general_election_by_electorate.csv; on the new platform's the concordance's | every number read as the concordance's | another count | the records: the reinstatements of old-platform removals restore the same region only under the 2023 roll's numbers, and the old platform's transactions by electorate number follow the 2023 roll, not the census-day roll (checks.py) |
-| SF20 | added to the roll | an accepted enrolment or reinstatement that puts a person who was not on the roll at the close of census day on it, a removal made before census day and put right in the window included | enrolments only; enrolments that put a removal right left out | another count each | specification 3: "the people added to the roll in the reporting period who were not on the roll at the close of census day"; the dictionary: "REI the reinstatement of a removed elector"; the records: each such reinstatement names a removal the extract, which starts on census day, does not hold |
+| SF20 | added to the roll | an accepted enrolment or reinstatement that puts a person who was not on the roll at the close of census day on it, a removal made before census day and put right in the window included | enrolments only; enrolments that put a removal right left out | another count each | specification 3: "the people added to the roll in the reporting period who were not on the roll at the close of census day"; the code list: REI "Reinstatement of a removed elector"; the records: each such reinstatement names a removal the extract, which starts on census day, does not hold |
 
 ## Ladder
 
@@ -178,7 +194,7 @@ Lesson: a dual-system estimate is only as good as the independence of its two co
 | 15 | Duplicate resolution | the census's duplicates are its D records (SF8); the asks count each elector number once, the old platform's older records removed overnight as duplicates (SF17) |
 | 16 | Identity normalisation | the roll at census day and the new platform carry the 2024 electorate numbers, the old platform the 2020 ones as on the 2023 roll (SF19) |
 | 17 | Netting | removals reversed anywhere later in the extract netted, by a reinstatement of the record or an enrolment naming them (SF18) |
-| 18 | Dimensional units | people; the old platform's local time and the new platform's UTC, filed in the dictionary (SF16) |
+| 18 | Dimensional units | people; the old platform's unmarked stamps in the country's time and the new platform's marked Z (UTC), the country's offset in specification 2 (SF16) |
 | 19 | Code and status semantics | M and N, C, D, V, O, W (SF8, SF9); removal codes by platform (SF18) |
 | 20 | Integerisation | whole organisers, whole people in the asks |
 | 21 | Clause scope | the plan for the allocation; the specification for the asks |
@@ -204,14 +220,13 @@ answer.
 - **Ask A, the people added to the roll in each region between census day and 30 June 2026 who had not been on it on
   census day (16 figures, whole people).** H18 home: the campaign's baseline, set beside each region's organisers in
   the Commission's plan (section 5). Path: `roll_transactions_2025_2026.csv` (TXN_ID, PROCESSED, TXN_TYPE, REASON,
-  STATUS, ELECTOR_NO, PERSON_REF, ELECTORATE, ADDRESS_TYPE, REF_TXN), the data dictionary, the migration notes, the
+  STATUS, ELECTOR_NO, RECORD_REF, ELECTORATE, ADDRESS_TYPE, CORRECTS_TXN), the code list, the migration notes, the
   concordance, `roll_at_2023_general_election_by_electorate.csv` (ELECTORATE, REGION), the specification: six files,
   twelve columns.
-  Primary device (re-sited after stage 4 round 2, where both readers kept all 32 figures through REF_TXN and the
-  concordance's earlier numbers): D7, the true key elsewhere. An elector keeps one number for life, and the old platform
-  opened a new record (PERSON_REF) at every enrolment it took, an elector's own included: a move to another electorate,
+  Primary device (re-sited at stage 4, `## Tried and rejected`): D7, the true key elsewhere. An elector keeps one number for life, and the old platform
+  opened a new record (RECORD_REF) at every enrolment it took, an elector's own included: a move to another electorate,
   or a second form, is an enrolment under the elector's number and a new reference, and that night its duplicate check
-  removes the older record (03). No file says so and no REF_TXN joins them. One person a reference counts every mover
+  removes the older record (03). No file says so and no CORRECTS_TXN joins them. One person a record reference counts every mover
   as a new elector (52,050 more); a first transaction that is a removal does too; "anyone with a removal" leaves out
   the 705 new electors who sent a second form. Only an elector number followed through its records settles all three.
   Second device: D5, an interior population. Removals made before census day in error (the death matches of December
@@ -228,24 +243,24 @@ answer.
   Hazards: each platform's time basis (filed), census-day transactions, rejected applications, overseas addresses,
   re-enrolments of electors removed in the window, the corrections of death removals made in the window.
 - **Ask B, the electors removed from the roll in each region in that time because they had died (16 figures, whole
-  people).** H18 home: the roll's cleaning baseline beside Ask A. Path: the same log, the dictionary's codes and
-  REF_TXN, the migration notes' legacy codes, the concordance and the 2023 roll, specification 4: five files, ten
+  people).** H18 home: the roll's cleaning baseline beside Ask A. Path: the same log, the code list and
+  CORRECTS_TXN, the migration notes' legacy codes, the concordance and the 2023 roll, specification 4: five files, ten
   columns.
   Primary device: D7 again, on another join. The new platform reinstates a removal the old platform made under the key
-  the migration gave it, which the extract does not carry; netting only the removals a REF_TXN in the extract names
+  the migration gave it, which the extract does not carry; netting only the removals a CORRECTS_TXN in the extract names
   keeps those corrected deaths (102 with the next device, 2 to 15 a region). Second device: D8, a clock against a filed
   cutoff: the extract runs to 30 September 2026, and a removal reversed after 30 June was still not a removal
   (specification 4); netting inside the window keeps 34 of them, in 14 regions. Third: the shared 2020 numbers.
   Hazards: the code reissue (old 01 deceased, new 01 a request; filed), the time basis (filed), census-day removals,
-  the old platform's corrections by enrolment (REF_TXN in the extract).
+  the old platform's corrections by enrolment (CORRECTS_TXN in the extract).
 - **The construction layer:** the call and the sixteen organisers; the cracker has them.
-- **Main population zero-counts (asserted):** the call reads no transaction-log row, dictionary, migration note or 2023
+- **Main population zero-counts (asserted):** the call reads no transaction-log row, code list, migration note or 2023
   roll.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
 |---|---|---|
-| A, new electors | the round-2 readers' reading: accepted enrolments at residential addresses in the window in each platform's time, people tied through REF_TXN, anyone with a removal in the window left out, enrolments that put a removal right left out, reinstatements no addition, the regions by the concordance's numbers: the movers counted, the second forms and the corrections of earlier removals dropped and the old platform's five months misplaced, all sixteen outside their counts | miss |
-| B, removed for death | each platform's death codes in the window, reversals netted where a REF_TXN in the extract names them, the regions by the concordance's numbers: the old platform's removals reinstated on the new platform kept, the late reversals kept and the five months misplaced, fifteen of sixteen outside their counts | miss |
+| A, new electors | the careful reading: accepted enrolments at residential addresses in the window in each platform's time, people tied through CORRECTS_TXN, anyone with a removal in the window left out, enrolments that put a removal right left out, reinstatements no addition, the regions by the concordance's numbers: the movers counted, the second forms and the corrections of earlier removals dropped and the old platform's five months misplaced, all sixteen outside their counts | miss |
+| B, removed for death | each platform's death codes in the window, reversals netted where a CORRECTS_TXN in the extract names them, the regions by the concordance's numbers: the old platform's removals reinstated on the new platform kept, the late reversals kept and the five months misplaced, fifteen of sixteen outside their counts | miss |
 
 - Pair ceiling: 35.2 (weights 38 / 7 / 55: the cracker 46.7 on the main block, the instructions and 1 of the 32 ask
   figures; the mirror, R2, 23.7 on 8 of the 16 organisers, the instructions and the same ask figure)
@@ -258,27 +273,47 @@ answer.
 
 ## Pre-ship check
 
-- **The 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each region's census-day adult
-  population corrected for coverage the way census coverage measurement corrects it, dual-system estimates within
-  post-strata with their correlation bias measured against demographic analysis's sex ratios; checks.py executes the
-  analyst test on the clean truth (the dual-system estimates file the default path's eight wrong regions, the decisive
-  step alone files the golden). Layers: the workbook layouts, the deaths split across two files, the provisional
-  period, the renumbered electorates and every roll-log item are the systems' own and neutral on the call (R2); the
-  call reads no transaction-log row, dictionary, migration note or 2023 roll (asserted). Three rules: no decoy, memo
-  or earlier allocation ships; no field reading decides; executing every filed rule files the default path.
-- **Judge:** v5r1 NOT_DETERMINISTIC and FIX_NOW (the unfiled UTC, filed), v5r2 DETERMINISTIC and APPROVE (Gate G
-  method_or_model_selection and analytical_non_defect, Gate H pass); v5r3 on the shipping pack DETERMINISTIC and
-  APPROVE, all 48 graded figures reproduced, Gate H pass.
-- **Readers:** six scored readers in three rounds, all missing the call (five on the default path, one with the imputed
-  records kept); rounds 1 and 2 kept 32 of 32 ask figures through documented devices, so the asks were re-sited;
-  round 3 on 5b89c291378b1d76 kept 1 and 0 of 32 (3.1 and 0.0 per cent), score_reader exit 0 on both.
-- **Free gates (2026-10-20):** checks.py 198 of 198, verify.py PASS, two builds byte-identical, target.zip
-  2b60d1c33704dd7d cut from the final build (20 files; the census workbook's release dated 19 August 2025 after the
-  judge's date note, before the methods report that cites it, no figure moved), figures_check.py 77 of 77, precut.py 51 checks clean,
-  voice-check clean, guard.py surface clean and heart WARN (answered in the draw), ceiling.py pair 35.2.
-- **leak.py REVIEW lines, each harmless:** the field operations summary names the sixteen regions (the call is a list
-  of region names), and the methods report and series notes use the survey's and the registrations' own words without
-  naming a dependence, demographic analysis or a sex ratio.
+- **The 10/10 rules re-read against the built pack (2026-10-31 reship).** Domain: the deciding quantity is each
+  region's census-day adult population corrected for coverage the way census coverage measurement corrects it,
+  dual-system estimates within post-strata with their correlation bias measured against demographic analysis's sex
+  ratios; checks.py executes the analyst test on the clean truth (the dual-system estimates file the default path's
+  eight wrong regions, the decisive step alone files the golden). Layers: the workbook layouts, the deaths split across
+  two files, the provisional period, the renumbered electorates and every roll-log item are the systems' own and
+  neutral on the call (R2); the call reads no transaction-log row, code list, migration note or 2023 roll (asserted).
+  Three rules: no decoy, memo or earlier allocation ships; no field reading decides; executing every filed rule files
+  the default path.
+- **Judge:** v5r1 NOT_DETERMINISTIC and FIX_NOW (the unfiled UTC, filed), v5r2 and v5r3 DETERMINISTIC and APPROVE.
+  v5r4 on the reshipped pack (34853a79): DETERMINISTIC with SOLUTION_WRONG on critical component 2 only, FIX_NOW (the
+  dual-system adults recompute 69 people off, 3,593,109 against 3,593,178, under another implementation of the same
+  cells; now stated as about 3.59 million), Gate G method_or_model_selection and analytical_non_defect, Gate H pass,
+  every graded figure reproduced, no competing answer surviving on the call; its cosmetic note (CORRECTS_TXN values
+  written R25--006800 for removals before 2025) fixed in the generator (each year's own series, R24- and R25-).
+  Its watch lines need no change: the late reversals are the literal reading of specification 4 and the golden's; the
+  imputed-records reading is SF7, closed by methods report 3.3.
+  v5r5, the one re-judge of that FIX_NOW, on c2f85cf64789081a: DETERMINISTIC with no SOLUTION_WRONG, every committed
+  figure reproduced region by region, Gate G and Gate H pass; its disposition FIX_NOW rests on one optional pin (the old
+  platform's electorate numbers as the 2023 roll's), which the judge itself rates APPROVE-defensible because the data
+  force it (102 of 102 reinstated old-platform removals agree by region under the 2023 roll); the pin would file Ask A
+  and B's designed device (D2), so it is not added. Its thread's 65-and-over alternative did not reproduce (demographic
+  analysis stands at 0.9994 and 0.9984 of the dual-system estimates for men and women there), and checks.py now asserts
+  the levels at 50 to 64 and 65 and over within 1 per cent (201 of 201).
+- **Leak reader (2026-10-31, fresh unzip of 34853a79):** no decisive-step sentence, no ranking or helper-only file
+  (the code list read as the Commission's own), question 6 an analytical choice; findings recorded in
+  `leak_check_report.md`.
+- **Free gates on the final cut (2026-10-31, target.zip c2f85cf64789081a):** checks.py 201 of 201, verify.py PASS,
+  two builds byte-identical, figures_check.py 77 of 77, precut.py 61 checks with 0 FAIL (one WARN, the field's
+  method, recorded under Reflex), voice-check clean, leak.py REVIEW with no LEAK, ceiling.py pair 35.2, guard.py
+  surface exit 0 (task258 and task261 promoted for the author's read), heart BLOCK on four axis bans only.
+- **Heart axis bans, flagged to the author:** ban.pairing, ban.artifact and ban.forcing_event against task477 and
+  ban.shape against task475, both drawn on 2026-10-20 before this card's 17:17 registration; the heart was WARN at
+  the ship on 10-20, so the bans are the guard's newer axes applied to a shipped draw. A redraw would re-root a
+  shipped world, so they are left for the author's call. The similarity BLOCK (task258, task273 v3) is answered by
+  two differentiation lines on the card.
+- **leak.py REVIEW lines, each harmless:** the census workbook's Notes sheet (the Office's table footnotes), the
+  specification's Definitions sheet (the deliverable's definitions), the plan's organiser total (the decision
+  parameter), the field operations summary's region names (the call is a list of region names), and the methods
+  report and series notes, which use the survey's and the registrations' own words without naming a dependence,
+  demographic analysis or a sex ratio.
 
 ## Tried and rejected
 
@@ -480,3 +515,16 @@ answer.
   one, with no REF_TXN; removals made before census day and put right in the window add people; the new platform's
   reinstatements of old-platform removals name the keys the migration gave them; the extract runs to 30 September
   2026, so a reversal after the window still nets.
+- 2026-10-31, the 10-30 re-check: the roll extract's data dictionary was a describing file (leak.py sweep 1, LEAK)
+  and is out. Its facts moved to the export's own format and the governing documents: the new platform's stamps carry
+  their UTC mark (Z) and specification 2 gives the country's offset with the daylight saving period; the new platform's
+  codes are a plain code list, roll_transaction_codes.csv, which the migration notes point to; the record's reference
+  and the removal a transaction corrects are the extract's own labels (RECORD_REF, CORRECTS_TXN). The series notes'
+  layout sentence for the deaths workbook is out, the metadata's subdomain no longer narrates the method, and the
+  prompt drops the region count for the what form. No graded figure moved (figures.json unchanged).
+- 2026-10-31, judge v5r4 (FIX_NOW): critical component 2 stated to the person (3,593,178) recomputed 69 people off
+  under another implementation of the same cells, a precision the cells do not force; it is stated as about 3.59
+  million. The old platform's numbers for removals made before 2025 had run negative (R25--006800, the census-day
+  counter carried back at the extract's pace) and are numbered in their own year's series (R24-, R25-).
+- 2026-10-31, judge v5r5: an electorate-numbering pin in the migration notes, offered as optional; rejected because
+  it files Ask A and B's device D2, which the data force (the judge rates the build APPROVE-defensible without it).

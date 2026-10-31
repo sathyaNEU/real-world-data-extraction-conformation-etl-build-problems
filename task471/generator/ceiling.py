@@ -1,8 +1,9 @@
 """The pair ceiling on the cut pack. The cracker lands the call and reads the asks the careful way the round-2 readers
 did: every filed rule executed (accepted transactions, residential addresses, the window from the close of census day
-in each platform's time basis, each person once, the platforms' death codes from the dictionary and the migration
-notes), a person every reference REF_TXN ties together, on the roll on census day if they have a removal in the window,
-enrolments that put a removal right left out, reinstatements netted only where REF_TXN names the removal, and the
+in each platform's time basis, each person once, the platforms' death codes from the code list and the migration
+notes), a person every record reference CORRECTS_TXN ties together, on the roll on census day if they have a removal in
+the window, enrolments that put a removal right left out, reinstatements netted only where CORRECTS_TXN names the
+removal, and the
 electorate numbers read as the concordance's; the mirror stops at the default path (dual-system estimates within the
 survey's cells) and reads the asks the same way. Weights 38 / 7 / 55: the call 8, each of the 16 regions' organisers
 1.875, each of the 32 ask figures 55/32. The sensitivity lines climb the asks' ladder one find at a time.

@@ -4,22 +4,25 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, reader, golden, anchor, decisive, readers, county, method, missed, deaths, default, architecture, population, coverage, dual-system, analysis, reading, border, estimates, selection, record, correction, report, scored, national
+Stump terms swept: regions, survey, reader, golden, decisive, anchor, method, deaths, default, readers, county, population, counts, missed, record, architecture, border, coverage, dual-system, analysis, report, reading, estimates, selection, correction
 
-## 3 answer figures in the pack (REVIEW 1)
+## 1 file names (REVIEW 2)
+- **REVIEW** `census_2025_usual_residents_by_region.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+- **REVIEW** `enrolment_gap_file_specification.xlsx`: a sheet named 'Definitions': confirm it is the organisation's own notes and does not describe the data's columns or files
+
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `enrolment_campaign_plan_2027.docx`: golden figure 200 appears: ...3. Organisers 3.1 The campaign's 200 field organisers are shared among the 16 regions...
 - **REVIEW** `census_2025_field_operations_summary.pdf`: carries 17 of 18 distinctive words of the committed call: 'Ardenmere 27, Merriton 20, Westerby 25, Larchfield 26, Glenwhite 29, Hawksridge 5, Fairholme 11, Eastwold 12, Corran Val'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `pes_2025_methods_report.pdf`: 9 of 25 stump-paragraph terms appear (survey, method, missed, population, estimates, selection); read whether the document names the move
-- **REVIEW** `vital_and_border_series_notes.pdf`: 5 of 25 stump-paragraph terms appear (deaths, population, border, record, national); read whether the document names the move
+- **REVIEW** `pes_2025_methods_report.pdf`: 9 of 25 stump-paragraph terms appear (survey, method, population, counts, missed, record); read whether the document names the move
+- **REVIEW** `vital_and_border_series_notes.pdf`: 4 of 25 stump-paragraph terms appear (deaths, population, record, border); read whether the document names the move
 
 ## 9 dates after the setting (INFO 1)
 - **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -32,6 +35,7 @@ Stump terms swept: survey, reader, golden, anchor, decisive, readers, county, me
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -76,3 +80,16 @@ Architecture 5, round 3 (target.zip 5b89c291378b1d76), two fresh isolated reader
   analytical choice (dual-system estimation by cell).
 - **Ruling:** the decisive step held on all six readers in three rounds; the ask devices held (1 and 0 of 32, under a
   fifth), each reader stopping at a different find. No decisive-step sentence, no helping file, no main-call fork.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 20 files, target.zip 34853a7979772f12)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none. The nearest is plan 2.1, "whether or not the census counted them", which files the estimand and no method; the methods report's estimation cells read as the survey's own output specification.
+2. Ranking file: none. 3. Helper-only file: none. The code list reads as the Commission's own (the migration notes call it "the code list that comes with each extract"), the migration notes as a Data Services notice in the organisation's voice, the series notes as a statistics office's notes for users. 4. Answer-like figure or name: none; the plan carries the organiser total, the floor of two and the rule, and no region's allocation; the field operations summary carries dwelling counts and response shares only.
+5. Literal sentences: plan 2.2, 2.3 and 3.1 fix the roll, the subtraction and the sharing once the adults are known; specification 2 to 4 fix the asks' window in the country's time with its offset from UTC, each person once, and reversed removals netted.
+6. What decides: an analytical choice, estimating the people the census missed; the asks turn on codes, time zones, reversals and duplicate corrections, which is legal for the asks.
+
+Rulings on the REVIEW lines: the census workbook's Notes sheet, harmless (the Office's own table footnotes, per the reader); the specification's Definitions sheet, harmless (the deliverable's definitions, not the inputs' columns); the plan's organiser total, harmless (the decision parameter, filed there); the field operations summary's region names, harmless (the call is a list of region names, and the summary holds no adult count). The two stump-vocabulary lines were ruled in the main thread: the methods report and the series notes use the survey's and the registrations' own words and name no dependence, demographic analysis or sex ratio; harmless.
+
+Realism tells raised and kept: the specification's time-basis definition is long for a layout sheet (kept: a definitions sheet states its clock in full, and the country's offset is otherwise unfiled); the plan's round organiser total and tidy prose (kept, unchanged since the judge's approval); the census workbook's note 4 slightly guide-like (kept, the Office's own footnote). No toolchain names.

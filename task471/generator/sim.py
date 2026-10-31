@@ -355,7 +355,7 @@ def roll_log(reg, roll_counts, seed):
         tid = "tmp%09d" % serial[0]
         if local < switch:
             return tid, local.strftime("%Y-%m-%d %H:%M:%S"), "old"
-        return tid, local_to_utc(local).strftime("%Y-%m-%d %H:%M:%S"), "new"
+        return tid, local_to_utc(local).strftime("%Y-%m-%dT%H:%M:%SZ"), "new"
 
     def business(d):
         return _dt.datetime.combine(d, _dt.time(8, 0)) + _dt.timedelta(seconds=int(rng.integers(0, 9 * 3600 + 1800)))
@@ -584,16 +584,23 @@ def roll_log(reg, roll_counts, seed):
         r[0] = nid
         if r[2] == "NEW" and r[5] == "A" and r[6] == "NEW_NO":
             r[6] = new_no()
-    per_day = (seq - 132001) / float((switch - start).days)
+    jan1 = _dt.datetime(W.CENSUS_DAY.year, 1, 1)
+    pace = (132001 - 1) / ((start - jan1).total_seconds() / 86400.0)    # the 2025 series' pace up to census day
     old_used = set()
 
     def old_key(t0):
-        """the old platform's running number of a transaction before the extract, at its daily pace"""
-        k = 132001 - int((start - t0).total_seconds() / 86400.0 * per_day) - int(rng.integers(1, 40))
-        while k in old_used:
-            k -= 1
-        old_used.add(k)
-        return "R25-%07d" % k
+        """the old platform's running number of a transaction before the extract: the series starts afresh each
+        calendar year (R25- in 2025, R24- in 2024), at the pace the 2025 series ran up to census day"""
+        y0 = _dt.datetime(t0.year, 1, 1)
+        k = 1 + int((t0 - y0).total_seconds() / 86400.0 * pace) - int(rng.integers(1, 40))
+        if t0 >= jan1:
+            k = min(k, 131999)
+        k = max(k, 1)
+        pre = "R%02d" % (t0.year % 100)
+        while (pre, k) in old_used:
+            k += 1
+        old_used.add((pre, k))
+        return "%s-%07d" % (pre, k)
     for r in rows:
         if isinstance(r[6], tuple):
             r[6] = by_tmp[r[6][1]][6]

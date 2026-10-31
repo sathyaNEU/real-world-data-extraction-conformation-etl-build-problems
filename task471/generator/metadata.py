@@ -16,17 +16,15 @@ def write(target, out_path, deliverables, n=None):
     meta = {
         "task": "task471",
         "architecture": 5,
-        "title": "How many of the Electoral Commission's 200 organisers for its 2027 enrolment campaign each of the 16 "
-                 "regions gets, in proportion to its adults not on the roll on census day, 4 March 2025; with each "
+        "title": "How many of the Electoral Commission's organisers for its 2027 enrolment campaign each region "
+                 "gets, in proportion to its adults not on the roll on census day, 4 March 2025; with each "
                  "region's people added to the roll who had not been on it on census day and electors removed because "
                  "they had died, from census day to 30 June 2026, and a bar chart of the organisers",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "census-register-administrative-data-quality (a national statistics office estimates each region's "
-                     "adults on census day from the census and its post-enumeration survey, checks the estimates "
-                     "against demographic analysis of births, deaths and long-term movements, and conforms them with "
-                     "the electoral roll and its transaction log into the Commission's enrolment-gap file)",
+        "subdomain": "census-register-administrative-data-quality (the enrolment-gap file a national statistics "
+                     "office prepares for its electoral commission)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "05: an allocation to a fixed total: the 200 organisers shared among the 16 regions, with each "
+        "prompt_shape": "05: an allocation to a fixed total: the campaign's organisers shared among the regions, with each "
                         "region's new electors and removals because of death since census day",
         "as_of": W.AS_OF.isoformat(),
         "deliverables": deliverables,
@@ -36,7 +34,7 @@ def write(target, out_path, deliverables, n=None):
             "basis": "the Office's 2018-base population estimates at 30 June 2024, eight months before census day, by "
                      "five-year-and-wider age groups that do not separate the adults",
             "ruled_out_by": "the plan's section 2.1: the adults usually resident in the region on census day, 4 March 2025"},
-        "stated_inputs": ["200", "16", "4 March 2025", "30 June 2026", "2027"],
+        "stated_inputs": ["4 March 2025", "30 June 2026", "2027"],
         "input_gates": {"files": len(files), "formats": fmts, "largest_file": big,
                         "largest_file_rows": rows.get(big)},
         "sources": [
@@ -47,7 +45,7 @@ def write(target, out_path, deliverables, n=None):
                        "methods report, the vital and border series by year of birth with their notes, an electoral "
                        "commission's roll at census day by electorate, its electorate concordance, its roll at the 2023 "
                        "general election by electorate, its roll transaction "
-                       "log with a data dictionary and platform migration notes, its campaign field plan, the office's "
+                       "log with its code list and platform migration notes, its campaign field plan, the office's "
                        "file specification, earlier population estimates and a census field operations summary; the "
                        "country is unnamed and the office, commission, regions, electorates and people named are "
                        "fictional",

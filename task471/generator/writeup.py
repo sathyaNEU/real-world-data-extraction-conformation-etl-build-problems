@@ -51,7 +51,7 @@ def write(fig_path, out_path):
     out.append("1. Electors on the roll at the close of census day with a residential address: **%s**." % _n(
         nat["electors"]))
     out.append("2. Adults on census day by dual-system estimation within the survey's region, sex and age-group cells: "
-               "**%s**." % _n(nat["dse_adults"]))
+               "about **%s million**." % _r2(nat["dse_adults_million"]))
     out.append("3. Men per woman aged 18 to 24, 25 to 34 and 35 to 49: dual-system estimates **%s**; demographic analysis "
                "**%s**." % (_names(_r2(g["ratio_dse"]) for g in young), _names(_r2(g["ratio_da"]) for g in young)))
     out.append("4. Dual-system estimates of men aged 18 to 49 against demographic analysis: about **%d per cent** short, "
@@ -64,7 +64,7 @@ def write(fig_path, out_path):
         "In each estimation cell of pes_2025_methods_report.pdf (region by sex by age group) took the count in "
         "census_2025_usual_residents_by_region.xlsx less its imputed records, kept the share of the cell's records in "
         "pes_2025_census_records.csv with STATUS C and raised that by the cell's people in pes_2025_people.csv over "
-        "those with MATCH M: dual-system estimates of %s adults." % _n(nat["dse_adults"]),
+        "those with MATCH M: dual-system estimates of about %s million adults." % _r2(nat["dse_adults_million"]),
         "Rebuilt the population on census day by sex and single year of age, cohort by cohort, from %s less deaths "
         "(%s and %s) and departures plus arrivals (%s), the period 2025-01-01/2025-03-03 included: men per woman of %s "
         "at 18 to 24, 25 to 34 and 35 to 49, against the dual-system estimates' %s, the women's estimates agreeing with "
@@ -75,20 +75,21 @@ def write(fig_path, out_path):
         "estimated: about %s million adults." % (_names(str(p) for p in pct), _r2(nat["golden_adults_million"])),
         "Subtracted each region's electors and shared the %d organisers on the differences by largest remainders "
         "(plan 3.1; no share falls under two): the organisers above." % fig["call"]["total"],
-        "New electors: in %s read PROCESSED in each platform's time basis (%s) and the old platform's (R25-) electorate "
+        "New electors: in %s read PROCESSED in the country's time (a stamp marked Z is UTC; %s, note 2, gives the "
+        "offset) and the old platform's (R25-) electorate "
         "numbers as those of %s, the 2020 review's (a record the old platform removed and the new platform reinstated "
-        "keeps its region only under them); took a person as an elector number and a record as a PERSON_REF (the old "
+        "keeps its region only under them); took a person as an elector number and a record as a RECORD_REF (the old "
         "platform opened a new record at every enrolment, an elector's move or second form included, and removed the "
         "older record overnight as a duplicate); a person was on the roll at the close of census day if a removal from 5 "
         "March 2025 to 30 June 2026 in the country's time took off a record nothing in that period had put on it; counted "
         "each person not on it whom an accepted enrolment or reinstatement with a residential address put on the roll in "
         "that period (a removal made before census day and put right in it included), once, at the address of the first: "
-        "%s." % (P.FILES["log"], P.FILES["dictionary"], P.FILES["roll_2023"], _n(asks["new_total"])),
+        "%s." % (P.FILES["log"], P.FILES["spec"], P.FILES["roll_2023"], _n(asks["new_total"])),
         "Removed because they had died: the accepted DEL rows in the same period with reason 01 on the old platform "
         "(deceased, %s) or 11 or 12 on the new (%s), in the region of their electorate read the same way, less those a "
         "later accepted transaction anywhere in the extract reverses: a reinstatement of the same record (the new "
         "platform names an old-platform removal by a key the extract does not carry) or an enrolment naming the removal "
-        "in REF_TXN: %s." % (P.FILES["migration"], P.FILES["dictionary"], _n(asks["died_total"])),
+        "in CORRECTS_TXN: %s." % (P.FILES["migration"], P.FILES["codes"], _n(asks["died_total"])),
         "Wrote enrolment_gap_allocation_2027.csv in the layout of enrolment_gap_file_specification.xlsx and "
         "enrolment_gap_allocation_2027.png, a bar chart of each region's organisers.",
     ]

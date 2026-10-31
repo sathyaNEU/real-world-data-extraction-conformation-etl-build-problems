@@ -74,7 +74,7 @@ class Pack:
             if int(r["DEPARTURES"]):
                 d["departures"][k] = int(r["DEPARTURES"])
         self.d = d
-        self.log = rows(f("log"))
+        self.log = M.log_from_rows(rows(f("log")))
         self.codes = list(W.CODES)
 
     # ------------------------------------------------------------------ the call

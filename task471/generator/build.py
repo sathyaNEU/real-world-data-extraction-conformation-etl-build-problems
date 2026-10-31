@@ -34,7 +34,6 @@ OOXML = {   # creator, last modified by, created, modified, company, excel
     "plan": (W.PEOPLE["commission"], W.PEOPLE["commission"], "2026-09-08T21:14:00Z", "2026-09-21T23:02:51Z",
              W.COMMISSION, False),
     "spec": (W.PEOPLE["estimates"], W.PEOPLE["estimates"], "2026-09-23T22:40:00Z", "2026-09-29T20:17:09Z", W.OFFICE, True),
-    "dictionary": ("Data Services", "Data Services", "2025-09-08T23:05:00Z", "2026-09-30T21:31:47Z", W.COMMISSION, True),
     "census": ("Census Outputs", "Census Outputs", "2025-08-13T21:00:00Z", "2025-08-18T19:44:12Z", W.OFFICE, True),
     "deaths_hist": ("Vital Statistics", "Vital Statistics", "2019-05-02T22:10:00Z", "2025-04-13T21:58:30Z", W.OFFICE, True),
 }
@@ -42,7 +41,7 @@ AS_OF = {   # each file's date as its source dated it
     "census": "2025-08-19", "pes_people": "2025-09-26", "pes_records": "2025-09-26", "pes_meshblocks": "2025-09-26",
     "pes_report": "2025-09-26", "roll": "2026-09-17", "electorates": "2024-11-30", "births": "2025-04-14",
     "deaths_hist": "2025-04-14", "deaths": "2025-04-14", "movements": "2025-04-14", "series_notes": "2025-04-14",
-    "plan": "2026-09-22", "spec": "2026-09-30", "log": "2026-10-01", "dictionary": "2026-10-01",
+    "plan": "2026-09-22", "spec": "2026-09-30", "log": "2026-10-01", "codes": "2026-10-01",
     "migration": "2025-09-09", "estimates_2024": "2024-10-30", "field_ops": "2025-07-22", "roll_2023": "2023-11-09",
 }
 
@@ -80,7 +79,8 @@ def build(out, x=None, quiet=False):
     n["births"] = P.write_csv(f("births"), P.BIRTH_COLS, P.birth_rows(x), lineterminator="\n")
     n["deaths"] = P.write_csv(f("deaths"), P.DEATH_COLS, P.death_rows(x), lineterminator="\n")
     n["movements"] = P.write_csv(f("movements"), P.MOVE_COLS, P.movement_rows(x), lineterminator="\n")
-    n["log"] = P.write_csv(f("log"), P.LOG_COLS, P.log_rows(x))
+    n["log"] = P.write_csv(f("log"), P.LOG_HEADER, P.log_rows(x))
+    n["codes"] = P.write_csv(f("codes"), P.CODE_COLS, P.CODE_ROWS)
     n["estimates_2024"] = P.write_csv(f("estimates_2024"), P.EST_COLS, P.estimate_rows(x))
     DC.write_census_workbook(f("census"), P.census_table(x))
     DC.write_deaths_history(f("deaths_hist"), P.death_wide(x))
@@ -89,7 +89,6 @@ def build(out, x=None, quiet=False):
     DC.write_series_notes(f("series_notes"))
     DC.write_plan(f("plan"))
     DC.write_spec(f("spec"))
-    DC.write_dictionary(f("dictionary"))
     DC.write_migration(f("migration"))
     DC.write_field_ops(f("field_ops"), field_rows(x))
     for k, (c, m) in PDF_STAMPS.items():

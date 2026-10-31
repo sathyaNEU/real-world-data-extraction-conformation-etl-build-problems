@@ -130,15 +130,16 @@ def shares(gap):
 
 
 def country_date(row):
-    t = dt.datetime.strptime(row["PROCESSED"], "%Y-%m-%d %H:%M:%S")
-    if not row["TXN_ID"].startswith("R25-"):
+    """a stamp with its UTC mark (Z) in the country's time; an unmarked stamp is the country's time as written"""
+    t = dt.datetime.strptime(row["PROCESSED"].replace("T", " ").rstrip("Z"), "%Y-%m-%d %H:%M:%S")
+    if row["PROCESSED"].endswith("Z"):
         t = t.replace(tzinfo=dt.timezone.utc).astimezone(COUNTRY)
     return t.date(), t.replace(tzinfo=None)
 
 
 def asks(target, region_now, region_then):
     """the old platform's (R25-) electorate numbers are those of the 2023 general election's roll; a person is an elector
-    number and a record a person reference; a person was on the roll at the close of census day if a removal in the
+    number and a record a record reference; a person was on the roll at the close of census day if a removal in the
     window took off a record nothing in the window had put on the roll; each person not on it whom an accepted enrolment
     or reinstatement put on the roll in the window counts once, at the address of the first; a removal was reversed by a
     later accepted reinstatement of its record or a later accepted enrolment naming it, anywhere in the extract"""
@@ -148,10 +149,10 @@ def asks(target, region_now, region_then):
     window = [(t, r) for t, i, r in timed if FIRST <= t.date() <= LAST and r["STATUS"] == "A"]
     put_on, before, first = set(), set(), {}
     for t, r in window:
-        if r["TXN_TYPE"] == "DEL" and r["PERSON_REF"] not in put_on:
+        if r["TXN_TYPE"] == "DEL" and r["RECORD_REF"] not in put_on:
             before.add(r["ELECTOR_NO"])
         if r["TXN_TYPE"] in ("NEW", "REI"):
-            put_on.add(r["PERSON_REF"])
+            put_on.add(r["RECORD_REF"])
             first.setdefault(r["ELECTOR_NO"], r)
     new = {}
     for who, r in first.items():
@@ -162,15 +163,15 @@ def asks(target, region_now, region_then):
         if r["STATUS"] != "A":
             continue
         if r["TXN_TYPE"] == "REI":
-            later.setdefault(("record", r["PERSON_REF"]), []).append(t)
-        if r["TXN_TYPE"] in ("REI", "NEW") and r["REF_TXN"]:
-            later.setdefault(("named", r["REF_TXN"]), []).append(t)
+            later.setdefault(("record", r["RECORD_REF"]), []).append(t)
+        if r["TXN_TYPE"] in ("REI", "NEW") and r["CORRECTS_TXN"]:
+            later.setdefault(("named", r["CORRECTS_TXN"]), []).append(t)
     died = {}
     for t, r in window:
         codes = ("01",) if r["TXN_ID"].startswith("R25-") else ("11", "12")
         if r["TXN_TYPE"] != "DEL" or r["REASON"] not in codes:
             continue
-        if any(u > t for u in later.get(("record", r["PERSON_REF"]), []) + later.get(("named", r["TXN_ID"]), [])):
+        if any(u > t for u in later.get(("record", r["RECORD_REF"]), []) + later.get(("named", r["TXN_ID"]), [])):
             continue
         died[region(r)] = died.get(region(r), 0) + 1
     return new, died
@@ -224,14 +225,14 @@ def main(target, gdir, quiet=False):
     mig = " ".join(subprocess.run(["pdftotext", "-raw", find(target, r"^roll_platform_migration_notes\.pdf$"), "-"],
                                   capture_output=True, text=True, check=True).stdout.split())
     check("01 deceased" in mig, "the migration notes file the old platform's death code")
-    wb = openpyxl.load_workbook(find(target, r"^roll_extract_data_dictionary\.xlsx$"), read_only=True)
-    dic = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)
-    check("the new platform's in UTC" in dic and "puts right an earlier removal" in dic,
-          "the dictionary files the time basis and REF_TXN")
+    code_list = {(r["FIELD"], r["CODE"]): r["MEANING"] for r in rows(find(target, r"^roll_transaction_codes\.csv$"))}
+    check(code_list[("REASON", "11")].startswith("Deceased") and code_list[("REASON", "12")].startswith("Deceased")
+          and code_list[("TXN_TYPE", "REI")] == "Reinstatement of a removed elector"
+          and "code list" in mig, "the code list files the new platform's death codes and the reinstatement")
     wb = openpyxl.load_workbook(find(target, r"^enrolment_gap_file_specification\.xlsx$"), read_only=True)
     spec = " ".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r if v is not None)
-    check("Dates and times are the country's time." in spec and "each person once" in spec,
-          "the specification files the window's clock and the count of people")
+    check("Dates and times are the country's time, which is 12 hours ahead of UTC" in spec and "each person once" in spec,
+          "the specification files the window's clock, its offset from UTC and the count of people")
     # against the golden CSV
     gold = rows(os.path.join(gdir, "enrolment_gap_allocation_2027.csv"))
     check([g["REGION_CODE"] for g in gold] == sorted(names) and len(gold) == 16, "16 regions in code order")
@@ -256,7 +257,7 @@ def main(target, gdir, quiet=False):
               changed))
     check("change %d regions" % sum(1 for c in names if census_org[c] != org[c]) in rec, "the census counts' rival")
     elect = sum(roll.values())
-    check("**{:,}**".format(elect) in sub and "**{:,}**".format(int(round(sum(dse_adults.values())))) in sub,
+    check("**{:,}**".format(elect) in sub and "about **%.2f million**" % (sum(dse_adults.values()) / 1e6) in sub,
           "the electors and the dual-system adults")
     check("about **%.2f million**" % (sum(adults.values()) / 1e6) in sub, "the corrected adults")
     for c in sorted(names):

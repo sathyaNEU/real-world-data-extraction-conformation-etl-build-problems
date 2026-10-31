@@ -1,5 +1,5 @@
 """The pack's documents and workbooks: the survey's methods report, the vital and border series notes, the Commission's
-campaign plan, the Office's file specification, the roll extract's dictionary and migration notes, the census workbook,
+campaign plan, the Office's file specification, the roll platform's migration notes, the census workbook,
 the historical deaths workbook, and the census field operations summary."""
 import docx
 import openpyxl
@@ -161,9 +161,8 @@ def write_series_notes(path):
          "from 1925. Registration of births has been compulsory since 1912 and is complete. File: "
          "live_births_by_sex_1925_2025.csv."),
         ("Deaths", "Deaths registered in the country, by sex, the year of death and the year of birth on the death "
-         "registration. Deaths from 1925 to 1944 are in the historical workbook deaths_by_year_of_birth_1925_1944.xlsx "
-         "(a sheet for each sex, one row a year of death and one column a year of birth); deaths from 1945 are in "
-         "deaths_by_year_of_birth_1945_2025.csv."),
+         "registration. Deaths from 1925 to 1944 are in the historical workbook deaths_by_year_of_birth_1925_1944.xlsx; "
+         "deaths from 1945 are in deaths_by_year_of_birth_1945_2025.csv."),
         ("Long-term movements", "Arrivals of people coming to live in the country for 12 months or more, and departures "
          "of residents leaving it for 12 months or more, by sex, period and year of birth, from 1925. Every traveller "
          "is recorded at the border: the country's only ports of entry are its four international airports and two "
@@ -271,8 +270,9 @@ def write_spec(path):
     ws2.column_dimensions["B"].width = 120
     defs = [
         ("1", "One row a region, 16 rows, in region code order, comma-separated with a header row."),
-        ("2", "Dates and times are the country's time. The reporting period runs from the close of census day, 4 March "
-              "2025, to the end of 30 June 2026."),
+        ("2", "Dates and times are the country's time, which is 12 hours ahead of UTC, and 13 hours ahead in daylight "
+              "saving time, from the last Sunday in September to the first Sunday in April. The reporting period runs "
+              "from the close of census day, 4 March 2025, to the end of 30 June 2026."),
         ("3", "NEW_ELECTORS counts the people added to the roll in the reporting period who were not on the roll at the "
               "close of census day, each person once, in the region of the residential address they enrolled at. "
               "Enrolments with an overseas address are not counted in any region."),
@@ -284,56 +284,6 @@ def write_spec(path):
         ws2.cell(row=1 + i, column=1, value=k)
         c = ws2.cell(row=1 + i, column=2, value=v)
         c.alignment = Alignment(wrap_text=True, vertical="top")
-    wb.save(path)
-
-
-def write_dictionary(path):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Columns"
-    ws["A1"] = "Roll transactions extract: data dictionary"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = ("Electoral Commission, Data Services. The extract holds the enrolments, removals and reinstatements "
-                "processed from census day (4 March 2025) to 30 September 2026. Changes of name or address are not "
-                "included.")
-    _head(ws, ["Column", "Description"], [16, 100], row=4)
-    cols = [
-        ("TXN_ID", "The transaction's identifier"),
-        ("PROCESSED", "When the platform processed the transaction (date and time): the old platform's in the country's "
-                      "time, the new platform's in UTC. The country's time is 12 hours ahead of UTC, and 13 hours ahead "
-                      "in daylight saving time, from the last Sunday in September to the first Sunday in April"),
-        ("TXN_TYPE", "NEW an enrolment; DEL a removal from the roll; REI the reinstatement of a removed elector"),
-        ("REASON", "A removal's reason (Codes)"),
-        ("SOURCE", "An enrolment's channel (Codes)"),
-        ("STATUS", "A accepted; R rejected (an application that did not result in an enrolment)"),
-        ("ELECTOR_NO", "The elector number; blank on a rejected application"),
-        ("PERSON_REF", "The platform's reference for the person's record"),
-        ("ELECTORATE", "The electorate of the address enrolled at or removed from (electorate number)"),
-        ("ADDRESS_TYPE", "R residential address; O overseas address"),
-        ("SEX", "M or F"),
-        ("BIRTH_YEAR", "Year of birth"),
-        ("REF_TXN", "For a transaction that puts right an earlier removal, the identifier of that removal"),
-    ]
-    for i, (k, v) in enumerate(cols):
-        ws.cell(row=5 + i, column=1, value=k)
-        ws.cell(row=5 + i, column=2, value=v).alignment = Alignment(wrap_text=True)
-    ws2 = wb.create_sheet("Codes")
-    _head(ws2, ["Column", "Code", "Meaning"], [12, 8, 80])
-    codes = [
-        ("REASON", "01", "Removed at the elector's own request"),
-        ("REASON", "02", "Overseas for more than three years"),
-        ("REASON", "03", "Duplicate record"),
-        ("REASON", "04", "Objection upheld"),
-        ("REASON", "11", "Deceased: matched to a death registration"),
-        ("REASON", "12", "Deceased: notified by family or a funeral director"),
-        ("SOURCE", "ONL", "Online enrolment"),
-        ("SOURCE", "PAP", "Paper enrolment form"),
-        ("SOURCE", "PRV", "Provisional enrolment transferred to the roll at 18"),
-        ("SOURCE", "CAM", "Enrolment taken at a campaign event"),
-    ]
-    for i, r in enumerate(codes):
-        for j, v in enumerate(r):
-            ws2.cell(row=2 + i, column=j + 1, value=v)
     wb.save(path)
 
 
@@ -428,11 +378,11 @@ def write_migration(path):
          "the roll on the day the person turns 18 rather than at the start of the next month, and the death "
          "registration match runs weekly rather than monthly."),
         ("Identifiers", "Transactions processed by the old platform carry its running numbers (R25- followed by seven "
-         "digits); those processed by the new platform carry its 16-character keys. Person references and elector "
+         "digits); those processed by the new platform carry its 16-character keys. Record references and elector "
          "numbers were carried over unchanged."),
         ("Removal reasons before 4 August 2025", "Removals processed by the old platform carry its reason codes: 01 "
          "deceased; 02 overseas for more than three years; 03 duplicate record; 04 objection upheld. The new platform's "
-         "codes are in the data dictionary."),
+         "codes are in the code list that comes with each extract."),
         ("Extracts", "Extracts are produced by Data Services on request, as comma-separated files with a header row, in "
          "the order the platforms processed the transactions."),
     ):

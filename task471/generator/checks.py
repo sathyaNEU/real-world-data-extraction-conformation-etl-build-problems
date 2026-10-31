@@ -10,6 +10,7 @@ import datetime as dt
 import itertools
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -141,6 +142,10 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(len(pk.log) >= 25000 and len(B.rows(f("pes_people"))) >= 25000, "a file of 25,000 or more rows (the log %d)" % len(
         pk.log))
     ck(set(files) == set(P.FILES.values()), "the pack is exactly the files the generator names")
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|data_?notes|release_?notes", re.I)
+    ck(not [fn for fn in files if describing.search(fn)],
+       "section 3: no file named as a dictionary, manifest, readme or data notes ships")
     if meta_path:
         meta = json.load(open(meta_path, encoding="utf-8"))
         ck(len(meta["distractor_files"]) >= 2 and all(fn in files for fn in meta["distractor_files"]),
@@ -152,7 +157,9 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     notes = pdf_text(f("series_notes"))
     migration = pdf_text(f("migration"))
     spec = xlsx_text(f("spec"))
-    dictionary = xlsx_text(f("dictionary"))
+    codes = open(f("codes"), encoding="utf-8").read()
+    with open(f("log"), encoding="utf-8", newline="") as fh:
+        log_header = next(csv.reader(fh))
     workbook = xlsx_text(f("census"))
     for name, text, control in (
             ("the plan", plan, "2027 Enrolment Campaign: field plan"),
@@ -160,7 +167,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
             ("the series notes", notes, "Vital and border series"),
             ("the migration notes", migration, "Roll platform migration"),
             ("the specification", spec, "Enrolment-gap file for the Electoral Commission"),
-            ("the dictionary", dictionary, "Roll transactions extract: data dictionary"),
+            ("the code list", codes, "REASON,11,Deceased: matched to a death registration"),
             ("the census workbook", workbook, "2025 Census of Population and Dwellings")):
         ck(len(text) > 200 and control in text, "positive control: %s reads back (%d characters)" % (name, len(text)))
     # --------------------------------------------------------------- the pack read back against the simulation
@@ -232,6 +239,9 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
         else:
             ck(abs(m_e / f_e - m_d / f_d) < 0.005, "SF14 %s: the sex ratios agree (%.3f against %.3f)" % (
                 W.group_label(g), m_e / f_e, m_d / f_d))
+            ck(abs(m_e / m_d - 1) < 0.01 and abs(f_e / f_d - 1) < 0.01,
+               "SF14 %s: the levels agree too, men and women within 1 per cent of demographic analysis (%.4f, %.4f), so "
+               "no reading raises the older ages" % (W.group_label(g), m_d / m_e, f_d / f_e))
     ratios = {}
     for nm, kw in (("golden", {}), ("born before 0", {"born_before": 0.0}), ("born before 0.5", {"born_before": 0.5}),
                    ("born before 1", {"born_before": 1.0}), ("end 2024", {"to_census_day": False})):
@@ -366,19 +376,24 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
         ck(alloc_of(d, C.wrong_paths(d)[nm]) != GOLD, "SF10 %s: off the golden" % nm)
     ck("2025-01-01/2025-03-03" in notes and "the day before the 2025 census" in notes,
        "SF12 the series notes file the provisional period to the day before census day")
-    ck("Dates and times are the country's time." in spec and "to the end of 30 June 2026" in spec
-       and "the old platform's in the country's time, the new platform's in UTC" in dictionary,
-       "SF16 specification 2 files the window and the country's time; the dictionary files each platform's time basis")
-    ck("For a transaction that puts right an earlier removal, the identifier of that removal" in dictionary
-       and "The platform's reference for the person's record" in dictionary and "The elector number" in dictionary
+    ck("Dates and times are the country's time, which is 12 hours ahead of UTC, and 13 hours ahead in daylight saving "
+       "time, from the last Sunday in September to the first Sunday in April." in spec.replace("\n", " ")
+       and "to the end of 30 June 2026" in spec
+       and all(r["PROCESSED"].endswith("Z") != M.old_platform(r) for r in pk.log),
+       "SF16 specification 2 files the window, the country's time and its offset from UTC; every new-platform stamp "
+       "carries its UTC mark and no old-platform stamp carries one")
+    ck(log_header == M.LOG_HEADER and "RECORD_REF" in log_header and "CORRECTS_TXN" in log_header
+       and "ELECTOR_NO" in log_header and "Record references and elector numbers were carried over unchanged." in migration
        and "review" not in migration and "electorate" not in migration and "moved out" not in migration,
-       "SF17 SF18 the dictionary files REF_TXN, the record's reference and the elector number; the migration notes say "
-       "nothing of the electorates or of moves")
+       "SF17 SF18 the extract's labels file the record's reference, the elector number and the removal a transaction "
+       "corrects; the migration notes say nothing of the electorates or of moves")
     ck("each person once" in spec and "not on the roll at the close of census day" in spec,
        "SF17 specification 3 files new electors")
-    ck("A removal later reversed was not a removal." in spec and "11 Deceased" in dictionary.replace(":", "")
-       and "01 deceased" in migration, "SF18 the death codes: the dictionary's 11 and 12, the migration notes' legacy 01")
-    ck("REI the reinstatement of a removed elector" in dictionary and "people added to the roll in the reporting period "
+    ck("A removal later reversed was not a removal." in spec and "REASON,11,Deceased" in codes
+       and "REASON,12,Deceased" in codes and "01 deceased" in migration
+       and "The new platform's codes are in the code list that comes with each extract." in migration,
+       "SF18 the death codes: the code list's 11 and 12, the migration notes' legacy 01")
+    ck("TXN_TYPE,REI,Reinstatement of a removed elector" in codes and "people added to the roll in the reporting period "
        "who were not on the roll at the close of census day" in spec,
        "SF20 a reinstatement puts a removed elector back on the roll; specification 3 counts the people added")
     # ----------------------------------------------------------------------------------------------- the asks
@@ -390,7 +405,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     round2 = dict(person="reftxn", prior="any", reinstated=False, reversal_new="drop")
     stops_a = {"SF19 every electorate number read as the 2024 review's": pk.new_electors(vintage=False),
                "SF17 a person a person reference": pk.new_electors(person="ref"),
-               "SF17 a person every reference REF_TXN ties together": pk.new_electors(person="reftxn"),
+               "SF17 a person every record reference CORRECTS_TXN ties together": pk.new_electors(person="reftxn"),
                "SF17 on the roll if the first transaction in the window is a removal": pk.new_electors(prior="first"),
                "SF17 on the roll if any transaction in the window is a removal": pk.new_electors(prior="any"),
                "SF17 on the roll if the elector number was issued before census day": pk.new_electors(prior="number"),
@@ -405,7 +420,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     for k, v in stops_a.items():
         ck(hits(v, ga) <= 1, "ask A stop misses 15 or 16: %s (%d kept)" % (k, hits(v, ga)))
     stops_b = {"SF19 every electorate number read as the 2024 review's": pk.removed_dead(vintage=False),
-               "SF18 a removal reversed only where REF_TXN names it": pk.removed_dead(reversals="reftxn"),
+               "SF18 a removal reversed only where CORRECTS_TXN names it": pk.removed_dead(reversals="reftxn"),
                "SF18 the same, the reversal inside the window": pk.removed_dead(reversals="reftxn_window"),
                "SF18 no reversal netted": pk.removed_dead(reversals=None),
                "SF16 the stamps as written": pk.removed_dead(utc=False),
@@ -459,8 +474,9 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(sum(1 for r in pre if r["ADDRESS_TYPE"] == "R" and M.in_window(M.local_time(r))) >= 50,
        "SF20 reinstatements of removals made before census day put people on the roll in the window")
     pre_new = [r for r in acc if r["TXN_TYPE"] == "NEW" and r["REF_TXN"] and r["REF_TXN"] not in in_log]
-    ck(pre_new and all(r["REF_TXN"].startswith("R25-") and r["REF_TXN"] < min(t for t in in_log if t.startswith("R25-"))
-                       for r in pre_new),
+    first_old = min(t for t in in_log if t.startswith("R25-"))
+    ck(pre_new and all(re.fullmatch(r"R2[45]-\d{7}", r["REF_TXN"]) and (r["REF_TXN"].startswith("R24-")
+                                                                     or r["REF_TXN"] < first_old) for r in pre_new),
        "SF20 every enrolment naming a removal outside the extract names an old-platform number before its first (%d)" % len(
            pre_new))
     old_dels = {r["PERSON_REF"]: r for r in acc if r["TXN_TYPE"] == "DEL" and M.old_platform(r)}
@@ -490,7 +506,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ck(c_then > 0.8 and c_now < 0.5, "SF19 the old platform's transactions by electorate number follow the 2023 roll "
                                      "(correlation %.2f), not the census-day roll (%.2f)" % (c_then, c_now))
     ck(set(vol) <= set(pk.region_of), "SF19 every old-platform electorate number is also a current one: nothing fails to join")
-    stamps = [r["PROCESSED"] for r in pk.log]
+    stamps = [r["PROCESSED"].replace("T", " ").rstrip("Z") for r in pk.log]
     ck(min(stamps) >= "2025-03-04 00:00:00" and max(stamps) <= "2026-09-30 23:59:59",
        "the log's stamps lie between census day and the extract's close (%s to %s)" % (min(stamps), max(stamps)))
     edge = sum(1 for r in pk.log if not M.old_platform(r) and r["PROCESSED"][:10] == "2026-06-30"
@@ -507,7 +523,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     tmp = tempfile.mkdtemp(prefix="sep", dir=os.path.dirname(os.path.abspath(target)))
     try:
         for k in P.FILES:
-            if k not in ("dictionary", "migration", "spec", "plan") + tuple(P.DISTRACTORS):
+            if k not in ("codes", "migration", "spec", "plan") + tuple(P.DISTRACTORS):
                 shutil.copy2(f(k), os.path.join(tmp, P.FILES[k]))
         pk3 = B.Pack(tmp)
         ck(named(pk3.allocation()[0]) == GOLD and pk3.new_electors() == ga and pk3.removed_dead() == gb,
@@ -540,7 +556,6 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     # ----------------------------------------------------------------------------------------- figures.json
     sub_path = os.path.join(os.path.dirname(os.path.abspath(target)), "submission.md")
     if os.path.exists(sub_path):
-        import re
         cited = set(re.findall(r"[a-z0-9_]+\.(?:csv|xlsx|pdf|docx)", open(sub_path, encoding="utf-8").read()))
         cited -= {"enrolment_gap_allocation_2027.csv"}
         ck(cited and cited <= set(files), "every file submission.md cites ships in the pack (%s)" % sorted(cited - set(files)))

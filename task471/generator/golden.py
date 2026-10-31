@@ -64,6 +64,7 @@ def figures(pk):
         "national": {
             "electors": int(sum(d["roll"].values())),
             "dse_adults": int(round(sum(dse_adults.values()))),
+            "dse_adults_million": round(sum(dse_adults.values()) / 1e6, 2),
             "golden_adults_million": round(sum(gold_adults.values()) / 1e6, 2),
         },
         "groups": groups,

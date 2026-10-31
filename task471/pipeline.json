@@ -5,13 +5,13 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-20",
+ "updated": "2026-10-31",
  "architecture": 5,
  "loops": 0,
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-20",
+ "delivered": "2026-10-31",
  "portal": null,
  "source_note": "re-rooted from seed ET28's airport world (architecture 1, spent at Gate F); architecture 2 is a fresh world in item-response-theory-test-equating",
  "architecture_1": {
@@ -156,28 +156,28 @@
  "stump": "The default path estimates each region's adults by the post-enumeration survey's dual-system estimates within its cells, the textbook coverage estimator, and gives Westerby 26, Larchfield 28 and Glenwhite 31 organisers against Ardenmere 26, Hawksridge 4, Corran Valley 6, Drumlea 4 and Nethermoor 3; the estimator takes for granted that the census and the survey miss people independently, and the men aged 18 to 49 with no settled household are missed by both, so the estimate leaves about 4 per cent of them out; raising the men to the sex ratio that births, deaths and border movements fix moves eight regions' organisers.",
  "precut": {
   "exit": 0,
-  "date": "2026-10-20"
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 1,
+  "note": "the one WARN is the field's method (coverage estimation) on both lines, recorded under Reflex as a risk"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20 on the round-3 pack (region names in the field operations summary; generic survey words in two documents); no LEAK",
-  "reader": "round 1 on 7b7e6acddefeb6b8 and round 2 on 5402dd6ec2786aea: all four readers missed the call on R2 and kept 32 of 32 ask figures; round 3 on 5b89c291378b1d76 after the asks were re-sited: reader A missed the call on R2 and kept 1 of 32, reader B missed it (imputed records kept) and kept 0 of 32; score_reader PASS on both"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack, no LEAK (the roll extract's data dictionary removed: UTC marks on the new platform's stamps, the offset in specification 2, a code list, the labels RECORD_REF and CORRECTS_TXN)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 the plan and specification file the estimand and the asks' window, Q6 analytical"
  },
  "duplicate_check": {
-  "guard_check": "WARN only at the v5 draw",
-  "heart": "WARN 2026-10-20 (objective and Gate G overuse, Gate G and question form repeat against task474 v4; answered in the note); nearest driver 0.05",
-  "nearest": "task188 0.05"
+  "heart": "BLOCK on ban.pairing, ban.artifact, ban.forcing_event (task477) and ban.shape (task475) only, both drawn 2026-10-20 before this card; WARN at the 10-20 ship; flagged to the author. The similarity BLOCK (task258, task273 v3) answered by differentiation lines",
+  "surface": "exit 0 2026-10-31 (task258 and task261 promoted for the author's read)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (v5r3, on target.zip 5b89c291378b1d76)",
-  "disposition": "APPROVE: all 48 graded figures reproduced; the old platform's numbering and the reversals after the window settled by the data and definition 4's unbounded \"later\"",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "report": "determinism_check_report_v5r3.md",
-  "earlier": [
-   "determinism_check_report_v5r1.md (NOT_DETERMINISTIC, FIX_NOW: unfiled UTC, fixed)",
-   "determinism_check_report_v5r2.md (DETERMINISTIC, APPROVE)"
-  ],
-  "final_pack_note": "the shipping zip differs from the judged 5b89c291378b1d76 only in the census workbook's release date line and its stamps (19 August 2025); every figure unchanged"
+  "verdict": "DETERMINISTIC (v5r5 on c2f85cf64789081a)",
+  "disposition": "FIX_NOW on an optional pin only, rejected (it files the asks' device D2; the judge rates the build APPROVE-defensible); v5r4's FIX_NOW (critical component 2, the R25-- references) fixed and reproduced",
+  "gate_g": "method_or_model_selection, analytical_non_defect",
+  "gate_h": "domain pass, layers pass, decisive step analytical",
+  "reports": [
+   "determinism_check_report_v5r4.md",
+   "determinism_check_report_v5r5.md"
+  ]
  },
  "ceiling": {
   "pair": 35.2,
@@ -188,5 +188,16 @@
   "sensitivity": "2020 numbers 0 (34.4); + elector number and record test 0 (34.4); + corrections of earlier removals as additions 16 (48.1); + record-tied reversals in the window 18 (49.8); + late reversals 32 (61.9)",
   "script": "generator/ceiling.py"
  },
- "target_zip_sha256_16": "2b60d1c33704dd7d"
+ "target_zip_sha256_16": "c2f85cf64789081a",
+ "gates_2026_10_31": {
+  "checks": 201,
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "77 of 77",
+  "precut": "0 FAIL, 1 WARN (recorded risk)",
+  "voice_check": "PASS, no WARN",
+  "leak_py": "REVIEW, no LEAK",
+  "ceiling": "35.2",
+  "surface": "exit 0"
+ }
 }

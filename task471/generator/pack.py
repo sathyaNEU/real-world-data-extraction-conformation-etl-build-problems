@@ -7,7 +7,7 @@ import io
 import numpy as np
 
 import sim as S
-from methods import LOG_COLS  # noqa: F401
+from methods import LOG_COLS, LOG_HEADER  # noqa: F401
 import world as W
 
 FILES = {
@@ -26,13 +26,35 @@ FILES = {
     "plan": "enrolment_campaign_plan_2027.docx",
     "spec": "enrolment_gap_file_specification.xlsx",
     "log": "roll_transactions_2025_2026.csv",
-    "dictionary": "roll_extract_data_dictionary.xlsx",
+    "codes": "roll_transaction_codes.csv",
     "migration": "roll_platform_migration_notes.pdf",
     "estimates_2024": "subnational_population_estimates_jun2024.csv",
     "field_ops": "census_2025_field_operations_summary.pdf",
     "roll_2023": "roll_at_2023_general_election_by_electorate.csv",
 }
 DISTRACTORS = ["estimates_2024", "field_ops"]
+CODE_COLS = ["FIELD", "CODE", "MEANING"]
+CODE_ROWS = [   # the roll platform's code list, as Data Services sends it with an extract
+    ("TXN_TYPE", "NEW", "Enrolment"),
+    ("TXN_TYPE", "DEL", "Removal from the roll"),
+    ("TXN_TYPE", "REI", "Reinstatement of a removed elector"),
+    ("REASON", "01", "Removed at the elector's own request"),
+    ("REASON", "02", "Overseas for more than three years"),
+    ("REASON", "03", "Duplicate record"),
+    ("REASON", "04", "Objection upheld"),
+    ("REASON", "11", "Deceased: matched to a death registration"),
+    ("REASON", "12", "Deceased: notified by family or a funeral director"),
+    ("SOURCE", "ONL", "Online enrolment"),
+    ("SOURCE", "PAP", "Paper enrolment form"),
+    ("SOURCE", "PRV", "Provisional enrolment transferred to the roll at 18"),
+    ("SOURCE", "CAM", "Enrolment taken at a campaign event"),
+    ("STATUS", "A", "Accepted"),
+    ("STATUS", "R", "Rejected: the application did not result in an enrolment"),
+    ("ADDRESS_TYPE", "R", "Residential address"),
+    ("ADDRESS_TYPE", "O", "Overseas address"),
+    ("SEX", "M", "Male"),
+    ("SEX", "F", "Female"),
+]
 PERIOD_2025 = "2025-01-01/2025-03-03"
 
 

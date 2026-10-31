@@ -155,6 +155,14 @@ import datetime as _dt
 
 LOG_COLS = ["TXN_ID", "PROCESSED", "TXN_TYPE", "REASON", "SOURCE", "STATUS", "ELECTOR_NO", "PERSON_REF", "ELECTORATE",
             "ADDRESS_TYPE", "SEX", "BIRTH_YEAR", "REF_TXN"]
+SHIPPED_NAME = {"PERSON_REF": "RECORD_REF", "REF_TXN": "CORRECTS_TXN"}    # the extract's own column labels
+LOG_HEADER = [SHIPPED_NAME.get(c, c) for c in LOG_COLS]
+_BACK = {v: k for k, v in SHIPPED_NAME.items()}
+
+
+def log_from_rows(rows):
+    """the extract's rows as read from the file, under the estimators' names"""
+    return [{_BACK.get(k, k): v for k, v in r.items()} for r in rows]
 
 
 def old_platform(row):
@@ -170,7 +178,7 @@ def local_time(row, utc=True):
         return v
     t = row.get("_t")
     if t is None:
-        t = row["_t"] = _dt.datetime.strptime(row["PROCESSED"], "%Y-%m-%d %H:%M:%S")
+        t = row["_t"] = _dt.datetime.strptime(row["PROCESSED"].replace("T", " ").rstrip("Z"), "%Y-%m-%d %H:%M:%S")
     if not utc or (old_platform(row) and utc != "all"):
         v = t
     else:
