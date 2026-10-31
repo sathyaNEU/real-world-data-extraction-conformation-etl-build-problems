@@ -92,19 +92,15 @@ SOURCES = {
     "spells": "ICB data warehouse: acute discharges of patients aged 65 and over, Dec 2024 to Sep 2026",
     "wards": "ICB data warehouse: ward stays of the same spells",
     "wardref": "The two trusts' ward reference",
-    "acute_notes": "Field notes for the acute extracts",
     "practices": "GP practice list (Marchshire and Severnside ICBs)",
     "ices": "Integrated community equipment service: order lines, Dec 2024 to Sep 2026",
-    "ices_notes": "Field notes for the equipment export",
     "brokerage": "County council brokerage: referrals for home care, Dec 2024 to Sep 2026",
     "spot": "County council finance: spot-care invoice lines, 2025-26",
     "postcodes": "County council postcode lookup",
-    "council_notes": "Field notes for the council extracts",
     "guidance": "ICB allocation note SF-2026-14, Winter Discharge Fund 2026/27",
     "weekly": "National discharge collection as submitted by the two trusts (weekly, by trust)",
     "census": "Daily general and acute bed census by site",
     "reablement": "Reablement 91-day outcomes by district and quarter",
-    "log": "System Flow data request log",
 }
 
 
@@ -120,14 +116,12 @@ def metadata(target):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     return {
         "task": "task127",
-        "title": "How many of the winter discharge fund's 1,200 discharge-to-assess packages each of Marchshire's five "
-                 "acute hospitals should get, and the occupied bed-days they free",
+        "title": "Winter discharge-to-assess package split, 2026-27",
         "domain": "Healthcare Delivery & Health Economics",
         "subdomain": "patient flow, beds and workforce optimisation (discharge-to-assess packages)",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "05: allocation to a fixed total (five hospitals' packages and bed-days, the total, the "
-                        "hospitals left without packages), with each district's referrals started within seven days "
-                        "by month and each hospital's delayed bed-days by month on a chart",
+        "prompt_shape": "05: an allocation of a fixed number of packages across hospitals with the bed-days they free, "
+                        "referral starts by district and month, and delayed bed-days by hospital and month on a chart",
         "as_of": "2026-10-12",
         "deliverables": [GD.XLSX, GD.SVG],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],

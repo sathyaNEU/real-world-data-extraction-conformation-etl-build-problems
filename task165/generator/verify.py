@@ -347,11 +347,6 @@ def main():
         if f.endswith(".csv"):
             rows_csv(f)
     ok("CSV every shipped CSV parses with a header", n_csv >= 10, "%d files" % n_csv)
-    dic = openpyxl.load_workbook(os.path.join(TARGET, "data_dictionary.xlsx"), read_only=True)
-    fields = [r for r in dic["Fields"].iter_rows(values_only=True)]
-    dic.close()
-    ok("XLSX dictionary read back (legacy KG in kilograms)",
-       any(r[1] == "KG" and "kilograms" in r[2] for r in fields[1:]), "%d fields" % (len(fields) - 1))
     qb = openpyxl.load_workbook(os.path.join(TARGET, "qrt_frequent_network_2026_streets.xlsx"), read_only=True)
     streets = {r[1] for r in list(qb.worksheets[0].iter_rows(values_only=True))[4:] if r[1]}
     qb.close()

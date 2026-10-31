@@ -4,30 +4,30 @@
  "domain": "healthcare-delivery-health-economics",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
- "stage_name": "ship (architecture 2, loop 1)",
- "updated": "2026-10-16",
+ "stage_name": "ship (architecture 2, reship 10-31)",
+ "updated": "2026-10-31",
  "stump": "The default path values a discharge-to-assess package at each hospital by its covered patients' nights after the discharge ready date (every record presents them as the wait for home care, since the brokerage starts care on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,507 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 6,816; most of Ashby Vale's and Cleeve Park's covered patients were also waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
  "architecture": 2,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-16"
+  "date": "2026-10-31",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on the loop-1 cut, every line answered (leak_check_report.md)",
-  "reader": "passes 3 and 4 (loop 1): questions 1 to 4 none, question 6 an analytical choice, the equipment notes' route definition read as a plain description; the flat waits and the missing week fixed by the re-cuts (passes 1 and 2 in leak_check_report.md)"
+  "leak_py": "REVIEW, no LEAK, on target.zip 0747c7d8 (2026-10-31), every line answered (leak_check_report.md)",
+  "reader": "10-31 reader on the reship cut: questions 1 to 4 none, question 6 an analytical choice, every sweep line harmless"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.org_family; same_driver_older differentiated), 2026-10-16",
-  "surface": "no promoted pair after the card update, 2026-10-12",
-  "nearest": "task119 v2 0.08 (differentiated)"
+  "heart": "WARN 2026-10-31 after the stakeholder role was redrawn (ban.role against task449 cleared by drawing finance_controller; driver.near 0.13 against task172, people.last Bird against task450, overuse.org_family)",
+  "surface": "exit 0 on 2026-10-31: 4 pairs promoted on surface similarity in the corpus top 1 percent (task304, task461, task131, task478, each about 0.10), left to the author's optional clone-check"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (loop 1, final cut)",
-  "disposition": "APPROVE",
-  "report": "task127/determinism_check_report_loop2c.md (loop 1 earlier cuts: determinism_check_report_loop2.md, determinism_check_report_loop2b.md; loop 0: determinism_check_report.md and determinism_check_report_pass2.md)",
-  "gate_g": "binding_constraint or decomposition_attribution by pass (borderline with a counterfactual method choice), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "verdict": "DETERMINISTIC (10-31 pass 3 on the repair cut: the covered counts, the nights a package frees, the fill, 6,816 bed-days, all 45 chart labels and the 9 referral counts reproduced)",
+  "disposition": "APPROVE; the three optional solution-text edits applied in submission.md; the advisory forks (latest submission, ward at midnight, the spot-invoice key) are Ask A's and Ask B's devices, closed by the data",
+  "gate_g": "binding_constraint, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "task127/determinism_check_report_pass3.md (earlier passes in determinism_check_report.md, _pass2 and the loop2 files)"
  },
  "returned": [
   {
@@ -35,11 +35,19 @@
    "portal": "none: hardened at the author's request after the 10/10 audit, before any portal result",
    "repair": "design",
    "commit": "the RESHIPPED (task127) commit of 2026-10-16"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "none: batch 1 keep-and-repair under the rules learned from the approved tasks",
+   "repair": "keep and repair",
+   "moves": "the equipment notes withdrawn (a file describing the data), the prompt without a data count and with a fresh shell, the survivor anatomy written, the ceiling measured on the cut pack (generator/ceiling.py: pair 31.2, mirror leakage 4.9 per cent), submission.md rewritten to the pack, the note's issuer redrawn from the head of system flow to the deputy director of finance (ban.role against task449)",
+   "freeze": "no main-call figure, stump, ladder, default path or call sentence moved, and no ask figure moved",
+   "commit": "RESHIPPED (task127): describing file withdrawn, prompt without a data count, issuer role redrawn, ceiling measured"
   }
  ],
- "resume": "shipped (architecture 2, loop 1 of 2026-10-16); next event is the author's portal result",
+ "resume": "Reshipped 2026-10-31 on target.zip 0747c7d8. Next: the portal result.",
  "approved": null,
- "delivered": "2026-10-12",
+ "delivered": "2026-10-31",
  "portal": null,
  "history": {
   "architecture_1": {
@@ -102,6 +110,10 @@
    },
    "retired_reason": "Determinism judge NOT_DETERMINISTIC, SEND_BACK (competing_defensible_answer): the reserving basis leaves the method to the actuary and frequency-severity on paid per closed feature carries $350 million against the restatement's $400 million; the author restored architecture 2 on 2026-10-14",
    "commits": "DRAWN 9063126, PAUSED 2ca8c2f and 6edd337 (its note, generator, reports and pipeline state)"
+  },
+  "architecture_2_reship_2026-10-31": {
+   "event": "RESHIPPED: batch 1 keep-and-repair; judge pass 3 DETERMINISTIC APPROVE, leak read clean",
+   "zip": "0747c7d8839d4ed974f2ffa01202567e18b99251186c786ca2eefc6be146dc32"
   }
  },
  "restored": "2026-10-14: architecture 3 (a full refresh at the author's request) drew judge SEND_BACK at stage 4, and the author chose to restore this architecture as task127's live build (pack unchanged from SHIPPED 59aaaba)"

@@ -1,10 +1,10 @@
 {
  "task": "task127",
- "title": "How many of the winter discharge fund's 1,200 discharge-to-assess packages each of Marchshire's five acute hospitals should get, and the occupied bed-days they free",
+ "title": "Winter discharge-to-assess package split, 2026-27",
  "domain": "Healthcare Delivery & Health Economics",
  "subdomain": "patient flow, beds and workforce optimisation (discharge-to-assess packages)",
  "objective": "Opportunity Sizing & Decision Support",
- "prompt_shape": "05: allocation to a fixed total (five hospitals' packages and bed-days, the total, the hospitals left without packages), with each district's referrals started within seven days by month and each hospital's delayed bed-days by month on a chart",
+ "prompt_shape": "05: an allocation of a fixed number of packages across hospitals with the bed-days they free, referral starts by district and month, and delayed bed-days by hospital and month on a chart",
  "as_of": "2026-10-12",
  "deliverables": [
   "d2a_package_split_winter_2026-27.xlsx",
@@ -16,11 +16,10 @@
   "reablement_91_day_outcomes_2024-26.xlsx"
  ],
  "input_gates": {
-  "files": 16,
+  "files": 12,
   "formats": [
    "csv",
    "pdf",
-   "txt",
    "xlsx"
   ],
   "largest_file": "acute_ward_stays_2024-12_2026-09.csv",
@@ -41,15 +40,6 @@
    "bytes": 11613948,
    "rows": 65524,
    "source": "Constructed: ICB data warehouse: acute discharges of patients aged 65 and over, Dec 2024 to Sep 2026",
-   "date": "2026-10-12",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "acute_extract_notes.txt",
-   "format": "txt",
-   "bytes": 2688,
-   "rows": null,
-   "source": "Constructed: Field notes for the acute extracts",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
@@ -81,24 +71,6 @@
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "council_extract_notes.txt",
-   "format": "txt",
-   "bytes": 2399,
-   "rows": null,
-   "source": "Constructed: Field notes for the council extracts",
-   "date": "2026-10-12",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "data_request_log.csv",
-   "format": "csv",
-   "bytes": 2128,
-   "rows": 15,
-   "source": "Constructed: System Flow data request log",
-   "date": "2026-10-12",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
    "path": "discharge_delays_weekly_return_2024-12_2026-09.csv",
    "format": "csv",
    "bytes": 15785,
@@ -113,15 +85,6 @@
    "bytes": 1918,
    "rows": 21,
    "source": "Constructed: GP practice list (Marchshire and Severnside ICBs)",
-   "date": "2026-10-12",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "ices_export_notes.txt",
-   "format": "txt",
-   "bytes": 1369,
-   "rows": null,
-   "source": "Constructed: Field notes for the equipment export",
    "date": "2026-10-12",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
@@ -173,7 +136,7 @@
   {
    "path": "winter_discharge_fund_2026-27.pdf",
    "format": "pdf",
-   "bytes": 3647,
+   "bytes": 3929,
    "rows": null,
    "source": "Constructed: ICB allocation note SF-2026-14, Winter Discharge Fund 2026/27",
    "date": "2026-10-12",

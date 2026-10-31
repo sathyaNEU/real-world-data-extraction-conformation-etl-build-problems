@@ -5,32 +5,41 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-10-31",
  "stump": "The default path files the whole-year docket (five faculty whose earlier December disclosures make them look like under-reporters in place of five who submitted their 2026 disclosures in early December) because it compares each disclosure with the register's whole program year although a disclosure carries only what each company had paid by the day it was submitted; counted to each submission's day, the December 2026 disclosures grossed up by the same manufacturer's share of the year by that date, the weighted matched-line ratio comes closest on 2025 and files the golden docket.",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-14"
+  "date": "2026-10-31",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK); every REVIEW line answered in ## Leak check",
-  "reader": "pass 1 (first design) filed the golden docket, stump re-centred; pass 2 filed the whole-year docket and landed the three asks, B and C re-rooted and A folded into two counts; pass 3 filed thirteen of the fifteen (two December filers off), missed Ask B, landed A and C"
+  "leak_py": "REVIEW, no LEAK, on target.zip 745e4bab (2026-10-31), every line answered (leak_check_report.md)",
+  "reader": "10-31 reader on the reship cut: questions 1 to 4 none, question 6 an analytical choice validated by the filed back-test, every sweep line harmless"
  },
  "duplicate_check": {
-  "heart": "WARN (driver.near 0.14 own lineage; overuse.objective, repeat.gate_g, overuse.gate_g)",
-  "nearest": "0.10 task130 v4 lineage, 0.09 task259, 0.09 task445 lineage",
-  "note": "drawn 2026-10-14: guard WARN overuse.objective, repeat.gate_g, overuse.gate_g answered in ## Draw; task136, task185 and task80 differentiated on the card for the older same-driver signature",
-  "surface": "promoted task136, task185, task80 (older same-driver signature, differentiated on the card) and task450 (retired, surface only)"
+  "heart": "WARN 2026-10-31 once the card answered task268 v4, task271 v4, task458 and task455 with differentiation lines (driver.near 0.14 against its own v1, people.first Diana, overuse.objective, repeat.gate_g, overuse.gate_g)",
+  "surface": "exit 0 on 2026-10-31: 6 pairs promoted (task458 back to back, task455 two apart, task136, task268, task185, task80), each with a differentiation line on the card, left to the author's optional clone-check"
  },
  "judge": {
   "pass_1": "DETERMINISTIC / FIX_NOW (ask wording: CSV population, the 2025 publication); stump moderate; Gate H pass",
-  "pass_2": "DETERMINISTIC / FIX_NOW (step 3's closeness claim; the sixteenth a near tie), both fixed in the generator (step 3 and the memo restated and asserted; the sixteenth left the prompt); stump strong; Gate G PASS; Gate H pass"
+  "pass_2": "DETERMINISTIC / FIX_NOW (step 3's closeness claim; the sixteenth a near tie), both fixed in the generator (step 3 and the memo restated and asserted; the sixteenth left the prompt); stump strong; Gate G PASS; Gate H pass",
+  "pass_3": "DETERMINISTIC / APPROVE (10-31 on target.zip 745e4bab: 1,696 owed and 91 late at every cutoff tried, the nature and relationship tables, 9,994 rows, the back-test picks n/(n+2) at 523,180 against the whole-year reading's 708,830, the same fifteen with Baldwin 22K clear of the sixteenth); residual forks none flipping the docket (Ask C's entity list types, the conformed file's columns, the chart's order under other weightings, the docket's preparation date); Gate G method_or_model_selection, analytical_non_defect; Gate H pass; report determinism_check_report_pass2.md"
  },
- "returned": [],
- "resume": null,
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "none: batch 1 keep-and-repair under the rules learned from the approved tasks",
+   "repair": "keep and repair",
+   "moves": "the field definitions workbook and the export contents list withdrawn (files describing the data), the prompt without the docket's size and with a fresh shell, the metadata prose neutralised, the survivor anatomy written, the ceiling measured on the cut pack (generator/ceiling.py: pair 45.4, mirror leakage 30.8 per cent), differentiation lines for task268 v4, task271 v4, task458 and task455",
+   "freeze": "no main-call figure, stump, ladder, default path or call sentence moved, and no ask figure moved",
+   "commit": "RESHIPPED (task457): describing files withdrawn, prompt without the docket's size, ceiling measured"
+  }
+ ],
+ "resume": "Reshipped 2026-10-31 on target.zip 745e4bab. Next: the portal result.",
  "approved": null,
- "delivered": "2026-10-15",
+ "delivered": "2026-10-31",
  "portal": null,
  "source_note": "seed ET14 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a COI office's docket of fifteen, highest single-manufacturer remuneration first); the decoy-era traps are not used; pairing in Survey Research & Official Statistics, census-register-administrative-data-quality (see ## Draw)",
  "gates": {
@@ -39,8 +48,9 @@
   "byte_identical": true,
   "figures_check": "27 of 27",
   "precut": 0,
-  "voice_check": "PASS (959 characters)",
+  "voice_check": "PASS",
   "heart": "WARN only",
-  "container": "clean"
+  "container": "clean",
+  "ceiling": "generator/ceiling.py: pair 45.4"
  }
 }
