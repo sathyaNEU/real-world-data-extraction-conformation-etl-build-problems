@@ -1,12 +1,12 @@
 {
   "task": "task158",
-  "title": "Which of an Amsterdam model provider's six serving pools gets a leased 240-GPU stopgap for Q1 2027, and that pool's Q1 peak-week GPU shortfall, when the document Q&A pool takes on eleven report-service contracts whose every call opens its own session",
+  "title": "Which of an Amsterdam model provider's serving pools gets a leased 240-GPU stopgap for Q1 2027, and that pool's Q1 peak-week GPU shortfall",
   "domain": "General Statistics & Data Science",
   "client_domain": "General Statistics & Data Science",
   "house_domain": "general-statistics-data-science",
-  "subdomain": "regression-classification-model-diagnostics (GPU busy time regressed on the prompt tokens a model computes and the tokens it generates, the specification chosen on its out-of-sample fit to an early-access tenant's report calls)",
+  "subdomain": "regression-classification-model-diagnostics",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed pick (one of six serving pools for a leased cluster) with the pool's Q1 peak-week GPU shortfall to the nearest 10, a table of each pool's November out-of-service GPU-hours and longest stay out, a table of the leased cluster's accepted GPUs by rack with the nodes held back, and a bar chart of the November out-of-service GPU-hours",
+  "prompt_shape": "a committed pick (one serving pool for a leased cluster) with the pool's Q1 peak-week GPU shortfall to the nearest 10, a table of each pool's November out-of-service GPU-hours and longest stay out, a table of the leased cluster's accepted GPUs by rack with the nodes held back, and a bar chart of the November out-of-service GPU-hours",
   "as_of": "2026-12-07",
   "deliverables": [
     "stopgap_q1_2027.xlsx",
@@ -22,12 +22,11 @@
     "240"
   ],
   "input_gates": {
-    "files": 19,
+    "files": 18,
     "formats": [
       "csv",
       "jsonl",
       "log",
-      "md",
       "pdf",
       "xlsx"
     ],
@@ -55,18 +54,9 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "capacity_desk_notes.md",
-      "format": "md",
-      "bytes": 2524,
-      "rows": null,
-      "source": "Constructed: Slenk capacity desk, notes on the 7 December 2026 pull",
-      "date": "2026-12-07",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "capacity_pull_2026-12-07.log",
       "format": "log",
-      "bytes": 1865,
+      "bytes": 1808,
       "rows": null,
       "source": "Constructed: Slenk capacity desk, log of the 7 December 2026 pull",
       "date": "2026-12-07",
@@ -75,7 +65,7 @@
     {
       "path": "docs_usage_by_org_daily_2026-09-01_2026-12-06.csv",
       "format": "csv",
-      "bytes": 2849117,
+      "bytes": 2849126,
       "rows": 30903,
       "source": "Constructed: Slenk billing, Docs usage by organisation, channel and Amsterdam business day, 1 September to 6 December 2026",
       "date": "2026-12-07",
@@ -93,7 +83,7 @@
     {
       "path": "fleet_plan_2027Q1.xlsx",
       "format": "xlsx",
-      "bytes": 8850,
+      "bytes": 8848,
       "rows": 15,
       "source": "Constructed: Slenk fleet capacity, Q1 2027 fleet plan, issue v3 (1 December 2026)",
       "date": "2026-12-07",
@@ -183,8 +173,8 @@
     {
       "path": "report_service_commitments_2026-12-04.xlsx",
       "format": "xlsx",
-      "bytes": 9766,
-      "rows": 19,
+      "bytes": 8889,
+      "rows": 16,
       "source": "Constructed: Slenk report service, commitments ledger export (4 December 2026)",
       "date": "2026-12-07",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -201,7 +191,7 @@
     {
       "path": "stopgap_assignment_policy_2026-11.pdf",
       "format": "pdf",
-      "bytes": 35194,
+      "bytes": 35460,
       "rows": null,
       "source": "Constructed: Slenk fleet capacity, stopgap capacity policy for Q1 2027 (16 November 2026)",
       "date": "2026-12-07",

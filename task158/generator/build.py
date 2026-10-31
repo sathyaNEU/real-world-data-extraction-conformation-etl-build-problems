@@ -86,7 +86,6 @@ def build(out, quiet=False, B=None):
     DOC.write_policy(out)
     DOC.write_schedule(out)
     DOC.write_lease(out)
-    DOC.write_notes(out)
     log_rows = [(R.F_ROLLUP, n[R.F_ROLLUP], "2026-01-01T00:00Z..2026-12-06T23:00Z"),
                 (R.F_BILLING, n[R.F_BILLING], "2026-09-01..2026-12-06 (Europe/Amsterdam)"),
                 (R.F_JOBS, n[R.F_JOBS], "2026-10-26T00:00Z..2026-12-07T00:00Z"),
@@ -100,7 +99,7 @@ def build(out, quiet=False, B=None):
                 (R.F_INTAKE, None, "SharePoint capacity/intake"), (R.F_PLAN, None, "SharePoint capacity/plans"),
                 (R.F_LEDGER, None, "report service export 2026-12-04"), (DOC.F_CLOSEOUT, None, "SharePoint capacity/close-outs"),
                 (DOC.F_POLICY, None, "SharePoint capacity/policy"), (DOC.F_SCHEDULE, None, "contracts/noordermeer"),
-                (DOC.F_LEASE, None, "contracts/noordermeer"), (DOC.F_NOTES, None, "")]
+                (DOC.F_LEASE, None, "contracts/noordermeer")]
     DOC.write_log(out, log_rows)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))

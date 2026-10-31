@@ -26,13 +26,11 @@ SOURCES = {
     DOC.F_CLOSEOUT: "Slenk fleet capacity, Q3 2026 capacity close-out (16 October 2026)",
     DOC.F_SCHEDULE: "Lease of GPU capacity, Noordermeer Compute and Slenk, Schedule 3: Acceptance (13 November 2026)",
     DOC.F_LEASE: "Lease of GPU capacity, Noordermeer Compute and Slenk, principal terms (13 November 2026)",
-    DOC.F_NOTES: "Slenk capacity desk, notes on the 7 December 2026 pull",
     DOC.F_LOG: "Slenk capacity desk, log of the 7 December 2026 pull",
 }
 DISTRACTORS = [R.F_INCIDENTS, R.F_SPEC, DOC.F_LEASE]
-TITLE = ("Which of an Amsterdam model provider's six serving pools gets a leased 240-GPU stopgap for Q1 2027, and "
-         "that pool's Q1 peak-week GPU shortfall, when the document Q&A pool takes on eleven report-service "
-         "contracts whose every call opens its own session")
+TITLE = ("Which of an Amsterdam model provider's serving pools gets a leased 240-GPU stopgap for Q1 2027, and that "
+         "pool's Q1 peak-week GPU shortfall")
 
 
 def rows_of(path):
@@ -63,11 +61,9 @@ def write(task_dir, n=None):
         "domain": "General Statistics & Data Science",
         "client_domain": "General Statistics & Data Science",
         "house_domain": "general-statistics-data-science",
-        "subdomain": "regression-classification-model-diagnostics (GPU busy time regressed on the prompt tokens a model "
-                     "computes and the tokens it generates, the specification chosen on its out-of-sample fit to an "
-                     "early-access tenant's report calls)",
+        "subdomain": "regression-classification-model-diagnostics",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "a committed pick (one of six serving pools for a leased cluster) with the pool's Q1 peak-week "
+        "prompt_shape": "a committed pick (one serving pool for a leased cluster) with the pool's Q1 peak-week "
                         "GPU shortfall to the nearest 10, a table of each pool's November out-of-service GPU-hours "
                         "and longest stay out, a table of the leased cluster's accepted GPUs by rack with the nodes "
                         "held back, and a bar chart of the November out-of-service GPU-hours",

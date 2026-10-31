@@ -34,7 +34,6 @@ F_POLICY = "stopgap_assignment_policy_2026-11.pdf"
 F_CLOSEOUT = "capacity_closeout_2026Q3.pdf"
 F_SCHEDULE = "lease_schedule3_acceptance.pdf"
 F_LEASE = "stopgap_lease_terms_2026-11-13.pdf"
-F_NOTES = "capacity_desk_notes.md"
 F_LOG = "capacity_pull_2026-12-07.log"
 
 
@@ -103,7 +102,13 @@ POLICY = [
         "The cluster goes to the pool with the largest Q1 peak-week shortfall. Shortfalls are compared as computed and "
         "reported to the nearest 10 GPUs.",
     ]),
-    ("6. What this does not cover", [
+    ("6. Reporting with the assignment", [
+        "With the assignment, Fleet capacity reports each pool's GPU-hours out of service in the last full month and "
+        "the longest any one of its nodes stayed out. A node's GPUs are out of service from the node's cordon until "
+        "its uncordon; a node cordoned again while it is cordoned is out once. Hours fall in the month (UTC) they are "
+        "spent in, and go to the pool the node belonged to at the time.",
+    ]),
+    ("7. What this does not cover", [
         "A pool that does not receive the cluster works its shortfall through its product's capacity runbook "
         "(admission limits, queueing for asynchronous traffic). The AMS-3 hall extension planned for the second "
         "quarter is outside this policy.",
@@ -265,63 +270,6 @@ def write_lease(out):
     doc.build(flow, onFirstPage=_footer("Noordermeer Compute / Slenk: GPU lease", "LibSans"),
               onLaterPages=_footer("Noordermeer Compute / Slenk: GPU lease", "LibSans"))
     PP.normalize_pdf(path, pdf_stamp(K.LEASE_DATE, 13, 50), pdf_stamp(K.LEASE_DATE, 13, 50))
-
-
-# ---------------------------------------------------------------------------------------------------- the desk's notes
-def notes_text():
-    return """# Capacity desk: notes on the 7 December pull
-
-Casper Heijmans, fleet capacity. Pulled Monday 7 December 2026, 07:40 Amsterdam time. Times are UTC unless a file says
-otherwise.
-
-## Fleet rollup (`fleet_rollup_hourly_2026-01-01_2026-12-06.csv`)
-
-One row per pool per hour, 1 January to 6 December 2026, from the capacity rollup (GPU busy time from the node
-exporters, counters from the gateway).
-
-- `hour_start_utc`: start of the hour.
-- `pool`, `model`: the deployment and the model build it served; both builds, joined by `+`, while a rolling upgrade
-  ran.
-- `gpus_in_service`: GPUs on the pool's schedulable nodes when the hour closed.
-- `gpu_busy_s`: GPU-seconds the pool's GPUs spent running kernels in the hour, summed over its GPUs.
-- `requests`: requests completed in the hour. `sessions_new`: sessions opened in the hour.
-- `prompt_tokens`, `completion_tokens`: prompt and completion tokens of the hour's completed requests.
-- `ttft_p50_ms`, `ttft_p95_ms`: time to first token at the gateway.
-
-A few hours are missing where the collector was down (chat-prod on the morning of 14 August, voice-prod one hour on
-3 March).
-
-## Docs usage (`docs_usage_by_org_daily_2026-09-01_2026-12-06.csv`)
-
-Docs usage as billed: one row per organisation, channel and Amsterdam business day, 1 September to 6 December.
-Channels: `app` (the web app), `api` (the enterprise API), `report` (the report service). Input tokens are prompt
-tokens as billed.
-
-## Maintenance exports
-
-- `fleetctl_jobs_2026-10-26_2026-12-06.jsonl`: every step fleetctl logged for its jobs, one line per step.
-- `ops_console_audit_2026-10-26_2026-12-06.csv`: actions taken in the ops console, with the console's own times.
-- `fleet_nodes_2026-12-06.csv`: every node with its hall, rack and pool memberships (from, to).
-
-Out of service: a node's GPUs are out of service from the node's cordon until its uncordon. A node cordoned again while
-it is cordoned is out once. Hours fall in the month (UTC) they are spent in, and go to the pool the node belonged to at
-the time.
-
-## Stopgap cluster (Noordermeer, NX7)
-
-The provider's burn-in and fabric exports (`nx7_burnin_results.csv`, `nx7_fabric_results.csv`) as received on 4
-December, and its handover inventory (`nx7_handover_inventory_2026-12-04.csv`). Acceptance is Schedule 3 of the lease.
-
-## Also in the folder
-
-Q3 close-out, Q1 capacity intake, Q1 fleet plan (issue v3), report service commitments (export of 4 December), the stopgap
-policy, the lease terms, the H2 incident log and the GPU spec register.
-"""
-
-
-def write_notes(out):
-    with open(os.path.join(out, F_NOTES), "w", encoding="utf-8", newline="\n") as f:
-        f.write(notes_text())
 
 
 def write_log(out, rows):

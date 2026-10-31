@@ -201,6 +201,16 @@ source pack, which at lc2's cost per computed prompt token and per completion to
   traffic that brings fresh input every call; price new work on what the server must compute, from traffic that
   reuses nothing, and test the price where the new traffic first arrived; no build on file teaches serving-side reuse.
 
+## Survivor anatomy
+
+Actor: the property that decides is whether a request re-sends a document its session already holds; no file stores it, and it exists only as the relation between a pool's requests and its new sessions hour by hour, and for the report service as billing's one session per report against the gateway's one serving session per call.
+Link: a report call's real cost is read from the Batch pool's single calls on lc2, a sibling pool whose traffic reuses nothing, and checked against the early-access tenant's billing rows set against Docs' rollup hours, billing's Amsterdam days against the rollup's UTC hours; no key joins billing to the rollup, and nothing asks for another pool's calls to cost Docs' work.
+Reflex: the field's capacity-planning rate, the close-out's GPU-seconds per request, is rung 0 and files Code at 300 GPUs; the per-token, per-session and per-new-session rates on Docs' own traffic and the shared-pack reading file Code too.
+Back-test: the textbook route validates: Docs' rate per request is the close-out's own Q3 figure, the policy files it for the product team's requests, and it reproduces Docs' busy time in the hours it was earned; only the tenant's realised time on its report days refutes it for report calls.
+Second use: every file the step reads is in the pack for its own reason: the rollup carries every pool's requirement, the ledger the contracts the policy counts, billing the tenant's record, the close-out the rates the policy files.
+Shock: nothing reads as an anomaly: the tenant's excess GPU time is spread across ordinary Docs hours in October and November, and Docs' series shows no jump a sort of the pools would surface.
+Pins: the policy's sections 2 to 5 file the requirement, the busiest hour's traffic, the contracts' volume and the shortfall, and section 6 the out-of-service basis for Ask A; no filed sentence names a cost per computed token, a session, the prefix cache or the Batch pool's calls.
+
 ## Readability screen
 
 Each rung against the six tests (`stumping` 2.1). R4 is the decisive rung.
@@ -363,7 +373,7 @@ nodes stayed out** (12 figures: GPU-hours to the nearest 10, hours to one decima
 - H18 home: an audit trail of the allocations the call consumes, what an allocated GPU actually delivered in the last
   full month; the call compares requirements with the plan and reads no maintenance record.
 - Use: the workbook's out-of-service table and `pool_out_of_service_nov2026.png`.
-- Basis (filed in `capacity_desk_notes.md`, the capacity analyst's voice): "Out of service: a node's GPUs are out of
+- Basis (filed in the stopgap policy's section 6, Reporting with the assignment; until the 10-31 reship in the capacity desk's notes): "Out of service: a node's GPUs are out of
   service from the node's cordon until its uncordon. A node cordoned again while it is cordoned is out once. Hours fall
   in the month (UTC) they are spent in, and go to the pool the node belonged to at the time."
 - Golden: chat-prod 3,630 and 57.4; code-prod 1,110 and 33.7; agents-prod 1,470 and 57.0; docs-prod 1,260 and 57.1;
@@ -390,7 +400,7 @@ nodes stayed out** (12 figures: GPU-hours to the nearest 10, hours to one decima
   hand-completed jobs missed (both logs, times converted, dated membership, cordon and uncordon by action name) miss
   12; today's pool for every hour misses 2 (Chat and Agents GPU-hours); the rollup's samples miss all six GPU-hour
   figures and give no stay length.
-- Span: the job log, the console export, the fleet inventory, the rollup, the desk notes (5 files, 11 columns).
+- Span: the job log, the console export, the fleet inventory, the rollup, the stopgap policy (5 files, 11 columns).
 - Realism: maintenance automation logs its own steps and an ops console its own actions; an engineer who rescues a
   failed upgrade finishes the job from the console.
 
@@ -442,7 +452,7 @@ six GPU-hour figures) and its parts.
 | Sampling and units (end-of-hour samples; the unit column from 1 December) | A, B | A: four pools' GPU-hours; B: all four racks if the unit column is ignored |
 | Versions (the harness release restarting its run numbers) | B | B: R12 and R14 |
 
-**Referee.** The desk notes' basis and the console export (Ask A); the acceptance schedule and the handover
+**Referee.** The policy's section 6 basis and the console export (Ask A); the acceptance schedule and the handover
 inventory (Ask B); neither hands over a level.
 
 **Cracker sheet** (the cracker landed the call, ran the hygiene battery, executed every filed rule and matched every
@@ -457,9 +467,11 @@ control):
 **Mirror sheet.** The mirror stops at R0 or R2c on the main call and meets the same devices; it keeps the chart's parts
 and no Ask A or B figure unless it cracks a device.
 
-Mirror leakage: 10 per cent of ask weight (design: the chart's parts, about 2 of 21 ask criteria).
+Mirror leakage: 9.5 per cent of ask weight (the chart's layout and labels, 2 of 21 ask criteria; no Ask A or Ask B figure).
 
-Pair ceiling: 33.5 (design: the cracker at 38 + 7 + about 6 of 55 ask points; the best miss at about 5 + 7 + 4).
+Pair ceiling: 33.7 (the cracker at 50.2, 38 + 7 + 55 x 2/21, keeping the chart's layout and labels and no ask figure; the mirror at 17.2, 5 + 7 + 55 x 2/21).
+
+Measured by: `generator/ceiling.py` on the cut pack (Ask A without the hand-completed jobs' uncordons, Ask B on the highest run number with every run read).
 Rerun from the generated rubric at stage 4.
 
 ## Build record
@@ -599,3 +611,4 @@ Rerun from the generated rubric at stage 4.
   close-out now prints four decimals and the tenant ran at its contract's 400 reports an hour, the size chosen by rule.
 - Step 4's "a source pack computed once per report predicts under half": true only when the whole prompt is the pack,
   a share nothing files (0.45 at all of it, 0.72 at half); the rival is argued from sessions and the tenant's busy time.
+- 2026-10-31, re-check under the 10-30 gates: `leak.py` LEAK on the capacity desk's notes (section 3: they glossed every rollup column and listed the folder). Removed. Ask A's out-of-service basis is filed as the stopgap policy's section 6, Reporting with the assignment; every other file already names its zone, and billing's day column now does too (usage_day_amsterdam); `metadata.json`'s title and subdomain narrated the step and disclosed counts and were cut. The prompt drops its counts and asks what. Every graded figure unchanged (114 checks).

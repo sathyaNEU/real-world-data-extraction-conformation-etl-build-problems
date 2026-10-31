@@ -5,23 +5,23 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-10-31",
  "stump": "A competent solver costs every pool's busiest-hour requests at the Q3 close-out's GPU-seconds per request, adds Docs' contracted report calls at Docs' own rate per request, per token or per session (or with each report's sections sharing the pack) and sends the stopgap to Code at 300 GPUs short; the step that lands it there is pricing report calls at rates earned by turns that re-send a cached document, when each report call computes its whole source pack and leaves Docs 340 GPUs short.",
  "architecture": 1,
  "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17",
-  "checks": "49 checks, 0 FAIL, 0 WARN (built figures)"
+  "date": "2026-10-31",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-17 at ship, --asof 2026-12-07; every REVIEW line answered in the design note's Build record)",
-  "reader": "clean (round 1 and the round 2 re-read), decisive step analytical"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack, no LEAK (the capacity desk's notes removed; Ask A's basis filed as the stopgap policy's section 6, billing's day column names its zone, the report service's Notes sheet removed and the plan's About tab renamed Issue; title and subdomain scrubbed)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 the WHAT, Q6 analytical (leak_check_report.md)"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-17 (repeat.question_form; same_driver_older differentiated against task151)",
+  "heart": "PASS after a differentiation line against task307",
   "nearest": "task228 (v2, lineage) 0.05",
-  "surface": "task151 promoted on card axes only, text surface 0.075"
+  "surface": "exit 0 2026-10-31 (pairs promoted for the author's adjudicated read only)"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -29,9 +29,9 @@
   "report": "task158/determinism_check_report.md (round 1: determinism_check_report_round1.md; tenant re-check: determinism_check_report_tenant_recheck.md)"
  },
  "returned": [],
- "resume": "",
+ "resume": "RESHIPPED 2026-10-31 under the 10-30 gates; next: the author's portal result",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -44,5 +44,16 @@
   "answer": "docs-prod, 340 GPUs (338.8, 2027-W13)",
   "default_path": "code-prod, 300 GPUs (299.3)",
   "target_zip_sha256": "bfa825afc7aab4e6c141a6d71db0c1df0e0c39992a77a271d05d1d868ec4bec4"
+ },
+ "gates_2026_10_31": {
+  "checks": 114,
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "0 absent",
+  "precut": "0 FAIL",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "pair_ceiling": 33.7,
+  "ceiling_script": "generator/ceiling.py"
  }
 }

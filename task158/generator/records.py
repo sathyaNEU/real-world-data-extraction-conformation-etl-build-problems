@@ -28,7 +28,7 @@ F_SPEC = "gpu_spec_register_2026-12.csv"
 
 ROLLUP_COLS = ["hour_start_utc", "pool", "model", "gpus_in_service", "gpu_busy_s", "requests", "sessions_new",
                "prompt_tokens", "completion_tokens", "ttft_p50_ms", "ttft_p95_ms"]
-BILLING_COLS = ["usage_date", "org_id", "org_name", "product", "channel", "requests", "sessions", "input_tokens",
+BILLING_COLS = ["usage_day_amsterdam", "org_id", "org_name", "product", "channel", "requests", "sessions", "input_tokens",
                 "output_tokens"]
 NODE_COLS = ["node", "hall", "rack", "gpu_model", "gpus", "pool", "member_from", "member_to"]
 CONSOLE_COLS = ["time (Europe/Amsterdam)", "user", "action", "object", "detail", "ticket"]
@@ -255,7 +255,7 @@ def write_plan(path):
     m.append(["MV-2027-02", "batch-prod", "docs-prod", 6, 48, "2027-02-15", "Docs growth; Batch queue holds its "
               "drain time at 280 GPUs"])
     _widths(m, [12, 12, 12, 7, 7, 11, 60])
-    a = wb.create_sheet("About")
+    a = wb.create_sheet("Issue")
     for line in [
         ["Issue", "v3"], ["Issued", "2026-12-01"], ["Owner", K.PEOPLE["capacity_lead"] + ", fleet capacity"],
         ["Covers", "ISO weeks 2027-W01 (Monday 4 January) to 2027-W13 (Sunday 4 April)"],
@@ -272,7 +272,7 @@ def write_ledger(path, W):
     ws = wb.active
     ws.title = "Contracts"
     head = ["Contract", "Account", "Account id", "Product", "Service", "Tier", "Contracted peak (reports/hour)",
-            "Q1 committed reports", "Q1 calls", "Signed", "Go-live", "Status", "Account owner"]
+            "Q1 committed reports (contract minimum)", "Q1 calls", "Signed", "Go-live", "Status", "Account owner"]
     ws.append(head)
     for c in ws[1]:
         c.font = BOLD
@@ -301,13 +301,6 @@ def write_ledger(path, W):
     for tier, (n, pm, qm, price) in K.TIERS.items():
         t.append([tier, n, pm, qm, price, use[tier]])
     _widths(t, [8, 10, 16, 16, 14, 50])
-    n = wb.create_sheet("Notes")
-    for line in [["Owner", K.PEOPLE["reports_pm"] + ", report service"], ["Exported", "2026-12-04"],
-                 ["Calls", "A report is generated section by section; each section is one call to the Docs "
-                           "model. Q1 calls are committed reports times the tier's calls per report."],
-                 ["Committed", "Q1 committed reports are each contract's minimum for the quarter."]]:
-        n.append(line)
-    _widths(n, [12, 100])
     wb.save(path)
 
 

@@ -90,7 +90,7 @@ def read_billing(target):
     out = []
     with open(os.path.join(target, F_BILLING), encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            out.append(dict(date=dt.date.fromisoformat(r["usage_date"]), org=r["org_id"], name=r["org_name"],
+            out.append(dict(date=dt.date.fromisoformat(r["usage_day_amsterdam"]), org=r["org_id"], name=r["org_name"],
                             channel=r["channel"], requests=int(r["requests"]), sessions=int(r["sessions"]),
                             input=int(r["input_tokens"]), output=int(r["output_tokens"])))
     return out

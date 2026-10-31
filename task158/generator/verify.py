@@ -156,7 +156,7 @@ def main(target):
     bill = pd.read_csv(os.path.join(target, "docs_usage_by_org_daily_2026-09-01_2026-12-06.csv"))
     ea = con[con["Contract"].str.startswith("EA")].iloc[0]
     ten = bill[(bill["org_id"] == ea["Account id"]) & (bill["channel"] == "report")].copy()
-    ten["day"] = pd.to_datetime(ten["usage_date"]).dt.date
+    ten["day"] = pd.to_datetime(ten["usage_day_amsterdam"]).dt.date
     docs = roll[roll["pool"] == "docs-prod"].copy()
     docs["day"] = docs["t"].dt.tz_localize("UTC").dt.tz_convert("Europe/Amsterdam").dt.date
     dd = docs.groupby("day")[["gpu_busy_s", "requests"]].sum()
@@ -177,7 +177,7 @@ def main(target):
     ok("V16 the tenant's report calls in billing", "{:,}".format(int(ten["requests"].sum())) == G["steps"]["pilot_calls"])
     gw = docs.groupby("day")["sessions_new"].sum()
     aa = bill[bill["channel"] != "report"].copy()
-    aa["day"] = pd.to_datetime(aa["usage_date"]).dt.date
+    aa["day"] = pd.to_datetime(aa["usage_day_amsterdam"]).dt.date
     aa = aa.groupby("day")["sessions"].sum()
     gap = float((gw.loc[tday.index] - aa.loc[tday.index]).sum()) / float(tday["requests"].sum())
     ok("V17 billing bills a report as one session; the gateway opened one session per report call",

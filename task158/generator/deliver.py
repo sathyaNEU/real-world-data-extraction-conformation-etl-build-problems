@@ -292,7 +292,7 @@ def submission(F, hb):
     L.append("7. For the out-of-service table, joined fleetctl's cordon and uncordon steps with the console's cordons, "
              "uncordons and hand-completed jobs (Europe/Amsterdam times converted to UTC), counted eight GPUs per node "
              "from cordon to uncordon in November and gave each hour to the node's pool at the time "
-             "(fleet_nodes_2026-12-06.csv), per capacity_desk_notes.md.")
+             "(fleet_nodes_2026-12-06.csv), as the stopgap policy's section 6 counts them.")
     L.append("8. For acceptance, applied lease_schedule3_acceptance.pdf to the latest burn-in run of each fitted GPU "
              "serial and each node's latest all-reduce in nx7_fabric_results.csv finished before the 14:00 Amsterdam "
              "review (13:00 UTC), Gbit/s runs divided by 8 before the 360 GB/s line, racks as in "

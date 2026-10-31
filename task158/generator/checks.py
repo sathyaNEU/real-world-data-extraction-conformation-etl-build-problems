@@ -49,6 +49,10 @@ def main(target):
     # ------------------------------------------------------------------ input gates
     fmts = {f.rsplit(".", 1)[1] for f in files}
     check("G1 ten or more files", len(files) >= 10, "%d files" % len(files))
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|desk_?notes|notes", re.I)
+    check("section 3: no file named as a dictionary, manifest, readme or notes ships",
+          not [f for f in files if describing.search(f)], ", ".join(f for f in files if describing.search(f)))
     check("G2 three or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
     big = max((MD.rows_of(os.path.join(target, f)) or 0, f) for f in files)
     check("G3 one file of 25,000 rows or more", big[0] >= 25000, "%s %d rows" % (big[1], big[0]))
@@ -252,7 +256,7 @@ def main(target):
     rows = M["rows"]
     for c in live:
         r = [x for x in rows if x["Contract"] == c["ref"]][0]
-        q1_avg[c["ref"]] = r["Q1 committed reports"] / (13 * 7 * 24.0)
+        q1_avg[c["ref"]] = r["Q1 committed reports (contract minimum)"] / (13 * 7 * 24.0)
     spread_live = [dict(c, peak=q1_avg[c["ref"]]) for c in live]
     sp = C.shortfalls(intake, plan, M["gpr"], spread_live, M["cost"])[0]
     check("SF6 Q1 committed reports spread over the quarter's hours file Code (the policy holds contracted peaks)",
