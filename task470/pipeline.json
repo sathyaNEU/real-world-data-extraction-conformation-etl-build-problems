@@ -1,26 +1,26 @@
 {
  "task": "task470",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "A competent solver conforms the cadastre, the population register and the hub's hourly reads, counts as vacant the dwellings whose average daily consumption over the fortnight sits under a floor, and designates one municipality; an empty dwelling in a Norwegian November is heated, so only a household's morning and evening rise over the dwelling's own night-time load shows that someone lived there, which designates four.",
+ "stump": "A competent solver conforms the cadastre and the hub's hourly values, counts as vacant the dwellings whose average daily use over the fortnight sits under a consumption floor, sees the floor agree with the register, and files that no municipality qualifies at any floor from 1 to 10 kWh a day; an empty dwelling in a Norwegian November is left heated, so the vacant dwellings use a median 20.5 kWh a day against 19.5 for the lived-in ones, and only a household's morning or evening rise over the dwelling's own night-time use on some day shows that someone lived there, which designates five.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-31 on the final cut (target.zip 26076f7e43ec0c97): sweep 3 the regulation's 5.0 threshold, sweep 4 the regulation's own nouns; both ruled harmless in the design note; no LEAK",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-31 on the registered card (task477 differentiated)",
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-10-31: repeat.question_form (whether) against task306; the call is a gate",
+  "surface": "clean 2026-10-31"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2: the design sections, the asks, the generator's screens as code.",
+ "resume": "stage 4: leak reader and judge from the main thread. Rebuild with python3 task470/generator/build.py (byte-identical, target.zip sha256 26076f7e43ec0c97b2c28988ecfa57066c891a809a12576809f748f028542a10), spawn the leak reader from the brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task470_stage4_leak_brief.md on the scratch copy /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task470/ and the determinism-judge agent together in the background, fix every finding in one generator pass, then stage 5 (ledger row, card answer, SHIPPED commit with target.zip and golden/ force-added).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -61,5 +61,20 @@
    },
    "fate": "spent 2026-10-31 at the batch 1 repair: guard.py heart BLOCK against task242 on strategy, calibration, forum, forcing event and organisation family, and on pattern against task197; superseded before any portal result"
   }
- ]
+ ],
+ "gates": {
+  "checks": "84 of 84",
+  "verify": "every graded figure",
+  "byte_identical": true,
+  "figures_check": "123 of 123",
+  "voice_check": "PASS",
+  "target_zip_sha256": "26076f7e43ec0c97b2c28988ecfa57066c891a809a12576809f748f028542a10",
+  "ceiling": {
+   "pair": 29.0,
+   "cracker": 45.0,
+   "best_mirror": "13.0 on a consumption floor of 10 kWh a day",
+   "mirror_leakage": 0.0,
+   "script": "generator/ceiling.py"
+  }
+ }
 }
