@@ -46,7 +46,7 @@
     "layout-change-across-years"
   ],
   "stakeholder_role": "the district council's three waters operations manager, whose report to the elected council recommends whether the subdivision connects in 2027 or waits for the station's storage upgrade",
-  "role_family": "operations_director",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
     "file": "pump_station_inflow_2024-2026.csv",
@@ -56,7 +56,7 @@
     "source": "constructed for task156, no real dataset"
   },
   "forum": "council_or_assembly",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "other",
   "org_family": "local_government",
   "world": {
     "geography": "New Zealand (a fictional river terrace town, Rauwhero, in a fictional Kahuwera region)",
@@ -160,7 +160,7 @@
       "deliverable set": "pptx+xlsx"
     }
   ],
-  "notes": "",
+  "notes": "forcing_event other: the developer's request, under the subdivision's development agreement, to connect stage 1 from March 2027, which consent condition 8 makes the council assess before it accepts the connection. Redrawn in place on 2026-10-31 after the window moved under the registered card (task191 re-registered after this draw, task250's role family changed): vote_or_meeting met task306 and operations_director met task250; capacity_planner is the honester label for an assessment of a station's capacity for growth.",
   "registered": "2026-10-31T18:27:04Z",
   "shell": {
     "question form": "whether",

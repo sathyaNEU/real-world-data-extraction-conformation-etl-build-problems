@@ -20,7 +20,7 @@
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-31T18:27:04Z on the registered card after rebasing on main (repeat.question_form against task250, answered in the design note; test.same_driver_older differentiated against task134, task146, task165 and task173 v1); forum, forcing event and context artifact redrawn after task191 and task250 entered the window",
-  "heart": "WARN 2026-10-31 (repeat.question_form against task250); task130 v5 differentiated on the card",
+  "heart": "WARN 2026-10-31 after the PAUSED rebase (repeat.question_form); forcing event and role family redrawn in place (other, capacity_planner) when task191 re-registered after this draw and task250 changed its role family; task130 v5 differentiated",
   "surface": "personas are the three drawn names; five pairs promoted on card axes alone (task130, task134, task146, task165 differentiated; task154 on calibration and artifact, left for the author's adjudicated clone check)"
  },
  "judge": {
