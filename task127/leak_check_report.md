@@ -1,19 +1,20 @@
 # leak check, task127
 
-**Verdict: REVIEW.** 16 files read, 41 golden figures and 10 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 41 golden figures and 10 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: equipment, nights, patient, cleeve, wendlebury, marchford, covered, decisive, delivery, holmford, default, determinism, generator, counterfactual, analytical, dependency, sentence, warehouse, record, asserted, closed, service, allocation, removed, reader
+Stump terms swept: equipment, patient, nights, covered, cleeve, wendlebury, marchford, decisive, delivery, holmford, default, analytical, counterfactual, determinism, generator, dependency, sentence, service, warehouse, record, asserted, closed, allocation, waiting, removed
+
+## 1 file names (REVIEW 2)
+- **REVIEW** `bed_census_daily_2024-12_2026-09.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+- **REVIEW** `reablement_91_day_outcomes_2024-26.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `winter_discharge_fund_2026-27.pdf`: carries 17 of 19 distinctive words of the committed call: 'Give Royal Marchford Hospital 508 packages, Wendlebury Hospital 350, Holmford Infirmary 120, Cleeve Park Hospital 222 an'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `acute_extract_notes.txt`: 3 of 25 stump-paragraph terms appear (nights, patient, warehouse); read whether the document names the move
-- **REVIEW** `council_extract_notes.txt`: 4 of 25 stump-paragraph terms appear (patient, record, closed, service); read whether the document names the move
-- **REVIEW** `ices_export_notes.txt`: 6 of 25 stump-paragraph terms appear (equipment, patient, marchford, delivery, record, service); read whether the document names the move
-- **REVIEW** `winter_discharge_fund_2026-27.pdf`: 8 of 25 stump-paragraph terms appear (nights, patient, cleeve, wendlebury, marchford, covered); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `winter_discharge_fund_2026-27.pdf`: 9 of 25 stump-paragraph terms appear (patient, nights, covered, cleeve, wendlebury, marchford); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 2)
 - **REVIEW** `bed_census_daily_2024-12_2026-09.xlsx`: names 8 of 10 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -21,10 +22,11 @@ Stump terms swept: equipment, nights, patient, cleeve, wendlebury, marchford, co
 - **INFO** `ward_reference.csv`: names 8 of 10 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `winter_discharge_fund_2026-27.pdf`: names 7 of 10 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -34,9 +36,8 @@ Stump terms swept: equipment, nights, patient, cleeve, wendlebury, marchford, co
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -78,3 +79,38 @@ Two reader passes, each one Sonnet reader at medium effort on a fresh copy holdi
 - The six REVIEW lines: all harmless.
 - Realism. Fixed in the generator: no week in the data (care starts, deliveries and discharges flat across the week, deliveries even peaking on Saturday); the services now keep a working week, each turned-down weekend day redrawn from the service's own waits. Answered, no fix: "all statuses Started" is not the file (Started 11,768, Closed 1,871, Cancelled 373, Open 13 at that cut, checked); the bed census and the weekly return are complete because they are the system coordination centre's and the trusts' own complete returns (both distractors).
 - The final cut changed data only (no document text, no prompt), so no further read; `leak.py` gives the same REVIEW lines.
+
+## Solver's-eye read
+
+Reader (isolated, Sonnet, medium), 2026-10-31, on a fresh copy of prompt.txt and the 12-file pack after the reship
+repair (the three extract notes and the data request log withdrawn). It read the pack for leaks and solved nothing.
+
+1. Decisive step announced: none. The nearest sentences are section 4's objective ("split between the hospitals to
+   free as many occupied bed-days as possible") and value definition ("the number of nights by which a package would
+   have shortened their stay"), which fix the estimand and not the route.
+2. A file ranking the candidates on the question: none (the bed census and the weekly return are by site and trust,
+   neither ranks packages or bed-days freed).
+3. A file existing only to help the analyst: none; the ward reference, the postcode lookup and the practice list are
+   plain reference tables an organisation holds. No dictionary, readme or manifest.
+4. A figure or name reading as the answer: none (1,200 is the fund, stated in the prompt and the note).
+5. Literal sentences: the covered population selected by discharge ready date in the winter window; values carried
+   unrounded, bed-days rounded once; each hospital capped at its covered patients; delayed nights dated to the
+   evening they begin and a patient delayed in a month with one such night; the brokerage wait in calendar days from
+   receipt to start by month received. The note fixes the estimand and leaves the method open.
+6. What decides: an analytical choice (the counterfactual nights a package would have saved), stated nowhere; the
+   population work follows the note; no planted defect or decoy.
+
+Sweep lines: the bed census and reablement Notes sheets are each source's own footnotes (harmless); the fund note
+names the hospitals as its coverage (harmless); the bed census and the brokerage export name the hospitals beside
+row-level numbers and rank nothing (harmless). Main thread: the stump-vocabulary line on the fund note is its own
+vocabulary (patients, nights, the hospitals' names) and names no move; harmless.
+
+Reader (isolated, Sonnet, medium), 2026-10-31, on a fresh copy of prompt.txt and the 12-file pack after the reship
+repair (the equipment notes withdrawn, the allocation note's issuer redrawn to the board's deputy director of
+finance). It read the pack for leaks and solved nothing. Questions 1 to 4 none (section 4 names the value, the nights
+by which a package would have shortened the stay, not how to build it; the lookup tables are the organisations' own
+reference data). Question 5: the covered population, the cap and the fill read literally, the value left a
+counterfactual. Question 6: an analytical choice (the per-patient counterfactual nights over the right population);
+nothing planted, no field reading deciding it. Every sweep line harmless: the two Notes sheets are the trusts' and the
+council's own notes, the note shares the call's hospital names and window, and neither the census nor the brokerage
+rows rank the hospitals on freed bed-days.

@@ -31,8 +31,8 @@
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "none",
-  "stakeholder_role": "the integrated care board's head of system flow, who splits the winter discharge fund's discharge-to-assess packages across the five hospitals",
-  "role_family": "capacity_planner",
+  "stakeholder_role": "the integrated care board's deputy director of finance, who allocates the winter discharge fund's discharge-to-assess packages across the five hospitals",
+  "role_family": "finance_controller",
   "scoring_unit": "per episode",
   "spine": {
     "file": "acute_discharges_65plus_2024-12_2026-09.csv",
@@ -67,7 +67,7 @@
     "delayed_bed_days_winter_2025-26.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
+  "question_form": "whether",
   "driver": "The decisive quantity is the part of each unit's recorded wait that the offered intervention removes, because the recorded wait fuses the step the intervention replaces with a concurrent step it leaves in place, so only the replaced step's excess over the concurrent one, built by joining separate operational logs, counts; ranking units by the recorded wait, or by the replaced step measured from the same start, credits the units whose concurrent step is slowest.",
   "driver_concrete": "A discharge-to-assess package removes only the nights a pathway-1 patient spends waiting for home care after the community equipment ordered for their discharge has arrived, so the bed-days it frees are the nights from the later of the discharge ready date and the delivery to discharge, built per patient by joining the equipment service's order lines to the warehouse's spells; the delayed nights on record, which the brokerage's start dates present as the wait for care, credit the hospitals whose equipment waits are longest.",
   "stump": "A competent solver keeps last winter's covered patients, values a package at their nights after the discharge ready date (every record presents them as the wait for home care, since care starts on the day the patient goes home) and fills Ashby Vale Hospital first with 361 packages, then Cleeve Park 285, Wendlebury 350 and Royal Marchford 204, Holmford none, freeing 10,507 occupied bed-days, where the golden gives Royal Marchford 508, Wendlebury 350, Holmford 120, Cleeve Park 222 and Ashby Vale none, freeing 6,816; the step that lands it there is counting nights the patient also spent waiting for community equipment from the South depot, a wait that ran alongside the care wait and that a package does not shorten.",
