@@ -1,10 +1,10 @@
 {
  "task": "task191",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "banking-credit-financial-risk/fraud-aml-detection",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "each scenario's productivity read over the alerts already decided (or the undecided ones projected at that share, or at the decided investigations' share) sends RMF-P2P, MUL-INF and MER-RND to the 2027 tuning beside CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV; read by how alerts undecided at the same age ended in the scenario's own history, the three slow scenarios' open investigations are mostly SARs to come and they clear the floor",
  "architecture": 4,
@@ -14,17 +14,17 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (one line ruled: the procedure's own vocabulary); --asof 2026-11-02",
-  "reader": "pending: spawn from the main thread"
+  "leak_py": "REVIEW on e5ddad41, one line ruled",
+  "reader": "read 1: no leak, question 6 analytical"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g against task130 v5, answered on the card and in the note)",
   "surface": "exit 0; one pair promoted for adjudication, task474 (surface 0.101, the gap label time in common, a different driver); personas Katherine Cobb, Miguel Swanson and Leah Berg, all on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (architecture 4)"
  },
  "returned": [
   {
@@ -46,7 +46,7 @@
    "commit": "DRAWN (task191) architecture 4"
   }
  ],
- "resume": "stage 4 from the main thread (a fork cannot spawn agents): spawn the isolated leak reader at medium effort on the copy /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task191/ with the brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task191_stage4_leak_brief.md, and the determinism judge (determinism-judge agent, medium) on task191 together, both in the background; fix every finding in the generator in one pass and rebuild with `python3 task191/generator/make.py` (two byte-identical builds, checks, verifier, ceiling, target.zip), then re-run figures_check.py, precut.py, voice-check.py, leak.py --asof 2026-11-02 and guard.py heart and surface on the final cut; then stage 5 ship",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
