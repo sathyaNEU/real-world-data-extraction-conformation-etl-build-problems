@@ -15,11 +15,10 @@ SOURCES = {
     K.F_PAYROLL: "Kellaway's People and Payroll, payroll casual register, 12/11/2026",
     K.F_STORES: "Kellaway's, store list",
     K.F_STANDARD: "Kellaway's Workforce Planning, relief crew placement standard WP-04 version 4, 09/10/2026",
-    K.F_NOTES: "Kellaway's Workforce Systems, KWS Call-in module notes version 2.3, 04/08/2026",
+    K.F_NOTES: "Kellaway's Workforce Planning, WP-05 casual call-in procedure version 2.3, 04/08/2026",
     K.F_EA: "Kellaway's People and Payroll, enterprise agreement 2024 casual employment summary, 01/07/2026",
     K.F_PLAN: "Kellaway's Store Operations, Christmas trading plan 2026 version 2, 30/10/2026",
     K.F_CAL: "Kellaway's Store Operations, Victorian school terms and public holidays 2025 and 2026",
-    K.F_TRANSMIT: "Kellaway's Workforce Systems, transmittal for data extract WR-26-1187, 12/11/2026",
 }
 AS_OF = "2026-11-13"
 
@@ -57,10 +56,8 @@ def write(task, target):
                  "call-ins would otherwise leave unworked, and the crew hours it will work there",
         "domain": "Economics & Econometrics",
         "client_domain": "Economics & Econometrics",
-        "subdomain": "discrete-choice-limited-dependent-variable-modeling (each casual's accept-or-decline choice on a "
-                     "call-in offer, fitted on the offer log with the offer's position against the casual's own "
-                     "rostered shift as a term, and run through the call-in module over the published Christmas "
-                     "rosters)",
+        "subdomain": "discrete-choice-limited-dependent-variable-modeling (where a grocery chain's Christmas relief "
+                     "crew is placed under its placement standard)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a committed store and its crew hours in a one-page placement brief with a chart of every "
                         "store's expected unworked hours, and two tables: last Christmas's call-ins by store (hours "
@@ -79,9 +76,9 @@ def write(task, target):
                                "around a fictional family-owned Victorian grocery chain of eight stores, in the "
                                "layouts of a workforce management system's call-in register, offer history, roster "
                                "lines, people and availability exports, a legacy rostering spreadsheet tool's weekly "
-                               "export, a payroll casual register, a published roster workbook, a planning standard, "
-                               "system notes, an enterprise agreement summary, a trading plan, a calendar and an "
-                               "extract transmittal; no real organisation's records or person is depicted.",
+                               "export, a payroll casual register, a published roster workbook, a placement standard, "
+                               "a call-in procedure, an enterprise agreement summary, a trading plan and a "
+                               "calendar; no real organisation's records or person is depicted.",
                      "date": AS_OF, "license": "CC0-1.0 (original work)"}],
         "created": "2026-10-17",
         "generator": "task155/generator/build.py",

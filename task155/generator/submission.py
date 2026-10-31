@@ -47,9 +47,8 @@ def text(F):
     a("1. Offers that start as the casual's own rostered or booked shift at that store ends, or end as it starts, are "
       "accepted **%d%%** of the time, against **%d%%** for every other offer." % (F["ext_rate_pct"], F["other_rate_pct"]))
     a("2. **%d%%** of Werribee's open Christmas shifts could be taken by one of its own casuals staying on from a "
-      "rostered shift that ends as the open shift starts or starts as it ends, the module's checks passed (Box Hill "
-      "**%d%%**, Altona **%d%%**), against **%d%%** of Camberwell's."
-      % (F["abut_pct_werribee"], F["abut_pct_box_hill"], F["abut_pct_altona"], F["abut_pct_camberwell"]))
+      "rostered shift that ends as the open shift starts or starts as it ends, WP-05's checks passed, against "
+      "**%d%%** of Camberwell's." % (F["abut_pct_werribee"], F["abut_pct_camberwell"]))
     a("3. Camberwell's %d open shifts carry **%s** paid hours to the nearest 10." % (F["open_shifts_camberwell"],
                                                                                 n(F["crew_hours"])))
     a("")
@@ -70,7 +69,7 @@ def text(F):
       "shift's paid hours, finishing after 21:30, starting before 07:00, under four hours' notice, an offer repeated, a "
       "sister-store offer, rostered hours over 10 that week, the Christmas weeks, the casual's age band and home store.")
     a("4. Ran the fitted choice through the offer order, eligibility checks and offer hours in "
-      "kws_callin_module_notes.pdf over the published Christmas rosters, every store's open shifts posted at 09:00 on "
+      "wp05_casual_callin_procedure.pdf over the published Christmas rosters, every store's open shifts posted at 09:00 on "
       "16 November with the crew at no store (relief_crew_placement_standard.pdf, section 4), %d runs: "
       "call-ins would leave more of Camberwell's open hours unworked than of any other store's, well clear of the "
       "next store." % F["runs"])

@@ -451,20 +451,19 @@ def main(task, F):
     for sec in (DOC.STANDARD, DOC.NOTES, DOC.EA):
         for t, ps in sec:
             text += t + " " + " ".join(ps)
-    text += open(os.path.join(target, K.F_TRANSMIT), encoding="utf-8").read()
     check("RZ1 no em or en dash in any shipped text", "\u2014" not in text and "\u2013" not in text)
     card = json.load(open(os.path.join(os.path.dirname(task), ".claude", "skills", "fingerprint", "cards",
                                        "task155.json"), encoding="utf-8"))
     people = set(card["world"]["people"])
-    named = set(re.findall(r"(Beth Hill|Meredith Stevens|Kristina Patel|Belinda Friedman|[A-Z][a-z]+ [A-Z][a-z]+, "
+    named = set(re.findall(r"(Alison Thompson|Meredith Stevens|Kristina Patel|Belinda Friedman|[A-Z][a-z]+ [A-Z][a-z]+, "
                            r"(?:Workforce|General|Payroll))", text))
     check("RZ2 every person named is a drawn persona", all(n.split(",")[0] in people for n in named), ", ".join(sorted(named)))
     dates = [dt.date(int(y), int(m), int(d)) for d, m, y in re.findall(r"\b(\d{1,2})/(\d{1,2})/(20\d\d)\b", text)]
-    check("RZ3 no document dated after the as-of", all(d <= W.AS_OF for d in dates), "latest %s" % max(dates))
-    listed = set(re.findall(r"^(\S+\.(?:csv|xlsx|json|pdf|txt))\s", open(os.path.join(target, K.F_TRANSMIT),
-                                                                         encoding="utf-8").read(), re.M))
-    check("RZ7 the transmittal lists every shipped file but itself", listed == set(files) - {K.F_TRANSMIT},
-          "%d listed" % len(listed))
+    check("RZ3 no document dated after the as-of", all(d <= W.AS_OF for d in dates),
+          "latest %s" % (max(dates) if dates else "none written as dd/mm/yyyy"))
+    check("RZ7 no describing file ships: no transmittal, manifest, notes, readme or dictionary",
+          not any(x in f.lower() for f in files for x in ("transmittal", "manifest", "notes", "readme", "dictionary")),
+          files)
     st = {os.path.getmtime(os.path.join(target, f)) for f in files}
     check("RZ4 every file carries the extract's stamp", len(st) == 1)
     tot = [round(G["open"][l], 1) for l in B.locs]

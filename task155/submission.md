@@ -11,7 +11,7 @@ Call-ins would leave more of Camberwell's open Christmas hours unfilled than of 
 ## 2. Critical Components
 
 1. Offers that start as the casual's own rostered or booked shift at that store ends, or end as it starts, are accepted **32%** of the time, against **4%** for every other offer.
-2. **100%** of Werribee's open Christmas shifts could be taken by one of its own casuals staying on from a rostered shift that ends as the open shift starts or starts as it ends, the module's checks passed (Box Hill **96%**, Altona **79%**), against **0%** of Camberwell's.
+2. **100%** of Werribee's open Christmas shifts could be taken by one of its own casuals staying on from a rostered shift that ends as the open shift starts or starts as it ends, WP-05's checks passed, against **0%** of Camberwell's.
 3. Camberwell's 215 open shifts carry **1,090** paid hours to the nearest 10.
 
 ## 3. Step-by-Step Solution
@@ -19,7 +19,7 @@ Call-ins would leave more of Camberwell's open Christmas hours unfilled than of 
 1. Summed the paid hours (less the unpaid meal break on shifts over five hours, per ea_2024_casual_employment_summary.pdf) of the OPEN lines on each sheet of christmas_roster_2026_published.xlsx: Werribee 3,250 hours, Box Hill 2,600, Altona 1,770, Camberwell 1,090.
 2. Joined every offer in callin_offers_20250829_20261112.csv to the casual's roster lines that day (person code to payroll number through kws_people_20261112.csv and the previous numbers in payroll_casual_register_20261112.csv; both roster exports, less lines callin_register_20250829_20261112.csv shows vacated, plus call-ins the casual had accepted): 2,241 offers carried on from the casual's own shift at the store and 32% of them were accepted, against 4% of the other 153,829.
 3. Fitted a logit of each offer's acceptance on that term and on another shift the same day, a Sunday shift, the shift's paid hours, finishing after 21:30, starting before 07:00, under four hours' notice, an offer repeated, a sister-store offer, rostered hours over 10 that week, the Christmas weeks, the casual's age band and home store.
-4. Ran the fitted choice through the offer order, eligibility checks and offer hours in kws_callin_module_notes.pdf over the published Christmas rosters, every store's open shifts posted at 09:00 on 16 November with the crew at no store (relief_crew_placement_standard.pdf, section 4), 24 runs: call-ins would leave more of Camberwell's open hours unworked than of any other store's, well clear of the next store.
+4. Ran the fitted choice through the offer order, eligibility checks and offer hours in wp05_casual_callin_procedure.pdf over the published Christmas rosters, every store's open shifts posted at 09:00 on 16 November with the crew at no store (relief_crew_placement_standard.pdf, section 4), 24 runs: call-ins would leave more of Camberwell's open hours unworked than of any other store's, well clear of the next store.
 5. Placed the crew at Camberwell under section 3 of the standard; its crew hours under section 5 are the paid hours of Camberwell's open shifts: 1,090.
 
 ## 4. Deliverable Answers

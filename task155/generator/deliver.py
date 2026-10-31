@@ -371,7 +371,7 @@ def write_xlsx(path, B, G, S, ab, ex, figs, order, names, n_open):
         for j, wd in enumerate(widths[w.title], 1):
             w.column_dimensions[get_column_letter(j)].width = wd
     wb.save(path)
-    PP.normalize_ooxml(path, "Beth Hill", "Beth Hill", "2026-11-13T00:12:00Z", "2026-11-13T05:18:00Z",
+    PP.normalize_ooxml(path, "Alison Thompson", "Alison Thompson", "2026-11-13T00:12:00Z", "2026-11-13T05:18:00Z",
                        title="Relief crew placement, Christmas 2026", excel=True, company="Kellaway's")
 
 

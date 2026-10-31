@@ -1,6 +1,5 @@
-"""The pack's documents: Workforce Planning's relief crew placement standard, Workforce Systems' notes on the KWS
-call-in module, People and Payroll's summary of casual employment under the 2024 enterprise agreement, and the
-extract's transmittal. The text is held here as data so checks.py can quote it and execute every filed sentence."""
+"""The pack's documents: Workforce Planning's relief crew placement standard and its casual call-in procedure, and
+People and Payroll's summary of casual employment under the 2024 enterprise agreement. The text is held here as data so checks.py can quote it and execute every filed sentence."""
 from __future__ import annotations
 
 import os
@@ -80,7 +79,7 @@ def sentences(paras):
 
 # ---------------------------------------------------------------------------------------------------- the standard
 STANDARD_HEAD = ("Relief crew placement standard",
-                 "Workforce Planning standard WP-04, version 4, 9 October 2026. Owner: Beth Hill, Workforce Planning "
+                 "Workforce Planning standard WP-04, version 4, 9 October 2026. Owner: Alison Thompson, Workforce Planning "
                  "Manager. Approved: Belinda Friedman, General Manager, Retail Operations.")
 STANDARD = [
     ("1. Scope", [
@@ -114,58 +113,44 @@ STANDARD = [
         "Open shifts at the other seven stores post to call-in: Monday 16 November 2026, 09:00."]),
 ]
 
-# ---------------------------------------------------------------------------------------------------- the module notes
-NOTES_HEAD = ("KWS Call-in: how the module works",
-              "Workforce Systems, version 2.3, 4 August 2026. Contact: Meredith Stevens, Workforce Systems Lead.")
+# ---------------------------------------------------------------------------------------------------- the procedure
+NOTES_HEAD = ("WP-05 Casual call-in procedure",
+              "Workforce Planning, version 2.3, 4 August 2026, for the KWS call-in module. Contact: Meredith Stevens, "
+              "Workforce Systems Lead.")
 NOTES = [
-    ("Call-ins", [
-        "A call-in puts one shift out to casuals through KWS. A shift is put out to call-in when its line is left "
-        "open on a published roster (reason OPN, raised when the roster is published), or when it is vacated after "
-        "publication by a reported absence (ABS) or by leave approved after publication (LVE), which store managers "
-        "raise. For the Christmas rosters the open lines are raised once the relief crew is placed, and the open "
-        "lines of the store where the crew is placed are not raised.",
-        "A casual can report an absence in the KWS app or by phone to the store. An absence reported both ways raises "
-        "one ABS call-in for each report.",
-        "Absences of permanent staff through sickness are covered inside the store's permanent team and are not "
-        "raised as call-ins."]),
+    ("When a shift goes to call-in", [
+        "A shift is put out to casuals through call-in when its line is left open on a published roster (when the "
+        "roster is published), or when it is vacated after publication by a reported absence or by leave approved "
+        "after publication, which store managers raise. For the Christmas rosters the open lines go to call-in once "
+        "the relief crew is placed, and the open lines of the store where the crew is placed do not.",
+        "A casual reports an absence in the KWS app or by phone to the store.",
+        "Absences of permanent staff through sickness are covered inside the store's permanent team and do not go to "
+        "call-in."]),
     ("Who is offered the shift", [
-        "KWS offers a call-in to one casual at a time. It goes first to the store's own casuals in order of service "
-        "date, longest first, then to casuals of the store's call-in cluster who have opted in to sister-store "
-        "call-ins, in order of service date. The West cluster is Altona, Sunshine, Werribee and Williamstown; the "
-        "East cluster is Box Hill, Camberwell and Ringwood. Ballarat is in no cluster.",
+        "A shift is offered to one casual at a time: first to the store's own casuals in order of service date, "
+        "longest first, then to casuals of the store's call-in cluster who have opted in to sister-store call-ins, in "
+        "order of service date. The West cluster is Altona, Sunshine, Werribee and Williamstown; the East cluster is "
+        "Box Hill, Camberwell and Ringwood. Ballarat is in no cluster.",
+        "A casual's home store on a date is the store whose cost centre the casual is paid under that day.",
         "A casual is skipped if their availability profile does not cover the whole shift on that date, if they are "
         "rostered or booked at an overlapping time (a shift at another store counts from an hour before its start to "
         "an hour after its finish), if the shift would take their paid hours over 11 for the day or 38 for the roster "
-        "week, or if they would have less than 10 hours between finishing one day and starting the next. A casual "
-        "who has reported an absence for a day is not offered call-ins on that day."]),
+        "week, Friday to Thursday, or if they would have less than 10 hours between finishing one day and starting "
+        "the next. A casual who has reported an absence for a day is not offered call-ins on that day."]),
     ("When offers go out", [
         "Offers go out by SMS and the KWS app between 07:00 and 21:00 store time. Outside those hours an offer waits "
         "until 07:00, unless the shift starts within 12 hours.",
-        "The casual has 60 minutes to respond, or 20 minutes if the shift starts within 24 hours."]),
-    ("Responses", [
-        "Accepting books the shift to the casual and closes the call-in FILLED. A decline is final for that shift. If "
-        "there is no response in time the offer moves to the next casual, and the casual stays on the list.",
-        "When the list runs out with no acceptance, the call-in closes UNFILLED and KWS raises the shift again as a "
-        "new call-in, offered from the top of the list at 07:00 the next day to every casual who has not declined "
-        "it, so a shift offered over several days has a call-in for each day. Offering stops 15 minutes before the "
-        "shift starts and the call-in closes UNFILLED.",
+        "The casual has 60 minutes to respond, or 20 minutes if the shift starts within 24 hours. KWS stamps its "
+        "times in UTC; rosters, shifts and availability are kept in store time."]),
+    ("Responses and cover", [
+        "Accepting books the shift to the casual. A decline is final for that shift. If there is no response in time "
+        "the offer moves to the next casual, and the casual stays on the list.",
+        "A shift no one accepts is offered again from the top of the list at 07:00 the next day to every casual who "
+        "has not declined it, until 15 minutes before it starts.",
         "A casual who took a shift through call-in and then cannot work it reports an absence, as a rostered casual "
-        "does: the store raises the shift again as an ABS call-in naming them, their own call-in keeps its FILLED "
-        "outcome, and KWS offers them no other call-ins that day.",
+        "does, and is offered no other call-ins that day.",
+        "A shift is one line of a roster, however many times it is offered and however its absence was reported. "
         "A shift is covered by the casual who works it. A casual who gives a shift back has not covered it."]),
-    ("Times and records", [
-        "KWS stores times in UTC. Shift dates and times on rosters, in the offer history report and in availability "
-        "profiles are store time.",
-        "Call-in register: callin_id; location_id; shift_start_utc and shift_end_utc; reason (OPN an open roster "
-        "line, ABS an absence, LVE leave approved after publication); absent_payroll_no, the payroll number on the "
-        "vacated line; raised_at; closed_at; outcome (FILLED or UNFILLED); filled_by, the KWS person code.",
-        "Offer history: offer_id; callin_id; location_id; shift_date, shift_start and shift_end; person_code; "
-        "offered_at; response (ACCEPTED, DECLINED or NO RESPONSE); responded_at.",
-        "People: person_code; payroll_no; home_location; cluster_callins (Y if opted in to sister-store call-ins); "
-        "service_date; status.",
-        "Rosters for roster weeks from Friday 27 February 2026 are built in KWS. Earlier rosters were built in the "
-        "stores' legacy rostering tool and imported; its export gives Hrs as the length of the shift from start to "
-        "finish."]),
 ]
 
 # ---------------------------------------------------------------------------------------------------- the EA summary
@@ -212,7 +197,7 @@ def transmittal(counts):
     lines = [
         "Kellaway's Workforce Systems",
         "Data extract WR-26-1187",
-        "Requested by: Workforce Planning (B. Hill), 10/11/2026",
+        "Requested by: Workforce Planning (A. Thompson), 10/11/2026",
         "Extracted: 12/11/2026 18:40 by M. Stevens; payroll casual register extracted by Payroll (K. Patel) 12/11/2026",
         "Scope: call-ins and offers for shifts dated 29/08/2025 to 12/11/2026; rosters as published for the same dates;",
         "the Christmas 2026 rosters as published 12/11/2026; KWS people and availability profiles as at extraction.",
@@ -254,12 +239,11 @@ PDF_STAMPS = {
 
 def write_all(out, Wd, counts):
     write_pdf(os.path.join(out, K.F_STANDARD), STANDARD_HEAD, STANDARD, "Kellaway's Workforce Planning  WP-04 v4",
-              "Beth Hill")
-    write_pdf(os.path.join(out, K.F_NOTES), NOTES_HEAD, NOTES, "Kellaway's Workforce Systems  KWS Call-in v2.3",
+              "Alison Thompson")
+    write_pdf(os.path.join(out, K.F_NOTES), NOTES_HEAD, NOTES, "Kellaway's Workforce Planning  WP-05 v2.3",
               "Meredith Stevens", font="LibSans", bold="LibSans-Bold")
     write_pdf(os.path.join(out, K.F_EA), EA_HEAD, EA, "Kellaway's People and Payroll  EA 2024 casual summary",
               "Kristina Patel", tables=[("Casual rates", EA_RATES, [92, 70]), ("Junior rates", EA_JUNIOR, [92, 70])])
     for f, (c0, c1) in PDF_STAMPS.items():
         PP.normalize_pdf(os.path.join(out, f), c0, c1)
-    with open(os.path.join(out, K.F_TRANSMIT), "w", encoding="utf-8", newline="") as fh:
-        fh.write(transmittal(counts))
+
