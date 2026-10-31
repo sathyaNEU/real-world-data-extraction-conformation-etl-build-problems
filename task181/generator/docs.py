@@ -176,7 +176,17 @@ def equipment_log(path):
           ("WD3", "2027-06-22", "Chamber door switch replaced"),
           ("S4", "2027-08-17", "Door seal replaced"),
           ("S2", "2027-09-28", "Printer replaced")]
+    # the hospital's work orders run on through every department's jobs, so the CSSD's numbers climb unevenly with
+    # the calendar; each job is back in service when its engineer signs it off
+    back_at = ["15:25", "16:05", "15:50", "16:40", "11:35", "13:20", "10:15", "12:50", "15:40", "16:20", "15:05",
+               "16:55", "14:40", "09:45", "13:55", "11:10"]
+    spread = [0, 3, 11, 2, 9, 5, 14, 7, 1, 12, 4, 8, 6, 13, 10, 15]
+    wo, prev = 31240, None
     for k, (eq, d, work) in enumerate(ev):
-        back = "%s 14:40" % d if eq == "S3" and d == "2027-05-12" else "%s 16:%02d" % (d, 10 + 3 * k % 40)
-        rows.append((eq, d, "WO-%05d" % (31240 + 37 * k), work, back, "Medsteril Service"))
-    _xlsx(path, [("Log", rows, [2])], "Kooralong Health CSSD", "2024-07-02T03:10:00Z", "2027-09-29T05:55:00Z")
+        back = "%s %s" % (d, back_at[k])
+        day = dt.date.fromisoformat(d)
+        if prev is not None:
+            wo += max(2, round((day - prev).days * 4.6)) + spread[k]
+        prev = day
+        rows.append((eq, d, "WO-%05d" % wo, work, back, "Medsteril Service"))
+    _xlsx(path, [("Log", rows, [2])], "Kooralong Health CSSD", "2026-01-06T22:15:00Z", "2027-09-29T05:55:00Z")

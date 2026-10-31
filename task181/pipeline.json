@@ -1,10 +1,10 @@
 {
  "task": "task181",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics / provider-quality-risk-adjustment (a metropolitan health service's answer to the state surveillance centre's outlier notice: which general surgery consultants go to professional practice review for April to September 2027 site infections)",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "The default path applies the Centre's risk index to each consultant's April to September 2027 operations and refers GS-05, GS-12, GS-16 and GS-21; the step that lands it there is reading each consultant's excess over the expectation as the consultant's own, when operations that opened a tray steriliser 3 had sterilised after its 12 May repair carried several times the rate and steriliser 3, the one chamber for containers over 10 kg, sterilises every tray GS-05 and GS-12 own.",
  "architecture": 6,
@@ -14,8 +14,8 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 (1 REVIEW, 0 LEAK; ruled in the note's Leak review)",
-  "reader": "pending: stage 4 from the main thread"
+  "leak_py": "REVIEW, every line ruled in the design note",
+  "reader": "read 1 on 2ba1a563: no leak, question 6 analytical; the equipment log's generator pattern smoothed"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-31 (people.first Jacqueline and Todd in one older build each; repeat.gate_g against task191)",
@@ -23,10 +23,9 @@
   "surface": "exit 0 2026-10-31 (no persona in the pack)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "",
-  "brief": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (architecture 6)"
  },
  "returned": [
   {
@@ -60,7 +59,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 4: the leak reader and the determinism judge from the main thread (a fork cannot spawn them). Rebuild in the main tree with python3 task181/generator/make.py (two byte-identical builds, the zip, 45 checks, the verifier) and confirm target.zip sha256 2ba1a5636e3a2bf73fb58b4679e0a4664a85607dc88579dcf4b3d87d8e078e89. Reader brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_leak_brief.md (fresh copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task181/); the judge from the determinism-judge agent. Then fix every finding in the generator in one pass, re-run every gate on the final cut, run the golden-realism and reduce-house-fixes passes on the two goldens, write task181's row in the shipped ledger and commit SHIPPED (task181) with target.zip and golden/ force-added.",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -70,5 +69,6 @@
  "cut": {
   "target_zip_sha256": "2ba1a5636e3a2bf73fb58b4679e0a4664a85607dc88579dcf4b3d87d8e078e89",
   "rebuild": "python3 task181/generator/make.py"
- }
+ },
+ "zip_sha256_16": "329c3bfb626f5053"
 }
