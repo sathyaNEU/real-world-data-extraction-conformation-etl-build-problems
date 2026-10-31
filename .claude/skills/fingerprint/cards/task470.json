@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the registers and the meter reads correctly and reads the scheme's definition takes each dwelling's average daily consumption over the reference fortnight and counts as vacant the dwellings under a consumption floor (the utility-data vacancy rule official statisticians use), or checks only the population register's empty dwellings against their meters, and designates the wrong municipalities, because an empty Norwegian dwelling is heated through November and draws more than many lived-in ones, and dwellings whose registered residents have left still sit on the register.",
+  "analyst_test": "A strong analyst who conforms the cadastre and the meter reads correctly and reads the regulation takes each dwelling's average daily consumption over the reference fortnight and counts as vacant the dwellings under a consumption floor (the utility-data vacancy rule), sees it agree with the register, and files that no municipality qualifies at any floor from 1 to 10 kWh a day, because an empty Norwegian dwelling is heated through November and draws as much as a lived-in one; the register's own empty dwellings designate all ten.",
   "domain_test": "The deciding quantity is each municipality's share of dwellings nobody lived in, the register-based dwelling statistic official statistics builds from administrative sources, read here as the presence of a household's daily routine in each dwelling's own hourly load against the heating that runs in an empty home in a Norwegian November; with another field's nouns there is no heated empty dwelling, no population register and no household rhythm inside a meter load, and the task stops reading the same.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:occupancy-from-the-household-daily-cycle-against-a-heating-load",
@@ -51,7 +51,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "hourly meter reads (parquet)",
-    "rows": 0,
+    "rows": 2720816,
     "entity": "one meter point and hour",
     "grain": "meter point x hour",
     "source": "synthetic"
@@ -77,7 +77,7 @@
   "question_form": "whether",
   "driver": "The decisive quantity is whether each unit was in use during a window, seen only through a continuous meter whose level is dominated by a load that runs whether or not anyone uses the unit, so use is the presence of the users' daily rhythm in the unit's own record, not the record's level and not an official roll of users, and checking only the roll's empty units misses the units the roll still lists after their users left.",
   "driver_concrete": "A dwelling counts as vacant when nobody lived in it in the reference fortnight, whatever the population register shows; an empty Norwegian dwelling is heated through November, so its hourly load runs with the outdoor temperature at levels many lived-in flats never reach, and only a household's daily cycle (the morning and evening rise over the night's level) in its own hourly reads shows that someone lived there; the field's consumption floor finds almost none of the heated empties, and the register's empty dwellings checked against their meters miss the dwellings whose registered residents have moved to care or left.",
-  "stump": "A competent solver conforms the cadastre, the population register and the hub's hourly reads, takes each dwelling's average daily consumption over the fortnight and counts as vacant the dwellings under a consumption floor, which finds only the unheated empties and designates one municipality; an empty dwelling in a Norwegian November is heated, so its load runs with the outdoor temperature at levels many lived-in flats never reach, and only a household's morning and evening rise over its own night-time level shows that someone lived there, which designates four.",
+  "stump": "A competent solver conforms the cadastre and the hub's hourly values, counts as vacant the dwellings whose average daily use over the fortnight sits under a consumption floor, sees the floor agree with the register, and files that no municipality qualifies at any floor from 1 to 10 kWh a day; an empty dwelling in a Norwegian November is left heated, so the vacant dwellings use a median 20.5 kWh a day against 19.5 for the lived-in ones, and only a household's morning or evening rise over the dwelling's own night-time use on some day shows that someone lived there, which designates five.",
   "lineage": [
     {
       "domain": "physical-environmental-sciences",

@@ -18,78 +18,62 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
+import numpy as np       # noqa: E402
+
 import pack as P         # noqa: E402
+import sim               # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PACIFIC = dt.timezone(dt.timedelta(hours=-8))
+OSLO = dt.timezone(dt.timedelta(hours=1))
 
-PDF_STAMPS = {
-    "method": (b"D:20260318101544-07'00'", b"D:20260318101544-07'00'"),
-    "grants": (b"D:20261204152210-08'00'", b"D:20261204152210-08'00'"),
-    "network": (b"D:20250602094730-07'00'", b"D:20270108161205-08'00'"),
-    "reg_notes": (b"D:20270203113918-08'00'", b"D:20270203113918-08'00'"),
-    "f37": (b"D:20270122140027-08'00'", b"D:20270122140027-08'00'"),
-    "g42": (b"D:20270129083351-08'00'", b"D:20270129083351-08'00'"),
-}
-OOXML = {   # creator, last modified by, created, modified, company
-    "based": (W.STATE_OFFICE, "Aviation Planning", "2026-12-14T17:20:00Z", "2027-01-05T19:02:41Z", W.STATE_OFFICE),
-    "directory": (W.STATE_OFFICE, "Aviation Planning", "2026-10-21T16:05:00Z", "2026-11-01T15:47:12Z",
-                  W.STATE_OFFICE),
-    "l08": ("Pellam Airfield Services", "Pellam Airfield Services", "2027-01-12T18:11:00Z", "2027-01-15T22:30:54Z",
-            "Pellam Airfield Services"),
-    "d19": ("Ardley Counts LLC", "Ardley Counts LLC", "2027-01-20T17:40:00Z", "2027-01-22T21:03:19Z",
-            "Ardley Counts LLC"),
-    "m5010": (W.STATE_OFFICE, "Airport Inspections", "2026-09-29T20:13:00Z", "2026-09-30T16:22:08Z", W.STATE_OFFICE),
-}
+PDF_STAMPS = {"regulation": (b"D:20261014113207+02'00'", b"D:20261014113207+02'00'")}
 AS_OF = {   # each file's date as its source dated it
-    "events": "2027-01-08", "master": "2027-02-01", "dereg": "2027-02-01", "acftref": "2027-02-01",
-    "engine": "2027-02-01", "reg_notes": "2027-02-03", "based": "2027-01-05", "atct": "2027-01-12",
-    "f37": "2027-01-22", "l08": "2027-01-15", "g42": "2027-01-29", "d19": "2027-01-22", "method": "2026-03-18",
-    "grants": "2026-12-04", "network": "2027-01-08", "directory": "2026-11-01", "m5010": "2026-09-30",
-    "pbmon": "2027-02-02",
+    "regulation": "2026-10-14", "assignment": "2026-12-01", "cadastre": "2027-01-04", "municipalities": "2026-01-02",
+    "meterpoints": "2027-01-04", "hourly": "2026-12-14", "register": "2027-01-05", "events": "2027-01-05",
+    "titles": "2027-01-05", "transfers": "2027-01-05", "entities": "2027-01-05", "shareholders": "2026-05-29",
+    "prices": "2026-11-23", "outages": "2026-12-03",
 }
 
 
-def build(out, x=None, quiet=False):
+def build(out, w=None, quiet=False):
     import docs as DC
     import postprocess as PP
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
     f = lambda k: os.path.join(out, W.FILES[k])
-    x = x or P.everything()
+    if w is None:
+        w = sim.build()
+        P.prepare(w)
+    rng = np.random.default_rng(W.SEED + 1)
     n = {}
-    n["events"] = P.write_csv(f("events"), P.EVENT_COLS, P.event_rows(x))
-    n["master"] = P.write_padded(f("master"), P.MASTER_COLS, P.master_rows(x))
-    n["dereg"] = P.write_padded(f("dereg"), P.DEREG_COLS, P.dereg_rows(x))
-    n["acftref"] = P.write_padded(f("acftref"), P.ACFTREF_COLS, P.acftref_rows(x))
-    n["engine"] = P.write_padded(f("engine"), P.ENGINE_COLS, P.engine_rows(x))
-    n["atct"] = P.write_csv(f("atct"), P.ATCT_COLS, P.atct_rows(x), crlf=True)
-    n["pbmon"] = P.write_csv(f("pbmon"), P.PBMON_COLS, P.pbmon_rows(x))
-    DC.write_method(f("method"))
-    DC.write_grants(f("grants"))
-    DC.write_network(f("network"))
-    DC.write_reg_notes(f("reg_notes"))
-    DC.write_f37(f("f37"), x)
-    DC.write_g42(f("g42"), x)
-    DC.write_l08(f("l08"), x)
-    DC.write_d19(f("d19"), x)
-    DC.write_based(f("based"), x)
-    DC.write_directory(f("directory"), x)
-    DC.write_5010(f("m5010"), x)
+    n["cadastre"] = P.write_cadastre(w, f("cadastre"))
+    n["municipalities"] = P.write_municipalities(f("municipalities"))
+    n["meterpoints"] = P.write_meterpoints(w, f("meterpoints"), rng)
+    n["hourly"] = P.write_hourly(w, f("hourly"), rng)
+    n["register"] = P.write_register(w, f("register"))
+    n["events"] = P.write_events(w, f("events"), rng)
+    n["titles"] = P.write_titles(w, f("titles"))
+    n["transfers"] = P.write_transfers(w, f("transfers"))
+    n["entities"] = P.write_entities(w, f("entities"))
+    n["shareholders"] = P.write_shareholders(w, f("shareholders"))
+    n["prices"] = P.write_prices(w, f("prices"))
+    n["outages"] = P.write_outages(w, f("outages"))
+    DC.write_regulation(f("regulation"))
+    DC.write_assignment(f("assignment"))
     for k, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), c, m)
-    for k, (cr, lb, c0, m0, co) in OOXML.items():
-        PP.normalize_ooxml(f(k), cr, lb, c0, m0, excel=True, company=co)
+    PP.normalize_ooxml(f("outages"), "Driftssentralen", "Driftssentralen", "2026-12-02T13:05:00Z",
+                       "2026-12-03T08:41:27Z", excel=True, company="Hvitfjell Nett AS")
     for i, k in enumerate(W.FILES):
         y, m, d = (int(v) for v in AS_OF[k].split("-"))
-        ts = dt.datetime(y, m, d, 9 + (i * 7) % 8, (i * 13) % 60, tzinfo=PACIFIC).timestamp()
+        ts = dt.datetime(y, m, d, 8 + (i * 5) % 9, (i * 13) % 60, tzinfo=OSLO).timestamp()
         os.utime(f(k), (ts, ts))
     if not quiet:
         big = max(n, key=lambda k: n[k])
         print("pack: %d files, largest %s (%d rows)" % (len(W.FILES), W.FILES[big], n[big]))
-    return n, x
+    return n, w
 
 
 def digest(folder):
@@ -102,7 +86,7 @@ def cut_zip(root):
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):
-            t = dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(folder, name)), PACIFIC)
+            t = dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(folder, name)), OSLO)
             zi = zipfile.ZipInfo(name, date_time=(t.year, t.month, t.day, t.hour, t.minute, t.second))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
@@ -110,11 +94,11 @@ def cut_zip(root):
     return zp
 
 
-def everything(root, x=None, quiet=False):
+def everything(root, w=None, quiet=False):
     import golden as GO
     import metadata as MD
     import writeup as WU
-    n, x = build(os.path.join(root, "target"), x=x, quiet=quiet)
+    n, w = build(os.path.join(root, "target"), w=w, quiet=quiet)
     gdir = os.path.join(root, "golden")
     if os.path.exists(gdir):
         shutil.rmtree(gdir)
@@ -125,7 +109,7 @@ def everything(root, x=None, quiet=False):
     if not quiet:
         print("built %s: %d pack files, %d golden files" % (root, len(os.listdir(os.path.join(root, "target"))),
                                                            len(os.listdir(gdir))))
-    return x
+    return w
 
 
 def main(fast=False):
@@ -133,12 +117,12 @@ def main(fast=False):
     import zipfile
     import checks as CK
     import verify as V
-    x = everything(TASK)
-    good = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), x=x,
+    w = everything(TASK)
+    good = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), w=w,
                   meta_path=os.path.join(TASK, "metadata.json"), fig_path=os.path.join(HERE, "figures.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
+    vgood = V.main(os.path.join(TASK, "target"), os.path.join(HERE, "figures.json"))
     if fast:
-        if not good:
+        if not (good and vgood):
             raise SystemExit("checks failed")
         return
     tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
@@ -166,7 +150,7 @@ def main(fast=False):
         raise SystemExit("target.zip differs from target/")
     print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)" % (
         len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
-    if not good:
+    if not (good and vgood):
         raise SystemExit("checks failed")
 
 

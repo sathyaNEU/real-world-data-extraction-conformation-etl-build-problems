@@ -4,9 +4,6 @@ import json
 import world as W
 
 
-WORD = {4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
-
-
 def _join(xs):
     return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
 
@@ -15,89 +12,80 @@ def write(fig_path, out_path):
     f = json.load(open(fig_path, encoding="utf-8"))
     q = f["qualifying"]
     rv = f["rivals"]
-    c = f["counted"]
-    nd = f["never_recorded"]
-    names = {r["lid"]: r["name"] for r in f["fields"]}
+    t = f["totals"]
     lines = [
         "## Tags",
         "",
-        "**Domain:** Physical & Environmental Sciences (emissions inventory: airport lead inventory built from an ADS-B "
-        "receiver network's operations, the FAA aircraft register, tower and commissioned counts and the state's based "
-        "aircraft list, the operations the network cannot see estimated from the airplanes that never broadcast).",
+        "**Domain:** Survey Research & Official Statistics (census, register and administrative data quality: a "
+        "register-based dwelling statistic conformed from the cadastre, the meter data hub's metering points and hourly "
+        "values, the population register and the land, business and shareholder registers).",
         "**Analytical objective:** Data Extraction & Conformation (ETL).",
         "",
         "## 1. Final Recommendation",
         "",
-        "**%s of the 24 fields without a tower qualify for the 2027 round: %s.**" % (
-            f["count_word"], _join(["%s (%s)" % (r["name"], r["lid"]) for r in q])),
-        "Their 2026 lead from piston-engine aircraft runs from %d to %d kg against the round's %s kg; the highest field "
-        "below the line, %s, has %d kg. Not the %s fields one capture rate gives (the counted fields' %s per cent "
-        "applied to every field's recorded operations, which adds %s and drops %s), because the operations the "
-        "network misses belong to the airplanes that never broadcast, few at the flight-school fields and many at "
-        "the vintage ones; not the %s fields a capture rate split by flight training gives (%s per cent and %s per "
-        "cent, which adds %s)." % (
-            min(r["lead_kg"] for r in q), max(r["lead_kg"] for r in q), f["threshold_kg"], f["first_below"]["name"],
-            f["first_below"]["lead_kg"], WORD[len(rv["capture_set"])], rv["capture_pct"], _join(rv["capture_in"]),
-            _join(rv["capture_out"]), WORD[rv["training_set_count"]], rv["school_pct"], rv["other_pct"],
-            _join(rv["training_in"])),
+        "**%s of the ten municipalities qualify for the 2027 grant: %s.**" % (
+            f["count_word"], _join(["%s (%s)" % (r["name"], r["nr"]) for r in q])),
+        "Their vacancy shares run from %s to %s per cent against the regulation's %s; the highest share below the line "
+        "is %s's %s per cent. Not none, which a consumption floor anywhere from %s to %s kWh a day gives, because an "
+        "empty dwelling in November is left heated and uses more electricity than many lived-in ones; and not all "
+        "%d, which the population register's empty dwellings give, because the regulation counts who lived there, "
+        "not who was registered." % (
+            min(r["share"] for r in q), max(r["share"] for r in q), f["threshold"], f["highest_below"]["name"],
+            f["highest_below"]["share"], rv["floor_low"], rv["floor_high"], rv["register_count"]),
         "",
         "## 2. Critical Components",
         "",
-        "1. Operations the network did not record at the ten counted fields: **%s**, against **%s** based piston "
-        "airplanes there that the network never recorded in 2026: **%s** operations a never-recorded airplane." % (
-            c["unrecorded"], c["never_recorded"], c["per_airplane"]),
-        "2. Based piston airplanes the network never recorded in 2026 at the 20 fields without a count: %s." % _join(
-            ["%s **%s**" % (lid, n) for lid, n in nd.items()]),
-        "3. Lead of the qualifying fields, 2026: %s." % _join(["%s **%d kg**" % (r["lid"], r["lead_kg"]) for r in q]),
+        "1. Counted dwellings in the county: **%s**; vacant in the fortnight: **%s**." % (t["counted"], t["vacant"]),
+        "2. A dwelling was lived in when, on at least one day, its morning or evening use rose above its own night-time "
+        "use by more than **%s kWh** an hour; vacant when no day did." % f["cut"],
+        "3. Vacant dwellings still carrying a registered resident on 1 November: **%s**; lived-in dwellings with "
+        "nobody registered: **%s**." % (f["vacant_registered"], f["lived_unregistered"]),
         "",
         "## 3. Step-by-Step Solution",
         "",
-        "1. Read %s with times from UTC to Pacific time, kept 2026, and gave each event the aircraft that flew it: "
-        "icao24 through MASTER.txt or, for a registration cancelled during 2026, DEREG.txt by its issue and cancel "
-        "dates, except where the event's flight_id was the N-number of another airframe registered that day; "
-        "priced each piston-engine operation by ACFTREF.txt's engines and Table 1 of %s, a touch-and-go two "
-        "operations." % (W.FILES["events"], W.FILES["method"]),
-        "2. At the six towers, took %s's civil operations less the civil events the network recorded in the tower "
-        "hours of %s (method 4.2); at the four count fields, the studies' piston-engine operations less those "
-        "recorded (method 4.3)." % (W.FILES["atct"], W.FILES["directory"]),
-        "3. Matched %s's N-numbers, written four ways, to the register and found the based piston airplanes whose "
-        "addresses the network never recorded in 2026." % W.FILES["based"],
-        "4. Divided the counted fields' unrecorded operations by their never-recorded airplanes: %s operations an "
-        "airplane." % c["per_airplane"],
-        "5. At each field without a count, priced %s operations for each never-recorded airplane at %s g (method 3.2 "
-        "and 4.4) and added the recorded lead." % (c["per_airplane"], f["unrecorded_g"]),
-        "6. Compared each field's 2026 lead with the %s kg of the round's guidelines (section 2.2): %s qualify." % (
-            f["threshold_kg"], f["count_word"].lower()),
-        "7. Built the towered fields' piston operations and lead the same way. Where the Registry moved an N-number "
-        "from a piston airplane to a turbine in 2026, the piston airplane went on flying under the old icao24, "
-        "broadcasting its own new N-number as flight_id, until the turbine first appeared under that address, so "
-        "those operations are the piston airplane's; each tower's unrecorded civil operations are taken as "
-        "piston-engine operations (method 4.2).",
-        "8. Recommended the %s fields for the 2027 round." % f["count_word"].lower(),
+        "1. Took the cadastre's units of type Bolig in use on or before 1 November 2026 (Section 3): %s dwellings." % (
+            t["counted"]),
+        "2. Joined each to its household metering points by bruksenhet_id, else by municipality and address for a "
+        "single-unit house; Snøholt's points carry Fjordeid's old municipality number.",
+        "3. Put the hourly values on Norwegian time (UTC+1), kept the later delivery where an estimated day was "
+        "replaced, and added a dwelling's two points where its meter changed.",
+        "4. For each day took the mean of 06 to 09 and of 16 to 22 against the mean of 01 to 05; a rise above %s kWh "
+        "on any day marks the dwelling as lived in (Section 4: nobody lived in it on any day)." % f["cut"],
+        "5. Divided each municipality's vacant dwellings by its counted dwellings, rounded to one decimal, and "
+        "designated those at 5.0 per cent or more (Section 6).",
+        "6. Rolled the population register of 5 January 2027 back to 1 November by undoing every later event, reading "
+        "the November block renumberings as a change of unit number and the earlier events' old numbers as the "
+        "renumbered flats; ages on 1 November.",
+        "7. Rolled the land register back to 1 November by tinglyst date and counted the dwellings held by the "
+        "municipality, its KF or a company whose shares it holds all of with its own companies, titles without an "
+        "organisation number in the municipality's own name included.",
         "",
         "## 4. Deliverable Answers",
         "",
-        "### %s" % W.GOLDEN["csv"],
+        "### %s" % W.GOLDEN["xlsx"],
         "",
-        "1. Lead from piston-engine aircraft, 2026, each field without a tower:",
+        "1. Counted dwellings listed: %s, of which vacant: %s; persons registered on 1 November 2026 across them: %s." % (
+            t["counted"], t["vacant"], t["persons"]),
+        "2. Vacant dwellings and vacancy share by municipality:",
     ]
-    for r in f["fields"]:
-        lines.append("   - %s (%s): %d kg" % (r["name"], r["lid"], r["lead_kg"]))
+    for m in f["municipalities"]:
+        lines.append("   - %s (%s): %s of %s counted dwellings, %s per cent" % (m["name"], m["nr"], m["vacant"],
+                                                                              m["counted"], m["share"]))
     lines += [
         "",
-        "### %s" % W.GOLDEN["memo"],
+        "### %s" % W.GOLDEN["docx"],
         "",
-        "1. Qualifying fields, 2026 lead:",
+        "1. Qualifying municipalities: %s." % _join(["%s (%s per cent)" % (r["name"], r["share"]) for r in q]),
+        "2. Bar chart of the ten municipalities' vacancy shares against the %s per cent threshold, the qualifying "
+        "municipalities highlighted." % f["threshold"],
+        "3. Persons registered in the counted dwellings on 1 November 2026, under 18, 18 to 66, 67 and over:",
     ]
-    for r in q:
-        lines.append("   - %s (%s): %d kg" % (r["name"], r["lid"], r["lead_kg"]))
-    lines += [
-        "2. Bar chart of the 24 fields' 2026 lead against the round's %s kg threshold, the qualifying fields "
-        "highlighted." % f["threshold_kg"],
-        "3. Towered fields, 2026 piston-engine operations and lead:",
-    ]
-    for r in f["towers"]:
-        lines.append("   - %s (%s): %s operations, %d kg" % (r["name"], r["lid"], r["ops"], r["lead_kg"]))
+    for r in f["ask_a"]:
+        lines.append("   - %s (%s): %s, %s, %s" % (r["name"], r["nr"], r["under_18"], r["age_18_66"], r["age_67"]))
+    lines.append("4. Counted dwellings held on the land register on 1 November 2026 by the municipality or a company it "
+                 "owns:")
+    for r in f["ask_b"]:
+        lines.append("   - %s (%s): %s" % (r["name"], r["nr"], r["held"]))
     lines.append("")
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines))
