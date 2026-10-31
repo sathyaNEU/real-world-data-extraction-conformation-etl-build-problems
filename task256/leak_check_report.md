@@ -1,24 +1,21 @@
 # leak check, task256
 
-**Verdict: REVIEW.** 15 files read, 37 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 37 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, stature, weight, measured, distribution, reference, dimensions, authority, roster, decisive, height, population, conditional, sentence, sample, volunteers, carried, physical, published, latest, envelope, within-sex, workers, predicted, departure
+Stump terms swept: survey, stature, weight, measured, distribution, height, reference, roster, dimensions, authority, sentence, population, conditional, decisive, analytical, sample, volunteers, published, measurement, physical, within-sex, carried, departure, latest, measurements
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `exports_readme_fleet_maintenance.md`: carries 20 of 28 distinctive words of the committed call: 'Specify Configuration H (power-adjustable pedal set, extended-range seat riser, tilt-telescope steering column, deep-tra'
+## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `halvard_fit_report_2027_order_operator_workstation.pdf`: carries 23 of 28 distinctive words of the committed call: 'Specify Configuration H (power-adjustable pedal set, extended-range seat riser, tilt-telescope steering column, deep-tra'
 
-## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `brennard_working_adults_body_dimensions_2012_summary_tables.pdf`: 8 of 25 stump-paragraph terms appear (survey, stature, weight, measured, distribution, dimensions); read whether the document names the move
-- **REVIEW** `exports_readme_fleet_maintenance.md`: 5 of 25 stump-paragraph terms appear (survey, authority, roster, carried, workers); read whether the document names the move
-- **REVIEW** `exports_readme_hr_occupational_health.md`: 6 of 25 stump-paragraph terms appear (weight, measured, authority, roster, height, physical); read whether the document names the move
-- **REVIEW** `halvard_fit_report_2027_order_operator_workstation.pdf`: 8 of 25 stump-paragraph terms appear (survey, stature, weight, measured, dimensions, authority); read whether the document names the move
-- **REVIEW** `tvrta_standard_ES-12_operator_workstation.pdf`: 9 of 25 stump-paragraph terms appear (survey, measured, dimensions, authority, roster, height); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `brennard_working_adults_body_dimensions_2012_summary_tables.pdf`: 8 of 25 stump-paragraph terms appear (survey, stature, weight, measured, distribution, height); read whether the document names the move
+- **REVIEW** `halvard_fit_report_2027_order_operator_workstation.pdf`: 9 of 25 stump-paragraph terms appear (survey, stature, weight, measured, height, dimensions); read whether the document names the move
+- **REVIEW** `tvrta_standard_ES-12_operator_workstation.pdf`: 8 of 25 stump-paragraph terms appear (survey, measured, height, roster, dimensions, authority); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `fernhill_visits_tvrta_2021-01_2026-09.csv`: 2739 ISO dates after 2026-10-01, e.g. 2026-10-02, 2026-10-03, 2026-10-04, 2026-10-05, 2026-10-06
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -36,6 +33,7 @@ Stump terms swept: survey, stature, weight, measured, distribution, reference, d
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -55,3 +53,16 @@ Mechanical REVIEW lines:
 - Fit report, 23 of 28: harmless, the configuration table names the options.
 - Documents' ordinary words (survey, stature, weight, measured, dimensions, roster, height, physical): harmless, none names a method.
 - Fernhill's 2,739 dates after 2026-10-01: harmless, certificate expiries.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 14 files)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none; ES-12 3.2 and 3.3 file the population and the rule, and no sentence says what decides.
+2. Ranking file: none (the fit report carries prices and envelopes, no shares).
+3. Helper-only file: none (the measurement sheet and the comfort survey read as context).
+4. Answer-like figure or name: none.
+5. Literal sentences: ES-12 3.2 (every bus operator on the 30 September roster, each at the latest DOT physical) and 3.3 (the lowest-priced configuration at 95 per cent); FM-07 2.2 to 3.2 for the ask's cost per bus-year: the WHAT.
+6. What decides: an analytical choice (building the five dimensions' joint distribution for the whole roster from the survey, the physicals' stature and weight and the measured sample); the reader notes the measured sample could pass for the population, which is a rung, not a plant.
+
+Item rulings: the fit report harmless. FM-07 reads as a real procedure (revision, authority, numbered clauses). Realism: one-page documents with a tidy footer, round prices, normal-derived percentiles in the survey; no LLM tells.

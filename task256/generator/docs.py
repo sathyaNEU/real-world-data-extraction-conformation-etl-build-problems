@@ -17,8 +17,7 @@ import world as W      # noqa: E402
 STANDARD = "tvrta_standard_ES-12_operator_workstation.pdf"
 FIT_REPORT = "halvard_fit_report_2027_order_operator_workstation.pdf"
 SURVEY = "brennard_working_adults_body_dimensions_2012_summary_tables.pdf"
-NOTES_HR = "exports_readme_hr_occupational_health.md"
-NOTES_FLEET = "exports_readme_fleet_maintenance.md"
+FM_PROCEDURE = "tvrta_fleet_procedure_FM-07_maintenance_cost_reporting.pdf"
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
 for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Serif", "LiberationSerif-Regular"),
@@ -287,86 +286,44 @@ def write_survey(path):
               onLaterPages=_frame(W.INSTITUTE, "Report BIWD-13-04", foot, "Sans"))
 
 
-# ---------------------------------------------------------------- the exports readme
-NOTES_HR_TEXT = """# Exports for the 2027 operator workstation review: Human Resources and occupational health
-
-Pulled for Fleet Engineering on 1 October 2026 ({fleet}, {fleet_role}). Human Resources and the occupational health
-providers' exports are confidential: keep them on the Fleet Engineering share. Questions on the occupational health
-exports to {ohc}, {ohc_role}.
-
-## {roster}
-
-Human Resources' roster of the employees in the Transportation and Maintenance job classes on 30 September 2026,
-one row per employee. Emp No is the employee number. Job Class is the employee's classification; FT/PT whether the
-position is full-time or part-time. Division is the employee's home division. Duty Status is ACTIVE, LEAVE, LIGHT
-DUTY or MILITARY LEAVE.
-
-## {ostrander}
-
-{old}'s export of every encounter it recorded for the Authority's employees in DOT-regulated jobs from 1 January 2014
-until its contract ended on 30 June 2021: DOT physical examinations, recertifications after a short certificate, and
-the FTA drug and alcohol tests it collected. EMP# is the Authority's employee number. DOS is the date of service,
-month/day/year. HEIGHT (feet and inches, without shoes) and WEIGHT LB (light clothing) are measured at each DOT
-physical. CERT is the medical certificate issued and CERT EXPIRES its expiry.
-
-## {fernhill}
-
-{new}'s export of every visit it holds for the Authority's employees in DOT-regulated jobs to 30 September 2026. Fernhill
-took over the contract on 1 July 2021 and loaded {old_short}'s records from 1 January 2021 into its system at the
-changeover; legacy_ref carries the {old_short} encounter number of those records. employer_ref is TVT- and the
-Authority's employee number. visit_type: DOTPE DOT physical examination, DOTRC recertification, UDS-RAND random drug
-test, UDS-PREEMP pre-employment drug test, UDS-POSTACC post-accident drug test, BAT-RAND random breath alcohol test.
-ht_in (without shoes) and wt_lb (light clothing) are measured at each DOT physical. cert_months is the certificate
-issued and cert_expires its expiry.
-"""
+# ---------------------------------------------------------------- Fleet Maintenance's cost procedure
+FM_CLAUSES = [
+    ("1  Purpose", [
+        ("1.1", "This procedure sets how Fleet Maintenance states what the fleet's components cost to maintain, for "
+                "the operating budget and for the life-cycle costs Fleet Engineering carries into bus orders."),
+    ]),
+    ("2  Maintenance cost", [
+        ("2.1", "Fleet Maintenance states maintenance cost per bus-year."),
+        ("2.2", "Maintenance cost is the parts and labor on the work orders billed to the Authority's operating "
+                "budget (TVRTA). Work billed to a manufacturer's warranty or to a capital project is not maintenance "
+                "cost."),
+        ("2.3", "Work counts in the month its work order closed."),
+    ]),
+    ("3  Bus-years", [
+        ("3.1", "A bus counts one bus-month for each month in which it is in the fleet on the first day of the "
+                "month, from its acceptance until it leaves the fleet."),
+        ("3.2", "A workstation option's bus-months are the months in which the bus carries the option on the first "
+                "day. Bus-years are bus-months divided by twelve."),
+    ]),
+    ("4  Workstation option codes", [
+        ("4.1", "PDL power-adjustable pedal set (component PDL-ADJ); RSR extended-range seat riser (SEAT-RSR); TEL "
+                "tilt-telescope steering column (STR-TEL); TRK deep-travel seat track (SEAT-TRK); HDR raised header "
+                "and visor (HDR-VIS)."),
+    ]),
+]
 
 
-NOTES_FLEET_TEXT = """# Exports for the 2027 operator workstation review: Fleet Maintenance
-
-Pulled for Fleet Engineering on 1 October 2026 ({fleet}, {fleet_role}) from the fleet maintenance system.
-
-## {fleet_file}
-
-Fleet Maintenance's roster of the buses in the fleet on 30 September 2026. accepted is the date the Authority accepted
-the bus. operator_area_options lists the workstation options the bus carries: PDL power-adjustable pedal set, RSR
-extended-range seat riser, TEL tilt-telescope steering column, TRK deep-travel seat track, HDR raised header and visor.
-
-## {disposals}
-
-The buses disposed of since 1 January 2019, with the options each carried when it left the fleet.
-
-## {retrofits}
-
-Fleet campaigns completed since 1 January 2019: one row per bus, the date the work was completed.
-
-## {work_orders}
-
-Fleet Maintenance's operator-area work orders opened from 1 January 2019 and closed by 30 September 2026, one row per
-part line. component is the operator-area component worked on; the five option components are PDL-ADJ, SEAT-RSR,
-STR-TEL, SEAT-TRK and HDR-VIS. bill_to is TVRTA (the Authority's operating budget), HALVARD WARRANTY or a capital
-project. part_cost is qty times unit_cost. labor_hours and labor_cost are technician hours and their cost at the year's
-shop rate.
-
-## Fleet maintenance measures
-
-Fleet Maintenance states maintenance cost per bus-year. Maintenance cost is the parts and labor on the work orders
-billed to TVRTA, counted in the month the work order closed. A bus counts one bus-month for each month in which it is
-in the fleet on the first day of the month, from its acceptance until it leaves the fleet; an option's bus-months are
-the months in which the bus carries the option on the first day. Bus-years are bus-months divided by twelve.
-
-## {comfort}
-
-Kept beside the review: the May 2023 operator comfort survey (anonymous responses).
-
-## {claims}
-
-Kept beside the review: Risk Management's workers' compensation claims of operators, road supervisors and transportation
-instructors since 1 January 2019.
-"""
-
-
-def write_notes(path_hr, path_fleet, names):
-    kw = dict(fleet=W.PEOPLE["fleet"][0], fleet_role=W.PEOPLE["fleet"][1], ohc=W.PEOPLE["ohc"][0],
-              ohc_role=W.PEOPLE["ohc"][1], old=W.OLD, new=W.NEW, old_short=W.OLD.split()[0], **names)
-    open(path_hr, "w").write(NOTES_HR_TEXT.format(**{k: v for k, v in kw.items()}))
-    open(path_fleet, "w").write(NOTES_FLEET_TEXT.format(**kw))
+def write_fm_procedure(path):
+    title = "Fleet Maintenance Procedure FM-07: Maintenance Cost Reporting"
+    who, role = W.PEOPLE["coo"]
+    doc = _doc(path, title, W.AUTH)
+    s = [Paragraph(W.AUTH.upper(), M_META), Paragraph(title, M_H1),
+         Paragraph("Revision 2, issued 9 January 2023 under the authority of %s, %s. Replaces Revision 1 of 4 May "
+                   "2018." % (who, role), M_META)]
+    for head, items in FM_CLAUSES:
+        s.append(Paragraph(head, M_H2))
+        for num, text in items:
+            s.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (num, text), M_CL))
+    foot = "%s | FM-07 Maintenance Cost Reporting | Revision 2" % W.AUTH
+    doc.build(s, onFirstPage=_frame("Fleet Maintenance procedures", "FM-07 Rev. 2", foot),
+              onLaterPages=_frame("Fleet Maintenance procedures", "FM-07 Rev. 2", foot))

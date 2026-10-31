@@ -91,12 +91,12 @@ def main(target, golden):
             latest[emp] = (d, h_in, w_lb)
     for r in csv.DictReader(open(find(target, "ostrander"))):
         if r["SERVICE"] == "DOT PHYSICAL":
-            ft, inch = re.match(r"(\d+)' (\d+)\"", r["HEIGHT"]).groups()
+            ft, inch = re.match(r"(\d+)' (\d+)\"", r["HEIGHT (NO SHOES)"]).groups()
             keep(int(r["EMP#"]), dt.datetime.strptime(r["DOS"], "%m/%d/%Y").date(), int(ft) * 12 + int(inch),
                  int(r["WEIGHT LB"]))
     for r in csv.DictReader(open(find(target, "fernhill"))):
         if r["visit_type"] == "DOTPE":
-            keep(int(r["employer_ref"].split("-")[1]), dt.date.fromisoformat(r["visit_date"]), float(r["ht_in"]),
+            keep(int(r["employer_ref"].split("-")[1]), dt.date.fromisoformat(r["visit_date"]), float(r["ht_in_no_shoes"]),
                  int(r["wt_lb"]))
     assert set(latest) == set(ops), "an operator without a physical"
 

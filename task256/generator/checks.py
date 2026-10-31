@@ -77,7 +77,7 @@ def run(target, golden, st, meta_path):
     taken = [r for r in fh if r["legacy_ref"]]
     ok(len(taken) > 1000, "Fernhill holds Ostrander's encounters from 1 January 2021 (%d)" % len(taken))
     agree = all(ost[r["legacy_ref"]]["WEIGHT LB"] == r["wt_lb"] and
-                (not r["ht_in"] or abs(float(r["ht_in"]) - _ft_in(ost[r["legacy_ref"]]["HEIGHT"])) < 1e-9) for r in taken)
+                (not r["ht_in_no_shoes"] or abs(float(r["ht_in_no_shoes"]) - _ft_in(ost[r["legacy_ref"]]["HEIGHT (NO SHOES)"])) < 1e-9) for r in taken)
     ok(agree, "every taken-over record carries Ostrander's height and weight")
     ok(not any("sex" in h.lower() for h in list(fh[0].keys()) + list(next(iter(ost.values())).keys())),
        "SF9: no sex field in either export; the roster's is the only one")
@@ -149,7 +149,8 @@ def run(target, golden, st, meta_path):
     ok(prices == sorted(prices) and len(set(prices)) == len(prices), "SF6: one price per bus per configuration, distinct")
     for c, _, p in W.CONFIGS:
         ok("${:,}".format(p) in fit_text, "SF6: configuration %s's price in the fit report" % c)
-    ok("30 September 2026" in open(os.path.join(target, D.NOTES_HR)).read(), "SF8: the roster is the 30 September 2026 export")
+    ok("2026-09-30" in R.ROSTER and R.ROSTER in os.listdir(target), "SF8: the roster is the 30 September 2026 export "
+       "(its file date)")
     std = pdf_text(os.path.join(target, D.STANDARD))
     ok("on 30 September of the year before the order's model year, whatever their duty status" in std,
        "SF8: the standard dates the roster")
@@ -200,14 +201,16 @@ def run(target, golden, st, meta_path):
     v4 = _v(mr)
     ok(AN.pick(v4) == "G" and v4["G"] - W.LINE >= 0.012, "the raw mean eye heights against the roster's carried "
        "mean (%s mm) file G (%.2f)" % ({sx: round(float(mr[sx][AN.SEH]), 1) for sx in mr}, 100 * v4["G"]))
-    hr_notes = open(os.path.join(target, D.NOTES_HR)).read()
-    ok(hr_notes.count("without shoes") == 2, "SF15: both providers measure height without shoes")
-    ok("DOT physical examinations, recertifications after a short certificate" in hr_notes and
-       "DOTPE DOT physical examination, DOTRC recertification" in hr_notes,
-       "SF17: the readme lists recertifications apart from DOT physical examinations")
-    rc_blank = all(not r["HEIGHT"] and not r["WEIGHT LB"] for r in csv.DictReader(open(os.path.join(target, R.OSTRANDER)))
+    ost_hdr = next(csv.reader(open(os.path.join(target, R.OSTRANDER))))
+    fh_rows = list(csv.DictReader(open(os.path.join(target, R.FERNHILL))))
+    ok("HEIGHT (NO SHOES)" in ost_hdr and "ht_in_no_shoes" in fh_rows[0],
+       "SF15: both providers' exports record height without shoes")
+    descs = {(r["visit_type"], r["visit_desc"]) for r in fh_rows}
+    ok(("DOTPE", "DOT physical examination") in descs and ("DOTRC", "DOT recertification, short certificate") in descs,
+       "SF17: Fernhill's export describes recertifications apart from DOT physical examinations")
+    rc_blank = all(not r["HEIGHT (NO SHOES)"] and not r["WEIGHT LB"] for r in csv.DictReader(open(os.path.join(target, R.OSTRANDER)))
                    if r["SERVICE"] == "DOT PHYSICAL - RECERT")
-    rc_blank &= all(not r["ht_in"] and not r["wt_lb"] for r in csv.DictReader(open(os.path.join(target, R.FERNHILL)))
+    rc_blank &= all(not r["ht_in_no_shoes"] and not r["wt_lb"] for r in csv.DictReader(open(os.path.join(target, R.FERNHILL)))
                     if r["visit_type"] == "DOTRC")
     ok(rc_blank, "SF17: no recertification in either export carries a height or weight")
     last_dot = {}
@@ -239,8 +242,11 @@ def run(target, golden, st, meta_path):
                        r"probabilit\w*)\b", re.I)
     for f in (D.STANDARD, D.FIT_REPORT, D.SURVEY):
         ok(not vocab.search(pdf_text(os.path.join(target, f))), "no decisive-step word in %s" % f)
-    for f in (D.NOTES_HR, D.NOTES_FLEET):
-        ok(not vocab.search(open(os.path.join(target, f)).read()), "no decisive-step word in %s" % f)
+    ok(not vocab.search(pdf_text(os.path.join(target, D.FM_PROCEDURE))), "no decisive-step word in %s" % D.FM_PROCEDURE)
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    ok(not [f for f in os.listdir(target) if describing.search(f)],
+       "section 3: no file named as a dictionary, manifest, readme or notes ships")
 
     # ---- the ask: option maintenance and twelve-year costs
     m = fig["maint"]
@@ -289,7 +295,8 @@ def run(target, golden, st, meta_path):
     ok(len(multi) > 200, "D6: option work orders with several lines (%d)" % len(multi))
 
     # ---- separation: the ask's files feed nothing the call reads
-    ok(not set(meta["ask_files"]) & set(meta["call_files"]), "no file is on both the call's and the ask's path")
+    import build as BD
+    ok(not set(BD.ASK_FILES) & set(BD.CALL_FILES), "no file is on both the call's and the ask's path")
 
     # ---- the goldens agree with figures.json
     gw = openpyxl.load_workbook(os.path.join(golden, "workstation_configurations_2027.xlsx"))

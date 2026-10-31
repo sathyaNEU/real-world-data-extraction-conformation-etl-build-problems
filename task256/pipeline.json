@@ -5,22 +5,22 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-14",
+ "updated": "2026-10-31",
  "stump": "The default path files Configuration B (95.6 per cent of the survey's workers at the roster's sex mix); stature alone files E and predicted dimensions C; each operator's conditional distribution on the survey as published files G (96.4), and moving it by the volunteers' raw mean eye heights leaves G (96.3); only the survey's eye height raised by how far the 140 operators Halvard measured sit above it at their own stature and weight (28.0 mm men, 27.6 women) files H (97.0; G 93.0).",
  "architecture": 1,
  "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-14",
-  "checks": 49
+  "date": "2026-10-31",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on the loop-1 cut",
-  "reader": "loop 1: one read on the new cut; no decisive-step sentence, no ranking file, question 6 analytical; the measured operators read as calibration evidence, nothing names the move"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack, no LEAK (both exports readmes removed; the height columns name their condition, Fernhill's visits carry a description, the ask's WHAT filed in procedure FM-07; the comfort survey's About tab removed)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 the WHAT, Q6 analytical (leak_check_report.md)"
  },
  "duplicate_check": {
-  "heart": "WARN (org family, shape and Gate G overuse, answered in the note; own lineage differentiated on the card)",
-  "surface": "4 pairs promoted for adjudication on the loop-1 cut (not run: author-triggered)",
+  "heart": "BLOCK on three axis bans only (ban.role and ban.strategy against task454, ban.forum against task258 v1): every card involved was drawn 2026-10-13 and task256's card has no registration stamp, so the guard orders it as a draft after every same-day card; heart was WARN at the ship; similarity BLOCKs answered by eight differentiation lines",
+  "surface": "exit 0 2026-10-31 (pairs promoted for the author's adjudicated read only)",
   "nearest": "task256 v1 lineage 0.74, differentiated; task259 0.06"
  },
  "judge": {
@@ -38,9 +38,20 @@
    "commit": "the RESHIPPED (task256) commit of 2026-10-14"
   }
  ],
- "resume": "shipped; next event is the author's portal result",
+ "resume": "RESHIPPED 2026-10-31 under the 10-30 gates; next: the author's portal result",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": "2026-10-31",
  "portal": null,
- "seed": "DA06 number (START_HERE); the seed's world is not used"
+ "seed": "DA06 number (START_HERE); the seed's world is not used",
+ "gates_2026_10_31": {
+  "checks": 192,
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "0 absent",
+  "precut": "0 FAIL",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "pair_ceiling": 38.1,
+  "ceiling_script": "generator/ceiling.py"
+ }
 }

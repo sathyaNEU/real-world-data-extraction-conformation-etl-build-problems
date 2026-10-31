@@ -28,12 +28,11 @@ TASK = os.path.dirname(HERE)
 FILES = {
     "roster": R.ROSTER, "ostrander": R.OSTRANDER, "fernhill": R.FERNHILL, "fleet": R.FLEET, "disposals": R.DISPOSALS,
     "retrofits": R.RETROFITS, "work_orders": R.WORK_ORDERS, "comfort": R.COMFORT, "claims": R.CLAIMS,
-    "standard": D.STANDARD, "fit": D.FIT_REPORT, "survey": D.SURVEY, "notes_hr": D.NOTES_HR,
-    "notes_fleet": D.NOTES_FLEET, "trial": R.TRIAL,
+    "standard": D.STANDARD, "fit": D.FIT_REPORT, "survey": D.SURVEY, "fm": D.FM_PROCEDURE, "trial": R.TRIAL,
 }
 DISTRACTORS = ("comfort", "claims")
-CALL_FILES = ("standard", "fit", "survey", "roster", "ostrander", "fernhill", "notes_hr", "trial")
-ASK_FILES = ("fleet", "disposals", "retrofits", "work_orders", "notes_fleet")
+CALL_FILES = ("standard", "fit", "survey", "roster", "ostrander", "fernhill", "trial")
+ASK_FILES = ("fleet", "disposals", "retrofits", "work_orders", "fm")
 
 
 def build(out, quiet=False, st=None):
@@ -57,9 +56,7 @@ def build(out, quiet=False, st=None):
     D.write_standard(p("standard"))
     D.write_fit_report(p("fit"))
     D.write_survey(p("survey"))
-    D.write_notes(p("notes_hr"), p("notes_fleet"), {k: FILES[k] for k in ("roster", "ostrander", "fernhill", "disposals",
-                                                                          "retrofits", "work_orders", "comfort",
-                                                                          "claims")} | {"fleet_file": FILES["fleet"]})
+    D.write_fm_procedure(p("fm"))
     PP.normalize_ooxml(p("roster"), "HRIS Export", "HRIS Export", "2026-10-01T13:06:41Z", "2026-10-01T13:06:41Z",
                        excel=True)
     PP.normalize_ooxml(p("comfort"), W.PEOPLE["fleet"][0], W.PEOPLE["fleet"][0], "2023-05-30T15:42:10Z",
@@ -67,6 +64,7 @@ def build(out, quiet=False, st=None):
     PP.normalize_pdf(p("standard"), b"D:20240314094410-07'00'", b"D:20240314095203-07'00'")
     PP.normalize_pdf(p("fit"), b"D:20260828153318-05'00'", b"D:20260828160942-05'00'")
     PP.normalize_pdf(p("survey"), b"D:20130520101507-04'00'", b"D:20130520101507-04'00'")
+    PP.normalize_pdf(p("fm"), b"D:20230109081530-07'00'", b"D:20230109082204-07'00'")
     stamp = dt.datetime(2026, 10, 1, 8, 47, tzinfo=dt.timezone(dt.timedelta(hours=-7))).timestamp()
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (stamp, stamp))
@@ -98,7 +96,6 @@ def cut_zip(root):
 def write_metadata(path):
     meta = {"task": "task256", "distractor_files": [FILES[k] for k in DISTRACTORS],
             "deliverables": ["workstation_configurations_2027.xlsx", "operator_accommodation_2027.svg"],
-            "call_files": [FILES[k] for k in CALL_FILES], "ask_files": [FILES[k] for k in ASK_FILES],
             "stated_inputs": ["{:,}".format(p) for _, _, p in W.CONFIGS if p],
             "forward_dated": {FILES["fernhill"]: "cert_expires: the expiry of medical certificates issued up to "
                                                   "30 September 2026"},

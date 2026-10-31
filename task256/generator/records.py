@@ -27,6 +27,9 @@ OST_SERVICE = {"PHYS": "DOT PHYSICAL", "RECERT": "DOT PHYSICAL - RECERT", "DRUG-
                "ALC-RAND": "BREATH ALCOHOL - RANDOM"}
 FH_TYPE = {"PHYS": "DOTPE", "RECERT": "DOTRC", "DRUG-RAND": "UDS-RAND", "DRUG-PRE": "UDS-PREEMP",
            "DRUG-PA": "UDS-POSTACC", "ALC-RAND": "BAT-RAND"}
+FH_DESC = {"PHYS": "DOT physical examination", "RECERT": "DOT recertification, short certificate",
+           "DRUG-RAND": "Urine drug screen, random", "DRUG-PRE": "Urine drug screen, pre-employment",
+           "DRUG-PA": "Urine drug screen, post-accident", "ALC-RAND": "Breath alcohol test, random"}
 
 
 def us(d):
@@ -99,7 +102,7 @@ def write_ostrander(path, enc, nums):
     n = 0
     with open(path, "w", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["ACCT", "ENC #", "EMP#", "DOS", "SERVICE", "HEIGHT", "WEIGHT LB", "BP", "CERT", "CERT EXPIRES"])
+        w.writerow(["ACCT", "ENC #", "EMP#", "DOS", "SERVICE", "HEIGHT (NO SHOES)", "WEIGHT LB", "BP", "CERT", "CERT EXPIRES"])
         for i, e in enumerate(enc):
             if e["date"] >= W.CHANGEOVER:
                 continue
@@ -120,7 +123,8 @@ def write_fernhill(path, enc, nums):
     seq = {}
     with open(path, "w", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["visit_id", "employer_ref", "visit_date", "visit_type", "ht_in", "wt_lb", "bp_sys", "bp_dia",
+        w.writerow(["visit_id", "employer_ref", "visit_date", "visit_type", "visit_desc", "ht_in_no_shoes", "wt_lb",
+                    "bp_sys", "bp_dia",
                     "cert_months", "cert_expires", "legacy_ref"])
         for i, e in enumerate(enc):
             if e["date"] < W.TAKEN_OVER:
@@ -138,7 +142,7 @@ def write_fernhill(path, enc, nums):
                 sys_ = dia = ""
             months = e["months"] if phys else (9 if e["type"] == "RECERT" else "")
             exp = cert_expiry(e)
-            w.writerow([vid, "TVT-%d" % e["emp"], e["date"].isoformat(), FH_TYPE[e["type"]],
+            w.writerow([vid, "TVT-%d" % e["emp"], e["date"].isoformat(), FH_TYPE[e["type"]], FH_DESC[e["type"]],
                         "%.1f" % e["h_in"] if phys else "", e["w_lb"] if phys else "", sys_, dia, months,
                         exp.isoformat() if exp else "", nums.get(i, "") if taken else ""])
             n += 1
@@ -227,15 +231,6 @@ def write_comfort(path, rows):
     for i, wd in enumerate((11, 11, 12, 10, 12, 10, 10, 12, 12, 11), 1):
         ws.column_dimensions[get_column_letter(i)].width = wd
     ws.freeze_panes = "A2"
-    q = wb.create_sheet("About")
-    q["A1"] = "Operator workstation comfort survey, May 2023"
-    q["A1"].font = Font(bold=True)
-    q["A3"] = ("Online survey of bus operators run by Fleet Engineering and the Operator Safety Committee, 1 to 26 May "
-               "2023. Responses are anonymous; ratings run from 1 (poor) to 5 (very good) for the workstation of the "
-               "bus series the operator drives most.")
-    q["A3"].alignment = Alignment(wrap_text=True, vertical="top")
-    q.column_dimensions["A"].width = 100
-    q.row_dimensions[3].height = 48
     wb.save(path)
     return len(rows)
 

@@ -166,6 +166,16 @@ files Configuration H (97.0 per cent; G 93.0).
   person's own build, because a volunteer sample's raw means carry its selection. No build on file calibrates a
   reference distribution to a covariate-selected sample of the target population.
 
+## Survivor anatomy
+
+Actor: the property that decides is how far the Authority's operators sit above the survey's sitting eye height at their own stature and weight; no file stores it, and it exists only as the relation between each of Halvard's 140 measured operators and the survey's within-sex conditional mean at that operator's stature and weight.
+Link: the departure is read by setting Halvard's measurement sheet, keyed by Halvard's own subject numbers and never joined to the roster, against the survey's published tables at each subject's stature and weight; no key joins the sheet to anything, and no sentence asks for the comparison at the subjects' own body size, since the field's check compares raw means.
+Reflex: the field's standard route, the reference survey's within-sex multivariate normal at the roster's sex mix, is rung 0 and files Configuration B; carrying the survey to the operators by stature alone files E, by predicted dimensions C, and by the conditional distribution on the published survey G.
+Back-test: the textbook route validates: the measured operators' raw mean sitting eye height sits within a few millimetres of the survey's (2.3 mm for men, 5.1 for women), so the survey reads as a sound model of the workforce, and moving it by that gap leaves the call at G.
+Second use: the measurement sheet is in the pack as Halvard's fit-check sample, which the fit report cites for its envelopes; the occupational health exports carry each operator's stature and weight at the DOT physical the standard names, which every carry rung reads; the survey is the reference every rung starts from.
+Shock: nothing reads as an anomaly: the operators' raw mean eye height is ordinary against the survey, and the departure appears only once each subject is compared at its own stature and weight (28.0 mm for men, 27.6 for women), because Halvard's volunteers were drawn toward the lighter, shorter operators.
+Pins: standard ES-12 3.2 files the population (the bus operators on the roster of 30 September before the model year, every duty status, each as measured at the latest DOT physical) and 3.3 the rule (the lowest-priced configuration at 95 per cent); no filed sentence names a conditional distribution, an offset, the measurement sheet or how to carry the survey, and deleting 3.2's measurement clause leaves the population and the step where they were.
+
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
@@ -194,9 +204,9 @@ files Configuration H (97.0 per cent; G 93.0).
 | SF12 | accommodation of an operator whose dimensions are unmeasured | the operator's probability of fitting, averaged | counting operators whose probability passes one half | Configuration C | the standard counts a share of operators; counting operators above one half is the predicted-dimension rung's error (asserted) |
 | SF13 | the survey's correlations | within sex as tabulated | pooled across the sexes | not tabulated | the survey report tabulates within-sex correlations only |
 | SF14 | numerical integration | any method to four decimals | Monte Carlo with 200,000 draws | same call | same call (asserted within 0.1 point) |
-| SF15 | stature at the physical | measured without shoes, as the survey's | a shoe allowance taken off | not licensed | the HR readme: both providers measure height without shoes |
+| SF15 | stature at the physical | measured without shoes, as the survey's | a shoe allowance taken off | not licensed | both providers' exports record height without shoes in the column itself (Ostrander's HEIGHT (NO SHOES), Fernhill's ht_in_no_shoes) |
 | SF16 | weight at the physical | as weighed, light clothing | an allowance taken off for clothing | same call; the shares move | standard 3.2: each operator as measured at the latest DOT physical examination |
-| SF17 | the latest DOT physical examination | the latest physical (DOTPE, DOT PHYSICAL), the visit that measures height and weight | a recertification (DOTRC, DOT PHYSICAL - RECERT), the latest DOT visit of nine operators, read as the latest examination | same call, every share unchanged at one decimal | standard 3.2 names the DOT physical examination, and the HR readme lists recertifications apart from DOT physical examinations; C1: no recertification carries a height or weight, and leaving the nine out moves no share (asserted) |
+| SF17 | the latest DOT physical examination | the latest physical (DOTPE, DOT PHYSICAL), the visit that measures height and weight | a recertification (DOTRC, DOT PHYSICAL - RECERT), the latest DOT visit of nine operators, read as the latest examination | same call, every share unchanged at one decimal | standard 3.2 names the DOT physical examination, and Fernhill's visit_desc and Ostrander's SERVICE describe recertifications apart from DOT physical examinations; C1: no recertification carries a height or weight, and leaving the nine out moves no share (asserted) |
 | SF18 | how the operators measured move the survey | each sex's mean departure of the measured eye heights from the survey's eye height at the volunteer's own stature and weight, added to the survey's eye height | pooled over both sexes; the median; given stature alone; a regression on stature and weight, or stature alone, refitted to them; ratio scaling, added or pure; the departures weighted to the roster's statures and weights | same call: each files H, G half a point or more short (asserted) | same call |
 | SF19 | the volunteers' stature and weight | as measured on the day, in the sheet | their latest DOT physical | not in the pack | the sheet carries its own subject numbers and no employee number; section 6: stature and weight on the day |
 
@@ -252,7 +262,7 @@ files Configuration H (97.0 per cent; G 93.0).
 | 13 | Order of operations | units converted before conditioning; the departure taken before the carry | C1: conversion is linear; the departure is a shift of the eye height mean, the same whenever it is added |
 | 14 | Row order | none | C1 asserted over shuffled operators |
 | 15 | Duplicate resolution | an operator's physicals in both exports at the changeover are one examination | C1: duplicates carry identical stature and weight (asserted) |
-| 16 | Identity normalisation | employee numbers across the roster and the two exports; the measurement sheet's own subject numbers | the exports readme; every counted operator matched (asserted); the sheet is a sample read at its own stature and weight, never joined (SF19) |
+| 16 | Identity normalisation | employee numbers across the roster and the two exports; the measurement sheet's own subject numbers | the employee number in each source's own format (Emp No, EMP#, TVT- and the number); every counted operator matched (asserted); the sheet is a sample read at its own stature and weight, never joined (SF19) |
 | 17 | Netting against gross | none | none |
 | 18 | Dimensional units | millimetres and kilograms from inches and pounds | SF11 |
 | 19 | Code and status semantics | job classification and encounter type | the roster's classification; only DOT physical examinations carry stature and weight, recertifications C1 (SF17) |
@@ -291,7 +301,7 @@ easier model of the same operators' share, not from another reading.
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A, each option's 2021 to 2025 maintenance cost, bus-years and cost per bus-year | 15 | a measure every candidate carries that the call does not turn on (its parts) | the board weighs what each option costs to keep up beside its price | D6: the export prints the job's labour hours and cost on every part line of a work order | D7 (fleet numbers of the retired 2011 and 2012 series reused for the 2024 and 2025 series, so every work order joins); D5 (the retired buses' months in the disposals list only); D2 (the 2024 pedal retrofit campaign: the fleet roster shows today's options); D8 (closing month, filed) | work orders (number, bus, component, closed date, bill to, part cost, labour hours, labour cost), fleet roster (number, accepted, options), disposals (number, series, accepted, disposed, options), retrofit campaigns (bus, option, completed), maintenance notes; 5 files, 15 columns | labour summed over lines: every option's cost and rate high; current roster only: pedal and riser bus-years low, their rates high; today's options for every month: pedal bus-years high; the answer | a fleet system flattening work-order labour onto part lines; a transit authority reusing a retired series' fleet numbers |
+| A, each option's 2021 to 2025 maintenance cost, bus-years and cost per bus-year | 15 | a measure every candidate carries that the call does not turn on (its parts) | the board weighs what each option costs to keep up beside its price | D6: the export prints the job's labour hours and cost on every part line of a work order | D7 (fleet numbers of the retired 2011 and 2012 series reused for the 2024 and 2025 series, so every work order joins); D5 (the retired buses' months in the disposals list only); D2 (the 2024 pedal retrofit campaign: the fleet roster shows today's options); D8 (closing month, filed) | work orders (number, bus, component, closed date, bill to, part cost, labour hours, labour cost), fleet roster (number, accepted, options), disposals (number, series, accepted, disposed, options), retrofit campaigns (bus, option, completed), Fleet Maintenance procedure FM-07; 5 files, 15 columns | labour summed over lines: every option's cost and rate high; current roster only: pedal and riser bus-years low, their rates high; today's options for every month: pedal bus-years high; the answer | a fleet system flattening work-order labour onto part lines; a transit authority reusing a retired series' fleet numbers |
 | B, each configuration's twelve-year cost per bus | 8 | a measure every candidate carries that the call does not turn on | the board sees each configuration's price beside its upkeep | inherits A's devices | as A | A's path and the fit report's prices | any error in A moves every configuration but A | the authority's own life-cycle line |
 | C, each configuration's accommodation and the chart | 8 and 5 chart parts | the construction | the call's own table | none | none | the golden model | R1 to R3 values | the fit report's layout |
 
@@ -301,7 +311,7 @@ easier model of the same operators' share, not from another reading.
 - **Hazard table:** D6 moves every option's cost and rate (A) and every configuration but A (B); D7 and D5 move the
   pedal and riser bus-years and rates (A) and every configuration with them (B); D2 moves the pedal bus-years and rate
   (A) and B, D, F, G and H (B).
-- **Referee:** none; the maintenance notes define bus-years and the closing month and adjudicate no device.
+- **Referee:** none; procedure FM-07 defines maintenance cost, bus-years and the closing month and adjudicates no device.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
@@ -311,10 +321,15 @@ easier model of the same operators' share, not from another reading.
 | B twelve-year costs (8) | price plus twelve of A's rates | high for every configuration but A | miss |
 | C accommodation and chart | the golden's construction | right | outside |
 
-Mirror leakage: about 17 per cent of the ask weight (the three column, track and header bus-years and configuration
-A's zero twelve-year cost, 4 of 23 ask figures; the mirror's accommodation values are R1's).
-Pair ceiling: 38 (the cracker at about 54 with the call, its accommodation table and four ask figures, the mirror at
-about 22).
+Mirror leakage: 17.4 per cent of the ask weight (the column, deep track and header bus-years and configuration A's
+zero twelve-year cost, 4 of 23 ask figures, kept on the same ask paths; the mirror's accommodation values are rung R4's,
+Configuration G, and keep one share of eight).
+
+Pair ceiling: 38.1 (the cracker at 54.6 with the call, its accommodation table and four ask figures, 38 + 7 + 55 x 4/23;
+the mirror at 21.6, 5 + 7 + 55 x 4/23).
+
+Measured by: `generator/ceiling.py` on the cut pack (the work-order export read as delivered, labour summed over the
+part lines; bus-months on the fleet roster with today's options; procedure FM-07 and standard ES-12 executed).
 
 ## Build record
 
@@ -326,7 +341,7 @@ about 22).
   Halvard's measurement sheet (140 operators' sitting eye heights, statures and weights), Human Resources' roster
   (2,437 staff, 2,110 bus operators), Ostrander's encounters (19,073 rows) and Fernhill's visits (17,398 rows,
   Ostrander's first half of 2021 among them), the fleet roster (460 buses), disposals (134), retrofit campaigns (87),
-  the operator-area work orders (28,746 lines), two exports readmes; distractors the 2023 comfort survey (715
+  the operator-area work orders (28,746 lines), Fleet Maintenance's cost procedure FM-07 (two exports readmes until the 10-31 reship); distractors the 2023 comfort survey (715
   responses) and the workers' compensation claims (602).
 - Numbers: the per-operator conditional normal is integrated by quasi-Monte Carlo on one fixed Sobol set (2^15
   points); the verifier integrates each operator by Genz's algorithm from its own parse of the PDFs, the exports and
@@ -463,3 +478,4 @@ about 22).
   is 29.17 mm and three fit-trial trims were added (B's buttock-knee lower limit up a millimetre, F's popliteal lower
   limit down one, and A's thumb-tip reach lower limit down one, so that leaving out the nine operators whose latest DOT
   visit is a recertification moves no share at one decimal, SF17).
+- 2026-10-31, re-check under the 10-30 gates: `leak.py` LEAK on the two exports readmes (section 3: no shipped file describes the data, by name or by content). Removed. What they carried moved where the producing systems put it: the height columns name their condition (HEIGHT (NO SHOES), ht_in_no_shoes), Fernhill's export describes each visit type beside its code, the roster's date is its file's, and the ask's WHAT (maintenance cost, bus-years, the closing month, the option codes) is filed in Fleet Maintenance's cost procedure FM-07, read by the ask alone, so no document the call reads carries the ask. `metadata.json` no longer lists the call's and the ask's files. The prompt drops its counts and asks what. Every graded figure unchanged.
