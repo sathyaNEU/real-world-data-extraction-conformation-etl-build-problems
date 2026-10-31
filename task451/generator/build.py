@@ -92,17 +92,14 @@ def build(out, quiet=False, world=None):
     w["polish"] = dict(leakage=PO.leakage(out, Cw["group"], info), rx=PO.rx(out))
     targets, X = place_targets(out)
     DC.write_schedule_b(f("agreement"), targets, w["C"]["group"])
-    DC.write_dictionary(f("dictionary"), n["claims"])
-    DC.write_notes(f("notes"))
-    DC.write_rx_layout(f("rx_layout"))
+    DC.write_tallis_notice(f("notice"))
+    DC.write_code_values(f("codes"))
     DC.write_stop_loss(f("stoploss"))
     adm, ctl = W.PEOPLE["administrator"][0], W.PEOPLE["controller"][0]
-    PP.normalize_ooxml(f("notes"), adm, adm, "2025-03-04T15:20:00Z", "2027-02-02T21:41:07Z", title="Laurelford Fund data notes",
-                       company=W.FUND)
     PP.normalize_ooxml(f("clinicians"), adm, adm, "2024-06-11T13:02:00Z", "2027-01-04T15:27:44Z", excel=True, company=W.FUND)
     PP.normalize_ooxml(f("quality"), ctl, adm, "2026-12-08T16:40:00Z", "2027-01-22T19:05:31Z", excel=True, company=W.FUND)
     PP.normalize_pdf(f("agreement"), b"D:20251118153012-05'00'", b"D:20251119094405-05'00'")
-    PP.normalize_pdf(f("rx_layout"), b"D:20241203101500-06'00'", b"D:20241203101500-06'00'")
+    PP.normalize_pdf(f("notice"), b"D:20260915101500-05'00'", b"D:20260915101500-05'00'")
     PP.normalize_pdf(f("stoploss"), b"D:20251222111806-05'00'", b"D:20251222112251-05'00'")
     stamp = STAMP.timestamp()
     for name in os.listdir(out):

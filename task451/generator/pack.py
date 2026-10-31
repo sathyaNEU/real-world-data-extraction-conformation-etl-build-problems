@@ -11,13 +11,12 @@ import world as W
 
 FILES = {
     "claims": "medical_claims_extract_2025-01_2027-01.csv",
-    "dictionary": "keswold_extract_dictionary_2027-02-01.txt",
+    "notice": "keswold_client_notice_tallis_2026-09.pdf",
     "elig": "eligibility_spans_2025-2027.csv",
     "roster": "attribution_roster_2026.csv",
-    "notes": "laurelford_data_notes_2027-02.docx",
+    "codes": "laurelford_code_values.csv",
     "agreement": "accountable_care_partner_agreement_schedule_b.pdf",
     "rx": "corvane_pharmacy_claims_2026.csv",
-    "rx_layout": "corvane_claims_file_layout_v4.pdf",
     "clinicians": "partner_clinician_roster_2027-01-01.xlsx",
     "stoploss": "stop_loss_policy_2026.pdf",
     "quality": "partner_quality_scorecard_2026.xlsx",
@@ -161,7 +160,8 @@ def write_clinicians(world, path):
     ws["A1"] = "Accountable care partners: clinician roster"
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = ("Clinicians in each partner group on 1 January 2027, as the partners notified the Fund. A clinician who "
-                "leaves a group is removed when the partner gives notice. Source: Fund network file.")
+                "leaves a group is removed when the partner gives notice. Source: Fund network file, kept by %s, %s."
+                % W.PEOPLE["administrator"])
     hdr = ["NPI", "Partner code", "Partner", "Role", "Specialty", "With partner since"]
     for j, h in enumerate(hdr, 1):
         c = ws.cell(row=4, column=j, value=h)

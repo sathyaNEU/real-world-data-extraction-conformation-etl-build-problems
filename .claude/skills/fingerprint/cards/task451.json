@@ -1,132 +1,134 @@
 {
-  "task": "task451",
-  "architecture": "v2",
-  "drawn": "2026-10-13",
-  "slot_note": "Re-root of the ETL slot after architecture 1 failed the honest swap test. No seed is drawn: the pairing comes from the client's ETL task types and the field method the client names for this one (completion of recent claims from a lag triangle, payment-claims-health-plan-analytics pattern 1), re-found as a process the history never saw.",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a multiemployer health and welfare fund's annual total-cost-of-care reconciliation with its accountable care partners: each partner's 2026 incurred medical cost per attributed member month completed from claims paid through January 2027, after the fund's claims administrator moved adjudication to a next-day platform in October 2026",
-  "objective": "etl",
-  "shape": "other",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Four partners owe the Fund a shared-loss payment for 2026: Stonecrest Internal Medicine, Bellmont Clinic Network, Kettle Run Health Partners and Harrow Point Medical Group.",
-  "answer_source": "submission.md (Final Recommendation); golden/partner_settlement_2026.xlsx",
-  "gap": [
-    "time",
-    "population"
+ "task": "task451",
+ "architecture": "v2",
+ "drawn": "2026-10-13",
+ "slot_note": "Re-root of the ETL slot after architecture 1 failed the honest swap test. No seed is drawn: the pairing comes from the client's ETL task types and the field method the client names for this one (completion of recent claims from a lag triangle, payment-claims-health-plan-analytics pattern 1), re-found as a process the history never saw.",
+ "domain": "healthcare-delivery-health-economics",
+ "subdomain": "payment-claims-health-plan-analytics",
+ "niche": "a multiemployer health and welfare fund's annual total-cost-of-care reconciliation with its accountable care partners: each partner's 2026 incurred medical cost per attributed member month completed from claims paid through January 2027, after the fund's claims administrator moved adjudication to a next-day platform in October 2026",
+ "objective": "etl",
+ "shape": "other",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Four partners owe the Fund a shared-loss payment for 2026: Stonecrest Internal Medicine, Bellmont Clinic Network, Kettle Run Health Partners and Harrow Point Medical Group.",
+ "answer_source": "submission.md (Final Recommendation); golden/partner_settlement_2026.xlsx",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G7",
+  "G16",
+  "G17"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "maturity_censoring",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_standard",
+ "stakeholder_role": "health analytics lead at a multiemployer health fund's administrative office",
+ "role_family": "research_desk",
+ "scoring_unit": "per covered member",
+ "spine": {
+  "file": "medical_claims_extract_2025-01_2027-01.csv",
+  "rows": 174248,
+  "entity": "one version of one medical claim (original, replacement or void) as the claims administrator's extract reports it",
+  "grain": "claim x version",
+  "source": "synthetic (constructed in the layout of a third-party administrator's medical claims extract derived from 837 claims)"
+ },
+ "forum": "trustees_or_governors",
+ "forcing_event": "purchase_order_or_contract",
+ "org_family": "cooperative_or_member_body",
+ "world": {
+  "geography": "United States: western Pennsylvania",
+  "currency": "USD",
+  "org_type": "a jointly trusteed multiemployer health and welfare fund (building trades), its claims administrator, its pharmacy benefit manager and twelve accountable care partner groups",
+  "invented_names": [
+   "Laurelford Building Trades Health and Welfare Fund",
+   "Keswold Benefit Services",
+   "Tallis",
+   "Corvane Pharmacy Benefits",
+   "Halberd National Bank",
+   "Ridgeline Physician Group",
+   "Brookhollow Medical Associates",
+   "Sycamore Pediatric Partners",
+   "Stonecrest Internal Medicine",
+   "Kettle Run Health Partners",
+   "Harrow Point Medical Group",
+   "Wren Valley Physicians",
+   "Bellmont Clinic Network",
+   "Calder Family Practice",
+   "Tamarack Health Alliance",
+   "Juniper Hollow Primary Care",
+   "Ashby Lane Medical"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G7",
-    "G16",
-    "G17"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_standard",
-  "stakeholder_role": "health analytics lead at a multiemployer health fund's administrative office",
-  "role_family": "research_desk",
-  "scoring_unit": "per covered member",
-  "spine": {
-    "file": "medical_claims_extract_2025-01_2027-01.csv",
-    "rows": 174248,
-    "entity": "one version of one medical claim (original, replacement or void) as the claims administrator's extract reports it",
-    "grain": "claim x version",
-    "source": "synthetic (constructed in the layout of a third-party administrator's medical claims extract derived from 837 claims)"
-  },
-  "forum": "trustees_or_governors",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "cooperative_or_member_body",
-  "world": {
-    "geography": "United States: western Pennsylvania",
-    "currency": "USD",
-    "org_type": "a jointly trusteed multiemployer health and welfare fund (building trades), its claims administrator, its pharmacy benefit manager and twelve accountable care partner groups",
-    "invented_names": [
-      "Laurelford Building Trades Health and Welfare Fund",
-      "Keswold Benefit Services",
-      "Tallis",
-      "Corvane Pharmacy Benefits",
-      "Halberd National Bank",
-      "Ridgeline Physician Group",
-      "Brookhollow Medical Associates",
-      "Sycamore Pediatric Partners",
-      "Stonecrest Internal Medicine",
-      "Kettle Run Health Partners",
-      "Harrow Point Medical Group",
-      "Wren Valley Physicians",
-      "Bellmont Clinic Network",
-      "Calder Family Practice",
-      "Tamarack Health Alliance",
-      "Juniper Hollow Primary Care",
-      "Ashby Lane Medical"
-    ],
-    "people": [
-      "Ariel Hogan",
-      "George Khan",
-      "Jason Pollard",
-      "Linda Austin"
-    ]
-  },
-  "deliverables": [
-    "partner_settlement_2026.xlsx",
-    "partners_against_target_2026.png"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the part of each unit's period total not yet observed at the cut, completed from the history of how amounts arrive; arrival is a sender's delay, which never changed, plus a handler's delay that collapsed partway through the period, so development measured on arrival dates averages the old handler into the newest periods and overstates what they still owe, while development measured on the dates the handler received each amount completes them at the speed now in force; a recent arrival window still carries the old handler and the changeover's backlog, and only arrivals after the change settled agree.",
-  "driver_concrete": "Each accountable care partner's 2026 total cost of care is completed from claims paid through 29 January 2027. The administrator's move to next-day adjudication on 5 October 2026 cut receipt-to-payment from about five weeks to a day, so chain-ladder factors averaged over the 2025-2026 paid-date triangle carry the old speed into October to December 2026 and overstate 2026 by about ten per cent; the providers' submission lags never changed, so the received-date triangle completes 2026 at the speed now in force.",
-  "stump": "The default path names nine partners, the four that owe and Ashby Lane, Calder, Juniper Hollow, Ridgeline and Tamarack, because it completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments, reading the claims administrator's old five-week adjudication into claims now paid the day after they arrive and overstating 2026 by 10.2 per cent; developed on the received dates, whose provider submission lags never changed, four partners owe.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keeps each claim's final version and drops voids, builds attributed member months from the eligibility and attribution files, truncates each member's year at the agreement's $200,000 and completes 2026 with chain-ladder factors from the paid-date lag triangle over all of 2025 and 2026 names nine partners as owing; completing on the received dates, whose provider submission lags never changed, names four (Bellmont, Harrow Point, Kettle Run, Stonecrest).",
-  "domain_test": "The deciding quantity is each partner's 2026 incurred medical cost per attributed member month, which health plan analytics estimates by completing the latest service months from a claims lag triangle; the field's own check is whether the payment process the factors were measured on is the one now paying, and when adjudication speeds up it develops claims on their received dates. With a school's or a utility's nouns there is no claim, no lag between service and payment, no adjudication engine and no triangle, so the task stops reading.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task135": "task135 measures co-movement between holdings priced at different times of day, a covariance question across striking times; this build completes the unobserved remainder of a closed period from a claims lag triangle whose payment process changed inside the history, a maturity question with no co-movement in it"
-  },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "fate": "spent at design 2026-10-13, before any data was cut for the pack it would ship: the honest swap test fails. With a fund-of-funds' or a franchise marketing levy's nouns the task reads the same, crediting a pool's spending to contributors by what the pool held when it paid, so the decisive step is generic fund accounting and Survey Research & Official Statistics was the backdrop (10/10 rule 1). Re-rooted in Healthcare Delivery & Health Economics.",
-      "domain": "survey-research-official-statistics",
-      "subdomain": "census-register-administrative-data-quality",
-      "objective": "etl",
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G6",
-        "G5",
-        "G10"
-      ],
-      "gate_g": "decomposition_attribution",
-      "decision_type": "ranked_slate_under_cap",
-      "stump_strategy": "decomposition_attribution",
-      "driver": "Spending done through commingled intermediaries is credited to the original sources by their share of the money each intermediary held when it paid out, which for an intermediary that collects in one period and pays out in the next is the previous period's inflow mix, not the current one, and for one that pays out each inflow at once is the current one, carried into an intermediary funded by another; the current-period inflow share, the lifetime share and the receipts-before-payment share each rank a different wrong set.",
-      "driver_concrete": "Each implementer's 2025 spending is credited to the members by the member share of the money its funder held when it paid: the global fund collects in the last quarter and pays the collection out the next year, so its 2025 grants carried the members' 31.7 per cent of its 2024 collection, not the 75 per cent of the 2025 collection received after its last 2025 grant; the Sahel fund pays each January round out the same year, so its 2025 grants carried the 2025 round's mix with the global fund's part at 31.7 per cent; the year's contribution share (Rwanda, Uganda, Mali), the lifetime share (Rwanda, Kenya, Uganda) and the share of contributions received before each payment (Rwanda, Kenya, Tanzania) each miss Rwanda, Kenya and Mali."
-    }
-  ],
-  "notes": "Architecture 2 drawn 2026-10-13 after architecture 1 failed the honest swap test (lineage). Prototype in scratch (t451v2/proto3, proto4): against the received-date development, the paid-date chain ladder over all history is about +10 per cent on 2026, the latest twelve diagonals +8.5, the latest six +6.3, the latest four +5.4, the post-change diagonals +2.7 to +3.2, paid as extracted -3.",
-  "client_domain": "healthcare-delivery-health-economics",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:development-on-the-payment-process-in-force",
-  "layer1": [
-    "claim headers with replacement and void versions (837 frequency codes 1, 7, 8) collapsed to the final action claim",
-    "two date bases on every claim: service from and through, received and paid",
-    "eligibility earned through an hour bank, with retroactive eligibility when late employer contributions post",
-    "a monthly attribution roster of members to partner groups by primary care provider of record",
-    "a pharmacy benefit manager's file keyed by cardholder and person code, not member id",
-    "the agreement's per-member annual truncation of large claims",
-    "the bank's funding wires on the payment-run calendar, weekly then daily"
+  "people": [
+   "Ariel Hogan",
+   "George Khan",
+   "Jason Pollard",
+   "Linda Austin"
   ]
+ },
+ "deliverables": [
+  "partner_settlement_2026.xlsx",
+  "partners_against_target_2026.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "what",
+ "driver": "The decisive quantity is the part of each unit's period total not yet observed at the cut, completed from the history of how amounts arrive; arrival is a sender's delay, which never changed, plus a handler's delay that collapsed partway through the period, so development measured on arrival dates averages the old handler into the newest periods and overstates what they still owe, while development measured on the dates the handler received each amount completes them at the speed now in force; a recent arrival window still carries the old handler and the changeover's backlog, and only arrivals after the change settled agree.",
+ "driver_concrete": "Each accountable care partner's 2026 total cost of care is completed from claims paid through 29 January 2027. The administrator's move to next-day adjudication on 5 October 2026 cut receipt-to-payment from about five weeks to a day, so chain-ladder factors averaged over the 2025-2026 paid-date triangle carry the old speed into October to December 2026 and overstate 2026 by about ten per cent; the providers' submission lags never changed, so the received-date triangle completes 2026 at the speed now in force.",
+ "stump": "The default path names nine partners, the four that owe and Ashby Lane, Calder, Juniper Hollow, Ridgeline and Tamarack, because it completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments, reading the claims administrator's old five-week adjudication into claims now paid the day after they arrive and overstating 2026 by 10.2 per cent; developed on the received dates, whose provider submission lags never changed, four partners owe.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who keeps each claim's final version and drops voids, builds attributed member months from the eligibility and attribution files, truncates each member's year at the agreement's $200,000 and completes 2026 with chain-ladder factors from the paid-date lag triangle over all of 2025 and 2026 names nine partners as owing; completing on the received dates, whose provider submission lags never changed, names four (Bellmont, Harrow Point, Kettle Run, Stonecrest).",
+ "domain_test": "The deciding quantity is each partner's 2026 incurred medical cost per attributed member month, which health plan analytics estimates by completing the latest service months from a claims lag triangle; the field's own check is whether the payment process the factors were measured on is the one now paying, and when adjudication speeds up it develops claims on their received dates. With a school's or a utility's nouns there is no claim, no lag between service and payment, no adjudication engine and no triangle, so the task stops reading.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task135": "task135 measures co-movement between holdings priced at different times of day, a covariance question across striking times; this build completes the unobserved remainder of a closed period from a claims lag triangle whose payment process changed inside the history, a maturity question with no co-movement in it",
+  "task161": "task161 carries a stock built ahead of a cost step down at each holder's steady share of use; nothing here is a stock drawn down: the quantity is the part of each unit's period total not yet paid at the cut, completed from how claims arrive, where the handler's delay changed partway through the year and development has to be read on the dates the handler received each claim",
+  "task460": "task460 weights the margin a new source displaces by its own operating profile over interval-by-interval changes; nothing here is displaced or dispatched: the estimate completes unpaid claims, and the decisive step is the clock development is measured on after the claims handler's speed changed"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "fate": "spent at design 2026-10-13, before any data was cut for the pack it would ship: the honest swap test fails. With a fund-of-funds' or a franchise marketing levy's nouns the task reads the same, crediting a pool's spending to contributors by what the pool held when it paid, so the decisive step is generic fund accounting and Survey Research & Official Statistics was the backdrop (10/10 rule 1). Re-rooted in Healthcare Delivery & Health Economics.",
+   "domain": "survey-research-official-statistics",
+   "subdomain": "census-register-administrative-data-quality",
+   "objective": "etl",
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G6",
+    "G5",
+    "G10"
+   ],
+   "gate_g": "decomposition_attribution",
+   "decision_type": "ranked_slate_under_cap",
+   "stump_strategy": "decomposition_attribution",
+   "driver": "Spending done through commingled intermediaries is credited to the original sources by their share of the money each intermediary held when it paid out, which for an intermediary that collects in one period and pays out in the next is the previous period's inflow mix, not the current one, and for one that pays out each inflow at once is the current one, carried into an intermediary funded by another; the current-period inflow share, the lifetime share and the receipts-before-payment share each rank a different wrong set.",
+   "driver_concrete": "Each implementer's 2025 spending is credited to the members by the member share of the money its funder held when it paid: the global fund collects in the last quarter and pays the collection out the next year, so its 2025 grants carried the members' 31.7 per cent of its 2024 collection, not the 75 per cent of the 2025 collection received after its last 2025 grant; the Sahel fund pays each January round out the same year, so its 2025 grants carried the 2025 round's mix with the global fund's part at 31.7 per cent; the year's contribution share (Rwanda, Uganda, Mali), the lifetime share (Rwanda, Kenya, Uganda) and the share of contributions received before each payment (Rwanda, Kenya, Tanzania) each miss Rwanda, Kenya and Mali."
+  }
+ ],
+ "notes": "Architecture 2 drawn 2026-10-13 after architecture 1 failed the honest swap test (lineage). Prototype in scratch (t451v2/proto3, proto4): against the received-date development, the paid-date chain ladder over all history is about +10 per cent on 2026, the latest twelve diagonals +8.5, the latest six +6.3, the latest four +5.4, the post-change diagonals +2.7 to +3.2, paid as extracted -3.",
+ "client_domain": "healthcare-delivery-health-economics",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:development-on-the-payment-process-in-force",
+ "layer1": [
+  "claim headers with replacement and void versions (837 frequency codes 1, 7, 8) collapsed to the final action claim",
+  "two date bases on every claim: service from and through, received and paid",
+  "eligibility earned through an hour bank, with retroactive eligibility when late employer contributions post",
+  "a monthly attribution roster of members to partner groups by primary care provider of record",
+  "a pharmacy benefit manager's file keyed by cardholder and person code, not member id",
+  "the agreement's per-member annual truncation of large claims",
+  "the bank's funding wires on the payment-run calendar, weekly then daily"
+ ]
 }

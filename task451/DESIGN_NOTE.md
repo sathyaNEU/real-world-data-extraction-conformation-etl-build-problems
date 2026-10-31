@@ -95,6 +95,22 @@ The default path names nine partners because step 4 completes 2026 with chain-la
 
 **Lesson:** a claims lag triangle is a record of how the payer paid. When adjudication speeds up, development measured on paid dates overstates what the newest months still owe, and the claims are developed on the clock that did not change; no build on file teaches it (the nearest driver on file is task181 at 0.07).
 
+## Survivor anatomy
+
+Actor: the deciding property is the claims handler's delay, which collapsed when Keswold moved the Fund's claims to Tallis (receipt to payment a median of 23 days before 5 October 2026 and 1 day after); no column holds it: it is the gap between each claim's received and paid dates, read across the move.
+
+Link: the completion is read through the claims' received dates rather than the payment dates every lag triangle is built on; no sentence names a lag, a triangle, a factor or payment speed, and the client notice dates the move only because the frequency codes changed with it.
+
+Reflex: the field's named method for the claims not yet paid, a paid-date chain ladder, volume-weighted over all development from January 2025, is the default path (R0) and names nine partners.
+
+Back-test: the textbook route validates: the 2025 claims have run out and were paid by the old process throughout, so a paid-date ladder completes 2025's months as they ran, while 2026's newest months were paid by a process that no longer pays.
+
+Second use: every file the decisive step reads has its own use: the claims extract is the total cost of care's record (B.1.4), its received and paid dates sit on every version, and the client notice exists for the frequency codes that changed with the move.
+
+Shock: the correction lowers every partner's completed cost by a similar share, no partner's alone; risk recorded: the golden four are also the four highest on the default path's shares of target (120.2, 119.4, 115.9 and 112.6, the fifth Ashby Lane at 107.5), so a completion that scales the default path down alike by between 5.2 and 9.4 per cent lands them, while the paid-date windows short of the go-live month stop at five (the four and Ashby Lane).
+
+Pins: Schedule B files the WHAT (the Fund's paid amount for medical claims with a first date of service in 2026, in attributed member months, whenever paid, truncated at $200,000, above 102 per cent of the target, compared unrounded); no filed sentence names a lag, a factor, a received date's use or payment speed.
+
 ## Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 battery | 6 linear | Verdict |
@@ -102,7 +118,7 @@ The default path names nine partners because step 4 completes 2026 with chain-la
 | Paid as extracted (no estimate for the claims still to come) | fires: Schedule B, B.1.4 ("whenever the claims are paid") and B.3.1 (the Fund estimates the claims not yet paid) | no | no | no | no | no | readable |
 | The paid-date chain ladder over all development, or the latest twelve months (the default) | no | fires: paid_date on every row and the extract's own grain make the paid triangle the obvious table | fires: the textbook completion | no | no | no | readable |
 | The paid-date ladder over the latest six or four months | no | as above | fires: a recent-window habit | no | no | no | readable |
-| (decisive) The 2026 claims developed on the payment process now in force: on their received dates, whose provider lags never changed, or on the payments after the go-live month | no. No sentence names a lag, a triangle, a factor, a reserve or payment speed. The dictionary's release note dates the move to Tallis because the frequency codes changed with it, says claim numbers stayed the same and that claims unpaid at the move were adjudicated on Tallis; nothing about how long payment takes | no. received_date is an ordinary field on every claim; no column marks the platform, and claim numbers do not change format | no. The reflexes (the chain ladder over all history, a recent window, by claim type, a back-test on 2025, which the old process paid) all land wrong | no. No control, prior reconciliation, published factor or 2026 result ships | no. The battery (versions, voids, keys, joins, duplicates) comes back clean on the wrong path | no. The gap is a product of link ratios across 24 lags, by service month | silent |
+| (decisive) The 2026 claims developed on the payment process now in force: on their received dates, whose provider lags never changed, or on the payments after the go-live month | no. No sentence names a lag, a triangle, a factor, a reserve or payment speed. Keswold's client notice dates the move to Tallis because the frequency codes changed with it, says claim numbers stayed the same and that claims unpaid at the move were adjudicated on Tallis; nothing about how long payment takes | no. received_date is an ordinary field on every claim; no column marks the platform, and claim numbers do not change format | no. The reflexes (the chain ladder over all history, a recent window, by claim type, a back-test on 2025, which the old process paid) all land wrong | no. No control, prior reconciliation, published factor or 2026 result ships | no. The battery (versions, voids, keys, joins, duplicates) comes back clean on the wrong path | no. The gap is a product of link ratios across 24 lags, by service month | silent |
 
 The decisive quantity is named by no sentence and no column, every reflex lands wrong, no control sees it, and the battery is clean. It is the record's own structure: the receipt-to-payment time collapsed on 5 October 2026 (median 23 days to 1), and only an analyst who asks what process paid the history finds it.
 
@@ -112,7 +128,7 @@ One row per term of the main ask and per convention its computation rests on. Th
 
 | Id | Term or convention | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | our twelve accountable care partners | the twelve groups of Exhibit 1 | none | same call | Exhibit 1 |
+| SF1 | our accountable care partners | the groups of Exhibit 1, the roster naming no other | none | same call (asserted) | Exhibit 1 |
 | SF2 | owe a shared-loss payment | total cost of care per attributed member month more than 2.0 per cent over the target | at or over 2.0 per cent | same call: no partner within 0.0001 of the line | Schedule B, B.2.1 ("exceeds its Target PMPM in Exhibit 1 by more than 2.0 per cent") |
 | SF3 | for 2026 | claims with a first date of service in 2026 | claims paid in 2026 | not computed: refused | B.1.4 ("with a first date of service in the Performance Year") |
 | SF4 | claims paid through January | the payment run of 29 January 2027, the last business day | the extract's run date, 1 February | same rows: no payment run between them | B.3.1 ("paid through the last business day of January following the year") |
@@ -120,11 +136,11 @@ One row per term of the main ask and per convention its computation rests on. Th
 | SF6 | attributed member months | on the roster for the month and eligible on the latest version of the spans | the roster alone | same call (asserted, R2) | B.1.3 ("eligible for the Fund's medical benefits and appears on the Fund's attribution roster") |
 | SF7 | the large-claim exclusion | each member's year above $200,000 | none, or per claim | refused | B.1.5 ("the amount above $200,000 is excluded") |
 | SF8 | covered medical services | professional, outpatient and inpatient claims | pharmacy included | refused | B.1.4 ("Outpatient prescription drugs dispensed by retail, mail-order and specialty pharmacies are excluded") |
-| SF9 | a claim's value | its latest version's paid amount | every version summed, or the first version | same call for both (asserted, R2) | the dictionary ("The claim's value is the paid_amount of its latest version.") |
+| SF9 | a claim's value | its latest version's paid amount | every version summed, or the first version | same call for both (asserted, R2) | Keswold's client notice CN-2026-14 ("so a claim's value is the paid amount of its latest version") |
 | SF10 | the month a claim belongs to | the month of its first date of service | the month paid or received | refused | B.1.4 ("attributed to the Partner in the month of that first date of service") |
 | SF11 | the comparison | unrounded | the ratio rounded first | same call: no partner within 0.05 points of 102 per cent | B.2.3 ("are made on unrounded figures") |
 | SF12 | the claims not yet paid | included at their estimate (the ultimate cost of 2026 services) | paid through January only | refused (R1 names two partners) | B.1.4 ("whenever the claims are paid") and B.3.1 |
-| SF13 | an inpatient stay spanning months | the month of admission (its first date of service) | the month of discharge | refused | B.1.4 and the dictionary ("last date of service on the claim (the discharge date for an inpatient stay)") |
+| SF13 | an inpatient stay spanning months | the month of admission (its first date of service) | the month of discharge | refused | B.1.4 ("attributed to the Partner in the month of that first date of service") |
 | SF14 | a member attributed to two partners in a year | the exclusion shared by the member's amounts with each | all to the last partner | refused | B.1.5 ("shared in proportion to the Member's amounts with each") |
 
 The stump is none of these readings: the default and the golden read every term the same way and differ only in how the claims still to come are estimated.
@@ -169,7 +185,7 @@ Measured on the build (world seed 4512, `## Build record`) by `checks.py` and re
 | 2 | Unit of account | the attributed member month; the claim at its latest version | filed (B.1.3, B.1.6); the dictionary for the version |
 | 3 | Attribution window | a claim belongs to the month of its first date of service | filed (B.1.4); SF10, SF13 |
 | 4 | As-of dating | claims paid through the run of 29 January 2027 | filed (B.3.1); SF4 |
-| 5 | Version basis | each claim's latest version; each eligibility span's latest version | filed (dictionary; the Fund's notes); C1 asserted (R2) |
+| 5 | Version basis | each claim's latest version; each eligibility span's latest version | filed (Keswold's client notice; the code values' RT and RI); C1 asserted (R2) |
 | 6 | Divisor and denominator | attributed member months for the year | filed (B.1.6) |
 | 7 | Weighting | volume-weighted link ratios over the received-date triangle | C3: simple averages, the latest twelve months and by claim type land the same four (G2, G4 asserted) |
 | 8 | Measurement window length | the performance year 2026 | filed (B.1.1) |
@@ -180,7 +196,7 @@ Measured on the build (world seed 4512, `## Build record`) by `checks.py` and re
 | 13 | Order of operations | truncation on paid amounts by member, completion on the partner's paid amounts by month | C1 on the call: taking the $200,000 off each member's claims before completing names the same four on every golden route, and no owing partner carries a truncated member (asserted) |
 | 14 | Row order | order-free | C1 |
 | 15 | Duplicate resolution | one latest version per claim | filed (dictionary); keys unique (asserted) |
-| 16 | Identity normalisation | member ids as the Fund issues them; the roster's partner codes | filed (the Fund's notes); C1 |
+| 16 | Identity normalisation | member ids as the Fund issues them; the roster's partner codes | the eligibility file's own ids, matched by birth date and sex; C1 |
 | 17 | Netting against gross | voids at zero, replacements at their full amounts | filed (dictionary) |
 | 18 | Dimensional units | US dollars throughout | C1 |
 | 19 | Code and status semantics | legacy O, A, V and Tallis 1, 7, 8 frequency codes; P, D, V statuses | filed (dictionary) |
@@ -201,7 +217,7 @@ The prompt and Schedule B, executed word for word, fix the estimand: the members
 - **The quality scorecard** (distractor). Quality decides only shared savings (B.2.2), never a shared loss.
 - **The stop-loss summary** (distractor). Its $175,000 specific deductible and 12/15 basis belong to the reinsurance contract. B.1.5's $200,000 is the agreement's exclusion.
 - **The dictionary's release notes.** They date the move to Tallis by its frequency codes and record that claims unpaid at the move were adjudicated on Tallis, which explains October's payments; they say nothing about how long payment takes. Read alone, the backlog sentence invites dropping October's payments from the paid ladder, which still names nine (asserted).
-- **The Fund's notes and Corvane's layout.** Each states its own numbering (enrollment order; date of birth). They meet only on the pharmacy ask's path, not on the call's.
+- **The code values file.** It states Corvane's numbering (dependants by date of birth); the Fund's ids follow their own. They meet only on the pharmacy ask's path, not on the call's.
 - **The asks' referee: the claim's billing NPI.** It says which group billed each professional service and arbitrates the outside share without naming a level. It ties under every handling of the call.
 
 ## Ask sheet
@@ -212,8 +228,8 @@ The prompt and Schedule B, executed word for word, fix the estimand: the members
 - H18 home: B.4.1(a), the report's pharmacy line: a measure every partner carries that the call does not turn on (pharmacy is outside the total cost of care).
 - Use: the trustees read each group's pharmacy spending beside its medical cost.
 - Primary device, D7 (the true key elsewhere): Corvane numbers a family's dependants by date of birth (person code 03 up), and the Fund suffixes member ids in order of enrollment. In a family whose spouse or a stepchild enrolled after the children, the natural join (cardholder and person code to member id) puts each patient on another member, often another partner's.
-- Hazards: B2 reversals carrying the reversed claim's positive amounts, and B3 rebills (the layout says so; repaired right). Fills in months the member's eligibility was later ended (B.4.1(a) counts the Members' Attributed Member Months, so the roster alone overstates every partner by $1,599 to $10,519). The cardholder-only join puts every fill on the participant, so the pediatric group shows nothing (visible).
-- Path: corvane_pharmacy_claims_2026.csv (17 columns) to the eligibility spans (subscriber id, birth date, sex) to the roster (month, partner), with the layout PDF and the Fund's notes. Three files, five columns on the causal path.
+- Hazards: B2 reversals carrying the reversed claim's positive amounts, and B3 rebills (the code values file says so; repaired right). Fills in months the member's eligibility was later ended (B.4.1(a) counts the Members' Attributed Member Months, so the roster alone overstates every partner by $1,599 to $10,519). The cardholder-only join puts every fill on the participant, so the pediatric group shows nothing (visible).
+- Path: corvane_pharmacy_claims_2026.csv (17 columns) to the eligibility spans (subscriber id, birth date, sex) to the roster (month, partner), with the code values file. Three files, five columns on the causal path.
 - Stops: golden (cardholder, birth date and sex, in the member's attributed member months); the person-code join, $4,485 to $112,830 under on every partner (Sycamore $290,000 against $403,000); the roster without the eligibility condition, $1,599 to $10,519 over; the cardholder join.
 - Realism: pharmacy benefit managers key members by cardholder and person code; plan sponsors number their members their own way.
 
@@ -259,14 +275,25 @@ The prompt and Schedule B, executed word for word, fix the estimand: the members
 
 **Mirror sheet.** The mirror stops at the default (nine partners) and takes the same joins: it misses all 24 ask rows and the chart's title, keeping only the chart's bars and its 102 line (2 of about 28 ask criteria).
 
-Mirror leakage: 7 per cent of ask weight.
+Mirror leakage: 7.1 per cent of ask weight.
 
-Pair ceiling: 34 (the cracker 38 + 7 + 55 x 0.14 = 52.7, keeping the chart's four parts; the mirror 5 + 7 + 55 x 0.07 = 15.9).
+Pair ceiling: 34.4 (the cracker 38 + 7 + 55 x 4/28 = 52.9, keeping the chart's four parts and none of the 24 ask figures; the mirror 5 + 7 + 55 x 2/28 = 15.9).
+
+Measured by: generator/ceiling.py on the cut pack.
 
 ## Pre-ship check
 
+- **2026-10-31 reship under the 10-30 gates (target.zip 0d912557b442d3cb).** Judge pass 2 DETERMINISTIC, APPROVE
+  (stump power strong; Gate G method_or_model_selection, analytical_non_defect; Gate H pass); its optional pins (the
+  billing NPI as the basis for "with the partner", eligibility taken as posted) are not taken: the first files Ask B's
+  device and the second moves one pharmacy figure by a thousand on a reading the literal text already settles. Leak
+  reader clean (Q6 analytical; the pack read without a dictionary or layout). Free gates on the final cut: checks 168,
+  verify, two byte-identical builds, figures_check 58 of 58, precut 0 FAIL 0 WARN, voice-check clean, leak.py REVIEW
+  with no LEAK, ceiling.py pair 34.4, guard.py surface exit 0 and heart WARN. The 10/10 rules re-read: the decisive step
+  is still developing the 2026 claims on the clock in force, analytical; the mess is still Layer 1.
+
 - **Three rules.** Domain: health plan analytics' own completion of the open service months from a claims lag triangle, checked against the payment process now paying (swap test in the Three rules section). Two layers: the Layer 1 inventory (versions and voids under two code sets, two date bases, the hour bank's retroactive postings in a dated export, the monthly roster, the pharmacy benefit manager's own member keys, the clinician roster as a January snapshot), all of it what the administrator's, the Fund's and Corvane's systems write; and the development basis that separates the providers' unchanged submission lag from Keswold's collapsed adjudication time. Decisive step analytical: the analyst who conforms everything, applies every filed rule and completes with the paid-date chain ladder names nine partners (asserted on the shipped data); changing the development basis alone gives the golden's four (asserted), and every paid-date habit in the reflex sweep stays wrong.
-- **Gates.** 11 files in 5 formats, the claims extract at 174,248 rows, two distractors (the stop-loss policy summary and the quality scorecard) the solution never reads; 168 checks; `verify.py` PASS from the bundle alone (the five golden completions, the received-date ranges, both asks); two builds byte-identical; `figures_check.py` exit 0 (59 figures); `precut.py` exit 0; `leak.py --asof 2027-02-03` REVIEW with no LEAK; `guard.py surface` clean (the personas on the card) and `heart` WARN (Gate G overuse, decision type and question form, answered in the Draw).
+- **Gates.** 10 files in 3 formats (since the 10-31 reship), the claims extract at 174,248 rows, two distractors (the stop-loss policy summary and the quality scorecard) the solution never reads; 168 checks; `verify.py` PASS from the bundle alone (the five golden completions, the received-date ranges, both asks); two builds byte-identical; `figures_check.py` exit 0 (59 figures); `precut.py` exit 0; `leak.py --asof 2027-02-03` REVIEW with no LEAK; `guard.py surface` clean (the personas on the card) and `heart` WARN (Gate G overuse, decision type and question form, answered in the Draw).
 
 ## Leak check
 
@@ -291,3 +318,11 @@ Pair ceiling: 34 (the cracker 38 + 7 + 55 x 0.14 = 52.7, keeping the chart's fou
 - 2026-10-13, asks: B.4.1 worded without saying which members' fills count or whether the outside share is taken before B.1.5. Rejected: 361 fills ($48,025 on the build) fall in months a roster member's eligibility was later ended, and spreading the $200,000 exclusion over the claims moves Calder and Ashby Lane across a rounding edge, so two readings filed different ask figures; B.4.1(a) now counts the Members' Attributed Member Months and B.4.1(b) the Fund's paid amount before B.1.5.
 - 2026-10-13, stage 4: the owing partners' ranges stated across a post-cutover paid ladder whose triangle the write-up did not pin. Rejected: the judge built it on each claim's latest version by its paid date and ran 1.6 to 1.8 points higher, with Ashby Lane at 101.6; the ranges are now stated over the three received-date developments only, that construction joined the golden family as G5, and the targets are placed against it (Ashby Lane 100.9 on G5, 103.1 on the four-month window).
 - 2026-10-13, second-layer attempt after shipping (paper): development by service category made decisive, a late-2026 inpatient surge at the partners with older members making pooled received-date factors understate their open months. Rejected on the arithmetic: the claims still to come are about 3 per cent of 2026 cost (claims paid as extracted sit 3.1 per cent under the golden), so even a 30 per cent error in one partner's completion moves its cost about 1 per cent against golden margins of 1.09 per cent and more; the surge would have to be large enough to read as planted before the pooled factors named another partner.
+- 2026-10-31, the 10-30 re-check: Keswold's extract dictionary, Corvane's claims file layout and the Fund's data notes
+  were describing files (leak.py sweeps 1 and 12) and are out. Their facts moved: the codes of the three feeds
+  (frequency codes on both systems, claim status, Corvane's transaction, relationship and person codes, the Fund's
+  relationship and change-reason codes) are the Fund Office's code values list; the move to Tallis, the code change
+  and the versioning rule are Keswold's client notice CN-2026-14, in the vendor's own genre and with nothing on
+  payment timing; the clinician roster names the administrator who keeps it. The chart deliverable moved to SVG and
+  the prompt to the what form without its count; metadata.json's title and subdomain no longer narrate the lag or the
+  triangle. generator/ceiling.py measures the pair at 34.4. No graded figure moved (figures.json unchanged).

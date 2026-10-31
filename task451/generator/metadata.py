@@ -10,13 +10,12 @@ import pack as P    # noqa: E402
 TASK = os.path.dirname(HERE)
 SOURCES = {
     P.FILES["claims"]: "the claims administrator's monthly client extract of the Fund's medical claims, every version, run 1 February 2027",
-    P.FILES["dictionary"]: "the claims administrator's data dictionary for that extract, with its release notes",
+    P.FILES["notice"]: "the claims administrator's client notice of September 2026 on moving the Fund's claims to its Tallis platform",
     P.FILES["elig"]: "the Fund Office's export of its eligibility spans (hour-bank coverage), every version",
     P.FILES["roster"]: "the Fund Office's monthly attribution roster of members to accountable care partner groups for 2026",
-    P.FILES["notes"]: "the Fund Office's notes for analysts on member ids, eligibility and attribution",
+    P.FILES["codes"]: "the Fund Office's reference list of the codes in its claims, pharmacy and eligibility feeds",
     P.FILES["agreement"]: "Schedule B (annual reconciliation) of the Fund's accountable care partner agreements, with Exhibit 1",
     P.FILES["rx"]: "the pharmacy benefit manager's client claims file for prescriptions filled in 2026",
-    P.FILES["rx_layout"]: "the pharmacy benefit manager's client claims file layout, version 4",
     P.FILES["clinicians"]: "the Fund's network file of clinicians in each partner group on 1 January 2027",
     P.FILES["stoploss"]: "the Fund's specific stop-loss policy summary for 2026",
     P.FILES["quality"]: "the partners' preliminary 2026 quality measures",
@@ -41,19 +40,17 @@ def write(target, out_path):
     meta = {
         "task": "task451",
         "architecture": 2,
-        "title": "Which of a multiemployer health fund's twelve accountable care partners owe a 2026 shared-loss payment, "
-                 "each partner's incurred total cost of care per attributed member month completed from claims paid "
-                 "through January 2027 after the claims administrator moved adjudication to a next-day platform",
+        "title": "The accountable care partners that owe a multiemployer health fund a shared-loss payment for 2026, "
+                 "with each partner's pharmacy spending and the share of its professional spending outside the group",
         "domain": "Healthcare Delivery & Health Economics",
-        "subdomain": "payment-claims-health-plan-analytics (a total-cost-of-care reconciliation: claims versions, two "
-                     "date clocks, hour-bank eligibility and a monthly attribution roster conformed into the agreement's "
-                     "incurred cost per attributed member month, the open months completed from the claims lag triangle)",
+        "subdomain": "payment-claims-health-plan-analytics (a multiemployer health fund's annual reconciliation with its "
+                     "accountable care partners)",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "other: a register of the twelve partner groups, each with whether it owes, its members' 2026 "
+        "prompt_shape": "other: a register of the partner groups, each with whether it owes, its members' 2026 "
                         "pharmacy spending and the share of its members' 2026 professional spending that went to "
                         "clinicians outside the group, with a chart of each partner's cost against its target",
         "as_of": "2027-02-03",
-        "deliverables": ["partner_settlement_2026.xlsx", "partners_against_target_2026.png"],
+        "deliverables": ["partner_settlement_2026.xlsx", "partners_against_target_2026.svg"],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},

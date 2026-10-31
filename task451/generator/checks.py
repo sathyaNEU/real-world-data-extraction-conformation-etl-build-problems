@@ -45,11 +45,11 @@ QUOTES = [
     ("SF6", "agreement", "eligible for the Fund's medical benefits and appears on the Fund's attribution roster"),
     ("SF7", "agreement", "the amount above $200,000 is excluded"),
     ("SF8", "agreement", "Outpatient prescription drugs dispensed by retail, mail-order and specialty pharmacies are excluded"),
-    ("SF9", "dictionary", "The claim's value is the paid_amount of its latest version."),
+    ("SF9", "notice", "so a claim's value is the paid amount of its latest version"),
     ("SF10", "agreement", "attributed to the Partner in the month of that first date of service"),
     ("SF11", "agreement", "are made on unrounded figures"),
     ("SF12", "agreement", "whenever the claims are paid"),
-    ("SF13", "dictionary", "last date of service on the claim (the discharge date for an inpatient stay)"),
+    ("SF13", "agreement", "attributed to the Partner in the month of that first date of service"),
     ("SF14", "agreement", "shared in proportion to the Member's amounts with each"),
 ]
 BANNED = re.compile(r"\blag\b|lagged|triangle|completion|\bIBNR\b|incurred but not reported|chain[- ]ladder|run-?out|"
@@ -101,6 +101,12 @@ def run(target, golden, world=None, meta_path=None):
     ok(len(meta["distractor_files"]) >= 2 and all(d in names for d in meta["distractor_files"]), "two or more distractors named in metadata.json")
     ok(not any("distractor" in n.lower() for n in names), "no file name says distractor")
     ok(sorted(names) == sorted(P.FILES.values()), "the pack is exactly the files the generator names")
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|data_?notes|layout|release_?notes", re.I)
+    ok(not [n for n in names if describing.search(n)], "section 3: no dictionary, file layout, readme or data notes ships")
+    roster_codes = set(L["roster"]["partner_code"])
+    ok(sorted(tg) == sorted(W.CODES) and roster_codes <= set(tg),
+       "SF1 the accountable care partners are the groups of Exhibit 1 (%d), and the roster names no other" % len(tg))
 
     # ------------------------------------------------------------------ the call and every route
     for nm, want in EXPECT.items():

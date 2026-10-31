@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="633.6pt" height="388.8pt" viewBox="0 0 633.6 388.8" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 388.8 
+L 633.6 388.8 
+L 633.6 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 151.0975 338.136 
+L 617.253505 338.136 
+L 617.253505 36.576562 
+L 151.0975 36.576562 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M -852.870381 331.330378 
+L 227.677599 331.330378 
+L 227.677599 316.780429 
+L -852.870381 316.780429 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_4">
+    <path d="M -852.870381 307.862718 
+L 254.136199 307.862718 
+L 254.136199 293.312768 
+L -852.870381 293.312768 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_5">
+    <path d="M -852.870381 284.395057 
+L 267.186897 284.395057 
+L 267.186897 269.845108 
+L -852.870381 269.845108 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_6">
+    <path d="M -852.870381 260.927397 
+L 345.674324 260.927397 
+L 345.674324 246.377447 
+L -852.870381 246.377447 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_7">
+    <path d="M -852.870381 237.459736 
+L 353.455373 237.459736 
+L 353.455373 222.909787 
+L -852.870381 222.909787 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_8">
+    <path d="M -852.870381 213.992076 
+L 353.726121 213.992076 
+L 353.726121 199.442126 
+L -852.870381 199.442126 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_9">
+    <path d="M -852.870381 190.524415 
+L 367.12724 190.524415 
+L 367.12724 175.974466 
+L -852.870381 175.974466 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_10">
+    <path d="M -852.870381 167.056755 
+L 374.990052 167.056755 
+L 374.990052 152.506805 
+L -852.870381 152.506805 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #8c9aa6"/>
+   </g>
+   <g id="patch_11">
+    <path d="M -852.870381 143.589094 
+L 469.125585 143.589094 
+L 469.125585 129.039145 
+L -852.870381 129.039145 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #a33b20"/>
+   </g>
+   <g id="patch_12">
+    <path d="M -852.870381 120.121434 
+L 473.579825 120.121434 
+L 473.579825 105.571484 
+L -852.870381 105.571484 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #a33b20"/>
+   </g>
+   <g id="patch_13">
+    <path d="M -852.870381 96.653773 
+L 514.10101 96.653773 
+L 514.10101 82.103824 
+L -852.870381 82.103824 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #a33b20"/>
+   </g>
+   <g id="patch_14">
+    <path d="M -852.870381 73.186113 
+L 540.673406 73.186113 
+L 540.673406 58.636163 
+L -852.870381 58.636163 
+z
+" clip-path="url(#pef16d0e2ec)" style="fill: #a33b20"/>
+   </g>
+   <g id="axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="med98b2c039" d="M 0 0 
+L 0 3.5 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#med98b2c039" x="168.197599" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="168.197599" y="351.518031" transform="rotate(-0 168.197599 351.518031)">80</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#med98b2c039" x="232.014348" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="232.014348" y="351.518031" transform="rotate(-0 232.014348 351.518031)">85</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#med98b2c039" x="295.831097" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="295.831097" y="351.518031" transform="rotate(-0 295.831097 351.518031)">90</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#med98b2c039" x="359.647846" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="359.647846" y="351.518031" transform="rotate(-0 359.647846 351.518031)">95</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#med98b2c039" x="423.464595" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="423.464595" y="351.518031" transform="rotate(-0 423.464595 351.518031)">100</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#med98b2c039" x="487.281343" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="487.281343" y="351.518031" transform="rotate(-0 487.281343 351.518031)">105</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#med98b2c039" x="551.098092" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="551.098092" y="351.518031" transform="rotate(-0 551.098092 351.518031)">110</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#med98b2c039" x="614.914841" y="338.136" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: middle" x="614.914841" y="351.518031" transform="rotate(-0 614.914841 351.518031)">115</text>
+     </g>
+    </g>
+    <g id="text_9">
+     <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle" x="384.175502" y="364.222625" transform="rotate(-0 384.175502 364.222625)">2026 total cost of care per attributed member month, as a share of the partner's target (%)</text>
+    </g>
+   </g>
+   <g id="axis_2">
+    <g id="ytick_1">
+     <g id="line2d_9">
+      <defs>
+       <path id="m0ea262844f" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="324.055404" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="327.246747" transform="rotate(-0 144.0975 327.246747)">Wren Valley Physicians</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="300.587743" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="303.779087" transform="rotate(-0 144.0975 303.779087)">Sycamore Pediatric Partners</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="277.120083" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="280.311426" transform="rotate(-0 144.0975 280.311426)">Brookhollow Medical Associates</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="253.652422" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="256.843766" transform="rotate(-0 144.0975 256.843766)">Tamarack Health Alliance</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="230.184762" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="233.376105" transform="rotate(-0 144.0975 233.376105)">Ridgeline Physician Group</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="206.717101" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="209.908445" transform="rotate(-0 144.0975 209.908445)">Calder Family Practice</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="183.249441" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="186.440784" transform="rotate(-0 144.0975 186.440784)">Juniper Hollow Primary Care</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="159.78178" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="162.973124" transform="rotate(-0 144.0975 162.973124)">Ashby Lane Medical</text>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="136.31412" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_18">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="139.505463" transform="rotate(-0 144.0975 139.505463)">Harrow Point Medical Group</text>
+     </g>
+    </g>
+    <g id="ytick_10">
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="112.846459" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_19">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="116.037803" transform="rotate(-0 144.0975 116.037803)">Kettle Run Health Partners</text>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="89.378799" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_20">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="92.570142" transform="rotate(-0 144.0975 92.570142)">Bellmont Clinic Network</text>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#m0ea262844f" x="151.0975" y="65.911138" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_21">
+      <text style="font-size: 8.4px; font-family: 'DejaVu Sans'; text-anchor: end" x="144.0975" y="69.102482" transform="rotate(-0 144.0975 69.102482)">Stonecrest Internal Medicine</text>
+     </g>
+    </g>
+   </g>
+   <g id="line2d_21">
+    <path d="M 423.464595 338.136 
+L 423.464595 36.576562 
+" clip-path="url(#pef16d0e2ec)" style="fill: none; stroke: #30363d; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_22">
+    <path d="M 448.991294 338.136 
+L 448.991294 36.576562 
+" clip-path="url(#pef16d0e2ec)" style="fill: none; stroke-dasharray: 3.7,1.6; stroke-dashoffset: 0; stroke: #a33b20"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 151.0975 338.136 
+L 151.0975 36.576563 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 151.0975 338.136 
+L 617.253505 338.136 
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #a33b20" x="452.820299" y="49.215447" transform="rotate(-0 452.820299 49.215447)">Shared loss above 102% of target</text>
+   </g>
+   <g id="text_23">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="232.782938" y="326.185482" transform="rotate(-0 232.782938 326.185482)">84.7%</text>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="259.241539" y="302.717821" transform="rotate(-0 259.241539 302.717821)">86.7%</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="272.292236" y="279.250161" transform="rotate(-0 272.292236 279.250161)">87.8%</text>
+   </g>
+   <g id="text_26">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="350.779664" y="255.7825" transform="rotate(-0 350.779664 255.7825)">93.9%</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="358.560713" y="232.31484" transform="rotate(-0 358.560713 232.31484)">94.5%</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="358.831461" y="208.847179" transform="rotate(-0 358.831461 208.847179)">94.5%</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="372.23258" y="185.379519" transform="rotate(-0 372.23258 185.379519)">95.6%</text>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="380.095392" y="161.911858" transform="rotate(-0 380.095392 161.911858)">96.2%</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="474.230925" y="138.444198" transform="rotate(-0 474.230925 138.444198)">103.6%</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="478.685165" y="114.976537" transform="rotate(-0 478.685165 114.976537)">103.9%</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="519.20635" y="91.508877" transform="rotate(-0 519.20635 91.508877)">107.1%</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 8.2px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #202326" x="545.778746" y="68.041216" transform="rotate(-0 545.778746 68.041216)">109.2%</text>
+   </g>
+   <g id="text_35">
+    <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; fill: #202326" transform="translate(151.0975 19.053937)">Four partners owe a 2026 shared-loss payment</text>
+    <text style="font-size: 9.6px; font-family: 'DejaVu Sans'; fill: #202326" transform="translate(151.0975 30.576562)">Stonecrest, Bellmont, Kettle Run and Harrow Point are more than 2 per cent over target</text>
+   </g>
+  </g>
+  <g id="text_36">
+   <text style="font-size: 7px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #5a5f66" x="6.336" y="384.912" transform="rotate(-0 6.336 384.912)">Claims paid through 29 January 2027; claims not yet paid estimated from the claims' received dates. Laurelford Fund Office.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pef16d0e2ec">
+   <rect x="151.0975" y="36.576562" width="466.156005" height="301.559438"/>
+  </clipPath>
+ </defs>
+</svg>

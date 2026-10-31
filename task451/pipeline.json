@@ -5,32 +5,50 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-13",
+ "updated": "2026-10-31",
  "stump": "The default path names nine partners, the four that owe and Ashby Lane, Calder, Juniper Hollow, Ridgeline and Tamarack, because it completes 2026 with chain-ladder factors from the paid-date lag triangle over all 2025 and 2026 payments, reading the claims administrator's old five-week adjudication into claims now paid the day after they arrive and overstating 2026 by 10.2 per cent; developed on the received dates, whose provider submission lags never changed, four partners owe.",
  "architecture": 2,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-13"
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-13",
-  "reader": "two passes, no decisive-step sentence; Ask B reading closed; one realism tell fixed"
+  "leak_py": "REVIEW 2026-10-31, no LEAK (Keswold's extract dictionary, Corvane's file layout and the Fund's data notes removed; a code values list and Keswold's client notice CN-2026-14 carry the codes and the Tallis move)",
+  "reader": "2026-10-31: Q1 to Q4 none (B.3.1 names the estimate, no method), Q6 analytical; read without a dictionary or layout"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; answered in the Draw)",
-  "nearest": "0.07 (task181 v2 lineage)",
-  "note": "architecture 2 drawn 2026-10-13: guard WARN (repeat.gate_g, overuse.gate_g, repeat.decision, repeat.question_form; task135 differentiated)"
+  "heart": "WARN 2026-10-31 (people first names, Gate G repeat and overuse); the task161 and task460 same-driver BLOCK answered by differentiation lines",
+  "surface": "exit 0 2026-10-31 (eight pairs promoted for the author's read; task135 already differentiated)"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "report": "task451/determinism_check_report_pass2.md (pass 2 on zip 0d912557; stump power strong; Gate G method_or_model_selection, analytical_non_defect; Gate H pass)"
  },
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": "2026-10-31",
  "portal": null,
- "source_note": "seed ET08 (analytical_tasks/07_data_extraction_conformation), the world, the decision and the quantity only"
+ "source_note": "seed ET08 (analytical_tasks/07_data_extraction_conformation), the world, the decision and the quantity only",
+ "target_zip_sha256_16": "0d912557b442d3cb",
+ "ceiling": {
+  "pair": 34.4,
+  "script": "generator/ceiling.py",
+  "cracker_kept": "0 of 24 ask figures, the chart's four parts"
+ },
+ "gates_2026_10_31": {
+  "checks": 168,
+  "verify": "0 failed",
+  "byte_identical": true,
+  "figures_check": "58 of 58",
+  "precut": "0 FAIL, 0 WARN",
+  "voice_check": "PASS, no WARN",
+  "leak_py": "REVIEW, no LEAK",
+  "ceiling": "34.4",
+  "surface": "exit 0"
+ }
 }

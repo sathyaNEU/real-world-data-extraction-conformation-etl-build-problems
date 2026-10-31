@@ -1,27 +1,25 @@
 {
   "task": "task451",
   "architecture": 2,
-  "title": "Which of a multiemployer health fund's twelve accountable care partners owe a 2026 shared-loss payment, each partner's incurred total cost of care per attributed member month completed from claims paid through January 2027 after the claims administrator moved adjudication to a next-day platform",
+  "title": "The accountable care partners that owe a multiemployer health fund a shared-loss payment for 2026, with each partner's pharmacy spending and the share of its professional spending outside the group",
   "domain": "Healthcare Delivery & Health Economics",
-  "subdomain": "payment-claims-health-plan-analytics (a total-cost-of-care reconciliation: claims versions, two date clocks, hour-bank eligibility and a monthly attribution roster conformed into the agreement's incurred cost per attributed member month, the open months completed from the claims lag triangle)",
+  "subdomain": "payment-claims-health-plan-analytics (a multiemployer health fund's annual reconciliation with its accountable care partners)",
   "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "other: a register of the twelve partner groups, each with whether it owes, its members' 2026 pharmacy spending and the share of its members' 2026 professional spending that went to clinicians outside the group, with a chart of each partner's cost against its target",
+  "prompt_shape": "other: a register of the partner groups, each with whether it owes, its members' 2026 pharmacy spending and the share of its members' 2026 professional spending that went to clinicians outside the group, with a chart of each partner's cost against its target",
   "as_of": "2027-02-03",
   "deliverables": [
     "partner_settlement_2026.xlsx",
-    "partners_against_target_2026.png"
+    "partners_against_target_2026.svg"
   ],
   "distractor_files": [
     "stop_loss_policy_2026.pdf",
     "partner_quality_scorecard_2026.xlsx"
   ],
   "input_gates": {
-    "files": 11,
+    "files": 10,
     "formats": [
       "csv",
-      "docx",
       "pdf",
-      "txt",
       "xlsx"
     ],
     "largest_file": "medical_claims_extract_2025-01_2027-01.csv",
@@ -57,15 +55,6 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "corvane_claims_file_layout_v4.pdf",
-      "format": "pdf",
-      "bytes": 83854,
-      "rows": null,
-      "source": "Constructed: the pharmacy benefit manager's client claims file layout, version 4",
-      "date": "2027-02-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "corvane_pharmacy_claims_2026.csv",
       "format": "csv",
       "bytes": 8898819,
@@ -84,20 +73,20 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "keswold_extract_dictionary_2027-02-01.txt",
-      "format": "txt",
-      "bytes": 2783,
-      "rows": 44,
-      "source": "Constructed: the claims administrator's data dictionary for that extract, with its release notes",
+      "path": "keswold_client_notice_tallis_2026-09.pdf",
+      "format": "pdf",
+      "bytes": 63960,
+      "rows": null,
+      "source": "Constructed: the claims administrator's client notice of September 2026 on moving the Fund's claims to its Tallis platform",
       "date": "2027-02-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "laurelford_data_notes_2027-02.docx",
-      "format": "docx",
-      "bytes": 37619,
-      "rows": null,
-      "source": "Constructed: the Fund Office's notes for analysts on member ids, eligibility and attribution",
+      "path": "laurelford_code_values.csv",
+      "format": "csv",
+      "bytes": 1668,
+      "rows": 27,
+      "source": "Constructed: the Fund Office's reference list of the codes in its claims, pharmacy and eligibility feeds",
       "date": "2027-02-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -113,7 +102,7 @@
     {
       "path": "partner_clinician_roster_2027-01-01.xlsx",
       "format": "xlsx",
-      "bytes": 13053,
+      "bytes": 13082,
       "rows": null,
       "source": "Constructed: the Fund's network file of clinicians in each partner group on 1 January 2027",
       "date": "2027-02-03",

@@ -1,25 +1,26 @@
 # leak check, task451
 
-**Verdict: REVIEW.** 11 files read, 33 golden figures and 16 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 10 files read, 33 golden figures and 16 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, member, months, development, process, triangle, window, asserted, ladder, method, roster, latest, agreement, history, version, design, paid-date, rejected, changed, attributed, service, received-date, administrator, received, adjudication
+Stump terms swept: development, member, months, process, decisive, asserted, triangle, method, agreement, latest, changed, history, paid-date, ladder, version, roster, service, received, keswold, administrator, extract, attributed, adjudication, window, tallis
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `accountable_care_partner_agreement_schedule_b.pdf`: golden figure 2.0 appears: ...exceeds its Target PMPM in Exhibit 1 by more than 2.0 per cent, the Partner pays the Fund a shared-los...
 - **REVIEW** `accountable_care_partner_agreement_schedule_b.pdf`: carries 19 of 20 distinctive words of the committed call: 'Four of the twelve partners owe the Fund a shared-loss payment for 2026: Stonecrest Internal Medicine, Bellmont Clinic N'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `accountable_care_partner_agreement_schedule_b.pdf`: 8 of 25 stump-paragraph terms appear (member, months, process, roster, agreement, attributed); read whether the document names the move
-- **REVIEW** `corvane_claims_file_layout_v4.pdf`: 3 of 25 stump-paragraph terms appear (member, version, adjudication); read whether the document names the move
-- **REVIEW** `keswold_extract_dictionary_2027-02-01.txt`: 6 of 25 stump-paragraph terms appear (member, process, latest, version, service, received); read whether the document names the move
-- **REVIEW** `laurelford_data_notes_2027-02.docx`: 5 of 25 stump-paragraph terms appear (member, months, roster, version, administrator); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `accountable_care_partner_agreement_schedule_b.pdf`: 8 of 25 stump-paragraph terms appear (member, months, process, agreement, roster, service); read whether the document names the move
+- **REVIEW** `keswold_client_notice_tallis_2026-09.pdf`: 8 of 25 stump-paragraph terms appear (process, latest, version, service, received, keswold); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 3)
 - **REVIEW** `accountable_care_partner_agreement_schedule_b.pdf`: names 16 of 16 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `partner_clinician_roster_2027-01-01.xlsx`: names 16 of 16 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `partner_quality_scorecard_2026.xlsx`: names 16 of 16 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -34,11 +35,8 @@ Stump terms swept: decisive, member, months, development, process, triangle, win
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
 
-Reader pass 1, 2026-10-13 (isolated, Sonnet, medium, fresh copies of prompt.txt and target/ only).
 
 ## Solver's-eye read
 
@@ -121,3 +119,14 @@ Findings from the data:
 - Four roster clinicians joined in 2026 (since dates 2026-03 to 2026-06). Before the since date, all 361 of their claims were billed under their own NPI (none under a group NPI), and from the since date all of their claims are billed under the group NPI. So billing_npi and "With partner since" agree for joiners.
 - No group-billed claim precedes a since date, and the group-billed rendering clinician never maps to a different partner than the billing group.
 The reading the files support: with the partner on the service date means billing_npi equals the partner's group NPI (the rendering clinician's own-NPI claims after joining do not occur), cross-checked by the roster's since date for joiners. A reading that uses the 1 January 2027 roster alone gives a different answer (it misclassifies the leavers); a reading that uses the roster's partner code for current members matches the group-NPI reading for those members. One residual doubt: a clinician who is on the roster and bills under their own NPI would be "not with the partner", and the files show no such post-join case, so the two readings give the same classification for the roster clinicians.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 10 files, target.zip 0d912557b442d3cb)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none. The nearest is B.3.1, "The Fund estimates the claims incurred in the Performance Year and not yet paid from its claims data", which names the estimate and no method.
+2. Ranking file: none; Exhibit 1 lists targets, the scorecard quality measures, the clinician roster NPIs and dates. 3. Helper-only file: none. Keswold's client notice reads as a claims administrator's numbered, dated notice of a platform move (its closing sentence on versions a little explanatory); the code values file as the Fund's code reference list. 4. Answer-like figure or name: none.
+5. Literal sentences: B.1.4 to B.1.6, B.2.1, B.2.3, B.3.1 (the estimate of the unpaid claims, its method open), B.4.1(a) (net payments, reversals included whenever processed) and B.4.1(b) (clinicians not with the group when the service was given).
+6. What decides: an analytical choice, how the 2026 claims still unpaid are completed; the frequency codes are Layer 1.
+
+Dictionary-free reading: the reader read the pack without a dictionary or layout. The pharmacy patient's match to the Fund's member is inferable and has to be checked against birth date and relationship (Ask A's device); B2's positive amounts net out under B.4.1(a)'s "net payments" with the code list's reversal line; paid_amount is B.1.4's "paid amount"; a clinician's leaving is read from the claims (Ask B's device). Rulings on the REVIEW lines: Exhibit 1, the clinician roster and the scorecard name the partners beside targets, dates and quality measures, never a ranking on the call, harmless; Schedule B's shared words are the agreement's own; the stump-vocabulary lines on Schedule B and the notice were ruled in the main thread: the notice dates the move for the code change and says nothing of payment timing; harmless. Realism, kept: the notice's last sentence on versions (the vendor restating its versioning rule at a code change), the roster's source line, the scorecard's preliminary rates.

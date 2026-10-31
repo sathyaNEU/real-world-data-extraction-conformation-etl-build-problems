@@ -1,7 +1,7 @@
 """The golden deliverables, computed from the shipped files only: partner_settlement_2026.xlsx (the Fund Office's 2026
 settlement workbook: each partner's attributed member months, completed total cost of care per member month against its
 target, whether it owes, its members' 2026 pharmacy spending and the share of its members' professional spending that
-went to clinicians outside the group) and partners_against_target_2026.png (each partner's cost as a share of its target,
+went to clinicians outside the group) and partners_against_target_2026.svg (each partner's cost as a share of its target,
 the corridor marked); and figures.json, every figure the write-up states."""
 import collections
 import datetime as dt
@@ -21,7 +21,7 @@ import pack as P        # noqa: E402
 import world as W       # noqa: E402
 
 XLSX = "partner_settlement_2026.xlsx"
-PNG = "partners_against_target_2026.png"
+PNG = "partners_against_target_2026.svg"     # the chart deliverable
 GOLD = "G1 received, all development"
 FAMILY = ("G1 received, all development", "G2 received, latest 12 months", "G3 paid, after the go-live month",
           "G4 received, by claim type", "G5 paid (latest versions), after the go-live month")
@@ -112,7 +112,7 @@ def chart_png(X, F):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams["font.family"] = "DejaVu Sans"
+    plt.rcParams.update({"font.family": "DejaVu Sans", "svg.fonttype": "none", "svg.hashsalt": "task451"})
     tg = X["targets"]
     g = X["pmpm"][GOLD]
     order = sorted(W.CODES, key=lambda c: g[c] / tg[c])
@@ -140,9 +140,15 @@ def chart_png(X, F):
                          "Laurelford Fund Office.", fontsize=7, color="#5a5f66")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
+    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": None, "Format": None, "Type": None})
     plt.close(fig)
-    return buf.getvalue()
+    import re
+    s = buf.getvalue().decode("utf-8")
+    s = re.sub(r"<!-- Created with [^>]*-->\n?", "", s)
+    s = re.sub(r" *<metadata>.*?</metadata>\n?", "", s, flags=re.S)
+    s = s.replace('id="matplotlib.axis_', 'id="axis_')
+    assert "matplotlib" not in s.lower(), "plotting library named in the SVG"
+    return s.encode("utf-8")
 
 
 # ------------------------------------------------------------------------------------------------------ workbook

@@ -123,131 +123,8 @@ def write_schedule_b(path, targets, group_npi):
 
 
 # ------------------------------------------------------------------------------------------- Keswold dictionary
-def write_dictionary(path, n_rows):
-    L = []
-    a = L.append
-    a("KESWOLD BENEFIT SERVICES")
-    a("Client extract: medical claims")
-    a("Client: %s (group 4417)" % W.FUND)
-    a("Extract: medical_claims_extract_2025-01_2027-01.csv")
-    a("Run: 1 February 2027 05:12 (job CLX-MED-0221), %d rows" % n_rows)
-    a("Selection: every version of every medical claim with a first date of service from 1 January 2025 to")
-    a("31 January 2027, as adjudicated through the payment run of 29 January 2027.")
-    a("")
-    a("One row per claim version. A claim keeps its claim_number through every version.")
-    a("")
-    a("FIELDS")
-    flds = [
-        ("claim_number", "assigned on receipt: two-digit year, day of the year received, daily sequence"),
-        ("claim_version", "1 for the claim as first adjudicated, 2 for a later replacement or void"),
-        ("claim_frequency_code", "the version's type (see CODES)"),
-        ("member_id", "the Fund's member id"),
-        ("claim_form", "CMS1500 (professional) or UB04 (facility)"),
-        ("bill_type", "UB-04 type of bill for facility claims"),
-        ("place_of_service", "CMS place of service code for professional claims"),
-        ("service_from_date", "first date of service on the claim"),
-        ("service_to_date", "last date of service on the claim (the discharge date for an inpatient stay)"),
-        ("admission_date", "inpatient claims only"),
-        ("received_date", "the date Keswold received the claim (electronic or paper)"),
-        ("paid_date", "the date of the payment run on which this version was paid or recovered"),
-        ("billed_amount", "provider's billed charges, USD"),
-        ("allowed_amount", "allowed amount after network pricing, USD"),
-        ("paid_amount", "the Fund's paid amount for the claim as of this version, USD"),
-        ("payment_amount", "the amount paid (positive) or recovered (negative) with this version, USD"),
-        ("claim_status", "P paid, D denied, V voided"),
-        ("rendering_npi", "the clinician who rendered the service (professional claims)"),
-        ("billing_npi", "the billing provider: a group or facility NPI, or the clinician's own"),
-    ]
-    for n, d in flds:
-        a("  %-21s %s" % (n, d))
-    a("")
-    a("CODES")
-    a("  claim_frequency_code")
-    a("    Claims adjudicated on the Tallis platform:   1 original, 7 replacement, 8 void")
-    a("    Claims adjudicated on the legacy system:     O original, A adjustment (replacement), V void")
-    a("  A replacement carries the claim's full corrected amounts; a void carries zero amounts. The claim's")
-    a("  value is the paid_amount of its latest version.")
-    a("")
-    a("RELEASE NOTES")
-    a("  2026.10  5 October 2026. The Fund's claims are adjudicated on the Tallis platform. Versions processed")
-    a("           from this date carry the Tallis frequency codes; claim numbers are unchanged. Claims received")
-    a("           before 5 October and not yet paid were adjudicated on Tallis from that date.")
-    a("  2025.04  7 April 2025. place_of_service added for professional claims.")
-    a("")
-    a("Contact: %s, %s" % W.PEOPLE["tpa"])
-    open(path, "w", encoding="utf-8", newline="\r\n").write("\n".join(L) + "\n")
-
-
 # ----------------------------------------------------------------------------------------- the Fund's data notes
-def write_notes(path):
-    import docx
-    from docx.shared import Pt
-    d = docx.Document()
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(11)
-    d.add_heading("Laurelford Fund data notes", level=1)
-    d.add_paragraph("Fund Office, February 2027. For analysts using the Fund's eligibility and attribution files. "
-                    "Questions to %s, %s." % W.PEOPLE["administrator"])
-    d.add_heading("Member ids", level=2)
-    d.add_paragraph("Each participant has a subscriber id (LB and seven digits). Every member of the family, the "
-                    "participant included, has a member id made of the subscriber id and a two-digit suffix. Suffixes "
-                    "are assigned in the order the Fund enrolls the family's members, starting with 01 for the "
-                    "participant, and a suffix is never reused.")
-    d.add_heading("Eligibility spans (eligibility_spans_2025-2027.csv)", level=2)
-    d.add_paragraph("Medical eligibility is earned through the hour bank: the hours an employer reports for a work month, "
-                    "with the participant's banked hours, decide coverage two months later. The file holds one row per "
-                    "version of each coverage span. A later version of a span (span_version 2) replaces the earlier one, "
-                    "for example when an employer's contributions are reversed after an audit (change_reason RT). When "
-                    "late contributions post for a month the participant was not covered, the month is reinstated as a "
-                    "span of its own (change_reason RI). coverage_end is blank for a span still open on 31 January 2027. The "
-                    "file is the export of 1 February 2027 and holds the versions posted by then.")
-    d.add_paragraph("relationship_code: P participant, S spouse, D dependent child. change_reason: NE new enrollee, "
-                    "HB hour bank, RI reinstated after late contributions, RT retroactive termination.")
-    d.add_heading("Attribution roster (attribution_roster_2026.csv)", level=2)
-    d.add_paragraph("The roster is run on the first day of each month from the eligibility on file that day. It lists "
-                    "each member whose primary care provider of record belongs to an accountable care partner group, "
-                    "with that provider's NPI and the group's partner code. Members without a partner primary care "
-                    "provider do not appear. The roster is not rerun when eligibility changes later.")
-    d.add_heading("Other files", level=2)
-    d.add_paragraph("Pharmacy claims come from Corvane Pharmacy Benefits in Corvane's own layout. The partners' clinician "
-                    "roster is the network file the partners update by notice.")
-    d.save(path)
-
-
 # --------------------------------------------------------------------------------------------- Corvane layout
-def write_rx_layout(path):
-    title = "Client claims file layout, version 4"
-    doc, frame = _doc(path, title, W.PBM, "%s  |  Client claims file layout v4  |  Confidential" % W.PBM)
-    s = [Paragraph("CORVANE PHARMACY BENEFITS", H1),
-         Paragraph("Client claims file layout, version 4 (effective 1 January 2025)", SUB),
-         Paragraph("The client claims file carries every pharmacy claim transaction adjudicated for the client's plan in "
-                   "the period, one row per transaction, comma-separated with a header row. Amounts are in US dollars.", BODY)]
-    rows = [["Field", "Description"],
-            ["claim_id", "Corvane's transaction id"],
-            ["cardholder_id", "the id on the member's card: the plan's subscriber id for the family"],
-            ["person_code", "identifies the patient within the cardholder's family: 01 the cardholder, 02 the spouse, "
-                            "03 and up the dependents in order of date of birth, eldest first"],
-            ["patient_birth_date", "the patient's date of birth"],
-            ["patient_gender", "M or F"],
-            ["relationship_code", "1 cardholder, 2 spouse, 3 dependent"],
-            ["rx_number", "the pharmacy's prescription number"],
-            ["fill_date", "the date the prescription was filled"],
-            ["ndc", "National Drug Code (5-4-2)"],
-            ["quantity, days_supply", "as dispensed"],
-            ["ingredient_cost, dispensing_fee", "the plan's price for the drug and the pharmacy's fee"],
-            ["patient_pay", "the member's copay or coinsurance"],
-            ["plan_paid", "the amount the plan pays for the transaction"],
-            ["transaction_code", "B1 claim, B2 reversal, B3 rebill (NCPDP). A reversal carries the amounts of the claim "
-                                 "it reverses; a rebill replaces a reversed claim"],
-            ["adjudication_date", "the date Corvane adjudicated the transaction"]]
-    s.append(_table(rows, [1.9 * inch, 4.6 * inch]))
-    s.append(Spacer(1, 8))
-    s.append(Paragraph("Corvane invoices the client twice a month for plan_paid on the transactions adjudicated in the "
-                       "billing period, net of reversals.", BODY))
-    doc.build(s, onFirstPage=frame, onLaterPages=frame)
-
-
 # --------------------------------------------------------------------------------------------- stop-loss summary
 def write_stop_loss(path):
     title = "Specific stop-loss policy summary, 2026"
@@ -266,4 +143,65 @@ def write_stop_loss(path):
     s.append(Paragraph("Reimbursements are credited to the Plan's claims account when received. This summary does not "
                        "change the policy's terms.", BODY))
     s.append(Paragraph("Prepared by %s, %s, December 2025." % W.PEOPLE["controller"], BODY))
+    doc.build(s, onFirstPage=frame, onLaterPages=frame)
+
+
+# ------------------------------------------------------------------------------------------------- code values
+CODE_VALUES = [   # the Fund Office's reference list of the codes in its claims, pharmacy and eligibility feeds
+    ("Keswold medical claims", "claim_form", "CMS1500", "Professional claim"),
+    ("Keswold medical claims", "claim_form", "UB04", "Facility claim"),
+    ("Keswold medical claims", "claim_frequency_code", "1", "Original (Tallis)"),
+    ("Keswold medical claims", "claim_frequency_code", "7", "Replacement (Tallis)"),
+    ("Keswold medical claims", "claim_frequency_code", "8", "Void (Tallis)"),
+    ("Keswold medical claims", "claim_frequency_code", "O", "Original (legacy system)"),
+    ("Keswold medical claims", "claim_frequency_code", "A", "Adjustment, a replacement (legacy system)"),
+    ("Keswold medical claims", "claim_frequency_code", "V", "Void (legacy system)"),
+    ("Keswold medical claims", "claim_status", "P", "Paid"),
+    ("Keswold medical claims", "claim_status", "D", "Denied"),
+    ("Keswold medical claims", "claim_status", "V", "Voided"),
+    ("Corvane pharmacy claims", "transaction_code", "B1", "Claim"),
+    ("Corvane pharmacy claims", "transaction_code", "B2", "Reversal: carries the amounts of the claim it reverses"),
+    ("Corvane pharmacy claims", "transaction_code", "B3", "Rebill: replaces a reversed claim"),
+    ("Corvane pharmacy claims", "relationship_code", "1", "Cardholder"),
+    ("Corvane pharmacy claims", "relationship_code", "2", "Spouse"),
+    ("Corvane pharmacy claims", "relationship_code", "3", "Dependent"),
+    ("Corvane pharmacy claims", "person_code", "01", "Cardholder"),
+    ("Corvane pharmacy claims", "person_code", "02", "Spouse"),
+    ("Corvane pharmacy claims", "person_code", "03 and up", "Dependents in order of date of birth, eldest first"),
+    ("Fund eligibility", "relationship_code", "P", "Participant"),
+    ("Fund eligibility", "relationship_code", "S", "Spouse"),
+    ("Fund eligibility", "relationship_code", "D", "Dependent child"),
+    ("Fund eligibility", "change_reason", "NE", "New enrollee"),
+    ("Fund eligibility", "change_reason", "HB", "Hour bank"),
+    ("Fund eligibility", "change_reason", "RI", "Reinstated after late contributions"),
+    ("Fund eligibility", "change_reason", "RT", "Retroactive termination"),
+]
+
+
+def write_code_values(path):
+    import csv
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh, lineterminator="\r\n")
+        w.writerow(["source", "field", "code", "meaning"])
+        w.writerows(CODE_VALUES)
+
+
+def write_tallis_notice(path):
+    title = "Client notice CN-2026-14: moving your claims to Tallis"
+    name, role = W.PEOPLE["tpa"]
+    doc, frame = _doc(path, title, W.TPA, "%s  |  Client notice CN-2026-14" % W.TPA)
+    s = [Paragraph("CLIENT NOTICE CN-2026-14", H1),
+         Paragraph("%s, 15 September 2026. To: %s (group 4417)." % (W.TPA, W.FUND), SUB),
+         Paragraph("Moving your claims to Tallis", H2),
+         Paragraph("From Monday 5 October 2026 we adjudicate the Fund's medical claims on our Tallis platform in place of "
+                   "our legacy claims system. Claims received before 5 October and not yet paid will be adjudicated on "
+                   "Tallis from that date. Claim numbers are unchanged, and your monthly client extract keeps its layout "
+                   "and its run date.", BODY),
+         Paragraph("What changes in your extract", H2),
+         Paragraph("Claim versions processed on Tallis carry the standard claim frequency codes (1 original, 7 "
+                   "replacement, 8 void) in place of the legacy system's codes (O original, A adjustment, V void). Versions "
+                   "processed before 5 October keep their legacy codes. Nothing else changes: as before, a claim keeps its "
+                   "claim number through every version, a replacement carries the claim's full corrected amounts and a "
+                   "void carries zero amounts, so a claim's value is the paid amount of its latest version.", BODY),
+         Paragraph("Questions to %s, %s." % (name, role), BODY)]
     doc.build(s, onFirstPage=frame, onLaterPages=frame)
