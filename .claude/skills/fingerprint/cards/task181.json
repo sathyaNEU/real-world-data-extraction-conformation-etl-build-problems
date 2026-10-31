@@ -1,93 +1,88 @@
 {
   "task": "task181",
-  "architecture": "v4",
-  "drawn": "2026-10-12",
-  "slot_note": "seed AD04 re-rooted, architecture 4 (the author's builds are never retired): v1 (a credit union's counterfeit wave) spent at in-house round 1; v2 (pertussis area deployment, completed by laboratory route) spent once its estimand was filed literally; v3 (near-repeat burglary runs) spent at design because no filed back-test closes it on honest data; the objective and number are kept and the draw is new",
-  "domain": "human-factors-ergonomics",
-  "subdomain": "safety-incident-error-analysis",
-  "niche": "an area control centre's summer traffic plan: whether any en-route sector will run over the safety plan's tolerance of ATM-related losses of separation per 100,000 flight hours in summer 2027, when a new low-cost base sends its departures climbing and arrivals descending through a busy east-west trunk airway",
+  "architecture": "v5",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root after architecture 4; the criminology cell closed at the draw (see lineage v5a), moved to epidemiology under the directive's fallback; new world (a city health office's barangay dengue hotspot response), new dataset, new generator, new shell",
+  "domain": "epidemiology-public-health",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection",
+  "client_domain": "epidemiology-public-health",
+  "niche": "a Philippine city health office's barangay dengue hotspot response for the four weeks after the season's peak, where an export processing zone with few residents employs a large workforce that sleeps in the surrounding barangays",
   "objective": "anomaly-detection",
-  "shape": "01",
+  "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Tarvik will run over the safety plan's tolerance in summer 2027, at about 72 ATM-related losses of separation per 100,000 flight hours against 40.0, and no other sector will.",
-  "answer_source": "task181/submission.md, Final Recommendation; golden/summer2027_safety_forecast.pptx and golden/summer2026_sector_measures.csv, written by generator/deliver.py from target/ and recomputed by generator/verify.py",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population",
-    "time"
+    "objective"
   ],
   "pattern": [
-    "D"
+    "none"
   ],
   "generators": [
-    "G2",
-    "G13"
+    "G7",
+    "G6"
   ],
-  "gate_g": "forecasting",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
-  "decisive_rule_filed": true,
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
-  "stakeholder_role": "the centre's operations planning manager, who files the summer 2027 sector plan with the unit safety review board",
-  "role_family": "capacity_planner",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst merges the re-notified cases, sets aside the cases acquired outside the city, dates each case by onset, counts each barangay's cases in the latest four morbidity weeks and applies the plan's trigger of 30 cases infected in the barangay, filing the dormitory barangays and the one with a real local outbreak; every field is read correctly and the trigger executed, and the call is wrong because the line list places each case where the patient sleeps while the excess was caught where the patients work.",
+  "domain_test": "The deciding quantity is the number of dengue infections caught in each barangay, worked the way vector-borne disease surveillance works it: Aedes aegypti bites by day, so a working adult is exposed mostly where they spend the working day; put malaria's night-biting Anopheles or a non-vector disease in and the home is again the place of infection, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:day-biting-exposure-filed-at-the-home-barangay",
+  "layer1": [
+    "notifications from two disease reporting units with different layouts (the hospitals' and the rural health units')",
+    "re-notified cases (a case updated from suspect to confirmed arrives again)",
+    "barangay of residence written as each reporting unit writes it",
+    "onset, consultation and report dates in day-month-year text",
+    "morbidity weeks that do not match calendar months",
+    "the census workbook's multi-row headers and footnotes",
+    "a barangay split in 2025 (two new barangays carved from one)"
+  ],
+  "stakeholder_role": "the city health officer",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "fdps_sector_traversals_2025-01_2026-09.parquet",
-    "rows": 1693315,
-    "entity": "one flight's traversal of one elementary en-route sector (entry and exit time and flight level, as the flight data processing system logged it)",
-    "grain": "flight x elementary sector traversal",
+    "file": "dengue_line_list_2022_2027.csv",
+    "rows": 0,
+    "entity": "one notified dengue case",
+    "grain": "case",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "utility_or_infrastructure",
+  "forum": "operations_desk",
+  "forcing_event": "period_close",
+  "org_family": "local_government",
   "world": {
-    "geography": "fictional country (Aldmark), northern Europe, EUR ICAO region",
-    "currency": "EUR",
-    "org_type": "national air navigation service provider's area control centre with eight elementary en-route sectors from FL245 up",
+    "geography": "Philippines",
+    "currency": "PHP",
+    "org_type": "city health office",
     "invented_names": [
-      "Aldmark",
-      "Aldmark Air Navigation",
-      "Holmvik Area Control Centre",
-      "Holmvik",
-      "Brekka",
-      "Skarnes",
-      "Tarvik",
-      "Mosby",
-      "Grendal",
-      "Linmark",
-      "Karrow",
-      "Lysvik",
-      "Hallin",
-      "Sandvik"
+      "Dalisay City",
+      "Dalisay Ecozone"
     ],
     "people": [
-      "Dorte Koch",
-      "Erik Sørensen",
-      "Paw Frandsen",
-      "Kenny Lassen"
+      "John Figueroa",
+      "Tammy Orozco"
     ]
   },
   "deliverables": [
-    "summer2027_safety_forecast.pptx",
-    "summer2026_sector_measures.csv"
+    "dengue_hotspots_mw41_44_2027.pdf",
+    "barangay_figures_2027.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
-  "driver_concrete": "Losses of separation in the Holmvik centre happen where one aircraft climbs or descends through the level of another in the same sector (every one of the 96 ATM-related losses in the record), so each sector's summer 2027 losses follow the pairs whose levels change order in the summer 2027 planning traffic; Brekka's new base sends 26 departures and 26 arrivals a day climbing and descending through Tarvik's trunk-airway cruise levels, adding about 10 per cent to its flight hours and multiplying its pairs five-fold, which takes it to 72.4 against the safety plan's 40.0 losses per 100,000 flight hours while every other sector stays at or under 26.4.",
-  "stump": "A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's losses with its 2027 flight hours from the planning traffic and files that no sector reaches the safety plan's 40.0 in summer 2027 (Mosby highest at 32.0, Tarvik 13.4); the step that lands it there is forecasting losses from flight hours when separation is lost where one aircraft climbs or descends through another's level, so the Brekka flights that add about 10 per cent to Tarvik's flight hours multiply its pairs whose levels change order five-fold (9,682 to 48,545) and take it to 72.4, every other sector at or under 26.4.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who keeps the ATM-related losses of separation, attributes each to its elementary sector, reads the season in local time and computes summer flight hours exactly still forecasts summer 2027 by scaling each sector's losses with its flight hours, with the square of its traffic or with its climbing and descending flight hours, and files that no sector exceeds 40.0, because only counting the vertical crossings in each sector shows the new Brekka flights taking Tarvik over the tolerance.",
-  "domain_test": "The deciding quantity is the sector's count of aircraft pairs whose levels change order, the traffic-complexity measure air traffic safety analysis keeps beside flight hours, because a loss of separation happens where one aircraft is cleared through another's level. It is the traffic's geometry, not controller workload, and with another field's nouns there are no flight levels to cross, so the task does not survive the swap.",
+  "question_form": "where",
+  "driver": "A unit's recorded events are filed under the unit where each member lives, while the exposure that produces them falls where the member spends the active hours of the day, so a rise in one destination's exposure surfaces as rises in every origin whose members travel there, in proportion to the members each sends, and leaves the destination quiet in the record because few members live in it; only carrying each origin's excess back through the travel flows finds the unit where the exposure rose.",
+  "driver_concrete": "Dengue cases are notified by barangay of residence, but Aedes aegypti bites by day, so the 2027 outbreak in the ecozone surfaces as rises in the barangays its workforce sleeps in, in proportion to each barangay's ecozone workers in the census place-of-work table, while the ecozone barangay, home to few people, stays under the plan's trigger; only carrying each barangay's excess among employed residents back through the place-of-work flows puts the transmission in the ecozone.",
+  "stump": "The default path counts each barangay's notified dengue cases by residence in the latest four morbidity weeks against the plan's trigger of 30 cases infected in the barangay and presents the ecozone's dormitory barangays with the one real local outbreak; the step that lands it there is reading the barangay of residence as the place of infection, when the excess is among employed residents in proportion to how many of them work in the ecozone, so it was caught in the ecozone and those barangays' own transmission did not rise.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task229": "task229 v1 builds a standard error over shared parent nodes (entities that fail together); task181 v4 builds the exposure unit as a vertical crossing between two aircraft in one sector, and its forecast follows the crossings, never an error term.",
-    "task98": "task98 v3 forms each unit by chaining members within a distance under a per-unit threshold; task181 v4 forms no group: the exposure is each pair where one aircraft changes level through another's, and the forward change is new traffic multiplying those pairs.",
-    "task60": "task60 v8 counts people filed by two filers once under a tie-break; task181 v4 counts encounters between two aircraft (vertical crossings), and the forward count scales with those pairs rather than with flight hours or with any roll of units.",
-    "task183": "task183 forecasts each feeder's cable failures from each section's own failure history (a state carried by the part); task181 v4 forecasts each sector's losses from pairs of aircraft whose levels change order (an interaction the traffic builds); the shared surface is the lane (Anomaly Detection, shape 01) and the author's pack idiom, not the mechanism."
+    "task487": "task487 dates each inspection-found event inside its window by the share the previous inspection itself started; this build moves each recorded event to the unit where its member spends the vector's feeding hours, through the census place-of-work flows, and nothing is dated or timed inside a window."
   },
   "lineage": [
     {
@@ -115,17 +110,30 @@
       "fate": "spent 2026-10-21 on measurement at stage 2, after the shipped pack failed Gate F in a blind read",
       "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
       "why": "The dial is one-ended: across six settings of the new base's flights a day the golden moves 2.4-fold and every easy route moves with it, holding the separation flat at about 0.74 against the 1.3225 two 1.15x floors need. Gate F fails because pooling each sector's losses over its level-changing traversals, one group-by and one divide, names the committed sector alone over the tolerance on every seasonal window, and only the hours form of that reflex was ever asserted. Gate C fails because the fork table's two live rows were asserted separately and their product forks the call 32 cells to 3. The escape, narrowing the pair definition from the record, is closed: the two candidate denominators' monthly profiles correlate 0.9994 and separating them needs about 425 times the record's losses."
+    },
+    {
+      "architecture": "v4 (an air navigation service's summer 2027 losses of separation by sector, forecast against the safety plan's 40.0 per 100,000 flight hours; Tarvik over the line once the Brekka flights' level crossings are counted)",
+      "fate": "spent 2026-10-31 at the re-root: exposure by crossings rather than flight hours is the field's own collision-risk reasoning and an isolated in-house reader landed the call (Tarvik) on it; one portal determinism return (delay population, pooled-rate grading) on the record",
+      "driver": "Events arise when one moving unit passes through the position of another present at the same time, so the expected count follows the crossings a period's traffic creates rather than the time units spend, their number or its square; a forward change that sends new units across a dense existing flow multiplies the crossings while barely adding time, so scaling last period's events by time spent, by counts, by their square or by the time spent changing position keeps a unit under a rate limit that its crossings carry over it.",
+      "shell": {
+        "question form": "which",
+        "second-sentence opener": "put",
+        "deliverable set": "pptx+csv"
+      }
+    },
+    {
+      "architecture": "v5a (a county constabulary's July to September 2027 violence exceptions, judged against each area's own record for the weather the quarter brought; never built)",
+      "fate": "killed at the draw on 2026-10-31 before any data was cut: its abstraction is task182's approved driver (each unit's level follows a shared outside driver through its own response, and the effect is the gap to that path), and the separation it needed was unrealistic, a doubling of weekend-night violence per 4.6 degrees and a weather anomaly falling on weekends week after week, which reads as planted. The criminology cell itself was then closed: task182's architecture 8 had enumerated sixteen decisive steps there and found every one dead to a standing screen.",
+      "driver": "A unit's expected count, where its events come from a crowd that gathers on only two nights of the week and stays out only while the late evening is warm, is the record's response to the warmth of those nights, so a period of ordinary days and warm weekend nights lifts such units above their own record with nothing changed in them, while every reading of the period's warmth by its days, or by every night alike, leaves them over the line.",
+      "stump": "The default path predicts each area's quarter from its own 2022 to 2026 quarters with the weather read off the days (each day's maximum or mean temperature, or every night's temperature alike) and presents Castle Quarter, Riverside, the University Quarter and Millbrook; the step that lands it there is reading the weather where the violence does not happen, when the violence the weather moves is the night-time economy's on Friday and Saturday nights and the quarter's warmth was in exactly those nights."
     }
   ],
-  "notes": "Re-root of task181 to architecture 4, drawn 2026-10-12. Anomaly Detection & Diagnostics: the anomaly is a sector whose losses of separation will run over the safety plan's tolerance in summer 2027; the diagnosis is which of the flight-hour-scaled forecasts misses a change in the sector's vertical interactions. The tolerance is filed literally; the forecast's method is open and forced by the record (losses track vertical crossings, not flight hours).",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:vertical-crossing-exposure-for-separation-losses",
-  "layer1": [
-    "flight data processing extract at flight x elementary sector grain, levels in hundreds of feet, times in UTC against a season defined in local time",
-    "sectors named in full in the occurrence export and by code in the flight data",
-    "a summer 2027 planning traffic built by the forecast team in its own layout and flight key",
-    "a network manager delay export that keeps a re-filed flight's cancelled plan with the delay its slot carried",
-    "a sector configuration table revised mid-season, the earlier groupings only in the operations manual",
-    "both crews' reports of one ACAS resolution advisory encounter filed as two occurrences"
-  ]
+  "notes": "Drawn at the re-root's second pass on 2026-10-31 after the criminology cell closed (lineage v5a). stump_strategy causal_design: the decisive move is interference between units, outcomes recorded in one unit caused by exposure in another through daily travel. gate_g decomposition_attribution: each barangay's correctly reported cases assigned to the barangay where they were caught. Axis values drawn against the window (tasks 464, 273, 268): operations_desk, period_close, local_government, operations_director, monitoring_export.",
+  "registered": "2026-10-31T17:12:15Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "csv+pptx"
+  }
 }

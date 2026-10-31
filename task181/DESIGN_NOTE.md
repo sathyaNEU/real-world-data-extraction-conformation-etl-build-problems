@@ -1,441 +1,119 @@
-# task181 design note
+# task181 design note (architecture 5: where the city's dengue is caught)
 
-Architecture 4. Seed AD04 (Anomaly Detection & Diagnostics, a pump's zone-D vibration split by operating point) is
-idea material only: its insight is task180 v2's (a monitored signal carried in from ordinary operation), and its world
-has no client task type that serves this objective. Three architectures are spent (`## Tried and rejected`); the
-author's builds are never retired, so the objective and the number are kept and the draw is new.
+Architectures 1 to 4 are spent and in the card's lineage, with the weather draw that opened this re-root (v5a,
+killed at the draw). This architecture leaves criminology: the cell's decisive-step space was enumerated closed
+by task182's architecture 8 (sixteen candidates, each dead to a standing screen) and this pass's own screen added
+the weather-conditioned violence draw to that list. The re-root directive's fallback moves the build to another
+anomaly-detection client domain, and epidemiology carries an honest stump here.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task181.json`, architecture v4, registered 2026-10-12 after `guard.py
-  check` (WARN only: `three_rules.strategy_risk` and `repeat.gate_g`, both answered below; the older same-puzzle and
-  same-driver matches, task229 v1, task98 v3 and task60 v8, differentiated on the card).
-- **Pairing:** Human Factors & Ergonomics, task type safety-incident-error-analysis, objective Anomaly Detection &
-  Diagnostics (a pairing never built). The anomaly is a sector whose losses of separation will run over the safety
-  plan's tolerance in summer 2027; the diagnosis is what generates a sector's losses. Shape 01 (each sector's forecast
-  against the tolerance line, in or out). Decision `designation_set` (the sectors over the tolerance, possibly none),
-  question form `whether`.
-- **World:** Aldmark (a fictional northern European state), its national air navigation service provider Aldmark Air
-  Navigation and the Holmvik Area Control Centre, eight elementary en-route sectors from FL245 up (Tarvik, Mosby,
-  Grendal, Linmark, Karrow, Lysvik, Hallin, Sandvik; codes TRV, MSB, GRD, LNM, KRW, LYS, HAL, SDV) over a hub (Holmvik)
-  and two regional airports (Brekka, Skarnes). An east-west trunk airway crosses Grendal, Tarvik and Lysvik at FL330 to
-  FL400; Brekka, under the west of Tarvik, gets a low-cost carrier's new base for the summer 2027 schedule, whose
-  eastbound departures climb and arrivals descend through Tarvik.
-- **As of:** extracts pulled 12 October 2026 (actuals 1 January 2025 to 30 September 2026); the summer 2027 traffic
-  sample issued 9 October 2026; the unit safety review board approves the summer 2027 sector plan on 4 November 2026.
-  `leak.py --asof 2026-10-12`.
-- **Mechanism:** gap population (what one unit of exposure is: a pair of aircraft, one crossing the other's level),
-  then time (the forward window holds traffic the closed window never had); pattern D (two flawless grains, the
-  flight-hour grain of the extract and the crossing grain of the losses, no key bridging them); generators G2 (decisive)
-  and G13. Gate G `forecasting`. Strategy `grain_or_unit`.
-- **Furniture:** forum `committee_or_panel` (the unit safety review board), forcing event `season_or_peak` (summer 2027),
-  organisation family `utility_or_infrastructure`, role family `capacity_planner`, context artifact `close_out_summary`
-  (the summer 2026 safety performance close-out), opening `question-first`. Personas drawn with `guard.py names --geo
-  Denmark --seed 181` (Dorte Koch, Erik Sørensen, Paw Frandsen, Kenny Lassen); the prompt carries none of them.
-- **WARNs answered.** `three_rules.strategy_risk` (grain_or_unit): nothing here turns on reading a field; every field is
-  read the same on both paths, and the analyst test below names the easy route that still fails once every field and
-  rule is read correctly. `repeat.gate_g` (forecasting against task501 v3): forecasting is the honest label, because
-  the call is a bet on summer 2027 losses that no closed figure states; task501's mechanism (a buffer read off horizon
-  totals instead of a cumulative path) shares nothing with this one.
-- **Data-native sentence:** separation in this centre is lost almost only where one aircraft climbs or descends
-  through the level of another in the same sector (level traffic on the airways is spaced in trail by the flow
-  measures), so a sector's losses follow the vertical crossings its traffic creates, and the summer 2027 schedules send
-  the new Brekka base's departures and arrivals climbing and descending through Tarvik's busy trunk-airway cruise
-  levels while adding few flight hours.
-- **Sources read, one line each:**
-  - `stumping/references/client/two-layer-task-design.md`: the three rules and the two layers; the mess goes on the ask
-    paths and the stump into the forecast's exposure.
-  - `layer2-rigor-patterns.md` has no human-factors patterns; the five families in the client's standard place this
-    under the field's own method (`field_method`): the field's exposure for a separation loss is the interaction, not
-    the hour flown.
-  - `stumping/references/strategies.md` Parts 1, 4 and 6: the dead shapes avoided are the default construction as
-    golden, a quantity named by a sentence or a column, a reflex (pool, square the traffic, stratify by phase, trend),
-    a dated cause stepping a series, and a linear mechanism in a rate-times-exposure world.
-  - `stumping/references/client/measured-drivers.md`: the held group's lesson taken is the compound construction a
-    solver does not build (here an exposure made by pairing rows of one extract in time and level); none of their
-    withheld-method pins is used.
-  - Architecture 3's rejected draws (squared load, overlapping panels, competing exits, funnel limits, fabricated
-    interviews as inliers, warranty curves, the seed's zone-D split): none is reused.
+- **Card:** `.claude/skills/fingerprint/cards/task181.json` (v5), registered 2026-10-31. `guard.py check` on the
+  registered card: PASS, one NOTE (test.same_driver_older, differentiated against task487, whose driver dates
+  inspection-found events inside their windows); nearest driver 0.08 (task121 v3, lineage). No WARN.
+- **Pairing.** `epidemiology-public-health` / `disease-surveillance-outbreak-anomaly-detection` (serves AD and DQ),
+  objective Anomaly Detection & Diagnostics: a real outbreak separated from the place the records put it. Client
+  domain epidemiology-public-health. The task type carries one anomaly-detection card on file (task188, West Nile
+  pools) and this slot's own architecture 2 (pertussis, another world and dataset).
+- **World.** Dalisay City, a component city in Laguna province, Philippines (PHP), about 720,000 residents in 30
+  barangays (one split into two in 2025). The City Health Office's epidemiology and surveillance unit runs the
+  dengue line list fed by the city's disease reporting units (two hospitals, six city health centres, private
+  clinics). The Dalisay Industrial Estate, an export processing zone inside Barangay San Roque, employs a large
+  share of the working residents of six barangays near it and houses almost nobody; San Roque's own residents
+  live in its old village. People drawn with `guard.py names --geo PH --seed 181`: John Figueroa (city health
+  officer), Tammy Orozco (surveillance unit head).
+- **Decision.** On Monday 11 October 2027, the start of morbidity week 41, the city health officer sends the
+  hotspot response (search-and-destroy of breeding sites, larviciding, targeted fogging, house-to-house case
+  finding) for morbidity weeks 41 to 44 to every barangay that meets the dengue plan's trigger: 30 or more of the
+  city's notified dengue cases with onset in morbidity weeks 37 to 40 were infected in the barangay. The decision
+  faces forward (the next four weeks' response); the quantity is the closed window just behind it, because the
+  plan triggers on the latest four complete weeks, so the call is retrospective by design.
+- **Quantity.** Each barangay's count of the window's notified cases that were infected there.
+- **Data-native sentence.** A dengue notification records the barangay the patient sleeps in, because the case
+  investigation form takes the home address, while Aedes aegypti feeds in daylight, so a working adult's infection
+  is caught where they spend the working day; in a city whose export zone employs a large share of several
+  barangays' residents and houses almost none, an outbreak at the estate is recorded in the barangays its
+  workforce sleeps in.
+- **Default path's answer:** the six dormitory barangays and the two barangays with real residential outbreaks
+  (residence counts at or over 30). **Golden:** San Roque and the two residential-outbreak barangays.
+- **Shape.** `other`: a designation over every barangay. Criteria: each flagged barangay (3), each dormitory
+  barangay correctly left out although its residence count is over the trigger (6), the rest left out (1), the
+  chart's named parts (5 to 6), the files (2), and the asks' cells (supplemental-stumping).
+- **Strategy and family.** `causal_design` (interference between units: outcomes recorded in one barangay caused by
+  exposure in another through daily travel); Layer 2 family `estimand_identification` (contamination of each
+  unit's record by exposure elsewhere); Gate G `decomposition_attribution` (each barangay's correctly reported
+  cases assigned to the barangay where they were caught); gap population then objective; generators G7 (the
+  vector's feeding hours decide where a case is caught) and G6 (the working-age band moves against the rest).
+- **Axis values drawn against the window** (tasks 464, 273, 268): forum operations_desk (the dengue task force
+  desk dispatches the teams), forcing_event period_close (the four-week morbidity window closes), org_family
+  local_government, role operations_director (the city health officer), context artifact monitoring_export (the
+  line list export). season_or_peak was the first value for the forcing event and is banned by task273; the
+  window closing is the honester label anyway, since the trigger is read the Monday a window closes.
+- **Abstraction sentence.** Written against every approved build, no shared sentence holds: task175 reads a unit's
+  attribute at the neighbours it faces, task179 links two bodies' records person by person, task182 conditions
+  each unit on its own response to an outside driver, task236 reads a notified share against a sentinel rate,
+  task275 raises observed catch by unobserved effort, task303 removes events every sibling opened in one minute.
+  Here the recorded unit is not where the event was caused, and the place is recovered through the daily travel
+  of the people the events happen to. The spent family it sits nearest is task268's (people present against
+  residents), which died because there the estimand named presence; here the estimand names the place of
+  infection, and no file says where any infection happened.
+- **Sources.** All data synthetic, generated by `generator/` (license: CC0 for this pack). The world follows the
+  Philippine Integrated Disease Surveillance and Response notification practice (DOH), the Community-Based
+  Monitoring System tables an LGU holds (Republic Act 11315), and the DOH dengue prevention and control programme's
+  barangay response; no real person, office or zone is represented.
 
 ## Default path
 
-The pipeline a competent analyst builds from the prompt's words and the files' grain:
+1. Read the dengue plan's trigger: 30 or more notified cases with onset in morbidity weeks 37 to 40 infected in the
+   barangay.
+2. Load the line list (2022 to 2027), merge the re-notified cases (a case updated from suspect to confirmed
+   arrives again), set aside the cases that travelled outside the city in the two weeks before onset and the
+   non-resident patients the city's hospitals notified, map each barangay as the reporting units spell it to the
+   2025 barangay list.
+3. Take each barangay's cases with onset in morbidity weeks 37 to 40, by the barangay of residence the
+   notification records, which is the surveillance system's place of a case and the field's standard reading of a
+   locally acquired case.
+4. Flag every barangay at or over 30.
 
-1. Read the safety plan's tolerance: a sector's forecast rate of ATM-related losses of separation for the summer season
-   (1 June to 31 August, local time) may not exceed 40.0 per 100,000 flight hours.
-2. Load the occurrence export, keep the losses of separation with an ATM contribution and count them by elementary
-   sector and summer; sum each sector's flight hours in the flight data extract (entry to exit of every traversal) and
-   compute each sector's summer 2026 rate, which ties to the summer 2026 close-out.
-3. Sum each sector's flight hours in the summer 2027 planning traffic, scale each sector's summer 2026 losses by its
-   growth in flight hours (the rate held at 2026's), and compare each forecast rate with 40.0.
-4. No sector reaches 40.0 (Mosby highest at 32.0, Tarvik 13.4); file that summer 2027 stays inside the tolerance.
-
-Ends on: no sector over the tolerance
-Golden: Tarvik
+Ends on: the six dormitory barangays and the two residential-outbreak barangays (residence counts 36 to 66)
+Golden: San Roque and the two residential-outbreak barangays
 
 ## Stump sentence
 
-A competent solver keeps each sector's summer 2026 losses of separation per 100,000 flight hours, scales each sector's
-losses with its 2027 flight hours from the planning traffic and files no sector over the tolerance (Mosby highest at
-32.0 against 40.0, Tarvik 13.4), and the step that lands it there is forecasting losses from flight hours when
-separation is lost where one aircraft climbs or descends through another's level: the new Brekka departures and
-arrivals add about 10 per cent to Tarvik's flight hours but multiply its pairs whose levels change order five-fold
-(9,682 to 48,545), which takes Tarvik to 72.4 losses per 100,000 flight hours while every other sector stays at or
-under 26.4.
+The default path counts each barangay's notified cases by the barangay of residence and presents the six dormitory
+barangays and the two residential-outbreak barangays; the step that lands it there is taking the home barangay as
+the place of infection, when Aedes aegypti bites by day and the six barangays' excess is all among working
+residents in proportion to how many of them work at the estate, so those cases were caught in San Roque, whose own
+residence count stays under the trigger.
 
 ## Three rules
 
-Rewritten 2026-10-21 to the measurement rather than to pass. Architecture 4 is spent: the easy route lands the
-call, and the family the pack leaves open straddles the decision at every magnitude. Three screens, each run on
-the generator's clean truth and each run twice and byte-identical, are quoted in the lines below and itemised in
-`## Tried and rejected`.
+Task type: disease-surveillance-outbreak-anomaly-detection (Epidemiology & Public Health), which serves anomaly detection: a real outbreak separated from the place the records put it.
+Domain test: the quantity that decides is each barangay's count of the window's notified dengue cases infected there, and vector-borne disease surveillance places an infection where the person was while the vector feeds; Aedes aegypti feeds in daylight, so a working adult is exposed mostly where the working day is spent.
+Swap: "Which barangays need the malaria response?" reads differently, because Anopheles feeds at night and the home is then the place of infection; put influenza or road injuries in and there is no feeding window to place an infection at all, so the task stops making sense.
+Layer 1: two reporting-unit layouts (the hospitals' and the city health centres'), re-notified cases, barangay names as each unit spells them and the 2025 split of one barangay, day-month-year text dates, morbidity weeks that cut across months, the CBMS workbook's multi-row headers and footnotes, non-resident patients notified by the city's hospitals; each is produced by the system that records it and none is placed to be caught.
+Layer 2: estimand_identification, the place of infection: each barangay's record is contaminated by infections caught in another barangay, and the choice that flips the call is placing the working residents' excess where they spend the day.
+Decisive step: placing each barangay's cases where the patients were during the mosquito's daylight feeding, through the CBMS place-of-work table, instead of at the home address the notification carries.
+Not semantics: reading every field and the plan's "infected in the barangay" correctly still leaves the easy route on the residence counts, because no file records where any infection happened; the line list carries only the home barangay, and the place has to be estimated from the vector's feeding hours, the excess's working-age band and the place-of-work flows.
+Not rule application: no filed rule says where an infection was caught, so executing the plan's trigger on any placement files whatever that placement gives; the enumerated family (home barangay; home with travellers and non-residents out; by consultation or report week; the non-working residents as a local-transmission marker; place-of-work placements at a fixed share of a worker's exposure from 0.5 to 1.0; the excess spread by the place-of-work shares; the inversion of the flows) files three different sets (dormitories with the two outbreaks, the two outbreaks alone, San Roque with the two outbreaks), the standing family (the placements that put working residents' exposure where they work, which daylight feeding requires) files San Roque with the two outbreaks at every member measured, its cheapest member (every working resident's case spread by the place-of-work shares) included, and no clause or column does the ruling-out, only the biting hours and the excess's proportion to each barangay's estate workforce.
+Analyst test: a strong analyst merges the re-notified cases, sets travellers and non-residents aside, maps the barangay spellings, counts each barangay's cases with onset in morbidity weeks 37 to 40 by residence and flags the six dormitory barangays and the two residential-outbreak barangays; every field is read and the trigger executed, and the call is wrong because the cases are counted where people sleep while they were caught at the estate.
+Estimand: dalisay_dengue_plan_2027.pdf, the hotspot trigger: population, the city's notified dengue cases with onset in morbidity weeks 37 to 40 as notified by 08:00 on Monday 11 October 2027; outcome, the barangay where each was infected; window, morbidity weeks 37 to 40; unit, the barangay; comparison, 30 or more.
+No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure argues the residence count, and the line list's home barangay is what the notification form records.
+No certified replay: no certified or published figure reproduces the method; no file carries any barangay's infections by place, and the response log records where teams went, never where infections happened.
+Lesson: a case record's location is where a person sleeps, and for a day-biting vector the place of infection is where the person spends the day; a model that gets this right learns to ask where exposure happens before reading a surveillance map, which no build on file teaches (task268 was about the people present, task188 about pooled mosquito tests).
 
-- **Litmus:** no reported number is wrong and nothing overturns one. The flight data, the occurrence export, the
-  close-out and the traffic sample are all correct; the difficulty was to be a summer 2027 count no file states.
-- Task type: `safety-incident-error-analysis`, the `human-factors-ergonomics` task type that serves Anomaly
-  Detection & Diagnostics; the anomaly is a sector whose forecast ATM-related losses of separation break the unit
-  safety plan's tolerance, and the diagnosis is what generates a sector's losses. Holds.
-- Domain test: the deciding quantity is the field's own traffic-complexity count, the aircraft pairs in one sector at
-  once whose levels change order, which air traffic safety analysis keeps beside flight hours because separation is
-  lost in a vertical interaction. Holds, and the record carries it: 96 of 96 ATM-related losses are such a pair,
-  losses per pair run 2.31 to 2.59 per 10,000 across the eight sectors (max over min 1.121) while losses per 100,000
-  flight hours run 13.8 to 24.2 (max over min 1.761).
-- Swap: the call sentence with wards for sectors and bed-days for flight hours has no flight levels to cross and no
-  climb through a cruising flow, so nothing is left for a pair to change order in and the forecast collapses to a
-  rate times a volume. Holds.
-- Layer 1: realistic mess from the centre's own systems: the flight data extract at flight x elementary sector grain
-  with levels in hundreds of feet and times in UTC against a season defined in local time; sectors named in full in the
-  occurrence export and by code in the flight data; the summer 2027 planning traffic built by the forecast team in its
-  own layout and flight key; and, on the ask paths, a delay export that keeps a re-filed flight's cancelled plan, a
-  configuration table revised mid-season, and both crews' reports of one ACAS encounter filed as two occurrences.
-  Holds, and nothing is placed to be caught.
-- Layer 2: a sector's forward losses follow the pairs its traffic builds rather than the hours it flies, and the
-  record shows it. The family is real and it is not closed: the pack licenses the pair's definition along an axis
-  whose far end (any pair with an aircraft changing level) is a traversal attribute rather than the interaction, and
-  the record has no power to narrow it, so Layer 2 reaches the decision from both sides of it.
-- Decisive step: forecast each sector's summer 2027 losses from the pairs its planning traffic builds whose levels
-  change order, not from the flight hours it flies. NOT UNIQUE, measured: of the 35 constructions this note's own SF6
-  (what the pair is) crossed with SF7 (how the rate is pooled) licenses, 32 put Tarvik over 40.0 and 3 do not, namely
-  any pair with an aircraft changing level fitted per sector, which gives Tarvik 31.6 on the whole record, 34.0 on the
-  two summers and 26.5 on summer 2026 and names no sector at all. The main recommendation therefore forks on a
-  reading the note itself licenses, and the build asserted only the pooled form of that pair definition (59.4).
-- Not semantics: holds. Every field is read the same on both paths: the ATM contribution codes, the season in local
-  time, the levels in hundreds of feet, the sector names against codes and the planning traffic's own flight key all
-  resolve identically whichever exposure the forecast is built on, and the nine fork rows each close on a quoted
-  sentence or the same call. The failure below is not a reading.
-- Not rule application: the pack files no method, so the family left open is every construction of a sector's
-  forecast rate, and its spread is not zero. 25 constructions a competent analyst in this field would use spread
-  Tarvik from 8.7 to 79.9 ATM-related losses per 100,000 flight hours, a spread of 71.3 against a printed unit of 1,
-  and file 3 distinct calls (no sector, Grendal with Hallin, Tarvik). That open family is the failure rather than the
-  pass, because the spread straddles the decision: the tolerance has to sit at or above 48.6 to clear every easy
-  route by 1.15x and at or below 23.0 to keep every licensed construction over the line by 1.15x, a window empty by
-  a factor of 2.11. No magnitude closes it. Sweeping the one parameter that widens the separation, the new Brekka
-  base from 14 to 50 flights a day each way, holds the ratio of the weakest licensed construction's Tarvik figure to
-  the highest easy route's figure at 0.654, 0.709, 0.749, 0.726, 0.744 and 0.738, against the 1.3225 a non-empty
-  window needs, because the weakest licensed member and the strongest easy route both measure the sector's
-  level-changing traffic and rise together with the dial.
-- Analyst test: FAILS, measured. The easy route lands the call. Each sector's losses pooled over its level-changing
-  traversals, which is one group-by on the parquet where entry_fl is not exit_fl, one group-by on the occurrence
-  export and one divide with no pair construction anywhere, puts Tarvik alone over 40.0 on every seasonal estimation
-  window: 42.3 on the two summers, 41.4 on summer 2026 and 43.3 on summer 2025, with only the whole-record window
-  missing at 36.2. The wrong answer this note credits the easy route with, no sector over and Mosby highest at 32.0,
-  is one easy route's answer and not the family's, and the seasonal window is the natural one for a summer forecast
-  because the close-out reports by summer.
-- Estimand: each elementary sector's forecast rate of ATM-related losses of separation in summer 2027 (1 June to 31
-  August, local time, cl. 3.2) per 100,000 flight hours of the summer 2027 planning traffic (cl. 3.5), estimated from
-  the occurrence record since 1 January 2025 (cl. 4.2), against the plan's 40.0 (cl. 4.1), filed in
-  HACC_unit_safety_plan_2026-2028.pdf. Filed literally and unchanged; the failure is not here, and filing more of it
-  would file the method.
-- No decoy: holds. The summer 2026 close-out is a correct, labelled history of summer 2026 rates, no memo, draft,
-  briefing or voice argues for a sector or for a method, and nothing is planted to be caught.
-- No certified replay: holds. No certified or published figure pins the method; the rate per pair is estimated on the
-  record, and the close-out publishes rates per flight hour only.
-- Lesson: none this architecture can teach, because the step it was built to teach is not forced. What the
-  measurement teaches the next draw is that an exposure axis whose far end is a row attribute rather than the
-  interaction cannot carry a stump: the attribute end is a one-group-by route, and the record cannot tell the two
-  ends apart. Within each sector the monthly profile of pairs that change order and the monthly profile of pairs with
-  a mover correlate 0.9951 to 0.9988 (0.9994 pooled); the Poisson log-likelihood difference between the two bases on
-  each sector's monthly loss counts is 0.22 on one degree of freedom against the 3.84 needed, and reaching it would
-  take about 40,782 losses against the record's 96, some 425 times the record and about 743 years of this centre's
-  traffic. The across-sector test the design relies on (losses per moving pair varying 3.37-fold) is exactly the
-  heterogeneity a per-sector fit absorbs, so it cannot refute the per-sector form.
-- **Stump class:** analytical in kind and spent in fact. No planted defect or decoy decides it and no field reading
-  flips it, but the decisive step is not unique and the easy route reaches the call, so the architecture is re-rooted
-  rather than resumed.
+## Survivor anatomy
 
-## Readability screen
-
-| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear arithmetic | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 the summer 2026 rates as they stand (Mosby highest, no sector over) | the close-out states them | the close-out's table | no | the close-out ties | clean | one ratio | readable |
-| R1 the default path: losses scaled with flight hours, the 2026 rate held (none over) | no | flight hours from entry and exit times | the rate-times-exposure habit | the close-out ties | clean | one ratio per sector | readable |
-| R2 losses scaled with the square of each sector's hourly traffic, or with pairs of aircraft in the sector at once (none over) | no | traversal times | yes: density squared is the traffic-safety rule of thumb | no | clean | no | readable |
-| R2b losses per climbing or descending flight hour, applied to each sector's 2027 vertical flight hours (none over) | no | the occurrence phases show climbing and descending aircraft | yes: stratify on a visible attribute | no | clean | one ratio per phase | readable |
-| R2c each sector's 2025 to 2026 rise carried on (Grendal and Hallin over) | no | two closed summers | yes: trend | no | clean | one difference | readable |
-| R3 (decisive) losses per vertical crossing, a pair in one sector at once where one aircraft passes through the other's level, applied to the crossings in the summer 2027 planning traffic (Tarvik over) | no sentence names a crossing, a pair or an interaction | no column carries it: it is built by pairing traversal rows of one sector in time and comparing their level profiles, and no marker isolates the Brekka traffic's crossings | not a reflex: the reflexes scale exposure the rows already state (hours, counts, squares, vertical hours) | no control sees a crossing; the close-out publishes rates per flight hour | clean on the wrong path: every key unique, every join matches, the close-out ties | no: a rate estimated on 21 months of pairs and applied to a stock of pairs the 2027 traffic builds | silent |
-
-## Semantic fork table
-
-| Id | Term or convention in the main ask or the main computation | Golden reading | Alternative reading | Call under the alternative | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | "losses of separation" | ATM-related losses (ATM contribution direct or indirect), as the safety plan's tolerance counts them | every loss of separation, pilot-induced ones included | Tarvik only | safety plan cl. 3.4 and 4.1, and same call (asserted: Tarvik 79.9, next 29.1) |
-| SF2 | "summer 2027" | 1 June to 31 August 2027, local time | the same dates in UTC | Tarvik only | safety plan cl. 3.2, and same call (asserted) |
-| SF3 | "flight hours" | time from sector entry to exit of every traversal in the planning traffic | the same clipped at the season's edges | Tarvik only | safety plan cl. 3.5, and same call (asserted) |
-| SF4 | "sector" | the eight elementary sectors | the configured control positions, collapsed at night | Tarvik only | safety plan cl. 3.1 (occurrences and flight hours counted for the elementary sector), and same call |
-| SF5 | the window the loss rate is estimated on | the whole record since 1 January 2025 (January 2025 to September 2026) | summers only, or 2026 only | Tarvik only | safety plan cl. 4.2 (the record since the eight-sector structure came into use on 1 January 2025), and same call (asserted: 73.8, 71.5, 71.9) |
-| SF6 | the pair | two traversals of one sector overlapping in time whose straight-line level profiles change order | pairs that meet at a level, pairs within 1,000 ft or 2,000 ft with one aircraft changing level, any pair with an aircraft changing level | Tarvik only | the record (every loss is a pair whose levels changed order, 106 of 106), and same call (asserted: 69.6, 67.2, 63.4, 59.4; next at most 29.9) |
-| SF7 | the loss rate's pooling | one rate per pair for the centre | each sector's own rate per pair | Tarvik only | same call (asserted: Tarvik 72.5, next 25.6) |
-| SF8 | "run over the tolerance" | the forecast rate above 40.0 | at or above 40.0 | Tarvik only | same call (no sector within 6 per cent of 40.0, asserted) |
-| SF9 | rounding before the comparison | unrounded rate against 40.0 | the rate rounded to one decimal first | Tarvik only | same call (asserted) |
-
-## Ladder
-
-Built values (generator checks 1 to 34, verifier from the bundle). Rates are ATM-related losses of separation per
-100,000 flight hours in the summer season.
-
-| Rung | Construction | Over 40.0 | Tarvik | Highest other |
-|---|---|---|---|---|
-| R0 | summer 2026 rates as they stand (the close-out) | none | 13.4 | Mosby 32.0 |
-| R1, the default path | 2026 rate held, losses scaled with flight hours | none | 13.4 | Mosby 32.0 |
-| R1b | the whole record's rate per flight hour, or the two summers' | none | 13.8, 17.0 | Karrow 24.2, Mosby 32.5 |
-| R2 | losses scaled with the square of hourly traffic | none | 16.0 | Mosby 32.9 |
-| R2b | losses per climbing or descending flight hour, own sector, pooled, or pooled on summer 2026 | none | 25.3, 32.0, 36.6 | Mosby 31.9, 32.1, 36.6 |
-| R2c | the 2025 to 2026 change carried on | Grendal, Hallin | 8.7 | Grendal 55.4, Hallin 53.3 |
-| R3, decisive | losses per pair whose levels change order, pooled over the record, times each sector's pairs in the planning traffic | Tarvik | 72.4 | Lysvik 26.4 |
-
-- **Kills, one fact each:** R0, R1 and R1b by the record's mechanism (every loss is a pair whose levels changed order;
-  losses per flight hour run from 13.8 to 24.2 across the sectors while losses per pair hold, max/min 1.12); R2 by
-  the same record (the square of the traffic counts level pairs that carried no loss in 21 months); R2b by the record
-  (losses per climbing hour differ with how busy the levels climbed through are); R2c by the close-out and the
-  planning traffic (Hallin's rise is the western arrival stream moving onto its descent with AIRAC 2603, flat into
-  2027; Grendal's is one more loss on three); R3 stands.
-- **Why each rung is satisfying:** R1 is the safety plan's own unit carried forward the way rates always are; R2 and
-  R2b are the density and phase-of-flight corrections an analyst reaches for when losses look traffic-driven; R2c is
-  the trend reflex.
-- **Position rule:** the default path names no sector; Tarvik is last of eight on the summer 2026 rate and first only
-  on R3.
-- **Where the evidence sits:** the record names both aircraft in every loss; joined to the flight data, every one of
-  the 106 losses (96 ATM-related) is a pair in one sector at once whose levels changed order.
-- **Discriminator dominance:** the new Brekka flows take Tarvik's pairs from 9,682 in summer 2026 to 48,545 in the
-  planning traffic (x5.0) while its flight hours rise from 14,957 to 16,414 (x1.10), against Mosby's default-path lead
-  (32.0 against Tarvik's 13.4).
-- **Variants asserted on R3:** pairs that meet at a level (Tarvik 69.6), within 1,000 ft (67.2) or 2,000 ft (63.4)
-  with one aircraft changing level, any pair with an aircraft changing level (59.4), each sector's own rate (72.5),
-  summers-only (73.8), summer 2026 only (71.5) or 2026-only (71.9) estimation, every loss including pilot-induced ones
-  (79.9): every variant puts Tarvik over 40.0 by at least 15 per cent and every other sector at or under 29.9.
-- **Realised counts:** losses are scheduled by error diffusion on the expected count per sector and local month (moving
-  threshold), so every sector's realised summer 2025 and 2026 rate sits at least 6 per cent under 40.0 and the pooled
-  rate per pair reproduces on every window (asserted).
-- **Per-rung worth on the graded quantity:** the graded quantity is the set of sectors over the tolerance and the
-  chart's bars; each rung's set is asserted.
-
-## Closure table
-
-| # | Axis | Reading chosen | Closure move |
-|---|---|---|---|
-| 1 | Population | the eight elementary sectors; the summer 2027 planning traffic as issued 9 October 2026 | C1: one planning traffic file ships; asserted |
-| 2 | Unit of account | one ATM-related loss of separation, one occurrence | C1: occurrence numbers unique, one row per occurrence, asserted |
-| 3 | Attribution window | losses dated by occurrence time, local season | C1 (SF2) |
-| 4 | As-of dating | data to 30 September 2026, planning traffic of 9 October 2026 | filed in the extract notes; C1 |
-| 5 | Version basis | the planning traffic as issued | C1: no later vintage ships |
-| 6 | Denominator | flight hours in the summer 2027 planning traffic, entry to exit | filed in the safety plan's own words; C1 (SF3) |
-| 7 | Weighting | one rate per pair pooled over the centre | C3: sector rates give the same set (SF7) |
-| 8 | Window length | the record since 1 January 2025 for the rate | pinned in safety plan cl. 4.2; C3: summers only or 2026 only, same set (SF5) |
-| 9 | Boundary inclusivity | above 40.0 | C1: no sector within 6 per cent (SF8) |
-| 10 | Rounding path | the call is a set; ask figures rounded once at the end | pinned in the prompt's closing sentence (SF9) |
-| 11 | Tie-break | none needed | C4: Tarvik 72.4 against 40.0, the next 26.4 |
-| 12 | Maturity and censoring | occurrences reported within the month; none open at the cut | C1: no occurrence dated after 30 September 2026, asserted |
-| 13 | Order of operations | filter ATM-related, then rate, then forecast | C1: the filters commute |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | none on the main path | C1: one row per occurrence and per traversal, asserted |
-| 16 | Identity normalisation | traversals keyed by flight plan id; occurrences name both callsigns | C1: every occurrence's two aircraft found in the traversals, asserted |
-| 17 | Netting against gross | not applicable | C1 |
-| 18 | Dimensional units | flight levels in hundreds of feet, hours from UTC times | C1 |
-| 19 | Code and status semantics | ATM contribution codes from the occurrence scheme | pinned by the code list; C1 (SF1) |
-| 20 | Integerisation | expected losses are not integers | C1 |
-| 21 | Clause scope | the tolerance per elementary sector per summer | filed in the safety plan; C1 (SF4) |
-| 22 | Forward window contents | summer 2027 as the planning traffic carries it | C1: one full-season planning traffic file ships |
-
-## Literal reader
-
-Filed estimand, from the prompt and the safety plan: each elementary sector's forecast rate of ATM-related losses of
-separation in summer 2027 (1 June to 31 August, local time, cl. 3.2) per 100,000 flight hours of the summer 2027
-planning traffic (cl. 3.5), from the occurrence record since 1 January 2025 (cl. 4.2), against the plan's 40.0
-(cl. 4.1); the call is the set of sectors over it, or none. Criterion: none filed, because the design forces the
-method (determinism-check §1, form 1): the record names both aircraft in every loss, every one a pair in one sector
-at once where one aircraft passed through the other's level, and losses per such pair hold across sectors (2.31 to
-2.59 per 10,000) while losses per flight hour run from 13.8 to 24.2, so a forecast that ignores the pairs contradicts
-the record it is fitted on. Why the careful computation still lands wrong: the careful, obvious computation of the
-filed quantity (each sector's 2026 rate carried onto its 2027 flight hours, or scaled with its traffic density or
-its climbing and descending hours) files no sector; every literal reading of the prompt's terms puts Tarvik alone
-over 40.0 once the forecast carries the pairs (the semantic fork table), and the easy answer comes only from the easy
-method on the same estimand.
-
-## Oracles
-
-- The summer 2026 close-out (each sector's ATM-related losses for summers 2025 and 2026, summer 2026 flight hours and
-  rate): reproduces the record exactly (asserted), ranks nothing on 2027, and confirms no ask figure.
-- The network manager's regulation list carries no delay totals, so nothing ties the slot list as delivered.
-- Nothing ties only under the golden, for the call or any ask.
-
-## Ask sheet
-
-The main call's declared row population: the flight data traversals of January 2025 to September 2026, the
-occurrence rows of type SMI, and the summer 2027 planning traffic. Every device below lives in the network manager's
-slot allocation list, the configuration log and its tables, and the occurrence rows of type ACAS RA, which the main
-call never reads as rows; the generator asserts that no device row sits inside the declared population (the 662 plans
-that never flew are absent from the flight data; the advisory reports share no occurrence number with the SMI rows).
-Each ask is one of the other measures the summer sector plan carries for every sector, on which the call does not
-turn (H18 home 1): capacity, staffing and a second safety indicator. No ask is keyed to the call or its construction,
-and the three asks share no primary family and no file path.
-
-**Ask 1. En-route ATFM delay per flight in summer 2026, every sector (8 figures, minutes to two decimals).**
-- Use: the summer plan reads capacity beside safety, and the board weighs delay against any capacity cut.
-- Construction: each flight that flew, at the slot delay of its most penalising regulation (the extract notes' field
-  note), charged to that regulation's sector when the regulation is en-route, over the flights that entered the
-  sector in the local summer.
-- Primary device (D1, plans that never became flights): the slot list keeps the original plan of a flight re-filed
-  after its slot was issued (its own plan id, the larger delay; the re-filed plan flew with a smaller delay or none)
-  and a few plans of flights cancelled outright after their slot; 662 plans, every one absent from the flight data and
-  nothing else marking them. Ids are unique and no row repeats another; a callsign-and-day dedup removes the
-  re-filings it can see, keeps the larger cancelled delay, misses the plans whose re-filing escaped every regulation
-  and the cancellations, and merges the cargo and charter rotations that fly out and back under one callsign. Only
-  the plan ids in the flight data show which plan flew. Every sector's figure moves.
-- Texture (executed by the battery): one row per plan per regulation that captured it; a plan's delay is its largest,
-  and a flight whose largest is a Holmvik arrival regulation carries no en-route delay (moves three sectors in the
-  third decimal only).
-- Span (5 files, 11 columns): slot list, regulation list, sector register, flight data, extract notes; `ifplid`,
-  `callsign`, `eobt`, `regulation_id`, `slot_delay_min`, `traffic_volume`, `location_type`, `code`, `sector`,
-  `entry_time_utc`, `ifplid` (flight data).
-- Ladder (asserted): every row summed (Tarvik 0.62, every sector high); largest delay per plan id with the plans that
-  never flew (the cracker, Tarvik 0.59, every sector high); callsign-and-day dedup (Tarvik 0.57, at least six sectors
-  off); golden (Tarvik 0.53, Mosby 0.41, Grendal 0.43, Linmark 0.16, Karrow 0.29, Lysvik 0.55, Hallin 0.27,
-  Sandvik 0.10).
-
-**Ask 2. Hours each sector was open as a sector on its own in summer 2026 (8 figures, hours to one decimal).**
-- Use: the summer plan's staffing reads how long each sector needed its own team.
-- Construction: the supervisors' configuration log (local time) against the configuration table in force at each
-  moment, summing the time each elementary sector had a position to itself.
-- Primary device (D2, an attribute at the wrong vintage): the current table file is revision 9, which regrouped three
-  day configurations (C6A, C6B, C5) from 06:00 on 14 July 2026; revision 8, in force before, is only in the operations
-  manual's Table 3.4-1 (edition of 26 March 2026), and the switch is a remark in the log. Every code in the log matches
-  the current file, so the join is clean; every sector's hours move.
-- Texture: the log is in local time and labelled so; reading it as UTC moves nothing (night configurations open no
-  sector on its own).
-- Span (4 files, 7 columns): configuration log, current table, operations manual extract, sector register;
-  `log_time_local`, `configuration`, `remarks`, `position`, `sectors`, `table_revision`, `name`.
-- Ladder (asserted): current table all season (the cracker, every figure off); the manual's table all season (every
-  figure off); golden (Tarvik 1532.1, Mosby 1310.5, Grendal 735.3, Linmark 1202.3, Karrow 771.1, Lysvik 1410.2,
-  Hallin 971.6, Sandvik 1301.9).
-
-**Ask 3. Encounters that gave an aircraft an ACAS resolution advisory in summer 2026, every sector (8 whole numbers).**
-- Use: the second safety indicator the board reads beside losses of separation.
-- Construction: the occurrence rows of type ACAS RA in the local summer, two reports naming the same two aircraft in
-  the same sector minutes apart being one encounter.
-- Primary device (D1, one event under two reports): when both crews report, the export carries two occurrences (two
-  numbers, each crew naming the other aircraft, separations as each crew judged them); single reports are the
-  majority. Only pairing reports by the two callsigns and time counts encounters. Every sector's figure moves.
-- Hazard H1 (D8): occurrence times are UTC and the season local; an advisory at 22:56 UTC on 31 May 2026 is 1 June
-  local (Hallin) and one at 22:14 UTC on 31 August is 1 September local (Lysvik): the UTC season moves two sectors.
-- Span (3 files, 8 columns): occurrence export, occurrence scheme codes, sector register; `occurrence_no`,
-  `occurrence_type`, `occurrence_date`, `time_utc`, `sector`, `ac1_callsign`, `ac2_callsign`, `reported_by`.
-- Ladder (asserted): report rows counted (the cracker, every figure high); UTC season (two sectors off); golden
-  (Tarvik 8, Mosby 9, Grendal 10, Linmark 7, Karrow 4, Lysvik 7, Hallin 3, Sandvik 2).
-
-**The cracker sheet.** The cracker landed Tarvik, ran the hygiene battery (keys unique, no exact duplicates, every
-join matched, no fan-out beyond the regulation ids reused across months, the close-out tied) and executed every
-filed rule (the most penalising regulation, the local season, the configuration codes):
-
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask 1, delay per flight (8) | largest delay per plan id, charged to the regulation's sector, over the flights in the sector | the 662 plans that never flew are counted, every sector 6 to 20 per cent high | miss |
-| Ask 2, hours open alone (8) | configuration log against the current table, local time | revision 8 applied to 1 June to 14 July for C6A, C6B and C5, every sector | miss |
-| Ask 3, advisory encounters (8) | advisory rows counted by sector in the local season | both crews' reports of one encounter counted twice, every sector | miss |
-| Chart (rec block, not an ask) | bars of the summer 2027 forecast rate with the 40.0 line | carried by the main call, scored with the recommendation | outside |
-
-The mirror sheet (the same response stopped at no sector) differs from the cracker sheet only on the recommendation
-criteria and the chart, so no ask is coupled to the call.
-
-Mirror leakage: 8 per cent of the ask weight (method credit on the ask paths, no figure; the mirror's ask rows are the
-cracker's).
-
-**Pair arithmetic.** Planning weights 38 recommendation, 7 instruction following, 55 asks over 24 figures. With r = 5
-(the recommendation criteria a wrong call keeps: the ATM-related filter, the flight-hour denominator) and each top
-response keeping about 8 per cent of the ask weight: C = 38 + 7 + 4.4 = 49.4 for the cracker, S = 5 + 7 + 4.4 = 16.4
-for the mirror.
-
-Pair ceiling: 32.9
-
-## Pins
-
-- In the prompt (the question, never a convention): the eight sectors, ATM-related losses of separation, summer
-  2027, the safety plan's tolerance, and each ask's unit, period and rounding.
-- Filed at authority in the safety plan (the unit's safety performance plan, the document the board approves the summer
-  plan against): the tolerance (40.0 ATM-related losses of separation per 100,000 flight hours per elementary sector
-  per summer season, cl. 4.1), the forecast's inputs (the occurrence record since 1 January 2025 and the planning
-  traffic, cl. 4.2), the season (1 June to 31 August, local time), ATM-related meaning an ATM contribution direct or
-  indirect, flight hours from sector entry to exit.
-- The occurrence scheme: occurrence types, ATM contribution codes, severity. The network manager's field note (in the
-  extract notes): a flight plan captured by several regulations takes the slot of its most penalising one, and its
-  ATFM delay is that regulation's. The extract notes: the as-of dates and each system's clock. The operations manual:
-  amendments to Table 3.4-1 take effect at the time stated and are recorded in the log.
-- No pin names a crossing, a pair, an interaction, the level of the other aircraft or any forecasting method. The
-  readability screen was re-run on every pin.
-
-## Stopping rule
-
-Written before the first portal test. If a top portal response names Tarvik by counting vertical crossings, the
-call is at ceiling in this world: the next move is to change the decision, never to harden this mechanism. If the call
-holds and the asks score over the bar, the ask-only revision runs with the main call byte-identical. A fork on the
-call that convergence cannot close re-roots the decisive step rather than pinning it.
-
-## Pre-ship check
-
-1. Domain: the task is an area control centre's human-factors safety analysis, where its losses of separation will
-   come from next summer; the exposure for a loss is the controller's vertical interaction between two aircraft in
-   one sector, which the field counts beside flight hours, and another field's nouns break it (no levels to cross).
-2. Real work, nothing planted: an FDPS archive at flight x sector grain in UTC, a safety database export with crew
-   and controller reports, a planning traffic in the forecast team's own key, a network manager slot list that keeps
-   plans as allocated, a supervisors' log in local time beside a configuration table revised mid-season, each from
-   the centre's own systems.
-3. The flip is a method choice: forecasting each sector's losses from the pairs its traffic builds, never a field read
-   or a rule; every rule in the pack (ATM-related, the season, flight hours, the tolerance) is read the same on both
-   paths.
-4. The analyst test holds: the summer 2026 rate carried forward names no sector (Mosby 32.0 highest), density squared
-   and climbing hours name none, the 2025 to 2026 trend names Grendal and Hallin; only the pair count names Tarvik.
-5. One defensible method: the prompt and the plan fix the estimand; the record forces the exposure (every loss is a
-   pair whose levels changed order, 106 of 106), and every pair definition, window and pooling puts Tarvik alone over;
-   the write-up counts pairs strictly (one above the other where the overlap begins, below it where it ends), and the
-   judge's second pass (APPROVE) found the touching reading moves Tarvik to about 64 to 70 with the call unchanged.
-6. No decoy: the close-out is a correct, labelled history of summer 2026 rates; no memo, draft or voice argues for a
-   sector or a method.
-7. Nothing hidden and recovered: no certified figure pins the method; the rate per pair is estimated on the record.
-8. A new lesson: a forward change that sends new climbing and descending traffic through a busy level band multiplies
-   the encounters that produce events while barely adding exposure time, which a rate per hour and its visible
-   refinements both hide (`guard.py heart` WARN only, nearest driver task183 at 0.06).
-
-## Leak and duplicate checks
-
-`leak.py --asof 2026-10-12`: REVIEW, no LEAK (the tolerance, the rate basis and the close-out figures the write-up
-quotes are listed as `stated_inputs`). Each REVIEW line:
-- The close-out and the safety plan carry the call's words: the indicator's own vocabulary (tolerance, ATM-related,
-  losses of separation, flight hours, summer) in the documents that define and report it; neither forecasts 2027 or
-  names a sector over. Harmless.
-- The manual, the close-out and the extract notes carry stump-paragraph words (traffic, control, levels, Tarvik,
-  Grendal, Hallin): sector names and ordinary operations vocabulary; none names a pair, a crossing or an
-  interaction. Harmless.
-- The planning traffic's 2027 dates: it is the summer 2027 season's traffic, issued 9 October 2026. Harmless.
-`guard.py heart`: WARN (the strategy-risk and Gate G repeat WARNs answered in the Draw). `guard.py surface`: promotes
-task181 against task183 (surface 0.100) on the lane and the pack idiom, after the goldens moved from a workbook and
-a PNG (task183's pair) to a board deck and a measures CSV; the mechanisms share nothing (card differentiation), and
-task60 is differentiated on the card.
-The reader, twice (before and after the stage 4 repair): nothing for questions 1 to 4 (the close-out's Table 1 is the
-labelled summer 2026 standing, not a 2027 ranking); the question 5 sentences (plan 3.1 to 3.5, 4.1 to 4.3, the notes'
-grain and clock) execute to the golden's population, window and denominator and leave the model form open. Pass 1's
-realism tells fixed in the generator (document genres, the table's export date, out-of-order flight keys, the roster
-remarks); pass 2's minor tells harmless.
+Actor: the deciding property, where each case was infected, has no column in any file; the line list carries the home barangay, the CBMS table carries where each barangay's working residents work as counts and never per case, and the property is a relation between the cases' age band and home and the place-of-work flows.
+Link: no key ties a case to a workplace, and the comparison that finds the place (each barangay's working-age excess against its estate workforce in the CBMS table) is one the residence-based surveillance method never asks for; no sentence invites it.
+Reflex: the field's method, cases by barangay of residence against the trigger (the surveillance system's place of a case), is rung 0 and files the six dormitory barangays and the two residential-outbreak barangays.
+Back-test: the textbook route validates; in every season 2022 to 2026 the barangays the residence count put over the trigger were the barangays whose larval surveys found the highest container indices and where the response log sent the teams, because transmission then was residential.
+Second use: every file the decisive step reads has its own reason to be in the pack; the line list is the surveillance record, the CBMS workbook carries the population denominators the plan's incidence table and an ask need (its place-of-work sheet is part of the same LGU release), and the plan files the trigger.
+Shock: San Roque's residence count is ordinary (about 15 cases), nowhere near the pack's largest, and the golden set is not an interval of any sort of the barangays (residence count, rate per resident, working-age share of cases, week-on-week growth), asserted in checks.py.
+Pins: the WHAT sits in the dengue plan (population, place of infection, window, unit, trigger) and no filed sentence names where infections happen, the vector's biting hours, workplaces, the place-of-work table or any placement method; deleting the trigger sentence unforces the call and that sentence names no step.
 
 ## Tried and rejected
+
 
 - Architecture 1 (a credit union's counterfeit wave traced to two skimmed terminals behind a dominant common point):
   spent at in-house round 1, where a solver explained the co-visited sites away as subsets of the dominant source's
@@ -508,5 +186,42 @@ remarks); pass 2's minor tells harmless.
 - The two easy routes that already name Tarvik on the shipped pack, never asserted by the build: level-changing
   traversals pooled over the two summers (42.3) and over summer 2026 (41.4). The checks assert the vertical-flight-hour
   forms of that reflex (32.0 and 36.6) and never its count form, so Gate F was measured on a subset of the reflex.
-- **(2026-10-25, measured) A blind reader landed the call and took 46.4 per cent of the ask figures.** One isolated Sonnet reader at medium effort, holding only the pack, the prompt and the emitted key list (no path in it distinguishes the golden sector, all eight being named), filed **Tarvik as the one sector over the 40.0 tolerance** against the golden Tarvik, and took **65 of 140 ask figures**. It reached the decisive step from the physics in one sentence: losses happen when one aircraft climbs or descends through another's level, so it used crossings rather than flight hours as the exposure, validated that definition by reproducing 104 of the 106 recorded occurrences, and then named the default path's answer unprompted ("the per-flight-hour rates miss this: they would put the highest forecast at Karrow, 24.2"). It also noted that the per-sector rate instead of the pooled one gives about 71 and leaves the call unchanged. Readability test 3: matching the exposure denominator to the mechanism that produces the event is what an air traffic safety analyst does first, not a step one skips.
-  **Corrected 2026-10-25:** this row was first measured with a `score_reader.py` that tried a first-three-words text match before any numeric compare, so every figure the generator files as a string scored as text and a golden "0" matched a reader's 90, 50 and 40 alike. The figures above are the re-score after that was fixed; the call verdict is unchanged.
+- The in-house reader record that stood at the end of this section (architecture 4) was removed on 2026-10-31 under
+  CLAUDE.md's STOP block; architecture 4's death is carried by the measurement lines above and the card's lineage.
+- Architecture 4 moved to the card's lineage as spent on 2026-10-31 at the re-root (measured dead 2026-10-21).
+- The weather-conditioned violence draw (v5a: a county constabulary's July to September 2027 exceptions against each
+  area's own record for the weather, the night-time economy answering the warmth of Friday and Saturday nights),
+  killed at the draw on 2026-10-31 before any data: its abstraction is task182's approved driver (each unit's level
+  follows a shared outside driver through its own response, the effect is the gap to that path), and its
+  separation needed a doubling of weekend-night violence per 4.6 degrees and a warm spell falling on ten weekends
+  of thirteen with the weekdays between ordinary, which no weather record does and which reads as planted. Real
+  weather moves a quarter's violence by a few per cent.
+- The criminology cell (crime-incidence-hotspot-analysis x anomaly detection), closed at this re-root: task182's
+  architecture 8 enumerated sixteen decisive steps there and found each dead to a standing screen (denominator,
+  selection, coefficient or clean subset), and this pass screened nine more on paper before the weather draw
+  (capture changes, which spends task199 and task236; exposure denominators, the client card's reflex; which
+  records count, the WHAT pincer; a hospital or custody suite moving, Layer 1 geography; a tenure hazard, task149;
+  temporary causes, task111; breach exposure, task169; school calendars, the WHAT pincer; multi-victim events, the
+  unit). Moved under the directive's fallback to epidemiology, which is neither human factors, pharmacology nor
+  marketing.
+- A hospital's C. difficile wards by the ward of exposure through the bed-movement file: rejected at the draw. With
+  the estimand naming the ward of acquisition, an infection-control analyst reads each patient's ward stays in the
+  incubation window by reflex, the window is a free parameter, and ward colonisation pressure was already rejected
+  above.
+- An acquirer's merchants with descriptor-change disputes (cardholders who stopped recognising a renamed
+  subscription): rejected; this slot's lineage already holds two fraud worlds, and an estimand naming third-party
+  fraud sends a solver to the card's own history, one self-join.
+- Storm overflows by spill threshold against radar rain, ozone exceedances read as total oxidant, river dissolved
+  oxygen by time of sampling: rejected; the first is task182's abstraction with rain for climate, and the other two
+  name the true quantity (the oxidant, the daily mean) in a way that hands over its one-step correction.
+- Dengue with each case's workplace as a column of the line list: rejected; a per-case workplace makes the step a
+  reading of a field, so the place comes only through the place-of-work flows.
+- Dengue screen 1 (barangays of random size, a flat trigger of 30): every route failed, the golden included,
+  because large barangays crossed 30 on ordinary transmission; recalibrated to season-peak counts of 5 to 18 in an
+  ordinary barangay, with the estate a workplace inside its host barangay rather than a residential place.
+- Dengue screen 2, first calibration: the fractional placements at a half share and the excess spread by the
+  place-of-work shares missed in 11 to 14 of 20 seeds (the business district picking up spread cases, the
+  dormitories keeping half their estate cases), while the inversion landed 19 of 20; a standing family split by a
+  free share is a fork, so the world is built so every placement that puts working residents' exposure at work
+  files the golden (estate cases near 36 a dormitory on a home baseline near 4, the business district a small
+  employer of the dormitories), asserted across the placement family in checks.py.
