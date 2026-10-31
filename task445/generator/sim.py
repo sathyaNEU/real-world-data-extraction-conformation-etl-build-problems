@@ -1,712 +1,427 @@
-"""Simulate three quarters of 13F filing for a closed population of managers and issuers.
-
-Output is a `World` holding (a) the truth: every manager's position per issuer per quarter, (b) the
-filings as EDGAR would carry them (submissions, cover pages, information-table lines), with the
-realistic mess, and (c) the issuers' cover-page share counts.
-
-Dynamics: an index or ETF sponsor holds a stake of each security read against that quarter's cover-page
-count, the stake growing by W.GROW every quarter (its creations buy the whole basket), so its shares move
-with its creations and with the issuer's own share count; every other register type is flat in aggregate between quarters while
-its individual positions turn over; managers that habitually file after day 34 of the window move little.
-Every ask device sits on a bank trust that files every September report by 3 November.
-"""
+"""The clean truth: every death of an Ellesmoor resident from 2021 to the extract, the non-residents who died in the
+board's area once the medical examiner system began, each death's certification route and registration date, the
+registrations and corrections on the register, and the two medical examiner offices' cases. Seeded and
+deterministic; pack.py writes the files from this and nothing else."""
 import datetime as dt
-from dataclasses import dataclass, field
+import math
 
 import numpy as np
 
 import world as W
 
-QUARTERS = ["Q2", "Q3", "Q4"]
-SIG_LATE = 0.007
-FLOW_SIG = {"multistrat": 0.25, "longonly": 0.15, "ria": 0.18}    # whole-book flows by manager and quarter
-SIG_TYPE = {"multistrat": 0.40, "longonly": 0.20, "ria": 0.20, "instit": 0.07, "banktrust": 0.06, "dealer": 0.08}
-
-# ask devices, per cent of the September count (host, watchlist id, kind, size)
-A2_LINES = [("A2a", "W02", "CALL", 0.68), ("A2a", "W05", "PUT", 0.80), ("A2b", "W09", "CALL", 0.61),
-            ("A2b", "W11", "CALL", 0.45), ("A2b", "W02", "PUT", 0.60)]
-TV_LINES = [("TVa", "W01", "COM NEW", 0.50), ("TVa", "W10", "SHS", 0.44), ("TVb", "W07", "CL A", 0.49)]
-A3_LINES = [("A3a", "W01", "swap", 0.50), ("A3a", "W04", "check", 0.22), ("A3a", "W06", "swap", 0.23),
-            ("A3a", "W08", "check", 0.39), ("A3b", "W10", "check", 0.55), ("A3b", "W12", "swap", 0.53),
-            ("A3b", "W01", "check", 0.33), ("A3b", "W06", "check", 0.35)]
-KY_LINES = [("KYa", "W03", 0.41), ("KYa", "W04", 0.50), ("KYb", "W09", 0.30), ("KYb", "W12", 0.52)]
-# DV-1 (new-holdings host): the trust account's share of each watchlist position, left out of the original.
-# DV-2 (restatement host): the original's overstatement of each watchlist position. Both from a deterministic
-# search per name (0.0025 steps over 15 to 40 and 12 to 36 per cent, preferring 25 to 30 and 22 to 28) for
-# sizes that keep every mishandled September figure at least 0.06 points from the golden and in another
-# one-decimal bin, with every Ask A stop in its range; the loop 2 share-count moves make the October count a
-# larger hazard, so OTF, AMRB, TAAV, OLPD, SAF and NOPR sit outside the preferred ranges
-DV1_T = {"W01": 0.26, "W02": 0.30, "W03": 0.305, "W04": 0.3325, "W05": 0.315, "W06": 0.2825, "W07": 0.285,
-         "W08": 0.30, "W09": 0.2725, "W10": 0.27, "W11": 0.2675, "W12": 0.315}
-DV2_O = {"W01": 0.28, "W02": 0.28, "W03": 0.315, "W04": 0.135, "W05": 0.1925, "W06": 0.22, "W07": 0.2525,
-         "W08": 0.275, "W09": 0.36, "W10": 0.1775, "W11": 0.225, "W12": 0.25}
-DV2_KEYED = ("W04", "W09", "W12")
-DV2_OPT = [("W01", "CALL", 62_000), ("W06", "PUT", 48_500), ("W10", "CALL", 71_000), ("W02", "PUT", 55_000),
-           ("W07", "CALL", 64_500)]
-# DV-3: a bank trust's September option positions, kept confidential, added in January when treatment ended
-DV3_OPT = [("W03", "CALL", 52_400), ("W08", "PUT", 41_700), ("W11", "CALL", 63_100), ("W05", "CALL", 29_800)]
-DV3_DATE = dt.date(2023, 1, 17)
-AGENT_RS, AGENT_NH = 950_123, 1_104_659     # the custodian's filing agent and the department's
-NH_OMIT = ("W03", "W07", "W09")
-A1_NAMES = ("W01", "W02", "W04", "W05", "W06", "W08", "W10", "W11", "W12")
-A1_STALE = ("W02", "W05", "W08", "W12")
-A1_STALE_RATIO = {'W02': 1.291, 'W05': 1.151, 'W08': 1.161, 'W12': 1.307}       # June over September, the four stale positions
-# September count over the October count (watchlist; W08's tender offer set apart), and for the three names
-# with an August offering the 10-Q/A count over the 10-Q's
-# loop 2: the watchlist's share-count moves in the December window (d, the October-dated count over the
-# September count: buybacks, OTF's October follow-on, FENN's shares issued for an acquisition, at-the-market issuance)
-_D = {"W01": 0.970, "W03": 1.046, "W04": 0.975, "W05": 1.012, "W06": 0.968, "W07": 1.048, "W09": 1.015, "W12": 0.960}
-OCT_U = {"W02": 0.0082, "W10": 0.019, "W11": 0.0101}
-OCT_U.update({k: 1 / v - 1 for k, v in _D.items()})
-# and in the September window (e, the September count over the June count: GLI's July follow-on, SAF's July
-# modified Dutch tender, buybacks)
-APR_E = {"W01": 0.985, "W02": 1.050, "W04": 0.990, "W06": 0.988, "W10": 0.960, "W12": 0.980}
-A5_V = {"W05": 0.0215, "W09": 0.0255, "W11": 0.0167}
+D = dt.timedelta
+SA_F = ["Shamim", "Rukhsana", "Nasreen", "Parveen", "Gurmeet", "Surinder", "Bilquis", "Zubeida", "Kulwant", "Sakina"]
+SA_M = ["Mohammed", "Abdul", "Mohammad", "Gurdev", "Mushtaq", "Bashir", "Harbans", "Iqbal", "Ghulam", "Rashid"]
+SA_SURNAMES = {"Khanom", "Singh", "Begum", "Ali", "Hussain", "Ahmed", "Kaur"}
 
 
-@dataclass
-class Filing:
-    acc: str
-    mid: str
-    q: str
-    date: dt.date
-    form: str            # 13F-HR, 13F-HR/A, 13F-NT
-    reporttype: str      # 13F HOLDINGS REPORT, 13F NOTICE, 13F COMBINATION REPORT
-    amend_no: int = 0
-    amend_type: str = ""
-    lines: list = field(default_factory=list)   # dicts: iid, cusip, name, title, value, shares, sht, putcall, disc, othmgr
-    thousands: bool = False
-    name: str = ""
-    addl: str = ""
-    sub_q: str = ""          # the period in the submission header, where it differs from the cover page
-    dev: bool = False        # a device filing: its accession and pack draws come from their own streams
-    ghost: bool = False      # the loop-0 filing's pack draws, not written
-    conf: str = ""           # date confidential treatment expired (CONFDENIEDEXPIRED Y)
+def daterange(a, b):
+    d = a
+    while d <= b:
+        yield d
+        d += D(days=1)
 
 
-class World:
+def season(d):
+    doy = d.timetuple().tm_yday
+    return 1.0 + 0.17 * math.cos(2 * math.pi * (doy - 15) / 365.25)
+
+
+def covid(d):
+    if dt.date(2021, 1, 1) <= d <= dt.date(2021, 2, 28):
+        return 1.22
+    if dt.date(2021, 3, 1) <= d <= dt.date(2021, 3, 31):
+        return 1.06
+    return 1.0
+
+
+def lam(place, d):
+    yrs = (d - dt.date(2025, 7, 1)).days / 365.25
+    base = W.POP[place] * W.RATE[place] / 365.25 * (1.004 ** yrs) * (0.995 ** yrs)
+    m = season(d) * covid(d)
+    if W.HEAT22[0] <= d <= W.HEAT22[1] + D(days=1):
+        m *= 1.07
+    return base * m
+
+
+class Truth:
     pass
 
 
-def _bd(d):
-    return W.business_day_on_or_after(d)
-
-
-def _pick(pool, n, rr):
-    w = np.exp(np.array([m["size"] for m in pool]) - 20.0)
-    w = w / w.sum()
-    n = min(n, len(pool))
-    idx = rr.choice(len(pool), size=n, replace=False, p=w)
-    return [pool[j] for j in idx]
+def business_days_after(d, n):
+    out = d
+    k = 0
+    while k < n:
+        out += D(days=1)
+        if out.weekday() < 5:
+            k += 1
+    return out
 
 
 def build():
-    wd = World()
-    mgrs = W.build_managers()
-    iss = W.build_issuers()
-    r = W.rng("sim")
-    M = {m["mid"]: m for m in mgrs}
-    I = {i["iid"]: i for i in iss}
-    wd.mgrs, wd.iss, wd.M, wd.I = mgrs, iss, M, I
+    rng = np.random.default_rng(W.SEED)
+    T = Truth()
 
-    # ------------------------------------------------ habits: early filers file by day 33, late ones after 35
-    for m in mgrs:
-        if m["type"] == "passive":
-            continue
-        h = m["habit"]
-        if m["type"] == "banktrust":
-            h = min(h, 28.0)
-        if m["type"] == "dealer":
-            h = min(h, 29.0)
-        if 31.5 < h < 36.0:
-            h = 31.0 if h < 34.0 else 37.0
-        m["habit"] = h
-
-    # ------------------------------------------------ special roles
-    by_type = {}
-    for m in mgrs:
-        by_type.setdefault(m["type"], []).append(m)
-    passive = by_type["passive"]
-    P0, P1 = passive[0], passive[1]
-    late_passive = passive[2:]
-    lo = sorted(by_type["longonly"], key=lambda m: m["mid"])
-    bt = sorted(by_type["banktrust"], key=lambda m: m["mid"])
-    ria = sorted(by_type["ria"], key=lambda m: m["mid"])
-    TK = lo[0]; TK.update(habit=24.0, size=23.2)                # December values left in thousands
-    SP = bt[0]; SP.update(habit=16.0, size=23.0)                # several lines per position
-    GA1, GA2 = lo[1], lo[2]
-    GA1.update(habit=19.0, size=22.6); GA2.update(habit=26.0, size=22.0)
-    hosts = {"RS": bt[1], "NH": bt[2], "A1": bt[3], "A2a": bt[4], "A2b": bt[7], "TVa": bt[8], "TVb": bt[9],
-             "A3a": bt[10], "A3b": bt[11], "KYa": bt[12], "KYb": bt[13]}
-    for k, m in hosts.items():
-        m.update(habit=min(m["habit"], 24.0), size=max(m["size"], 21.0))
-    hosts["RS"]["habit"] = 7.0
-    hosts["NH"]["habit"] = 14.0
-    hosts["A1"]["habit"] = 12.0
-    fam_name = GA1["stem"] + " Investment Group"
-    GA2["stem"] = GA1["stem"]
-    GA2["disp"] = GA1["stem"] + " Capital Advisors LP"
-    GA2["name"] = GA2["disp"].upper()
-    GA1["family"] = GA2["family"] = fam_name
-    for m in mgrs:
-        if m["family"] is None:
-            m["family"] = ""
-    for a, b in [(bt[5], bt[6]), (ria[10], ria[11]), (lo[20], lo[21])]:
-        b["stem"] = a["stem"]
-        b["disp"] = a["stem"] + " " + b["disp"].split(" ", 1)[1]
-        b["name"] = b["disp"].upper()
-        a["family"] = b["family"] = a["stem"] + " Financial"
-    wd.roles = dict(P0=P0["mid"], P1=P1["mid"], TK=TK["mid"], SP=SP["mid"], GA1=GA1["mid"], GA2=GA2["mid"],
-                    late_passive=[m["mid"] for m in late_passive], **{k: m["mid"] for k, m in hosts.items()})
-    special = {P0["mid"], P1["mid"], TK["mid"], SP["mid"], GA1["mid"], GA2["mid"]} | {m["mid"] for m in hosts.values()}
-    wd.special = special
-    wd.new_name = {P0["mid"]: P0["stem"].upper() + " GLOBAL INDEXING INC"}
-
-    notice = [m["mid"] for m in ria[150 - 12:]]
-    attrit = [m["mid"] for m in ria[120:124]]          # stopped filing before 2022: in the register only
-    newq4 = [m["mid"] for m in ria[124:130]]
-    for x in newq4:
-        M[x]["habit"] = min(M[x]["habit"], 30.0)
-    wd.notice, wd.attrit, wd.newq4 = set(notice), set(attrit), set(newq4)
-
-    # ------------------------------------------------ filing days
-    fdate = {}
-    for m in mgrs:
-        mid = m["mid"]
-        if mid in wd.attrit:
-            continue
-        for q in QUARTERS:
-            if q in ("Q2", "Q3") and mid in wd.newq4:
-                continue
-            sd = 0.5 if m["type"] == "passive" else 1.3
-            d = m["habit"] + float(r.normal(0, sd))
-            d = min(max(d, 4.0), 45.0)
-            if m["type"] != "passive":
-                d = min(d, 33.0) if m["habit"] < 34 else max(d, 36.0)
-            day = _bd(W.PERIODS[q] + dt.timedelta(days=int(round(d))))
-            if day > W.DEADLINE[q]:
-                day = W.DEADLINE[q]
-                while day.weekday() >= 5 or day in W.HOLIDAYS:
-                    day -= dt.timedelta(days=1)
-            fdate[(mid, q)] = day
-    fdate[(hosts["RS"]["mid"], "Q3")] = dt.date(2022, 10, 7)
-    fdate[(hosts["NH"]["mid"], "Q3")] = dt.date(2022, 10, 14)
-    fdate[(hosts["A1"]["mid"], "Q3")] = dt.date(2022, 10, 12)
-    wd.fdate = fdate
-    cut = {q: W.PERIODS[q] + dt.timedelta(days=W.CUT_DAY) for q in QUARTERS}
-    wd.cut = cut
-    alive = {m["mid"] for m in mgrs if m["mid"] not in wd.notice and m["mid"] not in wd.attrit}
-    late = {x for x in alive if all(fdate[(x, q)] > cut[q] for q in QUARTERS if (x, q) in fdate)}
-    early = {x for x in alive if all(fdate[(x, q)] <= cut[q] for q in QUARTERS if (x, q) in fdate)}
-    assert late | early == alive and not (late & early)
-    assert all(M[x]["type"] not in ("banktrust", "dealer") for x in late)
-    wd.late, wd.early = late, early
-    wd.pending4 = {x for x in late if (x, "Q3") in fdate}
-
-    # ------------------------------------------------ prices
-    for i in iss:
-        p4 = i["P4"]
-        rr = W.rng("px", i["iid"])
-        p3 = p4 / float(np.exp(rr.normal(0.02, 0.11)))
-        p2 = p3 / float(np.exp(rr.normal(-0.03, 0.12)))
-        i["P3"], i["P2"] = round(p3, 2), round(p2, 2)
-
-    # ------------------------------------------------ share counts
-    for i in iss:
-        rr = W.rng("so", i["iid"])
-        i["S_jul"] = int(round(i["S_oct"] * (1 + max(0.004, rr.normal(0.011, 0.007)))))
-        i["S_jan"] = int(round(i["S_oct"] * (1 - abs(rr.normal(0.0012, 0.0015)))))
-        i["S_apr"] = int(round(i["S_jul"] * (1 + rr.normal(0.001, 0.002))))
-        if i["iid"] in OCT_U:
-            i["S_jul"] = int(round(i["S_oct"] * (1 + OCT_U[i["iid"]])))
-            i["S_apr"] = int(round(i["S_jul"] * (1 + rr.normal(0.001, 0.002))))
-            if i["iid"] in APR_E:
-                i["S_apr"] = int(round(i["S_jul"] / APR_E[i["iid"]]))
-        i["S_sep"] = i["S_jul"]
-    # texture: about one in ten other covered securities moves its count 3 to 8 per cent in one window
-    rx = W.rng("so-texture")
-    for i in iss:
-        if i["watch"]:
-            continue
-        u, w_, mv = float(rx.random()), float(rx.random()), float(rx.uniform(0.03, 0.08)) * (1 if rx.random() < 0.55 else -1)
-        if u < 0.10:
-            if w_ < 0.5:          # the December window: the September count against the October-dated count
-                i["S_jul"] = i["S_sep"] = int(round(i["S_oct"] / (1 + mv)))
-                i["S_apr"] = int(round(i["S_jul"] * (1 + float(rx.normal(0.001, 0.002)))))
-            else:                 # the September window: the June count against the September count
-                i["S_apr"] = int(round(i["S_jul"] / (1 + mv)))
-    I["W08"]["S_jul"] = I["W08"]["S_sep"] = int(round(I["W08"]["S_oct"] / 0.9463))   # September tender offer
-    I["W08"]["S_apr"] = I["W08"]["S_jul"] + 18_400
-    for k, iid in enumerate(W.A5_NAMES):          # August offering left out of the 10-Q cover; 10-Q/A count
-        rr = W.rng("a5", iid)
-        i = I[iid]
-        i["S_A5"] = i["S_sep"] = int(round(i["S_oct"] * (1 + OCT_U[iid])))
-        i["S_jul"] = int(round(i["S_A5"] / (1 + A5_V[iid])))
-        i["S_apr"] = int(round(i["S_jul"] * (1 + rr.normal(0.001, 0.002))))
-
-    # ------------------------------------------------ positions
-    pos = {q: {} for q in QUARTERS}
-    late_others = [M[x] for x in sorted(late) if M[x]["type"] != "passive" and (x, "Q3") in fdate]
-    gen_early = [m for m in mgrs if m["mid"] in early and m["mid"] not in special and m["type"] != "passive"
-                 and m["mid"] not in wd.newq4]
-    univ_early = [m for m in mgrs if m["mid"] in early and m["type"] != "passive" and m["mid"] not in wd.newq4
-                  and m["mid"] not in (TK["mid"], SP["mid"], GA1["mid"], GA2["mid"])]
-    generic = {q: {} for q in QUARTERS}     # (mid, iid) -> shares, generic early holders (balanced below)
-    dev = {}
-    for host, iid, title, pct in TV_LINES:
-        dev[(host, iid)] = pct
-    for host, iid, kind, pct in A3_LINES:
-        dev[(host, iid)] = dev.get((host, iid), 0) + pct
-    for host, iid, pct in KY_LINES:
-        dev[(host, iid)] = pct
-    rf = W.rng("flow")
-    flow = {(m["mid"], q): (float(rf.normal(0, FLOW_SIG.get(m["type"], 0.0))) if m["type"] in FLOW_SIG else 0.0)
-            for m in mgrs for q in ("43", "32")}
-    for i in iss:
-        rr = W.rng("pos", i["iid"])
-        iid, S = i["iid"], i["S_oct"]
-        S3 = i["S_sep"]
-        p4, p3, p2 = {}, {}, {}
-        # --- index and ETF sponsors that file late
-        if i["watch"]:
-            LPd, LOs = W.PEND[iid]
-            LPd, LOs = LPd / 100 * S, LOs / 100 * S
-        else:
-            T = i["A"] / 100 * S
-            L = (1 - i["f"]) * T
-            share = float(rr.uniform(0.55, 0.72))
-            LPd, LOs = share * L, (1 - share) * L
-        # each complex holds a stake of the security, read against the quarter's OM-4 count, the stake growing
-        # W.GROW a quarter: its shares move with its creations and with the issuer's own share count
-        dq, jq = i["S_oct"] / i["S_sep"], i["S_sep"] / i["S_apr"]
-        w = rr.dirichlet(np.full(len(late_passive), 6.0)) * LPd
-        for m, v in zip(late_passive, w):
-            s3 = v / (W.GROW * dq)
-            p3[m["mid"]] = s3
-            p4[m["mid"]] = s3 * W.GROW * dq * (1 + rr.normal(0, 0.0002))
-            p2[m["mid"]] = s3 / (W.GROW * jq) * (1 + rr.normal(0, 0.0002))
-        # --- every other type that files late
-        pool = [m for m in late_others if m["type"] == "multistrat"] if iid == "W07" else late_others
-        nl = int(rr.integers(14, 30)) if i["watch"] else int(rr.integers(8, 22))
-        chosen = _pick(pool, nl, rr)
-        w = rr.dirichlet(np.full(len(chosen), 1.2)) * LOs
-        for m, v in zip(chosen, w):
-            p3[m["mid"]] = p3.get(m["mid"], 0) + v
-        for m in chosen:
-            v = p3[m["mid"]]
-            p4[m["mid"]] = v * (1 + rr.normal(0, SIG_LATE))
-            p2[m["mid"]] = v * (1 + rr.normal(0, SIG_LATE))
-        # --- early index sponsors (top holders)
-        if i["watch"]:
-            p4[P0["mid"]] = (0.090 + rr.uniform(0, 0.010) + (0.006 if iid == "W03" else 0)) * S
-            p4[P1["mid"]] = (0.064 + rr.uniform(0, 0.010)) * S
-        else:
-            E = i["A"] / 100 * S - LPd - LOs
-            p4[P0["mid"]] = (0.12 + rr.uniform(0, 0.03)) * E
-            p4[P1["mid"]] = (0.08 + rr.uniform(0, 0.03)) * E
-        for x in (P0["mid"], P1["mid"]):
-            p3[x] = p4[x] / (W.GROW * dq) * (1 + rr.normal(0, 0.0002))
-            p2[x] = p3[x] / (W.GROW * jq) * (1 + rr.normal(0, 0.0002))
-        # --- other early specials (December-sized top holders, September-sized device hosts)
-        if i["watch"]:
-            s4 = {}
-            if iid in ("W02", "W08", "W11"):
-                s4[TK["mid"]] = (0.118 + rr.uniform(0, 0.006)) * S
+    # ---------------------------------------------------------------- postcodes and the lookup
+    pcs = {}
+    letters = "ABDEFGHJLNPQRSTUWXYZ"
+    for p in W.NAMES:
+        lst = []
+        for dno in W.DISTRICTS[p]:
+            for sec in range(1, 10):
+                for _ in range(5):
+                    lst.append("EL%d %d%s%s" % (dno, sec, letters[rng.integers(20)], letters[rng.integers(20)]))
+        lst = sorted(set(lst))
+        pcs[p] = lst
+    lookup = []      # (postcode, place, introduced, terminated, replaced_by)
+    usual_pool = {}
+    for p in W.NAMES:
+        pool = []
+        for pc in pcs[p]:
+            if rng.random() < 0.05:
+                term = dt.date(2023, 1, 1) + D(days=int(rng.integers(0, 1080)))
+                dno = pc.split()[0]
+                newpc = "%s %d%s%s" % (dno, int(rng.integers(1, 10)), letters[rng.integers(20)], letters[rng.integers(20)])
+                while newpc in pcs[p] or any(newpc == x[0] for x in lookup):
+                    newpc = "%s %d%s%s" % (dno, int(rng.integers(1, 10)), letters[rng.integers(20)], letters[rng.integers(20)])
+                lookup.append((pc, p, dt.date(1998, 6, 1), term, newpc))
+                lookup.append((newpc, p, term, None, ""))
+                pool.append((pc, newpc, term))
             else:
-                s4[TK["mid"]] = (0.010 + rr.uniform(0, 0.012)) * S
-            if iid in ("W04", "W09"):
-                s4[SP["mid"]] = (0.112 + rr.uniform(0, 0.006)) * S
-            else:
-                s4[SP["mid"]] = (0.006 + rr.uniform(0, 0.010)) * S
-            if iid in ("W05", "W12"):
-                s4[GA1["mid"]] = p4[P0["mid"]] * 0.885
-                s4[GA2["mid"]] = (0.040 + rr.uniform(0, 0.006)) * S
-            for x, v in s4.items():
-                p4[x] = v
-                p3[x] = v * float(np.exp(-rr.normal(0, 0.03)))
-                p2[x] = p3[x] * float(np.exp(-rr.normal(0, 0.03)))
-            s3 = {hosts["RS"]["mid"]: (0.016 + rr.uniform(0, 0.010)) * S3,
-                  hosts["NH"]["mid"]: (0.020 + rr.uniform(0, 0.010)) * S3}
-            if iid in A1_NAMES:
-                s3[hosts["A1"]["mid"]] = (0.010 + rr.uniform(0, 0.005)) * S3
-            for (h, ii), pct in dev.items():
-                if ii == iid:
-                    s3[hosts[h]["mid"]] = s3.get(hosts[h]["mid"], 0) + pct / 100 * S3
-            for h in ("A2a", "A2b"):
-                s3[hosts[h]["mid"]] = (0.003 + rr.uniform(0, 0.004)) * S3
-            for x, v in s3.items():
-                p3[x] = v
-                p4[x] = v * float(np.exp(rr.normal(0, 0.03)))
-                p2[x] = v * float(np.exp(-rr.normal(0, 0.03)))
-                if x == hosts["A1"]["mid"] and iid in A1_STALE:
-                    p2[x] = v * A1_STALE_RATIO[iid]
-        # --- small new filers in December
-        for mid in newq4:
-            if rr.random() < 0.35:
-                p4[mid] = float(rr.uniform(0.0002, 0.0012)) * S
-        # --- generic early holders, December
-        target4 = i["A"] / 100 * S
-        rest = target4 - sum(p4.values())
-        assert rest > 0.10 * target4, (iid, rest / S)
-        ne = int(rr.integers(110, 230)) if i["watch"] else int(rr.integers(40, 190))
-        cand = gen_early if i["watch"] else [m for m in univ_early if m["mid"] not in p4]
-        ch = _pick(cand, ne, rr)
-        we = rr.dirichlet(np.full(len(ch), 0.9)) * rest
-        cap = 0.045 * S
-        over = np.clip(we - cap, 0, None).sum()
-        we = np.minimum(we, cap)
-        we = we + over * (cap - we) / (cap - we).sum()
-        g4, g3, g2 = {}, {}, {}
-        for m, v in zip(ch, we):
-            g4[m["mid"]] = v
-        for mid, v in g4.items():
-            if rr.random() < 0.07:
+                lookup.append((pc, p, dt.date(1998, 6, 1), None, ""))
+                pool.append((pc, None, None))
+        usual_pool[p] = pool
+    T.lookup = sorted(lookup)
+    care_pc = {p: [x[0] for x in usual_pool[p][::23]][:8] for p in W.NAMES}
+    hosp_pc = {"North": "EL2 4HR", "South": "EL31 2HG"}
+    hospice_pc = {"North": "EL14 7HW", "South": "EL37 3HS"}
+    for a, pc in list(hosp_pc.items()) + list(hospice_pc.items()):
+        pl = W.HOSPITAL_PLACE[a] if pc in hosp_pc.values() else W.HOSPICE_PLACE[a]
+        if not any(x[0] == pc for x in T.lookup):
+            T.lookup.append((pc, pl, dt.date(1998, 6, 1), None, ""))
+    T.lookup = sorted(T.lookup)
+    outside_pc = ["KX%d %d%s%s" % (int(rng.integers(1, 30)), int(rng.integers(1, 10)), letters[rng.integers(20)],
+                                    letters[rng.integers(20)]) for _ in range(400)]
+
+    # ---------------------------------------------------------------- daily counts
+    days = list(daterange(W.START, W.LAST_DEATH))
+    counts = {}
+    for p in W.NAMES:
+        for d in days:
+            if W.W0 <= d <= W.W1:
                 continue
-            g3[mid] = v * float(np.exp(-rr.normal(0, SIG_TYPE[M[mid]["type"]]) - flow[(mid, "43")]))
-        cand3 = [m for m in cand if m["mid"] not in g4]
-        for m in _pick(cand3, int(rr.integers(4, 12)), rr):
-            g3[m["mid"]] = float(rr.uniform(0.0004, 0.004)) * S
-        for mid, v in g3.items():
-            if rr.random() < 0.06:
-                continue
-            g2[mid] = v * float(np.exp(-rr.normal(0, SIG_TYPE[M[mid]["type"]]) - flow[(mid, "32")]))
-        cand2 = [m for m in cand if m["mid"] not in g3]
-        for m in _pick(cand2, int(rr.integers(2, 8)), rr):
-            g2[m["mid"]] = float(rr.uniform(0.0004, 0.004)) * S
-        for q, src in (("Q4", p4), ("Q3", p3), ("Q2", p2)):
-            for mid, v in src.items():
-                pos[q][(mid, iid)] = v
-        for q, src in (("Q4", g4), ("Q3", g3), ("Q2", g2)):
-            for mid, v in src.items():
-                generic[q][(mid, iid)] = v
-                pos[q][(mid, iid)] = pos[q].get((mid, iid), 0) + v
+            counts[(p, d)] = int(rng.poisson(lam(p, d)))
+    # the expected deaths the fund files: the mean of the 2021 to 2025 summers' deaths, raised by 0.4 per cent a
+    # year of population growth to 2026
+    for p in W.NAMES:
+        for y in range(2021, 2026):
+            a, b = W.summer(y)
+            for d in daterange(a, b):
+                counts.setdefault((p, d), int(rng.poisson(lam(p, d))))
+    T.summer_final = {(p, y): sum(counts[(p, d)] for d in daterange(*W.summer(y))) for p in W.NAMES
+                      for y in range(2021, 2026)}
+    T.expected = {}
+    for p in W.NAMES:
+        mean = sum(T.summer_final[(p, y)] for y in range(2021, 2026)) / 5.0
+        growth = sum(1.004 ** (2026 - y) for y in range(2021, 2026)) / 5.0
+        T.expected[p] = int(round(mean * growth))
+    T.total26 = {p: int(round(T.expected[p] * (1 + W.EXCESS[p]))) for p in W.NAMES}
+    heatdays = list(daterange(W.HEAT26[0], W.HEAT26[1] + D(days=2)))
+    T.heat_excess = {}
+    for p in W.NAMES:
+        wdays = list(daterange(W.W0, W.W1))
+        lw = np.array([lam(p, d) for d in wdays])
+        base_total = int(round(T.expected[p] * float(lw.sum()) / float(lw.sum())))
+        heat = T.total26[p] - base_total
+        T.heat_excess[p] = heat
+        base = rng.multinomial(base_total, lw / lw.sum())
+        hw = np.array([1.0 if d <= W.HEAT26[1] else 0.5 for d in heatdays])
+        hx = rng.multinomial(max(heat, 0), hw / hw.sum())
+        for d, c in zip(wdays, base):
+            counts[(p, d)] = int(c)
+        T.heatx = getattr(T, "heatx", {})
+        for d, c in zip(heatdays, hx):
+            T.heatx[(p, d)] = int(c)
 
-    # ------------------------------------------------ balance: every type other than the sponsors is flat in
-    # aggregate among managers that filed both reports, over the twelve names and over every other security
-    re_ = W.rng("eps")
-    types = [t for t, *_ in W.MGR_TYPES if t != "passive"]
-    eps = {}
-    for scope in ("watch", "univ"):
-        for pair in ("43", "32"):
-            for t in types:
-                e = float(re_.uniform(0.0001, 0.0003)) * (1 if re_.random() < 0.5 else -1)
-                eps[(scope, pair, t)] = e
-    wd.eps = eps
-    watch = [i["iid"] for i in iss if i["watch"]]
-    wset = set(watch)
+    # ---------------------------------------------------------------- deaths of residents
+    seen = set()
+    deaths = []
 
-    def ipf(qa, qb, pair, col_target, slack):
-        """scale generic early positions of quarter qb so that, per type, sum(qa)/sum(qb) = 1 + eps over the
-        watchlist (and over the other securities), and per watch name qb's total meets col_target"""
-        for scope in ("watch", "univ"):
-            inscope = (lambda iid: iid in wset) if scope == "watch" else (lambda iid: iid not in wset)
-            rows = {}
-            for t in types:
-                num = sum(v for (mid, iid), v in pos[qa].items() if inscope(iid)
-                          and M[mid]["type"] == t and mid in early and mid not in wd.newq4)
-                fixed = sum(v for (mid, iid), v in pos[qb].items() if inscope(iid)
-                            and M[mid]["type"] == t and mid in early and (mid, iid) not in generic[qb])
-                rows[t] = num / (1 + eps[(scope, pair, t)]) - fixed
-            X = {k: generic[qb][k] for k in generic[qb] if inscope(k[1])}
-            bytype = {t: [k for k in X if M[k[0]]["type"] == t] for t in types}
-            if scope == "watch":
-                cols = dict(col_target)
-                cols[slack] = sum(rows.values()) - sum(v for c, v in cols.items() if c != slack)
-                assert cols[slack] > 0, cols[slack]
-                bycol = {c: [k for k in X if k[1] == c] for c in watch}
-            for _ in range(400 if scope == "watch" else 1):
-                for t in types:
-                    s = sum(X[k] for k in bytype[t])
-                    if s > 0:
-                        f = rows[t] / s
-                        for k in bytype[t]:
-                            X[k] *= f
-                if scope == "watch":
-                    for c in watch:
-                        s = sum(X[k] for k in bycol[c])
-                        f = cols[c] / s
-                        for k in bycol[c]:
-                            X[k] *= f
-            for t in types:
-                s = sum(X[k] for k in bytype[t])
-                assert abs(s / rows[t] - 1) < 1e-7, ("balance", qb, scope, t, s / rows[t])
-            for k, v in X.items():
-                pos[qb][k] = pos[qb][k] - generic[qb][k] + v
-                generic[qb][k] = v
-
-    colS = {}
-    for i in iss:
-        if not i["watch"] or i["iid"] == W.SEP_SLACK:
-            continue
-        tot = i["sep"] / 100 * i["S_sep"]
-        fixed = sum(v for (mid, iid), v in pos["Q3"].items() if iid == i["iid"] and (mid, iid) not in generic["Q3"])
-        colS[i["iid"]] = tot - fixed
-    ipf("Q4", "Q3", "43", colS, W.SEP_SLACK)
-    colJ = {}
-    for c in watch:
-        if c == W.JUN_SLACK:
-            continue
-        g3 = sum(v for (mid, iid), v in generic["Q3"].items() if iid == c)
-        f3 = sum(v for (mid, iid), v in pos["Q3"].items() if iid == c and mid in early and (mid, iid) not in generic["Q3"])
-        f2 = sum(v for (mid, iid), v in pos["Q2"].items() if iid == c and mid in early and (mid, iid) not in generic["Q2"])
-        colJ[c] = (g3 + f3) / W.JUN_MOVE.get(c, 1.0) - f2
-    ipf("Q3", "Q2", "32", colJ, W.JUN_SLACK)
-
-    for q in QUARTERS:
-        pos[q] = {k: int(round(v)) for k, v in pos[q].items() if v >= 1}
-        pos[q] = {k: v for k, v in pos[q].items() if (k[0], q) in fdate}
-    wd.pos = pos
-    wd.hosts = {k: m["mid"] for k, m in hosts.items()}
-    build_filings(wd, r)
-    return wd
-
-
-def _acc(cik, yy, seq):
-    return f"{cik:010d}-{yy:02d}-{seq:06d}"
-
-
-ABBR = {"THERMAL": "THERM", "HOLDINGS": "HLDGS", "INSTRUMENTS": "INSTRS", "BIOSCIENCES": "BIOSCI",
-        "SYSTEMS": "SYS", "INDUSTRIES": "INDS", "THERAPEUTICS": "THERAPTC", "LOGISTICS": "LOGISTCS",
-        "SOFTWARE": "SOFTWRE", "MATERIALS": "MATLS", "ENERGY": "ENRGY", "FINANCIAL": "FINL", "BRANDS": "BRNDS",
-        "NETWORKS": "NETWKS", "MEDICAL": "MED", "SEMICONDUCTOR": "SEMICONDTR", "FOODS": "FDS", "REALTY": "RLTY",
-        "ROBOTICS": "ROBOTCS", "AEROSPACE": "AEROSP", "WATER": "WTR", "PHARMA": "PHARM", "PAYMENTS": "PMTS",
-        "LABS": "LABS", "OUTDOOR": "OUTDR", "PACKAGING": "PKG", "MOBILITY": "MOBLTY", "ANALYTICS": "ANALYTCS",
-        "CORPORATION": "CORP", "GROUP": "GRP", "INC": "", "CO": "", "LTD": "LTD", "CORP": "CORP"}
-
-
-def abbreviate(name):
-    w = name.split()
-    out = [w[0]] + [ABBR.get(x, x) for x in w[1:]]
-    return " ".join(x for x in out if x)
-
-
-def build_filings(wd, r):
-    M, I = wd.M, wd.I
-    roles = wd.roles
-    H = wd.hosts
-    agents = [1_104_659, 1_213_900, 1_085_146, 950_123, 1_567_619]
-    seqs = {}
-
-    def acc_for(mid, d):
-        cik = M[mid]["cik"] if r.random() < 0.45 else int(agents[r.integers(len(agents))])
-        yy = d.year % 100
-        seqs[(cik, yy)] = seqs.get((cik, yy), int(r.integers(1, 400))) + int(r.integers(1, 30))
-        return _acc(cik, yy, seqs[(cik, yy)])
-
-    price = {q: {} for q in QUARTERS}
-    for i in wd.iss:
-        price["Q2"][i["iid"]] = i["P2"]; price["Q3"][i["iid"]] = i["P3"]; price["Q4"][i["iid"]] = i["P4"]
-    wd.price = price
-    titles = {}
-    for h, iid, t, pct in TV_LINES:
-        titles[(H[h], iid)] = t
-
-    def make_lines(mid, q, holdings, rr, thousands):
-        mm = M[mid]
-        lines = []
-        for iid, sh in sorted(holdings.items()):
-            ii = I[iid]
-            px = price[q][iid]
-            parts = [sh]
-            if mid == roles["SP"] and iid in ("W04", "W09") and q == "Q4":
-                a = int(sh * 0.38); b = int(sh * 0.34); parts = [a, b, sh - a - b]
-            elif mid == roles["SP"] and q == "Q4" and ii["watch"]:
-                a = int(sh * 0.55); parts = [a, sh - a]
-            elif mm["type"] in ("banktrust", "passive") and mid not in wd.special and rr.random() < 0.30 and sh > 50:
-                a = int(sh * rr.uniform(0.2, 0.8)); parts = [a, sh - a]
-            title = titles.get((mid, iid), "COM") if q == "Q3" else "COM"
-            for k, s in enumerate(parts):
-                v = s * px
-                v = int(round(v / 1000.0)) if thousands else int(round(v))
-                disc = "SOLE" if k == 0 else ("DFND" if mm["type"] in ("banktrust", "passive") else "OTR")
-                lines.append(dict(iid=iid, cusip=ii["cusip"], name=ii["name"], title=title,
-                                  value=v, shares=int(s), sht="SH", putcall="", disc=disc,
-                                  othmgr="" if k == 0 else str(k)))
-        return lines
-
-    filings = []
-    hold_by = {q: {} for q in QUARTERS}
-    for q in QUARTERS:
-        for (mid, iid), sh in wd.pos[q].items():
-            hold_by[q].setdefault(mid, {})[iid] = sh
-
-    rr = W.rng("lines")
-    rs_, nh_, a1_ = H["RS"], H["NH"], H["A1"]
-    rd = W.rng("dev-acc")
-    used_seq = {}
-
-    def dev_acc(cik, d):
-        yy = d.year % 100
+    def draw_name(sex):
         while True:
-            seq = int(rd.integers(20_000, 90_000))
-            a = _acc(cik, yy, seq)
-            if a not in used_seq:
-                used_seq[a] = 1
-                return a
-    for (mid, q), d in sorted(wd.fdate.items(), key=lambda kv: (kv[1], kv[0])):
-        if d > W.EXTRACT_DATE:
-            continue
-        thousands = d < W.UNIT_SWITCH
-        if mid == roles["TK"] and q == "Q4":
-            thousands = True       # reported on the old basis after the switch
-        if mid in wd.notice:
-            filings.append(Filing(acc_for(mid, d), mid, q, d, "13F-NT", "13F NOTICE"))
-            continue
-        h = dict(hold_by[q].get(mid, {}))
-        rtype = "13F COMBINATION REPORT" if M[mid]["type"] == "banktrust" and mid not in wd.special and rr.random() < 0.25 else "13F HOLDINGS REPORT"
-        name = wd.new_name.get(mid, "") if q == "Q4" else ""
-        addl = "Market values in this report are stated in thousands of dollars." if (mid == roles["TK"] and q == "Q4") else ""
-        if mid == nh_ and q == "Q3":
-            # DV-1: the original leaves out a second trust account's share of every watchlist position; on 31
-            # October the department files a NEW HOLDINGS amendment (amendment 1) adding it, and the custodian's
-            # agent files a RESTATEMENT (amendment 2) with one merged line per name, the same afternoon
-            tr = {k: int(round(v * DV1_T[k])) for k, v in h.items() if k in DV1_T}
-            base = {k: (v - tr[k] if k in tr else v) for k, v in h.items()}
-            f0 = Filing(acc_for(mid, d), mid, q, d, "13F-HR", rtype, lines=make_lines(mid, q, base, rr, True), thousands=True)
-            for ln in f0.lines:
-                if ln["iid"] in NH_OMIT:
-                    ln["devdraw"] = True      # lines the loop-0 original left out draw from the device stream
-            d2 = dt.date(2022, 10, 31)
-            ghost = Filing(acc_for(mid, d2), mid, q, d2, "13F-HR/A", rtype, 1, "NEW HOLDINGS",
-                           lines=[dict(disc="SOLE", putcall="") for _ in NH_OMIT], thousands=True)
-            ghost.ghost = True                # the loop-0 amendment's draws, so every other row keeps its bytes
-            f1 = Filing(dev_acc(AGENT_NH, d2), mid, q, d2, "13F-HR/A", rtype, 1, "NEW HOLDINGS",
-                        lines=make_lines(mid, q, tr, rr, True), thousands=True)
-            f2 = Filing(dev_acc(AGENT_RS, d2), mid, q, d2, "13F-HR/A", rtype, 2, "RESTATEMENT",
-                        lines=make_lines(mid, q, h, rr, True), thousands=True)
-            f1.dev = f2.dev = True
-            filings += [f0, ghost, f1, f2]
-            continue
-        if mid == rs_ and q == "Q3":
-            # DV-2: the original overstates every watchlist position (a terminated custody account left in the
-            # run); the restatement restates every position, adds option lines the original left out and keys a
-            # few CUSIPs off-format; its submission header carries the June period (the agent's June template)
-            orig = {k: int(round(v * (1 + DV2_O[k]))) if k in DV2_O else v for k, v in h.items()}
-            f0 = Filing(acc_for(mid, d), mid, q, d, "13F-HR", rtype, lines=make_lines(mid, q, orig, rr, True), thousands=True)
-            d2 = dt.date(2022, 10, 28)
-            f1 = Filing(acc_for(mid, d2), mid, q, d2, "13F-HR/A", rtype, 1, "RESTATEMENT",
-                        lines=make_lines(mid, q, h, rr, True), thousands=True)
-            f1.sub_q = "Q2"
-            for ln in f1.lines:
-                if ln["iid"] in DV2_KEYED:
-                    c = I[ln["iid"]]["cusip"]
-                    ln["cusip"] = c.lstrip("0") if c[0] == "0" else c.lower()
-            for iid, t, sh in DV2_OPT:
-                v = int(round(sh * price["Q3"][iid] / 1000.0))
-                f1.lines.append(dict(iid=iid, cusip=I[iid]["cusip"], name=I[iid]["name"], title=t, value=v,
-                                     shares=sh, sht="SH", putcall=t.title(), disc="SOLE", othmgr=""))
-            filings += [f0, f1]
-            continue
-        if mid == a1_ and q == "Q3":
-            orig = {k: (hold_by["Q2"][mid][k] if k in A1_STALE else v) for k, v in h.items()}
-            f0 = Filing(acc_for(mid, d), mid, q, d, "13F-HR", rtype, lines=make_lines(mid, q, orig, rr, True), thousands=True)
-            d2 = dt.date(2022, 10, 26)
-            f1 = Filing(acc_for(mid, d2), mid, q, d2, "13F-HR/A", rtype, 1, "RESTATEMENT",
-                        lines=make_lines(mid, q, h, rr, True), thousands=True)
-            filings += [f0, f1]
-            continue
-        filings.append(Filing(acc_for(mid, d), mid, q, d, "13F-HR", rtype, lines=make_lines(mid, q, h, rr, thousands),
-                              thousands=thousands, name=name, addl=addl))
+            sur = W.SURNAMES[int(rng.integers(len(W.SURNAMES)))]
+            if sur in SA_SURNAMES:
+                fn = (SA_F if sex == "F" else SA_M)[int(rng.integers(10))]
+            else:
+                fn = (W.FORENAMES_F if sex == "F" else W.FORENAMES_M)[int(rng.integers(50))]
+            if rng.random() < 0.42 and sur not in SA_SURNAMES:
+                mid = W.MIDDLE[int(rng.integers(0, 10)) if sex == "F" else int(rng.integers(10, 20))]
+                if mid != fn:
+                    fn = fn + " " + mid
+            return sur, fn
 
-    # ---- option lines with the put/call field filled (dealers and bank trust departments), every quarter
-    by_mid_q = {(f.mid, f.q): f for f in filings if f.form == "13F-HR" and not f.amend_no}
-    writers_all = sorted(m["mid"] for m in wd.mgrs if m["type"] in ("dealer", "banktrust") and m["mid"] not in wd.special)
-    for q in QUARTERS:
-        for i in wd.iss:
-            ro = W.rng("opt", q, i["iid"])
-            budget = (0.0085 if i["watch"] else 0.006) * i["S_oct"] * float(ro.uniform(0.6, 1.0))
-            if q == "Q4" and i["iid"] == "W07":
-                continue
-            if q == "Q4" and i["iid"] == "W03":
-                budget *= 0.12
-            writers = [x for x in writers_all if (x, q) in by_mid_q]
-            k = int(ro.integers(2, 6))
-            ws = ro.choice(len(writers), size=k, replace=False)
-            amts = ro.dirichlet(np.ones(k)) * budget
-            for j, a in zip(ws, amts):
-                f = by_mid_q[(writers[j], q)]
-                sh = int(round(a / 100.0)) * 100
-                if sh <= 0:
-                    continue
-                v = sh * price[q][i["iid"]]
-                v = int(round(v / 1000.0)) if f.thousands else int(round(v))
-                t = "CALL" if ro.random() < 0.55 else "PUT"
-                f.lines.append(dict(iid=i["iid"], cusip=i["cusip"], name=i["name"], title=t, value=v, shares=sh,
-                                    sht="SH", putcall=t.title(), disc="SOLE", othmgr=""))
+    age_bands = [(18, 59, 0.07), (60, 69, 0.12), (70, 79, 0.22), (80, 89, 0.35), (90, 103, 0.24)]
+    aw = np.array([b[2] for b in age_bands])
 
-    # ---- A2: options keyed only in the title of class (two wealth departments' filing software)
-    byq3 = {f.mid: f for f in filings if f.q == "Q3" and f.form == "13F-HR" and not f.amend_no}
-    wd.a2 = []
-    for h, iid, t, pct in A2_LINES:
-        f = byq3[H[h]]
-        i = I[iid]
-        sh = int(round(pct / 100 * i["S_sep"] / 100.0)) * 100
-        v = int(round(sh * price["Q3"][iid] * 0.06 / 1000.0))
-        f.lines.append(dict(iid=iid, cusip=i["cusip"], name=i["name"], title=t, value=v, shares=sh,
-                            sht="SH", putcall="", disc="SOLE", othmgr=""))
-        wd.a2.append((f.acc, iid, sh))
+    def one_death(p, d, heat):
+        sex = "F" if rng.random() < 0.51 else "M"
+        bi = int(rng.choice(5, p=aw / aw.sum()))
+        lo, hi, _ = age_bands[bi]
+        if p == "Ashwold" and bi < 4 and rng.random() < 0.15:
+            lo, hi, _ = age_bands[bi + 1]
+        age = int(rng.integers(lo, hi + 1))
+        dob = d - D(days=int(age * 365.25 + rng.integers(0, 365)))
+        sur, fn = draw_name(sex)
+        while (sur.lower(), fn.lower(), dob) in seen:
+            sur, fn = draw_name(sex)
+        seen.add((sur.lower(), fn.lower(), dob))
+        upc, newpc, term = usual_pool[p][int(rng.integers(len(usual_pool[p])))]
+        if newpc and term and d >= term and rng.random() < 0.7:
+            upc = newpc
+        home_share = W.HOME[p]
+        if heat:
+            home_share = {"Ashwold": 0.78, "Hollinsgate": 0.46}.get(p, 0.30)
+        r = rng.random()
+        if r < home_share:
+            pod = "Home"
+        elif r < home_share + 0.21:
+            pod = "Care home"
+        elif r < home_share + 0.21 + 0.06:
+            pod = "Hospice"
+        elif r < home_share + 0.21 + 0.06 + 0.02:
+            pod = "Other"
+        else:
+            pod = "Hospital"
+        area = W.OFFICE[p]
+        u = rng.random()
+        if pod == "Hospital" and u < 0.08:
+            area = "Outside"
+        elif pod == "Hospital" and u < 0.14:
+            area = "South" if area == "North" else "North"
+        if pod == "Home":
+            pdpc, podname = upc, "Usual address"
+        elif pod == "Care home":
+            pdpc, podname = care_pc[p][int(rng.integers(len(care_pc[p])))], "Care home"
+            if pdpc == upc:
+                pass
+            if rng.random() < 0.8:
+                upc = pdpc
+        elif pod == "Hospice":
+            pdpc, podname = hospice_pc[area if area != "Outside" else W.OFFICE[p]], W.HOSPICE[area if area != "Outside" else W.OFFICE[p]]
+            area = area if area != "Outside" else W.OFFICE[p]
+        elif pod == "Hospital":
+            if area == "Outside":
+                pdpc = outside_pc[int(rng.integers(len(outside_pc)))]
+                podname = W.OUTSIDE_HOSPITALS[int(rng.integers(3))]
+            else:
+                pdpc, podname = hosp_pc[area], W.HOSPITAL[area]
+        else:
+            pdpc, podname = upc, "Other private address"
+        return dict(place=p, dod=d, sex=sex, age=age, dob=dob, surname=sur, forenames=fn, usual_pc=upc,
+                    pod=pod, pod_name=podname, pod_pc=pdpc, area=area, heat=heat, resident=True,
+                    marital=W.MARITAL[int(rng.integers(5))] if age > 25 else "Single",
+                    occupation=W.OCCUPATIONS[int(rng.integers(0, 15)) if age >= 65 else int(rng.integers(14, 20))])
 
-    # ---- A3: failed check digits under abbreviated issuer names; keyed CUSIPs (leading zeros, lower case)
-    allbase = {i["cusip"][:8] for i in wd.iss}
-    wd.a3, wd.ky = [], []
-    for h, iid, kind, pct in A3_LINES:
-        f = byq3[H[h]]
-        i = I[iid]
-        for ln in f.lines:
-            if ln["iid"] == iid and not ln["putcall"]:
-                c = i["cusip"]
-                if kind == "swap":
-                    b8 = c[:8]
-                    for a in range(1, 7):
-                        nb = b8[:a] + b8[a + 1] + b8[a] + b8[a + 2:]
-                        if nb != b8 and nb not in allbase and W.cusip_check(nb) != c[8]:
-                            break
-                    else:
-                        raise AssertionError(("no transposition", iid))
-                    ln["cusip"] = nb + c[8]
+    for d in days:
+        for p in W.NAMES:
+            for _ in range(counts.get((p, d), 0)):
+                deaths.append(one_death(p, d, False))
+            for _ in range(getattr(T, "heatx", {}).get((p, d), 0)):
+                deaths.append(one_death(p, d, True))
+
+    # non-residents dying in the board's area once the medical examiners began (they reach the logs only)
+    for d in daterange(W.ME_START, W.LAST_DEATH):
+        for area in ("North", "South"):
+            n = int(rng.poisson(1.6 if area == "North" else 1.3))
+            for _ in range(n):
+                sex = "F" if rng.random() < 0.5 else "M"
+                age = int(rng.integers(45, 99))
+                dob = d - D(days=int(age * 365.25 + rng.integers(0, 365)))
+                sur, fn = draw_name(sex)
+                while (sur.lower(), fn.lower(), dob) in seen:
+                    sur, fn = draw_name(sex)
+                seen.add((sur.lower(), fn.lower(), dob))
+                hosp = rng.random() < 0.8
+                deaths.append(dict(place=None, dod=d, sex=sex, age=age, dob=dob, surname=sur, forenames=fn,
+                                   usual_pc=outside_pc[int(rng.integers(len(outside_pc)))],
+                                   pod="Hospital" if hosp else "Hospice",
+                                   pod_name=W.HOSPITAL[area] if hosp else W.HOSPICE[area],
+                                   pod_pc=hosp_pc[area] if hosp else hospice_pc[area], area=area, heat=False,
+                                   resident=False, marital="Married", occupation="Retired"))
+
+    deaths.sort(key=lambda x: (x["dod"], x["surname"], x["forenames"], x["dob"]))
+
+    # ---------------------------------------------------------------- certification and registration
+    held_left = dict(W.HELD)
+    for x in deaths:
+        d = x["dod"]
+        me = d >= W.ME_START and x["area"] in ("North", "South")
+        alone_home = x["pod"] == "Home"
+        found_late = False
+        if x["heat"] and alone_home and x["resident"] and held_left.get(x["place"], 0) > 0:
+            found_late = True
+            held_left[x["place"]] -= 1
+        x["found_late"] = found_late
+        if found_late:
+            route = "inquest"
+        else:
+            ref = 0.26 if me else 0.28
+            if alone_home:
+                ref = 0.45
+            if rng.random() < ref:
+                v = rng.random()
+                route = "100A" if v < 0.36 else ("100B" if v < 0.82 else "inquest")
+            else:
+                route = "mccd"
+            if W.W0 <= d <= W.W1 and d.year == 2026 and x["area"] == "Outside" and route == "inquest":
+                route = "100B"
+        x["route"] = route
+        # registration
+        if route == "mccd":
+            delay = int(min(40, 1 + rng.gamma(2.2, 1.9 if me else 1.4)))
+        elif route == "100A":
+            delay = int(8 + rng.integers(0, 20))
+        elif route == "100B":
+            delay = int(14 + rng.integers(0, 34))
+        else:
+            med = 200 if (x["area"] == "North" or (x["area"] == "Outside" and W.OFFICE.get(x["place"]) == "North")) else 150
+            dur = int(rng.lognormal(math.log(med), 0.45))
+            if found_late:
+                dur = max(dur, (W.EXTRACT - d).days + 25 + int(rng.integers(0, 60)))
+            delay = dur + int(rng.integers(1, 6))
+            x["inquest_opened"] = d + D(days=int(5 + rng.integers(0, 16)))
+            x["inquest_concluded"] = d + D(days=delay - int(rng.integers(1, 4)))
+        x["misaddr"] = None
+        if (d.year == 2025 and x["resident"] and x["pod"] == "Care home" and x["area"] != "Outside"
+                and x["place"] in ("Thornley Vale", "Moorbridge") and route in ("mccd", "100A")
+                and rng.random() < 0.30):
+            # a care home resident registered at the family's address in another place, by the care home's manager
+            fam = "Hollinsgate" if x["place"] == "Thornley Vale" else "Calderholt"
+            x["misaddr"] = (usual_pool[fam][int(rng.integers(len(usual_pool[fam])))][0], fam)
+            delay = int(1 + rng.integers(0, 3))
+        x["reg_date"] = d + D(days=delay)
+        x["registered"] = x["reg_date"] <= W.EXTRACT
+        # the coroner's steps
+        if route in ("100A", "100B", "inquest"):
+            x["referred"] = d + D(days=int(rng.integers(0, 4)))
+            if route == "100A":
+                x["decision"] = x["referred"] + D(days=int(1 + rng.integers(0, 5)))
+            elif route == "100B":
+                x["decision"] = x["referred"] + D(days=int(1 + rng.integers(0, 4)))
+            else:
+                x["decision"] = x["inquest_opened"]
+        x["me"] = me
+    T.deaths = deaths
+
+    # ---------------------------------------------------------------- the medical examiner offices' cases
+    seq = {"North": {}, "South": {}}
+    cref = {"North": {}, "South": {}}
+    cases = []
+
+    def next_ref(area, y):
+        seq[area][y] = seq[area].get(y, 0) + 1
+        return ("N%02d-%05d" if area == "North" else "SE-%02d-%05d") % (y % 100, seq[area][y])
+
+    def next_cref(area, y):
+        cref[area][y] = cref[area].get(y, 0) + 1
+        return ("NE/%02d/%04d" if area == "North" else "SC%02d-%04d") % (y % 100, cref[area][y])
+
+    for x in deaths:
+        if not x["me"]:
+            continue
+        area = x["area"]
+        d = x["dod"]
+        if x["route"] == "mccd":
+            comp = business_days_after(d, int(1 + rng.integers(0, 4)))
+            if rng.random() < 0.06:
+                # the medical examiner asked the coroner's officer for advice and certified: one row, a reference
+                cases.append(dict(death=x, area=area, ref=next_ref(area, comp.year), completed=comp, outcome="MCCD",
+                                  decision="Advice only", decision_date=comp, cref=next_cref(area, comp.year),
+                                  relog=False, forenames=x["forenames"]))
+            else:
+                cases.append(dict(death=x, area=area, ref=next_ref(area, comp.year), completed=comp, outcome="MCCD",
+                                  decision=None, decision_date=None, cref="", relog=False, forenames=x["forenames"]))
+            continue
+        comp = x["referred"]
+        cr = next_cref(area, comp.year)
+        x["cref"] = cr
+        fn = x["forenames"]
+        first = fn.split()[0]
+        relog_variant = False
+        if x["route"] == "100A" and first in W.VARIANT and not (W.W0 <= d <= W.W1 + D(days=40)) \
+                and rng.random() < 0.55:
+            fn = W.VARIANT[first] + fn[len(first):]
+            relog_variant = True
+        dec = {"100A": "100A", "100B": "Post-mortem", "inquest": "Inquest opened"}[x["route"]]
+        dd = x["decision"]
+        if x["route"] == "inquest" and x.get("inquest_opened") and x["inquest_opened"] > W.EXTRACT:
+            dec, dd = "Awaiting decision", None
+        if dd is not None and dd > W.EXTRACT:
+            dec, dd = "Awaiting decision", None
+        cases.append(dict(death=x, area=area, ref=next_ref(area, comp.year), completed=comp, outcome="Referred",
+                          decision=dec, decision_date=dd, cref=cr, relog=False, forenames=fn, variant=relog_variant))
+        if x["route"] == "100A" and dd is not None:
+            rc = business_days_after(dd, int(1 + rng.integers(0, 2)))
+            if W.quarter_fy(rc) != W.quarter_fy(comp) or rc.year != comp.year:
+                # keep a returned death inside the quarter its referral was completed in
+                rc = comp + D(days=0)
+            if rc <= W.EXTRACT:
+                cases.append(dict(death=x, area=area, ref=next_ref(area, rc.year), completed=rc, outcome="MCCD",
+                                  decision="100A", decision_date=dd, cref=cr, relog=True,
+                                  forenames=x["forenames"]))
+    cases.sort(key=lambda c: (c["area"], c["completed"], c["ref"]))
+    T.cases = cases
+
+    # ---------------------------------------------------------------- register rows (residents only)
+    rows = []
+    for x in deaths:
+        if not x["resident"] or not x["registered"]:
+            continue
+        cert = {"mccd": "Medical certificate", "100A": "Medical certificate", "100B": "Coroner (post-mortem)",
+                "inquest": "Coroner (inquest)"}[x["route"]]
+        if x["route"] in ("mccd", "100A") and x["dod"] >= W.ME_START:
+            cert = "Medical certificate (medical examiner)"
+        if x["area"] == "Outside":
+            dist = "Kexley"
+        else:
+            dplace = x["place"] if x["pod"] in ("Home", "Care home", "Other") else (
+                W.HOSPITAL_PLACE[x["area"]] if x["pod"] == "Hospital" else W.HOSPICE_PLACE[x["area"]])
+            dist = W.DISTRICT_OF_PLACE[dplace]
+        x["district"] = dist
+        if x["misaddr"]:
+            # registered at the family's address; corrected to the care home in the district's March 2026 review
+            rows.append(dict(death=x, kind="Registration", date=x["reg_date"], marital=x["marital"],
+                             occupation=x["occupation"], cert=cert, usual_pc=x["misaddr"][0], place=x["misaddr"][1]))
+            cd = dt.date(2026, 3, 16) + D(days=int(rng.integers(0, 5)))
+            rows.append(dict(death=x, kind="Correction", date=cd, marital=x["marital"], occupation=x["occupation"],
+                             cert=cert, usual_pc=x["usual_pc"], place=x["place"]))
+            continue
+        rows.append(dict(death=x, kind="Registration", date=x["reg_date"], marital=x["marital"],
+                         occupation=x["occupation"], cert=cert, usual_pc=x["usual_pc"], place=x["place"]))
+        if rng.random() < 0.026:
+            cd = x["reg_date"] + D(days=int(10 + rng.integers(0, 290)))
+            if cd <= W.EXTRACT:
+                field = "occupation" if rng.random() < 0.6 else "marital"
+                occ, mar = x["occupation"], x["marital"]
+                if field == "occupation":
+                    occ = W.OCCUPATIONS[(W.OCCUPATIONS.index(occ) + 3) % len(W.OCCUPATIONS)]
                 else:
-                    ln["cusip"] = c[:8] + str((int(c[8]) + 4) % 10)
-                ln["name"] = abbreviate(i["name"])
-                wd.a3.append((f.acc, iid, kind, ln["shares"]))
-    for h, iid, pct in KY_LINES:
-        f = byq3[H[h]]
-        i = I[iid]
-        for ln in f.lines:
-            if ln["iid"] == iid and not ln["putcall"]:
-                ln["cusip"] = i["cusip"].lstrip("0") if i["cusip"][0] == "0" else i["cusip"].lower()
-                wd.ky.append((f.acc, iid, ln["shares"]))
-    # ---- DV-3: options a bank trust kept confidential, added in January (NEW HOLDINGS, CONFDENIEDEXPIRED Y)
-    plain_bt = [m["mid"] for m in sorted(wd.mgrs, key=lambda m: m["mid"]) if m["type"] == "banktrust"
-                and m["mid"] not in wd.special and not m["family"]]
-    dv3 = plain_bt[12]
-    wd.roles["DV3"] = dv3
-    lines = []
-    for iid, t, sh in DV3_OPT:
-        lines.append(dict(iid=iid, cusip=I[iid]["cusip"], name=I[iid]["name"], title=t,
-                          value=int(round(sh * price["Q3"][iid])), shares=sh, sht="SH", putcall=t.title(),
-                          disc="SOLE", othmgr=""))
-    f3 = Filing(dev_acc(M[dv3]["cik"], DV3_DATE), dv3, "Q3", DV3_DATE, "13F-HR/A", byq3[dv3].reporttype, 1,
-                "NEW HOLDINGS", lines=lines, thousands=False, conf="13-JAN-2023")
-    f3.dev = True
-    filings.append(f3)
-    # ---- ordinary same-day pairs: three departments re-file their September report in full the day they filed
-    #      it (a cover-page or voting-authority correction), through either filing agent
-    wd.sameday = []
-    for mid in plain_bt[13:16]:
-        f0 = byq3[mid]
-        agent = AGENT_RS if len(wd.sameday) % 2 == 0 else AGENT_NH
-        fa = Filing(dev_acc(agent, f0.date), mid, "Q3", f0.date, "13F-HR/A", f0.reporttype, 1, "RESTATEMENT",
-                    lines=[dict(ln) for ln in f0.lines], thousands=f0.thousands)
-        fa.dev = True
-        filings.append(fa)
-        wd.sameday.append(mid)
-    # texture: December lines of other covered securities keyed off-format by bank trust departments
-    rc = W.rng("cusip")
-    for f in filings:
-        if f.q != "Q4" or f.form == "13F-NT" or M[f.mid]["type"] != "banktrust":
-            continue
-        for ln in f.lines:
-            ii = I[ln["iid"]]
-            if not ii["watch"] and not ln["putcall"] and rc.random() < 0.01:
-                ln["cusip"] = ii["cusip"].lstrip("0") if ii["cusip"][0] == "0" else ii["cusip"].lower()
-    wd.filings = filings
+                    mar = W.MARITAL[(W.MARITAL.index(mar) + 1) % len(W.MARITAL)]
+                rows.append(dict(death=x, kind="Correction", date=cd, marital=mar, occupation=occ, cert=cert,
+                                 usual_pc=x["usual_pc"], place=x["place"]))
+    rows.sort(key=lambda r: (r["date"], r["death"]["district"], r["kind"], r["death"]["surname"]))
+    # entry numbers run on through the years in each district; a correction repeats the entry's number
+    nums = {}
+    entry = {}
+    for r in rows:
+        x = r["death"]
+        k = id(x)
+        if r["kind"] == "Registration":
+            nums[x["district"]] = nums.get(x["district"], 0) + 1
+            entry[k] = nums[x["district"]]
+        r["entry"] = entry.get(k)
+    rows = [r for r in rows if r["entry"] is not None]
+    T.rows = rows
+    T.pcs = pcs
+    T.outside_pc = outside_pc
+    return T

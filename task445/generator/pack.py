@@ -1,190 +1,269 @@
-"""Write the evidence pack under target/ from a simulated World."""
+"""Write target/ from the clean truth: the registration extract, the two medical examiner offices' logs, the postcode
+lookup, the registration districts, the three context files and (through docs.py) the fund's terms and the data
+notes. Every file is written the way its source system exports it."""
 import csv
 import datetime as dt
 import io
+import json
 import os
 
 import numpy as np
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
 
+import docs
+import postprocess as PP
 import world as W
-import docs as D
 
-SUB_COLS = ["ACCESSION_NUMBER", "FILING_DATE", "SUBMISSIONTYPE", "CIK", "PERIODOFREPORT"]
-COV_COLS = ["ACCESSION_NUMBER", "REPORTCALENDARORQUARTER", "ISAMENDMENT", "AMENDMENTNO", "AMENDMENTTYPE",
-            "CONFDENIEDEXPIRED", "DATEDENIEDEXPIRED", "DATEREPORTED", "REASONFORNONCONFIDENTIALITY",
-            "FILINGMANAGER_NAME", "FILINGMANAGER_STREET1", "FILINGMANAGER_STREET2", "FILINGMANAGER_CITY",
-            "FILINGMANAGER_STATEORCOUNTRY", "FILINGMANAGER_ZIPCODE", "REPORTTYPE", "FORM13FFILENUMBER",
-            "CRDNUMBER", "SECFILENUMBER", "PROVIDEINFOFORINSTRUCTION5", "ADDITIONALINFORMATION"]
-INF_COLS = ["ACCESSION_NUMBER", "INFOTABLE_SK", "NAMEOFISSUER", "TITLEOFCLASS", "CUSIP", "VALUE", "SSHPRNAMT",
-            "SSHPRNAMTTYPE", "PUTCALL", "INVESTMENTDISCRETION", "OTHERMANAGER", "VOTING_AUTH_SOLE",
-            "VOTING_AUTH_SHARED", "VOTING_AUTH_NONE"]
+REG = "ellesmoor_death_registrations_2021-2026.csv"
+NORTH = "north_ellesmoor_me_office_log.xlsx"
+SOUTH = "south_ellesmoor_me_office_cases.json"
+LOOKUP = "postcode_to_place_lookup.csv"
+DISTRICTS = "registration_districts.csv"
+POPULATION = "population_estimates_mid-2025.csv"
+TEMPERATURE = "daily_max_temperature_2026.csv"
+ALERTS = "heat_health_alerts_summer_2026.csv"
+TERMS = "heat_resilience_fund_2027_terms.pdf"
+CARE = "care_home_locations_2026-10.xlsx"
+DISTRACTORS = [POPULATION, TEMPERATURE, ALERTS, CARE]
 
-
-def _w_tsv(path, cols, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        fh.write("\t".join(cols) + "\n")
-        for r in rows:
-            fh.write("\t".join("" if r.get(c) is None else str(r.get(c)) for c in cols) + "\n")
-
-
-# ZIP code ranges of the managers' cities (USPS delivery areas of each city centre)
-ZIP_RANGE = {"NEW YORK": (10001, 10282), "GREENWICH": (6830, 6836), "BOSTON": (2108, 2137), "SAN FRANCISCO": (94102, 94134),
-             "CHICAGO": (60601, 60661), "DALLAS": (75201, 75254), "PHILADELPHIA": (19102, 19154), "PRINCETON": (8540, 8544),
-             "MIAMI": (33125, 33199), "ATLANTA": (30303, 30363), "DENVER": (80202, 80239), "SEATTLE": (98101, 98199),
-             "MINNEAPOLIS": (55401, 55488), "COLUMBUS": (43201, 43240), "BALTIMORE": (21201, 21239),
-             "RICHMOND": (23218, 23298), "CHARLOTTE": (28202, 28299), "ST. LOUIS": (63101, 63199),
-             "MILWAUKEE": (53202, 53295), "NASHVILLE": (37201, 37250), "SCOTTSDALE": (85250, 85268)}
+CARE_NAMES = ["Beech Lodge", "The Laurels", "Holly Bank", "Ashgrove House", "Moorside Court", "Elm Tree Lodge",
+              "Rowan House", "Fernlea", "Oak Lodge", "The Willows", "Heathview", "Millbrook House", "Larch Court",
+              "Brookfield", "Highcroft", "Meadowbank", "Cedar House", "Woodlands", "Thornfield House", "Valley View",
+              "Birch Court", "Rose Lodge", "Greenacres", "Hillside", "Linden House", "Spring Bank", "Hawthorn Lodge",
+              "Westfield", "Prospect House", "Moorlands", "Kingfisher Court", "Orchard House", "Bramley Lodge",
+              "Sycamore House", "Riverside", "Hazelwood", "Primrose Court", "St Anne's", "Lilac House", "Abbeyfield",
+              "Glebe House", "Fairview", "Clough Bank", "Mill View", "The Grange", "Ivy Court", "Southlands",
+              "Copper Beeches", "Holme Lea", "Wharf House"]
+OLD_CODE = {"Hollinsgate": "HOL", "Ashwold and Thornley": "ASH", "Calderholt": "CAL", "Brinmoor and Moorbridge": "BRM",
+            "Kexley": "KEX"}
+NEW_CODE = {"Hollinsgate": "E30000801", "Ashwold and Thornley": "E30000802", "Calderholt": "E30000803",
+            "Brinmoor and Moorbridge": "E30000804", "Kexley": "E30000917"}
 
 
-def write_drops(wd, target):
-    M = wd.M
-    rz = W.rng("pack-zip")
-    # each manager's ZIP code from its city's own range; the old uniform draw is still taken so every later draw
-    # from this stream keeps its value
-    rzc = W.rng("pack-zip-city")
-    zips = {}
-    for m in wd.mgrs:
-        rz.integers(10001, 99950)
-        lo, hi = ZIP_RANGE[m["city"]]
-        zips[m["mid"]] = f"{int(rzc.integers(lo, hi + 1)):05d}"
-    streets = {m["mid"]: f"{int(rz.integers(1, 2400))} {rz.choice(['MAIN ST', 'PARK AVENUE', 'BROAD ST', 'MARKET ST', 'STATE ST', 'WASHINGTON BLVD', 'ELM ST', 'LEXINGTON AVE', 'COMMERCE DR'])}" for m in wd.mgrs}
-    crd = {m["mid"]: ("" if m["type"] in ("banktrust", "instit") else str(int(rz.integers(100000, 330000)))) for m in wd.mgrs}
-    rzd = W.rng("pack-dev")
-    out = {}
-    for folder, d0, d1 in W.DROPS:
-        os.makedirs(os.path.join(target, folder), exist_ok=True)
-        fl = [f for f in wd.filings if d0 <= f.date <= d1]
-        fl.sort(key=lambda f: (f.date, f.acc))
-        sub, cov, inf = [], [], []
-        sk = int(rz.integers(40_000_000, 60_000_000))
-        for f in fl:
-            m = M[f.mid]
-            z = rzd if f.dev else rz          # device filings draw from their own stream
-            street2 = "SUITE " + str(100 + int(z.integers(0, 40)) * 10) if z.random() < 0.4 else ""
-            if f.ghost:                       # the loop-0 filing's draws only, so every other row keeps its bytes
-                for ln in f.lines:
-                    if m["type"] in ("ria", "banktrust") and ln["disc"] == "SOLE" and not ln["putcall"]:
-                        z.random()
-                continue
-            sub.append(dict(ACCESSION_NUMBER=f.acc, FILING_DATE=W.sec_date(f.date), SUBMISSIONTYPE=f.form,
-                            CIK=m["cik"], PERIODOFREPORT=W.sec_date(W.PERIODS[f.sub_q or f.q])))
-            cov.append(dict(ACCESSION_NUMBER=f.acc, REPORTCALENDARORQUARTER=W.sec_date(W.PERIODS[f.q]),
-                            ISAMENDMENT="Y" if f.amend_no else "N",
-                            AMENDMENTNO=f.amend_no if f.amend_no else "",
-                            AMENDMENTTYPE=f.amend_type,
-                            CONFDENIEDEXPIRED="Y" if f.conf else "", DATEDENIEDEXPIRED=f.conf,
-                            DATEREPORTED=W.sec_date(W.PERIODS[f.q]) if f.conf else "",
-                            REASONFORNONCONFIDENTIALITY="",
-                            FILINGMANAGER_NAME=f.name or m["name"], FILINGMANAGER_STREET1=streets[f.mid],
-                            FILINGMANAGER_STREET2=street2,
-                            FILINGMANAGER_CITY=m["city"], FILINGMANAGER_STATEORCOUNTRY=m["state"],
-                            FILINGMANAGER_ZIPCODE=zips[f.mid], REPORTTYPE=f.reporttype,
-                            FORM13FFILENUMBER=m["fileno"], CRDNUMBER=crd[f.mid], SECFILENUMBER="",
-                            PROVIDEINFOFORINSTRUCTION5="N",
-                            ADDITIONALINFORMATION=f.addl or _addl(f)))
-            for ln in f.lines:
-                sk += 1
-                zl = rzd if ln.get("devdraw") else z
-                sole = ln["shares"] if ln["disc"] == "SOLE" else 0
-                none = 0
-                shared = ln["shares"] - sole
-                if m["type"] in ("ria", "banktrust") and ln["disc"] == "SOLE" and not ln["putcall"]:
-                    none = int(ln["shares"] * 0.3) if zl.random() < 0.3 else 0
-                    sole -= none
-                if ln["putcall"]:
-                    sole = shared = none = 0
-                inf.append(dict(ACCESSION_NUMBER=f.acc, INFOTABLE_SK=sk, NAMEOFISSUER=ln["name"],
-                                TITLEOFCLASS=ln["title"], CUSIP=ln["cusip"], VALUE=ln["value"],
-                                SSHPRNAMT=ln["shares"], SSHPRNAMTTYPE=ln["sht"], PUTCALL=ln["putcall"],
-                                INVESTMENTDISCRETION=ln["disc"], OTHERMANAGER=ln["othmgr"],
-                                VOTING_AUTH_SOLE=sole, VOTING_AUTH_SHARED=shared, VOTING_AUTH_NONE=none))
-        _w_tsv(os.path.join(target, folder, "SUBMISSION.tsv"), SUB_COLS, sub)
-        _w_tsv(os.path.join(target, folder, "COVERPAGE.tsv"), COV_COLS, cov)
-        _w_tsv(os.path.join(target, folder, "INFOTABLE.tsv"), INF_COLS, inf)
-        out[folder] = dict(sub=len(sub), cov=len(cov), inf=len(inf))
-    return out
+def fmt_reg_date(d, old):
+    return d.strftime("%d/%m/%Y") if old else d.isoformat()
 
 
-def _addl(f):
-    if f.amend_type == "NEW HOLDINGS" and f.conf:
-        return ""
-    if f.amend_type == "NEW HOLDINGS":
-        return "Amendment adds the holdings of one trust account omitted from the original report."
-    if f.amend_type == "RESTATEMENT":
-        return "Amendment restates the report in its entirety."
-    return ""
+def write_csv(path, header, rows):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n")
+    w.writerow(header)
+    for r in rows:
+        w.writerow(r)
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(buf.getvalue())
 
 
-def write_fsds(wd, target):
-    """Cover-page share counts in the FSDS sub/num layout, for the 10-Q and 10-K filings our
-    security master pulls (issuers on the watchlist and the wider coverage list)."""
-    folder = os.path.join(target, "fsds_cover_extract")
-    os.makedirs(folder, exist_ok=True)
-    rs = W.rng("fsds")
-    sub, num = [], []
-    for i in wd.iss:
-        cik = i["issuer_cik"]
-        # Q1 10-Q, Q2 10-Q, Q3 10-Q, FY 10-K (only those accepted by the extract)
-        docs = [("10-Q", dt.date(2022, 3, 31), "Q1", 2022, rs.integers(32, 44), i["S_apr"], 0),
-                ("10-Q", dt.date(2022, 6, 30), "Q2", 2022, rs.integers(28, 44), i["S_jul"], 0),
-                ("10-Q", dt.date(2022, 9, 30), "Q3", 2022, rs.integers(27, 43), i["S_oct"], 0)]
-        kd = int(rs.integers(26, 62))
-        if dt.date(2022, 12, 31) + dt.timedelta(days=kd) <= W.EXTRACT_DATE:
-            docs.append(("10-K", dt.date(2022, 12, 31), "FY", 2022, kd, i["S_jan"], 1))
-        if "S_A5" in i:
-            # a corrected cover page for the June quarter, filed in September after an August offering
-            docs.append(("10-Q/A", dt.date(2022, 6, 30), "Q2", 2022, int(rs.integers(75, 86)), i["S_A5"], 0))
-        amended = {(d[1], d[2]) for d in docs if d[0] == "10-Q/A"}
-        for form, per, fp, fy, lag, shares, _ in docs:
-            filed = W.business_day_on_or_after(per + dt.timedelta(days=int(lag)))
-            asof = filed - dt.timedelta(days=int(rs.integers(3, 12)))
-            prevrpt = 1 if (form == "10-Q" and (per, fp) in amended) else 0
-            seq = int(rs.integers(100, 99000))
-            adsh = f"{int(rs.integers(1000000, 1999999)):010d}-{filed.year % 100:02d}-{seq:06d}"
-            accepted = f"{filed.isoformat()} {int(rs.integers(6, 21)):02d}:{int(rs.integers(0, 60)):02d}:00.0"
-            sub.append(dict(adsh=adsh, cik=cik, name=i["name"], sic=i["sic"], countryba="US", stprba=i["state"],
-                            cityba=i["city"], form=form, period=per.strftime("%Y%m%d"), fy=fy, fp=fp,
-                            filed=filed.strftime("%Y%m%d"), accepted=accepted, prevrpt=prevrpt, nciks=1,
-                            afs=i["afs"], wksi=1 if i["afs"] == "1-LAF" else 0, fye="1231"))
-            num.append(dict(adsh=adsh, tag="EntityCommonStockSharesOutstanding", version="dei/2022",
-                            ddate=asof.strftime("%Y%m%d"), qtrs=0, uom="shares", coreg="", value=f"{shares}.0000", footnote=""))
-            if form == "10-K":
-                num.append(dict(adsh=adsh, tag="EntityPublicFloat", version="dei/2022", ddate="20220630", qtrs=0,
-                                uom="USD", coreg="", value=f"{int(i['S_jul'] * i['P2'] * rs.uniform(0.55, 0.9))}.0000", footnote=""))
-    sub_cols = ["adsh", "cik", "name", "sic", "countryba", "stprba", "cityba", "form", "period", "fy", "fp", "filed",
-                "accepted", "prevrpt", "nciks", "afs", "wksi", "fye"]
-    num_cols = ["adsh", "tag", "version", "ddate", "qtrs", "uom", "coreg", "value", "footnote"]
-    sub.sort(key=lambda r: (r["filed"], r["adsh"]))
-    num.sort(key=lambda r: (r["adsh"], r["tag"]))
-    _w_tsv(os.path.join(folder, "sub.txt"), sub_cols, sub)
-    _w_tsv(os.path.join(folder, "num.txt"), num_cols, num)
-    return dict(sub=len(sub), num=len(num))
+def care_home_name(T, pc):
+    keys = sorted({x["pod_pc"] for x in T.deaths if x["pod"] == "Care home"})
+    return {k: CARE_NAMES[i % len(CARE_NAMES)] for i, k in enumerate(keys)}
 
 
-def write_register(wd, target):
+def registrations(T, path):
+    names = care_home_name(T, None)
     rows = []
-    rr = W.rng("register")
-    for m in sorted(wd.mgrs, key=lambda m: m["cik"]):
-        since = ["2009Q4", "2012Q2", "2014Q1", "2016Q3", "2018Q1", "2019Q4", "2020Q2", "2021Q1"][int(rr.integers(8))]
-        if m["mid"] in wd.newq4:
-            since = "2022Q4"
-        rows.append({"cik": m["cik"], "manager_name": m["disp"], "family": m["family"],
-                     "manager_type": m["type_label"], "form13f_file_number": m["fileno"],
-                     "hq_state": m["state"], "covered_since": since,
-                     "status": "inactive" if m["mid"] in wd.attrit else "active"})
-    path = os.path.join(target, "manager_register.csv")
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
-        w.writeheader()
-        w.writerows(rows)
+    for r in T.rows:
+        x = r["death"]
+        old = r["date"] < W.SYSTEM_CHANGE
+        dist = x["district"]
+        if x["pod"] == "Care home":
+            pod = names[x["pod_pc"]]
+        else:
+            pod = x["pod_name"]
+        rows.append([dist, OLD_CODE[dist] if old else NEW_CODE[dist], r["entry"], 1 if r["kind"] == "Registration" else 2,
+                     fmt_reg_date(r["date"], old), fmt_reg_date(x["dod"], old), x["surname"].upper(), x["forenames"],
+                     fmt_reg_date(x["dob"], old), x["sex"], x["age"], r["marital"], r["occupation"], r["usual_pc"],
+                     W.CODE[r["place"]], x["pod"], pod, x["pod_pc"], r["cert"]])
+    header = ["registration_district", "district_code", "entry_number", "version", "date_of_registration",
+              "date_of_death", "deceased_surname", "deceased_forenames", "date_of_birth", "sex", "age_at_death",
+              "marital_status", "occupation", "usual_address_postcode", "usual_residence_code",
+              "place_of_death_type", "place_of_death", "place_of_death_postcode", "certification"]
+    write_csv(path, header, rows)
     return len(rows)
 
 
-def write_all(wd, target):
+DEC_N = {"100A": "Form 100A (no post-mortem)", "Post-mortem": "Post-mortem ordered", "Inquest opened": "Inquest opened",
+         "Awaiting decision": "Awaiting decision", "Advice only": "Advice only"}
+DEC_S = {"100A": "100A", "Post-mortem": "post_mortem", "Inquest opened": "inquest_opened",
+         "Awaiting decision": "awaiting", "Advice only": "advice_only"}
+POD_S = {"Hospital": "hospital", "Hospice": "hospice", "Home": "home", "Care home": "care_home", "Other": "other"}
+
+
+def north_log(T, path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Scrutiny log"
+    hdr = ["Case ref", "Date of death", "Deceased", "Date of birth", "Usual postcode", "Place of death",
+           "Scrutiny completed", "Outcome", "Coroner ref", "Coroner decision", "Decision date"]
+    ws.append(hdr)
+    for c in ws[1]:
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="005EB8")
+        c.alignment = Alignment(vertical="center")
+    names = care_home_name(T, None)
+    n = 0
+    for c in T.cases:
+        if c["area"] != "North":
+            continue
+        x = c["death"]
+        pod = names[x["pod_pc"]] if x["pod"] == "Care home" else (
+            "Home" if x["pod"] == "Home" else x["pod_name"])
+        ws.append([c["ref"], x["dod"], "%s, %s" % (x["surname"].upper(), c["forenames"]), x["dob"], x["usual_pc"], pod,
+                   c["completed"], "MCCD issued" if c["outcome"] == "MCCD" else "Referred to coroner",
+                   c["cref"] or None, DEC_N[c["decision"]] if c["decision"] else None, c["decision_date"]])
+        n += 1
+    for row in ws.iter_rows(min_row=2):
+        for idx in (1, 3, 6, 10):
+            if row[idx].value is not None:
+                row[idx].number_format = "dd/mm/yyyy"
+    for col, wdt in zip("ABCDEFGHIJK", [12, 12, 34, 12, 11, 30, 13, 20, 12, 26, 12]):
+        ws.column_dimensions[col].width = wdt
+    ws.freeze_panes = "A2"
+    wb.properties.creator = "Medical Examiner Office"
+    wb.properties.lastModifiedBy = "Medical Examiner Office"
+    wb.properties.created = dt.datetime(2024, 9, 2, 9, 12, 40)
+    wb.properties.modified = dt.datetime(2026, 10, 9, 16, 48, 5)
+    wb.save(path)
+    PP.normalize_zip(path, modified="2026-10-09T16:48:05Z",
+                     company="Hollinsgate Teaching Hospitals NHS Foundation Trust")
+    return n
+
+
+def utc(d, minute_of_day):
+    """a local time on date d, as the South office's system stores it (UTC)"""
+    local = dt.datetime(d.year, d.month, d.day) + dt.timedelta(minutes=minute_of_day)
+    bst = dt.date(d.year, 3, 31) - dt.timedelta(days=(dt.date(d.year, 3, 31).weekday() + 1) % 7) <= d < \
+        dt.date(d.year, 10, 31) - dt.timedelta(days=(dt.date(d.year, 10, 31).weekday() + 1) % 7)
+    return (local - dt.timedelta(hours=1 if bst else 0)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def south_cases(T, path):
+    rng = np.random.default_rng(W.SEED + 7)
+    names = care_home_name(T, None)
+    out = []
+    for c in T.cases:
+        if c["area"] != "South":
+            continue
+        x = c["death"]
+        sur = x["surname"]
+        given = c["forenames"]
+        pod = names[x["pod_pc"]] if x["pod"] == "Care home" else (
+            "Usual address" if x["pod"] == "Home" else x["pod_name"])
+        done = int(rng.integers(8 * 60 + 15, 17 * 60 + 50))
+        opened = max(8 * 60, done - int(rng.integers(30, 400)))
+        rec = {"case_id": c["ref"], "created_at": utc(c["completed"], opened),
+               "deceased": {"family_name": sur, "given_names": given, "date_of_birth": x["dob"].isoformat(),
+                            "sex": x["sex"]},
+               "death": {"date": x["dod"].isoformat(), "place_type": POD_S[x["pod"]], "place": pod,
+                         "usual_postcode": x["usual_pc"]},
+               "scrutiny": {"completed_at": utc(c["completed"], done),
+                            "outcome": "mccd" if c["outcome"] == "MCCD" else "referred"},
+               "coroner": None}
+        if c["cref"]:
+            rec["coroner"] = {"reference": c["cref"], "decision": DEC_S[c["decision"]],
+                              "decided_on": c["decision_date"].isoformat() if c["decision_date"] else None}
+        out.append(rec)
+    doc = {"system": "Pathfinder ME Case Manager", "office": "South Ellesmoor Medical Examiner Office",
+           "host": "Calderholt and Moorbridge Hospitals NHS Trust", "extracted_at": "2026-10-09T17:05:12Z",
+           "case_count": len(out), "cases": out}
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(doc, fh, indent=1, ensure_ascii=False)
+        fh.write("\n")
+    return len(out)
+
+
+def lookup(T, path):
+    rows = []
+    for pc, place, intro, term, repl in T.lookup:
+        rows.append([pc, W.CODE[place], place, intro.isoformat(), term.isoformat() if term else "", repl])
+    write_csv(path, ["postcode", "place_code", "place_name", "date_introduced", "date_terminated", "replaced_by"], rows)
+
+
+def districts(path):
+    rows = [[n, o, c, a + " Ellesmoor"] for n, o, c, a in W.REG_DISTRICTS]
+    rows.append(["Kexley", "KEX", "E30000917", "outside Ellesmoor"])
+    write_csv(path, ["registration_district", "code_to_2023-04-02", "code_from_2023-04-03", "coroner_area"], rows)
+
+
+def population(path):
+    shares = {"0-17": 0.205, "18-64": 0.590, "65-74": 0.105, "75-84": 0.070, "85+": 0.030}
+    old = {"Ashwold": 1.22, "Thornley Vale": 1.08, "Hollinsgate": 0.86}
+    rows = []
+    for p in W.NAMES:
+        tot = W.POP[p]
+        k = old.get(p, 1.0)
+        raw = {b: s * (k if b in ("65-74", "75-84", "85+") else 1.0) for b, s in shares.items()}
+        z = sum(raw.values())
+        vals = {b: int(round(tot * v / z)) for b, v in raw.items()}
+        vals["18-64"] += tot - sum(vals.values())
+        for b in shares:
+            rows.append([W.CODE[p], p, b, vals[b]])
+    write_csv(path, ["place_code", "place_name", "age_band", "population_mid_2025"], rows)
+
+
+def temperature(path):
+    rng = np.random.default_rng(W.SEED + 11)
+    rows = []
+    d = dt.date(2026, 6, 1)
+    while d <= dt.date(2026, 9, 30):
+        doy = d.timetuple().tm_yday
+        base = 19.5 + 2.5 * np.sin((doy - 120) / 365.25 * 2 * np.pi)
+        if W.HEAT26[0] <= d <= W.HEAT26[1]:
+            k = (d - W.HEAT26[0]).days
+            base = 27.5 + 6.0 * np.sin(np.pi * (k + 1) / 12)
+        for st, off in (("Hollinsgate Weston Park", 0.6), ("Brinmoor Edge", -1.1)):
+            rows.append([d.isoformat(), st, "%.1f" % (base + off + rng.normal(0, 1.4))])
+        d += dt.timedelta(days=1)
+    write_csv(path, ["date", "station", "max_air_temperature_c"], rows)
+
+
+def alerts(path):
+    rows = [["2026-06-23T11:00", "Yellow", "2026-06-24T09:00", "2026-06-26T17:00", "North of England"],
+            ["2026-07-10T11:00", "Yellow", "2026-07-12T09:00", "2026-07-14T09:00", "North of England"],
+            ["2026-07-12T10:30", "Amber", "2026-07-14T09:00", "2026-07-20T09:00", "North of England"],
+            ["2026-07-17T10:00", "Red", "2026-07-18T09:00", "2026-07-21T09:00", "North of England"],
+            ["2026-07-20T11:00", "Amber", "2026-07-21T09:00", "2026-07-25T09:00", "North of England"],
+            ["2026-08-11T11:00", "Yellow", "2026-08-12T09:00", "2026-08-14T17:00", "North of England"]]
+    write_csv(path, ["issued_at", "level", "valid_from", "valid_to", "region"], rows)
+
+
+def care_homes(T, path):
+    """the board's commissioning list of the care homes in its six places"""
+    rng = np.random.default_rng(W.SEED + 13)
+    names = care_home_name(T, None)
+    pc_place = {pc: pl for pc, pl, _, _, _ in T.lookup}
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Care homes"
+    ws.append(["Care home", "Postcode", "Place", "Service", "Registered beds", "Provider type"])
+    for c in ws[1]:
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="005EB8")
+    for pc in sorted(names, key=lambda k: (pc_place.get(k, ""), names[k])):
+        ws.append([names[pc], pc, pc_place.get(pc, ""), "Nursing" if rng.random() < 0.4 else "Residential",
+                   int(rng.integers(22, 96)), "Independent" if rng.random() < 0.85 else "Local authority"])
+    for col, wdt in zip("ABCDEF", [24, 11, 14, 12, 15, 15]):
+        ws.column_dimensions[col].width = wdt
+    wb.properties.creator = "Care Market Team"
+    wb.properties.lastModifiedBy = "Care Market Team"
+    wb.properties.created = dt.datetime(2025, 4, 7, 10, 3, 51)
+    wb.properties.modified = dt.datetime(2026, 10, 2, 14, 22, 9)
+    wb.save(path)
+    PP.normalize_zip(path, modified="2026-10-02T14:22:09Z")
+
+
+def write_all(T, target):
     os.makedirs(target, exist_ok=True)
     counts = {}
-    counts["drops"] = write_drops(wd, target)
-    counts["fsds"] = write_fsds(wd, target)
-    counts["register"] = write_register(wd, target)
-    D.write_docs(wd, target)
+    counts[REG] = registrations(T, os.path.join(target, REG))
+    counts[NORTH] = north_log(T, os.path.join(target, NORTH))
+    counts[SOUTH] = south_cases(T, os.path.join(target, SOUTH))
+    lookup(T, os.path.join(target, LOOKUP))
+    districts(os.path.join(target, DISTRICTS))
+    population(os.path.join(target, POPULATION))
+    temperature(os.path.join(target, TEMPERATURE))
+    alerts(os.path.join(target, ALERTS))
+    docs.terms(T, os.path.join(target, TERMS))
+    care_homes(T, os.path.join(target, CARE))
     return counts

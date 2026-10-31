@@ -3,14 +3,14 @@ import hashlib
 import re
 import zipfile
 
-FIXED = (2023, 2, 6, 7, 40, 0)
+FIXED = (2026, 10, 9, 17, 40, 0)
 
 
 DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
 NS_REL = b"http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
 
-def normalize_zip(path, when=FIXED, modified=None):
+def normalize_zip(path, when=FIXED, modified=None, company="NHS Ellesmoor Integrated Care Board"):
     """Repack an office container reproducibly. A workbook is laid out the way Excel saves one (shared
     strings, its own calc id and extended properties, its entry order, the 1980 entry stamp Office
     writes) and keeps its own last-saved stamp, given as `modified`; the cells are not touched."""
@@ -20,7 +20,7 @@ def normalize_zip(path, when=FIXED, modified=None):
     names = [n for n, _ in items]
     is_docx = "word/document.xml" in names
     if not is_docx:
-        items = _excel_like(dict(items), stamp)
+        items = _excel_like(dict(items), stamp, company)
         when = (1980, 1, 1, 0, 0, 0)
     doc_text = ""
     if is_docx:
@@ -42,7 +42,7 @@ def normalize_zip(path, when=FIXED, modified=None):
             z.writestr(zi, data)
 
 
-def _excel_like(parts, modified):
+def _excel_like(parts, modified, company):
     sst, index, count = [], {}, [0]
 
     def shared(m):
@@ -102,7 +102,7 @@ def _excel_like(parts, modified):
         b"<vt:variant><vt:i4>%d</vt:i4></vt:variant></vt:vector></HeadingPairs>" % len(titles)
         + b'<TitlesOfParts><vt:vector size="%d" baseType="lpstr">' % len(titles)
         + b"".join(b"<vt:lpstr>" + t_ + b"</vt:lpstr>" for t_ in titles)
-        + b"</vt:vector></TitlesOfParts><Company>Quillfield Research LLC</Company><LinksUpToDate>false</LinksUpToDate>"
+        + b"</vt:vector></TitlesOfParts><Company>" + company.encode() + b"</Company><LinksUpToDate>false</LinksUpToDate>"
         b"<SharedDoc>false</SharedDoc><HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion>"
         b"</Properties>")
     core = parts["docProps/core.xml"]

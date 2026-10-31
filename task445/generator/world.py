@@ -1,265 +1,119 @@
-"""The fixed world: calendar, managers, issuers, the watchlist design table.
-
-Everything here is deterministic from SEED. Names are invented from word lists (no real firm or
-issuer is depicted); CUSIPs carry a valid check digit; CIKs and accession numbers follow EDGAR's
-shapes.
-"""
+"""The fixed world of task445 architecture 2: NHS Ellesmoor integrated care board, its six places, two coroner areas,
+two medical examiner offices, the calendar and the name lists. Nothing here is random; sim.py draws from it."""
 import datetime as dt
-import numpy as np
+import os
 
-SEED = 445
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+GOLDEN = os.path.join(TASK, "golden")
 
-# ---------------------------------------------------------------- calendar
-PERIODS = {
-    "Q2": dt.date(2022, 6, 30),
-    "Q3": dt.date(2022, 9, 30),
-    "Q4": dt.date(2022, 12, 31),
-}
-DEADLINE = {"Q2": dt.date(2022, 8, 15), "Q3": dt.date(2022, 11, 14), "Q4": dt.date(2023, 2, 14)}
-EXTRACT_DATE = dt.date(2023, 2, 3)           # last EDGAR acceptance day in the daily build
-CUT_DAY = (EXTRACT_DATE - PERIODS["Q4"]).days  # 34
-UNIT_SWITCH = dt.date(2023, 1, 3)            # VALUE in dollars for filings on or after this date
-DROPS = [  # (folder, first submission date, last submission date)
-    ("form13f_2022q3", dt.date(2022, 7, 1), dt.date(2022, 9, 30)),
-    ("form13f_2022q4", dt.date(2022, 10, 1), dt.date(2022, 12, 31)),
-    ("edgar13f_daily_20230103_20230203", dt.date(2023, 1, 1), EXTRACT_DATE),
+SEED = 44502
+
+START = dt.date(2021, 1, 1)          # first date of death on the extract
+ME_START = dt.date(2024, 9, 9)       # the statutory medical examiner system in force
+LAST_DEATH = dt.date(2026, 10, 7)    # last date of death any source holds
+EXTRACT = dt.date(2026, 10, 9)       # registrations and both logs extracted at the end of this day
+W0, W1 = dt.date(2026, 6, 1), dt.date(2026, 8, 31)   # the fund's window, by date of death
+HEAT26 = (dt.date(2026, 7, 14), dt.date(2026, 7, 24))
+HEAT22 = (dt.date(2022, 7, 17), dt.date(2022, 7, 19))
+LINE = 0.10                          # a place qualifies at an excess of at least a tenth of its expected deaths
+GRANT, STANDARD = 300_000, 60_000
+
+# name, residence code, mid-2025 population, coroner area, medical examiner office, annual death rate, postcode
+# districts, share of deaths at home in an ordinary month, the 2026 summer's designed excess over the expected,
+# the summer deaths the coroner still holds at the extract beyond the ordinary inquests (heat wave, found late)
+PLACES = [
+    ("Hollinsgate", "E08000951", 415_200, "North", "North", 0.00905, range(1, 13), 0.25, 0.076, 12),
+    ("Ashwold", "E08000952", 205_400, "North", "North", 0.01310, range(13, 20), 0.27, 0.130, 40),
+    ("Thornley Vale", "E07000961", 131_300, "North", "North", 0.01080, range(20, 25), 0.26, 0.136, 2),
+    ("Brinmoor", "E07000962", 178_100, "South", "South", 0.00985, range(25, 30), 0.26, 0.068, 0),
+    ("Calderholt", "E08000953", 238_600, "South", "South", 0.01010, range(30, 36), 0.25, 0.126, 1),
+    ("Moorbridge", "E07000963", 162_400, "South", "South", 0.01030, range(36, 41), 0.26, 0.055, 0),
 ]
-HOLIDAYS = {dt.date(2022, 7, 4), dt.date(2022, 9, 5), dt.date(2022, 10, 10), dt.date(2022, 11, 11),
-            dt.date(2022, 11, 24), dt.date(2022, 12, 26), dt.date(2023, 1, 2), dt.date(2023, 1, 16),
-            dt.date(2023, 2, 20)}
+NAMES = [p[0] for p in PLACES]
+CODE = {p[0]: p[1] for p in PLACES}
+POP = {p[0]: p[2] for p in PLACES}
+CORONER = {p[0]: p[3] for p in PLACES}
+OFFICE = {p[0]: p[4] for p in PLACES}
+RATE = {p[0]: p[5] for p in PLACES}
+DISTRICTS = {p[0]: list(p[6]) for p in PLACES}
+HOME = {p[0]: p[7] for p in PLACES}
+EXCESS = {p[0]: p[8] for p in PLACES}
+HELD = {p[0]: p[9] for p in PLACES}
 
-
-def business_day_on_or_after(d):
-    while d.weekday() >= 5 or d in HOLIDAYS:
-        d += dt.timedelta(days=1)
-    return d
-
-
-def sec_date(d):
-    return d.strftime("%d-%b-%Y").upper()
-
-
-# ---------------------------------------------------------------- CUSIP
-def cusip_check(base8):
-    total = 0
-    for i, ch in enumerate(base8):
-        if ch.isdigit():
-            v = int(ch)
-        elif ch.isalpha():
-            v = ord(ch.upper()) - ord("A") + 10
-        else:
-            v = {"*": 36, "@": 37, "#": 38}[ch]
-        if i % 2 == 1:
-            v *= 2
-        total += v // 10 + v % 10
-    return str((10 - total % 10) % 10)
-
-
-def make_cusip(issuer6, issue="10"):
-    b = issuer6 + issue
-    return b + cusip_check(b)
-
-
-# ---------------------------------------------------------------- name stock
-_STEMS = """Ashgrove Bellmere Calder Dunmore Eastlake Fairhaven Glenrock Harrowgate Ironbridge Juniper
-Kestrel Larchfield Marlowe Northcote Oakhurst Pemberton Quarry Redfern Saltmarsh Thornbury Upland
-Varden Westbourne Yarrow Alder Birchall Copperline Dovecote Elmstead Foxley Granger Hollin Inverleigh
-Kittering Lowther Mossgiel Netherby Orchard Pendle Quayside Rainford Stonecrest Tamsin Underhill
-Vale Whitcombe Ambleside Brackley Carrow Delmont Edgewater Farrier Gilmour Halcyon Ingleby Jessop
-Kinloch Lindell Merriman Norland Ottery Prescott Ravenna Selwood Tolland Ulverston Verity Wickham
-Abbotsford Blakeney Cairnwood Dunleavy Ellery Fenwick Gresham Hartwell Islay Kellerman Langdale
-Mortlake Newhall Osgood Pellham Radley Sherwin Thackeray Wexley Brantwood Corrigan Davenant Eversley
-Fallowfield Greystone Holloway Kingsmere Lockhart Millbrook Northgate Ormond Pascoe Riverside
-Sandford Tilbury Waverly Ashby Barrowden Coldharbour Drummond Esk Falkland Galloway Highmoor
-Kirkby Lismore Moorcroft Nethercott Oldfield Penrose Rothwell Skelton Tregaron Wyndham Arden
-Bramley Cheswick Dalby Exmoor Fernhill Glenmore Hawthorn Ivers Lanyon Medway Norbury Otterburn
-Pryor Rosedale Stanwick Trevose Wolcott Ainsley Bexford Chilton Dorrance Eldon Fulbrook Garland
-Hensley Ilford Knowle Lytham Marsden Nantwich Overton Poynter Ramsay Shelby Tavener Whitby""".split()
-_MGR_WORDS = ["Capital", "Asset", "Investment", "Wealth", "Partners", "Advisors", "Trust", "Fund",
-              "Global", "Point", "Street", "Ridge", "Harbor", "Peak", "Square", "Bridge", "Lane"]
-_MGR_SUFFIX = ["Management LLC", "Management LP", "Advisors LLC", "Partners LP", "Capital LLC",
-               "Group Inc", "Investment Counsel Inc", "Wealth Advisors LLC", "& Co LLC", "LLC"]
-_ISS_WORDS = ["Thermal", "Biosciences", "Holdings", "Systems", "Industries", "Therapeutics", "Logistics",
-              "Software", "Materials", "Energy", "Financial", "Brands", "Networks", "Medical",
-              "Semiconductor", "Foods", "Realty", "Robotics", "Aerospace", "Water", "Pharma",
-              "Payments", "Labs", "Outdoor", "Packaging", "Mobility", "Analytics", "Instruments"]
-_ISS_SUFFIX = ["Inc", "Corp", "Inc", "Co", "Holdings Inc", "Group Inc", "Ltd", "Corporation"]
-_REAL = {"Vanguard", "Fidelity", "BlackRock", "Wellington", "Bridgewater", "Citadel", "Renaissance",
-         "Two Sigma", "Millennium", "Point72", "State Street", "Invesco", "Northern Trust", "Geode",
-         "Dimensional", "Schwab", "Goldman", "Morgan", "Capital Group", "T. Rowe", "Jane Street",
-         "Susquehanna", "Balyasny", "Elliott", "Baupost", "Viking", "Tiger", "Coatue", "Lone Pine",
-         "Hawthorn", "Riverside", "Kingsmere", "Granger", "Galloway", "Medway", "Exmoor", "Esk"}
-
-STATES = ["NY", "NY", "NY", "CT", "MA", "CA", "CA", "IL", "TX", "PA", "NJ", "FL", "GA", "CO", "WA",
-          "MN", "OH", "MD", "VA", "NC", "MO", "WI", "TN", "AZ"]
-CITY = {"NY": "NEW YORK", "CT": "GREENWICH", "MA": "BOSTON", "CA": "SAN FRANCISCO", "IL": "CHICAGO",
-        "TX": "DALLAS", "PA": "PHILADELPHIA", "NJ": "PRINCETON", "FL": "MIAMI", "GA": "ATLANTA",
-        "CO": "DENVER", "WA": "SEATTLE", "MN": "MINNEAPOLIS", "OH": "COLUMBUS", "MD": "BALTIMORE",
-        "VA": "RICHMOND", "NC": "CHARLOTTE", "MO": "ST. LOUIS", "WI": "MILWAUKEE", "TN": "NASHVILLE",
-        "AZ": "SCOTTSDALE"}
-
-# manager types: (key, register label, count, habit-day range, size lognormal mu)
-MGR_TYPES = [
-    ("passive", "Index and ETF sponsor", 7, None, 23.0),
-    ("multistrat", "Multi-strategy and hedge fund", 64, (36, 45), 20.6),
-    ("longonly", "Long-only investment adviser", 58, (14, 44), 20.9),
-    ("banktrust", "Bank trust and wealth department", 96, (7, 29), 20.1),
-    ("ria", "Registered investment adviser", 150, (9, 45), 18.9),
-    ("instit", "Pension, insurance and endowment", 34, (18, 41), 20.3),
-    ("dealer", "Broker-dealer", 8, (24, 38), 20.0),
+# registration districts (deaths are registered where they occur); the register's codes changed with the 2023
+# system replacement on 3 April 2023
+REG_DISTRICTS = [
+    ("Hollinsgate", "HOL", "E30000801", "North"),
+    ("Ashwold and Thornley", "ASH", "E30000802", "North"),
+    ("Calderholt", "CAL", "E30000803", "South"),
+    ("Brinmoor and Moorbridge", "BRM", "E30000804", "South"),
 ]
-# passive complexes: two large ones file early, five file at the deadline
-PASSIVE_DAYS = [21, 27, 41, 42, 43, 44, 44]
-PASSIVE_SIZE = [25.4, 25.0, 23.9, 23.6, 23.4, 23.0, 22.8]
+SYSTEM_CHANGE = dt.date(2023, 4, 3)
+DISTRICT_OF_PLACE = {"Hollinsgate": "Hollinsgate", "Ashwold": "Ashwold and Thornley",
+                     "Thornley Vale": "Ashwold and Thornley", "Calderholt": "Calderholt",
+                     "Brinmoor": "Brinmoor and Moorbridge", "Moorbridge": "Brinmoor and Moorbridge"}
+HOSPITAL = {"North": "Hollinsgate Royal Infirmary", "South": "Calderholt General Hospital"}
+HOSPICE = {"North": "St Wilfrid's Hospice", "South": "Moorbridge Hospice"}
+HOSPITAL_PLACE = {"North": "Hollinsgate", "South": "Calderholt"}
+HOSPICE_PLACE = {"North": "Ashwold", "South": "Moorbridge"}
+OUTSIDE_HOSPITALS = ["Kexley Infirmary", "Warrenby General Hospital", "Northfold University Hospital"]
 
-# ---------------------------------------------------------------- watchlist design
-# id, target Dec IO on the completed set (A), share of it on file at the extract (f),
-# target Sep IO (complete), shares outstanding (Oct-dated cover page), Q4 price
-WATCH = [
-    # id   A (Dec)  f      sep    S_oct        P4
-    ("W01", 88.60, 0.935, 85.11, 41_820_557, 74.18),
-    ("W02", 84.39, 0.665, 81.69, 63_104_219, 38.62),
-    ("W03", 80.40, 0.705, 78.81, 28_559_804, 112.41),
-    ("W04", 76.20, 0.950, 74.09, 117_402_633, 23.07),
-    ("W05", 74.30, 0.915, 75.41, 52_271_090, 56.90),
-    ("W06", 84.80, 0.945, 81.79, 35_906_712, 141.55),
-    ("W07", 79.60, 0.860, 81.61, 88_013_465, 31.34),
-    ("W08", 62.30, 0.855, 59.79, 74_660_128, 47.73),
-    ("W09", 71.10, 0.800, 69.71, 23_177_946, 88.26),
-    ("W10", 91.40, 0.720, 88.91, 46_318_551, 64.09),
-    ("W11", 55.22, 0.880, None, 158_244_370, 18.44),
-    ("W12", 67.20, 0.750, 65.49, 31_052_683, 52.80),
-]
-# holdings of the managers still due at the December extract, per cent of the October count:
-# index and ETF sponsors (December level), every other type (September level)
-PEND = {"W01": (3.5, 2.5), "W02": (15.4, 12.1), "W03": (23.2, 3.2), "W04": (4.0, 4.0), "W05": (5.0, 3.0),
-        "W06": (2.2, 1.6), "W07": (0.7, 16.0), "W08": (4.0, 4.5), "W09": (5.0, 4.0), "W10": (15.7, 9.2),
-        "W11": (3.0, 4.0), "W12": (4.5, 4.0)}
-SEP_SLACK = "W11"      # September early-holder total set by the type balance
-JUN_SLACK = "W04"      # June early-holder total set by the type balance
-JUN_MOVE = {"W02": 1.14}   # early holders' September over June, by name (others 1)
-GROW = 1.055               # index and ETF sponsors' stake growth per quarter (their creations)
-A5_NAMES = ("W05", "W09", "W11")
+FORENAMES_F = ["Margaret", "Joan", "Dorothy", "Patricia", "Jean", "Barbara", "Mary", "Betty", "Doreen", "Brenda",
+               "Sheila", "Irene", "Eileen", "Joyce", "Pauline", "Ann", "Christine", "Susan", "Elizabeth", "Kathleen",
+               "Maureen", "Valerie", "Audrey", "Marjorie", "Edna", "Vera", "Iris", "Gladys", "Winifred", "Hilda",
+               "Shirley", "Janet", "Linda", "Carol", "Sandra", "Marion", "Brenda", "June", "Rita", "Evelyn",
+               "Frances", "Lesley", "Gwendoline", "Beryl", "Muriel", "Olive", "Phyllis", "Ruth", "Sylvia", "Norma"]
+FORENAMES_M = ["John", "David", "William", "Robert", "James", "Peter", "Michael", "Brian", "Kenneth", "Alan",
+               "Ronald", "George", "Thomas", "Derek", "Keith", "Raymond", "Anthony", "Dennis", "Roy", "Colin",
+               "Geoffrey", "Frank", "Eric", "Barry", "Malcolm", "Stephen", "Terence", "Philip", "Leslie", "Gordon",
+               "Harold", "Arthur", "Albert", "Norman", "Donald", "Stanley", "Edward", "Charles", "Walter", "Bernard",
+               "Trevor", "Clifford", "Gerald", "Douglas", "Frederick", "Leonard", "Ernest", "Harry", "Jack", "Joseph"]
+MIDDLE = ["Ann", "Mary", "Elizabeth", "May", "Rose", "Louise", "Jane", "Margaret", "Edith", "Grace",
+          "John", "James", "William", "Edward", "Henry", "George", "Thomas", "Arthur", "Charles", "Frederick"]
+SURNAMES = ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright",
+            "Thompson", "Evans", "Walker", "White", "Roberts", "Green", "Hall", "Wood", "Clarke", "Hughes",
+            "Edwards", "Lewis", "Harris", "Turner", "Martin", "Cooper", "Hill", "Ward", "Morris", "Moore",
+            "Clark", "Lee", "King", "Baker", "Harrison", "Morgan", "Allen", "James", "Scott", "Phillips",
+            "Watson", "Davis", "Parker", "Price", "Bennett", "Young", "Griffiths", "Mitchell", "Kelly", "Cook",
+            "Carter", "Richardson", "Bailey", "Collins", "Bell", "Shaw", "Murphy", "Miller", "Cox", "Richards",
+            "Khanom", "Marshall", "Anderson", "Simpson", "Ellis", "Adams", "Singh", "Begum", "Wilkinson", "Foster",
+            "Chapman", "Powell", "Webb", "Rogers", "Gray", "Mason", "Ali", "Hunt", "Hussain", "Campbell",
+            "Matthews", "Owen", "Palmer", "Holmes", "Mills", "Barnes", "Knight", "Lloyd", "Butler", "Russell",
+            "Barker", "Fisher", "Stevens", "Jenkins", "Murray", "Dixon", "Harvey", "Graham", "Pearson", "Ahmed",
+            "Fletcher", "Walsh", "Kaur", "Gibson", "Howard", "Andrews", "Stewart", "Elliott", "Reynolds", "Saunders",
+            "Payne", "Fox", "Ford", "Pearce", "Day", "Brooks", "West", "Lawrence", "Cole", "Atkinson",
+            "Bradley", "Spencer", "Gill", "Dawson", "Ball", "Burton", "O'Brien", "Watts", "Rose", "Booth",
+            "Perry", "Ryan", "Grant", "Wells", "Armstrong", "Francis", "Rees", "Hayes", "Hart", "Hudson",
+            "Newman", "Barrett", "Kennedy", "Robertson", "Lord", "Holt", "Hargreaves", "Ashworth", "Greenwood",
+            "Sutcliffe", "Haigh", "Crowther", "Pickles", "Firth", "Ackroyd", "Holroyd", "Brearley", "Whiteley"]
+# forename spellings a medical examiner's first entry carries and the registrar's entry corrects
+VARIANT = {"Stephen": "Steven", "Ann": "Anne", "Geoffrey": "Jeffrey", "Philip": "Phillip", "Alan": "Allan",
+           "Brian": "Bryan", "Leslie": "Lesley", "Terence": "Terrence", "Marjorie": "Margery", "Sheila": "Shiela",
+           "Doreen": "Dorreen", "Frances": "Francis", "Gwendoline": "Gwendolyn", "Clifford": "Cliford",
+           "Kathleen": "Kathlene", "Muriel": "Murial", "Winifred": "Winnifred", "Beryl": "Berul"}
+OCCUPATIONS = ["Retired", "Retired teacher", "Retired nurse", "Retired engineer", "Retired clerk",
+               "Housewife", "Retired textile worker", "Retired driver", "Retired machinist", "Retired shop assistant",
+               "Retired electrician", "Retired care assistant", "Retired joiner", "Retired secretary", "Unemployed",
+               "Bus driver", "Warehouse operative", "Self-employed builder", "Office manager", "Student"]
+MARITAL = ["Married", "Widowed", "Single", "Divorced", "Civil partner"]
 
-def rng(*salt):
-    return np.random.default_rng([SEED] + [abs(hash_str(s)) for s in salt])
-
-
-def hash_str(s):
-    h = 0
-    for ch in str(s):
-        h = (h * 131 + ord(ch)) % 2_147_483_647
-    return h
-
-
-def build_managers():
-    r = rng("managers")
-    stems = [s for s in _STEMS if s not in _REAL]
-    used, mgrs = set(), []
-    cik_pool = r.choice(np.arange(1_040_000, 1_960_000), size=600, replace=False)
-    k = 0
-    for key, label, n, rngdays, mu in MGR_TYPES:
-        for j in range(n):
-            while True:
-                a = stems[r.integers(len(stems))]
-                if key == "passive":
-                    nm = f"{a} {r.choice(['Index', 'Indexing', 'Funds', 'Investments'])} {r.choice(['Group Inc', 'Advisors LLC', 'Management LP'])}"
-                elif key == "banktrust":
-                    nm = f"{a} {r.choice(['Bank & Trust Co', 'Trust Co', 'National Bank Wealth Management', 'Savings Bank Trust Dept'])}"
-                elif key == "dealer":
-                    nm = f"{a} {r.choice(['Securities LLC', 'Markets LLC', 'Trading LLC'])}"
-                elif key == "instit":
-                    nm = f"{a} {r.choice(['Retirement System', 'Mutual Life Insurance Co', 'University Endowment', 'Employees Pension Fund'])}"
-                else:
-                    b = _MGR_WORDS[r.integers(len(_MGR_WORDS))]
-                    nm = f"{a} {b} {_MGR_SUFFIX[r.integers(len(_MGR_SUFFIX))]}"
-                if nm not in used and a not in {m['stem'] for m in mgrs if m['type'] in ('passive', 'dealer')}:
-                    used.add(nm)
-                    break
-            if key == "passive":
-                habit, size = PASSIVE_DAYS[j], PASSIVE_SIZE[j]
-            else:
-                lo, hi = rngdays
-                habit = float(r.uniform(lo, hi))
-                if key in ("multistrat",) and r.random() < 0.12:
-                    habit = float(r.uniform(18, 33))
-                size = float(r.normal(mu, 0.9))
-            st = STATES[r.integers(len(STATES))]
-            mgrs.append(dict(mid=f"M{k:03d}", cik=int(cik_pool[k]), name=nm.upper().replace("&", "&"),
-                             disp=nm, stem=a, type=key, type_label=label, habit=habit, size=size,
-                             state=st, city=CITY[st], family=None,
-                             fileno=f"028-{int(r.integers(10000, 22999)):05d}"))
-            k += 1
-    return mgrs
+PERSONAS = ["Caroline Porter", "Jason Leach", "Graeme Gould", "Jayne Jackson"]
 
 
-def build_issuers():
-    r = rng("issuers")
-    stems = [s for s in _STEMS if s not in _REAL]
-    used, out = set(), []
-    six = set()
+def quarter_fy(d):
+    """2025-26 quarter of a date (1 to 4), or 0 outside the year."""
+    if dt.date(2025, 4, 1) <= d <= dt.date(2025, 6, 30):
+        return 1
+    if dt.date(2025, 7, 1) <= d <= dt.date(2025, 9, 30):
+        return 2
+    if dt.date(2025, 10, 1) <= d <= dt.date(2025, 12, 31):
+        return 3
+    if dt.date(2026, 1, 1) <= d <= dt.date(2026, 3, 31):
+        return 4
+    return 0
 
-    def new6(lead=None):
-        while True:
-            if lead == "0":
-                s = "0" + "".join(str(r.integers(10)) for _ in range(5))
-            elif lead == "alpha":
-                s = "".join(str(r.integers(10)) for _ in range(3)) + "XY"[r.integers(2)] + "".join(str(r.integers(10)) for _ in range(2))
-            else:
-                s = str(r.integers(1, 10)) + "".join(str(r.integers(10)) for _ in range(5))
-            if s not in six:
-                six.add(s)
-                return s
 
-    leads = {"W04": "0", "W09": "0", "W12": "alpha", "W03": "0"}
-    wstems = set()
-    for wid, A, f, sep, S, P4 in WATCH:
-        while True:
-            a = stems[r.integers(len(stems))]
-            b = _ISS_WORDS[r.integers(len(_ISS_WORDS))]
-            sfx = _ISS_SUFFIX[r.integers(len(_ISS_SUFFIX))]
-            if b == "Holdings" and "Holdings" in sfx:
-                continue
-            nm = f"{a} {b} {sfx}"
-            if nm not in used and a not in wstems:
-                used.add(nm)
-                wstems.add(a)
-                break
-        out.append(dict(iid=wid, name=nm.upper(), watch=True, cusip=make_cusip(new6(leads.get(wid))),
-                        A=A, f=f, sep=sep, S_oct=S, P4=P4))
-    for j in range(236):
-        while True:
-            a = stems[r.integers(len(stems))]
-            b = _ISS_WORDS[r.integers(len(_ISS_WORDS))]
-            sfx = _ISS_SUFFIX[r.integers(len(_ISS_SUFFIX))]
-            nm = f"{a} {b} {sfx}"
-            if nm not in used and a not in wstems and not (b == "Holdings" and "Holdings" in sfx):
-                used.add(nm)
-                break
-        A = float(r.uniform(32, 96))
-        out.append(dict(iid=f"U{j:03d}", name=nm.upper(), watch=False,
-                        cusip=make_cusip(new6("0" if r.random() < 0.08 else None)),
-                        A=A, f=float(r.uniform(0.70, 0.95)), sep=A + float(r.normal(0, 2.5)),
-                        S_oct=int(np.exp(r.uniform(np.log(1.2e7), np.log(1.6e9)))),
-                        P4=float(np.round(np.exp(r.uniform(np.log(6), np.log(420))), 2))))
-    # issuer master attributes
-    rm = rng("issuer-master")
-    ciks = rm.choice(np.arange(1_300_000, 1_920_000), size=len(out), replace=False)
-    tick = set()
-    sics = [2834, 2836, 3674, 3711, 3826, 4911, 5812, 6022, 7372, 7373, 2086, 3559, 1311, 4213, 6798, 3841, 5961, 3714]
-    for k, i in enumerate(out):
-        i["issuer_cik"] = int(ciks[k])
-        i["sic"] = int(sics[rm.integers(len(sics))])
-        st = STATES[rm.integers(len(STATES))]
-        i["state"], i["city"] = st, CITY[st]
-        i["afs"] = "1-LAF" if i["S_oct"] * i["P4"] > 2.5e9 else "2-ACC"
-        words = [w for w in i["name"].split() if w not in ("INC", "CORP", "CO", "LTD", "GROUP", "HOLDINGS", "CORPORATION")]
-        while True:
-            t = (words[0][:2] + words[1][:1] + ("" if rm.random() < 0.5 else words[0][2:3])).upper() if len(words) > 1 else words[0][:4]
-            if t in tick:
-                t = t[:3] + "ABCDEFGHJKLMNPRSTVWXZ"[rm.integers(21)]
-            if t not in tick and t not in ("COAL", "SAS", "GOLD", "OIL", "CASH", "FUND", "BANK", "ABB", "HAM", "JEM"):
-                tick.add(t)
-                break
-        i["ticker"] = t
-    return out
+def summer(y):
+    return dt.date(y, 6, 1), dt.date(y, 8, 31)

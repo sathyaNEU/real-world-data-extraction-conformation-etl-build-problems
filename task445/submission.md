@@ -1,52 +1,60 @@
-# task445 submission
-
 ## Tags
 
-**Domain:** Quantitative Finance (institutional ownership analytics from Form 13F holdings filings).  
+**Domain:** General Statistics & Data Science (data integration: an NHS integrated care board's summer 2026 deaths by date of occurrence, integrated from the death registrations and two medical examiner offices' logs that share no key).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.**
-
-OTF clears the 80.0% line at 80.4% and FENN stays under it at 79.6%. Not the December reports in hand alone, which leave out the 129 managers OM-4 s.2 still counts. Not one change per register type pooled across the twelve names, which grows OTF's index and ETF sponsors still due by 4.5% when the filed sponsors' OTF holdings rose 10.4% with OTF's share count, and leaves OTF at 79.2%. Not each manager still due carried at its September position, which also leaves OTF under the line. Not every manager still due moved with the name or carried at its stake, which takes FENN's multi-strategy funds up with FENN's share count and FENN over the line.
+**Designate Ashwold, Thornley Vale and Calderholt for the 2027 heat resilience grants; Hollinsgate, Brinmoor and Moorbridge take the standard heat-health allocation.** Ashwold's residents had 666 deaths from 1 June to 31 August 2026 against 589 expected, 13.1 per cent over, but 72 of those deaths were not on the register at the close of 9 October: the medical examiner offices referred them to the coroner, who is holding them for inquest, and the logs name each one. Completed instead with the earlier summers' share registered by 9 October (94.9 per cent), Ashwold reads 6.3 per cent and is left out.
 
 ## 2. Critical Components
 
-1. Managers with a September holdings or combination report and no December filing by 3 February 2023: **129**
-2. Index and ETF sponsors that filed both reports, change in OTF shares from September to December: **10.4%**, against **4.5%** across the twelve names
-3. December ownership of the flagged names: WHII **88.6%**, GLI **84.4%**, OTF **80.4%**, JEMS **84.8%**, SAF **91.4%**
-4. Highest unflagged December ownership: FENN **79.6%**, AMRB **76.2%**
+1. The deaths counted are each place's residents' deaths by date of death in the window, registered or not, each once: the register's entries (version 1) plus the residents' summer deaths in the two offices' logs that no entry matches on surname, forenames, date of birth and date of death.
+2. Deaths, Table 1 expected deaths and excess by place: Hollinsgate 891, 828, 7.6 per cent; Ashwold 666, 589, 13.1 per cent; Thornley Vale 345, 304, 13.5 per cent; Brinmoor 409, 383, 6.8 per cent; Calderholt 595, 528, 12.7 per cent; Moorbridge 364, 345, 5.5 per cent.
+3. Deaths not yet registered at the count, found only in the logs: Hollinsgate 60, Ashwold 72, Thornley Vale 15, Brinmoor 21, Calderholt 20, Moorbridge 14 (202 in all).
+4. Ellesmoor in all: 3,270 deaths, 9.8 per cent over Table 1's total.
 
 ## 3. Step-by-Step Solution
 
-1. Unioned SUBMISSION, COVERPAGE and INFOTABLE from the three 13F drops, keyed every report to the period on its cover page (REPORTCALENDARORQUARTER) and applied amendments by their cover page (ISAMENDMENT, AMENDMENTTYPE) in filing order, amendments filed on the same day in AMENDMENTNO order.
-2. Kept SH lines, dropped put and call lines by PUTCALL or a title of class of CALL or PUT, and read CUSIPs per OM-4 s.4 (failed check digits matched on issuer name and title).
-3. Took shares outstanding as the cover-page count with the latest as-of date on or before each period end across 10-Q, 10-Q/A and 10-K (OM-4 s.5).
-4. Applied OM-4 s.2: the managers reporting December holdings are those on file plus the 129 with a September holdings or combination report and no December filing, whose holdings are estimated.
-5. Ran the s.2 criterion on the September window at 3 November 2022, completing from June: the largest miss against September is 0.04 points for growing each index and ETF sponsor still due by the change its filed peers show in that name, every other type by its own change pooled across the twelve names, against 0.66 for each register type's change pooled across the twelve names and 1.38 for carrying each manager still due at its June position.
-6. Grew each index and ETF sponsor still due from its September position by the change in that name among the sponsors that filed both reports (OTF 10.4%), every other type by its own pooled change (flat to the first decimal), added the December reports on file and divided by the October-dated count; flag above 80.0% (OM-4 s.7).
-7. Recommendation: flag WHII, GLI, OTF, JEMS and SAF.
+1. Read the register in both date formats, kept version 1 of each entry (district and entry number), and took residents by usual_residence_code with a date of death from 1 June to 31 August 2026.
+2. Read the north log (Deceased split at its comma, Excel dates) and the south export (UTC stamps to local dates), and placed each case by its usual postcode through the lookup, terminated postcodes included; non-residents fall outside it.
+3. Matched the logs' residents' summer deaths to the register on case-folded surname, forenames, date of birth and date of death, and added each unmatched death once to its place.
+4. Took each place's excess over Table 1 as a percentage and designated the places at 10.0 per cent or more.
+5. Counted each place's deaths by month of death for the CSV.
+6. For each office and quarter of 2025-26, merged into one death any cases that share a coroner's reference or the same person, and counted each death in the quarter its scrutiny was first completed.
+7. Read each 2025 register entry as it now stands (the latest version's fields, version 1's registration date), and took, by place and quarter of death, the share of residents' deaths with a medical certificate registered no more than five days after the date of death.
 
 ## 4. Deliverable Answers
 
-### crowded_flags_2022q4.csv
+### heat_resilience_grants_2027.xlsx
 
-1. One row per watchlist name in watchlist order, layout v4, report period 2022-12-31:
-   - WHII (649698107): December ownership 88.6%, flag Y; September ownership 85.1%
-   - GLI (759069107): December ownership 84.4%, flag Y; September ownership 81.7%
-   - OTF (050469105): December ownership 80.4%, flag Y; September ownership 78.8%
-   - AMRB (091728105): December ownership 76.2%, flag N; September ownership 74.1%
-   - TAAV (981118102): December ownership 74.3%, flag N; September ownership 75.4%
-   - JEMS (165636101): December ownership 84.8%, flag Y; September ownership 81.8%
-   - FENN (805185105): December ownership 79.6%, flag N; September ownership 81.6%
-   - ABBB (767361108): December ownership 62.3%, flag N; September ownership 59.8%
-   - OLPD (016363103): December ownership 71.1%, flag N; September ownership 69.7%
-   - SAF (331222109): December ownership 91.4%, flag Y; September ownership 88.9%
-   - HAMR (233712108): December ownership 55.2%, flag N; September ownership 52.5%
-   - NOPR (359Y60106): December ownership 67.2%, flag N; September ownership 65.5%
+1. Qualifying places: Ashwold, Thornley Vale, Calderholt.
+2. Scorecard (deaths, expected, excess per cent, qualifies):
+   - Hollinsgate: 891, 828, 7.6, No
+   - Ashwold: 666, 589, 13.1, Yes
+   - Thornley Vale: 345, 304, 13.5, Yes
+   - Brinmoor: 409, 383, 6.8, No
+   - Calderholt: 595, 528, 12.7, Yes
+   - Moorbridge: 364, 345, 5.5, No
+   - Ellesmoor: 3,270 deaths, 9.8 per cent over
+3. Chart: each place's excess against the 10.0 per cent line; Ashwold, Thornley Vale and Calderholt above it.
+4. Deaths scrutinised by quarter of 2025-26 (April to June, July to September, October to December, January to March):
+   - North Ellesmoor Medical Examiner Office: 1,924, 1,812, 2,170, 2,183 (8,089 in the year)
+   - South Ellesmoor Medical Examiner Office: 1,454, 1,349, 1,713, 1,633 (6,149 in the year)
+5. Residents' deaths with a medical certificate in each quarter of 2025 registered no more than five days after the date of death, per cent (January to March, April to June, July to September, October to December):
+   - Hollinsgate: 59.3, 59.1, 59.8, 57.7
+   - Ashwold: 62.0, 62.5, 64.4, 60.0
+   - Thornley Vale: 63.9, 63.1, 63.8, 62.0
+   - Brinmoor: 60.4, 59.9, 59.4, 64.8
+   - Calderholt: 61.7, 63.6, 57.5, 61.1
+   - Moorbridge: 61.7, 60.9, 59.9, 65.5
 
-### sep_quarter_bridge.png
+### summer_2026_deaths_by_place.csv
 
-1. Waterfall, twelve names combined, whole shares: information-table lines as filed 599,363,366; put and call lines -8,193,500; the other lines in reports replaced by a later amendment -50,329,359; lines matched back to their CUSIPs +6,508,236; September institutional shares 547,348,743
-2. One bar each, in that order, for the three reconciling items between the two totals, each labelled in whole shares.
+1. Deaths by month of death (June, July, August 2026):
+   - Hollinsgate: 297, 327, 267
+   - Ashwold: 168, 301, 197
+   - Thornley Vale: 101, 130, 114
+   - Brinmoor: 117, 155, 137
+   - Calderholt: 185, 237, 173
+   - Moorbridge: 110, 147, 107

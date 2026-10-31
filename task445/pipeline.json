@@ -1,26 +1,26 @@
 {
  "task": "task445",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science / data-integration-record-linkage-entity-resolution",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
  "stump": "A competent analyst completes each place's registered June to August 2026 deaths with the earlier summers' share registered by the same point in October and designates the places whose completed deaths exceed the filed expected deaths by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, named one by one in the medical examiner offices' referral logs, so Ashwold is left out.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-31 (--asof 2026-10-14): sweeps 3 and 4 on the fund's terms (Table 1's 589, the call's place names, the WHAT's words), each ruled harmless in the note's Leak sweep; 0 LEAK",
+  "reader": "pending: stage 4 from the main thread (copy at scratchpad/leak-task445/, brief at scratchpad/task445_stage4_leak_brief.md)"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-31 on the card as redrawn after task468 v5's same-pairing draw (overuse.objective, repeat.gate_g and repeat.question_form against task468, answered in the note); task107 v3-etl, task181 and task485 differentiated on the card",
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-10-31 on the final cut: overuse.objective, repeat.gate_g against task468 v5, repeat.question_form against task125 v4, each answered in the note's Pre-ship check; no BLOCK; nearest driver 0.06 (task179 v5, task468 v4 lineage)",
+  "surface": "exit 0 2026-10-31; five pairs promoted for the author's adjudicated read on surface similarity at the corpus's top percentile (task146, task462, task447, task118, task273, about 0.10 each; task462 and task273 also share the decision type); no other build's persona in the pack"
  },
  "judge": {
   "verdict": "",
@@ -41,7 +41,7 @@
    "commit": "DRAWN (task445) architecture 2"
   }
  ],
- "resume": "stage 2 design: write the design note's architecture 2 sections (precut.py exit 0), then stage 3 build",
+ "resume": "stage 4 from the main thread: rebuild with `python3 task445/generator/make.py` (two byte-identical builds, the generator checks, the independent verifier; target.zip sha256 b103f21fb2366d0eb3a4b1dfb1a89bfacc834456706c6c0f1c4b30352b3c18b2), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task445/ with the brief scratchpad/task445_stage4_leak_brief.md and the determinism judge on task445 (architecture 1's four reports kept as determinism_check_report_arch1*.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut (precut, figures_check, voice-check, leak.py --asof 2026-10-14, guard surface and heart), append the reader's section to leak_check_report.md, git add -f task445/target.zip and task445/golden/*, ledger row, card current, commit SHIPPED (task445)",
  "approved": null,
  "delivered": null,
  "portal": "",
@@ -197,5 +197,5 @@
  ],
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": ""
+ "zip_sha256_16": "b103f21fb2366d0e"
 }

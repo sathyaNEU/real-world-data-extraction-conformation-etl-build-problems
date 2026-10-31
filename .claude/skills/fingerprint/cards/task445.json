@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Ashwold, Thornley Vale and Calderholt designated (Ashwold 13.1 per cent over its expected deaths)",
+  "answer_source": "task445/generator/figures.json, call; golden heat_resilience_grants_2027.xlsx, Scorecard",
   "gap": [
     "time",
     "population"
@@ -50,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "ellesmoor_death_registrations_2021-2026.csv",
-    "rows": 0,
+    "rows": 81590,
     "entity": "a death registration (an amendment is a second row)",
     "grain": "registration",
     "source": "synthetic"
@@ -84,7 +84,7 @@
     "summer_2026_deaths_by_place.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "A count by date of occurrence for a recent window is completed for the units a second body still holds out of the record, read from that body's own log linked to the record on personal identifiers and dates, because the usual completion factor assumes the hold is as rare as in the closed windows it reproduces.",
   "driver_concrete": "Each place's summer 2026 deaths are the deaths on the register plus the deaths the medical examiners referred to the coroner on which an inquest is still open, linked by name, birth date and date of death and placed by the deceased's postcode, because the July heat wave sent the deaths of people found at home to the coroner, so the earlier summers' share registered by October understates the summer and only the referral log names the missing deaths.",
   "stump": "A competent analyst completes each place's registered summer deaths with the earlier summers' share registered by the same point and designates the places whose completed deaths exceed the expected by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, so Ashwold is left out.",
@@ -164,7 +164,7 @@
       "forcing_event": "other",
       "org_family": "professional_services",
       "role_family": "product_manager",
-      "question_form": "which",
+      "question_form": "where",
       "opening_move": "question-first",
       "deliverables": [
         "crowded_flags_2022q4.csv",
@@ -200,7 +200,7 @@
       "fate": "spent 2026-10-31: the portal determinism block (answer_contradicts_files: OM-4 section 2 named the filers for the period and filed no completion, so a literal reading flagged WHII and JEMS) and the batch audit (short of the survivor anatomy: the decisive basis was a filed criterion's selection, not a link no key invites); re-rooted as architecture 2 into survey research and official statistics"
     }
   ],
-  "notes": "",
+  "notes": "WARNs answered in the design note's Pre-ship check: overuse.objective (the slot's objective), repeat.gate_g etl_conformance and repeat.question_form where against task468 v5 and task125 v4.",
   "registered": "2026-10-31T22:45:01Z",
   "shell": {
     "question form": "which",
