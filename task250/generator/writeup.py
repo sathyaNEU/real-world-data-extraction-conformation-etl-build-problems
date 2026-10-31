@@ -1,144 +1,135 @@
-"""figures.json and submission.md, both emitted from the golden computed on the shipped pack."""
+"""figures.json and submission.md, both written from the figures computed on the shipped pack (golden.py for the graded
+figures, rungs.py for the routes the recommendation names)."""
+import collections
 import json
-import os
 
-import numpy as np
-
-import params as P
-import routes as RT
-import solve as S
+import golden as GD
+import rungs as R
 
 
-def figures(target, F):
-    g = S.solve(target)
-    reg = S.register(target)
-    c = g["call"]
-    per = c["per_year"]
-    whole = {k: int(round(v)) for k, v in per.items()}
-    keep = reg["baja_prevista"].isna()
-    r = RT.all_routes(target, reg)
-    rerun = {k: int(round(v)) for k, v in r["rerun_2028_network"].items()}
-    runner = max(k for k in P.SETTINGS if k < c["setting"])
-    names = [nm for _, nm in P.DISTRICTS]
-    cut = {k: c["parts"][k][1] for k in P.SETTINGS}
+def extras(target, F):
+    d = GD.load(target, F)
+    M, arr, sh, gold = R.main_rungs(d)
+    mixed = R.mixed_days(arr, sh)
+    a = arr.copy()
+    a["day"] = a["scanned_at"].str[:10]
+    on_mixed = a[[(dep, x) in mixed for dep, x in zip(a["depot_code"], a["day"])]]
+    un = collections.Counter(gold[t] for t in on_mixed["tracking_no"] if t not in sh)
+    ldz_sorted = sum(1 for t in on_mixed["tracking_no"] if gold[t] == "HLDZ")
+    pick = lambda k, h: round(M[k][h]["rate"], 2)
     return {
-        "call": {"setting": c["setting"], "alerts_a_year": whole[c["setting"]],
-                 "runner_up": runner, "runner_up_alerts_a_year": whole[runner],
-                 "per_setting_alerts_a_year": {"%.1f" % k: whole[k] for k in P.SETTINGS}},
-        "components": {"stations_kept": int(keep.sum()), "stations_closing": int((~keep).sum()),
-                       "rerun_at_runner_up": rerun[runner],
-                       "rerun_alerts_a_year": {"%.1f" % k: rerun[k] for k in P.SETTINGS},
-                       "drift_alert_adjustments_kept": c["repairs_kept"],
-                       "drifts_cut_short": {"%.1f" % k: cut[k] for k in P.SETTINGS}},
-        "steps": {"drift_alert_visits_in_plan": c["budget"], "settings": list(P.SETTINGS), "radius_km": int(P.RADIUS_KM),
-                  "neighbours": P.N_NEIGHBOURS, "window_days": P.WINDOW, "min_in_window": P.MIN_IN_WINDOW,
-                  "hold_days": P.HOLD_DAYS, "stations_registered": len(reg), "lookback_days": 14,
-                  "alert_window_days": 10, "opening_window_days": 3, "years": 3},
-        "asks": {"drift_alert_visits_2027": {nm: g["ask_a"][nm]["visits"] for nm in names},
-                 "days_alerts_waited_2027": {nm: g["ask_a"][nm]["days_waited"] for nm in names},
-                 "breakdown_visits_2027_stations_kept": {nm: g["ask_b"][nm] for nm in names}},
-        "_golden": {"per_year": per, "alerts_year_whole": whole, "rerun": rerun, "cut": cut, "budget": c["budget"],
-                    "setting": c["setting"], "alerts_at_setting": whole[c["setting"]], "runner_up": runner,
-                    "n_keep": int(keep.sum()), "n_close": int((~keep).sum()), "repairs_kept": c["repairs_kept"],
-                    "ask_a": g["ask_a"], "ask_b": g["ask_b"]},
+        "unloadings": len(set(GD.unloadings(arr)["unloading"])),
+        "mixed_mornings": len(mixed),
+        "overflow_parcels": ldz_sorted,
+        "overflow_missed_strykow": un["HLDZ"],
+        "overflow_missed_pruszkow": un["HWAW"],
+        "plan": {"HLDZ": pick("R0 plan", "HLDZ"), "HWAW": pick("R0 plan", "HWAW")},
+        "shares": {"HLDZ": pick("R1 shares by depot-morning", "HLDZ"), "HWAW": pick("R1 shares by depot-morning", "HWAW")},
+        "left_out": {"HWAW": pick("R2 mixed mornings left out", "HWAW"), "HLDZ": pick("R2 mixed mornings left out", "HLDZ")},
+        "excess": {"HLDZ": pick("R3 excess over the base rate", "HLDZ"), "HWAW": pick("R3 excess over the base rate", "HWAW")},
     }
 
 
-def golden_content(fig):
-    return fig["_golden"]
+def _hub(fig, code):
+    return [x for x in fig["hubs"] if x["hub_code"] == code][0]
 
 
-def write_figures(path, fig):
-    out = {k: v for k, v in fig.items() if not k.startswith("_")}
+def _n(v):
+    return "{:,}".format(v)
+
+
+def submission(fig, ex):
+    H = {x["hub_code"]: x for x in fig["hubs"]}
+    fired = ", ".join(fig["fired"][:-1]) + " and " + fig["fired"][-1]
+    under = sorted((x for x in fig["hubs"] if not x["fires"]), key=lambda x: -x["rate"])[0]
+    lines = []
+    w = lines.append
+    w("# task250 submission")
+    w("")
+    w("## Tags")
+    w("")
+    w("**Domain:** General Statistics & Data Science (missing data, censoring and measurement error: a parcel carrier's "
+      "sort-scan completeness, where the hub an unscanned parcel passed through is itself missing and is recovered from "
+      "the unloading it arrived in at its delivery depot).")
+    w("**Analytical objective:** Data Quality Monitoring & Alerting (whether the TDS-4 scan alert fires at any of Kurier "
+      "Warta's sort hubs for October 2026, and at which).")
+    w("")
+    w("## 1. Final Recommendation")
+    w("")
+    w("**Fire the October 2026 scan alerts at %s, and at no other hub.**" % fired)
+    w("")
+    w("Sosnowiec missed %.2f per cent of its sort scans, Strykow %.2f and Pruszkow %.2f, against the 1.00 per cent "
+      "tolerance; the nearest hub under it is %s at %.2f. On %d mornings the Warsaw depots unloaded a second trailer "
+      "from Strykow, which had sorted %s parcels of Pruszkow's flow by hand; %d of their sort scans are missing, against "
+      "%d missing from Pruszkow's own trailers on those mornings, so a parcel without a sort scan is charged to the hub "
+      "whose trailer it came off, read from its unloading. Not the sort plan's hub, which charges Strykow's misses to "
+      "Pruszkow (Pruszkow %.2f, Strykow %.2f) and leaves Strykow under the line. Not each depot morning's split of its "
+      "sorted parcels, which assumes the two hubs missed alike (Strykow %.2f). Not the mornings with two hubs left out "
+      "(Pruszkow %.2f, Strykow %.2f), nor the excess over Pruszkow's rate on its other mornings charged to Strykow "
+      "(Strykow %.2f, Pruszkow %.2f): Pruszkow's own sorter missed more on the same heavy nights, so both clear "
+      "Pruszkow." % (H["HKTW"]["rate"], H["HLDZ"]["rate"], H["HWAW"]["rate"], under["hub_name"], under["rate"],
+                     ex["mixed_mornings"], _n(ex["overflow_parcels"]), ex["overflow_missed_strykow"],
+                     ex["overflow_missed_pruszkow"], ex["plan"]["HWAW"], ex["plan"]["HLDZ"], ex["shares"]["HLDZ"],
+                     ex["left_out"]["HWAW"], ex["left_out"]["HLDZ"], ex["excess"]["HLDZ"], ex["excess"]["HWAW"]))
+    w("")
+    w("## 2. Critical Components")
+    w("")
+    w("1. Missed-scan rate by hub: " + "; ".join("%s **%.2f** per cent" % (x["hub_name"], x["rate"]) for x in fig["hubs"]))
+    w("2. Parcels handled and missed sort scans at the three hubs that fire: " + "; ".join(
+        "%s **%s** and **%s**" % (H[h]["hub_name"], _n(H[h]["parcels"]), _n(H[h]["missed"])) for h in ("HKTW", "HLDZ", "HWAW")))
+    w("3. The mornings with two trailers: **%d** depot mornings at Warszawa-Okecie and Warszawa-Targowek; **%s** "
+      "parcels off Strykow's trailers, **%d** of them without a sort scan" % (ex["mixed_mornings"],
+                                                                          _n(ex["overflow_parcels"]),
+                                                                          ex["overflow_missed_strykow"]))
+    w("")
+    w("## 3. Step-by-Step Solution")
+    w("")
+    w("1. Took October's parcels from depot_scan_events_2026-10.csv, one per tracking number unloaded on the mornings of "
+      "1 to 31 October (TDS-4 s.2.1; the rows re-sent on 21 October are the same rows again): %s parcels." % _n(fig["n_parcels"]))
+    w("2. Took each parcel's hub from hub_sort_events_2026-10.parquet where it has a sort event (one hub per parcel; a "
+      "second read on the sorter loop is the same sort); a parcel with none is a missed sort scan (s.2.2).")
+    w("3. Split each depot door's arrival scans into unloadings wherever the door stood idle for more than ten minutes "
+      "(any pause from one to 29 minutes gives the same %d unloadings), and found every unloading's sorted parcels "
+      "carrying one hub." % ex["unloadings"])
+    w("4. Charged each parcel without a sort scan to its unloading's hub, then counted each hub's parcels, missed sort "
+      "scans and rate, and fired the alert above 1.00 per cent (s.2.3).")
+    w("5. Courier events sent twice (TDS-4 s.3): a later-received record of the same parcel, event, courier and handheld "
+      "carrying the first record's time cut to the minute, as local time from a TC52 and as UTC from a TC51 (two hours "
+      "behind local until 25 October, one after); a second loop or the afternoon wave is a new scan; counted under the "
+      "depot the event names.")
+    w("6. Pre-advised parcels never picked up (TDS-4 s.4): each consignment's latest version with an October collection "
+      "date, D-KRK1 read as D-KRK3 from 12 October, its pieces as parcels; a parcel the platform holds a pickup, sort, "
+      "arrival or delivery record for was collected (trailer collections carry no pickup scan) and a failed pickup is "
+      "not a collection; a piece label is the consignment number plus a three-digit piece number, and a marketplace "
+      "order is matched on its first 20 characters, the orders sharing them counted against their pickups.")
+    w("")
+    w("## 4. Deliverable Answers")
+    w("")
+    w("### %s" % GD.XLSX)
+    w("")
+    w("1. Each hub's parcels handled, missed sort scans, missed-scan rate and alert:")
+    for x in fig["hubs"]:
+        w("   - %s (%s): %s parcels, %s missed, %.2f per cent, %s" % (x["hub_name"], x["hub_code"], _n(x["parcels"]),
+                                                                       _n(x["missed"]), x["rate"],
+                                                                       "fires" if x["fires"] else "does not fire"))
+    w("2. Each depot's courier events sent twice and pre-advised parcels never picked up:")
+    for x in fig["depots"]:
+        w("   - %s %s: %s sent twice, %s never picked up" % (x["depot_code"], x["depot_name"], _n(x["sent_twice"]),
+                                                           _n(x["never_picked"])))
+    w("")
+    w("### %s" % GD.PPTX)
+    w("")
+    w("3. One slide: a horizontal bar chart of each hub's missed-scan rate against the 1.00 per cent tolerance line, "
+      "the bars of %s marked as firing and the other three under the line, beside the six hubs' parcels, missed sort "
+      "scans, rates and alerts." % fired)
+    w("")
+    return "\n".join(lines)
+
+
+def write_figures(path, fig, ex):
+    out = {"call": sorted(fig["fired"]), "tolerance": fig["tolerance"], "parcels": fig["n_parcels"],
+           "hubs": [{k: x[k] for k in ("hub_code", "hub_name", "parcels", "missed", "rate", "fires")} for x in fig["hubs"]],
+           "depots": fig["depots"], "routes": ex}
     with open(path, "w") as fh:
-        json.dump(out, fh, indent=1, ensure_ascii=False)
+        json.dump(out, fh, indent=1)
         fh.write("\n")
-
-
-def submission(fig):
-    c, comp, st, a = fig["call"], fig["components"], fig["steps"], fig["asks"]
-    ps = c["per_setting_alerts_a_year"]
-    rr = comp["rerun_alerts_a_year"]
-    cut = comp["drifts_cut_short"]
-    ru = "%.1f" % c["runner_up"]
-    names = [nm for _, nm in P.DISTRICTS]
-    L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Physical & Environmental Sciences (sensor calibration and measurement: the daily "
-             "spatial-consistency check of an agro-climatic station network's air temperature).  ")
-    L.append("**Analytical objective:** Data Quality Monitoring & Alerting.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**Run the %.1f setting from the January 2028 configuration: it raises %d drift alerts a year, within the "
-             "%d visits the field plan leaves for them.** At %.1f the quality control would raise %d a year: the record "
-             "re-run with the 2028 network raises %d, and %d drifts the record's own alerts repaired at kept stations "
-             "never reached the %.1f limit before their repair and would have kept growing until they did. Not %.1f on "
-             "the re-run alone, which counts those drifts only as far as the 3.0 alerts let them run.\n"
-             % (c["setting"], c["alerts_a_year"], st["drift_alert_visits_in_plan"], c["runner_up"],
-                c["runner_up_alerts_a_year"], rr[ru], cut[ru], c["runner_up"], c["runner_up"]))
-    L.append("## 2. Critical Components\n")
-    L.append("1. The 2028 network is **%d stations**: the register's %d less the **%d** closing on 31 December 2027."
-             % (comp["stations_kept"], st["stations_registered"], comp["stations_closing"]))
-    L.append("2. Re-run on the 2025 to 2027 record with that network and the limits set from the recorded statistic, "
-             "the quality control raises **%d, %d, %d and %d** drift alerts a year at 3.0, 3.5, 4.0 and 4.5."
-             % (rr["3.0"], rr["3.5"], rr["4.0"], rr["4.5"]))
-    L.append("3. The sensor history holds **%d** adjustments or replacements at drift-alert visits to kept stations; the "
-             "re-run never reaches **%d, %d, %d and %d** of them before their repair at 3.0, 3.5, 4.0 and 4.5."
-             % (comp["drift_alert_adjustments_kept"], cut["3.0"], cut["3.5"], cut["4.0"], cut["4.5"]))
-    L.append("4. Each setting's drift alerts a year in 2028: **%d, %d, %d and %d** at 3.0, 3.5, 4.0 and 4.5; the most "
-             "sensitive within the **%d** visits is **%.1f**.\n"
-             % (ps["3.0"], ps["3.5"], ps["4.0"], ps["4.5"], st["drift_alert_visits_in_plan"], c["setting"]))
-    L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Took the 2028 network from registro_estaciones.xlsx (sheet Estaciones): the %d stations less the %d with "
-             "a baja_prevista of 31/12/2027, %d stations." % (st["stations_registered"], comp["stations_closing"],
-                                                              comp["stations_kept"]))
-    L.append("2. Re-ran QC-02 sections 4, 5 and 8 on the anomalies in control_calidad_2025-2027.parquet with the %d kept "
-             "stations as the network (the %d nearest with an anomaly that day within %d km, inverse-square weights, the "
-             "%d-day mean where at least %d residuals exist, so from 10 January 2025 as in the export, no alert within %d "
-             "days of the last), against each station's "
-             "limit by section 6 (the setting times the standard deviation, n - 1, of its estadistico_14d over 2025 to "
-             "2027), counting the kept stations' alerts: %d, %d, %d and %d a year at 3.0, 3.5, 4.0 and 4.5."
-             % (comp["stations_kept"], st["neighbours"], st["radius_km"], st["window_days"], st["min_in_window"],
-                st["hold_days"], rr["3.0"], rr["3.5"], rr["4.0"], rr["4.5"]))
-    L.append("3. Took the drifts the record's alerts cut short from the sheet Historial sensor T: every row with motivo "
-             "Alerta de deriva (an adjustment or a replacement, as-found error recorded) at a kept station, %d, each "
-             "answering the station's latest alert in the export on or before its day, within %d days."
-             % (comp["drift_alert_adjustments_kept"], st["alert_window_days"]))
-    L.append("4. A drift goes on growing until a check sets it right (QC-02 section 9), so a drift the re-run's alerts "
-             "at a setting never reached, from %d days before the alert its visit answered to the adjustment, would "
-             "have raised one alert at that setting later, each two months or more before its station's next spring "
-             "round: %d, %d, %d and %d drifts at 3.0, 3.5, 4.0 and 4.5, added to the re-run's count and the three years "
-             "divided by %d: %d, %d, %d and %d a year."
-             % (st["lookback_days"], cut["3.0"], cut["3.5"], cut["4.0"], cut["4.5"], st["years"],
-                ps["3.0"], ps["3.5"], ps["4.0"], ps["4.5"]))
-    L.append("5. Chose the most sensitive setting within the %d drift-alert visits in plan_campo_2028.pdf: %.1f."
-             % (st["drift_alert_visits_in_plan"], c["setting"]))
-    L.append("6. Took the 2027 drift-alert visits from ordenes_trabajo_2025-2027.xlsx: on the old contractor's sheet every "
-             "Alerta deriva order closed with a Visita, on that day; on the new contractor's sheet each station of a "
-             "closed Corrective opened within %d days of an alert there, on the first day from its opening to its "
-             "visit_date with readings at the station in comprobaciones_patron_2025-2027.csv (under whatever order), "
-             "leaving out a day with a reading outside the station's tmin to tmax in estaciones_diario_2025-2027.csv (a "
-             "sensor read in a bath, not the check in place in the station's air that every visit includes, "
-             "plan_campo_2028.pdf), and no visit where no such day exists. Days waited run from the alert's day in the "
-             "quality-control export." % st["opening_window_days"])
-    L.append("7. Took the 2027 breakdown visits at kept stations as the old contractor's Avería orders closed with a "
-             "Visita and, by the same reading test, the stations of the new contractor's closed Correctives that "
-             "answered no alert.")
-    L.append("8. Run the %.1f setting in 2028.\n" % c["setting"])
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### drift_alert_setting_2028.xlsx\n")
-    L.append("1. Drift alerts a year in 2028, by setting:")
-    for k in P.SETTINGS:
-        L.append("   - %.1f: %d" % (k, ps["%.1f" % k]))
-    L.append("2. The setting: %.1f, %d drift alerts a year." % (c["setting"], c["alerts_a_year"]))
-    L.append("3. Drift-alert visits made in 2027 and the days their alerts waited for them in total, by district:")
-    for nm in names:
-        n = a["drift_alert_visits_2027"][nm]
-        L.append("   - %s: %d visit%s, %d days" % (nm, n, "" if n == 1 else "s", a["days_alerts_waited_2027"][nm]))
-    L.append("4. Breakdown visits made in 2027 at the stations kept in 2028, by district:")
-    for nm in names:
-        L.append("   - %s: %d" % (nm, a["breakdown_visits_2027_stations_kept"][nm]))
-    L.append("\n### alerts_by_setting_2028.png\n")
-    L.append("5. Bar chart of each setting's drift alerts a year in 2028 against a line at the field plan's %d visits, "
-             "each bar split into the network re-run's alerts and the drifts the record's alerts cut short, the %.1f bar "
-             "marked as the setting." % (st["drift_alert_visits_in_plan"], c["setting"]))
-    return "\n".join(L) + "\n"

@@ -1,25 +1,25 @@
 {
  "task": "task250",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "supply-chain-logistics",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the trailer each unscanned parcel came off at its delivery depot fires Strykow as well.",
+ "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night, and ends on alerts at Sosnowiec and Pruszkow with Strykow under the line; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the unloading each unscanned parcel came off at its delivery depot fires Strykow as well.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (2026-10-31, --asof 2026-11-06): three lines, each ruled harmless in the design note's Leak review; no LEAK",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "WARN (2026-10-31): repeat.decision and repeat.question_form only, after the redraw of the decisive generator (G17) and the requester (operations_director)",
+  "surface": "exit 0 (2026-10-31): no surface overlap; one card-axis pair promoted against task480 (gap time, G17, designation_set), the card's differentiation line names how the driver differs"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: readability screen, fork table, ladder, closure, ask sheet; then the generator",
+ "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn them). Rebuild with `python3 task250/generator/make.py` (byte-identical; target.zip sha256 1b8dcbc76a43565c85221a305fedda38b655d1191b891e05202c8e531fbd803b), give the leak reader the brief at scratchpad/task250_stage4_leak_brief.md on the copy at scratchpad/leak-task250/, spawn the determinism judge beside it, fix every finding in the generator in one pass, then ship: the ledger row, target.zip and golden/ force-added, `SHIPPED (task250): Fire the October scan alerts at Sosnowiec, Pruszkow and Strykow`",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -58,6 +58,14 @@
   {
    "date": "2026-10-31",
    "event": "DRAWN architecture 3: a regional parcel carrier's October missed sort scans by hub (Poland), supply-chain-logistics in general-statistics-data-science, missing-data-censoring-measurement-error; guard WARN only"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "stage 3 complete: generator rebuilt (sim, pack, docs, golden, rungs, checks, verify, ceiling, writeup, make), 157 checks, the verifier, two byte-identical builds, figures_check, precut 61 of 61, voice-check, leak.py REVIEW, guard heart WARN and surface exit 0; heart first BLOCKed G3 and statistical_office_head against task470's later re-draw, cleared by re-reading the decisive generator as G17 and redrawing the requester"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "PAUSED at stage 4 for the main thread: the leak reader and the determinism judge cannot be spawned from a fork"
   }
  ]
 }

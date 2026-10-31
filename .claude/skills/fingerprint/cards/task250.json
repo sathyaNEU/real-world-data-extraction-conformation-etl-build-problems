@@ -1,141 +1,143 @@
 {
-  "task": "task250",
-  "architecture": "v3 (re-root into a regional parcel carrier's tracking data: October's missed sort scans by hub, each unscanned parcel's hub read from the trailer it came off at its delivery depot)",
-  "drawn": "2026-10-31",
-  "slot_note": "re-root of task250 in the same objective (Data Quality Monitoring & Alerting), batch 1; the agro-climatic world is spent (two architectures) and left",
-  "domain": "supply-chain-logistics",
-  "client_domain": "general-statistics-data-science",
-  "subdomain": "transportation-network",
-  "niche": "hub sort-scan completeness of a regional parcel network's tracking events, with overflow trailers between sort hubs",
-  "objective": "data-quality-monitoring",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Fire the October scan alerts at Sosnowiec, Pruszkow and Strykow",
-  "answer_source": "design (to be confirmed by the generator)",
-  "gap": [
+ "task": "task250",
+ "architecture": "v3 (re-root into a regional parcel carrier's tracking data: October's missed sort scans by hub, each unscanned parcel's hub read from the trailer it came off at its delivery depot)",
+ "drawn": "2026-10-31",
+ "slot_note": "re-root of task250 in the same objective (Data Quality Monitoring & Alerting), batch 1; the agro-climatic world is spent (two architectures) and left",
+ "domain": "supply-chain-logistics",
+ "client_domain": "general-statistics-data-science",
+ "subdomain": "transportation-network",
+ "niche": "hub sort-scan completeness of a regional parcel network's tracking events, with overflow trailers between sort hubs",
+ "objective": "data-quality-monitoring",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "Fire the October scan alerts at Sosnowiec, Pruszkow and Strykow",
+ "answer_source": "design (to be confirmed by the generator)",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G17",
+  "G3",
+  "G12"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "population_selection",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who reads every file and clause correctly takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night (the field's scan-compliance count against the route of record) and fires Sosnowiec and Pruszkow only; Strykow sorted Pruszkow's overflow by hand on the heavy nights and trucked it to the Warsaw depots on its own trailers, so that route charges Strykow's unscanned overflow parcels to Pruszkow and leaves Strykow under the line, where the golden fires Sosnowiec, Pruszkow and Strykow.",
+ "domain_test": "The deciding quantity is each hub's share of the parcels that passed through it without a sort scan, a parcel network's scan-compliance measure worked from tracking events against the route each parcel actually took through the linehaul; with wards and porters in place of hubs and trailers there is no overnight trailer unloaded at a depot door in one burst and no overflow trailer between sort hubs, so the inference that decides has nothing to stand on.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:latent-route-denominator",
+ "layer1": [
+  "a sort plan revised mid-month for one depot",
+  "a depot's code changed on its move",
+  "a re-sent batch of arrival events with the same event ids",
+  "two tracking-number formats",
+  "platform receipt times in UTC beside local event times across the end of summer time",
+  "pre-advice versions superseded by later messages"
+ ],
+ "stakeholder_role": "the carrier's director of network operations, who rosters the scan audits the month's alerts send to the hubs in the first two weeks of the peak",
+ "role_family": "operations_director",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "courier_events_2026-10.parquet",
+  "rows": 280378,
+  "entity": "one courier handheld event",
+  "grain": "parcel x event",
+  "source": "synthetic"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "season_or_peak",
+ "org_family": "logistics_or_3pl",
+ "world": {
+  "geography": "Poland",
+  "currency": "PLN",
+  "org_type": "a regional parcel carrier with six sort hubs and twelve delivery depots",
+  "invented_names": [
+   "Kurier Warta sp. z o.o."
+  ],
+  "people": [
+   "Inga Blaut",
+   "Krzysztof Konieczek",
+   "Aurelia Pieczyrak"
+  ]
+ },
+ "deliverables": [
+  "tracking_scorecard_2026-10.xlsx",
+  "scan_alerts_2026-10.pptx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "The decisive quantity is each node's share of the units that passed through it unrecorded, when which node an unrecorded unit passed is itself unrecorded: the plan of record assigns every unit a node, but on the nights one node overflowed part of its flow went through a second node and was handled there by hand, so that night's unrecorded units belong partly to each and only the batch a unit was unloaded in at its destination, whose recorded members all passed one node, says which; charged by the plan the overflowing node carries the second node's misses, and charged by the nights' excess over its usual rate the overflowing node sheds the misses its own overload caused.",
+ "driver_concrete": "Each unscanned parcel's hub is the hub of the trailer it came off at its delivery depot, read from the unloading it was scanned off in at the depot door, whose sorted parcels all carry one hub's sort event; on the nights Pruszkow overflowed, Strykow sorted the overflow on its manual line (9.03 per cent missed) and trucked it to the Warsaw depots on its own trailers, so the sort plan charges Pruszkow with Strykow's misses, the morning's sorted split spreads them as if both hubs missed alike, and the overflow nights' excess read as Strykow's takes from Pruszkow the misses its own sorter made running full.",
+ "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night and fires Sosnowiec and Pruszkow; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the trailer each unscanned parcel came off at its delivery depot fires Strykow as well.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task480": "task480 v2 recovers each unit's future yearly amount from one cumulative total observed once, set against the cross-section's cumulative curve by age; here nothing is projected and no curve is fitted: each record missing its stratum takes the stratum of the batch it travelled in, because the missingness depends on the stratum (Strykow's manual line missed six times Pruszkow's rate) and every batch's recorded members carry one stratum"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "driver": "The decisive quantity is a count of alerts each unit raises when its departure from an estimate built from its nearest other units passes a limit set from that departure's past spread; when some units leave, the remaining units' estimates come from farther units and their departures spread wider while their limits stay at the spread measured with the old neighbours, so the alerts rise even as the units fall.",
+   "fate": "spent 2026-10-20 at stage 4: reader 1 re-ran the quality control with the 34 closing stations out of the neighbour pool and landed the call (4.0 at 9 a year, every setting within one of the golden 61/25/9/3); reader 2 replayed the record and filed 3.5 at 9; judge DETERMINISTIC APPROVE. The network re-run is now the first rung of architecture 2."
+  },
+  {
+   "architecture": "v2",
+   "domain": "physical-environmental-sciences",
+   "subdomain": "sensor-calibration-measurement",
+   "objective": "data-quality-monitoring",
+   "shape": "04",
+   "decision_type": "dial_setting",
+   "gap": [
     "time",
     "population"
-  ],
-  "pattern": [
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G3",
+   ],
+   "generators": [
     "G12",
-    "G6"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and clause correctly takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night (the field's scan-compliance count against the route of record) and fires Sosnowiec and Pruszkow only; Strykow sorted Pruszkow's overflow by hand on the heavy nights and trucked it to the Warsaw depots on its own trailers, so that route charges Strykow's unscanned overflow parcels to Pruszkow and leaves Strykow under the line, where the golden fires Sosnowiec, Pruszkow and Strykow.",
-  "domain_test": "The deciding quantity is each hub's share of the parcels that passed through it without a sort scan, a parcel network's scan-compliance measure worked from tracking events against the route each parcel actually took through the linehaul; with wards and porters in place of hubs and trailers there is no overnight trailer unloaded at a depot door in one burst and no overflow trailer between sort hubs, so the inference that decides has nothing to stand on.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:latent-route-denominator",
-  "layer1": [
-    "a sort plan revised mid-month for one depot",
-    "a depot's code changed on its move",
-    "a re-sent batch of arrival events with the same event ids",
-    "two tracking-number formats",
-    "platform receipt times in UTC beside local event times across the end of summer time",
-    "pre-advice versions superseded by later messages"
-  ],
-  "stakeholder_role": "the carrier's head of network data quality, who decides whose scan alerts fire for the month",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "tracking_events_2026-09-30_2026-11-06.parquet",
-    "rows": 0,
-    "entity": "one tracking event",
-    "grain": "parcel x event",
-    "source": "synthetic"
-  },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "logistics_or_3pl",
-  "world": {
-    "geography": "Poland",
-    "currency": "PLN",
-    "org_type": "a regional parcel carrier with six sort hubs and twelve delivery depots",
-    "invented_names": [
-      "Kurier Warta sp. z o.o."
-    ],
-    "people": [
-      "Inga Blaut",
-      "Krzysztof Konieczek",
-      "Aurelia Pieczyrak"
-    ]
-  },
-  "deliverables": [
-    "tracking_scorecard_2026-10.xlsx",
-    "scan_alerts_2026-10.pdf"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "The decisive quantity is each node's share of the units that passed through it unrecorded, when which node an unrecorded unit passed is itself unrecorded: the plan of record assigns every unit a node, but on the nights one node overflowed part of its flow went through a second node and was handled there by hand, so that night's unrecorded units belong partly to each and only the batch a unit was unloaded in at its destination, whose recorded members all passed one node, says which; charged by the plan the overflowing node carries the second node's misses, and charged by the nights' excess over its usual rate the overflowing node sheds the misses its own overload caused.",
-  "driver_concrete": "Each unscanned parcel's hub is the hub of the trailer it came off at its delivery depot, read from the door-scanner burst it was unloaded in, whose scanned parcels all carry one hub's sort scan; on the nights Pruszkow overflowed, Strykow sorted the overflow on its manual line and trucked it to the Warsaw depots on its own trailers, so the sort plan charges Pruszkow with Strykow's misses, and the overflow nights' excess at the Warsaw depots read as Strykow's takes from Pruszkow the misses its own tunnel made running full.",
-  "stump": "A competent solver takes each parcel's hub from its sort scan or, where it has none, from the sort plan of its night and fires Sosnowiec and Pruszkow; Strykow sorted Pruszkow's overflow by hand on the heavy nights and sent it to the Warsaw depots on its own trailers, so the unscanned overflow parcels that route charges to Pruszkow came off Strykow's trailers, and only the trailer each unscanned parcel came off at its delivery depot fires Strykow as well.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [
-    {
-      "architecture": "v1",
-      "driver": "The decisive quantity is a count of alerts each unit raises when its departure from an estimate built from its nearest other units passes a limit set from that departure's past spread; when some units leave, the remaining units' estimates come from farther units and their departures spread wider while their limits stay at the spread measured with the old neighbours, so the alerts rise even as the units fall.",
-      "fate": "spent 2026-10-20 at stage 4: reader 1 re-ran the quality control with the 34 closing stations out of the neighbour pool and landed the call (4.0 at 9 a year, every setting within one of the golden 61/25/9/3); reader 2 replayed the record and filed 3.5 at 9; judge DETERMINISTIC APPROVE. The network re-run is now the first rung of architecture 2."
-    },
-    {
-      "architecture": "v2",
-      "domain": "physical-environmental-sciences",
-      "subdomain": "sensor-calibration-measurement",
-      "objective": "data-quality-monitoring",
-      "shape": "04",
-      "decision_type": "dial_setting",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G3",
-        "G17"
-      ],
-      "gate_g": "forecasting",
-      "calibration_form": "none",
-      "stump_strategy": "maturity_censoring",
-      "context_artifact": "monitoring_export",
-      "driver": "The decisive quantity is a count of alerts a less sensitive limit will raise, read from a record the current limit produced: every fault the current limit caught was repaired within days, so the record holds those faults cut short below the higher limit they would otherwise have reached, and the count is the record re-run on the units and estimate sources the next period will have plus one alert for every caught fault the re-run never alerted before its repair.",
-      "stump": "A competent solver re-runs the quality control on the 2025 to 2027 export with the 131 stations the network keeps and files 3.5 at 23 drift alerts a year, inside the field plan's 28 visits (22 with the cut-short drifts added to the record as it ran, 12 on the record replayed); 30 of the 35 drifts the sensor history shows repaired at kept stations never reached the 3.5 limit before their repair and would have kept growing until they did, which puts 3.5 at 33 and files 4.0 at 18.",
-      "forum": "line_manager_or_team",
-      "forcing_event": "cutover_or_migration",
-      "org_family": "cooperative_or_member_body",
-      "role_family": "capacity_planner",
-      "deliverables": [
-        "drift_alert_setting_2028.xlsx",
-        "alerts_by_setting_2028.png"
-      ],
-      "question_form": "which",
-      "fate": "spent 2026-10-31 at the batch 1 repair: the determinism judge sent it back (NOT_DETERMINISTIC, SEND_BACK): the 4.0 call counted every repaired drift the re-run never reached as one later alert, which no shipped file forces; a rate model from the sensor history (onset at the previous clean check) gives 14 to 16 a year at 4.0, not 18, and the new contractor's visit day rested on an inference",
-      "shell": {
-        "question form": "how-many",
-        "second-sentence opener": "in",
-        "deliverable set": "png+xlsx"
-      }
-    }
-  ],
-  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (Poland, parcel carrier), new dataset, new shell (whether | each | csv+csv+pdf)",
-  "registered": "2026-10-31T17:43:38Z",
-  "shell": {
-    "question form": "whether",
-    "second-sentence opener": "each",
-    "rounding opener": "rates",
-    "deliverable set": "pdf+xlsx"
+    "G3",
+    "G17"
+   ],
+   "gate_g": "forecasting",
+   "calibration_form": "none",
+   "stump_strategy": "maturity_censoring",
+   "context_artifact": "monitoring_export",
+   "driver": "The decisive quantity is a count of alerts a less sensitive limit will raise, read from a record the current limit produced: every fault the current limit caught was repaired within days, so the record holds those faults cut short below the higher limit they would otherwise have reached, and the count is the record re-run on the units and estimate sources the next period will have plus one alert for every caught fault the re-run never alerted before its repair.",
+   "stump": "A competent solver re-runs the quality control on the 2025 to 2027 export with the 131 stations the network keeps and files 3.5 at 23 drift alerts a year, inside the field plan's 28 visits (22 with the cut-short drifts added to the record as it ran, 12 on the record replayed); 30 of the 35 drifts the sensor history shows repaired at kept stations never reached the 3.5 limit before their repair and would have kept growing until they did, which puts 3.5 at 33 and files 4.0 at 18.",
+   "forum": "line_manager_or_team",
+   "forcing_event": "cutover_or_migration",
+   "org_family": "cooperative_or_member_body",
+   "role_family": "capacity_planner",
+   "deliverables": [
+    "drift_alert_setting_2028.xlsx",
+    "alerts_by_setting_2028.png"
+   ],
+   "question_form": "which",
+   "fate": "spent 2026-10-31 at the batch 1 repair: the determinism judge sent it back (NOT_DETERMINISTIC, SEND_BACK): the 4.0 call counted every repaired drift the re-run never reached as one later alert, which no shipped file forces; a rate model from the sensor history (onset at the previous clean check) gives 14 to 16 a year at 4.0, not 18, and the new contractor's visit day rested on an inference",
+   "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "in",
+    "deliverable set": "png+xlsx"
+   }
   }
+ ],
+ "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (Poland, parcel carrier), new dataset, new shell (whether | each | pptx+xlsx); at the build's heart screen the decisive generator was re-read from the measured ladder (the step past the missing-at-random split, G17, with G3 the default path's) and the requester redrawn to the director of network operations, after task470's later re-draw took G3 and statistical_office_head into the window",
+ "registered": "2026-10-31T17:43:38Z",
+ "shell": {
+  "question form": "whether",
+  "second-sentence opener": "each",
+  "rounding opener": "rates",
+  "deliverable set": "pptx+xlsx"
+ }
 }
