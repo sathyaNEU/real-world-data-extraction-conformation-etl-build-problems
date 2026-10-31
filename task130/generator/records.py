@@ -1,297 +1,441 @@
-"""The pack's flat files: the claims register extract, the legacy payroll history, the 2026 HCM pay lines, the HCM job
-profile crosswalk, the cost centre directory, the carrier notice log, Stoneleigh's loss run, the patient safety event
-extract and the extract log."""
-from __future__ import annotations
-
-import csv
+"""The clean truth: Elkhorn County's establishments, permits, staff calendars and every visit from 2015 to 2026,
+the 2027 redraw and schedule, and the truth's expected 2027 count. Nothing here is shipped as is; pack.py writes
+the exports from it."""
 import datetime as dt
 import math
+from collections import defaultdict
 
-import common as K
-import world as WD
+import numpy as np
 
+import world as W
 
-def write_csv(path, header, rows, crlf=False):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\r\n" if crlf else "\n")
-        w.writerow(header)
-        n = 0
-        for r in rows:
-            w.writerow(["" if v is None else v for v in r])
-            n += 1
-    return n
+TYPES = [  # type, risk category, weight, seasonal share
+    ("Full-service restaurant", 3, 0.24, 0.02),
+    ("Quick-service restaurant", 2, 0.16, 0.00),
+    ("Tavern or bar with food", 2, 0.07, 0.00),
+    ("Bakery or coffee shop", 2, 0.09, 0.01),
+    ("Grocery with deli", 3, 0.05, 0.00),
+    ("Market or grocery, packaged food", 1, 0.10, 0.00),
+    ("Convenience store", 1, 0.11, 0.00),
+    ("School kitchen", 2, 0.06, 0.00),
+    ("Care facility kitchen", 3, 0.04, 0.00),
+    ("Caterer or commissary", 3, 0.03, 0.00),
+    ("Espresso stand", 1, 0.03, 0.10),
+    ("Resort or camp kitchen", 2, 0.02, 0.85),
+]
+FREQ = {1: 1, 2: 2, 3: 3}
+N_NEW = 760                  # permits opened 2015 to 2026
+COVER_POSTPONE = 0.65        # a leave day's routine visit waits for the district inspector this often
 
-
-def money(x):
-    return "" if x is None else "%.2f" % x
-
-
-def iso(d):
-    return "" if d is None else d.isoformat()
-
-
-def us(d):
-    return "" if d is None else "%02d/%02d/%04d" % (d.month, d.day, d.year)
-
-
-# ------------------------------------------------------------------------------------------------ claims register
-REGISTER_COLS = ["claim_no", "incident_no", "defendant_seq", "clinician_id", "defendant_role", "specialty",
-                 "coverage_line", "entity_at_incident", "incident_date", "claim_made_date", "matter_type", "allegation",
-                 "status", "closed_date", "indemnity_paid", "defense_paid", "indemnity_reserve", "defense_reserve",
-                 "prior_claim_no", "valuation_date"]
-
-
-def register_rows(rows):
-    out = []
-    for r in sorted(rows, key=lambda r: (r["claim_no"], r["defendant_seq"])):
-        out.append([r["claim_no"], r["incident_no"], r["defendant_seq"], r["clinician_id"], r["defendant_role"],
-                    r["specialty"], r["coverage_line"], r["entity_at_incident"], iso(r["incident_date"]),
-                    iso(r["claim_made_date"]), r["matter_type"], r["allegation"], r["status"], iso(r["closed_date"]),
-                    money(r["indemnity_paid"]), money(r["defense_paid"]), money(r["indemnity_reserve"]),
-                    money(r["defense_reserve"]), r["prior_claim_no"], K.VALUATION.isoformat()])
-    return out
+STREETS = ["Main St", "Front St", "Harbor Ave", "Cedar St", "Pine St", "Alder Way", "Commercial Ave", "Lake Rd",
+           "Mill St", "Railroad Ave", "Kessing Hwy", "Valley View Rd", "1st St", "2nd St", "3rd St", "4th Ave",
+           "5th Ave", "Ocean Beach Hwy", "Marine Dr", "Fir St", "Maple Ave", "Birch Ln", "Bridge St", "Market St",
+           "Sunset Blvd", "Highland Dr", "Orchard Ave", "Depot St", "College Way", "Fairgrounds Rd", "Ardell Rd",
+           "Wexby Loop", "Torvik Pass Rd", "Elsby Grade", "Callan Creek Rd", "Norrow Ferry Rd", "Baker Ave",
+           "Division St", "Grant St", "Lincoln Ave", "Washington St", "Chestnut St", "Hemlock St", "Spruce St"]
+PREFIX = ["Golden", "Blue Heron", "Red Barn", "Summit", "Harbor", "Cedar", "Evergreen", "Lucky", "Twin Rivers",
+          "Old Mill", "Riverside", "Lakeside", "Northwind", "Copper", "Iron Horse", "Silver", "Jade", "Pacific",
+          "Mountain View", "Sunrise", "Little", "Big Sky", "Wild Rose", "Stone", "Kettle", "Grey Gull", "Bluebird",
+          "Timberline", "Juniper", "Salt", "Driftwood", "Crow's Nest", "Brick", "Morning", "Union", "Garden"]
+CUISINE = ["Grill", "Bistro", "Diner", "Cafe", "Kitchen", "Taqueria", "Pho", "Pizza", "Sushi", "Thai Kitchen",
+           "Burger Bar", "Brewing Co.", "Smokehouse", "Teriyaki", "Noodle House", "Bakery", "Deli", "Tavern",
+           "Pub", "Cantina", "Wok", "Steakhouse", "Fish House", "Creamery", "Bagels", "Espresso"]
+CHAINS = [("Subway #", 2), ("McDonald's #", 2), ("Starbucks #", 2), ("Safeway #", 3), ("7-Eleven #", 1),
+          ("Fred Meyer #", 3), ("Dairy Queen #", 2), ("Taco Time #", 2), ("Shell Food Mart #", 1),
+          ("Chevron ExtraMile #", 1), ("Papa Murphy's #", 2), ("Domino's #", 2), ("Rite Aid #", 1)]
+SURNAMES = ["Nguyen", "Garcia", "Johnson", "Kim", "Patel", "Olsen", "Martinez", "Larsen", "Chen", "Hernandez",
+            "Sorensen", "Lopez", "Tran", "Park", "Silva", "Andersen", "Reyes", "Novak", "Haugen", "Ortiz"]
 
 
-# ------------------------------------------------------------------------------------------------ legacy payroll
-PAYROLL_COLS = ["pay_month", "employee_id", "job_code", "job_title", "cost_centre", "entity_code", "fte", "emp_status"]
-TITLE16 = {j[0]: j[3].upper().replace(" - ", "-") for j in K.JOBS}
-TITLE20 = {j[0]: j[3] for j in K.JOBS}
+def _name(r, typ, risk):
+    u = r.random()
+    if typ in ("School kitchen",):
+        return "%s %s" % (r.choice(["Lincoln", "Hillcrest", "Ridgeview", "Cedar Park", "Harbor", "Valley",
+                                     "Pine Grove", "Westside", "Eastview", "Lakewood", "Fairview", "Northshore"]),
+                          r.choice(["Elementary School", "Middle School", "High School", "Elementary"]))
+    if typ == "Care facility kitchen":
+        return "%s %s" % (r.choice(["Evergreen", "Harbor View", "Cedar Court", "Willow Creek", "Marlow", "Sound"]),
+                          r.choice(["Assisted Living", "Care Center", "Senior Living", "Health & Rehab"]))
+    if typ == "Resort or camp kitchen":
+        return "%s %s" % (r.choice(["Lake Elkhorn", "Torvik Pass", "Callan Creek", "Pine Point", "Kettle Lake"]),
+                          r.choice(["Lodge", "Resort", "Camp", "Bible Camp", "RV Park Store"]))
+    if u < 0.16:
+        base, rk = CHAINS[r.integers(len(CHAINS))]
+        return base + str(int(r.integers(1000, 39999)))
+    if u < 0.30:
+        return "%s's %s" % (r.choice(SURNAMES), r.choice(CUISINE))
+    if typ in ("Market or grocery, packaged food", "Grocery with deli"):
+        return "%s %s" % (r.choice(PREFIX), r.choice(["Market", "Grocery", "Foods", "Mercado", "Asian Market",
+                                                      "Food Center", "Natural Foods"]))
+    if typ == "Convenience store":
+        return "%s %s" % (r.choice(PREFIX), r.choice(["Mini Mart", "Food Mart", "Quick Stop", "Gas & Grocery"]))
+    if typ == "Espresso stand":
+        return "%s %s" % (r.choice(PREFIX), r.choice(["Espresso", "Coffee", "Java Hut", "Drive-Thru Espresso"]))
+    return "%s %s" % (r.choice(PREFIX), r.choice(CUISINE))
 
 
-def payroll_rows(W):
-    out = []
-    for (p, y, m, f) in WD.position_months(W, K.LEGACY_FIRST, K.LEGACY_LAST):
-        new_codes = (y, m) >= K.CODE_SWITCH
-        code = K.JOB[p.job][2] if new_codes else K.JOB[p.job][1]
-        title = TITLE20[p.job] if new_codes else TITLE16[p.job]
-        last = dt.date(y, m, K.days_in_month(y, m))
-        status = "L" if (y, m) in p.leave else ("T" if p.end is not None and p.end <= last and
-                                                  not _continues(W, p, y, m) else "A")
-        out.append((K.month_key(y, m), p.emp, code, title, p.cc, p.entity, "%.1f" % f if not p.per_diem else
-                    "%.2f" % f, status))
-    out.sort(key=lambda r: (r[0], r[1], r[4]))
-    return out
-
-
-def _continues(W, p, y, m):
-    """A position ending in a month whose employee holds another position the next month (a transfer)."""
-    nxt = dt.date(y + (m == 12), m % 12 + 1, 1)
-    return any(q.emp == p.emp and q is not p and q.start <= nxt and (q.end is None or q.end >= nxt)
-               for q in W.by_emp.get(p.emp, ()))
-
-
-# ------------------------------------------------------------------------------------------------ HCM pay lines
-HCM_COLS = ["worker_id", "position_id", "work_month", "earning_code", "earning_description", "hours", "fte",
-            "job_profile_code", "job_profile", "cost_centre", "pay_group"]
-EARNINGS = {"REG": "Regular salary", "PDM": "Per diem shifts", "PTO": "Paid time off", "CALL": "Call stipend",
-            "ADMIN": "Administrative stipend", "LOA": "Leave of absence (unpaid)", "TRM": "Termination payout"}
-PROFILE_NAME = {code: name for j in K.JOBS for code, name in j[5]}
-
-
-def hcm_hours(p, y, m):
-    """Paid hours in a work month: a scheduled position's hours for the days it is held, a per-diem clinician's shifts;
-    none in a month of unpaid leave."""
-    if (y, m) in p.leave:
-        return 0.0
-    if p.per_diem:
-        return 12.0 * p.shifts_held(y, m)
-    return WD.HOURS_FULL * p.fte_in(y, m) * p.held_share(y, m)
-
-
-def hcm_rows(W):
-    rng = K.stream("hcm-lines")
-    admin = set()
-    for p in sorted(W.positions, key=lambda p: p.pid):
-        if rng.random() < 0.06 and K.JOB[p.job][6] in ("hosp", "phys") and not p.per_diem and not p.moonlight:
-            admin.add(p.pid)
-    out = []
-    for p in sorted(W.positions, key=lambda p: p.pid):
-        group = "PHYS" if p.job not in ("NP", "PA", "CRNA", "CNM", "PSYC") else "APC"
-        if p.job in ("RES", "FEL"):
-            group = "GME"
-        for (y, m) in K.months(K.HCM_FIRST, K.HCM_LAST):
-            if p.held_share(y, m) <= 0:
-                continue
-            if p.per_diem and p.shifts_held(y, m) < 1:
-                continue
-            fte = p.fte_in(y, m) if not p.per_diem else 0.0
-            wm = K.month_key(y, m)
-            base = [p.emp, p.pid, wm]
-            tail = ["%.2f" % fte, p.hcm_profile, PROFILE_NAME[p.hcm_profile], p.cc, group]
-            if (y, m) in p.leave:
-                out.append(base + ["LOA", EARNINGS["LOA"], "0.00"] + tail)
-                continue
-            hours = hcm_hours(p, y, m)
-            pto = 0.0
-            if not p.per_diem and rng.random() < 0.42 and hours > 60:
-                pto = float(8 * rng.integers(1, 6))
-            code = "PDM" if p.per_diem else "REG"
-            out.append(base + [code, EARNINGS[code], "%.2f" % (hours - pto)] + tail)
-            if pto:
-                out.append(base + ["PTO", EARNINGS["PTO"], "%.2f" % pto] + tail)
-            if K.JOB[p.job][6] == "hosp" and not p.per_diem and rng.random() < 0.6 and not p.moonlight:
-                out.append(base + ["CALL", EARNINGS["CALL"], "0.00"] + tail)
-            if p.pid in admin:
-                out.append(base + ["ADMIN", EARNINGS["ADMIN"], "0.00"] + tail)
-    # a position that has ended is paid its termination payout in a later pay run, an amount with no hours
-    for p, (y, m) in getattr(W, "payouts", ()):
-        group = "GME" if p.job in ("RES", "FEL") else ("APC" if p.job in ("NP", "PA", "CRNA", "CNM", "PSYC")
-                                                       else "PHYS")
-        out.append([p.emp, p.pid, K.month_key(y, m), "TRM", EARNINGS["TRM"], "0.00", "0.00", p.hcm_profile,
-                    PROFILE_NAME[p.hcm_profile], p.cc, group])
-    out.sort(key=lambda r: (r[2], r[0], r[1], r[3]))
-    return out
-
-
-CROSSWALK_COLS = ["job_profile_code", "job_profile", "legacy_job_code", "legacy_job_title", "effective_date"]
-
-
-def crosswalk_rows():
-    out = []
-    for j in K.JOBS:
-        for code, name in j[5]:
-            out.append([code, name, j[2], TITLE20[j[0]], "2026-01-01"])
-    out.sort()
-    return out
-
-
-DIRECTORY_COLS = ["cost_centre", "company", "entity_code", "entity_name", "department", "effective_from",
-                  "effective_to", "status"]
-
-
-def directory_rows():
-    out = []
-    for e in K.ENTITY_ORDER:
-        ent = K.ENTITIES[e]
-        for suffix, dept, _ in K.DEPTS[e]:
-            frm = "2012-01-01"
-            if e == "BCH":
-                frm = "2019-07-01"
-            if e == "BCH" and suffix == "7110":
-                frm = "2026-10-01"
-            if e == "CMG" and suffix == "7810":
-                frm = "2018-03-01"
-            out.append([K.cost_centre(e, suffix), ent["company"], e, ent["name"], dept, frm, "", "Active"])
-    # retired cost centres the directory still carries
-    out.append(["110-6615", "110", "AMC", "Alderwick Medical Center", "Hospital APC Services (former)", "2012-01-01",
-                "2019-06-30", "Inactive"])
-    out.append(["300-7125", "300", "CMG", "Corvane Medical Group", "Riverside Family Medicine (closed)", "2012-01-01",
-                "2021-03-31", "Inactive"])
-    out.sort()
-    return out
-
-
-# ------------------------------------------------------------------------------------------------ carrier notices
-NOTICE_COLS = ["notice_no", "incident_no", "entity_code", "carrier", "sent_date", "event_date", "event_category"]
-
-
-def notice_rows(incidents, notice_only):
-    out = []
-    for inc in incidents + notice_only:
-        if inc.notice is None:
+def _leave(r, years):
+    """Each staff member's leave days: two blocks of annual leave a year and a few single days."""
+    out = set()
+    days = [W.START + dt.timedelta(days=i) for i in range((W.END - W.START).days + 1)]
+    work = [d for d in days if W.working(d)]
+    by_year = defaultdict(list)
+    for d in work:
+        by_year[d.year].append(d)
+    for y in years:
+        wd = by_year.get(y, [])
+        if not wd:
             continue
-        out.append([inc.notice_no, inc.incident_no, inc.entity, K.CARRIERS[K.carrier_on(inc.entity, inc.date)],
-                    iso(inc.notice), iso(inc.date), inc.allegation])
-    out.sort()
+        for _ in range(2):
+            n = int(r.integers(5, 11))
+            i = int(r.integers(0, max(1, len(wd) - n)))
+            out.update(wd[i:i + n])
+        for _ in range(int(r.integers(3, 9))):
+            out.add(wd[int(r.integers(0, len(wd)))])
     return out
 
 
-# ------------------------------------------------------------------------------------------------ Stoneleigh loss run
-SC_COLS = ["POLICY_NO", "POL_EFF", "POL_EXP", "INSURED_NAME", "CLAIM_NO", "INSURED_REF", "DATE_OF_LOSS",
-           "DATE_RPTD", "CLM_TYPE", "CLM_STATUS", "IND_PAID", "EXP_PAID", "IND_RESV", "EXP_RESV", "TOTAL_INCURRED",
-           "VALUATION_DT"]
-SC_NAME = {"CMG": "CORVANE MEDICAL GROUP", "BCH": "BRENNICK COMMUNITY HOSP"}
-SC_TYPE = {"Claim": "CLM", "Suit": "SUIT", "Incident": "INC"}
-SC_STATUS = {"Open": "O", "Closed": "C", "Reopened": "R"}
-
-
-def sc_rows(recs, nums, V):
-    out = []
-    for r in recs:
-        if K.ENTITIES[r["entity"]]["carrier"] != "SC":
-            continue
-        ref = "".join(ch for ch in r["ref"] if ch.isalnum())
-        tot = r["paid_ind"] + r["paid_exp"] + r["res_ind"] + r["res_exp"]
-        out.append([r["policy"], us(r["period"][0]), us(r["period"][1]), SC_NAME[r["entity"]], nums[r["incident_no"]],
-                    ref, us(r["date_of_loss"]), us(r["created"]), SC_TYPE[r["ctype"]], SC_STATUS[r["status"]],
-                    "%.2f" % r["paid_ind"], "%.2f" % r["paid_exp"], "%.2f" % r["res_ind"], "%.2f" % r["res_exp"],
-                    "%.2f" % tot, us(V)])
-    out.sort(key=lambda x: (x[0], x[4]))
-    return out
-
-
-# ------------------------------------------------------------------------------------------------ safety events
-SAFETY_COLS = ["event_id", "event_date", "entity_code", "department", "event_type", "harm_level", "reporter_role",
-               "rm_referral"]
-EVENT_TYPES = [("Medication", 0.24), ("Fall", 0.17), ("Skin integrity", 0.08), ("Diagnostic test", 0.07),
-               ("Surgery or procedure", 0.07), ("Care coordination", 0.09), ("Equipment or device", 0.06),
-               ("Infection", 0.04), ("Behavioral", 0.06), ("Lab specimen", 0.07), ("Blood product", 0.02),
-               ("Maternal or perinatal", 0.03)]
-HARM = [("No harm", 0.62), ("Mild harm", 0.27), ("Moderate harm", 0.085), ("Severe harm", 0.019), ("Death", 0.006)]
-ROLES = [("RN", 0.58), ("Pharmacist", 0.09), ("Physician", 0.07), ("APC", 0.03), ("Technician", 0.1),
-         ("Therapist", 0.05), ("Other staff", 0.08)]
-
-
-def safety_rows():
-    rng = K.stream("safety")
-    rate = {"AMC": 410, "TFH": 148, "CMG": 104, "BCH": 68}
-    pick = lambda opts: opts[int(rng.choice(len(opts), p=[w for _, w in opts]))][0]
-    out = []
-    seq = 2118400
-    for (y, m) in K.months((2019, 1), (2026, 9)):
-        days = []
-        for e in K.ENTITY_ORDER:
-            if e == "BCH" and (y, m) < (2019, 7):
+def build():
+    r = W.rng("establishments")
+    # ------------------------------------------------------------ premises and permits
+    premises = []
+    n0 = 2760
+    n_new = N_NEW
+    types, risks, weights, seasonal = zip(*[(t[0], t[1], t[2], t[3]) for t in TYPES])
+    weights = np.array(weights) / sum(weights)
+    town_w = np.array([t[3] for t in W.TOWNS])
+    town_w = town_w / town_w.sum()
+    used_addr = set()
+    for i in range(n0 + n_new):
+        k = int(r.choice(len(TYPES), p=weights))
+        typ, risk, seas = types[k], risks[k], seasonal[k]
+        ti = int(r.choice(len(W.TOWNS), p=town_w))
+        tname, tx, ty, _, spread = W.TOWNS[ti]
+        x = float(np.clip(tx + r.normal(0, spread), 0.5, 59.5))
+        y = float(np.clip(ty + r.normal(0, spread), 0.5, 44.5))
+        while True:
+            addr = "%d %s" % (int(r.integers(100, 9900)), r.choice(STREETS))
+            if addr not in used_addr:
+                used_addr.add(addr)
+                break
+        city = tname if tname else ("Marlow" if r.random() < 0.5 else W.TOWNS[int(r.integers(1, 8))][0])
+        zipc = r.choice(W.ZIP[tname])
+        if i < n0:
+            opened = W.START - dt.timedelta(days=int(r.integers(30, 9000)))
+        else:
+            opened = W.START + dt.timedelta(days=int(r.integers(30, (W.END - W.START).days - 20)))
+        closed = None
+        if r.random() < 0.30:
+            c = opened + dt.timedelta(days=int(r.integers(200, 6000)))
+            if W.START < c <= W.END:
+                closed = c
+            elif c <= W.START:
                 continue
-            depts = [d[1] for d in K.DEPTS[e] if d[0] not in ("6910",)]
-            lam = rate[e] * (1 + 0.012 * (y - 2019)) * (0.92 if m in (7, 8) else 1.0)
-            for _ in range(int(rng.poisson(lam))):
-                d = dt.date(y, m, int(rng.integers(1, K.days_in_month(y, m) + 1)))
-                harm = pick(HARM)
-                days.append((d, e, depts[int(rng.integers(0, len(depts)))], pick(EVENT_TYPES), harm, pick(ROLES),
-                             "Y" if harm in ("Severe harm", "Death") or (harm == "Moderate harm" and rng.random() < 0.4)
-                             else "N"))
-        days.sort(key=lambda t: (t[0], t[1]))
-        for t in days:
-            seq += int(rng.integers(1, 3))
-            out.append(["SE%07d" % seq, t[0].isoformat()] + list(t[1:]))
+        is_seasonal = r.random() < seas
+        premises.append(dict(pid=len(premises), type=typ, risk=risk, x=x, y=y, addr=addr, city=city, zip=zipc,
+                             opened=opened, closed=closed, seasonal=is_seasonal,
+                             d26=W.nearest(W.SEEDS_2026, x, y), d27=W.nearest(W.SEEDS_2027, x, y),
+                             name=_name(r, typ, risk)))
+    # permits: an ownership change issues a new permit with a new operator
+    permits = []
+    rp = W.rng("permits")
+    for p in premises:
+        start = max(p["opened"], dt.date(2008, 1, 1))
+        end = p["closed"]
+        cur = start
+        names = [p["name"]]
+        while True:
+            hold = int(rp.integers(700, 9000))
+            nxt = cur + dt.timedelta(days=hold)
+            if (end is not None and nxt >= end) or nxt > W.END or rp.random() > 0.55:
+                permits.append(dict(prem=p["pid"], start=cur, end=end, name=names[-1]))
+                break
+            if nxt > W.START:
+                permits.append(dict(prem=p["pid"], start=cur, end=nxt - dt.timedelta(days=1), name=names[-1]))
+                cur = nxt
+                if rp.random() < 0.6:
+                    names.append(_name(rp, p["type"], p["risk"]))
+            else:
+                cur = nxt
+    rt = W.rng("theta")
+    for j, pm in enumerate(permits):
+        pm["id"] = j
+        pm["theta"] = float(rt.normal(0, W.THETA_SD))
+    # identifiers: legacy permit numbers for permits held before the cutover, new numbers for every permit
+    # active at or after it (the migration renumbered the live ones)
+    ri = W.rng("ids")
+    legacy_pool = ri.permutation(np.arange(100000, 189999))
+    new_pool = ri.permutation(np.arange(10000, 69999))
+    li = ni = 0
+    for pm in permits:
+        pm["legacy"] = pm["new"] = None
+        if pm["start"] < W.CUTOVER + dt.timedelta(days=25) and (pm["end"] is None or pm["end"] >= W.RECORD):
+            pm["legacy"] = "FP-%06d" % legacy_pool[li]
+            li += 1
+        if pm["end"] is None or pm["end"] >= W.RECORD:      # the new system kept every permit's number
+            if pm["legacy"]:
+                pm["new"] = pm["legacy"]
+            else:
+                pm["new"] = "EH%02d-%05d" % (pm["start"].year % 100, new_pool[ni])
+                ni += 1
+    # ------------------------------------------------------------ staff
+    rg = W.rng("gamma")
+    gamma = {s[3]: float(rg.normal(0, W.GAMMA_SD)) for s in W.STAFF}
+    rl = W.rng("leave")
+    leave = {s[3]: _leave(rl, range(2015, 2027)) for s in W.STAFF}
+    return dict(premises=premises, permits=permits, gamma=gamma, leave=leave)
+
+
+def assign_2027(premises):
+    """Each 2027 district goes to the remaining inspector whose 2026 district shares most of its establishments
+    (the plan's Appendix A), taken greedily from the largest overlap down."""
+    active = [p for p in premises if p["closed"] is None]
+    staying = {d: W.district_holder(d, W.END) for d in W.SEEDS_2026 if d not in W.RETIRING_2026}
+    overlap = defaultdict(int)
+    for p in active:
+        if p["d26"] in staying:
+            overlap[(p["d27"], p["d26"])] += 1
+    pairs = sorted(overlap.items(), key=lambda kv: -kv[1])
+    out, used_d, used_i = {}, set(), set()
+    for (d27, d26), n in pairs:
+        if d27 in out or d26 in used_i:
+            continue
+        out[d27] = staying[d26]
+        used_i.add(d26)
+    rest_d = [d for d in W.SEEDS_2027 if d not in out]
+    rest_i = [staying[d] for d in staying if d not in used_i]
+    for d, e in zip(sorted(rest_d), sorted(rest_i)):
+        out[d] = e
     return out
 
 
-INVOICE_COLS = ["invoice_no", "panel_firm", "claim_no", "entity_code", "service_from", "service_to", "fees",
-                "disbursements", "invoice_total", "received_date", "approved_date"]
-PANEL = ["Harrowgate Lusk LLP", "Benedetti Varga & Coyle", "Okonkwo Stahl PC", "Marsh Ruelas Defense Group"]
+def holder_on(d26, day):
+    return W.district_holder(d26, day)
 
 
-def invoice_rows(incidents):
-    """Defence panel invoices received for July to September 2026 on suits open at the start of the quarter."""
-    rng = K.stream("invoices")
-    q0, q1 = dt.date(2026, 7, 1), dt.date(2026, 9, 30)
-    out = []
-    seq = 26300410
-    suits = []
-    for inc in incidents:
-        for c in inc.claims:
-            if c.matter_type == "Suit" and c.made < q0 and c.close >= q0 and any(d.line != "CONTRACT" for d in c.defendants):
-                suits.append((c.claim_no, inc.entity))
-    for claim_no, e in sorted(suits):
-        firm = PANEL[int(rng.integers(0, len(PANEL)))]
-        for mth in (7, 8, 9):
-            if rng.random() < 0.72:
-                fees = float(round(rng.lognormal(math.log(6500), 0.7), 2))
-                disb = float(round(fees * rng.uniform(0.02, 0.18), 2))
-                start = dt.date(2026, mth, 1)
-                end = dt.date(2026, mth, K.days_in_month(2026, mth))
-                rec = end + dt.timedelta(days=int(rng.integers(6, 40)))
-                if rec > dt.date(2026, 10, 2):
+def simulate(R):
+    """Every visit from 2015 to 2026, in date order, with its performer, the performer's earlier inspected visits
+    to the permit, and its outcome."""
+    premises, permits, gamma, leave = R["premises"], R["permits"], R["gamma"], R["leave"]
+    prem = {p["pid"]: p for p in premises}
+    rv = W.rng("visits")
+    plan = defaultdict(list)          # day -> list of (kind, permit id, extra)
+    # routine visits, planned per permit-year
+    for pm in permits:
+        p = prem[pm["prem"]]
+        n = 1 if p["seasonal"] else FREQ[p["risk"]]
+        anchor = float(rv.random())
+        for y in range(W.START.year, W.END.year + 1):
+            a = max(pm["start"], dt.date(y, 1, 1))
+            b = min(pm["end"] or W.END, dt.date(y, 12, 31))
+            if a > b:
+                continue
+            for j in range(n):
+                if p["seasonal"]:
+                    day = dt.date(y, 5, 15) + dt.timedelta(days=int(rv.integers(0, 110)))
+                else:
+                    frac = (anchor + j / n + rv.normal(0, 0.035)) % 1.0
+                    day = dt.date(y, 1, 1) + dt.timedelta(days=int(frac * 364))
+                if not (a <= day <= b):
                     continue
-                appr = rec + dt.timedelta(days=int(rng.integers(3, 25)))
-                seq += int(rng.integers(1, 9))
-                out.append(["INV-%d" % seq, firm, claim_no, e, start.isoformat(), end.isoformat(), "%.2f" % fees,
-                            "%.2f" % disb, "%.2f" % (fees + disb), rec.isoformat(),
-                            appr.isoformat() if appr <= dt.date(2026, 10, 2) else ""])
-    out.sort(key=lambda r: (r[9], r[0]))
-    return out
+                if W.COVID_STOP[0] <= day <= W.COVID_STOP[1]:
+                    continue
+                while not W.working(day):
+                    day += dt.timedelta(days=1)
+                if day <= (pm["end"] or W.END) and day <= W.END:
+                    plan[day].append(("routine", pm["id"], None))
+    # complaint incidents
+    rc = W.rng("complaints")
+    incidents = []
+    last_start = {}
+    for pm in permits:
+        lam = 0.085 * math.exp(1.1 * pm["theta"])
+        a, b = max(pm["start"], W.START), min(pm["end"] or W.END, W.END)
+        span = (b - a).days
+        if span <= 0:
+            continue
+        k = int(rc.poisson(lam * span / 365.0))
+        starts = sorted(dt.datetime.combine(a + dt.timedelta(days=int(rc.integers(0, span))), dt.time(0)) +
+                        dt.timedelta(minutes=int(rc.integers(6 * 60, 23 * 60))) for _ in range(k))
+        for t0 in starts:
+            cat = rc.choice(["Illness", "Pests", "Sanitation", "Temperature", "Other"], p=[0.22, 0.2, 0.33, 0.1, 0.15])
+            pri = 1 if cat == "Illness" else (2 if cat in ("Pests", "Temperature") else 3)
+            m = int(rc.choice([1, 2, 3, 4], p=[0.38, 0.32, 0.20, 0.10]))
+            times = sorted([t0 + dt.timedelta(seconds=int(rc.integers(0, 60)))] + [t0 + dt.timedelta(seconds=int(rc.integers(20 * 60, 56 * 3600))) for _ in range(m - 1)])
+            delay_h = {1: rc.uniform(3, 26), 2: rc.uniform(16, 70), 3: rc.uniform(40, 200)}[pri]
+            start = times[0] + dt.timedelta(hours=float(delay_h))
+            # the inspector arrives during working hours on a working day
+            s = start
+            if s.hour < 8:
+                s = dt.datetime.combine(s.date(), dt.time(8, int(rc.integers(0, 50))))
+            elif s.hour >= 16:
+                s = dt.datetime.combine(s.date() + dt.timedelta(days=1), dt.time(8, int(rc.integers(0, 50))))
+            while not W.working(s.date()):
+                s = dt.datetime.combine(s.date() + dt.timedelta(days=1), dt.time(8, int(rc.integers(0, 50))))
+            s = s.replace(microsecond=0)
+            times = [t for t in times if t < s - dt.timedelta(minutes=30)] or [times[0]]
+            if s.date() > W.END:
+                continue
+            if last_start.get(pm["id"]) and times[0] <= last_start[pm["id"]] + dt.timedelta(days=1):
+                continue
+            last_start[pm["id"]] = s
+            inc = dict(permit=pm["id"], times=times, cat=str(cat), pri=pri, start=s, channel=[
+                str(rc.choice(["Phone", "Online", "Email"], p=[0.45, 0.45, 0.10])) for _ in times])
+            incidents.append(inc)
+            plan[s.date()].append(("complaint", pm["id"], len(incidents) - 1))
+    # pre-opening inspections by the plan reviewer
+    for pm in permits:
+        if pm["start"] > W.START:
+            d = pm["start"] - dt.timedelta(days=int(rv.integers(4, 21)))
+            while not W.working(d):
+                d -= dt.timedelta(days=1)
+            if d >= W.START:
+                plan[d].append(("preopen", pm["id"], None))
+
+    # ------------------------------------------------------------ process day by day
+    pair = defaultdict(int)          # (performer, permit) -> earlier inspected visits
+    visits = []
+    ro = W.rng("outcomes")
+    rr = W.rng("returns")
+    open_seq = {}                    # permit -> a return sequence is still open (no routine visit until it closes)
+    day = W.START
+    while day <= W.END:
+        todays = plan.pop(day, [])
+        for kind, pid, extra in todays:
+            pm = permits[pid]
+            p = prem[pm["prem"]]
+            if kind in ("return", "complaint") and pm["end"] is not None and day > pm["end"]:
+                continue
+            if kind == "preopen":
+                who = W.PLAN_REVIEWER
+                visits.append(dict(day=day, kind="preopen", permit=pid, who=who, k=pair[(who, pid)], result="Approved",
+                                   unsat=False, red=0, blue=int(ro.integers(0, 4)), seq=None, incident=None,
+                                   time=dt.time(int(ro.integers(8, 15)), int(ro.integers(0, 60)))))
+                pair[(who, pid)] += 1
+                continue
+            if kind == "return":
+                who = extra["who"]
+                seq = extra
+            else:
+                holder = holder_on(p["d26"], day)
+                who = holder
+                if day in leave[holder]:
+                    order = W.covering_order(p["d26"])
+                    pick = list(ro.choice(len(order), size=len(order), replace=False, p=W.COVER_WEIGHTS))
+                    covers = [holder_on(order[i], day) for i in pick]
+                    covers = [c for c in covers if day not in leave[c]]
+                    if kind == "routine" and (not covers or ro.random() < COVER_POSTPONE):
+                        nd = W.add_working(day, 1)
+                        while nd in leave[holder]:
+                            nd = W.add_working(nd, 1)
+                        if nd <= W.END:
+                            plan[nd].append((kind, pid, extra))
+                        continue
+                    if covers:
+                        who = covers[0]
+                seq = None
+            if kind == "routine" and open_seq.get(pid):
+                nd = W.add_working(day, 10)
+                if nd <= W.END:
+                    plan[nd].append((kind, pid, extra))
+                continue
+            k = pair[(who, pid)]
+            t = dt.time(int(ro.integers(8, 16)), int(ro.integers(0, 60)), int(ro.integers(0, 60)))
+            if kind == "routine":
+                if ro.random() < 0.015:
+                    visits.append(dict(day=day, kind="routine", permit=pid, who=who, k=k, result="No access",
+                                       unsat=False, red=None, blue=None, seq=None, incident=None, time=t))
+                    nd = W.add_working(day, int(ro.integers(1, 6)))
+                    if nd <= W.END:
+                        plan[nd].append(("routine", pid, None))
+                    continue
+                f = W.F0 if k == 0 else (W.F1 if k == 1 else 0.0)
+                reopen = W.REOPEN_2021 if (day.year == 2021 and day.month <= 6) else 0.0
+                pr = W.expit(W.lg(W.BASE[p["risk"]]) + pm["theta"] + gamma[who] + f + reopen)
+                unsat = bool(ro.random() < pr)
+                red = _red(ro, unsat)
+                ihh = unsat and ro.random() < 0.01
+                visits.append(dict(day=day, kind="routine", permit=pid, who=who, k=k, p=pr, unsat=unsat,
+                                   result=("IHH" if ihh else ("Unsatisfactory" if unsat else "Satisfactory")),
+                                   red=red, blue=int(ro.integers(0, 13)), seq=None, incident=None, time=t))
+                pair[(who, pid)] += 1
+                if unsat:
+                    open_seq[pid] = True
+                    _schedule_return(plan, rr, day, pid, p, len(visits) - 1, 1)
+            elif kind == "complaint":
+                inc = incidents[extra]
+                t = inc["start"].time()
+                unsat = bool(ro.random() < 0.18)
+                visits.append(dict(day=day, kind="complaint", permit=pid, who=who, k=k, unsat=unsat,
+                                   result="Unsatisfactory" if unsat else "Satisfactory", red=_red(ro, unsat),
+                                   blue=int(ro.integers(0, 10)), seq=None, incident=extra, time=t))
+                pair[(who, pid)] += 1
+            elif kind == "return":
+                if rr.random() < 0.17:
+                    visits.append(dict(day=day, kind="return", permit=pid, who=who, k=k, result="No access",
+                                       unsat=False, red=None, blue=None, seq=seq, incident=None, time=t))
+                    if seq["n"] < 5:
+                        _schedule_return(plan, rr, day, pid, p, seq["routine"], seq["n"] + 1, gap=(2, 7))
+                    else:
+                        open_seq[pid] = False
+                    continue
+                unsat = bool(rr.random() < 0.16)
+                visits.append(dict(day=day, kind="return", permit=pid, who=who, k=k, unsat=unsat,
+                                   result="Unsatisfactory" if unsat else "Satisfactory", red=_red(rr, unsat),
+                                   blue=int(rr.integers(0, 9)), seq=seq, incident=None, time=t))
+                if who not in W.RETURN_OFFICER.values():
+                    pair[(who, pid)] += 1
+                if unsat and seq["n"] < 5:
+                    _schedule_return(plan, rr, day, pid, p, seq["routine"], seq["n"] + 1, gap=(5, 13))
+                else:
+                    open_seq[pid] = False
+        day += dt.timedelta(days=1)
+    R["visits"] = visits
+    R["incidents"] = incidents
+    R["pair_end"] = dict(pair)
+    return R
 
 
-EXTRACT_LOG_COLS = ["file_name", "source", "run_or_received", "records", "owner", "coverage"]
+def _red(r, unsat):
+    if unsat:
+        return 25 + int(r.choice([0, 5, 10, 15, 20, 25, 35], p=[0.24, 0.22, 0.18, 0.14, 0.1, 0.07, 0.05]))
+    if r.random() < 0.42:
+        return 0
+    return int(r.choice([5, 10, 15, 20], p=[0.36, 0.32, 0.2, 0.12]))
+
+
+def _schedule_return(plan, r, day, pid, p, routine_ix, n, gap=(3, 15)):
+    d = W.add_working(day, int(r.integers(gap[0], gap[1])))
+    if d > W.END:
+        return
+    if d >= W.RETURN_TEAM:
+        who = W.RETURN_OFFICER["north" if p["d26"] in W.NORTH else "south"]
+    else:
+        who = W.district_holder(p["d26"], d)
+    plan[d].append(("return", pid, dict(who=who, routine=routine_ix, n=n)))
+
+
+def schedule_2027(R):
+    """The plan's 2027 schedule: every permit active on 31 December 2026, its 2027 district and inspector and its
+    required routine inspections; and the truth's expected unsatisfactory count over it."""
+    prem = {p["pid"]: p for p in R["premises"]}
+    insp = assign_2027(R["premises"])
+    rows = []
+    truth = 0.0
+    pair = R["pair_end"]
+    for pm in R["permits"]:
+        if pm["end"] is not None:
+            continue
+        p = prem[pm["prem"]]
+        n = 1 if p["seasonal"] else FREQ[p["risk"]]
+        who = insp[p["d27"]]
+        k0 = pair.get((who, pm["id"]), 0)
+        for j in range(n):
+            k = k0 + j
+            f = W.F0 if k == 0 else (W.F1 if k == 1 else 0.0)
+            truth += W.expit(W.lg(W.BASE[p["risk"]]) + pm["theta"] + R["gamma"][who] + f)
+        rows.append(dict(permit=pm["id"], d27=p["d27"], who=who, n=n, k0=k0))
+    R["schedule"] = rows
+    R["insp27"] = insp
+    R["truth27"] = truth
+    return R

@@ -1,194 +1,155 @@
 {
-  "task": "task130",
-  "title": "The 2027 contribution to Corvane Health's new claims-made professional liability trust",
-  "domain": "Actuarial Science & Insurance",
-  "subdomain": "pricing-ratemaking-credibility (first-year funding of a self-insured claims-made professional liability trust at an Oregon health system)",
-  "stated_inputs": [],
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "other: the contribution, then two reconciliation asks across four entities (open claims under each expiring carrier's policies missing from its latest loss run, with reserves; paid covered clinician FTE in each of three months) and a chart of the second",
-  "as_of": "2026-10-12",
-  "deliverables": [
-    "trust_funding_2027.xlsx",
-    "trustees_paper_2027.pptx"
+ "task": "task130",
+ "title": "Elkhorn County food safety program: a third return-inspection officer for 2027",
+ "domain": "Psychology & Behavioral Science",
+ "task_type": "decision-making and computational behavioral modeling",
+ "objective": "Forecasting & Predictive Modeling",
+ "decision": "whether the county adds a third return-inspection officer for 2027 under its program plan's staffing rule, with the forecast the rule compares",
+ "as_of": "2027-01-11",
+ "deliverables": [
+  "return_officer_memo_2027.pdf",
+  "return_inspections_2027.xlsx"
+ ],
+ "distractor_files": [
+  "foodborne_illness_investigations_2019-2026.xlsx",
+  "permit_fee_invoices_2026.csv"
+ ],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "json",
+   "pdf",
+   "xlsx"
   ],
-  "distractor_files": [
-    "patient_safety_events_2019-01_2026-09.csv",
-    "defense_panel_invoices_2026Q3.csv"
-  ],
-  "input_gates": {
-    "files": 17,
-    "formats": [
-      "csv",
-      "md",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "clinician_fte_by_month_2016-01_2025-12.csv",
-    "largest_file_rows": 224767
+  "largest_file": "inspections_2019-01_2024-03.csv",
+  "largest_file_rows": 30164
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task130/generator/make.py (seeded, deterministic) around a fictional Washington county, its public health department, food establishments and people; every record and figure is invented.",
+   "date": "2027-01-11",
+   "license": "CC BY 4.0 (original work)"
+  }
+ ],
+ "files": [
+  {
+   "path": "complaints_2024-03_2026-12.csv",
+   "format": "csv",
+   "bytes": 121904,
+   "rows": 1392,
+   "source": "Constructed: Complaint intake records, 4 March 2024 to 31 December 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task130/generator/build.py (seeded, deterministic) around a fictional Oregon health system (Corvane Health), its hospitals, medical group, trust, carriers and people; no real organisation, person, patient or claim is depicted.",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-12",
-  "generator": "task130/generator/build.py",
-  "files": [
-    {
-      "path": "CPLT_funding_policy_adopted_2026-09-22.pdf",
-      "format": "pdf",
-      "bytes": 64957,
-      "rows": null,
-      "source": "Constructed: Trust funding policy as adopted by the Trustees",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "CPLT_trust_agreement_executed_2026-08-14.pdf",
-      "format": "pdf",
-      "bytes": 108956,
-      "rows": null,
-      "source": "Constructed: Corvane Professional Liability Trust Agreement as executed (extract: definitions, coverage, claims administration, Schedules A and B)",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "QMPL_loss_run_Corvane_val_2026-06-30_rev1.xlsx",
-      "format": "xlsx",
-      "bytes": 79509,
-      "rows": null,
-      "source": "Constructed: Quillan Mutual loss run valued 30 June 2026, revision 1 issued 9 October 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "QMPL_loss_run_Corvane_val_2026-09-30.xlsx",
-      "format": "xlsx",
-      "bytes": 81922,
-      "rows": null,
-      "source": "Constructed: Quillan Mutual loss run for Tolliver Falls Hospital and Alderwick Medical Center, valued 30 September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "Stoneleigh_lossrun_CORVANE_20260930.csv",
-      "format": "csv",
-      "bytes": 243760,
-      "rows": 1560,
-      "source": "Constructed: Stoneleigh Casualty loss run for Corvane Medical Group and Brennick Community Hospital, valued 30 September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "clinician_fte_by_month_2016-01_2025-12.csv",
-      "format": "csv",
-      "bytes": 14766339,
-      "rows": 224767,
-      "source": "Constructed: Legacy payroll history: paid FTE by employee, month and cost centre for employed clinicians, residents, fellows and psychologists, January 2016 to December 2025",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "clinician_staffing_plan_2027.xlsx",
-      "format": "xlsx",
-      "bytes": 9081,
-      "rows": null,
-      "source": "Constructed: 2027 staffing plan: covered clinician FTE by entity, specialty class and month",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cost_centre_directory_2026.csv",
-      "format": "csv",
-      "bytes": 4435,
-      "rows": 55,
-      "source": "Constructed: General ledger cost centre directory: company, entity and department",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "data_dictionary_rm_extracts.md",
-      "format": "md",
-      "bytes": 5394,
-      "rows": null,
-      "source": "Constructed: Data dictionary for the risk management extracts",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "defense_panel_invoices_2026Q3.csv",
-      "format": "csv",
-      "bytes": 10969,
-      "rows": 92,
-      "source": "Constructed: Defence panel invoices received for service from July to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_log_2026-10.csv",
-      "format": "csv",
-      "bytes": 2509,
-      "rows": 16,
-      "source": "Constructed: Extract log: each file's system, date, row count and preparer",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hcm_clinician_pay_lines_2026-01_2026-09.csv",
-      "format": "csv",
-      "bytes": 3246648,
-      "rows": 30902,
-      "source": "Constructed: HCM pay lines for clinicians, one row per worker, position, work month and earning code, January to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hcm_job_profile_crosswalk.csv",
-      "format": "csv",
-      "bytes": 2811,
-      "rows": 33,
-      "source": "Constructed: HCM job profiles mapped to the legacy job codes they replaced",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "insurance_premium_history_2016-2026.xlsx",
-      "format": "xlsx",
-      "bytes": 9137,
-      "rows": null,
-      "source": "Constructed: Clinician occurrence policies by entity and term, 2016 to 2026: carrier, policy number, period, rated FTE and premium",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "patient_safety_events_2019-01_2026-09.csv",
-      "format": "csv",
-      "bytes": 4955320,
-      "rows": 69064,
-      "source": "Constructed: Patient safety event reports, January 2019 to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "rm_carrier_notices_2012_2026.csv",
-      "format": "csv",
-      "bytes": 93314,
-      "rows": 838,
-      "source": "Constructed: Precautionary notices risk management sent to the carriers, 2012 to September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "rm_claims_register_extract_20261002.csv",
-      "format": "csv",
-      "bytes": 799174,
-      "rows": 4265,
-      "source": "Constructed: Risk management claims register extract: every clinician named on a claim number, valued 30 September 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "path": "correspondence_log_2026.csv",
+   "format": "csv",
+   "bytes": 534139,
+   "rows": 4856,
+   "source": "Constructed: Outgoing correspondence log, 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "county_holidays_2025-2027.json",
+   "format": "json",
+   "bytes": 2957,
+   "rows": null,
+   "source": "Constructed: Observed county holidays, 2025 to 2027",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "environmental_health_fee_schedule_2026.pdf",
+   "format": "pdf",
+   "bytes": 3122,
+   "rows": null,
+   "source": "Constructed: Environmental health fee schedule 2026, as amended 1 July 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "food_establishment_permits.csv",
+   "format": "csv",
+   "bytes": 344176,
+   "rows": 3415,
+   "source": "Constructed: Food establishment permit register, as of 31 December 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "food_program_staff_roster.xlsx",
+   "format": "xlsx",
+   "bytes": 7782,
+   "rows": null,
+   "source": "Constructed: Human Resources staff roster for the food safety program, December 2026, with separations since 2019",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "food_safety_program_plan_2027.pdf",
+   "format": "pdf",
+   "bytes": 5170,
+   "rows": null,
+   "source": "Constructed: Food Safety Program Plan 2027, issued 11 January 2027",
+   "date": "2027-01-11",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "foodborne_illness_investigations_2019-2026.xlsx",
+   "format": "xlsx",
+   "bytes": 10957,
+   "rows": null,
+   "source": "Constructed: Communicable disease team's foodborne illness investigations, 2019 to 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "inspections_2019-01_2024-03.csv",
+   "format": "csv",
+   "bytes": 1944281,
+   "rows": 30164,
+   "source": "Constructed: Inspection system export, January 2019 to 1 March 2024 (the system replaced on 4 March 2024)",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "inspections_2024-03_2026-12.csv",
+   "format": "csv",
+   "bytes": 1413437,
+   "rows": 18077,
+   "source": "Constructed: Inspection system export, 4 March 2024 to 31 December 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "permit_fee_invoices_2026.csv",
+   "format": "csv",
+   "bytes": 224461,
+   "rows": 2580,
+   "source": "Constructed: Annual permit fee invoices for 2026",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "return_team_capacity_report_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 22845,
+   "rows": null,
+   "source": "Constructed: Return team capacity report for calendar 2026 with the officers' day sheet log",
+   "date": "2027-01-08",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "routine_inspection_schedule_2027.xlsx",
+   "format": "xlsx",
+   "bytes": 117798,
+   "rows": null,
+   "source": "Constructed: Routine inspection schedule for 2027, issued with the plan",
+   "date": "2027-01-11",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  }
+ ]
 }

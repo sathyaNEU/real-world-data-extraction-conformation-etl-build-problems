@@ -1,25 +1,25 @@
 {
  "task": "task130",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "psychology-behavioral-science",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-31",
- "stump": "A competent solver who reads the plan's staffing rule, its 2027 schedule and the redrawn district map correctly carries each establishment's own unsatisfactory share, or a model with one criterion per inspector applied to each establishment's 2027 inspector, into the schedule and files about 650 unsatisfactory routine inspections and no third return-inspection officer; an inspector marks an establishment unsatisfactory far more often on a first visit than on a fourth, and the redraw makes about two fifths of 2027's routine inspections first visits, so the schedule gives about 1,000, past the plan's 800.",
+ "stump": "Carrying the risk categories' rates, each establishment's own record or one criterion per inspector into the 2027 schedule files about 450 unsatisfactory routine inspections and no third officer, because an inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or later one and the 2027 redraw makes 23 per cent of the schedule first visits for their named inspector; read at each named inspector's earlier visits, the schedule gives about 700, past the plan's 540.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
   "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31 on the registered card (19:05:15Z): repeat.deliverables (pdf+xlsx) and repeat.question_form against task250; test.same_driver_older differentiated against task134 v3, task146, task165 and task173 v1; nearest driver 0.06",
-  "heart": "",
+  "guard_check": "WARN 2026-10-31 at the draw (19:05:15Z), before task156 v2's card (18:27:04Z) reached this tree",
+  "heart": "BLOCK 2026-10-31 against task156 v2, earlier in draw order: ban.pattern G14, ban.strategy forecast_method_backtest, test.same_puzzle, test.same_driver, ban.org_family local_government",
   "surface": ""
  },
  "judge": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2: the design sections (three rules, survivor anatomy, readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet with a measured ceiling), the familiarity effect's screens as code on a prototype, then precut.py.",
+ "resume": "Stage 3, the guard: redraw the card's decisive pattern to G6 (generators G6, G14, G13) with strategy composition_mix, task175's labels for a rate held within a class and carried to a new mix, with differentiation lines for task124, task132, task144 v1, task163, task175, task455 v1 and task465 v1; move the organisation to a state department of health's Elkhorn County office in the fictional State of Penmore (government_agency) in docs.py, pack.py, world.py, distract.py, golden.py, metadata.py, analysis.py, verify.py, checks.py, prompt.txt, the note and the card; guard.py check and register, rebuild (python3 task130/generator/make.py), rerun every free gate, write submission.md; then stage 4: leak reader and judge from the main thread.",
  "approved": null,
  "delivered": null,
  "portal": null,
