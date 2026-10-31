@@ -178,12 +178,12 @@ def submission(A):
              "Sengalur an August wave nearly as large as their November one), against at most %d per cent in the "
              "others, and the share infected is %.2f to %.2f times the published value; in the others it is at most "
              "%.2f times (%s). Correcting every zone with one sensitivity "
-             "from the panel, pooled over all its sera (%.3f), from the fifth day of illness (%.3f) or over the kit's "
-             "5 to 60 day window (%.3f), puts every zone between %.2f and %.2f times its published value and flags "
+             "from the panel, pooled over all its sera (%.3f), from the fifth day of illness (%.3f) or over days 5 "
+             "to 60 since onset (%.3f), puts every zone between %.2f and %.2f times its published value and flags "
              "none. Reading each zone at the sensitivity of its median day since onset flags %s and misses %s, whose "
              "November waves were days old at fieldwork while their August waves were long past; at its peak day it "
-             "flags %s, %s among them; at its mean day %s, %s among them, whose January wave drags the mean back; a "
-             "fixed 90-day window flags %s; the city's pooled epidemic curve flags %s.\n"
+             "flags %s, %s among them; at its mean day %s, %s among them, whose January wave drags the mean back; "
+             "the city's pooled epidemic curve flags %s.\n"
              % (100 * min(g["se"] for g in A["groups"] if 7 <= g["visit"] <= 30),
                 100 * max(g["se"] for g in A["groups"] if 7 <= g["visit"] <= 30),
                 100 * [g for g in A["groups"] if g["visit"] == 75][0]["se"],
@@ -193,7 +193,7 @@ def submission(A):
                 min(rg["kit"]["min_ratio"], rg["pooled"]["min_ratio"]), max(rg["kit"]["max_ratio"], rg["pooled"]["max_ratio"]),
                 WORDS[rg["median"]["n"]].lower(), _names(rg["median"]["missed"]), WORDS[rg["peak"]["n"]].lower(),
                 _names(rg["peak"]["extra"]), WORDS[rg["mean"]["n"]].lower(), _names(rg["mean"]["extra"]),
-                WORDS[rg["w90"]["n"]].lower(), WORDS[rg["city"]["n"]].lower()))
+                WORDS[rg["city"]["n"]].lower()))
     L.append("## 2. Critical Components\n")
     for i, z in enumerate(fl, 1):
         L.append("%d. %s %s: published **%.1f** per cent; estimated share infected since 1 January **%.1f** per cent, "

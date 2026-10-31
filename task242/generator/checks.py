@@ -127,7 +127,7 @@ def run(target, golden, o, X, A):
        "R3a the kit window's sensitivity on the clean truth (%.3f) flags no zone" % kit_true)
 
     # ---------------------------------------------------------------- R3c: no plant, no method filed
-    for k in ("request", "register", "standard", "bulletin", "panelnote", "protocol", "vcsop", "readme", "dict"):
+    for k in ("request", "register", "standard", "bulletin", "panelnote", "protocol", "vcsop"):
         txt = _text(os.path.join(target, F[k]))
         ok(not re.search(r"sensitivity|specificity|days since onset|epidemic curve|convol|weighted by|timing|window of",
                          txt, re.I), "R3c %s names no sensitivity, timing or method" % F[k])

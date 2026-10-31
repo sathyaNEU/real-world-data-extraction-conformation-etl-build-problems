@@ -1,7 +1,6 @@
 """task242 documents: the city health officer's request (eml), the laboratory's cover note for the verification panel
 (eml), the City Epidemiology Cell's indicator register (xlsx), SOP-EPI-07 on quality flags (pdf), the December dengue
-bulletin (pdf), the serosurvey protocol (docx), the Vector Control Unit's surveillance SOP extract (pdf), the data
-dictionary and the readme (md)."""
+bulletin (pdf), the serosurvey protocol (docx) and the Vector Control Unit's surveillance SOP extract (pdf)."""
 import datetime as dt
 
 from reportlab.graphics.charts.barcharts import VerticalBarChart
@@ -360,8 +359,9 @@ def vc_sop(path, F):
           Paragraph("%s, Public Health Department, Vector Control Unit. Revision 5, March 2026." % CORP, small),
           Spacer(1, 6), Paragraph("4. The monthly house-to-house round", h2),
           Paragraph("Each ward's Domestic Breeding Checkers (DBCs) inspect every house on their ward list once in the "
-                    "calendar month, indoors and outdoors, and record on the inspection form the number of containers "
-                    "holding water and the number found with Aedes larvae or pupae. They empty, cover or treat every "
+                    "calendar month, indoors and outdoors, and record on the inspection form the house's property "
+                    "assessment number, the number of containers holding water and the number found with Aedes larvae "
+                    "or pupae. They empty, cover or treat every "
                     "positive container they find and record the source reduction. A house found locked is called on "
                     "again within the week; the call is recorded as LOCKED. A positive house is visited again about a "
                     "week later to check the source reduction.",
@@ -380,177 +380,6 @@ def vc_sop(path, F):
     postprocess.scrub(path, "Vector Control Unit", "2026-03-16")
 
 
-# ------------------------------------------------------------------ the data dictionary and readme (md)
-def dictionary(F):
-    return f"""# Data dictionary
-
-Dates are ISO (YYYY-MM-DD) unless a column says otherwise. Times in the field app export carry their offset; the
-laboratory's register is in Indian Standard Time.
-
-## {F['cases']}
-The city's dengue line list as kept by the City Epidemiology Cell: every dengue case notified to the Corporation from 1
-October 2026, extracted on 8 January 2028. One row per notification.
-
-| Column | Meaning |
-|---|---|
-| case_no | Notification number (NCMC/DEN/year of notification/serial) |
-| notified_on | Date the case was notified (DD-MM-YYYY) |
-| onset_date | Date of onset of fever, as reported (DD-MM-YYYY) |
-| age_yrs, sex | Age in completed years; M or F |
-| zone | Zone of residence as the reporting unit wrote it; non-residents as Non-resident with their district |
-| reporting_unit | The hospital, primary health centre or laboratory that notified the case |
-| test_done | The test that supported the notification |
-| classification | CONFIRMED (ELISA or RT-PCR) or PROBABLE (rapid test) |
-| hospitalised | Y or N |
-| outcome | RECOVERED, DIED, LAMA (left against medical advice), UNDER TREATMENT |
-
-## {F['results']}
-The household serosurvey's IgM results: one row per resident whose specimen the laboratory tested.
-
-| Column | Meaning |
-|---|---|
-| specimen_id | Specimen barcode (TS-ZZ-HHH-L, with R for a specimen collected again) |
-| household_id | ZZ-HHH: zone number and household serial in the zone |
-| zone | Zone |
-| member_line | The resident's line on the household roster |
-| age_yrs, sex | Age in completed years; F or M |
-| collected_on | Date the specimen was collected |
-| plate | ELISA plate |
-| igm_index | Final IgM index (sample to cut-off ratio) |
-| igm_result | REACTIVE or NON-REACTIVE |
-
-## {F['panel']}
-The laboratory's verification run for the IgM capture ELISA lot used for the survey (July 2027). One row per serum.
-
-| Column | Meaning |
-|---|---|
-| panel_no | Serial in the run |
-| arm | CONFIRMED CASE or NEGATIVE CONTROL |
-| patient_ref | Follow-up clinic number (FUC), blood bank number (BB) or febrile illness register number (OFI) |
-| confirmed_by | How the case was confirmed, or what the control is |
-| onset_date | Date of onset of illness (DD-MM-YYYY); blank for blood donors |
-| collected_on | Date the serum was collected (DD-MM-YYYY) |
-| index_first, reading_first | First IgM index and reading |
-| index_repeat | Index on repeat testing, for a first reading in the grey zone |
-| result_final | REACTIVE or NON-REACTIVE |
-
-## {F['sample']}
-The households sampled for the survey, one row each.
-
-| Column | Meaning |
-|---|---|
-| household_id | ZZ-HHH |
-| zone | Zone |
-| listing_sl_no | Serial in the zone's sample |
-| listing_address | Address as listed |
-
-## {F['visits']}
-The field app export (KoboToolbox): one row per submission of the household call form.
-
-| Column | Meaning |
-|---|---|
-| _id, _uuid | Submission identifiers given by the server |
-| start, end | When the form was opened and closed on the tablet (with offset) |
-| today | Date on the tablet |
-| deviceid | Tablet |
-| zone, household_id | The household called on |
-| visit_number | Call number entered by the interviewer |
-| visit_outcome | 1 interview completed, 2 refused, 3 nobody at home, 4 vacant, 5 not a dwelling, 6 other |
-| members_usual, members_eligible | Usual residents; residents aged one year and over (completed interviews) |
-| interviewer | Interviewer code |
-| __version__ | Form version |
-| _submission_time | When the server received the submission (UTC) |
-
-## {F['lab']}
-The laboratory's register of the survey specimens it received, one row per specimen.
-
-| Column | Meaning |
-|---|---|
-| lab_no | Laboratory accession number |
-| barcode | Specimen barcode from the field |
-| zone | Zone, from the barcode |
-| received_on | Date and time received |
-| condition | ACCEPTED, HAEMOLYSED, INSUFFICIENT |
-| action | TESTED, REJECTED, REJECTED - RECOLLECTION REQUESTED |
-| plate | ELISA plate, for a tested specimen |
-| released_on | Date the result was released |
-
-## {F['insp']}
-The Domestic Breeding Checkers' house inspection forms for November 2027, one row per form.
-
-| Column | Meaning |
-|---|---|
-| record_id | Form number |
-| inspected_on | Date of the visit |
-| ward_no | Ward number written on the form |
-| premise_id | Property assessment number (ZZ/WWW/NNNNN) |
-| premise_type | Residential |
-| wet_containers | Containers holding water |
-| positive_containers | Containers with Aedes larvae or pupae |
-| source_reduction | Y if positive containers were emptied, covered or treated |
-| remarks | The checker's remark |
-| inspector | DBC code |
-
-## {F['wards']}
-The Corporation's ward master, one row per ward.
-
-| Column | Meaning |
-|---|---|
-| ward_no | Ward number |
-| ward_name | Ward name |
-| zone | Zone |
-| former_ward_nos | The ward numbers the ward's area carried under the earlier ward map |
-
-## {F['rain']}
-Daily rainfall at the Corporation's rain gauges, 1 October 2026 to 31 December 2027.
-
-| Column | Meaning |
-|---|---|
-| station_id, station_name | Gauge |
-| date | Day |
-| rainfall_mm | Rainfall in the 24 hours to 08:30 IST |
-
-## {F['fog']}
-The Vector Control Unit's log of fogging and source reduction operations in 2027.
-
-| Column | Meaning |
-|---|---|
-| date | Day |
-| zone, locality | Where |
-| activity | Operation |
-| houses_covered | Houses covered (not recorded for thermal fogging) |
-| insecticide_litres | Insecticide used |
-| trigger | Why the operation was run |
-"""
-
-
-def readme(F):
-    return f"""# Serosurvey flag review, January 2028
-
-Files gathered by the City Epidemiology Cell, {CORP}, for the quality flag review of the 2027 serosurvey values
-before the public health standing committee.
-
-- {F['request']}: the City Health Officer's request
-- {F['register']}: the Cell's register of published indicators
-- {F['standard']}: SOP-EPI-07, quality flags on published surveillance indicators
-- {F['bulletin']}: City Dengue Bulletin No. 52 of 2027
-- {F['panelnote']}: the laboratory's note on the kit lot's verification run
-- {F['panel']}: the verification run's results
-- {F['protocol']}: the household serosurvey protocol
-- {F['results']}: the survey's IgM results
-- {F['sample']}: the sampled households
-- {F['visits']}: the field app export of household calls
-- {F['lab']}: the laboratory's register of survey specimens
-- {F['cases']}: the city's dengue line list
-- {F['vcsop']}: the Vector Control Unit's entomological surveillance SOP (extract)
-- {F['insp']}: the November 2027 house inspection forms
-- {F['wards']}: the ward master
-- {F['rain']}: daily rainfall at the Corporation's rain gauges
-- {F['fog']}: the fogging and source reduction log
-- DATA_DICTIONARY.md: the columns of every table
-"""
-
-
 def write_all(target, F, R):
     import os
     p = lambda k: os.path.join(target, F[k])
@@ -561,7 +390,3 @@ def write_all(target, F, R):
     bulletin(p("bulletin"), F, R)
     protocol(p("protocol"), F)
     vc_sop(p("vcsop"), F)
-    with open(p("dict"), "w") as fh:
-        fh.write(dictionary(F))
-    with open(p("readme"), "w") as fh:
-        fh.write(readme(F))

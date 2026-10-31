@@ -40,13 +40,12 @@ def metadata(target):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task242",
-        "title": "Which of a city's 12 zones' published 2027 dengue infection shares, from its post-season IgM "
+        "title": "Whether a city's published 2027 dengue infection shares by zone, from its post-season IgM "
                  "household serosurvey, carry the misclassification flag, with each zone's November Breteau index and "
                  "the survey's household response rate",
         "domain": "Epidemiology & Public Health",
-        "subdomain": "disease-surveillance-outbreak-anomaly-detection (a city's dengue serosurvey indicator judged against "
-                     "the quality standard's misclassification flag: the share infected since 1 January estimated from "
-                     "IgM results through the assay's detection by days since onset and each zone's epidemic curve)",
+        "subdomain": "disease-surveillance-outbreak-anomaly-detection (whether a city's published dengue serosurvey shares, "
+                     "zone by zone, carry the misclassification flag before they go to committee)",
         "objective": "Data Quality Monitoring & Alerting",
         "prompt_shape": "07: a grid of zones against measures, each zone's published share, estimated share and flag "
                         "beside its November Breteau index and household response rate, and a slide of the shares "

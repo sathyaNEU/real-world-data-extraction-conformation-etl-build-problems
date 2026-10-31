@@ -1,32 +1,30 @@
 # leak check, task242
 
-**Verdict: REVIEW.** 19 files read, 56 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 17 files read, 56 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: sensitivity, january, dropped, window, epidemic, collection, timing, single, quantity, fieldwork, laboratory, method, indicator, register, survey, season, infections, decisive, quality, specimen, marker, rogan-gladen, pooled, monitoring, surveillance
+Stump terms swept: sensitivity, dropped, january, window, epidemic, collection, decisive, method, single, timing, fieldwork, laboratory, repeat, quantity, register, infections, indicator, survey, season, quality, surveillance, specimen, marker, results, attack
 
 ## 3 answer figures in the pack (REVIEW 13)
+- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 12.3 appears: ...65 59 12.7 III Puthanpalli 28 Oct to 7 Nov 406 50 12.3 IV Melmangalam 22 Nov to 2 Dec 407 23 5.7 V Vadak...
+- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 14.2 appears: ...ion share, 2027 (%) I Kadalur 13 to 23 Oct 422 60 14.2 II Thenkarai 23 Oct to 2 Nov 465 59 12.7 III Puth...
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 12.7 appears: ...t 422 60 14.2 II Thenkarai 23 Oct to 2 Nov 465 59 12.7 III Puthanpalli 28 Oct to 7 Nov 406 50 12.3 IV Me...
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 13.2 appears: ...c 417 31 7.4 XII Aranmanai 29 Oct to 8 Nov 409 54 13.2 City 13 Oct to 7 Dec 4,952 440 8.9 Table 1. Dengu...
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 10.2 appears: ...8 Nov 378 35 9.3 VI Kizhakkoor 2 to 12 Nov 423 43 10.2 VII Velliyanur 8 to 18 Nov 432 19 4.4 VIII Chinna...
-- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 12.3 appears: ...65 59 12.7 III Puthanpalli 28 Oct to 7 Nov 406 50 12.3 IV Melmangalam 22 Nov to 2 Dec 407 23 5.7 V Vadak...
-- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 14.2 appears: ...ion share, 2027 (%) I Kadalur 13 to 23 Oct 422 60 14.2 II Thenkarai 23 Oct to 2 Nov 465 59 12.7 III Puth...
-- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 5.7 appears: ...406 50 12.3 IV Melmangalam 22 Nov to 2 Dec 407 23 5.7 V Vadakkupatti 18 to 28 Nov 378 35 9.3 VI Kizhakk...
-- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 7.4 appears: ...Nov 372 19 5.1 XI Sengalur 27 Nov to 7 Dec 417 31 7.4 XII Aranmanai 29 Oct to 8 Nov 409 54 13.2 City 13...
-- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 5.1 appears: ...Nov 418 28 6.7 X Kottaivayal 12 to 22 Nov 372 19 5.1 XI Sengalur 27 Nov to 7 Dec 417 31 7.4 XII Aranma...
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 4.4 appears: ...Nov 423 43 10.2 VII Velliyanur 8 to 18 Nov 432 19 4.4 VIII Chinnakulam 27 Nov to 7 Dec 403 19 4.7 IX Pe...
-- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 6.7 appears: ...Dec 403 19 4.7 IX Periyamalai 10 to 20 Nov 418 28 6.7 X Kottaivayal 12 to 22 Nov 372 19 5.1 XI Sengalur...
+- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 7.4 appears: ...Nov 372 19 5.1 XI Sengalur 27 Nov to 7 Dec 417 31 7.4 XII Aranmanai 29 Oct to 8 Nov 409 54 13.2 City 13...
+- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 5.7 appears: ...406 50 12.3 IV Melmangalam 22 Nov to 2 Dec 407 23 5.7 V Vadakkupatti 18 to 28 Nov 378 35 9.3 VI Kizhakk...
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 9.3 appears: ...Dec 407 23 5.7 V Vadakkupatti 18 to 28 Nov 378 35 9.3 VI Kizhakkoor 2 to 12 Nov 423 43 10.2 VII Velliya...
+- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 6.7 appears: ...Dec 403 19 4.7 IX Periyamalai 10 to 20 Nov 418 28 6.7 X Kottaivayal 12 to 22 Nov 372 19 5.1 XI Sengalur...
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 4.7 appears: ...32 19 4.4 VIII Chinnakulam 27 Nov to 7 Dec 403 19 4.7 IX Periyamalai 10 to 20 Nov 418 28 6.7 X Kottaiva...
+- **REVIEW** `dengue_bulletin_dec2027.pdf`: golden figure 5.1 appears: ...Nov 418 28 6.7 X Kottaivayal 12 to 22 Nov 372 19 5.1 XI Sengalur 27 Nov to 7 Dec 417 31 7.4 XII Aranma...
 - **REVIEW** `vector_surveillance_sop_extract.pdf`: golden figure 100 appears: ...Houses with at least one positive container, per 100 houses inspected Container index (CI) Positive co...
 
-## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `DATA_DICTIONARY.md`: 5 of 25 stump-paragraph terms appear (january, laboratory, register, survey, specimen); read whether the document names the move
-- **REVIEW** `README.md`: 8 of 25 stump-paragraph terms appear (january, laboratory, indicator, register, survey, quality); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `dengue_bulletin_dec2027.pdf`: 5 of 25 stump-paragraph terms appear (fieldwork, indicator, survey, season, specimen); read whether the document names the move
-- **REVIEW** `serosurvey_2027_protocol.docx`: 7 of 25 stump-paragraph terms appear (fieldwork, laboratory, register, survey, season, quality); read whether the document names the move
-- **REVIEW** `sop_epi_07_quality_flags.pdf`: 6 of 25 stump-paragraph terms appear (quantity, laboratory, indicator, register, quality, surveillance); read whether the document names the move
+- **REVIEW** `serosurvey_2027_protocol.docx`: 8 of 25 stump-paragraph terms appear (fieldwork, laboratory, register, survey, season, quality); read whether the document names the move
+- **REVIEW** `sop_epi_07_quality_flags.pdf`: 7 of 25 stump-paragraph terms appear (laboratory, quantity, register, indicator, quality, surveillance); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -47,7 +45,6 @@ Stump terms swept: sensitivity, january, dropped, window, epidemic, collection, 
 
 ## 11 prompt gate (clean)
 
-# Reader 2 (after the cover note was trimmed and the PDFs given subject lines)
 
 ## Solver's-eye read
 
@@ -88,3 +85,30 @@ None found. The bulletin's published shares are context. The cover note and the 
 - Question 3: the request email is the City Health Officer's own message (the context artifact), and the README and the dictionary are the folder's ordinary handover files, as in every pack. Harmless.
 - Question 5: every quoted sentence executes to the golden. Harmless.
 - Realism: "All plates passed the kit's run validity criteria" is the line a laboratory writes on any run report. Harmless.
+
+## Solver's-eye read, reship cut (no describing file), 2026-10-31
+
+Reader: one isolated general-purpose agent (sonnet, medium) on fresh copies of `prompt.txt` and `target/` after the
+reship removed README.md and DATA_DICTIONARY.md. It read all 17 files and solved nothing.
+
+1. Decisive step: none stated. The nearest is SOP-EPI-07's M row ("estimated from the same data with allowance for the
+   test's misclassification as the testing laboratory has measured it"), which names the correction and the limits
+   "but not how to do it"; no file says the assay's sensitivity depends on time since infection.
+2. Ranking or scoring file: none (the bulletin's Table 1 lists the published shares in zone order, no flag or estimate).
+3. Helper-only file: none; no dictionary or readme ships. The register, the protocol and SOP-VC-02 are the
+   organisation's governing documents, which define the indicator, the response rate and the indices.
+4. Answer-like figure or name: none.
+5. Literal sentences: SOP-EPI-07's M row with the register's SERO-D1 definition (residents aged one and over, infected
+   between 1 January 2027 and collection, the zone's share), the protocol's response rate and SOP-VC-02's one round
+   inspection per house; each executes to the golden's estimand, and the method of the correction is left open.
+6. What decides: an analytical choice, the correction the estimand needs from the panel's dates; nothing planted.
+
+Sweep lines: the bulletin's table figures are the published shares under review; SOP-VC-02's 100 is the index's unit.
+Both harmless.
+
+Realism: reads as municipal and laboratory records (the Kobo export's device ids and version strings, the register's R
+recollections and rejections, the ward renumbering, the inspectors' remarks). Minor notes, each ruled harmless: the
+Kobo `_submission_time` carries no offset because the server stamps UTC, as KoboToolbox does; the docx's zip entries
+dated 1980-01-01 are what Word itself writes; the cover note's July run is July 2027; `premise_type` reads Residential
+throughout because the round inspects houses. The reader read `premise_id` as ward-keyed; the zone-first structure is
+the referee's, never needed for the golden.

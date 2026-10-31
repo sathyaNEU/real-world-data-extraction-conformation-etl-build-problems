@@ -75,6 +75,38 @@ Sources, one line each (what it teaches; how this build differs):
 - Post-outbreak IgM serosurveys estimating attack rates: the field's practice; the timing correction is the analyst's
   to find from the panel and the case line list.
 
+## Survivor anatomy
+
+Actor: the deciding property, each zone's spread of days since onset at its residents' specimen collection, has no
+column: the results file holds each resident's collection date, the line list holds the zone's cases by onset date and
+the panel holds detection by onset and collection dates, so the zone's effective sensitivity is a relation across three
+files that no file stores.
+
+Link: the signal is read by carrying the panel's detection by days since onset through each zone's epidemic curve (the
+line list's resident cases by onset date, zone spellings mapped) up to each tested resident's collection date, a
+cross-file weighting that no key offers and no sentence invites; the register and SOP-EPI-07 file only the estimand and
+the flag's tolerance.
+
+Reflex: the field's named correction, Rogan-Gladen with the panel's sensitivity (from the fifth day of illness on,
+pooled over every case serum, or over days 5 to 60 since onset) and its specificity, sits at rungs 0 to 2 and files no zone
+flagged (multiples 1.00 to 1.30, 1.05 to 1.37 and 0.82 to 1.06).
+
+Back-test: what a solver checks the easy route against agrees with it: each zone's published value reproduces the
+bulletin's Table 1 exactly and every single-sensitivity correction keeps every zone inside the flag's band; the pack
+holds no record that scores a sensitivity against an outcome, so nothing refutes the single sensitivity.
+
+Second use: the panel is the laboratory's lot verification, sent with its own cover note, and the results file gives the
+published values themselves; the line list is the Cell's own surveillance record behind the bulletin, and it is the one
+file only the decisive step reads, a risk recorded rather than designed away.
+
+Shock: the six flagged zones are neither the six largest nor the six smallest on any shipped statistic (published share,
+cases, response rate, Breteau index, fieldwork date); the order that separates them is the zone's epidemic timing
+against its own fieldwork, which only the cross-file weighting produces.
+
+Pins: the register files the estimand (residents aged one year and over infected between 1 January 2027 and their
+specimen's collection) and SOP-EPI-07 the flag's tolerance; no filed sentence names a sensitivity, days since onset,
+an epidemic curve or a weighting (R3c in checks.py), and deleting either filing unforces the comparison, not the method.
+
 ## Default path
 
 1. Read the indicator register and SOP-EPI-07: SERO-D1's published value is the share of tested residents with a
@@ -176,7 +208,7 @@ half of a reported figure.
 | SF1 | cases (repeat notifications) | every notification row of a resident | one per zone, onset, age and sex | same call | same call (asserted) |
 | SF2 | zone of residence | every spelling mapped to its zone | the official spellings only | same call | same call (asserted) |
 | SF3 | dengue cases | confirmed and probable | confirmed only | same call | same call (asserted) |
-| SF4 | when an infection happened | onset date | notification date | same call | the dictionary; same call (asserted) |
+| SF4 | when an infection happened | onset date | notification date | same call | the line list names both dates; same call (asserted) |
 | SF5 | the collection of their specimen | each resident's date | the zone's middle fieldwork day | same call | the register; same call (asserted) |
 | SF6 | residents aged one year and over | every tested resident | none differs | converge | the protocol's eligibility; every tested resident is 1 or over (asserted) |
 | SF7 | the published value | reactive over tested | the bulletin's one-decimal share | same flags | same call (asserted) |
@@ -272,7 +304,7 @@ from Velliyanur round the city, so every earlier number is a current ward in ano
 scheme, and the ward master's former_ward_nos and the premise's assessment number (zone first) corroborate);
 hazards: LOCKED calls written as zero containers (SOP-VC-02 says they are not inspections), follow-up forms for
 positive houses about a week later (the latest-form reflex keeps them), rows the inspectors' app sent twice. Path: the
-inspections, the ward master, SOP-VC-02, the dictionary (4 files, 11 columns: record_id, inspected_on, ward_no,
+inspections, the ward master, SOP-VC-02 (3 files, 11 columns: record_id, inspected_on, ward_no,
 premise_id, wet_containers, positive_containers, source_reduction, remarks, the master's ward_no, zone,
 former_ward_nos). Stops: ward number on the current map, first inspections -3.8 to +5.2; current map, every form -2.4
 to +5.9; current map, last form -12.7 to -4.3; zone right, a locked call as the first form -1.6 to -0.6; zone right,
@@ -287,7 +319,7 @@ after the team had moved on, so households whose every specimen was rejected hav
 laboratory register holds them as REJECTED); hazards: completed interviews where nobody gave blood (the outcome code
 reads as a response), sampled households never called on (absent from the export; the protocol keeps them in), the
 tablets' submissions sent twice. Path: the sample, the field app export, the laboratory register, the results, the
-protocol, the dictionary (6 files, 10 columns: household_id, zone, start, visit_outcome, _id, barcode, condition,
+protocol (5 files, 10 columns: household_id, zone, start, visit_outcome, _id, barcode, condition,
 action, specimen_id, collected_on). Stops: a tested resident as the response -4.1 to -1.2; a completed interview +2.3
 to +7.6; the export's households as the denominator +0.4 to +1.4; both slips -2.8 to -0.3. Realism: haemolysis from a
 warm box is the commonest field loss in serosurveys, and a team that has left a zone does not go back for one sample.
@@ -355,6 +387,16 @@ Mirror leakage: 0.0 per cent of ask weight
    Kottaivayal (SF15 added on its note); the window opened to October 2026 flags nine (SF12); Gate G
    method_or_model_selection, analytical_non_defect; Gate H domain, layers and decisive step pass; spec gates all pass.
 
+8. Reship of 2026-10-31 under the 10-30 gates: README.md and DATA_DICTIONARY.md no longer ship (their facts sit in
+   the protocol, SOP-VC-02, which now names the form's assessment number, the cover note and the exports' own
+   columns); the prompt drops the zone count and asks in the whether form; metadata names what is decided, not how;
+   the survivor anatomy is written. Every graded figure unchanged (figures.json identical), checks 242, the verifier
+   agrees, two builds byte-identical, pair 35.1 on pair.py, precut 61 checks clean, leak.py REVIEW (no LEAK), heart
+   WARN (differentiated against task174, task476, task480, task241 and task244), surface exit 0 with no hard tell.
+   Judge pass 2 (isolated thread on the cut pack): DETERMINISTIC, APPROVE; every graded figure reproduced and every
+   defensible variant flags the same six; its two commentary notes taken (the 90-day remark dropped, the 5 to 60 day
+   correction no longer credited to the kit).
+
 ## Leak check
 
 - leak.py: REVIEW, no LEAK. The published shares appear in the bulletin because they are the values under review; the
@@ -369,6 +411,10 @@ Mirror leakage: 0.0 per cent of ask weight
   executes to the golden; question 6 an analytical choice. It read the request email, the README and the dictionary as
   analyst help (they are the City Health Officer's message and the folder's ordinary handover files) and a run-validity
   line as mildly pointed (a laboratory's standard line); harmless, one line each in the leak report.
+
+- Reader 3 (2026-10-31, the reship cut with no describing file): questions 1 to 4 none (SOP-EPI-07's M row names
+  the correction and the limits but not how); question 5 every quoted sentence executes to the golden's estimand;
+  question 6 an analytical choice. Realism notes ruled harmless in the leak report.
 
 ## Tried and rejected
 
@@ -394,3 +440,4 @@ Mirror leakage: 0.0 per cent of ask weight
 - A two-wave zone left as the only case where the mean day misled: the mean-day rung landed on the six once the panel
   was rebalanced; Kottaivayal carries a January wave (the tail of the 2026 monsoon season) that drags its mean back;
   dropped at stage 2.
+- Shipping README.md and DATA_DICTIONARY.md beside the governing documents: dropped at the 10-31 reship, a file that describes the data is a leak under the 10-30 gates (leak.py sweep 1); every fact they carried already sat in the protocol, the SOPs, the cover note or the exports' own columns, and judge pass 2 reproduced every graded figure without them.

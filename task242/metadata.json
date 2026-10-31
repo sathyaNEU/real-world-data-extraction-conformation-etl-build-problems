@@ -1,8 +1,8 @@
 {
   "task": "task242",
-  "title": "Which of a city's 12 zones' published 2027 dengue infection shares, from its post-season IgM household serosurvey, carry the misclassification flag, with each zone's November Breteau index and the survey's household response rate",
+  "title": "Whether a city's published 2027 dengue infection shares by zone, from its post-season IgM household serosurvey, carry the misclassification flag, with each zone's November Breteau index and the survey's household response rate",
   "domain": "Epidemiology & Public Health",
-  "subdomain": "disease-surveillance-outbreak-anomaly-detection (a city's dengue serosurvey indicator judged against the quality standard's misclassification flag: the share infected since 1 January estimated from IgM results through the assay's detection by days since onset and each zone's epidemic curve)",
+  "subdomain": "disease-surveillance-outbreak-anomaly-detection (whether a city's published dengue serosurvey shares, zone by zone, carry the misclassification flag before they go to committee)",
   "objective": "Data Quality Monitoring & Alerting",
   "prompt_shape": "07: a grid of zones against measures, each zone's published share, estimated share and flag beside its November Breteau index and household response rate, and a slide of the shares against the flag's limits",
   "as_of": "2028-01-10",
@@ -17,12 +17,11 @@
   "stated_inputs": [],
   "field_terms": [],
   "input_gates": {
-    "files": 19,
+    "files": 17,
     "formats": [
       "csv",
       "docx",
       "eml",
-      "md",
       "pdf",
       "xlsx"
     ],
@@ -97,7 +96,7 @@
     {
       "path": "vector_surveillance_sop_extract.pdf",
       "format": "pdf",
-      "bytes": 2883,
+      "bytes": 2908,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-10",
@@ -189,24 +188,6 @@
       "format": "csv",
       "bytes": 79614,
       "rows": 1049,
-      "source": "Constructed (seeded generator)",
-      "date": "2028-01-10",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "DATA_DICTIONARY.md",
-      "format": "md",
-      "bytes": 5650,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2028-01-10",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "README.md",
-      "format": "md",
-      "bytes": 1550,
-      "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-10",
       "license": "CC0-1.0 (original work)"

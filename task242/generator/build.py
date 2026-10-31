@@ -23,8 +23,6 @@ FILES = {
     "wards": "ncmc_ward_master_2027.csv",
     "rain": "ncmc_rain_gauges_daily.csv",
     "fog": "ncmc_fogging_log_2027.csv",
-    "dict": "DATA_DICTIONARY.md",
-    "readme": "README.md",
 }
 DISTRACTORS = ["rain", "fog"]
 
