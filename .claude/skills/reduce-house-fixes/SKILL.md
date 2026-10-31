@@ -124,7 +124,13 @@ Entries: **Defect**, **Cost**, **Line** (where the rule stops), **Check**, **Rep
   (zones in its timestamps, grain or unit in its column names, codes in a crosswalk without glosses).
 - **Repair.** Delete the file; move each convention into the producing file's own form, or into a
   governing document where the organisation itself defines it; rebuild and re-run every fork assertion,
-  since a reading the register used to close is now closed only by the data.
+  since a reading the register used to close is now closed only by the data. Then re-measure the ask
+  ceiling before any other work, with the cracker running the whole hygiene battery
+  (`supplemental-stumping` 1.1c): an ask device that looked silent because its resolving fact sat only in
+  the describing file is executable once that fact is filed (a clock, a vial's identity, an amendment
+  rule, a reissued code with its names beside it), and an ask the battery sees keeps nothing. If the
+  honest ceiling fails, the reship waits on new devices; the old sheet's lazier cracker is never the
+  measurement.
 
 ## H10. A rival-killer whose every miss the pack's own rules can excuse
 - **Defect.** A calibration corpus refutes rivals by raw miss count, but the pack files a discretion rule
