@@ -1,295 +1,35 @@
-# task130: Elkhorn County's 2027 return-inspection officer (architecture 5, a re-root into psychology-behavioral-science)
+# task130: Redbud Line Services' 2027 recordable injuries (architecture 6, a re-root into economics-econometrics)
 
-Architecture 4 (Corvane Health's claims-made trust, shipped 10-16 at $1,250,000) is spent at the batch 1 triage
-and sits in the card's lineage with every earlier architecture; `## Tried and rejected` keeps their record. This
-architecture is a new client domain, world and dataset under the same objective and number.
+Architecture 5 (Elkhorn County's third return-inspection officer) is spent at the guard window and sits in the
+card's lineage with every earlier architecture; `## Tried and rejected` keeps their record. This architecture is a
+new client domain, world and dataset under the same objective and number.
 
 ## Draw
 
-- **Pairing.** Client domain `psychology-behavioral-science`, task type
-  `decision-making-computational-behavioral-modeling`, objective Forecasting & Predictive Modeling. Batch 1's live
-  re-roots use energy (task118), epidemiology (task181), marketing (task268), actuarial (task306), survey research
-  (task470), general statistics (task250), biomedical (task191), healthcare delivery (task482) and product analytics
-  (task156); psychology is none of them, and psychology with forecasting has never been built.
-- **The call.** Whether Elkhorn County Public Health adds a third return-inspection officer for 2027 under the 2027
-  Food Safety Program Plan's staffing rule (a third officer when the routine inspections in the 2027 schedule that
-  will be marked unsatisfactory exceed 540, the two officers' capacity), with the forecast the rule compares, to the
-  nearest 100. Forward facing: the plan is issued on 11 January 2027 on the record to 31 December 2026, the decision
-  falls by 29 January, and the window is calendar 2027.
-- **Furniture.** Forum `line_manager_or_team` (the Environmental Health Director takes the decision on the program
-  manager's forecast under section 3 of the plan); forcing event `budget_or_appropriation` (the third position is a
-  2027 budget decision taken by 29 January so that the officer starts in March); organisation `local_government`;
-  role `field_unit_lead` (the food safety program manager); context artifact `capacity_report` (the return team's
-  2026 capacity report, which answers a past question, the team's 2026 return inspections against its capacity, and
-  keeps the day-sheet log); calibration `none`.
-- **World.** Elkhorn County, Washington (fictional, Pacific Time), county seat Marlow (fictional). The food safety
-  program schedules 5,512 routine inspections at 2,648 establishments for 2027, ran eleven district inspectors in 2026
-  and two return-inspection officers since February 2022. Erik Mayer and Andrew Mason retire on 31 December 2026 and
-  are not replaced; the plan redraws the districts from eleven to nine, so about half of the scheduled establishments
-  pass to another inspector than 2026's and 23 per cent fall to an inspector with no earlier inspection of the
-  establishment on the record (4.8 to 9.2 per cent a year in 2022 to 2026).
-- **Personas** (`guard.py names --geo "United States" --seed 130`, and `--seed 1130 --n 40` for the roster): Teresa
-  Hansen (Environmental Health Director), Valerie Wood (Food Safety Program Manager), Mariah Ramirez and Tina Rivera
-  (district inspectors who carry on into 2027), Erik Mayer and Andrew Mason (the two who retire); the rest of the
-  roster is drawn the same way and screened by `guard.py surface`.
-- **Structural labels.** Gap `time` first (every easy rung measures backward on years whose inspector and
-  establishment pairs held and is carried forward to a window the redraw resets), then `population` (an
-  establishment's record is its inspectors' record, not the kitchen's; that reading reaches only the own-record
-  rung); generators G14 (the pooled criterion does not fit first visits), G3 and G13; Gate G `forecasting`;
-  strategy `forecast_method_backtest` (F6: the natural fit validates on the latest years and is wrong for 2027
-  because each mark belongs to the pair that made it; only a hold-out on the 2023 appointee's first year separates
-  the two); shape `other`.
-- **Guard.** `check` at the draw (2026-10-31T19:05:15Z): WARN only, run before task156 v2's card (18:27:04Z)
-  reached this tree. At stage 3 `heart` BLOCKed against task156 v2 (ban.pattern G14, ban.strategy, ban.org_family,
-  test.same_puzzle and test.same_driver on population, G14 and go_hold_or_stop). The card was revised (the decisive
-  gap read again as time, every stale figure brought to the build) and filed anew at 2026-10-31T20:46:59Z: `check`
-  PASS and `heart` PASS, the axis bans now reading task474 v7, task181 v6 and task482 v15, none sharing an axis;
-  `test.same_driver_older` differentiated against task131 v2, task169 v1, task183, task230 v3 and task446 v3, and
-  task156 v2 carries its own line. task156 v2 still shares the pattern, the strategy and the organisation family
-  five builds back in draw order; its world (a New Zealand district council's wastewater station), domain and
-  driver differ (nearest driver 0.06). `surface` promotes five pairs for adjudication on card labels alone
-  (task131, task137, task183, task230, task446), none on files, names or seeds. WARNs at the draw:
-  `repeat.deliverables` (pdf+xlsx) against task250, the memo being the director's decision record, a PDF in the
-  office's practice; `repeat.question_form` (whether), the decision being a gate. `heart` after the final rebase
-  onto main: WARN only, `repeat.deliverables` (pdf+xlsx) against task125 v3, answered the same way: the memo is
-  the decision record and the workbook the 2026 measures, and the shell sits under every corpus cap.
-- **Screens.** `mechanisms --objective forecasting` read in full; `slots` on the mechanism words (inspector,
-  examiner, leniency, strictness, rookie; familiarity, rotation, fresh eyes, capture, reassignment; first visit,
-  repeat visit, redraw, district map, covering) and the setting words (restaurant, re-inspection, food safety,
-  driving test, retest, test centre, pass rate). No note screens a judge's familiarity with the unit. The nearest
-  records are task173 v1's service-desk opener tenure (abandoned unregistered at a guard window, never built) and the
-  tenure deaths in task182, task202 and task171, on which this world's first-year-inspector variant was set aside.
-- **Abstraction against the nearest approved builds.** task132 carries an item's wear past its probable replacement,
-  a physical renewal of the unit; task141 reads a capped term's petitions at the rate of terms already at their
-  maximum, a property of the term; task175 reads a lot's permit chance at the homes on the street it faces, a
-  neighbour's state; task179 lifts a supervisee's risk by a victim record linked by name and birth date. task130
-  reads a judge's mark at the number of earlier visits that judge has made to the unit, a property of the pair that
-  no record holds and the redraw resets.
-- **Shape (other), as built.** Call side: the call, the 2027 forecast to the nearest 100 and its comparison with 540
-  (three criteria), the memo on one page and the two files (three). Asks on 2026, for each of the eleven 2026
-  districts: the median return timeliness in working days (eleven), the median complaint response time in hours
-  (eleven) and the return visit fees in dollars (eleven), 33 criteria. About 39 in all.
-- **Data-native sentence.** A county's inspection record is written by a small team whose members see the same
-  kitchens year after year, so every mark carries the pair's history, and when the map is redrawn that history goes
-  with the inspector, not with the kitchen.
-
-## Survivor anatomy
-
-Actor: the property that decides is how many times the inspector named for each 2027 district has already inspected each scheduled establishment, and no file stores it: the exports list visits with an inspector and a permit, the schedule lists establishments with a 2027 district, Table 1 names a person, and the pair's history is a relation across the two exports and the roster that no column holds (R1 asserts that no column holds an earlier-visit count, a visit number or a tenure).
-Link: the pair is read through a link no key offers: the legacy export keys inspectors by three initials, the new export by employee number and the plan's Table 1 by name, so the count needs the initials resolved through the roster's names ("Last, First M.") across the March 2024 migration and each 2027 inspector placed against each establishment's record in both systems; the field's rater methods cross the inspector with nothing, and no sentence or column invites crossing the inspector with the establishment's history.
-Reflex: the field's methods for the deciding quantity sit at rungs 0 and 1 and file 424 to 458 with no third officer: base rates by risk category, each establishment's own record, one criterion per inspector (a rater-severity term read at Table 1's inspectors) and a first-year criterion for newly appointed inspectors, of whom 2027 has none.
-Back-test: the textbook route validates: risk-category rates fitted on 2022 to 2024 predict 878 unsatisfactory routine inspections for 2025 to 2026 against 834 recorded (5.3 per cent over), and the golden's construction predicts 852 (2.2 per cent), so the latest-years hold-out does not separate them; only a hold-out on the 2023 appointee's first year does (137 recorded, category rates 47, visit classes 110).
-Second use: every file the decisive step reads sits in the pack for a reason of its own: the two exports are every rung's data and every ask's, the roster is how any inspector rung reads the legacy initials and how ask A finds the return officers, the permits file carries the risk category every rung reads and the asks' 2026 districts, and the schedule and Table 1 are what every rung forecasts; deleting the decisive step drops no file.
-Shock: the movement the step recovers reads as ordinary: in 2022 to 2026 an inspector's first visit to an establishment is 4.8 to 9.2 per cent of a year's routine inspections (covering days and the 2023 appointment), the yearly unsatisfactory counts run 362 to 480 with no break, the largest year (2023, 480) carries the year's retirement and appointment, and the 2027 redraw is the plan's own answer to two retirements.
-Pins: the plan files the WHAT in its own genre (section 3: the routine inspections in the 2027 schedule that will be marked unsatisfactory, each counted as the inspector named in Table 1 for its district will make it, against 540; section 1: what makes a routine inspection unsatisfactory; section 2 and the schedule workbook: the population), and no filed sentence names earlier visits, familiarity, a first visit, rotation, tenure or experience (asserted on both PDFs).
-
-## Default path
-
-1. From the 2027 Food Safety Program Plan: the staffing rule (a third return-inspection officer when the routine
-   inspections in the 2027 schedule that will be marked unsatisfactory exceed 540), the definition of an
-   unsatisfactory routine inspection (25 red points or more, or a closure for an imminent health hazard), Table 1's
-   inspector for each 2027 district and the schedule workbook's routine inspections for each establishment.
-2. Stack the legacy export (January 2019 to March 2024: local times, inspector initials) and the new export (March
-   2024 to December 2026: UTC stamps, employee numbers), resolve the initials through the roster's names, convert the
-   UTC stamps to Pacific time and keep the routine inspections made (closed-premises calls out).
-3. Rung 0, the base-rate model: each risk category's unsatisfactory share over 2022 to 2026 (or a logistic on risk
-   category and establishment type), carried to the 2027 schedule: 437 (fitted on 2025 to 2026 only, 424; a linear
-   trend in the yearly counts, 437). Fitted on 2022 to 2024 it predicts 2025 to 2026 within 5.3 per cent.
-4. Rung 1, the field's rater models: each establishment's own record shrunk to its category (458), or one criterion
-   per inspector (observed against expected unsatisfactory shares, or an inspector term) read at each 2027 district's
-   named inspector (451); a first-year criterion for newly appointed inspectors changes nothing, since 2027 has none
-   (437).
-5. Compare with 540: no third officer.
-
-Ends on: about 450 unsatisfactory routine inspections in 2027 (437 to 458) and no third return-inspection officer
-Golden: 693.4, about 700, and the third return-inspection officer is added
-
-## Stump sentence
-
-Carrying the risk categories' rates, each establishment's own record or one criterion per inspector into the 2027
-schedule files about 450 unsatisfactory routine inspections and no third officer, because in the county's record an
-inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or
-later one, and the 2027 redraw makes 23 per cent of the schedule's routine inspections first visits for their named
-inspector, against 4.8 to 9.2 per cent a year in 2022 to 2026; read at the number of earlier visits each named inspector
-will have made, the schedule gives about 700, past the plan's 540.
-
-## Three rules
-
-Task type: decision-making-computational-behavioral-modeling in psychology-behavioral-science, which serves forecasting: a model of a human judgment (an inspector's decision to mark a routine inspection unsatisfactory) fitted to the inspectors' own recorded decisions and used to forecast the decisions the 2027 schedule will produce.
-
-Domain test: the deciding quantity is the chance that the inspector named for a 2027 district marks a scheduled routine inspection unsatisfactory, a human judgment the decision-making task type models from the judges' own recorded decisions (the criterion each judgment applies, as a function of the case's risk and the judge's state), checked on decisions held out of the fit; the call is that model summed over the 2027 schedule against 540.
-
-Swap: "does the water utility need a third meter-reading crew for 2027, sized on the reads that will be estimated?" keeps the sentence's shape and loses its substance: a meter read does not depend on how often the reader has read that meter, no judge's criterion relaxes with acquaintance, and a redrawn route changes who walks it but not what the meter shows, so the deciding quantity, a person's judgment shaped by the person's history with the case, stops making sense.
-
-Layer 1: two inspection exports either side of the March 2024 migration (the legacy system's local times and inspector initials, the new system's UTC stamps and employee numbers, the roster's names); routine, return, complaint and pre-opening visits and closed-premises calls in one file; changes of ownership reissuing a permit at the same address; seasonal establishments with one routine inspection; covering inspectors on the district inspector's leave days; the return team's paper day sheets keyed into the new system at a later stamp until 31 August 2026; several reports per complaint incident; closed-premises return calls of the paper era never keyed, evidenced only in the correspondence log. Nothing is placed to be caught, and the call's construction is mess-neutral (R2: UTC read as local 693.4, ownership merged by address 714.1, closures left out 683.6, closed-premises calls counted 695.7, each keeping the call and the bin).
-
-Layer 2: forecast validity under a shift in the decision model's covariate: the state each judgment depends on (the pair's earlier visits) moves out of its historical range in the forecast window, so a model that validates on the recent years, where new pairs make 5 to 6 per cent of inspections, misses when the redraw makes 23 per cent of the schedule new pairs; the methodological choice that flips the call is to carry the pair's visit count as the judgment's state rather than the inspector or the establishment.
-
-Decisive step: recognise that an inspector's criterion is not one per inspector but relaxes with that inspector's earlier visits to the establishment, so count for each scheduled 2027 inspection its named inspector's earlier inspected visits there across both exports (the legacy initials resolved through the roster) and through the schedule's own earlier 2027 inspections, and read it at the first, second or later visit rates the 2022 to 2026 record gives within each risk category: 693.4, about 700.
-
-Not semantics: every field, code and definition read correctly (the 25-point threshold and the imminent-hazard closures, the UTC stamps converted, the initials resolved, closed-premises calls left out, the schedule's inspections and Table 1's inspectors taken) still leaves the easy route at 437 to 458, because the pair's visit count is not a field: it is a state of the judge and the case that the analyst has to recognise the decision depends on and rebuild from two exports.
-
-Not rule application: no filed rule says the mark depends on earlier visits or tells the analyst how to read it, so executing the plan's staffing sentence (each inspection as the named inspector will make it) and its definition correctly still files 424 to 458 with any per-inspector or per-establishment model. The enumerated family (category rates on 2022 to 2026 or 2025 to 2026, a yearly trend, each establishment's own record, one criterion per inspector, a first-year criterion, pair classes fitted from 2019, first against any later visit, every 2027 inspection at its end-2026 count, and the standing members) spreads the total from 424 to 951 and splits the call; the standing family (48 crossed members: rates from 2021, 2022 or 2023 onward, classes 0, 1, 2+ or 0, 1, 2, 3+, every visit or routine visits only, any or a 36-month count, cell rates or a main-effects logistic; the classes with an inspector term, an establishment term or both; the four Layer 1 readings) spreads 675.7 to 730.2, unanimous on the call and on the nearest-100 bin; what rules out the rest is loud on a cut by the pair's visit (first visits run 3.9 to 5.9 times later visits in every risk category, second against later visits at a Mantel-Haenszel z of 8.5) and silent on every cut by inspector, establishment or year.
-
-Analyst test: a strong analyst who reads every field and rule correctly stacks the two exports, resolves the inspectors, converts the clock, keeps the routine inspections made, fits the unsatisfactory share on risk category with each establishment's own record or one criterion per inspector, validates it on 2025 to 2026 within about 5 per cent, carries it to the 2027 schedule with Table 1's inspectors and files about 450 (437 to 458) and no third officer; read at each named inspector's earlier visits to each establishment, the schedule gives about 700 and the third officer is added.
-
-Estimand: the plan (`food_safety_program_plan_2027.pdf`, section 3) files it: the routine inspections in the 2027 schedule that will be marked unsatisfactory, each scheduled routine inspection counted as the inspector named in Table 1 for its district will make it, against 540, the two officers' capacity; section 1 defines unsatisfactory (25 red points or more, or a closure for an imminent health hazard), and the schedule workbook issued with the plan lists the population (every permitted establishment, its 2027 district and its 2027 routine inspections).
-
-No decoy: nothing is planted to be caught: no memo, briefing, draft or stakeholder figure states a 2027 forecast, a rate or a count; the capacity report states the team's 2026 returns against its capacity, a past quantity it answers correctly; the illness investigations and the permit invoices are distractors named in metadata.json that rank nothing.
-
-No certified replay: the method is not recovered by reproducing certified or published figures: no published table carries an unsatisfactory rate by visit or by inspector, and the pair counts are rebuilt from raw visit rows in two systems.
-
-Lesson: a judged outcome is a property of the judge and the case together, so a forecast for a window that resets the pairs is wrong by every model keyed on the judge or the case alone, however well it validates on years when the pairs held; no build on file reads a human judgment at the judge's history with the case.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| R0 risk-category rates carried to the 2027 schedule | the plan's staffing rule invites a forecast of the schedule | `risk_category` in the permits file | the field's base-rate forecast | the 2025 to 2026 hold-out validates it | none | one group-by | none | readable |
-| R1a each establishment's own record shrunk to its category | none | the permit on every visit | a repeat-offender reading | validates on 2025 to 2026 | none | one group-by | none | readable |
-| R1b one criterion per inspector read at Table 1's inspectors | section 3 names the inspector who makes each inspection | the inspector on every visit | the field's rater-severity model | validates on 2025 to 2026 | the initials resolved through the roster | one ratio | none | readable |
-| R1c a first-year criterion for appointees | none | the roster's hire dates | tenure, the reflex of task182 and task202 | none | none | one join | none | readable |
-| R2 (decisive) each scheduled inspection read at its named inspector's earlier visits to the establishment | silent: no sentence names earlier visits, a first visit, familiarity, rotation or tenure (asserted on both PDFs) | silent: no column holds a pair count (R1), and the pair is rebuilt from two exports with different inspector keys | silent: the field's rater models key on the judge, not on the judge's history with the case | silent: the latest-years hold-out validates R0 and R1, and no file scores a pair reading | silent: no duplicate, clock or key issue points at it | silent: a running count over two exports keyed through the roster, crossed with Table 1 and the schedule | silent: the exports, roster, permits, schedule and plan each serve every rung and the asks | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | "marked unsatisfactory" | 25 red points or more, or a closure for an imminent health hazard (UNSAT and IHH CLOSURE in the legacy export, Unsatisfactory and Closed - imminent health hazard in the new one) | closures left out | 683.6, same call and bin | plan section 1 names the closure; same call |
-| SF2 | "the routine inspections in the 2027 schedule" | the schedule workbook's routine inspections (5,512 at 2,648 establishments) | establishments, or the record's 2026 count | the establishment count is not the plan's unit and the 2026 count is not the schedule | plan section 3 counts inspections and the workbook lists them (asserted) |
-| SF3 | "as the inspector named in Table 1 for its district will make it" | every scheduled inspection made by its 2027 district's named inspector | 2027 covering days modelled, or the 2026 district inspector | outside the filed WHAT | plan section 3's sentence; every scheduled district has its named inspector (asserted) |
-| SF4 | an inspector's earlier visits | inspected visits of every type at the permit (routine, return, complaint, pre-opening) | routine visits only | 690.0, same call and bin | same call |
-| SF5 | a closed-premises call | not a visit: the inspector did not inspect | counted as an earlier visit | 695.7, same call and bin | same call |
-| SF6 | the years the rates come from | 2022 to 2026, visits counted from January 2019 | 2021 or 2023 onward; 2019 onward | 699.0 and 708.3, same call and bin; 2019 onward 521.5 | 2019 onward reads a pair's first visit on the record as a first visit although the record starts in January 2019, most permits are dated before it and section 1 sets one to three routine inspections a year (2019's first-visit share 50 per cent against 4.8 to 10.4 in every later year) |
-| SF7 | the visit classes | first, second, third or later | 0, 1, 2, 3 or more; first against any later | 709.6, same call and bin; first against later 626.2, the call in another bin | the record: second visits run above later visits in every risk category (Mantel-Haenszel z 8.5, asserted) |
-| SF8 | how far back the count reaches | every earlier visit on the record | within 36 months | 694.8, same call and bin | same call |
-| SF9 | 2027's own earlier inspections | a pair's second 2027 inspection is its second visit (the count advances through the schedule) | every 2027 inspection at its end-2026 count | 951.1, the call in another bin | the record's classes count the same year's earlier visits (asserted), so the end-2026 count reads the classes another way than they were fitted; section 3 counts each inspection as the inspector will make it |
-| SF10 | the new export's clock | `inspected_at_utc` converted to Pacific time | read as local | 693.4, same call and bin | the column's name; same call |
-| SF11 | an establishment across a change of ownership | the permit (a new owner's permit starts a new record) | merged by street address | 714.1, same call and bin | same call |
-| SF12 | "exceed 540" | strictly greater | at or above | same call: 693.4 is not 540 | same call |
-| SF13 | the nearest 100 | 693.4 to 700, 43.4 from the nearer edge; the standing family 675.7 to 730.2 in the same bin | none | same call | the prompt's rounding sentence (asserted) |
-| SF14 | ask A's population and count | 2026 unsatisfactory routine inspections whose first completed return inspection fell in 2026; county working days from the routine inspection to the day of that return | the inspection system's date for the return; a closed-premises call ending the count | equals the truth for every district (asserted) | plan section 4 ("a return visit that finds the premises closed does not end the count") |
-| SF15 | county working days | weekdays less the days in the county holidays file (Thanksgiving, the day after, Juneteenth among them) | federal holidays | the county's own calendar (asserted) | plan section 4 names county holidays |
-| SF16 | a paper-era closed-premises return call | dated by its RV-NA letter's visit date | the letter's date | every RV-NA letter carries a visit date (asserted) | the fee schedule charges at the rate on the day of the visit |
-| SF17 | complaint response time | the earliest report of the conditions since the permit's previous investigation, to the inspector's arrival | the report the investigation carries | equals the truth for every district (asserted) | plan section 4 ("from the program's first notice of the conditions a complaint reports") |
-| SF18 | the asks' districts | the eleven 2026 districts (`district_2026` in the permits file) | the nine 2027 districts | every 2026 district has investigations and returns (asserted) | the measures are 2026's, and plan section 2 begins the nine districts on 1 January 2027 |
-| SF19 | return visit fees | each further return visit after the first for the same routine inspection, made or found closed, at the rate on the day of the visit, for 2026 visits after 2026 unsatisfactory routine inspections | the inspection system's return visits only | equals the truth for every district (asserted) | the fee schedule's return-visit paragraph |
-| SF20 | a district with no fees | every 2026 district owes fees | none | asserted | the record |
-| SF21 | fees to the dollar | sums of 152 and 168 | none | every total divides by 8 (asserted) | the fee schedule's two rates |
-
-## Ladder
-
-| Rung | Route | 2027 forecast | Third officer |
-|---|---|---|---|
-| R0 | risk-category rates, 2022 to 2026 | 437.3 | no |
-| R0b | risk-category rates, 2025 to 2026 | 424.1 | no |
-| R0c | a linear trend in the yearly counts | 436.8 | no |
-| R1a | each establishment's own record shrunk to its category | 458.4 | no |
-| R1b | one criterion per inspector at Table 1's inspectors | 451.0 | no |
-| R1c | a first-year criterion for appointees (none in 2027) | 437.3 | no |
-| R2a | pair classes counted and fitted from 2019 (left truncation unhandled) | 521.5 | no |
-| R2b | first visit against any later visit | 626.2 | yes, 600 at the nearest 100 |
-| R2c | every 2027 inspection at its end-2026 count | 951.1 | yes, 1,000 at the nearest 100 |
-| Golden | first, second and later visit rates by risk category, counted from 2019, fitted on 2022 to 2026, advancing through 2027 | 693.4 | yes, 700 |
-| Standing | the 48 crossed members, the inspector and establishment terms (698.2, 695.0, 701.5, 699.9), the Layer 1 readings | 675.7 to 730.2 | yes, 700 |
-| Truth | the simulation's own expected count | 637.5 | yes |
-
-Separation: the highest easy rung (458.4) sits 1.18 under 540 and the lowest standing member (675.7) 1.25 over it,
-both asserted against a 1.15 floor; the decisive step alone moves R0 from 437.3 to the golden's 693.4 (R3b). No cheap
-route reaches the call: every route keyed on the inspector, the establishment or the year lands under 540, and the
-two routes that reach it in another bin (R2b, R2c) both need the pair count first. The golden sits 8.8 per cent above
-the truth's expected count (asserted within 12): the record counts from 2019, so pairs with only pre-2019 visits read
-as new, and the first-visit cells carry their sampling error (about 300 to 700 inspections each).
-
-## Closure table
-
-| Axis | Reading | Move |
-|---|---|---|
-| 1 Population | the 2027 schedule's routine inspections, as the workbook lists them | filed: plan section 3 and the workbook (SF2) |
-| 2 Unit of account | one routine inspection, marked unsatisfactory or not | filed: plan section 3 |
-| 3 Attribution window | calendar 2027 | filed: the plan's year and the schedule |
-| 4 As-of dating | the record to 31 December 2026, the plan issued 11 January 2027 | filed: the plan's header; C1, nothing after 2026 ships |
-| 5 Version basis | one export per system, no revisions or re-pulls | C1 |
-| 6 Denominator | inspections made; a closed-premises call is not an inspection | C1: SF5 same bin |
-| 7 Weighting | each scheduled inspection counts once | filed: a count |
-| 8 Window length | rates from 2022 to 2026, visits counted from 2019 | C3: rates from 2021 or 2023 onward keep the bin (SF6); 2019 onward refuted by the record's start |
-| 9 Boundary inclusivity | "exceed 540" strictly | C1: same call (SF12) |
-| 10 Rounding path | the unrounded sum, rounded once to the nearest 100 | filed: the prompt's last sentence (SF13) |
-| 11 Tie-break | no tie at the threshold or at a bin edge | C1: 693.4 is 43.4 from the nearer edge |
-| 12 Maturity and censoring | the record's start truncates every pair's history | C2: rates start three years after the record, and every standing window agrees (SF6) |
-| 13 Order of operations | count the pair's visits, take the class rates, sum over the schedule | C1: the steps commute |
-| 14 Row order | visits in local time order, across both exports | C1: UTC read as local keeps the figure (SF10) |
-| 15 Duplicate resolution | no duplicate visits; a complaint's several reports belong to ask B | C1 for the call |
-| 16 Identity normalisation | legacy initials to employee numbers through the roster; permits keep their numbers across the migration | C1: no two staff share initials (asserted) |
-| 17 Netting against gross | a count, nothing netted | C1 |
-| 18 Dimensional units | inspections | C1 |
-| 19 Code and status semantics | UNSAT and IHH CLOSURE, Unsatisfactory and Closed - imminent health hazard are unsatisfactory; NO ACCESS and No access are not inspections | filed: plan section 1; C1 (SF1, SF5) |
-| 20 Integerisation | the expected count is not an integer and is rounded once | filed: the prompt |
-| 21 Clause scope | section 3 counts routine inspections only; other visits count only as earlier visits | filed: section 3; C3 (SF4) |
-| 22 Forward window contents | 2027's own earlier scheduled inspections advance the count; 2027 complaint visits are not forecast | C2: the record's classes count same-year visits (SF9); no member forecasts 2027 complaints |
-
-## Literal reader
-
-On paper and on the cut pack: the prompt asks for the call and the forecast the rule compares; the plan's section 3
-files the rule and its WHAT (the 2027 schedule's routine inspections that will be marked unsatisfactory, each as
-Table 1's inspector will make it, against 540), section 1 the definition and section 2 with the workbook the
-population. Executed word for word, the WHAT leaves open only how an inspector's mark is forecast, and the record
-forces it: the per-inspector and per-establishment models validate on the latest years and land under 540, while the
-pair's visit count separates first, second and later visits (second against later at z 8.5) and a hold-out on the
-2023 appointee's first year refutes the per-inspector rates (47 against 137 recorded, visit classes 110). Every
-literal reading of a convention on the call (SF1 to SF13) gives the golden's call and bin or is ruled out by a
-quotable fact, and every ask reading (SF14 to SF21) equals the simulation's own measure. Pass.
-
-## Oracles
-
-- The truth's expected 2027 count from the simulation's own criteria, 637.5: the golden sits 8.8 per cent above it
-  (asserted within 12 per cent), on the same call.
-- The asks: every ask A, B and C figure equals the simulation's own measure for its district, 33 of 33 (SF14, SF17,
-  SF19).
-- No shipped oracle: no file ties only under the golden reading; the capacity report states 2026's returns against
-  capacity, a past quantity; the latest-years hold-out validates both the easy route and the golden.
-
-## Ask sheet
-
-Pair ceiling: 28.5 (the cracker 45.0, the mirror 12.0, on the planning weights of 38, 7 and 55)
-Mirror leakage: 0.0 per cent of the ask weight
-Measured by: generator/ceiling.py, run on the cut pack
-
-| Ask | Primary device | Golden | The cracker's figures | Cracker |
-|---|---|---|---|---|
-| A, median return timeliness in working days, eleven 2026 districts | D8: the return team's inspections keyed from paper day sheets until 31 August 2026 carry the keying stamp (the next Monday or Tuesday, sometimes a week later); the day sheets' own dates sit in the capacity report's day-sheet log, matched by officer and address as written | 8.5 to 13.0 | 11.0 to 15.5, every district off | miss |
-| B, median complaint response in hours, eleven 2026 districts | D1: an incident's several reports (telephone, online form, email, referral) sit as separate complaint records, and the investigation carries the report it was dispatched on, the latest before dispatch, while the plan measures from first notice | 60.3 to 155.5 | 35.5 to 121.4, every district off | miss |
-| C, return visit fees in dollars, eleven 2026 districts | D4: paper-era closed-premises return calls were never keyed and are evidenced only by the correspondence log's RV-NA letters; D8's day-sheet dates move visits across the 1 July rate change | 1,416 to 4,376 | 792 to 3,464, every district off | miss |
-
-The full includer (day sheets, first notice and the letters, a stress row) keeps 33 of 33; the letters without the day
-sheets keep 7 of 11 fee cells, so ask C carries two devices from two families on disjoint blocks. Every ask reads rows
-the call never reads (return and complaint visits, complaint records, letters, the day-sheet log), and no device sits
-on a routine inspection (asserted). Each ask B median sits at least 0.03 hours from a rounding edge (a clearance pass
-makes ten nudges of 150 seconds to complaint visit times, asserted), and the ask A medians are whole or half days.
-
-## Build record
-
-- Seed 1302027; `generator/make.py` builds the pack, the goldens, metadata.json and figures.json, runs checks.py (245
-  assertions), verify.py (an independent recomputation of the forecast and all 33 ask figures from the bundle alone,
-  against the golden workbook and memo), a second build in a fresh folder compared byte for byte, and writes
-  target.zip.
-- Pack: 13 files in four formats; the legacy export 30,164 rows, the new export 18,077; distractors
-  `foodborne_illness_investigations_2019-2026.xlsx` and `permit_fee_invoices_2026.csv`.
-
-## Leak sweep
-
-`leak.py --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Each REVIEW line, ruled:
-
-- Sweep 3, the plan carries most of the call's words: harmless. Section 3 files the staffing rule the call executes
-  (a third officer when the forecast exceeds 540); it states no forecast, no direction and no figure the golden
-  computes.
-- Sweep 4, stump-paragraph nouns in the plan (inspector, record, establishment, schedule, category) and the fee
-  schedule (establishment, schedule, category): harmless. They are each document's own nouns for its program; neither
-  document names earlier visits, first visits, familiarity, rotation, tenure or experience (asserted in checks.py).
-- Sweep 9, 2027 dates in `county_holidays_2025-2027.json`: harmless. The county publishes its holiday calendar ahead
-  of the year, and the file's 2027 days are that calendar, a forward-looking record by its genre.
-- The report's solver's-eye section from architecture 4 (Corvane Health) was cut from the report, since it read a
-  dead pack; the stage 4 reader appends a fresh one.
+- **Card:** `.claude/skills/fingerprint/cards/task130.json`, architecture v6, registered 2026-10-31T23:21:13Z on a
+  tree pulled at 23:20Z, `guard.py check` WARN only (`three_rules.strategy_risk`, answered in `## Three rules`).
+- **Pairing:** economics-econometrics x forecasting, task type discrete-choice-limited-dependent-variable-modeling
+  (labour economics: the choice a crew makes to report an injury under an incentive pay scheme). The last three
+  live builds in draw order are task445 (general-statistics, ETL), task272 (general-statistics, descriptive) and
+  task122 (human-factors, experiment-causal); none holds the domain, the decisive pattern (G12), the strategy
+  (time_semantics), the organisation family (other: a power line construction contractor), the forum
+  (customer_or_counterparty), the forcing event (audit_or_inspection), the role (compliance_or_audit) or the
+  context artifact (filed_standard).
+- **Shape:** 02, forecast across many periods (2027 quarter by quarter, crew type by crew type).
+- **Strategy:** time_semantics (F1). The record has to be read at each crew's position in its own rolling 90-day
+  recognition cycle, a service clock no file stores, estimated from every cycle the crews ran.
+- **Data-native sentence:** Redbud's recordable log is written from what each crew's foreman reports to the safety
+  office, and a crew's 90-day bonus is lost the moment it reports a recordable, so the log holds what each crew
+  chose to report at each point of its own cycle, and the cycle sits in no file.
+- **Abstraction sentence:** against the nearest build on file (task180 v4, small earthquakes lost to daytime noise
+  until new stations remove the masking) the sentence a reviewer could write for both is the genus of every
+  completeness repair ("a record short in part of a cycle, the cause removed forward"); the driving insight is not
+  shared: here the thinning is the recorder's own choice under a reward, its phase is each recorder's own rolling
+  cycle reset by its own records and payouts, every event is exposed to it whatever its size, and the trap is the
+  comparison with recorders the reward never covered. No approved build carries a reward-thinned record.
+- **Sources:** synthetic throughout. Rate definitions follow 29 CFR 1904 (OSHA recordkeeping: a recordable case,
+  the 200,000-hour rate base); the client's contractor safety standard, the recognition programme and every record
+  are fictional.
 
 ## Tried and rejected
 
@@ -668,3 +408,23 @@ Architecture 5 build (2026-10-31):
   place at 19:05Z), and the state agency answered only the organisation ban. The card was revised instead to the
   decisive gap it argues best (time, Gap 1: the measurement backward, the decision forward, which every easy rung
   shares) and filed anew; the world, the mechanism and every graded figure are unchanged.
+
+Architecture 6 draw (2026-10-31):
+
+- Architecture 5 (Elkhorn County's third return-inspection officer, the unsatisfactory rate stationary in each
+  inspector's visit number): passed two determinism passes (DETERMINISTIC, APPROVE; the reports kept as
+  determinism_check_report_arch5.md and determinism_check_report_arch5_pass2.md), but its draw repeated task156 v2's
+  decisive pattern G14, strategy forecast_method_backtest and organisation family local_government inside the
+  three-build window. The draw's check ran before task156's card reached the tree, and re-registering the card only
+  moved the window, which later moved back; the guard forbids waiting for the window to move or relabelling a card,
+  so the build re-roots.
+- This draw's first card (human-factors-ergonomics, human-reliability-assessment, strategy causal_design, shape 07,
+  organisation family utility_or_infrastructure): redrawn before registration, when task122 v3's card reached the tree
+  holding the domain, the strategy, the shape and the organisation family; the world and the mechanism moved to
+  economics-econometrics (the reporting choice under an incentive pay scheme), strategy time_semantics, shape 02.
+- Insurance claims hidden under a no-claims discount until standard protection removes the incentive: set aside at
+  the draw, actuarial-science-insurance is this slot's v3 and v4 domain (claims-frequency-severity was v3's task type).
+- A wind farm's weather-window waiting time, a vial-sharing drug budget, a storage cluster's retention plateau, a
+  hotel's duplicate bookings, a loyalty scheme's expiry bunching and an employer-change hazard: weighed and not
+  taken (the field's simulation is the golden, a withheld pooling rule, a weak domain fit, composition, task134 v2's
+  surge-filled clock and task179's other-body lift respectively).

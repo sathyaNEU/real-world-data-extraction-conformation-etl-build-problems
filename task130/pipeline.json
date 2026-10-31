@@ -1,26 +1,26 @@
 {
  "task": "task130",
- "status": "PAUSED",
- "domain": "psychology-behavioral-science",
+ "status": "DESIGN",
+ "domain": "economics-econometrics",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-31",
- "stump": "Carrying the risk categories' rates, each establishment's own record or one criterion per inspector into the 2027 schedule files about 450 unsatisfactory routine inspections and no third officer, because an inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or later one and the 2027 redraw makes 23 per cent of the schedule first visits for their named inspector; read at each named inspector's earlier visits, the schedule gives about 700, past the plan's 540.",
- "architecture": 5,
+ "stump": "A competent solver who reads the client's standard, the recognition notice and the 2027 hours plan correctly carries the recorded rate forward, or checks the bonus against the technicians it never covered and finds them no higher, and files about 2.4 recordables per 200,000 hours and a 2027 plan inside the 3.0 limit; each crew records roughly two in five fewer injuries than it has late in its 90-day cycle, and read at each crew's own rate where the reward exerts no pull 2027 comes to about 3.6 (design targets, set at the build).",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 (--asof 2027-01-11): sweeps 3, 4 and 9, each ruled harmless in the note's Leak sweep",
-  "reader": "pending: stage 4 from the main thread"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "PASS 2026-10-31 on the card revised and filed anew at 20:46:59Z (decisive gap time); the draw's 19:05:15Z check ran before task156 v2's card reached this tree",
-  "heart": "WARN 2026-10-31 after the final rebase onto main: repeat.deliverables (pdf+xlsx) against task125 v3, answered in the note",
-  "surface": "exit 0 2026-10-31; five pairs promoted for adjudication on card labels alone (task131, task137, task183, task230, task446), none on files, names or seeds"
+  "guard_check": "WARN 2026-10-31 (three_rules.strategy_risk only), registered 23:21:13Z",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
   "verdict": "",
@@ -28,14 +28,14 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: leak reader and judge from the main thread",
+ "resume": "stage 2: write the design note's sections and prompt.txt through precut.py, then the generator",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "wave": "batch 1 (re-root in a new world, 2026-10-31), the author's fifth root",
+ "wave": "batch 1 (re-root in a new world, 2026-10-31), the author's sixth root",
  "lineage": [
   {
    "architecture": "v1",
@@ -206,23 +206,49 @@
     "judge_thin_spots": "month-start exposure $1,387,788 rounds to $1,500,000, closed by the staffing plan's 'held through the month'; Ask B hours/173.33 against the position fte field"
    },
    "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-16 at $1,250,000, pending review; the rule 3 re-audits rated the stump moderate, so the slot was re-rooted in a new client domain, world and dataset"
+  },
+  {
+   "architecture": "v5",
+   "status": "RETIRED_ARCHITECTURE",
+   "domain": "psychology-behavioral-science",
+   "objective": "forecasting",
+   "stump": "Carrying the risk categories' rates, each establishment's own record or one criterion per inspector into the 2027 schedule files about 450 unsatisfactory routine inspections and no third officer, because an inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or later one and the 2027 redraw makes 23 per cent of the schedule first visits for their named inspector; read at each named inspector's earlier visits, the schedule gives about 700, past the plan's 540.",
+   "precut": {
+    "exit": 0,
+    "date": "2026-10-31"
+   },
+   "leak": {
+    "leak_py": "REVIEW 2026-10-31 (--asof 2027-01-11): sweeps 3, 4 and 9, each ruled harmless in the note's Leak sweep",
+    "reader": "pending: stage 4 from the main thread"
+   },
+   "duplicate_check": {
+    "guard_check": "PASS 2026-10-31 on the card revised and filed anew at 20:46:59Z (decisive gap time); the draw's 19:05:15Z check ran before task156 v2's card reached this tree",
+    "heart": "WARN 2026-10-31 after the final rebase onto main: repeat.deliverables (pdf+xlsx) against task125 v3, answered in the note",
+    "surface": "exit 0 2026-10-31; five pairs promoted for adjudication on card labels alone (task131, task137, task183, task230, task446), none on files, names or seeds"
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_arch5.md and determinism_check_report_arch5_pass2.md"
+   },
+   "build": {
+    "checks": 246,
+    "verify": "match",
+    "rebuild": "byte-identical",
+    "command": "python3 task130/generator/make.py",
+    "target_zip_sha256": "ffdcfd56fce04bb50300a154b2b4ee71ce81b0f6744fd288200d20e9bc649abc",
+    "figures_check": "PASS 75 of 75",
+    "precut": "PASS 61 checks",
+    "voice_check": "PASS",
+    "pair_ceiling": 28.5,
+    "mirror_leakage": 0.0
+   },
+   "stage4": {
+    "leak_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task130/",
+    "leak_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task130_stage4_leak_brief.md",
+    "note": "target.zip and golden/ stay uncommitted; the main thread rebuilds them byte-identically"
+   },
+   "fate": "spent at stage 4 on 2026-10-31: two determinism passes DETERMINISTIC, APPROVE, but the draw repeated task156 v2's decisive pattern G14, strategy forecast_method_backtest and organisation family local_government inside the three-build window; re-rooted rather than wait for the window or relabel"
   }
- ],
- "build": {
-  "checks": 246,
-  "verify": "match",
-  "rebuild": "byte-identical",
-  "command": "python3 task130/generator/make.py",
-  "target_zip_sha256": "ffdcfd56fce04bb50300a154b2b4ee71ce81b0f6744fd288200d20e9bc649abc",
-  "figures_check": "PASS 75 of 75",
-  "precut": "PASS 61 checks",
-  "voice_check": "PASS",
-  "pair_ceiling": 28.5,
-  "mirror_leakage": 0.0
- },
- "stage4": {
-  "leak_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task130/",
-  "leak_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task130_stage4_leak_brief.md",
-  "note": "target.zip and golden/ stay uncommitted; the main thread rebuilds them byte-identically"
- }
+ ]
 }

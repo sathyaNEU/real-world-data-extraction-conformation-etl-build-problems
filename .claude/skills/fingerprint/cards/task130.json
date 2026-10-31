@@ -1,106 +1,103 @@
 {
   "task": "task130",
-  "architecture": "v5",
+  "architecture": "v6 (re-root 2026-10-31: a Georgia power line contractor's 2027 recordable injuries for its client's contractor safety standard, the crews' 90-day recognition bonus ending on 31 December 2026, each crew read at the rate it records in the stretch of its cycle where hiding gains nothing)",
   "drawn": "2026-10-31",
-  "slot_note": "fifth root of task130 (batch 1 re-root, 2026-10-31): v4's claims-made trust pricing spent; a new client domain (psychology-behavioral-science), world and dataset under the same objective",
-  "domain": "psychology-behavioral-science",
-  "subdomain": "decision-making-computational-behavioral-modeling",
-  "client_domain": "psychology-behavioral-science",
-  "niche": "a county food safety program's 2027 return-inspection staffing, sized on the routine inspections its inspectors will mark unsatisfactory when a district redraw hands nearly a quarter of the schedule to inspectors with no earlier visit to the establishment",
+  "slot_note": "sixth root of task130 (batch 1 re-root, 2026-10-31): v5's inspector-visit forecast spent at the guard window; a new client domain (economics-econometrics), world and dataset under the same objective and number",
+  "domain": "economics-econometrics",
+  "subdomain": "discrete-choice-limited-dependent-variable-modeling",
+  "client_domain": "economics-econometrics",
+  "niche": "a utility power line contractor's 2027 recordable injury forecast for the contract-year safety plan its electric cooperative client's contractor safety standard requires, read once the crews' recognition bonus for every 90 consecutive days without a recordable ends",
   "objective": "forecasting",
-  "shape": "other",
-  "decision_type": "go_hold_or_stop",
+  "shape": "02",
+  "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Add the third return-inspection officer for 2027: about 700 unsatisfactory routine inspections in the 2027 schedule against the plan's 540",
-  "answer_source": "generator/analysis.py golden_call (693.4, rounded to the nearest 100); figures.json forecast_total",
+  "answer": "About 330 recordable injuries in 2027, a rate of about 3.6 per 200,000 hours, over the standard's 3.0 (design target, set at the build)",
+  "answer_source": "generator/analysis.py golden_call; figures.json forecast_recordables_2027 and forecast_trir_2027",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G3",
+    "G12",
     "G13"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "stump_strategy": "time_semantics",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the two inspection exports, resolves the legacy initials through the roster, converts the new export's UTC stamps, keeps the routine inspections made and applies the plan's 2027 schedule and Table 1's inspectors fits the unsatisfactory share on risk category with each establishment's own record or one criterion per inspector, validates it on 2025 to 2026 within about 5 per cent, and files about 450 (437 to 458) unsatisfactory routine inspections and no third return-inspection officer; read at each named inspector's earlier visits to each establishment, the schedule gives about 700.",
-  "domain_test": "The deciding quantity is each 2027 inspector's criterion for marking a routine inspection unsatisfactory as it relaxes with that inspector's earlier visits to the same establishment, worked as the decision-making task type works a judgment (a model of the decision fitted to the inspectors' own decisions and compared on held-out decisions); put kilowatt-hours and meters in for inspections and inspectors and no reading depends on how often the reader has read the same meter, so the call has nothing to stand on.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:a-judge's-criterion-relaxes-with-visits-to-the-same-unit-and-a-redrawn-map-makes-first-visits",
+  "analyst_test": "A strong analyst who joins each recordable case to the injured worker's crew on the day, nets paid leave and mutual-aid storm hours out of the timesheets, applies the client's rate definition and reads the recognition notice correctly carries the 2022 to 2026 recordable rate into the 2027 hours plan, or tests the bonus against the meter and locating technicians it never covered, finds them no higher, and files about 2.4 per 200,000 hours and a plan inside the 3.0 limit, when each crew records roughly two in five fewer injuries than it has in the last two months of its 90-day cycle and its own first-month rate puts 2027 near 3.6.",
+  "domain_test": "The deciding quantity is the latent injury rate behind a count that crews thin by choosing not to report as a reward nears, estimated as limited-dependent-variable econometrics estimates a latent rate behind a selected count (each crew's recorded rate where the reward exerts no pull, the reporting choice varying with the reward at stake), carried onto the hours each kind of crew will work; put kilowatt-hours and meters in for injuries and crews and no reading is held back as a meter nears a milestone, so the call has nothing to stand on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a-recorded-count-dips-as-each-unit-nears-a-clean-record-reward-and-the-reward-ends",
   "layer1": [
-    "the legacy export's local inspection times against the new export's UTC timestamps",
-    "routine, return, complaint and pre-opening visits and closed-premises calls in one file",
-    "changes of ownership reissuing a permit at the same address",
-    "seasonal and closed establishments in the permit register",
-    "covering inspectors on the district inspector's leave days",
-    "the return team's paper day sheets keyed into the new system at a later stamp until 31 August 2026",
-    "several reports per complaint incident, the investigation carrying the one it was dispatched on",
-    "paper-era closed-premises return calls evidenced only in the correspondence log"
+    "two incident systems: the legacy EHS log to 31 May 2024 and the case management export after it, with different case numbers, date formats and status codes",
+    "case versions: a case recorded first aid and later reclassified recordable once medical treatment followed, and recordables later found not work-related",
+    "the injured worker's crew read from a dated crew assignment history, workers moving between crews",
+    "timesheet hours including paid leave and mutual-aid storm deployments outside the client's territory, which the standard's hours exclude",
+    "crew codes renamed at the 2025 reorganisation of two districts",
+    "bonus payouts in the payroll extract by pay period, a crew's payout split across two periods when a milestone falls on a period end",
+    "subcontractor crews in a separate monthly portal report outside the standard's scope"
   ],
-  "stakeholder_role": "food safety program manager in a county environmental health division, who applies the program plan's staffing rule for the return-inspection team",
-  "role_family": "field_unit_lead",
-  "scoring_unit": "per episode",
+  "stakeholder_role": "the contractor's director of environment, health and safety, who signs the contract-year safety plan the client's contractor safety standard asks for",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "inspections_2019-01_2024-03.csv",
-    "rows": 30164,
-    "entity": "one inspection visit to one permitted food establishment, with its type, inspector, red and blue points and result",
-    "grain": "establishment x visit",
+    "file": "crew_week_hours_2022-2026.csv",
+    "rows": 0,
+    "entity": "one crew's hours in one payroll week, by hour type",
+    "grain": "crew x payroll week x hour type",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "local_government",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "other",
   "world": {
-    "geography": "United States, Washington (a fictional county on Pacific Time)",
+    "geography": "United States, Georgia (a fictional power line contractor serving a fictional electric membership corporation)",
     "currency": "USD",
-    "org_type": "county public health department's environmental health division running the food safety program",
+    "org_type": "utility power line construction and maintenance contractor",
     "invented_names": [
-      "Elkhorn County",
-      "Elkhorn County Public Health",
-      "Marlow"
+      "Redbud Line Services",
+      "Pinewater Electric Membership Corporation",
+      "Pinewater EMC"
     ],
     "people": [
-      "Teresa Hansen",
-      "Valerie Wood",
-      "Mariah Ramirez",
-      "Erik Mayer",
-      "Tina Rivera",
-      "Andrew Mason"
+      "Samantha Galvan",
+      "Jerome Warren",
+      "Norma Hinton",
+      "Sergio Phillips"
     ]
   },
   "deliverables": [
-    "return_officer_memo_2027.pdf",
-    "return_inspections_2027.xlsx"
+    "safety_plan_recordables_2027.docx",
+    "recordables_forecast_2027.xlsx",
+    "recordables_by_quarter_2027.png"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "A unit's recorded outcome is a judge's mark, and a judge marks a unit more leniently the more often the judge has visited it, so a forecast window in which a redrawn map hands a large share of the units to judges who have never visited them is understated by every unit's own record, by the team's pooled rate and by a model that gives each judge one criterion; the window is read with each judge's criterion at the number of earlier visits the judge will have made to each unit, which the record's covering visits and past reassignments show and a back-test held out on the latest reassignment confirms.",
-  "driver_concrete": "In 2027 Elkhorn County redraws its food safety districts from eleven to nine after two inspectors retire unreplaced, so 23 per cent of the schedule's routine inspections fall to an inspector with no earlier inspection of the establishment, against 4.8 to 9.2 per cent a year in 2022 to 2026, and in the county's own record an inspector's first visits to an establishment, on covering days and after the 2019, 2021 and 2023 appointments, are marked unsatisfactory at about four to six times the rate of the same inspector's third and later visits; the 2027 schedule's unsatisfactory routine inspections come to about 700 against the plan's 540, not the 437 to 458 that risk-category rates, each establishment's own record or a model giving each inspector one criterion files.",
-  "stump": "A competent solver who reads the plan's staffing rule, its 2027 schedule and Table 1's inspectors correctly carries risk-category rates, each establishment's own unsatisfactory share or one criterion per inspector into the schedule and files about 450 unsatisfactory routine inspections and no third return-inspection officer; the step that lands it there is giving each inspector one criterion, when in the county's own record an inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or later one, and the redraw makes 23 per cent of 2027's routine inspections first visits; with each inspection read at the number of earlier visits its inspector will have made, the schedule gives about 700, past the plan's 540, and the third officer is added.",
+  "question_form": "how-many",
+  "driver": "A recorded count is what the units choose to record, and each unit records less as it nears a milestone that pays it for a clean record and records in full again once the milestone is paid or lost, so the record understates the rate the units show when nothing is at stake; when the reward ends the forward rate is each unit's rate in the stretch of its own cycle where hiding gains nothing, which the units the reward never covered cannot give because they do other work at another risk.",
+  "driver_concrete": "Redbud's line, underground, substation and tree crews earn a recognition bonus for every 90 consecutive days without a recordable injury, and the bonus ends on 31 December 2026; in the 2022 to 2026 record a crew's recorded rate in the first month of a cycle runs well above its rate in the last two months, so the record's 2.4 per 200,000 hours understates the rate near 3.6 the crews will record in 2027, which the meter and locating technicians outside the bonus, at about 2.0 on lighter work, appear to refute.",
+  "stump": "A competent solver who reads the client's standard, the recognition notice and the 2027 hours plan correctly carries the recorded rate forward, or checks the bonus against the technicians it never covered and finds them no higher, and files about 2.4 recordables per 200,000 hours and a 2027 plan inside the 3.0 limit; the step that lands it there is reading the record as the injuries, when each crew records roughly two in five fewer than it has late in its 90-day cycle, and read at each crew's own rate in the first month of its cycles 2027 comes to about 3.6 and breaches the limit.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task138": "task138 starts a replayed seasonal requirement from each unit's physical store, rebuilt by running its own recorded inputs through a balance; task130 has no store, balance or replay: it reads each judged outcome at the number of earlier visits its judge will have made to the unit.",
-    "task178": "task178's lineage rated a structure's response across a floodplain from gauged flows; task130 has no physical response: the deciding quantity is a human judge's criterion at the number of earlier visits the judge has made to the unit, read through a roster no inspection record keys to.",
-    "task134": "task134 forecasts rebuilding from each unit's best option against an allowance and a cost step in the construction method; task130 has no option or allowance: each outcome is a human judge's mark, which relaxes with the judge's earlier visits to the unit, and the window's redrawn map makes most pairs new.",
-    "task146": "task146 releases a pool of units refused at a calendar turn, the share returning set by segment and time since refusal; task130 has no pool or turn: each routine inspection's outcome is the judge's mark, read at the number of earlier visits that judge will have made to that establishment.",
-    "task165": "task165 conditions an upgraded service level's gain on how much of each unit the old level already treated; task130 conditions a judged outcome on how often its judge has visited the unit, read from covering visits and past reassignments, with no treatment or upgrade.",
-    "task173": "task173's first draw, abandoned unregistered at a guard window and never built, conditioned a service desk's comebacks on the first-contact taker's group and tenure, a person's attribute on the roster; task130's deciding property belongs to a pair, how often this inspector has visited this establishment, which no roster or column holds and the redrawn map resets for nearly a quarter of the schedule.",
-    "task156": "task156 reads a sewer catchment's storm and dry-day inflow at the length of pipe below a fluctuating water table, a physical exposure of the network read from a separate record; task130 has no physical exposure: each outcome is a human judge's mark, read at the number of earlier visits that judge has made to the unit, which a redrawn map resets.",
-    "task131": "task131 prices a randomised treatment's load moved out of a window and returned as a surge at the target day's conditions; task130 has no treatment or load: each judged outcome is read at the judge's earlier visits to the unit.",
-    "task169": "task169's first architecture carried one component's growth to the cell it dominates against a whole-cycle mix; task130 has no components or cycle: each outcome is a human judge's mark, read at the judge's history with the unit.",
-    "task183": "task183 carries each part's own failure history, the outcome repeating itself; task130's state is not the unit's outcome history but how often its judge has visited it, a property of the judge and the unit together that a redrawn map resets while the unit's own record stays.",
-    "task230": "task230 measures a category count's net misclassification on a late channel processed under a looser rule; task130 corrects no classification: every mark is a real decision, read at the judge's earlier visits to the unit.",
-    "task446": "task446 converts a flag at the rate of the kind of component that raised it, the forward pool's components shifted; task130 has no flags or components: each judged outcome is read at how many earlier visits its judge has made to the unit."
+    "task170": "task170 forecasts a rail operator's ETCS data-entry errors from a per-attempt failure probability that falls with each driver's own attempt count; task130 has no learning curve: every injury is recorded or not by a crew weighing a clean-record reward, and the forward rate is the crew's own rate where the reward is not at stake.",
+    "task229": "task229's checks see a unit's state just before resetting it; task130's record is a choice made by the unit itself, which records less as its reward nears and in full after it is paid or lost.",
+    "task141": "task141 carries end-of-term outcomes at the rate of terms already at their class maximum; task130 has no term or cap: a crew's recorded injuries dip with its position in a rolling 90-day cycle that the record never stores.",
+    "task151": "task151 prices a stepped bonus on a season total by the chances of clearing each step; task130 prices no bonus: the bonus is the cause of the record's shortfall and its end the forward condition.",
+    "task179": "task179 adds the lift of another body's records to each member's own risk; task130 adds nothing from outside: the shortfall is read inside each crew's own cycle.",
+    "task253": "task253 counts schools below a line from noisy small-sample averages; task130 estimates no level below a line: it recovers what a reward kept out of the record.",
+    "task174": "task174 recovers a gain per repetition from sessions whose stopping rule is informative; task130 has no stopping rule: the record is short where the reward is near and whole where it is not.",
+    "task122": "task122 reads a discretionary aid's effect on conflict alerts at like traffic mix minute by minute; task130 has no aid or traffic mix: a crew's recorded injuries are thinned by the crew itself as a clean-record reward nears, and the forward rate is its rate where the reward is not at stake.",
+    "task133": "task133 counts a taken-over loan's months at risk only from its age at the takeover, a left-truncated record of exposure; task130's exposure is complete and every hour is on the timesheets: the shortfall is in the events, which each crew thins itself as its reward nears.",
+    "task137": "task137's arrivals leave no trace because a referrer serves them elsewhere when the service runs out of capacity, and its later architectures add a second body's units the register never holds; task130 has no capacity, referrer or second body: the same crews' own injuries go unrecorded when the crew's clean-record reward is close.",
+    "task196": "task196 recovers unseen events from the overlap of two capture channels whose second is produced by the firm chasing the first; task130 has one channel and no overlap: the unrecorded injuries are read from the rate each crew records where its reward exerts no pull.",
+    "task180": "task180 v4 loses small earthquakes to instrument noise that follows the clock of the day, the same for every station, until new stations remove the masking; task130's thinning is a choice each crew makes under an incentive, its phase is the crew's own rolling 90-day cycle reset by the crew's own reports and payouts, every injury is exposed to it whatever its size, and the trap is the comparison with workers the reward never covered, not a completeness test on a size distribution."
   },
   "lineage": [
     {
@@ -232,6 +229,32 @@
       "role_family": "compliance_or_audit",
       "drawn": "2026-10-12",
       "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-16 at $1,250,000 (round 3a), pending review, after the rule 3 re-audits rated its stump moderate (the dollar-weighted claims-made step factor lands the golden); re-rooted in a new client domain, world and dataset"
+    },
+    {
+      "architecture": "v5",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "decision-making-computational-behavioral-modeling",
+      "stump_strategy": "forecast_method_backtest",
+      "decision_type": "go_hold_or_stop",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G3",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "org_family": "local_government",
+      "forum": "line_manager_or_team",
+      "role_family": "field_unit_lead",
+      "fate": "spent at stage 4 on 2026-10-31: two determinism passes returned DETERMINISTIC, APPROVE (reports kept as determinism_check_report_arch5.md and determinism_check_report_arch5_pass2.md), but the draw repeated task156 v2's decisive pattern G14, strategy forecast_method_backtest and organisation family local_government inside the three-build window; the draw's guard check ran before task156's card reached the tree and re-registering only moved the window, so the build re-roots rather than wait or relabel",
+      "driver": "A unit's recorded outcome is a judge's mark, and a judge marks a unit more leniently the more often the judge has visited it, so a forecast window in which a redrawn map hands a large share of the units to judges who have never visited them is understated by every unit's own record, by the team's pooled rate and by a model that gives each judge one criterion; the window is read with each judge's criterion at the number of earlier visits the judge will have made to each unit, which the record's covering visits and past reassignments show and a back-test held out on the latest reassignment confirms.",
+      "niche": "a county food safety program's 2027 return-inspection staffing, sized on the routine inspections its inspectors will mark unsatisfactory when a district redraw hands nearly a quarter of the schedule to inspectors with no earlier visit to the establishment"
     }
   ],
   "lineage_shells": [
@@ -240,14 +263,20 @@
       "second-sentence opener": "put",
       "rounding opener": "give",
       "deliverable set": "pptx+xlsx"
+    },
+    {
+      "question form": "other",
+      "second-sentence opener": "the",
+      "rounding opener": "the",
+      "deliverable set": "pdf+xlsx"
     }
   ],
-  "notes": "Architecture 5 re-root, 2026-10-31. Every architecture in the lineage is spent; the new draw moves to psychology-behavioral-science, a client domain no batch 1 re-root uses, and a pairing (psychology x forecasting) never built. A first-year-inspector variant was set aside at the draw (tenure from a hire date is a roster attribute, task182's and task202's recorded reflex death); the decisive property is a pair's visit history instead. Revised at stage 3 (2026-10-31) and filed anew: the draw's check at 19:05Z ran before task156 v2's card (18:27Z) reached this tree, and heart then BLOCKed on the pair's shared labels. The decisive gap is time (Gap 1): every easy rung, the category rates and the per-inspector criterion as much as each establishment's own record, measures backward on years whose inspector and establishment pairs held and is applied forward to a window the redraw resets, while the file-is-not-the-kitchen reading reaches only the own-record rung, so population is second.",
+  "notes": "Architecture 6 re-root, 2026-10-31. Every architecture in the lineage is spent (v3 and v4 in actuarial-science-insurance, v5 in psychology-behavioral-science); the new draw moves to economics-econometrics, discrete-choice-limited-dependent-variable-modeling (labour economics: the reporting choice crews make under an incentive pay scheme), under the same forecasting objective. The first card of this draw (human-factors-ergonomics, causal_design, shape 07, utility_or_infrastructure) was redrawn before registration when task122 v3's card reached the tree holding those axes. The organisation family is other: a power line construction and maintenance contractor, which neither owns nor runs the utility. The decisive gap is population (Gap 2, the file is not the thing): the recordable log is what crews chose to record under a reward for a clean record; time (Gap 1) is second, the 2027 window carrying no reward. The strategy is time_semantics: the record has to be read at each crew's position in its own rolling 90-day cycle, a service clock no file stores, estimated from every cycle the crews ran. G12 leads (a crew-day with nothing recorded late in a cycle is partly a non-answer, and the rollup reconciles only while the reward keeps the blanks blank); G13 follows (the decision window has no reward). The shell is drawn with the world: a how-many question and docx, png and xlsx deliverables, unlike v4 (how-much, pptx plus xlsx) and v5 (pdf plus xlsx).",
   "shell": {
     "question form": "other",
     "second-sentence opener": "the",
     "rounding opener": "the",
     "deliverable set": "pdf+xlsx"
   },
-  "registered": "2026-10-31T20:46:59Z"
+  "registered": "2026-10-31T23:21:13Z"
 }
