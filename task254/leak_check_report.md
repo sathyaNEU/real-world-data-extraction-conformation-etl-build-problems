@@ -1,23 +1,20 @@
 # leak check, task254
 
-**Verdict: REVIEW.** 25 files read, 16 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 24 files read, 16 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: segment, period, rejected, architecture, decisive, construction, carries, golden, walked, dropped, re-root, counts, vehicle, reading, segments, midpoint, travel, second, default, device, cutover, reliability, planning, setting, profile
+Stump terms swept: segment, period, segments, travel, vehicle, walked, reaches, construction, profile, reliability, corridor, decisive, midpoint, experienced, carries, analyst, setting, default, standard, travel-time, planning, vendor, reading, golden, sentence
 
-## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `trelvane_export_readme.txt`: golden figure 264 appears: ...age: I-65 between Exit 121 and Exit 136 and the I-264 interchange, both directions, KY-480 at Exit 12...
+## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `chestnut_garage_closure_notice.pdf`: carries 6 of 7 distinctive words of the committed call: 'The 2027 staff shuttle should leave the Cedar Grove park-and-ride lot at 7:05 a.m.'
 - **REVIEW** `shuttle_service_budget_note_2027.docx`: carries 5 of 7 distinctive words of the committed call: 'The 2027 staff shuttle should leave the Cedar Grove park-and-ride lot at 7:05 a.m.'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `shuttle_service_budget_note_2027.docx`: 3 of 25 stump-paragraph terms appear (counts, vehicle, planning); read whether the document names the move
-- **REVIEW** `staff_shuttle_service_standard.docx`: 5 of 25 stump-paragraph terms appear (counts, vehicle, travel, planning, setting); read whether the document names the move
-- **REVIEW** `trelvane_export_readme.txt`: 6 of 25 stump-paragraph terms appear (segment, vehicle, segments, travel, second, planning); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `staff_shuttle_service_standard.docx`: 7 of 25 stump-paragraph terms appear (travel, vehicle, setting, standard, travel-time, planning); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `hr_holiday_calendars.xlsx`: 9 ISO dates after 2026-10-16, e.g. 2027-01-01, 2027-01-18, 2027-05-31, 2027-06-18, 2027-07-05
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -35,6 +32,7 @@ Stump terms swept: segment, period, rejected, architecture, decisive, constructi
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -63,3 +61,14 @@ Second pass (Sonnet, medium) on the final pack, after the budget note was rewrit
 Mechanical items: all seven harmless (I-264 is a road; the notice and budget note give no time; the standard, budget note and readme name no move; the 2027 dates are the 2027 holiday sheet the budget note cites).
 
 Realism tells: none needing a fix. The reader reads the probe files as uniform and complete (they are complete on the route's working-weekday rows by design, with 1,664 epochs left out elsewhere), the 40X timetable as a clean grid, the request numbers as sequential in date order and the permit roll as sorted by permit number, which is how such exports come out.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 24 files)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none stated; the nearest is the budget note's costing rule for late arrivals, and the standard's 2.1 and 2.3 give the criterion and the population.
+2. Ranking file: none. 3. Helper-only file: none (the reassignment list is rider input; the 40X timetable and the commute survey read as distractors). 4. Answer-like figure or name: none.
+5. Literal sentences: standard 2.1 to 2.6 and the budget note's costing: the WHAT (days, route, class, grid, costs).
+6. What decides: an analytical choice. The reader reasoned its own way to propagating time-of-day travel times along the route, which is the decisive construction named by no file: evidence for the reflex risk the survivor anatomy records, not a leak.
+
+Without the readme: the timestamps are labelled local and the daylight-saving morning has no repeated or skipped stamp in the window; travel times read as seconds from speed and segment length (the unit is not written); the TMC file carries both network releases with their effective dates. Item rulings: the closure notice and the budget note harmless. Realism: uniform document metadata and tidy governing documents; no LLM tells.

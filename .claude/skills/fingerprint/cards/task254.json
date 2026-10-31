@@ -84,7 +84,11 @@
     "distractors: the 2026 staff commute survey and the transit authority's express-route timetable on another corridor"
   ],
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task193": "task193 v2 counts units showing one of two orderings by chance given where each unit's exposure falls in its window; here nothing is ordered by chance: a departure's arrival is composed by walking each segment at the period the vehicle reaches it.",
+    "task204": "task204 recovers a transport rate by solving a unit's unsteady balance across filed windows; here no balance is solved: a trip's time is the chain of segment times read as the queue builds during the trip itself.",
+    "task249": "task249 v6 measures a treatment's total effect when the parts it treats save a capped budget the untreated parts then spend; here no treatment acts: a trip's time is assembled stage by stage at the period each stage is reached, as the queue builds during the trip."
+  },
   "lineage": [
     {
       "architecture": "v1",

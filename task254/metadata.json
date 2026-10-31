@@ -2,7 +2,7 @@
  "task": "task254",
  "title": "The latest 2027 morning departure of a hospital's staff shuttle from a remote park-and-ride lot whose trips would have reached the campus stop by 8:00 a.m. on 90 per cent of working weekdays",
  "domain": "Urban & Regional Science",
- "subdomain": "network analysis (corridor travel-time reliability)",
+ "subdomain": "network analysis",
  "objective": "Descriptive & Distribution Analysis",
  "prompt_shape": "04 (setting one dial): the latest departure meeting the on-time share, the working weekdays at it and the next departure, and at each departure from 6:50 to 7:20 the late staff arrivals and the 2027 cost of holding it, with the riders, vehicles and seats it carries",
  "as_of": "2026-10-16",
@@ -15,12 +15,11 @@
   "route_40x_southwest_express_timetable.pdf"
  ],
  "input_gates": {
-  "files": 25,
+  "files": 24,
   "formats": [
    "csv",
    "docx",
    "pdf",
-   "txt",
    "xlsx"
   ],
   "largest_file": "trelvane_tmc_export_2026-07.csv",
@@ -29,7 +28,7 @@
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task254/generator/make.py (seeded, deterministic) around a fictional hospital; I-65, I-264 and the Louisville streets are named as real roads, the probe vendor, the shuttle operator, the hospital, its staff and every travel time are invented, and no real probe data is reproduced.",
+   "origin": "constructed for this task by task254/generator/make.py (seeded, deterministic) around a fictional hospital; the interstate highways and the Louisville streets are named as real roads, the probe vendor, the shuttle operator, the hospital, its staff and every travel time are invented, and no real probe data is reproduced.",
    "date": "2026-10-16",
    "license": "CC BY 4.0 (original work)"
   }
@@ -146,18 +145,9 @@
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "trelvane_export_readme.txt",
-   "format": "txt",
-   "bytes": 1989,
-   "rows": null,
-   "source": "Constructed: Probe vendor's readme for the TMC travel-time export (delivered 5 October 2026)",
-   "date": "2026-10-16",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
    "path": "trelvane_tmc_export_2025-10.csv",
    "format": "csv",
-   "bytes": 3759945,
+   "bytes": 3759951,
    "rows": 50475,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2025-10: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -166,7 +156,7 @@
   {
    "path": "trelvane_tmc_export_2025-11.csv",
    "format": "csv",
-   "bytes": 3635212,
+   "bytes": 3635218,
    "rows": 48808,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2025-11: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -175,7 +165,7 @@
   {
    "path": "trelvane_tmc_export_2025-12.csv",
    "format": "csv",
-   "bytes": 3757237,
+   "bytes": 3757243,
    "rows": 50447,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2025-12: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -184,7 +174,7 @@
   {
    "path": "trelvane_tmc_export_2026-01.csv",
    "format": "csv",
-   "bytes": 3758110,
+   "bytes": 3758116,
    "rows": 50443,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-01: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -193,7 +183,7 @@
   {
    "path": "trelvane_tmc_export_2026-02.csv",
    "format": "csv",
-   "bytes": 3396301,
+   "bytes": 3396307,
    "rows": 45583,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-02: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -202,7 +192,7 @@
   {
    "path": "trelvane_tmc_export_2026-03.csv",
    "format": "csv",
-   "bytes": 3760175,
+   "bytes": 3760181,
    "rows": 50469,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-03: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -211,7 +201,7 @@
   {
    "path": "trelvane_tmc_export_2026-04.csv",
    "format": "csv",
-   "bytes": 3746605,
+   "bytes": 3746611,
    "rows": 50276,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-04: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -220,7 +210,7 @@
   {
    "path": "trelvane_tmc_export_2026-05.csv",
    "format": "csv",
-   "bytes": 3866477,
+   "bytes": 3866483,
    "rows": 51921,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-05: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -229,7 +219,7 @@
   {
    "path": "trelvane_tmc_export_2026-06.csv",
    "format": "csv",
-   "bytes": 3740086,
+   "bytes": 3740092,
    "rows": 50261,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-06: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -238,7 +228,7 @@
   {
    "path": "trelvane_tmc_export_2026-07.csv",
    "format": "csv",
-   "bytes": 3865989,
+   "bytes": 3865995,
    "rows": 51936,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-07: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -247,7 +237,7 @@
   {
    "path": "trelvane_tmc_export_2026-08.csv",
    "format": "csv",
-   "bytes": 3866710,
+   "bytes": 3866716,
    "rows": 51925,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-08: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",
@@ -256,7 +246,7 @@
   {
    "path": "trelvane_tmc_export_2026-09.csv",
    "format": "csv",
-   "bytes": 3743923,
+   "bytes": 3743929,
    "rows": 50256,
    "source": "Constructed: Probe vendor's TMC travel-time export for 2026-09: every segment in the export, every day, 05:30 to 09:25",
    "date": "2026-10-16",

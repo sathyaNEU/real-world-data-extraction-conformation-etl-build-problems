@@ -1,5 +1,5 @@
 """The pack's documents: the shuttle service standard and the finance budget note (DOCX), the garage closure
-notice and the express route timetable (PDF), and the vendor's readme (TXT)."""
+notice and the express route timetable (PDF)."""
 import datetime as dt
 import io
 import re
@@ -239,49 +239,3 @@ def normalize_docx(data, path):
             z.writestr(zi, b)
 
 
-def readme_txt(path, files):
-    lines = [
-        "Trelvane Mobility Data: TMC travel-time export",
-        "Customer: Beargrass Medical Center, Transportation Planning (order 2026-0418)",
-        "Delivered 5 October 2026",
-        "",
-        "CONTENTS",
-        "",
-        "  One CSV per calendar month, October 2025 to September 2026:",
-        "  %s to %s" % (files["probe_2025-10"], files["probe_2026-09"]),
-        "  %s, the segments in each network release used in the export" % files["tmc"],
-        "",
-        "  Coverage: I-65 between Exit 121 and Exit 136 and the I-264 interchange, both directions, KY-480 at",
-        "  Exit 121; every day; epochs from 05:30 to 09:25.",
-        "",
-        "FIELDS",
-        "",
-        "  tmc_code              segment code",
-        "  measurement_tstamp    start of the five-minute epoch, local time (Eastern)",
-        "  speed_all             average speed, all vehicles, mph",
-        "  travel_time_all       average travel time over the segment, all vehicles, seconds",
-        "  speed_passenger       average speed, passenger vehicles, mph",
-        "  travel_time_passenger average travel time over the segment, passenger vehicles, seconds",
-        "  speed_freight         average speed, freight trucks, mph",
-        "  travel_time_freight   average travel time over the segment, freight trucks, seconds",
-        "  reference_speed       the segment's reference speed (85th percentile off-peak), mph",
-        "  data_density          A: 5 or more probe vehicles in the epoch; B: 2 to 4; C: fewer than 2, the",
-        "                        value filled from the segment's history for that epoch",
-        "",
-        "  Travel times are averages over the class's probe vehicles in the epoch. Speeds are length over",
-        "  travel time. An epoch with no probe vehicles and no usable history for the segment is left out",
-        "  of the export.",
-        "",
-        "NETWORK RELEASES",
-        "",
-        "  %s lists every segment of each network release used in the export, with its" % files["tmc"],
-        "  length in miles. The release in force on a date is the latest whose effective date is on or",
-        "  before it; release 2025.2 was in force to 31 March 2026 and release 2026.1 from 1 April 2026.",
-        "",
-        "LICENCE",
-        "",
-        "  For the customer's internal planning use. Not for redistribution.",
-        "",
-    ]
-    with open(path, "w", newline="") as f:
-        f.write("\r\n".join(lines))

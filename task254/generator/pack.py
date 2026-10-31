@@ -23,7 +23,6 @@ MONTHS = [(2025, m) for m in (10, 11, 12)] + [(2026, m) for m in range(1, 10)]
 FILES = {"probe_%d-%02d" % ym: "trelvane_tmc_export_%d-%02d.csv" % ym for ym in MONTHS}
 FILES.update({
     "tmc": "TMC_Identification.csv",
-    "readme": "trelvane_export_readme.txt",
     "route": "route_cedar_grove_to_brook_st.xlsx",
     "deadhead": "ridgeline_deadhead_route_brook_st_yard.xlsx",
     "standard": "staff_shuttle_service_standard.docx",
@@ -154,7 +153,7 @@ def probe(path, W, ym):
                              "%.2f" % tt[e, j], "%.2f" % (miles[j] / frt[e, j] * 3600), "%.2f" % frt[e, j],
                              "%.1f" % ref[j], density(c, kind, t)))
     rows.sort(key=lambda r: (r[0], r[1]))
-    _csv(path, ["tmc_code", "measurement_tstamp", "speed_all", "travel_time_all", "speed_passenger",
+    _csv(path, ["tmc_code", "measurement_tstamp_local", "speed_all", "travel_time_all", "speed_passenger",
                 "travel_time_passenger", "speed_freight", "travel_time_freight", "reference_speed", "data_density"],
          rows)
 

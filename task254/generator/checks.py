@@ -42,15 +42,15 @@ def route_rows(target):
     tp, sp = np.full(shape, np.nan), np.full(shape, np.nan)
     dens, dup, months = [], 0, {}
     for f in sorted(glob.glob(os.path.join(target, "trelvane_tmc_export_*.csv"))):
-        df = pd.read_csv(f, dtype={"tmc_code": str, "measurement_tstamp": str, "data_density": str})
-        dup += int(df.duplicated(["tmc_code", "measurement_tstamp"]).sum())
-        months[os.path.basename(f)] = sorted(set(df.measurement_tstamp.str[:7]))
+        df = pd.read_csv(f, dtype={"tmc_code": str, "measurement_tstamp_local": str, "data_density": str})
+        dup += int(df.duplicated(["tmc_code", "measurement_tstamp_local"]).sum())
+        months[os.path.basename(f)] = sorted(set(df.measurement_tstamp_local.str[:7]))
         df = df[df.tmc_code.isin(ci)]
-        mins = df.measurement_tstamp.str[11:13].astype(int) * 60 + df.measurement_tstamp.str[14:16].astype(int)
-        dens.append(pd.DataFrame({"day": df.measurement_tstamp.str[:10], "min": mins, "d": df.data_density}))
-        w = df.measurement_tstamp.str[:10].isin(di)
+        mins = df.measurement_tstamp_local.str[11:13].astype(int) * 60 + df.measurement_tstamp_local.str[14:16].astype(int)
+        dens.append(pd.DataFrame({"day": df.measurement_tstamp_local.str[:10], "min": mins, "d": df.data_density}))
+        w = df.measurement_tstamp_local.str[:10].isin(di)
         df, mins = df[w], mins[w]
-        i = df.measurement_tstamp.str[:10].map(di).to_numpy()
+        i = df.measurement_tstamp_local.str[:10].map(di).to_numpy()
         e = ((mins - core.E0) // 5).to_numpy()
         k = df.tmc_code.map(ci).to_numpy()
         tp[i, e, k] = df.travel_time_passenger.to_numpy(float)
@@ -66,7 +66,7 @@ def run(W, S, F, G, target, golden_dir, task_dir, docs_text):
     nxt = call + 5
     gc = F["golden_counts"]
     deps = core.DEPARTURES
-    std, readme = docs_text["standard"], docs_text["readme"]
+    std = docs_text["standard"]
     prompt = open(os.path.join(task_dir, "prompt.txt")).read()
     grid = F["grid"]
 
@@ -112,7 +112,12 @@ def run(W, S, F, G, target, golden_dir, task_dir, docs_text):
                                                   "day." in std)
     ok("SF8 incident days dropped: same call", grid["incidents_dropped_walk"] == call, grid["incidents_dropped_walk"])
     ok("SF9 the 90th percentile of each departure's trips: same call", grid["p90_rule"] == call, grid["p90_rule"])
-    ok("SF10 local time filed", "start of the five-minute epoch, local time (Eastern)" in readme)
+    hdr = open(sorted(glob.glob(os.path.join(target, "trelvane_tmc_export_*.csv")))[0]).readline().strip().split(",")
+    ok("SF10 the export names its clock: measurement_tstamp_local", "measurement_tstamp_local" in hdr)
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    ok("section 3: no file named as a dictionary, manifest, readme or notes ships",
+       not [f for f in os.listdir(target) if describing.search(f)])
     last = max(float(core.walk(tt, d, v).max()) for d in deps for v in VARIANTS)
     ok("SF10 every trip ends inside the export's epochs", last < core.E0 + 5 * core.NE, last)
 
@@ -173,7 +178,7 @@ def run(W, S, F, G, target, golden_dir, task_dir, docs_text):
 
     # ---------------------------------------------------------------- the separation line and the devices
     main_files = {P.FILES[k] for k in P.FILES if k.startswith("probe_")} | {P.FILES[k] for k in
-                                                                            ("route", "standard", "holidays", "readme")}
+                                                                            ("route", "standard", "holidays")}
     dev_files = {P.FILES[k] for k in ("reassign", "hr", "charges", "budget", "deadhead", "notice")}
     ok("separation: the ask files are not the main call's", not main_files & dev_files)
     dh = load_workbook(os.path.join(target, P.FILES["deadhead"]), read_only=True)["Deadhead"]
@@ -332,14 +337,12 @@ def run(W, S, F, G, target, golden_dir, task_dir, docs_text):
                "planning time",
                "travel time index"):
         ok("counter-pin: no '%s' in the filed text" % wd, wd not in allt, wd)
-    prose = "\n".join(docs_text[k] for k in ("standard", "budget", "notice", "readme")).lower()
+    prose = "\n".join(docs_text[k] for k in ("standard", "budget", "notice")).lower()
     for wd in ("duplicate", "both sheets", "both lists", "twice", "reissue", "ramp"):
         ok("counter-pin: no device narrated ('%s') in the documents" % wd, wd not in prose, wd)
     ok("counter-pin: no route travel time by departure in any file",
        not any(re.search(r"route_?travel|travel_time_route|departure", open(f, errors="ignore").readline().lower())
                for f in glob.glob(os.path.join(target, "*.csv"))))
-    ok("counter-pin: the readme names no entry rule for an epoch",
-       "vehicles entering" not in readme.lower() and "entered" not in readme.lower())
 
     # ---------------------------------------------------------------- realism sweep
     for name, lo, hi in (("Late requests", dt_(2026, 9, 28), dt_(2026, 10, 14)),

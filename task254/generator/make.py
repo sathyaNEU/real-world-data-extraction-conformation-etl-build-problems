@@ -31,7 +31,6 @@ STAMP = 1792108800          # 16 October 2026
 
 SOURCES = {
     "tmc": "Probe vendor's TMC identification table, network releases 2025.2 and 2026.1",
-    "readme": "Probe vendor's readme for the TMC travel-time export (delivered 5 October 2026)",
     "route": "Transportation Planning's route file for the morning staff shuttle, Cedar Grove to Brook Street",
     "deadhead": "Shuttle operator's deadhead route, Brook Street stop to its Fern Valley yard (October 2025)",
     "standard": "Staff shuttle service standard, version 2 (June 2026)",
@@ -62,7 +61,6 @@ def write_all(target, golden):
     D.budget_docx(os.path.join(target, P.FILES["budget"]))
     D.notice_pdf(os.path.join(target, P.FILES["notice"]))
     D.transit_pdf(os.path.join(target, P.FILES["transit"]))
-    D.readme_txt(os.path.join(target, P.FILES["readme"]), P.FILES)
     F = AN.main_figures(W)
     G = AN.ask_figures(F, S)
     GD.write(golden, F, G)
@@ -91,7 +89,7 @@ def metadata():
         "title": "The latest 2027 morning departure of a hospital's staff shuttle from a remote park-and-ride lot "
                  "whose trips would have reached the campus stop by 8:00 a.m. on 90 per cent of working weekdays",
         "domain": "Urban & Regional Science",
-        "subdomain": "network analysis (corridor travel-time reliability)",
+        "subdomain": "network analysis",
         "objective": "Descriptive & Distribution Analysis",
         "prompt_shape": "04 (setting one dial): the latest departure meeting the on-time share, the working weekdays "
                         "at it and the next departure, and at each departure from 6:50 to 7:20 the late staff "
@@ -103,7 +101,7 @@ def metadata():
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "constructed for this task by task254/generator/make.py (seeded, deterministic) "
-                               "around a fictional hospital; I-65, I-264 and the Louisville streets are named as "
+                               "around a fictional hospital; the interstate highways and the Louisville streets are named as "
                                "real roads, the probe vendor, the shuttle operator, the hospital, its staff and "
                                "every travel time are invented, and no real probe data is reproduced.",
                      "date": "2026-10-16", "license": "CC BY 4.0 (original work)"}],
@@ -218,10 +216,10 @@ def figures_json(W, S, F, G):
 
 
 def docs_text(target):
-    """Every filed sentence: the documents, the readme and every string cell of the pack's workbooks."""
+    """Every filed sentence: the documents and every string cell of the pack's workbooks."""
     from openpyxl import load_workbook
     out = {"standard": "\n".join(t for _, t in D.STANDARD), "budget": "\n".join(t for _, t in D.BUDGET),
-           "notice": "\n".join(t for _, t in D.NOTICE), "readme": open(os.path.join(target, P.FILES["readme"])).read()}
+           "notice": "\n".join(t for _, t in D.NOTICE)}
     for k in ("route", "deadhead", "charges", "holidays", "reassign"):
         wb = load_workbook(os.path.join(target, P.FILES[k]), read_only=True)
         out[k] = "\n".join(str(v) for ws in wb.worksheets for r in ws.iter_rows(values_only=True) for v in r

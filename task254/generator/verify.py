@@ -72,16 +72,16 @@ def trips(target):
     ci = {c: k for k, c in enumerate(codes)}
     arr = np.full((len(days), 48, len(codes)), np.nan)
     for f in sorted(glob.glob(os.path.join(target, "trelvane_tmc_export_*.csv"))):
-        df = pd.read_csv(f, usecols=["tmc_code", "measurement_tstamp", "travel_time_passenger"],
-                         dtype={"tmc_code": str, "measurement_tstamp": str})
+        df = pd.read_csv(f, usecols=["tmc_code", "measurement_tstamp_local", "travel_time_passenger"],
+                         dtype={"tmc_code": str, "measurement_tstamp_local": str})
         df = df[df.tmc_code.isin(ci)]
-        day = df.measurement_tstamp.str[:10]
+        day = df.measurement_tstamp_local.str[:10]
         df = df[day.isin(di)]
-        ts = df.measurement_tstamp
+        ts = df.measurement_tstamp_local
         mins = ts.str[11:13].astype(int) * 60 + ts.str[14:16].astype(int)
         e = ((mins - 330) // 5).to_numpy()
         assert (e >= 0).all() and (e < 48).all()
-        arr[df.measurement_tstamp.str[:10].map(di).to_numpy(), e, df.tmc_code.map(ci).to_numpy()] = \
+        arr[df.measurement_tstamp_local.str[:10].map(di).to_numpy(), e, df.tmc_code.map(ci).to_numpy()] = \
             df.travel_time_passenger.to_numpy(float)
     assert not np.isnan(arr).any(), "a route segment is missing a passenger value in a morning epoch"
     rows = np.arange(len(days))
