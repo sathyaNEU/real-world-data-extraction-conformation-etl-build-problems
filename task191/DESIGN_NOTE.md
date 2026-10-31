@@ -1,67 +1,96 @@
 # task191 design note
 
-Architecture 2, drawn 2026-10-31 at the batch 1 re-root: a cancer institute's genome-wide CRISPR knockout screen of one
-cell line, read for the genes the line itself depends on, where a guide that cuts an amplified locus kills cells
-whatever gene it targets. Architecture 1 (the interconnect worst-window) is kept below as a record.
+Architecture 3, drawn 2026-10-31 at the batch 1 re-root: a municipal bus company's forward-collision and pedestrian
+warnings, read for the depots whose drivers let genuine warnings pass. Architecture 2 (a knockout-screen world) was
+spent at stage 2 with no data cut and architecture 1 (the interconnect worst-window) is kept below as a record.
 
 ## Draw
 
-- **Card.** `cards/task191.json`, architecture v2, re-root of the slot in the same objective; architecture 1 moved to
-  the card's lineage with its fate; registered 2026-10-31 and checked again on the registered card: WARN, no BLOCK.
-  The WARNs, answered: `shell.repeat` read the slot's old prompt, which this draw replaces. NOTEs
-  `test.same_puzzle_older` and `test.same_driver_older`, differentiated on the card against task228 v2, task478 v7 and
-  task182 v1, with lines also against task107 v2, task121 v4 and task465 v1, which earlier drafts of the triple met.
-  Redrawn while the window moved under the draft (task470's and task306's re-roots registered first): G3, the most
-  literal generator, was banned against task470 v2 and its triple repeated task470's inside the batch, so G16 is decisive
-  and G3 second, the honest order once the step is read as the standard's estimand entitling the copy-number-netted
-  method over the raw depletion; the decision is a slate under the arrayed round's capacity, which the validation
-  facility really has (the first draft's designation set repeated task470's), shape 10 (shape 01 banned against
-  task470), and the chart ships as SVG beside the workbook (pdf and xlsx repeated task306 v3).
-- **Pairing.** Biomedical & Clinical Research / genomics-gwas-high-dimensional-association, a task type the taxonomy
-  tags for Anomaly Detection & Diagnostics; drawn for AD. The anomaly is a gene whose loss reduces the line's fitness
-  far beyond the genome's background; the call designates the line's own dependencies for arrayed validation.
-- **Cell screened first.** Human Factors & Ergonomics / safety-incident-error-analysis (no card on file) was screened
-  and left: its two natural designs are dead in other slots (signals passed at danger per approach at danger,
-  task180 and task181; misclassified incident causes corrected by a specialist review, the Rogan-Gladen family spent
-  by task242, task192 and task228). See `## Tried and rejected`.
-- **Niche.** The Vliedorp Instituut voor Kankeronderzoek's functional genomics facility screened OSR-7, an oesophageal
-  adenocarcinoma line, with a genome-wide knockout library of four guides a gene, the plasmid library against cells
-  harvested at day 21 in three replicates. OSR-7 carries focal amplifications and single-copy segments, as the line's
-  characterisation records. The target committee takes the line's own dependencies into arrayed validation in the
-  first quarter of 2027, and the guide synthesis order for the arrayed library closes on 18 January 2027.
-- **The call.** Which genes fill the committee's 2027 arrayed validation round: the genes on which OSR-7 depends,
-  beyond the common essential genes every line needs, by the institute's screening standard (the fitness loss caused
-  by losing the gene's own function, on the screen's scale where the non-essential reference genes sit at 0 and the
-  common essential genes at -1, at or below the standard's line).
-- **Shape.** 10, scorecard against thresholds: each candidate gene's effect against the standard's line, the slate
-  filled to the arrayed round's capacity, and the asks; the criteria arithmetic is written at stage 2. Decision
-  ranked_slate_under_cap, answer set_of_items, question form what, deliverables `osr7_validation_slate_2027.xlsx` and
-  `osr7_gene_effects_2027.svg`.
-- **Strategy.** decomposition_attribution: the observed depletion of a gene's guides is the gene's own effect plus the
-  cutting effect at its locus, which rises with the locus's copy number and is shared by every gene in the segment.
-  G16 decisive (the standard's estimand, the gene's own effect, entitles the copy-number-netted estimate over the raw
-  depletion), G3 second (record against operation: was it the gene's loss or the cut that killed the cells?). Gap objective (the screen's
-  depletion score is computed correctly and is not the quantity the standard decides on). Gate G
-  decomposition_attribution. Calibration gold_standard_subsample (the published reference genes of known effect).
-  Context artifact filed_standard (the screening standard). Layer 2 family field_method.
-- **Forum, event, organisation.** committee_or_panel (the target committee), purchase_order_or_contract (the arrayed
-  library's synthesis order), university_or_school (an academic institute). Role portfolio_manager (the target
-  portfolio lead, who owns the slate).
-- **People** (`guard.py names --geo Netherlands --seed 191`, locale nl_NL): Femke Nihoe, the target portfolio lead;
-  Rick Claassen, who manages the screening facility; Merel Spanhaak, who ran the facility's counting pipeline. None
-  appears in the prompt.
-- **Data-native sentence.** A Cas9 guide cutting a locus the line carries in many copies makes many double-strand
-  breaks, and the DNA-damage response stops the cells whatever gene the guide targets, so in OSR-7's amplicons every
-  gene's guides deplete and in its single-copy segments every gene's guides deplete less; the standard decides on the
-  gene's own effect, and the screen's non-essential reference genes, which have none, measure the cutting effect in
-  each copy-number state.
-- **As-of.** Friday 8 January 2027, before the synthesis order closes.
-- **Forward facing.** The call fixes the 2027 validation slate; its estimand is the screen's measured effect of each
-  gene in the line, a quantity of the line, not of a closed period.
-- **Sources.** Aguirre et al. 2016 (genomic copy number dictates a gene-independent cell response to CRISPR-Cas9
-  targeting), Munoz et al. 2016, Meyers et al. 2017 (CERES), Iorio et al. 2018 (CRISPRcleanR), Hart et al. 2014 and
-  2017 (reference essential and non-essential gene sets, BAGEL); `guard.py slots` on the mechanism's and the
-  setting's nouns: no slot holds the copy-number cutting effect.
+- **Card.** `cards/task191.json`, architecture v3, re-root of the slot in the same objective; architecture 2 moved to
+  the card's lineage with its fate beside architecture 1; registered 2026-10-31T19:28:35Z and checked again on the
+  registered card: PASS. Redrawn on the way: the first triple (gap population, G2 grain mismatch, designation set)
+  BLOCKed `test.same_puzzle` inside the batch against task270 v11 and `test.same_puzzle_older` and
+  `test.same_driver_older` against task239, task264 v1, task48 v2, task187, task263 and task279, so the gap and the
+  pattern were redrawn rather than differentiated: the decisive gap is objective (the dashboard's no-brake share is
+  computed correctly and is not what the programme decides on) and the decisive generator G15 (evidence-standard
+  exclusion: a warning that fails the terms' own standard of a genuine warning is set aside), with G2 and G18 behind
+  it. First name Santiago (people.first against task151) was replaced from the same draw. The draft's `shell.repeat`
+  WARN read architecture 1's prompt, which this commit removes; architecture 3's prompt comes at stage 2. The window
+  moved under the draft too: task156 and task130 registered first, which freed classification_error and composition_mix
+  and banned forecast_method_backtest, monitoring_export, local_government, council_or_assembly and
+  line_manager_or_team, so the context artifact is the programme's filed terms rather than the dashboard export.
+- **Pairing.** Human Factors & Ergonomics / safety-incident-error-analysis, a task type the taxonomy tags for Root-Cause
+  and Anomaly Detection & Diagnostics; drawn for AD (no AD card on file in the cell). The anomaly is a depot whose
+  drivers do not brake on collision warnings that were real; the artifact is a warning the system raises at a fixed
+  structure on nearly every pass, where nothing is in the bus's path and not braking is the right response.
+- **Niche.** Empresa Municipal de Autobuses de Lorvega runs the city's buses from seven depots. Every bus carries an
+  advanced driver-assistance camera that raises a forward-collision warning and a pedestrian and cyclist warning and
+  reports each one, with the bus, the position, the speed and whether the brake was applied within two seconds, to the
+  telematics platform. The December 2025 network change opened a busway with retractable bollards, sent two corridors
+  under a low rail bridge and over a hill road with a tight barriered bend, and moved routes between depots.
+- **The call.** Where the 2027 driver-attention programme runs: the depots whose drivers, from January to October
+  2026, did not brake on genuine collision warnings at 1.3 times the fleet's rate or more, by the programme's terms
+  (a genuine warning is one raised when a vehicle, cyclist or pedestrian was in the bus's path; not braked on means no
+  brake application within two seconds; a driver's depot is the depot the driver was assigned to on the day).
+- **Shape.** other, written out at stage 2: each depot's genuine warnings, the ones not braked on, its rate and its
+  ratio to the fleet's, the fleet's own rate, the depots taken in, the closest depot left out and the chart's parts,
+  with the asks beside. Decision designation_set, answer set_of_items, question form where, deliverables
+  `attention_programme_depots_2027.docx`, `warning_response_by_depot_2026.xlsx` and
+  `genuine_warning_response_2026.svg`.
+- **Strategy.** classification_error: the warning file classes every warning as a collision hazard, and at the network's
+  new fixed structures that class is wrong on nearly every warning; the misclassified warnings are told apart from the
+  busy streets where warnings are real but frequent only by the share of bus passages on which a place fires, from the
+  running-time database's passages by link, which no count of warnings at a place carries. This is not the
+  misclassification-correction family task242, task192 and task228 spent (a classifier's or an investigator's error
+  rates read off a validation panel and inverted): nothing here is inverted and no panel exists; each warning's class is
+  settled by its place's share of passes. Gap objective then population; G15 decisive, G2 (the class lives at the
+  place-and-pass grain, the warning file at the event grain) and G18 (the over-correction that drops every busy place)
+  behind it. Gate G decomposition_attribution (the no-brake share is split between warnings with nothing in the path and
+  drivers who let real ones pass). Calibration none. Context artifact filed_standard (the programme's terms of
+  reference). Layer 2 family estimand_identification.
+- **Forum, event, organisation.** executive_team (the company's management committee approves the programme),
+  launch_or_rollout (the programme starts on 11 January 2027), utility_or_infrastructure (a municipal transport
+  operator). Role compliance_or_audit (the head of driving safety, who proposes the depots).
+- **People** (`guard.py names --geo Spain --seed 191`, locale es_ES): Miriam Vilanova, head of driving safety;
+  Paulina Mariño, managing director, who chairs the management committee; Trinidad Arévalo, telematics and
+  driver-assistance lead; Baudelio Carballo, scheduling, who keeps the running-time database; Luciana Berrocal, depot
+  operations; Pío Roig, driver training. None appears in the prompt.
+- **Data-native sentence.** A forward camera that judges time to collision from what it sees ahead fires at a low
+  bridge, a line of bollards or a barrier on a tight bend on almost every pass at speed, and drivers who meet that every
+  day stop braking for it, which is correct; in a market street a pedestrian really steps into the path on a few passes
+  in a hundred, and those warnings are genuine however many of them there are, so only the share of passes on which a
+  place fires, read from the passages the scheduling database keeps for running times, tells the two apart.
+- **Abstraction sentence.** Each unit's failure to act on alarms is read only on alarms whose trigger was real, and a
+  place that raises an alarm on nearly every occasion is told from a place where real hazards cluster only by the share
+  of occasions on which it raises one; no approved build on file carries that sentence (task236 reads a capture share
+  against an independent sample's volume and positivity, task196 a latent count from two overlapping channels, task119
+  each unit's waits through its own free resource, task182 a lagged response to a shared driver, task103 a handed-over
+  quantity in standard amounts, task104 the least sensitive paging threshold).
+- **Same-puzzle and library tests.** The triple (objective, G15, designation_set) and the driver triple (objective,
+  G15, decomposition_attribution) repeat nothing in the last twelve or older, measured by `guard.py check`. The library
+  test: the golden is not "use X on Y" with X a named correction; the field's own measure of warning compliance (the
+  no-brake share, with nuisance places set aside by how many warnings they raise or how seldom drivers brake there) is
+  rung 0 and rung 1, and the decisive step is the recognition that this record breaks its precondition (that a busy
+  place or an ignored place is a false one).
+- **As-of.** Monday 9 November 2026, the extracts cut on Sunday 1 November; the management committee meets on Tuesday
+  24 November 2026.
+- **Forward facing.** The call places the 2027 programme; its estimand is each depot's drivers' compliance with
+  genuine warnings over January to October 2026, the period the programme's terms read, and the depots are those the
+  drivers belong to now. The tag stays Anomaly Detection: no future value is predicted.
+- **Sources.** Breznitz 1984 (Cry Wolf: the psychology of false alarms); Bliss 2003 and Bliss and Dunn 2000 (alarm
+  reaction patterns and the probability matching of responses to alarm reliability); Dixon, Wickens and McCarley 2007
+  (false alarms and misses in diagnostic automation: false alarms reduce compliance); Lees and Lee 2007 (driver response
+  to imperfect collision warning systems, nuisance and unnecessary alarms); Regulation (EU) 2019/2144 (the general
+  safety regulation's advanced driver-assistance requirements for buses); `guard.py slots` on the mechanism's nouns
+  (warning, alarm, false, nuisance, telematics, reliability, compliance) and the setting's (bus, driver, collision,
+  passage, running time): no slot holds the mechanism or the setting.
+
+## Architecture 2 record (spent 2026-10-31 at stage 2)
+
+A cancer institute's genome-wide knockout screen of one cell line, read for the line's own dependencies net of the
+copy-number cutting effect, drawn and registered 2026-10-31 (commit a0836137) and spent at stage 2 with no data cut:
+the previous fork's drafting of the world was interrupted by a safety classifier, and the slot re-rooted to a cell far
+from genome editing, laboratory biology and anything dual-use. The card's lineage holds its identity and fate.
 
 ## Architecture 1 record (spent 2026-10-31)
 
@@ -541,3 +570,19 @@ The pack as built, read against the gates one last time.
 - 2026-10-31, at the draw, the decisive G3 and a designation set: `ban.pattern` and `test.same_puzzle` BLOCK against
   task470 v2, registered while this card was drafted; G16 decisive with G3 second, the slate under the round's
   capacity, shape 10 (01 banned against task470), the chart as SVG (pdf and xlsx repeated task306 v3).
+
+- 2026-10-31, architecture 2 (the knockout-screen world, drawn in commit a0836137): spent at stage 2 with no data cut,
+  because the previous fork's drafting of the world was interrupted by a safety classifier; re-rooted to a cell far
+  from genome editing, laboratory biology and anything dual-use, and its card moved to the lineage. The two
+  human-factors designs this note already screens dead stay dead (signals passed at danger per approach at danger;
+  fatigue misclassification corrected by a specialist review).
+- 2026-10-31, at the architecture 3 draw, set aside before a card: a card issuer's fraud screen read through its random
+  holdout (the honest label is population_selection, banned against task250's card in this window); a breach's
+  exposure window read as the step in each day's later-fraud share at a skimmed merchant (the step is visible on a plot
+  and the change-point estimators split); a shared decline budget whose cut-off drifts and lets other segments' fraud
+  through (filing what the model team decides on names the fixed cut-off, rule application); vehicle or yard-block
+  hazards read within the operators who worked them (the handler-plus-unit regression task201's architecture 13 measured
+  as the reflex); descriptor-change disputes (task181's own rejection, one self-join); an issue cohort read off a Lexis
+  table (task173's cohort step died on its lever and the identification fork, and the honest label is composition);
+  an inspector's misses read at the line's target prevalence (a fitted prevalence curve is a free form); confirmations
+  answered from a swapped SIM (the closing sentence names the swap, the fork is the stump).

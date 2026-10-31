@@ -1,13 +1,13 @@
 {
  "task": "task191",
  "status": "DESIGN",
- "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
+ "domain": "human-factors-ergonomics/safety-incident-error-analysis",
  "objective": "anomaly-detection",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-31",
- "stump": "each gene's guide-level depletion scaled on the reference genes and read against the standard's line without the copy-number cutting effect: the amplicons' passenger genes join the slate and a single-copy segment's dependency drops off (default: the scaled depletion; golden: the effect net of the cutting effect measured on the non-essential reference genes by copy-number state)",
- "architecture": 2,
+ "stump": "each depot's no-brake share of every collision warning against the fleet's (the dashboard's measure) counts the warnings the network's new fixed structures raise on nearly every pass at speed, where nothing is in the path and not braking is right, and setting aside the busiest places also drops the genuine pedestrian streets (default: the all-warning share, or the share without the busiest places; golden: the share of genuine warnings, the fixed false-trigger places told apart by warnings per passage at speed)",
+ "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": null,
@@ -32,9 +32,15 @@
    "portal": "none: batch 1 re-root; architecture 1's decisive step measured as landed in-house, never a portal result",
    "repair": "re-root",
    "commit": "DRAWN (task191) architecture 2"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "none: architecture 2 spent at stage 2 with no data cut (the drafting was interrupted by a safety classifier)",
+   "repair": "re-root",
+   "commit": "DRAWN (task191) architecture 3"
   }
  ],
- "resume": "Architecture 2 drawn 2026-10-31 (OSR-7 genome-wide knockout screen, the 2027 arrayed validation slate net of the copy-number cutting effect). Next: stage 2 design (default path, stump sentence, ladder, fork table, asks, prompt) gated by precut.py.",
+ "resume": "Architecture 3 drawn 2026-10-31 (Lorvega's municipal buses: the 2027 driver-attention programme's depots read on genuine collision warnings, the fixed false-trigger places told apart by warnings per passage). Next: stage 2 design (default path, stump sentence, three rules, survivor anatomy, ladder, fork table, closure, asks, prompt.txt) gated by precut.py, then stage 3. Architecture 1's tracked pack files stay until stage 3 replaces them.",
  "approved": null,
  "delivered": null,
  "portal": null,

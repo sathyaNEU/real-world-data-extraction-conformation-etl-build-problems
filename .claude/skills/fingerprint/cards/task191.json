@@ -1,93 +1,93 @@
 {
   "task": "task191",
-  "architecture": "v2 (re-root 2026-10-31: a cancer institute's genome-wide knockout screen of one cell line, the 2027 arrayed validation slate net of the copy-number cutting effect)",
+  "architecture": "v3 (re-root 2026-10-31: a municipal bus company's collision warnings by depot, the 2027 driver-attention programme read on the warnings that were genuine)",
   "drawn": "2026-10-31",
-  "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 1 moved to lineage",
-  "domain": "biomedical-clinical-research",
-  "subdomain": "genomics-gwas-high-dimensional-association",
-  "niche": "a functional genomics facility's genome-wide CRISPR knockout screen of one cancer cell line, read for the line's own dependencies before arrayed validation",
+  "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 2 moved to lineage, spent at stage 2",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "safety-incident-error-analysis",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a municipal bus fleet's forward-collision and pedestrian warnings, read for the depots whose drivers let genuine warnings pass",
   "objective": "anomaly-detection",
-  "shape": "10",
-  "decision_type": "ranked_slate_under_cap",
+  "shape": "other",
+  "decision_type": "designation_set",
   "answer_unit": "set_of_items",
+  "scoring_unit": "other",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "objective"
+    "objective",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G3"
+    "G15",
+    "G2",
+    "G18"
   ],
   "gate_g": "decomposition_attribution",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly scales each gene's guide-level depletion so that the non-essential reference genes sit at 0 and the common essential genes at -1, sets the common essentials aside and fills the validation round's places with the most depleted genes past the standard's line, which fills them with the amplified regions' passenger genes and leaves off the dependencies in single-copy segments, the slate the screen's own quality metrics endorse.",
-  "domain_test": "The deciding quantity is each gene's own fitness effect in the line, estimated the way genome-wide CRISPR screening estimates it, net of the copy-number effect (a guide cutting an amplified locus kills cells through the extra DNA breaks whatever gene it targets), read off the reference genes known to carry no effect across the line's copy-number states; with another field's nouns there is no guide that cuts every copy of its locus, no DNA-damage response and no amplicon, and the task stops reading the same.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:copy-number-cutting-effect-netted-on-reference-genes",
+  "analyst_test": "A strong analyst who reads every file and the programme's terms correctly takes each depot's share of collision warnings with no brake application within two seconds against the fleet's, the fleet safety dashboard's own measure, and perhaps sets aside the places that raise the most warnings as nuisance places; the first files the two depots whose routes pass the fixed structures that fire a warning on almost every pass at speed, and the second also throws away the busy pedestrian streets where the warnings are real, so neither files the depot whose drivers let genuine pedestrian warnings pass there.",
+  "domain_test": "The deciding quantity is each depot's rate of not braking on genuine collision warnings, the human-factors measure of warning compliance, which alarm research reads on valid alarms only because operators rightly learn to let a warning that is false at a known place go; with another field's nouns (fraud alerts, smoke alarms) there is no bus passing a place at speed, no fixed structure that fires on nearly every pass and no brake response, and the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:fixed-place-false-warnings-told-apart-by-share-of-passes",
   "layer1": [
-    "read counts split across sequencing lanes, one lane re-delivered",
-    "guide library annotated in an older gene-symbol release",
-    "plasmid and day-21 counts in separate exports",
-    "copy-number segments as intervals beside guide cut-site coordinates",
-    "published reference gene sets under older symbols",
-    "zero-count and low-count guides",
-    "sample names that differ between the sample sheet and the count files"
+    "warnings stamped in UTC beside a running-time database in local time, across the 25 October 2026 clock change",
+    "warnings located by GPS point while running times are kept by stop-to-stop link, matched through the link register",
+    "the December 2025 network change renumbering links and moving routes between depots",
+    "drivers found through the ticket machine's log-on records, which leave gaps and double log-ons",
+    "buses lent between depots for days at a time",
+    "telematics messages resent after lost connections, the same warning twice",
+    "warning types coded differently by two firmware versions"
   ],
-  "stakeholder_role": "the institute's target portfolio lead, who sets the 2027 arrayed validation slate",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "per accepted item",
+  "stakeholder_role": "the bus company's head of driving safety, who proposes the 2027 driver-attention programme's depots to the management committee",
+  "role_family": "compliance_or_audit",
   "spine": {
-    "file": "osr7_guide_counts.csv",
-    "rows": 74000,
-    "entity": "one sgRNA of the genome-wide library",
-    "grain": "guide x sample",
+    "file": "collision_warnings_2025-01_2026-10.csv",
+    "rows": 0,
+    "entity": "one forward-collision or pedestrian warning raised on a bus",
+    "grain": "warning event",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "university_or_school",
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Netherlands",
+    "geography": "Spain (a fictional Andalusian city and its municipal bus network)",
     "currency": "EUR",
-    "org_type": "academic cancer research institute",
+    "org_type": "municipal bus company",
     "invented_names": [
-      "Vliedorp Instituut voor Kankeronderzoek",
-      "OSR-7"
+      "Lorvega",
+      "Empresa Municipal de Autobuses de Lorvega"
     ],
     "people": [
-      "Femke Nihoe",
-      "Rick Claassen",
-      "Merel Spanhaak"
+      "Miriam Vilanova",
+      "Paulina Mariño",
+      "Trinidad Arévalo",
+      "Baudelio Carballo",
+      "Luciana Berrocal",
+      "Pío Roig"
     ]
   },
   "deliverables": [
-    "osr7_validation_slate_2027.xlsx",
-    "osr7_gene_effects_2027.svg"
+    "attention_programme_depots_2027.docx",
+    "warning_response_by_depot_2026.xlsx",
+    "genuine_warning_response_2026.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is each unit's own effect on an outcome measured through several probes, where every probe in a region also carries a damage term that grows with how many copies of the region the system holds, so units sitting in a multiplied region rank as the most affected and units in a lost region look spared; only the effect net of the region's damage, read off the reference units known to have no effect, ranks the units for the few places available.",
-  "driver_concrete": "Each gene's knockout effect in OSR-7 is read through four guides, and a guide that cuts in an amplified region also kills cells through the extra DNA breaks, so the genes of the line's amplicons look like strong dependencies and genes in its single-copy segments look spared; only the guide-level depletion net of the copy-number cutting effect, estimated on the non-essential reference genes across the line's copy-number states, gives the dependencies the institute validates.",
-  "stump": "A competent solver normalises the screen's guide counts, scales each gene's median depletion so that the non-essential reference genes sit at 0 and the common essentials at -1, sets the common essentials aside and fills the arrayed round's places with the most depleted genes past -0.5, most of them passenger genes of the line's amplicons, where the effect net of the copy-number cutting effect keeps the amplicons' own driver dependencies, drops their passengers and brings in dependencies from the single-copy segments.",
+  "question_form": "where",
+  "driver": "Each unit's rate of failing to act on a warning is read only on the warnings whose trigger was real, because the warning system fires on nearly every pass at a few fixed places where nothing is ever in the way and operators rightly let those go, while the places where real hazards cluster fire on a small share of passes; the two kinds of place are told apart only by the share of passes on which the system fires, which no count of warnings carries, so the units whose routes cross the fixed places look worst and the unit that lets real hazards pass looks ordinary.",
+  "driver_concrete": "Each depot's share of genuine forward-collision and pedestrian warnings with no brake application within two seconds, where the warnings raised on most passes at speed by a few fixed structures on the new network (a low rail bridge, the busway's bollards, a tight bend's crash barrier) are not genuine and are set aside, told apart from the busy pedestrian streets where warnings are real but rare only by warnings per bus passage at speed from the running-time database.",
+  "stump": "The fleet dashboard's measure, the no-brake share of every collision warning by depot against the fleet's, files the two depots whose routes run under the rail bridge and along the busway, and setting aside the places with the most warnings also drops the pedestrian streets where the warnings are genuine and files no depot; the depot whose drivers let genuine pedestrian warnings pass in those streets is flagged only once the fixed false-trigger places are removed by their share of passes at speed and the genuine hotspots are kept.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task182": "182 v1 nets each bore's own lagged response to a shared external driver out of a level change through time; here nothing is a time series or a lag: the contaminating term is the measuring method's own damage at each probe's locus, proportional to how many copies of the locus the line carries, estimated once on reference units known to carry no effect, and the call is which units' own effect passes a filed line.",
-    "task465": "465 v1 values a capped payoff over periods a target series was not observed, through its correlation with another series; here every unit is observed in full and nothing is predicted: each unit's observed effect is split between the unit's own loss and a locus-level cutting effect the reference units measure.",
-    "task107": "107 v2 scales a pilot's assignment effect by who actually delivered each unit's sessions, reached through a timetable, a staff directory and a certification register; here nothing is delivered or assigned: each unit's observed loss is split between the unit's own effect and a locus-level cutting effect of the measuring method, measured on reference units known to carry none.",
-    "task121": "121 v4 books a fall in satisfaction to the conditions each response was made under rather than to ratings that move with the overall verdict; here there is no respondent and no rating: the probe's own damage at a multiplied locus inflates every unit there, and only the reference units' depletion by copy-number state measures it.",
-    "task228": "228 v2 separates each unit's random error from comparators' errors through the covariances of three or four measurements of one unobserved signal; here each unit is measured once through its own probes and the contaminating term is systematic, a damage term set by the copy number of the unit's locus and measured on reference units of known zero effect, with no comparator series at all.",
-    "task478": "478 v7 carries occasional spot tests across a period through a third party's monthly record of an input property; here nothing is sampled in time and no third-party record moves: every unit is read once at the screen's end, and its depletion is split between its own loss and its locus's copy-number cutting effect."
-  },
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1",
@@ -137,14 +137,69 @@
       ],
       "question_form": "whether",
       "fate": "spent 2026-10-31 at the batch 1 re-root: shipped 2026-10-17 on the interconnect worst-window call (fund nothing), its decisive step measured as landed in-house before any portal result; the multiple-testing cell, the filed comparison criterion and the statistic-of-a-statistic reference retired with it"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-31",
+      "domain": "biomedical-clinical-research",
+      "subdomain": "genomics-gwas-high-dimensional-association",
+      "niche": "a functional genomics facility's genome-wide CRISPR knockout screen of one cancer cell line, read for the line's own dependencies before arrayed validation",
+      "objective": "anomaly-detection",
+      "shape": "10",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G3"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "gold_standard_subsample",
+      "stump_strategy": "decomposition_attribution",
+      "context_artifact": "filed_standard",
+      "forum": "committee_or_panel",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "university_or_school",
+      "role_family": "portfolio_manager",
+      "driver": "The decisive quantity is each unit's own effect on an outcome measured through several probes, where every probe in a region also carries a damage term that grows with how many copies of the region the system holds, so units sitting in a multiplied region rank as the most affected and units in a lost region look spared; only the effect net of the region's damage, read off the reference units known to have no effect, ranks the units for the few places available.",
+      "driver_concrete": "Each gene's knockout effect in OSR-7 is read through four guides, and a guide that cuts in an amplified region also kills cells through the extra DNA breaks, so the genes of the line's amplicons look like strong dependencies and genes in its single-copy segments look spared; only the guide-level depletion net of the copy-number cutting effect, estimated on the non-essential reference genes across the line's copy-number states, gives the dependencies the institute validates.",
+      "stump": "A competent solver normalises the screen's guide counts, scales each gene's median depletion so that the non-essential reference genes sit at 0 and the common essentials at -1, sets the common essentials aside and fills the arrayed round's places with the most depleted genes past -0.5, most of them passenger genes of the line's amplicons, where the effect net of the copy-number cutting effect keeps the amplicons' own driver dependencies, drops their passengers and brings in dependencies from the single-copy segments.",
+      "answer": "",
+      "world": {
+        "geography": "Netherlands",
+        "currency": "EUR",
+        "org_type": "academic cancer research institute",
+        "invented_names": [
+          "Vliedorp Instituut voor Kankeronderzoek",
+          "OSR-7"
+        ],
+        "people": [
+          "Femke Nihoe",
+          "Rick Claassen",
+          "Merel Spanhaak"
+        ]
+      },
+      "deliverables": [
+        "osr7_validation_slate_2027.xlsx",
+        "osr7_gene_effects_2027.svg"
+      ],
+      "question_form": "what",
+      "fate": "spent 2026-10-31 at stage 2 with no data cut: the previous fork's drafting of the knockout-screen world was interrupted by a safety classifier, so the slot re-rooted to a cell far from genome editing, laboratory biology and anything dual-use; the design was never built or shipped"
     }
   ],
   "notes": "",
-  "registered": "2026-10-31T17:47:31Z",
-  "shell": {
-    "question form": "which",
-    "second-sentence opener": "the",
-    "rounding opener": "shortfalls",
-    "deliverable set": "png+xlsx"
-  }
+  "registered": "2026-10-31T19:28:35Z",
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "the",
+      "rounding opener": "shortfalls",
+      "deliverable set": "png+xlsx"
+    }
+  ]
 }
