@@ -1,188 +1,137 @@
-"""Independent verifier for task306: reads only target.zip, on its own code path (no generator module), takes the
-covers' terms from the quotation and the capital policy's rules from its text, recomputes the call and every graded
-figure, and compares them with generator/figures.json.
+"""An independent verifier: pandas over target/ only, written apart from analysis.py, recomputing the call, every
+graded figure and both asks, and comparing them with figures.json.
 
-    python3 task306/generator/verify.py [target.zip]
+    python3 task306/generator/verify.py
 """
-import csv
-import datetime as dt
-import email
-import io
 import json
+import math
 import os
 import re
 import sys
-import zipfile
-from collections import defaultdict
 
 import numpy as np
-from openpyxl import load_workbook
-from pdfminer.high_level import extract_text
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+T = os.path.join(os.path.dirname(HERE), "target")
 BAD = []
 
 
-def check(label, cond, detail=""):
-    print("%s  %s  %s" % ("PASS" if cond else "FAIL", label, detail))
+def check(name, cond, detail=""):
+    print(("ok    " if cond else "FAIL  ") + name + ("" if cond else "   " + str(detail)))
     if not cond:
-        BAD.append(label)
+        BAD.append(name)
 
 
-def text(z, name):
-    return re.sub(r"\s+", " ", extract_text(io.BytesIO(z.read(name))))
+def london(ts):
+    t = pd.to_datetime(ts, utc=True)
+    return t.dt.tz_convert("Europe/London").dt.date
 
 
-def rows(z, name):
-    return list(csv.DictReader(io.StringIO(z.read(name).decode("utf-8"))))
-
-
-def gbp(s):
-    return float(s.replace(",", ""))
-
-
-def nets(year, loss, n, base, sec):
-    """each simulated year's loss gross, net of the occurrence cover, and net of both, in date order within year"""
-    gross = np.zeros(n)
-    rec_b = np.zeros(n)
-    rec_s = np.zeros(n)
-    seen = set()
-    for y, l in zip(year, loss):
-        gross[y - 1] += l
-        rec_b[y - 1] += min(max(l - base["ret"], 0.0), base["lim"])
-        if y in seen:
-            rec_s[y - 1] += min(max(min(l, base["ret"]) - sec["ret"], 0.0), sec["lim"])
-        seen.add(y)
-    rec_b = np.minimum(rec_b, 2 * base["lim"])
-    rec_s = np.minimum(rec_s, 2 * sec["lim"])
-    rp_b = base["prem"] * np.minimum(rec_b, base["lim"]) / base["lim"]
-    rp_s = sec["prem"] * np.minimum(rec_s, sec["lim"]) / sec["lim"]
-    nb = gross - rec_b + rp_b
-    return gross, nb, nb - rec_s + rp_s, rec_s, rp_s
-
-
-def tvar(x, k):
-    return float(np.sort(x)[-k:].mean())
-
-
-def main(zp):
-    z = zipfile.ZipFile(zp)
-    names = set(z.namelist())
+def main():
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    cp = text(z, "CP-04_capital_policy_windstorm_2026.pdf")
-    qt = text(z, "penwarden_windstorm_quotation_2027.pdf")
-    wd = text(z, "windstorm_xl_wording_2026.pdf")
-    check("pdfminer reads the three documents (positive control)", "Capital Policy CP-04" in cp
-          and "Second-event cover" in qt and "72 consecutive hours" in wd)
-    k = int(re.search(r"average of the (\d+) worst of the ([\d,]+) simulated years", cp).group(1))
-    nyears = int(gbp(re.search(r"average of the (\d+) worst of the ([\d,]+) simulated years", cp).group(2)))
-    coc = float(re.search(r"cost of capital of (\d+) per cent", cp).group(1)) / 100
-    terms = re.findall(r"GBP ([\d,]+) each and every Loss Occurrence excess of GBP ([\d,]+)", qt)
-    prems = re.findall(r"GBP ([\d,]+), payable in", qt)
-    base = {"lim": gbp(terms[0][0]), "ret": gbp(terms[0][1]), "prem": gbp(prems[0])}
-    sec = {"lim": gbp(terms[1][0]), "ret": gbp(terms[1][1]), "prem": gbp(prems[1])}
-    check("the covers' terms read from the quotation", base["ret"] > sec["ret"] and sec["lim"] < base["lim"],
-          "A %s, B %s" % (base, sec))
-    # the record linked to the hindcast by date
-    wb = load_workbook(io.BytesIO(z.read("windstorm_experience_2001-2025.xlsx")), read_only=True, data_only=True)
-    exp = [(r[2].date() if isinstance(r[2], dt.datetime) else r[2], float(r[4]))
-           for r in list(wb["Storms"].iter_rows(values_only=True))[1:]]
-    hc = [(dt.datetime.strptime(r["peak_utc"], "%Y-%m-%dT%H:%MZ").date(), float(r["loss_gbp"]))
-          for r in rows(z, "seaborne_windstorm_hindcast_2001-2025.csv")]
-    link = []
-    for d, inc in sorted(exp):
-        m = [h for h in hc if 0 <= (h[0] - d).days <= 1]
-        link.append((d, m[0][1] if len(m) == 1 else None, inc))
-    check("every storm of record links to one hindcast storm", all(l[1] for l in link), "%d storms" % len(link))
-    fol = [i > 0 and (link[i][0] - link[i - 1][0]).days <= 42 for i in range(len(link))]
-    h = np.array([l[1] for l in link]); a = np.array([l[2] for l in link]); f = np.array(fol)
-    lf, ll = a[f].sum() / h[f].sum(), a[~f].sum() / h[~f].sum()
-    check("the two ratios match the write-up", round(lf, 2) == fig["record"]["load_follow"]
-          and round(ll, 2) == fig["record"]["load_other"], "%.3f and %.3f" % (lf, ll))
-    # the table, each storm classed against the one before it in its simulated year
-    yl = rows(z, "seaborne_windstorm_ylt_2027_portfolio.csv")
-    year = np.array([int(r["year"]) for r in yl]); loss = np.array([float(r["loss_gbp"]) for r in yl])
-    peak = [dt.datetime.strptime(r["peak_utc"], "%Y-%m-%dT%H:%MZ").date() for r in yl]
-    tcls = np.array([i > 0 and year[i] == year[i - 1] and (peak[i] - peak[i - 1]).days <= 42 for i in range(len(yl))])
-    costed = loss * np.where(tcls, lf, ll)
-    gross, nb, nboth, rec_s, rp_s = nets(year, costed, nyears, base, sec)
-    G, NB, NBO = tvar(gross, k), tvar(nb, k), tvar(nboth, k)
-    rel = NB - NBO
-    margin = sec["prem"] + rp_s.mean() - rec_s.mean()
-    value = coc * rel - margin
-    cap = fig["capital_gbp_m"]
-    check("the 1-in-200 losses match", (round(G / 1e6), round(NB / 1e6), round(NBO / 1e6)) ==
-          (cap["gross"], cap["net_occurrence"], cap["net_both"]), "%.2f %.2f %.2f" % (G / 1e6, NB / 1e6, NBO / 1e6))
-    check("the release matches", round(rel / 1e6) == cap["release"], "%.2fm" % (rel / 1e6))
-    check("the margin and the worth match", round(margin / 1e6, 1) == fig["cover_gbp_m"]["margin"]
-          and round(value / 1e6, 1) == fig["cover_gbp_m"]["value"], "%.3f and %+.3f" % (margin / 1e6, value / 1e6))
-    check("the call: the cover adds value", value > 0 and fig["call"] == "add the second-event cover")
-    pooled = a.sum() / h.sum()
-    _, pnb, pnbo, prs, prp = nets(year, loss * pooled, nyears, base, sec)
-    pv = coc * (tvar(pnb, k) - tvar(pnbo, k)) - (sec["prem"] + prp.mean() - prs.mean())
-    check("the default path (one ratio for every storm) values the cover below nil", pv < 0, "%+.3fm" % (pv / 1e6))
-    # ask A on the claims and the adjusters' instructions
-    inst = defaultdict(list)
-    for r in rows(z, "loss_adjuster_instructions_2026.csv"):
-        inst[r["insurer_ref"].replace(" ", "")].append((r["instructed"], r["job_ref"], r["date_of_damage"]))
-    lines = defaultdict(list)
-    for c in rows(z, "claims_extract_2026-10-31.csv"):
-        if c["peril"] == "Storm":
-            lines[c["claim_number"].split("/")[0]].append(c)
-    day_amt = defaultdict(lambda: [0.0, 0.0])
-    for ref, cl in lines.items():
-        cl.sort(key=lambda c: (dt.datetime.strptime(c["notified_date"], "%d/%m/%Y"), c["claim_number"]))
-        ins = sorted(inst.get(ref, []))
-        for i, c in enumerate(cl):
-            d = dt.date.fromisoformat(ins[min(i, len(ins) - 1)][2]) if ins else dt.datetime.strptime(c["loss_date"], "%d/%m/%Y").date()
-            day_amt[d][0 if c["line"] == "Home" else 1] += float(c["paid_gbp"]) + float(c["outstanding_gbp"])
-    days = sorted(day_amt)
-    occ, i = [], 0
-    while i < len(days):
-        j = i
-        while j + 1 < len(days) and (days[j + 1] - days[i]).days <= 2 and (days[j + 1] - days[j]).days <= 1:
-            j += 1
-        tot = [sum(day_amt[d][q] for d in days[i:j + 1]) for q in (0, 1)]
-        if sum(tot) >= 1e6:
-            occ.append((days[i], tot))
-        i = j + 1
-    ret, lim, prem = gbp(re.search(r"excess of GBP ([\d,]+) each and every", wd).group(1)), \
-        gbp(re.search(r"up to GBP ([\d,]+) each and every", wd).group(1)), \
-        gbp(re.search(r"annual premium of GBP ([\d,]+)", wd).group(1))
-    recov = sum(min(max(sum(t) - ret, 0), lim) for _, t in occ)
-    rp = prem * min(recov, lim) / lim
-    got = [(round(t[0], -3), round(t[1], -3)) for _, t in occ]
-    want = [(o["home"], o["farm"]) for o in fig["occurrences_2026"]]
-    check("ask A: each occurrence's home and farm cost", got == [tuple(map(float, w)) for w in want], str(got))
-    check("ask A: the recovery and the reinstatement premium", (round(recov, -3), round(rp, -3)) ==
-          (fig["recovery_2026"], fig["reinstatement_2026"]), "%.0f and %.0f" % (recov, rp))
-    # ask B on the farm book and the coinsurance register
-    fw = load_workbook(io.BytesIO(z.read("farm_policies_and_locations_2026-10-31.xlsx")), read_only=True, data_only=True)
-    pols = list(fw["Policies"].iter_rows(values_only=True))[1:]
-    hold = list(fw["Holdings"].iter_rows(values_only=True))[1:]
-    reg = {r["holding_cph"]: float(r["hartcombe_share"].rstrip("%")) / 100 for r in rows(z, "coinsurance_register_2026.csv")}
-    keys = defaultdict(set)
-    for p in pols:
-        keys[p[0]].add(p[1].replace("/", ""))
-    for l in hold:
-        if l[1] == 1 and l[3]:
-            keys[l[0]].add(l[3].replace("/", ""))
-    share = {p: next((reg[x] for x in ks if x in reg), 1.0) for p, ks in keys.items()}
-    si = defaultdict(lambda: [0.0, 0.0])
-    for l in hold:
-        si[l[4]][0] += l[5] * 1000 * share[l[0]]
-        si[l[4]][1] += l[6] * 1000 * share[l[0]]
-    ok_b = all(round(si[c][0] / 1e6, 1) == v["buildings"] and round(si[c][1] / 1e6, 1) == v["farm_contents"]
-               for c, v in fig["farm_si_gbp_m"].items())
-    check("ask B: each county's buildings and farm contents, our share", ok_b,
-          "; ".join("%s %.1f/%.1f" % (c, v[0] / 1e6, v[1] / 1e6) for c, v in sorted(si.items())))
-    m = email.message_from_bytes(z.read("2027_windstorm_programme.eml"))
-    check("the request email reads back", "second-event" in m.get_payload())
-    check("every pack file is present and nothing else", len(names) == 14, str(len(names)))
-    print("verify: %d failed" % len(BAD) if BAD else "verify: all passed")
-    return len(BAD)
+    master = pd.read_csv(os.path.join(T, "wealdmoor_security_master_2026-11-30.csv"), dtype=str).fillna("")
+    band = dict(zip(master["sedol"], master["index_band"].map({"FTSE 100": "L", "FTSE 250": "M", "FTSE SmallCap": "S"})))
+    cons = {}
+    for s, note in zip(master["sedol"], master["corporate_action_note"]):
+        m = re.search(r"(\d\d)/(\d\d)/(\d{4})", note)
+        if m:
+            cons[s] = pd.Timestamp(int(m.group(3)), int(m.group(2)), int(m.group(1))).date()
+    mk = pd.read_parquet(os.path.join(T, "lse_daily_market_data_2025-2026.parquet"))
+    mk["trade_date"] = pd.to_datetime(mk.trade_date).dt.date
+    mk = mk.sort_values(["sedol", "trade_date"])
+    mk["value"] = mk.close_gbx / 100.0 * mk.volume_shares
+    mk["ret"] = np.log(mk.close_gbx / mk.groupby("sedol").close_gbx.shift(1))
+    mk.loc[[cons.get(s) == d for s, d in zip(mk.sedol, mk.trade_date)], "ret"] = np.nan
+    g = mk.groupby("sedol")
+    mk["adv20"] = g.value.transform(lambda x: x.shift(1).rolling(20, min_periods=20).mean())
+    mk["vol60"] = g.ret.transform(lambda x: x.shift(1).rolling(60, min_periods=10).std()) * 1e4
+    look = mk.set_index(["sedol", "trade_date"])[["adv20", "vol60"]]
+
+    od = pd.read_csv(os.path.join(T, "oms_orders_2025-2026.csv"), dtype={"order_id": str})
+    fl = pd.read_csv(os.path.join(T, "oms_fills_2025-2026.csv"), dtype={"order_id": str})
+    fl = fl.drop_duplicates("exec_id")
+    fl["px"] = np.where(fl.price_unit == "GBP", fl.fill_price * 100.0, fl.fill_price)
+    od["day"] = london(od.created_utc)
+    filled = fl.groupby("order_id").fill_qty.sum()
+    od["filled"] = od.order_id.map(filled).fillna(0).astype(int)
+    term = od[od.status == "TERMINATED"].copy()
+    term["left"] = term.order_qty - term.filled
+    rec = od[od.source == "BACKUP-RECOVERY"]
+    key = ["account_code", "sedol", "side", "day"]
+    mm = rec.merge(term[key + ["left", "order_id"]].rename(columns={"order_id": "orig"}), left_on=key + ["order_qty"],
+                   right_on=key + ["left"], how="left")
+    parent = dict(zip(mm.order_id, mm.orig))
+    fl["oid"] = [parent.get(o) if isinstance(parent.get(o), str) else o for o in fl.order_id]
+    fl["pv"] = fl.fill_qty * fl.px
+    agg = fl.groupby("oid").agg(q=("fill_qty", "sum"), pv=("pv", "sum")).reset_index()
+    ex = agg.merge(od, left_on="oid", right_on="order_id")
+    ex["avg"] = ex.pv / ex.q
+    ex["sgn"] = np.where(ex.side == "BUY", 1.0, -1.0)
+    ex["sf"] = ex.sgn * (ex.avg - ex.arrival_mid_gbx) / ex.arrival_mid_gbx * 1e4
+    ex["value"] = ex.q * ex.arrival_mid_gbx / 100.0
+    lv = look.reindex(list(zip(ex.sedol, ex.day)))
+    ex["part"] = ex.value.values / lv.adv20.values
+    ex["vol"] = lv.vol60.values
+    ex["band"] = ex.sedol.map(band)
+    X = np.column_stack([(ex.band == b).astype(float) for b in "LMS"] + [ex.vol * np.sqrt(ex.part)])
+    coef, *_ = np.linalg.lstsq(X, ex.sf.values, rcond=None)
+    check("the fitted impact coefficient sits near the square-root law's 0.85", 0.75 < coef[3] < 0.95, coef)
+
+    summ = pd.read_excel(os.path.join(T, "research_backtests_2027_candidates.xlsx"), sheet_name="Summary")
+    alpha = dict(zip(summ["Strategy code"], summ["Annualised gross alpha, 2015 to 2026"].astype(str).str.rstrip("%").astype(float)
+                     / 100))
+    tr = pd.read_csv(os.path.join(T, "backtest_rebalance_trades_2025-2026.csv"))
+    tr["d"] = pd.to_datetime(tr.rebalance_date).dt.date
+    tr = tr[(tr.d >= pd.Timestamp(2025, 12, 1).date()) & (tr.d <= pd.Timestamp(2026, 11, 30).date())]
+    tr["sedol"] = tr["isin"].map(dict(zip(master["isin"], master["sedol"])))
+    lt = look.reindex(list(zip(tr.sedol, tr.d)))
+    v = tr.traded_weight.abs() * 400e6
+    p = v.values / lt.adv20.values
+    a = np.array([coef["LMS".index(band[s])] for s in tr.sedol])
+    tr["cost"] = v.values * (a + coef[3] * lt.vol60.values * np.sqrt(p)) / 1e4
+    cost = tr.groupby("strategy_code").cost.sum()
+    for k in ("SCM", "MCV", "LCQ"):
+        net = alpha[k] * 400e6 - cost[k]
+        check("%s alpha kept GBP %dm" % (k, fig["candidates"][k]["net_gbp_m"]),
+              int(round(net / 1e6)) == fig["candidates"][k]["net_gbp_m"], round(net / 1e6, 3))
+        check("%s gross GBP %dm" % (k, fig["candidates"][k]["gross_gbp_m"]),
+              int(round(alpha[k] * 400)) == fig["candidates"][k]["gross_gbp_m"])
+    nets = {k: alpha[k] * 400e6 - cost[k] for k in ("SCM", "MCV", "LCQ")}
+    order = sorted(nets, key=lambda k: -nets[k])
+    check("the call and the runner-up", order[0] == fig["call"] and order[1] == fig["runner_up"], order)
+
+    reg = pd.read_csv(os.path.join(T, "trading_account_register.csv"), dtype=str).fillna("")
+    live = ["UK Equity Income", "UK Mid Cap Growth", "UK Smaller Companies", "UK Dynamic"]
+
+    def owner(acc, d):
+        for _i, r in reg[reg.account_code == acc].iterrows():
+            if pd.Timestamp(r.opened).date() <= d and (r.closed == "" or d <= pd.Timestamp(r.closed).date()):
+                return r.account_name
+        return None
+    al = pd.read_csv(os.path.join(T, "oms_block_allocations_2025-2026.csv"), dtype={"block_order_id": str})
+    blk = ex[ex.order_id.isin(set(al.block_order_id))].merge(al, left_on="order_id", right_on="block_order_id")
+    blk["account_code"] = blk["account_code_y"]
+    blk["value"] = blk.allocated_qty * blk.arrival_mid_gbx / 100.0
+    blk["pv"] = blk.allocated_qty * blk.avg
+    keep = ex[~ex.order_id.isin(set(al.block_order_id))]
+    ex = pd.concat([keep, blk[keep.columns]], ignore_index=True)
+    e26 = ex[[d.year == 2026 for d in ex.day]].copy()
+    e26["who"] = [owner(a, d) for a, d in zip(e26.account_code, e26.day)]
+    e26 = e26[e26.who.isin(live)]
+    e26["q"] = [(d.month - 1) // 3 + 1 for d in e26.day]
+    e26["h"] = [1 if d.month <= 6 else 2 for d in e26.day]
+    sf = e26.groupby(["who", "q"]).apply(lambda x: (x.sf * x.value).sum() / x.value.sum(), include_groups=False)
+    tv = e26.groupby(["who", "h"]).pv.sum() / 100.0
+    bad_a = [k for k in fig["ask_shortfall_bps"] if round(float(sf[(k.rsplit(" ", 1)[0], int(k[-1]))]), 1)
+             != fig["ask_shortfall_bps"][k]]
+    bad_b = [k for k in fig["ask_traded_gbp_m"] if int(round(tv[(k.rsplit(" ", 1)[0], int(k[-1]))] / 1e6))
+             != fig["ask_traded_gbp_m"][k]]
+    check("ask A: every quarter's shortfall recomputes", not bad_a, bad_a)
+    check("ask B: every half's traded value recomputes", not bad_b, bad_b)
+    print("verify:", "PASS" if not BAD else "FAIL (%d)" % len(BAD))
+    sys.exit(1 if BAD else 0)
 
 
 if __name__ == "__main__":
-    zp = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target.zip")
-    sys.exit(1 if main(zp) else 0)
+    main()

@@ -190,6 +190,12 @@ match no key offers, homes put Oro Rosso lowest and Nordhavn mid-table.
 | SF14 | the share | the rival's buying homes as denominator | the Roastery's homes as denominator | Westquay | the prompt: "whose 2026 buying homes least often also bought" |
 | SF15 | rounding | whole per cent from counts; gap from unrounded shares | rounding first | same figures (mid-bin asserted) | convergence |
 | SF16 | tie-break | none needed | none | same call | margins of 1.15 or more asserted |
+| SF17 | a label the counter sold (the deck's loose coffee) | a label paid for, by card at the counter or in cash at a checkout | every label printed, the voided re-weighs included | every cell moves | the board: labels not paid for by closing are void |
+| SF18 | the card match | the one set of labels printed in the 25 minutes before the payment whose prices, with any board accessories, make its amount | a wider or narrower window, a consumption order, an accessories-only reading | same figures (asserted unique from 20 to 35 minutes before and 3 to 10 after, whichever labels other payments took, and strictly up to the payment away from scale 2's block; no amount an accessory sum) | the board: within 25 minutes of weighing |
+| SF19 | the cash match | the one label printed earlier that day at the till line's price | the 150 minutes before | same figures (asserted unique over the day and the 150 minutes) | the board: pay there the same day |
+| SF20 | scale 2's re-dated block | shifted by the offset that lines its card-paid labels up with their payments | any offset within ten minutes | same quarters (asserted) | none needed |
+| SF21 | scale 2's weights | grams | kilograms as printed | scale 2's labels move a thousandfold | the log's own figures (hundreds against scale 1's fractions), asserted |
+| SF22 | the accessories in a counter sale | the fewest that close the amount (no sale took more than two) | any number up to four | same figures under the fewest-accessories reading (asserted unique in every payment); a free count of three or four reads some sales two ways | parsimony, the board's accessories at their prices |
 
 ## Ladder
 
@@ -382,3 +388,6 @@ counted from the shipped rows in `checks.py`; the call is unchanged when every a
 - Seeds 1 to 81 and 101 to 266 screened on the in-memory world on 2026-10-31 for every rung's winner and margin (1.15, the decisive 1.2), the runner-up a point clear of third, every share off its rounding edge (the call and runner-up by 0.15), the gap rounding alike from unrounded and rounded shares, link thresholds identical, online accounts alone never naming the call, both asks' figures off their edges and the cracker missing every ask figure: seeds 263 and 276 passed; 263 kept (its one-line adjustment stop keeps 4 of 20 against 276's 11).
 - The counter's card terminal as the only way to pay, and a scale clock reset in April, set aside in the stage 3 build on 2026-10-31: with no cash route the counter's takings tied to the sold labels, and a two-week April reset moved only three cells; cash labels now go to the main tills, the reset runs 22 June to 14 July across the second and third quarters, and the funding rates are odd cents so no quarter sits on a half euro.
 - Multibuy deals whose cheapest pair cost less than the deal price, found in the stage 3 build: a pair of Cafetto Original 200g at 14.98 against a two-for-15.00 deal produced negative savings; every deal now lists packs of one price.
+- The counter's matching left to windows the pack never stated (stage 4 judge, FIX_NOW): 122 card sales read two ways at
+  one total and 114 cash lines had two same-priced labels; the board now files the 25 minutes, the same day and the
+  void at closing, and the generator re-weighs any label that allows a second reading under any window near them.

@@ -1,308 +1,57 @@
 # task191 design note
 
-Architecture 3, drawn 2026-10-31 at the batch 1 re-root: a municipal bus company's forward-collision and pedestrian
-warnings, read for the depots whose drivers let genuine warnings pass. Architecture 2 (a knockout-screen world) was
-spent at stage 2 with no data cut and architecture 1 (the interconnect worst-window) is kept below as a record.
+Architecture 4, drawn 2026-10-31 at the batch 1 re-root after architecture 3's stage 4 send-back: a regional bank's
+transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious activity report too rarely to
+escape the 2027 tuning. Architectures 1 to 3 are kept below as records.
 
 ## Draw
 
-- **Card.** `cards/task191.json`, architecture v3, re-root of the slot in the same objective; architecture 2 moved to
-  the card's lineage with its fate beside architecture 1; registered 2026-10-31T19:28:35Z and checked again on the
-  registered card: PASS. Redrawn on the way: the first triple (gap population, G2 grain mismatch, designation set)
-  BLOCKed `test.same_puzzle` inside the batch against task270 v11 and `test.same_puzzle_older` and
-  `test.same_driver_older` against task239, task264 v1, task48 v2, task187, task263 and task279, so the gap and the
-  pattern were redrawn rather than differentiated: the decisive gap is objective (the dashboard's no-brake share is
-  computed correctly and is not what the programme decides on) and the decisive generator G15 (evidence-standard
-  exclusion: a warning that fails the terms' own standard of a genuine warning is set aside), with G2 and G18 behind
-  it. First name Santiago (people.first against task151) was replaced from the same draw. The draft's `shell.repeat`
-  WARN read architecture 1's prompt, which this commit removes; architecture 3's prompt comes at stage 2. The window
-  moved under the draft too: task156 and task130 registered first, which freed classification_error and composition_mix
-  and banned forecast_method_backtest, monitoring_export, local_government, council_or_assembly and
-  line_manager_or_team, so the context artifact is the programme's filed terms rather than the dashboard export.
-- **Pairing.** Human Factors & Ergonomics / safety-incident-error-analysis, a task type the taxonomy tags for Root-Cause
-  and Anomaly Detection & Diagnostics; drawn for AD (no AD card on file in the cell). The anomaly is a depot whose
-  drivers do not brake on collision warnings that were real; the artifact is a warning the system raises at a fixed
-  structure on nearly every pass, where nothing is in the bus's path and not braking is the right response.
-- **Niche.** Empresa Municipal de Autobuses de Lorvega runs the city's buses from seven depots. Every bus carries an
-  advanced driver-assistance camera that raises a forward-collision warning and a pedestrian and cyclist warning and
-  reports each one, with the bus, the position, the speed and whether the brake was applied within two seconds, to the
-  telematics platform. The December 2025 network change opened a busway with retractable bollards, sent two corridors
-  under a low rail bridge and over a hill road with a tight barriered bend, and moved routes between depots.
-- **The call.** Where the 2027 driver-attention programme runs: the depots whose drivers, from January to October
-  2026, did not brake on genuine collision warnings at 1.3 times the fleet's rate or more, by the programme's terms
-  (a genuine warning is one raised when a vehicle, cyclist or pedestrian was in the bus's path; not braked on means no
-  brake application within two seconds; a driver's depot is the depot the driver was assigned to on the day).
-- **Shape.** other, written out at stage 2: each depot's genuine warnings, the ones not braked on, its rate and its
-  ratio to the fleet's, the fleet's own rate, the depots taken in, the closest depot left out and the chart's parts,
-  with the asks beside. Decision designation_set, answer set_of_items, question form where, deliverables
-  `attention_programme_depots_2027.docx`, `warning_response_by_depot_2026.xlsx` and
-  `genuine_warning_response_2026.svg`.
-- **Strategy.** classification_error: the warning file classes every warning as a collision hazard, and at the network's
-  new fixed structures that class is wrong on nearly every warning; the misclassified warnings are told apart from the
-  busy streets where warnings are real but frequent only by the share of bus passages on which a place fires, from the
-  running-time database's passages by link, which no count of warnings at a place carries. This is not the
-  misclassification-correction family task242, task192 and task228 spent (a classifier's or an investigator's error
-  rates read off a validation panel and inverted): nothing here is inverted and no panel exists; each warning's class is
-  settled by its place's share of passes. Gap objective then population; G15 decisive, G2 (the class lives at the
-  place-and-pass grain, the warning file at the event grain) and G18 (the over-correction that drops every busy place)
-  behind it. Gate G decomposition_attribution (the no-brake share is split between warnings with nothing in the path and
-  drivers who let real ones pass). Calibration none. Context artifact filed_standard (the programme's terms of
-  reference). Layer 2 family estimand_identification.
-- **Forum, event, organisation.** executive_team (the company's management committee approves the programme),
-  launch_or_rollout (the programme starts on 11 January 2027), utility_or_infrastructure (a municipal transport
-  operator). Role compliance_or_audit (the head of driving safety, who proposes the depots).
-- **People** (`guard.py names --geo Spain --seed 191`, locale es_ES): Miriam Vilanova, head of driving safety;
-  Paulina Mariño, managing director, who chairs the management committee; Trinidad Arévalo, telematics and
-  driver-assistance lead; Baudelio Carballo, scheduling, who keeps the running-time database; Luciana Berrocal, depot
-  operations; Pío Roig, driver training. None appears in the prompt.
-- **Data-native sentence.** A forward camera that judges time to collision from what it sees ahead fires at a low
-  bridge, a line of bollards or a barrier on a tight bend on almost every pass at speed, and drivers who meet that every
-  day stop braking for it, which is correct; in a market street a pedestrian really steps into the path on a few passes
-  in a hundred, and those warnings are genuine however many of them there are, so only the share of passes on which a
-  place fires, read from the passages the scheduling database keeps for running times, tells the two apart.
-- **Abstraction sentence.** Each unit's failure to act on alarms is read only on alarms whose trigger was real, and a
-  place that raises an alarm on nearly every occasion is told from a place where real hazards cluster only by the share
-  of occasions on which it raises one; no approved build on file carries that sentence (task236 reads a capture share
-  against an independent sample's volume and positivity, task196 a latent count from two overlapping channels, task119
-  each unit's waits through its own free resource, task182 a lagged response to a shared driver, task103 a handed-over
-  quantity in standard amounts, task104 the least sensitive paging threshold).
-- **Same-puzzle and library tests.** The triple (objective, G15, designation_set) and the driver triple (objective,
-  G15, decomposition_attribution) repeat nothing in the last twelve or older, measured by `guard.py check`. The library
-  test: the golden is not "use X on Y" with X a named correction; the field's own measure of warning compliance (the
-  no-brake share, with nuisance places set aside by how many warnings they raise or how seldom drivers brake there) is
-  rung 0 and rung 1, and the decisive step is the recognition that this record breaks its precondition (that a busy
-  place or an ignored place is a false one).
-- **As-of.** Monday 9 November 2026, the extracts cut on Sunday 1 November; the management committee meets on Tuesday
-  24 November 2026.
-- **Forward facing.** The call places the 2027 programme; its estimand is each depot's drivers' compliance with
-  genuine warnings over January to October 2026, the period the programme's terms read, and the depots are those the
-  drivers belong to now. The tag stays Anomaly Detection: no future value is predicted.
-- **Sources.** Breznitz 1984 (Cry Wolf: the psychology of false alarms); Bliss 2003 and Bliss and Dunn 2000 (alarm
-  reaction patterns and the probability matching of responses to alarm reliability); Dixon, Wickens and McCarley 2007
-  (false alarms and misses in diagnostic automation: false alarms reduce compliance); Lees and Lee 2007 (driver response
-  to imperfect collision warning systems, nuisance and unnecessary alarms); Regulation (EU) 2019/2144 (the general
-  safety regulation's advanced driver-assistance requirements for buses); `guard.py slots` on the mechanism's nouns
-  (warning, alarm, false, nuisance, telematics, reliability, compliance) and the setting's (bus, driver, collision,
-  passage, running time): no slot holds the mechanism or the setting.
+- **Card.** `cards/task191.json`, architecture v4, re-root of the slot in the same objective; architecture 3 moved to
+  the card's lineage as spent (stage 4, judge SEND_BACK on Gate G and Gate H3) with its prompt shell in
+  `lineage_shells`; registered 2026-10-31T21:24:59Z, check WARN only (`repeat.decision`: designation_set repeats
+  task125 v3, answered here: the decision a tuning standard asks of a scenario scorecard is which scenarios fall below
+  its floor, a set by nature, and nothing else on the card repeats task125). Redrawn on the way: the first signature
+  (gap time, G12, forecasting) BLOCKed `test.same_puzzle` against task482's lineage and `test.same_driver` against
+  task250's, so the decisive generator is G15 (evidence-standard exclusion: the easy route reads a scenario only over
+  the alerts whose investigation has reached a decision) with G12 and G13 behind it and the gap time and population
+  (the outcome lands after the extract, and the population includes the alerts still undecided). First name Richard
+  (`people.first` against task265) replaced from the same draw (`guard.py names --geo "United States" --seed 191`).
+- **Pairing.** Banking, Credit & Financial Risk / fraud-aml-detection, a task type the taxonomy tags for Anomaly
+  Detection & Diagnostics (one banking AD card on file, task196, a capture-recapture count). The anomaly is a scenario
+  whose alerts rarely end in a SAR; the standard's productivity is the share of a scenario's alerts that end in one.
+- **Niche.** Kestrel Point Bank, a regional commercial bank in Ohio, runs fourteen transaction-monitoring scenarios in
+  its monitoring system. Every alert is triaged; most close within days with no suspicious activity found, and the
+  rest are escalated into investigations in the financial crimes case manager, which decide whether a SAR is filed.
+  The 2026 tuning standard sends every scenario whose productivity over the year to 30 September falls below 3 per
+  cent into the next year's tuning, and the BSA/AML officer must put the 2027 set to the BSA/AML committee before the
+  bank's 2027 independent BSA/AML test.
+- **The call.** Which scenarios go into the 2027 tuning: those whose share of alerts raised from 1 October 2025 to
+  30 September 2026 (by the bank's business date) that end in a SAR is below 3 per cent, the standard counting every
+  alert raised in the year, those still under investigation when the figures are drawn by how they will end.
+- **Shape.** 10, scorecard against a threshold: each scenario's productivity against the floor, in or out of the
+  tuning, the chart's parts, with the asks beside. Decision designation_set, answer set_of_items, question form what,
+  deliverables `tuning_scenarios_2027.docx` and `tm_alert_figures_2026.xlsx`.
+- **Strategy.** informative_censoring: on 2 November 2026 a scenario's decided alerts are a biased sample of its
+  alerts, because an alert heading for a closure without filing is decided at triage within days while one heading for
+  a SAR runs through escalation, investigation and the filing decision for months; the undecided alerts are mostly
+  SARs to come, most of all for the scenarios whose investigations run longest.
+- **Forum, event, organisation.** committee_or_panel (the BSA/AML committee), audit_or_inspection (the 2027 independent
+  test the tuning plan is read against), financial_institution; none in the last three builds' bans.
+- **Role.** compliance_or_audit: the BSA/AML officer, Katherine Cobb; the financial crimes analytics lead Miguel
+  Swanson and the investigations manager Leah Berg appear in the pack's records. The prompt carries no persona.
+- **Spine.** `tm_alerts_2025-07_2026-10.csv`, one row per alert the monitoring system raised from July 2025 to October
+  2026 (a re-run alert appears twice), about 75,000 rows, UTC stamps; constructed for this build, no real dataset.
+- **Forward window.** The tuning year is 2027 and the productivity read includes outcomes still to come (the
+  undecided alerts' SARs), so the call is about a window not yet closed.
 
-## Default path
+## Architecture 3 record (spent 2026-10-31 at stage 4)
 
-1. Read the terms: genuine collision warnings, January to October 2026, one camera event each, not braked on as no
-   service brake within two seconds, a depot's warnings by the bus's allocation on the day, 1.3 times the fleet's
-   pooled rate.
-2. From adas_collision_warnings_2025-10_2026-10.csv keep FCW, PCW, FWD_COLL and PED_COLL, one row per event_id,
-   local dates in the window; not braked on is brake_2s N on firmware 1.x, brake_reaction_ms blank or over 2,000 on
-   2.x; give each warning its bus's depot that day from the fleet register's allocations.
-3. Take each depot's share of its collision warnings not braked on against the fleet's, the fleet safety dashboard's
-   own measure of warning compliance, and look at the places that raise the most warnings: the four fixed structures
-   on the new network and the Plaza de Abastos all raise thousands and all are let go by the drivers, so either keep
-   every warning or set the busiest and most ignored places aside as nuisance places.
-4. Take the depots at 1.3 or more.
-
-Ends on: Hornacho and Valdeolmos
-Golden: San Lázaro
-
-## Stump sentence
-
-The default path takes each depot's no-brake share of its collision warnings against the fleet's and files Hornacho
-and Valdeolmos; the step that lands it there is reading every warning as genuine (or, one move on, setting aside the
-busiest and most ignored places together, which files La Ribera), when four fixed structures of the new network fire
-on a quarter or more of the buses that pass them with nothing in the path, while the Plaza de Abastos fires on 2.6
-per cent of passes because pedestrians really step out there, and San Lázaro's drivers let 96.9 per cent of those
-genuine warnings go.
-
-## Three rules
-
-Task type: safety-incident-error-analysis (Human Factors & Ergonomics), which serves anomaly detection: a real lapse in drivers' response to hazards separated from an artifact of the warning system.
-Domain test: the quantity that decides the call is each depot's rate of not braking on genuine collision warnings, warning compliance as human-factors alarm research measures it, read on valid alarms only because an operator who has learned that one alarm is false at one place rightly lets it go (cry-wolf and alarm-reliability work, Breznitz; Bliss; Dixon, Wickens and McCarley).
-Swap: "which wards' nurses fail to answer genuine monitor alarms" keeps the logic inside human factors; put fraud alerts or smoke detectors in and there is no bus passing a place at speed, no fixed structure firing on a share of passes and no brake within two seconds, and the task stops making sense.
-Layer 1: the telematics export in UTC beside local dates, events re-sent after lost connections under a new message number, two firmware versions with different type codes and brake fields, lane and headway warnings in the same export, positions as GPS points beside a register of stop-to-stop sequences with validity dates and renumbered stops, buses lent between depots for days, the return's semicolons and day-month dates; each is what the platform, the camera firmware, the register or the return writes, and none is placed to be caught.
-Layer 2: estimand_identification: the population of warnings the rate is read on, the genuine ones, told apart from the warnings a fixed structure raises with nothing in the path; the choice that flips the call is which places are set aside.
-Decisive step: setting aside the warnings of the places that fire on a large share of the buses passing them (the alarm's own per-pass false rate, from the passes the return's trips put over each segment) while keeping the busy pedestrian places that fire on a few passes in a hundred, however many warnings they raise and however often drivers let them go.
-Not semantics: every field read correctly (the types, the firmware brake fields, the allocations, the dates) still leaves the easy route on every warning, because no file marks a warning genuine or false; the class has to be inferred from how often each place fires against how often buses pass it.
-Not rule application: no filed rule says which warnings had something in the path, so executing the terms on any classification files whatever the classification gives; the enumerated family (every warning; the busiest places out at k from 1 to 8; the most ignored places out at no-brake thresholds from 0.50 to 0.99; pedestrian or forward warnings alone; slow or fast warnings alone; the new network's segments out; places that first fired in 2026 out; per-pass shares at 0.05 to 0.24 in 5, 10 and 20 m bins; whole segments at a tenth of passes) files seven different sets, the standing family (the per-pass classifications, which the definition of a genuine warning and the passes require) files San Lázaro at every one of its 19 members with identical counts, and nothing filed does the ruling-out, only the gap between a quarter of passes and 2.6 per cent.
-Analyst test: a strong analyst who dedupes the events, reads both firmware versions, converts the clock and allocates the buses takes each depot's no-brake share of its collision warnings against the fleet's and files Hornacho and Valdeolmos; one move on, setting the busiest or most ignored places aside as nuisance, files La Ribera; both read every rule right and are wrong because the places are told apart by how often they fire per bus, not by how loud they are.
-Estimand: driver_attention_programme_2027_terms.pdf, sections 2 and 3: population, the genuine collision warnings (a vehicle, cyclist or pedestrian in the path) of 1 January to 31 October 2026, Lorvega local time, one camera event each; outcome, not braked on within two seconds; unit, the depot the bus was allocated to on the day; comparison, the depot's rate at 1.3 times the fleet's pooled rate or more.
-No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure argues the all-warning share, no dashboard export ships, and the structures are the network's own (an underpass, a link road, a busway gate, a sculpture on a street line 44 has always used).
-No certified replay: no certified or published figure reproduces any method; no file carries a per-depot rate, and the terms define the population without naming a place.
-Lesson: an alarm's record is not a hazard's record; a model that gets this right learns to ask, of any alarm stream, which alarms fire whenever the system passes a place and which fire on the rare occasions a hazard is there, measured against how often the system passes, before reading operators' responses as compliance, which no build on file teaches (task236 reads a capture share against an independent sample; task196 recovers a latent count from overlapping channels).
-
-## Survivor anatomy
-
-Actor: the deciding property, whether a warning had something in the path, has no column in any file; the export carries the type, position, speed and brake response, and the property is a relation between the warnings at a place and the bus passes over it, which no file stores.
-Link: no key ties a warning to a segment or a pass; the warning is a GPS point, the passes come from the return's trips operated through the register's stop sequences, and the comparison that classes a place (warnings per pass) is one the dashboard's compliance measure never asks for; no sentence invites it.
-Reflex: the field's measure, the no-brake share of collision warnings by depot, is rung 0 and files Hornacho and Valdeolmos; the alarm-research reflex of setting nuisance places aside by their volume or by drivers ignoring them is rung 1 and files La Ribera.
-Back-test: the textbook route validates; on the export's months before Red 2026 (1 October to 13 December 2025) no place fires on more than 2.3 per cent of the buses passing it, so the dashboard measure and the per-pass reading file the same set (La Ribera), asserted in checks.py (B1): a solver who checks the dashboard measure on the extract's own first months finds it right.
-Second use: every file the decisive step reads has its own reason to be in the pack; the export is the programme's record, the fleet register carries the allocations the terms and the claims ask need, the stop and route register is the network's and carries the line sequences the kilometres ask reads through the return, and the return is the contract's monthly filing the kilometres ask reads.
-Shock: San Lázaro's all-warning share is ordinary (1.16 times the fleet's, third of seven), the pack's loudest places are the false ones, and the golden set is not an interval of any sort of the depots (warnings, warnings not braked on, no-brake share, pedestrian share, all topped by Valdeolmos), asserted in checks.py.
-Pins: the WHAT sits in the terms (genuine warnings, the window, one event each, two seconds, the allocation on the day, 1.3 times the pooled rate) and no filed sentence names a place, a structure, a pass, a share of passes, the return or the register; deleting the definition of a genuine warning makes the all-warning share the literal reading (SF8), and that sentence names no step.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| 0 every collision warning | 3 defines the population as genuine | the type and brake columns | the dashboard's measure | none refutes it | the battery runs it | one group-by | none | readable |
-| 1 busiest or most ignored places set aside | none names a place | no place column | the alarm-research nuisance reflex | none | a by-location count | one filter | none | readable |
-| 2 pedestrian or forward warnings alone | the type definitions | the type column | a type split | none | yes | one filter | none | readable |
-| 3 (decisive) places classed by warnings per bus pass | none names a pass, a share or a place | no column holds a pass or a class | not the compliance reflex | no file classes a warning | no battery item | not affine in a shipped column | the return and the register carry the kilometres ask | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | one warning | one camera event (event_id) | one message (re-sent ones twice) | same call (asserted, 1,386 events sent twice) | terms 3: "One camera event" |
-| SF2 | the window's dates | Lorvega local dates | UTC dates | same call (asserted) | terms 3: "Lorvega local time" |
-| SF3 | a depot's warnings | the bus's allocation on the day | the bus's home depot | same call (asserted) | terms 3: "allocated to the depot on the day of the warning" |
-| SF4 | not braked on, firmware 2.x | no reaction under 2,000 ms | no brake in the 3,000 ms capture | same call (asserted; no reaction at exactly 2,000) | terms 3: "within two seconds" |
-| SF5 | collision warning | forward and pedestrian warnings | headway warnings too | same call (asserted) | terms 3: "Lane-departure and headway warnings are not collision warnings" |
-| SF6 | the fleet's rate | the pooled share | the mean of depot rates | same call (asserted) | terms 3: "taken together" |
-| SF7 | 1.3 times or more | at or above 1.3 | above 1.3 | same call (asserted: no depot within 0.05) | terms 2 |
-| SF8 | genuine collision warning | something in the path | every warning, or the warnings drivers act on | Hornacho and Valdeolmos, or La Ribera | terms 3: "raised when a vehicle, a cyclist or a pedestrian was in the bus's path"; a pedestrian in the shared space is in the path whether or not drivers brake |
-| SF9 | the place a structure fires at | the warnings at its point | every warning on its segment | same call and counts (asserted: those segments carry no other warning) | none needed |
-| SF10 | brake_2s on firmware 1.x | Y braked, N not | blank read as not | same call (asserted: none blank) | the camera supplier's bulletin: firmware 1.9 reports the two-second brake as yes or no |
-| SF11 | the buses passing a place | every operated trip of every line and direction over the place's segment in the window | the trips programmed; one direction's trips; the trips since the place first fired | same call (asserted: the same four places at or over 0.10 under each, every other place at 5.2 per cent or under) | none needed |
-
-## Ladder
-
-| Rung | Construction | Files | Dies to |
-|---|---|---|---|
-| 0 | each depot's no-brake share of every collision warning against the fleet's (the dashboard's measure) | Hornacho (1.41), Valdeolmos (1.48) | four places fire on 25.0 to 30.3 per cent of the buses passing them, on bus-only or quiet segments with no other warning; 17,968 warnings, 86 to 89 per cent let go |
-| 1 | rung 0 with the busiest places (top five by warnings) or the most ignored set aside | La Ribera (1.42) | the Plaza de Abastos, set aside with them, fires on 2.6 per cent of passes: its 2,970 warnings are pedestrians in the path, genuine by the terms |
-| 2 | pedestrian or forward warnings alone; the new network's segments set aside | San Lázaro and Valdeolmos; Hornacho | the busway gate and the sculpture fire as pedestrian warnings and the sculpture sits on a street line 44 has always used |
-| 3 (decisive) | the places that fire on a large share of passes set aside, every other warning kept | San Lázaro (2.00) | the golden |
-
-- **Margins on the cut pack** (asserted in checks.py): San Lázaro at 2.00, every other depot at or below 1.14 (La
-  Ribera, the closest left out); on rung 0 Hornacho and Valdeolmos at 1.41 and 1.48 and San Lázaro at 1.16; on rung
-  1 La Ribera at 1.42.
-- **Pricing sequence.** (1) The residue the filed WHAT leaves is which warnings had something in the path, a method
-  rather than a knob. (2) San Lázaro must move from 1.16 to past 1.3 and Hornacho and Valdeolmos from 1.41 and 1.48 to
-  under it; the classification moves the fleet's rate from 38.9 to 22.6 per cent and takes 17,968 warnings out of
-  Hornacho's and Valdeolmos's, far past both. (3) The one-group-by route (warnings by location) shows five loud places
-  and cannot tell four of them from the fifth: the class comes only through the passes. (4) No per-unit quantity is
-  estimated from a thin slice: each place's share rests on 7,599 to 113,716 passes, and the smallest false share is
-  9.6 times the largest other place's. (5) and (6) No variance is corrected. (7) No subset of rows prints a class.
-  (8) The reflex sweep runs as code: every route in the enumerated family (checks.py R0 to R2).
-- **Separation.** The default path is wrong on the clean truth (R0) and the default path with only the classification
-  changed files the golden (C1, C2); the over-correction files La Ribera (R1, R1b); in the Plaza's market hours its
-  share is 7.8 per cent against the smallest false place's 25.0 (C5).
-
-## Closure table
-
-| Axis | Reading | Closure |
-|---|---|---|
-| 1 Population | genuine collision warnings, buses of the seven depots | filed in terms 2 and 3; C1 for the classification family (asserted) |
-| 2 Unit of account | a warning, one camera event | filed in terms 3; SF1 asserted |
-| 3 Attribution window | 1 January to 31 October 2026, local | filed in terms 2 and 3; SF2 asserted |
-| 4 As-of dating | the export to 1 November 2026 | the export's last day; the window closes 31 October |
-| 5 Version basis | one row per event_id | SF1 |
-| 6 Denominator | the depot's genuine warnings | filed in terms 3 |
-| 7 Weighting | pooled for the fleet | filed in terms 3; SF6 asserted |
-| 8 Window length | ten months | filed in terms 2 |
-| 9 Boundary inclusivity | 1.3 or more | C1: no depot within 0.05 of 1.3 (SF7) |
-| 10 Rounding path | ratios compared unrounded | C1: no ratio within 0.05 of the line |
-| 11 Tie-break | none needed | no ties at the line |
-| 12 Maturity and censoring | none: the warning is recorded at the event | not applicable |
-| 13 Order of operations | dedupe, window, classify, rate | C1: classifying before or after deduplication gives the same set (asserted through the family) |
-| 14 Row order | export order | C1 over permutations (event_id keyed) |
-| 15 Duplicate resolution | re-sent messages are one event | filed in terms 3; SF1 |
-| 16 Identity normalisation | fleet numbers, stop codes 2026 | the register's codes; renumbered stops mapped there |
-| 17 Netting against gross | none | not applicable |
-| 18 Dimensional units | shares of warnings | not applicable |
-| 19 Code and status semantics | FCW, PCW, FWD_COLL, PED_COLL; Y and N, reaction ms | the camera supplier's bulletin (the 2.3 type codes, the reaction time empty past the three-second capture); SF4, SF5, SF10 |
-| 20 Integerisation | counts are whole | not applicable |
-| 21 Clause scope | terms 2 applies to every depot | filed |
-| 22 Forward window contents | the programme runs from January 2027 | the call is the set; nothing forward is graded |
-
-## Literal reader
-
-Executing terms 2 and 3 word for word gives the genuine collision warnings of 1 January to 31 October 2026 in local
-time, one per camera event, by the depot of the bus that day, each depot's share not braked on within two seconds
-against the pooled fleet share; no file marks a warning genuine, so every literal reading has to infer it, and every
-inference that classes a place by how often it fires on the buses passing it files San Lázaro with identical counts,
-while reading every warning as genuine (an easy method on the same literal estimand, not a reading of the sentence)
-files Hornacho and Valdeolmos.
-
-## Oracles
-
-- The service return and the stop and route register are the decisive inputs, not controls: neither classes a warning.
-- The Red 2026 notice names the underpass, the link road, the busway and its gates and the shared space as service
-  changes; it names no warning, and the sculpture is in no document.
-- The 2025 months of the export tie the dashboard's measure to the genuine rate (no place then fires on more than a
-  few per cent of passes), which confirms the textbook route on the period before the structures, never the golden.
-- none ties only under the golden.
-
-## Ask sheet
-
-| Ask | Figures | H18 home and use | Primary devices (block) | Hazards | Files and columns on the path |
-|---|---|---|---|---|---|
-| A | each depot's drivers' hours on service in each of the four October weeks (28, whole hours) | the programme's release plan: driver-hours each depot can give it (terms 4) | D7/D1 a relieved driver's first session left open by the bus's machine until the next driver logs on, so the same driver holds two buses at once (every figure); D8 the clocks going back at 03:00 on 25 October under every night line's session, wall-clock times with no offset (the week of 19 October, every depot) | repeated upload rows; lines 000 and ESC; nine drivers transferred on 19 October | etm_logons_2026-10.csv (coche, empleado, linea, inicio_local, fin_local), hr_depot_assignments_2026.csv (empleado, cochera, desde, hasta), hr_hours_on_service_note.txt |
-| B | each depot's at-fault collisions, January to October, and the claims paid on them (14, whole numbers and euros) | the 2027 insurance renewal (the broker's notes) | D1 the driver's and the inspector's report of one incident under two references, minutes apart, the place written two ways (the counts); D2/D1 a reopened claim under a new number whose paid to date carries the earlier claim's payments forward (the amounts) | the bordereau's month-end snapshots; plates changed on 20 April 2026; claims on incidents not at fault | incident_register_2026.xlsx (parte, fecha, hora_local, coche, culpa), insurer_bordereau_2026-01_2026-10.csv (snapshot, claim_no, reopened_from, incident_date, incident_time_local, vehicle_plate, paid_to_date_eur), fleet_register_2026.xlsx Registrations and Allocations, broker_reporting_notes_2027_renewal.pdf |
-| C | each depot's kilometres in service in each month, July to October (28, whole kilometres) | the contract's monthly return (Annex IV) | D5 the authorised diversions, in the Mobility Department's register only, lengthening or shortening every trip on their lines for their dates (26 figures); D7 line 25 still under El Quiñón's cost centre in the return though Las Tenerías operates it (8 figures) | lines 40 to 46 written in metres by the new module from July | service_return_2025-10_2026-10.csv (fecha, linea, sentido, centro, expediciones_realizadas, km_realizados), mobility_diversions_register_2026.csv (lineas, sentidos, desde, hasta, km_por_expedicion), red2026_service_notice.pdf depot table, contract_annex_iv_kilometres.pdf |
-
-- **Stops (cut pack; each verdict is a checks.py assertion).** A: sessions as written (misses every figure), sessions
-  as written on the wall clock with overlaps ended (misses the week of 19 October), the golden. B: every report and
-  every claim number's latest paid to date (keeps 2 of 14), reports paired but chains summed (misses the amounts),
-  the golden. C: the return as filed, by operating depot (misses 26 of 28), by the return's cost centre (misses 28),
-  the golden.
-- **Pin test.** A's sentence carries the weeks and "drivers' hours on service"; HR's note files the WHAT (a session's
-  week, its depot, the lines that are not service) and the devices live in which records are one driver's duty and
-  in the clock's elapsed time, which no sentence states. B's sentence carries the window; the broker's notes file at
-  fault (A and C) and the October bordereau, and the devices live in which reports are one incident and which claim
-  numbers are one chain. C's sentence carries the months and the contract return; Annex IV files kilometres the buses
-  ran and the lines a depot operates, and the device lives in a register the return never reflects.
-- **Realism.** Each device is how the producing system writes its records: a ticket machine that closes a session
-  only when the next driver logs on, wall-clock stamps through a clock change, a driver's and an inspector's report of
-  one incident, an insurer carrying payments forward to a reopened claim, a return generated from timetabled lengths,
-  a cost centre left behind when a line moved.
-- **Separation.** No ask file is read by the call; the call reads only the return's trips operated and the register's
-  sequences, never the kilometres, cost centres, log-ons, incidents or claims, and deleting every ask file leaves the
-  call's classification unchanged (the call's code reads none of them).
-
-| Ask | Cracker (lands the call, runs the battery, executes the filed rules: sessions as written on the wall clock, every incident report and claim number, the return's kilometres as filed) | Verdict |
-|---|---|---|
-| A | sums every service session as written, wall clock: 0 of 28 figures kept | miss |
-| B | counts both reports of an incident and every claim number's latest paid to date: 2 of 14 kept | miss |
-| C | the return's kilometres by operating depot, no diversion: 2 of 28 kept | miss |
-| full includer | resolves every device: 71 of 71 (stress row, not the gate) | outside |
-
-- Mirror leakage: 7.0 per cent of ask weight, measured on the cut pack (the dashboard-measure response runs the same
-  battery and keeps the same 5 of 71 ask criteria).
-- Pair ceiling: 32.4 (cracker 38 + 7 + 55 x 0.070 = 48.9; mirror 5 + 7 + 55 x 0.070 = 15.9), each response under two
-  fifths of the ask weight.
-- Measured by: generator/ceiling.py on the cut pack: each response's ask figures recomputed from target/ with its
-  handling and scored against the golden handling on the same files.
-
-## Leak review
-
-leak.py on the final cut (target.zip 4cd23ce6): verdict REVIEW, no LEAK. The first cut's two describing documents were
-rewritten at build (the telematics supplier's field table became its customer bulletin on firmware 2.3, prose on the
-type codes and the brake reaction time; the broker's field table was dropped for its agreed definitions and timetable),
-the ticket machines' and the incident files' time columns now carry their zone in the header, and the OOXML creator tag
-is scrubbed. Each REVIEW line, ruled:
-
-- `hr_hours_on_service_note.txt` (a text file): HR's own guidance for the duty and payroll returns, issued 12 January
-  2026; it defines hours on service (lines 000 and ESC are not service, the week a session starts in, the depot on the
-  start date) and names no file, column or record. Clean.
-- `driver_attention_programme_2027_terms.pdf`, four of five words of the call: the programme's own name, its year and
-  "depot"; the terms name no depot and carry no figure. Clean.
-- `driver_attention_programme_2027_terms.pdf`, stump vocabulary (genuine, driver, collision, pedestrian, forward): the
-  filed WHAT, a genuine warning as one with something in the path; no place, structure, pass or share is named. Clean.
-- `fleetview_customer_bulletin_cb-2026-04.pdf` (driver, collision, pedestrian, export, measure, forward): the supplier's
-  rollout bulletin, the 2.3 type codes and the reaction time over a three-second capture; it says nothing of where
-  warnings fire or of false triggers. Clean.
-- `red2026_service_notice.pdf` (driver and three depot names): the staff notice of the network change and its depot
-  table; it names the underpass, the link road, the busway and the shared space as service changes, the genuine place
-  beside three of the false ones, so it sorts nothing, and the sculpture is in no document. Clean.
-- `prompt`, stump terms in the second sentence: the golden workbook's columns (counted warnings, those not braked on,
-  the rate, the ratio); no step is named. Clean.
-
-guard.py surface on the final cut (exit 0) promotes two pairs for the author's adjudication, neither a hard tell:
-task193 and task470 each share two generic card axes (decisive gap objective, decision designation_set). The first
-cut had also shared one rare construction with task470 in the rounding sentence, reworded at build ("State rates in
-per cent with one decimal"), which dropped task470's surface score from 0.167 to 0.100 and took task473 out of the
-promoted pairs. task470 classes each unit's meter series by a use rhythm inside that series; task191 classes alarm
-places by their warnings against an exposure count built from another system. One differentiation line each is on
-the card.
+Lorvega's municipal buses (Human Factors & Ergonomics, safety-incident-error-analysis): the 2027 Driver-Attention
+Programme's depots read on each depot's genuine collision warnings. Built through every free gate (target.zip
+4cd23ce6); the stage 4 judge returned DETERMINISTIC with SEND_BACK on Gate G and Gate H3 (planted_defect_flip,
+surface_read_rejection, sole_data_defect yes): four fixed structures inflated the raw warning rates and catching them
+was the decisive step, so Layer 1 mess carried the stump. Its report is kept as `determinism_check_report_arch3.md`;
+its generator, prompt and submission are in the repository history at commit 73c2647f.
 
 ## Architecture 2 record (spent 2026-10-31 at stage 2)
 
@@ -805,3 +554,10 @@ The pack as built, read against the gates one last time.
   table (task173's cohort step died on its lever and the identification fork, and the honest label is composition);
   an inspector's misses read at the line's target prevalence (a fitted prevalence curve is a free form); confirmations
   answered from a swapped SIM (the closing sentence names the swap, the fork is the stump).
+- 2026-10-31, architecture 3 (Lorvega's municipal buses, the 2027 Driver-Attention Programme read on each depot's
+  genuine collision warnings): the stage 4 judge returned DETERMINISTIC with SEND_BACK on Gate G and Gate H3, and the
+  reconciliation confirmed it. The decisive step was catching four fixed structures whose warnings inflated the raw
+  rates (mechanism planted_defect_flip, family surface_read_rejection, sole_data_defect yes), the Plaza de Abastos read
+  as a decoy against a count filter, and on clean data San Lázaro won trivially, so Layer 1 mess carried the stump.
+  Lesson: the reported numbers must be sound and the difficulty a method or estimand choice that a strong analyst with
+  clean data still gets wrong the easy way. Report kept as determinism_check_report_arch3.md.

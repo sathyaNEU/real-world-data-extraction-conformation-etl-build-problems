@@ -1,78 +1,142 @@
 {
- "call": "add the second-event cover",
- "capital_gbp_m": {
-  "gross": 113,
-  "net_both": 87,
-  "net_occurrence": 94,
-  "release": 7
+ "ask_shortfall_bps": {
+  "UK Dynamic Q1": 27.9,
+  "UK Dynamic Q2": 44.6,
+  "UK Dynamic Q3": 52.1,
+  "UK Dynamic Q4": 35.4,
+  "UK Equity Income Q1": 30.4,
+  "UK Equity Income Q2": 45.8,
+  "UK Equity Income Q3": 40.4,
+  "UK Equity Income Q4": 35.7,
+  "UK Mid Cap Growth Q1": 41.4,
+  "UK Mid Cap Growth Q2": 51.3,
+  "UK Mid Cap Growth Q3": 32.9,
+  "UK Mid Cap Growth Q4": 27.1,
+  "UK Smaller Companies Q1": 68.7,
+  "UK Smaller Companies Q2": 62.2,
+  "UK Smaller Companies Q3": 84.2,
+  "UK Smaller Companies Q4": 55.5
+ },
+ "ask_traded_gbp_m": {
+  "UK Dynamic H1": 801,
+  "UK Dynamic H2": 967,
+  "UK Equity Income H1": 1088,
+  "UK Equity Income H2": 899,
+  "UK Mid Cap Growth H1": 360,
+  "UK Mid Cap Growth H2": 252,
+  "UK Smaller Companies H1": 113,
+  "UK Smaller Companies H2": 122
+ },
+ "call": "MCV",
+ "candidates": {
+  "LCQ": {
+   "cost_gbp_m": 1,
+   "gross_gbp_m": 7,
+   "name": "UK Large Cap Quality",
+   "net_gbp_m": 6,
+   "rebalances": 4,
+   "traded_gbp_m": 493
+  },
+  "MCV": {
+   "cost_gbp_m": 4,
+   "gross_gbp_m": 12,
+   "name": "UK Mid Cap Value",
+   "net_gbp_m": 8,
+   "rebalances": 4,
+   "traded_gbp_m": 523
+  },
+  "SCM": {
+   "cost_gbp_m": 15,
+   "gross_gbp_m": 20,
+   "name": "UK Smaller Companies Momentum",
+   "net_gbp_m": 5,
+   "rebalances": 12,
+   "traded_gbp_m": 1214
+  }
  },
  "constants": {
-  "base_limit": 18000000,
-  "base_retention": 12000000,
-  "coc_per_cent": 12,
-  "floor_m": 1,
-  "hours": 72,
-  "per_cent": 100,
-  "sec_limit": 7500000,
-  "sec_retention": 4000000,
-  "worst_years": 50,
-  "years": 10000
+  "adv_sessions": 20,
+  "aum_gbp_m": 400,
+  "pence_per_pound": 100,
+  "vol_sessions": 60
  },
- "cover_gbp_m": {
-  "capital_cost": 0.8,
-  "expected_recoveries": 0.7,
-  "expected_reinstatement": 0.1,
-  "margin": 0.7,
-  "premium": 1.3,
-  "value": 0.1
- },
- "farm_si_gbp_m": {
-  "Cornwall": {
-   "buildings": 1302.1,
-   "farm_contents": 618.2
+ "gap_gbp_m": 2,
+ "raw": {
+  "cost": {
+   "LCQ": 1.491,
+   "MCV": 3.812,
+   "SCM": 14.954
   },
-  "Devon": {
-   "buildings": 1502.4,
-   "farm_contents": 746.3
+  "net": {
+   "LCQ": 5.709,
+   "MCV": 7.788,
+   "SCM": 5.286
   },
-  "Dorset": {
-   "buildings": 389.0,
-   "farm_contents": 184.3
+  "shortfall": {
+   "UK Dynamic Q1": 27.9132,
+   "UK Dynamic Q2": 44.6326,
+   "UK Dynamic Q3": 52.1064,
+   "UK Dynamic Q4": 35.3874,
+   "UK Equity Income Q1": 30.3885,
+   "UK Equity Income Q2": 45.7523,
+   "UK Equity Income Q3": 40.4286,
+   "UK Equity Income Q4": 35.734,
+   "UK Mid Cap Growth Q1": 41.4104,
+   "UK Mid Cap Growth Q2": 51.2578,
+   "UK Mid Cap Growth Q3": 32.8748,
+   "UK Mid Cap Growth Q4": 27.1378,
+   "UK Smaller Companies Q1": 68.7182,
+   "UK Smaller Companies Q2": 62.1688,
+   "UK Smaller Companies Q3": 84.2402,
+   "UK Smaller Companies Q4": 55.5483
   },
-  "Somerset": {
-   "buildings": 863.7,
-   "farm_contents": 396.8
+  "traded": {
+   "UK Dynamic H1": 801.2515,
+   "UK Dynamic H2": 967.0645,
+   "UK Equity Income H1": 1087.9696,
+   "UK Equity Income H2": 899.2683,
+   "UK Mid Cap Growth H1": 359.9318,
+   "UK Mid Cap Growth H2": 251.8475,
+   "UK Smaller Companies H1": 112.6231,
+   "UK Smaller Companies H2": 122.1354
   }
  },
- "occurrences_2026": [
-  {
-   "days": "11 to 13 January",
-   "farm": 2510000,
-   "home": 13067000,
-   "incurred": 15577000
+ "routes": {
+  "band average (orders)": {
+   "LCQ": 6.69,
+   "MCV": 10.48,
+   "SCM": 15.07
   },
-  {
-   "days": "8 to 9 February",
-   "farm": 3541000,
-   "home": 16898000,
-   "incurred": 20439000
+  "band average (value)": {
+   "LCQ": 5.23,
+   "MCV": 8.99,
+   "SCM": 11.09
   },
-  {
-   "days": "15 to 16 February",
-   "farm": 931000,
-   "home": 3943000,
-   "incurred": 4874000
+  "binned": {
+   "LCQ": 5.68,
+   "MCV": 7.67,
+   "SCM": 3.75
+  },
+  "flat 10 bps": {
+   "LCQ": 6.71,
+   "MCV": 11.08,
+   "SCM": 19.03
+  },
+  "golden": {
+   "LCQ": 5.71,
+   "MCV": 7.79,
+   "SCM": 5.29
+  },
+  "power by band": {
+   "LCQ": 5.71,
+   "MCV": 7.93,
+   "SCM": 4.65
+  },
+  "sqrt by band": {
+   "LCQ": 5.7,
+   "MCV": 7.91,
+   "SCM": 5.07
   }
- ],
- "record": {
-  "gap_between_trains_min_days": 70,
-  "gap_in_train_max_days": 24,
-  "load_follow": 1.62,
-  "load_other": 0.98,
-  "pooled": 1.06,
-  "storms": 43,
-  "within_six_weeks": 9
  },
- "recovery_2026": 12015000,
- "reinstatement_2026": 1402000
+ "runner_up": "LCQ"
 }

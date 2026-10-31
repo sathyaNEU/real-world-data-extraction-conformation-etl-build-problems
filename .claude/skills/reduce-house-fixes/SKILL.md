@@ -573,3 +573,18 @@ content it was written for rather than on a type that a stricter case also satis
 of cases out and run it: both directions of every tolerance (a one-member set against its member, a set in
 another order, a string-typed figure against a number, a prose name with a qualifier) with the wanted verdict
 beside each, as a test the script keeps.
+
+## H13. A generator's pattern left visible in the pack
+
+**The defect.** Identifiers that advance in a fixed step, times that rise by a fixed increment, every document
+carrying one creation stamp, a workbook modified before it was created, a table cell clipped at a PDF's page edge.
+Each is invisible to the generator's checks and plain to a reader at a glance.
+
+**What it costs.** Readers called task181's equipment log generated (work orders 37 apart, sign-off times three
+minutes later each row, so the one repair that mattered stood out as a cue), task191's ids in steps of 3 and 7,
+task118's workbooks modified before created, and task306's quotation clipped its second cover's terms mid-word.
+
+**The check.** Before stage 4: difference every id and timestamp column and refuse a constant step; read each
+PDF's CreationDate and ModDate and each workbook's created and modified, distinct per document and in order; and
+read every PDF back with `pdftotext -layout` at the default crop, refusing a cell that runs past the margin.
+

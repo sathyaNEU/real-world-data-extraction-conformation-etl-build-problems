@@ -1,25 +1,26 @@
 {
  "task": "task125",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences / environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
  "stump": "A competent analyst multiplies each boundary monitor's run concentrations by the boundary gauge's flow, averages the dry season's run loads and flags the units whose mean tops the allocation; the step that lands it there is taking the boundary sample as the unit's water, when a monitor within a few kilometres of a confluence samples one inflow's unmixed plume and the unit's load is what its inflows carry in.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-31 (--asof 2026-10-09): sweeps 3 and 4 on the allocation schedule, each ruled harmless in the note's Leak sweep; architecture 2's carried reader section dropped",
+  "reader": "pending: stage 4 from the main thread (copy at scratchpad/leak-task125/, brief at scratchpad/task125_stage4_leak_brief.md)"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "guard_check": "WARN 2026-10-31 on the card as filed (registered 20:44:17Z): overuse.org_family and repeat.gate_g against task474 v7, answered in the note's Pre-ship check",
+  "heart": "WARN 2026-10-31 on the final cut: the same two WARNs, no BLOCK",
+  "surface": "exit 0 2026-10-31; four pairs promoted for the author's adjudicated read (task127 and task304 on surface similarity, task257 and task84 on card axes already differentiated); every persona in the pack is on the card"
  },
  "judge": {
   "verdict": "",
@@ -46,7 +47,7 @@
    "commit": "DRAWN (task125) architecture 3"
   }
  ],
- "resume": "stage 2: design note sections (default path, stump, three rules, survivor anatomy, screens, forks, ladder, closure, asks), then prompt.txt and precut.py",
+ "resume": "stage 4 from the main thread: rebuild with `python3 task125/generator/make.py` (two byte-identical builds, 37 generator checks, the verifier; target.zip sha256 ad0c0db71e2cf1bde82c8627c766e5bd904b7a5c766de192af8219b2242cc45b), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task125/ with the brief scratchpad/task125_stage4_leak_brief.md and the determinism judge on task125 (architecture 2's two reports kept as determinism_check_report_arch2*.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut, append the reader's section to leak_check_report.md, git add -f task125/target.zip and task125/golden/*, ledger row, card current, commit SHIPPED (task125)",
  "approved": null,
  "delivered": null,
  "portal": "",
@@ -54,10 +55,14 @@
   {
    "architecture": 1,
    "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
+  },
+  {
+   "architecture": 2,
+   "fate": "retired at the batch audit 2026-10-31: short of the survivor anatomy (actor schema-visible, the field's estimator as the golden, the decisive step exact arithmetic); re-rooted as architecture 3"
   }
  ],
  "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline",
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": ""
+ "zip_sha256_16": "ad0c0db71e2cf1bd"
 }

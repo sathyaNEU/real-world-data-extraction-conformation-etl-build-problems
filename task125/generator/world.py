@@ -1,143 +1,168 @@
-"""The fixed world of task125: Merrowland Statistics' Household Labour Survey (HLS), its regions, its rotation and
-the parameters of the households it samples. Every other module reads its constants from here."""
+"""The Umzimela catchment's 2025/26 hydrological year: rivers, gauges, monitors, mines and the water they carry.
+
+Every quantity is generated from one process: daily rain drives each inflow's flow; each mine stream carries the
+colliery's discharge and the seepage around it; sulfate is conservative, so a resource unit's water past its lower
+boundary carries exactly what its inflows bring in; and a boundary monitor set within a few kilometres of a mine
+stream's confluence samples water that has not mixed across the channel, the near bank carrying more of the mine
+stream and the far bank more of the main river."""
 import datetime as dt
+import math
 
-SEED = 125
-SALT = 14                                # realisation of the sampling noise (chosen once, see the design note)
-AS_OF = dt.date(2026, 10, 20)            # data lock for the July to September 2026 processing run
-NOTE_DATE = dt.date(2026, 10, 23)        # the methods note the goldens are dated
-OFFICE = "Merrowland Statistics"
-SURVEY = "Household Labour Survey"
+import numpy as np
 
-# regions: code, name, share of the population aged 15 and over, share of out-by-day households
-REGIONS = [
-    ("VEL", "Velmouth", 0.31, 0.43),
-    ("CAR", "Carrowdene", 0.19, 0.37),
-    ("PEL", "Pellard", 0.15, 0.33),
-    ("HAS", "Haskvale", 0.13, 0.30),
-    ("TIR", "Tirrin", 0.12, 0.28),
-    ("DUN", "Dunmarrow", 0.10, 0.25),
+SEED = 125_3
+YEAR0 = dt.date(2025, 10, 1)          # the hydrological year, October to September
+YEAR1 = dt.date(2026, 9, 30)
+DAYS = [YEAR0 + dt.timedelta(days=i) for i in range((YEAR1 - YEAR0).days + 1)]
+DRY0, DRY1 = dt.date(2026, 5, 1), dt.date(2026, 9, 30)
+CONV = 0.0864                          # mg/L x m3/s -> tonnes per day
+S_TO_SO4 = 96.06 / 32.06               # sulfate expressed as S -> as SO4
+
+
+def rng(tag):
+    import zlib
+    return np.random.default_rng((SEED * 1_000_003 + zlib.crc32(tag.encode())) % (2 ** 32))
+
+
+# ------------------------------------------------------------------ the network
+# resource units, upstream to downstream; inflows are other units whose water enters at the unit's upper end
+RU = [
+    # code,  river,              name,                         inflows,          weir,  allocation t/d
+    ("MZ1", "Mzimela River",    "Upper Mzimela",              [],                "W01", 8.0),
+    ("KH1", "Khambule Stream",  "Khambule",                   [],                "W02", 16.0),
+    ("MZ2", "Mzimela River",    "Mzimela at Esikhotheni",     ["MZ1", "KH1"],    "W03", 32.0),
+    ("MZ3", "Mzimela River",    "Mzimela Middle",             ["MZ2"],           "W04", 32.0),
+    ("SW1", "Silwane Stream",   "Silwane",                    [],                "W05", 15.0),
+    ("MZ4", "Mzimela River",    "Mzimela at Ngwelezane Drift", ["MZ3", "SW1"],    "W06", 34.0),
+    ("GB1", "Gubhu River",      "Gubhu",                      [],                "W07", 3.0),
+    ("MZ5", "Mzimela River",    "Lower Mzimela",              ["MZ4", "GB1"],    "W08", 46.0),
+    ("NY1", "Nyathi River",     "Upper Nyathi",               [],                "W09", 16.0),
+    ("NT1", "Ntsheketshe Stream", "Ntsheketshe",              [],                "W10", 23.0),
+    ("NY2", "Nyathi River",     "Nyathi at Mabhokweni",       ["NY1", "NT1"],    "W11", 35.0),
+    ("MP1", "Mpafa Stream",     "Mpafa",                      [],                "W12", 15.0),
+    ("NY3", "Nyathi River",     "Nyathi at Siphethu",         ["NY2", "MP1"],    "W13", 58.0),
+    ("NY4", "Nyathi River",     "Lower Nyathi",               ["NY3"],           "W14", 58.0),
 ]
-RCODES = [r[0] for r in REGIONS]
-RNAME = {r[0]: r[1] for r in REGIONS}
-# districts per region (area codes on the call records), used to place an address
-DISTRICTS = {"VEL": 9, "CAR": 6, "PEL": 5, "HAS": 5, "TIR": 4, "DUN": 4}
+RU_BY = {r[0]: r for r in RU}
+ORDER = [r[0] for r in RU]
 
-AGE_GROUPS = ["15-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"]
-AGE_EDGES = [15, 25, 35, 45, 55, 65, 75, 200]
+# boundary monitors inside a confluence's lateral mixing zone: (bank the monitor stands on, side the mine stream
+# enters, km below the confluence); every other boundary monitor stands where the river is mixed
+MINE_STREAM = {"MZ2": "KH1", "MZ4": "SW1", "NY2": "NT1", "NY3": "MP1"}
+MIXING = {"MZ2": ("left", "left", 2.6, 1.45), "MZ4": ("right", "left", 3.1, 0.20),
+          "NY2": ("left", "right", 2.2, 0.60), "NY3": ("right", "right", 1.8, 2.60)}
 
-# quarters are (year, q); the person file runs 2023Q1 to 2026Q3, intakes from 2022Q1
-FIRST_Q = (2023, 1)
-LAST_Q = (2026, 3)
-FIRST_INTAKE = (2022, 1)
-CALLS_FROM = (2025, 1)                   # the call-record app replaced the paper call sheets at the 2025Q1 intake
-LIMIT_FROM = (2026, 2)                   # first interviews capped at three visits from 1 April 2026
-LIMIT_TO = (2027, 1)                     # ... to 31 March 2027 (the 2026/27 field year); six visits from April 2027
-RELEASE_Q = (2026, 3)                    # the quarter being released, and the quarter whose rise is in question
-PRIOR_Q = (2026, 2)                      # the quarter it is compared with
-LAST_PUBLISHED = (2026, 2)               # the latest quarter already released when the extract was locked
-TEMPLATE_Q = (2026, 1)                   # the one uncapped quarter whose five intakes all carry visit histories
-WAVES = 5
-MAX_VISITS = 6
-CAP_VISITS = 3
-
-ISSUED_PER_INTAKE = 6400                 # addresses issued per quarterly intake
-INELIGIBLE = 0.075                       # vacant, demolished or non-residential
-REFUSAL = 0.17                           # at contact, wave 1
-POP15 = 4_118_000                        # population 15 and over, 2023Q1
-POP_GROWTH_Q = 0.0029                    # per quarter
-
-# contact at each wave-1 visit: someone at home by day, else by household class
-P_CONTACT_HOME = 0.60
-P_CONTACT_AWAY = {"A": 0.150, "R": 0.240}
-P_HOME_U = 0.86                          # an unemployed member is at home by day
-P_HOME_I = 0.90                          # an inactive member is at home by day
-# telephone waves: response given the previous wave answered
-P_TEL_HOME = 0.935
-P_TEL_AWAY = 0.875
-
-# labour market: macro multiplier on the employed-to-unemployed hazard, by quarter index from FIRST_INTAKE - 8
-MACRO = {
-    (2020, 1): 1.00, (2020, 2): 1.00, (2020, 3): 1.00, (2020, 4): 1.00,
-    (2021, 1): 0.98, (2021, 2): 0.97, (2021, 3): 0.96, (2021, 4): 0.95,
-    (2022, 1): 0.94, (2022, 2): 0.94, (2022, 3): 0.95, (2022, 4): 0.96,
-    (2023, 1): 0.97, (2023, 2): 0.99, (2023, 3): 1.01, (2023, 4): 1.03,
-    (2024, 1): 1.05, (2024, 2): 1.07, (2024, 3): 1.09, (2024, 4): 1.10,
-    (2025, 1): 1.11, (2025, 2): 1.12, (2025, 3): 1.12, (2025, 4): 1.11,
-    (2026, 1): 1.11, (2026, 2): 1.11, (2026, 3): 1.14, (2026, 4): 1.13,
-    (2027, 1): 1.13, (2027, 2): 1.13, (2027, 3): 1.13, (2027, 4): 1.13,
+# headwater and tributary units: (base dry-season flow m3/s, wet-season multiplier, sulfate at base flow mg/L,
+# dilution exponent); a mine stream's sulfate falls as rain adds clean water
+SOURCES = {
+    "MZ1": (1.55, 3.4, 31.0, 0.15),
+    "KH1": (0.105, 2.6, 2310.0, 0.62),
+    "SW1": (0.100, 2.4, 1352.0, 0.55),
+    "GB1": (0.82, 3.1, 14.0, 0.10),
+    "NY1": (1.12, 3.2, 116.2, 0.20),
+    "NT1": (0.148, 2.5, 1890.0, 0.60),
+    "MP1": (0.080, 2.3, 1616.0, 0.58),
 }
 
-# quarterly transition probabilities by age group (E to U base, U to E base)
-E_TO_U = {"15-24": 0.034, "25-34": 0.016, "35-44": 0.012, "45-54": 0.011, "55-64": 0.012, "65-74": 0.010, "75+": 0.010}
-U_TO_E = {"15-24": 0.30, "25-34": 0.36, "35-44": 0.36, "45-54": 0.33, "55-64": 0.27, "65-74": 0.20, "75+": 0.15}
-E_TO_I = {"15-24": 0.040, "25-34": 0.012, "35-44": 0.010, "45-54": 0.010, "55-64": 0.022, "65-74": 0.090, "75+": 0.150}
-I_TO_E = {"15-24": 0.070, "25-34": 0.060, "35-44": 0.050, "45-54": 0.040, "55-64": 0.020, "65-74": 0.008, "75+": 0.002}
-U_TO_I = 0.11
-I_TO_U = {"15-24": 0.040, "25-34": 0.025, "35-44": 0.020, "45-54": 0.015, "55-64": 0.010, "65-74": 0.002, "75+": 0.001}
-CLASS_EU = {"A": 0.40, "R": 1.00}        # out-by-day households lose jobs less often
-CLASS_UE = {"A": 1.20, "R": 1.00}
-
-PEOPLE = {
-    "head": ("Raewyn Bailey", "Head of Labour Market Statistics"),
-    "field": ("Jane Phillips", "Manager, Field Operations"),
-    "methods": ("Aaron Tucker", "Principal Methodologist"),
-    "data": ("Dylan Fletcher", "Survey Data Office"),
-    "field_2024": ("Anna Bishop", "Manager, Field Operations"),
-}
+# mines and their licensed discharge points (each discharges into a mine stream's unit)
+MINES = [
+    ("Khambule Colliery (Pty) Ltd", "KHC", [("KHC-DP1", "KH1", 0.046), ("KHC-DP2", "KH1", 0.021)]),
+    ("Silwane Anthracite Mine", "SAM", [("SAM-DP1", "SW1", 0.038)]),
+    ("Ntsheketshe Coal Holdings", "NCH", [("NCH-DP1", "NT1", 0.071), ("NCH-DP2", "NT1", 0.034)]),
+    ("Mpafa Mining Company", "MMC", [("MMC-DP1", "MP1", 0.029)]),
+]
+# the commercial laboratory three of the mines use reported sulfate as S from its November 2025 batches
+LAB_AS_S_FROM = dt.date(2025, 11, 1)
+LAB_AS_S_MINES = {"KHC", "NCH", "MMC"}
+METER_SWAP = ("SAM-DP1", dt.date(2026, 2, 14))   # the flow totaliser replaced at an inspection
 
 
-def qlabel(q):
-    return "%dQ%d" % q
-
-
-def qnext(q, k=1):
-    y, n = q
-    i = y * 4 + (n - 1) + k
-    return (i // 4, i % 4 + 1)
-
-
-def qindex(q):
-    return q[0] * 4 + q[1] - 1
-
-
-def qrange(a, b):
-    out, q = [], a
-    while qindex(q) <= qindex(b):
-        out.append(q)
-        q = qnext(q)
+def rain():
+    """daily rainfall (mm) at the catchment's representative gauge: summer thunderstorms, a dry winter"""
+    r = rng("rain")
+    out = []
+    for d in DAYS:
+        m = d.month
+        wet = {10: 0.32, 11: 0.45, 12: 0.52, 1: 0.55, 2: 0.50, 3: 0.42, 4: 0.25, 5: 0.08, 6: 0.04, 7: 0.03,
+               8: 0.05, 9: 0.10}[m]
+        if r.random() < wet:
+            out.append(round(float(r.gamma(0.9, 9.0 if m in (11, 12, 1, 2) else 5.5)), 1))
+        else:
+            out.append(0.0)
     return out
 
 
-def qmonths(q):
-    return [3 * (q[1] - 1) + m for m in (1, 2, 3)]
+def flows(rain_mm):
+    """daily mean flow of each source unit (m3/s) from a two-store response to rain"""
+    out = {}
+    for code, (base, wetx, c0, ex) in SOURCES.items():
+        r = rng("flow-" + code)
+        slow, quick = base * wetx * 0.55, 0.0
+        q = []
+        for i, d in enumerate(DAYS):
+            p = rain_mm[i] * (0.8 + 0.4 * r.random())
+            quick = quick * 0.55 + base * 0.045 * p
+            # the slow store recedes towards the dry-season base through winter
+            target = base * (wetx if d.month in (11, 12, 1, 2, 3) else (1.6 if d.month in (10, 4) else 1.0))
+            slow = slow + 0.035 * (target - slow) + base * 0.004 * p
+            q.append(max(slow + quick, base * 0.55))
+        out[code] = np.array(q)
+    return out
 
 
-def qname(q):
-    return {1: "January to March", 2: "April to June", 3: "July to September", 4: "October to December"}[q[1]] + " %d" % q[0]
+def concentrations(q):
+    """daily sulfate (mg/L) of each source unit's mixed water"""
+    out = {}
+    for code, (base, wetx, c0, ex) in SOURCES.items():
+        r = rng("conc-" + code)
+        drift = np.cumsum(r.normal(0, 0.004, len(DAYS)))
+        c = c0 * (base / q[code]) ** ex * np.exp(drift - drift.mean())
+        out[code] = c
+    return out
 
 
-def capped(intake):
-    return qindex(LIMIT_FROM) <= qindex(intake) <= qindex(LIMIT_TO)
+def simulate():
+    rain_mm = rain()
+    q = flows(rain_mm)
+    c = concentrations(q)
+    Q, C = dict(q), dict(c)
+    L = {k: C[k] * Q[k] * CONV for k in SOURCES}
+    gauge_noise = {}
+    for code, river, name, inflows, weir, alloc in RU:
+        if code in SOURCES:
+            continue
+        qin = sum(Q[i] for i in inflows)
+        lin = sum(L[i] for i in inflows)
+        Q[code] = qin
+        L[code] = lin
+        C[code] = lin / (qin * CONV)
+    for code in ORDER:
+        r = rng("gauge-" + code)
+        gauge_noise[code] = 1.0 + r.normal(0, 0.0035, len(DAYS))
+    return dict(rain=rain_mm, Q=Q, C=C, L=L, gauge_noise=gauge_noise)
 
 
-def capped_intakes():
-    return qrange(LIMIT_FROM, LIMIT_TO)
+def point_concentration(code, day_index, Q, C, run_rng):
+    """the boundary monitor's sulfate on one run: the section's mixed water where the river is mixed, and within a
+    confluence's mixing zone the blend of the two inflows the monitor's bank carries, the mine stream's water making
+    up k times its share of the flow at the near bank and k times it at the far bank (k under 1)"""
+    if code not in MIXING:
+        return C[code][day_index] * (1.0 + run_rng.normal(0, 0.006))
+    bank, side, km, k = MIXING[code]
+    inflows = RU_BY[code][3]
+    trib = MINE_STREAM[code]
+    main = [i for i in inflows if i != trib][0]
+    qt, qm = Q[trib][day_index], Q[main][day_index]
+    f = qt / (qt + qm)
+    w = min(0.97, max(0.0, f * k * (1.0 + run_rng.normal(0, 0.06))))
+    return (1.0 - w) * C[main][day_index] + w * C[trib][day_index]
 
 
-def capped_waves(q):
-    """The waves of quarter q's sample held by an intake first interviewed under the three-visit cap."""
-    return tuple(sorted(w for c in capped_intakes()
-                        for w in [qindex(q) - qindex(c) + 1] if 1 <= w <= WAVES))
-
-
-def forward():
-    """The five published quarters the call is about: the released quarter and the four after it."""
-    return qrange(RELEASE_Q, qnext(RELEASE_Q, 4))
-
-
-def age_group(age):
-    for g, lo, hi in zip(AGE_GROUPS, AGE_EDGES, AGE_EDGES[1:]):
-        if lo <= age < hi:
-            return g
-    raise ValueError(age)
+def runs():
+    """the routine sampling runs: every second Tuesday from 7 October 2025"""
+    d = dt.date(2025, 10, 7)
+    out = []
+    while d <= YEAR1:
+        out.append(d)
+        d += dt.timedelta(days=14)
+    return out

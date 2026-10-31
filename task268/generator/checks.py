@@ -153,6 +153,7 @@ def run(task=TASK, world=None):
     ok("ask A golden equals the truth", all(abs(R["ask_a"][k] - ta[k]) < 1e-6 for k in ta),
        "; ".join("%s %.3f/%.3f" % (k, R["ask_a"][k], ta[k]) for k in ta if abs(R["ask_a"][k] - ta[k]) >= 1e-6))
     ok("ask A matching unambiguous", R["counter_ambiguous"] == 0, str(R["counter_ambiguous"]))
+    _counter_forks(G, T, ok)
     for mode in ("every", "every_fixed", "noclock", "cardonly", "overclean", "grams"):
         m = G.ask_a(mode)
         miss = sum(1 for k in ta if abs(round(m[k], 1) - round(ta[k], 1)) >= 0.05)
@@ -352,3 +353,96 @@ if __name__ == "__main__":
         print("%s  %-70s %s" % ("PASS" if r[1] else "FAIL", r[0], r[2]))
     print("checks: %d assertions, %d failed" % (len(rs), len(bad)))
     sys.exit(1 if bad else 0)
+
+def _counter_forks(G, T, ok):
+    """SF17 to SF21 on the cut pack: the board's rules read, and every reading near them matches the same labels."""
+    import bisect
+    import itertools
+    import datetime as _dt
+    board = re.sub(r"\s+", " ", text_of(os.path.join(T, K.FILES["board"])))
+    ok("SF17 the board voids a label not paid for by closing, and files the 25 minutes and the same day",
+       "within 25 minutes of weighing" in board and "Take your label to any checkout today" in board
+       and "Unpaid labels are void at closing" in board, board[-300:])
+    labs = G.counter_labels()
+    pays = G.counter_payments()
+    acc = [0.0] + [a[1] for a in K.ACCESSORIES] + \
+        [a[1] + b[1] for i, a in enumerate(K.ACCESSORIES) for b in K.ACCESSORIES[i:]]
+    accset = set(int(round(x * 100)) for x in acc)
+    fewest = {}             # the fewest accessories making each amount, up to four
+    for n in range(5):
+        for comb in itertools.combinations_with_replacement([a[1] for a in K.ACCESSORIES], n):
+            c = int(round(sum(comb) * 100))
+            fewest[c] = min(fewest.get(c, 9), n)
+    times = sorted(labs, key=lambda x: x["when"])
+    tk = [x["when"] for x in times]
+
+    def card_readings(before, after):
+        many = only_acc = 0
+        for p in pays:
+            amt = int(round(p["amount"] * 100))
+            only_acc += amt in accset
+            lo = bisect.bisect_left(tk, p["when"] - _dt.timedelta(minutes=before))
+            hi = bisect.bisect_right(tk, p["when"] + _dt.timedelta(minutes=after))
+            n = 0
+            for k in (1, 2, 3):
+                for comb in itertools.combinations(times[lo:hi], k):
+                    n += (amt - sum(int(round(x["price"] * 100)) for x in comb)) in accset
+            many += n != 1
+        return many, only_acc
+    for b, a in ((20, 3), (25, 3), (30, 5), (35, 10)):
+        many, only_acc = card_readings(b, a)
+        ok("SF18 every counter card payment has one reading from %d minutes before to %d after, whichever labels other "
+           "payments took, and none is accessories alone" % (b, a), many == 0 and only_acc == 0, "%d, %d" % (many, only_acc))
+    wide = minimal_bad = 0
+    for p in pays:
+        amt = int(round(p["amount"] * 100))
+        lo = bisect.bisect_left(tk, p["when"] - _dt.timedelta(minutes=25))
+        hi = bisect.bisect_right(tk, p["when"] + _dt.timedelta(minutes=3))
+        reads = []
+        for k in (1, 2, 3):
+            for comb in itertools.combinations(times[lo:hi], k):
+                rest = amt - sum(int(round(x["price"] * 100)) for x in comb)
+                if rest in fewest:
+                    reads.append((fewest[rest], frozenset((x["scale"], x["no"]) for x in comb)))
+        wide += len(reads) > 1
+        least = min(r[0] for r in reads)
+        minimal_bad += sum(1 for r in reads if r[0] == least) != 1 or least > 2
+    ok("SF22 with three or four accessories allowed some payments read more ways (%d), and the reading with the fewest "
+       "accessories is one and is the golden's in every payment" % wide, minimal_bad == 0, str(minimal_bad))
+    sc0, f0, l0, _o = G.clock_block
+    n_lo, n_hi = int(f0.split("-")[1]), int(l0.split("-")[1])
+    plain = [x for x in times if not (x["scale"] == sc0 and n_lo <= x["no"] <= n_hi)]
+    pk = [x["when"] for x in plain]
+    bad0 = 0
+    for p in pays:
+        amt = int(round(p["amount"] * 100))
+        lo = bisect.bisect_left(pk, p["when"] - _dt.timedelta(minutes=25))
+        hi = bisect.bisect_right(pk, p["when"])
+        n = sum((amt - sum(int(round(x["price"] * 100)) for x in comb)) in accset
+                for k in (1, 2, 3) for comb in itertools.combinations(plain[lo:hi], k))
+        blk = any(x["scale"] == sc0 and n_lo <= x["no"] <= n_hi
+                  for x in times[bisect.bisect_left(tk, p["when"] - _dt.timedelta(minutes=25)):
+                                 bisect.bisect_right(tk, p["when"] + _dt.timedelta(minutes=3))])
+        bad0 += (n != 1) and not blk
+    ok("SF18 read strictly (labels printed in the 25 minutes up to the payment), every payment away from scale 2's "
+       "re-dated block has one reading", bad0 == 0, str(bad0))
+    lines = G.counter_till_lines()
+    for name, lo_of in (("earlier that day", lambda w: _dt.datetime.combine(w.date(), _dt.time(0))),
+                        ("in the 150 minutes before", lambda w: w - _dt.timedelta(minutes=150))):
+        bad = 0
+        for ln in lines:
+            lo = bisect.bisect_left(tk, lo_of(ln["when"]))
+            hi = bisect.bisect_right(tk, ln["when"] + _dt.timedelta(minutes=5))
+            bad += sum(1 for x in times[lo:hi] if abs(x["price"] - ln["value"]) < 0.005) != 1
+        ok("SF19 every counter till line is the price of one label printed %s" % name, bad == 0, str(bad))
+    sc, first, last, off = G.clock_block
+    n0, n1 = int(first.split("-")[1]), int(last.split("-")[1])
+    block = [x for x in labs if x["scale"] == sc and n0 <= x["no"] <= n1]
+    moved = sum(1 for x in block for d in (-600, 600)
+                if K.quarter((x["shown"] + _dt.timedelta(seconds=off + d)).date())
+                != K.quarter((x["shown"] + _dt.timedelta(seconds=off)).date()))
+    ok("SF20 scale 2's re-dated block keeps every label's quarter at any offset within ten minutes of the golden's",
+       block and moved == 0, "%d labels, %d moved" % (len(block), moved))
+    ok("SF21 scale 2 weighs in grams: its net weights run in the hundreds where scale 1's run under one",
+       min(float(x["kg"]) for x in G.counter_labels(fix_grams=False) if x["scale"] == "S2") > 50
+       and max(float(x["kg"]) for x in labs if x["scale"] == "S1") < 5)

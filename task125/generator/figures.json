@@ -1,102 +1,182 @@
 {
- "rise_unemployment_rate_points": "0.27",
- "cap_share_of_rise_points": "0.18",
- "labour_market_share_of_rise_points": "0.09",
- "published_unemployment_rate_2026Q2": "5.59",
- "published_unemployment_rate_2026Q3": "5.86",
- "unemployment_rate_2026Q3_without_cap": "5.47",
- "unemployment_rate_2026Q2_without_cap": "5.38",
- "unemployment_rate_gap_2026Q2_points": "0.21",
- "change_employment_rate_points": "-0.34",
- "cap_share_of_employment_change_points": "-0.63",
- "cap_took_off_employment_change_points": "0.63",
- "labour_market_share_of_employment_change_points": "0.29",
- "published_employment_rate_2026Q2": "58.88",
- "published_employment_rate_2026Q3": "58.54",
- "employment_rate_2026Q3_without_cap": "59.96",
- "employment_rate_2026Q2_without_cap": "59.67",
- "employment_rate_gap_2026Q2_points": "-0.79",
- "employment_rate_below_six_visit_rate_2026Q2_points": "0.79",
- "unemployment_rate_gap_points": {
-  "Jul-Sep 2026": "0.39",
-  "Oct-Dec 2026": "0.53",
-  "Jan-Mar 2027": "0.62",
-  "Apr-Jun 2027": "0.47",
-  "Jul-Sep 2027": "0.28"
+ "allocations_t_per_day": {
+  "GB1": 3.0,
+  "KH1": 16.0,
+  "MP1": 15.0,
+  "MZ1": 8.0,
+  "MZ2": 32.0,
+  "MZ3": 32.0,
+  "MZ4": 34.0,
+  "MZ5": 46.0,
+  "NT1": 23.0,
+  "NY1": 16.0,
+  "NY2": 35.0,
+  "NY3": 58.0,
+  "NY4": 58.0,
+  "SW1": 15.0
  },
- "employment_rate_gap_points": {
-  "Jul-Sep 2026": "-1.42",
-  "Oct-Dec 2026": "-1.97",
-  "Jan-Mar 2027": "-2.44",
-  "Apr-Jun 2027": "-1.88",
-  "Jul-Sep 2027": "-1.19"
+ "ask_a_tonnes": {
+  "KHC-DP1 Q1": 740,
+  "KHC-DP1 Q2": 620,
+  "KHC-DP1 Q3": 770,
+  "KHC-DP1 Q4": 860,
+  "KHC-DP2 Q1": 350,
+  "KHC-DP2 Q2": 300,
+  "KHC-DP2 Q3": 360,
+  "KHC-DP2 Q4": 400,
+  "MMC-DP1 Q1": 350,
+  "MMC-DP1 Q2": 300,
+  "MMC-DP1 Q3": 340,
+  "MMC-DP1 Q4": 380,
+  "NCH-DP1 Q1": 900,
+  "NCH-DP1 Q2": 810,
+  "NCH-DP1 Q3": 990,
+  "NCH-DP1 Q4": 1160,
+  "NCH-DP2 Q1": 430,
+  "NCH-DP2 Q2": 420,
+  "NCH-DP2 Q3": 490,
+  "NCH-DP2 Q4": 560,
+  "SAM-DP1 Q1": 370,
+  "SAM-DP1 Q2": 350,
+  "SAM-DP1 Q3": 390,
+  "SAM-DP1 Q4": 460
  },
- "employment_rate_below_six_visit_rate_points": {
-  "Jul-Sep 2026": "1.42",
-  "Oct-Dec 2026": "1.97",
-  "Jan-Mar 2027": "2.44",
-  "Apr-Jun 2027": "1.88",
-  "Jul-Sep 2027": "1.19"
+ "ask_b_hours": {
+  "ECL-03 2025-11": 534,
+  "ECL-03 2025-12": 233,
+  "ECL-03 2026-01": 31,
+  "ECL-03 2026-02": 7,
+  "ECL-03 2026-03": 27,
+  "ECL-03 2026-04": 509,
+  "ECL-06 2025-11": 575,
+  "ECL-06 2025-12": 239,
+  "ECL-06 2026-01": 18,
+  "ECL-06 2026-02": 9,
+  "ECL-06 2026-03": 13,
+  "ECL-06 2026-04": 542,
+  "ECL-08 2025-11": 532,
+  "ECL-08 2025-12": 204,
+  "ECL-08 2026-01": 22,
+  "ECL-08 2026-02": 9,
+  "ECL-08 2026-03": 17,
+  "ECL-08 2026-04": 520,
+  "ECL-10 2025-11": 275,
+  "ECL-10 2025-12": 121,
+  "ECL-10 2026-01": 20,
+  "ECL-10 2026-02": 158,
+  "ECL-10 2026-03": 308,
+  "ECL-10 2026-04": 676,
+  "ECL-11 2025-11": 498,
+  "ECL-11 2025-12": 179,
+  "ECL-11 2026-01": 29,
+  "ECL-11 2026-02": 35,
+  "ECL-11 2026-03": 51,
+  "ECL-11 2026-04": 583,
+  "ECL-14 2025-11": 442,
+  "ECL-14 2025-12": 59,
+  "ECL-14 2026-01": 0,
+  "ECL-14 2026-02": 0,
+  "ECL-14 2026-03": 0,
+  "ECL-14 2026-04": 567
  },
- "employment_fall_points": "0.34",
- "employment_rise_without_cap_points": "0.29",
- "template_quarter": "Jan-Mar 2026",
- "template_quarter_name": "January to March 2026",
- "clean_from_quarter": "Apr-Jun 2028",
- "clean_from_quarter_name": "April to June 2028",
- "six_visits_from_quarter": "Apr-Jun 2027",
- "gap_tolerance_points": {
-  "unemployment": "0.05",
-  "employment": "0.15"
- },
- "first_interview_visits_2026Q3_intake": {
-  "Velmouth": 3866,
-  "Carrowdene": 2378,
-  "Pellard": 1851,
-  "Haskvale": 1629,
-  "Tirrin": 1408,
-  "Dunmarrow": 1282
- },
- "unemployed_to_employed_share_pct": {
-  "Velmouth": "31.65",
-  "Carrowdene": "25.19",
-  "Pellard": "37.96",
-  "Haskvale": "24.11",
-  "Tirrin": "30.12",
-  "Dunmarrow": "29.03"
- },
- "unemployed_to_employed_counts": {
-  "Velmouth": [
-   75,
-   237
+ "call": {
+  "over": [
+   "KH1",
+   "MZ4",
+   "NT1",
+   "NY2"
   ],
-  "Carrowdene": [
-   34,
-   135
-  ],
-  "Pellard": [
-   52,
-   137
-  ],
-  "Haskvale": [
-   27,
-   112
-  ],
-  "Tirrin": [
-   25,
-   83
-  ],
-  "Dunmarrow": [
-   27,
-   93
+  "within": [
+   "GB1",
+   "MP1",
+   "MZ1",
+   "MZ2",
+   "MZ3",
+   "MZ5",
+   "NY1",
+   "NY3",
+   "NY4",
+   "SW1"
   ]
  },
- "total_weekly_hours_thousand": {
-  "Velmouth": "26679.5",
-  "Carrowdene": "16124.7",
-  "Pellard": "12659.1",
-  "Haskvale": "10624.5",
-  "Tirrin": "9734.0",
-  "Dunmarrow": "7648.3"
+ "constants": {
+  "dry_runs": 11,
+  "mg_l_m3s_to_t_per_day": 0.0864,
+  "so4_per_s": 2.996
+ },
+ "default_over": [
+  "KH1",
+  "MZ2",
+  "NT1",
+  "NY3"
+ ],
+ "dry_runs": [
+  "2026-05-05",
+  "2026-05-19",
+  "2026-06-02",
+  "2026-06-16",
+  "2026-06-30",
+  "2026-07-14",
+  "2026-07-28",
+  "2026-08-11",
+  "2026-08-25",
+  "2026-09-08",
+  "2026-09-22"
+ ],
+ "loads_t_per_day": {
+  "GB1": 1.225,
+  "KH1": 22.087,
+  "MP1": 11.775,
+  "MZ1": 5.017,
+  "MZ2": 27.105,
+  "MZ3": 27.105,
+  "MZ4": 39.9,
+  "MZ5": 41.125,
+  "NT1": 26.946,
+  "NY1": 13.205,
+  "NY2": 40.151,
+  "NY3": 51.926,
+  "NY4": 51.926,
+  "SW1": 12.796
+ },
+ "loads_whole": {
+  "GB1": 1,
+  "KH1": 22,
+  "MP1": 12,
+  "MZ1": 5,
+  "MZ2": 27,
+  "MZ3": 27,
+  "MZ4": 40,
+  "MZ5": 41,
+  "NT1": 27,
+  "NY1": 13,
+  "NY2": 40,
+  "NY3": 52,
+  "NY4": 52,
+  "SW1": 13
+ },
+ "point_loads_t_per_day": {
+  "GB1": 1.225,
+  "KH1": 22.087,
+  "MP1": 11.775,
+  "MZ1": 5.017,
+  "MZ2": 36.154,
+  "MZ3": 27.2,
+  "MZ4": 31.025,
+  "MZ5": 41.092,
+  "NT1": 26.946,
+  "NY1": 13.205,
+  "NY2": 30.311,
+  "NY3": 67.235,
+  "NY4": 51.969,
+  "SW1": 12.796
+ },
+ "triggers_uS_cm": {
+  "ECL-03": 270,
+  "ECL-06": 240,
+  "ECL-08": 230,
+  "ECL-10": 1400,
+  "ECL-11": 310,
+  "ECL-14": 410
  }
 }

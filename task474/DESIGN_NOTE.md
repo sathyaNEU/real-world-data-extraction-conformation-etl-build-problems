@@ -118,7 +118,7 @@ Pins: the WHAT sits in AP-3 (the estimand, the group's definition, the window of
 | 0 | the 2025 first-time pass rate of April to September carried onto the 2026 first-time candidates | 40 | Brindle's first-time pass rate for October 2025 to March 2026 sat 5 points above the same half a year earlier on the unchanged paper, as the gas engineers came through the standard route |
 | 1 | the half before the switch (October 2025 to March 2026) carried onto April to September 2026 | 40 | the summer sittings draw a stronger mix every year (Brindle's first-time pass rate in April to September sat 4 to 6 points above the October to March before it in every year from 2020 to 2024) |
 | 1b | the year-apart route corrected by the winter halves' shift | 40 | the gas engineers' share kept rising through 2026, so the winter shift understates the summer's |
-| 2 | the cross-switch candidates' two results side by side (a linear link) | 41 | every second sitting reads higher, as Brindle's resitters show |
+| 2 | the cross-switch candidates' two results side by side (a linear link) | 41 (the judge's variant against the 47.2 per cent first-time share gives 36; both off 38) | every second sitting reads higher, as Brindle's resitters show |
 | 3 | Brindle's resits of first-sitting fails, unmatched, carried onto the cross-switch candidates | 37 | the 2025 resit rules (a free resit for 55 to 64 within six weeks, six months' wait under 55) changed which first scores reach the new paper |
 | 4 (decisive) | the resits matched on the first score, their share at 65 carried onto the cross-switch candidates | 38 | the golden |
 

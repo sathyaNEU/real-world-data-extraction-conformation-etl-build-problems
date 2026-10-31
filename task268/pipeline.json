@@ -1,10 +1,10 @@
 {
  "task": "task268",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "marketing-consumer-research",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "A competent analyst builds the duplication of purchase table on the Rewards card, the chain's customer unit, and names Nordhavn; homes assembled from the Rewards cards and online accounts that pay with one bank card in Faircourt's settlement file put Oro Rosso lowest.",
  "architecture": 5,
@@ -14,17 +14,17 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 (five lines, each ruled harmless in the design note's ## Leak check)",
-  "reader": ""
+  "leak_py": "REVIEW, every line ruled",
+  "reader": "architecture 5 read and two re-reads after the counter repair: no leak, question 6 analytical"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-31 (three_rules.strategy_risk; older same-puzzle and same-driver notes differentiated)",
   "nearest": "surface 2026-10-31: task267 and task264 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (pass 1, FIX_NOW on the counter ask) and determinism_check_report_pass2.md (APPROVE)"
  },
  "returned": [
   {
@@ -34,7 +34,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn agents). Rebuild first with python3 task268/generator/build.py (seed 263; checks 80 of 80, verify PASS, byte-identical; target.zip sha256 8783d4958c4e4614b83cb6d63c5bba99e01e9b2477639dd8946946b336087f4b), then spawn the leak reader from scratchpad/task268_stage4_leak_brief.md (copy at scratchpad/leak-task268/) and the determinism-judge agent on task268 together; fix findings in the generator, then ship (git rm the arch 4 goldens, force-add target.zip and golden/, ledger row, card current).",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -43,5 +43,6 @@
  "portal_status_date": "",
  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
  "seed_world": 273,
- "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30"
+ "zip_md5": "f6dc0b57e6efa9a011d4e87d21613e30",
+ "zip_sha256_16": "56492de5d6701f85"
 }

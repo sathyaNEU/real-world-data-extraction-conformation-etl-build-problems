@@ -524,62 +524,87 @@ class World:
         self._counter_unique()
         self.labels.sort(key=lambda lb: (lb["scale"], lb["no"]))
 
-    COUNTER_WIN = (dt.timedelta(minutes=29), dt.timedelta(minutes=7))
-    TILL_WIN = (dt.timedelta(minutes=154), dt.timedelta(minutes=5))
+    COUNTER_WIN = (dt.timedelta(minutes=40), dt.timedelta(minutes=15))
+    TILL_AFTER = dt.timedelta(minutes=5)
 
     def _counter_unique(self):
-        """Every counter card payment is the sum of one set of labels plus accessories, and every counter line on a till
-        is one label's price, among the labels a matcher could consider: a label that would make a second reading
-        possible is re-weighed by a gram."""
+        """Every counter card payment is the sum of one set of labels plus accessories among every label printed from
+        29 minutes before it to 7 minutes after, whichever labels other payments took, and no sum of accessories
+        alone; every counter line on a till is the price of one label printed earlier that day, to 5 minutes after the
+        line. The board files 25 minutes and the same day, so any reading near them matches the same labels. A label
+        that would allow a second reading is re-weighed by a gram and the pass repeats until none does."""
         acc = [0.0] + [a[1] for a in K.ACCESSORIES] + \
             [a[1] + b[1] for i, a in enumerate(K.ACCESSORIES) for b in K.ACCESSORIES[i:]]
         accset = set(int(round(x * 100)) for x in acc)
         till_tx = [t for t in self.tx if t["kind"] == 'counter']
 
+        step = [1]
+
         def bump(lb):
-            lb["kg"] = round(lb["kg"] + 0.001, 3)
+            # one to three grams, varied by label and pass, so two labels of one coffee and weight never move in step
+            lb["kg"] = round(lb["kg"] + 0.001 * (1 + (lb["no"] * 7 + step[0]) % 3), 3)
             lb["price"] = K.r2(lb["kg"] * lb["ppk"])
 
-        for it in range(60):
+        def key(x):
+            return (x["scale"], x["no"])
+
+        for it in range(800):
+            step[0] = it
             labs = sorted(self.labels, key=lambda x: x["when"])
             keys = [x["when"] for x in labs]
-            used = set()
+            by_day = collections.defaultdict(list)
+            for x in labs:
+                by_day[x["when"].date()].append(x)
             changed = 0
             for p in sorted(self.counter_pay, key=lambda x: x["when"]):
                 p["amount"] = K.r2(sum(lb["price"] for lb in p["labels"]) +
                                    sum(K.ACCESSORIES[a][1] for a in p["accessories"]))
+                amt = int(round(p["amount"] * 100))
+                if amt in accset:
+                    bump(max(p["labels"], key=lambda x: x["price"]))
+                    changed += 1
+                    continue
                 lo = bisect.bisect_left(keys, p["when"] - self.COUNTER_WIN[0])
                 hi = bisect.bisect_right(keys, p["when"] + self.COUNTER_WIN[1])
-                cands = [x for x in labs[lo:hi] if (x["scale"], x["no"]) not in used]
-                amt = int(round(p["amount"] * 100))
+                cands = labs[lo:hi]
                 fits = []
                 for k in (1, 2, 3):
                     for comb in itertools.combinations(cands, k):
                         if amt - sum(int(round(x["price"] * 100)) for x in comb) in accset:
-                            fits.append(frozenset((x["scale"], x["no"]) for x in comb))
-                true = frozenset((x["scale"], x["no"]) for x in p["labels"])
+                            fits.append(frozenset(key(x) for x in comb))
+                true = frozenset(key(x) for x in p["labels"])
                 if fits != [true]:
                     alts = [f for f in fits if f != true]
-                    byid = {(x["scale"], x["no"]): x for x in cands}
+                    byid = {key(x): x for x in cands}
                     if alts:
-                        alt = alts[0]
-                        pick = sorted(true - alt) or sorted(alt - true)
+                        pick = sorted(true - alts[0]) or sorted(alts[0] - true)
                         bump(byid[pick[0]])
                     else:
                         bump(max(p["labels"], key=lambda x: x["price"]))
                     changed += 1
-                used |= true
             for t in sorted(till_tx, key=lambda x: x["when"]):
                 for lb in t["counter"]:
-                    lo = bisect.bisect_left(keys, t["when"] - self.TILL_WIN[0])
-                    hi = bisect.bisect_right(keys, t["when"] + self.TILL_WIN[1])
-                    cands = [x for x in labs[lo:hi] if (x["scale"], x["no"]) not in used and abs(x["price"] - lb["price"]) < 0.005]
-                    if [(x["scale"], x["no"]) for x in cands] != [(lb["scale"], lb["no"])]:
+                    cands = [x for x in by_day[t["when"].date()] if x["when"] <= t["when"] + self.TILL_AFTER
+                             and abs(x["price"] - lb["price"]) < 0.005]
+                    if [key(x) for x in cands] != [key(lb)]:
                         bump(lb)
                         changed += 1
-                    used.add((lb["scale"], lb["no"]))
+            if not changed:
+                # the graded cells (each guest roaster's kilograms a quarter) clear of a rounding edge
+                cell = collections.defaultdict(list)
+                for x in self.labels:
+                    if x["sold"]:
+                        cell[(x["roaster"], K.quarter(x["when"].date()))].append(x)
+                for c in sorted(cell):
+                    v = sum(x["kg"] for x in cell[c])
+                    if abs((v * 10) % 1 - 0.5) < 0.04:
+                        movable = [x for x in cell[c] if not (x["scale"] == "S2" and x["shown"] != x["when"])]
+                        bump(max(movable, key=lambda x: (x["when"], x["no"])))
+                        changed += 1
             if not changed:
                 break
+        else:
+            raise RuntimeError("the counter's labels did not settle to one reading")
         self.counter_iterations = it
 
     def _label(self, scale, seq, when, coffee, weight, sold):

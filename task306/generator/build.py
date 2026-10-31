@@ -1,145 +1,144 @@
-"""Build task306 from its seed: the pack (target/), every owed figure computed from the pack alone, the goldens
-(golden/), figures.json, submission.md and metadata.json; then the checks, a second build into a scratch folder that
-has to match byte for byte, target.zip and the independent verifier on the zip.
+"""Build task306's pack, goldens, figures.json, submission.md and metadata.json twice, require byte-identical output,
+cut target.zip, then run the checks and the verifier.
 
-    python3 task306/generator/build.py            (full)
-    python3 task306/generator/build.py --once     (one build, no rebuild, no zip)
+    python3 task306/generator/build.py
 """
 import datetime as dt
 import hashlib
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import analysis as A
-import docs as D
-import pack as P
-import postprocess
-import season as S
-import world as W
-
 TASK = os.path.dirname(HERE)
-TARGET = os.path.join(TASK, "target")
-GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 11, 2, 9, 30, 0)       # the morning the Board folder was put together
+sys.path.insert(0, HERE)
+import docs as D    # noqa: E402
+import golden as GD  # noqa: E402
+import pack as PK   # noqa: E402
+import world as W   # noqa: E402
+
+STAMP = (2026, 12, 1, 7, 15, 0)
+SOURCES = {
+    "master": "the dealing desk's security master (SEDOL, ISIN, index band, corporate actions)",
+    "market": "an exchange data vendor's daily closes and volumes for the London market",
+    "backtests": "a quantitative research team's backtest summary workbook",
+    "trades": "a backtest engine's rebalance trade log",
+    "orders": "an order management system's order blotter export",
+    "fills": "an order management system's fill (execution) export",
+    "accounts": "a dealing desk's trading account register",
+    "policy": "an investment committee's capital allocation policy",
+    "tca": "a dealing desk's transaction cost analysis standard",
+    "request": "the chief investment officer's email",
+    "commissions": "a dealing desk's broker commission schedule",
+    "esg": "an asset manager's ESG exclusion list",
+    "allocations": "an order management system's post-trade block allocation export",
+}
 
 
-def build_target(target):
-    os.makedirs(target, exist_ok=True)
-    F = {k: os.path.join(target, v) for k, v in P.FILES.items()}
-    P.write_ylt(F["ylt"], W.ylt())
-    rec, _ = W.record()
-    named = P.record_rows(sorted(rec))
-    P.write_hindcast(F["hindcast"], named)
-    P.write_experience(F["experience"], named)
-    claims, adj = S.season2026()
-    P.write_claims(F["claims"], claims)
-    P.write_adjusters(F["adjusters"], adj)
-    home, farms, locations, coins = S.exposure()
-    P.write_home(F["home"], home)
-    P.write_farm(F["farm"], farms, locations)
-    P.write_coins(F["coins"], coins)
-    P.write_flood(F["flood"])
-    P.write_panel(F["panel"])
-    D.capital_policy(F["capital"])
-    postprocess.scrub(F["capital"], W.ORG, "2026-06-17")
-    D.broker_quote(F["quote"])
-    postprocess.scrub(F["quote"], W.BROKER, "2026-10-14")
-    D.expiring_wording(F["wording"])
-    postprocess.scrub(F["wording"], W.BROKER, "2025-12-09")
-    D.request_eml(F["request"])
+def build_pack(out):
+    os.makedirs(out, exist_ok=True)
+    f = lambda k: os.path.join(out, PK.FILES[k])
+    univ = W.universe()
+    days = W.trading_days()
+    mkt, cons, month_end = W.market(univ, days)
+    cands = W.candidates(univ, days, month_end)
+    orders = W.live_orders(univ, mkt, days, month_end)
+    n = {}
+    PK.write_master(univ, cons, f("master"))
+    n["market"] = PK.write_market(mkt, univ, f("market"))
+    PK.write_backtests(f("backtests"))
+    PK.write_trades(cands, f("trades"))
+    n["fills"] = PK.write_orders_fills(orders, f("orders"), f("fills"))
+    PK.write_allocations(orders, f("allocations"))
+    PK.write_accounts(f("accounts"))
+    PK.write_esg(univ, f("esg"))
+    PK.write_commissions(f("commissions"))
+    D.policy(f("policy"))
+    D.tca(f("tca"))
+    D.request(f("request"))
+    t = dt.datetime(*STAMP).timestamp()
+    for k in PK.FILES:
+        os.utime(f(k), (t, t))
+    return n
 
 
-def figures(target):
-    """every owed figure, from the pack alone"""
-    g = A.programme(target, "golden")
-    rec = A.record(target)
-    rf = A.record_follows(rec)
-    pooled = A.loads(target, "pooled")[1]
-    a = A.ask_a(target)
-    b = A.ask_b(target)
-    return {
-        "gross": g["gross"], "net_base": g["net_base"], "net_both": g["net_both"],
-        "release_sec": g["release_sec"], "margin_sec": g["margin_sec"], "value": g["value"],
-        "rec_sec": g["rec_sec"], "rp_sec": g["rp_sec"], "release_base": g["release_base"],
-        "load_lone": g["loads"][0], "load_follow": g["loads"][1], "pooled": pooled,
-        "record": rec, "record_follow": [bool(x) for x in rf],
-        "occ2026": a["occurrences"], "recovery2026": a["recovery"], "reinstatement2026": a["reinstatement"],
-        "farm_si": b,
-    }
-
-
-def stamp(folder):
-    t = dt.datetime(*STAMP, tzinfo=dt.timezone.utc).timestamp()
-    for f in os.listdir(folder):
-        os.utime(os.path.join(folder, f), (t, t))
+def metadata(n):
+    meta = {"task": "task306", "architecture": 4, "as_of": "2026-12-01",
+            "files": {PK.FILES[k]: {"source": SOURCES[k], "date": "2026-12-01", "license": "synthetic, CC0",
+                                    "role": "distractor" if k in PK.DISTRACTORS else "evidence"}
+                      for k in PK.FILES},
+            "distractors": [PK.FILES[k] for k in PK.DISTRACTORS],
+            "largest_file": {"name": PK.FILES["market"], "rows": n["market"]},
+            "fills_rows": n["fills"],
+            "deliverables": [GD.DECK, GD.BOOK]}
+    return meta
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = {}
+    for root, _d, files in os.walk(folder):
+        for fn in sorted(files):
+            p = os.path.join(root, fn)
+            h[os.path.relpath(p, folder)] = hashlib.sha256(open(p, "rb").read()).hexdigest()
+    return h
 
 
-def fresh(folder):
-    if os.path.isdir(folder):
-        for f in os.listdir(folder):
-            os.remove(os.path.join(folder, f))
-    os.makedirs(folder, exist_ok=True)
+def one_build(base):
+    target, golden = os.path.join(base, "target"), os.path.join(base, "golden")
+    n = build_pack(target)
+    R, fig = GD.write_all(target, golden, base)
+    json.dump(fig, open(os.path.join(base, "figures.json"), "w"), indent=1, sort_keys=True)
+    json.dump(metadata(n), open(os.path.join(base, "metadata.json"), "w"), indent=1, sort_keys=True)
+    return digest(base), fig
 
 
-def cut_zip():
-    zp = os.path.join(TASK, "target.zip")
-    with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
-        for f in sorted(os.listdir(TARGET)):
-            zi = zipfile.ZipInfo(f, date_time=STAMP)
+def cut_zip(target, path):
+    t = STAMP
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for fn in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(fn, date_time=t)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(TARGET, f), "rb").read())
-    return zp
+            z.writestr(zi, open(os.path.join(target, fn), "rb").read())
 
 
-def main(second=True, checks=True):
-    import golden as GD
-    import writeup as WU
-    fresh(TARGET)
-    build_target(TARGET)
-    stamp(TARGET)
-    G = figures(TARGET)
-    fresh(GOLDEN)
-    GD.write(GOLDEN, G)
-    stamp(GOLDEN)
-    WU.write(TASK, G)
-    if checks:
-        import checks as C
-        assert not C.main(TARGET), "checks failed"
-    if second:
-        tmp = tempfile.mkdtemp()
-        t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
-        build_target(t2)
-        stamp(t2)
-        os.makedirs(g2, exist_ok=True)
-        GD.write(g2, figures(t2))
-        stamp(g2)
-        d1, d2 = digest(TARGET), digest(t2)
-        assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]
-        e1, e2 = digest(GOLDEN), digest(g2)
-        assert e1 == e2, [f for f in e1 if e1[f] != e2.get(f)]
-        shutil.rmtree(tmp)
-        zp = cut_zip()
-        print("byte-identical rebuild; target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
-        import verify as V
-        assert not V.main(zp), "verify failed"
-    return G
+def main():
+    a, b = tempfile.mkdtemp(), tempfile.mkdtemp()
+    ha, fig = one_build(a)
+    hb, _ = one_build(b)
+    same = ha == hb
+    print("two builds byte-identical:", same, "(%d files)" % len(ha))
+    if not same:
+        for k in sorted(set(ha) | set(hb)):
+            if ha.get(k) != hb.get(k):
+                print("  differs:", k)
+        sys.exit(1)
+    for sub in ("target", "golden"):
+        dst = os.path.join(TASK, sub)
+        if os.path.isdir(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(os.path.join(a, sub), dst)
+    shutil.copy(os.path.join(a, "figures.json"), os.path.join(HERE, "figures.json"))
+    shutil.copy(os.path.join(a, "metadata.json"), os.path.join(TASK, "metadata.json"))
+    shutil.copy(os.path.join(a, "submission.md"), os.path.join(TASK, "submission.md"))
+    shutil.rmtree(a)
+    shutil.rmtree(b)
+    zp = os.path.join(TASK, "target.zip")
+    cut_zip(os.path.join(TASK, "target"), zp)
+    print("target.zip sha256", hashlib.sha256(open(zp, "rb").read()).hexdigest())
+    print("call", fig["call"], "runner-up", fig["runner_up"], "gap", fig["gap_gbp_m"])
+    for script in ("checks.py", "verify.py"):
+        p = os.path.join(HERE, script)
+        if os.path.exists(p):
+            rc = subprocess.call([sys.executable, p])
+            print(script, "exit", rc)
+            if rc:
+                sys.exit(rc)
 
 
 if __name__ == "__main__":
-    if "--target-only" in sys.argv:
-        fresh(TARGET)
-        build_target(TARGET)
-        stamp(TARGET)
-    else:
-        main(second="--once" not in sys.argv, checks="--nochecks" not in sys.argv)
+    main()

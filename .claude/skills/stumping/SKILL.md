@@ -78,6 +78,13 @@ stated score deciding the call is a backdrop at any depth. In General Statistics
 of the method: the deciding quantity is the task type's own statistical object, and replacing it with a
 generic summary must change the call.
 
+**The literal standard is the golden.** A governing standard executed word for word gives the golden; a golden
+that needs an adjustment the standard does not ask for (a behavioural add-on, a correction for an artefact) files
+a withheld rule, and the judge reads it so. task482's costing standard, executed on the year's claims, filed 3,000
+where the golden added back the work members put off and filed 2,000. An artefact that inflates the raw figures
+is Layer 1 even when the method that removes it is the field's own: removing it is catching a defect, a planted
+flip (task191: four fixed structures firing on a quarter of their passes decided the depot).
+
 **The `Not rule application:` line carries three numbers.** "Does a filed rule name the method?" is not the
 test; **"is anything left to decide once every filed rule and the data are read?"** is. The line gives the
 spread of the **enumerated** family (every construction a competent analyst would reach for), the spread of

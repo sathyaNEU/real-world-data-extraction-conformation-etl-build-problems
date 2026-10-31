@@ -1,21 +1,21 @@
 {
   "task": "task191",
-  "architecture": "v3 (re-root 2026-10-31: a municipal bus company's collision warnings by depot, the 2027 driver-attention programme read on the warnings that were genuine)",
+  "architecture": "v4 (re-root 2026-10-31: a regional bank's transaction-monitoring scenarios, the 2027 tuning set read on the share of each scenario's alerts that end in a SAR, the alerts still under investigation included)",
   "drawn": "2026-10-31",
-  "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 2 moved to lineage, spent at stage 2",
-  "domain": "human-factors-ergonomics",
-  "subdomain": "safety-incident-error-analysis",
-  "client_domain": "human-factors-ergonomics",
-  "niche": "a municipal bus fleet's forward-collision and pedestrian warnings, read for the depots whose drivers let genuine warnings pass",
+  "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 3 moved to lineage, spent at stage 4 (judge SEND_BACK on Gate G and Gate H3)",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "fraud-aml-detection",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a regional bank's AML transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious activity report too rarely to escape the next year's tuning",
   "objective": "anomaly-detection",
-  "shape": "other",
+  "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "scoring_unit": "other",
-  "answer": "San Lázaro: the 2027 Driver-Attention Programme runs at San Lázaro and at no other depot",
-  "answer_source": "submission.md block 1; golden attention_programme_depots_2027.docx and warning_response_by_depot_2026.xlsx; generator/figures.json call.depots",
+  "answer": "",
+  "answer_source": "submission.md block 1; golden tuning paper and alert figures workbook; generator/figures.json call",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
@@ -23,74 +23,68 @@
   ],
   "generators": [
     "G15",
-    "G2",
-    "G18"
+    "G12",
+    "G13"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "classification_error",
+  "gate_g": "forecasting",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "informative_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who dedupes the events, reads both firmware versions, converts the clock and allocates the buses takes each depot's no-brake share of its collision warnings against the fleet's and files Hornacho and Valdeolmos; one move on, setting the busiest or most ignored places aside as nuisance, files La Ribera; both read every rule right and are wrong because the places are told apart by how often they fire per bus, not by how loud they are.",
-  "domain_test": "The deciding quantity is each depot's rate of not braking on genuine collision warnings, the human-factors measure of warning compliance, which alarm research reads on valid alarms only because operators rightly learn to let a warning that is false at a known place go; with another field's nouns (fraud alerts, smoke alarms) there is no bus passing a place at speed, no fixed structure that fires on nearly every pass and no brake response, and the task stops reading the same.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:fixed-place-false-warnings-told-apart-by-share-of-passes",
+  "analyst_test": "A strong analyst who merges the re-run duplicates, reads the replaced scenario with its replacement, carries each alert to the investigation it joined and reads the standard right (every alert raised in the year counts, those still under investigation by how they will end) projects the undecided alerts at the share of SARs among the scenario's decided ones, or reads productivity over decided alerts alone, and sends the slow-investigation scenarios to tuning; both read every rule right and are wrong because an alert heading for a SAR stays open for months while one heading for a closure without filing is closed within weeks, so a scenario's undecided alerts are mostly its SARs to come.",
+  "domain_test": "The deciding quantity is each scenario's alert-to-SAR conversion, the productivity measure AML tuning reads, and it is open on any extract because a SAR comes only after escalation, an investigation and the filing decision, months after the alert, while an alert closed without suspicion is closed at triage within days; put another field's nouns in (complaints resolved, claims paid) and nothing in them takes a suspicious-activity investigation's months to reach the rare outcome while the common one closes at once, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:undecided-alerts-are-mostly-sars-to-come",
   "layer1": [
-    "warnings stamped in UTC beside a running-time database in local time, across the 25 October 2026 clock change",
-    "warnings located by GPS point while running times are kept by stop-to-stop link, matched through the link register",
-    "the December 2025 network change renumbering links and moving routes between depots",
-    "drivers found through the ticket machine's log-on records, which leave gaps and double log-ons",
-    "buses lent between depots for days at a time",
-    "telematics messages resent after lost connections, the same warning twice",
-    "warning types coded differently by two firmware versions"
+    "alerts stamped in UTC by the overnight monitoring run while the bank's business day is Eastern time",
+    "a March 2026 re-run of one night's monitoring that raised a day's alerts a second time under new alert numbers",
+    "a scenario replaced in April 2026 by a re-thresholded version under a new code",
+    "alerts merged into investigations that span several scenarios, the SAR decision recorded on the investigation",
+    "SAR filings that are initial, continuing-activity or amended, told apart only by their prior-report references",
+    "investigation records exported as an event history in JSON"
   ],
-  "stakeholder_role": "the bus company's head of driving safety, who proposes the 2027 driver-attention programme's depots to the management committee",
+  "stakeholder_role": "the bank's BSA/AML officer, who sets the 2027 monitoring tuning plan before the BSA/AML committee",
   "role_family": "compliance_or_audit",
   "spine": {
-    "file": "adas_collision_warnings_2025-10_2026-10.csv",
-    "rows": 99207,
-    "entity": "one warning message from a bus's driver-assistance camera (an event re-sent after a lost connection appears twice)",
-    "grain": "camera warning message, October 2025 to 1 November 2026",
+    "file": "tm_alerts_2025-10_2026-10.csv",
+    "rows": 0,
+    "entity": "one alert a monitoring scenario raised on a customer's activity (a re-run alert appears twice)",
+    "grain": "alert, October 2025 to October 2026",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "utility_or_infrastructure",
+  "forum": "committee_or_panel",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "Spain (a fictional Andalusian city and its municipal bus network)",
-    "currency": "EUR",
-    "org_type": "municipal bus company",
+    "geography": "United States (a fictional regional bank in Ohio)",
+    "currency": "USD",
+    "org_type": "regional commercial bank",
     "invented_names": [
-      "Lorvega",
-      "Empresa Municipal de Autobuses de Lorvega"
+      "Kestrel Point Bank"
     ],
     "people": [
-      "Miriam Vilanova",
-      "Paulina Mariño",
-      "Trinidad Arévalo",
-      "Baudelio Carballo",
-      "Luciana Berrocal",
-      "Pío Roig"
+      "Katherine Cobb",
+      "Miguel Swanson",
+      "Leah Berg"
     ]
   },
   "deliverables": [
-    "attention_programme_depots_2027.docx",
-    "warning_response_by_depot_2026.xlsx",
-    "warning_response_2026.svg"
+    "tuning_scenarios_2027.docx",
+    "tm_alert_figures_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "where",
-  "driver": "Each unit's rate of failing to act on a warning is read only on the warnings whose trigger was real, because the warning system fires on a large share of the passes at a few fixed places where nothing is in the way and operators rightly let those go, while the places where real hazards cluster fire on a small share of passes; the two kinds of place are told apart only by the share of passes on which the system fires, which no count of warnings carries, so the units whose routes cross the fixed places look worst and the unit that lets real hazards pass looks ordinary.",
-  "driver_concrete": "Each depot's share of genuine forward-collision and pedestrian warnings with no brake application within two seconds, where the warnings four fixed structures of the new network raise (an underpass beneath the railway, a bus-only link road, the busway's bollard gates and a sculpture on a roundabout) on a quarter or more of the buses passing them are not genuine and are set aside, told apart from the market-day shared space where pedestrians really step out, which fires on 2.6 per cent of passes, only by warnings per bus passage, the passes counted from the service return's trips operated over the stop-and-route register's sequences.",
-  "stump": "The fleet dashboard's measure, the no-brake share of every collision warning by depot against the fleet's, files Hornacho and Valdeolmos, whose lines cross the four fixed structures; setting aside the busiest or most ignored places as nuisance also drops the Plaza de Abastos, where pedestrians are really in the path, and files La Ribera; San Lázaro, whose drivers let 96.9 per cent of the Plaza's genuine warnings go, is flagged only once the places are classed by warnings per bus pass.",
+  "question_form": "whether",
+  "driver": "Each unit's share of cases that end in the rare outcome is read over every case it raised in the period, those still undecided included, and because a case heading for the rare outcome stays open for months while one heading for the common outcome is closed within weeks, the undecided cases are mostly rare-outcome cases; reading the share over decided cases alone, or projecting the undecided ones at the decided cases' share, understates it most for the units whose rare-outcome cases take longest to decide, so units that clear the floor read below it.",
+  "driver_concrete": "Each transaction-monitoring scenario's productivity, the share of its alerts raised in the year to 30 September 2026 that end in a SAR, read on 2 November 2026 when the slow scenarios' SAR cases (rapid movement of funds, mule inflows, trade-counterparty wires) are mostly still under investigation while their alerts closed without suspicion were closed at triage within days.",
+  "stump": "Productivity read the way the monitoring MI reads it, the SARs among the alerts already decided (or the undecided alerts projected at that share), sends the rapid-movement, mule-inflow and trade-counterparty scenarios to tuning beside the genuinely unproductive ones; the step that lands a solver there is taking the undecided alerts to end like the decided ones, when an alert heading for a SAR stays under investigation for months and one heading for a closure without filing is closed within days.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task193": "surface promotion on two generic card axes only (decisive gap objective, decision designation_set): task193 dates first exposures inside a self-controlled window in pharmacoepidemiology, a model choice; task191 classes alarm places by their firing share of bus passes, no shared mechanism, file or world.",
-    "task473": "surface promotion on the decision type alone (designation_set): task473 weights record-linkage positives by an observer's noticing share; task191 classes alarm places by firing share per pass.",
-    "task470": "both class records as signal or artifact (classification_error), but task470 reads a use rhythm inside each unit's own meter series, while task191 reads a place's warnings against an exposure count built from another system (the return's trips over the register's sequences); the shared rounding construction in the prompt was reworded at build."
+    "task192": "task192's lineage v2 counted a cohort's eventual events with the other terminal state leaving the population at risk, in conflict-event data; task191 reads a share of decided outcomes where the time to decision itself depends on the outcome, so the undecided cases carry the rare outcome, in AML alert dispositions.",
+    "task194": "task194 completes counts that crystallise late through a coding lag read across two vintages; task191 has no lag in the counts, only open investigations whose outcome is still to come.",
+    "task201": "task201 rebuilds exposure time lost before an event was reported; task191 estimates the outcome of cases still open, not their exposure."
   },
   "lineage": [
     {
@@ -194,16 +188,63 @@
       ],
       "question_form": "what",
       "fate": "spent 2026-10-31 at stage 2 with no data cut: the previous fork's drafting of the knockout-screen world was interrupted by a safety classifier, so the slot re-rooted to a cell far from genome editing, laboratory biology and anything dual-use; the design was never built or shipped"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-31",
+      "domain": "human-factors-ergonomics",
+      "subdomain": "safety-incident-error-analysis",
+      "niche": "a municipal bus fleet's forward-collision and pedestrian warnings, read for the depots whose drivers let genuine warnings pass",
+      "objective": "anomaly-detection",
+      "shape": "other",
+      "decision_type": "designation_set",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "objective",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G15",
+        "G2",
+        "G18"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "none",
+      "stump_strategy": "classification_error",
+      "context_artifact": "filed_standard",
+      "forum": "executive_team",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "utility_or_infrastructure",
+      "role_family": "compliance_or_audit",
+      "driver": "Each unit's rate of failing to act on a warning is read only on the warnings whose trigger was real, because the warning system fires on a large share of the passes at a few fixed places where nothing is in the way and operators rightly let those go, while the places where real hazards cluster fire on a small share of passes; the two kinds of place are told apart only by the share of passes on which the system fires, which no count of warnings carries, so the units whose routes cross the fixed places look worst and the unit that lets real hazards pass looks ordinary.",
+      "driver_concrete": "Each depot's share of genuine forward-collision and pedestrian warnings with no brake application within two seconds, where the warnings four fixed structures of the new network raise (an underpass beneath the railway, a bus-only link road, the busway's bollard gates and a sculpture on a roundabout) on a quarter or more of the buses passing them are not genuine and are set aside, told apart from the market-day shared space where pedestrians really step out, which fires on 2.6 per cent of passes, only by warnings per bus passage, the passes counted from the service return's trips operated over the stop-and-route register's sequences.",
+      "stump": "The fleet dashboard's measure, the no-brake share of every collision warning by depot against the fleet's, files Hornacho and Valdeolmos, whose lines cross the four fixed structures; setting aside the busiest or most ignored places as nuisance also drops the Plaza de Abastos, where pedestrians are really in the path, and files La Ribera; San Lázaro, whose drivers let 96.9 per cent of the Plaza's genuine warnings go, is flagged only once the places are classed by warnings per bus pass.",
+      "spent": "2026-10-31, stage 4: the judge returned DETERMINISTIC with SEND_BACK on Gate G and Gate H3 and the reconciliation confirmed it; the decisive step was catching four fixed structures whose warnings inflated the raw rates (planted_defect_flip, surface_read_rejection, sole_data_defect yes), so Layer 1 mess carried the stump"
     }
   ],
   "notes": "",
-  "registered": "2026-10-31T19:28:35Z",
+  "registered": "2026-10-31T21:24:59Z",
   "lineage_shells": [
     {
       "question form": "which",
       "second-sentence opener": "the",
       "rounding opener": "shortfalls",
       "deliverable set": "png+xlsx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "attention_programme_depots_2027.docx",
+      "rounding opener": "state",
+      "deliverable set": "docx+svg+xlsx"
     }
-  ]
+  ],
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "attention",
+    "rounding opener": "state",
+    "deliverable set": "docx+svg+xlsx"
+  }
 }

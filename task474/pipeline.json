@@ -1,10 +1,10 @@
 {
  "task": "task474",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "the raw pass mark on the new 60-question theory paper that holds the old paper's standard of 65, read through the candidates who failed the old paper and sat the new one, their second attempt set against the retest gain the old paper's own retakes measure, matched on the first result (default: the 2025 first-time pass rate held on the 2026 first-timers, a cohort changed by experienced gas engineers)",
  "architecture": 7,
@@ -14,8 +14,8 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 1fc4d13f, every line ruled in the design note's Leak sweep",
-  "reader": ""
+  "leak_py": "REVIEW on 1fc4d13f, three lines ruled",
+  "reader": "read 1: no leak, question 6 analytical"
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-31 (architecture 7)",
@@ -23,9 +23,9 @@
   "surface": "see the PAUSED commit message"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (architecture 7)"
  },
  "returned": [
   {
@@ -35,7 +35,7 @@
    "commit": "DRAWN (task474) architecture 7"
   }
  ],
- "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn them). Rebuild with python3 task474/generator/make.py (byte-identical, target.zip sha256 1fc4d13fdf97b07d3aa11df9dffc59f1815840cfd79f01524671502ee4f00b4d), spawn the leak reader from the brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task474_stage4_leak_brief.md on the scratch copy /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task474/ and the determinism-judge agent together in the background, fix every finding in one generator pass, then stage 5 (ledger row, card answer, SHIPPED commit with target.zip and golden/ force-added).",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,

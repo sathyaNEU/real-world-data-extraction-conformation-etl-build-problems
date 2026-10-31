@@ -1,138 +1,119 @@
-"""Independent verifier: recomputes the July to September split, the gap path and the three regional asks from target/
-alone, with its own parsing, raking and matching (no generator module), and compares them with the goldens."""
-import csv
+"""An independent recompute of every graded figure from target.zip alone, with pandas and none of the generator's
+modules: the call (each unit's load as its inflows carry it in), the discharges by quarter and the loggers' hours.
+
+    python3 task125/generator/verify.py
+"""
+import io
+import json
 import os
 import re
 import sys
 import zipfile
-from collections import defaultdict
 
 import numpy as np
-import openpyxl
-import pyarrow.parquet as pq
+import pandas as pd
 
-REG = ["VEL", "CAR", "PEL", "HAS", "TIR", "DUN"]
-NAME = {"VEL": "Velmouth", "CAR": "Carrowdene", "PEL": "Pellard", "HAS": "Haskvale", "TIR": "Tirrin", "DUN": "Dunmarrow"}
-
-
-def controls(target):
-    wb = openpyxl.load_workbook(os.path.join(target, "population_controls_2023q1_2027q4.xlsx"), data_only=True)
-    reg = {r[0]: np.array(r[2:8], float) for r in wb["Region"].iter_rows(min_row=2, values_only=True)}
-    cel = {r[0]: np.array(r[2:16], float) for r in wb["Age and sex"].iter_rows(min_row=2, values_only=True)}
-    return reg, cel
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+FAIL = []
 
 
-def ipf(region, cell, rt, ct):
-    w = np.ones(len(region))
-    for _ in range(500):
-        w = w * rt[region] / np.bincount(region, w, 6)[region]
-        f = ct / np.bincount(cell, w, 14)
-        w = w * f[cell]
-        if abs(f - 1).max() < 1e-13:
-            break
-    return w
+def check(label, cond, detail=""):
+    print(("ok    " if cond else "FAIL  ") + label + ("" if cond else "  %s" % (detail,)))
+    if not cond:
+        FAIL.append(label)
 
 
-def ur_er(st, w):
-    e, u = w[st == 1].sum(), w[st == 2].sum()
-    return 100 * u / (e + u), 100 * e / w.sum()
+def main():
+    z = zipfile.ZipFile(os.path.join(TASK, "target.zip"))
+    rd = lambda n: pd.read_csv(io.BytesIO(z.read(n)), dtype=str)
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    reg = pd.read_excel(io.BytesIO(z.read("umzimela_monitoring_network_register.xlsx")), sheet_name=None, dtype=str)
+    sites, weirs, units = reg["Sites"], reg["Weirs"], reg["Resource units"]
+    bmon = {r.resource_unit: r.site_code for r in sites.itertuples() if str(r.purpose).startswith("boundary")}
+    stn = dict(zip(weirs.weir, weirs.station))
+    lab = rd("umzimela_wq_lab_results_2025_26.csv")
+    s = lab[lab.analyte == "SO4"].copy()
+    s["rr"] = s.lab_sample_id.str.endswith("-R")
+    s = s.sort_values(["site_code", "sample_date", "rr", "analysed_date"]).groupby(["site_code", "sample_date"]).tail(1)
+    so4 = {(a, b): float(c) for a, b, c in zip(s.site_code, s.sample_date, s.result)}
+    gq = rd("umzimela_gauges_daily_2025_26.csv")
+    flow = {(a, b): float(c) for a, b, c in zip(gq.station, gq.date, gq.mean_flow_m3s)}
+    dates = sorted({d for d in s.sample_date if "2026-05-01" <= d <= "2026-09-30"})
+    check("eleven dry-season runs", len(dates) == 11, len(dates))
+    up = {r.resource_unit: [x.strip() for x in str(r.upstream_units).split(",") if x.strip() and x != "nan"]
+          for r in units.itertuples()}
+    weir = dict(zip(units.resource_unit, units.lower_boundary_weir))
+    alloc = fig["allocations_t_per_day"]
 
-
-def main(target, golden):
-    t = pq.read_table(os.path.join(target, "hls_person_quarter_2023q1_2026q3.parquet")).to_pydict()
-    n = len(t["quarter"])
-    first = {}
-    with open(os.path.join(target, "hls_call_records_2025q1_2026q3.csv"), encoding="utf-8") as fh:
-        calls = list(csv.DictReader(fh))
-    for r in calls:
-        if r["outcome"] == "110":
-            s = r["serial"][:9]
-            first[s] = min(first.get(s, 99), int(r["visit_no"]))
-    reg, cel = controls(target)
-
-    def sample(q):
-        idx = [i for i in range(n) if t["quarter"][i] == q]
-        region = np.array([REG.index(t["region"][i]) for i in idx])
-        age = np.array([t["age"][i] for i in idx])
-        grp = np.digitize(age, [25, 35, 45, 55, 65, 75])
-        cell = 2 * grp + np.array([t["sex"][i] for i in idx]) - 1
-        st = np.array([t["ilo_status"][i] for i in idx])
-        wave = np.array([t["wave"][i] for i in idx])
-        late = np.array([first.get(t["serial"][i][:9], 0) >= 4 for i in idx])
-        wt = np.array([t["weight"][i] for i in idx])
-        return region, cell, st, wave, late, wt
-
-    # the one quarter with no capped intake at any wave and a visit history for every household: January to March
-    # 2026. The cap runs on the intakes of 2026Q2 to 2027Q1, so quarter q holds them at waves q - intake + 1.
-    region, cell, st, wave, late, _ = sample("2026Q1")
-    base = ur_er(st, ipf(region, cell, reg["2026Q1"], cel["2026Q1"]))
-    path = []
-    for pos in [(1, 2), (1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5)]:      # 2026Q3 .. 2027Q3
-        keep = ~(np.isin(wave, pos) & late)
-        r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q1"], cel["2026Q1"]))
-        path.append((r[0] - base[0], r[1] - base[1]))
-    keep = ~((wave == 1) & late)                                                # 2026Q2, one capped intake at wave 1
-    r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q1"], cel["2026Q1"]))
-    prior = (r[0] - base[0], r[1] - base[1])
-    q2 = ur_er(*sample("2026Q2")[2::3])
-    q3 = ur_er(*sample("2026Q3")[2::3])
-    cap_u = path[0][0] - prior[0]
-    real_u = (q3[0] - q2[0]) - cap_u
-
-    # asks
-    register = {}
-    with open(os.path.join(target, "hls_address_register_2025q1_2026q3.csv"), encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            register[r["serial"]] = r["region"]
-    vis = defaultdict(set)
-    for r in calls:
-        if r["intake"] == "2026Q3":
-            vis[register[r["serial"][:9]]].add((r["serial"], r["visit_no"]))
-    key = lambda i: (t["serial"][i][:9], t["sex"][i], str(t["date_of_birth"][i]))
-    q2p = {key(i): i for i in range(n) if t["quarter"][i] == "2026Q2"}
-    q3p = {key(i): i for i in range(n) if t["quarter"][i] == "2026Q3"}
-    num, den = defaultdict(int), defaultdict(int)
-    for k, i in q2p.items():
-        if t["ilo_status"][i] == 2 and k in q3p:
-            den[t["region"][i]] += 1
-            num[t["region"][i]] += t["ilo_status"][q3p[k]] == 1
-    hours = defaultdict(float)
-    for i in range(n):
-        if t["quarter"][i] == "2026Q3" and t["ilo_status"][i] == 1:
-            h = t["actual_hours"][i]
-            if t["mode"][i] == "CATI":
-                whole = int(h)
-                h = whole + round((h - whole) * 100) / 60
-            hours[t["region"][i]] += t["weight"][i] * h
-
-    # compare with the goldens
-    wb = openpyxl.load_workbook(os.path.join(golden, "hls_visit_limit_path_2027.xlsx"), data_only=True)
-    gp = [r for r in wb["Gap path"].iter_rows(min_row=5, max_row=9, values_only=True)]
-    for (u, e), r in zip(path, gp):
-        assert "%.2f" % r[1] == "%.2f" % round(u, 2) and "%.2f" % r[2] == "%.2f" % round(e, 2), (r, u, e)
-    split = {r[0]: r for r in wb["Gap path"].iter_rows(min_row=12, max_row=20, values_only=True) if r[0]}
-    assert "%.2f" % split["of which the cap"][1] == "%.2f" % round(cap_u, 2), (split["of which the cap"][1], cap_u)
-    assert "%.2f" % split["of which the labour market"][1] == "%.2f" % round(real_u, 2)
-    assert "%.2f" % split["Published, July to September 2026"][1] == "%.2f" % round(q3[0], 2)
-    assert "%.2f" % split["Gap, April to June 2026"][1] == "%.2f" % round(prior[0], 2)
-    rg = {r[0]: r for r in wb["Regions"].iter_rows(min_row=4, max_row=9, values_only=True)}
-    for g in REG:
-        row = rg[NAME[g]]
-        assert row[1] == len(vis[g]), (g, row[1], len(vis[g]))
-        assert (row[2], row[3]) == (den[g], num[g]), (g, row[2:4], den[g], num[g])
-        assert "%.2f" % row[4] == "%.2f" % (100 * num[g] / den[g])
-        assert "%.1f" % row[5] == "%.1f" % (hours[g] / 1000), (g, row[5], hours[g])
-    with zipfile.ZipFile(os.path.join(golden, "hls_visit_limit_note_2026q3.docx")) as z:
-        x = re.sub(r"<[^>]+>", "", z.read("word/document.xml").decode("utf-8"))
-    assert "accounts for %.2f point of that rise and the labour market for %.2f point" % (round(cap_u, 2),
-                                                                                          round(real_u, 2)) in x
-    print("verify: OK (July to September: %.2f of the %.2f-point rise is the cap, against %.2f for the wave-1 route; "
-          "gap path %s; 18 regional figures recomputed independently)"
-          % (cap_u, q3[0] - q2[0], 0.0, "/".join("%.2f" % p[0] for p in path)))
+    def load(u, d):
+        if not up[u]:
+            return so4[(bmon[u], d)] * flow[(stn[weir[u]], d)] * 0.0864
+        return sum(load(i, d) for i in up[u])
+    loads = {u: np.mean([load(u, d) for d in dates]) for u in up}
+    over = sorted(u for u in loads if loads[u] > alloc[u])
+    check("the call: the units over their allocations", over == fig["call"]["over"], over)
+    check("each unit's load in whole tonnes a day", all(int(round(loads[u])) == fig["loads_whole"][u] for u in loads))
+    # ask A
+    rt = rd("wul_discharge_returns_2025_26.csv").sort_values("submitted_on").groupby(["discharge_point", "month"]).tail(1)
+    ins = rd("cma_compliance_inspections_2025_26.csv")
+    swap = {}
+    for r in ins.itertuples():
+        m = re.search(r"final reading ([0-9]+)", r.findings)
+        if m:
+            swap[r.discharge_point] = (r.date[:7], float(m.group(1)))
+    out = {}
+    for pt, g in rt.groupby("discharge_point"):
+        g = g.sort_values("month")
+        prev = None
+        mon = {}
+        for r in g.itertuples():
+            tot = float(r.totaliser_m3)
+            if prev is not None:
+                v = (swap[pt][1] - prev + tot) if (pt in swap and swap[pt][0] == r.month) else tot - prev
+                c = float(r.sulphate_mg_l)
+                if pt.split("-")[0] in ("KHC", "NCH", "MMC") and r.month >= "2025-11":
+                    c *= 96.06 / 32.06
+                mon[r.month] = v * c / 1e6
+            prev = tot
+        for q, ms in {"Q1": ("2025-10", "2025-11", "2025-12"), "Q2": ("2026-01", "2026-02", "2026-03"),
+                      "Q3": ("2026-04", "2026-05", "2026-06"), "Q4": ("2026-07", "2026-08", "2026-09")}.items():
+            out["%s %s" % (pt, q)] = int(round(sum(mon[m] for m in ms), -1))
+    check("ask A: every discharge point and quarter", out == fig["ask_a_tonnes"],
+          {k: (out[k], fig["ask_a_tonnes"][k]) for k in out if out[k] != fig["ask_a_tonnes"].get(k)})
+    # ask B
+    ec = rd("umzimela_ec_loggers_hourly_2025_26.csv")
+    ec["local"] = pd.to_datetime(ec.timestamp.str.replace("Z", "")) + pd.Timedelta(hours=2)
+    mem = rd("ec_logger_memory_downloads_2025_26.csv")
+    mem["local"] = pd.to_datetime(mem.reading_local)
+    allr = pd.concat([ec[["logger_id", "local", "ec_uS_cm"]], mem[["logger_id", "local", "ec_uS_cm"]]])
+    allr = allr.drop_duplicates(["logger_id", "local"])
+    allr["v"] = allr.ec_uS_cm.astype(float)
+    sv = rd("ec_logger_service_visits_2025_26.csv")
+    sv["t"] = pd.to_datetime(sv.visit_local)
+    trig = {r.ec_logger: float(r.ec_trigger_uS_cm) for r in sites.itertuples() if str(r.ec_logger) not in ("nan", "")}
+    res = {}
+    for lid, g in allr.groupby("logger_id"):
+        vs = sv[sv.logger_id == lid].sort_values("t")
+        tt = vs.t.tolist()
+        dd = [(float(a) - float(b)) if str(a) not in ("nan", "") else 0.0 for a, b in
+              zip(vs.reading_before_clean_uS_cm, vs.reading_after_clean_uS_cm)]
+        g = g.sort_values("local")
+        k = np.searchsorted(np.array(tt, dtype="datetime64[ns]"), g.local.values, side="right")
+        corr = []
+        for t, kk, v in zip(g.local, k, g.v):
+            if 0 < kk < len(tt):
+                frac = (t - tt[kk - 1]).total_seconds() / (tt[kk] - tt[kk - 1]).total_seconds()
+                v = v - dd[kk] * frac
+            corr.append(v)
+        g = g.assign(c=corr, m=g.local.dt.strftime("%Y-%m"))
+        for m in ("2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"):
+            res["%s %s" % (lid, m)] = int(((g.m == m) & (g.c > trig[lid])).sum())
+    check("ask B: every logger and month", res == fig["ask_b_hours"],
+          {k: (res[k], fig["ask_b_hours"][k]) for k in res if res[k] != fig["ask_b_hours"].get(k)})
+    print("verify: %s" % ("all passed" if not FAIL else "%d failed" % len(FAIL)))
+    return len(FAIL)
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.abspath(__file__))
-    task = os.path.dirname(here)
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(task, "target"),
-         sys.argv[2] if len(sys.argv) > 2 else os.path.join(task, "golden"))
+    sys.exit(1 if main() else 0)

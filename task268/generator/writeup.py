@@ -48,8 +48,9 @@ def write(R, F):
           "%d%%, %s next at %d%%." % (_n(F["homes_total"]), RN[call], F["call_share"], RN[runner], F["runner_share"]),
           "5. Counter: matched each label in counter_scale_labels_2026.csv to a SALE on terminal %s (labels printed in "
           "the 25 minutes before, plus accessories at coffee_counter_price_board_2026.pdf prices) or to a COUNTER "
-          "COFFEE LOOSE till line of its price; scale 2's labels %s to %s, printed under January dates, re-dated by the "
-          "offset that lines them up with those payments; S2 weights read as grams; unpaid labels left out." % (
+          "COFFEE LOOSE till line of its price earlier that day, as the board files; scale 2's labels %s to %s, "
+          "printed under January dates, re-dated by the offset that lines them up with those payments; S2 weights "
+          "read as grams; labels never paid for left out." % (
               K.COUNTER_TID, F["clock_block"][0], F["clock_block"][1]),
           "6. Funding: each MULTIBUY SAVING line in a deal's dates at the multibuy_deals_2026.xlsx rate in force on the "
           "sale day, each reversal netted against the receipt its refund cites, and each MULTIBUY ADJ line added at the "

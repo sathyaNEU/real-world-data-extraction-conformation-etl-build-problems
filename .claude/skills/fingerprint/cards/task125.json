@@ -10,8 +10,8 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Direct the mines of four resource units in 2027: KH1, MZ4, NT1 and NY2 carried more sulfate past their lower boundaries on the May to September 2026 runs than their allocations allow (22, 40, 27 and 40 t/d against 16, 34, 23 and 35), and every other unit is within its allocation; read as the boundary sample times the boundary flow, KH1, MZ2, NT1 and NY3 would be over, MZ2 and NY3 because their monitors sit in a mine stream's unmixed water (36 and 67 t/d against the 27 and 52 their inflows carry down)",
+  "answer_source": "submission.md block 1 and generator/figures.json call.over (target.zip sha256 33368b607de56b2b)",
   "gap": [
     "objective",
     "population"
@@ -30,7 +30,7 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
   "analyst_test": "A strong analyst conforms the laboratory results, units and gauged flows, multiplies each resource unit's boundary-monitor concentration on every routine run by the boundary gauge's flow that day, averages May to September and flags the units whose mean run load tops their allocation, a set that is wrong because the boundary monitors below the mine-stream confluences sample one inflow's unmixed plume.",
   "domain_test": "The deciding quantity is each resource unit's sulfate flux past its boundary, which river water-quality practice reads as a representative, fully mixed concentration times flow, and the lateral mixing of a tributary into a river over kilometres below a confluence is river hydraulics that has no meaning once the nouns are a hospital's or a school's.",
@@ -44,17 +44,17 @@
     "site names spelt three ways across the field sheets and the register",
     "a gauge rating revision mid-year whose revised flows supersede the provisional"
   ],
-  "stakeholder_role": "Senior Manager: Water Resource Protection, preparing the Governing Board's 2027 directives paper",
+  "stakeholder_role": "Senior Manager: Water Resource Protection, preparing the 2027 directives the Chief Executive Officer signs",
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
     "file": "umzimela_wq_lab_results_2025_26.csv",
-    "rows": 0,
+    "rows": 5743,
     "entity": "one laboratory result for one analyte on one routine sample at one monitoring site",
     "grain": "sample x analyte",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "line_manager_or_team",
   "forcing_event": "period_close",
   "org_family": "government_agency",
   "world": {
@@ -66,7 +66,8 @@
     ],
     "people": [
       "Thandazile Nongalo",
-      "Sithembiso Sikhunyana"
+      "Sithembiso Sikhunyana",
+      "Bhekisisa Mpangazitha"
     ]
   },
   "deliverables": [
@@ -97,12 +98,26 @@
       "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point on the unemployment rate) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so each published quarter is a mix of capped and uncapped intakes, the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero."
     }
   ],
-  "notes": "",
-  "registered": "2026-10-31T20:42:11Z",
+  "notes": "Forum and context artifact redrawn after registration when task474 v7 entered the window with board_of_directors and register: the directives are the Chief Executive Officer's to sign under delegated powers, so the requester's own line acts on the paper (line_manager_or_team), and the file the requester works from is the monitoring programme's run log of routine sampling runs (operations_log).",
+  "registered": "2026-10-31T20:44:17Z",
   "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "i",
-    "rounding opener": "rates",
-    "deliverable set": "docx+xlsx"
-  }
+    "question form": "where",
+    "second-sentence opener": "the",
+    "rounding opener": "loads",
+    "deliverable set": "pdf+xlsx"
+  },
+  "lineage_shells": [
+    {
+      "question form": "how-much",
+      "second-sentence opener": "i",
+      "rounding opener": "give",
+      "deliverable set": "docx+xlsx"
+    },
+    {
+      "question form": "how-much",
+      "second-sentence opener": "i",
+      "rounding opener": "rates",
+      "deliverable set": "docx+xlsx"
+    }
+  ]
 }

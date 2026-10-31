@@ -274,6 +274,23 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   sums (each version rule, void and reversal reading). task482's 2025 measures sat 0.19 and 0.28 cents
   above a cent's edge, a judge's reversal reading landed them under it, and two graded thresholds moved a
   cent; grade such a figure at a unit the chain cannot cross, or move the intermediate mid-bin.
+- **A free parameter in the decisive estimate holds at every value a reader can defend.** Where the decisive
+  step carries a share, rate or weight the pack does not fix, the call holds from the naive value a literal
+  reader reaches first (a clock share, an even split, the pooled figure) to the field's own; otherwise a shipped
+  fact fixes the basis as an estimand. task181's dengue placement held only from 0.45 of the day at work, an
+  8-hour clock share filed seven barangays, and the re-judge sent it back.
+- **The graded term is the governing document's own word.** Ask for a quantity in the word its policy defines
+  it by; a near-synonym the policy uses elsewhere reads two ways. task306's capital policy defines a cover's
+  value and uses "worth" for the release alone; asked for its worth, two blocks of the write-up graded
+  different figures.
+- **A record-handling rule is filed or unmistakable.** A reopened, re-sent, amended or re-registered record's
+  date, owner or key that the golden assigns by convention is filed as a WHAT or forced by the data; a
+  convention a literal reader cannot reach moves every figure it touches. task306's 379 reopened claim lines,
+  dated by their original claim's instruction, moved the year's recovery by 134,000.
+- **A match across two systems by amount and time has one reading over the whole window family.** The
+  generator re-weighs or re-times any record that admits a second reading under every window near the filed
+  one and any order of consumption, and the checks assert it over that family; a filed window alone leaves the
+  order and the edges open. task268's counter read 122 card sales two ways until its labels were re-weighed.
 - **The bin is wider than the estimator, measured in bins before data is cut.** Where the graded figure is
   estimated rather than counted, three quantities are measured in units of its bin and written into the ladder:
   the decisive step's own worth, the spread between the defensible subgroups or samples an estimate could be

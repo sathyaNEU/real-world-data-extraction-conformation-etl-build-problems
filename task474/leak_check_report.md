@@ -35,6 +35,21 @@ Stump terms swept: reader, architecture, readers, first-time, resits, decisive, 
 
 ## Solver's-eye read
 
-Pending: the isolated reader runs at stage 4 from the main thread (brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task474_stage4_leak_brief.md). Architecture 6's reader rounds are in the history of this file.
+Architecture 7, read 1 on target.zip 1fc4d13f (isolated Sonnet reader, a fresh copy of prompt.txt and target/ only).
 
-Main thread on the REVIEW lines: sweep 3's pass mark, Harrowgate and theory paper are the awarding body's own nouns in the policy and the notice, which carry no mark, share or group, harmless; sweep 4's resits, equivalent, carries, register and sittings are AP-3's own words for its estimand and its resit rules, and the policy names no second-sitting reading, matching or cohort, harmless.
+1. Decisive step: no sentence states it; the nearest is AP-3 section 2 (the pass mark is the lowest raw mark no larger
+   share of an equivalent group reaches than reaches 65; an equivalent group's proficiency is the same whichever paper
+   it sat), the equating principle and not which candidates form the group.
+2. Ranking or stated pass mark on the new paper: none; results are held until the Board sets it.
+3. Helping file: none; AP-3 and the change notice govern, the request email is a cover note, the venues, providers,
+   feedback and item statistics are context and distractors.
+4. Answer figure or name: none; 65 is the standard.
+5. Population sentence: AP-3 section 2 (the estimand and its comparison) and section 4 (voided or unattended
+   sittings are not sittings); the prompt fixes the held results and the 2027 sittings.
+6. What decides: an analytical choice, which candidates make the equivalent group; the void status, resits, clocks and
+   the provider merger are Layer 1. The reader noted the register's two id columns make the route discoverable, a
+   stump-strength question the ladder answers (the cross-switch pairs side by side file 41).
+
+Sweep lines: AP-3 and the change notice share the call's nouns as its governing documents, harmless.
+
+Realism: the pack reads as an awarding body's folder; the paired centre and site lists are a real rollout's shape.

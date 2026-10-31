@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: online, accounts, member, settlement, nordhavn, decisive, reading, survey, duplication, members, rejected, gullhaven, analyst, method, carries, patient, wrenhaven, terminal, payments, reflex, re-root, development, fennick, estimand, dropped
+Stump terms swept: online, accounts, reading, members, member, settlement, nordhavn, decisive, survey, analyst, duplication, rejected, gullhaven, method, carries, patient, wrenhaven, terminal, payments, reflex, re-root, development, fennick, nothing, estimand
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `roastery_sampling_brief_2027.docx`: carries 4 of 5 distinctive words of the committed call: "The 2027 Roastery sampling goes to Oro Rosso's homes."
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `corcallys_rewards_terms_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, member, members); read whether the document names the move
+- **REVIEW** `corcallys_rewards_terms_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, members, member); read whether the document names the move
 - **REVIEW** `faircourt_merchant_agreement_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, settlement, terminal); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 2)
@@ -36,32 +36,27 @@ Stump terms swept: online, accounts, member, settlement, nordhavn, decisive, rea
 
 ## 11 prompt gate (clean)
 
+## Solver's-eye read (architecture 5, the shipped pack)
 
-## Solver's-eye read
+Reader (isolated, Sonnet, medium), 2026-10-31, on a fresh copy of prompt.txt and the 13-file pack (target.zip
+8783d495), run from the main thread. It read the pack for leaks and solved nothing. Questions 1 to 4 none: the brief
+defines the estimand (each rival's buying homes, the share that also bought the Roastery) and the unit (a home), and
+no file says how cards, accounts and card tokens join into a home; the brand tracker ranks awareness and main brand,
+not the overlap; no dictionary, readme or guide ships. Question 5: the brief's home, 2026 window, Rewards-card and
+online channels and the delivery-day rule read literally, the method of building a home left open. Question 6: an
+analytical choice (the unit of analysis and how the home is built across the files); the brand spellings and the
+replaced-card chains are Layer 1. Every sweep line harmless. Its realism notes (the product master's brand spellings,
+odd-numbered promotion ids, sequential own-brand PLUs, the deal log's revisions) are the systems' own texture; its two
+ask readings (the scale labels' clock at a quarter edge, which revision of a deal applies from when) go to the judge.
 
-Architecture 4, 2026-10-28, one isolated Sonnet reader at medium on a fresh copy of prompt.txt and target.zip (md5 4b0343b25e5747494d1f7e2ef1acf918); the stump-vocabulary lines and the answer-figure numbers were kept out of its brief.
+## Solver's-eye read (re-read after the counter repair)
 
-1. Decisive step: quoted only the terms' estimand (term 3, claims counted whether or not notified by 30 September 2026, the claims not yet notified estimated as the Standard provides). That is the filed WHAT the estimand must carry; the decisive step, the grouping the claims still to come are developed on and the representatives' firm type behind it, was not found or named.
-2. A file ranking the candidates: none.
-3. A file existing only to help the analyst: none (every file a dated record or a lookup the insurer holds).
-4. A figure or name reading as the answer: none.
-5. Literal sentences: terms 3 (the population, notified or not, over 2025 earned car-years) and the Standard's 3.2 (the whole book's factors applied to each region's notified claims, never a region's own). Both execute to the golden's population and level; the reader's gloss of 3.2 as excluding any group's own factor is weighed with the judge's pass before any change.
-6. What decides: an analytical choice (correcting for claims not yet notified, back-tested on the latest closed year), not semantics, rule application or a plant.
-- The thread: harmless, the organisation's own correspondence, names no field, layout or figure.
-- The claims extract's answer-figure substrings: harmless, 138,245 transactional rows, no stated result.
-- Generated against exported: nothing templated; the exposure workbook's layout change read as genuine drift.
+Two isolated Sonnet reads on the rebuilt pack, the second on target.zip 56492de5 after the board's wording was put in a
+counter's voice. Questions 1 to 6 unchanged: no decisive-step sentence, no ranking or helping file, no answer figure;
+the brief files the estimand and leaves the home's construction open, and that construction decides (analytical). The
+board's Paying lines read as a real counter's sign ("Card payments here at the counter, within 25 minutes of weighing.
+Paying cash? Take your label to any checkout today. Unpaid labels are void at closing."), the 25 minutes and the void a
+mild tell rather than a leak; they file the counter ask's WHAT, which its figures need. The reader's other ask readings
+(the deal revision's effective date, the gap on unrounded shares, the counter's clock) are closed by the fork table
+(SF15, SF17 to SF22) and the judge's two passes.
 
-Main-thread rulings on the lines the reader did not see: the stump-vocabulary hits are the Standard's own development and back-test words (it names no grouping), the terms' estimand and the thread's logistics, harmless; the dates after 14 October 2026 are forward-dated by nature (changes processed ahead of their effective dates, term ends and cancellations dated into 2027), the allow-list of H16.
-
-## Solver's-eye read (re-read after the stage-4 repair)
-
-Architecture 4, 2026-10-28, one isolated Sonnet reader at medium on a fresh copy of the changed prompt and target.zip md5 9f49c3af653b4216ab1af1381d9d0dbe (the thread and the terms' clause 6 changed when the 2026 claims ask was retired).
-
-1. Decisive step: none; no sentence announces a decisive step.
-2. A file ranking the candidates: none.
-3. A file existing only to help the analyst: none.
-4. A figure or name reading as the answer: none.
-5. Literal sentence: terms 3, the population every private-car claim from a 2025 accident in the region, notified by 30 September 2026 or not, counted on the Standard's convention, over the mart's 2025 earned car-years; the golden's population.
-6. What decides: an analytical choice; the Standard fixes the factors' source (the whole book) and nothing filed says how the development is split across the claims behind a region's count, which is left to the data's own structure.
-- The thread: harmless, the organisation's own four-message chain, no figure, region or file structure.
-- Generated against exported: none; head-of-claim and channel counts irregular, the exposure's monthly noise and its layout change read as genuine.

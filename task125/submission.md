@@ -1,71 +1,51 @@
-# task125 submission
-
 ## Tags
 
-**Domain:** Survey Research & Official Statistics, anomaly detection in official statistics (a first-interview recruitment cap accumulating through a rotating-panel household labour survey, separated from the labour market).
-**Analytical objective:** Anomaly Detection & Diagnostics (how much of a quarter's rise in the unemployment rate is a fieldwork artifact, how the artifact builds as the capped intakes spread through the panel, and how long it stays in the published rates).
+**Domain:** Physical & Environmental Sciences (environmental monitoring and exceedance: a catchment agency's sulfate load allocations for coal-mine drainage).
+**Analytical objective:** Anomaly Detection & Diagnostics.
 
 ## 1. Final Recommendation
 
-**Most of the July to September 2026 rise in the unemployment rate is the three-visit cap, not the labour market: 0.18 of the 0.27-point rise is the cap and 0.09 point the labour market, and the published unemployment rate will sit 0.39, 0.53, 0.62, 0.47 and 0.28 point above the six-visit rate from July to September 2026 to July to September 2027, the employment rate 1.42, 1.97, 2.44, 1.88 and 1.19 point below it, with six visits back from 1 April 2027.**
-
-The cap removes the households found only at a fourth to sixth visit, mostly adults in work, and the panel keeps an intake for five quarters, so an intake recruited under the cap is short of them in every quarter it stays in the sample. The cap has run since the April to June 2026 intake, so by July to September two of the five intakes in the sample were recruited under it and by January to March 2027 four will be: the gap builds to 0.62 point and only then fades, and the published rates are back on a six-visit basis from April to June 2028. Not "the rise is real", which treats the cap as a wave-1 effect, gives both quarters the same 0.21-point gap and so leaves the whole 0.27-point rise to the labour market. Not the wave-1 difference carried unchanged into the later waves, which overstates every quarter. Not the gap on the January to March 2026 weights kept, which overstates the employment gap in every quarter, because the estimator rakes every sample to the population controls.
+**Direct the mines of four resource units in 2027: Khambule (KH1), Mzimela at Ngwelezane Drift (MZ4), Ntsheketshe (NT1) and Nyathi at Mabhokweni (NY2); every other unit is within its allocation.**
+MZ4 and NY2 carried 40 and 40 t/d against allocations of 34 and 35, although their boundary samples, taken on the bank the mine stream does not run along, read low. Not Mzimela at Esikhotheni (MZ2) or Nyathi at Siphethu (NY3), whose boundary samples sit in a mine stream's unmixed plume: their water carried 27 and 52 t/d against 32 and 58.
 
 ## 2. Critical Components
 
-1. The cap's gap on the unemployment rate: **0.21** point in April to June 2026 and **0.39** point in July to September 2026, so **0.18** point of the published rise is the cap
-2. The cap's gap on the employment rate: **-0.79** point in April to June and **-1.42** point in July to September, so **-0.63** point of the published change is the cap
-3. July to September 2026 on six visits throughout: unemployment rate **5.47** per cent (published **5.86**, April to June published **5.59**, April to June on six visits **5.38**), so the labour market's share of the rise is **0.09** point
-4. Employment on six visits throughout: **59.67** per cent in April to June and **59.96** in July to September, a rise of **0.29** point against the published fall of **0.34** point to **58.54** per cent
-5. Unemployment rate gap, July to September 2026 to July to September 2027: **0.39**, **0.53**, **0.62**, **0.47**, **0.28** point
-6. Employment rate gap over the same quarters: **-1.42**, **-1.97**, **-2.44**, **-1.88**, **-1.19** point
+1. Over their allocations (May to September 2026 runs): KH1 **22**, MZ4 **40**, NT1 **27** and NY2 **40** t/d of sulfate.
+2. MZ2 and NY3 carried **27** and **52** t/d, within 32 and 58.
+3. The boundary samples at MZ2, MZ4, NY2 and NY3 do not balance with the loads their inflows carry in or with the next mixed weir downstream; each of those units' loads is what its inflows carry in.
 
 ## 3. Step-by-Step Solution
 
-1. Took each address's interview visit from the visit number of its interview call (the interview outcome of `hls_data_dictionary.md`) in `hls_call_records_2025q1_2026q3.csv`, joined to `hls_person_quarter_2023q1_2026q3.parquet` on the serial's first nine characters (the check digit of `extract_notes_2026-10-20.md`): the households a three-visit cap (`field_instruction_FI-2026-04_first_interview_visits.pdf`) would not have recruited are those interviewed at visit 4, 5 or 6.
-2. Placed the four capped intakes (April to June 2026 to January to March 2027) in each quarter's sample by the five-wave rotation of `hls_methods_note_2025.pdf` section 1: waves 1 and 2 in July to September 2026, 1 to 3 in October to December, 1 to 4 in January to March 2027, 2 to 5 in April to June and 3 to 5 in July to September 2027, and wave 1 alone in April to June 2026.
-3. Rebuilt the counterfactual on January to March 2026, the one quarter with no capped intake at any wave whose five intakes all carry visit histories: for each quarter removed the visit 4 to 6 households from the waves that quarter's capped intakes hold, raked the rest to the January to March controls of `population_controls_2023q1_2027q4.xlsx` by region and by age group and sex as the methods note sets out, and took the change in each rate as it defines them: unemployment gaps 0.21, 0.39, 0.53, 0.62, 0.47 and 0.28 point from April to June 2026, employment gaps -0.79, -1.42, -1.97, -2.44, -1.88 and -1.19.
-4. Computed the published rates with the file's final weights: unemployment 5.59 per cent in April to June and 5.86 in July to September, a rise of 0.27; employment 58.88 and 58.54, a fall of 0.34.
-5. Took the change in the gap, not the gap, as the cap's share of the published change, because the cap was already in April to June: unemployment 0.39 less 0.21 is 0.18 point of the 0.27-point rise, leaving 0.09 to the labour market; employment -1.42 less -0.79 is -0.63 point, so on six visits throughout employment rose 0.29 point.
-6. Recommendation: most of the rise is the cap, the gap goes on building to 0.62 point in January to March 2027, and it is still 0.28 point in July to September 2027 with six visits back from 1 April 2027.
-7. Counted the July to September 2026 intake's calls once per serial and visit number, the regions from `hls_address_register_2025q1_2026q3.csv`.
-8. Matched April to June and July to September respondents on serial, sex and date of birth for the flows, and converted telephone hours (recorded as hours and minutes) to decimal hours before summing the employed's weighted hours.
+1. Kept each sample's reported sulfate (a re-run, suffix -R, replaces the first result) and each weir's daily mean flow, and took the routine runs from 1 May to 30 September 2026 (schedule section 3).
+2. Computed every unit's run load as boundary sulfate times boundary flow times 0.0864 and compared loads along each river with the register's upstream units.
+3. Found that at MZ2, MZ4, NY2 and NY3, the four weirs a short reach below a mine stream's confluence, the boundary load breaks the balance on every run, while the units above and the mixed weirs below balance.
+4. Took each unit's load as the sum of its inflows' loads, carried down from the headwater and mine-stream units measured at their own weirs, and averaged the season's runs.
+5. Compared each mean with Table 2 of the allocation schedule.
+6. Discharges: differenced each point's month-end totaliser readings (the latest return for a month stands; Silwane's February from the inspection's final reading), restated the November 2025 to September 2026 sulfate of the three mines whose laboratory reported it as S (x 2.996, their EC unchanged), and summed volume times composite by quarter.
+7. Loggers: SAST months, fouling drift removed linearly between service visits, telemetry gaps filled from the memory downloads, hours above each logger's trigger counted.
 
 ## 4. Deliverable Answers
 
-### hls_visit_limit_note_2026q3.docx
-1. The July to September rise in the unemployment rate: 0.27 point to 5.86 per cent, of which 0.18 point is the cap and 0.09 point the labour market; on six visits throughout, 5.38 per cent in April to June and 5.47 in July to September.
-2. The employment rate: a fall of 0.34 point to 58.54 per cent, the cap having taken 0.63 point off the change; on six visits throughout it rose 0.29 point, from 59.67 to 59.96 per cent.
-3. The unemployment rate above the six-visit rate by 0.39 point in July to September 2026, 0.53 in October to December, 0.62 in January to March 2027, 0.47 in April to June and 0.28 in July to September 2027; the employment rate below it by 1.42, 1.97, 2.44, 1.88 and 1.19 point in the same quarters, and by 0.79 point in April to June 2026. Back on a six-visit basis from April to June 2028.
-4. Chart on page 1: the published unemployment rate from January to March 2023 to July to September 2026 with the six-visit rate for the two capped quarters already published (5.38 and 5.47 against 5.59 and 5.86), beside bars of the projected gap for the five quarters to July to September 2027, the return to six visits from April to June 2027 marked.
-5. Table on page 2: the gap in each rate for each quarter, with the number of capped intakes in the sample and the waves they hold (2 of 5 at waves 1 and 2; 3 of 5 at waves 1, 2 and 3; 4 of 5 at waves 1, 2, 3 and 4; 4 of 5 at waves 2, 3, 4 and 5; 3 of 5 at waves 3, 4 and 5).
+### sulfate_load_directives_2027.pdf
 
-### hls_visit_limit_path_2027.xlsx
-1. Gap path, percentage points (unemployment rate, employment rate):
-   - Jul-Sep 2026: 0.39, -1.42
-   - Oct-Dec 2026: 0.53, -1.97
-   - Jan-Mar 2027: 0.62, -2.44
-   - Apr-Jun 2027: 0.47, -1.88
-   - Jul-Sep 2027: 0.28, -1.19
-2. April to June to July to September 2026: unemployment rate 5.59 to 5.86 published, gaps 0.21 and 0.39, so 5.38 to 5.47 on six visits throughout, change 0.27 of which the cap 0.18 and the labour market 0.09; employment rate 58.88 to 58.54 published, gaps -0.79 and -1.42, so 59.67 to 59.96 on six visits throughout, change -0.34 of which the cap -0.63 and the labour market 0.29.
-3. First-interview visits to the July to September 2026 intake:
-   - Velmouth: 3,866
-   - Carrowdene: 2,378
-   - Pellard: 1,851
-   - Haskvale: 1,629
-   - Tirrin: 1,408
-   - Dunmarrow: 1,282
-4. Share of April to June 2026 unemployed respondents employed in July to September 2026, percent:
-   - Velmouth: 31.65 (75 of 237)
-   - Carrowdene: 25.19 (34 of 135)
-   - Pellard: 37.96 (52 of 137)
-   - Haskvale: 24.11 (27 of 112)
-   - Tirrin: 30.12 (25 of 83)
-   - Dunmarrow: 29.03 (27 of 93)
-5. Total weekly hours actually worked by the employed, July to September 2026, thousands:
-   - Velmouth: 26,679.5
-   - Carrowdene: 16,124.7
-   - Pellard: 12,659.1
-   - Haskvale: 10,624.5
-   - Tirrin: 9,734.0
-   - Dunmarrow: 7,648.3
+1. Over their allocations, to be directed: KH1, MZ4, NT1, NY2.
+2. Within their allocations: GB1, MP1, MZ1, MZ2, MZ3, MZ5, NY1, NY3, NY4, SW1.
+3. Bar chart of each unit's dry-season load against its allocation, the units over their allocations in red.
+
+### umzimela_sulfate_loads_2025_26.xlsx
+
+1. Sulfate as SO4 discharged by each licensed point, tonnes to the nearest ten:
+   - KHC-DP1: Q1 740, Q2 620, Q3 770, Q4 860
+   - KHC-DP2: Q1 350, Q2 300, Q3 360, Q4 400
+   - MMC-DP1: Q1 350, Q2 300, Q3 340, Q4 380
+   - NCH-DP1: Q1 900, Q2 810, Q3 990, Q4 1,160
+   - NCH-DP2: Q1 430, Q2 420, Q3 490, Q4 560
+   - SAM-DP1: Q1 370, Q2 350, Q3 390, Q4 460
+2. Hours each logger read the river's EC above its trigger, whole hours, November 2025 to April 2026:
+   - ECL-03 (trigger 270 uS/cm): 2025-11 534, 2025-12 233, 2026-01 31, 2026-02 7, 2026-03 27, 2026-04 509
+   - ECL-06 (trigger 240 uS/cm): 2025-11 575, 2025-12 239, 2026-01 18, 2026-02 9, 2026-03 13, 2026-04 542
+   - ECL-08 (trigger 230 uS/cm): 2025-11 532, 2025-12 204, 2026-01 22, 2026-02 9, 2026-03 17, 2026-04 520
+   - ECL-10 (trigger 1400 uS/cm): 2025-11 275, 2025-12 121, 2026-01 20, 2026-02 158, 2026-03 308, 2026-04 676
+   - ECL-11 (trigger 310 uS/cm): 2025-11 498, 2025-12 179, 2026-01 29, 2026-02 35, 2026-03 51, 2026-04 583
+   - ECL-14 (trigger 410 uS/cm): 2025-11 442, 2025-12 59, 2026-01 0, 2026-02 0, 2026-03 0, 2026-04 567
+3. Each unit's dry-season load, whole tonnes a day: MZ1 5, KH1 22, MZ2 27, MZ3 27, SW1 13, MZ4 40, GB1 1, MZ5 41, NY1 13, NT1 27, NY2 40, MP1 12, NY3 52, NY4 52.

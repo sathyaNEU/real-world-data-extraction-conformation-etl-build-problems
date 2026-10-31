@@ -1,18 +1,18 @@
 {
   "task": "task172",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "wave 7, sathya8571 forecasting lane, seed FC43 (world, decision and quantity only)",
-  "domain": "general-statistics-data-science",
-  "subdomain": "regression-classification-model-diagnostics",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a Bellevue software company's global mobility team quoting, in its benefits portal, the wait within which four in five of the work-permit renewals it files from January to March 2027 will have USCIS's decision, now that a pending renewal no longer extends the card and USCIS is setting fingerprint appointments about seventeen weeks after receipt",
+  "architecture": "v2",
+  "drawn": "2026-10-31",
+  "slot_note": "second root of task172 (batch 1 re-root, 2026-10-31): v1's work-permit renewal quote retired by the batch audit (no survivor anatomy); a new client domain (biomedical-clinical-research), world and dataset under the same objective",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "survival-time-to-event-analysis",
+  "client_domain": "biomedical-clinical-research",
+  "niche": "an academic cancer trials unit's interim review of a charity-funded phase 3 immunotherapy trial, where the funder releases the second phase of funding only if the final progression-free survival analysis keeps enough conditional power, read with the treatment's effect over the follow-up still to come",
   "objective": "forecasting",
   "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "date_or_period",
-  "answer": "5.5 months",
-  "answer_source": "generator/figures.json quote_months (calc.quote: the quarter's renewals simulated with the appointment lead now set and each wait cut at its own card's expiry by the team's expedite request, 164 days, 5.395 months; submission.md block 1)",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "rate_or_share",
+  "answer": "Continue TALON-2 to its final analysis: the conditional power is about 85 per cent, well above the charter's 20 per cent futility bound",
+  "answer_source": "generator/analysis.py golden_cp; figures.json cp_golden",
   "gap": [
     "time"
   ],
@@ -20,79 +20,99 @@
     "none"
   ],
   "generators": [
-    "G3",
-    "G16",
-    "G13",
-    "G17"
+    "G4",
+    "G17",
+    "G13"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "forecast_method_backtest",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
-  "stakeholder_role": "the global mobility team's analytics lead, who sets the wait quotes the benefits portal shows each quarter",
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who counts the BICR-confirmed progression-free survival events the charter counts, applies the SAP's censoring rules, keeps the adjudicated read, fits the SAP's stratified Cox model and carries its hazard ratio of about 0.9 into the remaining follow-up files a conditional power of about 4 per cent and a recommendation to stop for futility; the two arms progress at the same rate for the first four months after randomisation and ravolimab's arm at about 0.55 times the other's after, so the follow-up still to come, mostly beyond month four, gives about 85 per cent and the trial continues.",
+  "domain_test": "The deciding quantity is the treatment's effect on the hazard of progression over time since randomisation, worked as time-to-event analysis works it (Kaplan-Meier curves by arm, interval hazards, a test of proportional hazards) inside the group-sequential machinery a data monitoring committee applies (the information fraction, the B-value, conditional power at the final event count); put churn and an onboarding programme in for progression and ravolimab and there is no information fraction, no event-driven final analysis and no futility bound, so the call has nothing to stand on.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:an-effect-that-starts-months-after-assignment-read-at-a-look-whose-exposure-is-mostly-early",
+  "layer1": [
+    "investigator and BICR timepoint responses in one export, the charter counting BICR",
+    "BICR reads by two radiologists with an adjudicator's read where they disagree",
+    "a site's subject numbers re-issued after a database migration, the old numbers kept in a crosswalk",
+    "scan dates as text in the EDC's DD-MON-YYYY form against the IWRS's ISO randomisation dates",
+    "deaths reported on the survival follow-up form after the data cut",
+    "stratification factors entered at randomisation in IWRS against the CRF's corrected values",
+    "subjects randomised and never dosed, kept in the intention-to-treat set",
+    "missed scans and scans outside the visit windows"
+  ],
+  "stakeholder_role": "the independent statistician in the trials unit who runs the unblinded interim analysis for the data monitoring committee and the funder's continuation review",
   "role_family": "research_desk",
-  "scoring_unit": "per resolved case",
+  "scoring_unit": "per episode",
   "spine": {
-    "file": "renewal_case_notices_2024-01_2026-12.csv",
-    "rows": 72625,
-    "entity": "one notice or case event logged on a work-permit renewal case: USCIS receipt, fingerprint appointment or its rescheduling, reuse of earlier fingerprints, request for evidence and its response, decision, card production and mailing, transfer",
-    "grain": "case x notice",
+    "file": "talon2_lab_results_dcut.csv",
+    "rows": 0,
+    "entity": "one central-laboratory result for one subject at one visit",
+    "grain": "subject x visit x analyte",
     "source": "synthetic"
   },
-  "forum": "other",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "software_or_platform",
+  "forum": "funder_or_donor",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United States (Bellevue, Washington)",
-    "currency": "USD",
-    "org_type": "a software company's global mobility team, which files work-permit renewals for employees whose green-card applications are pending and for the spouses of sponsored employees",
+    "geography": "United Kingdom (a university cancer trials unit) for a 14-country trial",
+    "currency": "GBP",
+    "org_type": "a university cancer trials unit running a charity-funded, investigator-led phase 3 trial with an independent data monitoring committee",
     "invented_names": [
-      "Sallowmere Software",
-      "Marrowby Teale LLP"
+      "TALON-2",
+      "ravolimab",
+      "Kesterton University Cancer Trials Unit",
+      "Ashgrove Cancer Research Trust",
+      "Halvorsen Therapeutics"
     ],
     "people": [
-      "Melinda Yang",
-      "Brandon Zamora",
-      "Jasmin Sims"
+      "Beverley Shaw",
+      "Jay O'Connor",
+      "Chloe Ball"
     ]
   },
   "deliverables": [
-    "q1_2027_renewal_quote.xlsx",
-    "q1_2027_expiring_permits.svg"
+    "talon2_interim_recommendation.pdf",
+    "talon2_interim_tables.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A unit's wait runs through a scheduled step and then a review, and is cut short only when the unit's own deadline passes, after which a request settles it within days; while the step came early the deadline cut only the record's slowest tail, but the step is now scheduled so late that most units will reach their deadline first, so the forward percentile is set by each unit's deadline plus the request's few weeks, not by the step's added delay laid on the record's waits or on its stage times, and not by the record's waits as they stand.",
-  "driver_concrete": "Since renewals filed after 30 October 2025 stopped extending the card, a renewal still pending around the day the filer's card expires gets an expedite request from the team and has been decided about a week later, which in the record cut only the slowest tail; USCIS now sets fingerprint appointments about seventeen weeks after receipt, so about nine in ten of next quarter's renewals that need an appointment (most (c)(26) renewals, a minority of the (c)(9) ones, about half the quarter) will reach the card's expiry, about five months after receipt, before the review that follows the appointment ends, and the quarter's 80th percentile is set by those expiry dates plus the week: 5.5 months, against 4.0 from the record and 7.0 from adding the new appointment delay to the record's appointment-route waits.",
-  "stump": "A competent solver who sees the fingerprint appointments now being set about seventeen weeks out adds the thirteen extra weeks to the record's appointment-route waits and quotes 7.0 months (the record's own waits, open cases censored, give 4.0); about nine in ten of the quarter's renewals that need an appointment will reach the filer's card expiry undecided, and since the automatic extension ended the renewals pending at expiry have been decided about a week after the expedite request the team files around the day the card expires, so the quarter's 80th percentile is 5.5 months.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the notices to the cases, keeps each case's latest appointment notice, treats open cases as censored, reads the quote standard correctly and sees the appointment delay now being set adds that delay to the record's appointment-route waits and quotes 7.0 months, where the card expiries those renewals will reach first, each followed about a week later by a decision on the team's expedite request, put the quarter at 5.5.",
-  "domain_test": "The quote turns on a duration model's out-of-sample diagnostic: whether the stage model fitted on the record, with the new appointment delay added, still describes renewals that reach the card's expiry undecided, which the renewals filed since the rule change that were still pending at their card's expiry show it does not, because each was decided about a week after the expedite request; the forward 80th percentile is the one under the model the record supports, replacing it with the record's pooled percentile or the uncapped stage model moves the quote by a bin or more, and with another field's nouns no expiring card, expedite request or fingerprint appointment exists to decide it.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:stage-model-cut-at-each-filers-card-expiry-plus-the-expedite-response",
-  "layer1": [
-    "the outside counsel's case-management export of USCIS notices keyed by its matter number, and the company's own case register keyed by case ID, with a crosswalk between them and receipt numbers carrying the service-center prefix",
-    "rescheduled fingerprint appointments: several appointment notices on one case, the latest standing",
-    "notices logged in the case system days or weeks after their notice date, by the mailroom's scan batches",
-    "the team's own case actions (expedite requests, address changes, withdrawals) in a separate log keyed by employee or dependant ID",
-    "dates in two formats across the register's 2025 system change",
-    "spouses keyed by benefits-enrollment ID in the dependants table and linked to the sponsoring employee through it",
-    "open cases at the extract, cases the company stopped tracking when an employee left, and transfers between service centers",
-    "requests for evidence with their response notices, card production and mailing notices with carrier re-scans",
-    "the team's monthly log of the government's posted processing time, whose layout changed when the posted figure moved from a range to a single month figure",
-    "appointment leads drifting by month, season and support centre, rising after the rule before the autumn's jump",
-    "a spouse who joined Sallowmere benefits after intake filed under Global Mobility's MP- ID on the case records and under her dependant ID in Benefits and the portal's uploads"
-  ],
+  "question_form": "whether",
+  "driver": "An intervention's effect on an outcome's rate starts only some months after each unit is assigned, so a look taken while most of the observed exposure is still early reads the effect as small; the exposure still to come is mostly late exposure, where the effect is full, so the chance that the final test succeeds, computed with the effect averaged over the look, falls far below the chance the effect over the remaining exposure gives, and a stop decision taken on the first is wrong.",
+  "driver_concrete": "In TALON-2 ravolimab plus chemotherapy and placebo plus chemotherapy progress at the same rate for the first four months after randomisation and ravolimab's arm at about 0.55 times the other's after; at the interim cut, with 165 BICR-confirmed events and enrolment just complete, most of the follow-up observed lies in those first months, so the stratified Cox hazard ratio is about 0.9 and the conditional power under it about 4 per cent, below the charter's 20 per cent futility bound, while the follow-up still to come, mostly beyond month four, gives about 85 per cent at the final analysis's 330 events.",
+  "stump": "A competent solver who counts the charter's BICR-confirmed events correctly fits the stratified Cox model, carries its hazard ratio of about 0.9 into the remaining follow-up and recommends stopping for futility at a conditional power of about 4 per cent; the step that lands it there is taking the effect as proportional over follow-up, when the arms' Kaplan-Meier curves run together for four months and separate after, so the follow-up still to come, mostly beyond month four, runs at a hazard ratio of about 0.55 and the conditional power is about 85 per cent.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task127": "task127's recorded delay fuses two waits that ran at once, so removing one saves only its excess over the other (the later of two dates); here the stages run one after the other and the wait is cut short at the filer's own card expiry by the team's expedite request, a cut only the record's slowest tail met and the forward appointment delay makes binding for most renewals (the earlier of two clocks)",
-    "task501": "task501 v3's units hurry to place what remains before a hard deadline, a catch-up in pace; here nothing speeds up before the deadline, the deadline itself (each filer's card expiry) triggers a request that ends the wait",
-    "task148": "task148's queue is drained by units abandoning it; here no unit leaves, the wait is ended early by a request filed at each unit's own card expiry"
+    "task122": "task122 reads a kidney drug's chronic eGFR slope after a protocol-timed background-therapy change undoes part of the early fall, a continuous marker's slope that picks a dose; task172 reads a treatment's hazard ratio on progression over time since randomisation, nil for four months and full after, at an interim look whose observed exposure is mostly early, and the call is the conditional power of the final event-driven test.",
+    "task309": "task309 varies a retrofit's loss reduction with each storm's local gust across a record whose exposure sat in mild storms, a dose of hazard by event; task172 varies a drug's effect with each patient's own time since randomisation, so the look's exposure and the exposure still to come differ in follow-up time, not in severity, and the quantity is a sequential test's conditional power.",
+    "task133": "task133 conditions an outcome curve on units having survived to the takeover; task172 conditions nothing on survival: the hazard ratio between two randomised arms changes with follow-up time and the interim look holds mostly early follow-up.",
+    "task123": "task123 splits a meter-read total onto calendar months by how fast consumption ran inside each reading interval, a within-interval timing of a quantity; task172 has no interval to split: a randomised treatment's hazard ratio changes with each patient's time since randomisation and the interim look's exposure is mostly early follow-up, so the forward conditional power of the final test is read from the late hazard ratio."
   },
-  "lineage": [],
-  "notes": "stump_strategy forecast_method_backtest: the natural fit, a stage model fitted on the record with the new appointment delay added (or the record's pooled waits), is wrong out of sample once the appointments now set push most renewals that need one past the card's expiry; the model is chosen on honest history, the renewals filed since the October 2025 rule change that were still pending at their card's expiry. Not composition (the share needing new fingerprints is stable within each category; the quarter's category mix moves the quote four days inside its half month) and not concurrency (the review follows the appointment; task127's concurrent waits are not this build's move). G3 first: for most of next quarter's renewals that need an appointment the decision is ended by the team's expedite around the card's expiry, not by the review the record's waits measure; G16 the model choice; G13 the forward window's appointment delay that no decided renewal filed since the rule met in numbers; G17 censoring. Stage 4 round 1 rework: ask A pinned by GM-07 1.3 and 1.4 (each current person's card approved most recently, its approval's category), with silent devices A1 (first (c)(9) cards only the register's filings and the tracker hold) and A6 (a spouse under her MP- and dependant IDs); ask B's 30 days pinned by GM-07 2.4. Round 2: GM-07 1.3 counts a domestic partner Benefits covers as the household's spouse and makes Global Mobility's records the household that governs; the generator's refiles after Stop work and its repeated child IDs removed (both table 2's Q3 refiled count, 14, and table 1 unchanged); the summer 2026 lead rise held to about a week; the coincidental route (the record's percentile plus the new delay times the quarter's appointment share, 5.44) flagged and asserted. Round 3: GM-07 1.3 files the spouse as the one person Global Mobility took into its care with the household, however Benefits covers her, and no other dependant; ask A's September 2027 (c)(26) cell stays 771 (two spouses' latest cards are on record only under their Benefits IDs, one person each since a household has one spouse), and the write-up names the people counted and left out. Round 4 (supplemental-stumping 1.1c, the scored reader kept 14 of 14 ask figures): the ask devices re-sited off the careful path with every pin kept and the call side byte-identical: the first (c)(9) cards' approvals on the green-card tracker only, a spouse employed at Sallowmere under her employee ID and her spouse ID (one card number), an employee moved between Sallowmere entities under two HR IDs (one enrollment), the applicant's own refiling as a case of its own beside the team's case closed not refiled, and applicants' forwarded rejections of their own other filings dated outside the renewal's packets. Round 5: a fresh blind scored reader missed the call (4.0) and 0 of 14 ask figures; the re-judge DETERMINISTIC, APPROVE; the forwarded notices' dates fixed at ship (each copy carries counsel's date, the other filings' rejections dated from their own trips). forum other: the analytics lead publishes the quote under the mobility policy; role research_desk: the policy gives the quote to the analytics lead.",
-  "registered": "2026-10-18T11:34:04Z"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "retired 2026-10-31 by the batch audit before any portal result: designed before the survivor anatomy gate, its note carries no Actor, Link or Reflex line",
+      "driver": "A unit's wait runs through a scheduled step and then a review, and is cut short only when the unit's own deadline passes, after which a request settles it within days; while the step came early the deadline cut only the record's slowest tail, but the step is now scheduled so late that most units will reach their deadline first, so the forward percentile is set by each unit's deadline plus the request's few weeks, not by the step's added delay laid on the record's waits or on its stage times, and not by the record's waits as they stand."
+    }
+  ],
+  "lineage_shells": [
+    {
+      "question form": "what",
+      "second-sentence opener": "other",
+      "rounding opener": "other",
+      "deliverable set": "xlsx+svg"
+    }
+  ],
+  "notes": "Architecture 2 re-root, 2026-10-31. general-statistics-data-science is spent for this slot; the new draw moves to biomedical-clinical-research, a pairing (biomedical x forecasting) never built.",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "give",
+    "deliverable set": "svg+xlsx"
+  },
+  "registered": "2026-10-31T22:05:54Z"
 }
