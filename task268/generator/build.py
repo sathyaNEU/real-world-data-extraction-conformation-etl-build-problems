@@ -25,26 +25,33 @@ import postprocess as PP   # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
-PDF_DATES = {"terms": ("D:20261006151204+01'00'", "D:20261006151204+01'00'"),
-             "standard": ("D:20251124102733+00'00'", "D:20251124102733+00'00'"),
-             "quote": ("D:20260922093018+01'00'", "D:20260922093018+01'00'")}
+PDF_DATES = {"agreement": ("D:20260512094118+01'00'", "D:20260512094118+01'00'"),
+             "terms": ("D:20251218112730+00'00'", "D:20251218112730+00'00'"),
+             "board": ("D:20260630171544+01'00'", "D:20260630171544+01'00'")}
 
 
-def build_pack(out):
+def build_pack(out, w=None):
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    w, pk, n = PK.write_pack(out)
+    w, n = PK.write_pack(out, w)
     p = lambda k: os.path.join(out, K.FILES[k])
     PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(p("exposure"), "Pricing MI", "Pricing MI", "2023-02-06T09:14:52Z", "2026-10-02T07:41:09Z", excel=True)
-    PP.normalize_ooxml(p("aggregator"), "Distribution MI", "Distribution MI", "2025-11-03T08:20:41Z",
-                       "2026-10-05T08:02:17Z", excel=True)
+    PP.normalize_ooxml(p("master"), "Range Data", "Katy Kinnegan", "2023-01-16T10:02:11Z", "2026-12-02T15:47:30Z",
+                       excel=True)
+    PP.normalize_ooxml(p("deals"), K.PEOPLE["buyer"], K.PEOPLE["buyer"], "2025-12-08T09:15:40Z", "2026-12-21T16:33:05Z",
+                       excel=True)
+    PP.COMPANY = "Lisnagree Research"
+    PP.normalize_ooxml(p("tracker"), "Lisnagree Research", "Lisnagree Research", "2026-05-25T13:20:00Z",
+                       "2026-12-04T11:06:52Z", excel=True)
+    PP.COMPANY = K.ORG_LTD
+    PP.normalize_ooxml(p("brief"), K.PEOPLE["brand"], K.PEOPLE["brand"], "2027-01-08T14:40:00Z", "2027-01-11T10:12:00Z",
+                       title="Roastery sampling 2027: brief")
     for k, (c, m) in PDF_DATES.items():
         PP.normalize_pdf(p(k), c.encode(), m.encode())
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
-    return w, pk, n
+    return w, n
 
 
 def build_golden(target, golden, gen_dir):
@@ -53,20 +60,16 @@ def build_golden(target, golden, gen_dir):
     import writeup as WU
     G = A.Golden(target)
     R = G.run()
-    R["_G"] = G
     F = D.figures(R)
-    text, extras = WU.write(R, F)
-    F["writeup"] = extras
+    text, _ = WU.write(R, F)
     if os.path.exists(golden):
         shutil.rmtree(golden)
     os.makedirs(golden)
-    D.write_workbook(os.path.join(golden, K.GOLDEN), R, F)
     D.write_deck(os.path.join(golden, K.DECK), R, F)
+    D.write_csv(os.path.join(golden, K.CSV_OUT), R)
     PP.COMPANY = K.ORG_LTD
-    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.PEOPLE["actuary"], K.PEOPLE["actuary"], "2026-10-12T13:05:44Z",
-                       "2026-10-14T15:52:10Z", excel=True)
-    PP.normalize_ooxml(os.path.join(golden, K.DECK), K.PEOPLE["actuary"], K.PEOPLE["actuary"], "2026-10-13T09:31:02Z",
-                       "2026-10-14T16:02:37Z", title="Telematics pilot 2027")
+    PP.normalize_ooxml(os.path.join(golden, K.DECK), K.PEOPLE["insight"], K.PEOPLE["insight"], "2027-01-18T09:41:00Z",
+                       "2027-01-21T16:28:00Z", title="Roastery sampling 2027")
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
     with open(os.path.join(gen_dir, "figures.json"), "w") as fh:
@@ -79,35 +82,39 @@ def build_golden(target, golden, gen_dir):
 
 def write_metadata(n, R):
     prov = {}
-    synth = ("constructed by the task generator (seeded); Corriven Insurance, its sales regions, policies, claims, "
-             "representatives, staff and suppliers are fictional; postcode districts are real UK districts, used only "
-             "to place the fictional book")
+    synth = ("constructed by the task generator (seeded); Corcally's, its stores, members, suppliers, brands, Faircourt "
+             "Merchant Services, the guest roasters and every record are fictional")
     about = {
-        "claims": ("Corriven's claims system extract of every motor claim notified to the end of 30 September 2026 on "
-                   "accidents from 1 January 2019, one row a claim", "2026-10-01"),
-        "reps": ("the claims system's table of claimant representatives", "2026-10-01"),
-        "districts": ("the 2025 drawing of the sales regions by postcode district", "2025-01-06"),
-        "exposure": ("the pricing mart's earned exposure by month, region, product and cover, 2019 to 2025", "2026-10-02"),
-        "terms": ("the chief underwriting officer's terms for the 2027 telematics pilot", "2026-10-06"),
-        "standard": ("the Motor Claims Reserving Standard, version 4", "2025-11-24"),
-        "thread": ("the planning thread for the pilot paper", "2026-10-09"),
-        "inforce": ("policy admin's file of the vehicles on terms in force at 30 September 2026", "2026-10-01"),
-        "changes": ("policy admin's log of mid-term changes processed to 30 September 2026", "2026-10-01"),
-        "quote": ("the telematics supplier's quotation", "2026-09-22"),
-        "aggregator": ("the distribution team's aggregator quote and sales report", "2026-10-05"),
+        "till": ("the data warehouse's coffee category till lines for 2026, one row a line", "2027-01-08"),
+        "online": ("the online shop's order history export with its coffee lines, orders placed from 1 December 2025",
+                   "2027-01-08"),
+        "register": ("the Corcally's Rewards card register extract", "2027-01-08"),
+        "settle": ("Faircourt Merchant Services' settlement detail for Corcally & Sons Limited, 2026", "2027-01-07"),
+        "agreement": ("Faircourt's merchant service agreement, Schedules 2 to 4", "2026-05-12"),
+        "master": ("the buying team's product master for the coffee range", "2026-12-02"),
+        "terms": ("the Corcally's Rewards terms and conditions, January 2026 edition", "2025-12-18"),
+        "brief": ("the Roastery team's brief for the 2027 sampling", "2027-01-11"),
+        "labels": ("the Drumsallagh coffee counter's scale label log for 2026", "2027-01-05"),
+        "board": ("the coffee counter's price board as displayed in 2026", "2026-06-30"),
+        "deals": ("the coffee buyer's multibuy deal log for 2026", "2026-12-21"),
+        "census": ("2022 census households by size for the small areas in the stores' catchment", "2023-05-30"),
+        "tracker": ("a research agency's coffee brand tracker for Corcally's, May and November 2026 waves",
+                    "2026-12-04"),
     }
     for k, fn in K.FILES.items():
         prov[fn] = {"source": synth, "covers": about[k][0], "date": about[k][1],
                     "licence": "CC0 1.0 (constructed for this task)",
                     "made": "generated by task268/generator (pack.py, docs.py) from world.py's seeded records"}
     m = {"task": "task268",
-         "title": "Corriven Insurance: the sales regions for the 2027 private-car telematics pilot",
-         "domain": "Actuarial Science & Insurance (claims frequency and severity)",
+         "title": "Corcally's: the rival coffee brand whose homes get the 2027 Roastery sampling",
+         "domain": "Marketing & Consumer Research",
          "objective": "Descriptive & Distribution Analysis",
-         "answer": "%s and %s host the pilot" % tuple(R["call"]),
+         "decision": "the rival coffee brand whose 2026 buying homes least often also bought Corcally's Roastery",
+         "answer": "%s's homes get the 2027 Roastery sampling" % K.BRAND_NAME[R["call"]],
          "deliverables": list(K.DELIVERABLES),
          "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
-         "rows": sorted((K.FILES[k], v) for k, v in n.items() if k in ("claims", "inforce", "changes")),
+         "rows": sorted([(K.FILES["till"], n["till"]), (K.FILES["settle"], n["settle"]), (K.FILES["labels"], n["labels"]),
+                         (K.FILES["register"], n["register"])]),
          "provenance": prov}
     with open(os.path.join(TASK, "metadata.json"), "w") as f:
         json.dump(m, f, indent=1)
@@ -137,31 +144,34 @@ def cut_zip(target, path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out")
+    ap.add_argument("--no-rebuild", action="store_true")
     a = ap.parse_args()
     if a.out:
         build_pack(a.out)
         return
     target, golden = os.path.join(TASK, "target"), os.path.join(TASK, "golden")
-    w, pk, n = build_pack(target)
+    w, n = build_pack(target)
     R, F = build_golden(target, golden, HERE)
     write_metadata(n, R)
     import checks
-    rows = checks.run(TASK)
+    rows = checks.run(TASK, world=w)
     bad = [r for r in rows if not r[1]]
     for r in rows:
-        print("%s  %-28s %s" % ("PASS" if r[1] else "FAIL", r[0], r[2]))
+        print("%s  %-74s %s" % ("PASS" if r[1] else "FAIL", r[0], r[2]))
     print("checks: %d assertions, %d failed" % (len(rows), len(bad)))
     import verify
     vbad = verify.run(target, os.path.join(HERE, "figures.json"))
     print("verify: %s" % ("PASS" if not vbad else "FAIL " + "; ".join(vbad)))
-    scratch = os.path.join(TASK, ".rebuild")
-    build_pack(os.path.join(scratch, "target"))
-    a1, a2 = digest(target), digest(os.path.join(scratch, "target"))
-    shutil.rmtree(scratch)
-    same = a1 == a2
-    print("rebuild: %s" % ("byte-identical" if same else "DIFFERS " + ", ".join(k for k in a1 if a1[k] != a2.get(k))))
+    same = True
+    if not a.no_rebuild:
+        scratch = os.path.join(TASK, ".rebuild")
+        build_pack(os.path.join(scratch, "target"))
+        a1, a2 = digest(target), digest(os.path.join(scratch, "target"))
+        shutil.rmtree(scratch)
+        same = a1 == a2
+        print("rebuild: %s" % ("byte-identical" if same else "DIFFERS " + ", ".join(k for k in a1 if a1[k] != a2.get(k))))
     cut_zip(target, os.path.join(TASK, "target.zip"))
-    for k, v in sorted(a1.items()):
+    for k, v in sorted(digest(target).items()):
         print("  %s  %s" % (v, k))
     sys.exit(1 if (bad or vbad or not same) else 0)
 

@@ -1,5 +1,5 @@
-"""The pack's documents: the chief underwriting officer's terms for the 2027 telematics pilot, the Motor Claims Reserving
-Standard (version 4), the telematics supplier's quotation and the planning thread."""
+"""The pack's documents: Faircourt's merchant service agreement (its outlets and terminals, settlement and charges),
+the Corcally's Rewards terms, the coffee counter's price board and the Roastery sampling brief."""
 from __future__ import annotations
 
 import datetime as dt
@@ -24,19 +24,19 @@ for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bol
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
 INK, GREY, RULE = colors.HexColor("#1d2327"), colors.HexColor("#5d666c"), colors.HexColor("#b7c0c6")
-TEAL, PLUM, SLATE = colors.HexColor("#0f5f66"), colors.HexColor("#5b2a4e"), colors.HexColor("#2f3e4c")
+NAVY, GREEN, BROWN = colors.HexColor("#1f3a5f"), colors.HexColor("#2d5a3d"), colors.HexColor("#5a3a22")
 
 
 def styles(font, accent):
-    body = ParagraphStyle("b", fontName=font, fontSize=9.8, leading=13.6, textColor=INK, spaceAfter=5)
+    body = ParagraphStyle("b", fontName=font, fontSize=9.6, leading=13.4, textColor=INK, spaceAfter=5)
     return dict(
         body=body,
         h1=ParagraphStyle("h1", fontName=font + "-B", fontSize=15, leading=19, textColor=accent, spaceAfter=2),
-        h2=ParagraphStyle("h2", fontName=font + "-B", fontSize=10.6, leading=14, textColor=INK, spaceBefore=8,
+        h2=ParagraphStyle("h2", fontName=font + "-B", fontSize=10.4, leading=14, textColor=INK, spaceBefore=8,
                           spaceAfter=2, keepWithNext=1),
         meta=ParagraphStyle("m", fontName=font, fontSize=8.5, leading=11.4, textColor=GREY, spaceAfter=9),
-        cell=ParagraphStyle("c", fontName=font, fontSize=8.3, leading=10.4, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName=font + "-B", fontSize=8.3, leading=10.4, textColor=INK),
+        cell=ParagraphStyle("c", fontName=font, fontSize=8.2, leading=10.2, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName=font + "-B", fontSize=8.2, leading=10.2, textColor=INK),
         clause=ParagraphStyle("p", parent=body, leftIndent=24, firstLineIndent=-24))
 
 
@@ -72,163 +72,153 @@ def _d(d):
     return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
 
 
-# ---------------------------------------------------------------------------------------------- the pilot terms
+# ---------------------------------------------------------------------------------- Faircourt's merchant agreement
+def write_agreement(path):
+    S = styles("Serif", NAVY)
+    doc = _doc(path, "Merchant Service Agreement, Schedules 2 to 4", "Faircourt Merchant Services")
+    st = [Paragraph("Faircourt Merchant Services", S["h1"]),
+          Paragraph("Merchant Service Agreement FMS/MSA/0447: Corcally &amp; Sons Limited. Schedules 2 to 4 as amended "
+                    "to 12 May 2026. Faircourt Merchant Services Limited is authorised by the Central Bank of Ireland.",
+                    S["meta"]),
+          Paragraph("Schedule 2. Outlets, merchant numbers and terminals", S["h2"]),
+          Paragraph("Each outlet settles under its own merchant number. A terminal is identified on every transaction "
+                    "by its terminal number; a replaced terminal keeps its outlet and takes a new number from the day it "
+                    "is installed.", S["body"])]
+    rows = [["Outlet", "Merchant no.", "Terminal no.", "Position", "Installed", "Removed"]]
+    for s, tl, tid, a, b in sorted(K.TERMINALS, key=lambda x: (x[0] != "DRM", x[0], x[1], x[3])):
+        pos = "Service desk" if tl == K.DESK else "Checkout %d" % tl
+        rows.append([K.STORE_NAME[s], K.MID[s], tid, pos, a.strftime("%d/%m/%Y"), b.strftime("%d/%m/%Y") if b else ""])
+    rows.append(["Drumsallagh", K.MID["DRM"], K.COUNTER_TID, "Coffee counter (standalone)", "18/09/2024", ""])
+    rows.append(["Online shop", K.MID["WEB"], K.WEB_TID, "Payment gateway (card not present)", "02/05/2023", ""])
+    st.append(_table(S, rows, (26, 22, 22, 50, 20, 20)))
+    st += [Paragraph("Schedule 3. Settlement", S["h2"]),
+           Paragraph("3.1&nbsp;&nbsp;Card transactions are settled to the merchant's nominated account one banking day "
+                     "after the transaction day for debit cards and two banking days after it for credit, prepaid and "
+                     "commercial cards, net of the charges in Schedule 4.", S["clause"]),
+           Paragraph("3.2&nbsp;&nbsp;The settlement detail file lists every transaction with its merchant and terminal "
+                     "numbers, its time in Coordinated Universal Time (UTC), its type (SALE or REFUND), its amount, the "
+                     "card reference (a token that stands in for the card number, so that no card number is shared with "
+                     "the merchant), the card's scheme, product and region, the entry mode, the authorisation code, the "
+                     "merchant's own reference where one was sent (online orders), the settlement date and the charges.",
+                     S["clause"]),
+           Paragraph("3.3&nbsp;&nbsp;Refunds are settled as debits on the settlement date of the refund.", S["clause"]),
+           Paragraph("Schedule 4. Charges", S["h2"]),
+           Paragraph("4.1&nbsp;&nbsp;Interchange is passed through at the rate the card's issuer applies and scheme fees "
+                     "at cost. The service charge is EUR 0.045 per transaction plus 0.05 per cent of its amount.",
+                     S["clause"]),
+           Paragraph("4.2&nbsp;&nbsp;Charges are shown on each transaction in the settlement detail and summarised on the "
+                     "monthly statement.", S["clause"])]
+    doc.build(st, onFirstPage=_frame("Faircourt Merchant Services", "FMS/MSA/0447", "Serif"),
+              onLaterPages=_frame("Faircourt Merchant Services", "FMS/MSA/0447", "Serif"))
+
+
+# ---------------------------------------------------------------------------------- the Rewards terms
 TERMS = [
-    ("1", "Purpose", "The pilot tests whether a telematics policy, priced at each renewal on the driving the device "
-     "records, reduces claim frequency on Corriven's private-car book. It runs for twelve months from 1 March 2027 "
-     "and its result informs the 2028 rating plan."),
-    ("2", "Where the pilot runs", "The pilot runs in the two sales regions whose private-car policies had the highest "
-     "claim frequency in accident year 2025."),
-    ("3", "Claim frequency", "Claim frequency for accident year 2025 is the number of claims arising from accidents "
-     "between 1 January and 31 December 2025 under private-car policies in the region, whether or not they had been "
-     "notified to Corriven by the end of 30 September 2026, per 100 car-years earned in the region in 2025. Claims "
-     "are counted as the Motor Reserving Standard counts them, including claims closed without payment, and claims "
-     "not yet notified are estimated as that Standard provides. Earned car-years are the pricing mart's earned "
-     "exposure for private cars."),
-    ("4", "Regions", "A claim or a car belongs to the sales region of its risk postcode district, on the 2025 drawing "
-     "of the regions. Vans and other light commercial vehicles are outside the pilot."),
-    ("5", "Reporting", "Frequencies are reported per 100 car-years to one decimal place."),
-    ("6", "The offer", "Policyholders in the pilot regions are offered the device at renewal from 1 March 2027. "
-     "COMP, TPFT and TPO policies are each offered their own discount scale, so the supplier's order is placed by "
-     "cover."),
-    ("7", "Timetable", "The regions are decided on %s. The supplier's order is placed by %s, and fitting "
-     "starts in February 2027." % (_d(K.DECISION_DATE), _d(K.ORDER_DATE))),
-    ("8", "Evaluation", "The pilot's claim frequency is compared at the end of the pilot with the same regions' "
-     "policyholders who declined the device and with the other three regions, adjusted for the rating factors. The "
-     "evaluation plan is a separate paper."),
+    ("1", "The scheme", [
+        ("1.1", "Corcally's Rewards is run by Corcally &amp; Sons Limited. Anyone aged 18 or over may join in store or "
+                "in the Corcally's app."),
+        ("1.2", "Membership is free. You may leave at any time by telling us in store or in the app.")]),
+    ("2", "Your card", [
+        ("2.1", "Each card is issued to one member, and a member holds one card at a time. If a card is lost or "
+                "damaged we issue a new card with a new number and move the points to it."),
+        ("2.2", "Cards are personal. Points earned on a card stay on that card and cannot be transferred to, or "
+                "combined with, another member's card."),
+        ("2.3", "Show your card or the app's barcode at the till before you pay.")]),
+    ("3", "Earning points", [
+        ("3.1", "You earn one point for each whole euro spent in our stores at Drumsallagh, Lisgarvan and "
+                "Kilbrannagh, after any discounts."),
+        ("3.2", "Points are not yet earned on online shop orders or at the coffee counter at Drumsallagh."),
+        ("3.3", "No points are earned on tobacco, lottery, gift cards, mobile top-ups, prescriptions or deposit return "
+                "items.")]),
+    ("4", "Member prices", [
+        ("4.1", "Some offers are for members. A customer without a card at the till may be given member prices at the "
+                "cashier's discretion; no points are earned on that purchase.")]),
+    ("5", "Using your points", [
+        ("5.1", "Every 500 points becomes a EUR 5 voucher, issued at the end of each quarter."),
+        ("5.2", "Vouchers can be used in our stores within three months of issue and have no cash value.")]),
+    ("6", "Your information", [
+        ("6.1", "We use the purchases made on your card to run the scheme, to send you offers if you have agreed to "
+                "receive them, and to understand how our customers shop. Our privacy notice explains how."),
+        ("6.2", "Returns are taken off your points.")]),
+    ("7", "Changes", [
+        ("7.1", "We may change these terms with 30 days' notice in store and in the app.")]),
 ]
 
 
 def write_terms(path):
-    S = styles("Sans", TEAL)
-    doc = _doc(path, "Telematics pilot 2027: terms", "Chief Underwriting Officer")
-    st = [Paragraph("Telematics pilot 2027", S["h1"]),
-          Paragraph("Terms set by %s, Chief Underwriting Officer, %s, after consultation with Pricing, Claims and "
-                    "Reserving. Distribution: Motor Pricing, Claims, Reserving, Underwriting Operations." % (K.PEOPLE["cuo"], _d(K.TERMS_DATE)), S["meta"])]
-    for num, head, text in TERMS:
+    S = styles("Sans", GREEN)
+    doc = _doc(path, "Corcally's Rewards: terms and conditions", "Corcally & Sons Limited")
+    st = [Paragraph("Corcally's Rewards", S["h1"]),
+          Paragraph("Terms and conditions, January 2026 edition, in force from 5 January 2026.", S["meta"])]
+    for num, head, clauses in TERMS:
         st.append(Paragraph("%s&nbsp;&nbsp;%s" % (num, head), S["h2"]))
-        st.append(Paragraph(text, S["body"]))
-    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Underwriting", "Sans"),
-              onLaterPages=_frame(K.ORG_LTD, "Underwriting", "Sans"))
+        for c, text in clauses:
+            st.append(Paragraph("%s&nbsp;&nbsp;%s" % (c, text), S["clause"]))
+    doc.build(st, onFirstPage=_frame("Corcally's Rewards", "Terms, January 2026", "Sans"),
+              onLaterPages=_frame("Corcally's Rewards", "Terms, January 2026", "Sans"))
 
 
-# ---------------------------------------------------------------------------------------------- the reserving standard
-STANDARD = [
-    ("1", "Scope", [
-        ("1.1", "This Standard governs the estimation of claim numbers and claim amounts for Corriven's private-car and "
-                "light commercial vehicle books, for the quarterly reserving review, the annual actuarial function "
-                "report and any pricing or portfolio work that uses claim numbers.")]),
-    ("2", "Claims and accident years", [
-        ("2.1", "A claim is one claimant's claim under one head of claim (own damage, third-party property damage, "
-                "third-party injury, theft, fire or glass) arising from one accident. One accident can give rise to "
-                "several claims. Every claim notified counts once, including claims closed without payment."),
-        ("2.2", "Claims are grouped by the calendar year of the accident and valued at 30 September each year. The "
-                "valuation age of an accident year is counted in months from 1 January of that year, so an accident "
-                "year is 21 months old at the first 30 September after it ends."),
-        ("2.3", "An accident year is closed three years after its last day, and its claim count is then final.")]),
-    ("3", "Claims not yet notified", [
-        ("3.1", "The number of claims incurred but not yet notified for an open accident year is estimated by "
-                "development. Development factors are measured on the closed accident years of the whole private-car "
-                "book, from their counts at the same valuation age to their final counts."),
-        ("3.2", "Sales-region estimates apply the whole book's factors to each region's notified claims; regional "
-                "triangles are too thin to give stable factors."),
-        ("3.3", "Before a development basis is used for an open accident year, it is re-run on the most recent closed "
-                "accident year from that year's position at the same valuation age, with only the closed accident "
-                "years before it. The basis is used only if its estimate reproduces that year's final count in every "
-                "sales region to within two per cent.")]),
-    ("4", "Claim amounts", [
-        ("4.1", "Case estimates are set by the handler at first contact and reviewed at each material change and at "
-                "least every 90 days. Injury estimates follow the Judicial College guidelines and, for claims under "
-                "the whiplash tariff, the tariff in force at the date of the accident."),
-        ("4.2", "Incurred but not enough reported amounts are projected on paid and incurred triangles by head of "
-                "claim. Claims over 250,000 pounds incurred are projected individually by the large loss team and "
-                "excluded from the triangles."),
-        ("4.3", "Periodical payment orders are valued at the discount rate set in the reserving basis, with the "
-                "personal injury discount rate of the date of settlement for lump sums.")]),
-    ("5", "Governance", [
-        ("5.1", "The Chief Actuary owns this Standard and reviews it each year. Changes are approved by the Reserving "
-                "Committee. Version 4 replaces version 3 from 1 December 2025; the change is the back-test in 3.3, "
-                "which version 3 required only for the annual report.")]),
-]
+# ---------------------------------------------------------------------------------- the counter's price board
+def write_board(path):
+    S = styles("Sans", BROWN)
+    doc = _doc(path, "Coffee counter price board 2026", "Corcally's Drumsallagh")
+    st = [Paragraph("Coffee counter, Drumsallagh", S["h1"]),
+          Paragraph("Guest roasters, beans weighed to order and ground on request. Price board as displayed in 2026.",
+                    S["meta"])]
+    rows = [["Roaster", "Coffee", "Per kg, from 5 January", "Per kg, from 1 July"]]
+    for rid, name, coffees in K.ROASTERS:
+        for c, p1, p2 in coffees:
+            rows.append([name, c, "EUR %.2f" % p1, "EUR %.2f" % p2])
+    st.append(_table(S, rows, (46, 50, 38, 38), right=(2, 3)))
+    st += [Spacer(1, 6), Paragraph("Accessories", S["h2"])]
+    rows = [["Item", "Price"]] + [[a, "EUR %.2f" % p] for a, p in K.ACCESSORIES]
+    st.append(_table(S, rows, (80, 30), right=(1,)))
+    st += [Spacer(1, 6), Paragraph("Paying", S["h2"]),
+           Paragraph("Card payments at the counter. Paying cash? Take your label to any checkout.", S["body"]),
+           Paragraph("Open Monday to Saturday 9:00 to 18:00, Sunday 12:00 to 17:00.", S["body"])]
+    doc.build(st, onFirstPage=_frame("Corcally's Drumsallagh", "Coffee counter", "Sans"),
+              onLaterPages=_frame("Corcally's Drumsallagh", "Coffee counter", "Sans"))
 
 
-def write_standard(path):
-    S = styles("Serif", PLUM)
-    doc = _doc(path, "Motor Claims Reserving Standard, version 4", "Chief Actuary")
-    st = [Paragraph("Motor Claims Reserving Standard", S["h1"]),
-          Paragraph("Version 4. Approved by the Reserving Committee on %s; effective 1 December 2025. Owner: Chief "
-                    "Actuary." % _d(K.STANDARD_DATE), S["meta"])]
-    for num, head, clauses in STANDARD:
-        st.append(Paragraph("%s&nbsp;&nbsp;%s" % (num, head), S["h2"]))
-        for cn, text in clauses:
-            st.append(Paragraph("%s&nbsp;&nbsp;&nbsp;%s" % (cn, text), S["clause"]))
-    doc.build(st, onFirstPage=_frame(K.ORG_LTD, "Reserving Standard v4", "Serif"),
-              onLaterPages=_frame(K.ORG_LTD, "Reserving Standard v4", "Serif"))
-
-
-# ---------------------------------------------------------------------------------------------- the supplier's quote
-def write_quote(path):
-    S = styles("Sans", SLATE)
-    doc = _doc(path, "Quotation Q-26-1184", "Brackwell Telematics Ltd")
-    st = [Paragraph("Quotation Q-26-1184: device telematics for private-car policies", S["h1"]),
-          Paragraph("Brackwell Telematics Ltd, Unit 4, Brunel Park, Northampton NN4 7BF. For Corriven Insurance "
-                    "Limited, attention %s. Issued 22 September 2026; valid to 31 December 2026." % K.PEOPLE["cuo"],
-                    S["meta"]),
-          Paragraph("Scope", S["h2"]),
-          Paragraph("Supply and fitting of the VT-5 self-install device, the driving-score service and the claims "
-                    "notification feed for a twelve-month pilot, with an option to extend. Devices are posted to the "
-                    "policyholder on renewal and activate on first journey; a fitter visit is offered where the car has "
-                    "no accessible OBD port.", S["body"]),
-          Paragraph("Charges", S["h2"]),
-          _table(S, [["Item", "Unit", "Price (GBP, excl. VAT)"],
-                     ["VT-5 device, posted", "per device", "38.50"],
-                     ["Fitter visit (where required)", "per visit", "64.00"],
-                     ["Driving-score and data service", "per active device per month", "2.15"],
-                     ["First-notice crash alert and reconstruction", "per alert", "11.00"],
-                     ["Returns handling at lapse", "per device", "6.20"],
-                     ["Programme set-up and integration", "once", "18,500.00"]], [92, 44, 38], right=(2,)),
-          Spacer(1, 6),
-          Paragraph("Volume terms", S["h2"]),
-          _table(S, [["Devices ordered", "Device price", "Data service"],
-                     ["up to 5,000", "list", "list"],
-                     ["5,001 to 20,000", "list less 6 per cent", "list less 4 per cent"],
-                     ["over 20,000", "list less 11 per cent", "list less 8 per cent"]], [60, 56, 58]),
-          Spacer(1, 6),
-          Paragraph("Terms", S["h2"]),
-          Paragraph("Prices are fixed for orders placed before 31 December 2026. The volume tier is set by the devices "
-                    "on the order. Data is held in the United Kingdom and processed under the data processing "
-                    "agreement of 14 May 2025. Expected take-up in comparable pilots has been 18 to 31 per cent of "
-                    "renewing policies offered the device.", S["body"])]
-    doc.build(st, onFirstPage=_frame("Brackwell Telematics Ltd", "Q-26-1184", "Sans"),
-              onLaterPages=_frame("Brackwell Telematics Ltd", "Q-26-1184", "Sans"))
-
-
-# ---------------------------------------------------------------------------------------------- the planning thread
-def thread_text():
-    a, c, i = K.PEOPLE["actuary"], K.PEOPLE["cuo"], K.PEOPLE["claims"]
-    mail = lambda n: n.lower().replace(" ", ".") + "@corriven.co.uk"
-    msgs = [
-        (c, [a, i], dt.datetime(2026, 10, 7, 9, 12), "Telematics pilot: paper for 13 November",
-         "Carol, Iain,\n\nI signed off the pilot terms yesterday (attached). Brackwell's quote holds to the end of "
-         "the year, and I want the order placed by 27 November so fitting can start in February. Could I have the "
-         "paper by 13 November? It needs to name the two regions with the 2025 frequencies behind them, "
-         "and tell Brackwell how many cars it is ordering for.\n\nDamian"),
-        (a, [c, i], dt.datetime(2026, 10, 7, 14, 40), "RE: Telematics pilot: paper for 13 November",
-         "Damian,\n\nYes. I'll work from the claims extract Data took on 1 October (everything notified to the end of "
-         "30 September) and the pricing mart's exposure, and do the 2025 year on the terms' basis, all five regions so "
-         "you see the gap below the two.\n\nFor Brackwell I'll count the private cars on cover at 30 "
-         "September, region by region and by cover, since each cover has its own discount scale.\n\nCarol"),
-        (i, [a, c], dt.datetime(2026, 10, 8, 8, 55), "RE: Telematics pilot: paper for 13 November",
-         "Damian, Carol,\n\nBrackwell's crash alerts will come into my first-notice desk from February, so I need the "
-         "two regions settled before the order goes. Happy to help with the claims extract if anything in it looks "
-         "odd.\n\nIain"),
-        (c, [a, i], dt.datetime(2026, 10, 9, 17, 31), "RE: Telematics pilot: paper for 13 November",
-         "Thanks both. A workbook with the figures and a short deck I can decide from, please; four or five slides "
-         "is plenty.\n\nDamian"),
+# ---------------------------------------------------------------------------------- the sampling brief
+def write_brief(path):
+    from docx import Document
+    from docx.shared import Pt, RGBColor
+    d = Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(11)
+    h = d.add_paragraph()
+    r = h.add_run("Roastery sampling 2027: brief")
+    r.bold, r.font.size, r.font.color.rgb = True, Pt(18), RGBColor(0x5A, 0x3A, 0x22)
+    p = d.add_paragraph("Corcally's Roastery. Alix Fennell, Roastery brand manager, 11 January 2027.")
+    p.runs[0].font.size, p.runs[0].font.color.rgb = Pt(9.5), RGBColor(0x5D, 0x66, 0x6C)
+    sections = [
+        ("What we are doing",
+         ["In spring 2027 the Roastery team will post a 227g taster pack of the House Blend, with a voucher for a "
+          "full pack, to the homes that buy one rival coffee brand. The aim is to bring homes that do not have the "
+          "Roastery in the cupboard to try it. This year one brand's homes get the packs."]),
+        ("Which brand",
+         ["The packs go to the homes of the rival whose 2026 buying homes least often also bought the Roastery: for "
+          "each rival, of the homes that bought it in 2026, the share that also bought the Roastery in 2026. The lower "
+          "that share, the more of the rival's homes are new to the Roastery."]),
+        ("How we read 2026",
+         ["A home is the people who live in it. A home bought a brand in 2026 if anyone in it bought a pack of that "
+          "brand at Corcally's between 1 January and 31 December 2026, on a Corcally's Rewards card in one of our three "
+          "stores or through the home's online shop account. An online order counts on the day it was delivered.",
+          "The Roastery means Corcally's Roastery packs. The rivals are the other coffee brands we sell in packs. The "
+          "coffee counter at Drumsallagh sells guest roasters loose and is outside this brief."]),
+        ("What we need back",
+         ["For each rival, the homes that bought it in 2026, how many of them also bought the Roastery, and that "
+          "share; the brand the packs go to, with the runner-up and the gap between them. The deck goes to the "
+          "Roastery planning session on 3 February."]),
     ]
-    out = []
-    for frm, to, t, subj, body in reversed(msgs):
-        out.append("From: %s <%s>\nTo: %s\nDate: %s\nSubject: %s\n\n%s\n" % (
-            frm, mail(frm), "; ".join("%s <%s>" % (x, mail(x)) for x in to),
-            t.strftime("%a %d %b %Y %H:%M"), subj, body))
-    return ("\n" + "-" * 72 + "\n\n").join(out)
+    for head, paras in sections:
+        hp = d.add_paragraph()
+        hr = hp.add_run(head)
+        hr.bold, hr.font.size = True, Pt(12)
+        for t in paras:
+            d.add_paragraph(t)
+    sec = d.sections[0]
+    sec.header.paragraphs[0].text = "Corcally's Roastery"
+    d.save(path)

@@ -1,39 +1,38 @@
 # leak check, task268
 
-**Verdict: REVIEW.** 11 files read, 23 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 29 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: claims, development, closed, notified, standard, accident, extract, method, grouping, carries, survey, decisive, back-test, rejected, gullhaven, notified-by, representatives, counts, reading, default, wrenhaven, severn, analyst, design, selection
+Stump terms swept: online, accounts, member, settlement, nordhavn, decisive, reading, survey, duplication, members, rejected, gullhaven, analyst, method, carries, patient, wrenhaven, terminal, payments, reflex, re-root, development, fennick, estimand, dropped
 
-## 1 file names (REVIEW 1)
-- **REVIEW** `telematics_pilot_thread.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `roastery_sampling_brief_2027.docx`: carries 4 of 5 distinctive words of the committed call: "The 2027 Roastery sampling goes to Oro Rosso's homes."
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `motor_claims_notified_2019_2026.csv`: golden figure 30,213 appears: ...14,2019-08-14,GLASS,,Policyholder,,Closed,2019-08-30,213.28,0.00 MC01018266,CL/437086,CV7532026,OP69 FWE,L...
-- **REVIEW** `motor_claims_notified_2019_2026.csv`: golden figure 11,434 appears: ...-06T11:57:59Z,GLASS,,Policyholder,,Closed,2024-01-11,434.13,0.00 MC12014847,,PC2731684,VX65 COS,PC,COMP,WA...
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `corcallys_rewards_terms_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, member, members); read whether the document names the move
+- **REVIEW** `faircourt_merchant_agreement_2026.pdf`: 3 of 25 stump-paragraph terms appear (online, settlement, terminal); read whether the document names the move
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `motor_reserving_standard_v4.pdf`: 8 of 25 stump-paragraph terms appear (claims, development, closed, notified, standard, accident); read whether the document names the move
-- **REVIEW** `telematics_pilot_terms_2027.pdf`: 6 of 25 stump-paragraph terms appear (claims, closed, notified, standard, accident, counts); read whether the document names the move
-- **REVIEW** `telematics_pilot_thread.txt`: 3 of 25 stump-paragraph terms appear (claims, notified, extract); read whether the document names the move
-
-## 9 dates after the setting (REVIEW 2)
-- **REVIEW** `policy_changes_2025_2026.csv`: 340 ISO dates after 2026-10-14, e.g. 2026-10-15, 2026-10-16, 2026-10-17, 2026-10-18, 2026-10-19
-- **REVIEW** `policy_vehicles_in_force_20260930.csv`: 246018 ISO dates after 2026-10-14, e.g. 2026-10-15, 2026-10-16, 2026-10-17, 2026-10-18, 2026-10-19
+## 6 ranking artifacts (REVIEW 2, INFO 2)
+- **REVIEW** `multibuy_deals_2026.xlsx`: names 6 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `product_master_coffee.xlsx`: names 7 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `coffee_counter_price_board_2026.pdf`: names 3 of 11 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `counter_scale_labels_2026.csv`: names 3 of 11 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 

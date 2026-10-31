@@ -1,180 +1,93 @@
 {
- "backtest_2022_route_pct": {
-  "Fenland": -0.78,
-  "Mersey": 0.08,
-  "Pennine": -0.94,
-  "Severn": 0.23,
-  "Wessex": -1.09
+ "ask_a": {
+  "Ardcath Coffee Co. Q1": 441.4,
+  "Ardcath Coffee Co. Q2": 464.3,
+  "Ardcath Coffee Co. Q3": 469.5,
+  "Ardcath Coffee Co. Q4": 470.8,
+  "Glenmore Roasters Q1": 514.0,
+  "Glenmore Roasters Q2": 503.0,
+  "Glenmore Roasters Q3": 521.2,
+  "Glenmore Roasters Q4": 541.9,
+  "Inish Bean Q1": 360.8,
+  "Inish Bean Q2": 363.1,
+  "Inish Bean Q3": 374.9,
+  "Inish Bean Q4": 347.0
  },
- "backtest_2022_worst_pct": {
-  "cmc_rest": 1.01,
-  "head": 7.85,
-  "notified_by": 6.78,
-  "pooled": 8.54,
-  "region": 7.87,
-  "representative": 8.63,
-  "route": 1.09,
-  "route_head": 1.09,
-  "route_simple": 1.05
+ "ask_b": {
+  "Bellvale Foods Ireland Ltd Q1": 140,
+  "Bellvale Foods Ireland Ltd Q2": 24,
+  "Bellvale Foods Ireland Ltd Q3": 210,
+  "Bellvale Foods Ireland Ltd Q4": 71,
+  "Cafetto Brands Ireland Ltd Q1": 30,
+  "Cafetto Brands Ireland Ltd Q2": 164,
+  "Cafetto Brands Ireland Ltd Q3": 30,
+  "Cafetto Brands Ireland Ltd Q4": 155,
+  "Halloran & Sons Coffee Ltd Q1": 259,
+  "Halloran & Sons Coffee Ltd Q2": 139,
+  "Halloran & Sons Coffee Ltd Q3": 174,
+  "Halloran & Sons Coffee Ltd Q4": 388,
+  "Nordhavn Coffee Ireland Ltd Q1": 259,
+  "Nordhavn Coffee Ireland Ltd Q2": 43,
+  "Nordhavn Coffee Ireland Ltd Q3": 233,
+  "Nordhavn Coffee Ireland Ltd Q4": 53,
+  "Oro Rosso Caffe Ireland Ltd Q1": 22,
+  "Oro Rosso Caffe Ireland Ltd Q2": 188,
+  "Oro Rosso Caffe Ireland Ltd Q3": 90,
+  "Oro Rosso Caffe Ireland Ltd Q4": 207
  },
- "call": [
-  "Mersey",
-  "Pennine"
+ "call": "Oro Rosso",
+ "call_both": 741,
+ "call_homes": 1857,
+ "call_share": 40,
+ "clock_block": [
+  "S2-006398",
+  "S2-006970"
  ],
- "cars_on_cover": {
-  "Fenland|COMP": 19421,
-  "Fenland|TPFT": 3243,
-  "Fenland|TPO": 1003,
-  "Mersey|COMP": 44743,
-  "Mersey|TPFT": 11434,
-  "Mersey|TPO": 4925,
-  "Pennine|COMP": 30213,
-  "Pennine|TPFT": 7051,
-  "Pennine|TPO": 2831,
-  "Severn|COMP": 36590,
-  "Severn|TPFT": 7448,
-  "Severn|TPO": 2919,
-  "Wessex|COMP": 30001,
-  "Wessex|TPFT": 5746,
-  "Wessex|TPO": 2037
- },
- "default_head": {
-  "Fenland": 5.9,
-  "Mersey": 8.9,
-  "Pennine": 7.7,
-  "Severn": 8.1,
-  "Wessex": 7.3
- },
- "default_notified_by": {
-  "Fenland": 5.9,
-  "Mersey": 8.9,
-  "Pennine": 7.8,
-  "Severn": 8.1,
-  "Wessex": 7.3
- },
- "default_pooled": {
-  "Fenland": 5.9,
-  "Mersey": 8.9,
-  "Pennine": 7.6,
-  "Severn": 8.1,
-  "Wessex": 7.3
- },
- "earned_car_years": {
-  "Fenland": 23927.05,
-  "Mersey": 61924.81,
-  "Pennine": 40568.81,
-  "Severn": 47215.47,
-  "Wessex": 38108.96
- },
- "final_2022": {
-  "Fenland": 1369,
-  "Mersey": 5352,
-  "Pennine": 2842,
-  "Severn": 3668,
-  "Wessex": 3062
- },
- "frequency": {
-  "Fenland": 5.9,
-  "Mersey": 8.9,
-  "Pennine": 8.2,
-  "Severn": 8.0,
-  "Wessex": 7.3
- },
- "frequency_unrounded": {
-  "Fenland": 5.8868,
-  "Mersey": 8.9088,
-  "Pennine": 8.2004,
-  "Severn": 8.0167,
-  "Wessex": 7.3006
- },
- "gap": 0.2,
- "not_yet_notified_2025": {
-  "Fenland": 34.5,
-  "Mersey": 219.7,
-  "Pennine": 335.8,
-  "Severn": 72.1,
-  "Wessex": 101.2
- },
- "notified_2025": {
-  "Fenland": 1374,
-  "Mersey": 5297,
-  "Pennine": 2991,
-  "Severn": 3713,
-  "Wessex": 2681
- },
- "route_factors": {
-  "Claims management company": 3.6872,
-  "Policyholder": 1.0,
-  "Solicitor practice": 1.1739,
-  "Third party": 1.0,
-  "Third-party insurer": 1.0
- },
- "share_still_to_come_pct": {
-  "Fenland": 2.5,
-  "Mersey": 4.0,
-  "Pennine": 10.1,
-  "Severn": 1.9,
-  "Wessex": 3.6
- },
- "third": "Severn",
- "ultimate_2025": {
-  "Fenland": 1408.5,
-  "Mersey": 5516.7,
-  "Pennine": 3326.8,
-  "Severn": 3785.1,
-  "Wessex": 2782.2
- },
- "writeup": {
-  "bt_cmc_rest_worst": 1.01,
-  "bt_head": -7.85,
-  "bt_notified_by": -6.78,
-  "bt_pooled": -8.54,
-  "bt_region": -7.87,
-  "bt_representative": -8.63,
-  "bt_route_worst": 1.09,
-  "cars_by_region": {
-   "Fenland": 23667,
-   "Mersey": 61102,
-   "Pennine": 40095,
-   "Severn": 46957,
-   "Wessex": 37784
+ "counter_tid": "41023121",
+ "default_call": "Nordhavn",
+ "default_share": 17,
+ "gap_points": 9,
+ "homes_total": 3802,
+ "receipts_matched": 50047,
+ "rivals": {
+  "Bellvale": {
+   "both": 889,
+   "homes": 1696,
+   "share": 52
   },
-  "cmc_closed_range": [
-   18,
-   30
-  ],
-  "cmc_tpi_21m": {
-   "Pennine": {
-    "2019": 26,
-    "2020": 18,
-    "2021": 30,
-    "2022": 22,
-    "2025": 119
-   },
-   "Wessex": {
-    "2019": 27,
-    "2020": 19,
-    "2021": 21,
-    "2022": 116,
-    "2025": 32
-   }
+  "Cafetto": {
+   "both": 950,
+   "homes": 1816,
+   "share": 52
   },
-  "cy_total": 211745.1,
-  "notified_total_2025": 16056,
-  "per_car_years": 100,
-  "standard_clauses": [
-   "2.1",
-   "2.2",
-   "2.3",
-   "3.1",
-   "3.2",
-   "3.3"
-  ],
-  "tolerance": 2.0,
-  "totals_a": [
-   160968,
-   34922,
-   13715
-  ]
- }
+  "Halloran's": {
+   "both": 1244,
+   "homes": 2436,
+   "share": 51
+  },
+  "Kinvara Hills": {
+   "both": 744,
+   "homes": 1325,
+   "share": 56
+  },
+  "Nordhavn": {
+   "both": 764,
+   "homes": 1568,
+   "share": 49
+  },
+  "Oro Rosso": {
+   "both": 741,
+   "homes": 1857,
+   "share": 40
+  },
+  "Westquay": {
+   "both": 372,
+   "homes": 472,
+   "share": 79
+  }
+ },
+ "runner_both": 764,
+ "runner_homes": 1568,
+ "runner_share": 49,
+ "runner_up": "Nordhavn"
 }
