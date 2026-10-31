@@ -1,179 +1,196 @@
 {
- "sectors_over_tolerance": [
-  "Tarvik"
+ "call": {
+  "hotspots": [
+   "Bagumbayan",
+   "Maligaya",
+   "San Roque"
+  ],
+  "response": "weeks 41 to 44",
+  "trigger": 40,
+  "window": "morbidity weeks 37 to 40, 2027"
+ },
+ "ddh_admissions": {
+  "33": 33,
+  "34": 31,
+  "35": 58,
+  "36": 39,
+  "37": 42,
+  "38": 27,
+  "39": 40,
+  "40": 32
+ },
+ "default_path": [
+  "Bagumbayan",
+  "Burol",
+  "Kanluran",
+  "Maligaya",
+  "Malinta",
+  "Pulong Bayabas",
+  "Silangan",
+  "Tabing-Ilog"
  ],
- "tolerance_per_100k_fh": "40.0",
- "forecast_rate_s27": {
-  "Tarvik": "72.4",
-  "Mosby": "24.8",
-  "Grendal": "23.5",
-  "Linmark": "24.1",
-  "Karrow": "24.2",
-  "Lysvik": "26.4",
-  "Hallin": "24.9",
-  "Sandvik": "18.9"
+ "dmc_admissions": {
+  "33": 54,
+  "34": 65,
+  "35": 68,
+  "36": 79,
+  "37": 80,
+  "38": 68,
+  "39": 53,
+  "40": 60
  },
- "forecast_losses_s27": {
-  "Tarvik": "11.9",
-  "Mosby": "2.4",
-  "Grendal": "3.4",
-  "Linmark": "2.5",
-  "Karrow": "1.7",
-  "Lysvik": "3.9",
-  "Hallin": "1.8",
-  "Sandvik": "1.9"
+ "first_positive_igm": {
+  "35": 7,
+  "36": 10,
+  "37": 9,
+  "38": 10,
+  "39": 10,
+  "40": 5
  },
- "planning_flight_hours_s27": {
-  "Tarvik": 16414,
-  "Mosby": 9633,
-  "Grendal": 14343,
-  "Linmark": 10233,
-  "Karrow": 7136,
-  "Lysvik": 14962,
-  "Hallin": 7183,
-  "Sandvik": 10116
+ "first_positive_ns1": {
+  "35": 52,
+  "36": 60,
+  "37": 52,
+  "38": 57,
+  "39": 68,
+  "40": 31
  },
- "crossings_s27": {
-  "Tarvik": 48545,
-  "Mosby": 9768,
-  "Grendal": 13752,
-  "Linmark": 10088,
-  "Karrow": 7049,
-  "Lysvik": 16137,
-  "Hallin": 7299,
-  "Sandvik": 7793
+ "house_index": {
+  "Bayanihan": 15.4,
+  "Dila": 24.1,
+  "Liwayway": 13.1,
+  "Lumbia": 18.8,
+  "Mabini": 12.7,
+  "Mangga": 25.8,
+  "Parian": 17.0,
+  "Rizal": 4.5,
+  "San Isidro": 4.9,
+  "Santa Cruz": 15.1,
+  "Tagumpay": 20.9,
+  "Talon": 20.7
  },
- "crossings_record": {
-  "Tarvik": 48966,
-  "Mosby": 49331,
-  "Grendal": 68214,
-  "Linmark": 50132,
-  "Karrow": 41094,
-  "Lysvik": 73504,
-  "Hallin": 24560,
-  "Sandvik": 36493
+ "over_trigger_by_home_address": 8,
+ "placement_by_inversion": {
+  "Bagumbayan": 85.8,
+  "Bayanihan": 11.8,
+  "Bonifacio": 10.2,
+  "Bulihan": 7.4,
+  "Burol": 7.6,
+  "Concepcion": 4.7,
+  "Dila": 18.0,
+  "Halang": 4.5,
+  "Ilaya": 16.0,
+  "Kanluran": 12.3,
+  "Liwayway": 2.9,
+  "Lumbia": 2.3,
+  "Mabini": 15.0,
+  "Malanday": 11.4,
+  "Maligaya": 66.0,
+  "Malinta": 9.8,
+  "Mangga": 13.0,
+  "Masagana": 2.6,
+  "Pag-asa": 6.8,
+  "Parian": 16.0,
+  "Poblacion": 0.0,
+  "Pulong Bayabas": 4.7,
+  "Rizal": 5.2,
+  "Sampaloc": 6.0,
+  "San Antonio": 12.9,
+  "San Isidro": 7.1,
+  "San Jose": 8.8,
+  "San Roque": 465.2,
+  "Santa Cruz": 5.9,
+  "Santo Niño": 4.3,
+  "Santo Tomas": 0.0,
+  "Santo Tomas Norte": 2.7,
+  "Silangan": 3.3,
+  "Tabing-Ilog": 8.6,
+  "Tagumpay": 11.6,
+  "Talon": 6.9
  },
- "losses_record": {
-  "Tarvik": 12,
-  "Mosby": 12,
-  "Grendal": 17,
-  "Linmark": 13,
-  "Karrow": 10,
-  "Lysvik": 17,
-  "Hallin": 6,
-  "Sandvik": 9
+ "plan_sections": [
+  "4.1",
+  "4.2",
+  "4.3",
+  "4.4",
+  "4.5",
+  "4.6"
+ ],
+ "residence_counts": {
+  "Bagumbayan": 86,
+  "Bayanihan": 19,
+  "Bonifacio": 11,
+  "Bulihan": 17,
+  "Burol": 54,
+  "Concepcion": 12,
+  "Dila": 22,
+  "Halang": 6,
+  "Ilaya": 16,
+  "Kanluran": 55,
+  "Liwayway": 4,
+  "Lumbia": 8,
+  "Mabini": 15,
+  "Malanday": 12,
+  "Maligaya": 66,
+  "Malinta": 47,
+  "Mangga": 13,
+  "Masagana": 13,
+  "Pag-asa": 10,
+  "Parian": 17,
+  "Poblacion": 3,
+  "Pulong Bayabas": 54,
+  "Rizal": 6,
+  "Sampaloc": 6,
+  "San Antonio": 15,
+  "San Isidro": 12,
+  "San Jose": 11,
+  "San Roque": 14,
+  "Santa Cruz": 14,
+  "Santo Niño": 12,
+  "Santo Tomas": 11,
+  "Santo Tomas Norte": 4,
+  "Silangan": 58,
+  "Tabing-Ilog": 48,
+  "Tagumpay": 21,
+  "Talon": 15
  },
- "flight_hours_record": {
-  "Tarvik": 87210,
-  "Mosby": 54763,
-  "Grendal": 81666,
-  "Linmark": 58179,
-  "Karrow": 41261,
-  "Lysvik": 77829,
-  "Hallin": 39742,
-  "Sandvik": 57563
+ "shares_at_work": [
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  1.0
+ ],
+ "weeks": {
+  "admissions": [
+   33,
+   34,
+   35,
+   36,
+   37,
+   38,
+   39,
+   40
+  ],
+  "laboratory": [
+   35,
+   36,
+   37,
+   38,
+   39,
+   40
+  ],
+  "response": [
+   41,
+   44
+  ],
+  "window": [
+   37,
+   40
+  ]
  },
- "losses_record_total": 96,
- "crossings_record_total": 392294,
- "losses_per_10000_crossings": "2.45",
- "rate_s26_per_100k_fh": {
-  "Tarvik": "13.4",
-  "Mosby": "32.0",
-  "Grendal": "28.6",
-  "Linmark": "20.1",
-  "Karrow": "14.4",
-  "Lysvik": "22.5",
-  "Hallin": "28.6",
-  "Sandvik": "20.3"
- },
- "crossings_s26": {
-  "Tarvik": 9682,
-  "Mosby": 9765,
-  "Grendal": 13758,
-  "Linmark": 10115,
-  "Karrow": 6669,
-  "Lysvik": 14708,
-  "Hallin": 6825,
-  "Sandvik": 7123
- },
- "flight_hours_s26": {
-  "Tarvik": 14957,
-  "Mosby": 9368,
-  "Grendal": 14008,
-  "Linmark": 9959,
-  "Karrow": 6936,
-  "Lysvik": 13348,
-  "Hallin": 6983,
-  "Sandvik": 9850
- },
- "rate_record_per_100k_fh": {
-  "Tarvik": "13.8",
-  "Mosby": "21.9",
-  "Grendal": "20.8",
-  "Linmark": "22.3",
-  "Karrow": "24.2",
-  "Lysvik": "21.8",
-  "Hallin": "15.1",
-  "Sandvik": "15.6"
- },
- "losses_per_10000_crossings_by_sector": {
-  "Tarvik": "2.45",
-  "Mosby": "2.43",
-  "Grendal": "2.49",
-  "Linmark": "2.59",
-  "Karrow": "2.43",
-  "Lysvik": "2.31",
-  "Hallin": "2.44",
-  "Sandvik": "2.47"
- },
- "default_path_highest": "Mosby",
- "default_path_highest_rate": "32.0",
- "next_highest_forecast": "Lysvik",
- "next_highest_forecast_rate": "26.4",
- "delay_per_flight_s26_min": {
-  "Tarvik": "0.53",
-  "Mosby": "0.41",
-  "Grendal": "0.43",
-  "Linmark": "0.16",
-  "Karrow": "0.29",
-  "Lysvik": "0.55",
-  "Hallin": "0.27",
-  "Sandvik": "0.10"
- },
- "flights_entered_s26": {
-  "Tarvik": 47518,
-  "Mosby": 32751,
-  "Grendal": 48292,
-  "Linmark": 30925,
-  "Karrow": 22701,
-  "Lysvik": 51201,
-  "Hallin": 22911,
-  "Sandvik": 34022
- },
- "hours_open_alone_s26": {
-  "Tarvik": "1532.1",
-  "Mosby": "1310.5",
-  "Grendal": "735.3",
-  "Linmark": "1202.3",
-  "Karrow": "771.1",
-  "Lysvik": "1410.2",
-  "Hallin": "971.6",
-  "Sandvik": "1301.9"
- },
- "acas_ra_encounters_s26": {
-  "Tarvik": 8,
-  "Mosby": 9,
-  "Grendal": 10,
-  "Linmark": 7,
-  "Karrow": 4,
-  "Lysvik": 7,
-  "Hallin": 3,
-  "Sandvik": 2
- },
- "tarvik_forecast_about": "72",
- "others_under": "30",
- "rate_basis_pairs": "10,000",
- "rate_basis_flight_hours": "100,000",
- "record_window": "1 January 2025 to 30 September 2026",
- "season": "1 June to 31 August, local time"
+ "working_age_band": [
+  15,
+  64
+ ]
 }

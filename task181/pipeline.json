@@ -1,30 +1,32 @@
 {
  "task": "task181",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a city health office's barangay dengue hotspot response)",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "The default path counts each barangay's notified dengue cases by barangay of residence in the latest four morbidity weeks against the plan's trigger of 30 cases infected in the barangay and presents the ecozone's dormitory barangays with the one real local outbreak; the step that lands it there is reading the barangay of residence as the place of infection, when the excess is among working residents in proportion to how many of them work in the ecozone, so it was caught in the ecozone's host barangay, which the residence count leaves under the trigger.",
+ "stump": "The default path counts each barangay's notified cases by the barangay of residence and presents Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; the step that lands it there is taking the home barangay as the place of infection, when Aedes aegypti bites by day and the six barangays' rise is all among working-age residents, the six barangays sending the most workers to the estate in San Roque, so those cases were caught in San Roque, whose own residents number 14 of the window's cases.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-31 (9 REVIEW, 0 LEAK; every line ruled in the note's Leak review)",
+  "reader": "pending: stage 4 from the main thread"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task121 v3 lineage 0.08 (draw-time check)"
+  "heart": "PASS 2026-10-31 (NOTE same_driver_older, differentiated against task487)",
+  "nearest": "task121 v3 lineage 0.08",
+  "surface": "PASS 2026-10-31 (NOTE: Santo Tomas, a barangay, read as a persona)"
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "",
+  "brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_judge_brief.md"
  },
  "returned": [
   {
@@ -52,11 +54,22 @@
    "commit": ""
   }
  ],
- "resume": "Architecture 5 drawn 2026-10-31 after the criminology cell closed at the draw (the weather-conditioned violence draw died on task182's abstraction and an unrealistic separation; task182's architecture 8 had already enumerated that cell closed). Moved under the re-root directive's fallback to epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection. Next: stage 2, the precut sections and prompt.txt, precut.py exit 0 before any data is cut.",
+ "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn them). Reader brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_leak_brief.md (fresh copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task181/); judge brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_judge_brief.md (isolated copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/determinism-check-task181-183756/). Then fix every finding in the generator in one pass, rebuild twice byte-identical (python3 task181/generator/build.py), re-run every gate, cut target.zip with python3 task181/generator/zipcut.py (md5 c6dd178bcc6f724315f6b2c3ad3be858 on this cut), replace task181's row in the shipped ledger's Shipped, pending the portal, and commit SHIPPED (task181) with target.zip and golden/ force-added.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "cut": {
+  "target_zip_md5": "c6dd178bcc6f724315f6b2c3ad3be858",
+  "target_zip_sha256": "3e54b709175d65a152d64f416d4ef851310e6b6506edb9e291535b58c4024b9a",
+  "members": 12,
+  "bytes": 813495,
+  "cut_by": "generator/zipcut.py",
+  "golden_sha256": {
+   "dengue_hotspots_mw41_44_2027.pdf": "01aa67c4ccb2951c90351703cfcb65db6feadf293a76300c981f61d512c9e2d2",
+   "response_figures_2027.csv": "09cd46ef0ccb4fffbe7338c25f89acf2aa0ef8eaf093092c0cefb6ed36154dee"
+  }
+ }
 }

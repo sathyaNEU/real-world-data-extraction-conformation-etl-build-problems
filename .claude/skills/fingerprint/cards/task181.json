@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "San Roque, Bagumbayan and Maligaya go under the hotspot response for morbidity weeks 41 to 44, and no other barangay; by home address eight barangays are over the trigger of 40 (Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan) and San Roque's own residents account for 14 of the window's cases",
+  "answer_source": "submission.md block 1 and generator/figures.json call.hotspots (cut target.zip md5 c6dd178bcc6f724315f6b2c3ad3be858)",
   "gap": [
     "population",
     "objective"
@@ -32,25 +32,27 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst merges the re-notified cases, sets aside the cases acquired outside the city, dates each case by onset, counts each barangay's cases in the latest four morbidity weeks and applies the plan's trigger of 30 cases infected in the barangay, filing the dormitory barangays and the one with a real local outbreak; every field is read correctly and the trigger executed, and the call is wrong because the line list places each case where the patient sleeps while the excess was caught where the patients work.",
+  "analyst_test": "A strong analyst keeps each case number's latest row, drops the notifications classified Not a case and the residents of other towns, merges patients notified by two units, dates each case by onset, counts each barangay's cases with onset in weeks 37 to 40 and applies the plan's trigger of 40 cases infected in the barangay, filing Bagumbayan, Maligaya and the six barangays beside the estate; every field is read correctly and the trigger executed, and the call is wrong because the line list places each case where the patient sleeps while the six barangays' excess was caught where their working residents work, at the estate in San Roque.",
   "domain_test": "The deciding quantity is the number of dengue infections caught in each barangay, worked the way vector-borne disease surveillance works it: Aedes aegypti bites by day, so a working adult is exposed mostly where they spend the working day; put malaria's night-biting Anopheles or a non-vector disease in and the home is again the place of infection, so the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:day-biting-exposure-filed-at-the-home-barangay",
   "layer1": [
-    "notifications from two disease reporting units with different layouts (the hospitals' and the rural health units')",
-    "re-notified cases (a case updated from suspect to confirmed arrives again)",
-    "barangay of residence written as each reporting unit writes it",
-    "onset, consultation and report dates in day-month-year text",
-    "morbidity weeks that do not match calendar months",
-    "the census workbook's multi-row headers and footnotes",
-    "a barangay split in 2025 (two new barangays carved from one)"
+    "the online system's export with migrated 2022 to 2024 rows (codes S, P, C, X and blank travel fields)",
+    "Update rows under a case number",
+    "patients notified by two units under two case numbers",
+    "barangay names as each unit spells them",
+    "Santo Tomas Norte written under its parent barangay before and sometimes after the 2025 split",
+    "dates day-month-year from the centres and year-month-day from the hospitals' online submissions",
+    "residents of other towns not yet forwarded",
+    "blank onsets",
+    "the CBMS workbook's multi-row headers, merged cells, dashes for zero and footnotes"
   ],
   "stakeholder_role": "the city health officer",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
     "file": "dengue_line_list_2022_2027.csv",
-    "rows": 0,
+    "rows": 26205,
     "entity": "one notified dengue case",
     "grain": "case",
     "source": "synthetic"
@@ -64,7 +66,17 @@
     "org_type": "city health office",
     "invented_names": [
       "Dalisay City",
-      "Dalisay Ecozone"
+      "Dalisay Industrial Estate",
+      "Dalisay Medical Center",
+      "Dalisay Doctors' Hospital",
+      "Dalisay Family Clinic",
+      "Dalisay East Medical Clinic",
+      "Dalisay Diagnostic and Wellness Center",
+      "Laguna Bay Inter-Local Health Zone",
+      "Pinagbuklod",
+      "Kalinaw",
+      "Sinagtala",
+      "Masilaw"
     ],
     "people": [
       "John Figueroa",
@@ -73,13 +85,13 @@
   },
   "deliverables": [
     "dengue_hotspots_mw41_44_2027.pdf",
-    "barangay_figures_2027.csv"
+    "response_figures_2027.csv"
   ],
   "opening_move": "question-first",
   "question_form": "where",
   "driver": "A unit's recorded events are filed under the unit where each member lives, while the exposure that produces them falls where the member spends the active hours of the day, so a rise in one destination's exposure surfaces as rises in every origin whose members travel there, in proportion to the members each sends, and leaves the destination quiet in the record because few members live in it; only carrying each origin's excess back through the travel flows finds the unit where the exposure rose.",
-  "driver_concrete": "Dengue cases are notified by barangay of residence, but Aedes aegypti bites by day, so the 2027 outbreak in the ecozone surfaces as rises in the barangays its workforce sleeps in, in proportion to each barangay's ecozone workers in the census place-of-work table, while the ecozone barangay, home to few people, stays under the plan's trigger; only carrying each barangay's excess among employed residents back through the place-of-work flows puts the transmission in the ecozone.",
-  "stump": "The default path counts each barangay's notified dengue cases by residence in the latest four morbidity weeks against the plan's trigger of 30 cases infected in the barangay and presents the ecozone's dormitory barangays with the one real local outbreak; the step that lands it there is reading the barangay of residence as the place of infection, when the excess is among employed residents in proportion to how many of them work in the ecozone, so it was caught in the ecozone and those barangays' own transmission did not rise.",
+  "driver_concrete": "Dengue cases are notified by home barangay, but Aedes aegypti bites by day, so the 2027 outbreak at the Dalisay Industrial Estate surfaces as working-age rises in the six barangays that send it the most workers in the census place-of-work table, while San Roque, the estate's barangay and home to few of its workers, stays under the plan's trigger; only carrying each barangay's working-age excess back through the place-of-work flows puts the transmission at the estate.",
+  "stump": "The default path counts each barangay's notified cases by the barangay of residence and presents Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; the step that lands it there is taking the home barangay as the place of infection, when Aedes aegypti bites by day and the six barangays' rise is all among working-age residents, the six barangays sending the most workers to the estate in San Roque, so those cases were caught in San Roque, whose own residents number 14 of the window's cases.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task487": "task487 dates each inspection-found event inside its window by the share the previous inspection itself started; this build moves each recorded event to the unit where its member spends the vector's feeding hours, through the census place-of-work flows, and nothing is dated or timed inside a window."
@@ -128,12 +140,12 @@
       "stump": "The default path predicts each area's quarter from its own 2022 to 2026 quarters with the weather read off the days (each day's maximum or mean temperature, or every night's temperature alike) and presents Castle Quarter, Riverside, the University Quarter and Millbrook; the step that lands it there is reading the weather where the violence does not happen, when the violence the weather moves is the night-time economy's on Friday and Saturday nights and the quarter's warmth was in exactly those nights."
     }
   ],
-  "notes": "Drawn at the re-root's second pass on 2026-10-31 after the criminology cell closed (lineage v5a). stump_strategy causal_design: the decisive move is interference between units, outcomes recorded in one unit caused by exposure in another through daily travel. gate_g decomposition_attribution: each barangay's correctly reported cases assigned to the barangay where they were caught. Axis values drawn against the window (tasks 464, 273, 268): operations_desk, period_close, local_government, operations_director, monitoring_export.",
+  "notes": "Drawn at the re-root's second pass on 2026-10-31 after the criminology cell closed (lineage v5a). stump_strategy causal_design: the decisive move is interference between units, outcomes recorded in one unit caused by exposure in another through daily travel. gate_g decomposition_attribution: each barangay's correctly reported cases assigned to the barangay where they were caught. Axis values drawn against the window (tasks 464, 273, 268): operations_desk, period_close, local_government, operations_director, monitoring_export. Renamed at the house-fix pass (H21): the private hospital, the clinics and the neighbouring towns, figures unchanged. guard.py surface reads Santo Tomas, a barangay, as a persona.",
   "registered": "2026-10-31T17:12:15Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "put",
-    "rounding opener": "give",
-    "deliverable set": "csv+pptx"
+    "question form": "where",
+    "second-sentence opener": "make",
+    "rounding opener": "admissions",
+    "deliverable set": "csv+pdf"
   }
 }

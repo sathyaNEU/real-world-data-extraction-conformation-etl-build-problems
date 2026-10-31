@@ -1,176 +1,215 @@
-"""Independent verifier: reads only the shipped bundle (target/) and the goldens, on its own code path (pandas joins
-by half-hour bucket for the pairs, its own interval and report arithmetic), and recomputes the call, every sector's
-forecast rate, the record the rate rests on, the close-out table and the three summer 2026 measures, then compares
-them with the golden workbook and figures.json."""
+"""Independent verifier: reads only the shipped bundle (target/ and the goldens), on its own code path, and
+recomputes the call and every graded figure. No generator module is imported.
+
+    python3 task181/generator/verify.py [bundle_dir]
+"""
 import datetime as dt
 import json
 import os
 import re
 import sys
+import unicodedata
 
 import numpy as np
 import pandas as pd
-import pdfplumber
+from openpyxl import load_workbook
+from pypdf import PdfReader
+from scipy.optimize import nnls
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-UTC0 = pd.Timestamp("1970-01-01", tz="UTC")
+TASK = os.path.dirname(HERE)
+OUT = []
 
 
-def secs(col):
-    return ((pd.to_datetime(col, utc=True) - UTC0) // pd.Timedelta(seconds=1)).astype("int64")
+def ok(label, cond, detail=""):
+    OUT.append((label, bool(cond), detail))
 
 
-def local_season(year):
-    a = pd.Timestamp("%d-06-01" % year, tz="Europe/Copenhagen").tz_convert("UTC")
-    b = pd.Timestamp("%d-09-01" % year, tz="Europe/Copenhagen").tz_convert("UTC")
-    return int((a - UTC0).total_seconds()), int((b - UTC0).total_seconds())
+MW1 = {2021: dt.date(2021, 1, 3), 2022: dt.date(2022, 1, 2), 2023: dt.date(2023, 1, 1), 2024: dt.date(2023, 12, 31),
+       2025: dt.date(2024, 12, 29), 2026: dt.date(2026, 1, 4), 2027: dt.date(2027, 1, 3), 2028: dt.date(2028, 1, 2)}
 
 
-def pairs(df):
-    """Pairs of traversals in one sector at once, by a self-join on half-hour buckets (a traversal lasts well under
-    half an hour, so a partner that entered while it was in the sector entered in its bucket or the next)."""
-    out = []
-    for sec, d in df.groupby("sector"):
-        d = d.reset_index(drop=True)
-        d["k"] = np.arange(len(d))
-        d["bk"] = d["t0"] // 1800
-        left = d[["k", "bk", "t0", "t1", "a", "b"]]
-        right = pd.concat([d.assign(bk=d["bk"] - 1), d])[["k", "bk", "t0", "t1", "a", "b"]]
-        m = left.merge(right, on="bk", suffixes=("_i", "_j"))
-        m = m[((m["t0_j"] > m["t0_i"]) | ((m["t0_j"] == m["t0_i"]) & (m["k_j"] > m["k_i"]))) & (m["t0_j"] < m["t1_i"])]
-        m = m.drop_duplicates(["k_i", "k_j"])
-        lo = m["t0_j"].to_numpy(float)
-        hi = np.minimum(m["t1_i"].to_numpy(float), m["t1_j"].to_numpy(float))
-        keep = hi > lo
-        m, lo, hi = m[keep], lo[keep], hi[keep]
-
-        def lev(p, t):
-            a, b = m["a_" + p].to_numpy(float), m["b_" + p].to_numpy(float)
-            t0, t1 = m["t0_" + p].to_numpy(float), m["t1_" + p].to_numpy(float)
-            return a + (b - a) * (t - t0) / (t1 - t0)
-        dlo, dhi = lev("i", lo) - lev("j", lo), lev("i", hi) - lev("j", hi)
-        cross = dlo * dhi < 0
-        tx = lo + (hi - lo) * np.where(cross, dlo / np.where(cross, dlo - dhi, 1), 0)
-        out.append(pd.DataFrame({"sector": sec, "tx": tx[cross]}))
-    return pd.concat(out, ignore_index=True)
+def week(d):
+    for y in sorted(MW1, reverse=True):
+        if d >= MW1[y]:
+            return y, (d - MW1[y]).days // 7 + 1
+    raise ValueError(d)
 
 
-def main(target, golden):
-    reg = json.load(open(os.path.join(target, "sector_register.json")))
-    tv = {s["traffic_volume"]: s["code"] for s in reg["sectors"]}
-    name = {s["code"]: s["name"] for s in reg["sectors"]}
-    code = {v: k for k, v in name.items()}
-    fd = pd.read_parquet(os.path.join(target, "fdps_sector_traversals_2025-01_2026-09.parquet"))
-    rec = pd.DataFrame({"sector": fd["sector"], "t0": secs(fd["entry_time_utc"]), "t1": secs(fd["exit_time_utc"]),
-                        "a": fd["entry_fl"].astype(int), "b": fd["exit_fl"].astype(int), "ifplid": fd["ifplid"]})
-    pl = pd.read_csv(os.path.join(target, "planning_traffic_summer2027_issue1.csv"))
-    plan = pd.DataFrame({"sector": pl["tv"].map(tv), "t0": secs(pl["t_in"]), "t1": secs(pl["t_out"]),
-                         "a": pl["fl_in"], "b": pl["fl_out"]})
-    occ = pd.read_csv(os.path.join(target, "occurrence_export_2025-01_2026-09.csv"), dtype=str, keep_default_na=False)
-    occ["ts"] = secs(occ["occurrence_date"] + " " + occ["time_utc"])
-    occ["code"] = occ["sector"].map(code)
-    atm = occ[(occ["occurrence_type"] == "SMI") & occ["atm_contribution"].isin(["D", "I"])]
-    # the rate per pair, pooled over the record
-    pr = pairs(rec)
-    lo_all, hi_all = int(pd.Timestamp("2025-01-01", tz="UTC").timestamp()), int(pd.Timestamp("2026-10-01", tz="UTC").timestamp())
-    pr = pr[(pr["tx"] >= lo_all) & (pr["tx"] < hi_all)]
-    lam = len(atm) / len(pr)
-    a27, b27 = local_season(2027)
-    p27 = pairs(plan)
-    p27 = p27[(p27["tx"] >= a27) & (p27["tx"] < b27)]
-    c27 = p27.groupby("sector").size()
-    fh27 = ((plan["t1"] - plan["t0"]) / 3600).groupby(plan["sector"]).sum()
-    rate = {s: lam * c27[s] / fh27[s] * 1e5 for s in name}
-    over = sorted(name[s] for s, v in rate.items() if v > 40.0)
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    assert over == fig["sectors_over_tolerance"] == ["Tarvik"], over
-    for s in name:
-        assert "%.1f" % rate[s] == fig["forecast_rate_s27"][name[s]], (s, rate[s], fig["forecast_rate_s27"][name[s]])
-        assert int(c27[s]) == fig["crossings_s27"][name[s]], s
-    assert "%.2f" % (lam * 1e4) == fig["losses_per_10000_crossings"]
-    print("verify: call Tarvik alone over 40.0 (%s); every forecast rate, pair count and the pooled rate reproduce" %
-          ", ".join("%s %.1f" % (name[s], rate[s]) for s in name))
-    # the summer 2026 close-out
-    a26, b26 = local_season(2026)
-    a25, b25 = local_season(2025)
-    with pdfplumber.open(os.path.join(target, "HACC_summer2026_safety_closeout.pdf")) as pdf:
-        text = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
-    for s in name:
-        l26 = int(((atm["code"] == s) & (atm["ts"] >= a26) & (atm["ts"] < b26)).sum())
-        l25 = int(((atm["code"] == s) & (atm["ts"] >= a25) & (atm["ts"] < b25)).sum())
-        m = (rec["sector"] == s) & (rec["t0"] >= a26) & (rec["t0"] < b26)
-        fh = float((rec["t1"][m] - rec["t0"][m]).sum()) / 3600
-        row = re.search(r"^%s (\d+) (\d+) ([\d,]+) ([\d.]+)$" % name[s], text, re.M)
-        assert row and (int(row.group(1)), int(row.group(2)), int(row.group(3).replace(",", "")), row.group(4)) == (
-            l25, l26, round(fh), "%.1f" % (l26 / fh * 1e5)), (s, row.groups() if row else None)
-    print("verify: the summer 2026 close-out reproduces from the record, every sector")
-    # ask 1
-    slots = pd.read_csv(os.path.join(target, "nm_slot_allocations_2026-05_2026-09.csv"), dtype={"ifplid": str})
-    regs = pd.read_csv(os.path.join(target, "nm_regulations_2026-05_2026-09.csv")).drop_duplicates("regulation_id")
-    rk = dict(zip(regs["regulation_id"], zip(regs["location_type"], regs["traffic_volume"])))
-    insea = rec[(rec["t0"] >= a26) & (rec["t0"] < b26)]
-    den = insea.groupby("sector")["ifplid"].nunique()
-    fl = slots[slots["ifplid"].isin(set(rec["ifplid"]))]
-    top = fl.loc[fl.groupby("ifplid")["slot_delay_min"].idxmax()]
-    top = top.assign(kind=top["regulation_id"].map(lambda x: rk[x][0]),
-                     sector=top["regulation_id"].map(lambda x: tv.get(rk[x][1])))
-    top = top[top["kind"] == "En-route"]
-    j = top.merge(insea[["ifplid", "sector"]], on=["ifplid", "sector"])
-    num = j.groupby("sector")["slot_delay_min"].sum()
-    delay = {s: float(num.get(s, 0)) / den[s] for s in name}
-    for s in name:
-        assert "%.2f" % delay[s] == fig["delay_per_flight_s26_min"][name[s]], (s, delay[s])
-    print("verify: ask 1 delay per flight reproduces (%s)" % ", ".join("%s %.2f" % (name[s], delay[s]) for s in name))
-    # ask 2
-    log = pd.read_csv(os.path.join(target, "sector_configuration_log_2026-05_2026-09.csv"), keep_default_na=False)
-    cur = pd.read_csv(os.path.join(target, "sector_configurations_current.csv"))
-    alone9 = {k: {r for r in g["sectors"] if "+" not in r} for k, g in cur.groupby("configuration")}
-    with pdfplumber.open(os.path.join(target, "HACC_OM_part3_ch4_sector_configuration.pdf")) as pdf:
-        om = "\n".join(pg.extract_text() or "" for pg in pdf.pages)
-    alone8 = {}
-    for line in om.splitlines():
-        mm = re.match(r"^(C8|C7A|C7B|C6A|C6B|C5|N3|N2) (\d) (.+)$", line.strip())
-        if mm:
-            alone8[mm.group(1)] = {code[x] for x in mm.group(3).split(", ") if "+" not in x}
-    t = pd.to_datetime(log["log_time_local"])
-    switch = t[log["remarks"].str.contains("revision 9")].iloc[0]
-    s0, s1 = pd.Timestamp("2026-06-01"), pd.Timestamp("2026-09-01")
-    hours = {s: 0.0 for s in name}
-    nxt = list(t[1:]) + [pd.Timestamp("2026-10-01")]
-    for k in range(len(t)):
-        a_, b_ = max(t[k], s0), min(nxt[k], s1)
-        if b_ > a_:
-            for s in (alone9 if t[k] >= switch else alone8)[log["configuration"][k]]:
-                hours[s] += (b_ - a_).total_seconds() / 3600
-    for s in name:
-        assert "%.1f" % hours[s] == fig["hours_open_alone_s26"][name[s]], (s, hours[s])
-    print("verify: ask 2 hours open alone reproduce (%s)" % ", ".join("%s %.1f" % (name[s], hours[s]) for s in name))
-    # ask 3
-    ra = occ[(occ["occurrence_type"] == "ACAS RA") & (occ["ts"] >= a26) & (occ["ts"] < b26)].copy()
-    ra["pair"] = [tuple(sorted(x)) for x in zip(ra["ac1_callsign"], ra["ac2_callsign"])]
-    ra = ra.sort_values("ts")
-    ra["gap"] = ra.groupby(["code", "pair"])["ts"].diff()
-    enc = ra[ra["gap"].isna() | (ra["gap"] > 600)].groupby("code").size()
-    for s in name:
-        assert int(enc.get(s, 0)) == fig["acas_ra_encounters_s26"][name[s]], (s, enc.get(s, 0))
-    print("verify: ask 3 encounters reproduce (%s)" % ", ".join("%s %d" % (name[s], enc.get(s, 0)) for s in name))
-    # the goldens carry the same figures: the deck's forecast table and the measures CSV
-    from pptx import Presentation
-    prs = Presentation(os.path.join(golden, "summer2027_safety_forecast.pptx"))
-    rows = {}
-    for shape in prs.slides[1].shapes:
-        if shape.has_table:
-            tb = shape.table
-            for r in range(1, len(tb.rows)):
-                rows[tb.cell(r, 0).text] = tb.cell(r, 4).text
-    assert all(rows[name[s]] == fig["forecast_rate_s27"][name[s]] for s in name), rows
-    ms = pd.read_csv(os.path.join(golden, "summer2026_sector_measures.csv"), dtype=str)
-    for r in ms.itertuples():
-        assert r.enroute_atfm_delay_per_flight_min == fig["delay_per_flight_s26_min"][r.sector]
-        assert r.hours_open_on_own == fig["hours_open_alone_s26"][r.sector]
-        assert int(r.acas_ra_encounters) == fig["acas_ra_encounters_s26"][r.sector]
-    print("verify: the deck and the measures file carry every figure")
+def canon(s):
+    s = unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode().lower().strip()
+    s = re.sub(r"^brgy\.?\s*", "", s)
+    s = s.replace("(city proper)", "").replace("pob.", "poblacion").replace("-", " ")
+    s = re.sub(r"\bsto\.?\s", "santo ", s)
+    return " ".join(s.split())
+
+
+def todate(s):
+    s = str(s).strip()
+    if not s or s == "nan":
+        return None
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", s):
+        return dt.date(int(s[:4]), int(s[5:7]), int(s[8:]))
+    d, m, y = s.split("/")
+    return dt.date(int(y), int(m), int(d))
+
+
+def cbms(path):
+    wb = load_workbook(path, data_only=True)
+    t1 = [r for r in wb["Table 1"].iter_rows(values_only=True)]
+    names, pop = [], []
+    for r in t1[5:]:
+        if r[0] == "Dalisay City":
+            break
+        if r[0] and isinstance(r[1], int):
+            v = [0 if x in (None, "-") else int(x) for x in r[2:16]]
+            names.append(r[0])
+            pop.append([sum(v[:3]), sum(v[3:13]), v[13]])
+    t3 = {r[0]: r[2] for r in wb["Table 3"].iter_rows(values_only=True) if r[0] in names}
+    rows4 = list(wb["Table 4"].iter_rows(values_only=True))
+    cols = list(rows4[4][2:])
+    W = np.zeros((len(names), len(names) + 1))
+    for r in rows4[5:]:
+        if r[0] in names and isinstance(r[1], int):
+            i = names.index(r[0])
+            for k, c in enumerate(cols):
+                v = 0 if r[2 + k] in (None, "-") else int(r[2 + k])
+                j = names.index(c) if c in names else len(names)
+                W[i, j] += v
+    W = W / W.sum(1, keepdims=True)
+    return names, np.array(pop, float), np.array([t3[n] for n in names], float), W
+
+
+def main(bundle):
+    T = os.path.join(bundle, "target") if os.path.isdir(os.path.join(bundle, "target")) else bundle
+    fig = json.load(open(os.path.join(HERE, "figures.json"), encoding="utf-8"))
+    names, pop, emp, W = cbms(os.path.join(T, "cbms_2025_dalisay_city.xlsx"))
+    ok("xlsx read: CBMS Table 1 lists the barangays (positive control: San Roque)", "San Roque" in names)
+    key = {canon(n): n for n in names}
+    ll = pd.read_csv(os.path.join(T, "dengue_line_list_2022_2027.csv"), dtype=str, keep_default_na=False)
+    ok("csv read: the line list has 25,000 rows or more", len(ll) >= 25000, str(len(ll)))
+    last = ll.groupby("case_no", sort=False).tail(1)
+    last = last[~last["case_classification"].isin(["Not a case", "X"])]
+    last = last[last["city_municipality"].str.strip() == "Dalisay City"].copy()
+    last["b"] = [key[canon(b)] for b in last["barangay"]]
+    pk = last["street_purok"].str.extract(r"(?i)purok\s*(\d+)")[0].fillna("0").astype(int)
+    last.loc[(last["b"] == "Santo Tomas") & (pk >= 5), "b"] = "Santo Tomas Norte"
+    last["d"] = [todate(o) or todate(c) for o, c in zip(last["date_onset"], last["date_consult"])]
+    last["rep"] = [todate(x) for x in last["date_reported"]]
+    last["age"] = last["age_years"].astype(int)
+    last = last.sort_values(["rep", "case_no"]).drop_duplicates(["patient_initials", "sex", "age", "b", "d"])
+    wk = [week(d) for d in last["d"]]
+    last["y"] = [w[0] for w in wk]
+    last["w"] = [w[1] for w in wk]
+    band = np.where(last["age"] < 15, 0, np.where(last["age"] < 65, 1, 2))
+    last["band"] = band
+    idx = {n: i for i, n in enumerate(names)}
+    res = np.zeros((len(names), 3))
+    hist = np.zeros((len(names), 3))
+    for b, y, w, a in zip(last["b"], last["y"], last["w"], last["band"]):
+        if y == 2027 and 37 <= w <= 40:
+            res[idx[b], a] += 1
+        if y <= 2026:
+            hist[idx[b], a] += 1
+    n = len(names)
+    # the home-address count and the placement of working-age cases at workplaces
+    home = res.sum(1)
+    erate = np.clip(emp / pop[:, 1], 0, 1)
+    work = res[:, 1] * erate
+    Wc = W[:, :n] / W[:, :n].sum(1, keepdims=True)
+    placed = res[:, 0] + res[:, 2] + res[:, 1] * (1 - erate) + 0.4 * work + (0.6 * work[:, None] * Wc).sum(0)
+    kappa = hist[:, 1] / np.maximum(hist[:, [0, 2]].sum(1), 1)
+    ex = np.clip(res[:, 1] - kappa * res[:, [0, 2]].sum(1), 0, None)
+    Wn = W[:, :n].copy()
+    np.fill_diagonal(Wn, 0)
+    Wn = Wn / Wn.sum(1, keepdims=True)
+    A = emp[:, None] * Wn
+    coef, _ = nnls(A, ex)
+    inv = home - ex + coef * A.sum(0)
+    hot_home = {names[i] for i in np.nonzero(home >= 40)[0]}
+    hot_placed = {names[i] for i in np.nonzero(placed >= 40)[0]}
+    hot_inv = {names[i] for i in np.nonzero(inv >= 40)[0]}
+    gold = set(fig["call"]["hotspots"])
+    ok("the call: the placement at a 0.6 share files the hotspots", hot_placed == gold, str(sorted(hot_placed)))
+    ok("the call: the inversion files the hotspots", hot_inv == gold, str(sorted(hot_inv)))
+    ok("the default path: the home-address count files another set", hot_home != gold and hot_home == set(fig["default_path"]),
+       str(sorted(hot_home)))
+    # the plan read through pypdf, with a positive control
+    plan = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(T, "dalisay_dengue_plan_2027_section4.pdf")).pages)
+    plan = " ".join(plan.split())
+    ok("pdf read: the plan's trigger (positive control)", "40 or more of those cases were infected in that barangay" in plan)
+    ok("pdf read: the plan files the house index", "at least one container" in plan)
+    # ask A: DMC stays stitched, DDH by date with the moved patients matched
+    dmc = pd.read_csv(os.path.join(T, "dmc_dengue_inpatient_census_2027.csv"), dtype=str, keep_default_na=False)
+    dmc["tin"] = pd.to_datetime(dmc["ward_in"], format="%d/%m/%Y %H:%M")
+    dmc["tout"] = pd.to_datetime(dmc["ward_out"], format="%d/%m/%Y %H:%M", errors="coerce")
+    dmc = dmc.sort_values(["hospital_no", "tin"])
+    prev_out = dmc.groupby("hospital_no")["tout"].shift(1)
+    prev_disp = dmc.groupby("hospital_no")["disposition"].shift(1)
+    new_stay = ~((prev_disp == "") & (prev_out == dmc["tin"]))
+    starts = dmc[new_stay]
+    dmc_w = {}
+    for t in starts["tin"]:
+        y, w = week(t.date())
+        if y == 2027 and 33 <= w <= 40:
+            dmc_w[str(w)] = dmc_w.get(str(w), 0) + 1
+    ok("ask A: DMC admissions recompute", {k: dmc_w.get(k, 0) for k in fig["dmc_admissions"]} == fig["dmc_admissions"])
+    outs = dmc[dmc["disposition"] == "Transferred to other hospital"]
+    outs = [(r.tout, int(r.age), r.sex, r.barangay.upper(), r.city_municipality.upper()) for r in outs.itertuples()]
+    wb = load_workbook(os.path.join(T, "ddh_dengue_admissions_2027.xlsx"), data_only=True)
+    ok("xlsx read: DDH's log has its weekly sheets (positive control)", "MW40" in wb.sheetnames)
+    ddh_w, used = {}, set()
+    for ws in wb.worksheets:
+        for r in list(ws.iter_rows(values_only=True))[4:]:
+            if not r[0]:
+                continue
+            t = dt.datetime.strptime(r[4] + " " + r[5], "%m/%d/%Y %I:%M %p")
+            b, town = [x.strip().upper() for x in r[3].rsplit(",", 1)]
+            hit = next((k for k, o in enumerate(outs) if k not in used and o[1] == int(r[1]) and o[2] == r[2]
+                        and o[3] == b and o[4] == town and dt.timedelta(0) < t - o[0].to_pydatetime() <= dt.timedelta(hours=8)), None)
+            if hit is not None:
+                used.add(hit)
+                continue
+            y, w = week(t.date())
+            if y == 2027 and 33 <= w <= 40:
+                ddh_w[str(w)] = ddh_w.get(str(w), 0) + 1
+    ok("ask A: DDH admissions recompute", {k: ddh_w.get(k, 0) for k in fig["ddh_admissions"]} == fig["ddh_admissions"])
+    # ask B: houses by purok and number
+    lv = pd.read_csv(os.path.join(T, "larval_survey_2027_09.csv"), dtype=str, keep_default_na=False)
+    lv["pos"] = np.where(lv["team"] == "VCU", (lv["larvae"] == "Y") | (lv["pupae"] == "Y"),
+                         pd.to_numeric(lv["containers_positive"], errors="coerce").fillna(0) > 0)
+    h = lv.groupby(["barangay", "purok", "household_code"])["pos"].max().reset_index()
+    hi = (h.groupby("barangay")["pos"].mean() * 100).round(1)
+    ok("ask B: house indices recompute", all(abs(hi[b] - v) < 1e-9 for b, v in fig["house_index"].items()))
+    # ask C: accepted runs, the person by initials, birth date and sex
+    runs = json.load(open(os.path.join(T, "cho_lab_run_log_2027.json"), encoding="utf-8"))
+    ok("json read: the run log (positive control: a rejected run)", any(r["qc"] == "Rejected" for r in runs["runs"]))
+    rej = {r["run_id"] for r in runs["runs"] if r["qc"] == "Rejected"}
+    lab = pd.read_csv(os.path.join(T, "cho_lab_dengue_results_2027.csv"), dtype=str, keep_default_na=False)
+    lab = lab[~lab["run_id"].isin(rej)].copy()
+    lab["c"] = pd.to_datetime(lab["collected_on"], format="%d/%m/%Y")
+    pos = lab[lab["result"] == "Positive"].sort_values(["c", "specimen_id"])
+    first = pos.drop_duplicates(["patient_initials", "date_of_birth", "sex"])
+    cnt = {}
+    for t, test in zip(first["c"], first["test"]):
+        y, w = week(t.date())
+        if y == 2027 and 35 <= w <= 40:
+            k = ("NS1" if test.startswith("NS1") else "IgM", str(w))
+            cnt[k] = cnt.get(k, 0) + 1
+    ok("ask C: first NS1 positives recompute", {w: cnt.get(("NS1", w), 0) for w in fig["first_positive_ns1"]} == fig["first_positive_ns1"])
+    ok("ask C: first IgM positives recompute", {w: cnt.get(("IgM", w), 0) for w in fig["first_positive_igm"]} == fig["first_positive_igm"])
+    # the goldens
+    gpath = os.path.join(TASK, "golden")
+    gcsv = pd.read_csv(os.path.join(gpath, "response_figures_2027.csv"), dtype=str)
+    ok("golden csv read: 40 figures", len(gcsv) == 40)
+    brief = " ".join(" ".join(pg.extract_text() for pg in PdfReader(os.path.join(gpath, "dengue_hotspots_mw41_44_2027.pdf")).pages).split())
+    ok("golden pdf read: the decision sentence (positive control)", "San Roque, Bagumbayan and Maligaya" in brief)
+    bad = [o for o in OUT if not o[1]]
+    for label, good, detail in OUT:
+        print("%s  %s%s" % ("PASS" if good else "FAIL", label, ("  [%s]" % detail) if detail and not good else ""))
+    print("%d of %d verifier checks pass" % (len(OUT) - len(bad), len(OUT)))
+    return 1 if bad else 0
+
 
 if __name__ == "__main__":
-    task = os.path.dirname(HERE)
-    main(os.path.join(task, "target"), os.path.join(task, "golden"))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else TASK))

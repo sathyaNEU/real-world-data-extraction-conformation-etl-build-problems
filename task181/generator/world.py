@@ -1,137 +1,280 @@
-"""The Holmvik Area Control Centre world: sectors, traffic flows, operators, dates and the people who sign the
-documents. Everything here is fiction (Aldmark, its air navigation service provider, its airports and operators);
-the external airports are real ICAO locations used only as origins and destinations of traffic."""
+"""The clean truth: Dalisay City's barangays, the CBMS 2025 tables, weekly dengue transmission by place,
+and every notified case with the barangay it was infected in (which no shipped file carries).
+
+Exposure. Children, residents not working and the elderly are exposed in their home barangay. A working
+resident is exposed at the place of work for a share PHI of the mosquito's feeding hours and at home for
+the rest. Work in San Roque is work at the Dalisay Industrial Estate (an export processing zone inside the
+barangay) except for San Roque's own residents, a part of whom work in the old village.
+"""
 import datetime as dt
-from zoneinfo import ZoneInfo
 
-UTC = dt.timezone.utc
-LOCAL = ZoneInfo("Europe/Copenhagen")      # Aldmark keeps Central European time, summer time per the EU calendar
+import numpy as np
 
-ANSP = "Aldmark Air Navigation"
-UNIT = "Holmvik Area Control Centre"
-UNIT_SHORT = "Holmvik ACC"
+from common import rng, mw_start, all_weeks, MW1_START, WEEKS_IN
 
-# eight elementary en-route sectors, FL245 to FL660
-SECTORS = ["TRV", "MSB", "GRD", "LNM", "KRW", "LYS", "HAL", "SDV"]
-NAME = {"TRV": "Tarvik", "MSB": "Mosby", "GRD": "Grendal", "LNM": "Linmark", "KRW": "Karrow", "LYS": "Lysvik",
-        "HAL": "Hallin", "SDV": "Sandvik"}
-CODE = {v: k for k, v in NAME.items()}
-FREQ = {"TRV": "128.355", "MSB": "132.880", "GRD": "125.105", "LNM": "134.230", "KRW": "127.680", "LYS": "131.455",
-        "HAL": "129.930", "SDV": "126.555"}
-ADJACENT = {"TRV": ["GRD", "LYS", "MSB", "LNM"], "MSB": ["TRV", "LNM", "SDV", "KRW"], "GRD": ["TRV", "KRW", "HAL"],
-            "LNM": ["MSB", "TRV", "HAL"], "KRW": ["GRD", "HAL", "MSB", "SDV"], "LYS": ["TRV", "SDV"],
-            "HAL": ["KRW", "GRD", "LNM"], "SDV": ["MSB", "LYS", "KRW"]}
-TV = {s: "AH" + s for s in SECTORS}        # network manager traffic volume of each sector
+PHI = 0.60                     # a working resident's share of exposure spent at the workplace
+REP = {"child": 0.30, "employed": 0.24, "other": 0.24, "elderly": 0.30}   # notified share of infections
+GROUPS = ("child", "employed", "other", "elderly")
+LAMBDA0 = 0.00058              # infections per person-week of full exposure at a season's peak, base 1.0
 
-HUB, BREKKA, SKARNES = "EXHM", "EXBK", "EXSK"
-AIRPORT_NAME = {HUB: "Holmvik", BREKKA: "Brekka", SKARNES: "Skarnes"}
+# name, role, population 2025, share of working residents employed in San Roque (the estate),
+# share employed in the Poblacion, baseline multiplier
+BARANGAYS = [
+    ("San Roque", "estate_host", 8150, 0.18, 0.07, 0.95),
+    ("Poblacion", "cbd", 9420, 0.04, 0.00, 0.70),
+    ("Bagumbayan", "loc1", 46780, 0.04, 0.035, 1.00),
+    ("Maligaya", "loc2", 30640, 0.03, 0.035, 1.00),
+    ("Tabing-Ilog", "dorm", 22410, 0.313, 0.020, 0.70),
+    ("Pulong Bayabas", "dorm", 19060, 0.381, 0.020, 0.68),
+    ("Malinta", "dorm", 25330, 0.291, 0.020, 0.70),
+    ("Kanluran", "dorm", 18240, 0.388, 0.020, 0.72),
+    ("Burol", "dorm", 21290, 0.356, 0.020, 0.69),
+    ("Silangan", "dorm", 24570, 0.296, 0.020, 0.68),
+    ("San Isidro", "ordinary", 27310, 0.05, 0.042, 1.10),
+    ("San Jose", "ordinary", 31480, 0.04, 0.038, 1.12),
+    ("Santa Cruz", "ordinary", 23960, 0.03, 0.045, 1.05),
+    ("San Antonio", "ordinary", 29870, 0.06, 0.035, 1.00),
+    ("Rizal", "ordinary", 15420, 0.05, 0.042, 0.95),
+    ("Mabini", "ordinary", 21170, 0.04, 0.038, 1.15),
+    ("Bonifacio", "ordinary", 18830, 0.03, 0.032, 1.20),
+    ("Masagana", "ordinary", 34650, 0.06, 0.028, 0.98),
+    ("Pag-asa", "ordinary", 26210, 0.05, 0.035, 1.08),
+    ("Sampaloc", "ordinary", 12940, 0.04, 0.045, 0.92),
+    ("Dila", "ordinary", 20760, 0.07, 0.025, 1.02),
+    ("Lumbia", "ordinary", 33190, 0.06, 0.032, 1.06),
+    ("Parian", "ordinary", 16580, 0.03, 0.045, 1.25),
+    ("Tagumpay", "ordinary", 28940, 0.05, 0.038, 0.97),
+    ("Liwayway", "ordinary", 22330, 0.04, 0.035, 1.04),
+    ("Bayanihan", "ordinary", 30120, 0.06, 0.032, 1.01),
+    ("Santo Tomas", "ordinary", 17860, 0.04, 0.042, 0.99),
+    ("Santo Tomas Norte", "ordinary", 11420, 0.05, 0.038, 1.09),
+    ("Mangga", "ordinary", 24890, 0.03, 0.035, 0.93),
+    ("Ilaya", "ordinary", 26740, 0.02, 0.028, 1.16),
+    ("Malanday", "ordinary", 19480, 0.04, 0.032, 1.03),
+    ("Talon", "ordinary", 25660, 0.05, 0.035, 0.96),
+    ("Bulihan", "ordinary", 31950, 0.03, 0.038, 1.07),
+    ("Halang", "ordinary", 14370, 0.06, 0.042, 1.12),
+    ("Concepcion", "ordinary", 27820, 0.04, 0.045, 0.94),
+    ("Santo Nino", "ordinary", 22190, 0.05, 0.035, 1.01),
+]
+NAMES = [b[0] for b in BARANGAYS]
+N = len(NAMES)
+IDX = {n: i for i, n in enumerate(NAMES)}
+SR, POB = IDX["San Roque"], IDX["Poblacion"]
+LOC1, LOC2 = IDX["Bagumbayan"], IDX["Maligaya"]
+DORMS = [i for i, b in enumerate(BARANGAYS) if b[1] == "dorm"]
+SPLIT_FROM, SPLIT_NEW = IDX["Santo Tomas"], IDX["Santo Tomas Norte"]
+SPLIT_DATE = dt.date(2025, 3, 17)
 
-# the record and the forward season
-ACTUAL_START = dt.datetime(2025, 1, 1, tzinfo=UTC)
-ACTUAL_END = dt.datetime(2026, 10, 1, tzinfo=UTC)          # exclusive
-EXTRACT_DAY = dt.date(2026, 10, 12)
-PLAN_ISSUED = dt.date(2026, 10, 9)
-BOARD_DAY = dt.date(2026, 11, 4)
+GROUP_SHARE = {"child": 0.286, "employed": 0.402, "other": 0.247, "elderly": 0.065}
+# the barangays of boarding houses beside the estate: young working residents, fewer children
+GROUP_SHARE_DORM = {"child": 0.200, "employed": 0.605, "other": 0.115, "elderly": 0.050}
+
+# the season: amplitude, peak week and width by year
+SEASON = {2022: (1.05, 34, 7.0), 2023: (0.62, 36, 6.5), 2024: (0.92, 33, 7.5),
+          2025: (0.78, 35, 7.0), 2026: (0.88, 34, 6.8), 2027: (1.18, 31, 6.2)}
 
 
-def season(year):
-    """The summer season, 1 June to 31 August local time, as UTC instants [start, end)."""
-    a = dt.datetime(year, 6, 1, tzinfo=LOCAL).astimezone(UTC)
-    b = dt.datetime(year, 9, 1, tzinfo=LOCAL).astimezone(UTC)
-    return a, b
+def season(year, week):
+    a, c, s = SEASON[year]
+    return a * (0.16 + 0.84 * np.exp(-0.5 * ((week - c) / s) ** 2))
 
 
-REROUTE_W = dt.datetime(2026, 3, 19, tzinfo=UTC)          # AIRAC 2603: western arrivals all onto the Hallin descent
-CONFIG_REV9 = dt.datetime(2026, 7, 14, 6, 0, tzinfo=LOCAL)  # configuration table revision 9 in force
-TOLERANCE = 40.0
+def population_tables():
+    """CBMS 2025: residents by barangay and group, and the place-of-work matrix of working residents."""
+    r = rng("cbms")
+    pop = np.array([b[2] for b in BARANGAYS], dtype=float)
+    grp = np.zeros((N, 4))
+    for i in range(N):
+        base_sh = GROUP_SHARE_DORM if BARANGAYS[i][1] == "dorm" else GROUP_SHARE
+        sh = np.array([base_sh[g] for g in GROUPS]) * r.uniform(0.94, 1.06, 4)
+        sh /= sh.sum()
+        grp[i] = np.round(pop[i] * sh)
+    # place of work, columns 0..N-1 the city's barangays, column N outside the city
+    OWN = {"dorm": (0.03, 0.06), "ordinary": (0.18, 0.28), "loc1": (0.20, 0.26), "loc2": (0.20, 0.26),
+           "estate_host": (0.10, 0.14), "cbd": (0.30, 0.34)}
+    OUT = {"dorm": (0.15, 0.22), "ordinary": (0.30, 0.40), "loc1": (0.22, 0.28), "loc2": (0.22, 0.28),
+           "estate_host": (0.14, 0.18), "cbd": (0.24, 0.28)}
+    W = np.zeros((N, N + 1))
+    for i, b in enumerate(BARANGAYS):
+        role, est, cbd = b[1], b[3], b[4]
+        own = r.uniform(*OWN[role])
+        out = r.uniform(*OUT[role])
+        W[i, SR] += est
+        W[i, POB] += cbd
+        if i not in (SR, POB):
+            W[i, i] += own
+        else:
+            W[i, i] += own
+        rest = max(0.02, 1.0 - W[i].sum() - out)
+        # the dormitory barangays near the estate are residential and hold few jobs for anyone else
+        others = [j for j in range(N) if j not in (SR, POB, i) and BARANGAYS[j][1] != "dorm"]
+        W[i, others] += r.dirichlet(np.full(len(others), 0.7)) * rest
+        W[i, N] = out
+        W[i] /= W[i].sum()
+    workers = np.round(grp[:, 1][:, None] * W)
+    return pop, grp, W, workers
 
-# cruise level sets (flight levels)
-EAST = [330, 350, 370, 390]
-WEST = [340, 360, 380, 400]
-NORTH = [310, 330, 350, 370, 390]
-SOUTH = [300, 320, 340, 360, 380]
-LOWC = [250, 270, 290]
 
-# external airports by direction
-WEST_AP = ["EGLL", "EGKK", "EHAM", "EBBR", "EIDW", "EGCC", "LFPG", "EGSS"]
-EAST_AP = ["EFHK", "EETN", "EVRA", "EYVI", "EPWA", "ESSA"]
-NORTH_AP = ["ENGM", "ENBR", "ENVA", "ESGG", "ENZV"]
-SOUTH_AP = ["LEMD", "LEBL", "LIRF", "LPPT", "LFMN", "LSZH", "LOWW", "LGAV", "LEPA", "LIMC"]
-NW_AP = ["BIKF", "ENBR", "EGPH", "EGPF"]
-SW_AP = ["EDDF", "EDDM", "LSGG", "EDDL", "EDDH"]
+def past_outbreaks():
+    """Residential outbreaks of earlier seasons: (year, barangay, peak week, peak multiplier)."""
+    r = rng("outbreaks")
+    out = []
+    pool = [i for i in range(N) if i not in (SR,)]
+    for y in (2022, 2023, 2024, 2025, 2026):
+        k = int(r.integers(2, 4))
+        for i in r.choice(pool, size=k, replace=False):
+            out.append((y, int(i), int(r.integers(31, 39)), float(r.uniform(2.6, 4.4))))
+    out.append((2027, LOC1, 37, 6.2))
+    out.append((2027, LOC2, 38, 9.2))
+    return out
 
-# operators: designator, the kind of flying, three-digit or alphanumeric flight numbers
-OPERATORS = {
-    "AMK": "Aldmark national carrier (hub Holmvik)", "NLY": "Nordlys Air (low-cost, Brekka base from summer 2027)",
-    "VSK": "low-cost, pan-European", "HXA": "network carrier", "GML": "network carrier", "PXR": "low-cost",
-    "MRN": "regional", "DXT": "charter", "KRB": "cargo", "TQA": "network carrier", "ZBL": "low-cost",
-    "OVN": "long-haul", "RFX": "cargo", "LNX": "regional", "CWA": "charter", "BRT": "regional (Brekka)",
+
+def estate_multiplier(year, week):
+    """The estate's own transmission relative to San Roque's village: ordinary until the 2027 works."""
+    if year < 2027 or week < 29:
+        return 0.8
+    # the Phase 3 works' excavations hold water from July 2027
+    ramp = {29: 3.0, 30: 5.6, 31: 9.7, 32: 14.2, 33: 20.5, 34: 27.5, 35: 35.8, 36: 44.7,
+            37: 53.8, 38: 59.4, 39: 61.9, 40: 58.9}
+    return ramp.get(week, 58.9)
+
+
+def place_rates():
+    """lam_home[w, j]: the rate of a person exposed all day in barangay j's homes;
+    lam_work[w, j]: the rate at a workplace in j (the estate for j = San Roque)."""
+    r = rng("rates")
+    weeks = all_weeks()
+    base = np.array([b[5] for b in BARANGAYS])
+    noise = r.lognormal(0.0, 0.10, (len(weeks), N))
+    ob = past_outbreaks()
+    lam_home = np.zeros((len(weeks), N))
+    lam_work = np.zeros((len(weeks), N))
+    for t, (y, w) in enumerate(weeks):
+        mult = np.ones(N)
+        for (oy, i, pw, pm) in ob:
+            if oy == y:
+                mult[i] *= 1.0 + (pm - 1.0) * np.exp(-0.5 * ((w - pw) / 2.6) ** 2)
+        lam_home[t] = LAMBDA0 * season(y, w) * base * mult * noise[t]
+        lam_work[t] = lam_home[t] / mult * 0.85          # workplaces do not share a village's outbreak
+        lam_work[t, SR] = LAMBDA0 * season(y, w) * base[SR] * noise[t, SR] * estate_multiplier(y, w)
+    lam_out = LAMBDA0 * np.array([season(y, w) for (y, w) in weeks]) * 1.0
+    return weeks, lam_home, lam_work, lam_out
+
+
+def simulate_cases(world_seed=0):
+    """Every notified case, 2022 week 1 to 2027 week 40, with its true place of infection.
+
+    Returns a list of dicts: year, week, home (barangay index), group, place (barangay index or -1 for
+    outside the city), and the person's attributes drawn later."""
+    pop, grp, W, workers = population_tables()
+    weeks, lam_home, lam_work, lam_out = place_rates()
+    r = rng("cases%d" % world_seed)
+    cases = []
+    for t, (y, w) in enumerate(weeks):
+        for i in range(N):
+            # before the 2025 split the two Santo Tomas barangays were one; people lived in both parts
+            for gi, g in enumerate(GROUPS):
+                n_i = grp[i, gi]
+                if g == "employed":
+                    # home part
+                    m_home = n_i * REP[g] * (1 - PHI) * lam_home[t, i]
+                    k = r.poisson(m_home)
+                    cases += [(y, w, i, g, i)] * int(k)
+                    # work parts
+                    shares = W[i, :N]
+                    if i == SR:
+                        # San Roque's own workers: 70 per cent at the estate, the rest in the village
+                        m_est = n_i * REP[g] * PHI * shares[SR] * 0.70 * lam_work[t, SR]
+                        m_vil = n_i * REP[g] * PHI * shares[SR] * 0.30 * lam_home[t, SR]
+                        ks = r.poisson([m_est, m_vil])
+                        cases += [(y, w, i, g, SR)] * int(ks[0] + ks[1])
+                        shares = shares.copy()
+                        shares[SR] = 0.0
+                    m_work = n_i * REP[g] * PHI * shares * lam_work[t]
+                    kw = r.poisson(m_work)
+                    for j in np.nonzero(kw)[0]:
+                        cases += [(y, w, i, g, int(j))] * int(kw[j])
+                    m_out = n_i * REP[g] * PHI * W[i, N] * lam_out[t]
+                    ko = r.poisson(m_out)
+                    cases += [(y, w, i, g, -1)] * int(ko)
+                else:
+                    m = n_i * REP[g] * lam_home[t, i]
+                    k = r.poisson(m)
+                    cases += [(y, w, i, g, i)] * int(k)
+    return cases, (pop, grp, W, workers), (weeks, lam_home, lam_work, lam_out)
+
+
+AGE_BANDS = {
+    "child": ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+              [2, 3, 4, 5, 6, 8, 9, 10, 10, 10, 10, 9, 9, 8, 7]),
+    "employed": (list(range(17, 65)), None),
+    "other": (list(range(15, 65)), None),
+    "elderly": (list(range(65, 92)), None),
 }
-TYPES = {"short": ["A320", "A20N", "B738", "B38M", "A321", "A21N", "A319", "E195", "E190", "CRJ9"],
-         "long": ["B789", "A333", "B77W", "A359", "B763", "A332"],
-         "regional": ["E190", "E195", "CRJ9", "A220", "E75L"]}
 
-# flows: the sectors each flight crosses (sector, entry level, exit level, minutes), "C" is the flight's cruise
-# level; levels drawn from lv with weights w; base is flights per day at summer 2026 traffic
-FLOWS = {
-    "EW_E": dict(path=[("GRD", "C", "C", 18), ("TRV", "C", "C", 20), ("LYS", "C", "C", 16)], lv=EAST,
-                 w=[.15, .3, .35, .2], base=230, dep=WEST_AP, arr=EAST_AP, ops=["HXA", "VSK", "GML", "PXR", "TQA", "ZBL", "OVN", "AMK", "RFX"], kind="mix"),
-    "EW_W": dict(path=[("LYS", "C", "C", 16), ("TRV", "C", "C", 20), ("GRD", "C", "C", 18)], lv=WEST,
-                 w=[.15, .3, .35, .2], base=230, dep=EAST_AP, arr=WEST_AP, ops=["HXA", "VSK", "GML", "PXR", "TQA", "ZBL", "OVN", "AMK", "RFX"], kind="mix"),
-    "NS_S": dict(path=[("LNM", "C", "C", 20), ("MSB", "C", "C", 18), ("SDV", "C", "C", 18)], lv=SOUTH,
-                 w=None, base=150, dep=NORTH_AP, arr=SOUTH_AP, ops=["VSK", "PXR", "DXT", "CWA", "GML", "ZBL", "HXA"], kind="short"),
-    "NS_N": dict(path=[("SDV", "C", "C", 18), ("MSB", "C", "C", 18), ("LNM", "C", "C", 20)], lv=NORTH,
-                 w=None, base=150, dep=SOUTH_AP, arr=NORTH_AP, ops=["VSK", "PXR", "DXT", "CWA", "GML", "ZBL", "HXA"], kind="short"),
-    "DG_SW": dict(path=[("HAL", "C", "C", 19), ("KRW", "C", "C", 19)], lv=SOUTH, w=None, base=110,
-                  dep=NW_AP, arr=SW_AP, ops=["TQA", "HXA", "MRN", "LNX", "KRB", "VSK"], kind="short"),
-    "DG_NE": dict(path=[("KRW", "C", "C", 19), ("HAL", "C", "C", 19)], lv=NORTH, w=None, base=110,
-                  dep=SW_AP, arr=NW_AP, ops=["TQA", "HXA", "MRN", "LNX", "KRB", "VSK"], kind="short"),
-    "HUB_DEP_S": dict(path=[("MSB", 245, "C", 14), ("SDV", "C", "C", 16)], lv=SOUTH, w=None, base=34,
-                      dep=[HUB], arr=SOUTH_AP, ops=["AMK", "VSK", "PXR"], kind="short"),
-    "HUB_DEP_SH": dict(path=[("MSB", 245, "C", 10)], lv=LOWC, w=None, base=8, dep=[HUB], arr=["EKBI", "EKAH", "ESMS"],
-                       ops=["AMK", "MRN"], kind="regional"),
-    "HUB_DEP_E": dict(path=[("TRV", 245, "C", 9), ("LYS", "C", "C", 14)], lv=LOWC, w=None, base=40, dep=[HUB],
-                      arr=EAST_AP, ops=["AMK", "MRN", "LNX"], kind="regional"),
-    "HUB_DEP_W": dict(path=[("KRW", 245, "C", 13), ("GRD", "C", "C", 15)], lv=WEST, w=None, base=28, dep=[HUB],
-                      arr=WEST_AP, ops=["AMK", "HXA", "VSK"], kind="short"),
-    "HUB_ARR_N": dict(path=[("LNM", "C", 245, 14)], lv=NORTH, w=None, base=38, dep=NORTH_AP, arr=[HUB],
-                      ops=["AMK", "VSK", "MRN", "GML"], kind="short"),
-    "HUB_ARR_E": dict(path=[("LYS", "C", 245, 13)], lv=WEST, w=None, base=40, dep=EAST_AP, arr=[HUB],
-                      ops=["AMK", "MRN", "LNX"], kind="regional"),
-    "HUB_ARR_ET": dict(path=[("LYS", "C", "C", 16), ("TRV", "C", 245, 12)], lv=[360, 380], w=None, base=18,
-                       dep=EAST_AP, arr=[HUB], ops=["AMK", "HXA", "OVN"], kind="mix"),
-    "HUB_ARR_W": dict(path=[("HAL", "C", 245, 13)], lv=EAST, w=None, base=30, dep=WEST_AP + NW_AP, arr=[HUB],
-                      ops=["AMK", "HXA", "VSK", "TQA"], kind="short"),
-    "HUB_ARR_WK": dict(path=[("KRW", "C", 245, 12)], lv=EAST, w=None, base=10, dep=WEST_AP + SW_AP, arr=[HUB],
-                       ops=["AMK", "HXA", "VSK", "TQA"], kind="short"),
-    "SKN_DEP": dict(path=[("GRD", 245, "C", 12)], lv=WEST, w=None, base=19, dep=[SKARNES], arr=WEST_AP,
-                    ops=["MRN", "VSK", "AMK"], kind="short"),
-    "SKN_ARR": dict(path=[("GRD", "C", 245, 12)], lv=EAST, w=None, base=19, dep=WEST_AP, arr=[SKARNES],
-                    ops=["MRN", "VSK", "AMK"], kind="short"),
-    "SOUTH_ARR": dict(path=[("SDV", "C", 245, 13)], lv=NORTH, w=None, base=30, dep=SOUTH_AP, arr=[HUB],
-                      ops=["AMK", "VSK", "PXR", "DXT"], kind="short"),
-    "BRK_DEP_S": dict(path=[("MSB", 245, "C", 12), ("SDV", "C", "C", 16)], lv=SOUTH, w=None, base=8, dep=[BREKKA],
-                      arr=SOUTH_AP, ops=["BRT", "DXT"], kind="regional"),
-    "BRK_ARR": dict(path=[("MSB", "C", 245, 12)], lv=NORTH, w=None, base=8, dep=SOUTH_AP, arr=[BREKKA],
-                    ops=["BRT", "DXT"], kind="regional"),
-    # the new base, summer 2027 only
-    "BRK_DEP_E": dict(path=[("TRV", 245, "C", 12), ("LYS", "C", "C", 14)], lv=[370, 390], w=[.6, .4], base=26,
-                      dep=[BREKKA], arr=EAST_AP + ["EPKK", "EPGD", "LKPR"], ops=["NLY"], kind="lcc"),
-    "BRK_ARR_E": dict(path=[("LYS", "C", "C", 14), ("TRV", "C", 245, 12)], lv=[380, 400], w=[.6, .4], base=26,
-                      dep=EAST_AP + ["EPKK", "EPGD", "LKPR"], arr=[BREKKA], ops=["NLY"], kind="lcc"),
-}
-NEW_2027 = ("BRK_DEP_E", "BRK_ARR_E")
 
-# daily traffic shape (local hour of entering the first sector) and the seasonal and yearly factors
-HOURS = [1, 0.5, 0.4, 0.4, 0.6, 2, 5, 7, 7, 6.5, 6, 6, 6, 6, 6, 6.5, 7, 7, 6.5, 5.5, 4.5, 3.5, 2.5, 1.5]
-MONTH = {1: .70, 2: .72, 3: .78, 4: .86, 5: .93, 6: 1.0, 7: 1.04, 8: 1.02, 9: .95, 10: .86, 11: .74, 12: .72}
-YEAR = {2024: .95, 2025: .97, 2026: 1.0, 2027: 1.025}
-WEEKDAY = [1.0, .97, .98, 1.0, 1.04, .9, .95]
+def draw_age(r, g):
+    ages, wts = AGE_BANDS[g]
+    if wts is None:
+        if g == "employed":
+            wts = [np.exp(-0.5 * ((a - 31) / 10.5) ** 2) for a in ages]
+        elif g == "other":
+            wts = [3.0 if a < 22 else (1.0 if a < 50 else 1.4) for a in ages]
+        else:
+            wts = [np.exp(-(a - 65) / 9.0) for a in ages]
+    p = np.array(wts, dtype=float)
+    p /= p.sum()
+    return int(r.choice(ages, p=p))
 
-# losses of separation per pair of aircraft in one sector at once whose levels change order (ATM contribution
-# direct or indirect, and none), and ACAS resolution advisory encounters
-LAMBDA_ATM = 2.45e-4
-LAMBDA_NON = 0.20e-4
-LAMBDA_RA = 3.9e-4
 
-PEOPLE = {"safety": "Dorte Koch", "planning": "Erik Sørensen", "data": "Paw Frandsen"}
+# ---- the notification process: who saw each case, and when it reached the line list ----
+DRUS = [
+    ("Dalisay Medical Center", "hospital"),
+    ("Dalisay Doctors' Hospital", "hospital"),
+    ("City Health Center I", "rhu"), ("City Health Center II", "rhu"), ("City Health Center III", "rhu"),
+    ("City Health Center IV", "rhu"), ("City Health Center V", "rhu"), ("City Health Center VI", "rhu"),
+    ("Dalisay Family Clinic", "clinic"), ("Dalisay East Medical Clinic", "clinic"),
+    ("Dalisay Diagnostic and Wellness Center", "clinic"),
+]
+
+
+def health_center_of(i):
+    return 2 + (i * 7 + 3) % 6
+
+
+def assign_attributes(cases, world_seed=0):
+    """Attach to each case its person, dates, reporting unit, admission, classification and travel."""
+    r = rng("attrs%d" % world_seed)
+    out = []
+    for k, (y, w, i, g, j) in enumerate(cases):
+        age = draw_age(r, g)
+        sex = "F" if r.random() < (0.47 if g == "employed" else 0.50) else "M"
+        onset = mw_start(y, w) + dt.timedelta(days=int(r.integers(0, 7)))
+        consult = onset + dt.timedelta(days=int(1 + r.poisson(2.1)))
+        u = r.random()
+        p_dmc = 0.30 if g != "employed" else 0.24
+        p_ddh = 0.12 if g != "employed" else 0.24
+        if u < p_dmc:
+            dru = 0
+        elif u < p_dmc + p_ddh:
+            dru = 1
+        elif u < p_dmc + p_ddh + 0.10:
+            dru = 8 + int(r.integers(0, 3))
+        else:
+            dru = health_center_of(i)
+        kind = DRUS[dru][1]
+        if kind == "hospital":
+            rep = consult + dt.timedelta(days=int(r.integers(0, 3) if dru == 0 else r.integers(1, 5)))
+        elif kind == "rhu":
+            # the centres send their week's notifications every Friday
+            days_to_friday = (4 - consult.weekday()) % 7
+            rep = consult + dt.timedelta(days=days_to_friday + (7 if r.random() < 0.18 else 0))
+        else:
+            rep = consult + dt.timedelta(days=int(r.integers(3, 13)))
+        admitted = kind == "hospital" and r.random() < (0.78 if dru == 0 else 0.62)
+        travel = r.random() < 0.028
+        out.append({"k": k, "year": y, "week": w, "home": i, "group": g, "place": j, "age": age, "sex": sex,
+                    "onset": onset, "consult": consult, "dru": dru, "reported": rep, "admitted": admitted,
+                    "travel": travel})
+    return out

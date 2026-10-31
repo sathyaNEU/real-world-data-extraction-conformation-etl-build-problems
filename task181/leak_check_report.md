@@ -1,26 +1,30 @@
 # leak check, task181
 
-**Verdict: REVIEW.** 15 files read, 24 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 12 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: traffic, tarvik, close-out, vertical, exposure, nothing, climbing, grendal, crossing, crossings, levels, architecture, control, hallin, forward, descending, method, interaction, reflex, readable, centre, brekka, review, decisive, season
+Stump terms swept: window, residents, estate, family, record, place-of-work, working, architecture, records, infection, exposure, sentence, address, vector, reflex, health, decisive, screen, beside, working-age, surveillance, infected, caught, golden, maligaya
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `HACC_summer2026_safety_closeout.pdf`: carries 11 of 11 distinctive words of the committed call: "Tarvik will run over the safety plan's tolerance in summer 2027, at about 72 ATM-related losses of separation per 100,00"
-- **REVIEW** `HACC_unit_safety_plan_2026-2028.pdf`: carries 9 of 11 distinctive words of the committed call: "Tarvik will run over the safety plan's tolerance in summer 2027, at about 72 ATM-related losses of separation per 100,00"
+- **REVIEW** `dalisay_dengue_plan_2027_section4.pdf`: golden figure 4.5 appears: ...at the hospital that admitted the patient first. 4.5 Laboratory The City Health Office laboratory test...
+- **REVIEW** `dalisay_dengue_plan_2027_section4.pdf`: carries 6 of 9 distinctive words of the committed call: 'Send the hotspot response for morbidity weeks 41 to 44 to San Roque, Bagumbayan and Maligaya, and to no other barangay.'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `HACC_OM_part3_ch4_sector_configuration.pdf`: 5 of 25 stump-paragraph terms appear (traffic, tarvik, grendal, control, hallin); read whether the document names the move
-- **REVIEW** `HACC_summer2026_safety_closeout.pdf`: 8 of 25 stump-paragraph terms appear (traffic, tarvik, close-out, grendal, control, hallin); read whether the document names the move
-- **REVIEW** `HACC_unit_safety_plan_2026-2028.pdf`: 6 of 25 stump-paragraph terms appear (traffic, close-out, control, centre, review, season); read whether the document names the move
-- **REVIEW** `extract_notes_2026-10-12.md`: 3 of 25 stump-paragraph terms appear (traffic, levels, control); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 1)
+- **REVIEW** `dalisay_dengue_plan_2027_section4.pdf`: 8 of 25 stump-paragraph terms appear (window, residents, record, records, vector, health); read whether the document names the move
 
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `planning_traffic_summer2027_issue1.csv`: 617826 ISO dates after 2026-10-12, e.g. 2027-05-31, 2027-06-01, 2027-06-02, 2027-06-03, 2027-06-04
+## 6 ranking artifacts (REVIEW 5)
+- **REVIEW** `barangays_psgc_2025.csv`: names 5 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `cbms_2025_dalisay_city.xlsx`: names 4 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `ddh_dengue_admissions_2027.xlsx`: names 4 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `dengue_line_list_2022_2027.csv`: names 6 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `vcu_operations_2022_2027.csv`: names 4 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 12 describing content (REVIEW 1)
+- **REVIEW** `dalisay_dengue_plan_2027_section4.pdf`: names 10 column(s) of the data files verbatim (Barangay, admitted, barangay, laboratory, larvae, pupae): confirm it is the organisation's own record and not a note written for the analyst
 
 ## 1 file names (clean)
 
@@ -28,13 +32,14 @@ Stump terms swept: traffic, tarvik, close-out, vertical, exposure, nothing, clim
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
+
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read (pass 1, Sonnet, 2026-10-12)
 
