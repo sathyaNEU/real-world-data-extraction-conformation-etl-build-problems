@@ -1,111 +1,201 @@
-"""submission.md from figures.json: tags, the recommendation, its components, the steps and the deliverable answers."""
-import params as P
+"""submission.md, generator/figures.json and metadata.json, every figure emitted from the computed results."""
+import json
+import os
+
+import golden as GD
+import pack as P
+import world as W
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def c(x):
-    return "{:,}".format(int(x))
+def m(x):
+    return "£%dm" % GD.m1(x)
 
 
-def pct(x):
-    return "%.1f per cent" % x
+def m1(x):
+    return "£%.1fm" % GD.m01(x)
 
 
-def write(path, fig):
-    S, F = fig["slots"], P.FILES
-    order = sorted(P.NAMES, key=lambda n: -S[n])
-    split = ", ".join("%s %s" % (n, c(S[n])) for n in order)
-    ro = fig["register_only"]["slots"]
-    t = []
-    t.append("## Tags\n")
-    t.append("**Domain:** Energy systems and utilities (asset condition and maintenance).")
-    t.append("**Analytical objective:** Opportunity sizing and decision support.\n")
-    t.append("## 1. Final Recommendation\n")
-    t.append("**Tool 2027 as %s slots: the %s slots in proportion to the %s pack failures outside the OEM warranty "
-             "forecast for the five platforms in the Netherlands in 2027.**" % (split, c(P.SLOTS), c(fig["total"])))
-    t.append("The packs that fail in 2027 are those of the cars in use in the Netherlands in 2027: the register of 30 "
-             "June 2026 and the used imports that keep arriving after it. The Mira city car's imports arrive about "
-             "%.1f years old, past its five-year pack warranty, and fail in their first months here: %s of its %s "
-             "forecast failures are theirs. Summed over the register alone, the Mira city car would get %s slots, the "
-             "Volta hatch %s, the Kestrel SUV %s and the Tern van %s.\n"
-             % (fig["mira_import_age"], c(fig["arrivals"]["Mira city car"]),
-                c(fig["forecast"]["Mira city car"]["whole"]), c(ro["Mira city car"]), c(ro["Volta hatch"]),
-                c(ro["Kestrel SUV"]), c(ro["Tern van"])))
-    t.append("## 2. Critical Components\n")
-    t.append("1. The population whose packs fall due in 2027 is every car in use in the Netherlands in 2027: the "
-             "register of 30 June 2026 holds the cars that had arrived by then, and the used imports registered after "
-             "it are in the fleet of 2027 too. Cars registered new after it are inside their warranty all year.")
-    t.append("2. The register shows the arrivals: in the twelve months to 30 June 2026, **%s** Mira city cars were "
-             "first registered here after a first admission abroad, about **%s** a month at **%.1f** years old on "
-             "average, past the Mira's **5**-year warranty; the other platforms' imports arrive inside their **8** "
-             "years." % (c(fig["window_imports"]["Mira city car"]), c(fig["mira_imports_month"]),
-                         fig["mira_import_age"]))
-    t.append("3. The 2027 forecast is **%s** failures for the cars on the register and **%s** for the imports still to "
-             "arrive (**%s** of them Mira city cars): **%s** to the nearest hundred."
-             % (c(fig["base_total"]), c(fig["arrivals_total"]), c(fig["arrivals"]["Mira city car"]), c(fig["total"])))
-    t.append("4. In lots of 50 the shares give %s whole lots; the **%d** lots left go to the two largest remainders, "
-             "the Mira city car's **%.2f** and the Plover saloon's **%.2f**, ahead of the Tern van's **%.2f**."
-             % (", ".join("%s %d" % (n, fig["floors"][n]) for n in order), fig["extra_lots"],
-                fig["remainders"]["Mira city car"], fig["remainders"]["Plover saloon"], fig["remainders"]["Tern van"]))
-    t.append("")
-    t.append("## 3. Step-by-Step Solution\n")
-    t.append("1. Took each car on %s (its make is its platform) with the pack it carried at the end of 30 June 2026 "
-             "from %s, one pack per car as the plan's section 3 files it: "
-             "its last replacement on or before that day (an OEM nieuw pack on the "
-             "platform's curve, a Voltwerk revisie pack on the refurbished curve), else the pack it was built with from "
-             "its datum eerste toelating; the OEM warranty ends 8 years after datum eerste toelating, 5 for the Mira "
-             "city car (%s), whatever was fitted since." % (F["register"], F["log"], F["warranty"]))
-    t.append("2. Gave each car the chance its pack fails in 2027 after the warranty, given it works on 30 June 2026: "
-             "F(a1) less F(a0), over 1 less F(a) on 30 June 2026, pack ages in days since fitting over 365.25, F the "
-             "curve in %s read by straight lines, a0 at the later of 1 January 2027 and the warranty's end, a1 at 1 "
-             "January 2028 (a pack fitted in its place after 30 June 2026 is left out); summed by platform, %s in all."
-             % (F["curves"], c(fig["base_total"])))
-    t.append("3. The plan's fleet of 2027 also holds the cars first registered here from 1 July 2026 to the end of 2027, "
-             "each from the day it is registered; the new cars among them stay inside their warranty all year. Took "
-             "the used imports first registered here from 1 July 2025 to 30 June 2026 (datum eerste toelating "
-             "before datum eerste tenaamstelling in Nederland), each with the pack the log shows it arrived with (its "
-             "last replacement before that registration, else its original pack), and carried them into July 2026 to "
-             "December 2027 at that rate and mix: each month takes in a twelfth of them on the same day of the month "
-             "(the month's last day if shorter), at the same age, pack age and warranty, each at its chance of failing "
-             "in 2027 after its warranty given its pack works on arrival; %s in all." % c(fig["arrivals_total"]))
-    t.append("4. Added the two by platform (%s; %s to the nearest hundred) and split the %s slots in proportion: 60 "
-             "lots of 50, each platform's whole lots first and the lots left to the largest remainders (the plan, %s, "
-             "section 2)." % (", ".join("%s %s" % (n, c(fig["forecast"][n]["whole"])) for n in order), c(fig["total"]),
-                              c(P.SLOTS), F["plan"]))
-    t.append("5. Modules: took the stores movements booked from 1 July 2025 to 30 June 2026 in %s, issues less "
-             "returns, each line in modules by %s (a Kestrel carrier is 2) and on its work order's platform; no lot's "
-             "stock goes below zero (%s), so on a supplier lot whose lines add up to more than %s shows it received "
-             "(the replacement lots for held packs), the one quantity a pick list carries against several work "
-             "orders went out once, which brings the lot back to what it received; divided by the packs shipped in "
-             "those months in %s and multiplied by 50." % (F["stores"], F["parts"], F["line_notes"], F["receipts"],
-                                                         F["shipments"]))
-    t.append("6. First-run passes: followed each pakket_id in %s to its work order through %s (a BMS replaced on "
-             "rework gives the pack a new pakket_id), took each work order's first run that was not an ABORT, kept the "
-             "packs whose first run started from 1 July 2025 to 30 June 2026 and took the share that passed."
-             % (F["eol"], F["bms"]))
-    t.append("7. Intake rejects: took the cores received from 1 July 2025 to 30 June 2026 in %s at either dock; a core "
-             "with a work order in %s was built on, so it passed intake, and its AFGEKEURD is the grade its scrapped "
-             "pack left on 1 July 2026 (its quarantine tag in %s is dated the day the line scrapped it, an intake "
-             "reject's the day it arrived); the share rejected is the AFGEKEURD rows with no work order over all the "
-             "cores received." % (F["intake"], F["workorders"], F["recycler"]))
-    t.append("")
-    t.append("## 4. Deliverable Answers\n")
-    t.append("### voltwerk_tooling_2027.xlsx\n")
-    t.append("1. Slots in 2027, by platform:")
-    for n in order:
-        t.append("   - %s: %s" % (n, c(S[n])))
-    t.append("2. Pack failures outside the OEM warranty forecast for 2027, all five platforms: %s" % c(fig["total"]))
-    t.append("3. Modules a lot of 50 should carry, by platform:")
-    for n in P.NAMES:
-        t.append("   - %s: %s" % (n, c(fig["ask_a"][n])))
-    t.append("4. Share of the packs with a first end-of-line run from July 2025 to June 2026 that passed it, by "
-             "platform:")
-    for n in P.NAMES:
-        t.append("   - %s: %s" % (n, pct(fig["ask_b"][n])))
-    t.append("5. Share of the cores received from July 2025 to June 2026 that were rejected at intake, by platform:")
-    for n in P.NAMES:
-        t.append("   - %s: %s" % (n, pct(fig["ask_c"][n])))
-    t.append("\n### voltwerk_tooling_2027.png\n")
-    t.append("1. Each platform's 2027 forecast beside its slots, the Mira city car's %s slots the largest." %
-             c(S["Mira city car"]))
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(t) + "\n")
+def k(x):
+    return "£{:,}".format(GD.k1(x))
+
+
+def label(o):
+    s, e = o["start"], o["end"]
+    if s == e:
+        return "%d %s" % (s.day, s.strftime("%B"))
+    if s.month == e.month:
+        return "%d to %d %s" % (s.day, e.day, s.strftime("%B"))
+    return "%d %s to %d %s" % (s.day, s.strftime("%B"), e.day, e.strftime("%B"))
+
+
+def figures(G):
+    nf = sum(G["record_follow"])
+    return {
+        "call": "add the second-event cover",
+        "capital_gbp_m": {"gross": GD.m1(G["gross"]), "net_occurrence": GD.m1(G["net_base"]),
+                          "net_both": GD.m1(G["net_both"]), "release": GD.m1(G["release_sec"])},
+        "cover_gbp_m": {"margin": GD.m01(G["margin_sec"]), "value": GD.m01(G["value"]),
+                        "capital_cost": GD.m01(W.COC * G["release_sec"]), "premium": GD.m01(W.SEC["premium"]),
+                        "expected_reinstatement": GD.m01(G["rp_sec"]), "expected_recoveries": GD.m01(G["rec_sec"])},
+        "record": {"storms": len(G["record"]), "within_six_weeks": nf, "load_follow": round(G["load_follow"], 2),
+                   "load_other": round(G["load_lone"], 2), "pooled": round(G["pooled"], 2),
+                   "gap_in_train_max_days": W.GAP_IN[1], "gap_between_trains_min_days": W.GAP_TRAINS},
+        "occurrences_2026": [{"days": label(o), "home": GD.k1(o["home"]), "farm": GD.k1(o["farm"]),
+                              "incurred": GD.k1(o["incurred"])} for o in G["occ2026"]],
+        "recovery_2026": GD.k1(G["recovery2026"]), "reinstatement_2026": GD.k1(G["reinstatement2026"]),
+        "farm_si_gbp_m": {c: {"buildings": GD.m01(b), "farm_contents": GD.m01(ct)} for c, (b, ct) in G["farm_si"].items()},
+        "constants": {"base_limit": int(W.BASE["limit"]), "base_retention": int(W.BASE["retention"]),
+                      "sec_limit": int(W.SEC["limit"]), "sec_retention": int(W.SEC["retention"]),
+                      "coc_per_cent": int(W.COC * 100), "worst_years": W.RANK_1IN200, "years": W.N_YEARS,
+                      "hours": W.HOURS, "floor_m": 1, "per_cent": 100},
+    }
+
+
+def submission(G):
+    nf = sum(G["record_follow"])
+    F = P.FILES
+    occ = G["occ2026"]
+    lines = [
+        "## Tags",
+        "",
+        "**Domain:** Actuarial Science & Insurance (reinsurance and capital: a county farm-and-home mutual's 2027 "
+        "windstorm reinsurance, a cover bought when the capital it releases is worth more than it costs).",
+        "**Analytical objective:** Opportunity Sizing & Decision Support.",
+        "",
+        "## 1. Final Recommendation",
+        "",
+        "**We should add Penwarden's second-event cover to the 2027 windstorm programme.**",
+        "It releases %s of 1-in-200 windstorm capital, worth %s a year at 12 per cent against a margin of %s, so it "
+        "adds %s a year. Not on one incurred-over-hindcast ratio for every storm of record, which undercosts the "
+        "storms that strike within weeks of the one before and leaves the cover looking dearer than its release is "
+        "worth. Not on each storm's place in its year or season, which the record's later storms on quiet seasons, "
+        "costing what the model says, rule out." % (m(G["release_sec"]), m1(W.COC * G["release_sec"]),
+                                                     m1(G["margin_sec"]), m1(G["value"])),
+        "",
+        "## 2. Critical Components",
+        "",
+        "1. Storms of record that struck within six weeks of the storm before cost **%.2f** times their hindcast, "
+        "every other storm **%.2f** times." % (G["load_follow"], G["load_lone"]),
+        "2. The 1-in-200 annual windstorm loss is **%s** gross, **%s** net of the occurrence cover and **%s** net of "
+        "both covers." % (m(G["gross"]), m(G["net_base"]), m(G["net_both"])),
+        "3. The second-event cover's margin is **%s** a year: its premium of **%s** and expected reinstatement "
+        "premium of **%s**, less expected recoveries of **%s**." % (m1(G["margin_sec"]), m1(W.SEC["premium"]),
+                                                                    m1(G["rp_sec"]), m1(G["rec_sec"])),
+        "",
+        "## 3. Step-by-Step Solution",
+        "",
+        "1. Linked each storm in %s to the storm in %s whose peak falls on its first damage date or the day after, "
+        "all %d storms of record, and classed each by the days since the storm before it (every gap is %d days or "
+        "less, or %d or more): the %d within six weeks cost %.2f times their hindcast and the rest %.2f, incurred over "
+        "hindcast for the storms like it per CP-04 section 2." % (
+            F["experience"], F["hindcast"], len(G["record"]), W.GAP_IN[1], W.GAP_TRAINS, nf, G["load_follow"],
+            G["load_lone"]),
+        "2. Classed each storm of %s the same way against the storm before it in its simulated year and costed it at "
+        "its class's ratio." % F["ylt"],
+        "3. Netted each simulated year of the occurrence cover (quotation A, 18,000,000 xs 12,000,000 each loss "
+        "occurrence, one reinstatement at 100 per cent pro rata as to amount), each storm one loss occurrence per "
+        "CP-04: the 1-in-200, the average of the 50 worst of the 10,000 years, is %s gross and %s net." % (
+            m(G["gross"]), m(G["net_base"])),
+        "4. Added the second-event cover (quotation B, 7,500,000 xs 4,000,000 of the loss retained under the "
+        "occurrence cover on each year's second and later loss occurrences, one reinstatement): the 1-in-200 falls to "
+        "%s, a release of %s." % (m(G["net_both"]), m(G["release_sec"])),
+        "5. Took the cover's margin per CP-04 section 3 over the 10,000 years: %s." % m1(G["margin_sec"]),
+        "6. Dated each 2026 storm claim line in %s by date_of_damage in %s (insurer_ref without its spaces), a "
+        "reopened claim's lines in notification order against its instructions in instruction order, and grouped the "
+        "days into the 72-hour loss occurrences that maximise the expiring cover's recovery (wording clause 3): "
+        "it recovers %s and calls %s of reinstatement premium." % (
+            F["claims"], F["adjusters"], k(G["recovery2026"]), k(G["reinstatement2026"])),
+        "7. Summed the Holdings sheet of %s by each holding's county, each coinsured policy at its share in %s, "
+        "matched on its main holding's CPH or, for a renumbered holding, its previous_cph, and applied to every "
+        "holding on the policy." % (F["farm"], F["coins"]),
+        "8. Valued the cover at 12 per cent of the release, %s, less the margin: it adds %s a year, so it is added "
+        "to the programme." % (m1(W.COC * G["release_sec"]), m1(G["value"])),
+        "",
+        "## 4. Deliverable Answers",
+        "",
+        "### %s" % GD.PDF,
+        "",
+        "1. Recommendation: add the second-event cover to the 2027 programme.",
+        "2. Bar chart on page 1 of the 1-in-200 annual windstorm loss: %s gross, %s net of the occurrence cover, %s "
+        "net of both covers." % (m(G["gross"]), m(G["net_base"]), m(G["net_both"])),
+        "3. Capital the second-event cover releases: %s." % m(G["release_sec"]),
+        "4. The cover's margin %s; its worth to us a year %s." % (m1(G["margin_sec"]), m1(G["value"])),
+        "5. 2026 loss occurrences of £1 million or more, home and farm policies:",
+    ]
+    for o in occ:
+        lines.append("   - %s: home %s, farm %s" % (label(o), k(o["home"]), k(o["farm"])))
+    lines += [
+        "6. The expiring cover recovers %s on 2026 and calls a reinstatement premium of %s." % (
+            k(G["recovery2026"]), k(G["reinstatement2026"])),
+        "7. Our share of the farm sums insured, buildings and farm contents:",
+    ]
+    for c in W.COUNTIES:
+        b, ct = G["farm_si"][c]
+        lines.append("   - %s: buildings %s, farm contents %s" % (c, "£{:,.1f}m".format(GD.m01(b)),
+                                                                  "£{:,.1f}m".format(GD.m01(ct))))
+    lines += [
+        "",
+        "### %s" % GD.XLSX,
+        "",
+        "1. The same figures: sheet Capital 2027 carries the call, the three 1-in-200 losses, the release, the margin "
+        "and the worth; Storms 2026 each occurrence's home and farm cost, the recovery and the reinstatement premium; "
+        "Farm sums insured each county's buildings and farm contents; Record the storms of record with their ratios.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def metadata(target):
+    files = []
+    for key, f in P.FILES.items():
+        p = os.path.join(target, f)
+        rows = (sum(1 for _ in open(p, encoding="utf-8")) - 1) if f.endswith(".csv") else None
+        files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
+                      "source": "Constructed (seeded generator)", "date": "2026-11-02",
+                      "license": "CC0-1.0 (original work)"})
+    big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
+    return {
+        "task": "task306",
+        "title": "Whether a county farm-and-home mutual adds a second-event windstorm cover to its 2027 reinsurance "
+                 "programme, and the 1-in-200 capital it releases under the mutual's capital policy",
+        "domain": "Actuarial Science & Insurance",
+        "subdomain": "reinsurance-capital (a catastrophe cover bought when the capital it releases is worth more than "
+                     "it costs, with the year's claims against the expiring cover and the farm book by county)",
+        "objective": "Opportunity Sizing & Decision Support",
+        "prompt_shape": "other: a buy-or-not call with the capital released and its worth, the year's loss "
+                        "occurrences by line, and the farm sums insured by county and section",
+        "as_of": "2026-11-02",
+        "deliverables": [GD.PDF, GD.XLSX],
+        "distractor_files": [P.FILES[x] for x in P.DISTRACTORS],
+        "context_artifacts": [],
+        "stated_inputs": ["the 1-in-200 annual windstorm loss, the costing of each simulated storm, the release and "
+                          "the value at the cost of capital (capital policy CP-04, sections 2 and 3)",
+                          "the covers quoted for 2027 (the broker's quotation) and the expiring cover's terms (the "
+                          "2026 wording)"],
+        "field_terms": [],
+        "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
+                        "largest_file": big["path"], "largest_file_rows": big["rows"]},
+        "sources": [{"files": "all files under target/",
+                     "origin": "generated by task306/generator/build.py (seeded, deterministic) around a fictional "
+                               "mutual insurer in the south-west of England, its fictional catastrophe model vendor, "
+                               "broker, reinsurers, co-insurers and loss adjusters; every organisation, storm and "
+                               "person is invented and no real dataset is reproduced.",
+                     "date": "2026-11-02", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-31",
+        "generator": "task306/generator/build.py",
+        "files": files,
+    }
+
+
+def write(task, G):
+    target = os.path.join(task, "target")
+    with open(os.path.join(task, "submission.md"), "w", encoding="utf-8") as fh:
+        fh.write(submission(G))
+    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as fh:
+        json.dump(figures(G), fh, indent=1, ensure_ascii=False, sort_keys=True)
+        fh.write("\n")
+    with open(os.path.join(task, "metadata.json"), "w", encoding="utf-8") as fh:
+        json.dump(metadata(target), fh, indent=2, ensure_ascii=False)
+        fh.write("\n")

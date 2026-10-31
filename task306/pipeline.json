@@ -1,12 +1,12 @@
 {
  "task": "task306",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "actuarial-science-insurance",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-31",
- "stump": "",
+ "stump": "A competent analyst costs every storm in the 2027 table at the record's one incurred-over-hindcast ratio, values the second-event cover at minus GBP 0.3 million a year and does not buy it; the step that lands it there is reading the record as one population, when the storms that strike within weeks of the storm before cost the mutual about 1.6 times the model and every other storm about what it says, and those are the storms the cover pays on in the years that set the capital.",
  "architecture": 3,
  "loops": 0,
  "precut": null,
@@ -23,7 +23,7 @@
    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "Architecture 3 drawn and registered 2026-10-31: Hartcombe Mutual's 2027 windstorm programme, an occurrence cover against an annual aggregate cover, each simulated storm costed at what the mutual's claims show, the storms that follow another inside a season costing more. Next: stage 2 design to precut.py exit 0.",
+ "resume": "Stage 3, architecture 3 (the second-event cover, buy or not): the generator under task306/generator is written and its checks.py passes on the cut pack (record seed 2703, second-event 7.5m xs 4m at GBP 1.31m); prompt.txt passes voice-check. Next: write generator/verify.py and generator/pair.py, rewrite DESIGN_NOTE.md to the second-event design until precut.py exits 0, update the card (text, people, answer, spine), run build.py in full (two byte-identical builds, target.zip, verify), figures_check.py, leak.py, guard.py surface and heart; then the stage 4 hand-off (leak copy at scratchpad/leak-task306, brief at scratchpad/task306_stage4_leak_brief.md).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -87,6 +87,10 @@
   {
    "date": "2026-10-31",
    "event": "DRAWN: architecture 3, reinsurance-capital x opportunity sizing"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "architecture 3 redesigned at stage 2 from occurrence-against-aggregate to the second-event cover, buy or not; the record redrawn (seed 2703, trains kept apart across the year end) so every rank, year, season, size and pooled route under every estimator files the wrong call; the asks re-sited onto the 2026 claims with the adjusters' instructions and the farm book with its coinsurance register"
   }
  ]
 }

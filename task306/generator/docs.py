@@ -1,302 +1,176 @@
-"""task306 documents: the draft 2027 tooling plan (docx), the warranty terms summary (pdf), the RDW extract's field
-descriptions (pdf), the line exports' notes (md), and the two distractors (the 2026 price list, pdf; module lead
-times, xlsx)."""
-import numpy as np
-from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt, RGBColor
+"""The pack's documents in the organisations' own voices: the mutual's capital policy, the broker's quote for 2027,
+the expiring windstorm wording and the request to bring the programme to the board."""
+from email.message import EmailMessage
+from email.utils import format_datetime
+import datetime as dt
+
 from reportlab.lib import colors
+from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-import params as P
+import world as W
+
+INK = colors.HexColor("#1d2a33")
+RULE = colors.HexColor("#9aa7b0")
 
 
-def _styles():
-    ss = getSampleStyleSheet()
-    body = ParagraphStyle("body", parent=ss["Normal"], fontName="Helvetica", fontSize=9.4, leading=13.0, spaceAfter=5)
-    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13.2, leading=17, spaceAfter=4)
-    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.2, leading=14,
-                        spaceBefore=8, spaceAfter=4, keepWithNext=1)
-    small = ParagraphStyle("small", parent=body, fontSize=8.0, leading=10.6, textColor=colors.HexColor("#444444"))
-    return body, h1, h2, small
+def _styles(font="Helvetica"):
+    base = ParagraphStyle("b", fontName=font, fontSize=9.6, leading=13.2, textColor=INK, alignment=TA_LEFT,
+                          spaceAfter=5)
+    return {
+        "t": ParagraphStyle("t", parent=base, fontName=font + "-Bold", fontSize=14, leading=18, spaceAfter=8),
+        "s": ParagraphStyle("s", parent=base, fontSize=8.6, leading=11.5, textColor=colors.HexColor("#4a5a66")),
+        "h": ParagraphStyle("h", parent=base, fontName=font + "-Bold", fontSize=10.4, leading=14, spaceBefore=6),
+        "p": base,
+    }
 
 
-def _footer(text):
-    def foot(canvas, d):
+def _doc(path, title, author, blocks, footer, font="Helvetica"):
+    st = _styles(font)
+
+    def page(canvas, d):
         canvas.saveState()
-        canvas.setFont("Helvetica", 7.4)
-        canvas.setFillColor(colors.HexColor("#555555"))
-        canvas.drawString(18 * mm, 10 * mm, text)
-        canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "%d" % d.page)
+        canvas.setFont(font, 7.5)
+        canvas.setFillColor(colors.HexColor("#5b6b77"))
+        canvas.drawString(18 * mm, 10 * mm, footer)
+        canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % d.page)
         canvas.restoreState()
-    return foot
-
-
-def _table(rows, widths, size=8.2):
-    cell = ParagraphStyle("cell", fontName="Helvetica", fontSize=size, leading=size + 2.2)
-    head = ParagraphStyle("head", parent=cell, fontName="Helvetica-Bold")
-    rows = [[Paragraph(str(v), head if r == 0 else cell) for v in row] for r, row in enumerate(rows)]
-    t = Table(rows, colWidths=[w * mm for w in widths], repeatRows=1)
-    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9A9A9A")),
-                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E6ECEF")),
-                           ("VALIGN", (0, 0), (-1, -1), "TOP")]))
-    return t
-
-
-def _pdf(path, title, subject, story, foot):
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm,
-                            bottomMargin=18 * mm, title=title, author=P.ORG, creator=P.ORG, subject=subject,
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title=title, author=author, creator=author, producer=author,
                             invariant=1)
-    doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
+    story = []
+    for kind, val in blocks:
+        if kind == "table":
+            t = Table(val, hAlign="LEFT")
+            t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), font, 8.8), ("FONT", (0, 0), (-1, 0), font + "-Bold", 8.8),
+                                   ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
+            story.append(t)
+            story.append(Spacer(1, 6))
+        elif kind == "sp":
+            story.append(Spacer(1, val))
+        else:
+            story.append(Paragraph(val, st[kind]))
+    doc.build(story, onFirstPage=page, onLaterPages=page)
 
 
-def warranty(path):
-    body, h1, h2, small = _styles()
-    F = P.FILES
-    rows = [["Platform", "OEM pack warranty", "Runs from", "Mileage limit"]]
-    for n in P.NAMES:
-        rows.append([n, "%d years" % P.WARRANTY[n], "datum eerste toelating", "none"])
-    s = [Paragraph(P.ORG + " | Technical Services", small), Spacer(1, 2 * mm),
-         Paragraph("Traction-battery warranty terms on the five platforms we refurbish", h1),
-         Paragraph("Summary for planning and the service desk, 3 February 2026. Replaces the summary of March 2024. "
-                   "Sources: each OEM's warranty booklet for the Netherlands and the EU, and Voltwerk's own terms of "
-                   "sale (edition 2025).", small),
-         Paragraph("1. The OEM's pack warranty", h2),
-         Paragraph("Each OEM warrants the traction-battery pack for a fixed number of years from the vehicle's date of "
-                   "first admission (datum eerste toelating), wherever in the EU the vehicle was first admitted. The "
-                   "warranty goes with the vehicle to every later holder and does not restart when the vehicle changes "
-                   "country. None of the five carries a mileage limit on the pack.", body),
-         _table(rows, [44, 38, 48, 34]),
-         Spacer(1, 3 * mm),
-         Paragraph("A pack the OEM replaces under its warranty is a new OEM pack and is covered for what remains of the "
-                   "original period: the replacement does not start a new period. Once the period has ended the OEM "
-                   "no longer replaces packs free of charge, and a failed pack is replaced at the owner's cost, in "
-                   "practice by one of our refurbished packs.", body),
-         Paragraph("2. Voltwerk's warranty on refurbished packs", h2),
-         Paragraph("A Voltwerk refurbished pack carries our own warranty of %d years from the day it is fitted. A "
-                   "refurbished pack that fails inside that period is replaced by another refurbished pack free of "
-                   "charge; one that fails after it is replaced at the owner's cost. Either way the replacement comes "
-                   "from the line." % P.VW_WARRANTY, body),
-         Paragraph("3. Where the dates come from", h2),
-         Paragraph("The date of first admission is the RDW's datum eerste toelating for the registration "
-                   "(%s, field descriptions in %s). Fitting dates are in the replacement log (%s)."
-                   % (F["register"], F["rdw_notes"], F["log"]), body)]
-    _pdf(path, "Traction-battery warranty terms on the five platforms", "Warranty terms summary, February 2026", s,
-         "Voltwerk Accu Revisie B.V. | Technical Services | warranty terms summary 2026")
-
-
-def rdw_notes(path):
-    body, h1, h2, small = _styles()
-    fields = [
-        ("kenteken", "Registration number, without dashes."),
-        ("voertuigsoort", "Vehicle kind (Personenauto, Bedrijfsauto)."),
-        ("merk", "Make as registered."),
-        ("handelsbenaming", "Trade name as registered; varies by variant and over the years."),
-        ("datum_eerste_toelating", "Date the vehicle was first admitted to the road, in the Netherlands or elsewhere "
-                                   "(YYYYMMDD)."),
-        ("datum_eerste_tenaamstelling_in_nederland", "Date the vehicle was first registered to a holder in the "
-                                                     "Netherlands (YYYYMMDD)."),
-        ("datum_tenaamstelling", "Date of the registration to the current holder (YYYYMMDD)."),
-        ("vervaldatum_apk", "Date the current periodic inspection (APK) expires (YYYYMMDD)."),
-        ("inrichting", "Body type."),
-        ("eerste_kleur", "Main colour."),
-        ("aantal_zitplaatsen", "Seats."),
-        ("massa_rijklaar", "Mass in running order, kg."),
-        ("catalogusprijs", "List price in euros where the RDW holds one; often empty for vehicles first admitted "
-                           "abroad."),
-        ("europese_voertuigcategorie", "EU vehicle category (M1, N1)."),
-        ("taxi_indicator", "Registered as a taxi (Ja/Nee)."),
+def capital_policy(path):
+    blocks = [
+        ("t", "Capital Policy CP-04: windstorm risk and its reinsurance"),
+        ("s", "%s. Approved by the Board on 17 June 2026. Owner: the Chief Actuary. Reviewed annually; this "
+              "version replaces CP-04 of June 2025." % W.ORG),
+        ("h", "1. Scope"),
+        ("p", "This policy covers windstorm: damage by wind to the buildings and contents the Society insures under its "
+              "home and farm policies, and the rain or snow that enters through that damage. Flood and storm surge are "
+              "held under CP-05. Figures are in pounds sterling."),
+        ("h", "2. The windstorm capital requirement"),
+        ("p", "The Society holds windstorm capital equal to its 1-in-200 annual windstorm loss. The 1-in-200 annual "
+              "windstorm loss is the average of the 50 worst of the 10,000 simulated years in the catastrophe model's "
+              "year loss table for the coming year's portfolio. A simulated year's windstorm loss is the sum of the "
+              "losses of the storms in it, net of the recoveries the reinsurance in force would pay on them, with any "
+              "reinstatement premium those recoveries call added back to the year's loss."),
+        ("p", "Each simulated storm is costed at what the Society's own claims show it pays for such a storm: the "
+              "model's loss for the storm, times the Society's incurred claims over the model's hindcast loss for the "
+              "past storms like it, each past storm hindcast on the portfolio of its time. Each storm in the year loss "
+              "table is one Loss Occurrence under the programme's covers. The actuarial function keeps the hindcast "
+              "and the storm experience and refreshes both each summer."),
+        ("h", "3. Buying reinsurance"),
+        ("p", "A windstorm cover is bought when the capital it releases is worth more than it costs. The capital a "
+              "cover releases is the 1-in-200 annual windstorm loss without it less the 1-in-200 annual windstorm loss "
+              "with it, the covers already bought being in force in both. Its value is that release at the Society's "
+              "cost of capital of 12 per cent a year, less its margin: its premium and the reinstatement premiums it "
+              "is expected to call, less the recoveries it is expected to pay, each the average over the 10,000 "
+              "simulated years."),
+        ("p", "The occurrence cover is the programme's first cover and is renewed each year on terms the Board "
+              "approves. Any further cover is valued with the occurrence cover in force."),
+        ("h", "4. Responsibilities"),
+        ("p", "The Chief Actuary, %s, maintains the year loss table, the hindcast and the storm experience. The Head of "
+              "Reinsurance, %s, places the programme through the Society's broker. The Board approves the programme "
+              "for each year at its November meeting." % (W.PEOPLE["actuary"], W.PEOPLE["reinsurance"])),
     ]
-    rows = [["Field", "Description"]] + [[a, b] for a, b in fields]
-    s = [Paragraph(P.ORG + " | Operations planning", small), Spacer(1, 2 * mm),
-         Paragraph("RDW register extract of 30 June 2026: field descriptions", h1),
-         Paragraph("Extract taken by operations planning from the RDW open data (Gekentekende voertuigen) on 1 July "
-                   "2026, for the five platforms we refurbish.", small),
-         Paragraph("What the extract holds", h2),
-         Paragraph("One row per registration: every vehicle of the makes VOLTA, KESTREL, PLOVER, MIRA and TERN on the "
-                   "Dutch register on 30 June 2026 that was insured and not reported exported on that date. Each make "
-                   "is one of our platforms (VOLTA the Volta hatch, KESTREL the Kestrel SUV, PLOVER the Plover saloon, "
-                   "MIRA the Mira city car, TERN the Tern van). Fields are as the RDW publishes them; dates are "
-                   "YYYYMMDD.", body),
-         _table(rows, [62, 112])]
-    _pdf(path, "RDW register extract of 30 June 2026: field descriptions", "Field descriptions", s,
-         "Voltwerk Accu Revisie B.V. | operations planning | RDW extract 2026-06-30")
+    _doc(path, "Capital Policy CP-04", W.ORG, blocks, "%s, Capital Policy CP-04, June 2026" % W.ORG_SHORT)
 
 
-def line_notes(path):
-    F = P.FILES
-    t = """# Line exports for 2025-26: what is in each file
-
-Exports pulled on 1 July 2026 from the MES, the stores system and the end-of-line test benches, for the 2025-26
-planning work. Times are local time (Europe/Amsterdam). Platform codes in the MES: VH Volta hatch, KS Kestrel SUV,
-PS Plover saloon, MC Mira city car, TV Tern van.
-
-## %(workorders)s
-
-One row per work order opened from 1 December 2024: `werkorder`, `geopend` (date opened), `platformcode`, `kerncode`
-(the core the pack is built on), `status` on 1 July 2026 (VERZONDEN shipped, AFGEKEURD scrapped, IN BEWERKING still on
-the line) and `afgesloten` (date closed).
-
-## %(stores)s
-
-Stores movements against work orders with a booking date from 1 July 2025 to 30 June 2026. `soort` is UITGIFTE for an
-issue and RETOUR for a return to stores, which carries a negative quantity. `aantal` is in the article's unit (see
-%(parts)s). `partij` is the supplier lot the units came from; stores keeps its stock by lot, and no lot's stock goes
-below zero. `picklijst` is the pick list the units went out on; one list can serve several work orders.
-
-## %(receipts)s
-
-Goods received into stores from 1 July 2025 to 30 June 2026, one row per supplier lot, with the supplier's delivery
-note.
-
-## %(parts)s
-
-The module articles, current (actief) and superseded (vervallen): description, platform, stores unit, the modules in
-one unit and the supplier.
-
-## %(eol)s
-
-Every end-of-line test run since the benches went live on 6 January 2025. `pakket_id` is the pack's serial number,
-`programma` the test programme, `resultaat` PASS, FAIL or ABORT. ABORT means the bench stopped the run itself (a
-bench, contact or cooling fault); an aborted run is no test of the pack, which is run again.
-
-## %(bms)s
-
-Every BMS paired to a pack on a work order opened from 1 December 2024: `soort` is MONTAGE when the pack is assembled
-and VERVANGING when a BMS is replaced.
-
-## %(shipments)s
-
-Packs shipped to garages from 1 July 2025 to 30 June 2026, one row per shipment.
-
-## %(intake)s
-
-Cores received from 1 July 2025 to 30 June 2026 and graded at dock 1 or dock 2: `herkomst` is garage (the failed pack
-sent back when a garage fits one of ours) or inkoop (cores bought in), `keuring` is the core's grade on 1 July 2026, A,
-B or AFGEKEURD, with the reason.
-
-## %(recycler)s
-
-The recycler's waste transfer notes for its Wednesday collections from 2 July 2025 to 1 July 2026, one line per pack
-collected, with the date on the quarantine tag.
-""" % F
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write(t)
+def broker_quote(path):
+    occ, sec = W.BASE, W.SEC
+    blocks = [
+        ("t", "Windstorm reinsurance 2027: quotation"),
+        ("s", "%s for %s. Issued 14 October 2026. Quotations firm until 30 November 2026, subject to the expiring "
+              "wording save as stated below." % (W.BROKER, W.ORG)),
+        ("h", "Period"),
+        ("p", "Losses occurring from 00:00 on 1 January 2027 to 24:00 on 31 December 2027, local standard time."),
+        ("h", "A. Occurrence cover (renewal)"),
+        ("table", [["Term", "Quoted"],
+                   ["Cover", "GBP %s each and every Loss Occurrence excess of GBP %s each and every Loss Occurrence"
+                    % (format(int(occ["limit"]), ","), format(int(occ["retention"]), ","))],
+                   ["Reinstatement", "One full reinstatement at 100 per cent additional premium, pro rata as to amount"],
+                   ["Premium", "GBP %s, payable in two instalments" % format(int(occ["premium"]), ",")],
+                   ["Loss Occurrence", "As the expiring wording: windstorm, 72 consecutive hours"]]),
+        ("h", "B. Second-event cover (new)"),
+        ("table", [["Term", "Quoted"],
+                   ["Cover", "GBP %s each and every Loss Occurrence excess of GBP %s each and every Loss Occurrence"
+                    % (format(int(sec["limit"]), ","), format(int(sec["retention"]), ","))],
+                   ["Loss Occurrences covered", "The second and each subsequent Loss Occurrence of the period; the "
+                    "first Loss Occurrence of the period, being the one whose 72 hours begin first, is not covered"],
+                   ["Subject loss", "The Reassured's loss retained under the occurrence cover in each Loss "
+                    "Occurrence, that is its loss up to the occurrence cover's GBP %s retention"
+                    % format(int(occ["retention"]), ",")],
+                   ["Reinstatement", "One full reinstatement at 100 per cent additional premium, pro rata as to amount"],
+                   ["Premium", "GBP %s, payable in one instalment" % format(int(sec["premium"]), ",")]]),
+        ("p", "Both quotations are led by Aldwych Syndicate 4127 with the expiring panel following. Cover B attaches "
+              "only if Cover A is bought."),
+    ]
+    _doc(path, "Windstorm reinsurance 2027 quotation", W.BROKER, blocks,
+         "%s, quotation PRB/HCM/27/031" % W.BROKER)
 
 
-def plan(path, created):
-    F = P.FILES
-    d = Document()
-    st = d.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    p = d.add_paragraph()
-    r = p.add_run("Voltwerk Accu Revisie B.V. | Operations planning")
-    r.font.size = Pt(8.5)
-    r.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
-    d.add_heading("Tooling plan 2027: refurbishment slots by platform", level=1)
-    p = d.add_paragraph()
-    r = p.add_run("Concept 3, for the operations meeting of 2 September 2026. %s, operations planning, 14 August "
-                  "2026. Fixtures and module stock are ordered by 30 September." % P.PEOPLE["planner"])
-    r.italic = True
-    r.font.size = Pt(9.5)
-    d.add_heading("1. Capacity", level=2)
-    d.add_paragraph("In 2027 the line has %s refurbishment slots on its four bays, two shifts a day. Fixtures, module "
-                    "stock and the end-of-line test programmes are platform-specific and are committed before the year "
-                    "starts, in lots of %d slots. A lot cannot be moved to another platform during the year: moving one "
-                    "means another fixture set and a revalidated test programme, and the bay stands for about two "
-                    "weeks while that is done." % ("{:,}".format(P.SLOTS), P.LOT))
-    d.add_heading("2. How the slots are split", level=2)
-    d.add_paragraph("The %s slots are split across the five platforms in proportion to the forecast of traction-battery "
-                    "pack failures outside the OEM warranty on each platform in the Netherlands in calendar 2027. Lots "
-                    "are set by the largest-remainder rule: each platform first takes the whole lots its share covers, "
-                    "and the lots left over go to the platforms with the largest remainders." % "{:,}".format(P.SLOTS))
-    d.add_paragraph("Garage partners order against the split through the year; a platform that runs out of lots is "
-                    "served from the next year's tooling, so a short platform costs us its fittings, not just a delay.")
-    d.add_heading("3. What counts as a failure", level=2)
-    d.add_paragraph("A failure counts when a pack fails in 2027 on a car in use in the Netherlands and the OEM's pack "
-                    "warranty on that car has ended (%s). A Voltwerk refurbished pack's failure counts whether or not "
-                    "our own warranty still covers it: either way the line supplies the pack." % F["warranty"])
-    d.add_paragraph("The cars in use in the Netherlands in 2027 are those on the register on 30 June 2026 and those first "
-                    "registered here from 1 July 2026 to the end of 2027, each from the day it is registered. The "
-                    "forecast follows one pack per car and counts its failure: the pack a car carries at the end of 30 "
-                    "June 2026 or, for a car first registered here later, the pack it carries when it is registered; a "
-                    "pack fitted in its place later is left out.")
-    d.add_paragraph("The forecast takes no car out of use: a car in use in the Netherlands in 2027 is taken to stay in "
-                    "use for the rest of the year. Packs fail as the life curves say (%s), read by straight lines "
-                    "between whole years of pack age. A pack's age runs from the day it was fitted, or from the car's "
-                    "first admission for the pack the car was built with." % F["curves"])
-    d.add_heading("4. Sources", level=2)
-    for k, txt in [("register", "the RDW register extract of 30 June 2026 for the five platforms (field descriptions "
-                                "in %s)" % F["rdw_notes"]),
-                   ("log", "every traction-battery pack replacement on a car registered here up to 30 June 2026, from "
-                           "the car's first admission: the OEMs' EU-wide dealer records, matched to the Dutch "
-                           "registration by VIN, and our own fitting records"),
-                   ("curves", "the share of packs failed by each whole year of pack age, from the OEMs' service "
-                              "documentation, with our own curve for refurbished packs from our warranty returns "
-                              "2019 to 2025"),
-                   ("warranty", "the warranty terms")]:
-        p = d.add_paragraph(style="List Bullet")
-        r = p.add_run(F[k])
-        r.bold = True
-        p.add_run(": " + txt + ".")
-    d.add_heading("5. What a lot carries", level=2)
-    d.add_paragraph("Each lot of %d is ordered as one set: the module stock to refurbish %d packs, the bench time to "
-                    "test them, re-runs included, and the cores to have on hand, rejects at intake included. The rates "
-                    "come from the line's exports for 2025-26 (%s). Module lead times, minimum order quantities and "
-                    "supplier prices are in %s; the Kestrel SUV's carriers come from one supplier, so its lots need the "
-                    "order in first." % (P.LOT, P.LOT, F["line_notes"], F["leadtimes"]))
-    d.add_heading("6. Still to settle", level=2)
-    d.add_paragraph("For the meeting of 2 September: the slots and the forecast per platform, and what each lot "
-                    "carries, for sign-off by the head of operations. %s to price the module orders and to put the "
-                    "year's revenue against the garage prices (%s)." % (P.PEOPLE["controller"], F["prices"]))
-    d.core_properties.author = P.PEOPLE["planner"]
-    d.core_properties.title = "Tooling plan 2027"
-    d.save(path)
+def expiring_wording(path):
+    e = W.EXP
+    blocks = [
+        ("t", "Windstorm catastrophe excess of loss reinsurance 2026"),
+        ("s", "Reassured: %s. Reinsurers: as per the signing schedule. Contract PRB/HCM/26/014." % W.ORG),
+        ("h", "1. Period"),
+        ("p", "Losses occurring from 00:00 on 1 January 2026 to 24:00 on 31 December 2026, local standard time."),
+        ("h", "2. Cover"),
+        ("p", "The Reinsurers shall pay the Reassured's Ultimate Net Loss in excess of GBP %s each and every Loss "
+              "Occurrence, up to GBP %s each and every Loss Occurrence." % (format(int(e["retention"]), ","),
+                                                                              format(int(e["limit"]), ","))),
+        ("h", "3. Loss Occurrence"),
+        ("p", "Loss Occurrence means all individual losses arising out of and directly occasioned by windstorm during "
+              "any period of 72 consecutive hours. The Reassured may choose the date and time when any such period "
+              "of 72 consecutive hours commences, and no individual loss shall be included in more than one Loss "
+              "Occurrence. An individual loss is dated by the day on which the damage was done."),
+        ("h", "4. Ultimate Net Loss"),
+        ("p", "Ultimate Net Loss means the sums paid or payable by the Reassured on its policies for the individual "
+              "losses in a Loss Occurrence, including expenses of loss adjusters, and for the purposes of each "
+              "statement the paid amounts and the outstanding estimates at the statement date."),
+        ("h", "5. Reinstatement"),
+        ("p", "The cover is reinstated once in full from the time of each loss, at 100 per cent of the annual premium "
+              "of GBP %s, pro rata as to the amount of cover reinstated." % format(int(e["premium"]), ",")),
+        ("h", "6. Statements"),
+        ("p", "The Reassured shall render a statement of each Loss Occurrence at the end of each quarter."),
+    ]
+    _doc(path, "Windstorm XL 2026 wording", W.BROKER, blocks, "Contract PRB/HCM/26/014, windstorm XL 2026")
 
 
-def prices(path):
-    body, h1, h2, small = _styles()
-    rs = np.random.default_rng([P.SEED_DOCS, 1])
-    base = {"Volta hatch": 4865, "Kestrel SUV": 7415, "Plover saloon": 6245, "Mira city car": 3195, "Tern van": 7960}
-    rows = [["Platform", "Refurbished pack, excl. VAT", "Core deposit", "Fitting (garage partners)", "Lead time"]]
-    for n in P.NAMES:
-        rows.append([n, "EUR %s" % "{:,}".format(base[n]), "EUR %s" % "{:,}".format(int(round(base[n] * 0.18 / 5.0) * 5)),
-                     "EUR %d" % int(305 + 20 * rs.integers(0, 5)), "%d working days" % (3 + int(rs.integers(0, 4)))])
-    other = [["Other charges", "Excl. VAT"],
-             ["Transport to the garage, per pack", "EUR 48.50"],
-             ["Next-working-day delivery, per pack", "EUR 95.00"],
-             ["Core collected without a replacement order", "EUR 62.00"],
-             ["Diagnostic report on a returned pack", "EUR 37.50"]]
-    s = [Paragraph(P.ORG + " | Sales", small), Spacer(1, 2 * mm),
-         Paragraph("Refurbished traction-battery packs: price list 2026", h1),
-         Paragraph("Valid from 1 January 2026 for garage partners in the Netherlands. Prices exclude VAT.", small),
-         _table(rows, [36, 40, 28, 38, 30]),
-         Spacer(1, 3 * mm),
-         _table(other, [96, 40]),
-         Spacer(1, 3 * mm),
-         Paragraph("The core deposit is refunded when the failed pack comes back to us complete and undamaged; a core "
-                   "we reject at intake is not refunded. Packs carry our two-year warranty from fitting. Prices are "
-                   "reviewed each January.", body)]
-    _pdf(path, "Refurbished traction-battery packs: price list 2026", "Price list 2026", s,
-         "Voltwerk Accu Revisie B.V. | price list 2026")
-
-
-def leadtimes(path, ws_writer):
-    rs = np.random.default_rng([P.SEED_DOCS, 2])
-    import line as Ln
-    rows = []
-    for n in P.NAMES:
-        rows.append([Ln.PART[n], Ln.SUPPLIER[n], n, int(6 + rs.integers(0, 9)), int([50, 100, 200][rs.integers(0, 3)]),
-                     round(float(rs.uniform(180, 420)), 2)])
-    for n in P.NAMES:
-        rows.append(["BMS-%s-%d" % (Ln.BMS_PRE[n], 3 + int(rs.integers(0, 3))), Ln.SUPPLIER[n], n,
-                     int(4 + rs.integers(0, 7)), int([20, 25, 50][rs.integers(0, 3)]),
-                     round(float(rs.uniform(140, 260)), 2)])
-    rows.append(["AFD-SET-UNI", "Hanseatic Module Supply", "alle", 3, 100, round(float(rs.uniform(11, 19)), 2)])
-    rows.append(["KLP-KST-2", "Hanseatic Module Supply", "Kestrel SUV", int(8 + rs.integers(0, 4)), 40,
-                 round(float(rs.uniform(30, 55)), 2)])
-    ws_writer(path, rows)
+def request_eml(path):
+    m = EmailMessage()
+    m["From"] = "Elizabeth Farmer <elizabeth.farmer@hartcombe-mutual.co.uk>"
+    m["To"] = "%s <mandy.george@hartcombe-mutual.co.uk>" % W.PEOPLE["reinsurance"]
+    m["Cc"] = "%s <arthur.begum@hartcombe-mutual.co.uk>" % W.PEOPLE["actuary"]
+    m["Subject"] = "2027 windstorm programme for the November Board"
+    m["Date"] = format_datetime(dt.datetime(2026, 10, 19, 8, 47, tzinfo=dt.timezone.utc))
+    m["Message-ID"] = "<20261019084711.3315@hartcombe-mutual.co.uk>"
+    m.set_content(
+        "Mandy,\n\n"
+        "Penwarden's quotation is in for 2027: the occurrence cover renewing as it stands and, new this year, a "
+        "second-event cover. The Board needs a paper for the November meeting saying whether we add the second-event "
+        "cover, and what it does to the windstorm capital we hold under CP-04, set out on the policy's own terms.\n\n"
+        "Arthur's team has refreshed the year loss table for the 2027 portfolio, the hindcast and the storm "
+        "experience, all in the folder. The Board will also want this year's storms against the expiring cover, and "
+        "where our sums insured sit going into 2027.\n\n"
+        "Elizabeth\n\nElizabeth Farmer\nChief Executive\n%s\n" % W.ORG)
+    open(path, "wb").write(bytes(m))
