@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "the 14 chronic segments, King St Wellington to Albert (112148) and the five Lakeshore Centre segments (Harbour Rd, Ontario to Simcoe 124511, Simcoe St, Front to King 158663, Harbour Rd, Simcoe to Mill 150449, Front St, Simcoe to Mill 176470, Front St, Peel to Ontario 109465); the five Memorial Gardens segments the 2026 count keeps drop out",
+  "answer_source": "golden/hot_spot_patrols_2027.pptx slide 1; submission.md block 4",
   "gap": [
     "time",
     "population"
@@ -37,24 +37,25 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:venue-event-increments-carried-by-the-coming-calendar",
   "layer1": [
-    "a records-management export with one row per report version under each incident number, a later version reclassifying an incident as unfounded",
-    "offence codes renumbered at the 2023 system change, older rows under the legacy codes",
-    "incidents geocoded to an intersection carrying its two segment ids, and a few with none",
-    "occurrence and report dates in separate columns, day-first in the legacy rows",
-    "calls-for-service timestamps in UTC against the records system's Eastern local times"
+    "a records-management export with one row per report version under each occurrence number, later versions reclassifying the offence, correcting the segment or recording the occurrence unfounded",
+    "the legacy system's offence codes and day-first dates on versions entered before the March 2023 migration",
+    "occurrences with no occurrence time dated by their report, and reports of 2021 and 2027 occurrences in the extract",
+    "a paid-duty register in two layouts, one row per booking to 2023 with abbreviated venue names and one row per officer line from 2024, holding the duties booked ahead into 2027",
+    "a CAD export in UTC carrying the contracted township's events with its patrol zones in the district column",
+    "a tour roster dating each night tour by the evening it starts"
   ],
   "stakeholder_role": "Superintendent, Patrol Operations, presenting the 2027 deployment plan to the Chief's command team",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "mps_rms_incidents_2021_2026.csv",
-    "rows": 0,
-    "entity": "one report version of one incident",
-    "grain": "incident x version",
+    "file": "mps_rms_occurrences_2022_2026.csv",
+    "rows": 82436,
+    "entity": "one report version of one occurrence",
+    "grain": "occurrence x version",
     "source": "synthetic"
   },
   "forum": "executive_team",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "period_close",
   "org_family": "local_government",
   "world": {
     "geography": "Canada, Ontario (a fictional lakeshore city, its police service, venues, team and people)",
@@ -110,8 +111,8 @@
       "org_family": "government_agency"
     }
   ],
-  "notes": "Re-rooted from architecture 3 (a planted-defect flip). Every recorded number is accurate as recorded; the easy route uses accurate counts the wrong way, as a forecast of 2027.",
-  "registered": "2026-10-31T22:06:02Z",
+  "notes": "Re-rooted from architecture 3 (a planted-defect flip). Every recorded number is accurate as recorded; the easy route uses accurate counts the wrong way, as a forecast of 2027. Built on seed 125054: the gap at the cut is 23 expected crimes and every standing member files one designation. Forcing event redrawn at the build from vote_or_meeting (banned against task172 v2, drawn just before) to period_close: the designation is made once the year has closed, for the calendar year ahead.",
+  "registered": "2026-10-31T23:51:44Z",
   "shell": {
     "question form": "whether",
     "second-sentence opener": "lay",

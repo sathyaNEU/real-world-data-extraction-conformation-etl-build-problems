@@ -1,26 +1,26 @@
 {
  "task": "task125",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "criminology-justice / crime-incidence-hotspot-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
  "stump": "A competent analyst ranks the street segments by their 2026, or 2022 to 2026, patrol crimes and designates the top 20, keeping the segments beside the Memorial Gardens and leaving out those beside the Lakeshore Centre; the step that lands it there is forecasting 2027 from each segment's own record when much of those segments' crime falls on venue event days and the 2027 calendar moves the Mariners' home games to the Lakeshore.",
  "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-31 on target.zip 5e01ea0a: sweep 3 (segment ids in the geography files), sweep 4 (the protocol's own nouns), sweep 9 (the register's 2027 bookings), each ruled harmless in the note's Leak review; no LEAK",
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31 on the card as filed (registered 20:44:17Z): overuse.org_family and repeat.gate_g against task474 v7, answered in the note's Pre-ship check",
-  "heart": "WARN 2026-10-31 on the final cut: the same two WARNs, no BLOCK",
-  "surface": "exit 0 2026-10-31; four pairs promoted for the author's adjudicated read (task127 and task304 on surface similarity, task257 and task84 on card axes already differentiated); every persona in the pack is on the card"
+  "guard_check": "WARN 2026-10-31 on the card re-registered 23:51:44Z (forcing event redrawn to period_close): repeat.gate_g against task172 v2, answered in the note's Pre-ship check",
+  "heart": "WARN 2026-10-31 on the final cut: the same WARN, no BLOCK; nearest driver 0.11",
+  "surface": "exit 0 2026-10-31 on target.zip 5e01ea0a: 302 builds screened, one pair promoted for the author's adjudicated read (task178, surface 0.090, on the card axes gap, pattern and Gate G already differentiated on the card); the pack's personas are the card's two"
  },
  "judge": {
   "verdict": "",
@@ -53,7 +53,7 @@
    "commit": "DRAWN (task125) architecture 4"
   }
  ],
- "resume": "stage 2: design note sections, the screens as code, prompt through voice-check, precut.py exit 0; then the build",
+ "resume": "stage 4: spawn the leak reader with scratchpad/task125_stage4_leak_brief.md on the fresh copy at scratchpad/leak-task125/ (target.zip 5e01ea0a053ced15) and the determinism judge on task125, together, both at medium effort; append the reader's answers to task125/leak_check_report.md under ## Solver's-eye read; fix every finding in the generator in one pass (python3 task125/generator/build.py), re-run the gates; then stage 5: ship",
  "approved": null,
  "delivered": null,
  "portal": "",
@@ -65,10 +65,14 @@
   {
    "architecture": 2,
    "fate": "retired at the batch audit 2026-10-31: short of the survivor anatomy (actor schema-visible, the field's estimator as the golden, the decisive step exact arithmetic); re-rooted as architecture 3"
+  },
+  {
+   "architecture": 3,
+   "fate": "spent at stage 4 2026-10-31: the determinism judge's SEND_BACK, a planted-defect flip (boundary samples in unmixed plumes); re-rooted as architecture 4"
   }
  ],
- "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline",
+ "alignment_pass": "",
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": "ad0c0db71e2cf1bd"
+ "zip_sha256_16": "5e01ea0a053ced15"
 }

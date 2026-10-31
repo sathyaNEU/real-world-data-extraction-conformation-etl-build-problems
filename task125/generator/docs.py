@@ -1,99 +1,180 @@
-"""The agency's governing document: the sulfate load allocation schedule (the WHAT of the call)."""
+"""The pack's documents: the Crime Analysis Unit's designation protocol, Patrol Operations' measures directive, and the
+Superintendent's request. Each carries its own save history; table cells wrap inside the page."""
+import datetime as dt
 import re
+from email.message import EmailMessage
+from email.utils import format_datetime
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import world as W
 
-CEO = "Bhekisisa Mpangazitha"
-AUTHOR = "Thandazile Nongalo"
+INK = colors.HexColor("#1b2a38")
+RULE = colors.HexColor("#7f909e")
 
 
 def _styles():
-    base = ParagraphStyle("p", fontName="Helvetica", fontSize=9.4, leading=12.6, spaceAfter=4, alignment=TA_LEFT)
-    return {"p": base,
-            "t": ParagraphStyle("t", parent=base, fontName="Helvetica-Bold", fontSize=13, leading=16, spaceAfter=3),
-            "s": ParagraphStyle("s", parent=base, fontSize=8.2, leading=10.6, textColor=colors.HexColor("#4a5560")),
-            "h": ParagraphStyle("h", parent=base, fontName="Helvetica-Bold", fontSize=10.2, leading=13, spaceBefore=6),
-            "c": ParagraphStyle("c", parent=base, fontSize=8.6, leading=10.8, spaceAfter=0),
-            "ch": ParagraphStyle("ch", parent=base, fontName="Helvetica-Bold", fontSize=8.6, leading=10.8, spaceAfter=0)}
+    base = ParagraphStyle("p", fontName="Helvetica", fontSize=9.6, leading=13.1, textColor=INK, alignment=TA_LEFT,
+                          spaceAfter=5)
+    return {"t": ParagraphStyle("t", parent=base, fontName="Helvetica-Bold", fontSize=14, leading=18, spaceAfter=4),
+            "s": ParagraphStyle("s", parent=base, fontSize=8.4, leading=11, textColor=colors.HexColor("#4c5d6a")),
+            "h": ParagraphStyle("h", parent=base, fontName="Helvetica-Bold", fontSize=10.4, leading=14,
+                                spaceBefore=6),
+            "p": base,
+            "cell": ParagraphStyle("cell", parent=base, fontSize=8.6, leading=11.0, spaceAfter=0),
+            "head": ParagraphStyle("head", parent=base, fontName="Helvetica-Bold", fontSize=8.6, leading=11.0,
+                                   spaceAfter=0)}
 
 
-def _table(rows, widths, st):
-    def esc(x):
-        return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    data = [[Paragraph(esc(c), st["ch"] if i == 0 else st["c"]) for c in r] for i, r in enumerate(rows)]
-    t = Table(data, colWidths=[w * mm for w in widths], hAlign="LEFT")
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#5b6b77")),
-                           ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 2),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5)]))
-    return t
+def _esc(x):
+    return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def fix_dates(path, created, modified):
+def _pdf(path, title, author, blocks, footer, created, modified):
+    st = _styles()
+
+    def page(canvas, d):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.4)
+        canvas.setFillColor(colors.HexColor("#5a6a76"))
+        canvas.drawString(19 * mm, 10 * mm, footer)
+        canvas.drawRightString(LETTER[0] - 19 * mm, 10 * mm, "Page %d" % d.page)
+        canvas.restoreState()
+    doc = SimpleDocTemplate(path, pagesize=LETTER, leftMargin=19 * mm, rightMargin=19 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title=title, author=author, creator=author, producer=author,
+                            invariant=1)
+    story = []
+    width = LETTER[0] - 38 * mm
+    for kind, val in blocks:
+        if kind == "table":
+            ncol = max(len(r) for r in val)
+            if ncol == 2:
+                widths = [42 * mm, width - 42 * mm]
+            elif ncol == 3:
+                widths = [24 * mm, 62 * mm, width - 86 * mm]
+            else:
+                widths = [width / ncol] * ncol
+            data = [[Paragraph(_esc(c), st["head"] if i == 0 else st["cell"]) for c in r] for i, r in enumerate(val)]
+            t = Table(data, colWidths=widths, hAlign="LEFT", repeatRows=1)
+            t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
+            story += [t, Spacer(1, 6)]
+        else:
+            story.append(Paragraph(val, st[kind]))
+    doc.build(story, onFirstPage=page, onLaterPages=page)
     data = open(path, "rb").read()
-    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + created.encode() + b")", data)
-    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + modified.encode() + b")", data)
     for sig in (b"ReportLab Generated PDF document (opensource)",
                 b"ReportLab generated PDF document -- digest (opensource)"):
         data = data.replace(sig, b" " * len(sig))
+    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + created.encode() + b")", data)
+    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + modified.encode() + b")", data)
     open(path, "wb").write(data)
 
 
-def schedule(path):
-    st = _styles()
-    alloc = [("Resource unit", "River", "Reach", "Lower boundary", "Allocation, t/d of sulfate")]
-    reach = {"MZ1": "Source to the Khambule Stream", "KH1": "Source to its Mzimela confluence",
-             "MZ2": "Khambule Stream confluence to Esikhotheni weir", "MZ3": "Esikhotheni weir to the Silwane Stream",
-             "SW1": "Source to its Mzimela confluence", "MZ4": "Silwane Stream confluence to Ngwelezane Drift weir",
-             "GB1": "Source to its Mzimela confluence", "MZ5": "Gubhu River confluence to the Nkwali gorge weir",
-             "NY1": "Source to the Ntsheketshe Stream", "NT1": "Source to its Nyathi confluence",
-             "NY2": "Ntsheketshe Stream confluence to Mabhokweni weir", "MP1": "Source to its Nyathi confluence",
-             "NY3": "Mpafa Stream confluence to Siphethu weir", "NY4": "Siphethu weir to the catchment outlet weir"}
-    for code, river, name, inflows, weir, a in W.RU:
-        alloc.append((code, river, reach[code], weir, "%.0f" % a))
+def protocol(path):
+    codes = [["Code", "Offence"]] + [[c, d] for c, d in W.PATROL.items()]
     blocks = [
-        Paragraph("Umzimela Catchment Management Agency", st["s"]),
-        Paragraph("Sulfate Load Allocation Schedule for the Umzimela Catchment", st["t"]),
-        Paragraph("Schedule 3 to the Catchment Management Strategy. Approved by the Chief Executive Officer, %s, on "
-                  "17 March 2025; prepared by %s, Senior Manager: Water Resource Protection. Replaces the 2019 "
-                  "schedule." % (CEO, AUTHOR), st["s"]),
-        Spacer(1, 4),
-        Paragraph("1. Purpose", st["h"]),
-        Paragraph("Drainage from the coal mines of the Umzimela catchment carries sulfate into its streams and rivers. "
-                  "This schedule divides the sulfate each river can carry without harm to the uses downstream into an "
-                  "allocation for each resource unit, and sets how the agency assesses each unit against its "
-                  "allocation and acts on the assessment.", st["p"]),
-        Paragraph("2. Resource units", st["h"]),
-        Paragraph("A resource unit is a reach of river or stream from its upper end to its lower boundary at the "
-                  "agency's gauging weir named in Table 2. The water of a unit includes all that enters it at its "
-                  "upper end, from the unit above it and from any stream joining it there.", st["p"]),
-        Paragraph("3. Assessment", st["h"]),
-        Paragraph("The load of a resource unit is the sulfate, as SO4, that its water carries past its lower "
-                  "boundary, in tonnes a day. A resource unit is over its allocation for a dry season when its load on "
-                  "the days of the routine sampling runs from 1 May to 30 September, averaged over those runs, "
-                  "exceeds its allocation in Table 2. The agency assesses each dry season after the hydrological year "
-                  "closes on 30 September.", st["p"]),
-        Paragraph("4. Directives", st["h"]),
-        Paragraph("For each resource unit over its allocation, the Chief Executive Officer directs the holders of "
-                  "water use licences that discharge into the unit, under section 19 of the National Water Act, to "
-                  "reduce their discharges in the following year. A unit within its allocation draws no directive "
-                  "for that year.", st["p"]),
-        Paragraph("5. Monitoring", st["h"]),
-        Paragraph("The agency's field teams sample every monitoring site on a routine run every second week, each run "
-                  "in one day, and the agency's laboratory analyses the samples. The gauging weirs record the flow "
-                  "past each unit's lower boundary. Mines report their discharges monthly under their licences.",
-                  st["p"]),
-        Paragraph("Table 2. Sulfate load allocations", st["h"]),
-        _table(alloc, [22, 30, 66, 24, 28], st),
+        ("t", "Hot Spot Patrol Programme: designation protocol"),
+        ("s", "Mountjoy Police Service, Crime Analysis Unit. 2027 edition, approved by the Chief of Police on "
+              "10 November 2026. Owner: Eric Gordon, Manager, Crime Analysis Unit."),
+        ("h", "1. Purpose"),
+        ("p", "The Hot Spot Patrol Programme puts short, frequent directed patrols on the street segments where the "
+              "city's street crime concentrates. A designated segment is visited by a two-officer car for about "
+              "fifteen minutes at a time, at unpredictable times between 14:00 and 03:00, as the platoons' "
+              "directed-patrol plan sets out. The programme's two cars have room for 20 segments."),
+        ("h", "2. The designation"),
+        ("p", "Once a year the command team designates the segments the programme patrols for the calendar year. "
+              "The Crime Analysis Unit designates the 20 street segments with the highest expected patrol crimes in "
+              "the year the designation covers, and puts the designation to the command team with a chart of each "
+              "candidate segment's expected patrol crimes against the cut, the designated segments marked."),
+        ("h", "3. Definitions"),
+        ("table", [["Term", "Meaning"],
+                   ["Street segment", "A segment in the City of Mountjoy's street segment file: one street between "
+                                      "two cross streets."],
+                   ["Patrol crime", "An occurrence whose offence is one of the codes in Table 1. Occurrences entered "
+                                    "in the records system before its migration on 1 March 2023 carry the legacy "
+                                    "system's codes, which the 2023 offence code crosswalk reads into the codes in "
+                                    "Table 1."],
+                   ["Founded", "An occurrence counts unless its latest version records it as unfounded."],
+                   ["Counting", "Each occurrence counts once, under the offence and on the segment of its latest "
+                                "version."],
+                   ["Date", "An occurrence belongs to the date it began, its occurred-from date. An occurrence the "
+                            "records system holds no occurrence date for belongs to the date it was reported."],
+                   ["Expected patrol crimes", "The number of founded patrol crimes a segment is expected to record "
+                                              "in the calendar year the designation covers."],
+                   ["Candidate segment", "A street segment that recorded at least 25 founded patrol crimes in at "
+                                         "least one of the five calendar years before the designation."]]),
+        ("h", "Table 1. Patrol crime offence codes"),
+        ("table", codes),
+        ("h", "4. Review"),
+        ("p", "The Unit reviews the protocol each autumn with the Superintendent, Patrol Operations; a revised "
+              "edition applies from the next designation."),
     ]
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
-                            bottomMargin=18 * mm, title="Sulfate Load Allocation Schedule", author="Umzimela CMA",
-                            creator="Umzimela CMA", producer="Umzimela CMA", invariant=1)
-    doc.build(blocks)
-    fix_dates(path, "D:20250303141200+02'00'", "D:20250317093500+02'00'")
+    _pdf(path, "Hot Spot Patrol Programme designation protocol, 2027 edition", "MPS Crime Analysis Unit", blocks,
+         "Mountjoy Police Service  |  Crime Analysis Unit  |  Hot Spot Patrol Programme protocol, 2027 edition",
+         "D:20261022141500-04'00'", "D:20261110093000-05'00'")
+
+
+def directive(path):
+    blocks = [
+        ("t", "Directive PO-14: patrol workload and response measures"),
+        ("s", "Mountjoy Police Service, Patrol Operations. Issued 3 March 2025 by the Chief of Police. Owner: the "
+              "Superintendent, Patrol Operations."),
+        ("h", "1. Purpose"),
+        ("p", "This directive fixes how the Service measures the patrol workload calls for service bring and how fast "
+              "officers reach emergencies, so that the figures the command team and the Police Services Board see "
+              "from one year to the next are the same measures."),
+        ("h", "2. Definitions"),
+        ("table", [["Term", "Meaning"],
+                   ["Call for service", "A request for police service received by the Communications Centre: by "
+                                        "911, on the administrative line, from an alarm company or in person. An "
+                                        "event an officer starts on view is not a call for service."],
+                   ["Priority", "The priority at which the Communications Centre dispatched the call. Priority 1 "
+                                "is an emergency."],
+                   ["Response time", "The minutes from the receipt of the call to the arrival on scene of the first "
+                                     "officer."],
+                   ["Officer-hours on a call", "For each unit assigned to the call, the hours from the unit's "
+                                               "dispatch to its clearing, times the number of officers on the "
+                                               "unit."],
+                   ["Period", "A call belongs to the local date on which it was received."],
+                   ["Ward", "A ward's figures count the calls for service at addresses in that ward of the City "
+                            "of Mountjoy."]]),
+        ("h", "3. Tours"),
+        ("p", "Patrol platoons work twelve-hour tours: day tours from 07:00 to 19:00 and night tours from 19:00 to "
+              "07:00. A car is one-officer or two-officer as the platoon staffs it for the tour."),
+        ("h", "4. Reporting"),
+        ("p", "The Superintendent, Patrol Operations reports the measures by ward to the command team each year with "
+              "the deployment plan, and to the Board on request."),
+    ]
+    _pdf(path, "Directive PO-14: patrol workload and response measures", "MPS Patrol Operations", blocks,
+         "Mountjoy Police Service  |  Patrol Operations  |  Directive PO-14",
+         "D:20250218101200-05'00'", "D:20250303154000-05'00'")
+
+
+def request(path):
+    m = EmailMessage()
+    m["From"] = "Lindsey Turner <lindsey.turner@mountjoypolice.ca>"
+    m["To"] = "Eric Gordon <eric.gordon@mountjoypolice.ca>"
+    m["Subject"] = "2027 hot spot designation for the 12 January command team"
+    m["Date"] = format_datetime(dt.datetime(2027, 1, 6, 13, 42, 0, tzinfo=dt.timezone.utc))
+    m["Message-ID"] = "<20270106134200.2214@mountjoypolice.ca>"
+    m.set_content(
+        "Eric,\n\n"
+        "The command team takes the 2027 hot spot designation at its meeting on 12 January, with the rest of the "
+        "2027 deployment plan. Please have the Unit put it together under the protocol, with the chart the protocol "
+        "calls for, as a short deck I can take in.\n\n"
+        "Information Management's usual extracts are in the folder: the RMS occurrences from 2022 to this morning's "
+        "extract, the street segment file and the 2023 code crosswalk, the paid-duty register, and the "
+        "Communications Centre's 2026 CAD export with the 2026 patrol roster. I have also put in the ward profiles and "
+        "the streetlight requests the Downtown BIA sent us in the autumn.\n\n"
+        "For the deployment plan the Chief wants two 2026 figures by ward in a CSV beside the deck: the officer-hours "
+        "each ward's calls for service took in each quarter, and each ward's median minutes from the receipt of a "
+        "priority 1 call to the first officer's arrival, as Directive PO-14 defines them.\n\n"
+        "Thanks,\n\n"
+        "Lindsey Turner\nSuperintendent, Patrol Operations\nMountjoy Police Service\n")
+    open(path, "wb").write(m.as_bytes(policy=m.policy.clone(linesep="\n")))

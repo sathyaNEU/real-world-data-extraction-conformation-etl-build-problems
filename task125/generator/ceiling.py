@@ -1,49 +1,42 @@
 """The ask layer's ceiling, measured on the cut pack: each response's ask figures recomputed from target/ with the
-handling that response applies, scored against the golden handling, and the pair priced on the planning weights
-(38 for the call and its components, 7 for instruction-following, 55 for the asks).
+handling that response applies, scored against the golden handling on the same files, and the pair priced on the
+planning weights (38 for the call and its components, 7 for instruction-following, 55 for the asks).
 
     python3 task125/generator/ceiling.py
 
-Rows. The cracker lands the call (each unit's load carried down from its inflows), runs the battery (the latest
-return for a month, the laboratory's re-runs, the loggers' UTC clock read as SAST, the totaliser readings
-differenced and the inspection's final reading at Silwane's meter change) and executes every filed rule, but takes
-each return's sulfate as it stands and each logger's readings as they stand, telemetry only. The mirror stops at the
-boundary samples on the call and handles the asks the same way, since they carry nothing from the call. The full
-includer also restates the three mines' as-S sulfate, takes the loggers' fouling drift off and fills their gaps from
-the memory downloads (a stress row, not the gate). The workbook's unit-load table is banked by every response that
-builds it from its own call, so it is scored with the call, not here."""
+Rows: the cracker lands the call, runs the battery (UTC read as local time, officer-started events left out,
+cancelled units timed from dispatch to clear) and executes every filed definition, but takes each unit's crew from the roster's tour of the dispatch's own date and reads each call's
+ward from the CAD district, where Elmvale's patrol zones repeat the ward numbers; the mirror stops at the 2026
+count on the call and handles the asks the same way, since they carry nothing from it; the full includer also dates
+a night tour by the evening it starts and places every call on the street file's segments (a stress row, not the
+gate)."""
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TARGET = os.path.join(os.path.dirname(HERE), "target")
 sys.path.insert(0, HERE)
-import figs as F  # noqa: E402
-
-BANKED = 1        # the brief's chart structure
+import analysis as A  # noqa: E402
 
 
-def score(a, b, ga, gb):
-    ka = sum(round(a[k], -1) == round(ga[k], -1) for k in ga)
-    kb = sum(b[k] == gb[k] for k in gb)
-    return ka, kb
+def kept(resp, gold):
+    return sum(resp[i][k] == v for i in range(len(gold)) for k, v in gold[i].items())
 
 
 def main(target=TARGET):
-    ga, gb = F.ask_a(target), F.ask_b(target)
-    n = len(ga) + len(gb) + BANKED
-    ca, cb = score(F.ask_a(target, as_s="raw"), F.ask_b(target, drift="none", memory=False), ga, gb)
-    fa, fb = score(F.ask_a(target), F.ask_b(target), ga, gb)
-    crack = ca + cb + BANKED
+    P = A.Pack(target)
+    gold = A.asks(P)
+    n = sum(len(g) for g in gold)
+    crack = kept(A.asks(P, by_district=True, naive_tour=True), gold)
+    full = kept(A.asks(P), gold)
     lc = crack / n
     c = 38 + 7 + 55 * lc
     s = 5 + 7 + 55 * lc
-    print("cracker (lands the call, battery, filed rules; the returns' sulfate and the loggers' readings as they "
-          "stand, telemetry only): keeps %d of %d ask criteria (A %d of %d, B %d of %d), response %.1f"
-          % (crack, n, ca, len(ga), cb, len(gb), c))
-    print("mirror (the boundary samples on the call, same ask handling): keeps %d of %d, response %.1f" % (crack, n, s))
-    print("full includer (as-S restated, drift off, gaps filled; stress row): keeps %d of %d, response %.1f"
-          % (fa + fb + BANKED, n, 38 + 7 + 55 * (fa + fb + BANKED) / n))
+    print("cracker (lands the call, battery, filed definitions; crews from the dispatch's own date, wards from the "
+          "district): keeps %d of %d ask criteria, response %.1f" % (crack, n, c))
+    print("mirror (the 2026 count on the call, same ask handling): keeps %d of %d, response %.1f" % (crack, n, s))
+    print("full includer (night tours dated by their start, calls on the street file's segments, stress row): "
+          "keeps %d of %d, response %.1f" % (full, n, 38 + 7 + 55 * full / n))
     print("pair ceiling %.1f; mirror leakage %.1f per cent of the ask weight" % ((c + s) / 2, 100 * lc))
     return (c + s) / 2, 100 * lc
 

@@ -1,105 +1,86 @@
 {
- "task": "task125",
- "architecture": 3,
- "files": [
-  {
-   "name": "umzimela_wq_lab_results_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: a catchment agency's laboratory results export, one row per analyte",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "umzimela_routine_run_log_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: the field teams' routine sampling run log",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "umzimela_ec_loggers_hourly_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: telemetry from continuous EC loggers",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "ec_logger_service_visits_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: the loggers' service visit log",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "ec_logger_memory_downloads_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: the loggers' memory downloads for telemetry gaps",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "umzimela_gauges_daily_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: a gauging network's daily mean stage and flow",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "umzimela_monitoring_network_register.xlsx",
-   "role": "evidence",
-   "source": "synthetic: the monitoring network register",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "umzimela_sulfate_load_allocation_schedule_2025.pdf",
-   "role": "evidence",
-   "source": "synthetic: the agency's sulfate load allocation schedule",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "wul_discharge_returns_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: mines' monthly water use licence discharge returns",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "wul_register_mine_discharges.xlsx",
-   "role": "evidence",
-   "source": "synthetic: the water use licence register for mine discharges",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "cma_compliance_inspections_2025_26.csv",
-   "role": "evidence",
-   "source": "synthetic: the agency's compliance inspection log",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "umzimela_raingauges_daily_2025_26.csv",
-   "role": "distractor",
-   "source": "synthetic: rain gauges' daily totals",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  },
-  {
-   "name": "nyathi_wtw_raw_water_log_2025_26.xlsx",
-   "role": "distractor",
-   "source": "synthetic: a water treatment works' daily raw water log",
-   "license": "CC0 (synthetic, authored for this task)",
-   "date": "2026-10-09"
-  }
+ "architecture": 4,
+ "as_of": "2027-01-06",
+ "cad_rows": 37874,
+ "deliverables": [
+  "hot_spot_patrols_2027.pptx",
+  "patrol_figures_2026.csv"
  ],
  "distractors": [
-  "umzimela_raingauges_daily_2025_26.csv",
-  "nyathi_wtw_raw_water_log_2025_26.xlsx"
+  "ward_profiles_2021_census.csv",
+  "streetlight_service_requests_2026.csv"
  ],
- "deliverables": [
-  "sulfate_load_directives_2027.pdf",
-  "umzimela_sulfate_loads_2025_26.xlsx"
- ]
+ "files": {
+  "hot_spot_patrol_protocol_2027.pdf": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a crime analysis unit's hot spot designation protocol"
+  },
+  "mountjoy_street_segments.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a city's street centreline segment file"
+  },
+  "mps_cad_calls_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a police communications centre's computer-aided dispatch export"
+  },
+  "mps_paid_duty_register_2022_2027.xlsx": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a police paid-duty office's booking register"
+  },
+  "mps_patrol_roster_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a patrol division's tour roster"
+  },
+  "mps_rms_occurrences_2022_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a municipal police service's records management system occurrence export (versions)"
+  },
+  "patrol_measures_directive_po14.pdf": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a police service's directive on patrol workload and response measures"
+  },
+  "rms_offence_code_crosswalk_2023.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "a records management system's 2023 offence code crosswalk"
+  },
+  "streetlight_service_requests_2026.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "a city's streetlight service requests"
+  },
+  "turner_request_2027_designation.eml": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the Superintendent, Patrol Operations' email"
+  },
+  "ward_profiles_2021_census.csv": {
+   "date": "2027-01-06",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "a city's ward profiles from the 2021 census"
+  }
+ },
+ "largest_file": {
+  "name": "mps_rms_occurrences_2022_2026.csv",
+  "rows": 82436
+ },
+ "task": "task125"
 }

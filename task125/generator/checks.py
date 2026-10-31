@@ -1,173 +1,287 @@
-"""The generator's assertions on the cut pack: the ladder, the margins, the forks, the separation, the asks' stops
-and the input gates.
+"""task125 generator checks, run on the cut pack in target/ against the generator's own truth.
 
     python3 task125/generator/checks.py
-"""
-import csv
+
+C: the conformed records equal the truth; the designation equals the truth's; the standing family files one set.
+R: every route the ladder prices files its stated set (the analyst test on the clean truth included).
+M: margins, the candidate pool, ties, rounding edges.
+SF1 to SF22: the semantic fork table, each alternative shown to file the same call or figure, or ruled out.
+D: the devices of the asks (the cracker misses every figure of asks A and B).
+X: no generator pattern; each document's own save history."""
+import collections
 import datetime as dt
 import json
 import os
 import re
 import sys
+import zipfile
 
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import figs as F    # noqa: E402
-import pack as P    # noqa: E402
-import world as W   # noqa: E402
-
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-GOLD = ["KH1", "MZ4", "NT1", "NY2"]
-DEFAULT = ["KH1", "MZ2", "NT1", "NY3"]
-ALLOC = {r[0]: r[5] for r in W.RU}
-N = [0, 0]
+sys.path.insert(0, HERE)
+import analysis as A  # noqa: E402
+import build as B     # noqa: E402
+import world as W     # noqa: E402
+
+FAILS = []
+N = [0]
 
 
-def ok(label, cond, detail=""):
+def check(name, ok, detail=""):
     N[0] += 1
-    if cond:
-        print("PASS  " + label)
-    else:
-        N[1] += 1
-        print("FAIL  " + label + ("  " + str(detail) if detail != "" else ""))
+    print("%s  %-6s %s" % ("PASS" if ok else "FAIL", name, detail))
+    if not ok:
+        FAILS.append(name)
 
 
-def pdf_text(path):
-    from pypdf import PdfReader
-    return re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(path).pages))
+def roles_of(w):
+    return w["role"]
 
 
-def main(target=TARGET):
-    D = F.load(target)
-    g = F.season_loads(D, "golden")
-    p = F.season_loads(D, "point")
-    runs = F.dry_runs(D)
-    ok("the dry season holds the routine runs from 1 May to 30 September 2026", len(runs) == 11 and
-       runs[0] >= W.DRY0 and runs[-1] <= W.DRY1, len(runs))
-    ok("R3 the conserved loads file the golden set", F.over_set(g) == GOLD, F.over_set(g))
-    ok("R0 the boundary sample times the boundary flow files the default set", F.over_set(p) == DEFAULT, F.over_set(p))
-    ok("R2 the flow-weighted ratio estimator on the boundary samples files the default set",
-       F.over_set(F.ratio_loads(D)) == DEFAULT)
-    # every golden verdict at least 8 per cent from its allocation; the default's flipped units 8 per cent the other way
-    marg = {c: g[c] / ALLOC[c] - 1 for c in g}
-    ok("margins: every unit's conserved load at least 8 per cent from its allocation",
-       min(abs(v) for v in marg.values()) >= 0.08, {c: round(v, 3) for c, v in marg.items()})
-    ok("margins: the four flipped units' boundary loads at least 8 per cent across the allocation the other way",
-       all(abs(p[c] / ALLOC[c] - 1) >= 0.08 and (p[c] > ALLOC[c]) != (g[c] > ALLOC[c]) for c in
-           ("MZ2", "MZ4", "NY2", "NY3")))
-    # the alternatives inside the standing family converge: the section's blend times the boundary flow, and the next
-    # mixed weir below read for the unit
-    alt = {}
-    for code, weir, inflows in D["ru"]:
-        vals = []
-        for d in runs:
-            q = D["flow"][(D["station"][weir], d.isoformat())]
-            if inflows:
-                qin = sum(D["flow"][(D["station"][[u for u in D["ru"] if u[0] == i][0][1]], d.isoformat())]
-                          for i in inflows)
-                vals.append(F.conserved_load(D, code, d) / qin * q)
-            else:
-                vals.append(F.point_load(D, code, d))
-        alt[code] = float(np.mean(vals))
-    ok("SF1 the blend's concentration times the boundary flow gives the same set and whole tonnes",
-       F.over_set(alt) == GOLD and all(round(alt[c]) == round(g[c]) for c in g),
-       {c: (round(alt[c], 2), round(g[c], 2)) for c in g if round(alt[c]) != round(g[c])})
-    down = {"MZ2": ("MZ3", []), "MZ4": ("MZ5", ["GB1"]), "NY3": ("NY4", []), "NY2": ("NY4", ["MP1"])}
-    for code, (below, joins) in down.items():
-        v = np.mean([F.point_load(D, below, d) - sum(F.point_load(D, j, d) for j in joins) for d in runs])
-        ok("SF2 %s read at the mixed weir below (%s, less what joins between) lands the same verdict" % (code, below),
-           (v > ALLOC[code]) == (g[code] > ALLOC[code]) and abs(v / g[code] - 1) < 0.01, round(v, 2))
-    for code in ("MZ3", "MZ5", "NY4"):
-        ok("the mixed boundary %s agrees with what its inflows carry in within one per cent" % code,
-           abs(p[code] / g[code] - 1) < 0.01, round(p[code] / g[code], 4))
-    # the default's inconsistency is there on every run, at the four weirs only
-    bad = {}
-    for code, weir, inflows in D["ru"]:
-        if not inflows:
+def main():
+    P = A.Pack(TARGET)
+    S = A.solve(P)
+    w = B.world()
+    role = w["role"]
+    ids, top = S["ids"], set(S["top"])
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+
+    # ------------------------------------------------------------------ C: truth
+    truth = collections.Counter((s, d) for s, d, p in w["crimes"])
+    got = collections.Counter(S["crimes"])
+    check("C0", truth == got, "conformed founded patrol crimes equal the truth (%d)" % sum(got.values()))
+    ev = w["ev"]
+    gn = W.event_nights(ev, "G")
+    ln = W.event_nights(ev, "L")
+    check("C0b", set(gn) == {d for d in S["nights"]["G"] if d.year <= 2026} and
+          set(ln) == {d for d in S["nights"]["L"] if d.year <= 2026}, "the register's venue nights are the calendar's")
+    ng27, nl27 = A.calendar_2027(S["nights"])
+    texp = {s: w["base"][s] + w["inc_g"].get(s, 0) * ng27 + w["inc_l"].get(s, 0) * nl27 for s in ids}
+    ttop = set(sorted(ids, key=lambda s: -texp[s])[:20])
+    check("C1", ttop == top, "the designation is the truth's top 20 at the 2027 calendar")
+    cnt = collections.Counter(role.get(s, "-") for s in top)
+    check("C1b", cnt == collections.Counter({"C": 14, "L": 5, "G": 1}), "designated: %s" % dict(cnt))
+    fam = A.standing_family(S)
+    standing = {k: v for k, v in fam.items() if "booked" not in k and int(k[:4]) <= 2024}
+    sets = {frozenset(v[0]) for v in standing.values()}
+    check("C2", sets == {frozenset(top)}, "standing family (replay and average calendars, fitted on three, four "
+          "or five years, with and without day-of-week terms): %d members, %d distinct sets" % (len(standing),
+                                                                                              len(sets)))
+    thin = {k: v for k, v in fam.items() if "booked" not in k and int(k[:4]) > 2024}
+    print("INFO   the same calendars fitted on 2025-2026 or 2026 alone: %d of %d members file the golden" %
+          (sum(frozenset(v[0]) == frozenset(top) for v in thin.values()), len(thin)))
+    booked = {k: v for k, v in fam.items() if "booked" in k and int(k[:4]) <= 2024}
+    standing.update(booked)
+    sets = {frozenset(v[0]) for v in standing.values()}
+    check("C3", {frozenset(v[0]) for v in booked.values()} == {frozenset(top)},
+          "the 2027 bookings alone as the calendar file the golden too (%d members)" % len(booked))
+    short = {k: v for k, v in fam.items() if "booked" in k and int(k[:4]) > 2024}
+    print("INFO   booked-only calendar on 2025-2026 or 2026 alone: %d of %d members file another set (a year "
+          "with no event after the extract's bookings, outside the standing family)"
+          % (sum(frozenset(v[0]) != frozenset(top) for v in short.values()), len(short)))
+
+    # ------------------------------------------------------------------ R: the routes
+    yr = S["yearly"]
+    default = set(A.designate(ids, [yr[2026][s] for s in ids])[0])
+    dcnt = collections.Counter(role.get(s, "-") for s in default)
+    check("R0", dcnt == collections.Counter({"C": 14, "G": 6}), "the 2026 count designates %s" % dict(dcnt))
+    routes = A.route_sets(S)
+    for k in ("count 2025", "count 2026", "mean 2022-2026", "mean 2024-2026", "shrunk mean", "trend",
+              "last 365 days"):
+        check("R0", set(routes[k]) == default, "%s files the default set" % k)
+    for k in ("2026 scaled by nights", "Gardens excess removed"):
+        check("R1", set(routes[k]) != top, "%s files another set (%s)" %
+              (k, dict(collections.Counter(role.get(s, "-") for s in routes[k]))))
+    # the clean truth: the same easy route on the generator's true counts
+    true_y = collections.Counter((s, d.year) for s, d, p in w["crimes"])
+    tdef = set(sorted(ids, key=lambda s: (-true_y[(s, 2026)], s))[:20])
+    check("R0t", tdef == default and tdef != top, "analyst test on the clean truth: the 2026 count files the default")
+    # proximity: the Gardens six replaced by the six segments nearest the Lakeshore Centre
+    segs = P.segs
+    lk = next(s for s in w["segs"] if s["key"] == W.LAKESHORE["seg"])
+    near = sorted(ids, key=lambda s: (float(segs[s]["x_utm17n"]) - lk["x"]) ** 2 +
+                  (float(segs[s]["y_utm17n"]) - lk["y"]) ** 2)
+    prox = {s for s in default if role.get(s) != "G"} | set(near[:6])
+    check("R2", prox != top, "proximity swap files another set (%d of the golden)" % len(prox & top))
+    back = len(set(routes["count 2025"]) & default)
+    check("R3", back >= 18, "back-test: the 2025 ranking recovers %d of 2026's top 20" % back)
+    # the shock test: the golden set is not the top 20 of any one shipped statistic
+    base_e, eg, el = A.decompose(S["m"], S["nights"])
+    gi = A.indicators(S["nights"], "G").astype(bool)
+    li = A.indicators(S["nights"], "L").astype(bool)
+    stats = {"2026 count": [yr[2026][s] for s in ids], "2025 count": [yr[2025][s] for s in ids],
+             "five-year total": S["m"].sum(axis=1), "steady rate": base_e, "Gardens excess": eg,
+             "Lakeshore excess": el, "crimes on Gardens nights": S["m"][:, gi].sum(axis=1),
+             "crimes on Lakeshore nights": S["m"][:, li].sum(axis=1),
+             "crimes on other nights": S["m"][:, ~(gi | li)].sum(axis=1)}
+    hits = [k for k, v in stats.items() if set(A.designate(ids, np.asarray(v, float))[0]) == top]
+    check("SHOCK", not hits, "the golden 20 is the top of no single statistic (%d sorted)" % len(stats))
+
+    # ------------------------------------------------------------------ M: margins and pool
+    order = S["order"]
+    exp = S["exp"]
+    gap = exp[order[19]] - exp[order[20]]
+    check("M1", gap >= 8, "cut margin %.1f expected crimes (20th %.1f, 21st %.1f)" % (gap, exp[order[19]],
+                                                                                      exp[order[20]]))
+    check("M2", top <= set(S["pool"]), "the designated are candidates (pool %d)" % len(S["pool"]))
+    outside = [s for s in ids if s not in S["pool"] and exp[s] >= exp[order[19]]]
+    check("M3", not outside, "no segment outside the pool reaches the cut")
+    check("SF10", set(A.designate(S["pool"], [exp[s] for s in S["pool"]])[0]) == top,
+          "designating from the candidates or from every segment files the same 20")
+    check("SF11", gap > 0.5, "no tie at the cut")
+
+    # ------------------------------------------------------------------ SF: the fork table
+    def call_under(crimes):
+        ids2, m2 = A.daily_matrix(P, crimes)
+        return set(A.designate(ids2, A.expected_2027(m2, S["nights"]))[0])
+
+    latest, first = {}, {}
+    for r in P.rms:
+        k = r["occurrence_no"]
+        v = int(r["version"])
+        if k not in latest or v > int(latest[k]["version"]):
+            latest[k] = r
+        if k not in first or v < int(first[k]["version"]):
+            first[k] = r
+
+    def crimes_from(rows, unf_any=False, legacy=True, date_by="occ", all_versions=False):
+        out = []
+        unf = {r["occurrence_no"] for r in P.rms if r["status"] == "UNFOUNDED"} if unf_any else set()
+        for r in rows:
+            code = P.xwalk.get(r["offence_code"], r["offence_code"]) if legacy else r["offence_code"]
+            if code not in A.PATROL or r["status"] == "UNFOUNDED" or not r["segment_id"]:
+                continue
+            if r["occurrence_no"] in unf:
+                continue
+            t = r["occurred_from"] or r["reported"] if date_by == "occ" else r["reported"]
+            d = A.parse_t(t).date()
+            if A.D0 <= d <= A.D1:
+                out.append((int(r["segment_id"]), d))
+        return out
+
+    check("SF1", call_under(crimes_from(latest.values(), unf_any=True)) == top,
+          "founded: dropping every occurrence unfounded on any version files the same call")
+    legacy_codes = {r["offence_code"] for r in P.rms if not r["offence_code"].isdigit()}
+    check("SF2", legacy_codes <= set(P.xwalk), "every legacy code in the export reads through the crosswalk "
+          "(protocol section 3 files the reading); %d legacy codes" % len(legacy_codes))
+    print("INFO   legacy-coded occurrences dropped instead: %s" %
+          ("same call" if call_under(crimes_from(latest.values(), legacy=False)) == top else "another call"))
+    check("SF3", call_under(crimes_from(P.rms)) == top, "every version counted files the same call")
+    check("SF4", call_under(crimes_from(latest.values(), date_by="rep")) == top,
+          "dated by the report date files the same call")
+    fl = []
+    for k, r in latest.items():
+        f = first[k]
+        rr = dict(r)
+        rr["segment_id"] = f["segment_id"]
+        fl.append(rr)
+    check("SF5", call_under(crimes_from(fl)) == top, "the first version's segment files the same call")
+    check("SF6", call_under(A.conform(P, legacy_dayfirst=False)) == top,
+          "legacy dates read month first files the same call")
+    check("SF7", sets == {frozenset(top)}, "the 2027 calendar replayed from 2026 or averaged over five years: "
+          "same call (C2), and booked-only on three years or more (C3)")
+    check("SF8", all(set(v[0]) == top for k, v in standing.items()), "fitting windows of three to five years")
+    check("SF9", all(set(v[0]) == top for k, v in standing.items() if k.endswith("dow")),
+          "day-of-week terms in the fit")
+
+    # ------------------------------------------------------------------ the venue nights' conventions
+    def call_nights(nights):
+        return set(A.designate(ids, A.expected_2027(S["m"], nights))[0])
+
+    hockey = {"G": set(S["nights"]["MG"]), "L": set(S["nights"]["ML"]), "MG": S["nights"]["MG"],
+              "ML": S["nights"]["ML"]}
+    hockey["G"] |= {d for d in S["nights"]["G"] if d.year == 2027}
+    hockey["L"] |= {d for d in S["nights"]["L"] if d.year == 2027}
+    l_hockey = sum(1 for d in S["nights"]["ML"] if d.year <= 2026)
+    check("SF18", l_hockey == 0 and len({d for d in S["nights"]["L"] if d.year <= 2026}) > 40,
+          "an event night is any EVENT duty at the venue: the Lakeshore Centre had %d hockey nights before 2027 and "
+          "%d show nights, so the Mariners' games alone leave the Lakeshore excess unidentified (that model files %s)"
+          % (l_hockey, len({d for d in S["nights"]["L"] if d.year <= 2026}),
+             "the golden" if call_nights(hockey) == top else "another call"))
+    new_layout = {k: {d for d in v if d.year >= 2024} for k, v in S["nights"].items()}
+    ex = A.expected_2027(S["m"], new_layout, 2024, 2026)
+    check("SF19", set(A.designate(ids, ex)[0]) == top, "the old layout's venue names (MEM GARDENS, LAKESHORE CTR) "
+          "missed: the 2024 to 2026 fit on the Duty Desk sheets files the same call")
+    both = S["nights"]["G"] & S["nights"]["L"]
+    nb = {k: (v - both if k in ("G", "L") else v) for k, v in S["nights"].items()}
+    check("SF20", call_nights(nb) == top, "%d nights with both venues busy, counted for both or for neither: same "
+          "call" % len(both))
+
+    # ------------------------------------------------------------------ asks
+    ga, gb = A.asks(P)
+    ra, rb = A.asks_raw(P)
+    ca, cb = A.asks(P, by_district=True, naive_tour=True)
+    check("D1", all(ga[k] != ca[k] for k in ga), "ask A: the cracker (tour by the dispatch's own date, wards by "
+          "district) misses %d of 32" % sum(ga[k] != ca[k] for k in ga))
+    na, _ = A.asks(P, by_district=False, naive_tour=True)
+    check("D1b", sum(ga[k] != na[k] for k in ga) >= 24, "ask A: the tour dating alone moves %d of 32" %
+          sum(ga[k] != na[k] for k in ga))
+    da, _ = A.asks(P, by_district=True, naive_tour=False)
+    check("D1c", sum(ga[k] != da[k] for k in ga) >= 24, "ask A: the districts alone move %d of 32" %
+          sum(ga[k] != da[k] for k in ga))
+    check("D2", all(gb[k] != cb[k] for k in gb), "ask B: the districts move %d of 8 medians (by %s)" %
+          (sum(gb[k] != cb[k] for k in gb), ", ".join("%.1f" % (cb[k] - gb[k]) for k in sorted(gb))))
+    edge_a = [k for k, v in ra.items() if abs((v % 1) - 0.5) < 0.01]
+    edge_b = [k for k, v in rb.items() if abs(((v * 10) % 1) - 0.5) < 0.01]
+    check("M4", not edge_a and not edge_b, "no ask figure within a hair of its rounding edge (%s %s)" %
+          (edge_a, edge_b))
+    officer = [r for r in P.cad if r["source"] == "OFFICER" and r["priority"] == "1"]
+    check("SF12", len(officer) > 0, "officer-started priority 1 events exist and are not calls (Directive PO-14, section 2)")
+    utc_year = sum(1 for r in P.cad if r["received_utc"].startswith("2027"))
+    check("SF13", utc_year > 0, "calls received late on 31 December 2026 local carry 2027 UTC stamps (%d rows); a "
+          "call's date is its local receipt date (Directive PO-14, section 2)" % utc_year)
+    n25 = [r for r in P.roster if r["tour_date"] == "2025-12-31"]
+    check("SF14", n25 and all(r["tour"] == "N" for r in n25), "the roster's only 2025 rows are the night tour of "
+          "31 December, which covers 1 January 2026 from midnight: a night tour is dated by its start")
+    twp = sum(1 for r in P.cad if r["segment_id"] and int(r["segment_id"]) not in P.segs)
+    check("SF15", twp > 0, "%d CAD rows sit on segments outside the street file; a ward counts the calls at addresses in it "
+          "(Directive PO-14, section 2)" % twp)
+    check("SF16", all(r["priority"] in "1234" for r in P.cad), "priority is the dispatched priority (Directive PO-14, section 2)")
+    crossing = 0
+    for r in P.cad:
+        if not r["unit"]:
             continue
-        r = [F.point_load(D, code, d) / sum(F.conserved_load(D, i, d) for i in inflows) for d in runs]
-        bad[code] = (min(r), max(r))
-    ok("the four boundary loads break the balance on every run by more than 12 per cent, the others within 3",
-       all(not (0.88 < bad[c][0] and bad[c][1] < 1.12) for c in ("MZ2", "MZ4", "NY2", "NY3")) and
-       all(0.97 < bad[c][0] and bad[c][1] < 1.03 for c in ("MZ3", "MZ5", "NY4")), bad)
-    # mess-neutral: the first laboratory result instead of the re-run, and the UTC day for the gauges, leave the call
-    so4_first = {}
-    for r in F._rows(target, "lab"):
-        if r["analyte"] == "SO4" and not r["lab_sample_id"].endswith("-R"):
-            so4_first[(r["site_code"], r["sample_date"])] = float(r["result"])
-    D2 = dict(D)
-    D2["so4"] = so4_first
-    ok("SF3 a re-run's first result instead of the re-run leaves both sets", F.over_set(F.season_loads(D2, "golden"))
-       == GOLD and F.over_set(F.season_loads(D2, "point")) == DEFAULT)
-    ok("SF4 above the allocation and at or above it agree (no unit within 0.5 t/d of its allocation)",
-       min(abs(g[c] - ALLOC[c]) for c in g) > 0.5)
-    ok("SF5 sulfate as SO4 throughout the laboratory's results (no as-S unit on the call's path)",
-       all(r["unit"] == "mg/L" for r in F._rows(target, "lab") if r["analyte"] == "SO4"))
-    # the shock: the golden set is no interval of any shipped statistic's sort
-    stats = {"boundary load": p, "allocation": ALLOC,
-             "boundary sulfate": {c: np.mean([D["so4"][(D["boundary"][c], d.isoformat())] for d in runs]) for c in g},
-             "boundary flow": {c: np.mean([D["flow"][(D["station"][[u for u in D["ru"] if u[0] == c][0][1]],
-                                                      d.isoformat())] for d in runs]) for c in g}}
-    for name, s in stats.items():
-        order = sorted(s, key=lambda c: -s[c])
-        k = len(GOLD)
-        ok("shock: the golden set is not the top or bottom four by %s" % name,
-           set(order[:k]) != set(GOLD) and set(order[-k:]) != set(GOLD))
-    # pins: the schedule files the WHAT and names no mixing, plume, bank or balance
-    text = pdf_text(os.path.join(target, P.FILES["schedule"]))
-    ok("the schedule reads (positive control)", "carries past its lower boundary" in text and "Table 2" in text)
-    ok("pins: no filed sentence names mixing, a plume, a bank, a balance or conservation",
-       not re.search(r"mix|plume|bank|balanc|conserv|cross-section|representative", text, re.I))
-    # ask A stops
-    a = F.ask_a(target)
-    raw = F.ask_a(target, as_s="raw")
-    rst = F.ask_a(target, meter="restart")
-    first = F.ask_a(target, resub="first")
-    mv = sum(round(a[k], -1) != round(raw[k], -1) for k in a)
-    ok("ask A the laboratory's as-S reporting left as it stands misses at least fifteen figures", mv >= 15, mv)
-    ok("ask A the restarted totaliser read without the inspection's final reading misses Silwane's Q2",
-       round(a[("SAM-DP1", "Q2")], -1) != round(rst[("SAM-DP1", "Q2")], -1))
-    ok("ask A the first of a resubmitted month misses Ntsheketshe DP2's Q2",
-       round(a[("NCH-DP2", "Q2")], -1) != round(first[("NCH-DP2", "Q2")], -1))
-    ok("bins: every ask A figure at least 2 t from its ten-tonne rounding edge", min(
-        5 - abs(v - round(v, -1)) for v in a.values()) >= 2.0, round(min(5 - abs(v - round(v, -1)) for v in a.values()), 2))
-    a3 = {}
-    for k, v in a.items():
-        a3[k] = v
-    ok("SF6 the S-to-SO4 factor 3.0 for 2.996 leaves every ask A figure in its bin", all(
-        round(v * 1.0013, -1) == round(v, -1) for v in a.values()))
-    ok("bins: every unit's whole-tonne load at least 0.15 t from its rounding edge",
-       min(0.5 - abs(g[c] - round(g[c])) for c in g) >= 0.15, {c: round(g[c], 2) for c in g})
-    # ask B stops
-    b = F.ask_b(target)
-    nod = F.ask_b(target, drift="none")
-    nom = F.ask_b(target, memory=False)
-    utc = F.ask_b(target, clock="utc")
-    ok("ask B the loggers' readings taken as they stand (no drift taken off) miss every figure by two hours or more",
-       all(abs(b[k] - nod[k]) >= 2 for k in b), sum(abs(b[k] - nod[k]) >= 2 for k in b))
-    ok("ask B the telemetry alone (no memory downloads) misses at least ten figures",
-       sum(b[k] != nom[k] for k in b) >= 10, sum(b[k] != nom[k] for k in b))
-    ok("ask B the UTC clock read as SAST moves at least one figure", sum(b[k] != utc[k] for k in b) >= 1)
-    cr = F.ask_b(target, drift="none", memory=False)
-    ok("ask B the cracker (SAST, no drift, no memory) keeps no figure", sum(b[k] == cr[k] for k in b) == 0)
-    # separation: the asks' device rows are outside the call's rows
-    ok("separation: no mine return, logger reading, service visit or memory download is read by the call",
-       all(k not in ("returns", "ec", "service", "memory", "inspections") for k in ("lab", "gauges", "register")))
-    # input gates
-    names = sorted(os.listdir(target))
-    fmts = {os.path.splitext(n)[1] for n in names}
-    big = max(sum(1 for _ in open(os.path.join(target, n), encoding="utf-8")) for n in names if n.endswith(".csv"))
-    ok("gates: 10 or more files in 3 or more formats, one file of 25,000 rows or more",
-       len(names) >= 10 and len(fmts) >= 3 and big >= 25000, (len(names), fmts, big))
-    meta = json.load(open(os.path.join(TASK, "metadata.json")))
-    ok("gates: two or more distractors named in metadata.json, none in a file name",
-       len(meta["distractors"]) >= 2 and not any("distract" in n for n in names))
-    print("%d checks, %d failed" % (N[0], N[1]))
-    return N[1]
+        d0, d1 = A.parse_utc(r["dispatched_utc"]), A.parse_utc(r["cleared_utc"])
+        if A.tour_of(d0) != A.tour_of(d1 - dt.timedelta(seconds=1)):
+            crossing += 1
+    check("SF22", crossing == 0, "no unit assignment runs across a tour change, so the crew at dispatch is the "
+          "crew throughout")
+    cb2 = A.ask_p1(P)
+    check("SF17", all(abs(cb2[k] - rb[k]) < 1e-9 for k in rb), "the first arrival is the earliest onscene of any "
+          "unit, sergeants included")
+    check("SF21", abs(sum(ra.values()) - sum(ga.values())) < 32, "officer-hours are dispatch to clear times crew")
+
+    # ------------------------------------------------------------------ X: patterns and documents
+    sid = sorted(ids)
+    steps = set(np.diff(sid).tolist())
+    check("X1", len(steps) > 50, "segment ids carry no fixed step")
+    nums = sorted(int(r["occurrence_no"][-6:]) for r in latest.values() if r["occurrence_no"].startswith("MP26"))
+    check("X2", len(set(np.diff(nums).tolist())) > 3, "occurrence numbers carry gaps of several sizes")
+    mins = collections.Counter(r["reported"][-2:] for r in P.rms)
+    check("X3", len(mins) >= 55, "report times spread over the minutes of the hour")
+    for fn in ("hot_spot_patrol_protocol_2027.pdf", "patrol_measures_directive_po14.pdf"):
+        data = open(os.path.join(TARGET, fn), "rb").read()
+        c = re.search(rb"/CreationDate \(D:(\d{14})", data).group(1)
+        mo = re.search(rb"/ModDate \(D:(\d{14})", data).group(1)
+        check("X4", c < mo and b"ReportLab" not in data, "%s saved after it was created, no toolchain string" % fn)
+    with zipfile.ZipFile(os.path.join(TARGET, "mps_paid_duty_register_2022_2027.xlsx")) as z:
+        core = z.read("docProps/core.xml").decode()
+    cr = re.search(r"<dcterms:created[^>]*>([^<]+)<", core).group(1)
+    mo = re.search(r"<dcterms:modified[^>]*>([^<]+)<", core).group(1)
+    check("X5", cr < mo, "the register workbook saved after it was created (%s, %s)" % (cr, mo))
+    rows = sum(1 for _ in open(os.path.join(TARGET, "mps_rms_occurrences_2022_2026.csv"))) - 1
+    check("X6", rows >= 25000, "the occurrence export holds %d rows" % rows)
+    check("X7", fig["designated"] == sorted(S["top"]), "figures.json carries the designation")
+    print("%s  task125 checks: %d run, %d failed" % ("PASS" if not FAILS else "FAIL", N[0], len(FAILS)))
+    return 1 if FAILS else 0
+
+
+def _mins(x):
+    return int(x[:2]) * 60 + int(x[3:])
 
 
 if __name__ == "__main__":
-    sys.exit(1 if main() else 0)
+    sys.exit(main())

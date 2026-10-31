@@ -1,89 +1,89 @@
-"""submission.md and metadata.json, every figure emitted from figures.json."""
-import json
-import os
-
-import pack as P
-import world as W
-
-NAME = {r[0]: r[2] for r in W.RU}
-ALLOC = {r[0]: r[5] for r in W.RU}
+"""task125 submission.md, written from figures.json (every figure emitted, none typed)."""
+import datetime as dt
 
 
-def submission(fig, path):
-    L = fig["loads_whole"]
-    over = fig["call"]["over"]
-    within = fig["call"]["within"]
-    lines = ["## Tags", "",
-             "**Domain:** Physical & Environmental Sciences (environmental monitoring and exceedance: a catchment "
-             "agency's sulfate load allocations for coal-mine drainage).",
-             "**Analytical objective:** Anomaly Detection & Diagnostics.", "",
-             "## 1. Final Recommendation", "",
-             "**Direct the mines of four resource units in 2027: Khambule (KH1), Mzimela at Ngwelezane Drift (MZ4), "
-             "Ntsheketshe (NT1) and Nyathi at Mabhokweni (NY2); every other unit is within its allocation.**",
-             "MZ4 and NY2 carried %d and %d t/d against allocations of %d and %d, although their boundary samples, "
-             "taken on the bank the mine stream does not run along, read low. Not Mzimela at Esikhotheni (MZ2) or "
-             "Nyathi at Siphethu (NY3), whose boundary samples sit in a mine stream's unmixed plume: their water "
-             "carried %d and %d t/d against %d and %d." % (L["MZ4"], L["NY2"], ALLOC["MZ4"], ALLOC["NY2"],
-                                                        L["MZ2"], L["NY3"], ALLOC["MZ2"], ALLOC["NY3"]), "",
-             "## 2. Critical Components", "",
-             "1. Over their allocations (May to September 2026 runs): KH1 **%d**, MZ4 **%d**, NT1 **%d** and NY2 "
-             "**%d** t/d of sulfate." % (L["KH1"], L["MZ4"], L["NT1"], L["NY2"]),
-             "2. MZ2 and NY3 carried **%d** and **%d** t/d, within %d and %d." % (L["MZ2"], L["NY3"], ALLOC["MZ2"],
-                                                                                ALLOC["NY3"]),
-             "3. The boundary samples at MZ2, MZ4, NY2 and NY3 do not balance with the loads their inflows carry "
-             "in or with the next mixed weir downstream; each of those units' loads is what its inflows carry in.",
-             "", "## 3. Step-by-Step Solution", "",
-             "1. Kept each sample's reported sulfate (a re-run, suffix -R, replaces the first result) and each weir's "
-             "daily mean flow, and took the routine runs from 1 May to 30 September 2026 (schedule section 3).",
-             "2. Computed every unit's run load as boundary sulfate times boundary flow times 0.0864 and compared "
-             "loads along each river with the register's upstream units.",
-             "3. Found that at MZ2, MZ4, NY2 and NY3, the four weirs a short reach below a mine stream's "
-             "confluence, the boundary load breaks the balance on every run, while the units above and the mixed "
-             "weirs below balance.",
-             "4. Took each unit's load as the sum of its inflows' loads, carried down from the headwater and "
-             "mine-stream units measured at their own weirs, and averaged the season's runs.",
-             "5. Compared each mean with Table 2 of the allocation schedule.",
-             "6. Discharges: differenced each point's month-end totaliser readings (the latest return for a month "
-             "stands; Silwane's February from the inspection's final reading), restated the November 2025 to "
-             "September 2026 sulfate of the three mines whose laboratory reported it as S (x 2.996, their EC "
-             "unchanged), and summed volume times composite by quarter.",
-             "7. Loggers: SAST months, fouling drift removed linearly between service visits, telemetry gaps "
-             "filled from the memory downloads, hours above each logger's trigger counted.", "",
-             "## 4. Deliverable Answers", "", "### %s" % "sulfate_load_directives_2027.pdf", "",
-             "1. Over their allocations, to be directed: %s." % ", ".join(over),
-             "2. Within their allocations: %s." % ", ".join(within),
-             "3. Bar chart of each unit's dry-season load against its allocation, the units over their allocations "
-             "in red.", "",
-             "### %s" % "umzimela_sulfate_loads_2025_26.xlsx", "",
-             "1. Sulfate as SO4 discharged by each licensed point, tonnes to the nearest ten:"]
-    pts = sorted({k.split()[0] for k in fig["ask_a_tonnes"]})
-    for pt in pts:
-        lines.append("   - %s: Q1 %s, Q2 %s, Q3 %s, Q4 %s" % tuple(
-            [pt] + ["{:,}".format(fig["ask_a_tonnes"]["%s %s" % (pt, q)]) for q in ("Q1", "Q2", "Q3", "Q4")]))
-    lines.append("2. Hours each logger read the river's EC above its trigger, whole hours, November 2025 to April 2026:")
-    months = ["2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04"]
-    for lid, site in P.LOGGERS:
-        lines.append("   - %s (trigger %d uS/cm): %s" % (lid, P.TRIGGERS[lid], ", ".join(
-            "%s %d" % (m, fig["ask_b_hours"]["%s %s" % (lid, m)]) for m in months)))
-    lines.append("3. Each unit's dry-season load, whole tonnes a day: %s." % ", ".join(
-        "%s %d" % (c, L[c]) for c in [r[0] for r in W.RU]))
-    open(path, "w", encoding="utf-8").write("\n".join(lines) + "\n")
+def _d(iso):
+    d = dt.date.fromisoformat(iso)
+    return "%d %s" % (d.day, d.strftime("%B %Y"))
 
 
-def metadata(path):
-    src = {"lab": "a catchment agency's laboratory results export, one row per analyte",
-           "runs": "the field teams' routine sampling run log", "ec": "telemetry from continuous EC loggers",
-           "service": "the loggers' service visit log", "memory": "the loggers' memory downloads for telemetry gaps",
-           "gauges": "a gauging network's daily mean stage and flow", "register": "the monitoring network register",
-           "schedule": "the agency's sulfate load allocation schedule",
-           "returns": "mines' monthly water use licence discharge returns",
-           "wul": "the water use licence register for mine discharges",
-           "inspections": "the agency's compliance inspection log", "rain": "rain gauges' daily totals",
-           "wtw": "a water treatment works' daily raw water log"}
-    meta = {"task": "task125", "architecture": 3,
-            "files": [{"name": P.FILES[k], "role": "distractor" if k in P.DISTRACTORS else "evidence",
-                       "source": "synthetic: " + src[k], "license": "CC0 (synthetic, authored for this task)",
-                       "date": "2026-10-09"} for k in P.FILES],
-            "distractors": [P.FILES[k] for k in P.DISTRACTORS],
-            "deliverables": ["sulfate_load_directives_2027.pdf", "umzimela_sulfate_loads_2025_26.xlsx"]}
-    json.dump(meta, open(path, "w"), indent=1)
+def _seg(fig, s):
+    return "%s (%s, ward %d)" % (s, fig["labels"][str(s)], fig["wards"][str(s)])
+
+
+def write(path, fig):
+    lab = fig["labels"]
+    ent = fig["entering"]
+    lea = fig["leaving"]
+    stay = fig["staying_gardens"]
+    L = ["## Tags", "",
+         "**Domain:** Criminology & Justice (crime incidence and hot spot analysis: a municipal police service "
+         "designating the street segments its directed patrols cover for a year).",
+         "**Analytical objective:** Anomaly Detection & Diagnostics.", ""]
+    L += ["## 1. Final Recommendation", "",
+          "**Designate the 20 street segments listed below for the 2027 hot spot patrols: the five segments around "
+          "the Lakeshore Centre come in and the five around the Memorial Gardens drop out, because the Mariners "
+          "play their 2027 home games at the Lakeshore Centre and those segments' street crime follows the "
+          "venue's event nights.** From 2022 to 2026 the five Lakeshore segments recorded %d of their %d founded "
+          "patrol crimes on the Lakeshore Centre's %d event nights. Not the ranking of 2026's or the five years' "
+          "counts, which keeps the Gardens segments on crime the Gardens' event nights carried (%d of their %d on "
+          "%d nights) and leaves out the segments the 2027 calendar loads."
+          % (fig["entering_on_lakeshore_nights"], fig["entering_total"], fig["lakeshore_nights_2022_2026"],
+             fig["leaving_on_gardens_nights"], fig["leaving_total"], fig["gardens_nights_2022_2026"]), ""]
+    L += ["## 2. Critical Components", "",
+          "1. The paid-duty register books **%d** Mariners home games at the Lakeshore Centre from %s; the "
+          "Mariners' last Memorial Gardens game was on %s."
+          % (fig["mariners_2027_booked"], _d(fig["mariners_first_lakeshore"]), _d(fig["mariners_last_gardens"])),
+          "2. The five Gardens segments that drop out recorded **%d of %d** founded patrol crimes from 2022 to 2026 "
+          "on the Gardens' **%d** event nights, about **%d per cent** of the nights."
+          % (fig["leaving_on_gardens_nights"], fig["leaving_total"], fig["gardens_nights_2022_2026"],
+             fig["gardens_nights_share_pct"]),
+          "3. The five Lakeshore segments that come in recorded **%d of %d** on the Lakeshore Centre's **%d** "
+          "event nights." % (fig["entering_on_lakeshore_nights"], fig["entering_total"],
+                             fig["lakeshore_nights_2022_2026"]),
+          "4. %s stays designated on its steady crime with the Gardens' event nights gone."
+          % "; ".join(_seg(fig, s) for s in stay), ""]
+    L += ["## 3. Step-by-Step Solution", "",
+          "1. Conformed mps_rms_occurrences_2022_2026.csv under the protocol: each occurrence once on its latest "
+          "version, legacy codes through rms_offence_code_crosswalk_2023.csv, legacy dates day first, unfounded "
+          "out, dated by occurred_from or the report date where blank, on the segments of "
+          "mountjoy_street_segments.csv.",
+          "2. Took each venue's event nights from the EVENT duties at the Memorial Gardens and the Lakeshore "
+          "Centre in every sheet of mps_paid_duty_register_2022_2027.xlsx: %d Gardens and %d Lakeshore nights from "
+          "2022 to 2026, and the 2027 sheet's %d Mariners home games at the Lakeshore Centre."
+          % (fig["gardens_nights_2022_2026"], fig["lakeshore_nights_2022_2026"], fig["mariners_2027_booked"]),
+          "3. Fitted each segment's daily founded patrol crimes from 2022 to 2026 by least squares on a constant "
+          "and the two venues' event-night indicators: its steady rate and its excess on each venue's nights.",
+          "4. Took 2027 as 2026's calendar with the Mariners' %d home games at the Lakeshore Centre (%d Lakeshore "
+          "nights, %d Gardens nights), each segment's expected count 365 days at its steady rate plus each excess "
+          "times its venue's nights, and designated the 20 highest."
+          % (fig["mariners_2026"], fig["nights_2027_lakeshore"], fig["nights_2027_gardens"]),
+          "5. Officer-hours: for each call in mps_cad_calls_2026.csv (source not OFFICER) received in 2026 local "
+          "time on a segment of the street file (so not Elmvale's events, whose districts repeat the ward "
+          "numbers), each unit's hours from dispatch to clear times its crew in mps_patrol_roster_2026.csv on the "
+          "tour covering the dispatch (a night tour is dated by the evening it starts), by ward and quarter of "
+          "receipt.",
+          "6. Priority 1 medians: the same calls at priority 1, the first onscene_utc of any unit minus "
+          "received_utc, median by the ward of the call's segment.", ""]
+    L += ["## 4. Deliverable Answers", "", "### hot_spot_patrols_2027.pptx", "",
+          "1. Designated segments, 20:"]
+    for s in fig["designated_ranked"]:
+        L.append("   - %s" % _seg(fig, s))
+    L += ["2. Come in against the 2026 ranking:"]
+    for s in ent:
+        L.append("   - %s" % _seg(fig, s))
+    L += ["3. Drop out against the 2026 ranking:"]
+    for s in lea:
+        L.append("   - %s" % _seg(fig, s))
+    L += ["4. Bar chart on slide 2 of each of the %d candidate segments' expected 2027 patrol crimes, designated in "
+          "navy, the cut between %s and %s." % (fig["pool_size"], fig["cut_20th"], fig["cut_21st"]), "",
+          "### patrol_figures_2026.csv", "",
+          "1. Officer-hours on calls for service in 2026, whole hours:"]
+    for w in range(1, 9):
+        L.append("   - Ward %d: %s" % (w, ", ".join("Q%d %d" % (q, fig["ask_officer_hours"]["%d Q%d" % (w, q)])
+                                                 for q in range(1, 5))))
+    L += ["2. Median minutes in 2026 from the receipt of a priority 1 call to the first officer's arrival, one "
+          "decimal:"]
+    for w in range(1, 9):
+        L.append("   - Ward %d: %.1f" % (w, fig["ask_p1_median"][str(w)]))
+    open(path, "w").write("\n".join(L) + "\n")

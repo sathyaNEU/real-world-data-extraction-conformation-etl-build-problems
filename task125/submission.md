@@ -1,51 +1,84 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (environmental monitoring and exceedance: a catchment agency's sulfate load allocations for coal-mine drainage).
+**Domain:** Criminology & Justice (crime incidence and hot spot analysis: a municipal police service designating the street segments its directed patrols cover for a year).
 **Analytical objective:** Anomaly Detection & Diagnostics.
 
 ## 1. Final Recommendation
 
-**Direct the mines of four resource units in 2027: Khambule (KH1), Mzimela at Ngwelezane Drift (MZ4), Ntsheketshe (NT1) and Nyathi at Mabhokweni (NY2); every other unit is within its allocation.**
-MZ4 and NY2 carried 40 and 40 t/d against allocations of 34 and 35, although their boundary samples, taken on the bank the mine stream does not run along, read low. Not Mzimela at Esikhotheni (MZ2) or Nyathi at Siphethu (NY3), whose boundary samples sit in a mine stream's unmixed plume: their water carried 27 and 52 t/d against 32 and 58.
+**Designate the 20 street segments listed below for the 2027 hot spot patrols: the five segments around the Lakeshore Centre come in and the five around the Memorial Gardens drop out, because the Mariners play their 2027 home games at the Lakeshore Centre and those segments' street crime follows the venue's event nights.** From 2022 to 2026 the five Lakeshore segments recorded 410 of their 822 founded patrol crimes on the Lakeshore Centre's 61 event nights. Not the ranking of 2026's or the five years' counts, which keeps the Gardens segments on crime the Gardens' event nights carried (801 of their 1345 on 200 nights) and leaves out the segments the 2027 calendar loads.
 
 ## 2. Critical Components
 
-1. Over their allocations (May to September 2026 runs): KH1 **22**, MZ4 **40**, NT1 **27** and NY2 **40** t/d of sulfate.
-2. MZ2 and NY3 carried **27** and **52** t/d, within 32 and 58.
-3. The boundary samples at MZ2, MZ4, NY2 and NY3 do not balance with the loads their inflows carry in or with the next mixed weir downstream; each of those units' loads is what its inflows carry in.
+1. The paid-duty register books **16** Mariners home games at the Lakeshore Centre from 8 January 2027; the Mariners' last Memorial Gardens game was on 20 December 2026.
+2. The five Gardens segments that drop out recorded **801 of 1345** founded patrol crimes from 2022 to 2026 on the Gardens' **200** event nights, about **11 per cent** of the nights.
+3. The five Lakeshore segments that come in recorded **410 of 822** on the Lakeshore Centre's **61** event nights.
+4. 112148 (King Street, Wellington to Albert, ward 1) stays designated on its steady crime with the Gardens' event nights gone.
 
 ## 3. Step-by-Step Solution
 
-1. Kept each sample's reported sulfate (a re-run, suffix -R, replaces the first result) and each weir's daily mean flow, and took the routine runs from 1 May to 30 September 2026 (schedule section 3).
-2. Computed every unit's run load as boundary sulfate times boundary flow times 0.0864 and compared loads along each river with the register's upstream units.
-3. Found that at MZ2, MZ4, NY2 and NY3, the four weirs a short reach below a mine stream's confluence, the boundary load breaks the balance on every run, while the units above and the mixed weirs below balance.
-4. Took each unit's load as the sum of its inflows' loads, carried down from the headwater and mine-stream units measured at their own weirs, and averaged the season's runs.
-5. Compared each mean with Table 2 of the allocation schedule.
-6. Discharges: differenced each point's month-end totaliser readings (the latest return for a month stands; Silwane's February from the inspection's final reading), restated the November 2025 to September 2026 sulfate of the three mines whose laboratory reported it as S (x 2.996, their EC unchanged), and summed volume times composite by quarter.
-7. Loggers: SAST months, fouling drift removed linearly between service visits, telemetry gaps filled from the memory downloads, hours above each logger's trigger counted.
+1. Conformed mps_rms_occurrences_2022_2026.csv under the protocol: each occurrence once on its latest version, legacy codes through rms_offence_code_crosswalk_2023.csv, legacy dates day first, unfounded out, dated by occurred_from or the report date where blank, on the segments of mountjoy_street_segments.csv.
+2. Took each venue's event nights from the EVENT duties at the Memorial Gardens and the Lakeshore Centre in every sheet of mps_paid_duty_register_2022_2027.xlsx: 200 Gardens and 61 Lakeshore nights from 2022 to 2026, and the 2027 sheet's 16 Mariners home games at the Lakeshore Centre.
+3. Fitted each segment's daily founded patrol crimes from 2022 to 2026 by least squares on a constant and the two venues' event-night indicators: its steady rate and its excess on each venue's nights.
+4. Took 2027 as 2026's calendar with the Mariners' 35 home games at the Lakeshore Centre (48 Lakeshore nights, 6 Gardens nights), each segment's expected count 365 days at its steady rate plus each excess times its venue's nights, and designated the 20 highest.
+5. Officer-hours: for each call in mps_cad_calls_2026.csv (source not OFFICER) received in 2026 local time on a segment of the street file (so not Elmvale's events, whose districts repeat the ward numbers), each unit's hours from dispatch to clear times its crew in mps_patrol_roster_2026.csv on the tour covering the dispatch (a night tour is dated by the evening it starts), by ward and quarter of receipt.
+6. Priority 1 medians: the same calls at priority 1, the first onscene_utc of any unit minus received_utc, median by the ward of the call's segment.
 
 ## 4. Deliverable Answers
 
-### sulfate_load_directives_2027.pdf
+### hot_spot_patrols_2027.pptx
 
-1. Over their allocations, to be directed: KH1, MZ4, NT1, NY2.
-2. Within their allocations: GB1, MP1, MZ1, MZ2, MZ3, MZ5, NY1, NY3, NY4, SW1.
-3. Bar chart of each unit's dry-season load against its allocation, the units over their allocations in red.
+1. Designated segments, 20:
+   - 190643 (Northgate Drive, Lake to Pier, ward 5)
+   - 124511 (Harbour Road, Ontario to Simcoe, ward 4)
+   - 158663 (Simcoe Street, Front to King, ward 4)
+   - 150449 (Harbour Road, Simcoe to Mill, ward 4)
+   - 176470 (Front Street, Simcoe to Mill, ward 4)
+   - 153464 (King Street, Clarence to Market, ward 3)
+   - 109465 (Front Street, Peel to Ontario, ward 3)
+   - 176794 (Victoria Street, George to Charlotte, ward 3)
+   - 165151 (George Street, Victoria to Clarence, ward 3)
+   - 197721 (Cedar Street, Durham to Murray, ward 6)
+   - 198000 (Bethune Street, Romaine to Sophia, ward 8)
+   - 135435 (Sherbrooke Street, Orchard to Maple, ward 6)
+   - 125703 (King Street, Market to Brock, ward 3)
+   - 145090 (Parkhill Road, Rubidge to Aylmer, ward 8)
+   - 182379 (Market Street, York to George, ward 3)
+   - 102787 (Dundas Street, Clarence to Market, ward 3)
+   - 109489 (Lansdowne Street, Maple to Rideau, ward 6)
+   - 116925 (Wolfe Street, Peel to Ontario, ward 7)
+   - 112148 (King Street, Wellington to Albert, ward 1)
+   - 185090 (Simcoe Street, Sherbrooke to Hunter, ward 8)
+2. Come in against the 2026 ranking:
+   - 124511 (Harbour Road, Ontario to Simcoe, ward 4)
+   - 158663 (Simcoe Street, Front to King, ward 4)
+   - 150449 (Harbour Road, Simcoe to Mill, ward 4)
+   - 176470 (Front Street, Simcoe to Mill, ward 4)
+   - 109465 (Front Street, Peel to Ontario, ward 3)
+3. Drop out against the 2026 ranking:
+   - 162095 (Albert Street, King to Queen, ward 3)
+   - 171145 (Queen Street, Wellington to Albert, ward 1)
+   - 168732 (Wellington Street, King to Queen, ward 1)
+   - 145175 (Wellington Street, Queen to Princess, ward 1)
+   - 162877 (King Street, Water to Wellington, ward 1)
+4. Bar chart on slide 2 of each of the 52 candidate segments' expected 2027 patrol crimes, designated in navy, the cut between 185090 and 186587.
 
-### umzimela_sulfate_loads_2025_26.xlsx
+### patrol_figures_2026.csv
 
-1. Sulfate as SO4 discharged by each licensed point, tonnes to the nearest ten:
-   - KHC-DP1: Q1 740, Q2 620, Q3 770, Q4 860
-   - KHC-DP2: Q1 350, Q2 300, Q3 360, Q4 400
-   - MMC-DP1: Q1 350, Q2 300, Q3 340, Q4 380
-   - NCH-DP1: Q1 900, Q2 810, Q3 990, Q4 1,160
-   - NCH-DP2: Q1 430, Q2 420, Q3 490, Q4 560
-   - SAM-DP1: Q1 370, Q2 350, Q3 390, Q4 460
-2. Hours each logger read the river's EC above its trigger, whole hours, November 2025 to April 2026:
-   - ECL-03 (trigger 270 uS/cm): 2025-11 534, 2025-12 233, 2026-01 31, 2026-02 7, 2026-03 27, 2026-04 509
-   - ECL-06 (trigger 240 uS/cm): 2025-11 575, 2025-12 239, 2026-01 18, 2026-02 9, 2026-03 13, 2026-04 542
-   - ECL-08 (trigger 230 uS/cm): 2025-11 532, 2025-12 204, 2026-01 22, 2026-02 9, 2026-03 17, 2026-04 520
-   - ECL-10 (trigger 1400 uS/cm): 2025-11 275, 2025-12 121, 2026-01 20, 2026-02 158, 2026-03 308, 2026-04 676
-   - ECL-11 (trigger 310 uS/cm): 2025-11 498, 2025-12 179, 2026-01 29, 2026-02 35, 2026-03 51, 2026-04 583
-   - ECL-14 (trigger 410 uS/cm): 2025-11 442, 2025-12 59, 2026-01 0, 2026-02 0, 2026-03 0, 2026-04 567
-3. Each unit's dry-season load, whole tonnes a day: MZ1 5, KH1 22, MZ2 27, MZ3 27, SW1 13, MZ4 40, GB1 1, MZ5 41, NY1 13, NT1 27, NY2 40, MP1 12, NY3 52, NY4 52.
+1. Officer-hours on calls for service in 2026, whole hours:
+   - Ward 1: Q1 602, Q2 566, Q3 509, Q4 555
+   - Ward 2: Q1 453, Q2 402, Q3 437, Q4 430
+   - Ward 3: Q1 773, Q2 748, Q3 817, Q4 815
+   - Ward 4: Q1 545, Q2 557, Q3 559, Q4 597
+   - Ward 5: Q1 910, Q2 824, Q3 838, Q4 895
+   - Ward 6: Q1 1024, Q2 1120, Q3 1176, Q4 1229
+   - Ward 7: Q1 874, Q2 814, Q3 886, Q4 827
+   - Ward 8: Q1 1277, Q2 1261, Q3 1384, Q4 1215
+2. Median minutes in 2026 from the receipt of a priority 1 call to the first officer's arrival, one decimal:
+   - Ward 1: 5.7
+   - Ward 2: 6.3
+   - Ward 3: 5.7
+   - Ward 4: 7.0
+   - Ward 5: 6.9
+   - Ward 6: 7.4
+   - Ward 7: 7.1
+   - Ward 8: 7.9
