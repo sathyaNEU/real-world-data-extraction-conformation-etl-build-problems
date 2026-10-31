@@ -1,21 +1,21 @@
 {
  "task": "task125",
- "status": "PAUSED",
- "domain": "physical-environmental-sciences / environmental-monitoring-exceedance",
+ "status": "DESIGN",
+ "domain": "criminology-justice / crime-incidence-hotspot-analysis",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-31",
- "stump": "A competent analyst multiplies each boundary monitor's run concentrations by the boundary gauge's flow, averages the dry season's run loads and flags the units whose mean tops the allocation; the step that lands it there is taking the boundary sample as the unit's water, when a monitor within a few kilometres of a confluence samples one inflow's unmixed plume and the unit's load is what its inflows carry in.",
- "architecture": 3,
+ "stump": "A competent analyst ranks the street segments by their 2026, or 2022 to 2026, patrol crimes and designates the top 20, keeping the segments beside the Memorial Gardens and leaving out those beside the Lakeshore Centre; the step that lands it there is forecasting 2027 from each segment's own record when much of those segments' crime falls on venue event days and the 2027 calendar moves the Mariners' home games to the Lakeshore.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 (--asof 2026-10-09): sweeps 3 and 4 on the allocation schedule, each ruled harmless in the note's Leak sweep; architecture 2's carried reader section dropped",
-  "reader": "pending: stage 4 from the main thread (copy at scratchpad/leak-task125/, brief at scratchpad/task125_stage4_leak_brief.md)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-31 on the card as filed (registered 20:44:17Z): overuse.org_family and repeat.gate_g against task474 v7, answered in the note's Pre-ship check",
@@ -45,9 +45,15 @@
    "portal": "batch audit: architecture 2 short of the survivor anatomy (actor schema-visible, the field's estimator as the golden, the decisive step exact arithmetic)",
    "repair": "re-root",
    "commit": "DRAWN (task125) architecture 3"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "architecture 3 (the Umzimela sulfate loads): stage 4 judge SEND_BACK, a planted-defect flip (boundary samples in unmixed plumes), confirmed on reconciliation",
+   "repair": "re-root",
+   "commit": "DRAWN (task125) architecture 4"
   }
  ],
- "resume": "stage 4 from the main thread: rebuild with `python3 task125/generator/make.py` (two byte-identical builds, 37 generator checks, the verifier; target.zip sha256 ad0c0db71e2cf1bde82c8627c766e5bd904b7a5c766de192af8219b2242cc45b), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task125/ with the brief scratchpad/task125_stage4_leak_brief.md and the determinism judge on task125 (architecture 2's two reports kept as determinism_check_report_arch2*.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut, append the reader's section to leak_check_report.md, git add -f task125/target.zip and task125/golden/*, ledger row, card current, commit SHIPPED (task125)",
+ "resume": "stage 2: design note sections, the screens as code, prompt through voice-check, precut.py exit 0; then the build",
  "approved": null,
  "delivered": null,
  "portal": "",

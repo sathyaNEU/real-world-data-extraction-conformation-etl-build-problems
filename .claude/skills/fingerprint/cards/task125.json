@@ -1,28 +1,28 @@
 {
   "task": "task125",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-31",
-  "slot_note": "re-root 3: architecture 2 retired at the batch audit",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "environmental-monitoring-exceedance",
-  "niche": "a catchment management agency's dry-season sulfate load allocations for coal-mine drainage, read at boundary monitors set at gauging weirs a few kilometres below mine-stream confluences",
+  "slot_note": "re-root 4: architecture 3 sent back at stage 4 (a planted-defect flip)",
+  "domain": "criminology-justice",
+  "subdomain": "crime-incidence-hotspot-analysis",
+  "niche": "a mid-size Ontario police service's 2027 hot spot patrol designation over its street segments, the year a junior hockey team moves its home games from an old arena to a lakeshore events centre",
   "objective": "anomaly-detection",
-  "shape": "other",
+  "shape": "01",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Direct the mines of four resource units in 2027: KH1, MZ4, NT1 and NY2 carried more sulfate past their lower boundaries on the May to September 2026 runs than their allocations allow (22, 40, 27 and 40 t/d against 16, 34, 23 and 35), and every other unit is within its allocation; read as the boundary sample times the boundary flow, KH1, MZ2, NT1 and NY3 would be over, MZ2 and NY3 because their monitors sit in a mine stream's unmixed water (36 and 67 t/d against the 27 and 52 their inflows carry down)",
-  "answer_source": "submission.md block 1 and generator/figures.json call.over (target.zip sha256 33368b607de56b2b)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "objective",
+    "time",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G2",
     "G5",
-    "G3"
+    "G6",
+    "G13"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
@@ -30,60 +30,64 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst conforms the laboratory results, units and gauged flows, multiplies each resource unit's boundary-monitor concentration on every routine run by the boundary gauge's flow that day, averages May to September and flags the units whose mean run load tops their allocation, a set that is wrong because the boundary monitors below the mine-stream confluences sample one inflow's unmixed plume.",
-  "domain_test": "The deciding quantity is each resource unit's sulfate flux past its boundary, which river water-quality practice reads as a representative, fully mixed concentration times flow, and the lateral mixing of a tributary into a river over kilometres below a confluence is river hydraulics that has no meaning once the nouns are a hospital's or a school's.",
+  "analyst_test": "A strong analyst conforms the records-management export (each incident's latest version, founded incidents only, the protocol's patrol offence codes across the 2023 code change), counts each street segment's patrol crimes over 2026 or over 2022 to 2026, ranks the segments and designates the top 20; every field is read and the protocol applied, and it designates the segments beside the Memorial Gardens and leaves out those beside the Lakeshore Centre, because those segments' 2027 crimes follow the 2027 venue calendar and not their own record.",
+  "domain_test": "The deciding quantity is each street segment's expected count of patrol crimes in 2027, the hot spot forecast place-based policing rests on, and an arena or events centre is a crime generator whose crowds raise street crime on the segments around it on event days; put a hospital ward in for the segment and nothing generates on a calendar, so the forecast has no generator to move.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:incomplete-lateral-mixing-below-a-confluence",
+  "layer2_pattern": "own:venue-event-increments-carried-by-the-coming-calendar",
   "layer1": [
-    "laboratory results long by analyte with re-run and duplicate sample codes",
-    "sulfate reported as SO4 by the laboratory and as S by the mines' self-monitoring",
-    "gauge flows at 15 minutes in UTC against field sheets in SAST",
-    "below-detection values written as <5",
-    "site names spelt three ways across the field sheets and the register",
-    "a gauge rating revision mid-year whose revised flows supersede the provisional"
+    "a records-management export with one row per report version under each incident number, a later version reclassifying an incident as unfounded",
+    "offence codes renumbered at the 2023 system change, older rows under the legacy codes",
+    "incidents geocoded to an intersection carrying its two segment ids, and a few with none",
+    "occurrence and report dates in separate columns, day-first in the legacy rows",
+    "calls-for-service timestamps in UTC against the records system's Eastern local times"
   ],
-  "stakeholder_role": "Senior Manager: Water Resource Protection, preparing the 2027 directives the Chief Executive Officer signs",
-  "role_family": "policy_adviser",
+  "stakeholder_role": "Superintendent, Patrol Operations, presenting the 2027 deployment plan to the Chief's command team",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "umzimela_wq_lab_results_2025_26.csv",
-    "rows": 5743,
-    "entity": "one laboratory result for one analyte on one routine sample at one monitoring site",
-    "grain": "sample x analyte",
+    "file": "mps_rms_incidents_2021_2026.csv",
+    "rows": 0,
+    "entity": "one report version of one incident",
+    "grain": "incident x version",
     "source": "synthetic"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "period_close",
-  "org_family": "government_agency",
+  "forum": "executive_team",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "local_government",
   "world": {
-    "geography": "South Africa, KwaZulu-Natal (a fictional catchment management agency, its rivers, mines and people)",
-    "currency": "ZAR",
-    "org_type": "catchment management agency",
+    "geography": "Canada, Ontario (a fictional lakeshore city, its police service, venues, team and people)",
+    "currency": "CAD",
+    "org_type": "municipal police service",
     "invented_names": [
-      "Umzimela Catchment Management Agency"
+      "Mountjoy Police Service",
+      "City of Mountjoy",
+      "Mountjoy Memorial Gardens",
+      "Lakeshore Centre",
+      "Mountjoy Mariners"
     ],
     "people": [
-      "Thandazile Nongalo",
-      "Sithembiso Sikhunyana",
-      "Bhekisisa Mpangazitha"
+      "Lindsey Turner",
+      "Eric Gordon",
+      "Ruben Stafford"
     ]
   },
   "deliverables": [
-    "sulfate_load_directives_2027.pdf",
-    "umzimela_sulfate_loads_2025_26.xlsx"
+    "hot_spot_patrols_2027.pptx",
+    "patrol_figures_2026.csv"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "The quantity a unit carries out is read at a single point its inflows reach before they have mixed, so the point reports whichever inflow runs along its side rather than the blend of the unit's whole flow, and only the sum of what each inflow carries in, measured where that inflow is already mixed, gives what the unit carries out.",
-  "driver_concrete": "Each resource unit's dry-season sulfate load is read at its boundary monitor, set at a gauging weir within the lateral mixing zone a few kilometres below a mine stream's confluence, so its samples carry the mine stream's concentration or the main river's depending on the bank it stands on; the unit's load is what its two inflows carry in, each from its own well-mixed monitor and gauge, which the river conserves to the boundary.",
-  "stump": "A competent analyst multiplies each boundary monitor's run concentrations by the boundary gauge's flow, averages the dry season's run loads and flags the units whose mean tops the allocation; the step that lands it there is taking the boundary sample as the unit's water, when a monitor within a few kilometres of a confluence samples one inflow's unmixed plume and the unit's load is what its inflows carry in.",
+  "driver": "A unit's events come from a steady part and a part tied to scheduled occasions at a site it borders, and the coming window's schedule moves most of those occasions to another site, so every forecast built on the units' own records keeps the occasions where they were, and only a forecast that carries each unit's increment per occasion by the coming schedule puts them where they will be.",
+  "driver_concrete": "Street segments beside an arena record street crime that rises on the arena's event days; in 2027 the Mariners move their home games from the Memorial Gardens to the Lakeshore Centre, so carrying each segment's record forward keeps the Gardens' segments among the 20 hottest and leaves the Lakeshore's out, while each segment's event-day increment carried by the 2027 calendar puts the Lakeshore's in and the Gardens' out.",
+  "stump": "A competent analyst who reads the protocol's designation rule and conforms the incident export ranks the street segments by their 2026, or 2022 to 2026, patrol crimes and designates the top 20, keeping the segments beside the Memorial Gardens and leaving out those beside the Lakeshore Centre; the step that lands it there is forecasting 2027 from each segment's own record when a large share of those segments' crimes fall on venue event days and the 2027 calendar moves the Mariners' home games to the Lakeshore.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task84": "task84 groups a unit's concurrently live copies on a composite key and prices their competition premium from removal episodes; here one unit's outgoing quantity is rebuilt from its inflows because its only reading point is unmixed, and nothing is grouped or priced.",
-    "task257": "task257 counts the latent dimensions of categorical items whose correlations skewed codes cap; here a flux past a boundary is rebuilt by conservation from inflows measured where each is mixed, with no latent structure estimated.",
-    "task269": "task269 and its Callowfield lineage estimate a rate or a reliability from occasions or scorers sampled unrepresentatively in time or by rota; here the reading is unrepresentative in space, across a river's width, and the golden is a conservation sum rather than a resampling, variance or reliability model."
+    "task130": "task130 reads each inspection's outcome at the visit count its inspector will have after a redrawn district map; here no outcome depends on who records it: a street segment's count rises with the events at a venue it borders, and the forecast moves with the published 2027 venue calendar.",
+    "task118": "task118 credits demand-response programmes at the fourth consecutive event day of a heat run; here events are a venue's scheduled games and shows, and what moves is where they happen, not how a response fades over a run.",
+    "task178": "task178 removes an absorbing agent from a market's dispersion through an instrument for the flow it offset; here nothing is removed or instrumented: each street segment's event-day increment is read directly off its record and carried to the venue that will host the events in 2027.",
+    "task156": "task156 replays a sewer network through twenty years of rainfall with each day's water table; here the forecast is a count at places driven by a published calendar of crowds, with no replay of a physical record."
   },
   "lineage": [
     {
@@ -96,15 +100,23 @@
       "fate": "retired 2026-10-31 at the batch audit: shipped before the survivor-anatomy gates and short of all three (the intake and visit number schema-visible through the serial, the field's estimator re-run as the golden, the decisive step exact arithmetic); re-rooted rather than repaired",
       "driver": "A change at the point units are recruited filters out a hard-to-reach share whose outcomes differ from the rest, and because every recruited unit stays for a fixed run of later periods carrying part of that difference, the distortion in the aggregate compounds while filtered intakes are still being issued and decays for a full run after the change is reversed; the unit the change acts on is the intake and not the period, so each period's distortion is a re-estimate on that period's own mix of filtered and unfiltered intakes and the change between two filtered periods is the change in that mix, while the first-period gap repeated while the change lasts files no change at all and the same gap applied at every position overstates every period.",
       "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point on the unemployment rate) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so each published quarter is a mix of capped and uncapped intakes, the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero."
+    },
+    {
+      "architecture": "v3 (Umzimela Catchment Management Agency: the 2027 sulfate load directives read at boundary monitors below mine-stream confluences)",
+      "fate": "spent 2026-10-31 at stage 4: the determinism judge returned NOT_DETERMINISTIC with SEND_BACK, confirmed on reconciliation: the decisive step caught four boundary samples taken in unmixed plumes (planted_defect_flip, surface_read_rejection, sole_data_defect yes) and the schedule executed literally filed the reverse of the golden; re-rooted into criminology",
+      "driver": "The quantity a unit carries out is read at a single point its inflows reach before they have mixed, so the point reports whichever inflow runs along its side rather than the blend of the unit's whole flow, and only the sum of what each inflow carries in, measured where that inflow is already mixed, gives what the unit carries out.",
+      "forum": "line_manager_or_team",
+      "forcing_event": "period_close",
+      "org_family": "government_agency"
     }
   ],
-  "notes": "Forum and context artifact redrawn after registration when task474 v7 entered the window with board_of_directors and register: the directives are the Chief Executive Officer's to sign under delegated powers, so the requester's own line acts on the paper (line_manager_or_team), and the file the requester works from is the monitoring programme's run log of routine sampling runs (operations_log).",
-  "registered": "2026-10-31T20:44:17Z",
+  "notes": "Re-rooted from architecture 3 (a planted-defect flip). Every recorded number is accurate as recorded; the easy route uses accurate counts the wrong way, as a forecast of 2027.",
+  "registered": "2026-10-31T22:06:02Z",
   "shell": {
-    "question form": "where",
-    "second-sentence opener": "the",
-    "rounding opener": "loads",
-    "deliverable set": "pdf+xlsx"
+    "question form": "whether",
+    "second-sentence opener": "lay",
+    "rounding opener": "crimes",
+    "deliverable set": "csv+pptx"
   },
   "lineage_shells": [
     {
@@ -118,6 +130,12 @@
       "second-sentence opener": "i",
       "rounding opener": "rates",
       "deliverable set": "docx+xlsx"
+    },
+    {
+      "question form": "where",
+      "second-sentence opener": "the",
+      "rounding opener": "loads",
+      "deliverable set": "pdf+xlsx"
     }
   ]
 }
