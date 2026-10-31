@@ -180,3 +180,15 @@ and a base flow read off the meter understate the replay's wet years.
   `two_layer.validated_decoy` (a closed record built to bless the wrong method) and on a structural signature spent in
   five builds. The design is drawn so the meter's own high-water-table storms and the overflow log refute one response
   per millimetre for anyone who checks them, and population (the meter's days are not the replay's) is the decisive gap.
+- A June 2025 high river with storms in it (the spell centred in August): the meter logged three overflows in it that one
+  response per millimetre misses, so the overflow log refuted the stop rung at the count level, a search signal; the spell
+  now falls in a dry month of 2025 and the meter's logged overflows are dry-ground storms every rung reproduces.
+- The spell's peak held below the replay's wettest days (12.6 km of sewer below the water table against 20): 812 replay
+  days sat above anything the meter saw, so the deciding configuration was out of sample and the infiltration had to be
+  extrapolated; the spell now reaches the replay's wettest days (one replay day above the meter's maximum).
+- Pumps below the wet-winter base (92 to 100 L/s): the station spilled in dry weather on groundwater alone and the
+  consent's 24-hour rule merged wet weeks into single long overflows, so more inflow could file fewer overflows and the
+  count was not monotone in the flow; the pumps now sit above the wettest dry-weather peak and every overflow needs rain.
+- Assumed unit hydrograph shapes and a crown or centreline reference for the submerged length: the replay spread 2.1 to
+  5.0 a year, but only because those variants fit the meter two to three times worse; among fits within a few per cent of
+  the best the figures agree inside the whole-number bin, so the figures are graded to whole overflows a year.
