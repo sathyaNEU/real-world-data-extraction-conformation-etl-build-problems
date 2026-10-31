@@ -118,9 +118,8 @@ def write_sap(path):
          "later than the earlier of 30 days after the last infusion and the patient's last study visit. Sites record an "
          "event that began before the first infusion and worsened after it as a new event with its own onset date, so "
          "whether an event is treatment-emergent is decided by its onset date as recorded; an event's seriousness or "
-         "severity changing on a later review does not make it a new event. The adverse event listing carries one "
-         "record for each event at each review while it is ongoing, each showing the event as it stood at that "
-         "review; an event's latest record is its current form."),
+         "severity changing on a later review does not make it a new event, and an event counts in the form of its "
+         "latest review."),
         ("6.4", "Serious infection", "A treatment-emergent serious adverse event in the MedDRA system organ class "
          "Infections and infestations."),
         ("6.5", "Infusion-related reaction", "A treatment-emergent adverse event with preferred term Infusion related "
@@ -138,7 +137,7 @@ def write_sap(path):
         ("6.8", "Pharmacokinetic samples", "A pre-dose sample is drawn before the infusion starts; a sample drawn after "
          "the start is not a pre-dose sample and is not used as one. Concentrations below the lower limit of "
          "quantification (0.100 ug/mL) are reported as below it; they are not quantified and are not used as "
-         "exposure values. Sample times are in UTC; infusion times are the site's local time."),
+         "exposure values."),
         ("6.9", "Clinical remission", "Modified Mayo score of 2 or less with a stool frequency subscore of 1 or less, a "
          "rectal bleeding subscore of 0 and an endoscopic subscore of 1 or less without friability, the endoscopic "
          "subscore from the central adjudicated read; non-responder imputation as in the charter."),

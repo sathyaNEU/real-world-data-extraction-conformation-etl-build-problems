@@ -94,6 +94,11 @@ def main():
     P = PR.read(TARGET)
     F = G.compute(TARGET)
     rows = PR.analysis_set(P)
+    import re
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    ok(not [f_ for f_ in os.listdir(TARGET) if describing.search(f_)],
+       "section 3: no file named as a dictionary, manifest, readme or notes ships")
 
     # ---- the call and the standing family ----
     ok(F['call'] == 300, "the golden call is 300 mg")

@@ -111,13 +111,6 @@
    "rows": 720
   },
   {
-   "file": "cvn2184_201_sap_definitions_excerpt.pdf",
-   "source": "Corvane Therapeutics, CVN2184-UC-201 statistical analysis plan version 2.0, section 6 (fictional, synthetic records)",
-   "date": "2026-04-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
    "file": "cvn2184_201_serum_concentrations.csv",
    "source": "Brightwater Bioanalytics, dovikizumab serum concentration results for CVN2184-UC-201 (fictional, synthetic records)",
    "date": "2026-07-09",
@@ -130,6 +123,13 @@
    "date": "2026-07-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": 71
+  },
+  {
+   "file": "cvn2184_201_statistical_analysis_plan_v2_section6.pdf",
+   "source": "Corvane Therapeutics, CVN2184-UC-201 statistical analysis plan version 2.0, section 6 (fictional, synthetic records)",
+   "date": "2026-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
   },
   {
    "file": "cvn2184_201_visit_dates.csv",

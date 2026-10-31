@@ -209,8 +209,17 @@ calibration; the run that first measured it was not kept, and its figures were o
 apart). The 600 mg forecast equals the observed rate under every logistic member,
 so the three forecasts differ only at 300 and 900 mg.
 
-## Readability screen
+## Survivor anatomy
 
+Actor: how a patient's clearance moves over induction, falling as the colitis settles in the patients who remit, has no column in any file; it shows only as the relation between a patient's successive trough concentrations and the patient's own week-12 outcome.
+Link: the week-4 trough, drawn before any patient's clearance has moved, is read from the laboratory's serum concentrations (UTC) set against the sites' infusion starts (local time, each site's zone in the site list) through the randomisation number; no key, clause or column asks for an early exposure, and the charter's analysis set reads exposure at steady state.
+Reflex: the field's exposure-response method, remission on each patient's steady-state exposure adjusted for the baseline clearance determinants and scaled by dose, is rung 0 and files 900 mg. Recorded risk: for monoclonal antibodies in inflammatory disease, reading exposure early to escape clearance that the response itself lowers is a known remedy, so a pharmacometrician may take the step by reflex (stumping 1.1b).
+Back-test: the textbook route validates: the steady-state fit reproduces the 600 mg arm's observed remission and gives a clean rising curve with a strong slope, the shape the charter expects of a dose that works.
+Second use: every file the step reads is in the pack for its own reason: the serum concentrations carry every exposure rung 0 reads too, the infusion records the dosing that sets the pre-dose rule, the site list the sites' zones, the efficacy lock the outcome, the healthy-volunteer summary the dose proportionality.
+Shock: nothing reads as an anomaly: clearance falling with resolving inflammation is ordinary pharmacology, and no patient, site or visit stands out on the troughs.
+Pins: the charter files the WHAT (each forecast as the remission rate the model predicts over the exposure-response analysis set at each dose, and the selection rule) and the SAP the endpoints; no filed sentence names the week-4 trough, clearance changing over induction or a time-varying exposure.
+
+## Readability screen
 Measured by the generator on the cut pack (`checks.py` restates every figure on each build). The forecast at 300, 600
 and 900 mg, the golden against the default path: 40.7, 40.9, 41.0 on the week-4 trough with the stratum; 29.6, 42.5,
 50.6 on the week-8 trough with the stratum.
@@ -234,12 +243,12 @@ points of the highest forecast.
 | SF1 | the forecast's population | the exposure-response analysis set: the 455 dovikizumab patients with a valid week-4 trough | the 25 without one counted as non-remitters | same call (asserted; 300 mg within 0.25 points) | charter 4 |
 | SF2 | exposure at the other candidates | each patient's exposure scaled in proportion to dose | no scaling | same call (asserted; every forecast equal) | charter 4, investigator's brochure 5.2 |
 | SF3 | the remission flags | the database lock (central adjudicated endoscopy) | the topline extract (local reads) | same call (asserted) | charter 3 and 6 |
-| SF4 | a pre-dose sample | collected before the infusion started, the laboratory's UTC against the site's local start converted to UTC (49 set aside) | every sample labelled pre-dose | same call (asserted) | SAP 6.8 |
+| SF4 | a pre-dose sample | collected before the infusion started, the laboratory's UTC against the site's local start converted to UTC (49 set aside) | every sample labelled pre-dose | same call (asserted) | SAP 6.8, and each file's own clock (`collected_utc`, `infusion_start_local`, the site list's `time_zone`) |
 | SF5 | a sample's result | the reportable result | the first result delivered | same call (asserted) | the reportable column |
 | SF6 | units | ng/mL results divided by 1,000 | read as ug/mL | not a fork: the unit column says it, and every ng/mL row sits in range only once converted (asserted) | the unit column |
 | SF7 | a result below the limit | not an exposure value: the patient is outside the analysis set | zero or half the limit kept as the exposure | same call (asserted); the decimals move, so the reading is filed | SAP 6.8 |
 | SF8 | the model | logistic regression on the log exposure with the randomisation stratum | no covariate, the stratum with weight and modified Mayo, or a linear probability model | same call (asserted); the decimals move, so the model is filed | charter 4 |
-| SF10 | the clock of the infusion start | each site's own time zone (the site list's time_zone) | every US site on Eastern time | same call (asserted) | the site list, SAP 6.8 |
+| SF10 | the clock of the infusion start | each site's own time zone (the site list's time_zone) | every US site on Eastern time | same call (asserted) | the site list's `time_zone` and the infusion export's `infusion_start_local` |
 | SF9 | the rule's comparison | unrounded forecasts | forecasts rounded to one decimal | same call (asserted) | charter 5 |
 
 The live rows are asserted as a cross product in `checks.py` (SF1 by SF4 by SF5 by SF7 by SF8, 72 cells): every cell
@@ -588,3 +597,4 @@ The fifth rebuild cell was left to this build, shape first: biomedical-clinical-
 Architecture 5 came from outside this number on 2026-10-26: the dovikizumab induction dose, drawn in the task141 rework,
 which task141 did not take because its own session had already re-rooted it to architecture 2. The author parked it
 here. Its card waits on `ban.strategy` (`## Draw`, Guard); no card is registered past v4 until then.
+- 2026-10-31, re-check under the 10-30 gates: `leak.py` LEAK on the SAP excerpt's file name (cvn2184_201_sap_definitions_excerpt.pdf reads as a definitions file). The excerpt is the sponsor's own SAP section 6, the endpoints filed in its genre, so it ships as cvn2184_201_statistical_analysis_plan_v2_section6.pdf; its two sentences that described the data rather than the endpoints (the adverse event listing's rows per review, each file's clock) are gone, the WHAT kept (an event counts in the form of its latest review) and the clocks left to the files' own columns. The prompt drops its count and asks what. Every graded figure unchanged (206 checks, verify 46 of 46).

@@ -5,22 +5,25 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-10-31",
  "stump": "A competent solver merges the valid troughs with the week-12 remission flags, takes each patient's steady-state exposure (the week-8 or week-12 trough, the mean of the troughs or a one-compartment fit's average concentration), fits the exposure-response with baseline albumin, weight, CRP and prior biologic, scales exposure in proportion to dose and files 900 mg, with 300 mg 8 to 29 points below 600 mg; the step that lands it there is reading exposure after clearance had already fallen in the patients who remit.",
  "architecture": 5,
  "loops": 0,
  "card_registered": true,
  "precut": {
   "exit": 0,
-  "date": "2026-10-27"
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on zip 4a85c214",
-  "reader": "three isolated readers clean: no decisive-step sentence, no ranking file, no fork; Q6 analytical"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack, no LEAK (the SAP excerpt ships under its own name, its two data-describing sentences removed)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 the charter fixes the model's form and leaves the exposure measure open, Q6 analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, answered in the note)",
-  "nearest": "check PASS 2026-10-27 on registration, nearest driver 0.07 (task182 v1, task270 v7, task479 v4, task464 v1)"
+  "heart": "BLOCK on ban.forum and ban.forcing_event only, against task487 (registered 2026-10-26, before this card's 10-27 stamp); WARN at the ship, so task487's card changed after; flagged to the author, not a repair's doing",
+  "nearest": "check PASS 2026-10-27 on registration, nearest driver 0.07 (task182 v1, task270 v7, task479 v4, task464 v1)",
+  "surface": "exit 0 2026-10-31 (three pairs promoted for the author's read)"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -56,11 +59,21 @@
   "rebuild_fifth_cell": "chosen shape first: biomedical-clinical-research / dose-response-pk-pd-modeling on code (phase 3 week-12 target-lesion response read lesion by lesion: lever +1.7 to +18.7 per cent at within-patient correlation 0.23 to 0.50, sigma about 6 per cent on 640 patients; scratch b171s/proto l1.py, l1b.py, l2.py) and physical-environmental-sciences / hydrology-flood-frequency (45-year record: flood-stage days sigma 15 per cent, Q10 9, Q100 22; every break a channel the standard names; h1.py); grey cells on paper, the owner-share contract-expiry structure honestly composition_mix, banned by task179",
   "architecture_5_paper": "drawn 2026-10-26 in the task141 rework and parked here at the author's choice: Corvane Therapeutics' dovikizumab phase 3 induction dose (pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response), clearance falling as the colitis remits so every trough after week 4 carries the response; on sim_er4.py's defaults the week-4 trough family files 300 mg on every member in 24 of 40 worlds and the late family never files 300 (closest gap 11.5 points); scripts and card draft in generator/paper"
  },
- "resume": "",
+ "resume": "RESHIPPED 2026-10-31 under the 10-30 gates; next: the author's portal result; stump risk recorded: early exposure is a known remedy for clearance confounding in antibody exposure-response",
  "approved": null,
- "delivered": "2026-10-27",
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "gates_2026_10_31": {
+  "checks": 206,
+  "verify": "46 of 46",
+  "byte_identical": true,
+  "figures_check": "66 of 66",
+  "precut": "0 FAIL, 0 WARN",
+  "voice_check": "PASS, no WARN",
+  "leak_py": "REVIEW, no LEAK",
+  "surface": "exit 0"
+ }
 }

@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, clearance, family, population, trough, points, window, decisive, record, inside, cohort, exposure-response, golden, months, driver, worlds, effect, standard, events, median, pooled, forward, default, outcome, change
+Stump terms swept: architecture, clearance, family, population, trough, points, window, decisive, golden, record, inside, cohort, exposure-response, months, driver, worlds, effect, standard, events, median, pooled, forward, default, outcome, nothing
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `cvn2184_phase3_dose_selection_charter.pdf`: \bthe model\b x2: ...estigator's brochure, section 5). Each forecast is the remission rate the model predicts over the exposure-response analysis set, the dovikizumab pat...
@@ -17,9 +17,12 @@ Stump terms swept: architecture, clearance, family, population, trough, points, 
 - **REVIEW** `dovikizumab_investigators_brochure_section5.pdf`: carries 3 of 5 distinctive words of the committed call: 'Corvane should carry dovikizumab 300 mg IV at weeks 0, 4 and 8 into phase 3.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `cvn2184_201_sap_definitions_excerpt.pdf`: 3 of 25 stump-paragraph terms appear (window, record, events); read whether the document names the move
+- **REVIEW** `cvn2184_201_statistical_analysis_plan_v2_section6.pdf`: 3 of 25 stump-paragraph terms appear (window, record, events); read whether the document names the move
 - **REVIEW** `cvn2184_phase3_dose_selection_charter.pdf`: 3 of 25 stump-paragraph terms appear (points, record, exposure-response); read whether the document names the move
 - **REVIEW** `dovikizumab_investigators_brochure_section5.pdf`: 3 of 25 stump-paragraph terms appear (clearance, population, effect); read whether the document names the move
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -34,9 +37,8 @@ Stump terms swept: architecture, clearance, family, population, trough, points, 
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -53,3 +55,14 @@ Three isolated Sonnet readers at medium effort, each holding only fresh copies o
 Rulings on the REVIEW lines, read by the readers with figures withheld: "the model" in charter 4, harmless (ordinary protocol wording, defined in the next sentence, no measure or result); the charter's numbers shared with the answer, harmless (the candidate doses and the rule, stated inputs); the brochure's two numbers, harmless (phase 1 facts, not phase 2b outputs); words shared with the recommendation sentence, harmless (the question's own vocabulary). The three stump-vocabulary lines were ruled in the main thread: the SAP excerpt (window, record, events), the charter (points, record, exposure-response) and the brochure (clearance, population, effect) use those words in their own definitions and name no exposure measure; harmless.
 
 Realism tells raised and fixed: the charter's records clause dated after its adoption (now "at its lock, planned for July 2026"); antibody run numbers out of date order (now numbered in run order). Left as is: short excerpts of the brochure and charter (they are excerpts), a tidy run log and lock file (an export's own form).
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 20 files)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none; the nearest is the charter's section 4, "The charter does not prescribe the exposure measure; the analysis records its choice and its reasons", which flags a choice and gives no direction.
+2. Ranking file: none. 3. Helper-only file: none (the run log and handset log read as operational logs; the topline extract as a stale local-read copy). 4. Answer-like figure or name: none.
+5. Literal sentences: charter 4 and 5 fix the population, the model's form and the comparison and leave the exposure measure open; SAP 6.7 to 6.10 define the asks' endpoints.
+6. What decides: an analytical choice (the exposure measure and the exposure data's structure); the filed rules and the PK file's mess do not decide it.
+
+The statistical analysis plan's section 6 reads as a sponsor's SAP definitions section (version, signature, omitted sections), not a note on the data files. Item rulings: the charter and the investigator's brochure harmless. Realism: two clarifying clauses in SAP 6.3 and 6.8 read as tailored, a tidy phase 1 workbook; no LLM prose.
