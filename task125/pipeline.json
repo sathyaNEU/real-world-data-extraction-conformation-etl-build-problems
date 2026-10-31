@@ -1,30 +1,30 @@
 {
  "task": "task125",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences / environmental-monitoring-exceedance",
  "objective": "anomaly-detection",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-23",
- "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
- "architecture": 2,
- "loops": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "A competent analyst multiplies each boundary monitor's run concentrations by the boundary gauge's flow, averages the dry season's run loads and flags the units whose mean tops the allocation; the step that lands it there is taking the boundary sample as the unit's water, when a monitor within a few kilometres of a confluence samples one inflow's unmixed plume and the unit's load is what its inflows carry in.",
+ "architecture": 3,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (sweep 4 only, generic survey vocabulary; sweeps 1 to 3 and 5 to 11 clean)",
-  "reader": "three rounds, all clean, Q6 answered (a) an analytical choice in every one. Round 1 found the population-control realism defect (fixed at source) and the methods-note density (ruled harmless on leak-check's own would-it-exist-without-the-trap test). Rounds 2 and 3 tested the pins: every clause came back as fixing a basis or convention with the analytical work untouched, and round 3 answered the shortcut question \"No. The prompt plus the pack does not let you shortcut the main question.\""
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "0.08 task500 v2"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "round 2 NOT_DETERMINISTIC (underspecified_objective / prompt_ambiguity on one clause), round 1 FIX_NOW. Every graded figure reproduces in the judge's own hands in both rounds.",
-  "disposition": "FIX_NOW twice; the one re-judge a FIX_NOW allows is spent. All three round-2 findings fixed with the judge's own recommended wording and asserted: the base quarter NAMED (round 1 described it and the description was not unique, reading literally to 2026Q3 and a zero gap), the flow denominator filed as \"interviewed in both quarters\", and the unit filed as \"in points\". Telephone hours confirmed closed by the judge itself on a second look, verified in all 14 quarters.",
-  "report": "/tmp/determinism-check-task125-180256c/verdict.md; both rounds recorded in DESIGN_NOTE.md. determinism_check_report_pass2.md remains VOID."
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -38,17 +38,26 @@
    "portal": "blind reader audit: call landed (2 of 2), asks 38 of 53, Gate F failed; the methods note's section 5 stated the method",
    "repair": "design (stage-2 re-root of the ladder)",
    "commit": ""
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "batch audit: architecture 2 short of the survivor anatomy (actor schema-visible, the field's estimator as the golden, the decisive step exact arithmetic)",
+   "repair": "re-root",
+   "commit": "DRAWN (task125) architecture 3"
   }
  ],
- "resume": "",
+ "resume": "stage 2: design note sections (default path, stump, three rules, survivor anatomy, screens, forks, ladder, closure, asks), then prompt.txt and precut.py",
  "approved": null,
- "delivered": "2026-10-23",
- "portal": null,
+ "delivered": null,
+ "portal": "",
  "lineage": [
   {
    "architecture": 1,
    "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
   }
  ],
- "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline"
+ "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline",
+ "portal_status": "",
+ "portal_status_date": "",
+ "zip_sha256_16": ""
 }
