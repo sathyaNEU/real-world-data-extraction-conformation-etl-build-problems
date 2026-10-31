@@ -1,48 +1,341 @@
 # task191 design note
 
-Architecture 4, drawn 2026-10-31 at the batch 1 re-root after architecture 3's stage 4 send-back: a regional bank's
-transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious activity report too rarely to
-escape the 2027 tuning. Architectures 1 to 3 are kept below as records.
+Architecture 4, drawn 2026-10-31 at the batch 1 re-root after architecture 3's stage 4 send-back: Kestrel Pay, a US
+payments platform, and its transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious
+activity report too rarely to escape the 2027 tuning. Architectures 1 to 3 are kept below as records.
 
 ## Draw
 
 - **Card.** `cards/task191.json`, architecture v4, re-root of the slot in the same objective; architecture 3 moved to
   the card's lineage as spent (stage 4, judge SEND_BACK on Gate G and Gate H3) with its prompt shell in
-  `lineage_shells`; registered 2026-10-31T21:24:59Z, check WARN only (`repeat.decision`: designation_set repeats
-  task125 v3, answered here: the decision a tuning standard asks of a scenario scorecard is which scenarios fall below
-  its floor, a set by nature, and nothing else on the card repeats task125). Redrawn on the way: the first signature
-  (gap time, G12, forecasting) BLOCKed `test.same_puzzle` against task482's lineage and `test.same_driver` against
-  task250's, so the decisive generator is G15 (evidence-standard exclusion: the easy route reads a scenario only over
-  the alerts whose investigation has reached a decision) with G12 and G13 behind it and the gap time and population
-  (the outcome lands after the extract, and the population includes the alerts still undecided). First name Richard
-  (`people.first` against task265) replaced from the same draw (`guard.py names --geo "United States" --seed 191`).
+  `lineage_shells`; registered 2026-10-31T21:24:59Z. `guard.py check` on the final card: WARN only
+  (`repeat.gate_g`: forecasting repeats task130 v5 among the last two builds, answered here: the Gate G family is the
+  standard's own forward read, how the year's undecided alerts will end, and no other axis of the card repeats
+  task130). Redrawn on the way: the first signature (gap time, G12, forecasting) BLOCKed `test.same_puzzle` against
+  task482's lineage and `test.same_driver` against task250's, so the decisive generator is G15 (evidence-standard
+  exclusion: the easy route reads a scenario only over the alerts whose investigation has reached a decision) with
+  G12 and G13 behind it and the gap time and population (the outcome lands after the extract, and the population
+  includes the alerts still undecided). The window then moved while the pack was designed: task306's architecture 4
+  registered `filed_standard`, `committee_or_panel` and `financial_institution`, so the governing artifact is the
+  BSA/AML officer's planning thread, the forum the executive risk meeting and the organisation a payments platform,
+  the regional bank of the first draft rebuilt as Kestrel Pay. First name Richard (`people.first` against task265)
+  replaced from the same draw (`guard.py names --geo "United States" --seed 191`).
 - **Pairing.** Banking, Credit & Financial Risk / fraud-aml-detection, a task type the taxonomy tags for Anomaly
   Detection & Diagnostics (one banking AD card on file, task196, a capture-recapture count). The anomaly is a scenario
   whose alerts rarely end in a SAR; the standard's productivity is the share of a scenario's alerts that end in one.
-- **Niche.** Kestrel Point Bank, a regional commercial bank in Ohio, runs fourteen transaction-monitoring scenarios in
-  its monitoring system. Every alert is triaged; most close within days with no suspicious activity found, and the
-  rest are escalated into investigations in the financial crimes case manager, which decide whether a SAR is filed.
-  The 2026 tuning standard sends every scenario whose productivity over the year to 30 September falls below 3 per
-  cent into the next year's tuning, and the BSA/AML officer must put the 2027 set to the BSA/AML committee before the
-  bank's 2027 independent BSA/AML test.
+- **Niche.** Kestrel Pay, a payments platform in Columbus, Ohio, licensed as a money transmitter (consumer wallets,
+  merchant accounts and cards), runs fourteen transaction-monitoring scenarios. Every alert is triaged; most close
+  within days with no suspicion, the rest are escalated into investigations in the financial crimes case manager, and
+  the Financial Intelligence Unit decides whether a SAR is filed. The standard agreed in March sends every scenario
+  whose productivity over the twelve months to 30 September falls below 3 per cent into the next year's tuning, and
+  the BSA/AML officer puts the 2027 set to the executive risk meeting on 18 November, before the independent AML
+  review opens on 11 January.
 - **The call.** Which scenarios go into the 2027 tuning: those whose share of alerts raised from 1 October 2025 to
-  30 September 2026 (by the bank's business date) that end in a SAR is below 3 per cent, the standard counting every
-  alert raised in the year, those still under investigation when the figures are drawn by how they will end.
+  30 September 2026 (by the run's business date) that end in a SAR is below 3 per cent, every alert of the year
+  counted, those still under investigation on 2 November by how they will end.
 - **Shape.** 10, scorecard against a threshold: each scenario's productivity against the floor, in or out of the
   tuning, the chart's parts, with the asks beside. Decision designation_set, answer set_of_items, question form what,
   deliverables `tuning_scenarios_2027.docx` and `tm_alert_figures_2026.xlsx`.
 - **Strategy.** informative_censoring: on 2 November 2026 a scenario's decided alerts are a biased sample of its
-  alerts, because an alert heading for a closure without filing is decided at triage within days while one heading for
-  a SAR runs through escalation, investigation and the filing decision for months; the undecided alerts are mostly
-  SARs to come, most of all for the scenarios whose investigations run longest.
-- **Forum, event, organisation.** committee_or_panel (the BSA/AML committee), audit_or_inspection (the 2027 independent
-  test the tuning plan is read against), financial_institution; none in the last three builds' bans.
-- **Role.** compliance_or_audit: the BSA/AML officer, Katherine Cobb; the financial crimes analytics lead Miguel
-  Swanson and the investigations manager Leah Berg appear in the pack's records. The prompt carries no persona.
-- **Spine.** `tm_alerts_2025-07_2026-10.csv`, one row per alert the monitoring system raised from July 2025 to October
-  2026 (a re-run alert appears twice), about 75,000 rows, UTC stamps; constructed for this build, no real dataset.
+  alerts, because an alert heading for a closure without a SAR is decided at triage within days while one heading for
+  a SAR runs through escalation, investigation and the filing decision for about seven months; the undecided alerts
+  are mostly SARs to come, most of all for the scenarios whose SAR decisions take longest.
+- **Forum, event, organisation.** executive_team (the executive risk meeting), audit_or_inspection (the independent
+  AML review the tuning plan is read against), software_or_platform (a payments platform); none in the last three
+  builds' bans once task306's architecture 4 was registered.
+- **Role.** compliance_or_audit: the BSA/AML officer, Katherine Cobb, writes the thread; Miguel Swanson (financial
+  crimes analytics) receives it and Leah Berg (investigations) is copied. The prompt carries no persona.
+- **Spine.** `tm_alerts_2025-07_2026-10.csv`, one row per alert the monitoring system raised from the 1 July 2025 run
+  to the 1 November 2026 run, 74,360 rows (the 10 March re-run's alerts appear twice), UTC stamps; constructed for
+  this build, no real dataset.
 - **Forward window.** The tuning year is 2027 and the productivity read includes outcomes still to come (the
   undecided alerts' SARs), so the call is about a window not yet closed.
+
+## Default path
+
+1. Read `tm_alerts_2025-07_2026-10.csv`, date each alert by the business date of its run in
+   `tm_monitoring_runs_2025-07_2026-10.csv`, drop the 157 copies the 11 March re-run raised (closed as duplicates),
+   and read XB-HRJ2 with XB-HRJ through the catalogue's `replaced_by`.
+2. Carry each escalated alert to its investigation in `fcm_cases_export_2026-11-02.json`, joined or opened: it ended
+   in a SAR when the disposition is "SAR filed", without one when "No SAR", and is undecided while the case is open.
+3. Read each scenario's productivity the way the monitoring MI reads its conversion, SARs over the decided alerts;
+   to honour "by how they will end", project the undecided alerts at that share, or at the share of the scenario's
+   decided investigations that filed (the undecided alerts are all in open investigations).
+4. File the scenarios below 3 per cent.
+
+- **Ends on:** CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P go into the 2027 tuning.
+- **Golden:** CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV go into the 2027 tuning, and no other scenario.
+
+## Stump sentence
+
+A competent analyst reads productivity over the decided alerts, or projects the undecided ones at the decided share,
+and files CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P; but in the scenario's own history an alert
+still undecided two months after it was raised has mostly ended in a SAR (69 to 81 per cent for MER-RND, RMF-P2P and
+MUL-INF, against a decided share under 3), so read by how they will end the three slow scenarios clear the floor at
+4.5 to 4.6 per cent and only CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV stay below it.
+
+## Three rules
+
+- **Task type:** fraud-aml-detection (banking-credit-financial-risk), serving anomaly-detection: a monitoring
+  scenario whose alerts rarely end in a SAR is the anomaly an AML tuning programme looks for, read on the measure the
+  field's tuning reviews use.
+- **Domain test:** the deciding quantity is each scenario's alert-to-SAR conversion, the productivity measure AML
+  tuning reads, and it is open on any extract because a SAR comes only after escalation, an investigation and the
+  filing decision, months after the alert, while an alert closed without suspicion is closed at triage within days.
+- **Swap:** "which hospital wards go into the 2027 review on the share of their admissions that end in a complaint":
+  nothing in a ward's admissions takes seven months to reach the rare outcome while the common one closes in a
+  week, so the decided share is the share and the task stops turning on how the undecided end; the swap breaks it.
+- **Layer 1:** UTC stamps on a nightly run whose business day is Eastern and ends at 22:00; one night's monitoring run
+  again on 11 March under new alert numbers; XB-HRJ replaced by XB-HRJ2 on 1 April; alerts added to investigations
+  other scenarios' alerts opened; a case export that also holds investigations opened before the alert export starts;
+  SAR filings told apart only by their prior-report field and periods, the field empty on some continuing activity
+  reports. None decides the call (asserted per item, `R2` in `checks.py`).
+- **Layer 2:** censoring that is informative: the outcome decides how long an alert stays undecided, so the decided
+  alerts are a biased sample, and the estimate of how the undecided alerts will end is read conditional on how long
+  they have already been open, from the scenario's older alerts, not at the scenario's overall share.
+- **Decisive step:** reading each undecided alert at the share of the scenario's older alerts still undecided at the
+  same age that went on to a SAR (equivalently, the cumulative incidence of a SAR beyond that age over the share still
+  open), which puts most of the slow scenarios' open investigations on the SAR side.
+- **Not semantics:** every field can be read right (the business date, the duplicate code, the replacement, the
+  disposition, the prior-report field) and the analyst who projects the undecided at the decided share still files the
+  three slow scenarios; no field, code or unit carries an alert's eventual outcome.
+- **Not rule application:** the thread files the WHAT (every alert of the year counts, the undecided by how they will
+  end) and nothing about how to estimate it; the estimate is the analyst's. Enumerated family on the cut pack: the
+  history from 120 to 450 days old, the mature-cohort reading from four to nine months, the prior quarter's matured
+  cohort, every open investigation read as a SAR, and the verifier's Aalen-Johansen estimate all file the golden; the
+  decided share, the undecided read as no SAR, the projection at the decided share and at the decided investigations'
+  share all file the default answer (asserted).
+- **Analyst test:** a strong analyst who cleaned the data and read every rule (duplicates out, XB-HRJ2 with XB-HRJ,
+  business dates, joined alerts carried to their investigation, every alert counted) projects the undecided alerts at
+  the decided share and files CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P; `checks.py` runs that
+  route on the generator's clean world (R3a) and it files the same seven.
+- **Estimand:** the thread: for each scenario, the share of the alerts it raised in the twelve months to 30 September
+  2026 (each alert at the business date of the run that raised it, duplicates out, a replaced scenario read with its
+  replacement) that end in a SAR, every alert counted, those still in triage or under investigation when the figures
+  are drawn by how they will end; below 3 per cent goes into the tuning.
+- **No decoy:** nothing is planted to be caught: no memo, draft or stakeholder figure argues for any scenario; the
+  thread and the procedure name no scenario and quote no figure; the risk tiers, the capacity plan and Quality
+  Assurance's case sample (distractors) carry no conversion; no block is copied and no rule is hidden.
+- **No certified replay:** no certified or published productivity figure is shipped to be reproduced; nothing in the
+  pack ties only under the golden.
+- **Lesson:** a conversion read on an extract is a censored quantity, and when the outcome itself sets the time to
+  decision the decided cases are not a sample of the cases: the slow outcome is under-read exactly where it is slowest,
+  and the open cases are read by how cases open that long have ended.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property is how each undecided alert will end, and no file has a column for it: the alerts
+  and the case export show where each alert stands on 2 November, never its eventual outcome.
+- **Link:** read through a relation no key offers: each undecided alert's age against the outcomes of the scenario's
+  older alerts that were undecided at that age, rebuilt from the raise stamps, the triage stamps and the case
+  decisions of alerts raised before the year.
+- **Reflex:** the monitoring MI's conversion, SARs over decided alerts, files the default answer at rung 0, and its
+  repair, the undecided projected at that share, files it again at rung 2.
+- **Back-test:** the textbook route validates: the slow scenarios' undecided alerts are 2.3 to 2.6 per cent of their
+  year, so projecting them at the decided share looks immaterial, and the decided conversion is the figure every MI
+  pack reports.
+- **Second use:** every file the decisive step reads has its own reason: the raise and triage stamps carry ask A's
+  opening alerts, the case decisions carry the call's dispositions and ask A's opening dates, the runs carry the
+  business dates, the older alerts are the export's own July to September 2025.
+- **Shock:** the movement reads as ordinary: on the decided alerts the three slow scenarios look like any unproductive
+  scenario (many investigations, few SARs), and none is the extreme of any shipped column (volume, score, undecided
+  share: FAN-OUT's undecided share is higher, asserted in the ladder).
+- **Pins:** the WHAT is filed once, in the thread, in the officer's own words (the floor, the twelve months by
+  business date, every alert counted by how it will end, duplicates out, the replacement read with its scenario); no
+  sentence names an age, a cohort, a history or a method, and deleting any filed sentence hands over nothing.
+
+## Readability screen
+
+| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Control | 5 Hygiene | 6 Linear | 7 Organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 SARs over the decided alerts | no | fires (status and disposition columns) | fires (the MI conversion) | no | no | no | no | readable |
+| R1 SARs so far over every alert | fires ("every alert counts") | no | fires | no | no | no | no | readable |
+| R2 the undecided projected at the decided share | fires ("by how they will end") | no | fires (the plug-in repair) | no | no | no | no | readable |
+| R3 the undecided at the decided investigations' share | no | fires (the open cases are investigations) | fires | no | no | no | no | readable |
+| R4 (decisive) each undecided alert at the outcome of older alerts undecided at its age | no: the thread files the outcome, never its estimate | no: no column carries an alert's age or eventual outcome | no: the MI reads decided alerts | no: no control ties a conversion | no: no duplicate, clock or replacement repair conditions on age | no | no: the older alerts are the export's own first quarter | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the alert's date | the business date of the run that raised it | the UTC date; the Eastern calendar date | same call (asserted) | the thread: "An alert belongs to the business date of the run that raised it" |
+| SF2 | duplicates | the re-run's copies out | kept | same call (asserted) | the thread: a duplicate "is not an alert of its scenario" |
+| SF3 | the replaced scenario | XB-HRJ with XB-HRJ2 | read apart | same call, both parts above the floor (asserted) | the thread: "read together with its replacement in every figure we give by scenario" |
+| SF4 | ends in a SAR | the investigation it was escalated into or added to files one | only the opening alert credited | same call (asserted) | the thread: "escalated into, or added to" |
+| SF5 | continuing reports and corrections | not a second SAR | counted again | same call: the log and the dispositions agree case by case (asserted) | the thread: they "do not count again" |
+| SF6 | the twelve months | business dates 1 October 2025 to 30 September 2026 | another year boundary | same call (asserted with SF1) | the thread |
+| SF7 | below 3 per cent | strictly below, unrounded | at or below; rounded first | same call (asserted) | margins of 0.8 or more from the floor |
+| SF8 | by how they will end | each undecided alert's eventual outcome, estimated | the decided share; the undecided as no SAR | the default answer | the data: in each slow scenario's history, alerts undecided at 60 days ended in a SAR 69 to 81 per cent of the time; the history window from 120 to 450 days, the mature cohorts from 4 to 9 months and the Aalen-Johansen estimate all hold the call (asserted) |
+| SF9 | those still in triage | counted by how they will end | n/a | none of the year's alerts is still in triage (asserted) | the export |
+| SF10 | when the figures are drawn | the 06:00 extract on 2 November | the case export at 06:20 | same states (asserted) | nothing decided between the two |
+| SF11 | an alert closed as a duplicate | the re-run's copies only | any repeated customer and scenario | same call (asserted) | the run log's re-run note and the DUP outcome |
+| SF12 | the investigations each scenario's alerts opened | each investigation once, for the alert whose escalation opened it | the investigation's first alert number; every scenario among its alerts | ask A only: 5 and 0 of 56 cells kept | the procedure: the escalation "opens an investigation", an added alert "opens no investigation of its own" |
+| SF13 | the quarter | the investigation's opening date | the opening alert's business date | ask A only: 1 of 56 kept | the prompt: "opened in each quarter" |
+| SF14 | initial and continuing activity reports | an investigation's first filing; a later one covering activity since the previous report; a correction neither | the prior-report field alone | ask B only: 0 of 20 kept | the procedure: a continuing activity report "on the investigation, covering the activity since the previous report"; a correction "covers the same activity" |
+| SF15 | the month | the Eastern filing date | the UTC date | same table (asserted) | filings are made in office hours |
+| SF16 | XB-HRJ in the asks | read with XB-HRJ2 | apart | the row changes | the thread: "in every figure we give by scenario" |
+
+## Ladder
+
+| Rung | Construction | Tuning set | The traps' productivity (MER-RND, MUL-INF, RMF-P2P), cut pack |
+|---|---|---|---|
+| R0 (default path) | SARs over the decided alerts | the default seven | 2.74, 2.36, 2.72 |
+| R1 | SARs so far over every alert | the default seven | 2.67, 2.30, 2.65 |
+| R2 | the undecided projected at the decided share | the default seven | 2.74, 2.36, 2.72 |
+| R3 | the undecided at the decided investigations' share (8.9 to 10.9 per cent) | the default seven | 2.90, 2.58, 2.88 |
+| R4 (decisive) | each undecided alert at the outcome of older alerts undecided at its age | the golden four | 4.64, 4.48, 4.52 |
+| truth | every alert's eventual outcome in the world | the golden four | 4.57, 4.46, 4.45 |
+
+- **Position and dominance:** every lower rung files all three traps (asserted); on the golden the four sit 0.82 or
+  more below the floor (CRY-OFF 2.18 the highest) and every other scenario 1.48 or more above it (MUL-INF 4.48 the
+  lowest), on the truth 0.87 and 1.45.
+- **Pricing sequence.** 1 Residue: the estimate of how the undecided end, a method with the data separating the
+  candidates (the history shows the age effect directly). 2 The move: the traps rise 1.8 to 2.1 points from R2 to R4,
+  against 0.3 to 0.5 for the golden four, whose SARs decide fast. 3 The one-group-by route is R0. 4 The traps' SAR
+  decisions take a median of about 200 days, their no-SAR closures about a week. 5 The lever is structural (the
+  outcome sets the time to decision), not a variance. 6 Subsets: a mature cohort cut at ten months or later reads one
+  quarter of the year or less and can put MUL-INF back in; it is not the estimand ("every alert raised in the twelve
+  months counts").
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | the scenario's alerts raised in the twelve months, duplicates out | WHAT in the thread |
+| 2 Unit of account | the alert | WHAT in the thread |
+| 3 Attribution window | the run's business date, 1 October 2025 to 30 September 2026 | WHAT in the thread; SF1 asserted |
+| 4 As-of dating | the alerts and cases as drawn on 2 November | WHAT in the thread ("when the figures are drawn"); SF10 |
+| 5 Version basis | the case's current status and disposition | the export; SF5 |
+| 6 Denominator | every alert of the year | WHAT in the thread |
+| 7 Weighting | none: each alert counts once | WHAT |
+| 8 Window length | twelve months | WHAT |
+| 9 Boundary inclusivity | 1 October to 30 September inclusive | WHAT; SF6 |
+| 10 Rounding path | unrounded against the floor | SF7, margins asserted |
+| 11 Tie-break | none needed | margins of 0.8 or more |
+| 12 Maturity and censoring | the undecided by how they will end | WHAT; SF8 (the decisive step) |
+| 13 Order of operations | dedupe and merge the replacement, then read | same call either order (asserted) |
+| 14 Row order | none | same call |
+| 15 Duplicate resolution | the re-run's DUP copies out | WHAT; SF2 |
+| 16 Identity normalisation | XB-HRJ2 read with XB-HRJ | WHAT; SF3 |
+| 17 Netting against gross | continuing reports and corrections add no SAR | WHAT; SF5 |
+| 18 Dimensional units | per cent of alerts | the prompt |
+| 19 Code and status semantics | NSA, ESC, DUP; SAR filed, No SAR, open | the export's own values; SF4 |
+| 20 Integerisation | asks in whole numbers | the prompt |
+| 21 Clause scope | the floor applies to every scenario, the replaced one with its replacement | WHAT |
+| 22 Forward window contents | the 2027 tuning reads the year to 30 September 2026 with its outcomes to come | WHAT |
+
+## Literal reader
+
+Executed word for word (the thread's twelve months by business date, every alert counted by how it will end,
+duplicates out, the replacement read with its scenario, below 3 per cent), the literal reader has to estimate how
+each undecided alert will end, and the pack's own older alerts show the estimate depends on how long the alert has
+been open; every estimate that uses that (the history window from 120 to 450 days, the verifier's Aalen-Johansen
+estimate, mature cohorts from four to nine months) prints CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV and no other, and the
+readings that move the call (the decided share, the undecided as no SAR, projections at the decided shares) take the
+undecided to end like alerts that were decided at once, which the data refute. Passes.
+
+## Oracles
+
+- The run log's `alerts_raised` ties to the alert export under every handling (the re-run's copies included on its
+  own row): no oracle for the call.
+- The SAR log and the case dispositions agree investigation by investigation (SF5) on every path: no oracle.
+- The catalogue's replacement and Quality Assurance's case sample confirm nothing about conversion.
+- No control total ties ask A or ask B: the case export carries no counts by scenario and the SAR log no type column.
+
+## Ask sheet
+
+**Ask A.** The investigations each scenario's alerts opened in each quarter of the twelve months, whole numbers
+(fourteen scenarios by four quarters, 56 figures, 69 to 426 each).
+- H18 home: the investigation workload behind each scenario's productivity, the measure every candidate carries that
+  the call does not turn on.
+- Use: the officer's case for the tuning set beside the investigations team's capacity.
+- Primary (D7, the key elsewhere): an investigation is credited to the alert whose escalation opened it, found by its
+  triage closure matching the investigation's opening; alerts on the same customer from other scenarios are added to
+  it, some raised earlier than the opener and waiting longer in triage, so the case's first alert number is not its
+  opening alert in 478 of the year's 10,337 investigations.
+- Hazards: alerts from several scenarios in one investigation (1,510 of them); the opening alert's own business date
+  against the investigation's opening date at the quarter edges; XB-HRJ2 read with XB-HRJ; investigations opened
+  before the alert export in the case export.
+- Files and columns: `fcm_cases_export_2026-11-02.json` (case_id, opened_at, alert_ids), `tm_alerts_2025-07_2026-10.csv`
+  (alert_id, scenario_code, triage_closed_at_utc, triage_outcome, case_id), `tm_scenario_catalogue_2026.xlsx`
+  (replaced_by), `aml_alert_handling_procedure_2026.pdf` (section 3): four files, 9 columns.
+- Stops: every scenario among an investigation's alerts (0 of 56); the first alert number (5 of 56); the opening
+  alert's business-date quarter (1 of 56); the golden.
+- Pin test: the asking sentence pins the investigations, the scenario's alerts that opened them and the opening
+  quarter; the device sits in which alert opened each investigation, named nowhere.
+- Realism: a case manager that lists an investigation's alerts by number and a triage queue that escalates a later
+  alert first is how alert-to-case linking runs.
+
+**Ask B.** The SARs filed in each month of 2026 to October, initial reports and continuing activity reports apart,
+whole numbers (ten months by two kinds, 20 figures).
+- H18 home: the filing trail behind the dispositions, on rows the call never reads (the call reads the case manager).
+- Use: the FIU's filing volumes for the meeting and the review.
+- Primary (D7, a prior-id chain): the prior-report field is empty on 137 of the 2026 continuing activity reports (the
+  FIU gave the prior report in the narrative), so they read as initial reports; only the investigation's own filings,
+  read in date order with their activity periods, show a second report covering the activity after the first.
+- Hazard: 110 corrections in 2026 cite the report they correct and repeat its period, neither initial nor continuing.
+- Files and columns: `sar_filings_2025-07_2026-10.csv` (bsa_id, case_id, filed_at_utc, prior_bsa_id, activity_start,
+  activity_end), the procedure (sections 5 and 6): two files, 6 columns.
+- Stops: the prior-report field alone (0 of 20); every filing citing a prior as continuing (0 of 20); corrections
+  counted as continuing (the continuing column wrong, 10 of 20); the golden.
+- Pin test: the asking sentence pins initial reports and continuing activity reports by month; the device sits in
+  which filing is which kind, never named.
+
+**Separation.** Ask A's device rows (which alert opened an investigation) and ask B's (the SAR log's fields) are read
+by no step of the call: the call reads each alert's own investigation and its disposition, never which alert opened
+it, and never the SAR log; emptying the SAR log leaves every productivity figure identical, and crediting
+investigations to their openers alone leaves the call unchanged (both asserted in `checks.py`).
+
+| Cracker (lands the call, runs the battery, executes every filed rule, reads every helper) | Ask A | Ask B |
+|---|---|---|
+| The cracker: duplicates out, XB-HRJ2 merged, each investigation credited to its first alert, corrections set aside by their repeated period, the prior-report field read as filed | miss | miss |
+| The full includer: every device it can find handled, the silent ones (the opener, the empty field) left | miss | miss |
+
+| Measured on the cut pack (target.zip, generator/ceiling.py) | Ask A kept | Ask B kept | Total |
+|---|---|---|---|
+| the cracker (on the call) | 5 of 56 | 0 of 20 | 48.6 |
+| the mirror (stops at R0; every scenario among an investigation's alerts; every filing citing a prior continuing) | 0 of 56 | 0 of 20 | 12.0 |
+
+- **Mirror leakage:** 0.0 per cent of ask weight (the mirror keeps 0 of 76 ask figures and no table row).
+- **Pair ceiling:** 30.3 (the cracker at 48.6 keeps 5 of 76 ask figures, the mirror at 12.0 none; both on the call
+  48.6).
+- **Measured by:** `generator/ceiling.py` on the cut pack (target.zip, unpacked and read twice), run by `make.py`
+  after every build.
+
+## Leak review
+
+`leak.py task191 --asof 2026-11-02` on the final cut (target.zip e5ddad41): REVIEW, no LEAK. The one REVIEW line,
+ruled: the procedure carries six words of the stump paragraph (business, investigation, decision, raised, financial,
+triage), its own vocabulary for runs, triage, investigations and the SAR decision; it names no scenario, quotes no
+figure and says nothing about how long an open alert has been open or what open alerts become. Harmless. Fixed on the
+way to this cut: the workbooks' writer signature (the library's name in `core.xml`'s creator, behind a namespace
+attribute the scrub missed), the alert column `generated_at_utc` (a generator's word) renamed `created_at_utc`, the
+metadata descriptions reworded off the stump vocabulary, and the thread's sign-off ("Katherine" above "Katherine
+Cobb", read as a second persona by the surface screen's people check) cut to the signature. The isolated reader runs
+at stage 4 from the main thread on `scratchpad/leak-task191/` with `scratchpad/task191_stage4_leak_brief.md`.
+
+## Duplicate check
+
+`guard.py heart` after pulling origin/main (task125 v4, task172 v2, task306 v4 and task482 v16 registered since this
+draw): WARN, `repeat.gate_g` against task130 v5 only, answered in `## Draw`; no ban. `guard.py surface` on the final
+cut: exit 0, one pair promoted for the author's adjudication, task474 (surface 0.101, the gap label time in common: its driver sets a pass mark through the candidates who sat both papers, a link and a population nothing here shares, so not a clone of this build's driver); the nearest neighbours not promoted. Personas in the pack: Katherine Cobb, Miguel Swanson and Leah Berg, all on the card.
+
+## Pre-ship check
+
+- `python3 task191/generator/make.py`: two byte-identical builds; `checks.py` 79 of 79; `verify.py` 0 failed (the
+  Aalen-Johansen estimate files the golden, every scenario within 0.35 points of the generator's); `ceiling.py` pair
+  30.3, both on the call 48.6, mirror leakage 0.0 per cent; target.zip
+  e5ddad411ae0fbcb5b206518af786febd8315cb3d73141612402951bc7375eb6.
+- `figures_check.py` 85 of 85; `precut.py` 61 checks with no FAIL or WARN; `voice-check.py` PASS; `leak.py` REVIEW,
+  ruled; heart WARN on `repeat.gate_g`; surface as above.
+- Generator patterns (`reduce-house-fixes` H13): alert, investigation and BSA numbers rise by varying steps in the
+  order the records were made; run times carry varied seconds and every run completes after its last alert; each
+  workbook's created stamp precedes its modified one and the stamps differ per document; the PDF's dates are in order
+  and it reads back with no line past the margin (all asserted in `checks.py`); the PDF carries no table to clip.
+- Realism: the world runs from January 2025 so the exports open mid-stream (investigations already open on 1 July in
+  the case export, continuing activity reports on older chains in the SAR log); the third distractor is Quality
+  Assurance's case sample.
+- Stage 4 pending: the isolated leak reader and the determinism judge, both spawned from the main thread.
 
 ## Architecture 3 record (spent 2026-10-31 at stage 4)
 
@@ -561,3 +854,24 @@ The pack as built, read against the gates one last time.
   as a decoy against a count filter, and on clean data San Lázaro won trivially, so Layer 1 mess carried the stump.
   Lesson: the reported numbers must be sound and the difficulty a method or estimand choice that a strong analyst with
   clean data still gets wrong the easy way. Report kept as determinism_check_report_arch3.md.
+
+- 2026-10-31, architecture 4 at the draw: the first card (a regional bank, the BSA/AML committee, a filed tuning
+  standard) went stale when task306's architecture 4 registered `filed_standard`, `committee_or_panel` and
+  `financial_institution` inside the ban window; the world was rebuilt as a payments platform with the officer's
+  planning thread as the governing text, the stump and the data untouched.
+- 2026-10-31, architecture 4, ask A first cut as the alerts each scenario raised by quarter: dead before data, the
+  business date is filed for the call, so the ask had no device a careful solver misses. Re-cut onto the
+  investigations each scenario's alerts opened, credited to the opening alert.
+- 2026-10-31, architecture 4, the first world processed escalations in the order the alerts were raised: every alert
+  added to an investigation was raised after its opener, so the case's first alert number was always the opener and
+  ask A's device was empty. Rebuilt with escalations in triage order and alerts of one customer's activity added to
+  the investigation one of them opened.
+- 2026-10-31, architecture 4, the first world started cold on 1 July 2025: the SAR log was near empty for two months
+  and continuing activity reports climbed through 2026, a generator's pattern. The world now runs from January 2025
+  and the exports open in July, the case export holding the investigations already open.
+- 2026-10-31, architecture 4, ask B first cut with corrections as its only device: a careful solver sets corrections
+  aside by their repeated period and keeps the whole ask. The empty prior-report field on some continuing activity
+  reports added as the primary, read only from the investigation's own filing chain.
+- 2026-10-31, architecture 4, a threshold change log as the third distractor: its tightenings and loosenings implied
+  alert volumes moving at their dates, which the world's steady rates do not show, a tell a reader can test. Replaced
+  by Quality Assurance's monthly sample of closed investigations (procedure section 7).

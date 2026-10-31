@@ -1,75 +1,64 @@
 ## Tags
 
-> **Domain:** Human factors and ergonomics, safety incident and error analysis.
+> **Domain:** Banking, credit and financial risk, fraud and AML detection.
 > **Analytical objective:** Anomaly detection and diagnostics.
 
 ## 1. Final Recommendation
 
-**Run the 2027 Driver-Attention Programme at San Lázaro, and at no other depot.**
-San Lázaro's drivers did not brake on 45.2 per cent of their genuine collision warnings in January to October 2026, 2.00 times the fleet's 22.6 per cent. Not Hornacho or Valdeolmos: their high no-brake shares come from four fixed structures that raise a warning on a large share of passes with nothing in the path. La Ribera comes closest at 1.14.
+**Put CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV into the 2027 tuning, and no other scenario.**
+Each is below the 3 per cent productivity floor over the twelve months to 30 September 2026 with every alert counted by how it will end. Not RMF-P2P, MUL-INF and MER-RND: their SARs so far are under 3 per cent of their decided alerts, but their investigations run longest, and the alerts still open on 2 November are mostly SARs to come.
 
 ## 2. Critical Components
 
-1. The terms count genuine warnings only (something in the bus's path), one camera event each, by the depot the bus was allocated to that day, in Lorvega local time.
-2. Read on every collision warning, the fleet's rate is 38.9 per cent and Hornacho and Valdeolmos reach 1.3 times it; San Lázaro sits at 1.16.
-3. Four places fire on a large share of bus passes, from 25.0 to 30.3 per cent; every other place, the Plaza de Abastos included at 2.6 per cent, fires on under 3 per cent. Their 17,968 warnings are not genuine and are set aside.
-4. The Plaza de Abastos warnings are genuine: drivers there let 96.9 per cent pass, so dropping the busiest or most ignored places wrongly removes them too.
+1. Read over the alerts already decided, RMF-P2P, MUL-INF and MER-RND fall below the floor as well as CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV.
+2. On 2 November RMF-P2P, MUL-INF and MER-RND had 91, 127 and 82 alerts from the year still under investigation.
+3. In those scenarios an alert ending in a SAR is decided months after it is raised, while one closed without a SAR is closed within weeks, so an alert still undecided is far more likely than the scenario's average to end in a SAR.
+4. Counted by how they will end, RMF-P2P, MUL-INF and MER-RND clear the floor and CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV stay below it.
 
 ## 3. Step-by-Step Solution
 
-1. From adas_collision_warnings_2025-10_2026-10.csv kept FCW, PCW, FWD_COLL and PED_COLL, one row per event_id, local dates 1 January to 31 October 2026; not braked on is brake_2s N (firmware 1.x) or brake_reaction_ms blank or over 2,000 (2.x).
-2. Gave each warning the depot of its bus that day from fleet_register_2026.xlsx Allocations.
-3. Snapped each warning to the nearest stop-to-stop segment of red_paradas_recorridos_2025_2026.xlsx (Red 2026, valid dates) and counted bus passes per segment from service_return_2025-10_2026-10.csv trips operated on every line and direction using it.
-4. Grouped warnings in 10 m bins along each segment and set aside the clusters firing on 10 per cent or more of the segment's passes.
-5. Took each depot's rate and its ratio to the pooled fleet rate; a depot at 1.3 or more goes in.
-6. Hours on service from etm_logons_2026-10.csv: removed repeated rows and lines 000 and ESC, ended a session at the same driver's next log-on, added the hour when clocks went back on 25 October, depot from hr_depot_assignments_2026.csv on the start date, week of the start.
-7. At-fault collisions from incident_register_2026.xlsx with the driver's and the inspector's report of one incident (same bus, minutes apart) counted once, codes A and C; claims paid from the October bordereau, plates to buses through the registration history, a reopened claim's chain counted once at its latest claim.
-8. Kilometres in service from the return by operating depot (line 25 at Las Tenerías), lines 40 to 46 from July in metres, plus trips operated times each authorised diversion's change for its dates.
+1. Dated each alert in tm_alerts_2025-07_2026-10.csv by the business date of its run in tm_monitoring_runs_2025-07_2026-10.csv, left out the copies closed as duplicates and read XB-HRJ2 with XB-HRJ.
+2. Carried each escalated alert to its investigation in fcm_cases_export_2026-11-02.json: it ends in a SAR when the investigation's disposition is SAR filed; an alert still in triage or in an open investigation is undecided.
+3. For each scenario, read its alerts raised at least 330 days before the extract whose outcome is in: those that ended in a SAR were decided months after the alert, those that did not within weeks.
+4. Counted each undecided alert at the share of those older alerts of its scenario, still undecided at the same age, that ended in a SAR, and divided the SARs and expected SARs by the scenario's alerts in the year.
+5. Sent the scenarios below 3 per cent to the 2027 tuning.
+6. Investigations by quarter: each investigation in the export opened from 1 October 2025 to 30 September 2026 (Eastern date), counted once for the scenario of the alert whose escalation opened it (the alert whose triage closed at the investigation's opening).
+7. SARs by month: each filing in sar_filings_2025-07_2026-10.csv by its Eastern filing date, read along its investigation's filings in date order: the first is the initial report, a later one covering activity after the previous report is a continuing activity report whether or not its prior report field is filled, and one covering the same activity as the report it cites is a correction, left out.
+8. Recommended CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV for the 2027 tuning.
 
 ## 4. Deliverable Answers
 
-### attention_programme_depots_2027.docx
+### tuning_scenarios_2027.docx
 
-1. Depots the programme takes: San Lázaro.
-2. Fleet's rate of counted warnings not braked on: 22.6 per cent.
-3. Depot coming closest without qualifying: La Ribera, ratio 1.14.
+1. Scenarios going into the 2027 tuning: CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV.
+2. Scenarios staying out: ATM-WDL, CHB-ABU, CSH-LDS, ELD-EXP, FAN-OUT, GMB-SPL, MER-RND, MUL-INF, RMF-P2P and XB-HRJ (with XB-HRJ2).
+3. Chart: each scenario's estimated productivity against the 3 per cent floor, CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV in red, the only bars under the line.
 
-### warning_response_by_depot_2026.xlsx
+### tm_alert_figures_2026.xlsx
 
-1. Counted warnings, not braked on, rate (per cent, one decimal) and ratio (two decimals):
-   - San Lázaro: 8,557, 3,868, 45.2, 2.00
-   - Hornacho: 5,700, 889, 15.6, 0.69
-   - Valdeolmos: 7,895, 1,273, 16.1, 0.71
-   - El Quiñón: 5,913, 981, 16.6, 0.73
-   - Las Tenerías: 10,744, 1,877, 17.5, 0.77
-   - La Ribera: 8,280, 2,139, 25.8, 1.14
-   - Santa Clara: 6,190, 1,008, 16.3, 0.72
-2. At-fault collisions, January to October, and claims paid on them (euros):
-   - San Lázaro: 20, 24,207
-   - Hornacho: 25, 25,850
-   - Valdeolmos: 19, 20,517
-   - El Quiñón: 19, 33,737
-   - Las Tenerías: 25, 29,216
-   - La Ribera: 22, 22,579
-   - Santa Clara: 21, 17,280
-3. Kilometres in service, July, August, September and October (whole kilometres):
-   - San Lázaro: 75,127, 72,183, 70,694, 74,009
-   - Hornacho: 66,213, 63,634, 60,226, 62,999
-   - Valdeolmos: 93,313, 93,247, 90,820, 93,543
-   - El Quiñón: 59,390, 55,796, 56,939, 57,969
-   - Las Tenerías: 105,247, 101,901, 101,253, 107,135
-   - La Ribera: 84,360, 80,946, 79,839, 81,039
-   - Santa Clara: 82,443, 80,731, 84,145, 78,799
-4. Drivers' hours on service, weeks from Monday 5, 12, 19 and 26 October (whole hours):
-   - San Lázaro: 4,493, 4,481, 4,514, 4,501
-   - Hornacho: 3,521, 3,493, 3,519, 3,498
-   - Valdeolmos: 4,496, 4,507, 4,510, 4,486
-   - El Quiñón: 3,398, 3,395, 3,378, 3,381
-   - Las Tenerías: 5,621, 5,614, 5,643, 5,617
-   - La Ribera: 4,507, 4,516, 4,494, 4,510
-   - Santa Clara: 4,502, 4,489, 4,492, 4,513
-
-### warning_response_2026.svg
-
-1. One bar per depot for the rate of counted warnings not braked on, with a dashed line at 1.3 times the fleet's rate (29.4 per cent).
-2. San Lázaro marked in red; the title names it.
+4. Investigations each scenario's alerts opened, by quarter, whole numbers:
+   - CSH-LDS: 2025 Q4 426, 2026 Q1 399, 2026 Q2 404, 2026 Q3 401
+   - CSH-VEL: 2025 Q4 163, 2026 Q1 143, 2026 Q2 148, 2026 Q3 144
+   - XB-HRJ (with XB-HRJ2): 2025 Q4 118, 2026 Q1 153, 2026 Q2 146, 2026 Q3 133
+   - RMF-P2P: 2025 Q4 322, 2026 Q1 304, 2026 Q2 292, 2026 Q3 311
+   - MUL-INF: 2025 Q4 391, 2026 Q1 366, 2026 Q2 345, 2026 Q3 391
+   - FAN-OUT: 2025 Q4 154, 2026 Q1 192, 2026 Q2 184, 2026 Q3 162
+   - CHB-ABU: 2025 Q4 108, 2026 Q1 95, 2026 Q2 99, 2026 Q3 105
+   - ATM-WDL: 2025 Q4 90, 2026 Q1 96, 2026 Q2 111, 2026 Q3 126
+   - PRF-DEV: 2025 Q4 166, 2026 Q1 184, 2026 Q2 188, 2026 Q3 177
+   - DRM-REA: 2025 Q4 71, 2026 Q1 80, 2026 Q2 77, 2026 Q3 71
+   - MER-RND: 2025 Q4 329, 2026 Q1 329, 2026 Q2 287, 2026 Q3 331
+   - CRY-OFF: 2025 Q4 72, 2026 Q1 84, 2026 Q2 73, 2026 Q3 69
+   - ELD-EXP: 2025 Q4 108, 2026 Q1 98, 2026 Q2 109, 2026 Q3 94
+   - GMB-SPL: 2025 Q4 76, 2026 Q1 79, 2026 Q2 80, 2026 Q3 83
+5. SARs filed in 2026 by month, initial and continuing activity, whole numbers:
+   - January: initial 161, continuing activity 85
+   - February: initial 135, continuing activity 93
+   - March: initial 161, continuing activity 70
+   - April: initial 152, continuing activity 76
+   - May: initial 157, continuing activity 86
+   - June: initial 168, continuing activity 89
+   - July: initial 133, continuing activity 85
+   - August: initial 163, continuing activity 102
+   - September: initial 162, continuing activity 88
+   - October: initial 143, continuing activity 79

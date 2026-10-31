@@ -1,231 +1,635 @@
 {
- "at_fault_collisions": {
-  "El Quiñón": 19,
-  "Hornacho": 25,
-  "La Ribera": 22,
-  "Las Tenerías": 25,
-  "San Lázaro": 20,
-  "Santa Clara": 21,
-  "Valdeolmos": 19
+ "ask_investigations": {
+  "ATM-WDL": {
+   "2025 Q4": 90,
+   "2026 Q1": 96,
+   "2026 Q2": 111,
+   "2026 Q3": 126
+  },
+  "CHB-ABU": {
+   "2025 Q4": 108,
+   "2026 Q1": 95,
+   "2026 Q2": 99,
+   "2026 Q3": 105
+  },
+  "CRY-OFF": {
+   "2025 Q4": 72,
+   "2026 Q1": 84,
+   "2026 Q2": 73,
+   "2026 Q3": 69
+  },
+  "CSH-LDS": {
+   "2025 Q4": 426,
+   "2026 Q1": 399,
+   "2026 Q2": 404,
+   "2026 Q3": 401
+  },
+  "CSH-VEL": {
+   "2025 Q4": 163,
+   "2026 Q1": 143,
+   "2026 Q2": 148,
+   "2026 Q3": 144
+  },
+  "DRM-REA": {
+   "2025 Q4": 71,
+   "2026 Q1": 80,
+   "2026 Q2": 77,
+   "2026 Q3": 71
+  },
+  "ELD-EXP": {
+   "2025 Q4": 108,
+   "2026 Q1": 98,
+   "2026 Q2": 109,
+   "2026 Q3": 94
+  },
+  "FAN-OUT": {
+   "2025 Q4": 154,
+   "2026 Q1": 192,
+   "2026 Q2": 184,
+   "2026 Q3": 162
+  },
+  "GMB-SPL": {
+   "2025 Q4": 76,
+   "2026 Q1": 79,
+   "2026 Q2": 80,
+   "2026 Q3": 83
+  },
+  "MER-RND": {
+   "2025 Q4": 329,
+   "2026 Q1": 329,
+   "2026 Q2": 287,
+   "2026 Q3": 331
+  },
+  "MUL-INF": {
+   "2025 Q4": 391,
+   "2026 Q1": 366,
+   "2026 Q2": 345,
+   "2026 Q3": 391
+  },
+  "PRF-DEV": {
+   "2025 Q4": 166,
+   "2026 Q1": 184,
+   "2026 Q2": 188,
+   "2026 Q3": 177
+  },
+  "RMF-P2P": {
+   "2025 Q4": 322,
+   "2026 Q1": 304,
+   "2026 Q2": 292,
+   "2026 Q3": 311
+  },
+  "XB-HRJ": {
+   "2025 Q4": 118,
+   "2026 Q1": 153,
+   "2026 Q2": 146,
+   "2026 Q3": 133
+  }
+ },
+ "ask_sars": {
+  "2026-01": {
+   "continuing": 85,
+   "initial": 161
+  },
+  "2026-02": {
+   "continuing": 93,
+   "initial": 135
+  },
+  "2026-03": {
+   "continuing": 70,
+   "initial": 161
+  },
+  "2026-04": {
+   "continuing": 76,
+   "initial": 152
+  },
+  "2026-05": {
+   "continuing": 86,
+   "initial": 157
+  },
+  "2026-06": {
+   "continuing": 89,
+   "initial": 168
+  },
+  "2026-07": {
+   "continuing": 85,
+   "initial": 133
+  },
+  "2026-08": {
+   "continuing": 102,
+   "initial": 163
+  },
+  "2026-09": {
+   "continuing": 88,
+   "initial": 162
+  },
+  "2026-10": {
+   "continuing": 79,
+   "initial": 143
+  }
  },
  "call": {
-  "closest": "La Ribera",
-  "closest_ratio": 1.14,
-  "depots": [
-   "San Lázaro"
+  "stay": [
+   "ATM-WDL",
+   "CHB-ABU",
+   "CSH-LDS",
+   "ELD-EXP",
+   "FAN-OUT",
+   "GMB-SPL",
+   "MER-RND",
+   "MUL-INF",
+   "RMF-P2P",
+   "XB-HRJ"
   ],
-  "line_ratio": 1.3
- },
- "claims_paid_eur": {
-  "El Quiñón": 33737,
-  "Hornacho": 25850,
-  "La Ribera": 22579,
-  "Las Tenerías": 29216,
-  "San Lázaro": 24207,
-  "Santa Clara": 17280,
-  "Valdeolmos": 20517
- },
- "conventions": {
-  "bin_m": 10,
-  "brake_window_ms": 2000,
-  "chart_line_rate_pct": 29.4,
-  "lines_in_metres_from_july": [
-   40,
-   41,
-   44,
-   46
-  ],
-  "share_set_aside_pct": 10,
-  "week_starts_october": [
-   5,
-   12,
-   19,
-   26
+  "tuning": [
+   "CRY-OFF",
+   "CSH-VEL",
+   "DRM-REA",
+   "PRF-DEV"
   ]
  },
- "default_path": {
-  "depots": [
-   "Hornacho",
-   "Valdeolmos"
-  ],
-  "fleet_rate_pct": 38.9,
-  "ratios": {
-   "El Quiñón": 0.43,
-   "Hornacho": 1.41,
-   "La Ribera": 0.66,
-   "Las Tenerías": 0.45,
-   "San Lázaro": 1.16,
-   "Santa Clara": 0.42,
-   "Valdeolmos": 1.48
+ "constants": {
+  "floor_per_cent": 3.0,
+  "history_days": 330
+ },
+ "counts": {
+  "ATM-WDL": {
+   "alerts": 2263,
+   "decided": 2225,
+   "sar_decided": 101,
+   "undecided": 38,
+   "undecided_in_investigation": 38
+  },
+  "CHB-ABU": {
+   "alerts": 1495,
+   "decided": 1470,
+   "sar_decided": 90,
+   "undecided": 25,
+   "undecided_in_investigation": 25
+  },
+  "CRY-OFF": {
+   "alerts": 2681,
+   "decided": 2651,
+   "sar_decided": 46,
+   "undecided": 30,
+   "undecided_in_investigation": 30
+  },
+  "CSH-LDS": {
+   "alerts": 6210,
+   "decided": 6136,
+   "sar_decided": 489,
+   "undecided": 74,
+   "undecided_in_investigation": 74
+  },
+  "CSH-VEL": {
+   "alerts": 7254,
+   "decided": 7208,
+   "sar_decided": 132,
+   "undecided": 46,
+   "undecided_in_investigation": 46
+  },
+  "DRM-REA": {
+   "alerts": 3104,
+   "decided": 3085,
+   "sar_decided": 47,
+   "undecided": 19,
+   "undecided_in_investigation": 19
+  },
+  "ELD-EXP": {
+   "alerts": 1661,
+   "decided": 1627,
+   "sar_decided": 106,
+   "undecided": 34,
+   "undecided_in_investigation": 34
+  },
+  "FAN-OUT": {
+   "alerts": 3633,
+   "decided": 3526,
+   "sar_decided": 165,
+   "undecided": 107,
+   "undecided_in_investigation": 107
+  },
+  "GMB-SPL": {
+   "alerts": 1083,
+   "decided": 1047,
+   "sar_decided": 56,
+   "undecided": 36,
+   "undecided_in_investigation": 36
+  },
+  "MER-RND": {
+   "alerts": 3258,
+   "decided": 3176,
+   "sar_decided": 87,
+   "undecided": 82,
+   "undecided_in_investigation": 82
+  },
+  "MUL-INF": {
+   "alerts": 4911,
+   "decided": 4784,
+   "sar_decided": 113,
+   "undecided": 127,
+   "undecided_in_investigation": 127
+  },
+  "PRF-DEV": {
+   "alerts": 10960,
+   "decided": 10885,
+   "sar_decided": 128,
+   "undecided": 75,
+   "undecided_in_investigation": 75
+  },
+  "RMF-P2P": {
+   "alerts": 3884,
+   "decided": 3793,
+   "sar_decided": 103,
+   "undecided": 91,
+   "undecided_in_investigation": 91
+  },
+  "XB-HRJ": {
+   "alerts": 2841,
+   "decided": 2798,
+   "sar_decided": 112,
+   "undecided": 43,
+   "undecided_in_investigation": 43
   }
  },
- "depots": {
-  "El Quiñón": {
-   "not_braked": 981,
-   "rate_pct": 16.6,
-   "ratio": 0.73,
-   "warnings": 5913
+ "family": {
+  "business date read from the Eastern clock": {
+   "productivity": {
+    "ATM-WDL": 5.441,
+    "CHB-ABU": 6.594,
+    "CRY-OFF": 2.177,
+    "CSH-LDS": 8.559,
+    "CSH-VEL": 2.154,
+    "DRM-REA": 1.85,
+    "ELD-EXP": 7.686,
+    "FAN-OUT": 6.616,
+    "GMB-SPL": 7.164,
+    "MER-RND": 4.64,
+    "MUL-INF": 4.476,
+    "PRF-DEV": 1.507,
+    "RMF-P2P": 4.52,
+    "XB-HRJ": 4.725
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   },
-  "Hornacho": {
-   "not_braked": 889,
-   "rate_pct": 15.6,
-   "ratio": 0.69,
-   "warnings": 5700
+  "history from 300 days old": {
+   "productivity": {
+    "ATM-WDL": 5.468,
+    "CHB-ABU": 6.599,
+    "CRY-OFF": 2.189,
+    "CSH-LDS": 8.561,
+    "CSH-VEL": 2.157,
+    "DRM-REA": 1.84,
+    "ELD-EXP": 7.715,
+    "FAN-OUT": 6.557,
+    "GMB-SPL": 7.067,
+    "MER-RND": 4.667,
+    "MUL-INF": 4.469,
+    "PRF-DEV": 1.517,
+    "RMF-P2P": 4.53,
+    "XB-HRJ": 4.732
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   },
-  "La Ribera": {
-   "not_braked": 2139,
-   "rate_pct": 25.8,
-   "ratio": 1.14,
-   "warnings": 8280
+  "history from 365 days old": {
+   "productivity": {
+    "ATM-WDL": 5.521,
+    "CHB-ABU": 6.613,
+    "CRY-OFF": 2.146,
+    "CSH-LDS": 8.569,
+    "CSH-VEL": 2.145,
+    "DRM-REA": 1.836,
+    "ELD-EXP": 7.695,
+    "FAN-OUT": 6.662,
+    "GMB-SPL": 7.214,
+    "MER-RND": 4.676,
+    "MUL-INF": 4.483,
+    "PRF-DEV": 1.5,
+    "RMF-P2P": 4.524,
+    "XB-HRJ": 4.724
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   },
-  "Las Tenerías": {
-   "not_braked": 1877,
-   "rate_pct": 17.5,
-   "ratio": 0.77,
-   "warnings": 10744
+  "mature cohorts, 6 months": {
+   "productivity": {
+    "ATM-WDL": 4.981,
+    "CHB-ABU": 6.271,
+    "CRY-OFF": 2.543,
+    "CSH-LDS": 9.035,
+    "CSH-VEL": 2.283,
+    "DRM-REA": 2.14,
+    "ELD-EXP": 7.816,
+    "FAN-OUT": 6.504,
+    "GMB-SPL": 5.979,
+    "MER-RND": 3.939,
+    "MUL-INF": 3.427,
+    "PRF-DEV": 1.373,
+    "RMF-P2P": 4.097,
+    "XB-HRJ": 4.77
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   },
-  "San Lázaro": {
-   "not_braked": 3868,
-   "rate_pct": 45.2,
-   "ratio": 2.0,
-   "warnings": 8557
+  "mature cohorts, 7 months": {
+   "productivity": {
+    "ATM-WDL": 4.791,
+    "CHB-ABU": 6.258,
+    "CRY-OFF": 2.381,
+    "CSH-LDS": 9.258,
+    "CSH-VEL": 2.288,
+    "DRM-REA": 2.17,
+    "ELD-EXP": 8.226,
+    "FAN-OUT": 6.318,
+    "GMB-SPL": 6.316,
+    "MER-RND": 4.118,
+    "MUL-INF": 3.717,
+    "PRF-DEV": 1.36,
+    "RMF-P2P": 4.497,
+    "XB-HRJ": 4.899
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   },
-  "Santa Clara": {
-   "not_braked": 1008,
-   "rate_pct": 16.3,
-   "ratio": 0.72,
-   "warnings": 6190
+  "mature cohorts, 8 months": {
+   "productivity": {
+    "ATM-WDL": 5.078,
+    "CHB-ABU": 6.402,
+    "CRY-OFF": 2.618,
+    "CSH-LDS": 8.847,
+    "CSH-VEL": 2.25,
+    "DRM-REA": 2.022,
+    "ELD-EXP": 8.369,
+    "FAN-OUT": 6.172,
+    "GMB-SPL": 6.303,
+    "MER-RND": 4.121,
+    "MUL-INF": 3.866,
+    "PRF-DEV": 1.397,
+    "RMF-P2P": 4.382,
+    "XB-HRJ": 4.726
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   },
-  "Valdeolmos": {
-   "not_braked": 1273,
-   "rate_pct": 16.1,
-   "ratio": 0.71,
-   "warnings": 7895
+  "mature cohorts, 9 months": {
+   "productivity": {
+    "ATM-WDL": 4.891,
+    "CHB-ABU": 6.691,
+    "CRY-OFF": 2.31,
+    "CSH-LDS": 8.419,
+    "CSH-VEL": 2.332,
+    "DRM-REA": 2.148,
+    "ELD-EXP": 8.787,
+    "FAN-OUT": 6.601,
+    "GMB-SPL": 6.234,
+    "MER-RND": 4.422,
+    "MUL-INF": 3.479,
+    "PRF-DEV": 1.465,
+    "RMF-P2P": 4.266,
+    "XB-HRJ": 4.384
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
+  },
+  "the re-run duplicates kept": {
+   "productivity": {
+    "ATM-WDL": 5.425,
+    "CHB-ABU": 6.586,
+    "CRY-OFF": 2.17,
+    "CSH-LDS": 8.543,
+    "CSH-VEL": 2.149,
+    "DRM-REA": 1.843,
+    "ELD-EXP": 7.649,
+    "FAN-OUT": 6.599,
+    "GMB-SPL": 7.157,
+    "MER-RND": 4.617,
+    "MUL-INF": 4.459,
+    "PRF-DEV": 1.503,
+    "RMF-P2P": 4.506,
+    "XB-HRJ": 4.72
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   }
  },
- "false_place_warnings": 17968,
- "false_places": [
-  {
-   "name": "the Glorieta del Olivo (line 44, outbound to its terminus)",
-   "passes": 27808,
-   "share_pct": 26.6,
-   "warnings": 7405
+ "ladder": {
+  "R0 productivity over the decided alerts (the conversion an MI pack shows)": {
+   "productivity": {
+    "ATM-WDL": 4.539,
+    "CHB-ABU": 6.122,
+    "CRY-OFF": 1.735,
+    "CSH-LDS": 7.969,
+    "CSH-VEL": 1.831,
+    "DRM-REA": 1.524,
+    "ELD-EXP": 6.515,
+    "FAN-OUT": 4.68,
+    "GMB-SPL": 5.349,
+    "MER-RND": 2.739,
+    "MUL-INF": 2.362,
+    "PRF-DEV": 1.176,
+    "RMF-P2P": 2.716,
+    "XB-HRJ": 4.003
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
   },
-  {
-   "name": "the bus-only underpass beneath the railway at Almadraba (line 27)",
-   "passes": 17266,
-   "share_pct": 25.0,
-   "warnings": 4322
+  "R1 SARs so far over every alert, the undecided read as not ending in a SAR": {
+   "productivity": {
+    "ATM-WDL": 4.463,
+    "CHB-ABU": 6.02,
+    "CRY-OFF": 1.716,
+    "CSH-LDS": 7.874,
+    "CSH-VEL": 1.82,
+    "DRM-REA": 1.514,
+    "ELD-EXP": 6.382,
+    "FAN-OUT": 4.542,
+    "GMB-SPL": 5.171,
+    "MER-RND": 2.67,
+    "MUL-INF": 2.301,
+    "PRF-DEV": 1.168,
+    "RMF-P2P": 2.652,
+    "XB-HRJ": 3.942
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
   },
-  {
-   "name": "the bollard gate on the Vía Verde busway (line 40)",
-   "passes": 14107,
-   "share_pct": 27.9,
-   "warnings": 3936
+  "R2 the undecided projected at the scenario's decided share": {
+   "productivity": {
+    "ATM-WDL": 4.539,
+    "CHB-ABU": 6.122,
+    "CRY-OFF": 1.735,
+    "CSH-LDS": 7.969,
+    "CSH-VEL": 1.831,
+    "DRM-REA": 1.524,
+    "ELD-EXP": 6.515,
+    "FAN-OUT": 4.68,
+    "GMB-SPL": 5.349,
+    "MER-RND": 2.739,
+    "MUL-INF": 2.362,
+    "PRF-DEV": 1.176,
+    "RMF-P2P": 2.716,
+    "XB-HRJ": 4.003
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
   },
-  {
-   "name": "the bend on the Los Molinos link road (line 33)",
-   "passes": 7599,
-   "share_pct": 30.3,
-   "warnings": 2305
+  "R3 undecided investigations at the scenario's investigation SAR share": {
+   "productivity": {
+    "ATM-WDL": 4.824,
+    "CHB-ABU": 6.33,
+    "CRY-OFF": 1.868,
+    "CSH-LDS": 8.212,
+    "CSH-VEL": 1.952,
+    "DRM-REA": 1.632,
+    "ELD-EXP": 6.962,
+    "FAN-OUT": 5.357,
+    "GMB-SPL": 6.055,
+    "MER-RND": 2.895,
+    "MUL-INF": 2.583,
+    "PRF-DEV": 1.295,
+    "RMF-P2P": 2.884,
+    "XB-HRJ": 4.283
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "MER-RND",
+    "MUL-INF",
+    "PRF-DEV",
+    "RMF-P2P"
+   ]
+  },
+  "R4 each undecided alert read by how the scenario's alerts undecided at that age ended (golden)": {
+   "productivity": {
+    "ATM-WDL": 5.441,
+    "CHB-ABU": 6.594,
+    "CRY-OFF": 2.177,
+    "CSH-LDS": 8.559,
+    "CSH-VEL": 2.154,
+    "DRM-REA": 1.85,
+    "ELD-EXP": 7.686,
+    "FAN-OUT": 6.616,
+    "GMB-SPL": 7.164,
+    "MER-RND": 4.64,
+    "MUL-INF": 4.476,
+    "PRF-DEV": 1.507,
+    "RMF-P2P": 4.52,
+    "XB-HRJ": 4.725
+   },
+   "tuning": [
+    "CRY-OFF",
+    "CSH-VEL",
+    "DRM-REA",
+    "PRF-DEV"
+   ]
   }
+ },
+ "names": {
+  "ATM-WDL": "Card withdrawals at many ATMs in one day",
+  "CHB-ABU": "Merchant chargeback and refund abuse",
+  "CRY-OFF": "Transfers out to virtual asset exchanges",
+  "CSH-LDS": "Cash loads under the reporting threshold at retail partners",
+  "CSH-VEL": "Cash-load velocity against the account's profile",
+  "DRM-REA": "Dormant account reactivated with large flows",
+  "ELD-EXP": "Older customer paying new payees after a contact change",
+  "FAN-OUT": "Payments out to many new recipients",
+  "GMB-SPL": "Payments split across gambling merchants",
+  "MER-RND": "Round-amount payments into a merchant from few payers",
+  "MUL-INF": "Many unrelated senders into one wallet",
+  "PRF-DEV": "Activity far outside the account's expected profile",
+  "RMF-P2P": "Funds moved in and out within 72 hours",
+  "XB-HRJ": "Cross-border transfers with high-risk jurisdictions"
+ },
+ "productivity": {
+  "ATM-WDL": 5.441,
+  "CHB-ABU": 6.594,
+  "CRY-OFF": 2.177,
+  "CSH-LDS": 8.559,
+  "CSH-VEL": 2.154,
+  "DRM-REA": 1.85,
+  "ELD-EXP": 7.686,
+  "FAN-OUT": 6.616,
+  "GMB-SPL": 7.164,
+  "MER-RND": 4.64,
+  "MUL-INF": 4.476,
+  "PRF-DEV": 1.507,
+  "RMF-P2P": 4.52,
+  "XB-HRJ": 4.725
+ },
+ "traps": [
+  "RMF-P2P",
+  "MUL-INF",
+  "MER-RND"
  ],
- "fleet_not_braked": 12035,
- "fleet_rate_pct": 22.6,
- "fleet_warnings": 53279,
- "gap_to_line": 0.16,
- "hours_on_service": {
-  "El Quiñón": [
-   3398,
-   3395,
-   3378,
-   3381
-  ],
-  "Hornacho": [
-   3521,
-   3493,
-   3519,
-   3498
-  ],
-  "La Ribera": [
-   4507,
-   4516,
-   4494,
-   4510
-  ],
-  "Las Tenerías": [
-   5621,
-   5614,
-   5643,
-   5617
-  ],
-  "San Lázaro": [
-   4493,
-   4481,
-   4514,
-   4501
-  ],
-  "Santa Clara": [
-   4502,
-   4489,
-   4492,
-   4513
-  ],
-  "Valdeolmos": [
-   4496,
-   4507,
-   4510,
-   4486
-  ]
- },
- "kilometres_in_service": {
-  "El Quiñón": [
-   59390,
-   55796,
-   56939,
-   57969
-  ],
-  "Hornacho": [
-   66213,
-   63634,
-   60226,
-   62999
-  ],
-  "La Ribera": [
-   84360,
-   80946,
-   79839,
-   81039
-  ],
-  "Las Tenerías": [
-   105247,
-   101901,
-   101253,
-   107135
-  ],
-  "San Lázaro": [
-   75127,
-   72183,
-   70694,
-   74009
-  ],
-  "Santa Clara": [
-   82443,
-   80731,
-   84145,
-   78799
-  ],
-  "Valdeolmos": [
-   93313,
-   93247,
-   90820,
-   93543
-  ]
- },
- "plaza": {
-  "not_braked_pct": 96.9,
-  "passes": 113716,
-  "share_pct": 2.6,
-  "warnings": 2970
+ "truth": {
+  "ATM-WDL": 5.612,
+  "CHB-ABU": 6.622,
+  "CRY-OFF": 2.126,
+  "CSH-LDS": 8.454,
+  "CSH-VEL": 2.082,
+  "DRM-REA": 1.772,
+  "ELD-EXP": 7.465,
+  "FAN-OUT": 6.551,
+  "GMB-SPL": 6.556,
+  "MER-RND": 4.573,
+  "MUL-INF": 4.459,
+  "PRF-DEV": 1.451,
+  "RMF-P2P": 4.454,
+  "XB-HRJ": 4.681
  }
 }

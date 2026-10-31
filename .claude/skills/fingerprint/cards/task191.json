@@ -1,18 +1,18 @@
 {
   "task": "task191",
-  "architecture": "v4 (re-root 2026-10-31: a regional bank's transaction-monitoring scenarios, the 2027 tuning set read on the share of each scenario's alerts that end in a SAR, the alerts still under investigation included)",
+  "architecture": "v4 (re-root 2026-10-31: a US payments platform's transaction-monitoring scenarios, the 2027 tuning set read on the share of each scenario's alerts that end in a SAR, the alerts still under investigation included)",
   "drawn": "2026-10-31",
   "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 3 moved to lineage, spent at stage 4 (judge SEND_BACK on Gate G and Gate H3)",
   "domain": "banking-credit-financial-risk",
   "subdomain": "fraud-aml-detection",
   "client_domain": "banking-credit-financial-risk",
-  "niche": "a regional bank's AML transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious activity report too rarely to escape the next year's tuning",
+  "niche": "a payments platform's AML transaction-monitoring scenarios, read for the ones whose alerts end in a suspicious activity report too rarely to escape the next year's tuning",
   "objective": "anomaly-detection",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "scoring_unit": "other",
-  "answer": "",
+  "answer": "CRY-OFF, CSH-VEL, DRM-REA and PRF-DEV go into the 2027 tuning and no other scenario; RMF-P2P, MUL-INF and MER-RND, below the floor on their decided alerts, clear it with their open investigations read by how they will end",
   "answer_source": "submission.md block 1; golden tuning paper and alert figures workbook; generator/figures.json call",
   "gap": [
     "time",
@@ -32,38 +32,39 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who merges the re-run duplicates, reads the replaced scenario with its replacement, carries each alert to the investigation it joined and reads the standard right (every alert raised in the year counts, those still under investigation by how they will end) projects the undecided alerts at the share of SARs among the scenario's decided ones, or reads productivity over decided alerts alone, and sends the slow-investigation scenarios to tuning; both read every rule right and are wrong because an alert heading for a SAR stays open for months while one heading for a closure without filing is closed within weeks, so a scenario's undecided alerts are mostly its SARs to come.",
+  "analyst_test": "A strong analyst who drops the re-run duplicates, reads XB-HRJ with XB-HRJ2, dates each alert by its run's business date, carries each alert to the investigation it was escalated into or added to and reads the standard right (every alert raised in the year counts, those still under investigation by how they will end) reads productivity over the decided alerts, or projects the undecided ones at the decided share or at the share of decided investigations that filed, and sends CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P to tuning; every rule is read right and the answer is wrong because an alert heading for a SAR stays under investigation for about seven months while one heading for a closure without filing is closed within weeks, so the slow scenarios' undecided alerts are mostly SARs to come.",
   "domain_test": "The deciding quantity is each scenario's alert-to-SAR conversion, the productivity measure AML tuning reads, and it is open on any extract because a SAR comes only after escalation, an investigation and the filing decision, months after the alert, while an alert closed without suspicion is closed at triage within days; put another field's nouns in (complaints resolved, claims paid) and nothing in them takes a suspicious-activity investigation's months to reach the rare outcome while the common one closes at once, and the task stops reading the same.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:undecided-alerts-are-mostly-sars-to-come",
   "layer1": [
-    "alerts stamped in UTC by the overnight monitoring run while the bank's business day is Eastern time",
+    "alerts stamped in UTC by the nightly monitoring run while the platform's business day is Eastern time and ends at 22:00",
     "a March 2026 re-run of one night's monitoring that raised a day's alerts a second time under new alert numbers",
     "a scenario replaced in April 2026 by a re-thresholded version under a new code",
-    "alerts merged into investigations that span several scenarios, the SAR decision recorded on the investigation",
-    "SAR filings that are initial, continuing-activity or amended, told apart only by their prior-report references",
+    "alerts added to investigations that other scenarios' alerts opened, the SAR decision recorded on the investigation",
+    "a case manager export that also holds investigations opened before the alert export starts",
+    "SAR filings that are initial, continuing activity or corrections, with the prior-report field empty on some continuing activity reports",
     "investigation records exported as an event history in JSON"
   ],
-  "stakeholder_role": "the bank's BSA/AML officer, who sets the 2027 monitoring tuning plan before the BSA/AML committee",
+  "stakeholder_role": "the platform's BSA/AML officer, who sets the 2027 monitoring tuning set for the executive risk meeting before the 2027 independent AML review",
   "role_family": "compliance_or_audit",
   "spine": {
-    "file": "tm_alerts_2025-10_2026-10.csv",
-    "rows": 0,
+    "file": "tm_alerts_2025-07_2026-10.csv",
+    "rows": 74360,
     "entity": "one alert a monitoring scenario raised on a customer's activity (a re-run alert appears twice)",
-    "grain": "alert, October 2025 to October 2026",
+    "grain": "alert, July 2025 to October 2026",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "executive_team",
   "forcing_event": "audit_or_inspection",
-  "org_family": "financial_institution",
+  "org_family": "software_or_platform",
   "world": {
-    "geography": "United States (a fictional regional bank in Ohio)",
+    "geography": "United States (a fictional payments platform in Columbus, Ohio, licensed as a money transmitter)",
     "currency": "USD",
-    "org_type": "regional commercial bank",
+    "org_type": "payments platform (P2P and merchant payments)",
     "invented_names": [
-      "Kestrel Point Bank"
+      "Kestrel Pay"
     ],
     "people": [
       "Katherine Cobb",
@@ -76,10 +77,10 @@
     "tm_alert_figures_2026.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "whether",
+  "question_form": "what",
   "driver": "Each unit's share of cases that end in the rare outcome is read over every case it raised in the period, those still undecided included, and because a case heading for the rare outcome stays open for months while one heading for the common outcome is closed within weeks, the undecided cases are mostly rare-outcome cases; reading the share over decided cases alone, or projecting the undecided ones at the decided cases' share, understates it most for the units whose rare-outcome cases take longest to decide, so units that clear the floor read below it.",
-  "driver_concrete": "Each transaction-monitoring scenario's productivity, the share of its alerts raised in the year to 30 September 2026 that end in a SAR, read on 2 November 2026 when the slow scenarios' SAR cases (rapid movement of funds, mule inflows, trade-counterparty wires) are mostly still under investigation while their alerts closed without suspicion were closed at triage within days.",
-  "stump": "Productivity read the way the monitoring MI reads it, the SARs among the alerts already decided (or the undecided alerts projected at that share), sends the rapid-movement, mule-inflow and trade-counterparty scenarios to tuning beside the genuinely unproductive ones; the step that lands a solver there is taking the undecided alerts to end like the decided ones, when an alert heading for a SAR stays under investigation for months and one heading for a closure without filing is closed within days.",
+  "driver_concrete": "Each transaction-monitoring scenario's productivity, the share of its alerts raised in the year to 30 September 2026 that end in a SAR, read on 2 November 2026 when the slow scenarios' SAR investigations (funds moved in and out within 72 hours, many unrelated senders into one wallet, round-amount payments into a merchant) are mostly still open while their alerts closed without a SAR were closed within weeks.",
+  "stump": "Productivity read the way the monitoring MI reads it, the SARs among the alerts already decided (or the undecided alerts projected at that share, or at the share of decided investigations that filed), files CRY-OFF, CSH-VEL, DRM-REA, MER-RND, MUL-INF, PRF-DEV and RMF-P2P: it sends the funds-in-and-out, many-senders and round-amount merchant scenarios to tuning beside the genuinely unproductive ones; the step that lands a solver there is taking the undecided alerts to end like the decided ones, when an alert still undecided two months after it was raised has, in the scenario's own history, mostly ended in a SAR.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task192": "task192's lineage v2 counted a cohort's eventual events with the other terminal state leaving the population at risk, in conflict-event data; task191 reads a share of decided outcomes where the time to decision itself depends on the outcome, so the undecided cases carry the rare outcome, in AML alert dispositions.",
@@ -242,9 +243,9 @@
     }
   ],
   "shell": {
-    "question form": "whether",
-    "second-sentence opener": "attention",
-    "rounding opener": "state",
-    "deliverable set": "docx+svg+xlsx"
+    "question form": "what",
+    "second-sentence opener": "make",
+    "rounding opener": "investigations",
+    "deliverable set": "docx+xlsx"
   }
 }
