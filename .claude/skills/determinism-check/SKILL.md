@@ -268,6 +268,12 @@ time). `precut.py` refuses an unresolved row; `checks.py` asserts every row.
   rather than from the data. Assert the edge distance, and name the tightest figure from the same number.
 - **Bins:** every graded figure mid-bin on a non-round value, flip condition stated as a number; never
   grade an iteration count, an even-set median, or a percentage near a one-decimal edge (Part 3).
+- **A chained rounding has an edge at every link.** Where a filed rule rounds an intermediate before it
+  feeds a graded figure (a measure to the cent, then times a trend factor, then a share of it), the
+  intermediate's own edge is a graded edge: measure it under every defensible conformance of the records it
+  sums (each version rule, void and reversal reading). task482's 2025 measures sat 0.19 and 0.28 cents
+  above a cent's edge, a judge's reversal reading landed them under it, and two graded thresholds moved a
+  cent; grade such a figure at a unit the chain cannot cross, or move the intermediate mid-bin.
 - **The bin is wider than the estimator, measured in bins before data is cut.** Where the graded figure is
   estimated rather than counted, three quantities are measured in units of its bin and written into the ladder:
   the decisive step's own worth, the spread between the defensible subgroups or samples an estimate could be
