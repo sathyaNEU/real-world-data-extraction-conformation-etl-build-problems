@@ -1,6 +1,7 @@
 """Generator assertions: the call, its family, the ladder, the fork table, the three rules on the clean truth, the asks'
 devices, separation, the input gates and the stock identity. Returns the number of failures."""
 import os
+import re
 
 import numpy as np
 import pandas as pd
@@ -74,8 +75,6 @@ def main(target, R=None):
           and m >= 1.2, "%s %d, x%.2f (the plan's opening position gives the golden)" % (w, f, m))
     import docx
     plan = " ".join(p_.text for p_ in docx.Document(os.path.join(target, B.FILES["plan"])).paragraphs)
-    dic = docx.Document(os.path.join(target, B.FILES["dictionary"]))
-    dic_text = " ".join(c_.text for t_ in dic.tables for r_ in t_.rows for c_ in r_.cells)
     check("SF2 the plan values half of the out-of-stock line-days, naming no particular half; the additions are half the loss",
           P.CUT == 0.5 and "removing half of a category's out-of-stock line-days" in plan and
           all(abs(add[c] - 0.5 * est[c]["net"]) < 1e-6 for c in S.CATS))
@@ -83,7 +82,7 @@ def main(target, R=None):
     check("SF3 both years averaged instead of the twelve months to 30 June 2026: infant formula still first",
           w == "Infant formula" and m >= 1.5 and "over the twelve months to 30 June 2026" in plan, "%s %d, x%.2f" % (w, f, m))
     lnf = D["ln"]
-    pos = pd.read_parquet(os.path.join(target, B.FILES["pos"]))
+    pos = pd.read_parquet(os.path.join(target, B.FILES["pos"])).rename(columns={"net_sales_nzd_incl_gst": "net_sales_nzd"})
     fy = pd.to_datetime(pos.trade_date) >= P.BASE_LO
     code = pd.read_csv(os.path.join(target, B.FILES["codes"]), dtype={"item_code": str})
     art = dict(zip(code.item_code, code.article))
@@ -91,8 +90,14 @@ def main(target, R=None):
     till = pos[fy].assign(p=lambda x: x.item_code.map(art).map(p26))
     check("SF4 the till's 2025-26 value is units at the 2025-26 shelf price: one valuation",
           np.allclose(till.net_sales_nzd, (till.units * till.p).round(2)))
-    check("SF5 the shelf price includes GST (the dictionary); ex-GST is a common factor and the same call",
-          "Shelf price in NZD including GST" in dic_text, "ex-GST formula %d" % rnd(add["Infant formula"] / 1.15, 10000))
+    lines_hdr = open(os.path.join(target, B.FILES["lines"])).readline().strip().split(",")
+    check("SF5 the shelf price includes GST (the range export's own column names); ex-GST is a common factor and the "
+          "same call", {"shelf_price_fy2025_incl_gst", "shelf_price_fy2026_incl_gst"} <= set(lines_hdr),
+          "ex-GST formula %d" % rnd(add["Infant formula"] / 1.15, 10000))
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    check("section 3: no file named as a dictionary, manifest, readme or notes ships",
+          not [f_ for f_ in os.listdir(target) if describing.search(f_)])
     neg = int((pos.units < 0).sum())
     w, f, m = named(adds(S.load(target, returns=False)))
     check("SF6 the till rows netting to negative units dropped: infant formula at 60,000 still",

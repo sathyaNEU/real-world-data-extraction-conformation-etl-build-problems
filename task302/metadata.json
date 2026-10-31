@@ -1,10 +1,10 @@
 {
   "task": "task302",
-  "title": "Which of four categories a regional supermarket chain moves first onto automated store ordering in 2027, by what the move adds to the category's sales, with the cereal trial, the distribution centre's late deliveries and the pallets its suppliers delivered",
+  "title": "Which category a regional supermarket chain moves first onto automated store ordering in 2027, by what the move adds to the category's sales",
   "domain": "Economics & Econometrics",
-  "subdomain": "structural-equilibrium-modeling (structural demand: where an unavailable product's demand goes, to the category's other lines on the day and to the line itself after the restock)",
+  "subdomain": "structural-equilibrium-modeling",
   "objective": "Opportunity Sizing & Decision Support",
-  "prompt_shape": "other: one of four categories and its addition, with a chart of the four, and three asks on the cereal trial export, the distribution centre's trailer stops and its purchasing",
+  "prompt_shape": "other: one category and its addition, with a chart of every candidate's, and three asks on the cereal trial export, the distribution centre's trailer stops and its purchasing",
   "as_of": "2026-11-16",
   "deliverables": [
     "store_ordering_first_category_2027.pptx",
@@ -24,7 +24,7 @@
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 16,
+    "files": 15,
     "formats": [
       "csv",
       "docx",
@@ -48,7 +48,7 @@
     {
       "path": "pos_daily_sales_2024-07_2026-06.parquet",
       "format": "parquet",
-      "bytes": 1595539,
+      "bytes": 1595615,
       "rows": 608820,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-16",
@@ -66,7 +66,7 @@
     {
       "path": "lines.csv",
       "format": "csv",
-      "bytes": 4681,
+      "bytes": 4699,
       "rows": 39,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-16",
@@ -94,15 +94,6 @@
       "path": "store_ordering_2027.docx",
       "format": "docx",
       "bytes": 36035,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2026-11-16",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "data_dictionary.docx",
-      "format": "docx",
-      "bytes": 37211,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2026-11-16",

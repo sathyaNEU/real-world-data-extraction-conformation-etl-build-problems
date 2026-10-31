@@ -49,7 +49,7 @@ def write(path, F):
              "category out (eight weeks either side where four hold fewer than two such days).")
     t.append("4. Took each category's loss as its out lines' expected units on their out days, less its lines' units "
              "above expectation on days another of its lines was out and in the fortnight after their own restock, at "
-             "each line's shelf_price_fy2026 in %s, and halved it per %s: formula about NZD %s, the most of the four."
+             "each line's shelf_price_fy2026_incl_gst in %s, and halved it per %s: formula about NZD %s, the most of the four."
              % (FL["lines"], FL["plan"], c(F["call_add"])))
     t.append("5. In %s took on_hand as the opening stock up to 1 February 2026 and as the closing stock from 2 February "
              "(only from then does a line sell on a day it shows nothing on hand), so a day's opening after go-live is "

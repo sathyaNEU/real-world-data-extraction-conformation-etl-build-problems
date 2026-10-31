@@ -114,8 +114,17 @@ Each rung is asserted in `generator/checks.py` (`ladder:` lines) at 1.1 times th
 constructions (`family:` lines) all print infant formula at 60,000. R1 and R2 are each a careful analyst's half of the
 netting and land on another category; only netting both separates formula, whose loss nothing recaptures.
 
-## Readability screen
+## Survivor anatomy
 
+Actor: where a missing line's shoppers go has no column in any file; it exists only as the relation between a line's out-of-stock days in the stock system and, on the tills, the other lines of its category that store-day and the line's own sales in the fortnight after its restock.
+Link: the out-of-stock day comes from the stock system's opening positions and the diversion from the tills' sales of sibling lines, two systems joined through the till code history (article numbers until 2 March 2025, GTINs after) at store-day grain; no key, clause or column asks for a sibling line's sales or for the line's own sales after the restock.
+Reflex: the field's lost-sales estimate, each out-of-stock line-day priced at the line's own expected sales (the same weekday nearby, or a store-line demand fit), is rung 0 and files bottled water at about NZD 110,000.
+Back-test: the textbook route validates line by line: the line's own same-weekday expectation fits its in-stock days, so each line's lost-sales estimate reads as sound; only the category's own sales on those days show that most of it was bought elsewhere on the shelf or later.
+Second use: every file the step reads is in the pack for its own reason: the stock positions carry the planning note's out-of-stock count and the trial export Ask A reads, the till sales the note's valuation (SF4), the code history every join from the tills, the range file the prices.
+Shock: nothing reads as an anomaly: water's many out-of-stock days are what a fast line does, and the diverted sales sit inside the other lines' ordinary daily variation; no sort of the categories on a shipped statistic puts formula first.
+Pins: the planning note files the WHAT (half of a category's out-of-stock line-days removed, valued over the twelve months to 30 June 2026 at that year's shelf prices, the category that adds the most first); no filed sentence names substitution, diversion, a category's other lines or the restock.
+
+## Readability screen
 | Rung | What the pack shows a reader | Verdict |
 |---|---|---|
 | R0 | the stock positions' zero openings and each line's sales on its other days | readable |
@@ -132,7 +141,7 @@ netting and land on another category; only netting both separates formula, whose
 | SF2 | half of the out-of-stock line-days not happened | half of the category's loss, no half being named | half of the spells removed whole | Infant formula, 60,000 | same call and figure (each spell equally likely to go); the plan names no half |
 | SF3 | the year valued | the twelve months to 30 June 2026 | both years averaged | Infant formula (70,000) | the plan: "over the twelve months to 30 June 2026"; same call |
 | SF4 | the value of sales | units at each line's 2025-26 shelf price | the till's net_sales_nzd | Infant formula, 60,000 | same call and figure: the till's 2025-26 values are units at that price |
-| SF5 | price basis | shelf price including GST | excluding GST | Infant formula (50,000) | the dictionary: "Shelf price in NZD including GST"; same call |
+| SF5 | price basis | shelf price including GST | excluding GST | Infant formula (50,000) | the range export's own column names, `shelf_price_fy2025_incl_gst` and `shelf_price_fy2026_incl_gst` (until the 10-31 reship the data dictionary said so); same call |
 | SF6 | units | the till's units net of returns | the rows netting to negative units dropped | Infant formula, 60,000 | same call and figure |
 | SF7 | a line's sales | every till code's article over its dates, from till_item_codes.csv | lines.csv's article numbers and current GTINs only | Infant formula, 60,000 | same call and figure |
 | SF8 | a year's addition | the twelve months valued as one year | February to December 2027 only | Infant formula (50,000) | the prompt's "add a year" and the plan's twelve months; same call |
@@ -160,7 +169,7 @@ netting and land on another category; only netting both separates formula, whose
 | 15 Duplicate resolution | none: one row per store, line and day in the stock file, per store, day and code in the sales | asserted by the stock identity |
 | 16 Identity normalisation | till codes to articles through till_item_codes.csv | C1 (SF7) |
 | 17 Netting against gross | the till's units net of returns | C1 (SF6) |
-| 18 Dimensional units | units and NZD including GST | the dictionary (SF5) |
+| 18 Dimensional units | units and NZD including GST | the price and till columns' own names (SF5) |
 | 19 Code and status semantics | an out-of-stock line-day is an opening position of zero on a trading day | the plan (SF1, SF10) |
 | 20 Integerisation | none before the final rounding | one rounding |
 | 21 Clause scope | the contract's half applies to every category alike | the plan (SF2) |
@@ -170,7 +179,7 @@ netting and land on another category; only netting both separates formula, whose
 
 Executed word for word, the planning note fixes the population (the 24 stores), the outcome (what the category would
 have sold had half of its out-of-stock line-days not happened, less what it did sell), the window (the twelve months to
-30 June 2026, taken as the guide to 2027), the price (each line's 2025-26 shelf price, including GST by the dictionary)
+30 June 2026, taken as the guide to 2027), the price (each line's 2025-26 shelf price, including GST by its column's name)
 and the out-of-stock line-day (the store opening with none of the line on hand). It says nothing about what a shopper
 does when a line is missing, so the literal reader has to estimate what the category would have sold, and every reading
 in the fork table names infant formula (SF1 to SF10, asserted). The easy answer comes from the easy method on the same
@@ -189,8 +198,8 @@ no figure needs.
 Ask A, the cereal out-of-stock line-days in each trial store in the 13 weeks after the ordering system went live and
 their per cent change from the 13 weeks before (6 cells): the vendor's export joins two reports, the stores' own stock
 report up to 1 February 2026, whose on_hand is the stock when the store opened, and the ordering system's from 2
-February, whose on_hand is the stock when it closed. Device D3 (a field's meaning set by date), silent: the dictionary
-says "Units on hand", and the evidence is a cross-row cut, lines selling on 42 days they show nothing on hand and never
+February, whose on_hand is the stock when it closed. Device D3 (a field's meaning set by date), silent: the export's column
+is plain `on_hand`, and the evidence is a cross-row cut, lines selling on 42 days they show nothing on hand and never
 before go-live; a day's opening after go-live is the previous day's close plus that morning's delivery, and the day's
 close plus its sales gives the same count (a count correction only falls on a day the line sold). Read as openings
 throughout, the falls are 62.6, 19.7 and 42.3 per cent against the golden's 73.7, 42.4 and 58.8. Every cell moving.
@@ -269,3 +278,4 @@ with the trading days, and the goods received with the dock appointments.
   the sales, which the judge's run r2 showed gave store 210 a second answer. The call held again (bottled water at
   110,000 from both). Ask C's truck grain now sits one level below the dispatch advice, the trial's count corrections
   fall only on days a line sold, and ask B is cut to the two islands.
+- 2026-10-31, re-check under the 10-30 gates: `leak.py` LEAK on the supply chain analytics data dictionary (section 3: it named all of the trial export's columns and most of the folder's). Removed. Its one closure (SF5, prices include GST) moved into the range export's and the tills' own column names (`_incl_gst`); everything else it said is in the files (the code history's dates, the opening-position column, the plan's definitions). `metadata.json`'s subdomain narrated the decisive step and was cut to the task type. The prompt drops its count and asks what. Every graded figure unchanged.

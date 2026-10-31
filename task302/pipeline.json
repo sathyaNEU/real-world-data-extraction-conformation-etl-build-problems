@@ -5,21 +5,24 @@
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-25",
+ "updated": "2026-10-31",
  "stump": "A competent solver prices every out-of-stock line-day at the line's own same-weekday sales in the store, halves the total and moves bottled water at about NZD 110,000, where the golden is infant formula at about NZD 60,000; the step that lands it there is counting a line's absence as the category's loss, when water's shoppers take another brand from the same shelf and pet food's buy the bag after the restock, while a missed formula delivery empties the whole shelf.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-25"
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW (the plan names the candidates beside the decision's words; stump-paragraph words in the dictionary and the plan; harmless)",
-  "reader": "stage 4 over three rounds, six scored readers: none quoted a decisive-step sentence (each quoted the plan's valuation and out-of-stock definitions, the filed estimand), no file ranks the candidates, nothing read as the answer; all six filed bottled water. Round 3 (3b9ace95): 8 of 44 ask figures each (asks A and B whole, ask C none), measured pair 22.0"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack, no LEAK (the data dictionary removed; prices and till values carry incl_gst in their column names; metadata's subdomain cut)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 the WHAT, Q6 analytical"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.question_form, answered: a pick of one of four asks which); surface clean (the persona on the card)",
-  "nearest": "task116 v1 lineage at 0.06"
+  "heart": "BLOCK on ban.strategy only (causal_design against task484 v3, drawn 2026-10-24); WARN at the ship 10-25, so task484's card changed after; flagged to the author, not a repair's doing",
+  "nearest": "task116 v1 lineage at 0.06",
+  "surface": "exit 0 2026-10-31"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -27,12 +30,20 @@
   "report": "task302/determinism_check_report.md (run r3 on 3b9ace95; Gate F strong, Gate G decomposition_attribution, analytical_non_defect, Gate H pass)"
  },
  "returned": [],
- "resume": "",
+ "resume": "RESHIPPED 2026-10-31 under the 10-30 gates; next: the author's portal result",
  "approved": null,
- "delivered": "2026-10-25",
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "shipped_zip": "3b9ace95f29319abc2119eee76d96f9042a567fa56ef203d77f3ca5cbbb8da5e"
+ "shipped_zip": "3b9ace95f29319abc2119eee76d96f9042a567fa56ef203d77f3ca5cbbb8da5e",
+ "gates_2026_10_31": {
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "59 of 59",
+  "precut": "0 FAIL, 0 WARN",
+  "voice_check": "PASS, no WARN",
+  "leak_py": "REVIEW, no LEAK"
+ }
 }

@@ -45,14 +45,12 @@ def metadata(target):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task302",
-        "title": "Which of four categories a regional supermarket chain moves first onto automated store ordering in "
-                 "2027, by what the move adds to the category's sales, with the cereal trial, the distribution centre's "
-                 "late deliveries and the pallets its suppliers delivered",
+        "title": "Which category a regional supermarket chain moves first onto automated store ordering in 2027, by "
+                 "what the move adds to the category's sales",
         "domain": "Economics & Econometrics",
-        "subdomain": "structural-equilibrium-modeling (structural demand: where an unavailable product's demand goes, "
-                     "to the category's other lines on the day and to the line itself after the restock)",
+        "subdomain": "structural-equilibrium-modeling",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "other: one of four categories and its addition, with a chart of the four, and three asks on "
+        "prompt_shape": "other: one category and its addition, with a chart of every candidate's, and three asks on "
                         "the cereal trial export, the distribution centre's trailer stops and its purchasing",
         "as_of": P.AS_OF.isoformat(),
         "deliverables": [GD.DECK, GD.XLSX],

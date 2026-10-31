@@ -19,7 +19,6 @@ FILES = {
     "codes": "till_item_codes.csv",
     "stores": "stores.csv",
     "plan": "store_ordering_2027.docx",
-    "dictionary": "data_dictionary.docx",
     "trial": "cereal_trial_stock_2025-11_2026-05.csv",
     "stops": "dc_trailer_stops_2025-26.csv",
     "trading": "store_trading_days_2025-26.csv",
@@ -125,9 +124,9 @@ def build(target, R=None):
     if R is None:
         R = world()
     f = lambda k: os.path.join(target, FILES[k])
-    R["pos"].to_parquet(f("pos"), index=False)
+    R["pos"].rename(columns={"net_sales_nzd": "net_sales_nzd_incl_gst"}).to_parquet(f("pos"), index=False)
     R["stock"].to_csv(f("stock"), index=False)
-    R["lines"].to_csv(f("lines"), index=False)
+    R["lines"].rename(columns={"shelf_price_fy2025": "shelf_price_fy2025_incl_gst", "shelf_price_fy2026": "shelf_price_fy2026_incl_gst"}).to_csv(f("lines"), index=False)
     R["codes"].to_csv(f("codes"), index=False)
     R["stores"].to_csv(f("stores"), index=False)
     R["trial"].drop(columns=["_opening"]).to_csv(f("trial"), index=False)
@@ -152,5 +151,4 @@ def build(target, R=None):
                               person="Space Planning")
     hours.to_csv(f("hours"), index=False)
     DC.plan(f("plan"))
-    DC.dictionary(f("dictionary"))
     return R

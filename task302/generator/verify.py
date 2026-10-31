@@ -31,7 +31,7 @@ def main(zpath):
     del BAD[:]
     F = json.load(open(os.path.join(HERE, "figures.json")))
     z = zipfile.ZipFile(zpath)
-    ln = read(z, "lines.csv")
+    ln = read(z, "lines.csv").rename(columns={"shelf_price_fy2025_incl_gst": "shelf_price_fy2025", "shelf_price_fy2026_incl_gst": "shelf_price_fy2026"})
     codes = read(z, "till_item_codes.csv", dtype={"item_code": str})
     sales = read(z, "pos_daily_sales_2024-07_2026-06.parquet")
     stock = read(z, "stock_positions_2024-07_2026-06.csv")

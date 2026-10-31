@@ -23,10 +23,10 @@ def load(folder, returns=True, codes="history"):
     """returns=False drops the till rows that net to negative units; codes="current" maps the tills' codes by
     lines.csv alone (article numbers and each line's current GTIN), the two readings the fork table tests."""
     f = lambda n: os.path.join(folder, n)
-    ln = pd.read_csv(f("lines.csv"))
+    ln = pd.read_csv(f("lines.csv")).rename(columns={"shelf_price_fy2025_incl_gst": "shelf_price_fy2025", "shelf_price_fy2026_incl_gst": "shelf_price_fy2026"})
     ch = pd.read_csv(f("till_item_codes.csv"), dtype={"item_code": str})
     st = pd.read_csv(f("stores.csv"))
-    pos = pd.read_parquet(f("pos_daily_sales_2024-07_2026-06.parquet"))
+    pos = pd.read_parquet(f("pos_daily_sales_2024-07_2026-06.parquet")).rename(columns={"net_sales_nzd_incl_gst": "net_sales_nzd"})
     stk = pd.read_csv(f("stock_positions_2024-07_2026-06.csv"))
     art = dict(zip(ch.item_code, ch.article))
     if codes == "current":
@@ -239,7 +239,7 @@ def ask_pallets(folder):
     f = lambda n: os.path.join(folder, n)
     grn = pd.read_csv(f("dc_goods_received_2025-26.csv"))
     dock = pd.read_csv(f("dc_dock_appointments_2025-26.csv"))
-    ln = pd.read_csv(f("lines.csv"))
+    ln = pd.read_csv(f("lines.csv")).rename(columns={"shelf_price_fy2025_incl_gst": "shelf_price_fy2025", "shelf_price_fy2026_incl_gst": "shelf_price_fy2026"})
     cat = dict(zip(ln.article, ln.category))
     t = grn.assign(ap=grn.delivery_ref.map(dict(zip(dock.delivery_ref, dock.appointment_no)))).drop_duplicates("ap")
     t = t.assign(cat=t.article.map(cat), m=pd.to_datetime(t.received).dt.to_period("M").astype(str))
