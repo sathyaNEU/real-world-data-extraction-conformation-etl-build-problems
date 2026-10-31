@@ -16,6 +16,16 @@ CABIN_ROADS = ["Hyttefeltvegen", "Fjellstølen", "Vardevegen", "Seterlia", "Tjer
 INSTITUTIONS = ["omsorgssenter", "sykehjem"]
 
 
+NAMESAKE_SUFFIXES = [("BYGG AS", "UTLEIE OG EIENDOM AS", "BOLIGUTVIKLING AS"),
+                     ("BYGG OG ANLEGG AS", "UTLEIEBOLIGER AS", "PROSJEKT AS"),
+                     ("HUS AS", "EIENDOMSUTVIKLING AS", "BOLIGBYGG AS"),
+                     ("TOMTESELSKAP AS", "UTLEIE OG EIENDOM AS", "BYGGSERVICE AS"),
+                     ("BOLIGPROSJEKT AS", "HYTTE OG HUS AS", "BYGG AS")]
+PRIVATE_SUFFIXES = ("EIENDOM AS", "UTLEIE AS", "BOLIGER AS", "INVEST AS", "HOLDING AS", "EIENDOMSSELSKAP AS",
+                    "BYGG OG EIENDOM AS", "UTLEIEBOLIGER AS", "EIENDOMSINVEST AS")
+SHARE_COUNTS = (30, 100, 30, 1000, 300, 30, 60, 100, 3000, 30, 500, 200, 100)
+
+
 def day(d):
     return (d - W.FORTNIGHT_START).days
 
@@ -517,18 +527,28 @@ def _ownership(w):
             w.muni_legal[nr] = ["%s KOMMUNE V/EIENDOMSFORVALTNINGEN" % up]
         # private companies in the municipality's name that it does not own
         w.namesakes[nr] = []
-        for suffix in ("BYGG AS", "UTLEIE OG EIENDOM AS", "BOLIGUTVIKLING AS"):
+        # (the suffixes and share counts vary by municipality as the register's companies do; neither touches the
+        # random draws, so every holding and every figure stands)
+        for k, suffix in enumerate(NAMESAKE_SUFFIXES[mi % len(NAMESAKE_SUFFIXES)]):
             o = new_org("%s %s" % (up, suffix), "AS", nr)
+            n_sh = SHARE_COUNTS[(mi * 3 + k * 5) % len(SHARE_COUNTS)]
             w.shareholders.append({"company": o["orgnr"], "holder": "P%08d" % (60000000 + int(rng.integers(0, 9999999))),
-                                   "n": 100, "total": 100})
+                                   "n": n_sh, "total": n_sh})
             w.namesakes[nr].append(o["orgnr"])
         # private landlords
         w.private[nr] = []
         for j in range(6):
             sur = SURNAMES[(mi * 6 + j) % len(SURNAMES)]
-            o = new_org("%s %s" % (sur, ("EIENDOM AS", "UTLEIE AS", "BOLIGER AS", "INVEST AS")[j % 4]), "AS", nr)
-            w.shareholders.append({"company": o["orgnr"], "holder": "P%08d" % (60000000 + int(rng.integers(0, 9999999))),
-                                   "n": 30, "total": 30})
+            o = new_org("%s %s" % (sur, PRIVATE_SUFFIXES[(mi * 7 + j * 3) % len(PRIVATE_SUFFIXES)]), "AS", nr)
+            n_sh = SHARE_COUNTS[(mi * 5 + j * 2 + 1) % len(SHARE_COUNTS)]
+            holder = "P%08d" % (60000000 + int(rng.integers(0, 9999999)))
+            if (mi + j) % 4 == 1:
+                # a couple's company: two persons, half the shares each (the second id from the company's own number)
+                w.shareholders.append({"company": o["orgnr"], "holder": holder, "n": n_sh - n_sh // 2, "total": n_sh})
+                w.shareholders.append({"company": o["orgnr"], "holder": "P%08d" % (60000000 + o["orgnr"] % 9999991),
+                                       "n": n_sh // 2, "total": n_sh})
+            else:
+                w.shareholders.append({"company": o["orgnr"], "holder": holder, "n": n_sh, "total": n_sh})
             w.private[nr].append(o["orgnr"])
     # an inter-municipal company two municipalities own between them
     iks = new_org("BREKKEVOLL OG RAVNSUND BOLIGSELSKAP IKS", "IKS", "5801")

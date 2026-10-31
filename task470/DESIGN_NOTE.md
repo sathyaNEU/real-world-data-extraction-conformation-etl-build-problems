@@ -347,10 +347,12 @@ Mirror leakage: 0.0 per cent of ask weight
    files none; no sentence names the household's day; the register and the floor are the field's own methods.
 4. Determinism: the WHAT filed in Sections 3, 4 and 6 and the ministry's letter; the household-day family converges on
    the golden five across every member and cut (SF12); the tables' terms closed (SF16 to SF23).
-5. Gates on the final cut (target.zip sha256 26076f7e43ec0c97): generator checks 84 of 84, the verifier on every
+5. Gates on the final cut (target.zip sha256 52fc465dedb924b1, after the shareholder register's realism pass, no figure
+   moved): generator checks 84 of 84, the verifier on every
    graded figure, two byte-identical builds, figures_check.py 123 of 123, precut.py 61 of 61, voice-check.py PASS,
    leak.py REVIEW with no LEAK, guard.py surface clean and heart WARN only on the question form (a gate asks
-   whether); the leak reader and the determinism judge run from the main thread.
+   whether); the leak reader found no leak, and the determinism judge returned DETERMINISTIC, APPROVE (SF19 closes its
+   one low note, the deed's date against the registration date).
 6. leak.py REVIEW, sweep 3: the regulation's 5.0 is the threshold Section 6 files, shared by every reading,
    harmless.
 7. leak.py REVIEW, sweep 4: the regulation's section, statistics, fortnight, points, office and cadastre are its
