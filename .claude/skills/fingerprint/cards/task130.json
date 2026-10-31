@@ -6,16 +6,16 @@
   "domain": "psychology-behavioral-science",
   "subdomain": "decision-making-computational-behavioral-modeling",
   "client_domain": "psychology-behavioral-science",
-  "niche": "a county food safety program's 2027 return-inspection staffing, sized on the routine inspections its inspectors will mark unsatisfactory when a district redraw hands about two fifths of the schedule to inspectors making a first visit",
+  "niche": "a county food safety program's 2027 return-inspection staffing, sized on the routine inspections its inspectors will mark unsatisfactory when a district redraw hands nearly a quarter of the schedule to inspectors with no earlier visit to the establishment",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "go_hold_or_stop",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Add the third return-inspection officer for 2027: about 700 unsatisfactory routine inspections in the 2027 schedule against the plan's 540",
+  "answer_source": "generator/analysis.py golden_call (693.4, rounded to the nearest 100); figures.json forecast_total",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
@@ -33,25 +33,26 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stacks the two inspection exports, links each permit and each inspector across the 2024 migration, keeps the routine inspections and applies the plan's 2027 schedule and redrawn district map fits the unsatisfactory share with an establishment risk model and one criterion per inspector, reads each establishment at its 2027 inspector's criterion, and files about 650 unsatisfactory routine inspections and no third return-inspection officer.",
+  "analyst_test": "A strong analyst who stacks the two inspection exports, resolves the legacy initials through the roster, converts the new export's UTC stamps, keeps the routine inspections made and applies the plan's 2027 schedule and Table 1's inspectors fits the unsatisfactory share on risk category with each establishment's own record or one criterion per inspector, validates it on 2025 to 2026 within about 5 per cent, and files about 450 (437 to 458) unsatisfactory routine inspections and no third return-inspection officer; read at each named inspector's earlier visits to each establishment, the schedule gives about 700.",
   "domain_test": "The deciding quantity is each 2027 inspector's criterion for marking a routine inspection unsatisfactory as it relaxes with that inspector's earlier visits to the same establishment, worked as the decision-making task type works a judgment (a model of the decision fitted to the inspectors' own decisions and compared on held-out decisions); put kilowatt-hours and meters in for inspections and inspectors and no reading depends on how often the reader has read the same meter, so the call has nothing to stand on.",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:a-judge's-criterion-relaxes-with-visits-to-the-same-unit-and-a-redrawn-map-makes-first-visits",
   "layer1": [
-    "two inspection exports either side of a March 2024 system migration, permits renumbered at the migration",
     "the legacy export's local inspection times against the new export's UTC timestamps",
-    "inspectors kept by initials in the legacy export and by employee number in the new one, by name in the roster",
-    "routine, return, complaint and pre-opening visits and no-access attempts in one file",
+    "routine, return, complaint and pre-opening visits and closed-premises calls in one file",
     "changes of ownership reissuing a permit at the same address",
     "seasonal and closed establishments in the permit register",
-    "covering inspectors on the district inspector's leave days"
+    "covering inspectors on the district inspector's leave days",
+    "the return team's paper day sheets keyed into the new system at a later stamp until 31 August 2026",
+    "several reports per complaint incident, the investigation carrying the one it was dispatched on",
+    "paper-era closed-premises return calls evidenced only in the correspondence log"
   ],
   "stakeholder_role": "food safety program manager in a county environmental health division, who applies the program plan's staffing rule for the return-inspection team",
   "role_family": "field_unit_lead",
   "scoring_unit": "per episode",
   "spine": {
     "file": "inspections_2019-01_2024-03.csv",
-    "rows": 0,
+    "rows": 30164,
     "entity": "one inspection visit to one permitted food establishment, with its type, inspector, red and blue points and result",
     "grain": "establishment x visit",
     "source": "synthetic"
@@ -84,16 +85,22 @@
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "A unit's recorded outcome is a judge's mark, and a judge marks a unit more leniently the more often the judge has visited it, so a forecast window in which a redrawn map hands a large share of the units to judges who have never visited them is understated by every unit's own record, by the team's pooled rate and by a model that gives each judge one criterion; the window is read with each judge's criterion at the number of earlier visits the judge will have made to each unit, which the record's covering visits and past reassignments show and a back-test held out on the latest reassignment confirms.",
-  "driver_concrete": "In 2027 Elkhorn County redraws its food safety districts after two inspectors retire unreplaced, so about two fifths of the schedule's routine inspections fall to an inspector making a first visit to the establishment, and in the county's own record an inspector's first visits to an establishment, on covering days and after the 2019, 2021 and 2023 reassignments, are marked unsatisfactory at about two and a half times the rate of the same inspector's repeat visits; the 2027 schedule's unsatisfactory routine inspections come to about 1,000 against the plan's 800, not the 650 that each establishment's own record or a model giving each inspector one criterion files.",
-  "stump": "A competent solver who reads the plan's staffing rule, its 2027 schedule and the redrawn district map correctly carries each establishment's own unsatisfactory share, or a model with an establishment risk term and one criterion per inspector applied to each establishment's 2027 inspector, into the schedule and files about 650 unsatisfactory routine inspections and no third return-inspection officer; the step that lands it there is giving each inspector one criterion, when in the county's own record an inspector marks an establishment unsatisfactory about two and a half times as often on a first visit as on a fourth, and the redraw makes about two fifths of 2027's routine inspections first visits; with each inspection read at the number of earlier visits its inspector will have made, the schedule gives about 1,000, past the plan's 800, and the third officer is added.",
+  "driver_concrete": "In 2027 Elkhorn County redraws its food safety districts from eleven to nine after two inspectors retire unreplaced, so 23 per cent of the schedule's routine inspections fall to an inspector with no earlier inspection of the establishment, against 4.8 to 9.2 per cent a year in 2022 to 2026, and in the county's own record an inspector's first visits to an establishment, on covering days and after the 2019, 2021 and 2023 appointments, are marked unsatisfactory at about four to six times the rate of the same inspector's third and later visits; the 2027 schedule's unsatisfactory routine inspections come to about 700 against the plan's 540, not the 437 to 458 that risk-category rates, each establishment's own record or a model giving each inspector one criterion files.",
+  "stump": "A competent solver who reads the plan's staffing rule, its 2027 schedule and Table 1's inspectors correctly carries risk-category rates, each establishment's own unsatisfactory share or one criterion per inspector into the schedule and files about 450 unsatisfactory routine inspections and no third return-inspection officer; the step that lands it there is giving each inspector one criterion, when in the county's own record an inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or later one, and the redraw makes 23 per cent of 2027's routine inspections first visits; with each inspection read at the number of earlier visits its inspector will have made, the schedule gives about 700, past the plan's 540, and the third officer is added.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task138": "task138 starts a replayed seasonal requirement from each unit's physical store, rebuilt by running its own recorded inputs through a balance; task130 has no store, balance or replay: it reads each judged outcome at the number of earlier visits its judge will have made to the unit.",
-    "task178": "task178's lineage rated a structure's response across a floodplain from gauged flows; task130 has no physical response: the deciding quantity is a newly appointed judge's criterion, read from earlier appointees' first years through a roster no inspection record keys to.",
+    "task178": "task178's lineage rated a structure's response across a floodplain from gauged flows; task130 has no physical response: the deciding quantity is a human judge's criterion at the number of earlier visits the judge has made to the unit, read through a roster no inspection record keys to.",
     "task134": "task134 forecasts rebuilding from each unit's best option against an allowance and a cost step in the construction method; task130 has no option or allowance: each outcome is a human judge's mark, which relaxes with the judge's earlier visits to the unit, and the window's redrawn map makes most pairs new.",
     "task146": "task146 releases a pool of units refused at a calendar turn, the share returning set by segment and time since refusal; task130 has no pool or turn: each routine inspection's outcome is the judge's mark, read at the number of earlier visits that judge will have made to that establishment.",
     "task165": "task165 conditions an upgraded service level's gain on how much of each unit the old level already treated; task130 conditions a judged outcome on how often its judge has visited the unit, read from covering visits and past reassignments, with no treatment or upgrade.",
-    "task173": "task173's first draw, abandoned unregistered at a guard window and never built, conditioned a service desk's comebacks on the first-contact taker's group and tenure, a person's attribute on the roster; task130's deciding property belongs to a pair, how often this inspector has visited this establishment, which no roster or column holds and the redrawn map resets for about two fifths of the schedule."
+    "task173": "task173's first draw, abandoned unregistered at a guard window and never built, conditioned a service desk's comebacks on the first-contact taker's group and tenure, a person's attribute on the roster; task130's deciding property belongs to a pair, how often this inspector has visited this establishment, which no roster or column holds and the redrawn map resets for nearly a quarter of the schedule.",
+    "task156": "task156 reads a sewer catchment's storm and dry-day inflow at the length of pipe below a fluctuating water table, a physical exposure of the network read from a separate record; task130 has no physical exposure: each outcome is a human judge's mark, read at the number of earlier visits that judge has made to the unit, which a redrawn map resets.",
+    "task131": "task131 prices a randomised treatment's load moved out of a window and returned as a surge at the target day's conditions; task130 has no treatment or load: each judged outcome is read at the judge's earlier visits to the unit.",
+    "task169": "task169's first architecture carried one component's growth to the cell it dominates against a whole-cycle mix; task130 has no components or cycle: each outcome is a human judge's mark, read at the judge's history with the unit.",
+    "task183": "task183 carries each part's own failure history, the outcome repeating itself; task130's state is not the unit's outcome history but how often its judge has visited it, a property of the judge and the unit together that a redrawn map resets while the unit's own record stays.",
+    "task230": "task230 measures a category count's net misclassification on a late channel processed under a looser rule; task130 corrects no classification: every mark is a real decision, read at the judge's earlier visits to the unit.",
+    "task446": "task446 converts a flag at the rate of the kind of component that raised it, the forward pool's components shifted; task130 has no flags or components: each judged outcome is read at how many earlier visits its judge has made to the unit."
   },
   "lineage": [
     {
@@ -235,12 +242,12 @@
       "deliverable set": "pptx+xlsx"
     }
   ],
-  "notes": "Architecture 5 re-root, 2026-10-31. Every architecture in the lineage is spent; the new draw moves to psychology-behavioral-science, a client domain no batch 1 re-root uses, and a pairing (psychology x forecasting) never built. A first-year-inspector variant was set aside at the draw (tenure from a hire date is a roster attribute, task182's and task202's recorded reflex death); the decisive property is a pair's visit history instead.",
-  "registered": "2026-10-31T19:05:15Z",
+  "notes": "Architecture 5 re-root, 2026-10-31. Every architecture in the lineage is spent; the new draw moves to psychology-behavioral-science, a client domain no batch 1 re-root uses, and a pairing (psychology x forecasting) never built. A first-year-inspector variant was set aside at the draw (tenure from a hire date is a roster attribute, task182's and task202's recorded reflex death); the decisive property is a pair's visit history instead. Revised at stage 3 (2026-10-31) and filed anew: the draw's check at 19:05Z ran before task156 v2's card (18:27Z) reached this tree, and heart then BLOCKed on the pair's shared labels. The decisive gap is time (Gap 1): every easy rung, the category rates and the per-inspector criterion as much as each establishment's own record, measures backward on years whose inspector and establishment pairs held and is applied forward to a window the redraw resets, while the file-is-not-the-kitchen reading reaches only the own-record rung, so population is second.",
   "shell": {
     "question form": "other",
     "second-sentence opener": "the",
     "rounding opener": "the",
     "deliverable set": "pdf+xlsx"
-  }
+  },
+  "registered": "2026-10-31T20:46:59Z"
 }

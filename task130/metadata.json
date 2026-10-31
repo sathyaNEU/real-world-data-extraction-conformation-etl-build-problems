@@ -37,7 +37,7 @@
   {
    "path": "complaints_2024-03_2026-12.csv",
    "format": "csv",
-   "bytes": 121904,
+   "bytes": 122780,
    "rows": 1392,
    "source": "Constructed: Complaint intake records, 4 March 2024 to 31 December 2026",
    "date": "2027-01-08",
@@ -46,7 +46,7 @@
   {
    "path": "correspondence_log_2026.csv",
    "format": "csv",
-   "bytes": 534139,
+   "bytes": 537481,
    "rows": 4856,
    "source": "Constructed: Outgoing correspondence log, 2026",
    "date": "2027-01-08",
@@ -73,7 +73,7 @@
   {
    "path": "food_establishment_permits.csv",
    "format": "csv",
-   "bytes": 344176,
+   "bytes": 346517,
    "rows": 3415,
    "source": "Constructed: Food establishment permit register, as of 31 December 2026",
    "date": "2027-01-08",
@@ -100,7 +100,7 @@
   {
    "path": "foodborne_illness_investigations_2019-2026.xlsx",
    "format": "xlsx",
-   "bytes": 10957,
+   "bytes": 10963,
    "rows": null,
    "source": "Constructed: Communicable disease team's foodborne illness investigations, 2019 to 2026",
    "date": "2027-01-08",
@@ -127,7 +127,7 @@
   {
    "path": "permit_fee_invoices_2026.csv",
    "format": "csv",
-   "bytes": 224461,
+   "bytes": 226244,
    "rows": 2580,
    "source": "Constructed: Annual permit fee invoices for 2026",
    "date": "2027-01-08",
@@ -136,7 +136,7 @@
   {
    "path": "return_team_capacity_report_2026.xlsx",
    "format": "xlsx",
-   "bytes": 22845,
+   "bytes": 22875,
    "rows": null,
    "source": "Constructed: Return team capacity report for calendar 2026 with the officers' day sheet log",
    "date": "2027-01-08",
@@ -145,7 +145,7 @@
   {
    "path": "routine_inspection_schedule_2027.xlsx",
    "format": "xlsx",
-   "bytes": 117798,
+   "bytes": 117794,
    "rows": null,
    "source": "Constructed: Routine inspection schedule for 2027, issued with the plan",
    "date": "2027-01-11",

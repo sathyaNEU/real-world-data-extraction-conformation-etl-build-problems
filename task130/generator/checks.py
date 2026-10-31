@@ -319,6 +319,8 @@ def run(R, Dd, counts, target, F, golden_dir):
     ok({"Forecast 2027", "Return timeliness 2026", "Complaint response 2026", "Return visit fees 2026"} <=
        set(gx.sheetnames), "golden: the workbook carries the forecast and the three 2026 tables")
     memo = pdf_text(os.path.join(golden_dir, "return_officer_memo_2027.pdf"))
+    ok(len(pypdf.PdfReader(os.path.join(golden_dir, "return_officer_memo_2027.pdf")).pages) == 1,
+       "golden: the memo is one page")
     ok("Add the third return-inspection officer" in memo and format(int(UNIT * int(tot / UNIT + 0.5)), ",") in memo,
        "golden: the memo states the call and the rounded forecast")
     return N[0]

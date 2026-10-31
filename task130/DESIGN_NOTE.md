@@ -32,16 +32,27 @@ architecture is a new client domain, world and dataset under the same objective 
   Hansen (Environmental Health Director), Valerie Wood (Food Safety Program Manager), Mariah Ramirez and Tina Rivera
   (district inspectors who carry on into 2027), Erik Mayer and Andrew Mason (the two who retire); the rest of the
   roster is drawn the same way and screened by `guard.py surface`.
-- **Structural labels.** Gap `population` first (an establishment's record is its inspectors' record, not the
-  kitchen's), generators G14 (the pooled criterion does not fit first visits), G3 and G13; Gate G `forecasting`;
+- **Structural labels.** Gap `time` first (every easy rung measures backward on years whose inspector and
+  establishment pairs held and is carried forward to a window the redraw resets), then `population` (an
+  establishment's record is its inspectors' record, not the kitchen's; that reading reaches only the own-record
+  rung); generators G14 (the pooled criterion does not fit first visits), G3 and G13; Gate G `forecasting`;
   strategy `forecast_method_backtest` (F6: the natural fit validates on the latest years and is wrong for 2027
   because each mark belongs to the pair that made it; only a hold-out on the 2023 appointee's first year separates
   the two); shape `other`.
-- **Guard.** `check` on the registered card (2026-10-31T19:05:15Z): WARN only. `repeat.deliverables` (pdf+xlsx)
-  against task250: the memo is the director's decision record, a PDF in the county's practice, and the prompt's
-  openers differ from task250's. `repeat.question_form` (whether) against task250: the decision is a gate, the form
-  the guide takes from it, at 11 per cent of prompts on file. `test.same_driver_older` differentiated against
-  task134 v3, task146, task165 and task173 v1 (the card's lines). Nearest driver 0.06.
+- **Guard.** `check` at the draw (2026-10-31T19:05:15Z): WARN only, run before task156 v2's card (18:27:04Z)
+  reached this tree. At stage 3 `heart` BLOCKed against task156 v2 (ban.pattern G14, ban.strategy, ban.org_family,
+  test.same_puzzle and test.same_driver on population, G14 and go_hold_or_stop). The card was revised (the decisive
+  gap read again as time, every stale figure brought to the build) and filed anew at 2026-10-31T20:46:59Z: `check`
+  PASS and `heart` PASS, the axis bans now reading task474 v7, task181 v6 and task482 v15, none sharing an axis;
+  `test.same_driver_older` differentiated against task131 v2, task169 v1, task183, task230 v3 and task446 v3, and
+  task156 v2 carries its own line. task156 v2 still shares the pattern, the strategy and the organisation family
+  five builds back in draw order; its world (a New Zealand district council's wastewater station), domain and
+  driver differ (nearest driver 0.06). `surface` promotes five pairs for adjudication on card labels alone
+  (task131, task137, task183, task230, task446), none on files, names or seeds. WARNs at the draw:
+  `repeat.deliverables` (pdf+xlsx) against task250, the memo being the director's decision record, a PDF in the
+  office's practice; `repeat.question_form` (whether), the decision being a gate. `heart` after the final rebase
+  onto main: WARN only, `repeat.deliverables` (pdf+xlsx) against task125 v3, answered the same way: the memo is
+  the decision record and the workbook the 2026 measures, and the shell sits under every corpus cap.
 - **Screens.** `mechanisms --objective forecasting` read in full; `slots` on the mechanism words (inspector,
   examiner, leniency, strictness, rookie; familiarity, rotation, fresh eyes, capture, reassignment; first visit,
   repeat visit, redraw, district map, covering) and the setting words (restaurant, re-inspection, food safety,
@@ -264,6 +275,21 @@ makes ten nudges of 150 seconds to complaint visit times, asserted), and the ask
   target.zip.
 - Pack: 13 files in four formats; the legacy export 30,164 rows, the new export 18,077; distractors
   `foodborne_illness_investigations_2019-2026.xlsx` and `permit_fee_invoices_2026.csv`.
+
+## Leak sweep
+
+`leak.py --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Each REVIEW line, ruled:
+
+- Sweep 3, the plan carries most of the call's words: harmless. Section 3 files the staffing rule the call executes
+  (a third officer when the forecast exceeds 540); it states no forecast, no direction and no figure the golden
+  computes.
+- Sweep 4, stump-paragraph nouns in the plan (inspector, record, establishment, schedule, category) and the fee
+  schedule (establishment, schedule, category): harmless. They are each document's own nouns for its program; neither
+  document names earlier visits, first visits, familiarity, rotation, tenure or experience (asserted in checks.py).
+- Sweep 9, 2027 dates in `county_holidays_2025-2027.json`: harmless. The county publishes its holiday calendar ahead
+  of the year, and the file's 2027 days are that calendar, a forward-looking record by its genre.
+- The report's solver's-eye section from architecture 4 (Corvane Health) was cut from the report, since it read a
+  dead pack; the stage 4 reader appends a fresh one.
 
 ## Tried and rejected
 
@@ -636,3 +662,9 @@ Architecture 5 build (2026-10-31):
   chance held within a class and carried to a new mix (G6, composition_mix), and the organisation moves to a state
   department of health's county office in a fictional state (government_agency), as states that run their county
   health units do; the mechanism, the data and every graded figure stay as built.
+- The redraw to G6 with composition_mix and a state agency in a fictional state, set out in the line above:
+  abandoned before any file changed. task181 v6, filed at 20:04Z, carries G6 as its decisive pattern, so G6 bans
+  either way (in this card's window once it is filed anew, or this card in task181's window if it is edited in
+  place at 19:05Z), and the state agency answered only the organisation ban. The card was revised instead to the
+  decisive gap it argues best (time, Gap 1: the measurement backward, the decision forward, which every easy rung
+  shares) and filed anew; the world, the mechanism and every graded figure are unchanged.
