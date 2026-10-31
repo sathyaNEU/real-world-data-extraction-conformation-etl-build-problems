@@ -1,32 +1,32 @@
 {
  "task": "task181",
- "status": "PAUSED",
- "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a city health office's barangay dengue hotspot response)",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics / provider-quality-risk-adjustment (a metropolitan health service's answer to the state surveillance centre's outlier notice: which general surgery consultants go to professional practice review for April to September 2027 site infections)",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-31",
- "stump": "The default path counts each barangay's notified cases by the barangay of residence and presents Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan; the step that lands it there is taking the home barangay as the place of infection, when Aedes aegypti bites by day and the six barangays' rise is all among working-age residents, the six barangays sending the most workers to the estate in San Roque, so those cases were caught in San Roque, whose own residents number 14 of the window's cases.",
- "architecture": 5,
+ "stump": "",
+ "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-31"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 (9 REVIEW, 0 LEAK; every line ruled in the note's Leak review)",
-  "reader": "pending: stage 4 from the main thread"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS 2026-10-31 (NOTE same_driver_older, differentiated against task487)",
-  "nearest": "task121 v3 lineage 0.08",
-  "surface": "PASS 2026-10-31 (NOTE: Santo Tomas, a barangay, read as a persona)"
+  "heart": "",
+  "nearest": "",
+  "surface": ""
  },
  "judge": {
   "verdict": "",
   "disposition": "",
   "report": "",
-  "brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_judge_brief.md"
+  "brief": ""
  },
  "returned": [
   {
@@ -52,24 +52,20 @@
    "portal": "none: architecture 4 spent on measurement 2026-10-21 (Gate F lost to the reflex's count form; SF6 by SF7 forked the call)",
    "repair": "re-root",
    "commit": ""
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "none: architecture 5 sent back at stage 4 by the FIX_NOW's second judge pass (NOT_DETERMINISTIC, SEND_BACK: the placement share was a free parameter a naive value flipped)",
+   "repair": "re-root",
+   "commit": ""
   }
  ],
- "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn them). Reader brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_leak_brief.md (fresh copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task181/); judge brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task181_stage4_judge_brief.md (isolated copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/determinism-check-task181-183756/). Then fix every finding in the generator in one pass, rebuild twice byte-identical (python3 task181/generator/build.py), re-run every gate, cut target.zip with python3 task181/generator/zipcut.py (md5 c6dd178bcc6f724315f6b2c3ad3be858 on this cut), replace task181's row in the shipped ledger's Shipped, pending the portal, and commit SHIPPED (task181) with target.zip and golden/ force-added.",
+ "resume": "stage 2: design note (default path, stump, three rules, anatomy, screens, fork table, ladder, closure, asks) and the generator, then precut.py and the build",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "cut": {
-  "target_zip_md5": "c6dd178bcc6f724315f6b2c3ad3be858",
-  "target_zip_sha256": "3e54b709175d65a152d64f416d4ef851310e6b6506edb9e291535b58c4024b9a",
-  "members": 12,
-  "bytes": 813495,
-  "cut_by": "generator/zipcut.py",
-  "golden_sha256": {
-   "dengue_hotspots_mw41_44_2027.pdf": "01aa67c4ccb2951c90351703cfcb65db6feadf293a76300c981f61d512c9e2d2",
-   "response_figures_2027.csv": "09cd46ef0ccb4fffbe7338c25f89acf2aa0ef8eaf093092c0cefb6ed36154dee"
-  }
- }
+ "cut": {}
 }
