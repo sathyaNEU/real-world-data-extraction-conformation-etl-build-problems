@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "to be filled at ship",
-  "answer_source": "to be filled at ship",
+  "answer": "expand the Home Battery Network: its 2,133 added batteries add 6 MW to the 2027 accredited capacity in the design year's system peak hour, against Peak Time Rewards 4 MW (runner-up), Cool Credit 3 MW and Business Demand Partners 2 MW",
+  "answer_source": "each programme's 18:00 MST reduction per enrolled unit averaged over the record's fourth consecutive event days (12 July 2024, 18 July 2025, 24 July 2026; the batteries on 2025 and 2026 under the 3.0 kW setting), times the whole units the cost sheet's all-in costs buy with USD 3.2 million",
   "gap": [
     "objective",
     "time"
@@ -50,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "mv_thermostat_panel_2024_2026.csv",
-    "rows": 0,
+    "rows": 504000,
     "entity": "one row is one sampled premise's metered energy in one hour of one event day",
     "grain": "premise x event day x hour",
     "source": "synthetic"
@@ -193,6 +193,6 @@
       "deliverable set": "docx+xlsx"
     }
   ],
-  "notes": "",
+  "notes": "surface (2026-10-31): promoted task120 (same domain and objective, approved; a campus water system's peak draw rebuilt from storage, a different driver), task119 (gap, decision type and artifact; a public administration wait decomposition) and task462 (surface top 1 per cent; an emissions inventory); heart PASS",
   "registered": "2026-10-31T17:17:16Z"
 }

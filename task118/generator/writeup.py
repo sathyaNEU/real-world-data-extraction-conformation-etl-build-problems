@@ -1,67 +1,96 @@
-"""submission.md, drafted from figures.json: every figure in it is read from there."""
-import figs as FG
-import golden as GD
-import params as P
+"""task118 submission.md, written from figures.json (every figure emitted, none typed)."""
+import datetime as dt
+
+ORDER = ("Home Battery Network", "Peak Time Rewards", "Cool Credit", "Business Demand Partners")
+MONTH = {"2026-06": "June", "2026-07": "July", "2026-08": "August", "2026-09": "September"}
 
 
-def write(path, F):
-    w, r = F["winner"], F["runner"]
-    W = F["duties"][w]
-    fuel = F["duties"]["FUEL"]
-    L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Economics & Econometrics (elasticity, welfare and policy impact estimation: a fixed Budget "
-             "envelope given to the excise duty whose cut removes the most excess burden in the Budget year).")
-    L.append("**Analytical objective:** Opportunity Sizing & Decision Support.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**Give the 2027 Budget's GBP %.1f million envelope to spirits duty, cutting its 2027 rate of GBP %.2f a "
-             "litre by about a fifth from 1 January 2027, which removes about GBP %.1f million of excess burden in 2027; "
-             "the next best, cider, would remove about GBP %.1f million.**"
-             % (F["envelope_m"], W["rate27"], F["winner_m"], F["runner_m"]))
-    L.append("Not road fuel, whose duty and GST are the largest share of its price but whose drivers make under a third of "
-             "their response to a price cut within 2027. Not cider, the most price-responsive duty, whose "
-             "small wedge leaves little gain on the extra litres a cut buys. Not beer or wine, each about a quarter "
-             "of the spirits figure.")
-    L.append("\n## 2. Critical Components\n")
-    L.append("1. Excess burden removed in 2027 by the envelope: **spirits about GBP %.1f million**, cider about GBP "
-             "%.1f million" % (F["winner_m"], F["runner_m"]))
-    L.append("2. The gain is counted on every extra litre at the whole of the duty and GST still charged on it, not "
-             "only on the cut itself")
-    L.append("3. Buyers' response is the part made within 2027 from a demand model with lagged adjustment: spirits "
-             "nearly all of their long-run response by the fourth quarter, road fuel under a third")
-    L.append("\n## 3. Step-by-Step Solution\n")
-    L.append("1. Stacked %s (2008 to 2011, one sheet per duty) and %s (2012 to 2026 Q3, preliminary quarters "
-             "included) into one quarterly series per duty, %d quarters at constant 2026 prices."
-             % (P.FILES["series_old"], P.FILES["series_new"], F["quarters"]))
-    L.append("2. For each duty fitted least squares of log clearances on four quarter dummies, log shelf price and the "
-             "previous quarter's log clearances; the response to a price change from 1 January 2027 by quarter k is "
-             "the first-quarter coefficient times (1 - adjustment^k) / (1 - adjustment).")
-    L.append("3. Baseline (manual, section 5): the four quarters 2025 Q4 to 2026 Q3, each standing for its quarter of "
-             "2027; producer price = the 2026 Q3 shelf price net of %d per cent GST less the duty then in force; the "
-             "2027 rate from %s." % (F["gst_pct"], P.FILES["rates"]))
-    L.append("4. For each duty solved for the cut at which duty and GST received in 2027, on the litres bought each "
-             "quarter after the response, fall by GBP %.1f million (spirits by about a fifth of its rate)."
-             % F["envelope_m"])
-    L.append("5. Excess burden removed: each quarter, the area between the fitted constant-elasticity demand curve and "
-             "the producer price over the extra litres, summed over 2027: spirits %.1f, cider %.1f GBP million."
-             % (F["winner_m"], F["runner_m"]))
-    L.append("6. Excise on releases (%s, CE14): exact duplicate rows dropped; procedure 4071 not cancelled; a "
-             "declaration that a later one names as its related declaration is replaced by it, so each release counts "
-             "once, as the last declaration of its chain, in the quarter the chain's first declaration was accepted "
-             "(Eskerholm date, UTC to UK time)." % P.FILES["declarations"])
-    L.append("7. Each item priced at quantity times the rate in force on that first day (duty_gbp repeats the "
-             "declaration's total on every item row); less 6171 repayments (duty_gbp) in the quarter accepted; plus "
-             "7171 removals to premises with no approval in force that day (EKW171 from 14 November 2025, EKW157 from "
-             "9 October 2025) at that day's rate; GBP thousand to one decimal.")
-    L.append("\n## 4. Deliverable Answers\n")
-    L.append("### %s\n" % GD.DOCX)
-    L.append("1. The duty: spirits, its 2027 rate of GBP %.2f a litre cut by about a fifth, removing about GBP %.1f "
-             "million of excess burden in 2027." % (W["rate27"], F["winner_m"]))
-    L.append("2. The next best: cider, about GBP %.1f million." % F["runner_m"])
-    L.append("3. A bar chart of the excess burden each duty's cut would remove in 2027, spirits marked.")
-    L.append("\n### %s\n" % GD.XLSX)
-    L.append("1. Excise accounted for on releases from bonded warehouses, GBP thousand:")
-    for c, *_ in P.DUTIES:
-        for q in P.ASK_QUARTERS:
-            L.append("   - %s, %s: %s" % (F["duties"][c]["name"], FG.QUARTER_LABEL[q], "{:,.1f}".format(F["asks_k"][c][q])))
-    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
+def _day(s):
+    d = dt.date.fromisoformat(s)
+    return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
+
+
+def _kw(x, nd):
+    return ("%%.%df" % nd) % x
+
+
+def write(path, fig):
+    mw, u, pu = fig["mw"], fig["units"], fig["per_unit_kw_fourth_day"]
+    r0 = fig["ladder"]["R0 ex post, every event"]
+    a = fig["ask_a"]
+    fd = [_day(x) for x in fig["fourth_days"]["Cool Credit"]]
+    lines = []
+    lines += ["## Tags", "",
+              "**Domain:** Energy Systems & Utilities (generation capacity planning).",
+              "**Analytical objective:** Opportunity Sizing & Decision Support.", ""]
+    lines += ["## 1. Final Recommendation", "",
+              "**The USD 3.2 million expansion line should go to the Home Battery Network, which adds %d MW to the "
+              "2027 accredited capacity against %d MW for Peak Time Rewards, the runner-up.** The deciding figure is "
+              "each programme's 18:00 reduction on the fourth consecutive event day, where the design year's peak "
+              "hour falls. Not Cool Credit, which leads on the record's average event at %d MW but adds %d MW in "
+              "that hour; not Business Demand Partners, at %d MW."
+              % (mw["Home Battery Network"], mw["Peak Time Rewards"], round(r0["Cool Credit"]), mw["Cool Credit"],
+                 mw["Business Demand Partners"]), ""]
+    lines += ["## 2. Critical Components", "",
+              "1. The system peak hour of the design year, the hour beginning 18:00 MST on 23 July 2027, is the "
+              "**fourth** consecutive weekday OP-7 calls.",
+              "2. The budget buys **{:,}** batteries, **{:,}** rebate customers, **{:,}** thermostat premises or "
+              "**{:,}** commercial sites.".format(u["Home Battery Network"], u["Peak Time Rewards"], u["Cool Credit"],
+                                                  u["Business Demand Partners"]),
+              "3. Accredited capacity added: Home Battery Network **%d MW**, Peak Time Rewards **%d MW**, Cool Credit "
+              "**%d MW**, Business Demand Partners **%d MW**." % tuple(mw[p] for p in ORDER), ""]
+    am = fig["ask_b_months"]
+    cm = fig["ask_c_months_whole"]
+    lines += ["## 3. Step-by-Step Solution", "",
+              "1. Took the hour of highest forecast load in appendix_b_design_year_2027.csv (the hour beginning "
+              "18:00 on 23 July 2027) and applied OP-7's trigger (a weekday whose forecast high reaches 110F) to "
+              "the design year's daily highs: 20 to 23 July are called, so the peak hour is the fourth event day "
+              "in a row.",
+              "2. Rebuilt each event date's run day from dr_event_log_2024-2026.csv as consecutive calendar days "
+              "with an event: the record's fourth days are %s, %s and %s." % tuple(fd),
+              "3. Read each programme's reduction per enrolled unit in the hour beginning 18:00 MST: holdout less "
+              "treatment mean kWh in ridgeway_cool_credit_panel_2024-2026.csv (UTC less seven hours), holdout less "
+              "alerted mean kW in ridgeway_peak_time_rewards_2024-2026.csv, the mean verified site reduction in "
+              "ridgeway_business_demand_partners_2024-2026.csv, and discharge over enrolled batteries in "
+              "brightwell_fleet_event_summary_2024-2026.csv under the 3.0 kW setting of schedule 2.",
+              "4. Averaged each over its fourth days (%s kW a Cool Credit premise, %s kW a rebate customer, %s kW a "
+              "site, %s kW a battery) and multiplied by the whole units dr_expansion_costs_2027.xlsx's all-in costs "
+              "buy: the Home Battery Network %d MW, Peak Time Rewards %d, Cool Credit %d, Business Demand Partners %d."
+              % (_kw(pu["Cool Credit"], 3), _kw(pu["Peak Time Rewards"], 4), _kw(pu["Business Demand Partners"], 1),
+                 _kw(pu["Home Battery Network"], 2), mw["Home Battery Network"], mw["Peak Time Rewards"],
+                 mw["Cool Credit"], mw["Business Demand Partners"]),
+              "5. Counted, for each 2026 event day, the premises in cool_credit_enrolments_cis_2026-10-16.csv "
+              "enrolled that day with a thermostat online at 23:00 UTC: the enrolled serial or a device registered "
+              "in halvern_device_registry_2026-10-16.json at the same address once both are normalised, "
+              "its last row in halvern_status_changes_2026.csv ONLINE, or IDLE from 7 July 2026, the first event "
+              "on which halvern_unreachable_devices_2026.csv stops listing idle devices.",
+              "6. Dropped exact repeats from brightwell_dispatch_records_2026.csv, added each battery's record hours "
+              "for an event (the MST date of the dispatch start), counted a premise in "
+              "battery_interconnection_register_2026-10-16.csv once per event when any of its batteries reached "
+              "three hours, and paid USD 15 an event in event order up to USD 255.",
+              "7. Kept the latest submitted row per meter and month in arroyo_nominations_2026.csv for meters in "
+              "cbmu_commercial_meters_2026-10-16.csv and summed nominated kW by month.",
+              "8. Recommended the Home Battery Network, %d MW ahead of Peak Time Rewards."
+              % (mw["Home Battery Network"] - mw["Peak Time Rewards"]), ""]
+    lines += ["## 4. Deliverable Answers", "", "### dr_capacity_note_2027.docx", "",
+              "1. Recommendation: expand the Home Battery Network with the USD 3.2 million.",
+              "2. Accredited capacity each programme's expansion adds in the 2027 system peak hour, whole "
+              "megawatts:"]
+    for p in ORDER:
+        lines.append("   - %s: %d MW" % (p, mw[p]))
+    lines += ["3. Runner-up: Peak Time Rewards.",
+              "4. A bar chart of each programme's megawatts sits under the table on page 1 of the note.", "",
+              "### dr_programme_audit_2026.csv", "",
+              "5. Cool Credit enrolled premises with a thermostat online at 16:00, each 2026 event day, whole "
+              "premises:"]
+    for d, v in a.items():
+        lines.append("   - %s: {:,}".format(v) % _day(d))
+    lines.append("6. Home Battery Network incentive owed by 2026 event month, nearest dollar:")
+    for m, v in am.items():
+        lines.append("   - %s: USD {:,}".format(v) % MONTH[m])
+    lines.append("7. Home Battery Network premises that reached the season cap: {:,}".format(fig["ask_b_capped"]))
+    lines.append("8. Business Demand Partners nominated capacity by month, whole kilowatts:")
+    for m, v in cm.items():
+        lines.append("   - %s 2026: {:,} kW".format(v) % MONTH[m])
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")

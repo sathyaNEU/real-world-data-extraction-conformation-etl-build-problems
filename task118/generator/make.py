@@ -1,6 +1,6 @@
 """Build the pack, compute every owed figure from it, write the goldens, figures.json, submission.md and metadata.json,
-run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run the independent
-verifier on it.
+run the checks, rebuild into a scratch folder and require byte-identical output, cut target.zip and run the
+independent verifier on it.
 
     python3 task118/generator/make.py            (full: two builds, the zip, the verifier)
     python3 task118/generator/make.py --once     (one build, no zip)
@@ -16,8 +16,8 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import build as B  # noqa: E402
-import figs as FG  # noqa: E402
+import build as B   # noqa: E402
+import figs as F    # noqa: E402
 import golden as GD  # noqa: E402
 import params as P  # noqa: E402
 import writeup as WU  # noqa: E402
@@ -25,68 +25,65 @@ import writeup as WU  # noqa: E402
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
-STAMP = (2026, 10, 20, 9, 5, 0)        # the morning the placement folder was handed over
+STAMP = (2026, 10, 19, 9, 5, 0)
 
 SOURCES = {
-    "series_new": "a national statistics office's quarterly excise clearances release (long CSV)",
-    "series_old": "a national statistics office's back-series workbook, one sheet per series",
-    "rates": "a finance ministry's duty rates table",
-    "manual": "a finance ministry's appraisal guidance for tax measures (in the manner of HM Treasury's Green Book)",
-    "thread": "government email correspondence",
-    "declarations": "a customs authority's line-level excise declarations extract (in the manner of HMRC's CHIEF and "
-                    "CDS procedure codes)",
-    "cpc": "a customs procedure code list",
-    "cpc_note": "a customs authority's excise accounting notice",
-    "warehouses": "a customs authority's register of approved excise warehouses",
-    "receipts": "a finance ministry's monthly excise cash receipts",
-    "price_quotes": "a statistics office's retail price survey shop quotes",
-    "passengers": "a customs authority's travellers' allowance declarations",
+    "plan": "a utility's integrated resource or resource adequacy plan chapter on capacity accreditation",
+    "design": "a resource adequacy plan's design-year appendix (hourly weather and forecast load)",
+    "op7": "a system operator's demand response dispatch procedure",
+    "log": "a system operations event log of demand response tickets",
+    "weather": "a weather station's daily maximum and minimum temperatures",
+    "cc_panel": "a measurement and verification contractor's residential interval-data panel with a holdout",
+    "ptr": "a measurement and verification contractor's peak-time rebate group means",
+    "bdp": "a measurement and verification contractor's commercial site verification file",
+    "fleet": "a battery aggregator's fleet event summary",
+    "costs": "a utility budget office's programme cost workbook",
+    "hbn_terms": "a battery aggregator participation agreement schedule",
+    "cis": "a utility customer information system's programme enrolment extract",
+    "registry": "a smart-thermostat vendor's device registry API export",
+    "status": "a smart-thermostat vendor's device status change log",
+    "unreachable": "a smart-thermostat vendor's per-event unreachable-device report",
+    "dispatch": "a battery aggregator's per-battery dispatch records",
+    "interconnect": "a utility's distributed-generation interconnection register",
+    "nominations": "a demand response aggregator's monthly capacity nomination export",
+    "meters": "a utility's commercial meter register",
+    "capacity_prices": "a regional bilateral capacity price outlook",
+    "satisfaction": "a utility's programme customer survey results",
 }
 
 
 def metadata(target):
     files = []
     for k in B.PACK:
-        f = P.FILES[k]
+        f = B.FILES[k]
         p = os.path.join(target, f)
         rows = None
         if f.endswith(".csv"):
             rows = sum(1 for _ in open(p, encoding="utf-8")) - 1
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows,
-                      "source": "Constructed (seeded generator) in the layout of %s" % SOURCES[k], "date": "2026-10-20",
+                      "source": "Constructed (seeded generator) in the layout of %s" % SOURCES[k], "date": "2026-10-19",
                       "license": "CC0-1.0 (original work)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task118",
-        "title": "Which of five excise duties gets the States of Eskerholm's GBP 1.5 million 2027 Budget envelope, "
-                 "and how much excess burden the cut removes in 2027, with Customs' excise on releases from bonded "
-                 "warehouses by duty and quarter, October 2025 to September 2026",
-        "domain": "Economics & Econometrics",
-        "subdomain": "elasticity-welfare-policy-impact-estimation (the excess burden a duty cut removes in the Budget "
-                     "year, on the whole existing wedge and the response made within the year)",
+        "title": "Which demand response programme Cholla Basin Municipal Utility's 2027 expansion line should go to, "
+                 "with a 2026 audit of three programmes",
+        "domain": "Energy Systems & Utilities",
+        "subdomain": "generation-capacity-planning",
         "objective": "Opportunity Sizing & Decision Support",
-        "prompt_shape": "07: one of five duties with its sized excess burden removed, the runner-up and its figure, and "
-                        "a grid of five duties by four quarters of excise on releases (20 figures)",
-        "as_of": "2026-10-20",
-        "deliverables": [GD.DOCX, GD.XLSX],
-        "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
-        "stated_inputs": ["the appraisal manual's Budget year, starting point, revenue cost, pass-through and what "
-                          "counts towards excess burden (treasury_budget_appraisal_manual_2026.pdf)",
-                          "CE14's accounting period, amendment, repayment and removal rules "
-                          "(customs_excise_accounting_note_ce14.pdf)"],
-        "field_terms": [],
+        "decision": "one of the utility's demand response programmes receives the USD 3.2 million 2027 expansion line",
+        "as_of": "2026-10-19",
+        "deliverables": [GD.NOTE, GD.LEDGER],
+        "distractor_files": [B.FILES[k] for k in P.DISTRACTORS],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
                         "largest_file": big["path"], "largest_file_rows": big["rows"]},
         "sources": [{"files": "all files under target/",
                      "origin": "generated by task118/generator/make.py (seeded, deterministic) around a fictional "
-                               "island government with five excise duties: the statistics office's quarterly "
-                               "clearances and shelf prices from 2008 drawn from a partial-adjustment demand at "
-                               "constant prices, the duty and GST rates, the treasury's appraisal manual, customs' "
-                               "line-level declarations for July 2025 to September 2026 with its procedure codes, "
-                               "accounting note and warehouse register; layouts follow the public files named, every "
-                               "organisation, place and person is invented, and no real dataset is reproduced.",
-                     "date": "2026-10-20", "license": "CC0-1.0 (original work)"}],
-        "created": "2026-10-27",
+                               "city-owned electric utility in Arizona with four demand response programmes; layouts "
+                               "follow the kinds of public and industry files named per file, every organisation, "
+                               "place and person is invented, and no real dataset is reproduced.",
+                     "date": "2026-10-19", "license": "CC0-1.0 (original work)"}],
+        "created": "2026-10-31",
         "generator": "task118/generator/make.py",
         "files": files,
     }
@@ -118,8 +115,7 @@ def cut_zip():
 
 def fresh(folder):
     if os.path.isdir(folder):
-        for f in os.listdir(folder):
-            os.remove(os.path.join(folder, f))
+        shutil.rmtree(folder)
     os.makedirs(folder, exist_ok=True)
 
 
@@ -127,10 +123,11 @@ def main(second=True, checks=True):
     fresh(TARGET)
     B.build(TARGET)
     stamp(TARGET)
+    fig = F.compute(TARGET)
+    F.write(fig, os.path.join(HERE, "figures.json"))
     fresh(GOLDEN)
-    fig = FG.compute(TARGET)
-    FG.write(fig, os.path.join(HERE, "figures.json"))
     GD.write(GOLDEN, fig)
+    B.scrub(GOLDEN)
     stamp(GOLDEN)
     WU.write(os.path.join(TASK, "submission.md"), fig)
     metadata(TARGET)
@@ -142,7 +139,8 @@ def main(second=True, checks=True):
         t2, g2 = os.path.join(tmp, "target"), os.path.join(tmp, "golden")
         B.build(t2)
         stamp(t2)
-        GD.write(g2, FG.compute(t2))
+        GD.write(g2, F.compute(t2))
+        B.scrub(g2)
         stamp(g2)
         d1, d2 = digest(TARGET), digest(t2)
         assert d1 == d2, [f for f in d1 if d1[f] != d2.get(f)]

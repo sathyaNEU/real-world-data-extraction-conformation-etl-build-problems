@@ -1,16 +1,23 @@
 # leak check, task118
 
-**Verdict: REVIEW.** 12 files read, 24 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 21 files read, 29 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: headline, release, national, readers, clicks, change, culture, architecture, counts, article, section, golden, elasticity, corrections, minutes, triangle, device, reading, method, already, months, primary, sentence, repeat, static
+Stump terms swept: headline, release, national, readers, clicks, architecture, design, culture, golden, record, device, sentence, reading, silent, change, article, reduction, section, corrections, minutes, consecutive, batteries, fourth, decisive, method
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `treasury_budget_appraisal_manual_2026.pdf`: 3 of 25 stump-paragraph terms appear (change, counts, already); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `op7_demand_response_dispatch_rev3.pdf`: 3 of 25 stump-paragraph terms appear (national, record, batteries); read whether the document names the move
+- **REVIEW** `ra_plan_2027_capacity_accreditation.pdf`: 3 of 25 stump-paragraph terms appear (design, record, reduction); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 2, INFO 2)
+- **REVIEW** `dr_customer_survey_2026.xlsx`: names 4 of 4 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `dr_event_log_2024-2026.csv`: names 4 of 4 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `dr_expansion_costs_2027.xlsx`: names 4 of 4 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `op7_demand_response_dispatch_rev3.pdf`: names 3 of 4 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `excise_duty_rates_2008-2027.xlsx`: 5 ISO dates after 2026-10-20, e.g. 2027-01-01
+- **REVIEW** `appendix_b_design_year_2027.csv`: 2928 ISO dates after 2026-10-19, e.g. 2027-06-01, 2027-06-02, 2027-06-03, 2027-06-04, 2027-06-05
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -23,13 +30,12 @@ Stump terms swept: headline, release, national, readers, clicks, change, culture
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

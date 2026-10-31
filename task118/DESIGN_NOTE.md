@@ -163,40 +163,45 @@ generator's (`generator/figures.json`, `ladder` block), printed here at design t
 
 | Rung | Construction | Cool Credit | Peak Time Rewards | Business Demand Partners | Home Battery Network | Winner, lead | Batteries' place |
 |---|---|---|---|---|---|---|---|
-| R0 | ex post: each programme's 18:00 reduction averaged over the 2024 to 2026 events | 11.4 | 8.6 | 6.1 | 5.5 | Cool Credit, 1.34 | 4th |
-| R1 | ex ante: a model on the day's high read at 117F (batteries on the 3.0 kW setting) | 10.4 | 8.1 | 5.5 | 6.2 | Cool Credit, 1.28 | 3rd |
-| R2 | ex ante with the overnight low and the three days' heat before (the design hour's 90F and 113F) | 9.7 | 7.7 | 5.2 | 6.2 | Cool Credit, 1.25 | 3rd |
-| R3 (decisive) | the design hour placed on its run's fourth day; reductions on the record's fourth consecutive event days | 3.0 | 4.1 | 2.1 | 6.0 to 6.2 | Home Battery Network, 1.47 | 1st |
+| R0 | ex post: each programme's 18:00 reduction averaged over the 2024 to 2026 events | 11.38 | 8.54 | 5.86 | 5.38 | Cool Credit, 1.33 | 4th |
+| R1 | ex ante: a model on the day's high read at the design day's 117.5F (batteries under the 3.0 kW setting) | 9.97 | 7.88 | 5.17 | 5.96 | Cool Credit, 1.27 | 3rd |
+| R2 | ex ante with the overnight low and the three days' heat before (the design day's 90.4F and 113.1F) | 9.88 | 7.77 | 5.10 | 5.85 | Cool Credit, 1.27 | 3rd |
+| R3 (decisive) | the design hour placed on its run's fourth day; reductions on the record's fourth consecutive event days | 3.05 | 3.76 | 1.94 | 6.18 | Home Battery Network, 1.64 | 1st |
 
 - **What kills each rung:** R0 dies to the plan's estimand (the design year's peak hour, not an average event); R1 to
   the design hour's place in its run (OP-7's trigger on Appendix B's week) and the record's fourth days; R2 to the
   Mondays after hot weekends, fresh event days with the heat build-up and hot nights of a fourth day that give a first
   day's full reduction, so the weather history is not what lowers a reduction; R3 is the golden.
 - **Separation and position:** the batteries are 4th on R0, never first on an intermediate rung and never second;
-  every rung's lead is 1.24 or more; the final lead over the runner-up is 1.47 (Peak Time Rewards), 2.0 over Cool
+  every rung's lead is 1.27 or more; the final lead over the runner-up is 1.64 (Peak Time Rewards), 2.0 over Cool
   Credit.
-- **Dominance:** the decisive step moves Cool Credit against the batteries by a factor of about 4.2 (11.4 against 5.5
-  on R0, 3.0 against 6.2 on R3) against Cool Credit's carried advantage of 2.07, and moves Peak Time Rewards by 2.3
-  against its carried 1.55; both clear 1.2 times the carried advantage.
-- **The reflex sweep, as code on the clean truth (`checks.py`):** every route that never reads run position files Cool
-  Credit: ex post, ex ante on the high, on the high and the low, on the heat build-up, on all three, the hottest event
-  days (115F and over), a day-after-an-event indicator (7.5 against 6.8), the tenth percentile (6.0 against 6.0 and
-  5.8). The routes that read run position file the Home Battery Network: run-day indicators with the high, the
-  fourth-day mean, a ratio model, a linear run-day count.
+- **Dominance:** the decisive step moves Cool Credit against the batteries by a factor of 4.3 (11.38 against 5.38 on
+  R0, 3.05 against 6.18 on R3) against Cool Credit's carried advantage of 2.12, and moves Peak Time Rewards by 2.6
+  against its carried 1.59; both clear 1.2 times the carried advantage (asserted).
+- **The reflex sweep, as code (`checks.py`, on the pack and on the clean truth):** every route that never reads the
+  run day files Cool Credit: ex post (11.38), ex ante on the high (9.97), on the high and the low (10.22), on the heat
+  build-up (9.43), on all three (9.88), the hottest event days at 115F and over (10.45), the most recent season
+  (11.69), a day-after-an-event indicator (7.23 against 6.64 and 6.10) and the tenth percentile (6.06 against 5.97
+  and 5.64). The routes that read the run day all file the Home Battery Network: run-day indicators with the high
+  (6.17), the fourth-day mean (6.18), a ratio model (6.16), a linear run-day count (6.25), the fourth-day mean with
+  the batteries pooled over 2025 and 2026 (5.98).
 - **Pricing sequence:** (1) the residue the filed WHAT leaves is a method (how to estimate the expected reduction at
-  the design hour's state), not a knob; (2) the move needed is Cool Credit from 10.4 to under 6.2 MW, and the affected
-  population (the fourth days) can carry it to 3.0; (3) the one-group-by route to the call is "reductions by run day"
-  once the run is rebuilt, and the run day is in no file, so the group-by needs the calendar construction first; (4)
-  the fourth-day estimate's standard error is about 0.02 kW per thermostat premise (0.25 MW at 12,307 premises) and
-  0.004 kW per rebate customer (0.2 MW), each a fraction of its whole-megawatt bin; (5) the lever (run position) is
-  not the ranked quantity's noise; the call is a verdict on one named programme 1.8 MW, about seven standard errors,
-  clear of the runner-up; (6) not a change call; (7) no subset is recovered exactly; (8) the reflex sweep above, with
-  run position residualised against the visible attributes (correlation with the day's high 0.35, with the overnight
-  low 0.03, with the three days' heat 0.48, none of them able to carry the call).
+  the design hour's state), not a knob; (2) the move needed is Cool Credit from 9.97 to under 6.18 MW, and the
+  affected population (the fourth days) carries it to 3.05; (3) the one-group-by route to the call is "reductions by
+  run day" once the run is rebuilt, and the run day is in no file, so the group-by needs the calendar construction
+  first; (4) the thermostat panel's per-event standard error is about 0.03 kW (0.2 MW on the fourth-day mean at
+  12,307 premises) and the rebate evaluation's about 0.008 kW (0.2 MW at 50,000 customers), each under half a
+  whole-megawatt bin; (5) the lever (the run day) is not the ranked quantity's noise, and the call is a verdict on one
+  named programme 2.4 MW, about ten standard errors, clear of the runner-up; (6) not a change call; (7) no subset is
+  recovered exactly; (8) the reflex sweep above, with the run day residualised against the visible attributes
+  (correlation with the day's high 0.35, with the overnight low 0.03, asserted under 0.5), and the hot weekends that
+  precede several fresh Mondays break its tie to the three days' heat.
 - **Grid:** the four candidates under every construction above; every cell names Cool Credit except the run-position
   family's, which names the batteries; no cell names Peak Time Rewards or Business Demand Partners.
-- **Worth:** the decisive step is worth 7.4 MW on Cool Credit's figure (10.4 to 3.0), against the standing family's
-  spread of 0.1 MW and the sampling interval of 0.5 MW.
+- **Worth:** the decisive step is worth 6.9 MW on Cool Credit's figure (9.97 to 3.05), against the standing family's
+  spread of 0.25 MW on Cool Credit (3.01 to 3.26), 0.66 MW on Peak Time Rewards (3.76 to 4.42), 0.46 MW on Business
+  Demand Partners (1.94 to 2.40) and 0.27 MW on the batteries (5.98 to 6.25), every member in its golden's whole
+  megawatt (asserted), and a sampling interval of about 0.4 MW.
 
 ## Closure table
 
@@ -300,9 +305,46 @@ log, the cost sheet, the plan or OP-7.
 | B, 4 months and the cap count | tests each record alone; months by the dispatch date | the same | miss |
 | C, 4 months | keeps the neighbouring utility's sites; counts the transition month's two references | the same | miss |
 
-Pair ceiling: to be measured by `generator/ceiling.py` on the cut pack (design target 45 and 12, pair 28.5).
-Mirror leakage: to be measured (design target 0 per cent of ask weight).
-Measured by: generator/ceiling.py
+The full includer (address links, a battery's records combined, CBMU meters only, IDLE read as connected all season)
+keeps 26 of 29 ask criteria and misses the three June event days; it is a stress row, not the gate.
+
+Pair ceiling: 30.4 (the cracker on the call at 46.9, the mirror off it at 13.9, each keeping 1 of 29 ask criteria,
+the note's chart).
+Mirror leakage: 3.4 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 26845106)
+
+## Leak sweep
+
+`leak.py --asof 2026-10-19` on target.zip 26845106: REVIEW, no LEAK; each line ruled.
+- Sweep 4 on `op7_demand_response_dispatch_rev3.pdf` (national, record, batteries) and on
+  `ra_plan_2027_capacity_accreditation.pdf` (design, record, reduction): harmless; the words are the National Weather
+  Service, the providers' records, the batteries the procedure dispatches, and the plan's design year and its
+  reduction definition; neither document says anything about consecutive calls, recovery or a run.
+- Sweep 6 on `dr_customer_survey_2026.xlsx` and `dr_event_log_2024-2026.csv`: harmless; the survey scores
+  satisfaction (a distractor, not the capacity question) and the log carries forecast highs per ticket.
+- Sweep 9 on `appendix_b_design_year_2027.csv`: harmless; the design year is the plan's forward appendix.
+- Column names (generator-style) were renamed to the producing systems' own forms before this run: the station
+  export as NCEI's STATION, NAME, DATE, TMAX, TMIN; the CIS's thermostat_serial; Halvern's serial.
+
+## Pre-ship check
+
+- The 10/10 rules re-read against the built pack: the decisive step is still the analytical one (the run day
+  rebuilt from the calendar, the reduction read on the record's fourth days); every Layer 1 item (UTC stamps, the
+  2024 battery setting, hour conventions, Halvern's change-only log, Arroyo's own references) mishandled leaves the
+  call (checks R2); the easy routes on the clean truth file Cool Credit (R3a); only the decisive step flips it (R3b).
+- Free gates on the final cut (target.zip 26845106): generator checks 100 of 100; two builds byte-identical; the
+  independent verifier 0 failures; `figures_check.py` 46 of 46; `precut.py` 61 checks, 0 FAIL; `voice-check.py`
+  PASS (shell what, a, megawatts, csv plus docx); `leak.py` REVIEW with every line ruled above; `guard.py heart`
+  PASS; `guard.py surface` exit 0 with three promoted pairs for adjudication: task120 (same domain and objective,
+  approved: a campus water system's peak draw rebuilt from storage changes, another driver), task119 (the same
+  first gap, decision type and artifact: a public-administration wait decomposition) and task462 (surface top one
+  per cent: an emissions inventory); the scrub audit clean on target and golden.
+- House fixes walked: H1 scrubbed with the producer CBMU and each PDF dated by its own issue date; H4 the archive
+  holds exactly the 21 files; H11 one submission and one prompt in the folder; H16 no record after its file's
+  export date outside the forward design year and price outlook; H23 the cap question reads with "none"; H25 every
+  governing sentence read under a strict parser and a second extractor.
+- Stage 4 (the isolated leak reader and the determinism judge) could not be spawned from the build's own thread
+  (a fork at the subagent nesting limit); the briefs are ready and the build waits on them before stage 5.
 
 ## Tried and rejected
 
