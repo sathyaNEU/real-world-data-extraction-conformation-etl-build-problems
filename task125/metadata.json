@@ -1,150 +1,105 @@
 {
-  "task": "task125",
-  "title": "How much of the July to September 2026 rise in the Household Labour Survey's unemployment rate is the labour market once the three-visit cap has been running for two intakes, and how far the cap will hold the published unemployment and employment rates off the six-visit rates in each quarter to September 2027",
-  "domain": "Survey Research & Official Statistics",
-  "subdomain": "anomaly detection in official statistics (a recruitment protocol change accumulating through a rotating panel, separated from the labour market)",
-  "objective": "Anomaly Detection & Diagnostics",
-  "prompt_shape": "02 (forecast across periods): the gap in the published unemployment and employment rates in each quarter from July to September 2026 to July to September 2027, with the July to September split, and three regional measures",
-  "as_of": "2026-10-20",
-  "deliverables": [
-    "hls_visit_limit_note_2026q3.docx",
-    "hls_visit_limit_path_2027.xlsx"
-  ],
-  "distractor_files": [
-    "jobseeker_support_claimants_2023-01_2026-09.csv",
-    "field_staffing_2026-10.json"
-  ],
-  "input_gates": {
-    "files": 12,
-    "formats": [
-      "csv",
-      "json",
-      "md",
-      "parquet",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "hls_person_quarter_2023q1_2026q3.parquet",
-    "largest_file_rows": 490398
+ "task": "task125",
+ "architecture": 3,
+ "files": [
+  {
+   "name": "umzimela_wq_lab_results_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: a catchment agency's laboratory results export, one row per analyte",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task125/generator/build.py (seeded, deterministic) around a fictional country's statistics office, its household labour survey, regions and staff; no real survey, office, person or record is depicted.",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-20",
-  "generator": "task125/generator/build.py",
-  "files": [
-    {
-      "path": "extract_notes_2026-10-20.md",
-      "format": "md",
-      "bytes": 1865,
-      "rows": null,
-      "source": "Constructed: Survey Data Office extract notes, 20 October 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "field_instruction_FI-2024-03_call_pattern.pdf",
-      "format": "pdf",
-      "bytes": 63913,
-      "rows": null,
-      "source": "Constructed: Field instruction FI-2024/03, call pattern for first interviews (superseded)",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "field_instruction_FI-2026-04_first_interview_visits.pdf",
-      "format": "pdf",
-      "bytes": 64035,
-      "rows": null,
-      "source": "Constructed: Field instruction FI-2026/04, first-interview visits from 1 April 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "field_staffing_2026-10.json",
-      "format": "json",
-      "bytes": 11800,
-      "rows": null,
-      "source": "Constructed: Field interviewers by region, October 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hls_address_register_2025q1_2026q3.csv",
-      "format": "csv",
-      "bytes": 2214500,
-      "rows": 44800,
-      "source": "Constructed: Addresses issued for a first interview, same intakes",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hls_call_records_2025q1_2026q3.csv",
-      "format": "csv",
-      "bytes": 8646232,
-      "rows": 110684,
-      "source": "Constructed: Call records for addresses issued for a first interview, intakes January to March 2025 to July to September 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hls_data_dictionary.md",
-      "format": "md",
-      "bytes": 2113,
-      "rows": null,
-      "source": "Constructed: HLS analysis files data dictionary",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hls_methods_note_2025.pdf",
-      "format": "pdf",
-      "bytes": 42707,
-      "rows": null,
-      "source": "Constructed: HLS methods note, 2025 edition",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hls_person_quarter_2023q1_2026q3.parquet",
-      "format": "parquet",
-      "bytes": 4033186,
-      "rows": 490398,
-      "source": "Constructed: Household Labour Survey person-quarter analysis file, January to March 2023 to July to September 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hls_release_tables_2026q2.xlsx",
-      "format": "xlsx",
-      "bytes": 9385,
-      "rows": null,
-      "source": "Constructed: Release tables for April to June 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "jobseeker_support_claimants_2023-01_2026-09.csv",
-      "format": "csv",
-      "bytes": 6731,
-      "rows": 270,
-      "source": "Constructed: Jobseeker Support claimants by region and month, January 2023 to September 2026",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "population_controls_2023q1_2027q4.xlsx",
-      "format": "xlsx",
-      "bytes": 11952,
-      "rows": null,
-      "source": "Constructed: Population controls by region and by age group and sex, 2023 to 2027",
-      "date": "2026-10-20",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "name": "umzimela_routine_run_log_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: the field teams' routine sampling run log",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "umzimela_ec_loggers_hourly_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: telemetry from continuous EC loggers",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "ec_logger_service_visits_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: the loggers' service visit log",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "ec_logger_memory_downloads_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: the loggers' memory downloads for telemetry gaps",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "umzimela_gauges_daily_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: a gauging network's daily mean stage and flow",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "umzimela_monitoring_network_register.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the monitoring network register",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "umzimela_sulfate_load_allocation_schedule_2025.pdf",
+   "role": "evidence",
+   "source": "synthetic: the agency's sulfate load allocation schedule",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "wul_discharge_returns_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: mines' monthly water use licence discharge returns",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "wul_register_mine_discharges.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the water use licence register for mine discharges",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "cma_compliance_inspections_2025_26.csv",
+   "role": "evidence",
+   "source": "synthetic: the agency's compliance inspection log",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "umzimela_raingauges_daily_2025_26.csv",
+   "role": "distractor",
+   "source": "synthetic: rain gauges' daily totals",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  },
+  {
+   "name": "nyathi_wtw_raw_water_log_2025_26.xlsx",
+   "role": "distractor",
+   "source": "synthetic: a water treatment works' daily raw water log",
+   "license": "CC0 (synthetic, authored for this task)",
+   "date": "2026-10-09"
+  }
+ ],
+ "distractors": [
+  "umzimela_raingauges_daily_2025_26.csv",
+  "nyathi_wtw_raw_water_log_2025_26.xlsx"
+ ],
+ "deliverables": [
+  "sulfate_load_directives_2027.pdf",
+  "umzimela_sulfate_loads_2025_26.xlsx"
+ ]
 }

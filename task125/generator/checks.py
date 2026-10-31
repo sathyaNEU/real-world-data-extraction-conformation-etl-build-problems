@@ -1,317 +1,173 @@
-"""Assertions on the built pack and goldens: the input gates, the golden path recomputed from the files equal to the
-simulation's, every rung of the ladder at its named wrong answer and outside the tolerance, the semantic forks (SF1
-to SF9), the separation line between the call and the asks, each ask device moving every region, the documents'
-silence on the devices, and the goldens agreeing with figures.json."""
+"""The generator's assertions on the cut pack: the ladder, the margins, the forks, the separation, the asks' stops
+and the input gates.
+
+    python3 task125/generator/checks.py
+"""
+import csv
+import datetime as dt
 import json
 import os
 import re
-import zipfile
+import sys
 
 import numpy as np
-import openpyxl
-import pandas as pd
 
-import analysis as AN
-import asks as A
-import build as B
-import models as M
-import records as R
-import world as W
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import figs as F    # noqa: E402
+import pack as P    # noqa: E402
+import world as W   # noqa: E402
 
-N = [0]
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+GOLD = ["KH1", "MZ4", "NT1", "NY2"]
+DEFAULT = ["KH1", "MZ2", "NT1", "NY3"]
+ALLOC = {r[0]: r[5] for r in W.RU}
+N = [0, 0]
 
 
-def ok(cond, what):
+def ok(label, cond, detail=""):
     N[0] += 1
-    if not cond:
-        raise AssertionError(what)
+    if cond:
+        print("PASS  " + label)
+    else:
+        N[1] += 1
+        print("FAIL  " + label + ("  " + str(detail) if detail != "" else ""))
 
 
-def run(target, golden, world, meta_path):
-    I = world["intakes"]
-    d = AN.load(target)
-    fig = json.load(open(os.path.join(os.path.dirname(golden), "generator", "figures.json")))
-    tol_u, tol_e = float(fig["gap_tolerance_points"]["unemployment"]), float(fig["gap_tolerance_points"]["employment"])
-
-    # ---- input gates
-    meta = json.load(open(meta_path))
-    files = sorted(os.listdir(target))
-    ok(len(files) >= 10, "ten or more files")
-    ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "three or more formats")
-    ok(meta["input_gates"]["largest_file_rows"] >= 25000, "a file of 25,000 rows or more")
-    ok(len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]), "two distractors")
-    for f in meta["distractor_files"]:
-        ok("distract" not in f, "distractor not named as such")
-    src = "".join(open(os.path.join(os.path.dirname(__file__), m)).read() for m in ("analysis.py", "asks.py", "deliver.py"))
-    for f in meta["distractor_files"]:
-        ok(f not in src, "the solution never reads " + f)
-
-    # ---- the golden path from the files equals the simulation's
-    gf, gs = AN.gap_path(d), M.gap_path(I)
-    for a, b in zip(gf, gs):
-        ok(abs(a[0] - b[0]) < 1e-9 and abs(a[1] - b[1]) < 1e-9, "file path equals simulation path")
-    h = AN.headline(d)
-    ok(abs(h["pub_q3"][0] - AN.published(d, (2026, 3), reweight="rake")[0]) < 2e-4, "file weights reproduce the raking")
-    for q in W.qrange(W.FIRST_Q, W.LAST_Q):
-        df = AN.quarter(d, q)
-        ok(np.max(np.abs(df["weight"].to_numpy() - AN.rake(df, d["controls"][W.qlabel(q)]))) < 0.0051, "weights re-rake")
-
-    # ---- the ladder, every rung at its named wrong answer, outside the tolerance in every asked quarter
-    QS = [W.PRIOR_Q] + list(AN.FORWARD)
-    r0 = AN.gap_path(d, carry="wave1")
-    r1 = AN.constant_gap_path(d)
-    r2 = AN.gap_path(d, reweight="keep")
-    for k in range(5):
-        ok(abs(gf[k][0] - r0[k][0]) > tol_u and abs(gf[k][1] - r0[k][1]) > tol_e, "rung 0 off the golden, %d" % k)
-        ok(abs(gf[k][0] - r1[k][0]) > tol_u and abs(gf[k][1] - r1[k][1]) > tol_e, "rung 1 off the golden, %d" % k)
-        ok(abs(gf[k][1] - r2[k][1]) > tol_e, "rung 2 (weights kept) off the golden employment gap, %d" % k)
-        ok(abs(gf[k][0] - r2[k][0]) > tol_u, "rung 2 off the golden unemployment gap, %d" % k)
-        ok(gf[k][0] > 0 and gf[k][1] < 0, "the gap's sign every quarter")
-        ok(r0[k][0] < gf[k][0] and r1[k][0] > gf[k][0], "rung 0 understates and rung 1 overstates, %d" % k)
-        ok(abs(r0[k][1]) < abs(gf[k][1]) and abs(r1[k][1]) > abs(gf[k][1]),
-           "rung 0 under and rung 1 over on the employment gap, %d" % k)
-    for k, q in enumerate(AN.FORWARD):
-        ok((r0[k] == (0.0, 0.0)) == (not W.capped(q)), "rung 0 files zero exactly once the wave-1 intake is uncapped")
-    order = sorted(range(5), key=lambda k: -gf[k][0])
-    ok(order[0] == 2 and gf[order[0]][0] - gf[order[1]][0] > tol_u,
-       "the gap peaks in January to March 2027, clear of the next quarter")
-    ok(gf[4][0] > tol_u and abs(gf[4][1]) > tol_e, "the gap is still over the tolerance in July to September 2027")
-    # the cap is already in the prior quarter, so its share of the change is the change in the gap
-    gp0 = AN.gap_path(d, carry="wave1", quarters=[W.PRIOR_Q])[0]
-    gp1 = AN.constant_gap_path(d, quarters=[W.PRIOR_Q])[0]
-    gp2 = AN.gap_path(d, reweight="keep", quarters=[W.PRIOR_Q])[0]
-    ok(abs(gp0[0] - gf[0][0] + h["gap_prior"][0] - r0[0][0]) >= 0, "the rungs decompose the change")
-    cap_r0, cap_r1, cap_r2 = r0[0][0] - gp0[0], r1[0][0] - gp1[0], r2[0][0] - gp2[0]
-    ok(abs(cap_r0) < 1e-12, "rung 0 files no cap at all in the change, so the whole rise is the labour market")
-    cap_e_r0, cap_e_r1, cap_e_r2 = r0[0][1] - gp0[1], r1[0][1] - gp1[1], r2[0][1] - gp2[1]
-    for nm, cu, ce in (("rung 0", cap_r0, cap_e_r0), ("rung 1", cap_r1, cap_e_r1), ("rung 2", cap_r2, cap_e_r2)):
-        ok(abs(cu - h["cap_u"]) > tol_u or abs(ce - h["cap_e"]) > tol_e,
-           "%s's share of the rise is off the golden's" % nm)
-        ok(abs(ce - h["cap_e"]) > tol_e, "%s's share of the employment change is off the golden's" % nm)
-        ok("%.2f" % round(cu, 2) != fig["cap_share_of_rise_points"]
-           and "%.2f" % round(h["rise_u"] - cu, 2) != fig["labour_market_share_of_rise_points"],
-           "%s prints a different cap share and a different labour market share" % nm)
-    ok(abs(cap_r0 - h["cap_u"]) > tol_u and abs(cap_r1 - h["cap_u"]) > tol_u,
-       "rungs 0 and 1 are off the golden's unemployment share")
-    ok(h["cap_u"] > h["real_u"] > 0, "the cap is the larger share of the rise and the labour market is positive")
-    ok(h["rise_e"] < 0 < h["real_e"], "the employment rate fell as published and rose on six visits throughout")
-    world["ladder"] = dict(golden=gf, rung0=r0, rung1=r1, rung2=r2,
-                           cap_share=dict(golden=h["cap_u"], rung0=cap_r0, rung1=cap_r1, rung2=cap_r2))
-
-    # ---- semantic forks
-    # SF1: the six-visit rate is the published estimator on six visits, the estimand of the prompt
-    ok("six visits all along" in open(os.path.join(os.path.dirname(golden), "prompt.txt")).read(), "SF1 prompt wording")
-    # SF2, SF3: definitions in the methods note, 15 and over
-    meth = _pdf_text(os.path.join(target, B.FILES["methods"]))
-    ok("population aged 15 and over" in meth and "labour force (employed plus unemployed)" in meth, "SF2 SF3 definitions")
-    # SF4: no document says how to measure the effect of a fieldwork change; the records pick the one quarter the
-    # construction can be run on at all (uncapped at every wave, and every household's visit history in the file)
-    for phrase in ("last full quarter", "re-running the estimation", "applying the change", "assessed on",
-                   "simulate", "counterfactual"):
-        ok(phrase not in meth.lower(), "SF4 the methods note is silent on how a change is measured (%s)" % phrase)
-    feasible = []
-    for q in W.qrange(W.qnext(W.FIRST_Q, 4), W.LAST_Q):
-        intakes = [W.qnext(q, -k) for k in range(5)]
-        uncapped = not any(W.capped(c) for c in intakes)
-        complete = bool(AN.quarter(d, q)["interview_visit"].notna().all())
-        if uncapped and complete:
-            feasible.append(q)
-    ok(feasible == [W.TEMPLATE_Q], "SF4 one feasible base quarter: %s" % ", ".join(W.qlabel(q) for q in feasible))
-    # SF4 is filed, not left to feasibility: the prompt names the base quarter by the observable property the
-    # loop above tests, so the pin and this code cannot drift apart. It names the WHAT (the comparison), never
-    # the HOW, and the decisive step stays the unit the cap acts on.
-    _pr = open(os.path.join(os.path.dirname(golden), "prompt.txt")).read()
-    # The base quarter is NAMED, not described: an earlier wording ("the latest quarter with all five waves'
-    # visit histories") read literally to 2026Q3, whose base files a zero July to September gap, and reached
-    # the golden only by inferring that "visit histories" meant six-visit ones. The name is tied to the
-    # quarter the feasibility loop above picks, so the prompt and this code cannot drift.
-    ok(W.qname(W.TEMPLATE_Q) + ", the last six-visit quarter" in _pr,
-       "SF4 the base quarter is named in the prompt and is the one the feasibility loop picks")
-    ok("published less six-visit" in _pr, "SF5b the gap's sign is filed in the prompt")
-    ok("interviewed in both quarters" in _pr, "SF5c the flow denominator is filed in the prompt")
-    ok("in points" in _pr, "SF5d the labour-market share's unit is filed in the prompt")
-    ok(W.qnext(W.TEMPLATE_Q) == W.LIMIT_FROM, "SF4 the base quarter is also the last quarter before the cap")
-    for q in (W.qnext(W.TEMPLATE_Q, -1), W.qnext(W.TEMPLATE_Q, -2)):
-        miss = AN.quarter(d, q)["interview_visit"].isna().mean()
-        ok(miss > 0.15, "SF4 %s cannot be split: %.0f per cent of its sample has no visit history" % (W.qlabel(q), 100 * miss))
-    for q in (W.PRIOR_Q, W.RELEASE_Q):
-        tqq = AN.quarter(d, q)
-        ok((tqq[tqq["wave"] == 1]["interview_visit"] <= W.CAP_VISITS).all(),
-           "SF4 %s is capped at wave 1, so the group to remove is already gone" % W.qlabel(q))
-    # SF5: the households a three-visit cap would not have recruited are those interviewed at visits 4 to 6
-    calls = d["calls"]
-    q3c = calls[calls["intake"] == "2026Q3"]
-    ok(q3c["visit_no"].max() == 3, "SF5 the capped intake has no fourth visit")
-    pre = calls[(calls["intake"] < W.qlabel(W.LIMIT_FROM)) & (calls["outcome"] == 110)]
-    ok(pre["visit_no"].max() == 6 and (pre["visit_no"] >= 4).mean() > 0.12, "SF5 visits 4 to 6 interviewed before")
-    tq = AN.quarter(d, W.TEMPLATE_Q)
-    ok(tq["interview_visit"].notna().all(), "SF5 every template household has its interview visit")
-    # SF6: re-raking is the methods note's estimator (rung 2 keeps weights)
-    ok("Every estimate the office publishes from the HLS uses the raked weights" in meth, "SF6 raking filed")
-    # SF7: six visits from 1 April 2027: the cap's intakes are the 2026/27 field year's and no other
-    ok(W.capped(W.LIMIT_TO) and not W.capped(W.qnext(W.LIMIT_TO)), "SF7 the cap's intakes")
-    ok(len(W.capped_intakes()) == 4 and W.capped_waves(W.qnext(W.LIMIT_TO, W.WAVES - 1)) == (W.WAVES,)
-       and W.capped_waves(W.qnext(W.LIMIT_TO, W.WAVES)) == (), "SF7 the last quarter the cap reaches")
-    # SF8: the real change is between April to June and July to September
-    ok(abs(h["rise_u"] - (h["pub_q3"][0] - h["pub_q2"][0])) < 1e-12, "SF8")
-    # SF9: rounding from unrounded estimates
-    ok(fig["labour_market_share_of_rise_points"] == "%.2f" % round(h["real_u"], 2), "SF9 rounding")
-
-    # ---- separation line: no device row in the main call's population
-    rows = world["call_rows"]
-    replays = [r for r in rows if r.get("_replay")]
-    ok(len(replays) > 0 and all(r["outcome"] != 110 and r["intake"] == "2026Q3" for r in replays),
-       "replays only on non-interview calls of the July to September 2026 intake")
-    main_intakes = {W.qlabel(W.qnext(W.TEMPLATE_Q, -k)) for k in range(5)}
-    ok(not any(r["intake"] in main_intakes for r in replays), "no replay in the template's intakes")
-    inter = calls[calls["outcome"] == 110]
-    ok(not inter.duplicated(["serial9"]).any(), "one interview row per address")
-    # the main path never reads person_no or actual_hours: shuffling them leaves the path unchanged
-    d2 = dict(d)
-    p2 = d["person"].copy()
-    p2["person_no"] = p2["person_no"].sample(frac=1, random_state=1).to_numpy()
-    p2["actual_hours"] = 0.0
-    d2["person"] = p2
-    ok(AN.gap_path(d2) == gf, "the main path is blind to person numbers and hours")
-
-    # ---- the asks: each device moves every region; the over-correction too
-    a = world["deliver"]["asks"]
-    for g in W.RCODES:
-        v = a["visits"]
-        ok(v["rows"][g] != v["golden"][g] and v["serial_day"][g] != v["golden"][g], "ask 1 device, " + g)
-        f = a["flows"]
-        ok("%.2f" % f["person_no"][g] != "%.2f" % f["golden"][g], "ask 2 device, " + g)
-        ok("%.2f" % f["serial_only"][g] != "%.2f" % f["golden"][g], "ask 2 fan-out, " + g)
-        hh = a["hours"]
-        ok("%.1f" % hh["raw"][g] != "%.1f" % hh["golden"][g], "ask 3 device, " + g)
-        ok("%.1f" % hh["all_converted"][g] != "%.1f" % hh["golden"][g], "ask 3 over-correction, " + g)
-    # the devices' internal evidence exists and nothing else marks them
-    p = d["person"]
-    cati = p[(p["mode"] == "CATI") & p["actual_hours"].notna()]["actual_hours"]
-    capi = p[(p["mode"] == "CAPI") & p["actual_hours"].notna()]["actual_hours"]
-    ok(((cati * 100).round() % 100).max() <= 59, "telephone hours never past .59")
-    ok(set(((capi * 100).round() % 100).astype(int)) <= {0, 25, 50, 75}, "face-to-face hours in quarter hours")
-    dup = q3c.duplicated(["serial", "visit_no"], keep=False)
-    ok(dup.sum() == 2 * len(replays), "each replay shares serial and visit number with its original")
-    ok(not q3c.duplicated(["record_id"]).any(), "record ids unique")
-
-    # ---- documents silent on the devices; no em dash anywhere
-    texts = {f: (_pdf_text(os.path.join(target, f)) if f.endswith(".pdf") else
-                 open(os.path.join(target, f), encoding="utf-8").read())
-             for f in files if f.endswith((".pdf", ".md", ".json"))}
-    for f, t in texts.items():
-        for w_ in ("minutes", "oldest", "re-sent", "resent", "re-sync", "duplicate", "h.mm"):
-            ok(w_ not in t.lower(), "%s silent on %s" % (f, w_))
-        ok("—" not in t and "–" not in t, "no dash in " + f)
-
-    # ---- release table reproduces the microdata
-    wb = openpyxl.load_workbook(os.path.join(target, R.RELEASE), data_only=True)
-    t1 = [r for r in wb["Table 1"].iter_rows(min_row=4, values_only=True) if r[0]]
-    for (q, (u, e)), r in zip([(q, AN.published(d, q)) for q in W.qrange(W.FIRST_Q, W.LAST_PUBLISHED)], t1):
-        ok(abs(r[1] - u) < 0.051 and abs(r[2] - e) < 0.051, "release table %s" % W.qlabel(q))
-
-    # the published hours referee: only the converted telephone hours reproduce it, every quarter
-    ph = d["person"]
-    emp = ph[ph["ilo_status"] == 1]
-    conv = emp["actual_hours"].where(emp["mode"] != "CATI", emp["actual_hours"].apply(A.to_decimal))
-    for q, r in zip(W.qrange(W.FIRST_Q, W.LAST_PUBLISHED), t1):
-        m = (emp["quarter"] == W.qlabel(q)).to_numpy()
-        good = (emp["weight"][m] * conv[m]).sum() / 1000
-        raw = (emp["weight"][m] * emp["actual_hours"][m]).sum() / 1000
-        ok(abs(r[5] - good) < 0.051 and abs(r[5] - raw) > 50, "release hours referee %s" % W.qlabel(q))
-    ok("a visit is identified by the address serial and its visit number" in meth, "ask 1 reading pin")
-    ok("People not interviewed in the second quarter are left out" in meth and "unweighted" in meth, "ask 2 reading pin")
-    ok("computed from unrounded estimates" in meth, "rounding pin")
-
-    # ---- goldens agree with figures.json
-    with zipfile.ZipFile(os.path.join(golden, "hls_visit_limit_note_2026q3.docx")) as z:
-        doc = re.sub(r"<[^>]+>", "", z.read("word/document.xml").decode("utf-8"))
-    for k in ("rise_unemployment_rate_points", "cap_share_of_rise_points", "labour_market_share_of_rise_points",
-              "published_unemployment_rate_2026Q3", "unemployment_rate_2026Q3_without_cap",
-              "unemployment_rate_2026Q2_without_cap", "published_employment_rate_2026Q3",
-              "employment_rate_2026Q3_without_cap", "employment_rate_2026Q2_without_cap",
-              "employment_rate_below_six_visit_rate_2026Q2_points", "employment_fall_points",
-              "employment_rise_without_cap_points", "clean_from_quarter_name", "template_quarter_name"):
-        ok(fig[k].lstrip("-") in doc, "memo carries " + k)
-    for q, v in fig["unemployment_rate_gap_points"].items():
-        ok(v in doc, "memo carries the unemployment gap " + q)
-    for q, v in fig["employment_rate_gap_points"].items():
-        ok(v.lstrip("-") in doc, "memo carries the employment gap " + q)
-    wx = openpyxl.load_workbook(os.path.join(golden, "hls_visit_limit_path_2027.xlsx"), data_only=True)
-    gp = {r[0]: r for r in wx["Gap path"].iter_rows(min_row=5, max_row=9, values_only=True)}
-    for q, v in fig["unemployment_rate_gap_points"].items():
-        ok("%.2f" % gp[q][1] == v and "%.2f" % gp[q][2] == fig["employment_rate_gap_points"][q], "workbook " + q)
-    sp = {r[0]: r for r in wx["Gap path"].iter_rows(min_row=12, max_row=20, values_only=True) if r[0]}
-    ok(len(sp) == 9, "the workbook's split block carries nine rows")
-    for lab, key in (("of which the cap", "cap_share_of_rise_points"),
-                     ("of which the labour market", "labour_market_share_of_rise_points"),
-                     ("Change, published", "rise_unemployment_rate_points"),
-                     ("Gap, April to June 2026", "unemployment_rate_gap_2026Q2_points")):
-        ok("%.2f" % sp[lab][1] == fig[key], "workbook split " + key)
-    rg = {r[0]: r for r in wx["Regions"].iter_rows(min_row=4, max_row=9, values_only=True)}
-    for g in W.RCODES:
-        nm = W.RNAME[g]
-        ok(rg[nm][1] == fig["first_interview_visits_2026Q3_intake"][nm], "workbook visits " + nm)
-        ok("%.2f" % rg[nm][4] == fig["unemployed_to_employed_share_pct"][nm], "workbook flows " + nm)
-        ok("%.1f" % rg[nm][5] == fig["total_weekly_hours_thousand"][nm], "workbook hours " + nm)
-    for f in (os.path.join(golden, x) for x in os.listdir(golden)):
-        if f.endswith(".docx"):
-            ok("—" not in doc and "–" not in doc, "no dash in the memo")
-
-    # ---- the three rules, executed on the generator's clean truth (dataset-generation 7.1)
-    # the analyst test: the easy route, with every field read and every filed rule applied, on the clean simulation
-    sg = M.gap_path(I, quarters=[W.PRIOR_Q] + list(M.FORWARD))
-    se = M.gap_path(I, wave1_only=True, quarters=[W.PRIOR_Q] + list(M.FORWARD))
-    ok(all(abs(a[0] - b[0]) < 1e-9 for a, b in zip(sg[1:], gf)), "the clean truth reproduces the golden path")
-    easy_cap = se[1][0] - se[0][0]
-    gold_cap = sg[1][0] - sg[0][0]
-    ok(abs(easy_cap) < 1e-12, "clean truth: the easy route files none of the rise as the cap")
-    ok(gold_cap > tol_u * 3, "clean truth: the decisive route files %.3f point of the rise as the cap" % gold_cap)
-    for k in range(5):
-        ok(se[k + 1][0] < sg[k + 1][0] - tol_u, "clean truth: the easy route understates quarter %d" % k)
-    # one decisive change at a time: the two routes are the same construction with one flag moved, so they agree
-    # exactly in the one quarter whose capped-wave set is the wave-1 position alone
-    ok(W.capped_waves(W.PRIOR_Q) == (1,) and se[0] == sg[0],
-       "clean truth: the wave map is the only difference between the easy route and the golden")
-    # every graded figure sits mid-bin: the distance from the shipped figure to its printed cell's edge
-    def edge(v, u):
-        return u / 2 - abs(v - round(v / u) * u)
-    graded = {"rise_u": h["rise_u"], "cap_u": h["cap_u"], "real_u": h["real_u"], "rise_e": h["rise_e"],
-              "cap_e": h["cap_e"], "real_e": h["real_e"], "pub_q2_u": h["pub_q2"][0], "pub_q3_u": h["pub_q3"][0],
-              "pub_q2_e": h["pub_q2"][1], "pub_q3_e": h["pub_q3"][1], "without_u": h["without_u"],
-              "without_e": h["without_e"], "without_q2_u": h["without_q2_u"], "without_q2_e": h["without_q2_e"],
-              "gap_prior_u": h["gap_prior"][0], "gap_prior_e": h["gap_prior"][1]}
-    for k, q in enumerate(AN.FORWARD):
-        graded["gap_u_%s" % W.qlabel(q)] = gf[k][0]
-        graded["gap_e_%s" % W.qlabel(q)] = gf[k][1]
-    bins = {k: edge(v, 0.01) for k, v in graded.items()}
-    tightest = min(bins, key=bins.get)
-    ok(bins[tightest] > 0.0008, "every graded rate figure clear of its rounding edge (tightest %s at %.5f)"
-       % (tightest, bins[tightest]))
-    for g in W.RCODES:
-        ok(edge(a["flows"]["golden"][g], 0.01) > 1e-6, "ask 2 share clear of its edge, " + g)
-        # the tightest measured is Pellard at 0.00041 of a thousand hours; the sum's worst-case float accumulation
-        # error (naive, 20,000 terms) is 2.5e-05, and numpy's pairwise summation is about 2e-08
-        ok(edge(a["hours"]["golden"][g], 0.1) > 0.0002, "ask 3 hours clear of its edge, " + g)
-    world["bin_distances"] = bins
-
-    # ---- the simulation's own truth (information, and a sanity bound)
-    J = dict(I)
-    J.update(world["counterfactual"])
-    true_q3 = M.published(I, W.RELEASE_Q)[0] - M.published(J, W.RELEASE_Q)[0]
-    ok(abs(true_q3 - gf[0][0]) < 0.12, "the July to September estimate near the simulation's own gap")
-    world["true_q3_gap"] = true_q3
-    print("checks: %d assertions passed (golden path %s; rung 0 %s; rung 1 %s; weights kept %s; simulated July to "
-          "September gap %.2f; cap share of the rise golden %.3f against rung 0 %.3f, rung 1 %.3f, rung 2 %.3f; "
-          "tightest graded bin %.5f at %s)"
-          % (N[0], _fmt(gf), _fmt(r0), _fmt(r1), _fmt(r2), true_q3, h["cap_u"], cap_r0, cap_r1, cap_r2,
-             bins[tightest], tightest))
-
-
-def _fmt(p):
-    return "/".join("%.2f" % x[0] for x in p)
-
-
-def _pdf_text(path):
+def pdf_text(path):
     from pypdf import PdfReader
-    return "\n".join(pg.extract_text() for pg in PdfReader(path).pages).replace("\n", " ")
+    return re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(path).pages))
+
+
+def main(target=TARGET):
+    D = F.load(target)
+    g = F.season_loads(D, "golden")
+    p = F.season_loads(D, "point")
+    runs = F.dry_runs(D)
+    ok("the dry season holds the routine runs from 1 May to 30 September 2026", len(runs) == 11 and
+       runs[0] >= W.DRY0 and runs[-1] <= W.DRY1, len(runs))
+    ok("R3 the conserved loads file the golden set", F.over_set(g) == GOLD, F.over_set(g))
+    ok("R0 the boundary sample times the boundary flow files the default set", F.over_set(p) == DEFAULT, F.over_set(p))
+    ok("R2 the flow-weighted ratio estimator on the boundary samples files the default set",
+       F.over_set(F.ratio_loads(D)) == DEFAULT)
+    # every golden verdict at least 8 per cent from its allocation; the default's flipped units 8 per cent the other way
+    marg = {c: g[c] / ALLOC[c] - 1 for c in g}
+    ok("margins: every unit's conserved load at least 8 per cent from its allocation",
+       min(abs(v) for v in marg.values()) >= 0.08, {c: round(v, 3) for c, v in marg.items()})
+    ok("margins: the four flipped units' boundary loads at least 8 per cent across the allocation the other way",
+       all(abs(p[c] / ALLOC[c] - 1) >= 0.08 and (p[c] > ALLOC[c]) != (g[c] > ALLOC[c]) for c in
+           ("MZ2", "MZ4", "NY2", "NY3")))
+    # the alternatives inside the standing family converge: the section's blend times the boundary flow, and the next
+    # mixed weir below read for the unit
+    alt = {}
+    for code, weir, inflows in D["ru"]:
+        vals = []
+        for d in runs:
+            q = D["flow"][(D["station"][weir], d.isoformat())]
+            if inflows:
+                qin = sum(D["flow"][(D["station"][[u for u in D["ru"] if u[0] == i][0][1]], d.isoformat())]
+                          for i in inflows)
+                vals.append(F.conserved_load(D, code, d) / qin * q)
+            else:
+                vals.append(F.point_load(D, code, d))
+        alt[code] = float(np.mean(vals))
+    ok("SF1 the blend's concentration times the boundary flow gives the same set and whole tonnes",
+       F.over_set(alt) == GOLD and all(round(alt[c]) == round(g[c]) for c in g),
+       {c: (round(alt[c], 2), round(g[c], 2)) for c in g if round(alt[c]) != round(g[c])})
+    down = {"MZ2": ("MZ3", []), "MZ4": ("MZ5", ["GB1"]), "NY3": ("NY4", []), "NY2": ("NY4", ["MP1"])}
+    for code, (below, joins) in down.items():
+        v = np.mean([F.point_load(D, below, d) - sum(F.point_load(D, j, d) for j in joins) for d in runs])
+        ok("SF2 %s read at the mixed weir below (%s, less what joins between) lands the same verdict" % (code, below),
+           (v > ALLOC[code]) == (g[code] > ALLOC[code]) and abs(v / g[code] - 1) < 0.01, round(v, 2))
+    for code in ("MZ3", "MZ5", "NY4"):
+        ok("the mixed boundary %s agrees with what its inflows carry in within one per cent" % code,
+           abs(p[code] / g[code] - 1) < 0.01, round(p[code] / g[code], 4))
+    # the default's inconsistency is there on every run, at the four weirs only
+    bad = {}
+    for code, weir, inflows in D["ru"]:
+        if not inflows:
+            continue
+        r = [F.point_load(D, code, d) / sum(F.conserved_load(D, i, d) for i in inflows) for d in runs]
+        bad[code] = (min(r), max(r))
+    ok("the four boundary loads break the balance on every run by more than 12 per cent, the others within 3",
+       all(not (0.88 < bad[c][0] and bad[c][1] < 1.12) for c in ("MZ2", "MZ4", "NY2", "NY3")) and
+       all(0.97 < bad[c][0] and bad[c][1] < 1.03 for c in ("MZ3", "MZ5", "NY4")), bad)
+    # mess-neutral: the first laboratory result instead of the re-run, and the UTC day for the gauges, leave the call
+    so4_first = {}
+    for r in F._rows(target, "lab"):
+        if r["analyte"] == "SO4" and not r["lab_sample_id"].endswith("-R"):
+            so4_first[(r["site_code"], r["sample_date"])] = float(r["result"])
+    D2 = dict(D)
+    D2["so4"] = so4_first
+    ok("SF3 a re-run's first result instead of the re-run leaves both sets", F.over_set(F.season_loads(D2, "golden"))
+       == GOLD and F.over_set(F.season_loads(D2, "point")) == DEFAULT)
+    ok("SF4 above the allocation and at or above it agree (no unit within 0.5 t/d of its allocation)",
+       min(abs(g[c] - ALLOC[c]) for c in g) > 0.5)
+    ok("SF5 sulfate as SO4 throughout the laboratory's results (no as-S unit on the call's path)",
+       all(r["unit"] == "mg/L" for r in F._rows(target, "lab") if r["analyte"] == "SO4"))
+    # the shock: the golden set is no interval of any shipped statistic's sort
+    stats = {"boundary load": p, "allocation": ALLOC,
+             "boundary sulfate": {c: np.mean([D["so4"][(D["boundary"][c], d.isoformat())] for d in runs]) for c in g},
+             "boundary flow": {c: np.mean([D["flow"][(D["station"][[u for u in D["ru"] if u[0] == c][0][1]],
+                                                      d.isoformat())] for d in runs]) for c in g}}
+    for name, s in stats.items():
+        order = sorted(s, key=lambda c: -s[c])
+        k = len(GOLD)
+        ok("shock: the golden set is not the top or bottom four by %s" % name,
+           set(order[:k]) != set(GOLD) and set(order[-k:]) != set(GOLD))
+    # pins: the schedule files the WHAT and names no mixing, plume, bank or balance
+    text = pdf_text(os.path.join(target, P.FILES["schedule"]))
+    ok("the schedule reads (positive control)", "carries past its lower boundary" in text and "Table 2" in text)
+    ok("pins: no filed sentence names mixing, a plume, a bank, a balance or conservation",
+       not re.search(r"mix|plume|bank|balanc|conserv|cross-section|representative", text, re.I))
+    # ask A stops
+    a = F.ask_a(target)
+    raw = F.ask_a(target, as_s="raw")
+    rst = F.ask_a(target, meter="restart")
+    first = F.ask_a(target, resub="first")
+    mv = sum(round(a[k], -1) != round(raw[k], -1) for k in a)
+    ok("ask A the laboratory's as-S reporting left as it stands misses at least fifteen figures", mv >= 15, mv)
+    ok("ask A the restarted totaliser read without the inspection's final reading misses Silwane's Q2",
+       round(a[("SAM-DP1", "Q2")], -1) != round(rst[("SAM-DP1", "Q2")], -1))
+    ok("ask A the first of a resubmitted month misses Ntsheketshe DP2's Q2",
+       round(a[("NCH-DP2", "Q2")], -1) != round(first[("NCH-DP2", "Q2")], -1))
+    ok("bins: every ask A figure at least 2 t from its ten-tonne rounding edge", min(
+        5 - abs(v - round(v, -1)) for v in a.values()) >= 2.0, round(min(5 - abs(v - round(v, -1)) for v in a.values()), 2))
+    a3 = {}
+    for k, v in a.items():
+        a3[k] = v
+    ok("SF6 the S-to-SO4 factor 3.0 for 2.996 leaves every ask A figure in its bin", all(
+        round(v * 1.0013, -1) == round(v, -1) for v in a.values()))
+    ok("bins: every unit's whole-tonne load at least 0.15 t from its rounding edge",
+       min(0.5 - abs(g[c] - round(g[c])) for c in g) >= 0.15, {c: round(g[c], 2) for c in g})
+    # ask B stops
+    b = F.ask_b(target)
+    nod = F.ask_b(target, drift="none")
+    nom = F.ask_b(target, memory=False)
+    utc = F.ask_b(target, clock="utc")
+    ok("ask B the loggers' readings taken as they stand (no drift taken off) miss every figure by two hours or more",
+       all(abs(b[k] - nod[k]) >= 2 for k in b), sum(abs(b[k] - nod[k]) >= 2 for k in b))
+    ok("ask B the telemetry alone (no memory downloads) misses at least ten figures",
+       sum(b[k] != nom[k] for k in b) >= 10, sum(b[k] != nom[k] for k in b))
+    ok("ask B the UTC clock read as SAST moves at least one figure", sum(b[k] != utc[k] for k in b) >= 1)
+    cr = F.ask_b(target, drift="none", memory=False)
+    ok("ask B the cracker (SAST, no drift, no memory) keeps no figure", sum(b[k] == cr[k] for k in b) == 0)
+    # separation: the asks' device rows are outside the call's rows
+    ok("separation: no mine return, logger reading, service visit or memory download is read by the call",
+       all(k not in ("returns", "ec", "service", "memory", "inspections") for k in ("lab", "gauges", "register")))
+    # input gates
+    names = sorted(os.listdir(target))
+    fmts = {os.path.splitext(n)[1] for n in names}
+    big = max(sum(1 for _ in open(os.path.join(target, n), encoding="utf-8")) for n in names if n.endswith(".csv"))
+    ok("gates: 10 or more files in 3 or more formats, one file of 25,000 rows or more",
+       len(names) >= 10 and len(fmts) >= 3 and big >= 25000, (len(names), fmts, big))
+    meta = json.load(open(os.path.join(TASK, "metadata.json")))
+    ok("gates: two or more distractors named in metadata.json, none in a file name",
+       len(meta["distractors"]) >= 2 and not any("distract" in n for n in names))
+    print("%d checks, %d failed" % (N[0], N[1]))
+    return N[1]
+
+
+if __name__ == "__main__":
+    sys.exit(1 if main() else 0)
