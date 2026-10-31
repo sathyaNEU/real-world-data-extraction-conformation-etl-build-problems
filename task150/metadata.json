@@ -3,13 +3,13 @@
   "title": "Where a suburban Colorado school district's 2025 bond places its 24 new elementary classrooms under the board's placement standard, from each school's projected enrollment over 2028-29 to 2032-33",
   "domain": "Sociology & Demography",
   "client_domain": "Sociology & Demography",
-  "subdomain": "population-estimation-demographic-projection (a small-area cohort-component projection of each attendance area's K-5 pupils: cohorts aged through grades, kindergartens from births five years earlier, exits and moves between areas as rates on the area a pupil leaves, arrivals from outside the district as counts)",
+  "subdomain": "population-estimation-demographic-projection (where a school district's bond classrooms go under its board's placement standard)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "a placement schedule for seven schools (each school's classroom need and classrooms placed), two October 1, 2026 tables (homeroom classes by grade band at seven schools; preschool children and classrooms at four sites), and a seven-panel enrollment chart",
   "as_of": "2026-10-09",
   "deliverables": [
     "classroom_placement_2028-33.xlsx",
-    "enrollment_vs_capacity_2026-33.png"
+    "enrollment_vs_capacity_2026-33.svg"
   ],
   "distractor_files": [
     "facility_condition_assessment_2025.xlsx",
@@ -17,7 +17,7 @@
   ],
   "stated_inputs": [],
   "input_gates": {
-    "files": 16,
+    "files": 13,
     "formats": [
       "csv",
       "pdf",
@@ -41,18 +41,9 @@
     {
       "path": "BP_FEA-R2_elementary_classroom_placement.pdf",
       "format": "pdf",
-      "bytes": 4686,
+      "bytes": 5405,
       "rows": null,
       "source": "Constructed: Sorrel Creek RE-6 Board of Education, Policy FEA-R2 Elementary Classroom Placement (2025 Bond Program), adopted 03/12/2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "births_file_notes.txt",
-      "format": "txt",
-      "bytes": 1136,
-      "rows": null,
-      "source": "Constructed: Brandt County Public Health, Vital Records: notes on the births file",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -68,18 +59,9 @@
     {
       "path": "ecse_roster_2026-10-01.xlsx",
       "format": "xlsx",
-      "bytes": 9523,
+      "bytes": 8534,
       "rows": null,
       "source": "Constructed: Sorrel Creek RE-6 Special Education Department, early childhood special education roster on 10/01/2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest_2026-10-09.csv",
-      "format": "csv",
-      "bytes": 2245,
-      "rows": 15,
-      "source": "Constructed: Sorrel Creek RE-6 Planning and Enrollment Office, manifest of the October 2026 pull",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -113,7 +95,7 @@
     {
       "path": "membership_oct2013-oct2018.txt",
       "format": "txt",
-      "bytes": 2981944,
+      "bytes": 3382501,
       "rows": 32283,
       "source": "Constructed: Sorrel Creek RE-6 legacy student information system, October membership snapshots 2013-14 to 2018-19 (pipe-delimited archive export)",
       "date": "2026-10-09",
@@ -122,7 +104,7 @@
     {
       "path": "october_membership_2019-2026.csv",
       "format": "csv",
-      "bytes": 3982377,
+      "bytes": 5505666,
       "rows": 44314,
       "source": "Constructed: Sorrel Creek RE-6 student information system, October membership snapshots 2019-20 to 2026-27",
       "date": "2026-10-09",
@@ -161,15 +143,6 @@
       "bytes": 29791,
       "rows": 290,
       "source": "Constructed: Sorrel Creek RE-6 student information system, elementary sections scheduled for 2026-27",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "sis_export_notes.txt",
-      "format": "txt",
-      "bytes": 4541,
-      "rows": null,
-      "source": "Constructed: Sorrel Creek RE-6 Student Information Systems, notes on the student-system files",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },

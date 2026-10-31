@@ -1,5 +1,5 @@
 """Assemble the evidence pack: the world, the records, the capacity report (rated capacities from Facilities' room
-plans), the fall 2026 sections and preschool files, the policy, the notes, the two unused files and the manifest."""
+plans), the fall 2026 sections and preschool files, the policy and the two unused files."""
 from __future__ import annotations
 
 import os
@@ -49,12 +49,9 @@ def write_pack(W, out):
     rows[AS.F_PRESCHOOL] = AS.write_preschool(W, W.P, out)
     AS.write_ecse(W, W.P, out)
     DOC.write_policy(out)
-    DOC.write_sis_notes(out, [K.COUNT_DAY[y] for y in K.YEARS])
-    DOC.write_birth_notes(out)
     DOC.write_fca(out)
     W.meals = DOC.write_meals(W, out)
     rows[DOC.F_MEALS] = len(W.meals)
-    DOC.write_manifest(out, rows)
     t = K.PULL_STAMP.timestamp()
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (t, t))

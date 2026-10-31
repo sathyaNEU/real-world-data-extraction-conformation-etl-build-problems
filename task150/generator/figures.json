@@ -55,8 +55,8 @@
   "backtest_gross_worst_school": "Ortega",
   "backtest_gpr5_fifth_street": "-8.2",
   "backtest_gpr5_prairie_rose": "8.3",
-  "backtest_gpr5_fifth_street_abs": "8.2",
-  "backtest_gpr5_prairie_rose_abs": "8.3",
+  "backtest_gpr5_fifth_street_abs": "8",
+  "backtest_gpr5_prairie_rose_abs": "8",
   "backtest_gross_fifth_street": "-0.7",
   "backtest_gross_prairie_rose": "-1.0",
   "excess": {

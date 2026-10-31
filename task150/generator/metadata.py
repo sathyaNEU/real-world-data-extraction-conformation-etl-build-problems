@@ -30,9 +30,6 @@ SOURCES = {
     DOC.F_POLICY: "Sorrel Creek RE-6 Board of Education, Policy FEA-R2 Elementary Classroom Placement (2025 Bond "
                   "Program), adopted 03/12/2026",
     DOC.F_CAPACITY: "Sorrel Creek RE-6 Facilities and Operations, elementary school capacity report 2026-27",
-    DOC.F_SIS_NOTES: "Sorrel Creek RE-6 Student Information Systems, notes on the student-system files",
-    DOC.F_BIRTH_NOTES: "Brandt County Public Health, Vital Records: notes on the births file",
-    DOC.F_MANIFEST: "Sorrel Creek RE-6 Planning and Enrollment Office, manifest of the October 2026 pull",
     DOC.F_FCA: "Sorrel Creek RE-6 Facilities and Operations, facility condition assessment of the elementary schools, "
                "spring 2025",
     DOC.F_MEALS: "Sorrel Creek RE-6 Nutrition Services, meal benefit eligibility of K-5 pupils on the October 1, 2026 "
@@ -62,10 +59,8 @@ def write(target, out_path):
                  "the board's placement standard, from each school's projected enrollment over 2028-29 to 2032-33",
         "domain": "Sociology & Demography",
         "client_domain": "Sociology & Demography",
-        "subdomain": "population-estimation-demographic-projection (a small-area cohort-component projection of each "
-                     "attendance area's K-5 pupils: cohorts aged through grades, kindergartens from births five years "
-                     "earlier, exits and moves between areas as rates on the area a pupil leaves, arrivals from outside "
-                     "the district as counts)",
+        "subdomain": "population-estimation-demographic-projection (where a school district's bond classrooms go under "
+                     "its board's placement standard)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a placement schedule for seven schools (each school's classroom need and classrooms placed), "
                         "two October 1, 2026 tables (homeroom classes by grade band at seven schools; preschool children "

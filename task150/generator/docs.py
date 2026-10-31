@@ -1,6 +1,5 @@
 """The governing document and the operating files around the records: Board Policy FEA-R2 (the estimand's filing), the
-facilities capacity report, the student-system notes, the births file notes, the export manifest, and the two files
-the solution never reads (the 2025 facility condition assessment and the October meal eligibility counts)."""
+facilities capacity report, and the two files the solution never reads (the 2025 facility condition assessment and the October meal eligibility counts)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -77,7 +76,18 @@ def write_policy(out):
             "capacity report current on October 1, 2026. Portable classrooms are not counted.",
             "(e) Classroom need of a school is its five-year average projected enrollment less its rated capacity, "
             "divided by 24 and rounded up to a whole classroom. A school whose five-year average projected enrollment "
-            "does not exceed its rated capacity has no classroom need."]),
+            "does not exceed its rated capacity has no classroom need.",
+            "(f) A homeroom class is one room in one session (full day, morning or afternoon), whatever the number of "
+            "homeroom sections or teachers of record in it, and it is counted in the grade or grades of the pupils "
+            "enrolled in it. A class meets on a day when one of its sections is open that day with at least one pupil "
+            "enrolled.",
+            "(g) A preschool class is a district preschool class at an elementary school, including an early childhood "
+            "special education (ECSE) classroom, which is a district preschool class taught by an early childhood "
+            "special education teacher. A child is counted once at a school's preschool however many enrollment "
+            "records hold the child. A child whose special education services are delivered at home or at a community "
+            "preschool (itinerant service) is not enrolled in a district preschool class. A child's case school is the "
+            "school whose special education team holds the child's IEP. A classroom is the room a class meets in; a "
+            "morning and an afternoon class in the same room share the classroom."]),
         ("3. Placement", [
             "Schools with a classroom need are taken in descending order of the amount by which their five-year "
             "average projected enrollment exceeds their rated capacity. Each in turn is placed its classroom need or "
@@ -89,7 +99,9 @@ def write_policy(out):
             "The Planning and Enrollment Office prepares the projection and the placement schedule from the district's "
             "student records and the county's birth records. The Superintendent presents the schedule to the Board for "
             "adoption at its regular November 2026 meeting. The schedule states, for each school, its classroom need "
-            "and the classrooms placed."]),
+            "and the classrooms placed, and the rooms in use on October 1, 2026: each school's homeroom classes meeting "
+            "that day and, at each school with a preschool, the children enrolled in its preschool classes and the "
+            "classrooms those classes use."]),
         ("5. Changes after adoption", [
             "Attendance-area changes and enrollment counts after October 1, 2026 do not change an adopted schedule. "
             "Classrooms placed at a school are not moved to another school except by action of the Board."]),

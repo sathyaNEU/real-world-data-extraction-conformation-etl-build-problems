@@ -172,10 +172,8 @@ def run(target, golden, W, R, meta_path):
     dis = meta["distractor_files"]
     C("G4 two distractors named in metadata.json and shipped", len(dis) >= 2 and all(x in files for x in dis), dis)
     C("G4b no file name says distractor", not any("distract" in f.lower() for f in files))
-    with open(os.path.join(target, DOC.F_MANIFEST), encoding="utf-8", newline="") as fh:
-        man = [r["file_name"] for r in csv.DictReader(fh)]
-    C("G5 the manifest lists every shipped file but itself (H9)", set(man) == set(files) - {DOC.F_MANIFEST},
-      set(man) ^ (set(files) - {DOC.F_MANIFEST}))
+    C("G5 no describing file ships: no manifest, field notes, readme or dictionary (dataset-generation section 3)",
+      not any(x in f.lower() for f in files for x in ("manifest", "notes", "readme", "dictionary", "layout")), files)
     C("G6 every file carries source, date and licence in metadata.json",
       {x["path"] for x in meta["files"]} == set(files) and all(x["source"] and x["date"] and x["license"]
                                                               for x in meta["files"]))
@@ -380,11 +378,10 @@ def run(target, golden, W, R, meta_path):
     C("C1 population: kindergartens of 2028 to 2032 come from births 2023 to 2027 (none enrolled yet)",
       all(M["P"][calc.GOLDEN][y][:, 0].sum() > 0 for y in calc.WIN))
     bnd = {f: len(re.findall(r"boundar|attendance-area change", t, re.I)) for f, t in texts.items()}
-    C("C1b the births file's boundaries in effect 08/01/2026 are the areas in effect on October 1, 2026: no shipped "
-      "text records an attendance-area change between the two dates (the policy's one change clause is after October 1)",
-      "boundaries in effect 08/01/2026" in texts[DOC.F_BIRTH_NOTES] and
+    C("C1b the births file's attendance areas are the areas in effect on October 1, 2026: no shipped text records an "
+      "attendance-area change (the policy's one change clause is after October 1)",
       "Attendance-area changes and enrollment counts after October 1, 2026" in pol and
-      sum(v for f, v in bnd.items() if f not in (DOC.F_BIRTH_NOTES, DOC.F_POLICY)) == 0, bnd)
+      sum(v for f, v in bnd.items() if f != DOC.F_POLICY) == 0, bnd)
     uniq = all(len(D.snap[y]) == D.rows[y] for y in D.years)
     C("C2 unit: each pupil once per count day in both layouts", uniq)
     days = {}
@@ -458,17 +455,16 @@ def run(target, golden, W, R, meta_path):
                                                             "births 2026-27 on the 2019-25 trend")))
 
     # ---- Ask A
-    sis = open(os.path.join(target, DOC.F_SIS_NOTES), encoding="utf-8").read()
-    unit = ("For class-size reporting the district counts classes, not sections. A homeroom class is one room in one "
-            "session (FULL, AM or PM), whatever the number of homeroom section rows or teachers of record in it, and it "
-            "is counted in the grade or grades of the pupils enrolled in it. A class meets on a day when one of its "
-            "sections is open that day with at least one pupil enrolled.")
+    unit = ("(f) A homeroom class is one room in one session (full day, morning or afternoon), whatever the number of "
+            "homeroom sections or teachers of record in it, and it is counted in the grade or grades of the pupils "
+            "enrolled in it. A class meets on a day when one of its sections is open that day with at least one pupil "
+            "enrolled.")
 
     def flat(t):
         return re.sub(r"\s+", " ", t)
 
-    C("A0 the class count is filed once, in the student-system notes, and nowhere else in the pack",
-      flat(sis).count(unit) == 1 and sum(flat(t).count("class-size reporting") for t in texts.values()) == 1)
+    C("A0 the class count is filed once, in Policy FEA-R2 2 (f), and nowhere else in the pack",
+      flat(pol).count(unit) == 1 and sum(flat(t).count("A homeroom class is one room") for t in texts.values()) == 1)
     truthA = {}
     for z in K.ZONES:
         for b, gs in (("K-2", (0, 1, 2)), ("3-5", (3, 4, 5))):
@@ -549,16 +545,17 @@ def run(target, golden, W, R, meta_path):
 
     # ---- Ask B
     roster_wb = openpyxl.load_workbook(os.path.join(target, AS.F_ECSE), data_only=True)
-    notes_b = " ".join(str(r[0]) for r in roster_wb["Notes"].iter_rows(values_only=True) if r and r[0])
-    C("B0 the roster's notes file the case school, the child once by state ID, the service models (an ECSE classroom "
-      "a district preschool class, the itinerant children out of class) and the classroom as a room",
-      "A child served itinerantly is not enrolled in a district preschool class." in notes_b and
-      "ECSE classroom, a district preschool class taught by an early childhood special education teacher;" in notes_b and
-      "a child is counted once however many enrollment rows the platform holds for them." in notes_b and
-      "Classroom: the school and room where the child's class meets. A morning and an afternoon class in the same room "
-      "share the classroom." in notes_b and
-      "Case school: the elementary school whose special education team holds the child's IEP case." in notes_b and
-      sum(flat(t).count("served itinerantly") for t in texts.values()) == 1)
+    fp = flat(pol)
+    C("B0 Policy FEA-R2 2 (g) files the preschool class (an ECSE classroom a district preschool class), the child once, "
+      "the itinerant children out of class, the case school and the classroom as a room; the roster carries no notes",
+      "an early childhood special education (ECSE) classroom, which is a district preschool class taught by an early "
+      "childhood special education teacher" in fp and
+      "A child is counted once at a school's preschool however many enrollment records hold the child." in fp and
+      "(itinerant service) is not enrolled in a district preschool class." in fp and
+      "A child's case school is the school whose special education team holds the child's IEP." in fp and
+      "a morning and an afternoon class in the same room share the classroom." in fp and
+      roster_wb.sheetnames == ["Roster 10-01-2026"] and
+      sum(flat(t).count("itinerant service") for t in texts.values()) == 1)
     truthB = {K.SCHOOLS[z]["name"]: dict(children=len(W.P.truth[z]["kids"]), classrooms=len(W.P.truth[z]["rooms"]))
               for z in AS.PRESCHOOL}
     C("B1 Ask B golden equals the world's preschool rolls", truthB == B["golden"], (truthB, B["golden"]))
@@ -639,7 +636,7 @@ def run(target, golden, W, R, meta_path):
             shutil.copy(os.path.join(target, f), tmp)
         A2 = calc.ask_a(tmp, D.codes)
         B2 = calc.ask_b(tmp, D.names)
-        C("SEP2 both asks unchanged with the distractors and the notes deleted", A2["golden"] == A["golden"] and
+        C("SEP2 both asks unchanged with the distractors deleted", A2["golden"] == A["golden"] and
           B2["golden"] == B["golden"])
     finally:
         shutil.rmtree(tmp)
@@ -660,7 +657,9 @@ def run(target, golden, W, R, meta_path):
       len([r for r in caps_rows if r[-1]]))
     people = list(K.PEOPLE.values())
     alltext = " ".join(texts.values())
-    C("RS4 the people named are the drawn personas", all(p in alltext for p in people[1:4] + [people[4]]) and
+    C("RS4 the people named are the drawn personas: the director of facilities signs the capacity report, and no "
+      "persona appears that the draw did not name", K.PEOPLE["facilities"] in alltext and
+      not any(p in alltext for p in (K.PEOPLE["sis"], K.PEOPLE["gis"], K.PEOPLE["registrar"])) and
       not re.search(r"John Doe|Jane Doe|Acme|Company [A-Z]\b", alltext))
     bad_meta = []
     for f in files + ["golden/" + x for x in os.listdir(golden)]:
@@ -678,7 +677,7 @@ def run(target, golden, W, R, meta_path):
                 bad_meta.append((f, when))
         if f.endswith(".pdf") and (b"ReportLab" in raw or b"reportlab" in raw or b"D:2000" in raw):
             bad_meta.append(f)
-        if f.endswith(".png") and (b"matplotlib" in raw.lower() or b"Software" in raw):
+        if f.endswith((".png", ".svg")) and (b"matplotlib" in raw.lower() or b"Software" in raw):
             bad_meta.append(f)
     C("RS5 containers scrubbed: no writer's name, no stamp after the pull (H1)", not bad_meta, bad_meta)
     dash = [f for f, t in texts.items() if DASH.search(t)]

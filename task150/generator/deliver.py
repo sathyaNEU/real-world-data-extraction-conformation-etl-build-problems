@@ -1,5 +1,5 @@
 """The golden deliverables, computed from the shipped pack only (calc): classroom_placement_2028-33.xlsx (the placement
-schedule, the projection behind it, and the two October 1, 2026 tables) and enrollment_vs_capacity_2026-33.png (one
+schedule, the projection behind it, and the two October 1, 2026 tables) and enrollment_vs_capacity_2026-33.svg (one
 panel per school), with generator/figures.json and submission.md written from the same objects."""
 from __future__ import annotations
 
@@ -10,6 +10,8 @@ import os
 import matplotlib
 
 matplotlib.use("Agg")
+matplotlib.rcParams["font.family"] = "sans-serif"
+matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
 import matplotlib.pyplot as plt          # noqa: E402
 import numpy as np                       # noqa: E402
 import openpyxl                          # noqa: E402
@@ -19,7 +21,7 @@ import calc                              # noqa: E402
 import common as K                       # noqa: E402
 
 F_BOOK = "classroom_placement_2028-33.xlsx"
-F_CHART = "enrollment_vs_capacity_2026-33.png"
+F_CHART = "enrollment_vs_capacity_2026-33.svg"
 STAMP = dt.datetime(2026, 10, 15, 10, 20, 0)     # the planning office's save, six days after the pull
 AUTHOR = K.PEOPLE["planning"]
 SHORT = {"6111": "Fifth Street", "6116": "Lincoln", "6142": "Ortega", "6158": "Bluestem", "6163": "Prairie Rose",
@@ -88,8 +90,8 @@ def figures(R):
             "backtest_gross_worst_school": SHORT[D.codes[fc["worst"]]],
             "backtest_gpr5_fifth_street": pct1(bt["five-year progression ratios"]["last"][fc["P"]]),
             "backtest_gpr5_prairie_rose": pct1(bt["five-year progression ratios"]["last"][fc["E"]]),
-            "backtest_gpr5_fifth_street_abs": pct1(abs(bt["five-year progression ratios"]["last"][fc["P"]])),
-            "backtest_gpr5_prairie_rose_abs": pct1(abs(bt["five-year progression ratios"]["last"][fc["E"]])),
+            "backtest_gpr5_fifth_street_abs": "%d" % round(abs(bt["five-year progression ratios"]["last"][fc["P"]])),
+            "backtest_gpr5_prairie_rose_abs": "%d" % round(abs(bt["five-year progression ratios"]["last"][fc["E"]])),
             "backtest_gross_fifth_street": pct1(bt["gross-flow"]["last"][fc["P"]]),
             "backtest_gross_prairie_rose": pct1(bt["gross-flow"]["last"][fc["E"]]),
             "excess": {SHORT[c]: n0(g["exc"][i]) for i, c in enumerate(D.codes)},
@@ -246,7 +248,7 @@ def write_book(path, R):
         ha.cell(row=tr, column=c).font = Font(bold=True)
         ha.cell(row=tr, column=c).border = Border(top=THIN)
     ha.append([])
-    ha.append(["The district's class count (sis_export_notes.txt): one class for each room and session among the "
+    ha.append(["The district's class count (Policy FEA-R2, 2 (f)): one class for each room and session among the "
                "homeroom sections (HR-K to HR-5) open on October 1 with at least one pupil enrolled that day, in the "
                "grade of its pupils on the October 1 count. A combination class's grade sections and a co-taught "
                "class's two sections count once, a half-day kindergarten's morning and afternoon classes twice, and the "
@@ -397,7 +399,13 @@ def write_chart(path, R):
     fig.suptitle("The 24 bond classrooms go to Prairie Rose, Lincoln, Fifth Street, Bluestem and Kessler: projected "
                  "October K-5 enrollment against rated capacity", fontsize=12.5, x=0.01, ha="left", fontweight="bold")
     fig.tight_layout(rect=(0, 0, 1, 0.95))
-    fig.savefig(path, metadata={"Software": None})
+    matplotlib.rcParams["svg.hashsalt"] = "sorrel-creek-planning"
+    matplotlib.rcParams["svg.fonttype"] = "none"
+    fig.savefig(path, format="svg", metadata={"Creator": None, "Date": None, "Format": None, "Type": None})
+    svg = open(path, encoding="utf-8").read()
+    svg = svg.replace('id="matplotlib.axis_', 'id="axis_').replace(", 'DejaVu Sans'", ", sans-serif")
+    svg = svg.replace("sans-serif, sans-serif", "sans-serif")
+    open(path, "w", encoding="utf-8").write(svg)
     plt.close(fig)
 
 
@@ -424,8 +432,8 @@ def submission(R, f):
                "the 24 run out at Kessler, which is placed the %s that remain. Not Bluestem %s, Fifth Street %s, Lincoln "
                "%s and Prairie Rose %s with none at Kessler, which five-year grade progression ratios give by striking "
                "Fifth Street's and Prairie Rose's steady stream of arrivals on classes of the past size and Ortega's "
-               "transfers on Bluestem's and Kessler's classes; run from 2019, those ratios came out %s per cent low at "
-               "Fifth Street and %s per cent high at Prairie Rose by 2026." % (
+               "transfers on Bluestem's and Kessler's classes; run from 2019, those ratios came out about %s per cent low at "
+               "Fifth Street and about %s per cent high at Prairie Rose by 2026." % (
                    nd["Prairie Rose"], nd["Lincoln"], nd["Fifth Street"], nd["Bluestem"], nd["Kessler"],
                    f["critical_components"]["classroom_need_total"], nd["North Fork"], s["kessler_remaining"],
                    dp["Bluestem"], dp["Fifth Street"], dp["Lincoln"], dp["Prairie Rose"],
@@ -459,7 +467,7 @@ def submission(R, f):
                    s["births_2026_27_basis"], s["transitions"]))
     out.append("4. Back-tested from %s (fitted on the transitions to %s, run from the %s count with the births on file): "
                "the projection misses each school's 2026 count by %s per cent or less, while five-year progression "
-               "ratios come out %s per cent low at Fifth Street and %s per cent high at Prairie Rose." % (
+               "ratios come out about %s per cent low at Fifth Street and about %s per cent high at Prairie Rose." % (
                    s["backtest_origin"], s["backtest_origin"], s["backtest_origin"], s["backtest_gross_worst_abs"],
                    s["backtest_gpr5_fifth_street_abs"], s["backtest_gpr5_prairie_rose_abs"]))
     out.append("5. Rolled every school from the October 1, 2026 count to 2032 and averaged 2028 to 2032 against rated "
@@ -488,7 +496,7 @@ def submission(R, f):
     for r in f["ask_b_preschool"]:
         out.append("   - %s: %s children enrolled, %s classrooms" % (r["site"], r["children"], r["classrooms"]))
     out.append("")
-    out.append("### enrollment_vs_capacity_2026-33.png\n")
+    out.append("### enrollment_vs_capacity_2026-33.svg\n")
     out.append("1. One panel per school: October K-5 enrollment %s to %s from the membership snapshots, the projection "
                "to %s, rated capacity across the panel and capacity with the placed classrooms from %s." % (
                    f["chart_years"]["history_from"], f["chart_years"]["history_to"], f["chart_years"]["projection_to"],

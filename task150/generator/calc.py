@@ -561,7 +561,7 @@ def october_grades(target, year="2026-27"):
 
 
 def ask_a(target, codes):
-    """Homeroom classes meeting on October 1, 2026, as the student-system notes count them: one class for each room and
+    """Homeroom classes meeting on October 1, 2026, as Policy FEA-R2, 2 (f) counts them: one class for each room and
     session among the homeroom sections open that day with at least one pupil enrolled that day, counted in the grade
     band of the pupils enrolled in it (their grade on the October 1 count)."""
     secs, lines = read_sections(target)

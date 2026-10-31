@@ -142,8 +142,9 @@ Kessler 2 and Prairie Rose 7.
 - **Not rule application:** the strict rule 3 test on every shipped sentence that bears on how the figure is computed:
   the prompt; Policy FEA-R2 sections 1 to 6 (the program, the definitions of K-5 enrollment, projected enrollment, the
   five-year average, rated capacity and classroom need, the order, the cap, the reserve, the tie-break, who prepares the
-  projection); the student-system notes (what each field and the snapshot hold, the codes); the births file notes (what
-  is counted, geocoding, provisional status); the capacity report's notes. Executed word for word they fix the target, the
+  projection) and its definitions (f) and (g) of a homeroom class and a preschool class, which serve only the asks; the
+exports' own columns (the entry codes with the systems' descriptions beside them, the births file's status); the
+capacity report's notes. Executed word for word they fix the target, the
   arithmetic of need and the placement, and give no projection: none names a method, a ratio, a rate or how arrivals or
   moves behave, and the one literal combination they admit with the field's standard projection (progression ratios)
   files the default (`R3s` in `checks.py`). The behaviour the decisive step turns on is inferred from the data, and the
@@ -171,6 +172,37 @@ Kessler 2 and Prairie Rose 7.
   its own base is the demographer's gross-migration cohort-component model, and no build on file teaches it (task89's net
   rate that already contains a filed inflow schedule is the nearest, a double count, not a scaling error in a closed
   system of areas).
+
+## Survivor anatomy
+
+Actor: the deciding property, how each flow into a school's next grade scales (exits and moves with the class a pupil
+leaves, arrivals from outside the district as a steady count each fall), has no column: the exports hold each pupil's
+school, grade and entry code on each count day, and the flows exist only as transitions of linked pupils across years.
+
+Link: the flows are read by linking each pupil across count days and across the 2019 system change (legacy number to
+state ID through the crosswalk), a pupil-level link the grade progression method never asks for, since it counts
+classes, not pupils; no sentence invites it.
+
+Reflex: the field's named method, the cohort-survival projection with five-year grade progression ratios and a
+kindergarten-to-births ratio, is rung 0 and files Bluestem 7, Fifth Street 3, Lincoln 6, Prairie Rose 8 and none at
+Kessler; its windows, trends, differences and district rakes (R0a to R1d) also file wrong placements.
+
+Back-test: risk recorded: the textbook route does not fully validate on the history: projected from earlier ratios it
+misses the 2020 to 2026 counts by 7 to 9 per cent at Fifth Street, Prairie Rose and Ortega; no validation table ships,
+so the miss shows only to a solver who runs the back-test, and it shows the error, not which flow makes it.
+
+Second use: every file the decisive step reads has its own use: both October exports are the K-5 counts every projection
+starts from, the crosswalk is the 2019 conversion table, the entry codes are the systems' own enrollment record, and the
+births file feeds every kindergarten; delete the decisive step and no file drops out.
+
+Shock: the step moves classrooms among schools that every method places (Prairie Rose 8 to 7, Bluestem 7 to 4, Fifth
+Street 3 to 5) and adds two at Kessler, so no school appears from nowhere; risk recorded: the schools placed on both
+paths are those whose October 2026 counts sit nearest their capacity, so the set of schools placed reads off the 2026
+shortfall and only the allocation among them carries the step.
+
+Pins: Policy FEA-R2 files the WHAT (each school's K-5 pupils expected on the count days of 2028 to 2032 under the 2026
+attendance areas, pupils not yet enrolled or born included, averaged and set against rated capacity, and the need and
+placement arithmetic); no filed sentence names a ratio, a flow, a rate or how arrivals or moves behave.
 
 ## Readability screen
 
@@ -205,7 +237,7 @@ Every row is asserted in `generator/checks.py`.
 | SF9 | K-5 enrollment | primary enrollments in kindergarten to grade 5, each pupil once | with preschool | not the standard | FEA-R2 section 2(a); preschool is not in the membership export |
 | SF10 | the projection base | the October 1, 2026 count | the 2025 count | not the as-of | FEA-R2 section 2(b) (projected from the district's records through the October 1, 2026 count) |
 | SF11 | births 2025 | provisional as filed | completed by a late-registration share | same call (asserted) | none needed |
-| SF12 | births not geocoded and outside the district | out of the areas' births | spread pro rata | same call (asserted) | the births notes |
+| SF12 | births not geocoded and outside the district | out of the areas' births | spread pro rata | same call (asserted) | the births file's own rows (OUTSIDE RE-6, NOT GEOCODED) |
 | SF13 | "expected" | the expected count | a high case | the standard's expected value | FEA-R2 section 2(b) |
 | SF14 | rounding path | unrounded average, excess over 24 rounded up once | the average rounded first | same call (asserted) | FEA-R2 section 2(e) |
 | SF15 | ties in the order | none arises | the larger October 2026 count | same call | FEA-R2 section 3; margins asserted |
@@ -266,7 +298,7 @@ Each row's assertion is in `checks.py` (C1 to C22).
 | 1 | Population | each school's K-5 primary enrollments on the 2028 to 2032 count days under the 2026 attendance areas, pupils not yet enrolled or born included | filed (FEA-R2 2(a), 2(b)); SF3, SF9 |
 | 2 | Unit of account | a pupil, once, at the school of primary enrollment; a classroom of 24 | filed (FEA-R2 2(a), 2(e)) |
 | 3 | Attribution window | a pupil belongs to the October count day of the school year | filed (FEA-R2 2(a)); the snapshots |
-| 4 | As-of dating | the October 1, 2026 count; files pulled by October 9, 2026 | FEA-R2 2(b); the export manifest |
+| 4 | As-of dating | the October 1, 2026 count; files pulled by October 9, 2026 | FEA-R2 2(b); the exports' count dates |
 | 5 | Version basis | one snapshot per count day; the capacity report of September 2026 | asserted (one snapshot per year) |
 | 6 | Denominator | rated capacity, permanent classrooms | FEA-R2 2(d); SF6 |
 | 7 | Weighting | each school on its own; rates pooled over grades or by grade | C1 asserted (pooled, by grade) |
@@ -278,17 +310,17 @@ Each row's assertion is in `checks.py` (C1 to C22).
 | 13 | Order of operations | counts, flows, rates, projection, average, excess, need, order, cap | design; the method forced by the data (Ladder) |
 | 14 | Row order | none matters | asserted (exports read in reverse) |
 | 15 | Duplicate resolution | one primary row per pupil per count day | asserted (unique state ID per snapshot) |
-| 16 | Identity normalisation | state ID across layouts; the crosswalk for blanks | the export notes; asserted |
+| 16 | Identity normalisation | state ID across layouts; the crosswalk for blanks | the crosswalk's own columns; asserted |
 | 17 | Netting against gross | flows kept gross | design |
 | 18 | Dimensional units | pupils; classrooms of 24 | FEA-R2 2(e) |
-| 19 | Code and status semantics | grade, school and entry codes in two layouts | the export notes; never the stump |
+| 19 | Code and status semantics | grade, school and entry codes in two layouts | the exports' own descriptions beside each code; never the stump |
 | 20 | Integerisation | the need rounded up; placement whole classrooms | FEA-R2 2(e), 3 |
 | 21 | Clause scope | FEA-R2 covers the Elementary Capacity program only | filed |
 | 22 | Forward window contents | five count days, kindergartens born 2023 to 2027 | the births file to 2025; 2026-27 births projected, C1 asserted |
 
 ## Literal reader
 
-Executing the prompt, Policy FEA-R2, the student-system notes, the births notes and the capacity report word for word
+Executing the prompt, Policy FEA-R2, the exports' own columns, the births file and the capacity report word for word
 fixes the target (each school's K-5 pupils expected on the October count days of 2028 to 2032 under the 2026 attendance
 areas, new kindergartens included, averaged, against rated capacity) and the whole arithmetic from the average to the
 placement; it leaves only the projection's method open, and every reading of every term converges on the golden's
@@ -320,11 +352,11 @@ its figures; they share no primary device.
 - H18 home: the building case for the placement (how many classes each school runs this fall in its permanent
   classrooms), a measure every school carries that the call does not turn on; in the board packet's words ("homeroom
   classes").
-- The unit, filed once in the student-system notes (stage 4 repair of the judge's Gate E finding), in the system owner's
-  voice: "For class-size reporting the district counts classes, not sections. A homeroom class is one room in one
-  session (FULL, AM or PM), whatever the number of homeroom section rows or teachers of record in it, and it is counted
-  in the grade or grades of the pupils enrolled in it. A class meets on a day when one of its sections is open that day
-  with at least one pupil enrolled." It settles the combination and co-taught sections, the half-day pairs, the
+- The unit, filed once in Policy FEA-R2's definition 2 (f) (the stage 4 repair of the judge's Gate E finding, moved
+  there from the student-system notes at the 10-31 reship, when no describing file may ship): "A homeroom class is one
+  room in one session (full day, morning or afternoon), whatever the number of homeroom sections or teachers of record
+  in it, and it is counted in the grade or grades of the pupils enrolled in it. A class meets on a day when one of its
+  sections is open that day with at least one pupil enrolled."  It settles the combination and co-taught sections, the half-day pairs, the
   placeholder (no pupil), the sections ended or opened around the count day (none starts or ends on October 1, A4) and
   the band.
 - Golden (`figures.json` `ask_a_homeroom_classes`, K-2 and 3-5, unchanged by the repair): Fifth Street 17 and 17,
@@ -339,7 +371,7 @@ its figures; they share no primary device.
   class's grade read off its sections' course codes misses all 14 figures (A3g, A7); the pupils' grades on the October 1
   count (a join through the section enrollment lines) put each class in its band. Only the cross-file cut shows it: the pupils' earlier lines in the grade's other classes end the school day
   before the class opened (A7c).
-- Second devices A1 and A2 (now executed by anyone who reads the notes): combination and co-taught classes on two
+- Second devices A1 and A2 (now executed by anyone who reads definition 2 (f)): combination and co-taught classes on two
   sections, half-day kindergarten pairs in one room.
 - Hazards: HA1 a homeroom section ended on September 18 when its teacher left, the class re-opened as a new section in
   the same room on September 21 (Bluestem grade 4, Lincoln grade 1); HA2 a placeholder section with no pupils (North
@@ -351,7 +383,7 @@ its figures; they share no primary device.
   homeroom section (14 of 14 off, "open that day with at least one pupil enrolled"); classes without the pupil test (off
   at North Fork 3-5, "at least one pupil enrolled"); classes without the date filter (the same figures, converging);
   classes banded by course code (14 of 14 off, "counted in the grade or grades of the pupils enrolled in it"); the golden.
-- Span: the sections export, the section enrollment export, the October membership, the student-system notes (4 files);
+- Span: the sections export, the section enrollment export, the October membership, Policy FEA-R2 (4 files);
   13 columns.
 - Realism: a student system schedules a combination class one section per grade and a co-taught class one section per
   teacher; a scheduler rebalancing in September reuses an unfilled section rather than building a new one, and the
@@ -361,8 +393,9 @@ its figures; they share no primary device.
 preschool classes on October 1, 2026 and the classrooms those classes use** (8 figures).
 - H18 home: building use outside the K-5 rated capacity the standard places on, a measure every hosting school carries
   that the call does not turn on; in the preschool office's words ("children enrolled", "classrooms").
-- Filed in the roster's own notes sheet (stage 4 repair of the judge's itinerant note and the reader's classroom
-  question, and the re-read's two points), in the special education department's voice: "Case school: the elementary
+- Filed in Policy FEA-R2's definition 2 (g) since the 10-31 reship (it stood in the roster's own notes sheet, the stage 4
+  repair of the judge's itinerant note and the reader's classroom question, and the re-read's two points); its earlier
+  wording in the special education department's voice, now the policy's: "Case school: the elementary
   school whose special education team holds the child's IEP case." "State ID: the child's state-assigned student ID, the
   key for a child across this roster and the preschool registration platform; a child is counted once however many
   enrollment rows the platform holds for them." "Service model: ECSE classroom, a district preschool class taught by an
@@ -392,7 +425,7 @@ preschool classes on October 1, 2026 and the classrooms those classes use** (8 f
   the itinerant children added (92, 96, 54, 37: over at 4 of 4, "not enrolled in a district preschool class"); classes
   counted as classrooms (over at the three half-day sites, "share the classroom"); the two sources added without
   matching children (over at 4 of 4); the golden.
-- Span: the platform export, the special education roster and its notes (2 files); 10 columns.
+- Span: the platform export, the special education roster and Policy FEA-R2 (3 files); 10 columns.
 - Realism: a registration platform opens a new child record on each application; special education preschool placements
   are made through the special education system, and a district classroom serves children whose cases sit with their
   home school's team.
@@ -419,12 +452,13 @@ state ID on both sources. Each is a field the golden reads, not a control: no fi
 | B children and classrooms (8) | the platform's enrollments open on October 1 and the roster's in-class children, each child once by state ID, itinerant children out, rooms distinct, the roster's children placed by its case school | every site gains or loses a child and a room to another site: every figure off | miss |
 | the chart | the cracker's projection drawn as the golden draws it | the history, capacity and its own projection | outside |
 
-Mirror leakage: about 16 per cent of the ask weight (the mirror runs the same ask paths as the cracker and keeps only the
+Mirror leakage: 14.8 per cent of the ask weight (the mirror runs the same ask paths as the cracker and keeps only the
 chart's structural criteria: the panels, the history, a projection line and the capacity lines).
-Pair ceiling: 39 (on a rubric of about 32 for the call and needs, 7 for instructions and 61 for the asks: the cracker 32
-plus 7 plus the chart's 9, 48; the mirror keeps the placements and needs every method shares, Lincoln's, Ortega's and
-North Fork's placements and Fifth Street's, Lincoln's, Ortega's and North Fork's needs, about 14, plus 7 and the chart's 9,
-30; 22 ask figures held on both paths).
+Pair ceiling: 40.0 (on a rubric of 32 for the call and needs, 7 for instructions and 61 for the asks: the cracker 32
+plus 7 plus the chart's 9, 48.0; the mirror keeps the placements and needs every method shares, 7 of the 14 call
+criteria, 16, plus 7 and the chart's 9, 32.0; none of the 22 ask figures held on either path).
+
+Measured by: generator/ceiling.py on the cut pack.
 
 ## Tried and rejected
 
@@ -534,6 +568,18 @@ The 10/10 rules read again against the shipped cut.
 - Rule 3: nothing is planted, no field reading decides the call, and the shipped HOW sentences name records, never a
   method (R3s); the decisive step is analytical.
 
+- **2026-10-31 reship under the 10-30 gates (target.zip c9a1a76cc38af6cf).** The student-system notes, the births file
+  notes and the export manifest are gone; the entry codes carry the systems' own descriptions, Policy FEA-R2 2 (f) and
+  (g) file the asks' units, the roster's notes sheet is gone, the prompt states no count and its shell (where, the,
+  state, svg+xlsx) sits under every quota, and the chart is an SVG with the plotting library's ids and fonts scrubbed.
+  Every graded figure unchanged (figures.json identical). Free gates on the final cut: checks 144, verify agreeing, two
+  byte-identical builds, figures_check 41 of 41, precut 0 FAIL 0 WARN, voice-check clean, leak.py REVIEW with no LEAK,
+  ceiling.py pair 40.0 and mirror leakage 14.8, guard.py surface exit 0 and heart WARN (people.first). Judge pass 2
+  DETERMINISTIC, APPROVE (Gate G forecasting, method or model selection, no surface-read dependency; Gate H analytical;
+  the transition model back-tests within 5.0 per cent where the ratios miss by 8 to 12). Leak reader clean (no
+  decisive-step sentence, no ranking or helper file). The 10/10 rules re-read: the decisive step is still the
+  projection's flow structure, analytical; the mess is Layer 1.
+
 ## Leak review
 
 `leak.py --asof 2026-10-09` on the stage 4 close cut: REVIEW, no LEAK. One line per REVIEW line.
@@ -554,3 +600,9 @@ The 10/10 rules read again against the shipped cut.
 - The births file's boundaries in effect 08/01/2026 are the areas the policy names as in effect on October 1, 2026: the
   pack records no attendance-area change between the two dates, the policy's one change clause concerns changes after
   October 1 (C1b); no fix.
+- 2026-10-31, reship under the 10-30 gates: the student-system notes, the births file notes and the export manifest were
+  describing files (leak.py sweeps 1 and 12); their load-bearing facts moved into the exports' own columns (each entry
+  code with the system's description beside it) and into Policy FEA-R2's definitions 2 (f) and (g) (the homeroom class,
+  the preschool class, the child counted once, the itinerant child, the case school, the classroom), the roster's notes
+  sheet removed with them; the prompt no longer counts the schools, and its shell (the, state, svg+xlsx) is under every
+  corpus quota.

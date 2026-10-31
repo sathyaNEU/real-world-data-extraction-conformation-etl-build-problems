@@ -18,6 +18,11 @@ F_CODES = "school_codes.csv"
 F_BIRTHS = "brandt_county_births_by_attendance_area_2008-2025.csv"
 
 OLD_GRADE = {0: "KG", 1: "01", 2: "02", 3: "03", 4: "04", 5: "05"}
+# the systems' own wording of their entry codes, exported beside each code
+NEW_ENTRY = {"01": "Entered district in kindergarten", "02": "Transfer from another Colorado district",
+             "03": "Transfer from another state", "04": "From nonpublic school or home school",
+             "05": "From outside the United States", "06": "Transfer from another school in the district"}
+OLD_ENTRY = {"E1": "NEW TO DIST", "E2": "IN-DIST TRANSFER"}
 NEW_GRADE = {0: "00", 1: "01", 2: "02", 3: "03", 4: "04", 5: "05"}
 
 
@@ -40,7 +45,7 @@ def legacy_rows(W):
             sex = info["sex"] if info["sex"] != "X" else "M"
             recs.append([K.SCHOOLS[z]["local"], OLD_GRADE[g], W.local[pid], [
                 "%d-%d" % (y, y + 1), K.us(cd), K.SCHOOLS[z]["local"], K.SCHOOLS[z]["old_name"], W.local[pid], sasid,
-                OLD_GRADE[g], K.us(info["birth"]), sex, K.us(ed), old,
+                OLD_GRADE[g], K.us(info["birth"]), sex, K.us(ed), old, OLD_ENTRY[old],
                 "Y" if WD.ell_on(W, pid, y) else "N", "Y" if WD.iep_on(W, pid, y) else "N"]])
         recs.sort(key=lambda t: (t[0], t[1], t[2]))
         rows.extend(r[3] for r in recs)
@@ -58,7 +63,7 @@ def member_rows(W):
             ed, code, old = W.spell[(pid, y)]
             recs.append([K.SCHOOLS[z]["state"], NEW_GRADE[g], info["sid"], [
                 K.school_year(y), K.iso(cd), K.SCHOOLS[z]["state"], school_name(z, y), info["sid"], NEW_GRADE[g],
-                K.iso(info["birth"]), info["sex"], K.iso(ed), code,
+                K.iso(info["birth"]), info["sex"], K.iso(ed), code, NEW_ENTRY[code],
                 "Y" if WD.ell_on(W, pid, y) else "N", "Y" if WD.iep_on(W, pid, y) else "N"]])
         recs.sort(key=lambda t: (t[0], t[1], t[2]))
         rows.extend(r[3] for r in recs)
@@ -67,13 +72,13 @@ def member_rows(W):
 
 def write_legacy(W, out):
     hdr = ["SCHL_YR", "CNT_DT", "SCH_CD", "SCH_NAME", "STU_NBR", "SASID", "GRADE", "BIRTH_DT", "SEX", "ENTRY_DT",
-           "ENTRY_CD", "ELL", "SPED"]
+           "ENTRY_CD", "ENTRY_DESC", "ELL", "SPED"]
     return K.write_csv(os.path.join(out, F_LEGACY), hdr, legacy_rows(W), delimiter="|")
 
 
 def write_members(W, out):
     hdr = ["school_year", "count_date", "school_code", "school_name", "student_id", "grade_level", "birth_date",
-           "gender", "entry_date", "entry_type", "ell", "iep"]
+           "gender", "entry_date", "entry_type", "entry_type_desc", "ell", "iep"]
     return K.write_csv(os.path.join(out, F_MEMBERS), hdr, member_rows(W))
 
 

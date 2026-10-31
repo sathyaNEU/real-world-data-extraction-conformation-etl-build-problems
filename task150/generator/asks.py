@@ -514,10 +514,5 @@ def write_ecse(W, P, out):
         row[1].number_format = "mm/dd/yyyy"
         row[6].number_format = "mm/dd/yyyy"
     ws.freeze_panes = "A5"
-    nt = wb.create_sheet("Notes")
-    for line in ECSE_NOTES:
-        nt.append([line])
-        nt.cell(row=nt.max_row, column=1).alignment = Alignment(wrap_text=True, vertical="top")
-    nt.column_dimensions["A"].width = 110
     K.save_workbook(wb, os.path.join(out, F_ECSE), dt.datetime(2026, 10, 2, 9, 14, 0), "Special Education")
     return len(P.ecse)
