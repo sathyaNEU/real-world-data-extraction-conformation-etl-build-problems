@@ -1,154 +1,132 @@
 {
  "task": "task482",
- "title": "Dental Plan annual maximum, 2027",
- "setting": "A fictional Missouri iron foundry and machining company's self-insured employee dental plan and its claims administrator: the company, the plan, the administrator, the union and the people are fictional, and every record is synthetic.",
- "as_of": "2026-10-16",
- "decides": "the annual maximum the company's bargaining committee can agree for 2027 under its board's mandate, with the plan's predetermination service by quarter and its outstanding orthodontic payments",
- "deliverables": [
-  "pembrook_dental_member_year_2025.csv",
-  "pembrook_dental_maximum_2027.pdf",
-  "pembrook_dental_maximum_2027.svg"
- ],
- "distractor_files": [
-  "target/ridgeline_network_access_2026q2.xlsx",
-  "target/rba_admin_fee_invoices_2025-01_2026-09.csv",
-  "target/rba_classic_accumulators_2024-01_2025-06.csv",
-  "target/rba_nexus_accumulators_2025-07_2026-09.csv"
- ],
- "stated_inputs": [],
+ "architecture": 16,
+ "setting": "2027-01-28",
  "files": [
   {
-   "file": "pembrook_benefit_costing_standard_f17.pdf",
-   "source": "Pembrook Castings Company, Finance Policy F-17, Costing Benefit Plan Changes (fictional, synthetic records)",
-   "date": "2023-03-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_electricity_hh_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: the electricity supplier's half-hourly settlement data for the works' import meter",
+   "date": "2027-01-11",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "pembrook_board_bargaining_mandate_2026-09-28.pdf",
-   "source": "Pembrook Castings Company, Board Resolution 2026-31, bargaining mandate (fictional, synthetic records)",
-   "date": "2026-09-28",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_gas_invoices_2026.pdf",
+   "role": "evidence",
+   "source": "synthetic: the gas supplier's VAT invoices by meter-read period, with calorific values",
+   "date": "2027-01-10",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "pembrook_dental_plan_spd_2025.pdf",
-   "source": "Pembrook Castings Company, Dental Plan Summary Plan Description 2025 (fictional, synthetic records)",
-   "date": "2024-11-18",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "brackwell_heat_treatment_oven_t1_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the solution and ageing oven's batch log",
+   "date": "2027-01-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_admin_fee_invoices_2025-01_2026-09.csv",
-   "source": "Ridgeline Benefit Administrators, administrative fee invoices (fictional, synthetic records)",
-   "date": "2026-10-05",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 21
+   "name": "brackwell_homogenizing_furnace_h1_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the homogenizing furnace's load log",
+   "date": "2027-01-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_classic_accumulators_2024-01_2025-06.csv",
-   "source": "Ridgeline Benefit Administrators, Classic platform, month-end benefit accumulators (fictional, synthetic records)",
-   "date": "2025-07-03",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 96424
+   "name": "brackwell_melting_furnace_logs_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the casthouse and foundry melting furnaces' charge logs as kept by the works office",
+   "date": "2027-01-19",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_classic_claims_2024-01_2025-06.csv",
-   "source": "Ridgeline Benefit Administrators, Classic adjudication platform, dental claim lines extract (fictional, synthetic records)",
-   "date": "2025-07-03",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 49271
+   "name": "brackwell_plant_asset_register.xlsx",
+   "role": "distractor",
+   "source": "synthetic: the works' plant asset register with rated inputs",
+   "date": "2026-09-22",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_classic_eligibility_2025-06-30.csv",
-   "source": "Ridgeline Benefit Administrators, Classic platform, eligibility spans at conversion (fictional, synthetic records)",
-   "date": "2025-06-30",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 6969
+   "name": "brackwell_production_lots_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the inspection system's export of production lots and results",
+   "date": "2027-01-15",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_classic_predeterminations_2024-01_2025-06.csv",
-   "source": "Ridgeline Benefit Administrators, Classic platform, predetermination log (fictional, synthetic records)",
-   "date": "2025-07-03",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 2484
+   "name": "brackwell_scr2_data_package.eml",
+   "role": "evidence",
+   "source": "synthetic: the supplier's cover email for its 2026 data package",
+   "date": "2027-01-21",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_member_crosswalk_2025-07-01.csv",
-   "source": "Ridgeline Benefit Administrators, member identifier crosswalk, Classic to Nexus conversion (fictional, synthetic records)",
-   "date": "2025-07-01",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 6281
+   "name": "brackwell_scrap_goods_in_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the scrap goods-in register",
+   "date": "2027-01-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_nexus_accumulators_2025-07_2026-09.csv",
-   "source": "Ridgeline Benefit Administrators, Nexus platform, month-end benefit accumulators (fictional, synthetic records)",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 86224
+   "name": "brackwell_shift_roster_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: the casthouse and foundry crew roster",
+   "date": "2025-12-15",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_nexus_claim_lines_2025-07_2026-10.csv",
-   "source": "Ridgeline Benefit Administrators, Nexus adjudication platform, dental claim lines extract (fictional, synthetic records)",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 41628
+   "name": "brackwell_site_gas_meter_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the gas supplier's 15-minute interval export for the works' one site meter",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_nexus_eligibility_2026-10-09.csv",
-   "source": "Ridgeline Benefit Administrators, Nexus platform, eligibility spans (fictional, synthetic records)",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 7270
+   "name": "brackwell_weighbridge_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the works' weighbridge export, one row per weighing",
+   "date": "2027-01-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_nexus_estimates_2025-06_2026-09.csv",
-   "source": "Ridgeline Benefit Administrators, Nexus platform, predetermination estimates (fictional, synthetic records)",
-   "date": "2026-10-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 2067
+   "name": "brackwell_works_weather_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the works' roof weather station, daily summary",
+   "date": "2027-01-05",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_ortho_case_schedule_2026-09-30.csv",
-   "source": "Ridgeline Benefit Administrators, orthodontic case schedule (fictional, synthetic records)",
-   "date": "2026-10-01",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 116
+   "name": "velden_2027_calloff_schedule.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the car maker's 2027 call-off schedule for the supplier",
+   "date": "2026-12-14",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
-   "file": "rba_ortho_payments_2024-01_2026-09.csv",
-   "source": "Ridgeline Benefit Administrators, orthodontic installment payments (fictional, synthetic records)",
-   "date": "2026-10-01",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1264
-  },
-  {
-   "file": "ridgeline_aso_agreement_schedule_c.pdf",
-   "source": "Ridgeline Benefit Administrators and Pembrook Castings Company, ASO Agreement Schedule C (fictional, synthetic records)",
-   "date": "2025-05-21",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "ridgeline_network_access_2026q2.xlsx",
-   "source": "Ridgeline Benefit Administrators, network management, network access report Q2 2026 (fictional, synthetic records)",
-   "date": "2026-07-22",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "ridgeline_plan_review_2025_renewal_2026.pdf",
-   "source": "Ridgeline Benefit Administrators, 2025 plan year review and 2026 renewal (fictional, synthetic records)",
-   "date": "2026-02-18",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "ridgeline_ppo_fee_schedule_2024-2027.xlsx",
-   "source": "Ridgeline Benefit Administrators, network contracting, PPO fee schedules 2024 to 2027 (fictional, synthetic records)",
-   "date": "2026-09-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "name": "velden_scr2_supplier_carbon_requirement.pdf",
+   "role": "evidence",
+   "source": "synthetic: the car maker's supplier carbon requirement, Revision 2",
+   "date": "2025-12-08",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   }
+ ],
+ "distractors": [
+  "brackwell_electricity_hh_2026.csv",
+  "brackwell_plant_asset_register.xlsx",
+  "brackwell_shift_roster_2026.csv"
+ ],
+ "distractor_reasons": {
+  "brackwell_electricity_hh_2026.csv": "electricity is not fuel the works burned (SCR-2 section 2), so it carries no direct emissions",
+  "brackwell_plant_asset_register.xlsx": "rated burner inputs say what a burner can fire, not the gas it burned; SCR-2 takes billed energy",
+  "brackwell_shift_roster_2026.csv": "crew rotations say who was on shift, not what the processes burned"
+ },
+ "stated_inputs": [
+  "0.235",
+  "0.18296",
+  "1.02264",
+  "2.83"
+ ],
+ "deliverables": [
+  "velden_low_carbon_premium_2027.docx",
+  "brackwell_scr2_figures_2026.csv"
  ]
 }

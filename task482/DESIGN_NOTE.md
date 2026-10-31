@@ -50,6 +50,255 @@ pays on 2027.
   tickets and the scrap goods-in register; distractors, the plant asset register (burner ratings) and the shift
   roster.
 
+## Default path
+
+1. Conform the meter: the 15-minute export from UTC to local time, the imperial meter's hundreds of cubic feet at the
+   bill's 2.83 before the 14 April exchange, each interval at its invoice period's calorific value and the volume
+   correction factor (55,650 MWh for 2026).
+2. Conform the logs and the lots: one row per furnace and heat (the re-keyed rows dropped), the tower melter's
+   kilograms in tonnes, the homogenizing furnace's and the oven's local stamps to UTC, each lot at its last result.
+3. Read each process's gas from the meter as the field reads a shared fuel: fit each local day's gas on what each
+   process put through (tonnes melted in the casthouse, tonnes charged to the tower melter, billet tonnes through the
+   homogenizing furnace, castings through the oven) and heating degree days, or fit the furnace on its hours to get
+   its year's total; either way each process's gas becomes a quantity per tonne processed.
+4. Give each family its processes' gas per tonne processed: the casthouse's by tonnes melted, the homogenizing
+   furnace's by the billet tonnes each alloy put through it, the tower melter's and the oven's to the castings, and
+   share the rest by tonnes produced (SCR-2 section 3).
+5. Compare each family with 0.235 and pay EUR 38 a tonne on the call-offs of the families at or under it.
+
+Ends on: EUR 456,000 (6063 billet, 6082 billet and LM25 ingot earn it, the two billet alloys level at 0.225 t CO2/t,
+0.218 with a tonnes driver in the fit).
+Golden: EUR 342,000 (6063 billet at 0.211 and LM25 ingot at 0.168 earn it; 6082 billet at 0.263 and the castings at
+0.501 are over the limit).
+
+## Stump sentence
+
+The default path reads each process's gas from the site meter as a quantity per tonne and gives the homogenizing
+furnace's gas to the two billet alloys by the tonnes each put through it, so 6082 billet sits level with 6063 at 0.225
+t CO2/t and the premium comes to EUR 456,000; the furnace burns by the hour whatever a load weighs, a 6082 load soaks
+about 15 hours against about 6 for 6063, and 6082 takes 47 per cent of the furnace's hours on 26 per cent of its
+billet, which puts it at 0.263, over the limit, and the premium at EUR 342,000.
+
+## Three rules
+
+- Task type: emissions-inventory (Physical & Environmental Sciences), which serves ETL: the works' gas meter export,
+  the supplier's invoices, three melting furnaces' charge logs, the homogenizing furnace's and the oven's cycle logs
+  and the production lots are conformed into one row per product family of 2026 direct emissions, from which the
+  premium is read.
+- Domain test: the deciding quantity is each product family's specific direct emissions, tonnes of CO2 per tonne, the
+  product carbon footprint an emissions inventory builds from shared combustion by giving each product the fuel the
+  processes that worked it burned; the swap fails because hospital wards or library loans have no furnace, no melt
+  yield and no soak at temperature.
+- Swap: "how much premium does the car maker pay on the families under the limit" with wards for families and
+  bed-days for tonnes becomes "which wards' energy per bed-day is under a limit", and the melting rate per tonne, the
+  soak that lasts as long as the alloy needs whatever the load weighs and the castings' melt yield stop making sense.
+- Layer 1: the meter exported in UTC at 15-minute intervals, the imperial meter's hundreds of cubic feet until the April
+  exchange and cubic metres after; invoices by meter-read period, each with its own calorific value, read dates off the
+  month ends, the first and last periods running into 2025 and 2027; furnace logs in local time with heats re-keyed
+  from the shift sheets; the tower melter in kilograms beside the casthouse's tonnes; loads and batches straddling
+  midnights, month ends and the clock changes; lots re-inspected under the same number; call-offs by Velden's part
+  numbers. Each is what those systems produce, and none carries the call.
+- Layer 2: estimation from the data's structure: the works' one meter records every process's burn at once, so each
+  process's gas has to be read from the meter's response to when and how much each process ran, and the driver each
+  process burns by (mass for the melting furnaces, time at temperature for the homogenizing furnace and the oven) is
+  what the data has to decide.
+- Decisive step: recognise that the homogenizing furnace's gas follows its loads' firing hours and not their tonnes
+  (the meter's daily response tracks the hours fired, not the billet loaded) and give each billet alloy the furnace's
+  gas for the hours its own loads fired.
+- Not semantics: every field (each interval's volume and unit, each invoice's calorific value, each heat's tonnes, each
+  load's door times and tonnes, each lot's last result, every SCR-2 sentence) can be read correctly and the per-tonne
+  route still files EUR 456,000, because no field holds a process's gas: the hours driver shows only in the meter's
+  response to the logs.
+- Not rule application: SCR-2 files what a family carries (the fuel each process burned on its metal) and how the rest
+  is shared, and no rule or procedure says how a process's fuel is read from a shared meter or which driver a furnace
+  burns by; the routes SCR-2 and the data leave open (per tonne, per hour, rated input scaled to the meter) differ in
+  the driver, and the meter's daily record separates them.
+- Analyst test: a strong analyst who conforms the meter (UTC, hundreds of cubic feet, each invoice's calorific value),
+  dedupes the logs and the lots, reads SCR-2 correctly and attributes each process's gas per tonne processed gives the
+  two billet alloys the same 0.225 and pays EUR 456,000 (the mass allocation, every family at the works' 0.22, pays
+  EUR 480,700); the homogenizing furnace burns by the hour, so 6082 billet is at 0.263, over the limit, and the premium
+  is EUR 342,000.
+- Estimand: SCR-2 files it: a family's specific direct emissions for 2026 are the CO2 from the fuel the works burned to
+  make it (each process attributed the fuel it burned, a family the fuel each process burned on its metal, the fuel no
+  process burned shared by tonnes produced) at the supplier's billed energy and 0.18296 kg per kWh, over the tonnes of
+  it that passed final inspection, years in local time; section 7 files the premium (EUR 38 a tonne of 2027 call-offs of
+  each family at or under 0.235).
+- No decoy: nothing is planted to be caught; no memo, quote or earlier declaration states a family's emissions, the
+  asset register's burner ratings are the works' own plant record (relevant, unused, a named distractor), and every file
+  is what the works, its gas supplier and Velden keep for their own reasons.
+- No certified replay: no certified figure blesses the per-tonne route; the invoices reconcile the meter's energy on
+  every route alike, because every route attributes all of the metered gas.
+- Lesson: a model learns that a shared meter's fuel follows each process's own physical driver, that a soak burns by
+  time whatever it holds while a melt burns by the tonne, and that per-tonne attribution inside a time-driven process
+  moves the long-cycle product's burden onto the short-cycle one; no build on file reads a process's fuel from a shared
+  meter.
+
+## Survivor anatomy
+
+- Actor: the gas each process burned has no column in any file; the works has one site meter and no sub-meter, the
+  furnace logs carry tonnes and times, and the invoices carry the site's energy by read period.
+- Link: a load of billet is tied to the gas it burned only through time, its door-closed and door-opened stamps in local
+  time against the meter's UTC intervals, with every other process burning on the same meter at the same moments; no
+  key joins a load to the meter.
+- Reflex: the field's way with shared fuel, sharing a process's fuel over what it processed by mass (and the works' fuel
+  over its output by mass, the GHG Protocol's physical allocation), sits on the default path and ends on EUR 456,000
+  (EUR 480,700 for the works' average), not the golden EUR 342,000.
+- Back-test: every route attributes all of the metered gas, so the year's energy reconciles to the invoices on each;
+  a per-tonne fit of the furnace still explains 99.3 per cent of the daily variation against 99.85 for the hours fit,
+  and nothing a solver checks fails on the per-tonne route.
+- Second use: the homogenizing log is the billet lots' traceability record, the meter export and the invoices are the
+  billing record, the weather file serves the heating term, the weighbridge and the goods-in register serve the asks;
+  deleting the decisive step drops no file.
+- Shock: 6082's longer soak is ordinary metallurgy (the alloy's manganese and chromium need a longer homogenization),
+  visible only as door-to-door times in a log kept for traceability, with every load of either alloy near 50 t.
+- Pins: SCR-2 files the WHAT at authority in the car maker's own genre (each process the fuel it burned, a family the
+  fuel its processes burned on its metal, the rest by tonnes produced, billed energy, the factor, production at final
+  inspection, local time, the limit and the premium); no filed sentence names a driver, a soak or hours.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the works' gas by tonnes produced | SCR-2 section 3 names tonnes for the shared part | the lots | the physical allocation by mass | the invoices reconcile | none | a ratio | yes | readable |
+| R1 each process per tonne, the furnace by billet tonnes | SCR-2 section 3 (each process the fuel it burned) | the logs' tonnes | the field's per-unit sharing within a process | the meter's year balances | none | a fit and a share | yes | readable |
+| R1b a tonnes driver for the furnace in the fit | as R1 | the load log's tonnes | as R1 | the fit explains 99.3 per cent | none | a fit and a share | yes | readable |
+| R2 (decisive) the furnace by its loads' firing hours | no sentence names hours, a soak or a driver | no column holds a load's gas | the field shares by mass | every control balances on every route | the battery conforms and stops | the driver chosen against the meter's daily response across two systems' clocks | the load log is the billet traceability record | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Readings | Ruled out by |
+|---|---|---|---|
+| SF1 | the year and its days | local time; UTC | SCR-2 section 6 files local time; same call (asserted) |
+| SF2 | the fuel | natural gas; gas and electricity | SCR-2 sections 2 and 4 (the fuel the works burned, natural gas at billed energy) |
+| SF3 | the billed energy | each invoice period's calorific value; one average for the year | SCR-2 section 4 and the invoices' own formula; same call (asserted) |
+| SF4 | the imperial conversion | the bill's 2.83; 2.831685 | the invoices state 2.83; same call (asserted) |
+| SF5 | production | the last result passed; the first result; every lot inspected | SCR-2 section 5; same call (asserted) |
+| SF6 | gas burned on rejected lots | in the family's numerator; taken out | SCR-2 section 2 (the fuel burned to make the family); same call (asserted) |
+| SF7 | pilot flames while a process runs | no process; the running process | SCR-2 section 3 (pilot flames whether or not a process is running); same call (asserted) |
+| SF8 | the heating term | degree days on 15.5 C; 18 C; 14 C; none | same call on each (asserted) |
+| SF9 | the fit's grain | local days; weeks; the days a process ran | same call on each (asserted) |
+| SF10 | melting's driver | tonnes melted; tonnes produced | SCR-2 section 3 (the fuel burned on the family's metal); same call (asserted) |
+| SF11 | re-keyed heats | dropped; kept | same call (asserted) |
+| SF12 | the call-offs | the schedule's months summed; its totals | identical (asserted) |
+| SF13 | the limit | 0.235 or less; under 0.235 | SCR-2 section 7; no family within 0.015 of it (asserted) |
+| SF14 | firing hours | stamps converted to UTC; local stamps unconverted | same call (asserted) |
+
+## Ladder
+
+| Rung | Route | Families earning | Premium |
+|---|---|---|---|
+| R0 | the works' gas over the families by tonnes produced | all four, each at the works' 0.2215 | EUR 480,700 |
+| R1 | each process per tonne processed, the homogenizing furnace's gas by billet tonnes | 6063, 6082 (both 0.225), LM25 ingot | EUR 456,000 |
+| R1b | a tonnes driver for the homogenizing furnace in the fit | 6063, 6082 (both 0.218), LM25 ingot | EUR 456,000 |
+| R2 (decisive) | the homogenizing furnace by its loads' firing hours | 6063 (0.211), LM25 ingot (0.168) | EUR 342,000 |
+
+Every defensible fit (degree days on 14, 15.5 or 18 C or none, local days, weeks or the days a process ran, melting
+by tonnes melted or produced, re-keyed heats kept) files EUR 342,000; across them 6063 spans 0.209 to 0.214, 6082
+0.260 to 0.268, LM25 ingot 0.166 to 0.175 and the castings 0.45 to 0.52. The call is graded on the premium and the
+families earning it, and the intensities are shown, not pinned to a rounding.
+
+## Closure table
+
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the product families Brackwell supplies Velden, the four on the call-off schedule | filed (SCR-2 section 1) |
+| 2 Unit of account | the family, tonnes of CO2 per tonne produced | filed (SCR-2 section 2) |
+| 3 Attribution window | fuel burned in 2026 on 2026's metal; no work in progress crosses the year | filed (SCR-2 section 2); the world asserts the casthouse, foundry and furnaces clear before 24 December |
+| 4 As-of dating | the data package of 21 January 2027 | the email and the files' dates; C5 |
+| 5 Version basis | each lot at its last inspection result; each heat once | filed (SCR-2 section 5); SF5, SF11 |
+| 6 Denominator | tonnes that passed final inspection in 2026 | filed (SCR-2 section 5); C4 |
+| 7 Weighting | none: a family's CO2 over its tonnes | filed (SCR-2 section 2) |
+| 8 Window length | the calendar year 2026 in local time | filed (SCR-2 section 6); SF1 |
+| 9 Boundary inclusivity | 0.235 or less | filed (SCR-2 section 7); SF13 |
+| 10 Rounding path | intensities compared unrounded; the premium on whole call-off tonnes to the euro | the prompt; C9 |
+| 11 Tie-break | none: four families and one limit | C11 (no family within 0.015 of the limit) |
+| 12 Maturity and censoring | the year is closed; every 2026 lot inspected by 23 December | the world asserts it |
+| 13 Order of operations | conform, fit, attribute, share, divide, compare | C1 (every variant on the same pipeline) |
+| 14 Row order | none: sums keyed by family | C1 |
+| 15 Duplicate resolution | one row per furnace and heat; a lot at its last result | SF5, SF11 |
+| 16 Identity normalisation | the logs' alloy codes and the lots' product names to the four families; Velden's parts to families by description | SF12; C4 |
+| 17 Netting against gross | none on the call; the asks net weighings | A1, A3 |
+| 18 Dimensional units | hundreds of cubic feet and cubic metres to kWh; kilograms and tonnes | units in the data; SF4 |
+| 19 Code and status semantics | PASS and REJECT; the meter's read type | the systems' own codes; never the stump |
+| 20 Integerisation | energy in kWh unrounded to the end; weights in kilograms | C5 |
+| 21 Clause scope | fuel burned (natural gas), not electricity | filed (SCR-2 section 2); SF2 |
+| 22 Forward window contents | the 2027 call-off schedule, revision 0 | the schedule; SF12 |
+
+## Literal reader
+
+Executed word for word, SCR-2 files the population (the families on the supply agreement, the call-off schedule's
+four), the year (2026, local time), the numerator (the CO2 of the fuel each family's processes burned on its metal,
+the fuel no process burned shared by tonnes produced, at billed energy and 0.18296 kg per kWh), the denominator
+(tonnes that passed final inspection, each lot at its last result), the limit (0.235 or less) and the premium (EUR 38 a
+tonne of 2027 call-offs). What it leaves to the reader is how much fuel each process burned, which no file records:
+the literal reader has to read it from the one meter. Every reading that reads the homogenizing furnace's fuel by the
+hours its loads fired files EUR 342,000 on every defensible fit; every reading that shares it by billet tonnes files
+EUR 456,000, and the meter's daily record fits hours better than tonnes (99.85 against 99.3 per cent). Each convention
+the call needs is closed in the fork table and asserted in checks.py. Every step of the write-up executes as written.
+
+## Oracles
+
+No shipped file ranks the families on the call: no declaration, memo or quote states a family's emissions, and the cover
+email names the files only. The invoices reconcile the meter's energy on every route alike. The asset register's rated
+inputs say what each burner can fire; at full rating over the logged hours they overstate the meter by about half, and
+scaled to the meter they reproduce the hours route, so they referee nothing. Ask A's referee is the weighbridge's own
+weighing sequence and the declared weights' sizes; ask B's is the goods-in line for the returned metal on the same
+ticket. Nothing ties only under the golden.
+
+## Ask sheet
+
+Two asks on the works' weighbridge and goods-in register, files the main call never reads, each on visits whose
+weighings no row labels.
+
+**Ask A, scrap bought in by grade and quarter (16 figures).**
+- Files: the goods-in register and the weighbridge export.
+- Primary (which records are one event, from a cardinality): a two-grade load is weighed in, between its tips and out,
+  three weighings under one ticket against two goods-in lines entered in grade order; each grade's weight is the drop
+  across its own tip, which only the declared weights' sizes match to its line; the merchant's note splits the load by
+  eye, so sharing the load's net by the declared weights moves every grade in every quarter by several tonnes.
+- Hazards: the weighbridge indicator replaced on 29 June restarts its tickets at 1 (the join is ticket and date);
+  rejected loads leave loaded; returned toll metal comes in on Midland's tickets; UTC stamps.
+
+**Ask B, dross sent off for recovery by quarter (4 figures).**
+- Files: the weighbridge export and the goods-in register.
+- Primary (which records are one event): on about a third of Midland's lifts the hook loader first unloads returned
+  metal, so the lift is weighed in, after the unloading and out; the dross is the rise from the second weighing, and
+  out-weigh less in-weigh understates every quarter by 12 to 28 tonnes.
+- Hazard: the returned metal's goods-in line on the same ticket.
+
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at R0) | Verdict |
+|---|---|---|---|
+| A, 16 quarterly grade figures | joins on ticket and date, drops the rejected and toll lines, shares a two-grade load's net by its declared weights | sums the declared weights | miss |
+| B, 4 quarterly dross figures | takes each lift as out-weigh less in-weigh | the same | miss |
+
+Pair ceiling: 28.5 (the cracker on the call at 45.0, the mirror off it at 12.0, each keeping 0 of 20 ask figures).
+Mirror leakage: 0.0 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 433ff500)
+
+## Leak sweep
+
+`leak.py task482 --asof 2027-01-28` on target.zip 433ff500: REVIEW, no LEAK; each line ruled.
+- Sweep 1, the call-off schedule's sheet named Notes: harmless; it is Velden's own schedule note (supplier number,
+  delivery plants, issue date and revision) and says nothing of a column, a file or a computation.
+- Sweep 4 on `velden_scr2_supplier_carbon_requirement.pdf` (ten of the note's terms: process, burned, shared,
+  invoices, energy, record and the like): harmless; SCR-2 files the WHAT in the car maker's own words (each process the fuel it burned, the rest shared by tonnes, the
+  supplier's records in the data package) and names no driver, no soak, no hours and no way of reading a process's
+  fuel from a meter.
+- Fixed before this run: the oven log's file name (an author word), the filed constants declared as stated inputs, and
+  the cover email's sign-off (the surface screen read a first name twice as a persona).
+
+## Pre-ship check
+
+1. Three rules: the decisive step (the homogenizing furnace's gas by its loads' firing hours) is analytical; nothing
+   planted, read or executed decides (the Three rules lines).
+2. Determinism: SCR-2 files the WHAT; every defensible fit files EUR 342,000 (C6 to C11, SF1 to SF14 asserted), the
+   intensities are shown and not pinned, the asks are exact weighbridge sums with no figure on a half tonne (A9).
+3. Gates on the final cut (target.zip 433ff500): generator checks 47 of 47, the independent verifier on every graded
+   figure, two byte-identical builds, figures_check.py 79 of 79, precut.py 61 of 61, voice-check.py PASS, leak.py
+   REVIEW with no LEAK, guard.py heart WARN (the nearest driver 0.12, task484 v3, a fuel read from the period before;
+   the how-much form against task306, the decision being a sum of money) and surface on the final cut; the leak reader
+   and the determinism judge run from the main thread.
+
 ## Architecture 15 record (spent 2026-10-31)
 
 Architecture 15 priced Pembrook Castings' 2027 employee dental maximum under its Finance Policy F-17: each maximum's
@@ -572,3 +821,10 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
   deductible on 34 lines, "still in treatment" and an orphan case open. The slot's lesson: the filed standard's
   word-for-word execution must be the golden, and the difficulty is computing that filed quantity from the data's
   structure, never a correction the standard does not ask for.
+- Architecture 16 design (2026-10-31): a third ask on the aluminium Midland recovered from each quarter's dross, read
+  from its settlement statements, dropped before data was cut: with the lift date on each settlement line the figure
+  is executed by any careful reader, and without it the figure rides the processor's booking lag, which no sentence
+  can file without handing it over.
+- Architecture 16 design (2026-10-31): the family intensities graded to two decimals, dropped on the measured spread:
+  the defensible fits put 6082 billet between 0.260 and 0.268 and the castings between 0.45 and 0.52, so the call is
+  graded on the premium and the families earning it, and the prompt pins no rounding on the intensities.

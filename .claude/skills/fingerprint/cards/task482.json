@@ -11,7 +11,7 @@
   "shape": "05",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "TBD at build",
+  "answer": "EUR 342,000: Velden pays EUR 38 a tonne on 7,200 t of 6063 extrusion billet and 1,800 t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 t CO2/t in 2026 (6063 billet 0.211, LM25 ingot 0.168); 6082 billet (0.263) and the LM25-TF castings (0.501) are over the limit",
   "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
   "gap": [
     "objective",
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the meter export (UTC, the imperial meter's hundreds of cubic feet before the meter exchange), converts it to energy at each invoice period's calorific value, dedupes the production lots and reads the car maker's requirement correctly shares the works' gas over the families by the tonnes each produced, the field's mass allocation, and puts every family under the limit; the call is wrong because the homogenizing furnace and the solution oven burn gas by the hours they fire, not the tonnes they hold, and the castings melt far more metal than they ship, so the long-soak billet alloy and the castings carry well over the works' average.",
+  "analyst_test": "A strong analyst who conforms the meter export (UTC, the imperial meter's hundreds of cubic feet before the meter exchange, each invoice period's calorific value), dedupes the furnace logs and the production lots, reads the car maker's requirement correctly and attributes each process's gas per tonne processed gives the two billet alloys the same 0.225 t CO2/t and pays EUR 456,000 (the mass allocation, every family at the works' 0.22, pays EUR 480,700); the call is wrong because the homogenizing furnace burns gas by the hours its loads fire, not the tonnes they hold, and a 6082 load soaks about two and a half times as long as a 6063 load, so 6082 billet is at 0.263, over the limit, and the premium is EUR 342,000.",
   "domain_test": "The deciding quantity is each product family's specific direct emissions, tonnes of CO2 per tonne, the product carbon footprint an emissions inventory attributes from shared combustion to the processes that burn the fuel, with melting energy scaling with the mass melted and soaking energy with time at temperature; put hospital wards or library loans in and there is no furnace, no soak and no melt yield, so the task stops making sense.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:shared-meter-process-attribution",
@@ -75,7 +75,7 @@
   "question_form": "how-much",
   "driver": "The decisive quantity is each product's share of fuel burned by shared equipment, recorded only by one meter, where one process burns fuel by the mass it melts and others by the hours they hold heat whatever they hold; spreading the meter's fuel over the products by their output mass gives every product the plant's average, while the processes' own fuel, read from the meter's response to when each process runs and how much it melts, puts the long-soaked product and the low-yield product well above it.",
   "driver_concrete": "Each family's 2026 direct emissions are the gas its processes burned: melting attributed by the tonnes melted for the family (castings melt about 1.6 tonnes per tonne shipped), the homogenizing furnace by its firing hours on the family's loads (6082 billet soaks about twice as long as 6063), the solution oven only to the castings, and the gas burned with no process running shared by tonnes; each process's gas is read from the site meter's 15-minute record against the charge and furnace logs, since no process is sub-metered.",
-  "stump": "TBD at design",
+  "stump": "The default path reads each process's gas from the site meter as a quantity per tonne and gives the homogenizing furnace's gas to the two billet alloys by the tonnes each put through it, so 6082 billet sits level with 6063 at 0.225 t CO2/t and the premium comes to EUR 456,000; the furnace burns by the hour whatever a load weighs, a 6082 load soaks about 15 hours against about 6 for 6063, and 6082 takes 47 per cent of the furnace's hours on 26 per cent of its billet, which puts it at 0.263, over the limit, and the premium at EUR 342,000.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task65": "task65 regroups child emission units into sources under a per-entity fee cap, so the total moves through the cap without any child's value changing; here no record is regrouped and nothing is capped: the site meter's fuel is split among processes by each process's own physical driver (mass melted against hours at temperature), which the meter's response to the process logs reveals, and the product families' intensities move because the time-driven furnaces' fuel follows hours, not output",
@@ -465,12 +465,12 @@
       "deliverable set": "csv+pdf+svg"
     }
   ],
-  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell (which | docx+csv); stump_strategy decomposition_attribution: a shared site meter's gas attributed to processes by their own drivers (mass melted, hours fired) rather than by output mass; the slot's lesson filed: the requirement's word-for-word execution (each process attributed the gas it burned) is the golden, and the difficulty is computing it from the meter's record",
+  "notes": "re-rooted 2026-10-31 by a batch 1 fork: new world (a West Midlands secondary aluminium works and a car maker's supplier carbon requirement), new dataset, new shell (how-much | csv+docx); stump_strategy decomposition_attribution: a shared site meter's gas attributed to processes by their own drivers (mass melted, hours fired) rather than by output mass; the slot's lesson filed: the requirement's word-for-word execution (each process attributed the gas it burned) is the golden, and the difficulty is computing it from the meter's record; the asks read the weighbridge's visits (a two-grade load's middle weighing, a dross lift that first unloads returned metal)",
   "registered": "2026-10-31T21:50:49Z",
   "shell": {
     "question form": "how-much",
-    "second-sentence opener": "price",
-    "rounding opener": "round",
-    "deliverable set": "csv+pdf+svg"
+    "second-sentence opener": "set",
+    "rounding opener": "tonnes",
+    "deliverable set": "csv+docx"
   }
 }

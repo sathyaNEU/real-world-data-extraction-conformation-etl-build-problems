@@ -1,235 +1,172 @@
-"""The pack's documents: the dental plan's summary plan description, the company's benefit costing standard, the
-board's bargaining mandate, Ridgeline's service agreement Schedule C, and Ridgeline's 2025 plan year review and 2026
-renewal."""
+"""task482 architecture 16: the pack's documents. Velden's SCR-2, the gas supplier's invoices, the cover email
+and the workbook writer. PDFs carry their issue dates and wrap every table cell inside the page."""
 import datetime as dt
+import os
+from email.message import EmailMessage
+from email.utils import format_datetime
 
+import openpyxl
 import reportlab.rl_config
+from openpyxl.styles import Font
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-import world as W
+import params as P
+import postprocess as PP
 
 reportlab.rl_config.invariant = 1
-STY = getSampleStyleSheet()
-BODY = ParagraphStyle("b", parent=STY["BodyText"], fontName="Helvetica", fontSize=9.5, leading=12.5, spaceAfter=6)
-SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10)
-H = ParagraphStyle("h", parent=STY["Heading2"], fontName="Helvetica-Bold", fontSize=11, spaceBefore=8, spaceAfter=4)
-T = ParagraphStyle("t", parent=STY["Title"], fontName="Helvetica-Bold", fontSize=14, spaceAfter=10)
-STAMPS = {"spd": b"D:20241118094500-06'00'", "costing": b"D:20230314153000-05'00'",
-          "mandate": b"D:20260928171200-05'00'", "schedule_c": b"D:20250521110400-05'00'",
-          "renewal": b"D:20260218142600-06'00'"}
+SS = getSampleStyleSheet()
+BODY = ParagraphStyle("b", parent=SS["Normal"], fontName="Helvetica", fontSize=9.2, leading=12.4, spaceAfter=5)
+H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=6)
+H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Helvetica-Bold", fontSize=10.4, leading=13.5,
+                    spaceBefore=6, spaceAfter=3)
+SMALL = ParagraphStyle("s", parent=BODY, fontSize=7.8, leading=10, textColor=colors.HexColor("#444444"))
+CELL = ParagraphStyle("c", parent=BODY, fontSize=8.0, leading=10.0, spaceAfter=0)
+CELLB = ParagraphStyle("cb", parent=CELL, fontName="Helvetica-Bold")
 
 
-def _pdf(path, title, story, author, org):
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch,
-                            topMargin=0.75 * inch, bottomMargin=0.75 * inch, title=title, author=author, creator=author,
-                            subject=title, producer=org)
-
-    def footer(c, d):
-        c.saveState()
-        c.setFont("Helvetica", 7.5)
-        c.drawString(0.85 * inch, 0.5 * inch, org + "  |  " + title)
-        c.drawRightString(letter[0] - 0.85 * inch, 0.5 * inch, "Page %d" % d.page)
-        c.restoreState()
-
-    doc.build(story, onFirstPage=footer, onLaterPages=footer)
+def _esc(x):
+    return str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _table(rows, widths=None, size=8.5):
-    t = Table(rows, colWidths=widths, repeatRows=1)
-    t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", size), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", size),
-                           ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-                           ("TOPPADDING", (0, 0), (-1, -1), 2)]))
+def _table(rows, widths, right=()):
+    data = [[Paragraph(_esc(c), CELLB if i == 0 else CELL) for c in r] for i, r in enumerate(rows)]
+    t = Table(data, colWidths=[w * mm for w in widths], hAlign="LEFT")
+    st = [("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#333333")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+          ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5), ("TOPPADDING", (0, 0), (-1, -1), 2.0)]
+    t.setStyle(TableStyle(st))
     return t
 
 
-def P(text, style=BODY):
-    return Paragraph(text, style)
+def _pdf(path, title, author, story, footer):
+    def page(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(18 * mm, 10 * mm, footer)
+        canvas.drawRightString(A4[0] - 18 * mm, 10 * mm, "Page %d" % doc.page)
+        canvas.restoreState()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=17 * mm,
+                            bottomMargin=17 * mm, title=title, author=author, creator=author, producer=author)
+    doc.build(story, onFirstPage=page, onLaterPages=page)
 
 
-def spd_pdf(path):
-    s = [P("Pembrook Castings Company Dental Plan", T),
-         P("Summary Plan Description. Effective 1 January 2025. Administered by " + W.TPA + ".", SMALL),
-         P("Who is covered", H),
-         P("Employees who enrol, and their enrolled spouses and children. A child is covered to the end of the month in "
-           "which the child turns 26. Coverage begins on the first of the month after 30 days of employment and ends on "
-           "the last day of the month in which employment ends."),
-         P("Plan year", H),
-         P("The plan year is the calendar year. The deductible, the annual maximum and the frequency limits start again "
-           "each 1 January."),
-         P("What the plan pays", H),
-         _table([["Class", "Services", "Plan pays", "Deductible"],
-                 ["I", "Evaluations, cleanings, radiographs, fluoride, sealants", "100%", "No"],
-                 ["II", "Fillings, extractions, endodontics, periodontics, palliative care", "80%", "Yes"],
-                 ["III", "Crowns, buildups, bridges, implants, dentures", "50%", "Yes"]],
-                [0.6 * inch, 3.6 * inch, 0.9 * inch, 0.9 * inch]),
-         Spacer(1, 6),
-         P("The deductible is 50 dollars per covered person per plan year and applies to Class II and Class III "
-           "services. The plan pays its share of the network fee for each service, network and non-network dentists "
-           "alike; a non-network dentist may bill you for the difference between its charge and the network fee."),
-         P("Annual maximum", H),
-         P("The plan pays up to 1,500 dollars for each covered person in a plan year. Payments for Class I, II and III "
-           "services all count toward the annual maximum. Orthodontic payments do not."),
-         P("Frequency limits", H),
-         P("Two evaluations and two cleanings per plan year; one set of bitewing radiographs per plan year; one "
-           "panoramic radiograph in any 36 months; sealants on permanent molars once per tooth to age 15."),
-         P("Orthodontic benefit", H),
-         P("For a covered child who is under 19 when the appliance is placed, the plan pays 50 per cent of the "
-           "orthodontist's case fee up to a lifetime maximum of 1,500 dollars per child. The plan pays a quarter of its "
-           "benefit when the appliance is placed and the rest in equal monthly installments over the months of "
-           "treatment, while the child is covered. If the child changes orthodontist, the new orthodontist's case is "
-           "paid under the same lifetime maximum."),
-         P("Predetermination of benefits", H),
-         P("When your dentist expects treatment to cost more than 300 dollars, ask the dentist to send Ridgeline a "
-           "predetermination before the work begins. Ridgeline's estimate shows what the plan expects to pay at the "
-           "time it is issued. An estimate is valid for 12 months from its issue date and is not a guarantee of payment: "
-           "the plan pays under the plan's terms when the work is done."),
-         P("Claims", H),
-         P("Your dentist sends claims to " + W.TPA + ", which decides them under the plan's terms. If a claim is "
-           "corrected, the corrected claim replaces the original."),
-         Spacer(1, 8),
-         P("Plan sponsor: " + W.COMPANY + ", Human Resources. Plan administrator: the company's Benefits Committee.",
-           SMALL)]
-    _pdf(path, "Dental Plan Summary Plan Description 2025", s, W.PEOPLE["benefits"], W.COMPANY)
+def _pdfdate(d, tz="+00'00'"):
+    return ("D:%s%s" % (d.strftime("%Y%m%d%H%M%S"), tz)).encode()
 
 
-def costing_pdf(path):
-    s = [P("Finance Policy F-17: Costing Benefit Plan Changes", T),
-         P(W.COMPANY + ". Adopted by the Finance Committee of the Board on 14 March 2023.", SMALL),
-         P("1. Purpose", H),
-         P("This policy sets how the company costs a change to a self-insured benefit plan, whether the change is "
-           "proposed by management or in collective bargaining, so that every proposal is costed on one basis."),
-         P("2. Costing basis", H),
-         P("A proposed change is costed as what the plan would have paid for the covered persons of the most recent "
-           "complete plan year had the change applied to that plan year, at the fees in effect for the plan year in "
-           "which the change would take effect. The result is stated per covered person month of that plan year's "
-           "enrolment."),
-         P("3. Cost of a proposal", H),
-         P("The cost of a proposal is its costed amount per covered person month less the same plan year's costed "
-           "amount at the current plan design, at the same fees."),
-         P("4. Records", H),
-         P("Costing uses the claims administrator's records of the plan year, with the claims for the plan year's "
-           "services decided after it ends, through the date of the costing."),
-         P("5. Presentation", H),
-         P("Amounts per covered person month are stated to the cent. The costing is signed by the Benefits Manager and "
-           "reviewed by the Vice President, Finance."),
-         Spacer(1, 8),
-         P("Approved: " + W.PEOPLE["finance"] + ", Vice President, Finance.", SMALL)]
-    _pdf(path, "Finance Policy F-17", s, W.PEOPLE["finance"], W.COMPANY)
+def scr2_pdf(path):
+    s = [Paragraph("Supplier Carbon Requirement SCR-2: product carbon intensity of aluminium supplies", H1),
+         Paragraph("%s, Purchasing, light metals. Revision 2, effective 1 January 2026; supersedes Revision 1 of "
+                   "March 2025." % P.BUYER, SMALL), Spacer(1, 4),
+         Paragraph("1. Scope", H2),
+         Paragraph("This requirement applies to every works that supplies aluminium semi-finished goods or castings to "
+                   "Velden. A supplier reports each product family it supplies to Velden, as listed in its supply "
+                   "agreement, for each calendar year.", BODY),
+         Paragraph("2. Specific direct emissions", H2),
+         Paragraph("A product family's specific direct emissions for a year are the carbon dioxide from the fuel the "
+                   "works burned to make that family in the year, in tonnes, divided by the tonnes of the family the "
+                   "works produced in the year.", BODY),
+         Paragraph("3. Attribution", H2),
+         Paragraph("Each production process is attributed the fuel it burned, and a product family carries the fuel "
+                   "each process burned on that family's metal. Fuel that heats the works' buildings, and fuel that "
+                   "pilot flames burn whether or not a process is running, belongs to no process; it is shared over "
+                   "the product families in proportion to the tonnes of each produced.", BODY),
+         Paragraph("4. Fuel and emission factor", H2),
+         Paragraph("Natural gas is taken at the energy the gas supplier billed it at, on gross calorific value, and "
+                   "its carbon dioxide at 0.18296 kilograms per kilowatt-hour.", BODY),
+         Paragraph("5. Production", H2),
+         Paragraph("A family's production is the tonnes of it that passed the works' final inspection in the year. A "
+                   "lot inspected more than once counts at its last result.", BODY),
+         Paragraph("6. Periods", H2),
+         Paragraph("Years, quarters, months and days are those of the works' local time.", BODY),
+         Paragraph("7. Low-carbon premium", H2),
+         Paragraph("For each contract year Velden pays a premium of EUR 38 per tonne of its call-offs of each product "
+                   "family whose specific direct emissions for the year before were 0.235 tonnes of carbon dioxide per "
+                   "tonne or less.", BODY),
+         Paragraph("8. The supplier's data package", H2),
+         Paragraph("By 31 January the supplier sends its fuel meters' interval records, its fuel invoices, its process "
+                   "logs and its production records for the year, with its energy records and the waste and scrap "
+                   "records Velden's supplier reporting asks for.", BODY),
+         Spacer(1, 6), Paragraph("Issued by Velden Purchasing, light metals. Approved: Head of Sustainable Sourcing.",
+                                 SMALL)]
+    _pdf(path, "SCR-2 Product carbon intensity", "Velden Automobil AG", s, "Velden SCR-2 Revision 2  |  public to "
+         "suppliers")
+    PP.normalize_pdf(path, _pdfdate(dt.datetime(2025, 11, 20, 9, 12, 0), "+01'00'"),
+                     _pdfdate(dt.datetime(2025, 12, 8, 14, 3, 0), "+01'00'"))
 
 
-def mandate_pdf(path):
-    s = [P("Board Resolution 2026-31: Bargaining Mandate, Dental Plan", T),
-         P(W.COMPANY + ", Board of Directors. Adopted at the meeting of 28 September 2026.", SMALL),
-         P("Whereas the collective bargaining agreement with the union representing the company's hourly employees "
-           "expires on 31 December 2026; and whereas the union's proposal of 9 September 2026 asks that the Dental "
-           "Plan's annual maximum be raised from 1,500 dollars to 3,000 dollars per covered person from 1 January 2027;"),
-         P("<b>Resolved</b>, that the company's bargaining committee may agree to an annual maximum of 2,000 dollars or "
-           "of 3,000 dollars per covered person from 1 January 2027, the plan otherwise unchanged, provided its cost "
-           "under Finance Policy F-17 is no more than 1.90 dollars per covered person month;"),
-         P("<b>Resolved further</b>, that the bargaining committee reports the costing to the Board with its "
-           "recommendation before the bargaining session of 12 November 2026."),
-         Spacer(1, 10),
-         P("Attest: " + W.PEOPLE["finance"] + ", Vice President, Finance, for the Secretary.", SMALL)]
-    _pdf(path, "Board Resolution 2026-31", s, W.PEOPLE["finance"], W.COMPANY)
+def invoices_pdf(path, invoices):
+    s = []
+    for k, inv in enumerate(invoices):
+        if k:
+            s.append(PageBreak())
+        s += [Paragraph("Northgate Gas Supply Ltd: VAT invoice %s" % inv["no"], H1),
+              Paragraph("Customer: %s. Supply point MPRN 8804419362. Account 30-77152. Issued %s." % (
+                  P.WORKS, inv["issued"].strftime("%d %B %Y")), SMALL), Spacer(1, 3)]
+        rows = [["Meter", "Read from", "Read to", "Opening read", "Closing read", "Units", "Volume (m3)"]]
+        for m in inv["meters"]:
+            rows.append([m["serial"], m["from"].strftime("%d/%m/%Y %H:%M"), m["to"].strftime("%d/%m/%Y %H:%M"),
+                         "%.0f" % m["open"], "%.0f" % m["close"], m["units"], "%.2f" % m["m3"]])
+        s.append(_table(rows, [25, 30, 30, 21, 21, 13, 24]))
+        s.append(Spacer(1, 4))
+        rows = [["Energy", "Value"],
+                ["Volume (m3)", "%.2f" % inv["m3"]],
+                ["Volume correction factor", "%.5f" % P.VCF],
+                ["Calorific value (MJ/m3)", "%.2f" % inv["cv"]],
+                ["Energy (kWh), volume x correction factor x calorific value / 3.6", "{:,.0f}".format(inv["kwh"])],
+                ["Unit rate (p/kWh)", "%.3f" % inv["rate"]],
+                ["Gas charge (GBP)", "{:,.2f}".format(inv["charge"])],
+                ["Standing charge, %d days (GBP)" % inv["days"], "{:,.2f}".format(inv["standing"])],
+                ["Climate Change Levy (GBP)", "{:,.2f}".format(inv["ccl"])],
+                ["VAT at 20 per cent (GBP)", "{:,.2f}".format(inv["vat"])],
+                ["Total (GBP)", "{:,.2f}".format(inv["total"])]]
+        s.append(_table(rows, [100, 50]))
+        if inv.get("note"):
+            s += [Spacer(1, 3), Paragraph(inv["note"], SMALL)]
+    _pdf(path, "Gas invoices 2026", "Northgate Gas Supply Ltd", s, "Northgate Gas Supply Ltd  |  MPRN 8804419362")
+    PP.normalize_pdf(path, _pdfdate(dt.datetime(2027, 1, 12, 10, 40, 0)), _pdfdate(dt.datetime(2027, 1, 12, 10, 40, 0)))
 
 
-def schedule_c_pdf(path):
-    hol = [d for d in W.HOLIDAYS if d.year in (2025, 2026)]
-    s = [P("Administrative Services Agreement: Schedule C, Service Standards", T),
-         P(W.TPA + " and " + W.COMPANY + ". Schedule C as amended 21 May 2025, effective 1 July 2025 for the plan's "
-           "move to Ridgeline's current adjudication platform.", SMALL),
-         P("C.1 Claims", H),
-         P("Ridgeline decides 95 per cent of clean claims within 10 business days of receipt."),
-         P("C.2 Predeterminations", H),
-         P("Ridgeline issues an estimate for every procedure in a predetermination request within five business days of "
-           "receipt for at least 90 per cent of the requests received in each calendar quarter. The standard is "
-           "measured on the requests received in the quarter."),
-         P("C.3 Business days and receipt", H),
-         P("A business day is Monday to Friday, except Ridgeline's observed holidays listed below. A request received "
-           "after 5:00 p.m. Central Time, or on a day that is not a business day, is received on the next business day."),
-         _table([["Observed holiday", "2025", "2026"]] + [
-             [name, next("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2025 and f(d)),
-              next("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2026 and f(d))]
-             for name, f in (("New Year's Day", lambda d: d.month == 1), ("Memorial Day", lambda d: d.month == 5),
-                             ("Independence Day", lambda d: d.month == 7), ("Labor Day", lambda d: d.month == 9),
-                             ("Thanksgiving Day", lambda d: d.month == 11 and d.weekday() == 3),
-                             ("Day after Thanksgiving", lambda d: d.month == 11 and d.weekday() == 4))]
-             + [["Christmas", ", ".join("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2025 and d.month == 12),
-                 ", ".join("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2026 and d.month == 12)]],
-             [2.2 * inch, 1.9 * inch, 1.9 * inch]),
-         Spacer(1, 6),
-         P("C.4 Member service", H),
-         P("Ridgeline answers 85 per cent of member calls within 30 seconds, measured monthly."),
-         P("C.5 Reporting", H),
-         P("Ridgeline reports the standards in C.1 to C.4 to the company each quarter within 30 days of the quarter's "
-           "end.")]
-    _pdf(path, "ASO Agreement Schedule C", s, W.PEOPLE["tpa"], W.TPA)
+def email(path, files):
+    m = EmailMessage()
+    m["From"] = "%s <r.kent@brackwell-alloys.co.uk>" % P.PEOPLE["energy"]
+    m["To"] = "%s <tony.coleman@velden-auto.de>" % P.PEOPLE["buyer"]
+    m["Subject"] = "Brackwell Alloys: SCR-2 data package for 2026"
+    m["Date"] = format_datetime(dt.datetime(2027, 1, 21, 16, 12, tzinfo=dt.timezone.utc))
+    m["Message-ID"] = "<scr2-2026.brackwell.20270121161200@brackwell-alloys.co.uk>"
+    body = ("Tony,\n\nAs SCR-2 asks, here is our 2026 data package for the four families we supply you. The gas "
+            "meter export is the supplier's interval file for our one site meter, which was exchanged in April. The "
+            "furnace, homogenizing and oven logs are the shift logs as kept, and the production file is the "
+            "inspection system's export. The electricity, weighbridge and goods-in files are for your supplier "
+            "reporting.\n\nFiles:\n" + "".join("  %s\n" % f for f in files) +
+            "\nAny questions on the logs, Reece Parker in the works office can help.\n\nRegards,\n\n"
+            "Rosemary Kent\nEnergy and Environment, Brackwell Alloys Ltd\n")
+    m.set_content(body)
+    with open(path, "wb") as f:
+        f.write(bytes(m))
 
 
-def renewal_figures(w):
-    """The administrator's plan-year review: paid claims per enrolled employee per month for 2024 and 2025 as decided
-    by 31 January 2026, and the 2025 figure it projected in October 2024 from 2024's claims at the 2025 fees."""
-    people = {p["pid"]: p for p in w["people"] if p["kind"] == "E"}
-    months = {y: sum(W.member_months(p, y) for p in people.values()) for y in (2024, 2025)}
-    paid = {2024: 0, 2025: 0}
-    demand24 = {}
-    for c in w["claims"]:
-        y = c["dos"].year
-        if y not in paid or c["adjudicated"] > dt.date(2026, 1, 31):
-            continue
-        lines = w["adjust"][c["cid"]]["lines"] if c["cid"] in w["adjust"] and \
-            w["adjust"][c["cid"]]["date"] <= dt.date(2026, 1, 31) else c["lines"]
-        paid[y] += sum(ln["paid"] for ln in lines)
-        if y == 2024 and c["adjudicated"] <= dt.date(2024, 9, 30):
-            for ln in lines:
-                if ln["reason"] == "FRQ":
-                    continue
-                v = (W.FEES[2025][ln["code"]] - ln["ded"]) * W.COINS[W.plan_class(ln["code"])] // 100
-                demand24[c["pid"]] = demand24.get(c["pid"], 0) + v
-    m24 = sum(W.member_months(people[pid], 2024) for pid in people)
-    proj = sum(min(v, W.MAXIMUM) for v in demand24.values())
-    # the October 2024 projection ran on January to September 2024 claims, annualised on the same months
-    m24_9 = sum(min(9, W.member_months(people[pid], 2024)) for pid in people)
-    return dict(months=months, paid=paid, pmpm={y: paid[y] / 100.0 / months[y] for y in paid},
-                proj25=proj / 100.0 / max(1, m24_9) if m24 else 0.0)
-
-
-def renewal_pdf(path, w):
-    f = renewal_figures(w)
-    s = [P("2025 Plan Year Review and 2026 Renewal", T),
-         P(W.COMPANY + " Dental Plan. Prepared by " + W.TPA + ", Account Management, 18 February 2026.", SMALL),
-         P("1. Experience", H),
-         _table([["Plan year", "Employee months", "Paid claims", "Paid per employee per month"],
-                 ["2024", "{:,}".format(f["months"][2024]), "{:,.2f}".format(f["paid"][2024] / 100.0),
-                  "%.2f" % f["pmpm"][2024]],
-                 ["2025", "{:,}".format(f["months"][2025]), "{:,.2f}".format(f["paid"][2025] / 100.0),
-                  "%.2f" % f["pmpm"][2025]]],
-                [1.0 * inch, 1.6 * inch, 1.5 * inch, 1.9 * inch]),
-         Spacer(1, 6),
-         P("Paid claims are for services in the plan year decided by 31 January 2026, at the plan's design (1,500 "
-           "dollar annual maximum, 50 dollar deductible, 100/80/50 coinsurance)."),
-         P("2. The 2025 projection", H),
-         P("Our October 2024 renewal projected 2025 at %.2f dollars per employee per month: January to September 2024 "
-           "claims re-priced at the 2025 network fees, each covered person's plan payments held to the annual maximum, "
-           "per employee month of the same months. The 2025 plan year came in at %.2f." % (
-               f["proj25"], f["pmpm"][2025])),
-         P("3. 2026 renewal", H),
-         P("The 2026 network fee schedule took effect on 1 January 2026. The administrative fee for 2026 is 4.38 dollars "
-           "per enrolled employee per month. No change to the plan design is proposed for 2026."),
-         Spacer(1, 8),
-         P("Account executive: " + W.PEOPLE["tpa"] + ".", SMALL)]
-    _pdf(path, "2025 Plan Year Review", s, W.PEOPLE["tpa"], W.TPA)
-    return f
-
-
-def write_all(t, w):
-    spd_pdf(t("spd"))
-    costing_pdf(t("costing"))
-    mandate_pdf(t("mandate"))
-    schedule_c_pdf(t("schedule_c"))
-    return renewal_pdf(t("renewal"), w)
+def workbook(path, sheets, owner, last_by, created, modified, company, widths=None, formats=None):
+    """sheets: [(title, header, rows)]. Saved under the owner's name and stamps, in Excel's dialect."""
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    for title, header, rows in sheets:
+        ws = wb.create_sheet(title)
+        ws.append(header)
+        for c in ws[1]:
+            c.font = Font(bold=True)
+        for r in rows:
+            ws.append([None if x == "" else x for x in r])
+        for col, fmt in ((formats or {}).get(title) or {}).items():
+            for row in ws.iter_rows(min_row=2, min_col=col, max_col=col):
+                for c in row:
+                    c.number_format = fmt
+        for i, w in enumerate((widths or {}).get(title, [16] * len(header))):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = w
+        ws.freeze_panes = "A2"
+    wb.save(path)
+    PP.normalize_ooxml(path, owner, last_by, created, modified, excel=True, company=company)

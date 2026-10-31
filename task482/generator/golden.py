@@ -1,350 +1,421 @@
-"""The golden for task482 (architecture 15), read from the cut pack alone.
+"""task482 architecture 16: the golden solution, read from the pack alone.
 
-Conform Ridgeline's two platforms into one set of claim lines per covered person (the legacy platform's voided
-originals out, its replacements in; the new platform's superseded lines out; a legacy claim restated on the new
-platform taken from its restatement; every member through the July 2025 crosswalk). Price the 2025 plan year at the
-2027 fee schedule: each person's plan-paid amount before the maximum (each covered line at its class's coinsurance
-after the deductible the plan applied to it, the lines the maximum cut at their full share), plus the predetermined
-work the person put off to the next plan year: 2025 estimate lines whose person, procedure and tooth do not reappear
-in the person's 2025 claims and do reappear in the claims within the estimate's twelve months. The plan's cost at a
-maximum is the sum over 2025's covered persons of the lesser of that amount and the maximum, per covered person month
-of 2025; each option's increase is set against the cost at the current 1,500 dollars.
+SCR-2 on Brackwell's 2026: the site meter's 15-minute volumes at each invoice period's calorific value give the gas
+burned; a regression of each local day's gas on what each process did that day (tonnes melted in the casthouse,
+tonnes charged to the tower melter, hours the homogenizing furnace and the solution oven fired, heating degree days)
+reads the gas each process burns; each family carries its processes' gas (melting by its tonnes melted, the
+homogenizing furnace by the hours its loads fired), the rest is shared by tonnes produced, and the premium is paid on
+the 2027 call-offs of the families at or under the limit. The asks read the weighbridge and the goods-in register.
 
-The asks: the predetermination service standard by quarter (requests received in the quarter, a request on the new
-platform being every estimate issued for one member and dentist at one receipt time, answered when its last estimate
-is issued, its receipt day under Schedule C's 5:00 p.m. Central rule and holidays), and the orthodontic payments the
-plan still owes on 30 September 2026 by the year treatment began (a child's treatment under a second orthodontist is
-the same treatment, and a child no longer covered is owed nothing)."""
+    python3 task482/generator/golden.py [target folder]
+"""
 import csv
 import datetime as dt
 import os
+import re
 import sys
+from zoneinfo import ZoneInfo
 
+import numpy as np
 import openpyxl
+import pdfplumber
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import world as W   # noqa: E402  (the plan's published constants and Schedule C's calendar only)
+TARGET = os.path.join(os.path.dirname(HERE), "target")
+LON = ZoneInfo("Europe/London")
+UTC = dt.timezone.utc
+YEAR = 2026
+DAYS = [dt.date(YEAR, 1, 1) + dt.timedelta(days=i) for i in range(365)]
+DAY_INDEX = {d: i for i, d in enumerate(DAYS)}
+FAMILIES = ["BIL6063", "BIL6082", "INGLM25", "CSTLM25"]
+PRODUCT = {"6063 extrusion billet": "BIL6063", "6082 extrusion billet": "BIL6082", "LM25 foundry ingot": "INGLM25",
+           "LM25-TF sand castings": "CSTLM25"}
+ALLOY = {"6063": "BIL6063", "6082": "BIL6082", "LM25": "INGLM25"}
+GRADES = ["CST", "EXT", "TRN", "UBC"]
+QUARTERS = ["Q1", "Q2", "Q3", "Q4"]
+CO2 = 0.18296          # SCR-2 section 4, kg per kWh
+LIMIT = 0.235          # SCR-2 section 7
+PREMIUM = 38           # SCR-2 section 7, EUR a tonne
+F = dict(meter="brackwell_site_gas_meter_2026.csv", invoices="brackwell_gas_invoices_2026.pdf",
+         furnaces="brackwell_melting_furnace_logs_2026.xlsx", h1="brackwell_homogenizing_furnace_h1_2026.csv",
+         t1="brackwell_heat_treatment_oven_t1_2026.csv", lots="brackwell_production_lots_2026.csv",
+         calloff="velden_2027_calloff_schedule.xlsx", weather="brackwell_works_weather_2026.csv",
+         weighbridge="brackwell_weighbridge_2026.csv", goodsin="brackwell_scrap_goods_in_2026.csv")
 
-D = dt.date
-YEAR = 2025
-CUT = D(2026, 9, 30)
-QUARTERS = ("2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2", "2026Q3")
-START_YEARS = (2024, 2025, 2026)
-FILES = dict(legacy_claims="rba_classic_claims_2024-01_2025-06.csv", new_claims="rba_nexus_claim_lines_2025-07_2026-10.csv",
-             legacy_predets="rba_classic_predeterminations_2024-01_2025-06.csv",
-             new_predets="rba_nexus_estimates_2025-06_2026-09.csv", legacy_elig="rba_classic_eligibility_2025-06-30.csv",
-             new_elig="rba_nexus_eligibility_2026-10-09.csv", crosswalk="rba_member_crosswalk_2025-07-01.csv",
-             fees="ridgeline_ppo_fee_schedule_2024-2027.xlsx", ortho_cases="rba_ortho_case_schedule_2026-09-30.csv",
-             ortho_payments="rba_ortho_payments_2024-01_2026-09.csv")
+
+def to_utc(naive):
+    return naive.replace(tzinfo=LON).astimezone(UTC)
 
 
-def rows(target, key):
-    with open(os.path.join(target, FILES[key]), encoding="utf-8", newline="") as f:
+def local_date(t_utc):
+    return t_utc.astimezone(LON).date()
+
+
+def day_bounds():
+    """Each local day of 2026 as a UTC window."""
+    return [(to_utc(dt.datetime.combine(d, dt.time())), to_utc(dt.datetime.combine(d + dt.timedelta(days=1),
+                                                                                   dt.time()))) for d in DAYS]
+
+
+BOUNDS = day_bounds()
+
+
+def split_days(a, b):
+    """[(day index, hours)] of the UTC span [a, b) over the local days."""
+    out = []
+    if b <= a:
+        return out
+    i = DAY_INDEX.get(local_date(a))
+    while i is not None and i < len(DAYS):
+        lo, hi = BOUNDS[i]
+        if lo >= b:
+            break
+        h = (min(b, hi) - max(a, lo)).total_seconds() / 3600.0
+        if h > 0:
+            out.append((i, h))
+        i += 1
+    return out
+
+
+def quarter(d):
+    return "Q%d" % ((d.month - 1) // 3 + 1)
+
+
+def rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
 
-def cents(s):
-    return int(round(float(s) * 100)) if s not in ("", None) else 0
-
-
-def usdate(s):
-    m, d, y = s.split("/")
-    return D(int(y), int(m), int(d))
-
-
-def isodate(s):
-    return D(*map(int, s[:10].split("-")))
-
-
-def utc_local(s):
-    """An ISO UTC stamp as America/Chicago local time."""
-    t = dt.datetime(int(s[0:4]), int(s[5:7]), int(s[8:10]), int(s[11:13]), int(s[14:16]))
-    for off in (-5, -6):
-        loc = t + dt.timedelta(hours=off)
-        if W.central_offset(loc) == off:
-            return loc
-    return t - dt.timedelta(hours=6)
-
-
-def load(target):
-    p = dict((k, rows(target, k)) for k in FILES if k != "fees")
-    wb = openpyxl.load_workbook(os.path.join(target, FILES["fees"]), data_only=True)
-    fees, cls = {}, {}
-    for ws in wb.worksheets:
-        y = int(ws.title)
-        fees[y] = {}
-        for r in ws.iter_rows(min_row=5, values_only=True):
-            if r[0] and str(r[0]).startswith("D"):
-                fees[y][r[0]] = int(round(float(r[3]) * 100))
-                cls[r[0]] = {"I": 1, "II": 2, "III": 3}[r[2]]
-    p["fees"], p["cls"] = fees, cls
-    return p
-
-
-# ------------------------------------------------------------------------------------------------------- persons
-def person_keys(p):
-    """One key per covered person: the new member key where the person has one, the legacy id otherwise."""
-    xw = {r["legacy_member_id"]: r["member_key"] for r in p["crosswalk"]}
-    return lambda ref: xw.get(ref, ref)
-
-
-def member_months(p, key):
-    """2025 covered months per person: legacy spans run to the June 2025 conversion at most (the legacy extract
-    writes an open span as 12/31/9999), new spans from it."""
-    months = {}
-
-    def add(k, a, b):
-        a, b = max(a, D(YEAR, 1, 1)), min(b, D(YEAR, 12, 31))
-        if a > b:
-            return
-        s = months.setdefault(k, set())
-        m = D(a.year, a.month, 1)
-        while m <= b:
-            s.add(m.month)
-            m = D(m.year + (m.month == 12), m.month % 12 + 1, 1)
-    for r in p["legacy_elig"]:
-        end = usdate(r["TERM_DATE"])
-        add(key(r["MEMBER_ID"]), usdate(r["EFF_DATE"]), min(end, D(2025, 6, 30)))
-    for r in p["new_elig"]:
-        end = isodate(r["coverage_end"]) if r["coverage_end"] else D(2099, 12, 31)
-        add(r["member_key"], isodate(r["coverage_start"]), end)
-    return {k: len(v) for k, v in months.items()}
-
-
-def relationship(p, key):
-    rel = {}
-    for r in p["legacy_elig"]:
-        rel[key(r["MEMBER_ID"])] = {"01": "Employee", "02": "Spouse"}.get(r["REL"], "Child")
-    for r in p["new_elig"]:
-        rel[r["member_key"]] = {"EE": "Employee", "SP": "Spouse", "CH": "Child"}[r["relationship"]]
-    return rel
-
-
-# --------------------------------------------------------------------------------------------------- claim lines
-def conformed_lines(p, key):
-    """[(person, dos, code, tooth, allowed, paid, deduct, reason)] for every line at its final version."""
-    voided = set(r["ORIG_CLAIM_NO"] for r in p["legacy_claims"] if r["TXN"] == "VOID")
-    restated = set(r["prior_claim_id"] for r in p["new_claims"] if r["prior_claim_id"])
+# ------------------------------------------------------------------------------------------------ reading the pack
+def read_invoices(path):
+    pdf = pdfplumber.open(path)
     out = []
-    for r in p["legacy_claims"]:
-        if r["TXN"] == "VOID" or (r["TXN"] == "ORIG" and (r["CLAIM_NO"] in voided or r["CLAIM_NO"] in restated)):
-            continue
-        out.append((key(r["MEMBER_ID"]), usdate(r["DOS"]), "D" + r["PROC"], r["TOOTH"],
-                    cents(r["ALLOWED"]), cents(r["PAID"]), cents(r["DEDUCT"]),
-                    {"MX": "MAX", "DD": "DED", "FQ": "FRQ", "": ""}[r["REASON"]]))
-    for r in p["new_claims"]:
-        if r["claim_status"] == "SUPERSEDED":
-            continue
-        out.append((r["member_key"], isodate(r["service_date"]), r["cdt_code"], r["tooth_number"].lstrip("0"),
-                    cents(r["allowed_amt"]), cents(r["plan_paid_amt"]), cents(r["deductible_amt"]),
-                    {"119": "MAX", "1": "DED", "151": "FRQ", "": ""}[r["carc"]]))
+    for page in pdf.pages:
+        text = page.extract_text() or ""
+        stamps = re.findall(r"(\d\d/\d\d/\d{4}) (\d\d:\d\d)", text)
+        cv = float(re.search(r"Calorific value \(MJ/m3\)\s+([\d.]+)", text).group(1))
+        vcf = float(re.search(r"Volume correction factor\s+([\d.]+)", text).group(1))
+        a = dt.datetime.strptime(" ".join(stamps[0]), "%d/%m/%Y %H:%M")
+        b = dt.datetime.strptime(" ".join(stamps[-1]), "%d/%m/%Y %H:%M")
+        out.append(dict(a=to_utc(a), b=to_utc(b), cv=cv, vcf=vcf))
+        conv = re.search(r"converted at ([\d.]+) cubic metres", text)
+        if conv:
+            out[-1]["hcf"] = float(conv.group(1))
+    out.sort(key=lambda p: p["a"])
     return out
 
 
-def demand(p, lines, year=YEAR, fee_year=2027):
-    """Each person's plan-paid amount before the maximum for year's services at fee_year's fees."""
-    fees, cls = p["fees"][fee_year], p["cls"]
-    out = {}
-    for who, dos, code, tooth, allowed, paid, ded, reason in lines:
-        if dos.year != year or reason == "FRQ":
+def read_meter(path, per):
+    hcf = [p["hcf"] for p in per if "hcf" in p][0]
+    starts, kwh = [], []
+    k = 0
+    for r in rows(path):
+        t = dt.datetime.strptime(r["Interval start (UTC)"], "%Y-%m-%d %H:%M").replace(tzinfo=UTC)
+        v = float(r["Consumption"])
+        m3 = v * hcf if r["Unit"] == "hcf" else v
+        while not (per[k]["a"] <= t < per[k]["b"]):
+            k += 1
+        starts.append(t)
+        kwh.append(m3 * per[k]["vcf"] * per[k]["cv"] / 3.6)
+    return starts, np.array(kwh)
+
+
+def read_furnaces(path):
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    heats, seen = [], set()
+    for sheet in ("M1 casthouse", "M2 casthouse"):
+        for r in list(wb[sheet].iter_rows(values_only=True))[1:]:
+            if r[0] is None or (sheet, r[0]) in seen:
+                continue
+            seen.add((sheet, r[0]))
+            heats.append(dict(furnace=sheet[:2], heat=r[0], family=ALLOY[str(r[1])], a=to_utc(r[2]), b=to_utc(r[3]),
+                              t=float(r[4]), lot=r[5]))
+    m3, seen = [], set()
+    for r in list(wb["M3 tower melter"].iter_rows(values_only=True))[1:]:
+        if r[0] is None or r[0] in seen:
             continue
-        out[who] = out.get(who, 0) + (fees[code] - ded) * W.COINS[cls[code]] // 100
-    return out
+        seen.add(r[0])
+        m3.append(dict(charge=r[0], a=to_utc(r[1]), t=r[2] / 1000.0))
+    return heats, m3
 
 
-# ------------------------------------------------------------------------------------------- the put-off work
-def utc_naive(s):
-    return dt.datetime(int(s[0:4]), int(s[5:7]), int(s[8:10]), int(s[11:13]), int(s[14:16]))
-
-
-def estimate_lines(p, key, conv=utc_local):
-    """[(person, receipt local, issued local date, code, tooth, est_allowed, est_deduct, est_plan, request id, npi,
-    estimate id)]: a request on the new platform is every estimate issued for one member and dentist at one receipt
-    time. conv reads the new platform's UTC stamps (Central time by default; the variants read them otherwise)."""
+def read_h1(path):
     out = []
-    for r in p["legacy_predets"]:
-        out.append((key(r["MEMBER_ID"]), dt.datetime.strptime(r["RECEIVED"], "%m/%d/%Y %H:%M"), usdate(r["RESPONDED"]),
-                    "D" + r["PROC"], r["TOOTH"], cents(r["EST_ALLOWED"]), cents(r["EST_DEDUCT"]),
-                    cents(r["EST_PLAN_PMT"]), ("L", r["PREDET_NO"]), r["PROV_NPI"], r["PREDET_NO"]))
-    for r in p["new_predets"]:
-        out.append((r["member_key"], conv(r["received_utc"]), conv(r["issued_utc"]).date(), r["cdt_code"],
-                    r["tooth_number"].lstrip("0"), cents(r["est_allowed_amt"]), cents(r["est_deductible_amt"]),
-                    cents(r["est_plan_amt"]), ("N", r["member_key"], r["rendering_npi"], r["received_utc"]),
-                    r["rendering_npi"], r["estimate_id"]))
+    for r in rows(path):
+        out.append(dict(load=int(r["Load"]), family=ALLOY[r["Alloy"]],
+                        a=to_utc(dt.datetime.strptime(r["Door closed"], "%d/%m/%Y %H:%M")),
+                        b=to_utc(dt.datetime.strptime(r["Door opened"], "%d/%m/%Y %H:%M")), t=float(r["Billet t"])))
     return out
 
 
-def put_off_work(p, key, lines, est=None, fee_year=2027, require_cut=True, window="validity", need_later=True):
-    """Each person's 2025 predetermined work not claimed in 2025 and claimed within the estimate's twelve months,
-    priced at fee_year's fees; the variants are the fork table's rows."""
-    est = est if est is not None else estimate_lines(p, key)
-    fees, cls = p["fees"][fee_year], p["cls"]
-    claimed = {}
-    for who, dos, code, tooth, *_ in lines:
-        claimed.setdefault((who, code, tooth), []).append(dos)
-    # a request is cut when the maximum cuts any of its lines: the member decides on the treatment as estimated
-    cut = set()
-    for who, recv, issued, code, tooth, allowed, ded, plan, req, npi, eid in est:
-        if plan < (allowed - ded) * W.COINS[cls[code]] // 100:
-            cut.add(req)
-    seen, out = set(), {}
-    for who, recv, issued, code, tooth, allowed, ded, plan, req, npi, eid in est:
-        if issued.year != YEAR:
-            continue
-        if require_cut and req not in cut:
-            continue
-        k = (who, code, tooth)
-        if k in seen:
-            continue
-        dates = claimed.get(k, [])
-        if any(recv.date() <= d0 <= D(YEAR, 12, 31) for d0 in dates):
-            continue
-        if need_later:
-            end = D(issued.year + 1, issued.month, min(issued.day, 28)) if window == "validity" else D(YEAR + 1, 6, 30)
-            if not any(D(YEAR + 1, 1, 1) <= d0 <= end for d0 in dates):
-                continue
-        seen.add(k)
-        out[who] = out.get(who, 0) + fees[code] * W.COINS[cls[code]] // 100
+def read_t1(path):
+    out = []
+    for r in rows(path):
+        out.append(dict(batch=int(r["Batch"]), a=to_utc(dt.datetime.strptime(r["Start"], "%Y-%m-%dT%H:%M")),
+                        b=to_utc(dt.datetime.strptime(r["End"], "%Y-%m-%dT%H:%M")), t=int(r["Net kg"]) / 1000.0))
     return out
 
 
-# ------------------------------------------------------------------------------------------------------- the call
-def costs(dem, put, mm, options=W.OPTIONS):
-    persons = [k for k, m in mm.items() if m > 0]
-    months = sum(mm[k] for k in persons)
-    base = sum(min(dem.get(k, 0), W.MAXIMUM) for k in persons)
+def read_lots(path):
+    """SCR-2 section 5: a lot counts at its last result, and a family's production is what passed."""
+    last = {}
+    for r in rows(path):
+        when = dt.datetime.strptime(r["Inspected"], "%d/%m/%Y %H:%M")
+        if r["Lot"] not in last or when >= last[r["Lot"]][0]:
+            last[r["Lot"]] = (when, r)
+    prod = {f: 0.0 for f in FAMILIES}
+    for when, r in last.values():
+        if r["Result"] == "PASS" and when.year == YEAR:
+            prod[PRODUCT[r["Product"]]] += int(r["Net kg"]) / 1000.0
+    return prod
+
+
+def read_weather(path):
+    return {dt.date.fromisoformat(r["Date"]): float(r["Mean C"]) for r in rows(path)}
+
+
+def read_calloffs(path):
+    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
+    out = {f: 0 for f in FAMILIES}
+    for r in list(wb["Call-offs 2027"].iter_rows(values_only=True))[1:]:
+        if not r[0]:
+            continue
+        desc = r[1]
+        fam = ("BIL6063" if "6063" in desc else "BIL6082" if "6082" in desc else
+               "CSTLM25" if "casting" in desc.lower() else "INGLM25")
+        months = sum(int(x) for x in r[3:15])
+        assert months == int(r[15]), r
+        out[fam] += months
+    return out
+
+
+def load(T=TARGET):
+    p = lambda k: os.path.join(T, F[k])  # noqa: E731
+    per = read_invoices(p("invoices"))
+    starts, kwh = read_meter(p("meter"), per)
+    heats, m3 = read_furnaces(p("furnaces"))
+    return dict(per=per, starts=starts, kwh=kwh, heats=heats, m3=m3, h1=read_h1(p("h1")), t1=read_t1(p("t1")),
+                prod=read_lots(p("lots")), weather=read_weather(p("weather")), calloff=read_calloffs(p("calloff")),
+                T=T)
+
+
+# ------------------------------------------------------------------------------------------------ the decomposition
+def daily(d, hdd_base=15.5):
+    y = np.zeros(365)
+    for t, k in zip(d["starts"], d["kwh"]):
+        y[DAY_INDEX[local_date(t)]] += k
+    x = {k: np.zeros(365) for k in ("melt", "m3", "h1", "t1", "h1_t", "t1_t", "hdd")}
+    for h in d["heats"]:
+        span = (h["b"] - h["a"]).total_seconds() / 3600.0
+        for i, hrs in split_days(h["a"], h["b"]):
+            x["melt"][i] += h["t"] * hrs / span
+    for c in d["m3"]:
+        x["m3"][DAY_INDEX[local_date(c["a"])]] += c["t"]
+    for ld in d["h1"]:
+        span = (ld["b"] - ld["a"]).total_seconds() / 3600.0
+        for i, hrs in split_days(ld["a"], ld["b"]):
+            x["h1"][i] += hrs
+            x["h1_t"][i] += ld["t"] * hrs / span
+    for b in d["t1"]:
+        span = (b["b"] - b["a"]).total_seconds() / 3600.0
+        for i, hrs in split_days(b["a"], b["b"]):
+            x["t1"][i] += hrs
+            x["t1_t"][i] += b["t"] * hrs / span
+    for day, m in d["weather"].items():
+        x["hdd"][DAY_INDEX[day]] = max(0.0, hdd_base - m)
+    return y, x
+
+
+def fit(y, x, drivers=("melt", "m3", "h1", "t1"), hdd=True):
+    cols = list(drivers) + (["hdd"] if hdd else [])
+    A = np.column_stack([x[c] for c in cols] + [np.ones(len(y))])
+    beta, *_ = np.linalg.lstsq(A, y, rcond=None)
+    resid = y - A @ beta
+    r2 = 1 - (resid ** 2).sum() / ((y - y.mean()) ** 2).sum()
+    return dict(zip(cols + ["const"], beta)), r2
+
+
+def attribute(d, beta, h1="hours", melt="melted", h1_driver="h1", t1_driver="t1"):
+    """Each family's process gas (kWh) from the fitted rates, the rest shared by tonnes produced."""
+    gas = {f: 0.0 for f in FAMILIES}
+    melted = {f: 0.0 for f in FAMILIES}
+    for h in d["heats"]:
+        melted[h["family"]] += h["t"]
+    m3_t = sum(c["t"] for c in d["m3"])
+    melted["CSTLM25"] = m3_t
+    if melt == "melted":
+        for f in ("BIL6063", "BIL6082", "INGLM25"):
+            gas[f] += beta["melt"] * melted[f]
+    else:      # the casthouse's melting gas spread by the tonnes each family produced
+        tot = beta["melt"] * sum(melted[f] for f in ("BIL6063", "BIL6082", "INGLM25"))
+        p = sum(d["prod"][f] for f in ("BIL6063", "BIL6082", "INGLM25"))
+        for f in ("BIL6063", "BIL6082", "INGLM25"):
+            gas[f] += tot * d["prod"][f] / p
+    gas["CSTLM25"] += beta["m3"] * m3_t
+    hours = {f: 0.0 for f in FAMILIES}
+    tonnes = {f: 0.0 for f in FAMILIES}
+    for ld in d["h1"]:
+        hours[ld["family"]] += (ld["b"] - ld["a"]).total_seconds() / 3600.0
+        tonnes[ld["family"]] += ld["t"]
+    if h1_driver == "h1":
+        h1_total = beta["h1"] * sum(hours.values())
+    else:
+        h1_total = beta["h1_t"] * sum(tonnes.values())
+    basis = hours if h1 == "hours" else tonnes
+    for f in ("BIL6063", "BIL6082"):
+        gas[f] += h1_total * basis[f] / sum(basis.values())
+    t1_hours = sum((b["b"] - b["a"]).total_seconds() / 3600.0 for b in d["t1"])
+    t1_tonnes = sum(b["t"] for b in d["t1"])
+    gas["CSTLM25"] += beta["t1"] * t1_hours if t1_driver == "t1" else beta["t1_t"] * t1_tonnes
+    total = float(d["kwh"].sum())
+    process = sum(gas.values())
+    allp = sum(d["prod"].values())
     out = {}
-    for m in options:
-        cost = sum(min(dem.get(k, 0) + (put.get(k, 0) if m > W.MAXIMUM else 0), m) for k in persons)
-        out[m] = dict(cost=cost, pmpm=cost / 100.0 / months, raw_increase=(cost - base) / 100.0 / months,
-                      increase_pct=100.0 * (cost - base) / base)
-    for m in options:
-        # the costing standard states amounts per covered person month to the cent
-        out[m]["pmpm_c"] = round(out[m]["pmpm"] + 1e-9, 2)
-        out[m]["increase"] = round(out[m]["pmpm_c"] - out[W.MAXIMUM]["pmpm_c"], 2)
-    return dict(base=base, months=months, persons=len(persons), options=out)
+    for f in FAMILIES:
+        kwh = gas[f] + (total - process) * d["prod"][f] / allp
+        out[f] = dict(kwh=kwh, co2=kwh * CO2 / 1000.0, intensity=kwh * CO2 / 1000.0 / d["prod"][f])
+    return out, dict(total=total, process=process, base=total - process, gas=gas, hours=hours, tonnes=tonnes,
+                     melted=melted)
 
 
-def call(c, limit=W.LIMIT, menu=(200000, 300000)):
-    fits = [m for m in menu if round(c["options"][m]["increase"] * 100) <= limit]
-    return max(fits) if fits else W.MAXIMUM
+def premium(fam, calloff):
+    earning = [f for f in FAMILIES if fam[f]["intensity"] <= LIMIT]
+    return PREMIUM * sum(calloff[f] for f in earning), earning
 
 
-# --------------------------------------------------------------------------------------------------------- ask A
-def turnaround(p, key, est=None, group_new=True, rule=True, holidays=True):
-    """{quarter: (requests received, answered within five business days)} under Schedule C: a request is answered
-    when its last estimate is issued; group_new=False counts each of the new platform's estimates as a request."""
-    est = est if est is not None else estimate_lines(p, key)
-    reqs = {}
-    for who, recv, issued, code, tooth, allowed, ded, plan, req, npi, eid in est:
-        rid = req if group_new or req[0] == "L" else ("E", eid)
-        reqs.setdefault(rid, [recv, issued])
-        reqs[rid][1] = max(reqs[rid][1], issued)
-    hol = W.HOLIDAY_SET if holidays else set()
+def mass_allocation(d):
+    """The works' gas over the families by the tonnes each produced: every family at the works' average."""
+    total = float(d["kwh"].sum())
+    allp = sum(d["prod"].values())
+    return {f: dict(kwh=total * d["prod"][f] / allp, co2=total * d["prod"][f] / allp * CO2 / 1000.0,
+                    intensity=total * CO2 / 1000.0 / allp) for f in FAMILIES}
 
-    def business(d):
-        return d.weekday() < 5 and d not in hol
 
-    def nxt(d):
-        while not business(d):
-            d += dt.timedelta(days=1)
-        return d
+# ------------------------------------------------------------------------------------------------ the asks
+def weighings(T):
+    visits = {}
+    for r in rows(os.path.join(T, F["weighbridge"])):
+        t = dt.datetime.strptime(r["Weighed (UTC)"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=UTC)
+        key = (int(r["Ticket"]), local_date(t))
+        v = visits.setdefault(key, dict(w=[], movement=r["Movement"], haulier=r["Haulier"], last=t))
+        v["w"].append((int(r["Weighing"]), int(r["Weight kg"])))
+        v["last"] = max(v["last"], t)
+    for v in visits.values():
+        v["w"] = [kg for _, kg in sorted(v["w"])]
+    return visits
 
-    out = {}
-    for rid, (recv, done) in reqs.items():
-        d = recv.date()
-        if rule and (not business(d) or recv.time() >= dt.time(17, 0)):
-            d = nxt(d + dt.timedelta(days=1))
-        elif not rule:
-            d = nxt(d)
-        q = "%dQ%d" % (d.year, (d.month - 1) // 3 + 1)
-        if q not in QUARTERS:
+
+def scrap(T, split="weighings", key="ticket_date"):
+    """Ask A: tonnes of each grade bought in each quarter, as weighed at the works' weighbridge. A two-grade load is
+    weighed in, between its tips and out; each grade's weight is the drop across its own tip, the tips matched to the
+    goods-in lines by the weights declared on them."""
+    visits = weighings(T)
+    by_ticket = {}
+    for (tk, day), v in visits.items():
+        by_ticket.setdefault(tk, []).append((day, v))
+    lines = {}
+    for r in rows(os.path.join(T, F["goodsin"])):
+        day = dt.datetime.strptime(r["Date"], "%d/%m/%Y").date()
+        lines.setdefault((int(r["WB ticket"]), day), []).append(r)
+    out = {g: {q: 0.0 for q in QUARTERS} for g in GRADES}
+    for (tk, day), ls in lines.items():
+        if key == "ticket_date":
+            v = visits[(tk, day)]
+        else:          # the ticket number alone: the first visit that carried it
+            v = sorted(by_ticket[tk], key=lambda x: x[0])[0][1]
+        w = v["w"]
+        ok = [r for r in ls if r["Status"] == "Accepted" and r["Grade"] in GRADES]
+        if not ok:
             continue
-        n, x = 0, d
-        while x < done:
-            x += dt.timedelta(days=1)
-            if business(x):
-                n += 1
-        tot, ok = out.get(q, (0, 0))
-        out[q] = (tot + 1, ok + (n <= 5))
-    return dict(sorted(out.items()))
+        if len(ls) == 1:
+            nets = [w[0] - w[-1]]
+        elif len(w) < 3:          # only on the wrong join: a two-line delivery matched to another visit
+            dec = [int(r["Declared kg"]) for r in ls]
+            nets = [(w[0] - w[-1]) * x / sum(dec) for x in dec]
+        elif split == "weighings":
+            drops = [w[0] - w[1], w[1] - w[2]]
+            dec = [int(r["Declared kg"]) for r in ls]
+            straight = abs(drops[0] - dec[0]) + abs(drops[1] - dec[1])
+            crossed = abs(drops[1] - dec[0]) + abs(drops[0] - dec[1])
+            nets = drops if straight <= crossed else [drops[1], drops[0]]
+        elif split == "line_order":
+            nets = [w[0] - w[1], w[1] - w[2]]
+        else:          # the load's net shared by the declared weights
+            dec = [int(r["Declared kg"]) for r in ls]
+            nets = [(w[0] - w[-1]) * x / sum(dec) for x in dec]
+        for r, net in zip(ls, nets):
+            if r["Status"] == "Accepted" and r["Grade"] in GRADES:
+                out[r["Grade"]][quarter(day)] += net / 1000.0
+    return out
 
 
-# --------------------------------------------------------------------------------------------------------- ask B
-def ortho_owed(p, key, by_child=True, check_coverage=True):
-    """The orthodontic payments the plan still owes on 30 September 2026 and the children in treatment, by the year
-    each child's treatment began."""
-    pays = {}
-    for r in p["ortho_payments"]:
-        pays[r["case_id"]] = pays.get(r["case_id"], 0) + cents(r["amount"])
-    cases = {}
-    for r in p["ortho_cases"]:
-        k = key(r["member_ref"]) if by_child else r["case_id"]
-        cases.setdefault(k, []).append(r)
-    cover = {}
-    for r in p["new_elig"]:
-        end = isodate(r["coverage_end"]) if r["coverage_end"] else D(2099, 12, 31)
-        cover[r["member_key"]] = (isodate(r["coverage_start"]), end)
-    for r in p["legacy_elig"]:
-        k = key(r["MEMBER_ID"])
-        if k not in cover:
-            end = usdate(r["TERM_DATE"])
-            cover[k] = (usdate(r["EFF_DATE"]), min(end, D(2025, 6, 30)) if end.year == 9999 else end)
-    owed = dict((y, 0) for y in START_YEARS)
-    kids = dict((y, 0) for y in START_YEARS)
-    for k, cs in cases.items():
-        cs = sorted(cs, key=lambda r: r["banding_date"])
-        active = cs[-1]
-        began = isodate(cs[0]["banding_date"]).year
-        ends = W.add_months(isodate(active["banding_date"]), int(active["treatment_months"]))
-        who = key(active["member_ref"])
-        if check_coverage:
-            a, b = cover.get(who, (D(1900, 1, 1), D(1900, 1, 1)))
-            if not (a <= CUT <= b):
-                continue
-        if ends <= CUT:
+def declared(T):
+    out = {g: {q: 0.0 for q in QUARTERS} for g in GRADES}
+    for r in rows(os.path.join(T, F["goodsin"])):
+        if r["Grade"] in GRADES:
+            day = dt.datetime.strptime(r["Date"], "%d/%m/%Y").date()
+            out[r["Grade"]][quarter(day)] += int(r["Declared kg"]) / 1000.0
+    return out
+
+
+def dross(T, combined="weighings"):
+    """Ask B: tonnes of dross sent off for recovery each quarter, as weighed: the skip's rise in weight, which on a
+    visit that first unloads returned metal is measured from the weighing after the unloading."""
+    out = {q: 0.0 for q in QUARTERS}
+    for (tk, day), v in weighings(T).items():
+        if v["movement"] != "Waste out":
             continue
-        left = cents(active["plan_benefit"]) - pays.get(active["case_id"], 0)
-        if left <= 0 or began not in owed:
-            continue
-        owed[began] += left
-        kids[began] += 1
-    return owed, kids
+        w = v["w"]
+        net = (w[-1] - w[-2]) if combined == "weighings" else (w[-1] - w[0])
+        out[quarter(local_date(v["last"]))] += net / 1000.0
+    return out
 
 
-# ---------------------------------------------------------------------------------------------------------- solve
-def solve(target):
-    p = load(target)
-    key = person_keys(p)
-    lines = conformed_lines(p, key)
-    mm = member_months(p, key)
-    dem = demand(p, lines)
-    est = estimate_lines(p, key)
-    put = put_off_work(p, key, lines, est)
-    gold = costs(dem, put, mm)
-    naive = costs(dem, {}, mm)
-    owed, kids = ortho_owed(p, key)
-    rel = relationship(p, key)
-    paid25 = {}
-    for who, dos, code, tooth, allowed, paid, ded, reason in lines:
-        if dos.year == YEAR:
-            paid25[who] = paid25.get(who, 0) + paid
-    return dict(p=p, key=key, lines=lines, mm=mm, dem=dem, put=put, gold=gold, naive=naive, call=call(gold),
-                naive_call=call(naive), ask_a=turnaround(p, key, est), ortho=(owed, kids), rel=rel, paid25=paid25,
-                est=est)
+# ------------------------------------------------------------------------------------------------ the golden
+def solve(T=TARGET):
+    d = load(T)
+    y, x = daily(d)
+    beta, r2 = fit(y, x)
+    fam, parts = attribute(d, beta)
+    prem, earning = premium(fam, d["calloff"])
+    a = scrap(T)
+    b = dross(T)
+    return dict(d=d, y=y, x=x, beta=beta, r2=r2, fam=fam, parts=parts, premium=prem, earning=earning, ask_a=a,
+                ask_b=b)
+
+
+def figures(res):
+    d, fam = res["d"], res["fam"]
+    hours, tonnes = res["parts"]["hours"], res["parts"]["tonnes"]
+    loads = {f: sum(1 for ld in d["h1"] if ld["family"] == f) for f in ("BIL6063", "BIL6082")}
+    return {
+        "constants": {"alloys": [6063, 6082], "co2_kg_per_kwh": CO2, "volume_correction": 1.02264,
+                      "mj_per_kwh": 3.6, "hdd_base_c": 15.5, "hcf_to_m3": 2.83, "meter_exchange": "14 April 10:30",
+                      "co2_rounding_t": 10, "ticket_restart": "29 June"},
+        "h1": {"mean_cycle_h": {f: round(hours[f] / loads[f], 1) for f in loads},
+               "hours_share_6082_pct": int(round(100 * hours["BIL6082"] / sum(hours.values()))),
+               "tonnes_share_6082_pct": int(round(100 * tonnes["BIL6082"] / sum(tonnes.values())))},
+        "earning_calloff_t": int(sum(d["calloff"][f] for f in res["earning"])),
+        "call": {"premium_eur": int(res["premium"]), "earning": res["earning"],
+                 "not_earning": [f for f in FAMILIES if f not in res["earning"]]},
+        "intensity_2dp": {f: "%.2f" % fam[f]["intensity"] for f in FAMILIES},
+        "intensity_3dp": {f: "%.3f" % fam[f]["intensity"] for f in FAMILIES},
+        "produced_t": {f: int(round(d["prod"][f])) for f in FAMILIES},
+        "calloff_t": {f: int(d["calloff"][f]) for f in FAMILIES},
+        "co2_t": {f: int(round(fam[f]["co2"], -2)) for f in FAMILIES},
+        "gas_mwh": int(round(res["parts"]["total"] / 1000.0, -2)),
+        "rates": {k: round(v, 1) for k, v in res["beta"].items()},
+        "ask_a": {g: {q: int(round(res["ask_a"][g][q])) for q in QUARTERS} for g in GRADES},
+        "ask_b": {q: int(round(res["ask_b"][q])) for q in QUARTERS},
+        "limit": LIMIT, "premium_eur_per_t": PREMIUM,
+    }
 
 
 if __name__ == "__main__":
-    res = solve(os.path.join(os.path.dirname(HERE), "target"))
-    g, n = res["gold"], res["naive"]
-    print("persons %d, months %d, base %.2f" % (g["persons"], g["months"], g["base"] / 100))
-    for m in W.OPTIONS:
-        print("max %d: golden %.4f pmpm (+%.2f, raw %.4f, %.2f%%) | naive %.4f pmpm (+%.2f, raw %.4f)" % (
-            m // 100, g["options"][m]["pmpm"], g["options"][m]["increase"], g["options"][m]["raw_increase"],
-            g["options"][m]["increase_pct"], n["options"][m]["pmpm"], n["options"][m]["increase"],
-            n["options"][m]["raw_increase"]))
-    print("call", res["call"], "naive call", res["naive_call"], "put-off persons", len(res["put"]),
-          "amount %.2f" % (sum(res["put"].values()) / 100))
-    print("ask A", res["ask_a"])
-    print("ask B", res["ortho"])
+    res = solve(sys.argv[1] if len(sys.argv) > 1 else TARGET)
+    print("r2 %.4f" % res["r2"], {k: round(v, 1) for k, v in res["beta"].items()})
+    for f in FAMILIES:
+        print(f, "%.4f" % res["fam"][f]["intensity"], "produced %.0f" % res["d"]["prod"][f])
+    print("premium", res["premium"], res["earning"])
+    print("ask A", {g: {q: round(v, 2) for q, v in res["ask_a"][g].items()} for g in GRADES})
+    print("ask B", {q: round(v, 2) for q, v in res["ask_b"].items()})
