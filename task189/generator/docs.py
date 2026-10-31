@@ -167,9 +167,9 @@ def method_schedule(target):
                        "Tirneevin under registration T-0184 and Kilgarron under T-0266, and both "
                        "took part in the 2025 round of the international proficiency scheme for "
                        "acid herbicides in water.", BODY))
-    f.append(Paragraph("TAS-IC-ANI-02 determines nitrate as the nitrate ion. KGL-CF-NUT-03 "
-                       "determines nitrate as nitrogen. The determinand code on each result says "
-                       "which, and the field dictionary gives both.", BODY))
+    f.append(Paragraph("TAS-IC-ANI-02 determines nitrate as the nitrate ion (NO3). KGL-CF-NUT-03 "
+                       "determines nitrate as nitrogen (NO3N); a result as nitrogen is 4.4268 times "
+                       "smaller than the same water as the nitrate ion.", BODY))
     d.build(f)
     return path
 

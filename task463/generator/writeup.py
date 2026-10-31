@@ -70,11 +70,7 @@ def write(fig_path, out_path):
                  WORDS[len(keep)], _p(min(dr)), _p(max(dr))))
     L.append("4. Set each rate against the item's published 12-month rate to September 2026 (%s, sheet 12-month rates) "
              "and moved the items whose rates, each to one decimal, are within 1.5 points." % W.FILES["published"])
-    L.append("5. For each supermarket and month, dated the arrival of the last file in %s carrying the month's records "
-             "(a weekly file's weeks in the month they end, Calderby's extracts by their days, resends and second "
-             "extracts included), converted from UTC to Kellesay time, counted the days after the month's end, and "
-             "averaged the thirteen months." % W.FILES["deliveries"])
-    L.append("6. Placed each category in %s on its RPI item by its name in %s (Wrenfold's 2025 codes name other "
+    L.append("5. Placed each category in %s on its RPI item by its name in %s (Wrenfold's 2025 codes name other "
              "categories in the map), left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and "
              "divided each item's sales by the households' spending in %s." % (
                  W.FILES["returns"], W.FILES["catmap"], W.FILES["spending"]))
@@ -88,11 +84,7 @@ def write(fig_path, out_path):
     for it in W.ICODE:
         L.append("   - %s %s: %d, %s, %s, %s, %s" % (it, N[it], F["lines"][it], _p(R[it]), _p(P[it]), _p(D[it]),
                                                     "moves" if it in mv else "stays"))
-    L.append("3. Each supermarket's average number of calendar days after a month's end until its records for the month "
-             "were complete, September 2025 to September 2026:")
-    for r in (W.RNAME[x] for x in W.RETAILERS):
-        L.append("   - %s: %s" % (r, _p(F["delivery"][r])))
-    L.append("4. Each item's 2025 coverage, the supermarkets' retail sales with GST as a share of households' spending, "
+    L.append("3. Each item's 2025 coverage, the supermarkets' retail sales with GST as a share of households' spending, "
              "whole per cent:")
     for it in W.ICODE:
         L.append("   - %s %s: %d" % (it, N[it], F["coverage"][it]))

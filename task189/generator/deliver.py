@@ -4,6 +4,8 @@ import os
 import matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams["svg.hashsalt"] = "task189"
+matplotlib.rcParams["font.family"] = "sans-serif"
+matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
 import matplotlib.pyplot as plt
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
@@ -94,6 +96,11 @@ def chart(path, g):
     ax.grid(axis="y", color="#e6e6e6", linewidth=0.6)
     ax.set_axisbelow(True)
     fig.tight_layout()
-    fig.savefig(path, metadata={"Software": None})
+    matplotlib.rcParams["svg.fonttype"] = "none"
+    fig.savefig(path, format="svg", metadata={"Creator": None, "Date": None, "Format": None, "Type": None})
+    svg = open(path, encoding="utf-8").read()
+    svg = svg.replace('id="matplotlib.axis_', 'id="axis_').replace(", 'DejaVu Sans'", ", sans-serif")
+    svg = svg.replace("sans-serif, sans-serif", "sans-serif")
+    open(path, "w", encoding="utf-8").write(svg)
     plt.close(fig)
     return path

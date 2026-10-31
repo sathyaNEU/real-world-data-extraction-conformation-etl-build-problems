@@ -50,7 +50,7 @@ Each water body's annual average was estimated from its own compliance samples, 
    - Owenbeg: 47, 31, non-compliant
    - Tirneevin Stream: 30, 20, compliant
 
-### mcpa_compliance_overview.png
+### mcpa_compliance_overview.svg
 
 3. One bar per water body, quantified results below and results below the reporting limit above, the four non-compliant water bodies marked: Owenbeg and Ballynure stand at 47 samples, Cloonfad, Drominagh and Glasheen at 36, Derryvore and Knockanure at 35, Carrowbeg and Tirneevin Stream at 30, Kilcrohane, Lisheenaguile and Moneycashen at 24, Aghavannagh at 23.
 

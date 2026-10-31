@@ -168,6 +168,32 @@ Three builds in this wave died on the other side of the screen (task190 settled 
 observed are in the population, task192 the unit of the count, task193 the comparison population); this one
 settles no part of it.
 
+## Survivor anatomy
+
+Actor: the deciding property, each confirmed event's discordance between the two screens (flagged by one and cleared
+by the other on the same specimen), has no column: each export carries one screen's call, and the pairing exists only
+across files on the same specimen.
+
+Link: the signal is read by setting the screen in service's call beside the candidate's flag on the same specimen and
+counting the specimens the two disagree on, a paired comparison the two-interval reading never asks for; no sentence
+invites it.
+
+Reflex: the field's reflex for an increase with a 95 per cent interval, each screen's own detection rate with its own
+Wilson interval read for overlap, is the default path and holds the change.
+
+Back-test: not applicable: a parallel-run validation has no history to test on; the textbook route's own figures (each
+screen's rate and its interval) recompute exactly, so nothing in the pack contradicts it.
+
+Second use: every file the decisive step reads sits in the pack for its own reason: the two quality-control exports,
+the re-run estimates and the panel register are the parallel run's own records, which the protocol's detection and
+false-call counts need whatever the comparison.
+
+Shock: the movement the step recovers is ordinary: the increase (16 specimens, 4.07 points at 0.030) is the same count
+the default path computes; only its interval changes, so no specimen or cutoff stands out.
+
+Pins: KVAL-07 4.1 files the WHAT (an increase in detected events that the parallel run establishes at 95 per cent, false
+calls within the bound); no filed sentence names pairing, discordant specimens or a paired test.
+
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
@@ -816,3 +842,7 @@ written to pass. Nine lines hold, three fail, and the client's own test is answe
   judgment the data settle. The library test fires: the golden is a card's method applied as the card
   states it, and the blind reader landed it in one pass at about 70 per cent confidence.
 - **(2026-10-25, measured) Re-measured with the scorer, and the architecture is confirmed spent from the other side.** `score_reader.py` on the stored reader answers: the reader **landed the call, 1 of 1** (0.030), and took **26 of 30 ask figures (86.7 per cent)**. Both halves fail at once, so neither hardening the ladder nor re-siting the devices reaches it; the number needs a re-root, which is what the stage-2 measurement already concluded on the family spread.
+- 2026-10-31, reship under the 10-30 gates: the export manifest and the validation extract dictionary were describing
+  files (leak.py sweep 1); both removed, their facts already carried by the exports' own columns, the KVAL-07 protocol
+  and the model card; every graded figure unchanged.
+- Reship of 10-31 without the extract dictionary: closing judge pass 2's FIX_NOW (the vial identity, the amendment rule) in KVAL-07 restores determinism but leaves A1 and A2 executable from a filed sentence; a careful cracker keeps 33 of 36 ask figures (pair 78.9), so the asks' devices are redesigned before the reship ships, never shipped on the lazy cracker the sheet measured.

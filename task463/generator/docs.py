@@ -1,5 +1,4 @@
-"""The pack's documents: Statistics Kellesay's plan for introducing supermarket transaction data into the RPI, the
-folder's data dictionary and its manifest."""
+"""The pack's document: Statistics Kellesay's plan for introducing supermarket transaction data into the RPI."""
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -81,6 +80,12 @@ def write_plan(path):
               "Stores weekly, Gorsedale Co-operative by fiscal period, Calderby's monthly as an extract of its "
               "point-of-sale database. Records for September 2025 to September 2026 form the parallel year, over which "
               "the field collection continued unchanged.")
+    P_("2.3", "The agreements fix what each supermarket sends. Wrenfold Stores sends each week's sales by product, its "
+              "weeks running Sunday to Saturday and dated by the Saturday that ends them. Gorsedale Co-operative sends its "
+              "sales by fiscal week, its weeks running Monday to Sunday, with its fiscal calendar. Calderby's sends each "
+              "month an extract of its point-of-sale database, one row for each store, day and product, a return being a "
+              "row of negative units. Wrenfold's and Gorsedale's sales values include GST and Calderby's are net of it; "
+              "GST is charged at 5 per cent on every item in Table 1.")
     s.append(Paragraph("3. Definitions", H2))
     P_("3.1", "<b>Product line.</b> A GTIN sold by one supermarket; the same GTIN at two supermarkets is two lines. A line "
               "belongs to the RPI item the office's product classification gives it.")
@@ -95,6 +100,8 @@ def write_plan(path):
               "a Törnqvist index.")
     P_("3.6", "<b>12-month rate.</b> An item's 12-month rate from transaction data is the percentage change in its index "
               "from September 2025 to September 2026, the change in the item's prices over the year.")
+    P_("3.7", "<b>Field collection.</b> A collector who finds a sampled product unavailable on the day carries its last "
+              "collected price, and the quote is marked T.")
     s.append(Paragraph("4. The test", H2))
     P_("4.1", "An item moves to transaction data from the January 2027 index when its 12-month rate from transaction data "
               "is within 1.5 percentage points of its published 12-month rate to September 2026, either way. An item "
@@ -106,97 +113,3 @@ def write_plan(path):
     doc.build(s, onFirstPage=frame, onLaterPages=frame)
 
 
-def write_dictionary(path, counts):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    F = W.FILES
-    c = lambda k: format(counts[k], ",")
-    rows = [
-        ("(all files)", "", "Dates are Kellesay dates (the island keeps British time) unless a column says otherwise. Money "
-                            "in pounds. GST is charged at 5 per cent on every item in this folder."),
-        (F["wrenfold"], "", "Wrenfold Stores' weekly sales by product, all stores, weeks Sunday to Saturday. %s rows." %
-         c("wrenfold")),
-        (F["wrenfold"], "week_ending", "The Saturday ending the week."),
-        (F["wrenfold"], "units, sales_value", "Units sold, net of returns, and their value including GST."),
-        (F["wrenfold"], "extract_date", "The date the week's records were extracted from Wrenfold's systems."),
-        (F["gorsedale"], "", "Gorsedale Co-operative's sales by fiscal year, period and week, all stores, pipe-delimited. "
-                             "%s rows." % c("gorsedale")),
-        (F["gorsedale"], "WEEK", "Week of the fiscal year; weeks run Monday to Sunday."),
-        (F["gorsedale"], "ITEM_NO, EAN", "Gorsedale's item number and the product's barcode number."),
-        (F["gorsedale"], "QTY, SALES", "Units sold, net of returns, and their value including GST."),
-        (F["calendar"], "", "Gorsedale Co-operative's fiscal calendar: each week's period and dates."),
-        (F["calderby"], "", "Extract of Calderby's point-of-sale database: tables daily_sales (one row per store, day and "
-                            "SKU, %s rows), sku_gtin and stores." % c("calderby")),
-        (F["calderby"], "daily_sales.units, net_value", "Units sold (a return is a row of negative units) and their value "
-                                                         "net of GST."),
-        (F["calderby"], "sku_gtin", "Calderby's SKU, the product's GTIN and the date the SKU was first sold."),
-        (F["classes"], "", "The office's product classification: each supermarket's product lines and the RPI item each "
-                           "belongs to, with the dates the assignment holds. %s rows." % c("classes")),
-        (F["published"], "", "The published RPI item indices, January 2024 to September 2026, and the items' 12-month "
-                             "rates."),
-        (F["deliveries"], "", "Every file the office received from the supermarkets under the data supply agreements. %s "
-                              "rows." % c("deliveries")),
-        (F["deliveries"], "covers_from, covers_to", "The first and last day of the records in the file."),
-        (F["deliveries"], "received_utc", "When the file reached the office's server, UTC."),
-        (F["quotes"], "", "The field collection's price quotes for the sixteen items, September 2025 to September 2026: the "
-                          "collector's shelf price for each sampled product at each outlet. %s rows." % c("quotes")),
-        (F["quotes"], "status", "C collected; T not available on the day, the last price carried."),
-        (F["returns"], "", "Each supermarket's annual return of 2025 retail sales to the office, one sheet each, as "
-                           "received."),
-        (F["catmap"], "", "The office's map of the supermarkets' product categories to RPI items."),
-        (F["spending"], "", "The office's estimate of Kellesay households' 2025 spending on each item."),
-        (F["rsi"], "", "The office's monthly retail sales index, value and volume."),
-        (F["manifest"], "", "The programme's register of the files in this folder: owner, period covered, version date, "
-                            "records and handling."),
-    ]
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Field definitions"
-    ws.append(["File", "Column", "What it holds"])
-    for r in rows:
-        ws.append([v or None for v in r])
-    head = PatternFill("solid", fgColor="E6EEF0")
-    for cell in ws[1]:
-        cell.font = Font(bold=True)
-        cell.fill = head
-    for row in ws.iter_rows(min_row=2):
-        for cell in row:
-            cell.alignment = Alignment(wrap_text=True, vertical="top")
-    ws.column_dimensions["A"].width = 46
-    ws.column_dimensions["B"].width = 30
-    ws.column_dimensions["C"].width = 90
-    ws.freeze_panes = "A2"
-    wb.save(path)
-
-
-def write_manifest(path, counts):
-    """The programme's register of the folder: each file's owner, what it covers, its version date, its records and how it
-    is handled."""
-    F = W.FILES
-    sup, own, pub = "Supplier confidential", "Internal", "Published"
-    prog, prices = "Transaction Data Programme", "Prices Statistics"
-    rows = [
-        [F["wrenfold"], "Wrenfold Stores", "Weekly item sales", "Weeks ending 6 Sep 2025 to 26 Sep 2026", "2026-10-01",
-         counts["wrenfold"], sup],
-        [F["gorsedale"], "Gorsedale Co-operative", "Item sales by fiscal week", "FY2026 P08 to FY2027 P08", "2026-10-06",
-         counts["gorsedale"], sup],
-        [F["calendar"], "Gorsedale Co-operative", "Fiscal calendar", "FY2026 and FY2027", "2026-02-02", counts["calendar"],
-         sup],
-        [F["calderby"], "Calderby's", "Point-of-sale database extract", "1 Sep 2025 to 30 Sep 2026", "2026-10-07",
-         counts["calderby"], sup],
-        [F["classes"], prices, "Supermarket lines classified to RPI items", "Lines sold from Sep 2025", "2026-10-14",
-         counts["classes"], own],
-        [F["published"], prices, "RPI item indices and 12-month rates", "Jan 2024 to Sep 2026", "2026-10-15", "", pub],
-        [F["plan"], prog, "Introduction plan, version 2", "", "2026-06-24", "", own],
-        [F["deliveries"], prog, "Data receipt log", "Files received to 21 Oct 2026", W.PACK_DATE.isoformat(),
-         counts["deliveries"], own],
-        [F["quotes"], prices, "RPI field collection quotes", "Sep 2025 to Sep 2026", "2026-10-09", counts["quotes"], own],
-        [F["returns"], "Business Statistics", "Supermarkets' annual returns of retail sales", "2025", "2026-04-30", "",
-         sup],
-        [F["catmap"], prices, "Retailer category map", "", "2025-03-14", counts["catmap"], own],
-        [F["spending"], "Household Statistics", "Household spending estimates by RPI item", "2025", "2026-07-22", "", own],
-        [F["rsi"], "Business Statistics", "Retail sales index", "Jan 2025 to Aug 2026", "2026-09-18", "", pub],
-        [F["dict"], prog, "Field definitions for this folder", "", W.PACK_DATE.isoformat(), "", own],
-    ]
-    return P.write_csv(path, ["file", "owner", "description", "period_covered", "version_date", "records", "handling"],
-                       rows)

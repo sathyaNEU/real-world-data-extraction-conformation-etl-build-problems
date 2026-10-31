@@ -74,8 +74,7 @@ def run(target, figures):
                      keep_default_na=False)
     ab = pd.read_csv(os.path.join(target, "abstraction_point_register.csv"), dtype=str,
                      keep_default_na=False)
-    mf = pd.read_csv(os.path.join(target, "export_manifest.csv"), dtype=str, keep_default_na=False)
-    ok(int(mf["row_count"].iloc[0]) == len(ex), "the manifest's row count disagrees")
+
 
     pr = pd.read_excel(os.path.join(target, "monitoring_programme_2025_26.xlsx"),
                        sheet_name="Programme 2025-26", header=None, dtype=object)

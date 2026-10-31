@@ -114,6 +114,14 @@ the weights and the clustering apart finds Central Valley. Open before data: R4 
 realised samples (Lakeshore 7), so the world is tuned for margin, the golden family (unweighted and weighted ANOVA,
 REML, the design-based components) is run on the one shipped sample, and the asks are built outside the hygiene battery.
 
+Tuning scan (30 realised samples each, scratchpad tune.py): with Central Valley's ICC 0.002 in 70 areas, a weight spread
+of CV 0.85 and Lakeshore's ICC 0.045, R4 picks Central Valley in 30 of 30 (its share removed 1.71 times the runner-up's
+at the median, 1.04 at the worst) and R1 the North in 30 of 30; but R2 picks Central Valley in 9 to 19 of 30 at every
+setting tried (weight spreads to 1.6, 40 to 90 areas), because the realised design effect is noisy. So the rung is
+fixed on the shipped sample, not left to chance: the technical report publishes each region's 2025 design effect from
+that one sample, and the generator draws the world whose published effects send both Kish routes to Lakeshore while
+R4 and the simulated truth find Central Valley, each margin asserted.
+
 ## Tried and rejected
 
 - Seed OS13's co-located charging sites as one site: the call turns on reading the federal site definition (data

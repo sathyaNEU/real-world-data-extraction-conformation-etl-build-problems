@@ -12,7 +12,7 @@ def write(task_dir, g):
         "objective": "Anomaly Detection & Diagnostics",
         "as_of": W.AS_OF.isoformat(),
         "committed_answer": "4 water bodies non-compliant for MCPA in the 2025/26 reporting year",
-        "deliverables": ["annual_compliance_return_2025_26.xlsx", "mcpa_compliance_overview.png"],
+        "deliverables": ["annual_compliance_return_2025_26.xlsx", "mcpa_compliance_overview.svg"],
         "distractor_files": [
             {"file": "daily_mean_flow_2025_2026.csv",
              "why_relevant": "a concentration average can be flow weighted, and the authority holds "

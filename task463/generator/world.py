@@ -66,16 +66,14 @@ FILES = {
     "classes": "statistics_kellesay_product_classification.csv",
     "published": "kellesay_rpi_item_indices_2024_2026.xlsx",
     "plan": "rpi_transaction_data_introduction_plan_2026.pdf",
-    "dict": "transaction_data_dictionary.xlsx",
     "deliveries": "retailer_delivery_log_2025_2026.csv",
     "quotes": "rpi_field_quotes_2025_2026.csv",
     "returns": "retailer_annual_returns_2025.xlsx",
     "catmap": "retailer_category_map.csv",
     "spending": "household_spending_estimates_2025.xlsx",
     "rsi": "kellesay_retail_sales_index_2025_2026.xlsx",
-    "manifest": "transaction_data_folder_register.csv",
 }
-DISTRACTORS = ["quotes", "rsi"]
+DISTRACTORS = ["quotes", "rsi", "deliveries"]
 DEADLINE_DAYS = 8                   # the plan: a month's records due by the end of the eighth day after it
 CALDERBY_STORES = [(1, "Calderby's Westgate", 0.45), (2, "Calderby's Ferry Lane", 0.33), (3, "Calderby's Gullhaven", 0.22)]
 GOLDEN = {"workbook": "kellesay_rpi_transaction_readiness_2027.xlsx",

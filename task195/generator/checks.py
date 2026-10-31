@@ -509,10 +509,6 @@ def run(target, g=None):
     lower = [i for i, r in enumerate(dil) if str(r[0])[0].islower()]
     ok("the operator's casing is not a pattern",
        len({b - a for a, b in zip(lower, lower[1:])}) > 2)
-    for key, pulled in (("mf", "2027-06-18"), ("weekly", W.AS_OF.isoformat()),
-                        ("panel", W.AS_OF.isoformat())):
-        rowm = [r for r in rows_of(os.path.join(target, W.FILES["manifest"])) if r["file"] == W.FILES[key]]
-        ok("the manifest's pull date for %s is the file's own" % key, rowm and rowm[0]["pulled"] == pulled)
     ok("no estimate was completed after the re-run was pulled",
        max(r["completed_date"] for r in mf_rows) <= "2027-06-18")
     ok("the protocol's annex does not predate its issue",
@@ -540,18 +536,10 @@ def run(target, g=None):
     ok("the booking clock records the second", len(secs) >= 50, "%d distinct seconds" % len(secs))
     ok("the booking minutes are not flat across the hour", mtop >= 0.024,
        "commonest minute is %.1f per cent against a flat 1.7" % (100 * mtop))
-    # the manifest and the dictionary are controlled documents
-    man = rows_of(os.path.join(target, W.FILES["manifest"]))
-    ok("the manifest records a licence for every file",
-       all(r["licence"].strip() for r in man), "%d rows" % len(man))
-    ok("the manifest records a source and a pull date for every file",
-       all(r["produced_by"].strip() and r["pulled"].strip() for r in man))
-    dicrows = rows_of(os.path.join(target, W.FILES["dictionary"]))
-    ok("the dictionary records an owner and a review date for every entry",
-       all(r["owner"].strip() and r["last_reviewed"].strip() for r in dicrows),
-       "%d entries" % len(dicrows))
-    ok("the dictionary carries its own issue history",
-       open(os.path.join(target, W.FILES["dictionary"]), encoding="utf-8").read().count("# issue") >= 3)
+    # no describing file ships (dataset-generation section 3): no dictionary, manifest, notes or readme
+    shipped = sorted(os.listdir(target))
+    ok("no describing file ships", not any(x in f.lower() for f in shipped
+                                           for x in ("dictionary", "manifest", "notes", "readme")), str(shipped))
     # the model card: its version predates the re-run and its addendum follows the last batch
     first_done = min(r["completed_date"] for r in mf_rows)
     last_done = max(r["completed_date"] for r in mf_rows)
@@ -566,7 +554,13 @@ def run(target, g=None):
 
     # ---------------------------------------------------------------- dates: no document describes an
     # event that had not happened when it was stated, and no extract carries a date after its own pull
-    pulled = {r["file"]: r["pulled"] for r in man}
+    # each extract's own pull date (the data teams' pull log, kept by the generator; no manifest ships)
+    pulled = {W.FILES[k]: d for k, d in (("qc_a", W.AS_OF.isoformat()), ("qc_b", W.AS_OF.isoformat()),
+                                         ("mf", "2027-06-18"), ("panel", W.AS_OF.isoformat()),
+                                         ("history", W.HIST_PULL.isoformat()), ("amendments", W.AS_OF.isoformat()),
+                                         ("volumes", "2027-03-06"), ("crosswalk", W.AS_OF.isoformat()),
+                                         ("config", "2027-06-08"), ("runlog", W.AS_OF.isoformat()),
+                                         ("costs", "2027-01-15"), ("plates", W.AS_OF.isoformat()))}
     amd = rows_of(os.path.join(target, W.FILES["amendments"]))
     ISO = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
     for f, pull in sorted(pulled.items()):
@@ -591,11 +585,6 @@ def run(target, g=None):
             found = ISO.findall(open(path, encoding="utf-8").read())
             if found:
                 starts[f] = min(found)
-    for r in dicrows:
-        if r["file"] in starts:
-            ok("the dictionary entry for %s is not reviewed before that data begins" % r["file"],
-               r["last_reviewed"] >= starts[r["file"]],
-               "reviewed %s, data from %s" % (r["last_reviewed"], starts[r["file"]]))
     ok("the protocol's issue says it pre-specifies the run it governs",
        "pre-specified" in doc_text and "approved before a run opens" in doc_text)
     ok("the protocol is not a conspicuous extract",
@@ -662,21 +651,10 @@ def run(target, g=None):
     ok("the distractors are shipped", all(os.path.exists(os.path.join(target, os.path.basename(d)))
                                           for d in meta["distractor_files"]))
     read_by_solution = {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "weekly", "history",
-                                             "volumes", "dilution", "protocol", "dictionary",
-                                             "crosswalk", "modelcard", "config", "manifest")}
+                                             "volumes", "dilution", "protocol",
+                                             "crosswalk", "modelcard", "config")}
     ok("no distractor is on the solution's path",
        not (read_by_solution & {os.path.basename(d) for d in meta["distractor_files"]}))
-    dic = {r["file"] for r in rows_of(os.path.join(target, W.FILES["dictionary"]))}
-    ok("the dictionary names every validation extract",
-       dic == {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "history", "crosswalk",
-                                     "amendments")}, str(dic))
-    manifest = rows_of(os.path.join(target, W.FILES["manifest"]))
-    ok("the manifest names every shipped file",
-       {r["file"] for r in manifest} == set(files) - {W.FILES["manifest"]},
-       str(set(files) - {r["file"] for r in manifest}))
-    ok("the manifest stays inside the fiction",
-       not re.search(r"constructed for|are invented|are fictional|exercise",
-                     open(os.path.join(target, W.FILES["manifest"]), encoding="utf-8").read(), re.I))
     # dates
     latest = []
     for f in files:

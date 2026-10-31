@@ -111,22 +111,6 @@ def write_workbook(path, F):
         ws.column_dimensions[col].width = wdt
     ws.row_dimensions[4].height = 44
     # Ask A
-    ts = wb.create_sheet("Supplier timeliness")
-    ts.append(["Days from a month's end until the supermarket's records for the month were complete"])
-    ts["A1"].font = Font(bold=True, size=12)
-    ts.append(["Average over the thirteen months of the parallel year; the arrival of the last file carrying the month's "
-               "records, in Kellesay time. A week's records belong to the month in which the week ends."])
-    ts.append([])
-    ts.append(["Supermarket", "Average days"] + B.MONTH_KEYS)
-    for c in ts[4]:
-        c.font = bold
-        c.fill = head
-    for r in (W.RNAME[x] for x in W.RETAILERS):
-        ts.append([r, F["delivery"][r]] + F["delivery_lags"][r])
-    for row in ts.iter_rows(min_row=5, max_row=7):
-        row[1].number_format = "0.0"
-    ts.column_dimensions["A"].width = 26
-    ts.column_dimensions["B"].width = 13
     # Ask B
     cs = wb.create_sheet("Coverage 2025")
     cs.append(["The three supermarkets' 2025 retail sales as a share of households' 2025 spending, by item"])

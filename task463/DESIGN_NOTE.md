@@ -32,10 +32,10 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   partial observation selected on the trait (458), an operating level (459), a dispatch margin (460), a record extended
   through an auxiliary series (461) and detection-weighted snapshots (462); none compiles a price index, and none turns
   on the path dependence of linked comparisons.
-- **Shape:** 10, a scorecard of sixteen items against the 1.5-point line. Arithmetic: for each of sixteen RPI items the lines compared, the
+- **Shape:** 10, a scorecard of the plan's sixteen items against the 1.5-point line. Arithmetic: for each item the lines compared, the
   transaction-data 12-month rate to September 2026, the published rate, the difference and whether it moves (80); the
-  moved set and its count (2); the asks (each supermarket's average days to complete monthly records, 3; each item's
-  2025 coverage, 16); the chart's named parts (5); the conformed product-month file (2): 108.
+  moved set and its count (2); the ask (each item's 2025 coverage, 16); the chart's named parts (5); the conformed
+  product-month file (2): 105 (the supplier-timeliness ask's 3 cut at the 10-31 reship).
 - **Strategy:** other (index-number path dependence; no vocab key names it: it is not a grain, population, censoring or
   composition choice) on the population gap (the month-pair comparisons are not the decided unit, the item's one
   12-month comparison) with the time gap behind it. Generators G16 (method selection) decisive, G6 (the quantity mix
@@ -79,6 +79,35 @@ Status lives in `pipeline.json`; this note holds the design. Read `## Tried and 
   (nonresponse departing from its allocation); no other Gate G key is honest. repeat.decision (designation_set against
   task233): a readiness decision designates the items that move. repeat.question_form (which, against task233): the
   moved items are a which; the deliverable set (xlsx, csv, png) differs from task233's.
+
+## Survivor anatomy
+
+Actor: the deciding property, how each line's quantity rebounds in the months after an offer month (stocking up, then
+buying below normal), has no column: the feeds hold each line's units and value by week, period or day, and the
+rebound is a relation between consecutive months of one line that no file stores.
+
+Link: the signal is read by comparing each line's September 2026 directly with September 2025 (or over the thirteen
+months together), a comparison across the whole year that no key offers and no sentence invites; the plan files the
+Törnqvist weights and the 12-month rate as the index's change, and names no linking.
+
+Reflex: the field's named construction for a monthly index, month-on-month Törnqvist comparisons chained over the year,
+sits at rung 1 and moves five items, its chain drift putting nine items 4.7 to 8.4 points under their published rates.
+
+Back-test: what a solver checks the easy route against agrees with it: each month's month-on-month comparison is a
+correct Törnqvist of that pair of months, every linked index starts at 100 in September 2025, and no record in the pack
+scores a chained index against a direct one.
+
+Second use: every file the decisive step reads is the call's own (the three feeds, the classification, the published
+indices and the plan); the direct comparison reads no file the chained index does not, so nothing in the pack exists
+for the decisive step alone.
+
+Shock: the thirteen items that move are not an interval of any shipped sort (published rate, coverage, lines compared,
+offer frequency); the three that stay are the items whose own lines' prices rose against the published rate, which only
+the drift-free comparison shows.
+
+Pins: the plan files the WHAT (each line's monthly price, the lines compared over the parallel year, the Törnqvist
+weights, the 12-month rate as the change in the item's prices over the year, the 1.5-point test); no filed sentence
+names chaining, linking or a direct comparison, and deleting 3.6 unforces the window, not the construction.
 
 ## Default path
 
@@ -188,13 +217,13 @@ over the thirteen months together, moves thirteen and holds only Pasta and rice,
 | SF1 | item | the RPI item the office's classification gives the line in the month | the supermarkets' own categories | not executable: the feeds carry no category | the plan's 3.1 |
 | SF2 | product line | a GTIN at one supermarket | a GTIN pooled across the supermarkets | same call | the plan's 3.1 ("the same GTIN at two supermarkets is two lines"); asserted |
 | SF3 | month | a calendar day by its month, a retailer week by the month in which it ends | a week by the month it starts in | same call | the plan's 3.2; asserted |
-| SF4 | monthly price | sales value with GST over units, returns netted | Calderby's net value as given; returns dropped | same call | the plan's 3.3; the dictionary's GST rate; asserted |
+| SF4 | monthly price | sales value with GST over units, returns netted | Calderby's net value as given; returns dropped | same call | the plan's 3.3 and 2.3 (Calderby's values net of GST, 5 per cent); asserted |
 | SF5 | lines compared | the lines each supermarket sold in every month of the parallel year | the lines sold in both Septembers; every line in each comparison | same call | the plan's 3.4; asserted |
 | SF6 | weights | each line's spending share averaged over the two months a comparison holds (Törnqvist) | Fisher; Laspeyres on September 2025 quantities | same call (Fisher the same sixteen rates; Laspeyres the same critical components) | the plan's 3.5; asserted |
 | SF7 | 12-month rate | the change in the item's index from September 2025 to September 2026 | the average of the year against the year before | not executable: the records start in September 2025 | the plan's 3.6 |
 | SF8 | within 1.5 points | the two rates, each to one decimal, differ by 1.5 or less | unrounded rates; strictly less than 1.5 | same call: no item within 0.6 of the line | the plan's 4.1; asserted |
 | SF9 | published 12-month rate | the published rate for September 2026, one decimal | recomputed from the rounded published indices | same call | the published workbook's notes; asserted |
-| SF10 | a resent week | its latest extract | both extracts; the first | same call | the dictionary (extract date); asserted |
+| SF10 | a resent week | its latest extract | both extracts; the first | same call | the feed's own extract date column; asserted |
 | SF11 | Gorsedale's EAN | the barcode as 13 digits | the number as written | same call (imported lines unclassified otherwise) | the classification's GTINs; asserted |
 | SF12 | rounding | rates and differences to one decimal | two decimals | same call | the prompt's rounding sentence |
 | SF13 | a line's share of the item's spending | across the three supermarkets' lines of the item | each line's share within its supermarket, the supermarkets combined by their spending | same call, the same sixteen rates | the plan's 3.5 ("the item's spending"); asserted |
@@ -235,7 +264,7 @@ over the thirteen months together, moves thirteen and holds only Pasta and rice,
 | 1 | Population | the lines each supermarket sold in every month of the parallel year, by item | the plan's 3.4 (SF5) |
 | 2 | Unit of account | the product line, a GTIN at one supermarket | the plan's 3.1 (SF2) |
 | 3 | Attribution window | September 2025 to September 2026; a week by the month it ends in | the plan's 3.2 and 3.6 (SF3) |
-| 4 | As-of dating | the feeds as received to 7 October 2026; the published rates of 15 October 2026 | the manifest; the published workbook |
+| 4 | As-of dating | the feeds as received to 7 October 2026; the published rates of 15 October 2026 | the delivery log; the published workbook |
 | 5 | Version basis | each resent week at its latest extract; Calderby's final extract | SF10 asserted |
 | 6 | Denominator | the item's spending over the lines compared, for the weights | the plan's 3.5 |
 | 7 | Weighting | spending shares as in a Törnqvist index | the plan's 3.5 (SF6) |
@@ -243,14 +272,14 @@ over the thirteen months together, moves thirteen and holds only Pasta and rice,
 | 9 | Boundary inclusivity | within 1.5 points moves, either way | the plan's 4.1 (SF8) |
 | 10 | Rounding path | rates to one decimal, the difference of the rounded rates | SF8, SF12 |
 | 11 | Tie-break | none needed | no item within 0.6 of the line; the moving and staying items nearest it each 0.3 or more clear of the next (asserted) |
-| 12 | Maturity and censoring | every month of the parallel year is closed and delivered | the delivery log; the manifest |
+| 12 | Maturity and censoring | every month of the parallel year is closed and delivered | the delivery log |
 | 13 | Order of operations | conform, classify, keep the lines compared, compare the two Septembers | C1: every drift-free comparison gives the same rates (asserted) |
 | 14 | Row order | none matters | C1 |
 | 15 | Duplicate resolution | a resent week replaces the first extract | SF10 |
 | 16 | Identity normalisation | EANs padded to 13 digits; Calderby's SKUs through its SKU table | SF11 |
 | 17 | Netting against gross | returns netted | the plan's 3.3 |
-| 18 | Dimensional units | pounds with GST; Calderby's net values grossed up at 5 per cent | the dictionary; SF4 |
-| 19 | Code and status semantics | Wrenfold's extract dates; the classification's validity dates | the dictionary |
+| 18 | Dimensional units | pounds with GST; Calderby's net values grossed up at 5 per cent | the plan's 2.3; SF4 |
+| 19 | Code and status semantics | Wrenfold's extract dates; the classification's validity dates | the files' own date columns; the plan's 2.3 and 3.7 |
 | 20 | Integerisation | none | n/a |
 | 21 | Clause scope | the test applies to each of the sixteen items alike | the plan's 4.1 |
 | 22 | Forward window contents | the January 2027 index takes the items that pass on the closed parallel year | the plan's 1.1 and 4.1 |
@@ -277,23 +306,10 @@ index is a neighbouring statistic, declared a distractor.
 
 ## Ask sheet
 
-- **Ask A, each supermarket's average number of calendar days after a month's end until its records for that month
-  were complete, over the thirteen months of the parallel year (3 figures, one decimal).** H18 home: the switch's production
-  timetable (a month's index is compiled only once all three supermarkets' records for it are in). Path: the delivery
-  log (file, covers from, covers to, received), the plan's week rule (3.2) and the dictionary's note that dates are
-  Kellesay dates (three files, six columns). Primary device: D8, a clock against the island's dates: the log stamps each
-  file's arrival in UTC, and the supermarkets' nightly exports reach the server just after midnight Kellesay time, so in
-  British Summer Time (September and October 2025, April to September 2026) a file's UTC date is the day before its
-  Kellesay date; every supermarket's average moves. Hazards: H1 Wrenfold's two February weeks resent on 9 March (the
-  month complete only then); H2 Calderby's March extract sent again on 22 April; H3 weeks and fiscal periods crossing a
-  month's end (a week's records belong to the month in which it ends). Stops (asserted): UTC dates (the cracker) 1.8,
-  7.4 and 8.3 days; weeks by calendar overlap 7.9 and 20.6 (Calderby's daily extracts unchanged at 8.6); the first file
-  for each month in place of the last (Wrenfold's resend and Calderby's second extract missed) 1.7, 8.0 and 7.4; the
-  golden 2.0, 8.0 and 8.6. Realism: an office's receipt server logs in UTC while its timetable runs on local dates.
-- **Ask B, each item's 2025 coverage: the three supermarkets' 2025 retail sales with GST as a share of households' 2025
+- **The coverage ask, each item's 2025 coverage: the three supermarkets' 2025 retail sales with GST as a share of households' 2025
   spending on it (16 figures, whole per cent).** H18 home: how much of each item's household spending the transaction
   data hold, a measure every item carries that the call does not turn on. Path: the supermarkets' annual returns (three
-  sheets in three layouts), the office's category map, the household spending estimates and the dictionary's GST rate
+  sheets in three layouts), the office's category map, the household spending estimates and the plan's GST rate
   (four files, ten columns). Primary device: D7, codes reissued: Wrenfold's 2025 return lists its categories under the
   codes of its 2025 hierarchy, while the office's map holds the codes its categories carried before, so the code join
   completes (only toiletries' new department code, P310, finds no row) and puts every category's sales on another item;
@@ -305,27 +321,29 @@ index is a neighbouring statistic, declared a distractor.
 - **The construction layer:** each item's lines compared, transaction-data 12-month rate, published rate, difference and
   verdict, the moved set, the chart and the conformed product-month file; the cracker has them.
 - **Main population zero-counts (asserted):** the main call reads no delivery log, annual return, category map or
-  household spending row (the call and every rung computed with those files deleted are identical); the asks read no
-  feed, classification or published row (Ask A and B computed with those files deleted are identical). No device or
+  household spending row (the call and every rung computed with those files deleted are identical); the coverage ask
+  reads no feed, classification or published row (computed with those files deleted, it is identical). No device or
   hazard row sits in a file the call reads.
-- **Hazard table (asserted):** H1 moves Wrenfold's average (February complete on 9 March); H2 Calderby's (March complete
-  on 22 April); H3 Wrenfold's and Gorsedale's; H4 every item's coverage; H5 the nine items with trade sales.
-- **Rounding edges (asserted):** each supermarket's average 0.03 or more from its tenth's edge; each coverage 0.1 or more
+- **Hazard table (asserted):** H4 every item's coverage; H5 the nine items with trade sales.
+- **Rounding edges (asserted):** each coverage 0.1 or more
   from its whole-per-cent edge; each item's transaction-data rate 0.015 or more from its tenth's edge under every
   drift-free comparison.
 - **Referee:** none; no total in any ask file ties only under one handling.
 
 | Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
 |---|---|---|
-| A, average days to complete records by supermarket | applies the week rule, takes the resend and Calderby's second extract as the last files, reads each arrival on its UTC date | miss |
-| B, coverage by item | grosses up Calderby, drops Gorsedale's trade rows, joins each return to the map on the category code | miss |
+| Coverage by item | grosses up Calderby, drops Gorsedale's trade rows, places each category by its name once the codes contradict the map's names (the hygiene battery, supplemental-stumping 1.1c) | kept |
 
-- Mirror leakage: about 10 per cent of ask weight (a response on R2 keeps the conformed product-month file; it misses
-  every Ask A and Ask B figure on the same devices as the cracker).
-- Pair ceiling: 33.7 (planning weights 38 / 7 / 55 with the call, each item's rate, difference and verdict and the chart
-  in the main block and r = 5; the ask weight spread over 21 criteria: A 3, B 16, the file 2; the cracker keeps the
-  file, 2 of 21 or 0.095, 38 + 7 + 5.2 = 50.2; the mirror keeps r, instruction-following and the file, 5 + 7 + 5.2 =
-  17.2; average 33.7), rerun from the generated rubric at ship.
+- Measured by: generator/ceiling.py on the cut pack, the cracker on the hygiene battery's path: it keeps all 16
+  coverage figures and the product-month file (18 of 18); the mirror, on the same ask paths, the same.
+- Pair ceiling: 83.5 (cracker 38 + 7 + 55 = 100.0; the mirror on R2, 5 + 7 + 55 = 67.0): FAILS. The coverage ask's
+  primary device (Wrenfold's reissued codes, whose names disagree with the map's) is a code contradicted by a finer
+  key, which the battery re-derives; the leak reader of 10-31 named the mismatch unprompted (G110 Coffee in the return,
+  Bread and rolls in the map). The ask layer needs a new silent device before this build ships.
+- Mirror leakage: 100.0 per cent of ask weight.
+- The supplier-timeliness ask was cut at the 10-31 reship: its one silent device was the receipt log's UTC clock, and
+  with the dictionary gone the island's clock has to be filed, after which a careful cracker converts it and keeps all
+  three figures; the delivery log stays in the pack as a declared distractor.
 
 ## Layer 1 inventory
 
@@ -461,3 +479,5 @@ with September 2025") is declined: it would file the construction, the decisive 
   indices sat flat from September to October and from August to September for most items (the reader's realism tell).
   Reviews now fall in any month on each line's own calendar, and the field history's and the independents' on their
   own months.
+- The coverage ask's reissued-code device at the 10-31 reship: a code contradicted by the names beside it is in the hygiene battery (supplemental-stumping 1.1c), so a careful cracker places each category by name and keeps all 16 figures (pair 83.5); the lazy code-join cracker the sheet measured at 33.7 was never the careful path. The supplier-timeliness ask died the same way (a UTC clock is in the battery). Both need devices no battery item sees.
+- A coverage device that splits a supermarket's mixed department (hot drinks holding coffee and tea, and so on) across its items by the supermarket's own product mix (screened 10-31): the mix comes from the point-of-sale product-months the call itself builds, so the construction layer hands the split to both responses (supplemental-stumping ban 4); not built.

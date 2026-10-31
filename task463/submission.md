@@ -20,8 +20,7 @@ The moving items' 12-month rates to September 2026 from the transaction data sit
 2. Classified each line through statistics_kellesay_product_classification.csv and kept, for each item, the lines each supermarket sold in every month from September 2025 to September 2026: 1,012 lines over the sixteen items.
 3. Compiled each item's monthly index over those lines as a Törnqvist comparison of the month with September 2025 (each line weighted by its spending share averaged over the two months compared) and took the 12-month rate as the index's change from September 2025 to September 2026; GEKS and CCDI over the thirteen months and a direct Fisher give the same sixteen rates to one decimal. Linking the twelve month-on-month comparisons was not used: in the nine items whose goods keep, the month after an offer runs well below normal sales, so the linked index ends 4.6 to 8.4 points below the direct comparison and below every line's own change, which no change in the item's prices can do.
 4. Set each rate against the item's published 12-month rate to September 2026 (kellesay_rpi_item_indices_2024_2026.xlsx, sheet 12-month rates) and moved the items whose rates, each to one decimal, are within 1.5 points.
-5. For each supermarket and month, dated the arrival of the last file in retailer_delivery_log_2025_2026.csv carrying the month's records (a weekly file's weeks in the month they end, Calderby's extracts by their days, resends and second extracts included), converted from UTC to Kellesay time, counted the days after the month's end, and averaged the thirteen months.
-6. Placed each category in retailer_annual_returns_2025.xlsx on its RPI item by its name in retailer_category_map.csv (Wrenfold's 2025 codes name other categories in the map), left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and divided each item's sales by the households' spending in household_spending_estimates_2025.xlsx.
+5. Placed each category in retailer_annual_returns_2025.xlsx on its RPI item by its name in retailer_category_map.csv (Wrenfold's 2025 codes name other categories in the map), left out Gorsedale's trade rows, added 5 per cent GST to Calderby's net sales, and divided each item's sales by the households' spending in household_spending_estimates_2025.xlsx.
 
 ## 4. Deliverable Answers
 
@@ -45,11 +44,7 @@ The moving items' 12-month rates to September 2026 from the transaction data sit
    - 5611 Laundry products: 56, 2.6, 2.6, 0.0, moves
    - 5613 Toilet and kitchen rolls: 43, 2.6, 2.5, 0.1, moves
    - 6213 Toiletries: 99, 2.5, 2.4, 0.1, moves
-3. Each supermarket's average number of calendar days after a month's end until its records for the month were complete, September 2025 to September 2026:
-   - Wrenfold Stores: 2.0
-   - Gorsedale Co-operative: 8.0
-   - Calderby's: 8.6
-4. Each item's 2025 coverage, the supermarkets' retail sales with GST as a share of households' spending, whole per cent:
+3. Each item's 2025 coverage, the supermarkets' retail sales with GST as a share of households' spending, whole per cent:
    - 1101 Bread: 68
    - 1103 Breakfast cereals: 58
    - 1105 Pasta and rice: 67

@@ -24,7 +24,6 @@ def cut(target):
     PK.write_plates(target, specimens)
     counts["plates"] = len(specimens)
     PK.write_config(target)
-    PK.write_dictionary(target)
     hist_rows, released, flagged, events, amend = AS.history(target)
     counts["history"] = hist_rows
     counts["volumes"] = AS.volumes(target, events)
@@ -50,7 +49,6 @@ def cut(target):
     DC.model_card(target, estimates)
     DC.weekly_reports(target, panel)
     DC.platform(target)
-    PK.write_manifest(target, counts)
     return specimens, counts
 
 

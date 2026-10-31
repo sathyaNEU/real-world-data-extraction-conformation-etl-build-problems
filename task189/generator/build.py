@@ -23,14 +23,12 @@ def cut(target):
     PK.write_register(target)
     PK.write_crosswalk(target, rows)
     PK.write_abstractions(target)
-    PK.write_manifest(target, rows)
     PK.write_flow(target)
     PK.write_sales(target)
     PK.write_batches(target, rows)
     PK.write_programme(target, rows)
     docs.regulations(target)
     docs.method_schedule(target)
-    docs.dictionary(target)
     qr = G.report_rows(rows)
     for lab in ("TAS", "KGL"):
         docs.quarterly_report(target, lab, qr)
@@ -39,8 +37,6 @@ def cut(target):
                      b"D:20240314101500+00'00'", b"D:20240314101500+00'00'")
     PP.normalize_pdf(os.path.join(target, "laboratory_method_schedule.pdf"),
                      b"D:20261116084210+00'00'", b"D:20261116084210+00'00'")
-    PP.normalize_pdf(os.path.join(target, "lims_field_dictionary.pdf"),
-                     b"D:20260908143355+00'00'", b"D:20260908143355+00'00'")
     PP.normalize_pdf(os.path.join(target, "tirneevin_quarterly_report_2025q3.pdf"),
                      b"D:20260120110744+00'00'", b"D:20260120110744+00'00'")
     PP.normalize_pdf(os.path.join(target, "kilgarron_quarterly_report_2025q3.pdf"),
@@ -61,7 +57,7 @@ if __name__ == "__main__":
     gold = os.path.join(task, "golden")
     os.makedirs(gold, exist_ok=True)
     DL.workbook(os.path.join(gold, "annual_compliance_return_2025_26.xlsx"), g, None)
-    DL.chart(os.path.join(gold, "mcpa_compliance_overview.png"), g)
+    DL.chart(os.path.join(gold, "mcpa_compliance_overview.svg"), g)
     PP.normalize_ooxml(os.path.join(gold, "annual_compliance_return_2025_26.xlsx"),
                        "Emmet McQuillen", "Katie Enright",
                        "2026-11-17T15:38:00Z", "2026-11-19T10:12:00Z",

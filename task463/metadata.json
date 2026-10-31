@@ -1,7 +1,7 @@
 {
  "task": "task463",
  "architecture": 1,
- "title": "Which of the sixteen grocery and household items in the Kellesay Retail Prices Index move from shelf-price collection to the three supermarkets' transaction data in the January 2027 index, an item moving when its 12-month rate to September 2026 from the transaction data is within 1.5 points of its published rate; with each supermarket's average days to complete monthly records and each item's 2025 coverage of household spending",
+ "title": "Whether each grocery and household item in the Kellesay Retail Prices Index's transaction data introduction plan moves from shelf-price collection to the supermarkets' transaction data in the January 2027 index under the plan's test, with each item's 2025 coverage of household spending",
  "domain": "Survey Research & Official Statistics",
  "subdomain": "seasonal-adjustment-official-time-series-production (official time-series production: a monthly retail prices index compiled from supermarket transaction records, conformed into product-months and set against the published index over a parallel year)",
  "objective": "Data Extraction & Conformation (ETL)",
@@ -14,7 +14,8 @@
  ],
  "distractor_files": [
   "rpi_field_quotes_2025_2026.csv",
-  "kellesay_retail_sales_index_2025_2026.xlsx"
+  "kellesay_retail_sales_index_2025_2026.xlsx",
+  "retailer_delivery_log_2025_2026.csv"
  ],
  "stated_inputs": [
   "sixteen",
@@ -39,7 +40,7 @@
   "6213"
  ],
  "input_gates": {
-  "files": 15,
+  "files": 13,
   "formats": [
    "csv",
    "pdf",
@@ -154,7 +155,7 @@
   {
    "path": "rpi_transaction_data_introduction_plan_2026.pdf",
    "format": "pdf",
-   "bytes": 65765,
+   "bytes": 66215,
    "rows": null,
    "source": "Constructed: the statistics office's plan for introducing supermarket transaction data into the RPI",
    "date": "2026-10-21",
@@ -166,24 +167,6 @@
    "bytes": 95130,
    "rows": 1250,
    "source": "Constructed: the statistics office's classification of the supermarkets' product lines to RPI items",
-   "date": "2026-10-21",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "transaction_data_dictionary.xlsx",
-   "format": "xlsx",
-   "bytes": 7937,
-   "rows": null,
-   "source": "Constructed: the prices team's field definitions for the folder",
-   "date": "2026-10-21",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "transaction_data_folder_register.csv",
-   "format": "csv",
-   "bytes": 1948,
-   "rows": 14,
-   "source": "Constructed: the programme's register of the files in the folder: owner, period covered, version date, records and handling",
    "date": "2026-10-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },

@@ -178,13 +178,12 @@ def run(target):
           "SF13 %s sits %.1f per cent from the standard under the fitted reading"
           % (o["name"], 100 * abs(o["fitted_dist"] - S) / S))
     # SF14 the nitrate basis is in the pack, so no graded figure rests on an outside constant
-    with pdfplumber.open(os.path.join(target, "lims_field_dictionary.pdf")) as pdf:
+    with pdfplumber.open(os.path.join(target, "laboratory_method_schedule.pdf")) as pdf:
         dic = re.sub(r"\s+", " ", " ".join(p.extract_text() or "" for p in pdf.pages))
-    A("4.4268 times smaller than the same water under NO3" in dic,
-      "SF14 the dictionary's nitrate basis is clipped on the rendered page")
-    for fld in ("lab_sample_id", "client_point_code", "sample_type", "determinand_code", "qualifier",
-                "reporting_limit", "result_status", "version", "batch_id"):
-        A(fld in dic, "SF14 the dictionary clips the %s row" % fld)
+    A("a result as nitrogen is 4.4268 times smaller than the same water as the nitrate ion" in dic,
+      "SF14 the method schedule's nitrate basis is clipped on the rendered page")
+    A(not any(f.startswith(("lims_field_dictionary", "export_manifest")) for f in os.listdir(target)),
+      "a describing file ships")
     with pdfplumber.open(os.path.join(target, "laboratory_method_schedule.pdf")) as pdf:
         sch = re.sub(r"\s+", " ", " ".join(p.extract_text() or "" for p in pdf.pages))
     for code in W.METHODS:
@@ -275,7 +274,7 @@ def run(target):
             A(lazy_max != mx, "A2 the conversion does not bite at %s" % name)
     # A2's counts hold under every conversion factor a chemist would use and under a rounded path,
     # so the one sample 0.07 per cent above the trigger cannot move a graded count; the maxima to one
-    # decimal are forced by the factor the dictionary files.
+    # decimal are forced by the factor the method schedule files.
     nref = g["a2"]
     anames = {r.sample_point_code: r.sample_point_name for r in ab.itertuples()}
     base = G.governing(d)

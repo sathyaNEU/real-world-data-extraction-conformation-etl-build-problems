@@ -1,11 +1,11 @@
 {
  "task": "task463",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-16",
+ "updated": "2026-10-31",
  "stump": "The default path links the twelve month-on-month Tornqvist comparisons per item and moves five RPI items in January 2027 (Bread, Pasta and rice, Yoghurt, Butter and spreads, Fruit juice), the nine items whose goods keep ending 4.7 to 8.4 points under their published rates through offer-month stockpiling; a direct September-to-September (or multilateral) comparison moves thirteen.",
  "architecture": 1,
  "loops": 0,
@@ -27,7 +27,7 @@
   "report": "task463/determinism_check_report.md"
  },
  "returned": [],
- "resume": "",
+ "resume": "PAUSED 2026-10-31 at session end; the shipped version stands in the portal (pending review). RESHIP BLOCKED ON THE ASK LAYER 2026-10-31 (the shipped version stands, pending review). Working tree: the transaction data dictionary and the folder register removed (leak.py LEAK cleared), their facts in the plan's 2.3 and 3.7; the supplier-timeliness ask cut (its UTC clock is a hygiene-battery item once filed) with the delivery log a declared distractor; prompt whether-form, The/Round openers, no count. checks 70, byte-identical, zip 9f3e5e7ce60599ae, figures unchanged, precut PASS only on the old lazy sheet. Honest ceiling.py (the battery's name join): the cracker keeps all 16 coverage figures, pair 83.5. Next: a coverage device outside supplemental-stumping 1.1c (a reconstruction across two systems no sentence states and no visible contradiction prompts), re-measure, then reader (clean on 10-31 for this cut) and judge (pass 2 spawned 10-31) before a RESHIPPED commit. Judge pass 2 on this cut: DETERMINISTIC on the call (13 of 16 move; margins 0.82 inside and 2.32 outside the line), FIX_NOW on the product-month file's scope: the prompt must say every supermarket line classified to the items, not only the lines compared (14,364 rows against 13,156); no graded figure moves. Judge report pass 2 written (determinism_check_report_pass2.md); its FIX_NOW applied in the prompt (every supermarket line classified to the items, not only the lines compared). Open watch items: metadata.json's prompt_shape still describes the cut timeliness ask; the product-month file's unit price carries no stated rounding. Rejected coverage device: a mixed department split by the supplier's own product mix (resolved by the call's construction).",
  "approved": null,
  "delivered": "2026-10-16",
  "portal": null,

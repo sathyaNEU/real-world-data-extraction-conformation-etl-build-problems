@@ -17,15 +17,12 @@ SOURCES = {
     F["classes"]: "the statistics office's classification of the supermarkets' product lines to RPI items",
     F["published"]: "the statistics office's published RPI item indices and 12-month rates",
     F["plan"]: "the statistics office's plan for introducing supermarket transaction data into the RPI",
-    F["dict"]: "the prices team's field definitions for the folder",
     F["deliveries"]: "the statistics office's log of the files received from the supermarkets",
     F["quotes"]: "the RPI field collection's price quotes for the sixteen items",
     F["returns"]: "the supermarkets' annual returns of 2025 retail sales",
     F["catmap"]: "the statistics office's map of the supermarkets' categories to RPI items",
     F["spending"]: "the statistics office's estimate of households' 2025 spending by RPI item",
     F["rsi"]: "the statistics office's monthly retail sales index",
-    F["manifest"]: "the programme's register of the files in the folder: owner, period covered, version date, records and "
-                   "handling",
 }
 DISTRACTORS = [F[k] for k in W.DISTRACTORS]
 DELIVERABLES = [W.GOLDEN["workbook"], W.GOLDEN["chart"], W.GOLDEN["products"]]
@@ -54,11 +51,9 @@ def write(target, out_path):
     meta = {
         "task": "task463",
         "architecture": 1,
-        "title": "Which of the sixteen grocery and household items in the Kellesay Retail Prices Index move from "
-                 "shelf-price collection to the three supermarkets' transaction data in the January 2027 index, an item "
-                 "moving when its 12-month rate to September 2026 from the transaction data is within 1.5 points of its "
-                 "published rate; with each supermarket's average days to complete monthly records and each item's 2025 "
-                 "coverage of household spending",
+        "title": "Whether each grocery and household item in the Kellesay Retail Prices Index's transaction data "
+                 "introduction plan moves from shelf-price collection to the supermarkets' transaction data in the "
+                 "January 2027 index under the plan's test, with each item's 2025 coverage of household spending",
         "domain": "Survey Research & Official Statistics",
         "subdomain": "seasonal-adjustment-official-time-series-production (official time-series production: a monthly "
                      "retail prices index compiled from supermarket transaction records, conformed into product-months "

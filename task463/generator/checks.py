@@ -346,7 +346,7 @@ def run(target, golden, x=None, meta_path=None, fig_path=None):
         shutil.rmtree(tmp)
     tmp = tempfile.mkdtemp()
     try:
-        for k in ("deliveries", "returns", "catmap", "spending", "dict", "plan"):
+        for k in ("deliveries", "returns", "catmap", "spending", "plan"):
             shutil.copy(B.path(target, k), tmp)
         check("separation: the asks computed with the feeds, classification, published indices and distractors deleted "
               "are identical", B.coverage_figures(tmp) == cov and

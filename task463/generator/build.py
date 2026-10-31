@@ -67,8 +67,6 @@ def build(out, x=None, quiet=False):
     P.spending_workbook(f("spending"), x["coverage"])
     P.rsi_workbook(f("rsi"), W.STREAM)
     DC.write_plan(f("plan"))
-    DC.write_dictionary(f("dict"), n)
-    n["manifest"] = DC.write_manifest(f("manifest"), n)
     lawson = W.PEOPLE["prices"]
     PP.normalize_ooxml(f("published"), "Prices Statistics", "Prices Statistics", "2024-02-14T09:12:00Z",
                        "2026-10-15T08:30:04Z", excel=True, company=W.ORG)
@@ -78,8 +76,6 @@ def build(out, x=None, quiet=False):
                        excel=True, company=W.ORG)
     PP.normalize_ooxml(f("rsi"), "Business Statistics", "Business Statistics", "2023-03-01T10:00:00Z",
                        "2026-09-18T08:30:41Z", excel=True, company=W.ORG)
-    PP.normalize_ooxml(f("dict"), lawson, lawson, "2026-10-19T11:20:00Z", "2026-10-21T15:37:09Z", excel=True,
-                       company=W.ORG)
     PP.normalize_pdf(f("plan"), b"D:20260624101500+01'00'", b"D:20260624101500+01'00'")
     ts = STAMP.timestamp()
     for k in W.FILES:
