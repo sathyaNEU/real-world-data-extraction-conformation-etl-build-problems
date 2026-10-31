@@ -11,7 +11,7 @@ FILES = dict(val="purchase_service_validations_2026-10-05_to_2026-11-09.csv",
              ses="session_service_starts_2026-10-05_to_2026-11-09.csv",
              links="account_service_links_2026-10-05_to_2026-11-09.csv",
              rates="ecb_euro_reference_rates_2026-09-28_to_2026-11-06.csv", reg="build_register.xlsx",
-             sdk="tern_sdk_release_notes.md")
+             sdk="tern_sdk_changelog.md")
 
 
 def lab(b):
@@ -163,10 +163,11 @@ def submission(A):
                % (tl["lost_pct"], tl["label"], int(round(100 * A["old_q"] + 0.5))))
     out.append("6. Charted each build's tracking loss against the 2 per cent line, its open purchases counted lost at the "
                "share of its events still on a phone when the game next opened that never arrived.")
-    out.append("7. Counted paying players (section 6) with accounts joined through %s and each guest account joined to the "
-               "account its phone shows next in %s, the links file being no full register of a player's accounts: from %d "
-               "(%s) to %s (%s)." % (FILES["links"], FILES["ses"], pmin["players"], pmin["label"],
-                                     format(pmax["players"], ","), pmax["label"]))
+    out.append("7. Counted paying players (section 6) with accounts joined through %s, followed through any chain, and each "
+               "guest account joined to the account its phone shows next, by time, across the validations and %s, when "
+               "that account is not a guest (section 6: the links are no register of every account): from %d (%s) to %s "
+               "(%s)." % (FILES["links"], FILES["ses"], pmin["players"], pmin["label"],
+                          format(pmax["players"], ","), pmax["label"]))
     out.append("8. Converted each purchase's price_minor at its currency's minor unit (none for JPY and KRW) at the ECB rate "
                "in force on its Irish date in %s, rounded to the cent line by line, and divided each build's total by its "
                "paying players (section 6): from %.2f euro (%s) to %.2f (%s) per paying player.\n"

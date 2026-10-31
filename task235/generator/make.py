@@ -37,14 +37,13 @@ def metadata(target):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task235",
-        "title": "Which production builds of a mobile game get a purchase-tracking alert in the studio's weekly "
-                 "tracking-quality run, each build's missing purchase events judged against the next session of the phone "
-                 "that made the purchase",
+        "title": "Which production builds of Fogbell Games' Kittiwake Cove get a purchase-tracking alert in the studio's "
+                 "weekly run of Monday 9 November 2026, with each build's paying players and gross bookings per paying "
+                 "player",
         "domain": "Product Analytics",
-        "subdomain": "metric-definition-measurement-science (a mobile game's purchase tracking: the analytics SDK's client "
-                     "events reconciled against the store-verified purchases, build by build)",
+        "subdomain": "metric-definition-measurement-science (a mobile game studio's weekly tracking-quality alert)",
         "objective": "Data Quality Monitoring & Alerting",
-        "prompt_shape": "10: a scorecard against a threshold, twelve production builds each alerted or not against the 2 per "
+        "prompt_shape": "10: a scorecard against a threshold, the production builds each alerted or not against the 2 per "
                         "cent tracking-loss line, with each build's paying players and gross bookings per paying player in euro",
         "as_of": "2026-11-09",
         "deliverables": [GD.CSV, GD.PNG],

@@ -67,7 +67,6 @@ def run(target, golden, o, X):
     files = {k: os.path.join(target, f) for k, f in __import__("build").FILES.items()}
     cat = _pdf_text(files["cat"])
     sdk = open(files["sdk"]).read()
-    dic = open(files["dict"]).read()
 
     # ------------------------------------------------------------ R1: the field's raw material ships, no deciding column
     cols = []
@@ -305,12 +304,16 @@ def run(target, golden, o, X):
        "KC-DQ-04 names no way of telling a lost event from a late one")
     ok("next session" not in sdk and not re.search(r"lost|missing|loss", sdk, re.I),
        "the SDK notes link no missing event to a session and say nothing of loss")
-    ok("history moved to the account it signed in to" in dic and "gst_" in dic,
-       "the dictionary describes guest_upgrade as history that moved, and guest accounts by prefix")
-    ok("not a register of every account a player has used" in dic and "until the player signs in on it" in dic,
-       "the links file says it is no full register, and the session log's account changes when the player signs in")
-    ok(not re.search(r"older account|account made before|no link|not linked", dic + cat, re.I),
-       "no document says a sign-in to an older account leaves no link")
+    ok("the guest account while the game is played as a guest" in sdk and "from the moment they sign in on it" in sdk,
+       "ask A: the SDK notes say a phone carries the guest account until the player signs in on it")
+    ok("they are not a register of every account a player has used" in cat,
+       "ask A: KC-DQ-04 s.6 says the account links are no register of every account a player has used (determinism-check 1)")
+    ok(not re.search(r"older account|account made before|no link|not linked", sdk + cat, re.I),
+       "no document says which sign-ins leave no link")
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|release_?notes|data_?notes", re.I)
+    ok(not [f for f in os.listdir(target) if describing.search(f)],
+       "section 3: no file named as a dictionary, manifest, readme or notes ships")
 
     # ------------------------------------------------------------ R3c, input gates, dates
     names = os.listdir(target)

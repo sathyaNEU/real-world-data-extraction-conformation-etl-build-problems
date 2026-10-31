@@ -82,7 +82,9 @@ def catalogue(path):
           Paragraph("Each build's paying players over the period are the distinct players with at least one purchase in "
                     "the build in the period. A player is counted once however many accounts they have used: a guest "
                     "account is the same player as the account it signs in to, two accounts merged by player support are "
-                    "the same player, and so on through any chain of these. Each build's gross bookings per paying player "
+                    "the same player, and so on through any chain of these. The account service's links record each move of "
+                    "an account's history to another account; they are not a register of every account a player has used. "
+                    "Each build's gross bookings per paying player "
                     "are its gross bookings over the period divided by its paying players, to the cent. Gross bookings are "
                     "the customer prices of the build's purchases in the period, before refunds, each converted to euro at "
                     "the ECB euro reference rate in force on the purchase's Irish date (the latest rate published on or "
@@ -133,7 +135,7 @@ def register(path):
 
 
 # ------------------------------------------------------------------ the SDK's release notes
-SDK_NOTES = """# Tern SDK release notes
+SDK_NOTES = """# Tern SDK changelog
 
 Fogbell Games' in-house analytics SDK. Maintained by the SDK team (Padraic Cormick). Newest first.
 
@@ -168,117 +170,10 @@ Fogbell Games' in-house analytics SDK. Maintained by the SDK team (Padraic Cormi
 - Events are written to a queue on the device and uploaded in batches when the game starts and every 30 seconds while
   it is in the foreground. The queue is kept when the game is closed or the phone restarts.
 - The queue holds up to 5,000 events; past that the oldest are dropped. Uninstalling the game deletes the queue.
+- Events carry the account signed in on the phone: the guest account while the game is played as a guest, and the
+  player's account from the moment they sign in on it.
 - Unity plugin built against Unity 2022.3 LTS.
 - Event names over 40 characters are rejected with a console warning.
 """ % {"sdk": P.PEOPLE["sdk"]}
 
 
-DICTIONARY = """# Data dictionary
-
-Times are UTC (ISO 8601 with Z) unless a field says otherwise. The studio reports on Irish dates (Europe/Dublin).
-
-## purchase_service_validations_2026-10-05_to_2026-11-09.csv
-
-One row per validation the purchase service recorded from 5 October 2026 to the export at 07:00 on 9 November.
-
-| field | meaning |
-|---|---|
-| validation_id | the purchase service's id for the validation |
-| store | app_store or google_play |
-| environment | the store environment the transaction came from: Production or Sandbox |
-| purchase_type | standard, or test for a Google Play licence tester |
-| transaction_kind | purchase (made in the game), renewal (a Harbour Pass renewal made by the store) or refund |
-| store_transaction_id | the store's id for the transaction (App Store transaction id, Google Play order id) |
-| original_transaction_id | for the Harbour Pass, the transaction that started the subscription |
-| account_id | the account signed in at the time of the transaction (guest accounts begin gst_) |
-| device_id | the device the game sent the transaction from (empty for renewals) |
-| app_build | the build number of the build that sent it (empty for renewals) |
-| product_id | the product bought |
-| price_minor | the customer price the store charged, in the currency's minor unit |
-| currency | ISO 4217 currency of the price |
-| storefront | the store country the player buys in |
-| purchased_at | when the store records the transaction |
-| validated_at | when the purchase service recorded the validation |
-
-## warehouse_purchase_completed_2026-10-05_to_2026-11-09.csv
-
-One row per purchase_completed event the warehouse received from 5 October 2026 to 07:00 on 9 November.
-
-| field | meaning |
-|---|---|
-| event_id | the event's id, made by the SDK on the device |
-| event_name | purchase_completed |
-| device_id | the device that sent the event |
-| account_id | the account signed in when the event was logged |
-| platform | ios or android |
-| app_version | the version name of the build that logged the event |
-| sdk_version | the Tern SDK version |
-| store_transaction_id | the store transaction the event reports |
-| restored | true when the game logged the purchase again on restoring it |
-| client_ts | the device clock when the event was logged, milliseconds since the Unix epoch |
-| received_at | when the warehouse received the event |
-
-## session_service_starts_2026-10-05_to_2026-11-09.csv
-
-One row per session start the session service recorded from 5 October 2026 to 07:00 on 9 November. The game opens a
-session with the session service when it is launched, or brought back to the foreground after at least 30 minutes away.
-
-| field | meaning |
-|---|---|
-| session_id | the session service's id |
-| device_id | the device |
-| account_id | the account signed in when the session started (on a device played as a guest, the guest account until the player signs in on it) |
-| platform | ios or android |
-| app_build | the build number |
-| country | the account's country |
-| started_at | when the session started |
-
-## account_service_links_2026-10-05_to_2026-11-09.csv
-
-One row per link the account service recorded from 5 October 2026 to 07:00 on 9 November: the account a player's history moved from and the account it moved to. The service writes a link when it moves an account's history; the file is not a register of every account a player has used.
-
-| field | meaning |
-|---|---|
-| from_account_id | the account the history moved from |
-| to_account_id | the account the history moved to |
-| link_type | guest_upgrade (a guest account's history moved to the account it signed in to) or support_merge (player support moved one account's history into the player's other account) |
-| linked_at | when the link was made |
-
-## build_register.xlsx
-
-Sheet Builds: every production build with its version name, build number, release date, Tern SDK version, minimum OS and
-rollout. Sheet Rollout 7.42.0: the staged rollout's steps.
-
-## ecb_euro_reference_rates_2026-09-28_to_2026-11-06.csv
-
-The ECB's euro foreign exchange reference rates, published on TARGET working days: units of the currency per euro.
-
-## crash_free_sessions_by_build.csv
-
-Daily sessions and crash-free share by build, from the crash reporter.
-
-## store_ratings_by_version.csv
-
-Weekly ratings and average rating by store and version.
-
-## push_campaigns_2026-10.csv
-
-Push campaigns sent from 5 October to 8 November: audience, platform, sends and opens.
-"""
-
-README = """# Kittiwake Cove purchase tracking pack, run of Monday 9 November 2026
-
-Exported at 07:00 on 9 November 2026 for the weekly tracking-quality check (metrics catalogue KC-DQ-04).
-
-- `metrics_catalogue_purchase_tracking.pdf`: catalogue entry KC-DQ-04, purchase tracking quality.
-- `purchase_service_validations_2026-10-05_to_2026-11-09.csv`: the purchase service's validations.
-- `warehouse_purchase_completed_2026-10-05_to_2026-11-09.csv`: the warehouse's purchase_completed events.
-- `session_service_starts_2026-10-05_to_2026-11-09.csv`: the session service's session starts.
-- `account_service_links_2026-10-05_to_2026-11-09.csv`: the account service's links.
-- `build_register.xlsx`: production builds and the 7.42.0 rollout.
-- `tern_sdk_release_notes.md`: the Tern SDK's release notes.
-- `ecb_euro_reference_rates_2026-09-28_to_2026-11-06.csv`: ECB euro reference rates.
-- `crash_free_sessions_by_build.csv`, `store_ratings_by_version.csv`, `push_campaigns_2026-10.csv`: context from the
-  crash reporter, the stores and the push service.
-- `DATA_DICTIONARY.md`: fields of every file.
-"""

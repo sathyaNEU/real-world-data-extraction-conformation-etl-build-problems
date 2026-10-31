@@ -104,8 +104,8 @@ def compute(target):
             conv = amount.astype(float)
         else:
             r = fx[fx.currency == cur].sort_values("d")
-            m = pd.merge_asof(g[["d"]].reset_index().sort_values("d"), r[["d", "rate"]], on="d", direction="backward")
-            rate = m.set_index("index").rate.reindex(g.index)
+            m = pd.merge_asof(g[["d"]].reset_index().sort_values("d"), r[["d", "units_per_euro"]], on="d", direction="backward")
+            rate = m.set_index("index").units_per_euro.reindex(g.index)
             conv = amount / rate
         rows.append(pd.DataFrame({"build": g.build, "eur": np.round(conv.values.astype(float) + 1e-9, 2)}))
     lines = pd.concat(rows)

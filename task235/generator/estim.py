@@ -21,7 +21,7 @@ NEW = [("android", "7.42.0"), ("ios", "7.42.0")]
 def load(target, files):
     rd = lambda k, **kw: pd.read_csv(os.path.join(target, files[k]), **kw)
     D = dict(val=rd("val", dtype=str, keep_default_na=False), evt=rd("evt", dtype=str, keep_default_na=False),
-             ses=rd("ses", dtype=str, keep_default_na=False), links=rd("links", dtype=str), rates=rd("rates"))
+             ses=rd("ses", dtype=str, keep_default_na=False), links=rd("links", dtype=str), rates=rd("rates").rename(columns={"units_per_euro": "rate"}))
     D["builds"] = pd.read_excel(os.path.join(target, files["reg"]), sheet_name="Builds", dtype={"build_number": str})
     return D
 

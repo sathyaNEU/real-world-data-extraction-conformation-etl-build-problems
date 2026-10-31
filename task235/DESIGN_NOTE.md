@@ -160,6 +160,22 @@ purchase has opened the game since, the only moment the event can leave it.
   chance can sit in another system's log, item by item; no build on file judges a missing record by its own sender's
   next contact.
 
+## Survivor anatomy
+
+Actor: the deciding property is whether the phone that made a purchase has opened the game since, a relation between the purchase's device and its later session starts in another service's log; no column in any file holds it.
+
+Link: each missing event is read against its own phone's next session start, joined by device_id from the purchase service's validations to the session service's starts; the catalogue names no session and the SDK changelog says only when the phone's queue uploads, so no sentence invites the join.
+
+Reflex: the field's settle window, a purchase lost when its event is still missing seven days later, is the default path (rung 0) and files five builds wrong, Android 7.38.1 and 7.41.0 and iOS 7.38.2, 7.39.1 and 7.40.0 alerted and the 7.42.0 pair left unjudged.
+
+Back-test: the textbook check passes: the pooled arrival curve flattens within a window of eleven days or more, and a window that long files Android 7.41.0 alone (rung 1), so a window checked against the curve looks safe while the late arrivals it waits for are the phones that have not opened the game.
+
+Second use: every file the decisive step reads has its own use: the session log also carries Ask A's guest sign-ins, the validations are the record of purchases (s.2), the warehouse events the tracked side (s.3), the SDK changelog the developers' release history.
+
+Shock: the correction reads as ordinary delivery delay on every build, and the golden pair is not an interval of any shipped statistic: on the share of purchases whose event is missing at the run Android 7.41.0 is second (6.34) and iOS 7.42.0 fourth (5.57), with Android 7.42.0 first (9.24) and Android 7.38.1 third (5.76) both left out.
+
+Pins: KC-DQ-04 s.2 to s.6 file the WHAT (the purchases, their events, the loss as the share whose event never reaches the warehouse, "lost only if it never will", the 2 per cent line compared unrounded); no filed sentence names a session, a phone's next start or a settle window.
+
 ## Readability screen
 
 Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
@@ -227,7 +243,7 @@ measured on the cut pack, asserted in `checks.py`; losses in per cent).
 | 1 | Population | each production build's store-verified purchases made in the game, 12 October to 8 November (Irish dates), purchases made shortly before the run counted like any other | KC-DQ-04 s.2, s.4 (SF2, SF6) |
 | 2 | Unit of account | the purchase (one store transaction) | KC-DQ-04 s.2, s.4 (SF9) |
 | 3 | Attribution window | the Irish date of purchased_at | KC-DQ-04 s.2 (SF5) |
-| 4 | As-of dating | the exports of 07:00 on Monday 9 November | README and dictionary; C1 (SF8) |
+| 4 | As-of dating | the exports of 07:00 on Monday 9 November | the exports' own last timestamps and KC-DQ-04 s.5 (the run at 07:00 on Monday); C1 (SF8) |
 | 5 | Version basis | a purchase belongs to the build that made it | KC-DQ-04 s.2 (SF4) |
 | 6 | Denominator | every purchase of the build in the period | KC-DQ-04 s.4 |
 | 7 | Weighting | none: a share of purchases per build | KC-DQ-04 s.4 |
@@ -239,10 +255,10 @@ measured on the cut pack, asserted in `checks.py`; losses in per cent).
 | 13 | Order of operations | filter, collapse events, match, judge, divide, compare | KC-DQ-04 s.2 to s.5 |
 | 14 | Row order | irrelevant to counts and matches | C1 |
 | 15 | Duplicate resolution | duplicate uploads and restored events are the purchase's one event | KC-DQ-04 s.3 (SF3) |
-| 16 | Identity normalisation | build numbers to versions through the register; the phone by device_id; a player through the account links and each guest's sign-in on its phone | register; KC-DQ-04 s.6; the links file's own note and the session log's account (dictionary); C1 (SF4, SF10) |
+| 16 | Identity normalisation | build numbers to versions through the register; the phone by device_id; a player through the account links and each guest's sign-in on its phone | register; KC-DQ-04 s.6; KC-DQ-04 s.6's note on the account links and the SDK changelog's account line; C1 (SF4, SF10) |
 | 17 | Netting against gross | none: a refunded purchase stays a purchase | KC-DQ-04 s.2 |
 | 18 | Dimensional units | counts and shares | KC-DQ-04 s.4 |
-| 19 | Code and status semantics | transaction kind, environment and purchase type as the dictionary gives them | dictionary; KC-DQ-04 s.2 |
+| 19 | Code and status semantics | transaction kind, environment and purchase type as KC-DQ-04 s.2 names them | KC-DQ-04 s.2 |
 | 20 | Integerisation | none | counts are integers |
 | 21 | Clause scope | every build in production in the register | KC-DQ-04 s.5 (SF11) |
 | 22 | Forward window contents | the events that will still arrive from phones that have not opened the game since | the design: an event leaves only when the game starts or is open (SDK notes), the session log records every start; margins asserted |
@@ -292,8 +308,8 @@ every price and currency scrambled.
 
 | Ask | Figures | H18 home | Use | Primary device (family) | Hazards | Path (files, columns) | Stops |
 |---|---|---|---|---|---|---|---|
-| A: each build's paying players over the period | 12 | a measure every build carries that the call does not turn on | the alert list tells the funnels' readers how many paying players an alerted build's events carry | D7, the true key elsewhere: a guest who signs in to an account made before keeps that account's history and leaves the guest's behind, so the account service records no link; the phone that bought as the guest goes on as the signed-in account, in the validations and the session log (KC-DQ-04 s.6: a guest account is the same player as the account it signs in to; the links file: not a register of every account a player has used) | link chains (a guest upgraded, then merged by support); testers (s.2); refunded purchases kept (s.2) | validations (account, device, purchase time, kind, environment, purchase type, build), session log (device, account, start), account links (from, to), register (platform, version, build number), KC-DQ-04 s.2 and s.6, dictionary: 6 files, 15 columns | every account a player (every build 8 to 32 high, against 275 to 1,538); the links one hop (every build 6 to 24 high); the links followed to the end of each chain (every build 5 to 20 high); the answer, links joined with each guest's next account on its phone |
-| B: each build's gross bookings per paying player, in euro | 12 | a measure every build carries that the call does not turn on | what a paying player of an alerted build spends while its events are left out of the funnels | D3, units set per currency: price_minor is in each currency's minor unit, and the yen and the won have none (ISO 4217 exponent 0), so a Japanese coin pack at 300 yen is 300, not 30,000 | the paying players of A as the divisor (shared); refunds before (s.6); testers (s.2); renewals (no build) | validations (price, currency, purchase time, kind, environment, purchase type, build, account, device), ECB rates (date, currency, rate), session log (device, account, start), account links (from, to), register (platform, version, build number), KC-DQ-04 s.2 and s.6, dictionary: 7 files, 18 columns | every price divided by 100 (every build 0.78 to 1.31 euro low: 4.80 to 10.42 against 5.58 to 11.73); the links as the record of players (every build 0.06 to 0.21 euro low); every account a player (every build 0.07 to 0.63 euro low); refunds netted (11 builds 0.02 to 0.13 euro low); testers in (6 builds 0.07 to 0.60 euro off); the answer, each price at its currency's exponent, converted at the rate in force and rounded line by line, the total over the paying players of A |
+| A: each build's paying players over the period | 12 | a measure every build carries that the call does not turn on | the alert list tells the funnels' readers how many paying players an alerted build's events carry | D7, the true key elsewhere: a guest who signs in to an account made before keeps that account's history and leaves the guest's behind, so the account service records no link; the phone that bought as the guest goes on as the signed-in account, in the validations and the session log (KC-DQ-04 s.6: a guest account is the same player as the account it signs in to; KC-DQ-04 s.6: the links are not a register of every account a player has used) | link chains (a guest upgraded, then merged by support); testers (s.2); refunded purchases kept (s.2) | validations (account, device, purchase time, kind, environment, purchase type, build), session log (device, account, start), account links (from, to), register (platform, version, build number), KC-DQ-04 s.2 and s.6, the SDK changelog: 6 files, 15 columns | every account a player (every build 8 to 32 high, against 275 to 1,538); the links one hop (every build 6 to 24 high); the links followed to the end of each chain (every build 5 to 20 high); the answer, links joined with each guest's next account on its phone |
+| B: each build's gross bookings per paying player, in euro | 12 | a measure every build carries that the call does not turn on | what a paying player of an alerted build spends while its events are left out of the funnels | D3, units set per currency: price_minor is in each currency's minor unit, and the yen and the won have none (ISO 4217 exponent 0), so a Japanese coin pack at 300 yen is 300, not 30,000 | the paying players of A as the divisor (shared); refunds before (s.6); testers (s.2); renewals (no build) | validations (price, currency, purchase time, kind, environment, purchase type, build, account, device), ECB rates (date, currency, units_per_euro), session log (device, account, start), account links (from, to), register (platform, version, build number), KC-DQ-04 s.2 and s.6, the SDK changelog: 7 files, 18 columns | every price divided by 100 (every build 0.78 to 1.31 euro low: 4.80 to 10.42 against 5.58 to 11.73); the links as the record of players (every build 0.06 to 0.21 euro low); every account a player (every build 0.07 to 0.63 euro low); refunds netted (11 builds 0.02 to 0.13 euro low); testers in (6 builds 0.07 to 0.60 euro off); the answer, each price at its currency's exponent, converted at the rate in force and rounded line by line, the total over the paying players of A |
 
 - **Span:** seven files and 33 column uses across the asks. B shares A's player count as a divisor (a hazard moving
   both asks on every build); its own primary is the currencies' minor units, and its rate and rounding hazards cancel
@@ -312,12 +328,24 @@ every price and currency scrambled.
 | A paying players (12) | executes s.6 through the account links, the guest_upgrade rows being the guests' sign-ins and the chains followed to their end; a guest who signed in to an older account has no link and shows only as a phone that changes account, which the battery's accounts-per-device count reads as a phone changing hands, so the player counts twice wherever both accounts bought on the build | misses the same way | miss |
 | B gross bookings per paying player (12) | converts every price right but divides by the paying players of A, two accounts for one player wherever the guest's sign-in left no link | misses the same way | miss |
 
-- **Cracker keeps:** under 0.05 of the ask weight (no figure is free of the paying players).
-- Mirror leakage: 5 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the call's
+- **Cracker keeps:** 0 of the 24 ask figures (its paying players run 5 to 20 high on every build, so no figure is free
+  of them).
+- Mirror leakage: 0 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the call's
   construction).
-- Pair ceiling: 31.3 (C = 38 + 7 + 55 x 0.05 = 47.8; S = 5 + 7 + 55 x 0.05 = 14.8; mean 31.3).
+- Pair ceiling: 28.5 (C = 38 + 7 + 55 x 0 = 45.0; S = 5 + 7 + 55 x 0 = 12.0; mean 28.5; 31.3 on paper before it was
+  measured).
+- Measured by: generator/ceiling.py on the cut pack.
 
 ## Pre-ship check
+
+- **2026-10-31 reship under the 10-30 gates (target.zip 526ac9335f1fb56b).** Judge pass 2 DETERMINISTIC, APPROVE
+  (Gate G statistical_rigor, analytical_non_defect; Gate H pass; no competing answer survived; every figure
+  reproduced); its file-count note fixed and write-up step 7 now states the guest join as the golden computes it.
+  Leak reader clean (question 6 analytical, every column read without a dictionary). Free gates on the final cut:
+  checks 192, verify, two byte-identical builds, figures_check 109 of 109, precut 0 FAIL 0 WARN, voice-check clean,
+  leak.py REVIEW with no LEAK, ceiling.py pair 28.5, guard.py surface exit 0 (seven pairs promoted for the author's
+  read) and heart WARN (the task197 similarity answered on the card). The 10/10 rules re-read: the decisive step is
+  still the censoring of a missing event until its phone's next session, analytical; the mess is still Layer 1.
 
 1. Domain: the call stands on each build's purchase-tracking loss, the client events reconciled against the
    store-verified purchases with each missing event judged against the next session of the phone that made the purchase
@@ -350,7 +378,7 @@ every price and currency scrambled.
    B (12) on every build by the yen and won exponents (0.78 to 1.31 euro low) and by A's players (0.06 to 0.21 euro low
    through the links); the call reads neither (asserted by scrambling accounts, prices and currencies and dropping the
    links and the rates).
-7. Input gates: 13 files in four formats (csv, md, pdf, xlsx), the session log at 325,515 rows, three distractors named
+7. Input gates: 11 files in four formats (csv, md, pdf, xlsx), the session log at 325,515 rows, three distractors named
    in metadata.json; 193 generator checks with the realism sweep; the verifier (its own merge and union-find, the alert
    set at three rates) green; two builds byte-identical; figures_check 109 of 109; containers clean.
 8. Duplicate guard: `guard.py heart` WARN (repeat.gate_g and repeat.decision against task264, drawn since this build's
@@ -379,6 +407,11 @@ links file's note reads as a hint (it is the determinism-check §1 sentence a co
 sign-in" is no fork: the links alone leave every guest who signed in to an older account counted twice, against s.6.
 REVIEW lines, all harmless: build numbers and version names in the pack are the candidates' own identifiers; the
 dictionary carries the call's words as build names; device_id is the SDK's and the services' own column name.
+
+Reship of 2026-10-31: leak.py REVIEW, no LEAK (the README and the data dictionary removed, the SDK notes shipping as
+tern_sdk_changelog.md); one reader on the 11-file pack: Q1 to Q4 none, Q6 an analytical choice, every column read
+without a dictionary; the catalogue's note on the account links reads a little like a caution, which it is by design
+(determinism-check 1); recorded in `leak_check_report.md`.
 
 ## Tried and rejected
 
@@ -414,3 +447,12 @@ dictionary carries the call's words as build names; device_id is the SDK's and t
 - Filing the rate for the open purchases (the build's own share of resolved gaps) to force the loss figure, as the
   judge offered: it names the decisive construction, and the step becomes rule application; the graded list carries
   the alert instead, which every rate the data supports leaves where it is.
+- 2026-10-31, the 10-30 re-check: the README (a pack manifest) and DATA_DICTIONARY.md (41 columns) were describing
+  files (leak.py sweeps 1 and 12) and are out. Their facts moved: the time basis is the exports' own Z marks and the
+  catalogue's Irish dates; the codes are KC-DQ-04 s.2's; the ECB file's quote direction is its column label
+  (units_per_euro); the reading that a phone's account switches from the guest's to the player's at sign-in is a line
+  in the SDK changelog's 4.6.0 entry; the links' "not a register of every account a player has used", the sentence
+  determinism-check 1 requires of a source the golden completes, is in KC-DQ-04 s.6. The Tern SDK's notes ship as
+  tern_sdk_changelog.md, their genre's own name, unchanged but for the account line. The prompt drops its build count
+  and asks what; metadata.json's title and subdomain no longer narrate the step. generator/ceiling.py measures the
+  pair at 28.5. No graded figure moved (figures.json unchanged).
