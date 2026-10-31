@@ -10,14 +10,14 @@
 ## 2. Critical Components
 
 1. The desk's 2025 and 2026 orders cost more the larger their share of the stock's 20-session daily traded value: shortfall rises with the square root of participation, times the stock's daily volatility.
-2. At GBP 400 million the rebalances of December 2025 to November 2026 trade GBP 1214 million (UK Smaller Companies Momentum), GBP 523 million (UK Mid Cap Value) and GBP 493 million (UK Large Cap Quality).
+2. At GBP 400 million the rebalances of December 2025 to November 2026 trade GBP 1211 million (UK Smaller Companies Momentum), GBP 524 million (UK Mid Cap Value) and GBP 485 million (UK Large Cap Quality).
 3. Alpha kept a year at GBP 400 million: UK Smaller Companies Momentum **GBP 5 million** of 20 gross; UK Mid Cap Value **GBP 8 million** of 12 gross; UK Large Cap Quality **GBP 6 million** of 7 gross.
 
 ## 3. Step-by-Step Solution
 
 1. Conformed the desk's orders: kept each execution id once from oms_fills_2025-2026.csv, read pounds fills as pence times 100, merged each BACKUP-RECOVERY order into the terminated original it continues (same account, stock, side and London date, the original's unfilled quantity), and measured each order's shortfall from its arrival mid, cost positive (TCA standard sections 1 and 2).
-2. Gave each order its participation, value at arrival over the 20-session average of close times volume in lse_daily_market_data_2025-2026.parquet, and the 60-session daily volatility, skipping each consolidation day in wealdmoor_security_master_2026-11-30.csv.
-3. Fitted shortfall on the index band and daily volatility times the square root of participation by least squares over every order.
+2. Gave each order its participation, value at arrival over the 20-session average of close times volume in lse_daily_market_data_2025-2026.parquet, and the 60-session daily volatility, skipping each consolidation day in wealdmoor_security_master_2026-11-30.csv (TCA standard section 3).
+3. Fitted, band by band, shortfall on daily volatility times the square root of participation by least squares over the band's orders (IC-07 section 2: the desk's executions in the candidate's index band).
 4. Took each candidate's rebalances from 1 December 2025 to 30 November 2026 in backtest_rebalance_trades_2025-2026.csv, joined ISIN to SEDOL, scaled each traded weight to GBP 400 million and priced it on the fitted curve at its participation on the rebalance date (IC-07 section 2).
 5. Took each strategy's annualised gross alpha 2015 to 2026 from research_backtests_2027_candidates.xlsx times GBP 400 million and subtracted the cost.
 6. Recommended UK Mid Cap Value, GBP 2 million ahead of UK Large Cap Quality.
@@ -43,12 +43,12 @@
 ### strategy_capacity_2027.xlsx
 
 1. Implementation shortfall by quarter of 2026, basis points to one decimal:
-   - UK Equity Income: Q1 30.4, Q2 45.8, Q3 40.4, Q4 35.7
-   - UK Mid Cap Growth: Q1 41.4, Q2 51.3, Q3 32.9, Q4 27.1
-   - UK Smaller Companies: Q1 68.7, Q2 62.2, Q3 84.2, Q4 55.5
-   - UK Dynamic: Q1 27.9, Q2 44.6, Q3 52.1, Q4 35.4
+   - UK Equity Income: Q1 29.3, Q2 35.1, Q3 19.2, Q4 15.1
+   - UK Mid Cap Growth: Q1 30.0, Q2 31.0, Q3 31.3, Q4 32.5
+   - UK Smaller Companies: Q1 59.0, Q2 61.4, Q3 59.8, Q4 59.7
+   - UK Dynamic: Q1 38.8, Q2 35.4, Q3 32.1, Q4 32.7
 2. Value traded by half of 2026, whole GBP million:
-   - UK Equity Income: H1 1088, H2 899
-   - UK Mid Cap Growth: H1 360, H2 252
-   - UK Smaller Companies: H1 113, H2 122
-   - UK Dynamic: H1 801, H2 967
+   - UK Equity Income: H1 815, H2 463
+   - UK Mid Cap Growth: H1 171, H2 147
+   - UK Smaller Companies: H1 69, H2 62
+   - UK Dynamic: H1 620, H2 514

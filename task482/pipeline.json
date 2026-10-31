@@ -1,26 +1,27 @@
 {
  "task": "task482",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences / emissions-inventory (client physical-environmental-sciences)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "",
+ "stump": "the homogenizing furnace's gas by its loads' firing hours, not their tonnes: 6082 billet at 0.263 over the 0.235 limit, the premium EUR 342,000 against the per-tonne route's EUR 456,000",
  "architecture": 16,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31",
+  "checks": "61 of 61, no FAIL or WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (2026-10-31, no LEAK; zip 433ff500), each line ruled in the note's Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-31 on the registered card (how-much repeats task306; nearest driver 0.12, task484 v3)",
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-10-31 (driver.near 0.12 against task484 v3, a fuel read from the period before; repeat.question_form how-much against task306, the decision a sum of money)",
+  "surface": "exit 0 on the final cut 2026-10-31 (no BLOCK; nearest task480 at 0.090 and task484 at 0.084, both two axes apart; the card's three personas only)"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design note (default path, stump sentence, three rules, anatomy, screens, fork table, ladder, closure, asks) gated by precut.py, then the generator",
+ "resume": "stage 4 from the main thread: rebuild with `python3 task482/generator/make.py` (two byte-identical builds, 47 generator checks, the verifier; target.zip sha256 433ff500dd8e84b789b2ac3f42cdb0060c6f1b351b9fce363f62eb7b8c81b6ed), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task482/ with the brief scratchpad/task482_stage4_leak_brief.md and the determinism judge on task482 (architecture 14's and 15's reports kept as determinism_check_report_arch14.md and determinism_check_report_arch15.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut, append the reader's section to leak_check_report.md, git add -f task482/target.zip and task482/golden/*, ledger row, card current, commit SHIPPED (task482)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -122,5 +123,11 @@
   },
   "source_note": "re-root into a new world (a Missouri manufacturer's employee dental plan, costing the union's proposal); architectures 1 to 14 spent",
   "spent": "2026-10-31 at stage 4: the judge NOT_DETERMINISTIC, SEND_BACK (a withheld costing rule: F-17 word for word files 3,000; the golden's 2,000 needed the put-off work added back)"
+ },
+ "build": {
+  "zip": "433ff500dd8e84b789b2ac3f42cdb0060c6f1b351b9fce363f62eb7b8c81b6ed",
+  "rebuild": "python3 task482/generator/make.py",
+  "gates": "two byte-identical builds; generator checks 47 of 47; the independent verifier on every graded figure; figures_check.py 79 of 79; precut.py 61 of 61; voice-check.py PASS; leak.py REVIEW with no LEAK; guard.py heart WARN and surface as recorded; pair ceiling 28.5 and mirror leakage 0.0 by generator/ceiling.py",
+  "call": "EUR 342,000 on 7,200 t of 6063 billet and 1,800 t of LM25 ingot"
  }
 }

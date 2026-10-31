@@ -1,48 +1,46 @@
 {
  "task": "task468",
- "status": "SHIPPED",
- "domain": "healthcare-delivery-health-economics",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics / seasonal-adjustment-official-time-series-production (client survey-research-official-statistics)",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-20",
- "stump": "The default path counts each hospital's recorded deaths and the Office's links, adds the deaths later bills record and drops the links later claims contradict, and files four losers with Varden at 1.33 while Mercy Valley (1.05) and Brannock (1.03) keep the bonus; corrected class by class at the rates the recorded deaths and the living members measure, Varden keeps it and Mercy Valley and Brannock lose it, five in all.",
- "architecture": 4,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "The default path applies the January 2027 update, pairs each dwelling's consecutive standard sales by address and fits the methodology's repeat-sales regression on every pair, so the ward where small developers extended and resold terraces clears the 5 per cent line and takes a share of the GBP 12 million beside the three wards whose prices really rose; setting aside the pairs whose dwelling had building work completed between its two sales (the council's building control completions, matched to the price paid addresses) puts that ward near 3 per cent and the pot splits three ways.",
+ "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20"
+  "exit": null,
+  "date": null
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-20 on target.zip f511b179e6742bf8, no LEAK; every REVIEW line answered in the design note",
-  "reader": "architecture 4: round 1 (b1bc148c) missed the call, kept 15 of 15 ask figures on the unfiled conventions (device re-sited); round 2, two scored readers on the shipping pack, both missed the call (the reflex repair, four losers) and kept 0 of 15 ask figures, score_reader exit 0 twice, question 6 analytical"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-20 (Gate G overuse, a first name in an older build)",
-  "surface": "six card-axis pairs promoted, the same as at the draw, each answered by the card's differentiation lines; the adjudicated clone check is the author's to call"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "pass_1": "DETERMINISTIC, FIX_NOW (file the replacement convention; three figures floored per class; the encounter file's late copy; near-round payment totals), fixed in one generator pass",
-  "pass_2": "DETERMINISTIC on target.zip f511b179e6742bf8, every graded figure reproduced; two write-up wording items fixed with the pack unchanged; Gate G statistical_rigor and analytical_non_defect, Gate H pass",
-  "reports": [
-   "determinism_check_report.md",
-   "determinism_check_report_pass2.md"
-  ]
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "architecture 4 retired by the batch audit (short of the survivor anatomy on the Reflex), never returned by the portal",
+   "repair": "re-root",
+   "commit": "DRAWN (task468) architecture 5"
+  }
+ ],
+ "resume": "stage 2: design (survivor anatomy, default path, stump sentence, three rules, readability screen, fork and closure tables, ladder, the asks, prompt.txt) until precut.py exits 0, then the generator",
  "approved": null,
- "delivered": "2026-10-20",
+ "delivered": null,
  "portal": null,
- "source_note": "fresh architecture 4 (no seed): a Medicaid plan's hospital quality bonus on linkage-corrected 30-day mortality",
- "ceiling": {
-  "pair": 39.0,
-  "cracker": 45.0,
-  "best_mirror": 33.0,
-  "mirror_leakage": 0.0,
-  "script": "generator/ceiling.py"
- },
- "target_zip": "f511b179e6742bf8",
+ "source_note": "fresh architecture 5 (no seed): a regional housing agency's 2027-28 pressured-ward uplift on a constant-quality repeat-sales house price index",
+ "ceiling": {},
+ "target_zip": "",
  "history": [
   {
    "architecture": 1,
@@ -64,6 +62,39 @@
   {
    "architecture": 3,
    "fate": "spent 2026-10-19: reader round 1 landed the call (score_reader exit 1); re-rooted by the author's rule (no retirement)"
+  },
+  {
+   "architecture": 4,
+   "fate": "retired 2026-10-31 by the batch audit before any portal result: short of the survivor anatomy on the Reflex (its golden was the field's own linkage-error correction, so the field's method sat at the top of the ladder); shipped 2026-10-20 on target.zip f511b179e6742bf8",
+   "judge": {
+    "pass_1": "DETERMINISTIC, FIX_NOW (file the replacement convention; three figures floored per class; the encounter file's late copy; near-round payment totals), fixed in one generator pass",
+    "pass_2": "DETERMINISTIC on target.zip f511b179e6742bf8, every graded figure reproduced; two write-up wording items fixed with the pack unchanged; Gate G statistical_rigor and analytical_non_defect, Gate H pass",
+    "reports": [
+     "determinism_check_report.md",
+     "determinism_check_report_pass2.md"
+    ]
+   },
+   "leak": {
+    "leak_py": "REVIEW 2026-10-20 on target.zip f511b179e6742bf8, no LEAK; every REVIEW line answered in the design note",
+    "reader": "architecture 4: round 1 (b1bc148c) missed the call, kept 15 of 15 ask figures on the unfiled conventions (device re-sited); round 2, two scored readers on the shipping pack, both missed the call (the reflex repair, four losers) and kept 0 of 15 ask figures, score_reader exit 0 twice, question 6 analytical"
+   },
+   "duplicate_check": {
+    "heart": "WARN 2026-10-20 (Gate G overuse, a first name in an older build)",
+    "surface": "six card-axis pairs promoted, the same as at the draw, each answered by the card's differentiation lines; the adjudicated clone check is the author's to call"
+   },
+   "ceiling": {
+    "pair": 39.0,
+    "cracker": 45.0,
+    "best_mirror": 33.0,
+    "mirror_leakage": 0.0,
+    "script": "generator/ceiling.py"
+   },
+   "target_zip": "f511b179e6742bf8",
+   "reports": [
+    "determinism_check_report_arch4.md",
+    "determinism_check_report_arch4_pass2.md",
+    "leak_check_report_arch4.md"
+   ]
   }
  ]
 }

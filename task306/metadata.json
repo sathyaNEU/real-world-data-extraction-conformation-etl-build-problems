@@ -89,7 +89,7 @@
    "source": "the dealing desk's security master (SEDOL, ISIN, index band, corporate actions)"
   }
  },
- "fills_rows": 61700,
+ "fills_rows": 62375,
  "largest_file": {
   "name": "lse_daily_market_data_2025-2026.parquet",
   "rows": 329800

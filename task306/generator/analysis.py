@@ -69,9 +69,10 @@ class Pack:
         self.day_ix = {d: i for i, d in enumerate(self.days)}
         self._cache = {}
 
-    def adv_vol(self, s, d, adv_n=20, vol_n=60):
-        """The 20-session average daily traded value (GBP) and the 60-session daily volatility (bps) before d."""
-        key = (s, d, adv_n, vol_n)
+    def adv_vol(self, s, d, adv_n=20, vol_n=60, cons="skip"):
+        """The 20-session average daily traded value (GBP) and the 60-session daily volatility (bps) before d. cons is
+        the consolidation day's handling: skipped (the TCA standard), the history before it adjusted, or left raw."""
+        key = (s, d, adv_n, vol_n, cons)
         if key in self._cache:
             return self._cache[key]
         ser = self.mkt[s]
@@ -83,9 +84,13 @@ class Pack:
         adv = sum(vals) / len(vals)
         rets = []
         for j in range(max(1, i - vol_n), i):
+            prev = ser[j - 1][1]
             if s in self.cons and ser[j][0] == self.cons[s]:
-                continue                                   # the consolidation day's tenfold price is no return
-            rets.append(math.log(ser[j][1] / ser[j - 1][1]))
+                if cons == "skip":
+                    continue                               # the consolidation day's tenfold price is no return
+                if cons == "adjust":
+                    prev *= 10.0
+            rets.append(math.log(ser[j][1] / prev))
         vol = float(np.std(rets, ddof=1)) * 1e4
         self._cache[key] = (adv, vol)
         return adv, vol
@@ -136,15 +141,15 @@ def executions(P, dedupe=True, units=True, failover=True):
         side = 1 if o["side"] == "BUY" else -1
         d = london_date(o["created_utc"])
         out.append(dict(order_id=oid, account=o["account_code"], sedol=o["sedol"], side=side, date=d,
-                        arrival=arr, qty=q, value=q * arr / 100.0, avg=avg,
+                        arrival=arr, qty=q, value=q * arr / 100.0, avg=avg, status=o["status"],
                         shortfall=side * (avg - arr) / arr * 1e4))
     out.sort(key=lambda x: x["order_id"])
     return out
 
 
-def with_size(P, ex, adv_n=20, vol_n=60):
+def with_size(P, ex, adv_n=20, vol_n=60, cons="skip"):
     for e in ex:
-        adv, vol = P.adv_vol(e["sedol"], e["date"], adv_n, vol_n)
+        adv, vol = P.adv_vol(e["sedol"], e["date"], adv_n, vol_n, cons)
         e["part"] = e["value"] / adv
         e["vol"] = vol
         e["tier"] = P.tier[e["sedol"]]
@@ -154,12 +159,31 @@ def with_size(P, ex, adv_n=20, vol_n=60):
 # ------------------------------------------------------------------------ cost models a solver might fit or take
 
 def fit_sqrt_vol(ex):
-    """The golden: shortfall = a_band + k * daily vol * sqrt(participation), least squares over the desk's orders."""
-    X = np.array([[1.0 if e["tier"] == t else 0.0 for t in "LMS"] + [e["vol"] * math.sqrt(e["part"])] for e in ex])
-    y = np.array([e["shortfall"] for e in ex])
-    c, *_ = np.linalg.lstsq(X, y, rcond=None)
-    a = dict(zip("LMS", c[:3]))
-    return lambda tier, p, vol: a[tier] + c[3] * vol * math.sqrt(p)
+    """The golden, band by band as IC-07 files the population: shortfall = a + k * daily vol * sqrt(participation),
+    least squares over the band's orders."""
+    return fit_curve(ex)
+
+
+def fit_curve(ex, g=0.5, vol=True, weight=False, pooled=False):
+    """The family of size curves the checks run: shortfall = a + b * (daily vol) * participation ** g, fitted band by
+    band (or pooled over the bands with an intercept per band), each order counted once or weighted by its value."""
+    def x(e_vol, p):
+        return (e_vol if vol else 1.0) * p ** g
+
+    def solve(rows, cols):
+        X = np.array([cols(e) for e in rows])
+        y = np.array([e["shortfall"] for e in rows])
+        if weight:
+            w = np.sqrt(np.array([e["value"] for e in rows]))
+            X, y = X * w[:, None], y * w
+        c, *_ = np.linalg.lstsq(X, y, rcond=None)
+        return c
+    if pooled:
+        c = solve(ex, lambda e: [1.0 if e["tier"] == t else 0.0 for t in "LMS"] + [x(e["vol"], e["part"])])
+        a = dict(zip("LMS", c[:3]))
+        return lambda tier, p, v: a[tier] + c[3] * x(v, p)
+    co = {t: solve([e for e in ex if e["tier"] == t], lambda e: [1.0, x(e["vol"], e["part"])]) for t in "LMS"}
+    return lambda tier, p, v: co[tier][0] + co[tier][1] * x(v, p)
 
 
 def fit_sqrt_band(ex):
@@ -252,13 +276,13 @@ def candidates(P):
     return out
 
 
-def price(P, cands, model, aum=AUM, adv_n=20, vol_n=60):
+def price(P, cands, model, aum=AUM, adv_n=20, vol_n=60, cons="skip"):
     res = {}
     for code, c in cands.items():
         cost = traded = 0.0
         parts = []
         for d, s, w in c["trades"]:
-            adv, vol = P.adv_vol(s, d, adv_n, vol_n)
+            adv, vol = P.adv_vol(s, d, adv_n, vol_n, cons)
             v = abs(w) * aum
             p = v / adv
             parts.append(p)
@@ -346,7 +370,8 @@ def run(target):
     P = Pack(target)
     ex = with_size(P, executions(P))
     cands = candidates(P)
-    models = {"golden": fit_sqrt_vol(ex), "sqrt by band": fit_sqrt_band(ex), "power by band": fit_power(ex),
+    models = {"golden": fit_sqrt_vol(ex), "pooled with band terms": fit_curve(ex, pooled=True),
+              "sqrt by band": fit_sqrt_band(ex), "power by band": fit_power(ex),
               "binned": binned(ex), "band average (value)": band_average(ex, True),
               "band average (orders)": band_average(ex, False), "flat 10 bps": flat(10.0)}
     priced = {k: price(P, cands, m) for k, m in models.items()}
