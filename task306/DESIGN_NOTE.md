@@ -31,10 +31,191 @@
 8. Furniture: forum committee_or_panel (the investment committee), forcing launch_or_rollout (the strategy goes live
    on 4 January 2027), org financial_institution, role portfolio_manager; none is banned against the last three
    builds (task181, task474, task125).
-9. Prompt shell: a how-much question, the second sentence opening "The", the rounding sentence opening "Alpha",
+9. Prompt shell: a which question (what alpha each keeps, and which should take it), the second sentence opening
+   "The", the rounding sentence opening "Alpha"; the dead architecture's how-much shell is not kept;
    deliverables pptx and xlsx.
 10. Guard WARN people.first answered: Carole and Sarah each appear in one older build (task105, task108); both are the
    drawn personas for this seed and no other persona in the pack shares their names.
+
+## Default path
+
+1. Read IC-07: alpha at a size is the backtest's annualised gross alpha less the shortfall the twelve months of
+   rebalances would pay at that size, estimated from the desk's own executions.
+2. Conform the desk's orders (each execution id once, pounds fills as pence, the failover orders merged, shortfall
+   from arrival, cost positive) and read what they paid: the value-weighted shortfall per band, about 19 basis points
+   for the large caps, 45 for the FTSE 250 and 73 for the small caps.
+3. Scale each candidate's traded weights to GBP 400 million and price every pound traded at its band's average, the
+   field's capacity check done on the desk's record.
+4. Net it from gross alpha: UK Smaller Companies Momentum keeps about GBP 11 million, UK Mid Cap Value 9, UK Large Cap
+   Quality 5.
+
+Ends on: UK Smaller Companies Momentum
+Golden: UK Mid Cap Value
+
+## Stump sentence
+
+The default path prices each candidate's twelve months of rebalances at GBP 400 million at what the desk's own orders
+paid per traded pound in the same band and gives the money to UK Smaller Companies Momentum; the step that lands it
+there is carrying the desk's average cost to trades of a new size, when the executions show shortfall rising with the
+square root of each order's share of the stock's daily traded value and at GBP 400 million momentum's month-end swaps
+take a quarter to a half of each small cap's day, so it keeps about GBP 5 million against UK Mid Cap Value's 8.
+
+## Three rules
+
+Task type: portfolio-construction-risk (Quantitative Finance), which serves Opportunity Sizing & Decision Support: the headline is the alpha a year each candidate keeps at the capital it would be given, the pool its gross alpha and the realisable part what survives its own trading.
+Domain test: the quantity that decides is each candidate's alpha net of the market impact its rebalances pay at GBP 400 million, which systematic equity estimates from the desk's transaction cost analysis, cost per order rising with its share of the stock's daily volume; with another field's nouns there is no participation, no arrival-mid shortfall and nothing that makes a trade dearer per pound as it grows.
+Swap: "Which charity should receive the bequest, sized by the beneficiaries it reaches?" reads differently, because a grant's cost per beneficiary does not rise with the size of the cheque against what a market absorbs in a day; put megawatt-hours in and there is no stock whose daily traded value prices the trade.
+Layer 1: the OMS export as the desk's systems write it: fills re-sent after the 9 June outage under the same execution ids, one broker reporting pounds where the rest report pence, orders the backup re-created after each failover under new ids, block orders on the desk's block account with a separate allocation export, cancelled orders with unfilled remainders, UTC stamps against London trade dates, a reused account code, SEDOL in the market data against ISIN in the backtest log, share consolidations in the market data; each is produced by the system that records it and none is placed to be caught.
+Layer 2: estimation_fit, the shortfall curve in trade size: the desk's executions trace cost against each order's share of the stock's day, and the comparison is decided by reading that curve at the participation each candidate's rebalances would have at GBP 400 million.
+Decisive step: pricing each rebalance trade at the cost the executions show for an order of its own share of the stock's day, rather than at what the desk paid on average for its own, far smaller orders.
+Not semantics: every field read right (participation, arrival mid, shortfall sign, the bands) still leaves the band averages, which are correct figures for the desk's own orders and say nothing about orders ten to forty times larger; no column holds a trade's cost at a size the desk never traded.
+Not rule application: IC-07 files the estimand and the TCA standard the measures, and neither says how cost depends on size; executing every filed rule with each band's average cost files momentum, and only the shape of cost against participation in the executions, which no sentence states, moves the money.
+Analyst test: a strong analyst conforms every fill, reads IC-07 and the TCA standard correctly, prices each candidate's rebalances at GBP 400 million at the desk's value-weighted shortfall for that band and gives the money to UK Smaller Companies Momentum at about GBP 11 million kept; every field is read and every rule executed, and the call is wrong because momentum's trades at that size sit far up a cost curve the desk's average never reached.
+Estimand: ic_capital_allocation_policy_2026.pdf section 2 with tca_standard_rev4.pdf sections 1 to 3: population, the candidates in Research's workbook; outcome, alpha a year at GBP 400 million, the annualised gross alpha 2015 to 2026 less the implementation shortfall of the rebalances of the twelve months to 30 November 2026 scaled to GBP 400 million and traded in full on each rebalance day; unit, pounds a year; comparison, the largest.
+No decoy: nothing is planted to be caught; no memo, research note or broker estimate argues the band average, the commission schedule and the ESG list are context, and the backtest workbook carries gross alpha only.
+No certified replay: no certified or published figure reproduces the method; no file carries a cost estimate for any candidate, a capacity figure or a ranking.
+Lesson: what a strategy keeps depends on the size it runs at, because a trade's cost rises with its share of the stock's daily volume; a model that learns to read the desk's own cost curve at the size being decided, not at the size it has traded, sizes capacity the way the field does, which no build on file teaches.
+
+## Survivor anatomy
+
+Actor: the deciding property, what a trade of a given size would cost, has no column; the orders carry their own participation and shortfall, the candidates' trades carry only a weight, and the property is the relation between the two that the executions trace and the candidates' trades sit far beyond on average.
+Link: no key ties a candidate's trade to any execution; the comparison that prices it (the desk's orders binned or fitted on participation, read at the trade's own participation on the rebalance date) is one the band-average capacity check never asks for, and no sentence invites it.
+Reflex: the field's back-of-envelope capacity check, turnover times the desk's average realised cost, is rung 0 and files UK Smaller Companies Momentum.
+Back-test: the textbook route validates: on the desk's own orders the band average reproduces each book's realised 2026 shortfall almost exactly, because those orders sit where the average was measured.
+Second use: every file the decisive step reads has its own reason to be in the pack: the fills and orders carry the year's TCA report (both asks), the market data the participation the standard defines, the trade log the candidates' rebalances.
+Shock: momentum's gross alpha is the largest by GBP 8 million and its trades are the desk's most familiar kind; the golden is not an interval of any sort of the candidates by gross alpha, turnover, band or holdings, asserted in checks.py (C2 and R0).
+Pins: the WHAT sits in IC-07 (gross alpha, the twelve months of rebalances, the size, traded in full on the day, commissions and the launch build outside) and the TCA standard (shortfall, value, participation, volatility); no filed sentence names how cost grows with size, a square root, impact or capacity (R1).
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 turnover at a flat research cost | none | the trade log's weights | the backtest habit | none | none | one product | yes | readable |
+| R1 turnover at the desk's average shortfall per band | IC-07 names the desk's executions | the TCA columns | the field's capacity check | the desk's own books reproduce it | the battery cleans the fills | one product | yes | readable |
+| R2 R1 with the orders' average per order, not per pound | none | the TCA columns | a TCA summary | none | none | one product | yes | readable |
+| R3 (decisive) each trade priced at its own participation on the executions' cost curve | none names size, a curve, impact or a square root | no column holds a trade's cost at a new size | not the capacity reflex | no file prices any candidate | the battery stops at clean orders | not affine in any shipped column | the files carry the asks | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | participation's daily traded value | 20 sessions before the trade date | 60 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
+| SF2 | daily volatility | 60 sessions before | 250 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
+| SF3 | the cost curve's fit | ordinary least squares over every order | value-weighted least squares, per-band square roots, a fitted power | same call and rounded figures (asserted, C2 and C3) | convergence |
+| SF4 | the failover orders in the fit | merged into their originals | left as separate orders | same call and rounded figures (asserted) | TCA standard section 1 |
+| SF5 | re-sent fills in the fit | each execution id once | kept twice | same call and rounded figures (asserted) | TCA standard section 1 |
+| SF6 | a pounds fill | times 100 into pence | read as pence | shortfalls of minus 10,000 bps show at once (asserted) | the fill's price unit and TCA standard section 1 |
+| SF7 | expected gross alpha | the Summary's annualised figure | the annual alphas compounded or averaged | the annual alphas compound to it (asserted) | IC-07 section 2 |
+| SF8 | the rebalances priced | the twelve months to 30 November 2026: twelve monthly, four quarterly | calendar 2026 or the whole log | not the filed window (asserted twelve and four) | IC-07 section 2 |
+| SF9 | what the cost of trading excludes | commissions and the launch build | either included | not the filed estimand | IC-07 section 2 (asserted) |
+| SF10 | shortfall, value, a block's owners and a portfolio's orders | arrival mid, filled quantity at arrival, the allocation export, the dated register | fill value, order quantity, the blotter's account | moves the asks only | TCA standard sections 1, 2 and 4 (asserted) |
+
+## Ladder
+
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 0 | gross alpha less turnover at a flat 10 basis points | UK Smaller Companies Momentum (GBP 19 million kept) | IC-07 sends the cost to the desk's executions |
+| 1 | gross alpha less turnover at the desk's value-weighted shortfall per band | UK Smaller Companies Momentum (about 11, against 9 and 5) | the desk's orders sat where the average was measured; at GBP 400 million momentum's swaps take a quarter to a half of each small cap's day |
+| 2 | rung 1 with the per-order average | UK Smaller Companies Momentum (15) | the same fact, further off |
+| 3 (decisive) | each trade at the cost the executions show for its own participation | UK Mid Cap Value (8), UK Large Cap Quality (6), momentum (5) | the golden |
+
+- **Margins on the cut pack** (asserted in checks.py): under the golden fit and every parametric variant (per-band
+  square root, fitted power, value-weighted, 60-session participation, 250-session volatility, the fit without the
+  failover merge or with the re-sent fills) UK Mid Cap Value keeps 7.8 to 8.0, UK Large Cap Quality 5.7 and momentum
+  4.65 to 5.37, every figure rounding to the same whole million; the binned reading (3.75 for momentum) files the same
+  call (C2). The size-blind routes file momentum by 2 to 8 million (R0).
+- **Pricing sequence.** (1) The residue the filed WHAT leaves is how cost depends on size, a method, not a knob. (2)
+  Momentum has to fall from about 11 kept to under 6; at GBP 400 million its swaps sit at 25 to 50 per cent of the
+  day, where the executions price an order at about four times the band average. (3) The one-group-by route (cost by
+  band) ranks the books' realised costs correctly and misprices the candidates; no route is affine in a shipped
+  column. (4) Across the parametric family momentum spreads 4.65 to 5.37, mid caps 7.8 to 8.0; the gap of 2 million
+  to the runner-up holds under every member. (5) and (6) No variance is corrected. (7) No subset of rows prints a
+  candidate's cost. (8) The reflex sweep runs as code (checks.py R0, C2 and C3).
+
+## Closure table
+
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the candidates in Research's workbook | filed (IC-07 section 1 and 2) |
+| 2 Unit of account | pounds of alpha a year at GBP 400 million | filed (IC-07 section 2) |
+| 3 Attribution window | the rebalances of 1 December 2025 to 30 November 2026 | filed (IC-07 section 2); SF8 |
+| 4 As-of dating | each trade's participation and volatility on its rebalance date | filed (TCA standard section 3); SF1, SF2 |
+| 5 Version basis | the trade log as Research cut it; the OMS export of 1 December 2026 | one version shipped |
+| 6 Denominator | the GBP 400 million for alpha; arrival value for shortfall | filed |
+| 7 Weighting | shortfall value-weighted at arrival | filed (TCA standard section 2) |
+| 8 Window length | twelve months of rebalances | filed |
+| 9 Boundary inclusivity | 1 December 2025 and 30 November 2026 both inside | filed; no rebalance near either edge |
+| 10 Rounding path | each figure rounded once from unrounded pounds; the gap from the rounded figures | C1; mid-bin asserted (C4) |
+| 11 Tie-break | none needed: the margins exceed 1.2 million | C2 |
+| 12 Maturity and censoring | none: the orders are complete fills to the export | C1 |
+| 13 Order of operations | conform, size, fit, price, net | C1 (SF4, SF5) |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | each execution id once | filed (TCA standard section 1); SF5 |
+| 16 Identity normalisation | ISIN to SEDOL through the security master | the systems' own keys |
+| 17 Netting against gross | buys and sells both cost, signed so a cost is positive | filed (TCA standard section 2) |
+| 18 Dimensional units | pence in the market data and fills, pounds where a fill says so | filed; SF6 |
+| 19 Code and status semantics | TERMINATED, BACKUP-RECOVERY, CANCELLED, the block account | filed (TCA standard section 1) |
+| 20 Integerisation | none: pounds | C1 |
+| 21 Clause scope | IC-07's commissions and launch exclusions bind the call only | filed scope |
+| 22 Forward window contents | the twelve months of 2026 rebalances stand for a year of trading from 4 January 2027 | filed (IC-07 section 2) |
+
+## Literal reader
+
+Executed word for word, IC-07 takes each candidate's annualised gross alpha from the workbook, scales the trade log's
+weights for the twelve months to 30 November 2026 to GBP 400 million and asks what implementation shortfall those
+trades would pay, traded in full on each rebalance day, estimated from the desk's executions; the TCA standard defines
+shortfall, value and participation. A literal reader fitting cost on participation, the standard's own measure, files
+the golden; the band average is a reading of the executions that ignores the measure the standard defines.
+
+## Oracles
+
+None on the main call: no file carries a cost estimate, capacity figure or ranking for any candidate. The verifier
+(generator/verify.py) recomputes the call, every figure and both asks with pandas from target/ alone.
+
+## Ask sheet
+
+Two asks on the desk's own 2026 trading, both from the OMS export the call reads for its curve, neither carrying the
+call's decisive step.
+
+**Ask A, each live strategy's implementation shortfall in each quarter of 2026 (16 figures, bps to one decimal).**
+- Devices: the orders the backup re-created after each failover are the originals (TCA standard section 1), and
+  nothing keys them; a block order belongs to its books by the allocation export.
+- Hazards: re-sent fills, pounds fills, cancelled remainders, the dated register.
+
+**Ask B, the value each live strategy traded in each half of 2026 (8 figures, whole GBP million).**
+- Device: the block orders sit on the desk's block account in the blotter and reach each book only through the
+  post-trade allocation export.
+- Hazards: the same battery; the reused account code.
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, 16 quarter shortfalls | measures each re-created order from its own arrival and leaves the blocks on the block account | miss |
+| B, 8 half-year traded values | leaves the blocks on the block account | miss |
+
+Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 2ac88df8)
+
+## Leak review
+
+`leak.py task306 --asof 2026-12-01` on target.zip 2ac88df8: REVIEW, no LEAK; each line ruled.
+- Sweep 12, the backtest workbook's Notes sheet: harmless; it defines gross alpha, says the ESG list is applied and
+  names its preparer, and describes no file or column.
+- Sweep 4 on IC-07 (executions, candidate, rebalances, standard, outside) and on the TCA standard (orders, average,
+  participation, standard, register): harmless; they are each document's own nouns for its estimand and measures, and
+  neither says how cost depends on size (R1).
+- Sweep 6, the backtest workbook names the candidates beside numbers: harmless; it ranks them by gross alpha, the input
+  IC-07 names, not by the alpha each keeps.
+- INFO, the account register names the live books: their codes and dates, no figure.
+
+## Pre-ship check
+
+1. The three rules re-read against the built pack: the decisive step is the cost curve read at the candidates'
+   participation, analytical; the mess is Layer 1 only and each piece is asserted not to move the call (SF4 to SF6).
+2. Determinism: the WHAT filed in IC-07 and the TCA standard; every parametric curve converges on the golden's whole
+   millions (C3), and the binned reading on the call (C2).
+3. Gates on the final cut: generator checks, the verifier, two byte-identical builds, figures_check.py, precut.py,
+   voice-check.py, leak.py, guard.py surface and heart.
 
 ## Tried and rejected
 

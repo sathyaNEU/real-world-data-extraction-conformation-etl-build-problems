@@ -1,16 +1,23 @@
 {
  "task": "task306",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "quantitative-finance / portfolio-construction-risk (client quantitative-finance)",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
  "stump": "A competent analyst nets each backtested strategy's gross alpha of its 2026 turnover priced at what the desk's own orders paid for stocks of that size and gives the GBP 400 million to small-cap momentum; impact rises with each trade's share of the stock's daily traded value, and at that size momentum's trades take several per cent of its small caps' day, so the mid-cap value strategy keeps the most.",
  "architecture": 4,
  "loops": 0,
- "precut": null,
- "leak": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-31",
+  "checks": "61, 0 FAIL, 0 WARN"
+ },
+ "leak": {
+  "leak_py": "REVIEW on target.zip 2ac88df8 (sweeps 4, 6 and 12 ruled harmless in the note's Leak review)",
+  "reader": "pending: run from the main thread"
+ },
  "duplicate_check": null,
  "judge": null,
  "returned": [
@@ -21,7 +28,7 @@
    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "stage 2: write the design note's sections, then the generator, pack, goldens and gates",
+ "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn them). Rebuild first with python3 task306/generator/build.py (two byte-identical builds, then checks.py 37 of 37 and verify.py PASS; target.zip sha256 2ac88df804af01084980a81f8eaef31cf653dc89f06a9ec5b121bacb289e3c03). The reader's fresh copy is at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task306/ with the brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task306_stage4_leak_brief.md; spawn it and the determinism-judge agent together, fix every finding in the generator in one pass, re-judge once on a FIX_NOW, then ship: ledger row, card current, target.zip and golden/ with git add -f, commit SHIPPED (task306): give the GBP 400 million to UK Mid Cap Value.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -95,5 +102,5 @@
    "event": "stage 3 complete on architecture 3: the pack cut (14 files, target.zip 5102c315), the goldens and submission written, every free gate green; paused at stage 4 because a fork cannot spawn the leak reader or the judge"
   }
  ],
- "zip_sha256_16": null
+ "zip_sha256_16": "2ac88df804af0108"
 }

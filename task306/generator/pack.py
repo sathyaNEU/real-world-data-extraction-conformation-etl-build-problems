@@ -1,244 +1,287 @@
-"""The pack's data files, each in the layout of the system that produced it."""
+"""The pack's data files, each written as the system that keeps it writes it."""
 import csv
 import datetime as dt
+import io
 import math
+import os
+import re
+import zipfile
 
 import numpy as np
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from openpyxl.utils import get_column_letter
+import openpyxl
+import pyarrow as pa
+import pyarrow.parquet as pq
 
-import postprocess
-import season as S
 import world as W
 
 FILES = {
-    "ylt": "seaborne_windstorm_ylt_2027_portfolio.csv",
-    "hindcast": "seaborne_windstorm_hindcast_2001-2025.csv",
-    "experience": "windstorm_experience_2001-2025.xlsx",
-    "capital": "CP-04_capital_policy_windstorm_2026.pdf",
-    "quote": "penwarden_windstorm_quotation_2027.pdf",
-    "wording": "windstorm_xl_wording_2026.pdf",
-    "request": "2027_windstorm_programme.eml",
-    "claims": "claims_extract_2026-10-31.csv",
-    "adjusters": "loss_adjuster_instructions_2026.csv",
-    "home": "home_policies_2026-10-31.csv",
-    "farm": "farm_policies_and_locations_2026-10-31.xlsx",
-    "coins": "coinsurance_register_2026.csv",
-    "flood": "seaborne_flood_ylt_2027_portfolio.csv",
-    "panel": "reinsurance_panel_security_2027.xlsx",
+    "master": "wealdmoor_security_master_2026-11-30.csv",
+    "market": "lse_daily_market_data_2025-2026.parquet",
+    "backtests": "research_backtests_2027_candidates.xlsx",
+    "trades": "backtest_rebalance_trades_2025-2026.csv",
+    "orders": "oms_orders_2025-2026.csv",
+    "fills": "oms_fills_2025-2026.csv",
+    "accounts": "trading_account_register.csv",
+    "policy": "ic_capital_allocation_policy_2026.pdf",
+    "tca": "tca_standard_rev4.pdf",
+    "request": "cio_request_2026-12-01.eml",
+    "commissions": "broker_commission_schedule_2026.xlsx",
+    "esg": "esg_exclusions_2026.csv",
+    "allocations": "oms_block_allocations_2025-2026.csv",
 }
-DISTRACTORS = ["flood", "panel", "home"]
+DISTRACTORS = ["commissions", "esg"]
+EXPORT = dt.datetime(2026, 12, 1, 7, 15, 0)
+BAND = {"L": "FTSE 100", "M": "FTSE 250", "S": "FTSE SmallCap"}
+ACCOUNT = {"INC": "WM-INC-01", "MCG": "WM-MCG-01", "SMC": "WM-SMC-01"}
 
 
-
-def _csv(path, header, rows, sep=","):
+def _csv(path, header, rows):
     with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, delimiter=sep, lineterminator="\r\n")
+        w = csv.writer(fh, lineterminator="\n")
         w.writerow(header)
-        for r in rows:
-            w.writerow(r)
-    return len(rows)
+        w.writerows(rows)
 
 
-def _xlsx(path, sheets, made, saved, author):
-    wb = Workbook()
+def _utc(d, hh, mm, ss=0):
+    """London wall time to UTC: British Summer Time from the last Sunday of March to the last Sunday of October."""
+    def last_sunday(y, m):
+        x = dt.date(y, m, 31)
+        return x - dt.timedelta(days=(x.weekday() + 1) % 7)
+    bst = last_sunday(d.year, 3) <= d < last_sunday(d.year, 10)
+    t = dt.datetime(d.year, d.month, d.day, hh, mm, ss) - dt.timedelta(hours=1 if bst else 0)
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def account_of(o):
+    if o["account"] == "BLOCK":
+        return "WM-BLOCK-01"
+    if o["account"] == "DYN":
+        return "WM-DYN-02" if o["date"] >= W.DYN_CODE_CHANGE else "WM-DYN-01"
+    if o["account"] == "TRN":
+        return "WM-DYN-01"
+    return ACCOUNT[o["account"]]
+
+
+def fills_for(o, r, failover=None):
+    """The order's fills: its filled quantity split across brokers' executions whose average sits at the price the
+    order paid. A failover splits the order: the first part fills before it under the original order, the rest under
+    the order the backup re-created."""
+    vwap = o["arrival"] * (1 + o["side"] * o["cost"] / 1e4)
+    n = 1 + int(r.poisson(1.6 if o["part"] < 0.02 else 4.0))
+    qty = o["filled"]
+    cuts = sorted(set(int(x) for x in r.integers(1, max(2, qty), size=n - 1))) if qty > n else []
+    parts = [b - a for a, b in zip([0] + cuts, cuts + [qty]) if b - a > 0]
+    disp = [float(r.normal(0, 0.0012)) for _ in parts]
+    mean_d = sum(p * d for p, d in zip(parts, disp)) / sum(parts)
+    prices = [vwap * (1 + d - mean_d) for d in disp]
+    t0 = o["hh"] * 60 + o["mm"]
+    span = 30 + int(min(o["part"], 0.6) * 420)
+    out = []
+    for k, (q, px) in enumerate(zip(parts, prices)):
+        t = min(t0 + 2 + int(span * (k + 1) / (len(parts) + 1)), 16 * 60 + 29)
+        out.append(dict(qty=q, px=px, minute=t, broker=W.BROKERS[int(r.integers(0, len(W.BROKERS)))]))
+    return out
+
+
+def write_allocations(orders, path):
+    """The post-trade allocation of each block order to the portfolios it was placed for."""
+    rows = []
+    for o in orders:
+        if o["account"] != "BLOCK":
+            continue
+        for acct, q in o["alloc"]:
+            rows.append([o["order_id"], account_of(dict(o, account=acct)), q, o["date"].isoformat()])
+    rows.sort()
+    _csv(path, ["block_order_id", "account_code", "allocated_qty", "allocation_date"], rows)
+
+
+def write_orders_fills(orders, path_o, path_f):
+    r = W.rng("fills")
+    orows, frows = [], []
+    eid = 7_300_000
+    recovery = []
+    for o in orders:
+        fl = fills_for(o, r)
+        fo = o["date"] in W.FAILOVER_DAYS and o["account"] not in ("TRN", "BLOCK") and o["part"] < 0.03 \
+            and len(fl) >= 2 \
+            and 9 <= o["hh"] <= 13
+        status = "CANCELLED" if o["cancelled"] else "FILLED"
+        if fo:
+            # the failover at 13:58 London time: fills after it move to the order the backup re-created
+            cut = max(1, len(fl) // 2)
+            before, after = fl[:cut], fl[cut:]
+            f1 = sum(f["qty"] for f in before)
+            status = "TERMINATED"
+            remaining = o["qty"] - f1
+            moved = sum(f["qty"] * f["px"] for f in before) / f1
+            rec_id = "WM%d" % (int(o["order_id"][2:]) + 900_000)
+            recovery.append(dict(order_id=rec_id, acct=account_of(o), sedol=o["sedol"], side=o["side"],
+                                 qty=remaining, created=_utc(o["date"], 14, 2 + int(r.integers(0, 6))),
+                                 mid=moved, status="CANCELLED" if o["cancelled"] else "FILLED"))
+            for f in before:
+                eid += int(r.integers(1, 9))
+                frows.append(_fill_row(eid, o["order_id"], f, o["date"]))
+            for f in after:
+                eid += int(r.integers(1, 9))
+                f = dict(f, minute=max(f["minute"], 14 * 60 + 5))
+                frows.append(_fill_row(eid, rec_id, f, o["date"]))
+        else:
+            for f in fl:
+                eid += int(r.integers(1, 9))
+                frows.append(_fill_row(eid, o["order_id"], f, o["date"]))
+        orows.append([o["order_id"], account_of(o), o["sedol"], "BUY" if o["side"] > 0 else "SELL", o["qty"],
+                      _utc(o["date"], o["hh"], o["mm"]), "%.2f" % o["arrival"], status, "DESK"])
+    for rc in recovery:
+        orows.append([rc["order_id"], rc["acct"], rc["sedol"], "BUY" if rc["side"] > 0 else "SELL", rc["qty"],
+                      rc["created"], "%.2f" % rc["mid"], rc["status"], "BACKUP-RECOVERY"])
+    orows.sort(key=lambda x: (x[5], x[0]))
+    # the re-sent batch: after the outage of 9 June 2026 the OMS sent that day's fills again, unchanged
+    day = W.RESENT_DAY.isoformat()
+    again = [list(x) for x in frows if x[6].startswith(day)]
+    frows = frows + again
+    frows.sort(key=lambda x: (x[6], x[0]))
+    _csv(path_o, ["order_id", "account_code", "sedol", "side", "order_qty", "created_utc", "arrival_mid_gbx",
+                  "status", "source"], orows)
+    _csv(path_f, ["exec_id", "order_id", "broker", "fill_qty", "fill_price", "price_unit", "exec_utc"], frows)
+    return len(frows)
+
+
+def _fill_row(eid, order_id, f, d):
+    gbp = f["broker"] == W.GBP_BROKER
+    px = "%.4f" % (f["px"] / 100.0) if gbp else "%.2f" % f["px"]
+    return ["X%d" % eid, order_id, f["broker"], f["qty"], px, "GBP" if gbp else "GBX",
+            _utc(d, f["minute"] // 60, f["minute"] % 60, 0)]
+
+
+def write_market(mkt, univ, path):
+    sed, dates, close, vol = [], [], [], []
+    for s in sorted(univ, key=lambda x: x["sedol"]):
+        for d, px, shares, _v in mkt[s["sedol"]]:
+            sed.append(s["sedol"])
+            dates.append(d)
+            close.append(round(px, 2))
+            vol.append(shares)
+    t = pa.table({"sedol": pa.array(sed, pa.string()), "trade_date": pa.array(dates, pa.date32()),
+                  "close_gbx": pa.array(close, pa.float64()), "volume_shares": pa.array(vol, pa.int64())})
+    pq.write_table(t, path, compression="snappy", use_dictionary=True, write_statistics=False,
+                   coerce_timestamps=None)
+    return len(sed)
+
+
+def write_master(univ, cons, path):
+    rows = []
+    for s in sorted(univ, key=lambda x: x["sedol"]):
+        note = ""
+        if s["sedol"] in cons:
+            note = "Share consolidation 10 for 1 effective %s" % cons[s["sedol"]].strftime("%d/%m/%Y")
+        rows.append([s["sedol"], s["isin"], s["name"], BAND[s["tier"]], s["sector"], "LSE Main Market", note])
+    _csv(path, ["sedol", "isin", "security_name", "index_band", "icb_industry", "listing", "corporate_action_note"],
+         rows)
+
+
+def write_trades(cands, path):
+    rows = []
+    for code in sorted(cands):
+        for t in cands[code]:
+            rows.append([code, t["date"].isoformat(), t["isin"], "%.6f" % t["weight"]])
+    rows.sort(key=lambda x: (x[0], x[1], x[2]))
+    _csv(path, ["strategy_code", "rebalance_date", "isin", "traded_weight"], rows)
+
+
+def write_accounts(path):
+    rows = [["WM-INC-01", "UK Equity Income", "2016-02-01", ""],
+            ["WM-MCG-01", "UK Mid Cap Growth", "2018-09-03", ""],
+            ["WM-SMC-01", "UK Smaller Companies", "2020-01-06", ""],
+            ["WM-DYN-01", "UK Dynamic", "2019-04-01", "2026-06-30"],
+            ["WM-DYN-02", "UK Dynamic", "2026-07-01", ""],
+            ["WM-DYN-01", "Pension transition (Severnvale)", "2026-08-17", "2026-11-13"],
+            ["WM-BLOCK-01", "Desk block account (allocated post-trade)", "2017-05-02", ""]]
+    _csv(path, ["account_code", "account_name", "opened", "closed"], rows)
+
+
+def write_esg(univ, path):
+    r = W.rng("esg")
+    pick = sorted(univ, key=lambda s: s["sedol"])
+    rows = []
+    for k in r.permutation(len(pick))[:23]:
+        s = pick[int(k)]
+        rows.append([s["isin"], s["name"], ["Thermal coal", "Controversial weapons", "Tobacco production",
+                                            "UN Global Compact breach"][int(r.integers(0, 4))], "2026-01-15"])
+    rows.sort()
+    _csv(path, ["isin", "issuer", "exclusion_reason", "effective"], rows)
+
+
+def xlsx(path, sheets, creator, created, modified):
+    wb = openpyxl.Workbook()
     wb.remove(wb.active)
-    for title, header, rows, widths, fmts in sheets:
+    for title, rows, widths in sheets:
         ws = wb.create_sheet(title)
-        ws.append(header)
-        for j, _ in enumerate(header, 1):
-            c = ws.cell(row=1, column=j)
-            c.font = Font(bold=True)
-            c.fill = PatternFill("solid", fgColor="DDE5EA")
-            c.alignment = Alignment(vertical="top", wrap_text=True)
-        for r in rows:
-            ws.append(list(r))
-        for j, w in enumerate(widths, 1):
-            ws.column_dimensions[get_column_letter(j)].width = w
-        for col, f in (fmts or {}).items():
-            j = header.index(col) + 1
-            for k in range(2, len(rows) + 2):
-                ws.cell(row=k, column=j).number_format = f
-        ws.freeze_panes = "A2"
-    wb.properties.creator = author
-    wb.properties.lastModifiedBy = author
-    wb.save(path)
-    postprocess.scrub(path, W.ORG, saved[:10])
-    postprocess.finish_office(path, made, saved, W.ORG)
+        for row in rows:
+            ws.append(list(row))
+        for col, wd in zip("ABCDEFGHIJ", widths):
+            ws.column_dimensions[col].width = wd
+        for c in ws[1]:
+            c.font = openpyxl.styles.Font(bold=True)
+    wb.properties.creator = creator
+    wb.properties.lastModifiedBy = creator
+    wb.properties.created = created
+    wb.properties.modified = modified
+    buf = io.BytesIO()
+    wb.save(buf)
+    src = zipfile.ZipFile(io.BytesIO(buf.getvalue()))
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for info in src.infolist():
+            data = src.read(info.filename)
+            if info.filename == "docProps/app.xml":
+                data = (b'<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">'
+                        b'<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity>'
+                        b'<ScaleCrop>false</ScaleCrop><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>'
+                        b'<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>')
+            if info.filename == "docProps/core.xml":
+                data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
+                              b"\\g<1>" + modified.strftime("%Y-%m-%dT%H:%M:%SZ").encode() + b"\\g<2>", data)
+                data = re.sub(rb"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)",
+                              b"\\g<1>" + created.strftime("%Y-%m-%dT%H:%M:%SZ").encode() + b"\\g<2>", data)
+            zi = zipfile.ZipInfo(info.filename, date_time=modified.timetuple()[:6])
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            z.writestr(zi, data)
 
 
-# invented storm names, one list a season from autumn 2015, when storms began to be named: a season's names run A to W
-# (no Q, U, X, Y or Z), and the mutual's storms are the few of each season's that reached it
-POOL = {
-    "A": ["Anwen", "Aled", "Ailsa", "Arwel", "Annis", "Aeron", "Alys", "Amory", "Aisling", "Arlo", "Avery", "Aelwen"],
-    "B": ["Bryok", "Bethan", "Bodmin", "Brannoc", "Briallen", "Bram", "Branwen", "Bronte", "Beren", "Blythe", "Benno"],
-    "C": ["Cador", "Carys", "Corin", "Ciaran", "Cerys", "Clovis", "Cadan", "Cressida", "Calum", "Columb", "Cari"],
-    "D": ["Derwa", "Demelza", "Dilwyn", "Dorcas", "Dafydd", "Delyth", "Deverel", "Dunstan", "Dulcie", "Drew", "Dilys"],
-    "E": ["Elowen", "Eseld", "Emrys", "Eira", "Esmond", "Efa", "Ellery", "Elfed", "Enid", "Ewan", "Edern"],
-    "F": ["Fenwick", "Fenella", "Fergal", "Freya", "Fulke", "Flora", "Faron", "Fiona", "Fenn", "Fflur", "Faisal"],
-    "G": ["Gwennol", "Garrow", "Gwilym", "Gilda", "Garnet", "Glenys", "Gowan", "Greer", "Guthrie", "Gwen", "Gideon"],
-    "H": ["Hedra", "Hesketh", "Hywel", "Hester", "Huw", "Halcyon", "Harlan", "Heulwen", "Hamish", "Hafren", "Hilde"],
-    "I": ["Ithel", "Ilar", "Isolde", "Idris", "Ianto", "Ione", "Islay", "Ivo", "Ilsa", "Irwin", "Ifan"],
-    "J": ["Jory", "Jenifer", "Jethro", "Jocasta", "Jasper", "Jowan", "Jessamy", "Joss", "Jemima", "Jarvis", "Jac"],
-    "K": ["Kenwyn", "Keverne", "Kerensa", "Kester", "Kit", "Kilda", "Kai", "Kelyn", "Kenelm", "Kezia", "Kyffin"],
-    "L": ["Lowen", "Lamorna", "Llew", "Lettice", "Lorcan", "Lark", "Linnet", "Lyle", "Leofric", "Lowri", "Lazlo"],
-    "M": ["Morwen", "Madron", "Meraud", "Mabyn", "Mostyn", "Marlow", "Mairwen", "Merrin", "Mungo", "Myfanwy", "Milo"],
-    "N": ["Nectan", "Nonna", "Nye", "Noreen", "Niamh", "Nevin", "Nerys", "Nolan", "Nesta", "Neville", "Nell"],
-    "O": ["Ottery", "Olwen", "Orrin", "Osian", "Odette", "Oswin", "Ondine", "Orla", "Otto", "Owain", "Opal"],
-    "P": ["Petroc", "Piran", "Perran", "Pryce", "Peronel", "Phelim", "Posy", "Padarn", "Pippa", "Porter", "Pella"],
-    "R": ["Rosen", "Ruan", "Rhodri", "Rowena", "Rhian", "Ralston", "Romilly", "Rufus", "Rhosyn", "Ravi", "Rilla"],
-    "S": ["Senara", "Sennen", "Sulien", "Selwyn", "Saffron", "Stellan", "Sian", "Solly", "Seren", "Silas", "Sabra"],
-    "T": ["Tamsin", "Tregony", "Talan", "Teilo", "Tamar", "Thorne", "Tegan", "Tobias", "Tirion", "Tansy", "Tybalt"],
-    "V": ["Veryan", "Verity", "Vaughan", "Vashti", "Vane", "Vivian", "Velma", "Vincent", "Vala", "Vere", "Viggo"],
-    "W": ["Wenna", "Wendron", "Winnoc", "Wynne", "Wren", "Wilfred", "Willa", "Wystan", "Wanda", "Wolfe", "Wini"],
-}
-LETTERS = "ABCDEFGHIJKLMNOPRSTVW"
+def write_backtests(path):
+    r = W.rng("backtests")
+    years = list(range(2015, 2027))
+    summ = [["Strategy code", "Strategy", "Benchmark", "Holdings", "Rebalance", "Annualised gross alpha, 2015 to 2026",
+             "Tracking error", "Information ratio (gross)"]]
+    annual = [["Year"] + [c[1] for c in W.CANDIDATES]]
+    series = {}
+    for code, name, tier, hold, freq, swap, alpha in W.CANDIDATES:
+        te = {"S": 0.058, "M": 0.041, "L": 0.027}[tier]
+        xs = [float(r.normal(alpha, te)) for _ in years]
+        shift = alpha - (math.prod(1 + x for x in xs) ** (1 / len(xs)) - 1)
+        xs = [x + shift for x in xs]
+        series[code] = xs
+        bm = {"S": "FTSE SmallCap (ex investment trusts)", "M": "FTSE 250 (ex investment trusts)",
+              "L": "FTSE 100"}[tier]
+        summ.append([code, name, bm, hold, "Monthly" if freq == "M" else "Quarterly", "%.2f%%" % (alpha * 100),
+                     "%.1f%%" % (te * 100), "%.2f" % (alpha / te)])
+    for i, y in enumerate(years):
+        annual.append([y if y < 2026 else "2026 (to 30 Nov, annualised)"] +
+                      ["%.1f%%" % (series[c[0]][i] * 100) for c in W.CANDIDATES])
+    notes = [["Note"],
+             ["Gross alpha is each strategy's return over its benchmark before any trading cost, from monthly "
+              "simulated portfolios on the Research team's point-in-time data."],
+             ["Every simulated portfolio applies the firm's ESG exclusion list in force at each date."],
+             ["Prepared by Quantitative Research for the 2027 allocation round."]]
+    xlsx(path, [("Summary", summ, (14, 34, 36, 10, 11, 22, 14, 18)), ("Annual alpha", annual, (26, 22, 22, 22)),
+                ("Notes", notes, (120,))], "Wealdmoor Quantitative Research",
+         dt.datetime(2026, 11, 9, 10, 41), dt.datetime(2026, 11, 26, 16, 5))
+    return series
 
 
-def _ids(rng, n, start, spread):
-    """n increasing numbers from start, in uneven steps the way a numbering system leaves them"""
-    steps = rng.integers(1, spread + 1, n)
-    return [int(x) for x in start + np.cumsum(steps)]
-
-
-def _catalogue(rng, n, lo, hi):
-    """n distinct catalogue ids, as a vendor's event set numbers its events"""
-    return [int(x) for x in rng.choice(np.arange(lo, hi), size=n, replace=False)]
-
-
-def _peak(rng, day, year=2027):
-    base = dt.datetime(year, 1, 1) + dt.timedelta(days=day - 1)
-    return base + dt.timedelta(minutes=int(rng.integers(0, 24 * 60)))
-
-
-def write_ylt(path, rows):
-    """the vendor's year loss table for the 2027 portfolio"""
-    rng = np.random.default_rng(W.SEED + 501)
-    ids = _catalogue(np.random.default_rng(W.SEED + 511), len(rows), 1_000_000, 9_999_999)
-    out = []
-    for k, (y, d, l, f) in enumerate(rows):
-        out.append([y, "SR8-%07d" % ids[k], _peak(rng, d).strftime("%Y-%m-%dT%H:%MZ"), "%.0f" % l])
-    return _csv(path, ["year", "event_id", "peak_utc", "loss_gbp"], out)
-
-
-def write_flood(path):
-    """the flood model's year loss table (CP-05's peril)"""
-    rng = np.random.default_rng(W.SEED + 502)
-    rows = []
-    for y in range(1, W.N_YEARS + 1):
-        for _ in range(int(rng.poisson(0.55))):
-            d = int(rng.integers(1, 366))
-            l = float(math.exp(rng.normal(math.log(0.6e6), 1.25)))
-            if l >= W.FLOOR:
-                rows.append((y, d, l))
-    ids = _catalogue(np.random.default_rng(W.SEED + 512), len(rows), 2_000_000, 7_999_999)
-    out = [[y, "SF3-%07d" % ids[k], _peak(rng, d).strftime("%Y-%m-%dT%H:%MZ"), "%.0f" % l]
-           for k, (y, d, l) in enumerate(rows)]
-    return _csv(path, ["year", "event_id", "peak_utc", "loss_gbp"], out)
-
-
-def _season(d):
-    return d.year if d.month >= 7 else d.year - 1
-
-
-def record_rows(rec):
-    """the record's storms with their names (named from the autumn 2015 season) and references"""
-    rng = np.random.default_rng(W.SEED + 505)
-    named, letter = [], {}
-    for i, (date, hind, act, f) in enumerate(rec):
-        name = ""
-        if date >= dt.date(2015, 10, 1):
-            s = _season(date)
-            j = letter.get(s, -1) + 1 + int(rng.choice([0, 0, 1, 1, 2, 3]))
-            letter[s] = j
-            assert j < len(LETTERS), (date, j)
-            # the 2025/26 season's names from F on are its January and February 2026 storms
-            assert s != 2025 or LETTERS[j] < "F", (date, LETTERS[j])
-            pool = POOL[LETTERS[j]]
-            name = pool[(s - 2015) % len(pool)]
-        named.append((date, hind, act, f, name, "HWS-%d-%02d" % (date.year, 1 + sum(1 for r in rec[:i] if r[0].year == date.year))))
-    return named
-
-
-def write_hindcast(path, named):
-    rng = np.random.default_rng(W.SEED + 503)
-    rid = np.random.default_rng(W.SEED + 513)
-    out, last = [], {}
-    for k, (date, hind, act, f, name, ref) in enumerate(named):
-        # the model's peak, in UTC; a storm whose winds peaked after midnight carries the next day
-        peak = dt.datetime.combine(date, dt.time(0, 0)) + dt.timedelta(minutes=int(rng.integers(6 * 60, 30 * 60)))
-        # the vendor's historical event set numbers each year's events, most of them storms that missed the portfolio
-        n = last.get(date.year, int(rid.integers(1, 9))) + int(rid.integers(3, 40))
-        last[date.year] = n
-        out.append(["SRH-%d-%03d" % (date.year, n), peak.strftime("%Y-%m-%dT%H:%MZ"), date.year, "%.0f" % hind])
-    return _csv(path, ["event_id", "peak_utc", "portfolio_year", "loss_gbp"], out)
-
-
-def write_experience(path, named):
-    rng = np.random.default_rng(W.SEED + 504)
-    rows = []
-    for date, hind, act, f, name, ref in named:
-        claims = int(max(12, act / float(rng.uniform(3600, 6400))))
-        system = "Legacy (Sapphire)" if date < dt.date(2014, 4, 1) else "ClaimCentre"
-        rows.append([ref, name or None, date, claims, round(act), system])
-    _xlsx(path, [("Storms", ["storm_ref", "storm_name", "first_damage_date", "claims", "incurred_gbp",
-                             "claims_system"], rows, [14, 14, 16, 9, 15, 18],
-                  {"first_damage_date": "dd/mm/yyyy", "incurred_gbp": "#,##0"})],
-          "2026-06-08T09:12:00Z", "2026-07-03T15:40:00Z", W.PEOPLE["actuary"])
-    return len(rows)
-
-
-def write_claims(path, claims):
-    out = [[c["claim"], c["line"], c["peril"], c["loss_date"].strftime("%d/%m/%Y"), c["notified"].strftime("%d/%m/%Y"),
-            c["channel"], c["county"], "%.2f" % c["paid"], "%.2f" % c["outstanding"], c["status"]] for c in claims]
-    return _csv(path, ["claim_number", "line", "peril", "loss_date", "notified_date", "channel", "county", "paid_gbp",
-                       "outstanding_gbp", "status"], out)
-
-
-def write_adjusters(path, adj):
-    """the loss adjusters' instruction log, in their system's layout: the insurer's claim number spaced as the
-    adjusters' portal prints it, one row per instruction"""
-    out = []
-    for a in adj:
-        c = a["claim"]
-        insurer_ref = "%s %s %s" % (c[:2], c[2:6], c[6:])
-        out.append([a["job"], insurer_ref, a["damage"].isoformat(), a["instructed"].isoformat(),
-                    "Penhallow Loss Adjusters"])
-    return _csv(path, ["job_ref", "insurer_ref", "date_of_damage", "instructed", "adjuster"], out)
-
-
-def write_home(path, home):
-    out = [[h["policy"], h["status"], h["start"].strftime("%d/%m/%Y"), h["end"].strftime("%d/%m/%Y"), h["county"],
-            "%.0f" % h["buildings"], "%.0f" % h["contents"]] for h in sorted(home, key=lambda x: x["policy"])]
-    return _csv(path, ["policy_number", "status", "start_date", "end_date", "county", "buildings_si_gbp",
-                       "contents_si_gbp"], out)
-
-
-def write_farm(path, farms, locations):
-    pol = [[f["policy"], f["cph"], f["county"], f["si_k"]] for f in farms]
-    loc = [[l["policy"], l["location"], l["cph"], l["prev"] or None, l["county"], l["b_k"], l["c_k"]] for l in locations]
-    _xlsx(path, [("Policies", ["policy", "main_holding_cph", "correspondence_county", "total_si_000"], pol,
-                  [12, 16, 20, 14], {"total_si_000": "#,##0"}),
-                 ("Holdings", ["policy", "location_no", "holding_cph", "previous_cph", "county", "buildings_si_000",
-                               "farm_contents_si_000"], loc, [12, 12, 14, 14, 12, 16, 18],
-                  {"buildings_si_000": "#,##0", "farm_contents_si_000": "#,##0"})],
-          "2026-10-31T16:05:00Z", "2026-10-31T16:22:00Z", W.ORG)
-    return len(pol) + len(loc)
-
-
-def write_coins(path, coins):
-    out = [[c["lead"], c["lead_ref"], c["cph"], "%d%%" % round(c["share"] * 100), c["arranged"].strftime("%d/%m/%Y")]
-           for c in coins]
-    return _csv(path, ["lead_insurer", "lead_reference", "holding_cph", "hartcombe_share", "last_renewed"], out)
-
-
-def write_panel(path):
-    rows = [["Aldwych Syndicate 4127", "A+ (Lloyd's)", "35.0%", "35.0%"],
-            ["Brunel Re Europe SE", "AA-", "20.0%", "22.5%"],
-            ["Calvert Mutual Reinsurance", "A", "15.0%", "12.5%"],
-            ["Dunmore Re plc", "A", "15.0%", "15.0%"],
-            ["Elmstead Syndicate 1880", "A+ (Lloyd's)", "15.0%", "15.0%"]]
-    _xlsx(path, [("Panel", ["reinsurer", "financial_strength", "share_2026", "share_2027_quoted"], rows,
-                  [30, 18, 12, 18], {})], "2026-10-14T10:02:00Z", "2026-10-14T10:20:00Z", W.BROKER)
-    return len(rows)
+def write_commissions(path):
+    rows = [["Broker", "Tier", "Monthly commission band (GBP)", "Rate (bps of value)", "Research component (bps)"]]
+    for b, base in zip(W.BROKERS, (4.0, 5.0, 3.5, 4.5)):
+        for k, band in enumerate(["0 to 250,000", "250,000 to 1,000,000", "over 1,000,000"]):
+            rows.append([b, k + 1, band, "%.1f" % (base - 0.8 * k), "%.1f" % (1.5 - 0.3 * k)])
+    xlsx(path, [("2026 schedule", rows, (28, 8, 30, 18, 24))], "Wealdmoor Dealing",
+         dt.datetime(2026, 1, 6, 9, 12), dt.datetime(2026, 3, 30, 11, 47))

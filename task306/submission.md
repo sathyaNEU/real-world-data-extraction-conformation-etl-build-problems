@@ -1,49 +1,54 @@
 ## Tags
 
-**Domain:** Actuarial Science & Insurance (reinsurance and capital: a county farm-and-home mutual's 2027 windstorm reinsurance, a cover bought when the capital it releases is worth more than it costs).
+**Domain:** Quantitative Finance (portfolio construction and risk: a systematic equity desk placing new capital with one of its backtested strategies, each sized by the alpha it keeps at that capital).
 **Analytical objective:** Opportunity Sizing & Decision Support.
 
 ## 1. Final Recommendation
 
-**We should add Penwarden's second-event cover to the 2027 windstorm programme.**
-It releases £7 million of 1-in-200 windstorm capital, worth £0.8 million a year at 12 per cent against a margin of £0.7 million, so it adds £0.1 million a year. Not on one incurred-over-hindcast ratio for every storm of record, which undercosts the storms that strike within weeks of the one before and leaves the cover looking dearer than its release is worth. Not on each storm's place in its year or season, which the record's later storms on quiet seasons, costing what the model says, rule out.
+**Give the GBP 400 million to UK Mid Cap Value, which keeps GBP 8 million of alpha a year at that size, GBP 2 million more than UK Large Cap Quality, the runner-up.** Each strategy's gross alpha is netted of the shortfall its twelve months of rebalances would pay at GBP 400 million, priced on the desk's own orders at each trade's share of the stock's daily traded value. Not UK Smaller Companies Momentum: its GBP 20 million of gross alpha is the largest, but at GBP 400 million its month-end trades take a large share of each small cap's day, and it keeps GBP 5 million.
 
 ## 2. Critical Components
 
-1. Storms of record that struck within six weeks of the storm before cost **1.62** times their hindcast, every other storm **0.98** times.
-2. The 1-in-200 annual windstorm loss is **£113 million** gross, **£94 million** net of the occurrence cover and **£87 million** net of both covers.
-3. The second-event cover's margin is **£0.7 million** a year: its premium of **£1.3 million** and expected reinstatement premium of **£0.1 million**, less expected recoveries of **£0.7 million**.
+1. The desk's 2025 and 2026 orders cost more the larger their share of the stock's 20-session daily traded value: shortfall rises with the square root of participation, times the stock's daily volatility.
+2. At GBP 400 million the rebalances of December 2025 to November 2026 trade GBP 1214 million (UK Smaller Companies Momentum), GBP 523 million (UK Mid Cap Value) and GBP 493 million (UK Large Cap Quality).
+3. Alpha kept a year at GBP 400 million: UK Smaller Companies Momentum **GBP 5 million** of 20 gross; UK Mid Cap Value **GBP 8 million** of 12 gross; UK Large Cap Quality **GBP 6 million** of 7 gross.
 
 ## 3. Step-by-Step Solution
 
-1. Linked each storm in windstorm_experience_2001-2025.xlsx to the storm in seaborne_windstorm_hindcast_2001-2025.csv whose peak falls on its first damage date or the day after, all 43 storms of record, and classed each by the days since the storm before it (every gap is 24 days or less, or 70 or more): the 9 within six weeks cost 1.62 times their hindcast and the rest 0.98, incurred over hindcast for the storms like it per CP-04 section 2.
-2. Classed each storm of seaborne_windstorm_ylt_2027_portfolio.csv the same way against the storm before it in its simulated year and costed it at its class's ratio.
-3. Netted each simulated year of the occurrence cover (quotation A, 18,000,000 xs 12,000,000 each loss occurrence, one reinstatement at 100 per cent pro rata as to amount), each storm one loss occurrence per CP-04: the 1-in-200, the average of the 50 worst of the 10,000 years, is £113 million gross and £94 million net.
-4. Added the second-event cover (quotation B, 7,500,000 xs 4,000,000 of the loss retained under the occurrence cover on each year's second and later loss occurrences, one reinstatement): the 1-in-200 falls to £87 million, a release of £7 million.
-5. Took the cover's margin per CP-04 section 3 over the 10,000 years: £0.7 million.
-6. Dated each 2026 storm claim line in claims_extract_2026-10-31.csv by date_of_damage in loss_adjuster_instructions_2026.csv (insurer_ref without its spaces), a reopened claim's lines in notification order against its instructions in instruction order, and grouped the days into the 72-hour loss occurrences that maximise the expiring cover's recovery (wording clause 3): it recovers £12,015,000 and calls £1,402,000 of reinstatement premium.
-7. Summed the Holdings sheet of farm_policies_and_locations_2026-10-31.xlsx by each holding's county, each coinsured policy at its share in coinsurance_register_2026.csv, matched on its main holding's CPH or, for a renumbered holding, its previous_cph, and applied to every holding on the policy.
-8. Valued the cover at 12 per cent of the release, £0.8 million, less the margin: it adds £0.1 million a year, so it is added to the programme.
+1. Conformed the desk's orders: kept each execution id once from oms_fills_2025-2026.csv, read pounds fills as pence times 100, merged each BACKUP-RECOVERY order into the terminated original it continues (same account, stock, side and London date, the original's unfilled quantity), and measured each order's shortfall from its arrival mid, cost positive (TCA standard sections 1 and 2).
+2. Gave each order its participation, value at arrival over the 20-session average of close times volume in lse_daily_market_data_2025-2026.parquet, and the 60-session daily volatility, skipping each consolidation day in wealdmoor_security_master_2026-11-30.csv.
+3. Fitted shortfall on the index band and daily volatility times the square root of participation by least squares over every order.
+4. Took each candidate's rebalances from 1 December 2025 to 30 November 2026 in backtest_rebalance_trades_2025-2026.csv, joined ISIN to SEDOL, scaled each traded weight to GBP 400 million and priced it on the fitted curve at its participation on the rebalance date (IC-07 section 2).
+5. Took each strategy's annualised gross alpha 2015 to 2026 from research_backtests_2027_candidates.xlsx times GBP 400 million and subtracted the cost.
+6. Recommended UK Mid Cap Value, GBP 2 million ahead of UK Large Cap Quality.
+7. For the workbook, gave each live strategy its orders through the dated trading account register (WM-DYN-01 is UK Dynamic to 30 June 2026 and the Severnvale transition from 17 August; WM-DYN-02 UK Dynamic from 1 July), then the value-weighted shortfall by quarter of 2026 and the value traded, filled quantity at the average fill price, by half year.
 
 ## 4. Deliverable Answers
 
-### windstorm_programme_board_paper_2027.pdf
+### capital_allocation_2027.pptx
 
-1. Recommendation: add the second-event cover to the 2027 programme.
-2. Bar chart on page 1 of the 1-in-200 annual windstorm loss: £113 million gross, £94 million net of the occurrence cover, £87 million net of both covers.
-3. Capital the second-event cover releases: £7 million.
-4. The cover's margin £0.7 million; its worth to us a year £0.1 million.
-5. 2026 loss occurrences of £1 million or more, home and farm policies:
-   - 11 to 13 January: home £13,067,000, farm £2,510,000
-   - 8 to 9 February: home £16,898,000, farm £3,541,000
-   - 15 to 16 February: home £3,943,000, farm £931,000
-6. The expiring cover recovers £12,015,000 on 2026 and calls a reinstatement premium of £1,402,000.
-7. Our share of the farm sums insured, buildings and farm contents:
-   - Cornwall: buildings £1,302.1 million, farm contents £618.2 million
-   - Devon: buildings £1,502.4 million, farm contents £746.3 million
-   - Somerset: buildings £863.7 million, farm contents £396.8 million
-   - Dorset: buildings £389.0 million, farm contents £184.3 million
+1. Recommendation: give the GBP 400 million to UK Mid Cap Value.
+2. Runner-up: UK Large Cap Quality.
+3. Difference between them: GBP 2 million a year.
+4. Alpha each strategy keeps a year at GBP 400 million, whole GBP million:
+   - UK Smaller Companies Momentum: 5
+   - UK Mid Cap Value: 8
+   - UK Large Cap Quality: 6
+5. Gross alpha a year at GBP 400 million, whole GBP million:
+   - UK Smaller Companies Momentum: 20
+   - UK Mid Cap Value: 12
+   - UK Large Cap Quality: 7
+6. Chart on slide 1: each strategy's gross alpha beside the alpha it keeps, both in GBP million, UK Mid Cap Value's kept alpha the tallest.
 
-### windstorm_programme_2027.xlsx
+### strategy_capacity_2027.xlsx
 
-1. The same figures: sheet Capital 2027 carries the call, the three 1-in-200 losses, the release, the margin and the worth; Storms 2026 each occurrence's home and farm cost, the recovery and the reinstatement premium; Farm sums insured each county's buildings and farm contents; Record the storms of record with their ratios.
+1. Implementation shortfall by quarter of 2026, basis points to one decimal:
+   - UK Equity Income: Q1 30.4, Q2 45.8, Q3 40.4, Q4 35.7
+   - UK Mid Cap Growth: Q1 41.4, Q2 51.3, Q3 32.9, Q4 27.1
+   - UK Smaller Companies: Q1 68.7, Q2 62.2, Q3 84.2, Q4 55.5
+   - UK Dynamic: Q1 27.9, Q2 44.6, Q3 52.1, Q4 35.4
+2. Value traded by half of 2026, whole GBP million:
+   - UK Equity Income: H1 1088, H2 899
+   - UK Mid Cap Growth: H1 360, H2 252
+   - UK Smaller Companies: H1 113, H2 122
+   - UK Dynamic: H1 801, H2 967
