@@ -1,571 +1,830 @@
 {
- "call": {
-  "counties": [
-   "Elkhollow",
-   "Halvering",
-   "Linnmere",
-   "Marlbank",
-   "Wexmoor"
-  ],
-  "n": 5
- },
- "counties": {
-  "Copperleaf": {
-   "eligible": 3135,
-   "miles_m": 42.4,
-   "no": "14",
-   "qualifies": false,
-   "read": 2982,
-   "tons": 8,
-   "tons_unrounded": 7.975
+ "act_section": "84.21",
+ "age_band_bounds": [
+  0,
+  5,
+  10,
+  15,
+  20,
+  30,
+  40,
+  60
+ ],
+ "backcast": {
+  "2000": {
+   "age": {
+    "City of Dunmore": -0.3,
+    "City of Juniper": -0.9,
+    "Town of Ashgrove": 0.4,
+    "Town of Cedar Run": -2.0,
+    "Town of Elk Prairie": -3.9,
+    "Town of Glenmoor": -6.2,
+    "Town of Harwick": -1.0,
+    "Town of Kessler": -5.2,
+    "Town of Maple Ford": -3.0,
+    "Town of Northfield": 1.2,
+    "Village of Barrow": -2.0,
+    "Village of Fallon": 0.0,
+    "Village of Ivydale": -1.0,
+    "Village of Lorne": 1.4
+   },
+   "place": {
+    "City of Dunmore": -3.6,
+    "City of Juniper": -3.8,
+    "Town of Ashgrove": -2.7,
+    "Town of Cedar Run": -14.0,
+    "Town of Elk Prairie": -6.7,
+    "Town of Glenmoor": -11.7,
+    "Town of Harwick": 3.2,
+    "Town of Kessler": -13.6,
+    "Town of Maple Ford": -1.8,
+    "Town of Northfield": -2.1,
+    "Village of Barrow": -5.4,
+    "Village of Fallon": -8.7,
+    "Village of Ivydale": -6.4,
+    "Village of Lorne": -7.1
+   },
+   "vintage": {
+    "City of Dunmore": -5.4,
+    "City of Juniper": -4.9,
+    "Town of Ashgrove": -13.1,
+    "Town of Cedar Run": -15.4,
+    "Town of Elk Prairie": -19.3,
+    "Town of Glenmoor": -22.9,
+    "Town of Harwick": -13.2,
+    "Town of Kessler": -23.1,
+    "Town of Maple Ford": -18.3,
+    "Town of Northfield": -15.4,
+    "Village of Barrow": -8.8,
+    "Village of Fallon": -12.2,
+    "Village of Ivydale": -9.0,
+    "Village of Lorne": -8.7
+   }
   },
-  "Dunmarsh": {
-   "eligible": 6149,
-   "miles_m": 47.9,
-   "no": "17",
-   "qualifies": false,
-   "read": 5812,
-   "tons": 9,
-   "tons_unrounded": 8.942
-  },
-  "Elkhollow": {
-   "eligible": 5182,
-   "miles_m": 64.0,
-   "no": "21",
-   "qualifies": true,
-   "read": 4911,
-   "tons": 12,
-   "tons_unrounded": 11.971
-  },
-  "Halvering": {
-   "eligible": 8688,
-   "miles_m": 76.7,
-   "no": "29",
-   "qualifies": true,
-   "read": 8230,
-   "tons": 14,
-   "tons_unrounded": 13.907
-  },
-  "Kinnard": {
-   "eligible": 2814,
-   "miles_m": 25.7,
-   "no": "35",
-   "qualifies": false,
-   "read": 2681,
-   "tons": 5,
-   "tons_unrounded": 4.993
-  },
-  "Larkhaven": {
-   "eligible": 5047,
-   "miles_m": 42.1,
-   "no": "38",
-   "qualifies": false,
-   "read": 4791,
-   "tons": 8,
-   "tons_unrounded": 7.935
-  },
-  "Linnmere": {
-   "eligible": 7060,
-   "miles_m": 71.0,
-   "no": "40",
-   "qualifies": true,
-   "read": 6667,
-   "tons": 13,
-   "tons_unrounded": 12.952
-  },
-  "Marlbank": {
-   "eligible": 5255,
-   "miles_m": 57.9,
-   "no": "44",
-   "qualifies": true,
-   "read": 4973,
-   "tons": 11,
-   "tons_unrounded": 10.942
-  },
-  "Quarrybrook": {
-   "eligible": 4221,
-   "miles_m": 44.1,
-   "no": "58",
-   "qualifies": false,
-   "read": 4016,
-   "tons": 8,
-   "tons_unrounded": 7.974
-  },
-  "Sallowford": {
-   "eligible": 2567,
-   "miles_m": 27.1,
-   "no": "63",
-   "qualifies": false,
-   "read": 2434,
-   "tons": 5,
-   "tons_unrounded": 4.961
-  },
-  "Thorncastle": {
-   "eligible": 4119,
-   "miles_m": 31.1,
-   "no": "71",
-   "qualifies": false,
-   "read": 3889,
-   "tons": 6,
-   "tons_unrounded": 5.944
-  },
-  "Wexmoor": {
-   "eligible": 11068,
-   "miles_m": 83.9,
-   "no": "79",
-   "qualifies": true,
-   "read": 10479,
-   "tons": 15,
-   "tons_unrounded": 14.906
+  "2010": {
+   "age": {
+    "City of Dunmore": -0.3,
+    "City of Juniper": 0.2,
+    "Town of Ashgrove": -0.9,
+    "Town of Cedar Run": -1.2,
+    "Town of Elk Prairie": -3.6,
+    "Town of Glenmoor": -4.0,
+    "Town of Harwick": -4.4,
+    "Town of Kessler": -3.0,
+    "Town of Maple Ford": -2.1,
+    "Town of Northfield": -2.9,
+    "Village of Barrow": -0.2,
+    "Village of Fallon": -0.6,
+    "Village of Ivydale": -0.6,
+    "Village of Lorne": -0.3
+   },
+   "place": {
+    "City of Dunmore": -1.7,
+    "City of Juniper": -1.1,
+    "Town of Ashgrove": -3.5,
+    "Town of Cedar Run": -6.5,
+    "Town of Elk Prairie": -7.2,
+    "Town of Glenmoor": -1.8,
+    "Town of Harwick": -5.3,
+    "Town of Kessler": -10.3,
+    "Town of Maple Ford": -4.9,
+    "Town of Northfield": 4.5,
+    "Village of Barrow": -2.9,
+    "Village of Fallon": -6.5,
+    "Village of Ivydale": -4.3,
+    "Village of Lorne": -3.0
+   },
+   "vintage": {
+    "City of Dunmore": -2.8,
+    "City of Juniper": -1.6,
+    "Town of Ashgrove": -8.2,
+    "Town of Cedar Run": -8.0,
+    "Town of Elk Prairie": -9.9,
+    "Town of Glenmoor": -12.2,
+    "Town of Harwick": -10.1,
+    "Town of Kessler": -11.0,
+    "Town of Maple Ford": -9.4,
+    "Town of Northfield": -9.6,
+    "Village of Barrow": -3.3,
+    "Village of Fallon": -6.9,
+    "Village of Ivydale": -5.5,
+    "Village of Lorne": -4.7
+   }
   }
  },
- "dates": {
-  "guidelines": "2026-09-08",
-  "memo": "2026-10-26",
-  "snapshot": "2026-07-01"
+ "backcast_mape_age_2000": 2.0,
+ "backcast_mape_age_2010": 1.7,
+ "backcast_mape_place_2000": 6.5,
+ "backcast_mape_place_2010": 4.5,
+ "backcast_mape_vintage_2000": 13.5,
+ "backcast_mape_vintage_2010": 7.4,
+ "backcast_max_age_2000": 6.2,
+ "backcast_max_age_2010": 4.4,
+ "backcast_max_place_2000": 14.0,
+ "backcast_max_place_2010": 10.3,
+ "backcast_max_vintage_2000": 23.1,
+ "backcast_max_vintage_2010": 12.2,
+ "births": {
+  "City of Dunmore": 111,
+  "City of Juniper": 98,
+  "Town of Ashgrove": 57,
+  "Town of Cedar Run": 167,
+  "Town of Elk Prairie": 18,
+  "Town of Glenmoor": 64,
+  "Town of Harwick": 101,
+  "Town of Kessler": 26,
+  "Town of Maple Ford": 84,
+  "Town of Northfield": 69,
+  "Village of Barrow": 35,
+  "Village of Fallon": 86,
+  "Village of Ivydale": 40,
+  "Village of Lorne": 22
  },
- "family_range": {
-  "Copperleaf": [
-   7.975,
-   8.128
-  ],
-  "Dunmarsh": [
-   8.941,
-   9.12
-  ],
-  "Elkhollow": [
-   11.971,
-   12.293
-  ],
-  "Halvering": [
-   13.907,
-   14.17
-  ],
-  "Kinnard": [
-   4.993,
-   5.095
-  ],
-  "Larkhaven": [
-   7.935,
-   8.128
-  ],
-  "Linnmere": [
-   12.952,
-   13.277
-  ],
-  "Marlbank": [
-   10.942,
-   11.135
-  ],
-  "Quarrybrook": [
-   7.974,
-   8.164
-  ],
-  "Sallowford": [
-   4.961,
-   5.015
-  ],
-  "Thorncastle": [
-   5.944,
-   6.088
-  ],
-  "Wexmoor": [
-   14.906,
-   15.192
-  ]
+ "births_by_written_city": {
+  "City of Dunmore": 190,
+  "City of Juniper": 139,
+  "Town of Ashgrove": 38,
+  "Town of Cedar Run": 129,
+  "Town of Elk Prairie": 9,
+  "Town of Glenmoor": 45,
+  "Town of Harwick": 52,
+  "Town of Kessler": 13,
+  "Town of Maple Ford": 55,
+  "Town of Northfield": 42,
+  "Village of Barrow": 39,
+  "Village of Fallon": 131,
+  "Village of Ivydale": 47,
+  "Village of Lorne": 49
  },
- "filed": {
-  "age_from": "1 January",
-  "clauses": [
-   "2.1",
-   "3.1",
-   "3.2",
-   "3.3",
-   "3.4"
-  ],
-  "grams_per_short_ton": "907,184.74",
-  "unusable_odometers": [
-   0,
-   999999
-  ]
+ "births_total": 978,
+ "call": [
+  "City of Dunmore",
+  "City of Juniper",
+  "Town of Cedar Run"
+ ],
+ "call_short": [
+  "Dunmore",
+  "Juniper",
+  "Cedar Run"
+ ],
+ "county_estimate_r100": 101400,
+ "deaths": {
+  "City of Dunmore": 244,
+  "City of Juniper": 182,
+  "Town of Ashgrove": 37,
+  "Town of Cedar Run": 72,
+  "Town of Elk Prairie": 24,
+  "Town of Glenmoor": 29,
+  "Town of Harwick": 40,
+  "Town of Kessler": 22,
+  "Town of Maple Ford": 64,
+  "Town of Northfield": 26,
+  "Village of Barrow": 104,
+  "Village of Fallon": 138,
+  "Village of Ivydale": 51,
+  "Village of Lorne": 37
  },
- "names": {
-  "Copperleaf": "Copperleaf",
-  "Dunmarsh": "Dunmarsh",
-  "Elkhollow": "Elkhollow",
-  "Halvering": "Halvering",
-  "Kinnard": "Kinnard",
-  "Larkhaven": "Larkhaven",
-  "Linnmere": "Linnmere",
-  "Marlbank": "Marlbank",
-  "Quarrybrook": "Quarrybrook",
-  "Sallowford": "Sallowford",
-  "Thorncastle": "Thorncastle",
-  "Wexmoor": "Wexmoor"
+ "deaths_by_code": {
+  "City of Dunmore": 270,
+  "City of Juniper": 216,
+  "Town of Ashgrove": 22,
+  "Town of Cedar Run": 63,
+  "Town of Elk Prairie": 17,
+  "Town of Glenmoor": 15,
+  "Town of Harwick": 28,
+  "Town of Kessler": 15,
+  "Town of Maple Ford": 44,
+  "Town of Northfield": 14,
+  "Village of Barrow": 116,
+  "Village of Fallon": 146,
+  "Village of Ivydale": 55,
+  "Village of Lorne": 49
  },
- "people": {
-  "chief": "Bridget Palmer",
-  "director": "Jacqueline Aguilar"
+ "deaths_total": 1070,
+ "default_county": 101958,
+ "dwellings_2026": {
+  "City of Dunmore": 7695,
+  "City of Juniper": 7413,
+  "Town of Ashgrove": 2503,
+  "Town of Cedar Run": 4810,
+  "Town of Elk Prairie": 1632,
+  "Town of Glenmoor": 2013,
+  "Town of Harwick": 3210,
+  "Town of Kessler": 2163,
+  "Town of Maple Ford": 4230,
+  "Town of Northfield": 1932,
+  "Village of Barrow": 2531,
+  "Village of Fallon": 4922,
+  "Village of Ivydale": 2394,
+  "Village of Lorne": 1916
  },
- "pilot": {
-  "Dunmarsh": {
-   "charges": 53985,
-   "naive_charges": 57640,
-   "naive_retired": 214,
-   "retired": 201,
-   "vouchers": 214
+ "estimate": {
+  "City of Dunmore": 13651,
+  "City of Juniper": 14230,
+  "Town of Ashgrove": 5761,
+  "Town of Cedar Run": 10787,
+  "Town of Elk Prairie": 3511,
+  "Town of Glenmoor": 4688,
+  "Town of Harwick": 7498,
+  "Town of Kessler": 4746,
+  "Town of Maple Ford": 9611,
+  "Town of Northfield": 4521,
+  "Village of Barrow": 5039,
+  "Village of Fallon": 9251,
+  "Village of Ivydale": 4526,
+  "Village of Lorne": 3550
+ },
+ "estimate_r100": {
+  "City of Dunmore": 13700,
+  "City of Juniper": 14200,
+  "Town of Ashgrove": 5800,
+  "Town of Cedar Run": 10800,
+  "Town of Elk Prairie": 3500,
+  "Town of Glenmoor": 4700,
+  "Town of Harwick": 7500,
+  "Town of Kessler": 4700,
+  "Town of Maple Ford": 9600,
+  "Town of Northfield": 4500,
+  "Village of Barrow": 5000,
+  "Village of Fallon": 9300,
+  "Village of Ivydale": 4500,
+  "Village of Lorne": 3600
+ },
+ "family_max": {
+  "City of Dunmore": 13744,
+  "City of Juniper": 14319,
+  "Town of Ashgrove": 5795,
+  "Town of Cedar Run": 10813,
+  "Town of Elk Prairie": 3521,
+  "Town of Glenmoor": 4688,
+  "Town of Harwick": 7536,
+  "Town of Kessler": 4802,
+  "Town of Maple Ford": 9623,
+  "Town of Northfield": 4539,
+  "Village of Barrow": 5214,
+  "Village of Fallon": 9273,
+  "Village of Ivydale": 4530,
+  "Village of Lorne": 3579
+ },
+ "family_max_r10": {
+  "City of Dunmore": 13740,
+  "City of Juniper": 14320,
+  "Town of Ashgrove": 5790,
+  "Town of Cedar Run": 10810,
+  "Town of Elk Prairie": 3520,
+  "Town of Glenmoor": 4690,
+  "Town of Harwick": 7540,
+  "Town of Kessler": 4800,
+  "Town of Maple Ford": 9620,
+  "Town of Northfield": 4540,
+  "Village of Barrow": 5210,
+  "Village of Fallon": 9270,
+  "Village of Ivydale": 4530,
+  "Village of Lorne": 3580
+ },
+ "family_min": {
+  "City of Dunmore": 13559,
+  "City of Juniper": 14207,
+  "Town of Ashgrove": 5519,
+  "Town of Cedar Run": 10348,
+  "Town of Elk Prairie": 3466,
+  "Town of Glenmoor": 3715,
+  "Town of Harwick": 7415,
+  "Town of Kessler": 4746,
+  "Town of Maple Ford": 9013,
+  "Town of Northfield": 4283,
+  "Village of Barrow": 5030,
+  "Village of Fallon": 9182,
+  "Village of Ivydale": 4475,
+  "Village of Lorne": -5345
+ },
+ "family_min_r10": {
+  "City of Dunmore": 13560,
+  "City of Juniper": 14210,
+  "Town of Ashgrove": 5520,
+  "Town of Cedar Run": 10350,
+  "Town of Elk Prairie": 3470,
+  "Town of Glenmoor": 3710,
+  "Town of Harwick": 7410,
+  "Town of Kessler": 4750,
+  "Town of Maple Ford": 9010,
+  "Town of Northfield": 4280,
+  "Village of Barrow": 5030,
+  "Village of Fallon": 9180,
+  "Village of Ivydale": 4480,
+  "Village of Lorne": -5350
+ },
+ "golden_county": 101371,
+ "gq_2026": {
+  "City of Dunmore": 382,
+  "City of Juniper": 1232,
+  "Town of Ashgrove": 0,
+  "Town of Cedar Run": 0,
+  "Town of Elk Prairie": 0,
+  "Town of Glenmoor": 0,
+  "Town of Harwick": 6,
+  "Town of Kessler": 0,
+  "Town of Maple Ford": 0,
+  "Town of Northfield": 0,
+  "Village of Barrow": 154,
+  "Village of Fallon": 91,
+  "Village of Ivydale": 0,
+  "Village of Lorne": 0
+ },
+ "land_use_codes": [
+  "1010",
+  "1020",
+  "1030",
+  "1050",
+  "1080"
+ ],
+ "line": 10000,
+ "rung_r100": {
+  "age": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14200,
+   "Town of Ashgrove": 5800,
+   "Town of Cedar Run": 10800,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4700,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5000,
+   "Village of Fallon": 9300,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3600
   },
-  "Elkhollow": {
-   "charges": 59050,
-   "naive_charges": 97770,
-   "naive_retired": 238,
-   "retired": 222,
-   "vouchers": 238
+  "age10": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14300,
+   "Town of Ashgrove": 5700,
+   "Town of Cedar Run": 10700,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5000,
+   "Village of Fallon": 9200,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3600
   },
-  "Kinnard": {
-   "charges": 26625,
-   "naive_charges": 30720,
-   "naive_retired": 118,
-   "retired": 102,
-   "vouchers": 118
+  "age10_x": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14300,
+   "Town of Ashgrove": 5700,
+   "Town of Cedar Run": 10700,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5100,
+   "Village of Fallon": 9300,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3500
   },
-  "Larkhaven": {
-   "charges": 42590,
-   "naive_charges": 47280,
-   "naive_retired": 171,
-   "retired": 154,
-   "vouchers": 171
+  "age3": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14300,
+   "Town of Ashgrove": 5700,
+   "Town of Cedar Run": 10700,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5000,
+   "Village of Fallon": 9200,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3600
+  },
+  "age3_x": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14200,
+   "Town of Ashgrove": 5500,
+   "Town of Cedar Run": 10300,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 3700,
+   "Town of Harwick": 7400,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9000,
+   "Town of Northfield": 4300,
+   "Village of Barrow": 5100,
+   "Village of Fallon": 9200,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": -5300
+  },
+  "age5": {
+   "City of Dunmore": 13600,
+   "City of Juniper": 14200,
+   "Town of Ashgrove": 5800,
+   "Town of Cedar Run": 10800,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4700,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5000,
+   "Village of Fallon": 9200,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3600
+  },
+  "age5_x": {
+   "City of Dunmore": 13600,
+   "City of Juniper": 14200,
+   "Town of Ashgrove": 5800,
+   "Town of Cedar Run": 10800,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5100,
+   "Village of Fallon": 9200,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3100
+  },
+  "age_x": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14300,
+   "Town of Ashgrove": 5700,
+   "Town of Cedar Run": 10800,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4600,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9500,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5200,
+   "Village of Fallon": 9300,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 1900
+  },
+  "curve": {
+   "City of Dunmore": 13700,
+   "City of Juniper": 14200,
+   "Town of Ashgrove": 5800,
+   "Town of Cedar Run": 10800,
+   "Town of Elk Prairie": 3500,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7500,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 9600,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5000,
+   "Village of Fallon": 9200,
+   "Village of Ivydale": 4500,
+   "Village of Lorne": 3600
+  },
+  "place": {
+   "City of Dunmore": 13800,
+   "City of Juniper": 14100,
+   "Town of Ashgrove": 5800,
+   "Town of Cedar Run": 9700,
+   "Town of Elk Prairie": 3700,
+   "Town of Glenmoor": 4700,
+   "Town of Harwick": 7400,
+   "Town of Kessler": 5100,
+   "Town of Maple Ford": 10500,
+   "Town of Northfield": 4400,
+   "Village of Barrow": 5100,
+   "Village of Fallon": 9500,
+   "Village of Ivydale": 4700,
+   "Village of Lorne": 3700
+  },
+  "trend": {
+   "City of Dunmore": 13600,
+   "City of Juniper": 14000,
+   "Town of Ashgrove": 5600,
+   "Town of Cedar Run": 9300,
+   "Town of Elk Prairie": 3600,
+   "Town of Glenmoor": 4600,
+   "Town of Harwick": 7200,
+   "Town of Kessler": 4800,
+   "Town of Maple Ford": 10200,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5000,
+   "Village of Fallon": 9100,
+   "Village of Ivydale": 4600,
+   "Village of Lorne": 3600
+  },
+  "type": {
+   "City of Dunmore": 15100,
+   "City of Juniper": 15500,
+   "Town of Ashgrove": 5100,
+   "Town of Cedar Run": 9700,
+   "Town of Elk Prairie": 3300,
+   "Town of Glenmoor": 4500,
+   "Town of Harwick": 6600,
+   "Town of Kessler": 4400,
+   "Town of Maple Ford": 8700,
+   "Town of Northfield": 3900,
+   "Village of Barrow": 5600,
+   "Village of Fallon": 9900,
+   "Village of Ivydale": 4900,
+   "Village of Lorne": 3900
+  },
+  "vintage": {
+   "City of Dunmore": 13800,
+   "City of Juniper": 14300,
+   "Town of Ashgrove": 6000,
+   "Town of Cedar Run": 10900,
+   "Town of Elk Prairie": 3700,
+   "Town of Glenmoor": 4800,
+   "Town of Harwick": 7700,
+   "Town of Kessler": 5100,
+   "Town of Maple Ford": 10200,
+   "Town of Northfield": 4600,
+   "Village of Barrow": 5200,
+   "Village of Fallon": 9500,
+   "Village of Ivydale": 4600,
+   "Village of Lorne": 3600
   }
  },
- "r1_over_pct": 43,
+ "rung_sets": {
+  "age": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age10": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age10_x": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age3": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age3_x": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age5": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age5_x": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "age_x": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "curve": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run"
+  ],
+  "place": [
+   "Dunmore",
+   "Juniper",
+   "Maple Ford"
+  ],
+  "trend": [
+   "Dunmore",
+   "Juniper",
+   "Maple Ford"
+  ],
+  "type": [
+   "Dunmore",
+   "Juniper"
+  ],
+  "vintage": [
+   "Dunmore",
+   "Juniper",
+   "Cedar Run",
+   "Maple Ford"
+  ]
+ },
  "rungs": {
-  "R0": {
-   "set": [
-    "Dunmarsh",
-    "Elkhollow",
-    "Halvering",
-    "Larkhaven",
-    "Linnmere",
-    "Marlbank",
-    "Quarrybrook",
-    "Thorncastle",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 8.5,
-    "Dunmarsh": 16.5,
-    "Elkhollow": 13.97,
-    "Halvering": 22.75,
-    "Kinnard": 7.85,
-    "Larkhaven": 13.7,
-    "Linnmere": 18.48,
-    "Marlbank": 14.32,
-    "Quarrybrook": 11.06,
-    "Sallowford": 6.76,
-    "Thorncastle": 11.38,
-    "Wexmoor": 28.17
-   }
+  "age": {
+   "City of Dunmore": 13651,
+   "City of Juniper": 14230,
+   "Town of Ashgrove": 5761,
+   "Town of Cedar Run": 10787,
+   "Town of Elk Prairie": 3511,
+   "Town of Glenmoor": 4688,
+   "Town of Harwick": 7498,
+   "Town of Kessler": 4746,
+   "Town of Maple Ford": 9611,
+   "Town of Northfield": 4521,
+   "Village of Barrow": 5039,
+   "Village of Fallon": 9251,
+   "Village of Ivydale": 4526,
+   "Village of Lorne": 3550
   },
-  "R1": {
-   "set": [
-    "Copperleaf",
-    "Dunmarsh",
-    "Elkhollow",
-    "Halvering",
-    "Larkhaven",
-    "Linnmere",
-    "Marlbank",
-    "Quarrybrook",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 11.45,
-    "Dunmarsh": 12.81,
-    "Elkhollow": 17.16,
-    "Halvering": 19.85,
-    "Kinnard": 7.2,
-    "Larkhaven": 11.4,
-    "Linnmere": 18.5,
-    "Marlbank": 15.72,
-    "Quarrybrook": 11.37,
-    "Sallowford": 7.08,
-    "Thorncastle": 8.55,
-    "Wexmoor": 21.21
-   }
+  "age10": {
+   "City of Dunmore": 13711,
+   "City of Juniper": 14306,
+   "Town of Ashgrove": 5716,
+   "Town of Cedar Run": 10687,
+   "Town of Elk Prairie": 3508,
+   "Town of Glenmoor": 4656,
+   "Town of Harwick": 7490,
+   "Town of Kessler": 4769,
+   "Town of Maple Ford": 9623,
+   "Town of Northfield": 4481,
+   "Village of Barrow": 5038,
+   "Village of Fallon": 9217,
+   "Village of Ivydale": 4527,
+   "Village of Lorne": 3556
   },
-  "R1c": {
-   "set": [
-    "Copperleaf",
-    "Dunmarsh",
-    "Elkhollow",
-    "Halvering",
-    "Larkhaven",
-    "Linnmere",
-    "Marlbank",
-    "Quarrybrook",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 11.04,
-    "Dunmarsh": 12.36,
-    "Elkhollow": 16.54,
-    "Halvering": 19.14,
-    "Kinnard": 6.94,
-    "Larkhaven": 10.99,
-    "Linnmere": 17.83,
-    "Marlbank": 15.16,
-    "Quarrybrook": 10.97,
-    "Sallowford": 6.83,
-    "Thorncastle": 8.24,
-    "Wexmoor": 20.45
-   }
+  "age10_x": {
+   "City of Dunmore": 13732,
+   "City of Juniper": 14319,
+   "Town of Ashgrove": 5705,
+   "Town of Cedar Run": 10674,
+   "Town of Elk Prairie": 3516,
+   "Town of Glenmoor": 4681,
+   "Town of Harwick": 7498,
+   "Town of Kessler": 4802,
+   "Town of Maple Ford": 9599,
+   "Town of Northfield": 4490,
+   "Village of Barrow": 5147,
+   "Village of Fallon": 9250,
+   "Village of Ivydale": 4502,
+   "Village of Lorne": 3520
   },
-  "R1d": {
-   "set": [
-    "Copperleaf",
-    "Dunmarsh",
-    "Elkhollow",
-    "Halvering",
-    "Larkhaven",
-    "Linnmere",
-    "Marlbank",
-    "Quarrybrook",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 11.27,
-    "Dunmarsh": 12.7,
-    "Elkhollow": 16.98,
-    "Halvering": 19.88,
-    "Kinnard": 7.04,
-    "Larkhaven": 11.19,
-    "Linnmere": 18.51,
-    "Marlbank": 15.47,
-    "Quarrybrook": 11.4,
-    "Sallowford": 7.06,
-    "Thorncastle": 8.44,
-    "Wexmoor": 21.34
-   }
+  "age3": {
+   "City of Dunmore": 13682,
+   "City of Juniper": 14273,
+   "Town of Ashgrove": 5743,
+   "Town of Cedar Run": 10693,
+   "Town of Elk Prairie": 3521,
+   "Town of Glenmoor": 4684,
+   "Town of Harwick": 7466,
+   "Town of Kessler": 4760,
+   "Town of Maple Ford": 9610,
+   "Town of Northfield": 4494,
+   "Village of Barrow": 5040,
+   "Village of Fallon": 9235,
+   "Village of Ivydale": 4530,
+   "Village of Lorne": 3555
   },
-  "R2": {
-   "set": [
-    "Dunmarsh",
-    "Halvering",
-    "Linnmere",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 5.52,
-    "Dunmarsh": 10.75,
-    "Elkhollow": 9.1,
-    "Halvering": 14.9,
-    "Kinnard": 5.07,
-    "Larkhaven": 8.89,
-    "Linnmere": 12.12,
-    "Marlbank": 9.29,
-    "Quarrybrook": 7.24,
-    "Sallowford": 4.42,
-    "Thorncastle": 7.37,
-    "Wexmoor": 18.57
-   }
+  "age3_x": {
+   "City of Dunmore": 13744,
+   "City of Juniper": 14235,
+   "Town of Ashgrove": 5519,
+   "Town of Cedar Run": 10348,
+   "Town of Elk Prairie": 3466,
+   "Town of Glenmoor": 3715,
+   "Town of Harwick": 7415,
+   "Town of Kessler": 4766,
+   "Town of Maple Ford": 9013,
+   "Town of Northfield": 4283,
+   "Village of Barrow": 5071,
+   "Village of Fallon": 9182,
+   "Village of Ivydale": 4487,
+   "Village of Lorne": -5345
   },
-  "R3t": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 8.82,
-    "Dunmarsh": 9.88,
-    "Elkhollow": 13.23,
-    "Halvering": 15.36,
-    "Kinnard": 5.53,
-    "Larkhaven": 8.77,
-    "Linnmere": 14.32,
-    "Marlbank": 12.1,
-    "Quarrybrook": 8.81,
-    "Sallowford": 5.48,
-    "Thorncastle": 6.57,
-    "Wexmoor": 16.47
-   }
+  "age5": {
+   "City of Dunmore": 13632,
+   "City of Juniper": 14215,
+   "Town of Ashgrove": 5783,
+   "Town of Cedar Run": 10789,
+   "Town of Elk Prairie": 3513,
+   "Town of Glenmoor": 4688,
+   "Town of Harwick": 7501,
+   "Town of Kessler": 4747,
+   "Town of Maple Ford": 9587,
+   "Town of Northfield": 4494,
+   "Village of Barrow": 5039,
+   "Village of Fallon": 9206,
+   "Village of Ivydale": 4513,
+   "Village of Lorne": 3579
   },
-  "bin1": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 8.13,
-    "Dunmarsh": 9.12,
-    "Elkhollow": 12.29,
-    "Halvering": 14.17,
-    "Kinnard": 5.1,
-    "Larkhaven": 8.13,
-    "Linnmere": 13.28,
-    "Marlbank": 11.14,
-    "Quarrybrook": 8.16,
-    "Sallowford": 5.02,
-    "Thorncastle": 6.09,
-    "Wexmoor": 15.19
-   }
+  "age5_x": {
+   "City of Dunmore": 13559,
+   "City of Juniper": 14227,
+   "Town of Ashgrove": 5795,
+   "Town of Cedar Run": 10813,
+   "Town of Elk Prairie": 3478,
+   "Town of Glenmoor": 4675,
+   "Town of Harwick": 7536,
+   "Town of Kessler": 4789,
+   "Town of Maple Ford": 9579,
+   "Town of Northfield": 4501,
+   "Village of Barrow": 5123,
+   "Village of Fallon": 9235,
+   "Village of Ivydale": 4475,
+   "Village of Lorne": 3149
   },
-  "golden": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 7.97,
-    "Dunmarsh": 8.94,
-    "Elkhollow": 11.97,
-    "Halvering": 13.91,
-    "Kinnard": 4.99,
-    "Larkhaven": 7.93,
-    "Linnmere": 12.95,
-    "Marlbank": 10.94,
-    "Quarrybrook": 7.97,
-    "Sallowford": 4.96,
-    "Thorncastle": 5.94,
-    "Wexmoor": 14.91
-   }
+  "age_x": {
+   "City of Dunmore": 13706,
+   "City of Juniper": 14257,
+   "Town of Ashgrove": 5748,
+   "Town of Cedar Run": 10761,
+   "Town of Elk Prairie": 3514,
+   "Town of Glenmoor": 4601,
+   "Town of Harwick": 7457,
+   "Town of Kessler": 4771,
+   "Town of Maple Ford": 9540,
+   "Town of Northfield": 4539,
+   "Village of Barrow": 5214,
+   "Village of Fallon": 9273,
+   "Village of Ivydale": 4481,
+   "Village of Lorne": 1855
   },
-  "ll4": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 7.99,
-    "Dunmarsh": 8.95,
-    "Elkhollow": 11.98,
-    "Halvering": 13.93,
-    "Kinnard": 5.0,
-    "Larkhaven": 7.94,
-    "Linnmere": 12.96,
-    "Marlbank": 10.96,
-    "Quarrybrook": 7.98,
-    "Sallowford": 4.97,
-    "Thorncastle": 5.95,
-    "Wexmoor": 14.94
-   }
+  "curve": {
+   "City of Dunmore": 13655,
+   "City of Juniper": 14207,
+   "Town of Ashgrove": 5777,
+   "Town of Cedar Run": 10787,
+   "Town of Elk Prairie": 3499,
+   "Town of Glenmoor": 4678,
+   "Town of Harwick": 7504,
+   "Town of Kessler": 4767,
+   "Town of Maple Ford": 9591,
+   "Town of Northfield": 4500,
+   "Village of Barrow": 5030,
+   "Village of Fallon": 9230,
+   "Village of Ivydale": 4530,
+   "Village of Lorne": 3553
   },
-  "ll6": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 8.03,
-    "Dunmarsh": 9.01,
-    "Elkhollow": 12.06,
-    "Halvering": 14.01,
-    "Kinnard": 5.03,
-    "Larkhaven": 7.99,
-    "Linnmere": 13.05,
-    "Marlbank": 11.02,
-    "Quarrybrook": 8.04,
-    "Sallowford": 5.0,
-    "Thorncastle": 5.99,
-    "Wexmoor": 15.03
-   }
+  "place": {
+   "City of Dunmore": 13772,
+   "City of Juniper": 14058,
+   "Town of Ashgrove": 5753,
+   "Town of Cedar Run": 9735,
+   "Town of Elk Prairie": 3690,
+   "Town of Glenmoor": 4650,
+   "Town of Harwick": 7357,
+   "Town of Kessler": 5089,
+   "Town of Maple Ford": 10451,
+   "Town of Northfield": 4426,
+   "Village of Barrow": 5115,
+   "Village of Fallon": 9491,
+   "Village of Ivydale": 4683,
+   "Village of Lorne": 3687
   },
-  "ols2": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 7.97,
-    "Dunmarsh": 8.94,
-    "Elkhollow": 11.97,
-    "Halvering": 13.91,
-    "Kinnard": 4.99,
-    "Larkhaven": 7.93,
-    "Linnmere": 12.95,
-    "Marlbank": 10.94,
-    "Quarrybrook": 7.97,
-    "Sallowford": 4.96,
-    "Thorncastle": 5.94,
-    "Wexmoor": 14.91
-   }
+  "trend": {
+   "City of Dunmore": 13628,
+   "City of Juniper": 13968,
+   "Town of Ashgrove": 5622,
+   "Town of Cedar Run": 9311,
+   "Town of Elk Prairie": 3575,
+   "Town of Glenmoor": 4644,
+   "Town of Harwick": 7192,
+   "Town of Kessler": 4814,
+   "Town of Maple Ford": 10195,
+   "Town of Northfield": 4546,
+   "Village of Barrow": 5035,
+   "Village of Fallon": 9108,
+   "Village of Ivydale": 4551,
+   "Village of Lorne": 3616
   },
-  "ols3": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 7.97,
-    "Dunmarsh": 8.94,
-    "Elkhollow": 11.97,
-    "Halvering": 13.91,
-    "Kinnard": 4.99,
-    "Larkhaven": 7.93,
-    "Linnmere": 12.95,
-    "Marlbank": 10.94,
-    "Quarrybrook": 7.97,
-    "Sallowford": 4.96,
-    "Thorncastle": 5.94,
-    "Wexmoor": 14.91
-   }
+  "type": {
+   "City of Dunmore": 15133,
+   "City of Juniper": 15536,
+   "Town of Ashgrove": 5100,
+   "Town of Cedar Run": 9717,
+   "Town of Elk Prairie": 3290,
+   "Town of Glenmoor": 4453,
+   "Town of Harwick": 6649,
+   "Town of Kessler": 4445,
+   "Town of Maple Ford": 8700,
+   "Town of Northfield": 3922,
+   "Village of Barrow": 5633,
+   "Village of Fallon": 9887,
+   "Village of Ivydale": 4881,
+   "Village of Lorne": 3904
   },
-  "ols4": {
-   "set": [
-    "Elkhollow",
-    "Halvering",
-    "Linnmere",
-    "Marlbank",
-    "Wexmoor"
-   ],
-   "tons": {
-    "Copperleaf": 8.02,
-    "Dunmarsh": 8.99,
-    "Elkhollow": 12.04,
-    "Halvering": 13.98,
-    "Kinnard": 5.02,
-    "Larkhaven": 7.98,
-    "Linnmere": 13.02,
-    "Marlbank": 11.0,
-    "Quarrybrook": 8.02,
-    "Sallowford": 4.99,
-    "Thorncastle": 5.98,
-    "Wexmoor": 14.99
-   }
+  "vintage": {
+   "City of Dunmore": 13828,
+   "City of Juniper": 14320,
+   "Town of Ashgrove": 5973,
+   "Town of Cedar Run": 10944,
+   "Town of Elk Prairie": 3701,
+   "Town of Glenmoor": 4818,
+   "Town of Harwick": 7718,
+   "Town of Kessler": 5086,
+   "Town of Maple Ford": 10247,
+   "Town of Northfield": 4605,
+   "Village of Barrow": 5151,
+   "Village of Fallon": 9520,
+   "Village of Ivydale": 4631,
+   "Village of Lorne": 3629
   }
  },
- "threshold": 10.0,
- "totals": {
-  "eligible": 65305,
-  "miles_m": 614.0,
-  "read": 61865,
-  "tons": 113
- },
- "year": 2027,
- "zone_charges": {
-  "0": 185,
-  "1": 280,
-  "2": 330,
-  "3": 395
- }
+ "year_built_placeholder_as": 1900
 }

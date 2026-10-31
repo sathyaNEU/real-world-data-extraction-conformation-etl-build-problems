@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="596" viewBox="0 0 760 596" font-family="Helvetica, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="24" y="34" font-size="17" font-weight="bold" fill="#1d2b36">Tamarack County: estimated residents on 1 July 2026</text>
+<text x="24" y="56" font-size="12" fill="#43525e">Three municipalities reach the 10,000 line for the 2027 urban tier: Juniper, Dunmore and Cedar Run</text>
+<line x1="178.0" y1="84" x2="178.0" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="178.0" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">0</text>
+<line x1="245.8" y1="84" x2="245.8" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="245.8" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">2,000</text>
+<line x1="313.5" y1="84" x2="313.5" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="313.5" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">4,000</text>
+<line x1="381.2" y1="84" x2="381.2" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="381.2" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">6,000</text>
+<line x1="449.0" y1="84" x2="449.0" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="449.0" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">8,000</text>
+<line x1="516.8" y1="84" x2="516.8" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="516.8" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">10,000</text>
+<line x1="584.5" y1="84" x2="584.5" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="584.5" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">12,000</text>
+<line x1="652.2" y1="84" x2="652.2" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="652.2" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">14,000</text>
+<line x1="720.0" y1="84" x2="720.0" y2="544" stroke="#e3e8ec" stroke-width="1"/>
+<text x="720.0" y="560" font-size="10" fill="#5b6b77" text-anchor="middle">16,000</text>
+<text x="168" y="108" font-size="11.5" fill="#1d2b36" text-anchor="end">City of Juniper</text>
+<rect x="178.0" y="92" width="482.0" height="22" fill="#1f6f5c"/>
+<text x="665.0" y="108" font-size="10.5" fill="#1d2b36">14,200</text>
+<text x="168" y="139" font-size="11.5" fill="#1d2b36" text-anchor="end">City of Dunmore</text>
+<rect x="178.0" y="123" width="462.4" height="22" fill="#1f6f5c"/>
+<text x="645.4" y="139" font-size="10.5" fill="#1d2b36">13,700</text>
+<text x="168" y="170" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Cedar Run</text>
+<rect x="178.0" y="154" width="365.4" height="22" fill="#1f6f5c"/>
+<text x="548.4" y="170" font-size="10.5" fill="#1d2b36">10,800</text>
+<text x="168" y="201" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Maple Ford</text>
+<rect x="178.0" y="185" width="325.6" height="22" fill="#9fb0bc"/>
+<text x="508.6" y="201" font-size="10.5" fill="#1d2b36">9,600</text>
+<text x="168" y="232" font-size="11.5" fill="#1d2b36" text-anchor="end">Village of Fallon</text>
+<rect x="178.0" y="216" width="313.4" height="22" fill="#9fb0bc"/>
+<text x="496.4" y="232" font-size="10.5" fill="#1d2b36">9,300</text>
+<text x="168" y="263" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Harwick</text>
+<rect x="178.0" y="247" width="254.0" height="22" fill="#9fb0bc"/>
+<text x="437.0" y="263" font-size="10.5" fill="#1d2b36">7,500</text>
+<text x="168" y="294" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Ashgrove</text>
+<rect x="178.0" y="278" width="195.2" height="22" fill="#9fb0bc"/>
+<text x="378.2" y="294" font-size="10.5" fill="#1d2b36">5,800</text>
+<text x="168" y="325" font-size="11.5" fill="#1d2b36" text-anchor="end">Village of Barrow</text>
+<rect x="178.0" y="309" width="170.7" height="22" fill="#9fb0bc"/>
+<text x="353.7" y="325" font-size="10.5" fill="#1d2b36">5,000</text>
+<text x="168" y="356" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Kessler</text>
+<rect x="178.0" y="340" width="160.8" height="22" fill="#9fb0bc"/>
+<text x="343.8" y="356" font-size="10.5" fill="#1d2b36">4,700</text>
+<text x="168" y="387" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Glenmoor</text>
+<rect x="178.0" y="371" width="158.8" height="22" fill="#9fb0bc"/>
+<text x="341.8" y="387" font-size="10.5" fill="#1d2b36">4,700</text>
+<text x="168" y="418" font-size="11.5" fill="#1d2b36" text-anchor="end">Village of Ivydale</text>
+<rect x="178.0" y="402" width="153.3" height="22" fill="#9fb0bc"/>
+<text x="336.3" y="418" font-size="10.5" fill="#1d2b36">4,500</text>
+<text x="168" y="449" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Northfield</text>
+<rect x="178.0" y="433" width="153.1" height="22" fill="#9fb0bc"/>
+<text x="336.1" y="449" font-size="10.5" fill="#1d2b36">4,500</text>
+<text x="168" y="480" font-size="11.5" fill="#1d2b36" text-anchor="end">Village of Lorne</text>
+<rect x="178.0" y="464" width="120.3" height="22" fill="#9fb0bc"/>
+<text x="303.3" y="480" font-size="10.5" fill="#1d2b36">3,600</text>
+<text x="168" y="511" font-size="11.5" fill="#1d2b36" text-anchor="end">Town of Elk Prairie</text>
+<rect x="178.0" y="495" width="118.9" height="22" fill="#9fb0bc"/>
+<text x="301.9" y="511" font-size="10.5" fill="#1d2b36">3,500</text>
+<line x1="516.8" y1="78" x2="516.8" y2="544" stroke="#b5432d" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="522.8" y="74" font-size="11" fill="#b5432d">10,000: urban tier (s. 84.21 (6))</text>
+<text x="24" y="582" font-size="10" fill="#5b6b77">Residents rounded to the nearest hundred. Dwellings standing on 1 July 2026 at the persons per dwelling the 2020 block groups show by type and age; group quarters from the 2026 survey.</text>
+</svg>

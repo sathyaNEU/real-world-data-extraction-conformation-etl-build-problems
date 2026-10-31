@@ -1,113 +1,83 @@
-"""The two supplementary asks, golden and the paths that miss them, from the shipped files (the 2024 station list
-read from the generator's register, which the annual report prints; verify.py reads it off the PDF instead).
-
-Ask A, the 2025 pilot by county: the vehicles it retired (a voucher whose vehicle is registered again at 1 July 2026
-was not retired), the dismantler charges the Department paid for them (the rate card's charge for each line's tow
-zone, not the amount a billing export writes) and the NOx they would have emitted in 2027 (the call's construction).
-Ask B, every county: the completed initial inspections of the vehicles registered there at 1 July 2026 that were
-done at a station in that county (a station number read with the licence that held it on the test date)."""
-import datetime as dt
+"""The two asks from the shipped files: each municipality's resident births and resident deaths in the estimate year,
+by the municipality the residence lies in (the county's address points), and the readings a careful solver takes
+instead (the written city of residence, the registrar's residence code)."""
+import functools
 import os
-from functools import lru_cache
+import re
 
-import numpy as np
 import pandas as pd
 
-import methods as M
-import pilot as P
-import stations as S
 import world as W
 
-
-@lru_cache(maxsize=None)
-def _vouchers(target):
-    v = pd.read_excel(os.path.join(target, W.FILES["vouchers"]), dtype=str)
-    v["county"] = v["applicant_county_no"].astype(int).map(W.NAME_OF)
-    v["my"] = v["model_year"].astype(int)
-    return v
+SUFFIX = {"STREET": "ST", "AVENUE": "AVE", "DRIVE": "DR", "LANE": "LN", "COURT": "CT", "ROAD": "RD", "CIRCLE": "CIR",
+          "TRAIL": "TRL", "PLACE": "PL", "WAY": "WAY", "PARKWAY": "PKWY", "TERRACE": "TER"}
+SHORTS = set(SUFFIX.values())
 
 
-@lru_cache(maxsize=None)
-def _invoices(target):
-    return pd.read_csv(os.path.join(target, W.FILES["invoices"]), dtype=str)
+def norm(addr):
+    """house number, street name and suffix of a written address: case folded, the suffix abbreviated, the unit
+    dropped (every unit of a building lies in one municipality)"""
+    a = re.sub(r"\s+", " ", addr.upper().strip())
+    a = re.sub(r"\s+(APT|UNIT|#)\s*\S+$", "", a)
+    a = re.sub(r"\s+#\S+$", "", a)
+    parts = a.split(" ")
+    num, rest = parts[0], parts[1:]
+    if rest and rest[-1] in SUFFIX:
+        rest[-1] = SUFFIX[rest[-1]]
+    if rest and rest[-1] in SHORTS:
+        return num, " ".join(rest[:-1]), rest[-1]
+    return num, " ".join(rest), ""
 
 
-def pilot_figures(target, drop_reinstated=True, rate_card=True, construction="golden"):
-    reg = M.load(target)[0]
-    v = _vouchers(target)
-    active = set(reg.loc[reg["record_status"] == "ACTIVE", "vin"])
-    keep = ~v["vin"].isin(active) if drop_reinstated else pd.Series(True, index=v.index)
-    r = v[keep].reset_index(drop=True)
-    inv = _invoices(target).drop_duplicates()
-    if rate_card:
-        line = inv.set_index("voucher_no")["tow_zone"].astype(int).map(lambda z: P.PROCESS + P.TOW[z])
-    else:
-        line = inv.groupby("voucher_no")["amount"].apply(lambda s: s.astype(float).sum())
-    r["charge"] = r["voucher_no"].map(line)
-    body = M.load(target)[2]
-    rates = M.load(target)[3]
-    r["cls"] = r["body_code"].map(body)
-    r["rate"] = [rates.at[m, "passenger_car_g_per_mi" if c == "PC" else "light_truck_g_per_mi"] for m, c in zip(r["my"], r["cls"])]
-    m = M.match(target, r[["vin", "plate", "my"]].reset_index(drop=True))
-    a0, a1 = (2027 - r["my"]).to_numpy(), (2028 - r["my"]).to_numpy()
-    if construction == "golden":
-        Mq = M.quad(target)
-        miles = np.asarray(m["miles"] / Mq(m["age"].to_numpy()) * (Mq(a1) - Mq(a0)))
-    else:
-        miles = np.asarray(m["miles"] / m["age"])
-    r["tons"] = miles * r["rate"].to_numpy() / W.GRAMS_PER_TON
+@functools.lru_cache(maxsize=None)
+def points(t):
+    p = pd.read_csv(os.path.join(t, W.FILES["points"]), dtype=str, keep_default_na=False)
+    p = p.sort_values(["STATUS"])           # an Active point before a Retired one at the same address
+    key = list(zip(p["ADD_NUM"], p["ST_NAME"], p["ST_TYPE"]))
     out = {}
-    for c in W.PILOT_COUNTIES:
-        s = r[r["county"] == c]
-        out[c] = dict(n=int(len(s)), charges=float(s["charge"].sum()), tons=float(s["tons"].sum()),
-                      unread=int(s["tons"].isna().sum()))
+    for k, m in zip(key, p["MCD"]):
+        out.setdefault(k, m)
     return out
 
 
-def station_county_on(no, d, reg=None):
-    """The county of the station that held licence number no on date d."""
-    reg = reg or S.register()
-    for x in reg.s:
-        if x["no"] == no and x["start"] <= d and (x["end"] is None or d <= x["end"]):
-            return x["county"]
-    return None
+def in_window(dates):
+    d = pd.to_datetime(dates)
+    return (d >= pd.Timestamp(W.VITAL_FROM)) & (d <= pd.Timestamp(W.VITAL_TO))
 
 
-def station_figures(target, by_date=True):
-    reg_file = M.load(target)[0]
-    t = M.load(target)[1].drop_duplicates()
-    t = t[(t["test_type"] == "INITIAL") & t["result"].isin(["PASS", "FAIL"])].copy()
-    t = t.sort_values(["test_start", "test_id"], kind="mergesort").drop_duplicates("vin")
-    act = reg_file[reg_file["record_status"] == "ACTIVE"].copy()
-    act["my"] = act["model_year"].astype(int)
-    act["county"] = act["county_no"].astype(int).map(W.NAME_OF)
-    first = t.set_index("vin")
-    vins = set(reg_file["vin"])
-    orphan = t[~t["vin"].isin(vins)].copy()
-    orphan["my"] = orphan["model_year"].astype(int)
-    orphan = orphan.drop_duplicates(["plate", "my"]).set_index(["plate", "my"])
-    sta, day = [], []
-    for vin, pl, my in zip(act["vin"], act["plate"], act["my"]):
-        if vin in first.index:
-            row = first.loc[vin]
-        elif (pl, my) in orphan.index:
-            row = orphan.loc[(pl, my)]
-        else:
-            sta.append(None)
-            day.append(None)
-            continue
-        sta.append(int(row["station_no"]))
-        day.append(dt.date.fromisoformat(row["test_start"][:10]))
-    act["station"] = sta
-    act["day"] = day
-    reg = S.register()
-    current = {x["no"]: x["county"] for x in reg.s if x["end"] is None}
-    if by_date:
-        act["st_county"] = [station_county_on(s, d, reg) if s is not None else None for s, d in zip(act["station"], act["day"])]
-    else:
-        act["st_county"] = [current.get(s) if s is not None else None for s in act["station"]]
-    out = {}
-    for c in W.NAMES:
-        s = act[act["county"] == c]
-        out[c] = int((s["st_county"] == c).sum())
-    return out
+def city_to_muni(city):
+    c = city.upper().strip()
+    for pre in ("TOWN OF ", "VILLAGE OF ", "CITY OF "):
+        c = c.replace(pre, "")
+    c = re.sub(r" (TWP|VLG|CITY)$", "", c)
+    hit = [m[1] for m in W.MUNIS if m[1].split(" of ", 1)[1].upper() == c]
+    return hit[0] if hit else None
+
+
+def by_address(t, df, col):
+    pts = points(t)
+    mcd = [pts.get(norm(a)) for a in df[col]]
+    assert all(mcd), "an address with no point"
+    return pd.Series([W.NAME[m] for m in mcd], index=df.index)
+
+
+@functools.lru_cache(maxsize=None)
+def births(t):
+    b = pd.read_csv(os.path.join(t, W.FILES["births"]), dtype=str, keep_default_na=False)
+    b = b[in_window(b["CHILD_DOB"])]
+    gold = by_address(t, b, "RES_STREET").value_counts().to_dict()
+    naive = b["RES_CITY"].map(city_to_muni).value_counts().to_dict()
+    names = [m[1] for m in W.MUNIS]
+    return {n: int(gold.get(n, 0)) for n in names}, {n: int(naive.get(n, 0)) for n in names}
+
+
+@functools.lru_cache(maxsize=None)
+def deaths(t):
+    d = pd.read_csv(os.path.join(t, W.FILES["deaths"]), dtype=str, keep_default_na=False)
+    d = d[in_window(d["DATE_OF_DEATH"])]
+    gold = by_address(t, d, "RES_STREET").value_counts().to_dict()
+    naive = d["RES_MCD_CODE"].str[-5:].map(W.NAME).value_counts().to_dict()
+    city = d["RES_CITY"].map(city_to_muni).value_counts().to_dict()
+    names = [m[1] for m in W.MUNIS]
+    return ({n: int(gold.get(n, 0)) for n in names}, {n: int(naive.get(n, 0)) for n in names},
+            {n: int(city.get(n, 0)) for n in names})

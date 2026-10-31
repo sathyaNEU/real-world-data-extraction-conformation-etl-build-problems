@@ -1,135 +1,166 @@
 {
- "task": "task480",
- "title": "Halvering Basin: the 2027 Vehicle Retirement Program intake counties",
- "setting": "A fictional state environmental quality department's mobile sources section, a fictional twelve-county ozone nonattainment area and its first biennial inspection cycle; every record is synthetic.",
- "as_of": "2026-10-26",
- "files": [
-  {
-   "file": "county_codes.csv",
-   "source": "Division of Motor Vehicles (fictional), synthetic records",
-   "date": "2026-07-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 12
+  "task": "task480",
+  "architecture": 3,
+  "title": "The municipalities of Tamarack County that reach 10,000 residents on 1 July 2026 and move into the road aid formula's urban tier for 2027, with each municipality's resident births and deaths",
+  "domain": "Survey Research & Official Statistics",
+  "subdomain": "census-register-administrative-data-quality (a state data center's certification of municipal populations for a road aid formula)",
+  "objective": "Data Extraction & Conformation (ETL)",
+  "prompt_shape": "10: a scorecard of every municipality against the 10,000 line, with each municipality's resident births and deaths and a chart of the estimates against the line",
+  "as_of": "2026-10-30",
+  "deliverables": [
+    "tamarack_municipal_estimates_2026.xlsx",
+    "urban_tier_estimates_2026.svg"
+  ],
+  "distractor_files": [
+    "dot_certified_local_road_miles_2026.xlsx",
+    "census_bureau_county_estimates_v2025.csv"
+  ],
+  "input_gates": {
+    "files": 14,
+    "formats": [
+      "csv",
+      "pdf",
+      "xlsx"
+    ],
+    "largest_file": "tamarack_address_points_2026-07.csv",
+    "largest_file_rows": 50055
   },
-  {
-   "file": "county_population_estimates_2025.csv",
-   "source": "State Demographer (fictional), synthetic records",
-   "date": "2025-12-18",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 12
-  },
-  {
-   "file": "dot_county_vmt_2025.csv",
-   "source": "State Department of Transportation (fictional), synthetic records",
-   "date": "2026-06-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 72
-  },
-  {
-   "file": "eip_annual_report_2024.pdf",
-   "source": "Mobile Sources Section (fictional), synthetic records",
-   "date": "2025-03-20",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "eip_inspections_2024_2025.csv",
-   "source": "Halvering Basin Enhanced Inspection Program (fictional), synthetic records",
-   "date": "2026-01-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 197738
-  },
-  {
-   "file": "eip_station_register_2026-06-30.xlsx",
-   "source": "Halvering Basin Enhanced Inspection Program (fictional), synthetic records",
-   "date": "2026-06-30",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 58
-  },
-  {
-   "file": "extract_notes_and_dictionary.pdf",
-   "source": "Mobile Sources Section (fictional), synthetic records",
-   "date": "2026-09-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "gasoline_sales_by_county_2025.csv",
-   "source": "State Department of Revenue (fictional), synthetic records",
-   "date": "2026-04-03",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 144
-  },
-  {
-   "file": "nox_running_rates_cy2027.xlsx",
-   "source": "Mobile Sources Section (fictional), synthetic records",
-   "date": "2026-04-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "registration_body_codes.csv",
-   "source": "Division of Motor Vehicles (fictional), synthetic records",
-   "date": "2026-07-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 9
-  },
-  {
-   "file": "vehicle_registrations_2026-07-01.csv",
-   "source": "Division of Motor Vehicles (fictional), synthetic records",
-   "date": "2026-07-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 253717
-  },
-  {
-   "file": "vehicle_retirement_program_guidelines_2027.pdf",
-   "source": "Mobile Sources Section (fictional), synthetic records",
-   "date": "2026-09-08",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "vrp_pilot_close_out_2025.pdf",
-   "source": "Mobile Sources Section (fictional), synthetic records",
-   "date": "2026-02-10",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "vrp_pilot_dismantler_invoices_2025.csv",
-   "source": "the 2025 pilot's three licensed dismantlers (fictional), synthetic records",
-   "date": "2026-01-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 741
-  },
-  {
-   "file": "vrp_pilot_vouchers_2025.xlsx",
-   "source": "Vehicle Retirement Program program office (fictional), synthetic records",
-   "date": "2026-01-20",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 741
-  }
- ],
- "distractors": [
-  {
-   "file": "dot_county_vmt_2025.csv",
-   "why": "road miles counted on each county's roads by every vehicle including through traffic; guidelines 3.3 judges each vehicle's 2027 miles on its own odometer reading"
-  },
-  {
-   "file": "gasoline_sales_by_county_2025.csv",
-   "why": "gallons sold by county of sale, every vehicle that fuels there; not a vehicle's miles, which 3.3 takes from its own reading"
-  },
-  {
-   "file": "county_population_estimates_2025.csv",
-   "why": "residents and households; the eligible fleet is the registration snapshot's ACTIVE records (2.1)"
-  },
-  {
-   "file": "eip_station_register_2026-06-30.xlsx",
-   "why": "where intake desks could sit (guidelines 5); a county's NOx rests on its vehicles' own readings wherever they were tested (3.3)"
-  }
- ],
- "deliverables": [
-  "retirement_program_county_nox_2027.xlsx",
-  "intake_counties_2027_memo.docx"
- ]
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task480/generator/build.py (seeded, deterministic) in the layouts of a county assessor's residential roll, municipal building inspectors' certificate and demolition logs, the Census Bureau's 2020 block group tables, a state boundary register, county address points and a state registrar's resident vital files; the county, its municipalities, the state's offices and every person and address are fictional, and the state and county codes are not any real state's.",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "created": "2026-10-30",
+  "generator": "task480/generator/build.py",
+  "files": [
+    {
+      "path": "births_tamarack_residents_2025-2026.csv",
+      "format": "csv",
+      "bytes": 133832,
+      "rows": 1086,
+      "source": "Constructed: the State Registrar's resident birth file for the county, filings July 2025 to August 2026",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "census2020_dhc_tamarack_block_groups.csv",
+      "format": "csv",
+      "bytes": 10596,
+      "rows": 111,
+      "source": "Constructed: the 2020 census Demographic and Housing Characteristics counts for the county's block groups",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "census_bureau_county_estimates_v2025.csv",
+      "format": "csv",
+      "bytes": 565,
+      "rows": 6,
+      "source": "Constructed: the Census Bureau's Vintage 2025 county population estimates for the state",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "certificates_of_occupancy_2020-01_2026-06.csv",
+      "format": "csv",
+      "bytes": 480216,
+      "rows": 4231,
+      "source": "Constructed: the county's consolidated log of certificates of occupancy issued by the municipal building inspectors, January 2020 to June 2026",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "deaths_tamarack_residents_2025-2026.csv",
+      "format": "csv",
+      "bytes": 157375,
+      "rows": 1223,
+      "source": "Constructed: the State Registrar's resident death file for the county, filings July 2025 to August 2026",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "decennial_census_tamarack_municipalities_2000-2020.xlsx",
+      "format": "xlsx",
+      "bytes": 10444,
+      "rows": null,
+      "source": "Constructed: the State Data Center's compilation of the 2000, 2010 and 2020 census counts by municipality",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "demolition_permits_2000-2026.csv",
+      "format": "csv",
+      "bytes": 138687,
+      "rows": 1188,
+      "source": "Constructed: the county's consolidated log of demolition permits since 2000",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "dot_certified_local_road_miles_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 6957,
+      "rows": null,
+      "source": "Constructed: the Department of Transportation's certified local road miles for the 2027 aid year",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "group_quarters_survey_2026.xlsx",
+      "format": "xlsx",
+      "bytes": 7294,
+      "rows": null,
+      "source": "Constructed: the State Data Center's annual survey of group quarters, 2026",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "municipal_boundary_changes_since_2000.csv",
+      "format": "csv",
+      "bytes": 13464,
+      "rows": 124,
+      "source": "Constructed: the state's register of municipal annexations and consolidations since 2000",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "municipal_estimates_program_statement_2026.pdf",
+      "format": "pdf",
+      "bytes": 3247,
+      "rows": null,
+      "source": "Constructed: the State Data Center's statement of its 2026 municipal estimates program",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "municipal_road_aid_act_excerpt.pdf",
+      "format": "pdf",
+      "bytes": 3389,
+      "rows": null,
+      "source": "Constructed: an excerpt of the Municipal Road Aid Act (statutes, ch. 84, subch. II)",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tamarack_address_points_2026-07.csv",
+      "format": "csv",
+      "bytes": 5027493,
+      "rows": 50055,
+      "source": "Constructed: the county's address points, July 2026",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "tamarack_real_property_roll_2026.csv",
+      "format": "csv",
+      "bytes": 3277035,
+      "rows": 28482,
+      "source": "Constructed: the Tamarack County assessor's real property roll of residential parcels, 1 January 2026",
+      "date": "2026-10-30",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
+  ]
 }

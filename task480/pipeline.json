@@ -1,24 +1,36 @@
 {
  "task": "task480",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics / census-register-administrative-data-quality",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
- "stump": "",
+ "stump": "The default path files Dunmore, Juniper and Maple Ford because it holds each municipality's 2020 persons per dwelling for July 2026, but a dwelling's household rises for a few years and thins for decades, so the ratio overstates Maple Ford's aging subdivisions and understates Cedar Run's homes built since 2019; estimated by the dwelling's age across the 2020 block groups, Cedar Run reaches 10,000 and Maple Ford does not.",
  "architecture": 3,
  "loops": 0,
- "precut": {},
- "leak": {},
- "duplicate_check": {
-  "check": "WARN only 2026-10-31 at registration (shell.repeat reads architecture 2's prompt)"
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-31"
  },
- "judge": {},
+ "leak": {
+  "leak_py": "REVIEW (sweeps 4 and 6; no LEAK)",
+  "reader": "three reads 2026-10-31: no decisive-step sentence, no ranking or helper file, Q6 analytical; twins closed by the statement's section 3"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.deliverables; shell reworded off task256)",
+  "surface": "exit 0 (11 pairs promoted for the author's read, all on card axes already differentiated)",
+  "nearest": "task480 v2 lineage 0.10, task485 0.08"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW applied (pass 3: chart wording, backcast figures, twins; pass 4: the solution files the dwelling types and the placeholder year)",
+  "report": "determinism_check_report_pass4.md"
+ },
  "returned": [],
- "resume": "architecture 3 drawn and registered 2026-10-31T19:27:22Z; next: stage 2 design (default path, stump sentence, three rules, survivor anatomy, readability screen, fork table, ladder, closure, asks, prompt) and precut.py exit 0, then the generator",
+ "resume": "",
  "approved": null,
- "delivered": "2026-10-21",
+ "delivered": "2026-10-31",
  "portal": null,
  "source_note": "seed ET37 (EU cohesion region category): the decision form kept (which territorial units a funded program designates, one unit at a time against a filed threshold); architecture 1's water utility spent at stage 4 on 2026-10-20; architecture 2 is a state environmental department's CMAQ-funded vehicle retirement program in a twelve-county ozone nonattainment area, each county's 2027 NOx from its eligible vehicles with each vehicle's 2027 miles estimated from one cumulative odometer reading",
  "architecture_2": {

@@ -1,127 +1,181 @@
-"""An independent verifier: it reads only the shipped bundle (target/, golden/, submission.md) and recomputes the call
-and every graded figure with its own code (pandas), then compares
-with the golden workbook and the write-up."""
+"""An independent verifier: it reads only the shipped bundle (target/, golden/, submission.md) with the csv module and
+its own arithmetic, rebuilds the dwelling stock, fits persons per dwelling by type and age on the 2020 block groups,
+estimates every municipality on 1 July 2026, places the births and deaths by address, and compares the call and every
+graded figure with the golden workbook and the write-up."""
+import csv
 import datetime as dt
 import os
-import sys
+import re
 
 import numpy as np
-import pandas as pd
+import openpyxl
 
-KM = 0.621371192
-TON = 907184.74
-
-
-def load(t):
-    reg = pd.read_csv(os.path.join(t, "vehicle_registrations_2026-07-01.csv"), dtype=str)
-    tst = pd.read_csv(os.path.join(t, "eip_inspections_2024_2025.csv"), dtype=str)
-    cty = pd.read_csv(os.path.join(t, "county_codes.csv"), dtype=str)
-    body = pd.read_csv(os.path.join(t, "registration_body_codes.csv"), dtype=str)
-    rates = pd.read_excel(os.path.join(t, "nox_running_rates_cy2027.xlsx"), sheet_name="Table 2")
-    return reg, tst, cty, body, rates
-
-
-def completed(tst):
-    """Completed initial tests, re-sent rows dropped, earliest first."""
-    t = tst.drop_duplicates()
-    t = t[(t["test_type"] == "INITIAL") & t["result"].isin(["PASS", "FAIL"])].copy()
-    t["when"] = pd.to_datetime(t["test_start"])
-    return t.sort_values(["when", "test_id"], kind="mergesort")
+LINE = 10000
+NAMES = {"002": "Town of Ashgrove", "006": "Town of Cedar Run", "010": "Town of Elk Prairie", "012": "Town of Glenmoor",
+         "014": "Town of Harwick", "016": "Town of Kessler", "018": "Town of Maple Ford", "020": "Town of Northfield",
+         "106": "Village of Barrow", "116": "Village of Fallon", "131": "Village of Ivydale", "146": "Village of Lorne",
+         "221": "City of Dunmore", "241": "City of Juniper"}
+MCD = {"21400": "City of Dunmore", "39050": "City of Juniper", "13200": "Town of Cedar Run",
+       "49875": "Town of Maple Ford", "03450": "Town of Ashgrove", "04875": "Village of Barrow",
+       "23800": "Town of Elk Prairie", "25600": "Village of Fallon", "29975": "Town of Glenmoor",
+       "33100": "Town of Harwick", "37600": "Village of Ivydale", "40150": "Town of Kessler",
+       "46225": "Village of Lorne", "57650": "Town of Northfield"}
+KIND = {"1010": 0, "1020": 1, "1030": 1, "1050": 2, "1080": 3}
+USE = {"Single-family dwelling": 0, "Two-family dwelling": 1, "Townhouse unit": 1, "Multi-family dwelling": 2,
+       "Manufactured home": 3}
+BANDS = [0, 5, 10, 15, 20, 30, 40, 60]
 
 
-def first_test(reg, t, vins, plates, mys):
-    """Each vehicle's first completed initial test: by VIN, else by plate and model year among the tests whose VIN
-    is on no registration record."""
-    by_vin = t.drop_duplicates("vin").set_index("vin")
-    known = set(reg["vin"])
-    orph = t[~t["vin"].isin(known)].copy()
-    orph["my"] = orph["model_year"].astype(int)
-    by_pm = orph.drop_duplicates(["plate", "my"]).set_index(["plate", "my"])
-    rows = []
-    for v, p, m in zip(vins, plates, mys):
-        if v in by_vin.index:
-            rows.append(by_vin.loc[v])
-        elif (p, m) in by_pm.index:
-            rows.append(by_pm.loc[(p, m)])
+def dec(s):
+    d = dt.date.fromisoformat(s)
+    y0 = dt.date(d.year, 1, 1)
+    return d.year + (d - y0).days / (dt.date(d.year + 1, 1, 1) - y0).days
+
+
+def rows(t, name):
+    with open(os.path.join(t, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
+
+
+def stock(t):
+    roll = rows(t, "tamarack_real_property_roll_2026.csv")
+    cos = rows(t, "certificates_of_occupancy_2020-01_2026-06.csv")
+    demo = rows(t, "demolition_permits_2000-2026.csv")
+    first = {}
+    for c in cos:
+        if c["USE"] in USE and int(c["NEW_DWELLING_UNITS"]) > 0:
+            w = dec(c["ISSUED"])
+            if c["TAXKEY"] not in first or w < first[c["TAXKEY"]][0]:
+                first[c["TAXKEY"]] = (w, c)
+    roll_date = dec("2026-01-01")
+    units = []   # (muni, kind, completed, demolished, block group)
+    vacant = {}
+    for r in roll:
+        n = int(r["LIVING_UNITS"])
+        if n == 0:
+            vacant[r["TAXKEY"]] = r
+            continue
+        y = int(r["YEAR_BUILT"]) or 1900
+        comp = first[r["TAXKEY"]][0] if r["TAXKEY"] in first else y + 0.5
+        units += [[NAMES[r["MUNI_NO"]], KIND[r["LAND_USE"]], comp, 9999.0, r["CENSUS_BLOCK_2020"][:12], r["TAXKEY"]]] * n
+    for k, (w, c) in first.items():
+        if w >= roll_date and k in vacant:
+            units += [[NAMES[k[:3]], USE[c["USE"]], w, 9999.0, vacant[k]["CENSUS_BLOCK_2020"][:12], k]] * int(c["NEW_DWELLING_UNITS"])
+    blocks = {r["TAXKEY"]: r["CENSUS_BLOCK_2020"][:12] for r in roll}
+    by_key = {}
+    for i, u in enumerate(units):
+        by_key.setdefault(u[5], []).append(i)
+    for d in demo:
+        if d["STATUS"] != "Completed" or int(d["DWELLING_UNITS"] or 0) == 0:
+            continue
+        w = dec(d["COMPLETED"])
+        if w >= roll_date:
+            for i in by_key.get(d["TAXKEY"], []):
+                units[i] = units[i][:3] + [w] + units[i][4:]
         else:
-            rows.append(None)
-    return rows
+            units += [[NAMES[d["TAXKEY"][:3]], USE[d["STRUCTURE"]], int(d["YEAR_BUILT"]) + 0.5, w,
+                       blocks.get(d["TAXKEY"], ""), d["TAXKEY"]]] * int(d["DWELLING_UNITS"])
+    return units
 
 
-def nox(t):
-    reg, tst, cty, body, rates = load(t)
-    names = dict(zip(cty["county_no"], cty["county"]))
-    el = reg[(reg["record_status"] == "ACTIVE") & reg["county_no"].isin(names)].copy()
-    el["my"] = el["model_year"].astype(int)
-    el = el[el["my"].between(2005, 2014) & el["fuel_code"].isin(["G", "F"]) & el["gvwr_class"].isin(["1", "2a"])].copy()
-    el["county"] = el["county_no"].map(names)
-    cls = dict(zip(body["body_code"], body["program_class"]))
-    rt = rates.set_index("model_year")
-    el["rate"] = [rt.at[m, "passenger_car_g_per_mi" if cls[b] == "PC" else "light_truck_g_per_mi"]
-                  for m, b in zip(el["my"], el["body_code"])]
-    t_ = completed(tst)
-    t_["odo"] = pd.to_numeric(t_["odometer"])
-    t_ = t_[t_["odo"].notna() & ~t_["odo"].isin([0, 999999])].copy()
-    t_["miles"] = np.where(t_["odometer_unit"] == "KM", t_["odo"] * KM, t_["odo"])
-    t_["age"] = (t_["when"] - pd.to_datetime(t_["model_year"] + "-01-01")).dt.days / 365.25
-    p = np.polyfit(t_["age"].to_numpy(), t_["miles"].to_numpy(), 2)
-    M = lambda a: np.polyval(p, a)
-    rows = first_test(reg, t_, el["vin"], el["plate"], el["my"])
-    lev = np.array([r["miles"] if r is not None else np.nan for r in rows], float)
-    age = np.array([r["age"] if r is not None else np.nan for r in rows], float)
-    a0, a1 = 2027 - el["my"].to_numpy(), 2028 - el["my"].to_numpy()
-    el["m27"] = lev / M(age) * (M(a1) - M(a0))
-    el["m27"] = el["m27"].fillna(el.groupby(["county", "my"])["m27"].transform("mean"))
-    tons = (el["m27"] * el["rate"]).groupby(el["county"]).sum() / TON
-    return tons, el.groupby("county").size(), pd.Series(~np.isnan(lev), index=el.index).groupby(el["county"]).sum()
+def band(a):
+    j = 0
+    for k, lo in enumerate(BANDS):
+        if a >= lo:
+            j = k
+    return j
 
 
-def pilot(t):
-    reg, tst, cty, body, rates = load(t)
-    names = dict(zip(cty["county_no"], cty["county"]))
-    v = pd.read_excel(os.path.join(t, "vrp_pilot_vouchers_2025.xlsx"), dtype=str)
-    inv = pd.read_csv(os.path.join(t, "vrp_pilot_dismantler_invoices_2025.csv"), dtype=str).drop_duplicates()
-    active = set(reg.loc[reg["record_status"] == "ACTIVE", "vin"])
-    v = v[~v["vin"].isin(active)].copy()
-    per_line = inv[inv["dismantler_licence"] != "D-2864"]
-    charge = per_line.groupby("tow_zone")["amount"].agg(lambda s: float(s.astype(float).mode().iloc[0]))
-    zone = inv.drop_duplicates("voucher_no").set_index("voucher_no")["tow_zone"]
-    v["charge"] = v["voucher_no"].map(zone).map(charge)
-    v["county"] = v["applicant_county_no"].map(names)
-    return v.groupby("county").size(), v.groupby("county")["charge"].sum()
+def estimates(t):
+    units = stock(t)
+    bg = rows(t, "census2020_dhc_tamarack_block_groups.csv")[1:]
+    ids = [b["GEO_ID"][-12:] for b in bg]
+    pos = {g: i for i, g in enumerate(ids)}
+    y = np.array([float(b["P15_001N"]) for b in bg])
+    X = np.zeros((len(ids), 4 + len(BANDS) - 1))
+    c20 = dec("2020-04-01")
+    for m, k, comp, gone, g, key in units:
+        if comp <= c20 < gone:
+            X[pos[g], k] += 1
+            j = band(c20 - comp)
+            if j < len(BANDS) - 1:
+                X[pos[g], 4 + j] += 1
+    beta = np.linalg.lstsq(X, y, rcond=None)[0]
+    c26 = dec("2026-07-01")
+    est = {}
+    for m, k, comp, gone, g, key in units:
+        if comp <= c26 < gone:
+            j = band(c26 - comp)
+            est[m] = est.get(m, 0.0) + beta[k] + (beta[4 + j] if j < len(BANDS) - 1 else 0.0)
+    wb = openpyxl.load_workbook(os.path.join(t, "group_quarters_survey_2026.xlsx"), data_only=True)
+    ws = wb.active
+    for r in range(5, ws.max_row + 1):
+        if ws.cell(row=r, column=3).value:
+            est[ws.cell(row=r, column=3).value] += ws.cell(row=r, column=6).value
+    return est
 
 
-def main(target, gdir):
+SUF = {"STREET": "ST", "AVENUE": "AVE", "DRIVE": "DR", "LANE": "LN", "COURT": "CT", "ROAD": "RD", "CIRCLE": "CIR",
+       "TRAIL": "TRL", "PLACE": "PL", "PARKWAY": "PKWY", "TERRACE": "TER"}
+
+
+def key(addr):
+    words = addr.upper().split()
+    while words and (words[-1].startswith("#") or (len(words) >= 2 and words[-2] in ("APT", "UNIT"))):
+        words = words[:-2] if not words[-1].startswith("#") else words[:-1]
+    words[-1] = SUF.get(words[-1], words[-1])
+    return words[0], " ".join(words[1:-1]), words[-1]
+
+
+def vital(t):
+    pts = {}
+    for p in sorted(rows(t, "tamarack_address_points_2026-07.csv"), key=lambda p: p["STATUS"]):
+        pts.setdefault((p["ADD_NUM"], p["ST_NAME"], p["ST_TYPE"]), p["MCD"])
+    out = {}
+    for name, col in (("births_tamarack_residents_2025-2026.csv", "CHILD_DOB"),
+                      ("deaths_tamarack_residents_2025-2026.csv", "DATE_OF_DEATH")):
+        cnt = {}
+        for r in rows(t, name):
+            if "2025-07-01" <= r[col] <= "2026-06-30":
+                m = MCD[pts[key(r["RES_STREET"])]]
+                cnt[m] = cnt.get(m, 0) + 1
+        out[name[:6]] = cnt
+    return out
+
+
+def main(t, gdir):
     ok = True
-    tons, n, read = nox(target)
-    q = sorted(c for c in tons.index if tons[c] >= 10.0)
-    wb = os.path.join(gdir, "retirement_program_county_nox_2027.xlsx")
-    g = pd.read_excel(wb, sheet_name="Intake counties", dtype={"County no.": str})
-    g = g[g["County no."].notna() & (g["County no."] != "")].set_index("County")
-    gq = sorted(g.index[g["Intake events"] == "Yes"])
-    print("verify: %d counties at 10 tons or more %s (golden %s)" % (len(q), q, gq))
-    ok &= q == gq
-    for c in tons.index:
-        same = int(tons[c] + 0.5) == int(g.at[c, "2027 NOx (short tons)"]) and int(n[c]) == int(g.at[c, "Eligible vehicles"]) \
-            and int(read[c]) == int(g.at[c, "With a usable reading"])
-        if not same:
-            print("verify: MISMATCH %s %.3f tons, %d eligible, %d read" % (c, tons[c], n[c], read[c]))
-        ok &= same
-    pn, pc = pilot(target)
-    p = pd.read_excel(wb, sheet_name="Pilot 2025").dropna(subset=["County no."]).set_index("County")
-    for c in pn.index:
-        same = int(pn[c]) == int(p.at[c, "Vehicles retired"]) and int(round(pc[c])) == int(p.at[c, "Dismantler charges paid ($)"])
-        print("verify: pilot %s %d retired, $%s %s" % (c, pn[c], "{:,.0f}".format(pc[c]), "ok" if same else "MISMATCH"))
-        ok &= same
+    est = estimates(t)
+    call = sorted(m for m, v in est.items() if v >= LINE)
+    v = vital(t)
+    ws = openpyxl.load_workbook(os.path.join(gdir, "tamarack_municipal_estimates_2026.xlsx"), data_only=True).active
+    reg = {}
+    for r in range(5, ws.max_row + 1):
+        m = ws.cell(row=r, column=2).value
+        if m in MCD.values():
+            reg[m] = (ws.cell(row=r, column=6).value, ws.cell(row=r, column=7).value, ws.cell(row=r, column=8).value)
+    for m in MCD.values():
+        want = ("Yes" if m in call else "No", v["births"].get(m, 0), v["deaths"].get(m, 0))
+        if reg.get(m) != want:
+            ok = False
+            print("verify: register row %s %s, verifier %s" % (m, reg.get(m), want))
     sub = open(os.path.join(os.path.dirname(gdir), "submission.md"), encoding="utf-8").read()
-    for c in tons.index:
-        ok &= ("- %s: %d; " % (c, int(tons[c] + 0.5))) in sub
-    for c in pn.index:
-        ok &= ("- %s: %d vehicles; $%s" % (c, pn[c], "{:,.0f}".format(pc[c]))) in sub
-    print("verify: %s" % ("PASS" if ok else "FAIL"))
-    return bool(ok)
+    for m in call:
+        if m not in sub.split("## 2.")[0]:
+            ok = False
+            print("verify: %s not in the recommendation" % m)
+    for kind in ("births", "deaths"):
+        for m, n in v[kind].items():
+            if not re.search(r"- %s: %s\b" % (re.escape(m), "{:,}".format(n)), sub):
+                ok = False
+                print("verify: %s %s for %s not in the write-up" % (kind, n, m))
+    print("verify: call %s; Cedar Run %.0f, Maple Ford %.0f; births %d, deaths %d; %s" % (
+        ", ".join(call), est["Town of Cedar Run"], est["Town of Maple Ford"], sum(v["births"].values()),
+        sum(v["deaths"].values()), "agrees" if ok else "DISAGREES"))
+    return ok
 
 
 if __name__ == "__main__":
-    task = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-    sys.exit(0 if main(os.path.join(task, "target"), os.path.join(task, "golden")) else 1)
+    here = os.path.dirname(os.path.abspath(__file__))
+    task = os.path.dirname(here)
+    raise SystemExit(0 if main(os.path.join(task, "target"), os.path.join(task, "golden")) else 1)

@@ -1,55 +1,60 @@
-"""The pair ceiling on the cut pack. The cracker lands the call (every county's 2027 NOx, its verdict and the set) and
-runs the hygiene battery, executing every filed rule it points at: ask A by the voucher register's PAID vouchers per
-applicant county, each priced at its tow zone's charge (Oakhaven's repeated invoice totals re-priced, as all four stage 4
-readers did). The mirror stops at the most attractive wrong rung (R1, each vehicle's reading over its age) and takes the
-asks by the same paths. Weights 38 / 7 / 55; the main block grades the set, each county's NOx and each county's
-verdict (25); the ask is 8 figures."""
+"""The ask sheet's cracker and mirror, run on the cut pack.
+
+The cracker lands the call, runs the hygiene battery and executes every filed rule. On the births it places each
+record in the municipality its written city of residence names (every written city is a municipality's name); on the
+deaths it takes the registrar's residence code. The mirror stops at the default path (each municipality's 2020 persons
+per dwelling) and takes the same readings, the asks consuming nothing the call's construction produces. A figure is
+kept when it equals the golden's whole count. The chart's two asked parts (a bar for each municipality's estimate,
+the 10,000 line) are kept by both. Weights 38 / 7 / 55, the mirror's main block 5.
+
+    python3 task480/generator/ceiling.py [target_dir]     (no argument: the figures on target.zip)
+"""
+import json
 import os
+import shutil
 import sys
+import tempfile
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-import asks as A       # noqa: E402
-import methods as M    # noqa: E402
-import world as W      # noqa: E402
+import asks as A    # noqa: E402
+import world as W   # noqa: E402
 
-W_CALL, W_INSTR, W_ASK = 38.0, 7.0, 55.0
-
-
-def r0(v):
-    return int(v + 0.5)
+TASK = os.path.dirname(HERE)
+CHART = 2
 
 
-def main(target=None, quiet=False):
-    target = target or os.path.join(os.path.dirname(HERE), "target")
-    R = M.routes(target)
-    gold, mir = R["golden"], R["R1"]
-    gset, mset = M.designated(gold), M.designated(mir)
-    keep = (gset == mset) + sum(r0(mir[c]) == r0(gold[c]) for c in W.NAMES) + \
-        sum((mir[c] >= W.THRESHOLD_TONS) == (gold[c] >= W.THRESHOLD_TONS) for c in W.NAMES)
-    p, pn = A.pilot_figures(target), A.pilot_figures(target, drop_reinstated=False)
-    rows = []
-    for c in W.PILOT_COUNTIES:
-        rows.append(("A", "%s vehicles retired" % c, p[c]["n"], pn[c]["n"]))
-        rows.append(("A", "%s dismantler charges ($)" % c, round(p[c]["charges"]), round(pn[c]["charges"])))
-    hits = sum(g == x for _, _, g, x in rows)
-    ask = W_ASK * hits / len(rows)
-    cracker = W_CALL + W_INSTR + ask
-    mirror = W_CALL * keep / 25.0 + W_INSTR + ask
-    if not quiet:
-        print("| ask | figure | golden | cracker's path | cracker |")
-        print("|---|---|---|---|---|")
-        for a, lab, g, x in rows:
-            print("| %s | %s | %s | %s | %s |" % (a, lab, "{:,}".format(g), "{:,}".format(x), "hit" if g == x else "miss"))
-        print("golden %s; mirror (R1) %s" % (gset, mset))
-        print("mirror keeps %d of 25 main criteria; the cracker's ask paths keep %d of %d figures" % (keep, hits, len(rows)))
-        print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (
-            cracker, mirror, (cracker + mirror) / 2, 100.0 * hits / len(rows)))
-    return (cracker + mirror) / 2, 100.0 * hits / len(rows)
+def run(target):
+    bg, bn = A.births(target)
+    dg, dn, dc = A.deaths(target)
+    names = [m[1] for m in W.MUNIS]
+    keep_b = sum(bn[n] == bg[n] for n in names)
+    keep_d = sum(dn[n] == dg[n] for n in names)
+    total = 2 * len(names) + CHART
+    lc = (keep_b + keep_d + CHART) / float(total)
+    ls = (keep_b + keep_d + CHART) / float(total)
+    cr, mi = 38 + 7 + 55 * lc, 5 + 7 + 55 * ls
+    rows = [("births " + W.SHORT[n], bn[n], bg[n]) for n in names] + [("deaths " + W.SHORT[n], dn[n], dg[n]) for n in names]
+    return dict(ask_criteria=total, cracker_kept={"births": int(keep_b), "deaths": int(keep_d), "chart": CHART},
+                mirror_kept={"births": int(keep_b), "deaths": int(keep_d), "chart": CHART}, cracker=round(cr, 1),
+                mirror=round(mi, 1), pair_ceiling=round((cr + mi) / 2, 1), mirror_leakage_pct=round(100 * ls, 1),
+                rows=rows)
+
+
+def main():
+    if len(sys.argv) > 1:
+        print(json.dumps(run(sys.argv[1]), indent=1))
+        return
+    tmp = tempfile.mkdtemp()
+    try:
+        with zipfile.ZipFile(os.path.join(TASK, "target.zip")) as z:
+            z.extractall(tmp)
+        print(json.dumps(run(tmp), indent=1))
+    finally:
+        shutil.rmtree(tmp)
 
 
 if __name__ == "__main__":
-    t = sys.argv[1] if len(sys.argv) > 1 else None
-    pc, leak = main(t)
-    sys.exit(0 if pc <= 40.0 and leak < 35.0 else 1)
+    main()

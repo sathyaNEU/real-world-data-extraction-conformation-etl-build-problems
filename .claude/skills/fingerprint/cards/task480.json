@@ -1,145 +1,158 @@
 {
-  "task": "task480",
-  "architecture": "v3",
-  "drawn": "2026-10-31",
-  "slot_note": "re-root of architecture 2 (emissions inventory, spent at its reship's stage 4); seed ET37's world (official regional statistics feeding a funding category) kept in spirit, the pitfall re-found in how a dwelling stock carries people",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "client_domain": "survey-research-official-statistics",
-  "niche": "a state data center's 1 July 2026 municipal population estimates by the housing unit method, built from the county address points, certificates of occupancy and the 2020 census block groups, the estimates that set which municipalities reach the 10,000 residents the state's municipal road aid formula moves to its urban tier",
-  "objective": "etl",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "time",
-    "population"
-  ],
-  "pattern": [
+ "task": "task480",
+ "architecture": "v3",
+ "drawn": "2026-10-31",
+ "slot_note": "re-root of architecture 2 (emissions inventory, spent at its reship's stage 4); seed ET37's world (official regional statistics feeding a funding category) kept in spirit, the pitfall re-found in how a dwelling stock carries people",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "census-register-administrative-data-quality",
+ "client_domain": "survey-research-official-statistics",
+ "niche": "a state data center's 1 July 2026 municipal population estimates by the housing unit method, built from the county address points, certificates of occupancy and the 2020 census block groups, the estimates that set which municipalities reach the 10,000 residents the state's municipal road aid formula moves to its urban tier",
+ "objective": "etl",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "City of Juniper, City of Dunmore and Town of Cedar Run reach 10,000 residents on 1 July 2026 and move into the urban tier for 2027",
+ "answer_source": "submission.md block 1; golden/tamarack_municipal_estimates_2026.xlsx",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G13",
+  "G6",
+  "G14"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "register",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who conforms the address points, the certificates of occupancy and the census and applies the housing unit method with each municipality's 2020 persons per occupied dwelling names the wrong municipalities, because persons per dwelling falls as a dwelling ages and the subdivisions built since 2020 sit in a few municipalities while others hold aging ones.",
+ "domain_test": "The deciding quantity is each municipality's resident population by the housing unit method, the official subcounty estimator, with persons per occupied dwelling modelled on dwelling age across the 2020 block groups; with any other field's nouns there is no dwelling stock aging through a household life cycle for the per-unit yield to follow.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:persons-per-dwelling-by-dwelling-age-in-the-housing-unit-method",
+ "layer1": [
+  "the roll's parcels against dwelling units (two-family, apartment and townhouse parcels)",
+  "temporary and final certificates of occupancy beside commercial and accessory certificates",
+  "demolition permits for garages and barns and permits that expired",
+  "the census history on each census's boundaries, the 2024 Ivydale consolidation and annexations by tax key",
+  "the assessor's year-built placeholder",
+  "post offices serving several municipalities",
+  "a registry release that recoded residence from a date"
+ ],
+ "stakeholder_role": "the state demographer",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "tamarack_real_property_roll_2026.csv",
+  "rows": 28482,
+  "entity": "one row is one residential parcel",
+  "grain": "parcel with its living units",
+  "source": "synthetic"
+ },
+ "forum": "minister_or_cabinet",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "United States",
+  "currency": "USD",
+  "org_type": "state data center",
+  "invented_names": [],
+  "people": [
+   "Laura Rubio",
+   "Chad Neal"
+  ]
+ },
+ "deliverables": [
+  "tamarack_municipal_estimates_2026.xlsx",
+  "urban_tier_estimates_2026.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "what",
+ "driver": "The decisive quantity is a count carried from the units of a stock by a per-unit yield measured at the last census, but the yield falls as each unit ages, so the units added since and the units now older do not carry the census average; the yield has to be modelled on unit age across the census's small areas and applied to the current stock by age, while the place's census average puts the newest units at the old stock's yield.",
+ "driver_concrete": "Each municipality's 1 July 2026 residents are its occupied dwellings times persons per occupied dwelling, and persons per dwelling falls as a dwelling ages (young households fill new subdivisions and shrink as children leave), so the 2020 census average of a municipality understates its new subdivisions and overstates its aging ones; persons per dwelling has to be estimated by dwelling age across the 2020 block groups and applied to the 2026 stock by age.",
+ "stump": "A competent analyst applies the housing unit method with each municipality's 2020 persons per dwelling to its 2026 dwellings and files Dunmore, Juniper and Maple Ford (Maple Ford 10,451, Cedar Run 9,735); the step that lands it there is holding a place's census ratio for a stock whose ages have moved, when persons per dwelling follows the dwelling's age and has to be estimated by age across the 2020 block groups, which files Dunmore, Juniper and Cedar Run.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task229": "task229 v2 reads a state's share through checks that see units just before setting them right, scheduled at interval ends or led by symptoms; nothing here is checked or corrected: every dwelling is counted, and the yield each carries is modelled on its age across the census's small areas",
+  "task242": "task242 corrects an event share for a detector whose sensitivity fades with time since the event; nothing here is detected: the count is complete and the per-dwelling yield falls with the dwelling's age, so the stock's age mix sets each place's total",
+  "task476": "task476 v2 places an unrecorded start time inside an inspection interval with seasonal starts; no event is timed here: each dwelling's completion year is recorded, and the decisive move is the occupancy each age carries, not when anything began",
+  "task174": "task174 v2 recovers a per-repetition gain from stopped runs with an overnight decay; nothing here repeats or stops: the yield per dwelling follows the household life cycle of the stock as it ages, estimated across small areas at one census",
+  "task461": "task461 carries a short record's low quantile through an auxiliary series' overlap; nothing here is a tail or an auxiliary record: the census's per-dwelling yield, measured on the 2020 stock, is modelled on dwelling age and applied to the 2026 stock",
+  "task501": "task501 v4 sets a chain process's sustainability by a mixing matrix's dominant eigenvalue measured over two pooled regimes; nothing here passes between units or pools regimes: a complete count of dwellings carries people at a yield that falls with each dwelling's age"
+ },
+ "lineage": [
+  {
+   "gap": [
+    "population",
+    "time"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
+   ],
+   "generators": [
+    "G16",
+    "G3",
+    "G6"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "designation_set",
+   "stump_strategy": "causal_design",
+   "layer2_pattern": "own:old-meter under-registration read across a staggered meter exchange against premises of the same type whose meters did not change over the same quarters",
+   "driver": "Each old instrument under-records by a share of what passes through it and shows that share only when it is replaced, and the replacements ran through a year in which one kind of unit used far more than the year before while the others did not; a unit's own change across its replacement carries that rise, and so does a comparison pooled over kinds, so the instrument's error is read against units of the same kind whose instrument did not change over the same periods, as a share of the volume delivered.",
+   "niche": "a Portuguese intermunicipal water utility's 2025 water balance by metering zone, with the old customer meters' under-registration measured in service from its own smart-meter rollout, deciding which zones' infrastructure leakage index qualifies them for a cohesion-funded network renewal application",
+   "subdomain": "field-service-maintenance",
+   "domain": "business-operations-analytics",
+   "architecture": "v1",
+   "drawn": "2026-10-20",
+   "stump": "The default path measures each exchanged meter's under-registration as its own step from the same quarters a year earlier (10.5 per cent), which carries 2025's rise in houses' use into the meters' error and files five zones; netting the step against every unchanged premises or those on the same tariff files seven; only the step net of same-type premises whose meters did not change (4.3 per cent) files the golden eight.",
+   "fate": "spent at stage 4 on 2026-10-20: scored leak reader 2 (target.zip on the v1 pack) landed the call, eight zones at 4.3 per cent, by netting each exchanged meter's step against unchanged premises of the same type with a placebo; reader 1 filed seven with type controls stratified by consumption band; both readers kept all 32 ask figures (the SCADA UTC stamps from the daylight-saving shift of the night profile, the GIS 2008 placeholder from its spike and the works register); judge DETERMINISTIC but FIX_NOW on the 4.3 per cent figure (its estimator family spans 3.5 to 4.5); re-rooted fresh by the author's rule (no retirement)"
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-21",
+   "domain": "physical-environmental-sciences",
+   "subdomain": "emissions-inventory",
+   "niche": "a state environmental quality department's 2027 Vehicle Retirement Program in a twelve-county ozone nonattainment area, which holds intake events in each county whose registered gasoline cars and light trucks of model years 2005 to 2014 will emit at least 10 short tons of NOx in 2027, each vehicle's 2027 miles expected from its own odometer reading at the area's first biennial inspection cycle (2024 and 2025)",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G17",
     "G13",
-    "G6",
-    "G14"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "register",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the address points, the certificates of occupancy and the census and applies the housing unit method with each municipality's 2020 persons per occupied dwelling names the wrong municipalities, because persons per dwelling falls as a dwelling ages and the subdivisions built since 2020 sit in a few municipalities while others hold aging ones.",
-  "domain_test": "The deciding quantity is each municipality's resident population by the housing unit method, the official subcounty estimator, with persons per occupied dwelling modelled on dwelling age across the 2020 block groups; with any other field's nouns there is no dwelling stock aging through a household life cycle for the per-unit yield to follow.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:persons-per-dwelling-by-dwelling-age-in-the-housing-unit-method",
-  "layer1": [
-    "municipal consolidation boundaries against the census's old townships",
-    "address points with several points per building and retired points",
-    "group quarters counted apart",
-    "certificates of occupancy against permits and demolitions",
-    "seasonal and vacant units"
-  ],
-  "stakeholder_role": "the state demographer",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "county_address_points",
-    "rows": 0,
-    "entity": "one row is one address point",
-    "grain": "address point",
-    "source": "synthetic"
-  },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "research_or_statistics_office",
-  "world": {
-    "geography": "United States",
-    "currency": "USD",
-    "org_type": "state data center",
-    "invented_names": [],
-    "people": [
-      "Laura Rubio",
-      "Chad Neal"
-    ]
-  },
-  "deliverables": [],
-  "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is a count carried from the units of a stock by a per-unit yield measured at the last census, but the yield falls as each unit ages, so the units added since and the units now older do not carry the census average; the yield has to be modelled on unit age across the census's small areas and applied to the current stock by age, while the place's census average puts the newest units at the old stock's yield.",
-  "driver_concrete": "Each municipality's 1 July 2026 residents are its occupied dwellings times persons per occupied dwelling, and persons per dwelling falls as a dwelling ages (young households fill new subdivisions and shrink as children leave), so the 2020 census average of a municipality understates its new subdivisions and overstates its aging ones; persons per dwelling has to be estimated by dwelling age across the 2020 block groups and applied to the 2026 stock by age.",
-  "stump": "A competent analyst applies the housing unit method with each municipality's 2020 persons per occupied dwelling to its 2026 occupied dwellings and names the wrong municipalities at 10,000 residents or more; the step that lands it there is reading persons per dwelling as a property of the place when it is a property of the dwelling's age.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task229": "task229 v2 reads a state's share through checks that see units just before setting them right, scheduled at interval ends or led by symptoms; nothing here is checked or corrected: every dwelling is counted, and the yield each carries is modelled on its age across the census's small areas",
-    "task242": "task242 corrects an event share for a detector whose sensitivity fades with time since the event; nothing here is detected: the count is complete and the per-dwelling yield falls with the dwelling's age, so the stock's age mix sets each place's total",
-    "task476": "task476 v2 places an unrecorded start time inside an inspection interval with seasonal starts; no event is timed here: each dwelling's completion year is recorded, and the decisive move is the occupancy each age carries, not when anything began",
-    "task174": "task174 v2 recovers a per-repetition gain from stopped runs with an overnight decay; nothing here repeats or stops: the yield per dwelling follows the household life cycle of the stock as it ages, estimated across small areas at one census",
-    "task461": "task461 carries a short record's low quantile through an auxiliary series' overlap; nothing here is a tail or an auxiliary record: the census's per-dwelling yield, measured on the 2020 stock, is modelled on dwelling age and applied to the 2026 stock",
-    "task501": "task501 v4 sets a chain process's sustainability by a mixing matrix's dominant eigenvalue measured over two pooled regimes; nothing here passes between units or pools regimes: a complete count of dwellings carries people at a yield that falls with each dwelling's age"
-  },
-  "lineage": [
-    {
-      "gap": [
-        "population",
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G16",
-        "G3",
-        "G6"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "designation_set",
-      "stump_strategy": "causal_design",
-      "layer2_pattern": "own:old-meter under-registration read across a staggered meter exchange against premises of the same type whose meters did not change over the same quarters",
-      "driver": "Each old instrument under-records by a share of what passes through it and shows that share only when it is replaced, and the replacements ran through a year in which one kind of unit used far more than the year before while the others did not; a unit's own change across its replacement carries that rise, and so does a comparison pooled over kinds, so the instrument's error is read against units of the same kind whose instrument did not change over the same periods, as a share of the volume delivered.",
-      "niche": "a Portuguese intermunicipal water utility's 2025 water balance by metering zone, with the old customer meters' under-registration measured in service from its own smart-meter rollout, deciding which zones' infrastructure leakage index qualifies them for a cohesion-funded network renewal application",
-      "subdomain": "field-service-maintenance",
-      "domain": "business-operations-analytics",
-      "architecture": "v1",
-      "drawn": "2026-10-20",
-      "stump": "The default path measures each exchanged meter's under-registration as its own step from the same quarters a year earlier (10.5 per cent), which carries 2025's rise in houses' use into the meters' error and files five zones; netting the step against every unchanged premises or those on the same tariff files seven; only the step net of same-type premises whose meters did not change (4.3 per cent) files the golden eight.",
-      "fate": "spent at stage 4 on 2026-10-20: scored leak reader 2 (target.zip on the v1 pack) landed the call, eight zones at 4.3 per cent, by netting each exchanged meter's step against unchanged premises of the same type with a placebo; reader 1 filed seven with type controls stratified by consumption band; both readers kept all 32 ask figures (the SCADA UTC stamps from the daylight-saving shift of the night profile, the GIS 2008 placeholder from its spike and the works register); judge DETERMINISTIC but FIX_NOW on the 4.3 per cent figure (its estimator family spans 3.5 to 4.5); re-rooted fresh by the author's rule (no retirement)"
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-21",
-      "domain": "physical-environmental-sciences",
-      "subdomain": "emissions-inventory",
-      "niche": "a state environmental quality department's 2027 Vehicle Retirement Program in a twelve-county ozone nonattainment area, which holds intake events in each county whose registered gasoline cars and light trucks of model years 2005 to 2014 will emit at least 10 short tons of NOx in 2027, each vehicle's 2027 miles expected from its own odometer reading at the area's first biennial inspection cycle (2024 and 2025)",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G17",
-        "G13",
-        "G16"
-      ],
-      "gate_g": "method_or_model_selection",
-      "stump_strategy": "decomposition_attribution",
-      "driver": "Each unit's amount in a future period is read from one cumulative total per unit observed once at a past date, and the yearly increment of that total falls as the unit ages; a unit's total over its age is the average of every year it has lived, which overstates its increment at the older age the period finds it at, so each unit's level is taken from its own total against the cumulative curve the cross-section of all units traces by age, and its amount from that curve's rise over the period.",
-      "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties at the 10-ton line; a car's yearly miles fall with age, so the reading's per-year average overstates the fleet's 2027 NOx by about 43 per cent, and each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files five; the fleet's curve without each vehicle's own level files four, dropping the two counties whose drivers run long and adding the one whose drivers run short.",
-      "shell": null,
-      "fate": "spent 2026-10-31 at stage 4 of its 10-30 reship: judge pass 2 NOT_DETERMINISTIC, SEND_BACK (the cumulative mileage curve's form selected by no filed criterion; the pilot ask's retired basis); shipped 10-21, pending review"
-    }
-  ],
-  "notes": "architecture 3 drawn 2026-10-31 after architecture 2's judge SEND_BACK",
-  "registered": "2026-10-31T19:27:22Z",
-  "shell": {
-    "question form": "which",
-    "second-sentence opener": "send",
-    "rounding opener": "give",
-    "deliverable set": "docx+xlsx"
+    "G16"
+   ],
+   "gate_g": "method_or_model_selection",
+   "stump_strategy": "decomposition_attribution",
+   "driver": "Each unit's amount in a future period is read from one cumulative total per unit observed once at a past date, and the yearly increment of that total falls as the unit ages; a unit's total over its age is the average of every year it has lived, which overstates its increment at the older age the period finds it at, so each unit's level is taken from its own total against the cumulative curve the cross-section of all units traces by age, and its amount from that curve's rise over the period.",
+   "stump": "The default path takes each eligible vehicle's odometer reading over its age as its 2027 miles and files nine counties at the 10-ton line; a car's yearly miles fall with age, so the reading's per-year average overstates the fleet's 2027 NOx by about 43 per cent, and each vehicle's 2027 miles are its own level against the inspected fleet's cumulative miles by age times that curve's rise over 2027, which files five; the fleet's curve without each vehicle's own level files four, dropping the two counties whose drivers run long and adding the one whose drivers run short.",
+   "shell": null,
+   "fate": "spent 2026-10-31 at stage 4 of its 10-30 reship: judge pass 2 NOT_DETERMINISTIC, SEND_BACK (the cumulative mileage curve's form selected by no filed criterion; the pilot ask's retired basis); shipped 10-21, pending review"
   }
+ ],
+ "notes": "architecture 3 drawn 2026-10-31 after architecture 2's judge SEND_BACK",
+ "registered": "2026-10-31T19:27:22Z",
+ "shell": {
+  "question form": "what",
+  "second-sentence opener": "for",
+  "rounding opener": "report",
+  "deliverable set": "svg+xlsx"
+ },
+ "lineage_shells": [
+  {
+   "question form": "which",
+   "second-sentence opener": "send",
+   "rounding opener": "give",
+   "deliverable set": "docx+xlsx"
+  }
+ ]
 }
