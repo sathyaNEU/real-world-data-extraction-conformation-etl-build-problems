@@ -1,11 +1,11 @@
 {
  "task": "task457",
  "architecture": 1,
- "title": "Which fifteen faculty an academic medical center's conflict-of-interest office sends to its February committee, 2026 remuneration from a single manufacturer estimated before Open Payments publishes the year",
+ "title": "Conflict of interest committee docket, February 2027",
  "domain": "Survey Research & Official Statistics",
- "subdomain": "census-register-administrative-data-quality (the faculty's self-reported disclosures validated against the Open Payments register on the years both cover, the amount-reporting error measured on matched reports and credibility-weighted by the number of them, carried to the year the register has not published)",
+ "subdomain": "census-register-administrative-data-quality (faculty disclosures and the Open Payments register)",
  "objective": "Data Extraction & Conformation (ETL)",
- "prompt_shape": "01: a ranked list under a cap (the committee's fifteen), with a chart, three supporting tables and the conformed faculty-by-year file",
+ "prompt_shape": "01: a ranked list under the committee's cap, with a chart, supporting tables and a conformed faculty-by-year file",
  "as_of": "2027-01-27",
  "deliverables": [
   "coi_committee_docket_2027-02.docx",
@@ -26,7 +26,7 @@
   "1,000"
  ],
  "input_gates": {
-  "files": 14,
+  "files": 12,
   "formats": [
    "csv",
    "pdf",
@@ -151,24 +151,6 @@
    "bytes": 175932,
    "rows": 656,
    "source": "Constructed: Open Payments research payments naming a faculty member as principal investigator, in the public file layout",
-   "date": "2027-01-21",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "oricoi_export_contents_2027-01-21.csv",
-   "format": "csv",
-   "bytes": 1205,
-   "rows": 13,
-   "source": "Constructed: the list of the export's files of 21 January 2027",
-   "date": "2027-01-21",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "oricoi_field_definitions.xlsx",
-   "format": "xlsx",
-   "bytes": 10226,
-   "rows": null,
-   "source": "Constructed: the field descriptions of the data files",
    "date": "2027-01-21",
    "license": "CC0-1.0 (original work, constructed for this task)"
   }

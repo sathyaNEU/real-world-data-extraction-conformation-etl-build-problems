@@ -52,6 +52,16 @@ The default path files the whole-year docket, five faculty whose earlier Decembe
 - No certified replay: the selection criterion is filed in general terms and the 2025 register is the register's own publication, not a certified figure built to bless a method; no estimator reproduces 2025 exactly, and the whole-year read is not blessed by it (it comes 1.32 times further from 2025 than the aligned golden).
 - Lesson: a model learns that a self-report validated against a register must be compared over the window the report could cover, so a report filed before its period closed is partial and a reporter's apparent error mixes habit with timing; no build on file aligns a self-report's reference window with a register's, and the whole-year ratio is the generalist's comparison.
 
+## Survivor anatomy
+
+Actor: the part of a manufacturer's year a disclosure could see has no column; it is the relation between the disclosure's submission time (the export's version in force and the submission history) and the dates of the register's payments, so a disclosure filed in early December reads low with no field saying it is partial.
+Link: each disclosure is set against the register's payments to the same faculty member from the same manufacturer up to the day it was submitted, through the profile's NPI and the manufacturer's Open Payments identifier on the office's entity list, a dated comparison that no key or clause names.
+Reflex: the record-check comparison every analyst builds first, each disclosure against the register's whole program year with a matched-line ratio weighted toward the faculty's and chosen by the policy's filed back-test, sits at rungs 0 to 2 and files the whole-year docket; the risk on file is that aligning a report's window is part of the field's own record-check method, so this line is answered by the data (a third of the faculty file in December by habit) rather than by the method being obscure.
+Back-test: the whole-year ratio passes the policy's filed back-test on the last register year well enough to be selected among the generalist's corrections, so the easy route is the one the record certifies as best among those it is shown.
+Second use: the submission history, the export and the register are the office's and CMS's own records, each read by the asks (the 2026 cycle's late filers, the register's 2025 natures, the non-reporting companies); nothing ships only to make the window computable.
+Shock: the December filers' low readings look like ordinary under-reporting habits spread across departments; nothing is the pack's largest anomaly.
+Pins: the policy files the docket's quantity, its fifteen places, the population (faculty holding an appointment on 31 December who filed) and the selection criterion in general terms; the guide files who files, the deadline and the version in force; no sentence names a submission window, partial disclosures or a gross-up.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -107,7 +117,7 @@ The default path files the whole-year docket, five faculty whose earlier Decembe
 | 2 | Unit of account | a faculty member, ranked on their largest single-manufacturer remuneration | the policy names the person and the single manufacturer |
 | 3 | Attribution window | calendar 2026 by date of payment; each disclosure compared over the payments made by its submission | the policy and the register's program year; the decisive construction for the comparison window (C4: every whole-year reading files another docket at its chosen weighting, asserted) |
 | 4 | As-of dating | the register as the January 2027 refresh publishes it; the disclosures as exported for the docket | filed in the policy ("latest publication") and the manifest |
-| 5 | Version basis | the version in force of each disclosure | the guide and the dictionary; C1 for the docket (no docket-region member amended) |
+| 5 | Version basis | the version in force of each disclosure | the guide ("The disclosure in force is the latest version you submitted"); C1 for the docket (no docket-region member amended) |
 | 6 | Denominator | the register's remuneration on the matched lines, counted to each disclosure's submission | the decisive construction; C4 (asserted cell by cell) |
 | 7 | Weighting | credibility weighting chosen on 2025 | the filed criterion (C2 in its statistical form: every construction closer than the golden files the same docket) |
 | 8 | Window length | 2021 to 2025 for 2026, 2021 to 2024 for the comparison on 2025 | the disclosure system's first year is 2021 |
@@ -117,11 +127,11 @@ The default path files the whole-year docket, five faculty whose earlier Decembe
 | 12 | Maturity and censoring | 2026 is censored in the register until June 2027; each December disclosure is censored at its submission | the policy files the first; the second is the decisive construction |
 | 13 | Order of operations | conform, align each line, measure each ratio, weight, divide and gross up each 2026 line, then take each person's largest | C1 over the hybrid and additive variants (asserted) |
 | 14 | Row order | none matters | C1 over shuffled input rows (asserted) |
-| 15 | Duplicate resolution | the version in force per disclosure; the register's latest publication per record | dictionary semantics; C1 for the docket |
-| 16 | Identity normalisation | faculty through the profile file's NPI; manufacturers through their Open Payments ID, typed and unidentified listed names through the register's names | dictionary semantics; C1 for the docket (the docket region's lines all carry list IDs; the two listed companies that began reporting are never a faculty member's largest, asserted) |
+| 15 | Duplicate resolution | the version in force per disclosure; the register's latest publication per record | the guide and the register's own publication dates; C1 for the docket |
+| 16 | Identity normalisation | faculty through the profile file's NPI; manufacturers through their Open Payments ID, typed and unidentified listed names through the register's names | the profile file and the register's own identifiers; C1 for the docket (the docket region's lines all carry list IDs; the two listed companies that began reporting are never a faculty member's largest, asserted) |
 | 17 | Netting against gross | disclosed amounts are gross payments | the form's instruction |
 | 18 | Dimensional units | US dollars throughout | the register and the form |
-| 19 | Code and status semantics | the five remuneration natures; the third-party column; the submission statuses | dictionary semantics; same call under each misreading (SF1, SF2, SF5) |
+| 19 | Code and status semantics | the five remuneration natures; the third-party column; the submission statuses | the register's and the disclosure system's own values, the guide's relationship types; same call under each misreading (SF1, SF2, SF5) |
 | 20 | Integerisation | none | not applicable to a set |
 | 21 | Clause scope | the criterion applies to the estimate, not to the docket's size | the policy's article |
 | 22 | Forward window contents | 2026 relationships seen only through the disclosures, each as of its submission | the policy's estimand ("from the amount each faculty member disclosed for the manufacturer") |
@@ -151,10 +161,13 @@ Executed word for word, the policy's docket article ranks faculty by an estimate
 | B | ties records through the profiles' NPIs, drops third-party payments, keeps the January refresh: four natures and the total miss | miss |
 | C | resolves typed names through the register's names, takes the version in force, checks the list's companies without an identifier against the register by their present names: every type and the total miss | miss |
 
-- Mirror leakage: about 20 per cent of ask weight (a whole-year response that runs the same battery keeps A's owed count, B's unaccredited nature and the conformed file's rows).
-- Pair ceiling: 40 (cracker 38 + 7 + 55 x 0.20 = 56; mirror 5 + 7 + 55 x 0.20 = 23; average 39.5), rerun from the generated rubric at build.
+- Mirror leakage: 30.8 per cent of ask weight, measured on the cut pack (a whole-year response that runs the same battery keeps A's owed count, B's unaccredited nature, the conformed file's row count and the chart's structure, 4 of 13 ask criteria).
+- Pair ceiling: 45.4 (cracker 38 + 7 + 55 x 0.308 = 61.9; mirror 5 + 7 + 55 x 0.308 = 28.9), each response under two fifths of the ask weight.
+Measured by: generator/ceiling.py on the cut pack (target.zip 745e4bab): each response's ask figures recomputed from target/ with its handling and scored against the golden handling on the same files; the full includer, resolving all three devices, keeps 13 of 13.
 
 ## Pre-ship check
+
+- **10-31 reship (batch 1):** the field definitions workbook and the export contents list withdrawn; free gates green on target.zip 745e4bab (checks 132 of 132, verify 9 of 9, two builds byte-identical, figures 27 of 27, precut 0 FAIL, voice PASS); heart WARN once the card answered task268 v4, task271 v4, task458 and task455; surface exit 0 (six pairs, each differentiated on the card); the leak read clean, question 6 analytical; judge pass 3 DETERMINISTIC APPROVE, no fork flipping the docket.
 
 - **Gates (after the stage-4 fix pass):** generator checks 132 of 132 (the golden against the generator's truth; the rungs by name; the 4,120-construction family under four alignments, three ways of taking the December share and the hybrids, with K=2 the closest whole-number weighting from 1 to 20; the fifteen fork rows; the three-rules block R1 to R3c on the clean truth; mess neutrality for nine Layer 1 readings and row order; the asks' stops and crackers, Ask A on its two counts; separation, now including the 24 NPI-less duplicate profiles (each tied by name and address to its own faculty member, no namesake's tied, the docket unchanged with them left out or matched by name alone) and the renamed company (the one listed company resolved only through an earlier name, the docket unchanged under the list's present names); bins; realism); the independent verifier 9 of 9 on its own pandas path (the aligned estimate, the NPI-linked faculty, the name-and-address profile tie, the companies resolved through every name the list has shown, Ask A's counts read from the memo); two consecutive builds byte-identical (14 target files, 2 goldens, metadata.json, figures.json); target.zip cut from the final build and equal to target/ file by file; figures_check 27 of 27; voice-check PASS at 959 characters.
 - **Input gates:** 14 files in three formats (csv, xlsx, pdf), the register extract at 90,140 rows, three distractors named in metadata.json (the research payments extract, the NIH award list and the June 2026 publication of 2025), each unread by the golden.
@@ -192,3 +205,8 @@ Executed word for word, the policy's docket article ranks faculty by an estimate
 - A robust sixteenth (judge pass 2 found it a near tie among the censored histories, $51,112 against $50,859 and $50,329, moving with how the ratios are formed): a long-standing faithful January filer placed at about $57,000 was the sixteenth under every construction closer than the golden, but under the faculty-wide December share five fully aligned constructions within 3.5 per cent of the golden on 2025 put it on the docket in place of a December filer; the sixteenth left the prompt, the chart carries no value labels, and the member sits below the cut.
 - Step 3's "comes closest" (judge pass 2): the golden's ratio of summed amounts is the closest of its own weightings, not of every form of the estimate (averaged ratios come closer); the write-up and the memo now state the ratio of sums, call n/(n+2) the closest whole-number weighting (asserted from 1 to 20), and say the forms that come closer name the same fifteen (asserted over every construction).
 - Total rows under the nature and relationship-type tables (pass 3): not asked by the prompt, and a reader summed the rounded rows (167 against the rounded total 166); the total rows left the memo and block 4.
+- 2026-10-31, reship under the learning loop's rules: the office's field definitions and export contents list withdrawn
+  (renaming them from data_dictionary and export_manifest had only dodged the name check; a shipped file may not
+  describe the data); every convention they carried is the guide's (version in force, relationship types by edition)
+  or the data's own columns. The metadata's subdomain, which named the record-check correction, and the prompt's count
+  of the docket's places (the policy files fifteen) were removed, and the prompt opens on who goes on the docket.
