@@ -71,7 +71,7 @@
     "region_elasticities_2027.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "where",
   "driver": "The decisive quantity is a slope on a long-run average that is measured in full only for a subsample selected on its level, while every unit carries one noisy single reading; the noise variance measured within the subsample carries to the whole population but the subsample's reliability ratio does not, because the subsample's spread of the long-run level is narrower, so the slope on the subsample's averages, the slope on the single readings and that slope rescaled by the subsample's reliability each name a different group, and only the whole population's moments corrected by the carried noise variance give the answer.",
   "driver_concrete": "Each region's intergenerational elasticity of children's earnings on their parents' five-year average income has to cover every child, but the five-year tax history exists only for the families that filed in every year, a narrower and better-off group; the census income covers everyone for one year with a transitory part whose variance, measured within the filers' five years, holds for all families, while the filers' reliability ratio does not, so regressing on the filers' averages, on the census year, or dividing the census slope by the filers' ratio names other regions.",
   "stump": "A strong analyst regresses children's earnings on the brief's five-year average among the families with a complete tax history and names Halverston (or, with every child on the census year, Torvale Metro; or with that slope divided by each region's filers' reliability ratio, Kestry North), when across every child, the census year's transitory part taken out by the variance the tax history shows, Selvane Valley's elasticity stands highest.",
@@ -81,7 +81,14 @@
   "mechanism_source": "design_note",
   "differentiation": {
     "task256": "task256 carries a reference survey's multivariate body-measurement distribution to a workforce through conditional distributions given two recorded measurements, to a share inside a box of ranges; task262 de-attenuates a regression slope by a within-family transitory income variance measured over five tax years and carried to the census population: no conditional distribution, no box, a repeated-measures variance component separating signal from noise",
-    "task54": "task54 multiplies a forward exposure integral by event rates recovered from closed investigations (logistics, anomaly); task262 corrects a cross-sectional intergenerational elasticity for the transitory part of one year's income"
+    "task54": "task54 multiplies a forward exposure integral by event rates recovered from closed investigations (logistics, anomaly); task262 corrects a cross-sectional intergenerational elasticity for the transitory part of one year's income",
+    "task267": "task267 v1 reads a rule's capture rate when the reference check went to everyone an older rule flagged and a random fifth of the rest; here nothing is verified: a slope on one year's income is de-attenuated by the transitory variance a subsample's history shows, which transfers where its reliability ratio does not.",
+    "task303": "task303 v1 prices a rise by who stays when what members hold is worth most to the costliest; here no price moves: a slope on one year's parental income is corrected for the year-to-year swing measured on the families with a full history.",
+    "task233": "task233 carries a gold-standard follow-up's departure between missing and imputed values to every unit; here no value is imputed: one year's income is de-attenuated region by region with the transitory variance the filers' five years show, not their reliability ratio.",
+    "task273": "task273 v2 measures each group's travel through the uninvolved parties of two-party events; here no exposure is induced: an elasticity is corrected for the transitory swing in one year of parents' income, measured within the families with a five-year history.",
+    "task280": "task280 measures a group's share of a window below a standard with probes its members' own activity silences; here nothing is probed: a slope on one year's income is de-attenuated by a variance carried from a subsample to every family.",
+    "task465": "task465 v2 counts units carrying two traits no large source records together, through a small source holding both; here no joint count is built: one source's year-to-year variance is carried to another's single-year incomes to de-attenuate a regional slope.",
+    "task473": "task473 completes a count seen through tests given where an observer notices the trait; here nothing is counted: a regional elasticity is de-attenuated by the transitory variance the tax history shows within families."
   },
   "lineage": [],
   "notes": "",

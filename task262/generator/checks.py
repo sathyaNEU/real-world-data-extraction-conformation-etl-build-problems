@@ -237,6 +237,10 @@ def run(target, golden, st, meta_path):
     exts = {f.rsplit(".", 1)[1] for f in files}
     check("input gates: %d files, %d formats, a file of %s rows" % (len(files), len(exts), format(st["counts"][K.EARN], ",")),
           len(files) >= 10 and len(exts) >= 3 and max(st["counts"].values()) >= 25000)
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    check("section 3: no file named as a dictionary, manifest, readme or notes ships",
+          not [f for f in files if describing.search(f)])
     check("input gates: no file name carries the stump or a distractor label", not any(
         re.search(r"distract|decoy|known_issue|answer|transitory|elastic", f) for f in files))
 
@@ -248,7 +252,7 @@ def run(target, golden, st, meta_path):
               int(sum(res["spending"].values()))]
     check("realism: no round headline totals", all(t % 100 for t in totals), str(totals))
     check("realism: personas are the drawn ones", all(
-        p in texts[K.BRIEF] + texts[K.GUIDE] + texts[K.DICT] for p in (K.PEOPLE["director"], K.PEOPLE["chair"])) and
+        p in texts[K.BRIEF] + texts[K.GUIDE] for p in (K.PEOPLE["director"], K.PEOPLE["chair"])) and
         K.PEOPLE["analyst"] in texts[K.GUIDE] and not re.search(r"John Doe|Jane Doe|Acme|Company A", " ".join(texts.values())))
     leaks = [f for f in files + [os.path.join("..", "golden", g) for g in os.listdir(golden)]
              if re.search(rb"ReportLab|reportlab|openpyxl|python-docx|matplotlib|Matplotlib",

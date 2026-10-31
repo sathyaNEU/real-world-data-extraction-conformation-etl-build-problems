@@ -5,7 +5,7 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-10-31",
  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags R14-01 and R25-01; one who also reads the queue loss from the river bridges' paired approaches flags R02-01, R04-03, R08-05, R14-01 and R25-01; the older TCX-2 cards also miss vehicles on cold days, which the summer filming never saw and which the bridges whose two approaches run different controllers show against the airport's temperatures, so the list is R02-01, R04-03, R06-01, R08-05, R14-01, R25-01 and R29-03.",
  "architecture": 5,
  "loops": 1,
@@ -18,7 +18,7 @@
   "reader": "four scored readers missed the call (two rounds); round 2 kept 0 of 24 asks each"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form) after the in-place relabel to population_selection and G6",
+  "heart": "WARN 2026-10-31 after a differentiation line against task273 v4 (the card's earlier lines cover task269 and task255)",
   "surface": "task243 (surface 0.101) and task68 (gap, pattern and Gate G) promoted, both differentiated on the card",
   "nearest": "task248 0.05"
  },
@@ -183,5 +183,6 @@
   "surface": "task243 and task68 promoted, differentiated",
   "freeze_rubric": "PASS with --allow asks.visits.Ashby.1,asks.visits.Kessel.3,asks.failures.Marlow.2,asks.failures.Marlow.3 (ask figures whose old values equalled a recommendation number, so freeze.py classed them as main-call)",
   "freeze_determinism": "FAIL on 18 ask figures and the Deliverable Answers block, which is the ask repair the author ordered; nothing on the main side moved"
- }
+ },
+ "recheck_2026_10_31": "every free gate re-run on the shipped cut 5266e879: precut 0 FAIL (8 WARN, the survivor anatomy lines a shipped build may lack), voice-check PASS (WARN: a count disclosed), leak.py REVIEW no LEAK, heart WARN, figures_check 0 absent; no reship owed"
 }

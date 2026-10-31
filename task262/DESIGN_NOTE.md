@@ -89,6 +89,16 @@ No decoy: nothing is planted; the tax history's coverage is the data centre's ow
 No certified replay: the method is not recovered by reproducing a published figure; no file publishes an elasticity, a reliability ratio or a transitory variance.
 Lesson: a reliability ratio belongs to the sample it was measured in, while the year-to-year swing of income carries across families; correcting one year's income for the swing measured on a better-off slice, rather than for that slice's reliability, is what the field's attenuation correction asks, and no build on file teaches which part of a validation sample transfers.
 
+## Survivor anatomy
+
+Actor: the quantity that decides, the transitory part of a family's yearly income, has no column in any file; it exists only as the year-to-year spread within each filing family's five tax years, a relation among the history's rows, and it acts on the spread of every family's census-year income in the cohort file.
+Link: the step carries a variance from one source (the families with a complete tax history) to another (the census-year incomes of every family, filers or not), region by region; the history joins to the cohort by family number, but no key, clause or column asks for the within-family variance to be computed or moved, and the field's correction moves a reliability ratio instead.
+Reflex: the field's standard routes, the multi-year average of parents' income measured directly on the filers (rung 0) and the census year corrected by the filers' reliability ratio, file Halverston and another region; the census year across every child (rung 1) files Torvale Metro.
+Back-test: the textbook route validates: among the filing families the five-year average's slope exceeds the census year's in every region (0.257 against 0.123 in Caskell Coast, 0.345 against 0.279 in Halverston), as attenuation predicts, and the two incomes agree in level (census over five-year means 0.987 to 1.011), so the history reads as a sound long-run measure.
+Second use: every file the step reads is in the pack for its own reason: the tax history is the brief's long-run income measured directly (rung 0), the cohort file holds the population and the census income, the earnings file the outcome, the price index the dollars, the recode file the region names.
+Shock: nothing reads as an anomaly: Selvane Valley is fifth of eight on the census-year slope across every child (0.229), sixth on the filers' census-year slope and sixth on their five-year slope, so no sort of the regions on a shipped statistic puts it first.
+Pins: the brief files the population (every child of the cohorts in the region), the outcome, the unit and long-run income as a level a family's income moves around; no filed sentence names a variance, a reliability ratio, a correction or which families to measure it on, and deleting the long-run definition leaves the estimand an elasticity on long-run income and the step where it was.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -163,7 +173,7 @@ Values on the built pack (stops.py; asserted in checks.py).
 | 16 | Identity normalisation | the family number joins the extract and the history; the child number joins the earnings | by construction |
 | 17 | Netting against gross | total income nets self-employment losses, as the census and the returns define it | filed (the guide) |
 | 18 | Dimensional units | census income in 2000 dollars, the history and earnings in constant 2005 dollars by the CPI table | filed (the guide); SF8 |
-| 19 | Code and status semantics | region codes, filing coverage; for the asks, program statuses and ledger accounts | the guide, the dictionary; never the stump |
+| 19 | Code and status semantics | region codes, filing coverage; for the asks, program statuses and ledger accounts | the guide and the region recode; never the stump |
 | 20 | Integerisation | children and young people whole; dollars to the thousand | prompt |
 | 21 | Clause scope | the brief's estimand governs the call; the program's records govern the asks | filed |
 | 22 | Forward window contents | the 2027 program's region rests on the cohorts the extract follows to 34, the latest whose adult earnings are complete | filed (the brief) |
@@ -228,9 +238,9 @@ cracker keeps 0 of 16 ask figures (A 0 of 8, B 0 of 8), and the mirror, taking t
   upper slopes of Kestry North, Selvane Valley, Caskell Coast, Ostler Plains and Wendmoor were chosen (binfit.py) so every
   consistent estimate of the swing gives the same two-decimal elasticity in every region; the ladder margins were
   re-checked after (stops.py, checks.py).
-- **Pack.** 15 files: the data centre's cohort extract (58,441 children), the children's earnings (525,969
+- **Pack.** 14 files (15 before the 10-31 reship removed the data dictionary): the data centre's cohort extract (58,441 children), the children's earnings (525,969
   child-years), the parents' income history (25,290 families, 126,450 family-years), the region recode, the price
-  index, the user guide and data dictionary; the foundation's brief, the Bridges participant export (1,640 records),
+  index, the user guide; the foundation's brief, the Bridges participant export (1,640 records),
   ledger (2,056 lines), office list, 2019 guidelines and 2024 close-out; two distractors (the 2021 regional economic
   indicators, the 2023 youth aspirations survey).
 - **Gates.** checks.py 82 assertions (three rules, ladder, reflexes, SF1 to SF12, convergence, bins, asks' goldens
@@ -299,3 +309,4 @@ cracker keeps 0 of 16 ask figures (A 0 of 8, B 0 of 8), and the mirror, taking t
 - Six invented names (five regions and the foundation), renamed at build: each sat within one letter of a real place
   (Harlow, Ramsey, Corran, Fenwick, Wycombe; a former region name one letter from North Shields) or shared its word
   with another build's world; checks.py screens every invented name (H21).
+- 2026-10-31, re-check under the 10-30 gates: `leak.py` LEAK on the data centre's data dictionary (section 3: no shipped file describes the data). Removed, with the user guide's file-by-file section and the brief's mention of it; the guide keeps the release's coverage, units and filing rule, which the data centre publishes, and the columns name their own units. `metadata.json` no longer lists which files the call and the asks read. The prompt drops its region count and asks where, not which. Every graded figure unchanged (84 checks).

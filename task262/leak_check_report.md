@@ -1,10 +1,10 @@
 # leak check, task262
 
-**Verdict: REVIEW.** 15 files read, 32 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 32 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: census, history, variance, family, families, transitory, reliability, filers, spread, carries, population, sample, halverston, five-year, measured, foundation, centre, selvane, valley, decisive, extract, torvale, correction, covers, estimand
+Stump terms swept: census, history, variance, family, families, transitory, reliability, filers, spread, carries, population, sample, measured, halverston, selvane, valley, five-year, decisive, foundation, centre, extract, torvale, correction, cracker, covers
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `opportunity_pathways_brief_2027.docx`: candidate 'Opportunity Pathways' sits beside decision vocabulary: ...The board meets on 26 November to choose the region for the first three years of Opportunity Pathways (2027 to 2029). As agreed at the September retreat, the program goes to one region: the r...
@@ -12,15 +12,18 @@ Stump terms swept: census, history, variance, family, families, transitory, reli
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `bridges_close_out_summary_2024.pdf`: 3 of 25 stump-paragraph terms appear (foundation, centre, covers); read whether the document names the move
-- **REVIEW** `linked_extract_user_guide_2026.pdf`: 8 of 25 stump-paragraph terms appear (census, history, family, families, carries, population); read whether the document names the move
+- **REVIEW** `linked_extract_user_guide_2026.pdf`: 7 of 25 stump-paragraph terms appear (census, history, families, carries, population, centre); read whether the document names the move
 - **REVIEW** `opportunity_pathways_brief_2027.docx`: 5 of 25 stump-paragraph terms appear (census, family, foundation, centre, extract); read whether the document names the move
-- **REVIEW** `youth_aspirations_survey_2023.pdf`: 6 of 25 stump-paragraph terms appear (family, halverston, foundation, selvane, valley, torvale); read whether the document names the move
+- **REVIEW** `youth_aspirations_survey_2023.pdf`: 6 of 25 stump-paragraph terms appear (family, halverston, selvane, valley, foundation, torvale); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 1, INFO 3)
 - **REVIEW** `regional_economic_indicators_2021.xlsx`: names 6 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `bridges_offices.csv`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `region_recode_2001_2021.csv`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `youth_aspirations_survey_2023.pdf`: names 6 of 8 answer-set candidates; confirm it does not rank them on the decision question
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -35,9 +38,8 @@ Stump terms swept: census, history, variance, family, families, transitory, reli
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read, loop 1
 
@@ -154,3 +156,16 @@ the default path (Halverston, the filers' five-year averages) or on the census y
 are rungs of the ladder, each ruled out by a quoted clause of the brief (every child of the region; long-run income as
 the level yearly income moves around), and the determinism judge executed the same text to the golden. Realism tells
 found in loops 1 and 2 were fixed in the generator; loop 3 found none.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 14 files)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none; the brief's definitions and the guide's coverage lines point at the data's structure and name no step.
+2. Ranking file: none (the regional indicators and the aspirations survey are per-region context, no elasticity or ordering).
+3. Helper-only file: none (the recode, office list and price index are plain lookups).
+4. Answer-like figure or name: none.
+5. Literal sentences: the brief's elasticity across every child of the region and its earnings definition, and the 2019 guidelines' start and cost-sharing rules for the asks: each files the WHAT.
+6. What decides: an analytical choice (reaching every child from the one-year census income and the partial history); nothing planted.
+
+Item rulings: the brief and the regional indicators harmless. Realism: the brief reads as a full specification (mild); the close-out's "as posted" line and the guide's "No boundary changed" read as designed to the reader, both outside the main call and kept; no LLM tells.

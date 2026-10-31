@@ -5,21 +5,24 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-10-31",
  "stump": "The default path names Halverston because it measures each region's elasticity only on the families with a complete five-year tax history, a narrower and better-off slice in most regions; across every child, with the census year's transitory part taken out by the variance the tax history shows within each region's families, Selvane Valley stands highest.",
  "architecture": 1,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-15"
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK: the program's name in the brief, data terms in the guide, a distractor naming regions)",
-  "reader": "three loops: no decisive-step sentence, no ranking or helper file, no answer figure, the deciding step analytical; realism tells from loops 1 and 2 fixed, loop 3 clean"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack (no LEAK; the data dictionary removed)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 the brief's estimand (the WHAT), Q6 analytical; no LLM tells"
  },
  "duplicate_check": {
-  "heart": "WARN (question form which; nearest driver 0.06); surface clean",
-  "nearest": "0.06 (task459, task253 v3, task34 lineage); structural repeats of task256 v1 and task54 differentiated"
+  "heart": "WARN 2026-10-31 after differentiation against task267 v1, task303 v1, task233 v1 and v2, task273 v2, task280, task465 v2, task473",
+  "nearest": "0.06 (task459, task253 v3, task34 lineage); structural repeats of task256 v1 and task54 differentiated",
+  "surface": "exit 0 2026-10-31, ten pairs promoted for the author's adjudicated read (nearest task454 0.101)"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -29,12 +32,23 @@
   "gate_h": "domain pass, layers pass, decisive step analytical"
  },
  "returned": [],
- "resume": "",
+ "resume": "RESHIPPED 2026-10-31 under the 10-30 gates; next: the author's portal result",
  "approved": null,
- "delivered": "2026-10-15",
+ "delivered": "2026-10-31",
  "portal": null,
  "draw": {
   "card": "cards/task262.json registered 2026-10-15T08:18:34Z",
   "guard": "WARN (question form which); nearest driver 0.06"
+ },
+ "gates_2026_10_31": {
+  "checks": 84,
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "65 of 65",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS, no WARN (question form where)",
+  "leak_py": "REVIEW, no LEAK",
+  "heart": "WARN",
+  "surface": "exit 0"
  }
 }

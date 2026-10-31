@@ -1,4 +1,4 @@
-"""The pack's documents: the Provincial Research Data Centre's user guide and data dictionary for the linked
+"""The pack's documents: the Provincial Research Data Centre's user guide for the linked
 extract, the director's brief to the trustees, the Bridges guidelines (2019) and close-out summary (2024), and two
 papers the folder also holds (the 2021 regional economic indicators, the 2023 youth aspirations survey)."""
 from __future__ import annotations
@@ -98,11 +98,7 @@ def write_user_guide(path, n_children, n_families, n_history):
         ("5. Dollars", [
             "Census income is in 2000 dollars, the income history in constant 2005 dollars and children's earnings in "
             "current dollars. The price index table (2005 = 100) converts any of them to constant 2005 dollars."]),
-        ("6. Files", [
-            "%s: one row per child. %s: one row per child and year. %s: one row per family and year, for the families "
-            "in section 3. %s: the 2001 region codes and their 2021 names. %s: the price index. The data dictionary "
-            "describes every column." % (K.COHORT, K.EARN, K.HIST, K.RECODE, K.CPI_FILE)]),
-        ("7. Confidentiality", [
+        ("6. Confidentiality", [
             "The extract is released to approved projects under the centre's agreement with the province. Results "
             "published from it must not show a count below 10, and every published figure is checked by the centre "
             "before release."]),
@@ -113,70 +109,6 @@ def write_user_guide(path, n_children, n_families, n_history):
             story.append(Paragraph(t, S["body"]))
     doc = _doc(path, "Linked intergenerational income extract: user guide", K.CENTRE)
     doc.build(story, onFirstPage=_frame(K.CENTRE, "2026 release", "Serif"), onLaterPages=_frame(K.CENTRE, "2026 release", "Serif"))
-
-
-DICT = {
-    K.COHORT: ("One row per child in the linked cohorts.", [
-        ("child_id", "Child number, fixed for this release", "Text, K and 8 digits", "Unique in the file"),
-        ("family_id", "The 2001 census household's family number", "Text, H and 7 digits",
-         "Shared by siblings; joins to the income history"),
-        ("birth_year", "Year of birth", "Integer", "1984 to 1988"),
-        ("sex", "Sex", "Text", "F or M"),
-        ("census_region_2001", "Census region of the 2001 household, as coded in 2001", "Text, 4 digits",
-         "The recode file gives the 2021 name"),
-        ("parents_in_household", "Parents of the child in the 2001 household", "Integer", "1 or 2"),
-        ("parents_total_income_2000", "Parents' total income in 2000 as reported to the census", "Integer, 2000 dollars",
-         "Zero or below where business or farm losses exceeded other income")]),
-    K.EARN: ("One row per child and tax year, 2014 to 2022.", [
-        ("child_id", "Child number", "Text", "Joins to the cohort file"),
-        ("tax_year", "Tax year", "Integer", "2014 to 2022"),
-        ("earnings", "Employment income and net self-employment income reported on the child's return",
-         "Integer, current dollars", "0 where no return was filed or no earnings were reported")]),
-    K.HIST: ("One row per family and tax year, 2001 to 2005, for families in which a parent filed in each of the five years.", [
-        ("family_id", "Family number, as in the cohort file", "Text", "Joins to the cohort file"),
-        ("tax_year", "Tax year", "Integer", "2001 to 2005"),
-        ("family_total_income_2005_dollars", "Parents' total income from their returns", "Integer, constant 2005 dollars",
-         "The parents in the 2001 household, summed")]),
-    K.RECODE: ("The 2001 census region codes and their 2021 names.", [
-        ("census_region_2001", "Code in 2001", "Text, 4 digits", ""), ("region_2021", "Name from 2021", "Text", ""),
-        ("change", "What changed in 2021", "Text", "")]),
-    K.CPI_FILE: ("Consumer price index for the province, annual average.", [
-        ("year", "Calendar year", "Integer", "2000 to 2022"), ("cpi_2005_100", "Index, 2005 = 100", "Decimal, one place", "")]),
-}
-
-
-def write_dictionary(path):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Files"
-    ws.append(["Linked intergenerational income extract, 2026 release: data dictionary"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["%s, %s" % (K.CENTRE, K.RELEASE.strftime("%-d %B %Y"))])
-    ws.append([])
-    ws.append(["File", "What it holds"])
-    for c in ws[4]:
-        c.font = Font(bold=True)
-    for f, (about, _) in DICT.items():
-        ws.append([f, about])
-    ws.column_dimensions["A"].width = 42
-    ws.column_dimensions["B"].width = 100
-    for row in ws.iter_rows(min_row=5):
-        row[1].alignment = Alignment(wrap_text=True, vertical="top")
-    for f, (about, cols) in DICT.items():
-        s = wb.create_sheet(f.replace(".csv", "")[:31])
-        s.append(["Column", "Meaning", "Type and unit", "Notes"])
-        for c in s[1]:
-            c.font = Font(bold=True)
-        for row in cols:
-            s.append([v if v else None for v in row])
-        s.column_dimensions["A"].width = 34
-        s.column_dimensions["B"].width = 70
-        s.column_dimensions["C"].width = 30
-        s.column_dimensions["D"].width = 56
-        s.freeze_panes = "A2"
-    wb.save(path)
 
 
 # ---------------------------------------------------------------------------------------------- the foundation
@@ -212,7 +144,7 @@ def write_brief(path):
         "the %s's linked extract holds them; a child counts where the parents' census income was above zero and the "
         "child had earnings in at least one year from age 30 to 34. A child's earnings as an adult are the average of "
         "the yearly earnings at ages 30 to 34 in constant 2005 dollars, a year without earnings counting as zero." % K.CENTRE,
-        "The extract, its user guide and data dictionary, the region recode and the price index are in the folder.",
+        "The extract, its user guide, the region recode and the price index are in the folder.",
         "The board will also want to see how %s (2019 to 2023) did in each region: the young people it started there and "
         "what it spent there. The participant export taken when the program closed, the program ledger, the office list "
         "and the 2019 guidelines are in the folder with the close-out summary." % K.OLD_PROGRAM,
