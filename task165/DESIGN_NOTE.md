@@ -25,7 +25,7 @@ street to Priority 1 adds depends on how much of it Priority 2 already salted.
 | Furniture | forum `council_or_assembly` (spending above the contract quantity needs council's approval under the City's procurement by-law, so the winter operations manager's commitment goes to council as a one-page report before the supplier's 1 October deadline), forcing event `purchase_order_or_contract` (the supply contract's 1 October deadline for seasonal tonnage), organisation family `local_government`, role family `operations_director` (the roads division's winter operations manager), context artifact `register` (the winter route register), calibration `none`, opening `question-first`, question form `how-much` |
 | Spine | the fleet telematics platform's segment-pass export (one row per spreader pass over one route segment, with the rock salt put down), 1 October 2023 to 23 September 2026, 344,770 rows, beside the legacy AVL's segment-by-shift summaries for November 2021 to March 2023; constructed in the layout of a winter-maintenance telematics export |
 | Deliverables | `salt_commitment_2026-27.xlsx` (the commitment, its working and the ask tables) and `seasonal_salt_commitment_council_report.docx` (a one-page staff report to council recommending the commitment, with the chart of the arterial figures) |
-| People | drawn with `guard.py names --geo "Canada" --seed 165`: Doris Wilkerson (manager, winter operations, owner of the winter maintenance plan), Mary Huynh (fleet telematics analyst, the exports and the data dictionary), Kristin Gonzalez (service planning, Quellbrook Regional Transit, the frequent network street list), Andre Nixon (director of roads, who approved the procurement procedure and the plan); the requester is in no file and not in the prompt |
+| People | drawn with `guard.py names --geo "Canada" --seed 165`: Doris Wilkerson (manager, winter operations, owner of the winter maintenance plan), Kristin Gonzalez (service planning, Quellbrook Regional Transit, the frequent network street list), Andre Nixon (director of roads, who approved the procurement procedure and the plan); the requester is in no file and not in the prompt |
 | World | Quellbrook (checked: no Canadian or United States place of the name), a fictional lakeshore city in southern Ontario of about 410,000, whose public works roads division runs winter maintenance from four works yards (Kelvin Road, Mapleford, Ridge and Lakeshore); Quellbrook Regional Transit runs the buses; Northgrit Salt Supply (supplier), Tessaline Geomatics (dome survey) and Kettlewood Road Services (arterial contractor) are fictional, as are the people, systems and data; each invented name was searched and none sits within two letters of a well-known organisation or place (H21) |
 
 **Guard.** The draw waited out bans on its honest keys rather than relabel them: `local_government` (twice),
@@ -155,7 +155,7 @@ only the gain read off each earlier move's own Priority 2 salt, at the new stree
   every segment, combined salt and brine mass, the fleet's work orders, contractor circuits, the yard realignment and
   the current circuit codes on old passes) sit on no row the call reads. Trucks rotate
   between circuits of their yard, the route audit keys each change in a few sittings and some after the change takes
-  effect, the register pull holds the salted network only (the manifest says so), and each winter carries its own swing
+  effect, the register pull holds the salted network only (every row carries priority 1, 2 or a Priority 3 hill), and each winter carries its own swing
   in salt per point that the index does not carry (about 14 per cent between winters, common to every road; netted
   against the never-moved collectors or not, the call holds, SF14).
 - **Layer 2:** `estimation_fit`: the Priority 2 to Priority 1 gain carried from the 377 collectors moved in 2022 to 2025
@@ -190,6 +190,16 @@ only the gain read off each earlier move's own Priority 2 salt, at the new stree
 - **Lesson:** what an upgraded service adds to a unit is what the old service left undone there, so a gain measured on
   units chosen because they were already well served has to be carried across conditioned on how much each was served,
   read from each unit's own history; no build on file teaches a treatment gain conditioned on prior partial coverage.
+
+## Survivor anatomy
+
+Actor: how much of a moved collector Priority 2 already salted has no column; it is a relation between each segment's Priority 2 passes and the storms in the incident board (which events put a spreader on which part of its length), rebuilt from the telematics passes, the legacy summaries and the storm log.
+Link: the gain is carried from the collectors moved before to the new ones through that rebuilt coverage, a cross-file comparison of pass records against declared events that no key, column or clause offers; the procedure and the plan name the estimand and the severity, never the coverage.
+Reflex: the field's own sizing of a service-level change, the Priority 1 collectors' salt per lane-km per WSI point less the moved segments' own Priority 2 salt (2,600 t), or the before-and-after gain of the earlier moves (1,500 t to 1,800 t), sits at rungs 0 to 2 and files a wrong tonnage here.
+Back-test: the before-and-after route validates on the earlier moves' own later winters, and the per-point rates reproduce each closed winter's recorded tonnage, so the easy routes pass every check the record offers.
+Second use: every file the decisive step reads (the passes, the legacy summaries, the storm log, the register and its revision log) is a record the Roads Division keeps for its own operations, and the asks read the same files for the domes and the arterial circuits.
+Shock: the moved collectors' Priority 2 coverage differs gradually with how many hazard spots a street has, which reads as ordinary street-to-street variation; nothing in the record is the pack's largest movement.
+Pins: procedure RO-PR-07 4.2 files the estimand (the roads the change moves, November to March, over what they needed before, at the planning severity, to the nearest 100 t) and the plan the severity; no sentence names coverage, selection of the earlier moves or how the gain is carried.
 
 ## Readability screen
 
@@ -231,9 +241,9 @@ Every term in the main ask and every convention the main computation needs; ever
 | SF4 | the winter | 1 November to 31 March, local dates | the platform's dates in UTC; the supply season from 1 October | same call (no collector pass within six hours of a season boundary, none in October or April, asserted) | the procedure 4.2; C1 |
 | SF5 | the severity | 61.7 WSI points | last winter's 58.4; the five winters' mean | 2,100 t; 2,000 t | the plan 4 ("Material planning uses the planning severity of 61.7 WSI points") |
 | SF6 | salt against severity | per WSI point | a line with an intercept through the five winters | another figure: each winter's swing tilts the line (the never-moved collectors' five winters give an intercept of about a fifth of a winter's salt, 980 t of 4,700 t) | the plan 4 ("plans each road's salt per WSI point"), asserted |
-| SF7 | "rock salt" | material RS | sand and salt rows | same call (collectors carry RS only, asserted) | the dictionary's material codes |
+| SF7 | "rock salt" | material RS | sand and salt rows | same call (collectors carry RS only, asserted) | the plan, section 5 (rock salt is material RS on the platform, SALT on the old AVL) |
 | SF8 | the moved roads | the revision log's 30 August 2026 entries | the transit agency's street list | same segments (asserted) | C1, asserted |
-| SF9 | units in the legacy export | kilograms | tonnes | a thousandfold off, loud | the dictionary ("kilograms") |
+| SF9 | units in the legacy export | kilograms | tonnes | a thousandfold off, loud | the export's own KG header, and a pass laying tens to hundreds of kilograms (asserted) |
 | SF10 | rounding | the total to the nearest 100 t, once | the gain per lane-km rounded first | same call | the procedure 4.2 |
 | SF11 | the earlier moves | every collector moved Priority 2 to Priority 1 on 1 November 2022, 2023, 2024 and 2025 | those with a transit reason only | 1,500 t (R2b, a rung, not a reading) | the revision log; the golden reads all 377 (asserted) |
 | SF12 | the gain component's precision | about 5 t a lane-km, the whole tonne every family member shares (5.13 to 5.23) | one decimal (5.2 on the golden, 5.1 under four bands or the power law) | same call; the component is stated where every construction agrees | block 2 states it to the tonne; SF12 asserts every member rounds to 5 |
@@ -359,7 +369,7 @@ never searched.
 | 1 | Population | the 216 segments moved on 30 August 2026, 424.0 lane-km | filed (the procedure's "roads the change moves"; the revision log); SF8 |
 | 2 | Unit of account | tonnes of rock salt | filed (the procedure); SF7, SF9 |
 | 3 | Attribution window | 1 November 2026 to 31 March 2027 | filed; records clear of the boundaries (SF4, asserted) |
-| 4 | As-of dating | the exports to 23 September 2026; the register of 14 September 2026 | the data dictionary and manifest; no record after the pull (asserted) |
+| 4 | As-of dating | the exports to 23 September 2026; the register of 14 September 2026 | each file's own date range and the register's file date; no record after the pull (asserted) |
 | 5 | Version basis | each segment's priority in each winter from the revision log | the revision log; the register carries the current priority |
 | 6 | Denominator | lane-km and WSI points | the register, the plan's per lane-km rates and the storm log; SF3, SF6 |
 | 7 | Weighting | lane-km weighted or not | C1 across the golden family (asserted) |
@@ -373,8 +383,8 @@ never searched.
 | 15 | Duplicate resolution | none on the call's rows | the realism sweep (no repeated pass key; no copied block) |
 | 16 | Identity normalisation | legacy ids to current through the crosswalk | the crosswalk; no main-population segment is split (asserted) |
 | 17 | Netting against gross | over what the roads needed before | filed (SF2) |
-| 18 | Dimensional units | kilograms in the legacy export, tonnes in the new | the dictionary; SF9 |
-| 19 | Code and status semantics | material RS; priority 1, 2, 3 | the dictionary and the plan (Layer 1, neutral) |
+| 18 | Dimensional units | kilograms in the legacy export, tonnes in the new | the column headers (KG; applied_t); SF9 |
+| 19 | Code and status semantics | material RS; priority 1, 2, 3 | the plan, sections 2 and 5 (Layer 1, neutral) |
 | 20 | Integerisation | none | n/a |
 | 21 | Clause scope | the procedure's 4.2 for every service change since the 2025-26 winter closed | filed; the redesign is the only change (SF1, asserted) |
 | 22 | Forward window contents | a winter at the planning severity | filed (the plan); no forward weather ships |
@@ -410,7 +420,7 @@ pass is on an arterial circuit, the collectors spread dry salt, no collector seg
 crosswalk, no collector pass falls within six hours of a season boundary, the contractor and the realignment touch
 arterials only, and the golden is unchanged with every ask file deleted). Against the shipped pack (target.zip d87ff77a)
 the rubric repair left the files the call reads byte-identical, the platform export's collector rows identical and its
-arterial rows identical in every column but the two realigned circuits' codes, the dictionary's rows for the call's files
+arterial rows identical in every column but the two realigned circuits' codes, 
 identical, and R0 and R0b at 5,045.3 and 5,392.8 (asserted, SEPARATION).
 
 **Ask A. For each works yard, the rock salt in its dome on 1 November 2026 once the October deliveries booked with the
@@ -456,8 +466,8 @@ supplier have landed, and the tonnes more the dome can then take** (8 figures, t
   or more); the survey day whole (every figure, 29.2 t or more); UTC as local (every figure, 86.9 t or more); by sheet
   (every figure, 272.5 t or more); supplier loads only (three yards, 42.8 t or more); the first dispatch issue (three
   yards, 17.0 t or more); the golden.
-- Span: the survey report, the scale-house log, the dispatch schedules (both issues), the dome register, the plan, the
-  dictionary (7 files).
+- Span: the survey report, the scale-house log, the dispatch schedules (both issues), the dome register and the plan
+  (6 files).
 
 **Ask B. For each works yard, the rock salt spread on its Priority 1 arterial circuits in each of the winters 2023-24,
 2024-25 and 2025-26, counting each circuit under the yard it belonged to that winter** (12 figures, to the nearest
@@ -500,7 +510,7 @@ supplier have landed, and the tonnes more the dome can then take** (8 figures, t
   on 1 July 2026 show KLV-A15 and KLV-A16 back to October 2023 and no pass carries MPF-A01 or MPF-A02; a reader who takes
   the yard from the code a pass carries counts both circuits at Kelvin Road in all three winters, six figures by 962.1 t
   or more. Fair: the revision log's ROUTE entries of 1 July 2026 take each current code back to the circuit it was
-  (asserted); the dictionary describes the field as the circuit the pass ran on.
+  (asserted); the field is the circuit the pass ran on, as its rows show.
 - Mirror device B2 (D4, a reporter absent): three arterial circuits at Kelvin Road and Mapleford are run by Kettlewood
   Road Services under contract RW-2023-07, whose trucks report to its own system; its salt is in its monthly returns,
   which the plan points to. Six figures move by 351.7 t or more.
@@ -513,8 +523,8 @@ supplier have landed, and the tonnes more the dome can then take** (8 figures, t
   or more); the contractor left out (six figures, 351.7 t or more); the register's yard or the code's own yard (six
   figures, 962.1 t or more); the first blind reader's path (every figure); the golden. The judge's second reading, the
   brine's salt off every row, keeps seven of the twelve (`## Residual`).
-- Span: the telematics export, the plan, the contractor's returns, the revision log, the work orders and the
-  dictionary (6 files, under Part 4's eight, `## Residual`); the register and the fleet list are read by its
+- Span: the telematics export, the plan, the contractor's returns, the revision log and the work orders (5 files,
+  under Part 4's eight, `## Residual`); the register and the fleet list are read by its
   misreadings.
 
 **The report's chart** (`seasonal_salt_commitment_council_report.docx`): Ask B's figures, each yard's three winters as
@@ -591,7 +601,7 @@ handling.
 | trucks rotating between circuits | yard dispatch (a spare or a swap most storms) | the pass export, the timesheets | a circuit read as one truck | none: the call reads salt by segment, whoever spread it |
 | route audit sittings | the route audit keys each change in sittings of 40 to 90 segments on working days, a segment's priority and route rows together, one change in four finished after it took effect | the revision log | the entry date read as the effective date | none: the call reads the effective date (asserted no priority change after 31 March 2026 but the redesign's) |
 | each winter's swing in salt per point | the weather the index does not score (event mix, pavement temperatures, freezing rain), common to every road | every salt record | one winter either side of a move read as typical | same call, netted against the never-moved collectors or not (SF14, asserted) |
-| a pull of the salted network only | the register export's filter (Priority 1 and 2, and the Priority 3 hills) | the register, the manifest says so | the register read as every street | none |
+| a pull of the salted network only | the register export's filter (Priority 1 and 2, and the Priority 3 hills) | the register's own rows (every row priority 1, 2 or a Priority 3 hill) | the register read as every street | none |
 
 ## Residual
 
@@ -646,6 +656,9 @@ report):
   the yard it belonged to that winter".
 - The recheck's realism items not changed: the gain line reads r = -0.95 (it judged real records nearer -0.8), and
   1,338 km of collectors is on the large side for a city of 410,000.
+- The 10-31 judge's Gate C residual (which yard keeps the two unremarked double weighings, about 44 t a dome): kept,
+  since it is A4 itself; the later ticket's same gross shows the load still aboard at the receiving yard's scale, and
+  only that ticket carries a load's tipping time. The judge read it as forced.
 - Duplicates: guard heart PASS (nearest driver 0.11, task118, differentiated at the draw); guard surface promotes nine
   pairs (task164 back to back and task453 and task159 on surface similarity; task163 and task167 two apart on the
   decisive gap and decision type; task465, task134, task146 and task54 on gap, pattern and decision family), each with
@@ -702,7 +715,7 @@ The 10/10 rules read again against the shipped pack (target.zip d87ff77a):
   33.3 and mirror leakage 8.7 per cent; the archive's 21 members equal the tree and metadata.json by content; target.zip
   d87ff77a from the final rebuild.
 - Reship after the rubric repair (target.zip 7fc71582): the call side frozen (freeze.py rubric PASS; the eight files
-  the call reads byte-identical, the platform export's collector rows and the dictionary's call rows the shipped rows,
+  the call reads byte-identical, the platform export's collector rows the shipped rows,
   R0 and R0b unchanged), so rules 1 and 3 stand as read above; rule 2's Layer 1 on the asks' rows now carries the
   changeover trucks weighed twice among the supplier's round trips and the scale houses' stored tares, the older
   controllers found from their own rows beside Fleet Services' work orders, and the platform's current codes on the
@@ -851,3 +864,8 @@ The 10/10 rules read again against the shipped pack (target.zip d87ff77a):
 - Step 6's first wording (round 3): the dome stocks followed the dispatch file's BOOKED October loads, and
   judge-task165f read them as the booked loads; each figure now carries its label, and the home yard's ticket cites
   RO-PR-07 section 2's "weighed at the yard's scale house".
+- 2026-10-31, reship under the learning loop's rules: the data dictionary and the export manifest withdrawn (shipped
+  files may not describe the data); the conventions they carried are the data's own (the KG and applied_t headers, UTC
+  in entry_utc, the crosswalk file), and the plan's materials section names the codes RS, SALT, SS and SAND/SALT in the
+  organisation's own words. The prompt dropped the 424 lane-km (a count the register holds) and drew a fresh shell.
+- 2026-10-31, remarks on the two A4 pairs to close the judge's Gate C residual: rejected before cutting; it moves A4's double count onto Lakeshore and Mapleford and hands back Ridge's and Kelvin Road's four dome figures on every careful path.

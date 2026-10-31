@@ -52,14 +52,13 @@ SHIPPED_CALL_FILES = {
     "winter_route_register_2026-09-14.csv": "224468a25e170f881667e3483c7768ca0fe926435ea4c9e8a250f696c1d8b695",
     "route_audit_revision_log.csv": "34f88a2ec357f3674d7d6c8caa4720e8d193ec556681f6dabf2bceee435fd65e",
     "storm_log_2021-22_to_2025-26.xlsx": "ad8e779838e7741e8f90f591544eab5264c16ddc826a1a59950268dc25c345e7",
-    "winter_maintenance_plan_2026-27.pdf": "13d1a904db688ddfe10ea40261e8079a1f40737ebb3c752c02fb292054193d2a",
+    "winter_maintenance_plan_2026-27.pdf": "c7e2198c987253dcdcb7481aadaf458a4fbf0a396027bd26591aaa2e9d100766",   # 10-31: section 5 names the material codes
     "road_salt_procurement_procedure_RO-PR-07.pdf": "1f2dac155a5eb245d7e6c0b9c3d786f2a5e3831f508446c7b7a34aef9fcf231a",
     "gis_segment_crosswalk_2023.csv": "959206e5c405cd26134fe070e2392ebed1abce0acf4fd7b6bd9db43d9e1fa3ac",
     "qrt_frequent_network_2026_streets.xlsx": "1f5f964535cf919d07c695579752cc1888c8dbc96f6d5d1902bb371a1810242d",
 }
 SHIPPED_COLLECTOR_ROWS = "f0dde0c60e93bc88bec33dd93823b2890174992fe867868a7c8c9b84c5c6c8f0"
 SHIPPED_ARTERIAL_ROWS = "42fbbf1c59d6d0c8c8f0a1863b0dedd124c7c5d64a7075edfd54b51b02f167f0"   # less route_code
-SHIPPED_DICT_CALL_ROWS = "9a1242a1644c5d2a7e79572b68dd1de0de0cd351ab1ecc3956ce45dceb675e0f"
 
 
 def check(label, ok, detail=""):
@@ -472,9 +471,11 @@ def main():
           set(P_.reg[P_.reg["street"].isin(by_street) & (P_.reg["func_class"] == "COLLECTOR") &
                      (P_.reg["frequent_transit"].fillna("").str.match(r"^(41|43|46|48|52|55|57|61|64)"))]["segment_id"])
           == set(nn["segment_id"]), "%d streets" % len(by_street))
-    dic = pd.read_excel(os.path.join(TARGET, P.F_DICT), sheet_name="Fields")
-    kg = dic[(dic["File"] == P.F_LEGACY) & (dic["Field"] == "KG")]["Description"].iloc[0]
-    check("SF9 the legacy export's KG field is filed in kilograms", "kilograms" in kg, kg)
+    leg = pd.read_csv(os.path.join(TARGET, P.F_LEGACY))
+    kgpp = (leg["KG"] / leg["PASSES"].clip(lower=1)).median()
+    check("SF9 the legacy export's quantity column is headed KG and reads in kilograms (a pass lays tens to hundreds of "
+          "kilograms, so a tonnes reading is a thousandfold off and loud)", "KG" in leg.columns and 20 < kgpp < 2000,
+          "median %.0f a pass" % kgpp)
     check("SF10 the total rounded once, or the gain per lane-km rounded first: same call",
           call(r1(gain) * L) == GOLD and "rounded to the nearest 100 t" in proc, "%.1f t" % (r1(gain) * L))
     moves_all = rev[(rev["field"] == "PRIORITY") & (rev["old_value"] == "2") & (rev["new_value"] == "1")]
@@ -734,10 +735,6 @@ def main():
           "in every column but the realigned circuits' codes",
           rows_sha(ps[~ps["route_code"].str.contains("-A")]) == SHIPPED_COLLECTOR_ROWS and
           rows_sha(ps[ps["route_code"].str.contains("-A")].drop(columns=["route_code"])) == SHIPPED_ARTERIAL_ROWS, "")
-    dic_f = pd.read_excel(os.path.join(TARGET, P.F_DICT), sheet_name="Fields")
-    check("SEPARATION the dictionary's rows for the call's files are the shipped rows",
-          rows_sha(dic_f[dic_f["File"].isin(list(SHIPPED_CALL_FILES) + [P.F_PASSES]) & (dic_f["Field"] != "route_code")])
-          == SHIPPED_DICT_CALL_ROWS, "")
     r0, r0b = C.r0_network(P_, sev=P_.wsi["2025-26"], winters=["2025-26"]), C.r0_network(P_)
     check("SEPARATION the network rungs that read the arterial rows recompute to the shipped figures (R0 5,045.3, "
           "R0b 5,392.8)", round(r0, 1) == 5045.3 and round(r0b, 1) == 5392.8, "%.1f, %.1f" % (r0, r0b))
@@ -780,13 +777,8 @@ def main():
     finally:
         shutil.rmtree(tmp)
     check("DISTRACTORS deleted: the golden and both asks unchanged", same, "")
-    man = pd.read_csv(os.path.join(TARGET, P.F_MANIFEST), dtype=str)
-    check("REGISTERS the manifest lists every shipped file but itself (set equality)",
-          set(man["file"]) == set(files) - {P.F_MANIFEST}, str(sorted(set(files) - set(man["file"]))))
-    dic_files = set(dic["File"])
-    data_files = {f for f in files if f.endswith((".csv", ".parquet", ".xlsx"))} - {P.F_DICT}
-    check("REGISTERS the dictionary covers every shipped data file (set equality)", dic_files == data_files,
-          str(sorted(data_files ^ dic_files)))
+    check("REGISTERS no shipped file or sheet describes the data (no dictionary, manifest, readme or field notes)",
+          not any(re.search(r"dictionar|manifest|read_?me|field_?notes|definitions|layout", f, re.I) for f in files), "")
     check("GATES every shipped file has a source, a date and a licence in metadata.json",
           sorted(x["path"] for x in meta["files"]) == files and all(x["source"] and x["date"] and x["license"]
                                                                    for x in meta["files"]), "")
