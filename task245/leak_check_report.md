@@ -1,19 +1,17 @@
 # leak check, task245
 
-**Verdict: REVIEW.** 13 files read, 11 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 11 golden figures and 12 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: network, record, counts, bearing, decisive, percentile, scaling, quality, monitoring, source, driver, operator, background, losses, concentration, missing, section, population, analyser, decision, sentence, outcome, rebuilt, rebuild, procedure
+Stump terms swept: network, section, counts, bearing, record, decisive, scaling, background, percentile, rebuild, quality, estimand, source, missing, procedure, method, driver, monitoring, analyser, accepted, sentence, concentration, nothing, market, street
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `tbc_aq_network_qaqc_procedure_v4.pdf`: carries 23 of 25 distinctive words of the committed call: 'Three stations go into the 2027 Annual Status Report with the data-capture note: North Gate (TBT1), Harbour Walk (TH3) a'
 
-## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `DATA_DICTIONARY.md`: 8 of 25 stump-paragraph terms appear (network, record, source, operator, background, section); read whether the document names the move
-- **REVIEW** `README.md`: 7 of 25 stump-paragraph terms appear (network, record, quality, monitoring, operator, background); read whether the document names the move
-- **REVIEW** `asr2027_table_a3_no2_2026.pdf`: 4 of 25 stump-paragraph terms appear (quality, monitoring, background, concentration); read whether the document names the move
-- **REVIEW** `tbc_aq_network_qaqc_procedure_v4.pdf`: 12 of 25 stump-paragraph terms appear (network, record, counts, quality, monitoring, source); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `asr2027_table_a3_no2_2026.pdf`: 6 of 25 stump-paragraph terms appear (background, quality, monitoring, concentration, market, street); read whether the document names the move
+- **REVIEW** `tbc_aq_network_qaqc_procedure_v4.pdf`: 13 of 25 stump-paragraph terms appear (network, section, counts, record, background, quality); read whether the document names the move
 
 ## 5 announcements (REVIEW 1)
 - **REVIEW** `tbc_aq_network_qaqc_procedure_v4.pdf`: Where that count is 35 or fewer but the station's result for the year is more than 35, the station's result carries the data-capture note: the station cannot be reported as meeting the objective.
@@ -28,6 +26,9 @@ Stump terms swept: network, record, counts, bearing, decisive, percentile, scali
 - **INFO** `tbt_dust_management_monitoring_plan_rev3.pdf`: names 5 of 12 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `thornmouth_aq_station_register.csv`: names 11 of 12 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
@@ -39,9 +40,8 @@ Stump terms swept: network, record, counts, bearing, decisive, percentile, scali
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
@@ -66,3 +66,12 @@ after the one fix pass.
   estimate open, Q6 an analytical choice. Every REVIEW line harmless: the procedure's vocabulary and 5.2 definition are
   its own subject; the dictionary, README and last year's table name no move; the service log, deposit results,
   workbook, export and the procedure's annex list stations and readings and rank nothing.
+
+Reader (isolated, Sonnet, medium), 2026-10-31, on a fresh copy of prompt.txt and the 11-file pack after the reship
+repair (the README and the data dictionary withdrawn). It read the pack for leaks and solved nothing. Questions 1 to 4
+none: section 5.1 defines the whole-year count, lost days included, and says nothing on how a lost day is estimated;
+no file ranks the stations on the note; the request and the procedure are governing documents. Question 5: sections
+5.1 and 5.2 read literally (every day of the year counts by its concentration; the note where the valid-day count is
+35 or fewer and the whole-year count more), with sections 2.3 and 3 fixing the valid days. Question 6: an analytical
+choice (estimating whether a lost day exceeded 50); the clocks, the 18-hour rule and the NO2 conversion are Layer 1;
+nothing planted. Every sweep line harmless.
