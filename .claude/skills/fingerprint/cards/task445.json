@@ -1,97 +1,98 @@
 {
   "task": "task445",
-  "architecture": "v1",
-  "drawn": "2026-10-11",
-  "slot_note": "seed ET02 (13F institutional ownership bridge: amendment types, filing-date value units, option rows, CUSIP repair). The seed's stump was rule application and data semantics, so it is re-rooted: the seed's mechanics stay as Layer 1 mess carried by the asks, and the decisive step is a Layer 2 censoring construction, completing a filing period whose 45-day window is still open at the extract. Hardening loop 1 (2026-10-11, after portal round 1 failed determinism): the estimand and a basis-selection criterion are filed in OM-4 s.2, and the decisive step moves from completing the open window at all to the basis the completion uses. Hardening loop 2 (2026-10-12, after in-house round 3 landed the call on the register-type change pooled across the names): the index and ETF sponsors' share holdings now follow each name's share count as well as their creations, so the type change pooled across names is the stump rung and the decisive step is moving each sponsor still due with the name's own count.",
-  "domain": "quantitative-finance",
-  "subdomain": "other",
-  "niche": "an independent ownership-research firm's quarterly crowded-ownership flag on a client watchlist, set from the SEC Form 13F structured data sets while the quarter's filing window is still open, so the flag has to rest on the institutional ownership the completed filing set will show",
+  "architecture": "v2 (re-root 2026-10-31: an integrated care board's split of its 2027 Heat Resilience Fund among its six places by each place's excess deaths in June to August 2026, the deaths that occurred whether registered yet or not, completed from the medical examiner offices' log of deaths the coroner holds for inquest)",
+  "drawn": "2026-10-31",
+  "slot_note": "batch 1 re-root; architecture 1 (quantitative finance, the 13F holdings carry) failed the portal's determinism block and the survivor anatomy",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "seasonal-adjustment-official-time-series-production",
+  "niche": "provisional deaths by date of occurrence for a heat summer, completed for the deaths a coroner's inquest keeps off the register by linking the medical examiner offices' referral log to the registrations",
   "objective": "etl",
-  "shape": "03",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "WHII, GLI, OTF, JEMS and SAF carry the crowded flag for the December 2022 quarter; AMRB, TAAV, FENN, ABBB, OLPD, HAMR and NOPR do not.",
-  "answer_source": "task445/submission.md, 1. Final Recommendation (golden/crowded_flags_2022q4.csv crowded column carries the same call)",
+  "shape": "05",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
-    "E"
+    "none"
   ],
   "generators": [
-    "G14",
-    "G16",
-    "G6",
-    "G19"
+    "G12",
+    "G3",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "forecast_method_backtest",
-  "decisive_rule_filed": true,
+  "gate_g": "etl_conformance",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every 13F line, reads OM-4 s.2 literally and back-tests the natural completion bases, the register-type change among them, grows each manager still due by its own type's change pooled across the twelve names (index and ETF sponsors about 4.5 per cent in shares, every other type flat), sees it beat every other basis it builds in the September back-test (about 0.7 points against 1.0 and up), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; only moving each index sponsor still due with the change its filed peers show in that name (equivalently its September stake grown by the sponsors' stake growth), the basis the filed criterion selects (about 0.04), flags WHII, GLI, OTF, JEMS and SAF.",
-  "domain_test": "The decisive step is how an index fund's 13F holdings behave: an index or ETF sponsor holds the index weight, so in shares it holds a fixed slice of each constituent's float, scaled by its own creations, and its share count in a name moves when that company issues, buys back or tenders while an active manager's does not; completing a quarter still inside its 45-day window has to move each sponsor still due with each name's own count; with another field's nouns there is no float to track, no creation mechanism and no filing window.",
-  "client_domain": "quantitative-finance",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:float-tracking-holders-in-completing-an-open-filing-window",
-  "layer1": [
-    "the SEC Form 13F data sets organised by the quarter a filing was submitted, not the period it reports, with the current quarter in a nightly build",
-    "originals with RESTATEMENT and NEW HOLDINGS amendments, including two amendments to one report filed the same day through two filing agents (the data set lists them in accession order, the amendment numbers give the other), a restatement whose submission header carries the previous quarter's period while its cover page carries the report's own, and a September report's option positions added in January when confidential treatment expired",
-    "put and call lines on the share CUSIP, some carrying the option only in the title of class with the put or call field blank",
-    "filer-keyed CUSIPs: leading zeros dropped, lower case, and failed check digits under filer-abbreviated issuer names",
-    "value in thousands of dollars before 2023-01-03 and in dollars after, by filing date, with one filer still on thousands after the switch",
-    "cover-page share counts at as-of dates either side of a period end, including an amended quarterly report's later count",
-    "manager families filing under several CIKs, a filer renamed between quarters, 13F notice filers and combination reports"
-  ],
   "context_artifact": "register",
-  "stakeholder_role": "head of ownership research at an independent ownership-research firm that publishes a quarterly crowded flag to hedge fund clients",
-  "role_family": "product_manager",
-  "scoring_unit": "flat per seat",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and the fund's rule correctly counts each place's residents' deaths with a June to August 2026 date of death on the register as extracted in October and completes them with the share of earlier summers' deaths registered by the same point, which reproduces every earlier summer's final count; this summer's unregistered deaths were not the usual few, because the July heat wave's deaths of people found at home went to the coroner and the north coroner opened inquests on them, so the earlier summers' completeness understates Ashwold and overstates the places whose deaths were all registered.",
+  "domain_test": "The deciding quantity is each place's deaths by date of occurrence, the vital-statistics series a provisional registration extract understates by its registration lag and that official mortality series complete before they are used; the lag is long only for deaths a coroner holds for inquest, so the count is completed from the medical examiners' referral log, and swapping in another field's records (admissions, claims, sales) loses the coroner's hold that makes the lag.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:inquest-held-registrations",
+  "layer1": [
+    "a registration extract with amended registrations as second rows",
+    "dates in two formats either side of the register's 2023 system change",
+    "residents' deaths registered in other districts",
+    "the deceased's name in one field in the referral log and in two fields on the register",
+    "two medical examiner offices' logs with different layouts",
+    "postcodes placed in places through a lookup that holds terminated postcodes",
+    "UTC timestamps on one office's case system"
+  ],
+  "stakeholder_role": "the integrated care board's heat resilience panel",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
   "spine": {
-    "file": "form13f_2022q4/INFOTABLE.tsv (one INFOTABLE per drop: form13f_2022q3, form13f_2022q4, edgar13f_daily_20230103_20230203)",
-    "rows": 39439,
-    "entity": "one information-table line of one 13F filing (one security position, or put or call, as one manager reported it in one accession)",
-    "grain": "accession x information-table line",
-    "source": "synthetic, on the SEC Form 13F data set schema"
+    "file": "harrowdale_death_registrations_2021-2026.csv",
+    "rows": 0,
+    "entity": "a death registration (an amendment is a second row)",
+    "grain": "registration",
+    "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "other",
-  "org_family": "professional_services",
+  "forum": "committee_or_panel",
+  "forcing_event": "season_or_peak",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States",
-    "currency": "USD",
-    "org_type": "independent ownership-research firm serving hedge fund clients",
+    "geography": "England (a fictional integrated care board area of six local authority places)",
+    "currency": "GBP",
+    "org_type": "an NHS integrated care board's population health intelligence team",
     "invented_names": [
-      "Quillfield Research",
-      "Harrowby Point Partners",
-      "Prescott Funds Group",
-      "Prescott Global Indexing",
-      "Wexley Trust Wealth Advisors",
-      "Tregaron National Bank Wealth Management",
-      "Shelby Investment Group"
+      "Harrowdale",
+      "Ashwold",
+      "Brinmoor",
+      "Calderholt",
+      "Hollinsgate",
+      "Moorbridge",
+      "Thornley Vale",
+      "Heat Resilience Fund"
     ],
     "people": [
-      "Nancy Henderson",
-      "Brian Guerra"
+      "Lynn Davison",
+      "Jason Leach",
+      "Graeme Gould",
+      "Caroline Porter"
     ]
   },
   "deliverables": [
-    "crowded_flags_2022q4.csv",
-    "sep_quarter_bridge.png"
+    "heat_resilience_fund_2027.xlsx",
+    "summer_2026_deaths_by_place.csv"
   ],
   "opening_move": "question-first",
-  "driver": "One class of holder keeps a fixed fraction of each unit rather than a fixed amount, so when a unit's size changes that class's amount in it moves with it, and the class's common change is a change in the fraction, the same in every unit; completing the holders not yet reported in a still-open period with one amount change per class pooled across units misstates the units whose size moved, carrying every class as a fraction misstates the units whose missing holders keep amounts, and the basis a filed back-test criterion selects moves each missing holder of that class with its own unit's size and the class's change in fraction while every other class keeps its amount.",
-  "driver_concrete": "At the 3 February 2023 extract the December 13F window (deadline 14 February) is open and OM-4 s.2 files the estimand (every manager that reports holdings for the quarter, the 129 still due included, their holdings estimated) and the criterion that selects the basis (closest on the September window at the same day, by the largest miss across the twelve names); an index or ETF sponsor holds a fixed slice of each company's float, so its shares in a name move with that name's count (OTF's October follow-on +4.6 per cent, FENN's shares issued for an acquisition +4.8, ABBB's tender -5.4, the buybacks at WHII, JEMS, AMRB and NOPR, GLI's July follow-on +5.0, SAF's July tender -4.0) on top of its creations (its stake in every name +5.5 per cent a quarter), while every other register type is flat in aggregate in shares; the selected basis grows each sponsor still due by the change its filed peers show in that name (equivalently its September stake grown by the sponsors' stake growth), which puts OTF, a quarter of it held by sponsors still due, at 80.4, while the sponsors' change pooled across the names in shares (about 4.5 per cent) leaves OTF at about 79.2, and carrying every manager's stake or one rate for everyone flags FENN, whose managers still due are multi-strategy funds.",
-  "stump": "A competent solver executes OM-4 literally, sees that the index and ETF sponsors that have filed grew their share holdings while every other register type held flat, grows each of the 129 managers still due by its own type's change pooled across the twelve names, sees that basis beat every other it builds in the September back-test (largest miss about 0.66 points against 1.0 for the all-filer change, 1.4 for flat carry and 2.2 per name), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; the step that lands it there is treating the sponsors' change as one factor for every name, when an index sponsor holds a fixed slice of each company, so in shares it moves with that name's share count as well as with its creations: OTF issued about 4.6 per cent more shares in October and its sponsors still due, 23 per cent of OTF, took their slice, which the two filed sponsors' OTF holdings show (up about 10.4 per cent against 4.5 pooled), so the basis the filed criterion selects grows each sponsor still due by the change its filed peers show in that name (largest miss about 0.04), which puts OTF at 80.4 and keeps FENN, whose managers still due are multi-strategy funds, at 79.6.",
+  "question_form": "how-much",
+  "driver": "A count by date of occurrence for a recent window is completed for the units a second body still holds out of the record, read from that body's own log linked to the record on personal identifiers and dates, because the usual completion factor assumes the hold is as rare as in the closed windows it reproduces.",
+  "driver_concrete": "Each place's summer 2026 deaths are the deaths on the register plus the deaths the medical examiners referred to the coroner on which an inquest is still open, linked by name, birth date and date of death and placed by the deceased's postcode, because the July heat wave sent the deaths of people found at home to the coroner, so the earlier summers' share registered by October understates the summer and only the referral log names the missing deaths.",
+  "stump": "A competent analyst completes each place's registered summer deaths with the earlier summers' share registered by the same point and splits the fund on the excess; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the north coroner holds the heat wave's deaths at home for inquest and Ashwold's are most of them.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task445": "Loop 1 (lineage) moved each missing reporter by its class's common drift pooled across the units, which round 3 landed; loop 2's decisive move is that the drifting class holds fractions of each unit, so a class change pooled across units in amounts is wrong unit by unit wherever a unit's size moved, and the selected basis applies the class's change in fraction with each unit's own size change; the loop 1 basis is loop 2's stump rung.",
-    "task181": "task181 nowcasts how much of a fortnight is still in transit, by each reporting route's own arrival delay (how much is missing); task445 knows exactly which holders are missing and turns on what they now hold: the missing index sponsors hold a fixed slice of each company, so they are moved with each name's share count and the sponsors' stake growth, not with their own history and not with a factor pooled across names, a basis a filed back-test criterion selects.",
-    "task107": "task107 v4 carries each unit forward past a dated step (a pay rise at a service anniversary) that earlier entrants show in the history, so its decisive step is when the step takes effect against the forward window; task445 has no dated event: one reporter class's holdings drift at a common rate every quarter (creations), measured on that class's filed peers in the same open period, and the decisive step is completing each missing reporter by its own class's drift, which a filed back-test criterion selects over flat carry and over any pooled rate.",
-    "task446": "task446 backs a forward count out of a screen's flagged share through error rates that hold across years while its yield moves with the base rate; task445 completes an open filing window holder by holder, and its decisive step is the quantity the missing index sponsors conserve (a slice of each company, moving with each name's share count), not a screen's yield against a base rate."
+    "task107": "task107 v3-etl re-pointed a payroll pipeline at a payments-only feed, so one file's window silently dropped each person's nil months; here no file is wrong and nothing is dropped: the deaths missing from the register are complete records in another body's log, held there by an inquest, and are found only by linking that log to the register on name, birth date and date of death.",
+    "task181": "task181 completes specimens notified against collected with each courier route's own delay (a nowcast by route); here no delay is estimated at all: the deaths the register lacks are named one by one in the medical examiners' referral log, so the golden is an enumeration through a link, and every delay model, pooled or by place, is a rung below it.",
+    "task485": "task485 carries arrivals' retention from earlier arrivals conditioned on each arrival's own migration history; here nothing is carried from earlier cohorts: the earlier summers' completeness is the wrong rung, and the count is completed from a second body's log of the deaths it still holds."
   },
   "lineage": [
     {
@@ -132,8 +133,79 @@
       "gate_g": "method_or_model_selection",
       "decision_type": "designation_set",
       "driver": "The decisive quantity is the part of a period's total still held by reporters whose reports have not arrived at the extract; because slow reporters concentrate in some units and not others, it has to be completed reporter by reporter from each one's last report, and reading the arrived reports as the total, or scaling every unit by one aggregate completion share, misstates exactly the units whose holders report late and changes which units cross the threshold."
+    },
+    {
+      "architecture": "v1 loop 2 (shipped 2026-10-12, the 13F holdings carry)",
+      "drawn": "2026-10-11",
+      "domain": "quantitative-finance",
+      "subdomain": "other",
+      "niche": "an independent ownership-research firm's quarterly crowded-ownership flag on a client watchlist, set from the SEC Form 13F structured data sets while the quarter's filing window is still open, so the flag has to rest on the institutional ownership the completed filing set will show",
+      "objective": "etl",
+      "shape": "03",
+      "decision_type": "designation_set",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G6",
+        "G19"
+      ],
+      "gate_g": "method_or_model_selection",
+      "calibration_form": "censored_or_lagged_release",
+      "stump_strategy": "forecast_method_backtest",
+      "context_artifact": "register",
+      "forum": "customer_or_counterparty",
+      "forcing_event": "other",
+      "org_family": "professional_services",
+      "role_family": "product_manager",
+      "question_form": "which",
+      "opening_move": "question-first",
+      "deliverables": [
+        "crowded_flags_2022q4.csv",
+        "sep_quarter_bridge.png"
+      ],
+      "driver": "One class of holder keeps a fixed fraction of each unit rather than a fixed amount, so when a unit's size changes that class's amount in it moves with it, and the class's common change is a change in the fraction, the same in every unit; completing the holders not yet reported in a still-open period with one amount change per class pooled across units misstates the units whose size moved, carrying every class as a fraction misstates the units whose missing holders keep amounts, and the basis a filed back-test criterion selects moves each missing holder of that class with its own unit's size and the class's change in fraction while every other class keeps its amount.",
+      "stump": "A competent solver executes OM-4 literally, sees that the index and ETF sponsors that have filed grew their share holdings while every other register type held flat, grows each of the 129 managers still due by its own type's change pooled across the twelve names, sees that basis beat every other it builds in the September back-test (largest miss about 0.66 points against 1.0 for the all-filer change, 1.4 for flat carry and 2.2 per name), and flags WHII, GLI, JEMS and SAF with OTF at about 79.2; the step that lands it there is treating the sponsors' change as one factor for every name, when an index sponsor holds a fixed slice of each company, so in shares it moves with that name's share count as well as with its creations: OTF issued about 4.6 per cent more shares in October and its sponsors still due, 23 per cent of OTF, took their slice, which the two filed sponsors' OTF holdings show (up about 10.4 per cent against 4.5 pooled), so the basis the filed criterion selects grows each sponsor still due by the change its filed peers show in that name (largest miss about 0.04), which puts OTF at 80.4 and keeps FENN, whose managers still due are multi-strategy funds, at 79.6.",
+      "world": {
+        "geography": "United States",
+        "currency": "USD",
+        "org_type": "independent ownership-research firm serving hedge fund clients",
+        "invented_names": [
+          "Quillfield Research",
+          "Harrowby Point Partners",
+          "Prescott Funds Group",
+          "Prescott Global Indexing",
+          "Wexley Trust Wealth Advisors",
+          "Tregaron National Bank Wealth Management",
+          "Shelby Investment Group"
+        ],
+        "people": [
+          "Nancy Henderson",
+          "Brian Guerra"
+        ]
+      },
+      "spine": {
+        "file": "form13f_2022q4/INFOTABLE.tsv (one INFOTABLE per drop: form13f_2022q3, form13f_2022q4, edgar13f_daily_20230103_20230203)",
+        "rows": 39439,
+        "entity": "one information-table line of one 13F filing (one security position, or put or call, as one manager reported it in one accession)",
+        "grain": "accession x information-table line",
+        "source": "synthetic, on the SEC Form 13F data set schema"
+      },
+      "fate": "spent 2026-10-31: the portal determinism block (answer_contradicts_files: OM-4 section 2 named the filers for the period and filed no completion, so a literal reading flagged WHII and JEMS) and the batch audit (short of the survivor anatomy: the decisive basis was a filed criterion's selection, not a link no key invites); re-rooted as architecture 2 into survey research and official statistics"
     }
   ],
-  "notes": "subdomain other: institutional ownership analytics from regulatory holdings filings, which the quantitative-finance task-type list does not carry. forcing_event other: the firm's quarterly flag file is published to clients on a fixed date inside the filing window. decisive_rule_filed true: the firm's methodology note (OM-4 s.2) files the estimand (the managers still due are in the population and their holdings are estimated) and the criterion that selects the estimation basis (the basis closest on the previous period at the same day, by the largest miss); it never names the basis. Personas drawn with guard.py names --geo 'United States' --seed 445 (Joan Collins skipped as a public figure name; Philip Montes and Pamela Sullivan skipped on a people.first WARN). Surface screen 2026-10-11: 0 promoted pairs; people.last WARN (Henderson in task117) answered in the design note. Hardening loop 1 (2026-10-11): card rewritten for the filed estimand and the basis-selection criterion; the shipped driver moved to lineage; stump_strategy forecast_method_backtest (the basis is chosen by a back-test the filed criterion names), decisive pattern E (one pooled carry rate applied to every missing reporter against the rate each reporter class shows). Prescott's December cover page carries a new name (an ask device); the old name stays in invented_names. Loop 1 people: Jonathan Richardson (data engineering, named only in data_sources.md) replaced by Brian Guerra (guard.py names --geo 'United States' --seed 445, the next name after the ones skipped at the draw), because task130 v3 (retired, filed later the same day) carries Jonathan Hoffman. Loop 1 build (2026-10-11): re-registered with register --force over the ban.forum BLOCK against task228 v2, a registration-order artifact (task445 registered customer_or_counterparty at 15:47, task228 v2 drew the same forum at 16:21 the same day); the forum is unchanged since the original PASS registration. Hardening loop 2 (2026-10-12): the loop 1 driver moved to lineage; decisive pattern E kept (the completion factor for the class that holds slices is conditioned on the name, through its share count), G6 added (the share count moves under the share metric); stump_strategy forecast_method_backtest and the calibration form unchanged; OM-4, the readme, the layout, data_sources.md and the prompt byte-identical; no filed sentence names a basis, a stake, float tracking or an index weight. Re-registered with register --force over the same ban.forum BLOCK against task228 v2 (registration order, unchanged since the original PASS registration). Loop 2 build (2026-10-12): heart BLOCK ban.org_family (professional_services) against task230 v2, the same registration-order artifact as the earlier ban.forum against task228 v2: task230 v2 was re-rooted after this card was drawn on 2026-10-11 and the guard sorts same-day cards by task number, so it reads as this card's predecessor; perssathya's author waived the organisation-family ban for exactly this pair on 2026-10-12. The world, forum and org family have not moved since the original PASS registration.",
-  "question_form": "which"
+  "notes": "",
+  "registered": "2026-10-31T22:45:01Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "their",
+    "rounding opener": "percentages",
+    "deliverable set": "csv+png"
+  }
 }
