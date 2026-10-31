@@ -1,12 +1,12 @@
 {
  "task": "task445",
  "status": "DESIGN",
- "domain": "survey-research-official-statistics / seasonal-adjustment-official-time-series-production",
+ "domain": "general-statistics-data-science / data-integration-record-linkage-entity-resolution",
  "objective": "etl",
  "stage": 2,
  "stage_name": "design",
  "updated": "2026-10-31",
- "stump": "A competent analyst completes each place's registered June to August 2026 deaths with the earlier summers' share registered by the same point in October and splits the Heat Resilience Fund on the excess over the filed expected deaths; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the north coroner holds the heat wave's deaths at home for inquest and Ashwold's are most of them, named one by one in the medical examiner offices' referral log.",
+ "stump": "A competent analyst completes each place's registered June to August 2026 deaths with the earlier summers' share registered by the same point in October and designates the places whose completed deaths exceed the filed expected deaths by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, named one by one in the medical examiner offices' referral logs, so Ashwold is left out.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -18,7 +18,7 @@
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "PASS 2026-10-31 on the card as filed (NOTE test.same_driver_older against task107 v3-etl lineage, differentiated on the card; task181 and task485 differentiated on the card)",
+  "guard_check": "WARN 2026-10-31 on the card as redrawn after task468 v5's same-pairing draw (overuse.objective, repeat.gate_g and repeat.question_form against task468, answered in the note); task107 v3-etl, task181 and task485 differentiated on the card",
   "heart": "",
   "surface": ""
  },

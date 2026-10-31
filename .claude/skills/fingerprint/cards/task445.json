@@ -1,27 +1,27 @@
 {
   "task": "task445",
-  "architecture": "v2 (re-root 2026-10-31: an integrated care board's split of its 2027 Heat Resilience Fund among its six places by each place's excess deaths in June to August 2026, the deaths that occurred whether registered yet or not, completed from the medical examiner offices' log of deaths the coroner holds for inquest)",
+  "architecture": "v2 (re-root 2026-10-31: NHS Ellesmoor integrated care board's 2027 heat resilience grants to the places whose residents' deaths from June to August 2026 exceeded the expected by a tenth, the deaths that occurred whether registered yet or not, the register integrated with the medical examiner offices' log of the deaths the coroner holds for inquest)",
   "drawn": "2026-10-31",
   "slot_note": "batch 1 re-root; architecture 1 (quantitative finance, the 13F holdings carry) failed the portal's determinism block and the survivor anatomy",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "provisional deaths by date of occurrence for a heat summer, completed for the deaths a coroner's inquest keeps off the register by linking the medical examiner offices' referral log to the registrations",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "niche": "deaths by date of occurrence for a heat summer, integrated from the death registrations and two medical examiner offices' referral logs that share no key, the deaths a coroner's inquest keeps off the register found by linking the logs to the registrations on name, birth date and date of death",
   "objective": "etl",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "currency",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
     "G3",
+    "G12",
     "G13"
   ],
   "gate_g": "etl_conformance",
@@ -32,8 +32,8 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and the fund's rule correctly counts each place's residents' deaths with a June to August 2026 date of death on the register as extracted in October and completes them with the share of earlier summers' deaths registered by the same point, which reproduces every earlier summer's final count; this summer's unregistered deaths were not the usual few, because the July heat wave's deaths of people found at home went to the coroner and the north coroner opened inquests on them, so the earlier summers' completeness understates Ashwold and overstates the places whose deaths were all registered.",
-  "domain_test": "The deciding quantity is each place's deaths by date of occurrence, the vital-statistics series a provisional registration extract understates by its registration lag and that official mortality series complete before they are used; the lag is long only for deaths a coroner holds for inquest, so the count is completed from the medical examiners' referral log, and swapping in another field's records (admissions, claims, sales) loses the coroner's hold that makes the lag.",
+  "analyst_test": "A strong analyst who reads every field and the fund's rule correctly counts each place's residents' deaths with a June to August 2026 date of death on the register as extracted in October and completes them with the share of earlier summers' deaths registered by the same point, which reproduces every earlier summer's final count; this summer's unregistered deaths were not the usual few, because the July heat wave's deaths of people living alone were found days later, the post-mortem could not give a cause and the coroner opened inquests on them, so the earlier summers' completeness leaves Ashwold under the fund's line, where the deaths that occurred put it well over.",
+  "domain_test": "The deciding quantity is each place's deaths by date of occurrence, which no one source holds: the register lacks the deaths a coroner holds for inquest and the medical examiners' logs lack residents who died outside their offices' areas, so data integration builds it by linking the logs to the register on name, birth date and date of death, since the two share no key; the field's own operation decides the call, and swapping in a single source (the register completed by its own history) is the rung that files the wrong set.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:inquest-held-registrations",
   "layer1": [
@@ -45,17 +45,17 @@
     "postcodes placed in places through a lookup that holds terminated postcodes",
     "UTC timestamps on one office's case system"
   ],
-  "stakeholder_role": "the integrated care board's heat resilience panel",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the integrated care board's board, on the population health directorate's advice",
+  "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "harrowdale_death_registrations_2021-2026.csv",
+    "file": "ellesmoor_death_registrations_2021-2026.csv",
     "rows": 0,
     "entity": "a death registration (an amendment is a second row)",
     "grain": "registration",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
+  "forum": "board_of_directors",
   "forcing_event": "season_or_peak",
   "org_family": "hospital_or_health_provider",
   "world": {
@@ -63,7 +63,7 @@
     "currency": "GBP",
     "org_type": "an NHS integrated care board's population health intelligence team",
     "invented_names": [
-      "Harrowdale",
+      "Ellesmoor",
       "Ashwold",
       "Brinmoor",
       "Calderholt",
@@ -73,21 +73,21 @@
       "Heat Resilience Fund"
     ],
     "people": [
-      "Lynn Davison",
+      "Caroline Porter",
       "Jason Leach",
       "Graeme Gould",
-      "Caroline Porter"
+      "Jayne Jackson"
     ]
   },
   "deliverables": [
-    "heat_resilience_fund_2027.xlsx",
+    "heat_resilience_grants_2027.xlsx",
     "summer_2026_deaths_by_place.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
+  "question_form": "which",
   "driver": "A count by date of occurrence for a recent window is completed for the units a second body still holds out of the record, read from that body's own log linked to the record on personal identifiers and dates, because the usual completion factor assumes the hold is as rare as in the closed windows it reproduces.",
   "driver_concrete": "Each place's summer 2026 deaths are the deaths on the register plus the deaths the medical examiners referred to the coroner on which an inquest is still open, linked by name, birth date and date of death and placed by the deceased's postcode, because the July heat wave sent the deaths of people found at home to the coroner, so the earlier summers' share registered by October understates the summer and only the referral log names the missing deaths.",
-  "stump": "A competent analyst completes each place's registered summer deaths with the earlier summers' share registered by the same point and splits the fund on the excess; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the north coroner holds the heat wave's deaths at home for inquest and Ashwold's are most of them.",
+  "stump": "A competent analyst completes each place's registered summer deaths with the earlier summers' share registered by the same point and designates the places whose completed deaths exceed the expected by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, so Ashwold is left out.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task107": "task107 v3-etl re-pointed a payroll pipeline at a payments-only feed, so one file's window silently dropped each person's nil months; here no file is wrong and nothing is dropped: the deaths missing from the register are complete records in another body's log, held there by an inquest, and are found only by linking that log to the register on name, birth date and date of death.",

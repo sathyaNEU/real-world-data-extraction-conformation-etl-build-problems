@@ -1,45 +1,51 @@
-# task445 design note (architecture 2, the Harrowdale Heat Resilience Fund)
+# task445 design note (architecture 2, the Ellesmoor heat resilience grants)
 
 Architecture 1 (the 13F holdings carry, quantitative finance) is spent and in the card's lineage; its measured
-deaths are in `## Tried and rejected`. It died on the determinism block (a literal reading of its governing section
-counted only the reports on file) and on the survivor anatomy (its decisive basis was a filed criterion's selection).
-This draw is held to two tests before anything else: the estimand, members not yet observed included, is filed so
-its literal execution is the golden, and the easy route is the field's own completion of an unfinished count, which
-every closed summer in the pack validates.
+deaths are in the last section. It died on the determinism block (a literal reading of its governing section counted
+only the reports on file) and on the survivor anatomy (its decisive basis was a filed criterion's selection). This
+draw is held to two tests before anything else: the estimand, members not yet observed included, is filed so its
+literal execution is the golden, and the easy route is the field's own completion of an unfinished count, which every
+closed summer in the pack validates.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task445.json`, architecture v2, registered 2026-10-31T22:45:01Z after
-  `guard.py recent`, `coverage` and `mechanisms --objective etl`. `check` PASS: the one older structural match
-  (task107 v3-etl, gap population, pattern G12, etl_conformance) is differentiated on the card, and so are task181
-  (a nowcast by route) and task485 (retention carried from earlier arrivals), the two maturity builds nearest in
-  family. The bans against the last three builds (task482 v16, task172 v2, task125 v4: other, funder and executive
-  forums; contract and meeting events; manufacturing, university and local-government organisations; the
-  decomposition, other and composition strategies; patterns G2, G4 and G5; shapes 01 and other) are clear.
-- **Pairing:** Survey Research & Official Statistics, task type seasonal-adjustment-official-time-series-production
-  (the official mortality series by date of occurrence, produced from registrations before it is used), objective Data
-  Extraction & Conformation: the deaths of each place's residents from 1 June to 31 August 2026, conformed from the
-  registrations and the medical examiner offices' referral logs, decide how an integrated care board splits a fixed
-  fund for summer 2027.
-- **Shape:** 05, an allocation to a fixed total: each place's deaths, its filed expected deaths, its excess and its
-  share of GBP 2.4 million; the asks' place-by-period and coroner-area grids supply the rest of the criteria.
-- **Strategy:** `maturity_censoring`; Gate G `etl_conformance`; gap population then time; generators G12 (a death
-  missing from the register is an absence of record, not a record that no death occurred), G3 (the register records
-  registrations, the fund counts occurrences), G13 (the extract's horizon is not the summer's).
+- **Card:** `.claude/skills/fingerprint/cards/task445.json`, architecture v2, first registered 2026-10-31T22:45:01Z
+  after `guard.py recent`, `coverage` and `mechanisms --objective etl`, and redrawn on its axes the same evening when
+  task468 v5, registered eight minutes earlier on the same pairing, shape, forum and role, landed on main (the redraw
+  is in the last section). `check` on the card as filed: WARN only (the objective's share of the last twelve builds,
+  which the slot fixes; Gate G `etl_conformance` and the question form `which` against task468, answered in the
+  pre-ship check). The bans against the last three builds (task172 v2, task125 v4, task468 v5: funder, executive and
+  panel forums; meeting and budget events; university, local-government and government-agency organisations; the
+  other, composition and population strategies; patterns G4, G5 and G11; shapes 01 and 05 against the last two) are
+  clear, and task107 v3-etl, task181 and task485 are differentiated on the card.
+- **Pairing:** General Statistics & Data Science, task type data-integration-record-linkage-entity-resolution,
+  objective Data Extraction & Conformation: each place's residents' deaths from 1 June to 31 August 2026, which no
+  one source holds (the register lacks the deaths a coroner holds for inquest, the medical examiner offices' logs lack
+  residents who died outside their areas), integrated from the registrations and the two offices' referral logs, which
+  share no key, decide which places of an integrated care board get its 2027 heat resilience grants.
+- **Shape:** 10, a scorecard against a threshold: each place's deaths, its filed expected deaths, its excess and the
+  fund's line of a tenth over the expected; the asks' place-by-period and coroner-area grids supply the rest of the
+  criteria.
+- **Strategy:** `maturity_censoring`; Gate G `etl_conformance`; gap time then population; generators G3 (the register
+  records registrations and the fund counts deaths, so the record lags the event by the coroner's hold), G12 (a death
+  missing from the register is an absence of record, not a record that no death occurred), G13 (the extract's horizon
+  is not the summer's).
 - **Data-native sentence:** in the July heat wave, older people living alone in Ashwold's terraces died at home and
   were found days later, the post-mortem could not give a cause, and a death whose cause a post-mortem cannot give
   waits for an inquest before it is registered, so in October Ashwold's summer is short on the register by exactly
   the deaths the medical examiners referred to the coroner and the coroner still holds.
-- **World:** NHS Harrowdale Integrated Care Board, a fictional board in the north of England serving six local
+- **World:** NHS Ellesmoor Integrated Care Board, a fictional board in the north of England serving six local
   authority places (Hollinsgate, the city; Ashwold; Brinmoor; Calderholt; Moorbridge; Thornley Vale); two coroner
-  areas (Harrowdale North: Hollinsgate, Ashwold, Thornley Vale; Harrowdale South: Brinmoor, Calderholt, Moorbridge);
+  areas (North Ellesmoor: Hollinsgate, Ashwold, Thornley Vale; South Ellesmoor: Brinmoor, Calderholt, Moorbridge);
   two medical examiner offices hosted by the acute trusts, each with its own log. People from `guard.py names --geo uk
-  --seed 445`: Lynn Davison (Director of Population Health, who chairs the Heat Resilience Panel and asks for the
-  split), Jason Leach (Head of Population Health Intelligence, who owns the mortality extracts), Graeme Gould (Lead
-  Medical Examiner, Harrowdale North), Caroline Porter (Medical Examiner Office Manager, Harrowdale South).
-- **Forum and forcing event:** the board's Heat Resilience Panel (committee_or_panel) agrees the 2027 allocations on
-  26 November 2026 so that the places can commission cool spaces, check-in calls and home adaptations before summer
-  2027 (season_or_peak); the organisation is an NHS integrated care board (hospital_or_health_provider).
+  --seed 445` (Lynn Davison and the Khan surname set aside, task468 v5 carrying Davison and Khan): Caroline Porter
+  (Director of Population Health, who takes the grants to the board and asks for the scorecard), Jason Leach (Head of
+  Population Health Intelligence, who owns the mortality extracts), Graeme Gould (Lead Medical Examiner, North
+  Ellesmoor), Jayne Jackson (Medical Examiner Office Manager, South Ellesmoor).
+- **Forum and forcing event:** the board of the integrated care board (board_of_directors) approves the 2027 heat
+  resilience grants at its meeting of 26 November 2026, so that the designated places can commission cool spaces,
+  check-in calls and home adaptations before summer 2027 (season_or_peak); the organisation is an NHS integrated care
+  board (hospital_or_health_provider).
 - **Why retrospective:** the fund pays for summer 2027 on summer 2026's toll, a window closed on 31 August whose
   count is not finished at the October extract; the forward element is the count's completion (the deaths not yet on
   the register), never a forecast of 2027.
@@ -151,3 +157,10 @@ every closed summer in the pack validates.
   authority counts, which determinism needs, a strong analyst who reads it correctly links the councils' records and
   lands the golden, so the decisive step was reading the scope, with no textbook estimate a careful reader would
   prefer to the link.
+- The draw as first registered (2026-10-31T22:45:01Z, pushed in 9b6e0799): survey-research-official-statistics with
+  seasonal-adjustment-official-time-series-production, shape 05 (an allocation of GBP 2.4 million on each place's
+  excess), the board's Heat Resilience Panel as forum and a programme officer as the role. task468 v5 had registered
+  the same pairing, subdomain, shape, forum, role and decision type eight minutes earlier on another branch, so on
+  main the card took six bans; the same world and decisive step were redrawn onto data integration, a scorecard
+  designation, the board itself and a policy adviser, with gap time and pattern G3, because every honest (population,
+  G12) and (population, G3) signature with a designation was already spent five or more times.
