@@ -1,58 +1,69 @@
 {
- "appt_share_c26": 0.707,
- "appt_share_c9": 0.282,
- "ask_a": {
-  "2027-07 (c)(26)": 182,
-  "2027-07 (c)(9)": 279,
-  "2027-08 (c)(26)": 187,
-  "2027-08 (c)(9)": 140,
-  "2027-09 (c)(26)": 771,
-  "2027-09 (c)(9)": 63
+ "at_risk": "267",
+ "at_risk_past": "200",
+ "band": "continue",
+ "band_threshold": "80",
+ "call": "continue as planned (band C)",
+ "ci_level": "95",
+ "cp_above": "99",
+ "cp_design": "54",
+ "cp_golden": "100",
+ "cp_golden_unrounded": "0.9996",
+ "cp_trend": "5",
+ "events_by_arm": [
+  "87",
+  "78"
+ ],
+ "events_final": "330",
+ "events_interim": "165",
+ "exposure": {
+  "0|doses": "1455",
+  "0|safety_population": "223",
+  "1|doses": "1501",
+  "1|safety_population": "226"
  },
- "ask_a_benefits_id_only": {
-  "2027-09 (c)(26)": 2
+ "hr_ci": [
+  "0.67",
+  "1.24"
+ ],
+ "hr_stratified": "0.91",
+ "liver": {
+  "0|ALT": "2",
+  "0|AST": "1",
+  "0|TBIL": "10",
+  "1|ALT": "10",
+  "1|AST": "10",
+  "1|TBIL": "16"
  },
- "ask_b": {
-  "2025 Q4": {
-   "refiled_30": 19,
-   "rejected": 22
-  },
-  "2026 Q1": {
-   "refiled_30": 26,
-   "rejected": 33
-  },
-  "2026 Q2": {
-   "refiled_30": 50,
-   "rejected": 57
-  },
-  "2026 Q3": {
-   "refiled_30": 14,
-   "rejected": 18
-  }
+ "logrank_z": "0.58",
+ "nsim": "20,000",
+ "one_sided_alpha": "2.5",
+ "randomised": "450",
+ "rate_ratio_early": [
+  "1.34",
+  "1.3"
+ ],
+ "rate_ratio_late": [
+  "0.38",
+  "0.4"
+ ],
+ "rejections": "19,992",
+ "sae": {
+  "0|Blood and lymphatic system disorders": "23",
+  "0|Gastrointestinal disorders": "18",
+  "0|Hepatobiliary disorders": "57",
+  "0|Infections and infestations": "53",
+  "0|events": "170",
+  "0|patients": "113",
+  "1|Blood and lymphatic system disorders": "30",
+  "1|Gastrointestinal disorders": "23",
+  "1|Hepatobiliary disorders": "74",
+  "1|Infections and infestations": "65",
+  "1|events": "222",
+  "1|patients": "132"
  },
- "call_quote_months": 5.5,
- "expedite_accepted": 0.862,
- "expedite_response": "about a week",
- "expedite_response_weeks": 1,
- "lead_weeks_before": 4,
- "lead_weeks_now": 17,
- "month_days": 30.4,
- "quarter_c9_share": 0.545,
- "quote_months": 5.5,
- "quote_unrounded": 5.395,
- "reach_appt_share": 0.915,
- "reach_expiry": "about nine in ten",
- "reach_share": 0.444,
- "refile_days": 30,
- "rival_default_months": 7.0,
- "rival_default_months_mix": 6.5,
- "rival_record_months": 4.0,
- "standard_sections": [
-  "1.3",
-  "1.4",
-  "2.3",
-  "3.1",
-  "4.2",
-  "4.3"
+ "thresholds": [
+  "5",
+  "3"
  ]
 }

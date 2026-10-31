@@ -1,412 +1,237 @@
-"""task172 documents: Global Mobility's renewal standard (PDF), the December planning thread (.eml), the data
-dictionary (Excel) and the export manifest. Their text is held here as data so checks.py can quote it and verify.py
-can read it back."""
-from __future__ import annotations
-
-import datetime as dt
-import os
+"""The governing documents: the DMC charter, the statistical analysis plan and Schedule 2 of the Ashgrove funding
+agreement, each set as its office issues it."""
+import io
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
-from reportlab.lib import colors                                                        # noqa: E402
-from reportlab.lib.pagesizes import letter                                              # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
-from reportlab.lib.units import mm                                                      # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                                # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                            # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer                     # noqa: E402
+from reportlab.lib import colors  # noqa: E402
+from reportlab.lib.pagesizes import A4  # noqa: E402
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # noqa: E402
+from reportlab.lib.units import mm  # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
-import common as C          # noqa: E402
-import postprocess as PP    # noqa: E402
+import postprocess as PP  # noqa: E402
 
-FONT_DIR = "/usr/share/fonts/truetype/"
-for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
-               ("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-from reportlab.pdfbase.pdfmetrics import registerFontFamily   # noqa: E402
-registerFontFamily("Carlito", normal="Carlito", bold="Carlito-Bold", italic="Carlito", boldItalic="Carlito-Bold")
-INK = colors.HexColor("#1f2328")
-GREY = colors.HexColor("#5d646d")
-ACCENT = colors.HexColor("#0b5a6b")
-
-POLICY_DATE = dt.date(2025, 11, 12)
-POLICY_TITLE = "Work Permit Renewal Standard"
-POLICY_SUB = "Global Mobility standard GM-07, revision 4, effective 12 November 2025. Owner: Jasmin Sims, Head of Global Mobility."
-POLICY = [
-    ("1. Scope", [
-        "1.1 This standard covers the renewal of work permits (Form I-765) that Global Mobility files through outside "
-        "counsel for employees whose adjustment of status is pending, in category (c)(9), and for the spouses of "
-        "employees, in category (c)(26) while the employee holds H-1B status and in category (c)(9) while the spouse's "
-        "own adjustment is pending.",
-        "1.2 Global Mobility files renewals for employees and for the spouses of employees. When an employee leaves "
-        "Sallowmere, work stops on the employee's and the spouse's pending renewals.",
-        "1.3 Global Mobility tracks the work permits of current employees and of the spouses of current employees. An "
-        "employee is current while HR's program roster shows the employee as Active. An employee's spouse is the one "
-        "person Global Mobility took into its care with the employee's household, however Benefits covers her; no "
-        "other dependant is tracked.",
-        "1.4 A person's work permit is the card USCIS approved for the person most recently, in the category on its "
-        "approval notice, which is not always the category entered on HR's work permit roster. It remains the "
-        "person's work permit until its last day, whatever has changed in the person's status since.",
-    ]),
-    ("2. Opening and filing", [
-        "2.1 Global Mobility opens a renewal 180 days before the current card expires and files it when the packet is "
-        "complete.",
-        "2.2 Packets go by courier to the USCIS lockbox for the filer's state of residence, with counsel's Form G-28.",
-        "2.3 A renewal is filed on the date USCIS receives it, the receipt date on its receipt notice.",
-        "2.4 A packet the lockbox rejects is not filed. A rejected renewal is filed again within 30 days when USCIS "
-        "receives it no later than the 30th day after the date on the rejection notice.",
-    ]),
-    ("3. When a card expires", [
-        "3.1 Renewals filed on or after 30 October 2025 do not extend the current card. An employee whose card expires "
-        "before USCIS decides the renewal may not work from the day after it expires and is placed on immigration "
-        "leave until the new card is in hand.",
-        "3.2 The first ten business days of immigration leave are paid. Leave beyond that is unpaid, and benefits "
-        "continue.",
-    ]),
-    ("4. The renewal wait in the benefits portal", [
-        "4.1 Each quarter the global mobility analytics lead publishes in the benefits portal, from the 15th of the "
-        "last month of the quarter before, the wait within which four in five of the renewals Global Mobility files "
-        "in the coming quarter will have USCIS's decision.",
-        "4.2 The wait runs from the date a renewal is filed to the date of USCIS's decision notice, approval or "
-        "denial. Renewals withdrawn before a decision are left out.",
-        "4.3 Waits are quoted in months of 30.4 days, to the nearest half month.",
-    ]),
-    ("5. Review", [
-        "5.1 Global Mobility reviews this standard each year and when USCIS changes how renewals are filed or "
-        "extended.",
-    ]),
-]
-REVISIONS = ("Revision 4 (12 November 2025): section 3 rewritten for the end of automatic extension. "
-             "Revision 3 (2 April 2024): section 2.2, the lockbox by state of residence.")
+NAVY = colors.HexColor("#1D3557")
+TEAL = colors.HexColor("#2A6F77")
 
 
-def section_numbers():
-    return [p.split(" ", 1)[0] for _, paras in POLICY for p in paras if p[:1].isdigit()]
+def styles(accent):
+    ss = getSampleStyleSheet()
+    return dict(
+        body=ParagraphStyle("b", parent=ss["Normal"], fontName="Times-Roman", fontSize=10.5, leading=14, spaceAfter=6),
+        head=ParagraphStyle("h", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+                            spaceBefore=8, spaceAfter=3, textColor=accent),
+        title=ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=15, leading=19, spaceAfter=3,
+                             textColor=accent),
+        sub=ParagraphStyle("s", parent=ss["Normal"], fontName="Helvetica", fontSize=9, leading=12, spaceAfter=10,
+                           textColor=colors.HexColor("#444444")),
+        cell=ParagraphStyle("c", parent=ss["Normal"], fontName="Helvetica", fontSize=8.6, leading=10.6),
+        cellb=ParagraphStyle("cb", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=8.6, leading=10.6),
+    )
 
 
-def policy_text():
-    out = [POLICY_TITLE, C.ORG, POLICY_SUB]
-    for h, paras in POLICY:
-        out.append(h)
-        out.extend(paras)
-    out.append(REVISIONS)
-    return out
+def table(rows, widths, st, accent):
+    data = [[Paragraph(str(c), st["cellb"] if i == 0 else st["cell"]) for c in r] for i, r in enumerate(rows)]
+    t = Table(data, colWidths=widths, repeatRows=1)
+    t.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9AA5B1")),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E6ECF2")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 2.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+    ]))
+    return t
 
 
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+def build(path, title, author, items, foot, created, modified, accent=NAVY):
+    st = styles(accent)
+    story = []
+    for kind, val in items:
+        if kind == "table":
+            story.append(table(val[0], val[1], st, accent))
+            story.append(Spacer(1, 6))
+        elif kind == "gap":
+            story.append(Spacer(1, val))
+        else:
+            story.append(Paragraph(val, st[kind]))
 
-
-def pdf_stamp(d, hh=10, mi=0):
-    off = -8 if d.month in (1, 2, 11, 12) or (d.month == 3 and d.day < 9) else -7
-    return ("D:%04d%02d%02d%02d%02d00%+03d'00'" % (d.year, d.month, d.day, hh, mi, off)).encode()
-
-
-def _footer(text):
-    def draw(canvas, doc):
+    def deco(canvas, doc):
         canvas.saveState()
-        canvas.setFont("Carlito", 7.8)
-        canvas.setFillColor(GREY)
-        canvas.drawString(22 * mm, 11 * mm, text)
-        canvas.drawRightString(letter[0] - 22 * mm, 11 * mm, "Page %d" % doc.page)
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(20 * mm, 12 * mm, foot)
+        canvas.drawRightString(A4[0] - 20 * mm, 12 * mm, "Page %d" % doc.page)
         canvas.restoreState()
-    return draw
+
+    buf = io.BytesIO()
+    doc = SimpleDocTemplate(buf, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=20 * mm, title=title, author=author, creator=author, producer=author)
+    doc.build(story, onFirstPage=deco, onLaterPages=deco)
+    open(path, "wb").write(buf.getvalue())
+    PP.normalize_pdf(path, created, modified, author)
 
 
-def write_policy(out):
-    path = os.path.join(out, C.F_POLICY)
-    st = dict(
-        org=ParagraphStyle("org", fontName="Carlito-Bold", fontSize=9.5, leading=12, textColor=ACCENT, spaceAfter=2),
-        h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=16, leading=20, textColor=INK, spaceAfter=4),
-        sub=ParagraphStyle("sub", fontName="Carlito", fontSize=9.2, leading=12, textColor=GREY, spaceAfter=12),
-        h2=ParagraphStyle("h2", fontName="LibSans-Bold", fontSize=11, leading=14, textColor=ACCENT, spaceBefore=8,
-                          spaceAfter=3),
-        body=ParagraphStyle("body", fontName="Carlito", fontSize=11, leading=14.6, textColor=INK, spaceAfter=5),
-        small=ParagraphStyle("small", fontName="Carlito", fontSize=8.6, leading=11, textColor=GREY, spaceBefore=10))
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=20 * mm,
-                            bottomMargin=20 * mm, title=POLICY_TITLE, author="Global Mobility", subject="", creator="",
-                            producer="")
-    story = [Paragraph(esc(C.ORG + " | " + C.TEAM), st["org"]), Paragraph(esc(POLICY_TITLE), st["h1"]),
-             Paragraph(esc(POLICY_SUB), st["sub"])]
-    for h, paras in POLICY:
-        story.append(Paragraph(esc(h), st["h2"]))
-        for p in paras:
-            story.append(Paragraph(esc(p), st["body"]))
-    story.append(Spacer(1, 4))
-    story.append(Paragraph(esc(REVISIONS), st["small"]))
-    foot = "Sallowmere Software internal. GM-07 rev. 4"
-    doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(POLICY_DATE, 11, 4), pdf_stamp(POLICY_DATE, 11, 4))
+def charter(path):
+    items = [
+        ("title", "TALON-2 Data Monitoring Committee Charter"),
+        ("sub", "Version 3.0, 3 March 2026. Kesterton University Cancer Trials Unit (KUCTU). Approved by the DMC chair, "
+                "Dr Jay O'Connor, and the Chief Investigator. Supersedes version 2.1 of 18 November 2025."),
+        ("head", "1. Purpose"),
+        ("body", "TALON-2 is a randomised, double-blind, placebo-controlled phase 3 trial of ravolimab, an investigational "
+                 "immune checkpoint antibody supplied by Halvorsen Therapeutics, added to gemcitabine and cisplatin as "
+                 "first-line treatment of advanced biliary tract cancer. The trial is sponsored by the University of "
+                 "Kesterton, coordinated by KUCTU and funded by the Ashgrove Cancer Research Trust. The independent Data "
+                 "Monitoring Committee (DMC) safeguards the interests of trial patients, reviews accumulating unblinded "
+                 "safety and efficacy data and makes recommendations to the Trial Steering Committee (TSC). This charter "
+                 "sets out how the DMC works, what it receives and the recommendations open to it."),
+        ("head", "2. Membership and independence"),
+        ("body", "The DMC has three voting members: an oncologist (chair), a second oncologist and a statistician, none of "
+                 "whom has any involvement in the trial or any interest in its outcome. The unblinded independent "
+                 "statistician at KUCTU, Dr Beverley Shaw, prepares the closed reports and attends closed sessions without "
+                 "a vote. The trial management group, the Chief Investigator and the funder remain blind to results by "
+                 "arm until the final analysis."),
+        ("head", "3. Meetings and reports"),
+        ("body", "The DMC meets every six months for safety review and once for the interim analysis. Open reports "
+                 "(recruitment, data completeness, conduct) are prepared by the trial statistician; closed reports, by "
+                 "arm, are prepared by the independent statistician from a database snapshot taken after the data cut. "
+                 "Every closed report gives progression-free survival by arm with the stratified log-rank test and the "
+                 "stratified hazard ratio defined in the statistical analysis plan, serious adverse events by arm and "
+                 "system organ class, laboratory abnormalities of grade 3 or worse by arm, and exposure to study treatment "
+                 "by arm."),
+        ("head", "4. The interim analysis"),
+        ("body", "One interim analysis is planned, for futility only, when 165 progression-free survival events confirmed "
+                 "by the blinded independent central review (BICR) have been observed, half the 330 events of the final "
+                 "analysis. The data cut-off for the interim analysis is the date of the 165th event. There is no early "
+                 "stopping for efficacy, and the final analysis keeps its full one-sided significance level of 2.5 per "
+                 "cent."),
+        ("body", "4.1 At the interim analysis the independent statistician reports the conditional power of the final "
+                 "analysis to the DMC. The conditional power is the probability that the final analysis, the stratified "
+                 "log-rank test of BICR-assessed progression-free survival at its 330th event, rejects the null "
+                 "hypothesis at the one-sided 2.5 per cent level, given the data at the interim analysis. It is computed "
+                 "for the trial as it will run from the interim cut: every patient still at risk at the cut, and every "
+                 "patient still to be randomised up to the planned 450, followed until the 330th event, with progression "
+                 "in each arm over that remaining follow-up as the interim data estimate it. It is not computed under the "
+                 "hazard ratio assumed for the sample size."),
+        ("body", "4.2 The DMC compares the conditional power with the continuation bands of Schedule 2 of the Ashgrove "
+                 "funding agreement (Appendix A) and recommends to the TSC one of: continue to the final analysis as "
+                 "planned; continue with the final analysis extended as Schedule 2 provides; or stop for futility. The "
+                 "DMC may depart from the bands only for a safety reason, which it records in the closed minutes."),
+        ("body", "4.3 The chair reports to the TSC and, through the TSC, to the Trust only the recommendation and the band "
+                 "the conditional power falls in. No estimate of the treatment effect leaves the closed session."),
+        ("head", "5. Safety review"),
+        ("body", "At every meeting the DMC reviews serious adverse events, deaths, grade 3 or worse laboratory "
+                 "abnormalities and exposure by arm. It may recommend a protocol change, additional monitoring or a "
+                 "pause in recruitment at any meeting on safety grounds."),
+        ("head", "Appendix A. Continuation bands (from Schedule 2 of the funding agreement)"),
+        ("table", ([["Conditional power at the interim analysis", "Recommendation"],
+                    ["Below 20 per cent", "Stop for futility"],
+                    ["20 per cent or more, and below 80 per cent", "Continue, with the final analysis extended to 420 events"],
+                    ["80 per cent or more", "Continue to the final analysis at 330 events as planned"]],
+                   [70 * mm, 95 * mm])),
+    ]
+    build(path, "TALON-2 DMC Charter v3.0", "Kesterton University Cancer Trials Unit", items,
+          "TALON-2 DMC Charter v3.0 | KUCTU-TL2-DMC-003 | Confidential", b"D:20260303101422+00'00'",
+          b"D:20260303164005+00'00'")
 
 
-# ------------------------------------------------------------------------------------------------------ the thread
-THREAD = [
-    dict(frm="Brandon Zamora <bzamora@sallowmere.com>", to="Melinda Yang <myang@sallowmere.com>",
-         cc="Jasmin Sims <jsims@sallowmere.com>", date="Thu, 03 Dec 2026 16:42:19 -0800",
-         body=["Melinda,",
-               "",
-               "The export from Marrowby's system runs tomorrow morning. I'll put it in the Mobility share with our "
-               "register, the case log, the roster pull from HR and the mailroom log.",
-               "",
-               "Appointment letters for the October and November filings are mostly for late January into March. The "
-               "(c)(9)s come back in January too, the first renewals of the 18-month cards.",
-               "",
-               "Brandon"]),
-    dict(frm="Melinda Yang <myang@sallowmere.com>", to="Brandon Zamora <bzamora@sallowmere.com>",
-         cc="Jasmin Sims <jsims@sallowmere.com>", date="Wed, 02 Dec 2026 09:15:52 -0800",
-         body=["Brandon,",
-               "",
-               "The 15 December release closes for edits on the 10th. For the renewals page I need the Q1 wait, the "
-               "expiring-permits chart we ran last time (July to September this time) and the lockbox numbers Jasmin "
-               "asked for at the quarterly review.",
-               "",
-               "Can you send me what you have?",
-               "",
-               "Thanks,",
-               "Melinda"]),
-]
+def sap(path):
+    items = [
+        ("title", "TALON-2 Statistical Analysis Plan"),
+        ("sub", "Version 2.0, 9 February 2026. Kesterton University Cancer Trials Unit. Prepared by the trial statistics "
+                "team; approved by the Chief Investigator and the Trial Steering Committee."),
+        ("head", "1. Design"),
+        ("body", "Patients with previously untreated, unresectable or recurrent biliary tract cancer are randomised 1:1 "
+                 "to ravolimab 1,500 mg or placebo, each given with gemcitabine 1,000 mg/m<super>2</super> and cisplatin "
+                 "25 mg/m<super>2</super> on days 1 and 8 of each 21-day cycle for up to eight cycles, then ravolimab "
+                 "1,500 mg or placebo alone every 4 weeks until progression or unacceptable toxicity. Randomisation is by "
+                 "the interactive response technology (IRT), in permuted blocks, stratified by disease status (initially "
+                 "unresectable or recurrent) and primary tumour site (intrahepatic cholangiocarcinoma, extrahepatic "
+                 "cholangiocarcinoma or gallbladder cancer). The planned sample size is 450 patients."),
+        ("head", "2. Primary endpoint"),
+        ("body", "Progression-free survival (PFS) is the time from randomisation to the earlier of disease progression "
+                 "assessed by the blinded independent central review (BICR) under RECIST 1.1 and death from any cause. "
+                 "Tumour assessments (CT or MRI) are scheduled every 6 weeks (plus or minus 7 days) from randomisation to "
+                 "week 24 and every 8 weeks thereafter until BICR-confirmed progression. The date of progression is the "
+                 "date of the scan at which the BICR records progressive disease."),
+        ("table", ([["Situation", "PFS date", "Outcome"],
+                    ["BICR progressive disease, or death with no BICR progression before it", "Scan date of progression, or date of death", "Event"],
+                    ["No progression and no death", "Date of the last adequate BICR assessment (complete response, partial response or stable disease)", "Censored"],
+                    ["No adequate assessment after randomisation, no death", "Date of randomisation", "Censored"],
+                    ["Progression or death immediately after two or more consecutive assessments the BICR recorded as not evaluable", "Date of the last adequate assessment before them", "Censored"],
+                    ["Assessments or deaths after the data cut-off", "Not used", ""]],
+                   [62 * mm, 70 * mm, 38 * mm])),
+        ("body", "The date of randomisation is the local date at the site at the moment of randomisation."),
+        ("head", "3. Analysis populations"),
+        ("body", "The intention-to-treat population is every randomised patient, analysed by the arm assigned. The safety "
+                 "population is every randomised patient who received at least one dose of any study treatment "
+                 "(ravolimab, placebo, gemcitabine or cisplatin), analysed by the arm assigned."),
+        ("head", "4. Final analysis of the primary endpoint"),
+        ("body", "The final analysis takes place when 330 BICR-confirmed PFS events have been observed. The two arms are "
+                 "compared by the log-rank test stratified by the two stratification factors as recorded in the IRT at "
+                 "randomisation, at the one-sided 2.5 per cent level. The hazard ratio is estimated by a Cox model "
+                 "stratified by the same factors, with Efron's method for tied event times, and reported with its 95 per "
+                 "cent confidence interval. Kaplan-Meier estimates are presented by arm."),
+        ("body", "330 events give 90 per cent power to detect a hazard ratio of 0.70 at the one-sided 2.5 per cent level. "
+                 "With 450 patients recruited over about 12 months, the final analysis was expected about 24 months after "
+                 "the first patient was randomised."),
+        ("head", "5. Interim analysis"),
+        ("body", "A single interim analysis for futility takes place at 165 events. It is conducted by the independent "
+                 "statistician for the DMC under the DMC charter, which defines the conditional power the DMC reviews and "
+                 "the recommendations open to it. The interim analysis does not alter the significance level of the "
+                 "final analysis."),
+        ("head", "6. Safety"),
+        ("body", "Adverse events are coded with MedDRA version 27.1 and graded with CTCAE version 5.0. Serious adverse "
+                 "events are summarised from the pharmacovigilance safety database, the trial's record of serious "
+                 "events, each event counted once in the arm the patient was randomised to; an event is included when it "
+                 "began on or after randomisation and on or before the data cut-off, and is summarised under the "
+                 "preferred term and system organ class of its latest report. A case nullified by pharmacovigilance is not "
+                 "an event."),
+        ("body", "Laboratory abnormalities are graded from central and local laboratory results against the upper limit of "
+                 "normal of the laboratory that measured the sample. The baseline value is the last sample taken on or "
+                 "before the day of the first dose; a value is on treatment when the sample was taken after the day of "
+                 "the first dose."),
+        ("body", "Exposure is summarised as the number of doses of ravolimab or placebo given and the number of cycles of "
+                 "chemotherapy given."),
+    ]
+    build(path, "TALON-2 SAP v2.0", "Kesterton University Cancer Trials Unit", items,
+          "TALON-2 Statistical Analysis Plan v2.0 | KUCTU-TL2-SAP-002", b"D:20260209092715+00'00'",
+          b"D:20260211141950+00'00'", accent=TEAL)
 
 
-def thread_text():
-    return [ln for m in THREAD for ln in m["body"] if ln]
-
-
-def write_thread(out):
-    last = THREAD[0]
-    lines = ["Return-Path: <bzamora@sallowmere.com>",
-             "Message-ID: <CAF4q2v7Hk0aZ1@mail.sallowmere.com>",
-             "In-Reply-To: <CAB8m1s3Rt9wQ4@mail.sallowmere.com>",
-             "References: <CAB8m1s3Rt9wQ4@mail.sallowmere.com>",
-             "Date: " + last["date"], "From: " + last["frm"], "To: " + last["to"], "Cc: " + last["cc"],
-             "Subject: RE: Q1 renewal wait for the portal", "MIME-Version: 1.0",
-             "Content-Type: text/plain; charset=\"utf-8\"", "Content-Transfer-Encoding: 8bit", ""]
-    lines.extend(last["body"])
-    prev = THREAD[1]
-    lines.extend(["", "________________________________", "From: Melinda Yang", "Sent: Wednesday, December 2, 2026 9:15 AM",
-                  "To: Brandon Zamora",
-                  "Cc: Jasmin Sims", "Subject: Q1 renewal wait for the portal", ""])
-    lines.extend("> " + ln if ln else ">" for ln in prev["body"])
-    with open(os.path.join(out, C.F_THREAD), "w", encoding="utf-8", newline="") as fh:
-        fh.write("\r\n".join(lines) + "\r\n")
-
-
-# ------------------------------------------------------------------------------------------------------ dictionary
-DICT = [
-    (C.F_NOTICES, "(file)", "Counsel's export of the USCIS notices and case-status events logged on Global Mobility's "
-     "renewal matters. One row per notice or event as logged. A matter logs nothing after counsel closes it."),
-    (C.F_NOTICES, "notice_id", "Counsel's identifier for the logged notice or event."),
-    (C.F_NOTICES, "matter_no", "Counsel's matter number."),
-    (C.F_NOTICES, "client_ref", "The Global Mobility case reference given to counsel when the matter was opened."),
-    (C.F_NOTICES, "receipt_no", "USCIS receipt number of the filing."),
-    (C.F_NOTICES, "form", "Forms the notice covers."),
-    (C.F_NOTICES, "eligibility_category", "Work permit category applied for."),
-    (C.F_NOTICES, "notice_type", "The notice or status event (sheet Codes)."),
-    (C.F_NOTICES, "notice_date", "Date on the notice, or the date of the status event."),
-    (C.F_NOTICES, "received_date", "On a receipt notice, the date USCIS received the filing. On a rejection notice, "
-     "the date the lockbox received the packet."),
-    (C.F_NOTICES, "appointment_date", "On a biometrics appointment notice, the date of the appointment."),
-    (C.F_NOTICES, "appointment_site", "Application support center of the appointment."),
-    (C.F_NOTICES, "valid_from", "On an approval notice, the first day of the new card."),
-    (C.F_NOTICES, "valid_to", "On an approval notice, the last day of the new card."),
-    (C.F_NOTICES, "uscis_office", "USCIS office or lockbox that issued the notice."),
-    (C.F_NOTICES, "source", "How counsel received it: mail scan, the USCIS online account, or the case status feed."),
-    (C.F_NOTICES, "logged_on", "Date counsel logged the notice."),
-    (C.F_REGISTER, "(file)", "Global Mobility's case register. Cases opened before 1 April 2025 are in sheet Cases to "
-     "Mar 2025 as that system held them on 31 March 2025, with dates as text, month first. Cases open on that day "
-     "were carried into the current system (sheet Cases) under a GM reference, with the RN reference in "
-     "legacy_case_id."),
-    (C.F_REGISTER, "case_id", "Global Mobility case reference (Case ID in the earlier sheet)."),
-    (C.F_REGISTER, "case_type", "Initial or renewal filing."),
-    (C.F_REGISTER, "person_id", "Employee ID; for a spouse, the benefits dependant ID, or a Global Mobility person "
-     "ID (MP-) where the spouse was not on Sallowmere benefits when the household came into Global Mobility's care."),
-    (C.F_REGISTER, "sponsor_id", "For a spouse, the employee whose household the case belongs to."),
-    (C.F_REGISTER, "category", "Work permit category of the filing."),
-    (C.F_REGISTER, "card_expires", "On a renewal, the expiry date of the card being renewed."),
-    (C.F_REGISTER, "opened_on", "Date Global Mobility opened the case."),
-    (C.F_REGISTER, "packet_sent_on", "Date the first packet left the mailroom."),
-    (C.F_REGISTER, "matter_no", "Counsel's matter number."),
-    (C.F_REGISTER, "receipt_no", "USCIS receipt number, entered from the receipt notice."),
-    (C.F_REGISTER, "received_on", "USCIS receipt date, entered from the receipt notice."),
-    (C.F_REGISTER, "status", "Open, Sent, Filed, Approved, Denied, Withdrawn, Closed - no longer tracked, Rejected - "
-     "not refiled; Migrated in the earlier sheet for a case carried into the current system."),
-    (C.F_REGISTER, "decided_on", "Date of USCIS's decision, entered from the decision notice."),
-    (C.F_REGISTER, "new_card_expires", "Expiry of the card issued on approval."),
-    (C.F_REGISTER, "closed_on", "Date the case closed."),
-    (C.F_REGISTER, "filed_by", "Marrowby Teale, or Applicant where the filer sent the filing without counsel."),
-    (C.F_ACTIONS, "(file)", "Global Mobility's log of its own actions on cases. One row per action."),
-    (C.F_ACTIONS, "case_id", "Case reference in use on the action date."),
-    (C.F_ACTIONS, "person_id", "Person the case is for."),
-    (C.F_ACTIONS, "action_date", "Date of the action."),
-    (C.F_ACTIONS, "action", "Action taken (sheet Codes)."),
-    (C.F_ACTIONS, "detail", "Coordinator's note."),
-    (C.F_ACTIONS, "reference", "USCIS service request number, or AR-11 confirmation number."),
-    (C.F_ACTIONS, "outcome", "Outcome where the action has one."),
-    (C.F_ACTIONS, "outcome_date", "Date of the outcome."),
-    (C.F_ACTIONS, "notice_date", "For a notice forwarded by an applicant, the date on the notice."),
-    (C.F_ACTIONS, "entered_by", "Coordinator's initials."),
-    (C.F_PERMITS, "(file)", "HR's work permit roster. One row per card entered; rows stay when a card expires or a "
-     "holder leaves."),
-    (C.F_PERMITS, "holder_id", "Employee ID, benefits dependant ID, or Global Mobility person ID (MP-)."),
-    (C.F_PERMITS, "holder_type", "Employee or Spouse."),
-    (C.F_PERMITS, "category", "Category recorded for the card."),
-    (C.F_PERMITS, "card_number", "Card number."),
-    (C.F_PERMITS, "valid_from", "First day of the card."),
-    (C.F_PERMITS, "valid_to", "Last day of the card."),
-    (C.F_PERMITS, "entered_on", "Date the card was entered."),
-    (C.F_PERMITS, "entered_via", "I-9 at hire; I-9 reverification; Onboarding, a spouse's card entered when Global "
-     "Mobility takes the household into its care; Portal upload, a card a spouse uploads to the benefits portal."),
-    (C.F_PERMITS, "household_employee_id", "On an onboarding entry, the employee whose household the spouse belongs "
-     "to."),
-    (C.F_EMPLOYEES, "(file)", "Employees in Global Mobility's programs, active on 4 December 2026 or terminated since "
-     "1 January 2024."),
-    (C.F_EMPLOYEES, "employee_id", "Employee ID."),
-    (C.F_EMPLOYEES, "hire_date", "Most recent hire date."),
-    (C.F_EMPLOYEES, "status", "Active or Terminated on 4 December 2026."),
-    (C.F_EMPLOYEES, "termination_date", "Last day of employment."),
-    (C.F_EMPLOYEES, "work_state", "State of the work location."),
-    (C.F_EMPLOYEES, "job_family", "Job family."),
-    (C.F_EMPLOYEES, "immigration_basis", "Current basis of the employee's authorization to work."),
-    (C.F_EMPLOYEES, "benefits_enrollment_id", "The employee's benefits enrollment."),
-    (C.F_DEPENDANTS, "(file)", "Dependants covered on Sallowmere benefits on 4 December 2026, continuation coverage "
-     "included."),
-    (C.F_DEPENDANTS, "dependant_id", "Benefits dependant ID."),
-    (C.F_DEPENDANTS, "benefits_enrollment_id", "Enrollment the dependant is covered under."),
-    (C.F_DEPENDANTS, "relationship", "Spouse, Domestic partner or Child."),
-    (C.F_DEPENDANTS, "coverage_start", "First day of coverage."),
-    (C.F_DEPENDANTS, "birth_year", "Year of birth."),
-    (C.F_TRACKER, "(file)", "Global Mobility's green-card tracker. One row per applicant for adjustment of status, the "
-     "principal and each derivative."),
-    (C.F_TRACKER, "applicant_id", "Employee ID, benefits dependant ID, or Global Mobility person ID (MP-)."),
-    (C.F_TRACKER, "principal_employee_id", "The employee whose petition the application rests on."),
-    (C.F_TRACKER, "relationship", "Principal or Spouse."),
-    (C.F_TRACKER, "chargeability", "Country of chargeability."),
-    (C.F_TRACKER, "priority_date", "Priority date."),
-    (C.F_TRACKER, "i140_approved", "Approval of the immigrant petition."),
-    (C.F_TRACKER, "i485_received", "USCIS receipt date of the adjustment application."),
-    (C.F_TRACKER, "i485_status", "Pending, Approved, Denied or Abandoned."),
-    (C.F_TRACKER, "i485_decided", "Date of the decision on the adjustment application."),
-    (C.F_TRACKER, "ead_approved", "Approval date of the applicant's latest (c)(9) work permit."),
-    (C.F_TRACKER, "ead_valid_to", "Last day of that work permit."),
-    (C.F_DISPATCH, "(file)", "The mailroom's dispatch log for 2025 and 2026, from the dispatch system used to 1 March "
-     "2026 and the current system from 2 March 2026."),
-    (C.F_DISPATCH, "packet_id", "Packet number. Each system numbers packets from 1, the earlier one from 1 each "
-     "January."),
-    (C.F_DISPATCH, "sent_on", "Date the packet left the mailroom."),
-    (C.F_DISPATCH, "case_id", "Case reference the packet was sent under."),
-    (C.F_DISPATCH, "person_id", "Person the packet was sent for."),
-    (C.F_DISPATCH, "contents", "Forms in the packet."),
-    (C.F_DISPATCH, "addressed_to", "Lockbox the packet was sent to."),
-    (C.F_DISPATCH, "courier", "Courier."),
-    (C.F_DISPATCH, "tracking_no", "Courier tracking number."),
-    (C.F_DISPATCH, "status", "Sent; Receipted, a USCIS receipt notice is in hand; Returned, the packet came back to the "
-     "mailroom."),
-    (C.F_DISPATCH, "returned_on", "Date the packet came back to the mailroom."),
-    (C.F_POSTED, "(file)", "Global Mobility's monthly capture of the processing time USCIS posts for Form I-765. One "
-     "row per form line and office captured; office by office from July 2025."),
-    (C.F_POSTED, "captured_on", "Date of the capture."),
-    (C.F_POSTED, "form_line", "Form line as posted."),
-    (C.F_POSTED, "office", "USCIS office."),
-    (C.F_POSTED, "posted_months", "Time posted for the form line and office, in months."),
-    (C.F_POSTED, "case_inquiry_date", "Receipt date posted for a case inquiry; captured to June 2025."),
-    (C.F_H1B, "(file)", "Immigration team's 2027 H-1B extension calendar: employees whose H-1B status ends in 2027."),
-    (C.F_H1B, "Employee ID", "Employee ID."),
-    (C.F_H1B, "H-1B valid to", "Last day of the current H-1B approval."),
-    (C.F_H1B, "Planned filing month", "Month the extension is planned to be filed."),
-    (C.F_H1B, "Petition", "Petition type planned."),
-    (C.F_H1B, "H-4 dependants", "Dependants in H-4 status."),
-    (C.F_H1B, "Premium processing", "Whether premium processing is planned."),
-]
-CODES = [
-    ("notice_type", "Receipt notice", "USCIS has received the filing."),
-    ("notice_type", "Biometrics appointment notice", "An appointment at an application support center; a later "
-     "notice replaces an earlier one."),
-    ("notice_type", "Biometrics reuse notice", "USCIS will reuse biometrics it already holds."),
-    ("notice_type", "Fingerprints taken", "Biometrics were taken."),
-    ("notice_type", "Request for evidence", "USCIS asked for more evidence."),
-    ("notice_type", "Evidence received", "USCIS received the response to its request."),
-    ("notice_type", "Case transferred", "The case moved to another USCIS office."),
-    ("notice_type", "Case under review", "An officer is reviewing the case."),
-    ("notice_type", "Approval notice", "The filing was approved."),
-    ("notice_type", "Denial notice", "The filing was denied."),
-    ("notice_type", "Withdrawal acknowledgement", "USCIS acknowledged a withdrawal."),
-    ("notice_type", "Rejection notice", "The lockbox rejected the packet and returned it."),
-    ("notice_type", "Card produced", "The new card was produced."),
-    ("notice_type", "Card mailed", "The new card was mailed."),
-    ("notice_type", "Card delivered", "The carrier delivered the card."),
-    ("notice_type", "Card returned undeliverable", "The card came back to USCIS undelivered."),
-    ("action", "Expedite request", "A request to USCIS to expedite a pending case."),
-    ("action", "Case inquiry", "A service request on a case outside the posted processing time."),
-    ("action", "Biometrics reschedule request", "A request to move a biometrics appointment."),
-    ("action", "Address change (AR-11)", "A change of address reported to USCIS."),
-    ("action", "Withdrawal request", "A request to USCIS to withdraw a filing."),
-    ("action", "Stop work", "Work stopped on the case."),
-    ("action", "Notice forwarded by applicant", "A notice the applicant received and sent to Global Mobility."),
-    ("action", "Card not received inquiry", "A service request on a card not received."),
-]
-
-
-def write_dictionary(out, stamp):
-    from openpyxl import Workbook
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Fields"
-    fill = PatternFill("solid", fgColor="DCE6F1")
-    for j, h in enumerate(("File", "Field", "Definition")):
-        c = ws.cell(row=1, column=j + 1, value=h)
-        c.font, c.fill = Font(bold=True), fill
-    for i, (f, fld, dfn) in enumerate(DICT):
-        ws.cell(row=i + 2, column=1, value=f)
-        ws.cell(row=i + 2, column=2, value=fld)
-        ws.cell(row=i + 2, column=3, value=dfn).alignment = Alignment(wrap_text=True, vertical="top")
-    ws.column_dimensions["A"].width = 40
-    ws.column_dimensions["B"].width = 24
-    ws.column_dimensions["C"].width = 100
-    ws.freeze_panes = "A2"
-    ws2 = wb.create_sheet("Codes")
-    for j, h in enumerate(("Field", "Code", "Meaning")):
-        c = ws2.cell(row=1, column=j + 1, value=h)
-        c.font, c.fill = Font(bold=True), fill
-    for i, (f, code, m) in enumerate(CODES):
-        ws2.cell(row=i + 2, column=1, value=f)
-        ws2.cell(row=i + 2, column=2, value=code)
-        ws2.cell(row=i + 2, column=3, value=m)
-    ws2.column_dimensions["A"].width = 14
-    ws2.column_dimensions["B"].width = 30
-    ws2.column_dimensions["C"].width = 80
-    ws2.freeze_panes = "A2"
-    path = os.path.join(out, C.F_DICT)
-    wb.save(path)
-    creator, last_by, created, modified = stamp
-    PP.normalize_ooxml(path, creator, last_by, created, modified, excel=True, company=C.ORG)
-    return len(DICT) + len(CODES)
-
-
-MANIFEST = [
-    (C.F_NOTICES, "Marrowby Teale LLP case-management system, renewal matters for Sallowmere Software", "2026-12-04",
-     "every notice and event logged to 4 December 2026 on the renewal matters received from 1 January 2024 or still "
-     "open"),
-    (C.F_REGISTER, "Global Mobility case register", "2026-12-04",
-     "cases opened from 1 December 2023, and earlier cases received from 1 January 2024"),
-    (C.F_ACTIONS, "Global Mobility case-action log", "2026-12-04", "actions on the register's cases to 4 December 2026"),
-    (C.F_PERMITS, "HR Systems, work permit roster", "2026-12-04", "every card entered since 2021"),
-    (C.F_EMPLOYEES, "HR Systems, Global Mobility program roster", "2026-12-04",
-     "employees active on 4 December 2026 or terminated since 1 January 2024"),
-    (C.F_DEPENDANTS, "Benefits, covered dependants", "2026-12-04", "dependants covered on 4 December 2026"),
-    (C.F_TRACKER, "Global Mobility green-card tracker", "2026-12-03", "adjustment applicants in Global Mobility's care since 2024"),
-    (C.F_DISPATCH, "Mailroom dispatch log", "2026-12-04", "packets sent from 2 January 2025 to 4 December 2026"),
-    (C.F_POLICY, "Global Mobility", "2025-11-12", "standard GM-07, revision 4"),
-    (C.F_THREAD, "Global Mobility mailbox", "2026-12-03", "the December thread on the Q1 2027 portal release"),
-    (C.F_DICT, "Global Mobility", "2026-12-04", "field definitions and codes for the files in this set"),
-    (C.F_POSTED, "Global Mobility", "2026-12-01", "monthly captures from January 2024 to November 2026"),
-    (C.F_H1B, "Immigration team", "2026-11-20", "H-1B extensions due in 2027"),
-]
-
-
-def write_manifest(out, n):
-    rows = []
-    for f, src, d, cov in MANIFEST:
-        rows.append((f, src, d, n.get(f, ""), cov))
-    rows.append((C.F_MANIFEST, "Global Mobility", "2026-12-04", "", "this list"))
-    return C.write_csv(os.path.join(out, C.F_MANIFEST), ("file", "source", "extract_date", "rows", "coverage"), rows)
+def schedule(path):
+    green = colors.HexColor("#2D5A27")
+    items = [
+        ("title", "Ashgrove Cancer Research Trust"),
+        ("sub", "Research Funding Agreement AGR-2025-0417 with the University of Kesterton: TALON-2. Schedule 2, "
+                "Continuation and Extension. Signed 14 October 2025."),
+        ("head", "2.1 Tranches"),
+        ("body", "The Trust funds the trial in two tranches. Tranche 1 (GBP 4.2 million) covers set-up, recruitment and "
+                 "follow-up to the interim analysis. Tranche 2 (GBP 3.1 million) covers follow-up, treatment costs and "
+                 "analysis from the interim analysis to the final analysis at 330 events."),
+        ("head", "2.2 The continuation decision"),
+        ("body", "Tranche 2 is released on the recommendation the Data Monitoring Committee makes at the interim "
+                 "analysis. The Trust's Clinical Trials Committee receives the recommendation and the continuation band "
+                 "below that the conditional power defined in the DMC charter falls in. The Trust does not receive, and "
+                 "will not ask for, any estimate of the treatment effect."),
+        ("table", ([["Band", "Conditional power", "What the Trust does"],
+                    ["A", "Below 20 per cent", "Funding ends with tranche 1. The University closes the trial to further "
+                     "treatment and follow-up and reports the interim results."],
+                    ["B", "20 per cent or more, and below 80 per cent", "Tranche 2 is released with an extension grant of "
+                     "GBP 0.9 million, and the final analysis is moved to 420 events so that the trial keeps a "
+                     "reasonable chance of a conclusive result."],
+                    ["C", "80 per cent or more", "Tranche 2 is released and the trial continues to its final analysis at "
+                     "330 events as planned."]],
+                   [14 * mm, 46 * mm, 110 * mm])),
+        ("head", "2.3 Timing"),
+        ("body", "The University informs the Trust of the band within 15 working days of the DMC meeting at which the "
+                 "interim analysis is reviewed. Tranche 2, and any extension grant, is paid within 30 days of that "
+                 "notice."),
+        ("head", "2.4 Safety"),
+        ("body", "Nothing in this Schedule limits the DMC's freedom to recommend a change to the trial on safety grounds "
+                 "at any time."),
+    ]
+    build(path, "Funding Agreement AGR-2025-0417 Schedule 2", "Ashgrove Cancer Research Trust", items,
+          "AGR-2025-0417 | Schedule 2 | Commercial in confidence", b"D:20251010151204+01'00'",
+          b"D:20251014103318+01'00'", accent=green)

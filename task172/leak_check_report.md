@@ -1,23 +1,22 @@
 # leak check, task172
 
-**Verdict: REVIEW.** 14 files read, 9 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 11 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, appointment, expiry, forward, standard, mobility, expedite, receipt, percentile, global, request, notices, counsel, appointments, decisive, review, change, register, method, software, carries, golden, pending, forecast, export
+Stump terms swept: record, forward, golden, benefits, silent, months, reflex, appointment, retired, decisive, projection, reader, request, renewals, expedite, expiry, spouse, stratified, log-rank, follow-up, readable, period, decision, dropped, quarter
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `mobility_renewal_standard.pdf`: carries 7 of 10 distinctive words of the committed call: 'The benefits portal should quote 5.5 months for the work-permit renewals filed from January to March 2027.'
+## 3 answer figures in the pack (REVIEW 6)
+- **REVIEW** `ashgrove_funding_agreement_schedule_2.pdf`: golden figure 330 appears: ...rom the interim analysis to the final analysis at 330 events. 2.2 The continuation decision Tranche 2 i...
+- **REVIEW** `talon2_dmc_charter_v3.0.pdf`: golden figure 330 appears: ...entral review (BICR) have been observed, half the 330 events of the final analysis. The data cut-off fo...
+- **REVIEW** `talon2_statistical_analysis_plan_v2.0.pdf`: golden figure 330 appears: ...mary endpoint The final analysis takes place when 330 BICR-confirmed PFS events have been observed. The...
+- **REVIEW** `ashgrove_funding_agreement_schedule_2.pdf`: carries 12 of 14 distinctive words of the committed call: 'Continue TALON-2 to its final analysis at 330 events as planned: the conditional power is 100 per cent to the nearest 10'
+- **REVIEW** `talon2_dmc_charter_v3.0.pdf`: carries 13 of 14 distinctive words of the committed call: 'Continue TALON-2 to its final analysis at 330 events as planned: the conditional power is 100 per cent to the nearest 10'
+- **REVIEW** `talon2_statistical_analysis_plan_v2.0.pdf`: carries 10 of 14 distinctive words of the committed call: 'Continue TALON-2 to its final analysis at 330 events as planned: the conditional power is 100 per cent to the nearest 10'
 
-## 4 design-note vocabulary (REVIEW 1)
-- **REVIEW** `mobility_renewal_standard.pdf`: 9 of 25 stump-paragraph terms appear (standard, mobility, receipt, global, counsel, review); read whether the document names the move
-
-## 9 dates after the setting (REVIEW 5)
-- **REVIEW** `green_card_tracker_2026-12.xlsx`: 4390 ISO dates after 2026-12-04, e.g. 2027-06-04, 2027-06-07, 2027-06-08, 2027-06-09, 2027-06-10
-- **REVIEW** `h1b_extension_calendar_2027.xlsx`: 4084 ISO dates after 2026-12-04, e.g. 2027-01-01, 2027-01-02, 2027-01-03, 2027-01-04, 2027-01-05
-- **REVIEW** `renewal_case_notices_2024-01_2026-12.csv`: 8698 ISO dates after 2026-12-04, e.g. 2026-12-05, 2026-12-06, 2026-12-07, 2026-12-08, 2026-12-09
-- **REVIEW** `renewal_case_register.xlsx`: 8263 ISO dates after 2026-12-04, e.g. 2026-12-05, 2026-12-06, 2026-12-07, 2026-12-08, 2026-12-09
-- **REVIEW** `work_permits_2026-12.xlsx`: 14319 ISO dates after 2026-12-04, e.g. 2026-12-05, 2026-12-06, 2026-12-07, 2026-12-08, 2026-12-09
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `talon2_dmc_charter_v3.0.pdf`: 5 of 25 stump-paragraph terms appear (record, months, stratified, log-rank, follow-up); read whether the document names the move
+- **REVIEW** `talon2_statistical_analysis_plan_v2.0.pdf`: 4 of 25 stump-paragraph terms appear (record, months, stratified, log-rank); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -34,4 +33,11 @@ Stump terms swept: record, appointment, expiry, forward, standard, mobility, exp
 
 ## 8 column names (clean)
 
+## 9 dates after the setting (clean)
+
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read
+
+pending: the stage 4 reader, run from the main thread on the copy of target.zip 0b377dd6.
