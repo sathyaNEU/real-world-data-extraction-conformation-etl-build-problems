@@ -40,9 +40,10 @@ def write(path, fig):
               "measured each order's shortfall from its arrival mid, cost positive (TCA standard sections 1 and 2).",
               "2. Gave each order its participation, value at arrival over the 20-session average of close times "
               "volume in lse_daily_market_data_2025-2026.parquet, and the 60-session daily volatility, skipping "
-              "each consolidation day in wealdmoor_security_master_2026-11-30.csv.",
-              "3. Fitted shortfall on the index band and daily volatility times the square root of participation "
-              "by least squares over every order.",
+              "each consolidation day in wealdmoor_security_master_2026-11-30.csv (TCA standard section 3).",
+              "3. Fitted, band by band, shortfall on daily volatility times the square root of participation by "
+              "least squares over the band's orders (IC-07 section 2: the desk's executions in the candidate's "
+              "index band).",
               "4. Took each candidate's rebalances from 1 December 2025 to 30 November 2026 in "
               "backtest_rebalance_trades_2025-2026.csv, joined ISIN to SEDOL, scaled each traded weight to GBP 400 "
               "million and priced it on the fitted curve at its participation on the rebalance date (IC-07 "

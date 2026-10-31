@@ -200,13 +200,7 @@ def write_accounts(path):
 
 
 def write_esg(univ, path):
-    r = W.rng("esg")
-    pick = sorted(univ, key=lambda s: s["sedol"])
-    rows = []
-    for k in r.permutation(len(pick))[:23]:
-        s = pick[int(k)]
-        rows.append([s["isin"], s["name"], ["Thermal coal", "Controversial weapons", "Tobacco production",
-                                            "UN Global Compact breach"][int(r.integers(0, 4))], "2026-01-15"])
+    rows = [[e["isin"], e["name"], e["reason"], e["effective"].isoformat()] for e in W.esg_list(univ)]
     rows.sort()
     _csv(path, ["isin", "issuer", "exclusion_reason", "effective"], rows)
 

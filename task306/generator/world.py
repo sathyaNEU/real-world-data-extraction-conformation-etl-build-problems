@@ -12,6 +12,17 @@ import numpy as np
 SEED = 30604
 AUM = 400_000_000.0                 # the new capital, GBP
 K_IMPACT = 0.85                     # impact = K * daily vol * sqrt(participation)
+ORDER_START = 63                    # the desk's live orders run from 1 April 2025, each with a full 60-session history
+HIGH_P_SHARE = {"L": 0.02, "M": 0.0, "S": 0.0}   # the share of a band's orders that are event trades
+HIGH_P_RANGE = (0.03, 0.40)         # their participation, log-uniform
+ORDER_VALUE = {"L": 0.0025, "M": 0.005, "S": 0.005}   # a live order's median value, a share of its band's median ADV
+THIN = {"S": (100, 0.15e6, 0.45), "M": (52, 0.6e6, 0.45)}  # each band's thinly traded names: count, ADV median, log-sd
+LIQ_BETA = 0.10                     # a book's order in a name scales with the name's liquidity to this power
+ORDER_SD = 0.6                      # the log spread of a book's order sizes
+DORMANT = 12                        # the least liquid small caps, which no book of the firm trades
+P_CAP = 0.70                        # the desk does not take more than about this share of a stock's day
+NOISE_K = 0.10                      # an order's shortfall noise, times daily vol
+ESG_REASONS = ["Thermal coal", "Controversial weapons", "Tobacco production", "UN Global Compact breach"]
 TIERS = {
     # n, price pence (lo, hi), ADV GBP (median, log-sd), daily vol bps (centre), half-spread bps (lo, hi)
     "L": dict(n=100, px=(350, 4200), adv=(120e6, 0.50), vol=130.0, hs=(2.9, 3.1)),
@@ -25,9 +36,9 @@ BANK_HOLIDAYS = {dt.date(2025, 1, 1), dt.date(2025, 4, 18), dt.date(2025, 4, 21)
                  dt.date(2026, 5, 25), dt.date(2026, 8, 31)}
 CANDIDATES = [
     # code, name, tier, holdings, rebalance ("M" monthly, "Q" quarterly), names swapped a rebalance, gross alpha
-    ("SCM", "UK Smaller Companies Momentum", "S", 160, "M", 18, 0.0506),
-    ("MCV", "UK Mid Cap Value", "M", 70, "Q", 10, 0.029),
-    ("LCQ", "UK Large Cap Quality", "L", 45, "Q", 6, 0.018),
+    ("SCM", "UK Smaller Companies Momentum", "S", 160, "M", 18, 0.0505),
+    ("MCV", "UK Mid Cap Value", "M", 70, "Q", 10, 0.0302),
+    ("LCQ", "UK Large Cap Quality", "L", 45, "Q", 6, 0.0184),
 ]
 LIVE = [
     # code, name, tiers it trades, AUM GBP, orders a month (approximate)
@@ -124,14 +135,43 @@ def universe():
             hs = float(r.uniform(*p["hs"]))
             out.append(dict(sedol=sd, isin=isin_for(sd), name=nm, tier=tier, sector=SECTORS[int(r.integers(0, 11))],
                             px0=px, adv=adv, vol=vol, hs=hs))
+    # each of the two lower bands carries a tail of thinly traded names
+    rt = rng("thin")
+    for tier, (n, med, sd) in THIN.items():
+        band = [s for s in out if s["tier"] == tier]
+        for k in rt.permutation(len(band))[:n]:
+            band[int(k)]["adv"] = float(med * math.exp(rt.normal(0, sd)))
+    return out
+
+
+def dormant(univ):
+    """The least liquid small caps: no portfolio of the firm and no candidate trades them."""
+    smalls = sorted([s for s in univ if s["tier"] == "S"], key=lambda s: (s["adv"], s["sedol"]))
+    return {s["sedol"] for s in smalls[:DORMANT]}
+
+
+def esg_list(univ):
+    """The firm's ESG exclusion list: each excluded issuer, why, and the date its exclusion took effect. Every entry
+    predates the rebalance log and the desk's orders, so no portfolio of the firm trades an excluded name in them."""
+    r = rng("esg")
+    rd = rng("esg-dates")
+    pick = sorted(univ, key=lambda s: s["sedol"])
+    out = []
+    for k in r.permutation(len(pick))[:23]:
+        s = pick[int(k)]
+        reason = ESG_REASONS[int(r.integers(0, 4))]
+        eff = dt.date(2019, 1, 7) + dt.timedelta(days=int(rd.integers(0, 6 * 365 - 30)))
+        out.append(dict(sedol=s["sedol"], isin=s["isin"], name=s["name"], reason=reason, effective=eff))
     return out
 
 
 def market(univ, days):
-    """Daily closes (pence) and volumes (shares); a few small caps consolidate their shares ten to one."""
+    """Daily closes (pence) and volumes (shares); a few of the least liquid small caps consolidate their shares ten
+    to one."""
     r = rng("market")
     cons = {}
-    smalls = [s for s in univ if s["tier"] == "S"]
+    dm = dormant(univ)
+    smalls = sorted([s for s in univ if s["sedol"] in dm], key=lambda s: s["sedol"])
     for k in r.permutation(len(smalls))[:8]:
         cons[smalls[int(k)]["sedol"]] = days[int(r.integers(60, len(days) - 60))]
     month_end = set()
@@ -180,10 +220,12 @@ def candidates(univ, days, month_end):
     traded in each stock (buys and sells), at its own rebalance dates."""
     out = {}
     q_end = [d for d in sorted(month_end) if d.month in (3, 6, 9, 12)]
+    excluded = {e["sedol"] for e in esg_list(univ)}
     for code, name, tier, hold, freq, swap, alpha in CANDIDATES:
         r = rng("cand-" + code)
         floor = {"S": 5e6, "M": 12e6, "L": 0.0}[tier]       # the strategy's liquidity screen
-        pool = sorted([s for s in univ if s["tier"] == tier and s["adv"] >= floor], key=lambda s: s["sedol"])
+        pool = sorted([s for s in univ if s["tier"] == tier and s["adv"] >= floor and s["sedol"] not in excluded],
+                      key=lambda s: s["sedol"])
         dates = sorted(month_end) if freq == "M" else q_end
         held = list(r.permutation(len(pool))[:hold])
         w = {int(k): 1.0 / hold for k in held}
@@ -213,26 +255,33 @@ def live_orders(univ, mkt, days, month_end):
     """The desk's live orders 2025 and 2026: each an order of one account in one stock on one day, its arrival mid,
     its size against the stock's 20-session traded value, and the shortfall it paid."""
     r = rng("orders")
+    excluded = {e["sedol"] for e in esg_list(univ)} | dormant(univ)
     by_tier = {t: sorted([s for s in univ if s["tier"] == t], key=lambda s: s["sedol"]) for t in TIERS}
+    live_tier = {t: [s for s in by_tier[t] if s["sedol"] not in excluded] for t in TIERS}
     idx = {d: i for i, d in enumerate(days)}
     orders = []
     oid = 4_100_000
     for code, name, tiers, aum, per_month in LIVE:
         for d in days:
             i = idx[d]
-            if i < 25:
+            if i < ORDER_START:
                 continue
             n = int(r.poisson(1.5 * per_month / 21.0 * (3.0 if d in month_end else 1.0)))
             for _ in range(n):
                 tier = tiers[int(r.integers(0, len(tiers)))]
-                s = by_tier[tier][int(r.integers(0, len(by_tier[tier])))]
+                s = live_tier[tier][int(r.integers(0, len(live_tier[tier])))]
                 adv, vol = adv20_and_vol(mkt[s["sedol"]], i)
                 u = r.random()
-                if u < 0.012:
-                    part = float(math.exp(r.uniform(math.log(0.03), math.log(0.70))))   # block and event trades
+                if u < HIGH_P_SHARE[tier]:
+                    part = float(math.exp(r.uniform(math.log(HIGH_P_RANGE[0]), math.log(HIGH_P_RANGE[1]))))
                 else:
-                    part = float(math.exp(r.normal(math.log(0.005 if tier != "L" else 0.0025), 0.8)))
-                part = min(part, 0.75)
+                    # the book's order is sized in pounds; its share of the day is large where the stock is thin
+                    med = TIERS[tier]["adv"][0]
+                    value = float(math.exp(r.normal(math.log(ORDER_VALUE[tier] * med * (s["adv"] / med) ** LIQ_BETA),
+                                                    ORDER_SD)))
+                    part = value / adv
+                if part > P_CAP:
+                    part = P_CAP * math.exp(-float(r.exponential(0.25)))
                 value = part * adv
                 px_close_prev = mkt[s["sedol"]][i - 1][1]
                 arrival = px_close_prev * math.exp(float(r.normal(0, 0.004)))
@@ -240,7 +289,7 @@ def live_orders(univ, mkt, days, month_end):
                 value = qty * arrival / 100.0
                 part = value / adv
                 true_cost = cost_bps(s, part, vol)
-                noise = float(r.normal(0, 0.12 * vol * (0.6 + math.sqrt(min(part, 0.6)))))
+                noise = float(r.normal(0, NOISE_K * vol * (0.6 + math.sqrt(min(part, 0.6)))))
                 side = 1 if r.random() < 0.5 else -1
                 hh = int(r.integers(8, 15))
                 mm = int(r.integers(0, 60))
@@ -254,11 +303,12 @@ def live_orders(univ, mkt, days, month_end):
         if not (W_REUSE <= d <= dt.date(2026, 11, 13)):
             continue
         i = idx[d]
-        for _ in range(int(tr.poisson(9))):
-            tier = ("L", "M", "S")[int(tr.integers(0, 3))]
-            s = by_tier[tier][int(tr.integers(0, len(by_tier[tier])))]
+        for _ in range(int(tr.poisson(5))):
+            u = tr.random()
+            tier = "L" if u < 0.65 else "M"
+            s = live_tier[tier][int(tr.integers(0, len(live_tier[tier])))]
             adv, vol = adv20_and_vol(mkt[s["sedol"]], i)
-            part = float(math.exp(tr.uniform(math.log(0.02), math.log(0.30))))
+            part = float(math.exp(tr.uniform(math.log(0.02), math.log(0.20 if tier == "L" else 0.30))))
             arrival = mkt[s["sedol"]][i - 1][1] * math.exp(float(tr.normal(0, 0.004)))
             qty = max(1, int(round(part * adv / (arrival / 100.0))))
             part = qty * arrival / 100.0 / adv
@@ -266,7 +316,8 @@ def live_orders(univ, mkt, days, month_end):
             orders.append(dict(order_id="WM%d" % oid, account="TRN", sedol=s["sedol"], tier=tier, date=d,
                                hh=int(tr.integers(8, 15)), mm=int(tr.integers(0, 60)),
                                side=1 if tr.random() < 0.5 else -1, qty=qty, arrival=arrival, adv=adv, vol=vol,
-                               part=part, cost=cost_bps(s, part, vol) + float(tr.normal(0, 0.33 * vol)),
+                               part=part, cost=cost_bps(s, part, vol) +
+                               float(tr.normal(0, NOISE_K * vol * (0.6 + math.sqrt(min(part, 0.6))))),
                                cancelled=False, filled=qty))
     # cancelled orders: a tenth of the orders stop part filled
     for o in orders:
@@ -286,10 +337,12 @@ def live_orders(univ, mkt, days, month_end):
             qty = o["qty"] + q2
             part = qty * o["arrival"] / 100.0 / o["adv"]
             oid += int(bl.integers(1, 40))
+            noise = float(bl.normal(0, NOISE_K * o["vol"] * (0.6 + math.sqrt(min(part, 0.6)))))
+            if part > P_CAP:                 # too large a share of the day to combine: each book trades its own
+                out.append(o)
+                continue
             out.append(dict(o, order_id="WM%d" % oid, account="BLOCK", qty=qty, filled=qty, part=part,
-                            cost=cost_bps(s, part, o["vol"]) + float(bl.normal(0, 0.12 * o["vol"] *
-                                                                                 (0.6 + math.sqrt(min(part, 0.6))))),
-                            alloc=[(o["account"], o["qty"]), ("DYN", q2)]))
+                            cost=cost_bps(s, part, o["vol"]) + noise, alloc=[(o["account"], o["qty"]), ("DYN", q2)]))
         else:
             out.append(o)
     out.sort(key=lambda o: (o["date"], o["hh"], o["mm"], o["order_id"]))

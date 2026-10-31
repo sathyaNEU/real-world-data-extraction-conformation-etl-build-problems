@@ -43,7 +43,8 @@ def workbook(path, fig):
     alloc += [[], ["Recommended", c[fig["call"]]["name"]], ["Runner-up", c[fig["runner_up"]]["name"]],
               ["Difference (GBP m a year)", fig["gap_gbp_m"]],
               ["Basis", "IC-07: backtest gross alpha 2015 to 2026 less the shortfall the rebalances of December 2025 "
-                        "to November 2026 would pay at GBP 400m, priced on the desk's 2025 and 2026 orders"]]
+                        "to November 2026 would pay at GBP 400m, priced on the desk's 2025 and 2026 orders in the "
+                        "strategy's index band"]]
     sf = [["Live strategy", "Q1 2026", "Q2 2026", "Q3 2026", "Q4 2026 (to 30 Nov)"]]
     for n in A.LIVE_NAMES:
         sf.append([n] + [fig["ask_shortfall_bps"]["%s Q%d" % (n, q)] for q in (1, 2, 3, 4)])

@@ -87,7 +87,8 @@ def policy(path):
         ("p", "The expected cost of trading is the implementation shortfall, as the dealing desk's TCA standard "
               "defines it, that the candidate's rebalances in the twelve months to 30 November 2026 would have "
               "paid, each rebalance's trades scaled to the capital allocated and traded in full on the rebalance "
-              "day. Expected costs are estimated from the desk's own executions. Commissions are paid from the "
+              "day. Expected costs are estimated from the desk's own executions in stocks of the index band the "
+              "candidate trades. Commissions are paid from the "
               "research budget and are not part of the comparison, and one-off trading to build a portfolio at "
               "launch is outside it."),
         ("h", "3. Paper to the Committee"),
@@ -129,7 +130,9 @@ def tca(path):
         ("h", "3. Size"),
         ("p", "An order's participation is its value as a share of the stock's average daily traded value, close "
               "times volume, over the 20 sessions before its trade date. A stock's daily volatility is the standard "
-              "deviation of its daily log returns over the 60 sessions before."),
+              "deviation of its daily log returns over the 60 sessions before. The day a share consolidation or "
+              "split takes effect gives no return, since its change in price is the corporate action's, and an "
+              "order is measured only once its stock has 60 sessions of history before its trade date."),
         ("h", "4. Reporting"),
         ("p", "Dealing reports each live portfolio's shortfall each quarter and the value it traded, its filled "
               "quantity at the average fill price, each half year. A portfolio's orders are those of the account "

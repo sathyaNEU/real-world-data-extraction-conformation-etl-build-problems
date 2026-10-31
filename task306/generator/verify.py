@@ -74,9 +74,13 @@ def main():
     ex["part"] = ex.value.values / lv.adv20.values
     ex["vol"] = lv.vol60.values
     ex["band"] = ex.sedol.map(band)
-    X = np.column_stack([(ex.band == b).astype(float) for b in "LMS"] + [ex.vol * np.sqrt(ex.part)])
-    coef, *_ = np.linalg.lstsq(X, ex.sf.values, rcond=None)
-    check("the fitted impact coefficient sits near the square-root law's 0.85", 0.75 < coef[3] < 0.95, coef)
+    coef = {}
+    for b in "LMS":
+        sub = ex[ex.band == b]
+        X = np.column_stack([np.ones(len(sub)), sub.vol * np.sqrt(sub.part)])
+        coef[b], *_ = np.linalg.lstsq(X, sub.sf.values, rcond=None)
+    check("each band's coefficient on volatility times the square root of participation sits near 0.85",
+          all(0.75 < coef[b][1] < 0.95 for b in "LMS"), {b: round(float(coef[b][1]), 3) for b in "LMS"})
 
     summ = pd.read_excel(os.path.join(T, "research_backtests_2027_candidates.xlsx"), sheet_name="Summary")
     alpha = dict(zip(summ["Strategy code"], summ["Annualised gross alpha, 2015 to 2026"].astype(str).str.rstrip("%").astype(float)
@@ -88,8 +92,9 @@ def main():
     lt = look.reindex(list(zip(tr.sedol, tr.d)))
     v = tr.traded_weight.abs() * 400e6
     p = v.values / lt.adv20.values
-    a = np.array([coef["LMS".index(band[s])] for s in tr.sedol])
-    tr["cost"] = v.values * (a + coef[3] * lt.vol60.values * np.sqrt(p)) / 1e4
+    a = np.array([coef[band[s]][0] for s in tr.sedol])
+    k = np.array([coef[band[s]][1] for s in tr.sedol])
+    tr["cost"] = v.values * (a + k * lt.vol60.values * np.sqrt(p)) / 1e4
     cost = tr.groupby("strategy_code").cost.sum()
     for k in ("SCM", "MCV", "LCQ"):
         net = alpha[k] * 400e6 - cost[k]
