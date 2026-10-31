@@ -135,7 +135,17 @@ def op7(path):
          Paragraph("5. Records", h2),
          Paragraph("System Operations keeps the event log of tickets. Each provider keeps its own records of the "
                    "event and delivers them under its agreement; Ridgeway Analytics receives them for measurement and "
-                   "verification.", body)]
+                   "verification.", body),
+         Paragraph("6. Readiness", h2),
+         Paragraph("System Operations records each programme's readiness for every event. A Cool Credit premise is "
+                   "ready when it is enrolled on the event day and a thermostat installed at it is registered with "
+                   "Halvern Controls, not retired, and online at 16:00, which is when the last status Halvern "
+                   "reported for the thermostat at or before 16:00 is ONLINE, or is IDLE reported under Halvern's "
+                   "firmware 6.0. Firmware 6.0 reached every registered thermostat on 6 July 2026; under earlier "
+                   "firmware a thermostat reported IDLE when its radio slept, and it could not take a command.",
+                   body),
+         Paragraph("The readiness of Business Demand Partners for a month is the kilowatts Arroyo Demand Services "
+                   "nominated for that month on the utility's commercial meters.", body)]
     _doc(path, "OP-7 Demand response dispatch", "CBMU System Operations", s,
          "%s  |  OP-7 Demand response dispatch  |  Revision 3" % P.UTILITY)
 

@@ -3,6 +3,7 @@
     import build; build.build("task118/target")
 """
 import csv
+import re
 import datetime as dt
 import io
 import json
@@ -53,7 +54,8 @@ def _csv(path, header, rows):
         w.writerows(rows)
 
 
-def _xlsx(path, sheets, creator):
+def _xlsx(path, sheets, creator, created, modified):
+    """`created` and `modified` are the workbook's own save history (the owning office's, in UTC)."""
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
     for title, rows, bold in sheets:
@@ -67,8 +69,8 @@ def _xlsx(path, sheets, creator):
             ws.column_dimensions[col].width = width
     wb.properties.creator = creator
     wb.properties.lastModifiedBy = creator
-    wb.properties.created = XLSX_STAMP
-    wb.properties.modified = XLSX_STAMP
+    wb.properties.created = created
+    wb.properties.modified = modified
     wb.properties.title = None
     buf = io.BytesIO()
     wb.save(buf)
@@ -78,7 +80,11 @@ def _xlsx(path, sheets, creator):
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
         for info in src.infolist():
             data = src.read(info.filename)
-            zi = zipfile.ZipInfo(info.filename, date_time=XLSX_STAMP.timetuple()[:6])
+            if info.filename == "docProps/core.xml":
+                # openpyxl stamps dcterms:modified at save; the workbook's own last save stands
+                data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
+                              b"\\g<1>" + modified.strftime("%Y-%m-%dT%H:%M:%SZ").encode() + b"\\g<2>", data)
+            zi = zipfile.ZipInfo(info.filename, date_time=modified.timetuple()[:6])
             zi.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(zi, data)
 
@@ -132,7 +138,8 @@ def build(folder):
             cost_rows.append((P.NAME[p], P.UNIT[p], comp, usd))
         cost_rows.append((P.NAME[p], P.UNIT[p], "Total, all in", P.COST[p]))
     cost_rows += [("", "", "", ""), ("2027 expansion line in the draft budget", "", "", P.BUDGET_USD)]
-    _xlsx(f("costs"), [("2027 expansion", cost_rows, [4])], "CBMU Budget and Rates")
+    _xlsx(f("costs"), [("2027 expansion", cost_rows, [4])], "CBMU Budget and Rates",
+          dt.datetime(2026, 8, 27, 16, 12, 0), dt.datetime(2026, 10, 14, 21, 37, 0))
 
     th = W.thermostats()
     _csv(f("cis"), ["premise_id", "service_address", "account_no", "thermostat_serial", "enrolled_on",
@@ -179,7 +186,8 @@ def build(folder):
          W.capacity_prices())
     sv = [("2026 demand response customer survey", "", "", ""), ("CBMU Customer Programs, fielded 12 to 30 September 2026", "", "", ""),
           ("", "", "", ""), ("Programme", "Question", "Respondents", "Mean score")] + W.satisfaction()
-    _xlsx(f("satisfaction"), [("Results", sv, [4])], "CBMU Customer Programs")
+    _xlsx(f("satisfaction"), [("Results", sv, [4])], "CBMU Customer Programs",
+          dt.datetime(2026, 9, 30, 15, 4, 0), dt.datetime(2026, 10, 9, 18, 51, 0))
     scrub(folder)
     return evs
 

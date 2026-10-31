@@ -155,6 +155,8 @@ Lesson: a demand-side resource's capacity at a multi-day design peak is its resp
 | SF12 | the commercial unit | verified reduction per enrolled site at 18:00 | per dispatched site | same call (asserted) | the verification file's enrolled-site rows |
 | SF13 | the rebate unit | control mean less treatment mean per enrolled customer | per notified customer | same call | the evaluation file's group definitions |
 | SF14 | the hour column in the rebate and commercial files | hour beginning MST | hour ending | same call (asserted) | each file's header |
+| SF15 | a thermostat online at 16:00 (ask A) | OP-7 section 6: registered, not retired, last status ONLINE, or IDLE under firmware 6.0 (from 6 July 2026) | IDLE read one way all season, or retired devices kept | figures only, no call | OP-7 section 6; the IDLE gap and the June days asserted |
+| SF16 | Business Demand Partners' nominations (ask C) | the utility's commercial meters, the register's | every row of Arroyo's file | figures only, no call | OP-7 section 6 |
 
 ## Ladder
 
@@ -260,13 +262,14 @@ figures are the generator's (`generator/figures.json`, `asks` block); stops and 
 - Primary 1 (D7, the true key elsewhere): a premise whose thermostat was replaced keeps the enrolled serial in the
   CIS, retired in Halvern's registry, and the replacement is registered under Halvern's install-address string, which
   writes the address its own way; the premise is online through the new serial.
-- Primary 2 (D2, a label stored before a silent switch): Halvern's `IDLE` meant a sleeping radio until the 6.0
-  firmware push of 6 July 2026 and from then means connected with no cooling call; no field dates the switch, and the
-  acknowledgements show idle devices acknowledging dispatch only from 6 July.
+- Filed, not a device: OP-7 section 6 files what a ready thermostat is (registered, not retired, last status ONLINE,
+  or IDLE under the 6.0 firmware that reached the fleet on 6 July 2026; earlier IDLE meant a sleeping radio). No
+  IDLE report falls between 21:00 UTC on 30 June and 00:00 UTC on 7 July, so the push day reads the same in either
+  zone (asserted).
 - Hazards: the change-only log (state rebuilt at 23:00 UTC), UTC stamps, premises with two thermostats (counted once),
   unenrolments.
-- Pin test: the sentence pins enrolled premises, a thermostat online and 16:00 on each 2026 event day; both primaries
-  sit in which serial is the premise's and what a status meant that day, dimensions the pins leave open.
+- Pin test: the sentence and OP-7 section 6 pin enrolled premises, a ready thermostat and 16:00 on each 2026 event
+  day; the primary sits in which serial is the premise's, a dimension the pins leave open.
 
 **Ask B, Home Battery Network incentive owed for each 2026 event month and the premises at the season cap (5 figures).**
 - H18 home: the battery programme's operating cost in 2026, a measure every programme carries that the call does not
@@ -286,8 +289,9 @@ figures are the generator's (`generator/figures.json`, `asks` block); stops and 
 - H18 home: the commercial programme's contracted capacity in 2026, the base its per-site reduction is credited over.
 - Files and columns: `arroyo_nominations_2026.csv` (month, Arroyo site reference, site name, service address, meter
   number, nominated kW), `cbmu_meter_register.csv` (meter number, premise, service address).
-- Primary 1 (D5, out-of-scope rows known only by structure): from August Arroyo's file carries its sites on the
-  neighbouring utility's system, whose meter numbers follow that utility's nine-digit scheme and match no CBMU meter.
+- Filed population: OP-7 section 6 counts the nominations on the utility's commercial meters; from August Arroyo's
+  file also carries its sites on the neighbouring utility's system, whose meter numbers match no CBMU meter, and the
+  register finds them.
 - Primary 2 (D1, one site under two references): a site that changed owner is listed under its old and its new
   reference in the month of the change, the same meter, a re-typed name.
 - Hazard: nominations restated within a month (the later row stands).
@@ -301,17 +305,17 @@ log, the cost sheet, the plan or OP-7.
 
 | Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at R2) | Verdict |
 |---|---|---|---|
-| A, 17 event-day counts | joins the CIS serial and reads `IDLE` one way all season | the same | miss |
+| A, 17 event-day counts | joins the CIS serial (or the registry by the address as written) | the same | miss |
 | B, 4 months and the cap count | tests each record alone; months by the dispatch date | the same | miss |
-| C, 4 months | keeps the neighbouring utility's sites; counts the transition month's two references | the same | miss |
+| C, 4 months | keeps the latest row per Arroyo reference, so a transition month counts a site twice | the same | miss |
 
-The full includer (address links, a battery's records combined, CBMU meters only, IDLE read as connected all season)
-keeps 26 of 29 ask criteria and misses the three June event days; it is a stress row, not the gate.
+The full includer (address links, a battery's records combined, the latest nomination per meter) keeps 29 of 29;
+it is a stress row, not the gate.
 
 Pair ceiling: 30.4 (the cracker on the call at 46.9, the mirror off it at 13.9, each keeping 1 of 29 ask criteria,
 the note's chart).
 Mirror leakage: 3.4 per cent of the ask weight.
-Measured by: generator/ceiling.py (run on the cut pack, target.zip 26845106)
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 90561f0e)
 
 ## Leak sweep
 
@@ -529,3 +533,6 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 26845106)
 - Megawatts to one decimal place: the standing family spreads Cool Credit 0.1 MW and the rebate programme 0.2 MW at
   the fourth day, and the thermostat panel's sampling interval is about 0.5 MW, so one-decimal figures fork; graded to
   the whole megawatt with every figure mid-bin.
+- IDLE's change of meaning as an ask A device (no field dated the switch): judge pass 9 found the ask open, since no
+  file said what IDLE meant or whether a retired thermostat counts; OP-7 section 6 now files both, the ask keeps the
+  address link, and the same section files Business Demand Partners' meters.
