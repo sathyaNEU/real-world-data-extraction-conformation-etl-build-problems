@@ -1,18 +1,18 @@
 {
   "task": "task156",
-  "architecture": "v1 loop 3",
-  "drawn": "2026-10-17",
-  "slot_note": "wave 5 (new); seed FC27 kept for its world, decision and quantity only (a developer Q&A network's 2027 paid moderation pool across nine topic sites after generative AI cut question volume, sized in FTE against a finance envelope, decided at the council's December sitting); the seed's charter clause that a need method may be used only if it reproduces every certified figure is not shipped (no certified need table ships at all), and its revised close-queue standard (5.0 to 2.0 minutes) ships as a filed standard every response applies, never the decisive step; the pitfall is re-found from how the network's review records come to exist: a community item reaches the paid team only when no volunteer reviews it in 72 hours",
-  "domain": "product-analytics",
-  "subdomain": "retention-cohort-lifetime-value-modeling",
-  "client_domain": "product-analytics",
-  "niche": "a Toronto-run developer Q&A network's 2027 request for its paid moderation team, sized in whole FTE per site from the hours its nine topic sites' moderator flags and unreviewed community-inbox items will take, when every community item goes first to volunteer reviewers, most of whom review casually and stop within months while a steady core stays for years, and review access became invitation-only in September 2026",
+  "architecture": "v2 (re-root in batch 1: a New Zealand district council's wastewater pump station, whether a subdivision can connect in 2027 within the station's consented overflows, the infiltration each storm and each dry day drives read from the length of sewer below the water table)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task156 in the same objective (Forecasting), batch 1; architecture 1 in lineage",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "hydrology-flood-frequency",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a district council's wastewater pump station whose discharge consent caps its average wet-weather overflows a year, a subdivision asking to connect in 2027 ahead of the station's storage upgrade, the infiltration a storm and a dry day drive read per kilometre of sewer lying below the water table",
   "objective": "forecasting",
   "shape": "other",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "32 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above finance's 26-FTE envelope",
-  "answer_source": "task156/generator/calc.py compute() on the shipped bundle, reproduced by task156/generator/verify.py",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "named_option",
+  "answer": "to be filled at ship",
+  "answer_source": "to be filled at ship",
   "gap": [
     "population",
     "time"
@@ -21,82 +21,103 @@
     "none"
   ],
   "generators": [
-    "G9",
-    "G6",
-    "G16"
+    "G14",
+    "G16",
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "none",
+  "calibration_form": "realised_outcome_roster",
   "stump_strategy": "forecast_method_backtest",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
-  "stakeholder_role": "Millrind's head of moderation operations, who takes the 2027 paid moderation request to the Moderation Council's December sitting and then to finance",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and rule correctly separates the dry-weather flow, fits the station's rainfall-derived infiltration and inflow as one unit-hydrograph response per millimetre of rain on the 2024 to 2026 storms (one set per season if they look for seasonality), carries the meter's base flow into the consent's 2006 to 2025 replay with the subdivision's flow added, and finds the station inside its consented two overflows a year, so the connection proceeds; the meter's storms fell while the water table mostly stood below the low terrace's sewers, and the replay's wet years, when it stood above most of them, overflow far more often.",
+  "domain_test": "The deciding quantity is the station's average overflows a year under the consent's continuous simulation, worked the way urban hydrology works rainfall-derived infiltration and inflow and groundwater infiltration: the infiltration a storm and a dry day drive scales with the length of sewer below the water table, read from the bore's groundwater level against the pipes' invert levels, and the model is chosen on storms it was not fitted on; with another field's nouns there is no water table, no pipe invert and no infiltration through joints, so the task stops reading the same.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:submerged-length-conditioned-infiltration-chosen-out-of-sample",
+  "layer1": [
+    "utc-local",
+    "datum-mismatch",
+    "sensor-gaps",
+    "duplicate-alarm-events",
+    "unit-mismatch",
+    "layout-change-across-years"
+  ],
+  "stakeholder_role": "the district council's three waters operations manager, whose report to the elected council recommends whether the subdivision connects in 2027 or waits for the station's storage upgrade",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "reviewer_roster_2026-10-08.csv (the review platform's reviewer access spells) beside review_inbox_daily_2024-01-01_2026-09-30.csv (its daily inbox export)",
-    "rows": 23148,
-    "entity": "one reviewer's access spell on one site: grant date, first and last review on the platform, status, lapse date",
-    "grain": "reviewer x site spell",
-    "source": "synthetic (constructed in the layout of a Q&A platform's review inbox export and reviewer roster)"
+    "file": "pump_station_inflow_2024-2026.csv",
+    "rows": 0,
+    "entity": "one row is the station's inflow in one 15-minute interval",
+    "grain": "station x 15 minutes",
+    "source": "constructed for task156, no real dataset"
   },
   "forum": "council_or_assembly",
   "forcing_event": "vote_or_meeting",
-  "org_family": "software_or_platform",
+  "org_family": "local_government",
   "world": {
-    "geography": "Canada, Ontario (Millrind's operations and finance in Toronto; the nine sites serve developers worldwide; the network, its sites, people, systems and data are fictional)",
-    "currency": "CAD",
-    "org_type": "developer question-and-answer network of nine topic sites, volunteer review in front of a paid moderation team",
-    "invented_names": [
-      "Millrind"
-    ],
+    "geography": "New Zealand, Waikato (a fictional district and town)",
+    "currency": "NZD",
+    "org_type": "district council three waters unit",
+    "invented_names": [],
     "people": [
-      "Duane Zamora",
-      "Natalie Maxwell",
-      "Claudia Spence"
+      "Aaliyah Beattie",
+      "Benjamin Gilbert",
+      "Anaru Boyce"
     ]
   },
   "deliverables": [
-    "moderation_pool_2027.xlsx",
-    "council_pool_request_2027.pptx"
+    "subdivision_connection_assessment_2027.xlsx",
+    "council_report_subdivision_connection_2027.docx",
+    "replay_overflows_2006-2025.png"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "Members of a pool leave at their own steady rates, which differ widely, so the fast leavers go first and the pool's overall leaving rate falls as its members age; while new members kept arriving the overall rate held high, and once admission stops the closed pool sheds its newest members and then slows, so carrying the open pool's rate overstates the forward losses, and because the record opens part-way through most members' lives, the rate by tenure has to count each member from when the record first sees them.",
-  "driver_concrete": "Most of Millrind's new volunteer reviewers stop within months (about 9 per cent a month in their first year of access) while reviewers past their third year stop at well under one per cent, so while grants ran at about 320 a month the pool's overall lapse rate held near 3 per cent; review access became invitation-only on 1 September 2026, so the 10,607 reviewers active then are the 2027 pool, shedding their first-year reviewers fast and then slowing, which the open pool's lapse rate overstates; the roster opens in January 2024, so the stop rate by tenure counts each reviewer from the first month the platform shows them active.",
-  "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds each site's capacity right (the reviews a reviewer completes when the inbox outruns the pool, about 40 a month, against the 2027 inbox the plan implies) and reads the handbook's invitation-only clause carries each site's pool from September 2026 at its own lapse rate of the last two years with no new reviewers and files 41 FTE (40 on twelve months, 38 on three); reviewers stop at rates that fall steeply with tenure, so the closed pool sheds its newest reviewers first, and carried on each reviewer's own tenure the request is 32.",
-  "domain_test": "The deciding quantity is a closed volunteer cohort's 2027 survival, forecast the way product analytics forecasts a retained-user cohort (survival by tenure read from a truncated, censored roster and applied to the members who are left, rather than a pooled churn rate), times the activity a retained reviewer delivers when work outruns the pool; with another field's nouns (a hospital's agency nurses, a utility's call centre) there is no self-selecting volunteer cohort whose members drift away at rates that differ by tenure, so the forecast has nothing to stand on.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:closed-cohort-survival-by-tenure-left-truncated-against-capacity",
-  "layer1": [
-    "a review-platform change in January 2024: a monthly per-queue workbook for 2021 to 2023 (one sheet a year, the edit queue added in 2022) beside a daily inbox export by item type from 2024",
-    "site names in the old workbook against site codes in the new export, with Graphics folded into Game Development in 2023, mapped by the site register",
-    "UTC day boundaries in the platform exports against Toronto time in the moderation team's own records",
-    "the September 2026 inbox export pulled twice, a preliminary pull with the last days' routing still open and a revised pull a week later",
-    "the moderator tool's flag export pulled in two parts that both carry 15 August",
-    "a WFM week re-sent after a payroll query, the original lines kept and marked superseded, and Infrastructure & DevOps still under its old WFM name",
-    "a reviewer roster that keeps the reviewers whose access lapsed in January or February 2024 without a review on the platform (first review blank)",
-    "a monthly report's question counts first reported short (a tag-sync fault, May to August 2022) and restated by the statistics job's rerun in a block below the year's notes"
-  ],
+  "question_form": "whether",
+  "driver": "The decisive quantity is how often a fixed capacity is exceeded once a steady load is added, when both the standing load and the response each driving event adds scale with how much of a fixed network lies below a fluctuating level read from a separate record, so one response and one standing load read off a short record whose level mostly stayed low understate a long record whose level often rose past most of the network.",
+  "driver_concrete": "The infiltration reaching the pump station on a dry day and in a storm scales with the length of the catchment's sewers whose inverts lie below the water table that day, read from the regional bore's level against the asset register's invert levels; the 2024 to 2026 meter ran through years when the water table mostly stood below the low terrace's sewers, while the consent's 2006 to 2025 replay holds wet years with it above most of them, so one response per millimetre and the meter's base flow carried into the replay understate the overflows the subdivision's added flow takes past the consent.",
+  "stump": "Fitting one unit-hydrograph response per millimetre on the meter's 2024 to 2026 storms and carrying the meter's base flow into the replay files about one overflow a year with the subdivision connected, inside the consent's two, and connects it; the step that lands it there is reading the station's response as one number when the infiltration storms and dry days drive scales with the sewer length below the water table, which the replay's wet years carry far past anything the meter saw (figures provisional until the generator is measured).",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task153": "task153 caps what a yard island hands a vehicle at the smaller of the fuel burned between visits and a known tankful, per segment; here the capacity is hidden wherever it was not binding, shrinks on the volunteers' own retention, and the decisive move is its crossing below arrivals in the year the request funds",
-    "task150": "task150 carries pupils at rates on their own base and arrivals at steady counts; here nothing arrives at a steady count and the decisive split is a capacity limit against arrivals",
-    "task148": "task148 drains a queue by abandonment and prices waits; here no item leaves on its own, the 72-hour hand-off is a routing rule, and the forecast is how many items the volunteers will not reach",
-    "task140": "task140 strikes a residual after higher reservations that include a dependent load; here the volunteers are no reservation and their capacity does not depend on the paid tier",
-    "task179": "task179 lets a member's chance of leaving fall once it meets the same peers in several groups, a process the forward members no longer pass through; here nobody's chance changes and the overall rate falls only through who is left, read by tenure from a left-truncated roster",
-    "task170": "task170's failure probability falls with each operator's own count of attempts (learning); here a reviewer's stop chance is constant for life and the fall is selection",
-    "task176": "task176 ends units when the youngest dependant reaches a fixed age, a clock other than tenure; here tenure is the clock, read from the record with its left edge",
-    "task134": "task134 turns a conversion hazard near zero for a member's first months into a forward inflow; here the hazard is highest in the first months and the forecast is a closed pool's survival",
-    "task452": "task452 weights each reference observation by its own design inclusion probability after a preliminary classification was revised; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure read from a left-truncated roster, set against an inbox",
-    "task157": "task157 expands a sample in which one defect class is a property of record pairs, so its inclusion probability is the square of the sampling fraction; here nothing is sampled: the forecast is a closed volunteer cohort's survival by tenure, read from a left-truncated roster and set against an inbox",
-    "task265": "task265's decisive step is the record's left edge itself, a survival share read from a record that began after many units had started; here the left edge is the second layer, and the decisive step is carrying a closed pool on the stop rate of each member's own tenure instead of the rate the open pool showed while it was still admitting members"
+    "task134": "task134 conditions a rebuild chance on whether an option's payoff beats the standing use, a threshold on each unit's economics; here the condition is a daily physical exposure, the length of network below a moving level, built from two records that share no key and carried by the forecast years far past the measured range.",
+    "task146": "task146 releases a pool at each period turn weighed by when within the period each unit was refused; here no pool or timing within a period enters: a dry day's and a storm's response is a fixed part plus a part proportional to a network length below a level that the replay rebuilds day by day from a separate twenty-year record.",
+    "task165": "task165 conditions an upgrade's gain on the share of each site the old level left untreated, read from each site's own record; here the units are days and storms, not sites, and the conditioning state is in no record of theirs but is constructed from a level series against fixed asset elevations.",
+    "task173": "task173 v1 conditions a comeback chance on who opened the case and their tenure, a mix of people the bench changes; here no population of agents is re-mixed: the state is a continuous physical exposure, network length under a water level, which the forecast window carries past the measured range and which only the physics of infiltration through joints extrapolates."
   },
   "lineage": [
+    {
+      "domain": "product-analytics",
+      "subdomain": "retention-cohort-lifetime-value-modeling",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G9",
+        "G6",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "driver": "Members of a pool leave at their own steady rates, which differ widely, so the fast leavers go first and the pool's overall leaving rate falls as its members age; while new members kept arriving the overall rate held high, and once admission stops the closed pool sheds its newest members and then slows, so carrying the open pool's rate overstates the forward losses, and because the record opens part-way through most members' lives, the rate by tenure has to count each member from when the record first sees them.",
+      "stump_strategy": "forecast_method_backtest",
+      "forum": "council_or_assembly",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "software_or_platform",
+      "role_family": "operations_director",
+      "architecture": "v1 loop 3 (Millrind's 2027 paid moderation pool, nine sites behind a closing volunteer review community, the 2027 pool carried on survival by tenure)",
+      "drawn": "2026-10-17",
+      "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
+      "fate": "spent 2026-10-31 at the batch 1 triage: loop 3 was reshipped 10-27 after the portal's FAILED_TO_STUMP on loops 1 and 2 (both responses filed the then golden), keeping the world, the prompt and the asks the portal had already solved once; re-rooted in a new world before any portal result on loop 3"
+    },
     {
       "architecture": "v1 (loops 1 and 2)",
       "drawn": "2026-10-17",
@@ -123,6 +144,20 @@
       "layer2_pattern": "own:volunteer-review-capacity-projected-from-reviewer-retention-against-inbox-arrivals"
     }
   ],
-  "notes": "Kinship cards read at the draw: task150, task153, task152, task149 (the lane's last builds), task140, task147, task148, task111, task128 (capacity and overflow drivers on file). No trust-and-safety card in the corpus carries a moderation-capacity driver. Round 1 (stage 4): the rule 3 audit called the retention tag thin and suggested a trust-and-safety or community-moderation workforce task type; vocab.json has none (healthcare's patient-flow workforce type would make the domain a backdrop), so the tag stays product-analytics retention, the deciding quantity being the volunteer reviewer cohort's retained activity. Loop 3 (2026-10-27): the portal landed the call (35 FTE) on the capacity framing with a flat lapse rate; the decisive step moved to survival by tenure on a closed, left-truncated pool (population_selection, estimation_fit, Gate G forecasting), the old identity in lineage. Strategy forecast_method_backtest: the regime change (review access invitation-only from 1 September 2026) makes the natural fit, the open pool's lapse rate, wrong out of sample, and the closed-cohort back-test separates the methods; population_selection (survivorship) and composition_mix also describe the move and were both banned by the live window at loop 3 (task264 v2 and its neighbours), so the honest third key is used. Generator G9 (downstream survival against upstream acquisition) is decisive: the open pool's rate carries the newcomers acquisition kept feeding in. Registration stamp kept at the draw (2026-10-17T08:19:38Z): the world and its furniture (forum, forcing event, organisation family) date from that draw and are unchanged; restamped at loop 3 the card met ban.forum against task242 and ban.forcing_event against task196 v2, both registered later that day (22:32 and 23:00), an artifact of re-running a draw-time gate (reduce-house-fixes H27); the loop 3 identity was checked against today's corpus with a fresh key first (strategy, gap, pattern and driver tests clear, task452 differentiated).",
-  "registered": "2026-10-17T08:19:38Z"
+  "lineage_shells": [
+    {
+      "question form": "how-many",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-10-31T18:27:04Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "the",
+    "rounding opener": "overflows",
+    "deliverable set": "docx+png+xlsx"
+  }
 }

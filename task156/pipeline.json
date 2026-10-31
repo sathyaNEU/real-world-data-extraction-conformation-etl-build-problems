@@ -1,70 +1,66 @@
 {
  "task": "task156",
- "status": "SHIPPED",
- "domain": "product-analytics/retention-cohort-lifetime-value-modeling (client domain product-analytics; world: trust and safety at a developer Q&A network)",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a New Zealand district council's wastewater pump station and its discharge consent)",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-27",
- "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
- "architecture": 1,
- "loops": 3,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "Fitting one unit-hydrograph response per millimetre on the meter's 2024 to 2026 storms and carrying the meter's base flow into the consent's 2006 to 2025 replay keeps the station inside its two overflows a year with the subdivision connected, and connects it; the infiltration reaching the station on a dry day and in a storm scales with the sewer length below the water table, which the replay's wet years carry far past anything the meter saw (figures provisional until the generator is measured).",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17",
-  "checks": "49 checks, 0 FAIL, 0 WARN after round 2 (pair ceiling 31.4, mirror leakage 4.5 per cent, the cracker misses every ask)"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on f17b387d, every line answered in the design note; sweep 1 clean (no file describes the data)",
-  "reader": "loop 3 (isolated, f17b387d): Q1 to Q4 none, Q5 the charter's need sentence as the estimand, Q6 analytical; REVIEW lines harmless"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (people.first: Natalie also in task281), no BLOCK, at the draw's registration stamp",
-  "surface": "no hard tell; task157 and task452 promoted on the cards alone, differentiated on the card; task265 differentiated",
-  "nearest": "driver 0.08 (task243)"
+  "guard_check": "WARN 2026-10-31T18:27:04Z on the registered card after rebasing on main (repeat.question_form against task250, answered in the design note; test.same_driver_older differentiated against task134, task146, task165 and task173 v1); forum, forcing event and context artifact redrawn after task191 and task250 entered the window",
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC (pass 3, run r3 on f17b387d, the loop 3 pack)",
-  "disposition": "APPROVE (every main-call and ask figure reproduced; the open pool's rate, a constant pool and the grant-date curve ruled method errors; no fix)",
-  "report": "task156/determinism_check_report_pass3.md (round 1: determinism_check_report_round1.md; round 2: determinism_check_report.md)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [
-  {
-   "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses landed the call (35 FTE, 9 above the envelope), building each site's capacity against its inbox at the saturated pace and carrying each pool at its own lapse rate with almost no new reviewers",
-   "repair": "design (loop 3): the capacity framing kept as the default path; the decisive step moved to how the pool is carried: two kinds of reviewer (most new reviewers casual, stopping at about 12 per cent a month, a steady core at about 0.5), grants following each site's question level until review access became invitation-only on 1 September 2026 (filed in the operations handbook), so the 2027 pool is a closed cohort carried on survival by tenure read from the left-truncated roster; the data dictionary, file list and markdown notes removed (a handbook and a question count standard carry the conventions); golden 32 FTE (5, 2, 6, 4, 4, 2, 4, 3, 2), 6 above the envelope; the asks unchanged",
-   "commit": "RESHIPPED (task156) on 2026-10-27, target.zip f17b387d"
-  }
- ],
- "resume": "",
+ "returned": [],
+ "resume": "Stage 2: the design sections, the asks, the generator's screens as code, prompt.txt, precut.py.",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "wave": "wave 5 (new), seed FC27 (world, decision and quantity kept; the certified-figure clause not shipped; the revised close standard filed as context, never decisive; pitfall re-found from the review platform's 72-hour hand-off to the paid team)",
- "answer": "Request 32 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above finance's 26-FTE envelope",
- "gates_stage3": {
-  "checks": "106 assertions, 0 failed (at ship: the pace stated only as about 40 in the graded blocks and goldens, the envelope compared network-wide)",
-  "verify": "independent verifier reproduces the 35 FTE and nine site needs, the pace, Ask A (27), Ask B (27) and Ask C (9, reading the March 2023 restatement)",
-  "rebuild": "two consecutive builds byte-identical: 24 target files, 2 goldens, figures.json, submission.md; target.zip cut flat",
-  "target_zip_sha256": "4a2dc4633613aeb35a0e72602967e72411a8731a5a0b626c856567f3f85fcda3",
-  "figures_check": "PASS, 109 figures in blocks 1 to 4, 0 absent",
-  "voice_check": "PASS (922 characters)",
-  "container": "scrub_producer_metadata audit clean on target and golden",
-  "golden_realism": "done: finding titles on every sheet and slide, notes sheet, footers and slide numbers, set table style, chart with validated palette, legend, forecast band, labelled envelope and the 2027 need annotated",
-  "house_fixes": "H1 clean; H4 archive cut without the enclosing folder; H14 each site's own pace and floor asserted; H16 flag first actions and reviews held before the export run; H21 the network renamed from Quernstone (a real UK firm) to Millrind; H24 no constructed-pack sentence under target",
-  "round1_moved_figures": "none graded moved across rounds 1 and 2: the call (35; 5, 2, 7, 5, 5, 2, 4, 3, 2) and Asks A, B and C as built; round 1's three chart totals were taken back out of the graded block in round 2"
- },
- "rule3_audit": "PASS (P(both) about 0.03 to 0.06); soft points answered in round 1: the January and February 2024 lapses now on the roster, the domain tag kept (no trust-and-safety task type in vocab.json)",
- "gates": {
-  "checks": 110,
-  "verify": "agrees (32: 5 2 6 4 4 2 4 3 2; asks 27, 27, 9)",
-  "byte_identical": true,
-  "figures_check": "112 figures, 0 absent",
-  "precut": "52 checks, 0 FAIL, 0 WARN",
-  "voice_check": "PASS",
-  "target_zip_sha256": "f17b387d5711f957f2c7c8b8b98f6b517c71e66964c4530fe2f34824ded88b56"
- }
+ "history": [
+  {
+   "architecture": 1,
+   "domain": "product-analytics",
+   "objective": "forecasting",
+   "stump": "Carrying each site's reviewer pool from September 2026 at its own lapse rate of the last two years, with no new reviewers since access became invitation-only, files 41 FTE (40 on the last twelve months' rate, 38 on the last three); the step that lands it there is reading one stop rate off a pool that was still taking in newcomers, when reviewers stop at about 9 per cent a month in their first year and under one per cent from their fourth: carried on the stop rate of each reviewer's own tenure, counted from when the roster first sees them, the 10,607 active reviewers average about 8,800 a month in 2027 and the request is 32 FTE (27 with the tenure curve read from each grant date).",
+   "delivered": "2026-10-17",
+   "returned": [
+    {
+     "date": "2026-10-27",
+     "portal": "FAILED_TO_STUMP: both responses landed the call (35 FTE, 9 above the envelope), building each site's capacity against its inbox at the saturated pace and carrying each pool at its own lapse rate with almost no new reviewers",
+     "repair": "design (loop 3): the capacity framing kept as the default path; the decisive step moved to how the pool is carried: two kinds of reviewer (most new reviewers casual, stopping at about 12 per cent a month, a steady core at about 0.5), grants following each site's question level until review access became invitation-only on 1 September 2026 (filed in the operations handbook), so the 2027 pool is a closed cohort carried on survival by tenure read from the left-truncated roster; the data dictionary, file list and markdown notes removed (a handbook and a question count standard carry the conventions); golden 32 FTE (5, 2, 6, 4, 4, 2, 4, 3, 2), 6 above the envelope; the asks unchanged",
+     "commit": "RESHIPPED (task156) on 2026-10-27, target.zip f17b387d"
+    }
+   ],
+   "leak": {
+    "leak_py": "REVIEW (no LEAK) on f17b387d, every line answered in the design note; sweep 1 clean (no file describes the data)",
+    "reader": "loop 3 (isolated, f17b387d): Q1 to Q4 none, Q5 the charter's need sentence as the estimand, Q6 analytical; REVIEW lines harmless"
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC (pass 3, run r3 on f17b387d, the loop 3 pack)",
+    "disposition": "APPROVE (every main-call and ask figure reproduced; the open pool's rate, a constant pool and the grant-date curve ruled method errors; no fix)",
+    "report": "task156/determinism_check_report_pass3.md (round 1: determinism_check_report_round1.md; round 2: determinism_check_report.md)"
+   },
+   "answer": "Request 32 paid moderator FTE for 2027 (Frontend & Web 5, Mobile Apps 2, Data & ML 6, Databases 4, Infrastructure & DevOps 4, Game Development 2, Security 4, Embedded & Hardware 3, Scientific Computing 2), 6 above finance's 26-FTE envelope",
+   "fate": "spent 2026-10-31 at the batch 1 triage: loop 3 reshipped 10-27 (target.zip f17b387d) after the portal's FAILED_TO_STUMP on loops 1 and 2, keeping the world, prompt and asks the portal had solved once; re-rooted in a new world before any portal result on loop 3"
+  }
+ ]
 }
