@@ -1,100 +1,104 @@
 {
   "task": "task268",
-  "architecture": "v4",
-  "drawn": "2026-10-28",
-  "slot_note": "re-root after architecture 3's send-back",
-  "domain": "actuarial-science-insurance",
-  "subdomain": "claims-frequency-severity",
-  "niche": "a motor insurer's 2025 private-car claim frequency by sales region for a 2027 telematics pilot, the injury claims that claims-management companies notify months and years after the accident still to come",
+  "architecture": "v5",
+  "drawn": "2026-10-31",
+  "slot_note": "",
+  "domain": "marketing-consumer-research",
+  "subdomain": "segmentation-market-structure",
+  "client_domain": "marketing-consumer-research",
+  "niche": "a regional grocer's coffee aisle: which rival brand's buyer homes its own-label roastery's 2027 sampling targets, read from loyalty cards, online accounts and the acquirer's card settlement file",
   "objective": "descriptive-distribution",
-  "shape": "01",
-  "decision_type": "ranked_slate_under_cap",
-  "answer_unit": "set_of_items",
-  "answer": "Mersey and Pennine host the 2027 telematics pilot: 8.9 and 8.2 claims per 100 car-years in accident year 2025, Severn third at 8.0 (gap 0.2), Wessex 7.3, Fenland 5.9",
-  "answer_source": "submission.md block 1 and generator/figures.json (frequency, call, gap)",
+  "shape": "14",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "TBD at stage 3",
+  "answer_source": "task268/submission.md block 1; task268/generator/figures.json",
   "gap": [
-    "rule",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G16",
-    "G6",
-    "G13"
+    "G10",
+    "G2",
+    "G6"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "realised_outcome_roster",
-  "stump_strategy": "forecast_method_backtest",
-  "decisive_rule_filed": true,
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
+  "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every filed rule, builds each region's 2025 earned car-years and completes its 2025 claims still to be notified with the region's own development from the closed accident years, by head of claim, or by the claims system's notified-by field, names Mersey and Severn, because each of those developments carries the notifying mix of the years it was measured on, and Pennine's 2025 injury claims came through claims-management companies, which notify far later than solicitors, about three times as often as before; only the development split by the representative's firm type, built from the representatives register, reproduces accident year 2022 in every region as the reserving standard requires, and it puts Pennine second.",
-  "domain_test": "The deciding quantity is each region's ultimate claim count for accident year 2025, the claims notified and those incurred but not yet notified, per earned car-year, which the field develops from notified counts with report-lag factors on groups whose lags are stable and validates against closed accident years; here the lag is carried by who notifies the claim, a claims-management company notifying injury claims near the three-year limitation period, and a noun swap to another field loses the notification route, the limitation period and the accident-year development the call rests on.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:claim-count-development-by-notifying-channel",
+  "analyst_test": "With every file conformed and every rule read, the easy route takes each Rewards card as one buyer, as the chain's own supplier scorecards do, measures the share of each rival brand's 2026 buying cards that also bought Corcally's Roastery and files Nordhavn as the least overlapped rival, when Nordhavn's capsule buyers are mostly the second card in a home whose other member buys the Roastery on their own card.",
+  "domain_test": "The deciding quantity is the duplication of purchase between brands' buyer bases at the unit that buys for a household, the market-structure measure a segmentation analyst reads to place a brand among its rivals; with another field's nouns (patients and clinics) there is no household repertoire split between members' cards, which is what moves the overlap and the pick.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:buyer-home-assembled-from-cards-and-accounts-sharing-a-payment-card",
   "layer1": [
-    "the claims-system migration of 3 July 2023: legacy references and date-only notifications beside the new system's UTC timestamps in one column",
-    "the pricing mart's change of layout between the 2022 and 2023 sheets (region, product and cover codes and vehicle-days against names and car-years)",
-    "vans in the claims extract and the exposure workbook beside the private cars",
-    "open accident years 2023, 2024 and 2026 in the extract beside the years the call reads"
+    "till lines, online orders, the Rewards register and the acquirer's settlement file kept by four systems with four identifiers",
+    "a lost card's replacement issued under a new number",
+    "the stores' house card swiped for customers without a card of their own",
+    "settlement dated one or two banking days after the sale",
+    "brand names spelt three ways across the product master's SKUs",
+    "refunds as negative lines on a later transaction",
+    "online orders amended before their cut-off, each amendment a new version of the order",
+    "loose deli coffee rung through one generic code with the roaster only on the scale's label"
   ],
-  "stakeholder_role": "the motor portfolio actuary",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "per active unit per period",
+  "stakeholder_role": "customer insight lead for the coffee aisle at a regional grocery chain",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
   "spine": {
-    "file": "motor_claims_notified_2019_2026.csv",
-    "rows": 138245,
-    "entity": "one claim notification",
-    "grain": "claim: one claimant's claim under one head from one accident",
-    "source": "synthetic"
+    "file": "coffee_till_lines_2026.csv",
+    "rows": 90000,
+    "entity": "one coffee item line on one till transaction, with the Rewards card presented if any",
+    "grain": "transaction line",
+    "source": "synthetic (the chain's point-of-sale line export for the coffee aisle and the deli counter, calendar 2026)"
   },
   "forum": "line_manager_or_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "financial_institution",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "retailer_or_ecommerce",
   "world": {
-    "geography": "England and Wales",
-    "currency": "GBP",
-    "org_type": "motor insurer",
+    "geography": "Ireland (a fictional Midlands market town and its hinterland)",
+    "currency": "EUR",
+    "org_type": "a family-owned regional grocery chain with an own-label coffee range, a loyalty programme and online delivery",
     "invented_names": [
-      "Corriven Insurance",
-      "Mersey",
-      "Pennine",
-      "Wessex",
-      "Fenland",
-      "Severn"
+      "Corcally's",
+      "Corcally's Roastery",
+      "Corcally's Rewards",
+      "Drumsallagh",
+      "Ballinroe Merchant Services",
+      "Nordhavn",
+      "Rossa Gold",
+      "Halloran's",
+      "Bellvale",
+      "Cafetto",
+      "Westquay",
+      "Kinvara Hills"
     ],
     "people": [
-      "Carol Thorpe",
-      "Damian Warren",
-      "Iain Ali"
+      "Cal Monaghan",
+      "Alix Fennell",
+      "Katy Kinnegan"
     ]
   },
   "deliverables": [
-    "telematics_pilot_regions_2027.xlsx",
-    "telematics_pilot_regions_2027.pptx"
+    "roastery_sampling_2027.pptx",
+    "rival_home_overlap_2026.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting route, where the route is built by joining each report's representative to a register of firm types, because one route reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, by event kind or by the coarse reporter field under-counts that unit, and only the route split reproduces an earlier closed period that a past shift in another unit disturbed, as a filed back-test requires.",
-  "driver_concrete": "Each region's 2025 claim frequency counts the claims still to be notified, completed with report-lag factors by the notifying representative's firm type from the representatives register, because claims-management companies notify injury claims months and years late and Pennine's 2025 injury claims came through them about three times as often as before; Pennine's own past development, the head-of-claim split and the notified-by field each fail the reserving standard's back-test on accident year 2022, which a claims-management wave in Wessex disturbed, and only the firm-type split passes it.",
-  "stump": "The default path completes each region's 2025 claims still to be notified with the region's own development from the closed accident years, by head of claim or by the notified-by field, and names Mersey and Severn, because claims-management companies notify injury claims months and years after the accident and Pennine's 2025 injury claims came through them about three times as often as before; developed by the representative's firm type, the only split that reproduces accident year 2022 in every region, Pennine's 2025 frequency is the second highest.",
+  "question_form": "other",
+  "driver": "The buying unit is a group of member records that no key joins, linked only by a payment card they share in a separate settlement record; read record by record, the share of each rival's buyers who also buy the house offer is lowest for the rival bought mostly by a group's second member, whose partner buys the house offer on another record, while built from the linked groups the lowest share falls on a rival bought by one-member groups.",
+  "driver_concrete": "Homes are assembled from Rewards cards and online accounts that pay with the same bank-card token in Ballinroe's settlement file; card by card Nordhavn capsule buyers look least likely to buy Corcally's Roastery because their partners buy it on another card, while home by home the lowest overlap is Rossa Gold's, bought by one-person homes.",
+  "stump": "A competent analyst takes each Rewards card as one buyer, measures the share of each rival brand's 2026 buying cards that also bought Corcally's Roastery and names Nordhavn, where Nordhavn's capsule buyers are mostly a home's second card whose other member buys the Roastery; assembled from the cards and online accounts that share a payment card in the acquirer's settlement file, homes put Rossa Gold lowest and Nordhavn mid-table.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task194": "task194 v3 developed recent counts for a coding lag at all, measured from two vintages of one series; here every route develops the 2025 counts, and the decisive step is the reporting channel the lag lives in, whose mix shifted in one region, chosen by reproducing closed years",
-    "task127": "task127 v3 projected a bodily-injury paid reserve by restating its development at the latest settlement shares and was sent back because the reserving basis left the method open; here claim counts are developed for notification lag, the segment the lag lives in (the notifying channel) is chosen by reproducing closed accident years, and every reasonable channel development agrees",
-    "task145": "task145 re-converted only the own-denomination holders at the forward factors, each group's mix of holders estimated from the units seen in both periods; here a closed year's claims still to be notified are developed by notifying channel, whose lag holds within the channel while one region's channel mix moved",
-    "task160": "task160 timed a recurring wave by each group's lag behind the group it spreads from; here a closed year's late notifications are developed by the channel that carries the lag",
-    "task138": "task138 v1 rebuilt each unit's store at the forecast date from its replenishment record; here claim counts are developed for notification lag by the notifying channel",
-    "task446": "task446 v2 backed a base rate out of a screen's flag share through error rates that carry across years; here the quantity that carries across years is each notifying channel's report-lag pattern, and one region's channel mix moved",
-    "task457": "task457 v1 corrected each unit's own report by the understatement measured on the items its closed-period reports kept; here a unit's own past completion is the wrong route, because the lag lives in the notifying representative's firm type and one unit's mix of firm types moved",
-    "task185": "task185 converted readings between an old and a new measuring device sized at the value converted; here a closed year's claims still to be notified are completed by notifying route, selected by a filed back-test",
-    "task271": "task271 v4 carried a per-home claim rate to new towns from the model a filed hold-out selects, placing homes in supply zones by geometry; here no rate is carried to a new population: a closed year's own late notifications are completed by the notifying firm type, and the back-test is the same development re-run on a closed accident year",
-    "task80": "task80 dated a fixed-term status from the event that conferred it rather than from first operation; here claims still to be notified are completed by notifying route",
-    "task181": "task181's specimen architecture completed each area's arrivals by its own courier route against a pooled nowcast, the route fixed per area; here each region's own past development is the wrong route because the region's mix of notifying firm types moved, and the route is a firm type built from the representatives register and chosen by a filed back-test on a closed year"
+    "task126": "task126 splits one docket chain into applications by an examiner credit class in a production ledger; task268 assembles homes from several member records that share nothing but a payment card in a third system, and the decided quantity is a duplication of purchase, not a duration.",
+    "task114": "task114 builds a meeting from invitees matched to two badge systems to size rooms; task268 builds a buying home from cards and accounts paying with one bank card to read brand overlap.",
+    "task179": "task179 links a second agency's victim records by name and birth date to add a predictor; task268 links nothing to add a variable: it changes the counting unit from the card to the home.",
+    "task131": "task131 v1 reads a card-randomised offer's effect where a household's cards share the offer, with the membership on file as a key; task268 reads no experiment and has no household key: homes are assembled from cards and online accounts that pay with one bank card in the acquirer's settlement file, and the decided quantity is the duplication of purchase between brands' buyer homes.",
+    "task264": "task264 counts distinct members from events sampled in proportion to each member's activity (size bias); task268 samples nothing and counts the buying unit that several records make up."
   },
   "lineage": [
     {
@@ -176,8 +180,46 @@
       "stump_strategy": "population_selection",
       "driver": "The decisive quantity is the share of units still free of an event a fixed time after their start, from a record that loses sight of units once they leave its reach, where units leave far more often after their recorded state has worsened; treating each loss as ordinary censoring credits the departed with the survival of the units still followed, so each departed unit's survival has to be carried from the state it was in when lost, through the moves between states and the state-specific event rates the followed units show.",
       "fate": "spent 2026-10-28: the portal's determinism round failed it with both judges (charter 3.2 read as the deaths on file), and the re-judge after the WHAT repair sent it back: plain Kaplan-Meier a rule-compliant reading naming Fennick (Gate C), the mechanic classed single_conceptual_flip (Gate G); two corrections of one graded quantity"
+    },
+    {
+      "domain": "actuarial-science-insurance",
+      "subdomain": "claims-frequency-severity",
+      "objective": "descriptive-distribution",
+      "shape": "01",
+      "decision_type": "ranked_slate_under_cap",
+      "answer_unit": "set_of_items",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G16",
+        "G6",
+        "G13"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "forecast_method_backtest",
+      "role_family": "portfolio_manager",
+      "forum": "line_manager_or_team",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "financial_institution",
+      "driver": "The decisive quantity is the eventual count of events from a closed period, completed from those reported so far with lag factors taken per reporting route, where the route is built by joining each report's representative to a register of firm types, because one route reports far later than the others and one unit's mix shifted toward it; completing each unit with its own past lag pattern, by event kind or by the coarse reporter field under-counts that unit, and only the route split reproduces an earlier closed period that a past shift in another unit disturbed, as a filed back-test requires.",
+      "architecture": "v4 (a motor insurer's 2027 telematics pilot regions by accident-year 2025 claim frequency, the claims not yet notified developed by notifying route, the route built by joining each claim's representative to the representatives table)",
+      "drawn": "2026-10-28",
+      "fate": "spent 2026-10-31 on the learning loop's paper screen: the route split sits one join away (the notified-by field plus the representatives table) and development by notification channel is the field's own reserving refinement, so the decisive rung is a reflex; one portal determinism return on architecture 3 before it; shipped 2026-10-28 and superseded before a portal result on the author's instruction to rebuild the batch under the survivor anatomy"
     }
   ],
-  "notes": "",
-  "registered": "2026-10-28T22:57:51Z"
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "for",
+      "rounding opener": "put",
+      "deliverable set": "pptx+xlsx"
+    }
+  ],
+  "notes": "Architecture 5, re-root 2026-10-31 under the survivor anatomy (stumping 1.4); MCR has never carried a descriptive build. The dead architecture's prompt shell is in lineage_shells.",
+  "registered": "2026-10-31T16:14:11Z"
 }
