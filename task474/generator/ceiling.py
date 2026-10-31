@@ -1,36 +1,50 @@
-"""The pair ceiling on the cut pack: the cracker lands the call and runs the battery on the gate exports, merging
-each truck's overlapping transactions into stays as recorded; the mirror
-stops at the all-vehicle factors. Weights 38 / 7 / 55; the main block grades each designated link listed,
-no other link listed and the count; the asks are 24 figures (trucks and old engines for 4 quarters and 8 carriers)."""
+"""The ask layer's ceiling, measured on the cut pack: each response's ask figures recomputed from target/ with the
+handling that response applies, scored against the golden handling, and the pair priced on the planning weights (38
+for the call and its components, 7 for instruction-following, 55 for the asks).
+
+    python3 task474/generator/ceiling.py
+
+Rows: the cracker lands the call, runs the battery (Brindle's SAT rows only, Harrowgate's held records set aside and
+each sitting once, UK local dates) and executes every filed rule, but takes each board number as a candidate, so a
+candidate who re-registered after a lapse is a new candidate at the later sitting; the mirror stays on the first-time
+pass-rate rung on the call and handles the asks the same way, since they carry nothing from it; the full includer also
+ties board numbers sharing a surname, initials and date of birth (a stress row, not the gate). The paper's chart is
+banked by every response that draws it."""
 import os
 import sys
 
-import bundle as B
-import methods as M
-
-W_CALL, W_INSTR, W_ASK = 38.0, 7.0, 55.0
 HERE = os.path.dirname(os.path.abspath(__file__))
+TARGET = os.path.join(os.path.dirname(HERE), "target")
+sys.path.insert(0, HERE)
+import figs as F  # noqa: E402
+
+BANKED = 1
 
 
-def main(target=None):
-    target = target or os.path.join(os.path.dirname(HERE), "target")
-    g, m = M.designated(B.nox(target)), M.designated(B.nox(target, "classes"))
-    # the main block grades each designated link listed (len(g)), no other link listed (1) and the count (1)
-    keep = sum(k in m for k in g) + (not set(m) - set(g)) + (len(m) == len(g))
-    mirror_call = W_CALL * keep / (len(g) + 2.0)
-    gq, gcar = B.fleet_asks(target)
-    cq, ccar = B.fleet_asks(target, "vin")
-    n = 8 + 2 * len(gcar)
-    hit = sum(gq[q][i] == cq[q][i] for q in gq for i in (0, 1)) + \
-        sum(ccar.get(k, (None, None))[i] == gcar[k][i] for k in gcar for i in (0, 1))
-    ask = W_ASK * hit / n
-    cracker, mirror = W_CALL + W_INSTR + ask, mirror_call + W_INSTR + ask
-    print("golden %s; mirror %s" % (g, m))
-    print("mirror keeps %d of %d main figures; the asks' careful path keeps %d of %d" % (keep, len(g) + 2, hit, n))
-    print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (
-        cracker, mirror, (cracker + mirror) / 2, 100.0 * hit / n))
-    return (cracker + mirror) / 2
+def figures(target, identity):
+    people, _ = F.load(target, identity=identity)
+    a = F.ask_a(people)
+    b = F.ask_b2(people)
+    return [v for k in sorted(a) for v in a[k]] + [v for k in sorted(b) for v in b[k]]
+
+
+def main(target=TARGET):
+    gold = figures(target, "name_dob")
+    n = len(gold) + BANKED
+    crack = sum(x == y for x, y in zip(figures(target, "board"), gold)) + BANKED
+    full = sum(x == y for x, y in zip(figures(target, "name_dob"), gold)) + BANKED
+    lc = crack / n
+    c = 38 + 7 + 55 * lc
+    s = 5 + 7 + 55 * lc
+    print("cracker (lands the call, battery, filed rules; each board number a candidate): keeps %d of %d ask "
+          "criteria, response %.1f" % (crack, n, c))
+    print("mirror (the first-time pass-rate rung on the call, same ask handling): keeps %d of %d, response %.1f"
+          % (crack, n, s))
+    print("full includer (board numbers tied by name and date of birth, stress row): keeps %d of %d, response %.1f"
+          % (full, n, 38 + 7 + 55 * full / n))
+    print("pair ceiling %.1f; mirror leakage %.1f per cent of the ask weight" % ((c + s) / 2, 100 * lc))
+    return (c + s) / 2, 100 * lc
 
 
 if __name__ == "__main__":
-    sys.exit(0 if main() <= 40.0 else 1)
+    main()

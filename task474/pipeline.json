@@ -1,26 +1,26 @@
 {
  "task": "task474",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
  "stump": "the raw pass mark on the new 60-question theory paper that holds the old paper's standard of 65, read through the candidates who failed the old paper and sat the new one, their second attempt set against the retest gain the old paper's own retakes measure, matched on the first result (default: the 2025 first-time pass rate held on the 2026 first-timers, a cohort changed by experienced gas engineers)",
  "architecture": 7,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW on target.zip 1fc4d13f, every line ruled in the design note's Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-31 (architecture 7)",
-  "heart": "",
-  "surface": ""
+  "heart": "PASS 2026-10-31",
+  "surface": "see the PAUSED commit message"
  },
  "judge": {
   "verdict": "",
@@ -35,9 +35,10 @@
    "commit": "DRAWN (task474) architecture 7"
   }
  ],
- "resume": "stage 2: design the ladder and the asks, then the generator (stage 3)",
+ "resume": "stage 4: leak reader and judge from the main thread (a fork cannot spawn them). Rebuild with python3 task474/generator/make.py (byte-identical, target.zip sha256 1fc4d13fdf97b07d3aa11df9dffc59f1815840cfd79f01524671502ee4f00b4d), spawn the leak reader from the brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task474_stage4_leak_brief.md on the scratch copy /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task474/ and the determinism-judge agent together in the background, fix every finding in one generator pass, then stage 5 (ledger row, card answer, SHIPPED commit with target.zip and golden/ force-added).",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "seed ET31's number; architecture 7 in a fresh world (an awarding body's pass mark across a test-vendor change)"
+ "source_note": "seed ET31's number; architecture 7 in a fresh world (an awarding body's pass mark across a test-vendor change)",
+ "zip_sha256_16": "1fc4d13fdf97b07d"
 }

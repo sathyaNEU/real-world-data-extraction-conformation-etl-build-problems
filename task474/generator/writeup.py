@@ -1,82 +1,63 @@
-"""submission.md, drafted from generator/figures.json: every figure the write-up states comes from there."""
-import json
-
+"""submission.md, written from figures.json (every figure emitted, none typed)."""
+import golden as GD
+import pack as K
 import world as W
 
-TAGS = ("**Domain:** Physical & Environmental Sciences (emissions inventory: an on-road NOx inventory by roadway link, "
-        "each link's vehicle-miles by class expanded from short classification counts with continuous count station "
-        "factors).\n"
-        "**Analytical objective:** Data Extraction & Conformation (ETL).")
-WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
-         10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen"}
+MONTHS = GD.MONTHS
 
 
-def fmt(n):
-    return "{:,}".format(int(n))
-
-
-def _join(xs):
-    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
-
-
-def write(fig_path, out_path):
-    f = json.load(open(fig_path, encoding="utf-8"))
-    F = W.FILES
-    des, sec, a = f["call"], f["sections"], f["asks"]
-    L = ["## Tags", "", TAGS, "",
-         "## 1. Final Recommendation", "",
-         "**Designate %s of the %s port roadway links for the 2027 Air Corridor Program: %s.**" % (
-             WORDS[f["n_call"]], WORDS[f["n_links"]], _join(des)),
-         "Each carried %s tonnes or more of on-road NOx per mile from October 2025 to September 2026. Every link's "
-         "two-weekday count is expanded to the year class by class with the classifying stations' factors, except "
-         "the combination trucks on the three terminal access roads (%s), which are the terminals' own drays and "
-         "follow the vessel calls: each count is carried to the year by its terminal's gate record, the terminal's "
-         "average daily trucks over the year against its trucks on the count days. Expanded with the stations' "
-         "factors, a road counted in a busy week or a quiet one keeps that week's level, and the designation would "
-         "be %s." % (f["line"], _join(sorted(f["access"])), _join(f["textbook_route"])),
-         "",
-         "## 2. Critical Components", "",
-         "1. Links at or above %s tonnes of NOx per mile: **%d** of %d." % (f["line"], f["n_call"], f["n_links"]),
-         "",
-         "## 3. Step-by-Step Solution", "",
-         "1. Took every link in %s (rule %s) and its two count days, both directions, from the programme and site the "
-         "register names: %s (hourly), %s (15-minute sheets, one per site) and %s (hourly by lane), as passenger "
-         "(1-3), single-unit (4-7) and combination (8-13) daily totals." % (F["links"], sec["links"], F["dot"],
-                                                                            F["county"], F["consultant"]),
-         "2. From %s, each classifying station in %s, both directions summed by date and class group, days with no "
-         "record left out." % (F["stations"], F["register"]),
-         "3. For each class group, each classifying station's factor for each month and day of week: its average "
-         "daily volume over the year divided by its average volume on that month's days of that weekday; the "
-         "group's factor the average over the four classifying stations.",
-         "4. Each link's annual average daily volume for each class group: the mean over its two count days of the "
-         "day's count times the class group's factor for that day's month and weekday; for the combination trucks on "
-         "the links %s names as terminal access roads, the mean over the count days of the day's count times the "
-         "terminal's average daily trucks_in over the 365 days in %s over its trucks_in that day." % (F["links"],
-                                                                                                    F["gates"]),
-         "5. NOx per mile: each class group's annual average daily volume times 365 days times its rate in %s, summed "
-         "over the groups, in tonnes (rule %s); designated every link at %s or more (rule %s): %s." % (
-             F["rates"], sec["nox"], f["line"], sec["line"], _join(des)),
-         "6. For the fleet sizing (rule %s), from %s: on each quarter's last day, the registrations in force "
-         "(registered_from on or before the day, registered_to blank or on or after it), one truck per vin (an O or "
-         "I, which a VIN never holds, read as 0 or 1) at its latest registration; each truck's engine model year "
-         "read from its engine_family in %s (model_year is the truck's own); counted, with those whose engines are "
-         "of model year 2009 or older, by quarter and, on 30 September 2026, by motor carrier." % (
-             sec["fleet"], F["fleet"], F["certs"]),
-         "",
-         "## 4. Deliverable Answers", "",
-         "### %s" % W.GOLDEN["workbook"], "",
-         "1. The designated links: %s (%s of %s)." % (_join(des), WORDS[f["n_call"]], WORDS[f["n_links"]])]
-    L.append("2. Drayage trucks registered on each quarter's last day, and those with engines of model year 2009 or "
-             "older:")
-    for q, d in zip(range(1, 5), ("31 December 2025", "31 March 2026", "30 June 2026", "30 September 2026")):
-        L.append("   - %s: %s trucks; %s of model year 2009 or older" % (d, fmt(a["trucks"]["Q%d" % q]),
-                                                                          fmt(a["old"]["Q%d" % q])))
-    L.append("3. On 30 September 2026, by motor carrier:")
-    for c in sorted(a["carrier_trucks"]):
-        L.append("   - %s: %s trucks; %s of model year 2009 or older" % (c, fmt(a["carrier_trucks"][c]),
-                                                                          fmt(a["carrier_old"][c])))
-    L += ["", "### %s" % W.GOLDEN["memo"], "",
-          "1. The designated links: %s." % _join(des),
-          "2. Bar chart of every link's on-road NOx per mile, October 2025 to September 2026, against the %s tonne "
-          "line, the designated links' bars in orange." % f["line"]]
-    open(out_path, "w", encoding="utf-8").write("\n".join(L) + "\n")
+def write(path, fig):
+    c, a, b, lad = fig["call"], fig["ask_a"], fig["ask_b"], fig["ladder"]
+    L = []
+    L += ["## Tags", "",
+          "> **Domain:** Education & Learning Sciences (item response theory and test equating).",
+          "> **Analytical objective:** Data Extraction & Conformation (ETL).", ""]
+    L += ["## 1. Final Recommendation", "",
+          "**Set the pass mark on Harrowgate Testing's theory paper at %d out of 60.** It holds the standard of 65 on "
+          "Brindle Assessment's scale under AP-3, read through the candidates who failed Brindle's paper and sat "
+          "Harrowgate's next, against Brindle's own resits matched on the first score. Not %d, the mark that carries "
+          "the 2025 first-time pass rate onto the 2026 first-time candidates, a stronger cohort." % (
+              c["pass_mark"], lad["same months a year earlier"]), ""]
+    L += ["## 2. Critical Components", "",
+          "1. The candidates measured on both papers are the %s who failed their one Brindle sitting and sat "
+          "Harrowgate's paper next; a second sitting reads higher than a first on any paper." % "{:,}".format(c["n_cross_switch"]),
+          "2. Brindle's resits of first-sitting fails in 2021 to 2025, matched on the first score, put **%.1f per "
+          "cent** of those candidates at 65 or more on a second Brindle sitting." % (100 * c["p_equivalent"]),
+          "3. On Harrowgate's paper %.1f per cent of them reach %d and %.1f per cent reach %d, so **%d** is the "
+          "lowest raw mark no larger share reaches." % (100 * c["share_below_mark"], c["pass_mark"] - 1,
+                                                       100 * c["share_at_mark"], c["pass_mark"], c["pass_mark"]),
+          ""]
+    L += ["## 3. Step-by-Step Solution", "",
+          "1. Tied every sitting to a person through %s (Brindle and Harrowgate candidate numbers to board numbers; "
+          "board numbers sharing surname, initials and date of birth as one person), kept Brindle's SAT rows and "
+          "Harrowgate's cleared and released marks once per sitting_ref, dated by the UK local date." % K.FILES["register"],
+          "2. Took the candidates whose only Brindle sitting was a fail (under 65) and whose next sitting was "
+          "Harrowgate's paper, with their first scaled score and their raw mark.",
+          "3. Took every Brindle fail at a first sitting from 2021 to 2025 followed by a second Brindle sitting, and "
+          "for each first score the share scoring 65 or more at the second.",
+          "4. Averaged that share over the cross-switch candidates' first scores (AP-3 section 2's equivalent group): "
+          "%.1f per cent." % (100 * c["p_equivalent"]),
+          "5. Set the pass mark at the lowest raw mark the cross-switch candidates reach in no larger share: %d." % c["pass_mark"],
+          "6. Counted, on the same people, each 2026 month's first-time and resitting candidates and each year's "
+          "first sittings of Brindle's paper with their passes (a person's first sat sitting on either paper).",
+          "7. Recommended %d out of 60." % c["pass_mark"], ""]
+    L += ["## 4. Deliverable Answers", "", "### %s" % GD.PDF, "",
+          "1. Recommendation: set the pass mark on Harrowgate's theory paper at %d out of 60." % c["pass_mark"],
+          "2. Chart: the share of the candidates who sat Harrowgate's paper reaching each raw mark, with the pass "
+          "mark of %d drawn on it." % c["pass_mark"],
+          "3. Candidates sitting the theory paper for the first time, and candidates resitting it, in each month of "
+          "2026 to September, whole numbers:"]
+    for i in range(9):
+        k = "2026-%02d" % (i + 1)
+        L.append("   - %s 2026: %s first time, %s resitting" % (MONTHS[i], "{:,}".format(a[k]["first_time"]),
+                                                                  "{:,}".format(a[k]["resitting"])))
+    L.append("4. Candidates who first sat Brindle's paper in each year from 2021 to 2025, and how many of them "
+             "passed at that sitting, whole numbers:")
+    for y, v in b.items():
+        L.append("   - %s: %s first sat, %s passed" % (y, "{:,}".format(v["first_time"]), "{:,}".format(v["passed"])))
+    L += ["", "### %s" % GD.CSV, "",
+          "1. Every 2026 sitting of the theory paper to 30 September, one row each: the person's board number, the "
+          "board number at the sitting, the UK date, the provider, the scale, the mark, the attempt, whether it was "
+          "the first sitting and the result (65 on Brindle's scale, %d on Harrowgate's)." % c["pass_mark"], ""]
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(L))
