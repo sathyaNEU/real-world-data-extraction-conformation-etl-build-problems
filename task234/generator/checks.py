@@ -333,9 +333,10 @@ def run(target, golden, o, X):
     ok(not log.change.str.contains(r"time|clock|UTC|zone|Wexmoor|Westmarch|lost|drop", case=False).any(),
        "change log says nothing of receipt clocks or of either laboratory")
     ok(D["res"].message_id.is_unique, "message ids unique")
-    dic = open(os.path.join(target, "DATA_DICTIONARY.md")).read()
-    rline = next(l for l in dic.splitlines() if l.startswith("| received |"))
-    ok(not re.search(r"UTC|county|local|time zone|Chicago", rline), "the dictionary states no zone for the receipt time")
+    head = open(os.path.join(target, "elr_respiratory_results_extract_2027-01-25.csv")).readline().strip().split(",")
+    ok("released_utc" in head and "specimen_collected_utc" in head and "received" in head,
+       "the extract names its two UTC columns and the receipt column carries the broker's stamp with no zone (%s)" % head)
+    ok(not [f for f in os.listdir(target) if f.endswith(".md")], "no file describing the data ships (no dictionary or readme)")
     for f in ("submission.md",):
         p = os.path.join(os.path.dirname(target), f)
         if os.path.exists(p):

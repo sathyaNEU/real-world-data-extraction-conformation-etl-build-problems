@@ -8,19 +8,19 @@
   "as_of": "2027-01-25",
   "deliverables": [
     "respiratory_feed_escalations_2027-W03.xlsx",
-    "respiratory_feed_completeness_2027-W03.png"
+    "respiratory_feed_completeness_2027-W03.svg"
   ],
   "distractor_files": [
     "ed_syndromic_ili_weekly.csv",
     "state_respiratory_positivity_by_region.csv",
-    "county_respiratory_admissions_weekly.csv"
+    "county_respiratory_admissions_weekly.csv",
+    "county_influenza_vaccination_coverage_2026-27.csv"
   ],
   "field_terms": [],
   "input_gates": {
-    "files": 11,
+    "files": 10,
     "formats": [
       "csv",
-      "md",
       "pdf",
       "xlsx"
     ],
@@ -41,7 +41,7 @@
     {
       "path": "elr_respiratory_results_extract_2027-01-25.csv",
       "format": "csv",
-      "bytes": 30832585,
+      "bytes": 30832593,
       "rows": 211361,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
@@ -93,24 +93,6 @@
       "license": "CC0-1.0 (original work)"
     },
     {
-      "path": "DATA_DICTIONARY.md",
-      "format": "md",
-      "bytes": 2898,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
-      "path": "README.md",
-      "format": "md",
-      "bytes": 986,
-      "rows": null,
-      "source": "Constructed (seeded generator)",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work)"
-    },
-    {
       "path": "ed_syndromic_ili_weekly.csv",
       "format": "csv",
       "bytes": 20200,
@@ -133,6 +115,15 @@
       "format": "csv",
       "bytes": 14820,
       "rows": 672,
+      "source": "Constructed (seeded generator)",
+      "date": "2027-01-25",
+      "license": "CC0-1.0 (original work)"
+    },
+    {
+      "path": "county_influenza_vaccination_coverage_2026-27.csv",
+      "format": "csv",
+      "bytes": 4322,
+      "rows": 95,
       "source": "Constructed (seeded generator)",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work)"

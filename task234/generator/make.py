@@ -46,7 +46,7 @@ def metadata(target):
         "prompt_shape": "07: a grid of cells, ten laboratories by influenza, RSV and SARS-CoV-2, each of 29 result streams "
                         "escalated or not, with each stream's week-2 completeness and each laboratory's week-3 specimens",
         "as_of": "2027-01-25",
-        "deliverables": [GD.XLSX, GD.PNG],
+        "deliverables": [GD.XLSX, GD.SVG],
         "distractor_files": [B.FILES[k] for k in B.DISTRACTORS],
         "field_terms": [],
         "input_gates": {"files": len(files), "formats": sorted({x["format"] for x in files}),
