@@ -562,8 +562,12 @@ def sweep_task_metadata(task, rep, vocab, nums, prompt_text=""):
             strings.append((path.lstrip("."), x))
     walk(meta, "")
     safe_keys = ("distractor", "field_terms", "stated_inputs", "licen", "source", "url", "date", "provenance")
+    # Keys that exist to carry the answer or the inputs for the portal's own fields are not prose about the task.
+    answer_keys = ("task", "task_id", "stated_inputs", "committed_answer", "answer", "answers", "golden", "figures")
     for path, text in strings:
         low = text.lower()
+        if re.split(r"[.\[]", path)[0].lower() in answer_keys:
+            continue
         if any(k in path.lower() for k in ("distractor",)) and len(text) < 200:
             continue  # the distractors are named here by design
         for n in sorted(nums, key=len, reverse=True):
