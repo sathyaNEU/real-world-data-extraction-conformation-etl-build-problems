@@ -158,6 +158,7 @@ half of a reported figure; 7 a file the step alone reads.
 | SF20 | the depot of a pre-advice | the replacing depot for a replaced code from the day it opened | the code as the shipper sent it | moves Krakow's two rows | TDS-4 4.3 and the register's Depots sheet |
 | SF21 | parcels in ask B | pieces | consignments | moves every contract depot | TDS-4 4.1 |
 | SF22 | never picked up | never collected from the shipper | no pickup scan | moves every depot | TDS-4 4.4; a parcel sorted, unloaded or delivered was collected |
+| SF23 | the courier events in the depot column | every record of the month's extract (events dated 30 September to 3 November) | the events dated in October only | moves six depots | the prompt (the extract's courier events) and TDS-4 3.1 |
 
 ## Ladder
 

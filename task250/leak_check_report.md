@@ -31,3 +31,29 @@ Stump terms swept: record, parcel, pruszkow, strykow, sorted, unscanned, decisiv
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+
+## Solver's-eye read
+
+Architecture 3, read 1 on target.zip 1b8dcbc7 and read 2 after the prompt's courier-event pin (isolated Sonnet
+readers, a fresh copy of prompt.txt and target/ only each time).
+
+1. Decisive step: no sentence names it; the nearest is TDS-4 2.1 (a month's parcels are those the delivery depots
+   unloaded on its mornings, a hub's those it sorted the night before), which files the population, not which hub
+   sorted a parcel with no sort event.
+2. Ranking file: none; the sorter availability file carries downtime minutes only and the claims no hub verdict.
+3. Helping file: none; the sort plan and the network register are the reference data a hub analyst works from, the
+   request email a cover note.
+4. Answer figure or name: none; the standard's 1.00 per cent tolerance only.
+5. Population sentences: TDS-4 2.1 to 2.3 (unloaded parcels by sorting hub, a missed scan a parcel with no sort
+   event, the alert above 1.00 per cent); 3.1 and 3.2 for the courier events; 4.1 to 4.4 for the pre-advices.
+6. What decides: read 1, the analytical choice of the unit and its denominator, the population rebuilt across
+   systems; read 2 put it nearest rule application with the sort plan's mapping. Ruled analytical: the sort plan is
+   the easy route the record contradicts (Strykow sorted Pruszkow's overflow), and only the unloading each parcel
+   came off at its depot places it; both judge passes read Gate H as analytical.
+
+Sweep lines: the standard's 1.00 per cent is its own tolerance; the sort plan's December dates are its planned window
+ends; both harmless. Read 2 found the phrase "the extract's courier events" a natural request (the email names the
+October extract; "courier event" is TDS-4's own term).
+
+Realism: nothing generated-looking; the register's uniform reader type and door pairs read as one vendor's estate.

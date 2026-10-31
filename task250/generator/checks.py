@@ -309,6 +309,8 @@ def run(target, w, fig, golden):
     # SF17 to SF22
     cp = GD.sent_twice(d["courier"], d["handhelds"])
     ok(len(cp) == sum(x["sent_twice"] for x in fig["depots"]), "SF17 events equal records")
+    oct_only = cp[cp["event_time"].str[:7] == "2026-10"] if hasattr(cp, "columns") else [x for x in cp if x["event_time"][:7] == "2026-10"]
+    ok(len(oct_only) != len(cp), "SF23 the extract's events, not October's alone (the October-only count moves the column)")
     hh_dep = dict(zip(d["handhelds"]["device_id"], d["handhelds"]["depot_code"]))
     alt = collections.Counter(hh_dep[x] for x in cp["device_id"])
     ok(alt["D-KRK1"] == 0 and alt["D-KRK3"] > A["golden"]["D-KRK3"], "SF18 the register's depot moves Krakow")
