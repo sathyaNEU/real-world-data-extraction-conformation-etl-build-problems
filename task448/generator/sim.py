@@ -319,6 +319,16 @@ def two_county(M, LX):
     pool = M[(M.lender == "N3") & M.rural & (M.close >= dt.date(2026, 1, 1)) & M.captured & (M.county == "Marion")]
     if len(pool):
         M.at[pool.index.values[0], "land_county"] = "McPherson"
+    # the farmsteads whose land runs across the Saline, Marion and McPherson lines: Eisenbrandt's Dickinson county
+    # farms reaching into Saline and Marion, Stueckemann's Rice county farms reaching into McPherson
+    for lid, house, land, k in (("N5", "Dickinson", "Saline", 5), ("N5", "Dickinson", "Marion", 3),
+                                ("N7", "Rice", "McPherson", 3), ("N3", "Marion", "Dickinson", 2)):
+        rng = stream("dup2", lid, land)
+        pool = M[(M.lender == lid) & M.rural & M.close.map(lambda d: 2024 <= d.year <= 2025) & M.captured &
+                 (M.county == house) & (M.land_county == "")]
+        pick = pool.index.values[rng.choice(len(pool), size=min(k, len(pool)), replace=False)]
+        for i in sorted(pick):
+            M.at[i, "land_county"] = land
     return M
 
 

@@ -21,10 +21,9 @@ SOURCES = {
     P.FILES["shortlist"]: "the board's twelve-lender shortlist",
     P.FILES["agg2023"]: "HMDA 2023 originations by Kansas county, purpose and loan type",
     P.FILES["education"]: "homebuyer education completions by month, county and class format",
-    P.FILES["manifest"]: "the research desk's export manifest",
+    P.FILES["codes"]: "the FFIEC's published values for the coded HMDA fields",
     DC.GUIDELINES: "Rural Down-Payment Assistance Program guidelines, 2027",
     DC.LAYOUT: "the vendor's file layout guide, versions 3 and 4",
-    DC.DICTIONARY: "the research desk's field dictionary",
 }
 
 
@@ -45,14 +44,12 @@ def write(target, out_path):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task448",
-        "title": "Which five of twelve shortlisted lenders a Kansas homeownership nonprofit recruits first for its 2027 "
-                 "rural down-payment program, ranked on the home-purchase mortgages each made in eight non-metropolitan "
-                 "counties in 2024 and 2025, counting the local banks and credit unions HMDA does not cover",
+        "title": "The lenders a Kansas homeownership nonprofit recruits first for its 2027 rural down-payment "
+                 "program, ranked on the home-purchase mortgages each made in the service area in 2024 and 2025",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "census-register-administrative-data-quality (completing an administrative register that misses "
-                     "whole producers from a second, incomplete list)",
+        "subdomain": "census-register-administrative-data-quality",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "01 (ranked list under a cap): the five of twelve, in order, with counts and the sixth",
+        "prompt_shape": "01 (ranked list under a cap): the first lenders to recruit, in order, with counts and the next",
         "as_of": "2026-10-09",
         "deliverables": ["rural_lender_recruitment_2027.xlsx", "rural_lender_recruitment_2027.pptx"],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],

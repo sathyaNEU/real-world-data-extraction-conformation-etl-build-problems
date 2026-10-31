@@ -114,12 +114,12 @@
  "years": "2024 and 2025",
  "program_year_span": "1 July 2025 to 30 June 2026",
  "stack": {
-  "stacked": "3,770",
-  "closed_2024_2025": "2,628",
+  "stacked": "3,782",
+  "closed_2024_2025": "2,640",
   "rerecordings": "17",
   "quitclaim_pairings": "81",
   "second_mortgages": "10",
-  "land_only_records": "10",
+  "land_only_records": "22",
   "seller_notes": "37",
   "lender_mortgages": "2,473",
   "nonreporters": {
@@ -133,11 +133,11 @@
     "mortgage": "121"
    },
    "Eisenbrandt State Bank": {
-    "rows": "51",
+    "rows": "58",
     "rerecord": "1",
     "qcd": "1",
     "second": "0",
-    "land_row": "2",
+    "land_row": "9",
     "seller_note": "0",
     "mortgage": "47"
    },
@@ -151,11 +151,11 @@
     "mortgage": "80"
    },
    "Heidebrecht State Bank": {
-    "rows": "128",
+    "rows": "130",
     "rerecord": "1",
     "qcd": "43",
     "second": "0",
-    "land_row": "2",
+    "land_row": "4",
     "seller_note": "0",
     "mortgage": "82"
    },

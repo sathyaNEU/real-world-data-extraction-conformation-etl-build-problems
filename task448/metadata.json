@@ -1,10 +1,10 @@
 {
   "task": "task448",
-  "title": "Which five of twelve shortlisted lenders a Kansas homeownership nonprofit recruits first for its 2027 rural down-payment program, ranked on the home-purchase mortgages each made in eight non-metropolitan counties in 2024 and 2025, counting the local banks and credit unions HMDA does not cover",
+  "title": "The lenders a Kansas homeownership nonprofit recruits first for its 2027 rural down-payment program, ranked on the home-purchase mortgages each made in the service area in 2024 and 2025",
   "domain": "Survey Research & Official Statistics",
-  "subdomain": "census-register-administrative-data-quality (completing an administrative register that misses whole producers from a second, incomplete list)",
+  "subdomain": "census-register-administrative-data-quality",
   "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "01 (ranked list under a cap): the five of twelve, in order, with counts and the sixth",
+  "prompt_shape": "01 (ranked list under a cap): the first lenders to recruit, in order, with counts and the next",
   "as_of": "2026-10-09",
   "deliverables": [
     "rural_lender_recruitment_2027.xlsx",
@@ -15,7 +15,7 @@
     "homebuyer_education_completions_2024_2026.csv"
   ],
   "input_gates": {
-    "files": 15,
+    "files": 14,
     "formats": [
       "csv",
       "pdf",
@@ -37,29 +37,20 @@
   "generator": "task448/generator/build.py",
   "files": [
     {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 2506,
-      "rows": 14,
-      "source": "Constructed: the research desk's export manifest",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "field_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 11772,
-      "rows": null,
-      "source": "Constructed: the research desk's field dictionary",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "hmda_2023_county_summary_ks.csv",
       "format": "csv",
       "bytes": 111168,
       "rows": 1872,
       "source": "Constructed: HMDA 2023 originations by Kansas county, purpose and loan type",
+      "date": "2026-10-09",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "hmda_lar_code_values.csv",
+      "format": "csv",
+      "bytes": 3564,
+      "rows": 83,
+      "source": "Constructed: the FFIEC's published values for the coded HMDA fields",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -111,7 +102,7 @@
     {
       "path": "rural_dpa_program_guidelines_2027.pdf",
       "format": "pdf",
-      "bytes": 67305,
+      "bytes": 67364,
       "rows": null,
       "source": "Constructed: Rural Down-Payment Assistance Program guidelines, 2027",
       "date": "2026-10-09",
@@ -138,8 +129,8 @@
     {
       "path": "venridge_pmm_ks8_2024.txt",
       "format": "txt",
-      "bytes": 403042,
-      "rows": 1283,
+      "bytes": 403279,
+      "rows": 1284,
       "source": "Constructed: county recorder vendor's purchase-money mortgage file, eight counties, recordings of 2024",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -147,8 +138,8 @@
     {
       "path": "venridge_pmm_ks8_2025.txt",
       "format": "txt",
-      "bytes": 427320,
-      "rows": 1361,
+      "bytes": 429721,
+      "rows": 1371,
       "source": "Constructed: county recorder vendor's purchase-money mortgage file, eight counties, recordings of 2025",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -156,8 +147,8 @@
     {
       "path": "venridge_pmm_ks8_2026ytd.txt",
       "format": "txt",
-      "bytes": 357565,
-      "rows": 1126,
+      "bytes": 357783,
+      "rows": 1127,
       "source": "Constructed: county recorder vendor's purchase-money mortgage file, recordings of January to August 2026",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work, constructed for this task)"

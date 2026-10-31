@@ -1,5 +1,4 @@
-"""The pack's documents: the 2027 rural program guidelines (PDF), the recorder vendor's layout guide (PDF) and the
-research desk's field dictionary (XLSX)."""
+"""The pack's documents: the 2027 rural program guidelines (PDF) and the recorder vendor's layout guide (PDF)."""
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -16,7 +15,6 @@ import world as W   # noqa: E402
 
 GUIDELINES = "rural_dpa_program_guidelines_2027.pdf"
 LAYOUT = "venridge_pmm_layout_guide_v4.pdf"
-DICTIONARY = "field_dictionary.xlsx"
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
 pdfmetrics.registerFont(TTFont("LiberationSerif", FONT_DIR + "LiberationSerif-Regular.ttf"))
@@ -102,7 +100,8 @@ def write_guidelines(path):
     s.append(Paragraph("6. Program year and reporting", G_H2))
     N("6.1", "The program year runs from 1 July to 30 June.")
     N("6.2", "Staff report reservations, assistance funded and home-purchase lending in the service area to the board "
-             "by program year and by county.")
+             "by program year and by county, each home in the county where it stands (2.2), whatever county a "
+             "lender's HMDA report gives for it.")
     s.append(Paragraph("7. Definitions", G_H2))
     N("7.1", "<i>Home</i>: a dwelling of one to four units, site-built or manufactured, on land in the service area.")
     N("7.2", "<i>Mortgage lender</i>: a bank, savings institution, credit union or licensed mortgage company. A seller "
@@ -195,116 +194,3 @@ def write_layout(path):
     doc.build(s, onFirstPage=_vframe, onLaterPages=_vframe)
 
 
-HMDA_FIELDS = [
-    ("activity_year", "Calendar year of the action taken"), ("lei", "Legal entity identifier of the reporting institution"),
-    ("derived_msa-md", "MSA or metropolitan division of the property; 99999 outside any"),
-    ("state_code", "State of the property"), ("county_code", "Five-digit FIPS code of the county the reporting institution's geocoding assigned to the property address"),
-    ("census_tract", "Eleven-digit census tract of the property"),
-    ("conforming_loan_limit", "C conforming, NC nonconforming, U undetermined, NA"),
-    ("derived_loan_product_type", "Loan type and lien status"),
-    ("derived_dwelling_category", "Construction method and number of units"),
-    ("derived_ethnicity", "Derived ethnicity of applicants"), ("derived_race", "Derived race of applicants"),
-    ("derived_sex", "Derived sex of applicants"),
-    ("action_taken", "1 loan originated; 2 approved, not accepted; 3 denied; 4 withdrawn; 5 closed for incompleteness; "
-                     "6 purchased loan; 7 preapproval request denied; 8 preapproval request approved, not accepted"),
-    ("purchaser_type", "Type of entity that bought the loan in the year; 0 not sold"),
-    ("preapproval", "1 requested, 2 not requested"), ("loan_type", "1 conventional, 2 FHA, 3 VA, 4 USDA RHS or FSA"),
-    ("loan_purpose", "1 home purchase, 2 home improvement, 31 refinancing, 32 cash-out refinancing, 4 other, 5 NA"),
-    ("lien_status", "1 first lien, 2 subordinate lien"),
-    ("reverse_mortgage", "1 reverse mortgage, 2 not, 1111 exempt"),
-    ("open-end_line_of_credit", "1 open-end, 2 not, 1111 exempt"),
-    ("business_or_commercial_purpose", "1 primarily business or commercial, 2 not, 1111 exempt"),
-    ("loan_amount", "Amount, at the midpoint of its $10,000 interval"),
-    ("combined_loan_to_value_ratio", "Combined loan-to-value ratio, per cent"),
-    ("interest_rate", "Interest rate, per cent"), ("rate_spread", "Spread over the average prime offer rate"),
-    ("hoepa_status", "1 high-cost, 2 not high-cost, 3 not applicable"),
-    ("total_loan_costs", "Total loan costs, dollars"), ("origination_charges", "Total origination charges, dollars"),
-    ("loan_term", "Months"), ("property_value", "Value relied on, at the midpoint of its $10,000 interval"),
-    ("construction_method", "1 site-built, 2 manufactured home"),
-    ("occupancy_type", "1 principal residence, 2 second residence, 3 investment property"),
-    ("total_units", "Dwelling units"), ("income", "Gross annual income relied on, thousands of dollars"),
-    ("debt_to_income_ratio", "Debt-to-income ratio, banded"), ("applicant_age", "Age of the applicant, banded"),
-    ("submission_of_application", "1 submitted directly to the institution, 2 not, 3 not applicable, 1111 exempt"),
-    ("initially_payable_to_institution", "1 initially payable to the institution, 2 not, 3 not applicable, 1111 exempt"),
-    ("aus-1", "First automated underwriting system used; 6 not applicable, 1111 exempt"),
-    ("denial_reason-1", "First reason for denial; 10 not applicable, 1111 exempt"),
-    ("tract_population", "Census tract population"),
-    ("tract_minority_population_percent", "Minority share of the tract population, per cent"),
-    ("ffiec_msa_md_median_family_income", "FFIEC median family income of the MSA or non-MSA area"),
-    ("tract_to_msa_income_percentage", "Tract median family income against the area's, per cent"),
-    ("tract_owner_occupied_units", "Owner-occupied units in the tract"),
-    ("tract_one_to_four_family_homes", "One-to-four family homes in the tract"),
-    ("tract_median_age_of_housing_units", "Median age of the tract's housing units, years")]
-PANEL_FIELDS = [("activity_year", "Reporting year"), ("lei", "Legal entity identifier"),
-                ("agency_code", "1 OCC, 2 FRS, 3 FDIC, 5 NCUA, 7 HUD, 9 CFPB"), ("id_rssd", "Federal Reserve RSSD ID; -1 none"),
-                ("respondent_name", "Institution name as filed"), ("respondent_city", "City of the institution"),
-                ("respondent_state", "State of the institution"), ("parent_name", "Parent company, where one is filed"),
-                ("assets", "Total assets, thousands of dollars (depositories)"),
-                ("other_lender_code", "0 depository or independent; other codes for subsidiaries and affiliates")]
-OWN_FIELDS = [
-    (P.FILES["deliveries"], "delivery_id", "Venridge delivery identifier"),
-    (P.FILES["deliveries"], "file_name", "File as received"), (P.FILES["deliveries"], "layout", "PMM layout version"),
-    (P.FILES["deliveries"], "recordings_from", "First recording date covered"),
-    (P.FILES["deliveries"], "recordings_to", "Last recording date covered"),
-    (P.FILES["deliveries"], "rows", "Data rows in the file"), (P.FILES["deliveries"], "delivered", "Date received"),
-    (P.FILES["alias"], "mortgagee_as_indexed", "Mortgagee text exactly as it appears in a Venridge file"),
-    (P.FILES["alias"], "nmls_id", "NMLS ID of the lender the text refers to"),
-    (P.FILES["alias"], "lender_name", "Legal name of that lender"),
-    (P.FILES["alias"], "match", "exact, variant, or MERS as nominee for the lender"),
-    (P.FILES["alias"], "first_seen", "First recording date the text was seen"),
-    (P.FILES["alias"], "reviewed", "Date the match was reviewed"),
-    (P.FILES["register"], "nmls_id", "NMLS ID"), (P.FILES["register"], "legal_name", "Legal name"),
-    (P.FILES["register"], "institution_type", "Bank, credit union or mortgage company"),
-    (P.FILES["register"], "charter", "Charter or licence"), (P.FILES["register"], "lei", "Legal entity identifier, where one is held"),
-    (P.FILES["register"], "rssd_id", "Federal Reserve RSSD ID, where one is held"),
-    (P.FILES["register"], "service_area_offices", "Offices in the eight counties"),
-    (P.FILES["agg2023"], "originations", "Loans originated in 2023"),
-    (P.FILES["agg2023"], "loan_amount_000", "Their total amount, thousands of dollars"),
-    (P.FILES["education"], "completions", "Households completing the class"),
-    (P.FILES["education"], "first_time_buyers", "Of which, households who have not owned a home in three years")]
-GRAIN = [
-    (P.FILES["lar"], "One row per application, preapproval request or purchased loan an institution reported for a "
-                     "Kansas property; the public file carries no loan number, address or action date."),
-    (P.FILES["panel"], "One row per reporting institution and year."),
-    ("venridge_pmm_ks8_*.txt", "One row per recorded mortgage document Venridge matched to a conveyance; files cut by "
-                               "the mortgage's recording date."),
-    (P.FILES["deliveries"], "One row per Venridge delivery."),
-    (P.FILES["alias"], "One row per mortgagee text seen in a Venridge file and matched to a lender."),
-    (P.FILES["register"], "One row per lender known to the fund."),
-    (P.FILES["shortlist"], "One row per lender on the board's 2027 shortlist."),
-    (P.FILES["agg2023"], "One row per county, loan purpose and loan type with any 2023 origination."),
-    (P.FILES["education"], "One row per month, county and class format with any completion."),
-]
-
-
-def write_dictionary(path):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Fields"
-    ws.append(["File", "Field", "Meaning"])
-    for f, d in HMDA_FIELDS:
-        ws.append([P.FILES["lar"], f, d])
-    for f, d in PANEL_FIELDS:
-        ws.append([P.FILES["panel"], f, d])
-    for f, ds, _ in V3_DESC:
-        ws.append(["venridge_pmm_ks8_2024.txt, _2025.txt", f, ds])
-    ws.append(["venridge_pmm_ks8_2026ytd.txt", "(all)", "Layout v4; see the layout guide for renamed fields"])
-    for f, fld, d in OWN_FIELDS:
-        ws.append([f, fld, d])
-    ws2 = wb.create_sheet("Grain")
-    ws2.append(["File", "Grain"])
-    for f, g in GRAIN:
-        ws2.append([f, g])
-    for sh, widths in ((ws, (40, 34, 96)), (ws2, (40, 110))):
-        for c in sh[1]:
-            c.font = Font(bold=True, color="FFFFFF")
-            c.fill = PatternFill("solid", fgColor="3B5B3A")
-        for col, wd in zip("ABC", widths):
-            sh.column_dimensions[col].width = wd
-        for row in sh.iter_rows(min_row=2):
-            for c in row:
-                c.alignment = Alignment(vertical="top", wrap_text=True)
-        sh.freeze_panes = "A2"
-    wb.save(path)

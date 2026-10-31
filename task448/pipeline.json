@@ -5,20 +5,22 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-13",
+ "updated": "2026-10-31",
  "stump": "The default path recruits Shunga Valley Bank at 151 instead of Mennwell Credit Union because it counts the five non-reporting lenders at their rows in the Venridge file, which holds 60 per cent of a lender's purchase mortgages when the lender records its own mortgage after the deed (97 per cent when the closing records the two together); measured on the reporters within each way of recording and carried to each non-reporting lender by its own, Mennwell made about 200 and Weyrauch State Bank about 260, while the pooled capture of 90 per cent still leaves Mennwell at about 130.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) 2026-10-13, rerun after the third portal repair (guidelines 7.5's count of every mortgage, the write-up's path, sellers and buyers without a shared surname, the program-year total to the nearest 100); no document near the decisive step changed, so no reader rerun",
-  "reader": "2026-10-12: Q1 to Q4 none; Q5 the estimand executed, no main-call fork; Q6 the reader named the 7.3 to 7.5 filters and the date basis, both asserted neutral to the call (not a rule-3 finding); realism tells fixed (small-lender names, alias review dates, shortlist notes); second read after the fix: Q1 to Q4 none, Q5 resolves the county to the recorder's (fork closed), Q6 not a rule-3 finding (the named rules asserted neutral); third read after the coverage sentence: Q1 to Q4 none (the coverage sentence read as a data caveat, not a method), Q5 the estimand executed, Q6 analytical; realism tells fixed (verification dates, one shortlist note)"
+  "leak_py": "REVIEW 2026-10-31 --asof 2026-10-09 on the reshipped pack (no LEAK; sweeps 1, 12 and 13 clear)",
+  "reader": "2026-10-31: Q1 to Q4 none; Q5 guidelines 7.3 with 2.2 and 7.5, the WHAT; Q6 leaning analytical, the rule-application risk ruled by checks.py (the pooled capture executes every filed rule and files the wrong five); no realism tells"
  },
  "duplicate_check": {
-  "heart": "BLOCK 2026-10-13 ban.shape against task186, drawn five hours after task448 on 2026-10-12 (DRAWN 699d08a against 4e15f1c) and ordered first by the guard's same-day tie-break on task number; the shape is frozen and the repair does not touch it; WARN repeat.gate_g answered",
+  "heart": "WARN 2026-10-31 (repeat.gate_g, repeat.deliverables); same_puzzle_older and same_driver_older BLOCKs against task271 v1, task166 v2, task167 v2, task268 v1 and task471 v4 answered by differentiation lines on the card; no shell match",
   "nearest": "0.06 (task62 lineage)",
   "note": "draw checked 2026-10-12: guard WARN repeat.gate_g (task185) answered; seven older same-signature builds differentiated on the card"
  },
@@ -47,11 +49,31 @@
    "portal": "determinism, third return, two judges both unsure: the twelve ranked on the Venridge file as delivered against completed counts (competing_defensible_answer, Gates C, D and G unsure); the captures' numerators, the non-reporters' 154 and 121, the county placement of completed counts and the program year's 1,610 not reproduced",
    "repair": "determinism",
    "commit": "RESHIPPED 2026-10-13 (guidelines 7.5, SF13 to SF17, program-year total to the nearest 100)"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "none (in-house re-check under the 10-30 gates: leak.py LEAK on field_dictionary.xlsx and export_manifest.csv; precut FAIL on the Measured by line)",
+   "repair": "gates",
+   "commit": "RESHIPPED (task448)"
   }
  ],
- "resume": "reshipped after the third portal determinism repair (guidelines 7.5 counts every mortgage a lender makes; the write-up's reproducible path; SF13 to SF17; the program-year total to the nearest 100, 1,600); waiting for the portal",
+ "resume": "RESHIPPED 2026-10-31 under the 10-30 gates (no portal result since the 10-13 reship); next: the author's portal result",
  "approved": null,
- "delivered": "2026-10-12",
+ "delivered": "2026-10-31",
  "portal": null,
- "source_note": "seed ET05 (analytical_tasks/07_data_extraction_conformation), the world and the league-table decision only"
+ "source_note": "seed ET05 (analytical_tasks/07_data_extraction_conformation), the world and the league-table decision only",
+ "gates_2026_10_31": {
+  "checks": 157,
+  "verify": "PASS",
+  "byte_identical": true,
+  "figures_check": "160 of 160",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS, no WARN (964 characters; question form who)",
+  "leak_py": "REVIEW, no LEAK",
+  "heart": "WARN",
+  "surface": "exit 0, personas none",
+  "pair_ceiling": 37.7,
+  "mirror_leakage_pct": 6.7,
+  "ceiling_script": "generator/ceiling.py"
+ }
 }

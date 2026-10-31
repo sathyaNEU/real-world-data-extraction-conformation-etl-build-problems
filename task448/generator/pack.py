@@ -1,6 +1,6 @@
 """Write the pack's data files: the HMDA loan-level file and reporter panel, the recorder vendor's three deliveries
 and its delivery register, the mortgagee alias register, the lender register, the board's shortlist, the two
-neighbouring files, and the export manifest."""
+neighbouring files, and the HMDA code values."""
 import csv
 import datetime as dt
 
@@ -22,7 +22,7 @@ FILES = {
     "shortlist": "rural_lender_shortlist_2027.xlsx",
     "agg2023": "hmda_2023_county_summary_ks.csv",
     "education": "homebuyer_education_completions_2024_2026.csv",
-    "manifest": "export_manifest.csv",
+    "codes": "hmda_lar_code_values.csv",
 }
 DISTRACTORS = ["agg2023", "education"]
 V3 = ["REC_KEY", "STATE", "CNTY_FIPS", "CNTY_NAME", "MTG_DOC_NO", "MTG_REC_DATE", "MTG_INSTR_DATE", "MTG_AMT",
@@ -245,42 +245,54 @@ def write_education(path):
     return len(rows)
 
 
-MANIFEST = [
-    ("lar", "HMDA loan-level records, Kansas, activity years 2024 and 2025, every action and purpose",
-     "FFIEC HMDA Data Browser, state = KS, years 2024 and 2025; fields kept as listed in the field dictionary",
-     "2026-10-06", "Public data (FFIEC HMDA), no restrictions"),
-    ("panel", "HMDA reporter panel rows for the institutions with records in the eight counties",
-     "FFIEC HMDA reporter panel, 2024 and 2025", "2026-10-06", "Public data (FFIEC HMDA), no restrictions"),
-    ("feed24", "Purchase-money mortgage file, eight counties, recordings of 2024", "Venridge Property Data, LLC",
-     "2025-01-17", "Subscription; internal use under the Venridge data agreement"),
-    ("feed25", "Purchase-money mortgage file, eight counties, recordings of 2025", "Venridge Property Data, LLC",
-     "2026-01-16", "Subscription; internal use under the Venridge data agreement"),
-    ("feed26", "Purchase-money mortgage file, eight counties, recordings of January to August 2026",
-     "Venridge Property Data, LLC", "2026-09-15", "Subscription; internal use under the Venridge data agreement"),
-    ("deliveries", "Venridge deliveries received for the eight counties", "Research desk", "2026-10-09", "Internal"),
-    ("alias", "Mortgagee names as indexed by the recorders, matched to lenders by NMLS ID", "Research desk",
-     "2026-10-08", "Internal"),
-    ("register", "Lenders known to the fund, with identifiers", "Research desk (NMLS Consumer Access, NCUA, FFIEC NIC)",
-     "2026-09-08", "Internal"),
-    ("shortlist", "The board's twelve-lender shortlist for the 2027 rural program", "Board of directors",
-     "2026-09-24", "Internal"),
-    ("agg2023", "HMDA 2023 originations by county, purpose and loan type, Kansas", "FFIEC HMDA aggregate data, 2023",
-     "2025-10-14", "Public data (FFIEC HMDA), no restrictions"),
-    ("education", "Homebuyer education completions by month, county and class format", "Program operations",
-     "2026-10-02", "Internal"),
-    ("guidelines", "Rural Down-Payment Assistance Program guidelines, 2027", "Board of directors, approved 2026-06-18",
-     "2026-06-18", "Internal"),
-    ("layout", "Venridge purchase-money mortgage file: layout guide, v3 and v4", "Venridge Property Data, LLC",
-     "2026-08-20", "Subscription documentation"),
-    ("dictionary", "Field dictionary for the files in this folder", "Research desk", "2026-10-09", "Internal"),
+# The FFIEC's published values for the coded fields of the public loan-level file and the reporter panel, as the
+# research desk keeps them beside the extract: a crosswalk of codes to their labels and nothing else.
+CODE_VALUES = [
+    ("action_taken", [("1", "Loan originated"), ("2", "Application approved but not accepted"),
+                      ("3", "Application denied"), ("4", "Application withdrawn by applicant"),
+                      ("5", "File closed for incompleteness"), ("6", "Purchased loan"),
+                      ("7", "Preapproval request denied"), ("8", "Preapproval request approved but not accepted")]),
+    ("purchaser_type", [("0", "Not applicable"), ("1", "Fannie Mae"), ("2", "Ginnie Mae"), ("3", "Freddie Mac"),
+                        ("4", "Farmer Mac"), ("5", "Private securitizer"),
+                        ("6", "Commercial bank, savings bank, or savings association"),
+                        ("71", "Credit union, mortgage company, or finance company"), ("72", "Life insurance company"),
+                        ("8", "Affiliate institution"), ("9", "Other type of purchaser")]),
+    ("preapproval", [("1", "Preapproval requested"), ("2", "Preapproval not requested")]),
+    ("loan_type", [("1", "Conventional"), ("2", "Federal Housing Administration insured"),
+                   ("3", "Veterans Affairs guaranteed"), ("4", "USDA Rural Housing Service or Farm Service Agency guaranteed")]),
+    ("loan_purpose", [("1", "Home purchase"), ("2", "Home improvement"), ("31", "Refinancing"),
+                      ("32", "Cash-out refinancing"), ("4", "Other purpose"), ("5", "Not applicable")]),
+    ("lien_status", [("1", "Secured by a first lien"), ("2", "Secured by a subordinate lien")]),
+    ("reverse_mortgage", [("1", "Reverse mortgage"), ("2", "Not a reverse mortgage"), ("1111", "Exempt")]),
+    ("open-end_line_of_credit", [("1", "Open-end line of credit"), ("2", "Not an open-end line of credit"),
+                                 ("1111", "Exempt")]),
+    ("business_or_commercial_purpose", [("1", "Primarily for a business or commercial purpose"),
+                                        ("2", "Not primarily for a business or commercial purpose"), ("1111", "Exempt")]),
+    ("hoepa_status", [("1", "High-cost mortgage"), ("2", "Not a high-cost mortgage"), ("3", "Not applicable")]),
+    ("construction_method", [("1", "Site-built"), ("2", "Manufactured home")]),
+    ("occupancy_type", [("1", "Principal residence"), ("2", "Second residence"), ("3", "Investment property")]),
+    ("submission_of_application", [("1", "Submitted directly to your institution"),
+                                   ("2", "Not submitted directly to your institution"), ("3", "Not applicable"),
+                                   ("1111", "Exempt")]),
+    ("initially_payable_to_institution", [("1", "Initially payable to your institution"),
+                                          ("2", "Not initially payable to your institution"), ("3", "Not applicable"),
+                                          ("1111", "Exempt")]),
+    ("aus-1", [("1", "Desktop Underwriter (DU)"), ("2", "Loan Prospector (LP) or Loan Product Advisor"),
+               ("3", "Technology Open to Approved Lenders (TOTAL) Scorecard"),
+               ("4", "Guaranteed Underwriting System (GUS)"), ("5", "Other"), ("6", "Not applicable"),
+               ("7", "Internal Proprietary System"), ("1111", "Exempt")]),
+    ("denial_reason-1", [("1", "Debt-to-income ratio"), ("2", "Employment history"), ("3", "Credit history"),
+                         ("4", "Collateral"), ("5", "Insufficient cash (downpayment, closing costs)"),
+                         ("6", "Unverifiable information"), ("7", "Credit application incomplete"),
+                         ("8", "Mortgage insurance denied"), ("9", "Other"), ("10", "Not applicable"),
+                         ("1111", "Exempt")]),
+    ("agency_code", [("1", "Office of the Comptroller of the Currency"), ("2", "Federal Reserve System"),
+                     ("3", "Federal Deposit Insurance Corporation"), ("5", "National Credit Union Administration"),
+                     ("7", "Department of Housing and Urban Development"), ("9", "Consumer Financial Protection Bureau")]),
 ]
 
 
-def write_manifest(path, counts, names):
-    rows = []
-    for key, what, src, date, lic in MANIFEST:
-        name = names[key]
-        rows.append(dict(file=name, contents=what, source=src, received_or_pulled=date, terms=lic,
-                         rows=counts.get(key, "")))
+def write_codes(path):
+    rows = [dict(field=f, code=c, value=v) for f, vals in CODE_VALUES for c, v in vals]
     pd.DataFrame(rows).to_csv(path, index=False, lineterminator="\n")
     return len(rows)

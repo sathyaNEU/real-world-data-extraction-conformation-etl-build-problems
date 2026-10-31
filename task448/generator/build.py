@@ -59,13 +59,9 @@ def build(out, quiet=False, world=None):
     n["education"] = P.write_education(f("education"))
     DC.write_guidelines(os.path.join(out, DC.GUIDELINES))
     DC.write_layout(os.path.join(out, DC.LAYOUT))
-    DC.write_dictionary(os.path.join(out, DC.DICTIONARY))
-    names = dict(P.FILES, guidelines=DC.GUIDELINES, layout=DC.LAYOUT, dictionary=DC.DICTIONARY)
-    n["manifest"] = P.write_manifest(f("manifest"), n, names)
+    n["codes"] = P.write_codes(f("codes"))
     PP.normalize_ooxml(f("shortlist"), "Maxwell Ewing", "Laura Cohen", "2026-09-24T21:12:00Z", "2026-09-30T14:48:31Z",
                        excel=True)
-    PP.normalize_ooxml(os.path.join(out, DC.DICTIONARY), "Laura Cohen", "Laura Cohen", "2025-03-03T16:20:00Z",
-                       "2026-10-09T19:58:14Z", excel=True)
     PP.normalize_pdf(os.path.join(out, DC.GUIDELINES), b"D:20260618102204-05'00'", b"D:20260619091535-05'00'")
     PP.normalize_pdf(os.path.join(out, DC.LAYOUT), b"D:20260820141106-04'00'", b"D:20260820141106-04'00'")
     stamp = STAMP.timestamp()

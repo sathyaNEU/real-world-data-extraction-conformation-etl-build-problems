@@ -69,14 +69,19 @@ def run(target, golden, world=None, meta_path=None):
     dis = meta.get("distractor_files", [])
     ok(len(dis) >= 2 and all(d in files for d in dis), "gate: two or more distractors, shipped", ", ".join(dis))
     ok(not any("distractor" in f.lower() for f in files), "gate: no file name says distractor")
-    man = pd.read_csv(os.path.join(target, P.FILES["manifest"]))
-    ok(set(man.file) == set(files) - {P.FILES["manifest"]}, "H9 the manifest lists every other shipped file")
     import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(target, DC.DICTIONARY), read_only=True)
-    named = " ".join(str(c.value) for ws in wb for row in ws.iter_rows() for c in row if c.value)
-    covered = [f for f in files if f in named or (f.startswith("venridge_pmm_ks8_") and "venridge_pmm_ks8_" in named)]
-    ok(set(covered) >= set(files) - {P.FILES["manifest"], DC.DICTIONARY, DC.GUIDELINES, DC.LAYOUT},
-       "H9 the dictionary names every data file")
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|"
+                            r"definition|extract_?notes|export_?notes|notes", re.I)
+    ok(not [f for f in files if describing.search(f)], "section 3: no file named as a dictionary, manifest, readme "
+       "or notes ships")
+    sheets = [ws for f in files if f.endswith(".xlsx")
+              for ws in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames]
+    ok(not [w for w in sheets if describing.search(w) or w.lower() in ("fields", "grain", "about", "how to read")],
+       "section 3: no sheet that describes the data ships", ", ".join(sheets))
+    cv = pd.read_csv(os.path.join(target, P.FILES["codes"]), dtype=str)
+    ok(list(cv.columns) == ["field", "code", "value"] and set(cv.field) <= set(
+       open(os.path.join(target, P.FILES["lar"])).readline().strip().split(",")) | {"agency_code"},
+       "the code values map codes to labels and nothing else", "%d rows" % len(cv))
     reg = pd.read_csv(os.path.join(target, P.FILES["deliveries"]))
     feed_rows = {f: sum(1 for _ in open(os.path.join(target, f))) - 1 for f in C.FEEDS}
     ok(all(int(r.rows) == feed_rows[r.file_name] for r in reg.itertuples()),
@@ -311,7 +316,8 @@ def run(target, golden, world=None, meta_path=None):
     ok(len(miss_h) >= 4, "Ask B device D9 alone (HMDA county codes) misses four or more figures", ", ".join(miss_h))
     A_d, _ = C.ask_figures(C.market_two_year(B, dedupe=False), py_g)
     miss_d = [k for k in A if C.r10(A_d[k]) != C.r10(A[k])]
-    ok(len(miss_d) >= 1, "Ask B device D6 alone (farmsteads twice) misses a figure", ", ".join(miss_d))
+    ok(len(miss_d) == len(A), "Ask B cracker (every filed rule read: the recorded county, farmsteads twice) misses "
+       "every figure", " ".join("%.0f/%.0f" % (A_d[k], A[k]) for k in A))
     _, P_cr = C.ask_figures(two_g, C.program_year(B, per_record=False))
     ok(all(rk(k, P_cr[k]) != rk(k, PYf[k]) for k in PYf), "Ask A cracker (each lender's 2024-25 route carried "
        "into 2026) misses every figure", " ".join("%.0f/%.0f" % (P_cr[k], PYf[k]) for k in PYf))
@@ -320,10 +326,9 @@ def run(target, golden, world=None, meta_path=None):
     _, P_rd = C.ask_figures(two_g, C.program_year(B, datecol="MTG_REC_DATE"))
     ok(any(rk(k, P_rd[k]) != rk(k, PYf[k]) for k in PYf), "SF10 Ask A the recording date for the closing moves a figure")
     ok(C.estimate(B) == gold, "SF10 the main call never reads the program year")
-    wbd = openpyxl.load_workbook(os.path.join(target, DC.DICTIONARY), read_only=True)
-    dict_rows = {(r[0], r[1]): r[2] for r in wbd["Fields"].iter_rows(min_row=2, values_only=True)}
-    ok("geocoding" in dict_rows[(P.FILES["lar"], "county_code")],
-       "Ask B pin: the dictionary files HMDA's county as the institution's geocode of the address")
+    ok("each home in the county where it stands (2.2), whatever county a lender's hmda report gives for it" in
+       re.sub(r"\s+", " ", doc_text).lower(),
+       "Ask B pin: guidelines 6.2 place each home where it stands, whatever county a lender's HMDA report gives")
     ok("the county in which the property lies" in doc_text,
        "Ask B pin: the vendor's guide files the recording county as where the property lies")
     flat = re.sub(r"\s+", " ", doc_text)
@@ -488,7 +493,8 @@ def run(target, golden, world=None, meta_path=None):
        "realism: the deliveries cover January 2024 to August 2026 recordings")
     ok(all(int(r) % 10 for r in feed_rows.values()), "realism: no delivery has a round row count",
        str(list(feed_rows.values())))
-    ok(pd.to_datetime(man.received_or_pulled).max() <= pd.Timestamp(W.PULL), "realism: nothing dated after the pull")
+    ok(pd.to_datetime(reg.delivered).max() <= pd.Timestamp(W.PULL), "realism: no delivery received after the pull",
+       str(pd.to_datetime(reg.delivered).max().date()))
     pers = re.compile(rb"<dc:creator>([^<]*)</dc:creator>|<cp:lastModifiedBy>([^<]*)</cp:lastModifiedBy>")
     who = set()
     for folder in (target, golden):
