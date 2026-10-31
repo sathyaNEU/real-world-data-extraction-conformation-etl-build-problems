@@ -335,7 +335,7 @@ def main():
     check("SF6 the older tests from lb/hr (R2a)", whole(gl) == gw)
     klag = k_fit(I, lag=1)
     vlag = carried(I, klag, lag=1)
-    check("SF7 the table's month is the month the gas was delivered (guidance section 7); read as the month after, %d of "
+    check("SF7 the table's month is the month the gas was delivered (guidance section 4); read as the month after, %d of "
           "14 whole tons move and the boiler's rise drops to %.2f, so the data prefer the filed reading"
           % (sum(whole(vlag)[n] != gw[n] for n in B.ORDER), klag),
           "the average heat content of the gas it delivered to the area in the month" in pdf_text("guidance") and
@@ -631,6 +631,10 @@ def main():
     files = os.listdir(TARGET)
     meta = json.load(open(os.path.join(TASK, "metadata.json")))
     check("I ten or more files (%d)" % len(files), len(files) >= 10)
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    check("section 3: no file named as a dictionary, manifest, readme or notes ships",
+          not [f_ for f_ in files if describing.search(f_)])
     check("I three or more formats (%s)" % sorted({fn.rsplit(".", 1)[1] for fn in files}),
           len({fn.rsplit(".", 1)[1] for fn in files}) >= 3)
     check("I one file of 25,000 rows or more (CEMS %d)" % len(cems), len(cems) >= 25000)

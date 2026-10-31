@@ -193,8 +193,17 @@ content moves from month to month a burner's rate moves with it, and a test read
 fired on rich gas while one read on a rich month overstates a winter on lean; no build on file carries a measured rate
 by a property of a third party's delivery.
 
-## Readability screen
+## Survivor anatomy
 
+Actor: how a low-NOx burner's NOx rate moves with the heat content of the gas it fires has no column in any file; it exists only as the relation between each source test's month, the heat content the utility reported for the burner's BTU area that month, and the monitored Lindqvist boiler's hourly NOx rate against the utility's monthly table.
+Link: each test is set against its area's heat content in its month through Appendix A's BTU area and the utility's published table, two organisations' records with no shared key, and the monitored boiler's CEMS rate against that table is a comparison the inventory method never asks for, since the method carries a test's rate across the year.
+Reflex: the field's inventory method, each unmonitored burner's latest source test carried across its 2026 heat input (with every filed rule applied), is rung 0 and files Tamsett State University fifth at 8 tons against Merriwell Foods' 7; the mean of each burner's tests files the same five (R3a, asserted on the clean truth).
+Back-test: the textbook route validates: the monitored units' NOx is the sum of their hourly mass as the guidance files it, every unmonitored burner's latest test passes its permit limit, and carrying a passing test across the year is the guidance's own section 3 read plainly; nothing in the pack scores the carried rates against a measured year.
+Second use: every file the step reads is in the pack for its own reason: the utility's heat content table converts the statements' MMSCF to MMBtu (guidance section 4), the CEMS export carries the monitored units' NOx, the two test databases the unmonitored units' rates, Appendix A each facility's BTU area.
+Shock: nothing reads as an anomaly: the Westside heat content swings month to month with the gas plant's ethane recovery, Merriwell Foods' August test sits on lean gas like other summer tests, and no facility's 2026 total stands out on a sort of the default path's figures.
+Pins: the plan's 2.1 and 2.2 and the guidance's sections 2 to 6 file the WHAT (NOx as NO2, the Rule 4306 units, local standard time, substitute hours, heat input, Method 19, the engines' factor); no filed sentence names a heat content effect on NOx, a burner's air metering or carrying a rate from its test month, and the counter-pins in `checks.py` assert none does.
+
+## Readability screen
 | Rung | What it takes | Verdict |
 |---|---|---|
 | 1 Monitored units | each 2026 CEMS hour's nox_mass_lb summed, joined to its device through the permit list's FAC_NO and CEMS_UNIT_ID (guidance section 2) | readable |
@@ -219,7 +228,7 @@ route takes them.
 | SF4 | a monitored unit's NOx | substitute data hours left out | guidance section 2 counts them; same call without them (R2d, SF4) |
 | SF5 | heat input | MMscf at a fixed 1,020 Btu/scf | guidance section 4, the area's monthly heat content; same call and 14 whole tons at 1,020 (R2b, SF5) |
 | SF6 | a test's lb/MMBtu | the older tests from lb/hr over rating times load, not Method 19 from ppm | guidance section 5 gives both as equal; same 14 whole tons (R2a, SF6) |
-| SF7 | the heat content's month | the month after the gas, as a billing month | guidance section 7: the average heat content of the gas delivered in the month; the boiler's fit falls from 6.01 to 4.65 on the lag (SF7) |
+| SF7 | the heat content's month | the month after the gas, as a billing month | guidance section 4 (section 7 until the 10-31 reship): the average heat content of the gas delivered in the month; the boiler's fit falls from 6.01 to 4.65 on the lag (SF7) |
 | SF8 | the heat content's unit | Btu/scf to the whole Btu, not therms a CCF | same 14 whole tons (SF8) |
 | SF9 | the year's NOx | the year's fuel at the mean of the months' rates | guidance section 3, the NOx emitted over the year's operation, month by month at each month's rate; the five stands either way (SF9) |
 | SF10 | the facility of a device | Haskett Ridge's rows under 0705 as another facility | the permit list's device numbers carry every test and statement row (R2e, SF10) |
@@ -675,3 +684,4 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
   The asks fell with it (counts to every reader, miles to the overlap and five-minute dedupes). Re-root to architecture 2.
 - 2026-10-20, stage 3: the sweepers' night shifts of 28 February and 31 March: under a UTC window they moved camera
   miles across the month boundary; the spring sweeping schedule now runs 1 to 30 March nights.
+- 2026-10-31, re-check under the 10-30 gates: `leak.py` LEAK on the inventory guidance's section 7 (a file-by-file data dictionary inside the governing document: columns, codes, units and row counts). Section 7 removed; its one closure (SF7, the heat content is the gas delivered in the month) moved into section 4's own sentence on heat input, and the rest is in the files (the reference oxygen in every test file's columns, the compliance log's dates readable as written: month first before 2021, ISO after). The newer test database's Field notes sheet dropped for the same reason. The prompt drops its counts and asks who. Every graded figure unchanged (118 checks).

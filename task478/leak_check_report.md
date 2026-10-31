@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, reader, content, method, decisive, section, carried, pothole, window, landed, readers, loaded, source, monitored, carries, burner, district, standard, device, covers, golden, pattern, boiler, reading, meters
+Stump terms swept: architecture, reader, content, burner, section, method, decisive, carried, monitored, guidance, source, fourteen, utility, readers, pothole, carries, window, boiler, checks, golden, landed, loaded, district, standard, device
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: carries 14 of 15 distinctive words of the committed call: 'Sign the 2027 NOx reduction agreements with Ashgrove Refining, Valmora Renewable Fuels, Sedge Hollow Creamery, Lindqvist'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `tbapcd_emission_inventory_guidance_2026.pdf`: 10 of 25 stump-paragraph terms appear (content, method, section, source, district, standard); read whether the document names the move
-- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: 8 of 25 stump-paragraph terms appear (content, section, source, carries, burner, district); read whether the document names the move
+- **REVIEW** `tbapcd_emission_inventory_guidance_2026.pdf`: 9 of 25 stump-paragraph terms appear (content, section, method, guidance, source, boiler); read whether the document names the move
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: 12 of 25 stump-paragraph terms appear (content, burner, section, guidance, source, fourteen); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 3)
 - **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: names 13 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -26,6 +26,9 @@ Stump terms swept: architecture, reader, content, method, decisive, section, car
 - **REVIEW** `tbapcd_rule4702_engine_logs_2026.xlsx`: columns a generator names and an organisation does not: Device
 - **REVIEW** `tbapcd_source_tests_2018_2021.csv`: columns a generator names and an organisation does not: DEVICE_NO
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
@@ -36,8 +39,6 @@ Stump terms swept: architecture, reader, content, method, decisive, section, car
 ## 5 announcements (clean)
 
 ## 7 hidden content (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 
@@ -291,3 +292,14 @@ score_reader.py (figures.json without the per-facility agreement flag, which res
 score_reader.py (figures.json without the per-facility agreement flag, which restates the five): call 0 of 1; asks 11 of 42 (26.2 per cent, every hit a construction-layer ton the default path keeps at an Eastside or monitored-only facility); gas 0 of 14, engines 0 of 14; exit 2.
 
 Main thread's ruling: both readers filed the default five again (Tamsett State University in, Merriwell Foods sixth at 6.82 tons); question 1 none from both; every REVIEW line harmless. Neither read the engine logs as hours and minutes (both added about 0.15 hours a start of warm-up to decimal hours); reader v7d took the combined-billing accounts once but read every line as therms. Four readers over two rounds, none on the call.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 14 files)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none announced; the guidance's sections 3 and 4 are procedures and the plan's sum over Rule 4306 units scopes the population.
+2. Ranking file: none. 3. Helper-only file: the reader named the inventory guidance, which is the District's governing document (the WHAT and the standard methods), not a helper. 4. Answer-like figure or name: none.
+5. Literal sentences: guidance 2 (the hourly mass summed, substitute hours included), 3 with 5 (heat input times the tested rate) and the plan's 2.1 and 2.2 (the top five over the Rule 4306 units).
+6. What decides: the reader leaned to rule application and named the nearest analytical choice as how to carry a test's rate across the unit's year. Ruled in the main thread: that is the decisive step, and `checks.py` R3a executes every filed rule on the clean truth (each burner's latest test across its 2026 heat input) and files the default path's five, so the rules leave it open and the step is analytical.
+
+Without the file list: the fields, units and time bases read from the files; the CEMS substitute code is covered by the guidance's own rule, READ_TYPE's E reads as estimated, and the old and new test files' device numbers differ in form as a legacy export would. Item rulings: the plan, the permit list and the engine logs harmless. Realism: the reader's claim that every NO2 qualifier reads AN is wrong (204 of 26,280 rows; checked); templated compliance descriptions and a uniformly compliant inspection file noted; no LLM prose.

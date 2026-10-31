@@ -1,5 +1,5 @@
 """The pack's documents: the Lowry Creek Community Emissions Reduction Plan 2027 (PDF) and the district's point source
-emission inventory guidance for the 2026 reporting year, with its data dictionary (PDF)."""
+emission inventory guidance for the 2026 reporting year (PDF)."""
 from reportlab import rl_config
 rl_config.invariant = 1
 from reportlab.lib import colors                                     # noqa: E402
@@ -107,48 +107,8 @@ def write_guidance(path, n):
     tiers = Table([["Engine emission tier", "NOx (g/bhp-hr)"]] + [[k, "%.2f" % v] for k, v in W.TIER_NOX.items()],
                   hAlign="LEFT", colWidths=[1.8 * inch, 1.3 * inch])
     tiers.setStyle(GRID)
-    dd = [["File", "Contents"],
-          [P.FILES["cems"], "One row per operating hour of each unit with a continuous emissions monitoring system "
-           "(CEMS), 2026: facility_id, unit_id (the monitoring plan's unit), op_date and op_hour (local standard "
-           "time), op_time, heat_input_mmbtu, nox_rate_lb_mmbtu, nox_rate_modc (01 measured, 12 substitute data), "
-           "nox_mass_lb. {:,} rows.".format(n["cems"])],
-          [P.FILES["tests_old"], "The earlier source test database, tests to December 2021: NOx in ppmvd at the "
-           "reference oxygen and in lb/hr, the load as a share of the device's rating, the result against the permit "
-           "limit. {} tests.".format(n["tests_old"])],
-          [P.FILES["tests_new"], "The newer database, tests from January 2022: the same results with lb/MMBtu, the "
-           "heat input at the test and the tester. {} tests.".format(n["tests_new"])],
-          [P.FILES["statements"], "The facilities' annual emission statements, one row per device per month, "
-           "2018 to 2026: fuel, quantity and its unit (MMSCF, THERMS or MMBTU) and the device's operating hours in "
-           "the month. {:,} rows.".format(n["statements"])],
-          [P.FILES["heat"], "{}'s published monthly heat content for each BTU area, January 2018 to February 2027: "
-           "the average heat content of the gas it delivered to the area in the month, BTU_FACTOR in therms per CCF "
-           "and HEAT_CONTENT_BTU_SCF the same in Btu/scf. {} rows.".format(W.UTILITY, n["heat"])],
-          [P.FILES["permits"], "Every permitted combustion device at the fourteen facilities, as permitted in "
-           "February 2027: the rule it falls under, its rating, fuel, NOx control, monitoring, the monitoring plan's "
-           "unit id where it has a CEMS, its NOx limit (ppmvd at the reference oxygen), its test frequency, and for "
-           "engines the make, model and emission tier. {} devices.".format(n["permits"])],
-          [P.FILES["events"], "The District's compliance tracking log, 2018 to 2026: notifications, breakdowns, "
-           "inspections, test scheduling and deferrals, outages reported under Rule 4702, equipment work, audits, "
-           "changes of owner. Dates were entered month first until the 2021 system change. {} entries."
-           .format(n["events"])],
-          [P.FILES["billing"], "{}'s commercial billing extract (meter detail) as the utility delivered it: one line "
-           "per meter per billing period, read from November 2025 to January 2027; READ_TYPE A for an actual read, E "
-           "for an estimate; BTU_FACTOR is the heat content the bill is priced at, in therms per CCF (the utility's "
-           "factor for the month in which its read closes); USAGE_THERMS is the usage billed for the period. Accounts are by service address. {} lines.".format(W.UTILITY, n["billing"])],
-          [P.FILES["engine_logs"], "The facilities' 2026 Rule 4702 operating logs as each facility submitted it, one "
-           "sheet per facility (sheet name the facility number). {:,} log entries.".format(n["engine_logs"])],
-          [P.FILES["inspections"], "Each emergency engine's non-resettable hour meter as the District's inspector "
-           "read it, November 2025 to February 2027. {} readings.".format(n["inspections"])],
-          [P.FILES["no2"], "Hourly NO2 at the corridor's three community monitors, 2026 (local standard time; AN is "
-           "a machine malfunction). {:,} rows.".format(n["no2"])],
-          [P.FILES["onroad"], "The District's 2026 on-road NOx estimate for the corridor's road links (MOVES, county "
-           "scale). {} links.".format(n["onroad"])]]
-    dd = [[Paragraph(a, CELL), Paragraph(b, CELL)] for a, b in dd]
-    dt_ = Table(dd, hAlign="LEFT", colWidths=[2.2 * inch, 4.3 * inch])
-    dt_.setStyle(GRID)
     s = [Paragraph(title, TITLE),
-         Paragraph("%s, Engineering Division. Revised 17 February 2027 for the 2026 inventory, with the extracts it is "
-                   "compiled from (section 7)." % ORG, SUB),
+         Paragraph("%s, Engineering Division. Revised 17 February 2027 for the 2026 inventory." % ORG, SUB),
          Paragraph("1. Scope", HEAD),
          Paragraph("The District compiles each year's point source inventory from continuous monitoring data, source "
                    "test results and the emission statements facilities file under Rule 1160. This guidance covers "
@@ -167,7 +127,8 @@ def write_guidance(path, n):
          Paragraph("4. Heat input", HEAD),
          Paragraph("Heat input comes from the emission statements: therms divided by 10; MMBtu as reported; each "
                    "MMSCF of natural gas at the heat content %s reports for the facility's BTU area in that month, in "
-                   "Btu/scf (the plan's Appendix A lists each facility's BTU area)." % W.UTILITY, BODY),
+                   "Btu/scf, the average heat content of the gas it delivered to the area in the month (the plan's "
+                   "Appendix A lists each facility's BTU area)." % W.UTILITY, BODY),
          Paragraph("5. Source test results", HEAD),
          Paragraph("A test's result is the average of its runs, normally three. lb/MMBtu follows EPA Method 19: E = C "
                    "x 1.194 x 10<super>-7</super> x Fd x 20.9 / (20.9 - %O2<sub>ref</sub>), with C in ppmvd at the "
@@ -179,6 +140,5 @@ def write_guidance(path, n):
                    "facilities' Rule 4702 logs record each test, maintenance and emergency run; the District reads "
                    "each engine's non-resettable hour meter, which also counts each start's warm-up and cool-down, at "
                    "its inspections.", BODY),
-         tiers, Spacer(1, 6),
-         Paragraph("7. Files", HEAD), dt_]
+         tiers, Spacer(1, 6)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)

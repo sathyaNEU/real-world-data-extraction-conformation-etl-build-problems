@@ -123,15 +123,6 @@ def write_tests(old_path, new_path, e):
     for i, wd in enumerate(widths):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wd
     ws.freeze_panes = "A2"
-    ns = wb.create_sheet("Field notes")
-    for line in (["Source test results database (new system, from January 2022)"],
-                 ["Results are the average of the test's runs (normally three), corrected to 3 per cent oxygen, the"
-                  " reference oxygen of the device's permit limit."],
-                 ["lb/MMBtu is computed by the tester under EPA Method 19 from the fuel's F-factor; lb/hr from the"
-                  " measured stack flow."],
-                 ["Tests before 2022 are in the earlier database's export."]):
-        ns.append(line)
-    ns.column_dimensions["A"].width = 110
     wb.save(new_path)
     return len(old), len(new)
 
