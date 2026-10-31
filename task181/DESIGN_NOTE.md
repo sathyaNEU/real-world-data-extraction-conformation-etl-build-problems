@@ -25,10 +25,10 @@ Delivery & Health Economics, provider quality and risk adjustment. New world, ne
   build on file decomposes a provider comparison that way.
 - **Shell (redrawn with the world):** question form who, second sentence opening on the answer to the Centre,
   deliverables docx and csv; architecture 5's shell (where, make, csv and pdf) is in `lineage_shells`.
-- **Data-native sentence:** reusable instrument sets go back to the CSSD after every list and into whichever
-  steriliser is running when they arrive, and after six in the evening only steriliser 3 runs, so the sets of the
-  consultants who operate in the afternoon are reprocessed almost only by steriliser 3, whose drying stage ran short
-  after its 12 May repair while every cycle printed a pass.
+- **Data-native sentence:** a consultant's preference trays go back to the CSSD after every list, and a rigid
+  container over 10 kg can only go into steriliser 3, the one chamber validated for it, so the consultants whose
+  colorectal trays are heavy have nearly every tray sterilised by steriliser 3, whose drying stage ran short after its
+  12 May repair while every cycle printed a pass.
 - **Abstraction sentence (tested against every approved build):** units judged on their cases' outcomes against a
   case-mix expectation carry the excess of a shared upstream resource that handled their cases unequally because of
   when the units work, and only a time-ordered trace from each case through a second system to the resource
@@ -43,6 +43,213 @@ Delivery & Health Economics, provider quality and risk adjustment. New world, ne
   infection prevention team's surveillance export; the instrument tracking system's scan export; the steriliser cycle
   records; the CSSD equipment maintenance log; the Centre's published procedure rates and the outlier notice; the
   Centre's outlier response guide; two distractors (the wards' hand hygiene audits and the theatres' air sampling).
+
+## Default path
+
+1. Read the Centre's outlier response guide: the response names the consultants whose own practice raised their
+   patients' risk of a surgical site infection above the upper control limit (the 97.5th centile of a Poisson count at
+   the expected number), with procedures and infections counted as section 3 counts them.
+2. From the theatre export keep completed procedures in the six categories on their principal line, drop returns to
+   theatre, read GS-41 as GS-14, and give each procedure its risk index (ASA 3 or more, a contaminated or dirty wound,
+   incision to closure past the cut-point) and its expected infection from the Centre's 2026 rates.
+3. From the surveillance export keep each infection's latest confirmed record, link it to its procedure by booking,
+   inside 30 days or 90 with an implant, once per procedure at its deepest level.
+4. Count each consultant's April to September 2027 infections against the limit for their expected number, the
+   standardised infection ratio and its funnel, the field's own provider comparison.
+
+Ends on: GS-05, GS-12, GS-16 and GS-21
+Golden: GS-16 and GS-21
+
+## Stump sentence
+
+The default path counts each consultant's April to September 2027 infections against the Centre's control limit and
+refers GS-05, GS-12, GS-16 and GS-21; the step that lands it there is reading each consultant's excess over the
+case-mix expectation as the consultant's own, when every operation that opened a tray steriliser 3 had sterilised
+after its 12 May repair carried 4.3 times the rate, and steriliser 3, the one chamber for containers over 10 kg,
+reprocesses every tray GS-05 and GS-12 own and half of GS-21's.
+
+## Three rules
+
+Task type: provider-quality-risk-adjustment (Healthcare Delivery & Health Economics), which serves anomaly detection: a real provider outlier separated from an excess a shared system put on the providers.
+Domain test: the quantity that decides is each consultant's own effect on their patients' surgical site infection risk, the observed infections against the risk-index expectation that infection surveillance computes, once the infections a common source in the instrument reprocessing chain produced are separated from it; the field's provider comparison (the standardised ratio against its funnel) is rung 0 and its precondition, outcomes independent of any shared resource beyond case mix, is what this record breaks.
+Swap: "Which head teachers go to performance review for their schools' exam results?" keeps a ratio against an expectation and a funnel, but no sterile instrument chain carries a hidden exposure from one school to another through a shared machine, so the decisive step has nothing to act on; put sales branches or call centres in and the same holds.
+Layer 1: the theatre system's export (local times, cancelled bookings, returns to theatre listed as procedures, an add-on procedure as its own booking before the 2025 upgrade and as a second line after it, the booked and the responsible consultant in two columns, GS-41 renamed GS-14 in July 2025); the surveillance database (record versions after a reclassification, a second nurse's entry of the same infection, suspected infections found not to meet the definition, before 2025 the operation date typed from the notes and the consultant from the discharge summary); the tracking system (UTC scans keyed by barcode); the steriliser records (test cycles, aborted cycles re-run, loads as barcode lists with other specialties' sets, steriliser 3's cycle counter restarted by the new controller board); the Centre's rates as a PDF table with a footnoted cut-point rule. Each is produced by the system that keeps it and none is placed to be caught.
+Layer 2: estimand_identification, the right counterfactual for a provider: the excess a common-source exposure puts on the providers it served most is confounding, and the choice that flips the call is setting the exposed operations aside before any consultant is judged.
+Decisive step: tracing each operation's instrument tray, through the tracking system's theatre scan and the steriliser cycle records, to the load that last sterilised it, and judging each consultant on the procedures no post-repair steriliser 3 load reached.
+Not semantics: reading every field and the guide's "own practice" correctly still leaves the easy route on the ratio against the limit, because no file records which operations were exposed; the theatre export carries no tray, the surveillance export no steriliser, and the exposure exists only as a time-ordered relation across the tracking scans and the cycle records.
+Not rule application: no filed rule names a steriliser, a tray or a trace, so executing the guide's sections 2 to 4 on every procedure files the four consultants; the enumerated family (the raw ratio; the department's post-repair rise taken out; afternoon lists given their own rate; each consultant against their own 2022 to 2026 ratio; the window before the repair alone; the traced exposure set aside, with exposure read on any item, on rigid containers only or on every steriliser 3 load of the year; the traced exposure as its own stratum) files four sets (the four, GS-05 GS-12 and GS-21, too few procedures to judge, GS-16 and GS-21), the standing family (every route that sets the traced exposure aside or prices it) files GS-16 and GS-21 at every member measured with margins of at least 6 counts, and the ruling-out is done by the trace alone: no column, clause or code marks an exposed operation.
+Analyst test: a strong analyst keeps the principal procedures, drops returns to theatre and cancelled bookings, merges the renamed consultant code, takes each infection's latest confirmed record once per procedure, applies the Centre's risk index and rates and refers every consultant above the 97.5th-centile limit, filing GS-05, GS-12, GS-16 and GS-21; every field is read and the guide executed, and the call is wrong because GS-05's and GS-12's excess sits in the operations whose trays steriliser 3 sterilised after its repair.
+Estimand: haisc_outlier_response_guide_2027.pdf sections 2 to 4 with the notice: population, the consultants' general surgery procedures from 1 April to 30 September 2027 as the Centre counts them; outcome, the surgical site infections their own practice produced; comparison, the upper control limit for the procedures' expected number; unit, the consultant; window, each procedure's 30 or 90 days.
+No decoy: nothing is planted to be caught; no memo, draft or figure argues for the four, the equipment log records a routine repair with passed tests, every steriliser cycle prints a pass, and the hand hygiene and air sampling records are the service's ordinary monitoring, flat across the window.
+No certified replay: no certified or published figure reproduces the method; the notice carries a department total for one quarter and the rates table carries no hospital's figures.
+Lesson: a provider comparison against case mix assumes the providers share nothing else; a model that gets this right learns to ask what upstream resource the providers' cases pass through before reading a funnel, which no build on file teaches (task271 rebuilt a patient risk property, task194 developed a coding lag, task269 sampled hand hygiene).
+
+## Survivor anatomy
+
+Actor: the deciding property, whether an operation opened a tray from a post-repair steriliser 3 load, has no column in any file; the theatre export holds no tray, the surveillance export no steriliser, and the property is a relation between a theatre scan and the last cycle that held its barcode.
+Link: no key ties an operation to a load; the operation is found from the scan by patient, theatre and the minutes between anaesthetic start and closure (UTC against local time), and the load from the barcode's last passed cycle before the scan; no sentence invites either join.
+Reflex: the field's method, the standardised infection ratio against the Centre's funnel per consultant, is rung 0 and files GS-05, GS-12, GS-16 and GS-21.
+Back-test: the textbook route validates; from 2022 to 2026 every consultant's ratio sits inside the limit except GS-08 in 2025 and GS-16 in 2026, two genuine practice excesses the record carries year after year with no shared exposure behind them.
+Second use: every file the decisive step reads has its own reason to be in the review folder; the tracking scans and cycle records are the CSSD's mandatory traceability, the equipment log its maintenance record, the register its set inventory, and the guide asks the response to state any cause found outside the consultants' practice, for which the folder also carries the wards' hand hygiene audits and the theatres' air sampling.
+Shock: GS-16's and GS-21's excess is not the pack's largest anomaly on any shipped sort (raw ratio, infections, afternoon share, procedures): on the raw ratio the golden is the first and fourth of four above the limit, asserted in checks.py.
+Pins: the WHAT sits in the Centre's guide (who is named, what is counted, the limit) and the notice (the window); no filed sentence names a steriliser, an instrument tray, a trace, a repair or a date the stump rides on; deleting the guide's "own practice" leaves the ratio reading and names no step.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 raw ratio against the limit | guide sections 2 to 4 | every column it needs | the field's method | none refutes it | the battery runs it | one group-by | none | readable |
+| 1 the department's post-repair rise taken out | none, but the rise is visible by month | the knife-to-skin date | an epidemiologist's period adjustment | none | no | one ratio | none | readable |
+| 2 afternoon lists given their own rate | none | the session column | a case-mix extension | none | no | one ratio | none | readable |
+| 3 (decisive) the traced exposure set aside | none names a steriliser, tray or trace | no column holds an exposure; two time-ordered joins across systems with no key | not the surveillance reflex | no file ties infections to a load | no battery item | not affine in a shipped column | the CSSD's traceability records, kept for their own reason | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "whose own practice raised their patients' risk" | the excess left once the exposed operations are set aside | the raw ratio against the limit | the four (the default path) | guide section 2: own practice, and a cause outside it stated as a finding; the exposure ratio 4.3 asserted |
+| SF2 | which items count as exposed | any item last sterilised in steriliser 3 after the repair | rigid containers only; every steriliser 3 load of 2027 | same call (asserted) | none needed |
+| SF3 | setting the exposure aside | excluding the exposed operations | the exposed operations at their own rate (a stratum) | same call (asserted, margins 13 and 6) | none needed |
+| SF4 | the upper control limit | the 97.5th centile of a Poisson count | the 95th centile | same call and default (asserted) | guide section 4 |
+| SF5 | an operation's duration for the risk index | incision to closure | anaesthetic start to leaving theatre | same call (asserted) | the rates table's definition |
+| SF6 | a duration exactly at the cut-point | no duration point | a point | same call | the rates table's note |
+| SF7 | the window | knife-to-skin from 1 April to 30 September 2027 | the list date | same call | the notice |
+| SF8 | an infection's surveillance period | 30 days, 90 with an implant | every recorded infection | same call (asserted) | guide section 3 |
+| SF9 | a return to theatre | not a new procedure | a procedure | same call (asserted) | guide section 3 |
+| SF10 | an add-on's second line | not a procedure of its own | a procedure | same call (asserted) | guide section 3, the principal procedure |
+| SF11 | when the fault began | the return to service at 14:40 on 12 May | the start of 12 May | same call (asserted) | the equipment log |
+| SF12 | an item's last load | the last passed load before the theatre scan | any load, aborted included | same call | the cycle records' result |
+| SF13 | the 2025 code change | GS-41 is GS-14 | two consultants | no 2027 procedure under GS-41 | the export from July 2025 |
+| SF14 | the consultant a procedure belongs to | the responsible consultant | the booked consultant | same call (asserted) | guide section 3 |
+
+## Ladder
+
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 0 | each consultant's infections against the limit for their expected number (the field's ratio and funnel) | GS-05, GS-12, GS-16, GS-21 | the 362 operations with a post-repair steriliser 3 tray carried 115 infections against 21.7 expected, 4.3 times the department's other procedures (120 against 96.5) |
+| 1 | rung 0 with the department's post-repair rise (2.17 times) taken out of every expectation | GS-05, GS-12, GS-21 | the rise is not the department's: it sits on the operations one steriliser reached, and spreading it drops GS-16, whose excess has no exposure behind it |
+| 2 | rung 0 with afternoon lists given their own rate (1.66 times), or each consultant against their own 2022 to 2026 ratio | the four | the exposure follows the tray's weight, not the list's hour: GS-05 and GS-12 run afternoon lists no more often than GS-16 |
+| 3 (decisive) | the traced exposure set aside, each consultant judged on the procedures no post-repair steriliser 3 load reached | GS-16, GS-21 | the golden |
+
+- **Margins on the cut pack** (asserted in checks.py): GS-16 35 infections against a limit of 22 and GS-21 26 against
+  16 (10 counts inside at the least); GS-05 4 against 11, GS-12 5 against 12 and every other consultant at least 6
+  inside; with the exposure as a stratum the same set at margins of 13 and 6; on the default path the four sit 13 or
+  more above and the rest 6 or more below.
+- **Pricing sequence.** (1) The residue the filed WHAT leaves is the exposure, a reconstruction, not a knob. (2) GS-05
+  and GS-12 must move from 21 and 22 counts over their limits to inside them, and the exposed operations carry about
+  93 excess infections, far past both. (3) The one-group-by routes (by month, by session, by year) each file a wrong
+  set; no route is affine in a shipped column, since the exposure follows a tray's previous load. (4) The trace is
+  exact (every window procedure links to its theatre scans, asserted), so no estimator variance enters. (5) and (6) No
+  variance is corrected. (7) No subset of rows prints the exposure. (8) The reflex sweep runs as code in checks.py:
+  rungs 0 to 2, the pre-repair window alone, each exposure reading and the stratum.
+- **No free parameter.** The decisive estimate has nothing to set: an operation is exposed or not by its tray's last
+  load, and every reading of "exposed" and both ways of pricing it file the same consultants with margins of at least
+  6 counts; this is the property architecture 5 lacked.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | the consultants' general surgery procedures, April to September 2027 | filed in the notice and guide section 3 |
+| 2 Unit of account | a procedure, its consultant | guide section 3 |
+| 3 Attribution window | knife-to-skin in the window | the notice; C1 for the list date (SF7) |
+| 4 As-of dating | the export of 4 January 2028, every surveillance period closed | the notice asks for closed periods |
+| 5 Version basis | each infection's latest record | C1 (asserted on the call) |
+| 6 Denominator | the expected number from the Centre's rates | guide section 4 |
+| 7 Weighting | none | a count against a limit |
+| 8 Window length | six months | the notice |
+| 9 Boundary inclusivity | infections above the limit | guide section 4; no consultant within 6 of a limit on the traced route |
+| 10 Rounding path | whole infections against an integer limit | guide section 4 |
+| 11 Tie-break | none needed | no consultant at a limit |
+| 12 Maturity and censoring | every procedure's 30 or 90 days closed by the extract | filed in the notice |
+| 13 Order of operations | count, trace, set aside, compare | C1: the stratum gives the same set (SF3) |
+| 14 Row order | export order | C1 over permutations (latest version by number) |
+| 15 Duplicate resolution | an infection once per procedure at its deepest | guide section 3; C1 |
+| 16 Identity normalisation | GS-41 is GS-14; an add-on booked alone is its operation | the export; C1 for 2027 (SF13) |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | counts | not applicable |
+| 19 Code and status semantics | Confirmed against Not SSI; wound classes; Load against test cycles | the exports' own values |
+| 20 Integerisation | the limit is an integer by construction | guide section 4 |
+| 21 Clause scope | section 2 applies to every consultant | filed |
+| 22 Forward window contents | the professional practice review in 2028 | the call is the set; nothing forward is graded |
+
+## Literal reader
+
+Executing the guide's sections 2 to 4 and the notice word for word gives each consultant's general surgery procedures
+from 1 April to 30 September 2027 and the infections their own practice produced, against the upper control limit for
+the procedures' expected number; no file records which infections a shared system produced, so every literal reading
+has to find out, and every reading that traces the trays to the steriliser that last sterilised them files GS-16 and
+GS-21, while reading the raw ratio as the consultant's own (an easy method on the same literal estimand, not a reading
+of the sentence) files the four.
+
+## Oracles
+
+- The equipment log records the repair and its passed tests; it confirms nothing about infections on either path.
+- The steriliser cycle records print a pass for every load; they tie on both paths.
+- The notice's department total for the second quarter is one figure, consistent with both readings.
+- The hand hygiene audits and the air sampling are flat across the window; they refute no path.
+- none ties only under the golden.
+
+## Ask sheet
+
+Two asks, on 2022 to 2024, outside the call's window, each rebuilt across two systems by a reconstruction no
+sentence states. The figures are the generator's (`generator/figures.json`, `ask_a` and `ask_b`); stops and deltas
+are asserted in `checks.py`.
+
+**Ask A, each consultant's procedures in each year from 2022 to 2024 (30 figures).**
+- H18 home: the record behind the response, each consultant's volume in the three years before the 2025 systems.
+- Files and columns: `theatre_operations_2022_2027.csv` (booking, sequence, patient, theatre, knife-to-skin,
+  responsible consultant, category, status, return to theatre).
+- Primary (D1, one operation under two bookings): before the 2025 theatre system upgrade an add-on procedure was
+  booked on its own, the same patient, theatre and incision under a second booking; the Centre counts the operation
+  once, so the second booking is found only by its cardinality (two bookings, one incision).
+- Hazards: the GS-41 code (July 2025), returns to theatre, cancelled bookings.
+- Pin test: the sentence pins the consultant, the year and "procedures" (the guide's count); the device sits in which
+  bookings are one operation, a dimension the pins leave open.
+
+**Ask B, the infections after each consultant's procedures in each year from 2022 to 2024 (30 figures).**
+- H18 home: the same record, each consultant's infections.
+- Files and columns: `ssi_surveillance_2022_2027.csv` (infection, version, booking, patient, operation date,
+  category, consultant, onset, status) and the theatre export's procedures.
+- Primary (D7, the true key elsewhere): before the 2025 database the nurses typed the operation date from the notes,
+  an emergency's admission date at times, and the consultant from the discharge summary, the admitting consultant;
+  the infection belongs to its procedure and the procedure to its responsible consultant, so each record is linked to
+  the procedure up to three days after its recorded date.
+- Hazards: record versions, a second nurse's entry, Not SSI records, the surveillance period.
+- Pin test: the sentence pins the consultant, the year and "infections after them"; the device sits in which
+  procedure a record belongs to, a dimension the pins leave open.
+
+**Main population zero-counts (asserted):** no 2027 operation is split across two bookings; every surveillance record
+from 2025 carries its booking, so the call's rows carry neither primary.
+
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at rung 0) | Verdict |
+|---|---|---|---|
+| A, 30 consultant-years | counts each booking as a procedure: 0 of 30 kept | the same | miss |
+| B, 30 consultant-years | counts the export under its own consultant and date: 5 of 30 kept | the same | miss |
+
+The full includer (the add-ons merged, each infection linked to its procedure) keeps 61 of 61; it is a stress row, not
+the gate.
+
+Pair ceiling: 33.9 (the cracker on the call at 50.4, the mirror off it at 17.4, each keeping 6 of 61 ask criteria,
+the chart's structure among them).
+Mirror leakage: 9.8 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Leak review
+
+`leak.py task181 --asof 2028-01-04` on the final cut: REVIEW, no LEAK; each line ruled.
+- Sweep 4 on `haisc_outlier_response_guide_2027.pdf` (theatre, infection, counts, surveillance): harmless; the words
+  are the guide's own (what the Centre counts and how a theatre record attributes a procedure), and the guide names
+  no steriliser, tray, trace or repair.
+- Earlier passes' REVIEW lines (the cycle records' temperature column named as a generator would, and the metadata's
+  file descriptions in the note's vocabulary) were fixed in the generator before this run: the column is
+  `sterilising_temperature` and metadata.json states each file's format only.
+
+## Pre-ship check
+
+- Generator checks, the independent verifier and two byte-identical builds: `python3 task181/generator/make.py`.
+- figures_check.py, precut.py, voice-check.py, leak.py, guard.py surface and heart on the final cut.
+- Stage 4 (the leak reader and the determinism judge) from the main thread.
 
 ## Tried and rejected
 

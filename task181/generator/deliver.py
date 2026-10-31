@@ -1,165 +1,180 @@
-"""The golden deliverables: the hotspot brief (PDF with its chart) and the response figures (CSV)."""
+"""figures.json, the golden deliverables, submission.md and metadata.json, every figure from solve.py on target/.
+
+    python3 task181/generator/deliver.py
+"""
 import io
+import json
 import os
+import sys
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-from reportlab.lib import colors  # noqa: E402
-from reportlab.lib.pagesizes import A4  # noqa: E402
-from reportlab.lib.units import mm  # noqa: E402
-from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
+import matplotlib.pyplot as plt   # noqa: E402
+from docx import Document         # noqa: E402
+from docx.shared import Cm, Pt    # noqa: E402
 
-from common import GOLDEN, TRIGGER, write_csv, set_mtime, scrub_pdf  # noqa: E402
-from docs import ST, _fix_pdf_dates  # noqa: E402
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as C   # noqa: E402
+import solve as S    # noqa: E402
+import build as B    # noqa: E402
 
-BRIEF = "dengue_hotspots_mw41_44_2027.pdf"
-CSV = "response_figures_2027.csv"
-DORMS = ["Tabing-Ilog", "Pulong Bayabas", "Malinta", "Kanluran", "Burol", "Silangan"]
-
-
-INK = "#1d2733"
+DOCX = "ssi_review_response_2027.docx"
+CSV = "ssi_review_figures_2027.csv"
+plt.rcParams["svg.hashsalt"] = "task181"
 
 
-def chart_png(names, place, hot):
-    order = sorted(range(len(names)), key=lambda i: (-place[i], names[i]))
-    fig, ax = plt.subplots(figsize=(7.2, 8.4), dpi=150)
-    ys = list(range(len(order)))[::-1]
-    vals = [place[i] for i in order]
-    cols = ["#c0392b" if names[i] in hot else "#8a949c" for i in order]
-    ax.barh(ys, vals, color=cols, height=0.7)
-    ax.set_yticks(ys)
-    ax.set_yticklabels([names[i] for i in order], fontsize=7.5, color=INK)
-    ax.axvline(TRIGGER, color=INK, linewidth=1.0, linestyle=(0, (4, 3)))
-    ax.text(TRIGGER + 5, ys[-1] - 0.3, "trigger, %d cases" % TRIGGER, fontsize=7.5, color=INK, va="center")
-    for y, v, i in zip(ys, vals, order):
-        if names[i] in hot:
-            ax.text(v + 4, y, "%d" % round(v), fontsize=7.5, va="center", color=INK)
-    ax.set_xlabel("Cases with onset in weeks 37 to 40, by barangay where infected (estimated)", fontsize=8, color=INK)
-    ax.set_title("San Roque carries the window's infections; the barangays its workers live in fall under the trigger",
-                 fontsize=8.8, loc="left", color=INK)
-    from matplotlib.patches import Patch
-    ax.legend(handles=[Patch(color="#c0392b", label="Hotspot response, weeks 41 to 44"),
-                       Patch(color="#8a949c", label="No hotspot response")],
-              loc="lower right", fontsize=7.5, frameon=False)
-    for side in ("top", "right"):
-        ax.spines[side].set_visible(False)
-    ax.spines["left"].set_color("#b7bec4")
-    ax.spines["bottom"].set_color("#b7bec4")
-    ax.tick_params(axis="x", labelsize=7.5, colors=INK)
-    ax.tick_params(axis="y", length=0)
-    ax.xaxis.grid(True, color="#e3e7ea", linewidth=0.6)
-    ax.set_axisbelow(True)
-    fig.tight_layout()
+def figures(R):
+    gold, naive = R["gold"], R["naive"]
+    rr = R["rr"]
+    return {
+        "call": {"referred": S.referred(gold), "default_path": S.referred(naive)},
+        "repair": R["repair"].strftime("%Y-%m-%d %H:%M"),
+        "window_procedures": int(((R["P"]["day"] >= C.WIN0) & (R["P"]["day"] <= C.WIN1)).sum()),
+        "exposed_procedures": rr[1],
+        "exposed_ratio": round(rr[0], 1),
+        "exposed": {"observed": int(rr[2]), "expected": round(float(rr[3]), 1)},
+        "unexposed": {"observed": int(rr[4]), "expected": round(float(rr[5]), 1)},
+        "naive": {c: {"observed": v["observed"], "expected": round(v["expected"], 1), "limit": v["limit"]}
+                  for c, v in naive.items()},
+        "traced": {c: {"procedures": v["n"], "observed": v["observed"], "expected": round(v["expected"], 1),
+                       "limit": v["limit"]} for c, v in gold.items()},
+        "ask_a": R["ask_a"], "ask_b": R["ask_b"],
+        "conventions": {"surveillance_days": 30, "implant_days": 90, "limit_centile": 97.5, "link_days": 3,
+                        "heavy_container_kg": 10},
+    }
+
+
+def chart(fig, path):
+    cs = C.CONSULTANTS
+    t = fig["traced"]
+    f, ax = plt.subplots(figsize=(7.2, 3.6), dpi=150)
+    cols = ["#c0392b" if c in fig["call"]["referred"] else "#7f8c8d" for c in cs]
+    ax.bar(range(len(cs)), [t[c]["observed"] for c in cs], color=cols, width=0.6, label="Infections")
+    ax.scatter(range(len(cs)), [t[c]["limit"] for c in cs], marker="_", s=420, color="#1f2d3d", zorder=3,
+               label="Upper control limit")
+    ax.set_xticks(range(len(cs)))
+    ax.set_xticklabels(cs, fontsize=8)
+    ax.set_ylabel("Infections, April to September 2027", fontsize=8)
+    ax.set_title("Infections in each consultant's procedures not reached by the steriliser 3 fault",
+                 fontsize=9)
+    ax.legend(fontsize=7, frameon=False, loc="upper left")
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.tick_params(axis="y", labelsize=8)
+    f.tight_layout()
+    f.savefig(path)
+    plt.close(f)
+
+
+def response_docx(fig, path):
+    doc = Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    doc.add_heading("Response to outlier notice HAISC/ON/2027/031", level=1)
+    doc.add_paragraph("Kooralong Health, general surgery, procedures from 1 April to 30 September 2027. "
+                      "Prepared for the Executive Director of Medical Services, January 2028.")
+    ref = fig["call"]["referred"]
+    doc.add_heading("Consultants referred to professional practice review", level=2)
+    doc.add_paragraph("%s and %s go to professional practice review; no other consultant does." % tuple(ref))
+    doc.add_paragraph(
+        "From 12 May 2027 operations whose instrument tray had last been sterilised by steriliser 3 carried %.1f "
+        "times the infection rate of the department's other operations. Steriliser 3 is the CSSD's one chamber for "
+        "instrument containers over 10 kg, so it sterilises the heavy colorectal trays, among them every tray GS-05 "
+        "and GS-12 use. Set those operations aside and each consultant's infections stand against the Centre's "
+        "expectation for the rest of their procedures."
+        % fig["exposed_ratio"])
+    doc.add_heading("Each consultant against the upper control limit", level=2)
+    tab = doc.add_table(rows=1, cols=6)
+    tab.style = "Light Grid Accent 1"
+    hdr = ["Consultant", "All procedures: infections", "Limit", "Procedures without a steriliser 3 tray",
+           "Infections", "Limit", ]
+    for k, h in enumerate(hdr):
+        tab.rows[0].cells[k].text = h
+    for c in C.CONSULTANTS:
+        n, t = fig["naive"][c], fig["traced"][c]
+        row = tab.add_row().cells
+        row[0].text = c + (" (referred)" if c in ref else "")
+        row[1].text = str(n["observed"])
+        row[2].text = str(n["limit"])
+        row[3].text = str(t["procedures"])
+        row[4].text = str(t["observed"])
+        row[5].text = str(t["limit"])
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", metadata={"Software": None})
-    plt.close(fig)
-    buf.seek(0)
-    return buf
+    png = os.path.join(C.GOLDEN, "_chart.png")
+    chart(fig, png)
+    doc.add_paragraph("")
+    doc.add_picture(png, width=Cm(16))
+    os.remove(png)
+    doc.add_heading("Finding outside the consultants' practice", level=2)
+    doc.add_paragraph("Steriliser 3 has been withdrawn from service pending revalidation of its drying stage, and "
+                      "the trays it sterilised since its 12 May 2027 repair have been recalled for reprocessing.")
+    cp = doc.core_properties
+    cp.author = "Kooralong Health, Office of the Executive Director of Medical Services"
+    cp.title = "Response to outlier notice HAISC/ON/2027/031"
+    import datetime as dt
+    cp.created = dt.datetime(2028, 1, 11, 9, 20)
+    cp.modified = dt.datetime(2028, 1, 13, 16, 5)
+    cp.last_modified_by = cp.author
+    doc.save(path)
+    C.normalise_zip(path, "2028-01-11T09:20:00Z", "2028-01-13T16:05:00Z", app="Microsoft Office Word")
 
 
-def _footer(canvas, doc):
-    canvas.saveState()
-    canvas.setFont("Helvetica", 7)
-    canvas.setFillColor(colors.HexColor("#55606b"))
-    canvas.drawString(18 * mm, 9 * mm, "CESU, City Health Office, Dalisay City   Hotspot response, weeks 41 to 44 of 2027")
-    canvas.drawRightString(A4[0] - 18 * mm, 9 * mm, "Page %d of 2" % doc.page)
-    canvas.restoreState()
-
-
-def brief(fig, names, residence, place):
-    hot = set(fig["call"]["hotspots"])
-    path = os.path.join(GOLDEN, BRIEF)
-    os.makedirs(GOLDEN, exist_ok=True)
-    s = []
-    s.append(Paragraph("MEMORANDUM", ST["h1"]))
-    head = Table([["To", "John Figueroa, MD, City Health Officer"],
-                  ["From", "Tammy Orozco, RN, City Epidemiology and Surveillance Unit"],
-                  ["Date", "11 October 2027"],
-                  ["Subject", "Hotspot response for morbidity weeks 41 to 44 (10 October to 6 November 2027)"]],
-                 colWidths=[20 * mm, 150 * mm])
-    head.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.8), ("FONT", (0, 0), (0, -1), "Helvetica-Bold", 8.8),
-                              ("LINEBELOW", (0, -1), (-1, -1), 0.6, colors.black),
-                              ("TOPPADDING", (0, 0), (-1, -1), 1.5), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5)]))
-    s.append(head)
-    s.append(Spacer(1, 7))
-    s.append(Paragraph(
-        "<b>Send the hotspot response to San Roque, Bagumbayan and Maligaya, and to no other barangay.</b>", ST["p"]))
-    s.append(Paragraph(
-        "Counted by home address, %d barangays are over the plan's trigger of %d cases with onset in weeks 37 to "
-        "40: Bagumbayan, Maligaya and the six barangays beside the Dalisay Industrial Estate (%s). Section 4.3 of "
-        "the plan counts the cases infected in a barangay, and in those six the rise is in their working-age "
-        "residents only, while their children and older residents are at their usual levels; they are the six "
-        "barangays the CBMS 2025 place-of-work table shows sending the most workers to San Roque. Aedes aegypti bites by day, "
-        "so those residents were infected where they work, at the estate." % (
-            fig["over_trigger_by_home_address"], TRIGGER, ", ".join(DORMS)), ST["p"]))
-    s.append(Paragraph(
-        "Placing each barangay's working-age excess at the barangays its workers work in, by the pattern across "
-        "barangays, puts about %d of the window's cases in San Roque, whose own residents account for %d. "
-        "Bagumbayan and Maligaya have outbreaks at home, across every age, and stay over the trigger. Taking "
-        "anything from half of a working resident's day to all of it as spent at work, the same three barangays "
-        "reach the trigger and no other does." % (round(place[names.index("San Roque")]),
-                                                   residence[names.index("San Roque")]), ST["p"]))
-    s.append(Paragraph(
-        "At San Roque the response should cover the estate's grounds as well as the village, with the estate's management and the locators' clinics told of the cluster among their "
-        "workers. The six barangays beside the estate keep their routine search-and-destroy rounds.", ST["p"]))
-    s.append(Spacer(1, 3))
-    data = [["Barangay", "Cases by home address", "Cases infected there (est.)", "Response"]]
-    order = sorted(range(len(names)), key=lambda i: (names[i] not in hot, -place[i], names[i]))
-    for i in order:
-        data.append([names[i], str(residence[i]), str(int(round(place[i]))), "In" if names[i] in hot else "Out"])
-    t = Table(data, colWidths=[42 * mm, 34 * mm, 44 * mm, 22 * mm], repeatRows=1)
-    style = [("FONT", (0, 0), (-1, -1), "Helvetica", 7.5), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.5),
-             ("ALIGN", (1, 0), (-1, -1), "RIGHT"), ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black),
-             ("LINEBELOW", (0, 3), (-1, 3), 0.4, colors.grey),
-             ("TOPPADDING", (0, 0), (-1, -1), 1.0), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.0)]
-    for k, i in enumerate(order, start=1):
-        if names[i] in hot:
-            style.append(("FONT", (0, k), (-1, k), "Helvetica-Bold", 7.5))
-    t.setStyle(TableStyle(style))
-    s.append(t)
-    s.append(Spacer(1, 3))
-    s.append(Paragraph(
-        "Source: CESU dengue line list as notified by 08:00 on 11 October 2027 (notifications classified Not a "
-        "case and residents of other towns left out, a patient notified by two units counted once, per plan "
-        "section 4.1); CBMS 2025, Tables 1, 3 and 4.", ST["small"]))
-    s.append(Paragraph(
-        "Cases infected there are estimates: no record shows where a case was infected, so each barangay's "
-        "working-age cases above its 2022 to 2026 age mix are placed where its employed residents work.",
-        ST["small"]))
-    s.append(PageBreak())
-    s.append(Image(chart_png(names, place, hot), width=170 * mm, height=198 * mm))
-    s.append(Paragraph(
-        "Source: as page 1. Bars are the estimated cases infected in each barangay; the dashed line is the plan's "
-        "trigger of %d cases." % TRIGGER, ST["small"]))
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=14 * mm,
-                            bottomMargin=16 * mm, title="Hotspot response, weeks 41 to 44 of 2027",
-                            author="CESU Dalisay City", creator="CESU Dalisay City", producer="CESU Dalisay City",
-                            subject="", invariant=1)
-    doc.build(s, onFirstPage=_footer, onLaterPages=_footer)
-    _fix_pdf_dates(path)
-    scrub_pdf(path)
-    set_mtime(path)
-
-
-def figures_csv(fig):
+def figures_csv(fig, path):
     rows = []
-    for w, v in sorted(fig["dmc_admissions"].items(), key=lambda kv: int(kv[0])):
-        rows.append(["dengue_admissions", "Dalisay Medical Center", w, v])
-    for w, v in sorted(fig["ddh_admissions"].items(), key=lambda kv: int(kv[0])):
-        rows.append(["dengue_admissions", "Dalisay Doctors' Hospital", w, v])
-    for b, v in sorted(fig["house_index"].items()):
-        rows.append(["house_index_september_2027", b, "", "%.1f" % v])
-    for w, v in sorted(fig["first_positive_ns1"].items(), key=lambda kv: int(kv[0])):
-        rows.append(["patients_first_positive_ns1", "City Health Office Laboratory", w, v])
-    for w, v in sorted(fig["first_positive_igm"].items(), key=lambda kv: int(kv[0])):
-        rows.append(["patients_first_positive_igm", "City Health Office Laboratory", w, v])
-    write_csv(os.path.join(GOLDEN, CSV), ["figure", "item", "morbidity_week", "value"], rows, newline="\n")
+    for k, v in fig["ask_a"].items():
+        c, y = k.split()
+        rows.append(["procedures", c, y, v])
+    for k, v in fig["ask_b"].items():
+        c, y = k.split()
+        rows.append(["infections", c, y, v])
+    C.write_csv(path, ["figure", "consultant", "year", "value"], rows)
 
 
-def make(fig, L):
-    names = L["names"]
-    residence = [int(L["res"][i].sum()) for i in range(len(names))]
-    place = [fig["placement_by_inversion"][n] for n in names]
-    brief(fig, names, residence, place)
-    figures_csv(fig)
+def metadata(n):
+    src = {
+        "ops": "a hospital theatre management system's operations export",
+        "ssi": "an infection prevention team's surgical site infection surveillance export",
+        "scans": "an instrument tracking system's scan export",
+        "cycles": "a CSSD's steriliser cycle records",
+        "register": "a CSSD's instrument set register",
+        "equip": "a CSSD's equipment maintenance log",
+        "rates": "a state surveillance centre's published procedure rates",
+        "notice": "a state surveillance centre's outlier notice",
+        "guide": "a state surveillance centre's outlier response guide",
+        "hygiene": "a hospital's ward hand hygiene audit results",
+        "air": "a building management system's theatre air sampling export",
+    }
+    meta = {
+        "task": "task181",
+        "files": [{"name": B.FILES[k], "source": "synthetic, generated by task181/generator for this task",
+                   "format": B.FILES[k].rsplit(".", 1)[1], "license": "CC0-1.0", "created": "2026-10-31"}
+                  for k in B.FILES],
+        "distractors": [B.FILES[k] for k in B.DISTRACTORS],
+        "deliverables": [DOCX, CSV],
+        "rows": n,
+    }
+    with open(os.path.join(C.TASK, "metadata.json"), "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=1, ensure_ascii=False)
+        f.write("\n")
+
+
+def make(n=None):
+    R = S.solve()
+    fig = figures(R)
+    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as f:
+        json.dump(fig, f, indent=1, sort_keys=True)
+        f.write("\n")
+    os.makedirs(C.GOLDEN, exist_ok=True)
+    for x in os.listdir(C.GOLDEN):
+        os.remove(os.path.join(C.GOLDEN, x))
+    response_docx(fig, os.path.join(C.GOLDEN, DOCX))
+    figures_csv(fig, os.path.join(C.GOLDEN, CSV))
+    import writeup
+    writeup.write(os.path.join(C.TASK, "submission.md"), fig)
+    metadata(n or {})
+    return fig
+
+
+if __name__ == "__main__":
+    print(make()["call"])

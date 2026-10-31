@@ -1,301 +1,272 @@
-"""Build task181's pack: world 0, the shipped files under target/, figures.json and the goldens."""
-import csv
+"""Write the evidence pack under target/ from the truth in world.py, each file as the system that keeps it writes it.
+
+    python3 task181/generator/build.py
+"""
 import datetime as dt
 import json
 import os
-import shutil
 import sys
 
-import numpy as np
-from openpyxl import Workbook, load_workbook
-from openpyxl.styles import Font
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as C   # noqa: E402
+import docs as D     # noqa: E402
+import world as W    # noqa: E402
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import TARGET, GOLDEN, HERE, write_csv, normalise_zip, set_mtime, mw_of, mw_start, TRIGGER  # noqa
-import world as Wd  # noqa
-import linelist  # noqa
-import asks  # noqa
-import docs  # noqa
-import design  # noqa
-import reader  # noqa
-import routes as R  # noqa
-
-WORLD_SEED = 3
 FILES = {
-    "line_list": "dengue_line_list_2022_2027.csv",
-    "cbms": "cbms_2025_dalisay_city.xlsx",
-    "plan": "dalisay_dengue_plan_2027_section4.pdf",
-    "register": "barangays_psgc_2025.csv",
-    "dmc": "dmc_dengue_inpatient_census_2027.csv",
-    "ddh": "ddh_dengue_admissions_2027.xlsx",
-    "larval": "larval_survey_2027_09.csv",
-    "lab": "cho_lab_dengue_results_2027.csv",
-    "runlog": "cho_lab_run_log_2027.json",
-    "vcu": "vcu_operations_2022_2027.csv",
-    "rain": "rainfall_city_gauge_2022_2027.csv",
-    "bulletin": "lbilhz_dengue_update_mw39_2027.pdf",
+    "ops": "theatre_operations_2022_2027.csv",
+    "ssi": "ssi_surveillance_2022_2027.csv",
+    "scans": "instrument_tracking_scans_2027.csv",
+    "cycles": "steriliser_cycles_2027.csv",
+    "register": "cssd_set_register_2027.xlsx",
+    "equip": "cssd_equipment_log_2026_2027.xlsx",
+    "rates": "haisc_procedure_rates_2026.pdf",
+    "notice": "haisc_outlier_notice_kooralong_2027q2.pdf",
+    "guide": "haisc_outlier_response_guide_2027.pdf",
+    "hygiene": "hand_hygiene_audits_2027.csv",
+    "air": "theatre_air_sampling_2027.json",
 }
-DISTRACTORS = ["vcu", "rain", "bulletin"]
+DISTRACTORS = ["hygiene", "air"]
+WOUND = {1: "Clean", 2: "Clean-contaminated", 3: "Contaminated", 4: "Dirty"}
+DESC = {"COLO": ["Right hemicolectomy", "Anterior resection of rectum", "Sigmoid colectomy", "Left hemicolectomy",
+                 "Hartmann's procedure"],
+        "SB": ["Small bowel resection", "Small bowel resection with anastomosis"],
+        "XLAP": ["Laparotomy", "Exploratory laparotomy"],
+        "APPY": ["Laparoscopic appendicectomy", "Appendicectomy"],
+        "CHOL": ["Laparoscopic cholecystectomy", "Cholecystectomy, open"],
+        "HER": ["Inguinal hernia repair with mesh", "Inguinal hernia repair", "Incisional hernia repair with mesh"]}
+THEATRES = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"]
+FILLER = ["OR", "GY", "UR", "EN", "VA"]
 
 
-def world():
-    cases, tables, rates = Wd.simulate_cases(WORLD_SEED)
-    people = Wd.assign_attributes(cases, WORLD_SEED)
-    ev = design.evaluate(people, tables)
-    assert not ev["fails"], ev["fails"]
-    return people, tables, ev
+def fmt(t):
+    return t.strftime("%Y-%m-%d %H:%M")
 
 
-def write_ddh(path, header, sheets):
-    wb = Workbook()
-    first = True
-    for (y, w) in sorted(sheets):
-        if (y, w) < (2027, 30):
+def theatre_csv(path, T):
+    r = C.rng("pack-ops")
+    ops, inf = T["ops"], {i["op"]: i for i in T["inf"]}
+    rows = []
+    book = 7_400_000
+    list_theatre = {}
+    for o in ops:
+        book += int(r.integers(1, 9))
+        o["booking"] = book
+        if o["list_id"] not in list_theatre:
+            list_theatre[o["list_id"]] = "T8" if o["emergency"] else THEATRES[int(r.integers(0, 7))]
+        o["theatre"] = list_theatre[o["list_id"]]
+        code = o["consultant"]
+        if code == "GS-14" and o["start"].date() < dt.date(2025, 7, 1):
+            code = "GS-41"                      # the consultant's code before the 2025 rostering change
+        booked = code
+        # an emergency admitted and booked under the previous on-call consultant and operated by the next one
+        if o["emergency"] and r.random() < 0.32:
+            others = [c for c in C.CONSULTANTS if c != o["consultant"]]
+            booked = others[int(r.integers(0, len(others)))]
+            if booked == "GS-14" and o["start"].date() < dt.date(2025, 7, 1):
+                booked = "GS-41"
+        o["booked"] = booked
+        o["code"] = code
+        knife = o["start"]
+        anaes = knife - dt.timedelta(minutes=int(r.integers(18, 45)))
+        close = knife + dt.timedelta(minutes=o["minutes"])
+        out = close + dt.timedelta(minutes=int(r.integers(8, 22)))
+        desc = DESC[o["proc"]]
+        d = desc[int(r.integers(0, len(desc)))]
+        if o["proc"] == "HER":
+            d = desc[0] if o["mesh"] else desc[1]
+        rows.append([book, 1, o["ur"], o["theatre"], o["start"].date().isoformat(),
+                     "EM" if o["emergency"] else ("PM" if o["list_id"].endswith("PM") else "AM"),
+                     booked, code, d, o["proc"], fmt(anaes), fmt(knife), fmt(close), fmt(out), o["asa"],
+                     WOUND[o["wound"]], "Emergency" if o["emergency"] else "Elective", "Completed", "N",
+                     "Y" if o["mesh"] else "N"])
+        if o["proc"] == "CHOL" and not o["emergency"] and r.random() < 0.06:
+            # an add-on procedure: its own booking before the 2025 theatre system upgrade, a second line after
+            if o["start"].year <= 2024:
+                book += 1
+                rows.append([book, 1, o["ur"], o["theatre"], o["start"].date().isoformat(), rows[-1][5], booked,
+                             code, "Umbilical hernia repair", "HER", fmt(anaes), fmt(knife), fmt(close), fmt(out),
+                             o["asa"], WOUND[o["wound"]], "Elective", "Completed", "N", "N"])
+            else:
+                rows.append([book, 2, o["ur"], o["theatre"], o["start"].date().isoformat(), rows[-1][5], booked,
+                             code, "Umbilical hernia repair", "HER", fmt(anaes), fmt(knife), fmt(close), fmt(out),
+                             o["asa"], WOUND[o["wound"]], "Elective", "Completed", "N", "N"])
+        i = inf.get(o["id"])
+        if i and i["depth"] == "Organ/space" and r.random() < 0.55:
+            rt = dt.datetime.combine(i["onset"] + dt.timedelta(days=int(r.integers(0, 3))), dt.time(int(r.integers(9, 21)),
+                                     int(r.choice([0, 15, 30, 45]))))
+            book += 1
+            rows.append([book, 1, o["ur"], "T8", rt.date().isoformat(), "EM", code, code, "Laparotomy, washout",
+                         "XLAP", fmt(rt - dt.timedelta(minutes=30)), fmt(rt), fmt(rt + dt.timedelta(minutes=75)),
+                         fmt(rt + dt.timedelta(minutes=90)), max(o["asa"], 3), "Dirty", "Emergency", "Completed",
+                         "Y", "N"])
+        if r.random() < 0.025:
+            book += 1
+            rows.append([book, 1, o["ur"] + 7, o["theatre"], o["start"].date().isoformat(), rows[-1][5], code, code,
+                         d, o["proc"], "", "", "", "", "", "", "Elective", "Cancelled", "N", "N"])
+    rows.sort(key=lambda x: (x[4], x[11] or "99", x[0], x[1]))
+    C.write_csv(path, ["booking_no", "procedure_seq", "ur_number", "theatre", "list_date", "session",
+                       "booked_consultant", "responsible_consultant", "procedure", "surveillance_category",
+                       "anaesthetic_start", "knife_to_skin", "wound_closure", "out_of_theatre", "asa_class",
+                       "wound_class", "urgency", "status", "return_to_theatre", "implant"], rows)
+    return len(rows)
+
+
+def ssi_csv(path, T):
+    r = C.rng("pack-ssi")
+    ops = {o["id"]: o for o in T["ops"]}
+    rows = []
+    iid = 20_000
+    for i in sorted(T["inf"], key=lambda x: (x["onset"], x["op"])):
+        o = ops[i["op"]]
+        iid += int(r.integers(1, 4))
+        nurse = ["IPC-04", "IPC-07", "IPC-11", "IPC-15"][int(r.integers(0, 4))]
+        det = "Post-discharge review" if i["post_discharge"] else ("Readmission" if r.random() < 0.3 else "Inpatient")
+        entered = i["onset"] + dt.timedelta(days=int(r.integers(1, 9)))
+        first = i["depth"]
+        legacy = o["start"].year <= 2024
+        opdate = o["start"].date()
+        cons = o["code"]
+        bk = "" if legacy else o["booking"]
+        if legacy:
+            cons = o["booked"]
+            if o["emergency"] and r.random() < 0.4:
+                opdate = opdate - dt.timedelta(days=int(r.integers(1, 3)))
+        # a deep or organ/space infection first recorded as superficial and reclassified
+        if i["depth"] != "Superficial incisional" and r.random() < 0.22:
+            first = "Superficial incisional"
+            rows.append([iid, 1, bk, o["ur"], opdate.isoformat(), o["proc"], cons,
+                         i["onset"].isoformat(), first, det, "Confirmed", entered.isoformat(), nurse])
+            rows.append([iid, 2, bk, o["ur"], opdate.isoformat(), o["proc"], cons,
+                         i["onset"].isoformat(), i["depth"], det, "Confirmed",
+                         (entered + dt.timedelta(days=int(r.integers(3, 15)))).isoformat(), nurse])
+        else:
+            rows.append([iid, 1, bk, o["ur"], opdate.isoformat(), o["proc"], cons,
+                         i["onset"].isoformat(), i["depth"], det, "Confirmed", entered.isoformat(), nurse])
+        # the same infection entered again from the readmission ward by a second nurse
+        if r.random() < 0.06:
+            iid += int(r.integers(1, 4))
+            other = ["IPC-04", "IPC-07", "IPC-11", "IPC-15"][int(r.integers(0, 4))]
+            rows.append([iid, 1, bk, o["ur"], opdate.isoformat(), o["proc"], cons,
+                         (i["onset"] + dt.timedelta(days=int(r.integers(0, 3)))).isoformat(), i["depth"],
+                         "Readmission", "Confirmed", (entered + dt.timedelta(days=int(r.integers(1, 6)))).isoformat(),
+                         other])
+    # suspected wound infections reviewed and found not to meet the definition
+    ops_list = T["ops"]
+    for k in range(int(len(T["inf"]) * 0.18)):
+        o = ops_list[int(r.integers(0, len(ops_list)))]
+        iid += int(r.integers(1, 4))
+        on = o["start"].date() + dt.timedelta(days=int(r.integers(2, 20)))
+        rows.append([iid, 1, "" if o["start"].year <= 2024 else o["booking"], o["ur"], o["start"].date().isoformat(),
+                     o["proc"], o.get("code", o["consultant"]), on.isoformat(), "Superficial incisional", "Inpatient",
+                     "Not SSI", (on + dt.timedelta(days=4)).isoformat(), "IPC-07"])
+    rows = [x for x in rows if x[7] <= C.EXTRACT.isoformat()]
+    rows.sort(key=lambda x: (x[11], x[0], x[1]))
+    C.write_csv(path, ["infection_id", "record_version", "booking_no", "ur_number", "operation_date",
+                       "surveillance_category",
+                       "consultant_code", "onset_date", "depth", "detected", "status", "entered", "entered_by"], rows)
+    return len(rows)
+
+
+def write_scans(path, T, inst, ops_by_id):
+    """Theatre, decontamination and packing scans, then each steriliser load scan with its cycle and the release."""
+    r = C.rng("pack-scans")
+    rows = []
+    for u in inst["uses"]:
+        o = ops_by_id[u["op"]]
+        rows.append([C.to_utc(u["scan"]).strftime("%Y-%m-%dT%H:%M:%SZ"), u["barcode"], "THEATRE %s" % o["theatre"],
+                     o["ur"], "", "TH%02d" % int(r.integers(1, 40))])
+    for p in inst["passes"]:
+        for when, station in ((p["recv"], "DECON RECEIVE"), (p["wash"], "WASHER"), (p["pack"], "PACK BENCH")):
+            rows.append([C.to_utc(when).strftime("%Y-%m-%dT%H:%M:%SZ"), p["barcode"], station, "", "",
+                         "CS%02d" % int(r.integers(1, 30))])
+    for c in inst["cycles"]:
+        if c["kind"] != "Load":
             continue
-        ws = wb.active if first else wb.create_sheet()
-        first = False
-        ws.title = "MW%02d" % w
-        a = mw_start(y, w)
-        b = a + dt.timedelta(days=6)
-        ws["A1"] = "DALISAY DOCTORS' HOSPITAL"
-        ws["A1"].font = Font(bold=True)
-        ws["A2"] = "Dengue admissions log, morbidity week %d (%s to %s)" % (w, a.strftime("%d %b"), b.strftime("%d %b %Y"))
-        ws.append([])
-        ws.append(header)
-        for row in sheets[(y, w)]:
-            ws.append(row)
-        ws.column_dimensions["D"].width = 30
-        ws.column_dimensions["H"].width = 28
-    wb.properties.creator = "DDH Medical Records"
-    wb.properties.lastModifiedBy = "DDH Medical Records"
-    fixed = dt.datetime(2027, 10, 11, 7, 40, 0)
-    wb.properties.created = fixed
-    wb.properties.modified = fixed
-    wb.save(path)
-    normalise_zip(path)
+        for b in c["contents"]:
+            rows.append([C.to_utc(c["start"] - dt.timedelta(minutes=int(r.integers(2, 9)))).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"), b, "STERILISER %s" % c["st"], "", c["no"], "CS%02d" % int(r.integers(1, 30))])
+            if c["result"] == "Pass":
+                rows.append([C.to_utc(c["end"] + dt.timedelta(minutes=int(r.integers(25, 50)))).strftime(
+                    "%Y-%m-%dT%H:%M:%SZ"), b, "STORE RELEASE", "", "", "CS%02d" % int(r.integers(1, 30))])
+    rows.sort(key=lambda x: (x[0], x[1]))
+    C.write_csv(path, ["scan_utc", "barcode", "station", "ur_number", "cycle_no", "operator"], rows)
+    return len(rows)
 
 
-def build():
-    if os.path.isdir(TARGET):
-        shutil.rmtree(TARGET)
-    os.makedirs(TARGET)
-    people, tables, ev = world()
-    popn, grp, W, workers = tables
-    header, rows, persons, first_no = linelist.build_rows(people)
-    p = lambda k: os.path.join(TARGET, FILES[k])  # noqa
-    write_csv(p("line_list"), header, rows)
-    docs.cbms_xlsx(p("cbms"), grp, W, workers)
-    docs.plan_pdf(p("plan"))
-    docs.register_csv(p("register"))
-    stays = asks.hospital_stays(persons)
-    h, drows, dmc_truth = asks.dmc_census(stays)
-    write_csv(p("dmc"), h, drows)
-    oh, sheets, ddh_truth = asks.ddh_sheets(stays)
-    write_ddh(p("ddh"), oh, sheets)
-    lh, lrows, larval_truth = asks.larval_survey()
-    write_csv(p("larval"), lh, lrows)
-    labh, labrows, runlog, lab_truth = asks.laboratory(persons)
-    write_csv(p("lab"), labh, labrows)
-    with open(p("runlog"), "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"laboratory": "City Health Office Laboratory, Dalisay City", "exported": "2027-10-11T07:55:00+08:00",
-                   "runs": runlog}, f, indent=1, ensure_ascii=False)
-        f.write("\n")
-    set_mtime(p("runlog"))
-    docs.operations_log(p("vcu"))
-    docs.rainfall_csv(p("rain"))
-    y27 = sum(1 for q in people if q["year"] == 2027 and q["week"] <= 39)
-    y26 = sum(1 for q in people if q["year"] == 2026 and q["week"] <= 39)
-    docs.bulletin_pdf(p("bulletin"), int(round(y27 * 0.97)), y26)
-    truths = {"dmc": dmc_truth, "ddh": ddh_truth, "larval": larval_truth, "lab": lab_truth}
-    return people, tables, ev, persons, truths
+def cycles_csv(path, inst):
+    r = C.rng("pack-cycles")
+    rows = []
+    for c in inst["cycles"]:
+        items = list(c["contents"])
+        if c["kind"] == "Load":
+            for k in range(int(r.integers(2, 9))):
+                items.append("%s%05d" % (FILLER[int(r.integers(0, len(FILLER)))], int(r.integers(10000, 99999))))
+            r.shuffle(items)
+        prog = "" if c["kind"] != "Load" else ("134C 3.5 min porous load" if c["st"] != "S3" else
+                                                "134C 3.5 min containers")
+        rows.append([c["st"], c["no"], c["kind"], prog, C.to_utc(c["start"]).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                     C.to_utc(c["end"]).strftime("%Y-%m-%dT%H:%M:%SZ"), c["result"],
+                     "%.1f" % (134.0 + float(r.uniform(0.1, 0.9))) if c["kind"] != "Vacuum leak test" else "",
+                     "CS%02d" % int(r.integers(1, 30)), ";".join(items)])
+    rows.sort(key=lambda x: (x[4], x[0]))
+    C.write_csv(path, ["steriliser", "cycle_no", "cycle_type", "program", "start_utc", "end_utc", "result",
+                       "sterilising_temperature", "operator", "items"], rows)
+    return len(rows)
 
 
-# ------------------------------------------------------------------ the golden's figures from the pack
-def golden_main():
-    L = reader.load()
-    res, hist, pop, emp, W = L["res"], L["hist"], L["pop"], L["emp"], L["W"]
-    names = L["names"]
-    inv = R.inversion(res, hist, pop, emp, W)
-    family = {k: R.flagged(f(res, hist, pop, emp, W)) for k, f in R.ROUTES_STEP.items()}
-    gold = R.flagged(inv)
-    assert all(v == gold for v in family.values()), family
-    default = R.flagged(R.residence(res, hist, pop, emp, W))
-    return L, names, gold, default, inv, family
+def hygiene_csv(path):
+    r = C.rng("pack-hygiene")
+    rows = []
+    wards = ["4 East", "4 West", "5 North", "Surgical Short Stay", "ICU", "Theatre Recovery"]
+    for m in range(1, 10):
+        for w in wards:
+            for mom in ["Before patient contact", "Before procedure", "After body fluid exposure",
+                        "After patient contact", "After touching surroundings"]:
+                n = int(r.integers(18, 46))
+                k = int(r.binomial(n, float(r.uniform(0.78, 0.93))))
+                rows.append(["2027-%02d" % m, w, mom, n, k])
+    C.write_csv(path, ["audit_month", "ward", "moment", "moments_observed", "moments_compliant"], rows)
 
 
-def _dt(s):
-    return dt.datetime.strptime(s, "%d/%m/%Y %H:%M")
-
-
-def golden_dmc(path):
-    """DMC admissions: a stay is a run of a patient's ward segments, each starting the minute the last ended
-    with no disposition; a segment after a disposition, or after a gap, starts a new admission."""
-    with open(path, encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    by_no = {}
-    for r_ in rows:
-        by_no.setdefault(r_["hospital_no"], []).append(r_)
-    counts = {w: 0 for w in asks.ASK_WEEKS_HOSP}
-    for hn, segs in by_no.items():
-        segs.sort(key=lambda r_: _dt(r_["ward_in"]))
-        prev = None
-        for r_ in segs:
-            t_in = _dt(r_["ward_in"])
-            continuing = (prev is not None and prev["disposition"] == "" and prev["ward_out"] != ""
-                          and _dt(prev["ward_out"]) == t_in)
-            if not continuing:
-                y, w = mw_of(t_in)
-                if y == 2027 and w in counts:
-                    counts[w] += 1
-            prev = r_
-    return counts
-
-
-def dmc_transfers_out(path):
-    with open(path, encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    return [(_dt(r_["ward_out"]), int(r_["age"]), r_["sex"], r_["barangay"].upper(), r_["city_municipality"].upper())
-            for r_ in rows if r_["disposition"] == "Transferred to other hospital"]
-
-
-def golden_ddh(path, dmc_path):
-    """DDH admissions by the date admitted, a patient moved in from DMC counted at DMC: matched by age, sex
-    and address, admitted at DDH within eight hours of leaving DMC."""
-    outs = dmc_transfers_out(dmc_path)
-    wb = load_workbook(path, data_only=True)
-    counts = {w: 0 for w in asks.ASK_WEEKS_HOSP}
-    used = set()
-    for ws in wb.worksheets:
-        for row in ws.iter_rows(min_row=5, values_only=True):
-            if not row[0]:
-                continue
-            t = dt.datetime.strptime(row[4] + " " + row[5], "%m/%d/%Y %I:%M %p")
-            brgy, town = [x.strip().upper() for x in row[3].rsplit(",", 1)]
-            match = None
-            for k, (t_out, age, sex, b, tw) in enumerate(outs):
-                if k in used:
-                    continue
-                if age == int(row[1]) and sex == row[2] and b == brgy and tw == town and \
-                        dt.timedelta(0) < t - t_out <= dt.timedelta(hours=8):
-                    match = k
-                    break
-            if match is not None:
-                used.add(match)
-                continue
-            y, w = mw_of(t.date())
-            if y == 2027 and w in counts:
-                counts[w] += 1
-    return counts
-
-
-def golden_larval(path):
-    with open(path, encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    houses = {}
-    for r_ in rows:
-        key = (r_["barangay"], r_["purok"], r_["household_code"])
-        pos = (r_["larvae"] == "Y" or r_["pupae"] == "Y") if r_["team"] == "VCU" else int(r_["containers_positive"] or 0) > 0
-        houses[key] = houses.get(key, False) or pos
-    out = {}
-    for b in sorted(set(k[0] for k in houses)):
-        hs = [v for k, v in houses.items() if k[0] == b]
-        out[b] = round(100.0 * sum(hs) / len(hs), 1)
-    return out
-
-
-def golden_lab(path, logpath):
-    log = json.load(open(logpath, encoding="utf-8"))
-    rejected = {r_["run_id"] for r_ in log["runs"] if r_["qc"] == "Rejected"}
-    with open(path, encoding="utf-8") as f:
-        rows = [r_ for r_ in csv.DictReader(f) if r_["run_id"] not in rejected]
-    first = {}
-    for r_ in sorted(rows, key=lambda r_: (dt.datetime.strptime(r_["collected_on"], "%d/%m/%Y"), r_["specimen_id"])):
-        who = (r_["patient_initials"], r_["date_of_birth"], r_["sex"])
-        if r_["result"] == "Positive" and who not in first:
-            first[who] = r_
-    counts = {(t, w): 0 for t in ("NS1", "IgM") for w in asks.ASK_WEEKS_LAB}
-    for r_ in first.values():
-        y, w = mw_of(dt.datetime.strptime(r_["collected_on"], "%d/%m/%Y").date())
-        t = "NS1" if r_["test"].startswith("NS1") else "IgM"
-        if y == 2027 and w in asks.ASK_WEEKS_LAB:
-            counts[(t, w)] += 1
-    return counts
-
-
-def figures(truths):
-    L, names, gold, default, inv, family = golden_main()
-    p = lambda k: os.path.join(TARGET, FILES[k])  # noqa
-    dmc = golden_dmc(p("dmc"))
-    ddh = golden_ddh(p("ddh"), p("dmc"))
-    larv = golden_larval(p("larval"))
-    lab = golden_lab(p("lab"), p("runlog"))
-    assert dmc == truths["dmc"], (dmc, truths["dmc"])
-    assert ddh == truths["ddh"], (ddh, truths["ddh"])
-    assert larv == truths["larval"], (larv, truths["larval"])
-    assert lab == truths["lab"], (lab, truths["lab"])
-    fig = {
-        "call": {"hotspots": sorted(names[i] for i in gold),
-                 "trigger": TRIGGER, "window": "morbidity weeks 37 to 40, 2027", "response": "weeks 41 to 44"},
-        "default_path": sorted(names[i] for i in default),
-        "dmc_admissions": {str(w): dmc[w] for w in asks.ASK_WEEKS_HOSP},
-        "ddh_admissions": {str(w): ddh[w] for w in asks.ASK_WEEKS_HOSP},
-        "house_index": larv,
-        "first_positive_ns1": {str(w): lab[("NS1", w)] for w in asks.ASK_WEEKS_LAB},
-        "first_positive_igm": {str(w): lab[("IgM", w)] for w in asks.ASK_WEEKS_LAB},
-        "weeks": {"window": [37, 40], "response": [41, 44], "admissions": list(asks.ASK_WEEKS_HOSP),
-                  "laboratory": list(asks.ASK_WEEKS_LAB)},
-        "plan_sections": ["4.1", "4.2", "4.3", "4.4", "4.5", "4.6"],
-        "working_age_band": [15, 64],
-        "shares_at_work": [0.5, 0.6, 0.7, 0.8, 1.0],
-        "over_trigger_by_home_address": len(default),
-        "placement_by_inversion": {names[i]: round(float(inv[i]), 1) for i in range(len(names))},
-        "residence_counts": {names[i]: int(L["res"][i].sum()) for i in range(len(names))},
-    }
-    with open(os.path.join(HERE, "figures.json"), "w", encoding="utf-8") as f:
-        json.dump(fig, f, indent=1, ensure_ascii=False, sort_keys=True)
-        f.write("\n")
-    return fig, L
-
-
-COVERS = {
-    "line_list": "dengue notifications to the city surveillance unit, January 2022 to the extract of 11 October 2027",
-    "cbms": "Community-Based Monitoring System 2025 tables for the city: population, employment, place of work",
-    "plan": "the City Health Office's dengue plan for 2027, section 4 (surveillance and the hotspot response)",
-    "register": "the city's barangays with their codes, districts, areas and creation notes",
-    "dmc": "Dalisay Medical Center's dengue inpatient census, late July to the extract",
-    "ddh": "Dalisay Doctors' Hospital's dengue admissions log by week of entry, late July to the extract",
-    "larval": "the household larval survey of September 2027",
-    "lab": "the City Health Office laboratory's dengue test results, July to October 2027",
-    "runlog": "the City Health Office laboratory's ELISA run log with quality-control status",
-    "vcu": "the Vector Control Unit's activity log, 2022 to August 2027",
-    "rain": "daily rainfall at the city gauge, 2022 to October 2027",
-    "bulletin": "the inter-local health zone's dengue update for weeks 1 to 39 of 2027",
-}
-
-
-def metadata():
-    meta = {
-        "task": "task181",
-        "decision": "Which barangays of Dalisay City receive the dengue hotspot response for morbidity weeks 41 to 44 "
-                    "of 2027, with the response figures for the hospitals, the larval survey and the laboratory.",
-        "deliverables": ["dengue_hotspots_mw41_44_2027.pdf", "response_figures_2027.csv"],
-        "distractor_files": ["target/" + FILES[k] for k in DISTRACTORS],
-        "files": {("target/" + FILES[k]): {"source": "synthetic, generated by generator/build.py",
-                                            "date": "2027-10-11", "license": "CC0-1.0", "covers": COVERS[k]}
-                  for k in FILES},
-    }
-    path = os.path.join(os.path.dirname(HERE), "metadata.json")
+def air_json(path):
+    r = C.rng("pack-air")
+    recs = []
+    d = dt.date(2027, 1, 6)
+    while d <= C.WIN1:
+        for t in THEATRES:
+            recs.append({"theatre": t, "sampled": d.isoformat(), "state": "at rest",
+                         "particles_0_5um_m3": int(r.integers(9000, 32000)),
+                         "settle_plate_cfu": int(r.poisson(1.2))})
+        d += dt.timedelta(days=14)
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(meta, f, indent=1, ensure_ascii=False)
+        json.dump({"system": "Kooralong Hospital BMS theatre monitoring", "exported": "2028-01-04T09:12:00+11:00",
+                   "records": recs}, f, indent=1)
         f.write("\n")
+    C.set_mtime(path)
+
+
+def build(target=C.TARGET):
+    os.makedirs(target, exist_ok=True)
+    for n in os.listdir(target):
+        os.remove(os.path.join(target, n))
+    T = W.build_truth()
+    ops_by_id = {o["id"]: o for o in T["ops"]}
+    p = lambda k: os.path.join(target, FILES[k])
+    n_ops = theatre_csv(p("ops"), T)
+    n_ssi = ssi_csv(p("ssi"), T)
+    n_scans = write_scans(p("scans"), T, T["inst"], ops_by_id)
+    n_cyc = cycles_csv(p("cycles"), T["inst"])
+    D.set_register(p("register"), T["inst"])
+    D.equipment_log(p("equip"))
+    D.rates_pdf(p("rates"))
+    D.guide_pdf(p("guide"))
+    D.notice_pdf(p("notice"), T)
+    hygiene_csv(p("hygiene"))
+    air_json(p("air"))
+    return T, dict(ops=n_ops, ssi=n_ssi, scans=n_scans, cycles=n_cyc)
 
 
 if __name__ == "__main__":
-    import deliver
-    people, tables, ev, persons, truths = build()
-    fig, L = figures(truths)
-    deliver.make(fig, L)
-    metadata()
-    print("hotspots", fig["call"]["hotspots"])
-    print("default", fig["default_path"])
-    print("rows in the line list", len(L["rows"]))
+    T, n = build()
+    print(n)

@@ -1,82 +1,59 @@
 ## Tags
 
-> **Domain:** Epidemiology and public health, disease surveillance and outbreak anomaly detection.
+> **Domain:** Healthcare delivery and health economics, provider quality and risk adjustment.
 > **Analytical objective:** Anomaly detection and diagnostics.
 
 ## 1. Final Recommendation
 
-**Send the hotspot response for morbidity weeks 41 to 44 to San Roque, Bagumbayan and Maligaya, and to no other barangay.**
-San Roque is where the window's cases were infected far past the plan's trigger of 40, at the Dalisay Industrial Estate, though its own residents number only 14 of the cases. Not Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol or Silangan, which are over 40 by home address only because their working residents were infected at the estate. Bagumbayan and Maligaya stay in: their outbreaks are at home, across every age.
+**Refer GS-16 and GS-21 to professional practice review for the site infections after their April to September 2027 operations, and no other consultant.** Their infections stand above the Centre's control limit in the procedures steriliser 3's faulty loads never reached. Not GS-05 and GS-12, whose excess came from instrument trays steriliser 3 sterilised after its 12 May 2027 repair: with those operations set aside, each sits inside the limit.
 
 ## 2. Critical Components
 
-1. The plan counts the window's cases where they were infected (section 4.3), and no shipped file records a place of infection, so it is estimated.
-2. By home address, Bagumbayan, Maligaya, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan are over 40 and San Roque is under it.
-3. In the six barangays beside the estate the rise is among working-age residents only, and CBMS Table 4 puts a large share of their workers in San Roque.
-4. Placing each barangay's working-age cases where its workers work puts San Roque, Bagumbayan and Maligaya at 40 or more and every other barangay under it, at any share of the working day from a half to all of it and by the inversion of Table 4.
+1. Counted against the Centre's upper control limit on all their procedures, GS-05, GS-12, GS-16 and GS-21 are above it.
+2. From the 12 May 2027 repair, operations whose tray was last sterilised by steriliser 3 had 115 infections against 21.7 expected, 4.3 times the rate of the department's other procedures.
+3. Steriliser 3 is the CSSD's one chamber for instrument containers over 10 kg, so it sterilises every preference tray GS-05 and GS-12 own and half of GS-21's, and their operations carry most of the exposure.
+4. With the exposed operations set aside, GS-16 and GS-21 stay above the limit (GS-16 35 against 22; GS-21 26 against 16) and GS-05 and GS-12 fall inside it (GS-05 4 against 11; GS-12 5 against 12).
 
 ## 3. Step-by-Step Solution
 
-1. From dengue_line_list_2022_2027.csv, kept each case number's latest row, dropped Not a case and residents of other towns, merged patients notified twice (same initials, sex, age, barangay and onset), mapped spellings and Santo Tomas Puroks 5 to 8 to Santo Tomas Norte, and dated each case by onset or, where blank, consultation (plan 4.1, 4.2): by home address eight barangays have 40 or more cases with onset in weeks 37 to 40.
-2. Measured each barangay's working-age cases (15 to 64) in the window against its own 2022 to 2026 ratio of working-age to other cases: the six barangays beside the estate carry nearly all the excess.
-3. Fitted each barangay's rate as a workplace to the barangays' excess against their employed residents' place-of-work counts in cbms_2025_dalisay_city.xlsx Table 4 (non-negative least squares) and placed the excess there, and split every working-age case by the Table 3 employment rate and Table 4 shares at 0.5 to 1.0 of the day at work: San Roque, Bagumbayan and Maligaya reach 40 under every placement, no other barangay does.
-4. Hospitals: in dmc_dengue_inpatient_census_2027.csv, stitched each hospital number's ward segments into stays (a segment starting the minute the last ended with no disposition continues it) and counted stays by first ward entry; in ddh_dengue_admissions_2027.xlsx, counted every weekly sheet's rows by date admitted (month first) less the patients moved from Dalisay Medical Center, matched by age, sex and address within eight hours of the transfer (plan 4.4).
-5. Larval survey: keyed each house by barangay, purok and house number, a house positive where any row found larvae or pupae, and took positive houses over houses inspected (plan 4.6).
-6. Laboratory: removed the runs cho_lab_run_log_2027.json rejects, took each person (initials, birth date and sex) at the collection week of the first positive result, by test (plan 4.5).
-7. Recommendation: send the hotspot response to San Roque, Bagumbayan and Maligaya.
+1. From theatre_operations_2022_2027.csv, kept completed procedures in the Centre's categories on their principal line, dropped returns to theatre, merged an add-on booked on its own (same patient, theatre and incision) into its operation, read GS-41 as GS-14, and took each risk index and expected infection from haisc_procedure_rates_2026.pdf (incision to closure against the cut-point).
+2. From ssi_surveillance_2022_2027.csv, kept each infection's latest confirmed record and linked it to its procedure (by booking from 2025; before that by patient, category and the procedure up to three days after the recorded date), inside 30 days or 90 with an implant, once per procedure at its deepest level.
+3. Set each consultant's April to September 2027 infections against the upper control limit, the 97.5th centile of a Poisson count at their expected number: GS-05, GS-12, GS-16 and GS-21 above it.
+4. Matched each theatre scan in instrument_tracking_scans_2027.csv (UTC, read in Melbourne time) to its operation by patient and theatre, and took each scanned item's last passed load before the scan from steriliser_cycles_2027.csv: 362 window procedures had an item from steriliser 3 after its return to service at 14:40 on 12 May 2027 (cssd_equipment_log_2026_2027.xlsx), at 4.3 times the rate.
+5. Compared each consultant's infections in the procedures left with the limit for their expected number: GS-16 and GS-21 above it, every other consultant inside; giving the exposed procedures their own rate instead files the same consultants.
+6. Ask figures: each consultant's procedures in 2022 to 2024 as in step 1, and the infections linked to those procedures as in step 2, each under the procedure's responsible consultant.
+7. Recommendation: refer GS-16 and GS-21.
 
 ## 4. Deliverable Answers
 
-### dengue_hotspots_mw41_44_2027.pdf
+### ssi_review_response_2027.docx
 
-1. Barangays going under the response: San Roque, Bagumbayan, Maligaya.
-2. Every other barangay marked out, Tabing-Ilog, Pulong Bayabas, Malinta, Kanluran, Burol and Silangan among them.
-3. Bar chart on page 2: the window's cases infected in each barangay, the trigger of 40 drawn across it, San Roque, Bagumbayan and Maligaya in red.
+1. Consultants referred to professional practice review: GS-16 and GS-21.
+2. Every other consultant marked out: GS-03, GS-05, GS-08, GS-11, GS-12, GS-14, GS-19 and GS-23.
+3. Chart: each consultant's infections in the procedures the steriliser 3 fault did not reach against their upper control limit, with GS-16 and GS-21, the only bars over it, in red.
+4. Finding outside the consultants' practice: steriliser 3, from its repair on 12 May 2027.
 
-### response_figures_2027.csv
+### ssi_review_figures_2027.csv
 
-1. Dalisay Medical Center dengue admissions, whole numbers:
-   - Week 33: 54
-   - Week 34: 65
-   - Week 35: 68
-   - Week 36: 79
-   - Week 37: 80
-   - Week 38: 68
-   - Week 39: 53
-   - Week 40: 60
-2. Dalisay Doctors' Hospital dengue admissions, whole numbers:
-   - Week 33: 33
-   - Week 34: 31
-   - Week 35: 58
-   - Week 36: 39
-   - Week 37: 42
-   - Week 38: 27
-   - Week 39: 40
-   - Week 40: 32
-3. House index, September 2027 round, per cent to one decimal:
-   - Bayanihan: 15.4
-   - Dila: 24.1
-   - Liwayway: 13.1
-   - Lumbia: 18.8
-   - Mabini: 12.7
-   - Mangga: 25.8
-   - Parian: 17.0
-   - Rizal: 4.5
-   - San Isidro: 4.9
-   - Santa Cruz: 15.1
-   - Tagumpay: 20.9
-   - Talon: 20.7
-4. Patients whose first positive dengue test was an NS1, whole numbers:
-   - Week 35: 52
-   - Week 36: 60
-   - Week 37: 52
-   - Week 38: 57
-   - Week 39: 68
-   - Week 40: 31
-5. Patients whose first positive dengue test was an IgM, whole numbers:
-   - Week 35: 7
-   - Week 36: 10
-   - Week 37: 9
-   - Week 38: 10
-   - Week 39: 10
-   - Week 40: 5
+1. Procedures, whole numbers:
+   - GS-03: 2022 552, 2023 556, 2024 525
+   - GS-05: 2022 501, 2023 489, 2024 526
+   - GS-08: 2022 563, 2023 536, 2024 563
+   - GS-11: 2022 536, 2023 540, 2024 573
+   - GS-12: 2022 515, 2023 536, 2024 505
+   - GS-14: 2022 556, 2023 561, 2024 550
+   - GS-16: 2022 515, 2023 513, 2024 528
+   - GS-19: 2022 561, 2023 566, 2024 550
+   - GS-21: 2022 497, 2023 484, 2024 530
+   - GS-23: 2022 541, 2023 560, 2024 542
+2. Infections after them, whole numbers:
+   - GS-03: 2022 17, 2023 17, 2024 14
+   - GS-05: 2022 28, 2023 29, 2024 26
+   - GS-08: 2022 16, 2023 24, 2024 22
+   - GS-11: 2022 18, 2023 17, 2024 17
+   - GS-12: 2022 27, 2023 26, 2024 34
+   - GS-14: 2022 26, 2023 15, 2024 15
+   - GS-16: 2022 28, 2023 30, 2024 36
+   - GS-19: 2022 16, 2023 22, 2024 26
+   - GS-21: 2022 33, 2023 29, 2024 23
+   - GS-23: 2022 15, 2023 20, 2024 11
