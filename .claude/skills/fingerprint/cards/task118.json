@@ -1,18 +1,18 @@
 {
   "task": "task118",
-  "architecture": "v4",
-  "drawn": "2026-10-27",
+  "architecture": "v5",
+  "drawn": "2026-10-31",
   "slot_note": "",
-  "domain": "economics",
-  "subdomain": "public-finance",
-  "client_domain": "economics-econometrics",
-  "niche": "an island's 2027 Budget envelope of GBP 1.5 million, given by the legislature's amendment to one of five excise duties (beer, cider, wine, spirits, road fuel), sized by the excess burden the cut removes in the Budget year",
+  "domain": "energy-systems-utilities",
+  "subdomain": "generation-capacity-planning",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a city-owned electric utility's 2027 demand-response budget that can expand one program, each valued at the load it would take off the design year's system peak hour in the resource adequacy plan",
   "objective": "opportunity-sizing-decision",
-  "shape": "07",
+  "shape": "other",
   "decision_type": "pick_one_of_n",
-  "answer_unit": "currency",
-  "answer": "spirits, about GBP 0.9 million of excess burden removed in 2027 (cider next at about GBP 0.4 million)",
-  "answer_source": "submission.md block 1; golden budget_2027_duty_cut_paper.docx and budget_2027_duty_envelope.xlsx; generator/figures.json",
+  "answer_unit": "named_option",
+  "answer": "to be filled at ship",
+  "answer_source": "to be filled at ship",
   "gap": [
     "objective",
     "time"
@@ -21,73 +21,76 @@
     "none"
   ],
   "generators": [
-    "G1",
     "G13",
-    "G16"
+    "G7",
+    "G14"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "binding_constraint",
   "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": true,
+  "stump_strategy": "binding_constraint",
+  "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and rule correctly estimates each duty's price elasticity from the Statistics Office's quarterly clearances and prices by a static log-log fit, sizes each cut to the GBP 1.5 million envelope after buyers respond and values the gain as the cut's Harberger triangle, filing cider at about GBP 0.2 million; with the whole wedge on the same static or the long-run elasticity they file road fuel; only the whole wedge over the response made within 2027 files spirits at about GBP 0.9 million.",
-  "domain_test": "The deciding quantity is the change in excess burden, the welfare economist's measure of a tax's efficiency cost: the value consumers put on the extra units a cut lets them buy above what those units cost to supply, on the demand response the year actually sees; swap in a hospital's wards or a school's places and there is no tax wedge, no excess burden and no demand curve to integrate, so the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:excess-burden-change-on-the-existing-wedge-over-the-budget-year-response",
+  "analyst_test": "A strong analyst who reads every file and rule correctly takes each program's per-unit load reduction at 18:00 the way the load impact protocols do, the treatment-against-holdout difference averaged over the 2024 to 2026 events or a temperature model of it evaluated at the design hour's weather, multiplies it by the units the USD 3.2 million buys and files Cool Credit, the smart-thermostat program, at about 10 to 11 MW; the design year's peak hour falls on the fourth consecutive dispatch day, where the thermostats give about a fifth of a first day's reduction, so Cool Credit adds about 3 MW and the Home Battery Network's 6 MW is the call.",
+  "domain_test": "The deciding quantity is each demand-response program's expected load reduction in the design year's system peak hour, the capacity-accreditation quantity a resource adequacy plan prices, estimated from the programs' measurement and verification records the way a load impact evaluation estimates it; with another field's nouns (a hospital's surge beds against an escalation day) the dispatch trigger, the design-year peak hour and a holdout difference read by consecutive event day stop making sense.",
+  "layer2_family": "allocation_constraints",
+  "layer2_pattern": "own:consecutive-dispatch-depletion",
   "layer1": [
-    "the statistics office's release changed layout in 2012: a workbook of one sheet per duty for 2008 to 2011, a long CSV after, the latest two quarters preliminary",
-    "GST rose from 3 to 5 per cent in 2011 inside the shelf prices; duty rates step each 1 January by uneven amounts, alcohol to the penny and road fuel to a hundredth of a penny",
-    "customs declarations at item level with acceptance times in UTC, corrections lodged as new declarations naming the one they correct, cancellations, repayments naming the release in the same column, exact duplicate rows and each declaration's duty on every item row",
-    "a warehouse register with approvals that ended inside the extract, keepers still consigning to them"
+    "utc-local",
+    "contract-regime-change",
+    "change-only-status-log",
+    "address-string-keys",
+    "settlement-dating",
+    "hour-convention"
   ],
-  "stakeholder_role": "the expert adviser to the island legislature's economic affairs scrutiny panel, which lodges the Budget amendment that places the envelope",
-  "role_family": "policy_adviser",
+  "stakeholder_role": "the utility's resource planning manager, whose resource adequacy plan goes to the city council with the 2027 budget",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "customs_excise_declarations_2025-07_2026-09.csv",
-    "rows": 80653,
-    "entity": "one declaration item",
-    "grain": "declaration x item",
+    "file": "mv_thermostat_panel_2024_2026.csv",
+    "rows": 0,
+    "entity": "one row is one sampled premise's metered energy in one hour of one event day",
+    "grain": "premise x event day x hour",
     "source": "synthetic"
   },
   "forum": "council_or_assembly",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "other",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "the States of Eskerholm, a self-governing island in the British Isles",
-    "currency": "GBP",
-    "org_type": "an island legislature's economic affairs scrutiny panel and its expert adviser; the government's Treasury, Customs and Excise and Statistics Office supply the files",
+    "geography": "Arizona, United States (an invented desert city on Mountain Standard Time all year)",
+    "currency": "USD",
+    "org_type": "city-owned electric utility",
     "invented_names": [
-      "Eskerholm",
-      "Port Haverel",
-      "Ardvane"
+      "Cholla Basin Municipal Utility",
+      "Cool Credit",
+      "Peak Time Rewards",
+      "Business Demand Partners",
+      "Home Battery Network",
+      "Halvern Controls",
+      "Arroyo Demand Services",
+      "Brightwell Storage",
+      "Ridgeway Analytics"
     ],
     "people": [
-      "Rhys Armstrong",
-      "Aimee Miah",
-      "Elaine Hooper",
-      "Benjamin Humphreys"
+      "Corey Cox",
+      "Nina Franklin",
+      "Lisa Jennings",
+      "Kathy Gibson"
     ]
   },
   "deliverables": [
-    "budget_2027_duty_envelope.xlsx",
-    "budget_2027_duty_cut_paper.docx"
+    "dr_capacity_note_2027.docx",
+    "dr_programme_audit_2026.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A fixed revenue envelope given to one of several levies is valued by the welfare loss it removes, which is every extra unit's full existing wedge less half the cut, on the quantity the market actually reaches within the appraisal year; a response read off the long-run or static elasticity credits the slowest-adjusting levy with demand it will not reach in the year, and the cut's own triangle alone credits the most elastic small levy, so each half of the method names a different levy and only both together name the right one.",
-  "driver_concrete": "Spirits, whose 57 per cent wedge meets a demand that adjusts within quarters, removes about GBP 0.9 million of excess burden in 2027 for the GBP 1.5 million envelope; road fuel leads on its static or long-run elasticity (its demand adjusts over years, so 2027 sees about a fifth of it) and cider leads on the cut's triangle alone (the most price-responsive duty, with a small wedge).",
-  "stump": "A competent analyst estimates each duty's price elasticity by a log-log fit of the Statistics Office's quarterly clearances on shelf prices, sizes each cut to the GBP 1.5 million envelope after buyers respond and values it as the cut's own Harberger triangle, filing cider at about GBP 0.2 million where the golden is spirits at about GBP 0.9 million; the step that lands them there is valuing a cut by its own triangle on a static elasticity, when every extra litre a cut buys still carries the whole of the duty and GST on it and the Budget year sees only the part of each duty's response that has arrived by then.",
+  "question_form": "what",
+  "driver": "A resource's response is measured on occasions that mostly stand alone, while the occasion the decision prices comes at the end of a run of consecutive calls that the operating rule makes out of the design conditions, and a response drawn from a buffer that refills only partly between calls falls with each consecutive call, so every average or condition-matched measure overstates exactly the resources whose buffer empties and the resource that refills between calls wins.",
+  "driver_concrete": "Each program's 2027 accreditation is its expected reduction at 18:00 on Friday 23 July 2027, the design year's system peak hour, which OP-7's weekday 110F trigger makes the fourth consecutive dispatch day; the thermostats, the rebate customers and the commercial sites each give less on every consecutive event day (on the record's fourth days about a fifth, two fifths and three tenths of a first day's reduction), while the batteries recharge from rooftop solar between events, so the batteries' 6 MW beats the Cool Credit figure every average, temperature-matched or heat-build-up model files.",
+  "stump": "The default path averages each program's 18:00 treatment-against-holdout reduction over the 2024 to 2026 events, or fits it on the day's high and reads the fit at the design hour's 117F, multiplies by the units the USD 3.2 million buys and files Cool Credit at about 10 to 11 MW; it never places the design peak hour in its run of dispatch days, so it misses that the three weekdays before it clear OP-7's trigger and that on the record's fourth consecutive event days the thermostats give about a fifth of a first day's reduction.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task184": "task184 v1 reads a shared resource's effect against a site's own plan the site never meets; nothing here is read against a plan: a levy cut is valued by the whole existing wedge on every extra unit the Budget year's demand response reaches.",
-    "task198": "task198 ranks suppliers on a reported value capped at the lesser of ask and entitlement; no value here is capped: the excess burden a cut removes is computed from each duty's demand response and its full tax wedge.",
-    "task472": "task472 v1 finishes a job only when its slowest parallel stream does; there is no schedule here: the welfare change from cutting one of five levies on a demand that adjusts quarter by quarter.",
-    "task118": "v2 netted a measured gain to the share new to the whole site (one minus a display's conversion); v4 values a levy cut by the full existing wedge on the extra units the Budget year actually reaches, two independent moves on a demand curve."
-  },
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1 (loops 0 to 4, shipped 10-12, reshipped 10-27 after the portal's determinism block): the headlines each desk's own editors already test netted out of the squad's sized gain",
@@ -156,8 +159,40 @@
       "decision_type": "pick_one_of_n",
       "domain": "pharmacology-pharmacoepidemiology-safety",
       "subdomain": "benefit-risk-assessment"
+    },
+    {
+      "architecture": "v4",
+      "domain": "economics",
+      "subdomain": "public-finance",
+      "objective": "opportunity-sizing-decision",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G1",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "pick_one_of_n",
+      "stump_strategy": "other",
+      "driver": "A fixed revenue envelope given to one of several levies is valued by the welfare loss it removes, which is every extra unit's full existing wedge less half the cut, on the quantity the market actually reaches within the appraisal year; a response read off the long-run or static elasticity credits the slowest-adjusting levy with demand it will not reach in the year, and the cut's own triangle alone credits the most elastic small levy, so each half of the method names a different levy and only both together name the right one.",
+      "stump": "A competent analyst estimates each duty's price elasticity by a log-log fit of the Statistics Office's quarterly clearances on shelf prices, sizes each cut to the GBP 1.5 million envelope after buyers respond and values it as the cut's own Harberger triangle, filing cider at about GBP 0.2 million where the golden is spirits at about GBP 0.9 million; the step that lands them there is valuing a cut by its own triangle on a static elasticity, when every extra litre a cut buys still carries the whole of the duty and GST on it and the Budget year sees only the part of each duty's response that has arrived by then.",
+      "fate": "spent 2026-10-31 at the portal: the call landed three times and the determinism block failed twice; the golden was the field's own welfare method (the existing wedge plus the cut's triangle on the year's partial-adjustment quantity), which the portal's responses applied by reflex, so the slot re-roots into a new world, dataset, decisive step and prompt shell"
     }
   ],
-  "notes": "Architecture 4, re-rooted 2026-10-27 after architecture 3's FAILED_TO_STUMP, the author choosing a new domain; stump_strategy other: the welfare measure on the existing wedge and the Budget-year response path, two independent moves, neither a vocabulary strategy.",
-  "registered": "2026-10-28T02:37:34Z"
+  "lineage_shells": [
+    {
+      "question form": "how-much",
+      "second-sentence opener": "put",
+      "rounding opener": "give",
+      "deliverable set": "docx+xlsx"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-10-31T17:17:16Z"
 }

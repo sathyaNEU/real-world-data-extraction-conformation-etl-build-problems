@@ -1,275 +1,308 @@
-# task118 · Which excise duty the 2027 Budget envelope cuts, sized by the excess burden it removes (architecture 4)
+# task118 design note, architecture 5
 
-Architectures 1 and 2 (Bightline's headline squad) and 3 (the hypnotic deprescribing team) were each landed at the portal:
-both responses walked the decisive step every time, because a filed sentence or a single file named the quantity it
-turned on. Re-rooted 2026-10-27 at the author's direction into a new client domain, economics, with the decisive step a
-conjunction of two independent upstream moves, each partial fix landing on a different wrong duty. Card v4, lineage
-v1 to v3.
+The slot's fifth architecture: a city-owned electric utility's 2027 demand-response budget, in a new world, dataset,
+generator and prompt shell. Architecture 4 (an island legislature's duty envelope) is spent at the portal; its card
+entry moved to the lineage. Earlier architectures' notes live in git history and in `## Tried and rejected` below.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task118.json`, architecture v4, registered 2026-10-28 02:37Z. Guard verdict
-  WARN after the redraws at check: the house subdomain spelled public-finance (the task type
-  elasticity-welfare-policy-impact-estimation sits in the client domain economics-econometrics); the decisive pattern
-  moved from G13 to G1, because (objective, G13, method_or_model_selection) repeats task270 in the batch and task272 v2,
-  and G1 is the honest lead move (every extra unit a cut buys carries the whole existing wedge); the structural tests
-  against task184 v1, task198 v4, task472 v1 and this slot's v2 answered by differentiation lines on the card.
-  Nearest driver on file 0.04.
-- **WARNs answered:** `overuse.org_family` (a government treasury sets duties); `overuse.objective` (the number's
-  objective); `repeat.decision` and `repeat.question_form` (the Budget gives the envelope to one duty, so the form is
-  which); `repeat.deliverables` (a Budget workbook and a Treasury paper are what a chief economist sends).
-- **Pairing:** Economics (house domain, client domain Economics & Econometrics, task type
-  elasticity-welfare-policy-impact-estimation), for Opportunity Sizing & Decision Support, a never-built pairing: the
-  States of Eskerholm's 2027 Budget gives up GBP 1.5 million of duty and GST to cut one of five excise duties (beer,
-  cider, wine, spirits, road fuel), sized by the excess burden the cut removes in the Budget year. Pool: each duty's
-  excess burden; realisable: the part the envelope's cut removes in 2027, on the demand the year actually reaches.
-- **Strategy:** `other` (two independent moves, neither a vocabulary strategy), Gate G `method_or_model_selection`,
-  generators G1 (each extra unit's value is the whole existing wedge, not half the cut), G13 (the Budget year's
-  response against the static or long-run response), G16; gap objective and time; Layer 2 `field_method`, pattern
-  `own:excess-burden-change-on-the-existing-wedge-over-the-budget-year-response`.
-- **The conjunction, measured on the built pack (figures in GBP million removed in 2027):** the whole wedge over the
-  response made within 2027 files spirits 0.882, 2.16 times cider 0.408; the cut's own triangle on any elasticity files
-  cider (1.21 to 2.49 times); the whole wedge on the static or the long-run elasticity files road fuel (1.76 and 3.40
-  times), whose demand adjusts over years; the long-run elasticity with the triangle files road fuel at 1.15. No
-  hill-climb: fixing the welfare measure alone moves a solver from cider to road fuel, fixing the response alone leaves
-  it on cider.
-- **Screens before the card:** staggered rollouts (task129, task136, task177; a probe landed task137's), conjoint
-  latent classes (task301, task178, task309), regression to the mean (task130 v3), ratio of totals (task198), censored
-  patience in a queue (task148), bunching at a threshold (task157, task174, task270) and collections pilots (task128)
-  are spent; slots on excess burden, deadweight, Harberger, partial adjustment, long-run elasticity, excise, duty and
-  envelope return only task136's additionality and task472's ship tonnage.
-- **Forum, event, organisation (redrawn at stage 3):** council_or_assembly (the States Assembly votes the amendment
-  that places the envelope), vote_or_meeting (the Budget debate on 15 December, the panel meeting on 2 December), other
-  (an island legislature's economic affairs scrutiny panel, which no listed family fits); role policy_adviser (the
-  panel's expert adviser). The draw's furniture (minister_or_cabinet, budget_or_appropriation, government_agency,
-  research_desk) met `heart` BLOCKs once task310, drawn before this card with the same four, was delivered; redrawn,
-  the world rebuilt around the panel, `check` and `heart` WARN only.
-- **People** (`guard.py names --geo GB --seed 118`): Rhys Armstrong, the panel's expert adviser; Aimee Miah, the
-  panel's chair; Elaine Hooper, head of Customs and Excise; Benjamin Humphreys, Statistics Office.
-- **Clone screen (stage 3):** `guard.py heart` WARN (overuse.objective, overuse.gate_g, repeat.decision against task304,
-  repeat.deliverables against task311 and task304); `surface` exit 0, promoting task119 (gap objective and
-  pick_one_of_n, the two commonest values, back to back by number; domains, objectives and surfaces apart, 0.080) and
-  task172 (surface 0.102), both read as history because the ledger row carries architecture 3's portal fate; for the
-  author's adjudication if wanted.
-- **Data-native sentence:** each duty's quarterly clearances answer a price change gradually, road fuel over years
-  and spirits within a few quarters, and every unit a cut adds was held back by the whole of the duty and GST already
-  on it, so the duty whose cut removes most excess burden in the Budget year is neither the one with the most elastic
-  long-run demand nor the one whose cut leaves the biggest triangle.
-- **Shape (07):** the duty, its figure, the next best and its figure (4); each duty's excise accounted for on releases
-  from bonded warehouses in each quarter, October 2025 to September 2026, from Customs' declarations (20); the two
-  files (2): 26 criteria.
+- **Card:** `.claude/skills/fingerprint/cards/task118.json`, architecture v5. **Pairing:** client domain
+  energy-systems-utilities, task type `generation-capacity-planning` (serves OS), objective
+  opportunity-sizing-decision. The headline is a sized opportunity: from the units the USD 3.2 million buys in each
+  program (the pool) to the load those units take off the design year's system peak hour (the realisable), and the
+  sized figures drive the call.
+- **Shape:** other. Criteria: each program's accredited megawatts from the budget (4), the call, the runner-up and the
+  gap (3), the 2026 audit's Cool Credit premises online at 16:00 on each 2026 event day (17), the battery incentive by
+  event month and the premises at the season cap (5), and the commercial capacity payment by month (4): 33, plus the
+  two files.
+- **Strategy and labels:** `binding_constraint` (the buffer each programme draws on is a capacity that binds after
+  consecutive calls; the limit itself changes the pick), Gate G `binding_constraint`, gap objective then time, pattern
+  none, generators G13 (the decision's occasion is not the record's typical one), G7 (the operating procedure fixes
+  when calls happen), G14 (the pooled response does not apply to this occasion). Layer 2 `allocation_constraints`,
+  pattern `own:consecutive-dispatch-depletion` (energy carries no client rigor card).
+- **World:** Cholla Basin Municipal Utility (CBMU), the electric utility of an invented desert city in Arizona,
+  Mountain Standard Time all year, USD. Four programmes: Cool Credit (smart thermostats, Halvern Controls the device
+  platform), Peak Time Rewards (day-ahead alerts with a per-kWh rebate), Business Demand Partners (commercial cooling
+  load through Arroyo Demand Services), Home Battery Network (customer batteries through Brightwell Storage). Ridgeway
+  Analytics runs the programmes' measurement and verification.
+- **Furniture, drawn and checked:** forum `council_or_assembly` (the city council adopts the budget with the resource
+  adequacy plan), forcing `budget_or_appropriation`, org `utility_or_infrastructure`, role `capacity_planner`,
+  artifact `capacity_report` (the 2027 resource adequacy plan's accreditation chapter is the governing document).
+  Personas from `guard.py names --geo US --seed 118`: Corey Cox (resource planning), Nina Franklin (system
+  operations), Lisa Jennings (Ridgeway), Kathy Gibson (Arroyo).
+- **Data-native sentence:** the measurement record holds three summers of event days that mostly stand alone, because
+  OP-7 calls the programmes only on weekdays whose forecast high reaches 110F and the city's heat rarely holds that
+  long, while the design year's peak hour comes on the fourth weekday of a 110F spell; the thermostats' homes, the
+  rebate customers and the commercial buildings each give less on every consecutive call and recover only on a day
+  off, and the batteries recharge from rooftop solar every afternoon, so the record's average day and its hottest days
+  both price the wrong occasion.
+- **Abstraction sentence (stumping Part 6), against the nearest approved builds:** written for this build, "a
+  resource's response falls with its own consecutive use, so its value on the occasion the decision prices is read at
+  the run position the operating rule forces there, not at its average or its weather-matched level". Against 309 (an
+  effect read class by class of an exogenous intensity and carried through a forward event mix), 162 (a device's
+  effect replayed reading by reading through recorded upstream values) and 120 (a peak draw rebuilt as inflow plus the
+  reserve drawn down) the shared sentence would be "the effect is read at the decision's condition", which names no
+  decisive move; the moves differ (an exogenous class, a threshold replay, a storage identity against a state built
+  from the resource's own call history), so no reviewer's sentence fits both builds of any pair. Setting neighbours on
+  file, not approved: 131 (a peak tariff's rebound surge on the design day's whole curve) and 308 (a peaker credited
+  from its sister units' shared fuel outages); neither turns on consecutive calls, and 308's screen of energy-limited
+  demand response over long cold spells died on an unfiled call schedule, which OP-7 files here.
+- **Shell (redrawn with the world):** question form `what`, the second sentence opening on the note itself, the
+  rounding sentence opening on "Megawatts", deliverables `docx+csv`; the dead shell (how-much, put, docx plus xlsx)
+  is in `lineage_shells`. `where` and `csv+pdf` were drawn first and moved when task181's draw took both an hour
+  earlier (`repeat.question_form`, `repeat.deliverables`).
+- **Guard:** `check` PASS on the registered card (2026-10-31T17:17Z). At 16:30 the draft met `ban.pairing` and
+  `ban.org_family` against task464 (energy, opportunity sizing, a utility); the design went on on paper and the card
+  registered once task181's draw moved the window, with no label changed to pass. `repeat.decision` (pick one after
+  task268) is answered by the decision: one budget line expands one programme.
+- **Sources, one line each.** The client's two-layer standard (the field's own analysis decides: a load impact
+  evaluation's per-unit reduction at planning conditions). The California load impact protocols' ex post and ex ante
+  structure (public, the field's method at rungs 0 and 1). Utility demand-response evaluations reporting event-day
+  impacts by consecutive event day and the overnight-recovery argument (public domain knowledge; no text copied). The
+  world, every figure and every file are synthetic, generated by `generator/build.py` under seed 118.
+- **Re-root:** architecture 4's call landed three times at the portal and its determinism block failed twice, with
+  the field's own welfare method as the golden (the card's lineage says so). The cell handed out first
+  (pharmacology benefit-risk, a pharmacist medication review) was screened and left; each screen is a line in
+  `## Tried and rejected`.
+
+## Survivor anatomy
+
+Actor: the property that decides is how many consecutive days a programme had already been called when an hour came, and no file stores it; the event log lists dates, the measurement panels list event dates, and the run a day sits in is a relation between rows of the event log's calendar (a weekend or holiday ends it).
+Link: the design peak hour's place in its run is read by applying OP-7's weekday 110F trigger to the resource adequacy plan's design year (the three weekdays before Friday 23 July clear it, the Monday before does not), and the record's own run positions by applying the calendar to the event log; no key, column or sentence ties the plan's peak hour to the procedure's trigger or the panels to a run.
+Reflex: the field's method for the deciding quantity, a load impact evaluation's treatment-against-holdout reduction at the planning hour (ex post averaged over events, or ex ante from a weather model evaluated at the design hour), sits at rungs 0 and 1 and files Cool Credit.
+Back-test: the textbook route validates: a weather model of each programme's 18:00 reduction fitted on the 2024 and 2025 events predicts the 2026 season's average event reduction within a few per cent for every programme, because 2026's events stand alone as often as the earlier years' did.
+Second use: every file the decisive step reads is in the pack for its own reason: the event log is how every rung finds its event days, the design year is where every rung reads the peak hour's weather, OP-7 sets the event window and the 16:00 start every rung and ask A use, and the panels are every rung's data; deleting the decisive step drops no file.
+Shock: the lower reductions on later days of a run spread across about a third of the record's events and look like the ordinary scatter a weather model leaves (the hottest event days carry both full and small reductions, no season or programme stands out, and the record's largest step, the batteries' 2024 setting, is explained by the contract).
+Pins: the resource adequacy plan files the WHAT in its own accreditation chapter (expected reduction in the design year's system peak hour, operated as the 2027 procedures operate it, per enrolled unit, against the load the same units would draw undispatched, under the contracts in force), and no filed sentence names consecutive days, run position, recovery, fatigue or a buffer.
 
 ## Default path
 
-The strong analyst's route, every field read correctly and every filed sentence of the manual applied (figures from
-the built pack, seed 118; GBP million of excess burden removed in 2027):
-1. Stack the Statistics Office's two layouts (the 2008 to 2011 back-series workbook, one sheet per duty, and the 2012
-   to 2026 long release, preliminary quarters included) into one quarterly series per duty at constant 2026 prices.
-2. Estimate each duty's price elasticity the field's usual way, a log-log fit of clearances on the shelf price with
-   quarter dummies: beer -0.55, cider -1.09, wine -0.59, spirits -0.79, road fuel -0.92.
-3. Take the manual's starting point: the four quarters 2025 Q4 to 2026 Q3 standing for 2027's quarters, the 2026 Q3
-   shelf price, the producer price it implies, the 2027 rates already set, the cut passed in full with GST on top.
-4. Size each duty's cut so that the duty and GST given up in 2027, after buyers respond, is GBP 1.5 million.
-5. Value each cut as its Harberger triangle, half the cut in the tax on a litre times the extra litres: cider 0.204,
-   spirits 0.136, road fuel 0.063, beer 0.039, wine 0.026.
-Ends on: cider, about GBP 0.2 million of excess burden removed in 2027
-Golden: spirits, about GBP 0.9 million removed in 2027 (0.882), cider next at about GBP 0.4 million (0.408), once each
-cut is valued on the whole of the duty and GST still charged on every extra litre it buys and over the response each
-duty makes within 2027, from a demand model with lagged adjustment.
+1. Read the resource adequacy plan's accreditation chapter: each programme counts at its expected reduction in the
+   system peak hour of the design year (Appendix B), per enrolled unit; find the peak hour in `design_year_2027.csv`
+   (Friday 23 July 2027, the hour beginning 18:00, 115F, the day's high 117F).
+2. For each programme take the 18:00 reduction per enrolled unit the way a load impact evaluation does: Cool Credit
+   from the thermostat panel (treatment mean less holdout mean, converting the panel's UTC stamps to MST), Peak Time
+   Rewards from the group means, Business Demand Partners from the verified site reductions, Home Battery Network from
+   the fleet summary (2025 and 2026, under the 3.0 kW setting).
+3. Ex post: average each over the 2024 to 2026 events. Ex ante: fit the reduction on the day's high (and the overnight
+   low or the three days' heat before it) and read the fit at the design hour.
+4. Multiply by the units the USD 3.2 million buys at the cost sheet's per-unit costs (12,307 thermostat premises,
+   50,000 rebate customers, 133 sites, 2,133 batteries) and rank.
+
+Ends on: Cool Credit, about 11 MW (10.4 MW ex ante at 117F; 9.5 MW with the heat build-up)
+Golden: Home Battery Network, about 6 MW (Peak Time Rewards 4, Cool Credit 3, Business Demand Partners 2)
 
 ## Stump sentence
 
-A competent analyst estimates each duty's price elasticity by a log-log fit of the Statistics Office's quarterly
-clearances on shelf prices, sizes each cut to the GBP 1.5 million envelope after buyers respond and values it as the
-cut's own Harberger triangle, filing cider at about GBP 0.2 million; the step that lands them there is valuing a cut by
-its own triangle on a static elasticity, when every extra litre a cut buys still carries the whole of the duty and GST
-on it and 2027 sees only the part of each duty's response that has arrived by then, so spirits removes about GBP 0.9
-million while road fuel, whose drivers adjust over years, removes far less than its static elasticity promises.
+The default path reads each programme's 18:00 reduction as the load impact protocols do, averaged over the record's
+events or matched to the design hour's 117F, and files Cool Credit at about 11 MW; it never places the design peak hour
+in its run of dispatch days, so it misses that OP-7 calls every programme on the three weekdays before it and that on
+the record's fourth consecutive event days the thermostats give about a fifth of a first day's reduction, which puts
+Cool Credit at 3 MW behind the Home Battery Network's 6.
 
 ## Three rules
 
-Task type: economics-econometrics / elasticity-welfare-policy-impact-estimation, which serves Opportunity Sizing: a fixed revenue envelope placed on the excise duty whose cut removes the most excess burden in the Budget year, sized from the pool of each duty's excess burden to the part the envelope's cut removes in 2027.
-Domain test: the deciding quantity is the excess burden a duty cut removes in one year, the public-finance welfare measure built from each good's demand response to its price and the tax wedge between what buyers pay and what supply costs; the field estimates it, and two of its own distinctions decide the call: the change in excess burden when an existing tax is cut against the triangle of the cut alone, and the response a year sees against the response in the long run.
-Swap: put "clinic" for "duty", "patients" for "litres" and "waiting time" for "price": no tax wedge stays on the extra units, no demand curve prices them, no GST sits on a duty, and no consumer adjusts to a permanent price change over years; the question stops being a question, so the domain is the task and not its backdrop.
-Layer 1: the organisations' own systems produce every mess item: the Statistics Office's release changed layout in 2012 (a workbook of one sheet per duty for 2008 to 2011 against a long CSV after), its 2026 Q2 and Q3 are preliminary, GST rose from 3 to 5 per cent in April 2011 inside the shelf prices, duty rates step on 1 January by uneven amounts, alcohol rates are set to the penny and road fuel's to a hundredth of a penny; Customs' extract records acceptance in UTC, carries amendments as versions, cancellations, repayments, exact duplicate rows and each declaration's duty on every item row. R2 asserts each call-side item leaves the duty and both graded figures where they are.
-Layer 2: field_method, the change in excess burden from cutting a tax that already distorts the market, valued on the whole wedge still charged on each extra litre plus half the cut, over the quantity response each duty makes within the Budget year from a demand model with lagged adjustment fitted on the quarterly series.
-Decisive step: valuing each duty's cut on the whole wedge of duty and GST still charged on every extra litre, over the response made by each quarter of 2027 from the fitted lagged adjustment, the conjunction of two moves each of which alone files a different wrong duty (the cut's own triangle files cider, the static or long-run response files road fuel).
-Not semantics: every field and term read correctly (shelf prices at constant 2026 prices, clearances in thousand litres, the 2027 rates, GST on the duty-inclusive price, the Budget year) still leaves the default route on cider and the static route on road fuel; no column, code, unit or definition carries the welfare measure or the response horizon, which are modelling choices a strong analyst makes the easy way.
-Not rule application: no filed rule says how to measure the excess burden a cut removes or how buyers' response unfolds within the year; the manual files the year, the starting point, the pass-through, the revenue after response and which taxes count, and executing every one of those sentences with a log-log elasticity and the cut's triangle files cider (1.50 times spirits); with the whole wedge and that elasticity, road fuel (1.76 times).
-Analyst test: Yes. A strong analyst who stacks both layouts cleanly, applies every sentence of the manual, fits log-log elasticities with quarter dummies and values each cut by its Harberger triangle files cider at about GBP 0.2 million, and one who counts the whole wedge on the same static elasticities files road fuel; only the whole wedge over the response made within 2027 files spirits at about GBP 0.9 million.
-Estimand: the manual files the population (2027's buyers of each duty's goods, none yet observed, at the latest four published quarters standing for 2027's quarters), the outcome (excess burden removed in calendar 2027, every tax on the good counting), the unit (GBP), the measure's sizing (the cut that gives up GBP 1.5 million of duty and GST in 2027 after buyers respond, passed in full to the shelf price with GST on top) and the comparison (the most excess burden removed for the sum, the next best beside it); the welfare measure and the response horizon are left open.
-No decoy: nothing is planted to be caught: no memo, draft, voice or stakeholder figure argues for a duty or a method, the thread sets the envelope and the panel's two requests only, and no file ranks the duties; the three distractors are the Treasury's monthly cash receipts, the price survey's shop quotes and travellers' allowance declarations.
-No certified replay: no shipped document computes an elasticity, an excess burden or a ranking, and nothing certifies a method; the manual's sentences say what is appraised, never how.
-Lesson: cutting a tax that already distorts a market gives back the whole of the remaining wedge on every unit the cut adds, not only the cut's own triangle, and a Budget year sees only the part of buyers' response that has arrived within it; a static or long-run elasticity credits a slowly adjusting good with demand it will not reach in the year. Architecture 3's stump was a data reconstruction both responses walked; this one is a modelling conjunction no reconstruction reaches.
+Task type: generation-capacity-planning in energy-systems-utilities, which serves opportunity sizing: a resource adequacy plan's accreditation of demand-side resources, sized from the units a budget buys to the load those units take off the design year's peak hour.
+
+Domain test: the deciding quantity is each programme's expected load reduction per enrolled unit in the design year's system peak hour, the capacity-accreditation quantity a resource adequacy plan prices, estimated the way a load impact evaluation estimates it (the treatment-against-holdout difference at the planning hour in the measurement and verification record, read at the planning conditions).
+
+Swap: "which surge scheme should a hospital fund, valued at the beds it frees on the design surge day" keeps the sentence's shape and loses its substance: a hospital has no weekday 110F dispatch trigger, no randomised holdout read at an hour, no battery recharged by rooftop solar between calls and no design-year peak hour, so the quantity and its estimate stop making sense.
+
+Layer 1: the thermostat panel is stamped in UTC by Ridgeway's meter-data pull (the MST hour beginning 18:00 is 01:00 the next UTC day); Brightwell's 2024 dispatch setting was 2.0 kW per battery until the 2025 amendment raised it to 3.0 kW; Ridgeway keys the commercial verification by its own anonymised site keys; the rebate evaluation's group sizes change by season; Halvern's status log keeps changes only and its own address strings; Arroyo's invoices carry Arroyo's site references. Nothing is placed to be caught, and none of it moves the call.
+
+Layer 2: allocation under a binding constraint: each depleting programme's response is drawn from a buffer (the cool a home banks, a customer's attention, a building's thermal mass and its operators' patience) that refills only on a day without a call, and the methodological choice that flips the call is to read each reduction in the state the design occasion forces, the fourth consecutive dispatch day, rather than at the record's average or weather-matched state.
+
+Decisive step: place the design peak hour in its run of dispatch days (Friday 23 July 2027 is the fourth consecutive weekday OP-7 calls) and read each programme's per-unit reduction on the record's own fourth consecutive event days, rebuilt from the event log's calendar, which puts the Home Battery Network first.
+
+Not semantics: every field, unit, code and definition read correctly (the UTC stamps converted, the 3.0 kW setting applied, the hour beginning 18:00 MST taken, the plan's peak hour found) still leaves the easy route on Cool Credit at 10 to 11 MW, because an occasion's place in a run is not a reading of any field: it is a state the analyst has to recognise the response depends on and rebuild from the calendar.
+
+Not rule application: no filed rule or procedure says a reduction depends on earlier calls or tells the analyst to read it by run day, so executing the plan's accreditation sentence and OP-7's trigger correctly still files Cool Credit when the reduction is taken at its average or weather-matched level. The enumerated family (ex post average, ex ante on the day's high, on the high and overnight low, on the three days' heat before, the hottest event days, a day-after-an-event indicator, the run day as a linear count, run-day indicators, the fourth-day mean) spreads Cool Credit's figure from 3.0 to 11.4 MW and names Cool Credit six times and the Home Battery Network three; the standing family once the design hour sits in its run (run-day indicators with the day's high, the fourth-day mean, a ratio model on run days) spreads Cool Credit 3.0 to 3.1 MW and the batteries 6.0 to 6.2 MW and is unanimous on the call; what rules out the rest is loud on a cut by run day (the fourth days sit about 0.9 kW under any weather model) and silent on every weather cut.
+
+Analyst test: a strong analyst who reads every field and rule correctly takes each programme's 18:00 reduction as the load impact protocols do, averaged over the 2024 to 2026 events or read off a weather model at the design hour's 117F, multiplies by the units the USD 3.2 million buys and files Cool Credit, about 11 MW; the design hour is the fourth consecutive dispatch day, where the thermostats give about a fifth of a first day's reduction, so Cool Credit adds about 3 MW and the Home Battery Network's 6 MW is the call.
+
+Estimand: the resource adequacy plan's accreditation chapter (`ra_plan_2027_accreditation.pdf`, section 4.3) files it: a demand-side programme's 2027 accredited capacity is its expected load reduction in the system peak hour of the design year in Appendix B, operated as the procedures in force for 2027 operate it, measured against the load the same units would have drawn had the programme not been called, an added unit credited at the programme's expected reduction per enrolled unit under the contracts in force for 2027.
+
+No decoy: nothing is planted to be caught: no memo, briefing, draft, vendor claim or stakeholder figure states a per-unit reduction, a ranking or a capacity value for any programme; the cost sheet carries costs only, and the batteries' 2024 setting is the contract's own history.
+
+No certified replay: the method is not recovered by reproducing certified or published figures: no evaluation report, settlement statement or published table carries a reduction a solver could match, and the fourth-day reduction is read from raw panel rows.
+
+Lesson: a demand-side resource's capacity at a multi-day design peak is its response in the state the earlier calls of the run leave it, so the record's average or weather-matched response overstates every programme whose buffer does not refill overnight; no build on file prices a resource at the run position a filed dispatch rule forces.
 
 ## Readability screen
 
-| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene battery | 6 linear | 7 dedicated organ | Verdict |
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| R0 log-log elasticity, the cut's own triangle (default) | the manual's revenue after response and pass-through | clearances and shelf price columns | the field's textbook Harberger triangle on a static elasticity | none | no | yes | no | readable |
-| R1 the whole wedge on the static or long-run elasticity | the manual's "every tax on the good counts" names the taxes, not the measure | the same columns | a public-finance economist's reflex for cutting an existing tax | none | no | yes | no | readable |
-| R2 the response within 2027 with the cut's triangle | the manual's "in that year, on what consumers will buy in that year" | the same columns | a lagged adjustment is a second step the static fit never takes | none | no | no, a path | no | readable |
-| R3 the whole wedge over the response made within 2027 (decisive) | no sentence names the welfare measure or the adjustment path; the manual files the year and the taxes only | no column holds an elasticity, a path or a welfare figure | the field's reflex reaches one move at most and lands on road fuel or cider | no control ranks the duties | no sweep fits a lagged adjustment | no: a fixed point on the envelope and an integral along a four-quarter path | no: the quarterly series every rung reads | silent |
+| R0 ex post average of each programme's 18:00 reduction | the plan's "expected reduction" invites it | event rows carry the reduction's inputs | the field's ex post estimate | none | none | one group-by | none | readable |
+| R1 ex ante weather model at the design hour (117F) | Appendix B's design weather invites it | the day's high is on every event row | the load impact protocols' ex ante method | none | none | one fit | none | readable |
+| R2 weather model with the overnight low and the three days' heat before | none | the design year carries the lows and earlier days | a seasoned evaluator's heat build-up terms | none | none | one fit | none | readable |
+| R3 (decisive) the design hour placed in its run; reductions read on the record's fourth consecutive event days | silent: no sentence names consecutive days, run position, recovery or fatigue | silent: no run-day column, the event ids carry no run index | silent: the protocols condition on weather, not on the programme's own call history | silent: no file scores a run-day reading | silent: no duplicate, clock or key issue points at it | silent: the run is rebuilt from the calendar and crossed with the plan's peak day | silent: the event log, design year, OP-7 and the panels each serve every rung and the asks | silent |
 
 ## Semantic fork table
 
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | 2027 (the year the excess burden is removed) | calendar 2027, its four quarters | twelve months from the Council's meeting | same call | the manual, section 4 (the calendar year in which it takes effect; measures from 1 January); checks SF1 |
-| SF2 | the next best duty | the second duty under the same appraisal | the second by excess burden per pound of duty cut | same call | the manual, section 8 (reports the next best beside it); checks SF2 |
-| SF3 | the envelope | duty and GST given up in 2027 after buyers respond | duty only; revenue before the response | same call (0.6 and 0.8 on spirits: figure rungs) | the manual, section 6 and the thread; checks SF3 |
-| SF4 | the starting point | 2025 Q4 to 2026 Q3, each standing for its quarter of 2027, preliminary quarters included | the last four revised quarters | same call, same figures (R2) | the manual, section 5 (the latest four quarters the Statistics Office has published); checks SF4 |
-| SF5 | how a cut reaches the price | in full, GST on top | partial pass-through | same call | the manual, section 3; checks SF5 |
-| SF6 | the duty rate the cut starts from | the 2027 rate already set | the 2026 rate | same call, same figures (R2) | the manual, section 5 and the rates file's 2027 rows; checks SF6 |
-| SF7 | the producer price | the 2026 Q3 shelf price net of GST less the duty then in force, unchanged by the cut | the shelf price less duty and GST at 2027 rates | same call | the manual, sections 3 and 5; checks SF7 |
-| SF8 | the wedge that counts | duty and GST, the GST on the duty-inclusive price | duty only | same call (spirits 0.8, a figure rung) | the manual, section 2; checks SF8 |
-| SF9 | the quarter a declaration falls in (ask) | its acceptance date in Eskerholm, UK time | the UTC date | ask figures only | CE14, section 1; checks SF9 |
-| SF10 | a corrected declaration (ask) | replaced by the declaration that names it, so each release counts once, as the last declaration of its chain, in the quarter the chain's first declaration was accepted | dated by the declaration a correction names; each correction in its own quarter; the latest correction of each named declaration; every declaration counted | ask figures only | CE14, section 2 (replaces the one it corrects; the period in which the release was first accepted); every correction names a release declaration in the extract and none is corrected twice; checks SF10 |
-| SF11 | a cancelled declaration (ask) | nothing | its duty | ask figures only | CE14, section 2; checks SF11 |
-| SF12 | a repayment (ask) | credited in the quarter the repayment is accepted; the release it names stays a release | against the release's quarter; the release it names dropped as corrected | ask figures only | CE14, section 3 (a repayment gives the release it relates to as its related declaration); checks SF12 |
-| SF13 | a removal to premises whose approval ended (ask) | released, at that day's rate, from the end date on | a transfer in bond | ask figures only | CE14, section 4 (in force up to the day before its end date; no removal falls on an end date); checks SF13 |
-| SF14 | releases from bonded warehouses (ask) | procedure 4071 and removals to premises not approved that day | procedure 4000 imports as well | ask figures only | the procedure code list (4000 is entry on import); checks SF14 |
-| SF15 | the five duties (ask) | beer, cider, wine, spirits, road fuel | marked gas oil (REBF) on the same loads | ask figures only | the prompt and the register's duty codes; checks SF15 |
-| SF16 | a declaration's duty on its item rows (ask) | the declaration's total on every row, each item's share its litres at the rate on the release day | the total on each row as that item's | ask figures only | the records: on every release declaration the duty on each row equals its items at the rates of the release's first day to the penny, and one release in six carries more than one item; checks SF16 |
-| SF17 | rounding | the excess burden to GBP 0.1 million, the excise to GBP 100, once at the end | rounding each quarter's figure first | same call, same figures | the prompt; every cell GBP 1 or more and every graded figure 0.015 or more from an edge; checks SF17 |
+| SF1 | "system peak hour of the design year" | the hour beginning 18:00 MST on Friday 23 July 2027, the maximum of Appendix B's forecast load | the hour ending 18:00, or the hottest hour (16:00) | same call (the 16:00, 17:00 and 19:00 hours each name the Home Battery Network) | plan 4.3 and Appendix B's header ("hour beginning, MST"); asserted |
+| SF2 | "operated as the procedures in force for 2027 operate it" | called on every weekday whose forecast high reaches 110F, so Tuesday to Friday of that week | a first-day event, or a schedule that saves the programme for the peak day | Cool Credit under the fresh reading | OP-7 section 3's trigger and plan 4.3's sentence; the design year's daily highs (108, 111, 113, 115, 117) |
+| SF3 | the design year's forecast high | Appendix B's daily maximum, planned as forecast | a forecast-error band around it | same call | Appendix B's note that the design year is planned as forecast |
+| SF4 | "expected load reduction" | the mean reduction | a low percentile read as firm capacity | the tenth percentile names Cool Credit (asserted) | plan 4.3's "expected" |
+| SF5 | "per enrolled unit" | each panel's reduction over every enrolled unit, offline and opted-out units included | per responding unit | same call (asserted) | plan 4.3 and each file's enrolled denominators |
+| SF6 | the units the budget buys | the whole units USD 3.2 million buys at the cost sheet's all-in cost per added unit | a fractional quotient | same call | the cost sheet's "per added unit" and the budget line |
+| SF7 | the battery setting | 3.0 kW per battery, the 2025 amendment | the 2.0 kW setting, or the 2024 to 2026 mean | same call (asserted under both) | plan 4.3's "contracts in force for 2027" and Brightwell's amendment |
+| SF8 | the comparison | the holdout or control load, the verified baseline, the battery's own discharge | a pre-event baseline | same call | plan 4.3's "load the same units would have drawn had the programme not been called" |
+| SF9 | the panel clock | `interval_start_utc` converted to MST (UTC less seven hours) | UTC read as local | no call (no reduction at 11:00) | the column name and the plan's MST convention |
+| SF10 | a run of event days | consecutive calendar days with an event; a weekend, holiday or uncalled day ends it | the event log's order with calendar gaps ignored | same call: the record holds no Friday-and-Monday pair, so both give the same run days (asserted) | C1 by construction |
+| SF11 | the fourth-day estimator | the mean over the record's fourth consecutive event days | run-day indicators with the day's high, a ratio model | same call; every figure in its whole-megawatt bin (asserted) | C1, asserted |
+| SF12 | the commercial unit | verified reduction per enrolled site at 18:00 | per dispatched site | same call (asserted) | the verification file's enrolled-site rows |
+| SF13 | the rebate unit | control mean less treatment mean per enrolled customer | per notified customer | same call | the evaluation file's group definitions |
+| SF14 | the hour column in the rebate and commercial files | hour beginning MST | hour ending | same call (asserted) | each file's header |
 
 ## Ladder
 
-| Rung | Construction | Beer | Cider | Wine | Spirits | Road fuel | Call |
-|---|---|---|---|---|---|---|---|
-| R0 | log-log elasticity, the cut's triangle (default) | 0.039 | 0.204 | 0.026 | 0.136 | 0.063 | cider (1.50x) |
-| R0b | the same with revenue before the response (textbook) | 0.029 | 0.117 | 0.019 | 0.047 | 0.012 | cider (2.49x) |
-| R1 | the whole wedge on the log-log elasticity | 0.263 | 0.626 | 0.283 | 1.108 | 1.945 | road fuel (1.76x) |
-| R1b | the whole wedge on the long-run elasticity | 0.274 | 0.476 | 0.282 | 1.035 | 3.516 | road fuel (3.40x) |
-| R2 | the response within 2027, the cut's triangle | 0.028 | 0.120 | 0.018 | 0.099 | 0.002 | cider (1.21x) |
-| R2b | the long-run elasticity, the cut's triangle | 0.041 | 0.144 | 0.026 | 0.123 | 0.166 | road fuel (1.15x) |
-| R3 | the whole wedge over the response within 2027 (golden) | 0.200 | 0.408 | 0.209 | 0.882 | 0.150 | spirits (2.16x) |
+Four rungs, each a whole analysis a competent analyst could stop at, each naming its own figure; the figures are the
+generator's (`generator/figures.json`, `ladder` block), printed here at design time from the clean truth.
 
-GBP million removed in 2027 before rounding. Every wrong rung names cider or road fuel, each clears its runner-up by
-1.15x or more, and the two single corrections of the default land on different wrong duties (R1 road fuel, R2 cider).
-Figure rungs on spirits: revenue scored before the response 0.581, duty without GST 0.823, the first quarter's
-response all year 0.602, the fourth quarter's all year 1.020, each off the golden's 0.9. The method family (a time
-trend in the fit 0.895 and 0.402, a lagged price term 0.885 and 0.409, the straight-line welfare formula 0.886 and
-0.414, and their combinations) files spirits 0.9 and cider 0.4, each 0.015 or more from a bin edge. Every rung, margin,
-family member and bin distance is asserted in checks.py.
+| Rung | Construction | Cool Credit | Peak Time Rewards | Business Demand Partners | Home Battery Network | Winner, lead | Batteries' place |
+|---|---|---|---|---|---|---|---|
+| R0 | ex post: each programme's 18:00 reduction averaged over the 2024 to 2026 events | 11.4 | 8.6 | 6.1 | 5.5 | Cool Credit, 1.34 | 4th |
+| R1 | ex ante: a model on the day's high read at 117F (batteries on the 3.0 kW setting) | 10.4 | 8.1 | 5.5 | 6.2 | Cool Credit, 1.28 | 3rd |
+| R2 | ex ante with the overnight low and the three days' heat before (the design hour's 90F and 113F) | 9.7 | 7.7 | 5.2 | 6.2 | Cool Credit, 1.25 | 3rd |
+| R3 (decisive) | the design hour placed on its run's fourth day; reductions on the record's fourth consecutive event days | 3.0 | 4.1 | 2.1 | 6.0 to 6.2 | Home Battery Network, 1.47 | 1st |
+
+- **What kills each rung:** R0 dies to the plan's estimand (the design year's peak hour, not an average event); R1 to
+  the design hour's place in its run (OP-7's trigger on Appendix B's week) and the record's fourth days; R2 to the
+  Mondays after hot weekends, fresh event days with the heat build-up and hot nights of a fourth day that give a first
+  day's full reduction, so the weather history is not what lowers a reduction; R3 is the golden.
+- **Separation and position:** the batteries are 4th on R0, never first on an intermediate rung and never second;
+  every rung's lead is 1.24 or more; the final lead over the runner-up is 1.47 (Peak Time Rewards), 2.0 over Cool
+  Credit.
+- **Dominance:** the decisive step moves Cool Credit against the batteries by a factor of about 4.2 (11.4 against 5.5
+  on R0, 3.0 against 6.2 on R3) against Cool Credit's carried advantage of 2.07, and moves Peak Time Rewards by 2.3
+  against its carried 1.55; both clear 1.2 times the carried advantage.
+- **The reflex sweep, as code on the clean truth (`checks.py`):** every route that never reads run position files Cool
+  Credit: ex post, ex ante on the high, on the high and the low, on the heat build-up, on all three, the hottest event
+  days (115F and over), a day-after-an-event indicator (7.5 against 6.8), the tenth percentile (6.0 against 6.0 and
+  5.8). The routes that read run position file the Home Battery Network: run-day indicators with the high, the
+  fourth-day mean, a ratio model, a linear run-day count.
+- **Pricing sequence:** (1) the residue the filed WHAT leaves is a method (how to estimate the expected reduction at
+  the design hour's state), not a knob; (2) the move needed is Cool Credit from 10.4 to under 6.2 MW, and the affected
+  population (the fourth days) can carry it to 3.0; (3) the one-group-by route to the call is "reductions by run day"
+  once the run is rebuilt, and the run day is in no file, so the group-by needs the calendar construction first; (4)
+  the fourth-day estimate's standard error is about 0.02 kW per thermostat premise (0.25 MW at 12,307 premises) and
+  0.004 kW per rebate customer (0.2 MW), each a fraction of its whole-megawatt bin; (5) the lever (run position) is
+  not the ranked quantity's noise; the call is a verdict on one named programme 1.8 MW, about seven standard errors,
+  clear of the runner-up; (6) not a change call; (7) no subset is recovered exactly; (8) the reflex sweep above, with
+  run position residualised against the visible attributes (correlation with the day's high 0.35, with the overnight
+  low 0.03, with the three days' heat 0.48, none of them able to carry the call).
+- **Grid:** the four candidates under every construction above; every cell names Cool Credit except the run-position
+  family's, which names the batteries; no cell names Peak Time Rewards or Business Demand Partners.
+- **Worth:** the decisive step is worth 7.4 MW on Cool Credit's figure (10.4 to 3.0), against the standing family's
+  spread of 0.1 MW and the sampling interval of 0.5 MW.
 
 ## Closure table
 
-| # | Axis | Reading chosen | Closure move |
+| # | Axis | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | 2027's buyers of each duty's goods, none yet observed, at the latest four published quarters | pinned (manual 4, 5); SF1 SF4 |
-| 2 | Unit of account | a litre; GBP of excess burden | pinned (manual 2, 4) |
-| 3 | Attribution window | calendar 2027 | pinned (manual 4); SF1 |
-| 4 | As-of dating | 2026 Q3 shelf prices, the 2027 rates already set | pinned (manual 5); SF6 SF7 |
-| 5 | Version basis | the series as published, preliminary quarters included | pinned (manual 5); R2 asserted |
-| 6 | Denominator | none: a level, not a rate | C1 |
-| 7 | Weighting | each quarter of 2027 on its own baseline litres | pinned (manual 5) |
-| 8 | Window length | four quarters | pinned (manual 4) |
-| 9 | Boundary inclusivity | measures from 1 January; an approval in force up to the day before its end date (ask) | pinned (manual 4; CE14 4); SF13 |
-| 10 | Rounding path | unrounded, then GBP 0.1 million and GBP 100 once | the prompt; SF17 |
-| 11 | Tie-break | none needed (2.16x) | C1 |
-| 12 | Maturity and censoring | the response made by each quarter of 2027 | pinned (manual 4: in that year); C1 |
-| 13 | Order of operations | baseline, response path, cut solved on revenue after response, welfare along the path | C1 |
-| 14 | Row order | not order-dependent | C1 |
-| 15 | Duplicate resolution | none in the series; exact duplicate declaration rows dropped (ask) | C1; checks |
-| 16 | Identity normalisation | duty names in the series, codes in the declarations; the register's premises | C1 |
-| 17 | Netting against gross | the envelope net of the revenue the extra litres return | pinned (manual 6); SF3 |
-| 18 | Dimensional units | thousand litres in both layouts, GBP a litre at 2026 prices | C1 |
-| 19 | Code and status semantics | procedures 4071, 6171, 7171, 4000; CANCELLED; versions | pinned (CE14; the code list); SF10 to SF14 |
-| 20 | Integerisation | none | C1 |
-| 21 | Scope of a stated clause | "every tax on the good counts": duty and GST | pinned (manual 2); SF8 |
-| 22 | Forward window contents | 2027's quarters from the latest four, at the 2027 rates | pinned (manual 5); C1 |
+| 1 | Population | the programmes' enrolled units; the expansion's added units counted at the enrolled units' expected reduction | plan 4.3 files it; C1 |
+| 2 | Unit of account | an enrolled premise, customer, site or battery | plan 4.3 and the cost sheet's "per added unit" |
+| 3 | Attribution window | the design year's system peak hour, the hour beginning 18:00 MST on 23 July 2027 | plan 4.3 and Appendix B; SF1 asserted |
+| 4 | As-of dating | the 2027 procedures and contracts in force | plan 4.3; SF2, SF7 |
+| 5 | Version basis | the 2025 battery amendment in force for 2027 | plan 4.3 "contracts in force"; SF7 asserted |
+| 6 | Denominator | every enrolled unit, offline and opted-out included | each file's enrolled denominators; SF5 asserted |
+| 7 | Weighting | each fourth-day reduction weighted by its event, the panels' own group means within an event | C1: weighting by event or by premise-hour gives the same call and bins (asserted) |
+| 8 | Window length | the 2024 to 2026 record (2025 and 2026 for the batteries under the setting in force) | C1 across the three seasons and the last two (asserted) |
+| 9 | Boundary inclusivity | the 110F trigger at "reaches 110F"; no design day sits within 1F of it | C1: the design week's highs are 108, 111, 113, 115, 117 |
+| 10 | Rounding path | megawatts rounded once, from the unrounded per-unit reduction times units | the prompt's rounding sentence; asserted mid-bin |
+| 11 | Tie-break | none needed: the call leads by 1.47 | n/a, asserted |
+| 12 | Maturity and censoring | the 2026 season closed on 30 September; every event complete | C1 |
+| 13 | Order of operations | per-unit reduction then units then rounding | asserted equal under both orders of averaging |
+| 14 | Row order | none of the constructions depends on file order | asserted over a shuffle |
+| 15 | Duplicate resolution | no duplicate rows on the main path | asserted by count |
+| 16 | Identity normalisation | the panels' anonymised keys are consistent within a season | asserted |
+| 17 | Netting against gross | a pre-cooling increase before 16:00 does not net against the 18:00 reduction | the plan's single hour; asserted |
+| 18 | Dimensional units | kW per unit to MW for the programme, kWh per hour as kW | each file's units in its header |
+| 19 | Code and status semantics | the event log's event type (system events only on the main path) | the log's own type column; asserted |
+| 20 | Integerisation | whole units bought, the floor of budget over cost | SF6; same call |
+| 21 | Clause scope | plan 4.3 governs demand-side programmes only | the chapter's own scope line |
+| 22 | Forward window contents | the design year's weather and load are Appendix B's, shipped | `design_year_2027.csv` |
 
 ## Literal reader
 
-Executed word for word, the manual files the year (calendar 2027), the starting point (the latest four published
-quarters at the 2026 Q3 shelf prices and the 2027 rates), the pass-through, the revenue measure (duty and GST given up
-after buyers respond), the taxes that count towards excess burden (duty and GST) and the comparison (the most excess
-burden removed for the sum, the next best beside it); it is silent on how the excess burden a cut removes is measured
-and on how buyers' response unfolds within the year, and every literal execution that values each extra litre at the
-whole wedge over the response made by each quarter of 2027 lands on spirits at about GBP 0.9 million; the static,
-long-run and triangle routes are easy methods on the same literal estimand, not other readings.
+Executed word for word, the plan's 4.3 names the design year's peak hour (Appendix B, the hour beginning 18:00 MST on
+Friday 23 July 2027), operation under OP-7 (called on the four weekdays from Tuesday 20 July, the Monday at 108F
+uncalled), the comparison against the units' own uncalled load, per enrolled unit under the 3.0 kW battery setting;
+every literal reading of those sentences gives the golden (SF1 to SF14 asserted), and the easy answer comes from an
+easy method on the same estimand (the reduction averaged or weather-matched), never from another reading.
 
 ## Oracles
 
-None ranks the duties. The verifier recomputes every graded figure from target.zip on its own path (normal equations,
-bisection on the envelope, quadrature for the welfare integral). Customs' duty-paid litres and the Statistics Office's
-clearances agree within 7 per cent in every duty and quarter of the ask window and never tie (asserted), so neither
-validates the other's figures. No elasticity, excess burden or ranking is published anywhere in the pack.
+none on the main call: no file carries a per-unit reduction, a capacity value or a ranking for any programme; the
+evaluation files carry raw rows and group means only, the cost sheet carries costs only, and the battery fleet summary
+ties to no other shipped total. On the ask side, Halvern's acknowledgements tie to no count (they cover dispatched
+devices only, and the holdout is never dispatched), and Brightwell's records tie to no shipped total.
 
 ## Ask sheet
 
-| Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
-|---|---|---|---|---|---|---|---|---|
-| A, excise accounted for on releases from bonded warehouses, by duty and quarter, October 2025 to September 2026 | 20 | a reconciliation of the excise the Budget's annex reports, from Customs' declarations the call never reads | the panel's request in the thread (Elaine Hooper's note), for its review of the Budget's excise annex | D7 and D8, a prior-id chain anchored on the first record: a correction is a new declaration naming the one it corrects, so a release corrected twice or three times is a chain whose later links name a correction, not the release; keepers correct the last month's releases after their stock counts early in the next quarter (the year-end count fullest) and Customs' verification corrects some of those again, so 770 of the 2,733 corrections sit in chains and 493 name a declaration accepted in a later quarter than the release; the right count follows each chain to its first declaration for the quarter and the rates, and keeps only its last | the declaration's duty repeated on every item row (D6), UTC against UK dates (D8), cancellations, repayments naming the release in the same column (D1, repeated keys with opposite meanings), removals to two premises whose approval ended (D5), exact duplicate rows (D1), suspended duty on entries and duty on imports (D5) | customs_excise_declarations (13 columns: declaration_no, item_no, cpc, duty_code, accepted_at_utc, quantity_litres, duty_gbp, related_declaration, status among them), customs_procedure_codes, CE14, bonded_warehouse_register (premises, approval dates), excise_duty_rates (the rates by day) | dated by the declaration a correction names: every cell off, the smallest by GBP 3,734; each correction in its own quarter: GBP 20,424 or more; the latest correction of each named declaration: GBP 11,684 or more; every declaration counted: GBP 45,553 or more; a release a repayment names dropped: GBP 9,668 or more | Customs systems lodge a post-release correction as a new declaration citing the one it corrects, and keepers correct after stock counts |
-| C, the duty, its figure, the next best and its figure | 4 | the construction | the panel's amendment | none | none | the golden model | R0 to R3 | the manual's own measure |
+Three asks, each on files the main call never reads and each rebuilt by a reconstruction no sentence states. The
+figures are the generator's (`generator/figures.json`, `asks` block); stops and deltas are asserted in `checks.py`.
 
-- **Main population zero-counts:** the call reads the Statistics Office's two files, the rates and the manual; no
-  declaration, procedure code, register row or CE14 sentence enters it (the call recomputed with every ask file deleted
-  is unchanged, and the call's five files are byte-identical to the call's build, both asserted), and no ask figure
-  reads the series.
-- **Hazard table (each on the golden's chain reading):** the repeated declaration duty kept once on the first item, shared
-  by litres or summed on every row moves all 20 cells; UTC dates 18; repayments left out 20; the lapsed premises left
-  out 20; duplicates kept 20; imports added 20; each correction priced on its own day 4 (the year-end cells).
-- **Referee:** none ties under one handling only. A grader confirms the chain from the records: every correction names
-  a release declaration in the extract, none is corrected twice, and every declaration's duty equals its items at the
-  rates of its chain's first day to the penny (asserted), which is the day CE14 dates it by.
+**Ask A, Cool Credit premises online at 16:00 on each 2026 event day (17 figures, counts).**
+- H18 home: the thermostat programme's dispatchable base on each event day, an audit trail of the enrolment the
+  programme's per-unit reduction is read over; every programme carries such a base and the call does not turn on it.
+- Files and columns: `cool_credit_enrolments_cis.csv` (premise, address, enrolled serial, enrolled and unenrolled
+  dates), `halvern_device_registry.csv` (serial, install address, registered and retired), `halvern_status_log_2026.csv`
+  (serial, status, UTC change time; changes only), `halvern_dispatch_acks_2025_2026.csv` (event date, serial, UTC ack
+  time); ten columns on the golden's path.
+- Primary 1 (D7, the true key elsewhere): a premise whose thermostat was replaced keeps the enrolled serial in the
+  CIS, retired in Halvern's registry, and the replacement is registered under Halvern's install-address string, which
+  writes the address its own way; the premise is online through the new serial.
+- Primary 2 (D2, a label stored before a silent switch): Halvern's `IDLE` meant a sleeping radio until the 6.0
+  firmware push of 6 July 2026 and from then means connected with no cooling call; no field dates the switch, and the
+  acknowledgements show idle devices acknowledging dispatch only from 6 July.
+- Hazards: the change-only log (state rebuilt at 23:00 UTC), UTC stamps, premises with two thermostats (counted once),
+  unenrolments.
+- Pin test: the sentence pins enrolled premises, a thermostat online and 16:00 on each 2026 event day; both primaries
+  sit in which serial is the premise's and what a status meant that day, dimensions the pins leave open.
 
-| Ask figures | Cracker's path | Cracker's value | Verdict |
+**Ask B, Home Battery Network incentive owed for each 2026 event month and the premises at the season cap (5 figures).**
+- H18 home: the battery programme's operating cost in 2026, a measure every programme carries that the call does not
+  turn on.
+- Files and columns: `brightwell_dispatch_records_2026.csv` (record, enrolment number, battery serial, UTC start and
+  end, delivered kWh, settled on), `hbn_participation_agreement.pdf` schedule 2 (USD 15 for each event in which the
+  battery discharged at its dispatch setting through at least three of the four event hours; USD 180 a premise a
+  season), `battery_interconnection_register.csv` (premise, battery serial, enrolment number).
+- Primary 1 (D6, an event's dispatch split across records): a dispatch interrupted by a communications drop and
+  resumed is two records for one battery and event, neither three hours long; together they qualify.
+- Primary 2 (D8, a recorded date for the event date): Brightwell's `settled_on` is the day its settlement run read the
+  record, a day or more after the event, so month-end events settle in the next month; the event month is the MST
+  date of the dispatch.
+- Hazards: UTC stamps, a re-sent batch (exact copies), two batteries at one premise sharing one cap.
+
+**Ask C, Business Demand Partners kW nominated inside CBMU's territory for each 2026 month (4 figures).**
+- H18 home: the commercial programme's contracted capacity in 2026, the base its per-site reduction is credited over.
+- Files and columns: `arroyo_nominations_2026.csv` (month, Arroyo site reference, site name, service address, meter
+  number, nominated kW), `cbmu_meter_register.csv` (meter number, premise, service address).
+- Primary 1 (D5, out-of-scope rows known only by structure): from August Arroyo's file carries its sites on the
+  neighbouring utility's system, whose meter numbers follow that utility's nine-digit scheme and match no CBMU meter.
+- Primary 2 (D1, one site under two references): a site that changed owner is listed under its old and its new
+  reference in the month of the change, the same meter, a re-typed name.
+- Hazard: nominations restated within a month (the later row stands).
+
+**Main population zero-counts (asserted):** no ask device row sits in the four main-call evaluation files, the event
+log, the cost sheet, the plan or OP-7.
+
+**Hazards and per-ask deltas:** stated in `checks.py` and printed by `generator/ceiling.py` on the cut pack.
+
+**Referee:** none; each ask is forced by its own records.
+
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at R2) | Verdict |
 |---|---|---|---|
-| A beer, four quarters | the battery (duplicates, UTC, imports out, each item at litres times the rate) and CE14 executed, a correction dated and priced by the declaration it names | 894.5, 743.5, 851.6, 1,029.0 against 916.8, 720.9, 866.5, 1,006.6 | miss |
-| A cider, four quarters | the same | 466.2, 434.4, 546.1, 667.6 against 469.9, 424.1, 560.0, 650.8 | miss |
-| A wine, four quarters | the same | 1,410.0, 1,239.0, 1,234.8, 1,297.6 against 1,460.1, 1,189.0, 1,247.3, 1,270.6 | miss |
-| A spirits, four quarters | the same | 1,785.0, 1,365.4, 1,452.1, 1,551.1 against 1,829.9, 1,311.4, 1,476.7, 1,515.2 | miss |
-| A road fuel, four quarters | the same | 9,233.8, 10,240.0, 10,326.2, 11,094.2 against 9,395.0, 10,062.6, 10,492.8, 10,775.3 | miss |
-| C the call (4) | the golden's construction | right | outside |
+| A, 17 event-day counts | joins the CIS serial and reads `IDLE` one way all season | the same | miss |
+| B, 4 months and the cap count | tests each record alone; months by the dispatch date | the same | miss |
+| C, 4 months | keeps the neighbouring utility's sites; counts the transition month's two references | the same | miss |
 
-Careful paths, cells kept of 20 on the cut pack: litres times the rate with the battery, a correction dated and priced
-by the declaration it names, 0; the same priced at the release's own rates, 0; the same with the repeated declaration
-duty kept once, 0; each correction in its own quarter, 0; the latest correction of each named declaration, 0; every
-declaration counted, 0; the chain followed but a release a repayment names dropped, 0. Honest max 0. A response that
-finds the device and follows every chain to its first declaration keeps 16 pricing each correction on its own day and
-20 pricing it on the first day.
-Mirror leakage: 0.0 per cent of the ask weight: the mirror stops on R0 (cider) and does Ask A as the cracker does, the
-asks reading no file the call reads (separation asserted), so both rows keep nothing.
-Pair ceiling: 28.5 (the cracker at 45.0 with the call; the R0 mirror at 12.0). A response that follows every chain of
-corrections to its first declaration takes Ask A whole and the pair reaches 83.5 with one response on the call: the
-chain is the ask layer's one exposure, found only by asking whether the declaration a correction names is itself a
-correction, which no sweep asks once every reference has joined.
-Measured by: generator/pair.py on the cut pack (target.zip sha256 8031742f).
-
-## Leak sweep
-
-`leak.py --asof 2026-10-20` on the built pack: REVIEW, two lines, both ruled harmless. The manual's "a change in duty
-passes in full", "every tax on the good counts towards it" and "the duty rates already set" carry three stump-paragraph
-words: section 2 names which taxes count towards excess burden, not how a cut's change in it is measured (a solver who
-counts the GST on the cut inside its own triangle still files cider), and no sentence names the response within the
-year. The rates file's 2027-01-01 rows are the 2027 rates set by the 2026 Budget before the envelope, dated after the
-setting by design (the manual's starting point). The solver's-eye read is stage 4's.
-
-## Pre-ship check
-
-- Free gates on target.zip 8031742f (architecture 4): generator checks 149 of 149 (R1 to R3c, the ladder by name and
-  margin, every SF row, mess neutrality, separation, distractors, input gates, the call's five files unchanged by the
-  asks' rebuild); verify 57; two builds byte-identical; figures_check 37 of 37; precut 53 PASS with voice-check PASS;
-  pair.py: pair ceiling 28.5, mirror leakage 0.0 per cent, every careful path on Ask A (the battery and CE14 executed,
-  each natural reading of the correction chains) keeping 0 of 20; a response that follows every chain to its first
-  declaration keeps 16 or 20, and the pair then reaches 83.5 with one response on the call.
-- leak.py REVIEW, both lines ruled. Leak reader, architecture 4 read 1 (8031742f): no decisive-step sentence (it
-  quoted the manual's section 8 decision rule, "no model or numbers"), no ranking file, no answer figure; question 3 the
-  Customs accounting note CE14, ruled harmless as Customs' own published rules; question 5's baseline sentence
-  executes to the golden's; question 6 analytical, naming neither the whole wedge nor the within-year response.
-- Determinism judge, architecture 4 pass 1 (8031742f): DETERMINISTIC, APPROVE. Gate G method_or_model_selection,
-  analytical_non_defect, no surface-read dependency; Gate H domain, layers and decisive step pass. Its isolated thread
-  reproduced spirits at 0.88 and cider at 0.41 and all 20 Ask A cells, and confirmed the lagged-adjustment model
-  forced over the static one by the data's own Durbin-Watson and AIC. Its low-severity note: the whole-wedge valuation
-  was taken on trust, not stress-tested against a triangle-only reading; the manual's section 6 (the revenue cost is
-  the duty and GST the States receive less, after consumers respond) is the filed basis for the wedge.
-- Guard: heart WARN; surface exit 0 (task119 and task172 promoted on card axes, low priority).
-- The 10/10 rules re-read on the built pack: the deciding quantity is the excess burden a duty cut removes, the
-  welfare economist's own measure; the mess (two clearances layouts, preliminary quarters, CE14 chains, the clocks,
-  warehouse approvals) only complicates; the decisive steps are analytical, the whole tax wedge and the response
-  within the Budget year.
+Pair ceiling: to be measured by `generator/ceiling.py` on the cut pack (design target 45 and 12, pair 28.5).
+Mirror leakage: to be measured (design target 0 per cent of ask weight).
+Measured by: generator/ceiling.py
 
 ## Tried and rejected
 
@@ -405,3 +438,52 @@ setting by design (the manual's starting point). The solver's-eye read is stage 
 - The first chain draft spread stock-count corrections evenly over the quarter ends: the one-hop error in a quarter is
   its inflow from the quarter before less its outflow to the next, and in one cell they cancelled to GBP 151; with the
   year-end count fullest and the half-year next every careful path misses every cell by GBP 3,600 or more.
+
+- Architecture 4 as shipped (portal, 2026-10-28 to 10-31): the call landed three times and the determinism block
+  failed twice; the golden was the field's own welfare method (the existing wedge plus the cut's triangle on the
+  year's partial-adjustment quantity), which the responses applied by reflex. Spent; re-rooted to architecture 5 in
+  another client domain, world, dataset and prompt shell.
+- Architecture 5's handed-out cell, pharmacology benefit-risk with a pharmacist medication review whose harms avoided
+  depend on whether two interacting drugs come from one prescriber or two (2026-10-31, screened on paper): the
+  realisable share carried from a pilot within the prescriber-split stratum is approved 124's abstraction (a share that
+  holds only within the stratum, carried to the population); dropped.
+- The same cell's other mechanisms, each screened and dropped before any harness: pharmacy-counter interaction alerts
+  already resolving part of the pool (the netting architecture 1 spent); generic substitution resetting exposure (task302
+  and architecture 2's ground); discharge supplies misdating treatment start (architecture 3's ground); the review's lag
+  against harm onset (task105 v1, solved); a self-controlled case series as the golden (the field's reflex); OTC aspirin
+  co-exposure (a reflex, and purchase is not use, an open determinism fork); 90-day conversion with manufacturer
+  switching (a behavioural model with no forced form); long-term-care mandatory reviews (netting again); prescribing
+  cascades (task193's sequence symmetry). The cell could not carry an honest unbanned stump, so the build moved to
+  energy-systems-utilities, which the brief allows (not epidemiology, criminology or marketing).
+- An operating-theatre instrument-tray draw in healthcare delivery (screened on paper): the decisive quantity rode on
+  how surgeons book, a behavioural fork the WHAT cannot file without filing the step; dropped.
+- The demand-response draw labelled gap time with pattern E (first probe, 2026-10-31): structural BLOCKs against nine
+  older builds; the honest labels are gap objective first (the measured average is right and is not what the plan
+  prices) with G13, G7 and G14, which clear every structural test.
+- A water-pumping shift as the fourth programme (draw, 2026-10-31): its reservoir drawn down across a heat wave sits on
+  approved 120's setting (tank drawdown behind a peak), a reviewer's setting match; replaced by Peak Time Rewards.
+- The first calendar with every non-event day just under the trigger (harness dgp3, 2026-10-31): the three days' heat
+  before an event proxied its run day so closely that a weather model with heat build-up named the batteries at 1.22,
+  a cheap route landing the call; hot weekends (uncalled under OP-7's weekday rule) now precede several fresh Mondays,
+  and the heat build-up route files Cool Credit at 1.24.
+- A hot weekend whose Monday sat the day before a four-day run (harness dgp4): the Monday made it a five-day run and
+  the record's fourth day moved; the weekend moved two weeks.
+- A Friday event followed by a Monday event after an uncalled hot weekend (harness dgp4): whether the Monday is a run's
+  second day or a fresh first day is a construction fork (calendar days against the log's order); every Friday before
+  a hot weekend now falls just under the trigger, and the record holds no Friday-and-Monday pair (SF10, asserted).
+- A flat battery record (harness dgp5): the tenth percentile of each programme's event reductions named the batteries
+  at 1.03, a reading of "firm" that lands the call for the wrong reason; Brightwell's communications drops (four
+  events in 2025 and 2026 at about two thirds of the fleet) are the record's own texture and put the batteries'
+  tenth percentile under Cool Credit's.
+- Peak Time Rewards and Business Demand Partners within 1.07 of each other on the fourth day (harness dgp4): the
+  runner-up was not determinate; the commercial sites' fourth-day reduction deepened to about three tenths of a first
+  day's, which also puts every programme's figure mid-bin at whole megawatts.
+- A commercial settlement audit as an ask (each 2026 event's delivered kW against the nomination, with the baseline's
+  excluded days as the device): it computes a depleting programme's reduction event by event and so shows it falling
+  on consecutive event days, which hands the main call's decisive pattern to any solver doing the ask; replaced by the
+  nominated kW in CBMU's territory.
+- A battery energisation-date ask (register upload against the inspector's pass date): the governing sentence that
+  makes it determinate names the pass date, so the device is executed by every reader of that sentence; dropped.
+- Megawatts to one decimal place: the standing family spreads Cool Credit 0.1 MW and the rebate programme 0.2 MW at
+  the fourth day, and the thermostat panel's sampling interval is about 0.5 MW, so one-decimal figures fork; graded to
+  the whole megawatt with every figure mid-bin.

@@ -1,27 +1,30 @@
 {
  "task": "task118",
- "domain": "economics / public-finance (client economics-econometrics / elasticity-welfare-policy-impact-estimation)",
+ "status": "DESIGN",
+ "domain": "energy-systems-utilities / generation-capacity-planning (client energy-systems-utilities)",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-28",
- "stump": "valuing each duty's cut on the whole wedge of duty and GST over the response made within 2027 (default: cider; whole wedge on a static or long-run elasticity: road fuel)",
- "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (architecture 4 pass 1, zip 8031742f)",
-  "disposition": "APPROVE",
-  "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no",
-  "gate_h": "domain pass, layers pass, decisive step analytical",
-  "report": "task118/determinism_check_report_arch4.md"
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "each programme's 18:00 reduction read on the record's fourth consecutive event days, the design peak hour being the fourth weekday OP-7 calls (default: Cool Credit about 11 MW on the average or weather-matched reduction; golden: Home Battery Network about 6 MW)",
+ "architecture": 5,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
  },
- "approved": null,
- "delivered": "2026-10-28",
- "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 3): both responses filed the golden, Saltreach Coast at 19, runner-up Hethermoss 4 fewer",
- "source_note": "analytical_tasks/04_opportunity_sizing/OS01_headline-squad-renderable-click-share.md",
- "status": "SHIPPED",
- "resume": "",
  "leak": {
-  "leak_py": "REVIEW, both lines ruled",
-  "reader": "architecture 4 read 1 on 8031742f: no decisive-step sentence, no ranking file, no answer figure; question 3 the CE14 note (Customs' own rules, harmless); question 6 analytical"
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "surface": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -32,19 +35,19 @@
   },
   {
    "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed Culture\u00b7national at 1,250,000 (the golden), runner-up named Sport\u00b7national (850,000, gap 350,000; and 200,000 behind)",
+   "portal": "FAILED_TO_STUMP: both responses filed Culture·national at 1,250,000 (the golden), runner-up named Sport·national (850,000, gap 350,000; and 200,000 behind)",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 2"
   },
   {
    "date": "2026-10-27",
-   "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport\u00b7metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
+   "portal": "determinism block: judge 1 APPROVE; judge 2 competing_defensible_answer (Gates C, D, E, G fail): the lift estimator and the share of a won click new to Bightline stated in no file, recoverable only from the change log (REPLAY), and the model response's raw lift with one fitted factor, Sport·metro at 900,000, filed as a competing answer. Rubric 87 and 44, average 65.5.",
    "repair": "determinism",
    "commit": ""
   },
   {
    "date": "2026-10-27",
-   "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business\u00b7national, 500,000 extra article clicks in 2027, runner-up Local\u00b7metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
+   "portal": "FAILED_TO_STUMP: both responses filed the golden call cell for cell (Business·national, 500,000 extra article clicks in 2027, runner-up Local·metro, 100,000 behind) after the determinism reship that filed Experimentation's sign-off",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 3, baee0a47"
   },
@@ -53,24 +56,20 @@
    "portal": "FAILED_TO_STUMP: both responses filed the golden call (Saltreach Coast, 19 emergency fall admissions avoided, 19.2 in one; runner-up Hethermoss 15, 4 fewer), the start dating through the repeat-template chains landed",
    "repair": "re-root",
    "commit": "DRAWN (task118) architecture 4, 583c1bf4"
+  },
+  {
+   "date": "2026-10-31",
+   "portal": "architecture 4 (the duty envelope): the call landed three times and the determinism block failed twice; the golden was the field's own welfare method, applied by reflex",
+   "repair": "re-root",
+   "commit": "DRAWN (task118) architecture 5"
   }
  ],
- "zip_sha256_16": "8031742f5cae45ee",
- "architecture": 4,
- "loops": 0,
+ "resume": "",
+ "approved": null,
+ "delivered": null,
+ "portal": "FAILED_TO_STUMP 2026-10-27 (architecture 3): both responses filed the golden, Saltreach Coast at 19, runner-up Hethermoss 4 fewer",
  "portal_status": "",
  "portal_status_date": "",
- "precut": {
-  "exit": 0,
-  "date": "2026-10-27"
- },
- "duplicate_check": {
-  "heart": "WARN",
-  "surface": "exit 0; task119 and task172 low-priority promotions"
- },
- "freeze": {
-  "rubric": "PASS (six ask figures added, main call and stump unchanged)",
-  "determinism": "FAIL on one item: Deliverable Answers for squad_placement_2027.xlsx (the six totals added)",
-  "author_pick": "rubric (2026-10-27)"
- }
+ "source_note": "",
+ "zip_sha256_16": ""
 }
