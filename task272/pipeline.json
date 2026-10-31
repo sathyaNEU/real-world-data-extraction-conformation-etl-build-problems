@@ -1,35 +1,24 @@
 {
  "task": "task272",
- "status": "OPEN",
- "domain": "demographic-social-science",
+ "status": "DESIGN",
+ "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "A strong analyst who conforms the compounders' dose logs, the set-up events and the gravimetric check register and runs the textbook capability study on each product's 2026 weighed doses (the overall mean and spread, normal tails) puts on verification the products whose tubing sets lose most of the tolerance band before they are changed and misses the ones whose sets were run through extra batches; the weighed doses' own out-of-tolerance share and the quarantine sorts see almost none of a tail this rare, and only the doses rebuilt set by set, each dose's volume at the litres its set had pumped, name the set.",
  "architecture": 3,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-21",
-  "checks": 51
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-21 (no LEAK): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note's Leak check",
-  "reader": "r272c and r272d (architecture 2) both landed the call: a seasonal calendar per hospital or region and kind of work; asks held (Ask A 0 of 31 each, Ask B 1 of 31 each, the H20 tie)"
- },
+ "precut": null,
+ "leak": null,
  "duplicate_check": {
-  "heart": "WARN 2026-10-21 (three_rules.strategy_risk, repeat.gate_g against task482 v4, overuse.gate_g; answered in the note's Draw item 9)",
-  "nearest": "0.07 task111 v2 (driver); task17 v3 lineage 0.05 differentiated on the card",
-  "surface": "clean 2026-10-21 (persona Kristin Robertson)"
+  "heart": null,
+  "nearest": "0.08 task229 v2 (driver, lineage, differentiated on the card); test.same_driver_older differentiated against task271 v2, task308 v1 and task471 v1",
+  "surface": null
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (architecture 2)"
- },
+ "judge": null,
  "returned": [],
- "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
+ "resume": "Architecture 3 drawn 2026-10-31 (Ashcombe Valley Health's batch-compounded products for 100 percent gravimetric verification at the April 2027 IV workflow cutover). Next: the design sections and precut.py, then the generator, the pack, the goldens and every free gate; read DESIGN_NOTE.md's Tried and rejected first.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -45,22 +34,13 @@
   {
    "architecture": 2,
    "drawn": "2026-10-21",
-   "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16"
+   "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16; retired again 2026-10-31 by the batch audit, short of the survivor anatomy"
   },
   {
    "architecture": 3,
-   "drawn": null,
-   "fate": "not drawn 2026-10-21: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
+   "drawn": "2026-10-31",
+   "fate": null
   }
  ],
- "gates": {
-  "checks": "0 failed",
-  "verify": "PASS",
-  "byte_identical": true,
-  "figures_check": "85 figures, 0 absent",
-  "target_zip_md5": "66ca10c770c9de7091ae11a117f6ee9f",
-  "target_mb": 10.6,
-  "pair_ceiling": 29.4,
-  "family_margin_floor": 0.882
- }
+ "gates": {}
 }
