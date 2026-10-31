@@ -1,85 +1,150 @@
 {
- "task": "task191",
- "architecture": "v1",
- "drawn": "2026-10-16",
- "slot_note": "seed AD14 kept its decision shape only: one capacity upgrade funded among several candidates that all show an evening shortfall. The seed's own architecture compares the strongest gap against a range uncongested ports have shown, which is a filed reference band deciding the call, so the build is re-rooted on the field's own treatment of a maximum that was selected for being largest.",
- "domain": "general-statistics-data-science",
- "subdomain": "multiple-testing-selective-inference",
- "niche": "judging the worst of many monitored series when the worst was chosen for being worst",
- "objective": "anomaly-detection",
- "shape": "13",
- "decision_type": "go_hold_or_stop",
- "answer_unit": "named_option",
- "answer": "Fund no interconnect augment this cycle.",
- "answer_source": "submission.md block 1; generator/figures.json call. The quarter's worst evening shortfall is 318 kbps on HVT-01 on 2027-02-17 in the 19:00 window, and every one of the eight earlier quarters of the same measurement on the same seven interconnects produced a larger worst window, 398 to 489 kbps.",
- "gap": [
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G17",
-  "G18"
- ],
- "gate_g": "signal_vs_noise_or_hold",
- "calibration_form": "none",
- "stump_strategy": "uncertainty_hold",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "published_series",
- "stakeholder_role": "the network planning lead",
- "role_family": "capacity_planner",
- "scoring_unit": "per active unit per period",
- "spine": {
-  "file": "panel_throughput_minutes.csv",
-  "rows": 224460,
-  "entity": "one measurement of one path in one minute",
-  "grain": "path x minute",
-  "source": "synthetic"
- },
- "forum": "committee_or_panel",
- "forcing_event": "period_close",
- "org_family": "software_or_platform",
- "world": {
-  "geography": "Netherlands",
-  "currency": "EUR",
-  "org_type": "video streaming platform",
-  "invented_names": [],
-  "people": [
-   "Amelia Jekel",
-   "Rick Claassen"
-  ]
- },
- "deliverables": [
-  "augment_decision_2027Q1.xlsx",
-  "shortfall_overview.png"
- ],
- "opening_move": "question-first",
- "question_form": "whether",
- "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",
- "driver_concrete": "Seven interconnects are watched every evening for a quarter and the worst of them is put forward, so the figure to beat is the distribution of the worst of seven over a quarter of evenings, which the uncongested paths' own record puts well above the one-series bound the worst interconnect clears.",
- "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who cleans every series and applies the filed investment rule tests the worst interconnect's gap against that interconnect's own spread, gets a comfortable margin and funds the augment, where the honest comparison is against the maximum over seven paths and a quarter of evenings and the call is to hold.",
- "domain_test": "The deciding quantity is the null distribution of a maximum over many series and many periods, which selective inference estimates from the family rather than from the selected member; swap the interconnects for a single meter read once and nothing was selected, so the correction and the call disappear.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task189": "task189 and task191 share only the broadest generator tag, G17 statistical rigor, and the Gate G mechanism signal_vs_noise_or_hold. The mechanisms are unrelated. task189's decisive quantity is the mean of a set of results most of which carry only an upper bound, where two laboratories report to limits an order apart, so the call turns on estimating a mean under left censoring. task191's decisive quantity is the null distribution of a maximum: the figure is correct and uncensored, and the call turns on the breadth of the selection that produced it. Nothing is censored here and nothing is selected there.",
-  "task190": "furniture only: both packs shipped a handover manifest. task191's is renamed to the platform's own idiom and carries its own columns. task190's architecture 1 is spent and its driver, a stock read as a flow, has nothing to do with calibrating an extreme."
- },
- "lineage": [],
- "notes": "The deciding forum is the platform's capacity committee, redrawn from a board of directors after guard.py heart blocked the forum against task263.",
- "layer2_family": "forecast_uncertainty",
- "layer2_pattern": "own:null-of-the-selected-maximum",
- "layer1": [
-  "minute-level panel with gaps",
-  "two measurement vantage points",
-  "local time against UTC",
-  "a path renamed mid-quarter",
-  "a maintenance window to exclude",
-  "wide monthly sheets"
- ],
- "registered": "2026-10-16T23:55:31Z"
+  "task": "task191",
+  "architecture": "v2 (re-root 2026-10-31: a cancer institute's genome-wide knockout screen of one cell line, the 2027 arrayed validation slate net of the copy-number cutting effect)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task191 in the same objective (Anomaly Detection & Diagnostics), batch 1; architecture 1 moved to lineage",
+  "domain": "biomedical-clinical-research",
+  "subdomain": "genomics-gwas-high-dimensional-association",
+  "niche": "a functional genomics facility's genome-wide CRISPR knockout screen of one cancer cell line, read for the line's own dependencies before arrayed validation",
+  "objective": "anomaly-detection",
+  "shape": "10",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G16",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file and rule correctly scales each gene's guide-level depletion so that the non-essential reference genes sit at 0 and the common essential genes at -1, sets the common essentials aside and fills the validation round's places with the most depleted genes past the standard's line, which fills them with the amplified regions' passenger genes and leaves off the dependencies in single-copy segments, the slate the screen's own quality metrics endorse.",
+  "domain_test": "The deciding quantity is each gene's own fitness effect in the line, estimated the way genome-wide CRISPR screening estimates it, net of the copy-number effect (a guide cutting an amplified locus kills cells through the extra DNA breaks whatever gene it targets), read off the reference genes known to carry no effect across the line's copy-number states; with another field's nouns there is no guide that cuts every copy of its locus, no DNA-damage response and no amplicon, and the task stops reading the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:copy-number-cutting-effect-netted-on-reference-genes",
+  "layer1": [
+    "read counts split across sequencing lanes, one lane re-delivered",
+    "guide library annotated in an older gene-symbol release",
+    "plasmid and day-21 counts in separate exports",
+    "copy-number segments as intervals beside guide cut-site coordinates",
+    "published reference gene sets under older symbols",
+    "zero-count and low-count guides",
+    "sample names that differ between the sample sheet and the count files"
+  ],
+  "stakeholder_role": "the institute's target portfolio lead, who sets the 2027 arrayed validation slate",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "osr7_guide_counts.csv",
+    "rows": 74000,
+    "entity": "one sgRNA of the genome-wide library",
+    "grain": "guide x sample",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "Netherlands",
+    "currency": "EUR",
+    "org_type": "academic cancer research institute",
+    "invented_names": [
+      "Vliedorp Instituut voor Kankeronderzoek",
+      "OSR-7"
+    ],
+    "people": [
+      "Femke Nihoe",
+      "Rick Claassen",
+      "Merel Spanhaak"
+    ]
+  },
+  "deliverables": [
+    "osr7_validation_slate_2027.xlsx",
+    "osr7_gene_effects_2027.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "driver": "The decisive quantity is each unit's own effect on an outcome measured through several probes, where every probe in a region also carries a damage term that grows with how many copies of the region the system holds, so units sitting in a multiplied region rank as the most affected and units in a lost region look spared; only the effect net of the region's damage, read off the reference units known to have no effect, ranks the units for the few places available.",
+  "driver_concrete": "Each gene's knockout effect in OSR-7 is read through four guides, and a guide that cuts in an amplified region also kills cells through the extra DNA breaks, so the genes of the line's amplicons look like strong dependencies and genes in its single-copy segments look spared; only the guide-level depletion net of the copy-number cutting effect, estimated on the non-essential reference genes across the line's copy-number states, gives the dependencies the institute validates.",
+  "stump": "A competent solver normalises the screen's guide counts, scales each gene's median depletion so that the non-essential reference genes sit at 0 and the common essentials at -1, sets the common essentials aside and fills the arrayed round's places with the most depleted genes past -0.5, most of them passenger genes of the line's amplicons, where the effect net of the copy-number cutting effect keeps the amplicons' own driver dependencies, drops their passengers and brings in dependencies from the single-copy segments.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task182": "182 v1 nets each bore's own lagged response to a shared external driver out of a level change through time; here nothing is a time series or a lag: the contaminating term is the measuring method's own damage at each probe's locus, proportional to how many copies of the locus the line carries, estimated once on reference units known to carry no effect, and the call is which units' own effect passes a filed line.",
+    "task465": "465 v1 values a capped payoff over periods a target series was not observed, through its correlation with another series; here every unit is observed in full and nothing is predicted: each unit's observed effect is split between the unit's own loss and a locus-level cutting effect the reference units measure.",
+    "task107": "107 v2 scales a pilot's assignment effect by who actually delivered each unit's sessions, reached through a timetable, a staff directory and a certification register; here nothing is delivered or assigned: each unit's observed loss is split between the unit's own effect and a locus-level cutting effect of the measuring method, measured on reference units known to carry none.",
+    "task121": "121 v4 books a fall in satisfaction to the conditions each response was made under rather than to ratings that move with the overall verdict; here there is no respondent and no rating: the probe's own damage at a multiplied locus inflates every unit there, and only the reference units' depletion by copy-number state measures it.",
+    "task228": "228 v2 separates each unit's random error from comparators' errors through the covariances of three or four measurements of one unobserved signal; here each unit is measured once through its own probes and the contaminating term is systematic, a damage term set by the copy number of the unit's locus and measured on reference units of known zero effect, with no comparator series at all.",
+    "task478": "478 v7 carries occasional spot tests across a period through a third party's monthly record of an input property; here nothing is sampled in time and no third-party record moves: every unit is read once at the screen's end, and its depletion is split between its own loss and its locus's copy-number cutting effect."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-16",
+      "domain": "general-statistics-data-science",
+      "subdomain": "multiple-testing-selective-inference",
+      "niche": "judging the worst of many monitored series when the worst was chosen for being worst",
+      "objective": "anomaly-detection",
+      "shape": "13",
+      "decision_type": "go_hold_or_stop",
+      "answer_unit": "named_option",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G17",
+        "G18"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "calibration_form": "none",
+      "stump_strategy": "uncertainty_hold",
+      "context_artifact": "published_series",
+      "forum": "committee_or_panel",
+      "forcing_event": "period_close",
+      "org_family": "software_or_platform",
+      "role_family": "capacity_planner",
+      "driver": "The decisive quantity is whether the largest shortfall among many candidate series is larger than the largest a quiet set of the same size and length produces, because the candidate was chosen for standing out, so judging it against the spread of one series calls a routine extreme a real degradation.",
+      "driver_concrete": "Seven interconnects are watched every evening for a quarter and the worst of them is put forward, so the figure to beat is the distribution of the worst of seven over a quarter of evenings, which the uncongested paths' own record puts well above the one-series bound the worst interconnect clears.",
+      "stump": "A competent solver builds each interconnect's evening shortfall against its own daytime baseline, tests the worst one against its own variation, finds it clears comfortably and funds the augment, where the same shortfall is inside what the worst of seven quiet paths produces in a quarter.",
+      "answer": "Fund no interconnect augment this cycle.",
+      "world": {
+        "geography": "Netherlands",
+        "currency": "EUR",
+        "org_type": "video streaming platform",
+        "invented_names": [],
+        "people": [
+          "Amelia Jekel",
+          "Rick Claassen"
+        ]
+      },
+      "deliverables": [
+        "augment_decision_2027Q1.xlsx",
+        "shortfall_overview.png"
+      ],
+      "question_form": "whether",
+      "fate": "spent 2026-10-31 at the batch 1 re-root: shipped 2026-10-17 on the interconnect worst-window call (fund nothing), its decisive step measured as landed in-house before any portal result; the multiple-testing cell, the filed comparison criterion and the statistic-of-a-statistic reference retired with it"
+    }
+  ],
+  "notes": "",
+  "registered": "2026-10-31T17:47:31Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "the",
+    "rounding opener": "shortfalls",
+    "deliverable set": "png+xlsx"
+  }
 }

@@ -1,40 +1,47 @@
 {
  "task": "task191",
- "status": "SHIPPED",
- "domain": "general-statistics-data-science/multiple-testing-selective-inference",
+ "status": "DESIGN",
+ "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
- "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
- "architecture": 1,
- "loops": 1,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "each gene's guide-level depletion scaled on the reference genes and read against the standard's line without the copy-number cutting effect: the amplicons' passenger genes join the slate and a single-copy segment's dependency drops off (default: the scaled depletion; golden: the effect net of the cutting effect measured on the non-essential reference genes by copy-number state)",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, clause numbers and domain nouns only, four lines answered in the design note",
-  "reader": "wave 8 audit: call landed 1 of 1 and 111 of 119 ask figures, scored by score_reader.py; the reader's decisive step was the port's own prior-record 99th percentile at 330.2 kbps, which is one of the 48 licensed constructions and holds"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS after the forum was redrawn",
-  "nearest": "0.05 task130 v3"
+  "heart": "",
+  "surface": ""
  },
  "judge": {
-  "verdict": "r2 DETERMINISTIC (r1 NOT_DETERMINISTIC FIX_NOW), Gate G and Gate H pass",
-  "disposition": "r2 FIX_NOW on two write-up figures and one ask pin, all three fixed in the generator: the window counts computed from the data (1,851 and 1,809), step 6's pooled-statistics overclaim replaced by the 282 of 15,330 record windows at or above the quarter, and clause 7.2 pinned to the commitment in force on the quarter's last day",
-  "report": "/tmp/determinism-check-task191-r2/verdict.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
- "returned": [],
- "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED, asks 111 of 119 at 93.3 per cent. Owed: re-root the decisive step. Prior resume line follows. Architecture 1 refused on measurement, screened before any redesign (see DESIGN_NOTE.md '## Measured refusal' and generator/screen_estimator_family.py). Next step is a stage 1 re-root: new draw, architecture 2, loops reset, guard.py mechanisms and check first. The re-root may not reuse clause 4.2's filed comparison criterion in any wording, a reference built as a statistic of a statistic over the same panel, a two-year rollup of the same quantity shipped beside the quarter compared with it, or a decisive step whose only output is a binary while every graded figure is invariant to it. The ask layer is re-cut inside the re-root: 49 of its 119 graded figures are the deliverable's own worst-window grid and chart, which carry no device.",
+ "returned": [
+  {
+   "date": "2026-10-31",
+   "portal": "none: batch 1 re-root; architecture 1's decisive step measured as landed in-house, never a portal result",
+   "repair": "re-root",
+   "commit": "DRAWN (task191) architecture 2"
+  }
+ ],
+ "resume": "Architecture 2 drawn 2026-10-31 (OSR-7 genome-wide knockout screen, the 2027 arrayed validation slate net of the copy-number cutting effect). Next: stage 2 design (default path, stump sentence, ladder, fork table, asks, prompt) gated by precut.py.",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "architecture_spent": true,
+ "architecture_spent": false,
  "screen": {
   "date": "2026-10-21",
   "harness": "generator/screen_estimator_family.py",
