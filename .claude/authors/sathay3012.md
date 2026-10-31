@@ -2,26 +2,24 @@
 
 Account email: not yet recorded; until it is, the author names the handle at the start of the session. A backlog list, not a territory: no task belongs to anybody, and any build in here can be worked by whoever the user asks.
 
-- **Backlog range:** Descriptive & Distribution Analysis, task253 to task300. `status.py next` names the next task across every backlog; how many run at once is the user's call.
-- **Status board:** https://claude.ai/artifact/Ht1rZ4FAUWxn91Ma75XRzC (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
+- **Backlog range:** Batch 4, the author's queue of 2026-10-31: the 36 tasks below, across every objective, worked in the batch's priority order (returned builds, then shipped builds re-checked under the 10-30 gates, then the open builds). Earlier waves are replaced; every build in them is shipped or sits in this batch. `status.py next` names the next task across every backlog; how many run at once is the user's call.
+- **Status board:** https://claude.ai/artifact/Ht1rZ4FAUWxn91Ma75XRzC ("Batch 4 Board": one row per Batch 4 task grouped by priority, with its call, status, stage, links to the prompt, submission and `target.zip`, a short note and the date), updated at every commit point.
 - **No retirement.** No number in this lane is retired: an architecture that dies at the draw or at stage 4 is re-rooted in a fresh world, and the number stays in its wave until it ships (the author, 2026-10-25). The twelve numbers retired before that date (task121, task269 to task272, task274, task276 to task280, task282) were reopened the same day.
-- **Resume:** `handoffs/sathay3012/HANDOFF.md` (task253, task254).
+- **Resume:** `handoffs/sathay3012.md` and each build's own `pipeline.json` resume line.
 
 ## Backlog
 
 **Deprecated:** task112 is retired permanently and removed from the repository (2026-10-13, at the author's request). It was never drawn: its real-data bundle needed www2.census.gov, which the environment denies. The number is not reused.
 
-Work the waves in order, six tasks to ship per wave, two in flight at a time. `status.py next sathay3012` names
-the next task and `status.py --owner sathay3012` shows each wave's progress. When a wave is fully shipped,
-`status.py wave sathay3012` prints the next one; add it below in that `SHIPPED` commit. The note says where a
-task restarts: resume N (the stage it reached), redesign (the portal solved it), re-root (a new
-architecture), new. A task from an objective no developer owns says so.
+Work the waves in order. A shipped build in this batch is re-checked on the free gates (precut anatomy lines,
+voice-check's count rule, leak.py sweeps 12 and 13, guard.py heart's shell screen) and reshipped only on a failing
+gate or a portal result; an open build is drawn fresh under the current skills. The note says what each task owes.
 
 | Wave | Tasks, in order |
 |---|---|
-| 1 | task253 (resume 2: Ask A) · task254 (resume 2: architecture 3) · task120 (re-root: retired) · task121 (re-root: fresh world, Root-Cause) · task127 (re-root, Opportunity Sizing) |
-| 2 | task255 (new) · task256 (new) · task257 (new) · task258 (new) · task259 (new) · task260 (new) |
-| 3 | task261 (new) · task262 (new) · task263 (new) · task264 (new) · task265 (new) · task266 (new) |
-| 4 | task267 (new) · task268 (new) · task269 (re-root: fresh world) · task270 (re-root: fresh world) · task271 (re-root: fresh world) · task272 (re-root: fresh world) |
-| 5 | task273 (new) · task274 (re-root: fresh world) · task275 (new) · task276 (re-root: fresh world) · task277 (re-root: fresh world) · task278 (re-root: fresh world) |
-| 6 | task279 (re-root: fresh world) · task280 (re-root: fresh world) · task281 (new) · task282 (re-root: fresh world) · task283 (new) · task284 (new) |
+| 1 | task448 (priority 1: fork-is-the-stump test on the filed pins, then re-check) · task305 (priority 1: landed, re-check the re-root under the new rules) · task139 (priority 1: landed, re-check the re-root under the new rules) · task251 (priority 1: fork-is-the-stump test on the filed pins, then re-check) · task177 (priority 1: fork-is-the-stump test on the filed pins, then re-check) · task262 (priority 1: re-check under the 10-30 gates) |
+| 2 | task129 (priority 1: re-check under the 10-30 gates) · task256 (priority 1: re-check under the 10-30 gates) · task450 (priority 1: re-check under the 10-30 gates) · task158 (priority 1: re-check under the 10-30 gates) · task254 (priority 1: re-check under the 10-30 gates) · task302 (priority 1: re-check under the 10-30 gates) |
+| 3 | task478 (priority 2: re-check under the 10-30 gates) · task171 (priority 2: re-check under the 10-30 gates) · task471 (priority 3: re-check under the 10-30 gates) · task269 (priority 3: re-check under the 10-30 gates) · task235 (priority 3: re-check under the 10-30 gates) · task483 (priority 3: prompt repair, then reship) |
+| 4 | task451 (priority 3: re-check under the 10-30 gates) · task480 (priority 3: re-check under the 10-30 gates) · task150 (priority 4: re-check under the 10-30 gates) · task155 (priority 4: re-check under the 10-30 gates) · task189 (priority 4: re-check under the 10-30 gates) · task195 (priority 4: re-check under the 10-30 gates) |
+| 5 | task239 (priority 4: re-check under the 10-30 gates) · task242 (priority 4: re-check under the 10-30 gates) · task257 (priority 4: re-check under the 10-30 gates) · task310 (priority 4: re-check under the 10-30 gates) · task460 (priority 4: re-check under the 10-30 gates) · task463 (priority 4: re-check under the 10-30 gates) |
+| 6 | task481 (priority 4: re-check under the 10-30 gates) · task116 (priority 4: re-check under the 10-30 gates) · task274 (priority 5: resume, new draw answers the survivor anatomy) · task202 (priority 5: resume, new draw answers the survivor anatomy) · task311 (priority 5: resume, new draw answers the survivor anatomy) · task277 (priority 5: resume, new draw answers the survivor anatomy) |
