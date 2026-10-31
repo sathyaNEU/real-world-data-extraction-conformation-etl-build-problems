@@ -95,7 +95,7 @@ def write_workbook(path, fig):
     for line in ["Hand Hygiene Coaching Grant 2027: wards funded and the 2025-26 baseline.",
                  "Coaching nurse 2027: wards whose staff performed hand hygiene at fewer than 80 per cent of the "
                  "moments on their AM and PM shifts in 2025-26 (terms 2.1 to 2.4).",
-                 "Hospital-onset BSI: episodes under the hospital's surveillance definitions (version 3), attributed "
+                 "Hospital-onset BSI: episodes under the hospital's surveillance protocol (version 3), attributed "
                  "to the ward the patient was on when the culture was collected.",
                  "Hand rub put out: bottles issued to the ward's cost centre less returns, and the dispenser refills "
                  "fitted on the ward, each refill counted once.",
@@ -112,6 +112,7 @@ def write_workbook(path, fig):
 
 
 def write_chart(path, est, funded):
+    plt.rcParams.update({"svg.fonttype": "none", "svg.hashsalt": "task269"})
     order = sorted(K.WARD, key=lambda c: est[c])
     fig, ax = plt.subplots(figsize=(8.6, 6.2), dpi=150)
     fig.patch.set_facecolor(SURF)
@@ -145,7 +146,8 @@ def write_chart(path, est, funded):
     fig.text(0.02, 0.012, "Source: hand hygiene audit application, patient acuity system and rostering system, "
              "1 July 2025 to 30 June 2026. Ward 6A includes S1A from 2 February 2026.", fontsize=7.2, color=INK2)
     fig.tight_layout(rect=(0, 0.03, 1, 0.905))
-    fig.savefig(path, dpi=150, facecolor=SURF, metadata={"Software": None})
+    fig.savefig(path, format="svg", facecolor=SURF,
+                metadata={"Date": None, "Creator": None, "Format": None, "Type": None})
     plt.close(fig)
 
 

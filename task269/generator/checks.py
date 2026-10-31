@@ -52,6 +52,10 @@ def run(task, b, fig, res):
         all(os.path.basename(x) in files for x in meta["distractor_files"]), ", ".join(meta["distractor_files"]))
     row("GATE provenance", set(meta["provenance"]) == set(files), "%d entries" % len(meta["provenance"]))
     row("GATE deliverables", sorted(os.listdir(golden_dir)) == sorted(K.DELIVERABLES), ", ".join(K.DELIVERABLES))
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes|index|contents", re.I)
+    row("GATE section 3: no file named as a dictionary, manifest, index, readme, definitions or notes ships",
+        not [f for f in files if describing.search(f)], ", ".join(f for f in files if describing.search(f)) or "none")
 
     # ------------------------------------------------------------------ the call
     truth = tuple(c for c in K.WARD if W.truth[c] < K.BENCHMARK / 100.0)
@@ -153,9 +157,9 @@ def run(task, b, fig, res):
         ins < 0.79 and outs > 0.81, "inside max %.2f, outside min %.2f" % (100 * ins, 100 * outs))
     row("SF7 a session's shift is the roster shift it began in; no session in an overlap",
         int((wa["shift"] == "overlap").sum()) == 0, "AM 07:00 to 15:30, PM 13:00 to 21:30")
-    row("SF8 worked hours leave out supernumerary shifts (extract notes); counted, the same call",
+    row("SF8 worked hours leave out the roster's supernumerary shifts; counted, the same call",
         call_of(supernumerary=True) == gold, "same call")
-    row("SF9 escalation spaces carry care hours like any bed (extract notes); left out, the same call",
+    row("SF9 escalation spaces carry care hours like any bed; left out, the same call",
         call_of(escalation=False) == gold, "same call")
     row("SF10 at most six coaches: the cap does not bind", len(gold) <= 6, "%d funded" % len(gold))
     ties = 0
@@ -310,6 +314,8 @@ def _scrubbed(target, golden):
             if f.endswith(".pdf") and (b"ReportLab" in raw or b"reportlab" in raw):
                 return False
             if f.endswith(".png") and (b"matplotlib" in raw.lower() or b"Software" in raw):
+                return False
+            if f.endswith(".svg") and (b"matplotlib" in raw.lower() or b"<metadata>" in raw):
                 return False
             if f.endswith(".xlsx"):
                 with zipfile.ZipFile(p) as z:

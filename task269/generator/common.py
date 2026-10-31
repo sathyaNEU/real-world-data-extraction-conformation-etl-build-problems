@@ -75,12 +75,9 @@ PEOPLE = {
 REQUESTER = PEOPLE["grants"]
 
 FILES = {
-    "contents": "application_pack_index.txt",
     "terms": "hand_hygiene_coaching_grant_terms_2027.pdf",
     "program": "hand_hygiene_program_2025_26.pdf",
-    "bsidef": "hobsi_surveillance_definitions_v3.pdf",
-    "notes": "acuity_and_roster_extract_notes.txt",
-    "dictionary": "data_dictionary.csv",
+    "bsidef": "hobsi_surveillance_protocol_v3.pdf",
     "wards": "ward_and_area_reference.xlsx",
     "audits": "hand_hygiene_audit_moments_2025_26.csv",
     "acuity": "acuity_patient_shifts_2025_26.csv",
@@ -96,7 +93,7 @@ FILES = {
 }
 DISTRACTORS = ("survey", "flu")
 GOLDEN = "coaching_wards_2027.xlsx"
-CHART = "ward_compliance_2025_26.png"
+CHART = "ward_compliance_2025_26.svg"
 DELIVERABLES = (GOLDEN, CHART)
 
 

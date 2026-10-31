@@ -28,30 +28,6 @@ import world as WD         # noqa: E402
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 
-CONTENTS = [
-    ("terms", "The Foundation's terms for the Hand Hygiene Coaching Grant 2027 (adopted 22 September 2026)."),
-    ("program", "Infection Prevention and Control: the Hand Hygiene Program 2025-26, program summary."),
-    ("audits", "Hand hygiene audit application: every moment recorded in the 2025-26 audit year, all wards and "
-               "departments (export of 2 November 2026)."),
-    ("notes", "Workforce Information's notes on the acuity and roster extracts."),
-    ("acuity", "Patient acuity system: required care hours by patient and shift, inpatient wards, 2025-26."),
-    ("roster", "Rostering system: nursing shifts worked on the inpatient wards, 2025-26."),
-    ("bsidef", "Infection Prevention and Control: hospital-onset bloodstream infection surveillance definitions, "
-               "version 3."),
-    ("isolates", "Laboratory: positive blood cultures collected 1 July 2025 to 30 June 2026."),
-    ("admissions", "Patient administration system: the admissions of the patients with a positive blood culture in "
-                   "2025-26."),
-    ("transfers", "Patient administration system: the ward transfers of those admissions."),
-    ("census", "Patient administration system: midnight census by ward, 2025-26."),
-    ("issues", "Store: hand rub and hand soap items issued and returned, 2025-26."),
-    ("rounds", "Cleaning contractor: dispenser refill and cartridge records from the handhelds, 2025-26."),
-    ("wards", "Ward and area reference: codes, cost centres, application and laboratory names, dispensers."),
-    ("survey", "Patient experience survey: the hand hygiene question by ward and month of discharge, 2025-26."),
-    ("flu", "Staff influenza vaccination program 2025: ward nursing staff."),
-    ("dictionary", "Data dictionary for the files above."),
-]
-
-
 def build(out, seed=K.SEED, keep=False):
     if os.path.exists(out):
         shutil.rmtree(out)
@@ -71,10 +47,7 @@ def build(out, seed=K.SEED, keep=False):
     DC.write_terms(p("terms"))
     DC.write_program(p("program"))
     DC.write_definitions(p("bsidef"))
-    DC.write_notes(p("notes"), n)
-    DC.write_dictionary(p("dictionary"))
     DC.write_wards(p("wards"), s)
-    DC.write_contents(p("contents"), [(K.FILES[k], d) for k, d in CONTENTS])
     return dict(world=w if keep else None, side=s if keep else None, counts=n)
 
 
@@ -102,6 +75,7 @@ def finish_golden(golden):
     PP.COMPANY = K.FOUNDATION
     PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.REQUESTER, K.REQUESTER, "2026-11-09T22:05:00Z",
                        "2026-11-19T05:48:00Z", title="Coaching wards 2027", excel=True)
+    PP.normalize_svg(os.path.join(golden, K.CHART))
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 

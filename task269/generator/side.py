@@ -22,7 +22,7 @@ AREA_SESSIONS = {"ED": 150, "OT": 80, "DSU": 70, "RDU": 75, "OPC": 90, "MI": 60}
 AREA_MOMENTS = {"ED": 14, "OT": 12, "DSU": 11, "RDU": 13, "OPC": 9, "MI": 8}
 RENAME_DATE = dt.date(2026, 1, 1)      # the application's local name for personal care staff from this date
 
-# recognised pathogens and the common commensals of the surveillance definitions
+# recognised pathogens and the common commensals of the surveillance protocol
 PATHOGENS = [("Staphylococcus aureus", 0.20), ("Escherichia coli", 0.24), ("Klebsiella pneumoniae", 0.12),
              ("Enterococcus faecalis", 0.10), ("Pseudomonas aeruginosa", 0.08), ("Candida albicans", 0.06),
              ("Enterobacter cloacae complex", 0.06), ("Serratia marcescens", 0.04), ("Proteus mirabilis", 0.05),

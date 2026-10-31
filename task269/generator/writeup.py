@@ -54,8 +54,8 @@ def text(fig):
             "per cent of the hand hygiene moments on its AM and PM shifts from 1 July 2025 to 30 June 2026, a shift's "
             "moments in proportion to its patients' required care hours, at most six wards.",
             "2. Built every ward's AM and PM shifts: required care hours from acuity_patient_shifts_2025_26.csv, "
-            "worked hours from the rostered rows of nursing_roster_actuals_2025_26.csv (supernumerary rows left out, "
-            "per acuity_and_roster_extract_notes.txt), S1A read as 6A from 2 February 2026 per "
+            "worked hours from the rostered rows of nursing_roster_actuals_2025_26.csv (supernumerary rows left out), "
+            "S1A read as 6A from 2 February 2026 per "
             "ward_and_area_reference.xlsx.",
             "3. Placed each ward session of hand_hygiene_audit_moments_2025_26.csv on the roster shift it began in "
             "(no session begins in an overlap; the sessions begun on a night shift, after midnight included, left "
@@ -73,7 +73,7 @@ def text(fig):
             % names(funded),
             "6. Ask A: linked each culture in blood_culture_isolates_2025_26.csv to its admission in "
             "blood_culture_patient_admissions_2025_26.csv by record number, or by date of birth and sex for a record "
-            "number the admissions do not hold (to the patient with an admission covering the collection); applied hobsi_surveillance_definitions_v3.pdf, a stay in the hospital "
+            "number the admissions do not hold (to the patient with an admission covering the collection); applied hobsi_surveillance_protocol_v3.pdf, a stay in the hospital "
             "running on through an admission that began at the minute the patient's previous admission ended, and an "
             "episode being the patient's across admissions; "
             "attributed each episode to the ward the patient was on at collection, rebuilt from the admitting ward and "

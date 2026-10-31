@@ -1,6 +1,5 @@
 """The pack's documents: the Foundation's grant terms, the hospital's hand hygiene program summary and its hospital-onset
-bloodstream infection surveillance definitions (PDF); the workforce team's extract notes and the pack's contents (TXT);
-the data dictionary (CSV); the ward and area reference workbook (XLSX)."""
+bloodstream infection surveillance protocol (PDF); the ward and area reference workbook (XLSX)."""
 from __future__ import annotations
 
 import csv
@@ -175,13 +174,13 @@ def write_program(path):
     doc.build(st, onFirstPage=fr, onLaterPages=fr)
 
 
-# ------------------------------------------------------------------------------------------------ surveillance definitions
+# ------------------------------------------------------------------------------------------------ surveillance protocol
 def write_definitions(path):
     S = styles("Sans", NAVY)
-    doc, fr = _doc(path, "Hospital-onset bloodstream infection surveillance: definitions", K.PEOPLE["ipc"],
+    doc, fr = _doc(path, "Hospital-onset bloodstream infection surveillance protocol", K.PEOPLE["ipc"],
                    "Infection prevention and control", "%s, Infection Prevention and Control" % K.HOSPITAL,
-                   "HOBSI surveillance definitions, version 3")
-    st = [Paragraph("Hospital-onset bloodstream infection surveillance: definitions", S["h1"]),
+                   "HOBSI surveillance protocol, version 3")
+    st = [Paragraph("Hospital-onset bloodstream infection surveillance protocol", S["h1"]),
           Paragraph("Version 3, effective 1 July 2025. Infection Prevention and Control Service, %s. Replaces "
                     "version 2 (2022)." % K.HOSPITAL, S["meta"]),
           _clause(S, "1", "Scope. Inpatients of the hospital's wards. Patients seen in the emergency department, "
@@ -207,162 +206,6 @@ def write_definitions(path):
                     "(diphtheroids), <i>Cutibacterium</i> species, <i>Bacillus</i> species other than <i>B. "
                     "anthracis</i>, and viridans group streptococci.", S["body"])]
     doc.build(st, onFirstPage=fr, onLaterPages=fr)
-
-
-# ------------------------------------------------------------------------------------------------ extract notes
-def write_notes(path, counts):
-    out = ["WORKFORCE INFORMATION: EXTRACT NOTES",
-           "Request WI-26-0418, acuity and roster actuals 2025-26 (requested by %s, Infection Prevention and"
-           % K.PEOPLE["ipc"],
-           "Control, for the %s application)" % K.GRANT,
-           "Extracted by %s, 3 November 2026" % K.PEOPLE["workforce"],
-           "Files: acuity_patient_shifts_2025_26.csv (%s rows), nursing_roster_actuals_2025_26.csv (%s rows)"
-           % ("{:,}".format(counts["acuity"]), "{:,}".format(counts["roster"])),
-           "",
-           "1. acuity_patient_shifts_2025_26.csv",
-           "One row per patient per AM or PM shift on each inpatient ward, 1 July 2025 to 30 June 2026, from the",
-           "patient acuity system. required_care_hours is the direct nursing care the patient was assessed to need",
-           "over the shift, entered by the nurse in charge at the start of the shift and updated if the patient's",
-           "condition changed. Patients in escalation spaces (corridor and chair spaces opened when a ward is over",
-           "its beds) are rated like any other patient; their bed codes end ESC1, ESC2 and so on.",
-           "",
-           "2. nursing_roster_actuals_2025_26.csv",
-           "One row per nurse per shift worked on each ward, from the rostering system after timesheet approval.",
-           "Shifts are AM 07:00 to 15:30, PM 13:00 to 21:30 and night 21:00 to 07:30, each with a 30 minute unpaid",
-           "meal break; part shifts are 4 hours. worked_hours are the paid hours. The two night shifts over the",
-           "daylight saving changes (4 October 2025 and 4 April 2026) were 9 and 11 hours.",
-           "Shifts worked by the hospital's casual pool nurses carry their employee numbers like any other.",
-           "Rows whose shift_category begins Supernumerary are orientation, clinical education and student",
-           "placement shifts. They are not counted in a ward's nursing hours.",
-           "",
-           "3. Ward 6A",
-           "Ward 6A (Orthopaedics) moved to the new surgical block on 2 February 2026 and carries the code S1A in",
-           "both systems from that date. Its beds and staff moved with it.",
-           ""]
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write("\n".join(out))
-
-
-# ------------------------------------------------------------------------------------------------ dictionary
-DICTIONARY = [
-    ("audits", "session_id", "The audit application's session number, given when the session is saved."),
-    ("audits", "session_date", "Date of the session (day/month/year)."),
-    ("audits", "session_start", "Time the session began (24-hour clock, local time)."),
-    ("audits", "department", "The ward or department audited, as the audit application names it."),
-    ("audits", "auditor", "The gold auditor's code in the audit application."),
-    ("audits", "moment_seq", "Order of the moment within the session."),
-    ("audits", "moment", "Which of the five moments for hand hygiene."),
-    ("audits", "hcw_category", "Health care worker group of the person the moment belonged to, as the application "
-                               "lists it."),
-    ("audits", "action", "Hand rub, Hand wash or Missed."),
-    ("acuity", "ward", "Ward code."),
-    ("acuity", "shift_date", "Date of the shift (year-month-day)."),
-    ("acuity", "shift", "AM or PM."),
-    ("acuity", "bed", "Bed or escalation space."),
-    ("acuity", "encounter", "The patient's encounter number in the acuity system."),
-    ("acuity", "required_care_hours", "Direct nursing care hours the patient was assessed to need over the shift."),
-    ("roster", "roster_date", "Date the shift began (day/month/year)."),
-    ("roster", "ward", "Ward code."),
-    ("roster", "shift_code", "AM, PM or ND (night)."),
-    ("roster", "staff_key", "Employee number; for a student on placement, the university's student number."),
-    ("roster", "staff_type", "Employee or Placement."),
-    ("roster", "designation", "RN registered nurse, EN enrolled nurse, AIN assistant in nursing, Student."),
-    ("roster", "shift_start", "Rostered start time."),
-    ("roster", "shift_end", "Rostered end time."),
-    ("roster", "worked_hours", "Paid hours of the shift."),
-    ("roster", "shift_category", "Rostered, or the kind of supernumerary shift."),
-    ("isolates", "lab_number", "Laboratory accession number of the blood culture set."),
-    ("isolates", "mrn", "The patient's medical record number on the request."),
-    ("isolates", "date_of_birth", "Patient's date of birth (day/month/year)."),
-    ("isolates", "sex", "Patient's sex."),
-    ("isolates", "collected", "Date and time the blood culture set was collected."),
-    ("isolates", "received", "Date and time the laboratory received it."),
-    ("isolates", "location", "The ward or department on the request."),
-    ("isolates", "specimen", "Specimen type."),
-    ("isolates", "organism", "Organism grown."),
-    ("admissions", "admission_no", "Admission number."),
-    ("admissions", "mrn", "The patient's medical record number."),
-    ("admissions", "date_of_birth", "Patient's date of birth (day/month/year)."),
-    ("admissions", "sex", "Patient's sex."),
-    ("admissions", "admitted", "Date and time the admission began."),
-    ("admissions", "admitting_ward", "Ward of the patient at the start of the admission."),
-    ("admissions", "separated", "Date and time the admission ended."),
-    ("admissions", "separation_ward", "Ward of the patient at the end of the admission."),
-    ("transfers", "admission_no", "Admission number."),
-    ("transfers", "transfer_seq", "Order of the transfer within the admission."),
-    ("transfers", "from_ward", "Ward the patient moved from."),
-    ("transfers", "to_ward", "Ward the patient moved to."),
-    ("transfers", "transferred", "Date and time the patient moved."),
-    ("census", "census_date", "Date of the census (year-month-day)."),
-    ("census", "ward", "Ward code."),
-    ("census", "occupied_beds", "Inpatients in a bed or escalation space on the ward at midnight at the end of "
-                                "census_date."),
-    ("issues", "issue_no", "Store transaction number."),
-    ("issues", "issue_date", "Date of the transaction (day/month/year)."),
-    ("issues", "transaction", "ISSUE, or RETURN for stock returned to the store."),
-    ("issues", "cost_centre", "Cost centre charged."),
-    ("issues", "cost_centre_name", "Cost centre name."),
-    ("issues", "item_code", "Store item code."),
-    ("issues", "item_description", "Store item description."),
-    ("issues", "unit_of_issue", "EA each, CTN carton."),
-    ("issues", "quantity", "Quantity in units of issue; negative for a return."),
-    ("rounds", "record_id", "The contractor's record number, given when the handheld synchronises."),
-    ("rounds", "handheld", "The handheld that recorded the refill."),
-    ("rounds", "job_no", "Work order of a job raised outside the scheduled rounds (terminal cleans); blank on a scheduled round."),
-    ("rounds", "dispenser_id", "The dispenser's asset number."),
-    ("rounds", "fitted", "Date and time of the refill, as the handheld recorded it."),
-    ("rounds", "product", "Refill or cartridge fitted."),
-    ("rounds", "quantity", "Quantity, as the handheld recorded it."),
-    ("rounds", "cleaner", "The cleaner's code."),
-    ("survey", "ward", "Ward code."),
-    ("survey", "survey_month", "Month of discharge."),
-    ("survey", "responses", "Patients who answered the hand hygiene question."),
-    ("survey", "hand_hygiene_yes", "Answered yes to: did staff clean their hands before touching you?"),
-    ("survey", "hand_hygiene_no", "Answered no."),
-    ("survey", "hand_hygiene_dont_know", "Answered don't know."),
-    ("flu", "employee_no", "Employee number."),
-    ("flu", "home_ward", "The employee's home ward."),
-    ("flu", "vaccinated_on", "Date of the 2025 influenza vaccination; blank if not vaccinated in the program."),
-]
-
-
-def write_dictionary(path):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f, lineterminator="\r\n")
-        w.writerow(["file_name", "field_name", "source_system", "data_type", "description"])
-        for k, fld, desc in DICTIONARY:
-            w.writerow([K.FILES[k], fld, SYSTEM[k], _dtype(k, fld), desc])
-        for sheet, desc in (("Wards", "One row per inpatient ward code: name, specialty, beds, floor, cost centre, "
-                                      "audit application department, laboratory location."),
-                            ("Areas", "One row per other audited area."),
-                            ("Dispensers", "One row per wall dispenser: the ward or area it serves, floor, "
-                                           "hand rub or hand soap, installed and removed dates.")):
-            w.writerow([K.FILES["wards"], "sheet " + sheet, "Reference workbook", "sheet", desc])
-
-
-SYSTEM = {"audits": "Hand hygiene audit application", "acuity": "Patient acuity system", "roster": "Rostering system",
-          "isolates": "Laboratory information system", "admissions": "Patient administration system",
-          "transfers": "Patient administration system", "census": "Patient administration system",
-          "issues": "Store inventory system", "rounds": "Contractor handheld system",
-          "survey": "Patient experience survey", "flu": "Staff health"}
-NUMERIC = {("audits", "moment_seq"): "integer", ("acuity", "required_care_hours"): "decimal(4,1)",
-           ("roster", "worked_hours"): "decimal(5,2)", ("admissions", "admission_no"): "char(9)",
-           ("transfers", "transfer_seq"): "integer", ("census", "occupied_beds"): "integer",
-           ("issues", "quantity"): "integer", ("rounds", "quantity"): "integer", ("survey", "responses"): "integer",
-           ("survey", "hand_hygiene_yes"): "integer", ("survey", "hand_hygiene_no"): "integer",
-           ("survey", "hand_hygiene_dont_know"): "integer"}
-
-
-def _dtype(k, fld):
-    if (k, fld) in NUMERIC:
-        return NUMERIC[(k, fld)]
-    if fld in ("collected", "received", "admitted", "separated", "transferred", "fitted"):
-        return "datetime"
-    if fld.endswith("_date") or fld in ("date_of_birth", "vaccinated_on", "survey_month"):
-        return "date"
-    if fld in ("session_start", "shift_start", "shift_end"):
-        return "time"
-    return "text"
 
 
 # ------------------------------------------------------------------------------------------------ reference workbook
@@ -415,13 +258,3 @@ def write_wards(path, side):
     _style_sheet(wd)
     wb.save(path)
 
-
-def write_contents(path, items):
-    out = ["%s: %s, application pack" % (K.HOSPITAL, K.GRANT),
-           "Assembled %s by %s, Infection Prevention and Control, for the %s." %
-           (K.ASSEMBLED.strftime("%d %B %Y").lstrip("0"), K.PEOPLE["ipc"], K.FOUNDATION), ""]
-    for name, desc in items:
-        out.append(name)
-        out.append("    " + desc)
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write("\n".join(out) + "\n")

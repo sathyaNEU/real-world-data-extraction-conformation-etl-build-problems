@@ -1,5 +1,5 @@
 """The asks from the shipped pack. Ask A: each ward's 2025-26 hospital-onset bloodstream infections and their rate per
-10,000 occupied bed days, under the hospital's surveillance definitions. Ask B: the litres of alcohol-based hand rub put
+10,000 occupied bed days, under the hospital's surveillance protocol. Ask B: the litres of alcohol-based hand rub put
 out on each ward in 2025-26 and per 1,000 occupied bed days, as the hand hygiene program measures it. Each with its
 stops: the routes a careful analyst takes that file other figures."""
 import datetime as dt

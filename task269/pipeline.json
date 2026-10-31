@@ -5,33 +5,33 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-26",
+ "updated": "2026-10-31",
  "stump": "A competent solver weights each ward's audited AM and PM compliance by its shifts' required care hours, or carries it across every shift by the shift's care hours, and funds 9B alone; the step that lands it there is reading the gold-auditor sessions as a sample of the ward's moments because their care hours match every shift's, when the ward's own auditors audited almost only on shifts whose worked nursing hours covered the patients' required care hours and staff performed hand hygiene less often as the hours fell short, so only the audited compliance carried across every shift by its shortfall, weighted by required care hours, puts AMU, ESSU, 4A and 7A below 80 per cent beside 9B.",
  "architecture": 5,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-26",
-  "checks": 51
+  "date": "2026-10-31",
+  "checks": 61,
+  "warn": 0
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-26 (--asof 2026-11-04): the terms carry the ward codes and the grant's own nouns; the stump paragraph's common nouns in the notes, index, terms and program (read: none names the move)",
-  "reader": "round 5 (target.zip dfc0f006): both scored readers filed 9B alone; reader I 28 of 84 ask figures (Ask A, exit 2), reader J 0 of 84 (exit 0)"
+  "leak_py": "REVIEW 2026-10-31 on the reshipped pack, no LEAK (the data dictionary, the workforce extract notes and the application pack index removed; the surveillance definitions ship as hobsi_surveillance_protocol_v3.pdf)",
+  "reader": "2026-10-31: Q1 to Q4 none, Q5 terms 2.1 to 2.4 file the estimand, Q6 analytical; every file read without a dictionary"
  },
  "duplicate_check": {
-  "check_at_draw": "registered 2026-10-26T01:35:57Z under the author's override on ban.strategy only (composition_mix against task166 v2); every structural repeat differentiated on the card; WARNs answered in the note's Draw",
-  "heart": "BLOCK ban.strategy only (composition_mix against task166 v2), under the author's override for a ship conditional on stage 4; WARNs people.first, repeat.deliverables, repeat.question_form answered in the note's Draw",
-  "surface": "exit 0, people.first WARNs only"
+  "heart": "BLOCK on ban.forcing_event and ban.org_family only, against task301 v2 (registered 2026-10-25, the day before this card); the similarity BLOCKs against task255 v1 and task273 v4 answered by differentiation lines; flagged to the author",
+  "surface": "exit 0 2026-10-31 (seven pairs promoted for the author's read, none a gate)"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "task269/determinism_check_report_pass3.md"
+  "report": "task269/determinism_check_report_pass4.md (pass 4 on zip 68bac913; Gate G statistical_rigor, analytical_non_defect; Gate H pass; its stale-wording finding fixed in the note and card)"
  },
  "returned": [],
  "resume": "Shipped 2026-10-26 (architecture 5, round 5). Awaiting the portal result.",
  "approved": null,
- "delivered": "2026-10-26",
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -137,5 +137,17 @@
   "cracker": "0 of 84, pair ceiling 28.5",
   "target_zip_md5": "dfc0f006c43b02bff253cc2430452302"
  },
- "architecture_spent": 4
+ "architecture_spent": 4,
+ "gates_2026_10_31": {
+  "checks": 124,
+  "verify": "91 figures, 0 differ",
+  "byte_identical": true,
+  "figures_check": "106 of 106",
+  "precut": "0 FAIL, 0 WARN",
+  "voice_check": "PASS, no WARN",
+  "leak_py": "REVIEW, no LEAK",
+  "ceiling": "cracker.py pair 28.5",
+  "surface": "exit 0"
+ },
+ "target_zip_sha256_16": "68bac91330383553"
 }

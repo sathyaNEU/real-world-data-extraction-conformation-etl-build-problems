@@ -2,7 +2,7 @@
  "answer": "5 wards funded: AMU, ESSU, 4A, 7A, 9B",
  "deliverables": [
   "coaching_wards_2027.xlsx",
-  "ward_compliance_2025_26.png"
+  "ward_compliance_2025_26.svg"
  ],
  "distractor_files": [
   "target/patient_experience_survey_2025_26.csv",
@@ -11,17 +11,7 @@
  "domain": "Healthcare Delivery & Health Economics (provider quality and risk adjustment)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "acuity_and_roster_extract_notes.txt": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
-  },
   "acuity_patient_shifts_2025_26.csv": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
-  },
-  "application_pack_index.txt": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
    "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
@@ -32,11 +22,6 @@
    "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
   "blood_culture_patient_admissions_2025_26.csv": {
-   "date": "2026-10-26",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
-  },
-  "data_dictionary.csv": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
    "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
@@ -61,7 +46,7 @@
    "licence": "CC0 1.0 (constructed for this task)",
    "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"
   },
-  "hobsi_surveillance_definitions_v3.pdf": {
+  "hobsi_surveillance_protocol_v3.pdf": {
    "date": "2026-10-26",
    "licence": "CC0 1.0 (constructed for this task)",
    "source": "constructed by the task generator (seeded); Ardley Valley Hospital, its Foundation, wards, staff, patients and people are fictional; the records follow the forms of an Australian public hospital's hand hygiene audit application, patient acuity and rostering systems, laboratory, patient administration system, store and cleaning contractor"

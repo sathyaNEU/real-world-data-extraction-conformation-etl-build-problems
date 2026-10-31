@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="619.2pt" height="446.4pt" viewBox="0 0 619.2 446.4" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 446.4 
+L 619.2 446.4 
+L 619.2 0 
+L 0 0 
+z
+" style="fill: #fcfcfb"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 150.905 391.960734 
+L 602.26125 391.960734 
+L 602.26125 78.527531 
+L 150.905 78.527531 
+z
+" style="fill: #fcfcfb"/>
+   </g>
+   <g id="axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 150.905 391.960734 
+L 150.905 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2"/>
+     <g id="text_1">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="150.905" y="405.148234" transform="rotate(-0 150.905 405.148234)">60</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 215.384464 391.960734 
+L 215.384464 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4"/>
+     <g id="text_2">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="215.384464" y="405.148234" transform="rotate(-0 215.384464 405.148234)">65</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 279.863929 391.960734 
+L 279.863929 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6"/>
+     <g id="text_3">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="279.863929" y="405.148234" transform="rotate(-0 279.863929 405.148234)">70</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 344.343393 391.960734 
+L 344.343393 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8"/>
+     <g id="text_4">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="344.343393" y="405.148234" transform="rotate(-0 344.343393 405.148234)">75</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 408.822857 391.960734 
+L 408.822857 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10"/>
+     <g id="text_5">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="408.822857" y="405.148234" transform="rotate(-0 408.822857 405.148234)">80</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_11">
+      <path d="M 473.302321 391.960734 
+L 473.302321 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12"/>
+     <g id="text_6">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="473.302321" y="405.148234" transform="rotate(-0 473.302321 405.148234)">85</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_13">
+      <path d="M 537.781786 391.960734 
+L 537.781786 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_14"/>
+     <g id="text_7">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="537.781786" y="405.148234" transform="rotate(-0 537.781786 405.148234)">90</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_15">
+      <path d="M 602.26125 391.960734 
+L 602.26125 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke: #e4e2dc; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_16"/>
+     <g id="text_8">
+      <text style="font-size: 10px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="602.26125" y="405.148234" transform="rotate(-0 602.26125 405.148234)">95</text>
+     </g>
+    </g>
+    <g id="text_9">
+     <text style="font-size: 8.8px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle; fill: #52514e" x="376.583125" y="420.085344" transform="rotate(-0 376.583125 420.085344)">Hand hygiene performed, share of the moments on AM and PM shifts (%)</text>
+    </g>
+   </g>
+   <g id="axis_2">
+    <g id="ytick_1">
+     <g id="line2d_17"/>
+     <g id="text_10">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="107.936099" transform="rotate(-0 147.405 107.936099)">9B  Aged care</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_18"/>
+     <g id="text_11">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="128.971884" transform="rotate(-0 147.405 128.971884)">4A  General medicine</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_19"/>
+     <g id="text_12">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="150.00767" transform="rotate(-0 147.405 150.00767)">ESSU  Emergency Short Stay Unit</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_20"/>
+     <g id="text_13">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="171.043455" transform="rotate(-0 147.405 171.043455)">AMU  Acute Medical Unit</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_21"/>
+     <g id="text_14">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="192.079241" transform="rotate(-0 147.405 192.079241)">7A  Respiratory medicine</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_22"/>
+     <g id="text_15">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="213.115026" transform="rotate(-0 147.405 213.115026)">8A  Oncology and haematology</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_23"/>
+     <g id="text_16">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="234.150811" transform="rotate(-0 147.405 234.150811)">9A  Rehabilitation</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_24"/>
+     <g id="text_17">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="255.186597" transform="rotate(-0 147.405 255.186597)">7B  Renal medicine</text>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_25"/>
+     <g id="text_18">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="276.222382" transform="rotate(-0 147.405 276.222382)">6A  Orthopaedics</text>
+     </g>
+    </g>
+    <g id="ytick_10">
+     <g id="line2d_26"/>
+     <g id="text_19">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="297.258168" transform="rotate(-0 147.405 297.258168)">6B  Cardiology</text>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_27"/>
+     <g id="text_20">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="318.293953" transform="rotate(-0 147.405 318.293953)">CCU  Coronary Care Unit</text>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_28"/>
+     <g id="text_21">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="339.329739" transform="rotate(-0 147.405 339.329739)">5A  General surgery</text>
+     </g>
+    </g>
+    <g id="ytick_13">
+     <g id="line2d_29"/>
+     <g id="text_22">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="360.365524" transform="rotate(-0 147.405 360.365524)">PCU  Palliative Care Unit</text>
+     </g>
+    </g>
+    <g id="ytick_14">
+     <g id="line2d_30"/>
+     <g id="text_23">
+      <text style="font-size: 8.6px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #52514e" x="147.405" y="381.40131" transform="rotate(-0 147.405 381.40131)">ICU  Intensive Care Unit</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 150.905 110.291567 
+L 336.639983 110.291567 
+L 336.639983 97.24938 
+L 150.905 97.24938 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #eb6834"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 150.905 131.327353 
+L 345.466111 131.327353 
+L 345.466111 118.285166 
+L 150.905 118.285166 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #eb6834"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 150.905 152.363138 
+L 348.484012 152.363138 
+L 348.484012 139.320951 
+L 150.905 139.320951 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #eb6834"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 150.905 173.398924 
+L 358.220891 173.398924 
+L 358.220891 160.356737 
+L 150.905 160.356737 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #eb6834"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 150.905 194.434709 
+L 359.670666 194.434709 
+L 359.670666 181.392522 
+L 150.905 181.392522 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #eb6834"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 150.905 215.470494 
+L 463.427171 215.470494 
+L 463.427171 202.428308 
+L 150.905 202.428308 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 150.905 236.50628 
+L 464.001406 236.50628 
+L 464.001406 223.464093 
+L 150.905 223.464093 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 150.905 257.542065 
+L 466.546126 257.542065 
+L 466.546126 244.499878 
+L 150.905 244.499878 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 150.905 278.577851 
+L 472.196959 278.577851 
+L 472.196959 265.535664 
+L 150.905 265.535664 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 150.905 299.613636 
+L 478.719906 299.613636 
+L 478.719906 286.571449 
+L 150.905 286.571449 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 150.905 320.649422 
+L 480.613863 320.649422 
+L 480.613863 307.607235 
+L 150.905 307.607235 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 150.905 341.685207 
+L 482.604201 341.685207 
+L 482.604201 328.64302 
+L 150.905 328.64302 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 150.905 362.720993 
+L 482.645813 362.720993 
+L 482.645813 349.678806 
+L 150.905 349.678806 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 150.905 383.756778 
+L 497.937374 383.756778 
+L 497.937374 370.714591 
+L 150.905 370.714591 
+z
+" clip-path="url(#pceddfd5c88)" style="fill: #2a78d6"/>
+   </g>
+   <g id="line2d_31">
+    <path d="M 408.822857 391.960734 
+L 408.822857 78.527531 
+" clip-path="url(#pceddfd5c88)" style="fill: none; stroke-dasharray: 5.6,4.2; stroke-dashoffset: 0; stroke: #52514e; stroke-width: 1.4"/>
+   </g>
+   <g id="text_24">
+    <text style="font-size: 8.5px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #52514e" x="412.691625" y="88.04692" transform="rotate(-0 412.691625 88.04692)">National benchmark 80%</text>
+   </g>
+   <g id="legend_1">
+    <g id="patch_17">
+     <path d="M 439.928516 116.35223 
+L 456.928516 116.35223 
+L 456.928516 110.40223 
+L 439.928516 110.40223 
+z
+" style="fill: #eb6834; stroke: #eb6834; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_25">
+     <text style="font-size: 8.5px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="463.728516" y="116.35223" transform="rotate(-0 463.728516 116.35223)">Coaching nurse funded for 2027</text>
+    </g>
+    <g id="patch_18">
+     <path d="M 439.928516 130.886898 
+L 456.928516 130.886898 
+L 456.928516 124.936898 
+L 439.928516 124.936898 
+z
+" style="fill: #2a78d6; stroke: #2a78d6; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_26">
+     <text style="font-size: 8.5px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="463.728516" y="130.886898" transform="rotate(-0 463.728516 130.886898)">No coaching nurse</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_27">
+   <text style="font-weight: 700; font-size: 12px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #0b0b0b" x="12.384" y="20.553" transform="rotate(-0 12.384 20.553)">Five wards fall below the 80% benchmark on day-shift hand hygiene, 2025-26</text>
+  </g>
+  <g id="text_28">
+   <text style="font-size: 8.4px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #52514e" transform="translate(12.384 46.0815)">Share of the moments on each ward's AM and PM shifts at which staff performed hand hygiene, the gold auditors'</text>
+   <text style="font-size: 8.4px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #52514e" transform="translate(12.384 56.245172)">sessions carried across every shift by its worked nursing hours against its patients' required care hours</text>
+  </g>
+  <g id="text_29">
+   <text style="font-size: 7.2px; font-family: 'Inter', 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #52514e" x="12.384" y="441.0432" transform="rotate(-0 12.384 441.0432)">Source: hand hygiene audit application, patient acuity system and rostering system, 1 July 2025 to 30 June 2026. Ward 6A includes S1A from 2 February 2026.</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pceddfd5c88">
+   <rect x="150.905" y="78.527531" width="451.35625" height="313.433203"/>
+  </clipPath>
+ </defs>
+</svg>
