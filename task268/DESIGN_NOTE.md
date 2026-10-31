@@ -1,171 +1,45 @@
-# task268 design note
+# task268 design note: Corcally's Roastery 2027 sampling, the rival brand whose buyer homes least often already buy the Roastery
 
-Architecture 4, re-rooted 2026-10-28 after architecture 3's send-back (the portal's determinism round failed it with both judges, and the re-judge after the WHAT repair returned SEND_BACK: plain Kaplan-Meier a rule-compliant reading, the class-carried estimator filed nowhere; the rejected list below). Corriven Insurance, a motor insurer in England and Wales, puts its 2027 telematics pilot in the two sales regions whose private-car policies had the highest claim frequency in accident year 2025, while the 2025 claims that claims-management companies notify months and years after the accident are still arriving.
+Architecture 5, a re-root drawn 2026-10-31 in Descriptive & Distribution Analysis (the number's objective), client domain
+Marketing & Consumer Research, task type segmentation-market-structure. Architectures 1 to 4 are in the card's lineage and in
+`## Tried and rejected`.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task268.json`, architecture v4, registered 2026-10-28 at WARN; architectures 1 to 3 in its lineage with their fates. Labels redrawn before the design was cut, each to the honest key rather than the passing one: Gate G `method_or_model_selection` (two defensible developments, the right one pinned by validation, the vocabulary's own definition; `forecasting`, "a forecast the correctly read past does not pin", does not describe a design whose closed years pin the development, so it was withdrawn); strategy `forecast_method_backtest` (the library's F6: method selection on honest history, a regime making the natural fit wrong), after `composition_mix` met `ban.strategy` against task270 v11; gap `rule` then `population` (F6's legal gap 4: no file states the development grouping and a filed criterion selects it; the notified-claims file is not the claims population); decisive generator G16 (method selection), with G6 (the notifying mix shifted) and G13 (claims arrive after the year closes) behind it; forum `line_manager_or_team` (the chief underwriting officer owns the pilot, set its terms and decides its regions himself; the motor portfolio actuary's paper goes to him), after `executive_team` met `ban.forum` against task270 v11 and `committee_or_panel`, a pricing committee, met it against task464 when that card re-registered during stage 3; context artifact planning_thread; forcing event purchase_order_or_contract (the telematics supplier's order names the regions). Similarity differentiated on the card: task80, task127 v3, task138 v1, task145, task160, task181, task185, task194 v3, task271 v4, task446 v2, task457 v1. WARNs answered: overuse.objective (the number's objective is fixed); repeat.gate_g and overuse.gate_g (method selection is the field's own question here, which development the record entitles; the batch varies elsewhere: actuarial, a motor insurer, a committee, a supplier order, xlsx and pptx); repeat.question_form (the call names regions).
-2. Pairing: Actuarial Science & Insurance / claims-frequency-severity / Descriptive & Distribution Analysis. The field's own quantity decides: each region's claim frequency for a closed accident year, the claims notified and the claims incurred but not yet notified, per earned car-year, the not-yet-notified part developed from report-lag factors and validated on closed accident years.
-3. Niche: a motor insurer's 2025 private-car claim frequency by sales region, where injury claims that claims-management companies notify arrive months and years after the accident (inside the three-year limitation period) and one region's 2025 injury claims came through those companies far more often than before.
-4. Call and shape: the two regions that host the 2027 telematics pilot (ranked_slate_under_cap, cap two, question form which); shape 01, each region's 2025 frequency, the two chosen and the gap to the third.
-5. The library's warning on G16, "an enumerable model class behind a shipped back-test is an answer key" (task38), is met in the design rather than argued: the passing grouping is not a column of the claims extract. The extract's notified-by field says only that a representative notified the claim; the representative's firm type (solicitor practice or claims-management company) is on the representatives register, joined by the representative's reference. Every grouping the extract's own columns offer (region, head of claim, notified-by, cover) fails the back-test on accident year 2022.
-6. Data-native sentence: a claims-management company notifies an injury claim months or years after the accident, a solicitor sooner and a policyholder within days, so a year's claim count grows long after it closes and how much it still has to grow depends on who is notifying its claims; Pennine's 2025 injury claims came through claims-management companies about three times as often as its earlier years', so its own past development, the head-of-claim split or the notified-by field leaves out most of what is still to come.
-7. The design target, measured at stage 2 on the prototype: the default path names Mersey and Severn; the golden, developed by the representative's firm type, names Mersey and Pennine; the back-test the reserving standard files (re-run on accident year 2022 from its position at the same age with the closed years before it) refutes every grouping the extract's columns offer and keeps the firm-type split, and every development that passes it names the same pair at the same printed frequencies. task127 v3 and this slot's architecture 3 died at the judge because nothing filed selected the method; here the standard files the selection criterion in general terms and never names the grouping.
-8. People, drawn with `guard.py names --geo uk --seed 268`: Carol Thorpe (motor portfolio actuary, the requester), Damian Warren (chief underwriting officer, owns the pilot and decides its regions), Iain Ali (claims director). Lorraine, Gerald and Paula from the same draw set aside (each first name in an older build).
-
-## Default path
-
-1. Read the pilot terms: the two sales regions whose private-car policies had the highest claim frequency in accident year 2025 host the pilot; frequency is every claim from a 2025 accident, notified by 30 September 2026 or not, counted as the Reserving Standard counts claims, per 100 car-years earned in 2025, the claims not yet notified estimated as the Standard provides (terms 2, 3).
-2. Earned car-years by region from the pricing mart's 2025 sheet (private cars): Mersey 61,870.01, Pennine 40,590.00, Wessex 38,140.00, Fenland 23,910.00, Severn 47,230.00.
-3. The 2025 claims notified to 30 September 2026 by region (Mersey 5,297, Pennine 2,991, Wessex 2,681, Fenland 1,374, Severn 3,713), then the claims not yet notified by the Standard's development on the whole private-car book (3.1, 3.2): the closed years' final counts over their counts at 21 months, pooled, or by head of claim, or by the claims system's notified-by field.
-4. The two highest frequencies host: pooled Mersey 8.9, Severn 8.1, Pennine 7.6; by head Severn 8.1, Pennine 7.7; by notified-by Severn 8.1, Pennine 7.8. Where the analyst runs the Standard's back-test (3.3), every one of these fails it on Wessex (8.54, 7.85 and 6.78 per cent short), and the analyst who stops at the least-failing development, or sets the back-test aside as a one-off 2022 wave in one region, still files the same pair.
-
-Ends on: Mersey and Severn
-Golden: Mersey and Pennine
-
-## Stump sentence
-
-The default path completes each region's 2025 claims still to be notified with the whole book's development, pooled, by head of claim or by the notified-by field, and names Mersey and Severn, because claims-management companies notify injury claims months and years after the accident and Pennine's 2025 injury claims came through them about five times as often as in any closed year at the same age (119 against 18 to 30 at 21 months); developed by the representative's firm type, the only split that reproduces accident year 2022 in every region within the Standard's two per cent, Pennine's 2025 frequency is 8.2 against Severn's 8.0, and Pennine is second.
-
-## Three rules
-
-Task type: Actuarial Science & Insurance, `claims-frequency-severity`: each region's claim frequency for a closed accident year, the claims incurred but not yet notified completed by development on claim-count triangles, the development basis validated against the most recent closed accident year.
-Domain test: the deciding quantity is each region's ultimate 2025 claim count per earned car-year, notified claims plus those incurred but not yet notified; the field develops counts with report-lag factors on groups whose lags are stable and back-tests the basis on closed years, and the lag here is carried by who notifies the claim, a claims-management company notifying injury claims near the three-year limitation period; swap the nouns and there is no notification route, no limitation period and no accident-year development for the call to rest on.
-Swap: with hospital admissions for claims and wards for regions the sentences still parse, but an admission is recorded when it happens: there is no population of events that exist before anyone reports them, no route that reports them years late and no closed year whose final count tests a completion, so the task stops being one.
-Layer 1: the claims-system migration of 3 July 2023 (claims notified before it carry a legacy CL reference beside the new one and a notification date, the new system a UTC timestamp, in one column); the pricing mart's change of layout (2019 to 2022 sheets in the old mart's region codes R1 to R5, product and cover codes and vehicle-days, 2023 to 2025 in names and car-years); vans in the claims extract and the exposure beside the private cars; open accident years 2023, 2024 and 2026 in the extract beside the years the call reads. Each named with its system and asserted neutral in `checks.py` (R2).
-Layer 2: `field_method`, own:claim-count-development-by-notifying-route: the development basis is chosen by the out-of-sample back-test the Standard files, and the only basis that passes it splits the representatives' claims by firm type, a split no column of the claims extract carries.
-Decisive step: build each claim's notifying route from the notified-by field and, for claims a representative notified, the firm type the representatives table gives that representative; measure the whole book's 21-months-to-final factors by route on the closed years 2019 to 2022; re-run that basis on accident year 2022 from 30 September 2023 with 2019 to 2021 (every region within 1.1 per cent) after pooled, head-of-claim and notified-by developments fail it (8.54, 7.85 and 6.78 per cent short in Wessex); apply it to each region's 2025 notified claims.
-Not semantics: every field, code and definition read correctly (the notified-by values, the firm types, the heads of claim, the valuation age, the closed years, the earned car-years) leaves the pooled, head-of-claim and notified-by developments on Mersey and Severn; no definition says that claims-management companies notify late or that a basis should split by firm type, and the firm type is a plain attribute of a firm.
-Not rule application: the Standard files the outcome (the not-yet-notified claims estimated by development on the whole book) and an acceptance test, never the grouping; executing every filed rule leaves the analyst holding three failed developments and no instruction where the lag lives, and the split that passes is found only by asking which route's claims arrive late and building it through the representatives table.
-Analyst test: a strong analyst who reads every filed rule, builds the 2025 earned car-years and completes each region's 2025 claims with the whole book's development, pooled, by head of claim or by the notified-by field, names Mersey and Severn (Severn 8.1 against Pennine 7.6 to 7.8); executed on the generator's clean truth in `checks.py` R3a.
-Estimand: terms 2 to 5 of telematics_pilot_terms_2027.pdf and the Standard's 2.1 to 3.3: claims from accidents in 2025 under private-car policies in each sales region (2025 drawing, risk postcode district), notified by the end of 30 September 2026 or not, each claimant's claim under each head from one accident counted once, nil claims included, per 100 car-years earned in 2025 (the pricing mart), the not-yet-notified estimated by a whole-book development that reproduces 2022 within two per cent, to one decimal; the two highest host.
-No decoy: nothing is planted to be caught: no memo, earlier frequency study, report or stakeholder figure states a region's frequency or ranks the regions, the Standard names no grouping and no wrong one, and the representatives table, the claims extract and the exposure are the systems' own records.
-No certified replay: no shipped figure is a frequency, an ultimate count or a development factor, so the method cannot be recovered by reproducing a published number; the closed years' final counts are the claims themselves, which every route reads alike.
-Lesson: where a count is completed from a reporting lag, the lag belongs to whoever reports, and a unit whose reporters changed cannot be completed from its own history or from any grouping that blends the reporters; the closed year that a past shift disturbed is the test that says which grouping carries the lag.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0 the 2025 claims notified to 30 September 2026 per car-year | none (the terms count claims not yet notified) | the claims extract | count what has arrived | none | none | one count a region | readable |
-| R1 (the default path) the whole book's development, pooled | the Standard 3.1 and 3.2 | accident and notification dates | one completion factor | none | none | one factor | readable |
-| R2 the development by head of claim | none | head_of_claim | develop injury and damage apart | none | none | a group-by on head | readable |
-| R3 the development by the notified-by field | none | notified_by | develop by the field the extract carries | none | none | a group-by on notified_by | readable |
-| (decisive) the development by notifying route, the representatives' claims split by firm type through the representatives table, chosen by the 2022 back-test | the back-test (3.3) names no grouping; no file says who notifies late | no column carries the firm type; it is joined from the representatives table | none: the reflexes are R1 to R3 | none: no figure in the pack ties under the route split alone | none | a join, a group-by and a re-run of a closed year | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | claims arising from 2025 accidents | every claim on a 2025 accident date, notified or not | notified claims only | Mersey and Severn (R0) | terms 3 ("whether or not they had been notified") |
-| SF2 | a claim | one claimant's claim under one head from one accident (policy, car, accident date, head, claimant number) | one row of the extract | the same pair, the same figures | the Standard 2.1; no 2019 to 2022 or 2025 private-car accident carries two rows for one claimant and head (C1, asserted) |
-| SF3 | nil claims | counted | dropped | the same pair; another set of figures | terms 3 and the Standard 2.1 ("including claims closed without payment") |
-| SF4 | the region of a claim | the 2025 drawing of the risk postcode district | the region the claim was handled in | the same pair | terms 4; every claim's district is in the 2025 drawing (asserted) |
-| SF5 | private cars | product PC | every product | the same pair; another set of figures | terms 3 and 4 ("Vans ... are outside the pilot") |
-| SF6 | notified by the end of 30 September 2026 | the UK date of notification | the UTC date of the timestamp | the same pair, the same figures | C1: no claim of the years read is notified in the hour after midnight UK time on a valuation date that changes a position (asserted) |
-| SF7 | the valuation age | 21 months: 30 September of the following year | the accident's own age in days | the same pair | the Standard 2.2 |
-| SF8 | the closed years | 2019 to 2022 | 2020 to 2022 | the same pair, the same figures | the Standard 2.3 and 3.1; same call |
-| SF9 | the factor | the closed years' final counts over their counts at 21 months, taken together | the average of each year's ratio | the same pair, the same figures | same call (asserted) |
-| SF10 | the development's grouping | the notifying route (firm type for representatives), or any route-based split | pooled, head of claim, notified-by, representative, region | Mersey and Severn under every one | the Standard 3.3: each fails the 2022 back-test by 6.8 to 8.6 per cent in Wessex; region-level factors are also against 3.2 |
-| SF11 | the route-based family | the route split | route by head, claims-management against the rest, simple-average factors | the same pair, the same printed figures | same call (asserted, `checks.py` FAMILY) |
-| SF12 | earned car-years | the pricing mart's 2025 sheet, private cars | a car count at a date | the same pair | terms 3 ("the pricing mart's earned exposure") |
-| SF13 | one decimal, and the gap | each frequency rounded to one decimal; the gap from the unrounded frequencies | the gap of the rounded figures | the same 0.2 | same call (asserted) |
-| SF14 | a tie in the top two | none: Pennine leads Severn by 0.18 | | the same pair | same call |
-| SF15 | the region of a car on 30 September 2026 (the ask) | its risk district on that date, the latest address change effective on or before it | the district on the in-force row | another set of figures | the change log: the in-force row carries the district at the term's start (every policy with an address change shows the pre-change district) |
-| SF16 | the cover of a car on 30 September 2026 (the ask) | the latest cover change effective on or before it | the cover on the in-force row, or every change applied whatever its date | another set of figures | the change log: the in-force row carries the cover at the term's start (every policy with a cover change shows the pre-change cover), and a change effective after 30 September had not happened that day |
-
-## Ladder
-
-| Rung | Construction | Named | What kills it |
-|---|---|---|---|
-| R0 | the claims notified to 30 September 2026 per car-year | Mersey 8.6, Severn 7.9 (Pennine 7.4) | terms 3: the claims not yet notified count |
-| R1 | the whole book's 21-month development, pooled (the default path) | Mersey 8.9, Severn 8.1 (Pennine 7.6) | the back-test: 2022 Wessex 8.54 per cent short |
-| R2 | the development by head of claim | Mersey 8.9, Severn 8.1 (Pennine 7.7) | 2022 Wessex 7.85 per cent short |
-| R3 | the development by the notified-by field | Mersey 8.9, Severn 8.1 (Pennine 7.8) | 2022 Wessex 6.78 per cent short: the representatives blend solicitors with claims-management companies |
-| R3b | by representative, or each region's own development | Mersey and Severn | 2022 Wessex 8.58 and 7.87 per cent short; a representative first seen in 2022 has no history, and 3.2 puts every region on the whole book's factors |
-| golden | the development by notifying route, the representatives split by firm type | Mersey 8.9, Pennine 8.2; Severn 8.0, Wessex 7.3, Fenland 5.9; gap 0.2 | |
-
-Every route-based development names the same pair at the same printed figures (route, route by head, claims-management against the rest, simple-average factors), and every one passes the back-test within 1.1 per cent (`checks.py` FAMILY).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | every claim on a 2025 accident under a private-car policy, notified or not (terms 3); claims not yet notified estimated (Standard 3) |
-| 2 | Unit of account | one claimant's claim under one head from one accident (Standard 2.1); C1, no accident of the read years carries two rows for one claimant and head |
-| 3 | Attribution window | accident date in 2025; accident dates are dates, no clock |
-| 4 | As-of dating | notified by the end of 30 September 2026, UK time (terms 3); the extract taken 1 October |
-| 5 | Version basis | one row a claim; migrated claims carry both references, counted once |
-| 6 | Denominator | the pricing mart's 2025 earned car-years for private cars (terms 3) |
-| 7 | Weighting | the closed years' counts taken together (SF9); the simple average gives the same figures |
-| 8 | Window length | the closed years 2019 to 2022 (Standard 2.3, 3.1); 2020 to 2022 gives the same figures (SF8) |
-| 9 | Boundary inclusivity | within two per cent; the passing family at 1.1 or under, every other development at 6.8 or over |
-| 10 | Rounding path | frequencies unrounded to the ranking, one decimal shown; the gap from unrounded figures, equal to the rounded difference |
-| 11 | Tie-break | none needed: 0.18 between second and third |
-| 12 | Maturity and censoring | the claims not yet notified are the estimand's own, developed (the decisive step); closed years final (2.3) |
-| 13 | Order of operations | count by the 2.1 rule, then develop, then divide; dividing first gives the same figures |
-| 14 | Row order | none: counts |
-| 15 | Duplicate resolution | the 2.1 count; no duplicates in the years the call reads (C1, asserted) |
-| 16 | Identity normalisation | the representatives table's own reference; every representative on a claim is in it (asserted) |
-| 17 | Netting against gross | none: counts |
-| 18 | Dimensional units | claims per 100 car-years; the 2025 sheet in car-years (the older sheets' vehicle-days are not read) |
-| 19 | Code and status semantics | notified-by values, firm types and heads in plain words; closed nil is a status, counted (SF3) |
-| 20 | Integerisation | none |
-| 21 | Clause scope | terms 2 to 5 and the Standard 2 and 3 scope the call; terms 4 and 6 scope the ask |
-| 22 | Forward window contents | the pilot is placed on the last closed accident year's frequency (terms 2); not forward-looking |
-
-## Literal reader
-
-Executed word for word, the terms file each region's 2025 claims, notified or not, counted by the Standard, per 100 car-years the mart earned in 2025, the two highest hosting; the Standard files the development on the whole book's closed years from 21 months to final and refuses any basis that misses 2022's final count in a region by more than two per cent. A literal reader who tries the developments the extract offers finds each refused, and one that passes must split the representatives by the firm type the representatives table carries; every passing basis tried names Mersey and Pennine at 8.9 and 8.2 with Severn 8.0, so the reading lands on the golden. The readings the text leaves open (SF6 to SF9, SF11, SF13) converge on the same figures (C1, asserted).
-
-## Oracles
-
-The 2022 back-test is the only check that separates the developments, and it is the Standard's own test, run on the claims themselves; nothing in the pack ties only under the golden. The closed years' final counts are every route's same numbers. The ask has no control: the change log is its only evidence, and no total, report or summary in the pack reconciles to its golden (the pricing mart's exposure stops at 2025).
-
-## Ask sheet
-
-The ask, the supplier's order: private cars on cover on 30 September 2026 by region and by cover, COMP, TPFT and TPO (15 figures, whole cars). H18 home: the order the terms place by cover (6), for the device the pilot offers. Primary: D2, an attribute at the wrong vintage: policy admin's in-force file carries each policy's risk district and cover as they stood at the term's start, and the address and cover changes since are in the change log by effective date. Hazards: substituted cars (off-cover rows), cancellations, changes dated after 30 September (processed in advance), policies with two changes. Path: in-force file, change log, region drawing (3 files, 14 columns). Stops: the in-force row as it stands (cracker), every change applied whatever its date (mirror), the golden. Realism: a warehouse term table snapshots the risk at the term's start and takes mid-term changes in a separate transactions table. The remedy is a reconstruction, the state on one day rebuilt from an event log, with one correct form (Part 1.0b).
-
-Main population zero-counts: the in-force file and the change log are read by no step of the call, and the call reads no 2026 row (asserted in `checks.py` SEP).
-
-| Ask figure | Golden | Cracker | Mirror | Cracker verdict |
-|---|---|---|---|---|
-| A Mersey COMP | 44,743 | 45,282 | 44,670 | miss |
-| A Mersey TPFT | 11,434 | 11,113 | 11,469 | miss |
-| A Mersey TPO | 4,925 | 4,900 | 4,935 | miss |
-| A Pennine COMP | 30,213 | 30,542 | 30,204 | miss |
-| A Pennine TPFT | 7,051 | 6,760 | 7,068 | miss |
-| A Pennine TPO | 2,831 | 2,778 | 2,835 | miss |
-| A Wessex COMP | 30,001 | 30,437 | 29,972 | miss |
-| A Wessex TPFT | 5,746 | 5,468 | 5,760 | miss |
-| A Wessex TPO | 2,037 | 1,965 | 2,042 | miss |
-| A Fenland COMP | 19,421 | 19,623 | 19,415 | miss |
-| A Fenland TPFT | 3,243 | 3,051 | 3,257 | miss |
-| A Fenland TPO | 1,003 | 973 | 1,008 | miss |
-| A Severn COMP | 36,590 | 36,841 | 36,567 | miss |
-| A Severn TPFT | 7,448 | 7,024 | 7,483 | miss |
-| A Severn TPO | 2,919 | 2,848 | 2,920 | miss |
-
-Mirror leakage: 0.0 per cent of the ask figures (the mirror keeps 0 of 15)
-Pair ceiling: 28.5 (the cracker on the call keeps 0 of 15 ask figures, the mirror off it 0)
-Measured by: generator/cracker.py on the cut pack (target.zip of the final Linux build)
-
-## Build record
-
-- Generator: `task268/generator` (common, world, pack, docs, analysis, deliver, writeup, cracker, checks, verify, build, postprocess), seed 5 with the tuned waves and Severn's own-damage rate in `world.DEFAULT_P`. Built in the pinned linux/amd64 image `t268-build`; the Mac build is byte-identical to it file for file.
-- Pack: 11 files in 4 formats (csv, xlsx, pdf, txt); the claims extract 138,245 rows, the in-force file 248,648, the change log 32,264. Distractors in `metadata.json`: the supplier's quotation and the aggregator report, each deleted with every golden figure unchanged (`checks.py` GATE).
-- Free gates on target.zip md5 9f49c3af653b4216ab1af1381d9d0dbe: `checks.py` 78 assertions, 0 failed (R1 to R3c, SF1 to SF16, FAMILY, SEP, R2 LAYER1, H25 with pypdf strict and pdftotext); `verify.py` PASS from the bundle alone; two byte-identical builds; `figures_check.py` 84 of 84; `leak.py` REVIEW; `precut.py` 53 checks, 0 FAIL, 0 WARN; `guard.py heart` WARN (nearest driver task169 v2 at 0.08); `guard.py surface` people clean; the producer audit clean on target and golden.
-- The `leak.py` REVIEW lines, ruled here: the thread file is the organisation's own correspondence (the reader rules it too); the two answer-figure hits are substrings across a comma in the claims extract (a date followed by a pence amount, "...-30,213.28" and "...-16,359.47"), not figures; the stump-vocabulary hits are the Standard's own words for its development and back-test (it names no grouping, no route and no firm type), the terms' estimand and the thread's logistics, each harmless.
-- Repairs made during the build: a number plate whose random letters spelled an AI vendor's initialism (barred deterministically, no draw moved); the supplier's name, which matched a real company's 2025 rebrand, and the claims-management firms' generic names, renamed (H21); a deck sentence that said most of Pennine's claims were still to come, replaced by the computed shares (10.1 against 1.9 to 4.0 per cent); the head-of-claim back-test miss of 7.8496 per cent, on a rounding edge, kept out of the write-up and shown to two decimals in the goldens.
-
-- Stage 4, first pass on target.zip md5 4b0343b25e5747494d1f7e2ef1acf918 (`determinism_check_report_pass6.md`): NOT_DETERMINISTIC, SEND_BACK on the 2026 claims ask alone; the call, its five frequencies and gap and the cars on cover reproduced exactly and uniquely forced, Gate G method_or_model_selection (analytical_non_defect, no surface-read dependency), Gate H pass, pass, analytical. The ask was retired (the rejected list) and the leak reader re-run on the changed thread, terms and prompt; one re-judge on md5 9f49c3af653b4216ab1af1381d9d0dbe: DETERMINISTIC, APPROVE, every graded figure reproduced from a fresh unzip and the cars on cover to the car; Gate G method_or_model_selection, analytical_non_defect, no surface-read dependency; Gate H pass, pass, analytical; a second route split built independently (claims-management companies against the rest) converged on the same rounded figures. The leak reader's re-read: no decisive-step sentence, question 6 an analytical choice.
-
-## Pre-ship check
-
-- Rule 1, the domain: the deciding quantity is an ultimate claim count per earned car-year, completed by development on claim-count triangles and validated on a closed accident year; the noun swap loses the notification route, the limitation period and the development (the Swap line).
-- Rule 2, two layers: Layer 1 is the migration's mixed notification formats and legacy references, the mart's layout change, the vans and the open years, each asserted neutral (R2 LAYER1, SF5, SF6); Layer 2 is the development basis the back-test selects. Cleaning every file leaves the default path on Mersey and Severn (R3a on the clean truth).
-- Rule 3, the decisive step: an analytical choice, which grouping carries the lag, selected by the Standard's filed test and found only by building the notifying route through the representatives table; no plant, no withheld rule against a stated one (the Standard names no grouping), no field reading (the firm type is a plain attribute), no executed procedure (executing every filed rule leaves three failed developments).
-- The ask rests on the change log against the in-force file's term-start attributes; it reads no row the call reads (SEP), and the cracker misses all fifteen figures.
+- **Card.** `.claude/skills/fingerprint/cards/task268.json`, architecture v5, `guard.py check` WARN (three_rules.strategy_risk
+  on grain_or_unit, answered by `Analyst test:`), differentiation filed against task131 v1, task126, task114, task179 and
+  task264; nearest drivers 0.08 (task116) and under.
+- **Pairing.** marketing-consumer-research / segmentation-market-structure / descriptive-distribution; marketing has carried
+  no descriptive build. The market-structure measure is the duplication of purchase between brands' buyer bases: of the homes
+  that bought a rival brand in 2026, the share that also bought Corcally's Roastery, the chain's own-label coffee.
+- **Decision.** Corcally's (a family-owned grocery chain in a Midlands market town, Drumsallagh, and its hinterland) sends
+  its 2027 Roastery sampling to the homes of one rival coffee brand, the rival whose 2026 buying homes least often also
+  bought the Roastery. Retrospective by design: the brief reads the closed calendar year 2026, the last full year of
+  purchases, and the sampling runs in 2027.
+- **The quantity.** For each rival brand, the share of its 2026 buying homes that also bought the Roastery, a home counting as
+  a buyer when any of its members bought the brand at Corcally's in 2026, in a store or online.
+- **Data-native sentence.** Corcally's Rewards issues a card to each adult member and pools nothing, the online shop keeps its
+  own accounts, and the only record that two cards, or a card and an online account, belong to one home is that they pay with
+  the same bank card, which shows as a shared card token in the acquirer's settlement file; partners split the coffee
+  aisle (one buys capsules, the other the Roastery), so card by card the capsule brand's buyers look untouched by the
+  Roastery while home by home they mostly already buy it.
+- **Abstraction sentence (nearest approved builds).** task126 and task114 rebuild a counting unit from records a second system
+  groups (dockets into applications by a credit class; bookings into meetings by invitees and badges); this build rebuilds the
+  buying unit from member records that share nothing but a payment instrument in a third system, and the decided quantity is
+  a duplication of purchase between brands. A reviewer holding task131 v1 (card-randomised offers, household interference)
+  would say both turn on cards in one household: task131 v1 had the membership on file as a key and an experiment to read;
+  here there is no household key and no experiment.
+- **Shape.** 14, cuts of a distribution per segment: each rival brand's home penetration and its share of buying homes also
+  buying the Roastery (seven rivals), the Roastery's own penetration, the call, its share, the runner-up and the gap; the deck's
+  chart; the asks (deli loose coffee by roaster and quarter, card acceptance cost by store and quarter, and a third set at
+  stage 2).
+- **Strategy.** grain_or_unit, gate method_or_model_selection, generators G10 (what is one real-world buying unit), G2, G6;
+  gap population; Layer 2 estimand_identification.
+- **Sources (one line each).** The client's segmentation-market-structure card 4 (switching judged against share-based
+  expectation) is the field's method this build keeps at rung 1 and reads at the card; task131 v1 (household interference,
+  landed on the portal because the membership key sat on file) is why this build ships no household key; task120 v1 (a
+  solver union-found households through a dependents schedule one join away) is why the link here is a shared payment card
+  in a file kept for card-acceptance reconciliation, never a household or member field.
 
 ## Tried and rejected
 
@@ -211,3 +85,5 @@ Measured by: generator/cracker.py on the cut pack (target.zip of the final Linux
 - Region-level development as the default, with no filed selection criterion, rejected at the draw: task127 v3 and this slot's architecture 3 died at the judge for leaving the method open. The Standard files the back-test in general terms and puts regional estimates on the whole book's factors (3.2), so each region's own development is against the text as well as failing 2022.
 - A Severn own-damage rate at its first value and a Pennine wave of 0.55 per 100 car-years, measured on the prototype on 2026-10-28: the route split itself named Mersey and Severn (Pennine 8.03 against 8.25). The wave became 0.85 per 100 car-years and Severn's own-damage rate 7 per cent lower; seed 5 is the first of six where every route-based development prints the same five figures and the back-test separates at 1.1 against 6.8 per cent.
 - Ask B (private-car claims notified on 2026 accidents by region, injury against the rest, the online notification journey's abandoned first records as its device), retired at stage 4 on 2026-10-28: the determinism judge's first pass found the call and Ask A uniquely forced and Ask B open, because no shipped file says the abandoned record is the phoned claim and the Standard's 2.1 ("every claim notified counts once, including claims closed without payment") reads literally for counting it. The device cannot be both determinate and silent: identity filed or carried on the row, the careful solver executes 2.1 and the cracker keeps the ask; left unfiled, it is a fork. The twins were taken out of the world (2026 rows only, no figure of the call moved) and the ask layer became the cars on cover by all three covers, the reconstruction the judge confirmed.
+- Architecture 4 (a motor insurer's 2027 telematics pilot regions, the claims not yet notified developed by notifying route, the route built by joining each claim's representative to the representatives table), spent 2026-10-31 on the learning loop's paper screen: the route sits one join away (the notified-by field and the representatives table) and development by notification channel is the reserving field's own refinement, so the decisive rung was a reflex; the slot moves to marketing-consumer-research (segmentation-market-structure), a new world, dataset, generator and prompt shell.
+- Marketing draws screened on paper before this one, 2026-10-31: excess duplication judged over shoppers whose stores stock both brands (task281's note: filing the co-availability population is rule application, leaving it unfiled forks the call); a receipt-scanning panel whose submissions rise in a brand's bonus weeks (the correction needs a submission model, so the estimator family is open); a sub-panel's cross-media duplication applied to the full panel (one consistency check of the sub-panel's TV reach against the full panel's lands it); an exposure crediting quirk in the as-run log (reading what a record means, data semantics); mystery-shopper audits inflated by detection (the calibration against the CCTV census is the natural data-fusion reflex and reaches the golden).

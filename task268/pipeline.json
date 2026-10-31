@@ -1,30 +1,30 @@
 {
  "task": "task268",
- "status": "SHIPPED",
- "domain": "actuarial-science-insurance",
+ "status": "DESIGN",
+ "domain": "marketing-consumer-research",
  "objective": "descriptive-distribution",
- "stage": "5",
- "stage_name": "ship",
- "updated": "2026-10-28",
- "stump": "The default path develops each region's 2025 claims still to be notified with the region's own report-lag factors, or splits bodily injury from damage, and leaves Valley out of the pilot; developed by notifying channel, the split that reproduces accident year 2022 as it finally came in, Valley's 2025 frequency is among the two highest.",
- "architecture": "4",
- "loops": "0",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "A competent analyst takes each Rewards card as one buyer and names Nordhavn as the rival least overlapped with Corcally's Roastery; homes assembled from the cards and online accounts that share a payment card in the acquirer's settlement file put Rossa Gold lowest.",
+ "architecture": 5,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-28"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-28",
-  "reader": "re-read clean on md5 9f49c3af (Q1 none, Q6 analytical choice)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK), 2026-10-28",
-  "nearest": "task169 v2 0.08"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (re-judge on md5 9f49c3af653b4216ab1af1381d9d0dbe); pass 1 SEND_BACK on the retired 2026 claims ask in determinism_check_report_pass6.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -34,14 +34,14 @@
    "commit": ""
   }
  ],
- "resume": "shipped 2026-10-28; awaiting the portal",
+ "resume": "architecture 5 drawn 2026-10-31; stage 2 design (default path, ladder, fork table, closure, asks, prompt) then precut.py",
  "approved": null,
- "delivered": "2026-10-28",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
  "seed": "analytical_tasks/03_descriptive_distribution/DA18_quick-commerce-pilot-service-hours-population.md (header and Situation only)",
  "seed_world": 273,
- "zip_md5": "9f49c3af653b4216ab1af1381d9d0dbe"
+ "zip_md5": ""
 }
