@@ -1,183 +1,154 @@
 {
  "task": "task482",
- "title": "Two-sided risk track elections, 2027",
- "setting": "A fictional clinically integrated network of thirteen independent primary care practices in Wisconsin and its three commercial payers: the network, the practices, the payers and the people are fictional, and every record is synthetic.",
+ "title": "Dental Plan annual maximum, 2027",
+ "setting": "A fictional Missouri iron foundry and machining company's self-insured employee dental plan and its claims administrator: the company, the plan, the administrator, the union and the people are fictional, and every record is synthetic.",
  "as_of": "2026-10-16",
+ "decides": "the annual maximum the company's bargaining committee can agree for 2027 under its board's mandate, with the plan's predetermination service by quarter and its outstanding orthodontic payments",
  "deliverables": [
-  "two_sided_track_elections_2027.xlsx",
-  "practice_cost_vs_benchmark_2026.png"
+  "pembrook_dental_member_year_2025.csv",
+  "pembrook_dental_maximum_2027.pdf",
+  "pembrook_dental_maximum_2027.svg"
  ],
  "distractor_files": [
-  "target/kbp_medicare_advantage_attribution_2026.xlsx",
-  "target/lpn_quality_composite_2025.csv",
-  "target/mlh_care_coordination_remittance_2026.csv",
-  "target/KBP_CCF_REMIT_2026.xlsx",
-  "target/pmh_ccf_payments_2026.csv"
+  "target/ridgeline_network_access_2026q2.xlsx",
+  "target/rba_admin_fee_invoices_2025-01_2026-09.csv",
+  "target/rba_classic_accumulators_2024-01_2025-06.csv",
+  "target/rba_nexus_accumulators_2025-07_2026-09.csv"
  ],
- "stated_inputs": [
-  "250,000"
- ],
+ "stated_inputs": [],
  "files": [
   {
-   "file": "KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx",
-   "source": "Kesselcrest Benefit Partners, value-based partner attribution (fictional, synthetic records)",
-   "date": "2026-10-06",
+   "file": "pembrook_benefit_costing_standard_f17.pdf",
+   "source": "Pembrook Castings Company, Finance Policy F-17, Costing Benefit Plan Changes (fictional, synthetic records)",
+   "date": "2023-03-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "KBP_CCF_REMIT_2026.xlsx",
-   "source": "Kesselcrest Benefit Partners, care coordination remittances (fictional, synthetic records)",
-   "date": "2026-10-14",
+   "file": "pembrook_board_bargaining_mandate_2026-09-28.pdf",
+   "source": "Pembrook Castings Company, Board Resolution 2026-31, bargaining mandate (fictional, synthetic records)",
+   "date": "2026-09-28",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "KBP_CLAIMS_LPN_20261009.txt",
-   "source": "Kesselcrest Benefit Partners, partner claims extract (fictional, synthetic records)",
+   "file": "pembrook_dental_plan_spd_2025.pdf",
+   "source": "Pembrook Castings Company, Dental Plan Summary Plan Description 2025 (fictional, synthetic records)",
+   "date": "2024-11-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "rba_admin_fee_invoices_2025-01_2026-09.csv",
+   "source": "Ridgeline Benefit Administrators, administrative fee invoices (fictional, synthetic records)",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 21
+  },
+  {
+   "file": "rba_classic_accumulators_2024-01_2025-06.csv",
+   "source": "Ridgeline Benefit Administrators, Classic platform, month-end benefit accumulators (fictional, synthetic records)",
+   "date": "2025-07-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 96424
+  },
+  {
+   "file": "rba_classic_claims_2024-01_2025-06.csv",
+   "source": "Ridgeline Benefit Administrators, Classic adjudication platform, dental claim lines extract (fictional, synthetic records)",
+   "date": "2025-07-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 49271
+  },
+  {
+   "file": "rba_classic_eligibility_2025-06-30.csv",
+   "source": "Ridgeline Benefit Administrators, Classic platform, eligibility spans at conversion (fictional, synthetic records)",
+   "date": "2025-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 6969
+  },
+  {
+   "file": "rba_classic_predeterminations_2024-01_2025-06.csv",
+   "source": "Ridgeline Benefit Administrators, Classic platform, predetermination log (fictional, synthetic records)",
+   "date": "2025-07-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 2484
+  },
+  {
+   "file": "rba_member_crosswalk_2025-07-01.csv",
+   "source": "Ridgeline Benefit Administrators, member identifier crosswalk, Classic to Nexus conversion (fictional, synthetic records)",
+   "date": "2025-07-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 6281
+  },
+  {
+   "file": "rba_nexus_accumulators_2025-07_2026-09.csv",
+   "source": "Ridgeline Benefit Administrators, Nexus platform, month-end benefit accumulators (fictional, synthetic records)",
    "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 159442
+   "rows": 86224
   },
   {
-   "file": "KBP_ELIG_LPN_20261009.txt",
-   "source": "Kesselcrest Benefit Partners, partner eligibility extract (fictional, synthetic records)",
+   "file": "rba_nexus_claim_lines_2025-07_2026-10.csv",
+   "source": "Ridgeline Benefit Administrators, Nexus adjudication platform, dental claim lines extract (fictional, synthetic records)",
    "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 9289
+   "rows": 41628
   },
   {
-   "file": "kbp_medicare_advantage_attribution_2026.xlsx",
-   "source": "Kesselcrest Benefit Partners, Medicare Advantage provider attribution (fictional, synthetic records)",
-   "date": "2026-07-16",
+   "file": "rba_nexus_eligibility_2026-10-09.csv",
+   "source": "Ridgeline Benefit Administrators, Nexus platform, eligibility spans (fictional, synthetic records)",
+   "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 7270
   },
   {
-   "file": "lpn_board_resolution_2026-07.pdf",
-   "source": "Larrowbrook Physician Network, Board Resolution 2026-11 (fictional, synthetic records)",
-   "date": "2026-07-24",
+   "file": "rba_nexus_estimates_2025-06_2026-09.csv",
+   "source": "Ridgeline Benefit Administrators, Nexus platform, predetermination estimates (fictional, synthetic records)",
+   "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 2067
   },
   {
-   "file": "lpn_master_patient_index.csv",
-   "source": "Larrowbrook Physician Network, master patient index extract (fictional, synthetic records)",
-   "date": "2026-10-13",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 29583
-  },
-  {
-   "file": "lpn_payer_feed_field_guide.txt",
-   "source": "Larrowbrook Physician Network, payer performance analytics, feed field guide (fictional, synthetic records)",
-   "date": "2026-10-13",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 66
-  },
-  {
-   "file": "lpn_performance_standard_2026.pdf",
-   "source": "Larrowbrook Physician Network, Performance Standard for Commercial Members (fictional, synthetic records)",
-   "date": "2025-12-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "lpn_primary_care_roster_2026-10.xlsx",
-   "source": "Larrowbrook Physician Network, credentialing, primary care roster (fictional, synthetic records)",
+   "file": "rba_ortho_case_schedule_2026-09-30.csv",
+   "source": "Ridgeline Benefit Administrators, orthodontic case schedule (fictional, synthetic records)",
    "date": "2026-10-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 116
   },
   {
-   "file": "lpn_quality_composite_2025.csv",
-   "source": "The three payers' 2025 quality measure results for the network's practices (fictional, synthetic records)",
-   "date": "2026-05-29",
+   "file": "rba_ortho_payments_2024-01_2026-09.csv",
+   "source": "Ridgeline Benefit Administrators, orthodontic installment payments (fictional, synthetic records)",
+   "date": "2026-10-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 242
+   "rows": 1264
   },
   {
-   "file": "mlh_attribution_runs_py2025_py2026.csv",
-   "source": "Merrinlake Health Plan, attribution runs (fictional, synthetic records)",
-   "date": "2026-10-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 25009
-  },
-  {
-   "file": "mlh_care_coordination_remittance_2026.csv",
-   "source": "Merrinlake Health Plan, care coordination remittance detail (fictional, synthetic records)",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 454
-  },
-  {
-   "file": "mlh_eligibility_2025_2026.csv",
-   "source": "Merrinlake Health Plan, partner eligibility extract (fictional, synthetic records)",
-   "date": "2026-10-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 16729
-  },
-  {
-   "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
-   "source": "Merrinlake Health Plan, value-based partner claims extract (fictional, synthetic records)",
-   "date": "2026-10-07",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 283413
-  },
-  {
-   "file": "payer_completion_factors_2026-09.csv",
-   "source": "The three payers' completion factors, Performance Standard Appendix C (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 24
-  },
-  {
-   "file": "payer_em_fee_schedules_2026.xlsx",
-   "source": "Larrowbrook Physician Network, managed care contracting, payer fee schedule excerpts (fictional, synthetic records)",
-   "date": "2026-01-12",
+   "file": "ridgeline_aso_agreement_schedule_c.pdf",
+   "source": "Ridgeline Benefit Administrators and Pembrook Castings Company, ASO Agreement Schedule C (fictional, synthetic records)",
+   "date": "2025-05-21",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "payer_settlement_statements_py2025.pdf",
-   "source": "The three payers' performance year 2025 shared savings statements (fictional, synthetic records)",
-   "date": "2026-06-12",
+   "file": "ridgeline_network_access_2026q2.xlsx",
+   "source": "Ridgeline Benefit Administrators, network management, network access report Q2 2026 (fictional, synthetic records)",
+   "date": "2026-07-22",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "pmh_attribution_py2025_py2026.csv",
-   "source": "Pemberglen Mutual Health, attribution runs (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 7278
-  },
-  {
-   "file": "pmh_ccf_payments_2026.csv",
-   "source": "Pemberglen Mutual Health, care coordination payments (fictional, synthetic records)",
-   "date": "2026-10-16",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 671
-  },
-  {
-   "file": "pmh_members_2026-10-12.csv",
-   "source": "Pemberglen Mutual Health, partner member coverage (fictional, synthetic records)",
-   "date": "2026-10-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 5032
-  },
-  {
-   "file": "pmh_partner_claims_2026-10-12.json",
-   "source": "Pemberglen Mutual Health, value-based partner claims (fictional, synthetic records)",
-   "date": "2026-10-12",
+   "file": "ridgeline_plan_review_2025_renewal_2026.pdf",
+   "source": "Ridgeline Benefit Administrators, 2025 plan year review and 2026 renewal (fictional, synthetic records)",
+   "date": "2026-02-18",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "qualifying_primary_care_services.csv",
-   "source": "Larrowbrook Physician Network, Performance Standard Appendix A (fictional, synthetic records)",
-   "date": "2025-12-11",
+   "file": "ridgeline_ppo_fee_schedule_2024-2027.xlsx",
+   "source": "Ridgeline Benefit Administrators, network contracting, PPO fee schedules 2024 to 2027 (fictional, synthetic records)",
+   "date": "2026-09-15",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 25
+   "rows": null
   }
  ]
 }

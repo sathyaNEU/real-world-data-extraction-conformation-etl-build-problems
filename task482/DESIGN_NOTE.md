@@ -3,12 +3,12 @@
 Status lives in `pipeline.json`; this note holds the design. Architecture 15, drawn 2026-10-31 after architectures 1
 to 14 were spent: a new world, dataset and shell. Pembrook Castings Company, an iron foundry and machining company
 in Missouri, runs a self-insured dental plan for its employees and their families, administered by Ridgeline
-Benefit Administrators. The collective bargaining agreement with the hourly employees' union expires on 31 December
-2026, and the union has proposed a higher annual maximum than the 1,500 dollars per covered person the plan has paid
-since 2009. The company costs a benefit proposal on its most recent complete plan year (2025) at the fee schedule of
-the year the change takes effect (2027), per covered person month, and the board's bargaining mandate allows benefit
-improvements to add no more than 3.0 per cent to the plan's cost at the current design. The question is how far the
-company can agree to raise the maximum.
+Benefit Administrators, which moved the plan's claims from its Classic platform to its Nexus platform on 1 July 2025.
+The collective bargaining agreement with the hourly employees' union expires on 31 December 2026, and the union has
+proposed raising the annual maximum from 1,500 to 3,000 dollars per covered person. Board Resolution 2026-31 lets the
+bargaining committee agree 2,000 or 3,000 dollars provided the cost under Finance Policy F-17 is no more than 1.90
+dollars per covered person month, and F-17 costs a change on the most recent complete plan year (2025) at the fees of
+the year the change takes effect (2027). The question is how far the committee can go.
 
 ## Draw
 
@@ -20,30 +20,24 @@ company can agree to raise the maximum.
   checked PASS against task191, task250 and task470 and, after a rebase onto main, read BLOCK on all three axes
   against task156 v2 and task130 v5; a second, as a regional transit authority's plan (board_of_directors,
   launch_or_rollout, utility_or_infrastructure), read BLOCK after the next rebase against task191 v3, a municipal bus
-  company filed a few minutes earlier, which also put the two worlds side by side. The window now (task156, task130
-  and task191 v3) closes the strategies forecast_method_backtest and classification_error, the forums
-  council_or_assembly, line_manager_or_team and executive_team, the forcing events vote_or_meeting,
-  budget_or_appropriation and launch_or_rollout, the organisations local_government and utility_or_infrastructure,
-  the roles operations_director, field_unit_lead and compliance_or_audit, the context artifacts monitoring_export,
-  capacity_report and filed_standard, and the shape other. The axes were redrawn with the world, never relabelled:
-  the plan's sponsor is a manufacturer (organisation manufacturer) whose maximum is a bargaining term, so the call is
-  forced by the collective bargaining agreement that expires on 31 December 2026 (forcing event
-  purchase_order_or_contract, the honest kind for a labour contract's renewal) and decided by the company's
-  bargaining committee inside the board's mandate (forum committee_or_panel), with the benefits manager costing the
-  union's proposal (role finance_controller). Kept: context artifact filed_model (the administrator's 2026 renewal
-  projection), shape 04 (one dial set at every allowed value), decision type dial_setting.
+  company filed a few minutes earlier, which also put the two worlds side by side. The axes were redrawn with the
+  world, never relabelled: the plan's sponsor is a manufacturer (organisation manufacturer) whose maximum is a
+  bargaining term, so the call is forced by the collective bargaining agreement that expires on 31 December 2026
+  (forcing event purchase_order_or_contract, the honest kind for a labour contract's renewal) and decided by the
+  company's bargaining committee inside the board's mandate (forum committee_or_panel), with the benefits manager
+  costing the union's proposal (role finance_controller). Kept: context artifact filed_model (the administrator's
+  plan year review and its projection), shape 04 (one dial set at every allowed value), decision type dial_setting.
 - **WARNs answered on the way to PASS:** the question form moved from whether (task250) and what (task191, the last
   two prompts) to how-much, which is what a dial on a dollar ceiling asks; two personas whose first names stood in
   task104, task130 and task460 were redrawn from `guard.py names --geo "United States" --seed 482 --n 40`: Audrey
-  Bautista (the company's benefits manager, the requester), Marvin Jordan (Ridgeline's account executive) and Barry
-  Rowland (the company's vice president of finance, who chairs the bargaining committee), owners in file properties
-  and sign-offs only.
+  Bautista (the company's benefits manager), Marvin Jordan (Ridgeline's account executive) and Barry Rowland (the
+  company's vice president of finance, who chairs the bargaining committee), in file properties and sign-offs only.
 - **Pairing:** Healthcare Delivery & Health Economics, task type `payment-claims-health-plan-analytics`, which serves
-  ETL. The two adjudication platforms' claim lines, the predetermination log, the accumulators, the eligibility spans
-  and the member crosswalk are conformed into one row per 2025 covered person, and the plan's 2027 cost at each
-  allowed maximum is read off that conformed year. A new world for the slot: architectures 10, 13 and 14 sat in this
-  cell (a hospice cap and a clinically integrated network's risk track); none priced a benefit, none held a
-  predetermination, and the shell, world and dataset are all new.
+  ETL. The two adjudication platforms' claim lines, the two predetermination logs, the two eligibility files and the
+  member crosswalk are conformed into one row per 2025 covered person, and the plan's 2027 cost at each allowed
+  maximum is read off that conformed year. A new world for the slot: architectures 10, 13 and 14 sat in this cell (a
+  hospice cap and a clinically integrated network's risk track); none priced a benefit, none held a predetermination,
+  and the shell, world and dataset are all new.
 - **Strategy:** `other`, named in the card's notes: a member's year of demand is cut off by a per-person benefit
   ceiling, and the decisive move recovers the work held back above it from the dentists' predeterminations and the
   claims after the ceiling resets. Not maturity_censoring (the 2025 plan year is closed and every record of it is
@@ -58,93 +52,95 @@ company can agree to raise the maximum.
   through units already at their ceiling; task253 (approved) counts units past a floor as a sum of probabilities;
   task479 v3 grows uncapped amounts before capping them (here rung 1); task458 and task451 complete populations or
   periods, which nothing here does.
-- **The decision and the quantity:** the maximum the company can agree for 2027 (1,500, 2,000, 2,500 or 3,000
-  dollars: the current one, the union's proposal of 3,000 and the steps between), decided by the plan's 2027 cost at
-  each maximum against its cost at 1,500, per covered person month of the 2025 plan year. The cost at a maximum is
-  what the plan would have paid for 2025's covered persons under it, at the 2027 fees.
+- **The decision and the quantity:** the maximum the committee can agree for 2027 (2,000 or 3,000 dollars, the menu
+  Resolution 2026-31 allows, or neither), decided by each maximum's cost under F-17 against the current 1,500 dollars,
+  per covered person month of the 2025 plan year, against the resolution's 1.90 dollars. The cost at a maximum is what
+  the plan would have paid for 2025's covered persons under it, at the 2027 fees.
 - **Sources, one line each (all synthetic, shaped on public dental plan practice; the company, plan, administrator,
-  union and people are fictional):** the legacy platform's claim lines January 2024 to June 2025 and the new platform's July
-  2025 to September 2026 (the spine, two layouts); the predetermination log 2024 to 2026; the month-end accumulators
-  of each platform; the eligibility spans; the July 2025 member crosswalk; the PPO fee schedule workbook 2024 to 2027
-  with the CDT 2026 code map; the summary plan description; the company's benefit costing standard; the board's
-  bargaining mandate; the administrator's service agreement schedule and holiday
-  calendar; the
-  administrator's 2026 renewal report (the 2025 projection it made from 2024); two distractors, the orthodontic
-  claims (a separate lifetime maximum) and the second-quarter network access report.
+  union and people are fictional):** the Classic platform's claim lines January 2024 to June 2025 and the Nexus
+  platform's July 2025 to October 2026 (the spine, two layouts); the Classic predetermination log and the Nexus
+  estimates; the July 2025 member crosswalk; the eligibility spans of each platform; the PPO fee schedule workbook
+  2024 to 2027; the orthodontic case schedule and its installment payments (ask B); the summary plan description;
+  Finance Policy F-17; Board Resolution 2026-31; the service agreement's Schedule C with its holiday table (ask A); the
+  administrator's 2025 plan year review (its 2025 projection made from 2024); four distractors, the month-end
+  accumulators of each platform (who reached the maximum and when, unused by the golden), the second-quarter network
+  access report and the administrative fee invoices.
 
 ## Default path
 
-1. Conform the two platforms' 2025 plan-year lines: drop the legacy platform's void lines with the originals they
-   reverse and keep the replacements, drop the new platform's superseded lines, join both to one person through the
-   July 2025 crosswalk.
-2. For each 2025 covered person, sum the plan-paid amount before the maximum: each line's allowed amount at its class's
-   coinsurance after the deductible, the lines the maximum cut counted at their full share.
-3. Re-price every line at the 2027 fee schedule (the CDT 2026 code map for the retired codes), so the maximum bites on
-   2027 fees (the field's leveraged trend: grow each person's amount, then cap it).
+1. Conform the two platforms' 2025 plan-year lines: drop the Classic void lines with the originals they reverse and
+   keep the replacements, drop the Nexus superseded lines, take a Classic claim restated on Nexus from its
+   restatement, join both to one person through the July 2025 crosswalk.
+2. For each 2025 covered person, sum the plan's share of each service before the maximum: the line's fee less the
+   deductible the plan applied, at its class's coinsurance, the lines the maximum cut counted at their full share and
+   frequency-denied lines left out.
+3. Re-price every line at the 2027 fee sheet, so the maximum bites on 2027 fees (the field's leveraged trend: grow
+   each person's amount, then cap it).
 4. Build the continuance (the field's benefit-change pricing): the plan's cost at a maximum is the sum over persons of
-   the lesser of the person's amount and the maximum, per covered person month of 2025 enrollment.
-5. Set each option's cost against the cost at 1,500 and keep the highest maximum within 3.0 per cent; a standard
+   the lesser of the person's amount and the maximum, per covered person month of 2025's enrolment.
+5. Set each option's cost against the cost at 1,500 and keep the higher maximum within 1.90 dollars; a standard
    induction load on the increase (up to a third of it) does not move the pick.
 
-Ends on: a 3,000 dollar maximum (about 2.0 per cent over the cost at 1,500 on the design's numbers).
-Golden: a 2,000 dollar maximum (about 2.3 per cent; 2,500 dollars about 3.6 per cent, over the mandate's 3.0).
+Ends on: a 3,000 dollar maximum (an increase of 1.23 dollars per covered person month; 2,000 dollars at 0.83).
+Golden: a 2,000 dollar maximum (1.55 dollars; 3,000 dollars at 2.34, over the resolution's 1.90).
 
 ## Stump sentence
 
 The default path prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files a
-3,000 dollar maximum; the members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their
-dentists had predetermined until the January reset, work that shows only in the predeterminations and among the
-January to June 2026 claims, and with that work back in the year only 2,000 dollars stays inside the mandate's 3.0
-per cent.
+3,000 dollar maximum at 1.23 dollars per covered person month; the members who reached the 1,500 dollar maximum put
+off the crowns, bridges and implants their dentists had predetermined until the January reset, work that shows only
+as a relation between the 2025 estimates and the 2026 claims, and with that work in the plan year 3,000 dollars
+costs 2.34 and only 2,000 dollars (1.55) stays inside the resolution's 1.90.
 
 ## Three rules
 
 - Task type: payment-claims-health-plan-analytics (Healthcare Delivery & Health Economics), which serves ETL: two
-  adjudication platforms, a predetermination log, accumulators, eligibility and a crosswalk conformed into one row per
+  adjudication platforms, two predetermination logs, two eligibility files and a crosswalk conformed into one row per
   2025 covered person, from which the plan's 2027 cost at each maximum is read.
 - Domain test: the deciding quantity is the plan's 2027 cost at each annual maximum, which a health plan's claims
   analysts price from a continuance table of covered persons' annual plan-paid charges (the lesser of each person's
   charges and the maximum, summed); the swap fails because megawatt-hours or library loans have no predetermination,
   no coinsurance tier and no plan-year reset of a per-person benefit maximum.
-- Swap: "how far can the plan raise its annual maximum within 3.0 per cent" with library loans for claims becomes "how
-  far can the library raise its yearly loan cap", and the advance estimate that shows the member what the cap will cut,
-  the class coinsurance and the work that waits for 1 January all stop making sense.
-- Layer 1: the administrator's two platforms (the legacy one voids and replaces an adjusted claim, the new one restates
-  it in place and supersedes the old line), member identifiers renumbered at the July 2025 migration, CDT codes revised
-  on 1 January 2026 with a few retired codes on late-adjudicated 2025 lines, a fee workbook with a sheet per year under
-  a title block, open-ended eligibility written as 9999-12-31 or blank, predetermination timestamps in UTC beside
-  local claim dates, tooth numbers as text with a leading zero on one platform, coordination-of-benefits lines where
-  the plan paid second; each is what those systems produce, and none is placed to be caught.
+- Swap: "how far can the plan raise its annual maximum within 1.90 dollars per covered person month" with library
+  loans for claims becomes "how far can the library raise its yearly loan cap", and the advance estimate that shows
+  the member what the cap will cut, the class coinsurance and the work that waits for 1 January all stop making sense.
+- Layer 1: the administrator's two platforms (Classic voids and replaces an adjusted claim, Nexus restates it under a
+  new claim number and supersedes the old lines, a claim adjusted after the move restated from Classic onto Nexus),
+  member identifiers renumbered at the July 2025 migration, Classic procedure codes without the leading D and US dates
+  beside Nexus ISO dates, reduction reasons in two vocabularies (MX, DD and FQ against CARC 119, 1 and 151), a fee
+  workbook with a sheet per year under a title block, open-ended eligibility written as 12/31/9999 on Classic and left
+  blank on Nexus, Nexus estimates stamped in UTC beside Classic local times, Nexus tooth numbers with a leading zero,
+  Nexus estimates issued in parts by tooth group; each is what those systems produce, and none is placed to be caught.
 - Layer 2: estimand identification; a continuance prices a higher maximum on the charges the current maximum let
   through, and here the maximum also decides which predetermined work is done in the year, so the year's demand above
   1,500 dollars has to be rebuilt from the work its members put off.
-- Decisive step: recognise that the 2025 plan year's claims are cut off at the maximum for the members who reached it,
-  and add back each such member's predetermined crowns, bridges and implants that were estimated in 2025 with the
-  maximum cutting the payment, not claimed in 2025, and claimed after the January reset, before reading each option's
-  cost off the continuance.
+- Decisive step: recognise that the 2025 plan year's claims stop where members at the maximum chose to wait, and add
+  back each such member's predetermined crowns, bridges and implants that were estimated in 2025 with the maximum
+  cutting the payment, not claimed in 2025, and claimed after the January reset within the estimate's twelve months.
 - Not semantics: every field (allowed, paid, the reason a line was cut, the estimate's plan payment, the accumulator's
-  year-to-date) can be read correctly and the continuance of the 2025 claims still files 3,000 dollars, because no
+  year to date) can be read correctly and the continuance of the 2025 claims still files 3,000 dollars, because no
   field says that work was put off; the waiting shows only as a relation between an estimate and a later claim.
 - Not rule application: no filed rule or procedure adds work that was never claimed in the year; the plan's rules
-  (coinsurance, deductible, maximum, fee schedule) are applied identically on every route. The enumerated family
-  (continuance at 2025 or 2027 fees, with or without an induction load of up to a third, on 2024 or 2025, with the put-off
-  work at its predetermined value or at what proceeded) spreads the 2,500 dollar option from about 1.5 to about 4.5 per
-  cent; the standing family (the data and filed rules leave defensible) still spans the continuance routes at about
-  1.5 to 2.4 per cent and the deferral-aware route at about 3.6, and what rules the continuance out is silent: a
-  relation between the predeterminations and the January to June 2026 claims that no sentence or column points to.
+  (coinsurance, deductible, maximum, fee schedule) are applied identically on every route. The enumerated family (the
+  continuance at the 2025 or 2027 fees, on 2024 or 2025, with an induction load up to a third, with or without the
+  put-off work, with the cut work that never came back) spreads the 3,000 dollar option from 0.91 to 2.66 dollars per
+  covered person month; the standing family the data and the filed rules leave defensible still spans 1.23 (the
+  continuance), 1.64 (with a load of a third) and 2.34 (the deferral-aware route), and what rules the continuance out
+  is silent: a relation between the predeterminations and the 2026 claims that no sentence or column points to.
 - Analyst test: a strong analyst who conforms the two platforms, reads every plan rule and prices each maximum on a
-  continuance of the 2025 covered persons' plan-paid charges re-priced at the 2027 fees files a 3,000 dollar maximum;
-  the predetermined work the members at the maximum put off to the January reset puts 2,500 and 3,000 dollars over the
-  mandate's 3.0 per cent and leaves 2,000.
-- Estimand: the company's benefit costing standard files it: a benefit proposal is costed as what
-  the plan would have paid for the most recent complete plan year's covered persons under the change, at the fee
-  schedule of the year the change takes effect, per covered person month, against the same year's cost at the current
-  design; the board's bargaining mandate files the 3.0 per cent for benefit improvements.
+  continuance of the 2025 covered persons' plan-paid charges re-priced at the 2027 fees files a 3,000 dollar maximum
+  (1.23 dollars per covered person month); the predetermined work the members at the maximum put off to the January
+  reset puts 3,000 dollars at 2.34, over the resolution's 1.90, and leaves 2,000 dollars at 1.55.
+- Estimand: Finance Policy F-17 files it: a proposed change is costed as what the plan would have paid for the covered
+  persons of the most recent complete plan year had the change applied to that plan year, at the fees in effect for
+  the plan year in which it takes effect, per covered person month of that plan year's enrolment, less the same year's
+  costed amount at the current design at the same fees; Board Resolution 2026-31 files the menu (2,000 or 3,000
+  dollars, the plan otherwise unchanged) and the 1.90 dollars.
 - No decoy: nothing is planted to be caught; no memo, quote, benchmark or stakeholder figure prices the options, the
-  administrator's renewal report projects 2025 at the unchanged design only, and every file is what the company and its
-  administrator keep for their own reasons.
-- No certified replay: the method is not hidden behind certified figures; the renewal report's 2025 projection is
-  reproduced by every route alike, because no design changed between 2024 and 2025.
+  administrator's plan year review projects 2025 at the unchanged design only, and every file is what the company and
+  its administrator keep for their own reasons.
+- No certified replay: the method is not hidden behind certified figures; the plan year review's 2025 paid claims and
+  its projection are reproduced by every route alike, because no design changed between 2024 and 2025.
 - Lesson: a model learns that a benefit ceiling cuts off the demand the claims record can show, that the work held
   back above it is visible in the advance estimates and in what is done once the ceiling resets, and that a
   continuance read off claims prices a higher ceiling at about half its cost; no build on file prices a benefit limit.
@@ -154,23 +150,169 @@ per cent.
 - Actor: whether a member's work was put off because of the maximum has no column in any file; the predetermination
   carries no outcome, the claim line carries no predetermination number, and the accumulator says only that the
   maximum was reached and when.
-- Link: a 2025 predetermination line is tied to its 2026 claim line only by the person (through the July 2025
-  crosswalk), the procedure family and the tooth, within the estimate's twelve-month validity; no key joins them, and
-  the costing standard's continuance never asks for the predeterminations at all.
+- Link: a 2025 estimate line is tied to its 2026 claim line only by the person (through the July 2025 crosswalk for a
+  Classic request), the procedure and the tooth, within the estimate's twelve months; no key joins them, and F-17's
+  costing never asks for the predeterminations at all.
 - Reflex: the field's method for pricing a benefit maximum, a continuance of the 2025 covered persons' plan-paid
   charges re-priced at the 2027 fees, sits on the default path and ends on 3,000 dollars, not the golden 2,000.
-- Back-test: the administrator's 2026 renewal priced 2025 on a continuance of 2024 at the unchanged design and came
-  within about 1 per cent of 2025's paid claims, and the continuance at 1,500 reproduces 2025's paid to the cent; with
-  no design change the put-off work was in steady state, so every record the solver can test passes.
-- Second use: the predetermination log is in the pack for the turnaround ask (the service agreement's five business
-  days), the accumulators for the at-maximum ask, the crosswalk for every join, the fee workbook for the re-pricing,
-  and the 2026 claims for the year-to-date ask; deleting the decisive step from the design drops no file.
+- Back-test: the continuance at the 2025 fees and the 1,500 dollar maximum reproduces every person's 2025 paid claims
+  to the cent, and the administrator's October 2024 projection of 2025 (91.64 dollars per employee per month, a
+  continuance of January to September 2024 at the 2025 fees) came within 1 per cent of the 92.46 paid; with no design
+  change the work put off flows into and out of every plan year alike, so every record a solver can test passes.
+- Second use: the predetermination logs are in the pack for ask A (Schedule C's five business days), the Nexus claim
+  file runs to its extract date as the platform's extract does and carries the second half of 2025, the crosswalk
+  serves every join and ask B, and the fee workbook the re-pricing; deleting the decisive step drops no file.
 - Shock: the put-off work comes back as January to April 2026 claims, inside the January rise every plan year shows
-  when the deductible, the frequency limits and the maximum all reset; it is the ordinary peak of the year, and the
-  members who carry it are ordinary members.
-- Pins: the WHAT sits at authority in the organisation's own genres (the costing standard files the plan year,
-  population, fee basis, unit and comparison; the bargaining mandate files the 3.0 per cent), and no filed sentence
-  names deferral, predeterminations, the reset or the window over which work comes back.
+  when the deductible, the frequency limits and the maximum all reset (January 2024 and 2025 carry the same rise, the
+  2023 plan year's put-off work included); it is the ordinary peak of the year, and its members are ordinary members.
+- Pins: the WHAT sits at authority in the organisation's own genres (F-17 files the plan year, population, fee basis,
+  unit and comparison; the resolution files the menu and the 1.90 dollars), and no filed sentence names deferral,
+  predeterminations, the reset or the window over which work comes back.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 the 2025 claims at the 2025 fees | F-17 names the 2027 fees | the claim lines | the as-billed continuance | the plan year review reconciles | none | a sum of capped amounts | yes | readable |
+| R1 the continuance at the 2027 fees | F-17 section 2 | the fee workbook's 2027 sheet | the field's benefit-change pricing | the review's 2025 paid and projection both reconcile | none | a sum of capped amounts | yes | readable |
+| R1b R1 with an induction load | no sentence files a load | none | the actuary's induced-utilisation factor | none | none | a ratio | yes | readable |
+| R2 the continuance on 2024 | F-17 names the most recent complete plan year | the 2024 claim lines | the renewal projection's base | the review's projection | none | a sum of capped amounts | yes | readable |
+| R3 (decisive) the predetermined work put off past the plan year | no sentence names deferral, the reset or an estimate's outcome | no column holds an outcome or links an estimate to a claim | the field's continuance reads claims only | every control reconciles without it | the battery conforms the platforms and stops | a join across two files and two platforms on person, procedure and tooth within the estimate's twelve months | the estimates serve ask A, the 2026 lines come with the Nexus extract | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the covered persons of the plan year | every person with a month of 2025 coverage | persons covered on 31 December 2025 | same call (1.57, 2.38) | F-17 section 2 (per covered person month of that plan year's enrolment) |
+| SF2 | covered person months | whole calendar months of coverage | days over 30.4 | same call | same call (asserted: every span starts on a first and ends at a month's end) |
+| SF3 | the claims of the plan year | every decision in the extracts, through 9 October 2026 | decisions by 31 January 2026, the review's cut | same call, same figures | same call (asserted); F-17 section 4 (decided through the date of the costing) |
+| SF4 | a corrected claim | the correction replaces the original | the first version kept | same call (1.54, 2.32) | the plan summary (the corrected claim replaces the original) |
+| SF5 | the fees | the 2027 sheet | the 2026 sheet | same call (1.46, 2.13) | F-17 section 2 (the fees of the plan year in which the change takes effect) |
+| SF6 | the deductible at the 2027 fees | as the plan applied it to each line | re-applied in service-date order | same call | the records (each line carries the deductible the plan applied; the change touches only the maximum) |
+| SF7 | frequency-denied lines | left out | priced at the 2027 fees | same call | Resolution 2026-31 (the plan otherwise unchanged) and the plan summary's frequency limits |
+| SF8 | the comparison | the 1,500 design at the same 2027 fees | 2025's paid claims | both options over the limit | F-17 section 3 (at the same fees) |
+| SF9 | the rounding path | the difference of the cent-rounded amounts | the rounded difference | same call, same figures | same call (asserted) |
+| SF10 | no more than 1.90 | inclusive | exclusive | same call | same call (asserted: no increase within 0.30 of the limit) |
+| SF11 | the window the work comes back in | within the estimate's twelve months | January to June 2026 | same call, same figures | same call (asserted) |
+| SF12 | which estimates | requests whose estimate the maximum cut | every 2025 estimate | same call, same figures | same call (asserted) |
+| SF13 | the match | person, procedure and tooth | person, procedure family and tooth | same call, same figures | same call (asserted) |
+| SF14 | the deductible on the put-off work | none: every such member met the 2025 deductible first | the 2026 claim's deductible | same call | the plan summary (the deductible is per plan year) and F-17 (had the change applied to that plan year); asserted that every such member met it |
+| SF15 | cut work that never came back | not added | added at the 2027 fees | same call (1.73, 2.66) | same call (asserted) |
+| SF16 | the menu | 2,000 or 3,000 dollars | 2,500 dollars | not on the menu | Resolution 2026-31 |
+| SF17 | identity across the migration | the crosswalk | subscriber and birth date | same persons | the crosswalk (asserted complete for every person with a key on each platform) |
+
+## Ladder
+
+| Rung | Construction | Designates | Main figures kept |
+|---|---|---|---|
+| R0 | the continuance of the 2025 claims at the 2025 fees | 3,000 (0.62, 0.91) | 0 of 5 |
+| R1 | the continuance at the 2027 fees (the default path) | 3,000 (0.83, 1.23) | 1 of 5 (the cost at 1,500) |
+| R1b | R1 with an induction load of a third | 3,000 (1.11, 1.64) | 1 of 5 |
+| R2 | the continuance of 2024 at the 2027 fees, per 2024 covered person month | 3,000 (0.80, 1.11) | 0 of 5 |
+| G | the predetermined work put off past 2025 added back | 2,000 (1.55, 2.34) | 5 of 5 |
+
+Margins: R1 leaves 3,000 at 1.23 against 1.90 (1.55 times), R1b at 1.64 (1.16 times), R2 at 1.11 (1.71 times), R0 at
+0.91; the golden leaves 2,000 at 1.55 (1.23 times under) and puts 3,000 at 2.34 (1.23 times over). An induction load
+would have to reach about 55 per cent to move the continuance off 3,000. Every graded cost and increase sits at least
+0.33 of a cent from its rounding edge, asserted. Three bound routes reach 2,000 without the decisive step: every
+person over the maximum at the 2027 fees taking the whole rise (213 persons, 1.39 and 4.18), every person the
+accumulators show at the maximum doing so (158 persons, 1.03 and 3.10), and each such person's year annualised from
+the day the maximum was met (1.05 and 2.48). None is a costing under F-17: each replaces the persons' priced years
+with an assumption the records refute (about seven in ten of the 213 stop short of 2,000 on their own priced year,
+and more than half of the 158 kept claiming after the day the maximum was met), and each misses every graded cost
+figure. The routes that cost each person's year as F-17 states it, R0 to R2, all file 3,000.
+
+## Closure table
+
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | every person with a month of 2025 coverage on either platform | filed (F-17 section 2); SF1 |
+| 2 Unit of account | the covered person and the covered person month | filed (F-17 section 2) |
+| 3 Attribution window | services dated in 2025; at a higher maximum, the 2025 estimates' work that came back within the estimate's twelve months | filed (F-17: the plan year); SF11 asserted |
+| 4 As-of dating | every decision in the extracts through 9 October 2026 | filed (F-17 section 4); SF3 asserted |
+| 5 Version basis | each claim at its final version | the plan summary (the corrected claim replaces the original); SF4 |
+| 6 Denominator | 2025 covered person months | filed (F-17 section 2) |
+| 7 Weighting | none: a sum over persons over a sum of months | filed (F-17 section 2) |
+| 8 Window length | the 2025 plan year | filed (F-17: the most recent complete plan year) |
+| 9 Boundary inclusivity | no more than 1.90 dollars | filed (Resolution 2026-31); SF10 asserted |
+| 10 Rounding path | amounts per covered person month to the cent, the increase their difference | filed (F-17 section 5); SF9 asserted |
+| 11 Tie-break | none: two options and one limit | C1 |
+| 12 Maturity and censoring | the plan year is closed; all of its put-off work came back by June 2026, inside the extract | C1 (SF11 asserted: the June window gives the same set) |
+| 13 Order of operations | conform, join, price, add the put-off work, cap, sum | C1 (every variant asserted on the same pipeline) |
+| 14 Row order | none: set operations keyed by person, procedure and tooth | C1 |
+| 15 Duplicate resolution | an estimated procedure counted once per person, procedure and tooth | C1 (the truth recovered to the cent) |
+| 16 Identity normalisation | the July 2025 crosswalk; codes given their D; tooth numbers without the leading zero | the systems' own keys; SF17 |
+| 17 Netting against gross | a void nets its original; a Nexus restatement replaces its prior claim | C1 (the truth recovered to the cent) |
+| 18 Dimensional units | dollars and cents throughout | units in the data |
+| 19 Code and status semantics | MX, DD and FQ; CARC 119, 1 and 151; ORIG, VOID and REPL; SUPERSEDED | the systems' own codes; never the stump |
+| 20 Integerisation | each line's plan share rounded down to the cent as the plan pays it | C1 (the continuance at 2025 fees reproduces every person's paid claims) |
+| 21 Clause scope | F-17 costs the change in benefits; the administrative fee is outside it | filed scope (F-17 section 2) |
+| 22 Forward window contents | the 2027 plan year, costed on 2025's persons at the 2027 fees | filed (F-17 section 2) |
+
+## Literal reader
+
+Executed word for word, F-17 and Resolution 2026-31 file the plan year (2025), the population (its covered persons),
+the fee basis (the 2027 sheet), the unit (per covered person month of the year's enrolment), the comparison (the same
+year at the current design at the same fees), the rounding (to the cent) and the limit (no more than 1.90 dollars for
+2,000 or 3,000). What they leave to the reader is what the plan would have paid had the higher maximum applied: the
+literal reader has to decide what 2025's covered persons would have had done under it. Every reading that decides it
+from the claims alone (the continuance at any fee basis, on either base year, with an induction load up to a third)
+files 3,000 dollars; the reading that decides it from the records of what members did, the work their dentists
+predetermined in 2025 that the maximum cut and that they had done once the year turned, files 2,000, and so does the
+wider reading that adds back every cut estimate whether or not it came back (SF15). Each convention the call needs is
+closed in the fork table and asserted in checks.py. Every step of the write-up executes as written.
+
+## Oracles
+
+No shipped file ranks the options on the call: no memo, quote or stakeholder figure prices a higher maximum, and the
+administrator's plan year review projects 2025 at the unchanged design only. The review's 2025 paid claims and its
+projection are reproduced by every route alike (the back-test). The accumulators show who reached the maximum and
+when; they rank nothing and no costing route needs them. Ask A's only referee is Schedule C itself (its receipt rule,
+its holidays and its five business days); ask B's are the case schedule's plan benefit and the payments file.
+Nothing ties only under the golden.
+
+## Ask sheet
+
+**Ask A, predetermination requests by quarter of receipt from 2025Q1 to 2026Q3, received and answered within
+Schedule C's five business days** (14 figures). Primary device (a grain the platform does not show): on Nexus a
+request is issued in parts, one estimate per tooth group, so a request is every estimate for one member and dentist
+at one receipt time and is answered at its last estimate; counting each estimate as a request inflates the count and,
+taking each part's own issue time, the share answered in time. Second device (a clock that lies): Nexus stamps
+receipt and issue in UTC, and Schedule C's 5:00 p.m. rule runs on Central time with daylight saving, so the stamps as
+written move requests across the cutoff and an issue across midnight. Hazards: Schedule C's holidays, a request
+received on a weekend or holiday, the quarter a late request falls in. Path: the Classic log, the Nexus estimates and
+Schedule C (3 files). Stops: each Nexus estimate a request on Central time keeps 2 of 14; the stamps as written in UTC
+keep 2 or 3; no holidays 8; receipt on the day it arrived 7.
+
+**Ask B, children still in orthodontic treatment on 30 September 2026 and the plan's payments still owed for them,
+by the year each child's treatment began** (6 figures). Primary device (an identity across systems): a child who
+changes orthodontist has a second case under a new case number, on Nexus under the child's new key where the first
+case sits under the Classic member number; the treatment began at the first banding, and the second case's plan
+benefit is what was left of the lifetime maximum, so reading each case as a treatment counts the child twice, dates
+the treatment from the second banding and leaves the first case's unpaid remainder owed. Second device (a rule the
+case schedule does not apply): the installments are paid only while the child is covered, so a child whose coverage
+ended is owed nothing. Path: the case schedule, the payments, the crosswalk and the Nexus eligibility (4 files).
+Stops: each case a treatment with coverage checked keeps 2 of 6; with coverage unchecked 2; each child once with
+coverage unchecked 2.
+
+Main population zero-counts: the call reads the claim lines, the estimates, the eligibility, the crosswalk and the fee
+workbook; no orthodontic row and no Schedule C sentence is among them (golden.py reads those for the asks only).
+
+Pair ceiling: 39.5 (the cracker 56.0 with the call, keeping 4 of 20 ask figures; the mirror 23.0 off it, keeping 4)
+Mirror leakage: 20.0 per cent of ask weight
+Measured by: generator/ceiling.py
+
+| Ask | Figures | The cracker's route | Kept | Verdict |
+|---|---|---|---|---|
+| A | 14 | Schedule C's rule, holidays and five business days on Central time, each Nexus estimate a request | 2 | miss |
+| B | 6 | each case a treatment, coverage checked | 2 | miss |
+
+## Leak review
+
+`leak.py task482 --asof 2026-10-16`: REVIEW, no LEAK. The stump-vocabulary lines are ruled here and never reach the reader:
+
+- `pembrook_dental_plan_spd_2025.pdf` (claims, months, estimate): harmless; the plan summary's own words for its claims, the orthodontic months and the predetermination every member may ask for, and it names no member who waits, no reset as a strategy and no costing.
+- `ridgeline_plan_review_2025_renewal_2026.pdf` (claims, projection, months): harmless; the administrator's experience report in its own terms (paid claims, employee months, the 2025 projection at the unchanged design), and it prices no higher maximum and names no work put off.
 
 ## Architecture 14 record (spent 2026-10-31)
 
@@ -654,3 +796,25 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
   intake (no ETL task type carries it); mine-to-mill change of support (a free choice of support correction, Gate C);
   record-linkage and seasonal-adjustment cells set aside on the directive's batch reading (task250 and task470 hold
   those client domains), the census-register cell on task470 itself.
+- Architecture 15 stage 2 (2026-10-31), a limit of 3.0 per cent of the plan's cost on a menu of 2,000, 2,500 and 3,000
+  dollars: the 2,500 option sat between the routes with margins under 1.2 on both sides; the resolution now allows
+  2,000 or 3,000 dollars at no more than 1.90 dollars per covered person month.
+- Architecture 15 stage 2, an ask on the persons at the maximum by relationship: a count the accumulators state
+  outright; replaced by the orthodontic balances, whose units cross the migration.
+- Architecture 15 stage 2, ask A as shares to one decimal: five of the seven quarters sat within a quarter unit of a
+  rounding edge; asked as counts, which have none.
+- Architecture 15 stage 3, a simulation that began on 1 January 2024 with nothing carried in: January 2024 held no work
+  put off from 2023, so 2025 rose 11 per cent on 2024 and the October 2024 projection missed by 5 per cent, a search
+  signal the back-test was meant not to give; a 2023 plan year now runs first and is not extracted.
+- Architecture 15 stage 3, members putting work off before meeting the deductible, and new needs on a tooth whose work
+  was put off: each opened a fork on the graded figures (the put-off work's deductible; a later claim on the same tooth
+  matched by procedure family); a member now weighs a cut estimate only once the deductible is met, and work put off
+  stands in for the next year's need on the same tooth and procedure family.
+- Architecture 15 stage 3, a sentence in F-17 filing the deductible convention: it would have told a literal reader to
+  charge the 2026 claim's deductible on the put-off work; the records carry the convention instead (SF6, SF14).
+- Architecture 15 stage 3, a request stamped on the stroke of 5:00 p.m.: "after 5:00 p.m." and the golden's reading
+  disagreed on it; no request is now stamped on the cutoff minute.
+- Architecture 15 stage 3, the bound routes (every person at the maximum taking the whole rise; a year annualised from
+  the day the maximum was met) reach 2,000 dollars without the decisive step, and no menu or limit moves them while
+  the golden's correction raises the cost; they stay recorded in the ladder as the build's open exposure, each refuted
+  by the records and each missing every graded cost figure.

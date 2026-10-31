@@ -1,6 +1,6 @@
-"""The pack's documents: the network's Performance Standard (Exhibit B to each payer agreement), the board's July 2026
-resolution on the 2027 two-sided track, the three payers' 2025 settlement statements on their own contract terms, and
-the network's field guide to the payers' feeds."""
+"""The pack's documents: the dental plan's summary plan description, the company's benefit costing standard, the
+board's bargaining mandate, Ridgeline's service agreement Schedule C, and Ridgeline's 2025 plan year review and 2026
+renewal."""
 import datetime as dt
 
 import reportlab.rl_config
@@ -8,7 +8,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import world as W
 
@@ -18,33 +18,32 @@ BODY = ParagraphStyle("b", parent=STY["BodyText"], fontName="Helvetica", fontSiz
 SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10)
 H = ParagraphStyle("h", parent=STY["Heading2"], fontName="Helvetica-Bold", fontSize=11, spaceBefore=8, spaceAfter=4)
 T = ParagraphStyle("t", parent=STY["Title"], fontName="Helvetica-Bold", fontSize=14, spaceAfter=10)
-HEAD = ParagraphStyle("hd", parent=STY["BodyText"], fontName="Helvetica-Bold", fontSize=7, leading=8.5, alignment=2)
-HEADL = ParagraphStyle("hdl", parent=HEAD, alignment=0)
-STAMPS = {"standard": b"D:20251216143000-06'00'", "resolution": b"D:20260724101500-05'00'",
-          "statements": b"D:20260612090000-05'00'"}
+STAMPS = {"spd": b"D:20241118094500-06'00'", "costing": b"D:20230314153000-05'00'",
+          "mandate": b"D:20260928171200-05'00'", "schedule_c": b"D:20250521110400-05'00'",
+          "renewal": b"D:20260218142600-06'00'"}
 
 
 def _pdf(path, title, story, author, org):
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.8 * inch, rightMargin=0.8 * inch, topMargin=0.7 * inch,
-                            bottomMargin=0.7 * inch, title=title, author=author, creator=author, subject=title,
-                            producer=org)
+    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch,
+                            topMargin=0.75 * inch, bottomMargin=0.75 * inch, title=title, author=author, creator=author,
+                            subject=title, producer=org)
 
     def footer(c, d):
         c.saveState()
         c.setFont("Helvetica", 7.5)
-        c.drawString(0.8 * inch, 0.45 * inch, org + "  |  " + title)
-        c.drawRightString(letter[0] - 0.8 * inch, 0.45 * inch, "Page %d" % d.page)
+        c.drawString(0.85 * inch, 0.5 * inch, org + "  |  " + title)
+        c.drawRightString(letter[0] - 0.85 * inch, 0.5 * inch, "Page %d" % d.page)
         c.restoreState()
 
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def _table(rows, widths=None, size=8):
+def _table(rows, widths=None, size=8.5):
     t = Table(rows, colWidths=widths, repeatRows=1)
     t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", size), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", size),
                            ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2), ("TOPPADDING", (0, 0), (-1, -1), 2)]))
+                           ("ALIGN", (1, 1), (-1, -1), "RIGHT"), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                           ("TOPPADDING", (0, 0), (-1, -1), 2)]))
     return t
 
 
@@ -52,235 +51,185 @@ def P(text, style=BODY):
     return Paragraph(text, style)
 
 
-def standard_pdf(path):
-    payers = "%s, %s and %s" % tuple(W.PAYER_NAMES[p] for p in W.PAYERS)
-    rates = "; ".join("%s USD %.2f" % (W.PAYER_NAMES[p], W.CCF_RATE[p]) for p in W.PAYERS)
-    s = [P("Performance Standard for Commercial Members", T),
-         P(W.NETWORK + ". Adopted by the Board of Directors on 11 December 2025 and attached as Exhibit B to the network's "
-           "2026 value-based agreements with " + payers + ". Effective for performance year 2026.", SMALL),
+def spd_pdf(path):
+    s = [P("Pembrook Castings Company Dental Plan", T),
+         P("Summary Plan Description. Effective 1 January 2025. Administered by " + W.TPA + ".", SMALL),
+         P("Who is covered", H),
+         P("Employees who enrol, and their enrolled spouses and children. A child is covered to the end of the month in "
+           "which the child turns 26. Coverage begins on the first of the month after 30 days of employment and ends on "
+           "the last day of the month in which employment ends."),
+         P("Plan year", H),
+         P("The plan year is the calendar year. The deductible, the annual maximum and the frequency limits start again "
+           "each 1 January."),
+         P("What the plan pays", H),
+         _table([["Class", "Services", "Plan pays", "Deductible"],
+                 ["I", "Evaluations, cleanings, radiographs, fluoride, sealants", "100%", "No"],
+                 ["II", "Fillings, extractions, endodontics, periodontics, palliative care", "80%", "Yes"],
+                 ["III", "Crowns, buildups, bridges, implants, dentures", "50%", "Yes"]],
+                [0.6 * inch, 3.6 * inch, 0.9 * inch, 0.9 * inch]),
+         Spacer(1, 6),
+         P("The deductible is 50 dollars per covered person per plan year and applies to Class II and Class III "
+           "services. The plan pays its share of the network fee for each service, network and non-network dentists "
+           "alike; a non-network dentist may bill you for the difference between its charge and the network fee."),
+         P("Annual maximum", H),
+         P("The plan pays up to 1,500 dollars for each covered person in a plan year. Payments for Class I, II and III "
+           "services all count toward the annual maximum. Orthodontic payments do not."),
+         P("Frequency limits", H),
+         P("Two evaluations and two cleanings per plan year; one set of bitewing radiographs per plan year; one "
+           "panoramic radiograph in any 36 months; sealants on permanent molars once per tooth to age 15."),
+         P("Orthodontic benefit", H),
+         P("For a covered child who is under 19 when the appliance is placed, the plan pays 50 per cent of the "
+           "orthodontist's case fee up to a lifetime maximum of 1,500 dollars per child. The plan pays a quarter of its "
+           "benefit when the appliance is placed and the rest in equal monthly installments over the months of "
+           "treatment, while the child is covered. If the child changes orthodontist, the new orthodontist's case is "
+           "paid under the same lifetime maximum."),
+         P("Predetermination of benefits", H),
+         P("When your dentist expects treatment to cost more than 300 dollars, ask the dentist to send Ridgeline a "
+           "predetermination before the work begins. Ridgeline's estimate shows what the plan expects to pay at the "
+           "time it is issued. An estimate is valid for 12 months from its issue date and is not a guarantee of payment: "
+           "the plan pays under the plan's terms when the work is done."),
+         P("Claims", H),
+         P("Your dentist sends claims to " + W.TPA + ", which decides them under the plan's terms. If a claim is "
+           "corrected, the corrected claim replaces the original."),
+         Spacer(1, 8),
+         P("Plan sponsor: " + W.COMPANY + ", Human Resources. Plan administrator: the company's Benefits Committee.",
+           SMALL)]
+    _pdf(path, "Dental Plan Summary Plan Description 2025", s, W.PEOPLE["benefits"], W.COMPANY)
+
+
+def costing_pdf(path):
+    s = [P("Finance Policy F-17: Costing Benefit Plan Changes", T),
+         P(W.COMPANY + ". Adopted by the Finance Committee of the Board on 14 March 2023.", SMALL),
          P("1. Purpose", H),
-         P("This standard sets the one measure the network uses for each member practice's cost performance across its "
-           "commercial payers: the network measure. Each agreement's own settlement of shared savings with its payer is "
-           "governed by that agreement's Schedule A and is not changed by this standard."),
-         P("2. Attribution", H),
-         P("2.1 Each payer attributes its own commercial members on its own claims. A member is attributed for a performance "
-           "year to the member practice whose primary care clinicians furnished the most days of qualifying primary care "
-           "services to the member in that year; where practices tie, to the practice that furnished the latest such day. "
-           "A qualifying primary care service is a service with a code in Appendix A furnished by a clinician on the network's "
-           "primary care roster for that practice on the date of service."),
-         P("2.2 A member with no qualifying primary care service from a network clinician in the year is not attributed for "
-           "that year. A member attributed for a year is attributed for every month of the year in which the member was "
-           "covered by the payer, including the months before the member's first qualifying service."),
-         P("2.3 Each payer runs attribution monthly from March of the performance year (an interim run), on qualifying "
-           "services incurred through the end of the second month before the run and paid by the end of the month before it. "
-           "The final run for a performance year is the payer's April run in the following year, on all qualifying services "
-           "incurred in the performance year and paid by 31 March."),
-         P("3. The network measure", H),
-         P("3.1 A member's total cost of care for a year is the allowed amount, at its current version, of every claim for "
-           "covered medical and pharmacy services incurred in the year and first paid by 31 March of the following year, "
-           "capped at USD 250,000 for the member's year. A claim is incurred on its first date of service (a pharmacy "
-           "claim on its fill date)."),
-         P("3.2 A member month is a calendar month in which the member's coverage with the payer was in force."),
-         P("3.3 A practice's network measure for a year is the total cost of care of the members attributed to it on the "
-           "final runs of the three payers, summed across the payers, divided by those members' member months in the year, "
-           "summed across the payers."),
-         P("3.4 A practice's benchmark for 2026 is its network measure for 2025, rounded to the cent, times the "
-           "agreements' 2026 trend factor of 1.052, rounded to the cent."),
-         P("4. Interim reports", H),
-         P("4.1 After each interim run the network reports each practice's interim measure: the allowed amounts of the "
-           "claims incurred from 1 January through the month of the run's service cut and paid by the date of the payer's "
-           "feed, divided for each payer and month incurred by that payer's completion factor for the month (Appendix C), "
-           "for the members on the interim run, each member's year to date capped at USD 250,000, divided by those members' "
-           "member months from January through the month of the service cut."),
-         P("4.2 Interim reports are management information and are not used to settle shared savings."),
-         P("5. Care coordination fees", H),
-         P("5.1 Each payer pays the network a care coordination fee for each attributed member for each month of the "
-           "performance year the member is covered by the payer: " + rates + " a member month in 2026."),
-         P("5.2 Fees are paid on each interim run: for the month of the run, for each member on the run covered that month, "
-           "and, for a member on the payer's run for the first time in the year, for each earlier month of the year in which "
-           "the member was covered. Fees are paid to the network for the practice to which the run attributes the member."),
-         P("Appendix A. Qualifying primary care services", H),
-         P("The codes are listed in qualifying_primary_care_services.csv, issued with this standard."),
-         P("Appendix B. The payers' feeds", H),
-         P("Each payer sends the network, monthly, its claims and coverage for the members on its latest interim run and, "
-           "for the prior performance year, for the members on its final run, with its attribution runs and its fee "
-           "remittances. The layouts are set out in the network's field guide."),
-         P("Appendix C. Completion factors", H),
-         P("Each payer issues, with its September-paid feed, the share of a month's allowed amounts it has paid by 30 "
-           "September for each month incurred from January, from its lag study of the prior year. Claims with an allowed "
-           "amount over USD 100,000 are left out of the lag study.")]
-    _pdf(path, "Performance Standard for Commercial Members", s, W.PEOPLE["analytics"], W.NETWORK)
+         P("This policy sets how the company costs a change to a self-insured benefit plan, whether the change is "
+           "proposed by management or in collective bargaining, so that every proposal is costed on one basis."),
+         P("2. Costing basis", H),
+         P("A proposed change is costed as what the plan would have paid for the covered persons of the most recent "
+           "complete plan year had the change applied to that plan year, at the fees in effect for the plan year in "
+           "which the change would take effect. The result is stated per covered person month of that plan year's "
+           "enrolment."),
+         P("3. Cost of a proposal", H),
+         P("The cost of a proposal is its costed amount per covered person month less the same plan year's costed "
+           "amount at the current plan design, at the same fees."),
+         P("4. Records", H),
+         P("Costing uses the claims administrator's records of the plan year, with the claims for the plan year's "
+           "services decided after it ends, through the date of the costing."),
+         P("5. Presentation", H),
+         P("Amounts per covered person month are stated to the cent. The costing is signed by the Benefits Manager and "
+           "reviewed by the Vice President, Finance."),
+         Spacer(1, 8),
+         P("Approved: " + W.PEOPLE["finance"] + ", Vice President, Finance.", SMALL)]
+    _pdf(path, "Finance Policy F-17", s, W.PEOPLE["finance"], W.COMPANY)
 
 
-def resolution_pdf(path):
-    s = [P("Resolution 2026-11: Two-sided risk track for 2027", T),
-         P(W.NETWORK + ", Board of Directors. Adopted at the meeting of 23 July 2026.", SMALL),
-         P("Whereas each of the network's 2026 agreements with its commercial payers offers member practices, from 1 January "
-           "2027, a two-sided track that pays a larger share of savings and recovers a share of losses; and whereas a "
-           "practice should take on losses only where its cost performance is already clear of its benchmark;"),
-         P("<b>Resolved</b>, that the network enters a member practice in the two-sided track for 2027 only where the "
-           "practice's network measure for 2026 under the Performance Standard, on the payers' final 2026 attribution, comes "
-           "in at least 2 per cent below the practice's 2026 benchmark;"),
-         P("<b>Resolved further</b>, that because the payers' elections close before the final 2026 runs, the president "
-           "presents to the Board at its October meeting the network's projection of each practice's 2026 network measure on "
-           "that basis, and the Board elects on it;"),
-         P("<b>Resolved further</b>, that the elections be filed with each payer by 30 October 2026, and that a practice not "
-           "entered remains in the one-sided track for 2027."),
+def mandate_pdf(path):
+    s = [P("Board Resolution 2026-31: Bargaining Mandate, Dental Plan", T),
+         P(W.COMPANY + ", Board of Directors. Adopted at the meeting of 28 September 2026.", SMALL),
+         P("Whereas the collective bargaining agreement with the union representing the company's hourly employees "
+           "expires on 31 December 2026; and whereas the union's proposal of 9 September 2026 asks that the Dental "
+           "Plan's annual maximum be raised from 1,500 dollars to 3,000 dollars per covered person from 1 January 2027;"),
+         P("<b>Resolved</b>, that the company's bargaining committee may agree to an annual maximum of 2,000 dollars or "
+           "of 3,000 dollars per covered person from 1 January 2027, the plan otherwise unchanged, provided its cost "
+           "under Finance Policy F-17 is no more than 1.90 dollars per covered person month;"),
+         P("<b>Resolved further</b>, that the bargaining committee reports the costing to the Board with its "
+           "recommendation before the bargaining session of 12 November 2026."),
          Spacer(1, 10),
-         P("Attest: " + W.PEOPLE["president"] + ", President.", SMALL)]
-    _pdf(path, "Board Resolution 2026-11", s, W.PEOPLE["president"], W.NETWORK)
+         P("Attest: " + W.PEOPLE["finance"] + ", Vice President, Finance, for the Secretary.", SMALL)]
+    _pdf(path, "Board Resolution 2026-31", s, W.PEOPLE["finance"], W.COMPANY)
 
 
-STATEMENT_TERMS = {
-    "B": dict(cap=150000.0, rx=True, msr=0.02, share=0.50, note="Schedule A: medical and pharmacy allowed, each member's "
-              "year capped at USD 150,000; savings shared at 50 per cent where the practice's savings reach 2 per cent of its "
-              "benchmark, times the practice's quality multiplier."),
-    "M": dict(cap=100000.0, rx=False, msr=0.0, share=0.45, note="Schedule A: medical allowed only (pharmacy is settled "
-              "under the pharmacy benefit agreement), each member's year capped at USD 100,000; savings shared at 45 per cent, "
-              "times the practice's quality multiplier."),
-    "T": dict(cap=200000.0, rx=True, msr=0.03, share=0.50, note="Schedule A: medical and pharmacy allowed, each member's "
-              "year capped at USD 200,000; savings shared at 50 per cent where the practice's savings reach 3 per cent of its "
-              "benchmark, times the practice's quality multiplier."),
-}
+def schedule_c_pdf(path):
+    hol = [d for d in W.HOLIDAYS if d.year in (2025, 2026)]
+    s = [P("Administrative Services Agreement: Schedule C, Service Standards", T),
+         P(W.TPA + " and " + W.COMPANY + ". Schedule C as amended 21 May 2025, effective 1 July 2025 for the plan's "
+           "move to Ridgeline's current adjudication platform.", SMALL),
+         P("C.1 Claims", H),
+         P("Ridgeline decides 95 per cent of clean claims within 10 business days of receipt."),
+         P("C.2 Predeterminations", H),
+         P("Ridgeline issues an estimate for every procedure in a predetermination request within five business days of "
+           "receipt for at least 90 per cent of the requests received in each calendar quarter. The standard is "
+           "measured on the requests received in the quarter."),
+         P("C.3 Business days and receipt", H),
+         P("A business day is Monday to Friday, except Ridgeline's observed holidays listed below. A request received "
+           "after 5:00 p.m. Central Time, or on a day that is not a business day, is received on the next business day."),
+         _table([["Observed holiday", "2025", "2026"]] + [
+             [name, next("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2025 and f(d)),
+              next("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2026 and f(d))]
+             for name, f in (("New Year's Day", lambda d: d.month == 1), ("Memorial Day", lambda d: d.month == 5),
+                             ("Independence Day", lambda d: d.month == 7), ("Labor Day", lambda d: d.month == 9),
+                             ("Thanksgiving Day", lambda d: d.month == 11 and d.weekday() == 3),
+                             ("Day after Thanksgiving", lambda d: d.month == 11 and d.weekday() == 4))]
+             + [["Christmas", ", ".join("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2025 and d.month == 12),
+                 ", ".join("%d %s %d" % (d.day, d.strftime("%B"), d.year) for d in hol if d.year == 2026 and d.month == 12)]],
+             [2.2 * inch, 1.9 * inch, 1.9 * inch]),
+         Spacer(1, 6),
+         P("C.4 Member service", H),
+         P("Ridgeline answers 85 per cent of member calls within 30 seconds, measured monthly."),
+         P("C.5 Reporting", H),
+         P("Ridgeline reports the standards in C.1 to C.4 to the company each quarter within 30 days of the quarter's "
+           "end.")]
+    _pdf(path, "ASO Agreement Schedule C", s, W.PEOPLE["tpa"], W.TPA)
 
 
-def statement_rows(w):
-    """Each payer's 2025 settlement by practice on its own Schedule A terms, from the world's 2025 claims."""
-    col, att, ppl = w["claims"], w["att"], {q.pid: q for q in w["people"]}
-    quality = W.quality_multipliers()
-    out = {}
-    for payer in W.PAYERS:
-        terms = STATEMENT_TERMS[payer]
-        fin = att[("final", payer, 2025)]
-        tot = {}
-        for i in range(len(col["pid"])):
-            if col["payer"][i] != payer or col["year"][i] != 2025 or col["paid"][i] > W.FINAL_PAID[2025]:
-                continue
-            if col["pid"][i] not in fin or (col["ctype"][i] == "RX" and not terms["rx"]):
-                continue
-            tot[col["pid"][i]] = tot.get(col["pid"][i], 0.0) + col["allowed"][i]
-        g = W.rng(51, W.PAYERS.index(payer))
-        rows = []
-        for c in W.CODES:
-            mem = [pid for pid, v in fin.items() if v[0] == c]
-            mm = sum(W.enrolled_months(ppl[pid], 2025) for pid in mem)
-            tc = sum(min(terms["cap"], tot.get(pid, 0.0)) for pid in mem)
-            pmpm = tc / mm
-            bench = round(pmpm * float(g.uniform(0.965, 1.075)), 2)
-            sav = (bench - pmpm) * mm
-            earned = sav if sav >= terms["msr"] * bench * mm and sav > 0 else 0.0
-            qm = quality[(payer, c)]
-            pay = round(earned * terms["share"] * qm, 2)
-            rows.append(dict(practice=c, members=len(mem), mm=mm, tcoc=round(tc, 2), pmpm=round(pmpm, 2), bench=bench,
-                             savings=round(sav, 2), quality=qm, payment=pay))
-        out[payer] = rows
-    return out
+def renewal_figures(w):
+    """The administrator's plan-year review: paid claims per enrolled employee per month for 2024 and 2025 as decided
+    by 31 January 2026, and the 2025 figure it projected in October 2024 from 2024's claims at the 2025 fees."""
+    people = {p["pid"]: p for p in w["people"] if p["kind"] == "E"}
+    months = {y: sum(W.member_months(p, y) for p in people.values()) for y in (2024, 2025)}
+    paid = {2024: 0, 2025: 0}
+    demand24 = {}
+    for c in w["claims"]:
+        y = c["dos"].year
+        if y not in paid or c["adjudicated"] > dt.date(2026, 1, 31):
+            continue
+        lines = w["adjust"][c["cid"]]["lines"] if c["cid"] in w["adjust"] and \
+            w["adjust"][c["cid"]]["date"] <= dt.date(2026, 1, 31) else c["lines"]
+        paid[y] += sum(ln["paid"] for ln in lines)
+        if y == 2024 and c["adjudicated"] <= dt.date(2024, 9, 30):
+            for ln in lines:
+                if ln["reason"] == "FRQ":
+                    continue
+                v = (W.FEES[2025][ln["code"]] - ln["ded"]) * W.COINS[W.plan_class(ln["code"])] // 100
+                demand24[c["pid"]] = demand24.get(c["pid"], 0) + v
+    m24 = sum(W.member_months(people[pid], 2024) for pid in people)
+    proj = sum(min(v, W.MAXIMUM) for v in demand24.values())
+    # the October 2024 projection ran on January to September 2024 claims, annualised on the same months
+    m24_9 = sum(min(9, W.member_months(people[pid], 2024)) for pid in people)
+    return dict(months=months, paid=paid, pmpm={y: paid[y] / 100.0 / months[y] for y in paid},
+                proj25=proj / 100.0 / max(1, m24_9) if m24 else 0.0)
 
 
-def statements_pdf(path, w):
-    rows = statement_rows(w)
-    s = []
-    for n, payer in enumerate(W.PAYERS):
-        if n:
-            s.append(PageBreak())
-        s.append(P(W.PAYER_NAMES[payer] + ": Performance Year 2025 Shared Savings Statement", T))
-        s.append(P("Prepared for " + W.NETWORK + ". Final attribution run of April 2026; claims incurred in 2025 and paid "
-                   "through 31 March 2026. Issued 12 June 2026." + (" Signed for the plan: " + W.PEOPLE["payer"] + ", Manager, "
-                   "Provider Performance." if payer == "B" else ""), SMALL))
-        s.append(P(STATEMENT_TERMS[payer]["note"], SMALL))
-        hdr = [P("Practice", HEADL)] + [P(x, HEAD) for x in ("Members", "Member months", "Total cost (USD)", "PMPM",
-                                                             "Benchmark PMPM", "Savings (USD)", "Quality", "Payment (USD)")]
-        body = [[W.PRACTICE_NAMES[r["practice"]], "{:,}".format(r["members"]), "{:,}".format(r["mm"]), "{:,.2f}".format(r["tcoc"]),
-                 "%.2f" % r["pmpm"], "%.2f" % r["bench"], "{:,.2f}".format(r["savings"]), "%.2f" % r["quality"],
-                 "{:,.2f}".format(r["payment"])] for r in rows[payer]]
-        tot = ["Network", "{:,}".format(sum(r["members"] for r in rows[payer])), "{:,}".format(sum(r["mm"] for r in rows[payer])),
-               "{:,.2f}".format(sum(r["tcoc"] for r in rows[payer])), "", "", "{:,.2f}".format(sum(r["savings"] for r in rows[payer])),
-               "", "{:,.2f}".format(sum(r["payment"] for r in rows[payer]))]
-        s.append(_table([hdr] + body + [tot], widths=[1.6 * inch, 0.62 * inch, 0.66 * inch, 0.84 * inch, 0.5 * inch,
-                                                       0.72 * inch, 0.76 * inch, 0.52 * inch, 0.78 * inch], size=7))
-        s.append(Spacer(1, 6))
-        s.append(P("Savings are the benchmark PMPM less the PMPM, times member months; a negative figure is a loss and is not "
-                   "recovered under the one-sided track. The quality multiplier is 1.00 where every measure scored for the "
-                   "practice meets its target, 0.95 where three quarters or more do, 0.90 where half or more do, and 0.85 "
-                   "otherwise.", SMALL))
-    _pdf(path, "Performance Year 2025 Shared Savings Statements", s, W.PEOPLE["payer"],
-         "Payer statements as received by " + W.NETWORK)
+def renewal_pdf(path, w):
+    f = renewal_figures(w)
+    s = [P("2025 Plan Year Review and 2026 Renewal", T),
+         P(W.COMPANY + " Dental Plan. Prepared by " + W.TPA + ", Account Management, 18 February 2026.", SMALL),
+         P("1. Experience", H),
+         _table([["Plan year", "Employee months", "Paid claims", "Paid per employee per month"],
+                 ["2024", "{:,}".format(f["months"][2024]), "{:,.2f}".format(f["paid"][2024] / 100.0),
+                  "%.2f" % f["pmpm"][2024]],
+                 ["2025", "{:,}".format(f["months"][2025]), "{:,.2f}".format(f["paid"][2025] / 100.0),
+                  "%.2f" % f["pmpm"][2025]]],
+                [1.0 * inch, 1.6 * inch, 1.5 * inch, 1.9 * inch]),
+         Spacer(1, 6),
+         P("Paid claims are for services in the plan year decided by 31 January 2026, at the plan's design (1,500 "
+           "dollar annual maximum, 50 dollar deductible, 100/80/50 coinsurance)."),
+         P("2. The 2025 projection", H),
+         P("Our October 2024 renewal projected 2025 at %.2f dollars per employee per month: January to September 2024 "
+           "claims re-priced at the 2025 network fees, each covered person's plan payments held to the annual maximum, "
+           "per employee month of the same months. The 2025 plan year came in at %.2f." % (
+               f["proj25"], f["pmpm"][2025])),
+         P("3. 2026 renewal", H),
+         P("The 2026 network fee schedule took effect on 1 January 2026. The administrative fee for 2026 is 4.38 dollars "
+           "per enrolled employee per month. No change to the plan design is proposed for 2026."),
+         Spacer(1, 8),
+         P("Account executive: " + W.PEOPLE["tpa"] + ".", SMALL)]
+    _pdf(path, "2025 Plan Year Review", s, W.PEOPLE["tpa"], W.TPA)
+    return f
 
 
-def guide_txt(path):
-    text = """LARROWBROOK PHYSICIAN NETWORK - FIELD GUIDE TO THE PAYERS' VALUE-BASED FEEDS
-Maintained by Payer Performance Analytics (Joel Brewer, Director). Revised 13 October 2026.
-
-The payers send claims and coverage for the members on their latest interim attribution run and, for the
-prior performance year, for the members on their final run (Performance Standard, Appendix B). Each payer's
-files keep that payer's own layout. A member's identifier is the payer's; the master patient index carries
-one network patient identifier across payers.
-
-MERRINLAKE HEALTH PLAN (MLH)
-  mlh_tcoc_claims_2025-01_2026-09.csv     one row per claim; comma separated; dates YYYY-MM-DD
-    CLM_ID           claim number; a reprocessed claim is voided and replaced under new numbers
-    MBR_ID           Merrinlake member identifier
-    CLM_TYP          PROF professional, OUTP outpatient facility, INPT inpatient facility, PHRM pharmacy
-    SVC_FROM_DT      first date of service (fill date for pharmacy)
-    SVC_THRU_DT      last date of service
-    PD_DT            date paid
-    PROC_CD          CPT or HCPCS code (professional claims)
-    PROC_MOD         procedure modifier, where billed
-    POS_CD           place of service (professional claims)
-    REV_CD           revenue code (facility claims)
-    NDC_11           national drug code (pharmacy claims)
-    REND_NPI         rendering provider NPI (professional claims)
-    ALLOWED_AMT      allowed amount, USD
-    DAYS_SUPPLY      days supply (pharmacy claims)
-    ADJ_TYP          blank for an original claim; VOID for a reversal of it; REPL for its replacement
-    ORIG_CLM_ID      on VOID and REPL rows, the claim they reverse or replace
-  mlh_eligibility_2025_2026.csv           one row per coverage span; COV_TERM_DT 9999-12-31 while open
-  mlh_attribution_runs_py2025_py2026.csv  the final 2025 run (PY2025-F) and the October 2026 interim run (PY2026-10)
-  mlh_care_coordination_remittance_2026.csv  fees paid on each 2026 interim run, a line for each practice TIN,
-                                          coverage month (COV_MO) and line type (LINE_TYP: CUR the run's month, RETRO
-                                          earlier months); MBR_CNT is the member months the line pays
-
-KESSELCREST BENEFIT PARTNERS (KBP)
-  KBP_CLAIMS_LPN_20261009.txt             pipe delimited; dates MM/DD/YYYY
-    CLAIM_NO, LINE_NO, MEMBER_NO          claim, line and member; a reprocessed claim takes a suffix -01; a line with no
-                                          procedure, revenue or drug code is an adjustment to the claim
-    CLAIM_FORM                            1500 professional, UB04 facility, NCPDP pharmacy
-    BILL_TYPE                             type of bill on facility claims: 0111 inpatient, 0131 outpatient
-    FIRST_DOS, LAST_DOS, PAID_DATE        dates of service and payment
-    PROCEDURE, MODIFIER, PLACE_OF_SVC, REVENUE, NDC, RENDERING_PROV_NPI
-    ALLOWED_CENTS                         allowed amount in cents
-    CLAIM_STATUS                          P paid and current; A adjusted (superseded by a reprocessed claim)
-  KBP_ELIG_LPN_20261009.txt               coverage spans; blank TERM_DATE while open; REL_CD 18 self, 19 child
-  KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx  one sheet per run; the header row is the fourth row
-  KBP_CCF_REMIT_2026.xlsx                 care coordination remittances to the network's TINs in 2026; Service Period is
-                                          the month the fee covers
-
-PEMBERGLEN MUTUAL HEALTH (PMH)
-  pmh_partner_claims_2026-10-12.json      {"records": [...]}; one object per claim version
-    claimId, memberId, type               type professional, institutional_outpatient, institutional_inpatient, pharmacy
-    serviceStart, serviceEnd, adjudicated dates of service and of adjudication
-    cpt, modifier, pos, renderingNpi      professional claims (modifier where billed)
-    revenueCode                           facility claims
-    ndc, daysSupply                       pharmacy claims
-    allowed                               allowed amount, USD
-    version                               1 for the first adjudication; a reprocessed claim's later version replaces it
-  pmh_members_2026-10-12.csv              coverage; blank coverageEnd while open
-  pmh_attribution_py2025_py2026.csv       FINAL (2025) and INTERIM-10 (2026) runs
-  pmh_ccf_payments_2026.csv               care coordination payments on each 2026 interim run
-
-NETWORK FILES
-  lpn_primary_care_roster_2026-10.xlsx    the network's primary care clinicians by practice with effective dates
-  lpn_master_patient_index.csv            network patient identifier for each payer member identifier
-  payer_completion_factors_2026-09.csv    Appendix C of the Performance Standard
-  qualifying_primary_care_services.csv    Appendix A of the Performance Standard
-  payer_em_fee_schedules_2026.xlsx        each payer's 2026 evaluation and management rates for network clinicians
-"""
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(text)
-
-
-def write_all(t, w, ids, cf):
-    standard_pdf(t("standard"))
-    resolution_pdf(t("resolution"))
-    statements_pdf(t("statements"), w)
-    guide_txt(t("guide"))
+def write_all(t, w):
+    spd_pdf(t("spd"))
+    costing_pdf(t("costing"))
+    mandate_pdf(t("mandate"))
+    schedule_c_pdf(t("schedule_c"))
+    return renewal_pdf(t("renewal"), w)

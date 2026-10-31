@@ -4,91 +4,86 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
-
-
-def usd(x):
-    return "USD {:,.2f}".format(x)
-
-
-def joined(xs):
-    xs = list(xs)
-    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
-
-
-def short(k):
-    return k.split()[0]
+QN = {"Q1": "January to March", "Q2": "April to June", "Q3": "July to September", "Q4": "October to December"}
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    k_, par = f["constants"], f["parameters"]
-    order, steps = k_["order"], par["steps"]
-    enter, stay = f["call"]["enter"], f["call"]["stay"]
-    held = dict(steps["held"])
-    hp = sorted(held, key=lambda k: order.index(k))
-    dflt, runout = steps["default_enter"], steps["runout_enter"]
+    c, i, ci, po, py = f["cost"], f["increase"], f["continuance_increase"], f["put_off"], f["plan_year"]
+    my, A, B = f["member_year"], f["ask_a"], f["ask_b"]
+    call = f["call"]["maximum"]
     out = ["## Tags", "",
-           "**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a clinically "
-           "integrated network's 2027 two-sided risk elections for its thirteen primary care practices, conformed from "
-           "three commercial payers' claim, coverage and attribution feeds in three layouts, the network's clinician "
-           "roster and master patient index, its performance standard and the payers' E&M fee schedules).",
+           "**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a self-insured "
+           "employer dental plan's 2027 annual maximum costed for collective bargaining, conformed from its claims "
+           "administrator's two adjudication platforms, predetermination logs, eligibility spans, member crosswalk and "
+           "network fee schedules).",
            "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
            "## 1. Final Recommendation", "",
-           "**Enter %s in the 2027 two-sided track and keep %s one-sided.**" % (
-               joined([short(k) for k in enter]), joined([short(k) for k in stay])),
-           "%s come in over their thresholds once the %s members still in hospital on 31 August 2026, each already past "
-           "the USD %s cap, are carried at it. Not %s alone, the interim measure as it stands: the October runs attribute "
-           "only the members whose qualifying visit has been paid. Not %s as well, the interim measure carried by each "
-           "practice's own 2025 run-out alone: a hospital bills a stay when it ends, so neither the completion factors "
-           "nor the run-out carries a stay still running at the cut." % (
-               joined([short(k) for k in hp]), WORDS[sum(held.values())], "{:,}".format(k_["cap"]),
-               joined([short(k) for k in dflt]), joined([short(k) for k in runout if k not in enter])), "",
+           "**Agree a %s dollar annual maximum for 2027, not the union's 3,000.**" % call,
+           "Costed under Finance Policy F-17, the %s dollar maximum adds USD %s per covered person month (USD %s against "
+           "USD %s at the current 1,500), inside Board Resolution 2026-31's USD %s, and 3,000 dollars adds USD %s, over "
+           "it. The 2025 claims alone put 3,000 dollars at USD %s, because %d members whose predetermination showed the "
+           "1,500 dollar maximum reducing the plan's payment had that work done only after the plan year began again on "
+           "1 January 2026; at a higher maximum the work falls in the plan year, USD %s of plan share at the 2027 fees, "
+           "and 3,000 dollars no longer fits." % (
+               call, i["2,000"], c["2,000"], c["1,500"], f["constants"]["limit"], i["3,000"], ci["3,000"], po["members"],
+               po["amount"]), "",
            "## 2. Critical Components", "",
-           "1. Members in a hospital stay still running on 31 August 2026 and already past the USD %s cap: **%s**, %s." % (
-               "{:,}".format(k_["cap"]), WORDS[sum(held.values())],
-               " and ".join("%s at %s" % (WORDS[held[k]], k) for k in hp)),
-           "2. 2026 thresholds, 98 per cent of the benchmark: %s." % " and ".join(
-               "%s **%s**" % (short(k), usd(par["threshold"][k])) for k in hp), "",
+           "1. 2027 cost per covered person month under F-17 (the 2025 plan year at the 2027 fees): 1,500 dollars "
+           "**USD %s**, 2,000 dollars **USD %s**, 3,000 dollars **USD %s**." % (c["1,500"], c["2,000"], c["3,000"]),
+           "2. Increase over the current 1,500 dollar design against the mandate's USD %s: 2,000 dollars **USD %s**, "
+           "3,000 dollars **USD %s**." % (f["constants"]["limit"], i["2,000"], i["3,000"]),
+           "3. Predetermined work put off past 31 December 2025 and costed in the plan year: **%d** members, **USD %s** "
+           "of plan share at the 2027 fees." % (po["members"], po["amount"]),
+           "4. The 2025 plan year: **%s** covered persons, **%s** covered person months." % (
+               "{:,}".format(py["persons"]), "{:,}".format(py["months"])), "",
            "## 3. Step-by-Step Solution", "",
-           "1. Conformed the three payers' claims at their current version (Merrinlake's voided originals out, "
-           "Kesselcrest's superseded claims (status A) out and its cents in dollars, Pemberglen's latest version), member months from "
-           "the coverage files, and every run's TIN to its practice through lpn_primary_care_roster_2026-10.xlsx.",
-           "2. Took each practice's 2025 network measure on the payers' final 2025 runs (standard, section 3: claims "
-           "first paid by 31 March 2026, each member's year capped at USD %s) and its threshold at %d per cent of its "
-           "benchmark, the measure to the cent times %s to the cent (section 3.4)." % (
-               "{:,}".format(k_["cap"]), k_["threshold_share"], k_["trend"]),
-           "3. Computed each practice's interim measure on the October runs (section 4.1, the factors in "
-           "payer_completion_factors_2026-09.csv): taken as the 2026 figure it enters %s alone." % joined(
-               [short(k) for k in dflt]),
-           "4. Re-ran the standard's attribution (section 2) on the 2025 professional claims at the October run's cut, "
-           "qualifying services incurred by 31 August 2025 and paid by 30 September 2025, and carried each practice's "
-           "interim measure by its 2025 measure over the January to August 2025 measure of the members so attributed "
-           "(no long stay was running at the 2025 cut): %s practices come in under." % WORDS[len(runout)],
-           "5. Found the members in a stay still running at the cut (their attending physicians' daily inpatient visits "
-           "run to the cut with no facility claim in the October feeds): at the lowest per-day amount any closed stay of "
-           "a month or more of the same kind was allowed, %s had passed the USD %s cap; carried at the cap with each "
-           "one's months of coverage in the year, %s come in over their thresholds." % (
-               WORDS[sum(held.values())], "{:,}".format(k_["cap"]), joined([short(k) for k in hp])),
-           "6. For the level 5 share, read each visit's paid level from its claim's allowed amount, every line of the claim "
-           "counted, against the payer's 2026 rate for its setting in payer_em_fee_schedules_2026.xlsx: a Kesselcrest %s "
-           "claim whose line with no procedure code takes it down to Kesselcrest's %s rate is level 4, and a Merrinlake "
-           "E&M billed with modifier 25 beside a minor procedure by the same clinician that day is at the level whose rate "
-           "is twice its allowed amount (a halved %s equals Merrinlake's %s rate), a modifier 25 visit beside a preventive "
-           "visit at its own rate." % (k_["codes"][3], k_["codes"][2], k_["codes"][3], k_["codes"][1]),
-           "7. Entered the %s practices under their thresholds in the two-sided track for 2027." % WORDS[len(enter)],
-           "", "## 4. Deliverable Answers", "",
-           "### two_sided_track_elections_2027.xlsx", "",
-           "1. Elections, one row per practice:"]
-    for k in order:
-        out.append("   - %s: %s" % (k, "two-sided" if k in enter else "one-sided"))
-    out.append("2. Share of established-patient visits January to August 2026 the payers paid at level 5, per cent:")
-    for k in order:
-        out.append("   - %s: %.1f" % (k, f["ask_a"][k]))
-    out += ["", "### practice_cost_vs_benchmark_2026.png", "",
-            "1. Horizontal bar chart of each practice's projected 2026 network measure against its threshold: the %s "
-            "entering practices' bars fall below the threshold line and the %s one-sided practices' bars above it." % (
-                WORDS[len(enter)], WORDS.get(len(stay), str(len(stay))))]
+           "1. Conformed Ridgeline's two platforms: Classic voided originals out and replacements in, Nexus superseded "
+           "lines out, a Classic claim restated on Nexus taken from the restatement, every member through the July 2025 "
+           "crosswalk.",
+           "2. Took 2025's covered persons and covered person months from both eligibility files (Classic spans to 30 "
+           "June 2025, its open end written 12/31/9999; Nexus spans from 1 July 2025, an open end blank).",
+           "3. Priced each 2025 service line at the 2027 fee sheet with the deductible the plan applied to it and its "
+           "class's coinsurance, frequency-denied lines out and the lines the maximum cut at their full share.",
+           "4. Marked the 2025 predetermination requests whose estimated plan payment the maximum reduced (Nexus stamps "
+           "read in Central time).",
+           "5. Added to each person the estimated procedures of those requests not claimed for the same person, "
+           "procedure and tooth in 2025 and claimed after 1 January 2026 within the estimate's 12 months, at the 2027 "
+           "fee and coinsurance.",
+           "6. Costed each maximum as the sum over 2025's covered persons of the lesser of the person's amount (with "
+           "that work at a higher maximum) and the maximum, per covered person month, each increase against 1,500 at "
+           "the same fees.",
+           "7. Counted Schedule C requests by quarter of receipt (after 5:00 p.m. Central or on a non-business day, the "
+           "next business day; a Nexus request every estimate for one member and dentist at one receipt time, answered "
+           "at its last estimate) and those answered within five business days.",
+           "8. Followed each child's orthodontic treatment across a change of orthodontist through the crosswalk, its "
+           "year from the first banding, and summed the unpaid benefit of children in treatment and covered on 30 "
+           "September 2026.", "",
+           "## 4. Deliverable Answers", "",
+           "### pembrook_dental_member_year_2025.csv", "",
+           "1. One row per 2025 covered person: **%s** rows, **%s** covered person months." % (
+               "{:,}".format(my["rows"]), "{:,}".format(my["months"])),
+           "2. Column totals in dollars: put-off work at the 2027 fees **USD %s**; cost at 1,500 **USD %s**, at 2,000 "
+           "**USD %s**, at 3,000 **USD %s**." % (my["put"], my["cost"]["1,500"], my["cost"]["2,000"],
+                                                my["cost"]["3,000"]), "",
+           "### pembrook_dental_maximum_2027.pdf", "",
+           "1. Recommendation: agree a %s dollar maximum from 1 January 2027." % call,
+           "2. Cost per covered person month: USD %s (1,500), USD %s (2,000), USD %s (3,000); increases USD %s and USD "
+           "%s against the USD %s limit." % (c["1,500"], c["2,000"], c["3,000"], i["2,000"], i["3,000"],
+                                            f["constants"]["limit"]),
+           "3. Predetermination requests by quarter of receipt, received and answered within five business days:"]
+    for q in sorted(A):
+        out.append("   - %s (%s %s): %s received, %s answered within five business days" % (
+            q, QN[q[-2:]], q[:4], "{:,}".format(A[q][0]), "{:,}".format(A[q][1])))
+    out.append("4. Orthodontic treatment by the year it began, children still in treatment on 30 September 2026 and the "
+               "plan's payments still owed for them:")
+    for y in sorted(B):
+        out.append("   - %s: %d %s, USD %s" % (y, B[y]["children"], "child" if B[y]["children"] == 1 else "children",
+                                             B[y]["owed"]))
+    out += ["", "### pembrook_dental_maximum_2027.svg", "",
+            "1. Bar chart of each option's increase per covered person month, USD %s at 2,000 dollars and USD %s at "
+            "3,000 dollars, against a dashed line at the mandate's USD %s: the 2,000 bar falls under the line and the "
+            "3,000 bar rises over it." % (i["2,000"], i["3,000"], f["constants"]["limit"])]
     with open(os.path.join(TASK, "submission.md"), "w") as fh:
         fh.write("\n".join(out) + "\n")
 

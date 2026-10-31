@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "named_option",
-  "answer": "Raise the annual maximum to 2,000 dollars (design; to be confirmed by the generator)",
-  "answer_source": "design (to be confirmed by the generator)",
+  "answer": "Agree a 2,000 dollar annual maximum for 2027, not the union's 3,000: under Finance Policy F-17 2,000 dollars adds 1.55 dollars per covered person month, inside Board Resolution 2026-31's 1.90, and 3,000 dollars adds 2.34",
+  "answer_source": "generator (golden.py on the cut pack, recomputed by verify.py)",
   "gap": [
     "objective",
     "time"
@@ -38,22 +38,23 @@
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:benefit-ceiling-deferred-work",
   "layer1": [
-    "two claims platforms across the July 2025 migration (the legacy one voiding and replacing an adjusted claim, the new one restating it in place under a new claim number)",
+    "two claims platforms across the July 2025 migration (Classic voiding and replacing an adjusted claim, Nexus restating it under a new claim number and superseding the old lines, a Classic claim adjusted after the move restated on Nexus)",
     "member identifiers renumbered at the migration, joined through the administrator's crosswalk",
-    "CDT procedure codes revised on 1 January 2026, a few legacy codes still on late-adjudicated 2025 lines",
-    "a fee schedule workbook with one sheet per year and a title block above the header",
-    "eligibility spans written with an open end date as 9999-12-31 or left blank",
-    "predetermination timestamps in UTC beside local-time claim dates",
-    "tooth numbers stored as text with a leading zero on one platform",
-    "coordination-of-benefits lines where the plan paid second"
+    "Classic procedure codes without the leading D and US-format dates beside Nexus ISO dates",
+    "reduction reasons in two vocabularies (Classic MX, DD and FQ; Nexus CARC 119, 1 and 151)",
+    "a fee schedule workbook with one sheet per year under a title block",
+    "eligibility spans written with an open end as 12/31/9999 on Classic and left blank on Nexus",
+    "Nexus estimate timestamps in UTC beside Classic local times",
+    "Nexus tooth numbers stored as text with a leading zero",
+    "Nexus predeterminations issued in parts, one estimate per tooth group"
   ],
   "stakeholder_role": "the company's benefits manager, who costs the union's dental proposal for the company's bargaining committee",
   "role_family": "finance_controller",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "dental_claim_lines_2024-2026.csv",
-    "rows": 0,
-    "entity": "one adjudicated dental claim line (procedure, tooth, fee, allowed, paid, reason)",
+    "file": "rba_classic_claims_2024-01_2025-06.csv + rba_nexus_claim_lines_2025-07_2026-10.csv",
+    "rows": 90899,
+    "entity": "one adjudicated dental claim line (procedure, tooth, allowed, paid, deductible, reason)",
     "grain": "claim line",
     "source": "synthetic"
   },
@@ -82,8 +83,8 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The decisive quantity is what each member's yearly amount would be under a higher per-member ceiling when the records stop at the current one: members who reach it put off work their providers had already priced in advance until the ceiling resets, so that work shows only in the advance estimates and among the next period's first records, and a higher ceiling's cost read from the period's own records misses it and comes out at about half.",
-  "driver_concrete": "Each 2025 member's plan-paid amount before the maximum is the 2025 claims (the lines the maximum cut included) plus the predetermined major work the member put off once the estimate showed the 1,500 dollar maximum would cut the payment, read as the predetermination lines whose member, procedure and tooth reappear in the claims of January to June 2026; at the 2027 fees that work puts the 2,500 and 3,000 dollar maximums over the bargaining mandate's limit and leaves 2,000 dollars inside it.",
-  "stump": "A competent solver prices each maximum on a continuance of the 2025 claims trended to the 2027 fees and files 3,000 dollars; members at the 1,500 dollar maximum put off their predetermined crowns, bridges and implants to the January reset, so at a higher maximum the plan pays for that work in the year and only 2,000 dollars fits.",
+  "driver_concrete": "Each 2025 member's plan-paid amount before the maximum is the 2025 claims (the lines the maximum cut included) plus the predetermined major work the member put off once the estimate showed the 1,500 dollar maximum would cut the payment, read as the 2025 estimate lines whose member, procedure and tooth are not claimed in 2025 and are claimed after 1 January 2026 within the estimate's twelve months; at the 2027 fees that work puts the 3,000 dollar maximum over the board's 1.90 dollars per covered person month and leaves 2,000 dollars inside it.",
+  "stump": "A competent solver prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files 3,000 dollars (1.23 per covered person month); members at the 1,500 dollar maximum put off their predetermined crowns, bridges and implants to the January reset, so at a higher maximum the plan pays for that work in the year and only 2,000 dollars (1.55; 3,000 at 2.34) fits the board's 1.90.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
