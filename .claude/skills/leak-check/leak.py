@@ -509,20 +509,24 @@ def sweep_describing_content(files, rep):
         found = {c for c in all_cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
         if not found:
             continue
+        # A field name written as an identifier (snake_case, a digit, or interior capitals) is what a dictionary lists;
+        # a plain word that happens to head a column ("price", "result", "State") is what any governing document says.
+        ident = {c for c in found if "_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c)}
         worst = 0.0
         worst_file = ""
         for name, cols in data_cols.items():
-            if len(cols) >= 5:
-                share = len(found & cols) / len(cols)
+            hit = found & cols
+            if len(cols) >= 5 and len(hit) >= 5:
+                share = len(hit) / len(cols)
                 if share > worst:
                     worst, worst_file = share, name
-        if len(found) >= 8 or worst >= 0.4:
+        if len(ident) >= 8 or (worst >= 0.4 and len(ident) >= 3):
             rep.add("12 describing content", "LEAK", f["rel"],
                     "names %d column(s) of the data files verbatim%s: a document that lists the data's columns describes the "
                     "data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the "
                     "organisation's own genre, which names observables and never the files' fields"
                     % (len(found), (", %d%% of %s" % (round(worst * 100), worst_file)) if worst_file else ""))
-        elif len(found) >= 4:
+        elif len(ident) >= 4 or len(found) >= 8:
             rep.add("12 describing content", "REVIEW", f["rel"],
                     "names %d column(s) of the data files verbatim (%s): confirm it is the organisation's own record and not a note "
                     "written for the analyst" % (len(found), ", ".join(sorted(found)[:6])))
@@ -532,7 +536,7 @@ AUTHOR_META = re.compile(r"\b(stump\w*|rungs?|ladder|golden|decoys?|default path
                          r"easy route|the solver|trap|naive|cracker|mirror|device|silent|hidden|pin(?:ned|s)?\b|closure|fork)\b", re.I)
 
 
-def sweep_task_metadata(task, rep, vocab, nums):
+def sweep_task_metadata(task, rep, vocab, nums, prompt_text=""):
     """metadata.json travels with the pack. It names the distractors, the provenance and the portal's keys, and nothing
     about the method, the link or the mechanism: a title, subdomain or prompt_shape that narrates the decisive step,
     or any string carrying a golden figure or the design note's own vocabulary, hands the reader the author's intent."""
@@ -565,7 +569,9 @@ def sweep_task_metadata(task, rep, vocab, nums):
         for n in sorted(nums, key=len, reverse=True):
             if re.fullmatch(r"1(?:,?0)+", n):
                 continue  # a power of ten is a unit ("per 100,000"), not a graded figure
-            if len(n.replace(",", "")) >= 3 and re.search(r"(?<![\d.])%s(?![\d])" % re.escape(n), text):
+            if n in prompt_text:
+                continue  # a figure the prompt states is an input, not a leak
+            if len(re.sub(r"\D", "", n)) >= 3 and re.search(r"(?<![\d.])%s(?![\d])" % re.escape(n), text):
                 rep.add("13 task metadata", "LEAK", "metadata.json", "%s carries a figure from the submission's graded blocks (%s)" % (path, n))
                 break
         hit = AUTHOR_META.search(text)
@@ -700,7 +706,7 @@ def main():
     sweep_dates(files, rep, a.asof, prompt_text)
     sweep_metadata(target, rep)
     sweep_prompt(prompt_text, rep, task.name, legacy_prompt)
-    sweep_task_metadata(task, rep, vocab, nums)
+    sweep_task_metadata(task, rep, vocab, nums, prompt_text)
 
     level = rep.level()
     lines = ["# leak check, %s" % task.name, "",
