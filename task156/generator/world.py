@@ -78,7 +78,7 @@ COP_OCC = 2.7
 
 # the true response (generator only; nothing ships these)
 C0 = 2.1          # L/s of infiltration that never dries (upper terrace, perched water)
-G = 4.5           # L/s per km of sewer below the water table
+G = 4.2           # L/s per km of sewer below the water table
 RF = 30.0         # m3 per mm of rain, the fast inflow
 RS = 6.0          # m3 per mm of rain per km of sewer below the water table, the rain-induced infiltration
 UH_FAST = (1.0, 6)
