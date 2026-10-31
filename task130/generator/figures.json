@@ -64,5 +64,10 @@
   "10": "2,544",
   "11": "2,424"
  },
- "checks": 245
+ "fee_rates_usd": [
+  "152",
+  "168"
+ ],
+ "daysheet_match_days": "20",
+ "checks": 246
 }

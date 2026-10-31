@@ -1,28 +1,17 @@
 {
  "task": "task306",
- "status": "PAUSED",
- "domain": "actuarial-science-insurance",
+ "status": "DESIGN",
+ "domain": "quantitative-finance / portfolio-construction-risk (client quantitative-finance)",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-31",
- "stump": "A competent analyst costs every storm in the 2027 table at the record's one incurred-over-hindcast ratio, values the second-event cover at minus GBP 0.3 million a year and does not buy it; the step that lands it there is reading the record as one population, when the storms that strike within weeks of the storm before cost the mutual about 1.6 times the model and every other storm about what it says, and those are the storms the cover pays on in the years that set the capital.",
- "architecture": 3,
+ "stump": "A competent analyst nets each backtested strategy's gross alpha of its 2026 turnover priced at what the desk's own orders paid for stocks of that size and gives the GBP 400 million to small-cap momentum; impact rises with each trade's share of the stock's daily traded value, and at that size momentum's trades take several per cent of its small caps' day, so the mid-cap value strategy keeps the most.",
+ "architecture": 4,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-31",
-  "checks": "61, 0 FAIL, 0 WARN"
- },
- "leak": {
-  "leak_py": "REVIEW on target.zip 5102c315 (sweep 2 'the model' in CP-04, sweep 3 the quotation naming the cover; both ruled harmless in the note)",
-  "reader": "pending: run from the main thread on the copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task306 with the brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task306_stage4_leak_brief.md"
- },
- "duplicate_check": {
-  "heart": "WARN (people.first: Elizabeth in one older build, task128; answered in the note)",
-  "surface": "WARN only (people.first)",
-  "nearest": "task309 stump 0.10, task309 ledger 0.09, task130 lineage 0.07"
- },
+ "precut": null,
+ "leak": null,
+ "duplicate_check": null,
  "judge": null,
  "returned": [
   {
@@ -32,7 +21,7 @@
    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "stage 4: leak reader and judge from the main thread. The reader's fresh copy is at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task306 (prompt.txt and the unzipped target.zip, sha256 5102c315c29421517dcf78e4d5d376b917e4f85d103d936cc3bd5bc4f8fa20c6), its brief at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task306_stage4_leak_brief.md; the determinism judge reads the bundle rebuilt by python3 task306/generator/build.py, which reproduces target.zip and golden/ byte for byte (both uncommitted until ship). Free gates green on this cut: checks.py all passed, verify.py all passed, two byte-identical builds, figures_check.py 62 of 62, precut.py 0 FAIL 0 WARN, voice-check.py PASS, leak.py REVIEW (two lines ruled harmless), guard.py heart WARN and surface WARN (the people.first line). Then fix every finding in the generator in one pass, re-judge once on a FIX_NOW, and ship: ledger row, card current, target.zip and golden/ with git add -f, commit SHIPPED (task306): add the second-event cover.",
+ "resume": "stage 2: write the design note's sections, then the generator, pack, goldens and gates",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -105,5 +94,6 @@
    "date": "2026-10-31",
    "event": "stage 3 complete on architecture 3: the pack cut (14 files, target.zip 5102c315), the goldens and submission written, every free gate green; paused at stage 4 because a fork cannot spawn the leak reader or the judge"
   }
- ]
+ ],
+ "zip_sha256_16": null
 }

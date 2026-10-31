@@ -1,26 +1,21 @@
-"""Cut task482's pack (architecture 14) from the world's truth: each payer's October feed in its own layout (claims,
-eligibility, attribution runs, care coordination remittances), the network's clinician roster and master patient
-index, the payers' 2026 E&M fee schedules, the qualifying services code list and two out-of-scope files."""
+"""Cut task482's pack (architecture 15) from the world's truth: Ridgeline's two adjudication platforms' claim extracts,
+their predetermination logs, month-end accumulators and eligibility, the July 2025 member crosswalk, the PPO fee
+schedule workbook, the orthodontic case schedule and payments, and two out-of-scope files."""
 import csv
 import datetime as dt
 import io
-import json
-import math
 
-import numpy as np
 import openpyxl
 from openpyxl.styles import Font
 
 import world as W
 
 D = dt.date
-FEED_DATE = {"B": D(2026, 10, 7), "M": D(2026, 10, 9), "T": D(2026, 10, 12)}
-PAYER_ABBR = {"B": "MLH", "M": "KBP", "T": "PMH"}
 
 
-def _csv(path, header, rows, delim=",", crlf=True):
+def _csv(path, header, rows, crlf=True):
     buf = io.StringIO()
-    w = csv.writer(buf, delimiter=delim, lineterminator="\r\n" if crlf else "\n")
+    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
     w.writerow(header)
     for r in rows:
         w.writerow(r)
@@ -28,469 +23,398 @@ def _csv(path, header, rows, delim=",", crlf=True):
         f.write(buf.getvalue())
 
 
-def shared_rows(w, ids):
-    """The claims each payer shares under the data agreement: 2025 claims (paid through the feed date) of the members on
-    its final 2025 attribution, and 2026 claims incurred through September and paid by 30 September of the members on its
-    October 2026 run. Returns {payer: [claim index]}, {payer: {pid}} for each year."""
-    col, att = w["claims"], w["att"]
-    members = {(p, 2025): set(att[("final", p, 2025)]) for p in W.PAYERS}
-    members.update({(p, 2026): set(att[("run", p, 10)]) for p in W.PAYERS})
-    out = {p: [] for p in W.PAYERS}
-    pay, yr, pid, svc, paid = col["payer"], col["year"], col["pid"], col["svc"], col["paid"]
-    for i in range(len(pid)):
-        p, y = pay[i], yr[i]
-        if pid[i] not in members[(p, y)]:
-            continue
-        if paid[i] > W.FEED_PAID:
-            continue
-        if y == 2026 and svc[i] > D(2026, 9, 30):
-            continue
-        out[p].append(i)
-    return out, members
+def money(c):
+    return "%.2f" % (c / 100.0)
 
 
-def versions(w, idx, payer):
-    """Adjusted claims: a small share of each payer's claims were reprocessed after first payment. Returns rows of
-    (claim index, version tag, allowed, paid date) where the final allowed equals the world's allowed."""
-    col = w["claims"]
-    g = W.rng(41, W.PAYERS.index(payer))
-    out = []
-    for i in idx:
-        if col["ctype"][i] in ("PROF", "OUTPT", "INPT") and g.random() < 0.013:
-            first = round(col["allowed"][i] * float(g.choice([0.82, 0.9, 1.08, 1.15])), 2)
-            later = col["paid"][i] + dt.timedelta(days=int(g.integers(18, 75)))
-            if later > W.FEED_PAID:
-                out.append((i, "orig", col["allowed"][i], col["paid"][i]))
-                continue
-            out.append((i, "first", first, col["paid"][i]))
-            out.append((i, "adjusted", col["allowed"][i], later))
-        else:
-            out.append((i, "orig", col["allowed"][i], col["paid"][i]))
-    return out
+def us(d):
+    return d.strftime("%m/%d/%Y") if d else ""
 
 
-CTYPE = {"B": {"PROF": "PROF", "OUTPT": "OUTP", "INPT": "INPT", "RX": "PHRM"},
-         "M": {"PROF": "1500", "OUTPT": "UB04", "INPT": "UB04", "RX": "NCPDP"},
-         "T": {"PROF": "professional", "OUTPT": "institutional_outpatient", "INPT": "institutional_inpatient", "RX": "pharmacy"}}
+def iso(d):
+    return d.isoformat() if d else ""
 
 
-def mlh_icns(w, vs):
-    """Merrinlake's internal control numbers: region, two-digit year and Julian day of receipt, then the day's running
-    count; a pharmacy claim is received the day it is filled, any other a few days before its first payment and never
-    before its last day of service, and a void and its replacement are numbered on the day before the reprocessed
-    payment."""
-    col = w["claims"]
-    want = []
-    for (i, tag, amt, paid) in vs:
-        cid = int(col["cid"][i])
-        if tag in ("orig", "first"):
-            got = paid if col["ctype"][i] == "RX" else max(col["end"][i], paid - dt.timedelta(days=2 + cid % 7))
-            want.append((got, cid, "A"))
-        else:
-            want.append((paid - dt.timedelta(days=1), cid, "V"))
-            want.append((paid - dt.timedelta(days=1), cid, "R"))
-    out, count = {}, {}
-    for day, cid, kind in sorted(want):
-        n = count.get(day, 10000 + (day.toordinal() * 37) % 900) + 1 + cid % 3
-        count[day] = n
-        out[(cid, kind)] = "4%02d%03d%07d" % (day.year % 100, day.timetuple().tm_yday, n)
-    return out
-
-
-def claims_mlh(path, w, ids, idx):
-    col = w["claims"]
-    rows = []
-    first_amt = {}
-    vs = versions(w, idx, "B")
-    icn = mlh_icns(w, vs)
-    for (i, tag, amt, paid) in vs:
-        cid = int(col["cid"][i])
-        base = icn[(cid, "A")]
-        common = [ids[(col["pid"][i], "B")], CTYPE["B"][col["ctype"][i]], col["svc"][i].isoformat(), col["end"][i].isoformat()]
-        tail = [col["code"][i], col["mod"][i], col["pos"][i], col["rev"][i], col["ndc"][i], col["npi"][i]]
-        days = col["days"][i] if col["ctype"][i] == "RX" else ""
-        if tag == "orig":
-            rows.append([base] + common + [paid.isoformat()] + tail + ["%.2f" % amt, days, "", ""])
-        elif tag == "first":
-            first_amt[base] = "%.2f" % amt
-            rows.append([base] + common + [paid.isoformat()] + tail + ["%.2f" % amt, days, "", ""])
-        else:
-            rows.append([icn[(cid, "V")]] + common + [paid.isoformat()] + tail + ["-" + first_amt[base], days, "VOID", base])
-            rows.append([icn[(cid, "R")]] + common + [paid.isoformat()] + tail + ["%.2f" % amt, days, "REPL", base])
-    rows.sort(key=lambda r: (r[5], r[0]))
-    _csv(path, ["CLM_ID", "MBR_ID", "CLM_TYP", "SVC_FROM_DT", "SVC_THRU_DT", "PD_DT", "PROC_CD", "PROC_MOD", "POS_CD", "REV_CD",
-                "NDC_11", "REND_NPI", "ALLOWED_AMT", "DAYS_SUPPLY", "ADJ_TYP", "ORIG_CLM_ID"], rows)
-    return len(rows)
-
-
-def kbp_split(w, i, amt):
-    """Kesselcrest's claim lines for one current claim: the service line, and where Kesselcrest adjusts at the claim, a
-    line with no procedure or revenue code carrying the adjustment. A level 5 visit its level review paid at the level 4
-    rate keeps the code's rate on its line, the difference on the claim; an outpatient facility claim its case rate cut
-    carries the cut the same way. Returns [(cents, is_adjustment)], summing to the claim's allowed."""
-    col = w["claims"]
-    cents = int(round(amt * 100))
-    ct, code, pos = col["ctype"][i], col["code"][i], col["pos"][i]
-    if ct == "PROF" and code == "99215" and col["year"][i] == 2026:
-        f = W.FEES[("M", 2026)]
-        rate = f["fa"] if pos in ("19", "22") else f["nf"]
-        if abs(amt - rate[3]) < 0.005:
-            full = int(round(rate[4] * 100))
-            return [(full, False), (cents - full, True)]
-    if ct == "OUTPT":
-        g = W.rng(46, col["cid"][i] % 100003)
-        if g.random() < 0.075:
-            cut = int(round(cents * float(g.uniform(0.06, 0.31))))
-            return [(cents + cut, False), (-cut, True)]
-    return [(cents, False)]
-
-
-def receipt_numbers(w, vs, fmt, step):
-    """A payer's claim numbers in the order its claims were first paid, each year's count running on from a base with
-    the gaps of claims numbered and never paid to the partner."""
-    col = w["claims"]
-    first = {}
-    for (i, tag, amt, paid) in vs:
-        if tag in ("orig", "first"):
-            first[int(col["cid"][i])] = paid
-    out, n = {}, {}
-    for cid, paid in sorted(first.items(), key=lambda kv: (kv[1], kv[0])):
-        n[paid.year] = n.get(paid.year, 0) + 1 + cid % step
-        out[cid] = fmt(paid.year, n[paid.year])
-    return out
-
-
-def claims_kbp(path, w, ids, idx):
-    col = w["claims"]
-    rows = []
-    vs = versions(w, idx, "M")
-    num_of = receipt_numbers(w, vs, lambda y, k: "E%02d%08d" % (y % 100, 41000000 + k), 4)
-    for (i, tag, amt, paid) in vs:
-        no = num_of[int(col["cid"][i])]
-        ct = col["ctype"][i]
-        bill = {"INPT": "0111", "OUTPT": "0131"}.get(ct, "")
-        line = [ids[(col["pid"][i], "M")], CTYPE["M"][ct], bill, col["svc"][i].strftime("%m/%d/%Y"),
-                col["end"][i].strftime("%m/%d/%Y")]
-        tail = [col["code"][i], col["mod"][i], col["pos"][i], col["rev"][i], col["ndc"][i], col["npi"][i]]
-        cents = int(round(amt * 100))
-        if tag == "first":
-            rows.append([no, "1"] + line + [paid.strftime("%m/%d/%Y")] + tail + [str(cents), "A"])
-            continue
-        num = no if tag == "orig" else no + "-01"
-        for n, (c, adj) in enumerate(kbp_split(w, i, amt)):
-            rows.append([num, str(n + 1)] + line + [paid.strftime("%m/%d/%Y")] + (["", "", "", "", "", ""] if adj else tail) +
-                        [str(c), "P"])
-    rows.sort(key=lambda r: (r[7][-4:] + r[7][:2] + r[7][3:5], r[0]))
-    _csv(path, ["CLAIM_NO", "LINE_NO", "MEMBER_NO", "CLAIM_FORM", "BILL_TYPE", "FIRST_DOS", "LAST_DOS", "PAID_DATE", "PROCEDURE",
-                "MODIFIER", "PLACE_OF_SVC", "REVENUE", "NDC", "RENDERING_PROV_NPI", "ALLOWED_CENTS", "CLAIM_STATUS"], rows, delim="|",
-         crlf=False)
-    return len(rows)
-
-
-def claims_pmh(path, w, ids, idx):
-    col = w["claims"]
-    recs = []
-    vs = versions(w, idx, "T")
-    num_of = receipt_numbers(w, vs, lambda y, k: "C%08X" % ((k * 2654435761 + 0x5BD1E995 * (y - 2024)) % 2 ** 32), 1)
-    for (i, tag, amt, paid) in vs:
-        ct = col["ctype"][i]
-        r = {"claimId": num_of[int(col["cid"][i])], "memberId": ids[(col["pid"][i], "T")], "type": CTYPE["T"][ct],
-             "serviceStart": col["svc"][i].isoformat(), "serviceEnd": col["end"][i].isoformat(),
-             "adjudicated": paid.isoformat()}
-        if ct == "PROF":
-            r.update({"cpt": col["code"][i], "pos": col["pos"][i], "renderingNpi": col["npi"][i]})
-            if col["mod"][i]:
-                r["modifier"] = col["mod"][i]
-        elif ct == "RX":
-            r.update({"ndc": col["ndc"][i], "daysSupply": col["days"][i]})
-        else:
-            r.update({"revenueCode": col["rev"][i]})
-        if tag == "first":
-            r.update({"allowed": round(amt, 2), "version": 1})
-        elif tag == "adjusted":
-            r.update({"allowed": round(amt, 2), "version": 2})
-        else:
-            r.update({"allowed": round(amt, 2), "version": 1})
-        recs.append(r)
-    recs.sort(key=lambda r: (r["adjudicated"], r["claimId"], r["version"]))
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write('{"source":"Pemberglen Mutual Health","extract":"value-based partner claims","partner":"' + W.NETWORK +
-                '","runDate":"2026-10-12","records":[\n')
-        f.write(",\n".join(json.dumps(r, separators=(",", ":")) for r in recs))
-        f.write("\n]}\n")
-    return len(recs)
-
-
-def eligibility(w, ids, members):
-    """Coverage spans by payer for the members each payer shares; an October 2026 feed does not know a coverage end
-    still to come, so a 2026 span ending after September shows open."""
-    ppl = {q.pid: q for q in w["people"]}
-    out = {p: [] for p in W.PAYERS}
-    for p in W.PAYERS:
-        pids = sorted(members[(p, 2025)] | members[(p, 2026)])
-        for pid in pids:
-            q = ppl[pid]
-            spans = []
-            for y in W.YEARS:
-                if q.payer[y] != p or q.span[y] is None or pid not in members[(p, y)] and not (y == 2025 and pid in members[(p, 2026)]):
-                    continue
-                s, e = q.span[y]
-                start = D(y, s + 1, 1)
-                end = D(y, e, W.month_days(y, e))
-                if y == 2026 and e > 9:
-                    end = None
-                spans.append([start, end])
-            merged = []
-            for sp in spans:
-                if merged and merged[-1][1] is not None and (sp[0] - merged[-1][1]).days == 1:
-                    merged[-1][1] = sp[1]
+# ------------------------------------------------------------------------------------------------------ identities
+def identities(w):
+    """Each person's legacy member id (subscriber number and suffix) where covered before the migration, and new
+    member key where covered from it; the crosswalk pairs the two for everyone converted on 1 July 2025."""
+    people = w["people"]
+    r = W.rng("ids")
+    emp_people = {}
+    for p in people:
+        emp_people.setdefault(p["emp"], []).append(p)
+    legacy, new = {}, {}
+    used = set()
+    late = set(c["pid"] for c in w["claims"] if c["adjudicated"] >= W.MIGRATION)
+    late |= set(w["claims"][cid]["pid"] for cid, a in w["adjust"].items() if a["date"] >= W.MIGRATION)
+    late |= set(pr["pid"] for pr in w["predets"] if pr["received_local"].date() >= D(2025, 6, 28))
+    for emp in sorted(emp_people):
+        fam = emp_people[emp]
+        kids = sorted((p for p in fam if p["kind"] == "C"), key=lambda p: (p["dob"], p["pid"]))
+        for p in fam:
+            if p["start"] < W.MIGRATION:
+                if p["kind"] == "E":
+                    sfx = "01"
+                elif p["kind"] == "S":
+                    sfx = "02"
                 else:
-                    merged.append(sp)
-            for sp in merged:
-                out[p].append((pid, sp[0], sp[1]))
-    return out
+                    sfx = "%02d" % (3 + kids.index(p))
+                legacy[p["pid"]] = ("PC%06d" % emp, "PC%06d-%s" % (emp, sfx))
+            if p["end"] is None or p["end"] >= W.MIGRATION or p["pid"] in late:
+                while True:
+                    k = "RBN%08d" % r.randint(10000000, 99999999)
+                    if k not in used:
+                        used.add(k)
+                        break
+                new[p["pid"]] = k
+    sub_new = {}
+    for emp, fam in emp_people.items():
+        e = [p for p in fam if p["kind"] == "E"][0]
+        sub_new[emp] = new.get(e["pid"])
+    return dict(legacy=legacy, new=new, sub_new=sub_new)
 
 
-def eligibility_files(t, w, ids, members):
-    ppl = {q.pid: q for q in w["people"]}
-    spans = eligibility(w, ids, members)
-    g = W.rng(43)
-    rows = []
-    for pid, s, e in spans["B"]:
-        q = ppl[pid]
-        mid = ids[(pid, "B")]
-        rows.append([mid, mid[:9] + "00", "%02d" % (0 if q.age >= 26 else int(g.integers(2, 5))), q.dob.isoformat(), q.sex,
-                     "PPO" if pid % 4 else "HDHP", s.isoformat(), (e or D(9999, 12, 31)).isoformat()])
-    _csv(t("mlh_elig"), ["MBR_ID", "SBSCR_ID", "DEP_SFX", "BIRTH_DT", "GNDR", "PROD_CD", "COV_EFF_DT", "COV_TERM_DT"], rows)
-    rows = []
-    for pid, s, e in spans["M"]:
-        q = ppl[pid]
-        rows.append([ids[(pid, "M")], "S" + ids[(pid, "M")][1:], "18" if q.age >= 26 else "19", q.dob.strftime("%m/%d/%Y"),
-                     q.sex, "G%05d" % (1000 + pid % 380), s.strftime("%m/%d/%Y"), e.strftime("%m/%d/%Y") if e else ""])
-    _csv(t("kbp_elig"), ["MEMBER_NO", "SUBSCRIBER_NO", "REL_CD", "DOB", "SEX", "GROUP_NO", "EFF_DATE", "TERM_DATE"], rows,
-         delim="|", crlf=False)
-    rows = []
-    for pid, s, e in spans["T"]:
-        q = ppl[pid]
-        rows.append([ids[(pid, "T")], q.dob.isoformat(), q.sex, s.isoformat(), e.isoformat() if e else "", "PMH-COMM-" + ("A" if pid % 3 else "B")])
-    _csv(t("pmh_members"), ["memberId", "birthDate", "sex", "coverageStart", "coverageEnd", "planCode"], rows)
-    return spans
+def platform_of(day):
+    return "new" if day >= W.MIGRATION else "legacy"
 
 
-def attribution_files(t, w, ids):
-    att = w["att"]
-    # Merrinlake: one csv, both runs
-    rows = []
-    for (run, key, y, rid, rdt) in (("final", ("final", "B", 2025), 2025, "PY2025-F", D(2026, 4, 10)),
-                                    ("run", ("run", "B", 10), 2026, "PY2026-10", W.RUN_DATE)):
-        for pid, (prac, nd, last) in sorted(att[key].items(), key=lambda kv: ids[(kv[0], "B")]):
-            rows.append([ids[(pid, "B")], y, rid, rdt.isoformat(), W.TINS[prac].replace("-", ""), nd, last.isoformat()])
-    _csv(t("mlh_attr"), ["MBR_ID", "PERF_YR", "RUN_ID", "RUN_DT", "PRACTICE_TIN", "QUAL_SVC_DAYS", "LAST_QUAL_SVC_DT"], rows)
-    # Kesselcrest: a workbook, one sheet per run, with a title block above the header
-    wb = openpyxl.Workbook()
-    wb.remove(wb.active)
-    for title, key, rdt in (("PY2025 Final", ("final", "M", 2025), D(2026, 4, 14)), ("PY2026 Run 10", ("run", "M", 10), W.RUN_DATE)):
-        ws = wb.create_sheet(title)
-        ws.append(["Kesselcrest Benefit Partners  |  Value-Based Partner Attribution  |  " + W.NETWORK])
-        ws.append(["Run date " + rdt.strftime("%m/%d/%Y")])
-        ws.append([])
-        ws.append(["Member No", "Attributed TIN", "Practice", "Qualifying Visit Days", "Last Qualifying Visit"])
-        ws["A1"].font = Font(bold=True)
-        for c in ws[4]:
-            c.font = Font(bold=True)
-        for pid, (prac, nd, last) in sorted(w["att"][key].items(), key=lambda kv: ids[(kv[0], "M")]):
-            ws.append([ids[(pid, "M")], W.TINS[prac], W.PRACTICE_NAMES[prac], nd, last])
-            ws.cell(row=ws.max_row, column=5).number_format = "mm/dd/yyyy"
-        ws.column_dimensions["A"].width = 14
-        ws.column_dimensions["B"].width = 14
-        ws.column_dimensions["C"].width = 32
-        ws.column_dimensions["D"].width = 20
-        ws.column_dimensions["E"].width = 20
-        ws.freeze_panes = "A5"
-    wb.save(t("kbp_attr"))
-    # Pemberglen: a csv, both years
-    rows = []
-    for (py, key, run) in ((2025, ("final", "T", 2025), "FINAL"), (2026, ("run", "T", 10), "INTERIM-10")):
-        for pid, (prac, nd, last) in sorted(att[key].items(), key=lambda kv: ids[(kv[0], "T")]):
-            rows.append([ids[(pid, "T")], py, run, W.TINS[prac], nd, last.isoformat()])
-    _csv(t("pmh_attr"), ["memberId", "py", "run", "tin", "qualDays", "lastQualDate"], rows)
+# ---------------------------------------------------------------------------------------------------------- claims
+def claim_rows(w, ids):
+    """Every line on the platform that adjudicated it, with each correction as that platform writes it: the legacy
+    platform voids the original and pays a replacement under a new number; the new platform restates the claim
+    under a new number and marks the original superseded; a legacy claim corrected after the migration is restated
+    on the new platform, its legacy original left as paid."""
+    people = {p["pid"]: p for p in w["people"]}
+    legacy_rows, new_rows = [], []
+    seq_l, seq_n = [0], [0]
+    gaps = W.rng("nexus-claim-ids")       # Nexus numbers claims across every client it administers
+
+    def legacy_no(day):
+        seq_l[0] += 1
+        return "C%02d%03d%05d" % (day.year % 100, day.timetuple().tm_yday, seq_l[0] % 100000)
+
+    def new_no():
+        seq_n[0] += gaps.randint(1, 13)
+        return "RN%010d" % (7004000000 + seq_n[0])
+
+    def tooth_l(t):
+        return "" if t is None else str(t)
+
+    def tooth_n(t):
+        return "" if t is None else "%02d" % t
+
+    def quad(code, t):
+        return {1: "UR", 2: "UL", 3: "LL", 4: "LR"}[t] if code == "D4341" else ""
+
+    def leg_reason(ln):
+        return {"MAX": "MX", "DED": "DD", "FRQ": "FQ", "": ""}[ln["reason"]]
+
+    def new_carc(ln):
+        return {"MAX": "119", "DED": "1", "FRQ": "151", "": ""}[ln["reason"]]
+
+    def charge(ln, oon):
+        base = W.FEES[2024][ln["code"]] if ln["allowed"] == 0 else ln["allowed"]
+        return int(round(base * (1.38 if oon else 1.22) / 100.0)) * 100
+
+    oon_set = set(w["providers"]["oon"])
+
+    def leg_line(c, cno, k, ln, txn, orig, sign=1):
+        p = people[c["pid"]]
+        sub, mid = ids["legacy"][p["pid"]]
+        oon = c["provider"] in oon_set
+        return [cno, k + 1, mid, sub, us(c["dos"]), ln["code"][1:], tooth_l(ln["tooth"]), quad(ln["code"], ln["tooth"]),
+                c["provider"], "N" if oon else "Y", money(sign * charge(ln, oon)), money(sign * ln["allowed"]),
+                money(sign * ln["paid"]), money(sign * (ln["allowed"] - ln["paid"])), money(sign * ln["ded"]),
+                leg_reason(ln), txn, orig, us(c["received"]), us(c["adjudicated"] if txn == "ORIG" else c["_adj_on"])]
+
+    def new_line(c, cid, k, ln, status, prior, adj_day):
+        p = people[c["pid"]]
+        oon = c["provider"] in oon_set
+        return [cid, k + 1, ids["new"][p["pid"]], ln["code"], tooth_n(ln["tooth"]),
+                quad(ln["code"], ln["tooth"]), iso(c["dos"]), c["provider"], "OUT" if oon else "IN",
+                money(charge(ln, oon)), money(ln["allowed"]), money(ln["paid"]), money(ln["allowed"] - ln["paid"]),
+                money(ln["ded"]), new_carc(ln), status, prior, iso(c["received"]), iso(adj_day)]
+
+    for c in sorted(w["claims"], key=lambda c: (c["adjudicated"], c["cid"])):
+        adj = w["adjust"].get(c["cid"])
+        if platform_of(c["adjudicated"]) == "legacy":
+            cno = legacy_no(c["adjudicated"])
+            for k, ln in enumerate(c["lines"]):
+                legacy_rows.append((c["adjudicated"], leg_line(c, cno, k, ln, "ORIG", "")))
+            if adj:
+                if platform_of(adj["date"]) == "legacy":
+                    c2 = dict(c, _adj_on=adj["date"])
+                    for k, ln in enumerate(c["lines"]):
+                        legacy_rows.append((adj["date"], leg_line(c2, cno, k, ln, "VOID", cno, sign=-1)))
+                    rno = legacy_no(adj["date"])
+                    for k, ln in enumerate(adj["lines"]):
+                        legacy_rows.append((adj["date"], leg_line(c2, rno, k, ln, "REPL", cno)))
+                else:
+                    cid2 = new_no()
+                    for k, ln in enumerate(adj["lines"]):
+                        new_rows.append((adj["date"], new_line(c, cid2, k, ln, "PAID", cno, adj["date"])))
+        else:
+            cid = new_no()
+            status = "SUPERSEDED" if adj else ("DENIED" if all(ln["reason"] == "FRQ" for ln in c["lines"]) else "PAID")
+            for k, ln in enumerate(c["lines"]):
+                new_rows.append((c["adjudicated"], new_line(c, cid, k, ln, status, "", c["adjudicated"])))
+            if adj:
+                cid2 = new_no()
+                for k, ln in enumerate(adj["lines"]):
+                    new_rows.append((adj["date"], new_line(c, cid2, k, ln, "PAID", cid, adj["date"])))
+    legacy_rows.sort(key=lambda x: (x[0], x[1][0], x[1][1], x[1][16] != "ORIG"))
+    new_rows.sort(key=lambda x: (x[0], x[1][0], x[1][1]))
+    return [r for _, r in legacy_rows], [r for _, r in new_rows]
 
 
-def remittance_files(t, w):
-    lines = W.remittances(w)
-    paydate = {k: D(2026, k, 20) - dt.timedelta(days=(D(2026, k, 20).weekday() - 4) % 7) for k in range(1, max(W.RUN_MONTHS) + 1)}
-    # Merrinlake: coverage month on every line
-    rows = []
-    for ln in [x for x in lines if x["payer"] == "B"]:
-        rows.append([paydate[ln["run"]].isoformat(), "CCF2026-%02d" % ln["run"], W.TINS[ln["practice"]].replace("-", ""),
-                     "2026%02d" % ln["cov"], "CUR" if ln["type"] == "CURRENT" else "RETRO", ln["members"], "%.2f" % ln["amount"]])
-    _csv(t("mlh_ccf"), ["PMT_DT", "PMT_RUN", "PRACTICE_TIN", "COV_MO", "LINE_TYP", "MBR_CNT", "PMT_AMT"], rows)
-    # Kesselcrest: a workbook, service period on every line
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Remittance Detail"
-    ws.append(["Payment Date", "Remit No", "TIN", "Service Period", "Members", "Amount"])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    seq = {}
-    for ln in sorted([x for x in lines if x["payer"] == "M"], key=lambda x: (x["run"], W.CODES.index(x["practice"]), x["cov"])):
-        seq[ln["run"]] = seq.get(ln["run"], 0) + 1
-        ws.append([paydate[ln["run"]], "KR26%02d%05d" % (ln["run"], 4100 + 7 * seq[ln["run"]]),
-                   W.TINS[ln["practice"]], "%d-%02d" % (2026, ln["cov"]), ln["members"], ln["amount"]])
-        ws.cell(row=ws.max_row, column=1).number_format = "mm/dd/yyyy"
-        ws.cell(row=ws.max_row, column=6).number_format = "#,##0.00"
-    for col, wd in zip("ABCDEF", (14, 14, 13, 14, 10, 12)):
-        ws.column_dimensions[col].width = wd
-    ws.freeze_panes = "A2"
-    wb.save(t("kbp_ccf"))
-    # Pemberglen: one line per payment, posted to the run's period; the month a line covers is in its payment reference
-    rows = []
-    seq = 0
-    for ln in [x for x in lines if x["payer"] == "T"]:
-        seq += 1
-        rows.append(["2026-%02d" % ln["run"], paydate[ln["run"]].isoformat(),
-                     "PMH-CCF-%s-2026%02d-%04d" % (W.TINS[ln["practice"]][-4:], ln["cov"], seq), W.TINS[ln["practice"]],
-                     ln["members"], "%.2f" % ln["amount"]])
-    _csv(t("pmh_ccf"), ["period", "paymentDate", "paymentRef", "tin", "memberCount", "amount"], rows)
-    return lines
+LEGACY_CLAIM_HEADER = ["CLAIM_NO", "LINE_NO", "MEMBER_ID", "SUBSCRIBER_ID", "DOS", "PROC", "TOOTH", "QUAD", "PROV_NPI",
+                       "PAR", "CHARGE", "ALLOWED", "PAID", "MEMBER_RESP", "DEDUCT", "REASON", "TXN", "ORIG_CLAIM_NO",
+                       "RECEIVED", "PROCESSED"]
+NEW_CLAIM_HEADER = ["claim_id", "line_seq", "member_key", "cdt_code", "tooth_number", "quadrant", "service_date",
+                    "rendering_npi", "network_status", "billed_amt", "allowed_amt", "plan_paid_amt", "patient_resp_amt",
+                    "deductible_amt", "carc", "claim_status", "prior_claim_id", "received_date", "adjudicated_date"]
 
 
-def roster_file(t, w):
-    rows = sorted(w["clinicians"], key=lambda r: (r["practice"], r["start"], r["npi"]))
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Primary Care Roster"
-    ws.append(["NPI", "Credential", "Taxonomy", "Practice", "Practice TIN", "Effective", "Terminated"])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    g = W.rng(44)
-    # an advanced practice clinician carries the NUCC taxonomy of the credential, a physician the practice's specialty
-    apc = {"208000000X": "363LP0200X", "207R00000X": "363LA2200X", "207Q00000X": "363LF0000X"}
-    for r in rows:
-        cred = ("MD", "DO", "NP", "PA")[int(g.choice(4, p=[0.62, 0.14, 0.17, 0.07]))]
-        tax = r["spec"] if cred in ("MD", "DO") else (apc[r["spec"]] if cred == "NP" else "363A00000X")
-        ws.append([r["npi"], cred, tax, W.PRACTICE_NAMES[r["practice"]], W.TINS[r["practice"]], r["start"], r["end"]])
-        ws.cell(row=ws.max_row, column=6).number_format = "yyyy-mm-dd"
-        ws.cell(row=ws.max_row, column=7).number_format = "yyyy-mm-dd"
-    for col, wd in zip("ABCDEFG", (13, 11, 13, 32, 13, 12, 12)):
-        ws.column_dimensions[col].width = wd
-    ws.freeze_panes = "A2"
-    wb.save(t("roster"))
+def write_claims(t, w, ids):
+    leg, new = claim_rows(w, ids)
+    _csv(t("legacy_claims"), LEGACY_CLAIM_HEADER, leg)
+    _csv(t("new_claims"), NEW_CLAIM_HEADER, new)
+    return len(leg), len(new)
 
 
-def mpi_file(t, w, ids, members):
-    """The network's master patient index: every member a payer has shared, with each payer identifier."""
-    ppl = {q.pid: q for q in w["people"]}
-    shared = {(pid, p) for (p, y), pids in members.items() for pid in pids}
-    rows = []
-    pids = sorted({pid for (pid, _p) in shared})
-    perm = W.rng(47).permutation(len(pids))
-    lpn = {pid: "LPN%07d" % (2300417 + 31 * int(perm[n]) + int(W.rng(48, pid).integers(0, 31)))
-           for n, pid in enumerate(pids)}
-    for (pid, payer), mid in sorted(ids.items(), key=lambda kv: (kv[0][0], kv[0][1])):
-        if (pid, payer) not in shared:
+# --------------------------------------------------------------------------------------------- predeterminations
+def predet_rows(w, ids):
+    """The legacy log holds one predetermination number per request with its lines; the new platform issues an
+    estimate per tooth group, each with its own number and issue time, all carrying the request's receipt time."""
+    people = {p["pid"]: p for p in w["people"]}
+    legacy, new = [], []
+    r = W.rng("predet-ids")
+    pno, eno = 51000, 880000
+    for pr in sorted(w["predets"], key=lambda x: (x["received_local"], x["pid"])):
+        p = people[pr["pid"]]
+        local = pr["received_local"]
+        if local.date() < D(2025, 6, 28):
+            pno += r.randint(1, 4)
+            sub, mid = ids["legacy"][p["pid"]]
+            resp = max(pr["responded_local"])
+            for k, ln in enumerate(pr["lines"]):
+                legacy.append([ "PD%06d" % pno, k + 1, mid, pr["provider"], local.strftime("%m/%d/%Y %H:%M"),
+                                us(resp.date()), ln["code"][1:], "" if ln["tooth"] is None else str(ln["tooth"]),
+                                money(int(round(ln["allowed"] * 1.22 / 100.0)) * 100), money(ln["allowed"]),
+                                money(ln["ded"]), money(ln["est"]), money(ln["allowed"] - ln["est"])])
+        else:
+            utc = W.to_utc(local)
+            for gi, glines in enumerate(pr["groups"]):
+                eno += r.randint(1, 6)
+                issued = W.to_utc(pr["responded_local"][gi])
+                k = 0
+                for ln in pr["lines"]:
+                    if ln["group"] != gi:
+                        continue
+                    k += 1
+                    new.append(["E%07d" % eno, k, ids["new"][p["pid"]], pr["provider"],
+                                utc.strftime("%Y-%m-%dT%H:%M:00Z"), issued.strftime("%Y-%m-%dT%H:%M:00Z"), ln["code"],
+                                "" if ln["tooth"] is None else "%02d" % ln["tooth"],
+                                money(int(round(ln["allowed"] * 1.22 / 100.0)) * 100), money(ln["allowed"]),
+                                money(ln["ded"]), money(ln["est"]), money(ln["allowed"] - ln["est"])])
+    return legacy, new
+
+
+LEGACY_PREDET_HEADER = ["PREDET_NO", "LINE_NO", "MEMBER_ID", "PROV_NPI", "RECEIVED", "RESPONDED", "PROC", "TOOTH",
+                        "SUBMITTED", "EST_ALLOWED", "EST_DEDUCT", "EST_PLAN_PMT", "EST_MEMBER_PMT"]
+NEW_PREDET_HEADER = ["estimate_id", "est_line", "member_key", "rendering_npi", "received_utc", "issued_utc", "cdt_code",
+                     "tooth_number", "submitted_amt", "est_allowed_amt", "est_deductible_amt", "est_plan_amt",
+                     "est_patient_amt"]
+
+
+def write_predets(t, w, ids):
+    leg, new = predet_rows(w, ids)
+    _csv(t("legacy_predets"), LEGACY_PREDET_HEADER, leg)
+    _csv(t("new_predets"), NEW_PREDET_HEADER, new)
+
+
+# --------------------------------------------------------------------------------------------------- accumulators
+def accumulator_rows(w, ids):
+    """Month-end year-to-date plan payments toward the annual maximum by person, as each platform held them; the new
+    platform opened on 1 July 2025 with each converted person's legacy year-to-date."""
+    people = {p["pid"]: p for p in w["people"]}
+    events = {}
+    for c in w["claims"]:
+        y = c["dos"].year
+        paid = sum(ln["paid"] for ln in c["lines"])
+        events.setdefault((c["pid"], y), []).append((c["adjudicated"], paid))
+        adj = w["adjust"].get(c["cid"])
+        if adj:
+            events[(c["pid"], y)].append((adj["date"], sum(ln["paid"] for ln in adj["lines"]) - paid))
+    legacy, new = [], []
+    month_ends = []
+    d = D(2024, 1, 31)
+    while d <= D(2026, 9, 30):
+        month_ends.append(d)
+        d = W.month_end(d + dt.timedelta(days=1))
+    for (pid, y), ev in sorted(events.items()):
+        p = people[pid]
+        cov = W.coverage_in_year(p, y)
+        if not cov:
             continue
-        q = ppl[pid]
-        rows.append([lpn[pid], PAYER_ABBR[payer], mid, q.dob.isoformat(), q.sex])
-    rows.sort(key=lambda r: (r[0], r[1]))
-    _csv(t("mpi"), ["LPN_PATIENT_ID", "PAYER", "PAYER_MEMBER_ID", "BIRTH_DATE", "SEX"], rows)
+        for me in month_ends:
+            if me.year != y or me < W.month_end(cov[0]) or me > W.month_end(cov[1]):
+                continue
+            ytd = sum(x for d0, x in ev if d0 <= me)
+            reached = ""
+            run = 0
+            for d0, x in sorted(ev):
+                if d0 > me:
+                    break
+                run += x
+                if run >= W.MAXIMUM:
+                    reached = d0
+                    break
+            row_pl = "legacy" if me < W.MIGRATION else "new"
+            if row_pl == "legacy" and pid in ids["legacy"]:
+                legacy.append([ids["legacy"][pid][1], us(me), y, money(ytd), money(W.MAXIMUM), us(reached) if reached else ""])
+            elif row_pl == "new" and pid in ids["new"]:
+                new.append([ids["new"][pid], iso(me), y, money(ytd), money(max(0, W.MAXIMUM - ytd)),
+                            iso(reached) if reached else ""])
+    return legacy, new
 
 
-def fee_schedule_file(t):
+def write_accumulators(t, w, ids):
+    leg, new = accumulator_rows(w, ids)
+    _csv(t("legacy_accum"), ["MEMBER_ID", "PERIOD_END", "PLAN_YEAR", "YTD_APPLIED", "ANNUAL_MAX", "MAX_MET_DATE"], leg)
+    _csv(t("new_accum"), ["member_key", "period_end", "plan_year", "ytd_applied_amt", "remaining_amt", "max_met_date"],
+         new)
+
+
+# ---------------------------------------------------------------------------------------------------- eligibility
+def write_eligibility(t, w, ids):
+    leg, new = [], []
+    rel_new = {"E": "EE", "S": "SP", "C": "CH"}
+    for p in w["people"]:
+        if p["pid"] in ids["legacy"]:
+            sub, mid = ids["legacy"][p["pid"]]
+            end = p["end"] if p["end"] and p["end"] < W.MIGRATION else None
+            leg.append([mid, sub, mid[-2:], us(p["dob"]), p["sex"], us(p["start"]),
+                        us(end) if end else "12/31/9999", "DPPO1"])
+        if p["pid"] in ids["new"]:
+            start = max(p["start"], W.MIGRATION)
+            new.append([ids["new"][p["pid"]], ids["sub_new"][p["emp"]], rel_new[p["kind"]], iso(p["dob"]),
+                        {"M": "1", "F": "2"}[p["sex"]], iso(start), iso(p["end"]) if p["end"] else "", "PCC-DENTAL-PPO"])
+    leg.sort()
+    new.sort()
+    _csv(t("legacy_elig"), ["MEMBER_ID", "SUBSCRIBER_ID", "REL", "DOB", "SEX", "EFF_DATE", "TERM_DATE", "PLAN"], leg)
+    _csv(t("new_elig"), ["member_key", "subscriber_key", "relationship", "birth_date", "gender_code", "coverage_start",
+                         "coverage_end", "plan_code"], new)
+
+
+def write_crosswalk(t, w, ids):
+    rows = sorted([ids["legacy"][pid][1], ids["new"][pid], "2025-07-01"] for pid in ids["legacy"] if pid in ids["new"])
+    _csv(t("crosswalk"), ["legacy_member_id", "member_key", "converted_on"], rows)
+
+
+# ---------------------------------------------------------------------------------------------------- fee schedule
+def write_fees(t):
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
-    desc = {"99211": "Office or other outpatient visit, established patient, minimal", "99212": "Office visit, established, straightforward MDM",
-            "99213": "Office visit, established, low MDM", "99214": "Office visit, established, moderate MDM",
-            "99215": "Office visit, established, high MDM", "99202": "Office visit, new patient, straightforward MDM",
-            "99203": "Office visit, new patient, low MDM", "99204": "Office visit, new patient, moderate MDM",
-            "99205": "Office visit, new patient, high MDM"}
-    for payer in W.PAYERS:
-        ws = wb.create_sheet(W.PAYER_NAMES[payer].split()[0])
-        ws.append([W.PAYER_NAMES[payer] + " - 2026 professional fee schedule, evaluation and management (excerpt)"])
-        ws.append(["Effective 1 January 2026 for " + W.NETWORK + " participating clinicians"])
+    for y in (2024, 2025, 2026, 2027):
+        ws = wb.create_sheet(str(y))
+        ws.append([W.TPA + " - PPO dental fee schedule, " + W.COMPANY + " Dental Plan"])
+        ws.append(["Network maximum allowable fees effective 1 January %d" % y])
         ws.append([])
-        ws.append(["Code", "Description", "Non-facility", "Facility"])
+        ws.append(["Code", "Description", "Class", "Allowed fee"])
         ws["A1"].font = Font(bold=True)
         for c in ws[4]:
             c.font = Font(bold=True)
-        f = W.FEES[(payer, 2026)]
-        for i, code in enumerate(W.EM):
-            ws.append([code, desc[code], f["nf"][i], f["fa"][i]])
-        for i, code in enumerate(W.NEWPT):
-            ws.append([code, desc[code], f["new"][i], None])
-        for r in ws.iter_rows(min_row=5, min_col=3, max_col=4):
-            for c in r:
-                c.number_format = "0.00"
-        ws.append([])
-        note = {"B": "Non-facility rates apply in the office (POS 11) and for telehealth (POS 02, 10). Facility rates apply in "
-                     "an outpatient hospital department (POS 19, 22).",
-                "M": "Non-facility rates apply in the office (POS 11) and for telehealth (POS 02, 10). Facility rates apply in "
-                     "an outpatient hospital department (POS 19, 22).",
-                "T": "Non-facility rates apply in the office (POS 11). Facility rates apply in an outpatient hospital department "
-                     "(POS 19, 22) and for telehealth (POS 02, 10)."}[payer]
-        ws.append(["Place of service: " + note])
-        ws.column_dimensions["A"].width = 9
-        ws.column_dimensions["B"].width = 58
-        ws.column_dimensions["C"].width = 13
-        ws.column_dimensions["D"].width = 11
+        for code, (desc, cls, _, _) in W.PROCS.items():
+            ws.append([code, desc, {1: "I", 2: "II", 3: "III"}[cls], W.FEES[y][code] / 100.0])
+        for row in ws.iter_rows(min_row=5, min_col=4, max_col=4):
+            for c in row:
+                c.number_format = "#,##0.00"
+        ws.column_dimensions["A"].width = 8
+        ws.column_dimensions["B"].width = 62
+        ws.column_dimensions["C"].width = 7
+        ws.column_dimensions["D"].width = 12
     wb.save(t("fees"))
 
 
-def qualifying_codes_file(t):
-    rows = []
-    desc = {"99202": "New patient office visit, straightforward", "99203": "New patient office visit, low", "99204": "New patient office visit, moderate",
-            "99205": "New patient office visit, high", "99211": "Established patient office visit, minimal",
-            "99212": "Established patient office visit, straightforward", "99213": "Established patient office visit, low",
-            "99214": "Established patient office visit, moderate", "99215": "Established patient office visit, high",
-            "99381": "Preventive visit, new, infant", "99382": "Preventive visit, new, 1 to 4", "99383": "Preventive visit, new, 5 to 11",
-            "99384": "Preventive visit, new, 12 to 17", "99385": "Preventive visit, new, 18 to 39", "99386": "Preventive visit, new, 40 to 64",
-            "99391": "Preventive visit, established, infant", "99392": "Preventive visit, established, 1 to 4",
-            "99393": "Preventive visit, established, 5 to 11", "99394": "Preventive visit, established, 12 to 17",
-            "99395": "Preventive visit, established, 18 to 39", "99396": "Preventive visit, established, 40 to 64",
-            "99460": "Initial care, normal newborn, hospital or birthing center", "99461": "Initial care, normal newborn, other setting",
-            "99462": "Subsequent care, normal newborn, per day", "99463": "Initial care, normal newborn, admitted and discharged the same day"}
-    for code in sorted(desc):
-        cat = "Office or other outpatient" if code[3] in "01" else ("Newborn care" if code[3] == "4" else "Preventive medicine")
-        rows.append([code, desc[code], cat])
-    _csv(t("qualifying"), ["code", "description", "category"], rows)
+# ----------------------------------------------------------------------------------------------------- orthodontics
+def ortho_tables(w, ids):
+    """The orthodontic module's case schedule (one row per case as set up from the orthodontist's banding claim) and
+    its payments (the banding payment and the monthly installments), each payment under the member identifier of
+    the platform that made it; a case handed to a second orthodontist is set up again as that orthodontist's case."""
+    people = {p["pid"]: p for p in w["people"]}
+    cases, pays = [], []
+    cno = 3100
+    gaps = W.rng("ortho-case-ids")
+    for case in sorted(w["ortho"], key=lambda c: (c["band"], c["pid"])):
+        p = people[case["pid"]]
+        legs = [(case["ortho"], case["band"], case["fee"], case["months"])]
+        if case["transfer"]:
+            done = (case["transfer"]["date"].year - case["band"].year) * 12 + case["transfer"]["date"].month - case["band"].month
+            legs.append((case["transfer"]["ortho"], case["transfer"]["date"], case["transfer"]["fee"],
+                         max(3, case["months"] - done)))
+        used = 0
+        for li, (ortho, band, fee, months) in enumerate(legs):
+            if band > W.SERVICE_END:
+                continue            # the schedule stands at 30 September 2026: a later banding is not set up yet
+            cno += gaps.randint(3, 11)
+            benefit = min(fee * W.ORTHO_COINS // 100, W.ORTHO_LIFETIME - used)
+            initial = benefit // 4
+            inst = (benefit - initial) // max(1, months - 1)
+            stop = None
+            if li == 0 and case["transfer"]:
+                stop = case["transfer"]["date"]
+            member = lambda d: ids["new"].get(p["pid"]) if d >= W.MIGRATION else ids["legacy"].get(p["pid"], ("", ""))[1]
+            cases.append(["OC%05d" % cno, member(band) or member(W.MIGRATION), ortho, iso(band), money(fee), months,
+                          money(benefit), money(initial), money(inst)])
+            paid = 0
+            if W.covered(p, band):
+                pays.append(["OC%05d" % cno, member(band), iso(band), "D8080", money(initial)])
+                paid += initial
+            for k in range(1, months):
+                d = W.add_months(D(band.year, band.month, 1), k)
+                if d > W.SERVICE_END or (stop and d >= stop) or not W.covered(p, d):
+                    break
+                amt = inst if k < months - 1 else benefit - initial - inst * (months - 2)
+                pays.append(["OC%05d" % cno, member(d), iso(d), "D8670", money(amt)])
+                paid += amt
+            used += paid
+    return cases, pays
 
 
-def completion_factor_file(path, cf):
-    rows = []
-    for payer in W.PAYERS:
-        for m in range(8):
-            rows.append([PAYER_ABBR[payer], W.PAYER_NAMES[payer], "2026-%02d" % (m + 1), "2026-09-30", "%.3f" % cf[payer][m]])
-    _csv(path, ["payer", "payer_name", "incurred_month", "paid_through", "completion_factor"], rows)
+def write_ortho(t, w, ids):
+    cases, pays = ortho_tables(w, ids)
+    _csv(t("ortho_cases"), ["case_id", "member_ref", "orthodontist_npi", "banding_date", "case_fee", "treatment_months",
+                            "plan_benefit", "initial_payment", "monthly_installment"], cases)
+    _csv(t("ortho_payments"), ["case_id", "member_ref", "payment_date", "cdt_code", "amount"], pays)
 
 
-def distractor_files(t, w, ids):
-    """Two files the decision does not use: Kesselcrest's Medicare Advantage attribution of the network's practices (the
-    standard covers commercial members only) and the payers' 2025 quality measure results behind their settlements."""
+# ------------------------------------------------------------------------------------------------------ distractors
+def write_distractors(t, w):
+    r = W.rng("network")
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "MA Attribution 2026"
-    ws.append(["Kesselcrest Benefit Partners  |  Medicare Advantage Provider Attribution  |  " + W.NETWORK])
-    ws.append(["Attribution year 2026, quarterly refresh of 07/15/2026; plurality of allowed primary care E&M charges over "
-               "the 24 months to 06/30/2026"])
+    ws.title = "Access"
+    ws.append([W.TPA + " - network access report, " + W.COMPANY + " Dental Plan, quarter ending 30 June 2026"])
     ws.append([])
-    ws.append(["MA Member No", "Plan", "Attributed TIN", "Practice", "Attribution Start", "RAF Score", "E&M Visits (24 mo)"])
-    ws["A1"].font = Font(bold=True)
-    for c in ws[4]:
+    ws.append(["ZIP3", "Employees", "General dentists in network", "Accepting new patients", "Specialists in network",
+               "Employees within 10 miles of two general dentists"])
+    for c in ws[3]:
         c.font = Font(bold=True)
-    rows = [[r["mid"], r["plan"], W.TINS[r["practice"]], W.PRACTICE_NAMES[r["practice"]], r["start"], r["raf"], r["visits"]]
-            for r in W.ma_members()]
-    rows.sort(key=lambda r: r[0])
-    for r in rows:
-        ws.append(r)
-        ws.cell(row=ws.max_row, column=5).number_format = "mm/dd/yyyy"
-        ws.cell(row=ws.max_row, column=6).number_format = "0.000"
-    for col, wd in zip("ABCDEFG", (15, 27, 14, 32, 16, 10, 17)):
-        ws.column_dimensions[col].width = wd
-    ws.freeze_panes = "A5"
-    wb.save(t("ma"))
+    for z in ("640", "641", "644", "645", "646", "647", "648", "650", "651", "652", "653", "654", "655", "656", "657"):
+        e = r.randint(30, 420)
+        g = r.randint(3, 40)
+        ws.append([z, e, g, max(1, g - r.randint(0, g // 3)), r.randint(0, 9), round(min(1.0, 0.55 + g / 60.0), 3)])
+    ws.column_dimensions["A"].width = 7
+    for col in "BCDEF":
+        ws.column_dimensions[col].width = 16
+    wb.save(t("network"))
     rows = []
-    for payer, c, code, name, den, num, target in W.quality_table():
-        rows.append([2025, PAYER_ABBR[payer], W.TINS[c], W.PRACTICE_NAMES[c], code, name, den, num, "%.1f" % (100.0 * num / den),
-                     "%.1f" % (100.0 * target), "Y" if num / den >= target else "N"])
-    _csv(t("quality"), ["measurement_year", "payer", "practice_tin", "practice_name", "measure_code", "measure_name",
-                        "denominator", "numerator", "rate_pct", "target_pct", "target_met"], rows)
+    d = D(2025, 1, 1)
+    while d <= D(2026, 9, 1):
+        n = sum(1 for p in w["people"] if p["kind"] == "E" and W.covered(p, d))
+        rate = 425 if d.year == 2025 else 438
+        rows.append(["INV-%s" % d.strftime("%Y%m"), iso(d), n, money(rate), money(n * rate)])
+        d = W.add_months(d, 1)
+    _csv(t("admin_fees"), ["invoice_no", "billing_month", "employees_enrolled", "fee_per_employee", "invoice_amount"], rows)

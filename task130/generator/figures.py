@@ -32,5 +32,7 @@ def figures(F, n_checks):
         "ask_a_median_working_days": {str(d): "%.1f" % F["A"][d] for d in sorted(F["A"])},
         "ask_b_median_hours": {str(d): "%.1f" % F["B"][d] for d in sorted(F["B"])},
         "ask_c_fees_usd": {str(d): fmt(F["C"].get(d, 0)) for d in sorted(F["A"])},
+        "fee_rates_usd": ["152", "168"],
+        "daysheet_match_days": "20",
         "checks": n_checks,
     }

@@ -1,26 +1,26 @@
 {
  "task": "task482",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
- "stump": "A competent solver prices each maximum on a continuance of the 2025 covered persons' plan-paid charges re-priced at the 2027 fees and files a 3,000 dollar maximum; the members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists had predetermined until the January reset, so with that work back in the year only 2,000 dollars stays inside the bargaining mandate's 3.0 per cent.",
+ "stump": "The default path prices each maximum on a continuance of the 2025 claims re-priced at the 2027 fees and files a 3,000 dollar maximum at 1.23 dollars per covered person month; the members who reached the 1,500 dollar maximum put off the crowns, bridges and implants their dentists had predetermined until the January reset, work that shows only as a relation between the 2025 estimates and the 2026 claims, and with that work in the plan year 3,000 dollars costs 2.34 and only 2,000 dollars (1.55) stays inside the resolution's 1.90.",
  "architecture": 15,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-31 (no LEAK, --asof 2026-10-16)",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-10-31 on the registered card",
-  "heart": "",
-  "surface": ""
+  "heart": "PASS 2026-10-31",
+  "surface": "clean 2026-10-31 (personas Audrey Bautista, Barry Rowland, Marvin Jordan)"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2: the readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet with the measured ceiling, prompt.txt; then the generator (claims on two platforms, predeterminations, accumulators, eligibility, crosswalk, fee workbook, documents) with the screens as code.",
+ "resume": "stage 4: leak reader and judge from the main thread. Rebuild with python3 task482/generator/build.py (target.zip sha256 52554e779f515e00a7ef872fca409a6f41b12763727ae9958eed96f5adac3370, byte-identical); the leak reader's copy is scratchpad/leak-task482/ and its brief scratchpad/task482_stage4_leak_brief.md; spawn the determinism judge on the same pack in the same message, fix every finding in the generator in one pass, re-run the free gates, then ship (card answer current, ledger row, SHIPPED commit with target.zip and golden/ force-added).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -94,5 +94,10 @@
    "report": "determinism_check_report.md"
   },
   "fate": "spent 2026-10-31: the repair's judge pass 2 FIX_NOW (two thresholds a cent off) and the re-judge (the cap claim false under a pooled per-day reading, thin margins, the stay amount unfiled); a FIX_NOW that failed its second pass"
+ },
+ "build": {
+  "zip_sha256": "52554e779f515e00a7ef872fca409a6f41b12763727ae9958eed96f5adac3370",
+  "rebuild": "python3 task482/generator/build.py",
+  "gates": "checks.py 0 failures; verify.py every figure recomputes; two byte-identical builds (26 files); figures_check.py 80 of 80; precut.py exit 0; voice-check.py PASS; leak.py REVIEW; guard.py surface clean and heart PASS; producer scrub clean; ceiling 39.5, mirror leakage 20.0"
  }
 }

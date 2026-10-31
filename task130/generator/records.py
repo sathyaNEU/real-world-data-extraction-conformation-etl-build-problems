@@ -40,9 +40,10 @@ PREFIX = ["Golden", "Blue Heron", "Red Barn", "Summit", "Harbor", "Cedar", "Ever
 CUISINE = ["Grill", "Bistro", "Diner", "Cafe", "Kitchen", "Taqueria", "Pho", "Pizza", "Sushi", "Thai Kitchen",
            "Burger Bar", "Brewing Co.", "Smokehouse", "Teriyaki", "Noodle House", "Bakery", "Deli", "Tavern",
            "Pub", "Cantina", "Wok", "Steakhouse", "Fish House", "Creamery", "Bagels", "Espresso"]
-CHAINS = [("Subway #", 2), ("McDonald's #", 2), ("Starbucks #", 2), ("Safeway #", 3), ("7-Eleven #", 1),
-          ("Fred Meyer #", 3), ("Dairy Queen #", 2), ("Taco Time #", 2), ("Shell Food Mart #", 1),
-          ("Chevron ExtraMile #", 1), ("Papa Murphy's #", 2), ("Domino's #", 2), ("Rite Aid #", 1)]
+CHAINS = [("Sound Sub Co. #", 2), ("Kettle Burger #", 2), ("Tidewater Coffee #", 2), ("Cascadia Fresh Market #", 3),
+          ("Ridgeline Mart #", 1), ("Pennock's Market #", 3), ("Glacier Cone #", 2), ("Casa Verde Taco #", 2),
+          ("Northline Food Mart #", 1), ("Summit Fuel Mart #", 1), ("Papa Ferrante's #", 2), ("Hearthstone Pizza #", 2),
+          ("Bayside Drug #", 1)]
 SURNAMES = ["Nguyen", "Garcia", "Johnson", "Kim", "Patel", "Olsen", "Martinez", "Larsen", "Chen", "Hernandez",
             "Sorensen", "Lopez", "Tran", "Park", "Silva", "Andersen", "Reyes", "Novak", "Haugen", "Ortiz"]
 

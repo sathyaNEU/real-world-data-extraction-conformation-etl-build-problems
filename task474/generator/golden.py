@@ -1,155 +1,155 @@
-"""The golden deliverables: the air-corridor workbook (each link's designation and the terminal operations figures)
-and the designation memo for the Board (PDF with a bar chart of every link's NOx per mile against the program's
-line), and generator/figures.json."""
-import json
+"""The golden deliverables (the Board paper and the conformed 2026 record) and submission.md, from figures.json."""
+import csv
+import datetime as dt
+import io
 import os
 
-from reportlab import rl_config
-rl_config.invariant = 1
-from reportlab.graphics.shapes import Drawing, Line, Rect, String                       # noqa: E402
-from reportlab.lib import colors                                                        # noqa: E402
-from reportlab.lib.pagesizes import letter                                              # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
-from reportlab.lib.units import inch                                                    # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
-from openpyxl import Workbook                                                           # noqa: E402
-from openpyxl.styles import Font                                                        # noqa: E402
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+from reportlab.lib.units import mm  # noqa: E402
+from reportlab.platypus import Image  # noqa: E402
 
-import bundle as B   # noqa: E402
-import docs as DC    # noqa: E402
-import methods as M  # noqa: E402
-import world as W    # noqa: E402
+import figs as F  # noqa: E402
+import pack as K  # noqa: E402
+import params as P  # noqa: E402
+import routes as R  # noqa: E402
+import world as W  # noqa: E402
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ORANGE, BLUE, INK = colors.HexColor("#c8553d"), colors.HexColor("#4f7ca8"), colors.HexColor("#222222")
-WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
-         10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen"}
-QNAME = {1: "Oct-Dec 2025", 2: "Jan-Mar 2026", 3: "Apr-Jun 2026", 4: "Jul-Sep 2026"}
+PDF = "theory_pass_mark_2027.pdf"
+CSV = "theory_results_2026.csv"
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September"]
 
 
-def figures(target):
-    rate = B.nox(target)
-    links = sorted(rate)
-    des = M.designated(rate)
-    fq, fc = B.fleet_asks(target)
-    return dict(call=des, n_call=len(des), n_links=len(links), links=links, names={k: W.LINKS[k][0] for k in links},
-                rate={k: round(rate[k], 2) for k in links}, line="%.2f" % W.LINE, days=len(W.DAYS),
-                textbook_route=M.designated(B.nox(target, "classes")), access=B.access_roads(target),
-                sections=DC.SECTIONS, terminals={t: W.TERMINALS[t][0] for t in W.TERMINALS}, quarters=QNAME,
-                asks=dict(trucks={"Q%d" % q: v[0] for q, v in fq.items()}, old={"Q%d" % q: v[1] for q, v in fq.items()},
-                          carrier_trucks={c: v[0] for c, v in fc.items()}, carrier_old={c: v[1] for c, v in fc.items()}))
+def conformed_rows(target, mark):
+    people, reg = F.load(target)
+    venue_of = {}
+    import json
+    hg = json.load(open(os.path.join(target, K.FILES["harrowgate"]), encoding="utf-8"))["sittings"]
+    latest = {}
+    for pid, ss in people.items():
+        latest[pid] = ss[-1]["board"]
+    rows = []
+    for pid, ss in people.items():
+        for i, s in enumerate(ss):
+            if not (dt.date(2026, 1, 1) <= s["date"] <= P.LAST_DAY):
+                continue
+            paper = "Brindle scaled score" if s["vendor"] == "old" else "Harrowgate raw mark"
+            passed = s["score"] >= (P.OLD_PASS if s["vendor"] == "old" else mark)
+            rows.append([latest[pid], s["board"], s["date"].isoformat(),
+                         P.OLD_VENDOR if s["vendor"] == "old" else P.NEW_VENDOR, paper, s["score"], i + 1,
+                         "yes" if i == 0 else "no", "pass" if passed else "fail"])
+    rows.sort(key=lambda r: (r[2], r[0], r[3]))
+    return rows
 
 
-def write_workbook(path, f):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Links"
-    ws.append(["Air Corridor Program 2027: roadway link designations (program year October 2025 to September 2026)"])
-    ws.append([])
-    ws.append(["Link ID", "Link", "Designated"])
-    for c in ws[3]:
-        c.font = Font(bold=True)
-    for k in f["call"]:
-        ws.append([k, f["names"][k], "Yes"])
-    ws.append([])
-    ws.append(["Designated: %d of %d links." % (f["n_call"], f["n_links"])])
-    ws.column_dimensions["A"].width = 9
-    ws.column_dimensions["B"].width = 44
-    ws.column_dimensions["C"].width = 12
-    tg = wb.create_sheet("Drayage fleet")
-    tg.append(["Drayage trucks registered with the port, program year October 2025 to September 2026"])
-    tg.append([])
-    tg.append(["Quarter end", "Trucks registered", "Engines model year 2009 or older"])
-    for c in tg[3]:
-        c.font = Font(bold=True)
-    ends = {1: "31 Dec 2025", 2: "31 Mar 2026", 3: "30 Jun 2026", 4: "30 Sep 2026"}
-    for q in range(1, 5):
-        tg.append([ends[q], f["asks"]["trucks"]["Q%d" % q], f["asks"]["old"]["Q%d" % q]])
-    tg.append([])
-    tg.append(["Motor carrier (30 Sep 2026)", "Trucks registered", "Engines model year 2009 or older"])
-    for c in tg[tg.max_row]:
-        c.font = Font(bold=True)
-    for c in sorted(f["asks"]["carrier_trucks"]):
-        tg.append([c, f["asks"]["carrier_trucks"][c], f["asks"]["carrier_old"][c]])
-    for col, w in zip("ABC", (30, 18, 32)):
-        tg.column_dimensions[col].width = w
-    tg.append([])
-    tg.append(["Prepared by %s, %s." % (W.PEOPLE["analyst"][0], W.MEMO_DATE)])
-    wb.save(path)
+def write_csv(path, rows):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\n")
+    w.writerow(["board_number", "board_number_at_sitting", "sitting_date", "provider", "result_scale", "mark",
+                "attempt", "first_sitting", "result"])
+    w.writerows(rows)
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(buf.getvalue())
 
 
-def chart(f):
-    ks = sorted(f["links"], key=lambda k: -f["rate"][k])
-    w, h = 6.6 * inch, 3.2 * inch
-    d = Drawing(w, h)
-    left, bottom, top = .6 * inch, .5 * inch, .3 * inch
-    lo, hi = 0.0, 7.0
-    sy = lambda v: bottom + (v - lo) / (hi - lo) * (h - bottom - top)
-    bw = (w - left - 10) / len(ks)
-    for v in range(0, 8):
-        d.add(Line(left, sy(v), w - 6, sy(v), strokeColor=colors.HexColor("#e2e5e8"), strokeWidth=.5))
-        d.add(String(left - 6, sy(v) - 3, "%d" % v, fontName="Helvetica", fontSize=7, textAnchor="end", fillColor=INK))
-    for i, k in enumerate(ks):
-        x0 = left + i * bw + 3
-        d.add(Rect(x0, bottom, bw - 6, sy(f["rate"][k]) - bottom, fillColor=ORANGE if k in f["call"] else BLUE,
-                   strokeColor=None))
-        d.add(String(x0 + (bw - 6) / 2, bottom - 11, k, fontName="Helvetica", fontSize=7, textAnchor="middle",
-                     fillColor=INK))
-    d.add(Line(left, sy(W.LINE), w - 6, sy(W.LINE), strokeColor=INK, strokeWidth=1, strokeDashArray=[3, 2]))
-    d.add(String(w - 8, sy(W.LINE) + 3, "Program line, %.2f t per mile" % W.LINE, fontName="Helvetica-Bold",
-                 fontSize=7, textAnchor="end", fillColor=INK))
-    d.add(String(left, h - 12, "On-road NOx, tonnes per mile, October 2025 to September 2026; designated links in "
-                 "orange", fontName="Helvetica", fontSize=7.5, fillColor=INK))
-    return d
+def chart(path_png, fig):
+    xs = [int(k) for k in fig["chart"]]
+    ys = [fig["chart"][str(k)] for k in xs]
+    mark = fig["call"]["pass_mark"]
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "svg.hashsalt": "task474"})
+    f, ax = plt.subplots(figsize=(6.4, 3.3), dpi=150)
+    ax.plot(xs, ys, color="#2f5d7c", lw=1.8)
+    ax.axvline(mark, color="#b23a2e", lw=1.4, ls="--")
+    ax.text(mark + 0.4, 92, "pass mark %d" % mark, color="#b23a2e", fontsize=8.5)
+    ax.set_xlabel("Raw mark on the new paper (out of 60)")
+    ax.set_ylabel("Candidates reaching it (%)")
+    ax.set_ylim(0, 100)
+    ax.set_xlim(xs[0], xs[-1])
+    ax.grid(axis="y", color="#e3e6e8", lw=0.6)
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    f.tight_layout()
+    f.savefig(path_png, metadata={"Software": None})
+    plt.close(f)
 
 
-def write_memo(path, f):
-    body = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.6, spaceAfter=7)
-    hd = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=13, leading=16, textColor=BLUE)
-    small = ParagraphStyle("s", fontName="Helvetica", fontSize=8, leading=10)
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=.9 * inch, rightMargin=.9 * inch, topMargin=.8 * inch,
-                            bottomMargin=.8 * inch, title="Air Corridor Program 2027 designations", author=W.PORT,
-                            creator=W.PORT, producer=W.PORT, subject="Air Corridor Program")
-    des = f["call"]
-    names = ", ".join(des[:-1]) + " and " + des[-1]
-    s = [Paragraph("Air Corridor Program: 2027 link designations", hd),
-         Paragraph("To: Board of Commissioners &nbsp;&nbsp; From: %s, %s &nbsp;&nbsp; Date: %s" % (
-             W.PEOPLE["analyst"][0], W.PEOPLE["analyst"][1], W.MEMO_DATE), small), Spacer(1, 8),
-         Paragraph("I recommend designating %s of the %s port roadway links for the 2027 Air Corridor Program: %s. "
-                   "Each carried %s tonnes of NOx per mile or more from on-road vehicles between October 2025 and "
-                   "September 2026." % (WORDS[len(des)], WORDS[f["n_links"]], names, f["line"]), body),
-         Paragraph("Each link was counted for two weekdays, and the year's traffic is built from those counts with the "
-                   "state's classifying count stations, class by class. That holds for the roads carrying general "
-                   "traffic. The trucks on the three terminal access roads are the terminals' own drays, and they come "
-                   "and go with the vessel calls: Terminal Way and Cargo Drive were counted in busy weeks at Berth 20 "
-                   "and Pacific Gateway, Pell Road in a quiet one at Berth 40. Their trucks are carried to the year by "
-                   "each terminal's own gate record, its average day over the year against its count days; expanded "
-                   "with the state stations' factors, Terminal Way and Cargo Drive cross the line and Pell Road misses "
-                   "it.", body),
-         chart(f), Spacer(1, 6)]
-    t = [["Link", "Name", "Designated"]]
-    for k in f["links"]:
-        t.append([k, f["names"][k], "Yes" if k in des else "No"])
-    tb = Table(t, colWidths=[.6 * inch, 3.4 * inch, .9 * inch])
-    tb.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8), ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
-                            ("LINEBELOW", (0, 0), (-1, 0), .6, INK)]))
-    s.append(tb)
-    doc.build(s)
+def write_pdf(path, fig, tmp_png):
+    c = fig["call"]
+    chart(tmp_png, fig)
+    a, b = fig["ask_a"], fig["ask_b"]
+    blocks = [
+        ("t", "Theory paper: the pass mark on Harrowgate's paper"),
+        ("s", "Paper to the Board, meeting of 4 November 2026. Laura Kay, Head of Qualifications, with Alan Clayton, "
+              "Chief Examiner."),
+        ("h", "Recommendation"),
+        ("p", "Set the pass mark on Harrowgate's theory paper at <b>%d out of 60</b>, for the held results of April to "
+              "September 2026 and for every 2027 sitting. It is the mark that holds the standard of 65 on Brindle's "
+              "scale under AP-3." % c["pass_mark"]),
+        ("h", "How the standard was carried"),
+        ("p", "The candidates who failed their first sitting on Brindle's paper and sat Harrowgate's paper next are "
+              "the one group measured on both. A second sitting reads higher than a first on any paper, so their "
+              "Harrowgate marks were set against what the same candidates would have scored on a second Brindle "
+              "sitting: Brindle's own resits of 2021 to 2025, matched on the first score, put %.1f per cent of them "
+              "at 65 or more. %d is the lowest raw mark that no more than that share of them reach (%.1f per cent "
+              "reach %d; %.1f per cent reach %d)." % (100 * c["p_equivalent"], c["pass_mark"],
+                                                     100 * c["share_at_mark"], c["pass_mark"],
+                                                     100 * c["share_below_mark"], c["pass_mark"] - 1)),
+        ("p", "Carrying last year's first-time pass rate onto this year's first-time candidates would set a higher "
+              "mark: this year's candidates are a stronger cohort, with more experienced gas engineers coming through "
+              "the standard route since the autumn, and the summer sittings always draw a stronger mix than the "
+              "winter ones."),
+        ("h", "The figures the Board asked for"),
+        ("table", [["Month of 2026", "Sitting for the first time", "Resitting"]] +
+         [[MONTHS[i], "{:,}".format(a["2026-%02d" % (i + 1)]["first_time"]),
+           "{:,}".format(a["2026-%02d" % (i + 1)]["resitting"])] for i in range(9)]),
+        ("table", [["Year", "First sat Brindle's paper", "Passed at that sitting"]] +
+         [[y, "{:,}".format(v["first_time"]), "{:,}".format(v["passed"])] for y, v in b.items()]),
+    ]
+    st = K._styles()
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib import colors
+    story = []
+    for kind, val in blocks[:7]:
+        story.append(Paragraph(val, st[kind]))
+    story.append(Image(tmp_png, width=160 * mm, height=82.5 * mm))
+    story.append(Paragraph("The share of the candidates who sat Harrowgate's paper reaching each raw mark, April to "
+                           "September 2026, with the recommended pass mark.", st["s"]))
+    for kind, val in blocks[7:]:
+        if kind == "table":
+            width = A4[0] - 40 * mm
+            n = len(val[0])
+            widths = [width * 0.55] + [width * 0.45 / (n - 1)] * (n - 1)
+            rows = [[Paragraph(str(x).replace("&", "&amp;"), st["cell"]) for x in r] for r in val]
+            t = Table(rows, colWidths=widths, hAlign="LEFT")
+            t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.HexColor("#8a949c")),
+                                   ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+            story += [t, Spacer(1, 6)]
+        else:
+            story.append(Paragraph(val, st[kind]))
+
+    def page(canvas, d):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.drawString(20 * mm, 10 * mm, "%s  |  Board paper  |  4 November 2026" % P.ORG)
+        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
+        canvas.restoreState()
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title="Theory paper pass mark 2027", author=P.ORG, creator=P.ORG,
+                            producer=P.ORG, invariant=1)
+    doc.build(story, onFirstPage=page, onLaterPages=page)
+    import re
+    data = open(path, "rb").read()
+    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (D:20261027101500+00'00')", data)
+    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (D:20261027163000+00'00')", data)
+    for sig in (b"ReportLab Generated PDF document (opensource)", b"ReportLab generated PDF document -- digest (opensource)"):
+        data = data.replace(sig, b" " * len(sig))
+    open(path, "wb").write(data)
+    os.remove(tmp_png)
 
 
-def build(gdir, e, target=None, figs=None):
-    import postprocess as PP
-    target = target or os.path.join(os.path.dirname(gdir), "target")
-    figs = figs or os.path.join(HERE, "figures.json")
-    os.makedirs(gdir, exist_ok=True)
-    for fn in os.listdir(gdir):
-        if fn not in W.GOLDEN.values():
-            os.remove(os.path.join(gdir, fn))
-    f = figures(target)
-    json.dump(f, open(figs, "w", encoding="utf-8"), indent=1, sort_keys=True)
-    write_workbook(os.path.join(gdir, W.GOLDEN["workbook"]), f)
-    write_memo(os.path.join(gdir, W.GOLDEN["memo"]), f)
-    PP.normalize_ooxml(os.path.join(gdir, W.GOLDEN["workbook"]), W.PEOPLE["analyst"][0], W.PEOPLE["analyst"][0],
-                       "2026-11-02T15:12:00Z", "2026-11-04T14:02:00Z", excel=True, company=W.PORT)
-    PP.normalize_pdf(os.path.join(gdir, W.GOLDEN["memo"]), b"D:20261104091415-05'00'", b"D:20261104091415-05'00'")
-    return f
+def write_all(target, golden, fig):
+    os.makedirs(golden, exist_ok=True)
+    write_csv(os.path.join(golden, CSV), conformed_rows(target, fig["call"]["pass_mark"]))
+    write_pdf(os.path.join(golden, PDF), fig, os.path.join(golden, "_chart.png"))

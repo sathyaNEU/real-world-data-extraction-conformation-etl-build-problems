@@ -1,10 +1,10 @@
 {
  "task": "task156",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a New Zealand district council's wastewater pump station and its discharge consent)",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "Fitting one unit-hydrograph response per millimetre and the meter's own dry weather flow on 2024 to 2026 and replaying 2004 to 2023 files about 1 overflow a year with the subdivision (0.70), inside the consent's two, and connects it; the station's infiltration rises 4.2 L/s for every kilometre of sewer below the water table, which stood a median 0.2 km over the meter and 2.1 km over the replay, so the replay each day with its own water table files about 3 a year (3.20): hold the connection until the upgrade.",
  "architecture": 2,
@@ -15,8 +15,8 @@
   "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-31 (as of 2026-11-04), sweep 4 only: the consent's own estimand words and the upgrade brief's design groundwater sentence, both ruled harmless in the design note",
-  "reader": ""
+  "leak_py": "REVIEW, both lines ruled in the design note",
+  "reader": "read 1 on 200b0014: no leak, question 6 analytical"
  },
  "duplicate_check": {
   "guard_check": "WARN 2026-10-31T18:27:04Z on the registered card after rebasing on main (repeat.question_form against task250, answered in the design note; test.same_driver_older differentiated against task134, task146, task165 and task173 v1); forum, forcing event and context artifact redrawn after task191 and task250 entered the window",
@@ -24,12 +24,12 @@
   "surface": "personas are the three drawn names; five pairs promoted on card axes alone (task130, task134, task146, task165 differentiated; task154 on calibration and artifact, left for the author's adjudicated clone check)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md (the card's stale replay years fixed; SF7 records ask 1's one-pump reading)"
  },
  "returned": [],
- "resume": "stage 4: leak reader and judge from the main thread. Rebuild first with python3 task156/generator/build.py (target/, golden/, figures.json and submission.md come out byte-identical; target.zip sha256 200b0014d310ee60e8a5fb9b86bb8eec3ea9b5845bbfc7ed7f5e4c3daf9f91e3). The leak reader's scratch copy is scratchpad/leak-task156/ (prompt.txt and the unzipped target/) and its full brief scratchpad/task156_stage4_leak_brief.md; spawn it and the determinism judge together (both medium), fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship: every gate re-run on the final cut, target.zip and the goldens added with git add -f, the ledger row, the card's answer, SHIPPED (task156).",
+ "resume": "",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -87,5 +87,6 @@
    "seasonal": 0.85,
    "bore_level_straight": 1.0
   }
- }
+ },
+ "zip_sha256_16": "200b0014d310ee60"
 }

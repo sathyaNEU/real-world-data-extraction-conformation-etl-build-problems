@@ -13,14 +13,14 @@ quantity, prompt shell, deliverables, asks and mechanism are all new), and its i
 |---|---|
 | Card | `.claude/skills/fingerprint/cards/task156.json`, architecture v2, registered 2026-10-31T18:27:04Z; architecture 1 (v1 loop 3, and v1 loops 1 and 2 before it) in `lineage`, its shell in `lineage_shells` |
 | Domain / task type | `physical-environmental-sciences`, task type `hydrology-flood-frequency` (serves Forecasting): the deciding quantity is how often a pump station's capacity is exceeded under a long rainfall record, an exceedance frequency worked the way urban hydrology works it, by continuous simulation of a calibrated rainfall-derived infiltration and inflow model |
-| Objective | Forecasting & Predictive Modeling: the station's average wet-weather overflows a year once the subdivision connects in 2027, a window not yet open, estimated the way the discharge consent states it (the network as it will be, run through the 2006 to 2025 record) |
+| Objective | Forecasting & Predictive Modeling: the station's average wet-weather overflows a year once the subdivision connects in 2027, a window not yet open, estimated the way the discharge consent states it (the network as it will be, run through the 2004 to 2023 record) |
 | Shape | `other`: the call with the consent figure with and without the subdivision, the fitted infiltration components, a chart of the replay year by year against the limit, and row-set asks on records the call never reads (arithmetic in `## Shape` at stage 2) |
 | Decision | `go_hold_or_stop`, answer unit `named_option`: connect in 2027, or hold the connection until the storage upgrade |
 | Mechanism | population then time: the meter's 2024 to 2026 storms and dry days are not the population of days the consent's replay runs (Gap 2), and the decision is forward (Gap 1); generators G14 (conditioned yield: the infiltration a dry day and a storm drive is conditioned on the length of sewer below the water table, which the replay's wet years carry past anything the meter saw), G16 (the conditioned model chosen over one response per millimetre on storms it was not fitted on), G13; Gate G `forecasting`; strategy `forecast_method_backtest` (a rate stationary only in a constructed exposure, kilometres of sewer below the water table) |
 | Layer 2 family / pattern | `forecast_uncertainty` (model choice on out-of-sample error); `own:submerged-length-conditioned-infiltration-chosen-out-of-sample` |
 | Furniture | forum `council_or_assembly` (the elected district council resolves on the officers' report whether the subdivision connects in 2027), forcing event `other` (the developer's request under the development agreement to connect stage 1 from March 2027, which consent condition 8 makes the council assess), organisation family `local_government`, role family `capacity_planner` (the three waters operations manager assessing the station's capacity for growth), context artifact `monitoring_export` (the station's SCADA export the operations manager works from), calibration `realised_outcome_roster` (the station's overflow log, which both routes reproduce), opening `question-first`, question form `whether` |
-| Spine | `pump_station_inflow_2024-2026.csv`, the station's SCADA inflow every 15 minutes for three years (about 105,000 rows, UTC), beside the council's rain gauge, the regional bore's daily groundwater level from 2006, the asset register's pipes with invert levels and the 2006 to 2025 hourly rainfall record; constructed for this build, no real dataset |
-| Deliverables | `subdivision_connection_assessment_2027.xlsx` (the assessment), `council_report_subdivision_connection_2027.docx` (the officers' report to council), `replay_overflows_2006-2025.png` (the replay year by year against the limit) |
+| Spine | `pump_station_inflow_2024-2026.csv`, the station's SCADA inflow every 15 minutes for three years (about 105,000 rows, UTC), beside the council's rain gauge, the regional bore's daily groundwater level from 2006, the asset register's pipes with invert levels and the 2004 to 2023 hourly rainfall record; constructed for this build, no real dataset |
+| Deliverables | `subdivision_connection_assessment_2027.xlsx` (the assessment), `council_report_subdivision_connection_2027.docx` (the officers' report to council), `replay_overflows_2004-2023.png` (the replay year by year against the limit) |
 | People | drawn with `guard.py names --geo "New Zealand" --seed 156`: Aaliyah Beattie, Benjamin Gilbert, Anaru Boyce (roles fixed at stage 3; Sean McDowall passed over, his first name already on task105); the requester is in no file and not in the prompt |
 
 **Guard answers (registered card, `guard.py check` WARN, no BLOCK, after rebasing on main).**
@@ -61,7 +61,7 @@ None shares the latent structure, the default path and the correction.
 pipe lies below the water table, so it scales with the kilometres of sewer whose inverts sit under that day's
 groundwater level; on the river terrace that level follows the river's high flows from the upper catchment more than
 local rain, the 2024 to 2026 meter ran through low-river years when the water table stood below most of the terrace's
-sewers, and the consent's 2006 to 2025 record holds winters with it above most of them, so a response per millimetre
+sewers, and the consent's 2004 to 2023 record holds winters with it above most of them, so a response per millimetre
 and a base flow read off the meter understate the replay's wet years.
 
 **Sources read, one line each.**
@@ -191,7 +191,7 @@ below the water table, which stood a median 0.2 km over the meter and 2.1 km ove
 | SF4 | as connected at the assessment | the meter's catchment | scaled to the rating snapshot | same call and figure | condition 7; inert, asserted |
 | SF5 | the connection | full development, 260 dwellings | stage 1 only | same call | condition 8, "at its full development" |
 | SF6 | design flows | 2.7 persons, 200 litres, Table 5.2 by hour | a flat average | same figure | the code's section 5.2 |
-| SF7 | what the station can pump | both pumps, 112.0 L/s | one pump, 61.8 L/s | same call | the data sheet's drawdown test; condition 2 |
+| SF7 | what the station can pump | both pumps, 112.0 L/s | one pump, 61.8 L/s, or the duty pump alone below an assist level | same call (asserted); ask 1's counts read 4, 4 and 1 under the one-pump reading | the data sheet's drawdown test, condition 2, and the SCADA's storm drawdowns at 112 L/s |
 | SF8 | what it can store | 350 m3, duty start to the weir crest | the chamber's 312 m3 | same call | the data sheet |
 | SF9 | the upgrade | 1,100 m3 more below the crest | none | same call | the brief, "fills before the weir" |
 | SF10 | the archive's stamps | hour ending, NZST | hour beginning | same figure | the archive's own header |

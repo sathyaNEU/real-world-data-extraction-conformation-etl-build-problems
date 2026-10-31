@@ -1,121 +1,122 @@
 {
- "access": {
-  "L01": "B20",
-  "L06": "B30",
-  "L14": "B40"
- },
- "asks": {
-  "carrier_old": {
-   "Atlantic Port Services": 39,
-   "Bay Freight Co": 49,
-   "Coastal Haul LLC": 42,
-   "Harborline Drayage": 74,
-   "Northpoint Logistics": 48,
-   "Rivera Trucking": 45,
-   "Seaboard Intermodal": 54,
-   "Tri-County Cartage": 54
+ "ask_a": {
+  "2026-01": {
+   "first_time": 1065,
+   "resitting": 1471
   },
-  "carrier_trucks": {
-   "Atlantic Port Services": 229,
-   "Bay Freight Co": 259,
-   "Coastal Haul LLC": 304,
-   "Harborline Drayage": 413,
-   "Northpoint Logistics": 275,
-   "Rivera Trucking": 237,
-   "Seaboard Intermodal": 323,
-   "Tri-County Cartage": 383
+  "2026-02": {
+   "first_time": 1196,
+   "resitting": 1292
   },
-  "old": {
-   "Q1": 379,
-   "Q2": 385,
-   "Q3": 392,
-   "Q4": 405
+  "2026-03": {
+   "first_time": 1324,
+   "resitting": 1394
   },
-  "trucks": {
-   "Q1": 2290,
-   "Q2": 2333,
-   "Q3": 2369,
-   "Q4": 2423
+  "2026-04": {
+   "first_time": 1308,
+   "resitting": 1211
+  },
+  "2026-05": {
+   "first_time": 1677,
+   "resitting": 334
+  },
+  "2026-06": {
+   "first_time": 1895,
+   "resitting": 303
+  },
+  "2026-07": {
+   "first_time": 1819,
+   "resitting": 313
+  },
+  "2026-08": {
+   "first_time": 1502,
+   "resitting": 290
+  },
+  "2026-09": {
+   "first_time": 1813,
+   "resitting": 338
   }
  },
- "call": [
-  "L03",
-  "L05",
-  "L14"
- ],
- "days": 365,
- "line": "5.00",
- "links": [
-  "L01",
-  "L02",
-  "L03",
-  "L04",
-  "L05",
-  "L06",
-  "L07",
-  "L08",
-  "L09",
-  "L10",
-  "L11",
-  "L12",
-  "L13",
-  "L14"
- ],
- "n_call": 3,
- "n_links": 14,
- "names": {
-  "L01": "Terminal Way, Gate 1 to SR-61",
-  "L02": "Harbor Boulevard, 7th to 12th Street",
-  "L03": "I-880 northbound ramps at Port Avenue",
-  "L04": "Port Avenue, I-880 to Terminal Way",
-  "L05": "SR-61, Mill Street to Harbor Boulevard",
-  "L06": "Cargo Drive, Berths 30 to 34",
-  "L07": "7th Street, Harbor Boulevard to Cole Creek",
-  "L08": "I-880 southbound ramps at Port Avenue",
-  "L09": "Delmar Road, I-580 to Cargo Drive",
-  "L10": "Ridley Avenue, I-880 to rail yard",
-  "L11": "Quarry Road truck route",
-  "L12": "Harbor Boulevard, 12th to 20th Street",
-  "L13": "Selby Street, rail yard to Terminal Way",
-  "L14": "Pell Road, I-580 to Berth 40"
+ "ask_b": {
+  "2021": {
+   "first_time": 6721,
+   "passed": 3141
+  },
+  "2022": {
+   "first_time": 7319,
+   "passed": 3356
+  },
+  "2023": {
+   "first_time": 7913,
+   "passed": 3743
+  },
+  "2024": {
+   "first_time": 8640,
+   "passed": 4038
+  },
+  "2025": {
+   "first_time": 10935,
+   "passed": 5164
+  }
  },
- "quarters": {
-  "1": "Oct-Dec 2025",
-  "2": "Jan-Mar 2026",
-  "3": "Apr-Jun 2026",
-  "4": "Jul-Sep 2026"
+ "call": {
+  "items": 60,
+  "mark_below": 37,
+  "n_cross_switch": 1164,
+  "p_equivalent": 0.2802,
+  "p_equivalent_pct": 28.0,
+  "pass_mark": 38,
+  "share_at_mark": 0.2534,
+  "share_at_mark_pct": 25.3,
+  "share_below_mark": 0.3222,
+  "share_below_mark_pct": 32.2,
+  "standard": 65,
+  "year": 2026
  },
- "rate": {
-  "L01": 4.55,
-  "L02": 3.92,
-  "L03": 6.18,
-  "L04": 4.38,
-  "L05": 5.46,
-  "L06": 4.45,
-  "L07": 2.61,
-  "L08": 4.12,
-  "L09": 4.56,
-  "L10": 4.21,
-  "L11": 4.26,
-  "L12": 3.27,
-  "L13": 4.44,
-  "L14": 5.4
+ "chart": {
+  "20": 99.9,
+  "21": 99.8,
+  "22": 99.6,
+  "23": 99.3,
+  "24": 98.9,
+  "25": 98.4,
+  "26": 97.6,
+  "27": 96.7,
+  "28": 95.1,
+  "29": 93.1,
+  "30": 90.4,
+  "31": 87.2,
+  "32": 83.4,
+  "33": 79.0,
+  "34": 73.8,
+  "35": 68.4,
+  "36": 62.3,
+  "37": 56.1,
+  "38": 49.5,
+  "39": 43.5,
+  "40": 37.0,
+  "41": 31.1,
+  "42": 25.4,
+  "43": 20.3,
+  "44": 15.5,
+  "45": 11.6,
+  "46": 8.4,
+  "47": 5.9,
+  "48": 3.8,
+  "49": 2.5,
+  "50": 1.6,
+  "51": 0.9,
+  "52": 0.5,
+  "53": 0.3,
+  "54": 0.2,
+  "55": 0.1
  },
- "sections": {
-  "fleet": "3.1",
-  "line": "2.3",
-  "links": "2.1",
-  "nox": "2.2"
- },
- "terminals": {
-  "B20": "Berth 20 Container Terminal",
-  "B30": "Pacific Gateway Terminal (Berths 30 to 34)",
-  "B40": "Berth 40 Intermodal Terminal"
- },
- "textbook_route": [
-  "L01",
-  "L03",
-  "L05",
-  "L06"
- ]
+ "ladder": {
+  "both results side by side": 41,
+  "first-timers, the winter halves' shift": 40,
+  "retakes matched on the first score": 38,
+  "retakes, first scores not matched": 37,
+  "same months a year earlier": 40,
+  "the half before the switch": 40
+ }
 }

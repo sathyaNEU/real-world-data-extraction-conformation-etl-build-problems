@@ -46,9 +46,10 @@ def memo(path, F):
     title = ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=2)
     r = G["rates"]
     story = [
-        Paragraph("Return-inspection staffing for 2027", title),
-        Paragraph("Food Safety Program, Elkhorn County Public Health. To the Environmental Health Director, for the "
-                  "decision under section 3 of the 2027 Food Safety Program Plan. 25 January 2027.", small),
+        Paragraph("A third return-inspection officer is needed for 2027", title),
+        Paragraph("To: Teresa Hansen, Environmental Health Director<br/>From: Valerie Wood, Food Safety Program "
+                  "Manager<br/>Date: 25 January 2027<br/>Subject: Return-inspection staffing under section 3 of the "
+                  "2027 Food Safety Program Plan", small),
         Spacer(1, 6),
         Paragraph("Add the third return-inspection officer for 2027. The routine inspections in the 2027 schedule are "
                   "forecast to produce about %s unsatisfactory inspections, against the 540 the plan sets as the two "
@@ -89,11 +90,23 @@ def memo(path, F):
                            ("LINEBELOW", (0, 0), (-1, 0), 0.6, GREEN), ("LINEABOVE", (0, -1), (-1, -1), 0.4, GREEN),
                            ("BOTTOMPADDING", (0, 0), (-1, -1), 2), ("TOPPADDING", (0, 0), (-1, -1), 1.5)]))
     story.append(t)
+    story.append(Spacer(1, 4))
+    story.append(Paragraph("Source: the 2027 routine inspection schedule and Table 1 of the plan; inspection records "
+                           "from January 2019 to December 2026 in both systems. Unsatisfactory is as section 1 of the "
+                           "plan defines it: 25 red points or more, or a closure for an imminent health hazard.", small))
+
+    def footer(canvas, doc):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(0.9 * inch, 0.45 * inch, "Elkhorn County Public Health, Food Safety Program")
+        canvas.drawRightString(letter[0] - 0.9 * inch, 0.45 * inch, "Page 1 of 1")
+        canvas.restoreState()
     buf = io.BytesIO()
     doc = SimpleDocTemplate(buf, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.7 * inch,
-                            bottomMargin=0.7 * inch, title="Return-inspection staffing for 2027",
+                            bottomMargin=0.7 * inch, title="A third return-inspection officer is needed for 2027",
                             author="Food Safety Program", creator="Food Safety Program", producer="Food Safety Program")
-    doc.build(story)
+    doc.build(story, onFirstPage=footer, onLaterPages=footer)
     open(path, "wb").write(buf.getvalue())
     PP.normalize_pdf(path, b"D:20270125161204-08'00'", "Food Safety Program")
 
@@ -102,7 +115,7 @@ HEAD = Font(name="Calibri", bold=True, size=11)
 FILL = PatternFill("solid", fgColor="E2EFDA")
 
 
-def _table(ws, title, head, rows, widths, note=None):
+def _table(ws, title, head, rows, widths, note=None, formats=None):
     ws.append([title])
     ws["A1"].font = Font(name="Calibri", bold=True, size=12)
     if note:
@@ -118,6 +131,11 @@ def _table(ws, title, head, rows, widths, note=None):
         ws.append(r)
     for i, w in enumerate(widths, start=1):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
+    ws.freeze_panes = "A%d" % (hr + 1)
+    for col, fmtx in (formats or {}).items():
+        for c in ws[col][hr:]:
+            if isinstance(c.value, (int, float)):
+                c.number_format = fmtx
 
 
 def workbook(path, F):
@@ -132,6 +150,7 @@ def workbook(path, F):
     _table(ws, "2027 routine inspections forecast to be marked unsatisfactory",
            ["District", "Area", "Scheduled routine inspections", "First visits", "Second visits",
             "Forecast unsatisfactory"], rows, [9, 30, 16, 12, 12, 16],
+           formats={"C": "#,##0", "D": "#,##0", "E": "#,##0", "F": "0.0"},
            note="Forecast %s, rounded to the nearest 100: %s. Plan threshold 540." % ("%.1f" % S["total"],
                                                                                      format(S["total_r"], ",")))
     rr = wb.create_sheet("Rates 2022-2026")
@@ -141,20 +160,34 @@ def workbook(path, F):
             c = G["cells"][(risk, k)]
             rrows.append([risk, lab, c[1], c[0], round(100 * c[0] / c[1], 1)])
     _table(rr, "Routine inspections 2022-2026 by risk category and the inspector's visit to the establishment",
-           ["Risk category", "Visit", "Routine inspections", "Unsatisfactory", "Per cent"], rrows, [13, 22, 18, 15, 10])
+           ["Risk category", "Visit", "Routine inspections", "Unsatisfactory", "Per cent"], rrows, [13, 22, 18, 15, 10],
+           formats={"C": "#,##0", "D": "#,##0", "E": "0.0"})
     wa = wb.create_sheet("Return timeliness 2026")
     _table(wa, "Median county working days, unsatisfactory routine inspection to first return inspection, 2026",
            ["District", "Return inspections", "Median working days"],
-           [[d, F["A_n"][d], float(F["A"][d])] for d in sorted(F["A"])], [10, 18, 20])
+           [[d, F["A_n"][d], float(F["A"][d])] for d in sorted(F["A"])], [10, 18, 20], formats={"C": "0.0"})
     wbb = wb.create_sheet("Complaint response 2026")
     _table(wbb, "Median hours, first notice of a complaint's conditions to the inspector's arrival, 2026",
            ["District", "Complaint investigations", "Median hours"],
-           [[d, F["B_n"][d], round(F["B"][d], 1)] for d in sorted(F["B"])], [10, 22, 14])
+           [[d, F["B_n"][d], round(F["B"][d], 1)] for d in sorted(F["B"])], [10, 22, 14], formats={"C": "0.0"})
     wc = wb.create_sheet("Return visit fees 2026")
     _table(wc, "Return visit fees due for 2026 visits after 2026 unsatisfactory routine inspections",
-           ["District", "Fees due (USD)"], [[d, F["C"].get(d, 0)] for d in sorted(F["A"])], [10, 16])
-    for c in wc["B"][4:]:
-        c.number_format = "#,##0"
+           ["District", "Fees due (USD)"],
+           [[d, F["C"].get(d, 0)] for d in sorted(F["A"])] + [["All districts", sum(F["C"].values())]], [14, 16],
+           formats={"B": "#,##0"})
+    wn = wb.create_sheet("Notes")
+    for line in ("Inspection records from January 2019 to December 2026 in both systems; the 2027 schedule and Table 1 "
+                 "of the 2027 Food Safety Program Plan.",
+                 "Unsatisfactory: 25 red points or more, or a closure for an imminent health hazard (plan section 1).",
+                 "Return timeliness: county working days to the first return inspection at which the officer inspected "
+                 "the premises (plan section 4); return-team inspections keyed from paper day sheets are dated by the "
+                 "day sheet.",
+                 "Complaint response: hours from the first report of the conditions after the permit's previous "
+                 "investigation to the inspector's arrival (plan section 4).",
+                 "Return visit fees: each return visit after the first for the same routine inspection, made or found "
+                 "closed, at the rate on the day of the visit (fee schedule as amended 1 July 2026)."):
+        wn.append([line])
+    wn.column_dimensions["A"].width = 110
     wb.save(path)
     PP.normalize_xlsx(path, "Food Safety Program", "2027-01-22T18:05:00Z", "2027-01-25T23:40:00Z",
                       company="Elkhorn County")

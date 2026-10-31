@@ -37,6 +37,192 @@ its repair. Earlier architectures' sections are retired; their lessons stand in 
 - **Personas.** Laura Kay (Head of Qualifications), Alan Clayton (Chief Examiner), from `guard.py names --geo "United
   Kingdom" --seed 474`.
 
+## Default path
+
+1. Read AP-3: the new paper's pass mark is the lowest raw mark that no larger share of an equivalent group reaches
+   than reaches 65 on Brindle's scale.
+2. Conform the two exports through the register (Brindle's SAT rows, Harrowgate's cleared and released marks once per
+   sitting, UK dates) and take each candidate's first sitting.
+3. Take the first-time candidates of April to September 2025 on Brindle's paper as the equivalent group of the
+   first-time candidates of April to September 2026 on Harrowgate's (the same months a year apart, the awarding
+   body's way of holding a pass rate through a paper change), and set the mark where the 2026 share falls to the
+   2025 share at 65.
+
+Ends on: 40
+Golden: 38
+
+## Stump sentence
+
+The default path gives Harrowgate's 2026 first-time candidates the pass rate Brindle's paper gave the 2025 first-time
+candidates in the same months and files a pass mark of 40; the step that lands it there is reading a change in the
+cohort as a change in the paper, when experienced gas engineers have come through the standard route since the autumn
+of 2025 and the only candidates measured on both papers, the ones who failed Brindle's and sat Harrowgate's next, carry
+a second-sitting gain that Brindle's own resits measure, so the mark that holds 65 is 38.
+
+## Three rules
+
+Task type: item-response-theory-test-equating (Education & Learning Sciences), which serves Data Extraction & Conformation: two vendors' results conformed to one record and the old scale's standard carried onto the new paper.
+Domain test: the quantity that decides is the raw mark on the new paper equivalent to 65 on the old scale, an equating function the field estimates from a linking design, here the candidates measured on both papers once the gain every second sitting carries is removed; swap the nouns for a hospital's or a utility's and there is no instrument change, no pass standard and no retest gain, and the task stops reading the same.
+Swap: "What dose on the new infusion pump matches the old pump's 65?" has no candidates who sat twice and no second-sitting gain to remove, and "which tariff holds the old bill" has no measured proficiency, so the task does not read the same with another field's nouns.
+Layer 1: two vendors' exports keyed by their own candidate numbers and tied to board numbers only through the register, candidates who re-registered after a lapse under a second board number, Brindle's ABS and VOID bookings beside SAT rows, Harrowgate's held records beside their releases and its no-show and voided records, UTC timestamps against UK dates, day-month-year against ISO dates and Brindle's rotating forms on one scale; each is what the systems that hold it produce and none is placed to be caught.
+Layer 2: estimation_fit, the linking design: an equivalent group has to be found, the first-time cohorts on either side of the switch are not one (the gas engineers since autumn 2025, the stronger summer mix), and the candidates measured on both carry the retest gain, so their second-sitting pass rate on the old paper has to be estimated from Brindle's own resits matched on the first score.
+Decisive step: estimating, from Brindle's resits of first-sitting fails in 2021 to 2025 matched on the first score, the share of the cross-switch candidates who would have reached 65 on a second Brindle sitting, and setting the mark where their Harrowgate marks give that share.
+Not semantics: reading every field and AP-3 correctly still leaves the equivalent group to choose, and no column marks a gas engineer, a retest gain or a cohort; the first-time cohorts, the side-by-side pairs and the unmatched resits all read every field right and file 40, 41 and 37.
+Not rule application: AP-3 files the estimand (an equivalent group's share at 65) and no clause says which group is equivalent or how its old-paper share is found; executing the filed rule on any group files whatever that group gives, and only the resit record matched on the first score rules the other groups out.
+Analyst test: a strong analyst conforms both exports through the register, reads AP-3 correctly, holds the 2025 first-time pass rate on the 2026 first-time candidates and files 40; every field is read and every rule executed, and the mark is wrong because the 2026 cohort is stronger than the 2025 one and the candidates measured on both papers carry a second-sitting gain.
+Estimand: ap3_pass_marks_and_standards.pdf section 2: the lowest raw mark on Harrowgate's paper that no larger share of an equivalent group of candidates reaches than reaches 65 on Brindle's scale, an equivalent group being one whose proficiency would be the same whichever paper it sat; population, the paper's candidates; window, Harrowgate's sittings from 1 April to 30 September 2026; unit, the raw mark; comparison, the share at 65.
+No decoy: nothing is planted to be caught; no memo, draft, provisional mark or vendor recommendation argues any group or any mark, the held results carry no result, and the item statistics and the survey decide nothing.
+No certified replay: no certified or published figure reproduces any linking route; no file carries a pass rate, an equating table or a recommended mark.
+Lesson: an equivalent group for a paper change is the one whose proficiency is the same on both papers, which first-time cohorts a year apart are not when the intake moves, and which candidates measured twice are only after the retest gain the old paper's own resits measure is removed; no build on file teaches the retest gain in a linking sample.
+
+## Survivor anatomy
+
+Actor: the deciding property, how much a second sitting reads above a first, has no column; it shows only as the difference between a resitter's two Brindle scores, and the cohort's change shows only as Brindle's first-time pass rate rising on an unchanged paper from the autumn of 2025.
+Link: the comparison that finds the mark sets the cross-switch candidates beside Brindle's own resitters of 2021 to 2025 with the same first score, different people tied by no key, and no sentence invites it; the register's keys invite only the side-by-side pairs.
+Reflex: the field's way of holding a standard through a paper change at an awarding body, the pass rate of the same months a year earlier carried onto the new paper's first-time candidates, is rung 0 and files 40.
+Back-test: the textbook route validates on the record: Brindle's first-time pass rate held between 45.9 and 47.3 per cent in every year from 2021 to 2025, so any year-apart comparison on the old paper would have held the standard until the scheme's intake arrived.
+Second use: every file the decisive step reads has its own reason to be in the pack: Brindle's export is the results record, Harrowgate's the new paper's, the register ties the candidates, AP-3 files the standard and the resit rules, and the notice dates the switch.
+Shock: the golden sits below every first-time route, 38 against 40 on both the year-apart and the adjacent halves and 40 on their difference, and the obvious repair, the resits without matching, overshoots to 37; no route the cohorts allow lands on it.
+Pins: the WHAT sits in AP-3 (the estimand, the group's definition, the window of held results) and no filed sentence names a retest gain, matching, the gas engineers or a cohort (asserted, L1); deleting AP-3 section 2 unforces the call and that section names no step.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 first-time pass rate a year earlier | AP-3 section 2 is the estimand | first sittings by date | the awarding body's reflex | none refutes it | the battery runs it | one share and one cut | none | readable |
+| 1 the half before the switch | none | first sittings by date | a careful variant | none | yes | one share and one cut | none | readable |
+| 2 the cross-switch candidates side by side | none | the register's keys | the common-candidate link | none | yes | one linear link | none | readable |
+| 3 the resits unmatched | none | resits by date | a psychometrician's repair | none | yes | one share | none | readable |
+| 4 (decisive) the resits matched on the first score | none names a gain, matching or a cohort | no column holds a gain | not the reflex | Brindle's resits are the bench, matched by first score | no battery item | not affine in a shipped column | the resit record is the results export itself | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | an equivalent group | a group whose proficiency is the same whichever paper it sat | any group of candidates | the routes differ (40, 41, 37) | AP-3 section 2's definition; asserted |
+| SF2 | reaches 65 | at or above 65 | above 65 | not the filed reading | AP-3 section 2 ("reaches 65"); asserted |
+| SF3 | the lowest raw mark no larger share reaches | the lowest mark whose share is at or under the group's share at 65 | the mark whose share is nearest | same call (asserted) | AP-3 section 2 |
+| SF4 | the resit history | first-sitting fails from 2021 to 2025 | from 2020, from 2023, or to March 2026 | same call (asserted under each) | none needed |
+| SF5 | matching on the first score | each first score | bands of two or five points | same call (asserted) | none needed |
+| SF6 | the resits read | the resit of a first sitting | every resit | same call (asserted) | none needed |
+| SF7 | a sitting | a SAT row or a cleared or released mark, once per sitting | ABS, VOID, held, no-show or voided records, or a held record and its release twice | moves the asks, not the call | AP-3 section 4; asserted |
+| SF8 | the date of a remote sitting | the UK local date | the UTC date | same call (asserted) | the export's Z suffix |
+| SF9 | a candidate | a person: board numbers sharing surname, initials and date of birth | each board number | same call (asserted); moves the asks | the register (one person, two numbers) |
+| SF10 | first sitting and resitting in the asks | a person's first sat sitting on either paper | a board number's first | moves 18 of 18 and 10 of 10 figures (asserted) | the register and AP-3 section 4 |
+| SF11 | the months and years | UK calendar months of 2026 to September; calendar years by the sitting's date | other calendars | not the filed reading | the prompt; asserted |
+
+## Ladder
+
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 0 | the 2025 first-time pass rate of April to September carried onto the 2026 first-time candidates | 40 | Brindle's first-time pass rate for October 2025 to March 2026 sat 5 points above the same half a year earlier on the unchanged paper, as the gas engineers came through the standard route |
+| 1 | the half before the switch (October 2025 to March 2026) carried onto April to September 2026 | 40 | the summer sittings draw a stronger mix every year (Brindle's first-time pass rate in April to September sat 4 to 6 points above the October to March before it in every year from 2020 to 2024) |
+| 1b | the year-apart route corrected by the winter halves' shift | 40 | the gas engineers' share kept rising through 2026, so the winter shift understates the summer's |
+| 2 | the cross-switch candidates' two results side by side (a linear link) | 41 | every second sitting reads higher, as Brindle's resitters show |
+| 3 | Brindle's resits of first-sitting fails, unmatched, carried onto the cross-switch candidates | 37 | the 2025 resit rules (a free resit for 55 to 64 within six weeks, six months' wait under 55) changed which first scores reach the new paper |
+| 4 (decisive) | the resits matched on the first score, their share at 65 carried onto the cross-switch candidates | 38 | the golden |
+
+- **Margins on the cut pack** (asserted in checks.py): the equivalent share sits 0.027 above the share reaching 38 and
+  0.042 below the share reaching 37; every standing member (first scores exact or in bands, histories from 2020, 2021
+  or 2023, every resit) files 38, and the latent model's equivalence for any equivalent group is 38 (T1).
+- **Separation.** The default path is wrong on the clean truth (T3) and the matched route on the world's own sittings
+  is the golden (T2).
+
+## Closure table
+
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the theory paper's candidates; for the call, the group AP-3 calls equivalent | filed (AP-3 section 2) |
+| 2 Unit of account | the person, board numbers sharing surname, initials and date of birth | C1 (SF9) |
+| 3 Attribution window | Harrowgate's sittings 1 April to 30 September 2026, Brindle's to 31 March 2026 | filed (AP-3 section 2, the notice) |
+| 4 As-of dating | the register extract of 12 October 2026 | the file's date |
+| 5 Version basis | one record per sitting; a held record and its release are one sitting | SF7 |
+| 6 Denominator | the equivalent group's candidates | filed (AP-3 section 2) |
+| 7 Weighting | the cross-switch candidates' own first scores | C1 (SF5) |
+| 8 Window length | the resit history 2021 to 2025 | C1 (SF4) |
+| 9 Boundary inclusivity | reaches 65 is at or above 65; no larger share is at or under | filed (SF2, SF3) |
+| 10 Rounding path | marks are whole; shares compared unrounded | C1 by construction |
+| 11 Tie-break | the lowest mark meeting the share | filed (AP-3 section 2) |
+| 12 Maturity and censoring | results held, so no new-paper resit; the window closed on 30 September | filed (AP-3 section 2) |
+| 13 Order of operations | conform, tie people, take sittings, match, set | C1 |
+| 14 Row order | none: set operations by person and date | C1 |
+| 15 Duplicate resolution | a held record beside its release: the release | SF7 |
+| 16 Identity normalisation | provider numbers to board numbers by the register, board numbers to persons by name and date of birth | SF9 |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | scaled scores 0 to 100 on Brindle's paper, raw marks out of 60 on Harrowgate's | the files' own fields |
+| 19 Code and status semantics | SAT, ABS, VOID; cleared, released, held, no_show, voided | AP-3 section 4; SF7 |
+| 20 Integerisation | whole marks and whole candidates | C1 by construction |
+| 21 Clause scope | AP-3's resit rules decide who resits when, not the estimand | filed scope |
+| 22 Forward window contents | the mark applies to the held 2026 results and every 2027 sitting | filed (AP-3 section 2) |
+
+## Literal reader
+
+Executed word for word, AP-3 section 2 asks for the lowest raw mark that no larger share of an equivalent group
+reaches than reaches 65 on Brindle's scale, the group being one whose proficiency would be the same whichever paper it
+sat. Read literally, no group of first-time candidates a year apart, or the halves either side of the switch, has the
+same proficiency (Brindle's own first-time pass rates move between them on an unchanged paper), and the cross-switch
+candidates at their second sitting are equivalent only to themselves at a second sitting, whose Brindle share at 65
+Brindle's resits matched on the first score give: 38. The asks' months and years, first sittings and resits read
+literally on persons give the figures in figures.json.
+
+## Oracles
+
+None on the main call: no file carries a pass rate on Harrowgate's paper, an equating table, a provisional mark or a
+recommendation; the Harrowgate records carry no result. The asks have no oracle either: no file states a monthly or
+yearly count.
+
+## Ask sheet
+
+Two asks on the conformed record, each on persons the register ties by surname, initials and date of birth, a link no
+key invites.
+
+**Ask A, first-time and resitting candidates in each month of 2026 to September (18 figures).**
+- Files: the register, Brindle's export, Harrowgate's export.
+- Primary (D9, the true key elsewhere): a candidate who comes back after a year away re-registers under a second board
+  number and new provider numbers, so taking each board number as a candidate makes the returner a first-time
+  candidate; the person is the board numbers sharing surname, initials and date of birth.
+- Hazards: ABS and VOID bookings; Harrowgate's held records beside their releases; no-show and voided records; UTC
+  timestamps.
+
+**Ask B, candidates who first sat Brindle's paper in each year 2021 to 2025, and how many passed at it (10 figures).**
+- Files: the register and Brindle's export.
+- Primary (D9 again, a second grain): the returner's later first sitting under the second board number is counted
+  as another first sitting in its year, and its result as another first-sitting pass or fail.
+- Hazard: ABS and VOID bookings are not sittings (AP-3 section 4).
+
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at rung 0) | Verdict |
+|---|---|---|---|
+| A, 18 monthly figures | takes each board number as a candidate | the same | miss |
+| B, 10 yearly figures | takes each board number as a candidate | the same | miss |
+
+Pair ceiling: 30.4 (the cracker on the call at 46.9, the mirror off it at 13.9, each keeping 1 of 29 ask criteria,
+the paper's chart).
+Mirror leakage: 3.4 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 1fc4d13f)
+
+## Leak sweep
+
+`leak.py task474 --asof 2026-10-13` on target.zip 1fc4d13f: REVIEW, no LEAK; each line ruled.
+- Sweep 3 on `ap3_pass_marks_and_standards.pdf` and `theory_paper_change_notice_2026.pdf` (pass mark, Harrowgate,
+  theory paper): harmless; they are the awarding body's own nouns for the paper and its provider, and neither document
+  carries a mark, a share or a group.
+- Sweep 4 on `ap3_pass_marks_and_standards.pdf` (resits, equivalent, carries, register, sittings): harmless; the policy
+  files the estimand (an equivalent group) and its own resit rules, and says nothing of a second sitting's reading,
+  matching or a cohort (asserted, L1).
+- Fixed before this run: the venues file's name (an author word), the item note column's name, and the workbooks'
+  application stamp (now the office suite's, each workbook with its own save history).
+
+## Pre-ship check
+
+1. Three rules: the decisive step (the resits matched on the first score) is analytical; nothing planted, read or
+   executed decides (the Three rules lines).
+2. Determinism: AP-3 section 2 files the WHAT; the standing family converges on 38 across first-score bands, resit
+   histories and resit orders, the latent model gives 38 for every equivalent group, and the forks are closed
+   (SF1 to SF11, asserted).
+3. Gates on the final cut (target.zip 1fc4d13f): generator checks 42 of 42, the independent verifier on every graded
+   figure, two byte-identical builds, figures_check.py 52 of 52, precut.py 61 of 61, voice-check.py PASS, leak.py
+   REVIEW with no LEAK; the leak reader and the determinism judge run from the main thread.
+
 ## Tried and rejected
 
 - 2026-10-20, at the draw: the seed's own move (rebuild from towns rather than an area crosswalk): a careful analyst
@@ -195,3 +381,6 @@ its repair. Earlier architectures' sections are retired; their lessons stand in 
   deduplicated trucks by VIN and read blank model years from the certification list, so neither device sat on its
   path. Re-sited: the open carrier moves' VINs keyed with O or I, and gliders whose model_year is the chassis's.
 - 2026-10-31, the repair of architecture 6 (the port authority's air-corridor designations): the repair's determinism judge returned SEND_BACK; no shipped text said how a two-weekday count becomes a year's vehicle-miles, the golden's carrying rule (follow the vessel calls through the terminal's gate record) was filed nowhere, so the standard classifying-station factoring filed another designation, and the fleet answers needed an unfiled VIN rule. Lesson: an expansion or carrying rule the golden needs is the estimand's WHAT and is filed, or the design forces it; architecture 6 spent, re-rooted as architecture 7 in a new domain.
+- 2026-10-31, architecture 7 at design: a world without the 2025 resit rules let the unmatched resits file the golden (38, the cross-switch candidates' first scores mixed like the history's); the free near-miss resit within six weeks and the six-month wait under 55, the awarding body's own rules from 1 October 2025, make the candidates reaching the new paper low first-scorers, so the unmatched route files 37 and matching decides.
+- 2026-10-31, architecture 7 at design: a provider-count ask (each training provider's candidates on the new paper) was executable from the provider list's merger note, so the cracker kept it whole; replaced by the yearly first sittings and passes, which turn on the re-registered candidates as the monthly ask does.
+- 2026-10-31, architecture 7 at design: the remote sittings' UTC stamps as a month-boundary device: remote sittings run 07:00 to 23:59 UK time, so in British Summer Time no UTC stamp crosses a UK date and the device moved nothing; kept as Layer 1 only.

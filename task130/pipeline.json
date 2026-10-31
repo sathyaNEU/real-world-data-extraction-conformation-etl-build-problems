@@ -3,8 +3,8 @@
  "status": "PAUSED",
  "domain": "psychology-behavioral-science",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-31",
  "stump": "Carrying the risk categories' rates, each establishment's own record or one criterion per inspector into the 2027 schedule files about 450 unsatisfactory routine inspections and no third officer, because an inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or later one and the 2027 redraw makes 23 per cent of the schedule first visits for their named inspector; read at each named inspector's earlier visits, the schedule gives about 700, past the plan's 540.",
  "architecture": 5,
@@ -14,13 +14,13 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-10-31 (--asof 2027-01-11): sweeps 3, 4 and 9, each ruled harmless in the note's Leak sweep",
+  "reader": "pending: stage 4 from the main thread"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31 at the draw (19:05:15Z), before task156 v2's card (18:27:04Z) reached this tree",
-  "heart": "BLOCK 2026-10-31 against task156 v2, earlier in draw order: ban.pattern G14, ban.strategy forecast_method_backtest, test.same_puzzle, test.same_driver, ban.org_family local_government",
-  "surface": ""
+  "guard_check": "PASS 2026-10-31 on the card revised and filed anew at 20:46:59Z (decisive gap time); the draw's 19:05:15Z check ran before task156 v2's card reached this tree",
+  "heart": "WARN 2026-10-31 after the final rebase onto main: repeat.deliverables (pdf+xlsx) against task125 v3, answered in the note",
+  "surface": "exit 0 2026-10-31; five pairs promoted for adjudication on card labels alone (task131, task137, task183, task230, task446), none on files, names or seeds"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 3, the guard: redraw the card's decisive pattern to G6 (generators G6, G14, G13) with strategy composition_mix, task175's labels for a rate held within a class and carried to a new mix, with differentiation lines for task124, task132, task144 v1, task163, task175, task455 v1 and task465 v1; move the organisation to a state department of health's Elkhorn County office in the fictional State of Penmore (government_agency) in docs.py, pack.py, world.py, distract.py, golden.py, metadata.py, analysis.py, verify.py, checks.py, prompt.txt, the note and the card; guard.py check and register, rebuild (python3 task130/generator/make.py), rerun every free gate, write submission.md; then stage 4: leak reader and judge from the main thread.",
+ "resume": "stage 4: leak reader and judge from the main thread",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -207,5 +207,22 @@
    },
    "fate": "spent 2026-10-31 at the batch 1 triage: shipped 10-16 at $1,250,000, pending review; the rule 3 re-audits rated the stump moderate, so the slot was re-rooted in a new client domain, world and dataset"
   }
- ]
+ ],
+ "build": {
+  "checks": 246,
+  "verify": "match",
+  "rebuild": "byte-identical",
+  "command": "python3 task130/generator/make.py",
+  "target_zip_sha256": "ffdcfd56fce04bb50300a154b2b4ee71ce81b0f6744fd288200d20e9bc649abc",
+  "figures_check": "PASS 75 of 75",
+  "precut": "PASS 61 checks",
+  "voice_check": "PASS",
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0
+ },
+ "stage4": {
+  "leak_copy": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task130/",
+  "leak_brief": "/tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task130_stage4_leak_brief.md",
+  "note": "target.zip and golden/ stay uncommitted; the main thread rebuilds them byte-identically"
+ }
 }
