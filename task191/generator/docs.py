@@ -1,175 +1,199 @@
-"""The platform's own capacity framework, quality standard, dictionary and bulletin."""
-import os
+"""The pack's documents: the programme's terms of reference, the camera supplier's firmware release notes, the Red 2026
+service notice, HR's note on hours on service, the broker's reporting notes and the contract's annex on kilometres."""
+import re
 
-from reportlab import rl_config
-rl_config.invariant = 1
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-import world as W
+from common import scrub_pdf, set_mtime
 
-SS = getSampleStyleSheet()
-BODY = ParagraphStyle("b", parent=SS["BodyText"], fontName="Times-Roman", fontSize=9.5, leading=13,
-                      alignment=TA_JUSTIFY, spaceAfter=5)
-H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Times-Bold", fontSize=13, spaceAfter=8)
-H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Times-Bold", fontSize=10.5, spaceAfter=4,
-                    spaceBefore=8)
-SMALL = ParagraphStyle("s", parent=BODY, fontSize=8, leading=10.5)
-CELL = ParagraphStyle("c", fontName="Times-Roman", fontSize=8, leading=10)
-CELLB = ParagraphStyle("cb", fontName="Times-Bold", fontSize=8, leading=10)
-TBL = TableStyle([("GRID", (0, 0), (-1, -1), 0.3, colors.Color(0.45, 0.45, 0.45)),
-                  ("BACKGROUND", (0, 0), (-1, 0), colors.Color(0.90, 0.90, 0.88)),
-                  ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                  ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-                  ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)])
+PDF_DATE = "D:20261109091500+01'00'"
+
+ST = {
+    "h1": ParagraphStyle("h1", fontName="Helvetica-Bold", fontSize=13, leading=16, spaceAfter=4),
+    "h2": ParagraphStyle("h2", fontName="Helvetica-Bold", fontSize=10.5, leading=13, spaceBefore=8, spaceAfter=3),
+    "p": ParagraphStyle("p", fontName="Helvetica", fontSize=9.5, leading=12.5, spaceAfter=4),
+    "small": ParagraphStyle("small", fontName="Helvetica", fontSize=8, leading=10, textColor=colors.HexColor("#444444")),
+    "cell": ParagraphStyle("cell", fontName="Helvetica", fontSize=8.5, leading=10.5),
+}
 
 
-def wrap(rows):
-    return [[Paragraph(str(c), CELLB if i == 0 else CELL) for c in row] for i, row in enumerate(rows)]
+def _pdf(path, story, title, author):
+    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                            bottomMargin=18 * mm, title=title, author=author, subject="", creator=author,
+                            producer=author, invariant=1)
+    doc.build(story)
+    data = open(path, "rb").read()
+    data = re.sub(rb"/CreationDate \(D:[^)]*\)", b"/CreationDate (" + PDF_DATE.encode() + b")", data)
+    data = re.sub(rb"/ModDate \(D:[^)]*\)", b"/ModDate (" + PDF_DATE.encode() + b")", data)
+    open(path, "wb").write(data)
+    scrub_pdf(path)
+    set_mtime(path)
 
 
-def _doc(path, title):
-    return SimpleDocTemplate(path, pagesize=A4, title=title, author="", subject="", creator="",
-                             leftMargin=18 * mm, rightMargin=18 * mm, topMargin=18 * mm,
-                             bottomMargin=18 * mm)
+def _table(rows, widths):
+    t = Table([[Paragraph(str(c), ST["cell"]) for c in r] for r in rows], colWidths=[w * mm for w in widths])
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#999999")),
+                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8e8e8")),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP")]))
+    return t
 
 
+def terms_pdf(path):
+    s = [Paragraph("EMPRESA MUNICIPAL DE AUTOBUSES DE LORVEGA, S.A.", ST["small"]),
+         Paragraph("Driver-Attention Programme 2027: terms of reference", ST["h1"]),
+         Paragraph("Management Committee, issued for the committee of 24 November 2026. Safety and Training.",
+                   ST["small"]), Spacer(1, 6)]
+    s.append(Paragraph("1. Purpose", ST["h2"]))
+    s.append(Paragraph(
+        "The Driver-Attention Programme is a twelve-week course of in-cab observation, hazard-perception sessions and "
+        "coaching for the drivers of a depot. It is run at the depots where drivers are not acting on the collision "
+        "warnings the buses' driver-assistance cameras give them.", ST["p"]))
+    s.append(Paragraph("2. The depots the programme takes", ST["h2"]))
+    s.append(Paragraph(
+        "The 2027 programme runs at every depot whose drivers, between 1 January and 31 October 2026, did not brake "
+        "on genuine collision warnings at 1.3 times the fleet's rate or more. If no depot reaches that level, the "
+        "programme does not run in 2027 and its budget returns to the training plan.", ST["p"]))
+    s.append(Paragraph("3. Definitions", ST["h2"]))
+    rows = [["Term", "Meaning"],
+            ["Collision warning", "A forward-collision warning or a pedestrian and cyclist collision warning raised by a "
+             "bus's driver-assistance camera. Lane-departure and headway warnings are not collision warnings."],
+            ["Genuine collision warning", "A collision warning raised when a vehicle, a cyclist or a pedestrian was in the "
+             "bus's path."],
+            ["One warning", "One camera event."],
+            ["Not braked on", "No service brake application within two seconds of the warning."],
+            ["A depot's warnings", "The warnings raised on buses allocated to the depot on the day of the warning."],
+            ["The fleet's rate", "The share of all depots' genuine collision warnings, taken together, that were not "
+             "braked on."],
+            ["A depot's rate", "The share of the depot's genuine collision warnings that were not braked on."],
+            ["Dates and times", "Lorvega local time."]]
+    s.append(_table(rows, [45, 125]))
+    s.append(Paragraph("4. Timetable", ST["h2"]))
+    s.append(Paragraph(
+        "The Management Committee approves the depots on Tuesday 24 November 2026. Depot managers release drivers for "
+        "the programme from Monday 11 January 2027, in groups of twelve, until every driver assigned to the depot on "
+        "that date has completed it.", ST["p"]))
+    _pdf(path, s, "Driver-Attention Programme 2027: terms of reference", "EMAL Safety and Training")
 
 
-def framework(target):
-    path = os.path.join(target, "network_capacity_framework.pdf")
-    d = _doc(path, "Network capacity framework")
-    f = [Paragraph("%s: network capacity framework" % W.PLATFORM, H1),
-         Paragraph("Issue 6, approved by the board, 14 October 2026. Parts 1, 2, 3 and 6 and the "
-                   "annexes are not reproduced in this extract.", SMALL),
-         Paragraph("Part 4 Interconnect capacity", H2),
-         Paragraph("4.1 The capacity committee decides each quarter whether to fund an "
-                   "interconnect augment. The decision is taken on the reporting quarter that has "
-                   "closed, and the reporting quarters are the calendar quarters.", BODY),
-         Paragraph("4.2 An augment is funded on an interconnect whose evening shortfall is larger "
-                   "than the shortfall the network's own record shows the measurement produces "
-                   "without congestion. The shortfall of an interconnect in an evening window is the "
-                   "figure the delivered quality standard defines, and the figure the decision is "
-                   "taken on is the largest any interconnect in service at the quarter end shows in "
-                   "any evening window of the quarter.", BODY),
-         Paragraph("4.3 The evening windows the planning desk reports on are 19:00 to 19:59, 20:00 "
-                   "to 20:59 and 21:00 to 21:59, each in local time, and an evening is the local "
-                   "calendar date its windows begin on.", BODY),
-         Paragraph("4.4 An evening on which the network operations team had booked work inside an "
-                   "evening window on that interconnect is not evidence of congestion there, and the "
-                   "planning desk leaves those evenings out.", BODY),
-         Paragraph("4.5 One augment is funded in a quarter, or none.", BODY),
-         Paragraph("Part 5 Incidents", H2),
-         Paragraph("5.1 The service restoration standard is four hours from the time an incident was "
-                   "opened to the time service was restored. The time service was restored is the "
-                   "time the duty engineer records, which is not the time the ticket was closed, and "
-                   "an incident for which no restoration time was recorded is not counted as "
-                   "restored inside the standard.", BODY),
-         Paragraph("5.2 Every incident carries a recorded cause, and the dictionary says which "
-                   "causes sit outside the platform.", BODY),
-         Paragraph("Part 7 Peering commitments", H2),
-         Paragraph("7.1 A peering or transit agreement is billed on the ninety-fifth percentile of "
-                   "the quarter's five-minute samples of the traffic the platform sends the peer, "
-                   "which is the 1,296th highest sample of the quarter, taken over the peer's "
-                   "traffic and not over one port of it.", BODY),
-         Paragraph("7.2 The commitment a peer is billed on is the commitment the platform and the "
-                   "peer have both accepted and that is in force on the last day of the quarter, "
-                   "and an amendment the peer has not accepted is not billed on. Where the "
-                   "quarter's percentile is above the commitment, the overage "
-                   "is the excess in whole megabits a second, after the percentile is taken to the "
-                   "nearest whole megabit, at the agreement's own rate. A peer the "
-                   "platform exchanges traffic with settlement free is billed nothing and carries "
-                   "no commitment.", BODY)]
-    d.build(f)
-    return path
+def codes_pdf(path):
+    s = [Paragraph("FLEETVIEW TELEMATICS, FORWARD CAMERA INTEGRATION", ST["small"]),
+         Paragraph("Forward camera firmware 2.3: release notes", ST["h1"]),
+         Paragraph("Customer bulletin CB-2026-04, 21 April 2026. Distribution: fleet engineering and safety contacts, "
+                   "EMAL Lorvega.", ST["small"]), Spacer(1, 6)]
+    s.append(Paragraph("Rollout", ST["h2"]))
+    s.append(Paragraph(
+        "Firmware 2.3 is installed over the air when a vehicle next connects at its depot after the customer releases "
+        "it. Vehicles fitted with the earlier camera module (hardware revision A) stay on firmware 1.9 and continue to "
+        "report as before. Both versions report to the same platform and the same customer export from the day of "
+        "installation.", ST["p"]))
+    s.append(Paragraph("What changes in the warnings reported", ST["h2"]))
+    for t in [
+        "Warnings are reported under the platform's descriptive type codes: FWD_COLL for a forward collision warning, "
+        "PED_COLL for a pedestrian and cyclist collision warning, LANE_DEP for a lane departure warning and HEADWAY for "
+        "a headway warning, in place of FCW, PCW, LDW and HMW. The conditions that raise each warning do not change.",
+        "The brake response is reported as a reaction time: the milliseconds from the warning to the driver's first "
+        "service-brake application, measured over a capture of three seconds after the warning and left empty when the "
+        "brake is not applied within it. Firmware 1.9 reports only whether the service brake was applied within two "
+        "seconds of the warning, as yes or no.",
+    ]:
+        s.append(Paragraph("&bull; " + t, ST["p"]))
+    s.append(Paragraph("Warning conditions (both versions)", ST["h2"]))
+    s.append(Paragraph(
+        "A forward collision warning is given when the time to collision with the vehicle ahead falls below 2.7 "
+        "seconds. A pedestrian and cyclist collision warning is given when a pedestrian or a cyclist is detected in or "
+        "entering the vehicle's path with a time to collision below 2.0 seconds. A headway warning is given when the "
+        "time gap to the vehicle ahead stays below the configured headway; a lane departure warning when a lane "
+        "marking is crossed without the indicator.", ST["p"]))
+    _pdf(path, s, "Forward camera firmware 2.3: release notes", "FleetView Telematics")
 
 
-def standard(target):
-    path = os.path.join(target, "delivered_quality_standard.pdf")
-    d = _doc(path, "Delivered quality standard")
-    f = [Paragraph("%s: delivered quality standard" % W.PLATFORM, H1),
-         Paragraph("Streaming quality engineering, issue 11. How the client telemetry is reduced to "
-                   "the figures the planning desk and the bulletin use.", SMALL),
-         Paragraph("The minute value", H2),
-         Paragraph("The client reports the bitrate it was delivered for each session. The minute "
-                   "value for an interconnect is the median of those bitrates across the sessions "
-                   "the interconnect carried in that minute, in kilobits a second, and it is the "
-                   "only value the standard reduces further.", BODY),
-         Paragraph("A band median", H2),
-         Paragraph("The median of a band is the median of the band's minute values. The reference "
-                   "band is 12:00 to 14:59 local time, which the platform uses because demand there "
-                   "is a fraction of the evening's on every interconnect.", BODY),
-         Paragraph("The shortfall", H2),
-         Paragraph("The shortfall of an interconnect in an evening window is the median of the "
-                   "reference band for that interconnect on that date, less the median of the "
-                   "evening window, in kilobits a second. A positive shortfall is bitrate the "
-                   "evening did not deliver and the reference band did.", BODY),
-         Paragraph("What the standard does not define", H2),
-         Paragraph("The standard reduces telemetry. It does not say what a shortfall is to be "
-                   "compared against, which is the planning desk's own work under the capacity "
-                   "framework.", BODY)]
-    d.build(f)
-    return path
+def notice_pdf(path):
+    s = [Paragraph("EMPRESA MUNICIPAL DE AUTOBUSES DE LORVEGA, S.A.", ST["small"]),
+         Paragraph("Red 2026: the new bus network from Sunday 14 December 2025", ST["h1"]),
+         Paragraph("Service notice for staff, Planning and Operations, 1 December 2025.", ST["small"]), Spacer(1, 6)]
+    s.append(Paragraph("What changes", ST["h2"]))
+    for t in [
+        "Every stop takes a new five-digit code. Stop poles, the app and the timetable show the new codes from 14 "
+        "December; the old codes stay on the poles until the end of January.",
+        "Line 27 serves the Almadraba industrial estate, reaching it by the new bus-only underpass beneath the "
+        "railway.",
+        "Line 33 runs over the hill by the new Los Molinos link road, a bus-only road, instead of the Calle Huerta "
+        "loop.",
+        "Line 25 moves from the El Quiñón depot to Las Tenerías, with its buses and drivers.",
+        "Line 40 will use the Vía Verde busway, with automatic bollard gates at its ends, once the city hands it over "
+        "(expected in early summer 2026). Until then it keeps its present route.",
+        "From Monday 2 March 2026 Calle Feria and the Plaza de Abastos become a shared space on market days (Monday to "
+        "Saturday until 15:00). Lines 1, 3, 7 and 9 keep their route through it at walking pace.",
+    ]:
+        s.append(Paragraph("&bull; " + t, ST["p"]))
+    s.append(Paragraph("Depots", ST["h2"]))
+    rows = [["Depot", "Lines from 14 December 2025"],
+            ["San Lázaro", "1, 3, 7, 9 and night line N1"], ["Hornacho", "12, 14, 27, 33 and night line N2"],
+            ["Valdeolmos", "40, 41, 44, 46 and night line N3"], ["El Quiñón", "5, 16, 21 and night line N4"],
+            ["Las Tenerías", "2, 8, 19, 23, 25 and night line N5"], ["La Ribera", "4, 10, 17, 29 and night line N6"],
+            ["Santa Clara", "6, 11, 31, 35 and night line N7"]]
+    s.append(_table(rows, [45, 125]))
+    _pdf(path, s, "Red 2026 service notice", "EMAL Planning and Operations")
 
 
-def dictionary(target):
-    path = os.path.join(target, "telemetry_dictionary.pdf")
-    d = _doc(path, "Telemetry dictionary")
-    rows = [["Field", "Meaning"],
-            ["measured_at_utc", "the minute the client telemetry is stamped with, in UTC. The "
-                                "framework's windows are local time, and the Netherlands moves to "
-                                "summer time on the last Sunday in March"],
-            ["port_code", "the interconnect port as the record carried it when it was written; the "
-                          "interconnect register carries the port it now is"],
-            ["sessions", "the sessions the port carried in the minute"],
-            ["median_kbps, p10_kbps", "the minute value the delivered quality standard defines, and "
-                                      "the tenth percentile of the same bitrates"],
-            ["rebuffer_events", "the rebuffers the clients on that port reported in the minute"],
-            ["evening_date_local, window_from", "the daily rollup's own evening and window, already "
-                                                "in local time"],
-            ["evening_median_kbps, reference_median_kbps", "the two band medians the daily rollup "
-                                                           "keeps; the pipeline keeps minute rows "
-                                                           "for ninety days and these for two years"],
-            ["minutes_scheduled, minutes_captured", "what the collector was due to record and what "
-                                                    "it did record"],
-            ["out_mbps, in_mbps", "the edge's five-minute traffic samples, in megabits a second"],
-            ["build_version, build_ref", "the client version string the session reports, and the "
-                                         "build the release log identifies by its own reference and "
-                                         "its rollout dates"],
-            ["cause_category", "the recorded cause of an incident. Access network, transit provider, "
-                               "customer premises, and power or facility sit outside the platform. "
-                               "Origin service, packager, edge cache, client application and "
-                               "configuration change sit inside it"],
-            ["service_restored_at_utc", "the time the duty engineer recorded service as restored, "
-                                        "which only some incidents carry"]]
-    f = [Paragraph("%s: telemetry and operations dictionary" % W.PLATFORM, H1),
-         Paragraph("The fields of the extracts the data platform hands over.", SMALL)]
-    t = Table(wrap(rows), colWidths=[46 * mm, 128 * mm])
-    t.setStyle(TBL)
-    f.append(t)
-    d.build(f)
-    return path
+def payroll_txt(path):
+    txt = (
+        "EMAL HUMAN RESOURCES\r\n"
+        "Duty and payroll returns: hours on service\r\n"
+        "Issued 12 January 2026\r\n"
+        "\r\n"
+        "A driver's hours on service are the time the driver is logged on to a bus's ticket machine on a service line.\r\n"
+        "Sessions on line 000 (positioning between the depot and the line) and on ESC (the driving school) are not\r\n"
+        "service. A session counts in the week, Monday to Sunday, in which it starts. A driver's depot is the depot HR\r\n"
+        "assigns the driver to on the date the session starts.\r\n"
+        "\r\n"
+        "Queries to Payroll (Nominas), extension 2214.\r\n"
+    )
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(txt)
+    set_mtime(path)
 
 
-def bulletin(target, series):
-    """the platform's own published quarterly quality series, platform wide and by nothing else"""
-    path = os.path.join(target, "published_quarterly_quality_report.pdf")
-    d = _doc(path, "Quarterly quality report")
-    rows = [["Quarter", "Median delivered bitrate, kbps", "Sessions, millions",
-             "Rebuffer rate, per cent"]] + series
-    f = [Paragraph("%s: quarterly quality report" % W.PLATFORM, H1),
-         Paragraph("Published for subscribers and partners. Figures are platform wide across all "
-                   "access networks and are not broken down by interconnect.", SMALL)]
-    t = Table(wrap(rows), colWidths=[30 * mm, 56 * mm, 44 * mm, 44 * mm])
-    t.setStyle(TBL)
-    f.append(t)
-    f.append(Spacer(1, 4 * mm))
-    f.append(Paragraph("The platform reports the median delivered bitrate across every session it "
-                       "served in the quarter. Quarter on quarter movement reflects the mix of "
-                       "titles, devices and access networks as much as the network itself.", BODY))
-    d.build(f)
-    return path
+def insurance_pdf(path):
+    s = [Paragraph("ARCOS & VELA CORREDURÍA DE SEGUROS", ST["small"]),
+         Paragraph("EMAL fleet motor policy: reporting notes for the 2027 renewal", ST["h1"]),
+         Paragraph("Policy FL-0331-LOR. Prepared for EMAL Finance, October 2026.", ST["small"]), Spacer(1, 6)]
+    s.append(Paragraph("What the insurer asks for", ST["h2"]))
+    s.append(Paragraph(
+        "The insurer prices the 2027 renewal on each depot's own record rather than on the fleet as a whole. For each "
+        "depot it asks for the at-fault collisions of January to October 2026 and the claims paid on them, set against "
+        "the depot's kilometres in service over the same months.", ST["p"]))
+    s.append(Paragraph("As agreed with the insurer", ST["h2"]))
+    for t in [
+        "An at-fault collision is an incident EMAL's incident review records as at fault, wholly (code A) or in part "
+        "(code C). Code N is not at fault and code R is still under review; neither is reported.",
+        "The claims paid on a collision are the amounts the insurer has paid on the claims arising from it, as at the "
+        "October 2026 bordereau. Reserves are not reported.",
+        "A collision belongs to the depot its bus was allocated to on the day.",
+    ]:
+        s.append(Paragraph("&bull; " + t, ST["p"]))
+    s.append(Paragraph("Timetable", ST["h2"]))
+    s.append(Paragraph(
+        "EMAL Finance sends the figures to us by Friday 20 November 2026. We present them to the insurer with the "
+        "renewal submission on 1 December and expect terms before the policy year ends on 31 December.", ST["p"]))
+    _pdf(path, s, "Fleet motor policy: reporting notes", "Arcos & Vela Correduría de Seguros")
+
+
+def annex_pdf(path):
+    s = [Paragraph("AYUNTAMIENTO DE LORVEGA, CONTRATO DE GESTIÓN DEL SERVICIO DE AUTOBUSES URBANOS", ST["small"]),
+         Paragraph("Annex IV: kilometres in service and the monthly return", ST["h1"]),
+         Paragraph("English working translation for EMAL Finance.", ST["small"]), Spacer(1, 6)]
+    s.append(Paragraph(
+        "IV.1 The City pays the operator for the kilometres in service it runs each calendar month. The kilometres in "
+        "service are the kilometres the buses ran on service trips: positioning runs to and from the depots are not "
+        "service.", ST["p"]))
+    s.append(Paragraph(
+        "IV.2 The operator files a monthly service return with one row for each date, line and direction, giving the "
+        "trips programmed, the trips operated and the kilometres run.", ST["p"]))
+    s.append(Paragraph(
+        "IV.3 Each depot's kilometres are reported for the lines it operates.", ST["p"]))
+    _pdf(path, s, "Annex IV: kilometres in service", "Ayuntamiento de Lorvega")

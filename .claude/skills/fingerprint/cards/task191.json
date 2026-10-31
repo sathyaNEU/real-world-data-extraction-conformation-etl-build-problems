@@ -12,8 +12,8 @@
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
   "scoring_unit": "other",
-  "answer": "",
-  "answer_source": "",
+  "answer": "San Lázaro: the 2027 Driver-Attention Programme runs at San Lázaro and at no other depot",
+  "answer_source": "submission.md block 1; golden attention_programme_depots_2027.docx and warning_response_by_depot_2026.xlsx; generator/figures.json call.depots",
   "gap": [
     "objective",
     "population"
@@ -34,7 +34,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file and the programme's terms correctly takes each depot's share of collision warnings with no brake application within two seconds against the fleet's, the fleet safety dashboard's own measure, and perhaps sets aside the places that raise the most warnings as nuisance places; the first files the two depots whose routes pass the fixed structures that fire a warning on almost every pass at speed, and the second also throws away the busy pedestrian streets where the warnings are real, so neither files the depot whose drivers let genuine pedestrian warnings pass there.",
+  "analyst_test": "A strong analyst who dedupes the events, reads both firmware versions, converts the clock and allocates the buses takes each depot's no-brake share of its collision warnings against the fleet's and files Hornacho and Valdeolmos; one move on, setting the busiest or most ignored places aside as nuisance, files La Ribera; both read every rule right and are wrong because the places are told apart by how often they fire per bus, not by how loud they are.",
   "domain_test": "The deciding quantity is each depot's rate of not braking on genuine collision warnings, the human-factors measure of warning compliance, which alarm research reads on valid alarms only because operators rightly learn to let a warning that is false at a known place go; with another field's nouns (fraud alerts, smoke alarms) there is no bus passing a place at speed, no fixed structure that fires on nearly every pass and no brake response, and the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:fixed-place-false-warnings-told-apart-by-share-of-passes",
@@ -50,10 +50,10 @@
   "stakeholder_role": "the bus company's head of driving safety, who proposes the 2027 driver-attention programme's depots to the management committee",
   "role_family": "compliance_or_audit",
   "spine": {
-    "file": "collision_warnings_2025-01_2026-10.csv",
-    "rows": 0,
-    "entity": "one forward-collision or pedestrian warning raised on a bus",
-    "grain": "warning event",
+    "file": "adas_collision_warnings_2025-10_2026-10.csv",
+    "rows": 99207,
+    "entity": "one warning message from a bus's driver-assistance camera (an event re-sent after a lost connection appears twice)",
+    "grain": "camera warning message, October 2025 to 1 November 2026",
     "source": "synthetic"
   },
   "forum": "executive_team",
@@ -79,15 +79,19 @@
   "deliverables": [
     "attention_programme_depots_2027.docx",
     "warning_response_by_depot_2026.xlsx",
-    "genuine_warning_response_2026.svg"
+    "warning_response_2026.svg"
   ],
   "opening_move": "question-first",
   "question_form": "where",
-  "driver": "Each unit's rate of failing to act on a warning is read only on the warnings whose trigger was real, because the warning system fires on nearly every pass at a few fixed places where nothing is ever in the way and operators rightly let those go, while the places where real hazards cluster fire on a small share of passes; the two kinds of place are told apart only by the share of passes on which the system fires, which no count of warnings carries, so the units whose routes cross the fixed places look worst and the unit that lets real hazards pass looks ordinary.",
-  "driver_concrete": "Each depot's share of genuine forward-collision and pedestrian warnings with no brake application within two seconds, where the warnings raised on most passes at speed by a few fixed structures on the new network (a low rail bridge, the busway's bollards, a tight bend's crash barrier) are not genuine and are set aside, told apart from the busy pedestrian streets where warnings are real but rare only by warnings per bus passage at speed from the running-time database.",
-  "stump": "The fleet dashboard's measure, the no-brake share of every collision warning by depot against the fleet's, files the two depots whose routes run under the rail bridge and along the busway, and setting aside the places with the most warnings also drops the pedestrian streets where the warnings are genuine and files no depot; the depot whose drivers let genuine pedestrian warnings pass in those streets is flagged only once the fixed false-trigger places are removed by their share of passes at speed and the genuine hotspots are kept.",
+  "driver": "Each unit's rate of failing to act on a warning is read only on the warnings whose trigger was real, because the warning system fires on a large share of the passes at a few fixed places where nothing is in the way and operators rightly let those go, while the places where real hazards cluster fire on a small share of passes; the two kinds of place are told apart only by the share of passes on which the system fires, which no count of warnings carries, so the units whose routes cross the fixed places look worst and the unit that lets real hazards pass looks ordinary.",
+  "driver_concrete": "Each depot's share of genuine forward-collision and pedestrian warnings with no brake application within two seconds, where the warnings four fixed structures of the new network raise (an underpass beneath the railway, a bus-only link road, the busway's bollard gates and a sculpture on a roundabout) on a quarter or more of the buses passing them are not genuine and are set aside, told apart from the market-day shared space where pedestrians really step out, which fires on 2.6 per cent of passes, only by warnings per bus passage, the passes counted from the service return's trips operated over the stop-and-route register's sequences.",
+  "stump": "The fleet dashboard's measure, the no-brake share of every collision warning by depot against the fleet's, files Hornacho and Valdeolmos, whose lines cross the four fixed structures; setting aside the busiest or most ignored places as nuisance also drops the Plaza de Abastos, where pedestrians are really in the path, and files La Ribera; San Lázaro, whose drivers let 96.9 per cent of the Plaza's genuine warnings go, is flagged only once the places are classed by warnings per bus pass.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task193": "surface promotion on two generic card axes only (decisive gap objective, decision designation_set): task193 dates first exposures inside a self-controlled window in pharmacoepidemiology, a model choice; task191 classes alarm places by their firing share of bus passes, no shared mechanism, file or world.",
+    "task473": "surface promotion on the decision type alone (designation_set): task473 weights record-linkage positives by an observer's noticing share; task191 classes alarm places by firing share per pass.",
+    "task470": "both class records as signal or artifact (classification_error), but task470 reads a use rhythm inside each unit's own meter series, while task191 reads a place's warnings against an exposure count built from another system (the return's trips over the register's sequences); the shared rounding construction in the prompt was reworded at build."
+  },
   "lineage": [
     {
       "architecture": "v1",

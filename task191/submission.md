@@ -1,86 +1,75 @@
-# task191 submission
-
 ## Tags
 
-**Domain:** General Statistics & Data Science, multiple testing and selective inference (judging one monitored extreme when the extreme was picked out of every interconnect, evening and window the platform watches).
-**Analytical objective:** Anomaly Detection & Diagnostics (whether an evening shortfall is a real degradation or what monitoring 1,851 windows a quarter produces on its own).
+> **Domain:** Human factors and ergonomics, safety incident and error analysis.
+> **Analytical objective:** Anomaly detection and diagnostics.
 
 ## 1. Final Recommendation
 
-**Fund no interconnect augment this cycle.**
-
-The quarter's worst evening shortfall is **318 kbps**, on **HVT-01** on 2027-02-17 in the 19:00 window. Clause 4.2 funds an augment where the shortfall is larger than the shortfall the network's own record shows the measurement produces without congestion, and the record is the eight earlier quarters of the same measurement on the same seven interconnects. Every quarter in it produced a larger worst window than this one, from 398 kbps up to 489, so the quarter is the quietest of the nine and no interconnect clears the record.
+**Run the 2027 Driver-Attention Programme at San Lázaro, and at no other depot.**
+San Lázaro's drivers did not brake on 45.2 per cent of their genuine collision warnings in January to October 2026, 2.00 times the fleet's 22.6 per cent. Not Hornacho or Valdeolmos: their high no-brake shares come from four fixed structures that raise a warning on a large share of passes with nothing in the path. La Ribera comes closest at 1.14.
 
 ## 2. Critical Components
 
-1. The figure the decision is taken on is the largest of the 1,809 interconnect evening windows the quarter leaves standing, so the record it is measured against is each earlier quarter's own largest at that same reach: 489, 471, 458, 447, 436, 424, 411, 398 kbps.
-2. **HVT-01** comes closest at **318** kbps, which stands **28** per cent above its own 99th percentile for the quarter and **20** per cent below the smallest worst window any earlier quarter produced.
-3. **14** evenings are left out, the ones on which work was booked inside an evening window. Keeping them would put the worst shortfall at **569** kbps on **STR-01**, above every quarter in the record, and fund an augment there.
-4. **DLF-01** carries the largest shortfall across the quarter as a whole, a mean of **129.1** kbps against **112.0** on the next interconnect, and the record shows that level is ordinary for it.
-5. Measured against its own evening-to-evening spread instead of the record, the quarter's worst window stands clear and would fund an augment on HVT-01.
+1. The terms count genuine warnings only (something in the bus's path), one camera event each, by the depot the bus was allocated to that day, in Lorvega local time.
+2. Read on every collision warning, the fleet's rate is 38.9 per cent and Hornacho and Valdeolmos reach 1.3 times it; San Lázaro sits at 1.16.
+3. Four places fire on a large share of bus passes, from 25.0 to 30.3 per cent; every other place, the Plaza de Abastos included at 2.6 per cent, fires on under 3 per cent. Their 17,968 warnings are not genuine and are set aside.
+4. The Plaza de Abastos warnings are genuine: drivers there let 96.9 per cent pass, so dropping the busiest or most ignored places wrongly removes them too.
 
 ## 3. Step-by-Step Solution
 
-1. Read the minute panel, resolved the UTC stamps to local time across the 28 March change, and took each interconnect's reference band and evening window medians as the delivered quality standard defines them, cross-checking against the pipeline's own daily rollup.
-2. Resolved every port code to the interconnect in service at the quarter end through interconnect_register.csv, which carries the port renamed on 12 February.
-3. Left out the 14 evenings on which clause 4.4's booked work fell inside an evening window.
-4. Computed the shortfall of every interconnect, evening and window the quarter's record holds, 1,851 of them, and took the largest of the 1,809 that survive step 3: 318 kbps on HVT-01.
-5. Clause 4.2 asks whether that is larger than the shortfall the record shows the measurement produces without congestion, and the figure was selected as the largest of 1,809, so the comparison has to be with what the record produces at that same reach, not with one interconnect's own spread.
-6. Took the same maximum from each of the eight earlier quarters in evening_quality_daily.csv: every one is larger than this quarter's, the smallest at 398 kbps and the largest at 489, so nothing is funded. The record holds 282 of its 15,330 windows at or above this quarter's worst, so the measurement plainly produces that level without congestion.
-7. For the peers, summed each peer's ports at every five-minute instant and took the 1,296th highest sample of the quarter against the commitment both sides had accepted; for the client builds, split the sessions by the release log's own rollout windows; for the incidents, counted to the restoration time the duty engineer recorded.
+1. From adas_collision_warnings_2025-10_2026-10.csv kept FCW, PCW, FWD_COLL and PED_COLL, one row per event_id, local dates 1 January to 31 October 2026; not braked on is brake_2s N (firmware 1.x) or brake_reaction_ms blank or over 2,000 (2.x).
+2. Gave each warning the depot of its bus that day from fleet_register_2026.xlsx Allocations.
+3. Snapped each warning to the nearest stop-to-stop segment of red_paradas_recorridos_2025_2026.xlsx (Red 2026, valid dates) and counted bus passes per segment from service_return_2025-10_2026-10.csv trips operated on every line and direction using it.
+4. Grouped warnings in 10 m bins along each segment and set aside the clusters firing on 10 per cent or more of the segment's passes.
+5. Took each depot's rate and its ratio to the pooled fleet rate; a depot at 1.3 or more goes in.
+6. Hours on service from etm_logons_2026-10.csv: removed repeated rows and lines 000 and ESC, ended a session at the same driver's next log-on, added the hour when clocks went back on 25 October, depot from hr_depot_assignments_2026.csv on the start date, week of the start.
+7. At-fault collisions from incident_register_2026.xlsx with the driver's and the inspector's report of one incident (same bus, minutes apart) counted once, codes A and C; claims paid from the October bordereau, plates to buses through the registration history, a reopened claim's chain counted once at its latest claim.
+8. Kilometres in service from the return by operating depot (line 25 at Las Tenerías), lines 40 to 46 from July in metres, plus trips operated times each authorised diversion's change for its dates.
 
 ## 4. Deliverable Answers
 
-### augment_decision_2027Q1.xlsx
+### attention_programme_depots_2027.docx
 
-1. Recommendation: **fund no augment this cycle**.
-2. Comes closest: **HVT-01**, at **318** kbps.
-3. Evenings left out: **14**.
-4. Worst evening shortfall and the evening it fell on, by interconnect and window:
-   - DLF-01, the 19:00 window: 246 kbps, 2027-03-18
-   - DLF-01, the 20:00 window: 303 kbps, 2027-02-14
-   - DLF-01, the 21:00 window: 250 kbps, 2027-01-22
-   - HVT-01, the 19:00 window: 318 kbps, 2027-02-17
-   - HVT-01, the 20:00 window: 248 kbps, 2027-03-22
-   - HVT-01, the 21:00 window: 269 kbps, 2027-03-19
-   - KZD-01, the 19:00 window: 285 kbps, 2027-03-20
-   - KZD-01, the 20:00 window: 278 kbps, 2027-03-03
-   - KZD-01, the 21:00 window: 247 kbps, 2027-02-08
-   - OPL-01, the 19:00 window: 311 kbps, 2027-02-25
-   - OPL-01, the 20:00 window: 268 kbps, 2027-03-21
-   - OPL-01, the 21:00 window: 301 kbps, 2027-01-21
-   - RHN-01, the 19:00 window: 263 kbps, 2027-02-24
-   - RHN-01, the 20:00 window: 307 kbps, 2027-01-09
-   - RHN-01, the 21:00 window: 306 kbps, 2027-01-19
-   - STR-01, the 19:00 window: 290 kbps, 2027-01-17
-   - STR-01, the 20:00 window: 265 kbps, 2027-03-31
-   - STR-01, the 21:00 window: 312 kbps, 2027-03-06
-   - VSN-01, the 19:00 window: 249 kbps, 2027-02-14
-   - VSN-01, the 20:00 window: 241 kbps, 2027-01-08
-   - VSN-01, the 21:00 window: 237 kbps, 2027-01-01
+1. Depots the programme takes: San Lázaro.
+2. Fleet's rate of counted warnings not braked on: 22.6 per cent.
+3. Depot coming closest without qualifying: La Ribera, ratio 1.14.
 
-### shortfall_overview.png
+### warning_response_by_depot_2026.xlsx
 
-5. One bar for each interconnect of its worst evening shortfall across the quarter, the closest one marked: HVT-01 318, STR-01 312, OPL-01 311, RHN-01 307, DLF-01 303, KZD-01 285, VSN-01 249.
+1. Counted warnings, not braked on, rate (per cent, one decimal) and ratio (two decimals):
+   - San Lázaro: 8,557, 3,868, 45.2, 2.00
+   - Hornacho: 5,700, 889, 15.6, 0.69
+   - Valdeolmos: 7,895, 1,273, 16.1, 0.71
+   - El Quiñón: 5,913, 981, 16.6, 0.73
+   - Las Tenerías: 10,744, 1,877, 17.5, 0.77
+   - La Ribera: 8,280, 2,139, 25.8, 1.14
+   - Santa Clara: 6,190, 1,008, 16.3, 0.72
+2. At-fault collisions, January to October, and claims paid on them (euros):
+   - San Lázaro: 20, 24,207
+   - Hornacho: 25, 25,850
+   - Valdeolmos: 19, 20,517
+   - El Quiñón: 19, 33,737
+   - Las Tenerías: 25, 29,216
+   - La Ribera: 22, 22,579
+   - Santa Clara: 21, 17,280
+3. Kilometres in service, July, August, September and October (whole kilometres):
+   - San Lázaro: 75,127, 72,183, 70,694, 74,009
+   - Hornacho: 66,213, 63,634, 60,226, 62,999
+   - Valdeolmos: 93,313, 93,247, 90,820, 93,543
+   - El Quiñón: 59,390, 55,796, 56,939, 57,969
+   - Las Tenerías: 105,247, 101,901, 101,253, 107,135
+   - La Ribera: 84,360, 80,946, 79,839, 81,039
+   - Santa Clara: 82,443, 80,731, 84,145, 78,799
+4. Drivers' hours on service, weeks from Monday 5, 12, 19 and 26 October (whole hours):
+   - San Lázaro: 4,493, 4,481, 4,514, 4,501
+   - Hornacho: 3,521, 3,493, 3,519, 3,498
+   - Valdeolmos: 4,496, 4,507, 4,510, 4,486
+   - El Quiñón: 3,398, 3,395, 3,378, 3,381
+   - Las Tenerías: 5,621, 5,614, 5,643, 5,617
+   - La Ribera: 4,507, 4,516, 4,494, 4,510
+   - Santa Clara: 4,502, 4,489, 4,492, 4,513
 
-### Also requested
+### warning_response_2026.svg
 
-6. Per peer, the quarter's billable 95th percentile, the commitment billed on and the overage:
-   - Delfzicht Breedband: 159 Mbps against 124 Mbps, 236 euros
-   - Grensweg Carrier: 337 Mbps against 326 Mbps, 79 euros
-   - Kabelnet Zuid: 238 Mbps against 196 Mbps, 246 euros
-   - Noordlijn Transit: 648 Mbps against 540 Mbps, 583 euros
-   - Rhenia Telecom: 142 Mbps against 130 Mbps, 85 euros
-   - Vastnet: 198 Mbps against 183 Mbps, 92 euros
-   - Zandpoort IX: 89 Mbps against 72 Mbps, 158 euros
-7. Per client build, the sessions and the share that rebuffered:
-   - b-41600 (4.16.0): 9,853,791 sessions, 3.0 per cent
-   - b-41700 (4.17.0): 10,484,730 sessions, 2.8 per cent
-   - b-41800 (4.18.0): 7,300,481 sessions, 5.8 per cent
-   - b-41806 (4.18.0): 6,389,401 sessions, 3.2 per cent
-   - b-41810 (4.18.1): 5,660,060 sessions, 3.1 per cent
-   - b-41900 (4.19.0): 7,387,510 sessions, 3.2 per cent
-8. Per month, the incidents opened, those restored inside the standard and those whose recorded cause sits outside the platform:
-   - 2027-01: 47 opened, 26 restored inside the standard, 20 with a cause outside the platform
-   - 2027-02: 44 opened, 30 restored inside the standard, 13 with a cause outside the platform
-   - 2027-03: 57 opened, 37 restored inside the standard, 30 with a cause outside the platform
+1. One bar per depot for the rate of counted warnings not braked on, with a dashed line at 1.3 times the fleet's rate (29.4 per cent).
+2. San Lázaro marked in red; the title names it.
