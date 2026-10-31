@@ -1,39 +1,20 @@
 {
  "task": "task306",
- "status": "SHIPPED",
- "domain": "energy-systems-utilities",
+ "status": "DESIGN",
+ "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-26",
- "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools the Mira city car four lots short (1,250 against 1,450, 3,400 against 3,800 in total); the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 116 a month past their warranty and fall due inside the year.",
- "architecture": 1,
- "loops": 1,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-24"
- },
- "leak": {
-  "leak_py": "REVIEW on 7aa71d60 (four design-note vocabulary lines, each ruled harmless)",
-  "reader": "pass 2, isolated, pack and prompt only: LANDED the call (all five slots and the 3,800 total) and took 5 of 15 ask figures, 33.3 per cent (all five modules, none of the ten yield and core-rejection figures). Report task306/leak_reader_pass2.md. Its question-6 answer (filed rules and date reading rather than an analytical choice) is self-introspection the judge's measurement contradicts, and its own formula carries the conditioning denominator it does not name as a choice."
- },
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-31",
+ "stump": "",
+ "architecture": 2,
+ "loops": 0,
+ "precut": null,
+ "leak": null,
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task183, task130 lineage, task138 lineage, task114, task479 lineage at 0.05"
+  "check": "WARN at registration 2026-10-31T17:27:22Z (overuse.org_family, repeat.gate_g against task181 v5, repeat.decision against task118 v5; test.same_puzzle_older and test.same_driver_older against task302 and task120 v3 answered by differentiation)"
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (Gate G analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)",
-  "rejudge_2026_10_26": {
-   "verdict": "DETERMINISTIC",
-   "disposition": "APPROVE",
-   "gate_g": "forecasting, method/estimand selection on correctly read data, surface_read_dependency no, sole_data_defect no",
-   "gate_h": "domain pass, layers pass, decisive_step analytical",
-   "report": "task306/determinism_check_report_pass2.md",
-   "note": "40 variants run end to end. Golden family (survival conditioning, daily pro-rata) 8 variants give 3,681 to 3,810 and the committed split in 7 of 8. Unconditional reading about 2,700 and wrong on three platforms; register-only Mira 1,250 Volta 1,000; warranty from the Dutch registration date 1,968; ignoring the replacement log 5,732. One fork closed by inference (survival conditioning is not stated in words; the data force it, the curve reaching certainty at age 13 while surviving older packs are on the register). Optional hardening offered, not required."
-  }
- },
+ "judge": null,
  "returned": [
   {
    "date": "2026-10-26",
@@ -42,12 +23,62 @@
    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "Re-shipped 2026-10-26 after the determinism repair, on the author's call. Three forks closed in the record with no method filed; freeze.py --mode determinism PASS so no graded figure moved; licensed re-judge DETERMINISTIC APPROVE with decisive_step analytical over 40 measured variants; one isolated cold reader landed the call and took 5 of 15 ask figures, putting the pair near 46 against a bar of 70. Waits on the portal. The surviving risk is stated in the design note's Correction section and is Gate F, not rule 3: the decisive step is analytical but reflex reachable, since a competent solver conditions a survival curve on survival to the as-of date without deliberating. If the portal's two responses both land the call, this is a decisive-step re-root at stage 1 and not another determinism fix. Owed on any next cut whatever the portal says: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise). The card's stump sentence still names the register-only route, which the population sentence now rules out; left as filed because /fix-determinism freezes the stump.",
+ "resume": "Architecture 2 drawn and registered 2026-10-31: the development corporation's 2027 inward investment fund award, the regional GVA each project adds once its induced round is read where its staff live. Next: stage 2 design (default path, stump sentence, three rules, ladder, fork table, asks, prompt) to precut.py exit 0.",
  "approved": null,
- "delivered": "2026-10-24",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "architecture_spent": false
+ "architecture_spent": false,
+ "history": [
+  {
+   "date": "2026-10-31",
+   "event": "architecture 1 (Voltwerk's EV pack refurbishment slots, shipped 10-24, reshipped 10-26) spent at the batch 1 triage: its cold reader landed the call and named the decisive step a procedure",
+   "architecture_1": {
+    "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools the Mira city car four lots short (1,250 against 1,450, 3,400 against 3,800 in total); the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 116 a month past their warranty and fall due inside the year.",
+    "architecture": 1,
+    "loops": 1,
+    "precut": {
+     "exit": 0,
+     "date": "2026-10-24"
+    },
+    "leak": {
+     "leak_py": "REVIEW on 7aa71d60 (four design-note vocabulary lines, each ruled harmless)",
+     "reader": "pass 2, isolated, pack and prompt only: LANDED the call (all five slots and the 3,800 total) and took 5 of 15 ask figures, 33.3 per cent (all five modules, none of the ten yield and core-rejection figures). Report task306/leak_reader_pass2.md. Its question-6 answer (filed rules and date reading rather than an analytical choice) is self-introspection the judge's measurement contradicts, and its own formula carries the conditioning denominator it does not name as a choice."
+    },
+    "duplicate_check": {
+     "heart": "",
+     "nearest": "task183, task130 lineage, task138 lineage, task114, task479 lineage at 0.05"
+    },
+    "judge": {
+     "verdict": "DETERMINISTIC",
+     "disposition": "APPROVE",
+     "report": "determinism_check_report.md (Gate G analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)",
+     "rejudge_2026_10_26": {
+      "verdict": "DETERMINISTIC",
+      "disposition": "APPROVE",
+      "gate_g": "forecasting, method/estimand selection on correctly read data, surface_read_dependency no, sole_data_defect no",
+      "gate_h": "domain pass, layers pass, decisive_step analytical",
+      "report": "task306/determinism_check_report_pass2.md",
+      "note": "40 variants run end to end. Golden family (survival conditioning, daily pro-rata) 8 variants give 3,681 to 3,810 and the committed split in 7 of 8. Unconditional reading about 2,700 and wrong on three platforms; register-only Mira 1,250 Volta 1,000; warranty from the Dutch registration date 1,968; ignoring the replacement log 5,732. One fork closed by inference (survival conditioning is not stated in words; the data force it, the curve reaching certainty at age 13 while surviving older packs are on the register). Optional hardening offered, not required."
+     }
+    },
+    "returned": [
+     {
+      "date": "2026-10-26",
+      "portal": "determinism block failed, two findings on the 2027 population and the pack basis",
+      "repair": "determinism",
+      "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
+     }
+    ],
+    "resume": "Re-shipped 2026-10-26 after the determinism repair, on the author's call. Three forks closed in the record with no method filed; freeze.py --mode determinism PASS so no graded figure moved; licensed re-judge DETERMINISTIC APPROVE with decisive_step analytical over 40 measured variants; one isolated cold reader landed the call and took 5 of 15 ask figures, putting the pair near 46 against a bar of 70. Waits on the portal. The surviving risk is stated in the design note's Correction section and is Gate F, not rule 3: the decisive step is analytical but reflex reachable, since a competent solver conditions a survival curve on survival to the as-of date without deliberating. If the portal's two responses both land the call, this is a decisive-step re-root at stage 1 and not another determinism fix. Owed on any next cut whatever the portal says: the modules ask's eight over-posted pick lists read as planted (bookings stepping 07:05, 07:06, identical quantities per work order), and a golden-realism sweep (curves smooth to four decimals, round lot sizes, banded recycler weights, a register extract with no noise). The card's stump sentence still names the register-only route, which the population sentence now rules out; left as filed because /fix-determinism freezes the stump.",
+    "delivered": "2026-10-24"
+   }
+  },
+  {
+   "date": "2026-10-31",
+   "event": "DRAWN: architecture 2, regional-input-output-economic-impact x opportunity sizing, registered 2026-10-31T17:27:22Z"
+  }
+ ]
 }
