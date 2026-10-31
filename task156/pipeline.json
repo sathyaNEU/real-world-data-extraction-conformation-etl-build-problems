@@ -1,10 +1,10 @@
 {
  "task": "task156",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a New Zealand district council's wastewater pump station and its discharge consent)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-31",
  "stump": "Fitting one unit-hydrograph response per millimetre on the meter's 2024 to 2026 storms and carrying the meter's base flow into the consent's 2006 to 2025 replay keeps the station inside its two overflows a year with the subdivision connected, and connects it; the infiltration reaching the station on a dry day and in a storm scales with the sewer length below the water table, which the replay's wet years carry far past anything the meter saw (figures provisional until the generator is measured).",
  "architecture": 2,
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stage 2: the design sections, the asks, the generator's screens as code, prompt.txt, precut.py.",
+ "resume": "Stage 2 and 3 of architecture 2 (the PS03 connection). The physics is in generator/world.py, hydro.py and codeofpractice.py and is calibrated on the clean truth: the conditioned replay files about 3.4 overflows a year without the subdivision, 3.5 with it and 1.2 after the upgrade, one response per millimetre about 0.7, the meter logs three overflows; G is to come down slightly (about 4.3 L/s per km) so the with-subdivision figure sits off the 3.5 edge, now that the terrace network is a two-trunk tree of 481 pipes (30.6 km). Next, in order: finish records.py (asset register with the pump station and overflow monitor sheets, the monitor SMS log, the lines company's outages, the council's electricity sites, the water meter reads, accounts, rating snapshot and building consents, the two distractors); docs.py (consent AUTH-2024-0418, PS03 data sheet, code of practice, Ngaio Road servicing report, water metering and billing policy, the storage upgrade brief); estim.py (the golden from target/), deliver.py (workbook, council report docx, replay png, figures.json, submission.md), checks.py (R1 to R3, the SF rows, the realism sweep, the input gates), verify.py, ceiling.py, metadata.py, build.py; delete the architecture 1 modules (asks.py, calc.py, common.py, deliver.py, docs.py, checks.py, verify.py, metadata.py, postprocess.py rewritten for the new company) and its goldens; write the design note's stage 2 sections; then every free gate and the stage 4 hand-off (leak copy and reader brief in the scratchpad, PAUSED commit).",
  "approved": null,
  "delivered": null,
  "portal": null,
