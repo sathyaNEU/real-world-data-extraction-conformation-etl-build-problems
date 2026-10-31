@@ -174,7 +174,8 @@ def write_board(path):
     rows = [["Item", "Price"]] + [[a, "EUR %.2f" % p] for a, p in K.ACCESSORIES]
     st.append(_table(S, rows, (80, 30), right=(1,)))
     st += [Spacer(1, 6), Paragraph("Paying", S["h2"]),
-           Paragraph("Card payments at the counter. Paying cash? Take your label to any checkout.", S["body"]),
+           Paragraph("Card payments here at the counter, within 25 minutes of weighing. Paying cash? Take your label "
+                     "to any checkout today. Unpaid labels are void at closing.", S["body"]),
            Paragraph("Open Monday to Saturday 9:00 to 18:00, Sunday 12:00 to 17:00.", S["body"])]
     doc.build(st, onFirstPage=_frame("Corcally's Drumsallagh", "Coffee counter", "Sans"),
               onLaterPages=_frame("Corcally's Drumsallagh", "Coffee counter", "Sans"))

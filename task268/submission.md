@@ -21,7 +21,7 @@ Of the 1,857 homes that bought Oro Rosso in 2026, 741 also bought Corcally's Roa
 2. Matched every card-paid receipt to its SALE row in faircourt_settlement_2026.parquet on terminal (faircourt_merchant_agreement_2026.pdf, Schedule 2, by installed and removed dates), amount and time (txn_time_utc converted to Irish time, the row up to two minutes before the receipt): 50,047 receipts, one row each.
 3. Took each online order in online_orders_2026.json delivered in 2026, its last version's coffee lines, and its card_ref from the settlement row whose merchant_ref is the order number.
 4. Joined the Rewards cards and online accounts that share a card_ref into homes (3,802 homes bought coffee), and for each rival counted the homes that bought it and those that also bought Roastery packs: Oro Rosso lowest at 40%, Nordhavn next at 49%.
-5. Counter: matched each label in counter_scale_labels_2026.csv to a SALE on terminal 41023121 (labels printed in the 25 minutes before, plus accessories at coffee_counter_price_board_2026.pdf prices) or to a COUNTER COFFEE LOOSE till line of its price; scale 2's labels S2-006398 to S2-006970, printed under January dates, re-dated by the offset that lines them up with those payments; S2 weights read as grams; unpaid labels left out.
+5. Counter: matched each label in counter_scale_labels_2026.csv to a SALE on terminal 41023121 (labels printed in the 25 minutes before, plus accessories at coffee_counter_price_board_2026.pdf prices) or to a COUNTER COFFEE LOOSE till line of its price earlier that day, as the board files; scale 2's labels S2-006398 to S2-006970, printed under January dates, re-dated by the offset that lines them up with those payments; S2 weights read as grams; labels never paid for left out.
 6. Funding: each MULTIBUY SAVING line in a deal's dates at the multibuy_deals_2026.xlsx rate in force on the sale day, each reversal netted against the receipt its refund cites, and each MULTIBUY ADJ line added at the date of the receipt its note cites, one multibuy per missed pair on that receipt.
 7. The sampling goes to Oro Rosso's homes.
 
@@ -33,9 +33,9 @@ Of the 1,857 homes that bought Oro Rosso in 2026, 741 also bought Corcally's Roa
 2. Bar chart on slide 2 of every rival's share of buying homes that also bought the Roastery, lowest first, Oro Rosso highlighted.
 3. Runner-up Nordhavn at 49%; gap 9 points.
 4. Loose coffee the Drumsallagh counter sold, kilograms to one decimal:
-   - Glenmore Roasters: Q1 514.0, Q2 503.0, Q3 521.2, Q4 541.9
-   - Ardcath Coffee Co.: Q1 441.4, Q2 464.3, Q3 469.5, Q4 470.8
-   - Inish Bean: Q1 360.8, Q2 363.1, Q3 374.9, Q4 347.0
+   - Glenmore Roasters: Q1 514.4, Q2 503.7, Q3 521.9, Q4 542.9
+   - Ardcath Coffee Co.: Q1 441.7, Q2 464.9, Q3 470.2, Q4 471.3
+   - Inish Bean: Q1 361.1, Q2 363.3, Q3 375.4, Q4 347.7
 5. Multibuy funding owed by each supplier, whole euros:
    - Bellvale Foods Ireland Ltd: Q1 140, Q2 24, Q3 210, Q4 71
    - Cafetto Brands Ireland Ltd: Q1 30, Q2 164, Q3 30, Q4 155

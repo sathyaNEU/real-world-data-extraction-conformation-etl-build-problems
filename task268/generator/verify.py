@@ -252,7 +252,7 @@ def documents(T):
     from pypdf import PdfReader
     import docx
     for k, want in (("terms", "Each card is issued to one member"), ("agreement", "Coordinated Universal Time"),
-                    ("board", "Take your label to any checkout")):
+                    ("board", "Take your label to any checkout today")):
         t = re.sub(r"\s+", " ", " ".join((pg.extract_text() or "") for pg in PdfReader(os.path.join(T, K.FILES[k])).pages))
         if not t.strip() or want not in t:
             bad.append("%s: control %r not read" % (k, want))

@@ -451,8 +451,9 @@ class Golden:
                         used.add(lb["id"])
                         sold.add(lb["id"])
         if till:
+            # the board: a label paid in cash at a checkout the same day
             for ln in self.counter_till_lines():
-                lo = bisect.bisect_left(tkeys, ln["when"] - dt.timedelta(minutes=150))
+                lo = bisect.bisect_left(tkeys, dt.datetime.combine(ln["when"].date(), dt.time(0)))
                 hi = bisect.bisect_right(tkeys, ln["when"] + dt.timedelta(minutes=1))
                 cands = [lb for lb in times[lo:hi] if lb["id"] not in used and lb["price"] == ln["value"]]
                 if cands:
