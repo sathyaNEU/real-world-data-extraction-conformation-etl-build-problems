@@ -7,7 +7,7 @@
   "subdomain": "sample-design-allocation-weighting",
   "niche": "a university survey research centre placing a foundation-funded boost of 1,200 extra interviews in one of five health regions of a provincial health survey's 2027 wave, sized by how far the boost cuts that region's standard error",
   "objective": "opportunity-sizing-decision",
-  "shape": "01",
+  "shape": "13",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
   "answer": "",
@@ -25,7 +25,7 @@
   ],
   "gate_g": "binding_constraint",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "uncertainty_hold",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -83,5 +83,5 @@
   "lineage": [],
   "notes": "Drawn 2026-10-27 for task311 (seed OS13's world set aside).",
   "client_domain": "survey-research-official-statistics",
-  "registered": "2026-10-27T21:39:38Z"
+  "registered": "2026-10-31T22:57:59Z"
 }

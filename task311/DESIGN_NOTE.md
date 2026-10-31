@@ -11,11 +11,11 @@ paper here and measured on the generator's clean truth.
 | Axis | Value |
 |---|---|
 | Domain / task type | survey-research-official-statistics / sample-design-allocation-weighting (serves Opportunity Sizing) |
-| Objective | Opportunity Sizing & Decision Support: the headline is the precision the boost buys in each region, sized from the pool (1,200 nominal interviews) to the realisable (the standard error they take off the region's 2027 estimate, equivalently the effective interviews they add), and the sizes decide the region |
+| Objective | Opportunity Sizing & Decision Support: the headline is the precision the boost buys in each region, sized from the pool (1,200 nominal interviews) to the realisable (the share of the region's 2027 standard error they remove), and the sizes decide the region |
 | Decision / answer unit / question form | pick_one_of_n / named_option (one of five health regions) with each region's projected 2027 standard error / where |
-| Shape | 01, five candidates each with its projected error and error reduction, the call, the runner-up and the gap, plus three asks |
+| Shape | 13, five placement scenarios (the boost in each region) with each scenario's projected error and the share it removes, the call, and the flip point (the boost the runner-up would need to match the call), plus the asks |
 | Gap / pattern / generators | objective (the 2025 error is correct and is not what the boost is scored on), time / none / G2 (interviews against areas), G17 |
-| Gate G / strategy | binding_constraint (the between-area variance the fixed areas carry is a floor no added interview moves) / grain_or_unit |
+| Gate G / strategy | binding_constraint (the between-area variance the fixed areas carry is a floor no added interview moves) / uncertainty_hold (the decisive quantity is the precision a sample change buys) |
 | Layer 2 | estimation_fit, own:boost-precision-from-variance-components-not-scaled-error |
 | Forum / forcing event / org family | funder_or_donor (the foundation's grant committee releases the boost on the centre's placement) / purchase_order_or_contract (the 2027 fieldwork contract is let on the placement) / research_or_statistics_office |
 | Stakeholder | the survey director of a university survey research centre (statistical_office_head); the prompt carries no persona |
@@ -94,7 +94,28 @@ whose prevalence hardly clusters.
 - **Lesson:** precision bought by added sample is set by where the variance sits, not by the size of the present
   error; no build on file teaches projecting a clustered design's error under a changed cluster take.
 
+## Ladder prototype (2026-10-31, clean truth, scratchpad proto.py, proto_rel.py, proto_r4.py)
+
+The objective re-specified as the share of the region's 2027 standard error the boost removes (the precision it buys,
+pool to realisable), five regions, North ICC 0.22 in 20 areas of about 50, Central Valley ICC 0.004 with an area-weight
+spread of CV 0.85 (a dual-frame top-up), the others between:
+
+| Route | Pick | Shares removed (best first) |
+|---|---|---|
+| R1 the 2025 design error scaled by the root of the interviews | North | North 0.327, Southern Uplands 0.309, Lakeshore 0.298 |
+| R2 Kish with rho backed out of the published total design effect | Lakeshore | Lakeshore 0.170, Central Valley 0.162 |
+| R3 Kish with the weighting effect (1 + CV squared) divided out first | Lakeshore | Lakeshore 0.185, Southern Uplands 0.129, Central Valley 0.057 |
+| R4 variance components (ANOVA) projected through the design's own area weights | Central Valley | Central Valley 0.227, Lakeshore 0.190 |
+| Truth (the boosted design simulated, 300 replicates a region) | Central Valley | Central Valley 0.186, Metro 0.129, Lakeshore 0.124 |
+
+Reading: weighting inflates Central Valley's published design effect, so every Kish route mistakes it for clustering
+and sends the boost to Lakeshore, and count scaling sends it to the North; only the components projection that keeps
+the weights and the clustering apart finds Central Valley. Open before data: R4 picks Central Valley in 33 of 40
+realised samples (Lakeshore 7), so the world is tuned for margin, the golden family (unweighted and weighted ANOVA,
+REML, the design-based components) is run on the one shipped sample, and the asks are built outside the hygiene battery.
+
 ## Tried and rejected
 
 - Seed OS13's co-located charging sites as one site: the call turns on reading the federal site definition (data
   semantics); its state energy office repeats task310's organisation family; set aside.
+- The objective as drafted, the largest fall in the region's 2027 standard error (prototype of 2026-10-31, scratchpad proto.py, clean truth, 400 replicate draws a region): the absolute fall rewards the region whose present error is largest, so the North still tops the truth at 0.0023 against 0.0020 to 0.0021 for the low-clustering regions even with an intraclass correlation of 0.14, and the margins between the other regions are a few ten-thousandths, too thin for an estimator family; the Kish projection with the weighting effect divided out can turn a fall negative. Redrawn at the same time: stump_strategy uncertainty_hold (the decisive quantity is the precision a sample change buys) and shape 13 for 01 and grain_or_unit, both banned once task309 and task139 v3 entered the window. Next: an objective whose truth separates cleanly (a relative fall, or the ministry's publication standard as the line), measured before any data is cut.
