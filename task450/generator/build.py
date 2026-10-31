@@ -48,7 +48,6 @@ def build(out, quiet=False, world=None):
     n["directory"] = P.write_directory(w, f("directory"), rng)
     n["projection"] = P.write_projection(w, f("projection"), np.random.default_rng(W.SEED + 41))
     n["learning"] = P.write_learning(w, f("learning"), np.random.default_rng(W.SEED + 43))
-    n["dictionary"] = P.write_dictionary(f("dictionary"))
     strands = {}
     for r in P.items(w["F"], np.random.default_rng(W.SEED + 3)):
         if r["pos25"]:
@@ -61,7 +60,6 @@ def build(out, quiet=False, world=None):
     by = W.PEOPLE["director"][0]
     PP.normalize_ooxml(f("bank"), "Jacqueline Sanchez", by, "2024-11-04T15:10:00Z", "2026-04-06T13:22:41Z", excel=True)
     PP.normalize_ooxml(f("directory"), by, by, "2026-01-12T16:05:00Z", "2026-07-08T19:41:09Z", excel=True)
-    PP.normalize_ooxml(f("dictionary"), by, by, "2026-10-06T14:02:00Z", "2026-10-09T21:37:52Z", excel=True)
     PP.normalize_pdf(os.path.join(out, DC.REPORT), b"D:20250915101204-05'00'", b"D:20250916083518-05'00'")
     PP.normalize_pdf(os.path.join(out, DC.RULES), b"D:20260818163002-05'00'", b"D:20260819090144-05'00'")
     PP.normalize_pdf(os.path.join(out, DC.NOTICE), b"D:20260519112715-05'00'", b"D:20260519112715-05'00'")

@@ -1,10 +1,10 @@
 {
   "task": "task450",
-  "title": "Which elementary campuses a Texas district's superintendent's cabinet places its 2027 mathematics intervention coaches at, once the spring 2026 grade-5 results on a partly new test form are put on the reporting scale set on the 2025 form",
+  "title": "Which elementary campuses a Texas district's superintendent's cabinet places its 2027 grade-5 mathematics intervention coaches at, on this spring's assessment results",
   "domain": "Education & Learning Sciences",
-  "subdomain": "item-response-theory-test-equating (a new form linked to the reporting scale through the items it shares with the previous form, the two cohorts not equivalent)",
+  "subdomain": "item-response-theory-test-equating",
   "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "14 (cuts of a distribution): each rated campus's tested and meeting counts and share, the designated campuses the call",
+  "prompt_shape": "14 (cuts of a distribution): each rated campus's counts and share, the designated campuses the call",
   "as_of": "2026-10-09",
   "deliverables": [
     "intervention_schools_2027.docx",
@@ -15,7 +15,7 @@
     "math_professional_learning_hours_2025-26.csv"
   ],
   "input_gates": {
-    "files": 13,
+    "files": 12,
     "formats": [
       "csv",
       "pdf",
@@ -54,18 +54,9 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 7814,
-      "rows": null,
-      "source": "Constructed: the assessment office's field dictionary for the extract",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "dma_item_bank_grade5_math.xlsx",
       "format": "xlsx",
-      "bytes": 9537,
+      "bytes": 9538,
       "rows": null,
       "source": "Constructed: the district item bank's grade-5 mathematics items, release of 6 April 2026",
       "date": "2026-10-09",
@@ -92,7 +83,7 @@
     {
       "path": "dma_technical_report_2025_excerpt.pdf",
       "format": "pdf",
-      "bytes": 43518,
+      "bytes": 43506,
       "rows": null,
       "source": "Constructed: the District Mathematics Assessment technical report, spring 2025 (excerpt)",
       "date": "2026-10-09",

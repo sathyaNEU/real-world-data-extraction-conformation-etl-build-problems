@@ -1,6 +1,6 @@
 """Write task450's data files from the simulation: the two years' item-response exports, the item bank, the student
 information system's enrollment extract and id merges, the platform's registration crosswalk, the campus
-directory, two files the office keeps beside them, and the field dictionary."""
+directory and two files the office keeps beside them."""
 import csv
 import datetime as dt
 
@@ -18,7 +18,6 @@ FILES = {
     "directory": "campus_directory_2026-27.xlsx",
     "projection": "grade5_enrollment_projection_2026-27.csv",
     "learning": "math_professional_learning_hours_2025-26.csv",
-    "dictionary": "data_dictionary.xlsx",
 }
 DISTRACTORS = ("projection", "learning")
 FIX_POS = 4                      # the 2026 item whose key the bank carried wrongly
@@ -277,61 +276,3 @@ def write_learning(w, path, rng):
     return n
 
 
-FIELDS = [
-    (FILES["resp26"], "test_taker_id", "The platform's identifier for a registered test taker"),
-    (FILES["resp26"], "form_code", "Test form"),
-    (FILES["resp26"], "session", "Testing session (positions 1 to 25 in session 1, 26 to 50 in session 2)"),
-    (FILES["resp26"], "item_position", "Position of the item on the form"),
-    (FILES["resp26"], "item_id", "Item bank identifier"),
-    (FILES["resp26"], "response", "Answer chosen: A to D; blank when no answer was given; * when more than one was marked"),
-    (FILES["resp26"], "submitted_at", "Time the answer was submitted, district local time"),
-    (FILES["resp25"], "TEST_ID", "The platform's identifier for the test"),
-    (FILES["resp25"], "STUDENT_LOCAL_ID", "Student identifier in the district's records at the time of testing"),
-    (FILES["resp25"], "SCHOOL_CODE", "Campus code as the platform recorded it"),
-    (FILES["resp25"], "SCHOOL_NAME", "Campus name as the platform recorded it"),
-    (FILES["resp25"], "GRADE", "Grade tested"),
-    (FILES["resp25"], "FORM", "Test form"),
-    (FILES["resp25"], "TEST_DATE", "Date tested (MM/DD/YYYY)"),
-    (FILES["resp25"], "I01 to I50", "Answer chosen at each position of the form: A to D; blank when no answer was given; * when more than one was marked"),
-    (FILES["bank"], "Item ID", "Item bank identifier"),
-    (FILES["bank"], "Key", "The correct answer"),
-    (FILES["bank"], "Position, 2025 form / 2026 form", "Where the item appears on each grade-5 form; blank when it is not on that form"),
-    (FILES["bank"], "First used", "The year the item was first administered"),
-    (FILES["enroll"], "student_id", "Student identifier in the student information system"),
-    (FILES["enroll"], "campus_number", "Campus number (see the campus directory)"),
-    (FILES["enroll"], "entry_date / exit_date", "First and last day of the enrollment at the campus (the last day of school for enrollments open at year end)"),
-    (FILES["enroll"], "exit_code", "EY end of year; TW transferred to another district campus; LD left the district"),
-    (FILES["xwalk"], "test_taker_id", "The platform's identifier for a registered test taker"),
-    (FILES["xwalk"], "student_id", "Student identifier in the student information system"),
-    (FILES["xwalk"], "campus_number", "Campus the student was registered at"),
-    (FILES["xwalk"], "registered_on", "Date of registration (the roster load of 23 March 2026, or enrollment after it)"),
-    (FILES["merges"], "merged_id / surviving_id", "A student id retired into the id kept for the same student"),
-    (FILES["merges"], "merged_on", "Date of the merge"),
-    (FILES["directory"], "Campus number", "The district's campus number"),
-    (FILES["directory"], "Learning community", "The learning community the campus belongs to"),
-    (FILES["directory"], "Status, 2026-27", "Open, or the closure and where the attendance zone went"),
-    (FILES["projection"], "projected_grade5_2026_27", "The demographer's projection of grade-5 enrollment for 2026-27"),
-    (FILES["learning"], "hours", "Professional learning hours logged by the campus's grade-3 to grade-5 mathematics teachers"),
-]
-
-
-def write_dictionary(path):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Fields"
-    ws.append(["File", "Field", "Meaning"])
-    for f in FIELDS:
-        ws.append(list(f))
-    for c in ws[1]:
-        c.font = Font(bold=True, color="FFFFFF")
-        c.fill = PatternFill("solid", fgColor="2F4F6F")
-    for col, wd in zip("ABC", (40, 32, 96)):
-        ws.column_dimensions[col].width = wd
-    for row in ws.iter_rows(min_row=2):
-        for c in row:
-            c.alignment = Alignment(vertical="top", wrap_text=True)
-    ws.freeze_panes = "A2"
-    wb.save(path)
-    return len(FIELDS)

@@ -1,23 +1,26 @@
 # leak check, task450
 
-**Verdict: REVIEW.** 13 files read, 98 golden figures and 65 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 98 golden figures and 65 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: shared, conversion, screen, cohort, rejected, change, design, cohorts, method, golden, decisive, passing, student, scores, curriculum, difficulty, system, tested, full-academic-year, groups, linking, reporting, designates, report, alternative
+Stump terms swept: shared, conversion, screen, change, cohort, rejected, cohorts, method, design, golden, decisive, difficulty, passing, student, full-academic-year, scores, curriculum, linking, system, tested, groups, report, reporting, designates, points
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `campus_designation_rules_2026-27.pdf`: golden figure 300 appears: ...ich the district set on its 2025 grade-5 form, is 300 or above. Results from later forms are reported o...
 - **REVIEW** `dma_technical_report_2025_excerpt.pdf`: golden figure 300 appears: ...chose a linear scale so that the standard sits at 300 and each raw point on the 2025 form is worth six...
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `campus_designation_rules_2026-27.pdf`: 6 of 25 stump-paragraph terms appear (design, student, tested, full-academic-year, reporting, report); read whether the document names the move
-- **REVIEW** `dma_technical_report_2025_excerpt.pdf`: 5 of 25 stump-paragraph terms appear (conversion, student, scores, reporting, report); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Name them in intervention_schools_2027.docx with the share each was designated on, charted against the line, and put every rated campus's share with the two counts behind it in grade5_math_results_2026.xlsx, along with, "
+- **REVIEW** `campus_designation_rules_2026-27.pdf`: 6 of 25 stump-paragraph terms appear (design, student, full-academic-year, tested, report, reporting); read whether the document names the move
+- **REVIEW** `dma_technical_report_2025_excerpt.pdf`: 6 of 25 stump-paragraph terms appear (conversion, student, scores, report, reporting, points); read whether the document names the move
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Name them in intervention_schools_2027.docx with the share each was designated on, charted against the line, and put every rated campus's share with the counts behind it in grade5_math_results_2026.xlsx, along with, for "
 
 ## 6 ranking artifacts (REVIEW 1, INFO 1)
 - **REVIEW** `campus_directory_2026-27.xlsx`: names 65 of 65 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `grade5_enrollment_projection_2026-27.csv`: names 65 of 65 answer-set candidates; confirm it does not rank them on the decision question
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -32,9 +35,9 @@ Stump terms swept: shared, conversion, screen, cohort, rejected, change, design,
 
 ## 8 column names (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
+
+
 ## Solver's-eye read
 
 Two isolated reader passes (general-purpose, Sonnet, medium), each on fresh copies of prompt.txt and target/ from target.zip.
@@ -158,3 +161,16 @@ An analytical choice: how to carry the 2025 standard onto the 2026 form. No sent
 - Otherwise none.
 
 Main thread rulings (2026-10-13): no question-1 sentence, no question-2 or question-3 file, every question-5 sentence executes to the golden's population, question 6 analytical; the review lines harmless as read; the two realism observations are the platform's export format and a second author, kept.
+
+### Read of 2026-10-31 (reship under the 10-30 gates, pack 12 files)
+
+One isolated reader (Sonnet, medium) on fresh copies of `prompt.txt` and `target/`; it did not solve the task.
+
+1. Decisive step: none named; the nearest is the technical report's "The conversion applies to the 2025 form only" beside the rules' later forms on the same scale, which imply the 2025 table cannot be used on 2026 raw scores and never say to link or screen anything.
+2. Ranking file: none.
+3. Helper-only file: none (the merges, the registration crosswalk and the item bank read as ordinary system extracts).
+4. Answer-like figure or name: none (300, 40 per cent and ten are the rules' parameters).
+5. Literal sentence: rules section 4's rate over the full-academic-year testers, with sections 2, 3 and 5: the WHAT, leaving how 2026 raw scores reach the scale open.
+6. What decides: an analytical choice (putting the 2026 form on the 2025 scale); the filed rules and the key notice are rule application and data handling that do not settle the cut.
+
+Item rulings: the rules, the directory, the technical report and the prompt sentence all harmless. Realism: campus numbers stored as text in the directory (an export's own type), tidy invented names, a compact policy; no LLM tells.

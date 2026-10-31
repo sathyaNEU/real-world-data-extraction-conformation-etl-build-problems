@@ -52,6 +52,10 @@ def run(target, golden, world=None, meta_path=None):
     # ------------------------------------------------------------------------------------------ input gates ----
     rows = {f: sum(1 for _ in open(os.path.join(target, f))) - 1 for f in files if f.endswith(".csv")}
     ok(len(files) >= 10, "input gate: ten or more files", str(len(files)))
+    describing = re.compile(r"dictionar|manifest|readme|read_me|field_?notes|field_?guide|codebook|schema|definition|"
+                            r"extract_?notes|export_?notes|notes", re.I)
+    ok(not [f for f in files if describing.search(f)], "section 3: no file named as a dictionary, manifest, readme "
+       "or notes ships")
     ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "input gate: three or more formats",
        ",".join(sorted({f.rsplit(".", 1)[1] for f in files})))
     ok(max(rows.values()) >= 25000, "input gate: one file of 25,000 rows or more", str(max(rows.values())))

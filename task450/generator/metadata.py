@@ -19,7 +19,6 @@ SOURCES = {
     P.FILES["directory"]: "the district's campus directory for 2026-27",
     P.FILES["projection"]: "the demographer's 2026-27 grade-5 enrollment projection by campus",
     P.FILES["learning"]: "the curriculum office's log of mathematics professional learning hours, 2025-26",
-    P.FILES["dictionary"]: "the assessment office's field dictionary for the extract",
     DC.REPORT: "the District Mathematics Assessment technical report, spring 2025 (excerpt)",
     DC.RULES: "the board's campus designation rules for the 2027 District Improvement Plan",
     DC.NOTICE: "the assessment office's key correction notice of 19 May 2026",
@@ -43,15 +42,13 @@ def write(target, out_path):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task450",
-        "title": "Which elementary campuses a Texas district's superintendent's cabinet places its 2027 mathematics "
-                 "intervention coaches at, once the spring 2026 grade-5 results on a partly new test form are put on "
-                 "the reporting scale set on the 2025 form",
+        "title": "Which elementary campuses a Texas district's superintendent's cabinet places its 2027 grade-5 "
+                 "mathematics intervention coaches at, on this spring's assessment results",
         "domain": "Education & Learning Sciences",
-        "subdomain": "item-response-theory-test-equating (a new form linked to the reporting scale through the items "
-                     "it shares with the previous form, the two cohorts not equivalent)",
+        "subdomain": "item-response-theory-test-equating",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "14 (cuts of a distribution): each rated campus's tested and meeting counts and share, the "
-                        "designated campuses the call",
+        "prompt_shape": "14 (cuts of a distribution): each rated campus's counts and share, the designated campuses "
+                        "the call",
         "as_of": "2026-10-09",
         "deliverables": ["intervention_schools_2027.docx", "grade5_math_results_2026.xlsx"],
         "distractor_files": [P.FILES[k] for k in P.DISTRACTORS],
