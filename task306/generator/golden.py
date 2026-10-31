@@ -149,6 +149,21 @@ def workbook(path, G):
     for col, w in zip("ABCDEFG", (14, 11, 13, 14, 14, 12, 16)):
         s4.column_dimensions[col].width = w
     s4.freeze_panes = "A2"
+    s5 = wb.create_sheet("Notes")
+    for line in (
+            ("Basis", "Capital Policy CP-04, June 2026, sections 2 and 3"),
+            ("Year loss table", "Seaborne UK Windstorm Model 8.2, 2027 portfolio, 10,000 years; each storm one loss occurrence"),
+            ("Covers", "Penwarden quotation PRB/HCM/27/031 of 14 October 2026, covers A and B"),
+            ("Storms of record", "2001 to 2025, incurred from the storm experience against the model's hindcast"),
+            ("2026 storms", "claims extract of 31 October 2026, paid and outstanding; expiring contract PRB/HCM/26/014"),
+            ("Farm book", "policies and holdings at 31 October 2026; coinsurance register shares"),
+            ("Rounding", "capital to the nearest GBP million, the cover's margin and worth to GBP 0.1 million, "
+                         "2026 figures to the nearest GBP 1,000, sums insured to GBP 0.1 million"),
+            ("Prepared", "%s, actuarial function, 4 November 2026" % W.PEOPLE["actuary"])):
+        s5.append(list(line))
+        s5.cell(row=s5.max_row, column=1).font = bold
+    s5.column_dimensions["A"].width = 18
+    s5.column_dimensions["B"].width = 96
     wb.properties.creator = W.PEOPLE["actuary"]
     wb.properties.lastModifiedBy = W.PEOPLE["actuary"]
     wb.save(path)
@@ -168,14 +183,19 @@ def chart(G):
     bc.valueAxis.valueMax = 20 * (int(max(vals) / 20) + 1)
     bc.valueAxis.valueStep = 20
     bc.valueAxis.labels.fontSize = 8
-    bc.bars[0].fillColor = colors.HexColor("#2f5d7c")
+    bc.bars[0].fillColor = colors.HexColor("#9fb3c1")
+    bc.bars[(0, 2)].fillColor = colors.HexColor("#1f4e6b")
     bc.barWidth = 10
     d.add(bc)
     for i, v in enumerate(vals):
         x = bc.x + bc.width * (i + 0.5) / 3
         y = bc.y + bc.height * v / bc.valueAxis.valueMax + 2
         d.add(String(x, y, "%d" % int(round(v)), fontSize=8.5, textAnchor="middle"))
-    d.add(String(16 * mm, 60 * mm, "1-in-200 annual windstorm loss, 2027, GBP million", fontSize=9))
+    xr = bc.x + bc.width * 2.5 / 3 + 9 * mm
+    yr = bc.y + bc.height * G["net_both"] / 1e6 / bc.valueAxis.valueMax
+    d.add(String(xr, yr, "%d million released" % m1(G["release_sec"]), fontSize=7.5, fillColor=colors.HexColor("#1f4e6b")))
+    d.add(String(16 * mm, 60 * mm, "The second-event cover takes GBP %d million off the 1-in-200 windstorm loss "
+                 "(GBP million, 2027 portfolio)" % m1(G["release_sec"]), fontSize=9))
     return d
 
 
@@ -189,9 +209,10 @@ def paper(path, G):
                             creator=W.ORG, producer=W.ORG, invariant=1)
     nf = sum(G["record_follow"])
     story = [
-        Paragraph("Board paper: the 2027 windstorm programme", tt),
-        Paragraph("For the Board meeting of November 2026. %s, Head of Reinsurance, with %s, Chief Actuary."
-                  % (W.PEOPLE["reinsurance"], W.PEOPLE["actuary"]), sm),
+        Paragraph("Board, November 2026. Paper on the 2027 windstorm programme, for decision. From %s, Head of "
+                  "Reinsurance, with %s, Chief Actuary. 4 November 2026." % (W.PEOPLE["reinsurance"],
+                                                                             W.PEOPLE["actuary"]), sm),
+        Paragraph("The second-event cover pays its way: add it to the 2027 windstorm programme", tt),
         Paragraph("Recommendation", hd),
         Paragraph("Renew the occurrence cover and add the second-event cover Penwarden has quoted. Under CP-04 the "
                   "second-event cover takes the 1-in-200 windstorm loss net of reinsurance from GBP %d million to GBP "
@@ -220,15 +241,30 @@ def paper(path, G):
                              ("ALIGN", (1, 1), (-1, -1), "RIGHT"), ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.grey),
                              ("LINEABOVE", (0, -1), (-1, -1), 0.4, colors.grey)]))
     story += [tbl, Spacer(1, 4),
-              Paragraph("Loss occurrences of GBP 1 million or more, each claim dated by the day its damage was done.", sm),
+              Paragraph("Source: claims extract of 31 October 2026 and Penhallow's instructions. Loss occurrences of "
+                        "GBP 1 million or more under the wording's 72-hour clause, each claim dated by the day its "
+                        "damage was done; claims reopened for damage done by the next storm are counted in that "
+                        "storm's occurrence. Recoveries fall due on the year-end statement.", sm),
               Paragraph("Farm sums insured, our own share, at 31 October 2026", hd)]
     t2 = [["County", "Buildings GBP m", "Farm contents GBP m"]] + [
         [c, "%.1f" % m01(G["farm_si"][c][0]), "%.1f" % m01(G["farm_si"][c][1])] for c in W.COUNTIES]
     tbl2 = Table(t2, hAlign="LEFT")
     tbl2.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 8.6), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.6),
                               ("ALIGN", (1, 1), (-1, -1), "RIGHT"), ("LINEBELOW", (0, 0), (-1, 0), 0.6, colors.grey)]))
-    story.append(tbl2)
-    doc.build(story)
+    story += [tbl2, Spacer(1, 4),
+              Paragraph("Source: farm policies and holdings at 31 October 2026 with the coinsurance register; each "
+                        "coinsured policy at our share on every one of its holdings.", sm),
+              Paragraph("Note. CP-04 treats each storm in the model's table as one loss occurrence, so the 72-hour "
+                        "clause groups this year's claims but not the simulated storms.", sm)]
+
+    def footer(canvas, d):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#5b6b77"))
+        canvas.drawString(20 * mm, 10 * mm, "%s, Board paper, November 2026" % W.ORG_SHORT)
+        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
+        canvas.restoreState()
+    doc.build(story, onFirstPage=footer, onLaterPages=footer)
     postprocess.scrub(path, W.ORG, "2026-11-04")
 
 

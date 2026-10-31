@@ -1,0 +1,78 @@
+{
+ "call": "add the second-event cover",
+ "capital_gbp_m": {
+  "gross": 113,
+  "net_both": 87,
+  "net_occurrence": 94,
+  "release": 7
+ },
+ "constants": {
+  "base_limit": 18000000,
+  "base_retention": 12000000,
+  "coc_per_cent": 12,
+  "floor_m": 1,
+  "hours": 72,
+  "per_cent": 100,
+  "sec_limit": 7500000,
+  "sec_retention": 4000000,
+  "worst_years": 50,
+  "years": 10000
+ },
+ "cover_gbp_m": {
+  "capital_cost": 0.8,
+  "expected_recoveries": 0.7,
+  "expected_reinstatement": 0.1,
+  "margin": 0.7,
+  "premium": 1.3,
+  "value": 0.1
+ },
+ "farm_si_gbp_m": {
+  "Cornwall": {
+   "buildings": 1302.1,
+   "farm_contents": 618.2
+  },
+  "Devon": {
+   "buildings": 1502.4,
+   "farm_contents": 746.3
+  },
+  "Dorset": {
+   "buildings": 389.0,
+   "farm_contents": 184.3
+  },
+  "Somerset": {
+   "buildings": 863.7,
+   "farm_contents": 396.8
+  }
+ },
+ "occurrences_2026": [
+  {
+   "days": "11 to 13 January",
+   "farm": 2510000,
+   "home": 13067000,
+   "incurred": 15577000
+  },
+  {
+   "days": "8 to 9 February",
+   "farm": 3541000,
+   "home": 16898000,
+   "incurred": 20439000
+  },
+  {
+   "days": "15 to 16 February",
+   "farm": 931000,
+   "home": 3943000,
+   "incurred": 4874000
+  }
+ ],
+ "record": {
+  "gap_between_trains_min_days": 70,
+  "gap_in_train_max_days": 24,
+  "load_follow": 1.62,
+  "load_other": 0.98,
+  "pooled": 1.06,
+  "storms": 43,
+  "within_six_weeks": 9
+ },
+ "recovery_2026": 12015000,
+ "reinstatement_2026": 1402000
+}

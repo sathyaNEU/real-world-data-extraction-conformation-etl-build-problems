@@ -10,11 +10,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def m(x):
-    return "£%dm" % GD.m1(x)
+    return "£%d million" % GD.m1(x)
 
 
 def m1(x):
-    return "£%.1fm" % GD.m01(x)
+    return "£%.1f million" % GD.m01(x)
 
 
 def k(x):
@@ -133,8 +133,8 @@ def submission(G):
     ]
     for c in W.COUNTIES:
         b, ct = G["farm_si"][c]
-        lines.append("   - %s: buildings %s, farm contents %s" % (c, "£{:,.1f}m".format(GD.m01(b)),
-                                                                  "£{:,.1f}m".format(GD.m01(ct))))
+        lines.append("   - %s: buildings %s, farm contents %s" % (c, "£{:,.1f} million".format(GD.m01(b)),
+                                                                  "£{:,.1f} million".format(GD.m01(ct))))
     lines += [
         "",
         "### %s" % GD.XLSX,
