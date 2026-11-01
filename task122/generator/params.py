@@ -19,7 +19,7 @@ PAIRS = [("KPA", "HKI"), ("WKO", "TKI"), ("TPO", "KPT")]           # combined ov
 NEXT = {"KPA": "HKI", "HKI": "KPA", "WKO": "TPO", "TKI": "WKO", "TPO": "KPT", "KPT": "TPO"}
 
 # The probe and the activation risk (the truth the golden recovers).
-R_TRUE = 0.700           # the probe's multiplier on the activation intensity, the same at every traffic level
+R_TRUE = 0.694           # the probe's multiplier on the activation intensity, the same at every traffic level
 BETA = 0.60              # log intensity per climbing or descending aircraft, on top of the aircraft pairs present
 CAPACITY = 10            # a sector's declared capacity, aircraft at once (flow management holds the rest)
 TARGET = 800             # expected activations per sector over the trial (sets each sector's scale; STCA is tuned

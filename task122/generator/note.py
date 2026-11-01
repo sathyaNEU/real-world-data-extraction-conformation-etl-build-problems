@@ -14,6 +14,21 @@ TASK = os.path.dirname(HERE)
 NOTE = os.path.join(TASK, "DESIGN_NOTE.md")
 
 
+def DIES(k, pct):
+    if k.startswith("R3 observed"):
+        return "the golden"
+    if k.startswith("R3"):
+        return "a standing member; prints %d" % pct
+    return {
+        "R0": "the probe's minutes are busier, with more aircraft and more of them climbing or descending",
+        "R1": "the hour's traffic misses the minute's: the probe runs in the hour's climbing and descending minutes",
+        "R1b": "within the hour the probe runs in the minutes the climbing and descending traffic fills",
+        "R2": "at like occupancy the probe's minutes still hold more climbing and descending aircraft",
+        "R2b": "per pair still leaves the climbing and descending mix unheld",
+        "R2c": "per climbing aircraft leaves the aircraft around it unheld, and the probe's minutes hold more of them",
+    }[k.split(" ")[0]]
+
+
 def ceiling():
     out = subprocess.run([sys.executable, os.path.join(HERE, "ceiling.py")], capture_output=True, text=True).stdout
     line = [l for l in out.splitlines() if l.startswith("pair ceiling")][0]
@@ -121,19 +136,18 @@ Pins: the WHAT sits in SRB 2026/04 (the share of the activations the sectors wou
 
 | Rung | Construction | Share prevented (per cent) | Dies to |
 |---|---|---|---|
-""" + "\n".join("| %s | %s | %.1f | %s |" % (k.split(" ")[0], " ".join(k.split(" ")[1:]), v,
-                                              "the golden" if k.startswith("R3 observed") else
-                                              ("a standing member; prints %d" % pct if k.startswith("R3") else
-                                               "the probe's minutes carry more climbing and descending traffic at any count"))
+""" + "\n".join("| %s | %s | %.1f | %s |" % (k.split(" ")[0], " ".join(k.split(" ")[1:]), v, DIES(k, pct))
                 for k, v in L.items()) + """
 
-- **Margins on the cut pack** (asserted in checks.py): every route without the climbing count sits %.1f points or
-  more under the bar (highest %.1f); every standing member prints %d, from %.1f to %.1f, clear of the bin's edges;
-  the golden %.1f sits mid-bin.
+- **Margins on the cut pack** (asserted in checks.py): every rung sits under the bar by more than the golden
+  clears it (highest rung %.1f, the golden %.1f over); the crude mix route, per climbing or descending aircraft-minute,
+  sits %.1f points under; every standing member prints %d, from %.1f to %.1f, clear of the bin's edges; the golden %.1f
+  sits mid-bin.
 - **Separation.** The default path is wrong on the clean truth (T2) and the like-count-and-mix route on the world's
   own records is the golden (T2); the pack's handling recovers the truth minute by minute (T1).
 - **Gate F.** No route that skips the climbing count reaches the bar (asserted).
-""" % (20 - max(wrong.values()), max(wrong.values()), pct, min(fam.values()), max(fam.values()), sp))
+""" % (max(v for k, v in wrong.items() if not k.startswith("R2c")), sp - 20,
+       20 - L["R2c per climbing or descending aircraft"], pct, min(fam.values()), max(fam.values()), sp))
     S.append("""## Closure table
 
 | Axis | Reading in this build | Move |
@@ -211,8 +225,48 @@ Pair ceiling: %.1f (%s).
 Mirror leakage: %.1f per cent of the ask weight.
 Measured by: generator/ceiling.py (run on the cut pack, target.zip %s)
 """ % (pc, keep.split(": ", 1)[1] if ": " in keep else keep, ml, zsha))
+    S.append("""## Leak sweep
+
+`leak.py task122 --asof 2026-10-09` on target.zip %s: REVIEW, no LEAK; each line ruled.
+- Sweep 3 on `probe_m_trial_acceptance_criteria.pdf` and `probe_m_planner_guide_v2.1.pdf` (the call's words:
+  PROBE-M, mandatory, en-route planner position, 1 April 2027): harmless; the criteria state the decision the
+  executive team takes and the guide names the tool and its position, and neither carries a share, a rate with and
+  without the probe or a recommendation.
+- Sweep 4 on the guide (traffic, minutes, aircraft, sectors) and the safety report (traffic, aircraft, sectors):
+  harmless; the guide says what the probe predicts and the report defines its counts, and neither names a mix, a
+  level, a comparison or a count of aircraft to hold (asserted by reading, and the Pins line).
+- Fixed before this run: the 2024/25 report's published figures moved off every figure this trial owes (a flight-hour
+  cell printed as one of the trial's), and the request's signature no longer repeats its sender's first name.
+""" % zsha)
+    S.append("""## Pre-ship check
+
+1. Three rules: the decisive step (the probe's minutes against minutes without it at like sector, count and climbing
+   and descending count) is analytical; nothing planted, read or executed decides (the Three rules lines).
+2. Determinism: SRB 2026/04 files the WHAT; the standing family converges on %d across strata, observed against
+   expected and the Poisson forms, every presence convention, revision and continuation reading and added stratum
+   (SF1 to SF14, asserted).
+3. Gates on the final cut (target.zip %s): generator checks, the independent verifier on every graded figure, two
+   byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py REVIEW with no LEAK, guard.py heart
+   and surface; the leak reader and the determinism judge run from the main thread.
+""" % (pct, zsha))
     body = "\n".join(S)
     note = open(NOTE, encoding="utf-8").read()
+    # the Draw section's pricing paragraph, from the cut pack's routes
+    a = note.index("**Pricing on the")
+    b = note.index("\n\n", a)
+    pricing = ("**Pricing on the cut pack (target.zip %s; every value from generator/figures.json and asserted in "
+               "checks.py).** Share prevented by route: the report's rate per flight hour %.1f per cent (the probe "
+               "reads as raising activations); the hour's traffic held %.1f; like occupancy minute by minute %.1f "
+               "(with the hour of day %.1f; per aircraft pair %.1f; per climbing or descending aircraft-minute %.1f); "
+               "like count and like mix, the standing family (strata, observed against expected, Poisson forms with "
+               "the count as factors or pairs and the climbing count), %.1f to %.1f, every member printing %d. The "
+               "bar is 20: every route without the climbing count sits %.1f points or more under it, and the standing "
+               "family %.1f points or more over it." % (
+                   zsha, L["R0 per flight hour"], L["R1 hourly traffic"], L["R2 like occupancy"],
+                   L["R2 like occupancy and hour of day"], L["R2b per aircraft pair"],
+                   L["R2c per climbing or descending aircraft"], min(fam.values()), max(fam.values()), pct,
+                   20 - max(wrong.values()), min(fam.values()) - 20))
+    note = note[:a] + pricing + note[b:]
     i = note.index("## Default path") if "## Default path" in note else note.index("## Tried and rejected")
     j = note.index("## Tried and rejected")
     note = note[:i] + body + "\n" + note[j:]

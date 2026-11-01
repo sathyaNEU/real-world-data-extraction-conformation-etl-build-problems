@@ -30,23 +30,23 @@ def write(path, f):
     L += ["## 2. Critical Components", "",
           "1. Activations counted as the Safety Performance Report counts them over the trial: **%s**, of which **%s** "
           "in the probe's running time." % (c(f["activations_counted"]), c(f["observed"])),
-          "2. At the same sector, number of aircraft and number climbing or descending, the minutes without the probe "
-          "put the activations the probe's running time would have raised at **%s**." % c(f["expected"]),
-          "3. The probe prevented **%s**, about **%d per cent**, above the criterion's 20 per cent." % (c(f["prevented"]), pct),
+          "2. At the same sector, number of aircraft and number climbing or descending, minute by minute, the probe "
+          "prevented about **%d per cent** of the activations its running time would have raised, above the "
+          "criterion's 20 per cent." % pct,
           ""]
     L += ["## 3. Step-by-Step Solution", "",
           "1. Took each flight's latest plan revision from fdps_sector_crossings_2026-04_2026-09.csv (a revision "
           "re-issues the flight's whole crossing list) and counted, for each sector and minute, the aircraft in the "
           "sector and those whose entry and exit levels differ.",
           "2. Marked the minutes with the probe running from probe_m_planner_workstation_log_2026-04_2026-09.csv, New "
-          "Zealand time taken to UTC, a combined position's display covering both sectors (SRB 2026/04 section 3.3).",
+          "Zealand time taken to UTC, a combined position's display covering both sectors (the acceptance criteria).",
           "3. Counted the activations in stca_activations_2026-04_2026-09.csv as the Safety Performance Report counts "
           "them (live only, once per event in the sector where it began, a combined-sector activation in the sector "
           "of the first-named aircraft): %s." % c(f["activations_counted"]),
           "4. Applied the activation rate of the minutes without the probe, at each sector, number of aircraft and "
           "number climbing or descending, to the probe's running minutes: %s expected against %s raised." % (
               c(f["expected"]), c(f["observed"])),
-          "5. Took the share prevented, about %d per cent, against section 3.1's one in five." % pct,
+          "5. Took the share prevented, about %d per cent, against the acceptance criteria's one in five." % pct,
           "6. For the tables, split each flown crossing at New Zealand month ends, counted each month's activations "
           "per 1,000 flight hours in the sector where each began, and counted each flight once in each sector it "
           "entered.",

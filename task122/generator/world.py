@@ -169,6 +169,8 @@ def flights(fr):
                 continue
             c1 = a + int(round((b - a) / 60.0 * r.uniform(0.35, 0.55))) * 60
             c2 = c1 + int(r.integers(3, 6)) * 60
+            if b - c2 < 3 * 60 or c1 - a < 3 * 60:
+                continue
             mid = fin + (fout - fin) * (c1 - a) / (b - a)
             mid2 = fin + (fout - fin) * (c2 - a) / (b - a)
             m1 = int(round(mid / 10.0) * 10)
@@ -340,6 +342,7 @@ def activations(fl, n, T, on, comb):
     """STCA activations: each sector-minute's intensity rises with the aircraft present and, more steeply, with those
     climbing or descending; the probe's use multiplies it by R_TRUE at every traffic level."""
     r = rng("stca")
+    thin = rng("stca-thin")
     present = [[] for _ in S]
     # crossing index by sector for drawing the pair
     for fi, f in enumerate(fl):
@@ -350,7 +353,9 @@ def activations(fl, n, T, on, comb):
     starts = [np.array([p[0] for p in present[i]]) for i in range(len(S))]
     out = []
     for i, s in enumerate(S):
-        base = intensity(n[i], T[i], on[i])
+        # candidates at the probe-free intensity, then the probe's minutes thinned to R_TRUE with their own draws,
+        # so the probe's effect and the rest of the record are drawn apart
+        base = intensity(n[i], T[i], np.zeros_like(on[i]))
         lam = P.TARGET / base.sum() * base
         k = r.poisson(lam)
         for m in np.nonzero(k)[0]:
@@ -368,9 +373,13 @@ def activations(fl, n, T, on, comb):
                 a, b = cand[a_i], rest[b_i]
                 dur = int(r.integers(8, 75))
                 inh = s in ("WKO", "KPA") and r.random() < P.P_INHIBITED
+                hsep = round(float(r.uniform(0.8, 4.6)), 1)
+                vsep = int(r.choice([0, 100, 200, 300, 400, 500, 600, 700, 800]))
+                if on[i, m] and thin.random() >= P.R_TRUE:
+                    continue
                 out.append({"sector": s, "t": t, "dur": dur, "a": (a[2], a[3]), "b": (b[2], b[3]), "inhibited": inh,
                             "m": int(m), "probe": bool(on[i, m]), "comb": bool(comb[m]),
-                            "hsep": round(float(r.uniform(0.8, 4.6)), 1), "vsep": int(r.choice([0, 100, 200, 300, 400, 500, 600, 700, 800]))})
+                            "hsep": hsep, "vsep": vsep})
     out.sort(key=lambda x: (x["t"], x["sector"]))
     return out
 

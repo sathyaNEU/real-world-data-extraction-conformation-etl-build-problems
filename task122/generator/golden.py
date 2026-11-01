@@ -145,7 +145,7 @@ def paper(fig, path, png):
          "in the time it was running. Activations are counted as the Safety Performance Report counts them: live "
          "alerts, once per event, in the sector where the alert began.")
     para("What the trial shows", bold=True, size=10.5, space=3)
-    para("Over the trial the probe ran for %s planner-sector hours. In that time the six sectors raised %s "
+    para("Over the trial the probe ran for %s sector-hours. In that time the six sectors raised %s "
          "activations. Minutes without the probe in the same sector, with the same number of aircraft in the sector "
          "and the same number of them climbing or descending, put the activations the sectors would have raised in "
          "that time at %s. The probe prevented %s of them, about %d per cent, above the one in five the criterion "
@@ -169,7 +169,7 @@ def paper(fig, path, png):
     tb.style = "Light List"
     _cell(tb.rows[0].cells[0], "Measure", bold=True)
     _cell(tb.rows[0].cells[1], "Trial, 1 April to 30 September 2026", bold=True, align="r")
-    lines = [("Probe running, planner-sector hours", "{:,}".format(fig["probe_hours"])),
+    lines = [("Probe running, sector-hours", "{:,}".format(fig["probe_hours"])),
              ("Activations raised in that time", "{:,}".format(fig["observed"])),
              ("Activations the same traffic would have raised without the probe", "{:,}".format(int(round(fig["expected"])))),
              ("Activations prevented", "{:,}".format(int(round(fig["prevented"])))),

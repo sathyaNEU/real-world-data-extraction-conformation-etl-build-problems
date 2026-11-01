@@ -6,13 +6,13 @@
   "domain": "human-factors-ergonomics",
   "client_domain": "human-factors-ergonomics",
   "subdomain": "usability-task-performance-studies",
-  "niche": "a New Zealand air navigation service provider's en-route control centre, where the planner controllers of six en-route sectors have run a medium-term conflict probe at their own discretion since 1 May 2026; the Safety Review Board decides in December 2026 whether the probe becomes mandatory at every en-route planner position from 1 April 2027, on the acceptance criteria's share of short-term conflict alert activations prevented",
+  "niche": "a New Zealand air navigation service provider's en-route control centre, where the planner controllers of six en-route sectors have run a medium-term conflict probe at their own discretion since 1 April 2026; the executive team decides in November 2026, on the Safety Review Board's acceptance criteria, whether the probe becomes mandatory at every en-route planner position from 1 April 2027, on the share of short-term conflict alert activations its use prevented",
   "objective": "experiment-causal",
   "shape": "07",
   "decision_type": "go_hold_or_stop",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "mandatory at every en-route planner position from 1 April 2027; about 30 per cent of the STCA activations prevented in the probe running time",
+  "answer_source": "task122/generator/figures.json",
   "gap": [
     "objective"
   ],
@@ -34,8 +34,8 @@
   "role_family": "other",
   "scoring_unit": "other",
   "spine": {
-    "file": "fdps_sector_crossings_2026-05_2026-10.csv",
-    "rows": 0,
+    "file": "fdps_sector_crossings_2026-04_2026-09.csv",
+    "rows": 232088,
     "entity": "one flight's crossing of one en-route sector in one flight plan revision: callsign, aerodromes, aircraft type, entry and exit time (UTC) and level",
     "grain": "flight x sector x plan revision",
     "source": "synthetic"
@@ -65,10 +65,10 @@
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "A discretionary aid is switched on when the conditions that produce the outcome gather, and the outcome comes almost wholly from one kind of unit present together with others, so the aid's working periods hold more of that kind than its idle periods even at the same number of units present; a comparison per unit of exposure, or at like numbers present, carries that difference into the aid's effect, while a comparison at like numbers and like mix of the two kinds, period by period, reads the aid's own effect.",
-  "driver_concrete": "Compare each sector's minutes with the probe running against its minutes without, holding the number of aircraft in the sector and the number of them climbing or descending fixed, both rebuilt minute by minute from the FDPS crossings: the probe prevented about 30 per cent of the activations the sectors would have raised in its running time, where the safety report's rate per 100,000 flight hours has it raising them and the like-occupancy comparison has it preventing about one in twenty.",
-  "stump": "The default path prices the probe at like traffic, comparing minutes with it running against minutes without at the same number of aircraft in the sector, and files that it prevented about 5 per cent of activations, short of the 20 per cent the criteria require; the step that lands it there is holding only the count of aircraft, when the planners switch the probe on as climbing and descending traffic gathers and almost every activation involves a climbing or descending aircraft, so at like count and like mix the probe prevented about 30 per cent and becomes mandatory.",
+  "driver_concrete": "Compare each sector's minutes with the probe running against its minutes without, holding the number of aircraft in the sector and the number of them climbing or descending fixed, both rebuilt minute by minute from the FDPS crossings: the probe prevented about 30 per cent of the activations the sectors would have raised in its running time, where the safety report's rate per 1,000 flight hours has it doubling them and the like-occupancy comparison has it raising them by about 15 per cent.",
+  "stump": "The default path prices the probe at like traffic, comparing minutes with it running against minutes without at the same number of aircraft in the sector, finds the probe's minutes raising about 15 per cent more activations, no benefit against the 20 per cent the criteria require, and keeps it discretionary; the step that lands it there is holding only the count of aircraft, when the planners switch the probe on as climbing and descending traffic gathers and almost every activation involves a climbing or descending aircraft, so at like count and like mix the probe prevented about 30 per cent and becomes mandatory.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who counts activations as the safety report counts them, takes each flight's latest plan revision, converts the planner log's local time to UTC and splits combined sectors, then compares the activation rate with the probe running against without, first per 100,000 flight hours (the safety report's measure, higher with it running) and then at like traffic, the same number of aircraft in the sector minute by minute, files that the probe prevented about 5 per cent of activations, short of the criteria's 20 per cent, and keeps it discretionary; every field is read and every filed rule applied, and the call is wrong because the planners switch the probe on as climbing and descending traffic gathers, which raises the activation risk at any count of aircraft.",
+  "analyst_test": "A strong analyst who counts activations as the safety report counts them, takes each flight's latest plan revision, converts the planner log's local time to UTC and splits combined sectors, then compares the activation rate with the probe running against without, first per 100,000 flight hours (the safety report's measure, higher with it running) and then at like traffic, the same number of aircraft in the sector minute by minute, finds the probe's minutes raising about 15 per cent more activations, no benefit against the criteria's 20 per cent, and keeps it discretionary; every field is read and every filed rule applied, and the call is wrong because the planners switch the probe on as climbing and descending traffic gathers, which raises the activation risk at any count of aircraft.",
   "domain_test": "The deciding quantity is the share of conflict alerts a controller's decision aid prevents, a task-performance effect the field estimates by comparing the alert rate with and without the aid at matched traffic load, here only at like traffic count and like vertical mix, since conflict alerts come from pairs with a climbing or descending aircraft; with a hospital's or a retailer's nouns there is no sector traffic, no vertical mix and no conflict alert, and the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:confounding-by-the-conditions-of-use-at-the-grain-of-use",
@@ -175,9 +175,9 @@
   "notes": "Re-rooted 2026-10-31 at batch 1. Gate G decomposition_attribution: the safety report's higher activation rate in the probe's running time is a correctly reported movement, and the call assigns it to its driver, the traffic count and climbing and descending mix the planners switch the probe on into, before the probe's own share is read; the acceptance criteria's estimand (the share of the activations the sectors would have raised in the probe's running time that its use prevented) with the data's structure (probe use and activations both rising with the climbing and descending count at any occupancy) rule out the per-flight-hour and like-occupancy readings. Strategy causal_design: confounding by the conditions of use, read at the minute the aid is switched at. Forum executive_team (the provider's executive team, on the Safety Review Board's advice); forcing event launch_or_rollout (the mandate from 1 April 2027); org family utility_or_infrastructure; role family other (the human factors lead); context artifact published_series (the safety performance report's monthly STCA rates).",
   "registered": "2026-10-31T23:12:08Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "judge",
-    "rounding opener": "egfr",
-    "deliverable set": "pdf+xlsx"
+    "question form": "whether",
+    "second-sentence opener": "set",
+    "rounding opener": "the share is wanted",
+    "deliverable set": "docx+xlsx"
   }
 }

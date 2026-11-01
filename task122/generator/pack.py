@@ -192,9 +192,11 @@ def stca_rows(Wd):
         end = t + a["dur"]
         cont = None
         exit_a = A["cross"][ca][2]
-        if ca + 1 < len(A["cross"]) and t <= exit_a <= t + 90 and r.random() < 0.9:
+        if ca + 1 < len(A["cross"]) and t + 4 <= exit_a <= t + 90 and r.random() < 0.9:
             nxt = A["cross"][ca + 1][0]
-            if nxt != sec:
+            me = min(int(exit_a // 60), P.MINUTES - 1)
+            # a new record opens only where the operational sector changes (not inside a combined sector)
+            if nxt != sec and opname(nxt, bool(comb[me])) != opname(sec, bool(comb[me])):
                 end = exit_a
                 cs = exit_a + int(r.integers(0, 3))
                 cont = (nxt, cs, cs + int(r.integers(5, 41)))
@@ -401,7 +403,7 @@ def request_eml(path):
         "configuration log for April to September, with last year's report for the definitions. Neil has the "
         "planners' survey if you want it, and the training plan is in the folder.\n\n"
         "Thanks,\nTessa\n\n"
-        "Tessa Freeman\nHuman Factors Lead, Area Control Centre\nTasman Air Navigation\n")
+        "--\nHuman Factors Lead, Area Control Centre\nTasman Air Navigation\n")
     with open(path, "wb") as f:
         f.write(bytes(m))
 
@@ -480,11 +482,45 @@ def build(target):
          sigmet_rows())
     criteria_pdf(p("criteria"))
     guide_pdf(p("guide"))
-    report_pdf(p("report"), report_figures(Wd))
+    rep = report_figures(Wd)
+    report_pdf(p("report"), rep)
     request_eml(p("request"))
     forecast_xlsx(p("forecast"), Wd)
     training_xlsx(p("training"))
+    # last year's published figures are their own series: none may print as one of this trial's figures
+    import figs
+    g = figs.compute(target)
+    taken = {"{:,}".format(v) for s_ in P.SECTORS for v in g["flight_hours"][s_]}
+    taken |= {"%.1f" % v for s_ in P.SECTORS for v in g["stca_rate"][s_]}
+    taken |= {"{:,}".format(g["flights_handled"][s_]) for s_ in P.SECTORS}
+    taken |= {"{:,}".format(int(round(x))) for x in (g["activations_counted"], g["observed"], g["expected"],
+                                                     g["prevented"], g["probe_hours"])}
+    taken |= {"%.1f" % g["rate_on_per_1000fh"], "%.1f" % g["rate_off_per_1000fh"]}
+    if dodge(rep, taken):
+        report_pdf(p("report"), rep)
     return Wd
+
+
+def dodge(rep, taken):
+    moved = False
+    for s_ in P.SECTORS:
+        for k in range(12):
+            while "{:,}".format(rep["fh"][s_][k]) in taken:
+                rep["fh"][s_][k] += 1
+                moved = True
+            while "%.1f" % rep["rate"][s_][k] in taken:
+                rep["rate"][s_][k] = round(rep["rate"][s_][k] + 0.1, 1)
+                moved = True
+        rep["acts"][s_] = int(round(sum(f * x / 1000.0 for f, x in zip(rep["fh"][s_], rep["rate"][s_]))))
+        rep["year_rate"][s_] = round(rep["acts"][s_] / sum(rep["fh"][s_]) * 1000, 1)
+        while ("{:,}".format(rep["flights"][s_]) in taken or "{:,}".format(rep["acts"][s_]) in taken
+               or "{:,}".format(sum(rep["fh"][s_])) in taken or "%.1f" % rep["year_rate"][s_] in taken):
+            rep["flights"][s_] += 7
+            rep["fh"][s_][0] += 1
+            rep["acts"][s_] = int(round(sum(f * x / 1000.0 for f, x in zip(rep["fh"][s_], rep["rate"][s_]))))
+            rep["year_rate"][s_] = round(rep["acts"][s_] / sum(rep["fh"][s_]) * 1000, 1)
+            moved = True
+    return moved
 
 
 if __name__ == "__main__":
