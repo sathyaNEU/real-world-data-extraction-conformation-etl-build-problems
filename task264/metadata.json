@@ -1,0 +1,138 @@
+{
+ "architecture": 3,
+ "as_of": "2026-10-06",
+ "deliverables": [
+  "spinal_volume_2027-28.csv",
+  "spinal_volume_board_paper.docx"
+ ],
+ "distractors": [
+  {
+   "file": "fft_inpatient_spinal_2025-26.csv",
+   "why_relevant": "patient-reported experience at the same providers' spinal services, a quality signal the policy does not use"
+  },
+  {
+   "file": "cqc_locations_2026-09.json",
+   "why_relevant": "the regulator's ratings of the same sites, a quality signal the policy does not use"
+  }
+ ],
+ "files": [
+  {
+   "date": "2026-10-02",
+   "file": "apc_spells_lumbar_cohort_2022-26.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 30883,
+   "source": "The board's commissioning data warehouse: admitted patient care spells for the lumbar spine cohort (index operations 2022-23 to 2025-26 and every later spell to 30 September 2026)"
+  },
+  {
+   "date": "2026-09-30",
+   "file": "code_lookup.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 68,
+   "source": "Code descriptions for the codes the extract carries"
+  },
+  {
+   "date": "2026-10-02",
+   "file": "cohort_deaths_linked_2026-09.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 454,
+   "source": "Civil registration deaths linked to the cohort by the board's data services"
+  },
+  {
+   "date": "2026-09-30",
+   "file": "cqc_locations_2026-09.json",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 10,
+   "source": "Care Quality Commission location ratings for the providers' sites"
+  },
+  {
+   "date": "2026-05-12",
+   "file": "fft_inpatient_spinal_2025-26.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 120,
+   "source": "Friends and Family Test inpatient responses for the providers' spinal services, 2025-26"
+  },
+  {
+   "date": "2026-10-01",
+   "file": "mossgill_nhs_number_link_2026-09.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 23190,
+   "source": "The supplier's patient references against the board's pseudonymised NHS numbers"
+  },
+  {
+   "date": "2025-04-07",
+   "file": "mossgill_spinal_proms_2022-04_to_2025-03.xlsx",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 19517,
+   "source": "The outcomes supplier's commissioner extract from its first platform, questionnaires completed 1 April 2022 to 31 March 2025"
+  },
+  {
+   "date": "2026-10-01",
+   "file": "mossgill_spinal_proms_2025-04_to_2026-09.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 11797,
+   "source": "The outcomes supplier's commissioner extract from its second platform, questionnaires completed 1 April 2025 to 30 September 2026"
+  },
+  {
+   "date": "2026-04-14",
+   "file": "msk_triage_referrals_2023-06_to_2026-03.json",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 16267,
+   "source": "The community MSK triage service's referral log"
+  },
+  {
+   "date": "2026-09-30",
+   "file": "provider_reference_2026-09.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 14,
+   "source": "The warehouse's provider reference"
+  },
+  {
+   "date": "2026-04-09",
+   "file": "ptl_spinal_month_end_2026-01_to_2026-03.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 7800,
+   "source": "Providers' month-end waiting list submissions, January to March 2026"
+  },
+  {
+   "date": "2026-05-08",
+   "file": "ptl_spinal_removals_2025-11_to_2026-04.csv",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 2795,
+   "source": "Providers' waiting list removals, November 2025 to April 2026"
+  },
+  {
+   "date": "2026-09-29",
+   "file": "spinal_capacity_returns_2027-28.xlsx",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 10,
+   "source": "Providers' 2027-28 capacity returns as collected by the planned care contracting team"
+  },
+  {
+   "date": "2026-09-17",
+   "file": "spinal_contracting_policy_2027-28.pdf",
+   "license": "Constructed for this task; no third-party records; CC BY 4.0",
+   "provenance": "synthetic, constructed by the task author to behave as the named system's export",
+   "rows": 1,
+   "source": "The board's contracting policy for the 2027-28 additional lumbar activity"
+  }
+ ],
+ "stated_inputs": [
+  "1,250",
+  "14.5"
+ ],
+ "task": "task264",
+ "world": "Quenmoor and Kirkbeck Integrated Care Board (fictional), England"
+}

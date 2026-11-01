@@ -9,9 +9,9 @@ TARGET = TASK / "target"
 GOLDEN = TASK / "golden"
 SEED = 264_3
 
-BOARD = "Wendmoor and Ashlade Integrated Care Board"
-BOARD_SHORT = "Wendmoor and Ashlade ICB"
-SUPPLIER = "Larkmead Outcomes"
+BOARD = "Quenmoor and Kirkbeck Integrated Care Board"
+BOARD_SHORT = "Quenmoor and Kirkbeck ICB"
+SUPPLIER = "Mossgill Outcomes"
 
 # cohort windows (financial years, 1 April to 31 March)
 FY = {
@@ -47,53 +47,53 @@ CASEMIX = {
 # NHS transfer destination for complications (independent sites), capacity offered 2027-28
 PROVIDERS = [
     # key   site   name                          kind   group/trust
-    dict(key=40117, site="LK03", name="Rothersby Royal Infirmary", kind="NHS",
-         org="Rothersby Teaching Hospitals NHS Foundation Trust",
+    dict(key=40117, site="LK03", name="Ravensholt Royal Infirmary", kind="NHS",
+         org="Ravensholt Teaching Hospitals NHS Foundation Trust",
          vol=(612, 655, 640), c=0.105, u=-0.09, r=0.74, sev=0.55, cap=210),
-    dict(key=40152, site="LK07", name="Fenwold General Hospital", kind="NHS",
-         org="Fenwold and Kelderby Hospitals NHS Trust",
+    dict(key=40152, site="LK07", name="Cragsmoor General Hospital", kind="NHS",
+         org="Cragsmoor and Fernhollow Hospitals NHS Trust",
          vol=(455, 470, 488), c=0.090, u=0.28, r=0.70, sev=0.40, cap=150),
-    dict(key=40188, site="LK11", name="Harlowmere Hospital", kind="NHS",
-         org="North Wendmoor Hospitals NHS Trust",
+    dict(key=40188, site="LK11", name="Gorsedene Hospital", kind="NHS",
+         org="North Quenmoor Hospitals NHS Trust",
          vol=(318, 341, 352), c=0.075, u=-2.72, r=0.68, sev=0.25, cap=120),
-    dict(key=41206, site="LK14", name="Wrayfield Hospital", kind="IS",
-         org="Halbury Healthcare Ltd",
+    dict(key=41206, site="LK14", name="Shelderwick Hospital", kind="IS",
+         org="Corriemoor Healthcare Ltd",
          vol=(590, 640, 702), c=0.205, u=1.77, r=0.71, sev=-0.25, cap=260),
-    dict(key=41231, site="LK15", name="Brandling Park Hospital", kind="IS",
-         org="Halbury Healthcare Ltd",
+    dict(key=41231, site="LK15", name="Hethercombe Park Hospital", kind="IS",
+         org="Corriemoor Healthcare Ltd",
          vol=(402, 431, 455), c=0.085, u=0.75, r=0.72, sev=-0.20, cap=180),
-    dict(key=41274, site="LK19", name="Castlegate Spine Clinic", kind="IS",
-         org="Castlegate Clinics Ltd",
+    dict(key=41274, site="LK19", name="Ormsbrook Spine Clinic", kind="IS",
+         org="Ormsbrook Clinics Ltd",
          vol=(366, 398, 420), c=0.230, u=1.04, r=0.66, sev=-0.35, cap=240),
     dict(key=41309, site="LK22", name="Oxlade Treatment Centre", kind="IS",
-         org="Merrowdale Surgical Services Ltd",
+         org="Saltwyke Surgical Services Ltd",
          vol=(512, 548, 560), c=0.120, u=-1.10, r=0.69, sev=-0.10, cap=200),
-    dict(key=41355, site="LK26", name="Pellow House Hospital", kind="IS",
-         org="Pellow House Healthcare Ltd",
+    dict(key=41355, site="LK26", name="Penderwick House Hospital", kind="IS",
+         org="Penderwick House Healthcare Ltd",
          vol=(288, 302, 330), c=0.065, u=-1.15, r=0.73, sev=-0.15, cap=110),
-    dict(key=41388, site="LK29", name="Kestrelmead Hospital", kind="IS",
-         org="Kestrelmead Health Ltd",
+    dict(key=41388, site="LK29", name="Thistledene Hospital", kind="IS",
+         org="Thistledene Health Ltd",
          vol=(345, 362, 371), c=0.200, u=0.84, r=0.70, sev=-0.05, cap=170),
     dict(key=41402, site="LK31", name="Tannerbrook Surgical Centre", kind="IS",
          org="Tannerbrook Healthcare LLP",
          vol=(280, 296, 318), c=0.110, u=-1.61, r=0.67, sev=-0.30, cap=130),
 ]
-# Pellow House was bought by Halbury Healthcare (completion 1 April 2025) and re-keyed in the warehouse
-RENAME = dict(old_key=41355, new_key=41477, new_name="Halbury Pellow House Hospital",
-              date=dt.date(2025, 4, 1), new_org="Halbury Healthcare Ltd")
+# Penderwick House was bought by Corriemoor Healthcare (completion 1 April 2025) and re-keyed in the warehouse
+RENAME = dict(old_key=41355, new_key=41477, new_name="Corriemoor Penderwick House Hospital",
+              date=dt.date(2025, 4, 1), new_org="Corriemoor Healthcare Ltd")
 NHS_KEYS = [40117, 40152, 40188]
 
 # ---------------------------------------------------------------------------------------------
 # Identifiers and code sets the producing systems use
-ODS = {40117: "RWX01", 40152: "RWF02", 40188: "RNW01", 41206: "NHB11", 41231: "NHB14", 41274: "NCG03",
-       41309: "NMD07", 41355: "NPH01", 41477: "NHB19", 41388: "NKM02", 41402: "NTB05"}
+ODS = {40117: "RVH01", 40152: "RCF02", 40188: "RNQ01", 41206: "NCM11", 41231: "NCM14", 41274: "NOB03",
+       41309: "NSW07", 41355: "NPW01", 41477: "NCM19", 41388: "NTD02", 41402: "NTB05"}
 # other hospitals that appear in the cohort's later spells
 OTHER_PROVIDERS = [
-    dict(key=40231, ods="RWF09", name="Kelderby Community Hospital", org="Fenwold and Kelderby Hospitals NHS Trust",
+    dict(key=40231, ods="RCF09", name="Fernhollow Community Hospital", org="Cragsmoor and Fernhollow Hospitals NHS Trust",
          kind="NHS community", site=""),
-    dict(key=40244, ods="RWX07", name="Ashlade Community Hospital", org="Rothersby Teaching Hospitals NHS Foundation Trust",
+    dict(key=40244, ods="RVH07", name="Brackenholt Community Hospital", org="Ravensholt Teaching Hospitals NHS Foundation Trust",
          kind="NHS community", site=""),
-    dict(key=40099, ods="RQD01", name="Saltmarsh District Hospital", org="Saltmarsh and Esk Valley NHS Trust",
+    dict(key=40099, ods="RHM01", name="Hawksmere District Hospital", org="Hawksmere Hospitals NHS Trust",
          kind="NHS", site=""),
 ]
 # each independent site's patients are admitted as emergencies to the local NHS trust

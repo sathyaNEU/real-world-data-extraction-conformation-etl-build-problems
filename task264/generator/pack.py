@@ -15,9 +15,9 @@ from io_util import write_csv, repack_ooxml, write_pdf
 D = dt.timedelta
 F = {
     "spells": "apc_spells_lumbar_cohort_2022-26.csv",
-    "proms_old": "larkmead_spinal_proms_2022-04_to_2025-03.xlsx",
-    "proms_new": "larkmead_spinal_proms_2025-04_to_2026-09.csv",
-    "link": "larkmead_nhs_number_link_2026-09.csv",
+    "proms_old": "mossgill_spinal_proms_2022-04_to_2025-03.xlsx",
+    "proms_new": "mossgill_spinal_proms_2025-04_to_2026-09.csv",
+    "link": "mossgill_nhs_number_link_2026-09.csv",
     "deaths": "cohort_deaths_linked_2026-09.csv",
     "policy": "spinal_contracting_policy_2027-28.pdf",
     "capacity": "spinal_capacity_returns_2027-28.xlsx",
@@ -30,8 +30,8 @@ F = {
     "cqc": "cqc_locations_2026-09.json",
 }
 DISTRACTORS = ["fft", "cqc"]
-PREFIX = {40117: "RR", 40152: "FG", 40188: "HM", 41206: "WF", 41231: "BP", 41274: "CG", 41309: "OX",
-          41355: "PH", 41477: "PH", 41388: "KM", 41402: "TB"}
+PREFIX = {40117: "RV", 40152: "CM", 40188: "GD", 41206: "SH", 41231: "HP", 41274: "OB", 41309: "OX",
+          41355: "PW", 41477: "PW", 41388: "TD", 41402: "TB"}
 
 
 def dmy(d):
@@ -79,7 +79,7 @@ def proms_files(A, p_old, p_new):
                    ("Yes" if r.prev else "No") if pre else None,
                    DUR_TEXT[int(r.dur)] if pre else None] + list(r.ans))
     wb.save(p_old)
-    repack_ooxml(p_old, SUPPLIER, "Larkmead Data Services", "2025-04-07T06:12:00Z", "2025-04-07T06:14:00Z",
+    repack_ooxml(p_old, SUPPLIER, "Mossgill Data Services", "2025-04-07T06:12:00Z", "2025-04-07T06:14:00Z",
                  "Spinal Outcomes Programme commissioner extract", SUPPLIER)
     rows = []
     for r in new.itertuples():
@@ -123,7 +123,7 @@ def providers_csv(path):
                      o["ods"], "", "2001-04-01", "", ""])
     rows.sort(key=lambda r: r[0])
     return write_csv(path, ["provider_code", "provider_name", "organisation", "sector", "ods_site_code",
-                            "larkmead_site_code", "valid_from", "valid_to", "predecessor_provider_code"], rows, newline="\n")
+                            "mossgill_site_code", "valid_from", "valid_to", "predecessor_provider_code"], rows, newline="\n")
 
 
 CODES = [
@@ -234,11 +234,28 @@ def capacity_xlsx(path):
                  "2026-09-29T15:47:00Z", "2027-28 spinal capacity returns", BOARD)
 
 
+def pathway_ids(A):
+    """Each provider's patient administration system numbers pathways across every specialty, so the spinal
+    pathways it holds are increasing numbers with irregular gaps."""
+    P = A["paths"]
+    out = {}
+    r = stream(9994)
+    for prov, g in P.groupby(P.prov.map(lambda k: PREFIX[k])):
+        g = g.sort_values(["receipt", "path"])
+        start = int(r.integers(1_200_000, 4_800_000))
+        gaps = r.geometric(1 / 41.0, size=len(g))
+        for path, v in zip(g.path, start + np.cumsum(gaps)):
+            out[path] = "%s%07d" % (prov, v)
+    return out
+
+
 def ptl_files(A, p_ptl, p_rem):
+    pid = pathway_ids(A)
     ptl = A["ptl"].sort_values(["snap", "prov", "path"])
+    ptl = ptl.assign(pw=ptl.path.map(pid)).sort_values(["snap", "prov", "pw"])
     rows = []
     for r in ptl.itertuples():
-        rows.append([iso(r.snap), r.prov, "%s%07d" % (PREFIX[r.prov], r.path), r.pseudo, r.yob, r.sex, r.district, r.gp,
+        rows.append([iso(r.snap), r.prov, r.pw, r.pseudo, r.yob, r.sex, r.district, r.gp,
                      r.route, dmy(r.receipt), dmy(r.clock_rec), r.weeks, r.proc, r.prio, dmy(r.tci) if r.tci else ""])
     n1 = write_csv(p_ptl, ["snapshot_date", "provider_code", "pathway_id", "pseudo_nhs_number", "birth_year", "sex",
                            "postcode_district", "gp_practice", "referral_route", "referral_received", "rtt_clock_start",
@@ -246,7 +263,7 @@ def ptl_files(A, p_ptl, p_rem):
     rem = A["removals"].sort_values(["rec_on", "prov", "path"])
     rows = []
     for r in rem.itertuples():
-        rows.append([r.prov, "%s%07d" % (PREFIX[r.prov], r.path), r.pseudo, r.route, dmy(r.receipt), dmy(r.clock_rec),
+        rows.append([r.prov, pid[r.path], r.pseudo, r.route, dmy(r.receipt), dmy(r.clock_rec),
                      dmy(r.removal), r.reason, r.dest, iso(r.rec_on)])
     n2 = write_csv(p_rem, ["provider_code", "pathway_id", "pseudo_nhs_number", "referral_route", "referral_received",
                            "rtt_clock_start", "removal_date", "removal_reason", "transferred_to", "recorded_on"], rows,
@@ -265,7 +282,7 @@ def triage_json(A, path):
                      "sex": "F" if x.sex == 2 else "M", "postcode_district": x.district, "gp_practice": x.gp,
                      "received": iso(x.received), "outcome": x.outcome, "routed_to": x.routed_to or None,
                      "outcome_date": iso(x.routed_on)})
-    doc = {"service": "Wendmoor and Ashlade Community MSK Triage Service", "extract_run": "2026-04-14T07:05:00+01:00",
+    doc = {"service": "Quenmoor and Kirkbeck Community MSK Triage Service", "extract_run": "2026-04-14T07:05:00+01:00",
            "referrals": recs}
     head = json.dumps({k: v for k, v in doc.items() if k != "referrals"}, ensure_ascii=False)[:-1]
     body = ",\n".join(json.dumps(x, ensure_ascii=False, separators=(",", ":")) for x in recs)

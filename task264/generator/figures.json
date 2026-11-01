@@ -1,0 +1,218 @@
+{
+ "askA": [
+  {
+   "over52": 5,
+   "provider": "Corriemoor Penderwick House Hospital",
+   "waiting": 126,
+   "within18_pct": 56
+  },
+  {
+   "over52": 3,
+   "provider": "Cragsmoor General Hospital",
+   "waiting": 314,
+   "within18_pct": 46
+  },
+  {
+   "over52": 20,
+   "provider": "Gorsedene Hospital",
+   "waiting": 306,
+   "within18_pct": 31
+  },
+  {
+   "over52": 11,
+   "provider": "Hethercombe Park Hospital",
+   "waiting": 202,
+   "within18_pct": 56
+  },
+  {
+   "over52": 25,
+   "provider": "Ormsbrook Spine Clinic",
+   "waiting": 192,
+   "within18_pct": 54
+  },
+  {
+   "over52": 27,
+   "provider": "Oxlade Treatment Centre",
+   "waiting": 254,
+   "within18_pct": 50
+  },
+  {
+   "over52": 50,
+   "provider": "Ravensholt Royal Infirmary",
+   "waiting": 527,
+   "within18_pct": 33
+  },
+  {
+   "over52": 25,
+   "provider": "Shelderwick Hospital",
+   "waiting": 350,
+   "within18_pct": 49
+  },
+  {
+   "over52": 18,
+   "provider": "Tannerbrook Surgical Centre",
+   "waiting": 144,
+   "within18_pct": 55
+  },
+  {
+   "over52": 4,
+   "provider": "Thistledene Hospital",
+   "waiting": 173,
+   "within18_pct": 54
+  }
+ ],
+ "askB": [
+  {
+   "participation_pct": 81,
+   "provider": "Corriemoor Penderwick House Hospital"
+  },
+  {
+   "participation_pct": 85,
+   "provider": "Cragsmoor General Hospital"
+  },
+  {
+   "participation_pct": 84,
+   "provider": "Gorsedene Hospital"
+  },
+  {
+   "participation_pct": 80,
+   "provider": "Hethercombe Park Hospital"
+  },
+  {
+   "participation_pct": 81,
+   "provider": "Ormsbrook Spine Clinic"
+  },
+  {
+   "participation_pct": 84,
+   "provider": "Oxlade Treatment Centre"
+  },
+  {
+   "participation_pct": 84,
+   "provider": "Ravensholt Royal Infirmary"
+  },
+  {
+   "participation_pct": 81,
+   "provider": "Shelderwick Hospital"
+  },
+  {
+   "participation_pct": 81,
+   "provider": "Tannerbrook Surgical Centre"
+  },
+  {
+   "participation_pct": 80,
+   "provider": "Thistledene Hospital"
+  }
+ ],
+ "call": {
+  "floor": 14.5,
+  "held": 340,
+  "per_provider": {
+   "Corriemoor Penderwick House Hospital": 110,
+   "Cragsmoor General Hospital": 150,
+   "Hethercombe Park Hospital": 180,
+   "Ravensholt Royal Infirmary": 210,
+   "Shelderwick Hospital": 260
+  },
+  "placed": 910,
+  "providers": 5,
+  "volume": "1,250"
+ },
+ "components": {
+  "answered": "5,208",
+  "change_below_expected": 17.5,
+  "eligible": "8,150",
+  "outcomes": {
+   "Corriemoor Penderwick House Hospital": 15,
+   "Cragsmoor General Hospital": 16,
+   "Gorsedene Hospital": 13,
+   "Hethercombe Park Hospital": 17,
+   "Ormsbrook Spine Clinic": 14,
+   "Oxlade Treatment Centre": 13,
+   "Ravensholt Royal Infirmary": 15,
+   "Shelderwick Hospital": 15,
+   "Tannerbrook Surgical Centre": 13,
+   "Thistledene Hospital": 14
+  },
+  "resp_flag_pct": 33,
+  "resp_rest_pct": 68
+ },
+ "csv": [
+  {
+   "outcome": 17,
+   "placed": 180,
+   "provider": "Hethercombe Park Hospital"
+  },
+  {
+   "outcome": 16,
+   "placed": 150,
+   "provider": "Cragsmoor General Hospital"
+  },
+  {
+   "outcome": 15,
+   "placed": 260,
+   "provider": "Shelderwick Hospital"
+  },
+  {
+   "outcome": 15,
+   "placed": 210,
+   "provider": "Ravensholt Royal Infirmary"
+  },
+  {
+   "outcome": 15,
+   "placed": 110,
+   "provider": "Corriemoor Penderwick House Hospital"
+  },
+  {
+   "outcome": 14,
+   "placed": 0,
+   "provider": "Thistledene Hospital"
+  },
+  {
+   "outcome": 14,
+   "placed": 0,
+   "provider": "Ormsbrook Spine Clinic"
+  },
+  {
+   "outcome": 13,
+   "placed": 0,
+   "provider": "Oxlade Treatment Centre"
+  },
+  {
+   "outcome": 13,
+   "placed": 0,
+   "provider": "Tannerbrook Surgical Centre"
+  },
+  {
+   "outcome": 13,
+   "placed": 0,
+   "provider": "Gorsedene Hospital"
+  },
+  {
+   "held": 340
+  }
+ ],
+ "steps": {
+  "default_placed": {
+   "Corriemoor Penderwick House Hospital": 40,
+   "Cragsmoor General Hospital": 150,
+   "Hethercombe Park Hospital": 180,
+   "Ormsbrook Spine Clinic": 240,
+   "Ravensholt Royal Infirmary": 210,
+   "Shelderwick Hospital": 260,
+   "Thistledene Hospital": 170
+  },
+  "flagged": "1,041",
+  "m12_from_weeks": 48,
+  "m12_to_weeks": 64,
+  "national_expected": 16.85,
+  "triage_days": 10,
+  "window_days": 90
+ },
+ "thresholds": {
+  "methods": "21 to 28",
+  "months": 12,
+  "snapshot_year": 2026,
+  "weeks18": 18,
+  "weeks52": 52
+ }
+}

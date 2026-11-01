@@ -31,7 +31,7 @@ BODY = [
           "multiplied by 100."),
     ("p", "The case-mix adjusted mean is the mean expected change over the eligible index operations of all providers, "
           "plus the provider's mean of the observed change minus the expected change. The expected change for an "
-          "operation comes from the model in Appendix B."),
+          "operation is set out in Appendix B."),
     ("h", "4. Placing the 2027-28 volume"),
     ("p", "A provider whose outcome is at least 14.5 points is offered volume. Offers are made in descending order of "
           "outcome, each up to the additional operations the provider offered in its 2027-28 capacity return, until the "

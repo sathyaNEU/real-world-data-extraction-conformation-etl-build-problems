@@ -1,25 +1,25 @@
 {
  "task": "task264",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "healthcare-delivery-health-economics",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "The default (indirect standardisation on the returned 12-month questionnaires, or the non-answers imputed on the case-mix, on which they balance) places all 1,250 operations with seven providers, Ormsbrook 240 and Thistledene 170 among them; the non-answers are concentrated among patients readmitted as an emergency within 90 days of discharge (33 against 68 per cent return, change 17.5 points below expected), and filling each from the answerers at its provider who shared that status drops both below the 14.5 floor: five providers, 910 placed, 340 held.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK; sweep 4 policy and prompt vocabulary, sweep 6 capacity returns; each ruled harmless in the design note)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (overuse.org_family, repeat.gate_g, overuse.gate_g; no BLOCK)",
+  "nearest": "task239 0.09 driver; surface promotes task265 (0.090) and task263 (0.084), back to back by number"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4 (main session): the isolated leak reader and the determinism judge on the final cut, target.zip d990a19c",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -78,5 +78,18 @@
    "stump": "The default path turns each member council's expanded visits into residents with its respondents' average 12-month visit count, a visit-weighted average in an exit survey, so the three valley councils' frequent visitors are undercounted and their levy share falls well below the share the survey's weight over each respondent's own visit count gives.",
    "delivered": "2026-10-17"
   }
- ]
+ ],
+ "gates": {
+  "checks": "74 of 74",
+  "verify": "PASS",
+  "rebuild": "byte-identical (19 files)",
+  "figures_check": "95 of 95",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "producer_metadata": "clean",
+  "target_zip": "d990a19c",
+  "pair_ceiling": 33.8,
+  "mirror_leakage": 0.0,
+  "pair_if_cracker_matches_keyless": 59.8
+ }
 }

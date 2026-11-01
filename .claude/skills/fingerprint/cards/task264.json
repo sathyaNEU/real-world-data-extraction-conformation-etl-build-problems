@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Place 910 of the 1,250 additional 2027-28 operations with five providers (Hethercombe Park Hospital 180, Cragsmoor General Hospital 150, Shelderwick Hospital 260, Ravensholt Royal Infirmary 210, Corriemoor Penderwick House Hospital 110) and hold 340 for in-year commissioning",
+  "answer_source": "golden/spinal_volume_2027-28.csv and submission.md block 1",
   "gap": [
     "population"
   ],
@@ -49,7 +49,7 @@
   "scoring_unit": "per episode",
   "spine": {
     "file": "apc_spells_lumbar_cohort_2023-26.csv",
-    "rows": 0,
+    "rows": 31058,
     "entity": "one admitted patient care spell for a patient in the board's lumbar spine cohort (index operations and every later spell in the follow-up window)",
     "grain": "spell",
     "source": "synthetic (constructed commissioning extract, declared in metadata.json)"
@@ -62,19 +62,28 @@
     "currency": "GBP",
     "org_type": "an NHS integrated care board commissioning elective spinal surgery from NHS trusts and independent sector providers",
     "invented_names": [
-      "Wendmoor and Ashlade Integrated Care Board",
-      "Rothersby Royal Infirmary",
-      "Fenwold General Hospital",
-      "Harlowmere Hospital",
-      "Wrayfield Hospital",
-      "Brandling Park Hospital",
-      "Castlegate Spine Clinic",
+      "Quenmoor and Kirkbeck Integrated Care Board",
+      "Ravensholt Royal Infirmary",
+      "Ravensholt Teaching Hospitals NHS Foundation Trust",
+      "Cragsmoor General Hospital",
+      "Cragsmoor and Fernhollow Hospitals NHS Trust",
+      "Gorsedene Hospital",
+      "North Quenmoor Hospitals NHS Trust",
+      "Shelderwick Hospital",
+      "Hethercombe Park Hospital",
+      "Corriemoor Healthcare",
+      "Ormsbrook Spine Clinic",
+      "Ormsbrook Clinics",
       "Oxlade Treatment Centre",
-      "Pellow House Hospital",
-      "Kestrelmead Hospital",
+      "Saltwyke Surgical Services",
+      "Penderwick House Hospital",
+      "Corriemoor Penderwick House Hospital",
+      "Thistledene Hospital",
       "Tannerbrook Surgical Centre",
-      "Halbury Healthcare",
-      "Larkmead Outcomes"
+      "Fernhollow Community Hospital",
+      "Brackenholt Community Hospital",
+      "Hawksmere District Hospital",
+      "Mossgill Outcomes"
     ],
     "people": [
       "Maureen Thompson",
@@ -88,7 +97,7 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is each group's mean change across every member it treated, observed only for the members who answered a follow-up, when members whose course went wrong answer far less and change far less and that course shows only as a later event in a second record; reading the change on the answerers, adjusted for each member's starting state or with the non-answerers filled from it, overstates the groups with the most such events, and only filling each non-answerer from the answerers who shared its later event counts them.",
-  "driver_concrete": "Each provider's case-mix adjusted 12-month Oswestry Disability Index improvement over every eligible index operation, where the 12-month questionnaire comes back from about seven in ten patients without a complication but about a quarter of those readmitted as an emergency within 90 days or operated on again within the year (visible only as later spells in the board's hospital episode extract), so the answerers' adjusted mean overstates the complication-heavy providers by up to about two points; each non-answerer's improvement is taken from the answerers at its provider who shared its complication status.",
+  "driver_concrete": "Each provider's case-mix adjusted 12-month Oswestry Disability Index improvement over every eligible index operation, where the 12-month questionnaire comes back from about seven in ten patients but about a third of those readmitted as an emergency within 90 days of discharge (visible only as later spells in the board's hospital episode extract, often at another hospital), whose change is about 17 points below expected, so the answerers' adjusted mean overstates the complication-heavy providers by up to about 1.7 points; each non-answerer's improvement is taken from the answerers at its provider who shared its readmission status.",
   "stump": "A competent solver computes each provider's adjusted improvement on the patients who returned the 12-month questionnaire (or fills the others from their pre-operative case-mix), ranks the complication-heavy providers near the top and places the 2027-28 volume with them, when their non-answerers are disproportionately the patients readmitted or operated on again after a complication, whose improvement is far lower; filling each non-answerer from the answerers who shared its complication status drops them below the providers the default leaves out.",
   "mechanism_source": "design_note",
   "differentiation": {
@@ -161,6 +170,6 @@
       "deliverable set": "docx+xlsx"
     }
   ],
-  "notes": "Calibration organ none: the outcomes programme's answerers are a selected subset of the population the policy names, not a validation sample. stump_strategy population_selection: who answered the 12-month questionnaire is selected by the complication that lowers the outcome. Context artifact: the providers' 2027-28 capacity returns (each provider's offered operations), which answer another question correctly; the governing document is the board's 2027-28 spinal contracting policy (the WHAT). Generators: G9 decisive (the measured outcome is the answerers' and the class that decides who answers, a complication, sits behind a join to later spells); G12 and G14 support it. Axes redrawn at the first check against the window (task138, task133 v4, task255 v3): role to operations_director (the board's director of planned care places the volume; procurement_lead and capacity_planner both in the window), forum to funder_or_donor (the board decides as the funder of the volume under its delegated contracting; board_of_directors in the window), forcing event to purchase_order_or_contract (the 2027-28 contract variations); generators[0] from G12 to G9 (G12 and G14 repeat task273's lineage inside the batch on gap, pattern and Gate G; G9, the survival class behind a join, is the honest description of who reaches the measured outcome).",
+  "notes": "Calibration organ none: the outcomes programme's answerers are a selected subset of the population the policy names, not a validation sample. stump_strategy population_selection: who answered the 12-month questionnaire is selected by the complication that lowers the outcome. Context artifact: the providers' 2027-28 capacity returns (each provider's offered operations), which answer another question correctly; the governing document is the board's 2027-28 spinal contracting policy (the WHAT). Generators: G9 decisive (the measured outcome is the answerers' and the class that decides who answers, a complication, sits behind a join to later spells); G12 and G14 support it. Axes redrawn at the first check against the window (task138, task133 v4, task255 v3): role to operations_director (the board's director of planned care places the volume; procurement_lead and capacity_planner both in the window), forum to funder_or_donor (the board decides as the funder of the volume under its delegated contracting; board_of_directors in the window), forcing event to purchase_order_or_contract (the 2027-28 contract variations); generators[0] from G12 to G9 (G12 and G14 repeat task273's lineage inside the batch on gap, pattern and Gate G; G9, the survival class behind a join, is the honest description of who reaches the measured outcome). Invented names redrawn after the H21 screen (h21.py: real UK places, NHS organisations and every other card's invented names), figures unchanged.",
   "registered": "2026-11-01T20:55:00Z"
 }

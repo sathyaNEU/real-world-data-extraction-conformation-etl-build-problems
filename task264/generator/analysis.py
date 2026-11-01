@@ -47,7 +47,7 @@ def load(target):
         if r.predecessor_provider_code:
             site[r.provider_code] = r.predecessor_provider_code
     s["unit"] = s.provider_code.map(site)
-    old = pd.read_excel(P("larkmead_spinal_proms_2022-04_to_2025-03.xlsx"), skiprows=3, dtype=object)
+    old = pd.read_excel(P("mossgill_spinal_proms_2022-04_to_2025-03.xlsx"), skiprows=3, dtype=object)
     odi = ["ODI%d" % i for i in range(1, 11)]
     o = pd.DataFrame({"ref": old.PatientRef.astype(str), "site": old.Site.astype(str),
                       "sup_op": pd.to_datetime(old.OperationDate), "completed": pd.to_datetime(old.Completed),
@@ -57,7 +57,7 @@ def load(target):
                       "dur": old.SymptomDuration.map(DUR),
                       "n": old[odi].notna().sum(axis=1).astype(int),
                       "tot": old[odi].apply(pd.to_numeric).sum(axis=1).astype(float)})
-    new = pd.read_csv(P("larkmead_spinal_proms_2025-04_to_2026-09.csv"), dtype=str, keep_default_na=False)
+    new = pd.read_csv(P("mossgill_spinal_proms_2025-04_to_2026-09.csv"), dtype=str, keep_default_na=False)
     n = pd.DataFrame({"ref": new.patient_ref, "site": new.site_code,
                       "sup_op": pd.to_datetime(new.operation_date, format="%d/%m/%Y"),
                       "completed": pd.to_datetime(new.completed_date), "qtype": np.where(new.questionnaire == "PREOP", "pre", "m12"),
@@ -67,7 +67,7 @@ def load(target):
                       "n": new.odi_sections_answered.astype(int), "tot": new.odi_raw_score.astype(float)})
     q = pd.concat([o, n], ignore_index=True)
     q["score"] = np.where(q.n >= 8, q.tot / (5.0 * q.n) * 100.0, np.nan)
-    link = pd.read_csv(P("larkmead_nhs_number_link_2026-09.csv"), dtype=str, keep_default_na=False)
+    link = pd.read_csv(P("mossgill_nhs_number_link_2026-09.csv"), dtype=str, keep_default_na=False)
     q = q.merge(link[["patient_ref", "pseudo_nhs_number"]].rename(columns={"patient_ref": "ref", "pseudo_nhs_number": "pseudo"}),
                 on="ref", how="left")
     q["pseudo"] = q.pseudo.fillna("")
@@ -265,8 +265,8 @@ def participation(L, use_booked=False, match_unlinked=True):
         prov = L["prov"]
         site_unit = {}
         for r in prov.itertuples():
-            if r.larkmead_site_code:
-                site_unit[r.larkmead_site_code] = L["site"][r.provider_code]
+            if r.mossgill_site_code:
+                site_unit[r.mossgill_site_code] = L["site"][r.provider_code]
         free = ops[~ops.pseudo_nhs_number.isin(linked_pseudo)].copy()
         free["yob_lo"] = free.admission_date.dt.year - free.age_on_admission - 1
         free["yob_hi"] = free.admission_date.dt.year - free.age_on_admission
