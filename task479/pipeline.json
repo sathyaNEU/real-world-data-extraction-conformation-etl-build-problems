@@ -1,13 +1,13 @@
 {
  "task": "task479",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 5,
- "stage_name": "ship",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-11-01",
  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
- "architecture": 6,
+ "architecture": 7,
  "loops": 0,
  "precut": {
   "exit": 0,
@@ -30,7 +30,7 @@
   "earlier": "DETERMINISTIC, APPROVE, determinism_check_report.md, 2026-10-21"
  },
  "returned": [],
- "resume": "Architecture 6 spent at the 11-01 re-check: the judge SEND_BACK, the memo's literal reading is the default path and the sentence that closes it names the decisive step (fork is the stump). Shipped and pending on the portal; a re-root (new world, dataset, generator and shell, architecture 7) or overruling the judge is the author's call. If overruled, the reship repair is: drop the dictionary and manifest from pack.FILES and build.py, \"each member employer\" in the prompt, employer names off alphabetical id order, account managers drawn per row.",
+ "resume": "Architecture 7 draw for objective ETL, paused at stage 1 on the orchestrating session's stop rule (twelve candidates screened across five task types, none clears; no card registered for v7). Architecture 6 (the shipped health-trust build, judge SEND_BACK at the 11-01 re-check) stays at the portal pending; its identity and fate are already in the card's lineage and the card carries architecture_spent. Next: draw a fresh ETL mechanism outside the twelve screens and the drivers task464 architecture 5 maps (cells A to D measured mechanism-dead on 10-27; cell F holds task450, task482 v6 and task488), or take the author's call on the slot; then guard.py check and register, commit DRAWN, and continue from stage 2.",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,
@@ -42,5 +42,24 @@
   "figures_check": "93 of 93",
   "anatomy": "Back-test and Shock fail, measured (DESIGN_NOTE ## Survivor anatomy)",
   "repair": "cut and gated, not shipped; shipped cut restored"
+ },
+ "shipped_architecture": {
+  "architecture": 6,
+  "delivered": "2026-10-21",
+  "portal": "pending, left untouched",
+  "target_zip_sha256": "8d3e2b831aec51fc0e5bea7035bc4cbdd7c13cd84ac49a0b7856892698557053"
+ },
+ "draw_screen": {
+  "date": "2026-11-01",
+  "screened": 12,
+  "task_types": [
+   "item-response-theory-test-equating",
+   "data-integration-record-linkage-entity-resolution",
+   "census-register-administrative-data-quality",
+   "seasonal-adjustment-official-time-series-production",
+   "emissions-inventory"
+  ],
+  "cleared": 0,
+  "record": "DESIGN_NOTE ## Tried and rejected, screens 1 to 12"
  }
 }

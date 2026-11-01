@@ -159,8 +159,32 @@
       ],
       "gate_g": "forecasting",
       "niche": "a school employees' health cooperative's October 2026 mid-year contribution review: which member districts' expected full 2026 plan-year plan-paid claims per member per month exceed the claims component of their 2026 contribution rate, from January to June 2026 claims, when members pay their deductibles first in the plan year and four districts moved to a $3,000 deductible on 1 January 2026"
+    },
+    {
+      "architecture": "v6",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-11-01 at the re-check's stage 4: judge pass 2 NOT_DETERMINISTIC, SEND_BACK, the renewal memo's literal reading filing each employer's own trended experience (the default path) and the broker survey left open as a complement; the isolated leak reader read the memo the same way; the sentence that would close the fork names the decisive step, so the fork is the stump",
+      "driver": "A unit's expected next-period level is read from a few periods of its own record, and for small units the record's spread is mostly chance, larger than the true differences between units; taking each unit's record at face value ranks the lucky small units low and the unlucky ones high, while the expected level weighs the unit's record against the pool by how much of its spread is signal.",
+      "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and files CR104, CR109, CR136, CR167 and CR176 surcharged, because it never asks how much of a small employer's three years is chance: one member's large claim moves a forty-member employer's year by more than the employers truly differ, so the small employers with high experience are expected near the trust's level and under their claims components, and the small employers with low experience, whose claims components sit well under the trust's level, are expected over them.",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "niche": "a chamber of commerce's small-employer health trust deciding at its November 2026 trustees' meeting which member employers' expected 2027 retained claims per member per month exceed the claims component of the 2027 contribution each employer elected, from the 2023 to 2025 plan years' experience, when most employers cover fewer than three hundred members"
     }
   ],
   "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
-  "registered": "2026-10-21T02:09:25Z"
+  "registered": "2026-10-21T02:09:25Z",
+  "architecture_spent": true,
+  "lineage_shells": [
+    {
+      "architecture": "v6",
+      "question form": "which",
+      "second-sentence opener": "build",
+      "deliverable set": "xlsx"
+    }
+  ]
 }
