@@ -401,7 +401,7 @@ def make_proms(w):
                 pseudo = hexid(rg, 10)
                 unlinked = bool(new and rg.random() < UNLINKED[p["key"]])
                 regs.append(dict(ref=ref, pseudo="" if unlinked else pseudo, site=p["site"], pid=-1, new=new,
-                                 linked_on=reg + D(days=3)))
+                                 linked_on=reg + D(days=3), gpseudo=pseudo))
                 age = float(np.clip(rg.normal(56, 13.5), 19, 91))
                 yob = booked.year - int(age) - int(rg.integers(0, 2))
                 pre = float(np.clip(rg.normal(45, 13.5), 8, 90))
@@ -415,7 +415,52 @@ def make_proms(w):
                                      dur=int(rg.integers(1, 5)), pid=-1))
     q = pd.DataFrame(rows)
     reg = pd.DataFrame(regs)
+    reg = settle_unlinked(w, q, reg)
     return q, reg
+
+
+def match_candidates(ops, site_prov, booked, yob, sex):
+    """The one rule that places a questionnaire with no NHS number: same provider, same sex, a birth year the
+    age on admission allows, the operation from 120 days before to 30 days after the booked date, nearest wins."""
+    c = ops[(ops.mprov == site_prov) & (ops.sex_code == sex) & (ops.yob_lo <= yob) & (ops.yob_hi >= yob)]
+    dd = (c.op_date - booked).apply(lambda x: x.days)
+    c = c[(dd >= -30) & (dd <= 120)].copy()
+    c["gap"] = (c.op_date - booked).apply(lambda x: abs(x.days))
+    return c.sort_values(["gap", "pid"])
+
+
+def settle_unlinked(w, q, reg):
+    site_key = {p["site"]: p["key"] for p in PROVIDERS}
+    ops = w[["pid", "prov", "op_date", "sex_code", "age", "adm_off"]].copy()
+    ops["mprov"] = ops.prov
+    adm = ops.op_date - ops.adm_off.apply(lambda d: D(days=int(d)))
+    ops["yob_lo"] = [a.year - int(g) - 1 for a, g in zip(adm, ops.age)]
+    ops["yob_hi"] = [a.year - int(g) for a, g in zip(adm, ops.age)]
+    linked_pids = set(reg[(reg.pseudo != "") & (reg.pid >= 0)].pid)
+    free = ops[~ops.pid.isin(linked_pids)]
+    pre = q[q.qtype == "pre"].set_index("ref")
+    flip = set()
+    for r in reg[reg.pseudo == ""].itertuples():
+        if r.ref not in pre.index:
+            continue                       # no questionnaire: nothing to place
+        qq = pre.loc[r.ref]
+        c = match_candidates(free, site_key[r.site], qq.sup_op, qq.yob, qq.sex)
+        if r.pid < 0:
+            ok = len(c) == 0
+        else:
+            ok = len(c) >= 1 and int(c.iloc[0].pid) == r.pid and (len(c) == 1 or c.iloc[1].gap > c.iloc[0].gap)
+        if not ok:
+            flip.add(r.ref)
+    pseudo_of = dict(zip(w.pid, w.pseudo))
+    gh = stream(9402)
+    newp = []
+    for r in reg.itertuples():
+        if r.ref in flip:
+            newp.append(pseudo_of[r.pid] if r.pid >= 0 else hexid(gh, 10))
+        else:
+            newp.append(r.pseudo)
+    reg["pseudo"] = newp
+    return reg
 
 
 def make_deaths(w):
@@ -426,7 +471,7 @@ def make_deaths(w):
         if row.died_12m:
             d = row.op_date + D(days=int(r.integers(5, 361)))
         else:
-            start = row.op_date + D(days=366)
+            start = row.op_date + D(days=380)
             span = (EXTRACT_TO - start).days
             hz = 0.009 + 0.0009 * max(0, row.age - 60)
             d = None
