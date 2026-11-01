@@ -78,7 +78,42 @@ PROVIDERS = [
          org="Tannerbrook Healthcare LLP",
          vol=(280, 296, 318), c=0.110, u=-1.58, r=0.67, sev=-0.30, cap=130),
 ]
-# Pellow House was bought by Halbury Healthcare on 1 September 2024 and re-keyed in the warehouse
+# Pellow House was bought by Halbury Healthcare (completion 1 April 2025) and re-keyed in the warehouse
 RENAME = dict(old_key=41355, new_key=41477, new_name="Halbury Pellow House Hospital",
-              date=dt.date(2024, 9, 1), new_org="Halbury Healthcare Ltd")
+              date=dt.date(2025, 4, 1), new_org="Halbury Healthcare Ltd")
 NHS_KEYS = [40117, 40152, 40188]
+
+# ---------------------------------------------------------------------------------------------
+# Identifiers and code sets the producing systems use
+ODS = {40117: "RWX01", 40152: "RWF02", 40188: "RNW01", 41206: "NHB11", 41231: "NHB14", 41274: "NCG03",
+       41309: "NMD07", 41355: "NPH01", 41477: "NHB19", 41388: "NKM02", 41402: "NTB05"}
+# other hospitals that appear in the cohort's later spells
+OTHER_PROVIDERS = [
+    dict(key=40231, ods="RWF09", name="Kelderby Community Hospital", org="Fenwold and Kelderby Hospitals NHS Trust",
+         kind="NHS community", site=""),
+    dict(key=40244, ods="RWX07", name="Ashlade Community Hospital", org="Rothersby Teaching Hospitals NHS Foundation Trust",
+         kind="NHS community", site=""),
+    dict(key=40099, ods="RQD01", name="Saltmarsh District Hospital", org="Saltmarsh and Esk Valley NHS Trust",
+         kind="NHS", site=""),
+]
+# each independent site's patients are admitted as emergencies to the local NHS trust
+LOCAL_TRUST = {41206: 40117, 41231: 40152, 41274: 40117, 41309: 40188, 41355: 40152, 41388: 40188, 41402: 40117}
+
+DISTRICTS = [f"WX{i}" for i in range(1, 15)] + [f"AQ{i}" for i in range(1, 10)]
+CATCH = {40117: DISTRICTS[0:5], 40152: DISTRICTS[14:23], 40188: DISTRICTS[9:14]}
+
+# OPCS-4 (as the extract writes them, no dot) for the index operations, Appendix A of the policy
+INDEX_STENOSIS = ["V253", "V254", "V255", "V256"]
+INDEX_DISC = ["V331", "V332", "V337"]
+REVISION = ["V264", "V347"]
+INJECTION = ["A521", "V544"]
+UNRELATED_EL = [("C751", "H251"), ("T202", "K409"), ("A651", "G560"), ("H221", "K573"), ("H251", "K621")]
+COMP_DIAG = [("T814", 0.28), ("T810", 0.10), ("G970", 0.08), ("M541", 0.22), ("M511", 0.10), ("I269", 0.05),
+             ("I802", 0.05), ("R33X", 0.06), ("N390", 0.06)]
+OTHER_EM_DIAG = ["R074", "J189", "N390", "I480", "R55X", "K358", "S720", "I214", "J441", "R104"]
+
+# 2027-28 placement order and policy constants
+WINDOW_PRE_DAYS = 90          # pre-operative questionnaire: the 90 days up to and including the operation day
+M12_FROM_WEEKS, M12_TO_WEEKS = 48, 64
+MIN_SECTIONS = 8
+SNAPSHOT = dt.date(2026, 3, 31)

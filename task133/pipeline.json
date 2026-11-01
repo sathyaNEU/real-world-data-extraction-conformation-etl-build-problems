@@ -18,7 +18,7 @@
   "reader": "no leak (stage 4 round 1, e53d1a72); the planning basis and the prompt changed since, so the reader reads again at the re-judge"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-01 (repeat.gate_g, repeat.decision against task138 v3; first names on older builds)",
+  "heart": "WARN 2026-11-01 on b86a875e (repeat.gate_g, repeat.decision against task138 v3; first names on older builds); no BLOCK",
   "nearest": "surface: task134 (back to back by number) and task142 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
@@ -81,7 +81,7 @@
   "voice_check": "PASS (717 characters)",
   "leak_py": "REVIEW, no LEAK (--asof 2026-10-20)",
   "guard_heart": "WARN (no BLOCK): repeat.gate_g and repeat.decision against task138 v3, as at the draw",
-  "guard_surface": "PENDING",
+  "guard_surface": "2 pairs promoted for adjudication (task134 back to back, task142), both differentiated on the card, as at the draw; personas in the cut pack: John Morris (on the card)",
   "target_zip_sha256": "b86a875e9b7abd52888dae29548a7690c898703dfc773007e53ae67ffbc9087e",
   "pair_ceiling": "28.5 (46.8 if the cracker also finds one silent device); mirror leakage 0.0"
  },

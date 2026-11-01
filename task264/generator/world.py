@@ -3,7 +3,7 @@ answer and later spells, before any system writes a record or any mess is applie
 import datetime as dt
 import numpy as np
 import pandas as pd
-from common import SEED, PROVIDERS, FY, CASEMIX, NHS_KEYS, EXTRACT_DATE
+from common import *
 
 FY_ORDER = ["2022-23", "2023-24", "2024-25", "2025-26"]
 
@@ -128,7 +128,320 @@ def build_world():
     return w
 
 
-if __name__ == "__main__":
+# =============================================================================================
+# The rest of the truth, each drawn from its own streams so the tuned core above never moves.
+EXTRACT_FROM = dt.date(2022, 4, 1)
+EXTRACT_TO = dt.date(2026, 9, 30)
+NEW_PLATFORM = dt.date(2025, 4, 1)
+D = dt.timedelta
+
+
+def practices():
+    r = stream(9100)
+    out = {}
+    used = set()
+    for d in DISTRICTS:
+        k = int(r.integers(2, 5))
+        codes = []
+        while len(codes) < k:
+            c = "W8%04d" % int(r.integers(1000, 9999))
+            if c not in used:
+                used.add(c)
+                codes.append(c)
+        out[d] = codes
+    return out
+
+
+GP = practices()
+
+
+def hexid(r, n):
+    return "".join("0123456789ABCDEF"[int(x)] for x in r.integers(0, 16, n))
+
+
+def ukeys(r, n, fmt, lo, hi):
+    vals = r.choice(np.arange(lo, hi), size=n, replace=False)
+    return [fmt % int(v) for v in vals]
+
+
+def odi_from(sections, n_answered, rng):
+    s = np.array(sections, dtype=float)
+    keep = np.ones(10, bool)
+    if n_answered < 10:
+        keep[rng.permutation(10)[:10 - n_answered]] = False
+    ans = [int(v) if k else None for v, k in zip(s, keep)]
+    tot = sum(v for v in ans if v is not None)
+    score = tot / (5.0 * n_answered) * 100.0
+    return ans, tot, score
+
+
+def n_sections(r):
+    u = r.random()
+    if u < 0.93:
+        return 10
+    if u < 0.97:
+        return 9
+    if u < 0.985:
+        return 8
+    return int(r.integers(5, 8))
+
+
+def provider_at(key, day):
+    if key == RENAME["old_key"] and day >= RENAME["date"]:
+        return RENAME["new_key"]
+    return key
+
+
+def extras(w):
+    """Per-operation attributes the systems record: identifiers, residence, booking, questionnaires."""
+    pmap = {p["key"]: p for p in PROVIDERS}
+    rid = stream(9200)
+    w["pseudo"] = [hexid(rid, 10) for _ in range(len(w))]
+    assert w.pseudo.is_unique
+    recs = []
+    for row in w.itertuples():
+        p = pmap[row.prov]
+        rx = stream(row.rkey[0], row.rkey[1], row.rkey[2] + 3000, 5)
+        if p["kind"] == "NHS" and rx.random() < 0.7:
+            dist = CATCH[row.prov][int(rx.integers(0, len(CATCH[row.prov])))]
+        else:
+            dist = DISTRICTS[int(rx.integers(0, len(DISTRICTS)))]
+        gp = GP[dist][int(rx.integers(0, len(GP[dist])))]
+        adm_off = 1 if (p["kind"] == "NHS" and row.age > 65 and rx.random() < 0.25) else 0
+        res_rate = 0.09 if p["kind"] == "NHS" else 0.14
+        booked = row.op_date
+        if rx.random() < res_rate:
+            if rx.random() < 0.4:
+                booked = row.op_date + D(days=int(rx.integers(3, 26)))      # brought forward
+            else:
+                booked = row.op_date - D(days=int(rx.integers(10, 121)))    # postponed
+        lead = int(rx.integers(14, 71))
+        reg = booked - D(days=lead)
+        pre_c = min(reg + D(days=int(rx.integers(0, 10))), booked)
+        n_pre = n_sections(rx)
+        rs = stream(row.rkey[0], row.rkey[1], row.rkey[2] + 4000, 6)
+        pre_secs = odi_sections(row.pre_true, rs)
+        pre_ans, pre_tot, pre_score = odi_from(pre_secs, n_pre, rs)
+        n_m12 = n_sections(rx)
+        late = int(np.floor(rx.exponential(19.0)))
+        m12_c = row.op_date + D(days=357 + late)
+        post_secs = odi_sections(row.post_true, rs)
+        post_ans, post_tot, post_score = odi_from(post_secs, n_m12, rs)
+        if row.symp12:
+            dur = 3 if rx.random() < 0.55 else 4
+        else:
+            dur = 1 if rx.random() < 0.25 else 2
+        unl = rx.random()
+        recs.append(dict(district=dist, gp=gp, adm_off=adm_off, booked=booked, reg=reg, pre_c=pre_c,
+                         n_pre=n_pre, pre_ans=pre_ans, pre_tot=pre_tot, pre_score=pre_score,
+                         n_m12=n_m12, m12_c=m12_c, post_ans=post_ans, post_tot=post_tot, post_score=post_score,
+                         dur=dur, unl_u=unl, sex_code=2 if row.female else 1,
+                         yob=(row.op_date.year - int(row.age) - (1 if rx.random() < 0.5 else 0))))
+    x = pd.DataFrame(recs, index=w.index)
+    w = pd.concat([w, x], axis=1)
+    w["platform"] = np.where(w.reg >= NEW_PLATFORM, "new", "old")
+    return w
+
+
+UNLINKED = {40117: 0.045, 40152: 0.035, 40188: 0.065, 41206: 0.085, 41231: 0.055, 41274: 0.095,
+            41309: 0.04, 41355: 0.075, 41388: 0.05, 41402: 0.07}
+
+
+def make_spells(w):
+    """Every admitted patient care spell the board's cohort extract holds."""
+    pmap = {p["key"]: p for p in PROVIDERS}
+    rows = []
+    for row in w.itertuples():
+        p = pmap[row.prov]
+        rs = stream(row.rkey[0], row.rkey[1], row.rkey[2] + 5000, 7)
+        adm = row.op_date - D(days=row.adm_off)
+        dis = row.op_date + D(days=int(row.los))
+        if row.stenosis:
+            diag = "M480" if rs.random() < 0.8 else "M544"
+            proc = INDEX_STENOSIS[int(rs.choice(4, p=[0.30, 0.42, 0.18, 0.10]))]
+        else:
+            diag = "M511" if rs.random() < 0.7 else "M512"
+            proc = INDEX_DISC[int(rs.choice(3, p=[0.12, 0.18, 0.70]))]
+        meth = ["11", "12", "13"][int(rs.choice(3, p=[0.8, 0.15, 0.05]))]
+        cls = "2" if (int(row.los) == 0 and row.adm_off == 0) else "1"
+        dest = "51" if row.transfer else "19"
+        prov = provider_at(row.prov, adm)
+        rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=prov, adm=adm, dis=dis, meth=meth, cls=cls,
+                         diag=diag, proc=proc, opdate=row.op_date, age=int(row.age), sex=row.sex_code,
+                         dest=dest, district=row.district, kind="index"))
+        if row.transfer:
+            ch = 40231 if row.prov == 40152 else 40244
+            rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=ch, adm=dis, dis=dis + D(days=int(rs.integers(3, 22))),
+                             meth="81", cls="1", diag=diag, proc="", opdate=None, age=int(row.age), sex=row.sex_code,
+                             dest="19", district=row.district, kind="transfer"))
+        for kind, t in row.emerg:
+            if kind == "comp":
+                a = dis + D(days=int(t))
+                if p["kind"] == "NHS":
+                    pv = row.prov if rs.random() < 0.85 else [k for k in NHS_KEYS if k != row.prov][int(rs.integers(0, 2))]
+                else:
+                    pv = LOCAL_TRUST[row.prov]
+                dg = COMP_DIAG[int(rs.choice(len(COMP_DIAG), p=[q for _, q in COMP_DIAG]))][0]
+                pr = REVISION[int(rs.integers(0, 2))] if (dg in ("T814", "T810", "M541", "M511", "G970") and rs.random() < 0.45) else ""
+                m = ["21", "22", "28"][int(rs.choice(3, p=[0.75, 0.10, 0.15]))]
+                rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=pv, adm=a, dis=a + D(days=int(rs.integers(1, 13))),
+                                 meth=m, cls="1", diag=dg, proc=pr, opdate=a + D(days=int(rs.integers(0, 2))) if pr else None,
+                                 age=int(row.age + (a - row.op_date).days / 365.25), sex=row.sex_code, dest="19",
+                                 district=row.district, kind="comp"))
+            else:
+                a = row.op_date + D(days=int(t))
+                pv = (row.prov if p["kind"] == "NHS" else LOCAL_TRUST[row.prov]) if rs.random() < 0.8 else 40099
+                rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=pv, adm=a, dis=a + D(days=int(rs.integers(0, 10))),
+                                 meth="21", cls="1", diag=OTHER_EM_DIAG[int(rs.integers(0, len(OTHER_EM_DIAG)))], proc="",
+                                 opdate=None, age=int(row.age + t / 365.25), sex=row.sex_code, dest="19",
+                                 district=row.district, kind="other"))
+        if row.inj:
+            a = row.op_date + D(days=int(rs.integers(60, 331)))
+            pv = provider_at(row.prov, a) if p["kind"] == "IS" else row.prov
+            rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=pv, adm=a, dis=a, meth="11", cls="2",
+                             diag="M544" if rs.random() < 0.5 else "M545", proc=INJECTION[int(rs.integers(0, 2))],
+                             opdate=a, age=int(row.age + (a - row.op_date).days / 365.25), sex=row.sex_code, dest="19",
+                             district=row.district, kind="injection"))
+        # unrelated planned day cases anywhere in the extract window
+        span = (EXTRACT_TO - EXTRACT_FROM).days
+        n_el = int(rs.poisson(0.085 * span / 365.25))
+        for _ in range(n_el):
+            a = EXTRACT_FROM + D(days=int(rs.integers(0, span)))
+            pr, dg = UNRELATED_EL[int(rs.integers(0, len(UNRELATED_EL)))]
+            pool = [40117, 40152, 40188, 40099, 41206, 41309, 41388]
+            pv = provider_at(pool[int(rs.integers(0, len(pool)))], a)
+            day = rs.random() < 0.85
+            rows.append(dict(pid=row.pid, pseudo=row.pseudo, prov=pv, adm=a, dis=a if day else a + D(days=int(rs.integers(1, 4))),
+                             meth="11", cls="2" if day else "1", diag=dg, proc=pr, opdate=a,
+                             age=int(row.age + (a - row.op_date).days / 365.25), sex=row.sex_code, dest="19",
+                             district=row.district, kind="elective"))
+    s = pd.DataFrame(rows)
+    s = s[(s.adm >= EXTRACT_FROM) & (s.adm <= EXTRACT_TO)].copy()
+    s.loc[s.dis > EXTRACT_TO, "dis"] = None      # still in hospital at the extract date
+    s = s.sort_values(["pid", "adm", "kind"]).reset_index(drop=True)
+    # submission dates and re-submissions under a new spell number
+    r = stream(9300)
+    s["spell_id"] = ukeys(r, len(s), "%010d", 1_000_000_000, 9_999_999_999)
+    sub = []
+    for i, row in enumerate(s.itertuples()):
+        base = row.dis if row.dis is not None else row.adm
+        sub.append(min(base + D(days=int(r.integers(3, 41))), dt.date(2026, 10, 2)))
+    s["submitted"] = sub
+    s["version"] = 1
+    extra = []
+    for i, row in enumerate(s.itertuples()):
+        pr_ = 0.022 if row.kind == "index" else 0.01
+        if r.random() < pr_:
+            d = row._asdict()
+            d.pop("Index")
+            d["submitted"] = min(row.submitted + D(days=int(r.integers(20, 81))), dt.date(2026, 10, 2))
+            d["version"] = 2
+            if row.kind == "index" and row.proc == "V254" and r.random() < 0.3:
+                d["proc"] = "V253"
+            if row.dis is not None and r.random() < 0.2:
+                d["dis"] = row.dis + D(days=1)
+            extra.append(d)
+    e = pd.DataFrame(extra)
+    e["spell_id"] = ukeys(r, len(e), "%010d", 1_000_000_000, 9_999_999_999)
+    clash = set(e.spell_id) & set(s.spell_id)
+    assert not clash
+    s = pd.concat([s, e], ignore_index=True)
+    return s
+
+
+def make_proms(w):
+    """Registrations, questionnaires and the supplier-to-board link."""
+    rows, regs = [], []
+    r = stream(9400)
+    old_refs = ukeys(r, len(w), "P%07d", 1_000_000, 9_999_999)
+    new_refs = ukeys(r, len(w), "N%08d", 10_000_000, 99_999_999)
+    for i, row in enumerate(w.itertuples()):
+        new = row.platform == "new"
+        ref = new_refs[i] if new else old_refs[i]
+        site = {p["key"]: p["site"] for p in PROVIDERS}[row.prov]
+        sup_op = row.booked if new else row.op_date
+        unlinked = bool(new and row.unl_u < UNLINKED[row.prov])
+        regs.append(dict(ref=ref, pseudo="" if unlinked else row.pseudo, site=site, pid=row.pid, new=new,
+                         linked_on=row.reg + D(days=3)))
+        if row.pre_done and row.pre_c <= EXTRACT_TO:
+            rows.append(dict(ref=ref, site=site, sup_op=sup_op, qtype="pre", completed=row.pre_c, yob=row.yob,
+                             sex=row.sex_code, ans=row.pre_ans, tot=row.pre_tot, n=row.n_pre,
+                             smoker=row.smoker, prev=row.prev, dur=row.dur, pid=row.pid))
+        if row.resp_12m and not row.died_12m and row.m12_c <= EXTRACT_TO:
+            rows.append(dict(ref=ref, site=site, sup_op=sup_op, qtype="m12", completed=row.m12_c, yob=row.yob,
+                             sex=row.sex_code, ans=row.post_ans, tot=row.post_tot, n=row.n_m12,
+                             smoker=None, prev=None, dur=None, pid=row.pid))
+    # bookings that never reached theatre, and 2026-27 bookings, carry questionnaires with no operation
+    rg = stream(9401)
+    ghost_refs_o = ukeys(rg, 4000, "P%07d", 1_000_000, 9_999_999)
+    ghost_refs_n = ukeys(rg, 4000, "N%08d", 10_000_000, 99_999_999)
+    used = set(old_refs) | set(new_refs)
+    ghost_refs_o = [g for g in ghost_refs_o if g not in used]
+    ghost_refs_n = [g for g in ghost_refs_n if g not in used]
+    gi = go = 0
+    for p in PROVIDERS:
+        for fy, (a, b) in list(FY.items()) + [("2026-27", (dt.date(2026, 4, 1), dt.date(2026, 9, 30)))]:
+            n = int(round((0.03 if fy != "2026-27" else 0.55) * p["vol"][-1] * (1 if fy != "2026-27" else 1.15)))
+            for _ in range(n):
+                booked = a + D(days=int(rg.integers(0, (b - a).days + 1)))
+                reg = booked - D(days=int(rg.integers(14, 71)))
+                new = reg >= NEW_PLATFORM
+                if new:
+                    ref = ghost_refs_n[gi]; gi += 1
+                else:
+                    ref = ghost_refs_o[go]; go += 1
+                pseudo = hexid(rg, 10)
+                unlinked = bool(new and rg.random() < UNLINKED[p["key"]])
+                regs.append(dict(ref=ref, pseudo="" if unlinked else pseudo, site=p["site"], pid=-1, new=new,
+                                 linked_on=reg + D(days=3)))
+                age = float(np.clip(rg.normal(56, 13.5), 19, 91))
+                yob = booked.year - int(age) - int(rg.integers(0, 2))
+                pre = float(np.clip(rg.normal(45, 13.5), 8, 90))
+                secs = odi_sections(pre, rg)
+                ans, tot, sc = odi_from(secs, n_sections(rg), rg)
+                c = min(reg + D(days=int(rg.integers(0, 10))), booked)
+                if c <= EXTRACT_TO and rg.random() < 0.85:
+                    rows.append(dict(ref=ref, site=p["site"], sup_op=booked, qtype="pre", completed=c, yob=yob,
+                                     sex=1 + int(rg.random() < 0.53), ans=ans, tot=tot, n=sum(v is not None for v in ans),
+                                     smoker=bool(rg.random() < 0.18), prev=bool(rg.random() < 0.1),
+                                     dur=int(rg.integers(1, 5)), pid=-1))
+    q = pd.DataFrame(rows)
+    reg = pd.DataFrame(regs)
+    return q, reg
+
+
+def make_deaths(w):
+    r = stream(9500)
+    out = []
+    causes = ["I219", "C349", "J449", "I64X", "C509", "F03X", "J189", "I500", "C189", "G309"]
+    for row in w.itertuples():
+        if row.died_12m:
+            d = row.op_date + D(days=int(r.integers(5, 361)))
+        else:
+            start = row.op_date + D(days=366)
+            span = (EXTRACT_TO - start).days
+            hz = 0.009 + 0.0009 * max(0, row.age - 60)
+            d = None
+            if span > 0 and r.random() < hz * span / 365.25:
+                d = start + D(days=int(r.integers(0, span)))
+        if d is not None and d <= EXTRACT_TO:
+            out.append(dict(pseudo=row.pseudo, dod=d, cause=causes[int(r.integers(0, len(causes)))]))
+    return pd.DataFrame(out)
+
+
+def build_all():
     w = build_world()
-    print(len(w), w.groupby("fy").size().to_dict())
-    print(w.groupby("prov")[["comp", "resp_12m", "imp_true"]].mean().round(3))
+    w = extras(w)
+    spells = make_spells(w)
+    q, reg = make_proms(w)
+    deaths = make_deaths(w)
+    from waits import make_waits
+    waits = make_waits()
+    return dict(ops=w, spells=spells, q=q, reg=reg, deaths=deaths, **waits)
+
+
+if __name__ == "__main__":
+    import time
+    t = time.time()
+    A = build_all()
+    print({k: len(v) for k, v in A.items() if hasattr(v, "__len__")}, round(time.time() - t, 1), "s")
