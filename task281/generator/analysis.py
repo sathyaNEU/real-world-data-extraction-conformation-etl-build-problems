@@ -250,6 +250,115 @@ def referrals(P, picks):
 
 
 # ---------------------------------------------------------------------------------------------------------------
+# the estimator family a biostatistician would reach for, each carried to every clinic
+def _fit_logistic(x, y, iters=100):
+    import numpy as np
+    X = np.column_stack([np.ones(len(x)), x])
+    b = np.zeros(2)
+    for _ in range(iters):
+        p = 1 / (1 + np.exp(-X @ b))
+        H = X.T @ (X * (p * (1 - p))[:, None])
+        b = b + np.linalg.solve(H + 1e-9 * np.eye(2), X.T @ (y - p))
+    return b
+
+
+def _isotonic(x, y):
+    o = sorted(range(len(x)), key=lambda i: x[i])
+    blocks = []
+    for i in o:
+        blocks.append([float(y[i]), 1.0, x[i]])
+        while len(blocks) > 1 and blocks[-2][0] / blocks[-2][1] > blocks[-1][0] / blocks[-1][1]:
+            v, n_, hi = blocks.pop()
+            blocks[-1][0] += v
+            blocks[-1][1] += n_
+            blocks[-1][2] = hi
+    steps = [(hi, v / n_) for v, n_, hi in blocks]
+
+    def f(s):
+        for hi, v in steps:
+            if s <= hi:
+                return v
+        return steps[-1][1]
+    return f
+
+
+def estimators(P):
+    """Each clinic's sensitivity at every point under every estimator: the observed proportion by camera model
+    weighted by the clinic's screenings (the golden), by its expected referable screenings, or by camera and age
+    group; and the validation study's calibration of referable status on the DR score (logistic on the score,
+    logistic on its logit, 10-point bins, isotonic) carried to the clinic's own scores."""
+    import math
+    import numpy as np
+    val = P.val_rows()
+    scr = P.screens()
+    models = ("NR-40", "NR-70")
+    vm = {m: [r for r in val if r["model"] == m] for m in models}
+    obs = {m: {nm: P.sens(vm[m], cut) for nm, cut in P.ops} for m in models}
+    cal = {}
+    for m in models:
+        g = [r for r in vm[m] if not r["ung"]]
+        s = np.array([r["score"] for r in g], float)
+        y = np.array([r["ref"] for r in g], float)
+        u = [r for r in vm[m] if r["ung"]]
+        q = np.clip(s, 0.5, 99.5) / 100
+        bins = {}
+        for lo in range(0, 101, 10):
+            sel = [yy for ss, yy in zip(s, y) if lo <= ss < lo + 10 or (lo == 100 and ss == 100)]
+            bins[lo] = sum(sel) / len(sel) if sel else 0.0
+        cal[m] = {"pu": sum(r["ref"] for r in u) / len(u), "raw": _fit_logistic(s, y),
+                  "lgt": _fit_logistic(np.log(q / (1 - q)), y), "bins": bins, "iso": _isotonic(list(s), list(y))}
+
+    def p_of(m, kind, sc, ung):
+        c = cal[m]
+        if ung:
+            return c["pu"]
+        if kind == "raw":
+            return 1 / (1 + math.exp(-(c["raw"][0] + c["raw"][1] * sc)))
+        if kind == "lgt":
+            q = min(max(sc, 0.5), 99.5) / 100
+            return 1 / (1 + math.exp(-(c["lgt"][0] + c["lgt"][1] * math.log(q / (1 - q)))))
+        if kind == "bins":
+            return c["bins"][min(100, (sc // 10) * 10)]
+        return c["iso"](sc)
+
+    byc = defaultdict(list)
+    for s in scr:
+        byc[s["code"]].append(s)
+    out = {}
+    for c in P.codes:
+        ss = byc[c]
+        n = Counter(s["model"] for s in ss)
+        N = sum(n.values())
+        est = {"observed, screenings": {nm: sum(n[m] / N * obs[m][nm] for m in n) for nm, _ in P.ops}}
+        mix = Counter((s["model"], s["age"]) for s in ss if s["age"])
+        M = sum(mix.values())
+        est["observed, camera and age"] = {
+            nm: sum(k / M * P.sens([r for r in vm[m] if r["age"] == a], cut) for (m, a), k in mix.items())
+            for nm, cut in P.ops}
+        for kind, label in (("raw", "logistic on score"), ("lgt", "logistic on logit score"),
+                            ("bins", "binned calibration"), ("iso", "isotonic calibration")):
+            ps = [p_of(s["model"], kind, s["score"], s["ung"]) for s in ss]
+            tot = sum(ps)
+            est[label] = {nm: sum(p for p, s in zip(ps, ss) if s["ung"] or s["score"] >= cut) / tot
+                          for nm, cut in P.ops}
+            er = Counter()
+            for p, s in zip(ps, ss):
+                er[s["model"]] += p
+            E = sum(er.values())
+            est["observed, expected referables (%s)" % label] = {
+                nm: sum(er[m] / E * obs[m][nm] for m in er) for nm, _ in P.ops}
+        out[c] = est
+    return out
+
+
+def decisive_margin(P, cells, pick):
+    """Distance from the floor of the cells that decide a pick: every less sensitive point and the pick itself."""
+    order = [nm for nm, _ in P.ops]
+    upto = order[:order.index(pick) + 1] if pick else order
+    return min(abs(cells[nm] - P.floor) for nm in upto)
+
+
+# ---------------------------------------------------------------------------------------------------------------
 # the asks
 QUARTERS = [("Oct-Dec 2025", dt.date(2025, 10, 1), dt.date(2025, 12, 31)),
             ("Jan-Mar 2026", dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
