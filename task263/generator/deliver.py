@@ -1,8 +1,10 @@
 """The goldens: the 2027 grant workbook (the list with each system's grant and the walk, the wells' own water, the
 county figures) and the chart of each active well's PFOA and PFOS against the line, both from analysis.py on the
-shipped pack; and generator/figures.json, the figures the write-up states."""
+shipped pack; generator/figures.json, the figures the write-up states; and metadata.json, the distractors and each
+file's provenance."""
 from __future__ import annotations
 
+import csv
 import json
 import os
 
@@ -10,7 +12,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt                       # noqa: E402
-from openpyxl import Workbook                          # noqa: E402
+from openpyxl import Workbook, load_workbook           # noqa: E402
 from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
 
 import analysis as A                                   # noqa: E402
@@ -218,6 +220,35 @@ def write(target, golden, T=None):
     chart(os.path.join(golden, K.DELIVERABLES[1]), D, G)
     F = figures(D, G, aa, ab)
     json.dump(F, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
-    meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS]}
-    json.dump(meta, open(os.path.join(os.path.dirname(target), "metadata.json"), "w"), indent=2)
+    json.dump(metadata(target), open(os.path.join(os.path.dirname(target), "metadata.json"), "w"), indent=2)
     return F
+
+
+def metadata(target):
+    """The distractors and every shipped file's provenance (dataset-generation section 9): what the file is, the system
+    that produced it, when it was extracted or issued, the office that holds it, its rows. Nothing about the method."""
+    files = []
+    for k, name in K.FILES.items():
+        path = os.path.join(target, name)
+        if name.endswith(".csv"):
+            with open(path, newline="", encoding="utf-8") as f:
+                rows = sum(1 for _ in csv.reader(f)) - 1
+        elif name.endswith(".xlsx"):
+            rows = load_workbook(path, read_only=True).worksheets[0].max_row - 1
+        else:
+            rows = None
+        what, system, when, office = K.PROVENANCE[k]
+        files.append(dict(path="target/" + name, format=name.rsplit(".", 1)[1], rows=rows, source=what,
+                          source_system=system, extracted_or_issued=when.isoformat(), owner=office,
+                          license="CC0-1.0 (original work, constructed for this task)"))
+    return {"task": "task263", "as_of": K.AS_OF.isoformat(), "deliverables": list(K.DELIVERABLES),
+            "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
+            "sources": [{"files": "all files under target/",
+                         "origin": "constructed for this task by task263/generator/build.py (seeded, deterministic) "
+                                   "around a fictional Upper Midwest state's drinking water program, its revolving fund "
+                                   "authority, community water systems, laboratories and people; no real organisation, "
+                                   "water system, well or person is depicted. EPA Methods 533 and 537.1 are named as the "
+                                   "real analytical methods, and the federal survey file follows the survey's published "
+                                   "layout with synthetic values.",
+                         "date": "2026-10-16", "license": "CC0-1.0 (original work)"}],
+            "generator": "task263/generator/build.py", "files": files}

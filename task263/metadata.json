@@ -1,6 +1,143 @@
 {
+  "task": "task263",
+  "as_of": "2026-09-30",
+  "deliverables": [
+    "pfas_design_grants_2027.xlsx",
+    "well_pfas_2027.png"
+  ],
   "distractor_files": [
     "target/national_pfas_survey_2023.csv",
     "target/private_well_pfas_2024-2026.csv"
+  ],
+  "sources": [
+    {
+      "files": "all files under target/",
+      "origin": "constructed for this task by task263/generator/build.py (seeded, deterministic) around a fictional Upper Midwest state's drinking water program, its revolving fund authority, community water systems, laboratories and people; no real organisation, water system, well or person is depicted. EPA Methods 533 and 537.1 are named as the real analytical methods, and the federal survey file follows the survey's published layout with synthetic values.",
+      "date": "2026-10-16",
+      "license": "CC0-1.0 (original work)"
+    }
+  ],
+  "generator": "task263/generator/build.py",
+  "files": [
+    {
+      "path": "target/pfas_entry_point_results_2024-2026.csv",
+      "format": "csv",
+      "rows": 36414,
+      "source": "Constructed: the state drinking water database's PFAS compliance export, every community water system",
+      "source_system": "state drinking water database",
+      "extracted_or_issued": "2026-08-24",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/pfas_field_collection_records_2024-2026.csv",
+      "format": "csv",
+      "rows": 1519,
+      "source": "Constructed: the program samplers' PFAS collection forms as keyed to the state database",
+      "source_system": "state drinking water database",
+      "extracted_or_issued": "2026-08-24",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/source_facility_inventory_2026.xlsx",
+      "format": "xlsx",
+      "rows": 223,
+      "source": "Constructed: the department's source facility inventory, every community water system",
+      "source_system": "SDWIS Reports",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/iup_2027_draft_section6_pfas_design_grants.pdf",
+      "format": "pdf",
+      "rows": null,
+      "source": "Constructed: section 6 of the draft 2027 Intended Use Plan, Drinking Water State Revolving Fund",
+      "source_system": "Water Infrastructure Finance Authority",
+      "extracted_or_issued": "2026-09-30",
+      "owner": "Water Infrastructure Finance Authority",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/pfas_initial_monitoring_sampling_guide_rev2.pdf",
+      "format": "pdf",
+      "rows": null,
+      "source": "Constructed: the department's PFAS initial monitoring sampling guide, revision 2",
+      "source_system": "Drinking Water Program",
+      "extracted_or_issued": "2023-12-18",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/monthly_operating_reports_2025.csv",
+      "format": "csv",
+      "rows": 2652,
+      "source": "Constructed: every community water system's 2025 monthly operating reports as filed",
+      "source_system": "state drinking water database",
+      "extracted_or_issued": "2026-02-23",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/source_meter_register_2026.csv",
+      "format": "csv",
+      "rows": 215,
+      "source": "Constructed: the department's source meter register",
+      "source_system": "SDWIS Reports",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/community_water_system_register_2026.csv",
+      "format": "csv",
+      "rows": 136,
+      "source": "Constructed: the department's community water system register",
+      "source_system": "SDWIS Reports",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/wholesale_connections_2026.csv",
+      "format": "csv",
+      "rows": 17,
+      "source": "Constructed: the department's register of connections between water systems",
+      "source_system": "SDWIS Reports",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/laboratories.csv",
+      "format": "csv",
+      "rows": 3,
+      "source": "Constructed: the laboratories certified to report PFAS to the department",
+      "source_system": "SDWIS Reports",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/national_pfas_survey_2023.csv",
+      "format": "csv",
+      "rows": 3248,
+      "source": "Constructed: the federal PFAS survey's two 2023 events at the state's systems, in the survey's published layout (synthetic values)",
+      "source_system": "federal survey data, as published",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "target/private_well_pfas_2024-2026.csv",
+      "format": "csv",
+      "rows": 446,
+      "source": "Constructed: the department's private well program results, homeowners' samples",
+      "source_system": "state drinking water database",
+      "extracted_or_issued": "2026-08-24",
+      "owner": "Department of Natural Resources and Environmental Quality, Drinking Water Program",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    }
   ]
 }

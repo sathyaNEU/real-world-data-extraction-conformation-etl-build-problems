@@ -5,7 +5,7 @@
  "objective": "descriptive-distribution",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-18",
+ "updated": "2026-11-01",
  "stump": "The default path funds 7 systems and stops at Nesvold with $672,000 left because it gives each well the average of the entry-point samples taken while it pumped, so a clean well that runs beside a well over the line takes on that well's water; solving every entry point's samples as a mass balance of its wells' own water leaves only the wells whose own water is over 4.0 ng/L, and the $36 million reaches 16 systems, stopping at Nordvold with $451,200 left.",
  "architecture": 1,
  "loops": 0,
@@ -14,22 +14,32 @@
   "date": "2026-10-16"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; every REVIEW line answered in leak_check_report.md)",
-  "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed; wave 3 audit loop 3 clean on the re-cut pack and the reworded ask 6 (Q1 none, Q6 analytical, neither ask's device named)"
+  "leak_py": "REVIEW, no LEAK (--asof 2026-09-30, the reshipped cut c38b7092, 2026-11-01)",
+  "reader": "loop 1 and loop 2 clean on the call (no decisive-step sentence, no ranking, Q6 analytical); realism notes fixed; wave 3 audit loop 3 clean on the re-cut pack and the reworded ask 6 (Q1 none, Q6 analytical, neither ask's device named); reship read 1 (first cut 81d61969) read the pump sentence the repair had put in the plan's 6.3 beside the own-water definition as a mild hint at the unmixing, so the fact moved to the inventory's own pump column and 6.3 went back to its shipped wording; reship read 2 (final cut c38b7092): no decisive-step sentence, no ranking, Q6 an analytical choice, the hint it names is the single-well route (the default path's), the pump column unremarked"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g vs task152 answered; repeat.deliverables vs task189 answered)",
-  "nearest": "task234 0.08, task181 v1 lineage 0.08"
+  "nearest": "task234 0.08, task181 v1 lineage 0.08",
+  "heart_2026_11_01": "BLOCK, read against the dates as H27 artifacts: test.same_puzzle_older against task269 v3 (drawn 2026-10-19) and task279 (drawn 2026-10-24), test.same_driver_older against task279, all drawn after this build's 2026-10-16 draw; task279's card already differentiates against task263. Surface exit 0, 8 pairs promoted on card and surface axes at the corpus floor."
  },
  "judge": {
-  "verdict": "DETERMINISTIC (r1); wave 3 audit pass 2 DETERMINISTIC (the re-cut Ask B reproduced)",
+  "verdict": "DETERMINISTIC (r1); wave 3 audit pass 2 DETERMINISTIC (the re-cut Ask B reproduced); reship pass 3 DETERMINISTIC (2026-11-01, the final cut c38b7092)",
   "disposition": "APPROVE",
-  "report": "task263/determinism_check_report.md, task263/determinism_check_report_pass2.md",
+  "report": "task263/determinism_check_report.md, task263/determinism_check_report_pass2.md, task263/determinism_check_report_pass3.md (reship)",
   "gate_g": "method_or_model_selection, analytical_non_defect",
   "gate_h": "domain pass, layers pass, decisive step analytical",
-  "pass2": "APPROVE; soft readings the renumbering resolved by name, the county people are counted in, the emergency well; its optional tightening (people living in the county) taken into the prompt after the verdict, no graded figure moved"
+  "pass2": "APPROVE; soft readings the renumbering resolved by name, the county people are counted in, the emergency well; its optional tightening (people living in the county) taken into the prompt after the verdict, no graded figure moved",
+  "pass3": "2026-11-01 on the reshipped cut c38b70927ef7065db923fe1d22411dca: DETERMINISTIC, APPROVE; Gate G decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain pass, layers pass, decisive_step analytical; 16 systems, Nordvold, USD 451,200 reproduce, 23 of 53 wells under every non-detect, revision, confirmation and weighting variant; nothing the removed notes carried opens a second figure (capacity weighting derivable from the entry-point flow, 0.95 to 1.06 of the running wells' capacities on all 393 records); Kesselring's emergency Well 3 and the inactive buyer ids each closed to one figure. The thread on the first reship cut (81d61969) was stopped before it wrote."
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK data_request_notes_2026-09-02.txt: names 12 column(s) of the data files verbatim, 26% of pfas_entry_point_results_2024-2026.csv)",
+   "repair": "leak",
+   "move": "The generator no longer writes data_request_notes_2026-09-02.txt (the department's covering notes naming each file's columns, codes and row counts) or the source facility inventory's Notes sheet (glosses of rated_capacity_gpm, entry_point and status, with the pump fact). Against the judged pack: 9 files byte-identical; the inventory's Facilities sheet identical but for a new pump column beside rated_capacity_gpm; the federal survey identical but for its own Units column; the plan identical but for its note under Table 6-1; the goldens and figures.json byte-identical. Provenance (each file's source system, extraction or issue date and rows) moved to metadata.json through common.PROVENANCE, which checks.py also uses to assert no file carries a date past its extraction. SF16's pump fact is carried by the producing system: the inventory's own pump column reads \"Vertical turbine, constant speed\" (37 wells) or \"Submersible, constant speed\" (183 wells) and is blank on the two surface water plants and the interconnection, the pump type drawn on its own stream so no other value moves; with the entry-point flow on every listed record within 7 per cent of the running wells' rated capacities (median gap 1.2 per cent, largest 6.0, 393 records) it closes the monthly-volume reading's 11 systems. This reship's first cut (81d61969) filed the fact as a last sentence of the plan's 6.3, where the stage 4 leak reader read it beside the own-water definition as a hint; 6.3 is back to its shipped wording. Ask B's counting rule, the referee and not a device, is filed once in the plan's note under Table 6-1: \"Population served is the number of people a system serves directly, as the department's system register records it on 1 September 2026; a system that sells water to another counts only its own customers.\" The federal survey carries its own Units column in micrograms per litre (closure 18). Everything else the two files said (sample types, non-detects, revisions, date formats, meter and connection glosses) is carried by the sampling guide or the systems' own columns and labels, asserted to agree; the asks' devices stay unstated. checks.py asserts no shipped file or sheet describes the data by name (leak.py's own patterns plus a notes token, positive-controlled on the two old names) and by content (positive-controlled on the records' header); the pump fact filed once, in that column, read through the verifier's own xlsx reader, and absent from the plan under pdftotext and pypdf; the flow convergence through the verifier's readers; the counting rule through both extractors. Gates: checks 120, verify PASS, two builds byte-identical, freeze determinism PASS, figures.json unchanged, figures_check 61 of 61, precut exit 0 (61 checks, 0 FAIL, 8 WARN), voice-check PASS, leak.py --asof 2026-09-30 REVIEW with no LEAK, guard surface exit 0, cracker 0 of 8 ask figures (pair ceiling 31.0). Documents changed: the plan (its note under Table 6-1); the leak reader and the judge are re-run by the main thread. Stage 4: the first cut's leak read moved the pump fact from the plan to the inventory (above); on the final cut the leak read is clean and judge pass 3 returned DETERMINISTIC, APPROVE, Gate H decisive step analytical.",
+   "commit": "RESHIPPED (task263)"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-17",
@@ -37,5 +47,19 @@
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "analytical_tasks/03_descriptive_distribution/DA13_pfas-design-grants-blend-down-source-sets.md (header and Situation only)"
+ "seed": "analytical_tasks/03_descriptive_distribution/DA13_pfas-design-grants-blend-down-source-sets.md (header and Situation only)",
+ "target_zip_md5": "c38b70927ef7065db923fe1d22411dca",
+ "gates": {
+  "checks": "120 assertions passed",
+  "verify": "PASS",
+  "rebuild": "byte-identical, target.zip c38b70927ef7065db923fe1d22411dca twice",
+  "freeze": "determinism PASS",
+  "figures_check": "PASS, 61 figures",
+  "precut": "61 checks, 0 FAIL, 8 WARN",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "cracker": "0 of 8 ask figures, pair ceiling 31.0",
+  "surface": "exit 0",
+  "heart": "BLOCK read against the dates (duplicate_check.heart_2026_11_01)"
+ }
 }

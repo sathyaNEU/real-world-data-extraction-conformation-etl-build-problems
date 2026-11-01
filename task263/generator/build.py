@@ -1,6 +1,7 @@
-"""Build task263: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch folder
-inside the task (removed after) compared byte for byte, then target.zip cut from the final build.
+"""Build task263: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json (the distractors
+and every file's provenance; nothing under target/ describes the pack) and generator/figures.json, then the checks and
+the independent verifier, then a second full build into a scratch folder inside the task (removed after) compared
+byte for byte, then target.zip cut from the final build.
 
     python3 task263/generator/build.py              everything
     python3 task263/generator/build.py --out DIR    the pack only, into DIR
@@ -53,7 +54,6 @@ def build(out):
     listed.sort(key=lambda s: s["rank"])
     D.write_iup(p("iup"), listed)
     D.write_guide(p("guide"))
-    open(p("notes"), "w", encoding="utf-8").write(D.data_notes(K.FILES, counts))
     PP.COMPANY = K.DEPT
     PP.normalize_ooxml(p("inventory"), "SDWIS Reports", K.PEOPLE["lead"], "2026-09-01T13:05:22Z",
                        "2026-09-02T14:01:37Z", excel=True)

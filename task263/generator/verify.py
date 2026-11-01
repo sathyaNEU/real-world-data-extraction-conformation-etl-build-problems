@@ -25,6 +25,12 @@ def plan(target):
     return out
 
 
+def inventory(target):
+    """The source facility inventory's Facilities sheet, as this verifier reads it."""
+    return pd.read_excel(os.path.join(target, "source_facility_inventory_2026.xlsx"), sheet_name="Facilities",
+                         dtype={"pws_id": str, "facility_id": str})
+
+
 def wells_in(text, active):
     t = str(text).strip() if isinstance(text, str) else ""
     if not t:
@@ -38,8 +44,7 @@ def main(target):
     F = json.load(open(os.path.join(HERE, "figures.json")))
     P = plan(target)
     ids = {p["pws"] for p in P}
-    inv = pd.read_excel(os.path.join(target, "source_facility_inventory_2026.xlsx"), sheet_name="Facilities",
-                        dtype={"pws_id": str, "facility_id": str})
+    inv = inventory(target)
     act = inv[(inv.status == "Active") & (inv.facility_type == "Well") & inv.pws_id.isin(ids)]
     cap = {}
     for _, f in act.iterrows():

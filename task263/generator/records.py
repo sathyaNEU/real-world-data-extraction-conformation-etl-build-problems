@@ -215,6 +215,18 @@ def _sheet(ws, head, rows, widths):
 
 
 AQUIFERS = ["Sand and gravel", "Cambrian-Ordovician sandstone", "Silurian dolomite", "Glacial outwash"]
+DRIVE = "constant speed"        # every community-system well pump in the state
+
+
+def pump_of(w, built):
+    """The well's pump as the sanitary survey records it: a line-shaft vertical turbine on most large and many older
+    wells, a submersible on the rest, every one on a constant-speed drive. Drawn on its own stream, so nothing else
+    in the pack moves."""
+    g = w["gpm"]
+    p = 0.0 if g < 200 else 0.12 if g < 500 else 0.45 if g < 1000 else 0.85
+    if g >= 200 and built < 1965:
+        p = min(0.95, p + 0.2)
+    return ("Vertical turbine" if K.rng("pump", w["fid"]).random() < p else "Submersible") + ", " + DRIVE
 
 
 def write_inventory(path, S):
@@ -224,36 +236,28 @@ def write_inventory(path, S):
             r = K.rng("facility", w["fid"])
             if w.get("plant"):
                 ftype, depth, aq, built = "Surface water treatment plant", "", "", int(r.integers(1958, 1994))
+                pump = ""
             else:
                 ftype = "Well"
                 depth = int(10 * round(r.uniform(90, 620) / 10))
                 aq = AQUIFERS[int(r.integers(0, 4))]
                 built = int(r.integers(1951, 2016)) if not s.get("well_from") else 2025
+                pump = pump_of(w, built)
             sdate = {"Active": "", "Emergency": "2019-03-01", "Inactive": w.get("since", dt.date(2010, 1, 1)).isoformat()
                      if w["status"] == "Inactive" else ""}[w["status"]]
             rows.append([s["pws"], s["full"], w["fid"], w["name"], ftype, w["status"], sdate, w["ep"] or "",
-                         w["gpm"], depth, aq, built])
+                         w["gpm"], pump, depth, aq, built])
     # the emergency interconnection a listed system opened in 2025
     pax = next(s for s in S if s["name"] == W.PURCHASE[0])
     rows.append([pax["pws"], pax["full"], pax["ic_fid"], pax["ic_name"], "Interconnection",
-                 "Emergency", "2011-08-15", "", "", "", "", 2011])
+                 "Emergency", "2011-08-15", "", "", "", "", "", 2011])
     rows.sort(key=lambda x: (x[0], x[2]))
     wb = Workbook()
     ws = wb.active
     ws.title = "Facilities"
     _sheet(ws, ["pws_id", "system_name", "facility_id", "facility_name", "facility_type", "status", "status_date",
-                "entry_point", "rated_capacity_gpm", "well_depth_ft", "aquifer", "year_constructed"], rows,
-           [10, 40, 11, 38, 26, 11, 12, 11, 12, 11, 28, 10])
-    ns = wb.create_sheet("Notes")
-    for line in ["Source facility inventory, community water systems, as of 1 September 2026.",
-                 "rated_capacity_gpm: the pump's rated discharge in gallons per minute at the system's design head, "
-                 "as the last sanitary survey recorded it. Well pumps in community systems here are constant-speed: a "
-                 "well delivers its rated discharge whenever it runs.",
-                 "entry_point: the sample point of the entry point to the distribution system the facility feeds.",
-                 "status: Active (in routine use), Emergency (kept for emergencies, not in routine use), Inactive "
-                 "(disconnected or abandoned); status_date is the date the status took effect."]:
-        ns.append([line])
-    ns.column_dimensions["A"].width = 120
+                "entry_point", "rated_capacity_gpm", "pump", "well_depth_ft", "aquifer", "year_constructed"], rows,
+           [10, 40, 11, 38, 26, 11, 12, 11, 12, 30, 11, 28, 10])
     wb.save(path)
     return len(rows)
 
@@ -433,12 +437,13 @@ UCMR_MRL = {"PFOA": 0.004, "PFOS": 0.004, "PFHxS": 0.003, "PFNA": 0.004, "PFBS":
             "ADONA": 0.003, "PFMPA": 0.004, "PFMBA": 0.003, "NFDHA": 0.02, "9Cl-PF3ONS": 0.002,
             "11Cl-PF3OUdS": 0.005, "PFEESA": 0.003, "PFTrDA": 0.007, "PFTA": 0.008, "NMeFOSAA": 0.006,
             "NEtFOSAA": 0.005}
+SURVEY_UNITS = "µg/L"      # the survey's own units column, as the federal file publishes it
 
 
 def write_survey(path, S):
     """The federal survey's two 2023 sampling events at the entry points of the state's larger systems and a sample of
-    the smaller ones, as EPA published them: micrograms per litre, the survey's own reporting levels, its own facility
-    and sample point numbers."""
+    the smaller ones, as EPA published them: micrograms per litre on the survey's own units column, the survey's own
+    reporting levels, its own facility and sample point numbers."""
     rows = []
     r0 = K.rng("survey")
     for s in sorted(S, key=lambda x: x["pws"]):
@@ -464,10 +469,10 @@ def write_survey(path, S):
                     rows.append([s["pws"], s["full"].upper(), size, fac, "EP %s" % ep["code"][2:],
                                  "GW" if not s.get("surface") else "SW", "EPTDS%02d" % (e + 1),
                                  "ENTRY POINT %d" % (e + 1), "EP", day.strftime("%m/%d/%Y"), sid, a, "%.3f" % mrl,
-                                 "533" if a not in ("PFTrDA", "PFTA", "NMeFOSAA", "NEtFOSAA") else "537.1", sign,
-                                 "%.4f" % v if sign == "=" else "", ev])
+                                 SURVEY_UNITS, "533" if a not in ("PFTrDA", "PFTA", "NMeFOSAA", "NEtFOSAA") else "537.1",
+                                 sign, "%.4f" % v if sign == "=" else "", ev])
     return _w(path, ["PWSID", "PWSName", "Size", "FacilityID", "FacilityName", "FacilityWaterType", "SamplePointID",
-                     "SamplePointName", "SamplePointType", "CollectionDate", "SampleID", "Contaminant", "MRL",
+                     "SamplePointName", "SamplePointType", "CollectionDate", "SampleID", "Contaminant", "MRL", "Units",
                      "MethodID", "AnalyticalResultsSign", "AnalyticalResultValue", "SampleEventCode"], rows)
 
 

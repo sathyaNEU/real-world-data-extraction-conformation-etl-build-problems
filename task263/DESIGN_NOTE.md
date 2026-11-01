@@ -90,7 +90,7 @@ Lesson: a sample taken where sources mix measures the mixture, and a source's ow
 | SF13 | left | $36 million less the grants made | none | same call | the plan |
 | SF14 | non-detects | half the reporting limit | zero; the reporting limit | same call | asserted: same call and same wells at every substitution |
 | SF15 | quality-control samples and reissued reports | blanks and duplicates set aside, the latest revision | duplicates kept; blanks kept as zero; both revisions kept | same call | the guide's sample types and revision rule; asserted: same call |
-| SF16 | the mixing proportions | each pumping well's rated capacity over the sum | the entry-point flow shared by capacity; equal shares; each well's 2025 monthly pumped volume | same call; same call; 11 systems | asserted: same wells under the first two; the monthly volumes are ruled out by the inventory's note that a well delivers its rated discharge whenever it runs (the entry-point flow on every record matches the running wells' capacities) |
+| SF16 | the mixing proportions | each pumping well's rated capacity over the sum | the entry-point flow shared by capacity; equal shares; each well's 2025 monthly pumped volume | same call; same call; 11 systems | asserted: same wells under the first two; the monthly volumes are ruled out by the inventory's own pump column beside rated capacity (every well "Vertical turbine, constant speed" or "Submersible, constant speed", so a well pumps at its rated capacity whenever it runs; filed once, read through the verifier's xlsx reader) and by the entry-point flow on every listed record, within 7 per cent of the running wells' rated capacities (median gap 1.2 per cent, largest 6.0; the verifier's readers) |
 | SF17 | sources not recorded | those samples left out | the wells inferred from the entry-point flow | same call | asserted: same call |
 
 ## Ladder
@@ -126,10 +126,10 @@ Values on the built pack (analysis.py; asserted in checks.py, recomputed in veri
 | 1 | Population | the active wells of the twenty systems in Table 6-1 | filed (the plan); SF1, SF6 |
 | 2 | Unit of account | the well, then the system's grant on its wells' rated capacity | filed (the plan) |
 | 3 | Attribution window | samples collected in 2024 and 2025 | filed (the plan); SF3 |
-| 4 | As-of dating | the inventory's statuses and capacities as of 1 September 2026, the plan's list as drafted 30 September 2026 | filed |
+| 4 | As-of dating | the inventory's statuses and capacities as extracted 1 September 2026, the register's populations as the plan's note dates them (1 September 2026), the plan's list as drafted 30 September 2026 | filed (the plan) and by construction (one inventory and one register in the pack; extraction dates in metadata.json) |
 | 5 | Version basis | the latest report revision of each sample | filed (the guide); SF15 |
 | 6 | Denominator | none: a level against a line, then dollars | n/a |
-| 7 | Weighting | each sample once; the mixture by the pumping wells' flows | design (the data's structure); SF16 |
+| 7 | Weighting | each sample once; the mixture by the pumping wells' flows | design (the data's structure: the inventory's pump column, the records' entry-point flow); SF16 |
 | 8 | Window length | two calendar years | filed |
 | 9 | Boundary inclusivity | more than 4.0 ng/L; collected 1 January 2024 to 31 December 2025 | filed; SF5 |
 | 10 | Rounding path | grants exact to the dollar from whole gallons a minute; no rounding of levels before the comparison | prompt; SF8 |
@@ -140,8 +140,8 @@ Values on the built pack (analysis.py; asserted in checks.py, recomputed in veri
 | 15 | Duplicate resolution | field duplicates and blanks are quality control; a reissued report replaces the first | filed (the guide); SF15 |
 | 16 | Identity normalisation | the state sample number joins results and collection records; the sampler's text parses to well numbers | by construction; SF17 |
 | 17 | Netting against gross | none | n/a |
-| 18 | Dimensional units | ng/L in the state's export (the 2023 national survey's micrograms per litre is a distractor); gallons a minute to MGD | filed; SF8 |
-| 19 | Code and status semantics | sample types, revision numbers, facility statuses; for the asks, facility types, meters, connection types | the guide and the inventory notes; never the stump |
+| 18 | Dimensional units | ng/L in the state's export (the 2023 national survey's micrograms per litre is a distractor); gallons a minute to MGD | the producing systems' own units columns (the export's ng/L, the survey's own Units column in micrograms per litre, asserted); SF8 |
+| 19 | Code and status semantics | sample types, revision numbers, facility statuses; for the asks, facility types, meters, connection types | the guide (sample types, revisions), the plan (the active wells are those the inventory lists as active) and the systems' own labels (Active, Emergency, Inactive; Well, Interconnection; each meter's facilities and location; Full purchase, Emergency, the end date and the register's primary source, asserted to agree); never the stump |
 | 20 | Integerisation | dollars whole; people whole; water to a tenth of a million gallons | prompt |
 | 21 | Clause scope | section 6 of the plan governs the call; the operating reports and the register govern the asks | filed |
 | 22 | Forward window contents | the 2027 grants rest on the 2024 and 2025 samples, the two complete years the department reviewed | filed (the plan) |
@@ -176,9 +176,10 @@ register's population counts each system's own customers only.
 - **Hazard table.** H1 moves Granlund in A; H2 moves Granlund for a path reading meter readings; H3 moves Hedstrom for a path
   keeping active wells only; H4 moves Granlund and Sandholm in B for a path following every tie; H5 moves Hedstrom, Sandholm and
   Engvall for a path placing buyers in their seller's county, closed by the ask's "people living in the county".
-- **Referee.** The register's notes file the counting rule for B (a system's population counts its own customers) and
-  the inventory's notes file the facility types for A; no file says which meters are shared on the reports or which
-  buyers sell on.
+- **Referee.** The plan's note under Table 6-1 files the counting rule for B once (a system's population counts its own
+  customers; a seller counts only its own), asserted through both extractors, and the register's populations agree
+  (between 2.2 and 2.8 people a service connection for every seller and buyer, asserted); the inventory's own facility
+  types carry A; no file says which meters are shared on the reports or which buyers sell on.
 
 | Ask figures | Cracker's path | Cracker's value | Verdict |
 |---|---|---|---|
@@ -202,10 +203,10 @@ cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
 - **Names.** Every invented place and organisation was screened against US places (every ZIP-code place, every
   county, every city over 15,000): none within one edit of a distinctive real word, none containing one; the first
   draft's names that sat on real Midwest towns were retired (checks.py H21 keeps the near-miss register).
-- **Pack.** 13 files: the statewide results export (36,414 rows), the field collection records (1,519), the source
-  facility inventory, section 6 of the draft 2027 plan, the sampling guide, the department's notes, the 2025
-  operating reports (2,652), the meter register, the system register, the wholesale connections, the laboratory
-  list; two distractors (the 2023 national survey in micrograms per litre, the private well program's results).
+- **Pack.** 12 files: the statewide results export (36,414 rows), the field collection records (1,519), the source
+  facility inventory, section 6 of the draft 2027 plan, the sampling guide, the 2025 operating reports (2,652), the
+  meter register, the system register, the wholesale connections, the laboratory list; two distractors (the 2023
+  national survey in micrograms per litre, the private well program's results).
 - **Gates.** checks.py 96 assertions (golden against the truth, the three rules, the ladder and its cells, every SF
   row, convergence, both asks and their stops, separation, distractors, input gates, realism, H21); verify.py PASS on
   its own code path (pandas, pypdf, normal equations); two builds byte-identical; figures_check 61 of 61; precut 49
@@ -236,6 +237,32 @@ cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
   ... any of those wells"), no graded figure moved. Reader loop 3 clean (Q1 none, Q6 analytical, neither ask's
   device named). checks 102, verify PASS, two builds byte-identical, figures_check 61 of 61, precut 50 of 50; the
   call's files and every listed row unchanged.
+
+- **Leak re-check (2026-11-01).** The department's notes and the inventory's Notes sheet no longer ship (Tried and
+  rejected). Against the shipped pack: 9 files byte-identical; the inventory's Facilities sheet identical but for its
+  own pump column beside rated capacity (the sanitary survey's pump type, every well on a constant-speed drive); the
+  federal survey identical but for its own Units column; the plan identical but for its note under Table 6-1 (the
+  counting rule); the goldens and figures.json byte-identical. Provenance (each file's system, extraction or issue date
+  and rows) is in metadata.json. checks 120, verify PASS, two builds byte-identical, freeze determinism PASS,
+  figures_check 61 of 61, precut 61 checks 0 FAIL, voice-check PASS, leak.py at --asof 2026-09-30 REVIEW with no LEAK
+  (sweeps 1, 12 and 13 clean), guard surface exit 0. Each REVIEW line, ruled:
+  - 3, the plan names Torvik beside decision words: Table 6-1 is the list itself (rank, PWS id, system, county,
+    population, points), with no grant, well or reach (R3c asserted).
+  - 3, the plan carries 13 of 18 words of the call: the plan's own words for its list and set-aside; it names no reach,
+    stop or balance.
+  - 4, the plan holds 7 of the sweep's design-note terms: domain words; 6.3 reads as shipped, and the note's counting
+    rule names no mixture, balance, share or solve (R3c asserted).
+  - 4, the guide holds 13 of them: the sampling guide's own words, unchanged, read by three reader loops with no
+    sentence naming the move.
+  - 6, the plan names all 15 answer-set candidates beside numbers: Table 6-1 orders by priority points only.
+  - 6, the operating reports name all 15 beside numbers: an export at its own grain (facility month), no ranking.
+  - 6, the results export names all 15 beside numbers: an export at its own grain (analyte, sample, revision), no
+    ranking.
+  - 6, the collection records name all 15 beside numbers: one record per bottle set, no ranking.
+  - 6, the inventory names all 15 beside numbers: one row per facility, no ranking.
+  - 11, the prompt's "the twenty systems": predates this repair (voice-check WARN, PASS); it sits in the call's
+    sentence, frozen in a determinism-scope repair; for the main thread.
+  - 11, the shell quota ("give", png+xlsx): predates this repair, a corpus quota WARN; for the main thread.
 
 ## Pre-ship check
 
@@ -276,3 +303,6 @@ cracker keeps 0 of 8 ask figures (A 0 of 4, B 0 of 4), the mirror the same.
 - 2026-10-16, at build: a fixed daily run-time cap repeated monthly volumes across systems; the cap now varies by day and small systems' wells are sized to their demand.
 - 2026-10-17, at stage 4: rounding the unlisted systems' pump ratings to 5 gpm changed their blends and confirmation samples, which renumbered the statewide samples and moved the listed systems' blank records and revisions; reverted to 25 gpm so every listed row stays as judged.
 - Ask B held by the purchase chain alone (wave 3 audit): following buyers of buyers is the plain reading of "get their water from", and measured in code the cracker's closure landed all four counties; the chain now runs through a buyer renumbered on a change of owner, the connections still on its retired id.
+
+- 2026-11-01, in-house re-check under the new leak gate: the department's covering notes (`data_request_notes_2026-09-02.txt`, each file's columns, codes and row counts; LEAK, 12 of the results export's columns named) and the inventory's Notes sheet (glosses of rated_capacity_gpm, entry_point and status, and the pump fact) shipped through wave 3 and describe the data. Replaced by metadata.json for provenance, by the plan for the two facts the build needs (6.3's pump fact closing SF16, the note under Table 6-1's counting rule as Ask B's referee), by the survey's own Units column for closure 18, and by the guide and the systems' own columns and labels for the rest; the asks' devices stay unstated.
+- 2026-11-01, this reship's first cut (target.zip 81d61969): the pump fact filed as the last sentence of the plan's 6.3 ("Well pumps in the state's community systems are constant-speed: a well pumps at its rated capacity whenever it runs.") sat beside the own-water definition, and the stage 4 leak reader read the two together as a hint at the step the call turns on (recovering each well's own water from the entry-point samples); the sentence left the plan (6.3 reads as shipped) and the fact moved to the inventory's own pump column beside rated capacity, every well's pump on a constant-speed drive.

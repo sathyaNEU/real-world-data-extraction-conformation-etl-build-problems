@@ -64,7 +64,6 @@ FILES = {
     "inventory": "source_facility_inventory_2026.xlsx",
     "iup": "iup_2027_draft_section6_pfas_design_grants.pdf",
     "guide": "pfas_initial_monitoring_sampling_guide_rev2.pdf",
-    "notes": "data_request_notes_2026-09-02.txt",
     "mor": "monthly_operating_reports_2025.csv",
     "meters": "source_meter_register_2026.csv",
     "register": "community_water_system_register_2026.csv",
@@ -74,6 +73,37 @@ FILES = {
     "private": "private_well_pfas_2024-2026.csv",
 }
 DISTRACTORS = ("survey", "private")
-CALL_FILES = ("results", "records", "inventory", "iup", "guide", "notes")
+CALL_FILES = ("results", "records", "inventory", "iup", "guide")
 ASK_FILES = ("mor", "meters", "register", "connections")
 DELIVERABLES = ("pfas_design_grants_2027.xlsx", "well_pfas_2027.png")
+AS_OF = dt.date(2026, 9, 30)           # the pack's latest document, the draft plan
+
+# ---------------------------------------------------------------------------------------------- provenance
+# metadata.json only (dataset-generation section 9); no file under target/ describes the pack. Per file: what it is,
+# the system that produced it, the date it was extracted or issued, and the office that holds it.
+OFFICE = "%s, %s" % (DEPT, PROGRAM)
+PROVENANCE = {
+    "results": ("Constructed: the state drinking water database's PFAS compliance export, every community water system",
+                "state drinking water database", PULL, OFFICE),
+    "records": ("Constructed: the program samplers' PFAS collection forms as keyed to the state database",
+                "state drinking water database", PULL, OFFICE),
+    "inventory": ("Constructed: the department's source facility inventory, every community water system",
+                  "SDWIS Reports", REGISTER_PULL, OFFICE),
+    "iup": ("Constructed: section 6 of the draft 2027 Intended Use Plan, Drinking Water State Revolving Fund",
+            "Water Infrastructure Finance Authority", IUP_DATE, "Water Infrastructure Finance Authority"),
+    "guide": ("Constructed: the department's PFAS initial monitoring sampling guide, revision 2",
+              "Drinking Water Program", dt.date(2023, 12, 18), OFFICE),
+    "mor": ("Constructed: every community water system's 2025 monthly operating reports as filed",
+            "state drinking water database", MOR_PULL, OFFICE),
+    "meters": ("Constructed: the department's source meter register", "SDWIS Reports", REGISTER_PULL, OFFICE),
+    "register": ("Constructed: the department's community water system register", "SDWIS Reports", REGISTER_PULL,
+                 OFFICE),
+    "connections": ("Constructed: the department's register of connections between water systems", "SDWIS Reports",
+                    REGISTER_PULL, OFFICE),
+    "labs": ("Constructed: the laboratories certified to report PFAS to the department", "SDWIS Reports",
+             REGISTER_PULL, OFFICE),
+    "survey": ("Constructed: the federal PFAS survey's two 2023 events at the state's systems, in the survey's "
+               "published layout (synthetic values)", "federal survey data, as published", REGISTER_PULL, OFFICE),
+    "private": ("Constructed: the department's private well program results, homeowners' samples",
+                "state drinking water database", PULL, OFFICE),
+}

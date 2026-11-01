@@ -1,6 +1,5 @@
 """The pack's documents: section 6 of the draft 2027 intended use plan (the PFAS treatment-design grants and the 2027
-priority list), the department's PFAS initial monitoring sampling guide, and the department's notes on the data it
-sent the Authority."""
+priority list) and the department's PFAS initial monitoring sampling guide. No document describes the data files."""
 from __future__ import annotations
 
 import datetime as dt
@@ -118,8 +117,9 @@ def write_iup(path, listed):
     st.append(Paragraph("6.6 Other emerging-contaminants uses in 2027. Sampling assistance for systems serving fewer than "
                         "3,300 people, $1,850,000; source water protection planning, $640,000; program administration, "
                         "$1,612,000.", S["body"]))
-    st.append(Paragraph("Population served is as the department's system register records it on 1 September 2026.",
-                        S["note"]))
+    st.append(Paragraph("Population served is the number of people a system serves directly, as the department's "
+                        "system register records it on 1 September 2026; a system that sells water to another counts "
+                        "only its own customers.", S["note"]))
     doc.build(st, onFirstPage=_frame("2027 Intended Use Plan (draft)", AUTHORITY, "Serif"),
               onLaterPages=_frame("2027 Intended Use Plan (draft)", AUTHORITY, "Serif"))
 
@@ -173,66 +173,3 @@ def write_guide(path):
     st.append(Paragraph("Questions: Drinking Water Program, PFAS monitoring coordinator.", S["note"]))
     doc.build(st, onFirstPage=_frame("PFAS initial monitoring: sampling guide, rev. 2", K.DEPT),
               onLaterPages=_frame("PFAS initial monitoring: sampling guide, rev. 2", K.DEPT))
-
-
-# ---------------------------------------------------------------------------------------------- the notes
-def data_notes(files, counts):
-    f = files
-    lines = [
-        "Data for the Authority's 2027 PFAS design-grant review",
-        "From: %s, PFAS compliance lead, Drinking Water Program" % K.PEOPLE["lead"],
-        "To: %s, %s" % (K.PEOPLE["manager"], AUTHORITY),
-        "Sent: 2 September 2026",
-        "",
-        "Judy, the files you asked for are below, with what each one holds. Everything is as the systems and",
-        "laboratories reported it; we have not edited any of it.",
-        "",
-        "%s" % f["results"],
-        "  Every community water system's PFAS results in the state database as of %s (%s rows):" % (
-            K.PULL.strftime("%-d %B %Y"), "{:,}".format(counts["results"])),
-        "  one row per analyte per sample per report revision. result is blank when result_sign is '<' (less than the",
-        "  reporting_limit). sample_type RT routine, CO confirmation, FD field duplicate, FRB field reagent blank.",
-        "  Dates are the collection date and time.",
-        "",
-        "%s" % f["records"],
-        "  The samplers' collection records, one per bottle set (%s). collected is month/day/year." % "{:,}".format(
-            counts["records"]),
-        "  sources_in_service is as the sampler wrote it.",
-        "",
-        "%s" % f["inventory"],
-        "  Source facilities of every community water system as of 1 September 2026, with the field notes on the second",
-        "  sheet.",
-        "",
-        "%s" % f["mor"],
-        "  Every system's 2025 monthly operating reports as filed (%s rows): one row per facility per month with the" % "{:,}".format(
-            counts["mor"]),
-        "  meter readings at the start and end of the month, the gallons for the month and the days in service.",
-        "",
-        "%s" % f["meters"],
-        "  Source meters as of 1 September 2026. facility_ids lists the facilities a meter measures; removed is the date",
-        "  a meter came out.",
-        "",
-        "%s" % f["register"],
-        "  Community water systems as of 1 September 2026. population_served is the number of people the system serves",
-        "  directly (its own customers); a system that sells water to another counts only its own customers.",
-        "",
-        "%s" % f["connections"],
-        "  Connections through which one system takes water from another, from our register. connection_type: Full",
-        "  purchase (the buyer takes all its water through the connection) or Emergency (opened only when one side loses",
-        "  supply). in_service_to is the date a connection was closed; blank if it is open.",
-        "",
-        "%s" % f["labs"],
-        "  The laboratories that report PFAS to us.",
-        "",
-        "%s" % f["survey"],
-        "  The federal survey's results for our systems, as EPA published them (micrograms per litre, EPA's facility and",
-        "  sample point numbers), two events in 2023.",
-        "",
-        "%s" % f["private"],
-        "  Our private well program's results, 2024 to June 2026 (homeowners' samples; ng/L).",
-        "",
-        "The plan's section 6 and our sampling guide are attached as PDFs.",
-        "",
-        "Lynn",
-    ]
-    return "\n".join(lines) + "\n"

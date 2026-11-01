@@ -1,8 +1,9 @@
 """The generator's assertions on every build: the three rules (R1 raw material, R2 each mess item neutral, R3a the
 analyst test, R3b the decisive step alone, R3c no plant), the ladder and the shortcuts beside it, every row of the
 semantic fork table (SF1 to SF17), the estimators' convergence and the margins, the asks' goldens against the
-generator's truth and their stops, the separation line, the distractors, the input gates, the realism sweep and the
-invented names (H21)."""
+generator's truth and their stops, the separation line, the distractors, the screen that no shipped file or sheet
+describes the data (by name and by content, each positive-controlled), the provenance in metadata.json, the input
+gates, the realism sweep and the invented names (H21)."""
 from __future__ import annotations
 
 import collections
@@ -17,9 +18,13 @@ import tempfile
 import zipfile
 
 import numpy as np
+import pandas as pd
+from openpyxl import load_workbook
+from pypdf import PdfReader
 
 import analysis as A
 import common as K
+import verify as V
 import world as W
 
 PASSED = []
@@ -247,9 +252,31 @@ def run(target, T):
     check("SF16 the mixing proportions: rated capacities, the entry-point flow or equal shares, same wells",
           all(same_over(A.over_from_levels(A.own_levels(D, weights=w)), G["over"]) for w in ("rated", "flow", "equal")))
     mv = monthly_volume_route(D, target)
-    check("SF16 the 2025 monthly volumes as mixing proportions file %d systems, ruled out by the inventory's note that a "
-          "well delivers its rated discharge whenever it runs" % len(mv["funded"]),
-          walk_key(mv)[:2] != base[:2] and "delivers its rated discharge whenever it runs" in texts[K.FILES["inventory"]])
+    inv = V.inventory(target)                       # the verifier's own xlsx reader
+    wells = inv[inv.facility_type == "Well"]
+    cols = list(inv.columns)
+    check("SF16 control: the verifier's xlsx reader finds the inventory's pump column beside rated capacity, %d well "
+          "rows, both pump types" % len(wells),
+          cols.index("pump") == cols.index("rated_capacity_gpm") + 1 and len(wells) >= 200 and
+          set(wells.pump.str.rsplit(", ", n=1).str[0]) == {"Vertical turbine", "Submersible"})
+    check("SF16 the pump fact is filed once, in the inventory's own pump column: every well's pump on a constant-speed "
+          "drive, the plants and the interconnection blank, and no other shipped file says it",
+          bool(wells.pump.str.endswith(", constant speed").all()) and
+          bool(inv[inv.facility_type != "Well"].pump.isna().all()) and
+          [f for f, t in texts.items() if re.search(r"constant[ -]speed", t, re.I)] == [K.FILES["inventory"]])
+    check("SF16 the plan does not carry the pump fact (read by the checks' extractor and by the verifier's), and its "
+          "own-water sentence is read by both",
+          not any(re.search(r"constant[ -]speed|whenever it runs|rated discharge", t, re.I)
+                  for t in (texts[K.FILES["iup"]], pypdf_text(target, K.FILES["iup"]))) and
+          all("A well's own water is the water the well itself pumps." in t
+              for t in (texts[K.FILES["iup"]], pypdf_text(target, K.FILES["iup"]))))
+    gap, mid, nrec = flow_gap(target)
+    check("SF16 the entry-point flow on every listed record with its wells recorded matches the running wells' rated "
+          "capacities to within 7 per cent (the verifier's readers, %d records, median gap %.1f per cent, largest %.1f)"
+          % (nrec, 100 * mid, 100 * gap), gap <= 0.07 and mid <= 0.02 and nrec >= 300)
+    check("SF16 the 2025 monthly volumes as mixing proportions file %d systems, ruled out by the pump column and the "
+          "entry-point flow (a constant-speed well pumps at its rated capacity whenever it runs)" % len(mv["funded"]),
+          walk_key(mv)[:2] != base[:2])
     nblank = sum(1 for x in D["samples"] if x["listed"] and x["on"] is None and x["date"].year in K.WINDOW)
     check("SF17 sources not recorded (%d samples): left out or inferred from the entry-point flow, same call" % nblank,
           nblank > 0 and walk_key(A.route(D, A.over_from_levels(A.own_levels(D, missing="infer")))) == base)
@@ -306,6 +333,22 @@ def run(target, T):
           "register keeps match none)", sum(1 for r in reg.values() if r["status"] == "Inactive" and any(
               q["status"] == "Active" and q["system_name"] == r["system_name"] and q["county"] == r["county"]
               for q in reg.values())) == len(ren))
+    rule = "a system that sells water to another counts only its own customers"
+    check("Ask B referee: the counting rule (a system's population counts its own customers) is filed once, in the "
+          "plan's note under Table 6-1, read by the checks' extractor and by the verifier's",
+          rule in texts[K.FILES["iup"]] and rule in pypdf_text(target, K.FILES["iup"]) and
+          [f for f, t in texts.items() if "own customers" in t] == [K.FILES["iup"]])
+    check("Ask B referee: the register's populations are each system's own (people per service connection between 2.2 "
+          "and 2.8 for every seller and buyer on a connection)",
+          all(2.2 <= int(reg[i]["population_served"]) / int(reg[i]["service_connections"]) <= 2.8
+              for c in con for i in (c["buyer_pws_id"], c["seller_pws_id"])))
+    check("Ask B labels: every full-purchase buyer in service is on purchased water in the register, and every system on "
+          "an emergency tie or an ended purchase has its own source",
+          all(reg[c["buyer_pws_id"]]["primary_source"].startswith("Purchased") for c in con
+              if c["connection_type"] == "Full purchase" and not c["in_service_to"]) and
+          all(not reg[c["buyer_pws_id"]]["primary_source"].startswith("Purchased") for c in con
+              if c["connection_type"] == "Emergency" or c["in_service_to"]) and
+          {c["connection_type"] for c in con} == {"Full purchase", "Emergency"})
 
     import cracker as CR
     rows_cr = CR.score(target)
@@ -324,6 +367,51 @@ def run(target, T):
           sorted("target/" + K.FILES[k] for k in K.DISTRACTORS))
     check("no shipped file name says distractor, decoy or answer", not any(re.search(r"distract|decoy|answer|truth", f, re.I)
                                                                          for f in os.listdir(target)))
+
+    # ------------------------------------------------------------------------------------------ nothing describes the data
+    # dataset-generation section 3: no file or sheet whose job is to say what the data is, what a column means or how
+    # the files fit together. By name, with the leak sweep's own patterns and a notes or request token, positive-
+    # controlled on the names this build used to ship (the department's notes file, the inventory's Notes sheet).
+    check("describing-file control: the name patterns refuse the names this build used to ship",
+          bool(DESCRIBE.search("data_request_notes_2026-09-02") and DESCRIBE.search("data_dictionary") and
+               DESCRIBE_SHEET.match("Notes") and not DESCRIBE.search("pfas_initial_monitoring_sampling_guide_rev2")))
+    shipped = sorted(os.listdir(target))
+    check("no shipped file describes the data, by name (no notes, readme, dictionary, manifest or definitions file, and "
+          "no text file at all)", not [f for f in shipped if DESCRIBE.search(f.rsplit(".", 1)[0])] and
+          not [f for f in shipped if f.rsplit(".", 1)[1] in ("txt", "md", "rtf", "html")], str(shipped))
+    sheets = {f: load_workbook(os.path.join(target, f), read_only=True).sheetnames for f in shipped if f.endswith(".xlsx")}
+    check("no shipped sheet describes the data, by name (the inventory is its Facilities sheet alone)",
+          sheets == {K.FILES["inventory"]: ["Facilities"]} and
+          not [s for v in sheets.values() for s in v if DESCRIBE_SHEET.match(s.strip())], str(sheets))
+    idents = data_identifiers(target)
+    control = " ".join(next(csv.reader(open(os.path.join(target, K.FILES["records"]), encoding="utf-8"))))
+    check("describing-content control: the column finder names the records' own header (%d identifiers)" %
+          len(named_identifiers(control, idents)), len(named_identifiers(control, idents)) >= 8)
+    docs = [f for f in shipped if f.endswith(".pdf")]
+    known = {K.FILES["iup"]: "A well's own water is the water the well itself pumps.",
+             K.FILES["guide"]: "Blanks and duplicates check the sampling and the laboratory"}
+    check("describing-content control: every shipped document is read (text extracted, a known sentence found)",
+          sorted(docs) == sorted(known) and all(len(texts[f]) > 1000 and known[f] in texts[f] for f in docs))
+    check("no shipped document describes the data, by content (each names fewer than 4 of the data files' column "
+          "identifiers and fewer than 8 of their columns)",
+          all(len(named_identifiers(texts[f], idents)) < 4 and len(named_columns(texts[f], target)) < 8 for f in docs),
+          str({f: sorted(named_columns(texts[f], target)) for f in docs}))
+
+    # ------------------------------------------------------------------------------------------ provenance
+    meta_files = {m["path"][len("target/"):]: m for m in meta["files"]}
+    check("provenance: metadata.json records every shipped file and nothing else", sorted(meta_files) == shipped and
+          set(K.PROVENANCE) == set(K.FILES), str(sorted(set(meta_files) ^ set(shipped))))
+    check("provenance: metadata.json's row counts are the shipped files' own",
+          all(meta_files[f]["rows"] == rows_of(target, f) for f in shipped))
+    late = {f: d for f, d in ((f, latest_date(target, f)) for f in shipped)
+            if d and d > dt.date.fromisoformat(meta_files[f]["extracted_or_issued"])}
+    check("provenance: no file carries a date after the date it was extracted or issued", not late, str(late))
+    check("provenance: the pack's as-of date is its latest document's (the draft plan, 30 September 2026)",
+          meta["as_of"] == K.AS_OF.isoformat() == max(m["extracted_or_issued"] for m in meta["files"]))
+    sv = A.rd(target, K.FILES["survey"])
+    check("units (closure 18): the state's export reports ng/L on its own units column, the federal survey micrograms "
+          "per litre on its own",
+          {r["units"] for r in A.rd(target, K.FILES["results"])} == {"ng/L"} and {r["Units"] for r in sv} == {"µg/L"})
 
     # ------------------------------------------------------------------------------------------ input gates
     files = os.listdir(target)
@@ -464,6 +552,105 @@ def mor_unique(target):
     # an exact coincidence between two unrelated wells that ran different days is honest; a value repeating across
     # three wells, or two wells sharing the volume and the days, is a capped or copied stream
     return all(len(v) == 1 or (len(v) == 2 and v[0] != v[1]) for v in seen.values())
+
+
+# the leak sweep's own describing-name patterns (leak-check/leak.py DESCRIBE_NAME, DESCRIBE_SHEET), with a notes and a
+# data-request token added for the names this build used to ship
+DESCRIBE = re.compile(r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+                      r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|"
+                      r"file_layout|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|"
+                      r"extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|"
+                      r"handling_notes|release_notes|notes|data_request\w*)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
+COLUMN = re.compile(r"^[A-Za-z][A-Za-z0-9_ ]*$")
+
+
+def pypdf_text(target, name):
+    """A PDF's text the way verify.py reads it (pypdf, page by page), whitespace closed up."""
+    return re.sub(r"\s+", " ", "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, name)).pages))
+
+
+def flow_gap(target):
+    """The largest and the median gap, as a share, between a listed record's entry-point flow and the rated capacities
+    of the wells its sampler recorded, read the way verify.py reads them (its plan, its inventory, its parse of the
+    sources in service, the records through pandas); and how many records they cover."""
+    ids = {p["pws"] for p in V.plan(target)}
+    inv = V.inventory(target)
+    act = inv[(inv.status == "Active") & (inv.facility_type == "Well") & inv.pws_id.isin(ids)]
+    cap = {}
+    for _, f in act.iterrows():
+        cap.setdefault((f.pws_id, f.entry_point), {})[int(f.facility_name.split()[-1])] = int(f.rated_capacity_gpm)
+    rec = pd.read_csv(os.path.join(target, K.FILES["records"]), dtype={"pws_id": str})
+    gaps = []
+    for _, r in rec[rec.pws_id.isin(ids)].iterrows():
+        w = cap[(r.pws_id, r.sample_point)]
+        on = V.wells_in(r.sources_in_service, sorted(w))
+        if on is None:
+            continue
+        tot = sum(w[k] for k in on)
+        gaps.append(abs(float(r.ep_flow_gpm) - tot) / tot)
+    return max(gaps), float(np.median(gaps)), len(gaps)
+
+
+def data_columns(target):
+    """Every data file's column names: each CSV's header and the workbook's first row."""
+    cols = set()
+    for f in os.listdir(target):
+        p = os.path.join(target, f)
+        if f.endswith(".csv"):
+            cols |= set(next(csv.reader(open(p, encoding="utf-8"))))
+        elif f.endswith(".xlsx"):
+            cols |= {str(c) for c in next(load_workbook(p, read_only=True).worksheets[0].iter_rows(values_only=True))}
+    return {c.strip() for c in cols if len(c.strip()) >= 4 and COLUMN.match(c.strip())}
+
+
+def data_identifiers(target):
+    """The column names written as identifiers (snake_case, a digit, interior capitals): what a dictionary lists."""
+    return {c for c in data_columns(target) if "_" in c or re.search(r"\d", c) or re.search(r"[a-z][A-Z]", c)}
+
+
+def named(text, cols):
+    return {c for c in cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+
+
+def named_identifiers(text, idents):
+    return named(text, idents)
+
+
+def named_columns(text, target):
+    return named(text, data_columns(target))
+
+
+def rows_of(target, f):
+    p = os.path.join(target, f)
+    if f.endswith(".csv"):
+        return len(list(csv.DictReader(open(p, newline="", encoding="utf-8"))))
+    if f.endswith(".xlsx"):
+        return sum(1 for _ in load_workbook(p, read_only=True).worksheets[0].iter_rows()) - 1
+    return None
+
+
+def latest_date(target, f):
+    """The latest calendar date a data file carries: ISO dates, month-first dates and report months (a month counts
+    at its last day). Documents state dates in words and are not read here."""
+    p = os.path.join(target, f)
+    if f.endswith(".csv"):
+        text = open(p, encoding="utf-8").read()
+    elif f.endswith(".xlsx"):
+        text = " ".join(str(v) for r in load_workbook(p, read_only=True).worksheets[0].iter_rows(values_only=True)
+                        for v in r if v is not None)
+    else:
+        return None
+    out = []
+    for y, m, d in re.findall(r"\b(20\d\d|19\d\d)-(\d\d)-(\d\d)\b", text):
+        out.append(dt.date(int(y), int(m), int(d)))
+    for m, d, y in re.findall(r"\b(\d\d)/(\d\d)/(20\d\d|19\d\d)\b", text):
+        out.append(dt.date(int(y), int(m), int(d)))
+    if f == K.FILES["mor"]:
+        for y, m in re.findall(r",(20\d\d)-(\d\d),", text):
+            out.append(dt.date(int(y) + int(m) // 12, int(m) % 12 + 1, 1) - dt.timedelta(days=1))
+    return max(out) if out else None
 
 
 def all_text(folder):

@@ -1,23 +1,18 @@
 # leak check, task263
 
-**Verdict: LEAK.** 13 files read, 26 golden figures and 15 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 26 golden figures and 15 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: samples, sample, balance, sources, average, pumping, mixture, collection, source, inventory, blends, beside, results, records, asserted, entry-point, decisive, proportions, environmental, register, mixtures, mixing, blanks, service, nothing
-
-## 1 file names (REVIEW 2)
-- **REVIEW** `data_request_notes_2026-09-02.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
-- **REVIEW** `source_facility_inventory_2026.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
+Stump terms swept: samples, sample, balance, sources, average, pumping, mixture, inventory, collection, source, asserted, register, records, blends, entry-point, beside, results, decisive, proportions, environmental, mixtures, mixing, blanks, service, nothing
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: candidate 'Torvik Water Utility' sits beside decision vocabulary: ...FAS priority list Rank PWS ID System County Population served Priority points 1 4626844 Torvik Water Utility Hedstrom 6,538 92 2 4664327 City of Halvorsen Water Department Engvall 8,917 88 3 4...
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: carries 13 of 18 distinctive words of the committed call: 'The $36 million reaches 16 of the 20 systems on the 2027 PFAS priority list, Torvik Water Utility through Valdahl Sanita'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `data_request_notes_2026-09-02.txt`: 9 of 25 stump-paragraph terms appear (samples, sample, sources, collection, source, results); read whether the document names the move
-- **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: 7 of 25 stump-paragraph terms appear (average, source, inventory, records, environmental, register); read whether the document names the move
-- **REVIEW** `pfas_initial_monitoring_sampling_guide_rev2.pdf`: 13 of 25 stump-paragraph terms appear (samples, sample, sources, pumping, collection, source); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: 7 of 25 stump-paragraph terms appear (average, inventory, source, register, records, environmental); read whether the document names the move
+- **REVIEW** `pfas_initial_monitoring_sampling_guide_rev2.pdf`: 13 of 25 stump-paragraph terms appear (samples, sample, sources, pumping, inventory, collection); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 5, INFO 1)
 - **REVIEW** `iup_2027_draft_section6_pfas_design_grants.pdf`: names 15 of 15 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -27,18 +22,14 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 - **REVIEW** `source_facility_inventory_2026.xlsx`: names 15 of 15 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `wholesale_connections_2026.csv`: names 8 of 15 answer-set candidates; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
-
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 2)
 - **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "How many of the twenty"; the N things: "the twenty systems" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
-- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 46% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 22% of 196 prompts (cap 20%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 44% of 196 prompts (cap 20%); deliverable set 'png+xlsx' at 21% of 196 prompts (cap 20%); reword at the role level, not the verb
 
-## 12 describing content (LEAK 1)
-- **LEAK** `data_request_notes_2026-09-02.txt`: names 12 column(s) of the data files verbatim, 26% of pfas_entry_point_results_2024-2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -47,6 +38,8 @@ Stump terms swept: samples, sample, balance, sources, average, pumping, mixture,
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 
 ## Solver's-eye read
@@ -122,3 +115,9 @@ workbook (leading-zero ids); section 6 is a two-page extract of the draft plan (
 populations on a few systems (registers carry estimates); the notes state the export's row count (a transmittal).
 
 Verdict after loop 3: no LEAK; nothing names the decisive step or either ask's device; Q6 analytical.
+
+### Reship reads (2026-11-01, Sonnet at medium, fresh copies of prompt.txt and target.zip, the covering notes and the inventory's Notes sheet no longer shipped)
+
+First cut (81d61969): the reader read the pump sentence the repair had filed at the end of the plan's 6.3 ("Well pumps in the state's community systems are constant-speed: a well pumps at its rated capacity whenever it runs.") together with 6.3's "A well's own water is the water the well itself pumps" as a mild hint toward recovering each well's water from the blends. The fact moved to the inventory's own `pump` column (every well constant speed), 6.3 went back to its shipped wording, and the plan keeps only the population-served note under Table 6-1.
+
+Final cut (c38b7092): 1 none states the move (the nearest it names is 6.3's own-water sentence with the guide's sources-in-service field, read as pointing at samples where one well ran alone, the default path's own route); 2 none (Table 6-1 ranks by priority points, the funding order the prompt takes as given); 3 no dictionary, readme, manifest or notes sheet, the sampling guide and the laboratories list read as agency artifacts; 4 none; 5 the plan's 6.1, 6.3, 6.4 and the note under Table 6-1, and the guide's sections 5 and 7, each executed as written; 6 an analytical choice (each well's own water inferred from the entry-point blends), nothing planted. The pump column drew no remark. Its supplementary readings are settled per judge pass 3: the county water counts every well of the listed systems that pumped, Kesselring's emergency Well 3 included, since "active" governs only the grant and the chart; the county population takes each renumbered buyer at its active record; the non-detect convention moves no flagged well or grant; the wholesale buyers' customers are the ask's own step. Its realism notes (the placeholder geography, the QC ratios matching the guide, the identical analyte lists) are on files this reship did not change.
