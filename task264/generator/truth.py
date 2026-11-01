@@ -88,3 +88,12 @@ def golden_truth(A, flag="f90"):
     el = flags(A, eligible_frame(A))
     netE = el.E.mean()
     return cell_impute(el, flag, netE), el, netE
+
+
+def participation_truth(A):
+    """Each provider's 2025-26 pre-operative participation on the clean truth."""
+    w = A["ops"]
+    fy = w[(w.op_date >= dt.date(2025, 4, 1)) & (w.op_date <= dt.date(2026, 3, 31))].copy()
+    gap = (fy.op_date - fy.pre_c).apply(lambda x: x.days)
+    fy["ok"] = fy.pre_done & ~fy.not_invited & (fy.n_pre >= MIN_SECTIONS) & (gap >= 0) & (gap <= WINDOW_PRE_DAYS - 1)
+    return {k: 100.0 * g.ok.mean() for k, g in fy.groupby("prov")}

@@ -67,33 +67,34 @@ def employed(df):
 
 # ------------------------------------------------------------------------------------------- panel linking
 def person_keys(L, check_identity=True):
-    """Link each adult across quarters: the unit's case id carried back through the CAPI crosswalk, plus the line
-    number, kept only where sex matches and age moves by 0 or 1 (a new household reuses line numbers)."""
+    """Each adult across quarters: the unit's case id carried back through the CAPI crosswalk, plus the line number.
+    A new household at the address reuses line numbers, so a chain breaks where sex changes or age does not move by
+    0 or 1 between the quarters (with identity checking off, unit and line alone)."""
     P = L["P"].copy()
     new2old = dict(zip(L["X"]["NEW_CASEID"], L["X"]["OLD_CASEID"]))
     P["unit"] = P["CASEID"].map(lambda c: new2old.get(c, c))
     P = P.sort_values(["unit", "LINENO", "qi"]).reset_index(drop=True)
-    prev = P.groupby(["unit", "LINENO"]).shift(1)
-    P["prev_qi"] = prev["qi"]
-    P["prev_idx"] = P.index.to_series().groupby([P["unit"], P["LINENO"]]).shift(1)
-    ok = (P["prev_qi"] == P["qi"] - 1)
+    g = P.groupby(["unit", "LINENO"])
+    prev_sex, prev_age, prev_qi = g["SEX"].shift(1), g["AGE"].shift(1), g["qi"].shift(1)
+    new_chain = prev_qi.isna()
     if check_identity:
-        ok &= (prev["SEX"] == P["SEX"]) & ((P["AGE"] - prev["AGE"]).isin([0, 1]))
-    P["linked"] = ok
+        new_chain |= (prev_sex != P["SEX"]) | ~((P["AGE"] - prev_age).isin([0, 1]))
+    P["pid"] = new_chain.cumsum()
+    P["linked"] = (~new_chain) & (prev_qi == P["qi"] - 1)
     return P
 
 
-def pairs(PK):
-    """Adjacent-quarter pairs of the same adult, employed in both quarters."""
-    cur = PK[PK["linked"]].copy()
-    prv = PK.loc[cur["prev_idx"].astype(int).values].reset_index(drop=True)
-    cur = cur.reset_index(drop=True)
+def pairs(PK, lag=1):
+    """Pairs of quarters of the same adult `lag` quarters apart, employed in both."""
+    A = PK[["pid", "qi", "HES_AREA", "SURVEY_QTR", "LFSTAT", "MJH", "RESPLINE", "LINENO"]]
+    B = A.copy()
+    B["qi"] = B["qi"] - lag
+    m = A.merge(B, on=["pid", "qi"], suffixes=("0", "1"))
     out = pd.DataFrame({
-        "unit": cur["unit"], "line": cur["LINENO"], "area": cur["HES_AREA"], "q0": prv["SURVEY_QTR"],
-        "q1": cur["SURVEY_QTR"],
-        "emp0": prv["LFSTAT"].isin([1, 2]).values, "emp1": cur["LFSTAT"].isin([1, 2]).values,
-        "m0": (prv["MJH"] == 1).values, "m1": (cur["MJH"] == 1).values,
-        "s0": (prv["RESPLINE"] == prv["LINENO"]).values, "s1": (cur["RESPLINE"] == cur["LINENO"]).values})
+        "pid": m["pid"], "area": m["HES_AREA0"], "q0": m["SURVEY_QTR0"], "q1": m["SURVEY_QTR1"],
+        "emp0": m["LFSTAT0"].isin([1, 2]), "emp1": m["LFSTAT1"].isin([1, 2]),
+        "m0": m["MJH0"] == 1, "m1": m["MJH1"] == 1,
+        "s0": m["RESPLINE0"] == m["LINENO0"], "s1": m["RESPLINE1"] == m["LINENO1"]})
     return out[out["emp0"] & out["emp1"]].reset_index(drop=True)
 
 
@@ -137,25 +138,17 @@ def false_report(pr):
 
 
 def sandwich(PK):
-    """Sensitivity from adults answered for in a quarter flanked by two quarters in which they reported a second job
-    themselves (no persistence correction needed on either side)."""
-    lk = PK.set_index(PK.index)
-    rows = []
-    cur = PK[PK["linked"]]
-    nxt = {}
-    for i, r in cur[["prev_idx"]].iterrows():
-        nxt[int(r["prev_idx"])] = i
-    for mid, r in PK.iterrows():
-        if not r["linked"] or mid not in nxt:
-            continue
-        a, b = int(r["prev_idx"]), nxt[mid]
-        A, B = PK.loc[a], PK.loc[b]
-        if not (A["LFSTAT"] in (1, 2) and r["LFSTAT"] in (1, 2) and B["LFSTAT"] in (1, 2)):
-            continue
-        if A["RESPLINE"] == A["LINENO"] and B["RESPLINE"] == B["LINENO"] and r["RESPLINE"] != r["LINENO"]:
-            if A["MJH"] == 1 and B["MJH"] == 1:
-                rows.append(r["MJH"] == 1)
-    return float(np.mean(rows)), len(rows)
+    """Sensitivity from adults answered for in a quarter flanked by quarters in which they reported a second job
+    themselves (no persistence correction on either side)."""
+    A = PK[["pid", "qi", "LFSTAT", "MJH", "RESPLINE", "LINENO"]].copy()
+    A["self"] = A["RESPLINE"] == A["LINENO"]
+    A["emp"] = A["LFSTAT"].isin([1, 2])
+    L_ = A.assign(qi=A["qi"] + 1)
+    R_ = A.assign(qi=A["qi"] - 1)
+    m = A.merge(L_, on=["pid", "qi"], suffixes=("", "_l")).merge(R_, on=["pid", "qi"], suffixes=("", "_r"))
+    m = m[m["emp"] & m["emp_l"] & m["emp_r"] & ~m["self"] & m["self_l"] & m["self_r"] & (m["MJH_l"] == 1) &
+          (m["MJH_r"] == 1)]
+    return float((m["MJH"] == 1).mean()), int(len(m))
 
 
 # ------------------------------------------------------------------------------------------------ estimators
@@ -243,23 +236,47 @@ def mar_impute(e, coarse=False):
     e["v"] = np.where(e["self"], e["mjh"], imp)
     return shares_from(e, "v")
 
-
-def carry(e, PK, fallback="face", s=None, mar=None):
+def carry(e, PK, fallback="face", s=None, fp=0.0, how="nearest"):
     """Answered-for adults given their own second-job report from the nearest quarter in which they answered for
-    themselves (employed then); adults never self-reporting get the fallback."""
-    lk = PK[["unit", "LINENO", "qi", "SURVEY_QTR", "LFSTAT", "MJH", "RESPLINE", "SEX", "AGE", "linked"]].copy()
-    # chains: consecutive linked rows of one adult share a chain id
-    lk["start"] = ~lk["linked"]
-    lk["chain"] = lk["start"].cumsum()
-    lk["selfemp"] = (lk["RESPLINE"] == lk["LINENO"]) & lk["LFSTAT"].isin([1, 2])
-    chain_self = lk[lk["selfemp"]][["chain", "qi", "MJH"]]
-    e = e.copy()
-    key = lk.set_index(["SURVEY_QTR", "unit", "LINENO"])["chain"]
-    new2old = {}
-    e = e.merge(lk[["SURVEY_QTR", "LINENO", "unit", "chain"]].assign(CASEID=None).drop(columns="CASEID"),
-                how="left", left_on=["SURVEY_QTR", "LINENO", "unit"], right_on=["SURVEY_QTR", "LINENO", "unit"]) \
-        if "unit" in e.columns else e
-    return e
+    themselves while employed (any quarter on file); adults never answering for themselves get the fallback:
+    their answered-for report as it stands (face), their cell's self-reported rate (mar), or the answered-for report
+    corrected by the sensitivity s (corrected)."""
+    keys = PK[["SURVEY_QTR", "CASEID", "LINENO", "pid", "qi"]]
+    e = e.merge(keys, on=["SURVEY_QTR", "CASEID", "LINENO"], how="left")
+    own = PK[(PK["RESPLINE"] == PK["LINENO"]) & PK["LFSTAT"].isin([1, 2])][["pid", "qi", "MJH"]]
+    own = own.rename(columns={"qi": "qo", "MJH": "mo"})
+    px = e[~e["self"]][["pid", "qi"]].reset_index()
+    m = px.merge(own, on="pid", how="inner")
+    m["d"] = (m["qo"] - m["qi"]).abs()
+    if how == "nearest":
+        m = m.sort_values(["index", "d", "qo"]).drop_duplicates("index")
+        val = (m.set_index("index")["mo"] == 1).astype(float)
+    else:
+        val = m.assign(v=(m["mo"] == 1).astype(float)).groupby("index")["v"].mean()
+    e["carried"] = val
+    e["has"] = e["carried"].notna()
+    if fallback == "face":
+        e["v"] = np.where(e["self"], e["mjh"], np.where(e["has"], e["carried"], e["mjh"]))
+        return shares_from(e, "v"), e
+    if fallback == "mar":
+        e2 = e.copy()
+        k = cell_key(e2)
+        sf = e2[e2["self"]]
+        rate = (sf["FWGT"] * sf["mjh"]).groupby(k[sf.index]).sum() / sf["FWGT"].groupby(k[sf.index]).sum()
+        k2 = e2["HES_AREA"] + "|" + pd.cut(e2["AGE"], [15, 24, 34, 44, 54, 64, 200], labels=False).astype(str)
+        rate2 = (sf["FWGT"] * sf["mjh"]).groupby(k2[sf.index]).sum() / sf["FWGT"].groupby(k2[sf.index]).sum()
+        imp = k.map(rate).fillna(k2.map(rate2))
+        e2["v"] = np.where(e2["self"], e2["mjh"], np.where(e2["has"], e2["carried"], imp))
+        return shares_from(e2, "v"), e
+    out = {}
+    for a in AREAS:
+        g = e[e["HES_AREA"] == a]
+        sf, pc, pn = g[g["self"]], g[~g["self"] & g["has"]], g[~g["self"] & ~g["has"]]
+        rp = (pn["FWGT"] * pn["mjh"]).sum() / pn["FWGT"].sum()
+        tp = (rp - fp) / (s - fp)
+        num = (sf["FWGT"] * sf["mjh"]).sum() + (pc["FWGT"] * pc["carried"]).sum() + tp * pn["FWGT"].sum()
+        out[a] = float(100 * num / g["FWGT"].sum())
+    return out, e
 
 
 def golden_family(L, e, PK, pr):
@@ -271,15 +288,42 @@ def golden_family(L, e, PK, pr):
     fam["s_fwd"] = corrected(e, sensitivity(pr, "fwd"), fp)
     fam["s_bwd"] = corrected(e, sensitivity(pr, "bwd"), fp)
     fam["no_fp"] = corrected(e, s_adj, 0.0)
-    fam["s_by_area"] = corrected(e, s_adj, fp, {a: sensitivity(pr, "adj", a) for a in AREAS})
+    for how in ("adj", "raw", "fwd", "bwd"):
+        fam["area_s_" + how] = corrected(e, s_adj, fp, {a: sensitivity(pr, how, a) for a in AREAS})
     fam["unweighted"] = corrected_unweighted(e, s_adj, fp)
     fam["by_quarter_mean"] = corrected_by_quarter(e, s_adj, fp)
-    return fam, dict(s_adj=s_adj, s_raw=sensitivity(pr, "raw"), s_fwd=sensitivity(pr, "fwd"),
-                     s_bwd=sensitivity(pr, "bwd"), fp=fp)
+    sw, nsw = sandwich(PK)
+    fam["sandwich"] = corrected(e, sw, fp)
+    pr2 = pairs(PK, lag=2)
+    s2 = sensitivity(pd.concat([pr, pr2]), "adj")
+    fam["lags_1_2"] = corrected(e, s2, fp)
+    fam["carry_then_correct"] = carry(e, PK, "corrected", s=s_adj, fp=fp)[0]
+    PKn = person_keys(L, check_identity=False)
+    prn = pairs(PKn)
+    fam["no_identity_check"] = corrected(e, sensitivity(prn, "adj"), false_report(prn))
+    e_pre = employed(attach_weights(L, "2026Q3"))
+    fam["q3_first_issue"] = corrected(e_pre, s_adj, fp)
+    par = dict(s_adj=s_adj, s_raw=sensitivity(pr, "raw"), s_fwd=sensitivity(pr, "fwd"), s_bwd=sensitivity(pr, "bwd"),
+               fp=fp, s_sandwich=sw, n_sandwich=nsw, s_lags=s2,
+               n_sp=int((pr["s0"] & ~pr["s1"] & pr["m0"]).sum()), n_ps=int((~pr["s0"] & pr["s1"] & pr["m1"]).sum()))
+    return fam, par
 
 
 def designate(sh):
     return sorted(a for a, v in sh.items() if v >= THRESHOLD)
+
+
+def statewide(e, s=None, fp=0.0):
+    """The state's share on the self-report basis (s given) or as reported (s None)."""
+    if s is None:
+        return float(100 * (e["FWGT"] * e["mjh"]).sum() / e["FWGT"].sum())
+    sf, pf = e[e["self"]], e[~e["self"]]
+    num = (sf["FWGT"] * sf["mjh"]).sum()
+    for a in AREAS:
+        g = pf[pf["HES_AREA"] == a]
+        rp = (g["FWGT"] * g["mjh"]).sum() / g["FWGT"].sum()
+        num += (rp - fp) / (s - fp) * g["FWGT"].sum()
+    return float(100 * num / e["FWGT"].sum())
 
 
 def main_call(L):
@@ -289,8 +333,24 @@ def main_call(L):
     fam, par = golden_family(L, E, PK, pr)
     rungs = {}
     rungs["R0_face"] = shares_from(E, "mjh")
-    sf = E[E["self"]]
-    rungs["R1_self_only"] = shares_from(sf, "mjh")
+    rungs["R1_self_only"] = shares_from(E[E["self"]], "mjh")
     rungs["R2_mar"] = mar_impute(E)
     rungs["R2_mar_coarse"] = mar_impute(E, coarse=True)
-    return dict(E=E, PK=PK, pr=pr, fam=fam, par=par, rungs=rungs)
+    rungs["R3_carry_face"], Ec = carry(E, PK, "face")
+    rungs["R3_carry_mean"] = carry(E, PK, "face", how="mean")[0]
+    rungs["R3b_carry_mar"] = carry(E, PK, "mar")[0]
+    k = cell_key(E)
+    sf = E[E["self"]]
+    rate = (sf["FWGT"] * sf["mjh"]).groupby(k[sf.index]).sum() / sf["FWGT"].groupby(k[sf.index]).sum()
+    pf = E[~E["self"]]
+    expct = k[pf.index].map(rate)
+    ok = expct.notna()
+    cs_ratio = float((pf["FWGT"][ok] * pf["mjh"][ok]).sum() / (pf["FWGT"][ok] * expct[ok]).sum())
+    raw_ratio = float(((pf["FWGT"] * pf["mjh"]).sum() / pf["FWGT"].sum()) /
+                      ((sf["FWGT"] * sf["mjh"]).sum() / sf["FWGT"].sum()))
+    par.update(cs_ratio_cells=cs_ratio, cs_ratio_raw=raw_ratio, carried_share=float(Ec[~Ec["self"]]["has"].mean()),
+               proxy_share=float(1 - E["self"].mean()))
+    state = dict(face=statewide(E), golden=statewide(E, par["s_adj"], par["fp"]),
+                 s_raw=statewide(E, par["s_raw"], par["fp"]), s_fwd=statewide(E, par["s_fwd"], par["fp"]),
+                 s_bwd=statewide(E, par["s_bwd"], par["fp"]), sandwich=statewide(E, par["s_sandwich"], par["fp"]))
+    return dict(E=E, PK=PK, pr=pr, fam=fam, par=par, rungs=rungs, state=state)
