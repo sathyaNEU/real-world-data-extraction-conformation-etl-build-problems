@@ -24,13 +24,11 @@ READ_ME = [
     "Hourly 911 volume forecast, fiscal years 2027 and 2028",
     "Published 15 September 2026 (planning, William Braun)",
     "",
-    "Each row is a PSAP, a month, a day of the week and an hour beginning (local time). The forecast is the average "
-    "number of 911 calls presented to the PSAP's queue in that clock hour on that day of the week in that month: "
-    "calls transferred in from other PSAPs are counted, administrative lines and test calls are not.",
+    "The forecast is the average number of 911 calls presented to a PSAP's queue in a clock hour (local time), calls "
+    "transferred in from other PSAPs counted, administrative lines and test calls not.",
     "Fiscal 2028 includes Halvorsen Township's calls, which move from Wexley County Emergency Communications to the "
     "Tavish County Emergency Communications Agency on 1 July 2027, location-based routing sending the township's "
-    "wireless calls to Tavish County from the same date. The Halvorsen column is the part of each figure that is the "
-    "move (negative for Wexley County).",
+    "wireless calls to Tavish County from the same date.",
     "The forecast is built from each PSAP's call history, the region's growth and the Halvorsen move. It forecasts "
     "calls presented, not answer times or staffing.",
     "Fiscal years run from 1 July to 30 June.",

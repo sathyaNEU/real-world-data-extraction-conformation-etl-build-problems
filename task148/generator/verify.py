@@ -18,7 +18,70 @@ CHE = "che_location_records_fy2026_northeast.csv"
 GEOJ = "halvorsen_township_boundary.geojson"
 DIRC = "esinet_psap_directory.csv"
 CB = "callback_desk_tasks_2026-01_2026-06.csv"
+SOP = "sop_2-10_call_handling_standard_and_reporting.pdf"
+BUDGET = "fy2028_recommended_budget_communications_floor.pdf"
 TZ = "America/Chicago"
+
+# The filed sentences the call and the asks lean on, as the shipped documents carry them. checks.py reads the same
+# documents through pdf_text and cover_sheet below, so the bundle is read back one way only.
+FILED = {
+    SOP: {
+        "2.2 test calls are not 911 calls": "Calls on the administrative lines are not 911 calls; neither are test calls.",
+        "3.1 presentation is the queue entry or the trunk seizure":
+            "A call is presented when it reaches the agency's 911 queue: the i3 queue entry on NG911, or the trunk "
+            "seizure on the CAMA trunks before the cutover.",
+        "3.3 the measure": "divided by the number of 911 calls presented in the period, less the calls abandoned within "
+                           "5 seconds of presentation.",
+        "4.2 a position is busy until Ready": "A position takes no new call until the call-taker sets Ready again after "
+                                              "the call's after-call work and CAD entry.",
+        "5.1 the arrivals are the board's forecast": "planned against the Tri-County Regional 911 Board's published "
+                                                     "hourly volume forecast for the agency for that year.",
+        "5.2 a block past midnight belongs to the day it starts": "A block that runs past midnight belongs to the day it "
+                                                                  "starts.",
+        "6.1 a shift's calls in the month it starts": "A shift's calls are reported in the month the shift starts.",
+        "6.2 a wireless call placed by its last handset location":
+            "Calls are reported by where they were placed from, a wireless call by the last handset location received "
+            "for it.",
+        "7.1 every abandoned call called back": "Every abandoned 911 call is called back by the callback desk, however "
+                                                "briefly the caller held on.",
+    },
+    BUDGET: {
+        "the late shift's call-takers": "22:00 to 02:00, nights starting Friday and Saturday 5 4",
+    },
+    FC: {
+        "the forecast's unit": "The forecast is the average number of 911 calls presented to a PSAP's queue in a clock "
+                               "hour (local time)",
+    },
+}
+
+
+def pdf_text(path):
+    """A shipped PDF's text, every page, whitespace collapsed (pypdf)."""
+    from pypdf import PdfReader
+    return " ".join(" ".join((pg.extract_text() or "").split()) for pg in PdfReader(path).pages)
+
+
+def cover_sheet(path, sheet="Read me"):
+    """The forecast workbook's cover sheet, its lines joined (pandas, as the forecast is read)."""
+    df = pd.read_excel(path, sheet_name=sheet, header=None)
+    return " ".join(" ".join(str(v).split()) for v in df.iloc[:, 0].tolist() if isinstance(v, str))
+
+
+def document_text(target, name):
+    p = os.path.join(target, name)
+    return pdf_text(p) if name.endswith(".pdf") else cover_sheet(p)
+
+
+def filed_sentences(target):
+    """{(document, label): found} for every filed sentence in FILED, read from the bundle; and each document's
+    extracted length (an empty extraction would pass every absence check)."""
+    found, lengths = {}, {}
+    for name, sents in FILED.items():
+        text = document_text(target, name)
+        lengths[name] = len(text)
+        for label, s in sents.items():
+            found[(name, label)] = s in text
+    return found, lengths
 
 
 def load_calls(t):
@@ -210,8 +273,13 @@ def main(target, golden):
         busy, pat, " ".join("%d" % gold[k] for k in sorted(gold, key=lambda k: (k[0], k[1]))),
         ", ".join("%d-%02d" % k for k in short)))
     print("verify: Halvorsen %s; callbacks %s" % (A, Bv))
-    if not (ok_main and ok_a and ok_b and short == [(2027, 7), (2027, 8), (2028, 6)]):
-        raise SystemExit("verify failed: main %s, ask A %s, ask B %s, short %s" % (ok_main, ok_a, ok_b, short))
+    found, lengths = filed_sentences(target)
+    ok_docs = all(found.values()) and all(n > 500 for n in lengths.values())
+    print("verify: %d of %d filed sentences read back from the shipped documents (%s)" % (
+        sum(found.values()), len(found), ", ".join("%s %d characters" % (k, v) for k, v in lengths.items())))
+    if not (ok_main and ok_a and ok_b and ok_docs and short == [(2027, 7), (2027, 8), (2028, 6)]):
+        raise SystemExit("verify failed: main %s, ask A %s, ask B %s, documents %s, short %s" % (
+            ok_main, ok_a, ok_b, [k for k, v in found.items() if not v] or lengths, short))
     print("verify: every graded figure recomputes from the bundle and matches the goldens")
 
 

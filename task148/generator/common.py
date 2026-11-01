@@ -27,7 +27,7 @@ NEIGHBOUR = "Wexley County Emergency Communications"
 
 PEOPLE = {
     "ops": "Leon Carpenter",        # operations manager, brings the FY2028 late-shift request (not in the prompt)
-    "qa": "Regina Holder",          # quality assurance and data analyst; the ACD exports and the README
+    "qa": "Regina Holder",          # quality assurance and data analyst; the ACD exports (named in no shipped file)
     "planner": "William Braun",     # the regional board's planner; the volume forecast
     "finance": "Carol Bender",      # finance director; the FY2028 budget
     "callback": "Gary Dennis",      # training and callback supervisor

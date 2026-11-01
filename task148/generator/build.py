@@ -38,9 +38,9 @@ FILES = [
     (R.F_CALLBACK, "Callback desk tasks, 1 January to 30 June 2026."),
     (R.F_CAD, "CAD incidents opened from 911 calls on Friday and Saturday late shifts, fiscal 2026."),
     (R.F_ADMIN, "Administrative line ACD call detail, fiscal 2026."),
-    (R.F_MANIFEST, "Extract log: each file's source system, record count and pull date."),
-    (DOC.F_README, "This file."),
 ]
+# FILES and SYSTEMS are provenance: they go to metadata.json, outside target/, and no shipped file lists the files or
+# describes their columns (dataset-generation sections 3 and 9).
 SYSTEMS = {
     R.F_LEGACY: "legacy ACD (CAMA/ALI) MIS", R.F_I3: "NG911 call-handling system, i3 logging", R.F_ROSTER: "scheduling system",
     R.F_FORECAST: "Tri-County Regional 911 Board", DOC.F_SOP: "agency procedures", DOC.F_BUDGET: "county budget office",
@@ -88,15 +88,6 @@ def build(out, quiet=False, W=None):
     counts[R.F_ADMIN] = K.write_csv(p(R.F_ADMIN), R.ADMIN_COLS, R.admin_rows(W))
     DOC.write_sop(p(DOC.F_SOP))
     DOC.write_budget(p(DOC.F_BUDGET))
-    man = []
-    for f, d in FILES:
-        if f in (R.F_MANIFEST, DOC.F_README):
-            continue
-        man.append({"file": f, "system": SYSTEMS[f], "description": d, "records": counts.get(f, ""),
-                    "pulled": K.EXPORT_DATE.isoformat() if f not in (R.F_FORECAST, DOC.F_SOP, DOC.F_BUDGET) else ""})
-    counts[R.F_MANIFEST] = K.write_csv(p(R.F_MANIFEST), ["file", "system", "description", "records", "pulled"], man)
-    with open(p(DOC.F_README), "w", encoding="utf-8", newline="") as fh:
-        fh.write(DOC.readme_text(FILES))
     PP.normalize_pdf(p(DOC.F_SOP), b"D:20250623143107-05'00'", b"D:20250627091822-05'00'")
     PP.normalize_pdf(p(DOC.F_BUDGET), b"D:20260929160412-05'00'", b"D:20261002083955-05'00'")
     PP.normalize_ooxml(p(R.F_FORECAST), K.PEOPLE["planner"], K.PEOPLE["planner"], "2026-08-04T19:22:51Z",
@@ -142,7 +133,7 @@ def everything(root, quiet=False):
     stamp = K.EXPORT_STAMP.timestamp() + 2 * 86400
     for f in os.listdir(os.path.join(root, "golden")):
         os.utime(os.path.join(root, "golden", f), (stamp, stamp))
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), FILES)
+    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), FILES, SYSTEMS)
     return B, G
 
 

@@ -215,7 +215,7 @@ Written at the draw, brought to the design's figures at stage 2 and set on the h
   shorten the others' waits, how patient a caller is or that callers differ by night; the default path reads them all
   and still files five months short.
 - **Not rule application:** the shipped sentences that bear on how the figure is computed (the prompt's question, SOP
-  2.10's measure and its 5-second exclusion, the busy-time and shift definitions in the SOP and the README, the SOP's
+  2.10's measure and its 5-second exclusion, the busy-time and shift definitions in the SOP, the SOP's
   statement that staffing is planned on the board's forecast) are executed word for word on the clean truth in
   `checks.py` (the rule 3 block, ten sentences) and give no figure of their own: they say what is counted and what the
   arrivals are, never a queue, a wait, a patience or whose patience; the estimators they admit (Erlang C, the observed
@@ -275,12 +275,12 @@ group the data force (the late shift's 123 seconds against 529 to 628 elsewhere)
 | SF2 | the late shift | the hours 22:00 to 02:00 of each night that starts on a Friday or a Saturday: Friday and Saturday 22:00 and 23:00, Saturday and Sunday 00:00 and 01:00, local time | the calendar Friday and Saturday 00:00 and 01:00 | July alone (July 89.7) | the prompt ("Friday and Saturday late shift, 22:00 to 02:00"), the FY2028 budget's staffing table (nights starting Friday and Saturday) and SOP 2.10 5.2 (a block past midnight belongs to the day it starts) |
 | SF3 | a night's month | the month the night starts, each of its hours on that month's forecast (the Friday 30 June 2028 night is June's) | each hour in its calendar month's table | same call (asserted) | SOP 2.10 6.1 (a shift's calls are reported in the month the shift starts); same call |
 | SF4 | within 15 seconds | answer time less presentation time of 15 seconds or less | under 15 seconds | same call (the model is continuous; asserted) | SOP 2.10 3.3 |
-| SF5 | presentation | the moment the call reaches the agency's ACD queue (the i3 queue entry, the legacy trunk seizure) | the moment it reaches a position | no difference (positions are on auto-answer; 93.5 per cent of i3 answered calls show no wait) | SOP 2.10 3.1 and 4.1; the README |
+| SF5 | presentation | the moment the call reaches the agency's ACD queue (the i3 queue entry, the legacy trunk seizure) | the moment it reaches a position | no difference (positions are on auto-answer; 93.5 per cent of i3 answered calls show no wait) | SOP 2.10 3.1 and 4.1, read back from the shipped PDF, and the systems' own fields (`SEIZE_TIME`, `presented`) (asserted) |
 | SF6 | the measure's denominator | calls presented less calls abandoned within 5 seconds of presentation | all calls presented; calls answered only | all presented: each month 0.2 to 0.5 lower, the same set (asserted), August a point lower; answered only: ruled out | SOP 2.10 3.2 and 3.3, the compliance definition |
 | SF7 | the arrivals | the board's FY2028 forecast for the agency, the Halvorsen move included | the analyst's own forecast from the history | no month short (R1b) | SOP 2.10 5.1 (staffing is planned against the board's published hourly forecast) |
-| SF8 | the forecast's unit | average 911 calls presented per clock hour for that day and hour beginning in that month | the month's total for the cell | ruled out | the workbook's Read me sheet |
+| SF8 | the forecast's unit | average 911 calls presented per clock hour for that day and hour beginning in that month | the month's total for the cell | ruled out | the board's own column header (`Forecast 911 calls per hour`) and its cover sheet's definition of the series, read back from the shipped workbook (asserted) |
 | SF9 | four call-takers | four positions taking 911 calls in every late-shift hour of every night | the supervisor or the callback desk taking overflow | ruled out | SOP 2.10 4.3 (the floor supervisor and the callback desk take no calls from the 911 queue) and the FY2028 budget's table |
-| SF10 | busy time | answer to the position's return to Ready, the after-call work and CAD entry included | answer to release (talk only) | no month short (talk time 158.8 seconds) | SOP 2.10 4.2 (a position takes no new call until the call-taker sets Ready again after the after-call work and CAD entry) and the README |
+| SF10 | busy time | answer to the position's return to Ready, the after-call work and CAD entry included | answer to release (talk only) | no month short (talk time 158.8 seconds) | SOP 2.10 4.2 (a position takes no new call until the call-taker sets Ready again after the after-call work and CAD entry), read back from the shipped PDF, and the systems' own Ready fields (`RDY_TIME`, `ready`) (asserted) |
 | SF11 | the busy-time window | every answered 911 call in the history | the late shift's calls; fiscal 2026; January to June 2025; fiscal 2027's first quarter; one layout; transfers-in left out | same call (asserted: 225.5 to 227.1 seconds) | same call |
 | SF12 | the patience window | the late shift's own 911 calls over the whole history | fiscal 2026; the last twelve months; the i3 layout; transfers-in left out; Friday and Saturday nights to 06:00 | same call (asserted: 109.2 to 123.1 seconds, and one sigma, 13.7 seconds either way) | same call |
 | SF13 | the patience estimator | the exponential likelihood, answered calls censored | Kaplan-Meier on the late shift's waits with an exponential fitted to it; the hang-ups' rate over the total waiting time by 30-second band; the patience matched to the late shift's fiscal 2026 hang-up share (a method of moments) | same call (asserted: 118.8 and 123.2 seconds); the moment-matched patience, 79.4 to 111.7 seconds by grouping, files the same set (asserted), August and June printing 90 at the coarse groupings; a patience fitted so the queue reproduces the late shift's own observed compliance over its whole history (137 seconds) gives the same twelve figures (printed) | same call; the figure exposure is in `## Ladder` |
@@ -288,13 +288,13 @@ group the data force (the late shift's 123 seconds against 529 to 628 elsewhere)
 | SF15 | the hours of a shift | each hour on its own forecast | the shift's average rate for all four hours | same call (asserted) | same call |
 | SF16 | a month's figure | the month's calls answered within 15 seconds over its calls presented less those abandoned within 5 seconds, over all its late-shift hours | the forecast-weighted mean of the hourly figures | same call (asserted) | same call |
 | SF17 | transferred-in calls | in the population and in the estimates | left out | same call (asserted) | SOP 2.10 2.2 (transferred-in calls included) |
-| SF18 | test calls | out (not 911 calls; the i3 test responder answers them) | in | same call (asserted: 226.0 and 123.8 seconds) | SOP 2.10 2.2 and the README; same call |
+| SF18 | test calls | out (not 911 calls; the i3 test responder answers them) | in | same call (asserted: 226.0 and 123.8 seconds) | SOP 2.10 2.2, read back from the shipped PDF; each export's two test labels mark the same calls (asserted); same call |
 | SF19 | redials | each call presented counts, a redial included | one per callback number | ruled out | SOP 2.10 3.3 (calls presented); same call on the estimates (683 calls collapsed, 120.0 seconds; asserted) |
-| SF20 | the two layouts | both, legacy local times read with the zone's rules and i3 UTC converted to local | one layout | same call on the estimates (asserted) | the README |
+| SF20 | the two layouts | both, legacy local times read with the zone's rules and i3 UTC converted to local | one layout; the legacy times misread as UTC | same call on the estimates (asserted); misread as UTC, same call (asserted: 121.9 seconds) | the producing systems: every i3 time carries its `Z`, the legacy times are the MIS's local clock, and only the local reading runs on across the 13 May 2025 handover (asserted: 843 against 18,843 seconds); same call |
 | SF21 | the daylight-saving nights | the 6 November 2027 night runs five clock hours, 01:00 twice; the 11 March 2028 night four | four hours every night | same call (asserted) | same call |
 | SF22 | falls short | the unrounded compliance below 90 per cent | the rounded figure below 90 | same call (every month at least 1.03 from 90; asserted at 0.9) | same call |
 | SF23 | rounding | each month's compliance to the whole per cent, once | hourly figures rounded first | same call (asserted) | the prompt |
-| SF24 | the cutover days | 13 to 16 May 2025 in both exports, each call in one of them | either export alone | same call on the estimates (asserted: 305 legacy and 1,723 i3 calls on those days, none in both) | the README's cutover note |
+| SF24 | the cutover days | 13 to 16 May 2025 in both exports, each call in one of them | either export alone | same call on the estimates (asserted: 305 legacy and 1,723 i3 calls on those days, none in both) | same call (C1: no call in both exports, asserted) |
 
 ## Ladder
 
@@ -393,10 +393,10 @@ below the golden's; rungs 2 and 2b 0 of 12 on the golden's).
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | the 911 calls presented to the agency's ACD in the Friday and Saturday late-shift hours of each FY2028 month, calls not yet made and the Halvorsen calls the board forecasts included | filed (the prompt; SOP 2.10 sections 2 and 3; the workbook's Read me); C1 on transfers and test calls (SF17, SF18) |
+| 1 | Population | the 911 calls presented to the agency's ACD in the Friday and Saturday late-shift hours of each FY2028 month, calls not yet made and the Halvorsen calls the board forecasts included | filed (the prompt; SOP 2.10 sections 2 and 3; the board's cover sheet, which states that fiscal 2028 includes the Halvorsen move); C1 on transfers and test calls (SF17, SF18) |
 | 2 | Unit of account | the call | filed (SOP 2.10 section 3) |
 | 3 | Attribution window | a night's hours count in the month the night starts | filed (SOP 2.10 section 6); C1 (SF3) |
-| 4 | As-of dating | the history runs to 30 September 2026; the forecast is the board's FY2028 edition | filed (the workbook; the README's file list and the QA extract log) |
+| 4 | As-of dating | the history runs to 30 September 2026; the forecast is the board's FY2028 edition | the workbook's own publication date; the exports' own date ranges (their names, and the last call on 30 September 2026, asserted); C1 |
 | 5 | Version basis | the FY2028 sheet; the FY2027 sheet is the year before | filed (the prompt's fiscal 2028; the sheet names) |
 | 6 | Denominator | calls presented less calls abandoned within 5 seconds | filed (SOP 2.10 section 3); C4 (SF6) |
 | 7 | Weighting | each month's calls: the forecast per hour times its nights | filed (the measure is a ratio of calls); C1 (SF16) |
@@ -410,8 +410,8 @@ below the golden's; rungs 2 and 2b 0 of 12 on the golden's).
 | 15 | Duplicate resolution | the cutover days carry different calls in each export | C1 (no call in both; asserted, SF24) |
 | 16 | Identity normalisation | the main call needs no join across systems | not applicable |
 | 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | legacy local time to the second, i3 UTC to the millisecond; durations in seconds | the README; C1 (SF20) |
-| 19 | Code and status semantics | the legacy and i3 dispositions and service codes | the README's code lists; never the stump |
+| 18 | Dimensional units | legacy local time to the second, i3 UTC to the millisecond; durations in seconds | the producing systems (the i3 log's `Z`, the CHE file's `received_utc`, the legacy MIS's local clock); C1 (SF20) |
+| 19 | Code and status semantics | the legacy and i3 dispositions and service codes | the systems' own labels (`ANS`, `ABN`, `TST`; `answered`, `abandoned`, `test-responder`; the service types), each export's two test labels marking the same calls (asserted); never the stump |
 | 20 | Integerisation | four call-takers, whole | not applicable |
 | 21 | Clause scope | the 15-second standard covers every 911 call presented | filed (SOP 2.10 section 2) |
 | 22 | Forward window contents | the board's forecast for every FY2028 hour; four call-takers every late-shift night | filed (the workbook; the FY2028 budget) |
@@ -451,8 +451,8 @@ grouping, 79.4 to 123.2 seconds) files the same set (asserted); the figure expos
 ## Ask sheet
 
 **Main call's declared row population:** the two ACD exports (every 911 call's presentation, answer, release, ready,
-disposition and service type), the floor roster, the board's workbook, SOP 2.10 sections 1 to 6, the FY2028 budget and
-the README. Device and hazard rows in it: 0. The asks' devices sit in the CHE location records, the boundary file, the
+disposition and service type), the floor roster, the board's workbook, SOP 2.10 sections 1 to 6.1 and the FY2028
+budget. Device and hazard rows in it: 0. The asks' devices sit in the CHE location records, the boundary file, the
 PSAP directory and the callback desk log (asserted in `checks.py`: the call computed from the main files alone is the
 golden; the asks computed without the roster, the workbook and the documents are the asks). The i3 log is shared and
 carries no device: its incident identifier, transfer-target and callback-reference columns are read by the asks alone.
@@ -473,8 +473,10 @@ transferred to Wexley County Emergency Communications** (8 figures, whole number
   location inside the Halvorsen Township boundary (both parts, less the hole), by local quarter; of them, the calls whose
   transfer target is either of Wexley County Emergency Communications' URIs in the regional directory.
 - Pins, each a sentence in the owner's voice, the alternative asserted as a stop:
-  - The location record: the README, "The agency places a wireless call by the last handset location received for it
-    (`device` or `gnss`)". The routing location, every call's first record (asserted), is stop S2, 8 of 8 off.
+  - The location record: SOP 2.10 6.2, "Calls are reported by where they were placed from, a wireless call by the last
+    handset location received for it" (read back from the shipped PDF, asserted). The routing location, every call's
+    first record (asserted), is stop S2, 8 of 8 off; every handset reading (the first or the last handset fix, the most
+    precise record, the last record of any method) files the golden's 8 figures (C1, asserted).
   - Wexley's transfers: the ESInet directory files both Wexley URIs (the primary and `alt07` at the state backup
     centre) under Wexley County Emergency Communications (asserted). The primary alone is stop S3, the 4 transferred
     figures off.
@@ -484,7 +486,7 @@ transferred to Wexley County Emergency Communications** (8 figures, whole number
     the agency answered from its backup centre, whose call-handling system filed a call's location records under the
     ESInet incident identifier.
   - The split evidence: the i3 log carries both identifiers on every call and names one queue throughout (asserted, no
-    marker). The README says only that `call_id` ties each record to its call in the i3 log.
+    marker). No shipped sentence describes the location records' key.
   - Why it is silent: most of the county's wireless calls have no record in the north-east extract anyway, so a join
     on `callId` alone drops the backup centre's calls without a gap. The dropped calls are 39, 71, 57 and 30 a quarter
     (2.4 to 5.7 per cent), 33, 64, 54 and 27 of them transferred.
@@ -510,8 +512,7 @@ transferred to Wexley County Emergency Communications** (8 figures, whole number
   - S5, every other step right, records joined on the call identifier alone: 8 of 8 off (Q1 1,436 and 1,293).
   - S6, full geometry, URIs naming Wexley, the call identifier alone: 8 of 8 off (Q1 1,436 and 1,127).
   - Lazy delta: S1 against the golden, every quarter.
-- Span: the i3 log, the CHE location records, the boundary GeoJSON, the PSAP directory, the README and SOP 2.10 (6
-  files); callId, incidentId, serviceType, presented, transferTo; call_id, seq, method, latitude, longitude; the
+- Span: the i3 log, the CHE location records, the boundary GeoJSON, the PSAP directory and SOP 2.10 (5 files); callId, incidentId, serviceType, presented, transferTo; call_id, seq, method, latitude, longitude; the
   geometry; uri, agency (12 columns and the geometry).
 - Realism: an NG911 call-handling system stores the routing location delivered with the call and then each handset
   fix the location server returns; a backup centre running its own system files records under the ESInet's incident
@@ -530,21 +531,23 @@ June 2026** (6 figures, per cent to one decimal).
 - Pins, each a sentence in the owner's voice, the alternative asserted:
   - The denominator: SOP 2.10 7.1, every abandoned 911 call is called back "however briefly the caller held on".
     Leaving out the abandons within 5 seconds moves all 6 months (57.3, 44.7, 59.1, 54.8, 51.1, 53.2).
-  - The numerator: the README, "A task closed as `caller called in` was never dialled". Counting those tasks as dialled
-    back moves all 6 (65.6 to 73.0).
-  - The linkage: the README, "The desk works one open task per callback number, from the abandon that opens it until
-    the task is dialled or closed: any later abandon from that number in that time joins the task and opens none of
-    its own" (joins in every month, 4 to 9 a month, 4.5 per cent of abandons). Tasks keyed on their opening call move
-    all 6, whether the unjoined count as not dialled back (51.0, 37.3, 54.1, 45.4, 48.7, 48.2) or are dropped (53.9,
-    40.4, 56.1, 48.9, 50.0, 50.2). A task read as open only from its `created` stamp drops the one April abandon that
-    hung up 4 seconds before its number's task was stamped: April 51.5, the other five months unchanged (asserted).
+  - The numerator: C1 in the desk log, every task closed as `caller called in` carries no first dial and no dial
+    attempt (118 tasks, asserted). Counting those tasks as dialled back by their close moves all 6 (65.6 to 73.0).
+  - The linkage: C1 in the data, no sentence. Read plainly, with no task model, an abandon is dialled back when the
+    desk's first dial to its callback number came at or after the hang-up and within two minutes, and that files the
+    golden in every month (asserted); every 911 task's opening call carries the task's number (724 of 724) and, on the
+    desk's local clock, is stamped 0.2 to 20.7 seconds after its hang-up (asserted). Abandons join an open task in
+    every month (4 to 9 a month, 4.5 per cent of abandons). Tasks keyed on their opening call move all 6, whether the
+    unjoined count as not dialled back (51.0, 37.3, 54.1, 45.4, 48.7, 48.2) or are dropped (53.9, 40.4, 56.1, 48.9,
+    50.0, 50.2). A task read as open only from its `created` stamp, a construction no shipped sentence suggests, drops
+    the one April abandon that hung up 4 seconds before its number's task was stamped: April 51.5, the other five
+    months unchanged (asserted).
 - Primary device B4 (D5, a category crossed by label):
   - The callers: some first hang up on the administrative line and then dial 911 and hang up again. The 911 abandon
     joins the open task the administrative-line abandon opened, a task whose `line` is `ADMIN`.
   - Why it is silent: keeping the desk's 911 tasks alone, the natural scope for "abandoned 911 calls", loses them: 2 to
     6 a month dialled back through an administrative-line task, all 6 months off (52.1, 39.2, 54.1, 47.4, 49.2, 48.6).
-  - Nothing narrates it: the README says the desk works abandoned 911 and administrative-line calls and one task per
-    number, never that a 911 abandon can join an administrative task.
+  - Nothing narrates it: no shipped sentence describes the desk's tasks, its lines or how an abandon joins one.
 - Device B2 (D8, an anchor on the current record): a task is stamped when the callback module takes the abandon, 1 to
   21 seconds after the hang-up; measuring two minutes from the stamp moves every month (S6: 59.4, 51.0, 58.6, 51.6,
   53.5, 55.1).
@@ -558,7 +561,7 @@ June 2026** (6 figures, per cent to one decimal).
   task log alone, tasks as the unit: 6 of 6 off. S6 two minutes from the stamp: 6 of 6 off. S7 the desk's 911 tasks
   alone (B4): 6 of 6 off. A matching window of 25, 45, 90 or 300 seconds for a task stamped after the hang-up gives
   the same figures. Lazy delta: S7 against the golden, every month.
-- Span: the i3 log, the callback desk log, SOP 2.10 and the README (4 files); callId, disposition, ended, callbackRef,
+- Span: the i3 log, the callback desk log and SOP 2.10 (3 files); callId, disposition, ended, callbackRef,
   referredBy; task_id, line, created, call_ref, callback_number, first_dial, result (12 columns).
 - Realism: callback modules fold a repeat abandon into the open task for that number whatever line it came on; a task
   is stamped when the module takes the event; a caller who gives up on the administrative line often dials 911.
@@ -574,32 +577,61 @@ June 2026** (6 figures, per cent to one decimal).
 | HC2 test calls | the i3 test responder | main, A | main: same call (asserted); A: none is a wireless call |
 | HC3 transferred-in calls | other PSAPs transfer callers in | main, B | main: same call (asserted); B: 14 abandons, five months move without them |
 
-**Referee:** the CHE's handset fixes and the README's placement sentence settle the location record, the boundary's
+**Referee:** the CHE's handset fixes and SOP 2.10 6.2 settle the location record, the boundary's
 own geometry A1, the PSAP directory A3, and the i3 log's two identifiers A4; the callback numbers, the tasks' lines and
 the first-dial times settle B4 and B2. None hands over a quarter's or a month's figure.
 
-**Cracker sheet**
+**Cracker sheet** (measured on the cut pack, target.zip md5 ce339aaf4758c1c4cb95946f0bb2b63e, 2026-11-01)
 
 | Ask row | Figures | Cracker (landed the call, ran the battery, executed every filed rule) |
 |---|---|---|
-| Ask A, Halvorsen wireless calls reaching the agency, by quarter | 4 | miss |
-| Ask A, of them transferred to Wexley County Emergency Communications, by quarter | 4 | miss |
-| Ask B, abandoned calls dialled back within two minutes, by month | 6 | miss |
+| Ask A, Halvorsen wireless calls reaching the agency, by quarter | 4 | keeps 4 of 4 |
+| Ask A, of them transferred to Wexley County Emergency Communications, by quarter | 4 | keeps 4 of 4 |
+| Ask B, abandoned calls dialled back within two minutes, by month | 6 | keeps 6 of 6 |
 | the chart's monthly compliance and its 90 per cent line | 2 | outside |
 
-The cracker's misses rest on devices a careful solver can resolve, measured here as built stops:
-- Ask A: the join on `callId` alone (S5, S6). A solver who checks the location records left unmatched by the i3
-  `callId` finds the incident identifiers and lands all 8 figures.
-- Ask B: the 911-only task scope (S7). A solver who links every task by number, whatever its line, lands all 6.
+The cracker is the careful solver, and it resolves every device the sheet names, so each is spent against it (measured,
+not tuned; the ask layer is owed `/fix-rubric`):
+- A4: an anti-join of the location records on the i3 `callId` leaves 571 keys of 14,982, each an i3 incident identifier
+  by its own URN, and the battery's re-keyed records step joins them. A1: the boundary read as its GeoJSON geometry
+  says (two parts, one hole). A3: the directory's agency for each transfer URI.
+- B4: the 34 abandons no desk task names (of 758) are looked up by their callback number, whatever the task's line. B2:
+  the prompt's "of the hang-up" anchors the two minutes.
+- The sheet's earlier paper cracker (S1 for Ask A, S7 for Ask B) missed every figure only by skipping the battery and
+  reading the geometry, the directory and the desk log narrowly: it is the mirror's shortcut. The mirror (off the call,
+  the natural read without the battery) keeps 0 of 14; the full includer (the golden's construction) gives back
+  figures.json, the script's control.
 
-Mirror leakage: 9 per cent of the ask weight (the chart's form and its 90 per cent line, the files; the mirror, off
-the call, misses both asks and the chart's values).
+Measured by: generator/ceiling.py
 
-Pair ceiling: 34 (C = 38 + 7 + 55 x 0.10 = 50.5 with the cracker keeping the chart; S = 5 + 7 + 55 x 0.09 = 17.0).
-If the cracker also resolves A4 and B4, with the rest of each ask right, C rises to 100 and the pair to about 58: the
-devices are the margin, the portal measures them, and the ceiling is rerun from the generated rubric when it returns.
+Mirror leakage: 6.2 per cent of the ask weight (the chart's 90 per cent line; the mirror keeps no ask figure).
+
+Pair ceiling: 57.7 (the sheet's formula, each of the 16 criteria equal: C = 38 + 7 + 55 x 1.00 = 100.0, the cracker
+keeping all of them; S = 5 + 7 + 55 x 0.062 = 15.4; 57.4 with the chart at the sheet's 10 per cent). The pair sits under
+60 only because the mirror is off the call; the bar's own condition, each top response under two fifths of the ask
+weight, fails for the cracker.
 
 ## Build record
+
+**Reship, 2026-11-01 (in-house leak re-check, no portal return).** `leak.py --asof 2026-10-06` returned LEAK on the
+shipped cut: `README.md` described the data by name and by content (33 columns named, 88 per cent of the CHE file's).
+One generator pass:
+- The README and `qa_extract_log.csv` (a file list with each file's system, record count and pull date) no longer
+  ship; each file's system and what it covers are provenance in `metadata.json` (`files[].provenance`), whose title and
+  subdomain now say what the task decides and nothing of how.
+- One fact the asks' determinism needs is filed once in SOP 2.10, 6.2: "Calls are reported by where they were placed
+  from, a wireless call by the last handset location received for it." Everything else the README stated is carried by
+  the producing systems or converges in the data, each asserted; the fork table, the closure table and `## Ask sheet`
+  cite the new homes. The board's cover sheet lost its two column glosses ("Each row is ...", "The Halvorsen column is
+  ...").
+- Pack: 12 files, five formats (csv, geojson, jsonl, pdf, xlsx); target.zip md5 ce339aaf4758c1c4cb95946f0bb2b63e. No
+  graded figure moved: `figures.json`, `submission.md` and the goldens are byte-identical.
+- `checks.py` 220 assertions, 0 failed; `verify.py` reads back 11 filed sentences from the shipped documents.
+- `generator/ceiling.py` measured the ask layer on this cut: the careful solver keeps all 14 ask figures (`## Ask
+  sheet`), so the ask layer is owed `/fix-rubric` before this pack ships.
+
+The record below is the 2026-10-16 build's; its pack, README and extract-log lines are superseded by the paragraph
+above.
 
 Stage 3 of the hardening complete on 2026-10-16. The second stage 4 (reader clean, judge APPROVE, rule 3 PASS) was
 answered in one generator pass (`generator/build.py`, the sixth full build of the hardening). It changed one sentence
@@ -661,7 +693,19 @@ re-read (`## Leak review`).
 
 ## Leak review
 
-`leak.py --asof 2026-10-06` on the shipped cut: REVIEW, no LEAK; its three lines (the budget page's frame, the README's
+`leak.py --asof 2026-10-06` on the reship cut (2026-11-01, target.zip md5 ce339aaf4758c1c4cb95946f0bb2b63e): REVIEW, no
+LEAK, the describing-content, metadata and dates sweeps clean. Each REVIEW line, ruled:
+- The workbook's `Read me` sheet: the board's own cover sheet for its published series (title, edition, owner and
+  publication date, what the series forecasts, the Halvorsen move as a fact about the world, its basis, the fiscal
+  year); since the reship it glosses none of its columns and names no file (asserted).
+- The budget page's 16 of 24 call words: the decision's frame, as ruled for the shipped cut below; no month, figure or
+  method.
+- SOP 2.10's four terms (forecast, seconds, second, regional): the filed estimand, as ruled below; 6.2 adds none.
+- The prompt's "the four call-takers": the decision parameter the FY2028 budget funds, not a count the data hold.
+- The prompt's shell quota (which, give, png+xlsx): measured on the corpus as it stands now; the shipped prompt is
+  frozen in a leak repair, and `voice-check.py` passes it.
+
+The earlier record, on the 2026-10-16 cut: `leak.py --asof 2026-10-06` on the shipped cut: REVIEW, no LEAK; its three lines (the budget page's frame, the README's
 and SOP 2.10's vocabulary) are answered under `## Build record`. Reader rounds, each an isolated read of `prompt.txt` and
 `target/` only:
 - Round 1, the first pack (027f6ff): clean.
@@ -735,3 +779,4 @@ and SOP 2.10's vocabulary) are answered under `## Build record`. Reader rounds, 
 - The record's first residual (stage 3 of the hardening) counted only the cell-mean back-test's late-shift cells and its logistic. The rule 3 re-audit of the second stage 4 (2026-10-16) found the per-hour back-test landing the set too: Erlang C on each hour's realised count, with every correction, on every hour and on 19 of 24 late-shift cells (a Jensen bias about the size of the abandonment effect). It also found the crude four-call-taker lookups landing. No small data-native change removes it: a heavier late-shift history moves the true factor from 0.87 toward fiscal 2028's 0.68, inside the landing band, and a lighter one is noisier. So the data ship as is, the residual is recorded and asserted, and the re-audit's estimate stands (one strong solver lands about 0.25, both of two about 0.07).
 - Closing the April 2026 callback edge with a generator change (second stage 4, 2026-10-16). One 911 hang-up came 4 seconds before the callback module stamped the task its number's earlier abandon had opened. Making the module stamp before any later abandon would have shortened the stamp lag that device B2 rests on, or tied each poll to the next abandon. Instead the README's callback sentence now says a task is open from the abandon that opens it until it is dialled or closed, and the stamp-only reading is asserted (April 51.5, the other five months and Ask A unchanged).
 - The moment-matched patience (second stage 4, 2026-10-16). Matched to fiscal 2026's late-shift hang-up share, it is 79.4 to 111.7 seconds by grouping and keeps the set, but at the coarse groupings it prints August and June at 90. Recorded as a figure exposure with no change: the likelihood is the principled estimate, and 41 hang-ups against 32 to 39 expected is within noise.
+- Shipping the README and the QA extract log (shipped 2026-10-16, replaced 2026-11-01). The README was field notes and a file list (33 columns named, the code lists, the clocks, the location rule, the desk's task model and the callback numbers' pseudonyms) and the extract log a file list with each file's system, count and pull date: both describe the data (dataset-generation section 3), and the in-house re-check under the new leak gate read LEAK. Replaced by provenance in `metadata.json`, the location rule filed once as SOP 2.10 6.2, and every other fact carried by the producing systems or converging in the data (asserted); the board's cover sheet lost its column glosses. The callback linkage the README's sentence had closed now converges with no sentence: the plain reading by number files the golden.

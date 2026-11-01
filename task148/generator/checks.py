@@ -4,6 +4,7 @@ defensible constructions and one sigma, the out-of-sample back-test, and the ask
 devices, stops, determinism, separation and the distractors)."""
 from __future__ import annotations
 
+import csv
 import datetime as dt
 import json
 import math
@@ -28,9 +29,16 @@ import geo as GEO           # noqa: E402
 import levels as LV         # noqa: E402
 import model as M           # noqa: E402
 import records as R         # noqa: E402
+import verify as V          # noqa: E402  (the bundle-only extractor for the PDFs and the workbook's cover sheet)
 
 TASK = os.path.dirname(HERE)
-MAIN_FILES = [R.F_LEGACY, R.F_I3, R.F_ROSTER, R.F_FORECAST, DOC.F_SOP, DOC.F_BUDGET, DOC.F_README]
+MAIN_FILES = [R.F_LEGACY, R.F_I3, R.F_ROSTER, R.F_FORECAST, DOC.F_SOP, DOC.F_BUDGET]
+# A file whose name says it describes the data (dataset-generation section 3): no readme, dictionary, codebook, field
+# notes, manifest, extract or export log or notes, file list, schema, glossary or definitions file ships.
+DESCRIBING_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?(notes|guide)|fields?_(guide|notes|list)|"
+    r"manifest|extract_(log|notes|contents)|export_(log|notes)|file_?list|file_layout|glossary|column_(notes|desc\w*)|"
+    r"data_?notes|how_to_read|about_this|definitions|schema|layout_notes|release_notes|notes)(?![a-z])", re.I)
 ASK_FILES = [R.F_CHE, R.F_BOUNDARY, R.F_DIRECTORY, R.F_CALLBACK]
 FY28 = K.fy_months(2028)
 STUMP_WORDS = ["erlang", "patience", "censor", "reneg", "queueing model", "hang-ups' own", "staffing model",
@@ -91,6 +99,39 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ck("gate distractors", len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]),
        ", ".join(meta["distractor_files"]))
     ck("gate no distractor in a file name", not any("distract" in f.lower() for f in files))
+    # no shipped file describes the data (dataset-generation section 3): none by its name, no text file at all, and
+    # no document listing the data's columns; the regex's positive control is the name the README shipped under
+    ck("gate no shipped file describes the data, by name (no readme, dictionary, notes, manifest, extract log or file "
+       "list)", DESCRIBING_NAME.search("README") is not None and DESCRIBING_NAME.search("qa_extract_log") is not None
+       and not [f for f in files if DESCRIBING_NAME.search(f.rsplit(".", 1)[0])],
+       ", ".join(f for f in files if DESCRIBING_NAME.search(f.rsplit(".", 1)[0])) or "%d files, none" % len(files))
+    ck("gate no text file ships (no .md or .txt under target/)", not [f for f in files if f.endswith((".md", ".txt"))])
+    data_cols = set()
+    for f in files:
+        if f.endswith(".csv"):
+            data_cols |= {c for c in open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+                          if len(c) >= 4 and ("_" in c or re.search(r"\d|[a-z][A-Z]", c))}
+    with open(os.path.join(target, R.F_I3), encoding="utf-8") as fh:
+        for k, line in enumerate(fh):
+            data_cols |= {c for c in json.loads(line) if re.search(r"[a-z][A-Z]", c)}
+            if k > 5000:
+                break
+
+    def fields_named(text):
+        return {c for c in data_cols if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), text)}
+    control = fields_named("SEIZE_TIME is the trunk seizure; callbackRef and call_ref tie a call to its task.")
+    named = {f: sorted(fields_named(V.document_text(target, f))) for f in (DOC.F_SOP, DOC.F_BUDGET, R.F_FORECAST)}
+    ck("gate no document names a data file's field (the SOP, the budget page and the board's cover sheet, read "
+       "through the verifier's extractor; %d identifier-shaped fields swept, the control string's three found)"
+       % len(data_cols), len(data_cols) >= 25 and control == {"SEIZE_TIME", "callbackRef", "call_ref"}
+       and not any(named.values()), "; ".join("%s: %s" % kv for kv in named.items() if kv[1]) or "none")
+    cover = V.document_text(target, R.F_FORECAST)
+    ck("gate the board's cover sheet names its series and states what it forecasts, and names no column of its table "
+       "and no file of the pack", "Hourly 911 volume forecast, fiscal years 2027 and 2028" in cover
+       and "average number of 911 calls presented" in cover
+       and not any(h in cover for h in ("Hour beginning", "Of which Halvorsen", "calls per hour", "PSAP column",
+                                         "Halvorsen column", "Each row"))
+       and not any(f.rsplit(".", 1)[0] in cover for f in files), cover[:90])
 
     # ------------------------------------------------------------------------------------------------ the golden
     ck("golden months below 90", CA.short_months(gold) == want, CA.label_set(CA.short_months(gold)))
@@ -144,11 +185,14 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ck("R3b the golden's busy time is the world's within its sampling error", abs(busy / K.AHT - 1) < 0.005,
        "%.2f against %.1f" % (busy, K.AHT))
     texts = {f: open(os.path.join(target, f), encoding="utf-8").read().lower() for f in files
-             if f.endswith((".md", ".geojson")) or f == R.F_DIRECTORY or f == R.F_MANIFEST}
-    texts[DOC.F_SOP] = " ".join(DOC.sop_sentences()).lower()
-    texts[DOC.F_BUDGET] = " ".join([r[0] + " " + r[3] for r in DOC.BUDGET_ROWS] + DOC.BUDGET_TEXT).lower()
-    import forecast as FCM
-    texts[R.F_FORECAST] = " ".join(FCM.READ_ME).lower()
+             if f.endswith(".geojson") or f == R.F_DIRECTORY}
+    for f in (DOC.F_SOP, DOC.F_BUDGET, R.F_FORECAST):        # the shipped documents, read back from the bundle
+        texts[f] = V.document_text(target, f).lower()
+    ck("R3c the documents read back from the bundle (positive control: each carries its own title line)",
+       "call answering and answer-time reporting" in texts[DOC.F_SOP]
+       and "communications floor staffing" in texts[DOC.F_BUDGET]
+       and "hourly 911 volume forecast" in texts[R.F_FORECAST], " ".join("%d" % len(texts[f]) for f in
+                                                                     (DOC.F_SOP, DOC.F_BUDGET, R.F_FORECAST)))
     hits = [(f, w) for f, t in texts.items() for w in STUMP_WORDS if w in t]
     ck("R3c no plant: no document names a queueing model, a patience or a compliance forecast", not hits, str(hits))
     ck("R3c no staffing study, model output or prior compliance figure ships",
@@ -218,6 +262,15 @@ def run(target, golden, B=None, G=None, meta_path=None):
     zero = np.mean(C.wait[C.is911 & ~C.ab & (C.layout == "i3")] == 0.0)
     ck("SF5 presentation is the queue entry; an undelayed call is answered on presentation (auto-answer)",
        zero > 0.8 and "auto-answer" in sop, "%.1f%% of i3 answered calls with no wait" % (100 * zero))
+    # the closures the shipped README used to carry, now filed once in SOP 2.10 or carried by the producing systems,
+    # each read back from the bundle through the verifier's extractor (verify.FILED)
+    filed, lengths = V.filed_sentences(target)
+    ck("filed sentences read back from the shipped documents (positive control: every one found, no empty extraction)",
+       all(filed.values()) and all(n > 500 for n in lengths.values()),
+       "%d of %d; %s" % (sum(filed.values()), len(filed), ", ".join("%d" % n for n in lengths.values())))
+    ck("SF5 closed by SOP 2.10 3.1 as shipped, the systems' own presentation fields (legacy SEIZE_TIME, i3 presented)",
+       filed[(V.SOP, "3.1 presentation is the queue entry or the trunk seizure")] and "SEIZE_TIME" in heads
+       and "presented" in i3keys)
     noex = CA.fy2028(fc, busy, pat, excl=False)
     ck("SF6 the denominator without the 5-second exclusion: same months (the figures ruled out by SOP 2.10 3.2 and 3.3)",
        CA.short_months(noex) == want, fmt(noex))
@@ -226,7 +279,11 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ck("SF7 the analyst's own arrivals (no Halvorsen move) file another call, ruled out by SOP 2.10 section 5",
        CA.short_months(own) != want and "planned against the Tri-County Regional 911 Board's published hourly volume forecast" in sop,
        CA.label_set(CA.short_months(own)))
-    ck("SF8 the forecast's unit is filed in its Read me", any("average number of 911 calls presented" in x for x in FCM.READ_ME))
+    import pandas as pd
+    fhead = list(pd.read_excel(os.path.join(target, R.F_FORECAST), sheet_name="FY2028", header=2, nrows=1).columns)
+    ck("SF8 the forecast's unit: the board's column header (calls per hour) and its cover sheet's definition, read from "
+       "the shipped workbook", "Forecast 911 calls per hour" in fhead and filed[(V.FC, "the forecast's unit")],
+       ", ".join(fhead))
     five = CA.fy2028(fc, busy, pat, c=5)
     ck("SF9 four call-takers: five file no month short; the supervisor and callback desk take no 911 calls",
        CA.short_months(five) == [] and "do not take calls from the 911 queue" in sop)
@@ -236,6 +293,8 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ck("SF10 busy time to release (talk only) files another call, ruled out by SOP 2.10 section 4.2",
        CA.short_months(talkonly) != want and "takes no new call until the call-taker sets Ready" in sop,
        "talk %.1f s: %s" % (talk, CA.label_set(CA.short_months(talkonly))))
+    ck("SF10 closed by SOP 2.10 4.2 as shipped and the systems' own Ready fields (legacy RDY_TIME, i3 ready)",
+       filed[(V.SOP, "4.2 a position is busy until Ready")] and "RDY_TIME" in heads and "ready" in i3keys)
     oct25 = dt.datetime(2025, 10, 1, tzinfo=K.TZ).timestamp()
     bwin = {"fiscal 2026": loc_fy == 2026, "January to June 2025": loc_fy == 2025, "fiscal 2027 Q1": loc_fy == 2027,
             "the late shift's calls": late, "legacy layout": C.layout == "legacy", "i3 layout": C.layout == "i3",
@@ -275,6 +334,21 @@ def run(target, golden, B=None, G=None, meta_path=None):
     p_ = CA.estimates(C2, late)[1]
     v = CA.fy2028(fc, b_, p_)
     ck("SF18 test calls counted as 911 calls: same call", same_call(v, gold), "%.2f s, %.1f s: %s" % (b_, p_, fmt(v)))
+    tcodes = {}
+    with open(os.path.join(target, R.F_LEGACY), encoding="utf-8") as fh:
+        for r in csv.DictReader(fh):
+            k_ = (r["CALL_STATUS"] == "TST", r["CLASS_OF_SVC"] == "TEST")
+            tcodes[("legacy",) + k_] = tcodes.get(("legacy",) + k_, 0) + 1
+    with open(os.path.join(target, R.F_I3), encoding="utf-8") as fh:
+        for line in fh:
+            o = json.loads(line)
+            k_ = (o["disposition"] == "test-responder", o["serviceType"] == "test")
+            tcodes[("i3",) + k_] = tcodes.get(("i3",) + k_, 0) + 1
+    ck("SF18 closed by SOP 2.10 2.2 as shipped; each export's two test labels mark the same calls (legacy TST and "
+       "TEST, i3 test-responder and test)", filed[(V.SOP, "2.2 test calls are not 911 calls")]
+       and not any(n for k_, n in tcodes.items() if k_[1] != k_[2]) and all(tcodes.get((s, True, True), 0) > 100
+                                                                           for s in ("legacy", "i3")),
+       str(tcodes))
     keep = first_of_redials(C)
     b_ = CA.estimates(C, keep)[0]
     p_ = CA.estimates(C, keep & late)[1]
@@ -282,6 +356,20 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ck("SF19 redials collapsed to one call per number in ten minutes: same call", same_call(v, gold),
        "%d calls dropped; %.1f s: %s" % ((~keep & C.is911).sum(), p_, fmt(v)))
     ck("SF20 the two layouts' estimates agree (SF11 busy time; SF12 the i3 layout)", True)
+    # the zones are the producing systems' own: every i3 time carries its Z (calc parses each with it), the legacy
+    # times are the CAMA-era MIS's local clock; misread as UTC they file the same call, and only the local reading
+    # runs on without a gap across the 13 May 2025 handover of wireless calls from the legacy ACD to i3
+    Cu = CA.read_calls(target, R.F_LEGACY, R.F_I3, legacy_utc=True)
+    bu, pu = CA.estimates(Cu)[0], CA.estimates(Cu, Cu.late)[1]
+    vu = CA.fy2028(fc, bu, pu)
+    ck("SF20 the legacy times misread as UTC: same call", same_call(vu, gold), "%.2f s, %.1f s: %s" % (bu, pu, fmt(vu)))
+
+    def handover(Cx):
+        return float(np.min(Cx.t[Cx.layout == "i3"]) - np.max(Cx.t[(Cx.layout == "legacy") & (Cx.kind == "wireless")]))
+    gap_l, gap_u = handover(C), handover(Cu)
+    ck("SF20 the zones are carried by the data: read as local, the legacy log's last wireless call is within 30 minutes "
+       "of the i3 log's first call; read as UTC the two are 5 hours apart",
+       0 < gap_l < 1800 and gap_u > 4.5 * 3600, "%.0f s against %.0f s" % (gap_l, gap_u))
     nov = no_dst(fc, busy, pat)
     ck("SF21 the 6 November 2027 night at four hours: same call", same_call(nov, gold), fmt(nov))
     ck("SF22 falls short on unrounded figures: every month at least 0.9 from 90", margin >= 0.9, "%.3f" % margin)
@@ -957,6 +1045,25 @@ def transient(fc, busy, pat, warm=False, steps=40):
     return out
 
 
+def ask_a_pick(C, che, polys, dr, pick):
+    """Ask A with every other step the golden's (records under the call or the incident identifier, the full geometry,
+    the directory, local quarters), each call placed by the record pick(records) returns."""
+    out = {(2026, q): [0, 0] for q in (1, 2, 3, 4)}
+    lo = dt.datetime(2025, 7, 1, tzinfo=K.TZ).timestamp()
+    hi = dt.datetime(2026, 7, 1, tzinfo=K.TZ).timestamp()
+    for i in np.nonzero(C.is911 & (C.kind == "wireless") & (C.layout == "i3"))[0]:
+        recs = che.get(C.cid[i]) or che.get(C.iid[i])
+        if not recs or not (lo <= C.t[i] < hi):
+            continue
+        pt = pick(recs)
+        if not CA.in_polys(pt[3], pt[2], polys):
+            continue
+        fq = K.fiscal_quarter(K.to_local(C.t[i]).date())
+        out[fq][0] += 1
+        out[fq][1] += int(bool(C.xout[i]) and dr.get(C.xout[i]) == K.NEIGHBOUR)
+    return {k: tuple(v) for k, v in out.items()}
+
+
 def ask_checks(ck, target, G, W):
     C = G["C"]
     A = G["ask_a"]
@@ -1030,9 +1137,19 @@ def ask_checks(ck, target, G, W):
        len(queues) == 1 and all(x for x in C.iid[C.layout == "i3"]), ", ".join(sorted(queues)))
     first_cell = all(recs[0][1] == "cell" for recs in che.values())
     ck("Ask A pin's subject: every call's first record is its routing location", first_cell)
-    readme = open(os.path.join(target, DOC.F_README), encoding="utf-8").read()
-    ck("Ask A pin: the agency places a wireless call by the last handset location received (README); the routing record "
-       "alternative is stop S2", "places a wireless call by the last handset location received for it" in readme)
+    filed = V.filed_sentences(target)[0]
+    ck("Ask A pin: SOP 2.10 6.2 as shipped, a wireless call is placed by the last handset location received for it "
+       "(read back through the verifier's extractor); the routing record alternative is stop S2",
+       filed[(V.SOP, "6.2 a wireless call placed by its last handset location")]
+       and "a wireless call by the last handset location" in " ".join(DOC.sop_sentences("reporting")))
+    hand = {"the first handset fix": lambda r: [x for x in r if x[1] != "cell"][0],
+            "the most precise record": lambda r: min(r, key=lambda x: (x[4], -x[0])),
+            "the last record of any method": lambda r: r[-1],
+            "the last satellite fix, else the last device fix": lambda r: ([x for x in r if x[1] == "gnss"]
+                                                                            or [x for x in r if x[1] == "device"])[-1]}
+    for k_, pick in hand.items():
+        v = ask_a_pick(C, che, polys, dr, pick)
+        ck("Ask A C1: placing each call by %s files the golden's 8 figures" % k_, v == A, str(v))
     wex = [u for u, ag in dr.items() if ag == K.NEIGHBOUR]
     ck("Ask A pin: the ESInet directory files Wexley's alternate URI under Wexley County Emergency Communications; the "
        "primary-only alternative is stop S3", len(wex) == 2 and any("alt07" in u for u in wex), ", ".join(sorted(wex)))
@@ -1065,7 +1182,6 @@ def ask_checks(ck, target, G, W):
     ck("Ask B golden equals the world's own dial-backs in every month",
        all(abs(tru_b[k] - Bm[k]) < 1e-12 for k in Bm) and set(tru_b) == set(Bm), str({k: round(100 * v, 2) for k, v in tru_b.items()}))
     tasks = G["tasks"]
-    readme = open(os.path.join(target, DOC.F_README), encoding="utf-8").read()
     sop = " ".join(DOC.sop_sentences())
     off_ = lambda v: sum(K.round_half_up(100 * v[k], 1) != K.round_half_up(100 * Bm[k], 1) for k in Bm)
     show_ = lambda v: str({k[1]: round(100 * x, 2) for k, x in v.items()})
@@ -1074,22 +1190,35 @@ def ask_checks(ck, target, G, W):
        "every abandoned 911 call is called back by the callback desk, however briefly the caller held on" in sop.lower())
     v = CA.ask_b(C, tasks, misdials=False)[0]
     ck("Ask B pin's alternative: abandons within 5 seconds left out moves 4 or more months", off_(v) >= 4, "%d off: %s" % (off_(v), show_(v)))
-    ck("Ask B pin: a task closed as caller called in was never dialled (README)",
-       "a task closed as `caller called in` was never dialled" in readme.lower())
+    # what the shipped README used to state, now carried by the data (C1); no shipped sentence describes the desk's
+    # tasks, its clock or the callback numbers' pseudonyms
+    with open(os.path.join(target, R.F_CALLBACK), encoding="utf-8") as fh:
+        called_in = [r for r in csv.DictReader(fh) if r["result"] == "caller called in"]
+    ck("Ask B C1: every task closed as caller called in carries no first dial and no dial attempt (never dialled)",
+       len(called_in) >= 50 and all(r["first_dial"] == "" and r["dial_attempts"] == "0" for r in called_in),
+       "%d tasks" % len(called_in))
     v = CA.ask_b(C, tasks, called_in="dialled")[0]
-    ck("Ask B pin's alternative: caller-called-in tasks counted as dialled back moves 4 or more months", off_(v) >= 4,
-       "%d off: %s" % (off_(v), show_(v)))
-    ck("Ask B pin: one open task per callback number, from the abandon that opens it until it is dialled or closed, a "
-       "later abandon joins it (README)",
-       "the desk works one open task per callback number, from the abandon that opens it until the task is dialled or "
-       "closed" in readme.lower() and "joins the task and opens none of its own" in readme.lower())
+    ck("Ask B construction: caller-called-in tasks counted as dialled back (by their close) moves 4 or more months",
+       off_(v) >= 4, "%d off: %s" % (off_(v), show_(v)))
+    plain = CA.ask_b(C, tasks, tol=float("inf"))[0]
+    ck("Ask B C1: the plain reading, the desk's first dial to the abandon's number at or after its hang-up and within "
+       "two minutes, with no task model, files the golden in every month", plain == Bm, show_(plain))
+    at = {C.cid[i]: i for i in np.nonzero(C.layout == "i3")[0]}
+    t911 = [tk for tk in tasks if tk["line"] == "911"]
+    same_num = sum(tk["ref"] in at and C.cbn[at[tk["ref"]]] == tk["num"] for tk in t911)
+    lag = np.array([tk["created"] - C.hang[at[tk["ref"]]] for tk in t911 if tk["ref"] in at])
+    ck("Ask B C1: every 911 task's opening call carries the task's callback number (callbackRef, cb- and the same "
+       "pseudonym)", len(t911) > 500 and same_num == len(t911), "%d of %d" % (same_num, len(t911)))
+    ck("Ask B C1: the desk's clock is local Central time, read with the zone's rules: every 911 task is stamped 0 to 21 "
+       "seconds after its opening abandon's hang-up, across the 8 March 2026 change",
+       len(lag) == len(t911) and lag.min() >= 0.0 and lag.max() <= 21.0, "%.1f to %.1f s" % (lag.min(), lag.max()))
     v = CA.ask_b(C, tasks, open_from="stamp")[0]
-    ck("Ask B pin's alternative: a task open only from its stamp (an abandon before the stamp joins nothing) moves a month",
-       off_(v) >= 1, "%d off: %s" % (off_(v), show_(v)))
+    ck("Ask B construction: a task read as open only from its stamp (an abandon before the stamp joins nothing) moves a "
+       "month", off_(v) >= 1, "%d off: %s" % (off_(v), show_(v)))
     G["ask_b_stamp_reading"] = v
     for k_, v in {"tasks keyed on their opening call, the unjoined counted as not dialled back": CA.ask_b(C, tasks, match="ref")[0],
                   "tasks keyed on their opening call, the unjoined dropped": CA.ask_b(C, tasks, match="ref", unmatched="drop")[0]}.items():
-        ck("Ask B pin's alternative: %s moves 3 or more months" % k_, off_(v) >= 3, "%d off: %s" % (off_(v), show_(v)))
+        ck("Ask B construction: %s moves 3 or more months" % k_, off_(v) >= 3, "%d off: %s" % (off_(v), show_(v)))
     # the silent devices
     v = CA.ask_b(C, tasks, lines911=True)[0]
     ck("Ask B device B4: the 911 tasks alone (the administrative line's open tasks dropped) misses 6 of 6", off_(v) == 6,
@@ -1226,6 +1355,9 @@ def realism(ck, target, files, C):
     last = max(C.t)
     ck("realism no call after 30 September 2026", K.to_local(last).date() <= dt.date(2026, 9, 30), str(K.to_local(last)))
     people = set(K.PEOPLE.values())
-    readme = open(os.path.join(target, DOC.F_README), encoding="utf-8").read()
-    named = set(re.findall(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b", readme)) & {p for p in people}
-    ck("realism every person named in the pack is one of the drawn personas", named <= people, ", ".join(sorted(named)))
+    docs_text = {f: V.document_text(target, f) for f in (DOC.F_SOP, DOC.F_BUDGET, R.F_FORECAST)}
+    named = {f: set(re.findall(r"\b([A-Z][a-z]+ [A-Z][a-z]+)\b", t)) & people for f, t in docs_text.items()}
+    ck("realism each document names its own owner, a drawn persona (the SOP its operations manager, the budget page its "
+       "finance director, the board's cover sheet its planner), read back from the bundle",
+       K.PEOPLE["ops"] in named[DOC.F_SOP] and K.PEOPLE["finance"] in named[DOC.F_BUDGET]
+       and K.PEOPLE["planner"] in named[R.F_FORECAST], ", ".join(sorted(set().union(*named.values()))))

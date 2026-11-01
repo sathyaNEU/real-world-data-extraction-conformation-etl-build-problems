@@ -46,15 +46,23 @@ class Calls:
     """Every call in the two ACD exports, unified: presented, answered, ready, hang-up (epoch seconds), flags."""
 
 
-def read_calls(target, legacy_name, i3_name):
+def _p_legacy_utc(s):
+    """The legacy times misread as UTC (checks.py's SF20 alternative only)."""
+    if not s:
+        return math.nan
+    return dt.datetime.strptime(s, "%m/%d/%Y %H:%M:%S").replace(tzinfo=UTC).timestamp()
+
+
+def read_calls(target, legacy_name, i3_name, legacy_utc=False):
     rows = []
+    _p_legacy_ = _p_legacy_utc if legacy_utc else _p_legacy
     with open(os.path.join(target, legacy_name), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
-            rows.append((_p_legacy(r["SEIZE_TIME"]), _p_legacy(r["ANS_TIME"]), _p_legacy(r["RDY_TIME"]),
-                         _p_legacy(r["DISC_TIME"]) if r["CALL_STATUS"] == "ABN" else math.nan,
+            rows.append((_p_legacy_(r["SEIZE_TIME"]), _p_legacy_(r["ANS_TIME"]), _p_legacy_(r["RDY_TIME"]),
+                         _p_legacy_(r["DISC_TIME"]) if r["CALL_STATUS"] == "ABN" else math.nan,
                          r["CALL_STATUS"] == "ABN", r["CALL_STATUS"] == "TST", LEGACY_KIND[r["CLASS_OF_SVC"]],
                          bool(r["XFER_IN_FROM"]), r["XFER_OUT_TO"], r["CBN_REF"].lower(), r["CALL_ID"], "legacy",
-                         _p_legacy(r["REL_TIME"]), ""))
+                         _p_legacy_(r["REL_TIME"]), ""))
     with open(os.path.join(target, i3_name), encoding="utf-8") as fh:
         for line in fh:
             o = json.loads(line)

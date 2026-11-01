@@ -18,8 +18,6 @@ SOURCES = {
     R.F_CALLBACK: "Tavish County Emergency Communications Agency, callback module task export",
     R.F_CAD: "Tavish County Emergency Communications Agency, CAD incident export",
     R.F_ADMIN: "Tavish County Emergency Communications Agency, administrative line ACD export",
-    R.F_MANIFEST: "Tavish County Emergency Communications Agency, QA extract log",
-    DOC.F_README: "Tavish County Emergency Communications Agency, README and field notes",
 }
 DISTRACTORS = [R.F_CAD, R.F_ADMIN]
 
@@ -38,24 +36,26 @@ def rows_of(path):
     return None
 
 
-def write(target, out_path, files):
+def write(target, out_path, files, systems):
+    """files: (name, what it covers) for every shipped file; systems: the system or office that produced it. Both are
+    provenance and live here only (dataset-generation section 9), never in a file under target/."""
+    covers = dict(files)
     out = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
         out.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
                     "source": "Constructed: " + SOURCES[f], "date": "2026-10-06",
+                    "provenance": {"system": systems[f], "covers": covers[f]},
                     "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task148",
         "title": "In which months of fiscal 2028 a county 911 center's Friday and Saturday late shift falls short of "
-                 "answering 90 per cent of calls within 15 seconds with four call-takers, when its callers hang up as "
-                 "they wait",
+                 "answering 90 per cent of calls within 15 seconds with four call-takers",
         "domain": "Urban & Regional Science",
         "client_domain": "Urban & Regional Science",
-        "subdomain": "municipal-service-demand-resource-allocation (a PSAP's answer-time compliance forecast from its "
-                     "ACD history and the regional board's arrival forecast, by a queue with reneging whose patience "
-                     "is estimated over censored waits)",
+        "subdomain": "municipal-service-demand-resource-allocation (a county 911 center's call-taker staffing for its "
+                     "Friday and Saturday late shift against its call-answering standard, fiscal 2028)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a forecast across the twelve months of fiscal 2028 (each month's expected compliance to the "
                         "whole per cent and the months below 90 per cent), a chart of the months against the standard, "

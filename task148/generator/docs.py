@@ -1,6 +1,7 @@
 """The pack's documents: SOP 2.10 (call answering and answer-time reporting) and the FY2028 recommended budget's
-communications floor page (PDF), the README with its field notes. Their text is kept here as data so checks.py can
-quote and execute it."""
+communications floor page (PDF). Their text is kept here as data so checks.py can quote and execute it, and checks.py
+reads each one back from the shipped PDF through the verifier's extractor. No file in the pack describes the data
+(dataset-generation section 3): provenance lives in metadata.json."""
 from __future__ import annotations
 
 import re
@@ -92,7 +93,9 @@ SOP = [
         "belongs to the day it starts."]),
     ("6", "Reporting", "reporting", [
         "6.1 Quality assurance reports compliance monthly, for the floor and for each block. A shift's calls are "
-        "reported in the month the shift starts."]),
+        "reported in the month the shift starts.",
+        "6.2 Calls are reported by where they were placed from, a wireless call by the last handset location "
+        "received for it."]),
     ("7", "Abandoned calls", "abandoned", [
         "7.1 Every abandoned 911 call is called back by the callback desk, however briefly the caller held on. The "
         "desk aims to dial each one within two minutes of the hang-up."]),
@@ -165,82 +168,3 @@ def write_budget(path):
     doc = _doc(path, "FY2028 Recommended Budget: communications floor staffing", K.PEOPLE["finance"])
     f = _footer("Tavish County Budget Office  |  FY2028 recommended  |  Draft", "Page ", font="LibSans")
     doc.build(s, onFirstPage=f, onLaterPages=f)
-
-
-# ---------------------------------------------------------------------------------------------------- README
-F_README = "README.md"
-
-
-def readme_text(files):
-    L = []
-    L.append("# Tavish County Emergency Communications Agency: data for the FY2028 late-shift staffing request")
-    L.append("")
-    L.append("Compiled by Quality Assurance (%s) on 6 October 2026 for the operations manager. Callback numbers in "
-             "every export are replaced by a keyed pseudonym (the same number gives the same pseudonym in every file "
-             "of this folder); everything else is as the systems wrote it." % K.PEOPLE["qa"])
-    L.append("")
-    L.append("## Files")
-    L.append("")
-    for f, d in files:
-        L.append("- `%s`: %s" % (f, d))
-    L.append("")
-    L.append("## Field notes")
-    L.append("")
-    L.append("**ACD call detail, legacy layout** (`acd_call_detail_legacy_2025-01-01_2025-05-16.csv`). The CAMA and "
-             "ALI-era ACD's call detail, one row per call presented to the 911 queue. Times are local (Central) to the "
-             "second, `MM/DD/YYYY HH:MM:SS`. `SEIZE_TIME` is the trunk seizure (presentation), `ANS_TIME` the "
-             "connection to a position, `REL_TIME` the end of the conversation, `RDY_TIME` the call-taker's "
-             "return to Ready, `DISC_TIME` the caller's disconnect on an abandoned call. `CALL_STATUS` is `ANS` "
-             "(answered), `ABN` (abandoned before answer) or `TST` (a trunk test answered by the test position). "
-             "`CLASS_OF_SVC` codes: `RESD` residence, `BUSN` business, `PBXB` business PBX, `WPH1` and `WPH2` "
-             "wireless (Phase I and Phase II), `VOIP`, `TLMA` telematics, `TEST`. `XFER_IN_FROM` and `XFER_OUT_TO` "
-             "are the transfer speed-dial codes: `WEXLEY`, `WEX ALT`, `GARRICK`, `GAR ALT`, `SP D6` (State Patrol "
-             "District 6), `HOLLIN CR`.")
-    L.append("")
-    L.append("**i3 call log** (`i3_call_log_2025-05-13_2026-09-30.jsonl`). The NG911 call-handling system's call "
-             "records, one JSON object per line per call presented to the 911 queue. Times are UTC with milliseconds. "
-             "`presented` is the queue entry; `answered` the connection to a position; `released` the end of the "
-             "conversation; `ready` the call-taker's return to Ready; `ended` the caller's disconnect on an abandoned "
-             "call. `disposition` is `answered`, `abandoned` or `test-responder` (an ESInet test call answered by the "
-             "test responder, not a call-taker). `serviceType` is `wireless`, `fixed`, `voip`, `mlts`, `telematics` or "
-             "`test`. `referredBy` is the URI of the PSAP that transferred the call in; `transferTo` and `transferAt` "
-             "the URI a call was transferred out to and when. `callId` is the ESInet's Call Identifier and "
-             "`incidentId` its Incident Tracking Identifier.")
-    L.append("")
-    L.append("**Cutover.** Wireless, VoIP and telematics calls moved to NG911 at 06:00 on 13 May 2025; wireline "
-             "calls stayed on the CAMA trunks until 06:00 on 16 May 2025. Calls presented between those times are in "
-             "one export or the other, never both.")
-    L.append("")
-    L.append("**Floor roster** (`floor_roster_2025-01_2026-09.csv`). Call-takers on the 911 floor by block, from "
-             "the scheduling system. A block that runs past midnight is dated by the day it starts: the `2200-0200` "
-             "block of a Friday runs to 02:00 on Saturday.")
-    L.append("")
-    L.append("**Location records** (`che_location_records_fy2026_northeast.csv`). Every location record the "
-             "agency's call-handling systems, on the floor and at the backup centre, stored for wireless 911 calls "
-             "presented from 1 July 2025 to 30 June 2026 with any location inside 39.80 to 39.97 N and 88.21 to 87.97 W "
-             "(the north-east of the county and the Wexley County line). `method` is `cell` (the serving cell sector's "
-             "location delivered with the call; `cell_sector` names the sector), `device` (a handset location from the "
-             "device-based hybrid service) or `gnss` (a handset satellite fix, also returned on a rebid). `radius_m` is "
-             "the uncertainty radius at `confidence_pct`. `call_id` ties each record to its call in the i3 log. The "
-             "agency places a wireless call by the last handset location received for it (`device` or `gnss`).")
-    L.append("")
-    L.append("**Township boundary** (`halvorsen_township_boundary.geojson`). Tavish County GIS's boundary of "
-             "Halvorsen Township, the layer the ESInet's routing uses for the township from 1 July 2027 (WGS84 "
-             "longitude and latitude).")
-    L.append("")
-    L.append("**PSAP directory** (`esinet_psap_directory.csv`). The ESInet's directory of PSAP URIs and the "
-             "agencies that answer on them.")
-    L.append("")
-    L.append("**Callback desk** (`callback_desk_tasks_2026-01_2026-06.csv`). The callback module's tasks created "
-             "from 1 January to 30 June 2026, for abandoned 911 calls and abandoned administrative-line calls. Times "
-             "are local (Central), `YYYY-MM-DD HH:MM:SS`. `call_ref` is the call that opened the task (the i3 "
-             "`callId`, or the administrative line's `call_id`); `callback_number` is the pseudonym of the number "
-             "dialled; `first_dial` is the desk's first dial. The desk works one open task per callback number, from "
-             "the abandon that opens it until the task is dialled or closed: any later abandon from that number in that "
-             "time joins the task and opens none of its own. A task closed as `caller called in` was never dialled: the "
-             "caller got through on a redial first.")
-    L.append("")
-    L.append("**Other exports.** The CAD incident export and the administrative line's ACD export are as pulled for "
-             "the request; the board's forecast workbook is as published, with its own Read me sheet.")
-    L.append("")
-    return "\n".join(L)

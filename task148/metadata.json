@@ -1,9 +1,9 @@
 {
   "task": "task148",
-  "title": "In which months of fiscal 2028 a county 911 center's Friday and Saturday late shift falls short of answering 90 per cent of calls within 15 seconds with four call-takers, when its callers hang up as they wait",
+  "title": "In which months of fiscal 2028 a county 911 center's Friday and Saturday late shift falls short of answering 90 per cent of calls within 15 seconds with four call-takers",
   "domain": "Urban & Regional Science",
   "client_domain": "Urban & Regional Science",
-  "subdomain": "municipal-service-demand-resource-allocation (a PSAP's answer-time compliance forecast from its ACD history and the regional board's arrival forecast, by a queue with reneging whose patience is estimated over censored waits)",
+  "subdomain": "municipal-service-demand-resource-allocation (a county 911 center's call-taker staffing for its Friday and Saturday late shift against its call-answering standard, fiscal 2028)",
   "objective": "Forecasting & Predictive Modeling",
   "prompt_shape": "a forecast across the twelve months of fiscal 2028 (each month's expected compliance to the whole per cent and the months below 90 per cent), a chart of the months against the standard, and two tables (Halvorsen Township's wireless calls reaching the agency and transferred to Wexley, by fiscal 2026 quarter; the share of abandoned calls dialled back within two minutes, January to June 2026)",
   "as_of": "2026-10-06",
@@ -17,12 +17,11 @@
   ],
   "stated_inputs": [],
   "input_gates": {
-    "files": 14,
+    "files": 12,
     "formats": [
       "csv",
       "geojson",
       "jsonl",
-      "md",
       "pdf",
       "xlsx"
     ],
@@ -41,21 +40,16 @@
   "generator": "task148/generator/build.py",
   "files": [
     {
-      "path": "README.md",
-      "format": "md",
-      "bytes": 6395,
-      "rows": null,
-      "source": "Constructed: Tavish County Emergency Communications Agency, README and field notes",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "acd_call_detail_legacy_2025-01-01_2025-05-16.csv",
       "format": "csv",
       "bytes": 10304767,
       "rows": 78676,
       "source": "Constructed: Tavish County Emergency Communications Agency, legacy ACD (CAMA and ALI) call detail export",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "legacy ACD (CAMA/ALI) MIS",
+        "covers": "ACD call detail, legacy CAMA and ALI layout, 1 January 2025 to the cutover (wireline to 16 May 2025)."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -65,6 +59,10 @@
       "rows": 35114,
       "source": "Constructed: Tavish County Emergency Communications Agency, administrative line ACD export",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "administrative line ACD",
+        "covers": "Administrative line ACD call detail, fiscal 2026."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -74,6 +72,10 @@
       "rows": 6397,
       "source": "Constructed: Tavish County Emergency Communications Agency, CAD incident export",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "CAD",
+        "covers": "CAD incidents opened from 911 calls on Friday and Saturday late shifts, fiscal 2026."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -83,6 +85,10 @@
       "rows": 3743,
       "source": "Constructed: Tavish County Emergency Communications Agency, callback module task export",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "callback module",
+        "covers": "Callback desk tasks, 1 January to 30 June 2026."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -92,6 +98,10 @@
       "rows": 39720,
       "source": "Constructed: Tavish County Emergency Communications Agency, call-handling systems' location records, north-east extract",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "NG911 call-handling systems (floor and backup centre), location records",
+        "covers": "Call-handling systems' location records for wireless 911 calls in the north-east, fiscal 2026."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -101,6 +111,10 @@
       "rows": 8,
       "source": "Constructed: Tri-County ESInet PSAP directory",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "Tri-County ESInet",
+        "covers": "ESInet PSAP directory: PSAP URIs and their agencies."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -110,6 +124,10 @@
       "rows": 3829,
       "source": "Constructed: Tavish County Emergency Communications Agency, scheduling system floor roster",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "scheduling system",
+        "covers": "Floor roster: call-takers on the 911 floor by block, 31 December 2024 to 30 September 2026."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -119,6 +137,10 @@
       "rows": null,
       "source": "Constructed: Tavish County budget office, FY2028 recommended budget page for the communications floor",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "county budget office",
+        "covers": "FY2028 recommended budget, communications floor staffing (budget office draft, 2 October 2026)."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -128,6 +150,10 @@
       "rows": null,
       "source": "Constructed: Tavish County GIS, Halvorsen Township boundary",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "Tavish County GIS",
+        "covers": "Halvorsen Township boundary, Tavish County GIS (the ESInet routing layer from 1 July 2027)."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
@@ -137,33 +163,36 @@
       "rows": 339676,
       "source": "Constructed: Tavish County Emergency Communications Agency, NG911 call-handling system i3 call log export",
       "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "qa_extract_log.csv",
-      "format": "csv",
-      "bytes": 1971,
-      "rows": 12,
-      "source": "Constructed: Tavish County Emergency Communications Agency, QA extract log",
-      "date": "2026-10-06",
+      "provenance": {
+        "system": "NG911 call-handling system, i3 logging",
+        "covers": "NG911 i3 call log, 13 May 2025 to 30 September 2026."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "sop_2-10_call_handling_standard_and_reporting.pdf",
       "format": "pdf",
-      "bytes": 36393,
+      "bytes": 36523,
       "rows": null,
       "source": "Constructed: Tavish County Emergency Communications Agency, SOP 2.10 call answering and answer-time reporting",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "agency procedures",
+        "covers": "SOP 2.10, call answering and answer-time reporting (revision 4, effective 1 July 2025)."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "tri_county_911_hourly_forecast_fy2027_fy2028.xlsx",
       "format": "xlsx",
-      "bytes": 445775,
+      "bytes": 445687,
       "rows": 16128,
       "source": "Constructed: Tri-County Regional 911 Board, hourly 911 volume forecast workbook, fiscal 2027 and 2028",
       "date": "2026-10-06",
+      "provenance": {
+        "system": "Tri-County Regional 911 Board",
+        "covers": "Tri-County Regional 911 Board, hourly 911 volume forecast for fiscal 2027 and 2028 (published 15 September 2026)."
+      },
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]

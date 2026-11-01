@@ -21,7 +21,6 @@ F_DIRECTORY = "esinet_psap_directory.csv"
 F_CALLBACK = "callback_desk_tasks_2026-01_2026-06.csv"
 F_CAD = "cad_incidents_fy2026_fri_sat_late.csv"
 F_ADMIN = "admin_line_acd_fy2026.csv"
-F_MANIFEST = "qa_extract_log.csv"
 
 QUEUE_URI = "sip:911@acd.tavish911.example"
 ESINET = "tricounty911.example"
