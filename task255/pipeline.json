@@ -1,10 +1,10 @@
 {
  "task": "task255",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "pharmacology-pharmacoepidemiology-safety / medication-adherence-persistence",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-01",
  "stump": "The default path times each dispensing at one WHO defined daily dose a day and files 041236 and 041263; each new user's own dose, read from their refill rhythm, files 041219, 041236, 041248, 041275, 041307 and 041322.",
  "architecture": 3,
@@ -14,18 +14,18 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-01, as-of 2027-02-12, target.zip ccc93a03)",
-  "reader": "no leak (round 1); question 6 leaned rule application with a reconstruction step, settled by the judge's measurement"
+  "leak_py": "REVIEW ruled (2026-11-01, --asof 2027-02-12)",
+  "reader": "clean in both rounds; round 2 read question 6 as analytical; the reader's sections appended to task255/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "PASS (2026-11-01)",
+  "heart": "PASS 2026-11-01 at the ship gate",
   "surface": "one pair promoted for adjudication: task265 (surface 0.101, same decision type designation_set; left-truncated implant survival against a dose read from refill rhythm), not adjudicated (2026-11-01)",
   "nearest": "task270 driver 0.11"
  },
  "judge": {
-  "verdict": "round 1 (eb685de6): FIX_NOW on ask 4 only; Gates G and H PASS, Gate F moderate",
-  "disposition": "repaired in the generator (round 1)",
-  "report": "kept by the coordinator"
+  "verdict": "architecture 3 round 2 DETERMINISTIC, APPROVE (order kept; Gate F moderate to good; Gate G analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE, no repair; round 1's ask-4 fork closed by a filed WHAT and a shipped register link",
+  "report": "task255/determinism_check_report.md"
  },
  "returned": [
   {
@@ -53,9 +53,9 @@
    "commit": "the main session commits"
   }
  ],
- "resume": "round 1 repaired 2026-11-01 (target.zip ccc93a03): generator checks 73/73, verify 80/80, two byte-identical builds, figures_check 195/195, precut 61/0, voice-check PASS, leak.py REVIEW (no LEAK), guard heart and check PASS; next: the re-judge (coordinator)",
+ "resume": "Shipped 2026-11-01 (architecture 3, Descriptive): six practices join the 2027 statin follow-up programme; target.zip ccc93a03. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "seed": "DA05 number (START_HERE); the seed's world is not used",
  "portal_status": "",
@@ -87,5 +87,8 @@
    "moved": "ask A now per quarter (32 figures); its annual totals moved at six pharmacies with the added later cancellations (A102 63,474 to 63,048; A107 43,708 to 43,120; A121 26,928 to 26,367; A133 36,408 to 35,076; A139 28,152 to 27,948; A145 49,590 to 47,763; A114 and A126 unchanged); ask B unchanged at 2,151; the call and every share unchanged",
    "target_zip": "ccc93a03"
   }
- ]
+ ],
+ "build": {
+  "target_zip": "ccc93a03 (13 members, each byte-identical to target/)"
+ }
 }
