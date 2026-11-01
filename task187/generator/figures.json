@@ -171,6 +171,12 @@
    10,
    12
   ],
-  "rotor_diameters_ch02_to_ch04": 3.5
+  "rotor_diameters_ch02_to_ch04": 3.5,
+  "annex_m_fit_ms": [
+   4,
+   12
+  ],
+  "fleet_cell_wind_ms": 0.5,
+  "fleet_cell_turbulence": 0.02
  }
 }

@@ -139,11 +139,6 @@ def write_states(path):
         ws.append(list(r))
     for row in ws.iter_rows(min_row=2):
         row[3].alignment = Alignment(wrap_text=True, vertical="top")
-    ws2 = wb.create_sheet("Notes")
-    ws2.append(["Hallvard H93-2.3 controller, software 7.4: the state written with each ten-minute record is the "
-                "controller state at the end of the interval."])
-    ws2.append(["Operating categories follow the turbine supply agreement's availability schedule."])
-    ws2.column_dimensions["A"].width = 120
     wb.save(path)
 
 

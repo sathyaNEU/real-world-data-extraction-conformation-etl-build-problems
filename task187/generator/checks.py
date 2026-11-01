@@ -12,6 +12,7 @@ import datetime as dt
 import json
 import os
 import re
+import zipfile
 import warnings
 
 import numpy as np
@@ -123,7 +124,7 @@ def run(target, golden, sim, meta_path, quiet=False):
     for f in files:
         if f.endswith((".csv", ".txt")):
             txt = open(os.path.join(target, f)).read().lower()
-            ok("campaign" not in txt or f == D.NOTES, "R3c %s does not mention the campaign" % f)
+            ok("campaign" not in txt, "R3c %s does not mention the campaign" % f)
             ok("shortfall" not in txt and "erosion" not in txt, "R3c %s states no shortfall or erosion" % f)
 
     # ------------------------------------------------------------------ R2, each Layer 1 item neutral for the call
@@ -235,7 +236,8 @@ def run(target, golden, sim, meta_path, quiet=False):
     ok(True, "SF10 and SF11 asserted under R2")
     ok(golden_bin == 100 and "nearest 50 MWh" in open(os.path.join(TASK, "prompt.txt")).read(), "SF12 the prompt's bin")
     ok("three blades of one turbine" in om, "SF13 OM-07 names the campaign's three blades")
-    ok("33 kV connection" in open(os.path.join(target, D.NOTES)).read(), "SF14 the export meter is the connection's")
+    meter_head = open(os.path.join(target, R.METER)).readline().strip().split(",")
+    ok("turbine" not in meter_head and "export_kwh" in meter_head, "SF14 the export meter is the farm's, no turbine column")
 
     # ------------------------------------------------------------------ the asks
     At, Bt = AN.asks_truth(sim["ops"])
@@ -327,11 +329,12 @@ def run(target, golden, sim, meta_path, quiet=False):
        "the paper: CH04 three and a half diameters from CH02")
 
     # ------------------------------------------------------------------ the documents and the dates
-    notes = open(os.path.join(target, D.NOTES)).read()
-    ok({f for f in files if f in notes} == set(files) - {D.NOTES}, "the extract notes name every shipped file")
-    scada_para = notes.split(R.SCADA)[1].split(R.MAST)[0]
-    ok("UTC" not in scada_para and "local" not in scada_para.lower(), "the notes do not state the SCADA's clock")
-    ok("isolat" not in notes.lower() and "outage" not in notes.lower(), "the notes narrate no silent interval")
+    describing = re.compile(r"readme|dictionar|manifest|field[_ ]?notes|extract[_ ]?notes|schema|codebook", re.I)
+    ok(not [f for f in files if describing.search(f)], "no file under target/ describes the data, by name")
+    ok(not [f for f in files if f.endswith(".txt")], "no free-text notes file under target/")
+    sc_wb = openpyxl.load_workbook(os.path.join(target, R.STATES))
+    ok(sc_wb.sheetnames == ["State codes"] and sc_wb["State codes"]["A1"].value == "code",
+       "the state code table is the vendor's code list alone, no notes sheet")
     late = []
     for f in files:
         if f.endswith((".csv", ".txt")):
@@ -357,11 +360,14 @@ def run(target, golden, sim, meta_path, quiet=False):
              for f in files}
     texts[D.STANDARD] = _pdf_text(os.path.join(target, D.STANDARD))
     allt = " ".join(texts.values())
+    for f in files:   # the workbooks' own core properties carry their author, as Excel writes them
+        if f.endswith(".xlsx"):
+            with zipfile.ZipFile(os.path.join(target, f)) as z_:
+                allt += " " + z_.read("docProps/core.xml").decode("utf-8", "ignore")
     for k in ("asset_manager", "secretary", "lifts"):
         ok(W.PEOPLE[k][0] in allt or k == "lifts", "persona %s in the pack" % W.PEOPLE[k][0])
     for f in files:
         if f.endswith(".xlsx"):
-            import zipfile
             with zipfile.ZipFile(os.path.join(target, f)) as z:
                 core = z.read("docProps/core.xml").decode()
                 app = z.read("docProps/app.xml").decode()

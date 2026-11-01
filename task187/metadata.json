@@ -1,8 +1,8 @@
 {
   "task": "task187",
-  "title": "Which of a community wind farm's ten turbines gets the summer 2027 leading-edge repair campaign, and the energy the repaired blades recover over the twelve months after the work, with each turbine's each turbine's metered generation and the farm's metered export over the eleven months to 31 August 2026",
+  "title": "Which turbine of a community wind farm gets the summer 2027 leading-edge repair campaign, and the energy the repaired blades recover over the twelve months after the work, with each turbine's metered generation and the farm's metered export by month from November 2025 to August 2026",
   "domain": "Energy Systems & Utilities",
-  "subdomain": "grid reliability and outage analysis (a wind farm's production accounting: the performance shortfall split into blade loss and inflow, reconciled to the revenue counters and the connection meter)",
+  "subdomain": "grid reliability and outage analysis (a wind farm's production accounting: a blade repair valued in energy, reconciled to the revenue counters and the connection meter)",
   "objective": "Anomaly Detection & Diagnostics",
   "prompt_shape": "14 (cuts of a distribution by segment): the campaign's turbine and recovered energy; each turbine's metered generation and the farm's metered export by month; the chart of generation by turbine",
   "as_of": "2026-10-09",
@@ -15,12 +15,11 @@
     "lost_production_2024_25.xlsx"
   ],
   "input_gates": {
-    "files": 14,
+    "files": 13,
     "formats": [
       "csv",
       "parquet",
       "pdf",
-      "txt",
       "xlsx"
     ],
     "largest_file": "scada_10min_2025-10_2026-09.parquet",
@@ -92,18 +91,9 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "extract_notes_2026-10-09.txt",
-      "format": "txt",
-      "bytes": 2452,
-      "rows": null,
-      "source": "Constructed: Asset manager's extract notes, 9 October 2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "hallvard_H93_state_codes.xlsx",
       "format": "xlsx",
-      "bytes": 7762,
+      "bytes": 6958,
       "rows": null,
       "source": "Constructed: Turbine controller state code table",
       "date": "2026-10-09",

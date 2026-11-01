@@ -83,7 +83,8 @@ def figures(target):
                        "power_performance_standard": "IEC 61400-12-1", "state_codes_downtime": [30, 40, 41],
                        "ask_window_local": ["2025-10-01", "2026-09-01"],
                        "state_codes_normal": [10, 20], "bands_ms": [3, 4, 8, 8.5, 9.5, 10, 12],
-                       "rotor_diameters_ch02_to_ch04": 3.5},
+                       "rotor_diameters_ch02_to_ch04": 3.5, "annex_m_fit_ms": [4, 12],
+                       "fleet_cell_wind_ms": 0.5, "fleet_cell_turbulence": 0.02},
     }
     return fig
 

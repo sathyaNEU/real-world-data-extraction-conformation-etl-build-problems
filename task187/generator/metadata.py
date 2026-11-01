@@ -20,7 +20,6 @@ SOURCES = {
     "orders": "Service contractor's work orders, October 2025 to September 2026",
     "standard": "Society O&M standard OM-07, revision 3",
     "schedule": "Turbine supply agreement, Schedule 3, warranted power curve",
-    "notes": "Asset manager's extract notes, 9 October 2026",
     "meter": "Connection export meter, half-hourly settlement data",
     "prior": "Lost production report to the board, October 2024 to September 2025",
 }
@@ -47,13 +46,12 @@ def write(target, out_path):
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task187",
-        "title": "Which of a community wind farm's ten turbines gets the summer 2027 leading-edge repair campaign, and "
-                 "the energy the repaired blades recover over the twelve months after the work, with each turbine's "
-                 "each turbine's metered generation and the farm's metered export over the eleven months to 31 August 2026",
+        "title": "Which turbine of a community wind farm gets the summer 2027 leading-edge repair campaign, and the "
+                 "energy the repaired blades recover over the twelve months after the work, with each turbine's "
+                 "metered generation and the farm's metered export by month from November 2025 to August 2026",
         "domain": "Energy Systems & Utilities",
-        "subdomain": "grid reliability and outage analysis (a wind farm's production accounting: the performance "
-                     "shortfall split into blade loss and inflow, reconciled to the revenue counters and the "
-                     "connection meter)",
+        "subdomain": "grid reliability and outage analysis (a wind farm's production accounting: a blade repair "
+                     "valued in energy, reconciled to the revenue counters and the connection meter)",
         "objective": "Anomaly Detection & Diagnostics",
         "prompt_shape": "14 (cuts of a distribution by segment): the campaign's turbine and recovered energy; each "
                         "turbine's metered generation and the farm's metered export by month; the chart of generation by turbine",

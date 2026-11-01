@@ -28,7 +28,7 @@ TASK = os.path.dirname(HERE)
 FILES = {
     "scada": R.SCADA, "mast": R.MAST, "anm": R.ANM, "states": R.STATES, "lifts": R.LIFTS, "layout": R.LAYOUT,
     "register": R.REGISTER, "counters": R.COUNTERS, "orders": R.WORKORDERS, "standard": D.STANDARD,
-    "schedule": D.SCHEDULE, "notes": D.NOTES, "meter": R.METER, "prior": R.PRIOR,
+    "schedule": D.SCHEDULE, "meter": R.METER, "prior": R.PRIOR,
 }
 # The connection meter now carries ask B. Nothing reads the ANM log once the curtailment ask is gone:
 # the call works on normal-operation intervals and neither ask joins an instruction.
@@ -66,9 +66,6 @@ def build(out, quiet=False, sim=None):
     R.write_prior(p("prior"), R.prior_year())
     D.write_standard(p("standard"))
     D.write_schedule(p("schedule"), sim["curve"])
-    D.write_notes(p("notes"), {k: FILES[k] for k in ("scada", "mast", "anm", "states", "lifts", "layout", "register",
-                                                       "counters", "orders", "meter", "prior")} |
-                  {"orders": FILES["orders"]})
     am = W.PEOPLE["asset_manager"][0]
     PP.normalize_ooxml(p("states"), "Hallvard Wind Systems", am, "2019-02-14T10:12:07Z", "2025-11-03T15:40:22Z", excel=True)
     PP.normalize_ooxml(p("lifts"), W.PEOPLE["lifts"][0], am, "2026-04-20T06:58:31Z", "2026-07-16T17:02:48Z", excel=True)

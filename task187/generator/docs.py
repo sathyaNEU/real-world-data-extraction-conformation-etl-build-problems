@@ -1,5 +1,5 @@
 """The pack's documents: the society's standard OM-07, Schedule 3 of the turbine supply agreement (the warranted
-power curve) and the asset manager's extract notes."""
+power curve)."""
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -15,7 +15,6 @@ import world as W      # noqa: E402
 
 STANDARD = "OM-07_blade_campaigns_and_lost_production.pdf"
 SCHEDULE = "TSA_schedule_3_warranted_power_curve.pdf"
-NOTES = "extract_notes_2026-10-09.txt"
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
 for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Serif", "LiberationSerif-Regular"),
@@ -160,51 +159,3 @@ def write_schedule(path, curve):
     foot = "Turbine Supply Agreement | Schedule 3"
     doc.build(s, onFirstPage=_frame("Hallvard H93-2.3", "Schedule 3", foot, "Serif"),
               onLaterPages=_frame("Hallvard H93-2.3", "Schedule 3", foot, "Serif"))
-
-
-NOTES_TEXT = """Cairnhollow Community Wind Farm: data for the 2027 campaign paper and the 2025-26 lost production report
-Extracted 9 October 2026 by {am} (asset manager).
-
-Files
-{scada}
-  The SCADA's ten-minute records for CH01 to CH10, October 2025 to September 2026. One row per turbine and interval,
-  timestamped at the end of the interval. The SCADA moved from the site server to the provider's hosted platform on
-  3 February 2026; this file joins the server archive to the platform's export.
-  wind_speed_mean: nacelle anemometer, ten-minute mean, m/s (nacelle transfer function applied by the controller)
-  wind_speed_sd: standard deviation of the nacelle anemometer's one-second readings over the interval, m/s
-  nacelle_position: degrees from north
-  active_power_mean: kW at the turbine's low-voltage terminals
-  ambient_temperature: nacelle sensor, deg C
-  state: controller state (see {states})
-{mast}
-  Met mast M1 logger. TIMESTAMP_UTC is the start of the ten-minute interval. Cup anemometer at 80 m (m/s), vane at
-  78 m (degrees from north), temperature (deg C), pressure (hPa) and relative humidity (%) at 76 m.
-{anm}
-  Morvenside Networks' log of ANM instructions to our connection (Glenrigg zone). Times UTC; an instruction is in
-  force from start_utc to end_utc; export_limit_mw is the limit at our connection, 0 for a trip.
-{states}
-  Hallvard's controller state codes.
-{lifts}
-  Brackwater Cranes' lift log for the site in 2026. Pads as on the site layout.
-{layout}
-  Pads, turbines and the met mast on the site grid (metres east and north of the site datum).
-{register}
-  Turbine register.
-{counters}
-  Each turbine's energy meter, read at local midnight on the first of each month.
-{orders}
-  Hallvard Service UK's work orders for the twelve months. Times are local (UK) clock times.
-{standard}
-  Our O&M standard (revision 3).
-{schedule}
-  The warranted power curve from the turbine supply agreement.
-{meter}
-  Export meter at the 33 kV connection, half-hourly settlement data (kWh, UTC periods), from the supplier's portal.
-{prior}
-  Last year's lost production report to the board.
-"""
-
-
-def write_notes(path, names):
-    open(path, "w").write(NOTES_TEXT.format(am=W.PEOPLE["asset_manager"][0], standard=STANDARD, schedule=SCHEDULE,
-                                            **names))

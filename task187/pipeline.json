@@ -6,23 +6,24 @@
  "delivered": "2026-10-13",
  "domain": "energy-systems-utilities / grid-reliability-outage-analysis (a wind farm's lost-production accounting)",
  "duplicate_check": {
-  "heart": "WARN (objective overuse, repeat decision)",
-  "nearest": "task500 v3 0.05"
+  "heart": "BLOCK (11-01, inherited: ban.artifact and ban.shape vs task258, ban.strategy vs task232, same_puzzle vs task228 v5, same_driver vs task263 and task279, every colliding card drawn 10-13 to 10-24, on or after this draw; card untouched; escalated to the author, not re-rooted)",
+  "surface": "7 promoted pairs (11-01, all inherited: card axes vs task186, task228, task48, task263, task279; surface 0.101 vs task307 and task308, drawn 10-27, identical with the shipped prompt)",
+  "nearest": "task471 v5 0.05"
  },
  "judge": {
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md",
-  "verdict": "pass 1 DETERMINISTIC (APPROVE; optional turbulence pin declined as a readability leak)"
+  "report": "determinism_check_report_pass2.md",
+  "verdict": "11-01 pass 1 DETERMINISTIC, SOLUTION_WRONG, FIX_NOW (step 5 underspecified); fixed in submission.md; re-judge DETERMINISTIC, APPROVE"
  },
  "leak": {
-  "leak_py": "REVIEW, the same four lines as the shipped build, all on untouched main-call documents",
-  "reader": "two reads: no decisive-step sentence, no ranking file, question 6 analytical; realism findings fixed"
+  "leak_py": "REVIEW (11-01, sweeps 1 to 13; the shipped cut was LEAK on sweeps 1 and 12, the extract notes; the state-code Notes sheet also removed)",
+  "reader": "11-01 read on the 13-file pack and new prompt: no decisive-step sentence, no ranking file, question 6 analytical"
  },
  "loops": 1,
  "objective": "anomaly-detection",
  "portal": null,
  "precut": {
-  "date": "2026-10-13",
+  "date": "2026-11-01",
   "exit": 0
  },
  "resume": "",
@@ -38,6 +39,12 @@
    "portal": "wave 8 audit, measured in house",
    "repair": "rubric",
    "commit": "RESHIPPED (task187)"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "re-check under the new gates (leak.py sweeps 12 and 13, voice-check count rule, precut anatomy)",
+   "repair": "leak and prompt",
+   "commit": "RESHIPPED (task187)"
   }
  ],
  "seed": "analytical_tasks/02_anomaly_detection/AD10_blade-campaign-rotor-lift-log-chain.md",
@@ -46,5 +53,5 @@
  "status": "SHIPPED",
  "stump": "The default path ranks the turbines by their energy shortfall against the warranted power curve after cleaning the record, which reads the plantation-edge turbine's turbulence loss near rated power as blade erosion and books the campaign there; the shortfall at each turbine's own turbulence leaves it sound and names CH04, whose blades lose about two per cent of their power below rated, a loss its neighbour's wake hides at low wind.",
  "task": "task187",
- "updated": "2026-10-20"
+ "updated": "2026-11-01"
 }

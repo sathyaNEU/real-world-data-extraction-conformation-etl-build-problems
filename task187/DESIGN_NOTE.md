@@ -128,6 +128,16 @@ hides at low wind.
   mean input alone; no build on file teaches the averaging interval's own effect on a unit's curve (19 Anomaly Detection
   drivers read above).
 
+## Survivor anatomy
+
+- Actor: the deciding property, each turbine's power deficit against an as-new rotor at the record's own turbulence, sits in no column; the SCADA ships the raw channels (mean and standard deviation of the nacelle wind, mean power, state) and no turbulence intensity, shortfall or loss (R1).
+- Link: each ten-minute record is compared with the warranted curve averaged over that record's own wind spread, a comparison no key offers and no filed sentence invites; OM-07 says only "in the same winds" and Schedule 3 states no turbulence (R3 asserted).
+- Reflex: the field's first method, the method of bins against the warranted curve at density-corrected mean wind, is rung 0 and files the plantation-edge turbine CH07 (235 MWh, 2.04 times the next), the default path's Ends on.
+- Back-test: the monthly energy counters tie the cleaned ten-minute record's energy to within each visit's read drift, so the record the default ranks validates against the revenue meters; nothing in the pack refutes the binned shortfall.
+- Second use: every file the decisive step reads has its own use: the SCADA and the mast feed the default path and both asks, Schedule 3 is the contract curve any shortfall reads, OM-07 governs the campaign and the lost-production categories; deleting the decisive step drops no file.
+- Shock: CH04 sits fourth on the default's shortfall (asserted in checks.py); the pack's largest anomaly is CH07's shortfall near rated, which the step explains away, and CH04's loss is hidden by its neighbour's wake at low wind.
+- Pins: OM-07 files the WHAT (the energy the turbine would have produced over its last twelve months of normal operation in the same winds with its blades as new, less what it produced; the blade-set rule; normal operation) and no sentence names turbulence or how it enters the comparison (the judge's optional pin declined for that reason).
+
 ## Readability screen
 
 The six tests per rung (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5 hygiene, 6 linear), verdict last.
@@ -149,7 +159,7 @@ The six tests per rung (1 filed sentence, 2 schema, 3 reflex, 4 control bench, 5
 | SF3 | the turbine's wind | the nacelle anemometer's density-corrected ten-minute mean | the met mast's wind | CH07 (every turbine 110 to 840 MWh short) | the valuation sentence: the mast's wind charges the wakes, the terrain and the plantation's slower air to the blades, which the repair does not change |
 | SF4 | the turbulence | the nacelle anemometer's standard deviation over its mean, each record | the mast's turbulence intensity | CH07 | the valuation sentence: the same winds are the turbine's own; the mast does not see the plantation's eddies at CH07 |
 | SF5 | density correction | the wind normalised by the cube root of the density ratio, as OM-07 4.6 writes it | no correction | same call, the energy off its bin (every turbine 50 to 200 MWh short at a site density of 1.19) | Schedule 3 states the curve at 1.225 kg/m3 |
-| SF6 | the twelve months | the ten-minute intervals ending 1 October 2025 to 30 September 2026 | calendar months by UTC or by local time at the edges | same call, same bin (asserted) | the extract and OM-07's twelve months, and same call |
+| SF6 | the twelve months | the ten-minute intervals ending 1 October 2025 to 30 September 2026 | calendar months by UTC or by local time at the edges, intervals read as starting | same call, same bin (asserted) | OM-07's twelve months, and same call |
 | SF7 | a blade set changed within the year | CH09 measured from 25 April 2026 (its present rotor) | CH09's whole year | CH09 (its old rotor's erosion) | OM-07's blade-set sentence |
 | SF8 | the method of bins against per-record interpolation | either | either | same call, same bin (asserted) | same call |
 | SF9 | the matched-turbulence method | Annex M normalisation on the mast's turbulence (89 MWh) | Annex M on the site's typical turbulence or a flat 10 per cent (89, 116); turbulence bins of 0.25 or 0.5 m/s by 0.01 to 0.05 against the fleet's mean, median or the sound turbines' mean (24 variants, 80 to 90); the records in the usual turbulence scaled to the year (93) | CH04 every time, leading by 1.18x or more, every figure in the 100 MWh bin (asserted) | same call |
@@ -201,7 +211,7 @@ Built figures (seed 187), each asserted by name in `generator/checks.py`, MWh ov
 | 1 | Population | each turbine's normal-operation intervals in the twelve months; CH09 from 25 April 2026 | OM-07's normal-operation and blade-set sentences |
 | 2 | Unit of account | the turbine (its three blades) | OM-07's campaign sentence |
 | 3 | Attribution window | intervals ending 1 October 2025 to 30 September 2026 | the extract and OM-07; no campaign-relevant record within an hour of either edge moves a bin (C1) |
-| 4 | As-of dating | the extract of 9 October 2026; the campaign is summer 2027 | the extract notes and OM-07 |
+| 4 | As-of dating | the extract of 9 October 2026; the campaign is summer 2027 | OM-07 and the files' own dates |
 | 5 | Version basis | one SCADA export, the warranted curve of the supply agreement | none needed |
 | 6 | Denominator | none: an energy, not a rate | none needed |
 | 7 | Weighting | each ten-minute interval equally | C1 (bins or records give one figure, SF8) |
@@ -215,7 +225,7 @@ Built figures (seed 187), each asserted by name in `generator/checks.py`, MWh ov
 | 15 | Duplicate resolution | the repeated October hour is two intervals | C1 (SF11) |
 | 16 | Identity normalisation | the lift log's pad codes to turbines through the layout | the site layout |
 | 17 | Netting | turbulence gains at low wind and losses near rated net within a turbine's year | the valuation sentence (the blades alone) |
-| 18 | Dimensional units | kW, m/s, degrees C, hPa, MWh | units in the data and the extract notes |
+| 18 | Dimensional units | kW, m/s, degrees C, hPa, MWh | units in the data and the files' own headers (`export_kwh`, `_utc`, `_local`) |
 | 19 | Code and status semantics | state codes 10 and 20 are normal operation | the state code table and OM-07 |
 | 20 | Integerisation | none | none needed |
 | 21 | Clause scope | the blade-set sentence reads the blade set now fitted | OM-07 |
@@ -317,7 +327,7 @@ of 10.
 ## Build record
 
 - **Generator:** `generator/build.py` (world, wind, ops, records, docs, analysis, deliver, checks, verify, metadata,
-  postprocess); 14 files, 5 formats; SCADA 522,159 rows (52,560 intervals for ten turbines, less the silent intervals,
+  postprocess); 13 files, 4 formats (csv, parquet, pdf, xlsx); SCADA 522,159 rows (52,560 intervals for ten turbines, less the silent intervals,
   plus the repeated October hour), mast 52,560 rows, 120 ANM instructions (15 trips, 18 before the October change).
 - **checks.py:** 442 assertions, the three-rules block included (R1 the anemometer's deviation is the deciding input:
   with the mast's turbulence in its place the comparison files CH07; R2 the clock either way, the repeated hour and the
@@ -350,6 +360,18 @@ of 10.
   warranted curve from 4 to 8.5 m/s).
 - Its realism note (CH08 and CH09 sharing a hub serial) was the reader's too, fixed before the verdict arrived.
 
+- **11-01 re-check, pass 1 (the 13-file pack):** DETERMINISTIC, SOLUTION_WRONG, FIX_NOW. Every graded figure
+  reproduced (the twenty ask figures exactly; the default's 235, 115, 114, 93, 71 exactly; CH09 from 25 April; the
+  clock recovered from the record by the mast correlation, the migration date unobservable and immaterial). Step 5
+  of the solution, as then worded, left the turbulence's definition, the reference turbulence and the fit range to
+  the reader, and the thread's own filling gave CH04 76 and CH02 56. Fixed in submission.md: step 5 now states the
+  computation the generator runs (an independent implementation from the bundle gives 89.0, 65.3, every other
+  turbine within 0.4 MWh), and figures.json files the fit range and the fleet cells. No figure in blocks 1, 2 or 4
+  moved (freeze.py determinism PASS). Its residual notes, each declined: deepening CH04's loss to widen the 75 MWh
+  edge moves graded figures and the edge sat on the old step's underspecified reading; naming the turbine's own wind
+  in OM-07 2.4 is the pin pass 1 of 10-13 declined as a readability leak; the SCADA clock is Layer 1, recovered from
+  the record. Gate G method_or_model_selection, analytical; Gate H domain, layers and decisive step pass.
+
 ## Pre-ship check
 
 - Call: the 2027 campaign goes to CH04; its blades cost 89 MWh over normal operation in the twelve months to September
@@ -362,7 +384,7 @@ of 10.
   surface clean.
 - Deliverables: le_repair_campaign_2027.pdf (two pages: the call, why not CH07, why not CH02 and how CH04's loss was
   hidden, CH09's exchange, the table, the lost production chart, notes), lost_production_2025_26.xlsx (twenty figures,
-  the campaign sheet, notes); target.zip from the final rebuild, 14 files.
+  the campaign sheet, notes); target.zip from the final rebuild, 13 files.
 - Card current: answer, spine rows 522,159, stump and driver at the built values.
 
 ## Leak record
@@ -393,6 +415,25 @@ of 10.
   house fix rather than cleared, because clearing it would mean editing the card, which the rubric repair freezes.
 - **Reader, pass 2 (the changed files):** no decisive-step sentence, no pointer to a turbine, no repeated serial, no
   text written by someone who knows the answer; one shared commissioning date kept (one project, one handover).
+
+- **11-01 re-check under the new gates (leak.py with sweeps 12 and 13, as-of 2026-10-09): the shipped pack was LEAK,
+  now REVIEW.** Sweep 1 and sweep 12 found `extract_notes_2026-10-09.txt` (a file describing the data, naming 8 of the
+  ANM log's columns); it leaves the pack. The state-code workbook's Notes sheet glossed how the SCADA writes its state
+  column and leaves too; the vendor's code table stays as the code list alone. Every reading the notes carried is in
+  the data's own headers (`_utc`, `_local`, `export_kwh`, pad codes) or converges: the SCADA's interval-end stamp
+  (SF6, and every misreading of either clock's stamp gives the true join or the one-interval-off join R2 asserts
+  neutral), the platform migration's date (local and UTC stamps coincide between the October and March clock changes,
+  so no figure rests on it; the repeated October hour and the absent March gap mark the zones in the record), the
+  connection meter (SF14, the meter file has no turbine column). metadata.json's subdomain no longer narrates the
+  shortfall's split (sweep 13). Remaining REVIEW, each harmless: the lost production report's Notes sheet is the
+  board report's own basis line, which rules the declared distractor out; OM-07 carries the call's nouns as the
+  standard governing the campaign, naming no turbine or figure; OM-07 and Schedule 3 carry the domain's own words.
+- **Reader, 11-01 (the cut 13-file pack and the new prompt):** question 1 none (OM-07 2.3 and 2.4 fix the estimand,
+  not the method); question 2 none (the 2024-25 report ranks last year's downtime and curtailment, the declared
+  distractor); question 4 none; question 6 an analytical choice (the as-new counterfactual), the stated rules (3.1,
+  2.5, 2.6) placing the window and population only. Realism: none beyond the one shared commissioning date already
+  kept. Its ask readings (counter reads against SCADA energy; gross export against export net of import) are the
+  asks' designed devices, read by the judge.
 
 ## Tried and rejected
 
@@ -443,3 +484,10 @@ of 10.
   response reaching the method banked all ten. A per-unit block whose spread is 4 per cent of its level is
   one figure wearing ten criteria, and the replacement puts the two blocks on different systems and grains.
 - **(2026-10-25, measured) The ask-layer line this note carries is unearned: the reader scored zero ask figures.** `score_reader.py` on the stored wave-8 reader answers: the call missed (0 of 1, the reader filed CH07 against CH04), and the reader's twenty ask figures came back under its own key names (`curtailment_mwh.CH01`, `downtime_mwh.CH01`), none of them a `figures.json` key, so every one left the denominator and the run printed `0 of 0 hit` and `PASS`. The ask layer of this shipped build is UNMEASURED, not holding. The scorer now refuses such a run (house fix H34); the build owes one reader briefed with the flat key list before any ask-layer claim here is evidence.
+- 2026-11-01, re-check. **The extract notes as the carrier of the files' conventions:** a file describing the data is a
+  leak whatever its genre (dataset-generation section 3, leak.py sweeps 1 and 12); its readings live in the headers or
+  converge, and the file left the pack with the state-code workbook's Notes sheet. The prompt's counts ("each of the
+  ten turbines", "the ten months") went with it: the data hold them (guide-to-prompt), and the rounding sentence no
+  longer opens on Give. Call, stump, ladder and every graded figure frozen (freeze.py determinism PASS).
+- 2026-11-01, re-check. **The 10-25 line's "one reader briefed with the flat key list" is void:** scored readers are
+  retired (CLAUDE.md, the STOP block); the ask layer is argued on paper and measured by the portal alone.
