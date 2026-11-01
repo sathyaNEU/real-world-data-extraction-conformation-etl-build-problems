@@ -228,6 +228,8 @@ over 7.0 and the state to 7 percent.
 | SF11 | no one at home | codes 3 and 216 | every noninterview | different rates | HES_DISPOSITION_CODES.csv's NC group and the technical note's definition |
 | SF12 | the reference week | the survey's, one record per adult per quarter | a person's latest report | same call | ARM 24.30.102(1) and (2), "in the survey reference week" |
 | SF13 | the grouping of the sensitivity | pooled | per area (four forms) | same call | same call (asserted) |
+| SF14 | an eligible housing unit (asks) | on the master address file as finally corrected on the visit date, not found vacant, demolished or not a housing unit | codes alone; the file as it stood at the visit | other rates | HES_TECHNICAL_NOTE_2026-09.pdf, response rates: "taken as finally corrected ... from the date of the removal" |
+| SF15 | the visit date (asks) | the noninterview row's DISPO_DATE | another row's date | same rates | same rates: every unit-quarter without an interview has exactly one row (asserted) |
 
 ## Ladder
 
@@ -303,35 +305,37 @@ the frame log, the code list, the areas workbook).
 
 **Ask A, each area's household response rate (8 figures, percent to one decimal).** Home: the certification's account
 of the survey behind each area.
+- Filed WHAT (judge round 1): the technical note scopes the rates to housing units on the master address file as
+  finally corrected on the visit date, a removal later reversed as made in error counting as never made from the date
+  of the removal. The file's state at each visit is still a reconstruction across the dispositions and the
+  maintenance log, which no sentence spells out.
+- Primary device (a state replayed from an event log, which records are one event): 147 units were removed in error,
+  restored, and later removed again when they really emptied, before a visit coded no one home; only replaying the log
+  in date order, each restore cancelling the removal it follows, keeps the second removal standing. Reading a restore
+  as clearing its unit misses every area by 0.09 to 0.2 points.
+- Second device: 239 noncontact unit-quarters sit at units removed in error and restored only after the visit; the file
+  as it stood at the visit drops them and misses every area by 0.18 to 0.33. 414 units coded no one home were already
+  removed as vacant or demolished (0.31 to 0.51 points under the codes alone).
+- Hazards: converted refusals logged twice (the new system reissues them under a case of their own), the old system's
+  second record of some 2026Q2 interviews, two code lists, county 59041 by ZIP.
 
-- Primary device (D4, absence evidenced in a file no habitual join reaches): 414 unit-quarters the interviewer coded
-  no one home were already deleted from the frame as vacant or demolished before the visit; only rebuilding each unit's
-  frame status at its visit date from HES_FRAME_MAINTENANCE finds them, and leaving them in moves every area's rate by
-  0.31 to 0.51 points.
+**Ask B, each area's noncontact rate (8 figures, percent to one decimal).** Home: the same account; the same units move
+the numerator and the base. Hazards as Ask A, plus code 4 and 219 (other noninterview) against 3 and 216.
 
-- Second device (its over-cleaning half): 239 noncontact unit-quarters sit at units deleted in error and restored as
-  DELETED IN ERROR only after the visit; the frame read as it stood at the visit drops them and misses every area by
-  0.17 to 0.33.
+Pin test: the asking sentences pin the statistic, unit, rounding and window; the technical note files the scope (the
+address file as finally corrected) and the code list the groups. No pin says that a unit can be removed twice or how a
+restore pairs with a removal. The main population carries zero device rows (asserted L6, L7).
 
-- Hazards: converted refusals logged as a refusal row and an interview row (the new system reissues them under a case
-  of their own), the old system's second record of some 2026Q2 interviews, two code lists, county 59041 by ZIP.
-
-**Ask B, each area's noncontact rate (8 figures, percent to one decimal).** Home: the same account; it moves with the
-same frame record in the numerator as well as the base (0.38 to 0.59 points under the codes, 0.19 to 0.39 under the
-frame as it stood). Hazards as Ask A, plus code 4 and 219 (other noninterview) against 3 and 216.
-
-Pin test: the asking sentences pin the statistic (response and noncontact rate), the unit (percent), the rounding and
-the window; the technical note files the inclusion (each housing unit once a quarter; eligible means occupied at the
-visit). No pin names the frame log, a deletion or a restore. The main population carries zero device rows (asserted
-L6, L7).
-
-| Ask row | The cracker (landed the call, ran the battery, executed every filed definition on the codes) | Verdict |
+| Ask row | The cracker (landed the call, ran the battery, executed the filed scope reading a restore as clearing its unit) | Verdict |
 |---|---|---|
-| A, eight response rates | counts no-one-home units the frame had deleted as vacant | miss |
+| A, eight response rates | the 147 twice-removed units counted eligible | miss |
 | B, eight noncontact rates | the same units in numerator and base | miss |
-| A and B, full includer | reads the frame as it stood at the visit and drops the restored-in-error units | miss |
+| A and B, codes alone or the file as it stood | every area off by 0.18 or more | miss |
 
-Pair ceiling: 28.5 ((38 + 7 + 55 x 0.0) and (5 + 7 + 55 x 0.0), averaged)
+A full includer that replays the log in date order keeps both asks; with such a response on both sides the pair would
+sit at 83.5 (ceiling.py prints it).
+
+Pair ceiling: 28.5 ((38 + 7 + 55 x 0.0) and (5 + 7 + 55 x 0.0), averaged; 83.5 with full includers on both sides)
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
 
@@ -363,6 +367,17 @@ leak.py --asof 2026-10-23 on the final cut: verdict REVIEW, no LEAK; each REVIEW
 - guard.py surface (2026-11-01) promoted three pairs for the author's adjudication: task454 (surface similarity only; ETL, a Medicaid pharmacy cost survey), task192 v3 (the same-driver signature, cleared at the draw by the card's differentiation line: a validation batch's carried rates against an error rate read within person), task261 (the same domain and objective pairing two numbers apart; its call is a variance-of-difference segmentation, no measurement correction).
 - Guard WARN repeat.question_form (whether, against task255 v3): the call is a gate per area ("does each area
   qualify"), and the alternative (which) runs over the corpus quota at 36 percent; whether kept.
+
+
+## Judge round 1 (2026-11-01)
+
+Main call reproduced independently (four areas, statewide 7 percent; Gate F high, Gate G statistical_rigor, Gate H
+pass); FIX_NOW on the rate asks only; the leak reader found no leak (question 6 analytical). Fixed in the generator in
+one pass: the rates' scope filed in the technical note (the master address file as finally corrected, a reversal
+applying from the removal); the sensitivity stated in block 2 with its computation (54.4 percent of switches over 97
+percent persistence); the person file's code list shipped beside the disposition codes (HES_PERSON_CODES.csv); the
+demographer's quarterly projections made uneven by area; 147 twice-removed units added so the filed scope still needs
+the log replayed in order. No graded figure moved.
 
 ## Architecture 1 record (re-rooted 2026-11-01)
 
@@ -837,3 +852,7 @@ Pair ceiling: 38 (the cracker at about 63 with the call, Ask C and the chart; th
   streams are split, and three areas' rates sat on a rounding edge until their streams were redrawn.
 - Deletions entered in error restored after the visit at 6 to 9 per area: too few to move a one-decimal rate; 25 to 36
   per area kept.
+- The rate asks with eligibility left to the disposition codes and the frame log unfiled (judge round 1): a
+  codes-only reading moved every area and a removal restored in error after the visit read two ways (Gates C and E);
+  the scope is now filed, and the asks' silent work moved to replaying the log in order.
+

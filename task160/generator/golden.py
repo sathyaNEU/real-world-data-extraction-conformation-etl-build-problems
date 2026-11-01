@@ -42,7 +42,10 @@ def chart(b, path):
     ax.set_xticklabels([MONTH_NAME[m] for m in A.MONTHS], fontsize=8)
     ax.set_ylabel("Reviews signed off", fontsize=8)
     ax.tick_params(axis="y", labelsize=7)
-    ax.set_title("Quillfield reviews signed off by shift, July to September 2026", fontsize=9)
+    tot = sum(b.values())
+    day = sum(b[(m, "Day")] for m in A.MONTHS)
+    ax.set_title("Day shift signed off %d%% of Quillfield's reviews, July to September 2026" % round(100.0 * day / tot),
+                 fontsize=9)
     ax.legend(fontsize=7, frameon=False, ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.12))
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
@@ -56,7 +59,8 @@ def workbook(P, g, a, b, path):
     wb = Workbook()
     ws = wb.active
     ws.title = "Forecast"
-    ws.append(["MSP26 hospital-wide go-live: override reviews from Quillfield's adult wards"])
+    ws.append(["MSP26 go-live: about %d more override reviews from Quillfield's adult wards in the first 13 weeks"
+               % A.r100(g["net"])])
     ws["A1"].font = Font(bold=True, size=12)
     ws.append(["Thirteen weeks from Monday 4 January 2027 to Sunday 4 April 2027, against the same weeks without "
                "the go-live (Schedule B 4.3)"])
@@ -105,6 +109,7 @@ def workbook(P, g, a, b, path):
               "in, from the alert history."])
     for col, wdt in zip("ABC", (12, 28, 34)):
         h.column_dimensions[col].width = wdt
+    h.freeze_panes = "A2"
     s = wb.create_sheet("Signed off by shift")
     s.append(["Month", "Day (07:00 to 15:00)", "Evening (15:00 to 23:00)", "Night (23:00 to 07:00)", "Total"])
     for c in s[1]:
@@ -116,6 +121,15 @@ def workbook(P, g, a, b, path):
     s.append(["One review per overridden alert; month and shift of sign-off, Eastern time."])
     for col, wdt in zip("ABCDE", (18, 20, 24, 22, 10)):
         s.column_dimensions[col].width = wdt
+    s.freeze_panes = "B2"
+    nt = wb.create_sheet("Notes")
+    for line in ["Basis: Schedule B 4.3, the reviews the adult wards will send with MSP26 live against the same weeks "
+                 "without it; one overridden alert is one review (2.1).",
+                 "Extracts through Sunday 25 October 2026; prepared 28 October 2026.",
+                 "7W, 5E and 8N have run MSP26 live since 9 September 2024 and are unchanged by the go-live.",
+                 "Volumes on Quillfield's FY2027 inpatient volume plan (Schedule B 4.1)."]:
+        nt.append([line])
+    nt.column_dimensions["A"].width = 110
     for row in ws.iter_rows(min_row=10, max_row=19):
         row[0].alignment = Alignment(wrap_text=False)
     wb.save(path)
@@ -128,14 +142,16 @@ def memo(P, g, b, png, path):
     st = d.styles["Normal"]
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
-    d.add_heading("MSP26 go-live: override review forecast for the change order", level=1)
+    d.add_heading("MSP26 go-live: about %d more override reviews in the first 13 weeks" % A.r100(g["net"]), level=1)
     p = d.add_paragraph()
     p.add_run("To: ").bold = True
     p.add_run("Override Review Service Manager    ")
     p.add_run("From: ").bold = True
     p.add_run("Desk Planning    ")
     p.add_run("Date: ").bold = True
-    p.add_run("28 October 2026")
+    p.add_run("28 October 2026    ")
+    p.add_run("Ref: ").bold = True
+    p.add_run("CR-2291")
     d.add_paragraph(
         "When both MSP26 rules go live on every adult ward on 4 January 2027, the desk should plan for about %d more "
         "override reviews from Quillfield over the thirteen weeks to 4 April 2027 than it would get without the "
@@ -156,12 +172,14 @@ def memo(P, g, b, png, path):
                  ("Net change", "+%d" % A.r100(g["net"]))):
         c = t.add_row().cells
         c[0].text, c[1].text = k, v
-    d.add_paragraph("")
+    d.add_paragraph("Source: Quillfield medication alert history and MSP26 background log to 25 October 2026; FY2027 "
+                    "inpatient volume plan. Reviews from 7W, 5E and 8N do not change: the package has run live there "
+                    "since September 2024.")
     d.add_paragraph("For the shift mix, the desk signed off these Quillfield reviews last quarter:")
     d.add_picture(png, width=Inches(6.0))
     tot = sum(b.values())
     d.add_paragraph("%d reviews in all from July to September 2026, one per overridden alert, by the shift and month "
-                    "of sign-off." % tot)
+                    "of sign-off (Eastern time). Source: Corvane queue export, matched to the alert history." % tot)
     d.core_properties.author = "Desk Planning"
     d.save(path)
     IO.repack_ooxml(path, "Desk Planning", "Desk Planning", "2026-10-28T15:02:00Z", "2026-10-28T19:12:00Z",
