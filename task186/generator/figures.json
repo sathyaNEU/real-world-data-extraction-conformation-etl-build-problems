@@ -1,0 +1,175 @@
+{
+ "ask_a": {
+  "2025-12": 19,
+  "2026-01": 17,
+  "2026-02": 20,
+  "2026-03": 14,
+  "2026-04": 16,
+  "2026-05": 17,
+  "2026-06": 16,
+  "2026-07": 17,
+  "2026-08": 15,
+  "2026-09": 15,
+  "2026-10": 12,
+  "2026-11": 16
+ },
+ "ask_a_population": {
+  "2025-12": 93,
+  "2026-01": 93,
+  "2026-02": 93,
+  "2026-03": 93,
+  "2026-04": 92,
+  "2026-05": 92,
+  "2026-06": 92,
+  "2026-07": 92,
+  "2026-08": 91,
+  "2026-09": 91,
+  "2026-10": 91,
+  "2026-11": 91
+ },
+ "ask_b": {
+  "D1 Q1": 219000,
+  "D1 Q2": 209000,
+  "D1 Q3": 209000,
+  "D1 Q4": 213000,
+  "D2 Q1": 212000,
+  "D2 Q2": 199000,
+  "D2 Q3": 204000,
+  "D2 Q4": 204000,
+  "D3 Q1": 174000,
+  "D3 Q2": 168000,
+  "D3 Q3": 167000,
+  "D3 Q4": 167000,
+  "D4 Q1": 137000,
+  "D4 Q2": 132000,
+  "D4 Q3": 131000,
+  "D4 Q4": 133000,
+  "D5 Q1": 74000,
+  "D5 Q2": 71000,
+  "D5 Q3": 71000,
+  "D5 Q4": 71000,
+  "I1 Q1": 144000,
+  "I1 Q2": 136000,
+  "I1 Q3": 135000,
+  "I1 Q4": 140000,
+  "I2 Q1": 120000,
+  "I2 Q2": 113000,
+  "I2 Q3": 114000,
+  "I2 Q4": 117000
+ },
+ "ask_b_raw": {
+  "D1 Q1": 219262,
+  "D1 Q2": 209271,
+  "D1 Q3": 209187,
+  "D1 Q4": 212856,
+  "D2 Q1": 211689,
+  "D2 Q2": 198719,
+  "D2 Q3": 203559,
+  "D2 Q4": 204474,
+  "D3 Q1": 173569,
+  "D3 Q2": 168125,
+  "D3 Q3": 167006,
+  "D3 Q4": 167318,
+  "D4 Q1": 136643,
+  "D4 Q2": 132149,
+  "D4 Q3": 130743,
+  "D4 Q4": 133143,
+  "D5 Q1": 73525,
+  "D5 Q2": 70507,
+  "D5 Q3": 70968,
+  "D5 Q4": 70987,
+  "I1 Q1": 144428,
+  "I1 Q2": 136233,
+  "I1 Q3": 135322,
+  "I1 Q4": 140270,
+  "I2 Q1": 119849,
+  "I2 Q2": 113271,
+  "I2 Q3": 113634,
+  "I2 Q4": 117444
+ },
+ "call_off": [
+  {
+   "detection_pct": 55.9,
+   "employment": "Full-time",
+   "name": "Douglas White",
+   "raw_hit_pct": 91.0,
+   "staff_no": "SC19116"
+  },
+  {
+   "detection_pct": 57.3,
+   "employment": "Casual",
+   "name": "Tina Anderson",
+   "raw_hit_pct": 76.2,
+   "staff_no": "SC46133"
+  },
+  {
+   "detection_pct": 59.4,
+   "employment": "Casual",
+   "name": "Meredith Rogers",
+   "raw_hit_pct": 76.3,
+   "staff_no": "SC42948"
+  },
+  {
+   "detection_pct": 60.5,
+   "employment": "Casual",
+   "name": "Leah Rangel",
+   "raw_hit_pct": 77.6,
+   "staff_no": "SC17045"
+  },
+  {
+   "detection_pct": 63.6,
+   "employment": "Full-time",
+   "name": "Rhonda Perez",
+   "raw_hit_pct": 93.4,
+   "staff_no": "SC29369"
+  },
+  {
+   "detection_pct": 64.7,
+   "employment": "Full-time",
+   "name": "Thomas Fernandez",
+   "raw_hit_pct": 92.4,
+   "staff_no": "SC46312"
+  },
+  {
+   "detection_pct": 65.6,
+   "employment": "Casual",
+   "name": "Emily Bridges",
+   "raw_hit_pct": 81.4,
+   "staff_no": "SC16884"
+  },
+  {
+   "detection_pct": 69.6,
+   "employment": "Full-time",
+   "name": "Alicia Morrison",
+   "raw_hit_pct": 94.4,
+   "staff_no": "SC19645"
+  },
+  {
+   "detection_pct": 73.6,
+   "employment": "Full-time",
+   "name": "Matthew Perry",
+   "raw_hit_pct": 95.0,
+   "staff_no": "SC43647"
+  },
+  {
+   "detection_pct": 74.2,
+   "employment": "Full-time",
+   "name": "Valerie Scott",
+   "raw_hit_pct": 95.0,
+   "staff_no": "SC46282"
+  }
+ ],
+ "call_off_count": 10,
+ "currency_hours": 20,
+ "default_off": [
+  "SC17045",
+  "SC42948",
+  "SC46133"
+ ],
+ "default_off_count": 3,
+ "endorsed_population": 91,
+ "masked_count": 7,
+ "pooled_first_pct": 88.5,
+ "pooled_repeat_pct": 99.5,
+ "standard_pct": 80
+}

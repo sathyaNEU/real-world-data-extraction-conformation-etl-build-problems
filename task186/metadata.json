@@ -1,0 +1,107 @@
+{
+ "architecture": 2,
+ "as_of": "2026-12-02",
+ "decision": "which X-ray screening officers come off X-ray duty at the January 2027 recertification under the airport's screening officer competency standard",
+ "deliverables": [
+  "recertification_2027.csv",
+  "screening_year_review_2026.pdf"
+ ],
+ "distractor_files": [
+  "checkpoint_queue_times_daily_2026.csv",
+  "xray_cbt_sessions_2026.csv",
+  "tip_projection_settings.json"
+ ],
+ "files": {
+  "SCS-04_screening_officer_competency_standard_rev6.pdf": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "SCS-04 screening officer competency standard, revision 6; synthetic"
+  },
+  "checkpoint_queue_times_daily_2026.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Checkpoint daily queue time and passengers screened, calendar 2026; synthetic"
+  },
+  "ct_operator_logins.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CT operator login register kept by the screening systems coordinator; synthetic"
+  },
+  "ct_unit_bag_counts_hourly_utc.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CT units' hourly image counts collected by the screening systems coordinator; synthetic"
+  },
+  "ct_unit_register.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CT unit register (current location of each unit); synthetic"
+  },
+  "hr_leave_taken_20251201_20261130.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Payroll system export of leave taken by screening officers, screening year 2025-26; synthetic"
+  },
+  "lane_roster_20251201_20261130.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Lane roster export from the screening rostering system, screening year 2025-26; synthetic"
+  },
+  "screening_officer_register.xlsx": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Screening officer register kept by the Head of Security Screening; synthetic"
+  },
+  "tip_events_20250701_20261130.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kestrine TIP manager event export for the seven CT lanes, 1 July 2025 to 30 November 2026; synthetic"
+  },
+  "tip_library_catalogue_r1.xlsx": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kestrine 3D TIP library release 1.0, object catalogue and image list from the library manager; synthetic"
+  },
+  "tip_projection_settings.json": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "TIP manager projection settings export; synthetic"
+  },
+  "xray_cbt_sessions_2026.csv": {
+   "date": "2026-12-02",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Computer-based X-ray training sessions completed by screening officers, 2026; synthetic"
+  }
+ },
+ "largest_file": {
+  "name": "tip_events_20250701_20261130.csv",
+  "rows": 74704
+ },
+ "row_counts": {
+  "SCS-04_screening_officer_competency_standard_rev6.pdf": 1,
+  "checkpoint_queue_times_daily_2026.csv": 668,
+  "ct_operator_logins.csv": 186,
+  "ct_unit_bag_counts_hourly_utc.csv": 38103,
+  "ct_unit_register.csv": 8,
+  "hr_leave_taken_20251201_20261130.csv": 1450,
+  "lane_roster_20251201_20261130.csv": 31616,
+  "screening_officer_register.xlsx": 93,
+  "tip_events_20250701_20261130.csv": 74704,
+  "tip_library_catalogue_r1.xlsx": 1080,
+  "tip_projection_settings.json": 7,
+  "xray_cbt_sessions_2026.csv": 629
+ },
+ "task": "task186"
+}

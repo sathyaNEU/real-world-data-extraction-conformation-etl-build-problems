@@ -49,8 +49,12 @@ def chart(tab, off, path):
     ax.set_ylim(50, 101)
     ax.spines[["top", "right"]].set_visible(False)
     ax.legend(loc="lower right", fontsize=8.2, frameon=False)
-    ax.set_title("Ten officers detect fewer than 80 per cent of threat items new to them; six of them clear 80 per "
-                 "cent on raw hit rate", fontsize=9.6, loc="left")
+    n_off = len(off)
+    n_mask = int(((t["golden"] < P.STANDARD) & (t["overall"] >= P.STANDARD)).sum())
+    words = {6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve", 5: "five", 4: "four"}
+    ax.set_title("%s officers detect fewer than 80 per cent of threat items new to them; %s of them clear 80 per "
+                 "cent on the raw hit rate" % (words.get(n_off, str(n_off)).capitalize(), words.get(n_mask, str(n_mask))),
+                 fontsize=9.6, loc="left")
     fig.tight_layout()
     fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
