@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Plan for about 300 more override reviews (to the nearest 100) from Quillfield's adult wards in the 13 weeks from Monday 4 January 2027 than the desk would get over those weeks without the go-live.** The QT combination alert adds about 500 reviews; the duplicate PRN opioid alert, answered by removing the new order 49 per cent of the time on the pilot units, takes about 200 of today's reviews off the desk. Not 500: the background log counts the package's own alerts, and a removed order carries no alerts of its own and has no severe interaction alert fire against it later in the stay.
+**Plan for about 300 more override reviews (to the nearest 100) from Quillfield's adult wards in the first 13 weeks of the hospital-wide go-live than the desk would get over those weeks without it.** The go-live is on 4 January 2027. The QT combination alert adds about 500 reviews; the duplicate PRN opioid alert, answered by removing the new order 49 per cent of the time on the pilot units, takes about 200 of today's reviews off the desk. Not 500: the background log counts the package's own alerts, and a removed order carries no alerts of its own and has no severe interaction alert fire against it later in the stay.
 
 ## 2. Critical Components
 
@@ -28,7 +28,7 @@
 
 ### msp26_review_forecast_q1_2027.xlsx
 
-1. Net change in override reviews, 13 weeks from 4 January 2027: +300 (QT combination alert +500, current reviews lost -200), to the nearest 100.
+1. Net change in override reviews, 13 weeks from 4 January 2027: +300 (QT combination alert +500, current reviews lost 200), to the nearest 100.
 2. Desk hours, July to September 2026, nearest whole hour:
    - 4N 4 North Medicine: 26
    - 4S 4 South Medicine: 20
@@ -38,17 +38,17 @@
    - 12N 12 North Medicine: 16
    - 11N 11 North Geriatrics: 16
    - 11S 11 South Pulmonary: 17
-   - 3E 3 East Neuroscience: 15
+   - 3E 3 East Stroke and Spine: 15
    - 3W 3 West Renal: 12
    - 6E 6 East Orthopaedics: 45
    - 6W 6 West General Surgery: 39
    - 10N 10 North Surgery: 35
    - 10S 10 South Surgery: 22
    - 5W 5 West Vascular Surgery: 25
-3. Reviews signed off by shift:
-   - July 2026: day 389, evening 363, night 370
-   - August 2026: day 369, evening 372, night 308
-   - September 2026: day 367, evening 374, night 332
+3. Reviews signed off, July, August and September 2026, by shift:
+   - Day shift: July 389, August 369, September 367
+   - Evening shift: July 363, August 372, September 374
+   - Night shift: July 370, August 308, September 332
 
 ### msp26_go_live_review_memo.docx
 

@@ -28,7 +28,7 @@ def main():
     a("## 1. Final Recommendation\n")
     a("**Plan for about %d more override reviews (to the nearest 100) from Quillfield's adult wards in the first 13 "
       "weeks of the hospital-wide go-live than the desk would get over those weeks without it.** The go-live is on "
-      "Monday 4 January 2027. The QT "
+      "4 January 2027. The QT "
       "combination alert adds about %d reviews; the duplicate PRN opioid alert, answered by removing the new order "
       "%d per cent of the time on the pilot units, takes about %d of today's reviews off the desk. Not %d: the "
       "background log counts the package's own alerts, and a removed order carries no alerts of its own and has "

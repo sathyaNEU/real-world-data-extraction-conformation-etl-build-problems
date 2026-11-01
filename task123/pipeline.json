@@ -1,20 +1,31 @@
 {
  "task": "task123",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "survey-research-official-statistics / seasonal-adjustment-official-time-series-production",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build complete, free gates green; stage 4 (leak reader and determinism judge) for the main session",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "The default path fills the unfiled August 2026 returns at the occupancy of the reporting establishments of the same comune and type and benchmarks each comune's July to September to its declared tourist-tax nights in proportion, filing Sant'Elvira a Mare and Capo Ferrino with Marina di Cervessa at 28.6 nights per resident; August as the declared quarter less the filed July and September (the unfiled are the holiday houses full around Ferragosto) adds Marina di Cervessa at 31.4.",
  "architecture": 3,
  "loops": 0,
- "precut": {},
- "leak": {},
- "duplicate_check": {},
+ "precut": {
+  "exit": 0,
+  "date": "2026-11-01",
+  "pair_ceiling": 40.3,
+  "mirror_leakage": 21.4
+ },
+ "leak": {
+  "leak_py": "REVIEW (0 LEAK) at --asof 2026-11-20: a txt record, four files naming comuni beside numbers (none ranks them on August nights), the prompt's question-form quota"
+ },
+ "duplicate_check": {
+  "heart": "WARN only (repeat.decision, repeat.deliverables, repeat.question_form; answered in the note)",
+  "surface": "4 pairs promoted at surface 0.100 to 0.101 (task121, task476, task452, task473), none on the driver; personas Goffredo Canil, Martino Zamengo",
+  "nearest": "0.08 (task272 v2 lineage)"
+ },
  "judge": {},
  "returned": [],
- "resume": "architecture 3 drawn 2026-11-01 (card registered): a union of comuni's 2027 peak-month co-financing from August 2026 guest nights; design note and generator in progress",
+ "resume": "stage 4: the main session spawns the leak reader and the determinism judge on the cut pack; findings are fixed in task123/generator and rebuilt with build.py",
  "approved": null,
  "delivered": null,
  "portal": null,
