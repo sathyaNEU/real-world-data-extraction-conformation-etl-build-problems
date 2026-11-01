@@ -34,6 +34,8 @@ FORESTS = {
 # compartments). PLAN_SCALE sets the plan's size against FY2026.
 PLAN_SCALE = 1.06
 PLAN_MIX_SHIFT = {"A": -0.02, "P": 0.0, "K": 0.0, "KI": 0.01, "KIS": 0.01}
+# the plan's compartment yields by grade against the FY2026 mix (set by tune.py so each graded figure sits mid-bin)
+PLAN_GRADE_ADJ = {"A": 0.9992, "P": 1.00333, "K": 0.99861, "KI": 0.99783, "KIS": 0.99874}
 
 CARRIERS = {
     "RLC": "Ruahine Log Cartage Ltd",

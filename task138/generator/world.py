@@ -216,6 +216,10 @@ def transformers():
     # weights: each transformer's share of its feeder's member energy
     w = rng.gamma(2.0, 1.0, len(df)) * df["kva"].values ** 0.6
     df["w"] = w
+    cls = rng.choice(["R-1", "R-1", "R-1", "R-1", "GS-1", "IR-1"], len(df))
+    df["cls"] = np.where(df["mult"] == 20, "LP-3", cls)
+    df["meter"] = ["%08d" % (31000000 + int(x)) for x in rng.choice(900000, len(df), replace=False)]
+    df["set_year"] = rng.integers(1978, 2025, len(df))
     return df
 
 

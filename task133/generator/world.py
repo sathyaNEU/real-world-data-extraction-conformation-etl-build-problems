@@ -147,7 +147,7 @@ def build(seed=P.SEED):
         mix = {g: max(0.0, f["mix"][g] + P.PLAN_MIX_SHIFT[g]) for g in f["mix"]}
         s = sum(mix.values())
         for g in mix:
-            plan[(fc, g)] = round(tot * mix[g] / s / 100) * 100
+            plan[(fc, g)] = round(tot * mix[g] / s * P.PLAN_GRADE_ADJ[g] / 100) * 100
     W.plan = plan
     return W
 
