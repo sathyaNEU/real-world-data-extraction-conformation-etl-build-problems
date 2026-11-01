@@ -1,66 +1,56 @@
-# task122 submission
-
 ## Tags
 
-**Domain:** Biomedical & Clinical Research (longitudinal outcomes with repeated measures: reading a 52-week phase 2b dose-ranging trial's eGFR record for each dose's effect against placebo over a 36-month phase 3).
-**Analytical objective:** Experiment & Causal Analysis (which VMK-4410 dose goes into the phase 3, judged by each dose's eGFR difference from placebo after 36 months' treatment).
+> **Domain:** Human Factors & Ergonomics (usability and task performance studies).
+> **Analytical objective:** Experiment & Causal Analysis.
 
 ## 1. Final Recommendation
 
-**Take VMK-4410 20 mg into the phase 3: after 36 months' treatment eGFR would be 3 mL/min/1.73 m2 higher on it than on placebo.**
-
-Not 40 mg (2), which has the largest early fall and only looks best when the one-off recovery after background diuretics were eased is read as a slope; not 10 mg (1), which leads on the week-52 difference alone; not 5 mg (0).
+**Make PROBE-M mandatory at every en-route planner position from 1 April 2027.** Its use prevented about 30 per cent of the STCA activations the six sectors would have raised in the time it was running, against the 20 per cent the acceptance criteria require, read at the same sector, number of aircraft and number climbing or descending, minute by minute. Not the Safety Performance Report's rate per 1,000 flight hours (167.4 with the probe running, 77.2 without), which sets the probe's minutes against quieter ones; not a comparison at like occupancy alone, which leaves the probe's minutes with more climbing and descending traffic and shows no benefit.
 
 ## 2. Critical Components
 
-1. The chronic phase of the eGFR response starts at **week 24**: on 20 and 40 mg the difference from placebo rises from week 12 to week 24, as patients whose loop diuretic was eased from the week-12 visit recover part of the early fall, and is a straight line from week 24 to week 52
-2. At month 36, 20 mg leads the runner-up, 40 mg, by **1** mL/min/1.73 m2
+1. Activations counted as the Safety Performance Report counts them over the trial: **4,742**, of which **1,865** in the probe's running time.
+2. At the same sector, number of aircraft and number climbing or descending, the minutes without the probe put the activations the probe's running time would have raised at **2,596**.
+3. The probe prevented **731**, about **30 per cent**, above the criterion's 20 per cent.
 
 ## 3. Step-by-Step Solution
 
-1. Took every randomised patient by randomised arm from dm.csv and each patient's first and last dose from ex.csv; a patient whose last dose came before the week-52 visit in sv.csv, or who left the study, stopped study drug for good.
-2. From lb.csv took the central laboratory's CKD-EPI 2021 eGFR at the scheduled visits (the first sample of a visit, as section 2 of VMK-4410-202_SAP_v2.0.pdf sets out), baseline the mean of the screening and day-1 values, and set aside values from samples taken after the last dose of a patient who stopped for good, as the estimand in VMK-4410-301_synopsis_draft_v0.3.pdf files it.
-3. Took each arm's mean change from baseline at each visit less placebo's.
-4. In cm.csv, loop diuretic doses were reduced or stopped at the week-12, 16 and 20 visits in most loop-diuretic patients on 40 mg, many on 20 mg and almost none on placebo, as section 6 of VMK-4410-202_protocol_v3.0.pdf allows from week 12; the 40 mg difference rises 1.8 mL/min/1.73 m2 from week 12 to week 24 and is linear after it.
-5. Fitted a straight line through each dose's differences at weeks 24, 32, 40 and 52 and read it at week 156: 20 mg 3, 40 mg 2, 10 mg 1, 5 mg 0 mL/min/1.73 m2.
-6. For the tables: serum potassium from every laboratory in lb.csv after the first dose to the last; hyperkalaemia events in ae.csv by group identifier on the SAP's two preferred terms, onset imputed by the SAP's rule; stopping and days on drug from ex.csv, each dosed day counted once, before the sv.csv week-52 visit.
-7. Recommendation: VMK-4410 20 mg, 3 mL/min/1.73 m2 above placebo at month 36.
+1. Took each flight's latest plan revision from fdps_sector_crossings_2026-04_2026-09.csv (a revision re-issues the flight's whole crossing list) and counted, for each sector and minute, the aircraft in the sector and those whose entry and exit levels differ.
+2. Marked the minutes with the probe running from probe_m_planner_workstation_log_2026-04_2026-09.csv, New Zealand time taken to UTC, a combined position's display covering both sectors (SRB 2026/04 section 3.3).
+3. Counted the activations in stca_activations_2026-04_2026-09.csv as the Safety Performance Report counts them (live only, once per event in the sector where it began, a combined-sector activation in the sector of the first-named aircraft): 4,742.
+4. Applied the activation rate of the minutes without the probe, at each sector, number of aircraft and number climbing or descending, to the probe's running minutes: 2,596 expected against 1,865 raised.
+5. Took the share prevented, about 30 per cent, against section 3.1's one in five.
+6. For the tables, split each flown crossing at New Zealand month ends, counted each month's activations per 1,000 flight hours in the sector where each began, and counted each flight once in each sector it entered.
+7. Recommended making PROBE-M mandatory from 1 April 2027.
 
 ## 4. Deliverable Answers
 
-### VMK-4410_phase3_dose_recommendation.pdf
+### probe_decision_2027.docx
 
-1. The call: take VMK-4410 20 mg into the phase 3.
-2. eGFR difference from placebo after 36 months' treatment, nearest whole mL/min/1.73 m2:
-   - 5 mg: 0
-   - 10 mg: 1
-   - 20 mg: 3
-   - 40 mg: 2
-3. Chart of each dose's eGFR difference from placebo by month to month 36: the phase 2b visits to week 52 and each dose's chronic-phase line from week 24 carried to month 36, the month-36 values labelled.
+1. Recommendation: make PROBE-M mandatory at every en-route planner position from 1 April 2027.
+2. The share its use prevented: about 30 per cent of the STCA activations the sectors would have raised in its running time (criterion 20 per cent).
+3. Chart: the share of minutes with the probe running by the number of aircraft climbing or descending in the sector, beside the activations in the probe's running time as raised and as the same traffic raised without it.
 
-### VMK-4410_phase2b_tables.xlsx
+### probe_trial_figures.xlsx
 
-1. Patients with a serum potassium above 5.5 mmol/L on treatment:
-   - Placebo: 2
-   - 5 mg: 4
-   - 10 mg: 10
-   - 20 mg: 29
-   - 40 mg: 68
-2. Hyperkalaemia adverse events that began on treatment:
-   - Placebo: 1
-   - 5 mg: 2
-   - 10 mg: 8
-   - 20 mg: 28
-   - 40 mg: 80
-3. Patients who stopped study drug for good before their week-52 visit:
-   - Placebo: 5
-   - 5 mg: 6
-   - 10 mg: 7
-   - 20 mg: 9
-   - 40 mg: 10
-4. The arm's total years on study drug before the week-52 visit, one decimal:
-   - Placebo: 147.1
-   - 5 mg: 148.4
-   - 10 mg: 145.7
-   - 20 mg: 146.1
-   - 40 mg: 144.7
+1. Flight hours by sector and month, New Zealand time, whole hours:
+   - KPA: April 969, May 995, June 943, July 1,075, August 1,066, September 1,018
+   - HKI: April 1,328, May 1,335, June 1,254, July 1,456, August 1,389, September 1,367
+   - WKO: April 1,513, May 1,564, June 1,517, July 1,652, August 1,604, September 1,580
+   - TKI: April 942, May 988, June 945, July 1,032, August 1,026, September 991
+   - TPO: April 1,563, May 1,554, June 1,491, July 1,674, August 1,608, September 1,594
+   - KPT: April 1,492, May 1,514, June 1,453, July 1,624, August 1,560, September 1,554
+2. STCA activations per 1,000 flight hours by sector and month, one decimal:
+   - KPA: April 125.9, May 125.7, June 130.4, July 121.8, August 141.6, September 135.5
+   - HKI: April 96.4, May 118.3, June 75.8, July 81.0, August 92.9, September 100.9
+   - WKO: April 74.7, May 85.0, June 71.9, July 76.9, August 81.0, September 81.0
+   - TKI: April 135.9, May 119.4, June 116.4, July 149.2, August 136.5, September 152.4
+   - TPO: April 83.8, May 83.7, June 87.2, July 110.5, August 86.5, September 106.7
+   - KPT: April 77.1, May 89.2, June 73.0, July 85.0, August 82.1, September 88.8
+3. Flights handled over the trial, whole flights:
+   - KPA: 25,943
+   - HKI: 35,991
+   - WKO: 43,027
+   - TKI: 25,401
+   - TPO: 44,764
+   - KPT: 43,552

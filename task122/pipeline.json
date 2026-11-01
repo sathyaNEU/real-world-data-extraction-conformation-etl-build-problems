@@ -1,11 +1,11 @@
 {
  "task": "task122",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "human-factors-ergonomics",
  "objective": "experiment-causal",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-31",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-01",
  "stump": "A careful analyst prices PROBE-M at like traffic, comparing minutes with it running against minutes without at the same number of aircraft in the sector, and files that it prevented about one STCA activation in twenty, short of the criteria's one in five; the step that lands it there is holding only the count, when planners switch the probe on as climbing and descending traffic gathers and almost every activation involves a climbing or descending aircraft, so at like count and like mix it prevented about 30 per cent and becomes mandatory from 1 April 2027.",
  "architecture": 3,
  "card_architecture": "v4",
@@ -25,7 +25,7 @@
    "commit": ""
   }
  ],
- "resume": "",
+ "resume": "Stage 3, generator written (task122/generator: params, world, pack, figs, routes, golden, writeup, checks, verify, ceiling, make, note). Next: (1) world.flights re-entry split: require at least 8 minutes between the split and the crossing's exit so no crossing has exit before entry (4 negative spans broke T1); (2) rerun the R_TRUE scan and set R_TRUE so every standing member of the share prevented sits mid-bin at the nearest five per cent (now 27.7 to 29.1, golden 28.2); (3) relax SF11's threshold to 24 of 36; (4) python3 task122/generator/make.py until checks.py and verify.py pass on two byte-identical builds; (5) python3 task122/generator/note.py to fill the design note, then precut.py, figures_check.py, leak.py --asof 2026-10-09, guard.py surface and heart; (6) leak copy at scratchpad/leak-task122/ and the brief at scratchpad/task122_stage4_leak_brief.md, then commit PAUSED with the stage 4 resume step.",
  "approved": null,
  "delivered": null,
  "portal": null,
