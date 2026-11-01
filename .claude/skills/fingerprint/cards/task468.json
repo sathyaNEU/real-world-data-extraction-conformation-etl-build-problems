@@ -1,205 +1,224 @@
 {
- "task": "task468",
- "architecture": "v5",
- "drawn": "2026-10-31",
- "slot_note": "batch 1 re-root (2026-10-31): architecture 4 (the Medicaid plan's linkage-corrected mortality bonus) retired by the batch audit, short of the survivor anatomy on the Reflex; a new client domain (survey-research-official-statistics), world and dataset under the same objective",
- "domain": "survey-research-official-statistics",
- "subdomain": "seasonal-adjustment-official-time-series-production",
- "client_domain": "survey-research-official-statistics",
- "niche": "a regional housing agency's 2027-28 pressured-ward uplift for affordable homes in an English city, split among the wards whose constant-quality repeat-sales house price index rose more than 5 per cent from 2025 to 2026, compiled from the price paid record and its monthly update, in a year when small developers bought tired terraces in one ward, added loft conversions and rear extensions under building control and resold them",
- "objective": "etl",
- "shape": "05",
- "decision_type": "allocation_to_total",
- "answer_unit": "currency",
- "answer": "Calder Bank (GBP 5,638,095), Kestrel Rise (GBP 3,657,143) and Abbots Hollow (GBP 2,704,762) share the 2027-28 Pressured Wards Uplift: their Ward House Price Index rose 7.9, 6.7 and 5.8 per cent from 2025 to 2026; Pellbury, 6.0 per cent on every pair of sales, rose 3.1 per cent once the pairs spanning completed building work are set aside.",
- "answer_source": "submission.md block 1; harrowmere_pressured_wards_2027-28.pdf and harrowmere_ward_index_2026.xlsx",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G11",
-  "G5",
-  "G6"
- ],
- "gate_g": "etl_conformance",
- "calibration_form": "none",
- "stump_strategy": "population_selection",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "filed_standard",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who applies the January 2027 update, keeps the standard sales, pairs each dwelling's consecutive sales by address and fits the methodology's repeat-sales regression on every pair files the flip ward's 2026 rise over the 5 per cent line and splits the GBP 12 million four ways; set aside the pairs whose dwelling had building work completed between its two sales, recorded only in the council's building control register, and that ward falls well under the line and the pot goes to three wards.",
- "domain_test": "The deciding quantity is each ward's constant-quality house price change from a repeat-sales index, the official statistician's own construction for a small-area price series, and its identifying assumption (the dwelling unchanged between its two sales) fails where houses were extended and resold; with hospitals or megawatt-hours in place of dwellings there is no repeat-sales pair, no building control completion and no price paid record, so the task does not survive the swap.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:repeat-sales-pairs-spanning-completed-building-work",
- "layer1": [
-  "price paid files in the publisher's layout, the last a monthly update whose A, C and D rows add, correct, move and withdraw earlier entries",
-  "standard and additional price paid categories, property type Other, new dwellings' first sales",
-  "a dwelling identified only by its address (primary and secondary addressable object, street, postcode)",
-  "a postcode lookup carrying both the 2019 and the May 2023 ward codes",
-  "a building control register in two systems' layouts (a legacy export of free-text site addresses to 2020, a structured export from 2021)",
-  "abbreviated and differently cased street names between the register and the price paid record",
-  "a programme pipeline on the April to March programme year with scheme statuses",
-  "dates in three formats across the files"
- ],
- "stakeholder_role": "the Agency's Director of Investment, who takes the 2027-28 pressured-ward uplift to the Investment Committee",
- "role_family": "programme_officer",
- "scoring_unit": "other",
- "spine": {
-  "file": "pp-harrowmere-2015-2025.csv",
-  "rows": 75002,
-  "entity": "one price paid record (one transfer of one property)",
-  "grain": "property x date of transfer",
-  "source": "synthetic",
-  "source_dataset": "constructed (seeded generator, in the layout of an open price paid record)"
- },
- "forum": "committee_or_panel",
- "forcing_event": "budget_or_appropriation",
- "org_family": "government_agency",
- "world": {
-  "geography": "England (a fictional city, Harrowmere, with its twelve wards, a fictional regional housing agency and fictional people)",
-  "currency": "GBP",
-  "org_type": "a regional housing investment agency",
-  "invented_names": [
-   "Harrowmere",
-   "Harrowmere and Vale Housing Agency",
-   "Pressured Wards Uplift",
-   "Ward House Price Index"
-  ],
-  "people": [
-   "Sylvia Davison",
-   "Jodie Khan",
-   "Gillian Lawson"
-  ]
- },
- "deliverables": [
-  "harrowmere_pressured_wards_2027-28.pdf",
-  "harrowmere_ward_index_2026.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is each unit's change in the price of an unchanged item, estimated from pairs of transactions on the same item, but in one unit a wave of items were altered between their two transactions and the alteration is recorded only in a separate register of completed work that shares no key with the transactions, so every estimate on all pairs credits the alterations' value to the unit's price change and lifts it over the line, and only the pairs whose item had no work completed between its two transactions measure it.",
- "driver_concrete": "Each ward's 2025-to-2026 change in the Agency's repeat-sales house price index is fitted on pairs of consecutive standard sales of the same dwelling, but in one ward of Victorian terraces small developers bought houses, completed loft conversions and rear extensions under building control and resold them in 2026, so their pairs carry the works' value as price growth; only the pairs with no building work completed between the two sales, found by matching the council's building control completions to the price paid addresses, measure the ward's constant-quality change.",
- "stump": "The default path applies the January 2027 update, pairs every dwelling's consecutive standard sales and fits the methodology's repeat-sales index on every pair, so Pellbury clears the 5 per cent line at 6.0 per cent and takes a share of the GBP 12 million beside Calder Bank, Kestrel Rise and Abbots Hollow; setting aside the pairs whose dwelling had building work completed between its two sales (the council's building control completions matched to the sale addresses) puts Pellbury at 3.1 per cent and the uplift splits three ways.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task467": "task467 restates a monthly series across a temporary change that began with a permanent one, separating the two effects; here no series is restated: an annual index is fitted to matched sales, and the pairs whose asset was itself altered between the sales are recognised through a second system and set aside.",
-  "task470": "task470 reads each dwelling's occupancy from a meter whose base load runs regardless of use; here the statistic is a price change, and the step is which matched pairs compare an unchanged asset.",
-  "task251": "task251 extends a monitor's error from the conditions its checks covered to those they did not; here no error is extrapolated: each sales pair either spans a recorded alteration of its dwelling or it does not.",
-  "task245": "task245 counts exceedance periods from records whose gaps fall in the heaviest periods; here no record is missing: every sale is present and the step is the comparison an altered dwelling's pair makes.",
-  "task305": "task305 reads members' response to a forced choice from members an existing limit already forces; here there is no behavioural response: the population of matched pairs is chosen for the index's estimand."
- },
- "lineage": [
-  {
-   "gap": [
+  "task": "task468",
+  "architecture": "v6",
+  "drawn": "2026-11-01",
+  "slot_note": "batch 1 re-root (2026-11-01): architecture 5 (Harrowmere's pressured wards on a repeat-sales index) sent back by its stage 4 judge; healthcare delivery and survey research are spent for this slot, so the draw moves to physical-environmental-sciences / emissions-inventory with the decisive step an estimate (a conversion model), not a filter, a match or an exclusion",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a regional water utility's 2026 trade waste mass returns: each industrial customer's chemical oxygen demand discharged to sewer against its agreement's annual limit, after the utility's laboratory moved from dichromate COD to total organic carbon on 2 February 2026 and the COD equivalent has to be estimated from the samples tested both ways",
+  "objective": "etl",
+  "shape": "other",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Coolabah Olives, Tallowood Tannery, Glenbrae Meats and Riverbend Poultry exceeded their agreements' 2026 COD mass limits and go on the regulator's return and to agreement review; Mt Edwin Cheese and the other customers did not",
+  "answer_source": "submission.md block 1; the review memo and the trade waste figures workbook",
+  "gap": [
+    "objective",
     "population"
-   ],
-   "pattern": [
-    "C"
-   ],
-   "generators": [
-    "G6",
-    "G12",
-    "G3"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "ranked_slate_under_cap",
-   "stump_strategy": "identity_resolution",
-   "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
-   "driver": "The decisive quantity is a per-unit count assembled from records that a matcher links to units, where the matcher fails far more often for some units' records, so the unlinked records are not distributed like the linked ones, and the review that measures their mix draws clusters at random and one record within each, so a cluster holding many unlinked records is seen no more often than one holding a single record; the review's raw mix, like a share-out in proportion to the linked records, understates the units whose clusters fail most, and only each reviewed record weighted by its cluster's count of unlinked records restores each unit's count.",
-   "niche": "a city transit department's delivered-frequency evidence for a state capital program, built by linking vehicle-location departure records to routes through a vendor's trip matcher that leaves late-running departures unmatched, with the department's trip-matching review sample",
-   "subdomain": "data-integration-record-linkage-entity-resolution",
-   "domain": "general-statistics-data-science",
-   "architecture": "v1",
-   "drawn": "2026-10-17",
-   "fate": "spent at stage 4 on 2026-10-19: four isolated readers landed the call (score_reader exit 1, Gate F) and judge pass 3 found the shelter ask NOT_DETERMINISTIC (the moved-stop rule unstated); re-rooted by the author's decision"
-  },
-  {
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
+  ],
+  "pattern": [
     "none"
-   ],
-   "generators": [
-    "G13",
-    "G6",
-    "G14"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "allocation_to_total",
-   "stump_strategy": "composition_mix",
-   "layer2_pattern": "own:specialty-spend-developed-by-months-on-therapy-for-the-members-on-therapy",
-   "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active both depend on how long a unit has been active, and the groups differ in how recently their active units started; carrying the latest run-rate or trailing year forward, applying last year's active units' following-year experience, or a group's persistence curve read from each unit's start all misstate the groups whose active units are newer or older than usual, and only each group's development conditional on time since start, applied to today's units at their own durations, gets the shares right.",
-   "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files",
-   "subdomain": "payment-claims-health-plan-analytics",
-   "domain": "healthcare-delivery-health-economics",
-   "architecture": "v2",
-   "drawn": "2026-10-19",
-   "fate": "spent at stage 4 on 2026-10-19: the isolated reader projected the caseload by tenure since first fill from past month ends and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F); judge DETERMINISTIC/APPROVE; re-rooted by the author's decision"
+  ],
+  "generators": [
+    "G1",
+    "G6"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the two laboratory systems, applies the policy's volume-weighted mass formula and converts each 2026 TOC result to COD through the samples the laboratory tested both ways, by one pooled relation or by each customer's own COD to TOC ratio from its parallel samples (the usual site-specific correlation), files the wrong set of customers over their limits: the reference COD method also reads the chloride in brine effluents, which TOC never sees, and the cheese plant cut its chloride with brine recovery in May 2026 while the tannery's rose with a new hide supplier, so only a conversion that carries each sample's own chloride places them.",
+  "domain_test": "The deciding quantity is each customer's mass of chemical oxygen demand discharged in the year on the agreement's reference method, the trade waste chemist's own load estimate, and the conversion from TOC turns on how the dichromate test responds to chloride; put hospitals or megawatt-hours in place of effluents and there is no oxidant demand, no interfering ion and no conversion to carry.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:method-bridge-with-an-interfering-constituent-that-moved-after-the-overlap",
+  "layer1": [
+    "two laboratory systems' exports with different layouts, site codes, analyte names and clocks (local time before the migration, UTC after)",
+    "a site code crosswalk across the LIMS migration",
+    "quality-control duplicates and re-runs carrying the base sample number with a suffix",
+    "results below the reporting limit reported with a less-than qualifier",
+    "hourly flow telemetry as cumulative register readings that reset at meter exchanges, the final and opening reads only in the field job log",
+    "limits in kilograms a year for some agreements and tonnes for others"
+  ],
+  "stakeholder_role": "the utility's Trade Waste Manager, who issues the 2027-28 agreement review notices",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "",
+    "rows": 0,
+    "entity": "one hourly flow telemetry reading at one customer's meter",
+    "grain": "meter x hour",
+    "source": "synthetic",
+    "source_dataset": "constructed (seeded generator)"
   },
-  {
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G13",
-    "G6",
-    "G14"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "allocation_to_total",
-   "stump_strategy": "composition_mix",
-   "layer2_pattern": "own:specialty-spend-developed-by-months-in-the-current-episode-of-therapy",
-   "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active depend on how long the current spell of activity has run, not on how long ago the unit was first active; units returning after a lapse look long-standing by their first activity but behave like new ones, and one group's returning units surged just before the reference date, so a development by time since first activity, applying last year's active units' following year, or carrying the trailing year forward each overstates exactly the groups the returners filled.",
-   "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files, where members returning to therapy after a lapse sit among the long-standing members by their first fill",
-   "subdomain": "payment-claims-health-plan-analytics",
-   "domain": "healthcare-delivery-health-economics",
-   "architecture": "v3",
-   "drawn": "2026-10-19",
-   "fate": "spent at stage 4 on 2026-10-19: the isolated reader built episodes by a 100-day break read off the bimodal refill gaps and landed the call (score_reader exit 1, Gate F); re-rooted fresh by the author's rule (no retirement)"
+  "forum": "customer_or_counterparty",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "Australia (a fictional regional water utility in south-east Queensland and its industrial customers)",
+    "currency": "AUD",
+    "org_type": "a regional water and sewerage utility with a trade waste unit and its own laboratory",
+    "invented_names": [
+      "Glenbrae Water",
+      "Coolabah Olives",
+      "Tallowood Tannery",
+      "Mt Edwin Cheese",
+      "Glenbrae Meats",
+      "Riverbend Poultry",
+      "Sunvale Dairy Ingredients"
+    ],
+    "people": [
+      "Erik Marks",
+      "Mitchell Boyd",
+      "Brent Fisher"
+    ]
   },
-  {
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G3",
-    "G12",
-    "G14"
-   ],
-   "gate_g": "method_or_model_selection",
-   "decision_type": "designation_set",
-   "stump_strategy": "other",
-   "layer2_pattern": "own:linkage-error-corrected-outcome-counts-by-identifier-class",
-   "driver": "The decisive quantity is each unit's count of an outcome found only by linking its records to an outside register, where the linker misses true outcomes for records with weak identifiers and invents false ones for records with common identifiers, at rates measurable only on two internal control groups (outcomes the units' own later records show, and records shown still active after a linked outcome); a unit whose weak-identifier records are low-risk is inflated by false links and one whose weak-identifier records are high-risk is deflated by missed links, so counting the links, adding the outcomes known from the records, or dropping the links the records contradict each leaves one of them on the wrong side of the threshold.",
-   "niche": "a nonprofit Medicaid managed care plan's 2027 hospital quality bonus, decided on each network hospital's risk-adjusted 30-day mortality for fiscal 2026 index admissions, where post-discharge deaths are found by the state vital records office's probabilistic linkage of members to the state death file, and members enrolled without a Social Security number (the state-funded coverage for undocumented adults) link worst",
-   "subdomain": "payment-claims-health-plan-analytics",
-   "domain": "healthcare-delivery-health-economics",
-   "architecture": "v4",
-   "drawn": "2026-10-20",
-   "fate": "retired 2026-10-31 by the batch audit before any portal result: short of the survivor anatomy on the Reflex, its golden being the field's own linkage-error correction (each identifier class's false-link and missed-link rates applied to the Office's matches), so the field's named method sat at the top of the ladder, and the Office's shipped match file was the key the link rode on"
-  }
- ],
- "notes": "Architecture 5 drawn fresh 2026-10-31 (batch 1 re-root): a regional housing agency's pressured-ward uplift on a constant-quality repeat-sales index, shape 05 (the pot split among the wards over the line, each ward's share at stake). Architectures 1 to 4 are in the lineage.",
- "registered": "2026-10-31T22:37:37Z",
- "shell": {
-  "question form": "how-many",
-  "second-sentence opener": "put",
-  "rounding opener": "give",
-  "deliverable set": "xlsx"
- }
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A quantity reported on a new measurement basis is converted to the reference basis through the samples both bases measured, but the reference basis also responds to a constituent the new basis does not see, carried at levels that differ between senders and that moved for some senders after the overlap; one factor for every sender, or each sender's own factor from the overlap, misplaces the senders whose constituent level is not what it was, and only a conversion that carries each sample's own level of the constituent places every sender.",
+  "driver_concrete": "Each trade waste customer's 2026 COD mass is converted from TOC through the laboratory's parallel samples, but the dichromate COD test also oxidises chloride, which TOC ignores; the olive packer's brine stayed salty, the cheese plant's fell with brine recovery in May and the tannery's rose with a new hide supplier, so a pooled factor misses the brine customers and each customer's own 2025 ratio puts the cheese plant over and the tannery under.",
+  "stump": "The default path conforms the two laboratory systems, applies the policy's volume-weighted mass formula and converts each 2026 TOC result to COD with each customer's own COD to TOC ratio from its parallel samples, which puts Mt Edwin Cheese over its limit and leaves Tallowood Tannery under; the step that lands it there is taking a customer's parallel-period ratio as its conversion, when the dichromate COD also oxidises the chloride in brine effluents, which TOC never sees, and Mt Edwin cut its chloride with brine recovery in May 2026 while Tallowood's rose with a new hide supplier, so converted with each sample's own chloride Tallowood is over and Mt Edwin under (one pooled factor misses every brine customer).",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task308": "task308 values an added unit on the shortfall hours it would have covered, its availability correlated with the shortfall through a shared outage cause; here no unit is valued or added: a measurement made on a new basis is converted to the reference basis through the samples both measured, and the conversion has to carry an interfering constituent whose level moved for some senders after the overlap.",
+    "task450": "task450 separates an instrument change from a group difference through the items both groups answered; here the same samples carry both measurements, there is no group difference to remove, and the conversion fails because the reference method reads a constituent the new one ignores."
+  },
+  "lineage": [
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G11",
+        "G5",
+        "G6"
+      ],
+      "gate_g": "etl_conformance",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "population_selection",
+      "layer2_pattern": "own:repeat-sales-pairs-spanning-completed-building-work",
+      "driver": "The decisive quantity is each unit's change in the price of an unchanged item, estimated from pairs of transactions on the same item, but in one unit a wave of items were altered between their two transactions and the alteration is recorded only in a separate register of completed work that shares no key with the transactions, so every estimate on all pairs credits the alterations' value to the unit's price change and lifts it over the line, and only the pairs whose item had no work completed between its two transactions measure it.",
+      "niche": "a regional housing agency's 2027-28 pressured-ward uplift for affordable homes in an English city, split among the wards whose constant-quality repeat-sales house price index rose more than 5 per cent from 2025 to 2026, compiled from the price paid record and its monthly update, in a year when small developers bought tired terraces in one ward, added loft conversions and rear extensions under building control and resold them",
+      "subdomain": "seasonal-adjustment-official-time-series-production",
+      "domain": "survey-research-official-statistics",
+      "architecture": "v5",
+      "drawn": "2026-10-31",
+      "fate": "spent 2026-11-01 at its stage 4 judge, NOT_DETERMINISTIC, SEND_BACK: the methodology's pair definition executed word for word kept the pairs spanning building work (Pellbury 6.0, four wards), the golden's set-aside rested on the intent phrase 'same dwelling at the same quality', and filing it would have made linking the completions register a rule executed (task445 v2's death); ask 3 also failed to reproduce"
+    },
+    {
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G6",
+        "G12",
+        "G3"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "ranked_slate_under_cap",
+      "stump_strategy": "identity_resolution",
+      "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/1",
+      "driver": "The decisive quantity is a per-unit count assembled from records that a matcher links to units, where the matcher fails far more often for some units' records, so the unlinked records are not distributed like the linked ones, and the review that measures their mix draws clusters at random and one record within each, so a cluster holding many unlinked records is seen no more often than one holding a single record; the review's raw mix, like a share-out in proportion to the linked records, understates the units whose clusters fail most, and only each reviewed record weighted by its cluster's count of unlinked records restores each unit's count.",
+      "niche": "a city transit department's delivered-frequency evidence for a state capital program, built by linking vehicle-location departure records to routes through a vendor's trip matcher that leaves late-running departures unmatched, with the department's trip-matching review sample",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "domain": "general-statistics-data-science",
+      "architecture": "v1",
+      "drawn": "2026-10-17",
+      "fate": "spent at stage 4 on 2026-10-19: four isolated readers landed the call (score_reader exit 1, Gate F) and judge pass 3 found the shelter ask NOT_DETERMINISTIC (the moved-stop rule unstated); re-rooted by the author's decision"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "composition_mix",
+      "layer2_pattern": "own:specialty-spend-developed-by-months-on-therapy-for-the-members-on-therapy",
+      "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active both depend on how long a unit has been active, and the groups differ in how recently their active units started; carrying the latest run-rate or trailing year forward, applying last year's active units' following-year experience, or a group's persistence curve read from each unit's start all misstate the groups whose active units are newer or older than usual, and only each group's development conditional on time since start, applied to today's units at their own durations, gets the shares right.",
+      "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "domain": "healthcare-delivery-health-economics",
+      "architecture": "v2",
+      "drawn": "2026-10-19",
+      "fate": "spent at stage 4 on 2026-10-19: the isolated reader projected the caseload by tenure since first fill from past month ends and landed the call (10 of 10) and 27 of 28 ask figures (score_reader exit 1, Gate F); judge DETERMINISTIC/APPROVE; re-rooted by the author's decision"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G13",
+        "G6",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "allocation_to_total",
+      "stump_strategy": "composition_mix",
+      "layer2_pattern": "own:specialty-spend-developed-by-months-in-the-current-episode-of-therapy",
+      "driver": "The decisive quantity is what the units in each group that are active today will cost over the coming year, where cost and the chance of staying active depend on how long the current spell of activity has run, not on how long ago the unit was first active; units returning after a lapse look long-standing by their first activity but behave like new ones, and one group's returning units surged just before the reference date, so a development by time since first activity, applying last year's active units' following year, or carrying the trailing year forward each overstates exactly the groups the returners filled.",
+      "niche": "a regional health plan's specialty pharmacy clinical program, staffing its clinical pharmacists across drug classes by the spend each class's members already on therapy will run over the program year, from two pharmacy benefit managers' claim files, where members returning to therapy after a lapse sit among the long-standing members by their first fill",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "domain": "healthcare-delivery-health-economics",
+      "architecture": "v3",
+      "drawn": "2026-10-19",
+      "fate": "spent at stage 4 on 2026-10-19: the isolated reader built episodes by a 100-day break read off the bimodal refill gaps and landed the call (score_reader exit 1, Gate F); re-rooted fresh by the author's rule (no retirement)"
+    },
+    {
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G12",
+        "G14"
+      ],
+      "gate_g": "method_or_model_selection",
+      "decision_type": "designation_set",
+      "stump_strategy": "other",
+      "layer2_pattern": "own:linkage-error-corrected-outcome-counts-by-identifier-class",
+      "driver": "The decisive quantity is each unit's count of an outcome found only by linking its records to an outside register, where the linker misses true outcomes for records with weak identifiers and invents false ones for records with common identifiers, at rates measurable only on two internal control groups (outcomes the units' own later records show, and records shown still active after a linked outcome); a unit whose weak-identifier records are low-risk is inflated by false links and one whose weak-identifier records are high-risk is deflated by missed links, so counting the links, adding the outcomes known from the records, or dropping the links the records contradict each leaves one of them on the wrong side of the threshold.",
+      "niche": "a nonprofit Medicaid managed care plan's 2027 hospital quality bonus, decided on each network hospital's risk-adjusted 30-day mortality for fiscal 2026 index admissions, where post-discharge deaths are found by the state vital records office's probabilistic linkage of members to the state death file, and members enrolled without a Social Security number (the state-funded coverage for undocumented adults) link worst",
+      "subdomain": "payment-claims-health-plan-analytics",
+      "domain": "healthcare-delivery-health-economics",
+      "architecture": "v4",
+      "drawn": "2026-10-20",
+      "fate": "retired 2026-10-31 by the batch audit before any portal result: short of the survivor anatomy on the Reflex, its golden being the field's own linkage-error correction (each identifier class's false-link and missed-link rates applied to the Office's matches), so the field's named method sat at the top of the ladder, and the Office's shipped match file was the key the link rode on"
+    }
+  ],
+  "notes": "Architecture 6 drawn 2026-11-01 (batch 1 re-root after architecture 5's SEND_BACK): a water utility's trade waste COD masses after its laboratory's move to TOC, the conversion carrying the chloride the reference method reads.",
+  "shell": {
+    "question form": "how-much",
+    "second-sentence opener": "compile",
+    "rounding opener": "send",
+    "deliverable set": "pdf+xlsx"
+  },
+  "registered": "2026-11-01T01:02:25Z"
 }
