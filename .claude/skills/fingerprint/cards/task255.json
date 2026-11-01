@@ -11,7 +11,7 @@
  "shape": "10",
  "decision_type": "designation_set",
  "answer_unit": "set_of_items",
- "answer": "Tier G 2027: Overstappunten, Zuidtak and Oosttak (49, 48 and 47 per cent effective reach); every other package standard tier",
+ "answer": "Tier G 2027: Overstappunten, Oosttak and Zuidtak (47, 47 and 46 per cent effective reach); every other package standard tier",
  "answer_source": "submission.md block 1; golden tier_g_2027.xlsx (sheet Tier G 2027)",
  "gap": [
   "time",
@@ -33,7 +33,7 @@
  "validated_decoy": false,
  "context_artifact": "monitoring_export",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who cleans the smart-card extract, applies every rate-card rule (the regular-rider definition, the four-week window, the halls and passages each package's screens hang in) and puts each journey's change of trains where the line map puts it, the field's way of placing the passes no gate records, files Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak with Centraal at 63 per cent; the line map is right off the peak and wrong at the weekday peaks, which only the journeys' own durations show, and Tier G is Overstappunten, Zuidtak and Oosttak with Centraal at 33.",
+ "analyst_test": "A strong analyst who cleans the smart-card extract, applies every rate-card rule (the regular-rider definition, the four-week window, the halls and passages each package's screens hang in) and puts each journey's change of trains where the line map puts it, the field's way of placing the passes no gate records, files Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak with Centraal at 63 per cent; the line map is right off the peak and wrong at the weekday peaks, which only the journeys' own durations show, and Tier G is Overstappunten, Oosttak and Zuidtak with Centraal at 34.",
  "domain_test": "The call turns on each package's effective reach, the share of the rate card's regular riders with three or more opportunities to see over a four-week flight, built rider by rider from where each journey took them (the media field's frequency-distribution measure, read at an effective-frequency threshold); with another field's nouns there is no flight, no opportunity to see, no effective frequency and no tier sold on it.",
  "layer2_family": "estimand_identification",
  "layer2_pattern": "own:effective-reach-from-passes-placed-by-the-service-each-journey-actually-rode",
@@ -51,7 +51,7 @@
  "scoring_unit": "other",
  "spine": {
   "file": "RVB_metro_ritten_20261001_20261104.csv",
-  "rows": 112057,
+  "rows": 110356,
   "entity": "one smart-card journey on the metro, from check-in to check-out",
   "grain": "journey",
   "source": "synthetic (constructed operator extract, declared in metadata.json)"
@@ -87,7 +87,7 @@
  "question_form": "what",
  "driver": "The decisive quantity is how many members of a population pass a set of points a given number of times over a period, when the record logs each member only where it enters and leaves and the points passed in between depend on how the service ran at that hour, which at the busiest hours differed from the published network; placing the in-between points from the published network credits passes to members who never made them and misses members who did, and only each journey's own duration against the network's timings shows which happened.",
  "driver_concrete": "Each package's effective reach counts the regular riders who passed its screens three or more times in the four autumn weeks; the halls come from the check-in and check-out gates, and the central interchange passage from the journeys that changed trains there, which at the weekday peaks are the north-south and west-east journeys (the north branch's trains run through to the east branch and the west's to the south) and off the peak the north-east and south-west ones, shown only by each journey's duration against the network's run and walking times.",
- "stump": "The default path places every change of trains where the line map puts it and credits the central interchange passage with the north-east and south-west commuters, filing Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak (Centraal 63 per cent); at the weekday peaks those commuters stay on through trains and the north-south and west-east commuters change instead, which only the journeys' durations show, so Centraal and Binnenstad fall to 33 per cent and Tier G is Overstappunten, Zuidtak and Oosttak.",
+ "stump": "The default path places every change of trains where the line map puts it and credits the central interchange passage with the north-east and south-west commuters, filing Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak (Centraal 63 per cent); at the weekday peaks those commuters stay on through trains and the north-south and west-east commuters change instead, which only the journeys' durations show, so Centraal and Binnenstad fall to 34 and 33 per cent and Tier G is Overstappunten, Oosttak and Zuidtak.",
  "mechanism_source": "design_note",
  "differentiation": {
   "task451": "task451 completes a period total not yet observed from how amounts arrive (a sender's delay and a handler's delay that collapsed); here nothing is incomplete or late: every journey is recorded in full, and the decisive step is placing the passes between its two gates by the service it actually rode",
