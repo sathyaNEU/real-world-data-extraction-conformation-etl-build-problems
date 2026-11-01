@@ -90,9 +90,9 @@ def main():
     L.append("5. Net revenue from the autumn bookings by package, nearest 10 euros:")
     for k in pkg_order:
         L.append("   - %s: EUR %s" % (k, format(f["net_revenue_eur"][k], ",")))
-    L += ["", "### tier_g_2027.pdf", "",
-          "1. One-page bar chart of every package's effective reach, highest first, with the Tier G line at 40 per "
-          "cent drawn across it and %s shaded as Tier G." % names, ""]
+    L += ["", "### tier_g_2027.docx", "",
+          "1. One-page note with a bar chart of every package's effective reach, highest first, the Tier G line at 40 "
+          "per cent drawn across it and %s shaded as Tier G." % names, ""]
     open(os.path.join(TASK, "submission.md"), "w").write("\n".join(L))
 
 

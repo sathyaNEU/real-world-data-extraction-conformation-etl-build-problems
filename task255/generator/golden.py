@@ -1,4 +1,4 @@
-"""The golden deliverables (tier_g_2027.xlsx and tier_g_2027.pdf) and figures.json, from target/ alone."""
+"""The golden deliverables (tier_g_2027.xlsx and tier_g_2027.docx) and figures.json, from target/ alone."""
 import json
 import os
 
@@ -6,7 +6,7 @@ import analysis as AN
 import io_util as IO
 
 BOOK = "tier_g_2027.xlsx"
-PAGE = "tier_g_2027.pdf"
+PAGE = "tier_g_2027.docx"
 INK, INK2, MUTED = "#0b0b0b", "#52514e", "#c9c8c3"
 TIER = "#2a78d6"
 
@@ -168,35 +168,61 @@ def workbook(c, f, path):
 
 
 def page(c, f, path, png):
-    from reportlab.lib.units import mm
+    """A one-page note in Word: the identifying block, the finding as its title, the chart, the reasoning."""
+    from docx import Document
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Cm, Pt, RGBColor
     tier = sorted(f["call"], key=lambda k: -f["reach_exact"][k])
     names = "%s, %s and %s" % tuple(tier)
     reach, lm = f["reach"], f["reach_linemap"]
     below = sorted((k for k in reach if k not in tier), key=lambda k: -f["reach_exact"][k])[0]
-    blocks = [
-        ("s", "Spoorbeeld Media B.V. · Audience research · 13 November 2026"),
-        ("s", "To: commercial director, rate card 2027 · From: Floortje Brugman · Subject: Tier G 2027"),
-        ("t", "%s clear the 40 per cent Tier G line; Centraal and Binnenstad do not" % names),
-        ("img", (png, 172 * mm, 88.5 * mm)),
-        ("s", "Source: RVB OV-chipkaart metro journeys 1 October to 4 November 2026 (re-export of 5 November), RVB "
-              "planning model 2026, rate card 2027 Annex A."),
-        ("p", "Three packages qualify for Tier G in 2027: %s at %d, %d and %d per cent of the %s regular riders. "
-              "%s is the nearest below the line at %d per cent." % (names, reach[tier[0]], reach[tier[1]],
-                                                                    reach[tier[2]], format(f["regular_riders"], ","),
-                                                                    below, reach[below])),
-        ("p", "Centraal and Binnenstad both come to %d per cent. Put every change of trains where the line map puts it "
-              "and they would reach %d and %d per cent, but the journeys' own durations show that on weekday peaks, "
-              "07:00 to 09:30 and 16:00 to 18:30, trains from the north branch run on to the east branch and trains "
-              "from the west run on to the south. The north-east and west-south commuters, the largest flows, stay "
-              "on board through Centraal and never use the interchange passage; the north-south and west-east "
-              "commuters change there instead." % (reach["Centraal"], lm["Centraal"], lm["Binnenstad"])),
-        ("s", "Regular riders are passenger cards with a metro journey in each calendar week from 5 October to 1 "
-              "November 2026; staff and service cards are left out (rate card 3.3). A journey without a check-out "
-              "counts its check-in hall only (3.4)."),
-    ]
-    IO.write_pdf(path, "Tier G 2027", "Floortje Brugman", "Spoorbeeld Media B.V.", blocks,
-                 "Spoorbeeld Media B.V. · Audience research · Tier G 2027", "D:20261113161000+01'00'",
-                 "D:20261113161000+01'00'")
+    doc = Document()
+    sec = doc.sections[0]
+    sec.page_height, sec.page_width = Cm(29.7), Cm(21.0)
+    sec.left_margin = sec.right_margin = Cm(2.0)
+    sec.top_margin, sec.bottom_margin = Cm(1.7), Cm(1.6)
+    base = doc.styles["Normal"]
+    base.font.name = "Arial"
+    base.font.size = Pt(9.5)
+    grey = RGBColor(0x52, 0x51, 0x4E)
+
+    def para(text, size=9.5, bold=False, colour=None, after=4, italic=False):
+        p = doc.add_paragraph()
+        p.paragraph_format.space_after = Pt(after)
+        r = p.add_run(text)
+        r.font.size = Pt(size)
+        r.bold = bold
+        r.italic = italic
+        if colour is not None:
+            r.font.color.rgb = colour
+        return p
+    para("Spoorbeeld Media B.V. \u00b7 Audience research \u00b7 13 November 2026", 8.5, colour=grey, after=1)
+    para("To: commercial director, rate card 2027 \u00b7 From: Floortje Brugman \u00b7 Subject: Tier G 2027", 8.5,
+         colour=grey, after=10)
+    para("%s clear the 40 per cent Tier G line; Centraal and Binnenstad do not" % names, 13, bold=True, after=8)
+    pic = doc.add_paragraph()
+    pic.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pic.paragraph_format.space_after = Pt(2)
+    pic.add_run().add_picture(png, width=Cm(16.8))
+    para("Source: RVB OV-chipkaart metro journeys 1 October to 4 November 2026 (re-export of 5 November), RVB planning "
+         "model 2026, rate card 2027 Annex A.", 7.5, colour=grey, after=10)
+    para("Three packages qualify for Tier G in 2027: %s at %d, %d and %d per cent of the %s regular riders. %s is the "
+         "nearest below the line at %d per cent." % (names, reach[tier[0]], reach[tier[1]], reach[tier[2]],
+                                                     format(f["regular_riders"], ","), below, reach[below]), after=6)
+    para("Centraal and Binnenstad both come to %d per cent. Put every change of trains where the line map puts it and "
+         "they would reach %d and %d per cent, but the journeys' own durations show that on weekday peaks, 07:00 to "
+         "09:30 and 16:00 to 18:30, trains from the north branch run on to the east branch and trains from the west run "
+         "on to the south. The north-east and west-south commuters, the largest flows, stay on board through Centraal "
+         "and never use the interchange passage; the north-south and west-east commuters change there instead."
+         % (reach["Centraal"], lm["Centraal"], lm["Binnenstad"]), after=10)
+    para("Regular riders are passenger cards with a metro journey in each calendar week from 5 October to 1 November "
+         "2026; staff and service cards are left out (rate card 3.3). A journey without a check-out counts its check-in "
+         "hall only (3.4). Make-good, the screens on sale on 1 January and net revenue by package are in "
+         "tier_g_2027.xlsx.", 8, colour=grey, italic=True, after=0)
+    doc.core_properties.title = "Tier G 2027"
+    doc.save(path)
+    IO.repack_xlsx(path, "Floortje Brugman", "Floortje Brugman", "2026-11-13T14:30:00Z", "2026-11-13T16:10:00Z",
+                   "Tier G 2027", "Spoorbeeld Media B.V.", application="Microsoft Office Word")
 
 
 def write_all(target, golden, gen):
