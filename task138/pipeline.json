@@ -3,12 +3,12 @@
  "status": "BUILD",
  "domain": "physical-environmental-sciences/hydrology-flood-frequency (client domain physical-environmental-sciences; world: a fictional Midwestern river town's levee district deciding its 2027 levee raise against the 1 per cent annual chance flood)",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build complete; stage 4 (isolated leak reader and determinism judge) is the main session",
+ "stage": 4,
+ "stage_name": "stage 4 round 1 repaired in the generator; awaiting the re-judge",
  "updated": "2026-11-01",
  "stump": "The default path fits LS-02's log-Pearson Type III curve to the Orrinsford record as published and files no raise (0 ft, a 95,000 cfs design flood), because it never asks whether the 1962 to 2008 peaks belong to the river as it now runs: the six levees between Coyle Bridge and Orrinsford, all raised by October 2008, no longer let their floodplains take the top off a big flood; rebuilt for the present river (Coyle Bridge x 1.078 before 2009) the design flood is 110,000 cfs and the crown needs 2 ft.",
  "architecture": 2,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-01",
@@ -16,20 +16,46 @@
  },
  "leak": {
   "leak_py": "REVIEW, no LEAK (2026-11-01, --asof 2026-11-09)",
-  "reader": ""
+  "reader": "round 1: question 6 mostly rule application with one analytical judgement left; realism tells fixed"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.gate_g, repeat.question_form)",
   "nearest": "0.07 task255 lineage",
-  "surface": "exit 0; five pairs promoted for the author's adjudication (task136, task139 by consecutive-build surface percentile at 0.100; task171, task168, task104 on card axes the card differentiates)"
+  "surface": "exit 0; five pairs promoted for the author adjudication (task136, task139, task171, task168, task104)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "round 1 (2026-11-01): failing gates C and E; Gate G pass, Gate H pass (decisive step analytical); the brief carried the graded blocks inline, so the round broke derive-first and does not spend the one re-judge"
  },
- "returned": [],
- "resume": "Stage 4 in the main session: the isolated leak reader and the determinism judge on the final cut (target.zip 1ceb1182); fix every finding in the generator, rebuild, re-run the free gates, then ship.",
+ "returned": [
+  {
+   "round": 1,
+   "date": "2026-11-01",
+   "source": "stage 4 judge and leak reader (main session)",
+   "findings": [
+    "main call Gate C: the 18 water years since the last raise met LS-02 s.2 and s.8 as written (1 ft)",
+    "extension forms 111.2k to 113.6k, the top over the 112,500 edge",
+    "ask B Gate C: the ORF2 pre-swap offset not forced (Coyle hourly crests 3 to 5 h after the published times)",
+    "ask B rounding: whole hours admitted truncation",
+    "ask A: reach descriptors with no shipped source; surveys reach means differing from the paired figure",
+    "realism: Table 4 uniform fall, smooth crown, inspection summary narrative",
+    "leak reader question 6: mostly rule application with one analytical judgement left (record homogeneity)"
+   ],
+   "repair": [
+    "LS-02 s.3 files the window: one annual peak discharge for every water year since the Orrinsford gauge opened in water year 1962",
+    "LS-02 s.8: Discharges are taken from the State Water Survey published records; the district loggers record stage for flood warning only",
+    "relation steadier (intervening share sd 0.009, noise 0.0055, mean 0.065): six forms 110,260 to 110,477, every chance 0.027 or more inside its bin",
+    "published peak times set from the agency hourly crests; two ORF2 loggers overlap three days; all clock routes at 6 h",
+    "every lead time fraction 0.1 to 0.4 h; Coyle datum change moved to October 2019; sill 616.95 ft",
+    "reach descriptors dropped; both surveys every 100 ft, realignment 700 ft, one-to-one pairing",
+    "Table 4 reach slopes and cross-section effects; crown low spots, tie-in step, floodwall top; inspection as a ratings report",
+    "Three rules: the window is a WHAT and the homogeneity judgement stays the decisive step"
+   ],
+   "target_zip": "81bc1b75"
+  }
+ ],
+ "resume": "The re-judge (round 2) on the repaired cut (target.zip 81bc1b75), derive-first with no graded blocks in the brief; then the leak reader if a document changed, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -51,13 +77,13 @@
   "target_zip": "19 members, 2,541,365 bytes, sha256 50c887dca427e7ad, each byte-identical to target/ on the final rebuild"
  },
  "build": {
-  "checks": "88 of 88",
-  "verify": "28 of 28",
+  "checks": "102 of 102",
+  "verify": "30 of 30",
   "byte_identical": "two builds byte-identical over 17 files",
-  "figures_check": "80 of 80",
+  "figures_check": "81 of 81",
   "voice_check": "PASS, 999 characters",
   "ceiling": "pair 28.5, mirror leakage 0.0",
-  "target_zip_sha256": "1ceb11827588fdf4f589d1e172de81bffee0faf53c815e0781a3d2d7a6a785f6",
+  "target_zip_sha256": "81bc1b755d580b192f921eeca93774a96b9c50081276155baa0c8a09fa54be99",
   "as_of": "2026-11-09"
  }
 }

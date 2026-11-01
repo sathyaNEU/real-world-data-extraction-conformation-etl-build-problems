@@ -66,17 +66,17 @@ CAMERAS = [
 MODEL = {s: m for s, m, _ in CAMERAS}
 
 PLACEMENTS = [
-    # Wendmere (pilot A): the NR-40 until the NR-70 went in on Saturday 8 February 2025
-    ("HO-NR40-180317", "WM", D(2018, 4, 23), D(2025, 2, 8), "Replaced"),
-    ("HO-NR70-250240", "WM", D(2025, 2, 8), None, "New installation"),
+    # Wendmere (pilot A): the NR-40 until the NR-70 went in on Saturday 1 March 2025
+    ("HO-NR40-180317", "WM", D(2018, 4, 23), D(2025, 3, 1), "Replaced"),
+    ("HO-NR70-250240", "WM", D(2025, 3, 1), None, "New installation"),
     # Quarry Hill (pilot B): NR-70 from December 2024, out for repair 12 April to 3 May 2025 with an NR-40 loaner
     ("HO-NR40-180322", "QH", D(2018, 4, 23), D(2024, 12, 14), "Replaced"),
     ("HO-NR70-241188", "QH", D(2024, 12, 14), D(2025, 4, 12), "Out for repair"),
     ("HO-NR40-190547", "QH", D(2025, 4, 12), D(2025, 5, 3), "Loaner"),
     ("HO-NR70-241188", "QH", D(2025, 5, 3), None, "Returned from repair"),
-    # Yarrowby (pilot C): NR-40 to 1 February 2025, NR-70 after, an NR-40 loaner 7 to 21 June 2025 and 9 to 30 May 2026
-    ("HO-NR40-180355", "YB", D(2018, 6, 4), D(2025, 2, 1), "Replaced"),
-    ("HO-NR70-250251", "YB", D(2025, 2, 1), D(2025, 6, 7), "Out for repair"),
+    # Yarrowby (pilot C): NR-40 to 22 February 2025, NR-70 after, an NR-40 loaner 7 to 21 June 2025 and 9 to 30 May 2026
+    ("HO-NR40-180355", "YB", D(2018, 6, 4), D(2025, 2, 22), "Replaced"),
+    ("HO-NR70-250251", "YB", D(2025, 2, 22), D(2025, 6, 7), "Out for repair"),
     ("HO-NR40-190547", "YB", D(2025, 6, 7), D(2025, 6, 21), "Loaner"),
     ("HO-NR70-250251", "YB", D(2025, 6, 21), D(2026, 5, 9), "Returned from repair"),
     ("HO-NR40-190502", "YB", D(2026, 5, 9), D(2026, 5, 30), "Loaner"),
@@ -101,19 +101,23 @@ PLACEMENTS = [
     ("HO-NR70-251130", "SC", D(2025, 10, 18), D(2026, 4, 4), "Out for repair"),
     ("HO-NR40-190470", "SC", D(2026, 4, 4), D(2026, 4, 25), "Loaner"),
     ("HO-NR70-251130", "SC", D(2026, 4, 25), None, "Returned from repair"),
-    # Veldane: NR-70 from July 2025; failed 23 April 2026, on an NR-40 loaner since 2 May (board on back-order)
+    # Veldane: NR-70 from July 2025; failed 16 October 2025, on an NR-40 loaner from 25 October until the repaired
+    # camera came back on 12 September 2026 (board on back-order)
     ("HO-NR40-190466", "VD", D(2019, 8, 26), D(2025, 7, 19), "Replaced"),
-    ("HO-NR70-250694", "VD", D(2025, 7, 19), D(2026, 5, 2), "Out for repair"),
-    ("HO-NR40-190533", "VD", D(2026, 5, 2), None, "Loaner"),
+    ("HO-NR70-250694", "VD", D(2025, 7, 19), D(2025, 10, 25), "Out for repair"),
+    ("HO-NR40-190533", "VD", D(2025, 10, 25), D(2026, 9, 12), "Loaner"),
+    ("HO-NR70-250694", "VD", D(2026, 9, 12), None, "Returned from repair"),
     # Brackenfield: still on its NR-40
     ("HO-NR40-190470", "BF", D(2019, 8, 26), D(2026, 4, 4), "Moved"),
     ("HO-NR40-180381", "BF", D(2026, 4, 4), None, "Moved"),
-    # Kestle Road: NR-70 from September 2025; failed 15 April 2026, on an NR-40 loaner since 25 April
+    # Kestle Road: NR-70 from September 2025; failed 13 October 2025, on an NR-40 loaner from 18 October until the
+    # repaired camera came back on 5 September 2026
     ("HO-NR40-190502", "KN", D(2019, 10, 14), D(2025, 9, 20), "Replaced"),
-    ("HO-NR70-250931", "KN", D(2025, 9, 20), D(2026, 4, 25), "Out for repair"),
-    ("HO-NR40-181014", "KN", D(2026, 4, 25), None, "Loaner"),
+    ("HO-NR70-250931", "KN", D(2025, 9, 20), D(2025, 10, 18), "Out for repair"),
+    ("HO-NR40-181014", "KN", D(2025, 10, 18), D(2026, 9, 5), "Loaner"),
+    ("HO-NR70-250931", "KN", D(2026, 9, 5), None, "Returned from repair"),
     # Hollinmoor: still on its NR-40
-    ("HO-NR40-180355", "HM", D(2025, 2, 1), None, "Moved"),
+    ("HO-NR40-180355", "HM", D(2025, 2, 22), None, "Moved"),
 ]
 
 
@@ -127,8 +131,8 @@ def camera_on(code, d):
 FAULTS = [
     # (serial, location, fault date (a clinic day), swap Saturday the loaner went in, repair note)
     ("HO-NR70-250677", "OF", D(2026, 2, 10), D(2026, 2, 14), "Flash module fault"),
-    ("HO-NR70-250694", "VD", D(2026, 4, 23), D(2026, 5, 2), "Sensor board failure, part on back-order"),
-    ("HO-NR70-250931", "KN", D(2026, 4, 15), D(2026, 4, 25), "Sensor board failure, part on back-order"),
+    ("HO-NR70-250694", "VD", D(2025, 10, 16), D(2025, 10, 25), "Sensor board failure, part on back-order"),
+    ("HO-NR70-250931", "KN", D(2025, 10, 13), D(2025, 10, 18), "Sensor board failure, part on back-order"),
     ("HO-NR70-251130", "SC", D(2026, 3, 30), D(2026, 4, 4), "Joystick and focus drive fault"),
     ("HO-NR70-250251", "YB", D(2026, 5, 1), D(2026, 5, 9), "Flash module fault"),
     ("HO-NR70-250689", "PB", D(2026, 6, 3), D(2026, 6, 13), "Chin rest motor and alignment"),
@@ -149,6 +153,8 @@ class World:
         self.rng = {k: np.random.default_rng(s) for k, s in zip(
             ["val", "dep", "pat", "grade", "orders", "reads", "registry", "outside", "tickets", "dash", "survey",
              "misc", "manual", "extra"], kids)}
+        vs = np.random.SeedSequence([seed, 1000 + P.VAL_STREAM]).spawn(2)
+        self.rng["val"], self.rng["grade"] = np.random.default_rng(vs[0]), np.random.default_rng(vs[1])
         self.clinic = {c[0]: c for c in P.CLINICS}
         self.make_patients()
         self.make_validation()
@@ -198,7 +204,7 @@ class World:
         r = self.rng["val"]
         days = {lab: [d for d in daterange(P.VAL_START, P.VAL_END) if is_clinic_day(d, code)]
                 for lab, code in P.PILOTS.items()}
-        n_by = {"A": 1176, "B": 1114, "C": 1121}
+        n_by = {"A": 1512, "B": 1468, "C": 1497}
         self.validation = []
         sid = 0
         for lab in ["A", "B", "C"]:

@@ -2,6 +2,7 @@
 import datetime as dt
 
 SEED = 5327
+VAL_STREAM = 0             # the validation study's own draws (enrolment, reads, grading)
 ASSEMBLED = dt.datetime(2026, 11, 16, 16, 40, 0)        # every file's mtime, the in-fiction export date
 ASOF = dt.date(2026, 11, 16)
 
@@ -17,7 +18,7 @@ CAMERA_MAKER = "Halvard Optics"
 REF_START = dt.date(2025, 10, 1)
 REF_END = dt.date(2026, 9, 30)
 VAL_START = dt.date(2025, 1, 13)
-VAL_END = dt.date(2025, 6, 27)
+VAL_END = dt.date(2025, 8, 22)
 
 # the vendor's operating points: a screen refers when its DR score is at or above the cutoff, or it is ungradable
 OPS = [("Standard", 50), ("Enhanced", 42), ("High", 34), ("Maximum", 26)]
@@ -25,7 +26,7 @@ FLOOR = 0.85                 # governance standard: sensitivity at least 85 per 
 OVERREAD_CAPACITY = 7200     # reading center agreement: overreads a contract year
 
 # the AI's latent score model (score = 100 * logistic(latent))
-MU_REF = {"NR-70": 1.025, "NR-40": 0.138}    # referable eyes, by camera model
+MU_REF = {"NR-70": 1.18, "NR-40": 0.138}     # referable eyes, by camera model
 MU_REF_AGE75 = -0.22                         # older referable patients score a little lower on both models
 SD_REF = 0.605                               # spread of the latent among referable eyes
 MU_NON = -1.40                               # non-referable
