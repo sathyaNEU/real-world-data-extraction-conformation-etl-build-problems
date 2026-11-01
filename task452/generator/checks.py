@@ -239,6 +239,12 @@ def main():
     trips = len(re.findall(r"MAIN BURNER\s+TRIP", jl0))
     offs = len(re.findall(r"KILN \d FEED\s+OFF", jl0))
     check("A1 and A2 organ: unplanned stops are logged as burner trips, the planned shutdowns as feed off", trips >= 10 and offs == 2, "%d trips, %d feed off" % (trips, offs))
+    check("A3 licence 1.6 files the conversion basis (air at 21 per cent oxygen)", "oxygen content of air taken as 21%" in lic)
+    a2l = A.ask2(TGT, prefer_logger=True)
+    for k in ("K1", "K2"):
+        check("A3 %s NOx at the filed 21 per cent under both overlap choices (historian kept, logger preferred)" % k,
+              rh(a2[k]["total"]) == figs["nox_t_%s" % k] == rh(a2l[k]["total"]) and edge(a2l[k]["total"]) >= 0.3,
+              "%.2f and %.2f" % (a2[k]["total"], a2l[k]["total"]))
     a2c = A.ask2(TGT, logger_converted_again=True)
     check("A3 device: the logger's concentrations read as if at 10 per cent oxygen miss both kilns",
           all(rh(a2c[k]["total"]) != rh(a2[k]["total"]) for k in a2))

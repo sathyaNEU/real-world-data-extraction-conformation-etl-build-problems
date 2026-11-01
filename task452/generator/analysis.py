@@ -417,7 +417,7 @@ def ask1_historian(target, prorate_gap=True):
 
 
 # ------------------------------------------------------------------------------------------------- ask 2
-def ask2(target, convert=True, use_logger=True, prorate=False, logger_converted_again=False):
+def ask2(target, convert=True, use_logger=True, prorate=False, logger_converted_again=False, prefer_logger=False):
     hdr, rows = read_historian(target)
     seen = set()
     hist = {"K1": {}, "K2": {}}
@@ -447,6 +447,11 @@ def ask2(target, convert=True, use_logger=True, prorate=False, logger_converted_
         logger[stack[r[1]]][start] = c * float(r[4]) * 0.5 / 1e9
     year0 = dt.datetime(2026, 1, 1, tzinfo=UTC)
     allslots = [year0 + dt.timedelta(minutes=30 * i) for i in range(365 * 48)]
+    if prefer_logger:
+        for k in ("K1", "K2"):
+            for t, m in logger[k].items():
+                if t in hist[k]:
+                    hist[k][t] = m          # the analysers' own logger preferred where both hold the half-hour
     for k in ("K1", "K2"):
         tot = sum(hist[k].values())
         missing = [t for t in allslots if t not in hist[k]]

@@ -619,7 +619,7 @@ def write_licence(target):
         ("1.4  Compound operation: the time during which a kiln is producing clinker and its raw mill is running, so that the kiln gas passes through the raw mill before the bag filter.", "", 9),
         ("1.5  Direct operation: the time during which a kiln is producing clinker and its raw mill is stopped, so that the kiln gas passes from the conditioning tower to the bag filter.", "", 9),
         ("1.8  Hours: where these conditions require hours to be stated, the hours are the elapsed time from the start to the end of each period, summed, and not a count of clock hours.", "", 9),
-        ("1.6  Reference conditions: 273 K, 101.3 kPa, dry gas, 10% oxygen.", "", 9),
+        ("1.6  Reference conditions: 273 K, 101.3 kPa, dry gas, 10% oxygen. A concentration measured at another oxygen content is converted to the reference oxygen content with the oxygen content of air taken as 21%.", "", 9),
         ("1.7  Calendar year: 1 January to 31 December, Irish local time.", "", 9),
         ("", "", 9),
         ("Condition 5  Emissions to air", "B", 10),

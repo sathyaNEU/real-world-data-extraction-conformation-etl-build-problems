@@ -1,10 +1,10 @@
 {
  "task": "task452",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences / emissions-inventory (a cement works, kiln mercury to air)",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-01",
  "stump": "A competent analyst carries each stack's 2026 tested mercury rate over its kiln's hours on feed and files the works at 70 kg, under the 85 kg load, with no carbon injection; the year's release is the mercury the kilns took in less what left in clinker and in the filter dust kiln 1 bled to silo S7: 68 kg and 83 kg, 151 kg, 66 kg over.",
  "architecture": 3,
@@ -14,23 +14,23 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-11-01, as-of 2027-01-11; three REVIEW lines answered in the note",
-  "reader": "clean (round 1): no leak, question 6 analytical; the mild note on condition 5.6 stays as the filed WHAT"
+  "leak_py": "REVIEW ruled (2026-11-01, --asof 2027-01-11)",
+  "reader": "clean in both rounds; question 6 analytical each round; the reader's sections appended to task452/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.decision, repeat.deliverables), no BLOCK, 2026-11-01",
+  "heart": "WARN 2026-11-01 at the ship gate (repeat.deliverables, repeat.question_form), no BLOCK",
   "nearest": "0.08 task474 v3 lineage",
   "surface": "5 pairs promoted at surface 0.10 (corpus pct 99), no hard tell; persona Naomi Lynskey"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE (round 1, derive-first order kept)",
-  "report": "stage 4 round 1, main session; two advisory forks (hours reading, fuel mercury source) closed in the generator before the re-judge"
+  "verdict": "round 2 DETERMINISTIC on the call, the mercury and every hours figure; its one finding (the unfiled ambient-oxygen basis on supplementary 4) closed by the wording it asked for, no graded figure moved",
+  "disposition": "round 1 APPROVE with two forks closed by construction and a definition; round 2 FIX_NOW closed by filing 21 per cent oxygen in licence 1.6",
+  "report": "task452/determinism_check_report.md"
  },
  "returned": [],
- "resume": "the one re-judge on the rebuilt target.zip (round 1 fixes: SF13 hours definition, SF14 certificates); then ship",
+ "resume": "Shipped 2026-11-01 (architecture 3, ETL): at its 2026 release the works would emit 151 kg of mercury, 66 kg over the 85 kg load from 2028, so it needs carbon injection; target.zip sha256 d46d00ed. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "source_note": "seed ET09 (analytical_tasks/07_data_extraction_conformation) not used: its world is health economics, held by task451; the pairing is the client's emissions-inventory ETL task type",
  "lineage_note": "architecture 2 (forest programme deforestation area, emissions-inventory) shipped 2026-10-14, no portal result, re-rooted 2026-11-01 at the Batch 3 queue reset; architecture 1 shipped 2026-10-13 (judge pass 1 FIX_NOW, re-judge DETERMINISTIC, APPROVE; delivered, pending review) and was re-rooted 2026-10-14 at the author's request: its decisive step, a concentration-discharge rating curve, is the field's standard load method",
@@ -67,6 +67,20 @@
     "test report closing lines varied per report"
    ],
    "figures_moved": "none"
+  },
+  {
+   "round": 2,
+   "date": "2026-11-01",
+   "judge": "re-judge (order kept): main call and every hours figure reproduced; FIX_NOW on the NOx ask only (ambient oxygen constant unfiled)",
+   "leak_reader": "clean (question 6 analytical)",
+   "fixes": [
+    "licence 1.6 files the conversion basis: oxygen content of air taken as 21%; NOx asserted at 931.90 and 605.00 t under both overlap choices",
+    "metadata.json declares a reason for each distractor (quarry haulage 1.69 Mt limestone against 2.15 Mt in the production records, not split by kiln line)"
+   ],
+   "figures_moved": "none (figures.json and submission.md byte-identical before and after)"
   }
- ]
+ ],
+ "build": {
+  "target_zip": "sha256 d46d00ed (11 members, each byte-identical to target/)"
+ }
 }

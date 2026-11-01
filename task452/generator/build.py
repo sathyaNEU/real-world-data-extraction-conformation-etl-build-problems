@@ -92,6 +92,11 @@ def metadata(files):
         "deliverables": ["kiln_mercury_memo_2026.pdf", "kiln_emissions_2026.xlsx"],
         "distractor_files": ["target/fuel_receipts_2026.csv", "target/quarry_extraction_2026.csv",
                              "target/weighbridge_byproducts_2026.csv"],
+        "distractor_reasons": {
+            "target/quarry_extraction_2026.csv": "haulage from the quarry faces to the crusher: 1.69 Mt of limestone hauled in 2026 against 2.15 Mt of limestone in the production records, and not split by kiln line, so it gives neither kiln's raw material intake",
+            "target/fuel_receipts_2026.csv": "fuel purchases with the suppliers' certificates, by consignment received rather than by fuel fired, and not split by kiln line",
+            "target/weighbridge_byproducts_2026.csv": "by-product dispatches off site (filter dust, refractory waste, scrap), by ticket and truck rather than by kiln line or month of production",
+        },
         "as_of": "2027-01-11",
         "files": [],
     }
