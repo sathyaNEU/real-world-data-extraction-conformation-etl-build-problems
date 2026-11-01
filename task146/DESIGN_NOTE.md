@@ -91,11 +91,7 @@ same-day opening it funded keeps it in instant-access savings and puts the hedge
   a move between issues is kept rather than run off.
 - Not semantics: every field, code, unit and date read correctly (pence converted, ES02 read by date, local dates)
   still leaves the account cohort at GBP 125 million; no field marks a move, and no definition is misread.
-- Not rule application: no filed rule or procedure links a closure to an opening; the policy files what is kept (held
-  in instant-access savings at every month end) and the products; the enumerated family (total-book ratio, account
-  cohorts, money followed into instant-access openings, money followed into bonds too) spreads GBP 125 to 221 million,
-  the standing family once the policy excludes bonds is the money route alone at GBP 165 million (pooled and averaged
-  start dates both 165), and what rules the rest out is the policy's own words, quiet.
+- Not rule application: FAILS the 2026-11-01 lines (commits 19c4263b, 273af233). The decisive step is an inclusion over a second source: the event log's same-day CLOSE and OPEN pairs decide which balances count as kept. Filed, it is a rule executed: policy 7.3 counts a balance as kept "to the extent the Society held it in instant-access savings at every month end", which names the money a member moves into a new issue, and the event log lists every such move, so linking it executes the estimand (task445 v2, Gate H3). Unfiled, the stable balance is an intent phrase, the literal reading files the account cohort, and the golden needs a withheld rule (task468 v5). The account-cohort route also contradicts 7.3 for any analyst who sees the moves, so it is not a route a strong analyst would file without contradicting a filed sentence. Once the money is followed nothing is left to estimate: the link is exact to the penny (4,312 of 4,312 switches recovered), and the run-off after it is arithmetic on the extract.
 - Analyst test: the easy route, account cohorts, ends on a GBP 125 million hedge and a GBP 23 million new swap.
 - Estimand: ALM Policy section 7.3 and 7.4 (trentmoor_alm_policy_structural_hedge_v4.pdf): products, the kept balance,
   the start dates taken together, the first to third anniversaries, the hedge to the nearest GBP 1 million.
@@ -254,3 +250,11 @@ edge (checks.py), pooled and averaged start dates agree on every graded figure (
   opponent's first move once the default is filed); a practice closure dispersed through households (task124's group
   members' records); reactive inspections inflating a fault rate (filing the scheduled programme names the population,
   task269 v4's law).
+- Architecture 2 as a whole (2026-11-01, on paper at stage 2, before any reader or judge): spent by the rule
+  application lines the skills took from the day's deaths (19c4263b: a filed estimand naming the members one
+  source misses, shipped beside a source that lists them, makes linking it rule application; 273af233: an
+  inclusion or exclusion over a second source has no safe filing). Following the money across a member's move
+  between instant-access issues is exactly that inclusion: policy 7.3 files it and the event log lists every
+  move, while dropping 7.3's wording leaves the account cohort as the literal reading. The world, generator and
+  goldens stay green (target.zip 06b54fc7) as history; the slot re-roots into another world with the decisive
+  step drawn as an estimate no shipped source lists.

@@ -99,12 +99,13 @@
   "differentiation": {
     "task464": "task464 v1 fits each unit's response to an external driver and finds the units whose response changed partway through the record; task146 has no response model and no change point: the deciding quantity is the money a savings book keeps, and the step is linking each closing payment to the same-day opening it funded so a member's move between instant-access issues is not booked as run-off."
   },
-  "notes": "Axes redrawn at the post-registration check (2026-11-01): committee_or_panel and monitoring_export were held by task231 v2 and task145 v2, filed minutes earlier; the Board approves the hedge in this mutual (ALCO recommends), and the reset acts on the treasury's swap register, so the honest labels are board_of_directors and register.",
+  "notes": "Axes redrawn at the post-registration check (2026-11-01): committee_or_panel and monitoring_export were held by task231 v2 and task145 v2, filed minutes earlier; the Board approves the hedge in this mutual (ALCO recommends), and the reset acts on the treasury's swap register, so the honest labels are board_of_directors and register. Architecture 2 spent 2026-11-01 on paper at stage 2: following the money across same-day close-and-open pairs is an inclusion over a second source with no safe filing (19c4263b, 273af233).",
   "registered": "2026-11-01T00:42:44Z",
   "shell": {
     "question form": "how-much",
     "second-sentence opener": "for",
     "rounding opener": "balances",
     "deliverable set": "pdf+xlsx"
-  }
+  },
+  "architecture_spent": true
 }
