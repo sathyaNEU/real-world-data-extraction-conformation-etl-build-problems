@@ -354,3 +354,90 @@ def main_call(L):
                  s_raw=statewide(E, par["s_raw"], par["fp"]), s_fwd=statewide(E, par["s_fwd"], par["fp"]),
                  s_bwd=statewide(E, par["s_bwd"], par["fp"]), sandwich=statewide(E, par["s_sandwich"], par["fp"]))
     return dict(E=E, PK=PK, pr=pr, fam=fam, par=par, rungs=rungs, state=state)
+
+
+# ------------------------------------------------------------------------------------------------------- asks
+INTERVIEW = {"1", "201"}
+NOT_ELIGIBLE = {"5", "6", "223", "224", "225"}
+NO_ONE_HOME = {"3", "216"}
+
+
+def area_of(L):
+    """County to workforce area from the areas workbook; county 59041 by ZIP."""
+    cty = {}
+    for wda, name, counties, board in L["areas"]:
+        for c in str(counties).split(","):
+            cty.setdefault(c.strip(), []).append(str(wda))
+    z = {str(r[0]): str(r[1]) for r in L["zips"]}
+    return cty, z
+
+
+def unit_quarters(L, quarters=REF, dedup=True, split041="zip"):
+    D = L["D"]
+    D = D[D["SURVEY_QTR"].isin(quarters)].copy()
+    cty, z = area_of(L)
+    if split041 == "zip":
+        D["area"] = [z[zp] if c == "59041" else cty[c][0] for c, zp in zip(D["CTY"], D["ZIP"])]
+    else:
+        D["area"] = [split041 if c == "59041" else cty[c][0] for c, zp in zip(D["CTY"], D["ZIP"])]
+    D["code"] = D["DISPO"].astype(str)
+    if not dedup:
+        D["interviewed"] = D["code"].isin(INTERVIEW)
+        D["visit"] = D["DISPO_DATE"]
+        return D
+    g = D.groupby(["FRAMEID", "SURVEY_QTR"])
+    first = g.first()[["area"]]
+    first["interviewed"] = g["code"].agg(lambda s: bool(set(s) & INTERVIEW))
+    nonint = D[~D["code"].isin(INTERVIEW)].sort_values("DISPO_DATE").groupby(["FRAMEID", "SURVEY_QTR"]).last()
+    first["code"] = nonint["code"]
+    first["visit"] = nonint["DISPO_DATE"]
+    first.loc[first["interviewed"], "code"] = "I"
+    return first.reset_index()
+
+
+def frame_deleted_at(L, U, void_in_error=True):
+    """Whether each unit-quarter's housing unit stood deleted from the frame (vacant or demolished) on the visit date.
+    void_in_error: a deletion later restored as entered in error never took effect."""
+    F = L["F"]
+    dels = F[(F["ACTION"] == "DELETE") & F["REASON"].isin(["VACANT", "DEMOLISHED"])][["FRAMEID", "EFFECTIVE"]]
+    rst = F[(F["ACTION"] == "RESTORE")][["FRAMEID", "EFFECTIVE"]].rename(columns={"EFFECTIVE": "R"})
+    m = U[["FRAMEID", "SURVEY_QTR", "visit"]].merge(dels, on="FRAMEID", how="inner")
+    m = m[m["EFFECTIVE"] <= m["visit"]]
+    if void_in_error:
+        r = m.merge(rst, on="FRAMEID", how="left")
+        r["voided"] = r["R"].notna() & (r["R"] >= r["EFFECTIVE"])
+        void = r.groupby(["FRAMEID", "SURVEY_QTR", "EFFECTIVE"])["voided"].any().reset_index()
+        m = void[~void["voided"]]
+    else:
+        r = m.merge(rst, on="FRAMEID", how="left")
+        r["restored_before"] = r["R"].notna() & (r["R"] >= r["EFFECTIVE"]) & (r["R"] <= r["visit"])
+        void = r.groupby(["FRAMEID", "SURVEY_QTR", "EFFECTIVE"])["restored_before"].any().reset_index()
+        m = void[~void["restored_before"]]
+    keys = set(zip(m["FRAMEID"], m["SURVEY_QTR"]))
+    return np.array([(f, q) in keys for f, q in zip(U["FRAMEID"], U["SURVEY_QTR"])])
+
+
+def ask_rates(L, frame="golden", dedup=True, split041="zip", interview_proves=True):
+    """Household response rate and noncontact rate by area over the four quarters, per cent.
+    frame: golden (frame state at the visit, deletions restored as in error void), asof (state at the visit as the
+    log then stood), none (disposition codes only)."""
+    U = unit_quarters(L, dedup=dedup, split041=split041)
+    if not dedup:
+        U = U.rename(columns={"interviewed": "interviewed"})
+        U["code"] = np.where(U["interviewed"], "I", U["code"])
+    ne = U["code"].isin(NOT_ELIGIBLE).values
+    if frame != "none":
+        dz = frame_deleted_at(L, U, void_in_error=(frame == "golden"))
+        if interview_proves:
+            dz = dz & ~U["interviewed"].values
+        ne = ne | dz
+    U["eligible"] = ~ne
+    U["nc"] = U["eligible"] & U["code"].isin(NO_ONE_HOME)
+    out = {}
+    for a in AREAS:
+        g = U[U["area"] == a]
+        el = g["eligible"].sum()
+        out[a] = dict(rr=float(100 * (g["interviewed"] & g["eligible"]).sum() / el),
+                      nc=float(100 * g["nc"].sum() / el), eligible=int(el),
+                      interviewed=int((g["interviewed"] & g["eligible"]).sum()))
+    return out

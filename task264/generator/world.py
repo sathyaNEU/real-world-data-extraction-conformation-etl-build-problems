@@ -247,11 +247,12 @@ def extras(w):
             dur = 1 if rx.random() < 0.25 else 2
         unl = rx.random()
         rn = stream(row.rkey[0], row.rkey[1], row.rkey[2] + 6000, 8)
-        not_invited = bool(reg >= NEW_PLATFORM and rn.random() < NOT_INVITED[row.prov])
+        ni_u = rn.random()
+        not_invited = bool(reg >= NEW_PLATFORM and ni_u < NOT_INVITED[row.prov])
         recs.append(dict(district=dist, gp=gp, adm_off=adm_off, booked=booked, reg=reg, pre_c=pre_c,
                          n_pre=n_pre, pre_ans=pre_ans, pre_tot=pre_tot, pre_score=pre_score,
                          n_m12=n_m12, m12_c=m12_c, post_ans=post_ans, post_tot=post_tot, post_score=post_score,
-                         dur=dur, unl_u=unl, not_invited=not_invited, sex_code=2 if row.female else 1,
+                         dur=dur, unl_u=unl, ni_u=ni_u, not_invited=not_invited, sex_code=2 if row.female else 1,
                          yob=(row.op_date.year - int(row.age) - (1 if rx.random() < 0.5 else 0))))
     x = pd.DataFrame(recs, index=w.index)
     w = pd.concat([w, x], axis=1)
@@ -259,7 +260,7 @@ def extras(w):
     return w
 
 
-NOT_INVITED = {40117: 0.0064, 40152: 0.0056, 40188: 0.0089, 41206: 0.0123, 41231: 0.0000, 41274: 0.0128, 41309: 0.0157, 41355: 0.0196, 41388: 0.0134, 41402: 0.0027}
+NOT_INVITED = {40117: 0.0058, 40152: 0.0048, 40188: 0.0074, 41206: 0.0150, 41231: 0.0078, 41274: 0.0158, 41309: 0.0190, 41355: 0.0166, 41388: 0.0124, 41402: 0.0036}
 UNLINKED = {40117: 0.06, 40152: 0.05, 40188: 0.075, 41206: 0.09, 41231: 0.08, 41274: 0.10,
             41309: 0.07, 41355: 0.085, 41388: 0.08, 41402: 0.08}
 

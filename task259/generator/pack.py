@@ -158,10 +158,10 @@ def write_target(W, tdir):
     err_after = set()
     for code, *_ in world.AREAS:
         nc = [h for h in ref_nc if h["area"] == code and A[h["aid"]]["vacant_from"] is None]
-        for k in rng.choice(len(nc), size=int(rng.integers(6, 10)), replace=False):
+        for k in rng.choice(len(nc), size=int(rng.integers(25, 37)), replace=False):
             err_after.add((nc[k]["aid"], nc[k]["q"]))
         cp = [h for h in ref_cp if h["area"] == code and A[h["aid"]]["vacant_from"] is None]
-        for k in rng.choice(len(cp), size=int(rng.integers(1, 4)), replace=False):
+        for k in rng.choice(len(cp), size=int(rng.integers(2, 6)), replace=False):
             err_after.add((cp[k]["aid"], cp[k]["q"]))
     W["err_after"] = err_after
 
