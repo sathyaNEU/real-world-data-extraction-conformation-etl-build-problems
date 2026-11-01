@@ -152,7 +152,9 @@ def figures(rec):
         "stations": 23,
         "c124_max_pct": math.ceil(max(abs(rec["call"]["errs"]["C124"][m]) for m in range(1, 13)) * 1000) / 10,
         "bias_range_pct": [rng_lo, rng_hi],
-        "bias_least": {"station": least[0], "month": MON[least[1] - 1], "pct": round(-least[2] * 100, 1)},
+        # whole per cent, the precision the plan's day carries: at one decimal the least sits 0.004 from an edge and a
+        # 5-minute day prints 14.3 where a 1-minute day prints 14.4; every step from 3 seconds to 30 minutes prints 14 (SF20)
+        "bias_least": {"station": least[0], "month": MON[least[1] - 1], "pct": int(round(-least[2] * 100))},
         "sable": {"may": W.outlook_2027("C107", 5), "june": W.outlook_2027("C107", 6), "top": tops["C107"]},
         "grade_b_pct": 5,
         "short_months": {no: [MON[m - 1] for m in rec["call"]["short"][no]] for no in W.CURRENT if rec["call"]["short"][no]},

@@ -13,7 +13,7 @@ Below the two peaking plants each station's rating, read at the day's mean water
 
 ## 2. Critical Components
 
-1. In every peaking month the published daily discharge at C104 and C105 below Talbot Canyon and C112 and C113 below Merrin Falls falls **14 to 32 per cent** below the day's mean flow, the least at Corriston River at Hollis Bridge (C105) in February (**14.4 per cent**)
+1. In every peaking month the published daily discharge at C104 and C105 below Talbot Canyon and C112 and C113 below Merrin Falls falls **14 to 32 per cent** below the day's mean flow, the least at Corriston River at Hollis Bridge (C105) in February (**14 per cent**)
 2. At Merrin Creek near the mouth (C124) the Vardy River's inflow damps the swing, and the published daily discharge stays within **1.0 per cent** of the day's mean flow in every month
 3. Talbot Canyon peaks in every month but May and June; Merrin Falls, in service from 1 June, peaks from **July**
 4. Sable Creek's May and June flows (**8.65** and **9.44** m3/s) exceed one and a half times its largest gauging (**4.21** m3/s)
@@ -21,7 +21,7 @@ Below the two peaking plants each station's rating, read at the day's mean water
 ## 3. Step-by-Step Solution
 
 1. Graded each station-month of 2027 under sections 3 and 4 of hydrometric_data_standard_ed2.pdf on the flows of water_supply_outlook_2027.xlsx and corriston_hydro_operating_plan_2027.pdf (data_plan_2027.docx, section 2).
-2. Took each station's published daily discharge as data_dictionary.csv defines it, the rating in force applied to the day's mean water level, unchanged in 2027 (data plan, section 1), with the ratings of rating_book_issue2_2026.pdf.
+2. Took each station's published daily discharge as data_plan_2027.docx states it in section 1, the rating in force applied to the day's mean water level, unchanged in 2027, with the ratings of rating_book_issue2_2026.pdf.
 3. Built each peaking day at C104 and C105 below Talbot Canyon and C112, C113 and C124 below Merrin Falls from the operating plan: the minimum release (1.8 and 0.7 m3/s) outside 06:00 to 10:00 and 16:00 to 21:00, the rest of the day's forebay or headpond inflow inside them with 30-minute ramps, plus the local inflow (the outlook's station flow less its TAL-FB or MER-HP row).
 4. Carried each day's flow through the station's rating to the water level and read the rating at the day's mean water level: 14 to 32 per cent below the day's mean flow at C104 and C105 from January to April and July to December, and at C112 and C113 from July, after Merrin Falls' continuous generation through June; at C124 the Vardy River's inflow keeps it within 1.0 per cent.
 5. Applied the extrapolation rule against each rating's gauged top in the rating book: Sable Creek (C107) in May and June only; every other station's flow is steady through the day, so its published discharge equals the month's flow.

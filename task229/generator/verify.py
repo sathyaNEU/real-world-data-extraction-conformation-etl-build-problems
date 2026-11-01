@@ -26,6 +26,23 @@ def text(path):
     return "\n".join(p.extract_text() for p in pypdf.PdfReader(path).pages)
 
 
+# the bundle's own headers (the source systems' field names), mapped to this verifier's names
+HEAD = {"stn_no": "station", "obs_date": "date", "platform_type": "platform", "q_meas": "discharge", "rating_no": "rating",
+        "visit_date": "date", "sample_date": "date"}
+
+
+def bundle_csv(path, as_str=(), **kw):
+    cols = pd.read_csv(path, nrows=0).columns
+    inv = {v: k for k, v in HEAD.items() if k in cols}
+    dt = str if as_str == "all" else {inv.get(c, c): str for c in as_str}
+    return pd.read_csv(path, dtype=dt, **kw).rename(columns=HEAD)
+
+
+def plan_text(tgt):
+    from docx import Document
+    return " ".join(p.text for p in Document(find(tgt, r"data_plan.*\.docx$")).paragraphs)
+
+
 def find(tgt, pat):
     for f in os.listdir(tgt):
         if re.search(pat, f):
@@ -84,12 +101,15 @@ def read_outlook(tgt):
 
 
 def read_register(tgt):
-    return pd.read_excel(find(tgt, r"register.*\.xlsx$"), sheet_name="Stations", dtype={"replaced_by": str})
+    return pd.read_excel(find(tgt, r"register.*\.xlsx$"), sheet_name="Stations", dtype={"replaced_by": str}).rename(columns=HEAD)
 
 
 # ------------------------------------------------------------------------------------------------ the call
 def call(tgt):
     pct, mult = read_standard(tgt)
+    pt = plan_text(tgt)
+    say("the platform's mean water level for the day" in pt and "the day's discharge from that water level through the station's rating in force on the day" in pt
+        and "processed in 2027 as they are now" in pt, "data plan: the published discharge is the rating in force at the day's mean water level, unchanged in 2027")
     rat, top, _ = read_ratings(tgt)
     wins, ramp, plants, cmonths, in_service = read_plan(tgt)
     out = read_outlook(tgt)
@@ -139,12 +159,14 @@ def call(tgt):
 
 # ------------------------------------------------------------------------------------------------ Ask A
 def ask_a(tgt):
-    d = pd.read_csv(find(tgt, r"daily_records.*\.csv$"), dtype=str)
+    d = bundle_csv(find(tgt, r"daily_records.*\.csv$"), "all")
     reg = read_register(tgt)
+    # the day each row covers, as the data plan files it: a GOES platform's UTC day, otherwise the standard's day
+    goes_utc = say("A GOES platform averaged its readings over the UTC day" in plan_text(tgt), "data plan: the GOES day is the UTC day")
     chain = {r.station: r.replaced_by for _, r in reg.iterrows() if isinstance(r.replaced_by, str) and r.replaced_by}
     d = d[(d.date >= "2025-10-01") & (d.date <= "2026-09-30")].copy()
     start = pd.to_datetime(d.date)
-    hours = np.where(d.platform == "GOES", 24, 32)        # the UTC day ends at 00:00Z; the local standard day at 08:00Z
+    hours = np.where((d.platform == "GOES") & goes_utc, 24, 32)   # the UTC day ends at 00:00Z; the local standard day at 08:00Z
     end = start + pd.to_timedelta(hours, unit="h")
     got = pd.to_datetime(d.received_utc.str.rstrip("Z"))
     d = d[(got >= end).values]
@@ -158,8 +180,8 @@ def ask_b(tgt):
     rat, top, eff = read_ratings(tgt)
     t = text(find(tgt, r"rating_book.*\.pdf$")).replace("\n", " ")
     c122_from = date(2026, 6, 4) if "C122) from 4 June 2026" in t else None
-    d = pd.read_csv(find(tgt, r"daily_records.*\.csv$"), dtype={"station": str, "date": str})
-    g = pd.read_csv(find(tgt, r"gaugings.*\.csv$"), dtype={"station": str, "gauging_no": str, "unit": str}, keep_default_na=False)
+    d = bundle_csv(find(tgt, r"daily_records.*\.csv$"), ("station", "date"))
+    g = bundle_csv(find(tgt, r"gaugings.*\.csv$"), ("station", "gauging_no", "unit"), keep_default_na=False)
     reg = read_register(tgt)
     chain = {r.station: r.replaced_by for _, r in reg.iterrows() if isinstance(r.replaced_by, str) and r.replaced_by}
     # superseded ratings: the curve through each site's published pairs before the effective date

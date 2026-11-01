@@ -7,6 +7,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 
+import headers as H
 import params as P
 import postprocess
 import world as W
@@ -43,7 +44,7 @@ def daily_record(df, path):
     out["date"] = [d.isoformat() for d in out.date]
     out["water_level_m"] = [("%.2f" % v) if W.ST[s]["res"] == 0.01 else ("%.3f" % v) for s, v in zip(out.station, out.water_level_m)]
     out["discharge_m3s"] = [_g4(v) for v in out.discharge_m3s]
-    csv(out, path)
+    csv(H.out(out, "daily"), path)
 
 
 def _g4(v):
@@ -58,7 +59,7 @@ def gaugings(G, path):
     out = G[["gauging_no", "station", "measured_utc", "gh_m", "discharge", "unit", "method", "rating", "crew", "notes"]].copy()
     out["gh_m"] = ["%.3f" % v for v in out.gh_m]
     out["discharge"] = ["%.3g" % v for v in out.discharge]
-    csv(out, path)
+    csv(H.out(out, "gaugings"), path)
 
 
 # ------------------------------------------------------------------------------------------------ the register
@@ -96,7 +97,7 @@ def register(path):
     ws.title = "Stations"
     cols = ["station", "name", "river", "river_km", "drainage_area_km2", "established", "status", "closed", "replaced_by",
             "telemetry", "on_platform_since", "goes_slot_utc", "wl_resolution_m", "field_unit", "site_notes"]
-    _hdr(ws, cols, 1)
+    _hdr(ws, [H.name("register", c) for c in cols], 1)
     r = 2
     for no in sorted(W.ST):
         st = W.ST[no]
@@ -168,7 +169,7 @@ def migration(path):
     ws = wb.active
     ws.title = "Cut-overs"
     cols = ["station", "name", "from", "to", "installed", "first_day_new", "goes_removed", "notes"]
-    _hdr(ws, cols, 1)
+    _hdr(ws, [H.name("migration", c) for c in cols], 1)
     r = 2
     for no in sorted(W.ST):
         if no == "C122":
@@ -194,46 +195,7 @@ def visit_log(rows, path):
     df = pd.DataFrame(rows, columns=["date", "station", "crew", "work"])
     df = df.sort_values(["date", "station", "work"], kind="mergesort")
     df["date"] = [d.isoformat() for d in df.date]
-    csv(df, path)
-
-
-# ------------------------------------------------------------------------------------------------ dictionary
-DICT = [
-    ("daily_records_wy2023_wy2026.csv", "station", "station number"),
-    ("daily_records_wy2023_wy2026.csv", "date", "the day the row's water level covers: the UTC day for GOES platforms, the local standard-time day for cellular and Iridium platforms"),
-    ("daily_records_wy2023_wy2026.csv", "water_level_m", "the day's mean water level, the mean of the platform's readings over the day, in metres above the station's gauge datum, to the station's resolution"),
-    ("daily_records_wy2023_wy2026.csv", "discharge_m3s", "the day's discharge, from water_level_m through the station's rating in force on the date, in cubic metres a second"),
-    ("daily_records_wy2023_wy2026.csv", "status", "provisional as received; approved once the annual review has passed the day"),
-    ("daily_records_wy2023_wy2026.csv", "platform", "the telemetry platform that sent the row: GOES, cellular or Iridium"),
-    ("daily_records_wy2023_wy2026.csv", "received_utc", "when the network's data system received the row"),
-    ("gaugings_2016_2026.csv", "gauging_no", "measurement number"),
-    ("gaugings_2016_2026.csv", "station", "station number"),
-    ("gaugings_2016_2026.csv", "measured_utc", "mid-time of the measurement, UTC"),
-    ("gaugings_2016_2026.csv", "gh_m", "gauge height at the measurement, metres above the station's gauge datum"),
-    ("gaugings_2016_2026.csv", "discharge", "measured discharge, in the unit column's unit"),
-    ("gaugings_2016_2026.csv", "unit", "unit of the discharge column"),
-    ("gaugings_2016_2026.csv", "method", "ADCP, current meter or volumetric"),
-    ("gaugings_2016_2026.csv", "rating", "rating number"),
-    ("gaugings_2016_2026.csv", "crew", "field crew"),
-    ("gaugings_2016_2026.csv", "notes", "the crew's field notes"),
-    ("station_register.xlsx", "river_km", "distance from the river's mouth along the channel"),
-    ("station_register.xlsx", "replaced_by", "for a closed station, the number its record continues under: the closed number's daily rows and gaugings are that station's"),
-    ("station_register.xlsx", "telemetry", "the station's platform since its 2026 cut-over"),
-    ("station_register.xlsx", "on_platform_since", "first day on the current platform"),
-    ("station_register.xlsx", "goes_slot_utc", "the GOES transmission slot the station held before its cut-over"),
-    ("station_register.xlsx", "wl_resolution_m", "resolution of the station's water level"),
-    ("station_register.xlsx", "field_unit", "the unit the field software records the station's gaugings in"),
-    ("telemetry_migration_2026.xlsx", "first_day_new", "the first day the new platform reports; the GOES platform reports that day too and is removed the next day"),
-    ("water_supply_outlook_2027.xlsx", "Jan to Dec", "monthly mean flow in 2027, cubic metres a second, most probable"),
-    ("field_visits_wy2026.csv", "work", "what the crew did on the visit"),
-    ("water_quality_grab_samples_2026.csv", "water_temperature_degc", "water temperature at the sample, degrees C"),
-    ("water_quality_grab_samples_2026.csv", "turbidity_ntu", "nephelometric turbidity"),
-    ("water_quality_grab_samples_2026.csv", "conductivity_us_cm", "specific conductance at 25 degrees C"),
-]
-
-
-def dictionary(path):
-    csv(pd.DataFrame(DICT, columns=["file", "column", "description"]), path)
+    csv(H.out(df, "visits"), path)
 
 
 # ------------------------------------------------------------------------------------------------ distractor
@@ -254,9 +216,4 @@ def water_quality(rng, TR, path):
             rows.append([d.isoformat(), no, "%02d:%02d" % (hh, int(rng.integers(0, 60))), round(temp, 1),
                          int(round(cond)), round(turb, 1), round(7.2 + rng.normal(0, 0.25), 2)])
     df = pd.DataFrame(rows, columns=["date", "station", "time_local", "water_temperature_degc", "conductivity_us_cm", "turbidity_ntu", "ph"])
-    csv(df.sort_values(["date", "station"], kind="mergesort"), path)
-
-
-def manifest(path, names, desc, dated):
-    rows = [(n, desc[n][0], desc[n][1], dated[n]) for n in names]
-    csv(pd.DataFrame(rows, columns=["file", "contents", "made_by", "dated"]), path)
+    csv(H.out(df.sort_values(["date", "station"], kind="mergesort"), "quality"), path)

@@ -11,6 +11,7 @@ from datetime import date, datetime, timedelta, timezone
 import numpy as np
 import pandas as pd
 
+import headers as H
 import params as P
 import world as W
 import forward as FW
@@ -21,12 +22,24 @@ MLAB = ["Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", 
         "Jul 2026", "Aug 2026", "Sep 2026"]
 
 
+def read_daily(path, dt=None):
+    dt = dt or {"station": str, "date": str, "status": str, "platform": str, "received_utc": str}
+    return H.back(pd.read_csv(path, dtype=H.dtype("daily", dt)), "daily")
+
+
+def read_gaugings(path, dt=None):
+    dt = dt or {"gauging_no": str, "station": str, "unit": str, "rating": str, "notes": str}
+    return H.back(pd.read_csv(path, dtype=H.dtype("gaugings", dt), keep_default_na=False), "gaugings")
+
+
+def read_register(path):
+    return H.back(pd.read_excel(path, sheet_name="Stations", dtype={"replaced_by": str}), "register")
+
+
 def load(tgt, F):
-    d = pd.read_csv(os.path.join(tgt, F["daily"]), dtype={"station": str, "date": str, "status": str, "platform": str,
-                                                          "received_utc": str})
-    g = pd.read_csv(os.path.join(tgt, F["gaugings"]), dtype={"gauging_no": str, "station": str, "unit": str,
-                                                             "rating": str, "notes": str}, keep_default_na=False)
-    reg = pd.read_excel(os.path.join(tgt, F["register"]), sheet_name="Stations", dtype={"replaced_by": str})
+    d = read_daily(os.path.join(tgt, F["daily"]))
+    g = read_gaugings(os.path.join(tgt, F["gaugings"]))
+    reg = read_register(os.path.join(tgt, F["register"]))
     out = pd.read_excel(os.path.join(tgt, F["outlook"]), sheet_name="Outlook 2027", header=4)
     return d, g, reg, out
 

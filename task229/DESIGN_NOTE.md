@@ -33,7 +33,7 @@ bind the build; `## Architecture 2 record (spent 2026-10-11)` and `## Architectu
 | Context artifact | filed_model: the 2027 water supply outlook (monthly natural flows at each station and at the two forebay inflow nodes), which answers how much water each stream will carry, correctly |
 | Role, forum, forcing event, organisation | the data quality manager of the Corriston Basin Hydrometric Cooperative, who signs the network's data plan (compliance_or_audit); the provincial water licence inspector who reviews the 2027 data plan (regulator_or_inspector); Merrin Falls Generating Station entering service on 1 June 2027 (launch_or_rollout); the cooperative, whose members are the regional district, two water utilities, the irrigation districts and Corriston Hydro (cooperative_or_member_body) |
 | World | Canada, British Columbia, the southern Coast Mountains (low valley gauges, open water all year): the fictional Corriston Basin Hydrometric Cooperative and its 23-station Corriston Hydrometric Network; the Corriston River and Merrin Creek and its tributary the Vardy River; Corriston Hydro Ltd.'s Talbot Canyon Generating Station (peaking since its 2017 licence amendment) and Merrin Falls Generating Station (from 1 June 2027); Fenn Creek's run-of-river plant; Sable Creek; Lake Ashlin |
-| People | Phyllis Thompson (data quality manager: the station register, the data review, the dictionary), Brandon Holden (Corriston Hydro operations planner: the 2027 operating plan), Teresa Chen (hydrologist: the 2027 water supply outlook); drawn with `guard.py names --geo "Canada, British Columbia"` (seeds 229 and 2290) |
+| People | Phyllis Thompson (data quality manager: the station register, the data review, the 2027 data plan), Brandon Holden (Corriston Hydro operations planner: the 2027 operating plan), Teresa Chen (hydrologist: the 2027 water supply outlook); drawn with `guard.py names --geo "Canada, British Columbia"` (seeds 229 and 2290) |
 | Layer 2 | field_method, `own:peaking-releases-bias-daily-mean-stage-discharge` |
 | Deliverables | `discharge_grades_2027.png` (the call: one row per station, one column per month of 2027, every month outside grade B shaded) and `record_review_wy2026.xlsx` (the asks: each month's station-days with a valid daily mean water level, each station's mean gauging difference from the rating in force) |
 
@@ -114,6 +114,16 @@ No certified replay: the method is not recovered by reproducing certified figure
 
 Lesson: a model learns to carry a quantity's variation below the record's grain through a nonlinear conversion before averaging, here a river swung by a peaking plant read through a convex rating, rather than converting the period's mean; no build on file teaches it in hydrometry (nearest drivers 0.05).
 
+## Survivor anatomy
+
+Actor: the deciding property, how far each regulated station's water level swings inside a day, has no column in any file: the daily record holds one mean water level and one discharge per station-day, and nothing stores a within-day range, a release or a regulated flag (R1 asserted).
+Link: the swing is read by joining the operating plan's peak windows and minimum releases (keyed by plant, river and tailrace river km) to the register's stations (keyed by river and river km from the mouth) and the outlook's forebay rows; no key joins a plant to a station and no sentence says which gauges sit below a plant or what a release does at one.
+Reflex: hydrometry's standard checks on a published record, each rating back-tested on its gaugings and the extrapolation rule run on the forecast flows, sit at rung 0 and file the default path's Ends on, Sable Creek from May with the other twenty-two holding (R3a asserted).
+Back-test: the textbook route validates: every gauging since WY2023 sits within 3 per cent of its current rating, the regulated stations' included, because the standard makes gaugings at steady flow; every published daily discharge reproduces from its rating at the day's water level, and the outlook's regulated flows reconcile with the forebay rows (asserted).
+Second use: every file the decisive step reads (the standard, the data plan, the rating book, the outlook, the operating plan, the register) is read by the default path too, for the grade, the processing, the 2027 flows, the extrapolation rule, the gauged tops and the station list; with the decisive step deleted the pack carries the same twelve files.
+Shock: the regulated stations read as ordinary: their 2027 outlook flows against their 2023 to 2026 published means sit inside the spread of the unregulated stations in every month (asserted), Talbot Canyon has peaked since 2017 so nothing steps in the record, and the five that fail are no interval by station number or by river (Merrin Creek near the mouth, below the same plant, holds; Sable Creek, which no plant regulates, fails).
+Pins: the WHAT is filed in the standard (grade B on the month's mean published daily discharge against the month's true mean discharge, the day in local standard time, the extrapolation rule) and the data plan (2027 graded on the outlook's and the plan's flows; a station's daily record is the platform's mean water level for the day and the discharge from it through the rating in force, unchanged in 2027); no filed sentence names a swing inside a day, a gauge's place below a tailrace as a cause, or which stations a plant regulates. Deleting the processing sentence leaves the published value undefined (Gate B), not forced to the golden: it states one processing for every station, steady or not, and the default path executes it correctly.
+
 ## Deletion tests and Gate G
 
 - **Delete every wrong number:** none is planted; still hard.
@@ -131,8 +141,8 @@ Lesson: a model learns to carry a quantity's variation below the record's grain 
 |---|---|---|---|---|---|---|---|
 | Rung 0: each published daily discharge taken as the day's mean flow, the extrapolation rule on the outlook (default) | fires: the standard's grade and extrapolation rule, the outlook's monthly flows and the rating book's gauged ranges are all the solver needs | the outlook keys stations by number, as the register does | the first construction anyone builds | the gaugings confirm the ratings | nothing to find | one ratio per station-month | readable |
 | Rung 1: the gauges below Merrin Falls flagged from its in-service month | fires: the plan dates the plant's entry into service | the station names say which gauges sit below the plant | a regime change flagged as unverified is the monitoring reflex | none | none | one date | readable |
-| Rung 2: the rating's curvature checked on the spread of each regulated station's daily water levels inside a month | fires: the dictionary says discharge comes from the water level through the rating, which invites a curvature check | the daily record carries the water levels | the reflex of carrying an input's spread through a nonlinear conversion | none | none | one variance per station-month | readable |
-| Rung 3 (decisive): each regulated station's day built from the release schedule and the local inflow, carried through the rating, and the rating read at the day's mean water level against the day's mean flow | does not fire: the dictionary describes each column the way every station's record is processed (the day's mean water level, the discharge from it through the rating in force); the plan describes generation in two windows and a minimum release between them; no document relates a release to a published value, names an error inside a day, or says how the river at a gauge moves through a day | does not fire: no column carries a within-day range, a release or a regulated flag; the daily record holds one water level and one discharge per station-day, and the plan keys its plants by its own distances below each tailrace while the register keys stations by river kilometre from the mouth | does not fire: the reflexes for a published record's accuracy (back-test on the gaugings, the extrapolation check, the volume balance below a plant, neighbour ratios, the record's own spread through the rating) land on rungs 0 to 2 | does not fire: every gauging is made at steady flow by the standard's rule and ties under every reading; no file holds a day's true mean flow at a regulated station | does not fire: the battery (keys, duplicates, gaps, flatlines, timestamps, units) finds the asks' mess and nothing below the plants; every published value reproduces from its rating at the day's water level | does not fire: no shipped figure becomes the answer by one operation; the day's flow has to be built from the plan and carried through the rating before averaging | silent |
+| Rung 2: the rating's curvature checked on the spread of each regulated station's daily water levels inside a month | fires: the data plan's section 1 says the day's discharge comes from the day's mean water level through the rating, which invites a curvature check | the daily record carries the water levels | the reflex of carrying an input's spread through a nonlinear conversion | none | none | one variance per station-month | readable |
+| Rung 3 (decisive): each regulated station's day built from the release schedule and the local inflow, carried through the rating, and the rating read at the day's mean water level against the day's mean flow | does not fire: the data plan's section 1 states how every station's record is processed, steady or not (the day's mean water level, the discharge from it through the rating in force), in the words the export dictionary used before it left the pack; the plan describes generation in two windows and a minimum release between them; no document relates a release to a published value, names an error inside a day, or says how the river at a gauge moves through a day | does not fire: no column carries a within-day range, a release or a regulated flag; the daily record holds one water level and one discharge per station-day, and the plan keys its plants by its own distances below each tailrace while the register keys stations by river kilometre from the mouth | does not fire: the reflexes for a published record's accuracy (back-test on the gaugings, the extrapolation check, the volume balance below a plant, neighbour ratios, the record's own spread through the rating) land on rungs 0 to 2 | does not fire: every gauging is made at steady flow by the standard's rule and ties under every reading; no file holds a day's true mean flow at a regulated station | does not fire: the battery (keys, duplicates, gaps, flatlines, timestamps, units) finds the asks' mess and nothing below the plants; every published value reproduces from its rating at the day's water level | does not fire: no shipped figure becomes the answer by one operation; the day's flow has to be built from the plan and carried through the rating before averaging | silent |
 
 ## Semantic fork table
 
@@ -140,7 +150,7 @@ Lesson: a model learns to carry a quantity's variation below the record's grain 
 |---|---|---|---|---|---|
 | SF1 | fall short of grade B | the station-month's mean published daily discharge more than 5 per cent from the month's true mean discharge, or the month graded C by the extrapolation rule | graded anything but B | same call: the standard has two grades for a station-month, B and C | standard s.3 |
 | SF2 | the month's true mean discharge | the mean over the month of each day's mean flow past the station, the flows being the outlook's and the operating plan's | the outlook's figure read as the published mean (the default's easy method, not a reading) | the estimand is the same; the default is an easy method on it | standard s.3; data plan s.2 |
-| SF3 | published daily discharge in 2027 | the network's processing as the dictionary states it (the rating in force applied to the day's mean water level), unchanged in 2027 | a mean of within-day discharges | no station transmits within-day values in 2027 | data plan s.3 ("daily transmission and processing continue unchanged in 2027"); the dictionary |
+| SF3 | published daily discharge in 2027 | the network's processing as the data plan states it (the rating in force applied to the day's mean water level), unchanged in 2027 | a mean of within-day discharges | no station transmits within-day values in 2027 | data plan s.1 ("A station's daily record holds the platform's mean water level for the day, the mean of its readings over the day, and the day's discharge from that water level through the station's rating in force on the day"; "Daily values are transmitted and processed in 2027 as they are now") |
 | SF4 | each month of 2027 | the calendar months January to December, days running midnight to midnight local standard time | days on the clock | same call: the release cycle repeats inside every day under either clock (C1 asserted) | standard s.2 |
 | SF5 | from which month | the first month short | every month short | the Talbot pair are short January to April and July to December; their first month is January; the chart shades every month | the prompt's "from which month"; the chart carries every month |
 | SF6 | the release inside a peaking day | the minimum release outside the windows and, inside them, the rate that passes the rest of the day's inflow | an even release; generation at full capacity for fewer hours | an even release is not the plan; full capacity breaks the plan's windows; with 30 or 60 minute ramps the call is unchanged (C3 asserted) | operating plan s.3 and s.4 |
@@ -153,10 +163,12 @@ Lesson: a model learns to carry a quantity's variation below the record's grain 
 | SF13 | the month's mean discharge for the extrapolation rule | the outlook's monthly flow | the published monthly mean | same call: the rule binds only at Sable Creek, which no plant regulates (asserted) | C1 |
 | SF14 | rounding before comparing with 5 per cent | unrounded | whole or one-decimal per cent | same call: no golden station-month lies between 4.0 and 6.0 per cent (asserted) | C1 |
 | SF15 | within 5 per cent | 5.0 meets grade B | strictly under 5 | same call: no station-month at 5.0 | standard s.3 |
-| SF16 | the station set | the 23 stations of the register, C122 standing for the relocated C110 | C110 and C122 as two stations | 23 stations either way for 2027: C110 has no 2027 record | the register's replaced-by entry and its dictionary line (the closed number's rows and gaugings are the station's) |
+| SF16 | the station set | the 23 stations of the register, C122 standing for the relocated C110 | C110 and C122 as two stations | 23 stations either way for 2027: C110 has no 2027 record | the register's replaced_by entry and the standard's section 7 ("a station moved to a new section keeps its record under its new number") |
 | SF17 | Fenn Creek below the run-of-river plant | no swing: the plant passes the creek as it arrives | the swing applied below every plant | no schedule exists to swing it | operating plan s.5 (no pondage) |
 | SF18 | Lake Ashlin's outflow | the weir rating at the lake level, steady through a day | none | holds | the register; the outlook |
 | SF19 | the plant's capacity | never reached in a peaking month at the month's inflow | continuous generation on a day above capacity | same call: the largest generating rate is 54.9 m3/s at Talbot Canyon (July) against 64, 24.4 at Merrin Falls against 28; days above capacity under a day-to-day spread run continuously by the plan and move no verdict (asserted) | operating plan s.1 and s.3 |
+| SF20 | the plan's day: its time step and the shape of the 30-minute ramp | the day built at any step, the ramp a steady move over its 30 minutes inside the window | a coarser day (5, 15 or 30 minutes); a smooth (cosine) ramp, which the plan does not describe | same call at every step from 3 seconds to 30 minutes and under a smooth ramp; the range prints 14 to 32 and the least (C105, February) 14 at every step, while at one decimal the least prints 14.4 on a 1-minute day and 14.3 on a 5-minute one, so Critical Components state it whole; a smooth ramp would print 15 to 33 and moves no call | C1 on the call and on the whole-per-cent figures (`checks.py` SF20); the plan's "output moves between the minimum release and the generating rate over 30 minutes" |
+| SF21 | the day a daily row covers (Ask A) | the UTC day for a GOES row, the standard's day for a cellular or Iridium row | every row the standard's day; every row the UTC day | every row a UTC day gives the same twelve counts (C1); every row the standard's day reads each GOES row as received before its day ended and misses every month | data plan s.1 ("A GOES platform averaged its readings over the UTC day; the cellular and Iridium platforms average theirs over the day as the standard reckons it"); `checks.py` SF21 |
 
 ## Ladder
 
@@ -166,7 +178,7 @@ eighteen that hold.
 
 | Rung | Construction | Schedule filed | Dies to | Worth on the graded call |
 |---|---|---|---|---|
-| 0 (default) | each published daily discharge taken as the day's mean flow; the extrapolation rule on the outlook's monthly flows against the rating book's gauged ranges | Sable Creek from May; the other twenty-two hold | the dictionary's processing (the published daily is the rating read at the day's mean water level) with the plan's windows and minimum release: below a peaking plant the day's mean water level is not the water level of the day's mean flow | 1 of 5 stations; four holds wrong |
+| 0 (default) | each published daily discharge taken as the day's mean flow; the extrapolation rule on the outlook's monthly flows against the rating book's gauged ranges | Sable Creek from May; the other twenty-two hold | the data plan's processing (the published daily is the rating read at the day's mean water level) with the plan's windows and minimum release: below a peaking plant the day's mean water level is not the water level of the day's mean flow | 1 of 5 stations; four holds wrong |
 | 1 (the forcing event) | rung 0 plus Merrin Creek's two gauges flagged from the plant's in-service month, as a regime the ratings have not seen | Sable Creek from May; C112 and C113 from June | the standard's section 3 (the grade is the published mean's error, not a verification status) with the plan's channel note (no works below the tailrace) and freshet clause (continuous generation through 30 June): June's water passes as the river's own and the rating holds | 1 of 5; two months wrong; the Talbot pair missed |
 | 2 (sophisticated) | the rating's curvature checked at each regulated station: the spread of the daily water levels inside each month carried through the rating, under 3 per cent of a monthly mean (largest 2.8) | Sable Creek from May; the other twenty-two hold | the plan's windows: the swing that matters is inside each day, which the daily record averages away, and the grade compares each day's published value with that day's flow | 1 of 5 |
 | over-correction (the blanket flag) | every station below a peaking plant flagged in its plant's peaking months, the swing taken as decisive without carrying it through each station's flow | the golden plus Merrin Creek near the mouth (C124) from July | the outlook's C124 flow (the Vardy River joins 2.6 km above the gauge) through its rating: the swing moves the published discharge by 1 per cent or less, and the station holds | 5 of 5; one hold wrong |
@@ -217,7 +229,7 @@ graded schedule, never on a bias.
 | 13 | Order of operations | the day's flow built and carried through the rating before the day's mean water level is taken | the construction itself; every order that averages after converting agrees (C1 asserted) |
 | 14 | Row order | the outlook's and register's rows in any order | C1: order-free arithmetic, asserted over a shuffle |
 | 15 | Duplicate resolution | one outlook row per station and node | C1: asserted unique |
-| 16 | Identity normalisation | station numbers in the outlook and the register; plants by name in the plan | dictionary semantics; each join asserted one to one (C122 for C110, SF16) |
+| 16 | Identity normalisation | station numbers in the outlook and the register; plants by name in the plan | the register's replaced_by and the standard's section 7; each join asserted one to one (C122 for C110, SF16) |
 | 17 | Netting against gross | no netting: the error is the published mean against the true mean | filed: standard s.3 |
 | 18 | Dimensional units | cubic metres a second in the outlook, the plan and the ratings; water levels in metres | units stated in each; a litres-a-second reading of the two spring creeks' ratings gives flows a thousand times the outlook's (C4) |
 | 19 | Code and status semantics | the plan's operating modes (peaking, continuous generation, run-of-river) | filed: operating plan s.2 to s.5 (SF11, SF17) |
@@ -227,8 +239,8 @@ graded schedule, never on a bias.
 
 ## Literal reader
 
-Executed word for word (the standard's sections 2 to 4, the data plan's sections 1 to 3, the dictionary's
-daily-record columns, the rating book's equations and gauged ranges, the outlook's flows, the operating
+Executed word for word (the standard's sections 2 to 4, the data plan's sections 1 to 3 (section 1 filing the
+daily record's processing), the rating book's equations and gauged ranges, the outlook's flows, the operating
 plan's modes, windows, minimum releases and in-service date): each station's 2027 published daily discharge
 is its current rating applied to the day's mean water level, and each day's flow past it is the outlook's
 for the month, shaped inside the day by the plan where a plant peaks. At the eighteen stations no plant
@@ -260,16 +272,16 @@ filed estimand, not a second reading of a filed sentence. No filed sentence read
 - **Primary device (D4, absence written as values):** a GOES platform that misses its transmission slot leaves the ingest holding its last message, so the missed day arrives as a copy of the day before, value, discharge and received time alike. Every month carries held days: the GOES stations until each one's 2026 cut-over, and three stations on GOES until 21 to 28 September 2026. Nothing files the behaviour; the only evidence is a received time earlier than the end of the row's own day, repeated from the row before.
 - **Over-cleaning half:** Lake Ashlin's weir-held level (June to October) and Pellam and Garrow spring creeks' winter baseflow (November to May) repeat to the centimetre for days, genuinely, on older 1 cm shaft encoders; a run-length flatline rule deletes them in every month whatever its threshold (asserted for runs of 2 to 14 days).
 - **Hazards:** H1 provisional and approved rows for the same station-day (October 2025 to June 2026 reviewed); H2 the cut-over day carried by both platforms; H3 C110 and C122 both transmitting 4 to 8 June 2026; H4 cellular days backfilled from logger memory and received days late (measured on their day).
-- **Files and columns on the path:** the daily records (station, date, water_level_m, status, platform, received_utc), the register (station, replaced_by, relocated, telemetry, cut_over, slot_utc, resolution_m), the migration tracker (station, from, to, cut_over), the dictionary, the visit log (station, date, work): 5 files, 15 columns.
+- **Files and columns on the path:** the daily records (station, date, water_level_m, status, platform, received_utc), the register (station, replaced_by, relocated, telemetry, cut_over, slot_utc, resolution_m), the migration tracker (station, from, to, cut_over), the data plan's section 1 (the GOES UTC day), the visit log (station, date, work): 5 files, 15 columns (shipped under the systems' own headers: stn_no, obs_date, platform_type, visit_date).
 - **Stops:** (N) one row per station and date after removing duplicates: every month high by its held days; (O) a flatline rule over every station: low in every month by the genuine repeats; (P) held days dropped, provisional and approved both counted: reviewed months high; (R) C110 and C122 counted as two stations: June high by 5; then the golden. Lazy delta: the natural read misses every month by at least 3 station-days (held days by month 3 to 51, asserted).
 - **Realism:** an ingest that fills a missed slot with the platform's last message keeps a series unbroken, and a copied record copies its metadata; the network's review approves ratings and gaugings, not transmissions.
 
 **Ask B: each station's mean of its 2026-water-year gaugings' percentage differences from the rating in force on the gauging day (23 figures, one decimal place).**
 - **H18 home:** the ratings the 2027 grades rest on replaced, on 1 April 2026, the ratings that published the first half of the water year; each station's gauging agreement under the rating in force is the audit trail of the record and of the refit the call consumes.
 - **Use:** the inspector's rating-performance line, one figure per station.
-- **Primary device (D2, an attribute at the wrong vintage, a later snapshot):** at the move to the new database on 1 April 2026 every station's rating was refitted and the gauging export's rating column was rewritten to the current rating on every row, the gaugings before April included. The superseded ratings appear in no document; they survive only in the daily record, where every published discharge before 1 April is the superseded rating at that day's water level (the rating book's effective date and the dictionary's discharge column are the filed facts, and neither names the gauging column). Every station has 3 to 5 of its 6 to 11 WY2026 gaugings before April, and the refit moved every rating by 1.5 to 6 per cent at winter flows.
+- **Primary device (D2, an attribute at the wrong vintage, a later snapshot):** at the move to the new database on 1 April 2026 every station's rating was refitted and the gauging export's rating column was rewritten to the current rating on every row, the gaugings before April included. The superseded ratings appear in no document; they survive only in the daily record, where every published discharge before 1 April is the superseded rating at that day's water level (the rating book's effective date and the data plan's processing sentence are the filed facts, and neither names the gauging column). Every station has 3 to 5 of its 6 to 11 WY2026 gaugings before April, and the refit moved every rating by 1.5 to 6 per cent at winter flows.
 - **Hazards:** H5 litres a second at Pellam and Garrow (the register's reporting unit); H6 braided sections at C108 and C119 gauged channel by channel, one row per channel under one gauging number; H3 the relocation (C110's gaugings against the old site's ratings, C122's from 4 June against the new site's); H7 field times in UTC (an evening gauging on 31 March 2026 local reads 1 April in UTC).
-- **Files and columns on the path:** the gaugings (gauging_no, station, measured_utc, gh_m, discharge, rating, method, notes), the rating book (equations, effective date, the curve form), the daily records (station, date, water_level_m, discharge_m3s, status), the register (reporting unit, replaced_by, relocated), the dictionary: 5 files, 16 columns.
+- **Files and columns on the path:** the gaugings (gauging_no, station, measured_utc, gh_m, discharge, rating, method, notes), the rating book (equations, effective date, the curve form), the daily records (station, date, water_level_m, discharge_m3s, status), the register (reporting unit, replaced_by, relocated), the data plan's section 1: 5 files, 16 columns (shipped under the systems' own headers: stn_no, q_meas, rating_no, obs_date).
 - **Stops:** (N) every gauging against the rating its export row names: every station off; (O) the gaugings before April dropped for want of a superseded table: every station off; (U) litres read as cubic metres: two stations absurd (loud, and repaired by every response); (S) channel rows read as gaugings: C108 and C119 off by about half their weight; (T) the UTC date for the switch: one station off; then the golden. Lazy delta: the natural read misses every station by at least 0.69 points (asserted per station, outside the bin).
 - **Realism:** a database move that refits ratings and repoints history at the current rating is how migrations go; a rating book prints the ratings in force, not those retired; a braided section is gauged channel by channel; spring creeks are reported in litres.
 
@@ -310,6 +322,8 @@ fits the superseded ratings from the record (Ask B) or tests received times agai
 
 Pair ceiling: 27 (cracker 35 for the call and components, 7 for instructions, 0 for the asks; mirror 5, 7
 and 0; generated-rubric weights assumed at 35, 7 and 58, rerun from the generated rubric at ship).
+
+Measured by: `generator/checks.py`, run on the cut pack by every `make.py`: the cracker's path on each ask misses every figure (Ask A stop N, one row per station-day kept with approved over provisional, the cut-over day once and C110 chained to C122 but the held days counted, misses all 12 months; stops O, P and R miss as listed; Ask B stops N, each gauging against the rating its export row names, and O, the pre-April gaugings dropped, each miss all 23 stations), asserted figure by figure; the mirror runs the same battery and misses the same 35.
 
 ## Builder's work order
 
@@ -387,6 +401,103 @@ in the daily record and the gaugings, which the call never reads (R2 asserted on
 decisive step is the within-day construction through the convex rating. Rule 3: no planted defect (every
 file is correct), no semantics (every field read right still files Sable Creek alone, R3a), no rule
 application (no filed sentence computes discharge through the day).
+
+**Re-check under the new gates (2026-11-01, no portal result yet).** The only determinism return on record is
+architecture 1's (the standard error's construction unforced). Its class was hunted on this architecture: every
+construction, convention and precision the graded figures and the flags rest on was listed and checked filed or
+inert. The flags: the day's shape is the plan's (windows, minimum release, the day's inflow released within the day,
+30-minute ramps inside the window), the published value the data plan's processing, the grade the standard's; the
+clock, the lag, the step and the ramp's shape are inert on the call (SF4, SF9, SF20, asserted), and the unfiled
+variants (damping, local inflow, day-to-day spread) sit inside the C3 corridor. Ask A: the counting rule converges
+except on the day a row covers, now filed (SF21). Ask B: the standard files the curve's form (6.1), the difference
+(5.3), the day (2, 6.2) and the channel sum (5.2); log-space and linear-space least squares on the record's pre-April
+pairs agree to 0.0022 points against a nearest bin edge of 0.0249, and interpolation on the pairs cannot reach the
+gaugings below the daily range, so it is no rival. One figure failed the test: Critical Components' least (C105,
+February) at one decimal, 14.4, is 14.3536 at the limit, 0.0036 from the 14.35 edge, and prints 14.3 on a 5-minute
+day and 14.2 on a 15-minute one; it is stated whole (14), which every step from 3 seconds to 30 minutes prints (SF20).
+The gates on the shipped pack: `leak.py` LEAK (sweep 1: data_dictionary.csv and export_manifest.csv; sweep 12: the
+data plan, the flood update and the rating book naming plain-word headers such as station, date, platform, discharge
+and rating), `precut.py` FAIL (no `Measured by:` line) with the survivor anatomy missing, `voice-check.py` WARN on
+"each of our 23" and the shell quota, `guard.py heart` BLOCK (below), `surface` clean, `figures_check.py` 49 of 49,
+and the rebuild from the generator reproducing the shipped target.zip byte for byte (sha256 048a269b).
+Repairs, in the generator: the dictionary and the manifest leave the pack (12 files, four formats); the two readings
+only the dictionary carried move into the data plan's section 1 in the dictionary's own words, the processing ("A
+station's daily record holds the platform's mean water level for the day, the mean of its readings over the day, and
+the day's discharge from that water level through the station's rating in force on the day") and the day a GOES row
+covers ("A GOES platform averaged its readings over the UTC day; the cellular and Iridium platforms average theirs
+over the day as the standard reckons it"), and the plan's pointer to the dictionary becomes "as they are now"; every
+other reading the dictionary glossed already sits in the files' own form (received_utc, measured_utc, gh_m, unit, the
+tracker's goes_removed, the outlook's own title and method rows) or in the standard (2, 5.2, 5.3, 6.1, 6.2, 7, the
+last filing the relocated station's record under its new number); the CSV and workbook headers carry the source
+systems' field names (`generator/headers.py`: stn_no, obs_date, platform_type, q_meas, rating_no, visit_date,
+sample_date), every reader mapping them back and `verify.py` reading them with its own map; provenance (contents,
+maker, date per file) moves to metadata.json; the prompt drops the count; the write-up's step 2 cites the data plan;
+the least is printed whole. `checks.py` adds H9 (no describing file by name, no document naming a shipped CSV header,
+the data plan carrying both readings), SF20 and SF21; `verify.py` reads the processing and the day basis from the
+data plan. Fork-is-the-stump test on each move: the processing sentence is no new closure (the shipped pack filed it,
+data plan to dictionary) and states one processing for every station, steady or not; the day-basis sentence is
+ask-side; the precision and the headers touch no sentence the decisive step reads. Results: 1,750 assertions green;
+`verify.py` 315 checks, 0 FAIL; two builds byte-identical (12 target files, 2 goldens, figures.json), the goldens
+byte-identical to the shipped ones; `figures_check.py` 49 of 49; `precut.py` 61 checks, 0 FAIL, 0 WARN;
+`voice-check.py` PASS (WARN shell quota); `leak.py` REVIEW, no LEAK; `guard.py heart` BLOCK on ban.forcing_event only.
+`freeze.py check --mode determinism --allow bias_least.pct`: three items recorded as moved, each ordered here: the
+Critical Components numbers (14.4 restated 14, SF20), the prompt's call sentence (the dropped count, "each of our
+23 hydrometric stations" to "each of our hydrometric stations") and the ladder section's hash (rung 0's Dies-to cell
+cites the data plan's processing where it cited the dictionary's; no schedule, worth or margin moved); no other frozen item moved (the call, the stump, the
+ladder, the default path, every Deliverable Answers figure and every other main-call key unchanged).
+
+**Surface, 2026-11-01.** No persona in the cut pack. Two pairs promoted, neither caused by the re-check: task261
+(0.1003, corpus top 1 per cent) on a flat layout and the same four formats alone, with no shared file name, prompt
+shingle, invented name or schema (the shipped pack shared more, data_dictionary.csv sitting in 106 builds); task162
+(SHIPPED and approved 10-30) on the card axes (gap time, pattern G7, Gate G forecasting), a card drawn 2026-10-28,
+after this one, and answered by the differentiation line on the card. Recorded for the author's adjudicated
+`/clone-check`, which only the author triggers.
+
+**Stage 4 leak reader (re-check, 2026-11-01, isolated, Sonnet at medium, the 12-file cut).** Q1 none: no sentence
+states the decisive step (the nearest it names is the standard's 3.2, the grade's comparison). Q2 none. Q3 none
+clearly; the data plan "comes closest" for its section-1 processing sentence, "mildly explanatory". Ruled harmless:
+the plan is the organisation's plan for the inspector, with the review's basis, the flag policy, the 2026 water
+year's scope and the 2027 changes; the sentence is the processing the shipped pack already filed (data plan to
+dictionary), restated in the dictionary's words, and the inspector reviewing a finished telemetry migration reads
+what it changed in the record (the day a GOES row covers) and what it did not (the discharge from the day's mean
+water level through the rating). Q4 none. Q5: the standard's 3.2 to 3.4 and 4 with the data plan's flag sentence,
+executed literally, give the golden's construction (the earliest 2027 month graded C per register station, on the
+outlook's and the plan's flows). Q6: an analytical choice (the published value is the rating at the day's mean
+water level, which differs from the day's mean flow where the plants' windows swing the river, estimated per month
+from the outlook and the plan's parameters; no file states a method and no stated rule yields the month). Every
+sweep line harmless. Realism tells, answered without a change: the data plan's date (5 November, three days after
+the outlook) is the plan written once the outlook issued, for a review due 30 November; the docx's size is the
+writer's style part (the container scrubbed, H1 asserted); the outlook's forebay rows carry the precision the
+outlook prints for them; the register's and tracker's tidy 2026 dates are the migration year's; the rating book's
+single curve form is the standard's 6.1 (every rating drawn as Q = C (h - e)^b since 2014), and its issue after
+the 1 April refit is the database move's. None moves a figure, and none was edited after the judge's thread had
+started on the cut.
+
+**Stage 4 determinism judge, pass 2 (2026-11-01, isolated thread from the judge agent's brief, the 12-file cut,
+derive-first order kept).** DETERMINISTIC, APPROVE: the call, the grid, the 12 station-day counts and the 23
+gauging means reproduced (the pre-April ratings recovered by a power-law fit of the record's pairs, rms 1e-4);
+Gate G forecasting, analytical_non_defect, no surface-read dependency, no sole defect; Gate H domain, layers and
+decisive step pass. Its residual forks move no committed answer: C110 and C122 merged (closed by the standard's
+s.7 and the register's replaced_by), the old rating recoverable only by a fit (the ask's device, as designed),
+GOES days counted by their date (SF21), attenuation unfiled (a 6-hour damping leaves C105 at minus 5.2 and C113
+at minus 11.7). Its optional sentence tying C110 to C122 is declined: s.7 already files it, and it would move a
+filed sentence after the approval.
+
+**Heart, re-read 2026-11-01 after the final pull.** BLOCK `ban.forcing_event` (launch_or_rollout) against task454:
+both cards drawn 2026-10-13, neither stamped, both entered the history in one commit on 2026-10-28; at this build's
+ship the verdict was WARN, so the ban arrived from the corpus and not from this card, whose forcing event the re-check
+did not touch (reduce-house-fixes H27). Inherited and recorded for the author; no redraw of a shipped build on it.
+BLOCK `test.same_driver_older` against task162 v2 (drawn 2026-10-28) and task170 v1 (lineage, drawn 2026-10-24) is
+a similarity rule against later cards, cleared by the card's differentiation lines (now NOTE). WARN
+`three_rules.strategy_risk` answered by the analyst test.
+
+**leak.py REVIEW lines on the re-cut, answered.** Sweep 12: the rating book (6) and the flood update (5) "name" the
+register's and tracker's first rows (C101, C102, Ashlin River, Ashlin River above Lake Ashlin, Lake Ashlin at the
+outlet weir, closed), which the sweep reads as a workbook's columns; they are station numbers and names in the
+hydrometric section's own records, and no document names a shipped header (asserted). Sweep 11: the shell quota
+(question form "which", deliverable set png+xlsx) is a corpus WARN on a shipped build; the call's form comes from the
+decision (from which month a flag starts) and the deliverables are the call's grid and the record review, so neither
+is reworded on a reship. Sweeps 3, 4 and 6 as answered at ship (above).
 
 ## Tried and rejected
 
@@ -530,6 +641,8 @@ application (no filed sentence computes discharge through the day).
 - 2026-10-13, hydrometry stage 2, stuck-sensor runs as Ask A's device: a sensor that sticks part way through a day leaves that day and the repair day half real, so a count of measured days had no forced answer; replaced by the GOES ingest's held messages, whole days by construction.
 - 2026-10-13, hydrometry stage 2, the extrapolation rule on the share of days above one and a half times the largest gauging: the outlook gives monthly flows only, so the count of days was not forced; the rule reads on the month's mean discharge, and the largest gauging is the top of the gauged range the rating book prints.
 - 2026-10-13, hydrometry build, every gauge below a peaking plant failing: the leak reader's first read showed that a solver flagging every station below a peaking plant, with nothing computed, reached the golden list; Merrin Creek near the mouth (C124) was added below the ungauged Vardy River, where the diluted swing moves the published discharge by 1 per cent or less, so the blanket flag files a wrong hold.
+- 2026-11-01, re-check: the data dictionary and the export manifest in the pack (leak.py sweep 1 LEAK) with plain-word CSV headers that the data plan, the flood update and the rating book named (sweep 12 LEAK); both files left, the processing and the GOES UTC day moved into the data plan's section 1 in the dictionary's own words, the headers took the source systems' names (`headers.py`).
+- 2026-11-01, re-check: Critical Components' least (C105, February) at one decimal (14.4) sat 0.004 from its edge and printed 14.3 on a 5-minute day; restated whole (14), which every step from 3 seconds to 30 minutes prints (SF20).
 
 ## Architecture 2 record (spent 2026-10-11)
 

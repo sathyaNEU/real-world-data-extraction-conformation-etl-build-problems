@@ -1,24 +1,24 @@
 # leak check, task229
 
-**Verdict: REVIEW.** 14 files read, 31 golden figures and 27 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 31 golden figures and 27 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: outlook, talbot, decisive, inside, corriston, ratings, canyon, regulated, operating, windows, release, spread, network, register, golden, steady, default, extrapolation, monthly, schedule, freshet, generation, inflow, peaking, minimum
+Stump terms swept: outlook, inside, decisive, regulated, release, talbot, operating, windows, steady, register, default, extrapolation, spread, asserted, network, ratings, nothing, canyon, corriston, monthly, schedule, freshet, inflow, gauges, minimum
 
 ## 3 answer figures in the pack (REVIEW 5)
 - **REVIEW** `hydrometric_data_standard_ed2.pdf`: golden figure 3.2 appears: ...the record of one station for one calendar month. 3.2 A station-month meets grade B when the mean of th...
 - **REVIEW** `rating_book_issue2_2026.pdf`: golden figure 1.4 appears: ...ation h = 0.4 m h = 0.6 m h = 0.8 m h = 1.0 m h = 1.4 m h = 1.8 m h = 2.4 m C101 0.3493 1.958 4.55 7.99...
+- **REVIEW** `rating_book_issue2_2026.pdf`: candidate 'Mattin Creek' sits beside decision vocabulary: ...C122. Station Name Rating In force from C e (m) b Gauged range (m3/s) Top gauged on C110 Mattin Creek at the gravel pit C110-R4 1 Apr 2026 6.62 0.233 1.78 0.484 to 10.9 1 Jun 2024 Rating tabl...
 - **REVIEW** `rating_book_issue2_2026.pdf`: candidate 'Lake Ashlin' sits beside decision vocabulary: ...Rating In force from C e (m) b Gauged range (m3/s) Top gauged on C101 Ashlin River above Lake Ashlin C101-R6 1 Apr 2026 14.2 0.284 1.72 1.32 to 24.9 21 Jun 2024 C102 Lake Ashlin at the outle...
 - **REVIEW** `rating_book_issue2_2026.pdf`: candidate 'Ashlin River' sits beside decision vocabulary: ...ed to. Station Name Rating In force from C e (m) b Gauged range (m3/s) Top gauged on C101 Ashlin River above Lake Ashlin C101-R6 1 Apr 2026 14.2 0.284 1.72 1.32 to 24.9 21 Jun 2024 C102 Lake A...
-- **REVIEW** `rating_book_issue2_2026.pdf`: candidate 'Mattin Creek' sits beside decision vocabulary: ...C122. Station Name Rating In force from C e (m) b Gauged range (m3/s) Top gauged on C110 Mattin Creek at the gravel pit C110-R4 1 Apr 2026 6.62 0.233 1.78 0.484 to 10.9 1 Jun 2024 Rating tabl...
 
 ## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `corriston_hydro_operating_plan_2027.pdf`: 13 of 25 stump-paragraph terms appear (talbot, inside, corriston, canyon, operating, windows); read whether the document names the move
-- **REVIEW** `data_plan_2027.docx`: 8 of 25 stump-paragraph terms appear (outlook, talbot, corriston, ratings, canyon, operating); read whether the document names the move
-- **REVIEW** `flood_frequency_update_2025.pdf`: 3 of 25 stump-paragraph terms appear (corriston, canyon, network); read whether the document names the move
-- **REVIEW** `hydrometric_data_standard_ed2.pdf`: 6 of 25 stump-paragraph terms appear (corriston, ratings, network, register, steady, extrapolation); read whether the document names the move
-- **REVIEW** `rating_book_issue2_2026.pdf`: 5 of 25 stump-paragraph terms appear (talbot, corriston, ratings, canyon, network); read whether the document names the move
+- **REVIEW** `corriston_hydro_operating_plan_2027.pdf`: 11 of 25 stump-paragraph terms appear (inside, release, talbot, operating, windows, canyon); read whether the document names the move
+- **REVIEW** `data_plan_2027.docx`: 8 of 25 stump-paragraph terms appear (outlook, talbot, operating, register, network, ratings); read whether the document names the move
+- **REVIEW** `flood_frequency_update_2025.pdf`: 3 of 25 stump-paragraph terms appear (network, canyon, corriston); read whether the document names the move
+- **REVIEW** `hydrometric_data_standard_ed2.pdf`: 6 of 25 stump-paragraph terms appear (steady, register, extrapolation, network, ratings, corriston); read whether the document names the move
+- **REVIEW** `rating_book_issue2_2026.pdf`: 5 of 25 stump-paragraph terms appear (talbot, network, ratings, canyon, corriston); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 5, INFO 2)
 - **REVIEW** `flood_frequency_update_2025.pdf`: names 17 of 27 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -32,6 +32,13 @@ Stump terms swept: outlook, talbot, decisive, inside, corriston, ratings, canyon
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); deliverable set 'png+xlsx' at 24% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (REVIEW 2)
+- **REVIEW** `flood_frequency_update_2025.pdf`: names 5 column(s) of the data files verbatim (Ashlin River, Ashlin River above Lake Ashlin, C101, C102, Lake Ashlin at the outlet weir): confirm it is the organisation's own record and not a note written for the analyst
+- **REVIEW** `rating_book_issue2_2026.pdf`: names 6 column(s) of the data files verbatim (Ashlin River, Ashlin River above Lake Ashlin, C101, C102, Lake Ashlin at the outlet weir, closed): confirm it is the organisation's own record and not a note written for the analyst
+
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
@@ -44,7 +51,6 @@ Stump terms swept: outlook, talbot, decisive, inside, corriston, ratings, canyon
 
 ## 9 dates after the setting (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read (read 1, 2026-10-13, the 22-station cut)
 
@@ -146,3 +152,37 @@ Literal execution I can foresee: downstream stations of peaking plants (C104 and
 5. rating_book_issue2_2026.pdf: header says ratings are "refitted to each station's 2016 to 2026 gaugings" yet every "In force from" is 1 Apr 2026 and every rating name carries a clean R-number. The Gauged range "Top gauged on" values cluster in June and July for most stations.
 
 **Main thread's rulings on read 2.** Q1, Q2, Q4: none. Q3: the data plan is the organisation's plan for the inspector and carries the review's basis and the flag policy, which a real plan files; its 2027 processing sentence is the pin SF3 rests on and stays. Q5 and Q6: analytical, as designed. Realism tells fixed as data-only changes, checked by leak.py: the manifest dates each file by its own date, the migration tracker's installation dates follow the crews' schedule, and the flood frequency update gives each station's record length from its establishment; the rating book's common in-force date is the database move and stays. All REVIEW lines harmless.
+
+## Solver's-eye read (re-check, 2026-11-01, the 12-file cut)
+
+Read: prompt.txt and all twelve files (PDFs, DOCX, three XLSX, four CSVs; CSV headers and first rows only for the large ones). No hidden sheets seen. Nothing computed.
+
+1. Decisive step. No sentence announces it. The nearest is the standard's grade definition: hydrometric_data_standard_ed2.pdf, "A station-month meets grade B when the mean of the station's published daily discharges for the month is within 5 per cent of the month's true mean discharge, the mean over the month's days of the discharge that passed the station." It names the comparison (published daily mean against true mean) but not how the gap arises or is estimated for a future month. The plan's "on the flows that the 2027 water supply outlook ... and Corriston Hydro's 2027 operating plan put past each station" names inputs only. Answer: none that states the step.
+
+2. Ranking or scoring of stations on the prompt's question: none. The outlook gives monthly mean flows, the flood update gives flood quantiles, the rating book gives ratings and gauged ranges. None grades a station-month or names a flag month.
+
+3. Files that exist only to help the analyst: none clearly. data_plan_2027.docx comes closest. It states the platform averaging convention and that the daily record holds the mean level run through the rating, which is the organisation's plan for an inspector but is mildly explanatory. Quote: "A station's daily record holds the platform's mean water level for the day, the mean of its readings over the day, and the day's discharge from that water level through the station's rating in force on the day." The station register and migration tracker are ordinary records.
+
+4. Figure or name reading as the answer: none. The outlook rows TAL-FB and MER-HP are labelled inputs. Unusually round values (5.6, 2.1) sit beside the exact station rows, but they are inflows, not results.
+
+5. Sentences that fix the computation or population.
+- hydrometric_data_standard_ed2.pdf 3.2 (quoted in Q1) plus 3.3, "A station-month that does not meet grade B is graded C."
+- Section 4: "A station-month whose mean discharge exceeds one and a half times the largest discharge gauged at the station is graded C whatever its error".
+- data_plan_2027.docx: "From the first month of 2027 in which the review expects a station-month to be graded C, the network publishes that station's daily discharge with the qualifier below grade B until the station is reviewed again."
+Literal result in words: for each station in the register, find the earliest 2027 calendar month in which its expected station-month is graded C, meaning either the published daily-discharge mean is off the true mean by more than 5 per cent, or the month's mean exceeds 1.5 times the top gauged discharge. That month is the flag-from month, and the station has none if no 2027 month qualifies. The population is the register stations (closed C110 is not in the outlook). The flows come from the outlook plus the plan's operating modes.
+
+6. What decides the main answer: an analytical choice. The solver has to see that the published daily discharge is a rating applied to a daily mean level (the plan's sentence in Q3), that it differs from the true mean discharge when flow varies within the day, and that this is driven by peaking operation at the plants (operating plan sections 2 and 3: "On a peaking day a plant generates in two windows ... Between the windows it holds its minimum release.") and the rating's curvature. The error then has to be estimated for each future month, with the outlook's monthly means and the plant parameters as the only inputs. No file states a method, and no stated rule yields the month by execution. Section 4's 1.5-times test is a stated rule but is only one of the two routes to grade C. The remaining pieces (UTC day on the GOES platform, the day boundary) are Layer 1 mess and are not decisive for 2027, since all platforms are already on the standard day. Nothing looks planted.
+
+Mechanical sweep lines
+a. hydrometric_data_standard_ed2.pdf: harmless. The coinciding number is "5 per cent" or "1 cm" or "1.5", which are generic standard constants and not station results.
+b. rating_book_issue2_2026.pdf: harmless. The coinciding numbers are gauged-range tops and rating-table values, which are the rating record itself and enter any answer only as inputs (the 1.5 times the gauged top test).
+c. rating_book_issue2_2026.pdf, Lake Ashlin, Ashlin River, Mattin Creek beside decision vocabulary: harmless. The "decision vocabulary" is "Closed sites", "In force from" and "Replaces the ratings", which is rating administration, not a grading verdict. Mattin Creek is the C110 to C122 move.
+d. The five files naming many or all stations beside numbers: none ranks stations on the prompt's question. The flood update ranks by return period flow, the rating book lists ratings, the register lists metadata, the migration tracker lists cut-over dates and the outlook lists monthly flows. All are context, and none is a grade or flag-from month. Harmless.
+e. flood_frequency_update_2025.pdf and rating_book_issue2_2026.pdf: both read as the organisation's own records (dated, addressed to a programme or issued with a revision number, with the usual frame wording). Neither is written for the analyst. The flood update is a plausible distractor (it excludes stations below generating stations). Harmless.
+
+Realism tells (up to five)
+1. Dating. data_plan_2027.docx is "Prepared 5 November 2026" and the outlook is "Issued 2 November 2026", while the operating plan is 19 October 2026. A plan that is 3 days later than the setting date and cites documents issued the days before looks tight for a "due 30 November" review, and an inspector's plan would not normally restate platform averaging in this much detail.
+2. data_plan_2027.docx is 35 KB for about four short paragraphs, so it may carry template or generator residue in its metadata or styles. Check the core properties and author before shipping.
+3. The outlook has round-number rows (TAL-FB and MER-HP at one or two significant figures) next to three-significant-figure station rows, and every station in its Method note shares one regression-and-recession recipe. That is neat in a way a real outlook is not.
+4. Station register: on_platform_since dates fall in a tidy 2026 range and GOES slot times are random minutes. The register's telemetry column and the migration tracker duplicate each other one-for-one.
+5. The rating book is a perfect Q = C (h - e)^b table for all 23 stations with every "Top gauged on" date in a plausible window. Real books carry shift notes and mixed rating forms, and "Issued 30 June 2026" while "in force from 1 April 2026" is a retroactive refit that is explained only briefly.

@@ -66,8 +66,8 @@ def main():
     steps = [
         "Graded each station-month of 2027 under sections 3 and 4 of hydrometric_data_standard_ed2.pdf on the flows of "
         "water_supply_outlook_2027.xlsx and corriston_hydro_operating_plan_2027.pdf (data_plan_2027.docx, section 2).",
-        "Took each station's published daily discharge as data_dictionary.csv defines it, the rating in force applied to the "
-        "day's mean water level, unchanged in 2027 (data plan, section 1), with the ratings of rating_book_issue2_2026.pdf.",
+        "Took each station's published daily discharge as data_plan_2027.docx states it in section 1, the rating in force applied "
+        "to the day's mean water level, unchanged in 2027, with the ratings of rating_book_issue2_2026.pdf.",
         "Built each peaking day at C104 and C105 below Talbot Canyon and C112, C113 and C124 below Merrin Falls from the "
         "operating plan: the minimum release (%s and %s m3/s) outside %s, the rest of the day's forebay or headpond inflow inside them "
         "with 30-minute ramps, plus the local inflow (the outlook's station flow less its TAL-FB or MER-HP row)." % (

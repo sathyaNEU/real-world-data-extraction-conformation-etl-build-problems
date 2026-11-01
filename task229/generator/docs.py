@@ -141,9 +141,13 @@ def data_plan(path):
         d.add_paragraph("The network runs the 23 stations of the station register through 2027. The 2026 telemetry "
                         "migration finished on 28 September 2026: every station now reports on a cellular logger or, "
                         "in the Talbot Canyon and Merrin Creek gorges where there is no cellular coverage, on an "
-                        "Iridium platform. No station changes platform or rating in 2027. Daily values are transmitted "
-                        "and processed in 2027 as the data dictionary describes, and the ratings in force are those of "
-                        "the rating book, issue 2.")
+                        "Iridium platform. A GOES platform averaged its readings over the UTC day; the cellular and "
+                        "Iridium platforms average theirs over the day as the standard reckons it. A station's daily "
+                        "record holds the platform's mean water level for the day, the mean of its readings over the "
+                        "day, and the day's discharge from that water level through the station's rating in force on "
+                        "the day. No station changes platform or rating in 2027. Daily values are transmitted and "
+                        "processed in 2027 as they are now, and the ratings in force are those of the rating book, "
+                        "issue 2.")
         d.add_heading("2. The 2027 grade review", level=2)
         d.add_paragraph("The review grades each station-month of 2027 under sections 3 and 4 of the hydrometric data "
                         "standard, on the flows that the 2027 water supply outlook (issued 2 November 2026) and "

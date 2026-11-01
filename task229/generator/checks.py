@@ -52,10 +52,9 @@ def run(task_dir, tgt, B, meta):
     ok(len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]), "gate: distractors")
     ok(not any("distractor" in f.lower() for f in files), "gate: no distractor in a file name")
     ok(set(files) == set(F.values()), "gate: shipped set equals the declared set")
-    man = pd.read_csv(p("manifest"))
-    ok(set(man.file) == set(files), "H9: the manifest lists every shipped file")
-    dic = pd.read_csv(p("dictionary"))
-    ok(set(dic.file) <= set(files), "H9: the dictionary names only shipped files")
+    # H9: no file whose job is to describe the pack, by name or by content
+    ok(not any(re.search(r"dictionar|manifest|readme|read_me|codebook|schema|field_notes|notes|definitions|glossary|guide", f, re.I)
+               for f in files), "H9: no dictionary, manifest, readme or notes file ships", files)
 
     # ------------------------------------------------------------------ documents carry the design's parameters
     std = pdf_text(p("standard"))
@@ -70,10 +69,21 @@ def run(task_dir, tgt, B, meta):
               "over 30 minutes", "From 1 May to 30 June", "no pondage", "1 June 2027", "64", "28", "1.8", "0.7"]:
         ok(s in flat_ops, "operating plan carries", s)
     flat_dp = dp.replace("\n", " ")
-    for s in ["2027 water supply outlook", "operating plan put past each station", "as the data dictionary describes",
-              "No station changes platform or rating in 2027"]:
+    for s in ["2027 water supply outlook", "operating plan put past each station", "No station changes platform or rating in 2027",
+              "the platform's mean water level for the day, the mean of its readings over the day",
+              "the day's discharge from that water level through the station's rating in force on the day",
+              "processed in 2027 as they are now", "A GOES platform averaged its readings over the UTC day",
+              "average theirs over the day as the standard reckons it"]:
         ok(s in flat_dp, "data plan carries", s)
-    ok("from water_level_m through the station's rating in force" in " ".join(dic.description), "dictionary: the processing fact")
+    ok("dictionary" not in flat_dp.lower() and "manifest" not in flat_dp.lower(), "H9: the data plan points at no describing file")
+    # H9: the documents name observables, never the files' fields (leak.py sweep 12)
+    shipped_cols = set()
+    for f in files:
+        if f.endswith(".csv"):
+            shipped_cols |= set(pd.read_csv(os.path.join(tgt, f), nrows=0).columns)
+    for name_, txt in (("standard", std), ("ops", ops), ("ratings", rb), ("plan", dp)):
+        hit = sorted(c for c in shipped_cols if len(c) >= 4 and re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), txt))
+        ok(len(hit) <= 1, "H9: a document names no shipped column header", (name_, hit))
     for no in W.CURRENT:
         ok(W.RATING_NO[no] in rb, "rating book lists", no)
 
@@ -88,7 +98,8 @@ def run(task_dir, tgt, B, meta):
     ok(len(W.CURRENT) == 23, "SF16: 23 stations")
     ok("graded C" in std and "grade A" not in std, "SF1: the standard has two grades for a station-month, B and C")
     ok("the mean over the month's days of the discharge that passed the station" in std.replace("\n", " "), "SF2: the true mean discharge filed")
-    ok("processed in 2027 as the data dictionary describes" in flat_dp, "SF3: 2027 processing as the dictionary describes")
+    ok("processed in 2027 as they are now" in flat_dp and "through the station's rating in force on the day" in flat_dp,
+       "SF3: 2027 processing as the data plan states it (the rating in force at the day's mean water level)")
     ok(call["short"]["C104"] == [1, 2, 3, 4, 7, 8, 9, 10, 11, 12] and call["short"]["C105"] == [1, 2, 3, 4, 7, 8, 9, 10, 11, 12],
        "SF5: the Talbot pair short January to April and July to December, first January")
     errs = call["errs"]
@@ -118,7 +129,7 @@ def run(task_dir, tgt, B, meta):
         ok((" to %s" % s) in rb.replace("\n", " "), "rating book prints the gauged top", no)
 
     # SF12: the gauging export's largest discharge against the rating book's top: same call
-    gt = GD.gauging_table(pd.read_csv(p("gaugings"), dtype={"station": str, "unit": str}, keep_default_na=False))
+    gt = GD.gauging_table(GD.read_gaugings(p("gaugings"), {"station": str, "unit": str}))
     alt_top = {no: float(gt[gt.station == no].q.max()) for no in W.CURRENT}
     alt_first = {no: (min([m for m in range(1, 13) if W.outlook_2027(no, m) > 1.5 * alt_top[no]] or [None]) if False else None) for no in W.CURRENT}
     sch_alt = FW.schedule(alt_top)
@@ -171,6 +182,42 @@ def run(task_dir, tgt, B, meta):
             hi = mid
     rec["flip_damp_C105_jan"] = (lo + hi) / 2
     ok(rec["flip_damp_C105_jan"] > 0.35, "flip: C105 holds in January only beyond 35 per cent damping", rec["flip_damp_C105_jan"])
+    # SF20: the plan's day built at any step from 3 seconds to 30 minutes, and with the ramp read as a steady move or a
+    # smooth one: the call never moves, and the range and the least print the same whole per cent at every step (at one
+    # decimal the least sits 0.004 from an edge and a 5-minute day prints 14.3 against a 1-minute day's 14.4)
+    def bias_at(step=None, cosine=False):
+        keep = (FW.STEP, FW.SPD, FW.HOURS, FW.window_weight)
+        try:
+            if step:
+                FW.STEP, FW.SPD = step, int(round(24 * 60 / step))
+                FW.HOURS = (np.arange(FW.SPD) + 0.5) * step / 60.0
+            if cosine:
+                def ww(dst, ramp_h):
+                    w = np.zeros(FW.SPD)
+                    for a, z in P.WINDOWS:
+                        a0, z0 = a - dst, z - dst
+                        lin = np.minimum(np.clip((FW.HOURS - a0) / ramp_h, 0, 1), np.clip((z0 - FW.HOURS) / ramp_h, 0, 1))
+                        w += (0.5 - 0.5 * np.cos(np.pi * lin)) * ((FW.HOURS > a0) & (FW.HOURS < z0))
+                    return w
+                FW.window_weight = ww
+            v = {(no, m): FW.published_over_true(no, m) - 1 for no in W.PLANT_OF if no != "C124" for m in call["short"][no]}
+            c124 = max(abs(FW.published_over_true("C124", m) - 1) for m in range(1, 13) if FW.plant_mode("C124", m) == "peaking")
+            return v, c124
+        finally:
+            FW.STEP, FW.SPD, FW.HOURS, FW.window_weight = keep
+    one_dec = {}
+    for step in (0.05, 0.25, 1.0, 2.0, 5.0, 10.0, 15.0, 30.0):
+        v, c124 = bias_at(step)
+        least_k = max(v, key=v.get)
+        ok(all(e < -P.GRADE_B for e in v.values()), "SF20: the call holds at every step", step)
+        ok(least_k == ("C105", 2) and int(round(-v[least_k] * 100)) == 14 and int(round(-min(v.values()) * 100)) == 32,
+           "SF20: the least (C105, February) and the range print 14 and 32 at every step", (step, least_k, v[least_k], min(v.values())))
+        ok(c124 <= 0.010, "SF20: C124 within 1.0 per cent at every step", (step, c124))
+        one_dec[step] = round(-v[least_k] * 100, 1)
+    ok(one_dec[1.0] != one_dec[5.0], "SF20: at one decimal the least moves with the step, so it is stated whole", one_dec)
+    v, c124 = bias_at(1.0, cosine=True)
+    ok(all(e < -P.GRADE_B for e in v.values()) and c124 <= 0.010, "SF20: a smooth ramp moves no call", (min(v.values()), c124))
+    rec["sf20_least_one_decimal"] = one_dec
     # SF9: lag is a shift inside a repeating day
     for no in W.PLANT_OF:
         m = (call["short"][no] or [7])[0]
@@ -221,7 +268,7 @@ def run(task_dir, tgt, B, meta):
        grid[(False, "blanket", True)])
     rec["grid"] = {"%s|%s|%s" % k: v for k, v in grid.items()}
     # rung 2: the curvature checked on the record's monthly spread of daily water levels (regulated stations)
-    d = pd.read_csv(p("daily"), dtype={"station": str, "date": str})
+    d = GD.read_daily(p("daily"), {"station": str, "date": str})
     d = d.drop_duplicates(["station", "date", "platform"])
     sp_max = 0.0
     for no in ("C104", "C105"):
@@ -243,7 +290,7 @@ def run(task_dir, tgt, B, meta):
         if f.endswith(".csv"):
             cols = pd.read_csv(os.path.join(tgt, f), nrows=1).columns
             ok(not any(re.search(r"bias|swing|hourly|minute|subdaily|within|true_", c, re.I) for c in cols), "R1: no within-day or bias column", f)
-    dd = pd.read_csv(p("daily"), dtype={"station": str, "date": str, "platform": str, "status": str})
+    dd = GD.read_daily(p("daily"), {"station": str, "date": str, "platform": str, "status": str})
     ok(dd.groupby(["station", "date", "platform", "status"]).size().max() == 1, "R1: one row per station, day, platform and status")
     out_x = pd.read_excel(p("outlook"), sheet_name="Outlook 2027", header=4)
     ok(len(out_x) == 25 and set(out_x.station[:23]) == set(W.CURRENT), "separation: the outlook holds the 23 stations and two nodes")
@@ -267,7 +314,7 @@ def run(task_dir, tgt, B, meta):
     shutil.rmtree(tmp)
 
     # ------------------------------------------------------------------ the gaugings tie (oracles, L1)
-    g = pd.read_csv(p("gaugings"), dtype={"station": str, "unit": str, "gauging_no": str}, keep_default_na=False)
+    g = GD.read_gaugings(p("gaugings"), {"station": str, "unit": str, "gauging_no": str})
     gt = GD.gauging_table(g)
     since = gt[gt.day >= date(2022, 10, 1)]
     diffs = [100 * (q - float(W.q_of_h(W.RATING[s], h))) / float(W.q_of_h(W.RATING[s], h)) for s, q, h in zip(since.station, since.q, since.gh)]
@@ -291,7 +338,7 @@ def run(task_dir, tgt, B, meta):
             ok(lo_ <= ratio <= hi_, "masking: regulated ratio inside the unregulated spread", (no, m, round(ratio, 3), round(lo_, 3), round(hi_, 3)))
 
     # ------------------------------------------------------------------ Ask A
-    reg = pd.read_excel(p("register"), sheet_name="Stations", dtype={"replaced_by": str})
+    reg = GD.read_register(p("register"))
     A = res["A"]
     rec["A"] = A
     x = dd[(dd.date >= "2025-10-01") & (dd.date <= "2026-09-30")].copy()
@@ -300,6 +347,14 @@ def run(task_dir, tgt, B, meta):
     x["st"] = x.station.map(lambda s: ch.get(s, s))
     x["ym"] = x.date.str[:7]
     labs = dict(zip(["%04d-%02d" % ym for ym in GD.MONTHS_WY], GD.MLAB))
+    # SF21: the day a row covers. Every row read as a UTC day converges on the golden; every row read as the standard's
+    # day (the data plan's GOES sentence missed) misses every month
+    rcv = pd.to_datetime(x.received_utc.str.replace("Z", ""), format="%Y-%m-%dT%H:%M:%S").values
+    for h_goes, h_other, same in ((24, 24, True), (32, 32, False)):
+        end = (pd.to_datetime(x.date) + pd.to_timedelta(np.where(x.platform == "GOES", h_goes, h_other), unit="h")).values
+        cnt = x[~(rcv < end)].drop_duplicates(["st", "date"]).groupby("ym").size()
+        for ym, lab in labs.items():
+            ok((cnt.get(ym, 0) == A[lab]) == same, "SF21: the day each row covers", (h_goes, h_other, lab, cnt.get(ym, 0), A[lab]))
     held = x[x.held].drop_duplicates(["st", "date"]).groupby("ym").size()
     for ym, lab in labs.items():
         ok(held.get(ym, 0) >= 1, "Ask A device: held days in every month", (ym, held.get(ym, 0)))

@@ -5,32 +5,30 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-13",
+ "updated": "2026-11-01",
  "stump": "A competent solver back-tests every rating on its gaugings, applies the extrapolation rule to the 2027 outlook and files Sable Creek from May; the other twenty-two stations hold grade B through December; the step that lands it there is taking each published daily discharge as the day's mean flow, when the network publishes it from the day's mean water level through a convex rating and below Talbot Canyon (peaking since 2017) and Merrin Falls (from June 2027) the plant releases the day's inflow in two peak windows and holds the minimum release between them, so the river at those four gauges swings tenfold and more inside every day and the published daily discharge sits an eighth to a third below the day's mean flow: from January below Talbot Canyon and from July, after the freshet's continuous generation, below Merrin Falls.",
  "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-13",
-  "checks": 49
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK); every REVIEW line answered in the design note's build record",
-  "reader": "read 1 (22-station cut) and read 2 (23-station cut): no decisive-step sentence, no ranking file, decisive step analytical, every REVIEW line harmless; read 1's blanket-flag risk answered by C124, realism tells fixed"
+  "leak_py": "REVIEW 2026-11-01 on the 12-file cut (no LEAK; sweeps 1, 12 and 13 clean of LEAK after data_dictionary.csv and export_manifest.csv left the pack and the headers took the source systems' names); every REVIEW line answered in the design note's re-check record",
+  "reader": "stage 4 re-check 2026-11-01 (isolated, Sonnet at medium): Q1, Q2, Q4 none; Q3 none clearly (the data plan's section-1 processing sentence 'mildly explanatory', ruled harmless: the processing the shipped pack already filed, in the dictionary's words); Q5 executes to the golden's construction; Q6 analytical; every sweep line harmless; realism tells answered without a change. Earlier: read 1 and read 2 (2026-10-13), as recorded in the report"
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK)",
-  "surface": "0 promoted pairs; two false personas (Brandt Flats, the outlook's month headers)",
-  "nearest": "drivers 0.05: task79, task109 v1, task185, task123 v2, task500 v1",
-  "guard_check": "WARN (three_rules.strategy_risk, answered); NOTE same_driver_older against task105 v1, task127 v1 and task87 v9, differentiated"
+  "heart": "BLOCK 2026-11-01 after the final pull, ban.forcing_event (launch_or_rollout) against task454: both cards drawn 2026-10-13, unstamped, entered history together 2026-10-28; WARN at ship, so inherited from the corpus (H27), not caused by the re-check; recorded for the author. test.same_driver_older against task162 v2 (drawn 10-28) and task170 v1 (drawn 10-24) cleared by differentiation lines (NOTE). WARN three_rules.strategy_risk answered",
+  "surface": "2026-11-01: no persona; 2 promoted pairs, neither caused by the re-check: task261 (0.1003, flat layout and same four formats only, no shared name, prompt, entity or schema) and task162 (card axes gap time, G7, forecasting; drawn after this card, differentiated); for the author's adjudicated /clone-check",
+  "nearest": "drivers 0.07 (task464 v2 lineage, task483)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (pass 1, the 22-station cut)",
-  "disposition": "APPROVE",
-  "report": "task229/determinism_check_report.md",
-  "gate_g": "mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no; reconciled with the card",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "residual": "the final cut adds C124 and a dictionary line after the thread; covered by 1,697 generator assertions and verify.py (313 checks)"
+  "verdict": "DETERMINISTIC (pass 2, 2026-11-01, the 12-file cut; derive-first order kept)",
+  "disposition": "APPROVE; every block figure reproduced (the call, the grid, 12 station-day counts, 23 gauging means); optional sentence tying C110's record to C122 declined: standard s.7 and the register's replaced_by already file it, and adding it would move a filed sentence after the approval",
+  "report": "task229/determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+  "gate_g": "mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "returned": [
   {
@@ -38,6 +36,13 @@
    "portal": "architecture 1: determinism QC failed by both reviewers (the standard error's construction unforced)",
    "repair": "design",
    "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none (in-house re-check under the new gates: leak.py LEAK on sweeps 1 and 12, precut FAIL on Measured by, voice-check count WARN, and the architecture-1 class hunted: Critical Components' least at one decimal sat 0.004 from its edge)",
+   "repair": "determinism",
+   "fix": "data_dictionary.csv and export_manifest.csv out (12 files, four formats); the processing and the GOES UTC day filed in the data plan's section 1 in the dictionary's words; headers as the source systems name them (stn_no, obs_date, platform_type, q_meas, rating_no, visit_date, sample_date); provenance to metadata.json; prompt drops 'our 23'; the least (C105, February) printed whole, 14.4 to 14 (SF20); SF20, SF21 and H9 asserted; survivor anatomy and Measured by written. freeze.py --mode determinism --allow bias_least.pct: three moved items recorded, the Critical Components 14.4 to 14, the call sentence's dropped count and the ladder hash (rung 0's citation, dictionary to data plan); every Deliverable Answers figure, the call, the stump and the ladder unchanged; goldens byte-identical",
+   "commit": "RESHIPPED (task229)"
   }
  ],
  "resume": "",
@@ -276,7 +281,7 @@
    "deliverable": "freeze_gate_2026.html (one file, shape 10; the chart on ask B's forecast cases)",
    "golden_set": "Hinckley, Daventry, Bellshill, Warrington, Magor, Avonmouth qualify; Thurrock, Doncaster supervised",
    "ladder_sets": "rung 0 none; rung 1 Magor; rung 2 (textbook) Magor, Hinckley; rung 3 the six",
-   "filed_criterion": "HOW forced by the design (determinism-check \u00a71 form 1: the estimand at 06:00 through a full count, the posting and due-date facts and the data's age-dependent match rates) and by Thornacre 4.5, the standard's general requirement that an estimate be one a full count at the measurement time would be expected to bear out (form 2); no filed back-test (form 3)",
+   "filed_criterion": "HOW forced by the design (determinism-check §1 form 1: the estimand at 06:00 through a full count, the posting and due-date facts and the data's age-dependent match rates) and by Thornacre 4.5, the standard's general requirement that an estimate be one a full count at the measurement time would be expected to bear out (form 2); no filed back-test (form 3)",
    "asks": "A stock value on in-scope faces (D6 repeated face quantity on batch rows; H1 period-10 change file; H2 eaches); B forecast cases over the freeze and its chart (D2 depot label before the peak re-zoning with a 27 December far edge; H2; H3 Boxing Day closures)",
    "input_gates": "19 files; PDF, DOCX, CSV, XLSX, TXT, JSON; count history about 110,000 rows; two distractors named in metadata.json; synthetic, CC0",
    "first_tuning": "Hinckley's rung 1 to 96.5 or under with rung 2 at 97.5 or over; every rung-3 estimate 0.6+ from 97.0 and 0.2+ from an x.5 edge; private truth on the golden side; the chart title flipping under ask B's primary device"
@@ -328,5 +333,6 @@
   "daily_rows": 39930,
   "target_zip_sha256": "048a269bb0ff0fd7ed08bbfe83d6e89b8ac27312f06bb583687d4dec6ebb9cb2"
  },
- "call": "flag the published daily discharge at C104 and C105 from January 2027, C107 from May, C112 and C113 from July; the other 18 stations hold grade B"
+ "call": "flag the published daily discharge at C104 and C105 from January 2027, C107 from May, C112 and C113 from July; the other 18 stations hold grade B",
+ "architecture_1_status": "2026-11-01: its finding (a construction the files do not force) checked on architecture 3: no standard error or estimator choice; the day's shape, the published value and the grade are filed, clock, lag, step and ramp shape inert, unfiled variants inside the C3 corridor; Ask B's fit forced by the standard's 6.1 form (log and linear least squares agree to 0.0022 against a 0.0249 edge); the one figure that failed (the least at one decimal) restated whole"
 }

@@ -34,13 +34,11 @@ F = {
     "ops": "corriston_hydro_operating_plan_2027.pdf",
     "migration": "telemetry_migration_2026.xlsx",
     "visits": "field_visits_wy2026.csv",
-    "dictionary": "data_dictionary.csv",
     "flood": "flood_frequency_update_2025.pdf",
     "quality": "water_quality_grab_samples_2026.csv",
-    "manifest": "export_manifest.csv",
 }
 DISTRACTORS = ["flood", "quality", "visits"]
-DESC = {
+DESC = {  # provenance, recorded in metadata.json outside target/ (no manifest ships, reduce-house-fixes H9)
     F["standard"]: ("the network's hydrometric data standard, edition 2 (March 2025)", "hydrometric section"),
     F["plan"]: ("the network's 2027 data plan for the water licence inspector", "data quality manager"),
     F["register"]: ("the station register, every station including closed ones", "data quality manager"),
@@ -51,17 +49,15 @@ DESC = {
     F["ops"]: ("Corriston Hydro Ltd.'s 2027 operating plan for the Corriston and Merrin systems", "Corriston Hydro Ltd."),
     F["migration"]: ("the 2026 telemetry migration tracker", "data quality manager"),
     F["visits"]: ("field visits, water year 2026", "field crews"),
-    F["dictionary"]: ("column definitions for the exports", "hydrometric section"),
     F["flood"]: ("flood frequency update, 2025", "hydrometric section"),
     F["quality"]: ("monthly water quality grab samples, water year 2026", "environmental monitoring"),
-    F["manifest"]: ("this list", "hydrometric section"),
 }
 MTIME = {
     "standard": "2025-03-14 10:12", "plan": "2026-11-05 14:15", "register": "2026-10-02 09:05",
     "ratings": "2026-06-30 15:40", "daily": "2026-11-06 07:31", "gaugings": "2026-11-06 07:34",
     "outlook": "2026-11-02 09:35", "ops": "2026-10-19 13:02", "migration": "2026-09-29 14:10",
-    "visits": "2026-11-06 07:36", "dictionary": "2026-11-06 07:38", "flood": "2025-12-09 11:20",
-    "quality": "2026-10-28 16:44", "manifest": "2026-11-06 07:40",
+    "visits": "2026-11-06 07:36", "flood": "2025-12-09 11:20",
+    "quality": "2026-10-28 16:44",
 }
 
 
@@ -104,9 +100,7 @@ def write_pack(out):
     ship.outlook(p("outlook"))
     ship.migration(p("migration"))
     ship.visit_log(R.visit_rows(G, DR), p("visits"))
-    ship.dictionary(p("dictionary"))
     ship.water_quality(np.random.default_rng([P.SEED, 900]), TR, p("quality"))
-    ship.manifest(p("manifest"), [F[k] for k in F], DESC, {F[k]: MTIME[k][:10] for k in F})
     return tgt, {"TR": TR, "DR": DR, "G": G, "GR": GR}
 
 
@@ -128,10 +122,12 @@ def metadata(out, tgt):
             n = sum(1 for _ in open(path, encoding="utf-8")) - 1
         if n and n > rows:
             biggest, rows = name, n
+        key = next(k for k, v in F.items() if v == name)
         files.append({"path": name, "format": ext, "bytes": os.path.getsize(path), "rows": n,
+                      "contents": DESC[name][0], "made_by": DESC[name][1],
                       "source": "Constructed for this task: the fictional Corriston Basin Hydrometric Cooperative's "
                                 "network and Corriston Hydro Ltd.; no third-party data",
-                      "date": "2026-11-06", "license": "CC0-1.0 (original work)"})
+                      "date": MTIME[key][:10], "license": "CC0-1.0 (original work)"})
     meta = {
         "task": "task229",
         "title": "From which month of 2027 each hydrometric station's published daily discharge carries the below-grade-B flag",
