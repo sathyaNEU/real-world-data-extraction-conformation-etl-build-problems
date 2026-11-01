@@ -34,3 +34,30 @@ Stump terms swept: dropped, change, window, architecture, operation, patient, de
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (the isolated leak reader, two rounds)
+
+Every REVIEW line above is ruled harmless by the reader in each round; neither round found a ranking file, a helper file or a figure that reads as the answer.
+
+### Leak reader, round 1 (2026-11-01, isolated, Sonnet at medium effort, on target.zip d990a19c)
+
+1. Decisive step: none stated; the nearest is policy 3's "over every eligible index operation the provider carried out from 1 April 2023 to 31 March 2025, whether or not the patient returned the 12-month questionnaire", the estimand's population, not a hint.
+2. Nothing ranks or scores the providers (the capacity returns list offers; policy 4 gives the 14.5 line and the placing order, no outcomes).
+3. Ordinary reference files only (OPCS code lookup, provider reference with predecessors).
+4. Nothing reads as the answer (1,250 and 14.5 are policy parameters; capacity totals are offers).
+5. Policy 3 (all-provider mean expected change plus the provider's mean of observed minus expected change over its eligible operations, Appendix B coefficients; every eligible operation counts whether or not the questionnaire came back) and 4 (descending order of outcome, each up to its offer, the rest held back).
+6. The reader's answer: "mostly following stated rules and procedure ... The only analytical element is that the 3 population includes patients with no 12-month questionnaire, and 3 says so explicitly ... a rule-application risk (rule 3) more than an analytical-choice stump."
+Sweep flags: all harmless (the policy files the WHAT; the prompt names deliverables only; the capacity returns rank nothing).
+Realism: none strong; capacity totals all round multiples of 10 with smooth quarterly splits (plausible for a commissioner return, slightly tidy).
+
+### Leak reader, round 2 (2026-11-01, isolated, Sonnet at medium effort, on target.zip 44c981bc)
+
+1. Decisive step: policy 3's population ("over every eligible index operation ... whether or not the patient returned the 12-month questionnaire") and 4's placement rule; neither flagged as a trap.
+2. Nothing ranks or scores the providers (the returns list offers only).
+3. No helper file (plain code lookups, a provider code history).
+4. Nothing reads as the answer (14.5 and 1,250 are policy inputs; no row says which providers qualify).
+5. Policy 3 with Appendix B: every eligible operation stays in the population, including those with no 12-month questionnaire; the sentence does not say what value such an operation takes for its observed change.
+6. A mix: handling the missing 12-month outcome is an analytical choice no sentence fixes; the case-mix formula and the placement rule are rule application; field readings (the NHS-number link, the provider code change, the triage clock) are needed but do not decide; nothing planted.
+Sweep flags: the policy harmless on vocabulary (it names the population and formula, not the missing-outcome handling; borderline on question 6, not a clear leak); the capacity returns harmless (offers by quarter, no ranking).
+Realism: none (system-export features throughout); the capacity quarters vary irregularly, acceptable.
+
