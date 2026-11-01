@@ -48,6 +48,20 @@ def cut(target):
     return rows
 
 
+def seal(target, path):
+    """target.zip with fixed entry stamps, so two builds give one archive byte for byte"""
+    import zipfile
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(f, date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            zi.create_system = 3
+            with open(os.path.join(target, f), "rb") as fh:
+                z.writestr(zi, fh.read())
+    return path
+
+
 if __name__ == "__main__":
     tgt = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(
         os.path.dirname(os.path.abspath(__file__))), "target")
@@ -57,7 +71,7 @@ if __name__ == "__main__":
     gold = os.path.join(task, "golden")
     os.makedirs(gold, exist_ok=True)
     DL.workbook(os.path.join(gold, "annual_compliance_return_2025_26.xlsx"), g, None)
-    DL.chart(os.path.join(gold, "mcpa_compliance_overview.svg"), g)
+    DL.chart(os.path.join(gold, "orthophosphate_results_2025_26.svg"), g)
     PP.normalize_ooxml(os.path.join(gold, "annual_compliance_return_2025_26.xlsx"),
                        "Emmet McQuillen", "Katie Enright",
                        "2026-11-17T15:38:00Z", "2026-11-19T10:12:00Z",
@@ -68,7 +82,9 @@ if __name__ == "__main__":
     import verify as VF
     k = VF.run(tgt, os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json"))
     print("generator assertions", n, "independent checks", k)
+    if len(sys.argv) <= 1:
+        seal(tgt, os.path.join(task, "target.zip"))
     print("files", len(os.listdir(tgt)), "export rows", len(rows))
     print("count", g["count"], g["non_compliant"])
     print("rungs", g["rungs"])
-    print("a3", g["a3"])
+    print("orthophosphate", g["w"])

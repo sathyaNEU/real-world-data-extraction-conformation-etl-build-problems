@@ -91,15 +91,15 @@ reporting limit contributes to a mean when the limits in the sample differ, and 
 because two laboratories with different methods serve one network.
 - **Decisive step:** estimating each water body's annual mean from the censored sample using every
 observation's own reporting limit, rather than substituting one value for every result below a limit.
-- **Not semantics:** the data dictionary states plainly that a `<` qualifier means the determinand was not
-detected at the value in `reporting_limit_ug_l`, and the method schedule gives each method's limit, so
-the reading is free. A solver who reads every field correctly still has to decide what those results
+- **Not semantics:** regulation 4.3 has every result carry the reporting limit the method achieved for the
+sample, and the method schedule says a result below the limit is reported with the qualifier shown in the
+export and gives each method's limit, so the reading is free. A solver who reads every field correctly still has to decide what those results
 contribute to an average, and every constant substitution files a different count: 7 at half the limit,
 3 at zero, 11 at the limit itself, 8 with them dropped.
 - **Not rule application:** clause 7.2 files what is averaged (the compliance samples the programme requires
 for the water body in the reporting year, each weighted equally) and clause 7.3 the standard it is
 compared with. No shipped sentence says what a result reported below a limit contributes, and the
-regulations, the method schedule, the programme and the data dictionary are silent on it. Executing
+regulations, the method schedule and the programme name no value for it. Executing
 every stated rule leaves the decisive step untouched.
 - **Analyst test:** a strong analyst conforms the export, drops the QC and superseded rows, crosswalks the
 points, substitutes half the reporting limit for every non-detect, averages and files 7 non-compliant
@@ -126,6 +126,16 @@ detection threshold that moves with a daily noise cycle (task180), where the eve
 at all, and a density from grouped tests (task188), where every group is observed; none has an
 observation that is present and bounded.
 
+## Survivor anatomy
+
+- **Actor:** the deciding property is each water body's annual mean over its compliance samples with every result below a limit valued from what the record supports; no column stores it, and the qualifier and limit columns are ordinary metadata that every rung of the ladder reads alike.
+- **Link:** the signal is read across the two laboratories, the sensitive method's quantified results in the same water bodies and months showing what lies under the legacy method's 0.10 ug/l, a comparison no key joins and no sentence asks for.
+- **Reflex:** the field's own regulatory convention for a mean over results below the limit of quantification, half the limit (the convention the EU's QA/QC directive for water monitoring sets), sits at rung 0 and files 7, the `Ends on:` figure.
+- **Back-test:** the one internal check the pack offers passes the easy route: Kilcrohane, the only water body measured wholly by the sensitive method, is non-compliant under half the limit too, and the quarterly reports and the programme tie under every handling.
+- **Second use:** every file the decisive step reads sits in the pack for its own reason: the export for every figure, the method schedule for the methods and limits regulation 4.3 has recorded, the regulations for the standard and the population.
+- **Shock:** weak on this build and frozen with the call: measured on the cut pack, the golden four are also the top four of the zero and half-limit rankings, so the step moves where the line falls rather than the order; the call is the count, which those two rungs put at 3 and 7.
+- **Pins:** clause 7.2 files the population, the weighting and the comparison and no sentence names an estimator, but its third sentence (a sample's own concentration at the figure the results it holds support) is the one sentence whose deletion unforces the call, 8 of 13 verdicts open without it (`## Tried and rejected`), so this line holds only in part.
+
 ## Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
@@ -142,19 +152,18 @@ observation that is present and bounded.
 | id | term or convention | golden reading | alternative | call under it | ruled out by |
 |---|---|---|---|---|---|
 | SF1 | water body | the register's water body in force in the reporting year | the 2024 pre-revision code | 4, the same bodies under either code | `same call`, asserted: the revision renamed codes and merged none |
-| SF2 | compliance sample | a field sample the programme requires at a listed point | any row in the export, QC included | 7 | clause 7.2 "the compliance samples the authority's monitoring programme requires", and the dictionary's sample type codes |
+| SF2 | compliance sample | a field sample the programme requires at a listed point | any row in the export, QC included | 7 | clause 7.2 "the compliance samples the authority's monitoring programme requires", and regulation 4.2, which names the blanks, duplicates and spikes |
 | SF3 | reporting year | 1 April 2025 to 31 March 2026 | calendar 2025 | 5 | clause 1.4 "the reporting year begins on 1 April" |
 | SF4 | which sample date | the date of collection | the date of receipt or of analysis | 4 | `same call`, asserted: every sample is collected and received inside one reporting year, the nearest clear of the boundary by 9 days |
 | SF5 | result version | the approved version | the provisional version, or both | 4 and 4 | clause 7.5 "the result as approved by the laboratory"; asserted that no approved value differs from its provisional value for MCPA |
 | SF6 | weighting | each sample weighted equally | per point, then averaged over points | 5 | clause 7.2 "each sample weighted equally", quoted against the per-point reading; the separation is asserted |
-| SF7 | units | ug/L after converting the ng/L rows | the numbers as reported | 11 | the `units` column and the dictionary's statement that both are in use |
-| SF8 | the `<` qualifier | the determinand was not detected at the limit in `reporting_limit_ug_l` | the value is the limit | 11 | the dictionary: "a result qualified `<` was not detected; the figure in reporting_limit_ug_l is the limit the method achieved for that sample" |
+| SF7 | units | ug/L after converting the ng/L rows | the numbers as reported | 11 | the `units` column and the method schedule's note that TAS-LC-PHX-04 reports in ng/l |
+| SF8 | the `<` qualifier | the determinand was not detected at the limit in `reporting_limit_ug_l` | the value is the limit | 11 | regulation 4.3 (every result carries the reporting limit the method achieved for the sample) and the method schedule's note that a result below the limit is reported with the qualifier |
 | SF9 | standard | 0.05 ug/L, Schedule 2, as an annual average | the 0.10 ug/l drinking water parametric value in the method schedule's scope note | 1 | clause 7.3 "the standard for the substance set out in Schedule 2" |
 | SF10 | non-compliant | the average exceeds the standard | the average equals or exceeds it | 4 | `same call`, asserted: no estimate lands within 11 per cent of the standard |
 | SF11 | rounding | the count is a whole number of water bodies; no estimate is rounded before the comparison | each average rounded to two decimals first | 4 | `same call`, asserted at two and three decimals |
 | SF12 | the district | the thirteen water bodies the programme lists for the authority | the register's full list, which includes three outside the programme | 4 | clause 7.2 "requires for the water body", and the programme's own list |
 | SF13 | the average | the mean of the thirteen water bodies' own samples, one concentration per sample | the mean of a lognormal fitted to the censored sample, which is a property of the fit rather than of the samples | 4 | `same call`, asserted: the fitted distribution's own mean gives the same four verdicts with every water body 12 per cent or more clear of the standard; clause 7.2 also says the average is "the mean of the concentrations of the compliance samples ... one concentration for each of those samples" and that the authority "shall not report in place of the average any property of a distribution fitted to them" |
-| SF14 | nitrate basis | a result under `NO3N` is nitrogen and converts to the nitrate ion by 4.4268 | the two codes pooled as reported | the asks' figures change at five of the six abstraction points | the field dictionary: "a result under NO3N is 4.4268 times smaller than the same water under NO3" |
 
 ## Ladder
 
@@ -205,18 +214,18 @@ partnership's points; Kilcrohane, which is all on the sensitive method, sits in 
 | 13 Order of operations | convert units, then exclude, then average | every order gives the same figures, asserted over the three permutations that are defined |
 | 14 Row order | the export's order | C1, asserted over three permutations of the export |
 | 15 Duplicate resolution | the same sample under two client codes | the crosswalk resolves them; the main call's population holds no duplicate pair, asserted by count |
-| 16 Identity normalisation | laboratory client point codes against authority codes | `sample_point_crosswalk.csv`, every code matched, asserted 1 to 1 on the compliance network |
+| 16 Identity normalisation | laboratory client point codes against authority codes | `monitoring_point_crosswalk.csv`, every MCPA code matched, asserted 1 to 1 on the compliance network |
 | 17 Netting against gross | none; concentrations do not offset | no closure needed, asserted that no result is negative |
 | 18 Dimensional units | ng/L and ug/L in one column | the `units` column, SF7; asserted that every averaged value is in ug/L |
-| 19 Code and status semantics | the qualifier, sample type and status codes | the data dictionary, SF8; never the decisive step |
+| 19 Code and status semantics | the qualifier, sample type and status codes | regulations 4.2, 4.3 and 7.5 and the method schedule, SF2, SF5, SF8; never the decisive step |
 | 20 Integerisation | the count of water bodies | a whole number by construction |
 | 21 Clause scope | per substance, per water body, per year | clause 7.2's own scope, SF9 |
 | 22 Forward window contents | none; the reporting year closed on 31 March 2026 | the call is retrospective: the figure is committed at the regulator's deadline of 30 November 2026 and the window it describes is closed. The reason is the decision itself, which is what the authority states in a statutory return, and no forward quantity enters it. |
 
 ## Literal reader
 
-Executing the prompt, clause 7.2, clause 7.3, clause 7.5, clause 1.4, the method schedule and the data
-dictionary word for word selects 427 MCPA compliance results at 37 sample points in 13 water bodies and
+Executing the prompt, clause 7.2, clause 7.3, clause 7.5, clause 1.4 and the method schedule word for
+word selects 427 MCPA compliance results at 37 sample points in 13 water bodies and
 asks for the mean of each water body's samples' concentrations against 0.05 ug/l, one concentration per
 sample. The text is silent on what a sample the laboratory reported no value for contributes, so every
 option was computed: zero 3, half the limit 7, the limit 11, dropped 8, and each of the five readings
@@ -230,7 +239,6 @@ either ruled out by a quoted sentence or asserted to give the same call.
 - The labs' quarterly report PDFs confirm result counts per quarter and the values as issued; they tie
   under every handling of the non-detects, because they carry no average and no assessment.
 - The programme workbook confirms each point's required frequency; it ties under every handling.
-- `export_manifest.csv` confirms the export's row count and date range; it ties under every handling.
 - Kilcrohane, the one water body wholly on the sensitive method, reads 0.0606 to 0.0612 ug/L under all
   six pipelines and is non-compliant in every one. It is the data's own consequence of an accredited
   limit twelve times below the standard, it is not quoted anywhere, and it blesses no method: it is
@@ -239,46 +247,124 @@ either ruled out by a quoted sentence or asserted to give the same call.
 
 ## Ask sheet
 
-| Ask | Figures | H18 home | Use | Primary device | Hazards | Files, columns | Stops, lazy delta | Realism |
+| Ask | Figures | H18 home | Use | Primary devices | Hazards | Files, columns | Stops, lazy delta | Realism |
 |---|---|---|---|---|---|---|---|---|
-| A1 the year's sampling record | per water body, the compliance samples the year holds and how many came back below the reporting limit (26 figures) | the audit trail of the call's own population | the return's own columns; the regulator asks every authority for them | none (construction layer) | QC sample types, provisional superseded by approved, the ng/L rows, the 2024 point renumbering, a re-issued batch | export, programme, crosswalk, register, dictionary; 11 columns | 5 stops; the lazy read (every MCPA row at the programme's points, QC and all) gives 475 against 427 | the return form asks for the sample count behind every assessment |
-| A2 nitrate at the abstraction points | per abstraction point, the highest nitrate result of the year as mg/L NO3 to one decimal and the number of samples at or above 37.5 mg/L NO3 (12 figures) | an input the call consumes (the same export) read on rows the call never touches | the authority's drinking water source protection report | D1, the same samples submitted under two client codes, the water services section's and the laboratory's own, so a plain count double-counts; resolved only by the crosswalk and the collection timestamp | the two determinand codes, nitrate as NO3 and as N; a point renamed mid-year | export, crosswalk, abstraction register, dictionary, method schedule; 9 columns | 4 stops; the lazy read double-counts 40 rounds and files the as-N figures at five of the six points | abstraction points are monitored for nitrate under a separate programme |
-| A3 the quarter's reconciliation | for October to December 2025, the ortho-phosphate results the quarterly reports show for the district, the number the export holds, and the number in only one of the two (3 figures) | an input reconciled to another system's total | the authority's data quality log, which the regulator audits | D2 version, the reports were issued on a cut-off before some results were approved, so the export holds replacements the reports do not | a report page with a continued multi-row header; one report issued twice | two report PDFs, export, manifest; 7 columns | 4 stops; the lazy read compares the two totals, 250 against 242, and files 8 rather than 18 | the quarterly report is the laboratory's contractual deliverable |
+| W the return's ortho-phosphate figures | per water body, the compliance samples the year holds an approved ortho-phosphate result for, and how many of those results were below the reporting limit (26 cells; the chart's 13 bars carry the same cells) | a measure every candidate carries that the call does not turn on: the same return's ortho-phosphate row for each water body (regulation 7.6, Schedule 3), on rows the MCPA call never reads | the return states each listed substance's compliance samples and below-limit results for every water body, and ortho-phosphate is the listed substance the nutrient suite carries at every compliance point | three, each a reconstruction, one referee deciding them (a compliance point's nutrient bottle is filled on the visit that takes its pesticide sample, so it carries that sample's collection date and time): (D7) a bottle the reception booked to a compliance point's open slot and booked again later under the operational point that took it, the first booking's withdrawal never reaching the authority, 13 bottles, one into every water body, each into the slot that point's own lost bottle left open and each dated on a day that point was not visited; (D1) a bottle booked twice by one reception, from the round's pre-registration one to three days early and from the chain of custody form, one analysis issued to both, 22 at the compliance points of 11 water bodies and 3 at operational points; (D7) the Tirneevin code, catchment and last two digits, that operational points ARW-2122 and ARW-2241 share with compliance points ARW-0322 and ARW-1041, neither operational point having a crosswalk row of its own | QC sample types (4.2); October to December provisional and late-approved results (7.5); ARW-1043 in the programme only from October and ARW-0853 only to September (4.1); five missed visits; 14 bottles lost on the way, which nothing in the programme shows; every Tirneevin result below its 0.10 mg/l limit | export (13 columns), crosswalk (4), programme (points and dates, the operational network), register (2), regulations 1.4, 4.1, 4.2, 7.5 and 7.6; 5 files, 21 columns | 6 stops: the lazy read (every ortho-phosphate row at the programme's points, QC and versions included) 498 and 259 against the golden 413 and 187; the cracker 472 and 246; the plan reader and the one-a-month reader, each over by every lost bottle; a reader of any one reconstruction, 0 of 26; the golden | two contracted laboratories' receptions and a client numbering that drops the hundreds digit produce exactly these records, and nothing in the pack narrates them |
+
+**Pin test.** The asking sentence pins the substance, the unit (the compliance samples with an approved
+result), the year and the grain (the water body); regulations 4.1, 4.2 and 7.5 file the programme's
+points and dates, what a compliance sample is and the approved result. No filed sentence names a
+booking, a bottle's identity, a visit or a code's owner, and each device sits in one of those three dimensions:
+which bookings are one bottle, which point a bottle belongs to, which point a shared code's bottle came
+from. Filing the WHAT a judge would force (compliance samples, approved results, the programme's dates)
+leaves all three in place.
+
+**Forcing, asserted on the cut pack.** One identity decides every device, asserted in `checks.py`: a
+compliance point's own nutrient bottle carries the collection date and time of the point's pesticide
+sample that month (the visit), at all 37 points and 427 visits. Of the 472 nutrient bookings under a
+compliance point's code, 413 fall on one of that point's visits, at most one to a visit, and the other
+59 are exactly the device bookings, none of which falls on a visit: the 22 second bookings, each dated
+one to three days before a visit of its point and repeating that visit's bottle result for result; the
+13 misbooked bottles, each dated on a day its compliance point was not visited, that point's visit of the
+month leaving no booked bottle, each with an identical and newer twin under the operational point that
+took it; the 12 ARW-2122 bottles under ARWA-BN-22 (each month exactly one of that code's two bottles falls
+on ARW-0322's visit) and the 12 ARW-2241 bottles under ARWA-CB-41, none on the day of an ARW-1041 visit,
+while all 11 of ARW-1041's Kilgarron bottles fall on its visits. The golden read from the shipped files
+equals the generator's truth, and `verify.py` rebuilds it twice without the generator, once from the
+visits and once from the bottles alone (the double bookings merged by their shared receipt and results,
+each twin kept at its newer booking, the shared codes split), the two agreeing cell for cell.
 
 **Main population separation.** Zero device rows in the main call's population (MCPA, field samples,
-approved versions, the 13 programmed water bodies' 37 points, 1 April 2025 to 31 March 2026): the A2
-double submissions are nitrate at the six abstraction points, which are not in the compliance network;
-the A3 superseded versions are ortho-phosphate. Asserted by count in `checks.py`. The main path still
-carries its own texture (QC rows, provisional versions, ng/L, the crosswalk), all of it coded and found
-by the hygiene battery.
+approved versions, the 13 programmed water bodies' 37 points, 1 April 2025 to 31 March 2026): every
+device row is a nutrient-suite field row, none in October to December. `checks.py` asserts it by count
+from the shipped rows and asserts the call's own files and rows against the shipped commit: the
+regulations, the register and the crosswalk byte for byte, the 1,898 pesticide-suite rows byte for
+byte, and the programme's points, names, water bodies, laboratories, pesticide rounds, dates and notes
+cell for cell. The only cells that moved in the programme are the nutrient and physico-chemical round
+counts of ARW-1043 and ARW-0853, from 12 and 24 to 6 and 12, so the required rounds match the dates the
+programme already gave.
 
-**Hazard table.** 475 MCPA rows sit at the programme's points and 427 of them are compliance samples. QC sample types move A1 and A2; the ng/L rows move A1 and A2; the 2024 renumbering
-moves A1 and A3; the multi-row report header moves A3.
+**No marker.** No column, code, status or flag separates a device row: the misbooked bottles keep
+their first booking's number and status, and the re-bookings and second bookings are numbered from the
+end of Tirneevin's series together with 80 ordinary bottles whose chain of custody forms reached
+reception late, so no number range isolates them either (asserted: device bookings are under half of that
+block). Their times, batches and receipts follow the same patterns as every other nutrient bottle.
 
-**Referee.** `export_manifest.csv` arbitrates the export's own extent (row count, date range, the
-determinands it covers) and nothing else; it ties under every handling and settles no level.
+**Hazard table.** The QC rows and the October to December versions move the lazy read at every water
+body (498 rows against the cracker's 472); the programme dates of ARW-1043 and ARW-0853 move Carrowbeg
+and Tirneevin Stream for a reader without regulation 4.1; the lost bottles and the missed visits move
+the plan reader at every water body; the double bookings, the misbooked bottles and the shared codes
+move the cracker at every water body, by 3 to 13 samples.
 
-**Cracker sheet.** The cracker landed the call at rung 5, ran the hygiene battery, executed clauses
-1.4, 7.2, 7.3 and 7.5 and matched the quarterly reports.
+**Referee.** One, and it hands over no level: the monthly visit, read from the export's own pesticide
+rows (their collection date and time), which the call reads unchanged and byte for byte as shipped. It
+decides which booking is a compliance sample in each device; the visits number 427 and the figures are
+the visits with a booked bottle, a count nothing states. The two quarterly reports, declared
+distractors, list October to December only, where no device sits, and tie under every handling.
 
-| Ask figure | Cracker's figure | Golden | Result |
+**Cracker sheet.** The cracker landed the call at rung 5, ran the hygiene battery (exact duplicates,
+natural-key duplicates on point, determinand, collection date and time, unmatched joins, the governing
+version) and executed regulations 1.4, 4.1, 4.2 and 7.5. Measured on target.zip f2c0b70568a20c9a.
+
+| Water body | Cracker's samples, below limit | Golden | Result |
 |---|---|---|---|
-| A1 compliance samples, Ballynure | counts every MCPA row at the water body's points, 53 against 47 | 47 | miss |
-| A1 below-limit count, Owenbeg | counts every `<` row including the field duplicates and blanks | 31 | miss |
-| A2 highest nitrate, Gortaleen Borehole | takes the maximum as reported, without the nitrate-ion basis, 14.9 | 65.9 | miss |
-| A2 rounds at or above 37.5, Sheskin Shallow Well | reads the as-N results as the nitrate ion, so no round reaches the level and it files 0 | 19 | miss |
-| A3 identifiers in only one of the two | subtracts the two totals and files 8 | 18 | miss |
+| Aghavannagh | 25, 13 | 22, 10 | miss |
+| Ballynure | 59, 35 | 46, 22 | miss |
+| Carrowbeg | 41, 24 | 28, 11 | miss |
+| Cloonfad | 38, 14 | 35, 11 | miss |
+| Derryvore | 37, 13 | 34, 10 | miss |
+| Drominagh | 38, 26 | 35, 23 | miss |
+| Glasheen | 38, 14 | 35, 11 | miss |
+| Kilcrohane | 26, 14 | 23, 11 | miss |
+| Knockanure | 37, 25 | 34, 22 | miss |
+| Lisheenaguile | 26, 14 | 23, 11 | miss |
+| Moneycashen | 26, 14 | 23, 11 | miss |
+| Owenbeg | 49, 26 | 46, 23 | miss |
+| Tirneevin Stream | 32, 14 | 29, 11 | miss |
 
-Pair ceiling: 34.0
-Mirror leakage: 20.0 per cent of the ask weight
+Stress readings, measured on the same pack:
 
-**Leak sweeps answered.** `leak.py` returns REVIEW on six lines, each harmless. Sweep 4 flags the
-regulations, the method schedule, the dictionary and the two quarterly reports for sharing three to
-eight ordinary words with the stump paragraph (sample, method, average, authority, standard,
-programme, laboratory): those are the domain's own nouns and no document names the decisive step, which
-the word sweep in `checks.py` asserts over every shipped file. Sweep 3 flags 0.005 and 0.10 in the
-method schedule: they are the two accredited reporting limits, an input the pack must carry, and both
-are listed under `stated_inputs` in `metadata.json`.
+| Reading | Cells kept of 26 | Score on the call |
+|---|---|---|
+| the plan reader: required nutrient rounds less the rounds the programme records as not sampled | 0 | 45.0 |
+| one bottle a month at every point | 0 | 45.0 |
+| double bookings merged, nothing else | 0 | 45.0 |
+| re-bookings resolved, nothing else | 0 | 45.0 |
+| shared codes split, nothing else | 0 | 45.0 |
+| double bookings and re-bookings | 22 | 91.5 |
+| re-bookings and shared codes | 4 | 53.5 |
+| re-bookings resolved, then one bottle a month | 24 | 95.8 |
+| all three reconstructions from the bottles alone | 26 | 100.0 |
+| the visit reader: each compliance point's bookings on its pesticide visits (the golden) | 26 | 100.0 |
+
+Pair ceiling: 28.5
+Mirror leakage: 0.0 per cent of the ask weight
+Measured by: generator/ceiling.py, run on the cut pack (target.zip f2c0b70568a20c9a)
+
+**The weak side, priced.** The mirror files rung 0 on the call and handles the ask exactly as the cracker
+does, since the ask reads no row the call's construction produces, so both keep 0 of 26 and the pair is
+28.5 on paper. A response that joins each compliance point's nutrient bookings to its pesticide visits
+keeps all 26: the referee is the layer's single point of failure, and the layer holds only while no top
+response matches nutrient bottles to pesticide visits, a cross-suite join no battery sweep makes. A
+response that finds the re-bookings, a cross-point comparison of whole bottles, and then caps every point
+at one bottle a month keeps 24 of 26 (Carrowbeg's shared code alone holds it) and scores 95.8 on the call;
+one that also merges the double bookings but not the shared codes keeps 22.
+
+**Leak sweeps answered.** `leak.py --asof 2026-11-16` returns REVIEW on four lines, each harmless, and no
+LEAK. Sweep 4 flags the regulations (11 of the stump paragraph's terms), the method schedule (7) and the
+two quarterly reports (3 each) for ordinary words of the field (sample, method, authority, programme,
+standard, average, laboratory, export, qualifier): they are the domain's own nouns, no document names the
+decisive step, and the word sweep in `checks.py` asserts over every shipped file that none says
+substitute, censor, non-detect, Kaplan or maximum likelihood.
+
+**Scope, proved.** `freeze.py check task189 --mode rubric` FAILs on two keys and nothing else:
+`a2_nitrate.Gortaleen Borehole.at_or_above_trigger` (25) and `a2_nitrate.Rathvilly Borehole 2.at_or_above_trigger`
+(3). Both were figures of the retired nitrate ask, classed main-call only because their values equal a
+Critical Components number (Derryvore's 25 bounded results) and a Final Recommendation number (3 under
+zero substitution) by coincidence; neither number moved in either block. With those two keys named by
+`--allow` the check PASSes: blocks 1 and 2, every other main-call figure (the call, the rungs, the
+construction counts), the stump, the card's stump and driver, the ladder, the default path and the call
+sentence are unchanged.
 
 ## Pre-ship check
 
@@ -286,28 +372,39 @@ are listed under `stated_inputs` in `metadata.json`.
   left-censored mean with two reporting limits in play, and `checks.py` executes it: the easy route on
   the generator's clean truth files 7 and the same clean truth assessed on the limits as reported files
   4. The mess in the pack is Layer 1 only: the QC rows, the provisional versions, the ng/l rows, the
-  crosswalk, the renumbering and the incomplete rounds are all typed or documented, and removing every
-  one of them leaves the call exactly as hard, because the decisive step is in the 427 compliance
-  samples themselves.
+  crosswalk, the renumbering and the incomplete rounds are all typed or filed, and removing every one of
+  them leaves the call exactly as hard, because the decisive step is in the 427 compliance samples
+  themselves. The reship moved no MCPA row: the 1,898 pesticide-suite rows, the regulations, the
+  register and the crosswalk are the shipped commit's byte for byte.
 - **Rule 3, each class.** Nothing is planted (every quantified MCPA value is its own draw, asserted
-  distinct; no block is copied; no memo, draft or stakeholder figure ships). Not semantics (the
-  dictionary states what the `<` qualifier and `reporting_limit` mean, so the reading is free, and a
-  word sweep over every shipped file asserts that none of them says substitute, censor, non-detect,
-  Kaplan or maximum likelihood). Not rule application (clause 7.2 files the population, the unit, the
-  window and the weighting, clause 7.3 the standard, clause 7.5 the governing version, and no shipped
-  sentence says what a result below a limit contributes).
-- **Input gates.** 14 files, 4 formats (csv, xlsx, json, pdf), the export at 25,524 rows, two
-  distractors declared in `metadata.json` and named in neither a file name nor the prompt.
+  distinct; no block is copied; no memo, draft or stakeholder figure ships). Not semantics (regulation
+  4.3 and the method schedule say what the qualifier and the reporting limit carry, so the reading is
+  free, and a word sweep over every shipped file asserts that none of them says substitute, censor,
+  non-detect, Kaplan or maximum likelihood). Not rule application (clause 7.2 files the population, the
+  unit, the window and the weighting, clause 7.3 the standard, clause 7.5 the governing version; the
+  limits of that line are in `## Survivor anatomy`, Pins). The ask turns on which bookings are one
+  bottle and which point a bottle belongs to, decided by the visit each bottle was filled on, which rule
+  3 leaves free for an ask.
+- **Input gates.** 12 files, 4 formats (csv, xlsx, json, pdf), the export at 25,316 rows, five
+  distractors declared in `metadata.json` (the flow record, the sales returns, the two quarterly
+  reports, the abstraction register) and named in neither a file name nor the prompt.
 - **Gate G.** No shipped artifact assesses or ranks the water bodies: the regulations give the standard
   and the method, the programme gives the points and the rounds, the quarterly reports list
   ortho-phosphate results and say in their own words that they are not a compliance assessment, and
-  the word `non-compliant` appears only in the regulations' own clauses. There is no declared
-  wrong-basis distractor and the difficulty survives deleting every number in the pack that is not a
-  laboratory result.
-- **Free gates.** `precut.py` 49 checks 0 FAIL 0 WARN; `voice-check.py` PASS at 908 characters;
-  generator assertions 209; independent checks 68; two byte-identical rebuilds of `target/` and
-  `golden/`; `figures_check.py` 42 of 42; `leak.py` REVIEW with every line answered above;
-  `guard.py surface` clean and `heart` WARN only (`government_agency` overuse).
+  the word `non-compliant` appears only in the regulations' own clauses. The ortho-phosphate chart
+  carries no MCPA assessment. There is no declared wrong-basis distractor.
+- **Free gates on the final cut (target.zip f2c0b70568a20c9a).** Generator assertions 3,898 and
+  independent checks 78, green; two builds byte-identical (`target/`, `golden/`, `metadata.json`,
+  `figures.json`, `target.zip`); `figures_check.py` 34 of 34; `precut.py` 61 checks, 0 FAIL;
+  `voice-check.py` PASS at 617 characters; `leak.py` REVIEW with every line answered above;
+  `guard.py heart` WARN only and `surface` with five promoted pairs answered on the card (task143,
+  task155, task181, task192, task462); `freeze.py --mode rubric` as above; `ceiling.py` 0 of 26 for the cracker and the
+  mirror, pair 28.5.
+- **Heart WARNs answered.** `government_agency` overuse: the body that files a river basin district's
+  statutory return is a public authority. The decision type repeating task151 is the frozen call's. The
+  deliverable pair svg and xlsx repeating task150 is the shell: the return is the regulator's workbook
+  form and its chart the companion the prompt names, and the voice gate's quotas pass. The repeated
+  first name George was replaced from the seeded draw (Polly Caddow, Tirneevin's contact).
 - **Retrospective call.** The reporting year closed on 31 March 2026 and the figure is committed to the
   regulator at the 30 November 2026 deadline, which is the decision the authority actually makes; no
   forward quantity enters it (closure axis 22).
@@ -373,3 +470,11 @@ are listed under `stated_inputs` in `metadata.json`.
   stump's lever and the determinism hole are the same cells and no clause-free wording separates them.
 - **(2026-10-25, measured) A blind reader landed the call and took 86.4 per cent of the ask figures.** One isolated Sonnet reader at medium effort, holding only a fresh unzip of `target.zip`, `prompt.txt` and the flat `figures.json` key list, filed **4 non-compliant water bodies** against the golden 4 and named Owenbeg, Cloonfad, Glasheen and Kilcrohane in its prose, so the call is landed on the members as well as the count, and **51 of 59 ask figures hit**. It reached the call by substituting each legacy-limit non-detect with that water body's same-month sensitive-limit mean, which is the decisive step this architecture rests on, and it reported all five rung counts (3, 7, 11, 8, 4) unprompted, so the ladder is visible from the pack. Both halves of Gate F fail at once: with the call landed the pair floors at 45 plus 55 times the ask keep, so no ask repair reaches it. Re-root, do not harden.
 - Reship of 10-31 without the dictionary and the manifest (the nitrate factor moved into the method schedule, the chart an SVG, figures unchanged): held on the ask layer. A1, each water body's compliance samples and below-limit counts (26 figures), is the call's own construction, so a careful cracker (QC samples out, approved results, the programme's points) keeps all 26 and so does the mirror; the sheet's cracker had taken a lazier read. Pair about 74 against the 70 bar; the asks need devices outside the call's construction and the hygiene battery before a reship.
+
+- (11-01, rubric reship) A1, each water body's MCPA compliance samples and below-limit counts, retired as an ask: it was the call's own construction over the call's own population, so a careful cracker and the default-path mirror both kept all 26 cells (pair about 74). Its counts stay in `figures.json` only as the construction behind Critical Components 1 and 4, and the chart that drew them is gone with it.
+- (11-01, rubric reship) A2, the abstraction points' nitrate, retired: under H18 the drinking water source protection report is another decision with another owner, and its two devices were a conversion factor the method schedule files and copies on the same collection timestamp, both executed by the battery.
+- (11-01, rubric reship) A3, the October to December reconciliation, retired: the reports' printed counts, the governing-version filter and an identifier-level comparison hand all three figures to the careful cracker, and the device that would bite there, a result re-booked under a new number, reads as two results to a literal grader, which is a fork rather than a device.
+- (11-01, rubric reship) The return's ortho-phosphate figures on the nutrient suite as it shipped, before any device: each determinand of a bottle carried its own collection day and receipt, and a water body's samples equalled the programme's required rounds less the missed visits, so the programme alone recovered every cell (the blind-response test). A bottle now carries one date, time and receipt across its determinands, its total oxidised nitrogen is its nitrate plus nitrite, the method schedule lists every nutrient determinand each method carries, and the bottles lost on the way, which nothing in the programme shows, take the plan reader off every cell.
+- (11-01, rubric reship) The double booking alone as the ask's device: a reader that keeps one bottle per point and month removes every double booking without identifying one, and so would a reader of the shared Ballynure code. The misbooked bottles were placed in the slots their target points' own lost bottles left open, the causal order a reception follows, and that reader now misses every cell; it still keeps 25 of 26 once it has also resolved the re-bookings (the ask sheet prices it).
+- (11-01, rubric reship, judge pass 2) The ortho-phosphate counts resting on conventions no file states: a bottle under two points counted at its newer booking, status V excluded with no code list in the pack (the quarterly reports print those rows approved), and the Tirneevin ARWA-CB-41 bottles given to an operational point the crosswalk does not name. The judge found each a competing reading, the newer-booking rule even contradicted by the programme's twelve rounds at the misbooked point, whose own bottle was the lost one. Replaced by one identity the data carry: a compliance point's nutrient bottle is filled on the visit that takes its pesticide sample and carries that sample's collection date and time, which decides all three devices; the withdrawn status dropped from the reissued batches; the operational points sharing a code kept off the compliance point's visit day.
+- (11-01, rubric reship, judge pass 3) The visit identity as the ortho-phosphate devices' referee (a compliance point's nutrient bottle carries its pesticide sample's collection date and time): the judge reproduced the golden only under that rule and ruled it an unfiled convention, the literal count of every approved field booking at a programme point (472 and 246 across the network) being the reading the files support. Second determinism failure of this ask layer: filing the visit as WHAT hands the reconstruction to the cracker (157's closure arithmetic), and removing the devices hands it the cells, so the layer is spent and the next pass re-sites the ask onto a new device family whose truth a judge can force from one filed WHAT that the cracker cannot execute without the reconstruction.

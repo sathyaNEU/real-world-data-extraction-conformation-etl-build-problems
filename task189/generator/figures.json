@@ -53,37 +53,6 @@
    "samples": 30
   }
  },
- "a2_nitrate": {
-  "Ballynure Borehole 1": {
-   "at_or_above_trigger": 14,
-   "max_no3_mgl": 50.7
-  },
-  "Cloonfad Spring Chamber": {
-   "at_or_above_trigger": 0,
-   "max_no3_mgl": 35.5
-  },
-  "Gortaleen Borehole": {
-   "at_or_above_trigger": 25,
-   "max_no3_mgl": 65.9
-  },
-  "Moneycashen Intake": {
-   "at_or_above_trigger": 0,
-   "max_no3_mgl": 28.5
-  },
-  "Rathvilly Borehole 2": {
-   "at_or_above_trigger": 3,
-   "max_no3_mgl": 41.3
-  },
-  "Sheskin Shallow Well": {
-   "at_or_above_trigger": 19,
-   "max_no3_mgl": 60.1
-  }
- },
- "a3_quarter": {
-  "export": 242,
-  "one_only": 18,
-  "reports": 250
- },
  "below_limit_total": 276,
  "call": 4,
  "censored_readings_agreeing": 4,
@@ -91,13 +60,66 @@
  "legacy_limit_over_standard": 2.0,
  "nearest_compliant_pct_below": 11,
  "nearest_non_compliant_pct_above": 12,
- "nitrate_trigger_mgl_no3": 37.5,
  "non_compliant": [
   "Cloonfad",
   "Glasheen",
   "Kilcrohane",
   "Owenbeg"
  ],
+ "orthophosphate": {
+  "Aghavannagh": {
+   "below_limit": 10,
+   "samples": 22
+  },
+  "Ballynure": {
+   "below_limit": 22,
+   "samples": 46
+  },
+  "Carrowbeg": {
+   "below_limit": 11,
+   "samples": 28
+  },
+  "Cloonfad": {
+   "below_limit": 11,
+   "samples": 35
+  },
+  "Derryvore": {
+   "below_limit": 10,
+   "samples": 34
+  },
+  "Drominagh": {
+   "below_limit": 23,
+   "samples": 35
+  },
+  "Glasheen": {
+   "below_limit": 11,
+   "samples": 35
+  },
+  "Kilcrohane": {
+   "below_limit": 11,
+   "samples": 23
+  },
+  "Knockanure": {
+   "below_limit": 22,
+   "samples": 34
+  },
+  "Lisheenaguile": {
+   "below_limit": 11,
+   "samples": 23
+  },
+  "Moneycashen": {
+   "below_limit": 11,
+   "samples": 23
+  },
+  "Owenbeg": {
+   "below_limit": 23,
+   "samples": 46
+  },
+  "Tirneevin Stream": {
+   "below_limit": 11,
+   "samples": 29
+  }
+ },
  "programme_points": 37,
  "regulation_clauses": [
   "1.4",

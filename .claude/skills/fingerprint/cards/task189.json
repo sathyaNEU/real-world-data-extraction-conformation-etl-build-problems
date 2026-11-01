@@ -57,13 +57,13 @@
     "people": [
       "Emmet McQuillen",
       "Katie Enright",
-      "George Twohey",
+      "Polly Caddow",
       "Shay Caldwell"
     ]
   },
   "deliverables": [
     "annual_compliance_return_2025_26.xlsx",
-    "mcpa_compliance_overview.png"
+    "orthophosphate_results_2025_26.svg"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
@@ -90,7 +90,11 @@
   "differentiation": {
     "task70": "task70's decisive move builds a per-record date under a filed clause that bars one record class from a late capacity slot, so a stated rule drives it and the quantity is a surcharge; here no filed sentence touches the decisive step and the quantity is a mean estimated from measurements that carry only an upper bound, with several bounds in play.",
     "task260": "task260's decisive move is the width of an interval over two sampled dimensions, readers and examinations, deciding which measured gain survives its own uncertainty; here the decisive move is a point estimate, the mean of a left-censored sample, and the error is giving each unquantified result a value rather than mis-stating an interval.",
-    "task143": "task143's decisive move is a joint probability: a shared group effect in a predictor's error, so compounding members' marginal chances as if independent overstates a forecast count, and the error structure is recovered from whole groups followed to the end. Here nothing is forecast and no dependence is modelled: the decisive move is the estimate of a mean from measurements that carry only an upper bound, where the bounds differ by the instrument that produced them, and the error is putting a value in place of a bound rather than mis-combining probabilities."
+    "task143": "task143's decisive move is a joint probability: a shared group effect in a predictor's error, so compounding members' marginal chances as if independent overstates a forecast count, and the error structure is recovered from whole groups followed to the end. Here nothing is forecast and no dependence is modelled: the decisive move is the estimate of a mean from measurements that carry only an upper bound, where the bounds differ by the instrument that produced them, and the error is putting a value in place of a bound rather than mis-combining probabilities.",
+    "task155": "task155 picks one site from a forward take-up rate that rests on whether open tasks carry straight on from scheduled work; here nothing is forecast and nothing is picked: the call is a count of water bodies whose annual mean, estimated from results most of which carry only an upper bound, exceeds a standard. The overlap the surface screen measures is the pack's furniture (a workbook deliverable, a short closing sentence), not the driver.",
+    "task192": "task192 counts units carrying a property an instrument labels, where the instrument's validation batch covered only the opening of the window, so the rates per class carry forward and the batch's shares do not; here no instrument is validated against a batch and nothing carries forward: every result is bounded by its own reporting limit, and the mean is estimated from the bounds themselves rather than from a label's error rates.",
+    "task462": "task462 sizes a period total of intermittent sources seen only through snapshot surveys, each detection weighted up by the detection probability its blind trials measure, and designates the producers under a methane threshold; here nothing is detected with a probability and nothing is designated: every result is reported, most of them only as an upper bound, and the call counts the water bodies whose annual mean, estimated from those bounds, exceeds a standard.",
+    "task181": "task181 refers consultants whose excess outcomes belong to a shared steriliser, traced through two time-ordered records to the cases it handled; here no outcome is risk-adjusted and no excess is reassigned between causes: the shared artifact is only the export's genre, and the decisive move is the mean of a left-censored sample with two reporting limits in play."
   },
   "lineage": [],
   "notes": "Gate G could also be read as method_or_model_selection (the decisive step is which estimator the censored results get); signal_vs_noise_or_hold is the reviewer's reading, since the call separates a real exceedance from an artifact of the reporting limit, and it is not the mechanism of either of the last two builds. Decisive generator G12, a record of absence (the analyte was looked for and not found at a stated limit) read either as an absence of record or as a value. Redrawn on 2026-10-16 after task148 v2 shipped the same day with G16 and field_unit_lead: the decisive generator is filed as G17 statistical rigor, which is also the label the determinism judge used, and the stakeholder as the officer who runs the monitoring programme.",

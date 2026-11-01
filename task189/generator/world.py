@@ -14,13 +14,13 @@ REGULATOR = "National Water Quality Office"
 DISTRICT = "Araglen River Basin District"
 PEOPLE = {"monitoring_lead": "Emmet McQuillen",       # the authority's catchment monitoring lead
           "assessor": "Katie Enright",                # the regulator's water quality assessor
-          "lab_manager": "George Twohey",     # Tirneevin
+          "lab_manager": "Polly Caddow",     # Tirneevin
           "kgl_contact": "Shay Caldwell"}      # Kilgarron             # Tirneevin's laboratory manager
 
 # --- laboratories and methods ---------------------------------------------------------------
 LABS = {
     "TAS": {"name": "Tirneevin Analytical Services", "town": "Tirneevin",
-            "inab": "T-0184", "contact": "George Twohey"},
+            "inab": "T-0184", "contact": "Polly Caddow"},
     "KGL": {"name": "Kilgarron Laboratories", "town": "Kilgarron",
             "inab": "T-0266", "contact": "Shay Caldwell"},
 }
@@ -31,10 +31,10 @@ METHODS = {
     "KGL-GC-PHX-07": {"lab": "KGL", "analytes": ["MCPA", "2,4-D", "MECOPROP", "TRICLOPYR"],
                       "technique": "derivatisation GC-ECD", "rl": 0.10, "units": "ug/l",
                       "from": dt.date(2014, 4, 1)},
-    "TAS-IC-ANI-02": {"lab": "TAS", "analytes": ["NO3", "CL", "SO4", "OPO4"],
+    "TAS-IC-ANI-02": {"lab": "TAS", "analytes": ["NO3", "NH4N", "TON", "CL", "SO4", "OPO4"],
                       "technique": "ion chromatography", "rl": 0.10, "units": "mg/l",
                       "from": dt.date(2019, 1, 1)},
-    "KGL-CF-NUT-03": {"lab": "KGL", "analytes": ["NO3N", "NH4N", "OPO4", "TON"],
+    "KGL-CF-NUT-03": {"lab": "KGL", "analytes": ["NO3N", "NH4N", "TON", "OPO4", "CL", "SO4"],
                       "technique": "continuous flow colorimetry", "rl": 0.01, "units": "mg/l",
                       "from": dt.date(2016, 1, 1)},
     "TAS-FLD-PHY-01": {"lab": "TAS", "analytes": ["COND", "PH", "DO", "TEMP", "SS", "ALK", "TURB", "COLOUR"],
@@ -147,6 +147,41 @@ POINT_FROM = {"ARW-1043": dt.date(2025, 10, 1)}     # joined the programme at th
 POINT_TO = {"ARW-0853": dt.date(2025, 9, 30)}       # the landowner withdrew access
 MISSED = [("ARW-0324", 2025, 12), ("ARW-0742", 2026, 1), ("ARW-0213", 2026, 2),
           ("ARW-1121", 2025, 11), ("ARW-0931", 2026, 2)]
+
+# --- the nutrient bottles' own history at the two receptions (never stated in any shipped file) ----
+# (point, year, month): the bottle broke or was lost on the way to the laboratory, so the round has
+# no nutrient result at that point
+LOST_BOTTLES = [("ARW-0412", 2025, 7), ("ARW-0522", 2026, 1), ("ARW-0632", 2025, 6),
+                ("ARW-0214", 2025, 4), ("ARW-0324", 2025, 9), ("ARW-0742", 2025, 8),
+                ("ARW-0852", 2026, 3), ("ARW-0931", 2025, 5), ("ARW-1042", 2026, 2),
+                ("ARW-1121", 2025, 7), ("ARW-1251", 2026, 1), ("ARW-1363", 2025, 9),
+                ("ARW-1471", 2025, 6), ("ARW-1041", 2025, 8)]
+# (point the reception booked it to, point it was taken at, year, month): the bottle was booked to
+# the other point's open slot, re-booked to its own point under a new number, and the withdrawal of
+# the first booking never reached the authority's system
+MISBOOKED = [("ARW-0412", "ARW-2003", 2025, 7), ("ARW-0522", "ARW-2010", 2026, 1),
+             ("ARW-0632", "ARW-2290", 2025, 6), ("ARW-0214", "ARW-2115", 2025, 4),
+             ("ARW-0324", "ARW-2311", 2025, 9), ("ARW-0742", "ARW-2311", 2025, 8),
+             ("ARW-0852", "ARW-2227", 2026, 3), ("ARW-0931", "ARW-2052", 2025, 5),
+             ("ARW-1042", "ARW-2304", 2026, 2), ("ARW-1121", "ARW-2164", 2025, 7),
+             ("ARW-1251", "ARW-2164", 2026, 1), ("ARW-1363", "ARW-2171", 2025, 9),
+             ("ARW-1471", "ARW-2269", 2025, 6)]
+# (point, year, month, days): the reception booked the bottle from the round's pre-registration,
+# dated that many days before the bottle was taken, and again from the chain of custody form, and
+# issued the one analysis to both bookings
+DOUBLE_BOOKED = [("ARW-0412", 2025, 5, 2), ("ARW-0412", 2025, 8, 1), ("ARW-0522", 2025, 5, 3),
+                 ("ARW-0522", 2025, 7, 1), ("ARW-0632", 2025, 5, 1), ("ARW-0632", 2025, 8, 2),
+                 ("ARW-0212", 2025, 6, 2), ("ARW-0214", 2025, 8, 3), ("ARW-0742", 2025, 5, 2),
+                 ("ARW-0742", 2025, 7, 1), ("ARW-0852", 2025, 6, 1), ("ARW-0852", 2025, 8, 2),
+                 ("ARW-0933", 2025, 6, 3), ("ARW-0931", 2025, 8, 1), ("ARW-1121", 2025, 5, 2),
+                 ("ARW-1121", 2025, 8, 3), ("ARW-1251", 2025, 6, 1), ("ARW-1251", 2025, 8, 2),
+                 ("ARW-1361", 2025, 5, 3), ("ARW-1363", 2025, 7, 2), ("ARW-1471", 2025, 5, 1),
+                 ("ARW-1471", 2025, 7, 3), ("ARW-2003", 2025, 6, 2), ("ARW-2115", 2025, 7, 1),
+                 ("ARW-2227", 2025, 5, 3)]
+
+# Tirneevin bottles whose chain of custody form reached reception after the round's first pass, so
+# their bookings carry numbers from the end of the year's series like the re-bookings above
+LATE_PAPERWORK = 80
 
 QC_TYPES = ["FIELD_BLANK", "EQUIP_BLANK", "FIELD_DUP", "LAB_DUP", "MATRIX_SPIKE"]
 TARGET_ROWS = 25000
