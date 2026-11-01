@@ -12,7 +12,7 @@ Stump terms swept: register, borrower, scenario, record, division, volume, asser
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `50MAX_route_approval_RDC-2026-114.pdf`: 3 of 25 stump-paragraph terms appear (permit, limits, september); read whether the document names the move
-- **REVIEW** `cartage_planning_basis_FY2028.docx`: 8 of 25 stump-paragraph terms appear (register, record, permit, payload, credit, limits); read whether the document names the move
+- **REVIEW** `cartage_planning_basis_FY2028.docx`: 10 of 25 stump-paragraph terms appear (register, record, volume, permit, payload, credit); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `fleet_register_2026-06-30.xlsx`: names 6 of 10 answer-set candidates beside numbers; confirm it does not rank them on the decision question

@@ -105,9 +105,13 @@ def main():
     check("R3c no decoy: no shipped document states FY2028 loads or a payload under the new limits", not leak_fig, leak_fig)
     check("R3c no certified replay: no file publishes a payload or load figure the method must reproduce",
           "payload" not in approval.lower())
-    named = [w for w in ("bunk", "volume", "cube", "JAS", "full") if re.search(r"\b%s" % w, basis, re.I)]
-    check("R3c no stated rule: the planning basis files the WHAT (the payload FY2026's loads would carry on the same units) "
-          "and names no bunk, volume or cube limit", not named, named)
+    how = [m.group(0) for m in re.finditer(r"lesser of|whichever|smaller of|cap(?:ped|s)?\b|bunks? (?:is|are) full|"
+                                              r"fill(?:s|ed)? (?:its|their|the) bunks|limit(?:ed|s)? by|binds?\b|"
+                                              r"volume (?:limit|cap)|combine", basis, re.I)]
+    check("R3c no stated rule: the planning basis files the WHAT (each unit's tare, permit and full-bunk volume for each "
+          "log length as the register records them; the payload FY2026's loads would carry on the same units) and no "
+          "sentence says how mass and volume combine or that a load stops at its bunks",
+          not how and "full-bunk volume for each log length" in docs.S_FLEET and docs.S_FLEET in basis, how)
 
     # ------------------------------------------------------------------ semantic fork table
     check("SF1 a load is one trip to Port Kowhai weighed on the port weighbridge: every ticket is a Matiri forest load",

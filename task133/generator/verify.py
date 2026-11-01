@@ -39,6 +39,7 @@ def main():
     figs = json.load(open(os.path.join(GEN, "figures.json")))
     basis = "\n".join(p.text for p in Document(os.path.join(T, "cartage_planning_basis_FY2028.docx")).paragraphs)
     for phrase in ("weighed over the port weighbridge", "1 July 2027 to 30 June 2028", "fleet register at 30 June 2026",
+                   "tare, 50MAX permit and full-bunk volume for each log length",
                    "would carry on the same units in FY2028", "run at 50 tonnes gross", "paid for FY2026's loads",
                    "whose unit hauled the load", "net of any credit note", "by delivery date"):
         ok("positive control: the planning basis files %r" % phrase, phrase in basis)

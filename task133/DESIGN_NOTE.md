@@ -61,11 +61,11 @@ so every convention sits mid-bin; the fleet register and the planning basis rewr
   no file.
 - Shock: nothing moves in the record; the FY2028 loads by grade read as ordinary growth on FY2026, and the short grades'
   shortfall shows only against the mass-only uplift.
-- Pins: the WHAT is filed in the cartage planning basis (a load, FY2028, the fleet as the register records it, each
-  grade's loads as the plan's tonnes over the average payload FY2026's loads would carry on the same units, the limits)
-  and the council's approval; the default is an easier method inside that WHAT (it reads "would carry" as what the new
-  limit allows and leaves out what the same units' bunks hold, which the register records for every unit), and no filed
-  sentence names a bunk or volume limit, says which limit binds, how a load's density is found or how the limits combine.
+- Pins: the WHAT is filed in the cartage planning basis (a load, FY2028, the fleet with each unit's tare, 50MAX permit
+  and full-bunk volume for each log length as the register records them, each grade's loads as the plan's tonnes over
+  the average payload FY2026's loads would carry on the same units, the limits) and the council's approval; the default
+  is an omission inside that WHAT (it leaves out the full-bunk volumes the fleet sentence lists), and no filed sentence
+  says which limit binds, how a load's density is found or how mass and volume combine.
 
 ## Default path
 
@@ -121,8 +121,9 @@ new limit allows and FY2028 needs 29,000 loads.
   payloads files 27,000 loads, because the short-length grades fill their bunks before they reach 50 tonnes.
 - Estimand: the cartage planning basis (cartage_planning_basis_FY2028.docx, "What we are sizing" and "How we get to
   FY2028 loads") with RDC-2026-114: FY2028 loads for a grade are the plan's export tonnes for the grade over the average
-  payload that grade's FY2026 port loads would carry on the same units in FY2028, the units as the register at 30 June
-  2026 records them, permit units at 50 tonnes gross and others at 44.
+  payload that grade's FY2026 port loads would carry on the same units in FY2028, each unit with the tare, 50MAX permit
+  and full-bunk volume for each log length the register at 30 June 2026 records for it, permit units at 50 tonnes gross
+  and others at 44.
 - No decoy: nothing is planted: no file states a payload under the new limits, a load count for FY2028 or which loads
   are mass-limited; the approval states the legal limits truly; the fleet register's volumes are the units' own.
 - No certified replay: the method is not recovered by reproducing any certified or published figure; no control total
@@ -241,7 +242,7 @@ are closed in SF16 to SF20 and SF23.
   every ask file leaves the call (asserted).
 - Pair ceiling: 28.5 (cracker C 45.0 keeping 0 of 18 ask figures, mirror S 12.0; 46.8 if the cracker also finds one silent device)
 - Mirror leakage: 0.0 per cent of ask weight (the mirror handles the asks as the cracker does)
-- Measured by: generator/ceiling.py on the cut pack (target.zip b86a875e)
+- Measured by: generator/ceiling.py on the cut pack (target.zip 4a9ed312)
 
 | Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
 |---|---|---|---|---|
@@ -250,16 +251,17 @@ are closed in SF16 to SF20 and SF23.
 
 ## Leak review
 
-`leak.py --asof 2026-10-20` on the final cut (target.zip b86a875e): REVIEW, no LEAK. Each REVIEW line ruled:
+`leak.py --asof 2026-10-20` on the final cut (target.zip 4a9ed312): REVIEW, no LEAK. Each REVIEW line ruled:
 
 - Sweep 3, the planning basis carries the call's words and names Port Kowhai beside them: it is the governing document
   that defines a load, FY2028, the fleet and the limits for the port it plans for, and it states no figure of the call.
   Harmless.
 - Sweep 4, the approval shares permit and limits: the council's legal limits, true as stated. Harmless.
-- Sweep 4, the planning basis shares register, record, permit, payload, credit and limits: it files the WHAT (the fleet
-  as the register records it, the payload FY2026's loads would carry on the same units, the limits, cartage net of credit
-  notes) and names no bunk, volume or cube; no sentence says which limit binds, how a load's density is found or how
-  the limits combine (asserted, R3c). Harmless.
+- Sweep 4, the planning basis shares register, record, volume, permit, payload and credit: it files the WHAT (each
+  unit's tare, 50MAX permit and full-bunk volume for each log length as the register records them, the payload FY2026's
+  loads would carry on the same units, the limits, cartage net of credit notes), the listing the default omits; no
+  sentence says which limit binds, how a load's density is found or how mass and volume combine (asserted, R3c).
+  Harmless.
 - Sweep 6, the fleet register names the carriers beside numbers: tares and bunk volumes, no cartage and no ranking.
   Harmless.
 - Sweep 6, the harvest plan names the grades beside numbers: planned tonnes, not loads. Harmless.
@@ -1095,3 +1097,8 @@ same_driver_older against task180 differentiated on the card.
 - Arch 4, fleet units coded by carrier (RLC-01 to PLH-08) with tares drawn per configuration and one bunk volume table
   (stage 4 round 1, realism): read as generated; Matiri's truck numbers now run with induction across the carriers,
   tares follow configuration, bunk count, age and fit-out, and full-bunk volumes the bunk count with unit-to-unit spread.
+- Arch 4 round 1 repair, the fleet basis cut to "the units as the register records them" (coordinator, before the
+  re-judge): it left the full-bunk volume out of the filed WHAT, so the mass-limit-only default stayed compliant on a
+  literal reading and the re-judge could fail Gate H on it; the Logistics planning note now lists each unit's tare,
+  50MAX permit and full-bunk volume for each log length as the register records them, in its own voice, and still no
+  sentence says how mass and volume combine or that a load stops at its bunks (asserted, R3c). No graded figure moved.

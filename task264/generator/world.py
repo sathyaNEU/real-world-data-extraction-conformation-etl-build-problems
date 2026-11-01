@@ -160,8 +160,16 @@ def hexid(r, n):
 
 
 def ukeys(r, n, fmt, lo, hi):
-    vals = r.choice(np.arange(lo, hi), size=n, replace=False)
-    return [fmt % int(v) for v in vals]
+    out, seen = [], set()
+    while len(out) < n:
+        for v in r.integers(lo, hi, size=max(16, 2 * (n - len(out)))):
+            v = int(v)
+            if v not in seen:
+                seen.add(v)
+                out.append(fmt % v)
+                if len(out) == n:
+                    break
+    return out
 
 
 def odi_from(sections, n_answered, rng):

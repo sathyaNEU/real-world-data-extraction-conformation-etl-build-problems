@@ -14,7 +14,7 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on b86a875e (no LEAK; the REVIEW lines ruled harmless in the note's Leak review)",
+  "leak_py": "REVIEW 2026-11-01 on 4a9ed312 (no LEAK; the REVIEW lines ruled harmless in the note's Leak review)",
   "reader": "no leak (stage 4 round 1, e53d1a72); the planning basis and the prompt changed since, so the reader reads again at the re-judge"
  },
  "duplicate_check": {
@@ -34,7 +34,7 @@
    "commit": "RESHIPPED (task133): round 2 (this commit)"
   }
  ],
- "resume": "stage 4: the re-judge (the determinism judge on target.zip b86a875e; the leak reader again, since the prompt and the planning basis changed)",
+ "resume": "stage 4: the re-judge (the determinism judge on target.zip 4a9ed312; the leak reader again, since the prompt and the planning basis changed)",
  "approved": null,
  "delivered": null,
  "portal": {
@@ -81,8 +81,8 @@
   "voice_check": "PASS (717 characters)",
   "leak_py": "REVIEW, no LEAK (--asof 2026-10-20)",
   "guard_heart": "WARN (no BLOCK): repeat.gate_g and repeat.decision against task138 v3, as at the draw",
-  "guard_surface": "2 pairs promoted for adjudication (task134 back to back, task142), both differentiated on the card, as at the draw; personas in the cut pack: John Morris (on the card)",
-  "target_zip_sha256": "b86a875e9b7abd52888dae29548a7690c898703dfc773007e53ae67ffbc9087e",
+  "guard_surface": "PENDING",
+  "target_zip_sha256": "4a9ed3126e3527948a09a2bec520ca4ea8d4b5f220790bf1bb81bfef9cecdc06",
   "pair_ceiling": "28.5 (46.8 if the cracker also finds one silent device); mirror leakage 0.0"
  },
  "rounds": [
@@ -97,11 +97,12 @@
     "density conventions unchanged and inside the same bins (SF7, SF11)",
     "delivery dates unchanged",
     "realism: fleet register numbered by Matiri's induction across carriers, tares by configuration, bunk count, age and fit-out, full-bunk volumes by bunk count with unit spread (new Bunks column), permit equal to nine-axle; weighbridge net tightness left as it was; planning basis rewritten as a Logistics planning note naming no bunk or volume",
-    "cartage rate card (4.20 + 0.121 per km) and mill contract tonnes retuned for the new world's edges"
+    "cartage rate card (4.20 + 0.121 per km) and mill contract tonnes retuned for the new world's edges",
+    "before the re-judge (coordinator): the Logistics planning note's fleet sentence again lists each unit's tare, 50MAX permit and full-bunk volume for each log length as the register records them (the WHAT the default omits), with no sentence on how mass and volume combine (R3c asserted); figures.json byte-identical, no graded figure moved"
    ],
    "call": "29,000 export log loads (28,945 unrounded); A 4,900, Pruned 2,500, K 7,500, KI 8,000, KIS 6,100",
    "convention_span": "total 28,922 to 29,067 (tightest 172 inside its 500-load bin); grades tightest 28.5 (K, unit-weighted) and 29.4 among the eight licensed conventions",
-   "rebuilt": "target.zip b86a875e"
+   "rebuilt": "target.zip 4a9ed312"
   }
  ]
 }
