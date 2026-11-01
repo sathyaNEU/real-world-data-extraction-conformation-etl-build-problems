@@ -35,3 +35,17 @@ Stump terms swept: borrower, record, register, division, industry, decisive, tak
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (the isolated leak reader, architecture 3)
+
+### Leak reader, round 1 (2026-11-01, isolated, Sonnet at medium effort, on target.zip d613bac0)
+
+1. Decisive step: none announced. CR-ST-02 states the procedure: stressed PD is the 12-month PD times the Table 2 multiplier "for the fall in the borrower's own sales over the stress year under the scenario"; "a borrower's segment follows its own division on the NZBN register"; the risk grade is the model grade or an override in force.
+2. No file ranks or scores anything on the question (the rural PDF is another book; the scenario workbook gives divisional sales changes only).
+3. No helper file outright (CR-ST-02 governs; the scenario workbook is a required input).
+4. Nothing reads as the answer (the only totals are the rural book's, context).
+5. CR-ST-02 3.1: a facility's stressed loss is stressed PD x stressed LGD x EAD, summed over the book; 4.2 and 4.3 fix the net credit loss per half and the default counts and shares per band.
+6. The reader's answer: "following a stated rule or procedure (CR-ST-02 3.1 to 3.4, 4.1 to 4.3), plus reading fields and codes correctly (override validity dates, NZBN division against the book's industry_code, the customer merge log, the grade D exclusion). Nothing in the pack names an analytical choice as the stump. This is a Rule 2/3 concern for the author: the pack is largely semantics and rule execution."
+Sweep flags: CR-ST-02's shared numbers and call words harmless (filed PD, multiplier and LGD tables; no loss figure); its shared vocabulary names the procedure, no pitfall (mild at most); the rural summary harmless (another book, excluded by 1.2, no business figure or method).
+Realism: none clearly generated; one note: the override reasons in grade_overrides_2024-2026.xlsx look randomly assigned (reason text does not match the direction of the grade change).
+

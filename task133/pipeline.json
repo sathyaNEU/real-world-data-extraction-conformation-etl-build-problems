@@ -1,10 +1,10 @@
 {
  "task": "task133",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "urban-regional-science",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-01",
  "stump": "a relaxed mass limit lifts each log truck load only until its bunks are full; the short grades gain a fraction of the six tonnes",
  "architecture": 4,
@@ -14,17 +14,17 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on 4a9ed312 (no LEAK; the REVIEW lines ruled harmless in the note's Leak review)",
-  "reader": "no leak (stage 4 round 1, e53d1a72); the planning basis and the prompt changed since, so the reader reads again at the re-judge"
+  "leak_py": "REVIEW ruled (2026-11-01, --asof 2026-10-20)",
+  "reader": "clean in both rounds; question 6 analytical each round; the reader's sections appended to task133/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-11-01 on 4a9ed312 (repeat.gate_g, repeat.decision against task138 v3; first names on older builds); no BLOCK",
+  "heart": "WARN 2026-11-01 at the ship gate (people.first names, repeat.gate_g and repeat.decision against task138 v3), no BLOCK",
   "nearest": "surface: task134 (back to back by number) and task142 promoted for adjudication, both differentiated on the card"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "report": "held by the main session (stage 4 round 1 on target.zip e53d1a72; Gates G and H PASS; the leak reader no leak)"
+  "verdict": "architecture 4 round 2 DETERMINISTIC, APPROVE (order kept; Gate F good; Gate G binding_constraint / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE, no repair; round 1's FIX_NOW (cartage window, the total's rounding margin) closed by a prompt WHAT and by construction",
+  "report": "task133/determinism_check_report.md"
  },
  "returned": [
   {
@@ -34,9 +34,9 @@
    "commit": "RESHIPPED (task133): round 2 (this commit)"
   }
  ],
- "resume": "stage 4: the re-judge (the determinism judge on target.zip 4a9ed312; the leak reader again, since the prompt and the planning basis changed)",
+ "resume": "Shipped 2026-11-01 (architecture 4, Forecasting): the FY2028 harvest plan needs 29,000 export log loads to Port Kowhai under the 50MAX route limits; target.zip 4a9ed312. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": {
   "v1": "2026-10-11: one model stumped, the other landed AUD 13,773,000 at 100 per cent"
  },
@@ -104,5 +104,8 @@
    "convention_span": "total 28,922 to 29,067 (tightest 172 inside its 500-load bin); grades tightest 28.5 (K, unit-weighted) and 29.4 among the eight licensed conventions",
    "rebuilt": "target.zip 4a9ed312"
   }
- ]
+ ],
+ "build": {
+  "target_zip": "4a9ed312 (13 members, each byte-identical to target/)"
+ }
 }
