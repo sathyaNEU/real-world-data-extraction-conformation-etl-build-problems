@@ -1,6 +1,6 @@
 """task170 documents: Human Factors' forecast conventions, the ETCS rollout plan, the safety desk's reporting guidance
-and Fleet Engineering's acceptance note (PDF), and the data dictionary (text). Their text is held here as data so
-checks.py can quote it and verify.py can read it back."""
+and Fleet Engineering's acceptance note (PDF). Their text is held here as data so checks.py can quote it and verify.py
+can read it back. No file describing the data ships (dataset-generation section 3)."""
 from __future__ import annotations
 
 import datetime as dt
@@ -87,10 +87,12 @@ GUIDE = [
         "centre or the train radio."]),
     ("2. Reports", [
         "Reports reach the desk from drivers, signallers, the fleet data check and the recorder downloads. Each "
-        "report is logged on the register with the time it was received, the reporter, the unit and the staff "
-        "number of the driver of the train. The SoM Ref is the event reference the driver's display gives at Start "
+        "report is logged on the register with the time it was received, the reporter, the unit, the staff "
+        "number of the driver of the train and the depot the driver worked from that day. The SoM Ref is the event reference the driver's display gives at Start "
         "of Mission: a driver's report carries it where the driver noted it, and the fleet data check carries it "
-        "always."]),
+        "always. The fleet data check reads the on-board recorder downloads, where each Start of Mission is marked "
+        "SVC for a service train, DPT for a train prepared at the depot before it goes out and TST for a test by a "
+        "fleet technician under the technician's own staff number."]),
     ("3. Linked and withdrawn reports", [
         "Where a driver and a signaller report the same event, or the fleet data check finds an error already "
         "reported, the desk links the later report to the first in Linked To; a linked report is not a second "
@@ -103,7 +105,7 @@ ACCEPT_PIN = ("A unit is accepted for ETCS service when both of its driving vehi
               "will be.")
 ACCEPT = [
     ("1. Fitment", [
-        "Each Class 461 unit has two driving vehicles, the A-end and the B-end. The Phase 4 fitment programme fits "
+        "Each Class 461 unit has two driving vehicles in its formation, the A-end and the B-end. The Phase 4 fitment programme fits "
         "ETCS on-board equipment to each driving vehicle at the works; the equipment is accepted after dynamic "
         "testing."]),
     ("2. Acceptance for service", [ACCEPT_PIN]),
@@ -171,7 +173,7 @@ def write_rollout(path):
     _pdf(path, "ETCS Rollout Plan 2024 to 2027",
          "%s, ETCS Programme. Revision 7, 14 September 2026. Charlie Coles, ETCS Programme Manager." % C.OPERATOR,
          ROLLOUT, table=rollout_table(), table_after="Table 1", issued=dt.date(2026, 9, 14), author="Charlie Coles",
-         widths=[22 * mm, 45 * mm, 18 * mm, 40 * mm], foot="Revision 7 moves the Phase 4 go-live dates to 2027.")
+         widths=[22 * mm, 45 * mm, 18 * mm, 40 * mm], foot="Revision history: revision 6, 2 June 2026; revision 7, 14 September 2026, Phase 4 go-live dates in 2027.")
 
 
 def write_guidance(path):
@@ -184,64 +186,3 @@ def write_acceptance(path):
     _pdf(path, "Class 461 ETCS Fitment: Acceptance for Service",
          "%s, Fleet Engineering. Issued 18 August 2026." % C.OPERATOR, ACCEPT, issued=dt.date(2026, 8, 18),
          author="Fleet Engineering")
-
-
-DICT = """DATA DICTIONARY, PHASE 4 ETCS SAFETY CASE (Human Factors, assembled 9 November 2026)
-
-obr_start_of_mission_log_2024-03_2026-10.csv  On-board recorder downloads: one row per ETCS Start of Mission on the
-  Phase 1 to 3 fleet (Class 384), 4 March 2024 to 31 October 2026
-  som_ref     event reference the driver's display gives at Start of Mission
-  obr_utc     recorder time (UTC)
-  unit        unit number
-  cab         driving cab used (A or B end)
-  driver_id   staff number entered at Start of Mission (a fleet technician's for a test)
-  som_type    SVC service; DPT depot, preparing a train before it goes out; TST test by a fleet technician
-
-safety_desk_register_2024-2026.xlsx  Safety desk register: one row per report received, March 2024 to October 2026
-  Report No, Received (when the report was logged), Reporter, Category (see the reporting guidance), Depot (the
-  driver's depot), Staff No (the driver's staff number), Unit, SoM Ref, Linked To (the first report of the same event),
-  Status (Closed, Open or Withdrawn), Sub-category (the desk's pick list within the category)
-
-driver_roster_2026-10-31.xlsx  Resourcing: every driver on a depot roster at 31 October 2026, all fourteen depots
-  Staff No, Depot, Grade, Link, Contract, Date of Birth, Qualified (date qualified as a driver)
-
-staff_number_crosswalk.csv  Resourcing: a driver who transfers is issued a staff number in the new depot's block
-  old_staff_no, new_staff_no, effective, reason
-
-phase4_duty_records_2026.csv  Crew management: one row per duty rostered for a Phase 4 depot driver, January to
-  October 2026
-  duty_date, staff_no, depot, duty_no
-  cab_activations   the times the driver opened a cab desk to drive on the duty
-  status            Worked or Cancelled
-  issue             a duty re-issued after a timetable change carries issue 2
-
-fleet_allocation_2027.csv  Fleet: Class 461 units allocated to each Phase 4 depot for the 2027 timetable
-  unit, depot, allocated_from
-
-etcs_fitment_works_records.xlsx  Fitment Programme Office: one row per Class 461 driving vehicle in the Phase 4
-  fitment programme
-  Vehicle, Unit (the vehicle's unit in the fitment programme), End (A or B), Works In, Works Out, Dynamic Test,
-  Accepted, Planned Acceptance, Status (Accepted, In works or Planned)
-
-unit_formations_2026-10-31.csv  Fleet Engineering: Class 461 unit formations at 31 October 2026
-  unit, vehicle_a_end, vehicle_b_end, class
-
-unit_renumbering_register.csv  Fleet Engineering: Class 461 units renumbered
-  old_unit, new_unit, effective, reason
-
-punctuality_by_depot_2024-2026.xlsx  Performance and Planning: trains planned and the public performance measure
-  (per cent of trains arriving within five minutes of the timetable) by depot and month
-
-depot_weather_daily_2024-2026.csv  Daily weather at each depot: maximum and minimum temperature (C), rain (mm),
-  frost (Y where the minimum fell below zero)
-
-etcs_rollout_plan_2024-2027.pdf  ETCS Programme
-phase4_safety_case_conventions.pdf  Human Factors
-safety_desk_reporting_guidance.pdf  Safety Desk
-fleet_etcs_acceptance_note.pdf  Fleet Engineering
-"""
-
-
-def write_dict(path):
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(DICT.replace("\n", "\r\n"))

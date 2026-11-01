@@ -268,7 +268,7 @@ def write_submission(path, o, F):
              "250." % ("{:,.1f}".format(o["call"]), c(o["call_r"])))
     L.append("6. Units: each unit in %s by its two driving vehicles in %s, accepted for ETCS service by its depot's "
              "go-live in the rollout plan when both vehicles' Accepted or Planned Acceptance dates in %s fall on or "
-             "before it; the works records' Unit is the programme's own unit, so vehicles reformed into other units and "
+             "before it; the works records' Programme Unit is the programme's own unit, so vehicles reformed into other units and "
              "renumbered units are read through the formation list." % (C.F_ALLOC, C.F_FORM, C.F_WORKS))
     L.append("7. Events: the register's LTR and BRK reports received January to October 2026, withdrawn reports out and "
              "linked reports once, each recorder download report (stamped in the recorder's UTC) folded into a driver's or "
@@ -286,8 +286,8 @@ def write_submission(path, o, F):
     for d in C.P4_CODES:
         a, n = o["fleet"][d]
         L.append("   - %s: **%d** accepted, **%d** not accepted" % (NAME[d], a, n))
-    L.append("4. Level transition errors and ETCS brake interventions of each Phase 1 to 3 depot's drivers, January to "
-             "October 2026:")
+    L.append("4. Level transition errors and ETCS brake interventions the safety desk recorded against each Phase 1 to 3 "
+             "depot, January to October 2026:")
     for d in C.REC_CODES:
         lt, bk = o["events"][d]
         L.append("   - %s: **%d** level transition errors, **%d** brake interventions" % (NAME[d], lt, bk))
@@ -300,7 +300,7 @@ def write_submission(path, o, F):
 
 def write_metadata(path):
     files = [C.F_SOM, C.F_REG, C.F_ROSTER, C.F_XWALK, C.F_DUTY, C.F_ROLL, C.F_CONV, C.F_GUIDE, C.F_ALLOC, C.F_WORKS,
-             C.F_FORM, C.F_RENUM, C.F_ACCEPT, C.F_DICT, C.F_PUNC, C.F_WX]
+             C.F_FORM, C.F_RENUM, C.F_ACCEPT, C.F_PUNC, C.F_WX]
     meta = {"task": C.TASK,
             "distractor_files": ["target/" + f for f in C.DISTRACTORS],
             "deliverables": [C.DELIV_XLSX, C.DELIV_SVG],

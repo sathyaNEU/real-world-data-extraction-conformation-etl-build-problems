@@ -2,7 +2,40 @@
 
 Architecture 5, the tenth cell of a reopened number (Forecasting lane, sathya8571), chosen by this session
 (`## Rebuild`): human-factors-ergonomics / human-reliability-assessment. Architecture 4 (the auto-enrolled employer
-match) is kept under `## Architecture 4 record`, architecture 3 (the repellent net campaign) under `## Architecture 3
+match) is kept under `## Stage 4 and pre-ship check (2026-11-01)
+
+- **leak.py** (`--asof 2026-11-09`): REVIEW, no LEAK. Lines ruled here, the stump-vocabulary ones never sent to the
+  reader: the class number 461 in the rollout plan and acceptance note (the fleet's class); 250 and the call's words
+  in the conventions (the filed estimand and rounding, no rate, method or figure); driver, diagrams, rollout in the
+  rollout plan, and the conventions' and guidance's ordinary words (driver, report, register, category, recorder,
+  counted, earlier): the operator's own vocabulary, none naming practice, a count of starts or a curve (D2 asserts
+  the decisive step's words absent from all four documents); the prompt sentence asking for the drivers and their
+  starts (critical components the default path also needs); the punctuality distractor naming the Phase 4 depots
+  beside PPM (no errors, no ranking); the works records' planned acceptance dates and the allocation's timetable
+  dates after the export (plans, H16).
+- **Leak reader, read 1** (Sonnet medium, fresh copy, target.zip 60c3b11b): question 1 none, 2 none, 3 none of the
+  describing kind, 4 none, 5 the conventions' count, rounding and turns sentences, the acceptance pin and the go-live
+  table (they fix population, window, unit and de-duplication and leave the rate per start and its shape open), 6 an
+  analytical choice. Realism tells fixed in the generator, data only: per-unit recorder references, per-unit
+  allocation dates in fleet order, timetable-driven trains planned; `figures.json` byte-identical.
+- **Determinism judge** (isolated Sonnet thread on 60c3b11b): DETERMINISTIC, APPROVE; Gate G forecasting,
+  analytical_non_defect, no surface read, not a sole data defect; Gate H domain pass, layers pass, decisive step
+  analytical; the call reproduced at 1,279.2 to 1,281 under every banding tried, 276 drivers, 111,357.6 starts, every
+  unit and event cell. Two supplementary readings closed in the same pass: ask C's depot (the prompt now asks what the
+  safety desk recorded against each Phase 1 to 3 depot, SF16) and ask A's vehicles (the acceptance note now files a
+  unit's two driving vehicles as those in its formation, SF17); neither moves a figure.
+- **Leak reader, read 2** on the final cut (the prompt and the acceptance note changed): recorded in
+  `leak_check_report.md`.
+- **Pre-ship check, the 10/10 rules re-read against the built pack.** Domain: the deciding quantity is a human error
+  probability per task demand under the experience shaping factor, estimated from the operator's own record. Two
+  layers: the mess (re-keyed staff numbers, linked and withdrawn reports, UTC against local time, technicians' test
+  starts, cancelled and re-issued duties) is the systems' own and R2-neutral item by item; the decisive step is the
+  curve on each driver's own count, R3b. No decoy, no withheld rule, no field reading: R3a files 750 on the clean
+  truth with every filed rule applied, and both isolated readers called the step analytical. Gate F: one cheap route
+  (a rate on each driver's own count) reaches the call; the pooled rate, the go-live curve and the service-held pool
+  file 750, the analogues 2,000 and 2,250.
+
+## Architecture 4 record`, architecture 3 (the repellent net campaign) under `## Architecture 3
 record`, architecture 1 (the paediatric ARV order) under `## Architecture 1 record`; architecture 2's cells and cells
 five to nine died before any card (`## Tried and rejected`). The setting is fictional throughout, country included:
 Elsmarra, Carvanne Vale Railways, its depots and units, the Elsmarra Office of Rail Safety and every record are
@@ -25,10 +58,11 @@ signalling standard the fictional operator fits, as any operator in Europe would
    Safety carries the forecast of train data entry errors in each Phase 4 depot's first twelve months, which sets the
    driver monitoring plan (every recorded error is debriefed).
 4. Call and shape: the Phase 4 depots' train data entry errors in each depot's first twelve months on ETCS, a count
-   (`quantity_figure`, how many). Shape `07`: the call with asks on rows the call never reads, cut by depot and
-   measure (Class 461 units accepted for ETCS service by each Phase 4 go-live, and each Phase 1 to 3 depot's level
-   transition errors and brake interventions in January to October 2026); shapes 14 and 10 are banned by the last
-   two builds; 36 criteria (`## Ask sheet`).
+   (`quantity_figure`, how many). Shape `other`: one forecast figure with its two components (the drivers covered and
+   their starts), beside two side tables on populations the call never reads (Class 461 units accepted for ETCS service
+   by each Phase 4 go-live, and each Phase 1 to 3 depot's level transition errors and brake interventions in January to
+   October 2026) and a chart; no decision grid, so `07` (a pick per row) never described it. Arithmetic: 3 + 12 + 3 + 16
+   + 2 = 36 criteria (`## Ask sheet`). Keyed `07` at the draw; redrawn at stage 3 with the furniture in item 11.
 5. Mechanism keys: gap population (the Phase 4 drivers practise at a quarter of the suburban pace), then time (the
    first twelve months cover a different stretch of the practice curve); pattern E with generators G14 (does the pooled
    first-year rate apply to this pool), G2 (the unit of experience is one start-up by one driver, not a depot-month)
@@ -63,11 +97,18 @@ signalling standard the fictional operator fits, as any operator in Europe would
     Gillian Armstrong (safety desk). None appears in the prompt.
 11. Furniture: forum `regulator_or_inspector` (the Elsmarra Office of Rail Safety accepts the Phase 4 safety case and
     sets the monitoring condition on the forecast), forcing event `launch_or_rollout` (Phase 4 go-live from February
-    2027), organisation family `utility_or_infrastructure` (a passenger rail operator), role family
-    `compliance_or_audit` (the human factors lead owns the safety case submission), context artifact `operations_log`
-    (the on-board recorders' Start of Mission log), calibration form `pilot_log` (Phases 1 to 3 as the record of the
-    rollout). The hospital world first drafted for this mechanism (smart infusion pumps) was refused by `ban.org_family`
-    against task482 and redrawn before any card.
+    2027), organisation family `utility_or_infrastructure` (a passenger rail operator), role family `capacity_planner`
+    (the head of driver standards, whose depot driver managers debrief every recorded error, plans their Phase 4
+    debriefing time from the forecast: the conventions' purpose sentence), context artifact `none` (the recorder log is
+    the spine; the pack carries no file answering another question in the sense of `dataset-generation` section 5),
+    calibration form `pilot_log` (Phases 1 to 3 as the record of the rollout). Redrawn at stage 3 (2026-11-01): the
+    role was `compliance_or_audit` (the human factors lead), the artifact `operations_log` and the shape `07` until
+    task279 and task280 were marked spent after this card was filed, which slid task275 (compliance_or_audit,
+    operations_log) and task484 (shape 07) into its window; each replacement is the honester key (the forecast's user
+    plans debriefing capacity; no section 5 artifact ships; no decision grid) and no pack file changed for it. heart
+    WARN only: strategy risk (item 9), `people.first` Gillian (the safety desk manager, named only as the guidance's
+    author, against one older build), `repeat.deliverables` svg+xlsx (task483). The hospital world first drafted for
+    this mechanism (smart infusion pumps) was refused by `ban.org_family` against task482 and redrawn before any card.
 12. Cell choice (this session, 2026-10-24, under the main session's four conditions). The forward window changes the
     process in a way not on file: no depot in the record ran ETCS at rural start-up volumes, so no record shows a
     slow-practice depot's first year. The record is not replayable (no Phase 4-like depot to copy), not one group-by
@@ -118,6 +159,16 @@ No decoy: nothing is planted to be caught: no forecast, target, earlier estimate
 No certified replay: no certified or published figure is reproduced to recover the method; no figure in the pack is an output of a forecasting method.
 Lesson: an error rate measured on people who practised fast is a point on a curve, not a property of the task; a model learns to ask how fast the forward operators will practise and to read the curve on each operator's own count, which no build on file teaches (task107 v4 reads tenure, task251 an asset's cumulative use, task179 a peer count under a changed allocation).
 
+## Survivor anatomy
+
+Actor: the deciding property, each driver's place on the driver's own count of ETCS starts at each start and at each recorded error, has no column in any file; it is built from the driver's dated Starts of Mission across every depot, through Resourcing's staff number crosswalk, and each error is placed on it through its SoM Ref (or a linked report's) or, where none, at the driver's last start before the report.
+Link: the comparison that rules the easy routes out, the record's spare-turn, part-time and link drivers against their own depot-mates at the same count rather than at the same month, is a cross-driver comparison inside one depot that neither the depot's first-year rate nor a go-live curve ever asks for, and the forward pace comes from a second system (crew management's cab activations on the 2026 duties) joined to that curve driver by driver.
+Reflex: the field's own handling of one task's error probability sits at rungs 0 to 2a and files 750: the earlier sites' observed rate per demand carried to the new sites' demands, the same rate on months since go-live (the programme's monitoring chart), and the pool held to years of service.
+Back-test: the textbook route validates on the record: Phases 1 and 2's first-year errors per start carried to Phase 3's first-year starts give 1,014.8 against the 980 Phase 3 recorded (+3.5 per cent), because every record depot ran fast suburban or intercity diagrams (median first-year starts per driver 1,095 to 1,534 by depot), so no back-test inside the record crosses the Phase 4 pace (median 431).
+Second use: every file the decisive step reads is one the default path already needs: the recorder log for the starts, the safety desk register for the errors (and ask C), the crosswalk for the re-keyed drivers, the duty records for the Phase 4 starts, the roster for who is counted; deleting the decisive step drops no file.
+Shock: the slow drivers are an ordinary minority on every depot's roster (spare turns, part-time contracts, links) and their higher first-year rate per start reads as ordinary variation by link; no depot, month or link is the pack's outlier, and the Phase 4 drivers' lower starts read as the rural timetable they are.
+Pins: the WHAT sits in Human Factors' forecast conventions (COUNT_PIN, WORK_PIN, ROSTER_PIN, CALL_PIN: who is counted, the window from each go-live, the TDE category, linked and withdrawn reports, the 2026 turns at the ten months' average cab activations, the expected number to the nearest 250); no filed sentence names practice, a count of starts, a curve or a clock (D2 asserts the vocabulary absent from all four documents), and deleting any one pin unforces only its own convention.
+
 ## Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
@@ -145,12 +196,17 @@ an analogue of similar operators, an adjustment for operator tenure. Each files 
 | SF6 | a forecast count | the expected number | a simulated count's median | same call (asserted SF6) | CALL_PIN files the expected number |
 | SF7 | a Phase 4 driver's starts in the window | twelve months at the driver's average monthly cab activations over January to October 2026 | the busiest month times twelve | 1,496.2, prints 1,500 | WORK_PIN files the ten months' average (asserted SF7) |
 | SF8 | the error probability's clock and form | the record's starts on each driver's own count, any form the record fits (bands of 25, 50 or 100, nine or five bands, power, shifted power, exponential with a floor, logistic on log count, a pace regression) | a curve on months since go-live | 750 | the record's slow drivers err at their count, 0.0293 against 0.0321 in the first 50 starts, and not at their month, 0.0160 against 0.0057 (asserted SF8); every form on the count prints the call (B1) |
-| SF9 | a fleet technician's test start | not a driver's start | counted with the drivers' starts | same call (asserted SF9) | same call; the dictionary marks TST as a technician's test |
+| SF9 | a fleet technician's test start | not a driver's start | counted with the drivers' starts | same call (asserted SF9) | same call; the reporting guidance marks TST as a fleet technician's test |
 | SF10 | a withdrawn report | not an error | kept | same call (asserted SF10) | COUNT_PIN |
 | SF11 | a driver who transferred | one driver across staff numbers (the crosswalk) | two drivers | same call (asserted SF11) | same call |
 | SF12 | the register's clock | local time | read as the recorder's UTC | same call (asserted SF12) | same call |
 | SF13 | a cancelled duty | not worked | its cab activations counted | same call (asserted SF13) | WORK_PIN |
-| SF14 | a re-issued duty | issue 2 replaces issue 1 | both kept | same call (asserted SF14) | WORK_PIN and the dictionary |
+| SF14 | a re-issued duty | issue 2 replaces issue 1 | both kept | same call (asserted SF14) | WORK_PIN |
+| SF15 | ask C: how close a recorder download's report sits to the driver's or signaller's report of the same event | folded into a manual report of the same driver, unit and category up to 30 minutes after, the download read as UTC | a fold window of 15, 20, 45 or 60 minutes | every cell the same (asserted SF15 at 15, 20, 30, 45 and 60 minutes) | the record: manual reports trail the recorder by 1 to 12 minutes and the next report of the same driver, unit and category comes 70 minutes or more later |
+| SF16 | ask C: which depot a report is counted at | the depot the safety desk records the report against (the register's Depot) | the driver's roster depot at 31 October 2026 | 8 of 16 cells move by 1 to 5 (the stage 4 judge's reading) | the asking sentence (what the safety desk recorded against each Phase 1 to 3 depot) and the reporting guidance (each report logged with the depot the driver worked from that day), asserted SF16 |
+| SF17 | ask A: a unit's driving vehicles | the formation list at 31 October 2026, the units the 2027 allocation names | the works records' Programme Unit | every depot moves (the device's stop) | the acceptance note (both of its driving vehicles) and the works records' header naming its unit as the programme's (asserted SF17) |
+| SF18 | ask A: accepted "by its go-live date" | on or before the go-live day | before it | same call (asserted SF18: no vehicle is accepted or planned on a go-live day) | same call |
+| SF19 | ask C: the January to October window's clock | the register's local time, the recorder downloads converted from UTC | every report on UTC | same call (asserted SF19: no LTR or BRK report within three hours of either edge) | same call |
 
 ## Ladder
 
@@ -176,7 +232,7 @@ expected count is 1,298.8 against the golden's 1,280.2.
 | 1 Population | drivers on the six Phase 4 depots' rosters at 31 October 2026 | the conventions |
 | 2 Unit of account | train data entry errors | the question and the conventions |
 | 3 Attribution window | each depot's first twelve months from its go-live | the conventions; go-live dates in the rollout plan |
-| 4 As-of dating | records to 31 October 2026, assembled November 2026 | the dictionary and the export notes |
+| 4 As-of dating | records to 31 October 2026, assembled November 2026 | each file's own dates (the log and the register end 31 October, the roster and formations are at 31 October) |
 | 5 Version basis | the register as exported, each error's latest classification | the register's guidance |
 | 6 Denominator | the Phase 4 drivers' planned start-ups | SF7 |
 | 7 Weighting | driver by driver | the estimand sums drivers |
@@ -785,6 +841,7 @@ The full architecture 1 note (default path, ladder, closure, asks and the stage 
   with its form chosen by fit, so the textbook route lands; where the geometry is not in the flows (a climb), it has
   to ship as a column or a one-purpose layer, and either names the step.
   - Tenth cell, first world (2026-10-24): the learning-on-practice mechanism in a hospital group's smart infusion pump rollout (each nurse's programming errors on her own count of programmings) was refused by `ban.org_family` against task482 before any card; the mechanism moved to a rail operator's ETCS rollout (architecture 5).
+- Stage 3, 2026-11-01: the data dictionary (`data_dictionary.txt`) removed under the leak gate's describing-file rule (`dataset-generation` section 3): the Start of Mission type codes (SVC, DPT, TST) moved into the safety desk's reporting guidance as a fact of the recorder downloads, and the fitment works records' unit column headed `Programme Unit` as the Programme Office's own grain; the call, every rung and every graded figure unchanged (checks 110, verify 0 of 31 failed, rebuild byte-identical).
 
 ## Retired
 

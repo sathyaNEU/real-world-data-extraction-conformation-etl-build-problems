@@ -67,7 +67,6 @@ F_WORKS = "etcs_fitment_works_records.xlsx"
 F_FORM = "unit_formations_2026-10-31.csv"
 F_RENUM = "unit_renumbering_register.csv"
 F_ACCEPT = "fleet_etcs_acceptance_note.pdf"
-F_DICT = "data_dictionary.txt"
 F_PUNC = "punctuality_by_depot_2024-2026.xlsx"
 F_WX = "depot_weather_daily_2024-2026.csv"
 DISTRACTORS = [F_PUNC, F_WX]

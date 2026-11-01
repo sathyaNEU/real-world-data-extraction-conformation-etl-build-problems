@@ -8,11 +8,11 @@
   "client_domain": "human-factors-ergonomics",
   "niche": "a regional rail operator's forecast, for the rail safety regulator, of the train data entry errors its Phase 4 depots' drivers will make at ETCS Start of Mission in each depot's first twelve months on ETCS, when the suburban depots that went first gave each driver four to six times as many start-ups a month",
   "objective": "forecasting",
-  "shape": "07",
+  "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "About 650 train data entry errors by the Phase 4 depots' drivers in each depot's first twelve months on ETCS (planning value at the draw; fixed from the shipped files at ship)",
-  "answer_source": "design note ## Draw (planning value; submission.md block 1 at ship)",
+  "answer": "Plan the Phase 4 safety case and its debriefing for about 1,250 train data entry errors (1,280.2) recorded against the six Phase 4 depots' 276 drivers in each depot's first twelve months on ETCS, on about 111,000 starts; the default path files 750 (821.6)",
+  "answer_source": "task170/submission.md block 1; task170/generator/figures.json",
   "gap": [
     "population",
     "time"
@@ -31,9 +31,9 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
+  "context_artifact": "none",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the Start of Mission log to the safety desk's error register, removes the duplicate reports, maps the re-keyed staff numbers, reads the safety case conventions correctly and carries the Phase 1 to 3 depots' errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' start-ups files about 400, against about 650.",
+  "analyst_test": "A strong analyst who joins the safety desk register to the recorder log, drops the linked and withdrawn reports, maps the re-keyed staff numbers, converts the recorder's UTC, reads the forecast conventions correctly and carries the Phase 1 to 3 depots' first-year train data entry errors per start (or that rate month by month since go-live) to the Phase 4 drivers' planned starts files 750 (821.6) against 1,250 (1,280.2): the error probability falls with each driver's own count of ETCS starts, and the rural diagrams give a Phase 4 driver about a third of the suburban starts",
   "domain_test": "The deciding quantity is a human error probability, train data entry at ETCS Start of Mission, under the experience performance shaping factor human reliability assessment applies to a task: read from the record as the per-attempt error probability on each driver's own count of start-ups and carried to the forward drivers' own start-up rates. Swap the drivers for machines and there is no operator whose practice moves the probability, so the call becomes the earlier depots' rate times the forward volume.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:per-attempt-error-probability-on-the-operator's-own-count-of-attempts",
@@ -46,12 +46,12 @@
     "a diagram file with cancelled and re-issued turns",
     "test and depot-shunt start-ups on the log beside service start-ups"
   ],
-  "stakeholder_role": "the operator's human factors lead, whose Phase 4 safety case submission to the rail safety regulator carries the forecast of train data entry errors that sets the driver monitoring plan",
-  "role_family": "compliance_or_audit",
+  "stakeholder_role": "the head of driver standards, whose depot driver managers debrief every train data entry error the safety desk records and who plans their Phase 4 debriefing time from the forecast the safety case carries",
+  "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "etcs_start_of_mission_log (the on-board recorders' Start of Mission events, Phase 1 to 3 depots, each depot's go-live to 31 October 2026)",
-    "rows": 0,
+    "file": "obr_start_of_mission_log_2024-03_2026-10.csv",
+    "rows": 712452,
     "entity": "one Start of Mission by one driver on one unit",
     "grain": "driver x start-up",
     "source": "synthetic"
@@ -83,7 +83,7 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is a per-attempt failure probability that falls with each operator's own count of attempts, so a forward group whose operators make attempts more slowly spends most of its first year on the steep part of the curve; the earlier groups' first-year rate per attempt, or a curve on time since start, carries their faster practice into the forecast and understates it.",
   "driver_concrete": "Carvanne Vale's Phase 1 to 3 suburban depots gave each driver about 110 ETCS start-ups a month, so a driver passed 600 start-ups inside the first six months, where the train data entry error rate has fallen to a fifth of its first-week level; the Phase 4 rural depots' diagrams give 20 to 45, so their drivers spend the first year where the earlier drivers spent their first two months.",
-  "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or the same rate month by month since go-live) to the Phase 4 drivers' start-ups and files about 400, against about 650, because the error probability falls with each driver's own count of start-ups and the Phase 4 diagrams run that count up at a quarter of the suburban pace.",
+  "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files 750 (821.6), against 1,250 (1,280.2), because the error probability falls with each driver's own count of ETCS start-ups, which the suburban diagrams ran past 600 inside five months while the Phase 4 rural diagrams, at about a third of the start-ups, keep each driver on the steep early part of the curve for most of the first year.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task170": "v4 recovered a choice model of a default from an opt-in record; v5 reads a learning curve on each operator's own count of attempts and carries it at the forward operators' slower practice",
@@ -95,7 +95,8 @@
     "task56": "there a population is identifiable only by its absence from an event stream; here every forward operator is named in the plan and the probability is read along each one's own count",
     "task57": "there candidate measures reproduce their own year and only a held-out year separates them; here the candidate clocks are separated inside the record, by drivers who practised slowly inside fast depots",
     "task76": "there a class with zero conversion exists only as a look-back over failed contacts; here no class is hidden: the probability is a function of practice and the forward drivers' practice rate is planned",
-    "task124": "there the analogs' measured value was held down by the organisation's own dispatch, which newcomers cannot join; here nothing held the earlier depots' rate down: their drivers practised faster, so their first-year rate per attempt is lower than the forward drivers' will be"
+    "task124": "there the analogs' measured value was held down by the organisation's own dispatch, which newcomers cannot join; here nothing held the earlier depots' rate down: their drivers practised faster, so their first-year rate per attempt is lower than the forward drivers' will be",
+    "task305": "task305 v3 reads a forced choice's response from members an existing limit already forces; here there is no choice and no limit: one task's per-attempt error probability falls along each operator's own count of attempts, and the forward operators run that count up at a third of the record's pace"
   },
   "lineage": [
     {
@@ -216,6 +217,6 @@
       "fate": "spent 2026-10-23 at stage 4: the judge returned NOT_DETERMINISTIC (the default's take-up pace forked); cells five to nine found no draw that held before this one"
     }
   ],
-  "notes": "stump_strategy time_semantics: the decisive clock is the operator's own count of attempts, not calendar time since go-live; composition_mix also describes the forward drivers' lower practice rate, keyed time_semantics because a calendar-clock learning curve, the learning-aware analyst's route, lands with the pooled rate. Prototypes: scratchpad t170h/proto lc1.py to lc3.py (pooled and month routes 36 to 39 per cent low; own-count bands, power law and log-linear within 2 to 9 per cent of each other; a ward-count curve converges). Keyed pattern E (G14, does the pooled rate apply to this pool) with the decisive gap population: the forward drivers practise at a quarter of the suburban pace; pattern A (time_semantics' own) is banned against task281 in the last three and the count-call keyings on G2 and G13 collide with task173's lineage inside the window; nothing relabelled.",
+  "notes": "stump_strategy time_semantics: the decisive clock is the operator's own count of attempts, not calendar time since go-live; composition_mix also describes the forward drivers' lower practice rate, keyed time_semantics because a calendar-clock learning curve, the learning-aware analyst's route, lands with the pooled rate. Prototypes: scratchpad t170h/proto lc1.py to lc3.py (pooled and month routes 36 to 39 per cent low; own-count bands, power law and log-linear within 2 to 9 per cent of each other; a ward-count curve converges). Keyed pattern E (G14, does the pooled rate apply to this pool) with the decisive gap population: the forward drivers practise at a quarter of the suburban pace; pattern A (time_semantics' own) is banned against task281 in the last three and the count-call keyings on G2 and G13 collide with task173's lineage inside the window; nothing relabelled. Stage 3 redraw (2026-11-01): task279 and task280 were marked spent after this card was filed, which slid task275 and task484 into its window and raised ban.role, ban.artifact and ban.shape; the stakeholder is redrawn to the head of driver standards (capacity_planner), whose driver managers' debriefing time the forecast sizes (the conventions' purpose sentence), the context artifact keyed none (the recorder log is the spine and the pack carries no section 5 context artifact), and the shape keyed other (one forecast figure with its drivers and starts beside two side tables on other populations and a chart, no decision grid: 3 + 12 + 3 + 16 + 2 = 36 criteria).",
   "registered": "2026-10-24T23:47:23Z"
 }

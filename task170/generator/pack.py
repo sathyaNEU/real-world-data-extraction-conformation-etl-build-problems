@@ -1,6 +1,7 @@
 """task170 pack writer: every data file under target/ from the world, as each system exports it."""
 from __future__ import annotations
 
+import calendar
 import datetime as dt
 
 import numpy as np
@@ -21,7 +22,7 @@ class Pack:
     def write_som(self, path):
         rows = []
         for i, (t, pid, staff, unit, cab, typ) in enumerate(self.w.starts):
-            rows.append(("SM%09d" % (i + 104000000), t.strftime("%Y-%m-%dT%H:%M:%SZ"), unit, cab, staff, typ))
+            rows.append((self.w.som_ref[i], t.strftime("%Y-%m-%dT%H:%M:%SZ"), unit, cab, staff, typ))
         return C.write_csv(path, ["som_ref", "obr_utc", "unit", "cab", "driver_id", "som_type"], rows, crlf=False)
 
     # ------------------------------------------------------------------ the safety desk's register
@@ -93,7 +94,17 @@ class Pack:
 
     # ------------------------------------------------------------------ Class 461 fleet and the fitment programme
     def write_allocation(self, path):
-        rows = sorted(((u["now"], u["depot"], "2026-12-13") for u in self.w.units461), key=lambda r: (r[1], r[0]))
+        # most units move to their Phase 4 depot at the December 2026 timetable change; some have worked from it since an
+        # earlier timetable, and a few follow when another unit comes back from the works in January
+        g = C.stream("allocation")
+        earlier = ("2024-12-15", "2025-05-18", "2025-12-14", "2026-05-17")
+        rows = []
+        for u in self.w.units461:
+            x = g.random()
+            when = (earlier[int(g.integers(len(earlier)))] if x < 0.27 else
+                    "2027-01-%02d" % int(g.integers(4, 30)) if x > 0.93 else "2026-12-13")
+            rows.append((u["now"], u["depot"], when))
+        rows.sort(key=lambda r: r[0])
         return C.write_csv(path, ["unit", "depot", "allocated_from"], rows)
 
     def works_rows(self):
@@ -114,11 +125,11 @@ class Pack:
         return rows
 
     def write_works(self, path):
-        head = ["Vehicle", "Unit", "End", "Works In", "Works Out", "Dynamic Test", "Accepted", "Planned Acceptance",
+        head = ["Vehicle", "Programme Unit", "End", "Works In", "Works Out", "Dynamic Test", "Accepted", "Planned Acceptance",
                 "Status"]
         XW.STAMPS[C.F_WORKS] = ("Fitment Programme Office", "2026-11-03T16:20:00Z")
         return XW.write_table(path, "Class 461 vehicles", head, self.works_rows(),
-                              widths=[9, 9, 5, 11, 11, 12, 11, 18, 10])
+                              widths=[9, 15, 5, 11, 11, 12, 11, 18, 10])
 
     def write_formations(self, path):
         cls = lambda u: "461/" + u[3]
@@ -135,10 +146,15 @@ class Pack:
         rows = []
         for code, name, ph, golive in C.DEPOTS:
             lvl = g.uniform(88.5, 93.5)
+            per_day = g.uniform(78, 152) if ph < 4 else g.uniform(21, 41)
             y, m = 2024, 1
             while (y, m) <= (2026, 10):
                 v = lvl + g.normal(0, 1.1) - (1.6 if m in (11, 12, 1) else 0.0)
-                planned = int(g.integers(2200, 4800) if ph < 4 else g.integers(600, 1300))
+                # the timetable sets the trains a month plans: each December and May change moves the daily figure a
+                # little, and the month's days, bank holidays and engineering weekends move the total
+                tt = (y - 2024) * 2 + (1 if m >= 5 else 0) + (1 if m == 12 else 0)
+                days = calendar.monthrange(y, m)[1]
+                planned = int(round(per_day * (1 + 0.012 * tt) * days * (1 - g.uniform(0.0, 0.035))))
                 rows.append((code, name, "%04d-%02d" % (y, m), planned, round(min(99.4, v), 1)))
                 y, m = (y + (m == 12), m % 12 + 1)
         XW.STAMPS[C.F_PUNC] = ("Performance and Planning", "2026-11-05T10:02:00Z")
@@ -159,4 +175,4 @@ class Pack:
                 rows.append((day.isoformat(), code, round(tmax, 1), round(tmin, 1), round(rain, 1),
                              "Y" if tmin < 0 else "N"))
             day += dt.timedelta(days=1)
-        return C.write_csv(path, ["date", "depot", "max_temp_c", "min_temp_c", "rain_mm", "frost"], rows)
+        return C.write_csv(path, ["ob_date", "depot", "max_air_temperature", "min_air_temperature", "prcp_amt", "ground_frost"], rows)

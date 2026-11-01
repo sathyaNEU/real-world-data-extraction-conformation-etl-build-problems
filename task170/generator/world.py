@@ -251,6 +251,18 @@ class World:
                              self.units384[code][int(g.integers(12))], "AB"[int(g.integers(2))], "TST"))
         rows.sort(key=lambda r: (r[0], r[3], r[2]))
         self.starts = rows
+        # each unit's on-board recorder numbers its own Starts of Mission from where its counter stood at the record's
+        # start (recorders were fitted and reset at different times), so a reference is the unit and that unit's count
+        seq = {}
+        self.som_ref = []
+        for r in rows:
+            u = r[3]
+            k = seq.get(u)
+            if k is None:
+                k = 3000 + (int(u[-3:]) * 7919 + int(u[:3]) * 131) % 61000
+            k += 1
+            seq[u] = k
+            self.som_ref.append("%s/%07d" % (u, k))
         # each driver's count before each start, over every ETCS start the driver made at any depot
         count = defaultdict(int)
         self.start_n = []
@@ -279,7 +291,7 @@ class World:
         for i in self.errors:
             t, pid, staff, unit, cab, typ = self.starts[i]
             local = C.utc_to_local(t)
-            ref = "SM%09d" % (i + 104000000)
+            ref = self.som_ref[i]
             rep = []
             drv = g.random() < 0.62
             sig = g.random() < (0.25 if typ == "SVC" else 0.03)
