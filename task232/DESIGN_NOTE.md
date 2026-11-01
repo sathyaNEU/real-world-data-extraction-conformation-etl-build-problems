@@ -245,7 +245,11 @@ Planned (stage 3 builds them; the ceiling is measured by `task232/generator/ceil
 - Ask A: each county's household response rate in each quarter of 2026 (32 figures, per cent to one decimal).
   Devices: the senior team's reissue export (D7, keyed by Eircode and address; the reissued outcomes count against
   the original dwelling at its final outcome) and the frame team's vacancy log (D4, a dwelling found vacant or not
-  residential is ineligible from the log's effective date).
+  residential is ineligible from the log's effective date). Rule 3 at stage 3: the completes are countable from the
+  interview file the call reads, so each figure has to move on the denominator, which only the case file, the
+  reissue export and the vacancy log fix (a reissued non-contact counted twice when its export row is read as a new
+  case; a vacant dwelling coded non-contact left eligible); measure the cracker on the denominator devices alone
+  before keeping the ask, and re-site it to the contact log if the interview file carries it.
 - Ask B: each county's share of first contact attempts made in the evening (18:00 or later, Irish time) in each
   quarter of 2026 (32 figures, per cent to one decimal). Devices: the contact log's UTC stamps (D8, Irish Summer
   Time from 30 March to 26 October 2025 and from 29 March to 25 October 2026) and the CAPI sync's re-sent attempts
