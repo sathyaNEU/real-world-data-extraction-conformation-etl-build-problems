@@ -181,6 +181,13 @@ def write_all(target, golden, gen):
     workbook(P, g, a, b, os.path.join(golden, BOOK))
     memo(P, g, b, png, os.path.join(golden, MEMO))
     figs = A.figures(P)
-    json.dump({"task": "task160", "figures": figs}, open(os.path.join(gen, "figures.json"), "w"), indent=1,
-              sort_keys=True)
+    working = {"pilot_duplicate_removal_pct": round(100 * g["c"]), "pilot_qt_override_pct": round(100 * g["p"]),
+               "pilot_qt_removal_pct": 100 - round(100 * g["p"]), "base_qt_alerts": g["qt_rows_B"],
+               "base_qt_reviews_added": round(g["qt_add_B"]), "base_reviews": g["reviews_B"],
+               "base_reviews_lost": round(g["pre_B"]), "plan_admissions": g["plan_adm"], "base_admissions": g["adm_B"],
+               "qt_added_unrounded": round(g["qt_add"]), "lost_unrounded": round(g["pre"]),
+               "net_unrounded": round(g["net"]), "rounding_unit": 100,
+               "signed_off_total": sum(b.values()), "desk_hours_total": int(sum(a.values()) + 0.5)}
+    json.dump({"task": "task160", "figures": figs, "working": working}, open(os.path.join(gen, "figures.json"), "w"),
+              indent=1, sort_keys=True)
     return figs
