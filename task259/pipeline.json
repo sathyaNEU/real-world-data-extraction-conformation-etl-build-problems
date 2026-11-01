@@ -1,10 +1,10 @@
 {
  "task": "task259",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment",
  "objective": "descriptive-distribution",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-01",
  "stump": "the default path (answered-for reports as given, or self-answered shares, or cell imputation, all validated by the cross-sectional answered-for against self check at 1.02) certifies Silver Creek alone with the state at 5.5 percent; answered-for adults hold second jobs more often and the member answering carries only 56 percent of them, read within person across the rotation panel; corrected, Northern Basin, Silver Creek, Upper River and Eastern Prairie qualify and the state is at 7 percent",
  "architecture": 2,
@@ -14,17 +14,17 @@
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-11-01 after judge round 1, --asof 2026-10-23); every REVIEW answered in the design note",
-  "reader": "round 1 (2026-11-01): no leak, question 6 analytical, every flag harmless; noted the release's smooth quarterly table (fixed)"
+  "leak_py": "REVIEW ruled (2026-11-01, --asof 2026-10-23)",
+  "reader": "clean in both rounds; question 6 analytical each round; the reader's sections appended to task259/leak_check_report.md"
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK (2026-11-01, after judge round 1)",
+  "heart": "WARN 2026-11-01 at the ship gate (overuse.objective, repeat.gate_g, overuse.gate_g, repeat.question_form), no BLOCK",
   "nearest": "task80 v1 lineage at 0.09"
  },
  "judge": {
-  "verdict": "round 1 (2026-11-01): FIX_NOW on the rate asks only (eligibility scope unfiled, Gates C and E; the delete-then-restore interval, Gate C; the 56 percent wording, Gate A; no person code list, Gate B low); main call reproduced independently, Gate F high, Gate G statistical_rigor, Gate H pass",
-  "disposition": "fixed in the generator in one pass on 2026-11-01: scope filed in the technical note (master address file as finally corrected, reversal from the removal), block 2 states the sensitivity's computation, HES_PERSON_CODES.csv shipped, uneven quarterly projections, twice-removed units added; no graded figure moved",
-  "report": "held by the main session"
+  "verdict": "round 2 DETERMINISTIC, APPROVE (order kept; Gate F good; Gate G statistical_rigor / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE; round 1's rate-ask FIX_NOW closed by a filed eligibility WHAT; round 2's per-area-decimal note closed by restating critical component 2 against the 7.0 line",
+  "report": "task259/determinism_check_report.md"
  },
  "returned": [
   {
@@ -40,9 +40,12 @@
    "commit": ""
   }
  ],
- "resume": "judge round 1 repairs built 2026-11-01 (target.zip aae8a109, every free gate green); next: the re-judge of the rate asks (main session)",
+ "resume": "Shipped 2026-11-01 (architecture 2, Descriptive): Northern Basin, Silver Creek, Upper River and Eastern Prairie certified for the 2027 portable benefits pilot; 7 per cent statewide; target.zip aae8a109. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
- "seed": "none: DA09's salary-platform world is closed; a new world, dataset and shell (Batch 3 queue reset)"
+ "seed": "none: DA09's salary-platform world is closed; a new world, dataset and shell (Batch 3 queue reset)",
+ "build": {
+  "target_zip": "aae8a109 (13 members, each byte-identical to target/)"
+ }
 }

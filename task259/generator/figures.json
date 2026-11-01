@@ -20,6 +20,7 @@
   3
  ],
  "false_report_pct": 0.2,
+ "interval_pct": 95,
  "noncontact_rate_pct": {
   "Capital Region": 11.9,
   "Eastern Prairie": 17.8,
@@ -61,5 +62,9 @@
  },
  "statewide_as_collected_pct": 5.5,
  "statewide_pct": 7,
+ "supported_sensitivity_pct": [
+  53,
+  59
+ ],
  "threshold_pct": 7.0
 }

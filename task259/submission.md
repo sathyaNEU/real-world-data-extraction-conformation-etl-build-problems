@@ -10,7 +10,7 @@
 ## 2. Critical Components
 
 1. Answered-for reports carry **56%** of the second jobs the same adults report themselves: in adjacent quarters where an employed adult answered for themselves in one and was answered for in the other (either order), the answered-for report carries the self-reported second job 54.4% of the time, divided by the 97% of self-reported second jobs still self-reported in the adjacent quarter.
-2. Shares of employed residents holding more than one job on the residents' own reporting basis: Northern Basin 7.8, Silver Creek 9.3, Upper River 8.3, Eastern Prairie 8.0 (qualifying); Capital Region 5.8, High Plains 4.4, Southwest Lakes 5.6, Timber Country 6.5.
+2. Under every proxy sensitivity from 53% to 59% (the 95% interval of the within-person estimate), Northern Basin, Silver Creek, Upper River and Eastern Prairie each clear 7.0% on the residents' own reporting basis and Capital Region, High Plains, Southwest Lakes and Timber Country each stay below it.
 3. Statewide share on the same basis **7%** (as collected 5.5%).
 
 ## 3. Step-by-Step Solution
