@@ -9,8 +9,11 @@ T2  the default path (the safety report's rate, then like occupancy) files 'disc
     golden
 L1  the ladder: every route that does not hold the climbing and descending count sits at least 6 points under the
     criterion; every standing member prints the golden's share at its rounding, 0.75 points clear of the bin's edges
-SF1 to SF14 the fork table, each closed reading asserted
+SF1 to SF17 the fork table, each closed reading asserted (SF15 and SF16 by the data's rejection of the coarser
+    or linear forms, SF17 in A4)
 A1 to A3 each ask's device moves its figures; every graded ask figure sits clear of its rounding edge
+A4  one pair's records in one sector never overlap or sit within PAIR_GAP; no deduplication moves a count
+R1  last year's report sits on its seasonal profile and prints no trial figure
 D1  the distractors are inert
 """
 import json
@@ -165,6 +168,48 @@ def main():
         d["cfg"] = np.tile(Wd["comb"], len(P.SECTORS))
         v = 1 - R.mh(d, ["sector", "n", "T", k])
         check("SF14 adding %s to the strata (same printed share)" % k, bin5(v) == base, "%.1f%%" % (100 * v))
+    # SF15 and SF16: the forms that coarsen the climbing count or make the counts linear are rejected by the data
+    import statsmodels.api as sm
+    import statsmodels.formula.api as smf
+    from scipy.stats import chi2
+    G0 = df.groupby(["sector", "n", "T", "on"]).agg(al=("al", "sum"), ex=("m", "size")).reset_index()
+    G0 = G0[G0.ex > 0].copy()
+    G0["onf"] = G0.on.astype(int)
+    G0["Tb"] = np.minimum(G0["T"], 3)
+
+    def lr(red, lo=2):
+        # nested Poisson fits on the sector-count-climbing cells, the factor form against a reduced one; lo=2 keeps
+        # the minutes with two aircraft or more (fewer cannot raise an alert), lo=0 every minute
+        Gp = G0[G0.n >= lo]
+
+        def fit(fml):
+            return smf.glm(fml, data=Gp, family=sm.families.Poisson(), offset=np.log(Gp.ex)).fit()
+        a, b = fit("al ~ onf + C(sector) + C(n) + C(T)"), fit(red)
+        return (2 * (a.llf - b.llf), int(round(a.df_model - b.df_model)), 1 - float(np.exp(b.params["onf"])),
+                1 - float(np.exp(a.params["onf"])))
+    cover = fig["probe_minutes"] / float(fig["probe_minutes_all"])
+    check("SF15 matched cells at the exact climbing count hold the probe's running time", cover >= 0.999,
+          "%.2f%% of its minutes (%d unmatched, %d activations)" % (100 * cover, fig["unmatched_minutes"],
+                                                                     fig["unmatched_activations"]))
+    d = df.copy()
+    d["Tb"] = np.minimum(d["T"], 3)
+    ob, eb, _ = F.observed_expected(d, ("sector", "n", "Tb"))
+    os_, es_, _ = F.observed_expected(d, ("sector", "T"))
+    x2, k, vb, _ = lr("al ~ onf + C(sector) + C(n) + C(Tb)")
+    check("SF15 the data reject a top bin of three or more climbing or descending (likelihood ratio, p < 0.001)",
+          x2 > chi2.ppf(0.999, k), "LR %.0f on %d df; binned cells %.1f%%, sector by climbing count alone %.1f%%, "
+          "binned Poisson %.1f%%" % (x2, k, 100 * (1 - ob / eb), 100 * (1 - os_ / es_), 100 * vb))
+    top = d[d["T"] >= 3]
+    gt = top.groupby(["sector", "n", "on"])["T"].mean().unstack("on").dropna()
+    wt = top[top.on].groupby(["sector", "n"]).size().reindex(gt.index).fillna(0)
+    lift = float(((gt[True] - gt[False]) * wt).sum() / wt.sum())
+    check("SF15 inside the top bin the probe's minutes carry more climbing or descending aircraft", lift > 0.05,
+          "%.2f more at the same sector and count" % lift)
+    for lo in (0, 2):
+        x2, k, vl, vf = lr("al ~ onf + C(sector) + n + T", lo)
+        check("SF16 the data reject a Poisson linear in the count of aircraft and the climbing count, minutes with %d "
+              "aircraft or more (p < 0.001)" % lo, x2 > chi2.ppf(0.999, k),
+              "LR %.0f on %d df; the linear form reads %.1f%%, the factor form %.1f%%" % (x2, k, 100 * vl, 100 * vf))
     check("SF5 the window is the export's (1 April to 30 September, New Zealand time)",
           int(c.a.min()) >= 0 and int(c.a.max()) < P.MINUTES * 60, "first and last entries inside the trial")
     check("SF13 an activation's month is its start in New Zealand time", True, "figs.ask_rates reads the start")
@@ -185,6 +230,69 @@ def main():
     check("A1 flight hours clear of the half-hour", e_h >= 0.02, "tightest %.3f hours" % e_h)
     e_r = min(edge(v, 0.1) for s in P.SECTORS for v in fig["stca_rate_exact"][s])
     check("A2 rates clear of the half-decimal", e_r >= 0.002, "tightest %.4f" % e_r)
+
+    # A4: one pair's records in one sector never overlap or sit within the hand-over gap (no deduplication can move a
+    # count), and the gap between a pair's records anywhere is either a hand-over (0 to 3 s) or PAIR_GAP or more
+    lv = st[st.status == "LIVE"].copy()
+    lv["a"] = F.utc_sec(lv.start_utc)
+    lv["b"] = F.utc_sec(lv.end_utc)
+    lv["pair"] = [tuple(sorted(x)) for x in zip(lv.callsign_1, lv.callsign_2)]
+    close_same = 0
+    gaps = []
+    for (sec, pair), g in lv.groupby(["sector", "pair"]):
+        g = g.sort_values("a")
+        a_, b_ = g.a.values, g.b.values
+        for j in range(1, len(g)):
+            if a_[j] - b_[j - 1] < P.PAIR_GAP:
+                close_same += 1
+    for pair, g in lv.groupby("pair"):
+        g = g.sort_values("a")
+        a_, b_ = g.a.values, g.b.values
+        gaps += [int(a_[j] - b_[j - 1]) for j in range(1, len(g))]
+    check("A4 (SF17) one pair's live records in one sector sit %d s apart or more" % P.PAIR_GAP, close_same == 0,
+          "%d pairs of records closer" % close_same)
+    mid = [x for x in gaps if 3 < x < P.PAIR_GAP]
+    check("A4 a pair's records are a hand-over (0 to 3 s) or %d s apart or more" % P.PAIR_GAP,
+          not mid and min(gaps) >= 0, "%d hand-overs, %d gaps in between" % (sum(1 for x in gaps if x <= 3), len(mid)))
+    # a deduplication as generous as four minutes: one pair's counted records in one elementary sector merged
+    cnt = F.activations(D, pn["c"])
+    merged = 0
+    for _, g in cnt.groupby(["elem", "pair"]):
+        g = g.sort_values("a")
+        a_, b_ = g.a.values, g.b.values
+        end = b_[0]
+        for j in range(1, len(g)):
+            merged += int(a_[j] - end < 240)
+            end = max(end, b_[j])
+    check("A4 (SF17) merging one pair's records within four minutes in one sector moves no count",
+          merged == 0 and len(cnt) == fig["activations_counted"],
+          "%d merged; %d activations either way" % (merged, len(cnt)))
+
+    # R1: last year's report: every month's flight hours on the sector's seasonal profile, no figure on a trial figure
+    import re as _re
+    import pypdf
+    txt = "\n".join(pg.extract_text() for pg in pypdf.PdfReader(os.path.join(TARGET, "safety_performance_report_2024-25.pdf")).pages)
+    seas = [1.04, 0.99, 1.01, 1.04, 1.06, 1.12, 1.10, 1.05, 1.03, 1.00, 0.96, 0.94]
+    sec_t = txt[txt.index("3 En-route traffic"):txt.index("4 STCA activity")]
+    worst = 0.0
+    for s in P.SECTORS:
+        vals = []
+        for part in sec_t.split("Sector")[1:3]:
+            seg = part[part.index("\n" + s + "\n"):]
+            nums = _re.findall(r"\d{1,3}(?:,\d{3})+|\d+", seg[len(s) + 2:])
+            vals += [int(x.replace(",", "")) for x in nums[:6]]
+        level = sum(vals) / sum(seas)
+        worst = max(worst, max(abs(v / (level * k) - 1) for v, k in zip(vals, seas)))
+    check("R1 every month's flight hours sit on the seasonal profile", worst <= 0.04, "largest %.1f%% off" % (100 * worst))
+    gold = {"{:,}".format(v) for s in P.SECTORS for v in fig["flight_hours"][s]}
+    gold |= {"%.1f" % v for s in P.SECTORS for v in fig["stca_rate"][s]}
+    gold |= {"{:,}".format(fig["flights_handled"][s]) for s in P.SECTORS}
+    gold |= {"{:,}".format(int(round(fig[k]))) for k in ("activations_counted", "observed_all", "observed", "expected",
+                                                         "prevented", "probe_hours")}
+    gold |= {"%.1f" % fig["rate_on_per_1000fh"], "%.1f" % fig["rate_off_per_1000fh"]}
+    in_pdf = set(_re.findall(r"\d{1,3}(?:,\d{3})+(?:\.\d)?|\d+(?:\.\d)?", txt))
+    check("R1 no figure in last year's report prints as a trial figure", not (gold & in_pdf),
+          "%d shared" % len(gold & in_pdf))
 
     # D1: distractors inert (a SIGMET in force adds nothing to the strata)
     sg = __import__("pandas").read_csv(os.path.join(TARGET, "sigmets_nzzc_2026-04_2026-09.csv"))

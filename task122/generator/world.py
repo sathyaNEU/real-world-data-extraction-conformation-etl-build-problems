@@ -343,6 +343,13 @@ def activations(fl, n, T, on, comb):
     climbing or descending; the probe's use multiplies it by R_TRUE at every traffic level."""
     r = rng("stca")
     thin = rng("stca-thin")
+    redraw = rng("stca-redraw")
+    seen = {}            # each pair's alerts so far, in any sector: one pair's records never sit within PAIR_GAP
+
+    def clear(pair, t0, t1):
+        # an alert's records (its hand-over record included) run to ALERT_REACH past its start
+        t1 = max(t1, t0 + P.ALERT_REACH)
+        return all(t0 >= e + P.PAIR_GAP or t1 <= s0 - P.PAIR_GAP for s0, e in seen.get(pair, ()))
     present = [[] for _ in S]
     # crossing index by sector for drawing the pair
     for fi, f in enumerate(fl):
@@ -377,6 +384,20 @@ def activations(fl, n, T, on, comb):
                 vsep = int(r.choice([0, 100, 200, 300, 400, 500, 600, 700, 800]))
                 if on[i, m] and thin.random() >= P.R_TRUE:
                     continue
+                pair = frozenset((a[2], b[2]))
+                if not clear(pair, t, t + dur):
+                    # the same two aircraft already alerted in the last few minutes: another pair present raised this one
+                    found = False
+                    for _ in range(25):
+                        x, y = (int(v) for v in redraw.choice(len(cand), size=2, replace=False))
+                        if clear(frozenset((cand[x][2], cand[y][2])), t, t + dur):
+                            a, b = cand[x], cand[y]
+                            found = True
+                            break
+                    if not found:
+                        continue
+                    pair = frozenset((a[2], b[2]))
+                seen.setdefault(pair, []).append((t, max(t + dur, t + P.ALERT_REACH)))
                 out.append({"sector": s, "t": t, "dur": dur, "a": (a[2], a[3]), "b": (b[2], b[3]), "inhibited": inh,
                             "m": int(m), "probe": bool(on[i, m]), "comb": bool(comb[m]),
                             "hsep": hsep, "vsep": vsep})

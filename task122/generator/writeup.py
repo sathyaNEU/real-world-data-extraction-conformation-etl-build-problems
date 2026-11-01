@@ -29,7 +29,9 @@ def write(path, f):
           "traffic and shows no benefit." % (pct, f["rate_on_per_1000fh"], f["rate_off_per_1000fh"]), ""]
     L += ["## 2. Critical Components", "",
           "1. Activations counted as the Safety Performance Report counts them over the trial: **%s**, of which **%s** "
-          "in the probe's running time." % (c(f["activations_counted"]), c(f["observed"])),
+          "in the probe's running time, **%s** of those at combinations of sector, number of aircraft and number "
+          "climbing or descending that also occur without the probe." % (
+              c(f["activations_counted"]), c(f["observed_all"]), c(f["observed"])),
           "2. At the same sector, number of aircraft and number climbing or descending, minute by minute, the probe "
           "prevented about **%d per cent** of the activations its running time would have raised, above the "
           "criterion's 20 per cent." % pct,
@@ -44,8 +46,8 @@ def write(path, f):
           "them (live only, once per event in the sector where it began, a combined-sector activation in the sector "
           "of the first-named aircraft): %s." % c(f["activations_counted"]),
           "4. Applied the activation rate of the minutes without the probe, at each sector, number of aircraft and "
-          "number climbing or descending, to the probe's running minutes: %s expected against %s raised." % (
-              c(f["expected"]), c(f["observed"])),
+          "number climbing or descending, to the probe's running minutes at combinations that also occur without "
+          "it: %s expected against %s raised in them." % (c(f["expected"]), c(f["observed"])),
           "5. Took the share prevented, about %d per cent, against the acceptance criteria's one in five." % pct,
           "6. For the tables, split each flown crossing at New Zealand month ends, counted each month's activations "
           "per 1,000 flight hours in the sector where each began, and counted each flight once in each sector it "

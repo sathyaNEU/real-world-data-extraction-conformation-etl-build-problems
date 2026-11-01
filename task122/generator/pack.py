@@ -183,6 +183,13 @@ def stca_rows(Wd):
     fl = Wd["flights"]
     comb = Wd["comb"]
     recs = []
+    # each pair's alerts by sector, so a hand-over record never lands within PAIR_GAP of the pair's other records there
+    by = {}
+    for a in Wd["acts"]:
+        by.setdefault((a["sector"], frozenset((a["a"][0], a["b"][0]))), []).append((a["t"], a["t"] + a["dur"]))
+
+    def free(sec, pair, t0, t1):
+        return all(t0 >= e + P.PAIR_GAP or t1 <= s0 - P.PAIR_GAP for s0, e in by.get((sec, pair), ()))
     for a in Wd["acts"]:
         fa, ca = a["a"]
         fb, cb = a["b"]
@@ -197,9 +204,13 @@ def stca_rows(Wd):
             me = min(int(exit_a // 60), P.MINUTES - 1)
             # a new record opens only where the operational sector changes (not inside a combined sector)
             if nxt != sec and opname(nxt, bool(comb[me])) != opname(sec, bool(comb[me])):
-                end = exit_a
                 cs = exit_a + int(r.integers(0, 3))
-                cont = (nxt, cs, cs + int(r.integers(5, 41)))
+                ce = cs + int(r.integers(5, 41))
+                pair = frozenset((fa, fb))
+                if free(nxt, pair, cs, ce):
+                    end = exit_a
+                    cont = (nxt, cs, ce)
+                    by.setdefault((nxt, pair), []).append((cs, ce))
         status = "INHIBITED" if a["inhibited"] else "LIVE"
         m = int(t // 60)
         recs.append([t, opname(sec, bool(comb[min(m, P.MINUTES - 1)])), t, max(end, t + 4), A["callsign"], B["callsign"],
@@ -463,7 +474,7 @@ def report_figures(Wd):
         acts[s] = int(round(sum(f * x / 1000.0 for f, x in zip(fh[s], rate[s]))))
         yr[s] = round(acts[s] / sum(fh[s]) * 1000, 1)
         flights[s] = int(round(sum(fh[s]) * 60 / float(r.uniform(13.2, 14.6))))
-    return {"months": months, "fh": fh, "rate": rate, "acts": acts, "flights": flights, "year_rate": yr}
+    return {"months": months, "fh": fh, "rate": rate, "acts": acts, "flights": flights, "year_rate": yr, "seas": seas}
 
 
 # ------------------------------------------------------------------------------------------------- the pack
@@ -493,15 +504,23 @@ def build(target):
     taken = {"{:,}".format(v) for s_ in P.SECTORS for v in g["flight_hours"][s_]}
     taken |= {"%.1f" % v for s_ in P.SECTORS for v in g["stca_rate"][s_]}
     taken |= {"{:,}".format(g["flights_handled"][s_]) for s_ in P.SECTORS}
-    taken |= {"{:,}".format(int(round(x))) for x in (g["activations_counted"], g["observed"], g["expected"],
-                                                     g["prevented"], g["probe_hours"])}
+    taken |= {"{:,}".format(int(round(x))) for x in (g["activations_counted"], g["observed_all"], g["observed"],
+                                                     g["expected"], g["prevented"], g["probe_hours"])}
     taken |= {"%.1f" % g["rate_on_per_1000fh"], "%.1f" % g["rate_off_per_1000fh"]}
     if dodge(rep, taken):
         report_pdf(p("report"), rep)
     return Wd
 
 
+def _derived(rep, s_):
+    rep["acts"][s_] = int(round(sum(f * x / 1000.0 for f, x in zip(rep["fh"][s_], rep["rate"][s_]))))
+    rep["year_rate"][s_] = round(rep["acts"][s_] / sum(rep["fh"][s_]) * 1000, 1)
+
+
 def dodge(rep, taken):
+    """Move last year's published figures off every figure this trial owes, by the smallest step each figure prints
+    in (an hour on a month's flight hours, a tenth on a month's rate, a flight on the flights handled); the moves the
+    year's totals need are rotated across the months, so no month absorbs them."""
     moved = False
     for s_ in P.SECTORS:
         for k in range(12):
@@ -511,15 +530,27 @@ def dodge(rep, taken):
             while "%.1f" % rep["rate"][s_][k] in taken:
                 rep["rate"][s_][k] = round(rep["rate"][s_][k] + 0.1, 1)
                 moved = True
-        rep["acts"][s_] = int(round(sum(f * x / 1000.0 for f, x in zip(rep["fh"][s_], rep["rate"][s_]))))
-        rep["year_rate"][s_] = round(rep["acts"][s_] / sum(rep["fh"][s_]) * 1000, 1)
-        while ("{:,}".format(rep["flights"][s_]) in taken or "{:,}".format(rep["acts"][s_]) in taken
-               or "{:,}".format(sum(rep["fh"][s_])) in taken or "%.1f" % rep["year_rate"][s_] in taken):
-            rep["flights"][s_] += 7
-            rep["fh"][s_][0] += 1
-            rep["acts"][s_] = int(round(sum(f * x / 1000.0 for f, x in zip(rep["fh"][s_], rep["rate"][s_]))))
-            rep["year_rate"][s_] = round(rep["acts"][s_] / sum(rep["fh"][s_]) * 1000, 1)
+        while "{:,}".format(rep["flights"][s_]) in taken:
+            rep["flights"][s_] += 1
             moved = True
+        _derived(rep, s_)
+        step = 0
+        while ("{:,}".format(rep["acts"][s_]) in taken or "{:,}".format(sum(rep["fh"][s_])) in taken
+               or "%.1f" % rep["year_rate"][s_] in taken):
+            k = step % 12
+            if "{:,}".format(sum(rep["fh"][s_])) in taken:
+                rep["fh"][s_][k] += 1
+                while "{:,}".format(rep["fh"][s_][k]) in taken:
+                    rep["fh"][s_][k] += 1
+            else:
+                rep["rate"][s_][k] = round(rep["rate"][s_][k] + 0.1, 1)
+                while "%.1f" % rep["rate"][s_][k] in taken:
+                    rep["rate"][s_][k] = round(rep["rate"][s_][k] + 0.1, 1)
+            _derived(rep, s_)
+            step += 1
+            moved = True
+            if step > 240:
+                raise RuntimeError("dodge did not converge for %s" % s_)
     return moved
 
 

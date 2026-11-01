@@ -73,7 +73,7 @@ beside v2's. Its pack, generator and goldens are removed from the tree and kept 
   quadratic growth of conflicts with traffic; climbing and descending traffic as the main source of conflict alerts;
   medium-term conflict detection at the planner position; the build carries the practice, not any provider's figures.
 
-**Pricing on the cut pack (target.zip c74f2a16; every value from generator/figures.json and asserted in checks.py).** Share prevented by route: the report's rate per flight hour -108.0 per cent (the probe reads as raising activations); the hour's traffic held -109.9; like occupancy minute by minute -14.9 (with the hour of day -12.2; per aircraft pair -20.8; per climbing or descending aircraft-minute 14.3); like count and like mix, the standing family (strata, observed against expected, Poisson forms with the count as factors or pairs and the climbing count), 30.2 to 30.9, every member printing 30. The bar is 20: every route without the climbing count sits 5.7 points or more under it, and the standing family 10.2 points or more over it.
+**Pricing on the cut pack (target.zip bb6963b0; every value from generator/figures.json and asserted in checks.py).** Share prevented by route: the report's rate per flight hour -108.1 per cent (the probe reads as raising activations); the hour's traffic held -109.9; like occupancy minute by minute -15.0 (with the hour of day -12.2; per aircraft pair -20.9; per climbing or descending aircraft-minute 14.2); like count and like mix, the standing family (strata, observed against expected, Poisson forms with the count as factors or pairs and the climbing count), 30.2 to 30.9, every member printing 30. The bar is 20: every route without the climbing count sits 5.8 points or more under it, and the standing family 10.2 points or more over it.
 
 ## Default path
 
@@ -87,16 +87,16 @@ beside v2's. Its pack, generator and goldens are removed from the tree and kept 
    against 65.6, the probe's minutes higher.
 4. Recognise that the planners run the probe in busy traffic and hold the traffic: compare each sector's minutes with
    the probe running against its minutes without at the same number of aircraft in the sector (the field's
-   traffic-adjusted comparison, conflicts growing with the aircraft present): the probe prevented -14.9 per cent.
+   traffic-adjusted comparison, conflicts growing with the aircraft present): the probe prevented -15.0 per cent.
 5. File: short of the one in five, keep the probe discretionary.
 
-Ends on: -14.9 per cent prevented, keep PROBE-M discretionary
+Ends on: -15.0 per cent prevented, keep PROBE-M discretionary
 Golden: 30 per cent prevented (30.3), mandatory from 1 April 2027
 
 ## Stump sentence
 
 The default path holds the number of aircraft in the sector, minute by minute, finds the probe's minutes raising
-activations at -14.9 per cent below the rate without it, short of the one in five, and keeps PROBE-M discretionary;
+activations at -15.0 per cent below the rate without it, short of the one in five, and keeps PROBE-M discretionary;
 the step that lands it there is holding only the count, when the planners switch the probe on as climbing and
 descending traffic gathers and almost every activation involves an aircraft climbing or descending, so at the same
 count and the same number climbing or descending the probe prevented about 30 per cent of the activations its running
@@ -110,9 +110,9 @@ Swap: "should the ward's early-warning tool be mandatory, on the share of rapid-
 Layer 1: the FDPS crossing list's plan revisions (a revision re-issues the flight's whole list, so a superseded route's crossings drop out), the STCA log's continuation records when an alert carries into the next sector, inhibited and test activations beside live ones, combined sectors overnight on operational names against the crossings' elementary sectors, the planner workstation log in New Zealand time across both daylight-time changes against UTC everywhere else, re-entries into a sector; each is what the systems produce and none is placed to be caught.
 Layer 2: estimand_identification, confounding by the conditions of use: the probe is switched on when the climbing and descending traffic that produces the alerts gathers, so its minutes and its idle minutes differ in that mix at any count of aircraft, and the counterfactual for its minutes has to be read at like count and like mix.
 Decisive step: setting the probe's running minutes against minutes without it in the same sector at the same number of aircraft and the same number of them climbing or descending, both rebuilt minute by minute from the crossings' entry and exit levels, and reading the activations prevented from the difference.
-Not semantics: reading every field, code and definition correctly (the revisions, the continuation records, the combined sectors, the local time) still leaves the report's rate at -108.0 per cent and the like-occupancy comparison at -14.9 per cent; no column marks a climbing aircraft or holds a minute's traffic mix.
+Not semantics: reading every field, code and definition correctly (the revisions, the continuation records, the combined sectors, the local time) still leaves the report's rate at -108.1 per cent and the like-occupancy comparison at -15.0 per cent; no column marks a climbing aircraft or holds a minute's traffic mix.
 Not rule application: SRB 2026/04 files the estimand (the share of the activations the sectors would have raised in the probe's running time) and the report the counting; no clause says which minutes stand for the probe's minutes without it, and executing every filed rule files whatever comparison the analyst picks; the enumerated family spreads from -157.1 to 30.9 per cent, the standing family (the strata, observed against expected, the Poisson forms with the count of aircraft as factors or pairs and the climbing count) from 30.2 to 30.9, every member printing 30, ruled by the data's own structure (probe use and activations both rising with the climbing and descending count at every occupancy).
-Analyst test: a strong analyst cleans the records the report's way, takes the report's rate per 1,000 flight hours (-108.0 per cent prevented), holds the number of aircraft minute by minute (-14.9 per cent prevented) and keeps the probe discretionary; every field is read and every filed rule applied, and the call is wrong because the probe's minutes carry more climbing and descending traffic at any count of aircraft.
+Analyst test: a strong analyst cleans the records the report's way, takes the report's rate per 1,000 flight hours (-108.1 per cent prevented), holds the number of aircraft minute by minute (-15.0 per cent prevented) and keeps the probe discretionary; every field is read and every filed rule applied, and the call is wrong because the probe's minutes carry more climbing and descending traffic at any count of aircraft.
 Estimand: probe_m_trial_acceptance_criteria.pdf section 3.1: the share of the STCA activations the trial sectors would have raised in the time PROBE-M was running that its use prevented; population, the six sectors' minutes with the probe running (section 3.3); window, 1 April to 30 September 2026, New Zealand time; unit, activations counted as the Safety Performance Report counts them (section 3.2); comparison, the same time without the probe.
 No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure argues a share or a call, the report's rates are its own published series for 2024/25, and the request asks for the paper and the tables without a view.
 No certified replay: no certified or published figure reproduces any route; no file carries a share prevented, a rate with and without the probe, or a recommendation.
@@ -122,7 +122,7 @@ Lesson: an aid used at the operator's discretion is switched on when the conditi
 
 Actor: the deciding property, how many of the aircraft in a sector are climbing or descending at a given minute, has no column; it is a relation between the crossing rows present in the same minute whose entry and exit levels differ, and the probe's minutes hold more of it at every count of aircraft.
 Link: the probe's running time comes from the planner workstation log in New Zealand time on operational, sometimes combined, sectors, the traffic from the FDPS crossings in UTC on elementary sectors, the activations from the STCA log; no key joins them, only time intervals on the configuration in force, and the report's measure never compares a minute's traffic mix across the three.
-Reflex: the field's measure, activations per 1,000 flight hours with the probe running against without (-108.0 per cent prevented), and its traffic-adjusted form at like occupancy (-14.9), sit at rungs 0 and 2 and file a wrong call.
+Reflex: the field's measure, activations per 1,000 flight hours with the probe running against without (-108.1 per cent prevented), and its traffic-adjusted form at like occupancy (-15.0), sit at rungs 0 and 2 and file a wrong call.
 Back-test: the textbook route validates: the trial's minutes without the probe run at the report's 2024/25 rates for each sector, and the like-occupancy comparison is steady when the hour of day is added (-12.2 per cent), so nothing in the record flags the comparison it rests on.
 Second use: every file the decisive step reads is in the pack for a reason it independently has: the crossings for the flight hours and flights handled the tables owe, the STCA log for the activation rates, the planner log for the probe's running time the criterion names; the entry and exit levels are the crossing list's own fields.
 Shock: the climbing and descending mix swings with the hub's departure and arrival banks every day, ordinary movement; no sector, month or day stands out, and the probe's share prevented holds in every sector.
@@ -156,28 +156,31 @@ Pins: the WHAT sits in SRB 2026/04 (the share of the activations the sectors wou
 | SF12 | flights handled | each flight once in each sector it entered | crossings | moves every sector (asserted) | the report section 2 |
 | SF13 | an activation's month and sector | its start in New Zealand time, where it began | its end, or the receiving sector | the report's counting (asserted in figs) | the report section 2 |
 | SF14 | further strata (hour of day, configuration, weekday) | not needed | added | same printed share (asserted) | none needed |
+| SF15 | the climbing count's resolution | each exact count | bins (none, one, two, three or more), both counts binned, or the climbing count without the count of aircraft | binned cells print 20 (20.2; both binned 21.2), a binned Poisson files discretionary, the climbing count alone prints 35 (36.6) | the data: the exact cells hold all but 52 of the probe's running minutes, a top bin of three or more fails a likelihood ratio at p < 0.001, and inside it the probe's minutes carry more climbing aircraft at the same sector and count (asserted) |
+| SF16 | the adjustment's form | the cells, or a Poisson with the counts as factors (or log pairs) | a Poisson linear in the count of aircraft and the climbing count, or sector by the two counts linear | the linear form files discretionary (19.4), sector by linear counts prints 20 (22.2) | the data: the linear form fails a likelihood ratio against the factor form at p < 0.001 on every minute and on minutes with two aircraft or more (asserted); the factor, log-pair and climbing-linear forms agree at 30 |
+| SF17 | one pair's records close together in one sector | none occur (a hand-over record is in the next sector, 0 to 2 s on) | merged as one activation | no count moves (asserted in A4) | the data: one pair's records in one sector sit 243 s apart or more |
 
 ## Ladder
 
 | Rung | Construction | Share prevented (per cent) | Dies to |
 |---|---|---|---|
-| R0 | per flight hour | -108.0 | the probe's minutes are busier, with more aircraft and more of them climbing or descending |
+| R0 | per flight hour | -108.1 | the probe's minutes are busier, with more aircraft and more of them climbing or descending |
 | R1 | hourly traffic | -109.9 | the hour's traffic misses the minute's: the probe runs in the hour's climbing and descending minutes |
 | R1b | same sector-hour | -157.1 | within the hour the probe runs in the minutes the climbing and descending traffic fills |
-| R2 | like occupancy | -14.9 | at like occupancy the probe's minutes still hold more climbing and descending aircraft |
+| R2 | like occupancy | -15.0 | at like occupancy the probe's minutes still hold more climbing and descending aircraft |
 | R2 | like occupancy and hour of day | -12.2 | at like occupancy the probe's minutes still hold more climbing and descending aircraft |
-| R2b | per aircraft pair | -20.8 | per pair still leaves the climbing and descending mix unheld |
-| R2c | per climbing or descending aircraft | 14.3 | per climbing aircraft leaves the aircraft around it unheld, and the probe's minutes hold more of them |
+| R2b | per aircraft pair | -20.9 | per pair still leaves the climbing and descending mix unheld |
+| R2c | per climbing or descending aircraft | 14.2 | per climbing aircraft leaves the aircraft around it unheld, and the probe's minutes hold more of them |
 | R3 | Mantel-Haenszel (sector, n, T) | 30.7 | a standing member; prints 30 |
 | R3 | Poisson, count factors, climbing count linear | 30.2 | a standing member; prints 30 |
 | R3 | Poisson, log aircraft pairs and climbing count | 30.2 | a standing member; prints 30 |
-| R3 | Poisson, sector, count and climbing count as factors | 30.4 | a standing member; prints 30 |
+| R3 | Poisson, sector, count and climbing count as factors | 30.3 | a standing member; prints 30 |
 | R3 | observed against expected (sector, n, T) | 30.3 | the golden |
 | R3 | strata with hour of day | 30.9 | a standing member; prints 30 |
 
 - **Margins on the cut pack** (asserted in checks.py): every rung sits under the bar by more than the golden
   clears it (highest rung -12.2, the golden 10.3 over); the crude mix route, per climbing or descending aircraft-minute,
-  sits 5.7 points under; every standing member prints 30, from 30.2 to 30.9, clear of the bin's edges; the golden 30.3
+  sits 5.8 points under; every standing member prints 30, from 30.2 to 30.9, clear of the bin's edges; the golden 30.3
   sits mid-bin.
 - **Separation.** The default path is wrong on the clean truth (T2) and the like-count-and-mix route on the world's
   own records is the golden (T2); the pack's handling recovers the truth minute by minute (T1).
@@ -216,9 +219,9 @@ Executed word for word, SRB 2026/04 section 3.1 asks for the share of the STCA a
 raised in the time PROBE-M was running that its use prevented. Read literally, the minutes without the probe stand for
 the probe's minutes only where they carry the same traffic: the same sector, the same aircraft present and the same of
 them climbing or descending, since the planners switched the probe on as that traffic gathered and the activations
-come from it; set against those minutes, the probe's running time raised 1,520 activations against 2,181, about 30 per cent
-prevented. The asks' months, counts and flights read literally on the report's definitions give the figures in
-figures.json.
+come from it; the probe's running time raised 1,542 activations, and its minutes at combinations that also occur without
+it (all but 52 of them) raised 1,520 against 2,181, about 30 per cent prevented. The asks' months, counts and flights read
+literally on the report's definitions give the figures in figures.json.
 
 ## Oracles
 
@@ -258,11 +261,11 @@ states.
 
 Pair ceiling: 36.9 (keeps 12 of 79 ask criteria, response 53.4).
 Mirror leakage: 15.2 per cent of the ask weight.
-Measured by: generator/ceiling.py (run on the cut pack, target.zip c74f2a16)
+Measured by: generator/ceiling.py (run on the cut pack, target.zip bb6963b0)
 
 ## Leak sweep
 
-`leak.py task122 --asof 2026-10-09` on target.zip c74f2a16: REVIEW, no LEAK; each line ruled.
+`leak.py task122 --asof 2026-10-09` on target.zip bb6963b0: REVIEW, no LEAK; each line ruled.
 - Sweep 3 on `probe_m_trial_acceptance_criteria.pdf` and `probe_m_planner_guide_v2.1.pdf` (the call's words:
   PROBE-M, mandatory, en-route planner position, 1 April 2027): harmless; the criteria state the decision the
   executive team takes and the guide names the tool and its position, and neither carries a share, a rate with and
@@ -279,10 +282,13 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip c74f2a16)
    and descending count) is analytical; nothing planted, read or executed decides (the Three rules lines).
 2. Determinism: SRB 2026/04 files the WHAT; the standing family converges on 30 across strata, observed against
    expected and the Poisson forms, every presence convention, revision and continuation reading and added stratum
-   (SF1 to SF14, asserted).
-3. Gates on the final cut (target.zip c74f2a16): generator checks, the independent verifier on every graded figure, two
+   (SF1 to SF17, asserted; SF15 and SF16 by the data's rejection of the coarser and linear forms).
+3. Gates on the final cut (target.zip bb6963b0): generator checks, the independent verifier on every graded figure, two
    byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py REVIEW with no LEAK, guard.py heart
    and surface; the leak reader and the determinism judge run from the main thread.
+4. Surface: the one promoted pair, task81 (economics, a regional employment incentive costed from employer schedules,
+   a descriptive quantity), rides the place name New Zealand, a real country and not an invented name, and the
+   published-series context type; its domain, objective, decision type and driver all differ, so it is not a clone.
 
 ## Tried and rejected
 
@@ -588,6 +594,22 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip c74f2a16)
   counts and the observed-against-expected route drifted five points from the strata; each watch's own habit with the
   probe (unrecorded, drawn per watch and not per controller, so no controller's habit is an instrument) gives the
   overlap.
+- 2026-11-01, stage 4 judge on target.zip c74f2a16 (FIX_NOW, a minor SOLUTION_WRONG): Critical Component 1 put 1,520
+  activations in the probe's running time, where its minutes raised 1,542 and the 1,520 are those at combinations of
+  sector, count and climbing count that also occur without it (52 running minutes have no such match); the write-up,
+  the paper and the workbook now state both figures from figures.json.
+- 2026-11-01, the same judge: one pair's STCA alerts drawn independently minute by minute left nine same-sector,
+  same-pair records overlapping in time, so a deduplicating reading moved seven rate cells by about one per 1,000
+  flight hours; closed in the data and not by a counting rule: one pair's records sit 243 s apart or more in any
+  sector, a hand-over record aside (A4, SF17).
+- 2026-11-01, the same judge: the safety report's dodge loop added an hour to a sector's first month each time the
+  year's totals printed as a trial figure (TPO July 2024 at 2,838 flight hours against about 1,500 in every other
+  month); the moves now rotate across the months and R1 holds every month within 4 per cent of the seasonal profile.
+- 2026-11-01, the same judge's method forks, left open and closed by the data rather than by filing the comparison or
+  the covariates (filing them hands over the decisive step): the climbing count binned none, one, two, three or more
+  (20.2 on c74f2a16), both counts binned (20.9 to 21.5), the climbing count alone by sector (36.6), sector by the two
+  counts linear (22.2) and a Poisson linear in the counts (19.4, the one that files discretionary); SF15 and SF16
+  assert the likelihood ratios that reject the coarser and the linear forms.
 
 ## Architecture v3 record (spent 2026-10-31)
 

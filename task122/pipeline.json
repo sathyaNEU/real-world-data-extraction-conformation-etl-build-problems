@@ -9,22 +9,23 @@
  "stump": "A careful analyst prices PROBE-M at like traffic, comparing minutes with it running against minutes without at the same number of aircraft in the sector, finds the probe's minutes raising about 15 per cent more STCA activations, no benefit against the criteria's one in five, and keeps it discretionary; the step that lands it there is holding only the count, when planners switch the probe on as climbing and descending traffic gathers and almost every activation involves a climbing or descending aircraft, so at like count and like mix it prevented about 30 per cent and becomes mandatory from 1 April 2027.",
  "architecture": 3,
  "card_architecture": "v4",
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip c74f2a16 (sweeps 3 and 4: the decision's words in the criteria and the guide, the tool's and the report's own nouns; ruled in the design note's Leak sweep)",
-  "reader": "pending: the isolated reader from scratchpad/task122_stage4_leak_brief.md"
+  "leak_py": "REVIEW 2026-11-01 on target.zip bb6963b0 (sweeps 3 and 4: the decision's words in the criteria and the guide, the tool's and the report's own nouns; ruled in the design note's Leak sweep)",
+  "reader": "first read on target.zip c74f2a16 by the main thread; re-read pending on bb6963b0, since the safety performance report PDF changed (scratchpad/task122_stage4_leak_brief.md, copy at scratchpad/leak-task122/)"
  },
  "duplicate_check": {
   "heart": "WARN 2026-11-01 (decision type go_hold_or_stop and question form whether repeat task172; a gate asks whether)",
-  "surface": "exit 0 2026-11-01 on target.zip c74f2a16; personas match the card"
+  "surface": "exit 0 2026-11-01 on target.zip bb6963b0; personas match the card; the one promoted pair, task81, rides the real place name New Zealand and the published-series context type, ruled not a clone in the design note's Pre-ship check"
  },
  "judge": {
-  "verdict": null,
-  "report": "pending: the determinism judge from the main thread"
+  "verdict": "DETERMINISTIC SOLUTION_WRONG (minor), FIX_NOW",
+  "disposition": "FIX_NOW repaired 2026-11-01; one re-judge pending on bb6963b0",
+  "report": "the main thread's judge on target.zip c74f2a16: the call, the 30.3 per cent share and every xlsx cell reproduced; Gates F, G and H pass (decisive step analytical); repaired: Critical Component 1 states the 1,542 activations of the probe's running time and the 1,520 at combinations that also occur without it; one pair's records sit 243 s apart or more in a sector (A4, SF17); the safety report's months on their seasonal profile (R1); the coarse-bin and linear-Poisson forks closed by the data (SF15, SF16)"
  },
  "returned": [
   {
@@ -34,7 +35,7 @@
    "commit": ""
   }
  ],
- "resume": "Stage 4 from the main thread on target.zip c74f2a16 (rebuild with python3 task122/generator/make.py and check the digest first): spawn the leak reader from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task122_stage4_leak_brief.md (the copy at scratchpad/leak-task122/) and the determinism judge on task122 together, both at medium effort; fix every finding in the generator in one pass and re-run every free gate on the new cut (make.py, note.py, precut.py, figures_check.py, leak.py --asof 2026-10-09, guard.py heart and surface); a FIX_NOW is re-judged once; then ship: target.zip and golden/ with git add -f, the ledger row, the card current, commit SHIPPED (task122).",
+ "resume": "Stage 4 from the main thread on target.zip bb6963b0 (rebuild with python3 task122/generator/make.py and check the digest first): the one re-judge of the FIX_NOW (the determinism judge on task122, medium effort) and the leak re-read beside it (the reader from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task122_stage4_leak_brief.md on the copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task122/, medium effort), since the safety performance report PDF changed; fix any finding in the generator and re-run every free gate on the new cut (make.py, note.py, precut.py, figures_check.py, leak.py --asof 2026-10-09, guard.py heart and surface); then ship: target.zip and golden/ with git add -f, the ledger row, the card current, commit SHIPPED (task122).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -81,11 +82,11 @@
   }
  },
  "gates": {
-  "target_zip_sha256": "c74f2a16d6f23edafd372877229cd474681bb07a03eba7fb9cf22520a5414c9c",
-  "generator_checks": "37 of 37",
+  "target_zip_sha256": "bb6963b01c5bef62e79cba2966c2017dec50695694a00e1370b21b74bc5d40f8",
+  "generator_checks": "47 of 47",
   "verify": "PASS",
   "byte_identical_builds": 2,
-  "figures_check": "95 of 95",
+  "figures_check": "96 of 96",
   "precut": "61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS",
   "leak_py": "REVIEW, no LEAK",

@@ -52,7 +52,7 @@ def chart(fig, path):
     a2.bar(x + w / 2, lv["observed"], width=w, color=ON_C, label="Raised with the probe running")
     a2.set_xticks(x, lv["levels"])
     a2.set_xlabel("Aircraft climbing or descending in the sector", fontsize=8.5, color=INK)
-    a2.set_ylabel("STCA activations in the probe's running time", fontsize=8.5, color=INK)
+    a2.set_ylabel("STCA activations, matched probe minutes", fontsize=8.5, color=INK)
     a2.set_title("Fewer activations at every level of climbing and descending traffic", fontsize=9.2, color=INK,
                  loc="left")
     a2.legend(frameon=False, fontsize=7.6, loc="upper right")
@@ -145,12 +145,15 @@ def paper(fig, path, png):
          "in the time it was running. Activations are counted as the Safety Performance Report counts them: live "
          "alerts, once per event, in the sector where the alert began.")
     para("What the trial shows", bold=True, size=10.5, space=3)
-    para("Over the trial the probe ran for %s sector-hours. In that time the six sectors raised %s "
-         "activations. Minutes without the probe in the same sector, with the same number of aircraft in the sector "
-         "and the same number of them climbing or descending, put the activations the sectors would have raised in "
-         "that time at %s. The probe prevented %s of them, about %d per cent, above the one in five the criterion "
-         "asks for." % ("{:,}".format(fig["probe_hours"]), "{:,}".format(fig["observed"]),
-                         "{:,}".format(int(round(fig["expected"]))), "{:,}".format(int(round(fig["prevented"]))), pct))
+    para("Over the trial the probe ran for %s sector-hours, and the six sectors raised %s activations in that "
+         "time. All but %d minutes of it can be set against minutes without the probe in the same sector, with the "
+         "same number of aircraft in the sector and the same number of them climbing or descending. In those matched "
+         "minutes the sectors raised %s activations, and the minutes without the probe put the activations they "
+         "would have raised at %s. The probe prevented %s of them, about %d per cent, above the one in five the "
+         "criterion asks for." % ("{:,}".format(fig["probe_hours"]), "{:,}".format(fig["observed_all"]),
+                                  fig["unmatched_minutes"], "{:,}".format(fig["observed"]),
+                                  "{:,}".format(int(round(fig["expected"]))),
+                                  "{:,}".format(int(round(fig["prevented"]))), pct))
     para("Why the published rate points the other way", bold=True, size=10.5, space=3)
     para("On the Safety Performance Report's own measure, activations per 1,000 flight hours, the sectors ran at %.1f "
          "with the probe on and %.1f with it off. That comparison sets the probe's minutes against quieter ones. "
@@ -162,16 +165,17 @@ def paper(fig, path, png):
          % (fig["rate_on_per_1000fh"], fig["rate_off_per_1000fh"]))
     d.add_picture(png, width=Cm(16.4))
     cap = para("Figure 1. Left: the share of minutes with the probe running, by the number of aircraft climbing or "
-               "descending in the sector. Right: activations in the probe's running time, as raised and as the same "
-               "traffic raised without the probe.", size=8, space=8, color="5B6670")
+               "descending in the sector. Right: activations in the probe's matched running minutes, as raised and "
+               "as the same traffic raised without the probe.", size=8, space=8, color="5B6670")
     para("The trial in figures", bold=True, size=10.5, space=3)
     tb = d.add_table(rows=1, cols=2)
     tb.style = "Light List"
     _cell(tb.rows[0].cells[0], "Measure", bold=True)
     _cell(tb.rows[0].cells[1], "Trial, 1 April to 30 September 2026", bold=True, align="r")
     lines = [("Probe running, sector-hours", "{:,}".format(fig["probe_hours"])),
-             ("Activations raised in that time", "{:,}".format(fig["observed"])),
-             ("Activations the same traffic would have raised without the probe", "{:,}".format(int(round(fig["expected"])))),
+             ("Activations raised in that time", "{:,}".format(fig["observed_all"])),
+             ("Of them, in minutes matched without the probe", "{:,}".format(fig["observed"])),
+             ("Activations those minutes would have raised without the probe", "{:,}".format(int(round(fig["expected"])))),
              ("Activations prevented", "{:,}".format(int(round(fig["prevented"])))),
              ("Share prevented", "about %d per cent (criterion: 20 per cent)" % pct)]
     for k, v in lines:
@@ -180,9 +184,10 @@ def paper(fig, path, png):
         _cell(row.cells[1], v, align="r")
     para("", space=2)
     para("Activations are live STCA alerts once per event in the sector where they began (Safety Performance Report "
-         "2024/25, section 2). Expected counts sum, over the probe's running minutes, the rate of the minutes without "
-         "it in the same sector at the same number of aircraft and the same number climbing or descending.",
-         size=8, space=8, color="5B6670", italic=True)
+         "2024/25, section 2). Expected counts sum, over the probe's matched running minutes, the rate of the minutes "
+         "without it in the same sector at the same number of aircraft and the same number climbing or descending; "
+         "the %d running minutes with no such match (%d activations) are left out of the share."
+         % (fig["unmatched_minutes"], fig["unmatched_activations"]), size=8, space=8, color="5B6670", italic=True)
     para("Introducing the mandate", bold=True, size=10.5, space=3)
     para("The training plan schedules a classroom module, two simulator sessions and a competency check for every "
          "planner between January and March 2027, with backfill on the roster. The planners' survey and the "
@@ -258,21 +263,22 @@ def workbook(fig, path):
     ws = wb.create_sheet("Probe effect")
     ws.append(["The probe's running time against the same traffic without it, by sector"])
     ws["A1"].font = Font(italic=True, color="5B6670", size=9)
-    ws.append(["Sector", "Probe running (hours)", "Activations raised", "Would have raised without the probe",
-               "Prevented"])
+    ws.append(["Sector", "Probe running (hours)", "Activations raised", "Of them in matched minutes",
+               "Matched minutes, would have raised without the probe", "Prevented"])
     for c in ws[2]:
         c.font = head
         c.fill = fill
         c.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     for s in P.SECTORS:
         b = fig["by_sector"][s]
-        ws.append([s, b["hours"], b["observed"], b["expected"], b["prevented"]])
-    ws.append(["All sectors", fig["probe_hours"], fig["observed"], round(fig["expected"], 1), round(fig["prevented"], 1)])
+        ws.append([s, b["hours"], b["observed_all"], b["observed"], b["expected"], b["prevented"]])
+    ws.append(["All sectors", fig["probe_hours"], fig["observed_all"], fig["observed"], round(fig["expected"], 1),
+               round(fig["prevented"], 1)])
     for row in ws.iter_rows(min_row=3, max_row=ws.max_row):
         for j, c in enumerate(row):
-            if j in (1, 2):
+            if j in (1, 2, 3):
                 c.number_format = "#,##0"
-            elif j in (3, 4):
+            elif j in (4, 5):
                 c.number_format = "#,##0.0"
             if j > 0:
                 c.alignment = Alignment(horizontal="right")
@@ -280,9 +286,11 @@ def workbook(fig, path):
         c.font = Font(bold=True)
     ws.append([])
     ws.append(["Share prevented, all sectors", "about %d per cent" % fig["share_prevented_pct_nearest5"]])
-    ws.append(["Expected counts: for each probe-running minute, the rate of the minutes without the probe in the same "
-               "sector with the same number of aircraft and the same number climbing or descending."])
-    for col, w in zip("ABCDE", (28, 18, 16, 22, 14)):
+    ws.append(["Matched minutes: probe-running minutes with minutes without the probe in the same sector at the same "
+               "number of aircraft and the same number climbing or descending; each takes the activation rate of those "
+               "minutes. The %d running minutes with no such match (%d activations) are left out of the share."
+               % (fig["unmatched_minutes"], fig["unmatched_activations"])])
+    for col, w in zip("ABCDEF", (28, 18, 16, 18, 22, 14)):
         ws.column_dimensions[col].width = w
     ws = wb.create_sheet("Notes")
     for line in ["Sources: FDPS crossing list, STCA log, planner workstation log and configuration log, 1 April to "

@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: orders, harden, minutes, climbing, traffic, decisive, session, aircraft, descending, design, golden, carousel, running, minute, reading, placed, candidate, dropped, device, re-root, window, in-session, sectors, shipped, sessions
+Stump terms swept: orders, minutes, climbing, harden, decisive, traffic, session, aircraft, descending, design, running, minute, golden, carousel, reading, placed, candidate, dropped, device, re-root, window, in-session, totals, sectors, shipped
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `probe_m_planner_guide_v2.1.pdf`: carries 5 of 6 distinctive words of the committed call: 'Make PROBE-M mandatory at every en-route planner position from 1 April 2027.'
@@ -33,7 +33,9 @@ Stump terms swept: orders, harden, minutes, climbing, traffic, decisive, session
 
 ## 11 prompt gate (clean)
 
+
 ## Solver's-eye read
 
-Pending: the main thread spawns the isolated reader from the stage 4 brief on target.zip c74f2a16 (a fresh copy of
-prompt.txt and target/ only) beside the determinism judge.
+Pending: the main thread re-reads with the isolated reader from the stage 4 brief on target.zip bb6963b0 (a fresh
+copy of prompt.txt and target/ only) beside the one re-judge, since the FIX_NOW repair changed the safety performance
+report PDF and the STCA log; the first read ran on target.zip c74f2a16.

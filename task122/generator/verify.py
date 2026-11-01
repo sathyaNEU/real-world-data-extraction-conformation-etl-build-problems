@@ -121,7 +121,9 @@ def main():
         ok &= good
         print("%-4s %-46s %s against %s" % ("PASS" if good else "FAIL", name, a, b))
     eq("activations counted", len(counted), fig["activations_counted"])
-    eq("raised in the probe's running time", O, fig["observed"])
+    eq("raised in the probe's running time", sum(x[1] for x in cell.values()), fig["observed_all"])
+    eq("of them in matched minutes", O, fig["observed"])
+    eq("the probe's minutes without a match", sum(x[0] for x in cell.values() if not x[2]), fig["unmatched_minutes"])
     eq("expected without the probe", round(E, 1), fig["expected"], 0.05)
     eq("share prevented, nearest five per cent", int(5 * round(100 * share / 5)), fig["share_prevented_pct_nearest5"])
     # the asks

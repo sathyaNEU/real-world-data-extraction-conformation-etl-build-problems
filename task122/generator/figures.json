@@ -1,40 +1,46 @@
 {
- "activations_counted": 3966,
+ "activations_counted": 3965,
  "by_sector": {
   "HKI": {
    "expected": 417.7,
    "hours": 603,
    "observed": 281,
+   "observed_all": 284,
    "prevented": 136.7
   },
   "KPA": {
-   "expected": 406.2,
+   "expected": 406.1,
    "hours": 432,
    "observed": 269,
-   "prevented": 137.2
+   "observed_all": 278,
+   "prevented": 137.1
   },
   "KPT": {
    "expected": 404.6,
    "hours": 666,
    "observed": 288,
+   "observed_all": 288,
    "prevented": 116.6
   },
   "TKI": {
    "expected": 141.8,
    "hours": 248,
    "observed": 126,
+   "observed_all": 134,
    "prevented": 15.8
   },
   "TPO": {
    "expected": 304.2,
    "hours": 386,
    "observed": 204,
+   "observed_all": 206,
    "prevented": 100.2
   },
   "WKO": {
    "expected": 506.4,
    "hours": 956,
    "observed": 352,
+   "observed_all": 352,
    "prevented": 154.4
   }
  },
@@ -42,7 +48,7 @@
  "chart": {
   "expected": [
    16.1,
-   53.3,
+   53.2,
    261.3,
    351.4,
    373.1,
@@ -74,7 +80,7 @@
   ]
  },
  "criterion_pct": 20,
- "expected": 2180.8,
+ "expected": 2180.7,
  "flight_hours": {
   "HKI": [
    1329,
@@ -184,17 +190,17 @@
   "WKO": 42990
  },
  "ladder": {
-  "R0 per flight hour": -108.0,
+  "R0 per flight hour": -108.1,
   "R1 hourly traffic": -109.9,
   "R1b same sector-hour": -157.1,
-  "R2 like occupancy": -14.9,
+  "R2 like occupancy": -15.0,
   "R2 like occupancy and hour of day": -12.2,
-  "R2b per aircraft pair": -20.8,
-  "R2c per climbing or descending aircraft": 14.3,
+  "R2b per aircraft pair": -20.9,
+  "R2c per climbing or descending aircraft": 14.2,
   "R3 Mantel-Haenszel (sector, n, T)": 30.7,
   "R3 Poisson, count factors, climbing count linear": 30.2,
   "R3 Poisson, log aircraft pairs and climbing count": 30.2,
-  "R3 Poisson, sector, count and climbing count as factors": 30.4,
+  "R3 Poisson, sector, count and climbing count as factors": 30.3,
   "R3 observed against expected (sector, n, T)": 30.3,
   "R3 strata with hour of day": 30.9
  },
@@ -207,10 +213,12 @@
   "2026-09"
  ],
  "observed": 1520,
+ "observed_all": 1542,
  "per_flight_hours": 1000,
- "prevented": 660.8,
- "probe_hours": 3290,
+ "prevented": 660.7,
+ "probe_hours": 3291,
  "probe_minutes": 197394,
+ "probe_minutes_all": 197446,
  "rate_off_per_1000fh": 65.6,
  "rate_on_per_1000fh": 136.5,
  "share_prevented": 0.303,
@@ -229,7 +237,7 @@
    106.6,
    102.8,
    97.7,
-   103.3,
+   102.3,
    103.1
   ],
   "KPT": [
@@ -279,7 +287,7 @@
    106.5737,
    102.7742,
    97.7077,
-   103.2605,
+   102.3218,
    103.1367
   ],
   "KPT": [
@@ -314,5 +322,7 @@
    56.1062,
    72.1945
   ]
- }
+ },
+ "unmatched_activations": 22,
+ "unmatched_minutes": 52
 }

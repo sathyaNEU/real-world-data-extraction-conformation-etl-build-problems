@@ -131,6 +131,9 @@ Pins: the WHAT sits in SRB 2026/04 (the share of the activations the sectors wou
 | SF12 | flights handled | each flight once in each sector it entered | crossings | moves every sector (asserted) | the report section 2 |
 | SF13 | an activation's month and sector | its start in New Zealand time, where it began | its end, or the receiving sector | the report's counting (asserted in figs) | the report section 2 |
 | SF14 | further strata (hour of day, configuration, weekday) | not needed | added | same printed share (asserted) | none needed |
+| SF15 | the climbing count's resolution | each exact count | bins (none, one, two, three or more), both counts binned, or the climbing count without the count of aircraft | binned cells print 20 (20.2; both binned 21.2), a binned Poisson files discretionary, the climbing count alone prints 35 (36.6) | the data: the exact cells hold all but 52 of the probe's running minutes, a top bin of three or more fails a likelihood ratio at p < 0.001, and inside it the probe's minutes carry more climbing aircraft at the same sector and count (asserted) |
+| SF16 | the adjustment's form | the cells, or a Poisson with the counts as factors (or log pairs) | a Poisson linear in the count of aircraft and the climbing count, or sector by the two counts linear | the linear form files discretionary (19.4), sector by linear counts prints 20 (22.2) | the data: the linear form fails a likelihood ratio against the factor form at p < 0.001 on every minute and on minutes with two aircraft or more (asserted); the factor, log-pair and climbing-linear forms agree at 30 |
+| SF17 | one pair's records close together in one sector | none occur (a hand-over record is in the next sector, 0 to 2 s on) | merged as one activation | no count moves (asserted in A4) | the data: one pair's records in one sector sit 243 s apart or more |
 """)
     S.append("""## Ladder
 
@@ -181,10 +184,11 @@ Executed word for word, SRB 2026/04 section 3.1 asks for the share of the STCA a
 raised in the time PROBE-M was running that its use prevented. Read literally, the minutes without the probe stand for
 the probe's minutes only where they carry the same traffic: the same sector, the same aircraft present and the same of
 them climbing or descending, since the planners switched the probe on as that traffic gathered and the activations
-come from it; set against those minutes, the probe's running time raised %s activations against %s, about %d per cent
-prevented. The asks' months, counts and flights read literally on the report's definitions give the figures in
-figures.json.
-""" % ("{:,}".format(f["observed"]), "{:,}".format(int(round(f["expected"]))), pct))
+come from it; the probe's running time raised %s activations, and its minutes at combinations that also occur without
+it (all but %d of them) raised %s against %s, about %d per cent prevented. The asks' months, counts and flights read
+literally on the report's definitions give the figures in figures.json.
+""" % ("{:,}".format(f["observed_all"]), f["unmatched_minutes"], "{:,}".format(f["observed"]),
+       "{:,}".format(int(round(f["expected"]))), pct))
     S.append("""## Oracles
 
 None on the main call: no file carries a share prevented, an activation rate with and without the probe, or a
@@ -244,10 +248,13 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip %s)
    and descending count) is analytical; nothing planted, read or executed decides (the Three rules lines).
 2. Determinism: SRB 2026/04 files the WHAT; the standing family converges on %d across strata, observed against
    expected and the Poisson forms, every presence convention, revision and continuation reading and added stratum
-   (SF1 to SF14, asserted).
+   (SF1 to SF17, asserted; SF15 and SF16 by the data's rejection of the coarser and linear forms).
 3. Gates on the final cut (target.zip %s): generator checks, the independent verifier on every graded figure, two
    byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py REVIEW with no LEAK, guard.py heart
    and surface; the leak reader and the determinism judge run from the main thread.
+4. Surface: the one promoted pair, task81 (economics, a regional employment incentive costed from employer schedules,
+   a descriptive quantity), rides the place name New Zealand, a real country and not an invented name, and the
+   published-series context type; its domain, objective, decision type and driver all differ, so it is not a clone.
 """ % (pct, zsha))
     body = "\n".join(S)
     note = open(NOTE, encoding="utf-8").read()

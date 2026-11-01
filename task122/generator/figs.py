@@ -270,15 +270,22 @@ def compute(target=TARGET, rules=None):
         x = gs[(gs.sector == s) & (gs.ex_on > 0) & (gs.ex_off > 0)]
         e = float((x.ex_on * x.al_off / x.ex_off).sum())
         o = int(x.al_on.sum())
-        by[s] = {"hours": int(round(df[(df.sector == s) & df.on].shape[0] / 60.0)), "observed": o, "expected": round(e, 1),
-                 "prevented": round(e - o, 1)}
+        ds = df[(df.sector == s) & df.on]
+        by[s] = {"hours": int(round(ds.shape[0] / 60.0)), "observed_all": int(ds.al.sum()), "observed": o,
+                 "expected": round(e, 1), "prevented": round(e - o, 1)}
     on_ = df[df.on]
     off_ = df[~df.on]
     rate_on = 1000.0 * on_.al.sum() / (on_.n.sum() / 60.0)
     rate_off = 1000.0 * off_.al.sum() / (off_.n.sum() / 60.0)
     fig = {
         "chart": chart, "by_sector": by,
-        "probe_hours": int(round(onmin / 60.0)),
+        # the probe's whole running time, and the part of it whose traffic also ran without the probe (the cells
+        # observed against expected reads); the rest has no like minute without the probe and is left out
+        "probe_minutes_all": int(len(on_)),
+        "probe_hours": int(round(len(on_) / 60.0)),
+        "observed_all": int(on_.al.sum()),
+        "unmatched_minutes": int(len(on_)) - int(onmin),
+        "unmatched_activations": int(on_.al.sum()) - int(O),
         "rate_on_per_1000fh": round(rate_on, 1), "rate_off_per_1000fh": round(rate_off, 1),
         "call": "mandatory" if share >= 0.20 else "discretionary",
         "share_prevented": round(share, 4),

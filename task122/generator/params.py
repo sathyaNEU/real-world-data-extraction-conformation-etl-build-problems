@@ -39,5 +39,7 @@ P_REROUTE = 0.018        # flights rerouted through another sector by a later re
 P_REENTRY = 0.020        # flights whose route leaves a sector and comes back into it
 P_CONTINUATION = 0.08    # activations that carry into the next sector (a second record opens there)
 P_INHIBITED = 0.05       # activations inside the approach inhibition volumes (logged, not presented)
+PAIR_GAP = 243           # seconds between one pair's alerts, in any sector, other than a hand-over record
+ALERT_REACH = 132        # seconds: the furthest an alert's records run past its start, its hand-over record included
 
 ASOF = dt.date(2026, 10, 9)
