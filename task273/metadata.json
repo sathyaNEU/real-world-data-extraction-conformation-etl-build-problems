@@ -1,0 +1,101 @@
+{
+ "architecture": 6,
+ "as_of": "2026-11-02",
+ "decision": "whether the Kaitanga bore field's 2026-27 summer plan passes the site's drought test, and the bores and months that fail it",
+ "deliverables": [
+  "kaitanga_summer_test_2026-27.xlsx",
+  "borefield_plan_2026-27.pptx"
+ ],
+ "distractor_files": [
+  "kaitanga_bore_nitrate_2016-2026.csv",
+  "kaitanga_ews_rainfall_daily.csv"
+ ],
+ "files": {
+  "MRC_MB1_groundwater_level_daily.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Matarae Regional Council environmental data portal, MB1 daily mean groundwater level; synthetic"
+  },
+  "MRC_permit_meter_telemetry_2025-26.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Matarae Regional Council water use telemetry for AUTH-117204, 2025-26; synthetic"
+  },
+  "MRC_water_permit_AUTH-117204.pdf": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Matarae Regional Council water permit AUTH-117204 as varied 19 October 2026; synthetic"
+  },
+  "PB9_logger_LT5-2408817_2026-10.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Waipa Drilling Ltd logger record of the PB9 step and constant-rate test, October 2026; synthetic"
+  },
+  "SWS-03_site_water_supply_security_standard.pdf": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "SWS-03 site water supply security standard, revision 4; synthetic"
+  },
+  "kaitanga_bore_nitrate_2016-2026.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Quarterly nitrate-nitrogen results for the production bores; synthetic"
+  },
+  "kaitanga_bore_register.xlsx": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kaitanga bore register maintained by the site utilities team; synthetic"
+  },
+  "kaitanga_bores_daily_2014-2026.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kaitanga site SCADA historian, monthly export of each production bore's daily take, mean pumping water level and pump run hours; synthetic, built for this task"
+  },
+  "kaitanga_ews_rainfall_daily.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Kaitanga site weather station daily rainfall (9 am to 9 am); synthetic"
+  },
+  "kaitanga_icp_meter_register.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Site register of pump ICPs and meters; synthetic"
+  },
+  "kaitanga_summer_bore_plan_2026-27.xlsx": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kaitanga summer bore plan 2026-27 prepared for the site drought committee; synthetic"
+  },
+  "pump_icp_interval_data_2025-26.csv": {
+   "date": "2026-11-02",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Metering equipment provider half-hourly interval data for the pump ICPs, 2025-26; synthetic"
+  }
+ },
+ "largest_file": {
+  "name": "MRC_permit_meter_telemetry_2025-26.csv",
+  "rows": 279913
+ },
+ "row_counts": {
+  "MRC_MB1_groundwater_level_daily.csv": 4630,
+  "MRC_permit_meter_telemetry_2025-26.csv": 279913,
+  "PB9_logger_LT5-2408817_2026-10.csv": 218,
+  "kaitanga_bore_nitrate_2016-2026.csv": 345,
+  "kaitanga_bores_daily_2014-2026.csv": 37071,
+  "kaitanga_ews_rainfall_daily.csv": 4687,
+  "pump_icp_interval_data_2025-26.csv": 105120
+ },
+ "task": "task273"
+}

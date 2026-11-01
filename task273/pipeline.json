@@ -1,25 +1,25 @@
 {
  "task": "task273",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "A competent analyst builds each bore's drought curve on its own record, carries it on MB1's 2019-20 levels at the planned takes, adds PB9 from its own test, and files that the plan holds, every bore above its minimum operating level in every month; the step that lands it there is reading each bore's level as its own take's alone, when PB9 will lower PB3 by 3.0 m at 4.40 ML/d, which only the dip PB9's constant-rate test left in PB3's daily log measures.",
  "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (2026-11-01)",
+  "reader": "nothing for questions 1 to 4; question 5 the golden's estimand; question 6 analytical; one realism note fixed (pump cover)"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (shell.repeat stale before re-register, repeat.gate_g)",
+  "nearest": "0.06 task464 v1"
  },
  "judge": {
   "verdict": "",
@@ -46,7 +46,7 @@
    "commit": "DRAWN (task273) architecture 5"
   }
  ],
- "resume": "Architecture 6 (the Kaitanga bore field) drawn and built 2026-11-01; next: the free gates, then stage 4 (leak reader and determinism judge).",
+ "resume": "Stage 4: the determinism judge thread is running on /tmp/determinism-check-task273-r1 (brief judge_brief.md, verdict to verdict.md); collect it, fix every finding in the generator in one pass, re-run the free gates, then ship (target.zip d624d9e5 at pause).",
  "approved": null,
  "delivered": null,
  "portal": null,

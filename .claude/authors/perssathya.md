@@ -37,3 +37,18 @@ architecture), new. A task from an objective no developer owns says so.
 | 5 | task249 (new) · task250 (new) · task251 (new) · task252 (new) |
 | 6 | task301 (new, Opportunity Sizing) · task302 (new, Opportunity Sizing) · task303 (new, Opportunity Sizing) · task304 (paused at the draw, Opportunity Sizing) · task305 (new, Opportunity Sizing) · task306 (new, Opportunity Sizing) |
 | 7 | task307 (new, Opportunity Sizing) · task308 (new, Opportunity Sizing) · task309 (new, Opportunity Sizing) · task310 (new, Opportunity Sizing) · task311 (new, Opportunity Sizing) · task312 (new, Opportunity Sizing) |
+
+## Batch 3 queue (the author, 2026-11-01)
+
+The author replaced this backlog's open work with the 36 tasks of Claude_Code_Batch_3.csv and asked that each be rebuilt
+as a fresh, unique architecture drawn on what the approved builds share (the survivor anatomy), not templated, built to
+pass the portal on its first round. Worked in priority order; every row is re-rooted at stage 1 with one architecture
+per world, whatever its old status. Progress is on the status board above.
+
+| Priority | Tasks, in order |
+|---|---|
+| 1 | task273 · task255 · task133 · task281 · task138 · task452 · task123 · task259 · task264 · task160 · task186 · task475 |
+| 2 | task304 · task134 |
+| 3 | task271 · task485 · task233 · task484 · task301 |
+| 4 | task142 · task149 · task159 · task185 · task204 · task238 · task243 · task248 · task449 · task459 · task466 · task477 · task199 |
+| 5 | task178 · task176 · task280 · task278 |

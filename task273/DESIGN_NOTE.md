@@ -4,7 +4,16 @@ Architecture 6, drawn 2026-11-01 at the Batch 3 queue reset: the author had ever
 unique architecture built on what the approved builds share, so architecture 5 (shipped 10-28) was re-rooted with no
 portal result on it. One architecture per world: the zone-substation load world is closed and the slot moves to a
 dairy processing site's bore field, inside the same client domain (water supply sits in Energy Systems & Utilities, as
-task124, task162 and task120 do). Its record sits under `## Architecture 5 record`.
+task124, task162 and task120 do). Its record sits under `## Leak review
+
+- leak.py on the final cut: REVIEW only. The SWS-03 call-vocabulary line is the WHAT the prompt names (harmless);
+  the SWS-03 stump-term line (record, register, recorded, production) is the standard's own words for its scope and
+  records section and names no move (harmless); the permit's Schedule 1 is the ordinary permit table (harmless). The
+  file-name LEAK on the test logger's first name ("test_") was cleared by naming it after the logger serial.
+- Reader (isolated, medium): nothing quoted for question 1, no ranking or helper file, question 5 executes to the
+  golden's estimand, question 6 analytical. Its one realism note (uniform pump cover) fixed in the generator.
+
+## Architecture 5 record`.
 
 ## Draw
 
