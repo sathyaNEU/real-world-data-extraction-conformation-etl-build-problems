@@ -34,6 +34,8 @@ def main(target=TARGET):
     P = A.Pack(target)
     gold = figures(P, "alert", "timestamps", "alerts")
     n = len(gold[0]) + len(gold[1])
+    if n == 0:
+        raise SystemExit("ceiling: no ask figure to score (nothing to measure); refusing to print a ceiling")
     crack = kept(figures(P, "map", "timestamps", "tasks"), gold)
     hand = kept(figures(P, "map", "handle_all", "tasks"), gold)
     full = kept(gold, gold)

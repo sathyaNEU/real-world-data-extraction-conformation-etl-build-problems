@@ -159,7 +159,7 @@ def write_release(path):
     IO.write_pdf(path, "MSP26 content release 2026.2", "Halverson Clinical Content", "Halverson Content Publisher",
                  blocks, "Halverson Clinical Content, MSP26 release 2026.2 client bulletin", "D:20260316100000-04'00'",
                  "D:20260316100000-04'00'",
-                 widths={5: [92, 78, 44, 160, 116]})
+                 widths={5: [112, 80, 52, 150, 102]})
 
 
 def write_schedule(path):

@@ -10,7 +10,7 @@ worlds; their records sit under `## Leak check
 - IEL-1186-03_conditions_consolidated_2026.pdf carries 9 of the swept terms: they are the licence's own words
   (reference conditions, reporting, emission points, period) and the sweep also read architecture 2's record; no
   sentence names a balance, the raw mill's effect on mercury, the dust or a test's representativeness.
-- stack_tests_Hg_2024-2026.pdf carries 6 of the swept terms (reference, report, emission, laboratory, clinker,
+- stack_tests_Hg_2024-2026.pdf carries 7 of the swept terms (reference, report, emission, laboratory, clinker,
   monitoring): a test report's standard vocabulary; it states each run's conditions and ranks nothing.
 - Sweeps 2, 3, 5 to 9 and 11 clean; the container sweep finds no writer signature (producers scrubbed per issuing
   body in build.py).
@@ -301,7 +301,7 @@ Measured by: generator/ceiling.py, run on the cut pack
 - IEL-1186-03_conditions_consolidated_2026.pdf carries 9 of the swept terms: they are the licence's own words
   (reference conditions, reporting, emission points, period) and the sweep also read architecture 2's record; no
   sentence names a balance, the raw mill's effect on mercury, the dust or a test's representativeness.
-- stack_tests_Hg_2024-2026.pdf carries 6 of the swept terms (reference, report, emission, laboratory, clinker,
+- stack_tests_Hg_2024-2026.pdf carries 7 of the swept terms (reference, report, emission, laboratory, clinker,
   monitoring): a test report's standard vocabulary; it states each run's conditions and ranks nothing.
 - Sweeps 2, 3, 5 to 9 and 11 clean; the container sweep finds no writer signature (producers scrubbed per issuing
   body in build.py).

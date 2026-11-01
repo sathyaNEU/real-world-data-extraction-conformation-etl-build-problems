@@ -239,6 +239,31 @@ def main():
     check("separation: no ask device row in the call's population (decant only in the queue's point of care)",
           not Pk.hist["department"].str.contains(r"\^").any() and "poc_location" not in Pk.hist.columns)
 
+    # ---------------- house fixes: the record obeys the stated mechanism, every PDF reads back with every reader
+    h = Pk.hist
+    removed_at = h[h["user_action"] == "Order removed"].groupby("order_id")["t"].min()
+    later = h[h["interacting_order_id"].isin(removed_at.index)]
+    bad_refs = int((later["t"] > later["interacting_order_id"].map(removed_at)).sum())
+    check("H6 the record obeys the golden's rule: no alert fires against an order after it was removed", bad_refs == 0,
+          "%d of %d references" % (bad_refs, len(later)))
+    import pypdf
+    from pdfminer.high_level import extract_text
+    phrases = {"Corvane_QRMC_Service_Schedule_B_rev3.pdf": ["One overridden alert is one review", "4.3 Content changes",
+                                                           "prescribers answering its alerts"],
+               PK.FILES["release"]: ["evaluate like every rule in the engine", "Background mode"]}
+    ok_all = True
+    for fn, want in phrases.items():
+        p = os.path.join(TARGET, fn)
+        t1 = " ".join(pg.extract_text() for pg in pypdf.PdfReader(p, strict=True).pages)
+        t2 = extract_text(p)
+        t3 = V.pdf_text(p)
+        for w_ in want:
+            for t in (t1, t2, t3):
+                if w_ not in " ".join(t.split()):
+                    ok_all = False
+    check("H25 every governing PDF reads back its WHAT sentences under pypdf (strict), pdfminer and the verifier",
+          ok_all)
+
     # ---------------- input gates and realism
     files = os.listdir(TARGET)
     exts = {os.path.splitext(f)[1] for f in files}
