@@ -1,46 +1,59 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (hydrology and frequency analysis: a season's irrigation requirement read at 24 in 30 from replayed weather years through a daily root-zone water balance, started from a state calibrated on soil moisture monitoring).
+**Domain:** Physical & Environmental Sciences (hydrology and flood frequency: the 1 per cent annual chance flood at a gauged river town and the levee crown raise it calls for).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Kestrel Bend Irrigation District should order 212,000 acre-feet from the Tolan Valley Project for the 2027 season.**
-That is the smallest whole number of thousands of acre-feet that covers the 2027 fields' headgate requirement in 24 of the 30 replayed weather years, every replay started from each field's root zone as it stands at the end of 31 January 2027, rebuilt from its 2026 sets at the share of their water that the soil moisture stations' 2026 readings show reaching the root zone. Not an order built from the 2026 record at Table 4's efficiency, which is the replays' design value: the stations' season puts the share above it at every drip, micro-sprinkler and sprinkler station, and their 31 January readings, every station deep in its root zone after the dry winter, read the same under either. Not one from each field's last set taken as a refill or from replays that start every field full: every drip, micro-sprinkler and sprinkler station reads short of its full point after its last set, and every station is deep in its root zone on 31 January.
+**Raise the Orrinsford levee crown by 2 ft before the 2027 flood season.** The design flood for the river as it now runs is 110,000 cfs at the Orrinsford gauge and the railroad closure is 1.48 ft short of it with freeboard; a 1 ft raise leaves a 1.1 per cent annual chance of exceeding what the levee holds, 2 ft brings it to 0.9 per cent. Not no raise: the fit to the published Orrinsford record (97,000 cfs) keeps floods the upstream floodplains cut before their levees were raised. Not 1 ft: the 18 water years since the last raise alone (106,000 cfs) set aside Coyle Bridge's 47 earlier years.
 
 ## 2. Critical Components
 
-1. The 2027 fields are the **631** fields on accepted water requests, **40,309** acres.
-2. At every one of the **9** drip, micro-sprinkler and sprinkler soil moisture stations, the 2026 readings put the share of a set's water reaching the root zone above Table 4's efficiency for the station's method.
-3. The 24th smallest of the thirty replayed headgate requirements, the 2012 replay's, lies between **211,000** and **212,000** acre-feet.
+1. Every levee between Coyle Bridge and Orrinsford was raised by October 2008, so water year **2009** is the first of the river as it now runs.
+2. The present river's 1 per cent annual chance discharge at Orrinsford is **110,000 cfs**.
+3. Against it the railroad closure's crown is **1.48 ft** short of the design water surface plus freeboard.
 
 ## 3. Step-by-Step Solution
 
-1. Took each field's latest accepted version in kbid_water_requests_2027.xlsx (crop, irrigation method, acres) with its lateral and soil unit from kbid_field_register_2027-02-01.csv per WOP 6.2 of KBID_Water_Order_Procedure_rev2025.pdf, and its total available water and allowable depletion from Tables 2 and 3 of KBID_WOP_tables_2027_order.xlsx per WOP 3.3: 631 fields, 40,309 acres.
-2. Spliced the weather record per WOP 6.1: station39_daily_1995-2027.csv converted from millimetres to inches up to 30 April 2014, kbid_station_daily_2014-2027.csv from 1 May 2014, and the network station's values on a day the yard station did not record.
-3. Fitted, for each drip, micro-sprinkler and sprinkler station in kbid_soil_moisture_network_2026.xlsx (joined to its field through the register's parcel number, each midnight reading stamped UTC taken as the end of the day before, its depletion the full point less the profile water), the share of the field's delivered water reaching the root zone that brings its 2026 season through the WOP 3.1 to 3.3 balance closest to its readings by least squares, from field capacity at the end of 27 January 2026 with each Delivered set in kbid_irrigation_orders_2023-2026.csv putting in its ordered flow for the hours it ran, and averaged the stations by method: above Table 4 at all 9 stations.
-4. Ran every field's 2026 season the same way at its method's share (border fields at Table 4, their sets running past field capacity) to the end of 31 January 2027, replayed each weather year 1997 to 2026 from that state per WOP 2.4 and 3.1 to 3.5, and carried the deliveries to the headgate per WOP 4.1: the 24th smallest requirement, the 2012 replay's, lies between 211,000 and 212,000 acre-feet.
-5. Summed each lateral's 2026 turnout deliveries from kbid_meter_book_2026.csv, each meter's reads differenced in its own register units converted to acre-feet with rollovers carried, each mid-season meter swap chained through the Reg. out and Reg. in of its work order in kbid_meter_shop_log_2026.xlsx, and the west spur turnouts 05-021 to 05-034 credited to Lateral 5 through their 15 June 2026 read and to Lateral 6 after (kbid_canal_operations_log_2026.docx): the deliveries in block 4.
-6. Summed each lateral's water put in from the daily totals in kbid_lateral_headings_daily_2026.csv with the Water Master's estimates in kbid_canal_operations_log_2026.docx for the days a heading logger kept no total, and took the share not delivered as the water put in less the deliveries, over the water put in: the water put in and the shares in block 4.
-7. Applied each tail weir's equation in kbid_canal_structures.xlsx to each morning's gauge in kbid_tail_weir_sheets_2026.csv, held until the next reading, with the crest raised 2 inches for each flashboard the riders' remarks put in place: the spills in block 4.
-8. Ordered the smallest whole number of thousands of acre-feet covering at least 24 of the 30 replays per WOP 2.3: 212,000 acre-feet.
+1. From the Segments and Gauges sheets of DNR_levee_inventory_Tamsen_2025.xlsx, took the six segments between river miles 41.0 and 12.6: their crown raises, the last in October 2008, were all in force from water year 2009.
+2. Read each water year's annual peak at Orrinsford and Coyle Bridge from SWS_annual_peaks_Tamsen_basin_2026-10-28.csv (an October to December peak counts in the next water year) and fitted Orrinsford on Coyle Bridge through the origin over water years 2009 to 2026: 1.078; before 2009 the great floods sit well below it (1970: 95,100 against 132,000 cfs).
+3. Took Orrinsford's peaks from 2009 and Coyle Bridge's times 1.078 before, and fitted LS-02's log-Pearson Type III by moments with the station skew weighted with the SW-16-03 region 2 skew (-0.08, mean square error 0.14): the 1 per cent discharge is 111,807 cfs, 110,000 to the nearest 5,000.
+4. Read HWE-1907_hydraulic_update_2019_Table4.pdf linearly in discharge, added LS-02 freeboard (3.0 ft, 4.0 ft within 100 ft of a bridge, plus the upstream allowance) and set it against the 2024 crown in the inventory's Orrinsford crown sheet: the railroad closure is 1.48 ft short, so the smallest whole-foot raise is 2 ft.
+5. For each uniform raise, found the discharge the levee then holds with freeboard at every cross-section (the railroad closure governs) and its annual chance on the present-river curve: 1.4, 1.1, 0.9, 0.7, 0.6 per cent for 0 to 4 ft.
+6. Ask A: took 650 ft off each station of the 2016 survey (the four structures both surveys shot sit 650 ft apart), put its shots on NAVD 88 with OLDD_benchmark_list.csv (+0.27 ft) and averaged 2016 less 2024 by the 2024 survey's reach: R1 0.07, R2 0.12, R3 0.16, R4 0.21, R5 0.29, R6 0.24, R7 0.14, R8 0.09 ft.
+7. Ask B: took OP-04's warning level, 661.00 ft NGVD 29, on the Coyle Bridge gauge datum in force (21.0 ft before the 2.00 ft step in stage against discharge on 19 October 2021, 23.00 ft after on the 638.00 ft datum), moved ORF2 stamps before the June 2021 logger swap from CST to UTC (+6 h, from the published peak times), put the Main Street sill at 17.45 ft on the ORF2 gauge and interpolated both crossings within the hour: 36, 29, 38, 37, 31, 34, 52 hours.
+8. Raise the crown 2 ft before the 2027 flood season.
 
 ## 4. Deliverable Answers
 
-### kbid_order_2027.xlsx
+### levee_raise_review.xlsx
 
-1. 2027 order: 212,000 acre-feet
-2. Each lateral's 2026 turnout deliveries, the water put into it, the share of that water its turnouts did not deliver, and the water over its tail weir:
-   - Lateral 1: 17,870 acre-feet delivered, 19,680 acre-feet put in, 9.2 per cent not delivered, 580 acre-feet over the tail weir
-   - Lateral 2: 17,530 acre-feet delivered, 19,410 acre-feet put in, 9.7 per cent not delivered, 630 acre-feet over the tail weir
-   - Lateral 3: 15,400 acre-feet delivered, 16,880 acre-feet put in, 8.8 per cent not delivered, 440 acre-feet over the tail weir
-   - Lateral 4: 17,890 acre-feet delivered, 21,020 acre-feet put in, 14.9 per cent not delivered, 270 acre-feet over the tail weir
-   - Lateral 5: 18,160 acre-feet delivered, 19,760 acre-feet put in, 8.1 per cent not delivered, 550 acre-feet over the tail weir
-   - Lateral 6: 18,210 acre-feet delivered, 21,060 acre-feet put in, 13.5 per cent not delivered, 650 acre-feet over the tail weir
-   - Lateral 7: 15,310 acre-feet delivered, 16,710 acre-feet put in, 8.4 per cent not delivered, 510 acre-feet over the tail weir
-   - Lateral 8: 11,490 acre-feet delivered, 13,110 acre-feet put in, 12.4 per cent not delivered, 420 acre-feet over the tail weir
-   - Lateral 9: 15,080 acre-feet delivered, 17,370 acre-feet put in, 13.2 per cent not delivered, 360 acre-feet over the tail weir
+1. Crown raise: 2 ft.
+2. Design discharge at the Orrinsford gauge: 110,000 cfs.
+3. Annual chance the river exceeds what the levee holds with its freeboard, by uniform raise:
+   - 0 ft: 1.4%
+   - 1 ft: 1.1%
+   - 2 ft: 0.9%
+   - 3 ft: 0.7%
+   - 4 ft: 0.6%
+4. Crown settlement between the 2016 and 2024 surveys, by reach:
+   - R1 (north tie-in to Pump Station 1): 0.07 ft
+   - R2 (Riverside Park): 0.12 ft
+   - R3 (Front Street to the Main Street closure): 0.16 ft
+   - R4 (Main Street closure to Cedar Street): 0.21 ft
+   - R5 (Cedar Street to the railroad closure): 0.29 ft
+   - R6 (railroad closure to the grain terminal): 0.24 ft
+   - R7 (grain terminal to Pump Station 2): 0.14 ft
+   - R8 (Pump Station 2 to the south tie-in): 0.09 ft
+5. Hours from the Coyle Bridge warning level to the Main Street sill at Orrinsford, floods since October 2016:
+   - March 2020: 36 hours
+   - May 2020: 29 hours
+   - June 2020: 38 hours
+   - February 2024: 37 hours
+   - April 2024: 31 hours
+   - June 2024: 34 hours
+   - May 2025: 52 hours
 
-### kbid_order_2027.svg
+### levee_raise_memo.pdf
 
-1. Chart of the thirty replayed seasons' headgate requirements from smallest (2024) to largest (2002), the 24 the order covers marked apart from the six above it, the order drawn across them at 212,000 acre-feet, and the 2012 replay labelled as the one that sets it.
+1. One page recommending a 2 ft raise, with the chart of the present-river and published-record frequency curves at Orrinsford against the discharge each raise from 0 to 4 ft holds, the 1 per cent line marked, and the raise table.

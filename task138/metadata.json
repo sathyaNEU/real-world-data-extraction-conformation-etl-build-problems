@@ -1,214 +1,107 @@
 {
-  "task": "task138",
-  "title": "How much water Kestrel Bend Irrigation District should order from the Tolan Valley Project for 2027",
-  "domain": "Physical & Environmental Sciences",
-  "subdomain": "hydrology-flood-frequency (a season's irrigation requirement at a 24-in-30 non-exceedance level from replayed weather traces through a daily root-zone water balance, at a California irrigation district)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "13: the thirty weather-year replays with the order at the 24th smallest (the order in whole thousands of acre-feet, the replays chart), and four per-lateral asks on the 2026 season (turnout deliveries, the water put in at the heading, the share of it not delivered, the tail weir spill)",
-  "as_of": "2027-02-01",
-  "deliverables": [
-    "kbid_order_2027.xlsx",
-    "kbid_order_2027.svg"
-  ],
-  "distractor_files": [
-    "kbid_groundwater_levels_2016-2026.csv",
-    "kbid_crop_report_2026.csv",
-    "TVWA_2027_initial_allocation_notice.pdf"
-  ],
-  "input_gates": {
-    "files": 19,
-    "formats": [
-      "csv",
-      "docx",
-      "pdf",
-      "txt",
-      "xlsx"
-    ],
-    "largest_file": "kbid_irrigation_orders_2023-2026.csv",
-    "largest_file_rows": 107067
+ "architecture": 2,
+ "as_of": "2026-11-09",
+ "decision": "whether the Orrinsford levee crown needs raising before the 2027 flood season, and by how many whole feet",
+ "deliverables": [
+  "levee_raise_review.xlsx",
+  "levee_raise_memo.pdf"
+ ],
+ "distractor_files": [
+  "coop_daily_precip_Orrinsford_Coyle.csv",
+  "OLDD_2025_annual_inspection_summary.pdf"
+ ],
+ "files": {
+  "DNR_levee_inventory_Tamsen_2025.xlsx": {
+   "date": "2025-03-14",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "State Department of Natural Resources Tamsen River levee inventory extract"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task138/generator/build.py (seeded, deterministic) around a fictional California irrigation district (Kestrel Bend Irrigation District), its supplying authority (Tolan Valley Water Authority), structures, growers and people; no real organisation, person or field is depicted. Soil series names are the county soil survey's public series, used descriptively.",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-12",
-  "revised": "2026-10-14",
-  "generator": "task138/generator/build.py",
-  "files": [
-    {
-      "path": "KBID_WOP_tables_2027_order.xlsx",
-      "format": "xlsx",
-      "bytes": 11151,
-      "rows": null,
-      "source": "Constructed: The Water Order Procedure's Tables 1 to 5 for the 2027 order (crop coefficients, crops, soil units, application efficiency, loss allowances)",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "KBID_Water_Order_Procedure_rev2025.pdf",
-      "format": "pdf",
-      "bytes": 75681,
-      "rows": null,
-      "source": "Constructed: Kestrel Bend Irrigation District Water Order Procedure (Resolution 2019-07, revised Resolution 2025-18)",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "README_order_working_files.txt",
-      "format": "txt",
-      "bytes": 2568,
-      "rows": null,
-      "source": "Constructed: Working-files note: each file, what it is and where it came from",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "TVWA_2027_initial_allocation_notice.pdf",
-      "format": "pdf",
-      "bytes": 56005,
-      "rows": null,
-      "source": "Constructed: Tolan Valley Water Authority notice of the 2027 initial allocation and water orders (15 December 2026)",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_canal_operations_log_2026.docx",
-      "format": "docx",
-      "bytes": 39330,
-      "rows": null,
-      "source": "Constructed: Canal operations log, 2026 season",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_canal_structures.xlsx",
-      "format": "xlsx",
-      "bytes": 8999,
-      "rows": null,
-      "source": "Constructed: District Engineer's structures inventory: tail weirs, lateral headings, main canal",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_crop_report_2026.csv",
-      "format": "csv",
-      "bytes": 35825,
-      "rows": 648,
-      "source": "Constructed: The District's 2026 crop survey by field",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 8609,
-      "rows": null,
-      "source": "Constructed: Data dictionary for the order working files",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_field_register_2027-02-01.csv",
-      "format": "csv",
-      "bytes": 45534,
-      "rows": 648,
-      "source": "Constructed: Field register (GIS): fields, former field ids, turnouts, laterals, soil units, GIS acres",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_groundwater_levels_2016-2026.csv",
-      "format": "csv",
-      "bytes": 22595,
-      "rows": 528,
-      "source": "Constructed: Spring and fall depth to groundwater at 24 District monitoring wells, 2016 to 2026",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_irrigation_orders_2023-2026.csv",
-      "format": "csv",
-      "bytes": 10617455,
-      "rows": 107067,
-      "source": "Constructed: Irrigation orders (sets) for the 2023 to 2026 seasons from the District's ordering system",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_lateral_headings_daily_2026.csv",
-      "format": "csv",
-      "bytes": 145667,
-      "rows": 2425,
-      "source": "Constructed: Daily volume at each lateral heading, 2026 season (SCADA daily report)",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_meter_book_2026.csv",
-      "format": "csv",
-      "bytes": 914615,
-      "rows": 16311,
-      "source": "Constructed: Riders' turnout meter reads for 2026",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_meter_shop_log_2026.xlsx",
-      "format": "xlsx",
-      "bytes": 28920,
-      "rows": null,
-      "source": "Constructed: Meter shop log: the 2026 work orders and the meter inventory",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_soil_moisture_network_2026.xlsx",
-      "format": "xlsx",
-      "bytes": 77615,
-      "rows": null,
-      "source": "Constructed: The District's soil moisture network (Water Conservation's irrigation scheduling program): the eleven stations' sites and their daily profile water from 31 December 2025 to 31 January 2027, platform export",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_station_daily_2014-2027.csv",
-      "format": "csv",
-      "bytes": 210540,
-      "rows": 4681,
-      "source": "Constructed: Daily weather at the District's yard station, April 2014 to January 2027, logger export",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_tail_weir_sheets_2026.csv",
-      "format": "csv",
-      "bytes": 132411,
-      "rows": 2417,
-      "source": "Constructed: Riders' tail weir sheets, 2026 season",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "kbid_water_requests_2027.xlsx",
-      "format": "xlsx",
-      "bytes": 53961,
-      "rows": null,
-      "source": "Constructed: Growers' 2027 water requests, every version, from the District's request log",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "station39_daily_1995-2027.csv",
-      "format": "csv",
-      "bytes": 1087105,
-      "rows": 11446,
-      "source": "Constructed: Daily weather at state agricultural weather network station 39 (Kestrel Bend South), October 1995 to January 2027, in the network's export layout",
-      "date": "2027-02-01",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  "HWE-1907_hydraulic_update_2019_Table4.pdf": {
+   "date": "2019-12-16",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford Levee Hydraulic Update (2019), Table 4, water surface elevations at levee cross-sections"
+  },
+  "OLDD_2025_annual_inspection_summary.pdf": {
+   "date": "2025-08-29",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "distractor",
+   "source": "Orrinsford Levee and Drainage District 2025 annual levee inspection, summary of findings"
+  },
+  "OLDD_LS-02_levee_standard_rev3.pdf": {
+   "date": "2018-04-09",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford Levee and Drainage District levee design and review standard LS-02, revision 3"
+  },
+  "OLDD_OP-04_flood_warning_closure.pdf": {
+   "date": "2014-03-03",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford Levee and Drainage District operating procedure OP-04, flood warning and closures"
+  },
+  "OLDD_benchmark_list.csv": {
+   "date": "2019-08-20",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford Levee and Drainage District vertical control list"
+  },
+  "OLDD_crown_certification_survey_2024.csv": {
+   "date": "2024-05-31",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford levee crown certification survey, May 2024"
+  },
+  "OLDD_crown_survey_2016.csv": {
+   "date": "2016-10-14",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford levee crown profile survey, October 2016"
+  },
+  "ORF2_logger_export_20261005.csv": {
+   "date": "2026-10-05",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "Orrinsford streamgauge logger export (ORF2), all records"
+  },
+  "SWS_05432100_hourly_WY2017-2026.csv": {
+   "date": "2026-10-28",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "State Water Survey hourly gauge height and discharge, Tamsen River at Coyle Bridge, water years 2017 to 2026"
+  },
+  "SWS_SW-16-03_regional_skew_update.pdf": {
+   "date": "2016-09-26",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "State Water Survey technical release SW-16-03, regional skew coefficients"
+  },
+  "SWS_annual_peaks_Tamsen_basin_2026-10-28.csv": {
+   "date": "2026-10-28",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "evidence",
+   "source": "State Water Survey annual peak streamflow export for the five Tamsen basin streamgauges, retrieved 28 October 2026"
+  },
+  "coop_daily_precip_Orrinsford_Coyle.csv": {
+   "date": "2026-10-02",
+   "license": "synthetic, constructed for this task, CC0",
+   "role": "distractor",
+   "source": "Cooperative observer daily precipitation, Orrinsford 2 NE and Coyle 1 W"
+  }
+ },
+ "largest_file": {
+  "name": "SWS_05432100_hourly_WY2017-2026.csv",
+  "rows": 87635
+ },
+ "row_counts": {
+  "OLDD_benchmark_list.csv": 7,
+  "OLDD_crown_certification_survey_2024.csv": 365,
+  "OLDD_crown_survey_2016.csv": 193,
+  "ORF2_logger_export_20261005.csv": 87641,
+  "SWS_05432100_hourly_WY2017-2026.csv": 87635,
+  "SWS_annual_peaks_Tamsen_basin_2026-10-28.csv": 280,
+  "coop_daily_precip_Orrinsford_Coyle.csv": 7304
+ },
+ "task": "task138"
 }
