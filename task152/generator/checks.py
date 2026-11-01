@@ -272,8 +272,11 @@ def run(target, golden, B=None, G=None, meta_path=None):
     ok("SF9 the days after the wash: 1 to 2, 1 to 5 and 2 to 4 give the same volume",
        all(floor_k(r["golden variant: days %s after the wash" % x]) == vol for x in ("1 to 2", "1 to 5", "2 to 4")))
     tamb = A.P.dc / (A.P.poa[:, None] * K.OLD_KWP_INV)
-    ok("SF10 the temperature basis is the module's own (T_MOD_IW, the datasheet's coefficient for Pmax)",
-       "T_MOD_IW" in texts[DOC.F_README] and "-0.42 %/degC" in texts[DOC.F_SHEETS])
+    xwalk = open(os.path.join(target, R.F_TAGS), encoding="utf-8").read()
+    ok("SF10 the temperature basis is the module's own (the export's T_MOD_IW from the met station's back-of-module "
+       "sensor, the datasheet's coefficient for Pmax)",
+       "T_MOD_IW" in open(os.path.join(target, R.F_NEW), encoding="utf-8").read(4000) and
+       "back-of-module sensor" in xwalk and "-0.42 %/degC" in texts[DOC.F_SHEETS])
     unc = [k for k in r if k.startswith("R2b variant") and "no temperature correction" in k] + \
         ["R2e the plant's net ratio in the week after each wash, no temperature correction"]
     ok("SF10b an uncorrected comparison after the washes files another volume at the DC input, the AC output or the meter "
@@ -459,9 +462,22 @@ def run(target, golden, B=None, G=None, meta_path=None):
     sub = open(os.path.join(os.path.dirname(os.path.abspath(target)), "submission.md"), encoding="utf-8").read()
     ok("REALISM no em dash in the submission", "\u2014" not in sub and "\u2013" not in sub)
 
-    readme = texts[DOC.F_README]
-    unlisted = [f for f in sorted(os.listdir(target)) if f != DOC.F_README and f not in readme]
-    ok("REGISTER the README names every shipped file (H9)", not unlisted, unlisted)
+    describing = [f for f in sorted(os.listdir(target))
+                  if re.search(r"readme|dictionar|codebook|manifest|schema|field.?notes|data.?notes|definitions", f, re.I)]
+    hdrs = set()
+    for f in sorted(os.listdir(target)):
+        if f.endswith(".csv"):
+            with open(os.path.join(target, f), encoding="utf-8") as fh:
+                ln = next(x for x in fh if not x.startswith("#"))
+            hdrs |= {c.strip() for c in ln.strip().split(",")
+                     if len(c.strip()) >= 4 and re.match(r"^[A-Za-z][A-Za-z0-9_ ]*$", c.strip())}
+    naming = [f for f, t in texts.items()
+              if sum(1 for h in hdrs if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(h), t)) >= 8]
+    ok("REGISTER no file describes the data, by name or by naming eight or more of the files' columns (H9, leak sweeps 1 "
+       "and 12)", not describing and not naming and len(texts) >= 9, describing + naming)
+    ok("REGISTER control: the column sweep reads the documents (the policy's 4.2 and Exhibit C's C.3.1)",
+       "1.2816 standard deviations" in texts[DOC.F_POLICY] and
+       "records it against the end of the day" in re.sub(r"\s+", " ", texts[DOC.F_EXHIBIT]))
     sub_files = set(re.findall(r"\b[\w.-]+\.(?:csv|xlsx|pdf|txt|docx|md)\b", sub)) - {DL.GOLD_BOOK, DL.GOLD_NOTE}
     ok("REGISTER every file the submission names ships (H8)", sub_files <= set(os.listdir(target)), sorted(sub_files - set(os.listdir(target))))
 

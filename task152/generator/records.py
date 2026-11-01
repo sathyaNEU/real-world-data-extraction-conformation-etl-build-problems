@@ -30,7 +30,7 @@ F_MDM = "vsipd_acct_7731-0459_mdm_daily_2019-10-01_2025-12-31.csv"
 F_SP = "vsipd_acct_7731-0459_service_points.csv"
 F_BLOTTER = "power_forward_blotter_2015-2025.xlsx"
 F_LT = "clearfield_hadley_ranch_poa_hourly_2001-2025.csv"
-F_CURVE = "palo_verde_forwards_cal2027_2026-10-05.csv"
+F_CURVE = "palo_verde_forwards_cal2027_2026-10-05.json"
 
 ACCOUNT = "7731-0459"
 SP_GEN, SP_STN = "0417", "0418"
@@ -610,6 +610,17 @@ def curve_rows():
         sol = on * float(r.uniform(0.70, 0.80))
         out.append(["2027-%02d" % m, "%.2f" % on, "%.2f" % off, "%.2f" % sol, "2026-10-05"])
     return out
+
+
+def write_curve(path):
+    """The desk's end-of-day curve pull from its market data service, as the service returns it."""
+    import json
+    marks = [dict(zip(CURVE_COLS[:4], [r[0], float(r[1]), float(r[2]), float(r[3])])) for r in curve_rows()]
+    doc = {"curve_id": "PV-SOLAR-FWD", "hub": "Palo Verde", "as_of": "2026-10-05", "currency": "USD", "uom": "MWh",
+           "source": "desk end-of-day marks", "marks": marks}
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(json.dumps(doc, indent=2) + "\n")
+    return len(marks)
 
 
 # ---------------------------------------------------------------------------------------------------- the long-term record

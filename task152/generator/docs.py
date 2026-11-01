@@ -1,7 +1,7 @@
 """The pack's documents: the treasury's energy risk policy, the module replacement scope (Word), the O&M agreement's
 cleaning and availability schedules, the interconnection agreement's metering exhibit, Corvane's side-by-side
 report, the two module datasheets, the Westmark confirmations, the district's 2025 interruption report, Tresco's
-repowering program summary and the README. Their text is kept here as data so checks.py can quote and execute it."""
+repowering program summary. Their text is kept here as data so checks.py can quote and execute it."""
 from __future__ import annotations
 
 import datetime as dt
@@ -284,7 +284,10 @@ EXHIBIT = [
         "Meter."]),
     ("C.3", "Data", [
         "C.3.1 The District makes the daily totals of each meter on the Interconnection Customer's account available "
-        "through its customer data portal, and supplies interval data on request."]),
+        "through its customer data portal, and supplies interval data on request. A daily total is the energy of "
+        "the day from midnight to midnight, Arizona time. The legacy billing system, in use to February 29, 2020, "
+        "records it against the end of the day, at 0000 of the next date; the meter data system records it "
+        "against the day itself."]),
 ]
 
 
@@ -546,82 +549,6 @@ def write_tresco(path):
     doc.build(s, onFirstPage=f, onLaterPages=f)
 
 
-# ---------------------------------------------------------------------------------------------------- README
-F_README = "README.md"
-
-
-def readme_text(W):
-    L = []
-    L += ["# Hadley Ranch Solar: data pull for the 2027 forward sale", "",
-          "Pulled by %s (Solar Asset Manager) on October 6, 2026 for %s (Energy and Commodities Manager). All times "
-          "on site are Arizona time, which is Mountain Standard Time all year (UTC-7); files stamped in UTC say so."
-          % (K.PEOPLE["asset"], K.PEOPLE["desk"]), "",
-          "## The plant", "",
-          "- Commercial operation November 20, 2015. Sixteen 2,500 kW central inverters in four blocks of four, each "
-          "fed by 8,000 Kellerman KS-315P modules (400 strings of 20, 2,520 kWp per inverter, 40,320 kWp in all) on "
-          "fixed tables at 25 degrees facing south.",
-          "- The plant exports at 69 kV to the Vado Seco Irrigation and Power District (VSIPD) through the Hadley "
-          "Ranch substation. The district's revenue meter there is service point 0417 on account 7731-0459.",
-          "- Tresco Field Services has operated and maintained the plant since commercial operation; the current "
-          "agreement started January 1, 2021.",
-          "- Module replacement works started October 5, 2026 (scope in the July 2026 paper).", "",
-          "## SCADA", "",
-          "- `%s`: the original SCADA's daily report, one row per local day, energies in kWh, inverters INV01 to "
-          "INV16. The server lost August 14 to 16, 2018 in a disk failure; those days are not in the file." % R.F_OLD,
-          "- `%s`: the replacement SCADA's daily export from March 3, 2020, one row per device, point and day. "
-          "`day_start_utc` is the start of the local day in UTC (07:00Z). Energies in MWh." % R.F_NEW,
-          "- `%s`: the original inverter numbers against the replacement SCADA's block tags. Inverter 07 (B2-INV3) "
-          "was destroyed by a power stage fire on March 2, 2021; its replacement has run as B2-INV3R since April 15, "
-          "2021, on the same array." % R.F_TAGS,
-          "- Points in both layouts: DC energy measured at each inverter's DC input (`E_DC`, `_DC_kWh`); AC energy at "
-          "the inverter's AC output (`E_AC`, `_AC_kWh`); hours the inverter spent feeding the grid that day (`T_OP`, "
-          "`_OpHrs`); plane-of-array irradiation from the met station's pyranometer (`H_POA`, kWh/m2); the "
-          "back-of-module temperature at the met station averaged over the day weighted by plane-of-array "
-          "irradiance (`T_MOD_IW`, `TMod_IW_C`); the daily mean air temperature; and the revenue meter's export and "
-          "import registers as the SCADA reads them (`PLANT-RM` `E_EXP` and `E_IMP`, `Meter_Export_kWh` and "
-          "`Meter_Import_kWh`).", "",
-          "## 2025 detail", "",
-          "- `%s`: each inverter's AC energy in each hour of 2025 and its lifetime AC energy register at the end of "
-          "the hour (kWh), as the four block data loggers forward them. `interval_end_utc` is the end of the hour in "
-          "UTC." % R.F_HOURLY,
-          "- `%s`: the met station's hourly means for 2025; `hour_beginning_mst` is the local hour." % R.F_MET,
-          "- `%s`: the inverters' alarm and event log for 2025 (raised and cleared in UTC; `ack_by` is the Tresco "
-          "control room user who acknowledged it, blank when the event cleared itself)." % R.F_EVENTS, "",
-          "## Work orders", "",
-          "- `%s`: Tresco's work orders for the site from handover to the pull. Types: CLN cleaning, CM corrective, "
-          "PM preventive, INSP inspection, OWN owner request, VEG vegetation, PROJ project work. Created and "
-          "completed times are local." % R.F_WO, "",
-          "## District files (account 7731-0459)", "",
-          "- `%s`: the district's legacy billing system, daily totals from November 20, 2015 to February 29, 2020. "
-          "Fixed width: account (10), service point (6), meter (10), channel (4), interval end date and time "
-          "(YYYYMMDD HHMM), kWh, read status (A actual, E estimated). A day's total is stamped with the end of its "
-          "interval." % R.F_LEGACY,
-          "- `%s`: the district's meter data system from October 1, 2019, when it went live with its history load, to "
-          "December 31, 2025; one row per service point, channel, day and version." % R.F_MDM,
-          "- `%s`: the service points on the account." % R.F_SP,
-          "- Channels are named from the district's side: REC is the energy the district received from the service "
-          "point, DEL the energy it delivered to it.",
-          "- The district's revenue meter at service point 0417 is the meter of record (interconnection agreement, "
-          "Exhibit C); these files are the district's reads of it. The SCADA's `PLANT-RM` points are the control "
-          "room's own read of the same meter and stop when the SCADA does.", "",
-          "## Desk", "",
-          "- `%s`: the desk's blotter of Hadley Ranch forward trades, quantities as traded." % R.F_BLOTTER,
-          "- `%s`: Westmark's confirmations." % F_CONF,
-          "- `%s`: the desk's Palo Verde forward marks for 2027 on October 5, 2026." % R.F_CURVE, "",
-          "## Resource and documents", "",
-          "- `%s`: Clearfield Solar Resource's site-adapted hourly series for the plant, 2001 to 2025 (delivered "
-          "January 2026; details in the file header)." % R.F_LT,
-          "- `%s`: the treasury's energy risk policy (revision 4)." % F_POLICY,
-          "- `%s`: the module replacement scope and schedule (July 2026)." % F_SCOPE,
-          "- `%s`: Corvane's report on the side-by-side comparison in block 3." % F_RIG,
-          "- `%s`: the datasheets of the original and the new modules." % F_SHEETS,
-          "- `%s`: the O&M agreement's cleaning and availability schedules." % F_OM,
-          "- `%s`: the interconnection agreement's metering exhibit." % F_EXHIBIT,
-          "- `%s`: the district's 2025 interruption report for the plant's 69 kV tap." % F_INTERRUPT,
-          "- `%s`: Tresco's summary of the plants it has repowered." % F_TRESCO, ""]
-    return "\n".join(L)
-
-
 OFFICE = []
 
 
@@ -650,5 +577,3 @@ def write_all(out, W):
                        excel=True, company=K.CONTRACTOR)
     PP.normalize_ooxml(p(R.F_BLOTTER), K.PEOPLE["desk"], K.PEOPLE["desk"], "2015-10-20T22:14:00Z",
                        "2025-10-28T23:41:00Z", excel=True, company=K.COMPANY)
-    with open(p(F_README), "w", encoding="utf-8", newline="") as fh:
-        fh.write(readme_text(W))

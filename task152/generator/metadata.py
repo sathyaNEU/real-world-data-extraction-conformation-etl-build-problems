@@ -28,7 +28,6 @@ SOURCES = {
     DOC.F_CONF: "Westmark Power Trading, confirmations file",
     DOC.F_INTERRUPT: "Vado Seco Irrigation and Power District, interruption report for the Hadley Ranch 69 kV tap, 2025",
     DOC.F_TRESCO: "Tresco Field Services, repowering program summary",
-    DOC.F_README: "Marden-Vail Building Products, README for the data pull",
 }
 DISTRACTORS = [DOC.F_TRESCO, R.F_CURVE]
 
@@ -44,6 +43,9 @@ def rows_of(path):
         import openpyxl
         wb = openpyxl.load_workbook(path, read_only=True)
         return sum(max(ws.max_row - 1, 0) for ws in wb.worksheets)
+    if path.endswith(".json"):
+        import json
+        return len(json.load(open(path, encoding="utf-8"))["marks"])
     return None
 
 
@@ -57,16 +59,14 @@ def write(target, out_path, B=None):
     big = max((x for x in out if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task152",
-        "title": "How much of a solar plant's 2027 output to sell forward at its one-year P90 once its worn modules "
-                 "are replaced, when only the modules' own wear leaves with them",
+        "title": "How much of a solar plant's 2027 output to sell forward at its one-year P90 with its new modules in "
+                 "from December",
         "domain": "Energy Systems & Utilities",
         "client_domain": "Energy Systems & Utilities",
-        "subdomain": "asset-condition-maintenance (a repowered plant's forward energy: the original modules' wear read "
-                     "apart from the dust carried between washes and the inverters' losses, on the days after each "
-                     "wash at the inverters' DC input, then the long-term record's one-year P90)",
+        "subdomain": "asset-condition-maintenance (a repowered plant's forward energy for the coming calendar year)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "a single committed volume with the P50 and standard deviation it rests on, a one-page note "
-                        "with a chart of the 25 weather-year outputs marking the P50 and the volume, and two tables "
+                        "with a chart of the output in each weather year of the long-term record marking the P50 and the volume, and two tables "
                         "(each inverter's 2025 availability under the O&M agreement; each year's over or under of net "
                         "energy at the delivery point against the volume sold forward, 2016 to 2025)",
         "as_of": "2026-10-06",

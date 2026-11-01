@@ -24,7 +24,7 @@ rebuild.
 | Furniture | forum `executive_team` (the treasurer approves the volume, policy section 5.1), forcing event `purchase_order_or_contract` (the 2027 forward sale confirmation), organisation family `manufacturer`, role family `procurement_lead`, context artifact `operations_log` (Tresco's work orders, which carry the washes, and the inverters' event log; the SCADA exports are the spine), calibration `none`, opening `question-first`, question form `how-much` |
 | Spine | the plant SCADA's daily exports: the original system's wide daily report to March 2, 2020 (1,562 days, 16 inverters by DC, AC and operating hours) and the replacement system's long export from March 3, 2020 (127,359 device-point-day rows), with the met station's plane-of-array irradiation and irradiance-weighted module temperature and the revenue meter's export and import (constructed) |
 | Deliverables | `hedge_volume_2027.xlsx` (volume, P50, standard deviation, the build, the weather years, the two ask tables, notes) and `hedge_note_2027.pdf` (a one-page memo to the treasurer with the weather-year chart); the format set rotates away from task151 (docx), task150 (png) and task148 (png) |
-| People | drawn with `guard.py names --geo "United States" --seed 152` (first names and surnames checked clean): Kristopher Lara (energy and commodities manager, the note's author; not in the prompt), Selena Sloan (solar asset manager, the README and the scope), Caroline Barnett (treasurer, the policy and the approval), John Davila (Tresco site supervisor), Laurie Howell (Corvane's field test engineer), Isabel Shaw (the district's meter data analyst, on the card only), Felicia Powers (Westmark's origination director, the confirmations), Ruben Yang and Howard Stout (Tresco technicians, user names in the work orders and event log), Sonia Whitehead (Tresco control room, user name) |
+| People | drawn with `guard.py names --geo "United States" --seed 152` (first names and surnames checked clean): Kristopher Lara (energy and commodities manager, the note's author; not in the prompt), Selena Sloan (solar asset manager, the scope), Caroline Barnett (treasurer, the policy and the approval), John Davila (Tresco site supervisor), Laurie Howell (Corvane's field test engineer), Isabel Shaw (the district's meter data analyst, on the card only), Felicia Powers (Westmark's origination director, the confirmations), Ruben Yang and Howard Stout (Tresco technicians, user names in the work orders and event log), Sonia Whitehead (Tresco control room, user name) |
 
 **Guard.** At the draw: WARN `overuse.objective`, `repeat.decision` and `repeat.question_form` (task151), answered: this
 is the Forecasting lane, and task151 shares no other axis. At stage 3 `guard.py check` raised a new BLOCK, `ban.forum`
@@ -185,6 +185,16 @@ the days after each wash at the inverters' DC input restores what the replacemen
   rarer, and carrying the present output forward keeps a wear the replacement removes; no build on file teaches the split
   of one unit's decline across an internal boundary and a reset cycle.
 
+## Survivor anatomy
+
+Actor: the deciding property, the original modules' own wear, has no column in any file: the inverters' DC energy per unit of irradiation carries the wear and the dust together on every day, the washes exist only as free-text CLN work orders block by block, and no file stores a wear figure, a soiling loss or a clean-module day.
+Link: the wear is read by joining each block's wash dates in the work orders to the four inverters of that block one to three days later in two SCADA layouts, at the DC input and temperature-corrected; no key joins a work order to an inverter-day and no sentence invites reading the decline on the days after a wash.
+Reflex: the field's first move for a repowering forecast, the plant's recent performance ratio carried onto the new modules with the measured side-by-side gain over the long-term weather years, sits at rung 0 and files the default path's 60,000 MWh (asserted, R3a); the next reflexes (the whole decline, the DC-side decline, the soiling-aware AC read) file 76,000, 73,000 and 72,000.
+Back-test: the textbook route validates: the base period's ratio over its own irradiation reproduces the base period's metered net energy, the side-by-side report's gain is reproduced from its own tables, and no record in the pack scores a repowered plant, so nothing a solver checks refutes rung 0.
+Second use: measured with the decisive step deleted: the work orders stay as the CMMS record Ask A reads (CM resets and OWN stops), the two SCADA layouts carry the default path and every rung, the datasheets carry the rungs' temperature corrections and the new nameplate's context; no file drops out, so opening the CLN rows does not single out the split.
+Shock: the movement reads as ordinary: a 14 per cent wear over ten years with a fast phase is a backsheet-cracked module's decline, the dust's growth follows the filed wash schedule from six a year to one, and no inverter or year is the pack's outlier on any shipped statistic; the call is one figure, so no candidate set is sorted.
+Pins: the WHAT is filed in the energy risk policy (the one-year P90, the delivery point's net energy, every full weather year, the base period, the rounding), the scope (the new nameplate, the inverters kept) and Schedule 2 (one December wash a year); no filed sentence names the wear, the days after a wash, the DC boundary or a soiling loss (asserted, R3c), and the policy executed alone files the default path.
+
 ## Readability screen
 
 Six tests per rung (1 a filed sentence names it or sends the solver looking, 2 a column, key or marker makes it a
@@ -220,14 +230,14 @@ inverter boundary and the wash cycle), never a reading.
 | SF8 | the as-new reference | 2016's washed days | commercial operation to 2016 or 2017; the first twelve months; the handover wash; 2016 and 2017; 2016's winter washes against December | same call (70,000; 73,000; 1,900; C3) | same call |
 | SF9 | a freshly washed day | 1 to 3 days after the block's wash, full operating hours | 1 to 1, 1 to 2, 1 to 5, 2 to 3, 2 to 4 days; full hours within 0.05 h | same call (C3) | same call |
 | SF10 | the temperature basis | the irradiance-weighted back-of-module temperature (T_MOD_IW) at the KS-315P's -0.42 %/degC | NOCT cell temperature from the daily air temperature; a coefficient fitted on the record (each period's regression at 25 degC or at the base period's temperature, one slope for both periods, 2016's slope) | same call (C3: 70,329 to 70,690; P50 72,784 to 73,157) | same call; the Sandia model needs hourly wind, which ships for 2025 only |
-| SF10b | the temperature basis | as SF10 | an uncorrected comparison (67,000 to 69,000) | ruled out | the README's field definition and the datasheet's coefficient of Pmax; the base period's post-wash days run 9 degC cooler than 2016's |
+| SF10b | the temperature basis | as SF10 | an uncorrected comparison (67,000 to 69,000) | ruled out | the export's T_MOD_IW point from the met station's back-of-module sensor (the crosswalk) and the datasheet's coefficient of Pmax; the base period's post-wash days run 9 degC cooler than 2016's |
 | SF11 | the measured gain | the twelve months' DC energy per kWp, table B over table A | the stated 14.7 per cent; the mean of the monthly ratios | same call | same call |
 | SF12 | the gain's first year | the test's modules were new at its start, so its gain carries their first year; 2027 is the repowered array's first full year | a later-year gain | ruled out | the report, section 2 |
 | SF13 | the new nameplate | 37,324.8 kWp | a flash-tested power | ruled out | the scope; no flash list ships |
 | SF14 | clipping | immaterial: the original array's highest hour is 91.3 per cent of rating; the repowered array reaches its rating in one cloud-edge hour of the 25 years (101.3 per cent, April 2014, 0.0006 per cent of that year) | an hourly clipping loss | same call | same call |
-| SF15 | the delivery point | the 69 kV revenue meter, the district's service point 0417, which the SCADA's PLANT-RM reads | the SCADA's read | same call for the call (agree within 0.004 per cent in every month of the base period); the asks take the district's files | Exhibit C (C.1.1: the revenue meter is the meter of record) and the README |
+| SF15 | the delivery point | the 69 kV revenue meter, the district's service point 0417, which the SCADA's PLANT-RM reads | the SCADA's read | same call for the call (agree within 0.004 per cent in every month of the base period); the asks take the district's files | Exhibit C (C.1.1: the revenue meter is the meter of record) and the service points' list |
 | SF16 | the long-term record's basis | the provider's site-adapted series | a raw satellite series | ruled out | the policy, section 4.3, and the record's header |
-| SF17 | the layouts | both: 2016 in the original, the base period in the replacement | one layout | same call | the README |
+| SF17 | the layouts | both: 2016 in the original, the base period in the replacement | one layout | same call | the two exports' own date ranges, which meet on March 3, 2020, and the crosswalk |
 | SF18 | the replaced inverter | inverter 07 continued by B2-INV3R | dropped | same call (asserted, R2b) | the crosswalk |
 | SF19 | rounding | the volume down to the nearest 1,000 from the unrounded P90; the P50 to the nearest 1,000; the standard deviation to the nearest 100 | the volume to the nearest 1,000 (71,000) | ruled out | the policy, section 4.1, and the prompt |
 | SF20 | the weather-year energy | the repowered plant's performance level times that year's plane-of-array irradiation | a temperature-adjusted level per year | same call (the record carries irradiance only) | same call |
@@ -303,7 +313,7 @@ more outside the bin (443 the nearest); the only round rates that land (1.2 to 1
 | 1 | Population | the plant's 2027 net energy at the delivery point, with the repowered array under the current O&M agreement | filed (the policy 3.1 and 4.2; the scope; Schedule 2); C1 on the layouts and the replaced inverter (SF17, SF18) |
 | 2 | Unit of account | MWh of net energy at the delivery point | filed (the policy 3.1) |
 | 3 | Attribution window | calendar 2027; the weather years 2001 to 2025 | filed (the policy 2.1 and 4.2) |
-| 4 | As-of dating | the monitoring history to September 30, 2026; the long-term record to December 31, 2025 | filed (the README and the record's header) |
+| 4 | As-of dating | the monitoring history to September 30, 2026; the long-term record to December 31, 2025 | filed (the exports' own date ranges and the record's header) |
 | 5 | Version basis | the provider's site-adapted series as last delivered; the report's issue 1 | filed (the policy 4.3; the report's header) |
 | 6 | Denominator | the 25 annual energies, the sample standard deviation | filed (the policy 4.2); C1 (SF3) |
 | 7 | Weighting | every weather year once | filed (the policy 4.2) |
@@ -317,8 +327,8 @@ more outside the bin (443 the nearest); the only round rates that land (1.2 to 1
 | 15 | Duplicate resolution | the two SCADA layouts meet on March 3, 2020 with no day in both | asserted |
 | 16 | Identity normalisation | inverter numbers to block tags at the SCADA replacement; inverter 07's new tag | C1 (asserted, R2b) |
 | 17 | Netting against gross | net export: delivered less received | filed (the policy 3.1) |
-| 18 | Dimensional units | the original SCADA in kWh, the replacement in MWh; irradiation in kWh/m2 a day, the record hourly in W/m2 | the README and the record's header |
-| 19 | Code and status semantics | operating hours; the work orders' job types | the README; never the stump |
+| 18 | Dimensional units | the original SCADA in kWh, the replacement in MWh; irradiation in kWh/m2 a day, the record hourly in W/m2 | the original layout's `_kWh` headers, the replacement's `unit` column and the record's header |
+| 19 | Code and status semantics | operating hours; the work orders' job types | the points' own names (`T_OP`, `_OpHrs`) and the work orders' descriptions; never the stump |
 | 20 | Integerisation | none | not applicable |
 | 21 | Clause scope | Schedule 2 to December 31, 2027; the scope replaces the modules only | filed |
 | 22 | Forward window contents | 2027 holds the repowered array under Schedule 2's December wash, a block a week, and the existing inverters; the scope keeps the December 2026 wash, so 2027's dust cycle is the base period's | filed (the scope; Schedule 2); asserted (AX22, AX23) |
@@ -384,7 +394,7 @@ device or path.
   a part-hour of operation and a part-covered Excluded Hour); reading under 1 or 5 kWh as none, or the district's
   restoration with 0 or 30 minutes for the inverters to reconnect, changes no figure (asserted).
 - Span: the hourly export, the met station file, the event log, the interruption report, the work orders, the O&M
-  agreement and the README (7 files); tag, interval end, AC energy, AC register, irradiance, code, raised, cleared,
+  agreement and the crosswalk (7 files); tag, interval end, AC energy, AC register, irradiance, code, raised, cleared,
   interruption and restoration, type and description (12 columns).
 - Realism: a central inverter raises one grid-fault alarm whether the grid or its own AC protection tripped it; logger
   links drop for hours while the inverter's register keeps counting; contractors exclude the utility's outages and the
@@ -397,7 +407,7 @@ volume sold forward for that year, net of any buy-backs** (10 figures, MWh; -2,9
 - Construction: each calendar year's REC less DEL at service point 0417 (the legacy file to February 29, 2020, the meter
   data system after, the latest version of each day), less that year's sales net of the 2019 and 2022 buy-backs, with
   the 2021 and 2024 amendments from the confirmations, which the policy makes the record of a trade's quantity (5.2).
-  Exhibit C makes the district's revenue meter the meter of record and the README says the district's files are its
+  Exhibit C makes the district's revenue meter the meter of record and its C.3.1 makes the district's daily totals its
   reads; the SCADA's PLANT-RM read differs by about 1 MWh a year and misses the three lost days of 2018.
 - Primary device B1 (D9, one account, two services): the account exports carry the station-service retail point 0418
   (rate GS-3) under the same channel name, DEL, to April 17, 2024. Netting the whole account takes the station service
@@ -414,7 +424,7 @@ volume sold forward for that year, net of any buy-backs** (10 figures, MWh; -2,9
   by their stamps, 5; S7 every meter data version summed, 1; S8 the meter data system's first version of each day, 1;
   golden.
 - Span: the legacy file, the meter data system's file, the service points, the metering exhibit, the blotter, the
-  confirmations and the README (7 files); service point, channel, interval end, read date, kWh, version, trade id, side,
+  confirmations and the account's service points (7 files); service point, channel, interval end, read date, kWh, version, trade id, side,
   delivery, quantity (10 columns).
 - Realism: utility account exports list every service point under the same channel names; station service at older
   plants was often a separate retail supply; desks amend hedges by confirmation and the blotter keeps the trade as
@@ -447,32 +457,40 @@ and the metering exhibit settle B1, the confirmations B2. None hands over an inv
 The cracker keeps 1 of the 26 ask figures (asserted). A solver who checks which hours all sixteen inverters lost together
 and which service point the delivery point is lands both asks.
 
-Mirror leakage: 6 per cent of the ask weight (the mirror, off the call, keeps the asks no better than the cracker, one
-figure in 26, and the chart's form; no rival keeps the standard deviation: the AC-side mirror's rounds to 2,000).
+Mirror leakage: 3.8 per cent of the ask weight (the mirror, off the call, keeps the asks no better than the cracker, one
+figure in 26; no rival keeps the volume, the P50 or the standard deviation).
 
-Pair ceiling: 32 (C = 38 + 7 + 55 x 0.04 = 47.2 with the cracker keeping 1 of 26 ask figures; S = 8 + 7 + 55 x 0.04 = 17.2
-with the best miss keeping the chart's form). If the cracker also resolves A1 and B1, C rises
-to about 100 and the pair to about 60: the devices are the margin, and the ceiling is rerun from the generated rubric.
+Pair ceiling: 28.1 (cracker 47.1: the three main figures, instruction-following and 1 of 26 ask figures; best mirror
+9.1: instruction-following and the same ask figure, none of the main three). If the cracker also resolves A1 and B1, C
+rises to about 100 and the pair to about 55: the devices are the margin, and the ceiling is rerun from the generated
+rubric.
+
+Measured by: generator/pair.py on the cut pack (cracker 47.1, best mirror 9.1 on the default path, every rung's mirror
+9.1, mirror leakage 3.8 per cent, pair 28.1).
 
 ## Leak review
 
-leak.py (as of 2026-10-06, on the final rebuild): REVIEW, 10 lines, no LEAK; sweeps 1, 5, 6, 7, 9, 10 and 11 clean.
+leak.py (as of 2026-10-06, on the 11-01 re-check's rebuild): REVIEW, 13 lines, no LEAK; sweeps 5, 6, 7, 9, 10 and 13
+clean.
+- Sweep 1, the legacy billing file as a text file: the district's own fixed-width export, rows only, no header or note.
 - Sweep 2, Exhibit C, "generator": the agreement's own name (Large Generator Interconnection Agreement), a field term
   declared in `metadata.json`.
 - Sweep 3, the legacy billing file, 534: a station-service day's 534.1 kWh (April 29, 2016) that matches 2021's
   over-under by chance; no answer figure.
 - Sweep 3, the policy, 10 of 12 words of the call: the policy is where the estimand is filed (P90, rounding, base
   period) and carries no figure.
-- Sweep 4, README (9 of 25 terms): file and field descriptions; it names no split, boundary or wash reading.
 - Sweep 4, Corvane report (5 of 25): the test's conditions and result; nothing about the plant's own decline.
 - Sweep 4, scope (6 of 25): what is replaced and what stays, a WHAT about the plant in 2027.
 - Sweep 4, O&M schedules (5 of 25): the cleaning and availability terms; Schedule 4 feeds Ask A only.
 - Sweep 8, `device` in the replacement SCADA, the event log and the hourly AC file: the systems' own column name.
+- Sweep 11, the shell quota on the second sentence's opener: a WARN of `voice-check.py`, which passes; the shipped
+  prompt is kept word for word so the rubric's asks do not move.
+- Sweep 12, the confirmations (5 columns: Date, Delivery, Product, Trade date, the counterparty): a counterparty's
+  confirmation carries those fields as its own; it describes trades, not the blotter.
 
 The final targeted re-read (on 053554f): clean on the main call, analytical, no ranking file, no answer figure, nothing
 planted. Its notes, each kept and accepted as a mild realism tell or a closed residual:
 - The scope's clipping sentence and its restatement of the December wash: kept, both WHATs about the plant in 2027.
-- The README's orienting lines: kept, Layer 1 help that names no part of the decisive step.
 - The O&M's explicit part-hour language: kept, it closes Ask A's Schedule 4 readings (S10, S11).
 - The Corvane setup's conditions: kept as the test's standard conditions; the analyst needs them (an unexposed table A,
   the new modules' first year inside the twelve months).
@@ -501,6 +519,16 @@ planted. Its notes, each kept and accepted as a mild realism tell or a closed re
   and the rule 3 audit's notes; judge round 2 DETERMINISTIC, FIX_NOW on the solution (`determinism_check_report.md`),
   every main and ask figure reproduced, its finding fixed by taking the rival figures out of the graded blocks; the leak
   reader clean in round 1; the targeted re-read of the round 2 documents clean.
+- **Re-check of 2026-11-01 under the new gates.** The rebuild reproduced the shipped target.zip byte for byte
+  (c893250a) before any edit. leak.py was LEAK (README.md, sweeps 1 and 12) and REVIEW on sweep 13 (the title and
+  subdomain narrated the split); precut FAILED on the missing `Measured by:` line and warned on the survivor anatomy.
+  The README left the pack (22 files, six formats with the desk's forward marks as the JSON curve pull), C.3.1 carries the legacy day-end stamp, metadata names the
+  decision only, `## Survivor anatomy` and `generator/pair.py` are written. On the final rebuild: checks 206 of 206,
+  verify green, two builds byte-identical, figures_check 59 of 59, freeze.py determinism PASS, precut 61 checks 0 FAIL
+  0 WARN, voice-check PASS, leak.py REVIEW, heart WARN after three differentiation lines (task141 v3, task269 v1,
+  task484 v3, older signatures the re-check did not cause; task154 also differentiated), surface: no text or file clone, three pairs promoted on card mechanism axes (task232 and task484 on the same-driver signature, task154 two apart on gap and decision type), each differentiated on the card, as task232 was at ship. Stage 4: leak reader Q1 to Q4 none, Q6
+  analytical, one C.3.1 finding fixed and re-read clean; judge pass 3 DETERMINISTIC, APPROVE, Gate H analytical
+  (`determinism_check_report_pass3.md`).
 - **Personas in the pack.** Kristopher Lara, Selena Sloan, Caroline Barnett, John Davila, Laurie Howell, Felicia
   Powers, Ruben Yang, Howard Stout and Sonia Whitehead (drawn with `guard.py names`), all on the card.
 
@@ -517,7 +545,7 @@ planted. Its notes, each kept and accepted as a mild realism tell or a closed re
   cool-season months and Schedule 2's December wash a block a week from 2021, the wear's fast phase (3.85 per cent a
   year, mid-2017 to mid-2020), the site's seasonal wind (calm December, windy March to June), the spring dust from
   February, the year-to-year spread of clear-sky transmittance (1.33 per cent) and the scope's December 2026 wash.
-- Pack: 23 files in six formats (csv, txt, xlsx, pdf, docx, md); the largest 219,144 rows; distractors Tresco's
+- Pack: 22 files in six formats (csv, json, txt, xlsx, pdf, docx); the largest 219,144 rows; distractors Tresco's
   repowering summary and the Palo Verde forward marks, named in `metadata.json`.
 - Gates at ship: checks 205/205; verify green; two builds byte-identical, target.zip sha256 c893250a; the rest under
   `## Pre-ship check`.
@@ -618,3 +646,16 @@ planted. Its notes, each kept and accepted as a mild realism tell or a closed re
   the confirmation, as amended, the record of a trade's quantity (the blotter as booked is S3).
 - Round 2 stamped each Office file's zip entries with its last save on the re-read's note; reverted at ship to the
   1980 stamp Word and Excel themselves write, which the house audit accepts, with core.xml's dates kept.
+- The README (11-01 re-check, leak.py sweeps 1 and 12: a readme naming 16 of the files' columns): left the pack. What
+  it carried is filed where the systems file it: the channels, service point 0417 and the meter of record in Exhibit
+  C.1, the district's daily totals as its reads and each day's total recorded against the end of that day in C.3.1
+  (the one line it alone carried), the module temperature's sensor in the crosswalk, the units and zones in the files'
+  own headers, the capacities in the scope. metadata.json's title and subdomain narrated the split; both now name the
+  decision only.
+- C.3.1's first wording at the 11-01 re-check ("a daily total ... is recorded against the end of that day"): the
+  leak reader read it as covering the meter data system too, which would shift every 2020 to 2025 day by one; narrowed
+  to the legacy billing system (0000 of the next date) and the meter data system (the day itself), re-read clean.
+- The pack in five formats after the README left (11-01 re-check): its format set and flat layout became task132's and
+  task120's exactly and `guard.py surface` promoted both at the corpus top 1 per cent with no shared text or file; the
+  desk's Palo Verde forward marks (a distractor nothing in the solution reads) now ship as the JSON its market data pull
+  returns, and neither pair is promoted. Rewording the prompt's second-sentence opener moved nothing and was reverted.

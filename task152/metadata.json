@@ -1,11 +1,11 @@
 {
   "task": "task152",
-  "title": "How much of a solar plant's 2027 output to sell forward at its one-year P90 once its worn modules are replaced, when only the modules' own wear leaves with them",
+  "title": "How much of a solar plant's 2027 output to sell forward at its one-year P90 with its new modules in from December",
   "domain": "Energy Systems & Utilities",
   "client_domain": "Energy Systems & Utilities",
-  "subdomain": "asset-condition-maintenance (a repowered plant's forward energy: the original modules' wear read apart from the dust carried between washes and the inverters' losses, on the days after each wash at the inverters' DC input, then the long-term record's one-year P90)",
+  "subdomain": "asset-condition-maintenance (a repowered plant's forward energy for the coming calendar year)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a single committed volume with the P50 and standard deviation it rests on, a one-page note with a chart of the 25 weather-year outputs marking the P50 and the volume, and two tables (each inverter's 2025 availability under the O&M agreement; each year's over or under of net energy at the delivery point against the volume sold forward, 2016 to 2025)",
+  "prompt_shape": "a single committed volume with the P50 and standard deviation it rests on, a one-page note with a chart of the output in each weather year of the long-term record marking the P50 and the volume, and two tables (each inverter's 2025 availability under the O&M agreement; each year's over or under of net energy at the delivery point against the volume sold forward, 2016 to 2025)",
   "as_of": "2026-10-06",
   "deliverables": [
     "hedge_volume_2027.xlsx",
@@ -13,18 +13,18 @@
   ],
   "distractor_files": [
     "tresco_repowering_program_2019-2026.pdf",
-    "palo_verde_forwards_cal2027_2026-10-05.csv"
+    "palo_verde_forwards_cal2027_2026-10-05.json"
   ],
   "field_terms": [
     "generator"
   ],
   "stated_inputs": [],
   "input_gates": {
-    "files": 23,
+    "files": 22,
     "formats": [
       "csv",
       "docx",
-      "md",
+      "json",
       "pdf",
       "txt",
       "xlsx"
@@ -43,15 +43,6 @@
   "created": "2026-10-16",
   "generator": "task152/generator/build.py",
   "files": [
-    {
-      "path": "README.md",
-      "format": "md",
-      "bytes": 5729,
-      "rows": null,
-      "source": "Constructed: Marden-Vail Building Products, README for the data pull",
-      "date": "2026-10-06",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
     {
       "path": "clearfield_hadley_ranch_poa_hourly_2001-2025.csv",
       "format": "csv",
@@ -143,9 +134,9 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "palo_verde_forwards_cal2027_2026-10-05.csv",
-      "format": "csv",
-      "bytes": 523,
+      "path": "palo_verde_forwards_cal2027_2026-10-05.json",
+      "format": "json",
+      "bytes": 1943,
       "rows": 12,
       "source": "Constructed: Marden-Vail Building Products, desk forward marks for Palo Verde, calendar 2027",
       "date": "2026-10-06",
@@ -235,7 +226,7 @@
     {
       "path": "vsipd_lgia_hadley_ranch_exhibit_c_metering.pdf",
       "format": "pdf",
-      "bytes": 44737,
+      "bytes": 44883,
       "rows": null,
       "source": "Constructed: Vado Seco Irrigation and Power District, interconnection agreement exhibit C (metering)",
       "date": "2026-10-06",

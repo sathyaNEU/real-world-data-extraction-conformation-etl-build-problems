@@ -65,7 +65,7 @@ def build_data(out, W):
         fh.write(",".join(R.LT_COLS) + "\n")
         fh.write("\n".join(",".join(r) for r in lt) + "\n")
     counts[R.F_LT] = len(lt)
-    counts[R.F_CURVE] = K.write_csv(p(R.F_CURVE), R.CURVE_COLS, R.curve_rows())
+    counts[R.F_CURVE] = R.write_curve(p(R.F_CURVE))
     return counts
 
 

@@ -5,20 +5,25 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-11-01",
  "stump": "Carrying the plant's last twelve months' performance ratio onto the new modules with the side-by-side gain files 60,000 MWh against the golden 70,000; restoring the plant's whole decline since 2016 (76,000), its whole DC-side decline (73,000) or its decline after washes read at the inverters' AC output (72,000) overshoots; the step that lands each there is reading the decline as one quantity, when only the original modules' own wear, read on the days after each block's wash at the inverters' DC input and corrected for temperature, leaves with them, while the inverters' losses and the dust carried between washes, which grew as washes fell from six a year to one, stay.",
  "architecture": 1,
  "loops": 2,
  "precut": {
   "exit": 0,
-  "date": "2026-10-17"
+  "date": "2026-11-01",
+  "checks": "61 checks, 0 FAIL, 0 WARN (survivor anatomy written; Measured by generator/pair.py)"
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-17, final rebuild, --asof 2026-10-06; every REVIEW line answered in the design note's Leak review)",
-  "reader": "round 1 clean; the targeted re-read of the round 2 documents (053554f) clean on the main call, its realism notes accepted and its residual forks asserted (the true-up blend, SF21, R2d)"
+  "leak_py": "REVIEW, no LEAK (2026-11-01, final rebuild, --asof 2026-10-06; README.md left the pack; every REVIEW line answered in the design note's Leak review)",
+  "reader": "2026-11-01 re-check: Q1 to Q4 none, Q6 analytical; one finding (C.3.1's first wording read literally shifted the meter data system's days), fixed; targeted re-read of C.3.1",
+  "earlier": {
+   "leak_py": "REVIEW, no LEAK (2026-10-17, final rebuild, --asof 2026-10-06; every REVIEW line answered in the design note's Leak review)",
+   "reader": "round 1 clean; the targeted re-read of the round 2 documents (053554f) clean on the main call, its realism notes accepted and its residual forks asserted (the true-up blend, SF21, R2d)"
+  }
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.objective); nearest 0.06, task132's ledger row",
+  "heart": "2026-11-01: BLOCK test.same_puzzle_older (task141 v3) and test.same_driver_older (task269 v1, task484 v3), older-build signatures not caused by the re-check, cleared with three differentiation lines (and task154's) on the card; now WARN overuse.objective",
   "nearest": "driver 0.04 (task459, task230 v3, task132); guard check WARN overuse.objective (forum redrawn to executive_team at stage 3 after a ban.forum BLOCK against task233's first card; context artifact redrawn to operations_log after a ban.artifact BLOCK against task189, pulled at the PAUSED push); surface: one pair promoted on the card signature already differentiated (task232, surface 0.083, percentile 68), no surface clone"
  },
  "judge": {
@@ -27,7 +32,14 @@
   "report": "determinism_check_report.md",
   "earlier": "round 1 DETERMINISTIC, APPROVE (determinism_check_report_round1.md); its and the rule 3 audit's notes hardened in one world pass"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (re-check under the new gates)",
+   "repair": "leak and precut gates: README.md out of the pack, its readings filed in Exhibit C.3.1, the crosswalk and the files' own headers; metadata.json title and subdomain name the decision only; survivor anatomy and generator/pair.py; the desk's forward marks as the JSON curve pull (surface: the five-format set matched task132's and task120's)",
+   "commit": ""
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-17",
@@ -64,5 +76,25 @@
   "ask_a": "16 availabilities re-drawn, 96.70 to 99.82",
   "ask_b": "10 over/unders re-drawn, -2,923 to +10,084"
  },
- "round2_fixes": "rival figures out of the graded blocks; O&M 2.3 drought clause dropped (well permit kept); Exhibit C C.1.1 states the meter of record; wash work orders as varied CMMS entries (own stream); office zip entries stamped with each document's last save; Corvane method as standard test conditions; policy 5.2 makes the amended confirmation the trade's record; Schedule 4.2 and 4.3 rewritten (zero AC energy, part hours, A = 100 x (1 - U / (P - X))); no graded figure moved (freeze.py: only the three rival numbers left block 1; figures.json identical)"
+ "round2_fixes": "rival figures out of the graded blocks; O&M 2.3 drought clause dropped (well permit kept); Exhibit C C.1.1 states the meter of record; wash work orders as varied CMMS entries (own stream); office zip entries stamped with each document's last save; Corvane method as standard test conditions; policy 5.2 makes the amended confirmation the trade's record; Schedule 4.2 and 4.3 rewritten (zero AC energy, part hours, A = 100 x (1 - U / (P - X))); no graded figure moved (freeze.py: only the three rival numbers left block 1; figures.json identical)",
+ "judge_recheck": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "determinism_check_report_pass3.md",
+  "notes": "thin upper margin clean (P50, SD and volume hold for a repowered ratio 0.8410 to 0.8523, estimate 0.8478); the as-new reference from the side-by-side table A defeated by the plant's own as-new level; no fix"
+ },
+ "gates_recheck": {
+  "rebuild_before_repair": "byte-identical to the shipped target.zip (c893250a); matplotlib 3.11.2 installed to rebuild the golden note",
+  "checks": "206 of 206",
+  "verify": "green",
+  "rebuild": "two builds byte-identical",
+  "target_zip_sha256": "3d72e7e2604202241c1a7ef85311e6a48c2c63fd4b899386d6ca7ff34cb6ea29",
+  "figures_check": "59 of 59",
+  "freeze": "determinism mode PASS (main call, stump and every frozen figure unchanged)",
+  "voice_check": "PASS (WARN shell quota on the second sentence's opener, prompt kept)",
+  "input_gates": "22 files, 6 formats (csv, json, txt, xlsx, pdf, docx), largest 219,144 rows, 2 distractors",
+  "surface": "2026-11-01 after the final pull: no text or file clone; three pairs promoted on card mechanism axes (task232, task484 same-driver signature; task154 two apart), each differentiated on the card"
+ },
+ "gates_stage3_note": "gates_stage3 is the 10-17 ship record"
 }
