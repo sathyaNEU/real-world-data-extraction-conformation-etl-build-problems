@@ -3,7 +3,7 @@ outcome sits mid-bin; writes the effects back into common.py. Never shipped."""
 import re, importlib
 import common, world, truth
 
-TARGET = {40117: 15.12, 40152: 15.93, 40188: 12.88, 41206: 15.14, 41231: 17.10, 41274: 13.92, 41309: 13.06,
+TARGET = {40117: 15.10, 40152: 15.93, 40188: 12.88, 41206: 15.14, 41231: 17.10, 41274: 13.92, 41309: 13.06,
           41355: 15.18, 41388: 13.95, 41402: 12.94}
 
 
