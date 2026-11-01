@@ -214,11 +214,17 @@ ENPS_EN = "How likely are you to recommend Brackenmere Markets as a place to wor
 ENPS_FR = "Quelle est la probabilité que vous recommandiez Marchés Brackenmere comme employeur? (0 pas du tout " \
           "probable, 10 extrêmement probable)"
 
+# Store departments: the July 2026 codes (STORE_DEPTS in world.py) and the codes People Services gave them on 1 October
+# 2026 for the new store labour model, in its order (front end first, receiving last). Distribution centre and head
+# office departments kept their July codes.
+RENUMBER_DAY = dt.date(2026, 10, 1)
+HR_EXTRACT_RUN = "2026-10-16 05:40"
+OCTOBER_CODE = {"FRT": 110, "MTS": 120, "PRD": 130, "BAK": 140, "DEL": 150, "GRO": 160, "MGT": 170, "RCV": 190}
+
 # Pack file names
 RESPONSES = "kestrava_brackenmere_2026_responses.csv"
 SUBMISSIONS = "kestrava_brackenmere_2026_submissions.csv"
-CODEBOOK = "kestrava_brackenmere_2026_codebook.xlsx"
-EXPORT_NOTES = "kestrava_export_notes_2026.pdf"
+QUESTIONNAIRE = "engagement_survey_2026_questionnaire.pdf"
 INVITATIONS = "kestrava_brackenmere_2026_distribution_list.csv"
 KIOSK = "kiosk_sessions_2026-09.jsonl"
 PAPER = "paper_returns_engagement_2026.xlsx"

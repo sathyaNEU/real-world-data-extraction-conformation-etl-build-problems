@@ -16,20 +16,20 @@ On the tetrachoric and polychoric correlations of the 30 items among the 13,717 
 
 ## 3. Step-by-Step Solution
 
-1. Took the last submission under each token of kestrava_brackenmere_2026_responses.csv, dropped the test tokens (status test in kestrava_brackenmere_2026_submissions.csv), mapped the French item codes to the items through kestrava_brackenmere_2026_codebook.xlsx, and tied each token to an employee through kestrava_brackenmere_2026_distribution_list.csv or, for a kiosk session, the employee number in kiosk_sessions_2026-09.jsonl.
+1. Took the last submission of each personal link in kestrava_brackenmere_2026_responses.csv (the repeated-link rule of survey_reporting_standard_2025.pdf), dropped Kestrava's test tokens (status test in kestrava_brackenmere_2026_submissions.csv), mapped the French item codes to the items through the French numbers in engagement_survey_2026_questionnaire.pdf, and tied each token to an employee through kestrava_brackenmere_2026_distribution_list.csv or, for a kiosk session, the employee number in kiosk_sessions_2026-09.jsonl.
 2. Kept the answers given before the close at the employee's site (the respondent definition in survey_reporting_standard_2025.pdf; the site held on 14 September in hris_assignment_history_2026.csv and its time zone in site_directory_2026-10.csv), a printed form counting by its envelope's sealed date in paper_returns_engagement_2026.xlsx: 13,717 respondents.
 3. Coded the five-point answers 0 to 4 with the four negatively worded statements reversed, yes 1 and no 0, does-not-apply missing, and estimated the latent correlation of every pair of items (tetrachoric for two yes or no questions, polychoric otherwise; two-step maximum likelihood, pairwise).
 4. Compared the eigenvalues (9.75, 6.01, 2.21, 0.78) with the 95th percentile of the eigenvalues of random normal data of the same size (1.07 at the fourth): three dimensions, as eigenvalues above one and Velicer's MAP also give.
 5. Fitted three factors (principal-axis factoring, promax rotation) and placed each item under its largest loading: the workload statements with the tools questions, the manager statements with the growth questions, and the belonging and recognition items together; minres or maximum-likelihood extraction with varimax, oblimin or geomin rotation gives the same placements.
 6. The same test on Pearson correlations of the answers keeps five (fourth and fifth eigenvalues 1.49 and 1.34 against 1.07 and 1.06), splitting off the tools questions (93.7 to 95.0 per cent yes) and the growth questions (4.5 to 6.7 per cent yes), whose correlations are capped by their splits.
-7. Counted, by the district of each employee's 14 September store, the respondents and those whose answers before the close cover all 30 items, an employee's kiosk sessions taken together and a does-not-apply answer counting as an answer: 12,245 and 10,055 across the 12 store districts.
+7. Placed each store employee under the store and department of the row in force on 14 September in hris_assignment_history_2026.csv, reading each September department code through the 1 October reorganisation rows (every employee holding a code on 30 September passes to one new code, which the report names as it now stands) and not through the report's department names, which are those of its 16 October run; then counted, under the standard's reporting, showing and response-rate rules, the respondents, their share of the employees assigned on 14 September and the stores where a department has 10 or more respondents: 12,245 store respondents.
 8. Report three sub-scales: Resources, Manager and growth, and Connection.
 
 ## 4. Deliverable Answers
 
 ### engagement_subscales_2027.xlsx
 
-1. Each item's sub-scale, 30 items:
+1. Each item's sub-scale, 30 items (the grouping is the answer; the sub-scale names are labels):
    - Q01 My manager treats me with respect: Manager and growth
    - Q02 My workload is manageable on a normal shift: Resources
    - Q03 I feel part of a team at work: Connection
@@ -60,19 +60,15 @@ On the tetrachoric and polychoric correlations of the 30 items among the 13,717 
    - Q28 In the past four weeks, has your manager talked with you one to one about how you are doing: Manager and growth
    - Q29 Do you know who to call when equipment in your department breaks down: Resources
    - Q30 Have you been invited to apply to the Brackenmere Leaders programme: Manager and growth
-2. For each of the 12 store districts, employees who answered at least one item before the survey closed and how many of them answered all 30:
-   - Ottawa-Gatineau: 1,130 answered at least one item before the survey closed; 921 of them answered all 30
-   - Eastern Ontario: 568 answered at least one item before the survey closed; 464 of them answered all 30
-   - Kingston and Quinte: 635 answered at least one item before the survey closed; 526 of them answered all 30
-   - Durham and Kawartha: 903 answered at least one item before the survey closed; 731 of them answered all 30
-   - Toronto East: 1,597 answered at least one item before the survey closed; 1,311 of them answered all 30
-   - Toronto West: 1,474 answered at least one item before the survey closed; 1,225 of them answered all 30
-   - Hamilton and Niagara: 1,061 answered at least one item before the survey closed; 867 of them answered all 30
-   - Northern Ontario: 829 answered at least one item before the survey closed; 685 of them answered all 30
-   - Montréal: 1,558 answered at least one item before the survey closed; 1,264 of them answered all 30
-   - Laval and Laurentides: 895 answered at least one item before the survey closed; 744 of them answered all 30
-   - Montérégie and Estrie: 1,005 answered at least one item before the survey closed; 830 of them answered all 30
-   - New Brunswick: 590 answered at least one item before the survey closed; 487 of them answered all 30
+2. Each store department's respondents, the stores where its results can be shown and its response rate:
+   - Grocery: 3,301 answered at least one item before the survey closed; results shown in 134 stores; 63.8 per cent of its employees on 14 September answered
+   - Produce: 1,334 answered at least one item before the survey closed; results shown in 67 stores; 63.4 per cent of its employees on 14 September answered
+   - Meat and Seafood: 1,070 answered at least one item before the survey closed; results shown in 46 stores; 61.9 per cent of its employees on 14 September answered
+   - Deli: 902 answered at least one item before the survey closed; results shown in 24 stores; 61.8 per cent of its employees on 14 September answered
+   - Bakery: 862 answered at least one item before the survey closed; results shown in 21 stores; 63.5 per cent of its employees on 14 September answered
+   - Front End: 3,262 answered at least one item before the survey closed; results shown in 137 stores; 63.4 per cent of its employees on 14 September answered
+   - Receiving: 623 answered at least one item before the survey closed; results shown in 2 stores; 63.6 per cent of its employees on 14 September answered
+   - Store Management: 891 answered at least one item before the survey closed; results shown in 24 stores; 74.4 per cent of its employees on 14 September answered
 
 ### engagement_dimensions_2026.png
 

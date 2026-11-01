@@ -1,35 +1,46 @@
 {
- "ask_a": {
-  "DKA": 903,
-  "EON": 568,
-  "HNI": 1061,
-  "KQU": 635,
-  "LLA": 895,
-  "MES": 1005,
-  "MTL": 1558,
-  "NBR": 590,
-  "NON": 829,
-  "OTG": 1130,
-  "TOE": 1597,
-  "TOW": 1474
- },
- "ask_a_total": 12245,
- "ask_b": {
-  "DKA": 731,
-  "EON": 464,
-  "HNI": 867,
-  "KQU": 526,
-  "LLA": 744,
-  "MES": 830,
-  "MTL": 1264,
-  "NBR": 487,
-  "NON": 685,
-  "OTG": 921,
-  "TOE": 1311,
-  "TOW": 1225
- },
- "ask_b_total": 10055,
  "call_subscales": 3,
+ "dept_headcount": {
+  "Bakery": 1358,
+  "Deli": 1459,
+  "Front End": 5148,
+  "Grocery": 5177,
+  "Meat and Seafood": 1729,
+  "Produce": 2105,
+  "Receiving": 980,
+  "Store Management": 1197
+ },
+ "dept_rate": {
+  "Bakery": 63.5,
+  "Deli": 61.8,
+  "Front End": 63.4,
+  "Grocery": 63.8,
+  "Meat and Seafood": 61.9,
+  "Produce": 63.4,
+  "Receiving": 63.6,
+  "Store Management": 74.4
+ },
+ "dept_respondents": {
+  "Bakery": 862,
+  "Deli": 902,
+  "Front End": 3262,
+  "Grocery": 3301,
+  "Meat and Seafood": 1070,
+  "Produce": 1334,
+  "Receiving": 623,
+  "Store Management": 891
+ },
+ "dept_respondents_total": 12245,
+ "dept_stores_shown": {
+  "Bakery": 21,
+  "Deli": 24,
+  "Front End": 137,
+  "Grocery": 134,
+  "Meat and Seafood": 46,
+  "Produce": 67,
+  "Receiving": 2,
+  "Store Management": 24
+ },
  "latent_eigen": [
   9.75,
   6.01,

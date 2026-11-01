@@ -1,5 +1,5 @@
-"""The pack's record files: Kestrava's long export, submissions and distribution list, the codebook, the kiosk app's
-session log, Kestrava's paper returns log, the HR assignment history, the site directory, the pulse survey's site
+"""The pack's record files: Kestrava's long export, submissions and distribution list, the kiosk app's session log,
+Kestrava's paper returns log, People Services' assignment history report, the site directory, the pulse survey's site
 results and Kestrava's retail benchmark."""
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import json
 
 import numpy as np
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Font, PatternFill
 
 import common as K
 
@@ -96,7 +96,8 @@ def write_paper(path, S):
     ws["A1"] = "Kestrava Listening, data entry"
     ws["A1"].font = Font(name="Calibri", bold=True, size=12)
     ws["A2"] = "Brackenmere Markets, Engagement Survey 2026 (BRK-ENG-2026): printed forms returned by stores"
-    ws["A3"] = "Prepared 9 October 2026. Forms are keyed under the token printed on each form."
+    ws["A3"] = ("Prepared 9 October 2026. Forms are keyed under the token printed on each form, and the export "
+                "records a form's answers at the time it is keyed.")
     head = ["Envelope", "Site", "Store", "Sealed", "Received", "Keyed", "Forms received", "Forms keyed",
             "Blank or spoiled"]
     ws.append([])
@@ -122,12 +123,13 @@ def write_paper(path, S):
 
 
 def write_hris(path, S):
-    rows = []
-    for p in S["people"]:
-        for h in p["history"]:
-            rows.append((_emp(p["emp"]), h["site"], h["dept"], h["dept_name"], h["start"], h["end"], h["action"]))
-    rows.sort(key=lambda r: (r[0], r[4], r[6] == "termination"))
+    """People Services' assignment history report as run on 16 October 2026 (world.hr_extract)."""
+    import world as W
+    rows, _ = W.hr_extract(S)
     with open(path, "w", newline="", encoding="utf-8") as fh:
+        fh.write("# Brackenmere Markets | People Services | PS-REPORTS ASGN_HIST, assignment history\n")
+        fh.write("# Run %s | rows in force on or after 2026-07-06 | department descriptions as of run date\n"
+                 % K.HR_EXTRACT_RUN)
         w = csv.writer(fh, lineterminator="\n")
         w.writerow(["employee_id", "site_no", "department_code", "department", "effective_from", "effective_to",
                     "action"])
@@ -145,57 +147,6 @@ def write_sites(path, S):
             w.writerow([s["site_no"], s["legacy_no"], s["name"], s["type"], s["format"], s["city"], s["province"],
                         s["tz"], s["district"], s["district_name"], s["opened"].isoformat()])
     return len(S["sites"])
-
-
-def write_codebook(path, S):
-    items = S["items"]
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Survey"
-    meta = [("Survey", "BRK-ENG-2026, Engagement Survey 2026"), ("Client", K.CHAIN),
-            ("Languages", "English (EN), French (FR)"), ("Opens", "14 September 2026"),
-            ("Closes", "27 September 2026, 23:59 local time"), ("Channels", "personal link, store kiosk, printed form"),
-            ("Account manager", K.PEOPLE["vendor"]), ("Codebook version", "2026.3, 2 September 2026")]
-    for k, v in meta:
-        ws.append([k, v])
-        ws.cell(row=ws.max_row, column=1).font = HDR_FONT
-    ws.column_dimensions["A"].width = 20
-    ws.column_dimensions["B"].width = 62
-    wi = wb.create_sheet("Items")
-    wi.append(["Item", "French code", "Kestrava library item", "Question (English)", "Question (French)", "Scale",
-               "Reversed"])
-    for c in wi[1]:
-        c.font = HDR_FONT
-        c.fill = HDR_FILL
-    for key in K.EN_ORDER:
-        it = next(x for x in items if x["key"] == key)
-        wi.append([it["en_code"], it["fr_code"], it["library"], it["en"], it["fr"],
-                   "agree5" if it["kind"] == "a5" else "yesno", "yes" if it["rev"] else "no"])
-    wi.append(["ENPS", "ENPS", "KL-0001", K.ENPS_EN, K.ENPS_FR, "nps11", "no"])
-    for col, w in zip("ABCDEFG", (7, 12, 20, 70, 74, 9, 9)):
-        wi.column_dimensions[col].width = w
-    for row in wi.iter_rows(min_row=2):
-        for c in row[3:5]:
-            c.alignment = Alignment(wrap_text=True, vertical="top")
-    wc = wb.create_sheet("Response codes")
-    wc.append(["Scale", "Code", "Label (English)", "Label (French)"])
-    for c in wc[1]:
-        c.font = HDR_FONT
-        c.fill = HDR_FILL
-    for code, en, fr in [(1, "Strongly disagree", "Fortement en désaccord"), (2, "Disagree", "En désaccord"),
-                         (3, "Neither agree nor disagree", "Ni en accord ni en désaccord"), (4, "Agree", "En accord"),
-                         (5, "Strongly agree", "Fortement en accord"), (6, "Does not apply to me",
-                                                                        "Ne s'applique pas à moi")]:
-        wc.append(["agree5", code, en, fr])
-    for code, en, fr in [(1, "Yes", "Oui"), (2, "No", "Non"), (6, "Does not apply to me", "Ne s'applique pas à moi")]:
-        wc.append(["yesno", code, en, fr])
-    wc.append(["nps11", "0-10", "0 not at all likely to 10 extremely likely", "0 pas du tout probable à 10 "
-                                                                               "extrêmement probable"])
-    wc.append([])
-    wc.append(["An item left blank has no row in the answers export."])
-    for col, w in zip("ABCD", (9, 7, 40, 40)):
-        wc.column_dimensions[col].width = w
-    wb.save(path)
 
 
 def write_pulse(path, S):

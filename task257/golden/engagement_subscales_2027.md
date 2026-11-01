@@ -23,22 +23,18 @@ The eigenvalues of those correlations are 9.75, 6.01 and 2.21, then 0.78, 0.76 a
 
 Run on the answers as scores (Pearson correlations), the same test keeps five dimensions: the eigenvalues are 5.59, 3.93, 2.15, 1.49 and 1.34, the fourth and fifth above random data's 1.07 and 1.06. The two extra dimensions are the tools questions and the growth questions on their own, split from the workload and manager statements they move with. They are the lopsided splits, not separate views: on the latent correlations the tools questions load with workload and the growth questions with the manager statements, and nothing is left over for a fourth or fifth dimension. Five sub-scales would have managers write action plans for two scores that mostly record where the yes line sits.
 
-## Coverage by store district
+## Coverage by store department
 
-| District | Answered at least one item before the close | Of them, answered all 30 |
-|---|---:|---:|
-| Ottawa-Gatineau | 1,130 | 921 |
-| Eastern Ontario | 568 | 464 |
-| Kingston and Quinte | 635 | 526 |
-| Durham and Kawartha | 903 | 731 |
-| Toronto East | 1,597 | 1,311 |
-| Toronto West | 1,474 | 1,225 |
-| Hamilton and Niagara | 1,061 | 867 |
-| Northern Ontario | 829 | 685 |
-| Montréal | 1,558 | 1,264 |
-| Laval and Laurentides | 895 | 744 |
-| Montérégie and Estrie | 1,005 | 830 |
-| New Brunswick | 590 | 487 |
-| All store districts | 12,245 | 10,055 |
+| Store department | Answered at least one item before the close | Employees on 14 September | Response rate (%) | Stores where results can be shown |
+|---|---:|---:|---:|---:|
+| Grocery | 3,301 | 5,177 | 63.8 | 134 |
+| Produce | 1,334 | 2,105 | 63.4 | 67 |
+| Meat and Seafood | 1,070 | 1,729 | 61.9 | 46 |
+| Deli | 902 | 1,459 | 61.8 | 24 |
+| Bakery | 862 | 1,358 | 63.5 | 21 |
+| Front End | 3,262 | 5,148 | 63.4 | 137 |
+| Receiving | 623 | 980 | 63.6 | 2 |
+| Store Management | 891 | 1,197 | 74.4 | 24 |
+| All store departments | 12,245 | 19,153 | 63.9 | 455 |
 
-Employees are counted once, under the district of the store they were assigned to in HR on 14 September. Printed forms count by the date their store sealed the envelope (every envelope was sealed by 27 September), not the date Kestrava keyed them; an employee's kiosk sessions are taken together; a does-not-apply answer counts as an answer. Answers given after a site's 23:59 close but before Kestrava's links stopped at 06:00 UTC on 28 September are left out under section 3.1 of the reporting standard. Distribution centres and head office are outside the 12 districts.
+Each employee is counted once, under the store and department they held in HR on 14 September (reporting standard 3.4), and a department's results show in a store when its team there has 10 or more respondents (4.1), so the stores column totals to the department teams that will see results. HR's assignment report names each row's department code by the department table on its run date, 16 October, and store departments took new numbers on 1 October, so the codes in force on 14 September were read through the 1 October reorganisation rows: every employee holding a given September code passed to the same new code. Read off the report's names, Grocery and Front End, Produce and Meat and Seafood, Deli and Bakery, and Receiving and Store Management would trade places. Printed forms count by the date their store sealed the envelope, not the date Kestrava keyed them, and an employee's kiosk sessions are taken together.

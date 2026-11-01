@@ -1,7 +1,7 @@
 """task257's generator checks: the input gates, the bundle against the generator's clean truth, the three rules
 executed (R1 to R3c), every semantic fork row (SF1 to SF16), the ladder (counts, margins, placements under every
-extraction and rotation), both asks' devices, stops and cracker sheet, the separation line, the goldens against
-figures.json, and the realism sweep."""
+extraction and rotation), the department ask's device, stops and cracker sheet, the separation line, the goldens
+against figures.json, and the realism sweep."""
 from __future__ import annotations
 
 import itertools
@@ -104,7 +104,7 @@ def run(target, golden, st, meta_path):
                 shutil.copy(os.path.join(target, f), os.path.join(tmp, f))
         G._REF.clear()
         f2 = G.compute(tmp)["figures"]
-        ck("gate: every distractor deleted, the golden and both asks unchanged", f2 == fig)
+        ck("gate: every distractor deleted, the golden and the department ask unchanged", f2 == fig)
     finally:
         shutil.rmtree(tmp)
 
@@ -119,15 +119,26 @@ def run(target, golden, st, meta_path):
     Xg = pd.DataFrame(Xt, index=emp_t).sort_index()
     ck("truth: every respondent's answers read from the bundle equal the generator's", np.array_equal(
         np.nan_to_num(Xb.to_numpy(), nan=-9), np.nan_to_num(Xg.to_numpy(), nan=-9)))
-    A_t = {d: 0 for d, _, _ in K.DISTRICTS}
-    B_t = {d: 0 for d, _, _ in K.DISTRICTS}
-    for d, c in zip(dist_t, comp_t):
-        if d in A_t:
-            A_t[d] += 1
-            B_t[d] += int(c)
-    ck("truth: Ask A from the bundle equals the generator's respondents by opening-day district", res["A"] == A_t,
-       (res["A"], A_t))
-    ck("truth: Ask B from the bundle equals the generator's complete respondents", res["B"] == B_t, (res["B"], B_t))
+    import world as W
+    _, hr_truth = W.hr_extract(S)
+    by_no = {s["site_no"]: s for s in S["sites"]}
+    resp_t = set(emp_t)
+    D_t = {d: [0, 0] for d in G.STORE_DEPARTMENTS}
+    team_t = {}
+    for e, (s, d) in hr_truth.items():
+        if by_no[s]["type"] != "store":
+            continue
+        D_t[d][1] += 1
+        if e in resp_t:
+            D_t[d][0] += 1
+            team_t[(s, d)] = team_t.get((s, d), 0) + 1
+    DF = res["DF"]
+    ck("truth: the department respondents read from the bundle equal the generator's",
+       all(DF["resp"][d] == D_t[d][0] for d in D_t), (DF["resp"], D_t))
+    ck("truth: the department headcounts on the opening day read from the bundle equal the generator's",
+       all(DF["head"][d] == D_t[d][1] for d in D_t), (DF["head"], D_t))
+    ck("truth: the stores showing each department equal the generator's", all(
+        DF["shown"][d] == sum(1 for (s, dd), n in team_t.items() if dd == d and n >= 10) for d in D_t))
 
     # ---------------------------------------------------------------- the call and its ladder on the bundle
     lat, pea = res["lat"], res["pea"]
@@ -186,8 +197,10 @@ def run(target, golden, st, meta_path):
     same_call(Xv, Kv, "SF5 R2: does-not-apply scored as an extra category, the same call")
     Xr = X.copy()
     items_cb = T["items"].set_index("Item")
+    ck("SF6: the negatively worded statements read from the answers are the questionnaire's four",
+       T["neg"] == {it["en_code"] for it in S["items"] if it["rev"]}, sorted(T["neg"]))
     for j, c in enumerate(order):
-        if items_cb.loc[c, "Reversed"] == "yes":
+        if c in T["neg"]:
             Xr[:, j] = 4 - Xr[:, j]
     same_call(Xr, Kc, "SF6 R2: negatively worded statements left as answered, the same call")
     Xy = X.copy()
@@ -230,9 +243,11 @@ def run(target, golden, st, meta_path):
     ck("ladder R2: straight-liners (%d) dropped keep five on Pearson correlations" % straight.sum(),
        G.dimensions(Xs, Kc, "pearson", reps=60)["pa95"] == 5)
     same_call(Xs, Kc, "ladder R2: straight-liners dropped, the latent route keeps the golden")
-    ck("SF1: the codebook carries no area, theme or grouping column", not any(
+    ck("SF1: the questionnaire carries no area, theme or grouping column", not any(
         re.search(r"theme|area|section|scale group|sub-?scale|dimension|factor", str(c), re.I)
         for c in T["items"].columns if c != "Scale"), list(T["items"].columns))
+    ck("SF8: the questionnaire maps every French code to one item", len(set(T["items"]["French code"])) == 31 and
+       all(T["items"].set_index("Item").loc[it["en_code"], "French code"] == it["fr_code"] for it in S["items"]))
     ck("SF1: the questionnaire's order interleaves the six areas", max(
         len(list(g)) for _, g in itertools.groupby(key_of[c] for c in order)) <= 2)
     pulse = pd.read_csv(os.path.join(target, K.PULSE))
@@ -245,9 +260,14 @@ def run(target, golden, st, meta_path):
        "one distinct dimension of employees' views that the survey's items measure" in std)
     ck("R3 not rule application: no filed sentence names an estimator or a retention test", not re.search(
         r"polychoric|tetrachoric|pearson|correlat|eigen|parallel analysis|factor|random data", std, re.I))
-    notes = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, K.EXPORT_NOTES)).pages))
-    ck("R3 not rule application: the export notes name no estimator", not re.search(
-        r"polychoric|tetrachoric|correlat|eigen|factor|sub-?scale|dimension", notes, re.I))
+    quest = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, K.QUESTIONNAIRE)).pages))
+    ck("R3 not rule application: the questionnaire names no estimator, grouping or area", not re.search(
+        r"polychoric|tetrachoric|correlat|eigen|factor|sub-?scale|dimension|theme|section", quest, re.I))
+    ck("SF5 SF7: the questionnaire's options carry the codes the export records",
+       "Yes (1), No (2), Does not apply to me (6)" in quest and "Strongly agree (5), Does not apply to me (6)" in quest)
+    ck("SF9: the standard counts a personal link's last submission", "its last submission counts" in std)
+    ck("no describing file ships: no codebook, dictionary, notes, readme or manifest by name",
+       not any(re.search(r"codebook|dictionar|notes|readme|manifest|schema", f, re.I) for f in files), files)
 
     # ---------------------------------------------------------------- the three rules on the clean truth (R1, R3)
     ck("R1: the spine is one row per answer (respondent by item), 25,000 rows or more",
@@ -255,7 +275,11 @@ def run(target, golden, st, meta_path):
     heads = []
     for f in files:
         if f.endswith(".csv"):
-            heads += [h for h in open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")]
+            with open(os.path.join(target, f), encoding="utf-8") as fh:
+                line = fh.readline()
+                while line.startswith("#"):
+                    line = fh.readline()
+            heads += line.strip().split(",")
     ck("R1: no shipped column holds a dimension, sub-scale, factor or loading", not any(
         re.search(r"dimension|sub-?scale|factor|loading|theme", h, re.I) for h in heads), heads)
     dt_ = G.dimensions(Xt, Kt, "pearson")
@@ -285,72 +309,90 @@ def run(target, golden, st, meta_path):
     ck("SF14: the 0.5 correction moves no latent correlation by 0.02", np.abs(R5 - lat["R"]).max() < 0.02,
        np.abs(R5 - lat["R"]).max())
 
-    # ---------------------------------------------------------------- the asks
-    env = T["paper"]
-    ck("ask A device: every envelope was sealed by the close", (pd.to_datetime(env["Sealed"]).dt.date <= K.CLOSE_DAY).all())
-    pre = {}
-    for paper in ("sealed", "answered_at"):
-        for close in ("local", "utc_date", "eastern", "links"):
-            pre[(paper, close)] = (rows, G.before_close(T, rows, paper=paper, close=close))
-    Agold, Bgold = res["A"], res["B"]
-
-    def off(D, gold):
-        return sum(1 for d in gold if D[d] != gold[d])
-    A_cr, B_cr = G.district_counts(T, paper="answered_at", complete="token", pre=pre[("answered_at", "local")])
-    ck("cracker A: second-envelope forms dropped, every district off", off(A_cr, Agold) == 12, A_cr)
-    ck("cracker B: one complete token required, every district off", off(B_cr, Bgold) == 12, B_cr)
-    _, B_ls = G.district_counts(T, paper="answered_at", complete="last_session", pre=pre[("answered_at", "local")])
-    ck("cracker B: the last kiosk session taken, every district off", off(B_ls, Bgold) == 12, B_ls)
-    _, B_kio = G.district_counts(T, complete="token", pre=pre[("sealed", "local")])
-    ck("ask B device: kiosk time-outs alone move every district", off(B_kio, Bgold) == 12, B_kio)
-    A_p, B_p = G.district_counts(T, paper="answered_at", pre=pre[("answered_at", "local")])
-    ck("ask A device: second-envelope forms alone move every district (A and B)", off(A_p, Agold) == 12 and
-       off(B_p, Bgold) == 12)
-    for d, _, _ in K.DISTRICTS:
-        ck("ask devices: %s's second-envelope respondents (%d) and kiosk-joined completes (%d) both live" % (
-            d, Agold[d] - A_p[d], Bgold[d] - B_kio[d]), Agold[d] - A_p[d] >= 10 and Bgold[d] - B_kio[d] >= 3)
-    A_u, B_u = G.district_counts(T, close="utc_date", pre=pre[("sealed", "utc_date")])
-    ck("hazard: UTC dates against the close move every district", off(A_u, Agold) == 12, A_u)
-    A_l, _ = G.district_counts(T, site="list", pre=pre[("sealed", "local")])
-    ck("hazard: the distribution list's site moves at least three districts", off(A_l, Agold) >= 3, A_l)
-    A_t2, _ = G.district_counts(T, people="tokens", pre=pre[("sealed", "local")])
-    ck("hazard: tokens counted as people move every district", off(A_t2, Agold) == 12, A_t2)
-    _, B_d = G.district_counts(T, dna="missing", pre=pre[("sealed", "local")])
-    ck("hazard: does-not-apply counted as missing moves every district (B)", off(B_d, Bgold) == 12, B_d)
-    hits_a = hits_b = 0
-    for paper, close, site, people in itertools.product(("sealed", "answered_at"), ("local", "utc_date", "eastern",
-                                                                                     "links"), ("opening", "list"),
-                                                        ("employees", "tokens")):
-        if paper == "sealed":
-            continue
-        Av, _ = G.district_counts(T, paper=paper, close=close, site=site, people=people, pre=pre[(paper, close)])
-        hits_a += 12 - off(Av, Agold)
-    for paper, close, site, complete, dna in itertools.product(("sealed", "answered_at"), ("local", "utc_date",
-                                                                                           "eastern", "links"),
-                                                               ("opening", "list"), ("union", "token", "last_session"),
-                                                               ("answer", "missing")):
-        if paper == "sealed" and complete == "union":
-            continue
-        _, Bv = G.district_counts(T, paper=paper, close=close, site=site, complete=complete, dna=dna,
-                                  pre=pre[(paper, close)])
-        hits_b += 12 - off(Bv, Bgold)
-    ck("no handling with the paper forms dropped lands on any Ask A cell", hits_a == 0, hits_a)
-    ck("no handling with the paper forms dropped or the kiosk sessions apart lands on any Ask B cell", hits_b == 0,
-       hits_b)
-    subs = T["subs"]
-    pap = rows[rows["channel"] == "paper"]
-    ck("no marker: printed forms keyed both during the survey and after the close",
-       (pap["answered_at"] < "2026-09-27").any() and (pap["answered_at"] > "2026-09-30").any())
-    ck("no marker: saved submissions on the web and at the kiosk", set(subs.loc[subs["status"] == "saved", "channel"])
-       >= {"web", "kiosk"})
-    kio = T["kiosk"]
-    to = kio[kio["close_reason"] == "timed out"]
-    again = kio.groupby("employee")["session"].count()
-    ck("no marker: time-outs with and without a later session", (to["employee"].map(again) > 1).any() and
-       (to["employee"].map(again) == 1).any())
-    late = rows[~pre[("sealed", "local")][1] & (rows["channel"] == "web")]
-    ck("hazard live: answers recorded after a site's close and before Kestrava's links stopped", len(late) > 0,
-       len(late))
+    # ---------------------------------------------------------------- the department ask
+    hris = T["hris"]
+    sites = T["sites"]
+    store_no = set(sites.loc[sites["site_type"] == "store", "site_no"].astype(int))
+    code, pairs = G.renumbering(hris, sites)
+    ck("device forcing: every store code in force on 30 September passes to one department on 1 October",
+       pairs.groupby(level=0).size().max() == 1 and len(code) == 8, pairs)
+    sep30 = L.in_force(hris, K.RENUMBER_DAY - __import__("datetime").timedelta(days=1))
+    sep30 = sep30[sep30["site_no"].astype(int).isin(store_no)]
+    oct_rows = hris[hris["effective_from"] == K.RENUMBER_DAY.isoformat()]
+    ck("device forcing: every store employee in force on 30 September has a 1 October row at the same site",
+       set(zip(sep30["employee_id"], sep30["site_no"])) <= set(zip(oct_rows["employee_id"], oct_rows["site_no"])),
+       len(sep30))
+    named = {c: d for c, d in zip(hris["department_code"], hris["department"])}
+    ck("device silent: every September store code has a name on the report (the run date's table)",
+       all(named.get(c) for c in code))
+    swapped = sum(1 for c in code if named[c] != code[c])
+    ck("device mass: every September store code is named after another department on the report", swapped == 8,
+       swapped)
+    ck("no marker: the 1 October rows carry the July reorganisation's action (and the day's leavers theirs)",
+       set(hris.loc[hris["effective_from"] == K.RENUMBER_DAY.isoformat(), "action"]) <=
+       {"reorganisation", "transfer", "termination"} and
+       set(hris.loc[hris["effective_from"] == K.REORG_DAY.isoformat(), "action"]) == {"reorganisation"})
+    dc_ho = hris[~hris["site_no"].astype(int).isin(store_no)]
+    ck("no marker: distribution centre and head office codes keep their names on both sides of 1 October",
+       dc_ho.groupby("department_code")["department"].nunique().max() == 1 and
+       not (dc_ho["effective_from"] == K.RENUMBER_DAY.isoformat()).any())
+    before = L.in_force(hris, K.RENUMBER_DAY - __import__("datetime").timedelta(days=1))
+    before = before[before["site_no"].astype(int).isin(store_no)]
+    oct1 = hris[(hris["effective_from"] == K.RENUMBER_DAY.isoformat()) & (hris["action"] == "reorganisation")]
+    m = before.merge(oct1, on=["employee_id", "site_no"], suffixes=("_b", "_a"))
+    moved_named = int((m["department_b"] != m["department_a"]).sum())
+    ck("forcing number: read by the report's names, every paired store employee changes department on 1 October "
+       "(%d of %d); read through the renumbering, none does" % (moved_named, len(m)),
+       moved_named == len(m) and all(code[c] == d for c, d in zip(m["department_code_b"], m["department_a"])))
+    rs = G.respondents(T)
+    F0 = DF
+    stops = {}
+    for mode in ("named", "latest", "own_next"):
+        F = G.department_figures(T, rs, mode=mode)
+        stops[mode] = sum((F["resp"][d] != F0["resp"][d]) + (F["rate"][d] != F0["rate"][d]) +
+                          (F["shown"][d] != F0["shown"][d]) for d in G.STORE_DEPARTMENTS)
+        if mode == "named":
+            Fn = F
+    ck("cracker (the opening-day row as the report names it): every one of the 24 cells off", stops["named"] == 24,
+       stops)
+    ck("cracker margins: respondents 20 or more, rates 0.2 points or more, stores 2 or more off in every department",
+       min(abs(Fn["resp"][d] - F0["resp"][d]) for d in G.STORE_DEPARTMENTS) >= 20 and
+       min(abs(Fn["rate"][d] - F0["rate"][d]) for d in G.STORE_DEPARTMENTS) >= 0.2 - 1e-9 and
+       min(abs(Fn["shown"][d] - F0["shown"][d]) for d in G.STORE_DEPARTMENTS) >= 2, Fn)
+    ck("stop: each employee's latest row (the current department) misses 22 or more of the 24 cells",
+       stops["latest"] >= 22, stops)
+    ck("stop: each employee's own 1 October row misses 18 or more of the 24 cells", stops["own_next"] >= 18, stops)
+    # hazards: moves inside a store before and after the opening day, the 5 October promotions, leavers
+    tr = hris[(hris["action"] == "transfer")]
+    ck("hazard live: department moves inside a store before the opening day",
+       ((tr["effective_from"] < K.OPEN_DAY.isoformat()) & (tr["effective_from"] >= "2026-08-15")).sum() >= 150)
+    ck("hazard live: department moves inside a store after the opening day",
+       (tr["effective_from"] > K.OPEN_DAY.isoformat()).sum() >= 600)
+    ck("hazard live: the 5 October moves into store management",
+       ((tr["effective_from"] == "2026-10-05") & (tr["department"] == "Store Management")).sum() >= 150)
+    late_leave = hris[(hris["action"] == "termination") & (hris["effective_from"] > K.OPEN_DAY.isoformat())]
+    ck("hazard live: employees assigned on the opening day who left afterwards", len(late_leave) >= 40, len(late_leave))
+    # the separation line: the call reads no HR row
+    tmp = tempfile.mkdtemp()
+    try:
+        for f in files:
+            if f != K.HRIS:
+                shutil.copy(os.path.join(target, f), os.path.join(tmp, f))
+        G._REF.clear()
+        f3 = G.compute(tmp)["figures"]
+        ck("separation: with the HR report deleted, the call's respondents, eigenvalues and placements are unchanged",
+           all(f3[k] == fig[k] for k in ("respondents", "latent_eigen", "pearson_eigen", "random_p95", "subscale_items",
+                                         "call_subscales", "yes_share")))
+    finally:
+        shutil.rmtree(tmp)
+    rows_all, _ = G.answer_rows(T)
+    ok_hr = G.before_close(T, rows_all, site_from="hr")
+    ok_tok = G.before_close(T, rows_all, site_from="token")
+    ck("separation: the close read from the HR site and from the token's own site keeps the same answer rows",
+       bool((ok_hr == ok_tok).all()))
+    edge = min(abs((F0["rate_exact"][d] * 10) % 1 - 0.5) / 10 for d in G.STORE_DEPARTMENTS)
+    ck("rounding edges: each department's response rate 0.01 points or more from its tenth's edge (closest %.4f)"
+       % edge, edge >= 0.01, F0["rate_exact"])
 
     # ---------------------------------------------------------------- goldens against figures.json
     gx = pd.read_excel(os.path.join(golden, K.DELIVERABLES[0]), sheet_name=None)
@@ -360,25 +402,29 @@ def run(target, golden, st, meta_path):
     for nm, codes in fig["subscale_items"].items():
         ck("golden xlsx: %s holds the figures.json items" % nm, sorted(items_g.loc[items_g["Sub-scale"] == nm,
                                                                                       "Item"]) == sorted(codes))
-    dd = gx["Districts"].dropna(subset=["Code"]).set_index("Code")
-    for d in Agold:
-        ck("golden xlsx: %s coverage matches figures.json" % d, int(dd.loc[d].iloc[1]) == fig["ask_a"][d] and
-           int(dd.loc[d].iloc[2]) == fig["ask_b"][d])
+    dd = gx["Departments"].dropna(subset=["Store department"]).set_index("Store department")
+    for d in G.STORE_DEPARTMENTS:
+        ck("golden xlsx: %s matches figures.json" % d, int(dd.loc[d].iloc[0]) == fig["dept_respondents"][d] and
+           abs(float(dd.loc[d].iloc[2]) - fig["dept_rate"][d]) < 1e-9 and
+           int(dd.loc[d].iloc[3]) == fig["dept_stores_shown"][d])
     md = open(os.path.join(golden, K.DELIVERABLES[2]), encoding="utf-8").read()
     ck("golden note: states three sub-scales", "three sub-scales" in md)
-    for d, nm, _ in K.DISTRICTS:
-        ck("golden note: %s row" % d, "| %s | %s | %s |" % (nm, "{:,}".format(Agold[d]), "{:,}".format(Bgold[d])) in md)
+    for d in G.STORE_DEPARTMENTS:
+        ck("golden note: %s row" % d, "| %s | %s | %s | %.1f | %d |" % (
+            d, "{:,}".format(fig["dept_respondents"][d]), "{:,}".format(fig["dept_headcount"][d]), fig["dept_rate"][d],
+            fig["dept_stores_shown"][d]) in md)
 
     # ---------------------------------------------------------------- realism sweep
-    ck("realism: no two districts share a respondent count", len(set(Agold.values())) == 12, Agold)
-    ck("realism: no two districts share a complete count", len(set(Bgold.values())) == 12, Bgold)
-    ck("realism: totals are not round", fig["ask_a_total"] % 100 and fig["ask_b_total"] % 100)
+    ck("realism: store department respondents sum to the store respondents",
+       fig["dept_respondents_total"] == sum(fig["dept_respondents"].values()))
+    ck("realism: totals are not round", fig["dept_respondents_total"] % 100 != 0)
     ck("realism: every answer time inside 11 September to 9 October",
        T["resp"]["answered_at"].min() >= "2026-09-11" and T["resp"]["answered_at"].max() < "2026-10-10")
+    kio = T["kiosk"]
     ck("realism: kiosk sessions close after they open", (kio["closed"] > kio["signed_in"]).all())
     h = T["hris"]
     ck("realism: HR rows end on or after they start", ((h["effective_to"] == "") | (h["effective_to"] >= h["effective_from"])).all())
-    texts = std + " " + notes
+    texts = std + " " + quest
     names = set(re.findall(r"\b(Alexander Copeland|Maria Murray|Melissa Vang)\b", texts))
     ck("realism: the documents name only the drawn people", names <= set(K.PEOPLE.values()) and len(names) >= 2, names)
     ck("realism: no em or en dash in any document", not re.search("[–—]", texts + md))
