@@ -4,10 +4,10 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: dropped, change, window, architecture, operation, patient, decisive, case-mix, method, answerers, spells, hospital, asserted, extract, expected, admission, emergency, reader, golden, population, readmission, shared, default, section, returned
+Stump terms swept: dropped, change, window, architecture, operation, patient, decisive, case-mix, method, extract, answerers, spells, hospital, asserted, expected, admission, emergency, reader, golden, section, population, questionnaires, readmission, nothing, shared
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `spinal_contracting_policy_2027-28.pdf`: 10 of 25 stump-paragraph terms appear (change, operation, patient, case-mix, method, hospital); read whether the document names the move
+- **REVIEW** `spinal_contracting_policy_2027-28.pdf`: 9 of 25 stump-paragraph terms appear (change, operation, patient, case-mix, method, hospital); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Send spinal_volume_2027-28.csv with a row for each provider giving its outcome under the policy and the operations placed with it, plus a row for any volume held back, and spinal_volume_board_paper.docx making the recomm'
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Outcomes are in whole points, shares and participation in whole per cent, and patients and operations as whole numbers.'
 

@@ -257,6 +257,8 @@ class World:
                         if present:
                             op = present[rot % len(present)][0]
                             rot += 1
+                        else:
+                            bags = 0          # nobody on the lane: it is not screening
                         slots_out.append((d, ln, s, e - s, bags, op))
                         ct = not (ln in P.INTL and d < P.INTL_CT)
                         if ct and op >= 0 and bags > 0:

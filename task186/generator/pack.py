@@ -92,12 +92,6 @@ def retrofitted(serial, d):
     return day is not None and d >= day + dt.timedelta(days=2)
 
 
-def first_open(lane, d):
-    from world import blocks_for
-    b = blocks_for(lane, d)
-    return min(x[1] for x in b) if b else None
-
-
 def build(world, target):
     os.makedirs(target, exist_ok=True)
     ids = Identities(world)
@@ -238,11 +232,14 @@ def build(world, target):
             continue
         hour = t.replace(minute=0, second=0)
         counts[(hour, unit_on(ln, d))] += bags
-    # performance-test images counted by retrofitted units before the lane opens
+    # performance-test images counted by retrofitted units before the lane's first rostered officer starts
+    first_rostered = {}
+    for (i, dd, ln, s, e, sick) in world.roster:
+        first_rostered[(dd, ln)] = min(first_rostered.get((dd, ln), 9999), s)
     d = P.WIN0 - dt.timedelta(days=1)
     while d <= P.WIN1 + dt.timedelta(days=1):
         for ln in P.LANES:
-            fo = first_open(ln, d)
+            fo = first_rostered.get((d, ln))
             serial = unit_on(ln, d)
             if fo is None or not retrofitted(serial, d):
                 continue
