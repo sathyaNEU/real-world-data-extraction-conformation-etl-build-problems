@@ -161,9 +161,10 @@ The full includer (REF7734 orders only, the fault day kept out) keeps all 34 (st
 
 ## Leak review
 
-`leak.py --asof 2026-11-16` on the final cut: no LEAK; seven REVIEW lines, each ruled here (the capacity 7,500 and the floor are declared `stated_inputs`).
+`leak.py --asof 2026-11-16` on the final cut: no LEAK; eight REVIEW lines, each ruled here (the capacity 7,500 and the floor are declared `stated_inputs`).
 - Sweep 4, clinical_ai_governance_standard_v3.pdf (camera, validation, capture, network, screen): harmless; "camera" occurs only in 4.2, the fault ask's WHAT, "capture" in 2.1 and 2.2 (the population's local date and the clinic of capture), "validation" in 2.3's reference standard; no sentence ties a camera to the AI's performance (checks.py R3c).
 - Sweep 4, retinacheck_operating_points.pdf (capture, carries, screen): harmless, the vendor's description of a result, its thresholds and its configuration.
+- Sweep 4, pellam_reading_agreement_2027.pdf (closed, network, screen): harmless, the agreement's service, capacity and fee terms; "closed" is a referral closed by a grade (1.2), the WHAT of the reading-center ask.
 - Sweep 4, validation_study_protocol_2025.pdf (validation, analysis, network, screen): harmless, the study's own design and plan; it names no camera and carries no result.
 - Sweep 6, biomed_asset_register_2026-09-30.xlsx: harmless, equipment by location and its moves; no sensitivity, no operating point, nothing ranked on the decision question.
 - Sweep 6, biomed_service_tickets_2025-26.csv: harmless, repair tickets for every equipment class.
