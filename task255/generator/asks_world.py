@@ -70,6 +70,7 @@ def build(rng, net):
     for s in screens:
         by_loc.setdefault(s.loc, []).append(s)
     players = {}
+    ports = {}           # (tag, player) -> the player's output the screen is on
     cabling = []         # (tag, player, from local datetime, to local datetime or None)
     pid = set()
 
@@ -88,10 +89,12 @@ def build(rng, net):
                 k = min(k, len(ss) - 1)
             p = new_player()
             players[p] = loc
-            for s in ss[i:i + k]:
+            for n_port, s in enumerate(ss[i:i + k], start=1):
                 cabling.append([s.tag, p, dt.datetime.combine(s.hung, dt.time(4, 0)), None])
+                ports[(s.tag, p)] = n_port
             i += k
     A.players = players
+    A.ports = ports
     # failures during the flights: for each autumn booking one media player behind some of its package's screens
     # dies, and its screens are re-cabled to a working player at the same place a day or two later; the register
     # records the move when the work order is closed, one to six days after the job
@@ -122,8 +125,10 @@ def build(rng, net):
         for c in cabling:
             if c[1] == dead and c[3] is None:
                 c[3] = recable_at
-        for t in moved:
+        nxt = max(n for (t2, p2), n in ports.items() if p2 == alive) + 1
+        for k_port, t in enumerate(moved):
             cabling.append([t, alive, recable_at, None])
+            ports[(t, alive)] = nxt + k_port
         failures.append({"dead": dead, "alive": alive, "fail_at": fail_at, "recable_at": recable_at,
                          "logged_at": logged_at, "loc": loc, "tags": moved, "booking": ref})
     A.failures = failures
@@ -136,10 +141,55 @@ def build(rng, net):
     for c in cabling:
         if c[0] in {s.tag for s in taken} and c[3] is None:
             c[3] = dt.datetime.combine(refurb_day, dt.time(5, 10))
+    # players behind the 5 October flights that had been offline since late September and came back in the flights'
+    # first days (the content system's export starts on 1 October, so only their return shows)
+    failure_players = {f["dead"] for f in failures} | {f["alive"] for f in failures}
+    removed_early = {c[1] for c in cabling if c[0] in {s.tag for s in taken}}
+    pkg_of = {x.tag: x.pkg for x in screens}
+    open_start = []
+    chosen = set()
+    for ref, ai, pkg, (m0, d0), (m1, d1), price in BOOKINGS:
+        f0 = dt.date(2026, m0, d0)
+        if f0 != dt.date(2026, 10, 5):
+            continue
+        start = dt.datetime.combine(f0, dt.time(5, 45))
+        cands = sorted({c[1] for c in cabling if pkg_of.get(c[0]) == pkg and c[2] <= start and
+                        (c[3] is None or c[3] > start)} - failure_players - removed_early - chosen)
+        if not cands:
+            continue
+        p = cands[rng.randrange(len(cands))]
+        chosen.add(p)
+        off = dt.datetime(2026, 9, rng.randint(23, 29), rng.randrange(7, 22), rng.randrange(0, 60))
+        back = (start + dt.timedelta(hours=rng.uniform(20, 70))).replace(second=0, microsecond=0)
+        open_start.append((p, off, back, ref))
+    A.open_start = open_start
+    # the supplier's 2026 replacement programme: new units for the screens of eight halls and passages, swapped at
+    # night from 2 to 4 November on the same player output; the new units come under new asset tags
+    swap_day = {"CEN-HZ": 2, "KNO-H": 2, "HDH-OV": 3, "STP-H": 3, "MZT-H": 3, "TWB-H": 4, "VLH-H": 4, "OSE-H": 4}
+    swaps = []
+    for loc in sorted(swap_day):
+        day = dt.date(2026, 11, swap_day[loc])
+        clock = dt.datetime.combine(day, dt.time(1, 0)) + dt.timedelta(minutes=rng.randrange(0, 50))
+        for x in sorted((x for x in screens if x.loc == loc and x.down is None), key=lambda x: x.pos):
+            conn = [c for c in cabling if c[0] == x.tag and c[3] is None]
+            if not conn:
+                continue
+            p = conn[0][1]
+            off_at = clock
+            on_at = clock + dt.timedelta(minutes=rng.randrange(6, 22))
+            conn[0][3] = off_at
+            tag = new_tag()
+            cabling.append([tag, p, on_at, None])
+            ports[(tag, p)] = ports[(x.tag, p)]
+            swaps.append({"old": x.tag, "new": tag, "loc": loc, "pos": x.pos, "pkg": x.pkg, "player": p,
+                          "off": off_at, "on": on_at})
+            clock = on_at + dt.timedelta(minutes=rng.randrange(4, 15))
+    A.swaps = swaps
     # the register's copy of the cabling: a re-cabling is entered when its work order is closed
     relog = {f["recable_at"]: f["logged_at"] for f in failures}
-    A.cabling_register = [[t, p, relog.get(a, a), relog.get(b, b) if b is not None else None]
-                          for t, p, a, b in cabling]
+    swapped_off = {(w["old"], w["player"]): w["off"] for w in swaps}
+    A.cabling_register = [[t, p, relog.get(a, a), None if (t, p) in swapped_off and b == swapped_off[(t, p)] else
+                           (relog.get(b, b) if b is not None else None)] for t, p, a, b in cabling]
     A.cabling = cabling
     # ------------------------------------------------------------ health: offline spells per player (local)
     spells = []          # (player, start local, end local or None)
@@ -158,12 +208,20 @@ def build(rng, net):
             if any(f["alive"] == p and st < f["logged_at"] + dt.timedelta(days=1) and
                    en > f["fail_at"] - dt.timedelta(days=1) for f in failures):
                 continue      # the receiving player stayed up around the job
+            if any(w["player"] == p and st < w["on"] + dt.timedelta(hours=3) and en > w["off"] - dt.timedelta(hours=3)
+                   for w in swaps):
+                continue      # the player was up for the swap
             spells.append((p, st, en))
     for f in failures:
         spells.append((f["dead"], f["fail_at"], None))      # the dead player never reports again
-    # the removed player's last report is the morning of the refurbishment; nothing after
+    for p, off, back, ref in open_start:
+        spells.append((p, off, back))
+    # the hall's player is switched off on the Sunday evening before the works and never reports again
     A.removed_players = removed
-    spells = [s for s in spells if not (s[0] in removed and s[1] >= dt.datetime.combine(refurb_day, dt.time(5, 0)))]
+    switch_off = dt.datetime.combine(refurb_day - dt.timedelta(days=1), dt.time(23, 40))
+    spells = [s for s in spells if not (s[0] in removed and s[1] >= switch_off - dt.timedelta(hours=6))]
+    for p in sorted(removed):
+        spells.append((p, switch_off, None))
     spells.sort(key=lambda s: (s[1], s[0]))
     # merge overlapping spells of one player
     merged = {}
@@ -206,15 +264,20 @@ def cms_events(A, t0, t1):
     for f in A.failures:
         ev.append((f["recable_at"], f["alive"], "DISPLAYS",
                    displays(A, f["alive"], f["recable_at"])))
+    for w in A.swaps:
+        ev.append((w["off"], w["player"], "DISPLAYS", displays(A, w["player"], w["off"])))
+        ev.append((w["on"], w["player"], "DISPLAYS", displays(A, w["player"], w["on"])))
     removed_after = dt.datetime.combine(A.refurb[1], dt.time(5, 0))
-    for p in sorted(A.removed_players):       # the screens unplugged and taken down; the player is then removed
-        ev.append((dt.datetime.combine(A.refurb[1], dt.time(5, 10)), p, "DISPLAYS", 0))
     busy = {}
     for p, st, en in A.spells:
         busy.setdefault(p, []).append((st - dt.timedelta(hours=1), (en or t1) + dt.timedelta(hours=1)))
     for f in A.failures:
         busy.setdefault(f["alive"], []).append((f["fail_at"] - dt.timedelta(days=1), f["logged_at"] + dt.timedelta(days=1)))
         busy.setdefault(f["dead"], []).append((f["fail_at"] - dt.timedelta(hours=2), t1))
+    for w in A.swaps:
+        busy.setdefault(w["player"], []).append((w["off"] - dt.timedelta(hours=3), w["on"] + dt.timedelta(hours=3)))
+    for p, off, back, ref in A.open_start:
+        busy.setdefault(p, []).append((t0, back + dt.timedelta(hours=2)))
     for p in sorted(A.players):
         if p in A.removed_players:
             busy.setdefault(p, []).append((removed_after - dt.timedelta(hours=2), t1))
@@ -230,6 +293,7 @@ def cms_events(A, t0, t1):
             ev.append((a, p, "DISPLAYS", k - 1))
             ev.append((b, p, "DISPLAYS", k))
             busy.setdefault(p, []).append((a - dt.timedelta(hours=1), b + dt.timedelta(hours=1)))
+    ev = [e for e in ev if t0 <= e[0] < t1]
     ev.sort(key=lambda e: (e[0], e[1], e[2]))
     return ev
 
