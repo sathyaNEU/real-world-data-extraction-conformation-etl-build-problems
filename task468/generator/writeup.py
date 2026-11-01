@@ -1,106 +1,84 @@
-"""submission.md, drafted from generator/figures.json: every figure the write-up states comes from there."""
-import json
-
-import world as W
-
-WORD = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 9: "nine"}
-CLS = {"ssn": "Social Security number on file", "simple": "no number, single surname",
-       "compound": "no number, two-part surname"}
+"""submission.md, drafted from figures.json: the tags, the call, the components, eight steps and the answers by file."""
+import figs as FG
+import golden as GD
 
 
-def _join(xs):
-    return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
-
-
-def money(v):
-    return "${:,}".format(v)
-
-
-def write(fig_path, out_path):
-    f = json.load(open(fig_path, encoding="utf-8"))
-    hs = {r["short"]: r for r in f["hospitals"]}
-    lose = [hs[s] for s in f["lose"]]
-    keep = [r for r in f["hospitals"] if r["verdict"] == "keeps"]
-    top_keep = max(keep, key=lambda r: r["ratio"])
-    rt = f["rates"]
-    reflex_extra = [s for s in f["reflex"]["lose"] if s not in f["lose"]]
-    reflex_miss = [s for s in f["lose"] if s not in f["reflex"]["lose"]]
-    lines = [
-        "## Tags",
-        "",
-        "**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid "
-        "plan's hospital pay-for-performance measure conformed from its claims, a delegated group's encounters and the "
-        "state's death record linkage, the linked deaths corrected for the linkage's own errors).",
-        "**Analytical objective:** Data Extraction & Conformation (ETL).",
-        "",
-        "## 1. Final Recommendation",
-        "",
-        "**%s of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: %s. The other %s keep it.**" % (
-            WORD[f["count_lose"]].capitalize(), _join([r["name"] for r in lose]), WORD[14 - f["count_lose"]]),
-        "Their fiscal 2026 mortality ratios run from %.2f to %.2f against the 1.15 line; the highest ratio among the "
-        "hospitals that keep it is %s's %.2f. Not the %s hospitals that the deaths on the bills and the Office of Vital "
-        "Records' links give, even with every link a later claim contradicts dropped and every death a later bill "
-        "records added (%s), because for members enrolled without a Social Security number the linkage links living "
-        "members with common names to other people's deaths and misses the deaths of members with two-part surnames, "
-        "and those repairs reach only the members whose later claims happen to show it: corrected at the error rates "
-        "the record's recorded deaths and living members measure, %s keeps the bonus and %s lose it." % (
-            min(r["ratio"] for r in lose), max(r["ratio"] for r in lose), top_keep["name"], top_keep["ratio"],
-            WORD[f["reflex"]["count"]], _join(f["reflex"]["lose"]), _join(reflex_extra), _join(reflex_miss)),
-        "",
-        "## 2. Critical Components",
-        "",
-        "1. The linkage's error rates by identifier class, measured on the index admissions whose deaths the bills "
-        "record and on the members seen alive after day 30: %s." % "; ".join(
-            "%s, **%d of %d** recorded deaths linked and **%d of %s** living members linked" % (
-                CLS[k], rt[k]["pos_linked"], rt[k]["pos"], rt[k]["neg_linked"], "{:,}".format(rt[k]["neg"]))
-            for k in ("ssn", "simple", "compound")),
-        "2. The hospitals that lose the bonus, deaths over expected deaths: %s." % "; ".join(
-            "%s **%.1f** over **%.1f**, ratio **%.2f**" % (r["name"], r["deaths"], r["expected"], r["ratio"])
-            for r in lose),
-        "3. %s, which the uncorrected links put over the line: **%.1f** deaths over **%.1f** expected, ratio "
-        "**%.2f**." % (_join([hs[s]["name"] for s in reflex_extra]), hs[reflex_extra[0]]["deaths"],
-                       hs[reflex_extra[0]]["expected"], hs[reflex_extra[0]]["ratio"]),
-        "",
-        "## 3. Step-by-Step Solution",
-        "",
-        "1. Conformed %s and %s into stays, each as last corrected with voided and deleted bills dropped, Carrisford "
-        "member numbers mapped through %s and both of Mercy Valley's NPIs through %s." % (
-            W.FILES["claims"], W.FILES["encounters"], W.FILES["enrollment"], W.FILES["roster"]),
-        "2. Kept the index admissions of specification 2.1 to 2.4 (%s in all): adults, no delivery DRGs, no patient "
-        "status 07, each member's first, a transfer joined to the first hospital's stay." % "{:,}".format(
-            f["index_total"]),
-        "3. Summed each hospital's HIMM 3.2 scores from %s, keyed by member, admission date and NPI." % W.FILES["scores"],
-        "4. Counted the deaths the bills record (patient status 20 on the stay, its transfer stay or a later stay ending "
-        "within the 30 days) and joined %s on member and admission date." % W.FILES["linkage"],
-        "5. Classed each member by %s (Social Security number on file; otherwise single or two-part surname) and "
-        "measured each class's share of recorded deaths linked and share of members with a service line in %s, an "
-        "admission or a live discharge after day 30 linked." % (W.FILES["enrollment"], W.FILES["activity"]),
-        "6. For each hospital and class, estimated the deaths among the admissions neither recorded dead nor seen alive "
-        "after day 30 as (links less the false-link share times the admissions) over (the share linked less the "
-        "false-link share), and added the recorded deaths.",
-        "7. Divided each hospital's deaths by its expected deaths and marked the hospitals over 1.15 (specification "
-        "5.2).",
-        "8. Took 2 per cent of each hospital's Halbrook payments for stays discharged in fiscal 2026 (Carrisford's out): "
-        "each stay its original plus a CPS replacement's change or a platform replacement's full amount, a voided bill "
-        "nothing, plus each additional payment in %s made by September 30 on those stays, except one the disputed "
-        "claim's replacement bill paid that day already carries: the replacement's change to the stay's payment (a CPS "
-        "replacement's amount, or a platform replacement's amount less the original's) equals the additional payment."
-        % W.FILES["disputes"],
-        "",
-        "## 4. Deliverable Answers",
-        "",
-        "### %s" % W.GOLDEN["workbook"],
-        "",
-        "1. Hospitals that lose the 2027 bonus: **%d**: %s." % (f["count_lose"], _join([r["name"] for r in lose])),
-        "2. Each hospital, 2027 bonus and bonus at stake (2 per cent of fiscal 2026 inpatient payments, nearest $100):",
-    ]
-    for r in f["hospitals"]:
-        lines.append("   - %s: %s, %s" % (r["name"], r["verdict"], money(r["bonus"])))
-    lines += [
-        "3. Total bonus at stake across the network: %s." % money(f["total_bonus"]),
-        "4. Bar chart of the 14 hospitals' fiscal 2026 mortality ratios against the 1.15 line, the five that lose the "
-        "bonus highlighted.",
-        "",
-    ]
-    with open(out_path, "w", encoding="utf-8") as fh:
-        fh.write("\n".join(lines))
+def write(path, fig):
+    c = fig["call"]
+    order = sorted(c["pressured"], key=lambda w: -c["shares"][w])
+    ch = fig["change"]
+    pb = fig["pellbury"]
+    a, b, d = order
+    L = []
+    L.append("## Tags\n")
+    L.append("> **Domain:** Survey Research & Official Statistics (seasonal adjustment and official time series "
+             "production: a ward house price index compiled from the price paid record and the council's building "
+             "control register).")
+    L.append("> **Analytical objective:** Data Extraction & Conformation (ETL).\n")
+    L.append("## 1. Final Recommendation\n")
+    L.append("**Give the 2027-28 pressured-ward uplift to %s (%s), %s (%s) and %s (%s).** Their Ward House Price "
+             "Index rose %.1f, %.1f and %.1f per cent from 2025 to 2026, over the 5.0 per cent line, and no other "
+             "ward's did. Not Pellbury, whose index rises %.1f per cent on every pair of its sales but %.1f per cent "
+             "once the pairs whose dwelling had building work completed between its two sales are set aside.\n"
+             % (a, c["shares_text"][a], b, c["shares_text"][b], d, c["shares_text"][d], ch[a], ch[b], ch[d],
+                pb["every_pair"], pb["golden"]))
+    L.append("## 2. Critical Components\n")
+    L.append("1. %s's, %s's and %s's index rose **%.1f%%**, **%.1f%%** and **%.1f%%** from 2025 to 2026."
+             % (a, b, d, ch[a], ch[b], ch[d]))
+    L.append("2. Pellbury's index rose **%.1f%%** with the pairs spanning completed building work set aside, against "
+             "**%.1f%%** on every pair." % (pb["golden"], pb["every_pair"]))
+    L.append("3. The pressured wards have **%d**, **%d** and **%d** homes due to start on site in 2027-28, **%d** in all.\n"
+             % (c["homes"][a], c["homes"][b], c["homes"][d], c["homes_total"]))
+    L.append("## 3. Step-by-Step Solution\n")
+    L.append("1. Read pp-harrowmere-2015-2025.csv and pp-harrowmere-2026.csv and applied pp-monthly-update-2027-01.csv "
+             "by transaction identifier: A and C rows stand as published, D rows withdraw the entry.")
+    L.append("2. Kept standard (category A) entries for property types D, S, T and F and paired each address's "
+             "consecutive sales (PAON, SAON, street and postcode), per section 3 of "
+             "hvha_ward_house_price_index_methodology.pdf.")
+    L.append("3. Read both sheets of hcc_building_control_completions_2015-2026.xlsx to house number or name, flat and "
+             "postcode, and set aside every pair whose dwelling has a completion certificate dated between its two "
+             "sales, the dwelling being of a different quality at the second sale: Pellbury keeps %d of its %d pairs "
+             "ending in 2026." % (pb["pairs_2026_kept"], pb["pairs_2026_every"]))
+    L.append("4. Placed each pair in its May 2023 ward by postcode (wd23cd in harrowmere_postcode_directory_2026-11.csv), "
+             "fitted each ward's index by ordinary least squares on the year indicators and took the 2025 to 2026 "
+             "change: %s %.1f, %s %.1f, %s %.1f, every other ward under 5.0 (Pellbury %.1f)."
+             % (a, ch[a], b, ch[b], d, ch[d], pb["golden"]))
+    L.append("5. Ask A: register rows certified in 2026, dwellings created less dwellings lost, each application once "
+             "(a partial completion and its completion certificate carry the same dwellings), in the ward of the "
+             "site postcode's wd23cd, since the register's Ward column holds the 2019 wards: %d in all."
+             % fig["ask_a_total"])
+    L.append("6. Ask B: category B entries for dwellings transferred in 2026, after the update; a portfolio "
+             "transfer's price stands on each of its titles, so a price on three or more entries of one day is "
+             "counted once: %d entries, GBP {:,} in all.".format(fig["ask_b_money_total"]) % fig["ask_b_count_total"])
+    L.append("7. Ask C: start-on-site claims in hvha_start_on_site_claims_2025-2027.csv dated 2026 and Paid or Approved, "
+             "each start once (Calderstone's claims for the starts Brackwell Homes was paid for before the merger "
+             "repeat the postcode, start date and homes): %d homes in all." % fig["ask_c_total"])
+    L.append("8. Shared the GBP 12,000,000 among the three in proportion to homes in Approved or In contract schemes "
+             "due to start from 1 April 2027 to 31 March 2028 in hvha_affordable_pipeline_2027-28.xlsx, per section 3 "
+             "of the programme rules: %s %s, %s %s and %s %s.\n"
+             % (a, c["shares_text"][a], b, c["shares_text"][b], d, c["shares_text"][d]))
+    L.append("## 4. Deliverable Answers\n")
+    L.append("### %s\n" % GD.PDF)
+    L.append("1. Pressured wards for 2027-28: %s, %s and %s." % (a, b, d))
+    L.append("2. Shares of the GBP 12,000,000 uplift: %s %s; %s %s; %s %s."
+             % (a, c["shares_text"][a], b, c["shares_text"][b], d, c["shares_text"][d]))
+    L.append("3. Chart on page 1: every ward's 2025 to 2026 index change as a bar, the 5.0 per cent line marked and "
+             "the three pressured wards highlighted.\n")
+    L.append("### %s\n" % GD.XLSX)
+    L.append("1. Index change 2025 to 2026, per cent to one decimal:")
+    for w in FG.WARDS:
+        L.append("   - %s: %.1f" % (w, ch[w]))
+    L.append("2. Share of the uplift, nearest pound:")
+    for w in FG.WARDS:
+        L.append("   - %s: %s" % (w, c["shares_text"][w] if w in c["pressured"] else "GBP 0"))
+    L.append("3. Net additional dwellings from building work completed in 2026 (May 2023 wards):")
+    for w in FG.WARDS:
+        L.append("   - %s: %d" % (w, fig["ask_a"][w]))
+    L.append("4. Additional price paid entries for dwellings transferred in 2026, count and money paid to the nearest pound:")
+    for w in FG.WARDS:
+        L.append("   - %s: %d entries, %s" % (w, fig["ask_b_count"][w], fig["ask_b_money_text"][w]))
+    L.append("5. Affordable homes started on site in 2026:")
+    for w in FG.WARDS:
+        L.append("   - %s: %d" % (w, fig["ask_c"][w]))
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(L) + "\n")

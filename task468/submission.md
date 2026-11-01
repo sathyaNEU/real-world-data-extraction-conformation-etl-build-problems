@@ -1,49 +1,101 @@
 ## Tags
 
-**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics: a Medicaid plan's hospital pay-for-performance measure conformed from its claims, a delegated group's encounters and the state's death record linkage, the linked deaths corrected for the linkage's own errors).
-**Analytical objective:** Data Extraction & Conformation (ETL).
+> **Domain:** Survey Research & Official Statistics (seasonal adjustment and official time series production: a ward house price index compiled from the price paid record and the council's building control register).
+> **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Five of Halbrook's 14 network hospitals lose the 2027 Hospital Quality Bonus: Brannock Medical Center, Calloway Memorial Hospital, Mercy Valley Medical Center, Northgate Community Hospital and Westover Regional Hospital. The other nine keep it.**
-Their fiscal 2026 mortality ratios run from 1.25 to 1.55 against the 1.15 line; the highest ratio among the hospitals that keep it is Fairhaven Community Hospital's 1.09. Not the four hospitals that the deaths on the bills and the Office of Vital Records' links give, even with every link a later claim contradicts dropped and every death a later bill records added (Calloway, Northgate, Varden and Westover), because for members enrolled without a Social Security number the linkage links living members with common names to other people's deaths and misses the deaths of members with two-part surnames, and those repairs reach only the members whose later claims happen to show it: corrected at the error rates the record's recorded deaths and living members measure, Varden keeps the bonus and Brannock and Mercy Valley lose it.
+**Give the 2027-28 pressured-ward uplift to Calder Bank (GBP 5,638,095), Kestrel Rise (GBP 3,657,143) and Abbots Hollow (GBP 2,704,762).** Their Ward House Price Index rose 7.9, 6.7 and 5.8 per cent from 2025 to 2026, over the 5.0 per cent line, and no other ward's did. Not Pellbury, whose index rises 6.0 per cent on every pair of its sales but 3.1 per cent once the pairs whose dwelling had building work completed between its two sales are set aside.
 
 ## 2. Critical Components
 
-1. The linkage's error rates by identifier class, measured on the index admissions whose deaths the bills record and on the members seen alive after day 30: Social Security number on file, **829 of 836** recorded deaths linked and **12 of 21,855** living members linked; no number, single surname, **44 of 48** recorded deaths linked and **20 of 1,179** living members linked; no number, two-part surname, **78 of 162** recorded deaths linked and **8 of 1,554** living members linked.
-2. The hospitals that lose the bonus, deaths over expected deaths: Brannock Medical Center **84.9** over **67.9**, ratio **1.25**; Calloway Memorial Hospital **190.6** over **143.8**, ratio **1.33**; Mercy Valley Medical Center **502.2** over **387.1**, ratio **1.30**; Northgate Community Hospital **189.3** over **122.2**, ratio **1.55**; Westover Regional Hospital **260.3** over **179.9**, ratio **1.45**.
-3. Varden Surgical Hospital, which the uncorrected links put over the line: **26.4** deaths over **25.6** expected, ratio **1.03**.
+1. Calder Bank's, Kestrel Rise's and Abbots Hollow's index rose **7.9%**, **6.7%** and **5.8%** from 2025 to 2026.
+2. Pellbury's index rose **3.1%** with the pairs spanning completed building work set aside, against **6.0%** on every pair.
+3. The pressured wards have **148**, **96** and **71** homes due to start on site in 2027-28, **315** in all.
 
 ## 3. Step-by-Step Solution
 
-1. Conformed hchp_ip_claims_extract_2026-10-05.csv and CMG_HCHP_IP_ENC_20261006.txt into stays, each as last corrected with voided and deleted bills dropped, Carrisford member numbers mapped through hchp_member_enrollment_extract_2026-10-05.csv and both of Mercy Valley's NPIs through hchp_network_hospitals_2026.csv.
-2. Kept the index admissions of specification 2.1 to 2.4 (34,500 in all): adults, no delivery DRGs, no patient status 07, each member's first, a transfer joined to the first hospital's stay.
-3. Summed each hospital's HIMM 3.2 scores from HIMM_3.2_scores_FY2026_admissions.xlsx, keyed by member, admission date and NPI.
-4. Counted the deaths the bills record (patient status 20 on the stay, its transfer stay or a later stay ending within the 30 days) and joined OVR_HCHP_FY2026_DEATH_LINKAGE_RETURN.csv on member and admission date.
-5. Classed each member by hchp_member_enrollment_extract_2026-10-05.csv (Social Security number on file; otherwise single or two-part surname) and measured each class's share of recorded deaths linked and share of members with a service line in hchp_member_service_lines_2025-01_2026-09.csv, an admission or a live discharge after day 30 linked.
-6. For each hospital and class, estimated the deaths among the admissions neither recorded dead nor seen alive after day 30 as (links less the false-link share times the admissions) over (the share linked less the false-link share), and added the recorded deaths.
-7. Divided each hospital's deaths by its expected deaths and marked the hospitals over 1.15 (specification 5.2).
-8. Took 2 per cent of each hospital's Halbrook payments for stays discharged in fiscal 2026 (Carrisford's out): each stay its original plus a CPS replacement's change or a platform replacement's full amount, a voided bill nothing, plus each additional payment in HCHP_Provider_Dispute_Log_IP_2026-10-01.xlsx made by September 30 on those stays, except one the disputed claim's replacement bill paid that day already carries: the replacement's change to the stay's payment (a CPS replacement's amount, or a platform replacement's amount less the original's) equals the additional payment.
+1. Read pp-harrowmere-2015-2025.csv and pp-harrowmere-2026.csv and applied pp-monthly-update-2027-01.csv by transaction identifier: A and C rows stand as published, D rows withdraw the entry.
+2. Kept standard (category A) entries for property types D, S, T and F and paired each address's consecutive sales (PAON, SAON, street and postcode), per section 3 of hvha_ward_house_price_index_methodology.pdf.
+3. Read both sheets of hcc_building_control_completions_2015-2026.xlsx to house number or name, flat and postcode, and set aside every pair whose dwelling has a completion certificate dated between its two sales, the dwelling being of a different quality at the second sale: Pellbury keeps 226 of its 261 pairs ending in 2026.
+4. Placed each pair in its May 2023 ward by postcode (wd23cd in harrowmere_postcode_directory_2026-11.csv), fitted each ward's index by ordinary least squares on the year indicators and took the 2025 to 2026 change: Calder Bank 7.9, Kestrel Rise 6.7, Abbots Hollow 5.8, every other ward under 5.0 (Pellbury 3.1).
+5. Ask A: register rows certified in 2026, dwellings created less dwellings lost, each application once (a partial completion and its completion certificate carry the same dwellings), in the ward of the site postcode's wd23cd, since the register's Ward column holds the 2019 wards: 348 in all.
+6. Ask B: category B entries for dwellings transferred in 2026, after the update; a portfolio transfer's price stands on each of its titles, so a price on three or more entries of one day is counted once: 525 entries, GBP 160,661,830 in all.
+7. Ask C: start-on-site claims in hvha_start_on_site_claims_2025-2027.csv dated 2026 and Paid or Approved, each start once (Calderstone's claims for the starts Brackwell Homes was paid for before the merger repeat the postcode, start date and homes): 1540 homes in all.
+8. Shared the GBP 12,000,000 among the three in proportion to homes in Approved or In contract schemes due to start from 1 April 2027 to 31 March 2028 in hvha_affordable_pipeline_2027-28.xlsx, per section 3 of the programme rules: Calder Bank GBP 5,638,095, Kestrel Rise GBP 3,657,143 and Abbots Hollow GBP 2,704,762.
 
 ## 4. Deliverable Answers
 
-### halbrook_2027_hospital_quality_bonus.xlsx
+### harrowmere_pressured_wards_2027-28.pdf
 
-1. Hospitals that lose the 2027 bonus: **5**: Brannock Medical Center, Calloway Memorial Hospital, Mercy Valley Medical Center, Northgate Community Hospital and Westover Regional Hospital.
-2. Each hospital, 2027 bonus and bonus at stake (2 per cent of fiscal 2026 inpatient payments, nearest $100):
-   - Saint Brendan Medical Center: keeps, $791,900
-   - Westover Regional Hospital: loses, $816,700
-   - Calloway Memorial Hospital: loses, $477,100
-   - Varden Surgical Hospital: keeps, $833,800
-   - Mercy Valley Medical Center: loses, $579,700
-   - Northgate Community Hospital: loses, $559,500
-   - Tamsin General Hospital: keeps, $389,500
-   - Pinecrest Hospital: keeps, $412,200
-   - Brannock Medical Center: loses, $391,800
-   - Lakeshore Hospital: keeps, $366,900
-   - Corbel Falls Hospital: keeps, $314,400
-   - Quayside Hospital: keeps, $599,300
-   - Marlow Ridge Medical Center: keeps, $293,100
-   - Fairhaven Community Hospital: keeps, $247,400
-3. Total bonus at stake across the network: $7,073,300.
-4. Bar chart of the 14 hospitals' fiscal 2026 mortality ratios against the 1.15 line, the five that lose the bonus highlighted.
+1. Pressured wards for 2027-28: Calder Bank, Kestrel Rise and Abbots Hollow.
+2. Shares of the GBP 12,000,000 uplift: Calder Bank GBP 5,638,095; Kestrel Rise GBP 3,657,143; Abbots Hollow GBP 2,704,762.
+3. Chart on page 1: every ward's 2025 to 2026 index change as a bar, the 5.0 per cent line marked and the three pressured wards highlighted.
+
+### harrowmere_ward_index_2026.xlsx
+
+1. Index change 2025 to 2026, per cent to one decimal:
+   - Abbots Hollow: 5.8
+   - Brindley Moor: 3.4
+   - Calder Bank: 7.9
+   - Dunmore: 2.2
+   - Eastholme: 3.9
+   - Fennick: 3.6
+   - Gorsey Hill: 2.6
+   - Hollin Edge: 3.7
+   - Kestrel Rise: 6.7
+   - Moss Brow: 2.4
+   - Pellbury: 3.1
+   - Wexley: 3.5
+2. Share of the uplift, nearest pound:
+   - Abbots Hollow: GBP 2,704,762
+   - Brindley Moor: GBP 0
+   - Calder Bank: GBP 5,638,095
+   - Dunmore: GBP 0
+   - Eastholme: GBP 0
+   - Fennick: GBP 0
+   - Gorsey Hill: GBP 0
+   - Hollin Edge: GBP 0
+   - Kestrel Rise: GBP 3,657,143
+   - Moss Brow: GBP 0
+   - Pellbury: GBP 0
+   - Wexley: GBP 0
+3. Net additional dwellings from building work completed in 2026 (May 2023 wards):
+   - Abbots Hollow: 21
+   - Brindley Moor: 26
+   - Calder Bank: 61
+   - Dunmore: 19
+   - Eastholme: 16
+   - Fennick: 11
+   - Gorsey Hill: 17
+   - Hollin Edge: 22
+   - Kestrel Rise: 35
+   - Moss Brow: 60
+   - Pellbury: 12
+   - Wexley: 48
+4. Additional price paid entries for dwellings transferred in 2026, count and money paid to the nearest pound:
+   - Abbots Hollow: 45 entries, GBP 14,939,138
+   - Brindley Moor: 43 entries, GBP 18,514,750
+   - Calder Bank: 93 entries, GBP 22,234,280
+   - Dunmore: 28 entries, GBP 12,089,585
+   - Eastholme: 51 entries, GBP 15,158,172
+   - Fennick: 48 entries, GBP 11,033,449
+   - Gorsey Hill: 30 entries, GBP 14,047,363
+   - Hollin Edge: 45 entries, GBP 13,924,752
+   - Kestrel Rise: 27 entries, GBP 7,121,539
+   - Moss Brow: 34 entries, GBP 9,947,892
+   - Pellbury: 39 entries, GBP 8,806,141
+   - Wexley: 42 entries, GBP 12,844,769
+5. Affordable homes started on site in 2026:
+   - Abbots Hollow: 131
+   - Brindley Moor: 138
+   - Calder Bank: 89
+   - Dunmore: 158
+   - Eastholme: 92
+   - Fennick: 164
+   - Gorsey Hill: 139
+   - Hollin Edge: 133
+   - Kestrel Rise: 86
+   - Moss Brow: 132
+   - Pellbury: 63
+   - Wexley: 215

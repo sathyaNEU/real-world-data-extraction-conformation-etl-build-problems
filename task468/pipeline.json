@@ -1,25 +1,26 @@
 {
  "task": "task468",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics / seasonal-adjustment-official-time-series-production (client survey-research-official-statistics)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-31",
- "stump": "The default path applies the January 2027 update, pairs each dwelling's consecutive standard sales by address and fits the methodology's repeat-sales regression on every pair, so the ward where small developers extended and resold terraces clears the 5 per cent line and takes a share of the GBP 12 million beside the three wards whose prices really rose; setting aside the pairs whose dwelling had building work completed between its two sales (the council's building control completions, matched to the price paid addresses) puts that ward near 3 per cent and the pot splits three ways.",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-01",
+ "stump": "The default path applies the January 2027 update, pairs each address's consecutive standard sales and fits the methodology's repeat-sales index on every pair, filing Calder Bank, Kestrel Rise, Pellbury (6.0 per cent) and Abbots Hollow and sharing the GBP 12 million four ways; setting aside the pairs whose dwelling had building work completed between its two sales (the council's building control completions matched to the sale addresses) puts Pellbury at 3.1 per cent and the uplift goes to the three: Calder Bank GBP 5,638,095, Kestrel Rise GBP 3,657,143, Abbots Hollow GBP 2,704,762.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": null
+  "exit": 0,
+  "date": "2026-11-01",
+  "checks": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on target.zip 2b95ef4209da0565, no LEAK, sweep 11 clean; every REVIEW line ruled in the design note's ## Leak check",
+  "reader": "pending (stage 4, main thread): copy at scratchpad/leak-task468/, brief at scratchpad/task468_stage4_leak_brief.md"
  },
  "duplicate_check": {
-  "heart": "",
-  "surface": ""
+  "heart": "WARN 2026-11-01 (overuse.org_family only; nearest driver 0.10 against task482 v4 lineage, stump 0.05)",
+  "surface": "2026-11-01 on target.zip 2b95ef42: five pairs promoted for adjudication (task467 and task470 on the SROS-ETL pairing, task251, task245 and task305 on the population gap), each answered by a differentiation line on the card; no people finding; the adjudicated clone check is the author's to call"
  },
  "judge": {
   "verdict": "",
@@ -34,13 +35,19 @@
    "commit": "DRAWN (task468) architecture 5"
   }
  ],
- "resume": "stage 2: design (survivor anatomy, default path, stump sentence, three rules, readability screen, fork and closure tables, ladder, the asks, prompt.txt) until precut.py exits 0, then the generator",
+ "resume": "stage 4 from the main thread (a fork cannot spawn): confirm `python3 task468/generator/make.py` rebuilds target.zip 2b95ef4209da0565 byte-identical, then spawn together in the background the leak reader (general-purpose, sonnet, medium) with the prompt in scratchpad/task468_stage4_leak_brief.md on the copy at scratchpad/leak-task468/, and the determinism judge (determinism-judge, medium) on task468/; fix every finding in the generator in one pass, re-run make.py, precut.py, figures_check.py, leak.py --asof 2027-02-03, guard.py surface and heart, then stage 5 (ship)",
  "approved": null,
  "delivered": null,
  "portal": null,
  "source_note": "fresh architecture 5 (no seed): a regional housing agency's 2027-28 pressured-ward uplift on a constant-quality repeat-sales house price index",
- "ceiling": {},
- "target_zip": "",
+ "ceiling": {
+  "pair": 40.72,
+  "cracker": 58.75,
+  "best_mirror": 22.69,
+  "mirror_leakage": 19.4,
+  "script": "generator/ceiling.py"
+ },
+ "target_zip": "2b95ef4209da0565f805001d6c8941420141e73f742d945d5faddd56ebf7aed2",
  "history": [
   {
    "architecture": 1,
@@ -96,5 +103,13 @@
     "leak_check_report_arch4.md"
    ]
   }
- ]
+ ],
+ "gates": {
+  "generator_checks": "all pass (generator/checks.py)",
+  "verify": "every owed figure recomputed independently",
+  "byte_identical": "two builds identical",
+  "figures_check": "100 of 100",
+  "voice_check": "PASS",
+  "guard_check": "WARN only (overuse.org_family)"
+ }
 }
