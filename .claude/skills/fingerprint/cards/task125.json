@@ -44,7 +44,7 @@
     "a CAD export in UTC carrying the contracted township's events with its patrol zones in the district column",
     "a tour roster dating each night tour by the evening it starts"
   ],
-  "stakeholder_role": "Superintendent, Patrol Operations, presenting the 2027 deployment plan to the Chief's command team",
+  "stakeholder_role": "Superintendent, Patrol Operations, signing off the 2027 designation with the platoons' deployment plan",
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
@@ -54,7 +54,7 @@
     "grain": "occurrence x version",
     "source": "synthetic"
   },
-  "forum": "executive_team",
+  "forum": "line_manager_or_team",
   "forcing_event": "period_close",
   "org_family": "local_government",
   "world": {
@@ -111,8 +111,8 @@
       "org_family": "government_agency"
     }
   ],
-  "notes": "Re-rooted from architecture 3 (a planted-defect flip). Every recorded number is accurate as recorded; the easy route uses accurate counts the wrong way, as a forecast of 2027. Built on seed 125054: the gap at the cut is 23 expected crimes and every standing member files one designation. Forcing event redrawn at the build from vote_or_meeting (banned against task172 v2, drawn just before) to period_close: the designation is made once the year has closed, for the calendar year ahead.",
-  "registered": "2026-10-31T23:51:44Z",
+  "notes": "Re-rooted from architecture 3 (a planted-defect flip). Every recorded number is accurate as recorded; the easy route uses accurate counts the wrong way, as a forecast of 2027. Built on seed 125054: the gap at the cut is 23 expected crimes and every standing member files one designation. Forcing event redrawn at the build from vote_or_meeting (banned against task172 v2, drawn just before) to period_close: the designation is made once the year has closed, for the calendar year ahead. Forum redrawn at the stage 4 repair from executive_team (banned against task122 v4 once the forcing-event redraw re-registered the card) to line_manager_or_team: the Superintendent, Patrol Operations adopts the designation for the division with the deployment plan.",
+  "registered": "2026-11-01T00:37:31Z",
   "shell": {
     "question form": "whether",
     "second-sentence opener": "lay",

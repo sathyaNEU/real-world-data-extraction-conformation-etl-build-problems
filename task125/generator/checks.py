@@ -210,26 +210,68 @@ def main():
     check("SF20", call_nights(nb) == top, "%d nights with both venues busy, counted for both or for neither: same "
           "call" % len(both))
 
-    # ------------------------------------------------------------------ asks
-    ga, gb = A.asks(P)
-    ra, rb = A.asks_raw(P)
-    ca, cb = A.asks(P, by_district=True, naive_tour=True)
-    check("D1", all(ga[k] != ca[k] for k in ga), "ask A: the cracker (tour by the dispatch's own date, wards by "
-          "district) misses %d of 32" % sum(ga[k] != ca[k] for k in ga))
-    na, _ = A.asks(P, by_district=False, naive_tour=True)
-    check("D1b", sum(ga[k] != na[k] for k in ga) >= 24, "ask A: the tour dating alone moves %d of 32" %
-          sum(ga[k] != na[k] for k in ga))
-    da, _ = A.asks(P, by_district=True, naive_tour=False)
-    check("D1c", sum(ga[k] != da[k] for k in ga) >= 24, "ask A: the districts alone move %d of 32" %
-          sum(ga[k] != da[k] for k in ga))
-    check("D2", all(gb[k] != cb[k] for k in gb), "ask B: the districts move %d of 8 medians (by %s)" %
-          (sum(gb[k] != cb[k] for k in gb), ", ".join("%.1f" % (cb[k] - gb[k]) for k in sorted(gb))))
-    edge_a = [k for k, v in ra.items() if abs((v % 1) - 0.5) < 0.01]
-    edge_b = [k for k, v in rb.items() if abs(((v * 10) % 1) - 0.5) < 0.01]
-    check("M4", not edge_a and not edge_b, "no ask figure within a hair of its rounding edge (%s %s)" %
-          (edge_a, edge_b))
-    officer = [r for r in P.cad if r["source"] == "OFFICER" and r["priority"] == "1"]
-    check("SF12", len(officer) > 0, "officer-started priority 1 events exist and are not calls (Directive PO-14, section 2)")
+    # ------------------------------------------------------------------ the 2027 night counts the write-up names
+    base_e, eg, el = A.decompose(S["m"], S["nights"])
+    held = 0
+    for nl in range(20, 61):
+        for ng in range(0, 11):
+            held += set(A.designate(ids, base_e * 365 + eg * ng + el * nl)[0]) == top
+    check("C4", held == 41 * 11, "the same 20 for every 2027 count of 20 to 60 Lakeshore and 0 to 10 Gardens nights "
+          "(%d of %d)" % (held, 41 * 11))
+
+    # ------------------------------------------------------------------ the CAD's clocks
+    neg = before = 0
+    for r in P.cad:
+        if not r["unit"]:
+            continue
+        rec, dsp = A.utc_of(r["received_utc"]), A.utc_of(r["dispatched_utc"])
+        steps = [A.utc_of(r[c]) for c in ("dispatched_utc", "enroute_utc", "onscene_utc", "cleared_utc") if r[c]]
+        neg += any(y < x for x, y in zip(steps, steps[1:]))
+        before += dsp < rec
+    check("T1", neg == 0 and before == 0, "every unit row runs forward: dispatch, en route, on scene, clear (%d rows "
+          "out of order), and no unit is dispatched before its call's receipt (%d)" % (neg, before))
+    stamps = [r for r in P.cad if r["unit"] and r["dispatched_utc"].endswith("Z") and r["cleared_utc"].endswith("Z")]
+    check("SF23", len(stamps) == sum(1 for r in P.cad if r["unit"]) and neg == 0,
+          "every unit stamp is UTC and runs forward, so a unit's hours are the elapsed time between its stamps on "
+          "either side of a clock change")
+    seen, back = [], 0
+    for r in P.cad:
+        if not seen or seen[-1][0] != r["event_no"]:
+            seen.append((r["event_no"], A.utc_of(r["received_utc"])))
+    back = sum(1 for x, y in zip(seen, seen[1:]) if y[1] < x[1])
+    check("T2", back == 0, "events are numbered in the order they were received, through both clock changes (%d "
+          "out of order)" % back)
+    quiet = sum(1 for r in P.cad if r["unit"] and r["source"] != "OFFICER" and
+                A.parse_utc(r["dispatched_utc"]).replace(tzinfo=None).strftime("%Y-%m-%d %H") == "2026-03-09 00")
+    check("T3", quiet == 0, "no unit is dispatched to a call in the first hour of 9 March, where a night tour dated by "
+          "a day of elapsed time lands on 7 March")
+
+    # ------------------------------------------------------------------ the ask
+    (ga,) = A.asks(P)
+    (ra,) = A.asks_raw(P)
+    (ca,) = A.asks(P, by_district=False, naive_tour=True)
+    check("D1", all(ga[k] != ca[k] for k in ga), "ask A: the cracker (each unit crewed from the roster's tour of the "
+          "dispatch's own date) misses %d of 32" % sum(ga[k] != ca[k] for k in ga))
+    (rn,) = A.asks_raw(P, by_district=False, naive_tour=True)
+    check("D1b", min(abs(rn[k] - ra[k]) for k in ra) >= 1.0, "ask A: crews from the dispatch's own date move every "
+          "cell by at least an hour (smallest %.2f)" % min(abs(rn[k] - ra[k]) for k in ra))
+    (da,) = A.asks(P, by_district=True, naive_tour=False)
+    print("INFO   ask A: Elmvale's events read into the wards by their district would move %d of 32 (Directive "
+          "PO-14 files that a call outside the City's wards belongs to none)" % sum(ga[k] != da[k] for k in ga))
+    readings = {"keep": A.ask_officer_hours(P), "drop": A.ask_officer_hours(P, intervals="drop"),
+                "clip": A.ask_officer_hours(P, intervals="clip"),
+                "elapsed-day tour dating": A.ask_officer_hours(P, tour=A.tour_elapsed),
+                "wall-clock tour dating": A.ask_officer_hours(P, tour=A.tour_naive_wall)}
+    moved = {n: [k for k in ga if int(A.half_up(v[k])) != ga[k]] for n, v in readings.items()}
+    check("D3", not any(moved.values()), "every cell holds at its rounding under %s (%s)" %
+          (", ".join(readings), "; ".join("%s %d" % (n, len(m)) for n, m in moved.items())))
+    spread = max(abs(v[k] - ra[k]) for v in readings.values() for k in ra)
+    check("D4", spread < 1e-6, "the five readings agree to %.2g hours in every cell" % spread)
+    edge = min(abs((v % 1) - 0.5) for v in ra.values())
+    check("M4", edge >= 0.25, "every officer-hours cell sits at least a quarter of an hour from its rounding edge "
+          "(nearest %.3f)" % edge)
+    officer = [r for r in P.cad if r["source"] == "OFFICER"]
+    check("SF12", len(officer) > 0, "officer-started events exist and are not calls (Directive PO-14, section 2)")
     utc_year = sum(1 for r in P.cad if r["received_utc"].startswith("2027"))
     check("SF13", utc_year > 0, "calls received late on 31 December 2026 local carry 2027 UTC stamps (%d rows); a "
           "call's date is its local receipt date (Directive PO-14, section 2)" % utc_year)
@@ -237,9 +279,8 @@ def main():
     check("SF14", n25 and all(r["tour"] == "N" for r in n25), "the roster's only 2025 rows are the night tour of "
           "31 December, which covers 1 January 2026 from midnight: a night tour is dated by its start")
     twp = sum(1 for r in P.cad if r["segment_id"] and int(r["segment_id"]) not in P.segs)
-    check("SF15", twp > 0, "%d CAD rows sit on segments outside the street file; a ward counts the calls at addresses in it "
-          "(Directive PO-14, section 2)" % twp)
-    check("SF16", all(r["priority"] in "1234" for r in P.cad), "priority is the dispatched priority (Directive PO-14, section 2)")
+    check("SF15", twp > 0, "%d CAD rows sit at addresses outside the City's street file; a call outside the City's "
+          "wards belongs to none (Directive PO-14, section 2)" % twp)
     crossing = 0
     for r in P.cad:
         if not r["unit"]:
@@ -249,9 +290,6 @@ def main():
             crossing += 1
     check("SF22", crossing == 0, "no unit assignment runs across a tour change, so the crew at dispatch is the "
           "crew throughout")
-    cb2 = A.ask_p1(P)
-    check("SF17", all(abs(cb2[k] - rb[k]) < 1e-9 for k in rb), "the first arrival is the earliest onscene of any "
-          "unit, sergeants included")
     check("SF21", abs(sum(ra.values()) - sum(ga.values())) < 32, "officer-hours are dispatch to clear times crew")
 
     # ------------------------------------------------------------------ X: patterns and documents

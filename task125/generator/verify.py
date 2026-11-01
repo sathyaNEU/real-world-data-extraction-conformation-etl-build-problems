@@ -111,13 +111,6 @@ def main():
         bad += got != v
     fails.append(bad)
     print("%s  ask A recomputed (%d of 32 differ)" % ("PASS" if not bad else "FAIL", bad))
-    p1 = cad[(cad.priority == "1") & cad.onscene_utc.notna()]
-    first = p1.groupby(["event_no", "ward"]).agg(rec=("received_utc", "first"), ons=("onscene_utc", "min")).reset_index()
-    first["mins"] = (first.ons - first.rec).dt.total_seconds() / 60
-    med = first.groupby("ward").mins.median()
-    bad = sum(int(np.floor(med[int(k)] * 10 + 0.5)) != int(round(v * 10)) for k, v in fig["ask_p1_median"].items())
-    fails.append(bad)
-    print("%s  ask B recomputed (%d of 8 differ)" % ("PASS" if not bad else "FAIL", bad))
     return 0 if not any(fails) else 1
 
 

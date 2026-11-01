@@ -76,13 +76,39 @@ def tour_of(t_local):
     return d - dt.timedelta(1), "N"
 
 
-def tour_end(t_local):
-    d, s = tour_of(t_local)
-    z = t_local.tzinfo
+def tour_end(t):
+    """The end of the tour covering an instant, as an aware datetime (07:00 and 19:00 exist on every date)."""
+    z = tz()
+    d, s = tour_of(t.astimezone(z))
     if s == "D":
         return dt.datetime(d.year, d.month, d.day, 19, 0, tzinfo=z)
     e = d + dt.timedelta(1)
     return dt.datetime(e.year, e.month, e.day, 7, 0, tzinfo=z)
+
+
+UTC = dt.timezone.utc
+QUIET = (dt.datetime(2026, 3, 9, 0, 0), dt.datetime(2026, 3, 9, 1, 0))
+
+
+def wall(naive):
+    """A real local time from a drawn wall time: a time the March change skips reads an hour later, and a time in
+    the first hour of 9 March is taken an hour later too."""
+    z = tz()
+    t = naive.replace(tzinfo=z)
+    if t.astimezone(UTC).astimezone(z).replace(tzinfo=None) != naive:
+        naive = naive + dt.timedelta(hours=1)
+    if QUIET[0] <= naive < QUIET[1]:
+        naive = naive + dt.timedelta(hours=1)
+    return naive.replace(tzinfo=z)
+
+
+def quiet(t):
+    """An instant in the first hour of 9 March moved an hour on, so every reading of a night tour's date agrees."""
+    z = tz()
+    loc = t.astimezone(z).replace(tzinfo=None)
+    if QUIET[0] <= loc < QUIET[1]:
+        return t + dt.timedelta(hours=1)
+    return t
 
 
 # ----------------------------------------------------------------------------------------------- the calls
@@ -105,7 +131,8 @@ def cad(r, segs, twp, base, nonp):
         for area, n in (("city", int(r.poisson(79))), ("twp", int(r.poisson(8.1)))):
             for _ in range(n):
                 h = int(r.choice(24, p=HOUR))
-                t_local = dt.datetime(d.year, d.month, d.day, h, int(r.integers(60)), int(r.integers(60)), tzinfo=z)
+                drawn = dt.datetime(d.year, d.month, d.day, h, int(r.integers(60)), int(r.integers(60)))
+                t_local = wall(drawn)
                 u = r.random()
                 prio = 1 if u < 0.062 else (2 if u < 0.30 else (3 if u < 0.76 else 4))
                 if area == "city":
@@ -126,7 +153,7 @@ def cad(r, segs, twp, base, nonp):
                     src = "911" if v < 0.22 else ("PHONE" if v < 0.66 else ("ALARM" if v < 0.75 else
                                                                           ("OFFICER" if v < 0.97 else "WALK-IN")))
                     ctype = OTHER_TYPES[int(r.integers(len(OTHER_TYPES)))]
-                ev = {"seq": seq, "received": t_local, "priority": prio, "type": ctype, "source": src,
+                ev = {"seq": seq, "received": t_local, "drawn": drawn, "priority": prio, "type": ctype, "source": src,
                       "address": addr, "segment": seg, "district": district, "ward": ward, "area": area,
                       "units": []}
                 seq += 1
@@ -142,7 +169,7 @@ def cad(r, segs, twp, base, nonp):
                     _units(r, ev, prio, src, area, ward)
                 events.append(ev)
         d += dt.timedelta(1)
-    events.sort(key=lambda e: (e["received"], e["seq"]))
+    events.sort(key=lambda e: (e["received"].astimezone(UTC), e["seq"]))
     return events
 
 
@@ -162,36 +189,76 @@ def _units(r, ev, prio, src, area, ward):
             chosen.append(u)
         if len(chosen) == nunits:
             break
-    t0 = ev["received"]
+    z = tz()
+    t0 = ev["received"].astimezone(UTC)
+    w0 = ev["drawn"]
     delay = {1: 0.85, 2: 2.6, 3: 7.5, 4: 18.0}[prio] * math.exp(r.normal(0, 0.45))
     travel = (WARD_TRAVEL[ward] if area == "city" else 11.6) * (1.0 if prio == 1 else 1.22)
     first = travel * math.exp(r.normal(0, 0.40))
     for k, u in enumerate(chosen):
+        # w_* replay the wall-clock times every draw was decided on; the stamps themselves run in UTC
         if src == "OFFICER" and k == 0:
-            dsp = t0 + dt.timedelta(seconds=int(r.integers(5, 40)))
-            ons = dsp + dt.timedelta(seconds=int(r.integers(0, 15)))
+            s1, s2 = int(r.integers(5, 40)), int(r.integers(0, 15))
+            w_dsp = w0 + dt.timedelta(seconds=s1)
+            w_ons = w_dsp + dt.timedelta(seconds=s2)
+            dsp = quiet(t0 + dt.timedelta(seconds=s1))
+            ons = dsp + dt.timedelta(seconds=s2)
         else:
-            dsp = t0 + dt.timedelta(minutes=delay + 0.6 * k * r.random())
+            lead = delay + 0.6 * k * r.random()
             tr = first if k == 0 else first * (1.0 + 0.35 * r.random()) + r.uniform(0.5, 4.0)
+            w_dsp = w0 + dt.timedelta(minutes=lead)
+            w_ons = w_dsp + dt.timedelta(minutes=tr)
+            dsp = quiet(t0 + dt.timedelta(minutes=lead))
             ons = dsp + dt.timedelta(minutes=tr)
-        end = tour_end(dsp)
-        if ons >= end - dt.timedelta(minutes=2):
-            dsp = end + dt.timedelta(seconds=int(r.integers(20, 90)))
-            ons = dsp + dt.timedelta(minutes=first if k == 0 else first + r.uniform(0.5, 4.0))
-            end = tour_end(dsp)
-        enr = dsp + dt.timedelta(seconds=int(r.integers(10, 75)))
+        w_end = _wall_end(w_dsp)
+        end = tour_end(dsp).astimezone(UTC)
+        if w_ons >= w_end - dt.timedelta(minutes=2):
+            s3 = int(r.integers(20, 90))
+            extra = first if k == 0 else first + r.uniform(0.5, 4.0)
+            w_dsp = w_end + dt.timedelta(seconds=s3)
+            w_end = _wall_end(w_dsp)
+            dsp = quiet(end + dt.timedelta(seconds=s3))
+            ons = dsp + dt.timedelta(minutes=extra)
+            end = tour_end(dsp).astimezone(UTC)
+        elif ons >= end - dt.timedelta(minutes=2):
+            dsp = quiet(end + dt.timedelta(seconds=55))
+            ons = dsp + dt.timedelta(minutes=first)
+            end = tour_end(dsp).astimezone(UTC)
+        lag0 = int(r.integers(10, 75))
+        w_enr = w_dsp + dt.timedelta(seconds=lag0)
+        lag = min(lag0, max(0, int((ons - dsp).total_seconds()) // 2))
+        enr = dsp + dt.timedelta(seconds=lag)
         if ev["disposition"] == "CANCELLED":
+            g = float(r.uniform(1.5, 9.0))
+            w_clr = w_enr + dt.timedelta(minutes=g)
             ons = None
-            clr = enr + dt.timedelta(minutes=float(r.uniform(1.5, 9.0)))
+            clr = enr + dt.timedelta(minutes=g)
         else:
-            clr = ons + dt.timedelta(minutes=float(r.gamma(2.2, 18.0)))
-        if clr >= end - dt.timedelta(minutes=1):
+            g = float(r.gamma(2.2, 18.0))
+            w_clr = w_ons + dt.timedelta(minutes=g)
+            clr = ons + dt.timedelta(minutes=g)
+        if w_clr >= w_end - dt.timedelta(minutes=1):
             clr = end - dt.timedelta(seconds=int(r.integers(40, 200)))
-            if ons is not None and clr <= ons:
-                clr = ons + dt.timedelta(seconds=30)
-        sec = lambda x: None if x is None else x.replace(microsecond=0)
+        elif clr >= end - dt.timedelta(minutes=1):
+            clr = end - dt.timedelta(seconds=90)
+        if ons is not None and clr <= ons:
+            clr = ons + dt.timedelta(seconds=30)
+        if clr <= enr:
+            clr = enr + dt.timedelta(seconds=30)
+        sec = lambda x: None if x is None else x.replace(microsecond=0).astimezone(z)
         ev["units"].append({"unit": u, "dispatched": sec(dsp), "enroute": sec(enr), "onscene": sec(ons),
                             "cleared": sec(clr)})
+
+
+def _wall_end(w):
+    """The end of the tour covering a naive wall-clock time, as a naive wall-clock time."""
+    h = w.hour + w.minute / 60.0
+    d = w.date()
+    if 7 <= h < 19:
+        return dt.datetime(d.year, d.month, d.day, 19, 0)
+    if h >= 19:
+        d = d + dt.timedelta(1)
+    return dt.datetime(d.year, d.month, d.day, 7, 0)
 
 
 # ----------------------------------------------------------------------------------------------- paid duty

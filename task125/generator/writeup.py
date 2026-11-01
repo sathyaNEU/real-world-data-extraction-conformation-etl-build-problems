@@ -25,9 +25,9 @@ def write(path, fig):
           "the Lakeshore Centre come in and the five around the Memorial Gardens drop out, because the Mariners "
           "play their 2027 home games at the Lakeshore Centre and those segments' street crime follows the "
           "venue's event nights.** From 2022 to 2026 the five Lakeshore segments recorded %d of their %d founded "
-          "patrol crimes on the Lakeshore Centre's %d event nights. Not the ranking of 2026's or the five years' "
-          "counts, which keeps the Gardens segments on crime the Gardens' event nights carried (%d of their %d on "
-          "%d nights) and leaves out the segments the 2027 calendar loads."
+          "patrol crimes on the Lakeshore Centre's %d event nights. A ranking on 2026's counts or on the five-year "
+          "average is the wrong basis for 2027: it would keep the five Gardens segments, whose counts the Gardens' "
+          "event nights carried (%d of their %d crimes on %d nights), and leave out the five Lakeshore segments."
           % (fig["entering_on_lakeshore_nights"], fig["entering_total"], fig["lakeshore_nights_2022_2026"],
              fig["leaving_on_gardens_nights"], fig["leaving_total"], fig["gardens_nights_2022_2026"]), ""]
     L += ["## 2. Critical Components", "",
@@ -54,17 +54,21 @@ def write(path, fig):
           % (fig["gardens_nights_2022_2026"], fig["lakeshore_nights_2022_2026"], fig["mariners_2027_booked"]),
           "3. Fitted each segment's daily founded patrol crimes from 2022 to 2026 by least squares on a constant "
           "and the two venues' event-night indicators: its steady rate and its excess on each venue's nights.",
-          "4. Took 2027 as 2026's calendar with the Mariners' %d home games at the Lakeshore Centre (%d Lakeshore "
-          "nights, %d Gardens nights), each segment's expected count 365 days at its steady rate plus each excess "
-          "times its venue's nights, and designated the 20 highest."
-          % (fig["mariners_2026"], fig["nights_2027_lakeshore"], fig["nights_2027_gardens"]),
+          "4. Took each segment's expected 2027 count as %d days at its steady rate plus each excess times its "
+          "venue's 2027 event nights, the nights read from the register: 2026's %d Lakeshore and %d Gardens nights "
+          "with the Mariners' %d Gardens nights of 2026 at the Lakeshore Centre, where the 2027 sheet books the team "
+          "(%d and %d); the same 20 come out of the 2027 sheet's own bookings (%d and %d) and of any count from %d "
+          "to %d Lakeshore and %d to %d Gardens nights, and designated the 20 highest."
+          % (fig["days_2027"], fig["lakeshore_nights_2026"], fig["gardens_nights_2026"], fig["mariners_2026"],
+             fig["nights_2027_lakeshore"], fig["nights_2027_gardens"], fig["register_2027_lakeshore"],
+             fig["register_2027_gardens"], fig["robust_lakeshore"][0], fig["robust_lakeshore"][1],
+             fig["robust_gardens"][0], fig["robust_gardens"][1]),
           "5. Officer-hours: for each call in mps_cad_calls_2026.csv (source not OFFICER) received in 2026 local "
-          "time on a segment of the street file (so not Elmvale's events, whose districts repeat the ward "
-          "numbers), each unit's hours from dispatch to clear times its crew in mps_patrol_roster_2026.csv on the "
-          "tour covering the dispatch (a night tour is dated by the evening it starts), by ward and quarter of "
-          "receipt.",
-          "6. Priority 1 medians: the same calls at priority 1, the first onscene_utc of any unit minus "
-          "received_utc, median by the ward of the call's segment.", ""]
+          "time at an address on a segment of mountjoy_street_segments.csv, its ward the segment's (a call at an "
+          "address outside the City's wards belongs to none, Directive PO-14), each unit's hours from dispatch to "
+          "clear times its crew in mps_patrol_roster_2026.csv on the tour covering the dispatch (a night tour is "
+          "dated by the evening it starts), by ward and quarter of receipt.",
+          ""]
     L += ["## 4. Deliverable Answers", "", "### hot_spot_patrols_2027.pptx", "",
           "1. Designated segments, 20:"]
     for s in fig["designated_ranked"]:
@@ -82,8 +86,4 @@ def write(path, fig):
     for w in range(1, 9):
         L.append("   - Ward %d: %s" % (w, ", ".join("Q%d %d" % (q, fig["ask_officer_hours"]["%d Q%d" % (w, q)])
                                                  for q in range(1, 5))))
-    L += ["2. Median minutes in 2026 from the receipt of a priority 1 call to the first officer's arrival, one "
-          "decimal:"]
-    for w in range(1, 9):
-        L.append("   - Ward %d: %.1f" % (w, fig["ask_p1_median"][str(w)]))
     open(path, "w").write("\n".join(L) + "\n")

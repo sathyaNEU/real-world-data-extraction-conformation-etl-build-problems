@@ -1,4 +1,4 @@
-"""task125 goldens: the command team deck and the ward figures CSV, both computed from target/ by analysis.py, and
+"""task125 goldens: the designation deck and the ward figures CSV, both computed from target/ by analysis.py, and
 figures.json with every figure the write-up states."""
 import csv
 import datetime as dt
@@ -81,7 +81,8 @@ def figures(P):
     ng27, nl27 = A.calendar_2027(nights)
     mar26 = sorted(d for d in nights["MG"] if d.year == 2026)
     mar27 = sorted(d for d in nights["ML"] if d.year == 2027)
-    a, b = A.asks(P)
+    (a,) = A.asks(P)
+    ng_b, nl_b = A.calendar_2027(nights, "booked")
     fig = {
         "designated": sorted(top),
         "designated_ranked": [s for s in order[:20]],
@@ -101,7 +102,8 @@ def figures(P):
         "mariners_2026": len(mar26), "mariners_2027_booked": len(mar27),
         "mariners_last_gardens": mar26[-1].isoformat(), "mariners_first_lakeshore": mar27[0].isoformat(),
         "ask_officer_hours": {"%d Q%d" % k: v for k, v in sorted(a.items())},
-        "ask_p1_median": {str(k): v for k, v in sorted(b.items())},
+        "register_2027_gardens": int(ng_b), "register_2027_lakeshore": int(nl_b),
+        "robust_lakeshore": [20, 60], "robust_gardens": [0, 10],
         "labels": {str(s): label(segs[s]) for s in S["pool"]},
         "wards": {str(s): int(segs[s]["ward"]) for s in S["pool"]},
     }
@@ -325,8 +327,6 @@ def write_csv(fig, path):
         for k, v in fig["ask_officer_hours"].items():
             ward, q = k.split()
             w.writerow(["officer_hours_on_calls", ward, "2026 %s" % q, v, "hours"])
-        for k, v in fig["ask_p1_median"].items():
-            w.writerow(["p1_median_minutes_to_first_arrival", k, "2026", "%.1f" % v, "minutes"])
 
 
 def write_all(target, golden, base):

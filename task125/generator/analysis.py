@@ -38,9 +38,18 @@ def parse_t(x):
 
 
 def parse_utc(x):
+    """A CAD stamp as local time, for dates and tours. Never subtract two of these: in one zone Python subtracts by
+    wall clock, an hour out across a clock change; elapsed time comes from utc_of."""
     if not x:
         return None
     return dt.datetime.strptime(x, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(TZ)
+
+
+def utc_of(x):
+    """A CAD stamp as a UTC instant, for elapsed time."""
+    if not x:
+        return None
+    return dt.datetime.strptime(x, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
 
 
 class Pack:
@@ -306,7 +315,28 @@ def _ward_of_event(P, r, by_district):
     return int(P.segs[s]["ward"]) if s in P.segs else None
 
 
-def ask_officer_hours(P, by_district=False, naive_tour=False):
+def tour_elapsed(t):
+    """A night tour dated by subtracting a day of elapsed time from an after-midnight dispatch (a pandas habit),
+    which differs from the calendar reading only in the first hour after a spring-forward change."""
+    h = t.hour + t.minute / 60.0
+    if 7 <= h < 19:
+        return t.date(), "D"
+    if h >= 19:
+        return t.date(), "N"
+    back = (t.astimezone(dt.timezone.utc) - dt.timedelta(days=1)).astimezone(TZ)
+    return back.date(), "N"
+
+
+def tour_naive_wall(t):
+    """A tour dated on the naive local wall clock, seven hours back for the night tour's date."""
+    w = t.replace(tzinfo=None)
+    h = w.hour + w.minute / 60.0
+    if 7 <= h < 19:
+        return w.date(), "D"
+    return (w - dt.timedelta(hours=7)).date(), "N"
+
+
+def ask_officer_hours(P, by_district=False, naive_tour=False, tour=None, intervals="keep"):
     """Each ward's officer-hours on 2026 calls for service, by quarter of the call's local date."""
     cr = crews(P)
     out = {(w, q): 0.0 for w in range(1, 9) for q in range(1, 5)}
@@ -320,10 +350,15 @@ def ask_officer_hours(P, by_district=False, naive_tour=False):
         if w is None:
             continue
         dsp, clr = parse_utc(r["dispatched_utc"]), parse_utc(r["cleared_utc"])
-        tour = tour_naive(dsp) if naive_tour else tour_of(dsp)
-        n = cr.get(tour + (r["unit"],), 1)
+        key = (tour or (tour_naive if naive_tour else tour_of))(dsp)
+        n = cr.get(key + (r["unit"],), 1)
         q = (rec.month - 1) // 3 + 1
-        out[(w, q)] += (clr - dsp).total_seconds() / 3600.0 * n
+        hours = (utc_of(r["cleared_utc"]) - utc_of(r["dispatched_utc"])).total_seconds() / 3600.0
+        if hours < 0 and intervals == "drop":
+            continue
+        if hours < 0 and intervals == "clip":
+            hours = 0.0
+        out[(w, q)] += hours * n
     return out
 
 
@@ -401,11 +436,10 @@ def half_up(x, nd=0):
     return float(decimal.Decimal(repr(x)).quantize(q, rounding=decimal.ROUND_HALF_UP))
 
 
-def asks(P, by_district=False, naive_tour=False):
-    a = ask_officer_hours(P, by_district, naive_tour)
-    b = ask_p1(P, by_district)
-    return {k: int(half_up(v)) for k, v in a.items()}, {k: half_up(v, 1) for k, v in b.items()}
+def asks(P, by_district=False, naive_tour=False, tour=None):
+    a = ask_officer_hours(P, by_district, naive_tour, tour)
+    return ({k: int(half_up(v)) for k, v in a.items()},)
 
 
-def asks_raw(P, by_district=False, naive_tour=False):
-    return ask_officer_hours(P, by_district, naive_tour), ask_p1(P, by_district)
+def asks_raw(P, by_district=False, naive_tour=False, tour=None):
+    return (ask_officer_hours(P, by_district, naive_tour, tour),)

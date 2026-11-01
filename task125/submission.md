@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Designate the 20 street segments listed below for the 2027 hot spot patrols: the five segments around the Lakeshore Centre come in and the five around the Memorial Gardens drop out, because the Mariners play their 2027 home games at the Lakeshore Centre and those segments' street crime follows the venue's event nights.** From 2022 to 2026 the five Lakeshore segments recorded 410 of their 822 founded patrol crimes on the Lakeshore Centre's 61 event nights. Not the ranking of 2026's or the five years' counts, which keeps the Gardens segments on crime the Gardens' event nights carried (801 of their 1345 on 200 nights) and leaves out the segments the 2027 calendar loads.
+**Designate the 20 street segments listed below for the 2027 hot spot patrols: the five segments around the Lakeshore Centre come in and the five around the Memorial Gardens drop out, because the Mariners play their 2027 home games at the Lakeshore Centre and those segments' street crime follows the venue's event nights.** From 2022 to 2026 the five Lakeshore segments recorded 410 of their 822 founded patrol crimes on the Lakeshore Centre's 61 event nights. A ranking on 2026's counts or on the five-year average is the wrong basis for 2027: it would keep the five Gardens segments, whose counts the Gardens' event nights carried (801 of their 1345 crimes on 200 nights), and leave out the five Lakeshore segments.
 
 ## 2. Critical Components
 
@@ -19,9 +19,8 @@
 1. Conformed mps_rms_occurrences_2022_2026.csv under the protocol: each occurrence once on its latest version, legacy codes through rms_offence_code_crosswalk_2023.csv, legacy dates day first, unfounded out, dated by occurred_from or the report date where blank, on the segments of mountjoy_street_segments.csv.
 2. Took each venue's event nights from the EVENT duties at the Memorial Gardens and the Lakeshore Centre in every sheet of mps_paid_duty_register_2022_2027.xlsx: 200 Gardens and 61 Lakeshore nights from 2022 to 2026, and the 2027 sheet's 16 Mariners home games at the Lakeshore Centre.
 3. Fitted each segment's daily founded patrol crimes from 2022 to 2026 by least squares on a constant and the two venues' event-night indicators: its steady rate and its excess on each venue's nights.
-4. Took 2027 as 2026's calendar with the Mariners' 35 home games at the Lakeshore Centre (48 Lakeshore nights, 6 Gardens nights), each segment's expected count 365 days at its steady rate plus each excess times its venue's nights, and designated the 20 highest.
-5. Officer-hours: for each call in mps_cad_calls_2026.csv (source not OFFICER) received in 2026 local time on a segment of the street file (so not Elmvale's events, whose districts repeat the ward numbers), each unit's hours from dispatch to clear times its crew in mps_patrol_roster_2026.csv on the tour covering the dispatch (a night tour is dated by the evening it starts), by ward and quarter of receipt.
-6. Priority 1 medians: the same calls at priority 1, the first onscene_utc of any unit minus received_utc, median by the ward of the call's segment.
+4. Took each segment's expected 2027 count as 365 days at its steady rate plus each excess times its venue's 2027 event nights, the nights read from the register: 2026's 13 Lakeshore and 41 Gardens nights with the Mariners' 35 Gardens nights of 2026 at the Lakeshore Centre, where the 2027 sheet books the team (48 and 6); the same 20 come out of the 2027 sheet's own bookings (32 and 2) and of any count from 20 to 60 Lakeshore and 0 to 10 Gardens nights, and designated the 20 highest.
+5. Officer-hours: for each call in mps_cad_calls_2026.csv (source not OFFICER) received in 2026 local time at an address on a segment of mountjoy_street_segments.csv, its ward the segment's (a call at an address outside the City's wards belongs to none, Directive PO-14), each unit's hours from dispatch to clear times its crew in mps_patrol_roster_2026.csv on the tour covering the dispatch (a night tour is dated by the evening it starts), by ward and quarter of receipt.
 
 ## 4. Deliverable Answers
 
@@ -65,20 +64,11 @@
 ### patrol_figures_2026.csv
 
 1. Officer-hours on calls for service in 2026, whole hours:
-   - Ward 1: Q1 602, Q2 566, Q3 509, Q4 555
-   - Ward 2: Q1 453, Q2 402, Q3 437, Q4 430
+   - Ward 1: Q1 602, Q2 567, Q3 509, Q4 556
+   - Ward 2: Q1 453, Q2 402, Q3 438, Q4 430
    - Ward 3: Q1 773, Q2 748, Q3 817, Q4 815
-   - Ward 4: Q1 545, Q2 557, Q3 559, Q4 597
-   - Ward 5: Q1 910, Q2 824, Q3 838, Q4 895
-   - Ward 6: Q1 1024, Q2 1120, Q3 1176, Q4 1229
-   - Ward 7: Q1 874, Q2 814, Q3 886, Q4 827
-   - Ward 8: Q1 1277, Q2 1261, Q3 1384, Q4 1215
-2. Median minutes in 2026 from the receipt of a priority 1 call to the first officer's arrival, one decimal:
-   - Ward 1: 5.7
-   - Ward 2: 6.3
-   - Ward 3: 5.7
-   - Ward 4: 7.0
-   - Ward 5: 6.9
-   - Ward 6: 7.4
-   - Ward 7: 7.1
-   - Ward 8: 7.9
+   - Ward 4: Q1 546, Q2 557, Q3 559, Q4 598
+   - Ward 5: Q1 911, Q2 824, Q3 838, Q4 895
+   - Ward 6: Q1 1028, Q2 1120, Q3 1177, Q4 1229
+   - Ward 7: Q1 874, Q2 815, Q3 886, Q4 828
+   - Ward 8: Q1 1280, Q2 1262, Q3 1385, Q4 1215

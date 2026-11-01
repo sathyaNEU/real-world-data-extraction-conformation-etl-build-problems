@@ -55,29 +55,24 @@ def world():
             "bookings": bks}
 
 
-def _quarter_hours(segs, rost, events):
+def _own_date_tour(t):
+    h = t.hour + t.minute / 60.0
+    return t.date(), ("D" if 7 <= h < 19 else "N")
+
+
+def _quarter_hours(segs, rost, events, naive=False):
     out = {}
     for ev in events:
         if ev["area"] != "city" or ev["source"] == "OFFICER":
             continue
         q = (ev["received"].month - 1) // 3 + 1
         for u in ev["units"]:
-            n = len(rost[S.tour_of(u["dispatched"]) + (u["unit"],)])
+            key = (_own_date_tour if naive else S.tour_of)(u["dispatched"])
+            n = len(rost.get(key + (u["unit"],), [0]))
             k = (ev["ward"], q)
-            out[k] = out.get(k, 0.0) + (u["cleared"] - u["dispatched"]).total_seconds() / 3600.0 * n
+            el = u["cleared"].astimezone(dt.timezone.utc) - u["dispatched"].astimezone(dt.timezone.utc)
+            out[k] = out.get(k, 0.0) + el.total_seconds() / 3600.0 * n
     return out
-
-
-def _medians(events):
-    import statistics
-    by = {}
-    for ev in events:
-        if ev["area"] != "city" or ev["source"] == "OFFICER" or ev["priority"] != 1:
-            continue
-        ons = [u["onscene"] for u in ev["units"] if u["onscene"] is not None]
-        if ons:
-            by.setdefault(ev["ward"], []).append((min(ons) - ev["received"]).total_seconds() / 60.0)
-    return {w: statistics.median(v) for w, v in by.items()}, by
 
 
 def _duty_hours(bks):
@@ -91,33 +86,52 @@ def _duty_hours(bks):
     return out
 
 
+def _later(t, seconds):
+    """An aware time moved on by elapsed seconds (never by wall-clock arithmetic across a clock change)."""
+    return (t.astimezone(dt.timezone.utc) + dt.timedelta(seconds=seconds)).astimezone(t.tzinfo)
+
+
 def settle_edges(segs, rost, events, bks):
-    """Keep every ask figure clear of its rounding edge: a total at a half hour, or a median at a twentieth of a
-    minute, rounds one way or the other on the reader's arithmetic. Each nudge moves one record by seconds or one
-    quarter hour."""
-    for _ in range(40):
+    """Keep every ask figure clear of its rounding edge. An officer-hours cell sits at least a quarter of an hour from
+    a half hour, so no reading of the clocks moves it across; each nudge lets one unit clear nine minutes later,
+    inside its tour. A paid-duty total at a half hour moves by a quarter hour (the register's own record)."""
+    for _ in range(400):
         moved = False
         for k, v in sorted(_quarter_hours(segs, rost, events).items()):
-            if abs((v % 1) - 0.5) < 0.012:
-                ev = next(e for e in events if e["area"] == "city" and e["ward"] == k[0] and e["source"] != "OFFICER"
-                          and (e["received"].month - 1) // 3 + 1 == k[1] and e["units"] and
-                          e["units"][0]["cleared"] < S.tour_end(e["units"][0]["dispatched"]) - dt.timedelta(minutes=3))
-                ev["units"][0]["cleared"] += dt.timedelta(seconds=97)
-                moved = True
-        med, by = _medians(events)
-        for w, v in sorted(med.items()):
-            if abs(((v * 10) % 1) - 0.5) < 0.02:
-                vals = sorted(by[w])
-                mid = vals[len(vals) // 2]
+            if abs((v % 1) - 0.5) < 0.25:
                 for e in events:
-                    if e["area"] == "city" and e["ward"] == w and e["priority"] == 1 and e["source"] != "OFFICER":
-                        ons = [u for u in e["units"] if u["onscene"] is not None]
-                        if ons and abs((min(x["onscene"] for x in ons) - e["received"]).total_seconds() / 60.0 - mid) < 1e-9:
-                            first = min(ons, key=lambda x: x["onscene"])
-                            first["onscene"] += dt.timedelta(seconds=4)
-                            if first["cleared"] <= first["onscene"]:
-                                first["cleared"] = first["onscene"] + dt.timedelta(seconds=30)
+                    if not (e["area"] == "city" and e["ward"] == k[0] and e["source"] != "OFFICER" and
+                            (e["received"].month - 1) // 3 + 1 == k[1] and e["units"]):
+                        continue
+                    u = e["units"][0]
+                    if _later(u["cleared"], 540) < S.tour_end(u["dispatched"]) - dt.timedelta(minutes=2) and \
+                            not u.get("nudged"):
+                        u["cleared"] = _later(u["cleared"], 540)
+                        u["nudged"] = True
+                        break
+                moved = True
+        gold = _quarter_hours(segs, rost, events)
+        for k, v in sorted(_quarter_hours(segs, rost, events, naive=True).items()):
+            if abs(v - gold[k]) < 1.0:
+                for e in events:
+                    if not (e["area"] == "city" and e["ward"] == k[0] and e["source"] != "OFFICER" and
+                            (e["received"].month - 1) // 3 + 1 == k[1]):
+                        continue
+                    for u in e["units"]:
+                        if u.get("nudged") or u["dispatched"].hour >= 7:
+                            continue
+                        c_true = len(rost[S.tour_of(u["dispatched"]) + (u["unit"],)])
+                        c_own = len(rost[_own_date_tour(u["dispatched"]) + (u["unit"],)])
+                        sign = 1 if v >= gold[k] else -1
+                        if (c_own - c_true) * sign <= 0:
+                            continue
+                        if _later(u["cleared"], 1500) < S.tour_end(u["dispatched"]) - dt.timedelta(minutes=2):
+                            u["cleared"] = _later(u["cleared"], 1500)
+                            u["nudged"] = True
                             break
+                    else:
+                        continue
+                    break
                 moved = True
         for w, v in sorted(_duty_hours(bks).items()):
             if abs((v % 1) - 0.5) < 0.012:

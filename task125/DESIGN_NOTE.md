@@ -28,8 +28,9 @@ number in the pack is accurate as recorded, and the easy route uses accurate num
   `guard.py names --geo Canada --seed 125`: Lindsey Turner (Superintendent, Patrol Operations, the requester), Eric
   Gordon (Manager, Crime Analysis Unit, the protocol's owner), Ruben Stafford (Chief of Police, who approved the
   protocol and chairs the command team).
-- **Forum and forcing event:** the Chief's command team (executive_team) adopts the 2027 designation with the
-  deployment plan on 12 January 2027; the designation is made once the year has closed, for the calendar year ahead
+- **Forum and forcing event:** the Superintendent, Patrol Operations adopts the 2027 designation with the platoons'
+  deployment plan on 12 January 2027 (line_manager_or_team: the forum was redrawn at the stage 4 repair from
+  executive_team, banned against task122 v4 once the forcing-event redraw re-registered the card); the designation is made once the year has closed, for the calendar year ahead
   (period_close; vote_or_meeting was banned against task172 v2, drawn just before, and the card was re-registered at
   2026-10-31T23:51:44Z); the extracts are of 6 January 2027; the organisation is a municipal police service
   (local_government).
@@ -39,7 +40,7 @@ number in the pack is accurate as recorded, and the easy route uses accurate num
 
 ## Default path
 
-1. Read the protocol: the command team designates the 20 street segments with the highest expected patrol crimes in
+1. Read the protocol: the Crime Analysis Unit designates the 20 street segments with the highest expected patrol crimes in
    calendar 2027; patrol crimes are the Table 1 codes, each occurrence once on its latest version, unfounded out, dated
    by occurrence.
 2. Conform mps_rms_occurrences_2022_2026.csv: latest versions, legacy codes through the 2023 crosswalk, the legacy
@@ -66,7 +67,7 @@ the paid-duty register's 2027 sheet books the Mariners' home games at the Lakesh
 Task type: crime-incidence-hotspot-analysis (Criminology & Justice), which serves Anomaly Detection & Diagnostics: the hot spots are the street segments whose patrol crime stands far above the city's, diagnosed by what generates it there.
 Domain test: the quantity that decides is each street segment's expected count of founded patrol crimes in 2027, the hot spot forecast place-based policing rests on, and environmental criminology reads an arena as a crime generator whose crowds raise street crime on the segments around it on event nights; put a hospital ward in for the segment and nothing generates on a published calendar, so the forecast has nothing to move.
 Swap: "Which hospital wards get the 2027 infection-control nurses, by expected infections?" reads differently, because a ward's infections do not come from a building next door whose crowds arrive on a published calendar and move to another building in January.
-Layer 1: the records system's export as it writes it (one row per report version, later versions reclassifying, correcting the segment or recording an occurrence unfounded; legacy codes and day-first dates on versions entered before the March 2023 migration; occurrences with no occurrence time dated by their report; reports of 2021 and 2027 occurrences inside the extract), the paid-duty register in two layouts (one row per booking to 2023 with abbreviated venue names, one row per officer line from 2024), the CAD's UTC stamps and the township's events in the dispatch export; each is produced by the system that records it and none is placed to be caught.
+Layer 1: the records system's export as it writes it (one row per report version, later versions reclassifying, correcting the segment or recording an occurrence unfounded; legacy codes and day-first dates on versions entered before the March 2023 migration; occurrences with no occurrence time dated by their report; reports of 2021 and 2027 occurrences inside the extract), the paid-duty register in two layouts (one row per booking to 2023 with abbreviated venue names, one row per officer line from 2024), the CAD's UTC stamps through the March and November clock changes and the contracted township's events in the dispatch export; each is produced by the system that records it and none is placed to be caught.
 Layer 2: composition_mix in the estimation_fit family: each segment's count is a steady part plus a part tied to its venue's event nights, the 2027 calendar moves the second part, and the comparison is decided by forecasting each part on its own calendar.
 Decisive step: splitting each segment's record into its steady rate and its excess on each venue's event nights, and carrying the excess by the venues' 2027 calendar instead of by the segment's own past.
 Not semantics: every field, code, unit and date read right still leaves each segment's 2026 count and its five-year mean, which are correct counts and put the Gardens segments on top; no column says which crimes came with a crowd or where the crowds go in 2027.
@@ -114,14 +115,13 @@ Pins: the WHAT sits in the protocol (the segments, the codes, the counting, the 
 | SF12 | a call | a request received, not an officer-started event | every event | moves the asks only | Directive PO-14, section 2 |
 | SF13 | a call's date | the local receipt date | the UTC date | moves the asks only | Directive PO-14, section 2 |
 | SF14 | a tour's date | the date it starts | the dispatch's date | moves ask A only | the roster's only 2025 rows, the night tour of 31 December 2025 (asserted) |
-| SF15 | a call's ward | the ward its address lies in, by the street file | the CAD district | moves asks A and B | Directive PO-14, section 2: a ward counts the calls at addresses in it |
-| SF16 | priority 1 | the dispatched priority | none | same figures | Directive PO-14, section 2 |
-| SF17 | the first officer's arrival | the earliest onscene of any unit | the first unit dispatched | moves ask B | the prompt's words (asserted) |
+| SF15 | a call's ward | the ward its address lies in, by the street file | the CAD district | moves the ask | Directive PO-14, section 2: a ward counts the calls at addresses in it, and a call outside the City's wards belongs to none |
 | SF18 | a venue's event night | any EVENT duty at the venue, games and shows | the Mariners' games alone | the Lakeshore excess unidentified | the data: the Lakeshore Centre held no hockey night before 2027 (asserted) |
 | SF19 | the venues in the old layout | MEM GARDENS and LAKESHORE CTR read as the venues | missed | same call (asserted, a 2024 to 2026 fit) | convergence |
 | SF20 | a night with both venues busy | counted for both | for neither | same call (asserted) | convergence |
 | SF21 | officer-hours | dispatch to clear times the officers on the unit | unit-hours | moves ask A | Directive PO-14, section 2 |
 | SF22 | a crew across a tour change | none crosses | none | same figures | no assignment crosses a change (asserted) |
+| SF23 | a unit's hours across a clock change | elapsed time between the UTC stamps | wall-clock difference | same figures | every stamp is UTC (asserted: every row runs forward, D3 and D4) |
 
 ## Ladder
 
@@ -189,41 +189,37 @@ None on the main call: no file carries an expected count, a hot spot list, an ev
 
 ## Ask sheet
 
-Two asks on the deployment plan's 2026 picture, each by ward, neither reading the occurrences the call ranks nor the
-register the call reads.
+One ask on the deployment plan's 2026 picture, by ward and quarter, reading neither the occurrences the call ranks nor
+the register the call reads.
 
 **Ask A, each ward's officer-hours on calls for service in each quarter of 2026 (32 figures, whole hours).**
-- H18 home: the patrol workload the command team deploys against. Files: mps_cad_calls_2026.csv,
+- H18 home: the patrol workload the deployment plan sets the platoons against. Files: mps_cad_calls_2026.csv,
   mps_patrol_roster_2026.csv, mountjoy_street_segments.csv (12 columns on the path).
 - Primary device (D8, a recorded date for the event date): the roster dates each night tour by the evening it starts,
   so a unit dispatched between midnight and 07:00 is crewed by the previous date's night tour; joined on the
-  dispatch's own date it takes the next evening's crew, and crews change from night to night. Moves 32 of 32 alone.
-- Second primary (D5, out-of-scope rows known by structure): the Communications Centre also dispatches for Elmvale,
-  whose events carry its patrol zones in the district column under the same numbers 1 to 8; only the segment, outside
-  the street file, shows them. Moves 32 of 32 alone.
-- Hazards: UTC stamps (a call's date is its local receipt date), officer-started events (not calls), cancelled units
-  (dispatch to clear).
-- Pin test: the asking sentence pins the ward, the quarter and the unit; Directive PO-14 pins a call, its date, the
-  tours' hours and officer-hours; neither names a tour's date or the township.
-
-**Ask B, each ward's median minutes in 2026 from the receipt of a priority 1 call to the first officer's arrival
-(8 figures, one decimal).**
-- Primary device: Elmvale's events in the district column (D5), moving 8 of 8 by 0.1 to 0.5 minutes.
-- Hazards: officer-started events (zero minutes), cancelled calls with no arrival, UTC stamps, sergeants first on
-  scene.
+  dispatch's own date it takes the next evening's crew, and crews change from night to night. Moves every cell by an
+  hour or more (D1b).
+- Hazards: UTC stamps through both clock changes (a call's date is its local receipt date, a unit's hours the elapsed
+  time between its stamps), officer-started events (not calls), cancelled units (dispatch to clear), and the
+  contracted township's events, whose district numbers repeat the wards' and which Directive PO-14 files as belonging
+  to no ward.
+- Pin test: the asking sentence pins the ward, the quarter and the unit; Directive PO-14 pins a call, its date, its
+  ward, the tours' hours and officer-hours; none names a tour's date.
+- Every cell sits at least a quarter of an hour from its rounding edge and holds under the negative-interval
+  handlings (none remain), a night tour dated by the calendar, by a day of elapsed time and by the naive wall clock
+  (D3, D4, M4); the judge's own pandas method reproduces all 32.
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed definition executed) | Verdict |
 |---|---|---|
-| A, 32 ward-quarter officer-hours | crews each unit from the roster's tour of the dispatch's own date and reads wards from the district | miss |
-| B, 8 ward medians | reads wards from the district, Elmvale's zones included | miss |
+| A, 32 ward-quarter officer-hours | crews each unit from the roster's tour of the dispatch's own date | miss |
 
 Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
 Mirror leakage: 0.0 per cent of ask weight
-Measured by: generator/ceiling.py (run on the cut pack, target.zip 5e01ea0a)
+Measured by: generator/ceiling.py (run on the cut pack, target.zip d5c73e26)
 
 ## Leak review
 
-`leak.py task125 --asof 2027-01-06` on target.zip 5e01ea0a: REVIEW, no LEAK; each line ruled.
+`leak.py task125 --asof 2027-01-06` on target.zip d5c73e26: REVIEW, no LEAK; each line ruled.
 - Sweep 3, golden figures in the pack: every hit is a segment number (the designated segments' ids) in the geography
   files (the street file, the occurrences, the CAD export, the streetlight requests), where every segment's id
   appears; harmless.
@@ -233,19 +229,31 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 5e01ea0a)
   (status BOOKED), the register's own content; harmless.
 - Sweep 12 first refused a field guide to the exports (a document naming the files' columns, LEAK); it was replaced by
   Directive PO-14, which defines the measures in the Service's own words and names no file field.
+- After the stage 4 judge, Directive PO-14 gained one sentence (a call outside the City's wards belongs to none),
+  the protocol's section 2 names the Superintendent, Patrol Operations as adopting the designation (the forum
+  redrawn from the command team), and the request and the prompt lost the medians and the command team; the
+  main thread re-reads them beside the re-judge.
 
 ## Pre-ship check
 
 1. The three rules re-read against the built pack: the decisive step is the split of each segment's record into its
    steady rate and its venue excess, carried by the 2027 calendar, analytical; every recorded number is accurate, and
    the mess is Layer 1 only, each piece asserted not to move the call (SF1 to SF6, SF18 to SF20).
-2. Determinism: the WHAT filed in the protocol and Directive PO-14; every standing member files the same 20 (C2, C3);
-   no expected count is a graded figure.
-3. Gates on the final cut (target.zip 5e01ea0a): generator checks (58, none failed), the verifier, two
-   byte-identical builds, figures_check.py (94 of 94), precut.py (61 checks, no FAIL or WARN), voice-check.py,
-   leak.py (REVIEW, ruled above), guard.py heart (WARN only) and surface (exit 0; one pair promoted for the author's
-   adjudicated read, task178 at surface 0.090 on card axes the card already differentiates).
-4. Guard WARN repeat.gate_g (method_or_model_selection against task172 v2, drawn just before): task172 chooses how an
+2. Determinism: the WHAT filed in the protocol and Directive PO-14; every standing member files the same 20 (C2, C3),
+   as does every 2027 count of 20 to 60 Lakeshore and 0 to 10 Gardens nights (C4); no expected count is a graded figure.
+3. The stage 4 judge (NOT_DETERMINISTIC, reconciled to FIX_NOW; determinism_check_report.md) passed the main call, the
+   deck's answers, Gates G and H, and failed the officer-hours ask on three unit rows that cleared before dispatch on
+   8 March, a dispatch before its call's receipt, and Ward 2 Q1. Repaired in the generator in one pass: every unit time
+   is reckoned in UTC (the generator had added minutes on the wall clock across the March gap), the golden's elapsed
+   times too (two stamps in one zone subtract by wall clock), no unit is dispatched in the first hour of 9 March (a
+   night tour dated by subtracting a day of elapsed time lands on 7 March there, the Ward 2 Q1 difference), every cell
+   a quarter hour from its edge and an hour from the device's value; PO-14 files that a call outside the City's wards
+   belongs to none, which spent the medians ask's only device, so the medians were dropped (the gate refuses an ask
+   the cracker keeps). The main call, the stump, the deck's answers and every critical component are unchanged
+   (figures.json); 13 of the 32 officer-hours cells moved by one to four hours.
+4. Gates on the final cut (target.zip d5c73e26): generator checks, the verifier, two byte-identical builds,
+   figures_check.py, precut.py, voice-check.py, leak.py (REVIEW, ruled above), guard.py heart and surface.
+5. Guard WARN repeat.gate_g (method_or_model_selection against task172 v2, drawn just before): task172 chooses how an
    interim's conditional power carries a trial's treatment effect over its remaining follow-up; here the method is a
    forecast's split of each place's count by a venue calendar. The labels share a Gate G mechanism, not a driver;
    the heart's nearest driver sits at 0.11.
@@ -336,3 +344,5 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip 5e01ea0a)
 - Architecture 4, the first parameter sets and seeds 125043 to 125045 (2026-10-31, at the build): increments near one crime a night put two thirds of the Gardens segments' crime on event nights, and the narrower gaps let a Lakeshore or warm segment into the count routes or let a one-year fit swap King St, Wellington to Albert, for a Gardens segment; the steady rates were raised, the gaps widened and the seed taken from a search of the ladder's conditions (125054: the gap at the cut 23, every count route on the default).
 - Architecture 4, a third ask on each ward's paid-duty hours worked in 2026 (2026-10-31, at the design gate): every hazard on its path (overnight duties, cancelled and no-show lines, intersections) is in the hygiene battery, so the cracker kept all eight figures and the gate's per-ask miss rule refused it; a midnight-split payroll, a ward stored at booking and reissued booking numbers were each weighed as its device and set aside (pairing halves is in the battery, a stored ward forks the ward set, the reissued numbers bite in January only); the ask was dropped and the register stays in Information Management's standard extract set.
 - Architecture 4, a field guide to the six exports (2026-10-31, at the leak sweep): leak.py sweep 12 refused it as a document describing the data (39 columns named, every column of the roster); its definitions of a call, its date, officer-hours and the tours moved into Directive PO-14, a governing document in the Service's genre, the codes and counting stayed in the protocol, and the formats were left to the files.
+- Architecture 4, the CAD's unit times summed on the local wall clock (2026-11-01, at the stage 4 judge): across the 8 March gap three units cleared before their dispatch and one was dispatched before its call came in, and the golden's own elapsed times were wall-clock differences; every stamp is now reckoned in UTC and asserted to run forward.
+- Architecture 4, the medians ask once Directive PO-14 filed the township's calls (2026-11-01, at the repair): the township's events in the district column were its only device, so the cracker would keep all eight medians and the per-ask miss rule refuses it; dropped from the prompt, the request and the goldens.

@@ -88,9 +88,10 @@ def protocol(path):
               "fifteen minutes at a time, at unpredictable times between 14:00 and 03:00, as the platoons' "
               "directed-patrol plan sets out. The programme's two cars have room for 20 segments."),
         ("h", "2. The designation"),
-        ("p", "Once a year the command team designates the segments the programme patrols for the calendar year. "
+        ("p", "Once a year the Superintendent, Patrol Operations adopts the segments the programme patrols for the "
+              "calendar year, with the platoons' deployment plan. "
               "The Crime Analysis Unit designates the 20 street segments with the highest expected patrol crimes in "
-              "the year the designation covers, and puts the designation to the command team with a chart of each "
+              "the year the designation covers, and puts the designation to the Superintendent with a chart of each "
               "candidate segment's expected patrol crimes against the cut, the designated segments marked."),
         ("h", "3. Definitions"),
         ("table", [["Term", "Meaning"],
@@ -143,7 +144,7 @@ def directive(path):
                                                "unit."],
                    ["Period", "A call belongs to the local date on which it was received."],
                    ["Ward", "A ward's figures count the calls for service at addresses in that ward of the City "
-                            "of Mountjoy."]]),
+                            "of Mountjoy. A call at an address outside the City's wards belongs to no ward."]]),
         ("h", "3. Tours"),
         ("p", "Patrol platoons work twelve-hour tours: day tours from 07:00 to 19:00 and night tours from 19:00 to "
               "07:00. A car is one-officer or two-officer as the platoon staffs it for the tour."),
@@ -160,21 +161,20 @@ def request(path):
     m = EmailMessage()
     m["From"] = "Lindsey Turner <lindsey.turner@mountjoypolice.ca>"
     m["To"] = "Eric Gordon <eric.gordon@mountjoypolice.ca>"
-    m["Subject"] = "2027 hot spot designation for the 12 January command team"
+    m["Subject"] = "2027 hot spot designation, for sign-off on 12 January"
     m["Date"] = format_datetime(dt.datetime(2027, 1, 6, 13, 42, 0, tzinfo=dt.timezone.utc))
     m["Message-ID"] = "<20270106134200.2214@mountjoypolice.ca>"
     m.set_content(
         "Eric,\n\n"
-        "The command team takes the 2027 hot spot designation at its meeting on 12 January, with the rest of the "
-        "2027 deployment plan. Please have the Unit put it together under the protocol, with the chart the protocol "
-        "calls for, as a short deck I can take in.\n\n"
+        "I sign off the 2027 hot spot designation on 12 January with the rest of the platoons' 2027 deployment plan. "
+        "Please have the Unit put it together under the protocol, with the chart the protocol calls for, as a "
+        "short deck.\n\n"
         "Information Management's usual extracts are in the folder: the RMS occurrences from 2022 to this morning's "
         "extract, the street segment file and the 2023 code crosswalk, the paid-duty register, and the "
         "Communications Centre's 2026 CAD export with the 2026 patrol roster. I have also put in the ward profiles and "
         "the streetlight requests the Downtown BIA sent us in the autumn.\n\n"
-        "For the deployment plan the Chief wants two 2026 figures by ward in a CSV beside the deck: the officer-hours "
-        "each ward's calls for service took in each quarter, and each ward's median minutes from the receipt of a "
-        "priority 1 call to the first officer's arrival, as Directive PO-14 defines them.\n\n"
+        "For the deployment plan the Chief wants the officer-hours each ward's calls for service took in each "
+        "quarter of 2026, as Directive PO-14 defines them, in a CSV beside the deck.\n\n"
         "Thanks,\n\n"
         "Lindsey Turner\nSuperintendent, Patrol Operations\nMountjoy Police Service\n")
     open(path, "wb").write(m.as_bytes(policy=m.policy.clone(linesep="\n")))
