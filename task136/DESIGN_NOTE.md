@@ -826,3 +826,4 @@ stump's determinism:
   rule that no shipped file describes the data (2026-11-01 re-check). Replaced by `metadata.json` for provenance and by
   NPP-114 3.1 and the extracts' own columns, codes and labels for every fork row they closed; no sentence added to a
   document, and the asks' devices stay unstated.
+- The ceiling recorded on the reship cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver, every field read by its plain meaning, every filed rule executed and the hygiene battery run, keeps 32 of 32 against the recorded 0 of 32, SPENT on Asks 1 to 4, pair 58.7 (84.0 with the mirror on the honest route); the reason in one line: Ask 1 the network model's feeder the cracker already executes for the call; Ask 2 'first lodged' as the earliest registered_date; Ask 3 the model field's nameplate; Ask 4 the register's battery_kwh as referee. The ask layer is owed a /fix-rubric pass before delivery; the leak repair stands.

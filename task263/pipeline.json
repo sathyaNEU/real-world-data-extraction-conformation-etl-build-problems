@@ -1,6 +1,6 @@
 {
  "task": "task263",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "descriptive-distribution",
  "stage": 5,
@@ -40,7 +40,7 @@
    "commit": "RESHIPPED (task263)"
   }
  ],
- "resume": "",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 8 of 8 against the recorded 0 of 8, SPENT on Asks A and B, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
@@ -61,5 +61,13 @@
   "cracker": "0 of 8 ask figures, pair ceiling 31.0",
   "surface": "exit 0",
   "heart": "BLOCK read against the dates (duplicate_check.heart_2026_11_01)"
+ },
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks A and B",
+  "careful_cracker_keeps": "8 of 8 against the recorded 0 of 8",
+  "pair": "58.5 with the mirror held at 0 (83.5 with the mirror on the honest route)",
+  "why": "Ask A the paired wells' identical meter lines and the register's common discharge header; Ask B the inactive buyer rows with an active row of the same name and county",
+  "probe": "scratchpad audit_cracker/task263/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+  "status_before": "SHIPPED"
  }
 }

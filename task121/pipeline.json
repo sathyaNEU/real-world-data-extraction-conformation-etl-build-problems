@@ -1,6 +1,6 @@
 {
  "task": "task121",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "human-factors-ergonomics",
  "objective": "root-cause",
  "stage": 5,
@@ -39,7 +39,7 @@
    "commit": "RESHIPPED (task121)"
   }
  ],
- "resume": "Shipped 2026-10-26 (target.zip 4eb36d04), reshipped 2026-11-01 on the leak gate (target.zip 0d39c59f; the QA program's 5.1 gained one sentence, so the leak reader and the judge read the pack again). Next: the portal result; a returned determinism block goes to /fix-determinism, a rubric over 50 with the call held to /fix-rubric.",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 12 of 36 against the recorded 0 of 36, SPENT on Ask A (Asks B and C hold), so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
  "approved": null,
  "delivered": "2026-10-26",
  "portal": null,
@@ -151,5 +151,13 @@
   "target_zip_md5": "0d39c59f3c649ddbc68494806a3e72b0",
   "freeze": "determinism PASS"
  },
- "architectures": []
+ "architectures": [],
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Ask A (Asks B and C hold)",
+  "careful_cracker_keeps": "12 of 36 against the recorded 0 of 36",
+  "pair": "46.8",
+  "why": "1,548 che_call_id values each on two incidents with the same answer second, call-taker, protocol and determinant: the near-exact duplicate check finds them",
+  "probe": "scratchpad audit_cracker/task121/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+  "status_before": "SHIPPED"
+ }
 }

@@ -1,6 +1,6 @@
 {
  "task": "task453",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
  "stage": 5,
@@ -47,7 +47,7 @@
    "commit": "RESHIPPED (task453)"
   }
  ],
- "resume": "",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 10 of 10 against the recorded 0 of 10, SPENT on Ask A, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
  "approved": null,
  "delivered": "2026-10-14",
  "portal": null,
@@ -65,5 +65,13 @@
   "freeze": "determinism PASS",
   "voice_check": "PASS",
   "ceiling": "cracker 0 of 10, mirror leakage 0.0, pair 30.5"
+ },
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Ask A",
+  "careful_cracker_keeps": "10 of 10 against the recorded 0 of 10",
+  "pair": "58.0 (85.5 with the mirror counting as the cracker)",
+  "why": "dwelling_ref is a slot: interview_no runs 6 then 1 on 28,403 of 84,988 references, so a dwelling is the reference plus its entry month",
+  "probe": "scratchpad audit_cracker/task453/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+  "status_before": "SHIPPED"
  }
 }

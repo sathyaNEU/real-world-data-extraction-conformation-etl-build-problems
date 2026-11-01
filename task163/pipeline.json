@@ -1,6 +1,6 @@
 {
  "task": "task163",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "economics-econometrics",
  "objective": "forecasting",
  "stage": 5,
@@ -39,12 +39,20 @@
    "commit": "RESHIPPED (task163)"
   }
  ],
- "resume": "",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 29 of 29 against the recorded 0 of 29, SPENT on Asks A, B and C, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
  "approved": null,
  "delivered": "2026-10-18",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "target_zip_md5": "dc7c39432937530f4193e1393cf044ea"
+ "target_zip_md5": "dc7c39432937530f4193e1393cf044ea",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks A, B and C",
+  "careful_cracker_keeps": "29 of 29 against the recorded 0 of 29",
+  "pair": "57.7 (83.5 with the mirror on the honest route)",
+  "why": "the anti-join on first_pay_date's quarter against the wage rows (179 migrated accounts), the counting notes' 'whatever its account or EIN' linking the re-keyed businesses, pay group 00 equal to 01 plus 02",
+  "probe": "scratchpad audit_cracker/task163/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+  "status_before": "SHIPPED"
+ }
 }

@@ -1,6 +1,6 @@
 {
  "task": "task137",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "forecasting",
  "stage": 5,
@@ -43,7 +43,7 @@
   "history": "pass 5 FIX_NOW (the AIC margin restated at 60; the evidence for the two soft ask forks written into steps 5 and 6), pass 6 APPROVE"
  },
  "call": "45,000 GP-referred visits (44,760.2); default 42,500 (42,011.3); the round 2 Opus reader's ten daily lags 42,500 (41,934.0)",
- "resume": "RESHIPPED 2026-11-01 (leak gate: data dictionary removed; judge pass 5 FIX_NOW repaired, pass 6 APPROVE), pending the portal.",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 8 of 36 against the recorded 0 of 36, SPENT on Ask B (Ask A holds, weakly), so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
  "architecture_1": {
   "status": "RETURNED",
   "domain": "banking-credit-financial-risk",
@@ -228,5 +228,13 @@
    "commit": ""
   }
  ],
- "target_zip_md5": "8f5c6aa228c4385bd09c5d4fdf29e2c8"
+ "target_zip_md5": "8f5c6aa228c4385bd09c5d4fdf29e2c8",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Ask B (Ask A holds, weakly)",
+  "careful_cracker_keeps": "8 of 36 against the recorded 0 of 36",
+  "pair": "40.7",
+  "why": "the annual report's section 4 names the one vacant post, so reading every unassigned line as vacant contradicts a filed fact; the other 67 follow a holder's Sickness lines",
+  "probe": "scratchpad audit_cracker/task137/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+  "status_before": "SHIPPED"
+ }
 }

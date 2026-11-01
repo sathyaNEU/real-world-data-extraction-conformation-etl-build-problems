@@ -1,6 +1,6 @@
 {
  "task": "task136",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities",
  "objective": "forecasting",
  "stage": 5,
@@ -106,7 +106,7 @@
    "commit": ""
   }
  ],
- "resume": "RESHIPPED 2026-11-01 (leak gate: data dictionary and export manifest removed; ceiling script added), pending the portal.",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the ceiling recorded on the reshipped cut was a narrowed cracker's; the careful solver (every field by its plain meaning, every filed rule, the hygiene battery) keeps 32 of 32 against the recorded 0 of 32, SPENT on Asks 1 to 4, so precut's 'cracker misses every ask' fails when measured honestly. Next: /fix-rubric with the main call frozen, the spent devices re-sited onto judgments the battery does not perform and the rows force (the identity form that held on task501), measured with the careful-solver cracker; the leak repair and the determinism record of the reship stand.",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
@@ -150,5 +150,13 @@
   "verdict": "PASS 2026-10-15 (re-audit of round 3, scratchpad/rule3/task136_r3.md): planted none, semantics pass, rule application pass, analyst test yes, Layer 1 does not carry the stump",
   "accepted_risks": "stump strength about one of the top two; both could land if both build a never-treated difference-in-differences (the never-treated comparison sits inside the corridor); the untreated suburbs' counts rise very smoothly (design note, Accepted risks)"
  },
- "target_zip_md5": "bd4c13ada66610115ca1f88998616de5"
+ "target_zip_md5": "bd4c13ada66610115ca1f88998616de5",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks 1 to 4",
+  "careful_cracker_keeps": "32 of 32 against the recorded 0 of 32",
+  "pair": "58.7 (84.0 with the mirror on the honest route)",
+  "why": "Ask 1 the network model's feeder the cracker already executes for the call; Ask 2 'first lodged' as the earliest registered_date; Ask 3 the model field's nameplate; Ask 4 the register's battery_kwh as referee",
+  "probe": "scratchpad audit_cracker/task136/probe.py (independent of the generator, reproduces the recorded keeps and the golden route)",
+  "status_before": "SHIPPED"
+ }
 }
