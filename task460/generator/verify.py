@@ -76,26 +76,44 @@ def avoided(target):
 
 
 def asks(target, mwh):
+    """Metered use on its own route: each meter's read cycles as the supplier bills them; the delivery utility's own
+    quantity where its invoice reached accounts payable, otherwise the supplier's, its first-term quantities (the bills
+    carrying the renewable portfolio standard line) over the meter's factor (supplier over utility in the cycles both
+    bill), its second-term quantities as billed. Dollars: every non-gas line as posted, each counted by its days in
+    2025."""
     inv = pd.read_csv(find(target, "corvane_electricity_invoice_lines"),
                       parse_dates=["invoice_date", "service_period_start", "service_period_end"])
-    head = inv.drop_duplicates("invoice_number")
-    latest = head.sort_values("invoice_date").groupby(
-        ["vendor_number", "meter_number", "service_period_start", "service_period_end"]).tail(1)["invoice_number"]
-    cur = inv[inv["invoice_number"].isin(set(latest))].copy()
     y0, y1 = pd.Timestamp("2025-01-01"), pd.Timestamp("2025-12-31")
-    days = (cur["service_period_end"] - cur["service_period_start"]).dt.days + 1
-    inside = ((cur["service_period_end"].clip(upper=y1) - cur["service_period_start"].clip(lower=y0)).dt.days + 1).clip(lower=0)
-    cur["frac"] = inside / days
-    supplier = cur["vendor_name"].str.contains("Retail Energy")
-    d = cur["line_description"]
-    # the delivery utility's distribution energy: its kWh lines that are neither transmission nor a tax or assessment
-    dist = (~supplier) & (cur["unit_of_measure"] == "KWH") & ~d.str.contains("ransmission|tax|assessment|receipts|excise",
-                                                                               case=False, regex=True)
-    use = (cur.loc[dist, "quantity"] * cur.loc[dist, "frac"]).groupby(cur.loc[dist, "store_number"]).sum() / 1000.0
-    elec = ~d.str.startswith("Gas")
-    paid = (cur.loc[elec, "line_amount_usd"] * cur.loc[elec, "frac"]).groupby(cur.loc[elec, "store_number"]).sum()
-    return {int(s): dict(use=float(use[s]), price=float(paid[s] / use[s]), share=100.0 * mwh[int(s)] / float(use[s]))
-            for s in use.index}
+    days = (inv["service_period_end"] - inv["service_period_start"]).dt.days + 1
+    inside = ((inv["service_period_end"].clip(upper=y1) - inv["service_period_start"].clip(lower=y0)).dt.days + 1).clip(lower=0)
+    inv["frac"] = inside / days
+    supplier = inv["vendor_name"].str.contains("Retail Energy")
+    service = inv["vendor_name"].str.contains("Payment Services")
+    d = inv["line_description"]
+    dist = (~supplier) & (~service) & (inv["unit_of_measure"] == "KWH") & ~d.str.contains(
+        "ransmission|tax|assessment|receipts|excise", case=False, regex=True)
+    cyc = inv[dist].groupby(["meter_number", "service_period_start", "service_period_end"])["quantity"].sum()
+    sup = inv[supplier]
+    en = sup[sup["line_description"] == "Energy - fixed price"].groupby(
+        ["meter_number", "service_period_start", "service_period_end"])["quantity"].sum()
+    rps = set(sup[sup["line_description"].str.startswith("Renewable")].groupby(
+        ["meter_number", "service_period_start", "service_period_end"]).size().index)
+    frac = inv.groupby(["meter_number", "service_period_start", "service_period_end"])["frac"].first()
+    store_of = sup.groupby("meter_number")["store_number"].first()
+    both = [k for k in en.index if k in rps and k in cyc.index]
+    factor = (en.loc[both].groupby(level=0).sum() / cyc.loc[both].groupby(level=0).sum())
+    use = {}
+    for k, q in en.items():
+        meter = k[0]
+        if k in cyc.index:
+            kwh = float(cyc.loc[k])
+        else:
+            kwh = float(q) / float(factor.loc[meter]) if k in rps else float(q)
+        st = int(store_of[meter])
+        use[st] = use.get(st, 0.0) + kwh * float(frac.loc[k]) / 1000.0
+    gas = d.str.startswith("Gas ") | d.str.endswith(", gas service")
+    paid = (inv.loc[~gas, "line_amount_usd"] * inv.loc[~gas, "frac"]).groupby(inv.loc[~gas, "store_number"]).sum()
+    return {s: dict(use=use[s], price=float(paid[s] / use[s]), share=100.0 * mwh[s] / use[s]) for s in use}
 
 
 def main(target=None, golden=None):

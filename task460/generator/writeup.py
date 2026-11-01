@@ -56,11 +56,22 @@ def write(fig_path, out_path):
     L.append("5. Weighted each hour's rate by the store's modelled output, as the charter's measure of what an array "
              "avoids: Gorsefield %.2f, Halvane %.2f, the other six %.2f to %.2f t/MWh." % (
                  S[pick]["rate"], S[second]["rate"], lo, hi))
-    L.append("6. Took each store's 2025 metered use from its delivery utility's distribution energy quantity in "
-             "corvane_electricity_invoice_lines_fy2025.csv, once per meter and billing cycle from the cycle's latest "
-             "invoice, each bill's days in 2025 pro rata, and divided the array's 2025 output by it.")
-    L.append("7. Divided every electricity charge on both vendors' latest invoices with service in 2025, each bill "
-             "prorated by its days in the year, by that use, leaving out Halvane Gas & Electric's gas lines.")
+    uses = sorted(S[t]["use"] for t in S)
+    shares = sorted(S[t]["share"] for t in S)
+    prices = sorted(S[t]["price"] for t in S)
+    L.append("6. Took each meter's 2025 metered kWh, each bill's days in 2025 pro rata, from its delivery utility's "
+             "distribution energy quantity in corvane_electricity_invoice_lines_fy2025.csv (Tennaford's blocks summed) "
+             "where the utility's own invoice reached accounts payable, and for the cycles after the store's main account "
+             "moved to Halworth Utility Payment Services (lines without a quantity) from Ardley Retail Energy's bill for "
+             "the same cycle, its first-term bills (those with the renewable portfolio standard line) over the meter's "
+             "loss factor (its quantity over the meter's in the cycles both bill, %.4f to %.4f) and its second-term "
+             "bills as billed, as the two garden-centre meters confirm: uses of %s to %s MWh, the array's output over "
+             "them %.1f to %.1f per cent." % (F["loss_factor_range"][0], F["loss_factor_range"][1],
+                                              "{:,}".format(uses[0]), "{:,}".format(uses[-1]), shares[0], shares[-1]))
+    L.append("7. Divided every payment for each store's 2025 electricity, the utilities' invoices, the service's lines "
+             "and Ardley's invoices each counted by its days in 2025 and as made (the bill paid twice at each move was "
+             "credited against the bills after it), Halvane Gas & Electric's gas charges left out, by that use: $%d to "
+             "$%d per MWh." % (prices[0], prices[-1]))
     L.append("8. Recommended Gorsefield, the store whose array would have avoided the most.\n")
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % W.GOLDEN["memo"])

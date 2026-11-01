@@ -18,11 +18,10 @@ SOURCES = {
     F["sites"]: "Corvane's candidate store sites with each store's delivery utility and feasibility-study array",
     F["codes"]: "the Commission's balancing area code list",
     F["utilmap"]: "the Commission's table of utilities and the balancing area each serves",
-    F["invoices"]: "Corvane accounts payable: every electricity invoice line for the eight stores with service in 2025",
+    F["invoices"]: "Corvane accounts payable: every electricity invoice line coded to the eight stores, from the "
+                   "delivery utilities, the retail supplier and the bill-payment service, December 2024 to February 2026",
     F["charter"]: "the Capital Committee's 2027 on-site solar pilot siting charter (approved 15 September 2026)",
     F["label"]: "the retail supplier's 2025 power content label",
-    F["dict"]: "the energy team's field definitions for the folder",
-    F["manifest"]: "the list of the files in the folder, with source, as-of date and terms",
 }
 DISTRACTORS = [F[k] for k in W.DISTRACTORS]
 DELIVERABLES = [W.GOLDEN["memo"], W.GOLDEN["hourly"]]
@@ -46,14 +45,13 @@ def write(target, out_path):
     meta = {
         "task": "task460",
         "architecture": 1,
-        "title": "Which of Corvane Home & Garden's eight candidate stores gets its 2027 on-site solar pilot, the store "
-                 "whose array would have avoided the most grid carbon dioxide per megawatt-hour it generated in 2025, "
-                 "conformed from hourly balancing-area operating data, a plant register, published emission rates, an "
-                 "array output model and accounts-payable invoice lines",
+        "title": "Which of Corvane Home & Garden's candidate stores gets its 2027 on-site solar pilot, with each store's "
+                 "grid carbon dioxide avoided per megawatt-hour of its array's 2025 output, its 2025 metered use, the "
+                 "share its array would have supplied and the price paid, from hourly grid data, an array model and "
+                 "accounts-payable invoice lines",
         "domain": "Physical & Environmental Sciences",
-        "subdomain": "emissions-inventory (the avoided-emissions factor of a grid-connected project: the operating "
-                     "margin of the store's balancing area in the hours its array generates, estimated from the hourly "
-                     "changes in the area's fossil CO2 and weighted by the array's output)",
+        "subdomain": "emissions-inventory (the grid carbon dioxide a store's on-site solar array would avoid per "
+                     "megawatt-hour it generates, the factor that credits a grid-connected project)",
         "objective": "Data Extraction & Conformation (ETL)",
         "prompt_shape": "01: a ranked list under a cap of one (eight stores, one pilot), with each store's avoided CO2 "
                         "per MWh, the first store left out and its gap, each store's 2025 metered use, the share its "

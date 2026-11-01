@@ -246,6 +246,10 @@ def ranking(fig, key):
 
 
 # ---------------------------------------------------------------------------------------------- the asks
+SERVICE = "Halworth Utility Payment Services LLC"
+Y0, Y1 = dt.date(2025, 1, 1), dt.date(2025, 12, 31)
+
+
 def read_invoices(target):
     rows = _rows(os.path.join(target, W.FILES["invoices"]))
     for r in rows:
@@ -255,26 +259,24 @@ def read_invoices(target):
         r["d1"] = dt.date.fromisoformat(r["service_period_end"])
         r["idate"] = dt.date.fromisoformat(r["invoice_date"])
         r["store"] = int(r["store_number"])
+        r["src"] = ("supplier" if r["vendor_name"] == W.SUPPLIER else "service" if r["vendor_name"] == SERVICE
+                    else "utility")
     return rows
 
 
 def in_2025(d0, d1):
-    a, b = max(d0, dt.date(2025, 1, 1)), min(d1, dt.date(2025, 12, 31))
+    a, b = max(d0, Y0), min(d1, Y1)
     return max((b - a).days + 1, 0) / ((d1 - d0).days + 1)
 
 
-def current_bills(rows):
-    """The invoices that stand: for each vendor, meter and service period, the latest invoice (an invoice billed again on
-    an actual read replaces the estimated one)."""
-    inv = {}
-    for r in rows:
-        inv.setdefault(r["invoice_number"], r)
-    latest = {}
-    for no, r in inv.items():
-        key = (r["vendor_number"], r["meter_number"], r["d0"], r["d1"])
-        if key not in latest or r["idate"] > inv[latest[key]]["idate"]:
-            latest[key] = no
-    return set(latest.values())
+def overlap(a, b, m0, m1):
+    return max((min(b, m1) - max(a, m0)).days + 1, 0)
+
+
+def month_bounds(y, m):
+    m0 = dt.date(y, m, 1)
+    m1 = (dt.date(y + 1, 1, 1) if m == 12 else dt.date(y, m + 1, 1)) - dt.timedelta(days=1)
+    return m0, m1
 
 
 DIST_ENERGY = ("Distribution energy charge", "Delivery service - energy", "Distribution kWh charge",
@@ -282,91 +284,131 @@ DIST_ENERGY = ("Distribution energy charge", "Delivery service - energy", "Distr
                "Electric distribution energy charge")
 
 
-def metered_kwh(lines):
-    """An invoice's metered kWh per meter: its distribution energy quantity (summed over the declining blocks where the
-    utility bills distribution energy in blocks)."""
-    out = {}
-    for r in lines:
+def is_gas(r):
+    d = r["line_description"]
+    return d.startswith("Gas ") or d.endswith(", gas service")
+
+
+def utility_cycles(rows):
+    """The delivery utilities' own invoices that reached accounts payable: per meter, each service period's metered kWh
+    (the distribution energy quantity, Tennaford's declining blocks summed). A bill the payment service paid carries
+    no quantity."""
+    cyc = {}
+    for r in rows:
         d = r["line_description"]
-        if r["unit_of_measure"] == "KWH" and (d in DIST_ENERGY or d.startswith("Distribution kWh charge,")):
-            out[r["meter_number"]] = out.get(r["meter_number"], 0.0) + r["qty"]
+        if r["src"] == "utility" and r["unit_of_measure"] == "KWH" and (d in DIST_ENERGY or
+                                                                        d.startswith("Distribution kWh charge,")):
+            cyc.setdefault(r["meter_number"], {})
+            k = (r["d0"], r["d1"])
+            cyc[r["meter_number"]][k] = cyc[r["meter_number"]].get(k, 0.0) + r["qty"]
+    return {m: sorted((a, b, q) for (a, b), q in v.items()) for m, v in cyc.items()}
+
+
+def supplier_cycles(rows):
+    """The supplier's invoices: per meter and service period (the utility's read cycle), its energy quantity and,
+    while its first term ran, the renewable portfolio standard line's quantity."""
+    out = {}
+    for r in rows:
+        if r["src"] != "supplier":
+            continue
+        e = out.setdefault(r["meter_number"], {}).setdefault((r["d0"], r["d1"]), dict(energy=None, rps=None))
+        if r["line_description"] == "Energy - fixed price":
+            e["energy"] = r["qty"]
+        elif r["line_description"].startswith("Renewable portfolio standard"):
+            e["rps"] = r["qty"]
     return out
+
+
+def allocated(cycles, m0, m1):
+    return sum(q * overlap(a, b, m0, m1) / ((b - a).days + 1) for a, b, q in cycles)
+
+
+def loss_factor(cycles, sup):
+    """The supplier's first-term quantity over the meter's kWh, over every cycle both the utility's own invoices and
+    the supplier's first term bill."""
+    own = {(a, b): q for a, b, q in cycles}
+    num = sum(e["energy"] for k, e in sup.items() if e["rps"] is not None and k in own)
+    den = sum(own[k] for k, e in sup.items() if e["rps"] is not None and k in own)
+    return num / den if den else None
+
+
+def metered(rows):
+    """Per meter: its metered kWh by read cycle. The utility's own invoice where it reached accounts payable; else the
+    supplier's bill for the cycle: its first term billed the meter's kWh grossed up by the territory's loss factor (the
+    ratio its quantities bear to the meter's in every cycle both bill), the standard's cost on the same quantity; its
+    second term (no standard line) bills the meter's kWh."""
+    cyc, sup = utility_cycles(rows), supplier_cycles(rows)
+    out, lf = {}, {}
+    for meter, bills in sup.items():
+        own = {(a, b): q for a, b, q in cyc.get(meter, [])}
+        f = loss_factor(cyc.get(meter, []), bills)
+        lf[meter] = f
+        out[meter] = sorted((a, b, own[(a, b)] if (a, b) in own else (e["energy"] / f if e["rps"] is not None
+                                                                         else e["energy"]))
+                            for (a, b), e in bills.items())
+    return out, lf, cyc
 
 
 def asks(target, D, golden_fig):
     rows = read_invoices(target)
-    keep = current_bills(rows)
-    by_inv = {}
+    mon, lf, cyc = metered(rows)
+    meter_store = {}
     for r in rows:
-        by_inv.setdefault(r["invoice_number"], []).append(r)
+        if r["src"] == "supplier":
+            meter_store[r["meter_number"]] = r["store"]
     out = {}
     for st, s in D["stores"].items():
-        use = 0.0
-        months = np.zeros(12)
-        paid = 0.0
-        for no, L in by_inv.items():
-            if no not in keep or L[0]["store"] != st:
-                continue
-            frac = in_2025(L[0]["d0"], L[0]["d1"])
-            paid += frac * sum(r["amt"] for r in L if not r["line_description"].startswith("Gas"))
-            if L[0]["vendor_name"] == W.SUPPLIER:
-                continue
-            q = sum(metered_kwh(L).values())
-            use += q * frac
-            d0, d1 = L[0]["d0"], L[0]["d1"]
-            n = (d1 - d0).days + 1
-            for k in range(n):
-                day = d0 + dt.timedelta(days=k)
-                if day.year == 2025:
-                    months[day.month - 1] += q / n / 1000.0
+        ms = [m for m in mon if meter_store[m] == st]
+        use = sum(q * in_2025(a, b) for m in ms for a, b, q in mon[m]) / 1000.0
+        months = np.array([sum(allocated(mon[m], *month_bounds(2025, k)) for m in ms) for k in range(1, 13)]) / 1000.0
+        paid = sum(r["amt"] * in_2025(r["d0"], r["d1"]) for r in rows if r["store"] == st and not is_gas(r))
         arr_m = np.zeros(12)
         t0 = dt.datetime(2025, 1, 1)
         arr = D["arrays"][st]
         for k in range(H):
             arr_m[(t0 + dt.timedelta(hours=k)).month - 1] += arr[k] / 1000.0
-        out[st] = dict(use_mwh=use / 1000.0, paid=paid, price=paid / (use / 1000.0),
-                       share=100.0 * golden_fig[st]["mwh"] / (use / 1000.0), months=months, array_months=arr_m)
+        out[st] = dict(use_mwh=use, paid=paid, price=paid / use, share=100.0 * golden_fig[st]["mwh"] / use,
+                       months=months, array_months=arr_m, lf={m: lf[m] for m in ms})
     return out
 
 
 def ask_wrong_paths(target, D, golden_fig):
-    """The natural and half-repaired readings of the invoice asks, each a complete pipeline: every kWh line summed;
-    one kWh line per invoice (the largest); the supplier's calendar months; both vendors' energy lines; every bill
-    including the estimated ones billed again; invoices dated in 2025; dollars from the utility alone, or with the
-    gas lines."""
+    """The natural and half-repaired readings of the invoice asks, each a complete pipeline. Use: every kWh line summed;
+    the utilities' own invoices alone; the utilities' invoices with the supplier's energy quantity filling the cycles
+    they no longer carry, as billed or divided by the loss factor learnt where both bill (the reconciled fill); the
+    supplier's energy quantity for the whole year, as billed or divided by that factor. Dollars: a bill that
+    reached accounts payable and was paid by the service as well counted once; the service's lines left out; the gas
+    lines kept."""
     rows = read_invoices(target)
-    keep = current_bills(rows)
-    by_inv = {}
-    for r in rows:
-        by_inv.setdefault(r["invoice_number"], []).append(r)
+    cyc, sup = utility_cycles(rows), supplier_cycles(rows)
+    meter_store = {r["meter_number"]: r["store"] for r in rows if r["src"] == "supplier"}
+    direct_bills = {r["invoice_number"] for r in rows if r["src"] == "utility"}
     out = {}
     for st in D["stores"]:
-        acc = dict(kwh_all=0.0, max_line=0.0, supplier=0.0, both=0.0, all_bills=0.0, by_invoice_date=0.0,
-                   paid_util_only=0.0, paid_with_gas=0.0, paid_all_bills=0.0)
-        for no, L in by_inv.items():
-            if L[0]["store"] != st:
+        acc = dict(kwh_all=0.0, util_only=0.0, fill_raw=0.0, fill_recon=0.0, sup_raw=0.0, sup_lf=0.0)
+        for meter, bills in sup.items():
+            if meter_store[meter] != st:
                 continue
-            frac = in_2025(L[0]["d0"], L[0]["d1"])
-            util = L[0]["vendor_name"] != W.SUPPLIER
-            kwh = [r["qty"] for r in L if r["unit_of_measure"] == "KWH"]
-            q = sum(metered_kwh(L).values()) if util else 0.0
-            if util:
-                acc["all_bills"] += q * frac
-            if no not in keep:
-                acc["paid_all_bills"] += frac * sum(r["amt"] for r in L if not r["line_description"].startswith("Gas"))
-                continue
-            acc["kwh_all"] += frac * sum(kwh)
-            acc["max_line"] += frac * (max(kwh) if kwh else 0.0)
-            if util:
-                acc["both"] += q * frac
-                if L[0]["idate"].year == 2025:
-                    acc["by_invoice_date"] += q
-                acc["paid_util_only"] += frac * sum(r["amt"] for r in L if not r["line_description"].startswith("Gas"))
-            else:
-                e = sum(r["qty"] for r in L if r["line_description"].startswith("Energy"))
-                acc["supplier"] += e * frac
-                acc["both"] += e * frac
-            acc["paid_with_gas"] += frac * sum(r["amt"] for r in L)
-            acc["paid_all_bills"] += frac * sum(r["amt"] for r in L if not r["line_description"].startswith("Gas"))
-        out[st] = {k: (v / 1000.0 if not k.startswith("paid") else v) for k, v in acc.items()}
+            own = {(a, b): q for a, b, q in cyc.get(meter, [])}
+            f = loss_factor(cyc.get(meter, []), bills)
+            acc["util_only"] += sum(q * in_2025(a, b) for (a, b), q in own.items())
+            for (a, b), e in bills.items():
+                fr = in_2025(a, b)
+                acc["sup_raw"] += e["energy"] * fr
+                acc["sup_lf"] += e["energy"] / f * fr
+                if (a, b) in own:
+                    acc["fill_raw"] += own[(a, b)] * fr
+                    acc["fill_recon"] += own[(a, b)] * fr
+                else:
+                    acc["fill_raw"] += e["energy"] * fr
+                    acc["fill_recon"] += e["energy"] / f * fr
+        acc["kwh_all"] = sum(r["qty"] * in_2025(r["d0"], r["d1"]) for r in rows
+                             if r["store"] == st and r["unit_of_measure"] == "KWH")
+        out[st] = {k: v / 1000.0 for k, v in acc.items()}
+        paid = lambda keep: sum(r["amt"] * in_2025(r["d0"], r["d1"]) for r in rows if r["store"] == st and keep(r))
+        twice = lambda r: r["src"] == "service" and r["line_description"].split(" bill ")[1].split()[0] in direct_bills
+        out[st].update(paid_dedup=paid(lambda r: not is_gas(r) and not twice(r)),
+                       paid_no_service=paid(lambda r: not is_gas(r) and r["src"] != "service"),
+                       paid_with_gas=paid(lambda r: True),
+                       paid_golden=paid(lambda r: not is_gas(r)))
     return out

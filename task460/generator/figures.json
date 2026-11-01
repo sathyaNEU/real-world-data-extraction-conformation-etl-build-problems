@@ -4,9 +4,9 @@
  "gap": 0.31,
  "gap_unrounded": 0.312,
  "hourly_rows": 70080,
- "loss_factor_range_pct": [
-  3.6,
-  6.2
+ "loss_factor_range": [
+  1.0365,
+  1.0623
  ],
  "pick_store": 2291,
  "rungs": {
@@ -54,7 +54,7 @@
   }
  },
  "share_range": [
-  22.7,
+  23.0,
   30.2
  ],
  "stores": {
@@ -68,15 +68,15 @@
    "nb": 0.39,
    "pooled": 0.69,
    "price": 155,
-   "price_unrounded": 154.87,
+   "price_unrounded": 155.1,
    "rate": 0.4,
    "rate_unrounded": 0.4017,
-   "share": 26.5,
-   "share_unrounded": 26.503,
+   "share": 26.6,
+   "share_unrounded": 26.595,
    "store": 2104,
    "tonnes": 253,
-   "use": 2381,
-   "use_unrounded": 2381.26
+   "use": 2373,
+   "use_unrounded": 2372.95
   },
   "Faraview": {
    "all_hours": 0.39,
@@ -87,16 +87,16 @@
    "hourly_average": 0.2,
    "nb": 0.39,
    "pooled": 0.39,
-   "price": 123,
-   "price_unrounded": 123.11,
+   "price": 122,
+   "price_unrounded": 122.24,
    "rate": 0.39,
    "rate_unrounded": 0.3884,
-   "share": 23.9,
-   "share_unrounded": 23.91,
+   "share": 24.0,
+   "share_unrounded": 24.013,
    "store": 2317,
    "tonnes": 184,
-   "use": 1984,
-   "use_unrounded": 1984.32
+   "use": 1976,
+   "use_unrounded": 1975.85
   },
   "Gorsefield": {
    "all_hours": 0.68,
@@ -107,16 +107,16 @@
    "hourly_average": 0.35,
    "nb": 0.8,
    "pooled": 0.61,
-   "price": 145,
-   "price_unrounded": 145.26,
+   "price": 146,
+   "price_unrounded": 146.09,
    "rate": 0.89,
    "rate_unrounded": 0.8915,
-   "share": 28.3,
-   "share_unrounded": 28.305,
+   "share": 28.5,
+   "share_unrounded": 28.514,
    "store": 2291,
    "tonnes": 653,
-   "use": 2589,
-   "use_unrounded": 2589.29
+   "use": 2570,
+   "use_unrounded": 2570.3
   },
   "Halvane": {
    "all_hours": 0.5,
@@ -128,15 +128,15 @@
    "nb": 0.68,
    "pooled": 0.51,
    "price": 142,
-   "price_unrounded": 142.1,
+   "price_unrounded": 141.84,
    "rate": 0.58,
    "rate_unrounded": 0.5795,
    "share": 27.1,
-   "share_unrounded": 27.102,
+   "share_unrounded": 27.086,
    "store": 2449,
    "tonnes": 394,
-   "use": 2506,
-   "use_unrounded": 2505.85
+   "use": 2507,
+   "use_unrounded": 2507.27
   },
   "Kestrel Point": {
    "all_hours": 0.39,
@@ -147,16 +147,16 @@
    "hourly_average": 0.22,
    "nb": 0.4,
    "pooled": 0.39,
-   "price": 226,
-   "price_unrounded": 225.82,
+   "price": 225,
+   "price_unrounded": 224.78,
    "rate": 0.39,
    "rate_unrounded": 0.3889,
-   "share": 27.5,
-   "share_unrounded": 27.506,
+   "share": 27.6,
+   "share_unrounded": 27.612,
    "store": 2402,
    "tonnes": 264,
-   "use": 2472,
-   "use_unrounded": 2471.72
+   "use": 2462,
+   "use_unrounded": 2462.19
   },
   "Ostlemere": {
    "all_hours": 0.39,
@@ -167,16 +167,16 @@
    "hourly_average": 0.34,
    "nb": 0.58,
    "pooled": 0.37,
-   "price": 169,
-   "price_unrounded": 169.0,
+   "price": 170,
+   "price_unrounded": 170.21,
    "rate": 0.39,
    "rate_unrounded": 0.3877,
    "share": 30.2,
-   "share_unrounded": 30.198,
+   "share_unrounded": 30.199,
    "store": 2356,
    "tonnes": 335,
    "use": 2862,
-   "use_unrounded": 2862.0
+   "use_unrounded": 2861.91
   },
   "Quillbury": {
    "all_hours": 0.43,
@@ -187,16 +187,16 @@
    "hourly_average": 0.23,
    "nb": 1.11,
    "pooled": 0.46,
-   "price": 184,
-   "price_unrounded": 184.02,
+   "price": 183,
+   "price_unrounded": 182.79,
    "rate": 0.39,
    "rate_unrounded": 0.3903,
-   "share": 22.7,
-   "share_unrounded": 22.697,
+   "share": 23.0,
+   "share_unrounded": 22.99,
    "store": 2163,
    "tonnes": 210,
-   "use": 2368,
-   "use_unrounded": 2368.28
+   "use": 2338,
+   "use_unrounded": 2338.02
   },
   "Tennaford": {
    "all_hours": 0.78,
@@ -207,16 +207,16 @@
    "hourly_average": 0.67,
    "nb": 0.49,
    "pooled": 0.83,
-   "price": 136,
-   "price_unrounded": 135.92,
+   "price": 137,
+   "price_unrounded": 136.96,
    "rate": 0.41,
    "rate_unrounded": 0.408,
-   "share": 26.9,
-   "share_unrounded": 26.896,
+   "share": 27.0,
+   "share_unrounded": 27.006,
    "store": 2238,
    "tonnes": 271,
-   "use": 2468,
-   "use_unrounded": 2468.28
+   "use": 2458,
+   "use_unrounded": 2458.26
   }
  }
 }

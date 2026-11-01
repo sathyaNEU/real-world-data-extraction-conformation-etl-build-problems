@@ -21,8 +21,8 @@ Its array would have avoided 0.89 t of grid carbon dioxide per MWh it generated 
 3. Computed each area's hourly fossil carbon dioxide from its coal, gas and oil net generation at the 2025 fuel output emission rates in edc_generation_emission_rates_2025.xlsx, pounds per MWh converted to tonnes.
 4. Estimated each area's marginal emission rate for each season and local standard hour as the slope of the hour-to-hour change in that carbon dioxide on the change in the area's net generation, interchange being scheduled a day ahead (solar_pilot_siting_charter_2027.pdf).
 5. Weighted each hour's rate by the store's modelled output, as the charter's measure of what an array avoids: Gorsefield 0.89, Halvane 0.58, the other six 0.39 to 0.41 t/MWh.
-6. Took each store's 2025 metered use from its delivery utility's distribution energy quantity in corvane_electricity_invoice_lines_fy2025.csv, once per meter and billing cycle from the cycle's latest invoice, each bill's days in 2025 pro rata, and divided the array's 2025 output by it.
-7. Divided every electricity charge on both vendors' latest invoices with service in 2025, each bill prorated by its days in the year, by that use, leaving out Halvane Gas & Electric's gas lines.
+6. Took each meter's 2025 metered kWh, each bill's days in 2025 pro rata, from its delivery utility's distribution energy quantity in corvane_electricity_invoice_lines_fy2025.csv (Tennaford's blocks summed) where the utility's own invoice reached accounts payable, and for the cycles after the store's main account moved to Halworth Utility Payment Services (lines without a quantity) from Ardley Retail Energy's bill for the same cycle, its first-term bills (those with the renewable portfolio standard line) over the meter's loss factor (its quantity over the meter's in the cycles both bill, 1.0365 to 1.0623) and its second-term bills as billed, as the two garden-centre meters confirm: uses of 1,976 to 2,862 MWh, the array's output over them 23.0 to 30.2 per cent.
+7. Divided every payment for each store's 2025 electricity, the utilities' invoices, the service's lines and Ardley's invoices each counted by its days in 2025 and as made (the bill paid twice at each move was credited against the bills after it), Halvane Gas & Electric's gas charges left out, by that use: $122 to $225 per MWh.
 8. Recommended Gorsefield, the store whose array would have avoided the most.
 
 ## 4. Deliverable Answers
@@ -40,32 +40,32 @@ Its array would have avoided 0.89 t of grid carbon dioxide per MWh it generated 
    - Faraview: 0.39
    - Ostlemere: 0.39
 3. 2025 metered electricity use, MWh:
-   - Gorsefield: 2,589
-   - Halvane: 2,506
-   - Tennaford: 2,468
-   - Brackwell: 2,381
-   - Quillbury: 2,368
-   - Kestrel Point: 2,472
-   - Faraview: 1,984
+   - Gorsefield: 2,570
+   - Halvane: 2,507
+   - Tennaford: 2,458
+   - Brackwell: 2,373
+   - Quillbury: 2,338
+   - Kestrel Point: 2,462
+   - Faraview: 1,976
    - Ostlemere: 2,862
 4. Share of 2025 use the array would have supplied, per cent:
-   - Gorsefield: 28.3
+   - Gorsefield: 28.5
    - Halvane: 27.1
-   - Tennaford: 26.9
-   - Brackwell: 26.5
-   - Quillbury: 22.7
-   - Kestrel Point: 27.5
-   - Faraview: 23.9
+   - Tennaford: 27.0
+   - Brackwell: 26.6
+   - Quillbury: 23.0
+   - Kestrel Point: 27.6
+   - Faraview: 24.0
    - Ostlemere: 30.2
 5. Paid for electricity per MWh used in 2025, dollars:
-   - Gorsefield: 145
+   - Gorsefield: 146
    - Halvane: 142
-   - Tennaford: 136
+   - Tennaford: 137
    - Brackwell: 155
-   - Quillbury: 184
-   - Kestrel Point: 226
-   - Faraview: 123
-   - Ostlemere: 169
+   - Quillbury: 183
+   - Kestrel Point: 225
+   - Faraview: 122
+   - Ostlemere: 170
 6. Chart: each store's 2025 monthly metered use against its array's modelled monthly output, one panel per store, on page 2.
 
 ### pilot_sites_hourly_avoided_emissions_2025.csv

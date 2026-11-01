@@ -41,9 +41,10 @@ def compute(target):
                        price=A[st]["price"], price0=int(round(A[st]["price"])), months=A[st]["months"],
                        array_months=A[st]["array_months"], avg=R[st]["avg"], nb=R[st]["nb"], fossil=R[st]["fossil"],
                        pooled=R[st]["pooled"], all_hours=R[st]["all_hours"], hourly_average=R[st]["hourly_average"])
+    loss = sorted(f for st in g for f in A[st]["lf"].values())
     WP = M.ask_wrong_paths(target, D, g)
-    loss = sorted(100.0 * (WP[st]["supplier"] / A[st]["use_mwh"] - 1.0) for st in g)
-    return dict(D=D, g=g, R=R, A=A, rows=rows, order=[code_of[s] for s in order], pick=code_of[pick],
+    twice = sum(1 for st in g if abs(WP[st]["paid_dedup"] - A[st]["paid"]) > 1.0)
+    return dict(twice=twice, D=D, g=g, R=R, A=A, rows=rows, order=[code_of[s] for s in order], pick=code_of[pick],
                 second=code_of[second], gap=g[pick]["rate"] - g[second]["rate"], st_of=st_of, loss=(loss[0], loss[-1]))
 
 
@@ -194,22 +195,32 @@ def write_pdf(X, path):
         "generation give the same figures to two decimals.", B))
     s.append(Paragraph("Use and price from the invoices", H2))
     s.append(Paragraph(
-        "Metered use is each delivery utility's distribution energy quantity, once per meter and billing cycle (Tennaford "
-        "bills it in declining blocks, which are summed), from the latest invoice for the cycle, with each bill's days "
-        "in 2025 counted pro rata; Quillbury and Kestrel Point add their garden-centre meters. %s bills the same "
-        "consumption by calendar month at the wholesale delivery point, %.1f to %.1f per cent above the meters, so its "
-        "quantities are not added. The price is every electricity charge on both vendors' invoices for 2025 over that "
-        "use; Halvane Gas & Electric's gas lines are left out. Each array is sized below its store's daytime load "
-        "(charter 3.3), so the share supplied is its 2025 output over the store's use." % (W.SUPPLIER, X["loss"][0],
-                                                                                            X["loss"][1]), B))
+        "Metered use is the kilowatt-hours each store's meters recorded in 2025. Each delivery utility's own invoices "
+        "carry them (its distribution energy quantity, once per meter and billing cycle; Tennaford bills it in declining "
+        "blocks, which are summed) until the store's main account moved to %s in the spring of 2025; the garden-centre accounts at "
+        "Quillbury and Kestrel Point stayed on direct payment all year. The service's lines carry only what it paid, so "
+        "for the rest of the year the use comes from %s, which bills each meter on the utility's read cycles. Its "
+        "first term billed the meter's kilowatt-hours grossed up to the wholesale delivery point, %.4f to %.4f times "
+        "the meters' readings in every cycle both bill, so those bills are divided by each meter's factor; its new term, "
+        "from the first read on or after 1 July, bills the meter's kilowatt-hours with the renewable standard's cost in "
+        "the price, as the garden-centre meters show, so those bills are taken as billed." % (
+            M.SERVICE, W.SUPPLIER, X["loss"][0], X["loss"][1]), B))
+    s.append(Paragraph(
+        "The price is everything Corvane paid for each store's electricity for 2025 service over that use, each bill "
+        "counted by its days in 2025: the utilities' invoices, the service's payments and the supplier's invoices. %s "
+        "stores' first bill after the move was paid twice, by accounts payable and by the service; the utility carried "
+        "the overpayment as a credit and the service paid that much less on the next bills, so every payment is counted "
+        "as made. Halvane Gas & Electric's gas charges are left out. Each array is sized below its store's daytime load "
+        "(charter 3.3), so the share supplied is its 2025 output over the store's use." % (
+            ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][X["twice"]]), B))
     s.append(Paragraph(
         "Kestrel Point's area filed its data under its former code, KPLP, until 30 June 2025. The operator filed a few "
         "hours of demand from each hour's net generation and interchange after telemetry gaps; leaving them out moves no "
         "figure.", SM))
     s.append(Spacer(1, 4))
     s.append(Image(io.BytesIO(chart_png(X)), width=6.7 * inch, height=3.63 * inch))
-    s.append(Paragraph("Figure 1. Each store's 2025 metered use by calendar month (from its billing cycles, by days) "
-                       "against its array's modelled 2025 output.", SM))
+    s.append(Paragraph("Figure 1. Each store's 2025 metered use by calendar month against its array's modelled 2025 "
+                       "output.", SM))
     s.append(Spacer(1, 6))
     s.append(Paragraph("%s<br/>%s" % (W.PEOPLE["director"], W.TITLES["director"]), B))
     doc.build(s, onFirstPage=frame, onLaterPages=frame)
@@ -271,7 +282,7 @@ def figures(X, n_hourly):
         out["rungs"][key] = dict(winner=rows[o[0]]["town"], value=r2(rows[o[0]][key]), second=rows[o[1]]["town"],
                                  second_value=r2(rows[o[1]][key]), gorsefield_place=o.index("GRSF") + 1)
     out["share_range"] = [min(rows[c]["share1"] for c in rows), max(rows[c]["share1"] for c in rows)]
-    out["loss_factor_range_pct"] = [float("%.1f" % X["loss"][0]), float("%.1f" % X["loss"][1])]
+    out["loss_factor_range"] = [round(X["loss"][0], 4), round(X["loss"][1], 4)]
     return out
 
 
