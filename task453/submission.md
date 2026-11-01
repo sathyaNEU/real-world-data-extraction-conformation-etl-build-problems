@@ -21,7 +21,7 @@ With every rotation group answering it, the redesigned questionnaire puts the pu
 ## 3. Step-by-Step Solution
 
 1. Conformed lfs_cai2014_estimation_cells_2022-01_2025-11.csv (weighted thousands by LFSTAT, regions on the 2019 codes to December 2024, through region_classification_concordance_2019_2025.csv) and lfs_ics_estimation_cells_2025-07_2026-12.csv (weighted persons) into weighted unemployed and labour force by month, region and rotation group; each month reproduces Table 2 of lfs_release_2026-12_tables.xlsx.
-2. Gave each rotation group its interview number from the replacement schedule in lfs_redesigned_questionnaire_methodology_note.pdf section 1: before July 2025 a first interview ran 1.3 points above the six-interview average, and the gap between the two questionnaires' groups in July to November 2025 is 1.2 points, mostly that bias.
+2. Gave each rotation group its interview number from the replacement schedule in lfs_redesigned_questionnaire_methodology_note.pdf section 1: in the CAI 2014 cells before July 2025 a first interview ran 1.3 points above the six-interview average, and the gap between the two questionnaires' groups in July to November 2025 is 1.2 points, mostly that bias.
 3. Read the redesign's effect at each interview number against the same interview number on the previous questionnaire, month and region held fixed, January 2022 to December 2026: negative at the first interview, positive at the second to sixth.
 4. Averaged the six effects as a published estimate averages the six rotation groups (methodology note section 1): +0.4848, +0.5 points rounded (Act section 9(2)).
 5. Restated the trigger: 6.0 plus 0.5 is 6.5 per cent (sections 8 and 9).

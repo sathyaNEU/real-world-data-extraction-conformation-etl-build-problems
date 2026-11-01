@@ -1,7 +1,12 @@
 """task453's assertions, run on every build: the input gates, the golden from the bundle, the corridor of every
-reasonable implementation, every wrong route by name, the margins, every semantic-fork row (SF1 to SF14), the
+reasonable implementation, every wrong route by name, the margins, every semantic-fork row (SF1 to SF15), the
 three-rules block (R1 to R3c) on the clean truth, mess neutrality, the ask's stops and cracker, the separation of the
-ask from the main call, the distractors' deletion test and the realism sweep."""
+ask from the main call, the distractors' deletion test, no shipped file describing the data (by name, sheet and
+content) with each closure that rests on the systems' own columns and labels read back through the verifier's own
+readers, and the realism sweep."""
+import csv
+import datetime as dt
+import itertools
 import json
 import os
 import re
@@ -10,6 +15,7 @@ import tempfile
 
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as pq
 
 import golden as GD
 import methods as M
@@ -18,10 +24,38 @@ import survey as S
 import world as W
 
 RESULTS = []
+# a file or sheet whose job is to tell the analyst what the data is (dataset-generation section 3): the name rule the
+# leak gate applies (leak-check/leak.py, sweep 1)
+DESCRIBE_NAME = re.compile(
+    r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|fields?_(guide|notes|"
+    r"list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|file_layout|glossary|column_(notes|"
+    r"descriptions?)|data_?notes|how_to_read|about_this|export_notes|extract_notes|feed_notes|desk_notes|data_team_notes|"
+    r"definitions|schema|layouts?_notes|handling_notes|release_notes)(?![a-z])", re.I)
+DESCRIBE_SHEET = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                            r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
+EXPORT_STAMP = dt.datetime(2027, 1, 25, 15, 40, tzinfo=dt.timezone(dt.timedelta(hours=13))).timestamp()
 
 
 def ok(label, cond, detail=""):
     RESULTS.append((label, bool(cond), detail))
+
+
+def release_table1(target):
+    """Table 1 as the verifier reads the release (openpyxl, values only): month label to the labour force, employed
+    and unemployed, thousands as published"""
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(target, P.FILES["release"]), read_only=True, data_only=True)
+    out = {}
+    for row in wb["Table 1"].iter_rows(min_row=5, values_only=True):
+        if row[0] and re.match(r"[A-Z][a-z]{2}-\d{4}$", str(row[0])):
+            out[str(row[0])] = (float(row[1]), float(row[2]), float(row[3]))
+    return out
+
+
+def month_label(ym):
+    """2022-01 or 202201 as the release labels the month (Jan-2022)"""
+    ym = ym if "-" in ym else ym[:4] + "-" + ym[4:]
+    return dt.date(int(ym[:4]), int(ym[5:7]), 1).strftime("%b-%Y")
 
 
 def restate(x):
@@ -260,6 +294,110 @@ def run(target, golden_dir, world=None, meta_path=None):
            M.golden_break(M.cells_from(une3, lab3))[0] == X["G"])
     finally:
         shutil.rmtree(tmp)
+
+    # ---------------------------------------------------------------- no shipped file describes the data
+    ok("describing files: the name rule catches a dictionary and a manifest (positive control on the two names that "
+       "used to ship)", all(DESCRIBE_NAME.search(n) for n in ("lfs_file_dictionary", "export_manifest")))
+    named = [f for f in files if DESCRIBE_NAME.search(f.rsplit(".", 1)[0])]
+    ok("describing files: no shipped file is a dictionary, manifest, readme, notes or definitions file by name",
+       not named, named or "%d names" % len(files))
+    from openpyxl import load_workbook
+    sheets = [s for f in files if f.endswith(".xlsx") for s in load_workbook(os.path.join(target, f), read_only=True).sheetnames]
+    ok("describing files: no workbook sheet is a readme, notes, dictionary or definitions tab (positive control: the "
+       "rule catches 'Notes', and %d sheets are read)" % len(sheets),
+       bool(DESCRIBE_SHEET.match("Notes")) and len(sheets) >= 5 and not [s for s in sheets if DESCRIBE_SHEET.match(s.strip())],
+       sheets)
+    pdfs = {f: pdf_text(os.path.join(target, f)) for f in files if f.endswith(".pdf")}
+    ok("describing files: positive control, each document is read through the extractor the sweep below uses (the "
+       "note's section 4 heading, the Act's section 9 heading)",
+       "The series on the redesigned basis" in pdfs.get(P.FILES["note"], "") and
+       "Restatement after a change to the survey" in pdfs.get(P.FILES["act"], ""))
+    fields = set()
+    for f in files:
+        if f.endswith(".csv"):
+            fields |= set(open(os.path.join(target, f), encoding="utf-8").readline().strip().split(","))
+        elif f.endswith(".parquet"):
+            fields |= set(pq.read_schema(os.path.join(target, f)).names)
+    ident = {c for c in fields if "_" in c or re.search(r"\d", c) or (c.isupper() and len(c) >= 3)}
+    in_docs = {f: sorted(c for c in ident if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
+               for f, t in pdfs.items()}
+    ok("describing files: no document names a field of the data files (%d field names swept)" % len(ident),
+       len(ident) >= 20 and not any(in_docs.values()), in_docs)
+
+    # ---------------------------------------------------------------- the closures the systems' own labels carry
+    import verify as V
+    tf = pq.read_table(os.path.join(target, P.FILES["field"])).to_pydict()          # the verifier's own read
+    pairs = sorted(set(zip(tf["outcome"], tf["outcome_desc"])))
+    ok("SF14: the fieldwork system writes one label of its own beside each outcome code, 11 and 12 its full and "
+       "partial responses", pairs == sorted(P.OUTCOME_LABEL.items()), pairs)
+    vq = V.q4_dwellings(target)
+    ok("SF14: responding read on the fieldwork system's labels (the verifier's path) gives the golden's counts read on "
+       "codes 11 and 12, region by region and in all", all(vq.get(c) == X["q4"][c] for c in W.RCODE + ["all"]), vq)
+    with open(os.path.join(target, P.FILES["old"]), newline="") as fh:                # the verifier's own reader
+        cai = list(csv.DictReader(fh))
+    lp = sorted(set((int(r["LFSTAT"]), r["LFSTAT_DESC"]) for r in cai))
+    ok("closure 19: CAI 2014 writes one label of its own beside each labour force status code",
+       lp == sorted(P.LFSTAT_LABEL.items()), lp)
+    vcells = V.read_cells(target)
+    vG = float(V.fit_effects(vcells).mean())
+    ok("closure 19: the change read through CAI 2014's status labels (the verifier's path) equals the golden's, read "
+       "on the codes", abs(vG - X["G"]) < 1e-9, "%.6f against %.6f" % (vG, X["G"]))
+    t1 = release_table1(target)
+    nat = {}
+    for (ym, _, _, _), (u, l) in vcells.items():
+        a = nat.setdefault(ym, [0.0, 0.0])
+        a[0] += u
+        a[1] += l
+    gaps = [max(abs(l / 6000.0 - t1[month_label(ym)][0]), abs((l - u) / 6000.0 - t1[month_label(ym)][1]),
+                abs(u / 6000.0 - t1[month_label(ym)][2])) for ym, (u, l) in nat.items()]
+    ok("closures 18 and 19 (C1): the cells conformed on the exports' own columns and labels (CAI 2014's WTD000 in "
+       "thousands with its status labels, ICS's weighted persons) reproduce Table 1's labour force, employed and "
+       "unemployed in every month", len(gaps) == W.T == len(t1) and max(gaps) <= 0.05 + 1e-6,
+       "%d months, largest gap %.4f thousand" % (len(gaps), max(gaps)))
+    tot = {}
+    for r in cai:
+        if r["REF_MTH"] < "202507":
+            k = (r["REF_MTH"], r["LFSTAT"])
+            tot[k] = tot.get(k, 0.0) + float(r["WTD000"])
+    pre_m = sorted({m for m, _ in tot})
+    fits = {}
+    for perm in itertools.permutations("123"):
+        fits["".join(perm)] = sum(abs(tot[(m, perm[0])] / 6.0 - t1[month_label(m)][1]) <= 0.05 + 1e-6 and
+                                  abs(tot[(m, perm[1])] / 6.0 - t1[month_label(m)][2]) <= 0.05 + 1e-6 for m in pre_m)
+    ok("closure 19 (C1): of the six readings of CAI 2014's codes 1, 2 and 3 only 1 employed, 2 unemployed reproduces "
+       "Table 1, in each of the months to June 2025, when every rotation group answered on CAI 2014",
+       len(pre_m) == W.PHASE and fits["123"] == len(pre_m) and all(v == 0 for k, v in fits.items() if k != "123"), fits)
+    tmp2 = tempfile.mkdtemp()
+    try:
+        for f in (P.FILES["new"], P.FILES["conc"]):
+            shutil.copy(os.path.join(target, f), tmp2)
+        with open(os.path.join(tmp2, P.FILES["old"]), "w", newline="") as fo:
+            wr = csv.DictWriter(fo, list(cai[0].keys()), lineterminator="\r\n")
+            wr.writeheader()
+            for r in cai:
+                wr.writerow(dict(r, SEX="2" if r["SEX"] == "1" else "1", AGEGRP=str(6 - int(r["AGEGRP"]))))
+        g_v = float(V.fit_effects(V.read_cells(tmp2)).mean())
+        u2, l2 = GD.read_cells(tmp2)
+        g_g = M.golden_break(M.cells_from(u2, l2))[0]
+        ok("closure 19: the sex and age codes are not read by the call (CAI 2014's sex codes swapped and its age groups "
+           "reversed, the change is unchanged on the verifier's reader and the golden's)",
+           abs(g_v - X["G"]) < 1e-9 and abs(g_g - X["G"]) < 1e-9, "%.6f and %.6f" % (g_v, g_g))
+    finally:
+        shutil.rmtree(tmp2)
+    rel = load_workbook(os.path.join(target, P.FILES["release"]), read_only=True, data_only=True)
+    contents = [str(c) for row in rel["Contents"].iter_rows(values_only=True) for c in row if c]
+    ok("closure 4: the release dates itself (its Contents: 'Released 21 January 2027.'), before the pack's export",
+       any("Released 21 January 2027." in c for c in contents) and W.RELEASE == "2027-01-21" < W.EXTRACT, contents[:2])
+    ok("closure 4: every pack file carries the export stamp of 25 January 2027",
+       all(abs(os.path.getmtime(os.path.join(target, f)) - EXPORT_STAMP) < 1 for f in files))
+    prov = {x["path"]: x for x in meta.get("files", [])}
+    ok("provenance: metadata.json gives every file its owner, what it covers and its extract or issue date, none after "
+       "the pack's as-of date and the release on its own date",
+       sorted(prov) == files and all(x.get("owner") and "covers" in x and
+                                     re.fullmatch(r"\d{4}-\d\d-\d\d", x.get("extracted_or_issued", "")) and
+                                     x["extracted_or_issued"] <= meta.get("as_of", "") for x in prov.values()) and
+       prov[P.FILES["release"]]["extracted_or_issued"] == W.RELEASE,
+       {k: v.get("extracted_or_issued") for k, v in prov.items()})
 
     # ---------------------------------------------------------------- realism sweep
     q4v = [X["q4"][c] for c in W.RCODE]

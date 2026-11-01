@@ -1,6 +1,8 @@
 """Independent verifier: reads only the shipped bundle and the goldens, on its own code path (csv, openpyxl and pyarrow
 readers, a within-transformation fixed-effects fit), and recomputes the change, the restated trigger, the designation,
-the regional series on the redesigned basis and the fourth-quarter dwelling count."""
+the regional series on the redesigned basis and the fourth-quarter dwelling count. It reads labour force status on
+CAI 2014's own labels and the fieldwork outcome on the fieldwork system's own labels, where the golden reads the codes,
+so the two paths agreeing shows the labels carry what the codes do."""
 import csv
 import os
 import re
@@ -42,9 +44,9 @@ def read_cells(target):
             k = (ym, reg, r["ROTGRP"], 0)
             u, l = cells.get(k, (0.0, 0.0))
             v = float(r["WTD000"]) * 1000.0
-            if r["LFSTAT"] == "2":
+            if r["LFSTAT_DESC"] == "Unemployed":
                 cells[k] = (u + v, l + v)
-            elif r["LFSTAT"] == "1":
+            elif r["LFSTAT_DESC"] == "Employed":
                 cells[k] = (u, l + v)
             else:
                 cells.setdefault(k, (u, l))
@@ -103,8 +105,8 @@ def q4_dwellings(target):
         for r in csv.DictReader(f):
             reg[r["psu"]] = r["region_2025"]
     seen = set()
-    for m, ref, k, out, p in zip(t["contact_month"], t["dwelling_ref"], t["interview_no"], t["outcome"], t["psu"]):
-        if out in (11, 12):
+    for m, ref, k, out, p in zip(t["contact_month"], t["dwelling_ref"], t["interview_no"], t["outcome_desc"], t["psu"]):
+        if out in ("Full response", "Partial response"):
             seen.add((ref, month_index(m) - int(k) + 1, reg[p]))
     by = {}
     for _, _, r in seen:

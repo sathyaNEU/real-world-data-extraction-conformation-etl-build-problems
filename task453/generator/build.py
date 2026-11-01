@@ -51,8 +51,6 @@ def build(out, quiet=False, world=None):
     n["pop"] = P.write_population(S.population(), f("pop"))
     n["seas"] = P.write_seasonal(f("seas"))
     n["resp"] = P.write_response(w, f("resp"))
-    n["dict"] = P.write_dictionary(f("dict"))
-    n["manifest"] = P.write_manifest(f("manifest"), n)
     DC.write_note(f("note"))
     DC.write_act(f("act"))
     PP.normalize_ooxml(f("release"), "Labour Market Statistics", "Labour Market Statistics", "2022-02-14T21:05:00Z",

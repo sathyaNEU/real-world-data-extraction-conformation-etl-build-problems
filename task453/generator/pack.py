@@ -1,6 +1,8 @@
 """The pack's data files, written from the simulated survey: both collection systems' exports, the December 2026
 release, the fourth-quarter fieldwork log and its unit lookup, the region concordance, the weighting benchmarks,
-the seasonal factors, the response report, the file dictionary and the export manifest."""
+the seasonal factors and the response report. No file describes the others: each system writes its own codes with
+the labels it carries beside them (CAI 2014's status, the fieldwork system's outcomes), and the provenance each file
+had in an export manifest lives in metadata.json outside the pack."""
 import csv
 import datetime as dt
 
@@ -20,12 +22,14 @@ FILES = {
     "pop": "population_benchmarks_15plus_2025-2027.csv",
     "seas": "lfs_seasonal_factors_2027_projected.csv",
     "resp": "lfs_response_rates_2025-2026.xlsx",
-    "dict": "lfs_file_dictionary.csv",
-    "manifest": "export_manifest.csv",
     "note": "lfs_redesigned_questionnaire_methodology_note.pdf",
     "act": "regional_employment_support_act_2021_extract.pdf",
 }
 AGE_CODE = {a: i + 1 for i, a in enumerate(W.AGES)}
+# the labels each producing system writes beside its own codes
+LFSTAT_LABEL = {1: "Employed", 2: "Unemployed", 3: "Not in labour force"}
+OUTCOME_LABEL = {11: "Full response", 12: "Partial response", 21: "Refusal", 22: "No contact",
+                 23: "Other non-response", 31: "Vacant", 32: "Derelict or demolished", 33: "Not a private dwelling"}
 
 
 def _csv(path, header, rows):
@@ -45,8 +49,8 @@ def region_code_in(t, code25):
 
 
 def write_old(S, path):
-    """the previous questionnaire's estimation cells from CAI 2014: long, one row per labour force status, weighted
-    persons in thousands to three decimals, months as YYYYMM"""
+    """the previous questionnaire's estimation cells from CAI 2014: long, one row per labour force status (the code
+    and the system's own label for it), weighted persons in thousands to three decimals, months as YYYYMM"""
     rows = []
     for t in range(W.T):
         if W.MONTHS[t] > "2025-11":
@@ -61,8 +65,8 @@ def write_old(S, path):
                         lf, u, n = S["lf"][t, r, g, s, a], S["u"][t, r, g, s, a], S["n"][t, r, g, s, a]
                         for stat, resp, wtd in ((1, lf - u, emp), (2, u, une), (3, n - lf, nilf)):
                             rows.append((W.MONTHS[t].replace("-", ""), region_code_in(t, code), W.GROUPS[g], s + 1,
-                                         a + 1, stat, int(resp), "%.3f" % (wtd / 1000.0)))
-    return _csv(path, ["REF_MTH", "REGION", "ROTGRP", "SEX", "AGEGRP", "LFSTAT", "RESP", "WTD000"], rows)
+                                         a + 1, stat, LFSTAT_LABEL[stat], int(resp), "%.3f" % (wtd / 1000.0)))
+    return _csv(path, ["REF_MTH", "REGION", "ROTGRP", "SEX", "AGEGRP", "LFSTAT", "LFSTAT_DESC", "RESP", "WTD000"], rows)
 
 
 def write_new(S, path):
@@ -169,9 +173,10 @@ def write_release(P, path):
 
 
 def write_fieldwork(rows, path):
-    """the fourth quarter of 2026 as the fieldwork system logs it: one row per sample slot and month"""
+    """the fourth quarter of 2026 as the fieldwork system logs it: one row per sample slot and month, each outcome
+    code with the system's own label beside it"""
     cols = {"contact_month": [], "psu": [], "rotation_group": [], "line": [], "dwelling_ref": [], "interview_no": [],
-            "outcome": [], "mode": [], "interviewer_area": []}
+            "outcome": [], "outcome_desc": [], "mode": [], "interviewer_area": []}
     order = sorted(rows, key=lambda r: (r[0], r[8], r[1], r[2], r[3]))
     for r in order:
         cols["contact_month"].append(r[0])
@@ -181,11 +186,13 @@ def write_fieldwork(rows, path):
         cols["dwelling_ref"].append("%s%s%02d" % (r[1], r[2], r[3]))
         cols["interview_no"].append(r[4])
         cols["outcome"].append(r[6])
+        cols["outcome_desc"].append(OUTCOME_LABEL[r[6]])
         cols["mode"].append(r[7])
         cols["interviewer_area"].append(r[8])
     schema = pa.schema([("contact_month", pa.string()), ("psu", pa.string()), ("rotation_group", pa.string()),
                         ("line", pa.int8()), ("dwelling_ref", pa.string()), ("interview_no", pa.int8()),
-                        ("outcome", pa.int16()), ("mode", pa.string()), ("interviewer_area", pa.string())])
+                        ("outcome", pa.int16()), ("outcome_desc", pa.string()), ("mode", pa.string()),
+                        ("interviewer_area", pa.string())])
     tab = pa.table(cols, schema=schema)
     pq.write_table(tab, path, compression="snappy", use_dictionary=True, write_statistics=False, version="2.6",
                    data_page_version="1.0")
@@ -256,84 +263,3 @@ def write_response(S, path):
     ws.column_dimensions["A"].width = 10
     wb.save(path)
     return rows
-
-
-DICTIONARY = [
-    ("lfs_cai2014_estimation_cells_2022-01_2025-11.csv", "", "Estimation cells from CAI 2014: one row per reference "
-     "month, region, rotation group, sex, age group and labour force status, for the rotation groups that answered the "
-     "previous questionnaire."),
-    ("", "REF_MTH", "Reference month, YYYYMM."),
-    ("", "REGION", "Region code on the regional classification in force in the reference month: the 2019 classification "
-     "to December 2024, the 2025 classification from January 2025."),
-    ("", "ROTGRP", "Rotation group, A to F."),
-    ("", "SEX", "1 male, 2 female."),
-    ("", "AGEGRP", "1 aged 15 to 24, 2 aged 25 to 34, 3 aged 35 to 44, 4 aged 45 to 54, 5 aged 55 and over."),
-    ("", "LFSTAT", "1 employed, 2 unemployed, 3 not in the labour force."),
-    ("", "RESP", "Responding persons in the cell with that status (unweighted)."),
-    ("", "WTD000", "Weighted persons, thousands. Each rotation group is weighted to the population aged 15 and over."),
-    ("lfs_ics_estimation_cells_2025-07_2026-12.csv", "", "Estimation cells from ICS: one row per period, region, "
-     "rotation group, sex and age band, for the rotation groups that answered the redesigned questionnaire."),
-    ("", "period", "Reference month, YYYY-MM."),
-    ("", "region", "Region code, 2025 regional classification."),
-    ("", "rotation_group", "Rotation group, A to F."),
-    ("", "sex", "M or F."),
-    ("", "age_band", "Age band in years."),
-    ("", "respondents", "Responding persons aged 15 and over in the cell (unweighted)."),
-    ("", "employed", "Weighted persons employed. Each rotation group is weighted to the population aged 15 and over."),
-    ("", "unemployed", "Weighted persons unemployed."),
-    ("", "not_in_labour_force", "Weighted persons not in the labour force."),
-    ("lfs_fieldwork_contacts_2026q4.parquet", "", "Fieldwork outcomes, October to December 2026: one row per sample "
-     "reference and contact month."),
-    ("", "contact_month", "Survey month of the contact, YYYY-MM."),
-    ("", "psu", "Primary sampling unit, four digits."),
-    ("", "rotation_group", "Rotation group, A to F."),
-    ("", "line", "Line within the primary sampling unit and rotation group, numbered from 1."),
-    ("", "dwelling_ref", "Sample reference: primary sampling unit, rotation group and line."),
-    ("", "interview_no", "Interview number, 1 to 6 (1 is the first interview)."),
-    ("", "outcome", "11 full interview, 12 partial interview, 21 refusal, 22 no contact, 23 other non-interview, "
-     "31 vacant, 32 derelict or demolished, 33 not a private dwelling. Codes 11 and 12 are responding dwellings."),
-    ("", "mode", "F2F face to face, TEL telephone."),
-    ("", "interviewer_area", "Interviewer area responsible for the contact."),
-    ("lfs_psu_region_lookup_2025.csv", "", "Primary sampling units and their region, 2025 regional classification."),
-    ("region_classification_concordance_2019_2025.csv", "", "Region codes on the 2019 and 2025 regional "
-     "classifications. The 2025 review renumbered the regions; their boundaries did not change."),
-    ("population_benchmarks_15plus_2025-2027.csv", "", "Population aged 15 and over at 1 January by region, sex and "
-     "age band, the benchmarks the rotation groups are weighted to; 2027 projected."),
-    ("lfs_seasonal_factors_2027_projected.csv", "", "Projected additive seasonal factors for the national unemployment "
-     "rate, 2027."),
-    ("lfs_response_rates_2025-2026.xlsx", "", "Monthly response rates by region, Survey Operations."),
-    ("lfs_release_2026-12_tables.xlsx", "", "Labour Force Survey, December 2026: the published tables."),
-]
-
-
-def write_dictionary(path):
-    return _csv(path, ["file", "field", "description"], DICTIONARY)
-
-
-def write_manifest(path, counts):
-    rows = [
-        (FILES["old"], "Estimation cells, previous questionnaire (CAI 2014)", "January 2022 to November 2025",
-         counts.get("old", ""), "Labour Market Statistics", W.EXTRACT),
-        (FILES["new"], "Estimation cells, redesigned questionnaire (ICS)", "July 2025 to December 2026",
-         counts.get("new", ""), "Labour Market Statistics", W.EXTRACT),
-        (FILES["release"], "Labour Force Survey, December 2026, published tables", "January 2022 to December 2026",
-         "", "Labour Market Statistics", "2027-01-21"),
-        (FILES["field"], "Fieldwork outcomes", "October to December 2026", counts.get("field", ""),
-         "Survey Operations", W.EXTRACT),
-        (FILES["psu"], "Primary sampling units by region", "2025 regional classification", counts.get("psu", ""),
-         "Survey Operations", W.EXTRACT),
-        (FILES["conc"], "Regional classification concordance", "2019 and 2025 classifications",
-         counts.get("conc", ""), "Classifications", "2024-11-29"),
-        (FILES["pop"], "Population benchmarks used in weighting", "1 January 2025 to 2027", counts.get("pop", ""),
-         "Population Statistics", "2026-11-12"),
-        (FILES["seas"], "Projected seasonal factors, national unemployment rate", "2027", counts.get("seas", ""),
-         "Time Series Analysis", "2027-01-08"),
-        (FILES["resp"], "Response rates by region", "January 2025 to December 2026", "", "Survey Operations",
-         W.EXTRACT),
-        (FILES["dict"], "Field descriptions for the files above", "", "", "Labour Market Statistics", W.EXTRACT),
-        (FILES["note"], "Methodology note on the redesigned questionnaire", "", "", "Labour Market Methods",
-         "2025-06-16"),
-        (FILES["act"], "Regional Employment Support Act 2021, extract", "consolidated to 1 July 2025", "",
-         "Parliamentary Counsel", "2025-07-01"),
-    ]
-    return _csv(path, ["file", "content", "covers", "rows", "owner", "extracted"], rows)

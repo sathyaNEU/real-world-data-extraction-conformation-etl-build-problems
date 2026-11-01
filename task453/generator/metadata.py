@@ -1,4 +1,6 @@
-"""Write task453/metadata.json from the built pack."""
+"""Write task453/metadata.json from the built pack. Each file's provenance (what it is, what it covers, the office
+that owns it and the date it was extracted or issued) lives here, outside the pack: no file under target/ describes
+the others."""
 import json
 import os
 import sys
@@ -10,21 +12,32 @@ import world as W   # noqa: E402
 
 TASK = os.path.dirname(HERE)
 F = P.FILES
-SOURCES = {
-    F["old"]: "the Labour Force Survey's estimation cells from CAI 2014 (the previous questionnaire), January 2022 to November 2025",
-    F["new"]: "the Labour Force Survey's estimation cells from ICS (the redesigned questionnaire), July 2025 to December 2026",
-    F["release"]: "the Labour Force Survey release for December 2026 (Tables 1 to 3)",
-    F["field"]: "the fieldwork system's contact outcomes, October to December 2026",
-    F["psu"]: "the survey's primary sampling units and their regions, 2025 regional classification",
-    F["conc"]: "the regional classification concordance, 2019 and 2025",
-    F["pop"]: "the population benchmarks the survey is weighted to, 1 January 2025 to 2027",
-    F["seas"]: "the projected seasonal factors for the national unemployment rate, 2027",
-    F["resp"]: "Survey Operations' monthly response rates by region, 2025 and 2026",
-    F["dict"]: "the field descriptions for the estimation, fieldwork and lookup files",
-    F["manifest"]: "the export manifest of 25 January 2027",
-    F["note"]: "the methodology note LMM 2025/04 on the redesigned questionnaire and its introduction",
-    F["act"]: "the Regional Employment Support Act 2021, Part 1, consolidated to 1 July 2025",
+# file: (what it is, what it covers, the owning office, extracted or issued)
+PROVENANCE = {
+    F["old"]: ("the Labour Force Survey's estimation cells from CAI 2014 (the previous questionnaire), January 2022 to "
+               "November 2025", "January 2022 to November 2025", "Labour Market Statistics", W.EXTRACT),
+    F["new"]: ("the Labour Force Survey's estimation cells from ICS (the redesigned questionnaire), July 2025 to "
+               "December 2026", "July 2025 to December 2026", "Labour Market Statistics", W.EXTRACT),
+    F["release"]: ("the Labour Force Survey release for December 2026 (Tables 1 to 3)", "January 2022 to December 2026",
+                   "Labour Market Statistics", W.RELEASE),
+    F["field"]: ("the fieldwork system's contact outcomes, October to December 2026", "October to December 2026",
+                 "Survey Operations", W.EXTRACT),
+    F["psu"]: ("the survey's primary sampling units and their regions, 2025 regional classification",
+               "2025 regional classification", "Survey Operations", W.EXTRACT),
+    F["conc"]: ("the regional classification concordance, 2019 and 2025", "2019 and 2025 classifications",
+                "Classifications", "2024-11-29"),
+    F["pop"]: ("the population benchmarks the survey is weighted to, 1 January 2025 to 2027",
+               "1 January 2025 to 2027, 2027 projected", "Population Statistics", "2026-11-12"),
+    F["seas"]: ("the projected seasonal factors for the national unemployment rate, 2027", "2027",
+                "Time Series Analysis", "2027-01-08"),
+    F["resp"]: ("Survey Operations' monthly response rates by region, 2025 and 2026", "January 2025 to December 2026",
+                "Survey Operations", W.EXTRACT),
+    F["note"]: ("the methodology note LMM 2025/04 on the redesigned questionnaire and its introduction", "",
+                "Labour Market Methods", "2025-06-16"),
+    F["act"]: ("the Regional Employment Support Act 2021, Part 1, consolidated to 1 July 2025",
+               "consolidated to 1 July 2025", "Parliamentary Counsel", "2025-07-01"),
 }
+SOURCES = {f: v[0] for f, v in PROVENANCE.items()}
 DISTRACTORS = [F["pop"], F["seas"], F["resp"]]
 DELIVERABLES = ["trigger_restatement_determination_2027.pdf", "regional_unemployment_redesigned_basis_2024-2026.csv"]
 
@@ -43,9 +56,10 @@ def write(target, out_path):
     files = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
+        what, covers, owner, issued = PROVENANCE[f]
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2027-01-25",
-                      "license": "CC0-1.0 (original work, constructed for this task)"})
+                      "source": "Constructed: " + what, "covers": covers, "owner": owner, "extracted_or_issued": issued,
+                      "date": "2027-01-25", "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
         "task": "task453",

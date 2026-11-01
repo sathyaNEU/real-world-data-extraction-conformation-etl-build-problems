@@ -1,14 +1,10 @@
 # leak check, task453
 
-**Verdict: LEAK.** 13 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 11 files read, 20 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: sample, rejected, effect, rotation, comparison, section, golden, interview, series, decisive, design, redesign, groups, points, interviews, previous, reader, averages, phase-in, seasonal, effects, references, payroll, method, office
-
-## 1 file names (LEAK 2)
-- **LEAK** `export_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
-- **LEAK** `lfs_file_dictionary.csv`: a file whose name says it describes the data (dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+Stump terms swept: sample, rejected, effect, rotation, section, comparison, golden, interview, series, decisive, design, redesign, groups, points, interviews, previous, reader, averages, phase-in, seasonal, effects, references, payroll, method, office
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `lfs_redesigned_questionnaire_methodology_note.pdf`: 14 of 25 stump-paragraph terms appear (sample, rotation, interview, series, design, redesign); read whether the document names the move
@@ -25,27 +21,26 @@ Stump terms swept: sample, rejected, effect, rotation, comparison, section, gold
 - **INFO** `lfs_psu_region_lookup_2025.csv`: names 6 of 7 answer-set candidates; confirm it does not rank them on the decision question
 - **INFO** `region_classification_concordance_2019_2025.csv`: names 6 of 7 answer-set candidates; confirm it does not rank them on the decision question
 
-## 7 hidden content (REVIEW 1)
-- **REVIEW** `lfs_fieldwork_contacts_2026q4.parquet`: could not be read: Unable to find a usable engine; tried using: 'pyarrow', 'fastparquet'.
-A suitable version of pyarrow or fastparquet is r
-
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
-
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 1)
-- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 35% of 196 prompts (cap 30%); second-sentence opener 'put' at 36% of 196 prompts (cap 20%); rounding opener 'give' at 46% of 196 prompts (cap 20%); reword at the role level, not the verb
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 36% of 196 prompts (cap 30%); second-sentence opener 'put' at 35% of 196 prompts (cap 20%); rounding opener 'give' at 44% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 13 task metadata (REVIEW 1)
 - **REVIEW** `metadata.json`: subdomain shares the design note's stump vocabulary (series, redesign, seasonal): say what the task decides, not how
+
+## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
 ## 3 answer figures in the pack (clean)
 
+## 7 hidden content (clean)
+
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 
 ## Solver's-eye read
@@ -87,3 +82,7 @@ Three isolated reader passes (Sonnet, medium), each on fresh copies of `prompt.t
 - **Q6** an analytical choice (how the questionnaire's effect is estimated from the overlapping rotation groups); nothing planted, the field semantics plain.
 - **Prompt read** "if so to what" is conditional; "which regions does the trigger then designate" keeps none grammatical; "the change ... it rests on" names a value that may be zero and asserts no direction; none is a grammatical answer to every ask.
 - **REVIEW lines** all harmless.
+
+### Reship read (2026-11-01, Sonnet at medium, fresh copy of prompt.txt and target.zip f0225fae, the file dictionary and export manifest no longer shipped)
+
+1 none states the move (the methodology note's rotation and phase-in sentences are the context the pack always carried, the Act's section 9(2) the filed estimand); 2 none (the release tables carry only the published series); 3 no dictionary, readme or manifest, the methodology note is the office's own note, the region concordance and the PSU lookup are plain code crosswalks, the release's Contents and the response workbook's footnote are table notes; 4 none; 5 the Act's sections 3, 7(1) and 9(2), the note's sections 1 and 4, the release's classification note and the prompt's "each dwelling once", each executed as written; 6 an analytical choice (the change estimated from the overlapping rotation groups compared like for like), nothing planted. The reader's one ask fork, "responded" as outcome 11 alone against 11 and 12, is closed by the pack: the fieldwork system labels 11 Full response and 12 Partial response, and the response workbook's responding share of eligible dwellings reproduces only on 11 and 12 (judge pass 3: 74.5, 74.1 and 71.5 against 70.0, 69.6 and 67.2 on 11 alone). The units it named as inferred (WTD000 in thousands against persons) close by convergence: the conformed cells reproduce the release's Table 1 in all 60 months only on that reading (closure 18). The sex and age codes it found unmapped carry no graded figure (closure 19: the change is unchanged with them swapped and reversed, asserted). The dwelling's identity is the ask's own step, unstated before and after the reship. Its realism notes (the projected seasonal factors file's header, the round design numbers, the response workbook's holiday sentence) are on files this reship did not change.

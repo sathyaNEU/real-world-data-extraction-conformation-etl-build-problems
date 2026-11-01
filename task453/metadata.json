@@ -20,7 +20,7 @@
     "6.0"
   ],
   "input_gates": {
-    "files": 13,
+    "files": 11,
     "formats": [
       "csv",
       "parquet",
@@ -42,38 +42,26 @@
   "generator": "task453/generator/build.py",
   "files": [
     {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 1728,
-      "rows": 12,
-      "source": "Constructed: the export manifest of 25 January 2027",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "lfs_cai2014_estimation_cells_2022-01_2025-11.csv",
       "format": "csv",
-      "bytes": 2121386,
+      "bytes": 3082598,
       "rows": 72090,
       "source": "Constructed: the Labour Force Survey's estimation cells from CAI 2014 (the previous questionnaire), January 2022 to November 2025",
+      "covers": "January 2022 to November 2025",
+      "owner": "Labour Market Statistics",
+      "extracted_or_issued": "2027-01-25",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "lfs_fieldwork_contacts_2026q4.parquet",
       "format": "parquet",
-      "bytes": 1080226,
+      "bytes": 1176270,
       "rows": 254964,
       "source": "Constructed: the fieldwork system's contact outcomes, October to December 2026",
-      "date": "2027-01-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lfs_file_dictionary.csv",
-      "format": "csv",
-      "bytes": 3165,
-      "rows": 35,
-      "source": "Constructed: the field descriptions for the estimation, fieldwork and lookup files",
+      "covers": "October to December 2026",
+      "owner": "Survey Operations",
+      "extracted_or_issued": "2027-01-25",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -83,6 +71,9 @@
       "bytes": 372122,
       "rows": 8370,
       "source": "Constructed: the Labour Force Survey's estimation cells from ICS (the redesigned questionnaire), July 2025 to December 2026",
+      "covers": "July 2025 to December 2026",
+      "owner": "Labour Market Statistics",
+      "extracted_or_issued": "2027-01-25",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -92,6 +83,9 @@
       "bytes": 24550,
       "rows": 1180,
       "source": "Constructed: the survey's primary sampling units and their regions, 2025 regional classification",
+      "covers": "2025 regional classification",
+      "owner": "Survey Operations",
+      "extracted_or_issued": "2027-01-25",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -101,6 +95,9 @@
       "bytes": 43570,
       "rows": null,
       "source": "Constructed: the methodology note LMM 2025/04 on the redesigned questionnaire and its introduction",
+      "covers": "",
+      "owner": "Labour Market Methods",
+      "extracted_or_issued": "2025-06-16",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -110,6 +107,9 @@
       "bytes": 18656,
       "rows": null,
       "source": "Constructed: the Labour Force Survey release for December 2026 (Tables 1 to 3)",
+      "covers": "January 2022 to December 2026",
+      "owner": "Labour Market Statistics",
+      "extracted_or_issued": "2027-01-21",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -119,6 +119,9 @@
       "bytes": 8137,
       "rows": null,
       "source": "Constructed: Survey Operations' monthly response rates by region, 2025 and 2026",
+      "covers": "January 2025 to December 2026",
+      "owner": "Survey Operations",
+      "extracted_or_issued": "2027-01-25",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -128,6 +131,9 @@
       "bytes": 206,
       "rows": 12,
       "source": "Constructed: the projected seasonal factors for the national unemployment rate, 2027",
+      "covers": "2027",
+      "owner": "Time Series Analysis",
+      "extracted_or_issued": "2027-01-08",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -137,6 +143,9 @@
       "bytes": 6427,
       "rows": 270,
       "source": "Constructed: the population benchmarks the survey is weighted to, 1 January 2025 to 2027",
+      "covers": "1 January 2025 to 2027, 2027 projected",
+      "owner": "Population Statistics",
+      "extracted_or_issued": "2026-11-12",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -146,6 +155,9 @@
       "bytes": 342,
       "rows": 9,
       "source": "Constructed: the regional classification concordance, 2019 and 2025",
+      "covers": "2019 and 2025 classifications",
+      "owner": "Classifications",
+      "extracted_or_issued": "2024-11-29",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -155,6 +167,9 @@
       "bytes": 66039,
       "rows": null,
       "source": "Constructed: the Regional Employment Support Act 2021, Part 1, consolidated to 1 July 2025",
+      "covers": "consolidated to 1 July 2025",
+      "owner": "Parliamentary Counsel",
+      "extracted_or_issued": "2025-07-01",
       "date": "2027-01-25",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }
