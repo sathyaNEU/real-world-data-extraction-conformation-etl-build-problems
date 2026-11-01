@@ -1026,6 +1026,7 @@ The 10/10 rules re-read against the built pack, 2026-10-28 (architecture 10, the
   survived the slot screens on the mechanism's and the setting's words and the clean-truth prototype (four rungs,
   four feeders, the golden reordering the whole slate) and is drawn as architecture 10.
 - **Architecture 10 names, 2026-10-28:** the primary was first called Wennock Cross and its neighbour Ludcombe; both sat one letter from real places (Much Wenlock in Shropshire, Luccombe in Somerset), the first in the very region the fiction is set in (reduce-house-fixes H21), so both were renamed in the generator (Copsewell Cross, Feltmoor) before the pack was read by anyone; every graded figure held to its printed decimal.
+- The ceiling recorded on the shipped cut was a narrowed cracker's (2026-11-01, honest-cracker audit): the careful solver keeps 16 of 16 device figures against the recorded 0 (36 of 36 ask criteria against 20), SPENT on both device asks (CI per 100 customers and CML per customer), pair 69.8 against the recorded 45.3; the reason in one line: the generator hire log's site, connected and disconnected times settle the mobile-generation exclusion by plain meaning against the definitions' 'restoration of that customer's supply', and 9 of 21 LV jobs sit wholly inside an HV outage at their own site with the same customer count, which the cross-system duplicate check drops. The ask layer is owed a rework before delivery.
 
 ## Portal result and the diagnosis, 2026-10-27
 

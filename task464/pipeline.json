@@ -1,11 +1,11 @@
 {
  "task": "task464",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities/asset-condition-maintenance",
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "stump": "A competent analyst carries each feeder's metered head current through the sections its project replaces and funds Oxenford Lane at 558.2 MWh a year, charging its old overhead line with a current that line never carries; rebuilt from the loads beyond each section, the flows fund Copsewell Town at 48.2, because almost no load lies beyond Kestle's old line; but the Hob Moor Solar Park beyond it exports up to 5 MW back through that line to the Kestle Park estate, and on the net of every load and generator beyond each section Kestle removes 74.2 MWh a year, the most of the eight.",
  "architecture": 10,
  "loops": 0,
@@ -68,7 +68,7 @@
    "commit": ""
   }
  ],
- "resume": "RESHIPPED 2026-11-01 (leak gate: describing-file name), pending the portal. A portal return routes by kind: a determinism finding to /fix-determinism, a rubric at or over 70 with the call held to /fix-rubric, a landed call to /build task464 from 2 with the result in the design note.",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the recorded ceiling was a narrowed cracker's; the careful solver keeps 16 of 16 device figures against the recorded 0 (36 of 36 ask criteria against 20), SPENT on both device asks (CI per 100 customers and CML per customer). Next: the ask rework (scratchpad ask_rework_brief.md), the main call frozen, the spent devices re-sited onto identity judgments the rows force and no battery item performs, or onto new ask-only records.",
  "approved": null,
  "delivered": "2026-10-28",
  "portal": null,
@@ -91,5 +91,13 @@
    },
    "fate": "spent 2026-10-28 at the portal determinism block (second return)"
   }
- ]
+ ],
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on both device asks (CI per 100 customers and CML per customer)",
+  "careful_cracker_keeps": "16 of 16 device figures against the recorded 0 (36 of 36 ask criteria against 20)",
+  "pair": "69.8 against the recorded 45.3",
+  "why": "the generator hire log's site, connected and disconnected times settle the mobile-generation exclusion by plain meaning against the definitions' 'restoration of that customer's supply', and 9 of 21 LV jobs sit wholly inside an HV outage at their own site with the same customer count, which the cross-system duplicate check drops",
+  "probe": "scratchpad audit_cracker2/task464/probe.py (independent of the generator, reproduces the recorded cracker and the golden route)",
+  "status_before": "SHIPPED"
+ }
 }

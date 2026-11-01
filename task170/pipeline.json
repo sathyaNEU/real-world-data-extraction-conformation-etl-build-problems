@@ -1,11 +1,11 @@
 {
  "task": "task170",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "human-factors-ergonomics/human-reliability-assessment",
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files 750 (821.6), against 1,250 (1,280.2), because the error probability falls with each driver's own count of ETCS start-ups, which the suburban diagrams ran past 600 inside five months while the Phase 4 rural diagrams, at about a third of the start-ups, keep each driver on the steep early part of the curve for most of the first year.",
  "architecture": 5,
  "loops": 0,
@@ -32,7 +32,7 @@
   "judged_zip": "60c3b11bc414ba0d953667a2e3b5540d; later edits data-only realism and two ask closures (SF16, SF17), figures.json byte-identical, no FIX_NOW so no re-judge"
  },
  "returned": [],
- "resume": "SHIPPED 2026-11-01, pending the portal. A portal return routes by kind: a determinism finding to /fix-determinism, a rubric at or over 70 with the call held to /fix-rubric, a landed call to /build task170 from 2 with the result in the design note.",
+ "resume": "ASK LAYER owed before delivery (honest-cracker audit, 2026-11-01): the recorded ceiling was a narrowed cracker's; the careful solver keeps 28 of 28 device figures against the recorded 0 (31 of 31 criteria), SPENT on Asks A and C. Next: the ask rework (scratchpad ask_rework_brief.md), the main call frozen, the spent devices re-sited onto identity judgments the rows force and no battery item performs, or onto new ask-only records.",
  "approved": null,
  "delivered": "2026-11-01",
  "portal": null,
@@ -48,5 +48,13 @@
   "target_zip_md5": "21761154a73580f6d22e580ce0c8babd"
  },
  "shipped_call": "Plan the Phase 4 safety case and its debriefing for about 1,250 train data entry errors (1,280.2) recorded against the six Phase 4 depots' 276 drivers in each depot's first twelve months on ETCS, on about 111,000 starts, each driver's chance of an error read at the driver's own count of ETCS starts",
- "target_zip_md5": "21761154a73580f6d22e580ce0c8babd"
+ "target_zip_md5": "21761154a73580f6d22e580ce0c8babd",
+ "ask_audit_2026_11_01": {
+  "verdict": "SPENT on Asks A and C",
+  "careful_cracker_keeps": "28 of 28 device figures against the recorded 0 (31 of 31 criteria)",
+  "pair": "56.0 (83.5 with the mirror on the careful ask route)",
+  "why": "Ask A: the acceptance note's 'two driving vehicles in its formation' executed through the formation list (SF17 filed it); Ask C: the hour-profile check reads the OBR download rows as UTC (gap to the next manual report median 6 minutes in winter, never under 60 in summer)",
+  "probe": "scratchpad audit_cracker2/task170/probe.py (independent of the generator, reproduces the recorded cracker and the golden route)",
+  "status_before": "SHIPPED"
+ }
 }
