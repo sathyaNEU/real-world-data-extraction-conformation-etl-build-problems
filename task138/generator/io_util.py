@@ -27,7 +27,12 @@ def write_csv(path, header, rows, preamble=None, newline="\r\n"):
     return len(rows)
 
 
+def _x(v):
+    return str(v).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def _core(creator, modified_by, created, modified, title):
+    creator, modified_by, title = _x(creator), _x(modified_by), _x(title)
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
             '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
             'xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" '
@@ -44,6 +49,7 @@ APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".pptx": ("Microsoft Office Powe
 
 def _app(ext, company):
     name, ver = APP[ext]
+    company = _x(company)
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
             '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
             'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'

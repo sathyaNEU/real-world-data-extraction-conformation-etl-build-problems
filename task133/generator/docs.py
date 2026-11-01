@@ -22,7 +22,7 @@ S_LOADS = ("3.1 FY2028 loads for a grade are the harvest plan's export tonnes fo
 S_LIMITS = ("3.2 From 1 July 2027 units holding a 50MAX permit run at 50 tonnes gross on the route to Port Kowhai; every "
             "other unit stays at 44 tonnes gross.")
 S_CART = "4.1 Cartage is reported against the carrier whose unit hauled the load, net of any credit note."
-S_MILL = "4.2 Domestic deliveries are reported by the date the load crossed the mill's weighbridge."
+S_MILL = "4.2 Domestic deliveries are reported by delivery date, in tonnes delivered."
 
 
 def _p(doc, text, bold=False, size=10.5):

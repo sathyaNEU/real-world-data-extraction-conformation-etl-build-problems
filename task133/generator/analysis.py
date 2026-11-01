@@ -151,12 +151,13 @@ def ask_a(tdir, pk=None, by_owner=True, credits=True):
     code_of = {v: k for k, v in P.CARRIERS.items()}
     out = defaultdict(float)
     seen = set()
+    rego_of = {t["ticket_no"]: t["vehicle_rego"] for t in pk.wb}
     for r in rows:
         amt = float(r["amount_nzd"])
         if not credits and amt < 0:
             continue
         if by_owner:
-            u = pk.by_rego.get(r["vehicle_rego"])
+            u = pk.by_rego.get(rego_of.get(r["ticket_ref"]))
             car = code_of[u["Carrier"]] if u else r["carrier_code"]
         else:
             car = r["carrier_code"]

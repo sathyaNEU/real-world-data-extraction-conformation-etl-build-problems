@@ -63,6 +63,7 @@ def build(seed=P.SEED):
 
     # ---------------------------------------------------------------- FY2026 port loads
     days = working_days(rng, *P.FY26)
+    per_day = {}
     loads = []
     wts = np.array([1.0 if u["carrier"] in ("RLC", "KRH", "TTT") else 0.85 for u in units])
     for fc, f in P.FORESTS.items():
@@ -82,7 +83,11 @@ def build(seed=P.SEED):
             vol_pay = cap * dens * float(rng.uniform(0.985, 1.0))
             net = round(min(mass_pay, vol_pay) / 0.02) * 0.02
             jas = round(net / dens, 3)
-            d = fdays[int(rng.integers(len(fdays)))]
+            while True:
+                d = fdays[int(rng.integers(len(fdays)))]
+                if per_day.get((d, u["unit"]), 0) < 3:
+                    break
+            per_day[(d, u["unit"])] = per_day.get((d, u["unit"]), 0) + 1
             loads.append(dict(forest=fc, grade=g, unit=u["unit"], net=round(net, 2), jas=jas, dens=dens, date=d,
                               limited="mass" if mass_pay <= vol_pay else "volume"))
             tonnes_left -= net
@@ -108,7 +113,7 @@ def build(seed=P.SEED):
     W.loads = loads
 
     # ---------------------------------------------------------------- cartage invoices (FY2026 loads)
-    rate_km = {fc: round(4.10 + 0.118 * f["km"], 2) for fc, f in P.FORESTS.items()}
+    rate_km = {fc: round(P.RATE_BASE + P.RATE_PER_KM * f["km"], 2) for fc, f in P.FORESTS.items()}
     W.rates = rate_km
     W.invoice_lines = []
     for r in loads:
@@ -120,7 +125,7 @@ def build(seed=P.SEED):
 
     # ---------------------------------------------------------------- domestic mill deliveries
     W.mill_loads = []
-    mill_t = {"MSM": 52000, "AHT": 38000, "HBL": 21000}
+    mill_t = dict(P.MILL_TONNES)
     dom_days = working_days(rng, dt.date(2025, 6, 16), dt.date(2026, 6, 30))
     for mc, tot in mill_t.items():
         left = tot

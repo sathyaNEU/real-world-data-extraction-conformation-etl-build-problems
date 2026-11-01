@@ -133,15 +133,14 @@ def write_reglog(path, log):
         ev = rng.choice(["TAP COUNTER RESET", "COMM FAIL", "BANDCENTER CONFIRMED", "DRAG HAND RESET",
                          "REVERSE POWER BLOCK"], p=[0.15, 0.25, 0.35, 0.15, 0.10])
         val = ""
-        if ev == "BANDCENTER CONFIRMED":
-            val = "123.5"
         tt = t.round("s")
+        if ev == "BANDCENTER CONFIRMED":
+            val = "119.2" if W.cvr_state(log, f, pd.DatetimeIndex([tt]))[0] else "123.5"
         rows.append((tt, "%s VR" % f, str(ev), val, "SCADA"))
         if ev == "COMM FAIL":
             rows.append((tt + pd.Timedelta(minutes=int(rng.integers(4, 140))), "%s VR" % f, "COMM OK", "", "SCADA"))
     rows.sort(key=lambda r: (r[0], r[1], r[2]))
     out = [[ts.strftime("%Y-%m-%d %H:%M:%S"), dev, ev, val, src] for ts, dev, ev, val, src in rows]
-    # the routine confirmations on the pilot feeders during CVR weeks would be misleading; keep only the others'
     return IO.write_csv(path, ["EventTime", "Device", "Event", "Bandcenter_V", "Source"], out)
 
 
@@ -186,19 +185,13 @@ def write_forecast(path):
 
 
 # ------------------------------------------------------------------ members' meters, the register, the supplier
-def vee_flags(md):
-    rng = np.random.default_rng(PR.MDMS_SEED + 7)
-    return np.where(rng.random(len(md)) < 0.011, "E", "A")
-
-
 def write_mdms(path, md, tx):
     """The meter data system's daily energy by transformer, the feeder as the GIS holds it on the day of export."""
     now = dict(zip(tx.tx, tx.feeder_now))
     md = md.sort_values(["tx", "date"]).reset_index(drop=True)
-    flags = vee_flags(md)
-    rows = [[t, now[t], d.strftime("%m/%d/%Y"), "%.2f" % k, v]
-            for t, d, k, v in zip(md.tx.values, md.date, md.kwh_held.values, flags)]
-    return IO.write_csv(path, ["XFMR_ID", "FEEDER", "READ_DATE", "KWH", "VEE"], rows)
+    rows = [[t, now[t], d.strftime("%m/%d/%Y"), "%.2f" % k]
+            for t, d, k in zip(md.tx.values, md.date, md.kwh_held.values)]
+    return IO.write_csv(path, ["XFMR_ID", "FEEDER", "READ_DATE", "KWH"], rows)
 
 
 CLASS_NAME = {"R-1": "R-1 Residential", "GS-1": "GS-1 General service", "IR-1": "IR-1 Irrigation (secondary)",
@@ -229,8 +222,9 @@ def write_mv90(path, gt):
     for meter in ("41-2207", "41-2208", "41-2391"):
         g = gt[gt.meter == meter]
         est = set()
-        start = int(rng.integers(2000, 9000))
         if meter != "41-2391":
+            # a recorder outage overnight, filled by the supplier's estimation
+            start = int(rng.integers(5, 115)) * 96 + int(rng.integers(3, 12))
             est = set(range(start, start + int(rng.integers(3, 9))))
         for k, (ts, v) in enumerate(zip(g.end_utc, g.kwh.values)):
             rows.append([meter, "1", "KWH", ts.strftime("%Y-%m-%d %H:%M"), "%.1f" % v, "E" if k in est else ""])
@@ -251,11 +245,10 @@ def write_ties(path):
                "Transferable at summer peak (MW)", "Last operated"])
     for r in (["TS-2207", "DUN-1", "CC-3 (Carrow Creek)", "Open", 400, 3.5, "2024-08-14"],
               ["TS-2231", "DUN-3", "OST-2 (Ostby)", "Open", 600, 4.0, "2025-07-30"],
-              ["TS-2236", "DUN-4", "DUN-8", "Open", 400, 2.5, "2026-06-30"],
               ["TS-2240", "DUN-5", "OST-4 (Ostby)", "Open", 400, 2.0, "2023-06-02"],
-              ["TS-2252", "DUN-6", "DUN-2", "Open", 400, 2.0, "2026-06-30"],
               ["TS-2258", "DUN-7", "CC-1 (Carrow Creek)", "Open", 600, 3.0, "2022-09-19"],
-              ["TS-2263", "DUN-8", "LIN-2 (Lindell)", "Open", 300, 1.5, "never"]):
+              ["TS-2263", "DUN-8", "LIN-2 (Lindell)", "Open", 300, 1.5, "never"],
+              ["TS-2269", "DUN-2", "CC-4 (Carrow Creek)", "Open", 400, 2.5, "2021-07-08"]):
         ws.append(r)
     for c, wd in zip("ABCDEFG", (11, 11, 20, 10, 18, 30, 13)):
         ws.column_dimensions[c].width = wd

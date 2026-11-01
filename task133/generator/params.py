@@ -35,7 +35,7 @@ FORESTS = {
 PLAN_SCALE = 1.06
 PLAN_MIX_SHIFT = {"A": -0.02, "P": 0.0, "K": 0.0, "KI": 0.01, "KIS": 0.01}
 # the plan's compartment yields by grade against the FY2026 mix (set by tune.py so each graded figure sits mid-bin)
-PLAN_GRADE_ADJ = {"A": 0.9992, "P": 1.00333, "K": 0.99861, "KI": 0.99783, "KIS": 0.99874}
+PLAN_GRADE_ADJ = {"A": 0.99928, "P": 1.00297, "K": 0.99934, "KI": 0.99775, "KIS": 0.99819}
 
 CARRIERS = {
     "RLC": "Ruahine Log Cartage Ltd",
@@ -49,3 +49,9 @@ CARRIERS = {
 BILLED_BY = {"WHT": "RLC", "KNC": "KRH", "PLH": "TTT"}
 
 MILLS = {"MSM": "Mohaka Sawmills", "AHT": "Ahuriri Timber Processors", "HBL": "Heretaunga Box and Lumber"}
+
+# FY2026 cartage rate card (NZD per tonne = base + per-km rate x one-way km)
+RATE_BASE = 4.21
+RATE_PER_KM = 0.118
+# FY2026 domestic mill deliveries (tonnes contracted)
+MILL_TONNES = {"MSM": 51800, "AHT": 38000, "HBL": 21000}

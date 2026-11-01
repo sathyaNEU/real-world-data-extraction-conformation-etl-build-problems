@@ -28,6 +28,8 @@ def weather():
     rng = np.random.default_rng(PR.WEATHER_SEED)
     frames = []
     for year in PR.SUMMERS:
+        if year == 2026:
+            rng = np.random.default_rng(PR.WEATHER_SEED_2026)
         days = pd.date_range("%d-06-01" % year, "%d-10-01" % year, freq="D")
         n = len(days)
         d = np.arange(n)
@@ -153,9 +155,9 @@ def loads(wx):
     for year in PR.SUMMERS:
         idx = summer_index(year)
         t = wx.set_index("local").loc[idx, "temp_f"].values
-        t1 = np.concatenate([[t[0]], t[:-1]])
-        t3 = np.concatenate([[t[0]] * 3, t[:-3]])
-        t_eff = 0.6 * t1 + 0.4 * t3
+        t2 = np.concatenate([[t[0]] * PR.LAG_A, t[:-PR.LAG_A]])
+        t4 = np.concatenate([[t[0]] * PR.LAG_B, t[:-PR.LAG_B]])
+        t_eff = 0.5 * t2 + 0.5 * t4
         g = (1 + PR.GROWTH) ** (year - 2024)
         other = np.array([other_load(ts) for ts in idx]) * PR.OTHER_PEAK * g
         d = duty(t_eff)
@@ -178,8 +180,8 @@ def loads(wx):
 def truth_relief_at_design():
     """The voltage cut's relief at the planning peak: the substation's evening peak hour (18:00) on a weekday whose
     afternoon reaches the design temperature, the buildings feeling the afternoon's heat about two hours late."""
-    t_eff = PR.DESIGN_TEMP_F - 0.35
-    o = PR.OTHER_PEAK * OTHER_PROFILE[18]
+    t_eff = PR.DESIGN_TEMP_F - PR.DESIGN_LAG_DROP
+    o = PR.OTHER_PEAK * OTHER_PROFILE[PR.PEAK_HOUR]
     a = PR.AC_FULL * float(duty(t_eff)) * sum(s * w for s, w in zip(PR.SHARE, PR.AC_WEIGHT))
     return cvr_relief(o, a)
 
@@ -231,7 +233,7 @@ def mdms(ld, tx):
     rng = np.random.default_rng(PR.MDMS_SEED + 1)
     s26 = ld[ld.local.dt.year == 2026].copy()
     s26["date"] = s26.local.dt.normalize()
-    daily = s26.groupby(["date", "feeder"])["mw"].sum().unstack() * 1000.0 * 0.974
+    daily = s26.groupby(["date", "feeder"])["mw"].sum().unstack() * 1000.0 * PR.METER_FACTOR
     share = dict(zip(PR.FEEDERS, PR.SHARE))
     rows = []
     for date, r in daily.iterrows():

@@ -1,4 +1,244 @@
-# task133 design note: Orari Bank, the ICAAP 2026 severe-scenario loss on the business banking book
+# task133 design note: Matiri Forest Products, FY2028 log truck loads to Port Kowhai under the 50MAX limits
+
+Private, never ships. Architecture 4, drawn 2026-11-01 after architecture 3's stage 4 SEND_BACK (the judge's Gate H line:
+"decisive_step analytical only if the method is filed"; the ICAAP standard read word for word gave each borrower its
+own division's change, the default path, so the payer route was an unfiled convention). The lesson this draw applies:
+the easy route has to be wrong by the data, not by a convention the filed text never states. Here the easy route lets a
+log truck carry what the raised mass limit allows, and the data say it cannot: the scaling volumes and the fleet
+register's full-bunk volumes show the short grades fill their bunks a few tonnes above today's payloads. The
+architecture 3 note is kept below as `## Architecture 3 record`, architecture 2's as `## Architecture 2 record`.
+
+## Draw
+
+- Pairing: Urban & Regional Science (`urban-regional-science`), task type `forecasting` (F), objective Forecasting &
+  Predictive Modeling. The call faces forward: the export log loads the FY2028 harvest plan needs once the route to
+  Port Kowhai opens to 50MAX vehicles on 1 July 2027.
+- Shape 14 (cuts by segment): the total and the five export grades (6), three critical components, six carriers'
+  cartage (ask A), three mills by four quarters (ask B, 12), the chart and the two files: 30 criteria.
+- World: Matiri Forest Products Limited, five Hawke's Bay forests, 62 contracted units across six carriers (43 with
+  50MAX permits), FY2026's 29,984 port loads carrying 764,070 tonnes; the FY2028 plan's export tonnes 808,800; the port
+  weighbridge tickets (29,984 rows), the port's log scaling records, the fleet register, the grade specification, the
+  route approval and the cartage planning basis.
+- Candidates written before choosing (fates in `## Tried and rejected`): (1) this draw; (2) a campus winter peak after
+  heat-pump conversions, the warm-up surge beyond the units' output (energy load-forecasting: banned the moment task138's
+  fresh card took the pairing); (3) a port's export tonnes after channel dredging, the berth pocket binding next; (4) a
+  contact centre's offered calls once abandonment falls, retrials shrinking; (5) a bus fleet's winter range; (6) a
+  bowel screening programme's first-round colonoscopy demand in a new district; (7) an airline's reactionary delay on
+  tighter turns.
+- Card: `.claude/skills/fingerprint/cards/task133.json`, registered 2026-11-01 (WARN only: repeat.gate_g and
+  repeat.decision against task138 v3, first names on older builds); the structural NOTEs differentiated against task141,
+  task142, task148 and task173; re-checked after registration.
+- Personas from `guard.py names --geo "New Zealand" --seed 133` (the two used by architecture 3 left out): Belinda Carson,
+  Stacey MacKay (fleet register), Nicole Clifford (harvest plan), John Morris (planning basis), Adam Fletcher, Christine
+  Cumming.
+- Data-native sentence: in this dataset a load's density lives only in the pairing of two systems that never share a
+  key, the port weighbridge's net tonnes and the scaling station's JAS volume for the same truck minutes later, and each
+  unit's full-bunk volume by log length lives only in the fleet register; the tickets carry no gross mass and no record
+  says which limit a load hit.
+
+## Survivor anatomy
+
+- Actor: the deciding property, how much more each load could carry before its bunks are full, has no column: the
+  tickets hold net tonnes, the scaling holds JAS volume, the register holds the unit's tare and full-bunk volumes by log
+  length, and only their combination per load gives the headroom.
+- Link: a ticket and its scaling record share no reference; they are paired by truck registration and the scaling
+  station's time a few minutes after the weighbridge's, and the two units re-registered in February are read through
+  the register's previous registrations.
+- Reflex: the field's payload-gain reckoning for a higher mass limit (each permit unit's load rises to the new gross
+  less its tare; the productivity case HPMV and 50MAX approvals are argued on) sits at rung 1 and files 26,900 loads.
+- Back-test: the textbook route validates: under the 44-tonne limit it reproduces FY2026, since 83 per cent of FY2026
+  loads sat at the mass limit and the rest are already full; nothing in the record says the bunks bind for the loads
+  that were mass-limited.
+- Second use: the weighbridge tickets are the cartage invoices' references (ask A), the fleet register names each unit's
+  carrier (ask A) as well as its tare, the scaling records are the port's export documentation; the decisive step adds
+  no file.
+- Shock: nothing moves in the record; the FY2028 loads by grade read as ordinary growth on FY2026, and the short grades'
+  shortfall shows only against the mass-only uplift.
+- Pins: the WHAT is filed in the cartage planning basis (load, year, fleet, the loads-by-grade arithmetic, the limits)
+  and the council's approval; no filed sentence names bunks, volume, density or which limit binds.
+
+## Default path
+
+1. Take FY2026's port loads from the weighbridge tickets and each unit's tare and 50MAX permit from the fleet register.
+2. Give each permit unit's load the FY2028 route limit: 50 tonnes gross less its tare; the other units stay at 44 less
+   their tare (planning basis 3.2, RDC-2026-114).
+3. Average each grade's FY2028 payloads and divide the plan's export tonnes for the grade by it (planning basis 3.1).
+
+Ends on: 26,900 loads (26,899 unrounded; A 4,900, Pruned 2,300, K 7,250, KI 6,950, KIS 5,500).
+Golden: 29,100 loads (29,098 unrounded; A 4,900, Pruned 2,500, K 7,550, KI 8,050, KIS 6,100).
+
+## Stump sentence
+
+A strong analyst lets each 50MAX permit unit's load rise to 50 tonnes gross less its tare and files 26,900 loads; the
+step that lands it there is ignoring the bunks: the scaling volumes and the register's full-bunk volumes show the
+short-length grades fill their bunks a few tonnes above today's payloads, so they gain a fraction of the six tonnes the
+new limit allows and FY2028 needs 29,100 loads.
+
+## Three rules
+
+- Task type: forecasting in Urban & Regional Science, which serves Forecasting & Predictive Modeling: the freight
+  movements a regional harvest plan puts on a route in a coming year under a changed vehicle mass limit.
+- Domain test: the deciding quantity is each log truck load's payload under the FY2028 route limits, which log
+  transport planning gets from the unit's gross mass limit less its tare and the volume its bunks hold for the logs'
+  length at the load's density; with another field's nouns the gross mass limit, the tare, the bunk volume by log
+  length and the JAS volume per load have nothing to attach to.
+- Swap: "how many log truck loads will the harvest need once the route opens to 50MAX" becomes "how many ward
+  admissions will the season need once the beds open": the gross mass limit, the tare, the bunks' volume by log length
+  and the scaled JAS volume of each load stop making sense.
+- Layer 1: the weighbridge keeps net tonnes only and the fleet register the tare; the scaling station keeps its own
+  clock and reference and keys loads to the truck's plates; two units changed plates mid-year; JAS volume beside green
+  tonnes; grade codes on tickets and grade names in the plan; subcontracted units billed under their head contractor;
+  credit notes reversing lines billed twice; mill dockets dated when posted. Each is produced by the system that holds
+  it and none decides the call (asserted).
+- Layer 2: estimand identification under a binding constraint: relaxing the limit that binds a load lifts it only
+  until the next one binds, and for the short grades the next one, the bunks' volume, sits a few tonnes above today.
+- Decisive step: recognising that a raised mass limit lifts a load only until its bunks are full, so each load's
+  FY2028 payload is the lesser of its unit's new gross less tare and its full-bunk volume for the grade's length at the
+  load's own density.
+- Not semantics: every field can be read right (net tonnes, tare, permit, the limits, the grade lengths) and the
+  analyst still lets each permit unit load to 50 tonnes gross, which is how a mass-limit change is reckoned, and files
+  26,900; no field says a load's bunks were nearly full.
+- Not rule application: the approval and the planning basis set the limits and the arithmetic, and no filed rule says
+  a load stops at its bunks. The enumerated family spans 25,700 to 29,100 (fleet average plus six tonnes 25,690;
+  permit units to the new limit 26,899; one bunk volume per unit 26,904; plus six tonnes on permit units 27,198; only the
+  loads at the old limit lifted 27,244; the golden 29,098); the standing family (per-load or grade-mean density, the
+  re-registered units' early loads kept or dropped, any linking window from 30 to 90 minutes) spans 29,080 to 29,098,
+  one bin; what rules the rest out is the data, the register's full-bunk volumes against the loads' JAS volumes.
+- Analyst test: a strong analyst who reads the 50MAX approval, the fleet register and the harvest plan correctly, lets
+  every 50MAX permit unit's load rise to 50 tonnes gross less its tare and divides the plan's tonnes by the new average
+  payloads files 26,900 loads, because the short-length grades fill their bunks before they reach 50 tonnes.
+- Estimand: the cartage planning basis 2.1 to 3.2 (cartage_planning_basis_FY2028.docx) with RDC-2026-114: FY2028 loads
+  for a grade are the plan's export tonnes for the grade over the average payload that grade's FY2026 port loads would
+  carry on the same units in FY2028, permit units at 50 tonnes gross and others at 44.
+- No decoy: nothing is planted: no file states a payload under the new limits, a load count for FY2028 or which loads
+  are mass-limited; the approval states the legal limits truly; the fleet register's volumes are the units' own.
+- No certified replay: the method is not recovered by reproducing any certified or published figure; no control total
+  ties only under the golden and no document carries a graded figure.
+- Lesson: a relaxed constraint helps only until the next one binds, and the next one has to be looked for in the
+  record; a model learns to check what a load can physically carry before counting the gain a rule change allows. No
+  build on file reads a freight forecast through a second physical limit (guard heart).
+
+## Readability screen
+
+| Rung | Answer | What a solver would need to see | Verdict |
+|---|---|---|---|
+| R0 fleet average payload plus six tonnes | 25,700 | the limit change alone | readable |
+| R1 permit units to 50 t gross less tare (the field's reckoning) | 26,900 | the register's tare and permit | readable |
+| R2 only the loads at the 44-tonne limit lifted, to the new limit | 27,200 | gross from net plus tare | readable |
+| Golden: each load capped by its bunks at its own density (decisive) | 29,100 | the scaling volume paired to each ticket by truck and time against the register's full-bunk volume for the grade's length | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
+|---|---|---|---|---|
+| SF1 | load | one trip to Port Kowhai weighed on the port weighbridge | none | basis 2.1 (same call) |
+| SF2 | FY2028 | 1 July 2027 to 30 June 2028 | none | basis 2.2 |
+| SF3 | fleet | the register at 30 June 2026 | none | basis 2.3; every plate maps (asserted) |
+| SF4 | FY2028 payload | the lesser of new gross less tare and full bunks at the load's density | the mass limit alone: 26,900 | the register's full-bunk volumes against the loads' JAS volumes (physics; no FY2026 load exceeds its bunks) |
+| SF5 | limits | 50 t gross with a permit, 44 t without | none | basis 3.2, RDC-2026-114 |
+| SF6 | loads by grade | plan tonnes over the grade's average FY2028 payload | none | basis 3.1 |
+| SF7 | density | each load's net over its JAS volume | the grade's mean density: same call | same call |
+| SF8 | linking | the same truck's scaling record within the hour | any window 30 to 90 minutes: same links | asserted |
+| SF9 | re-registered units | read through previous registrations | early loads dropped: same call | same call |
+| SF10 | log length | the 2025 grade specification | none | the specification (asserted) |
+| SF11 | rounding | total to 100, grades to 50 | none | the prompt; edges asserted |
+| SF12 | plan tonnes | the export sheet | the domestic sheet added | basis 2.1 (export loads to the port) |
+| SF13 | payload | the ticket's net tonnes | none | the ticket (asserted) |
+| SF14 | the FY2026 base | tickets 1 July 2025 to 30 June 2026 | none | asserted |
+| SF15 | route | every forest's road in the approval | none | RDC-2026-114 (asserted) |
+| SF16 | cartage carrier | the carrier whose unit hauled the load | the billed code | basis 4.1 |
+| SF17 | credit notes | netted | left out | basis 4.1 "net of any credit note" |
+| SF18 | delivery quarter | the date the load crossed the mill weighbridge | the docket's posting date | basis 4.2 "by delivery date" |
+| SF19 | tonnes delivered | gross less tare at the mill | none | equal to the docket (asserted) |
+| SF20 | Matiri loads at the mills | the MFP docket series | none | asserted |
+
+## Ladder
+
+| Rung | Construction | FY2028 loads | Graded |
+|---|---|---|---|
+| R0 | fleet average payload plus six tonnes | 25,690 | 25,700 |
+| R1 | permit units to the new limit (the field's reckoning) | 26,899 | 26,900 |
+| R2 | only the loads at the 44-tonne limit lifted, to the new limit | 27,244 | 27,200 |
+| Golden | each load capped by its bunks at its own density | 29,098 | 29,100 |
+
+Every rung files another total bin and misses at least three grades; the nearest wrong total is R2, 6.4 per cent low.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | FY2026 port loads; the plan's export tonnes | basis 2.1, 3.1, 3.3 |
+| 2 Unit of account | the load | basis 2.1 |
+| 3 Attribution window | FY2028 for the plan, FY2026 for the base | basis 2.2, the files' own windows |
+| 4 As-of dating | the register at 30 June 2026 | basis 2.3 |
+| 5 Version basis | the 2025 grade specification; RDC-2026-114; basis version 2 | document control |
+| 6 Denominator | the grade's average FY2028 payload | basis 3.1 |
+| 7 Weighting | each FY2026 load once | basis 3.1 (an average of loads) |
+| 8 Window length | the whole of FY2026 | basis 3.1 |
+| 9 Boundary inclusivity | limits "up to" 50 and 44 t gross | no FY2026 load above 44 t gross (asserted) |
+| 10 Rounding path | unrounded payloads and loads, rounded once | prompt; edges asserted |
+| 11 Tie-break | none | not applicable |
+| 12 Maturity and censoring | none: a year's loads | not applicable |
+| 13 Order of operations | payload per load, then the grade average, then the plan's tonnes over it | basis 3.1 |
+| 14 Row order | sums | C1 |
+| 15 Duplicate resolution | one scaling record per ticket | asserted (each record used once) |
+| 16 Identity normalisation | plates to units through current and previous registrations | asserted; dropping early loads same call |
+| 17 Netting against gross | net tonnes per ticket | the ticket |
+| 18 Dimensional units | tonnes, JAS m3, t per JAS m3 | the files' headers |
+| 19 Code and status semantics | grade codes to lengths; permit Y or N | the specification and the register; never the stump |
+| 20 Integerisation | loads unrounded until reported | prompt |
+| 21 Clause scope | limits for every forest's route | RDC-2026-114 |
+| 22 Forward window contents | the plan's FY2028 tonnes; the FY2026 loads re-run | basis 3.1, 3.3 |
+
+## Literal reader
+
+A reader executing the planning basis word for word takes FY2026's port loads, re-runs each on the same unit in FY2028
+at the limits 3.2 and the council's approval set, averages each grade's payloads and divides the plan's tonnes by them.
+"The payload the load would carry" is not filed as the legal maximum; it is what the load would weigh, and the data say
+what that is: the register's full-bunk volume for the grade's length times the load's density caps it, and no FY2026
+load exceeds its bunks. Reading the payload as the mass limit less tare is the easy method on the same estimand, which
+puts more logs on the short-grade loads than their bunks hold. Every licensed convention (SF7 to SF9) files 29,100 and
+the same five grades; the ask readings are closed in SF16 to SF20.
+
+## Oracles
+
+- The export log prices, the vessel calls and the forest road closures (distractors): none states a payload or a load
+  count, and none ties to a graded figure.
+- The grade specification: lengths only.
+- The approval: legal limits only, true as stated.
+- None ties only under the golden; no document states a graded figure (asserted, R3c).
+
+## Ask sheet
+
+- Ask A, FY2026 export cartage by the carrier whose unit hauled the load (six figures, NZD thousand): primary A1,
+  subcontracted units billed under their head contractor's carrier code, the hauler found only by pairing each invoice
+  line's ticket to the port weighbridge's plate and the plate to the register's carrier (D7, a key worked out across
+  three files); hazard: lines billed twice and their credit notes.
+- Ask B, FY2026 domestic deliveries by mill and quarter (twelve figures, tonnes): primary B1, the docket extract dates
+  each load when the docket was posted, days after delivery, while the delivery date sits only in the mills' weighbridge
+  logs among every other supplier's trucks (D8, a reconstruction across two files); hazards: two dockets re-sent in the
+  July batch, the docket extract missing the late-June deliveries posted in July.
+- Separation: the call reads the port tickets, the scaling records, the register, the plan and the grade
+  specification; the asks read the invoices (with the tickets and register) and the mills' dockets and logs; deleting
+  every ask file leaves the call (asserted).
+- Pair ceiling: 28.5 (cracker C 45.0 keeping 0 of 18 ask figures, mirror S 12.0; 46.8 if the cracker also finds one silent device)
+- Mirror leakage: 0.0 per cent of ask weight (the mirror handles the asks as the cracker does)
+- Measured by: generator/ceiling.py on the cut pack (target.zip ZIPHASH)
+
+| Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
+|---|---|---|---|---|
+| A cartage by hauling carrier (6) | invoice carrier codes, credit notes netted | A1 subcontract billing | 0 of 6 | miss |
+| B mill deliveries by quarter (12) | docket dates, re-sent dockets dropped | B1 posting dates | 0 of 12 | miss |
+
+## Leak review
+
+LEAKREVIEW
+
+## Architecture 3 record
+
+The Orari Bank ICAAP business-book stress (stress-testing-capital), built 2026-11-01 (target.zip d613bac0) and spent the same day at stage 4 (SEND_BACK, Gate H). Its note as it stood, headings demoted one level.
+
+### Orari Bank, the ICAAP 2026 severe-scenario loss on the business banking book
 
 Private, never ships. Architecture 3, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 2 (Bellbird personal
 loans, the 30 September 2026 ECL allowance in expected-credit-loss-provisioning) landed on the portal: the survival-to-date
@@ -7,7 +247,7 @@ conditioning was the field's reflex. Its world is closed (one architecture per w
 Orari Bank Limited, a South Island regional bank headquartered in Timaru, stressing its business lending book for the
 2026 ICAAP under the severe scenario its Board approved on 24 September 2026.
 
-## Draw
+### Draw
 
 - Pairing: Banking, Credit & Financial Risk (`banking-credit-financial-risk`), task type `stress-testing-capital` (F),
   objective Forecasting & Predictive Modeling. The committed call faces forward: the stressed credit loss the scenario
@@ -33,7 +273,7 @@ Orari Bank Limited, a South Island regional bank headquartered in Timaru, stress
   the clearing system's payer names, matched to the NZBN register, are the only place the industries that pay each
   borrower appear; the lending book carries only the borrower's own industry code.
 
-## Survivor anatomy
+### Survivor anatomy
 
 - Actor: the deciding property, the share of a borrower's sales each industry pays, has no column in any file: the
   lending book carries the borrower's own industry code, the credits carry a payer name the clearing system upper-cased
@@ -56,7 +296,7 @@ Orari Bank Limited, a South Island regional bank headquartered in Timaru, stress
   sales, Table 2, LGD, EAD, segments, net credit losses, the back-test) and the Board's scenario; no filed sentence names
   payers, receipts, a mix or a weighting.
 
-## Default path
+### Default path
 
 1. Take business_lending_book_2026-09-30.csv, drop the 13 customers in risk grade D (CR-ST-02 1.3) and set EAD per 3.4.
 2. Fill each borrower's ANZSIC division from its BIC code on the NZBN extract where the book's industry field is blank
@@ -68,7 +308,7 @@ Ends on: NZD 10.0 million (9.804 unrounded; construction 2.9, manufacturing 0.6,
 3.4, business services 0.8, health 0.4).
 Golden: NZD 11.5 million (11.4999 unrounded; 2.5, 1.3, 2.4, 3.4, 1.5, 0.4).
 
-## Stump sentence
+### Stump sentence
 
 A strong analyst stresses each business borrower at the severe scenario's sales path for its own ANZSIC division and
 files NZD 10.0 million; the step that lands it there is reading the fall in a borrower's own sales off its industry
@@ -76,7 +316,7 @@ label when its operating-account credits show who pays it: 56 per cent of the bo
 divisions, largely the builders, hotels and tour operators the scenario cuts by a quarter, so the transport, wholesale,
 labour-hire and engineering firms they pay take far steeper Table 2 multipliers than their own divisions' paths give.
 
-## Three rules
+### Three rules
 
 - Task type: stress-testing-capital in Banking, Credit & Financial Risk, which serves Forecasting & Predictive
   Modeling: a one-year stressed credit loss under a board-approved forward scenario.
@@ -125,7 +365,7 @@ labour-hire and engineering firms they pay take far steeper Table 2 multipliers 
   exposure; a model learns to read a counterparty's sources of revenue before mapping it to a sector path. No card on
   file reads a stress or forecast through the paying counterparties (guard heart).
 
-## Readability screen
+### Readability screen
 
 | Rung | Answer | What a solver would need to see | Verdict |
 |---|---|---|---|
@@ -135,7 +375,7 @@ labour-hire and engineering firms they pay take far steeper Table 2 multipliers 
 | R3 the harsher of own division and payers for every borrower | NZD 12.0 million | an over-correction of the decisive step | readable |
 | Golden: each borrower's own sales fall through its payers (decisive) | NZD 11.5 million | a relation between the credits' payer strings and the register no column holds, no sentence invites and the field's method does not ask for | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
 |---|---|---|---|---|
@@ -170,7 +410,7 @@ labour-hire and engineering firms they pay take far steeper Table 2 multipliers 
 | SF29 | share | the band's defaults over its borrowers | none | 4.3 (same call) |
 | SF30 | which customer defaulted | the customer the lending book shows holding the facility | the register's customer number | the lending book's facility holder (the register's number is the group lead) |
 
-## Ladder
+### Ladder
 
 | Rung | Construction | Book total (NZD m) | Graded |
 |---|---|---|---|
@@ -183,7 +423,7 @@ labour-hire and engineering firms they pay take far steeper Table 2 multipliers 
 Separation: every rung files another total bin and misses at least two segments; the nearest wrong total is R1 at
 NZD 10.5 million (8.5 per cent low) or R3 at 12.0. Not a candidate ranking, so the which-of-N margins do not apply.
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
@@ -210,7 +450,7 @@ NZD 10.5 million (8.5 per cent low) or R3 at 12.0. Not a candidate ranking, so t
 | 21 Clause scope | Table 2 per borrower; LGD per facility | 3.2, 3.3 |
 | 22 Forward window contents | the scenario's division changes for the stress year | 2.1 and the approved workbook |
 
-## Literal reader
+### Literal reader
 
 A reader executing CR-ST-02 word for word stresses every facility of a business customer at 30 September 2026 not in
 risk grade D, at its Table 1 PD times the Table 2 multiplier for the fall in the borrower's own sales over the stress
@@ -222,7 +462,7 @@ which 2.1 and 3.2 distinguish), never another reading of a filed term; every val
 licensed conventions (SF4 to SF11) files NZD 11.5 million and the same six segments (asserted). The ask readings are
 closed in SF20 to SF30 by 2.3, 4.2, 4.3, the Table 1 note and the records.
 
-## Oracles
+### Oracles
 
 - The rural book stress summary (distractor): the rural book's own-sector stress under the same scenario; another book,
   no business figure, and its total ties nothing in the business book.
@@ -231,7 +471,7 @@ closed in SF20 to SF30 by 2.3, 4.2, 4.3, the Table 1 note and the records.
 - The scenario's macroeconomic paths sheet: context for the division paths; nothing ties to a stressed loss.
 - None ties only under the golden; no document states a graded figure (asserted, R3c).
 
-## Ask sheet
+### Ask sheet
 
 - Ask A, net credit losses by segment and half (12 cells, NZD thousand): primary A1, guarantors' receipts posted to their
   own personal collection cases (customer master: Personal), linked to the written-off company only through the
@@ -256,7 +496,7 @@ closed in SF20 to SF30 by 2.3, 4.2, 4.3, the Table 1 note and the records.
 | B default counts (5) | overrides in force, both registers, merge log | B1 the group lead's number | 0 of 5 | miss |
 | B default shares (5) | the same | B1 | 0 of 5 | miss |
 
-## Leak review
+### Leak review
 
 `leak.py --asof 2026-10-16` on the final cut: REVIEW, no LEAK. Each REVIEW line ruled:
 
@@ -792,3 +1032,12 @@ same_driver_older against task180 differentiated on the card.
 - Card payments at the trade counter at 30 per cent for non-retail types: payments from individuals carried enough of manufacturing and trade sales that leaving them out moved the book total to 12.0; the trade-counter card share is 55 per cent, and leaving them out now keeps the total (manufacturing still moves, SF11).
 - Grading the book total to NZD 0.1 million: the six-month base would file 11.6 and the non-sales reading sit 0.008 from an edge; the 0.5-million bin keeps every licensed convention (11.458 to 11.574) inside with 0.18 to spare.
 - The prompt's second sentence opening on "The workbook": its shell (how-much, the, docx+xlsx) repeated task305 v3 (guard heart WARN shell.repeat); the sentence now opens "Set out".
+- Architecture 3 (Orari Bank's ICAAP business-book stress) spent 2026-11-01 at stage 4: the judge returned NOT_DETERMINISTIC with SOLUTION_WRONG and SEND_BACK, its Gate H line "decisive_step analytical only if the method is filed": CR-ST-02 2.1 and 3.2 read word for word give each borrower its own NZBN division's change (NZD 10.03 million, the default path), the payer route is unfiled (Gates B, C, E) and filing it would make it rule application; the leak reader's question 6 read the call as a stated rule plus fields read correctly; the asks rested on unfiled choices (guarantor receipts to the company, the agency's remittance against its collection, the rural-book customers and register, a lead's cross-default moved to the holder), Trade and logistics did not reproduce on the judge's payer method (2.56 to 2.61) and unmatched-payer weightings put the total from 11.72 to 11.91. The world is closed.
+- Candidate (architecture 4): a campus's winter peak after six boiler houses go to air-source heat pumps, the morning warm-up asking for more than the units' output at the outdoor temperature and the electric flow boilers carrying the rest one for one: a physics-forced step with the field's COP route at rung 1, but energy-systems-utilities forecasting was taken by task138's fresh card (ban.pairing, ban.subdomain, ban.shape and ban.forum BLOCK), so redrawn.
+- Candidate: a port's export tonnes after channel dredging, the berth pocket binding next: the berth's under-keel clearance is a harbour rule, so the step a literal reader executes is rule application; dropped.
+- Candidate: a contact centre's offered calls once abandonment falls, retrials shrinking: the retrial window is a convention and "demand" invites the easy reading; dropped.
+- Candidate: an electric bus fleet's winter range: cold-weather range loss is the field's reflex; dropped.
+- Candidate: a bowel screening programme's first-round colonoscopy demand in a new district: a screening world beside task281's, and positivity at new ages needs an extrapolation; dropped.
+- Candidate: an airline's reactionary delay on tighter turns: the swap test fails (any rotation of resources reads the same); dropped.
+- Candidate: log trucks with only the loads at the old mass limit gaining: readable from net plus tare alone; kept as rung R2 under the bunk-volume step.
+- The ask devices first drafted with the invoice's own registration and a docket file named for the weighbridge date: each was executed by the filed WHAT that pins it, so the invoice now carries only the port ticket and the dockets their posting date.

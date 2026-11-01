@@ -104,15 +104,15 @@ def write_invoices(W, out):
         idate = nxt + dt.timedelta(days=int(rng.integers(2, 8)))
         for j, ln in enumerate(by_month[(y, m, car)], start=1):
             r = ln["load"]
-            rows.append([f"INV{inv_no}", idate.strftime("%d/%m/%Y"), car, j, r["ticket"], r["rego"], r["forest"],
+            rows.append([f"INV{inv_no}", idate.strftime("%d/%m/%Y"), car, j, r["ticket"], r["forest"],
                          f"{r['net']:.2f}", f"{ln['rate']:.2f}", f"{ln['amount']:.2f}"])
             if id(ln) in dupe_ids:
                 # billed again on the next month's invoice, then credited
                 rows.append([f"INV{inv_no + 1}", (idate + dt.timedelta(days=31)).strftime("%d/%m/%Y"), car, 900 + j,
-                             r["ticket"], r["rego"], r["forest"], f"{r['net']:.2f}", f"{ln['rate']:.2f}", f"{ln['amount']:.2f}"])
+                             r["ticket"], r["forest"], f"{r['net']:.2f}", f"{ln['rate']:.2f}", f"{ln['amount']:.2f}"])
                 rows.append([f"CRN{inv_no + 7000}", (idate + dt.timedelta(days=45)).strftime("%d/%m/%Y"), car, 1,
-                             r["ticket"], r["rego"], r["forest"], f"{-r['net']:.2f}", f"{ln['rate']:.2f}", f"{-ln['amount']:.2f}"])
-    write_csv(os.path.join(out, INV), ["document_no", "document_date", "carrier_code", "line_no", "ticket_ref", "vehicle_rego",
+                             r["ticket"], r["forest"], f"{-r['net']:.2f}", f"{ln['rate']:.2f}", f"{-ln['amount']:.2f}"])
+    write_csv(os.path.join(out, INV), ["document_no", "document_date", "carrier_code", "line_no", "ticket_ref",
                                        "forest_code", "tonnes", "rate_nzd_per_t", "amount_nzd"], rows)
 
 

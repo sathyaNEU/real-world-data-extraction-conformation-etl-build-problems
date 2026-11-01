@@ -1,0 +1,71 @@
+{
+ "task": "task133",
+ "domain": "Urban & Regional Science",
+ "client_domain": "urban-regional-science",
+ "subdomain": "forecasting",
+ "objective": "Forecasting & Predictive Modeling",
+ "as_of": "2026-10-20",
+ "question": "the log truck loads a forestry company's FY2028 export harvest plan needs from its forests to its export port once the route opens to 50MAX vehicles, by grade, with the FY2026 cartage by carrier and the FY2026 domestic mill deliveries by quarter",
+ "deliverables": [
+  "matiri_fy2028_log_cartage_loads.xlsx",
+  "fy2028_loads_by_grade.svg"
+ ],
+ "distractor_files": [
+  {
+   "file": "export_log_prices_FY2026.csv",
+   "why_relevant": "log prices by grade decide what a forestry company harvests and sends to export",
+   "why_unused": "the harvest plan already fixes the FY2028 tonnes, and no graded figure reads a price"
+  },
+  {
+   "file": "port_kowhai_vessel_calls_FY2026.csv",
+   "why_relevant": "the ships that lift the logs set the port's demand for trucked logs",
+   "why_unused": "the loads are sized on the plan's tonnes and the trucks' payloads, and no graded figure uses a vessel call"
+  },
+  {
+   "file": "forest_road_closures_FY2026.csv",
+   "why_relevant": "days a forest cannot cart shape a haulage roster",
+   "why_unused": "the loads needed for a year's tonnes do not depend on the days lost, and no graded figure uses a closure"
+  }
+ ],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "docx",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "cartage_invoices_FY2026.csv",
+  "largest_file_rows": 29995
+ },
+ "files": {
+  "50MAX_route_approval_RDC-2026-114.pdf": "",
+  "cartage_invoices_FY2026.csv": 29995,
+  "cartage_planning_basis_FY2028.docx": "",
+  "export_log_grade_specifications_2025.pdf": "",
+  "export_log_prices_FY2026.csv": 60,
+  "fleet_register_2026-06-30.xlsx": "",
+  "forest_road_closures_FY2026.csv": 62,
+  "harvest_plan_FY2028.xlsx": "",
+  "log_scaling_port_kowhai_FY2026.csv": 29981,
+  "mill_dockets_FY2026.csv": 4503,
+  "mill_weighbridge_logs_FY2026.csv": 11642,
+  "port_kowhai_vessel_calls_FY2026.csv": 34,
+  "weighbridge_tickets_port_kowhai_FY2026.csv": 29981
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task133/generator/build.py (seeded and deterministic, seed 133041)",
+   "license": "CC BY 4.0 (constructed data)",
+   "date": "2026-11-01"
+  },
+  {
+   "files": "New Zealand 50MAX and 44-tonne general access limits, JAS log scaling",
+   "origin": "New Zealand vehicle dimensions and mass rules (public), the JAS log scaling standard used at New Zealand ports",
+   "license": "public reference",
+   "date": "2026"
+  }
+ ],
+ "notes": "Synthetic pack. Matiri Forest Products, Port Kowhai, Ruawharo District Council, the carriers, mills and people are invented; Hawke's Bay place names and the 50MAX regime are real."
+}

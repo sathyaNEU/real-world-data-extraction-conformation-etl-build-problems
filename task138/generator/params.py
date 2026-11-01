@@ -4,9 +4,10 @@ Everything the world draws from a seed sits here, so a rebuild from these number
 """
 
 WEATHER_SEED = 2138301      # the Mossford airport's summers
+WEATHER_SEED_2026 = 2138527  # summer 2026 drawn on its own stream
 LOAD_SEED = 2138302         # feeder load noise
 MDMS_SEED = 2138303         # members' transformer meters
-GT_SEED = 2138304           # the wholesale supplier's revenue meters
+GT_SEED = 2138335           # the wholesale supplier's revenue meters
 OTHER_SEED = 2138305        # distractors
 
 AS_OF = "2026-10-27"        # the planning engineer's review for the 2027 construction work plan
@@ -21,10 +22,14 @@ AC_WEIGHT = [1.02, 0.99, 0.97, 1.03, 1.01, 0.98, 1.00, 1.00]
 # load model (MW at the 2024 load level, whole substation): load that does not depend on weather follows the
 # hour-of-day profile below; air conditioning at full duty adds AC_FULL; duty rises linearly from DUTY_T0 to
 # DUTY_T1 (deg F, the temperature the buildings feel, a lagged mix of the last hours), steepening as it rises
-OTHER_PEAK = 22.62
-AC_FULL = 88.41
+OTHER_PEAK = 22.617
+AC_FULL = 88.396
 DUTY_T0, DUTY_T1 = 70.0, 102.0
 DUTY_EXP = 1.5
+LAG_A, LAG_B = 2, 4         # hours: the buildings feel a mix of the air temperature two and four hours earlier
+DESIGN_LAG_DROP = 0.4       # deg F below the day's maximum at the evening peak (for the truth only)
+PEAK_HOUR = 19
+METER_FACTOR = 0.974551     # members' meters see the feeder energy less line and transformer losses
 GROWTH = 0.0095             # a year, the 2025 load forecast's rate for Dunraith
 LOAD_NOISE = 0.003
 
