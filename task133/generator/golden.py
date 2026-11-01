@@ -1,353 +1,359 @@
-"""The golden deliverables: the allowance workbook and the two Audit and Risk Committee slides."""
-import copy
-import datetime as dt
+"""The golden deliverables, written from target/ alone: the ICAAP stress workbook and the board paper."""
+import io
 import os
 import sys
 
-import openpyxl
-import pandas as pd
-from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-from pptx import Presentation
-from pptx.chart.data import CategoryChartData
-from pptx.dml.color import RGBColor
-from pptx.enum.chart import XL_CHART_TYPE, XL_LABEL_POSITION, XL_LEGEND_POSITION
-from pptx.enum.text import PP_ALIGN
-from pptx.oxml.ns import qn
-from pptx.util import Cm, Pt
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import estimators as E
-import officex as OX
-import world as W
-import postprocess as P
 
-TASK = os.path.dirname(HERE)
-PREPARED = dt.datetime(2026, 10, 9, 16, 20)
-NAVY = RGBColor(0x1E, 0x2B, 0x3C)
-GREY = RGBColor(0x5B, 0x66, 0x70)
-WHITE = RGBColor(0xFF, 0xFF, 0xFF)
-# the migration chart's four states, checked for colour-blind separation as a set: stage 1, stage 2, stage 3, closed
-STATE = [RGBColor(0x2A, 0x78, 0xD6), RGBColor(0xED, 0xA1, 0x00), RGBColor(0xE3, 0x49, 0x48), RGBColor(0x62, 0x50, 0xD6)]
-ORDER = [("PL36", 1), ("PL36", 2), ("PL60", 1), ("PL60", 2)]
-NOW = ["stage 1", "stage 2", "stage 3", "closed"]
+import matplotlib  # noqa: E402
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+from docx import Document  # noqa: E402
+from docx.enum.table import WD_TABLE_ALIGNMENT  # noqa: E402
+from docx.enum.text import WD_ALIGN_PARAGRAPH  # noqa: E402
+from docx.shared import Pt, Cm, RGBColor  # noqa: E402
+from openpyxl import Workbook  # noqa: E402
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side  # noqa: E402
+from openpyxl.utils import get_column_letter  # noqa: E402
 
+import params as P  # noqa: E402
+import results as R  # noqa: E402
+from io_util import save_docx, save_xlsx  # noqa: E402
 
-def mil(x):
-    """AUD million to one decimal, as the allowance is reported"""
-    return round(x / 1e6, 1)
-
-
-def money(x):
-    return "$%.1f million" % mil(x)
-
-
-def figures(target):
-    s = E.solve(target)
-    lgd = E.realised_lgd(target)
-    fy = pd.read_csv(os.path.join(target, E.F["defaults"]))
-    fy["q"] = [((int(m[5:7]) - 7) % 12) // 3 + 1 for m in fy["default_month"]]
-    cells = fy.groupby(["product", "q"]).agg(loans=("loan_no", "size"), bal=("balance_at_default", "sum"))
-    mig = E.migration(target)
-    return dict(s=s, lgd=lgd, lgd_cells=cells, mig=mig)
+XLSX = "orari_icaap_business_stress_2027.xlsx"
+DOCX = "board_paper_business_stress_2027.docx"
+SHORT = {"Construction": "Construction", "Manufacturing": "Manufacturing", "Trade and logistics": "Trade and logistics",
+         "Hospitality, retail and leisure": "Hospitality, retail and leisure",
+         "Business and property services": "Business and property services",
+         "Health, education and personal services": "Health, education and personal services"}
+NAVY = "1F3A5F"
+THIN = Side(style="thin", color="B7C2CE")
 
 
-def workbook(f, path):
-    s, lgd, cells, mig = f["s"], f["lgd"], f["lgd_cells"], f["mig"]
-    thin = Side(style="thin", color="BFC5CC")
-    head_fill = PatternFill("solid", fgColor="1E2B3C")
-    wb = openpyxl.Workbook()
+def _hdr(ws, row, values, widths=None):
+    for i, v in enumerate(values, start=1):
+        c = ws.cell(row=row, column=i, value=v)
+        c.font = Font(bold=True, color="FFFFFF", size=10)
+        c.fill = PatternFill("solid", fgColor=NAVY)
+        c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center" if i > 1 else "left")
+    if widths:
+        for i, w in enumerate(widths, start=1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+
+
+def workbook(F, path):
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Allowance"
-    ws["A1"] = "Personal loans (PL36, PL60): collective ECL allowance at 30 September 2026"
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = "Credit Risk Reporting, 9 October 2026. CRM-ECL-04 v4.2; scenarios approved 18 September 2026."
-    ws["A2"].font = Font(italic=True, color="5B6670")
-    rows = [("Collective ECL allowance (AUD million)", mil(s["total"]), '0.0'),
-            ("Stage 1 allowance (AUD million)", mil(s["stage1"]), '0.0'),
-            ("Stage 2 allowance (AUD million)", mil(s["stage2"]), '0.0'),
-            (None, None, None),
-            ("Loans in stage 1", s["n1"], "#,##0"),
-            ("Loans in stage 2", s["n2"], "#,##0"),
-            ("Loans in stage 3, assessed under CRM-ECL-06", s["n3"], "#,##0"),
-            ("Probability-weighted PD multiplier", round(s["mult"], 2), "0.00")]
-    for i, (lab, v, fmt) in enumerate(rows, 4):
-        if lab is None:
-            continue
-        ws.cell(row=i, column=1, value=lab)
-        c = ws.cell(row=i, column=2, value=v)
-        c.number_format = fmt
-    for c in (ws["A4"], ws["B4"]):
-        c.font = Font(bold=True)
-    ws["A13"] = ("Source: loan system extract ECL_QE_BOOK at close of business 30 September 2026 (run 1 October); "
-                 "loan record at 30 September 2026; Q1 FY27 scenario sheet.")
-    ws["A13"].font = Font(italic=True, color="5B6670")
-    ws.column_dimensions["A"].width = 46
-    ws.column_dimensions["B"].width = 16
+    ws.title = "Summary"
+    ws["A1"] = "Orari Bank Limited - ICAAP 2026: business banking book under the severe scenario"
+    ws["A1"].font = Font(bold=True, size=13, color=NAVY)
+    ws["A2"] = ("Stress year 1 October 2026 to 30 September 2027. Book date 30 September 2026. Scenario approved by the "
+                "Board on 24 September 2026 (BD-2026-09-07). Method per CR-ST-02 v3.1.")
+    ws["A2"].font = Font(italic=True, size=9, color="555555")
+    ws["A4"] = "Stressed credit loss, business banking book (NZD million, nearest 0.5 million)"
+    ws["A4"].font = Font(bold=True)
+    ws["E4"] = F["total_half_m"]
+    ws["E4"].number_format = "0.0"
+    ws["E4"].font = Font(bold=True, size=12, color=NAVY)
+    _hdr(ws, 6, ["Reporting segment", "Performing borrowers", "EAD (NZD m)", "Stressed loss (NZD m)",
+                 "Stressed loss (NZD)", "Share of book loss"], [44, 13, 13, 15, 17, 13])
+    r = 7
+    for s in R.SEG_NAMES:
+        ws.cell(row=r, column=1, value=s)
+        ws.cell(row=r, column=2, value=F["n_seg"][s])
+        ws.cell(row=r, column=3, value=round(F["ead_seg"][s] / 1e6, 1)).number_format = "#,##0.0"
+        ws.cell(row=r, column=4, value=F["seg_m1"][s]).number_format = "0.0"
+        ws.cell(row=r, column=5, value=round(F["seg"][s])).number_format = "#,##0"
+        ws.cell(row=r, column=6, value=F["seg"][s] / F["total"]).number_format = "0.0%"
+        r += 1
+    ws.cell(row=r, column=1, value="Business banking book").font = Font(bold=True)
+    ws.cell(row=r, column=2, value=F["n_perf"]).font = Font(bold=True)
+    c = ws.cell(row=r, column=3, value=F["ead_m1"])
+    c.number_format, c.font = "#,##0.0", Font(bold=True)
+    c = ws.cell(row=r, column=4, value=F["total_half_m"])
+    c.number_format, c.font = "0.0", Font(bold=True)
+    c = ws.cell(row=r, column=5, value=round(F["total"]))
+    c.number_format, c.font = "#,##0", Font(bold=True)
+    c = ws.cell(row=r, column=6, value=1.0)
+    c.number_format, c.font = "0.0%", Font(bold=True)
+    for col in range(1, 7):
+        ws.cell(row=r, column=col).border = Border(top=THIN)
+    r += 2
+    ws.cell(row=r, column=1, value=("The book total is stated to the nearest NZD 0.5 million and the segments to NZD 0.1 "
+                                    "million, each rounded from the unrounded NZD figure in column E.")).font = Font(size=9, color="555555")
+    ws.cell(row=r + 1, column=1, value=("Excluded under CR-ST-02 1.3: %d customers in default at the book date (risk grade D), "
+                                        "individually provisioned." % F["n_default"])).font = Font(size=9, color="555555")
+    ws.freeze_panes = "A7"
 
-    ws = wb.create_sheet("Realised LGD")
-    ws["A1"] = "2023-24 defaults: share of the balance at default not recovered, at 30 September 2026 (CRM-ECL-04 3.3)"
-    ws["A1"].font = Font(bold=True, size=12)
-    hdr = ["Product", "Quarter of default", "Loans", "Balance at default (AUD)", "Realised loss (%)", "LGD in use (%)"]
-    ws.append([])
-    ws.append(hdr)
-    for j in range(1, len(hdr) + 1):
-        c = ws.cell(row=3, column=j)
-        c.font = Font(bold=True, color="FFFFFF")
-        c.fill = head_fill
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for p in ("PL36", "PL60"):
-        for q in (1, 2, 3, 4):
-            ws.append([p, E.QUARTERS[q], int(cells.loc[(p, q), "loans"]), round(float(cells.loc[(p, q), "bal"]), 2),
-                       round(lgd[(p, q)], 1), int(round(E.LGD[p] * 100))])
-    for r in ws.iter_rows(min_row=4, max_row=ws.max_row):
-        r[2].number_format = "#,##0"
-        r[3].number_format = "#,##0.00"
-        r[4].number_format = "0.0"
-        r[5].number_format = "0"
-    for col, wd in zip("ABCDEF", [10, 19, 8, 22, 15, 13]):
-        ws.column_dimensions[col].width = wd
-    ws.row_dimensions[3].height = 30
-    ws.freeze_panes = "A4"
+    wb2 = wb.create_sheet("Borrowers")
+    cols = ["Customer no", "Customer name", "NZBN", "Own division", "Reporting segment", "Risk grade", "12-month PD",
+            "Trading credits, year to 30 Sep 2026 (NZD)", "Paid by other divisions", "Paid by households",
+            "Own division's scenario change", "Sales change through payers", "Table 2 multiplier", "Stressed PD",
+            "EAD (NZD)", "Stressed loss (NZD)"]
+    _hdr(wb2, 1, cols, [12, 40, 15, 9, 34, 8, 9, 16, 10, 10, 11, 11, 10, 9, 14, 14])
+    wb2.row_dimensions[1].height = 45
+    for i, x in enumerate(F["rows"], start=2):
+        vals = [x["cust"], x["name"], x["nzbn"], x["div"], x["seg"], x["grade"], x["pd12"], round(x["sales"], 2),
+                x["other_share"], x["hh_share"], x["own_change"] / 100.0, x["change"] / 100.0, x["mult"], x["pds"],
+                round(x["ead"], 2), round(x["loss"], 2)]
+        fmts = [None, None, "@", None, None, "0", "0.00%", "#,##0", "0%", "0%", "0.0%", "0.0%", "0.00", "0.00%",
+                "#,##0", "#,##0"]
+        for j, (v, f) in enumerate(zip(vals, fmts), start=1):
+            c = wb2.cell(row=i, column=j, value=v)
+            if f:
+                c.number_format = f
+    last = len(F["rows"]) + 1
+    wb2.cell(row=last + 1, column=2, value="Total").font = Font(bold=True)
+    c = wb2.cell(row=last + 1, column=15, value="=SUM(O2:O%d)" % last)
+    c.number_format, c.font = "#,##0", Font(bold=True)
+    c = wb2.cell(row=last + 1, column=16, value="=SUM(P2:P%d)" % last)
+    c.number_format, c.font = "#,##0", Font(bold=True)
+    wb2.freeze_panes = "C2"
+    wb2.auto_filter.ref = "A1:P%d" % last
 
-    ws = wb.create_sheet("Stage migration")
-    ws["A1"] = "Loans in stage 1 or 2 at 30 June 2026: where they stand at 30 September 2026"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append([])
-    hdr = ["Product", "Stage at 30 June", "Stage 1", "Stage 2", "Stage 3", "Closed", "Loans at 30 June"]
-    ws.append(hdr)
-    for j in range(1, len(hdr) + 1):
-        c = ws.cell(row=3, column=j)
-        c.font = Font(bold=True, color="FFFFFF")
-        c.fill = head_fill
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for p, s0 in ORDER:
-        vals = [mig[(p, s0, x)] for x in NOW]
-        ws.append([p, "Stage %d" % s0] + vals + [sum(vals)])
-    for r in ws.iter_rows(min_row=4, max_row=ws.max_row):
-        for c in r[2:]:
-            c.number_format = "#,##0"
-            c.border = Border(bottom=thin)
-    ws["A9"] = "Stage at 30 September under CRM-ECL-04 section 2; closed means repaid, settled or written off by then."
-    ws["A9"].font = Font(italic=True, color="5B6670")
-    for col, wd in zip("ABCDEFG", [10, 16, 10, 10, 10, 10, 16]):
-        ws.column_dimensions[col].width = wd
+    ws3 = wb.create_sheet("Net credit losses")
+    ws3["A1"] = "Net credit losses, business banking book, financial year to 30 September 2026 (NZD thousand)"
+    ws3["A1"].font = Font(bold=True, color=NAVY)
+    ws3["A2"] = ("Amounts written off in the half less recoveries received in the half on loans already written off "
+                 "(CR-ST-02 4.2). H1 is October 2025 to March 2026, H2 April to September 2026.")
+    ws3["A2"].font = Font(italic=True, size=9, color="555555")
+    _hdr(ws3, 4, ["Reporting segment", "H1 written off", "H1 recovered", "H1 net credit loss", "H2 written off",
+                  "H2 recovered", "H2 net credit loss"], [44, 13, 13, 15, 13, 13, 15])
+    ws3.row_dimensions[4].height = 30
+    a = F["ask_a"]
+    r = 5
+    tot = [0.0] * 6
+    for s in R.SEG_NAMES:
+        ws3.cell(row=r, column=1, value=s)
+        vals = [a["written_off"].get((s, "H1"), 0.0), a["recovered"][(s, "H1")], a["net"][(s, "H1")],
+                a["written_off"].get((s, "H2"), 0.0), a["recovered"][(s, "H2")], a["net"][(s, "H2")]]
+        for j, v in enumerate(vals):
+            tot[j] += v
+            ws3.cell(row=r, column=2 + j, value=R.rhu(v / 1e3, 0)).number_format = "#,##0"
+        r += 1
+    ws3.cell(row=r, column=1, value="Business banking book").font = Font(bold=True)
+    for j, v in enumerate(tot):
+        c = ws3.cell(row=r, column=2 + j, value=R.rhu(v / 1e3, 0))
+        c.number_format, c.font = "#,##0", Font(bold=True)
+        c.border = Border(top=THIN)
+    ws3.cell(row=r + 2, column=1, value=("Recoveries include guarantors' payments on their own collection cases, credited to "
+                                         "the company they guaranteed, and the collection agency's remittances net of its "
+                                         "commission; rural and commercial property write-offs are reported under CR-ST-03 "
+                                         "and CR-ST-04.")).font = Font(size=9, color="555555")
+    ws3.freeze_panes = "B5"
 
-    ws = wb.create_sheet("Method")
+    ws4 = wb.create_sheet("Default back-test")
+    ws4["A1"] = "Business borrowers by risk-grade band at 30 September 2025 and defaults in the following twelve months"
+    ws4["A1"].font = Font(bold=True, color=NAVY)
+    ws4["A2"] = ("Grade in force at 30 September 2025 (model grade or approved override, CR-ST-02 Table 1). Defaults "
+                 "1 October 2025 to 30 September 2026 in the business and rural default registers.")
+    ws4["A2"].font = Font(italic=True, size=9, color="555555")
+    _hdr(ws4, 4, ["Risk-grade band", "Business borrowers at 30 Sep 2025", "Defaulted in the year", "Default share"],
+         [22, 18, 14, 13])
+    ws4.row_dimensions[4].height = 30
+    r = 5
+    for k, lab in enumerate(R.BAND_LABEL):
+        n, d = F["ask_b"][k]
+        ws4.cell(row=r, column=1, value=lab)
+        ws4.cell(row=r, column=2, value=n)
+        ws4.cell(row=r, column=3, value=d)
+        ws4.cell(row=r, column=4, value=F["ask_b_share"][k] / 100.0).number_format = "0.0%"
+        r += 1
+    nt = sum(n for n, d in F["ask_b"].values())
+    dtot = sum(d for n, d in F["ask_b"].values())
+    ws4.cell(row=r, column=1, value="All graded borrowers").font = Font(bold=True)
+    ws4.cell(row=r, column=2, value=nt).font = Font(bold=True)
+    ws4.cell(row=r, column=3, value=dtot).font = Font(bold=True)
+    c = ws4.cell(row=r, column=4, value=R.rhu(100.0 * dtot / nt, 1) / 100.0)
+    c.number_format, c.font = "0.0%", Font(bold=True)
+    ws4.cell(row=r + 2, column=1, value=("A connected group's cross-default is recorded against the group lead's customer "
+                                         "number; each defaulted facility is counted for the customer that holds it. Customer "
+                                         "numbers retired in the March 2026 merge are read through to their 2025 number.")
+             ).font = Font(size=9, color="555555")
+
+    ws5 = wb.create_sheet("Notes")
     notes = [
-        "Scope: PL36 and PL60 loans open at close of business 30 September 2026. Loans 90 or more days past due are stage 3 "
-        "and are assessed under CRM-ECL-06.",
-        "Stage 2: 30 or more days past due, a hardship arrangement in force on the date (start to end, both included, not "
-        "from the day it is cancelled), or a behaviour score 60 or more points below origination on v4 from the month-end "
-        "run on the position at the date; v3 origination scores converted as 1.12 x v3 - 18, rounded. At 30 June the "
-        "June month end's run supplies the scores (made 1 July; for the loans that run carried forward, the rerun made 2 "
-        "July), and days past due are put back to close of business on "
-        "30 June: the June extract counts them to its run date, 1 July, so each loan in arrears reads a day further. "
-        "A closed "
-        "loan, one written off included, is in no stage.",
-        "PD(k): for each product and month on book (calendar months from the drawdown month), the share of the loans "
-        "open and not in default at its start that defaulted in it, and the share that closed without a default, over "
-        "every loan in the loan record. Each loan counts only in the months the record held it: a loan the loan system "
-        "took over from the earlier platform at the October 2019 go-live counts from its first month on book after "
-        "30 September 2019, because the loans that defaulted or were repaid before then never came across. A loan at "
-        "month on book a takes the default rate at a + k times the share neither defaulting nor closing in each month "
-        "from a + 1 to a + k - 1. Stage 2 PD carries the 2.4 scalar. A loan past its maturity outside stage 3 has one "
-        "month remaining (3.2).",
-        "EAD re-amortises the current balance over the remaining term at the contract rate; each month is discounted at "
-        "the contract rate; LGD 70 per cent PL36, 76 per cent PL60; scenarios 55 / 30 / 15 per cent on multipliers "
-        "1.00 / 1.28 / 0.81 (weighted %.4f)." % s["mult"],
-        "Realised loss (3.3): for each product and quarter of default, the balance at default not recovered, summed over "
-        "the quarter's defaults, as a share of their total balance at default. Recoveries are the receipts after default "
-        "to 30 September 2026 in the Collections receipts file, plus each sold account's share of the March 2026 sale "
-        "(face value at cut-off x %.2f cents), each taken at the end of the month received and discounted to the "
-        "default month end monthly at the contract rate. A Wirraway remittance counts against the account placed under "
-        "the reference it quotes on the day it was received, from the agency's placement report; the receipts file posts "
-        "it to the account first placed under that reference, an earlier account where Wirraway has reissued it. Loans "
-        "back to performing lose nothing; a case Collections closed as cured on an arrangement withdrawn before it "
-        "started, the loan later written off, is measured on what the loan recovered." % W.SALE_PRICE_CENTS,
-        "Amounts are reported in AUD million to one decimal from loan-level results, so stage amounts may not add exactly.",
+        ("Book", "Business lending system extract at 30 September 2026; facilities of customers in risk grade D excluded (CR-ST-02 1.3)."),
+        ("Exposure at default", "Drawn balance; overdrafts and revolving credit facilities add 50 per cent of the undrawn limit (CR-ST-02 3.4)."),
+        ("Own division", "ANZSIC 2006 division from the borrower's BIC code on the NZBN extract of 12 October 2026; the lending book's blank and 1993-coded industry fields are not used."),
+        ("Sales change", "Each borrower's trading credits in the year to 30 September 2026 by payer: firms and public bodies matched to the NZBN extract by legal or trading name take their own division's scenario change; card settlements, branch cash and payments from individuals take the borrower's own division's change. Own-account transfers, GST refunds, insurance claims, loan advances and credit interest are not sales."),
+        ("Stressed PD", "Table 1 PD times the Table 2 multiplier for the borrower's sales fall, capped at 100 per cent; no fall keeps the Table 1 PD."),
+        ("Stressed LGD", "Table 3 by the facility's security code."),
+        ("Rounding", "Half up throughout. Book total to the nearest NZD 0.5 million, segments to NZD 0.1 million, net credit losses to the nearest NZD thousand, default shares to one decimal of a per cent."),
     ]
-    for i, t in enumerate(notes, 1):
-        ws.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
-    ws.column_dimensions["A"].width = 120
-    # the quarter's workbook is rolled forward (save as) from the one Credit Risk Reporting set up in February 2023
-    OX.xlsx_from_openpyxl(wb, path, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2023, 2, 6, 9, 31, 44), PREPARED, seed=1009)
+    ws5.column_dimensions["A"].width = 20
+    ws5.column_dimensions["B"].width = 110
+    ws5["A1"], ws5["B1"] = "Item", "Basis"
+    ws5["A1"].font = ws5["B1"].font = Font(bold=True)
+    for i, (k, v) in enumerate(notes, start=2):
+        ws5.cell(row=i, column=1, value=k).alignment = Alignment(vertical="top")
+        ws5.cell(row=i, column=2, value=v).alignment = Alignment(wrap_text=True, vertical="top")
+    for w in (ws, ws3, ws4):
+        w.sheet_view.showGridLines = False
+    save_xlsx(wb, path, "ICAAP 2026 business banking stress", "Capital Management", "2026-10-16T02:40:00Z")
 
 
-def _nudge(label, dx, dy):
-    """move one data label off its default spot by a fraction of the chart, as dragging it in PowerPoint records"""
-    dLbl = label._get_or_add_dLbl()
-    idx = dLbl.find(qn("c:idx"))
-    lay = dLbl.find(qn("c:layout"))
-    if lay is None:
-        lay = dLbl.makeelement(qn("c:layout"), {})
-        idx.addnext(lay)
-    for ch in list(lay):
-        lay.remove(ch)
-    ml = lay.makeelement(qn("c:manualLayout"), {})
-    lay.append(ml)
-    for tag, v in (("c:x", dx), ("c:y", dy)):
-        e = ml.makeelement(qn(tag), {"val": "%.4f" % v})
-        ml.append(e)
+def chart_png(F):
+    segs = R.SEG_NAMES
+    vals = [F["seg_m1"][s] for s in segs]
+    labels = ["Construction", "Manufacturing", "Trade and\nlogistics", "Hospitality,\nretail, leisure",
+              "Business and\nproperty", "Health, education\nand personal"]
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "svg.hashsalt": "task133"})
+    fig, ax = plt.subplots(figsize=(6.6, 3.0), dpi=150)
+    bars = ax.bar(range(len(segs)), vals, width=0.62, color="#2F5D8A", zorder=2)
+    for b_, v in zip(bars, vals):
+        ax.text(b_.get_x() + b_.get_width() / 2, v + 0.06, f"{v:.1f}", ha="center", va="bottom", fontsize=9, color="#222222")
+    ax.set_xticks(range(len(segs)))
+    ax.set_xticklabels(labels, fontsize=7.8)
+    ax.set_ylabel("NZD million")
+    ax.set_ylim(0, max(vals) * 1.22)
+    ax.grid(axis="y", color="#DDDDDD", linewidth=0.6, zorder=0)
+    for sp in ("top", "right", "left"):
+        ax.spines[sp].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+    share = (F["seg"]["Hospitality, retail and leisure"] + F["seg"]["Construction"]) / F["total"]
+    ax.set_title("Hospitality and construction carry %s of the stressed loss (NZD million, year to 30 Sep 2027)"
+                 % ("over half" if share > 0.5 else "almost half"), fontsize=9.5, loc="left", color="#1F3A5F")
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", metadata={"Software": None})
+    plt.close(fig)
+    return buf.getvalue()
 
 
-def deck(f, path):
-    s, mig = f["s"], f["mig"]
-    prs = Presentation()
-    prs.slide_width, prs.slide_height = Cm(33.867), Cm(19.05)
-    blank = prs.slide_layouts[6]
-
-    def title(slide, text, sub=None):
-        tb = slide.shapes.add_textbox(Cm(1.6), Cm(1.0), Cm(30.5), Cm(2.6))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        p = tf.paragraphs[0]
-        r = p.add_run()
-        r.text = text
-        r.font.size = Pt(24)
-        r.font.bold = True
-        r.font.color.rgb = NAVY
-        if sub:
-            p2 = tf.add_paragraph()
-            r2 = p2.add_run()
-            r2.text = sub
-            r2.font.size = Pt(13)
-            r2.font.color.rgb = GREY
-
-    def footer(slide, n):
-        tb = slide.shapes.add_textbox(Cm(1.6), Cm(17.7), Cm(30.5), Cm(0.8))
-        r = tb.text_frame.paragraphs[0].add_run()
-        r.text = "Bellbird Personal Finance  |  Audit and Risk Committee, 23 October 2026  |  Credit Risk Reporting  |  %d" % n
-        r.font.size = Pt(9)
-        r.font.color.rgb = GREY
-
-    s1 = prs.slides.add_slide(blank)
-    title(s1, "Book a collective ECL allowance of %s at 30 September 2026" % money(s["total"]),
-          "Stage 1 %s and stage 2 %s; %s loans in stage 3 are assessed separately under CRM-ECL-06"
-          % (money(s["stage1"]), money(s["stage2"]), "{:,}".format(s["n3"])))
-    rows = [("", "Loans", "Allowance"),
-            ("Stage 1", "{:,}".format(s["n1"]), money(s["stage1"])),
-            ("Stage 2", "{:,}".format(s["n2"]), money(s["stage2"])),
-            ("Collective allowance", "{:,}".format(s["n1"] + s["n2"]), money(s["total"]))]
-    tbl = s1.shapes.add_table(len(rows), 3, Cm(1.6), Cm(5.4), Cm(19.0), Cm(5.2)).table
-    for j, w in enumerate([8.6, 4.6, 5.8]):
-        tbl.columns[j].width = Cm(w)
-    for i, row in enumerate(rows):
-        for j, v in enumerate(row):
-            cell = tbl.cell(i, j)
-            cell.text = v
-            cell.fill.solid()
-            cell.fill.fore_color.rgb = NAVY if i == 0 else (RGBColor(0xEE, 0xF1, 0xF4) if i == len(rows) - 1 else RGBColor(0xFF, 0xFF, 0xFF))
-            para = cell.text_frame.paragraphs[0]
-            if not para.runs:
-                para.add_run()
-            para.runs[0].font.size = Pt(16)
-            para.runs[0].font.bold = i in (0, len(rows) - 1)
-            para.runs[0].font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF) if i == 0 else NAVY
-            if j >= 1:
-                para.alignment = PP_ALIGN.RIGHT
-    note = s1.shapes.add_textbox(Cm(1.6), Cm(11.6), Cm(30.5), Cm(4.0)).text_frame
-    note.word_wrap = True
-    r = note.paragraphs[0].add_run()
-    r.text = ("Each performing loan's monthly default probability is read from its product's default and repayment rates "
-              "by month on book in the loan record, counting the loans taken over at the 2019 go-live only from then; "
-              "stage 2 carries the 2.4 scalar and the scenarios are weighted 55 / 30 / 15 per cent (multiplier %.2f). "
-              "Amounts in AUD million." % s["mult"])
-    r.font.size = Pt(12)
-    r.font.color.rgb = GREY
-    src = s1.shapes.add_textbox(Cm(1.6), Cm(16.8), Cm(30.5), Cm(0.8)).text_frame.paragraphs[0].add_run()
-    src.text = "Source: loan system extract and loan record at 30 September 2026; scenarios approved 18 September 2026"
-    src.font.size = Pt(9)
-    src.font.color.rgb = GREY
-    footer(s1, 1)
-
-    s2 = prs.slides.add_slide(blank)
-    worse = sum(mig[(p, 1, x)] for p in ("PL36", "PL60") for x in ("stage 2", "stage 3"))
-    back = sum(mig[(p, 2, "stage 1")] for p in ("PL36", "PL60"))
-    title(s2, "%s stage 1 loans moved to stage 2 or 3 this quarter and %s stage 2 loans returned to stage 1"
-          % ("{:,}".format(worse), "{:,}".format(back)),
-          "Loans in stage 1 or stage 2 at 30 June 2026, by where they stand at 30 September 2026")
-    cd = CategoryChartData()
-    cd.categories = ["%s, stage %d at 30 June" % (p, s0) for p, s0 in ORDER]
-    names = {"stage 1": "Stage 1 at 30 September", "stage 2": "Stage 2", "stage 3": "Stage 3", "closed": "Closed"}
-    for x in NOW:
-        cd.add_series(names[x], [mig[(p, s0, x)] for p, s0 in ORDER])
-    gf = s2.shapes.add_chart(XL_CHART_TYPE.BAR_STACKED_100, Cm(1.6), Cm(4.4), Cm(30.5), Cm(12.3), cd)
-    ch = gf.chart
-    ch.has_legend = True
-    ch.legend.position = XL_LEGEND_POSITION.TOP
-    ch.legend.include_in_layout = False
-    ch.legend.font.size = Pt(11)
-    ch.value_axis.has_major_gridlines = False
-    ch.value_axis.tick_labels.number_format = "0%"
-    ch.value_axis.tick_labels.number_format_is_linked = False
-    ch.value_axis.tick_labels.font.size = Pt(10)
-    ch.category_axis.tick_labels.font.size = Pt(11)
-    ch.category_axis.reverse_order = True
-    plot = ch.plots[0]
-    plot.gap_width = 55
-    plot.overlap = 100
-    for ser, col, x in zip(plot.series, STATE, NOW):
-        ser.format.fill.solid()
-        ser.format.fill.fore_color.rgb = col
-        ser.format.line.color.rgb = WHITE
-        ser.format.line.width = Pt(1.5)
-        for idx, (p, s0) in enumerate(ORDER):
-            v = mig[(p, s0, x)]
-            share = v / sum(mig[(p, s0, y)] for y in NOW)
-            dl = ser.points[idx].data_label
-            dl.has_text_frame = True
-            dl.text_frame.text = "{:,}".format(v)
-            run = dl.text_frame.paragraphs[0].runs[0]
-            run.font.size = Pt(11)
-            run.font.bold = True
-            run.font.color.rgb = WHITE if x != "stage 2" and share >= 0.03 else NAVY
-            if share < 0.03:
-                # too thin a sliver to hold its number: the label sits just below the bar
-                dl.position = XL_LABEL_POSITION.CENTER
-                _nudge(dl, 0.0, 0.085)
-    src = s2.shapes.add_textbox(Cm(1.6), Cm(16.8), Cm(30.5), Cm(0.8)).text_frame.paragraphs[0].add_run()
-    src.text = ("Source: loan system extracts at 30 June and 30 September 2026; June month-end scoring run (1 July); hardship "
-                "register at 30 September. Stages under CRM-ECL-04 section 2; closed = repaid, settled or written off.")
-    src.font.size = Pt(9)
-    src.font.color.rgb = GREY
-    footer(s2, 2)
-    prs.core_properties.author = "Joseph Mitchell"
-    prs.core_properties.last_modified_by = "Joseph Mitchell"
-    prs.core_properties.title = "ECL allowance, Q1 FY27"
-    prs.core_properties.created = PREPARED
-    prs.core_properties.modified = PREPARED
-    prs.core_properties.revision = 3
-    prs.save(path)
+def _para(doc, text, bold=False, size=10.5, italic=False, space_after=6, color=None, align=None):
+    p = doc.add_paragraph()
+    run = p.add_run(text)
+    run.bold, run.italic = bold, italic
+    run.font.size = Pt(size)
+    if color:
+        run.font.color.rgb = RGBColor.from_string(color)
+    p.paragraph_format.space_after = Pt(space_after)
+    if align:
+        p.alignment = align
+    return p
 
 
-def build(target=None, out=None):
-    target = target or os.path.join(TASK, "target")
-    out = out or os.path.join(TASK, "golden")
+def _tbl(doc, header, rows, widths=None, bold_last=False):
+    t = doc.add_table(rows=1, cols=len(header))
+    t.style = "Light Grid Accent 1"
+    t.alignment = WD_TABLE_ALIGNMENT.LEFT
+    for i, h in enumerate(header):
+        cell = t.rows[0].cells[i]
+        cell.text = h
+        for r_ in cell.paragraphs[0].runs:
+            r_.bold = True
+            r_.font.size = Pt(9)
+    for k, row in enumerate(rows):
+        cells = t.add_row().cells
+        for i, v in enumerate(row):
+            cells[i].text = str(v)
+            para = cells[i].paragraphs[0]
+            if i > 0:
+                para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            for r_ in para.runs:
+                r_.font.size = Pt(9)
+                if bold_last and k == len(rows) - 1:
+                    r_.bold = True
+    if widths:
+        for row in t.rows:
+            for i, w in enumerate(widths):
+                row.cells[i].width = Cm(w)
+    return t
+
+
+def paper(F, path):
+    doc = Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    sec = doc.sections[0]
+    sec.left_margin = sec.right_margin = Cm(2.2)
+    sec.top_margin = sec.bottom_margin = Cm(1.8)
+    hp = sec.header.paragraphs[0]
+    hp.text = "Orari Bank Limited | Board of Directors | 26 November 2026 | Item 6.2 | In confidence"
+    hp.runs[0].font.size = Pt(8)
+    fp = sec.footer.paragraphs[0]
+    fp.text = "ICAAP 2026: business banking stress | Capital Management"
+    fp.runs[0].font.size = Pt(8)
+
+    _para(doc, "Board paper", size=9, color="555555", space_after=2)
+    _para(doc, "The severe scenario costs the business book NZD %.1f million in the stress year" % F["total_half_m"],
+          bold=True, size=15, color="1F3A5F", space_after=4)
+    _para(doc, "From: Capital Management    Date: 16 October 2026    For: decision    Paper: BD-2026-11-06", size=9,
+          color="555555", space_after=10)
+
+    _para(doc, "Decision sought", bold=True, size=11)
+    _para(doc, ("That the Board adopts NZD %.1f million as the business banking book's stressed credit loss for the year to "
+                "30 September 2027 under the severe scenario it approved on 24 September 2026, for use in the ICAAP capital "
+                "plan." % F["total_half_m"]))
+
+    _para(doc, "The stress result", bold=True, size=11)
+    seg = F["seg_m1"]
+    _para(doc, ("The %d performing business borrowers carry exposure at default of NZD %.1f million. Under CR-ST-02 each "
+                "borrower's probability of default is scaled by the Table 2 multiplier for the fall in its own sales, and a "
+                "business's sales are what its customers pay it. The operating-account credits for the year to 30 September "
+                "2026 show who those customers are: %d per cent of the book's trading credits came from firms and public "
+                "bodies outside the borrower's own industry division. The severe scenario cuts construction sales by 27.4 per "
+                "cent and accommodation and food services by 22.6 per cent, so the transport, wholesale, labour-hire and "
+                "engineering firms those builders, hotels and tour operators pay take steep multipliers even though their own "
+                "divisions fall far less.") % (F["n_perf"], F["ead_m1"], F["other_share_pct"]))
+    _para(doc, ("Hospitality, retail and leisure carries the largest loss at NZD %.1f million, followed by construction at "
+                "NZD %.1f million and trade and logistics at NZD %.1f million. Health, education and personal services, "
+                "whose revenue is mostly household and public spending that the scenario holds up, contributes NZD %.1f "
+                "million.") % (seg["Hospitality, retail and leisure"], seg["Construction"], seg["Trade and logistics"],
+                                seg["Health, education and personal services"]))
+    rows = [[s, f"{F['n_seg'][s]:,}", f"{F['ead_seg'][s] / 1e6:,.1f}", f"{seg[s]:.1f}"] for s in R.SEG_NAMES]
+    rows.append(["Business banking book", f"{F['n_perf']:,}", f"{F['ead_m1']:,.1f}", f"{F['total_half_m']:.1f}"])
+    _tbl(doc, ["Reporting segment", "Borrowers", "EAD (NZD m)", "Stressed loss (NZD m)"], rows, [7.6, 2.4, 2.8, 3.6],
+         bold_last=True)
+    _para(doc, ("Source: business lending book at 30 September 2026; operating-account credits October 2025 to September "
+                "2026; NZBN extract 12 October 2026. Total to the nearest NZD 0.5 million, segments to NZD 0.1 million. "
+                "Facilities of the %d customers in default at the book date are individually provisioned and outside the "
+                "stress (CR-ST-02 1.3).") % F["n_default"], size=8, italic=True, color="555555", space_after=8)
+    doc.add_picture(io.BytesIO(chart_png(F)), width=Cm(16))
+    _para(doc, "Figure 1. Stressed credit loss by reporting segment (NZD million).", size=8, italic=True, color="555555")
+
+    _para(doc, "Realised losses and grade performance in 2026", bold=True, size=11)
+    a = F["ask_a_k"]
+    tot1 = R.rhu(sum(F["ask_a"]["net"][(s, "H1")] for s in R.SEG_NAMES) / 1e3, 0)
+    tot2 = R.rhu(sum(F["ask_a"]["net"][(s, "H2")] for s in R.SEG_NAMES) / 1e3, 0)
+    _para(doc, ("Net credit losses on the business book were NZD %s thousand in the first half of the financial year and NZD "
+                "%s thousand in the second, with construction and hospitality write-offs rising through the year.")
+          % (f"{tot1:,.0f}", f"{tot2:,.0f}"))
+    rows = [[s, f"{a[(s, 'H1')]:,.0f}", f"{a[(s, 'H2')]:,.0f}"] for s in R.SEG_NAMES]
+    rows.append(["Business banking book", f"{tot1:,.0f}", f"{tot2:,.0f}"])
+    _tbl(doc, ["Reporting segment", "H1 FY2026 (NZD 000)", "H2 FY2026 (NZD 000)"], rows, [8.4, 3.8, 3.8], bold_last=True)
+    _para(doc, ("Amounts written off less recoveries received on loans already written off (CR-ST-02 4.2); recoveries "
+                "include guarantors' payments and the collection agency's remittances net of commission."), size=8,
+          italic=True, color="555555", space_after=8)
+    _para(doc, ("Defaults in the year rose with risk grade, from %.1f per cent of borrowers graded 1 to 3 at 30 September "
+                "2025 to %.1f per cent of those graded 7 to 9.") % (F["ask_b_share"][0], F["ask_b_share"][4]))
+    rows = []
+    for k, lab in enumerate(R.BAND_LABEL):
+        n, d = F["ask_b"][k]
+        rows.append([lab, f"{n}", f"{d}", f"{F['ask_b_share'][k]:.1f}"])
+    _tbl(doc, ["Risk-grade band at 30 Sep 2025", "Borrowers", "Defaulted", "Default share (%)"], rows,
+         [6.2, 3.0, 3.0, 3.6])
+    _para(doc, ("Grade in force at 30 September 2025, overrides included; defaults from both the business and rural "
+                "registers, cross-defaults counted for each member of the connected group."), size=8, italic=True,
+          color="555555", space_after=8)
+
+    _para(doc, "Basis of preparation", bold=True, size=11)
+    _para(doc, ("Book date 30 September 2026; stress year to 30 September 2027; CR-ST-02 version 3.1. Stressed loss is the "
+                "stressed PD times the Table 3 stressed LGD times exposure at default, summed over facilities. Detail by "
+                "borrower is in orari_icaap_business_stress_2027.xlsx."), size=9.5)
+    save_docx(doc, path, "ICAAP 2026: business banking stress", "Capital Management", "2026-10-16T03:05:00Z")
+
+
+def write(tdir, out):
     os.makedirs(out, exist_ok=True)
-    f = figures(target)
-    wbp = os.path.join(out, "ecl_allowance_2026Q3.xlsx")
-    workbook(f, wbp)
-    dp = os.path.join(out, "arc_ecl_q3_2026.pptx")
-    deck(f, dp)
-    P.office_container(dp, "Joseph Mitchell", "Joseph Mitchell", dt.datetime(2026, 10, 8, 16, 41), PREPARED,
-                       "Microsoft Office PowerPoint", revision=3)
-    P.deterministic_embeddings(dp, dt.datetime(2026, 10, 8, 16, 41))
-    for p in (wbp, dp):
-        ts = W.posix(PREPARED)
-        os.utime(p, (ts, ts))
-    return f
+    F = R.compute(tdir)
+    workbook(F, os.path.join(out, XLSX))
+    paper(F, os.path.join(out, DOCX))
+    return F
 
 
 if __name__ == "__main__":
-    import argparse
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--target", default=None)
-    ap.add_argument("--out", default=None)
-    a = ap.parse_args()
-    f = build(a.target, a.out)
-    s = f["s"]
-    print("total %.0f (%.1f)" % (s["total"], mil(s["total"])), "stage1 %.0f (%.1f)" % (s["stage1"], mil(s["stage1"])),
-          "stage2 %.0f (%.1f)" % (s["stage2"], mil(s["stage2"])))
-    print("lgd", {"%s Q%d" % key: round(v, 1) for key, v in sorted(f["lgd"].items())})
-    print("migration", f["mig"])
+    write(sys.argv[1], sys.argv[2])

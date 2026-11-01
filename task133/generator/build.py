@@ -1,273 +1,96 @@
-"""Build task133's evidence pack into <out>/ (default: task133/target)."""
-import argparse
-import datetime as dt
+"""Builds task133 twice in fresh interpreters, asserts the two builds are byte-identical, and installs target/,
+golden/, submission.md, generator/figures.json, metadata.json and target.zip.
+
+    python3 task133/generator/build.py
+"""
+import filecmp
+import hashlib
+import io
 import json
 import os
-import re
 import shutil
+import subprocess
 import sys
-
-import numpy as np
+import tempfile
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import world as W
-import sim as SM
-import extracts as X
-import docs as D
-import distract as Q
-import officex as OX
-import postprocess as P
-
 TASK = os.path.dirname(HERE)
-FILES = {
-    "book": "personal_loan_book_2026-09-30.csv",
-    "june": "personal_loan_book_2026-06-30.csv",
-    "method": "CRM-ECL-04_expected_credit_loss_personal_loans.docx",
-    "scen": "ifrs9_scenarios_2026Q3.xlsx",
-    "hardship": "hardship_register_2026-09-30.xlsx",
-    "note": "scorecard_v4_migration_note.pdf",
-    "dictionary": "ecl_extract_dictionary.txt",
-    "record": "loan_record_2026-09-30.parquet",
-    "scores": "behaviour_score_runs_2026-03_2026-08.parquet",
-    "defaults": "collections_defaults_2023-24.csv",
-    "receipts": "collections_receipts_2023-07_2026-09.csv",
-    "sale": "debt_sale_2026-03_schedule.xlsx",
-    "placements": "wirraway_placements_2026-09-30.csv",
-    "writeoffs": "write_offs_2025-07_2026-09.csv",
-    "rolls": "arrears_roll_rates_fy26.xlsx",
-}
-DISTRACTORS = ["writeoffs", "rolls"]
-# Sydney wall-clock times each file was last saved
-MTIMES = {
-    "book": (2026, 10, 1, 7, 34), "june": (2026, 7, 1, 7, 33), "record": (2026, 10, 1, 7, 41),
-    "method": (2026, 8, 26, 9, 14), "scen": (2026, 9, 18, 16, 52), "hardship": (2026, 10, 1, 8, 2),
-    "note": (2024, 6, 20, 15, 5), "dictionary": (2026, 10, 2, 10, 6),
-    "scores": (2026, 9, 2, 10, 17), "defaults": (2026, 10, 2, 9, 41), "receipts": (2026, 10, 2, 9, 38),
-    "sale": (2026, 3, 27, 14, 5), "placements": (2026, 10, 2, 9, 31), "writeoffs": (2026, 10, 1, 8, 5), "rolls": (2026, 7, 14, 9, 50),
-}
-SCORE_RUN_ENDS = [SM.dn(dt.date(2026, m + 1, 1)) - 1 for m in range(3, 9)]     # the March to August 2026 month ends
-RECORD_META = {
-    "dataset": "Loan record, personal loans",
-    "owner": "Loan Operations",
-    "extracted": "2026-10-01",
-    "population": "every PL36 and PL60 loan the loan system has held since it went live on 1 October 2019, when it took "
-                  "over the personal loan book from the earlier platform, open or closed, as at close of business on 30 "
-                  "September 2026",
-    "loan_no": "loan number",
-    "product": "PL36 or PL60",
-    "risk_grade": "grade at approval, A to E",
-    "drawdown_date": "date the loan was funded",
-    "first_repayment_date": "date of the first scheduled repayment",
-    "term_months": "contractual term in months",
-    "contract_rate": "annual contract rate, decimal",
-    "original_amount": "amount financed, whole dollars, including the establishment fee",
-    "default_month": "month of the first month end at which the loan system recorded the loan 90 or more days past due "
-                     "(YYYY-MM); empty if it never was",
-    "status": "Open or Closed at close of business on 30 September 2026",
-    "closed_date": "date the loan closed",
-    "closure_reason": "Repaid in full (by its final repayment or ahead of its term), Settled (for less than it owed) or "
-                      "Written off",
-}
-SCORE_META = {
-    "dataset": "Behaviour score v4: month-end scoring runs",
-    "owner": "Behaviour Scoring",
-    "extracted": "2026-09-02",
-    "runs": "the March, April, May, June, July and August 2026 month ends",
-    "population": "every loan open at the month end, from its first repayment date",
-    "loan_no": "loan number",
-    "run_date": "date the run was made",
-    "score_v4": "behaviour score, scorecard v4",
-    "score_status": "Scored, or Carried forward (the run could not score the loan and repeats the last score the scoring "
-                    "engine holds for it)",
-}
+sys.path.insert(0, HERE)
+
+import params as P  # noqa: E402
+
+ZIP_DT = (2026, 10, 16, 9, 12, 0)
 
 
-def register_xlsx(hd, path):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Arrangements"
-    cols = list(hd.columns)
-    ws.append(cols)
-    for j in range(1, len(cols) + 1):
-        c = ws.cell(row=1, column=j)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="D9E1F2")
-        c.alignment = Alignment(vertical="top")
-    for rec in hd.itertuples(index=False):
-        ws.append([None if (isinstance(v, float) and v != v) else v for v in rec])
-    n = len(hd) + 1
-    for r in range(2, n + 1):
-        for j, name in enumerate(cols, 1):
-            if name.endswith("_date") or name in ("arrangement_start", "arrangement_end"):
-                ws.cell(row=r, column=j).number_format = "dd/mm/yyyy"
-            elif name.endswith("_aud"):
-                ws.cell(row=r, column=j).number_format = "#,##0.00"
-    for col, w in zip("ABCDEFGHIJ", [11, 12, 13, 21, 19, 16, 16, 20, 17, 14]):
-        ws.column_dimensions[col].width = w
-    ws.freeze_panes = "A2"
-    ws.auto_filter.ref = "A1:%s%d" % (OX.col_letter(len(cols)), n)
-    # written by the job under its service account; an analyst in Credit Risk Reporting added the header fill, the
-    # frozen header row and the filter before the run folder was released
-    OX.xlsx_from_openpyxl(wb, path, W.JOB_ACCOUNT, "Declan Wallace", dt.datetime(2026, 10, 1, 7, 36, 5),
-                          dt.datetime(2026, 10, 1, 8, 2, 44), seed=1001)
+def run(*args):
+    r = subprocess.run([sys.executable] + list(args), cwd=HERE, capture_output=True, text=True)
+    if r.returncode != 0:
+        raise SystemExit("failed: %s\n%s\n%s" % (" ".join(args), r.stdout[-2000:], r.stderr[-4000:]))
+    return r.stdout
 
 
-def parquet(df, path, meta):
-    import pyarrow as pa
-    import pyarrow.parquet as pq
-    t = pa.Table.from_pandas(df, preserve_index=False)
-    t = t.replace_schema_metadata({k: v for k, v in meta.items()})
-    pq.write_table(t, path)
-    b = open(path, "rb").read()
-    b = re.sub(rb"parquet-cpp-arrow version \d{2}\.\d\.\d", b"parquet-cpp-arrow version 16.1.0", b)
-    open(path, "wb").write(b)
+def same_dirs(a, b):
+    fa, fb = sorted(os.listdir(a)), sorted(os.listdir(b))
+    assert fa == fb, (set(fa) ^ set(fb))
+    for f in fa:
+        assert filecmp.cmp(os.path.join(a, f), os.path.join(b, f), shallow=False), "differs between builds: " + f
+    return fa
 
 
-def score_frame(S, runs):
-    """one row per loan scored in each month-end run, dated by the day the run was made. The June month end's run on 1
-    July could not score one partition of the scoring engine's book (loan numbers by their last digit before the check
-    digit): the engine wrote each of those loans its last score (the May run's, or the application score on v4 for a
-    loan first due in June) marked Carried forward, and the partition was run again on 2 July"""
-    import pandas as pd
-    parts = []
-    t_jun, t_may = SM.dn(W.PRIOR_QE), SM.dn(dt.date(2026, 5, 31))
-    may = dict(zip(*runs[t_may]))
-    L = S.L
-    sa, sb = W.SCORE_MAP
-    for t in sorted(runs):
-        rows, sc = runs[t]
-        nos = L["loan_no"][rows]
-        status = np.full(len(rows), "Scored", dtype=object)
-        if t == t_jun:
-            part = np.isin(np.array([x[-2] for x in nos]), list(W.SCORE_RERUN_PARTITION))
-            app = np.where(L["v4"][rows], L["orig_score"][rows], np.floor(sa * L["orig_score"][rows] + sb + 0.5)).astype(int)
-            last = np.array([may.get(r, a) for r, a in zip(rows, app)])
-            parts.append(pd.DataFrame(dict(loan_no=nos[part], run_date=SM.dd(t + 2), score_v4=sc[part].astype(np.int32),
-                                           score_status="Scored")))
-            sc = np.where(part, last, sc)
-            status = np.where(part, "Carried forward", status)
-        parts.append(pd.DataFrame(dict(loan_no=nos, run_date=SM.dd(t + 1), score_v4=sc.astype(np.int32), score_status=status)))
-    out = pd.concat(parts, ignore_index=True)
-    return out.sort_values(["run_date", "loan_no"], kind="stable").reset_index(drop=True)
-
-
-def loss_history(S):
-    """the simulated loss history sits where the filed LGDs say it should: written-off cohorts with three years behind
-    them have recovered roughly a quarter of the balance written off (agency plans, settlements, odd payments and, for
-    the accounts sold in March 2026, their share of the sale), and about one default in six is resolved (settled, caught
-    up or put on a collections arrangement) before the 180-day write-off"""
-    C = X.collections(S)
-    R = S.R
-    wo, bal = C["wo"], C["wbal"]
-    got = np.zeros(len(wo))
-    pos = {int(i): k for k, i in enumerate(wo)}
-    for i, d, a in zip(C["ledger"]["_i"], C["ledger"]["_d"], C["ledger"]["_amt"]):
-        if i >= 0 and i in pos and d > S.close[i]:
-            got[pos[i]] += a
-    for k, (d, a, kind) in ((pos[i], f) for i, fl in C["flows_by"].items() for f in fl):
-        if d < SM.dn(dt.date(2023, 7, 1)) and d > S.close[wo[k]]:
-            got[k] += a                          # before the receipts extract begins
-    price = W.SALE_PRICE_CENTS / 100.0
-    for i, face in C["sold"].items():
-        got[pos[i]] += face * price
-    w = S.close[wo]
-    mature = w <= SM.dn(dt.date(2023, 9, 30))
-    rate = got[mature].sum() / bal[mature].sum()
-    assert 0.20 <= rate <= 0.30, "mature write-off cohorts recover %.3f of the balance written off" % rate
-    young = (w > SM.dn(dt.date(2025, 9, 30)))
-    assert got[young].sum() / bal[young].sum() < 0.6 * rate, "a young cohort shows a partial picture"
-    reached = (S.j0 > 0) & (S.e_def <= R - 200)
-    resolved = reached & (S.close_type != 3)
-    share = resolved.sum() / reached.sum()
-    assert 0.12 <= share <= 0.25, "defaults resolved before write-off %.3f" % share
-    return rate, share
-
-
-def build(out):
-    if os.path.exists(out):
-        shutil.rmtree(out)
-    os.makedirs(out)
-    S = SM.simulate()
-    p = lambda k: os.path.join(out, FILES[k])
-    bk = X.book(S, np.random.default_rng(W.SEED + 1))
-    hide = ["loan_key", "_bal", "_dpd"]
-    bk.drop(columns=hide).to_csv(p("book"), index=False, lineterminator="\n")
-    jb = X.frame_at(S, SM.dn(W.PRIOR_QE), arrears_at_run=W.JUNE_ARREARS_AT_RUN)
-    jb.drop(columns=hide).to_csv(p("june"), index=False, lineterminator="\n")
-    parquet(score_frame(S, X.score_runs(S, SCORE_RUN_ENDS)), p("scores"), SCORE_META)
-    X.withdrawn_arrangements(S)
-    hd = X.hardship(S, np.random.default_rng(W.SEED + 2))
-    register_xlsx(hd, p("hardship"))
-    parquet(X.loan_record(S).drop(columns=["_i"]), p("record"), RECORD_META)
-    D.methodology_docx(p("method"))
-    D.scenarios_xlsx(p("scen"))
-    D.scorecard_pdf(p("note"))
-    P.normalize_pdf(p("note"), dt.datetime(*MTIMES["note"]))
-    D.dictionary_txt(p("dictionary"))
-    C = X.collections(S)
-    X.fy24_defaults(S).drop(columns=["_i", "_dme"]).to_csv(p("defaults"), index=False, lineterminator="\n")
-    C["ledger"].drop(columns=["_i", "_post", "_d", "_amt"]).to_csv(p("receipts"), index=False, lineterminator="\n")
-    D.sale_xlsx(X.sale_schedule(S), C["consideration"], p("sale"))
-    X.placement_report(S).to_csv(p("placements"), index=False, lineterminator="\r\n")
-    X.write_offs(S).to_csv(p("writeoffs"), index=False, lineterminator="\n")
-    loss_history(S)
-    Q.roll_rates_xlsx(p("rolls"), X.roll_rates(S))
-    for k in FILES:
-        ts = W.posix(dt.datetime(*MTIMES[k]))
-        os.utime(p(k), (ts, ts))
-    return S, bk, hd
-
-
-def write_metadata():
-    meta = {
-        "task": "task133",
-        "title": "Bellbird personal loans: the 30 September 2026 ECL allowance",
-        "domain": "Banking, Credit & Financial Risk",
-        "subdomain": "expected-credit-loss-provisioning",
-        "objective": "Forecasting & Predictive Modeling",
-        "as_of": "2026-09-30",
-        "deliverables": ["ecl_allowance_2026Q3.xlsx", "arc_ecl_q3_2026.pptx"],
-        "input_files": [{"path": FILES[k], "format": FILES[k].rsplit(".", 1)[1]} for k in sorted(FILES, key=lambda k: FILES[k])],
-        "distractors": [FILES[k] for k in DISTRACTORS],
-        "provenance": "Fully constructed pack (dataset-generation section 2): every extract is generated by task133/generator "
-                      "from a simulated personal loan book for a fictional Australian non-bank lender; documents written "
-                      "for the fiction. No real lender's or borrower's data.",
-        "license": "Constructed data, released with the task (CC BY 4.0).",
-        "created": "2026-10-11",
-    }
-    with open(os.path.join(TASK, "metadata.json"), "w") as f:
-        json.dump(meta, f, indent=2)
-        f.write("\n")
-
-
-ZIP_TIME = (2026, 10, 2, 10, 30, 0)
-
-
-def zip_target(src, path):
-    """the bundle as shipped: every file flat, in name order, one fixed timestamp, so a rebuild is byte-identical"""
-    import zipfile
-    with zipfile.ZipFile(path, "w") as z:
-        for name in sorted(os.listdir(src)):
-            zi = zipfile.ZipInfo(name, date_time=ZIP_TIME)
+def zip_dir(d):
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in sorted(os.listdir(d)):
+            zi = zipfile.ZipInfo("target/" + f, date_time=ZIP_DT)
             zi.compress_type = zipfile.ZIP_DEFLATED
-            zi.create_system = 3
             zi.external_attr = 0o644 << 16
-            with open(os.path.join(src, name), "rb") as f:
-                z.writestr(zi, f.read())
+            z.writestr(zi, open(os.path.join(d, f), "rb").read())
+    return buf.getvalue()
+
+
+def main():
+    tmp = tempfile.mkdtemp(prefix="t133_")
+    try:
+        b1, b2 = os.path.join(tmp, "b1"), os.path.join(tmp, "b2")
+        run("make_pack.py", b1)
+        run("make_pack.py", b2)
+        files = same_dirs(b1, b2)
+        g1, g2 = os.path.join(tmp, "g1"), os.path.join(tmp, "g2")
+        run("golden.py", b1, g1)
+        run("golden.py", b2, g2)
+        same_dirs(g1, g2)
+        z1, z2 = zip_dir(b1), zip_dir(b2)
+        assert z1 == z2, "target.zip differs between builds"
+        print("two builds byte-identical: %d target files, %d golden files, target.zip" % (len(files), len(os.listdir(g1))))
+
+        tdir = os.path.join(TASK, "target")
+        if os.path.exists(tdir):
+            shutil.rmtree(tdir)
+        shutil.copytree(b1, tdir)
+        from io_util import set_mtime
+        for f in os.listdir(tdir):
+            set_mtime(os.path.join(tdir, f))
+        gdir = os.path.join(TASK, "golden")
+        if os.path.exists(gdir):
+            shutil.rmtree(gdir)
+        shutil.copytree(g1, gdir)
+        with open(os.path.join(TASK, "target.zip"), "wb") as f:
+            f.write(z1)
+        sha = hashlib.sha256(z1).hexdigest()
+
+        import writeup
+        writeup.emit(tdir, TASK)
+        import provenance
+        meta = provenance.metadata(tdir)
+        with open(os.path.join(TASK, "metadata.json"), "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=1, ensure_ascii=False)
+            f.write("\n")
+        print("installed target/, golden/, submission.md, generator/figures.json, metadata.json")
+        print("target.zip sha256 %s" % sha)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=os.path.join(TASK, "target"))
-    ap.add_argument("--zip", default=None, help="where to write the zipped bundle (default: target.zip beside target/)")
-    a = ap.parse_args()
-    build(a.out)
-    if a.out == os.path.join(TASK, "target"):
-        write_metadata()
-        zip_target(a.out, os.path.join(TASK, "target.zip"))
-    elif a.zip:
-        zip_target(a.out, a.zip)
-    print("built", a.out)
+    main()
