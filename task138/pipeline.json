@@ -15,19 +15,19 @@
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), --asof 2026-10-27; lines answered in the design note's Leak review",
-  "reader": "round 1: no leak (question 6 analytical; flags harmless); realism notes fixed"
+  "reader": "round 2: clean"
  },
  "duplicate_check": {
   "heart": "BLOCK on the guard window only: ban.pairing, ban.role and ban.artifact against task273 v6 (registered 01:51Z), ban.forum against task125 v4 and task281 v3; the card passed guard.py check at its registration (19:49Z) and the window moved when builds between re-registered; driver similarity 0.07 at most (task117)",
   "nearest": "task117 0.07"
  },
  "judge": {
-  "verdict": "DETERMINISTIC (SOLUTION_WRONG in wording only), round 1",
-  "disposition": "FIX_NOW, order kept; fixed in one pass 2026-11-01",
-  "report": "relayed by the coordinator: main call reproduced (102.93 MW at 101 F, transfers 1 to 5 MW for a CVR effect of 0.88 to 1.31 per cent); asks reproduced; Gates F strong, G PASS, H PASS"
+  "verdict": "DETERMINISTIC, APPROVE at the re-judge (order kept; main call and both asks reproduced; Gates F, G, H pass)",
+  "disposition": "one cosmetic fix applied 2026-11-01: critical component 2 states the relief as 1.14 MW in 2027 (two decimals, as computed), the workbook's relief column to 0.01 MW; no other figure moved",
+  "report": "relayed by the coordinator"
  },
  "returned": [],
- "resume": "the re-judge, then the author's decision on the guard window BLOCK",
+ "resume": "ship (stage 5, main session) once the author decides the guard window BLOCK",
  "approved": null,
  "delivered": null,
  "portal": null,
