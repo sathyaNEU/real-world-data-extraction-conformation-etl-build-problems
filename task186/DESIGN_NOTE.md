@@ -96,15 +96,17 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
 - **Reflex:** the field's method, each officer's TIP hit rate over the assessment year against the standard (with
   category balancing or the image-level first showing as refinements), is rung 0 and files three officers off: the
   three casual officers whose raw rates are 76 to 78 per cent.
-- **Back-test:** the textbook route validates: the raw hit rate is stable and internally consistent (every officer's
-  rate in the first and second halves of the year agrees closely), rises through 2025 as a learning curve would after
-  new scanners, and ranks the casual officers new in 2025 lowest, which reads as expected.
+- **Back-test:** the textbook route validates: the pooled hit rate climbs month by month from 90.8 per cent in July
+  2025 to 98.6 in November 2026, as a learning curve on new scanners would; officers' rates in the two halves of the
+  screening year correlate at 0.87; and the lowest four are the casual officers endorsed between August and October
+  2025, which reads as expected.
 - **Second use:** the TIP export is the spine and the lane throughput ask's numerator check; the library catalogue
   is where every image's object and category live, which every route needs to read categories; the login register
   is needed to name any officer at all. Delete the decisive step and every file stays.
-- **Shock:** the six full-time officers the step adds sit inside the hit-rate spread (91 to 95 per cent against a
-  recertified range of 92 to 99.5), and the ten are not an interval of any shipped statistic's sort (hit rate,
-  projections, endorsement date, category-balanced rate, image-level first showings), asserted.
+- **Shock:** five of the six full-time officers the step adds sit inside the recertified officers' hit-rate range
+  (91.9 to 99.5 per cent) and the sixth just under it at 91.0, and the ten are not an interval of any shipped
+  statistic's sort (hit rate, projections, endorsement date, category-balanced rate, image-level first showings),
+  asserted.
 - **Pins:** SCS-04 revision 6 files the WHAT (detection performance as the probability of detecting a prohibited item
   carried in a passenger's cabin bag, the screening year in Sydney time, every officer endorsed on 30 November, below
   80 per cent comes off); no filed sentence names repeats, first showings, objects, memory or the library's size.
@@ -220,14 +222,15 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
 - Margins: every officer coming off at most 74.2 per cent under every licensed form (raw 74.22, category-reweighted
   74.06, logistic 73.96); every other officer at least 83.3 per cent (83.54, 83.34, 83.5); the nearest any officer
   sits to the line is 3.3 points. The masked full-time officers' raw rates run 91.0 to 95.0 per cent against a
-  recertified range of 91.9 to 99.5, so they sit inside it.
-- Pricing: the step moves seven of ten designations; the lift is 11 points of hit probability on a repeat; the
-  golden's per-officer first showings number 107 to 205 in the year, so the sampling error of a designated officer's
-  estimate is about 3 to 4 points, inside the 8-point gap around the line. The world's free parameters (library size
-  360, projection probability 1.3 per cent, the memory multiplier 0.12, competent officers 0.89 to 0.95 on unseen
-  items, deficient full-time officers 0.64 to 0.72) were set so that every officer clears the line by at least 3
-  points under each licensed form and the masked officers sit inside the recertified spread; the same structure held
-  over seeds 186 to 191 at the prototype (golden equal to the truth's deficient set in every seed).
+  recertified range of 91.9 to 99.5, five of the six inside it.
+- Pricing: the step moves seven of ten designations; the lift is 11 points of hit probability on a repeat; every
+  endorsed officer has 107 to 263 first showings in the year, so a designated officer's estimate carries a standard
+  error of 3.4 to 4.7 points, and the decision is the filed comparison of that estimate with 80 per cent. The world's
+  free parameters (library size 360, projection probability 1.3 per cent, the memory multiplier 0.12, competent
+  officers 0.89 to 0.95 on unseen items, deficient full-time officers 0.64 to 0.72) were set so that every officer
+  clears the line by at least 3 points under each licensed form; on nine other seeds (187 to 195) the object-level
+  first showings designate exactly the world's ten deficient officers every time while the raw hit rate designates
+  one to three.
 
 ## Closure table
 

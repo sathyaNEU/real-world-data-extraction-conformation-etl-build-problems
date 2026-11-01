@@ -101,7 +101,7 @@ class World:
         # six full-time veterans whose detection of an unseen item is below standard
         for _ in range(6):
             add("D", "FT", r.uniform(P.DEF_FT[0], P.DEF_FT[1]), vet(), deficient=True)
-        # four part-time officers endorsed after the domestic CT lanes opened, below standard
+        # four casual officers endorsed after the domestic CT lanes opened, below standard
         for d in (dt.date(2025, 8, 11), dt.date(2025, 8, 25), dt.date(2025, 9, 15), dt.date(2025, 10, 6)):
             add("D", "CA", r.uniform(P.DEF_PT[0], P.DEF_PT[1]), d, deficient=True)
         for _ in range(28):

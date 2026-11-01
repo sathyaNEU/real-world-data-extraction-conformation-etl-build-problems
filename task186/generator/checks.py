@@ -216,11 +216,6 @@ def main():
                 and s0 not in cover[(d, ln)])
     check("C1 ask B: every passenger bag falls inside the lane's rostered time, so one rule separates the counts",
           stray == 0, "%d bags outside rostered time" % stray)
-    pre = 0
-    for (d, ln), mins in cover.items():
-        if P.WIN0 <= d <= P.WIN1:
-            fo = min(mins)
-            pre += fo % 60 == 0 or True
     check("C1 ask B: test images sit in an hour before the lane's first rostered start every day",
           all(h < min(lh[(d, ln)]) for (d, ln), h in _test_hours(T, assign, lh).items()), "test hours")
 
@@ -238,7 +233,7 @@ def main():
     check("SF6 the logistic fit does not move the call", set(A.designated(tab, "logit0")) == gold, "logit0")
     check("SF11 passenger bags leave out the counts before a lane's first rostered start", miss_test >= 10,
           "pre-opening counts move %d figures" % miss_test)
-    check("SF13 every endorsed officer has thirty or more first showings in the window", tab["n_first"].min() >= 30,
+    check("SF13 every endorsed officer has a hundred or more first showings in the window", tab["n_first"].min() >= 100,
           "min %d" % tab["n_first"].min())
 
     # ------------------------------------------------------------------ realism sweep
