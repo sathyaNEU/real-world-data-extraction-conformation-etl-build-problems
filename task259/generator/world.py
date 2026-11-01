@@ -199,4 +199,4 @@ def build_world(seed=SEED):
                                       mjh_true=int(m["mjh"] == 1) if emp else -1, mjh_rep=rep,
                                       self_rep=bool(self_rep), resp_line=resp + 1, want=want, slot=str(slot)))
     return dict(addresses=addresses, hh_q=hh_q, persons_q=persons_q, frame_size=frame_size, alloc=alloc,
-                rng_ops=rng_ops)
+                rng_ops=rng_ops, addr_by_id={a["aid"]: a for a in addresses})
