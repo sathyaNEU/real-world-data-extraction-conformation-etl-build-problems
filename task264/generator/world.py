@@ -467,7 +467,7 @@ def settle_unlinked(w, q, reg):
             ok = len(c) == 0
         else:
             ok = (len(c) >= 1 and int(c.iloc[0].pid) == r.pid and c.iloc[0].gap == 0
-                  and (len(c) == 1 or c.iloc[1].gap > 120))
+                  and (len(c) == 1 or c.iloc[1].gap > 3))
         if not ok:
             flip.add(r.ref)
     pseudo_of = dict(zip(w.pid, w.pseudo))

@@ -161,6 +161,11 @@ stay, never reaches the desk, about 200 reviews, so the net change is about 300.
 - No decoy: nothing is planted to be caught: no memo, briefing, vendor estimate or stakeholder figure states a forecast;
   the background log and the pilot record are true, complete records of what they record, and the vendor bulletin
   describes background mode without claiming it measures review burden.
+- Fine numbers: with every file complete and correct (the background log holds every alert the package would fire
+  with nobody answering, the history every alert that fired and how it was answered, the census and plan every
+  admission), the silent-mode route still files 500, because the log measures the package unanswered, a different
+  quantity from the review stream 4.3 names; nothing is missing to be noticed, and the golden is an expectation over
+  linked reviews at the pilot removal share, never a sum of reported rows.
 - No certified replay: no certified or published figure is reproduced to recover the method; the golden comes from the
   pilot answers and the two logs, and nothing in the pack validates either route against a known forecast.
 - Lesson: a background mode count measures a rule's own alerts with nobody answering them; once live, answers that
@@ -417,10 +422,11 @@ world is closed. Its leak report is kept as `leak_check_report_arch1.md`.
   and it would have been a confounded rival estimator; the pilot units now run the package live from before the
   extract begins, so no before period exists.
 - Severe interaction alerts accepted at 36 per cent: orders removed by a pre-empted alert survive once live and their
-  other alerts become reviews, a second-order term at 14 per cent of the net; acceptance set at 12 per cent (an 88 per
-  cent override share, as such alerts run) cut it to 16 reviews projected, asserted inside the bin (SF13).
+  other alerts become reviews, and the replayed truth on the base weeks ran 30 per cent above the first-order estimate
+  (227 against 174); acceptance set at 12 per cent (an 88 per cent override share, as such alerts run) leaves a
+  second-order term of 16 reviews projected, asserted inside the bin (SF13).
 - Seeds 160 to 168 and 170: standing families 35 to 116 reviews wide (seed 160's low-side combination three from the
-  250 edge, seed 166's crossing it); seed 169 at 28, then the going-live units' second QT drug and second PRN opioid
+  250 edge, seed 166's crossing the 350 edge); seed 169 at 28, then the going-live units' second QT drug and second PRN opioid
   propensities rescaled to centre the net, the QT reviews and the reviews lost in their bins.
 - Guard axes redrawn at the draw: role capacity_planner (task123 v3), generator G11 first ((population, G11) repeats
   task141 v4), (population, G3) (task138 and task273 inside the batch), forcing cutover_or_migration (the honest label
@@ -432,8 +438,8 @@ world is closed. Its leak report is kept as `leak_check_report_arch1.md`.
   and a 3.3 named the alert history as the record of where each alert fired: the first filed Ask B's device, the second
   pointed every reader at Ask A's link; both cut, the WHAT kept ("One overridden alert is one review"; desk time by the
   department in which the alert fired).
-- Ask A's decant first moved three ward pairs on one date: ten of fifteen figures were free to the cracker (pair 47);
-  five pairs now move on five dates from 20 July (pair 40.0).
+- Ask A's decant first moved three ward pairs on one date: nine of the fifteen ward figures were free to the cracker;
+  five pairs now move on five dates from 20 July, leaving five free (pair 40.0).
 - The vendor file first named "Release_Notes": leak.py sweep 1 reads a release-notes name as a describing file; renamed
   as the client bulletin it is.
 - Unit 3E first named "3 East Neuroscience": the write-up's figure check reads "eur" as a currency next to the ward's
@@ -442,3 +448,9 @@ world is closed. Its leak report is kept as `leak_check_report_arch1.md`.
   task452 re-registered after this card and the window moved; redrawn to `product_manager` and re-registered. The
   prompt's second sentence first opened on "The change order rests on that net figure" (shell how-many | the |
   docx+xlsx, a `shell.repeat` WARN against task301 v2); it now opens on the use, "For the change order".
+- Order signings first spread evenly over the 24 hours, so the night shift signed off as many reviews as the day shift:
+  every time in an encounter now passes through one monotone ward-day clock (a morning-round peak, a quiet night),
+  which moves no event's date and no ordering between events, so the call's figures are unchanged and the asks' shift
+  mix reads as a hospital's; the queue salt was rescanned for the ward hours' rounding margins.
+- The vendor bulletin's rule table first broke the rule ids and the severity words mid-word at the page width
+  (`pdftotext -layout`); its columns were widened.

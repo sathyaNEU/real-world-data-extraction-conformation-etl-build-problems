@@ -227,7 +227,7 @@ def main(target):
     for r in yr:
         if any(0 <= (r["opd"] - q["done"]).days <= 89 for q in pre_by[r["pseudo_nhs_number"]]):
             ok.add(r["spell_id"])
-    free = [r for r in index if r["pseudo_nhs_number"] not in linked]
+    free = index
     for q in Q:
         if not q["pre"] or q["pseudo"] or q["score"] is None:
             continue
@@ -240,7 +240,7 @@ def main(target):
             if not (r["adm"].year - a - 1 <= q["yob"] <= r["adm"].year - a):
                 continue
             gap = (r["opd"] - q["op"]).days
-            if -30 <= gap <= 120:
+            if gap == 0:
                 cand.append((abs(gap), r["spell_id"], r))
         if cand:
             r = sorted(cand)[0][2]

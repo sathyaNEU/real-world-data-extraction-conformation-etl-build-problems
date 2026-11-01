@@ -105,22 +105,22 @@ class World:
         for d in (dt.date(2025, 8, 11), dt.date(2025, 8, 25), dt.date(2025, 9, 15), dt.date(2025, 10, 6)):
             add("D", "CA", r.uniform(P.DEF_PT[0], P.DEF_PT[1]), d, deficient=True)
         for _ in range(28):
-            add("D", "FT", r.uniform(0.87, 0.94), vet())
+            add("D", "FT", r.uniform(P.COMP_T[0], P.COMP_T[1]), vet())
         for d in (dt.date(2025, 9, 1), dt.date(2025, 10, 13), dt.date(2025, 11, 3)):
-            add("D", "FT", r.uniform(0.88, 0.93), d)
+            add("D", "FT", r.uniform(P.COMP_T[0], P.COMP_T[1]), d)
         for _ in range(16):
-            add("D", "PT", r.uniform(0.87, 0.94), vet())
+            add("D", "PT", r.uniform(P.COMP_T[0], P.COMP_T[1]), vet())
         for _ in range(P.N_CA_D):
             add("D", "CA", r.uniform(P.CA_T[0], P.CA_T[1]), vet())
         for _ in range(12):
-            add("I", "FT", r.uniform(0.87, 0.94), vet())
+            add("I", "FT", r.uniform(P.COMP_T[0], P.COMP_T[1]), vet())
         for _ in range(8):
-            add("I", "PT", r.uniform(0.87, 0.94), vet())
+            add("I", "PT", r.uniform(P.COMP_T[0], P.COMP_T[1]), vet())
         for _ in range(P.N_CA_I):
             add("I", "CA", r.uniform(P.CA_T[0], P.CA_T[1]), vet())
         # two full-time officers who leave during the screening year (no longer endorsed at 30 November)
-        add("D", "FT", r.uniform(0.87, 0.93), vet(), left=dt.date(2026, 4, 17))
-        add("I", "FT", r.uniform(0.87, 0.93), vet(), left=dt.date(2026, 8, 28))
+        add("D", "FT", r.uniform(P.COMP_T[0], P.COMP_T[1]), vet(), left=dt.date(2026, 4, 17))
+        add("I", "FT", r.uniform(P.COMP_T[0], P.COMP_T[1]), vet(), left=dt.date(2026, 8, 28))
         order = r.permutation(len(offs))
         self.off = [offs[i] for i in order]
         for i, o in enumerate(self.off):

@@ -2,20 +2,7 @@
 
 Architecture 3, re-rooted 2026-11-01 at the Batch 3 queue reset (one architecture per world: architecture 2, the
 jurisdictional forest programme's deforestation area, and architecture 1, the tributary phosphorus loads, are closed
-worlds; their records sit under `## Leak check
-
-`leak.py task452 --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Each REVIEW line answered:
-- DCS_event_journal_2026.txt is a text file: it is the control system's own alarm and event journal (an operator
-  station export with its own header line and the station's time base), not a description of the data.
-- IEL-1186-03_conditions_consolidated_2026.pdf carries 9 of the swept terms: they are the licence's own words
-  (reference conditions, reporting, emission points, period) and the sweep also read architecture 2's record; no
-  sentence names a balance, the raw mill's effect on mercury, the dust or a test's representativeness.
-- stack_tests_Hg_2024-2026.pdf carries 7 of the swept terms (reference, report, emission, laboratory, clinker,
-  monitoring): a test report's standard vocabulary; it states each run's conditions and ranks nothing.
-- Sweeps 2, 3, 5 to 9 and 11 clean; the container sweep finds no writer signature (producers scrubbed per issuing
-  body in build.py).
-
-## Architecture 2 record` and in `## Tried and rejected`). Fiction as-of date
+worlds; their records sit under the Architecture 2 record and in the Tried and rejected list). Fiction as-of date
 2027-01-11.
 
 ## Draw

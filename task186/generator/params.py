@@ -58,5 +58,6 @@ RESEND_DAY = dt.date(2026, 2, 17)            # D3's TIP records for this day re-
 
 DEF_FT = (0.64, 0.72)    # detection of an unseen item, full-time officers below standard
 DEF_PT = (0.58, 0.64)    # detection of an unseen item, casual officers endorsed in 2025, below standard
-CA_T = (0.88, 0.91)      # casual officers at standard
+CA_T = (0.90, 0.93)      # casual officers at standard
+COMP_T = (0.89, 0.95)    # full-time and part-time officers at standard
 N_CA_D, N_CA_I = 10, 4

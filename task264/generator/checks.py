@@ -242,6 +242,40 @@ def main(target):
     Bg, Bn, Bc, Bh = (res["askB"][k] for k in ("golden", "natural", "cracker", "half"))
     un = q[(q.qtype == "pre") & (q.pseudo == "") & q.score.notna()]
     K.check("SF22 questionnaires with no NHS number exist at every site", un.site.nunique() == 10, un.site.nunique())
+    K.check("SF22 section 6 files that a questionnaire without an NHS number counts",
+            "whether or not it carries an NHS number" in policy)
+    # every licensed attachment of a questionnaire without an NHS number lands on the same operation (or none)
+    site_unit = {r.mossgill_site_code: L["site"][r.provider_code] for r in L["prov"].itertuples() if r.mossgill_site_code}
+    allops = ops.assign(yob_lo=ops.admission_date.dt.year - ops.age_on_admission - 1,
+                        yob_hi=ops.admission_date.dt.year - ops.age_on_admission)
+    linked_ps = set(L["link"][L["link"].pseudo_nhs_number != ""].pseudo_nhs_number)
+    freeops = allops[~allops.pseudo_nhs_number.isin(linked_ps)]
+
+    def attach(pool, r, lo, hi, unique_within=None):
+        c = pool[(pool.unit == site_unit[r.site]) & (pool.sex.astype(int) == r.sex) & (pool.yob_lo <= r.yob) &
+                 (pool.yob_hi >= r.yob)]
+        gap = (c.procedure_date - r.sup_op).dt.days
+        c = c[(gap >= lo) & (gap <= hi)].assign(g=gap.abs()).sort_values(["g", "spell_id"])
+        if not len(c):
+            return None
+        if unique_within is not None and len(c[c.g <= unique_within]) != 1:
+            return "ambiguous"
+        return c.iloc[0].spell_id
+    rules = {"exact day, all operations": (allops, 0, 0, None), "exact day, operations with no linked questionnaire":
+             (freeops, 0, 0, None), "nearest within 7 days": (allops, -7, 7, None),
+             "nearest within 30 days": (allops, -30, 30, None), "the golden's rule (120 days before to 30 after, "
+             "unlinked operations)": (freeops, -30, 120, None), "the only operation within 3 days": (allops, -3, 3, 3)}
+    got = {k: [attach(p, r, lo, hi, u) for r in un.itertuples()] for k, (p, lo, hi, u) in rules.items()}
+    base = got["exact day, all operations"]
+    K.check("SF22 every licensed attachment rule places each questionnaire without an NHS number on the same "
+            "operation, or on none", all(v == base for v in got.values()),
+            {k: sum(a != b for a, b in zip(v, base)) for k, v in got.items()})
+    wide = [attach(allops, r, -120, 120) for r, b in zip(un.itertuples(), base) if b is None]
+    K.check("SF22 a questionnaire from a booking that never reached theatre finds no operation within 120 days",
+            all(x is None for x in wide), sum(x is not None for x in wide))
+    lit = res["askB"]["cracker"]
+    K.check("SF22 the NHS-number-only reading, now outside section 6, misses every participation figure",
+            all(rnd(lit[u]) != rnd(res["askB"]["golden"][u]) for u in units))
     for lab, F in (("natural", An), ("cracker", Ac)):
         K.check("Ask A: the %s route misses every figure" % lab,
                 all(F[u]["over52"] != Ag[u]["over52"] and rnd(F[u]["within18"]) != rnd(Ag[u]["within18"]) for u in units),
@@ -309,6 +343,17 @@ def main(target):
                 late.append((f, y, mo, d))
                 break
     K.check("no date after the as-of date (6 October 2026) in any file", not late, late[:5])
+    tri_doc = json.load(open(os.path.join(target, "msk_triage_referrals_2023-06_to_2026-03.json")))
+    run = dt.date.fromisoformat(tri_doc["extract_run"][:10])
+    od = [dt.date.fromisoformat(x["outcome_date"]) for x in tri_doc["referrals"] if x["outcome_date"]]
+    K.check("hygiene: no triage outcome after the log's extract run", max(od) <= run, (max(od), run))
+    K.check("hygiene: the cohort extract holds nothing submitted after its 30 September 2026 cut",
+            L["s"].sus_submitted.max() <= pd.Timestamp("2026-09-30"), L["s"].sus_submitted.max())
+    if meta_d:
+        stamps = {f["file"]: f["date"] for f in meta_d["files"]}
+        K.check("hygiene: the deliveries and the link hold nothing after their recorded dates",
+                q.completed.max() <= pd.Timestamp(stamps["mossgill_spinal_proms_2025-04_to_2026-09.csv"])
+                and L["deaths"].date_of_death.max() <= pd.Timestamp(stamps["cohort_deaths_linked_2026-09.csv"]))
     per_prov = m.groupby("unit").size()
     K.check("realism: no two providers carry the same eligible count", per_prov.is_unique, per_prov.to_dict())
     spc = L["s"].groupby("provider_code").size()
