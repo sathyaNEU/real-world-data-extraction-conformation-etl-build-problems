@@ -34,6 +34,7 @@ FP_PROXY = 0.002         # chance the answering member reports a second job the 
 PERSIST = 0.97           # a second job held one quarter is still held the next with this chance
 AWAY_HOLD = 0.20         # extra chance an adult who holds a second job is out when the interviewer calls
 ALLOC_SCALE = 3.0        # sample size multiplier on the base allocation
+STREAM = {"01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0}   # per-area stream offsets
 
 
 def area_index():
@@ -42,7 +43,7 @@ def area_index():
 
 def build_world(seed=SEED):
     # each area draws from its own streams, so an area's households do not depend on another area's draws
-    streams = {a[0]: [np.random.default_rng([seed, i, k]) for k in range(3)] for i, a in enumerate(AREAS)}
+    streams = {a[0]: [np.random.default_rng([seed, i, k, STREAM[a[0]]]) for k in range(3)] for i, a in enumerate(AREAS)}
     rng_ops = np.random.default_rng(seed + 3)
 
     # Addresses issued: one rotation group enters each quarter and stays four quarters. Entry quarters run from
