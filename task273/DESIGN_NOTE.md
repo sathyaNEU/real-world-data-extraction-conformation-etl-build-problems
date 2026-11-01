@@ -1,8 +1,293 @@
 # task273 design note
 
-Architecture 5, drawn 2026-10-28 after the author re-tasked the slot from Descriptive & Distribution Analysis to Forecasting & Predictive Modeling (the coordinating session's decision of 2026-10-28, retirement not taken) and architecture 4 came back from the portal landed (both responses filed the golden 14 conditions, one by the published per-phase detection correction). The world is new and the domain moves to Energy Systems & Utilities. A state energy department prepares its spring 2027 minimum-load assessment of Tallowbark Networks' sixteen zone substations on the Saltgrass Coast: rooftop solar already drives every substation into reverse flow at the middle of a clear spring day, and from 1 September 2027 the network moves the switching signals of its audio-frequency load-control system from the night (10.00 pm to 7.00 am) into a midday solar-soak window: switch-on signals to its five load-control groups from 10.00 am to noon, switch-off at 4.00 pm. The department designates the substations whose lowest midday demand on a clear spring Sunday in October 2027 will still fall below their minimum-load threshold, and the minister directs emergency backstop arrangements for those substations before the season.
+Architecture 6, drawn 2026-11-01 at the Batch 3 queue reset: the author had every queued task rebuilt as a fresh,
+unique architecture built on what the approved builds share, so architecture 5 (shipped 10-28) was re-rooted with no
+portal result on it. One architecture per world: the zone-substation load world is closed and the slot moves to a
+dairy processing site's bore field, inside the same client domain (water supply sits in Energy Systems & Utilities, as
+task124, task162 and task120 do). Its record sits under `## Architecture 5 record`.
 
 ## Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task273.json`, architecture v6, v5 moved into `lineage` with its fate.
+   `guard.py check` on the registered card: WARN only (`repeat.gate_g`, answered below; `shell.repeat` read the old
+   prompt and cleared with the new one). Axes redrawn at the check: generators[0] from G5 to G3, the role family to
+   `capacity_planner` (a utilities engineer setting what the bore field can carry), the forum to the site's drought
+   committee, the forcing event to the summer season, the organisation to a manufacturer (a dairy co-operative's
+   processing site runs its own bore field; local government and utility were both inside the ban window). Each is
+   the honest label for this world.
+2. Pairing: Energy Systems & Utilities / `asset-condition-maintenance` / Forecasting & Predictive Modeling. The
+   deciding quantity is each production bore's pumping water level through a design drought, the figure a water
+   supplier's source assessment forecasts for each bore before a summer.
+3. Niche: a new production bore drilled between two existing ones, whose draw on its neighbours shows only in the
+   footprint its commissioning test left in their daily level logs.
+4. Call and shape: whether the 2026-27 summer bore plan passes the site's drought test, and if not which bores and
+   months fail (`go_hold_or_stop`, question form whether); shape 07, a grid of eight bores by four months, each cell
+   the lowest pumping water level (32 cells), plus the call, PB9's verdict and the two footprint figures.
+5. Gate G `forecasting` (answered WARN: the batch's last build also carries it; it is the honest label for a
+   predicted level the record pins), strategy `decomposition_attribution` (a bore's level is the sum of its own
+   drawdown and every neighbour's, and the forecast has to split it), gap population, pattern none, generators G3,
+   G6, G5.
+6. **Data-native sentence:** the site has pumped its eight bores in the same proportions for twelve years, so each
+   bore's own drought curve already carries its neighbours' steady draw and back-tests perfectly; the one bore whose
+   draw the record has never carried is PB9, and the only days it pumped are the seven of its October 2026
+   constant-rate test, when PB3's and PB4's daily levels moved by what PB9 will take from them all summer.
+7. **Abstraction sentence** (the one sentence a reviewer holding this build and its nearest approved build would say
+   is the same): none writable. Against task162 (valves holding outlet pressure only while the inlet is above them,
+   the mill's draw on the shared main taking the inlets below): there a nonlinear device meets a varying pressure and
+   the step is the device's cap; here a linear superposition meets a newcomer whose coefficient exists only in a
+   seven-day test footprint. Against task124 (a street's service lines laid with its main, read from the other lines'
+   tap cards): there the era of a unit is read off its siblings' records; here no unit's own record changes, a new
+   neighbour's future draw does.
+8. Same-puzzle test: gap population, pattern none (G3) and `go_hold_or_stop` match no build in the last twelve;
+   `test.same_driver_older` cleared with differentiation lines against task138 and task178 v2.
+9. People from `guard.py names --geo NZ --locale en_NZ --seed 273`: Megan Pickering (site utilities engineer,
+   prepares the plan and signs the test), Allan Morris (owner of SWS-03, keeps the bore register). Invented names:
+   Ruawaro Dairy Co-operative, the Kaitanga site, Mangarewa Stream, Matarae Regional Council, Waipa Drilling.
+10. Pack (twelve files, three formats: CSV, XLSX, PDF): the SCADA daily log of each bore's take, mean pumping water
+    level and pump run hours, 2014 to October 2026 (CSV, 37,000 rows); the council's MB1 monitoring bore daily
+    levels (CSV); the bore register (XLSX: bores, pumps, monitoring); PB9's hourly test logger record (CSV, UTC);
+    the summer bore plan (XLSX); SWS-03 (PDF, the governing WHAT); the water permit (PDF); the council's 15-minute
+    permit-meter telemetry for 2025-26 (CSV, 280,000 rows); the metering provider's half-hourly pump ICP data (CSV,
+    105,000 rows); the ICP and meter register (CSV); distractors: quarterly nitrate results and the site weather
+    station's rainfall.
+11. Sources, one line each:
+    - Source yield practice: a water supplier forecasts each production bore's pumping water level for a design
+      drought from the bore's drought curve (level against its own output, carried on the regional groundwater
+      level), against the level its pump needs (UKWIR's source deployable output method is the common written form).
+    - Well-field hydraulics: in a confined or semi-confined gravel aquifer the drawdown at one bore is the sum of the
+      drawdowns every pumping bore causes there (superposition), and the drawdown bore A causes at B equals the one B
+      causes at A (reciprocity).
+    - A constant-rate test is how a new bore's yield and its effect on neighbours are measured; the neighbours'
+      routine logs record that effect whether or not anyone reads them for it.
+
+## Survivor anatomy
+
+- **Actor:** PB9's drawdown on each existing bore has no column anywhere: the register holds coordinates, the daily
+  log holds each bore's own take and level, the test record holds PB9's own level and discharge. The property is a
+  relation across two files by date (PB9's test days against PB3's and PB4's daily levels), and nothing joins them.
+- **Link:** the test record is hourly, in UTC, keyed by a logger serial; the daily log is local days keyed by bore
+  tag. No key offers the join and no sentence invites a comparison: SWS-03 says nothing about neighbours, the plan
+  and register say nothing about interference, and the field's own method (a drought curve per bore) never asks
+  for one bore's level against another bore's take.
+- **Reflex:** the field's method, each bore's drought curve on its own record carried on MB1's 2019-20 recession,
+  with PB9's own drawdown from its test, is rung 0 and files the plan as holding with every bore at least 1.47 m
+  above its minimum operating level.
+- **Back-test:** each bore's own curve reproduces its 2019-20 and 2022-23 summer levels to about 0.2 m on average
+  (0.35 m at the worst bore), because the bores were always pumped in near-fixed proportions; the textbook route
+  validates on the pack's own record and nothing in it refutes the curve.
+- **Second use:** the daily log is the spine for everything (and the run hours feed the electricity ask); the test
+  record gives PB9's own drawdown and static level, which every route needs; MB1 is the drought and the permit's
+  trigger; the register gives every level its datum and minimum. Delete the decisive step and every file stays.
+- **Shock:** PB3's dip in the week of 7 October 2026 is 2.9 m on a series whose own take swings move it by 7 m
+  every winter shutdown; sorted on the shipped statistics PB3 sits in the middle: second on mean pumping level
+  behind PB4, second nearest to PB9 behind PB4, third closest to its minimum on the default path behind PB7 and PB4.
+- **Pins:** SWS-03 files the WHAT (every production bore in the plan including one entering supply, its pumping
+  water level as the logger's daily mean, at the planned take every day, with the aquifer at MB1's December 2019 to
+  March 2020 levels, against the register's minimum operating level). No filed sentence names neighbours,
+  interference, the test, a window or a method; deleting any one sentence leaves the call forced.
+
+## Default path
+
+1. Read the plan's takes for December to March and SWS-03's test; conform the daily log (old tags, the re-sent
+   batch, levels to reduced levels with the register).
+2. For each existing bore, build its drought curve the way a source assessment does: its level less MB1's on its
+   own daily take over the record, a line per bore.
+3. Carry each curve on MB1's lowest level in each month of December 2019 to March 2020 at the bore's planned take.
+4. For PB9, take its static level and its drawdown per ML/d from the constant-rate stage of its test, and carry it
+   the same way at 4.40 ML/d.
+5. Compare each bore and month with the register's minimum operating level.
+
+Ends on: the plan holds, every bore above its minimum operating level in every month
+Golden: the plan fails, PB3 below its minimum operating level in February and March
+
+## Stump sentence
+
+A competent analyst builds each bore's drought curve on its own record, carries it on MB1's 2019-20 levels at the
+planned takes, adds PB9 from its own test, and files that the plan holds, every bore above its minimum operating
+level in every month; the step that lands it there is reading each bore's level as its own take's alone, when PB9 will
+lower PB3 by 3.0 m at 4.40 ML/d, which only the dip PB9's constant-rate test left in PB3's daily log measures.
+
+## Three rules
+
+- **Task type:** energy-systems-utilities asset-condition-maintenance, which serves forecasting: the forecast is the
+  condition each production bore will run at (its pumping water level against its pump's limit) through the coming
+  summer.
+- **Domain test:** the deciding quantity is each production bore's pumping water level through the design drought,
+  which a water supplier forecasts from the bore's drought curve on the aquifer's recession; in a bore field the
+  level is the aquifer's response to every bore's take at once (superposed drawdown), the field's own hydraulics.
+- **Swap:** "whether the bore field's summer plan keeps every bore above its pump's minimum level" with wards for
+  bores and beds for megalitres: nothing lowers one ward's capacity by another ward's admissions through a shared
+  aquifer, and no test footprint measures it; the sentence stops making sense.
+- **Layer 1:** SCADA tags renamed at the May 2019 upgrade; a gateway batch re-sent after the August 2021 outage;
+  1.1 per cent of bore-days missing from telemetry gaps; a logger swap at PB6; MB1 on NZVD2016 against bores reduced
+  on Moturiki 1953; the PB9 logger in UTC against local days; the council's meters in NZST; a CT meter's register
+  advance; each written by the system named, none placed to be caught, each neutral on the call (R2 in checks.py).
+- **Layer 2:** decomposition of a superposed response, family estimand_identification: the level at a bore splits
+  into its own drawdown and its neighbours', and the forecast for a new configuration needs the term for the
+  newcomer, which the record measures only in its commissioning test's footprint.
+- **Decisive step:** reading PB9's drawdown on each neighbour from the dip its 7 to 14 October 2026 constant-rate
+  test left in their daily level logs, and adding it at PB9's planned take.
+- **Not semantics:** every field read correctly (the levels, datums, tags, clocks, the plan, the minimum operating
+  levels) still leaves the easy route on "the plan holds", because no field holds PB9's effect on another bore.
+- **Not rule application:** no filed rule or procedure computes one bore's effect on another; executing SWS-03 word
+  for word with the default construction files "the plan holds". The enumerated family for PB9's effect on PB3
+  spans 0 (left out, rungs 0 and 1) through 1.62 m (log distance from the existing pairs, rung 2) to 2.92 m (the
+  test footprint), a spread of 2.9 m on PB3's lowest level; the standing family once the data are read (the test
+  footprint by regression on every bore's take with PB9's test days in, or by the before-and-after dip, or the fit on
+  the last six years alone) spreads 0.02 m and gives the same graded half-metre in all 32 cells; what rules out the
+  rest is the footprint itself, a 2.9 m dip in PB3 and 0.5 m in PB4 against the distance relation's 1.6 m and 2.1 m.
+- **Analyst test:** a strong analyst who conforms every log and reads the plan and SWS-03 correctly builds each
+  bore's drought curve, adds PB9 from its own test and files that the plan holds, every bore above its minimum
+  operating level in every month; R3a in checks.py runs it on the clean truth.
+- **Estimand:** SWS-03 section 4: for each month December to March, every production bore in the plan (PB9
+  included) at its planned take every day, the aquifer at MB1's level on each day of the same month of 2019-20, the
+  pumping water level (logger daily mean, m below measuring point) against the register's minimum operating level.
+- **No decoy:** nothing is planted: no memo, draft, briefing or stakeholder figure argues the plan holds; the plan
+  states takes, not a result; the test record is the driller's own log; no file ranks the bores.
+- **No certified replay:** the golden reproduces no certified or published figure; no consultant's report on PB9
+  ships, and the method is the field's hydraulics applied to the logs.
+- **Lesson:** a bore's own drought curve is a statement about the field it was pumped in; when the field changes,
+  the forecast needs the newcomer's footprint, and the record holds it only where the newcomer was tested. No build
+  on file teaches superposition across units read from a commissioning footprint.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 own drought curves, PB9 on its own test | SWS-03 test | no | the field's method | none | none | yes | no | readable |
+| R1 interference among existing bores | none | no | multi-bore fit is a known refinement | none | none | yes | no | readable |
+| R2 PB9 by log distance from existing pairs | none | coordinates in the register | Thiem distance is textbook | none | none | yes | no | readable |
+| R3 PB9 footprint from its test days in the neighbours' logs (decisive) | no sentence names neighbours, interference or the test footprint | no column, no key between the hourly UTC test and the daily local logs | the field's method asks for a bore's own curve, not another bore's take | no control scores it | no battery item compares a test record with other bores' logs | one dip per neighbour, but only once the relation is seen | the test record serves PB9's own curve and the daily log everything | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Readings | Ruled out by |
+|---|---|---|---|
+| SF1 | pumping water level | daily mean, daily minimum | SWS-03 section 3 defines it as the logger's daily mean; the log carries only that |
+| SF2 | February in the design drought | with or without 29 February 2020 | SWS-03 "each day of the same month"; same call and same graded levels either way (checks.py) |
+| SF3 | datum | MB1 on NZVD2016, bores on Moturiki 1953 | a constant any fit absorbs; no graded level moves (checks.py) |
+| SF4 | which bores are tested | existing only, or PB9 too | SWS-03 section 2, a bore entering supply under the plan |
+| SF5 | the take on each day | the plan's average, or a daily profile | SWS-03 section 4, the planned take on every day |
+| SF6 | PB9's own level | its test static carried, or adjusted for its neighbours' takes by reciprocity | PB9 holds by more than 2 m either way (checks.py) |
+| SF7 | the record the response is read from | 2014 to 2026, summers only, the last six years | same graded levels in all 32 cells (checks.py, verify.py) |
+| SF8 | how PB9's footprint is measured | coefficient on its test days, or before-and-after dip | same graded footprint and levels (checks.py, verify.py) |
+| SF9 | the test's day boundaries | UTC days or local days | same call (checks.py) |
+| SF10 | falls below | strictly deeper, or at the level | no cell within 0.3 m of its minimum (checks.py) |
+
+## Ladder
+
+| Rung | Construction | Answer | Dies to |
+|---|---|---|---|
+| R0 | each bore's own drought curve, PB9 from its test (the default path) | the plan holds; smallest margin 1.47 m | PB3's daily log dips 2.9 m on PB9's test days |
+| R1 | every existing bore's take on every bore's level, PB9 left out | the plan holds; smallest margin 1.61 m | the same dip, which no existing bore's take explains |
+| R2 | R1 plus PB9 by the existing pairs' log-distance relation (0.37 m per ML/d on PB3, 0.47 on PB4) | PB4 fails in February (36.56 m against 36.1); PB3 holds by 0.79 m | PB4's log moved 0.5 m on PB9's test days, PB3's 2.9 m |
+| R3 | R1 plus PB9's footprint from its test days (0.663 m per ML/d on PB3, 0.108 on PB4) | PB3 fails in February (35.45 m) and March (35.50 m) against 35.0; nothing else | golden |
+
+- Separation: each rung names a different answer (none, PB4 February, PB3 February and March), asserted by name.
+- Margins: golden PB3 February and March at least 0.45 m below; December and January at least 0.52 m above; every
+  other cell at least 0.3 m above; R2's PB4 February 0.46 m below; R0's smallest margin 1.47 m (checks.py).
+- Dominance: PB9's footprint on PB3 is 1.8 times what distance gives, on PB4 under a quarter.
+- Pricing: the move the call needs is 0.5 m at PB3 in February; the footprint supplies 2.9 m. The standard error of
+  the footprint is about 0.003 m per ML/d by the fit (0.015 m at the planned take), larger by the bare dip. The one-group-by route
+  (each bore's own curve) is rung 0 and files the hold. Plan takes were set at last summer's averages in 0.05 ML/d
+  steps and nudged within that step so every graded level sits at least 0.1 m inside its half-metre bin.
+
+## Closure table
+
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | every production bore in the plan, PB9 included | filed (SWS-03 section 2); SF4 |
+| 2 Unit of account | pumping water level, m below measuring point | filed (SWS-03 section 3) |
+| 3 Attribution window | December to March | filed (SWS-03 section 2) |
+| 4 As-of dating | MB1's level on each day of the same month of 2019-20 | filed (SWS-03 section 4); SF2 |
+| 5 Version basis | the plan of 28 October 2026; the register as exported | one version shipped |
+| 6 Denominator | none (levels) | C1 |
+| 7 Weighting | none | C1 |
+| 8 Window length | each calendar month | filed |
+| 9 Boundary inclusivity | 1 December 2019 and 31 March 2020 inside | filed (SWS-03 section 3) |
+| 10 Rounding path | each level rounded once to 0.5 m from unrounded metres | C1; every cell 0.1 m inside its bin (C4) |
+| 11 Tie-break | none: no cell within 0.3 m of its minimum | C2; SF10 |
+| 12 Maturity and censoring | none: the record runs to 31 October 2026 | C1 |
+| 13 Order of operations | conform, fit, carry, compare | C1 |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | the re-sent August 2021 batch is exact | neutral (R2) |
+| 16 Identity normalisation | old SCADA tags to PB1 to PB8 | the register's bore ids; neutral (R2) |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | m3 to ML; L/s to ML/d; datum offset | SF3 |
+| 19 Code and status semantics | the test stages (static, step, constant rate, recovery) | the logger's own stage column |
+| 20 Integerisation | none | C1 |
+| 21 Clause scope | the permit's MB1 trigger binds the take, not the test; MB1 never falls below it in the drought | asserted above 30.05 m |
+| 22 Forward window contents | December 2026 to March 2027 at the plan's takes in the 2019-20 drought | filed (SWS-03 section 4) |
+
+## Literal reader
+
+Executed word for word, SWS-03 takes each production bore in the plan, PB9 included, at its planned take every day of
+each month, with the aquifer at MB1's level on each day of the same month of December 2019 to March 2020, and asks
+whether any bore's daily mean pumping water level falls below the register's minimum operating level. Nothing filed
+says how a bore's level responds to takes; the literal reader building it from the logs and the test with every
+bore's take in it files the golden, and one building it from each bore's own take files the hold.
+
+## Oracles
+
+none: no control, published figure or reconciliation column confirms either reading; the permit's MB1 trigger is
+never reached in the design drought, and no file reports a bore's level under the plan.
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling and its effect |
+|---|---|---|---|
+| tags renamed at the May 2019 SCADA upgrade | the historian | daily log | a bore split in two; fitting from May 2019 alone leaves the call |
+| re-sent August 2021 batch | the telemetry gateway | daily log | kept twice; leaves the call |
+| telemetry gaps | the radio network | daily log | rows missing; none on a design-drought day |
+| PB6 logger swap | site instruments | daily log | serial changes; no level step |
+| NZVD2016 against Moturiki 1953 | the council's datum since 2018 | MB1 | constant offset; absorbed (SF3) |
+| PB9 logger in UTC | the driller's logger | test record | days shifted 13 hours; leaves the call (SF9) |
+| council meters in NZST | the council's telemetry | permit meters | quarter edges an hour out; the ask files local dates |
+| CT meter register advance | the metering provider | ICP data | read as kWh; PB2 after 11 February 2026 a fortieth (ask A hazard) |
+
+## Ask sheet
+
+Two asks on the 2025-26 year the site reports to the council, both on files the call never reads.
+
+**Ask A, each existing bore's pump electricity per megalitre the permit meters measured, each quarter of the year to
+30 June 2026 (32 figures, whole kWh/ML).** Home: the asset-condition review of the pumps the plan leans on.
+- Primary device: switchboards SB-3 (PB5, PB6) and SB-4 (PB7, PB8) each carry two pumps on one ICP; the one
+  handling that reproduces each pump's draw is its daily run hours times its motor rating (both on file, the pumps
+  sheet and the daily log), and a run-hours or volume split misses all 16 of those figures.
+- Second device (from Ask B): the megalitres are the permit meters', so a meter read as the bore Schedule 1 lists
+  against it carries the wrong denominator for PB1, PB2, PB5, PB6, and PB4 after 17 February.
+- Hazards: interval stamps in UTC; the PB2 CT meter's x40 from 11 February 2026.
+
+**Ask B, each existing bore's volume as the council's permit meters measured it, each quarter (32 figures, ML to one
+decimal).** Home: the permit's annual report (condition 4).
+- Primary device: the council's loggers were refitted in May 2023 and two pairs went back on each other's meters
+  (Schedule 1's Bore 1 logger reads Bore 2, Bore 5's reads Bore 6); only matching each meter's days to the SCADA take
+  it tracks (outage days are zero on both) finds it.
+- Second device: PB4's meter was replaced on 17 February 2026 under a new logger, WM-40958, which Schedule 1 does
+  not list.
+- Hazards: totaliser rollovers on two meters; missed polls; NZST against local quarters.
+
+Pin test: the asking sentences pin the source (the permit meters), the unit, the rounding and local dates; no pin
+names a logger, a board or a split. The main population carries zero device rows (the call reads the daily log, MB1,
+the register, the test, the plan and SWS-03; the devices sit in the telemetry, ICP and ICP register files).
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, 16 shared-board figures | splits each board by run hours | miss |
+| A, PB1 and PB2 by quarter | denominators from Schedule 1's swapped loggers | miss |
+| A, PB4 Q3 and Q4 | the replacement meter left out | miss |
+| B, PB1, PB2, PB5, PB6 by quarter | Schedule 1's swapped loggers | miss |
+| B, PB4 Q3 and Q4 | the replacement meter left out | miss |
+
+Pair ceiling: 45.7 ((38 + 7 + 55 x 0.31) and (5 + 7 + 55 x 0.31), averaged)
+Mirror leakage: 31.2 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Architecture 5 record (spent 2026-11-01)
+
+Shipped 2026-10-28 (target.zip f641cf2c, seven of sixteen zone substations designated) and re-rooted on 2026-11-01 at the Batch 3 queue reset, when the author had every queued task rebuilt as a fresh architecture. Its draw and stump, kept for the record:
+
+### Architecture 5 draw
 
 1. Card: `.claude/skills/fingerprint/cards/task273.json`, architecture v5, architecture 4 moved into `lineage` with its portal fate (v1 to v3 already there). `guard.py check` on the registered card returns WARN with no BLOCK. The window at the draw held task464 v10 (registered 2026-10-29 01:27Z by another session), task268 and task270, which bans utility_or_infrastructure, committee_or_panel, vote_or_meeting, register, shape 07 and the strategies decomposition_attribution, forecast_method_backtest and composition_mix; the minimum-load assessment sits honestly with the state energy department that sets the minimum-load framework (government_agency), decided by the minister (minister_or_cabinet) before the spring season (season_or_peak), advised by its director of energy security (policy_adviser). WARNs answered: `overuse.org_family` (a state department is a government agency, the plain label); `overuse.gate_g` (forecasting is the honest key: the call is a forecast the correctly read 2026 record does not pin until each tank's reach is read); `repeat.question_form` against task268 (the call designates a set of substations, so the question asks which).
 2. Pairing: Energy Systems & Utilities / `load-forecasting` / Forecasting & Predictive Modeling. The deciding quantity is the field's own: each zone substation's minimum demand under a load-control retiming, built the way network and system planners build it, from a reference day's demand, the solar connection pipeline and each controlled-load tank's recovery replayed from its new release.
@@ -18,168 +303,10 @@ Architecture 5, drawn 2026-10-28 after the author re-tasked the slot from Descri
 8. People, drawn with `guard.py names --geo australia --seed 273`: Megan Robertson (director of energy security, the department), Jacob Barnes (Tallowbark Networks' manager of network operations, signs the solar-soak notice). Invented names (Tallowbark Networks, Saltgrass Coast, Quorrabin, Brindlemoor and the other fourteen zone substations) pass `guard.py check` (tell.names); the zone substation names drawn first (Kurrajine, Merrigal, Corrimba, Kalbarrup and others) sat within two letters of real places (Kurrajong, Merriwa, Corrimal, Kalbarri) and were redrawn at stage 3 (H21).
 9. Pack (twelve files, four formats): the sixteen substations' net demand from the SCADA historian, spring 2026, half-hourly in UTC (CSV, 69,856 rows, the spine); the Department's monitored sample of rooftop PV output per kW of inverter capacity (JSON, local time with offsets); Tallowbark's solar connections outlook to 1 October 2027 (XLSX); the metering installations register, current and removed meters for 91,000 NMIs (CSV, 114,571 rows); the approved meter models list (XLSX); spring 2026 consumption by meter register for the controlled-load customers (CSV, 78,047 rows); the load-control register (CSV, 31,832 heaters); the solar connection applications register (XLSX, 53,400 rows, the asks only); the Department's minimum-load framework v2 (PDF); network notice NN-2027-02 (PDF); distractors declared in `metadata.json`: the summer 2027-28 demand outlook (PDF) and the 2026 customer voltage enquiries (CSV).
 
-## Three rules
-
-- Task type: load-forecasting (Energy Systems & Utilities), serving Forecasting & Predictive Modeling: a zone substation's minimum demand for a coming season, built bottom up from a reference day, the rooftop solar forecast to connect and the load the network will move into the middle of the day.
-- Domain test: the deciding quantity is each zone substation's lowest half-hour demand on the 2027 reference Sunday, which network planners forecast from the reference day's metered demand, the solar connection pipeline at the day's output per kW, and the controlled load a load-control change moves, placed by replaying each moved water heater's recovery from its switch-on; the field's question about a retiming is which installations its signal actually switches.
-- Swap: "which hospitals will run short of beds on the reference Monday once elective lists move to weekends" keeps a forecast, a threshold and a scheduled move, but loses what decides here: a central signal that only some installations' switching devices obey, a water heater's element drawing its rating from switch-on until its daily energy is restored, and solar output per kW that sets each half-hour's depth, so neither the reach nor the replay stands for anything.
-- Layer 1: SCADA exported by the historian in UTC with interval-ending stamps across the 4 October daylight-saving change, and Tibbarin still under its pre-2019 point name (the historian); estimated rows where communications dropped on weekday nights (the historian); the monitored sample in local time with offsets (the Department's data programme); meters exchanged during spring 2026 so one customer's reads sit under two serials, and accumulation meters read on their own dates either side of spring (the meter data agent); register ids that differ by meter model (01/02, 11/41, E1/E2/E3, B1; the metering team's models list); removed meters kept beside current ones (the metering register); in the connections register only: zone substations as recorded at approval before the 2025 feeder transfers, withdrawn, lapsed and pending applications, and applications commissioned after the reference day (the connections system).
-- Layer 2: own:a-load-control-retiming-reaches-only-heaters-whose-meter-takes-the-network-signal; the population a scheduled retiming moves is the heaters whose switching device obeys the network's signal, then each moved heater's recovery is replayed from its group's new switch-on, and the forecast minimum is read where the recovered load has thinned under a still-high solar curve.
-- Decisive step: asking which controlled-load heaters the new signal times actually switch, and finding them by joining each heater to its current meter and that meter's model: 23,257 heaters sit on meters whose contactor is driven by an integral audio-frequency receiver and move to midday; 8,575 sit on meters whose contactor runs from an internal time switch and keep heating overnight, most of them behind Kinnabar, Quorrabin and Gerrimbal.
-- Not semantics: every field, register id, model description, date and stamp read correctly still leaves the easy route on the wrong set: the consumption data show every heater heating overnight, ripple and time-switched alike, the load-control register gives every heater a group, and the notice's signal table applies to every group; a solver who decodes "internal time switch" correctly but never asks which heaters the change reaches moves all 31,832 and files four substations.
-- Not rule application: the framework files what is forecast (the reference day, the window, the solar term, load "placed in the half-hours in which it will draw", a heater's draw from switch-on) and the notice files the signal times, but no sentence says which heaters the signal switches; executing every filed sentence over every heater files the default set. Enumerated family (no soak load, every heater replayed, every heater spread evenly, reached heaters spread evenly, interval meters only, every heater at the network reach share, the first meter on file, the current serial's reads only, whole half-hours, the golden): designated sets of 4, 5, 7 and 11, the three reach substations' minima moving 1.26 to 1.73 MW between every-heater and reached-heater routes; standing family (the reach read and every filed sentence held: current serial only, whole half-hours, first meter on file): one call, minima within 0.03 MW (0.14 MW for the first meter on file); loudness: nothing filed and no one-group-by comparison rules the all-heater route out, only the join of each heater to its meter's model.
-- Analyst test: a strong analyst converts the SCADA, finds the reference Sunday, prices the outlook's solar at the sample's output per kW, takes every heater in the load-control register with its group, element and daily energy and replays it from the notice's switch-on times, and designates Ondarra, Mundaree, Wirrandel and Tarravine, four substations, clearing Kinnabar, Quorrabin and Gerrimbal.
-- Estimand: framework 2.1 to 3.3 (minimum_load_framework_v2.pdf): the sixteen zone substations' forecast demand in each of the ten half-hours from 10.00 am to 3.00 pm on the coming spring's reference day, the preceding spring's lowest network Sunday carried forward with the solar forecast to connect by 1 October and the load notified to switch at different times placed where it will draw, against each substation's threshold in MW.
-- No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure states a designation, a soak load or a reach share; the notice is a true operational notice of signal times and the models list a true catalogue, neither written to carry the wrong answer.
-- No certified replay: no published figure, back-test or validated pilot exists for the solar soak; the method is not recovered by reproducing certified numbers, and the network's outlook carries only solar additions.
-- Lesson: a scheduled retiming of a central signal moves only the installations whose device obeys that signal, so a forecast of its effect starts from the device register rather than from the tariff or group lists; no build on file teaches a load-control retiming's reach through meter models, and task258's reach (a preload that only fetches what the server HTML names) is the nearest cousin in a different domain.
-
-## Default path
-
-1. Convert zss_net_demand_spring2026.csv to local time and take the Sunday whose lowest network half-hour between 10.00 am and 3.00 pm is lowest: 25 October 2026, -153.3 MW.
-2. Subtract the outlook's forecast inverter capacity at that day's output per kW from the monitored sample.
-3. Read every heater in load_control_register_2026-12-10.csv with its group and element, its daily energy from the controlled-load register reads.
-4. Replay every heater from its group's switch-on in the notice at its element rating until its daily energy is taken, sum by zone substation and take each substation's lowest half-hour.
-5. Compare with the framework's thresholds.
-
-Ends on: four substations, Ondarra, Mundaree, Wirrandel and Tarravine.
-
-Golden: seven substations, Kinnabar, Ondarra, Quorrabin, Gerrimbal, Mundaree, Wirrandel and Tarravine.
-
-## Stump sentence
+### Architecture 5 stump sentence
 
 The default path moves every controlled-load heater into the midday window and ends on four substations, Ondarra, Mundaree, Wirrandel and Tarravine, because the 8,575 heaters whose meters switch from an internal time switch never see the new signal and keep heating overnight; at Kinnabar, Quorrabin and Gerrimbal, where 49 to 62 per cent of heaters are time-switched, their recovery is 1.26 to 1.73 MW of load the midday minimum does not have.
 
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
-|---|---|---|---|---|---|---|---|---|
-| Reference day and solar term | the framework files both | the outlook names the day | yes | none | the UTC conversion | no | no | readable |
-| Every heater replayed from the new signal (rung 1, the default) | the framework files the draw | the load-control register lists every heater with a group | yes, the field's own replay | none | nothing flags a heater | no | no | readable |
-| Only heaters on receiver-driven meters move (decisive) | no sentence names which heaters the signal switches | the switching arrangement sits only in the models list's description text, one join from the metering register and two from the heater | no: the opponent holds the pool to the tariff and group lists, which list every heater | no control or published figure ties to either route | every heater has a group, an element, reads and a current meter; no join fails | no: the reach effect is each time-switched heater's recovery at the minimum's half-hour | no: the metering register is needed by every route for each NMI's zone substation, and the models list for each meter's controlled-load register id | silent |
-
-## Deletion tests
-
-- Delete the models list's switching descriptions: the golden is no longer computable (the reach has no other source), so the decisive organ is load-bearing; the list stays in the pack regardless, because the register ids needed for every heater's daily energy are only there.
-- Delete the time-switched heaters from the world: the default path and the golden coincide (four substations would need re-thresholding), so the difficulty lives in the reach and nowhere else.
-- Delete every Layer 1 item (UTC, Tibbarin's point name, the EST rows, the two serials, the read dates, the register ids): the default path still files four substations and the golden seven; the call stays hard on clean data.
-- Delete the connections register (the asks): the call is untouched; no call file carries an ask device.
-- Delete either distractor: the golden and every ask figure are unchanged (`checks.py`).
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the reference day | the Sunday with the lowest network half-hour, 10.00 am to 3.00 pm | each substation's own lowest Sunday (Tibbarin 27 September, Ondarra 22 November) | asserted in checks.py | framework 2.2, "the total demand of the network's zone substations" |
-| SF2 | Sunday | Sundays only | any day | same call | 25 October is also the lowest day of all |
-| SF3 | the ten half-hours | starting 10.00 am to 2.30 pm | ending 10.00 am to 2.30 pm | same call | same call |
-| SF4 | SCADA stamp | interval ending, UTC | interval start | same call | the column is `interval_end_utc`; same call |
-| SF5 | solar additions | inverter capacity at output per kW of inverter capacity | panel capacity | same call | the outlook and the sample carry inverter capacity only |
-| SF6 | daily energy | all of a heater's meters' reads | the current serial's reads only | same call | framework 3.2 "the preceding spring's meter reads"; same call |
-| SF7 | days | the days the reads cover | 91 days of spring | same call | framework 3.2 "the number of days those reads cover" |
-| SF8 | the draw | continuous from switch-on | whole half-hours | same call | framework 3.2; same call |
-| SF9 | switch-off | 4.00 pm, after the window | 3.00 pm | same call | notice table; same call |
-| SF10 | which meter | the meter in service now | the meter on the reference day | same call | spring exchanges are like for like; same call |
-| SF11 | below | strictly below | at or below | same call | no forecast within 0.25 MW of its threshold |
-| SF12 | threshold sign | negative MW, below is more negative | magnitudes | same call | framework 2.3 and the table's minus signs |
-| SF13 | controlled-load register | the models list's controlled-load id | the larger non-general register | same call | one non-general, non-export register per meter |
-| SF14 | soak window against the assessment window | assessment 10.00 am to 3.00 pm | the soak's 10.00 am to 4.00 pm | same call | framework 2.1 |
-| SF15 | Tibbarin's point | TIBB_ZS_NET_MW is Tibbarin | dropped | same call | the only point off the code list |
-| SF16 | load switched at different times | the load whose switch-on moves with the signal | none: the term has one reading; which heaters it covers is found by the join, not read | one reading | framework 3.1(b) and the notice's signal table |
-
-## Ladder
-
-| Rung | Route | Designated | Wrong because |
-|---|---|---|---|
-| 0 | no soak load placed (solar term only) | 11: adds Brindlemoor, Wendimbra, Tibbarin, Wyndabar | leaves out the load the new signals do move |
-| 1 | every heater replayed from the new switch-on (the default) | 4: Ondarra, Mundaree, Wirrandel, Tarravine | moves 8,575 time-switched heaters that keep heating overnight |
-| side | every heater spread evenly over the soak window | 4 | violates framework 3.2 and the reach |
-| side | interval meters only | 5: adds Gerrimbal | the reach is the switching device, not the data type |
-| side | every heater at the network reach share (73 per cent) | 4 | the reach is concentrated behind three substations |
-| golden | heaters on receiver-driven meters replayed from their group's switch-on | 7 | |
-
-Margins: at each reach substation the threshold sits at least 0.3 MW from both the golden and the default minimum (Kinnabar -14.2 against -15.10 and -13.37, Quorrabin -9.9 against -10.60 and -9.13, Gerrimbal -12.5 against -13.11 and -11.85); every other substation's threshold clears the golden minimum by 0.3 MW or more; every printed minimum sits at least 0.02 MW inside its tenth.
-
-## Closure table
-
-| Axis | Reading | Move |
-|---|---|---|
-| 1 Population | the sixteen zone substations; the heaters the signal switches are found, not filed | framework 2.1, C1 |
-| 2 Unit of account | zone substation; MW | the prompt and framework 2.3 |
-| 3 Attribution window | the ten half-hours from 10.00 am | framework 2.1; SF3 C1 |
-| 4 As-of dating | the reference day carried forward; meters as now | framework 3.3; SF10 C1 |
-| 5 Version basis | one version of every file | C1 |
-| 6 Denominator | days read (daily energy); kW of inverter capacity (output) | framework 3.2; sample measure |
-| 7 Weighting | none | C1 |
-| 8 Window length | the preceding spring | framework 2.2, 3.2 |
-| 9 Boundary inclusivity | below threshold | SF11, nothing within 0.25 MW |
-| 10 Rounding path | MW to one decimal at the end | prompt; edges 0.02 MW asserted |
-| 11 Tie-break | none needed | no tie within 0.25 MW |
-| 12 Maturity and censoring | spring complete | C1 |
-| 13 Order of operations | sum, then minimum | framework 2.1 |
-| 14 Row order | any | C1, the register lists the meter in service first |
-| 15 Duplicate resolution | two serials summed per heater | framework 3.2; SF6 C1 |
-| 16 Identity normalisation | TIBB to Tibbarin; heater to meter by NMI | SF15 C1 |
-| 17 Netting against gross | net demand | framework 2.3 |
-| 18 Dimensional units | kW to MW, kWh per day | units in headers |
-| 19 Code and status semantics | register ids from the models list | SF13 C1; never the stump |
-| 20 Integerisation | none | C1 |
-| 21 Clause scope | 3.1(b) covers notified switching changes | the notice |
-| 22 Forward window contents | October 2027 reference Sunday: the outlook's solar and the notice's signal times | shipped driver files |
-
-## Literal reader
-
-Executed word for word, the framework builds each substation's forecast from the 25 October 2026 half-hours, subtracts the outlook's inverter capacity at the sample's output per kW, and places "load the network has notified will be switched at different times" where it will draw; the notice says the system will send its switch-on signals at the new times, and the models list says which meters' contactors are driven by an audio-frequency receiver and which by an internal time switch, so the literal reader moves the receiver-switched heaters and leaves the time-switched ones overnight: seven substations. No sentence moves every heater, and every SF row's alternative either converges or violates a quotable sentence.
-
-## Oracles
-
-None. No shipped file carries a soak load, a forecast minimum, a reach share, a designation or a count of reached heaters; the summer outlook ranks peak demand (another question), and the outlook carries only solar additions.
-
-## Layer 1 inventory
-
-| Item | System that writes it | File | Natural mishandling | Effect |
-|---|---|---|---|---|
-| UTC, interval ending, across the DST change | SCADA historian | zss_net_demand_spring2026.csv | day cut on the UTC date | none: the minima fall after 11.00 am local |
-| Tibbarin under TIBB | historian point list | the same | drop the point | loud: a substation missing |
-| EST rows on weekday nights | historian | the same | drop them | none: no Sunday window touched |
-| local time with offsets | data programme | rooftop_pv_monitoring_spring2026.json | none | none |
-| two serials for a spring exchange | meter data agent | cl_customer_reads_spring2026.csv | current serial only | none on any printed figure |
-| read dates either side of spring | meter data agent | the same | divide by 91 days | same call |
-| register ids by model | metering team | approved_meter_models.xlsx | assume E2/41 | loud: missing reads |
-| removed meters beside current ones | metering register | metering_installations_2026-12-11.csv | first row per NMI | none: the meter in service is listed first |
-| approval-time substation names, withdrawn, lapsed and pending applications, late commissioning | connections system | der_applications_2026-12-08.xlsx | ask hazards | asks only |
-
-## Ask sheet
-
-The asks sit on the connections register, which the call never reads, and on the metering register's dates, which the call reads only for each heater's meter: every device row is a solar system, none a controlled-load heater (asserted by count). A: rooftop solar inverter capacity in service behind each substation on 25 October 2026 (16 figures, MW to two decimals); primary D4 absence as the signal (knock-down rebuilds: 4 to 8 old NMIs a substation abolished before the reference day whose systems the register still shows commissioned, and 2 to 4 abolished after it whose systems were still in service that day, so dropping every NMI without a meter now is wrong too); hazards: alterations carried as levels on a chain of prior applications (keying on the NMI drops second connections), approval-time zone substations on the 2025 transferred feeders, withdrawn, lapsed, pending and late-commissioned applications. B: the part the emergency backstop can curtail (16 figures); primary D8 an anchor on the current record, not the first (panel additions and export-limit changes after 1 July 2025 leave the inverter in place, visible only as an unchanged inverter_serial, 4 to 9 a substation); shared hazards as A. Construction: forecast minima, curtailment and further capacity (32 figures) are the call's construction; the cracker has them and the mirror does not.
-
-| Ask figures | Device on the path | Cracker (chain keyed, as-of, status, metering location with the register's own name for an NMI without a meter now, anchor on the commissioning of the record in service) | Verdict |
-|---|---|---|---|
-| A, 16 substations | abolished NMIs (D4), with the over-clean half | 0 of 16 hit | miss |
-| B, 16 substations | serial anchor (D8) | 0 of 16 hit | miss |
-
-Variants measured on the same pack: unmatched NMIs dropped 0 and 0 of 16; the register's own zone substation 0 and 0; NMI keyed 0 and 0; the golden handling 16 and 16.
-
-Pair ceiling: 44.0 (cracker 74.5 with the 32 construction figures and five chart parts counted as ask weight, mirror 13.6 at the default path, which misses every minimum, curtailment and further-capacity figure).
-
-Mirror leakage: 2.9 per cent of ask weight (two chart parts).
-
-Measured by: generator/cracker.py on the cut pack (pack digest de71c20592ed, target.zip f641cf2c).
-
-## Build record
-
-- Generator: task273/generator (v4's modules replaced in place; v4's place-name reference list removed). `build.py` writes the pack, the goldens, `figures.json`, `submission.md` and `metadata.json`, runs `checks.py` (64 of 64) and `verify.py` (reads only the bundle: thresholds, window and backstop date off the framework PDF, signal times off the notice PDF; 0 failures), rebuilds into scratch and compares byte for byte (target and golden identical), then cuts target.zip.
-- Stage 4: the determinism judge (pass 1 on architecture 5, target.zip 3d17e193) DETERMINISTIC, APPROVE; Gate G mechanism decomposition_attribution (secondary forecasting), stumping_family analytical_non_defect, no surface-read dependency, no sole data defect; Gate H domain pass, layers pass, decisive_step analytical; its isolated thread recomputed the call, the 23,257 against 8,575 reach split and every ask figure exactly. The leak reader (read 1) quoted no decisive sentence (question 1 none), no ranking file and no analyst-only file; question 4 flagged the outlook's header naming the reference day (removed); question 6 called the step closest to reading a field (the models list's switching descriptions read with the notice), which the judge's measurement overrules as the kind of step (determinism-check section 1) and which stands as the build's residual rule-3 risk. Fixed in one generator pass with the reader's realism notes (enquiry outcomes, the outlook's basis text) and two determinism clarifications of my own: the prompt's further capacity now reads "before any of those half-hours fell below its threshold" (three cleared substations print a tenth apart under the lowest-half-hour reading), and the applications register's substation column is named `zone_substation_at_approval`. Re-judge not required (APPROVE, no FIX_NOW); the reader re-read the changed prompt and outlook (read 2).
-- Free gates: precut.py 53 of 53; figures_check.py 119 figures, none absent; voice-check PASS (948 characters); leak.py REVIEW (no LEAK, after renaming the PV file away from `sample_` and declaring the thresholds as stated inputs); `scrub_producer_metadata.py` clean on target and golden; `guard.py heart` WARN (nearest driver 0.06, task230 v1 lineage), `check` WARN, no BLOCK; `guard.py surface` three promoted pairs on card axes only.
-- leak.py REVIEW lines ruled here: the framework's threshold table and the summer outlook list every zone substation by name, so each carries most names of the answer sentence (harmless: every candidate is named in any table of the sixteen, designated or not); the framework carries "heater", "recorded", "network", "change", "published" and "framework" and the notice "register", "signal", "network", "change" and "recorded" from the stump paragraph's vocabulary (harmless: the framework names the heater draw rule and the notice the signal table and the load-control register, and neither names which heaters the signal switches, a time switch or a reach).
-- Surface promoted pairs: task275 and task274 (survey-research calibration, Descriptive) share only the card axes gap `population` and decision `designation_set`; task271 (market-microstructure execution cost, Descriptive) shares the decision type and a top-3-per-cent surface score; heart puts every driver on file at 0.06 or under, so none shares the decisive move (shape echoes, not template findings).
-- Realism: substation names redrawn at stage 3 after an edit-distance screen against real places (Kurrajong, Merriwa, Corrimal, Kalbarri, Dunmarra, Marrabel, Tilba, Pindar, Yarra, Bungonia); the meter makers' names are generic geography at worst. Ask totals kept at least 0.5 kW from a printed hundredth so no rounding rule splits them.
-
-## Pre-ship check
-
-- **Rule 1, the domain:** the deciding quantity is each zone substation's lowest half-hour demand on the 2027 reference Sunday, forecast the way network planners build a spring minimum (reference day, solar connections at output per kW, the controlled load a load-control change moves replayed from switch-on); with hospitals and beds there is no signal some devices obey, no water heater recovering its daily energy and no solar curve setting each half-hour's depth.
-- **Rule 2, two layers:** every Layer 1 item in the inventory is produced by the network's or the Department's own systems and asserted neutral to the call in checks.py (the UTC day cut, the EST rows, the second serial, the days read, the first register row); the asks' devices sit only in the connections register and the metering register's dates, on solar systems, none on a controlled-load heater.
-- **Rule 3, the decisive step:** analytical (which heaters a scheduled retiming of a central signal reaches, found by joining 31,832 heaters to their current meter's model), executed in checks.py on the pack: every heater replayed files four substations (the default path), the reach files seven, no cheap route without the reach lands seven (0 of 5), every partial correction files another set, and no plant, decoy or narrated reach ships. Reading every field and executing every filed sentence still moves every heater.
 
 ## Architecture 4 record (spent 2026-10-28)
 
@@ -255,3 +382,6 @@ Closed-loop load tests and each pod's garbage-collection log: each endpoint's 99
 - Architecture 5 draw, 2026-10-28, a pathology network's 2027 hub workload with each specimen's analyte stability read against the courier timetable (night and afternoon collections at the spokes outlasting the stability of unspun potassium, glucose or coagulation tubes): dead on paper, because transport feasibility against stability is the first question any consolidation planner asks (readability test 3), and the mechanic gates which items a planned change reaches, which is task258's driver by abstraction.
 - Architecture 5 draw, 2026-10-28, also screened on paper and dropped: bus on-time performance through vehicle blocks and driver duties (generic scheduling, the swap test reads the same with surgeons and theatres), a diesel station's fuel after solar with its minimum load and fuel-curve intercept (task67's fixed-plus-variable driver), insulin pens' 28-day in-use life and multi-dose vaccine vials discarded at each session's end (a per-unit floor or ceiling read at the mean, the Jensen gap spent in task229, task187 and task450), O-negative red cells rotated before expiry (perishable stock rotation reads the same for any item), and inverter volt-watt curtailment on high-voltage connections (the new fleet against the old one is a validated decoy, and the voltage the curtailment needs moves with the forecast PV itself).
 - Architecture 5 draw, 2026-10-28, measured on a prototype before any card: a growth area's drinking water trunk main carrying the potable top-up of a dual-reticulation (recycled water) network, the recycling plant's output the smaller of its membrane capacity and its sewage feed times recovery. Dead by identity: in a replay that scales each day's per-lot quantities to the forecast lots, production, feed and demand scale together, so the feed-limited regime cannot newly appear and "last summer's production scaled by lots and capped at the licence figure" reproduces the golden on every day (`proto/p1.py`: the cap route equalled the golden at 26.5 on the peak day, the proportional routes at 26.33); every way to break the proportionality (an old town's sewage that does not grow, trade waste, a golf course's offtake) is task67's fixed-plus-variable driver, and a factory exit or a shutdown is a forward condition the history blesses. The utility setting closed anyway when task464 v10 registered at 01:27Z with `utility_or_infrastructure`.
+
+- Architecture 6 draw, 2026-11-01, candidates set aside before the card: the leak survey of a gas main by years since its last survey (the regrowth-clock abstraction task129 already spent); a pump station's catchment after a facility closure by each user's second choice (a closure redistribution task174 recorded as reading the same for a store); a wellfield's interference left to the field's Theis or Jenkins method as the golden (the field's method at the top of the ladder, 1.1b); the borehole idea kept with the field's method at rung 0 and the newcomer's test footprint as the step.
+- Architecture 5 (the zone-substation solar soak) re-rooted 2026-11-01 at the Batch 3 queue reset with no portal result on it: the author had every queued task rebuilt as a fresh architecture; one architecture per world closed the load world.

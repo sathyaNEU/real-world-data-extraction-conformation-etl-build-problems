@@ -1,93 +1,86 @@
 {
  "task": "task273",
- "architecture": "v5",
- "drawn": "2026-10-28",
+ "architecture": "v6",
+ "drawn": "2026-11-01",
  "slot_note": "task273/DESIGN_NOTE.md",
  "domain": "energy-systems-utilities",
- "subdomain": "load-forecasting",
- "niche": "a state energy department's spring 2027 minimum-load assessment of a distribution network's zone substations once the controlled-load hot water window moves into the middle of the day, the move reaching only the tanks whose meters take the network's load-control signal, which the meter register shows only through each meter's model",
+ "subdomain": "asset-condition-maintenance",
+ "niche": "a dairy cooperative's milk powder site and its gravel-aquifer bore field, the lowest pumping water level each production bore reaches through a repeat of the 2019-20 drought over the 2026-27 peak milk season once a new bore is commissioned into supply between two of them",
  "objective": "forecasting",
- "shape": "13",
- "decision_type": "designation_set",
+ "shape": "07",
+ "decision_type": "go_hold_or_stop",
  "answer_unit": "set_of_items",
- "answer": "Designate seven of Tallowbark Networks' sixteen zone substations for spring 2027: Gerrimbal, Kinnabar, Mundaree, Ondarra, Quorrabin, Tarravine and Wirrandel.",
+ "answer": "Do not adopt the 2026-27 summer bore plan as drafted: it fails the drought test at PB3, whose lowest pumping water level reaches 35.5 m below measuring point in February and March against its minimum operating level of 35.0 m, once PB9 takes 4.40 ML/d beside it.",
  "answer_source": "task273/submission.md block 1 (generator/figures.json call.sentence)",
  "gap": [
-  "population",
-  "time"
+  "population"
  ],
  "pattern": [
   "none"
  ],
  "generators": [
-  "G8",
-  "G7",
-  "G13"
+  "G3",
+  "G6",
+  "G5"
  ],
  "gate_g": "forecasting",
  "calibration_form": "none",
- "stump_strategy": "population_selection",
+ "stump_strategy": "decomposition_attribution",
  "decisive_rule_filed": false,
  "official_decoy": false,
  "validated_decoy": false,
- "context_artifact": "filed_standard",
+ "context_artifact": "operations_log",
  "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms every file and reads every notice correctly replays every controlled-load tank's recovery from its load-control group's release in the new window, adds it to each zone substation's spring reference-day demand with the solar the connection pipeline adds, and designates too few substations below their minimum-load threshold, because the tanks on meters with internal time switches cannot take the network's signal and keep heating overnight.",
- "domain_test": "The deciding quantity is each zone substation's lowest midday demand under a controlled-load retiming, which minimum-load assessments build from the reference day's demand, the solar connection pipeline and each controlled-load tank's recovery replayed from its new release, a tank moving only if its switching device takes the network's load-control signal; in another field's nouns there is no ripple signal, no time switch inside a meter and no hot water recovery for the question to stand on.",
+ "analyst_test": "A strong analyst who conforms every log and reads the operating plan and the council's supply security standard correctly builds each bore's drought curve (pumping water level against its own take, carried on the monitoring bore's 2019-20 recession) the way a source's sustainable yield is assessed, takes the new bore's own curve from its commissioning test, and files the plan as holding with every bore above its pump-protection level; the step it misses is that each existing curve has the neighbours' steady take folded into its baseline, and the new bore's draw on its neighbours shows only as the dip its commissioning test left in their daily level logs.",
+ "domain_test": "The deciding quantity is each production bore's pumping water level through the design drought, which a water supplier's source yield assessment builds from the bore's drought curve on the aquifer's recession; in a bore field the level is the aquifer's response to every bore's take at once (superposed drawdown), so the step is hydrogeology: swap the bores for hospital wards or call-centre queues and nothing lowers one unit's level by another unit's draw through a shared aquifer.",
  "layer2_family": "estimand_identification",
- "layer2_pattern": "own:a-load-control-retiming-reaches-only-tanks-whose-meter-takes-the-network-signal",
+ "layer2_pattern": "own:a-new-borehole-lowers-its-neighbours-levels-and-only-its-commissioning-test-footprint-measures-it",
  "layer1": [
-  "SCADA exported in UTC with interval-ending stamps across the October daylight-saving change, one substation under a legacy point name, estimated rows on weekday nights",
-  "a monitored PV sample in local time with offsets",
-  "spring meter exchanges splitting one customer's reads across two serials, and accumulation meters read on their own dates either side of spring",
-  "register ids that differ by meter model, decoded only through the approved models list",
-  "a metering register carrying removed meters beside the meter in service",
-  "connection applications carrying zone substations as recorded before the 2025 feeder transfers, with withdrawn, lapsed, pending and late-commissioned applications (asks only)"
+  "level loggers recording metres below datum at three sites and metres AOD at the rest, with the datum in the register",
+  "daily abstraction from telemetry with gaps filled by the monthly returns at a different grain",
+  "a logger swap at one borehole splitting its series across two logger serials",
+  "the commissioning test record hourly in UTC against daily logs in local days"
  ],
- "stakeholder_role": "director of energy security at the state energy department, advising the minister on the spring minimum load directions",
- "role_family": "policy_adviser",
+ "stakeholder_role": "site utilities engineer signing off the peak-season bore field operating plan",
+ "role_family": "capacity_planner",
  "scoring_unit": "other",
  "spine": {
-  "file": "zss_net_demand_spring2026.csv",
-  "rows": 69856,
-  "entity": "one zone substation's net demand in one half-hour",
-  "grain": "zone substation x 30 minutes (UTC, interval ending)",
+  "file": "borefield_daily_2014_2026.csv",
+  "rows": 37071,
+  "entity": "one production bore's abstraction and pumping water level on one day",
+  "grain": "bore x day",
   "source": "synthetic"
  },
- "forum": "minister_or_cabinet",
+ "forum": "committee_or_panel",
  "forcing_event": "season_or_peak",
- "org_family": "government_agency",
+ "org_family": "manufacturer",
  "world": {
-  "geography": "Australia",
-  "currency": "AUD",
-  "org_type": "state energy department (energy security division)",
+  "geography": "New Zealand",
+  "currency": "NZD",
+  "org_type": "dairy cooperative processing site (site utilities)",
   "invented_names": [
-   "Tallowbark Networks",
-   "Saltgrass Coast",
-   "Quorrabin",
-   "Brindlemoor"
+   "Ruawaro Dairy Co-operative",
+   "Kaitanga site",
+   "Mangarewa Stream"
   ],
   "people": [
-   "Megan Robertson",
-   "Jacob Barnes"
+   "Megan Pickering",
+   "Allan Morris"
   ]
  },
  "deliverables": [
-  "minimum_load_spring_2027.xlsx",
-  "minimum_load_briefing_2027.docx"
+  "kaitanga_summer_test_2026-27.xlsx",
+  "borefield_plan_2026-27.pptx"
  ],
  "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is each area's lowest demand in a coming season once a scheduled move shifts a deferrable load into the low-demand hours, where the move reaches only the units whose switching device takes the operator's central signal, recorded only through each meter's model in a register kept for metering; moving every unit's load files a different set of areas below the limit, and spreading the moved energy evenly instead of replaying each unit's recovery from its release time misplaces the lowest interval.",
- "driver_concrete": "Each zone substation's lowest half-hour demand between 10.00 am and 3.00 pm on the 2027 reference Sunday is the 25 October 2026 reference day's demand less the solar the network's outlook adds at the day's output per kW, plus the recovery of the water heaters the new switch-on signals reach (meters whose controlled-load contactor is driven by an integral audio-frequency receiver), each replayed at its element rating from its load-control group's switch-on until its spring daily energy is restored; heaters on meters with an internal time switch keep heating overnight, so moving every controlled-load heater clears three substations that the reach keeps below threshold.",
- "stump": "A competent analyst moves every controlled-load tank's recovery into the solar-soak window from its group's release, adds it to each substation's reference-day demand with the connection pipeline's solar, and designates too few substations below their minimum-load threshold; the step that lands it there is reading the retiming as reaching every tank, when the tanks on meters with internal time switches keep heating overnight, which only the meter register's models show.",
+ "question_form": "whether",
+ "driver": "Each unit's level is lowered by its own draw and by every neighbour's draw on one shared store, so a curve fitted on the unit's own history folds the neighbours' steady draw into its baseline; a newcomer's draw on its neighbours appears only as the dip its first trial left by date in their own logs, a relation across two records no key joins, and unit-by-unit curves file the forward plan as safe.",
+ "driver_concrete": "Each Kaitanga production bore's pumping water level through a repeat of the 2019-20 drought is the monitoring bore's recession at that site less its own drawdown per ML/d times its planned take and less every other bore's drawdown on it per ML/d times that bore's planned take; the existing pairs' interference sits in twelve years of daily logs, and the new bore PB9's interference on its neighbours only in the dip its October 2026 constant-rate test left in their daily levels.",
+ "stump": "A competent analyst builds each bore's drought curve on its own twelve-year record, carries it on the monitoring bore's 2019-20 recession at the planned takes, adds the new bore from its own commissioning test, and files the plan as holding with every bore above its pump-protection level; the step that lands it there is reading each bore's level as its own take's alone, when the new bore lowers its two neighbours by the drawdown its commissioning test left in their daily logs.",
  "mechanism_source": "design_note",
  "differentiation": {
-  "task164": "task164 sets each plug-in vehicle's effect on a pole-top transformer's evening peak by the premise's tariff schedule; task273 v5 has no vehicles or peak: it moves controlled-load hot water into the midday trough and the move reaches only the tanks whose meters take the network's signal",
-  "task464": "task464 sizes conductor losses from currents rebuilt as the net of every load and generator beyond each section; task273 v5 sizes no losses and rebuilds no currents: it forecasts each substation's lowest midday demand after a controlled-load retiming whose reach a meter's model sets",
-  "task258": "task258 carries a validated intervention's effect only to units whose served document lets it act; task273 v5 has no validated effect and no back-test: a scheduled retiming of a central signal moves only the devices that take the signal, which a meter register kept for metering shows through each model",
-  "task162": "task162's valve holds its setting only while its inlet is above it; task273 v5 has no setting: a tank either takes the retimed signal or keeps its own clock",
-  "task273": "architecture 3 bounded a burst's shut-off area by the valves the crews can close; architecture 5 moves no network boundary: it forecasts a substation's lowest midday demand once a load-control retiming reaches the tanks whose meters take the signal"
+  "task138": "task138 restarts each irrigation unit's store from its own replenishments at the forecast date; task273 v6 has no store state: one bore's level is lowered by its neighbours' takes through a shared aquifer, and the new bore's effect on them is read from its test's footprint in their logs",
+  "task178": "task178 v2 converts a recorded index through a rating relation that changes form above a level; task273 v6 has no conversion relation: the level is a superposition of every bore's drawdown, and the decisive term is a new neighbour's drawdown measured only in its test footprint"
  },
  "lineage": [
   {
@@ -194,8 +187,23 @@
    "layer2_pattern": "own:carrier-frequency-scaled-by-each-phase's-depth-dependent-calling-sensitivity",
    "registered": "2026-10-28T12:43:45Z",
    "fate": "spent 2026-10-28 at the portal: both responses filed the golden 14 conditions (ARSACS, Joubert syndrome type 2 and diastrophic dysplasia joining), one saying it computed observed and sensitivity-adjusted frequencies; the within-gene contrast added for the first judge pass made the missed calls visible and the per-phase detection correction is a published estimator a solver enumerates; shipped 2026-10-28 on ea742c6b after judge pass 2 DETERMINISTIC, APPROVE"
+  },
+  {
+   "architecture": "v5",
+   "drawn": "2026-10-28",
+   "niche": "a state energy department's spring 2027 minimum-load assessment of a distribution network's zone substations once the controlled-load hot water window moves into the middle of the day, the move reaching only the tanks whose meters take the network's load-control signal, which the meter register shows only through each meter's model",
+   "driver": "The decisive quantity is each area's lowest demand in a coming season once a scheduled move shifts a deferrable load into the low-demand hours, where the move reaches only the units whose switching device takes the operator's central signal, recorded only through each meter's model in a register kept for metering; moving every unit's load files a different set of areas below the limit, and spreading the moved energy evenly instead of replaying each unit's recovery from its release time misplaces the lowest interval.",
+   "stump": "A competent analyst moves every controlled-load tank's recovery into the solar-soak window from its group's release, adds it to each substation's reference-day demand with the connection pipeline's solar, and designates too few substations below their minimum-load threshold; the step that lands it there is reading the retiming as reaching every tank, when the tanks on meters with internal time switches keep heating overnight, which only the meter register's models show.",
+   "fate": "spent 2026-11-01: shipped 10-28 (target.zip f641cf2c), re-rooted in the Batch 3 queue reset at the author's instruction (every queued build redrawn as a fresh architecture); one architecture per world, so the zone-substation load world is closed",
+   "shell": null
   }
  ],
- "notes": "Architecture 5, drawn 2026-10-28: the author re-tasked the slot from Descriptive & Distribution Analysis to Forecasting & Predictive Modeling after four descriptive architectures and a nine-direction screen (the coordinating session's decision of 2026-10-28, retirement not taken); the decisive step is a domain mechanic (which water heaters a load-control signal retiming actually switches, read through each meter's model), never a named statistical correction. The zone substation names drawn first sat within two letters of real places and were redrawn at stage 3 (H21).",
- "registered": "2026-10-29T01:43:47Z"
+ "notes": "Architecture 6, drawn 2026-11-01 at the Batch 3 queue reset (the author: every queued task rebuilt as a fresh, unique architecture learned from the approved builds). One architecture per world: v5's zone-substation load world is closed, so the slot moves to a dairy processing site's bore field inside the same client domain (water supply sits in energy-systems-utilities as task124, task162 and task120 do). Axes redrawn at check: pattern (generators[0]) from G5 to G3, role family to capacity_planner, forum to the council's drought committee, forcing event to the summer season, organisation to a manufacturer (a dairy cooperative's processing site runs its own bore field, local government and utility both inside the ban window), each the honest label for the council world.",
+ "shell": {
+  "question form": "which",
+  "second-sentence opener": "in",
+  "rounding opener": "give",
+  "deliverable set": "docx+xlsx"
+ },
+ "registered": "2026-11-01T00:39:40Z"
 }
