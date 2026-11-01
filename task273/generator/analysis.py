@@ -338,6 +338,12 @@ def ask_energy(P, multiplier=True, split="hours_kw", meters=None):
                 shares = {bores[0]: float(kwh.sum())}
             else:
                 H = P.H.reindex(kwh.index)[bores].fillna(0.0)
+                if split == "hours_kw_quarter":
+                    hk = (H * P.kw[bores]).sum()
+                    shares = {k: float(kwh.sum() * hk[k] / hk.sum()) for k in bores}
+                    for k, v in shares.items():
+                        out[(k, qi + 1)] = v / ml[(k, qi + 1)] if ml[(k, qi + 1)] > 0 else float("nan")
+                    continue
                 if split == "hours_kw":
                     wgt = H * P.kw[bores]
                 elif split == "hours":

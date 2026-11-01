@@ -44,7 +44,7 @@ def compute(target):
         "constants": {"pb2_ct_multiplier": 40},
         "pb9_holds": all(lev[("PB9", m)] <= P.mol["PB9"] for m in A.MONTHS),
         "energy_kwh_per_ml": {"%s Q%d" % (i, q): int(round(v)) for (i, q), v in energy.items()},
-        "permit_meter_ml": {"%s Q%d" % (i, q): round(v, 1) for (i, q), v in meters.items()},
+        "permit_meter_ml": {"%s Q%d" % (i, q): int(round(v)) for (i, q), v in meters.items()},
         "raw": {"level": {"%s %d" % k: round(v, 4) for k, v in lev.items()},
                 "a9": {k: round(v, 4) for k, v in a9.items()},
                 "energy": {"%s Q%d" % k: round(v, 3) for k, v in energy.items()},
@@ -132,8 +132,8 @@ def workbook(P, lev, fails, energy, meters, path):
     for r, i in enumerate(A.EXISTING, 4):
         ws3.cell(r, 1, i)
         for q in range(1, 5):
-            ws3.cell(r, 1 + q, round(meters[(i, q)], 1)).number_format = "#,##0.0"
-        ws3.cell(r, 6, round(sum(meters[(i, q)] for q in range(1, 5)), 1)).number_format = "#,##0.0"
+            ws3.cell(r, 1 + q, int(round(meters[(i, q)]))).number_format = "#,##0"
+        ws3.cell(r, 6, int(round(sum(meters[(i, q)] for q in range(1, 5))))).number_format = "#,##0"
     ws3.cell(13, 1, "15-minute totaliser readings (NZST) differenced and placed in NZ local quarters; Bore 4 includes "
                     "replacement meter WM-40958 from 17 Feb 2026.").font = Font(italic=True, size=9,
                                                                                 color="5A656C")

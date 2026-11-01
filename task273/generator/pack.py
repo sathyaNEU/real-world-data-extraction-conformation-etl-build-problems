@@ -231,6 +231,10 @@ def utc_grid():
     return utc, local
 
 
+def utc_to_local_index(utc):
+    return pd.DatetimeIndex([u + pd.Timedelta(hours=13 if nz_dst(u + pd.Timedelta(hours=12)) else 12) for u in utc])
+
+
 def pump_halfhours(w):
     """Per bore and UTC half-hour of the 2025-26 year, the fraction of the half-hour the pump ran: each local day's
     run hours as one block from the evening, wrapping to the small hours of the same local day."""

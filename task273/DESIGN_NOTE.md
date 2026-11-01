@@ -13,6 +13,18 @@ task124, task162 and task120 do). Its record sits under `## Leak review
 - Reader (isolated, medium): nothing quoted for question 1, no ranking or helper file, question 5 executes to the
   golden's estimand, question 6 analytical. Its one realism note (uniform pump cover) fixed in the generator.
 
+## Pre-ship check
+
+- Judge round 1 (isolated thread): DETERMINISTIC on the call, the 32 levels, PB9 and the volumes; FIX_NOW on the
+  shared-board electricity (days with no SCADA row). Repaired in the generator.
+- Judge round 2: DETERMINISTIC on every graded figure; Gate G analytical_non_defect, surface_read_dependency no;
+  Gate H domain pass, layers pass, decisive step analytical; stump power good (PB3 0.45 m past its minimum). Its
+  optional pins were declined (each names an ask device); its two convention sensitivities closed by construction
+  and asserted (volumes in whole ML, day and quarter splits alike).
+- The three rules re-read on the built pack: the decisive step is still PB9's footprint read across two files; the
+  mess is Layer 1 and neutral on the call (R2 assertions); no file ranks the bores.
+- Reader and judge agree on Gate H (both analytical), so nothing is left open.
+
 ## Architecture 5 record`.
 
 ## Draw
@@ -267,8 +279,8 @@ Two asks on the 2025-26 year the site reports to the council, both on files the 
   against it carries the wrong denominator for PB1, PB2, PB5, PB6, and PB4 after 17 February.
 - Hazards: interval stamps in UTC; the PB2 CT meter's x40 from 11 February 2026.
 
-**Ask B, each existing bore's volume as the council's permit meters measured it, each quarter (32 figures, ML to one
-decimal).** Home: the permit's annual report (condition 4).
+**Ask B, each existing bore's volume as the council's permit meters measured it, each quarter (32 figures, whole
+ML).** Home: the permit's annual report (condition 4).
 - Primary device: the council's loggers were refitted in May 2023 and two pairs went back on each other's meters
   (Schedule 1's Bore 1 logger reads Bore 2, Bore 5's reads Bore 6); only matching each meter's days to the SCADA take
   it tracks (outage days are zero on both) finds it.

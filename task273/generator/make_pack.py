@@ -90,9 +90,43 @@ def tune_load(w, utc, local, frac, target, path):
                 PK.LOAD[i] = round(base + step, 3)
             PK.write_icp(w, utc, local, PK.pump_energy(w, utc, frac), path)
             e = A.ask_energy(P, meters=meters)
-            if all(abs((e[(i, q)] % 1) - 0.5) >= 0.15 for i in b for q in range(1, 5)):
+            eq = A.ask_energy(P, split="hours_kw_quarter", meters=meters) if len(b) > 1 else e
+            if all(abs((e[(i, q)] % 1) - 0.5) >= 0.15 and round(e[(i, q)]) == round(eq[(i, q)])
+                   for i in b for q in range(1, 5)):
                 break
     return PK.pump_energy(w, utc, frac)
+
+
+def tune_meters(w, utc, frac):
+    """Each council meter reads within its verified plus or minus 5 per cent; its error is set in 0.001 steps so every
+    whole-ML quarterly volume sits at least 0.1 ML inside its bin whether a quarter-hour belongs to the local day it
+    starts in or the day its reading is stamped on."""
+    bt = w["bt"]
+    q_utc = pd.date_range(utc[0], utc[-1] + pd.Timedelta(minutes=15), freq="15min")
+    local = PK.utc_to_local_index(q_utc)
+    end = local + pd.Timedelta(minutes=15)
+    qs = [(pd.Timestamp(a), pd.Timestamp(b) + pd.Timedelta(days=1)) for a, b in
+          [("2025-07-01", "2025-09-30"), ("2025-10-01", "2025-12-31"), ("2026-01-01", "2026-03-31"),
+           ("2026-04-01", "2026-06-30")]]
+    endday = end.normalize()
+    for i in W.IDS:
+        rate = 0.97 * bt.at[i, "cap"] * 1000 / 48.0
+        v = np.repeat(frac[i] * rate / 2.0, 2)
+        new = np.asarray((q_utc + pd.Timedelta(hours=12, minutes=15) > PK.PB4_SWAP) & (i == "PB4"))
+        base = PK.METER_BIAS[i]
+        for k in range(80):
+            step = (k // 2 + 1) * 0.001 * (1 if k % 2 == 0 else -1) if k else 0.0
+            bias = round(base + step, 3)
+            vol = v * np.where(new, PK.PB4_NEW_BIAS, bias)
+            good = True
+            for a, b in qs:
+                va = vol[np.asarray((local >= a) & (local < b))].sum() / 1000
+                vb = vol[np.asarray((endday >= a) & (endday < b))].sum() / 1000
+                if abs((va % 1) - 0.5) < 0.1 or round(va) != round(vb):
+                    good = False
+            if good:
+                PK.METER_BIAS[i] = bias
+                break
 
 
 def build(target, plan=None, w=None):
@@ -111,6 +145,7 @@ def build(target, plan=None, w=None):
     D.standard(f("standard"))
     D.permit(f("permit"))
     utc, local, frac = PK.pump_halfhours(w)
+    tune_meters(w, utc, frac)
     n["telemetry"], meter_truth, q_utc = PK.write_telemetry(w, utc, frac, f("telemetry"))
     PK.write_icp_register(f("icp_reg"))
     energy = tune_load(w, utc, local, frac, target, f("icp"))

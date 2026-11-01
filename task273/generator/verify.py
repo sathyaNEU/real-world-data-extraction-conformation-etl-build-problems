@@ -216,7 +216,7 @@ def main():
                 if a <= t.date() <= b:
                     meters[(assign[mid], k)] += v / 1000.0
     for (b, k), v in sorted(meters.items()):
-        check("permit meter %s Q%d" % (b, k), round(v, 1) == fig["permit_meter_ml"]["%s Q%d" % (b, k)],
+        check("permit meter %s Q%d" % (b, k), int(round(v)) == fig["permit_meter_ml"]["%s Q%d" % (b, k)],
               "%.2f" % v)
 
     # electricity: UTC to local, multiplier by meter serial, shared boards by run hours x motor kW

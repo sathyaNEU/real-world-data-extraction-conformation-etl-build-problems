@@ -149,9 +149,13 @@ def main():
        sorted(mp.values()) == sorted(A.EXISTING + ["PB4"]))
     ok("Ask B: four Schedule 1 meters read another bore", sum(mp[k] != v for k, v in A.SCHEDULE.items()) == 4)
     ok("Ask B: Schedule 1 handling misses at least 16 of 32 figures",
-       sum(round(g[k], 1) != round(s[k], 1) for k in g) >= 16)
-    ok("Ask B: the SCADA total is a different figure on every bore and quarter",
-       all(round(g[(i, q)], 1) != round(_scada_q(P, i, q), 1) for i in A.EXISTING for q in range(1, 5)))
+       sum(round(g[k]) != round(s[k]) for k in g) >= 16)
+    ok("Ask B: the SCADA total is a different whole-ML figure on at least 28 of 32 bore-quarters",
+       sum(round(g[(i, q)]) != round(_scada_q(P, i, q)) for i in A.EXISTING for q in range(1, 5)) >= 28)
+    ok("Ask B: every whole-ML volume at least 0.1 ML inside its bin", min(abs((v % 1) - 0.5) for v in g.values()) >= 0.1)
+    gb = _meters_reading_day(P)
+    ok("Ask B: a reading's own date or its quarter-hour's start date gives the same whole-ML figures",
+       all(round(gb[k]) == round(g[k]) for k in g))
     ge = A.ask_energy(P, meters=g)
     gh = A.ask_energy(P, split="hours", meters=g)
     ok("Ask A: the run-hours split misses all 16 shared-board figures",
@@ -165,8 +169,11 @@ def main():
     ok("Ask A: leaving the CT multiplier off moves PB2 in the quarters after 11 February",
        round(gm[("PB2", 3)]) != round(ge[("PB2", 3)]) and round(gm[("PB2", 4)]) != round(ge[("PB2", 4)]))
     ok("Ask figures match figures.json",
-       all(fig["permit_meter_ml"]["%s Q%d" % k] == round(v, 1) for k, v in g.items())
+       all(fig["permit_meter_ml"]["%s Q%d" % k] == int(round(v)) for k, v in g.items())
        and all(fig["energy_kwh_per_ml"]["%s Q%d" % k] == int(round(v)) for k, v in ge.items()))
+    gq = A.ask_energy(P, split="hours_kw_quarter", meters=g)
+    ok("Ask A: splitting each board on its quarter's hours times kW gives the same figures as day by day",
+       all(round(gq[k]) == round(ge[k]) for k in ge))
     ok("separation: no ask device row sits in a file the call reads",
        all(not f.startswith(("MRC_permit", "pump_icp", "kaitanga_icp")) for f in _call_files()))
 
@@ -256,6 +263,18 @@ def _dip_agrees(P, a9):
         res = (P.mp_rl[i] - df["L_" + i]) - df["mb"] - coef[i]["const"] - sum(coef[i][j] * df[j] for j in A.EXISTING)
         out[i] = -(res[full].mean() - res[near].mean()) / df.loc[full, "PB9"].mean()
     return all(half(out[i] * 4.4) == half(a9[i] * 4.4) for i in out)
+
+
+def _meters_reading_day(P):
+    inc = A.meter_increments(P)
+    mp = A.meter_map(P, inc)
+    inc = inc.assign(bore=inc["meter"].map(mp), day=(inc["local"] + pd.Timedelta(minutes=15)).dt.normalize())
+    out = {}
+    for qi, (a, b) in enumerate(A.QUARTERS):
+        s = inc[(inc["day"] >= a) & (inc["day"] <= b)].groupby("bore")["v"].sum() / 1000.0
+        for k in A.EXISTING:
+            out[(k, qi + 1)] = float(s.get(k, 0.0))
+    return out
 
 
 def _clone(P, **kw):

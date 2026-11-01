@@ -44,3 +44,53 @@ Moderate to good. A strong model that fits each bore on its own take (or on all 
 
 ## Fix
 Where: solution (golden xlsx PB5 to PB8 electricity sheet, and the write-up step 7 and figures). Regenerate with the missing run-hours rows filled from the metered volume (or excluded with their energy and volume) and say so in the write-up steps. Because PB8 Apr to Jun and PB7 Jan to Mar sit on a rounding edge across the defensible fills, either pin the treatment in the prompt/sheet note or nudge the data so the edge is cleared; if the data are touched, that part becomes a rerun.
+
+## Round 1 repair
+
+The shared-board pumps carry a SCADA row on every day of 2025-26 (the SB-3 and Paddock 14 radio links replaced in June 2025), each board's load factor is set so no electricity figure sits on a rounding edge, and the prompt's 'each of those bores' reads 'every bore now in supply'.
+
+## Re-judge (round 2), verbatim
+
+# Determinism verdict, task273 r2 (re-judge after the sup 4 FIX_NOW)
+
+**Verdict:** DETERMINISTIC (main call forced and reproduced; two filed-nowhere conventions on the supplementary sheets remain, see Evidence).
+
+**Disposition:** FIX_NOW. Optional in-house pins only (no change to the main call, the stump or any graded figure): file in the prompt (a) which meter belongs to which bore is taken from the bore the meter's volumes track (Schedule 1's meter column disagrees with the telemetry for Bores 1/2 and 5/6), and (b) that a shared switchboard is split between its pumps each day by run hours times motor rating. No stump-bearing file changes.
+
+**Why:** At the plan's 4.40 ML/d PB9 lowers PB3 by 2.91 m (PB4 by 0.47 m) in its 8 to 13 October constant-rate test; with that in the multi-bore drawdown model PB3 reaches 35.45 m (Feb) and 35.49 m (Mar) against 35.0 m, nothing else fails, PB9 holds. Every defensible estimate I ran gives the same fail set and the same rounded table. The residual risk is in sup 4 and 5 (meter-to-bore key and the shared-board split), not in the call.
+
+## Evidence (recomputed from the bundle)
+Main call and sheet 1 (kaitanga_bores_daily, MRC_MB1, PB9 logger, register, plan, SWS-03):
+- Conformed: KTG-BH0n to PBn (continuity at 13/14 May 2019 on take and level, no permutation), 23 exact duplicate rows Aug 2021 dropped, PB9 UTC to NZDT (full test days 8 to 13 Oct, 4.404 to 4.413 ML/d).
+- Model: level + MB1 on all nine takes plus intercept, 2014 to 2026, residual sd 0.035 m for every bore (no hidden defect). PB9 coefficients: PB3 0.662, PB4 0.106, PB5 0.234, PB2 0.228, PB6 0.164, PB1 0.140, PB7 0.116, PB8 0.085 per ML/d. Fitted matrix is symmetric (reciprocity holds).
+- Lowest PWL reproduced to 2 dp, then rounded: PB1 28.05/29.40/29.89/30.03; PB2 28.43/31.41/31.98/31.95; PB3 33.98/34.48/35.45/35.49; PB4 33.05/34.02/34.95/33.98; PB5 29.55/30.54/31.47/31.03; PB6 29.51/30.04/30.53/29.06; PB7 28.39/29.03/29.57/29.95; PB8 26.46/27.09/27.97/27.95. All 32 cells equal the golden's rounded grid.
+- Robustness: start 2019 / 2020, MB1 coefficient free, UTC-day PB9 takes (PB3 35.33/35.38), full test days only: max shift 0.12 m, same fail set, same rounded grid except none. The nearest rounding edges are 0.14 to 0.2 m clear. Ignoring PB9 (own-curve route) gives PB3 32.5, no failure, plan "passes".
+- PB9 itself: static 53.24 (level + MB1) from the two static spells (Oct 5 and Oct 6, they differ only by the neighbours' day takes), own drawdown 6.9 to 7.0 m at 4.4 ML/d, plus neighbours by reciprocity: peak PWL 32.5/33.8/34.6/34.6 against 38.0, margin over 3 m. Holds.
+- Competing answers: "plan passes" (own curves) is the easy route and is wrong; "PB4 fails, PB3 passes" (distance decay, PB4 is 172 m from PB9, PB3 325 m) contradicted by the test dips (PB4 0.47 m vs PB3 2.91 m). Raw before/after dip (2.6 to 2.8 m) gives PB3 35.1 to 35.2, still a fail but rounds to 35.0, so the controlled estimate is needed for the grid. Permit condition 5 (MB1 below 30.00) never triggers, design-drought minimum is 30.201. Site totals (27.65/26.0/25.85/24.9) are under 28.5 ML/d.
+
+Sup 5, permit-meter volumes (MRC telemetry, NZST to NZ local, rollovers of WM-30456 on 24 Jul and WM-35873 on 13 Aug 2025 added back 1,000,000 m3, meter totalisers differenced at local midnights): all 32 cells reproduce the golden exactly, with WM-40958 continuing PB4 from 17 Feb 2026 (first interval 10:15 to 10:30 unmeasured, about 0.04 ML, does not move 232.1).
+Sup 4, kWh per ML (pump_icp_interval_data, UTC to NZ local, PB2 multiplier 40 from 10:30 local 11 Feb, SB-3 and SB-4 split by daily run hours times motor kW, divided by the sup 5 volumes): all 32 cells reproduce (e.g. PB3 302.88/305.31/310.04/316.12, PB5 263.04/261.78/262.30/263.93). Every bore now in supply has a SCADA row for every day of the year on the shared boards (the round 1 repair holds); PB9 is "commissioning", has no electricity or meter record in the year, correctly excluded.
+
+Open forks (answers each produces):
+1. Meter-to-bore key. Permit Schedule 1 lists Bore 1 = WM-30455, Bore 2 = WM-30456, Bore 5 = WM-33119, Bore 6 = WM-33120. The telemetry tracks SCADA the other way round (daily r = 1.000: WM-30455 to PB2, WM-30456 to PB1, WM-33119 to PB6, WM-33120 to PB5; metered 735.7 vs SCADA PB1 922.2 ML would be a 20 percent miss against the permit's plus or minus 5 percent). Flow rates agree (WM-30456 48.1 L/s = PB1 duty 48.6; WM-30455 39.9 L/s vs PB2 41.7), and the PB1 and PB2 switchboard kWh per run hour match. WM-40958 is in no shipped key, so tracking is unavoidable for PB4. No shipped sentence says Schedule 1 is out of date. Literal Schedule 1 mapping changes the 16 volume cells and 16 kWh/ML cells of PB1, PB2, PB5, PB6 (e.g. PB1 Jul-Sep volume 155.5 not 205.1). The data decide it overwhelmingly, so I hold it as forced by the evidence, but it is the weakest link.
+2. Shared-board split is not filed in the prompt. Run hours times motor kW (golden) vs run hours alone vs metered or SCADA volume vs hours times duty flow: PB5 263 vs 240 to 258, PB6 254 vs 258 to 280, PB7 268 vs 296 to 304 (16 cells differ). The board's own kWh pins it: regression of daily board kWh on the two run-hour series gives 40.6:33.5 (SB-3) and 42.1:51.5 (SB-4) kW, the nameplate ratios 45:37 and 45:55 to within 0.4 percent, and a fitted-draw split reproduces all 32 cells. Within the golden convention, allocating on quarter totals instead of days moves one cell: PB6 Jan-Mar 252.35 (golden, 252) vs 252.51 (253).
+3. A 00:00 reading closes the previous day. Grouping the increment by the reading's own date moves 6 volume cells by 0.1 ML (e.g. PB1 Apr-Jun 139.9 vs 140.0); differencing at local midnights (golden) is the physical reading.
+
+## Files/Hygiene: PASS
+12 files; formats csv (8), xlsx (2), pdf (2). One file over 25,000 rows (telemetry 279,913; pump intervals 105,120; daily 37,103). Distractors present and unused: nitrate, rainfall, permit combined-take and MB1 trigger conditions. No authoring or generator disclosure in the files; PDF and xlsx metadata name people and organisations in the fiction only. Temporal: PB9 test (5 to 14 Oct) precedes the permit variation (19 Oct), plan 28 Oct, MB1 export 2 Nov; coherent. Real-world contamination: none, fictional site. No exclusion-level finding. Deck not in the pack, not assessed.
+
+## Stump power
+Good. A strong model that cleans the data and reads SWS-03 can still file "passes" by fitting each bore's own curve on MB1 and its take (PB3 about 32.5 m), or fail the wrong bore by letting map distance set PB9's draw (PB4). Only a joint fit of all nine takes with the pumping test's response decides it. PB3's margin over 35.0 is 0.45 m, well inside what the controlled estimate resolves; the asks add a second layer (meter key, DST, rollovers, ×40 meter, board split).
+
+## Stumping type
+mechanism: method_or_model_selection (multi-bore interference from a constant-rate test, reciprocity, design-drought superposition), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no. No reported figure is wrong; the plan's per-bore take table and the drought curve are fine, the difficulty is the unmodelled neighbour interference, and the task still stumps on perfectly clean data.
+
+## Three rules
+domain: pass, layers: pass (Layer 1: KTG tags, duplicate batch, UTC vs NZDT, NZST telemetry, totaliser rollovers, meter swap, x40 register, shared boards; Layer 2: borefield interference), decisive_step: analytical. The field's own analysis is drawdown superposition from a pumping test under a design-drought boundary; the easy route (each bore's own curve, or distance-ranked influence) files "plan passes" or "PB4 fails" and is wrong. Swap test: replacing bores with another asset breaks the task.
+
+## Fix
+prompt (optional pin, no rerun of the stump): name the meter-to-bore basis ("each meter assigned to the bore whose daily take it matches") and the shared-switchboard split basis ("by daily run hours times motor rating"); alternatively correct Schedule 1's meter column order if the authors accept a re-cut of that one file. Solution blocks need no change.
+
+## Round 2 answered
+
+DETERMINISTIC on every graded figure. The judge's optional pins (naming the meter-to-bore matching and the shared-board split in the prompt) are not filed: each would name its ask's device and hand the ask over, and the judge found both forced by the data (meters at daily r = 1.000, a 20 per cent miss on the Schedule 1 reading against the permit's 5 per cent; the boards' own kWh fit the nameplate ratio within 0.4 per cent). Its two convention sensitivities are closed by construction instead: the volumes are graded in whole ML with each meter's error set so a reading's own date and its quarter-hour's start date round alike, and each board's load factor set so a day-by-day and a quarter-total split round alike; both asserted in checks.py.

@@ -70,9 +70,9 @@ def main():
     for b in BORES:
         a("   - %s: %s" % (b, ", ".join("%s %d" % (QL[q], f["energy_kwh_per_ml"]["%s Q%d" % (b, q + 1)])
                                        for q in range(4))))
-    a("5. Volume by bore as the permit meters measured it, ML to one decimal:")
+    a("5. Volume by bore as the permit meters measured it, whole ML:")
     for b in BORES:
-        a("   - %s: %s" % (b, ", ".join("%s %.1f" % (QL[q], f["permit_meter_ml"]["%s Q%d" % (b, q + 1)])
+        a("   - %s: %s" % (b, ", ".join("%s %d" % (QL[q], f["permit_meter_ml"]["%s Q%d" % (b, q + 1)])
                                        for q in range(4))))
     a("")
     a("### borefield_plan_2026-27.pptx\n")

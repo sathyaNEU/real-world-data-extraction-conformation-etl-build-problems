@@ -23,7 +23,7 @@ import analysis as A  # noqa: E402
 def figures(P, match, split):
     m = A.ask_meters(P, match=match)
     e = A.ask_energy(P, split=split, meters=m)
-    return ({k: round(v, 1) for k, v in m.items()},
+    return ({k: int(round(v)) for k, v in m.items()},
             {k: (int(round(v)) if not math.isnan(v) else None) for k, v in e.items()})
 
 
