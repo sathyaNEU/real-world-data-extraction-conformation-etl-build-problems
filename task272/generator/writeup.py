@@ -1,98 +1,71 @@
-"""submission.md, emitted from generator/figures.json so every figure it states is one the build computed."""
-import json
-import os
-
-import common as K
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+"""submission.md, written from figures.json (every figure emitted, none typed)."""
+import golden as GD
+import pack as K
+import world as W
 
 
-def money(x):
-    return format(x, ",")
+def _n(x):
+    return "{:,}".format(x)
 
 
-def write():
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    q = f["call"]["qualify"]
-    n = f["call"]["count"]
-    rc = f["reflex_counts"]
+def write(path, fig):
+    call = fig["call"]["products"]
+    gold = fig["golden"]
+    lad = fig["ladder"]
+    order = sorted(gold, key=lambda c: -gold[c]["rate"])
+    name = {c: W.product(c)["name"] for c in gold}
     L = []
-    L.append("## Tags\n")
-    L.append("**Domain:** Sociology & Demography (income and poverty measurement).  ")
-    L.append("**Analytical objective:** Descriptive & Distribution Analysis.\n")
-    L.append("## 1. Final Recommendation\n")
-    L.append("**The FY2027 budget should carry %d Decision Coaching Grants, $%s, for %s.**" % (
-        n, money(f["budget_usd"]), ", ".join(q[:-1]) + " and " + q[-1]))
-    L.append("At each of these hospitals at least six percent of the 2025 applications from households within the "
-             "free-care limit on their income over the twelve months before applying left the household owing more "
-             "than half its balance; at no other hospital did. Not the 2025 policy's yearly figure read as that "
-             "income, which finds %d hospitals because a household whose work follows a harvest, fishing or resort "
-             "season was assessed on its best or its worst quarter. Not one calendar for each kind of work or for "
-             "each region, which finds %s because one kind of work keeps different months in different regions and "
-             "one region's kinds of work keep different months.\n"
-             % (rc["policy_quarter"], ("%d either way" % rc["kind_calendar"]) if rc["kind_calendar"] ==
-                rc["region_calendar"] else ("%d or %d" % (rc["kind_calendar"], rc["region_calendar"]))))
-    L.append("## 2. Critical Components\n")
-    L.append("1. The counsellors' 2025 first-review decisions: **%s** across the 31 hospitals" %
-             money(f["first_reviews_total"]))
-    L.append("2. Of them, applications from households within the free-care limit on their twelve-month income, each "
-             "household's quarter put on a yearly basis by its region's calendar for its kind of work: **%s**, of "
-             "which **%s** left the household owing more than half its balance" % (money(f["eligible_total"]),
-                                                                                 money(f["owing_total"])))
-    L.append("3. Hospitals at six percent or more: **%d** (%s)" % (n, ", ".join(q)))
-    L.append("4. FY2027 budget line: **%d** grants at **$%s**, **$%s**\n" % (n, money(f["grant_usd"]),
-                                                                             money(f["budget_usd"])))
-    L.append("## 3. Step-by-Step Solution\n")
-    L.append("1. Conformed the three hub extracts by the data guide's codes, put the Columbia extract's UTC times on "
-             "Pacific time, joined H23's rows across both hubs, and kept each hospital's 2025 first-review decisions, "
-             "without reconsiderations, pends, withdrawals or the presumptive screening (criteria 2.2): %s decisions."
-             % money(f["first_reviews_total"]))
-    L.append("2. Put every application's income on the 2025 policy's yearly basis, the three full months before the "
-             "month of application times four (the Puget three-month total times four, the Willamette yearly figure, "
-             "the Columbia monthly average times twelve).")
-    L.append("3. For each region in %s and each kind of work, averaged that yearly figure, as a share of the guideline for "
-             "the household's size, over every first-review decision of 2024 and 2025 by month of application, set "
-             "each month against the twelve months' average, and divided each application's figure by its month's "
-             "factor: its income over the twelve months before it applied (criteria 2.3)." % K.FILES["hospitals"])
-    L.append("4. Kept the applications from households at or below 200 percent of the 2025 guideline for their size "
-             "(section 3), %s, and counted those denied or approved at 25 percent (criteria 2.4), %s." % (
-                 money(f["eligible_total"]), money(f["owing_total"])))
-    L.append("5. Compared each hospital's share with six percent unrounded (criteria 2.1 and 2.5): %d hospitals "
-             "qualify, at $%s each (criteria 1.2), $%s." % (n, money(f["grant_usd"]), money(f["budget_usd"])))
-    L.append("6. For the assistance, took each write-off once (the adjustments extract repeats it on every account "
-             "the approval covers, so a line can exceed its own account's balance in %s), credited it to the "
-             "household's approval decided last before it posted (an approval on a later application for the same "
-             "bill posts under the number the household's first application carried), kept the counsellors' 2025 "
-             "approvals, subtracted each reversal posted through 31 March 2026 from the approval whose write-off it "
-             "reverses, and counted the Willamette hub's twice-loaded December 2025 lines once: $%s thousand in all."
-             % (K.FILES["accounts"], format(f["ask_a_total"], ",.1f")))
-    L.append("7. For the denials, counted the counsellors' 2025 denials for documents not received, reading code 2 "
-             "before 1 July 2025 and code 1 from 1 July, when the reason list was renumbered (the denials that "
-             "reconsiderations reopen carry code 2 to 30 June and code 1 after): %s in all." % money(f["ask_b_total"]))
-    L.append("8. Recommendation: %d grants, $%s.\n" % (n, money(f["budget_usd"])))
-    L.append("## 4. Deliverable Answers\n")
-    L.append("### %s\n" % K.DELIVERABLES[0])
-    L.append("1. Number of grants: %d, the FY2027 budget line $%s" % (n, money(f["budget_usd"])))
-    L.append("2. Whether each hospital qualifies, 31 hospitals in code order:")
-    for c in K.CODES:
-        L.append("   - %s %s: %s" % (c, K.NAME[c], f["verdict"][c]))
-    L.append("3. Assistance written off on the counsellors' 2025 approvals, net of reversals posted by 31 March 2026, "
-             "thousands of dollars to one decimal:")
-    for c in K.CODES:
-        L.append("   - %s: %s" % (c, format(f["ask_a"][c], ",.1f")))
-    L.append("4. Counsellor denials in 2025 for documents not received, whole counts:")
-    for c in K.CODES:
-        L.append("   - %s: %s" % (c, money(f["ask_b"][c])))
+    L += ["## Tags", "",
+          "> **Domain:** General Statistics & Data Science (exploratory data analysis and distribution assessment).",
+          "> **Analytical objective:** Descriptive & Distribution Analysis.", ""]
+    L += ["## 1. Final Recommendation", "",
+          "**Configure %d batch-compounded products for gravimetric verification of every dose at the April 2027 "
+          "cutover: %s.** Each made more than 10 out-of-tolerance doses per hundred thousand doses made in 2026 under "
+          "PH-QP-07 3.1 once every dose is placed on its set at the litres the set had pumped. The other %d stay on "
+          "SC-SOP-12's checks. Not %s, the products a normal fit to the weighed doses flags." % (
+              len(call), "; ".join(name[c] for c in sorted(call)), len(gold) - len(call),
+              "; ".join(name[c] for c in lad["ppk"])), ""]
+    L += ["## 2. Critical Components", "",
+          "1. On PC-1, PC-2 and PC-3 a product's weighed doses fall in a straight line with the litres the set had "
+          "pumped since its set-up, about a start that varies from set to set; on PC-4 they do not move.",
+          "2. Each completed dose's chance of lying outside its tolerance, taken at the litres its set had pumped and "
+          "summed over every dose made, gives each product's 2026 rate per hundred thousand doses made:"]
+    for c in order:
+        L.append("   - %s: %s" % (name[c], ("%.1f" % gold[c]["rate"]) if gold[c]["rate"] >= 0.05 else "under 0.1"))
+    L += ["3. The products over 10 are %s; every other product is under 3." % "; ".join(name[c] for c in sorted(call)), ""]
+    L += ["## 3. Step-by-Step Solution", "",
+          "1. Read %s's station for each serial (PC-3's two serials, before and after 14 July, are one compounder) and "
+          "%s's tolerance, specific gravity and tare for each product." % (K.FILES["equipment"], K.FILES["master"]),
+          "2. Took the completed doses in %s (fill times in UTC) and put each on the set its device had installed: the "
+          "latest SET_UP in %s before the dose, a re-seated set (the same set lot) being one set." % (
+              K.FILES["doses"], K.FILES["events"]),
+          "3. For each dose, the litres its set had pumped before it: the programmed volumes of the set's earlier "
+          "completed doses.",
+          "4. Tied each weighed dose in %s to its dose by batch and dose number; delivered volume is the net weight "
+          "(gross weight less the container tare to 30 June) divided by the specific gravity, as a per cent of the "
+          "labelled volume." % K.FILES["checks"],
+          "5. For each product fitted the weighed doses' per cent deviation as the set's start plus a loss per litre "
+          "pumped (one slope across the product's sets, the start varying from set to set about its mean, a "
+          "dose-to-dose scatter about the line).",
+          "6. Summed over every completed dose the normal chance of lying outside the tolerance at its litres "
+          "pumped, with the start's spread and the scatter, per hundred thousand doses made; the call is the products over 10.",
+          "7. Counted each station's completed doses by Ontario-local month and each product's sets (distinct set "
+          "lots on their devices, the product of the doses filled on them).", ""]
+    L += ["## 4. Deliverable Answers", "", "### %s" % GD.PDF, "",
+          "1. Products configured for gravimetric verification of every dose: %s." % "; ".join(name[c] for c in sorted(call)),
+          "2. Every batch-compounded product marked in or out:"]
+    for c in order:
+        L.append("   - %s: %s" % (name[c], "in" if c in call else "out"))
+    L += ["3. Chart: each product's 2026 out-of-tolerance rate per hundred thousand doses made against the limit of 10, the "
+          "products going on verification in red.", "", "### %s" % GD.CSV, "",
+          "1. Each compounder's doses made in each month of 2026 (Ontario local time), whole numbers:"]
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    for st in ("PC-1", "PC-2", "PC-3", "PC-4", "GC-1"):
+        L.append("   - %s: %s" % (st, ", ".join("%s %s" % (months[m - 1], _n(fig["ask_a"]["%s %02d" % (st, m)]))
+                                               for m in range(1, 13))))
+    L.append("2. The sets each product filled on PC-1 to PC-4 used in 2026, whole numbers:")
+    for c in sorted(fig["ask_b"]):
+        L.append("   - %s: %s" % (name[c], _n(fig["ask_b"][c])))
     L.append("")
-    L.append("### %s\n" % K.DELIVERABLES[1])
-    L.append("1. Horizontal bar chart of the 31 hospitals' shares against the six-percent line, the %d qualifying "
-             "hospitals highlighted." % n)
-    text = "\n".join(L) + "\n"
-    assert "\u2014" not in text
-    open(os.path.join(TASK, "submission.md"), "w").write(text)
-    return text
-
-
-if __name__ == "__main__":
-    print(write())
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(L))

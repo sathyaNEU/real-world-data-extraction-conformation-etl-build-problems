@@ -1,26 +1,25 @@
 # leak check, task272
 
-**Verdict: REVIEW.** 12 files read, 46 golden figures and 32 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 75 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: income, household, calendar, months, quarter, region, percent, application, seasonal, applications, policy, twelve-month, twelve, yearly, households, applied, period, factor, record, poverty, records, determinations, architecture, season, denial
+Stump terms swept: weighed, register, tolerance, golden, weights, litres, reader, architecture, spread, family, hospital, calendar, pumped, capability, reflex, pooled, volume, percent, points, outside, checks, application, readers, determinations, distribution
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `contents.txt`: carries 3 of 5 distinctive words of the committed call: 'The FY2027 budget should carry 16 Decision Coaching Grants, $1,024,000, for H02, H08, H10, H11, H12, H14, H15, H17, H20,'
-- **REVIEW** `fac_decision_coaching_criteria_fy2027.pdf`: carries 4 of 5 distinctive words of the committed call: 'The FY2027 budget should carry 16 Decision Coaching Grants, $1,024,000, for H02, H08, H10, H11, H12, H14, H15, H17, H20,'
+## 3 answer figures in the pack (REVIEW 3)
+- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 100 appears: ...its out-of-tolerance doses made in that year per 100,000 of its doses made in that year. The year is t...
+- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: golden figure 3.1 appears: ...l time. 3. Gravimetric verification of every dose 3.1 At each configuration of the pharmacy's IV workfl...
+- **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: golden figure 3.1 appears: ...s are in the compounded product master. 3. Set-up 3.1 Install the set, prime it with the product's sour...
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `contents.txt`: 4 of 25 stump-paragraph terms appear (region, application, applications, determinations); read whether the document names the move
-- **REVIEW** `fac_data_guide_2024_2025_extracts.pdf`: 15 of 25 stump-paragraph terms appear (income, household, calendar, months, region, percent); read whether the document names the move
-- **REVIEW** `fac_decision_coaching_criteria_fy2027.pdf`: 13 of 25 stump-paragraph terms appear (income, household, calendar, months, percent, application); read whether the document names the move
-
-## 6 ranking artifacts (REVIEW 2)
-- **REVIEW** `fac_member_hospitals_2025.xlsx`: names 31 of 32 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `state_charity_care_filings_fy2025.xlsx`: names 31 of 32 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `PH-QP-07_batch_compounded_products_policy.pdf`: 7 of 25 stump-paragraph terms appear (weighed, register, tolerance, calendar, volume, outside); read whether the document names the move
+- **REVIEW** `SC-SOP-12_batch_compounding_procedure.pdf`: 7 of 25 stump-paragraph terms appear (weighed, register, tolerance, hospital, volume, outside); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 37% of 196 prompts (cap 30%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -28,15 +27,10 @@ Stump terms swept: income, household, calendar, months, quarter, region, percent
 
 ## 5 announcements (clean)
 
+## 6 ranking artifacts (clean)
+
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
 
 ## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
-
-## Isolated readers (stage 4)
-
-- Architecture 1 (target.zip 90774da6): two scored readers, each on fresh copies of `prompt.txt` and `target/`. Reader 1 (r272a) corrected each counsellor-day's contrast by shuffling the day's determinations; reader 2 (r272b) fitted counsellor-day fixed effects and subtracted the null of 150 within-day permutations per hospital, naming the short-queue bias unprompted. Both named the golden 11. Asks: r272a 0 of 62 (every write-off line summed; code 1 for the whole year), r272b 31 of 62 (Ask A whole; Ask B code 1 for the whole year). `score_reader.py --call-key call.qualify` FAIL on both (the call): Gate F failed and the architecture is spent.
-- Architecture 2 (target.zip 66ca10c7): two scored readers, each on fresh copies of `prompt.txt` and `target/`. Reader C (r272c) fitted a smoothed seasonal profile for each hospital and kind of work; reader D (r272d) by kind of work, hospital group and month; each validated it on households seen twice and named the golden 16. Asks: both 0 of 31 on Ask A (every write-off line summed), 1 of 31 on Ask B (the H20 tie). Part 4: both read the four sweep items as harmless (reader C called criteria 2.3's twelve months a mild hint at most). `score_reader.py --call-key call.qualify --call-key call.count` FAIL on both (the call): Gate F failed and the architecture is spent.
