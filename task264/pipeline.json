@@ -1,40 +1,40 @@
 {
  "task": "task264",
- "status": "SHIPPED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-18",
- "stump": "The default path turns each member council's expanded visits into residents with its respondents' average 12-month visit count, a visit-weighted average in an exit survey, so the three valley councils' frequent visitors are undercounted and their levy share falls well below the share the survey's weight over each respondent's own visit count gives.",
- "architecture": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-17"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK; the levy requirement a stated input; every REVIEW line ruled harmless)",
-  "reader": "four readers, each Q1 none (the resolution's estimand only) and Q6 analytical; reader 4 after Ask B's re-cut names its conventions, each settled by the files"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g; ban.artifact cleared by correcting the card's context artifact to close_out_summary)",
-  "nearest": "task256 (v1) 0.11 driver; surface promotes task136 at 0.102 on card axes alone"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC (r1 FIX_NOW, r2 APPROVE; wave 3 audit pass 3 APPROVE)",
-  "disposition": "APPROVE: every committed answer reproduced, all eighteen collection figures included; Gate G statistical_rigor, analytical_non_defect; Gate H pass; the residual multiplicity-estimator fork judged unusual and its optional fix declined (it would name the visit unit)",
-  "report": "task264/determinism_check_report.md, task264/determinism_check_report_pass2.md, task264/determinism_check_report_pass3.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
  "resume": "",
  "approved": null,
- "delivered": "2026-10-17",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "seed": "none (re-root to a new world; architecture 1 took DA14's world)",
+ "seed": "none (re-root to a new world at the Batch 3 queue reset)",
  "history": [
   {
    "architecture": 1,
@@ -48,16 +48,35 @@
     "leak_py": "REVIEW (sweep 3: the filed 1.5 test; sweep 4: methodology and terms vocabulary; sweep 6: banners beside store counts; sweep 9: the retail calendar's forward weeks)",
     "reader": "Q1 none, Q6 analytical; Q5: the level at which a line's price is formed is not filed (constrained by methodology section 1 and the partner register's one shelf price); realism and ask-wording notes staged in the generator, not yet rebuilt"
    }
+  },
+  {
+   "architecture": 2,
+   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset (shipped 2026-10-17, no portal result); the park-levy world is closed",
+   "judge": {
+    "verdict": "DETERMINISTIC (r1 FIX_NOW, r2 APPROVE; wave 3 audit pass 3 APPROVE)",
+    "disposition": "APPROVE: every committed answer reproduced, all eighteen collection figures included; Gate G statistical_rigor, analytical_non_defect; Gate H pass; the residual multiplicity-estimator fork judged unusual and its optional fix declined (it would name the visit unit)",
+    "report": "task264/determinism_check_report.md, task264/determinism_check_report_pass2.md, task264/determinism_check_report_pass3.md"
+   },
+   "leak": {
+    "leak_py": "REVIEW (no LEAK; the levy requirement a stated input; every REVIEW line ruled harmless)",
+    "reader": "four readers, each Q1 none (the resolution's estimand only) and Q6 analytical; reader 4 after Ask B's re-cut names its conventions, each settled by the files"
+   },
+   "duplicate_check": {
+    "heart": "WARN (repeat.gate_g, overuse.gate_g; ban.artifact cleared by correcting the card's context artifact to close_out_summary)",
+    "nearest": "task256 (v1) 0.11 driver; surface promotes task136 at 0.102 on card axes alone"
+   },
+   "gates": {
+    "checks": 126,
+    "verify": "PASS",
+    "rebuild": "byte-identical",
+    "figures_check": "76 of 76",
+    "precut": "50 of 50",
+    "voice_check": "PASS",
+    "producer_metadata": "clean",
+    "cracker": "2 of 26 kept (the two nil late figures), pair ceiling 35.7"
+   },
+   "stump": "The default path turns each member council's expanded visits into residents with its respondents' average 12-month visit count, a visit-weighted average in an exit survey, so the three valley councils' frequent visitors are undercounted and their levy share falls well below the share the survey's weight over each respondent's own visit count gives.",
+   "delivered": "2026-10-17"
   }
- ],
- "gates": {
-  "checks": 126,
-  "verify": "PASS",
-  "rebuild": "byte-identical",
-  "figures_check": "76 of 76",
-  "precut": "50 of 50",
-  "voice_check": "PASS",
-  "producer_metadata": "clean",
-  "cracker": "2 of 26 kept (the two nil late figures), pair ceiling 35.7"
- }
+ ]
 }

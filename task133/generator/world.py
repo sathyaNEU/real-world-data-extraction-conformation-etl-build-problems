@@ -44,20 +44,29 @@ def build(seed=P.SEED):
     units = []
     for car, n in counts.items():
         for j in range(n):
-            nine = rng.random() < (0.78 if car in ("RLC", "KRH", "TTT") else 0.6)
-            tare = round(float(rng.uniform(18.1, 19.3) if nine else rng.uniform(16.7, 17.6)), 2)
-            base = (24.4, 28.6, 33.2) if nine else (23.0, 27.2, 31.6)
-            cap = {3.9: round(base[0] + float(rng.normal(0, 0.35)), 1), 5.9: round(base[1] + float(rng.normal(0, 0.35)), 1),
-                   12.1: round(base[2] + float(rng.normal(0, 0.4)), 1)}
-            units.append(dict(unit=f"{car}-{j + 1:02d}", carrier=car, rego=_plate(rng, used), prev="",
+            nine = rng.random() < P.NINE_AXLE_SHARE[car]
+            year = int(rng.integers(2011, 2026))
+            bunks = int(rng.choice([4, 5], p=[0.45, 0.55] if nine else [0.8, 0.2]))
+            # tare follows the axle set-up, the trailer's bunk count, its age (older steel trailers run heavier) and the
+            # unit's fit-out (cab guard, toolboxes, a second fuel tank)
+            tare = (18.25 if nine else 16.85) + 0.22 * (bunks == 5) + 0.035 * (2025 - year) + float(rng.normal(0, 0.28))
+            tare = round(float(np.clip(tare, 17.3 if nine else 16.1, 19.9 if nine else 18.3)), 2)
+            base = P.BUNK_VOLUME[(nine, bunks)]
+            cap = {L: round(base[L] + float(rng.normal(0, 0.25)), 1) for L in (3.9, 5.9, 12.1)}
+            units.append(dict(unit=None, carrier=car, rego=_plate(rng, used), prev="",
                               config="9-axle truck and trailer" if nine else "8-axle truck and trailer",
-                              eligible=nine, tare=tare, cap=cap,
-                              year=int(rng.integers(2012, 2026)), trailer=_plate(rng, used)))
+                              eligible=nine, tare=tare, cap=cap, bunks=bunks, year=year, trailer=_plate(rng, used)))
+    # Matiri issues its truck numbers at induction, so the numbers run with the units' age across every carrier
+    order = sorted(range(len(units)), key=lambda i: units[i]["year"] + float(rng.uniform(-1.5, 1.5)))
+    no = 207
+    for i in order:
+        no += int(rng.integers(1, 6))
+        units[i]["unit"] = str(no)
     # two units re-registered on 1 February 2026 (personalised plates on the head contractors' new livery)
-    rereg = [u for u in units if u["carrier"] in ("RLC", "KRH")][:2]
-    for u in rereg:
+    rereg = [next(u for u in units if u["carrier"] == "RLC"), next(u for u in units if u["carrier"] == "KRH")]
+    for u, plate in zip(rereg, ("RUAHN1", "KERERU")):
         u["prev"] = u["rego"]
-        u["rego"] = {"RLC-01": "RUAHN1", "KRH-01": "KERERU"}.get(u["unit"], _plate(rng, used))
+        u["rego"] = plate
     W.units = units
     W.rereg_date = dt.date(2026, 2, 1)
 
@@ -79,8 +88,8 @@ def build(seed=P.SEED):
             gd = P.GRADES[g]
             dens = float(np.clip(rng.normal(gd["density"], 0.028), gd["density"] - 0.09, gd["density"] + 0.09))
             cap = u["cap"][gd["length"]]
-            mass_pay = P.OLD_GROSS - u["tare"] - float(rng.uniform(0.0, 0.18))
-            vol_pay = cap * dens * float(rng.uniform(0.985, 1.0))
+            mass_pay = P.OLD_GROSS - u["tare"] - float(rng.uniform(0.0, P.LOAD_MARGIN_T))
+            vol_pay = cap * dens * float(rng.uniform(1.0 - P.BUNK_FILL_SHORTFALL, 1.0))
             net = round(min(mass_pay, vol_pay) / 0.02) * 0.02
             jas = round(net / dens, 3)
             while True:

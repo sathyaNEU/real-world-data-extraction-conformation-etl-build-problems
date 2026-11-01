@@ -35,7 +35,7 @@ FORESTS = {
 PLAN_SCALE = 1.06
 PLAN_MIX_SHIFT = {"A": -0.02, "P": 0.0, "K": 0.0, "KI": 0.01, "KIS": 0.01}
 # the plan's compartment yields by grade against the FY2026 mix (set by tune.py so each graded figure sits mid-bin)
-PLAN_GRADE_ADJ = {"A": 0.99928, "P": 1.00297, "K": 0.99934, "KI": 0.99775, "KIS": 0.99819}
+PLAN_GRADE_ADJ = {"A": 1.00565, "P": 1.00907, "K": 0.99928, "KI": 1.00318, "KIS": 1.0095}
 
 CARRIERS = {
     "RLC": "Ruahine Log Cartage Ltd",
@@ -55,3 +55,11 @@ RATE_BASE = 4.21
 RATE_PER_KM = 0.118
 # FY2026 domestic mill deliveries (tonnes contracted)
 MILL_TONNES = {"MSM": 51800, "AHT": 38000, "HBL": 21000}
+
+# The contracted fleet: share of nine-axle (50MAX-capable) units by carrier, full-bunk volumes (JAS m3) by axle set-up
+# and bunk count for each log length, and how closely loaders work to the limits (on-board scales, full bunks)
+NINE_AXLE_SHARE = {"RLC": 0.86, "KRH": 0.84, "TTT": 0.82, "WHT": 0.72, "KNC": 0.70, "PLH": 0.68}
+BUNK_VOLUME = {(True, 4): {3.9: 23.7, 5.9: 28.1, 12.1: 32.8}, (True, 5): {3.9: 25.2, 5.9: 29.2, 12.1: 33.6},
+               (False, 4): {3.9: 22.6, 5.9: 26.9, 12.1: 31.4}, (False, 5): {3.9: 23.9, 5.9: 27.8, 12.1: 32.1}}
+LOAD_MARGIN_T = 0.06
+BUNK_FILL_SHORTFALL = 0.004

@@ -51,17 +51,17 @@ def write_fleet(W, out):
     ws.title = "Fleet"
     ws.append(["Matiri Forest Products Limited - contracted log cartage fleet as at 30 June 2026"])
     ws.append([])
-    hdr = ["Unit", "Carrier", "Registration", "Previous registration", "Trailer registration", "Configuration", "Year",
-           "Tare (t)", "50MAX permit", "Full bunks 3.9 m logs (JAS m3)", "Full bunks 5.9 m logs (JAS m3)",
+    hdr = ["Unit", "Carrier", "Registration", "Previous registration", "Trailer registration", "Configuration", "Bunks",
+           "Year", "Tare (t)", "50MAX permit", "Full bunks 3.9 m logs (JAS m3)", "Full bunks 5.9 m logs (JAS m3)",
            "Full bunks 12.1 m logs (JAS m3)"]
     ws.append(hdr)
     for c in ws[3]:
         c.font = Font(bold=True)
         c.alignment = Alignment(wrap_text=True)
-    for u in W.units:
-        ws.append([u["unit"], P.CARRIERS[u["carrier"]], u["rego"], u["prev"] or None, u["trailer"], u["config"], u["year"],
-                   u["tare"], "Y" if u["eligible"] else "N", u["cap"][3.9], u["cap"][5.9], u["cap"][12.1]])
-    for col, w in zip("ABCDEFGHIJKL", (9, 28, 13, 13, 13, 24, 6, 9, 8, 13, 13, 13)):
+    for u in sorted(W.units, key=lambda x: int(x["unit"])):
+        ws.append([int(u["unit"]), P.CARRIERS[u["carrier"]], u["rego"], u["prev"] or None, u["trailer"], u["config"], u["bunks"],
+                   u["year"], u["tare"], "Y" if u["eligible"] else "N", u["cap"][3.9], u["cap"][5.9], u["cap"][12.1]])
+    for col, w in zip("ABCDEFGHIJKLM", (9, 28, 13, 13, 13, 24, 6, 6, 9, 8, 13, 13, 13)):
         ws.column_dimensions[col].width = w
     save_xlsx(wb, os.path.join(out, FLEET), "Cartage fleet register", "Stacey MacKay", "2026-07-03T21:15:00Z")
 

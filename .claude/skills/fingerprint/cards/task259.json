@@ -1,90 +1,90 @@
 {
   "task": "task259",
-  "architecture": "v1",
-  "drawn": "2026-10-13",
-  "slot_note": "DA09 seed (START_HERE): the seed's world, decision and quantity kept (a software company's Data Engineer III base-pay midpoint for the bands taking effect on 1 April 2027, read from a salary-sharing platform's licensed extract as of the 1 October 2026 benchmark date); the seed's focus split is kept only as a lower rung (job matching) and the decisive step is re-found in the data: each report's pay ageing to the benchmark date",
+  "architecture": "v2",
+  "drawn": "2026-11-01",
+  "slot_note": "re-rooted 2026-11-01 at the Batch 3 queue reset: the salary-platform world (DA09) is closed; a new world, dataset and shell under the same objective and number (a state labor department's household panel survey certifying the workforce areas for a 2027 pilot)",
   "domain": "survey-research-official-statistics",
   "subdomain": "nonresponse-calibration-measurement-error-adjustment",
   "client_domain": "survey-research-official-statistics",
-  "niche": "a software company's compensation team setting its 2027 Data Engineer pay bands (25th percentile, median and 75th percentile of market base pay for each of four levels) from a salary-sharing platform's respondent reports filed over three years, each report's pay carried to the 1 October 2026 benchmark date",
+  "niche": "a state labor department's quarterly household employment survey certifying which workforce areas have at least 7 per cent of employed residents holding more than one job, counted as the residents would report it themselves, when a household member answers for every adult who is out when the interviewer calls",
   "objective": "descriptive-distribution",
   "shape": "07",
-  "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "File the Data Engineer III midpoint at $170,000 for the pay bands that take effect on 1 April 2027.",
-  "answer_source": "task259/submission.md block 1; golden/data_engineer_bands_2027.xlsx, Bands 2027",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time",
+    "objective",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G7",
-    "G16"
+    "G12",
+    "G3",
+    "G14"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "retry_or_revision_log",
-  "stump_strategy": "grain_or_unit",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "classification_error",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
-  "stakeholder_role": "the company's head of total rewards",
-  "role_family": "other",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who weights the survey correctly and reads the self-report basis keeps the residents who answered for themselves and reweights them, or imputes the answered-for residents from self-reporters alike in age, sex, hours and occupation, and certifies too few areas, because the answered-for residents hold second jobs more often (the second job keeps them out when the interviewer calls) and the household member answering for them reports only about half of those jobs, which only each resident's own answers in the quarters they answered for themselves reveal.",
+  "domain_test": "The deciding quantity is the prevalence of multiple jobholding on the respondent's own reporting basis, which survey methodology estimates by correcting proxy responses for their measurement error, identified in a rotating panel by the same person answering in one quarter and being answered for in another; with another field's nouns there is no household proxy respondent, no rotation panel and no reference-week second job, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:proxy-response-sensitivity-read-within-person-across-panel-quarters",
+  "layer1": [
+    "person line numbers re-keyed at the CAPI system migration, with a crosswalk",
+    "interview start times in UTC against the state's Mountain time",
+    "workforce areas recoded from counties with one county split by ZIP",
+    "hours heaped at 40 and 'don't know' codes",
+    "weights delivered in a separate file per quarter",
+    "a preliminary and a final release of 2026Q3 overlapping"
+  ],
+  "stakeholder_role": "chief of the labor market research office at the state labor department",
+  "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
-    "file": "tallyband_extract_2026-10-01.csv",
-    "rows": 35851,
-    "entity": "one row is one salary-platform respondent's current report (employer, title, platform family and level, employer level code, state, years of experience, base pay, the date the pay was reported, and for respondents who updated, the previous base pay and its date)",
-    "grain": "respondent",
+    "file": "HES_PERSON_2025Q1_2026Q3.csv",
+    "rows": 70000,
+    "entity": "one adult household member in one quarterly survey interview",
+    "grain": "person x quarter",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "software_or_platform",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "United States (a fictional software company)",
+    "geography": "United States (a fictional Mountain West state)",
     "currency": "USD",
-    "org_type": "software company",
+    "org_type": "state labor market information office (the state labor department's research and statistics bureau that runs the household survey)",
     "invented_names": [
-      "Tarnwick Systems",
-      "Tallyband"
+      "State of Tamarack",
+      "Tamarack Household Employment Survey"
     ],
     "people": [
-      "Patty Carroll",
-      "Cole Gillespie",
-      "Wanda Kane"
+      "Mackenzie Parks",
+      "Damon Mcbride",
+      "Kylie Taylor"
     ]
   },
   "deliverables": [
-    "data_engineer_bands_2027.xlsx",
-    "data_engineer_bands_2027.svg"
+    "pba_pilot_areas_2027.xlsx",
+    "pba_pilot_certification_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each carried to the reference date by how the level itself moves at a fixed grade inside the same reporting units; the reporters' own changes between two reports run faster because individuals also climb within the grade, and the trend across the pooled reports runs slower because the units reporting at later dates sit lower, so carrying by the paired changes overshoots and carrying by the pooled trend, or not at all, undershoots.",
-  "driver_concrete": "Each matched respondent's base pay is aged from the date it was reported to 1 October 2026 by the market movement for the job at a fixed level read within employers (an intercept for each employer and level), 2.7 per cent a year, before the medians and quartiles are taken; the re-reporters' own growth between their two reports (4.7 per cent) includes merit inside the level and over-ages every report, and the trend across the pooled reports (1.1 per cent) under-ages them because the employers whose engineers began filing later pay less at every level.",
-  "stump": "A competent analyst matches the platform's respondents to Data Engineer III through the crosswalk and the focus table, sees the reports were filed over three years and carries each to the benchmark date at the re-reporters' own pay growth between their two reports at the same level (4.7 per cent a year), filing the midpoint at $175,000, because a person's raises carry the merit earned inside the level; the analyst who corrects that by the level's movement across the pooled reports (1.1 per cent a year) files $166,000, because the employers the platform reached later pay less at every level; carried by the movement within employers (2.7 per cent a year) the reports give $170,000, and left as filed they give $164,000.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who matches every respondent to the company's levels through the crosswalk and the focus table and reads every rule carries each report to the benchmark date at the re-reporters' own growth between their two reports at the same level (4.7 per cent a year) and files the Data Engineer III midpoint at $175,000; one who reads the level's movement across the pooled reports files $166,000; one who leaves the reports as filed files $164,000; carrying them by how pay at the fixed level moves within employers (2.7 per cent a year) files the golden $170,000.",
-  "domain_test": "The call turns on the market median base pay for a job and level as in effect on a benchmark date, read from pay reports filed at different dates, which compensation practice ages to the date by the market movement at a fixed level (the structure movement) measured on matched employers, the way the Employment Cost Index holds establishments fixed, rather than by individuals' raises, which carry merit, or by the pooled reports' trend, which carries the platform's changing employer mix; with a hospital's or a utility's nouns there is no job-level band, no re-reporter progressing inside it and no salary platform whose reach widens to lower-paying employers, and the task stops reading the same.",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of a population holding a status on the basis each member would report for themselves, when members absent at the moment of measurement are reported by someone else who misses the status about half the time and holding the status is itself what makes members absent; the second-hand and first-hand reports show nearly the same share in the cross-section because the two effects offset, and only the same members' first-hand and second-hand reports in different rounds show how much the second-hand reports miss.",
+  "driver_concrete": "Each workforce area's share of employed residents holding more than one job, counted as they would report it themselves: the survey answers for adults who are out at interview time through another household member, people with a second job are out at it more often, and the answering member reports a second job for only about half of those who hold one; that sensitivity is read from residents answering for themselves in one quarter and answered for in the next, and every answered-for report is corrected by it.",
+  "stump": "A competent analyst who reads the act's self-report basis keeps the residents who answered for themselves and reweights them, or imputes the answered-for residents from self-reporters alike in age, sex, hours and occupation, and certifies too few areas; the answered-for residents hold second jobs more often because the second job keeps them out when the interviewer calls, and the household members answering for them report only about half of those jobs, which the cross-sectional comparison of proxy and self reports hides and only each resident's own answers across quarters reveal.",
   "mechanism_source": "design_note",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:report-ageing-by-market-movement-within-employers",
-  "layer1": [
-    "a salary platform's own job family and normalised level mixing roles and levels the company's architecture separates (machine-learning data engineers inside data engineering; employer level codes mapped through an effective-dated crosswalk)",
-    "respondent reports filed over three years, a share carrying the respondent's previous report",
-    "free-text titles and employer names in several spellings",
-    "OEWS state employment margins beside the platform's respondents",
-    "ask paths: an HRIS roster with rehires under a second employee id, contractors and effective-dated job changes; a posting system export listing multi-location postings once per city"
-  ],
   "differentiation": {
-    "task87": "task87 caps a delivered count under an exclusivity no procedure states; this build ages pay reports to a reference date by the level's own movement rather than the reporters' progression: no cap, no exclusivity, no filed procedure",
-    "task445": "task445 completes a period total for reporters whose reports have not arrived by carrying each from its last report; this build has every report in hand and ages each one to a reference date by the market's movement at a fixed level, not by the reporters' own progression",
-    "task256": "task256 transfers a reference survey's joint body-size distribution to a roster through the survey's conditional distribution within sex; this build reads a rate of change at a fixed grade inside the same reporting employers because the platform's employers change across dates: a time trend's composition, not a population transfer",
-    "task259": "loop 1 keeps loop 0's carry by the level's own movement and reads that movement inside employers: loop 0's decisive trend across the pooled reports is now a rung, wrong because the platform's employers arrive through the window paying less at every level"
+    "task270": "task270 v2 corrects reports members withhold because reporting costs them more than the event, a cost that moves with their position on a scale; this build corrects answers a second household member gives without knowing the status, where holding the status is what makes the member absent, and the miss rate is read within the same person across survey rounds, with no cost, threshold or behavioural response",
+    "task192": "task192 v3 carries an instrument's per-class error rates from a validation batch that covered only the window's opening; this build has no validation batch: the second-hand reporter's miss rate is identified by the same people answering for themselves in one round and being answered for in another, and the reporter is assigned by the status itself (absence), so the cross-sectional comparison of the two routes shows almost no gap"
   },
   "lineage": [
     {
@@ -103,7 +103,32 @@
       "decision_type": "quantity_figure",
       "stump_strategy": "grain_or_unit",
       "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each of which has to be carried to the reference date by how the level itself moves at a fixed grade; the reporters' own changes between their two reports run faster because individuals also climb within the grade, so carrying the reports by the paired changes overshoots and leaving them as filed undershoots."
+    },
+    {
+      "architecture": "v1 (loop 1, shipped 2026-10-13): a software company's 2027 Data Engineer pay bands from a salary-sharing platform's respondent reports, each aged to the benchmark date by the level's movement read within employers",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset",
+      "domain": "survey-research-official-statistics",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "decomposition_attribution",
+      "decision_type": "quantity_figure",
+      "stump_strategy": "grain_or_unit",
+      "driver": "The decisive quantity is a level at a reference date estimated from reports filed at earlier dates, each carried to the reference date by how the level itself moves at a fixed grade inside the same reporting units; the reporters' own changes between two reports run faster because individuals also climb within the grade, and the trend across the pooled reports runs slower because the units reporting at later dates sit lower, so carrying by the paired changes overshoots and carrying by the pooled trend, or not at all, undershoots."
     }
   ],
-  "notes": "drawn 2026-10-13 after task258 shipped; task257 (DA07) waits for a later draw day because its world's natural step is the duty-cycle mix (composition_mix), barred against task256 in the draw window. DA09's seed step (the platform's family mixing machine-learning data engineers) stays a lower rung (job matching through the focus table); the client domain is Survey Research & Official Statistics (a salary survey's measurement adjustment), since Economics carries no Descriptive task type; loop 1 (2026-10-13, the author's request for a second layer): the platform's employers arrive through the window paying less, so the movement is read within employers; the strategy stays grain_or_unit for the first decisive move (whose movement carries a report) and the second layer is composition_mix (the employer mix of the pooled reports), which shares no mechanism with task256's within-sex conditional transfer of a survey to a roster"
+  "notes": "Architecture 2 drawn 2026-11-01 at the Batch 3 queue reset. Strategy classification_error: a proxy answer misclassifies a held second job as none; the correction's input is identified within person across the rotation panel.",
+  "lineage_shells": [],
+  "registered": "2026-11-01T20:56:11Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "in",
+    "rounding opener": "round",
+    "deliverable set": "svg+xlsx"
+  }
 }

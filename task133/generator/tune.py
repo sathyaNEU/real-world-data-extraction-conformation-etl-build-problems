@@ -1,5 +1,6 @@
-"""Sets params.PLAN_GRADE_ADJ (the plan's compartment yields by grade) so each grade's FY2028 loads sit at the centre of
-its 50-load bin and the total at the centre of its 100-load bin, measured on a written pack."""
+"""Sets params.PLAN_GRADE_ADJ (the plan's compartment yields by grade, applied in the planning step) so that, under every
+convention analysis.Pack.conventions() computes, each grade's FY2028 loads sit inside one 100-load bin and the total inside
+one 500-load bin, with the spread of the conventions centred in the bin. Measured on a written pack."""
 import importlib
 import os
 import shutil
@@ -16,26 +17,43 @@ def measure():
     tmp = tempfile.mkdtemp()
     try:
         make_pack.make(tmp)
-        pk, res = A.ladder(tmp)
+        conv = A.Pack(tmp).conventions()
     finally:
         shutil.rmtree(tmp)
-    return res["golden"]
+    grades = list(next(iter(conv.values())))
+    lo = {g: min(v[g] for v in conv.values()) for g in grades}
+    hi = {g: max(v[g] for v in conv.values()) for g in grades}
+    tl = min(sum(v.values()) for v in conv.values())
+    th = max(sum(v.values()) for v in conv.values())
+    return lo, hi, tl, th
 
 
-def main(rounds=4):
+def nearest(x, step):
+    return round(x / step) * step
+
+
+def main(rounds=6):
     import params as P
+    target = None
     for i in range(rounds):
-        g = measure()
-        tot = sum(g.values())
-        print("round", i, round(tot), {k: round(v, 1) for k, v in g.items()})
-        target = {k: round(v / 50) * 50 for k, v in g.items()}
-        # the total's 100-load bin centre: nudge the largest grade by 50 if the sum of centres sits on an odd 50
-        if sum(target.values()) % 100 != 0:
-            big = max(target, key=lambda k: target[k])
-            target[big] += 50 if g[big] > target[big] else -50
-        if all(abs(g[k] - target[k]) < 4 for k in g) and abs(tot - sum(target.values())) < 8:
+        lo, hi, tl, th = measure()
+        mid = {g: (lo[g] + hi[g]) / 2 for g in lo}
+        tmid = (tl + th) / 2
+        print("round", i, "total %.1f to %.1f" % (tl, th), {g: "%.1f-%.1f" % (lo[g], hi[g]) for g in lo})
+        if target is None:
+            T = nearest(tmid, 500)
+            target = {g: nearest(m, 100) for g, m in mid.items()}
+            while sum(target.values()) != T:
+                if sum(target.values()) < T:
+                    g = max(target, key=lambda k: mid[k] - target[k])
+                    target[g] += 100
+                else:
+                    g = min(target, key=lambda k: mid[k] - target[k])
+                    target[g] -= 100
+            print("targets", T, target)
+        if all(abs(mid[g] - target[g]) < 3 for g in mid):
             break
-        new = {k: round(P.PLAN_GRADE_ADJ[k] * target[k] / g[k], 5) for k in g}
+        new = {g: round(P.PLAN_GRADE_ADJ[g] * target[g] / mid[g], 5) for g in mid}
         src = open(os.path.join(HERE, "params.py")).read()
         a = src.index("PLAN_GRADE_ADJ = {")
         b = src.index("}", a) + 1

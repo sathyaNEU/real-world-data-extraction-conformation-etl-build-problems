@@ -22,8 +22,9 @@ def read_csv(path):
 
 
 class Pack:
-    def __init__(self, tdir):
+    def __init__(self, tdir, window=60):
         self.tdir = tdir
+        self.window = window
         self.wb = read_csv(os.path.join(tdir, WB))
         self.sc = read_csv(os.path.join(tdir, SC))
         ws = load_workbook(os.path.join(tdir, FLEET), read_only=True)["Fleet"]
@@ -68,7 +69,7 @@ class Pack:
         self.loads = []
         for t in self.wb:
             tw = dt.datetime.strptime(t["weighed_at"], "%d/%m/%Y %H:%M")
-            cands = [s for ts, s in by[t["vehicle_rego"]] if tw <= ts <= tw + dt.timedelta(minutes=60)]
+            cands = [s for ts, s in by[t["vehicle_rego"]] if tw <= ts <= tw + dt.timedelta(minutes=self.window)]
             s = cands[0]
             u = self.by_rego.get(t["vehicle_rego"])
             self.loads.append(dict(ticket=t["ticket_no"], grade=t["product_code"], net=float(t["net_tonnes"]),
@@ -96,7 +97,7 @@ class Pack:
             return min(m, self.cap(u, ld["grade"], fixed_length=12.1) * d)
         return min(m, self.cap(u, ld["grade"]) * d)
 
-    def loads_by_grade(self, mode="golden", grade_density=False, drop_unmapped=False):
+    def loads_by_grade(self, mode="golden", grade_density=False, drop_unmapped=False, harmonic=False, actual_44=False):
         dmean = {}
         if grade_density:
             for g in P.GRADE_ORDER:
@@ -108,8 +109,43 @@ class Pack:
                 continue
             if drop_unmapped and l["rego"] != l["unit"]["Registration"]:
                 continue
-            pay[l["grade"]].append(self.payload(l, mode, dmean.get(l["grade"]) if grade_density else None))
+            if actual_44 and l["unit"]["50MAX permit"] != "Y":
+                pay[l["grade"]].append(l["net"])
+            else:
+                pay[l["grade"]].append(self.payload(l, mode, dmean.get(l["grade"]) if grade_density else None))
+        if harmonic:
+            return {g: self.plan[g] * sum(1.0 / x for x in pay[g]) / len(pay[g]) for g in P.GRADE_ORDER}
         return {g: self.plan[g] / (sum(pay[g]) / len(pay[g])) for g in P.GRADE_ORDER}
+
+    def variants(self):
+        """Every licensed convention of the golden: density per load or per grade, the arithmetic mean payload or the mean
+        of each load's inverse payload, the 44-tonne units recomputed or kept at their FY2026 net."""
+        out = {}
+        for gd in (False, True):
+            for hm in (False, True):
+                for a44 in (False, True):
+                    out[(gd, hm, a44)] = self.loads_by_grade("golden", grade_density=gd, harmonic=hm, actual_44=a44)
+        return out
+
+    def further_readings(self):
+        """Two weightings no sentence licenses, held inside the same bins for margin: each FY2026 tonne re-carried at its
+        load's FY2028 payload (tonne-weighted inverse), and each unit's own average payload averaged over the units."""
+        pay, net, per_unit = defaultdict(list), defaultdict(list), defaultdict(lambda: defaultdict(list))
+        for l in self.loads:
+            p = self.payload(l)
+            pay[l["grade"]].append(p)
+            net[l["grade"]].append(l["net"])
+            per_unit[l["grade"]][l["unit"]["Unit"]].append(p)
+        tw = {g: self.plan[g] * sum(n / p for n, p in zip(net[g], pay[g])) / sum(net[g]) for g in P.GRADE_ORDER}
+        uw = {g: self.plan[g] / (sum(sum(v) / len(v) for v in per_unit[g].values()) / len(per_unit[g])) for g in P.GRADE_ORDER}
+        return {"tonne_weighted_inverse": tw, "unit_weighted": uw}
+
+    def conventions(self):
+        out = {"density %s, %s, 44 t units %s" % ("grade mean" if k[0] else "per load", "mean of inverse payloads" if k[1]
+                                                    else "mean payload", "at FY2026 net" if k[2] else "recomputed"): v
+               for k, v in self.variants().items()}
+        out.update(self.further_readings())
+        return out
 
     def fleet_average(self):
         """R0: every load gains six tonnes, fleet-wide average payload."""
