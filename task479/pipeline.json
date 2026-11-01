@@ -5,31 +5,42 @@
  "objective": "etl",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-21",
+ "updated": "2026-11-01",
  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
  "architecture": 6,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-21"
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (claims components as inputs only)",
-  "reader": "two readers missed the call (exit 0, asks 3.7 per cent)"
+  "leak_py": "LEAK on the shipped cut (sweep 1: data dictionary and extract manifest; sweeps 12 and 13 clean), 2026-11-01",
+  "reader": "2026-11-01: no decisive-step sentence; question 5 and 6 read memo section 3 as filing each employer's own trended experience (a main-call fork)"
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "task89 0.06"
+  "heart": "BLOCK ban.artifact against task474 (drawn 10-20, before this card; inherited, recorded for the author), 2026-11-01 after a pull",
+  "nearest": "task269 0.07",
+  "surface": "clean"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "verdict": "NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK",
+  "report": "determinism_check_report_pass2.md",
+  "date": "2026-11-01",
+  "earlier": "DETERMINISTIC, APPROVE, determinism_check_report.md, 2026-10-21"
  },
  "returned": [],
- "resume": "",
+ "resume": "Architecture 6 spent at the 11-01 re-check: the judge SEND_BACK, the memo's literal reading is the default path and the sentence that closes it names the decisive step (fork is the stump). Shipped and pending on the portal; a re-root (new world, dataset, generator and shell, architecture 7) or overruling the judge is the author's call. If overruled, the reship repair is: drop the dictionary and manifest from pack.FILES and build.py, \"each member employer\" in the prompt, employer names off alphabetical id order, account managers drawn per row.",
  "approved": null,
  "delivered": "2026-10-21",
  "portal": null,
- "source_note": "seed ET36 (NFIP loss ratios from public policy and claim records, written against earned, rows against insured units): the world, the decision and the quantity kept (NFIP claims experience per insured building, outreach for private-market flood products); the seed's mechanisms only as Layer 1; the pitfall re-found in the record's own mitigation history"
+ "source_note": "seed ET36 (NFIP loss ratios from public policy and claim records, written against earned, rows against insured units): the world, the decision and the quantity kept (NFIP claims experience per insured building, outreach for private-market flood products); the seed's mechanisms only as Layer 1; the pitfall re-found in the record's own mitigation history",
+ "recheck": {
+  "date": "2026-11-01",
+  "rebuild_reproduces_shipped_zip": true,
+  "voice_check": "WARN: a count the data hold (eighteen); which-form quota",
+  "figures_check": "93 of 93",
+  "anatomy": "Back-test and Shock fail, measured (DESIGN_NOTE ## Survivor anatomy)",
+  "repair": "cut and gated, not shipped; shipped cut restored"
+ }
 }

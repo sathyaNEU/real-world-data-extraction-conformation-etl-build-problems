@@ -80,6 +80,18 @@ No certified replay: no certified or published credibility, manual rate or proje
 
 Lesson: an expected level read from a short record is the record weighed against the pool by how much of its spread is signal, and for a small health group three years of claims are mostly the luck of a few members; no build on file estimates each unit's level by shrinking its own noisy record toward the pool by a credibility the pool's own spread sets.
 
+## Survivor anatomy
+
+Written at the 2026-11-01 re-check of the shipped build, each test run on the cut pack (scratch measurement, leave-one-year-out and every per-employer sort).
+
+Actor: the property that decides, how much of an employer's three years is chance, has no column in any file; it is a relation between each employer's own years and the spread of every employer's mean around the trust's level, which nothing stores.
+Link: the signal is read by comparing each employer's year-to-year spread with the spread across employers, a cross-unit comparison no key offers and no sentence invites; the memo names only each employer's own trended experience as the evidence.
+Reflex: the renewal underwriter's reflex, each group's own trended experience, sits at R2 and files CR104, CR109, CR136, CR167 and CR176 (Ends on); the trust's level for every employer (R0) adds CR181 to the golden.
+Back-test: fails here. A leave-one-year-out back-test on the pack refutes the easy route: own experience never beats the credibility estimate (weighted RMSE 115.9 against 109.9 holding out 2025, 86.8 against 72.4 holding out 2024, 60.2 against 60.0 holding out 2023), so a solver who validates is pointed toward the pool; recorded for the author, not repaired on a shipped build.
+Second use: every file the decisive step reads (the two lag reports, eligibility, the reimbursements, the policy schedule, the elections) is read by the default path too; the step reads no file of its own.
+Shock: fails here. The golden six are exactly the six lowest claims components in the elections workbook (positions 0 to 5 of 18 on that sort); they are no interval of member months, own experience, own experience less component or 2025 experience. Recorded for the author, not repaired on a shipped build.
+Pins: the memo files the population, outcome, window, unit, comparison, evidence and trend; no sentence names credibility, a pooling point, a manual rate or a full-credibility standard, and deleting any filed sentence leaves the credibility set unchanged (the fork table's convergences).
+
 ## Readability screen
 
 Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
@@ -87,7 +99,7 @@ Each rung, the sentence or file a reader would have to read to take it, and whet
 | Rung | What takes the reader there | Verdict |
 |---|---|---|
 | R0 the trust's level for every employer | the memo's "the trust's experience" | readable |
-| Layer 1: two layouts, reimbursements by policy, reissued ids | the dictionary and the policy schedule | readable |
+| Layer 1: two layouts, reimbursements by policy, reissued ids | the files' own headers and the policy schedule | readable |
 | R1 2025 experience alone, trended | the lag report | readable |
 | R2 (default path) each employer's three years trended | the memo and the lag report | readable |
 | R3 (decisive) each employer's experience weighed by its credibility | nothing: no sentence names credibility, a manual rate, a pooling point or a full-credibility standard; the plan summary describes the design and the stop-loss only | silent |
@@ -97,7 +109,7 @@ Each rung, the sentence or file a reader would have to read to take it, and whet
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | completeness of each plan year | claims paid through March of the next are complete | a lag allowance | same call | memo section 3; every cell within three months (SF1) |
-| SF2 | May 2026 in both lag reports | one cell | both | same call (May 2026 carries no 2023 to 2025 claims beyond March; identical cells, asserted) | the manifest's coverages; SF2 |
+| SF2 | May 2026 in both lag reports | one cell | both | same call (May 2026 carries no 2023 to 2025 claims beyond March; identical cells, asserted) | the two reports' paid months (05/2026 and 2026-05 cells equal at 100 to 1); SF2 |
 | SF3 | member months | a member enrolled in the month | persons | same call (no reissued id before July 2026, asserted) | memo section 2; SF3 |
 | SF4 | pharmacy rebates | before rebates | net | not filed alternatives | memo section 2 |
 | SF5 | trend | each year's retained claims at 7 per cent a year | each claimant trended before the deductible | same call (asserted, L1b) | memo section 3 |
@@ -131,7 +143,7 @@ Built values from the cut pack (generator/checks.py L1 to L4, C2, C3), expected 
 | 1 | Population | each member employer's members in 2027 | filed (memo 2) |
 | 2 | Unit of account | per member per month | filed (memo 2) |
 | 3 | Attribution window | plan year 2027 | filed |
-| 4 | As-of dating | the extracts of 7 October 2026 | manifest |
+| 4 | As-of dating | the extracts of 7 October 2026 | the files' own paid and coverage months, through September 2026 |
 | 5 | Version basis | one cell per employer, month, paid month and category | SF2 |
 | 6 | Denominator | member months | filed (SF3) |
 | 7 | Weighting | member months | SF7 (every form one call) |
@@ -143,10 +155,10 @@ Built values from the cut pack (generator/checks.py L1 to L4, C2, C3), expected 
 | 13 | Order of operations | conform, net, trend, weigh, compare | commutes (SF5) |
 | 14 | Row order | none | commutes |
 | 15 | Duplicate resolution | May 2026 once | SF2 |
-| 16 | Identity normalisation | employer ids across layouts | the dictionary |
+| 16 | Identity normalisation | employer ids across layouts | converge: the same CR codes in every file |
 | 17 | Netting against gross | net of reimbursements, before rebates | SF4, SF8 |
-| 18 | Dimensional units | cents against dollars | the dictionary |
-| 19 | Code and status semantics | MED and RX | the dictionary; never the stump |
+| 18 | Dimensional units | cents against dollars | the header plan_paid_cents; the May 2026 cells both reports carry agree at 100 to 1 |
+| 19 | Code and status semantics | MED and RX | the codes as each system writes them (Medical and MED, Pharmacy and RX); never the stump |
 | 20 | Integerisation | none | commutes |
 | 21 | Clause scope | the test applies to every employer | filed |
 | 22 | Forward window contents | 2027 not yet incurred, plan and employers unchanged | filed (memo 2) |
@@ -200,10 +212,13 @@ the finished pack.
 
 ## Pre-ship check
 
-- Readers (two Sonnet, medium, fresh unzips of target.zip, the neutral brief, 2026-10-21): both took each employer's own trended experience and filed CR104, CR109, CR136, CR167 and CR176 (the default path); score_reader.py exit 0 for both, call missed, asks 2 of 54 (3.7 per cent); both named no sentence carrying the decisive step and called the review lines harmless.
+- Leak readers (Sonnet, medium, fresh unzips of target.zip, 2026-10-21): named no sentence carrying the decisive step and called the review lines harmless (the scored-read figures of that round are the retired practice and are not kept).
 
 - Judge (hand-built brief, Sonnet, medium): DETERMINISTIC, APPROVE; the set reproduces under Buhlmann-Straub, limited fluctuation at 1,000 and 3,000 lives and k from half to twice its estimate; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no; Gate H domain pass, layers pass, decisive_step analytical. Report: determinism_check_report.md.
 - The 10/10 rules re-read against the built pack: the decisive step is credibility (analytical), the mess (two lag layouts, policy rewrites, reissued ids) is Layer 1 and moves no decision.
+
+- Re-check 2026-11-01 under the new gates, on the shipped cut (the rebuild reproduces target.zip at 8d3e2b83 byte for byte): leak.py LEAK on sweep 1 (crbht_data_dictionary.csv and crbht_extract_manifest_2026-10-07.csv describe the data; sweeps 12 and 13 clean); voice-check WARN on a count the data hold ("each of the eighteen employers") and the which-form quota; precut exit 0 with the survivor anatomy written (Back-test and Shock fail, measured); guard.py heart BLOCK ban.artifact against task474 (register, drawn 10-20, before this card), surface clean; figures_check 93 of 93. A repair was cut and gated (both files out, every reading converging on the files' headers, codes and paid months; the prompt saying "each member employer"; employer names off alphabetical id order and account managers drawn per row; freeze.py determinism PASS, leak.py REVIEW, precut, voice-check and figures_check green) and is not shipped: the stage 4 judge returned NOT_DETERMINISTIC, SEND_BACK (determinism_check_report_pass2.md) and the isolated leak reader read the memo the same way, so the shipped cut is restored and the architecture is spent. The re-root is the author's call.
+- The judge (pass 2) and the leak reader agree: the memo's section 3, read literally, takes each employer's own trended experience as its expected claims and files CR104, CR109, CR136, CR167 and CR176, the default path; the judge adds that nothing closes the broker survey as a complement. The sentence that would close the fork ("the expected cost given an employer's few members") names what the decisive step recognises, so the fork is the stump (build-pipeline, the fork-is-the-stump test) and no pin repairs it. The reader also named realism tells: employer names in alphabetical id order, account managers dealt round robin, ids in steps of four and five ascending with size.
 
 ## Tried and rejected
 
@@ -272,3 +287,4 @@ the finished pack.
   step that removes bad responses is Layer 1, and any shipped report of the easy route's figure is a Gate G artifact.
 - Architecture 5, a schools health cooperative's 2026 plan year completed under each district's 2026 deductible (2026-10-21, spent at stage 4): both scored readers completed each district's January to June 2026 by the 2025 factor of its 2026 plan, naming deductible leveraging unprompted, and landed the call and every expected PMPM (exit 1, 32 of 64 each); reader 7 also resolved ask A's reissued ids on person attributes, while ask B's reopened claimant files held for both. A field-standard correction whose inputs (a design history and per-unit experience by design) sit side by side in the pack is found by a strong reader; the judge thread was stopped as moot.
 - Adverse selection in dual-option employers as the decisive step (2026-10-21, screened at the draw): a simulation of members choosing the high-deductible plan by their own risk put the electees' plan-year factor at 1.06 to 1.12 against 1.19 for a whole-employer move, but a dual-option employer's blended factor stayed within 0.005 of its own history and plan-level pooling is dominated by the non-electees' claims, so neither the easy route nor plan pooling moved the call.
+- Architecture 6, each employer's expected claims by credibility against the trust's level (2026-11-01, spent at the re-check's stage 4): the judge (pass 2) returned NOT_DETERMINISTIC, SEND_BACK, the memo's literal reading filing each employer's own trended experience (the default path) and the broker survey left open as a complement, and the leak reader read section 3 as filing the method; filing the WHAT that closes it names the decisive step, so the fork is the stump. The 10-21 judge had approved the same memo. A dictionary and a manifest also shipped (leak.py sweep 1).
