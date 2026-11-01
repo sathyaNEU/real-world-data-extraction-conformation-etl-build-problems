@@ -176,25 +176,51 @@ def write_rural_pdf(out):
     c.setAuthor("Orari Bank Limited, Rural Banking")
     c.setCreator("Orari Bank Limited")
     c.setProducer("Orari Bank Limited")
+    c.setSubject("ICAAP 2026 rural book stress (CR-ST-03)")
     w, h = A4
     y = h - 60
-    lines = [("Helvetica-Bold", 12, "Orari Bank Limited - Rural book stress summary, ICAAP 2026 (CR-ST-03)"),
-             ("Helvetica", 9, "Book date 30 September 2026. Severe scenario approved 24 September 2026."),
-             ("Helvetica", 9, "Dairy payout NZD 6.10/kg MS in the stress year; farm land values down 22 per cent."),
-             ("Helvetica-Bold", 10, "Stressed loss by rural sector (NZD million)"),
-             ("Helvetica", 9, "Dairy farming                       14.8"),
-             ("Helvetica", 9, "Sheep and beef farming               3.1"),
-             ("Helvetica", 9, "Horticulture and viticulture         1.6"),
-             ("Helvetica", 9, "Rural contractors and services       0.9"),
-             ("Helvetica", 9, "Rural book total                    20.4"),
-             ("Helvetica", 8, "Prepared by Rural Credit Risk, 9 October 2026. For the ICAAP paper to the Board, November 2026.")]
-    for font, size, text in lines:
+    lines = [("Helvetica-Bold", 12, "Orari Bank Limited - Rural book stress summary, ICAAP 2026 (CR-ST-03)", None),
+             ("Helvetica", 9, "Book date 30 September 2026. Severe scenario approved 24 September 2026.", None),
+             ("Helvetica", 9, "Dairy payout NZD 6.10/kg MS in the stress year; farm land values down 22 per cent.", None),
+             ("Helvetica-Bold", 10, "Stressed loss by rural sector (NZD million)", None),
+             ("Helvetica", 9, "Dairy farming", "14.8"),
+             ("Helvetica", 9, "Sheep and beef farming", "3.1"),
+             ("Helvetica", 9, "Horticulture and viticulture", "1.6"),
+             ("Helvetica", 9, "Rural contractors and services", "0.9"),
+             ("Helvetica-Bold", 9, "Rural book total", "20.4"),
+             ("Helvetica", 8, "Prepared by Rural Credit Risk, 9 October 2026. For the ICAAP paper to the Board, November 2026.", None)]
+    for font, size, text, value in lines:
         c.setFont(font, size)
         c.drawString(56, y, text)
+        if value is not None:
+            c.drawRightString(290, y, value)
         y -= 18 if size >= 10 else 15
     c.showPage()
     c.save()
+    _pdf_scrub(path, "D:20261009101500+13'00'")
     return path
+
+
+def _pdf_scrub(path, stamp):
+    """Equal-length, in-place: the writer's comment lines blanked after their % marker and the fixed creation and
+    modification dates set to the summary's preparation date, so every xref offset stands."""
+    import re as _re
+    from io_util import pdf_text
+    before = pdf_text(path)
+    b = open(path, "rb").read()
+    n = len(b)
+
+    def blank(m):
+        return m.group(1) + b" " * (len(m.group(0)) - len(m.group(1)))
+    b = _re.sub(rb"(%\x93\x8c\x8b\x9e)[^\n]*ReportLab[^\n]*", blank, b)
+    b = _re.sub(rb"(%)[^\n]*ReportLab[^\n]*", blank, b)
+    old = _re.findall(rb"/(?:CreationDate|ModDate) \((D:[^)]*)\)", b)
+    for o in set(old):
+        assert len(o) == len(stamp), (o, stamp)
+        b = b.replace(o, stamp.encode("latin-1"))
+    assert len(b) == n and b"ReportLab" not in b and b"reportlab" not in b
+    open(path, "wb").write(b)
+    assert pdf_text(path) == before
 
 
 def write_deposits(W, out):

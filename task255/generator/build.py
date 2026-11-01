@@ -14,6 +14,7 @@ import zipfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+import asks_world as AW  # noqa: E402
 import golden as GD  # noqa: E402
 import io_util as IO  # noqa: E402
 import pack as PK  # noqa: E402
@@ -48,6 +49,7 @@ def metadata(n):
         "files": {PK.FILES[k]: {"source": SOURCES[k], "date": P.AS_OF.isoformat(), "license": "synthetic, CC0",
                                 "role": "distractor" if k in PK.DISTRACTORS else "evidence"} for k in PK.FILES},
         "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],
+        "stated_inputs": [b[0].split("-")[-1] for b in AW.BOOKINGS],
         "largest_file": {"name": PK.FILES["journeys"], "rows": n["journeys"]},
         "row_counts": {PK.FILES[k]: v for k, v in sorted(n.items())},
     }

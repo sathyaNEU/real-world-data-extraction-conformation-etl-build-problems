@@ -370,8 +370,8 @@ def write_distractors(w, target, rng):
                                 "avg_wait_reported_min", "pct_notice_screens"], srows,
                     ["Reizigersonderzoek metro Ravelmond, derde kwartaal 2026 (veldwerk 1 juli tot 30 september), "
                      "steekproef op het perron"])],
-                  ("Onderzoeksbureau Kwadrant", "Onderzoeksbureau Kwadrant", "2026-10-09T12:00:00Z",
-                   "2026-10-09T12:00:00Z", "Reizigersonderzoek Q3 2026", "Onderzoeksbureau Kwadrant"))
+                  ("Onderzoeksbureau Peilstok", "Onderzoeksbureau Peilstok", "2026-10-09T12:00:00Z",
+                   "2026-10-09T12:00:00Z", "Reizigersonderzoek Q3 2026", "Onderzoeksbureau Peilstok"))
     blocks = [("t", "OOH-benchmark 2026: digitale schermen in OV-knooppunten"),
               ("s", "Brancheoverzicht · Stichting Buitenreclame Benchmark · september 2026"),
               ("p", "The benchmark collects published rate cards and audited contacts of digital transit screens in "

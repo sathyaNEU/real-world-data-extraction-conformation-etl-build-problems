@@ -72,9 +72,9 @@ def main():
           "7. For net revenue, split the VAT out of facturen_oud_systeem_2026.csv, added the invoices and netted every "
           "credit note through its invoice number in billing_export_2026-10-15_2026-11-12.xlsx, and charged each "
           "agency's contract rate (its statement in bureaucommissie_najaar_2026.pdf over the value net of the credit "
-          "notes issued by 31 October: Kompasmedia %s, Noordlicht Mediaplanning %s and Bureau Lindeman %s per cent) on "
+          "notes issued by 31 October: Windroos Media %s, Noordlicht Mediaplanning %s and Bureau Overdiep %s per cent) on "
           "each booking's value net of all its credit notes (terms 8.2 and 8.3)."
-          % (rates["Kompasmedia"], rates["Noordlicht Mediaplanning"], rates["Bureau Lindeman"]),
+          % (rates["Windroos Media"], rates["Noordlicht Mediaplanning"], rates["Bureau Overdiep"]),
           "8. Recommended Tier G for %s." % names, ""]
     L += ["## 4. Deliverable Answers", "", "### tier_g_2027.xlsx", "",
           "1. Tier G in 2027: %s; every other package in the standard tier." % names,

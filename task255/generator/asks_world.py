@@ -272,25 +272,25 @@ def dark_hours(A, tag, f0, f1, how="golden"):
 
 # ---------------------------------------------------------------- bookings and billing
 ADVERTISERS = [
-    ("Duinvalk Zorgverzekeraar", "Kompasmedia"), ("Brouwerij De Ravel", None), ("Klaverstad Makelaars", None),
+    ("Duinvalk Zorgverzekeraar", "Windroos Media"), ("Brouwerij De Ravel", None), ("Klaverstad Makelaars", None),
     ("Polderlicht Energie", "Noordlicht Mediaplanning"), ("Stadsschouwburg Ravelmond", None),
-    ("Hoogland Opleidingen", "Kompasmedia"), ("Vivenza Mobiel", "Bureau Lindeman"),
-    ("Kaasmakerij Ten Haeve", "Bureau Lindeman"), ("Ravelmondse Tandartsen", "Noordlicht Mediaplanning"),
-    ("Fietsmakerij Velo Oost", "Bureau Lindeman"),
+    ("Hoogland Opleidingen", "Windroos Media"), ("Belzo Mobiel", "Bureau Overdiep"),
+    ("Kaasmakerij Ten Haeve", "Bureau Overdiep"), ("Ravelmondse Tandartsen", "Noordlicht Mediaplanning"),
+    ("Fietsmakerij Velo Oost", "Bureau Overdiep"),
 ]
-AGENCY_RATE = {"Kompasmedia": 0.135, "Noordlicht Mediaplanning": 0.125, "Bureau Lindeman": 0.175}
+AGENCY_RATE = {"Windroos Media": 0.135, "Noordlicht Mediaplanning": 0.125, "Bureau Overdiep": 0.175}
 BOOKINGS = [
     # ref, advertiser index, package, flight start, flight end, net price per screen-week (EUR)
-    ("SB-26-0412", 0, "OVP", (10, 5), (11, 1), 236.7),
-    ("SB-26-0415", 1, "CEN", (10, 5), (10, 18), 262.0),
-    ("SB-26-0418", 2, "NRD", (10, 5), (11, 1), 140.5),
-    ("SB-26-0421", 3, "OST", (10, 12), (11, 1), 150.6),
-    ("SB-26-0423", 4, "BNS", (10, 5), (10, 25), 173.9),
-    ("SB-26-0427", 5, "ZDT", (10, 5), (11, 1), 145.2),
-    ("SB-26-0430", 6, "CEN", (10, 19), (11, 1), 265.7),
-    ("SB-26-0433", 7, "WST", (10, 12), (10, 25), 116.7),
-    ("SB-26-0436", 8, "RNG", (10, 5), (11, 1), 107.4),
-    ("SB-26-0439", 9, "EIN", (10, 5), (11, 1), 126.5),
+    ("SB-26-0411", 0, "OVP", (10, 5), (11, 1), 236.7),
+    ("SB-26-0414", 1, "CEN", (10, 5), (10, 18), 262.0),
+    ("SB-26-0415", 2, "NRD", (10, 5), (11, 1), 140.5),
+    ("SB-26-0419", 3, "OST", (10, 12), (11, 1), 150.6),
+    ("SB-26-0422", 4, "BNS", (10, 5), (10, 25), 173.9),
+    ("SB-26-0424", 5, "ZDT", (10, 5), (11, 1), 145.2),
+    ("SB-26-0429", 6, "CEN", (10, 19), (11, 1), 265.7),
+    ("SB-26-0430", 7, "WST", (10, 12), (10, 25), 116.7),
+    ("SB-26-0434", 8, "RNG", (10, 5), (11, 1), 107.4),
+    ("SB-26-0437", 9, "EIN", (10, 5), (11, 1), 126.5),
 ]
 MAKE_GOOD_ALLOWANCE = 0.005
 
@@ -325,17 +325,17 @@ def make_good(A, b, dark_fn=None):
 VAT = 0.21
 CREDITS = [
     # booking ref, share of the booking's net value credited, the reason line, issued after the flight's last week
-    ("SB-26-0418", 0.18, "Prijsaanpassing schermen Wilgenhof (renovatie stationshal vanaf 19-10)", False),
-    ("SB-26-0415", 0.10, "Correctie tarief Centraal najaar", False),
-    ("SB-26-0439", 0.25, "Gedeeltelijke annulering week 44", True),
-    ("SB-26-0423", 0.12, "Compensatie storing Overstap Centraal oktober", False),
-    ("SB-26-0427", 0.15, "Compensatie uitval schermen Zuidtak oktober", True),
-    ("SB-26-0436", 0.20, "Compensatie Ringlijn oktober, afspraak accountmanager", True),
+    ("SB-26-0415", 0.18, "Prijsaanpassing schermen Wilgenhof (renovatie stationshal vanaf 19-10)", False),
+    ("SB-26-0414", 0.10, "Correctie tarief Centraal najaar", False),
+    ("SB-26-0437", 0.25, "Gedeeltelijke annulering week 44", True),
+    ("SB-26-0422", 0.12, "Compensatie storing Overstap Centraal oktober", False),
+    ("SB-26-0424", 0.15, "Compensatie uitval schermen Zuidtak oktober", True),
+    ("SB-26-0434", 0.20, "Compensatie Ringlijn oktober, afspraak accountmanager", True),
 ]
-OTHER_DEBTORS = ["Kompasmedia", "Noordlicht Mediaplanning", "Bureau Lindeman", "Gemeente Ravelmond",
+OTHER_DEBTORS = ["Windroos Media", "Noordlicht Mediaplanning", "Bureau Overdiep", "Gemeente Ravelmond",
                  "Hogeschool Ravelmond", "Autobedrijf Van Deursen", "Zorggroep Ravelstroom", "Bakkerij Meijerhof",
                  "Stichting Museum Ravelmond", "Ravelmond Marketing", "Brouwerij De Ravel", "Klaverstad Makelaars",
-                 "Woonstichting Kanaalzone", "Sportschool Fitlab", "Optiek Verhagen", "Vivenza Mobiel"]
+                 "Woonstichting Kanaalzone", "Sportschool Ravelfit", "Optiek Verhagen", "Belzo Mobiel"]
 
 
 def billing(A):

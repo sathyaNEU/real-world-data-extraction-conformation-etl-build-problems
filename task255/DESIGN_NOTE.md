@@ -1,6 +1,305 @@
 # task255 design note
 
+Architecture 2, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 1 (an intergovernmental liability pool's
+per-occurrence retention) is kept below as `## Architecture 1 record`; its world is closed.
+
 ## Draw
+
+- **Card:** `cards/task255.json`, architecture v2, registered 2026-11-01 (guard check PASS, nearest cards task451,
+  task135, task161 and task460, each differentiated on the card). Marketing & Consumer Research, task type
+  media-reach-frequency-audience-measurement, objective Descriptive & Distribution Analysis (the number's lane is
+  kept; the actuarial descriptive cell, claims-frequency-severity, is spent for a stump in this slot). Shape 10, a
+  scorecard: each package's effective reach checked against the Tier G line. Decision designation_set; gap time and
+  population; generators G7 (the operating window), G12 (two gates and nothing between) and G2 (the rider, not the
+  journey row, carries the frequency); Gate G method_or_model_selection; context artifact a monitoring export (the
+  player log); stakeholder the head of audience research.
+- **World:** Spoorbeeld Media B.V. holds the advertising concession of the Ravelmond metro (a fictional Dutch city,
+  three lines: M1 north-south, M2 west-east, both through Centraal, and the M3 ring between Ravelpark on M1 and
+  Handelshaven on M2). It sells its digital screens in nine packages (the halls and interchange passages of rate card
+  Annex A). From 1 January 2027 a package whose effective reach in the autumn audience window is 40 per cent or more
+  is sold in Tier G with a reach guarantee and a 22 per cent surcharge. The operator, the Ravelmondse Vervoerbedrijf
+  (RVB), re-exported its OV-chipkaart metro journeys of 1 October to 4 November 2026 on 5 November. Personas from
+  `guard.py names --geo NL --seed 255`: Floortje Brugman (audience research, the golden's author), Evie Hondeveld
+  (sales, the bookings workbook), Daphne Riem (RVB data warehouse), Brent Velderman (screen operations, the register).
+  As-of date of the fiction: Friday 13 November 2026.
+- **The call:** which packages are sold in Tier G in 2027. Golden: Overstappunten, Zuidtak and Oosttak (49, 48 and 47
+  per cent); every other package standard tier. The call faces forward (the 2027 rate card's tiers) and is measured on
+  a closed window, which the rate card itself fixes (3.2); the descriptive tag stands because the deciding quantity is
+  the distribution of opportunities to see over a population, not a predicted value.
+- **Shape arithmetic:** nine packages times reach and tier (18), the call and the nearest package below the line (2),
+  the chart with its line and shading (3), make-good for each autumn booking (10), screens on sale for each package
+  (9), net revenue for each package (9): 51 gradable figures, 28 of them asks.
+- **Data-native sentence:** an OV-chipkaart journey records only its two gates and their times, so every pass in
+  between is inferred from a route; here the route depends on the hour, because the operator interworks the
+  branches through Centraal at the weekday peaks, and the check-out time less the check-in time is the only record
+  that shows it.
+
+## Survivor anatomy
+
+- **Actor:** the deciding property, whether a journey changed trains at Centraal, has no column in any file: the
+  journey row holds a card, two stops, two gates and two times, and the change is a relation between those times and
+  the planning model's run and walking times, grouped by the hour of day and the pair of branches.
+- **Link:** the signal is read through a comparison no key offers: each journey's duration against the network's own
+  timings (Halls walks, Run times, the Interchanges passage walk, Frequencies for the wait), a cross-file reading the
+  field's path assignment never asks for, since an assignment takes the route from the network and the duration
+  from nowhere.
+- **Reflex:** the field's method for the deciding quantity, assigning each origin-destination trip to its path on the
+  published network and crediting every frame on the path (the way transit out-of-home audience measurement credits
+  passages), sits at rung 1 and files Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak, with
+  Centraal at 63 per cent.
+- **Back-test:** the easy route validates: every journey's fare in the extract reconciles to the line-map route's
+  stop count, off the peak and at weekends every journey's duration fits the line map, and the Frequencies sheet
+  lists one service per line.
+- **Second use:** every file the decisive step reads is in the pack for its own reason: the journeys extract is the
+  operator's fare and ridership record, the planning model is how RVB schedules its timetable (run times, walks,
+  frequencies, the gate inventory), and the rate card is the price list the decision amends.
+- **Shock:** the movement the step recovers reads as ordinary: Centraal's and Binnenstad's reach fall because riders
+  change elsewhere, not because anything anomalous happens; sorted by the line map's reach (Overstappunten 77,
+  Centraal 63, Binnenstad 56, Zuidtak 48, Oosttak 47) or by the gates alone (Zuidtak 41, Oosttak 39, Eindhaltes 36),
+  by price or by screen count, the golden set is not an interval of any shipped statistic.
+- **Pins:** the WHAT is filed in rate card section 3 and Annex A in the concessionaire's own genre (the window, the
+  regular rider, the passes, effective reach, the line); no filed sentence names the peak, the service pattern, a
+  duration or the interworking, and deleting any filed sentence only unfixes the population, the window or the
+  count, never the step.
+
+## Three rules
+
+- **Task type:** media-reach-frequency-audience-measurement in marketing-consumer-research, which serves Descriptive &
+  Distribution Analysis: the distribution of opportunities to see across a rider population, read at an effective
+  frequency.
+- **Domain test:** the call turns on each package's effective reach, the share of the regular riders who had three or
+  more opportunities to see over a four-week flight, built rider by rider from where each journey took them; that is
+  the media field's reach and frequency distribution read at an effective-frequency threshold, worked on smart-card
+  trips by assigning each trip to its path through the network's halls and passages.
+- **Swap:** "which hospital wards go into the guaranteed-staffing tier, set by the share of regular nurses passing a
+  ward's screens three times a month": no flight, no opportunity to see, no effective frequency, and no trip whose
+  path between two recorded gates carries the frames.
+- **Layer 1:** (1) the RVB extract re-exported after the gate-firmware update of 19 October, so four stations carry
+  two name spellings and their gates two code formats (the operator's export); (2) staff and service cards beside
+  passenger products (the card system); (3) 1,022 window journeys with no check-out, riders who forgot to tap out
+  (the gates); (4) local clock times across the 25 October change from summer time (the extract); (5) the screen
+  register kept as a log of hangings, moves and take-downs, with the supplier's replacement units of 3 to 5
+  November under new tags (screen operations); (6) the player log in UTC (the content management system); (7) the
+  billing system replaced on 15 October, legacy invoices gross of VAT in Dutch number format, credit notes on legacy
+  invoice numbers (finance). Nothing is placed to be caught; items 1 to 4 move nothing on the call (asserted R2),
+  items 5 to 7 sit only in the asks' files.
+- **Layer 2:** estimand identification under a violated precondition: path assignment presumes the published network
+  is the service ridden; here the service differs by hour, so the population of riders who used the interchange
+  passage has to be identified from the journeys themselves.
+- **Decisive step:** recognising that on weekday peaks the trains passing Centraal run north with east and west with
+  south, so the published line map is not the service ridden then, and placing each Centraal change of trains from
+  the journey's own duration against the walking and run times rather than from the map.
+- **Not semantics:** every field, code and unit read correctly (gates to halls in both formats, product classes, the
+  local clock, the window, the annex) still leaves the line map's routes, because no field, code or definition says
+  how trains ran at an hour; the deciding fact is a pattern in the durations.
+- **Not rule application:** no filed rule says where a rider changes trains; rate card 3.4 credits "the interchange
+  passage of any station where the rider changes trains on the way" and leaves the route to the analyst. Enumerated
+  family (every construction a competent analyst reaches for): the gates only (Tier G Zuidtak alone, Centraal 15),
+  the line map (five packages, Centraal 63), every journey through Centraal credited (five packages, Centraal 69),
+  the peak pattern on every weekday hour (three packages, Centraal 28), the durations read (three packages, Centraal
+  33): a spread of 54 points on Centraal and three distinct tiers. Standing family (what the durations and the rules
+  leave defensible: the reading thresholds, the minute at Centraal three minutes either side, the pattern read for
+  every journey): Centraal 32.68 to 32.73, one rider, one tier. What rules the others out is loud: in the hours
+  trains run every three minutes outside the peak windows 100 per cent of north-east riders change and 0 per cent of
+  north-south riders do, and inside them the reverse.
+- **Analyst test:** a strong analyst who cleans the extract, applies every rate-card rule and assigns each journey to
+  its line-map path, the field's way of placing the passes no gate records, files Tier G for Centraal, Binnenstad,
+  Overstappunten, Oosttak and Zuidtak with Centraal at 63 per cent; only reading the durations moves Centraal and
+  Binnenstad to 33.
+- **Estimand:** rate card 2027 (Spoorbeeld_tariefkaart_2027.pdf) section 3: a package is sold in Tier G when its
+  effective reach in the audience window (5 October to 1 November 2026, the operator's OV-chipkaart metro journeys)
+  is 40 per cent or more, effective reach being the share of regular riders (passenger cards with a journey in each
+  of the window's calendar weeks, dated by check-in) whose journeys passed its Annex A halls and passages three
+  times or more, passes counted at the check-in hall, the check-out hall and the passage of any station where the
+  rider changes trains.
+- **No decoy:** nothing is planted to be caught: no memo, draft, briefing, stakeholder figure, copied block or hidden
+  rule ships; the fares follow the planned route as a distance fare does in any OV-chipkaart system, and the
+  distractors (published boardings, a passenger survey, an industry benchmark) answer other questions.
+- **No certified replay:** no shipped figure certifies a reach, a pass count or a route, so the method is not
+  recovered by reproducing a published number; the decisive pattern is found in raw durations.
+- **Lesson:** a path assignment is only as good as the assumption that the published network is the service run;
+  where a trip's own clock times exist they test that assumption, and an analyst who checks them finds the service
+  that was actually ridden. No build on file reads a route from trip durations against a timetable.
+
+## Default path
+
+1. Take the passenger cards of RVB_metro_ritten_20261001_20261104.csv with a journey checked in during each
+   calendar week from 5 October to 1 November 2026 (rate card 3.3): 1,949 regular riders.
+2. Map each journey's check-in and check-out gates to halls through the planning model's Gates sheet.
+3. Route each journey over the published lines by the fewest changes (the field's path assignment) and credit the
+   interchange passage of every station where the route changes line: every north-east and west-south journey
+   changes at Centraal, every north-south and west-east journey rides through.
+4. Count for each Annex A package the regular riders passing its places three times or more and set each share
+   against the 40 per cent line.
+
+Ends on: Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak, Centraal at 63 per cent.
+Golden: Tier G for Overstappunten, Zuidtak and Oosttak, Centraal at 33 per cent.
+
+## Stump sentence
+
+The default path puts every change of trains where the line map puts it and files Tier G for Centraal, Binnenstad,
+Overstappunten, Oosttak and Zuidtak, Centraal at 63 per cent; on weekday peaks the north and east branches run
+through Centraal into each other and the west and south likewise, so the big north-east and west-south commuter
+flows never use the interchange passage, which only each journey's duration against the network's timings shows,
+and Centraal and Binnenstad fall to 33 per cent.
+
+## Readability screen
+
+| Rung | 1 filed | 2 schema | 3 reflex | 4 control | 5 hygiene | 6 linear | 7 organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 gates only | no | the gate columns | yes, the halls | no | no | no | no | readable |
+| R1 line-map path assignment | 3.4 asks where riders change | Run times and Interchanges | yes, the field's method | fares reconcile | no | no | no | readable |
+| R1b every Centraal through-journey credited | no | no | yes, a station-level shortcut | no | no | no | no | readable |
+| R2 peak pattern on every weekday hour | no | no | no | refuted by the shoulder hours | no | no | no | silent |
+| G durations read at Centraal (decisive) | no sentence names a peak, a service or a duration | no column holds a route or a change | the reflex lands on R1 | no control scores routes | the battery never sets durations against run times | the reach needs every rider's passes rebuilt | times and timings ship for fares and timetabling | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a regular rider's four weeks | calendar weeks Monday to Sunday | seven-day blocks from 5 October | same call, same 1,949 riders | same call (the window starts on a Monday) |
+| SF2 | the date a journey counts on | check-in | check-out | same call and figures | rate card 3.3, and same call |
+| SF3 | staff and service cards | left out | kept | same call, figures one point up | rate card 3.3 ("not a staff or service card"); RVB_productcodes.csv card_class |
+| SF4 | a journey without a check-out | its check-in hall only | dropped | same call and figures | rate card 3.4, and same call |
+| SF5 | "passes ... each time" | per place passed | once per journey | same call, three figures move | rate card 3.4 counts each hall or passage the journey takes the rider through |
+| SF6 | the hall a gate stands in | the Gates sheet | the stop alone | same call and figures | same call (no package lists one Centraal hall alone) |
+| SF7 | the route between two gates | fewest changes | fastest | same route for all 1,056 pairs | same call |
+| SF8 | the Centraal change off the peak | the line map | the duration alone at the passage walk | figures move | the data: in every hour the duration-only reading calls changes, more than 40 per cent of the same hour's straight trips came out faster than any change |
+| SF9 | the minute a rider reaches Centraal | walk, first wait and run from the check-in | three minutes either side, or the pattern read for every journey | same call and figures | same call |
+| SF10 | the line on the unrounded or the rounded reach | unrounded | rounded | same call | same call (every package 4.24 points or more from 40) |
+| SF11 | the journeys' clock | local | an hour off after 25 October | same call and figures | same call |
+| SF12 | rounding a reach | half up | half to even | same figures | same call (every reach 0.18 of a point or more inside its bin) |
+| SF13 | the player log's clock | UTC read in Ravelmond time | read as local | make-good moves | the column header event_time_utc; general terms 6.1 local time |
+| SF14 | when a taken-down screen goes dark | its player's last display report | the opening of the day the register gives | same make-good | same figures |
+| SF15 | part of an hour of make-good | counts as an hour | rounded to nearest | make-good moves | general terms 6.3 |
+| SF16 | booked screen-hours | the bookings workbook | opening hours times booked screens | same figures | same figures (they agree) |
+| SF17 | on sale on 1 January 2027 | hung by then and not taken down by then | none falls on the day | same counts | same counts |
+| SF18 | a screen held outside the packages | in no package | its old package | counts move | its register row carries package "-" |
+| SF19 | legacy invoice amounts | split out the VAT | gross | revenue moves | the header bedrag_incl_btw; general terms 8.3 excluding VAT |
+| SF20 | the agency commission | each agency's contract rate | the rate card's standard 15 per cent | revenue moves | rate card section 2 and general terms 8.2 ("the rate in the agency's contract") |
+| SF21 | the VAT split | rounded to the cent | unrounded | same 10-euro figures | same figures |
+| SF22 | which player drives a screen during a re-cabling | the receiving player's display report | the register's entry | make-good moves | general terms 6.2 ("the media player it is connected to"); the display report |
+
+## Ladder
+
+| Rung | Construction | Tier G | Centraal | Binnenstad | Overstappunten |
+|---|---|---|---|---|---|
+| R0 | the gates only (halls of check-in and check-out) | Zuidtak | 15 | 17 | 0 |
+| R1 | the line map's changes (path assignment, the field's method) | Centraal, Binnenstad, Overstappunten, Oosttak, Zuidtak | 63 | 56 | 77 |
+| R1b | every journey through Centraal credited with the passage | the same five | 69 | 63 | 83 |
+| R2 | the peak pattern on every weekday hour | Overstappunten, Oosttak, Zuidtak | 28 | 31 | 45 |
+| G | each Centraal change read from the journey's duration | Overstappunten, Oosttak, Zuidtak | 33 | 33 | 49 |
+
+R2 lands the call with three wrong figures and is refuted by the shoulder hours (`checks.py` L5). Every rung is
+asserted on the cut pack and on the clean truth; the golden reproduces the world's own passes for every rider. The
+nearest package to the line under the golden is Eindhaltes at 35.76 (4.24 points).
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | regular riders as rate card 3.3 files them | filed; SF1, SF3 asserted |
+| 2 Unit of account | the passenger card | filed (3.3) |
+| 3 Attribution window | journeys dated by check-in, 5 October to 1 November | filed (3.2, 3.3); SF2 C1 |
+| 4 As-of dating | the extract as re-exported on 5 November | C1, one export ships |
+| 5 Version basis | gate codes before and after the firmware update | C1, both formats map to halls (R2) |
+| 6 Denominator | all regular riders | filed (3.5) |
+| 7 Weighting | none, each rider counts once | filed (3.5) |
+| 8 Window length | four calendar weeks | filed (3.2) |
+| 9 Boundary inclusivity | 40 per cent or more | filed (3.1); SF10, nothing within 4 points |
+| 10 Rounding path | whole per cent after counting | C1, SF12 |
+| 11 Tie-break | none needed | C1, no package ties at the line |
+| 12 Maturity and censoring | journeys without a check-out | filed (3.4); SF4 C1 |
+| 13 Order of operations | population, then passes, then shares | C1 |
+| 14 Row order | file order irrelevant | C1, counts are order-free |
+| 15 Duplicate resolution | no duplicated journey rows | C1, asserted no copied history |
+| 16 Identity normalisation | stop codes and gate codes | C1, SF6 |
+| 17 Netting against gross | none on the call | not applicable to the call; asks SF19 to SF21 |
+| 18 Dimensional units | minutes and per cents | units in the headers |
+| 19 Code and status semantics | product classes, gate formats | the product list's card_class; the Gates sheet |
+| 20 Integerisation | riders counted whole | C1 |
+| 21 Clause scope | Annex A places per package | filed (3.4, Annex A) |
+| 22 Forward window contents | the 2027 tier rests on the closed autumn window | filed (3.1, 3.2) |
+
+## Literal reader
+
+Executed word for word: the prompt asks whether any package is sold in Tier G; rate card 3.1 to 3.5 and Annex A fix the
+window, the regular rider, the passes, effective reach and the line. Every literal reading of those sentences gives
+the golden once the reader establishes where riders changed trains, which 3.4 leaves to the records: SF1 to SF12
+show every convention either converges or is ruled out by a quoted sentence, and the routes converge (SF7). The
+line-map answer is not another reading of any sentence; it is the field's method applied to a network the journeys
+show was not running at the peaks. The asks read the same way: general terms 6.1 to 6.3 and 8.1 to 8.3 file the
+make-good and net revenue, and SF13 to SF22 close their conventions.
+
+## Oracles
+
+- The fares reconcile to the line-map route on every journey (the operator charges by planned distance): a check
+  that passes for the easy route, not an oracle for the golden.
+- No shipped control counts passes, reach or routes; the published boardings, the passenger survey's screen-notice
+  shares and the benchmark (distractors) cannot arbitrate a package.
+- Asks: each agency's statement amount over the value it was struck on returns the agency's round contract rate
+  (13.5, 12.5, 17.5 per cent) only on the value net of the credit notes issued by 31 October, an identity a grader
+  can confirm once the dating of the three later credit notes has been noticed; the receiving player's display
+  report is the evidence for each re-cabling, not a control that ties only under the golden.
+
+## Ask sheet
+
+Three asks on the files the call never reads (the register, the player log, the bookings, the terms, the two
+billing systems and the statements); none feeds the chart.
+
+**Ask A, make-good owed per autumn booking (10 figures, whole hours).** Home: general terms 6.3, the first quarter of
+2027.
+- Primary device (D8, a recorded date for the event date): when a media player died the field engineers re-cabled
+  its screens to a working player at the same place a day or two later, and the register's Bekabeling sheet enters
+  the move when the work order is closed, one to six days after the job; only the receiving player's report of its
+  displays rising by the moved screens dates the move. Every booking carries one such failure, so every figure moves
+  by 43 hours or more.
+- Hazards: the player log in UTC across the 25 October change (6.1 local time); Wilgenhof's screens taken down on 19
+  October (6.2); the 0.5 per cent allowance and rounding up (6.3).
+
+**Ask B, screens on sale on 1 January 2027 per package (9 counts).** Home: the 2027 inventory behind the rate card.
+- Primary device (D7, the true key elsewhere): the supplier's replacement units hung on 3 to 5 November at eight
+  halls and passages came in under new asset tags while the old tags' rows were never closed, so one position
+  carries two open rows; the position is the screen, and every package has a replaced screen.
+- Hazards: the status column as of 12 November against the planned December take-downs and hangings; moves that
+  left the old row open under the same tag; a screen held outside the packages (package "-").
+
+**Ask C, net revenue from the autumn bookings per package (9 figures, nearest 10 euros).** Home: the revenue base
+the Tier G surcharge is priced on.
+- Primary device (D9, a control true only in its scope): each agency's statement of 31 October settled commission on
+  the value net of the credit notes issued by then, and three credit notes (one per agency) came in early November;
+  commission due under 8.2 is the contract rate, recovered as the statement's amount over the value it was struck
+  on, applied to each booking's value net of every credit note.
+- Hazards: legacy invoices gross of VAT in Dutch number format; a credit note against a legacy invoice number; the
+  year's other invoices in both systems.
+
+Pin test: the asking sentences pin the unit (hours, counts, euros), the rounding, the date (1 January 2027) and the
+population (the autumn bookings); no pin names a re-cabling, a position, a tag or a statement date. The main
+population carries zero device rows: the call reads the journeys, the planning model, the product list and the rate
+card, and no ask reads any of them (`checks.py` R2 and SEP).
+
+| Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
+|---|---|---|
+| A, every booking | dates each re-cabling by the register's entry | miss |
+| B, every package | keeps each tag's latest row, so a replaced position counts twice | miss |
+| C, the seven agency packages | shares each statement's amount over its bookings | miss |
+
+Pair ceiling: 32.4 ((38 + 7 + 55 x 0.071) and (5 + 7 + 55 x 0.071), averaged)
+Mirror leakage: 7.1 per cent of ask weight
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Build record
+
+- Generator: `generator/` (params, world, asks_world, pack, io_util, analysis, golden, checks, verify, ceiling,
+  writeup, build). World from SEED 25502, the commercial records from their own stream (salt 298); 2,232 habitual
+  riders drawn, 1,949 of them regular in the window.
+- Gates on the cut pack: checks.py 72 of 72; verify.py 7 of 7 blocks on its own code path (pandas, its own PDF
+  decoder, the peak windows found from the data); two builds byte-identical; figures_check.py PASS; ceiling.py pair
+  32.4, mirror 7.1.
+
+## Architecture 1 record (spent 2026-11-01)
+
+### Draw
 
 - **Card:** `cards/task255.json`, registered 2026-10-13. Actuarial Science & Insurance, task type
   claims-frequency-severity, objective Descriptive & Distribution Analysis; shape 04 (setting one dial: each quoted
@@ -51,7 +350,7 @@
 - **Forward facing:** the call is the 2027 retention, a window not yet open; the curve is fitted to closed years and
   brought to 2027 cost with the actuary's projected index.
 
-## Default path
+### Default path
 
 1. Read the current administrator's loss run (csv) and the legacy administrator's closed-claim archive (xlsx, one
    sheet per accident year) and keep every liability occurrence of accident years 2014 to 2021: 1,071 (8 still open).
@@ -66,7 +365,7 @@
 Ends on: $2.0 million
 Golden: $4.0 million
 
-## Stump sentence
+### Stump sentence
 
 The default path fits one lognormal, deductible-truncated and retention-censored at 2027 cost, to all 1,071
 occurrences of 2014 to 2021 and carries Exhibit 6's 432.7 occurrences above $25,000 by that curve, which ends on $2.0
@@ -76,7 +375,7 @@ and one curve takes its shape from the 757 others; giving law enforcement its ow
 on $2.5 million; fitting the two groups apart and carrying the actuary's 85.1 law enforcement and 347.6 other
 occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).
 
-## Three rules
+### Three rules
 
 - **Task type:** claims-frequency-severity in Actuarial Science & Insurance, serving Descriptive & Distribution
   Analysis: the call reads the tail of the ground-up severity distribution at each quoted attachment.
@@ -131,7 +430,7 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
   of the record and the whole of the tail, and one curve fitted through the record's floor and ceiling is shaped by
   the many short claims, thinning the tail exactly where an excess attachment sits.
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -140,7 +439,7 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
 | Shift, own log mean, one spread ($2.5m) | none | the coverage column | a regression reflex once coverage is seen to matter | none | no | no | silent |
 | G (decisive), the groups fitted apart, each carried by its own projection ($4.0m) | no sentence names a grouping, a mixture or separate curves; policy 3.1 says the actuary projects the two groups on their own exposures, which is how frequency studies are laid out | Exhibit 6 has two rows and a total; the loss runs carry a coverage code | not a reflex: the reflexes fit one curve to the record and carry the total | nothing scores a fit: no severity parameter, no count above any amount, no excess experience ships | the battery sees no defect | a likelihood per group and a weighted sum | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -163,7 +462,7 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
 | SF17 | "severity is modelled as lognormal" | a lognormal for each group the record separates | one lognormal for every occurrence ($2.0m) | $2.0 million | the record: one curve is rejected at twice the log likelihood difference 158.2 on two degrees of freedom and one spread at 28.8 on one (asserted, the design forcing the method); the policy files the family, never one curve (4.2, asserted) |
 | SF18 | the groups | law enforcement liability and the other four parts, Exhibit 6's two projections | a curve per coverage part, the other four weighted by their share of the record above $25,000 | same call, the same seven counts at one decimal and the same seven layer losses to the hundred thousand (asserted) | same call |
 
-## Ladder
+### Ladder
 
 | Rung | Likelihood | Expected 2027 occurrences above $3.0m and $4.0m | Call |
 |---|---|---|---|
@@ -187,7 +486,7 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
 - **Flip:** with the other parts' projection held, $3.0 million would pass if Exhibit 6's law enforcement count were
   71.0 or lower; $4.0 million fails only above 103.2.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -214,7 +513,7 @@ occurrences by their own curves files $4.0 million (1.2 above $3.0 million, 0.8 
 | 21 | Clause scope | 4.2's window for severity, 4.3's anchor for frequency, 5.1 for the attachment | filed per clause |
 | 22 | Forward window contents | 2027's counts above $25,000 and its index value | the actuary's exhibits file both |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, the policy fixes severity as the distribution of all the members' liability occurrences from
 the first dollar at 2027 cost (4.1), modelled as lognormal and estimated by maximum likelihood from the pool's claims
@@ -229,7 +528,7 @@ the design forces the groups, and their literal execution gives $4.0 million. Ev
 violates a quoted sentence or converges on $4.0 million; the easy answers ($2.0 million, $2.5 million) come from a
 model the record rejects, not from another reading.
 
-## Oracles
+### Oracles
 
 - The actuary's 85.1 and 347.6 occurrences above $25,000: inputs of every rung (the reflex uses their total); they tie
   to nothing.
@@ -244,7 +543,7 @@ model the record rejects, not from another reading.
   department payroll in Exhibit 6 ties to the declarations' Police lines; no 2026 rated exposure, premium or
   expiring programme ships (Tried and rejected).
 
-## Ask sheet
+### Ask sheet
 
 | Ask | Figures | H18 home | Use | Primary device | Hazards | Path (files, columns) | Stops (lazy delta) | Realism |
 |---|---|---|---|---|---|---|---|---|
@@ -274,7 +573,7 @@ Mirror leakage: 0 per cent of the ask weight (every layer loss and count of the 
 misses at the graded rounding, asserted).
 Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror at 12.0).
 
-## Build record
+### Build record
 
 - Generator: `world.py`, `analysis.py`, `records.py`, `docs.py`, `golden.py`, `checks.py`, `verify.py`, `build.py`,
   `postprocess.py`; `python3 task255/generator/build.py` builds the pack, the goldens, `metadata.json` and
@@ -305,7 +604,7 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   347.6, the premium ask gave way to each quoted layer's expected losses (a downstream ask), the quotes were
   rescaled by one market factor, same-day occurrences were separated; 282 assertions, pair.py ceiling 56.0.
 
-## Judge record
+### Judge record
 
 - Pass 1 (stage 4): DETERMINISTIC, APPROVE. The isolated thread recomputed the record (820 occurrences, 108 at the
   retention), the fit (10.1769, 1.7102), the seven counts and premiums and the class exposure from the bundle alone,
@@ -357,7 +656,7 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   for the vehicles would move each premium by about $825, against the notes' effective-date definition; Gate G
   analytical, Gate H domain, layers and decisive step pass.
 
-## Leak record
+### Leak record
 
 - leak.py REVIEW, no LEAK: the policy carries the call's own nouns (retention, attachment, occurrence), harmless; four
   documents use ordinary domain words (record, deductible, likelihood, closed), none names a truncation or a
@@ -374,7 +673,7 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   it (the pool's share stopping at the retention less the deductible, a member's deductible changing often, a bulk
   load keyed on one day).
 
-## Pre-ship check
+### Pre-ship check
 
 - Call: keep the first $4,000,000 of each 2027 liability occurrence (the $4.0 million quoted attachment), 0.74
   expected 2027 occurrences above it and 1.25 above $3.0 million; curve log mean 10.18, log standard deviation 1.71
@@ -469,3 +768,37 @@ Pair ceiling: 56.0 (the cracker at 100.0 on the call and every ask, the mirror a
   347.6 keep the call, every count and every layer loss in its cell (at least 0.2 of the last place from each edge).
 - The same unit rate at $4.0 million and $5.0 million (a market minimum): flagged by two readers; the $5.0 million rate
   is now $222.50.
+
+- Architecture 1 as shipped (loop 2): re-rooted 2026-11-01 at the Batch 3 queue reset. The portal's responses filed
+  the pool's retention through the truncated and censored likelihood, the field's reflex for a loss run; the liability
+  pool's world is closed and the actuarial descriptive cell (claims-frequency-severity) is spent for this slot.
+- Draw candidate, actuarial claims-frequency-severity in another world: every stump that cell offers (truncation,
+  censoring, maturity, a coverage mix) is the field's reflex, already landed here; dropped.
+- Draw candidate, a loyalty programme's segments (segmentation-market-structure): the decisive step reduces to an
+  estimation grouping (stumping 1.1c), a reflex or a fork; dropped.
+- Draw candidate, television reach from a people-meter panel: the deciding step is the panel's weighting, an
+  estimator choice whose textbook form is the reflex; dropped.
+- Draw candidate, billboard reach from mobile location pings: the step is identity resolution across devices (data
+  semantics) or a capture-recapture estimate (the field's method at the top of the ladder); dropped.
+- Interchange walks of 4.0 minutes at Ravelpark and 4.5 at Handelshaven: the fastest and the fewest-change routes
+  differed on 54 station pairs and moved five packages' reach a bin (138 riders); lengthened to 9.0 and 8.0 minutes
+  (the ring's platforms across the square), every pair now routes the same.
+- Commuters between the ring line and the north or west branches: at the peaks a through train to the other ring
+  interchange beats the line map's route, a second route model with no record to settle it; those flows set to nil
+  and occasional riders' ring trips through Centraal kept out of the peak windows.
+- 2,130 habitual riders: Centraal and Oosttak sat 0.16 and 0.14 of a point from a whole-per-cent edge; 2,232 clear
+  every package by 0.18 or more.
+- The first ask layer (re-cablings entered on the day of the job, three re-tagged halls, statements struck after
+  every credit note): the cracker kept about 25 of 28 ask figures, a pair near 77; re-sited to the work-order dating,
+  the eight-hall replacement programme and the credit notes after the statements.
+- Net revenue to the nearest 100 euros: the credit notes after the statements moved some agency packages by 30 to 60
+  euros, inside a bin; graded to the nearest 10 euros, the precision the arithmetic carries.
+- A make-good allowance of 1.0 per cent: bookings with short outages fell to zero hours; 0.5 per cent kept.
+- The take-down dated from the register's date alone: 00:00 to 00:30 of that date belongs to the previous day's
+  opening hours, a half-hour fork per screen; the player's last display report (05:10) dates it.
+- Gate numbers drawn one to six at every hall: every hall showed the same gate count; each hall now has its own.
+- Sunday staff trips from 06:30: nine check-ins before the metro opened; they start after 07:00.
+- The first booking prices: Centraal's revenue sat at 9,105.00 and Oosttak's at 5,985.00, half a bin; nine prices
+  moved within two euros.
+- The question as "which packages": the shell quota (35 per cent of prompts on file); recast as a whether-question,
+  "none" grammatical.

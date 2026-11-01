@@ -25,7 +25,7 @@ GOV = [  # name, BIC
 ]
 ACQUIRERS = [("Kahu Merchant Services Limited", "K641920", "KAHU MERCHANT SVCS"),
              ("Tussock Payments Limited", "K641920", "TUSSOCK PAYMENTS")]
-INSURERS = [("Kotare Insurance Limited", "K632210"), ("Tasman Mutual Insurance Limited", "K632210"),
+INSURERS = [("Kotare Insurance Limited", "K632210"), ("Hokonui Mutual Insurance Limited", "K632210"),
             ("Kea General Insurance Limited", "K632210")]
 
 

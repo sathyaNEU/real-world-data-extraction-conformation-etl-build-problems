@@ -1,4 +1,266 @@
-# task133 design note: Bellbird personal loans, the 30 September 2026 ECL allowance
+# task133 design note: Orari Bank, the ICAAP 2026 severe-scenario loss on the business banking book
+
+Private, never ships. Architecture 3, drawn 2026-11-01 at the Batch 3 queue reset. Architecture 2 (Bellbird personal
+loans, the 30 September 2026 ECL allowance in expected-credit-loss-provisioning) landed on the portal: the survival-to-date
+conditioning was the field's reflex. Its world is closed (one architecture per world) and its note is kept below as
+`## Architecture 2 record`. This architecture moves to a never-drawn task type, stress-testing-capital, in a new world:
+Orari Bank Limited, a South Island regional bank headquartered in Timaru, stressing its business lending book for the
+2026 ICAAP under the severe scenario its Board approved on 24 September 2026.
+
+## Draw
+
+- Pairing: Banking, Credit & Financial Risk (`banking-credit-financial-risk`), task type `stress-testing-capital` (F),
+  objective Forecasting & Predictive Modeling. The committed call faces forward: the stressed credit loss the scenario
+  puts on the book in the stress year 1 October 2026 to 30 September 2027.
+- Shape 14 (cuts of a distribution by segment): the call (1) and its six reporting segments (6), two critical
+  components, twelve net credit loss cells (ask A), five bands' default counts and shares (ask B, 10), the chart and
+  the two files: 34 criteria.
+- World: 645 business customers on the 30 September 2026 book (632 performing, 13 in risk grade D), 1,346 facilities,
+  EAD NZD 496.7 million; a year of operating-account credits (74,491 rows); the NZBN extract for Canterbury, Otago and
+  Southland (26,300 entities); CR-ST-02 v3.1 (the business banking stress standard) and the board-approved scenario.
+- Candidates written before choosing (fates in `## Tried and rejected`): (1) this draw, the sector scenario read through
+  the industries that pay each borrower; (2) deposit-liquidity-behaviour, business deposit run-off by depositor type
+  under the same scenario; (3) a term-deposit renewal ladder; (4) intraday payment netting after a merger;
+  (5) lenders mortgage insurer capacity under the house-price path; (6) presale settlement risk on apartment
+  development loans; (7) a head contractor's failure spreading to its subcontractor borrowers.
+- Card: `.claude/skills/fingerprint/cards/task133.json`, registered 2026-11-01 (WARN repeat.gate_g only, the lane's
+  objective); re-checked after the build, still WARN only. Strategy `other` (exposure transmission through the paying
+  counterparties); forum board_of_directors, role finance_controller, context artifact register.
+- Personas drawn with `guard.py names` for New Zealand and recorded on the card's world.people: Julie Dawick (the
+  standard's author), Wendy Russell (the scenario), Keanu Boyd (the deposit listing), Tania Rees (collections receipts),
+  Marilyn Kendall (overrides).
+- Data-native sentence: in this dataset a business's sales are a year of named payments into its operating account, and
+  the clearing system's payer names, matched to the NZBN register, are the only place the industries that pay each
+  borrower appear; the lending book carries only the borrower's own industry code.
+
+## Survivor anatomy
+
+- Actor: the deciding property, the share of a borrower's sales each industry pays, has no column in any file: the
+  lending book carries the borrower's own industry code, the credits carry a payer name the clearing system upper-cased
+  and cut at 20 characters, and the register carries BIC codes keyed by legal and trading names.
+- Link: the payer is read through a link no key offers: a credit's other-party string, normalised (upper case, LIMITED as
+  LTD, & as AND, first 20 characters), against the register's legal or trading names; card settlements, branch cash and
+  payments from individuals carry no industry and are the borrower's household sales.
+- Reflex: the field's sector stress (each borrower at the scenario path of its own ANZSIC division, the industry PD
+  multiplier every bank runs) sits at rung 0 and files NZD 10.0 million.
+- Back-test: the textbook route validates: wherever the lending book carries a 2006 BIC code it agrees with the
+  register's for every borrower, the blank and 1993-coded rows fill cleanly from the register, the own-division losses
+  sum by segment to Table 4 with nothing left over, and every division the book holds has a scenario path.
+- Second use: the credits extract is the bank's own record of each borrower's sales, the base CR-ST-02 2.1 measures the
+  scenario's change against ("against the year to the book date"); the register fills the lending book's blank and
+  1993-coded industry fields on every route; the decisive step adds no file.
+- Shock: the movement the step recovers is ordinary: manufacturing, trade and logistics and business services rise,
+  construction falls, hospitality holds; no borrower is the pack's largest anomaly and the golden's high-loss set is not
+  an interval of any shipped statistic (grade, EAD, own division's path).
+- Pins: the WHAT is filed in CR-ST-02 (stressed loss, the stress year, the 12-month PD, the fall in the borrower's own
+  sales, Table 2, LGD, EAD, segments, net credit losses, the back-test) and the Board's scenario; no filed sentence names
+  payers, receipts, a mix or a weighting.
+
+## Default path
+
+1. Take business_lending_book_2026-09-30.csv, drop the 13 customers in risk grade D (CR-ST-02 1.3) and set EAD per 3.4.
+2. Fill each borrower's ANZSIC division from its BIC code on the NZBN extract where the book's industry field is blank
+   or on the 1993 codes (4.1).
+3. Stress each borrower at the severe scenario's sales change for its own division (the sector stress a bank runs).
+4. Table 2 multiplier on that fall, Table 1 PD times the multiplier, Table 3 LGD per facility, sum by segment and book.
+
+Ends on: NZD 10.0 million (9.804 unrounded; construction 2.9, manufacturing 0.6, trade and logistics 1.6, hospitality
+3.4, business services 0.8, health 0.4).
+Golden: NZD 11.5 million (11.4999 unrounded; 2.5, 1.3, 2.4, 3.4, 1.5, 0.4).
+
+## Stump sentence
+
+A strong analyst stresses each business borrower at the severe scenario's sales path for its own ANZSIC division and
+files NZD 10.0 million; the step that lands it there is reading the fall in a borrower's own sales off its industry
+label when its operating-account credits show who pays it: 56 per cent of the book's trading credits come from other
+divisions, largely the builders, hotels and tour operators the scenario cuts by a quarter, so the transport, wholesale,
+labour-hire and engineering firms they pay take far steeper Table 2 multipliers than their own divisions' paths give.
+
+## Three rules
+
+- Task type: stress-testing-capital in Banking, Credit & Financial Risk, which serves Forecasting & Predictive
+  Modeling: a one-year stressed credit loss under a board-approved forward scenario.
+- Domain test: the deciding quantity is each business borrower's stressed one-year probability of default under the
+  ICAAP severe scenario, the bank's revenue-shock PD table applied to the fall in the borrower's own sales, with the
+  stressed LGDs and EAD summed over the book; with another field's nouns the scenario's industry sales paths, the PD
+  table and the stressed LGDs have nothing to attach to.
+- Swap: "how much credit loss does the severe scenario put on our business banking book" becomes "how many bed-days does
+  the flu season put on our hospital": the industry sales paths, the borrowers' paying industries, the revenue-shock PD
+  table and the stressed LGDs stop making sense, because a hospital's demand does not arrive through who pays its
+  suppliers.
+- Layer 1: the clearing system upper-cases and cuts payer names at 20 characters; merchant-acquirer settlement batches
+  and branch cash carry no cardholder; own-account transfers, GST refunds, insurance claims, loan advances and credit
+  interest sit among the trading credits; the lending book's industry field is blank or on the 1993 code set for
+  borrowers migrated from the earlier platform; names as Ltd or Limited; public bodies across divisions O, P and Q;
+  each produced by the system that holds it and none placed to be caught (mess-neutral, asserted).
+- Layer 2: estimand identification in credit stress transmission: a sector scenario reaches a lender's borrower through
+  the industries that buy from it, weighted by what each pays, and Table 2's steep convex bands make an averaged mix
+  understate the loss.
+- Decisive step: recognising that a borrower's own sales fall under the scenario is the change for the industries that
+  buy from it, weighted by what each paid it in the base year, and not the change for the industry it is classified in.
+- Not semantics: every field, code and definition can be read right (the register's BIC, the 1993 codes mapped, card
+  settlements as household spending, non-sales credits out) and the analyst still stresses each borrower at its own
+  division, which is how sector stress is run, and files NZD 10.0 million; no field or code carries a payer's industry.
+- Not rule application: CR-ST-02 keys the multiplier on the fall in the borrower's own sales and the scenario states
+  division sales changes; no filed rule says how a division path becomes one borrower's own sales fall. The enumerated
+  family spans 8.18 to 11.96 (own division 9.80, division-average mix 10.53, count-weighted mix 10.44, the acquirer as
+  payer 9.08, households at the retail path 8.18, the harsher of the two 11.96, class-average mix 11.45); the standing
+  family (value-weighted read-through under every licensed convention: legal or trading names, public bodies at their
+  own division or O, the book's legacy letters, a six-month base, non-sales credits in or out) spans 11.458 to 11.574,
+  one bin; what rules the rest out is the receipts themselves, quietly, since no sentence names payers.
+- Analyst test: a strong analyst who fills the legacy industry codes from the register, reads the standard, the
+  scenario and the PD table correctly and stresses each borrower at its own ANZSIC division's sales path files NZD 10.0
+  million, about a seventh low, because the receipts show 56 per cent of the book's trading credits come from other
+  divisions, largely the builders and hotels the scenario hits hardest.
+- Estimand: CR-ST-02 3.1 to 3.4 with 2.1 and 2.2 (CR-ST-02_ICAAP_stress_testing_business_banking_v3.1.docx): stressed
+  PD times stressed LGD times EAD summed over the business book's facilities at 30 September 2026 not in default, for the
+  twelve months to 30 September 2027, the stressed PD being the Table 1 PD times the Table 2 multiplier for the fall in
+  the borrower's own sales under the scenario against the year to the book date.
+- No decoy: nothing is planted: no shipped file states a business-book stressed loss, a borrower's payer mix or a sector
+  multiplier per borrower; the rural summary is another book's stress (a declared distractor); the lending book's
+  industry code is the borrower's own and correct as far as it goes; no memo argues the own-division answer.
+- No certified replay: the method is not recovered by reproducing any certified or published figure; the scenario and
+  Table 2 are inputs, no control total ties only under the golden, and no document carries a graded figure.
+- Lesson: a sector shock reaches a lender's borrowers through who pays them, so a borrower's industry label is not its
+  exposure; a model learns to read a counterparty's sources of revenue before mapping it to a sector path. No card on
+  file reads a stress or forecast through the paying counterparties (guard heart).
+
+## Readability screen
+
+| Rung | Answer | What a solver would need to see | Verdict |
+|---|---|---|---|
+| R0 own division's path (the field's sector stress) | NZD 10.0 million | nothing: the standard, the scenario and the book's code suffice | readable |
+| R1 the receipts' payer mix averaged over each division | NZD 10.5 million | that receipts matter, without carrying them to the borrower | readable |
+| R2 card settlements read as payments by the acquirer (division K) | NZD 9.0 million | a field read wrongly (the settlement particulars) | readable |
+| R3 the harsher of own division and payers for every borrower | NZD 12.0 million | an over-correction of the decisive step | readable |
+| Golden: each borrower's own sales fall through its payers (decisive) | NZD 11.5 million | a relation between the credits' payer strings and the register no column holds, no sentence invites and the field's method does not ask for | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative and its call | Ruled out by |
+|---|---|---|---|---|
+| SF1 | stressed loss | PD x LGD x EAD summed over facilities | none | CR-ST-02 3.1 (same call) |
+| SF2 | stress year | the twelve months to 30 September 2027, 12-month PD | lifetime loss | 2.2 and Table 1's 12-month PD |
+| SF3 | the borrower's own sales | what its payers pay it, each at its division's change, households at its own | its own division's change: NZD 10.0 million | 3.2's "the borrower's own sales" against 2.1's "the division's sales", with 56 per cent of credits from other divisions |
+| SF4 | sales | trading credits only | every credit: 11.458, same call | same call |
+| SF5 | base period | the year to the book date | six months: same call; the last quarter: business services 1.6 | 2.1 "against the year to the book date" |
+| SF6 | card settlement batches | household spending at the borrower's own division | the acquirer as payer: NZD 9.0 million | the batches' own particulars (SETTLEMENT, a merchant ID) from two acquirers |
+| SF7 | public bodies | each at its own BIC division | all at O: same call | same call |
+| SF8 | the borrower's division | its BIC on the NZBN register | the book's 1993 letters: same call | 4.1 and same call |
+| SF9 | payer names | legal or trading name | legal names only: same call | same call |
+| SF10 | weight of a payer | the amount it paid | count of credits: NZD 10.5 million | the scenario states sales in NZD million |
+| SF11 | payments from individuals | household sales at the borrower's division | left out: total same, manufacturing 1.4 | no unmatched payer carries a company word; 3.2's own sales include them |
+| SF12 | households' spending path | the borrower's own division | the retail path for all: NZD 8.0 million | 2.1, each division's own sales |
+| SF13 | EAD | drawn plus half the undrawn limit on revolving products | none | 3.4 (same call) |
+| SF14 | customers in default | outside the stress | none | 1.3 (same call) |
+| SF15 | Table 2 band edges | "or more" and "less than" | a fall on an edge | no fall within 0.02 points of an edge (asserted) |
+| SF16 | the 100 per cent cap | never binds | none | asserted (same call) |
+| SF17 | a sales rise | multiplier 1 | none | 3.2 "keeps its 12-month probability" |
+| SF18 | segment | own division on the register, Table 4 | none | 4.1 (same call) |
+| SF19 | rounding | total to NZD 0.5 million, segments 0.1 | none | the prompt; edges 0.25 and 0.05 (asserted) |
+| SF20 | halves | October to March, April to September | none | 2.3 |
+| SF21 | recovery timing | in the half received | the write-off's half | 4.2 "in the half" |
+| SF22 | recovery amount | the agency's net remittance | its statement upload as well | 4.2 "the bank received" |
+| SF23 | recoveries in scope | on loans already written off | receipts before write-off | 4.2 "already written off" |
+| SF24 | portfolio | the business book | rural and commercial property rows | 1.2 |
+| SF25 | segment of a written-off customer | its NZBN's division via the customer master | none | 4.1 (same call) |
+| SF26 | risk grade at 30 September 2025 | the grade in force, override included | the model grade | Table 1 note on the grade in force |
+| SF27 | default window | 1 October 2025 to 30 September 2026 | none | 4.3 "following twelve months" (asserted) |
+| SF28 | grade D customers in 2025 | in no band | none | same call (asserted) |
+| SF29 | share | the band's defaults over its borrowers | none | 4.3 (same call) |
+| SF30 | which customer defaulted | the customer the lending book shows holding the facility | the register's customer number | the lending book's facility holder (the register's number is the group lead) |
+
+## Ladder
+
+| Rung | Construction | Book total (NZD m) | Graded |
+|---|---|---|---|
+| R0 | own division's path, the field's sector stress | 9.804 | 10.0, five of six segments off |
+| R1 | the receipts' mix averaged by division | 10.528 | 10.5 |
+| R2 | acquirer settlements as financial-services payers | 9.075 | 9.0 |
+| R3 | harsher of own division and payers | 11.955 | 12.0 |
+| Golden | each borrower's own payers, households at its division | 11.4999 | 11.5 |
+
+Separation: every rung files another total bin and misses at least two segments; the nearest wrong total is R1 at
+NZD 10.5 million (8.5 per cent low) or R3 at 12.0. Not a candidate ranking, so the which-of-N margins do not apply.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | facilities at 30 September 2026 of customers not in risk grade D | 1.2, 1.3 filed; 13 customers out (asserted) |
+| 2 Unit of account | the facility for the loss, the borrower for the sales fall | 3.1, 3.2 |
+| 3 Attribution window | stress year to 30 September 2027; base year to 30 September 2026 | 2.1, 2.2; the credits cover exactly the base year |
+| 4 As-of dating | book date 30 September 2026 | 2.2, the book extract's name |
+| 5 Version basis | CR-ST-02 v3.1, the scenario approved 24 September 2026 | document control; one scenario ships |
+| 6 Denominator | a borrower's trading credits in the base year | 2.1's base year; SF4 and SF5 same call |
+| 7 Weighting | by amount paid | SF10; the scenario's sales in NZD |
+| 8 Window length | the whole base year | 2.1; six months same call (SF5) |
+| 9 Boundary inclusivity | Table 2 "or more" and "less than" | no fall within 0.02 of an edge (SF15, asserted) |
+| 10 Rounding path | facility losses summed unrounded, rounded once when reported | prompt; edges asserted (SF19) |
+| 11 Tie-break | none (one figure) | not applicable |
+| 12 Maturity and censoring | none: a one-year stressed loss on the book at the date | 2.2 |
+| 13 Order of operations | PD times multiplier, cap, then LGD and EAD | 3.1, 3.2; the cap never binds (SF16) |
+| 14 Row order | sums | C1, order-free |
+| 15 Duplicate resolution | one row per facility and per credit | asserted unique facility numbers; credits are distinct events |
+| 16 Identity normalisation | payer strings to register names: upper case, LIMITED as LTD, & as AND, 20 characters | C1: legal-only and full matching land the same call (SF9); no ambiguous match (asserted) |
+| 17 Netting against gross | none on the call; ask A nets recoveries against write-offs by filed rule | 4.2 |
+| 18 Dimensional units | NZD; per cent changes; per cent PDs | the documents' headers |
+| 19 Code and status semantics | BIC from the register, 1993 codes, MS and DEP as household sales | 4.1; SF6, SF8; never the stump |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | Table 2 per borrower; LGD per facility | 3.2, 3.3 |
+| 22 Forward window contents | the scenario's division changes for the stress year | 2.1 and the approved workbook |
+
+## Literal reader
+
+A reader executing CR-ST-02 word for word stresses every facility of a business customer at 30 September 2026 not in
+risk grade D, at its Table 1 PD times the Table 2 multiplier for the fall in the borrower's own sales over the stress
+year under the scenario, against the year to the book date. The scenario states each division's sales change; a literal
+reader has to say what the borrower's own sales are and how the scenario reaches them, and the pack's only record of a
+borrower's sales is its operating-account credits, where each payment names who paid. Reading the division's change as
+the borrower's own is the easy method on the same estimand (it substitutes the division's sales for the borrower's own,
+which 2.1 and 3.2 distinguish), never another reading of a filed term; every value-weighted read-through under the
+licensed conventions (SF4 to SF11) files NZD 11.5 million and the same six segments (asserted). The ask readings are
+closed in SF20 to SF30 by 2.3, 4.2, 4.3, the Table 1 note and the records.
+
+## Oracles
+
+- The rural book stress summary (distractor): the rural book's own-sector stress under the same scenario; another book,
+  no business figure, and its total ties nothing in the business book.
+- The industry sales series (distractor): each division's quarterly history; no stressed figure, no borrower.
+- The deposit listing (distractor): balances only.
+- The scenario's macroeconomic paths sheet: context for the division paths; nothing ties to a stressed loss.
+- None ties only under the golden; no document states a graded figure (asserted, R3c).
+
+## Ask sheet
+
+- Ask A, net credit losses by segment and half (12 cells, NZD thousand): primary A1, guarantors' receipts posted to their
+  own personal collection cases (customer master: Personal), linked to the written-off company only through the
+  guarantees register (D7, a key worked out across two files); primary A2, the agency's statement upload (gross of
+  commission, days earlier) beside the remittance it becomes (D1); hazards: receipts before the first write-off, later
+  further write-offs, rural and commercial property rows, struck-off companies' segments through the customer master.
+- Ask B, defaults by risk-grade band at 30 September 2025 (5 counts, 5 shares): primary B1, a connected group's
+  cross-default recorded per facility under the group lead's customer number, the true holder found only in the lending
+  book (D7, a cardinality the register shows); hazards: overrides in force at 30 September 2025, the March 2026 merge
+  log, business borrowers moved to the rural book whose defaults sit in the rural register, grade D rows in the snapshot.
+- Separation: the asks read the call's register only for a written-off customer's segment and the lending book only
+  for a facility's holder; zero device rows in the call's population (asserted); deleting every ask file leaves the call
+  (asserted).
+- Pair ceiling: 28.5 (cracker C 45.0 keeping 0 of 22 ask figures, mirror S 12.0; 43.5 if the cracker also finds one
+  silent device)
+- Mirror leakage: 0.0 per cent of ask weight (the mirror handles the asks as the cracker does)
+- Measured by: generator/ceiling.py on the cut pack (target.zip 9ec7a1c7)
+
+| Ask | Cracker's stop on the cut pack | Device it misses | Cracker keeps | Verdict |
+|---|---|---|---|---|
+| A net credit losses (12 cells) | agency upload paired off, receipts after write-off, business rows | A1 guarantors' personal cases | 0 of 12 | miss |
+| B default counts (5) | overrides in force, both registers, merge log | B1 the group lead's number | 0 of 5 | miss |
+| B default shares (5) | the same | B1 | 0 of 5 | miss |
+
+## Architecture 2 record
+
+The Bellbird personal-loan ECL allowance (expected-credit-loss-provisioning), shipped 2026-10-14 (target.zip 1fb3303f), landed on the portal and re-rooted 2026-11-01. Its note as it stood, headings demoted one level.
+
+### Bellbird personal loans, the 30 September 2026 ECL allowance
 
 Private, never ships. Round 2 (2026-10-14), the slot's second architecture under the same draw. The 10/10 audit found
 the loop 1 build compliant but weak: its decisive step (conditioning a crude cohort curve on survival of both exits) sat
@@ -24,7 +286,7 @@ device (B4: the June month end's scoring run carried one partition's last scores
 July), with no ask B figure moving, redraws the forum to the Audit and Risk Committee (deck arc_ecl_q3_2026.pptx) and the
 hardship register's job-account persona, both against heart BLOCKs.
 
-## Draw
+### Draw
 
 | Axis | Value |
 |---|---|
@@ -86,7 +348,7 @@ the loans at risk in months where only survivors appear, which drives every earl
 counts each taken-over loan only from its first month on book after the take-over (delayed entry), or reads the rates off
 the loans the record watched from drawdown, and either way lands the same figure.
 
-## Default path
+### Default path
 
 1. Stage `personal_loan_book_2026-09-30.csv` under CRM-ECL-04 sections 1 and 2: 3,266 loans in stage 2, 343 in stage 3.
 2. Read `loan_record_2026-09-30.parquet`: each loan's month on book of first default (default_month), of closing without
@@ -103,7 +365,7 @@ the loans the record watched from drawdown, and either way lands the same figure
 Ends on: AUD 11.6 million
 Golden: AUD 13.2 million
 
-## Stump sentence
+### Stump sentence
 
 A strong solver builds each product's monthly default and repayment rates by month on book from the loan record,
 counting every loan from its drawdown, rolls each performing loan forward from its own month on book, and books AUD 11.6
@@ -112,7 +374,7 @@ record took over at the October 2019 go-live as at risk from their drawdown, whe
 they were still open that day, so their earlier months fill every early month's loans at risk with exposure that could
 not end in a recorded default.
 
-## Three rules
+### Three rules
 
 Task type: expected-credit-loss-provisioning, the banking domain's task type that serves Forecasting & Predictive Modeling: each performing loan's expected loss over its next 12 months or remaining life at 30 September 2026.
 Domain test: The deciding quantity is each loan's AASB 9 12-month or lifetime ECL, whose PD term is the product's default probability by month on book estimated from a loan-level performance record with repayment as a competing exit, then staged, scenario-weighted, re-amortised and discounted at the contract rate.
@@ -128,7 +390,7 @@ No decoy: Nothing is planted to carry the wrong answer: no memo, draft, briefing
 No certified replay: No certified, published or prior-quarter allowance or PD ships, so the method cannot be recovered by reproducing a figure; the estimators that respect what the record watched (delayed entry, the taken-over loans left out, landmark shares) agree with each other, not with a filed number.
 Lesson: A loan-level record that took over a predecessor's open loans watched them only from the take-over, so a life table built from it must enter each taken-over loan at its age then; no build on file teaches left truncation of a taken-over cohort (nearest drivers 0.10 and below, task255's size truncation and task134's right censoring differentiated).
 
-## Readability screen
+### Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -136,7 +398,7 @@ Lesson: A loan-level record that took over a predecessor's open loans watched th
 | R2 repayment censored (default-only survival), from drawdown | 3.2's "open and not in default ... first defaults" | closure_reason column | the textbook Kaplan-Meier reflex | none | no | no | readable |
 | R3 each taken-over loan held from its month on book at the go-live (decisive) | no: 3.2 and the dictionary state the record's population, never entry, exposure or the take-over's effect (asserted) | no: no flag, entry or month-on-book column; the taken-over loans are known only by drawdown before the go-live | no: the reflexes (pool, stratify, censor, compete, smooth) all land wrong (R0 to R2b, the audit's crude routes) | no: no control, corpus or published PD scores the risk set | no: keys unique, no duplicates, every join lands; thin early vintages read as a smaller old book | no: rebuilding every month's loans at risk, not one ratio | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -176,7 +438,7 @@ Lesson: A loan-level record that took over a predecessor's open loans watched th
 | SF34 | the June behaviour score (slide 2) | the June month end's Scored row: the run dated 1 July, or the 2 July rerun for the partition carried forward on 1 July | the run dated 1 July as it stands (carried-forward scores in), or its Scored rows only | 16 of 16 counts move either way | the scoring file's own fields: score_status says a Carried forward score repeats the last score held, and runs and run_date make the 2 July rows the June month end's; each loan's latest June month-end row gives the golden (C1); asserted |
 | SF35 | when a defaulted loan leaves the loans at risk | at its first default | the 1,223 defaulted loans not written off or settled kept at risk from the default month (an instant cure; the round 2c judge's residual fork) | AUD 13.1 million (10.5, 2.6) | 3.2: the probability that a loan open and not in default at a "first defaults in month on book a + k"; the record carries no cure date and 343 of the 761 still open are 90 or more days past due at 30 September, so the data do not support an instant cure; asserted |
 
-## Ladder
+### Ladder
 
 Measured by `checks.py` and `verify.py` on the shipped pack (allowance, AUD; reported to AUD 0.1 million):
 
@@ -204,7 +466,7 @@ Measured by `checks.py` and `verify.py` on the shipped pack (allowance, AUD; rep
 - R3a and R3b (three-rules block): the easy route with every filed rule executed files AUD 11.6 million on the answer's
   stages and multiplier; changing only the entry of the taken-over loans files the answer to the cent.
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
@@ -231,7 +493,7 @@ Measured by `checks.py` and `verify.py` on the shipped pack (allowance, AUD; rep
 | 21 Clause scope | 7.1 applies to PD; 3.2's estimand per product | 7.1, 3.2 |
 | 22 Forward window contents | PD from the record's experience, multipliers on PD, EAD on schedule | 3.2, section 4, 7.4 |
 
-## Literal reader
+### Literal reader
 
 A reader executing CRM-ECL-04 3.2 word for word estimates, per product and month on book, the probability that a loan
 open and not in default at the end of a first defaults at a + k, from every loan of the product in the loan record; the
@@ -246,7 +508,7 @@ judge's round 2 builds are reproduced to the figure in `checks.py` (60.5 to 74.7
 golden only at the cure, the remittance attribution and the June clock, each now ruled on by one filed sentence; the
 literal execution of the repaired text gives all eight loss shares and all sixteen counts on the verifier's own code.
 
-## Oracles
+### Oracles
 
 - The write-offs extract (distractor): monthly write-offs and recoveries, totals invariant under either attribution of
   agency remittances (D9, asserted); it states no PD, loss rate or allowance.
@@ -258,7 +520,7 @@ literal execution of the repaired text gives all eight loss shares and all sixte
 - The receipts total: the same under either attribution.
 - None ties only under the golden; no document states a graded figure (asserted).
 
-## Ask sheet
+### Ask sheet
 
 Both asks are decoupled from the call: neither reads the PD (asserted by running both with the PD code disabled), and
 the main call reads none of the June extract, the scoring runs, the Collections files, the sale schedule or the
@@ -397,7 +659,7 @@ Forecasting block, mechanisms differ (renewal against left truncation). repeat.d
 task129: the deliverables are the slot's since v1. Driver nearest 0.10 (this slot's loop 1), 0.06 task501 v3 and task23;
 same_driver_older against task180 differentiated on the card.
 
-## Leak review and stage 3 gates
+### Leak review and stage 3 gates
 
 - Round 2c (2026-10-14): `checks.py` PASS 600 (SF34 and B4's readings, the pair sheet asserted), `verify.py` PASS,
   two rebuilds byte-identical to `target/`, `target.zip` and `golden/`, `figures_check.py` exit 0 (65 figures), `precut.py`
@@ -496,3 +758,22 @@ same_driver_older against task180 differentiated on the card.
 - The June clock left silent behind the change log's source (round 2 re-judge, FIX_NOW on slide 2 only): the judge's literal build read the June column unadjusted (PL36 stage 1 14,450 / 680 / 39 / 1,582) and no file said the June days past due count to the run date. Applied as prescribed: the dictionary's loan book lines record each extract's run clock, and B3 dies as a device (pair 65.2 with both careful, 49.1 cracker only). Not taken: restating the June column at close of business (the re-judge's alternative), which leaves ask B a plain read; re-keying slide 2 to the literal counts, which the re-judge ruled out and freeze.py holds.
 - Ask B left device-less after the June clock was filed (round 2b, not shipped): the pair sat at 65.2 with both careful responses executing the clock. Round 2c draws B4 from the scoring engine's own failure mode (a partition carried forward on 1 July, rescored on 2 July), one digit of the loan number at first: single digits moved 10 to 16 counts on the run as it stands and 4 to 16 on its Scored rows alone, no digit both at 16; digits 3 and 4 together move all 16 both ways. Not taken: a status column alone without the rerun rows (loses the June-position score), a split run with no carried-forward rows (the battery's coverage check finds the missing loans), a Sept-side closed-or-stage-3 device (contradicts the dictionary's population sentences).
 - The judge's optional pin on exit at first default (round 2c re-judge, APPROVE): not taken. 3.2's estimand already says "first defaults", and the one variant that moves a figure (an instant cure, AUD 13.1 million) needs a cure the record never dates and that 343 still-defaulted open loans contradict; closed as SF35 and asserted.
+- Architecture 2 (Bellbird personal-loan ECL allowance) re-rooted 2026-11-01 at the Batch 3 queue reset: landed on the portal, the survival-to-date conditioning being the field's reflex; its world is closed and the slot moves to stress-testing-capital in a new world.
+- Candidate: business deposit run-off by depositor type under the scenario (deposit-liquidity-behaviour): the deciding step was a depositor-type run-off rate applied to balances, a lookup, and the deposit cell sits beside task170's driver; dropped.
+- Candidate: a term-deposit renewal ladder: the renewal rate by maturity bucket reads straight off the history, rule application; dropped.
+- Candidate: intraday payment netting after a merger: the decisive step was matching two systems' payment keys, identity semantics under rule 3; dropped.
+- Candidate: lenders mortgage insurer capacity under the house-price path: the stress lands in the insurer's capital, outside the bank's ICAAP book, and the call drifted toward opportunity sizing; dropped.
+- Candidate: presale settlement risk on apartment development loans: the decisive step settled which presales settle, a population that is WHAT (the WHAT screen); dropped.
+- Candidate: a head contractor's failure spreading to its subcontractor borrowers: reduces to a grouping (the contractor and its subcontractors at one PD), which stumping 1.1c rules out; dropped.
+- A payment-limit run under stress: task168's mechanism; not drawn.
+- First prototype of this architecture, with commercial-property investors and pass-through payers in the book: the payer and own-division readings cancelled (golden over the own-division rung 0.97 to 1.04), so the book was redrawn on business types whose buyers sit in other divisions.
+- Strategy composition_mix on the card: banned by the guard against the window, and the driver carries no rate across mixes; tagged other.
+- Forum committee_or_panel, role compliance_or_audit and context artifact filed_standard: banned against task273 and task130; redrawn as board_of_directors, finance_controller and register.
+- Ask B at twice the grade PD with 16 forced group defaults: realised default shares of 6 to 24 per cent in grades whose PDs run 0.25 to 16 per cent, and 51 customers in default at the book date; redrawn at a realised rate equal to the grade PD, five group defaults, and the later-written-off companies carried into the 2025 snapshot (graded, or grade D when already in default).
+- Write-offs at a NZD 150,000 median: the year's net credit losses near NZD 8 million against an 11.5 million stressed loss, a stress no ICAAP reviewer would accept; now a NZD 40,660 median with construction and hospitality failures heavier and later in the year (net credit losses NZD 3.9 million, the stress 2.9 times them).
+- Agency remittances as one receipt type among three: the double record touched 7 of 12 cells; placement with the agency now follows a write-off by three to six months with remittances every one to three months, touching every cell.
+- Folding buyers worth under NZD 1,200 a year into the borrower's largest buyer in the division: legal-name-only matching and the six-month base left their segment bins (business services 1.427, trade and logistics 2.348) through one engineering firm near a Table 2 edge; reverted, and a buyer's month under NZD 40 is simply not paid.
+- The rural register with no mass: no business borrower moved to the rural book defaulted at the realised rate, so the register moved nothing; three of the moved borrowers now default on their own stream (the dairy downturn reaching agricultural contractors), moving two bands.
+- The trigger Cross-default only on group rows: a marker isolating the device rows; ordinary events now carry it too (a borrower in default with another lender).
+- Card payments at the trade counter at 30 per cent for non-retail types: payments from individuals carried enough of manufacturing and trade sales that leaving them out moved the book total to 12.0; the trade-counter card share is 55 per cent, and leaving them out now keeps the total (manufacturing still moves, SF11).
+- Grading the book total to NZD 0.1 million: the six-month base would file 11.6 and the non-sales reading sit 0.008 from an edge; the 0.5-million bin keeps every licensed convention (11.458 to 11.574) inside with 0.18 to spare.

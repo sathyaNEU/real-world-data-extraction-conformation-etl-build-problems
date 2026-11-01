@@ -48,16 +48,17 @@ def _core(creator, modified_by, created, modified, title):
             % (title, creator, modified_by, created, modified))
 
 
-def _app(company):
+def _app(company, application="Microsoft Excel"):
     return ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
             '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" '
             'xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
-            '<Application>Microsoft Excel</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>'
+            '<Application>%s</Application><DocSecurity>0</DocSecurity><ScaleCrop>false</ScaleCrop>'
             '<Company>%s</Company><LinksUpToDate>false</LinksUpToDate><SharedDoc>false</SharedDoc>'
-            '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>' % company)
+            '<HyperlinksChanged>false</HyperlinksChanged><AppVersion>16.0300</AppVersion></Properties>'
+            % (application, company))
 
 
-def repack_xlsx(path, creator, modified_by, created, modified, title, company):
+def repack_xlsx(path, creator, modified_by, created, modified, title, company, application="Microsoft Excel"):
     src = zipfile.ZipFile(path)
     items = [(n, src.read(n)) for n in src.namelist()]
     src.close()
@@ -68,14 +69,14 @@ def repack_xlsx(path, creator, modified_by, created, modified, title, company):
             if n == "docProps/core.xml":
                 data = _core(creator, modified_by, created, modified, title).encode()
             elif n == "docProps/app.xml":
-                data = _app(company).encode()
+                data = _app(company, application).encode()
             zi = zipfile.ZipInfo(n, date_time=ZIP_TIME)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, data)
         if "docProps/app.xml" not in names:
             zi = zipfile.ZipInfo("docProps/app.xml", date_time=ZIP_TIME)
-            z.writestr(zi, _app(company).encode())
+            z.writestr(zi, _app(company, application).encode())
     open(path, "wb").write(out.getvalue())
 
 

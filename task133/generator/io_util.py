@@ -88,7 +88,7 @@ def pdf_text(path):
     import zlib
     raw = open(path, "rb").read()
     out = []
-    for m in re.finditer(rb"stream\r?\n(.*?)\r?\nendstream", raw, re.S):
+    for m in re.finditer(rb"stream\r?\n(.*?)\s*endstream", raw, re.S):
         data = m.group(1)
         dict_start = raw.rfind(b"<<", 0, m.start())
         head = raw[dict_start:m.start()]

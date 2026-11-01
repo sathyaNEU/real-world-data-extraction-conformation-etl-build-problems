@@ -1,12 +1,12 @@
 {
  "task": "task133",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "own sales fall read through the industries that pay each borrower (receipts matched to the NZBN register) against the field's own-division sector stress",
  "architecture": 3,
  "loops": 0,
  "precut": {

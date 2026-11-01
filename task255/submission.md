@@ -21,7 +21,7 @@
 4. Counted for each package in Annex A of Spoorbeeld_tariefkaart_2027.pdf the regular riders whose journeys passed its halls and passages 3 times or more (rate card 3.4 and 3.5): Overstappunten 49, Zuidtak 48 and Oosttak 47 per cent, every other package under 40.
 5. For make-good, took each booked screen's dark hours within the opening hours of terms 6.1 from cms_player_status_20261001_20261104.csv (UTC to Ravelmond time), on the player its Bekabeling rows in schermregister_2026-11-12.xlsx give, except that a move off a player that never came back dates from the receiving player's report of its displays rising by the moved screens, plus Wilgenhof's screens from their take-down; then the dark hours above 0.5 per cent of booked screen-hours, rounded up (terms 6.3).
 6. For the 2027 screens, took each asset tag's latest Schermen row hung by 1 January 2027 and not taken down by then, kept one screen to a location and position (the replacement units of 3 to 5 November came in under new tags beside rows left open), left out package "-" and counted by package.
-7. For net revenue, split the VAT out of facturen_oud_systeem_2026.csv, added the invoices and netted every credit note through its invoice number in billing_export_2026-10-15_2026-11-12.xlsx, and charged each agency's contract rate (its statement in bureaucommissie_najaar_2026.pdf over the value net of the credit notes issued by 31 October: Kompasmedia 13.5, Noordlicht Mediaplanning 12.5 and Bureau Lindeman 17.5 per cent) on each booking's value net of all its credit notes (terms 8.2 and 8.3).
+7. For net revenue, split the VAT out of facturen_oud_systeem_2026.csv, added the invoices and netted every credit note through its invoice number in billing_export_2026-10-15_2026-11-12.xlsx, and charged each agency's contract rate (its statement in bureaucommissie_najaar_2026.pdf over the value net of the credit notes issued by 31 October: Windroos Media 13.5, Noordlicht Mediaplanning 12.5 and Bureau Overdiep 17.5 per cent) on each booking's value net of all its credit notes (terms 8.2 and 8.3).
 8. Recommended Tier G for Overstappunten, Zuidtak and Oosttak.
 
 ## 4. Deliverable Answers
@@ -40,16 +40,16 @@
    - Noordtak (NRD): 31, standard tier
    - Westtak (WST): 25, standard tier
 3. Make-good owed per autumn booking, whole hours:
-   - SB-26-0412 (Overstappunten): 113
-   - SB-26-0415 (Centraal): 34
-   - SB-26-0418 (Noordtak): 591
-   - SB-26-0421 (Oosttak): 171
-   - SB-26-0423 (Binnenstad): 64
-   - SB-26-0427 (Zuidtak): 203
-   - SB-26-0430 (Centraal): 195
-   - SB-26-0433 (Westtak): 45
-   - SB-26-0436 (Ringlijn): 87
-   - SB-26-0439 (Eindhaltes): 137
+   - SB-26-0411 (Overstappunten): 113
+   - SB-26-0414 (Centraal): 34
+   - SB-26-0415 (Noordtak): 591
+   - SB-26-0419 (Oosttak): 171
+   - SB-26-0422 (Binnenstad): 64
+   - SB-26-0424 (Zuidtak): 203
+   - SB-26-0429 (Centraal): 195
+   - SB-26-0430 (Westtak): 45
+   - SB-26-0434 (Ringlijn): 87
+   - SB-26-0437 (Eindhaltes): 137
 4. Screens on sale on 1 January 2027 by package:
    - Centraal: 10
    - Binnenstad: 9

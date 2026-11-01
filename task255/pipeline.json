@@ -1,12 +1,12 @@
 {
  "task": "task255",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "marketing-consumer-research / media-reach-frequency-audience-measurement",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "The default path puts every change of trains where the line map puts it and files Tier G for Centraal, Binnenstad, Overstappunten, Oosttak and Zuidtak (Centraal 63 per cent); on weekday peaks the north and east branches run through Centraal into each other and the west and south likewise, which only each journey's duration against the network's timings shows, so Tier G is Overstappunten, Zuidtak and Oosttak.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -47,7 +47,7 @@
    "commit": "DRAWN (task255) architecture 2, by the main session"
   }
  ],
- "resume": "architecture 2 drawn 2026-11-01 (card registered PASS); next: design note and generator",
+ "resume": "architecture 2 built 2026-11-01: free gates run on the final cut by the builder; next: stage 4 (the isolated leak reader and the determinism judge, by the main session)",
  "approved": null,
  "delivered": null,
  "portal": null,

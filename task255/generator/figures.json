@@ -1,20 +1,20 @@
 {
  "agency_rates_pct": {
-  "Bureau Lindeman": 17.5,
-  "Kompasmedia": 13.5,
-  "Noordlicht Mediaplanning": 12.5
+  "Bureau Overdiep": 17.5,
+  "Noordlicht Mediaplanning": 12.5,
+  "Windroos Media": 13.5
  },
  "booking_package": {
-  "SB-26-0412": "Overstappunten",
-  "SB-26-0415": "Centraal",
-  "SB-26-0418": "Noordtak",
-  "SB-26-0421": "Oosttak",
-  "SB-26-0423": "Binnenstad",
-  "SB-26-0427": "Zuidtak",
-  "SB-26-0430": "Centraal",
-  "SB-26-0433": "Westtak",
-  "SB-26-0436": "Ringlijn",
-  "SB-26-0439": "Eindhaltes"
+  "SB-26-0411": "Overstappunten",
+  "SB-26-0414": "Centraal",
+  "SB-26-0415": "Noordtak",
+  "SB-26-0419": "Oosttak",
+  "SB-26-0422": "Binnenstad",
+  "SB-26-0424": "Zuidtak",
+  "SB-26-0429": "Centraal",
+  "SB-26-0430": "Westtak",
+  "SB-26-0434": "Ringlijn",
+  "SB-26-0437": "Eindhaltes"
  },
  "call": [
   "Overstappunten",
@@ -26,16 +26,16 @@
  "headway_min": 3,
  "make_good_allowance_pct": 0.5,
  "make_good_hours": {
-  "SB-26-0412": 113,
-  "SB-26-0415": 34,
-  "SB-26-0418": 591,
-  "SB-26-0421": 171,
-  "SB-26-0423": 64,
-  "SB-26-0427": 203,
-  "SB-26-0430": 195,
-  "SB-26-0433": 45,
-  "SB-26-0436": 87,
-  "SB-26-0439": 137
+  "SB-26-0411": 113,
+  "SB-26-0414": 34,
+  "SB-26-0415": 591,
+  "SB-26-0419": 171,
+  "SB-26-0422": 64,
+  "SB-26-0424": 203,
+  "SB-26-0429": 195,
+  "SB-26-0430": 45,
+  "SB-26-0434": 87,
+  "SB-26-0437": 137
  },
  "net_revenue_eur": {
   "Binnenstad": 5050,

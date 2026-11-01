@@ -30,6 +30,8 @@ def write_loss_files(W, out):
 
     crow = [[c["case"], c["cust"], fmt_date(c["opened"]), OFFICERS[int(rng.integers(len(OFFICERS)))], "Open"]
             for c in W.cases + W.gcases]
+    # the extract holds the cases open at 30 September 2026: a guarantor's case opened in October is not in it
+    crow = [r for r in crow if _dt(r[2]).date() <= P.WIN_END]
     rng.shuffle(crow)
     write_csv(os.path.join(out, "collections_cases_open_2026-09-30.csv"),
               ["case_no", "customer_no", "opened", "case_officer", "status"], crow)
@@ -115,7 +117,9 @@ def write_backtest_files(W, out):
     for c in ws[1]:
         c.font = Font(bold=True)
     for o in sorted(W.overrides, key=lambda o: (o["approved"], o["cust"])):
-        ws.append([o["cust"], o["model"], o["override"], o["approved"], o["removed"],
+        # an override whose removal falls after the export is still in force on it
+        removed = o["removed"] if o["removed"] is not None and o["removed"] <= dt.date(2026, 10, 7) else None
+        ws.append([o["cust"], o["model"], o["override"], o["approved"], removed,
                    str(rng.choice(["Credit Committee", "Head of Credit", "Senior Credit Manager"])), o["reason"]])
     for row in ws.iter_rows(min_row=2):
         row[3].number_format = "dd/mm/yyyy"

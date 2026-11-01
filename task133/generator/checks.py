@@ -400,6 +400,24 @@ def main():
           F["total"] >= 2.5 * sum(a["net"].values()), round(F["total"] / sum(a["net"].values()), 2))
     check("realism: performing book in default at the book date under 4 per cent of customers",
           F["n_default"] / (F["n_default"] + F["n_perf"]) < 0.04, F["n_default"])
+    import subprocess
+    scrub = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".claude", "skills", "reduce-house-fixes", "scripts",
+                         "scrub_producer_metadata.py")
+    for d in (TDIR, os.path.join(TASK, "golden")):
+        out = subprocess.run([sys.executable, scrub, d, "--floor", "2026-06-01", "--ceiling", "2026-10-16"],
+                             capture_output=True, text=True).stdout
+        check("H1 no writer signature or out-of-band stamp in %s" % os.path.basename(d), "clean" in out, out.strip()[-120:])
+    import pypdf
+    strict = pypdf.PdfReader(os.path.join(TDIR, docs.RURAL_PDF), strict=True).pages[0].extract_text()
+    layout = subprocess.run(["pdftotext", "-layout", os.path.join(TDIR, docs.RURAL_PDF), "-"], capture_output=True,
+                            text=True).stdout
+    check("H25 the rural PDF reads the same under a strict parser, pdftotext and the generator's own decoder",
+          all("Rural book total" in t for t in (strict, layout, pdf_text(os.path.join(TDIR, docs.RURAL_PDF)))))
+    cases = list(csv.DictReader(open(os.path.join(TDIR, "collections_cases_open_2026-09-30.csv"), encoding="utf-8")))
+    ovw = load_workbook(os.path.join(TDIR, "grade_overrides_2024-2026.xlsx"), read_only=True).active
+    late_rm = [r for r in ovw.iter_rows(min_row=2, values_only=True) if r[4] is not None and r[4].date() > P.EXPORT_DATE.date()]
+    check("H16 no record dated after its extract: cases opened by 30 September 2026, override removals by the export",
+          all(A._d(r["opened"]) <= P.WIN_END for r in cases) and not late_rm, (len(cases), len(late_rm)))
     with zipfile.ZipFile(os.path.join(TASK, "target.zip")) as z:
         zn = sorted(n.split("/", 1)[1] for n in z.namelist())
     check("bundle: target.zip holds exactly target/", zn == files)

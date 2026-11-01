@@ -252,7 +252,7 @@ def main(target):
           sum(utc[k]["make_good"] != mg[k]["make_good"] for k in mg) >= 8)
     noup = AN.make_good(target, takedowns=False)
     check("SF14 the take-down at its player's last report or at the day's opening: the same hours; ignoring it moves "
-          "Noordtak's booking only", [k for k in mg if noup[k]["make_good"] != mg[k]["make_good"]] == ["SB-26-0418"]
+          "Noordtak's booking only", [k for k in mg if noup[k]["make_good"] != mg[k]["make_good"]] == ["SB-26-0415"]
           and takedown_open_same(target, mg))
     check("SF15 part of an hour counts as an hour (terms 6.3): rounded up, never to nearest",
           all(v["make_good"] == math.ceil(round(v["dark"] - 0.005 * v["booked"], 6)) for v in mg.values()))
@@ -329,7 +329,7 @@ def main(target):
         elif f.endswith(".pdf"):
             authors |= {m.decode("latin-1") for m in re.findall(rb"/Author \(([^)]*)\)", open(os.path.join(target, f), "rb").read())}
     persons = {a for a in authors if re.fullmatch(r"[A-Z][a-z]+ [A-Z][a-z]+", a) and not re.search(
-        r"Media|Benchmark|Kwadrant|Spoorbeeld|RVB|Datawarehouse|Finance|Crediteuren|Informatie", a)}
+        r"Media|Benchmark|Onderzoeksbureau|Spoorbeeld|RVB|Datawarehouse|Finance|Crediteuren|Informatie", a)}
     check("RS6 every person who authored a shipped file is a persona from the card", persons <= people and persons,
           ", ".join(sorted(persons)))
     tool = [f for f in files if re.search(rb"ReportLab|reportlab|openpyxl|matplotlib|python", open(os.path.join(target, f), "rb").read())]
