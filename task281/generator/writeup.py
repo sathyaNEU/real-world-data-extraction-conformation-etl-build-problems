@@ -1,109 +1,115 @@
-"""submission.md for task281, rendered from generator/figures.json so that every figure in the write-up is the one
-the generator computed (build.py calls it after the goldens)."""
+"""Writes submission.md from figures.json, so every figure in blocks 1 to 4 is one the generator computed."""
 import json
 import os
 
-import params as P
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-A_, B_ = P.DRV["A"].split()[0], P.DRV["B"].split()[0]
+ORDER = ["Brackenfield", "Hollinmoor", "Kestle Road", "Orrin Falls", "Pellsbury", "Quarry Hill", "Rookwood",
+         "Sallow Creek", "Thistlebrook", "Veldane", "Wendmere", "Yarrowby"]
 
 
 def c(n):
-    return format(int(n), ",")
+    return "{:,}".format(n)
 
 
-def render(fig):
-    ph, fits, pl, call = fig["phases"], fig["fits"], fig["pooled"], fig["call"]
-    gset = call["set"]
-    names = ", ".join(gset[:-1]) + " and " + gset[-1]
-    ins = [ph[p]["share5"] for p in gset]
-    out = [p for p in P.PHASE_CODES if p not in gset]
-    top_out = sorted(out, key=lambda p: -ph[p]["share"])[:2]
-    pmin = min(ph[p]["pooled_pct"] for p in P.PHASE_CODES)
-    pmax = max(ph[p]["pooled_pct"] for p in P.PHASE_CODES)
-    a, b = fits[P.DRV["A"]], fits[P.DRV["B"]]
-    floor = pl["expected_floor"]
-    rest_max = max(ph[p]["share5"] for p in out)
-    shares_in = ", ".join("%s %d" % (p, ph[p]["share5"]) for p in gset)
-    shares_out = ", ".join("%s %d" % (p, ph[p]["share5"]) for p in out)
-    towns = sorted(fig["towns"])
-    k = fig["constants"]
-    lines = []
-    w = lines.append
-    w("## Tags\n")
-    w("**Domain:** General Statistics & Data Science (missing data, censoring and measurement error: a censored "
-      "lifetime distribution read past its follow-up).")
-    w("**Analytical objective:** Descriptive & Distribution Analysis.\n")
-    w("## 1. Final Recommendation\n")
-    w("**Put conversion phases %s into the 2027 group driver replacement program, %s luminaires still on their "
-      "original driver.**" % (names, c(call["program_luminaires"])))
-    w("Each of the five is projected at %d to %d per cent of its original-driver luminaires failing before their "
-      "twelfth year against the %d per cent trigger, because only %s's drivers wear out and these phases were built "
-      "mostly from %s lots. Not all ten, which one Weibull over every conversion driver files at %d to %d per cent "
-      "each: it reads %s's survivors as failures still to come, expecting more than %s %s failures by the close "
-      "against the %d recorded. Not %s or %s, the highest of the rest at %d and %d per cent, built mostly from %s "
-      "lots.\n" % (min(ins), max(ins), k["trigger_pct"], A_, A_, round(pmin), round(pmax), B_, c(floor), B_,
-                   b["failures"], top_out[0], top_out[1], ph[top_out[0]]["share5"], ph[top_out[1]]["share5"], B_))
-    w("## 2. Critical Components\n")
-    w("1. Driver failures on record to 31 December 2026: **%s %s** of %s drivers and **%s %d** of %s, against the "
-      "**more than %s** %s failures one Weibull over every driver expects" % (
-          A_, c(a["failures"]), c(a["drivers"]), B_, b["failures"], c(b["drivers"]), c(floor), B_))
-    w("2. %s's original-driver lifetime: Weibull shape **%.1f**, characteristic life **%.1f years**; %s's drivers "
-      "show no wear-out" % (A_, a["shape1"], a["life1"], B_))
-    w("3. Projected share failing before year 12, to the nearest 5 per cent: **%s**; %s" % (shares_in, shares_out))
-    w("4. Luminaires on their original driver on 1 January 2027 in the five phases: **%s**\n" % c(call["program_luminaires"]))
-    w("## 3. Step-by-Step Solution\n")
-    w("1. Took each luminaire's retrofit date, phase and lot from %s (both sheet layouts, every pole-tag form) and each "
-      "lot's LED driver maker from %s: %s %s and %s %s drivers." % (
-          P.FILES["install"], P.FILES["coc"], c(a["drivers"]), A_, c(b["drivers"]), B_))
-    w("2. Dated each original driver's failure at the completion of the first driver-replacement order on its pole "
-      "(DRVR in %s, SL-DRV-RPL in %s, the legacy orders open at the cutover counted once as MIGRATED) and each exit "
-      "at its knockdown, warranty swap or pole removal order, per %s 2.2 to 2.4, every other luminaire suspended at "
-      "its age on 31 December 2026." % (P.FILES["wo_legacy"], P.FILES["wo_new"], P.FILES["note"]))
-    w("3. Fitted the two-parameter Weibull by maximum likelihood to each driver maker's drivers (the note's 3.1): %s "
-      "shape %.1f and characteristic life %.1f years on %s failures; %s's %d failures show no wear-out, where one fit "
-      "over both makers expects more than %s." % (A_, a["shape1"], a["life1"], c(a["failures"]), B_, b["failures"],
-                                                 c(floor)))
-    w("4. Averaged, over each phase's luminaires on their original driver on 1 January 2027, the probability of "
-      "failure before the twelfth anniversary of installation given survival to their age that day, under their "
-      "maker's fit: %s above %d per cent, every other phase at %d per cent or less." % (
-          names, k["trigger_pct"], rest_max))
-    w("5. Energy saved: each converted pole's sodium fixture from the installer's Removed column at %s input watts "
-      "against its LED at the catalog's input watts, the LED at %d W from the completion of a glare order without a "
-      "shield part where %s shows the pole at %d W, to its removal order's day, for the tariff's monthly burning hours "
-      "by days in service, Corrinvale's LEDs at the dimmed level for the hours %s records." % (
-          P.FILES["tariff"], k["reprogrammed_watts"], P.FILES["register"], k["reprogrammed_watts"], P.FILES["nlc"]))
-    w("6. Late repairs: every outage order completed in 2026, timed from the first report of the outage in %s (portal "
-      "stamps converted from UTC to the local time the orders carry, phone reports placed by pole number or register "
-      "address), an underground cable order's reports taken from every pole on its riser's feed in the register, an "
-      "order the crews found from its creation; counted those over %d hours (the tariff's 4.2)." % (
-          P.FILES["reports"], k["repair_standard_hours"]))
-    w("7. Designated the five phases above %d per cent: %s luminaires.\n" % (k["trigger_pct"],
-                                                                          c(call["program_luminaires"])))
-    w("## 4. Deliverable Answers\n")
-    w("### %s\n" % P.GOLDEN_XLSX)
-    w("1. The 2027 program: %s, %s luminaires on their original driver." % (names, c(call["program_luminaires"])))
-    w("2. Projected share failing before year 12, to the nearest 5 per cent, and whether the phase goes in:")
-    for p in P.PHASE_CODES:
-        w("   - %s: %d per cent, %s" % (p, ph[p]["share5"], "in" if ph[p]["designated"] else "out"))
-    w("3. Energy the converted poles saved in 2026 against the sodium fixtures, whole MWh:")
-    for t in towns:
-        w("   - %s: %s" % (t, c(fig["towns"][t]["energy"])))
-    w("4. Outages repaired in 2026 that missed the 72-hour standard:")
-    for t in towns:
-        w("   - %s: %d" % (t, fig["towns"][t]["late"]))
-    w("\n### %s\n" % P.GOLDEN_PNG)
-    w("1. One bar per phase of its projected share, the %d per cent trigger drawn across, the five program phases set "
-      "apart in colour, each bar labelled with its share to the nearest 5 per cent." % k["trigger_pct"])
-    return "\n".join(lines) + "\n"
-
-
-def write(fig, path=os.path.join(TASK, "submission.md")):
-    with open(path, "w") as fh:
-        fh.write(render(fig))
+def main():
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    pts, ref, sens, grid = f["points"], f["referrals_by_clinic"], f["sensitivity_at_point_pct"], f["grid_pct"]
+    nr40, vm = f["nr40_share_pct"], f["validation_by_model_pct"]
+    by = {p: sorted(k for k, v in pts.items() if v == p) for p in ("Standard", "Enhanced", "High", "Maximum")}
+    assert by["Standard"] == ["Orrin Falls", "Pellsbury", "Quarry Hill", "Sallow Creek", "Thistlebrook", "Wendmere",
+                              "Yarrowby"], by
+    assert by["Enhanced"] == ["Kestle Road", "Veldane"] and by["High"] == ["Brackenfield", "Hollinmoor", "Rookwood"]
+    std = ", ".join(by["Standard"][:-1]) + " and " + by["Standard"][-1]
+    L = []
+    a = L.append
+    a("## Tags\n")
+    a("**Domain:** General Statistics & Data Science (robustness analysis: whether an autonomous diabetic retinopathy "
+      "screening AI's validated sensitivity holds at each clinic of a community health center network).")
+    a("**Analytical objective:** Descriptive & Distribution Analysis.\n")
+    a("## 1. Final Recommendation\n")
+    a("**In 2027 run RetinaCheck at Standard at %s, at Enhanced at Kestle Road and Veldane, and at High at "
+      "Brackenfield, Hollinmoor and Rookwood; on the 2025-26 screenings these points imply %s referrals, within "
+      "Pellam's capacity of %s.** Not Standard everywhere: the pooled validation sensitivity of %.1f%% at Standard "
+      "mixes images from two camera models, %.1f%% on the NR-40 and %.1f%% on the NR-70, and five clinics screened "
+      "mostly or wholly on an NR-40. Not High at Kestle Road and Veldane, where the register now shows NR-40 "
+      "loaners: %d%% and %d%% of their year ran on an NR-40, which puts both above 85%% at Enhanced and below it at "
+      "Standard."
+      % (std, c(f["referrals_total"]), c(f["capacity"]), f["pooled_pct"]["Standard"], vm["NR-40"]["Standard"],
+         vm["NR-70"]["Standard"], nr40["Kestle Road"], nr40["Veldane"]))
+    a("")
+    a("## 2. Critical Components\n")
+    a("1. Validation sensitivity by camera model at Standard, Enhanced, High and Maximum: NR-40 **%.1f%%, %.1f%%, "
+      "%.1f%%, %.1f%%**; NR-70 **%.1f%%, %.1f%%, %.1f%%, %.1f%%**." % tuple(
+          [vm["NR-40"][k] for k in ("Standard", "Enhanced", "High", "Maximum")] +
+          [vm["NR-70"][k] for k in ("Standard", "Enhanced", "High", "Maximum")]))
+    a("2. Share of each clinic's 2025-26 screenings captured on an NR-40: **%d%%** at Brackenfield, Hollinmoor and "
+      "Rookwood, **%d%%** Kestle Road, **%d%%** Veldane, **%d%%** Sallow Creek, **%d%%** Pellsbury, **%d%%** Orrin "
+      "Falls, **%d%%** Yarrowby, **%d%%** at Quarry Hill, Thistlebrook and Wendmere."
+      % (nr40["Rookwood"], nr40["Kestle Road"], nr40["Veldane"], nr40["Sallow Creek"], nr40["Pellsbury"],
+         nr40["Orrin Falls"], nr40["Yarrowby"], nr40["Wendmere"]))
+    a("3. Brackenfield, Hollinmoor and Rookwood reach **%d%%** at High after **%d%%** at Enhanced; Kestle Road and "
+      "Veldane clear 85%% at Enhanced and fall short at Standard; the other seven clinics are at **%d%%** or more at "
+      "Standard." % (sens["Rookwood"], grid["Rookwood"]["Enhanced"], min(sens[k] for k in by["Standard"])))
+    a("4. The points chosen for 2027 imply **%s** referrals on the 2025-26 screenings against Pellam's **%s**; High at every "
+      "clinic would imply %s.\n" % (c(f["referrals_total"]), c(f["capacity"]), c(f["referrals_high_everywhere"])))
+    a("## 3. Step-by-Step Solution\n")
+    a("1. Placed every image on its camera: validation images by the protocol's site letters (validation_study_"
+      "protocol_2025.pdf) and capture_date, 2025-26 screenings by Site (clinic_directory.csv) and Captured (UTC) moved "
+      "to Pacific local date; the camera is the serial the Location History sheet of biomed_asset_register_2026-09-30."
+      "xlsx places at the clinic's location that day, its model from the Assets sheet.")
+    a("2. From local_validation_study_2025.csv, counted as referable a final_level of moderate NPDR or worse or a "
+      "final_dme of Y, and as referred an Ungradable result or a dr_score at or above the point's threshold "
+      "(the CAI-03 definitions of referable disease and sensitivity, retinacheck_operating_points.pdf): NR-40 %.1f%% and NR-70 %.1f%% at Standard."
+      % (vm["NR-40"]["Standard"], vm["NR-70"]["Standard"]))
+    a("3. Weighted each model's sensitivity at every point by its share of the clinic's screenings in retina_ai_"
+      "results_2025-10_2026-09.csv (a screening belongs to the clinic where it was captured): Brackenfield, "
+      "Hollinmoor and Rookwood %d%% at High, the seven Standard clinics %d%% or more at Standard." %
+      (sens["Rookwood"], min(sens[k] for k in by["Standard"])))
+    a("4. Took each clinic's least sensitive point at or above 85%% (CAI-03 section 3) and counted the screenings it "
+      "would have referred, an Ungradable result or a DR Score at or above its threshold: %s, within the %s in "
+      "pellam_reading_agreement_2027.pdf." % (c(f["referrals_total"]), c(f["capacity"])))
+    a("5. For the reading center figures, kept the cases in pellam_overread_log_2025-26.csv whose Referral Order is "
+      "a REF7734 referral in ehr_retinal_screening_orders_2025-26.csv (the IMG92250 teleretinal reads are not AI "
+      "referrals), took each referral order as one referral closed by its last Referable or Not referable grade, "
+      "and counted days from its first case's Image Date to the closing grade's Graded (UTC) on the Pacific "
+      "calendar, as CAI-03 section 4 states the measure.")
+    a("6. For the camera faults, took the retinal camera tickets in biomed_service_tickets_2025-26.csv, ended each "
+      "outage when the Location History moved the next camera into the clinic (not at the ticket's Closed date), "
+      "and counted the weekdays after the fault day with no screening in the result export (the fault day itself "
+      "had screenings before the camera failed).")
+    a("7. Recommended Standard at seven clinics, Enhanced at Kestle Road and Veldane and High at Brackenfield, "
+      "Hollinmoor and Rookwood.\n")
+    a("## 4. Deliverable Answers\n")
+    a("### ai_operating_points_2027.xlsx\n")
+    a("1. 2027 operating point by clinic:")
+    for k in ORDER:
+        a("   - %s: %s" % (k, pts[k]))
+    a("2. Referrals each clinic's point implies on the 2025-26 screenings, whole counts:")
+    for k in ORDER:
+        a("   - %s: %s" % (k, c(ref[k])))
+    a("3. Network: %s referrals against Pellam's 2027 capacity of %s, within capacity." %
+      (c(f["referrals_total"]), c(f["capacity"])))
+    a("4. AI referrals Pellam read from the 2025-26 screenings, whole counts, and the share whose closing grade is "
+      "Referable, whole per cent:")
+    for k in ORDER:
+        a("   - %s: %s read, %d%%" % (k, c(f["reads_by_clinic"][k]), f["confirmed_pct_by_clinic"][k]))
+    a("5. Average days from screening to Pellam's closing grade by quarter of screening, one decimal:")
+    for q in ("Oct-Dec 2025", "Jan-Mar 2026", "Apr-Jun 2026", "Jul-Sep 2026"):
+        a("   - %s: %.1f" % (q, f["days_by_quarter"][q]))
+    a("6. Clinic days with no AI screening after each camera fault in the reference year, whole days:")
+    for k, v in sorted(f["downtime"].items(), key=lambda kv: kv[0].split()[-1]):
+        a("   - %s: %d" % (k, v))
+    a("")
+    a("### operating_points_2027_committee.pptx\n")
+    a("1. Heatmap on the slide with one row per clinic and one column per vendor point (Standard, Enhanced, High, Maximum), each "
+      "cell the clinic's estimated sensitivity and each clinic's point for 2027 outlined: Standard at seven clinics, "
+      "Enhanced at Kestle Road and Veldane, High at Brackenfield, Hollinmoor and Rookwood.")
+    text = "\n".join(L) + "\n"
+    assert "—" not in text and "–" not in text
+    with open(os.path.join(TASK, "submission.md"), "w") as fh:
+        fh.write(text)
 
 
 if __name__ == "__main__":
-    write(json.load(open(os.path.join(HERE, "figures.json"))))
+    main()

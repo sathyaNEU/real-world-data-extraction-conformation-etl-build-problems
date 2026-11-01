@@ -1,107 +1,115 @@
 {
   "task": "task281",
-  "architecture": "v2",
-  "drawn": "2026-10-28",
+  "architecture": "v3",
+  "drawn": "2026-11-01",
   "slot_note": "",
   "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "niche": "an electric utility's company-owned LED streetlights: each conversion phase's share of luminaires still on their original driver whose driver will fail before the luminaire's twelfth year, read past a follow-up that ends early in the drivers' wear-out",
+  "subdomain": "robustness-analysis",
+  "niche": "a community health center network's diabetic retinopathy screening AI: the operating point each clinic runs in 2027, the least sensitive at which the AI catches 85 per cent of referable retinopathy among that clinic's own screenings, carried from a local validation study whose images carry no camera field, within the reading center's overread capacity",
   "objective": "descriptive-distribution",
-  "shape": "14",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires still on their original driver.",
-  "answer_source": "task281/submission.md block 1; task281/generator/figures.json call.set and call.program_luminaires",
+  "shape": "07",
+  "decision_type": "dial_setting",
+  "answer_unit": "named_option",
+  "answer": "Standard at Orrin Falls, Pellsbury, Quarry Hill, Sallow Creek, Thistlebrook, Wendmere and Yarrowby; Enhanced at Kestle Road and Veldane; High at Brackenfield, Hollinmoor and Rookwood; 6,630 referrals against Pellam's 7,200",
+  "answer_source": "task281/generator/figures.json (points, referrals_total), computed from target/ by analysis.py; verified on its own path by verify.py",
   "gap": [
-    "population",
-    "time"
+    "objective",
+    "population"
   ],
   "pattern": [
-    "C"
+    "none"
   ],
   "generators": [
-    "G11",
-    "G16",
-    "G13"
+    "G6",
+    "G14",
+    "G3"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who takes each luminaire's retrofit date from the installer's logs, every driver failure from both work-management systems, and fits the lifecycle model's two-parameter Weibull with suspensions to the whole conversion files every one of the ten phases into the 2027 group driver replacement program, against the golden's five, because the drivers from one of the two makers never show the wear-out and their zeros are read as failures still to come.",
-  "domain_test": "The deciding quantity is a lifetime distribution read past its follow-up under a censoring structure in which part of the suspensions are cures, not failures still to come: each phase's share of original-driver luminaires whose driver will fail before year twelve, from a Weibull fitted only to the drivers at risk of the wear-out; replacing it with the failure share to date, a constant annual rate or one fit over every luminaire files other phases, and no noun swap makes the cure structure appear.",
+  "analyst_test": "A strong analyst who reads the governance standard and every file correctly carries the local validation study's sensitivity at each operating point to the clinics pooled, clinic by clinic for the pilot clinics, or reweighted to each clinic's recorded patient mix and image quality, finds every clinic clearing 85 per cent at the vendor's standard point and files the standard point at all twelve clinics, against the golden's more sensitive points at five.",
+  "domain_test": "The deciding quantity is the AI's sensitivity under each clinic's own capture conditions at each operating point, the robustness field's performance under the shift that matters, read from a validation study against an adjudicated reference; a label-shift or subgroup transport makes each operating point's sensitivity one number at every clinic, and with another field's nouns there is no classifier, no capture device and no validation corpus whose device mix the clinics depart from.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:cure-share-hidden-in-suspensions-identified-by-provenance",
+  "layer2_pattern": "general-statistics-data-science/robustness-analysis/1",
   "layer1": [
-    "the GIS register's install year is the pole's; each luminaire's retrofit date sits in the installer's daily logs",
-    "two work-management systems, the legacy one to June 2023 and its successor after, with different layouts and resolution codes",
-    "customer outage reports keyed by address and nearest pole, duplicated across the portal and the call centre",
-    "luminaires replaced after vehicle knockdowns carry a new serial and lot on an old pole",
-    "drivers replaced twice on one pole, the second on a stock driver",
-    "certificates of conformance per delivery lot as scanned PDFs, part numbers with revision suffixes",
-    "pole identifiers formatted differently in the GIS, the installer's logs and the work orders"
+    "the vendor portal's result export stamps captures and releases in UTC while the cameras and the EHR keep local Pacific time, the DST change inside the year",
+    "clinic names spelled one way in the EHR department list, another in the vendor portal, another in the asset register and another in the reading center's log",
+    "the biomedical engineering location history typed by hand, camera serials with and without the maker's prefix",
+    "the validation study's export with site letters and M/D/YYYY dates, two graders' levels and an adjudication flag",
+    "the reading center opens a second case under the same referral order when it asks for new photographs",
+    "merged charts leave retired MRNs on outside reports indexed before the merge",
+    "patients screened at a clinic other than their home clinic"
   ],
-  "stakeholder_role": "street lighting asset engineer, an investor-owned electric utility",
-  "role_family": "capacity_planner",
+  "stakeholder_role": "director of quality and clinical AI, a community health center network",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "brayle_install_logs_2021-2025.xlsx",
-    "rows": 43686,
-    "entity": "one luminaire installed on one pole on one day",
-    "grain": "luminaire",
-    "source": "constructed (installer daily logs, one sheet a year)"
+    "file": "retina_ai_results_2025-10_2026-09.csv",
+    "rows": 26997,
+    "entity": "one autonomous AI screening result",
+    "grain": "patient x screening visit",
+    "source": "synthetic (constructed vendor portal export)"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "utility_or_infrastructure",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States (a fictional electric utility's service territory in Ohio)",
+    "geography": "United States (Oregon)",
     "currency": "USD",
-    "org_type": "investor-owned electric utility, street lighting asset group",
-    "invented_names": [
-      "Tallisford Power & Light",
-      "Halberd Lighting Company",
-      "Brayle Electric",
-      "Vantrel Power Systems",
-      "Corvane Electronics",
-      "Lorand Controls",
-      "Ambrosine",
-      "Corrinvale",
-      "Dalwinter",
-      "Fallowmere",
-      "Garrick Hollow",
-      "Halverne Bend",
-      "Kesterbrook",
-      "Larkhaven"
-    ],
+    "org_type": "community health center network (a federally qualified health center with twelve primary care clinics)",
+    "invented_names": [],
     "people": [
-      "Andrew King",
-      "Shawn Hoover",
-      "Sabrina Mccarthy",
-      "Ebony Rivera"
+      "Natalie Mckinney",
+      "Noah Odonnell",
+      "Christy Francis"
     ]
   },
   "deliverables": [
-    "2027_group_driver_replacement.xlsx",
-    "driver_failure_projection_by_phase.png"
+    "ai_operating_points_2027.xlsx",
+    "operating_points_2027_committee.pptx"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is the share of each group's surviving units that will suffer one wear-out failure before a fixed age, read past a record whose follow-up ends early in the wear-out, when part of the units carry a part from a source that never wears out that way; the record is too young to show the plateau, so one lifetime fit on every unit passes its back-test and treats those units' zeros as failures still to come, and only a provenance record kept for warranty claims, joined unit by unit through the delivery lot, shows which units are at risk at all.",
-  "driver_concrete": "Each conversion phase's share of luminaires still on their original driver on 1 January 2027 whose driver will fail before the luminaire's twelfth year comes from a Weibull fitted only to the drivers of the maker whose drivers wear out; the other maker's drivers, identified only through the installer's lot numbers and the manufacturer's certificates of conformance, show no wear-out, so one fit over every luminaire reads their zeros as failures still to come and puts every phase in the program.",
-  "stump": "A competent solver fits the lifecycle model's Weibull with suspensions to every conversion driver and projects each phase's original-driver luminaires, filing all ten phases into the 2027 group driver replacement program at 68 to 71 per cent each; Corvane's drivers, found only through the installer's lot numbers and the luminaire maker's certificates of conformance, show no wear-out (16 failures against the 555 that fit expects), so the fit belongs to Vantrel's drivers alone and only P1, P3, P5, P7 and P9 clear 45 per cent.",
+  "question_form": "what",
+  "driver": "The decisive quantity is a classifier's hit rate on the positive class at each of several sites and each of a few decision thresholds, known only from a validation batch read against a reference standard; the batch's items were captured on two kinds of device whose hit rates differ widely at every threshold, in a mix that leaves every site's and every recorded subgroup's rate near the pooled one, and the device behind each item is in no column, recovered only by placing each item's site and date in a dated register of where each device stood, so each site's threshold is set on hit rates carried device by device at the share of its own items each device captured, not pooled, not site by site and not by any recorded subgroup.",
+  "driver_concrete": "Each clinic's 2027 operating point is the least sensitive of the vendor's points at which the AI's sensitivity for referable diabetic retinopathy among the clinic's reference-year screenings reaches 85 per cent, that sensitivity being the local validation study's sensitivity on each retinal camera model at the point (the model behind each validation image recovered by placing its clinic and capture date in the biomedical engineering register's placements) weighted by the share of the clinic's screenings each model captured; pooled, pilot by pilot or reweighted to any recorded subgroup, the standard point clears 85 per cent everywhere.",
+  "stump": "A competent analyst carries the local validation study's sensitivity at each operating point to every clinic, pooled, pilot by pilot or reweighted to each clinic's patient mix, and sets all twelve clinics at the vendor's standard point; the study's images came from two camera models whose sensitivities differ by about twenty-two points at that point in a mix that hides it, and only each model's sensitivity, the model behind each image recovered from the camera register's placement dates and carried by each clinic's own camera mix, moves five clinics to more sensitive points.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task141": "task141 moves every unit to the rate the units already at a ceiling show under a cap; task281 has no policy change: it removes from the population at risk the units whose part source never shows the wear-out, found through a provenance record joined unit by unit, before a lifetime fit is read past its follow-up.",
-    "task177": "task177's architecture 3 reads a loan outcome as one rare event's rate times a conversion share, the event rare in the record and common forward; task281 has no event to convert: a censored lifetime fit's suspensions hold a sub-population whose part never wears out, found unit by unit through a provenance join, so each phase's at-risk share is built before the fit is carried past the follow-up.",
-    "task301": "task301 discounts each list by its own population's exit rate over its record ages; task281 discounts nothing by record age: it takes out of a censored lifetime fit the units whose part source shows no wear-out, found through the installer's lot and the maker's certificate, and projects the at-risk remainder to a fixed age.",
-    "task75": "task75 finds a second inflow channel as the residual between two counts of one period and projects it by its recurrence; task281 has no second channel or residual: it splits one lifetime record by the provenance of each unit's part and fits the wear-out to the source at risk alone."
+    "task181": "task181 v6 lays a shared upstream resource's excess outcome risk on the units it served and removes it case by case; task281 removes nothing from any unit: it carries a classifier's hit rate measured on a validation batch to each site by the capture device behind each item, recovered through a dated placement register, because the sites ran the devices in different proportions."
   },
   "lineage": [
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-28",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "objective": "descriptive-distribution",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "generators": [
+        "G11",
+        "G16",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "stump_strategy": "population_selection",
+      "decision_type": "designation_set",
+      "driver": "The decisive quantity is the share of each group's surviving units that will suffer one wear-out failure before a fixed age, read past a record whose follow-up ends early in the wear-out, when part of the units carry a part from a source that never wears out that way; the record is too young to show the plateau, so one lifetime fit on every unit passes its back-test and treats those units' zeros as failures still to come, and only a provenance record kept for warranty claims, joined unit by unit through the delivery lot, shows which units are at risk at all.",
+      "driver_concrete": "Each conversion phase's share of luminaires still on their original driver on 1 January 2027 whose driver will fail before the luminaire's twelfth year comes from a Weibull fitted only to the drivers of the maker whose drivers wear out; the other maker's drivers, identified only through the installer's lot numbers and the manufacturer's certificates of conformance, show no wear-out, so one fit over every luminaire reads their zeros as failures still to come and puts every phase in the program.",
+      "stump": "A competent solver fits the lifecycle model's Weibull with suspensions to every conversion driver and projects each phase's original-driver luminaires, filing all ten phases into the 2027 group driver replacement program at 68 to 71 per cent each; Corvane's drivers, found only through the installer's lot numbers and the luminaire maker's certificates of conformance, show no wear-out (16 failures against the 555 that fit expects), so the fit belongs to Vantrel's drivers alone and only P1, P3, P5, P7 and P9 clear 45 per cent.",
+      "world": "an investor-owned electric utility's company-owned LED streetlights (Tallisford Power & Light, Ohio)",
+      "shell": null,
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset, after a portal determinism return and then a landed call on the shipped version; one architecture per world closes the streetlight world"
+    },
     {
       "architecture": "v1",
       "drawn": "2026-10-24",
@@ -129,6 +137,12 @@
       "fate": "spent 2026-10-27 at the portal: both top responses landed the call (59 of 60, one returned) by rating the relief positions at the July 2025 entry classes' first-year off-post share, the Director's memo having named the July 2027 entry classes; the world screened for a new step the same day and set aside, the axes then banned (government_agency, budget_or_appropriation, research_desk, filed_standard)"
     }
   ],
-  "notes": "Architecture 2, re-rooted 2026-10-28 into general-statistics-data-science / missing-data-censoring-measurement-error at the author's direction (a brand-new world and stump, Descriptive & Distribution Analysis). Organisation utility_or_infrastructure and context artifact filed_model drawn after the window moved to task118 v4 (filed_standard) and task464 v8 (local_government) at 02:50Z: an investor-owned utility owning company streetlights under a street-lighting tariff is the honest owner of this decision, and the lifecycle model note carrying the Weibull form and the group-replacement trigger is a filed model. Strategy population_selection: the decisive step selects the population at risk of the wear-out, forced by the records (the second maker's drivers show no wear-out failures against hundreds the one-population fit expects on their exposure). Gate G forecasting: the correctly read record does not pin the year-twelve share without the at-risk population. WARNs answered in the design note. Labels redrawn at stage 3 (2026-10-28) when the window moved under the filed card (task305 v3 drawn 10-27 and registered after this card, task141 v4 now inside the last twelve): context_artifact filed_standard, the program note being the utility's program rule book as much as its model, and pattern C, each phase's at-risk share being an absolute share the analyst builds behind the lot-to-certificate join, which no column or stated rule carries; G11 stays the decisive generator.",
-  "registered": "2026-10-28T02:52:03Z"
+  "notes": "Architecture 3, re-rooted 2026-11-01 at the Batch 3 queue reset into general-statistics-data-science / robustness-analysis (a task type never drawn on any objective), Descriptive & Distribution Analysis kept. Strategy composition_mix: the decisive step carries a measured hit rate by a latent capture device whose mix differs between the validation corpus and each clinic. Drawn after the window moved at 17:20Z (task138 v2 filed, task125 v4 out): at 17:05Z the window held composition_mix (task125 v4) and the draw was not filed then; gap objective first (the validation study's sensitivity is correct for its own images and is not what the decision is scored on, each clinic's own), pattern none with G6 decisive. Shape and shell redrawn before filing when task255 v2 filed at 17:30Z with shape 10, a designation, a which-question and xlsx plus pdf, and task138 v2 held shape 04: the decision is the operating point each clinic runs (a grid of clinics against the vendor's points, a floor at every clinic and the reading center's capacity as the two gates), which is the decision the vendor's per-site configuration really asks the network to make.",
+  "registered": "2026-11-01T17:35:40Z",
+  "shell": {
+    "question form": "how-many",
+    "second-sentence opener": "return",
+    "rounding opener": "give",
+    "deliverable set": "png+xlsx"
+  }
 }

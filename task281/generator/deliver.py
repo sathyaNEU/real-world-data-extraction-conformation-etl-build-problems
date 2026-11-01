@@ -1,230 +1,307 @@
-"""The goldens for task281, computed from the shipped pack by analysis.py: the 2027 program workbook, the projection
-chart and generator/figures.json (every figure the submission and the checks quote)."""
+"""The golden deliverables and figures.json, computed from target/ alone through analysis.py.
+
+    ai_operating_points_2027.xlsx   the 2027 points, their referrals, the reading center reads, camera faults
+    operating_points_2027_committee.pptx  the Committee slide: the call and the heatmap of each clinic's
+                                          estimated sensitivity at every vendor point, its point outlined
+"""
+import datetime as dt
 import json
 import os
-
-import numpy as np
+import zipfile
 
 import analysis as A
-import params as P
 
-AT_RISK = P.DRV["A"]
-CURED = P.DRV["B"]
-
-
-def nearest(v, u):
-    return int(round(v / u) * u)
-
-
-def compute(target):
-    D = A.load(target)
-    G = A.golden_call(D)
-    rows = G["rows"]
-    E, _ = A.energy_saving(D)
-    late, tot, _ = A.repairs(D)
-    pooled, (kP, lP) = A.rung_pooled(rows)
-    expB = float(sum((r["t"] / lP) ** kP for r in rows if r["maker"] == CURED))
-    ph = {}
-    for pc in P.PHASE_CODES:
-        v = G["phases"][pc]
-        ph[pc] = dict(installed=v["installed"], failed_to_date=v["failed_to_date"], on_original=v["n"],
-                      at_risk_maker=v["by_maker"][AT_RISK], cured_maker=v["by_maker"][CURED],
-                      share=round(v["share"], 6), share5=nearest(v["share"] * 100, 5), designated=v["designated"],
-                      share_pct=round(v["share"] * 100, 1), pooled_share=round(pooled[pc]["share"], 6),
-                      pooled_pct=round(pooled[pc]["share"] * 100, 1))
-    program = sum(ph[pc]["on_original"] for pc in G["set"])
-    fits = {mk: dict(drivers=v["n"], failures=v["failures"], shape=round(v["k"], 4), shape1=round(v["k"], 1),
-                     life1=round(float(v["lam"]), 1),
-                     life=round(float(v["lam"]), 4), F12=round(v["F12"], 6)) for mk, v in G["fits"].items()}
-    names = ", ".join(G["set"][:-1]) + " and " + G["set"][-1]
-    fig = dict(
-        constants=dict(trigger_pct=45, repair_standard_hours=72, reprogrammed_watts=70, horizon_years=12, share_unit_pct=5,
-                       clauses_cited=["2.1", "2.2", "2.4", "3.1", "3.2", "4.2"]),
-        call=dict(set=G["set"], program_luminaires=program,
-                  default_luminaires=sum(ph[pc]["on_original"] for pc in P.PHASE_CODES),
-                  sentence="Put conversion phases %s into the 2027 group driver replacement program, %s luminaires "
-                           "re-driven." % (names, format(program, ","))),
-        phases=ph, fits=fits,
-        pooled=dict(shape=round(kP, 4), life=round(lP, 4), expected_cured_failures=round(expB, 1),
-                    expected_floor=int(expB // 100 * 100),
-                    set=[pc for pc in P.PHASE_CODES if pooled[pc]["share"] > P.TRIGGER]),
-        towns={t: dict(energy_mwh=round(E[t], 3), energy=int(round(E[t])), repaired=tot[t], late=late[t])
-               for t in sorted(E)},
-    )
-    return D, G, fig
+BOOK = "ai_operating_points_2027.xlsx"
+BRIEF = "operating_points_2027_committee.pptx"
+STAMP = (2026, 11, 16, 16, 40, 0)
+NAMES = {"OF": "Orrin Falls", "TB": "Thistlebrook", "WM": "Wendmere", "PB": "Pellsbury", "QH": "Quarry Hill",
+         "RW": "Rookwood", "SC": "Sallow Creek", "VD": "Veldane", "BF": "Brackenfield", "YB": "Yarrowby",
+         "KN": "Kestle Road", "HM": "Hollinmoor"}
 
 
-# ---------------------------------------------------------------------------------------------- the workbook
-def write_xlsx(path, fig):
+def rnd(x, nd=0):
+    """Half-up rounding, the way the workbook and the write-up state figures."""
+    from decimal import Decimal, ROUND_HALF_UP
+    q = Decimal(1).scaleb(-nd)
+    return float(Decimal(repr(x)).quantize(q, rounding=ROUND_HALF_UP)) if nd else int(
+        Decimal(repr(x)).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+
+
+def figures(P, G):
+    L = G["ladder"]
+    order = sorted(P.codes, key=lambda c: NAMES[c])
+    cut = dict(P.ops)
+    per = {c: 0 for c in P.codes}
+    for s in P.screens():
+        nm = G["picks"][s["code"]]
+        if s["ung"] or (s["score"] is not None and s["score"] >= cut[nm]):
+            per[s["code"]] += 1
+    f = {
+        "points": {NAMES[c]: G["picks"][c] for c in order},
+        "referrals_by_clinic": {NAMES[c]: per[c] for c in order},
+        "referrals_total": G["referrals"],
+        "capacity": P.capacity,
+        "headroom": P.capacity - G["referrals"],
+        "sensitivity_at_point_pct": {NAMES[c]: rnd(100 * L["golden"][c][0][G["picks"][c]]) for c in order},
+        "grid_pct": {NAMES[c]: {nm: rnd(100 * L["golden"][c][0][nm]) for nm, _ in P.ops} for c in order},
+        "nr40_share_pct": {NAMES[c]: rnd(100 * L["golden"][c][2].get("NR-40", 0.0)) for c in order},
+        "validation_by_model_pct": {m: {nm: rnd(100 * v, 1) for nm, v in d.items()} for m, d in L["by_model"].items()},
+        "validation_counts": {m: {"screened": n, "referable": k} for m, (n, k) in L["counts"].items()},
+        "pooled_pct": {nm: rnd(100 * v, 1) for nm, v in L["pooled"][P.codes[0]][0].items()},
+        "rung_picks": {r: {NAMES[c]: L[r][c][1] for c in order} for r in ("pooled", "casemix", "worst_subgroup",
+                                                                           "snapshot")},
+        "rung_referrals": {r: A.referrals(P, {c: L[r][c][1] for c in P.codes})
+                           for r in ("pooled", "casemix", "worst_subgroup", "snapshot")},
+        "reads_by_clinic": {NAMES[c]: G["overreads_clinic"][c][0] for c in order},
+        "confirmed_pct_by_clinic": {NAMES[c]: rnd(100 * G["overreads_clinic"][c][1]) for c in order},
+        "days_by_quarter": {q: rnd(v, 1) for q, v in G["overreads_quarter"].items()},
+        "floor_pct": rnd(100 * P.floor),
+    }
+    dt_ = G["downtime"]
+    f["downtime"] = {"%s, fault reported %s" % (NAMES[v["clinic"]], v["opened"].isoformat()): v["days"]
+                     for k, v in dt_.items()}
+    f["referrals_high_everywhere"] = A.referrals(P, {c: "High" for c in P.codes})
+    f["referrals_enhanced_everywhere"] = A.referrals(P, {c: "Enhanced" for c in P.codes})
+    return f, order, per
+
+
+def workbook(P, G, f, order, per, path):
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    from openpyxl.utils import get_column_letter
+    L = G["ladder"]
     wb = Workbook()
+    bold = Font(bold=True)
+    head_fill = PatternFill("solid", fgColor="DCE6F1")
+    thin = Side(style="thin", color="A6A6A6")
+
+    def header(ws, row, vals):
+        for j, v in enumerate(vals, 1):
+            c = ws.cell(row=row, column=j, value=v)
+            c.font = bold
+            c.fill = head_fill
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+            c.border = Border(bottom=thin)
+
     ws = wb.active
-    ws.title = "2027 program"
-    bold = Font(name="Calibri", bold=True)
-    head_fill = PatternFill("solid", fgColor="DCE6EA")
-    thin = Side(style="thin", color="9AA6B0")
-    names = ", ".join(fig["call"]["set"][:-1]) + " and " + fig["call"]["set"][-1]
-    ws["A1"] = "2027 group driver replacement: %s go in, %s luminaires" % (names,
-                                                                           format(fig["call"]["program_luminaires"], ","))
-    ws["A1"].font = Font(name="Calibri", bold=True, size=13)
-    ws["A2"] = ("%s street lighting. Program test of Program Note SL-LM-04 rev. 3: work-management record closed "
-                "31 December 2026, luminaires on their original driver on 1 January 2027, failure before the "
-                "twelfth anniversary of installation." % P.UTILITY)
-    ws["A2"].font = Font(name="Calibri", italic=True, size=9, color="56616C")
-    head = ["Phase", "Installed", "Original-driver failures to 31 Dec 2026", "On original driver 1 Jan 2027",
-            "of which %s" % AT_RISK, "of which %s" % CURED, "Projected share failing before year 12",
-            "2027 program"]
-    ws.append([])
-    ws.append(head)
-    for c in ws[4]:
-        c.font = bold
-        c.fill = head_fill
-        c.alignment = Alignment(wrap_text=True, vertical="center")
-        c.border = Border(bottom=thin)
-    for pc in P.PHASE_CODES:
-        v = fig["phases"][pc]
-        ws.append([pc, v["installed"], v["failed_to_date"], v["on_original"], v["at_risk_maker"], v["cured_maker"],
-                   v["share5"] / 100.0, "Yes" if v["designated"] else "No"])
-        r = ws.max_row
-        for col in "BCDEF":
-            ws["%s%d" % (col, r)].number_format = "#,##0"
-        ws["G%d" % r].number_format = "0%"
-        ws["H%d" % r].alignment = Alignment(horizontal="center")
-    ws.append([])
-    ws.append(["Program", None, None, fig["call"]["program_luminaires"], None, None, None,
-               "%d phases" % len(fig["call"]["set"])])
-    r = ws.max_row
-    ws["A%d" % r].font = bold
-    ws["D%d" % r].number_format = "#,##0"
-    ws["D%d" % r].font = bold
-    ws.append([])
-    ws.append(["Shares to the nearest 5 per cent; a phase enters above 45 per cent (note 2.1). Each luminaire is "
-               "projected under its own driver maker's lifetime (sheet Driver lifetimes), the maker read from its "
-               "delivery lot's certificate of conformance."])
-    ws["A%d" % ws.max_row].font = Font(name="Calibri", italic=True, size=9, color="56616C")
-    ws.append(["Source: Brayle Electric installation logs 2021 to 2025; Halberd certificates of conformance; legacy "
-               "WMS export to June 2023 and EAM work orders to 31 December 2026."])
-    ws["A%d" % ws.max_row].font = Font(name="Calibri", italic=True, size=9, color="56616C")
-    ws.print_title_rows = "4:4"
-    for col, wdt in zip("ABCDEFGH", [8, 10, 15, 15, 14, 14, 15, 11]):
-        ws.column_dimensions[col].width = wdt
-    ws.row_dimensions[4].height = 46
+    ws.title = "2027 points"
+    ws["A1"] = "RetinaCheck operating points for contract year 2027 (CAI-03 v3, section 3)"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = "Sensitivity for referable DR estimated on each clinic's Oct 2025 to Sep 2026 screenings; floor 85%."
+    cols = ["Clinic", "2027 point", "Est. sensitivity at point", "Referrals implied (2025-26 screenings)",
+            "Share of screenings on NR-40 camera"] + ["Est. sensitivity, %s" % nm for nm, _ in P.ops]
+    header(ws, 4, cols)
+    r = 5
+    for c in order:
+        cells = L["golden"][c][0]
+        ws.cell(row=r, column=1, value=NAMES[c])
+        ws.cell(row=r, column=2, value=G["picks"][c])
+        ws.cell(row=r, column=3, value=round(cells[G["picks"][c]], 4)).number_format = "0%"
+        ws.cell(row=r, column=4, value=per[c]).number_format = "#,##0"
+        ws.cell(row=r, column=5, value=round(L["golden"][c][2].get("NR-40", 0.0), 4)).number_format = "0%"
+        for j, (nm, _) in enumerate(P.ops):
+            ws.cell(row=r, column=6 + j, value=round(cells[nm], 4)).number_format = "0%"
+        r += 1
+    ws.cell(row=r, column=1, value="Network").font = bold
+    ws.cell(row=r, column=4, value=G["referrals"]).number_format = "#,##0"
+    ws.cell(row=r, column=4).font = bold
+    r += 1
+    ws.cell(row=r, column=1, value="Pellam capacity, 2027")
+    ws.cell(row=r, column=4, value=P.capacity).number_format = "#,##0"
+    r += 1
+    ws.cell(row=r, column=1, value="Headroom")
+    ws.cell(row=r, column=4, value=P.capacity - G["referrals"]).number_format = "#,##0"
+    r += 2
+    ws.cell(row=r, column=1, value="Validation study sensitivity by camera model (camera from the asset register's "
+                                   "location history on each image's capture date)").font = bold
+    r += 1
+    header(ws, r, ["Camera model", "Images", "Referable"] + [nm for nm, _ in P.ops])
+    for m in ("NR-40", "NR-70"):
+        r += 1
+        n, k = L["counts"][m]
+        ws.cell(row=r, column=1, value=m)
+        ws.cell(row=r, column=2, value=n)
+        ws.cell(row=r, column=3, value=k)
+        for j, (nm, _) in enumerate(P.ops):
+            ws.cell(row=r, column=4 + j, value=round(L["by_model"][m][nm], 4)).number_format = "0.0%"
+    for j, wdt in enumerate([16, 11, 13, 17, 15, 13, 13, 13, 13], 1):
+        ws.column_dimensions[get_column_letter(j)].width = wdt
     ws.freeze_panes = "B5"
 
-    w2 = wb.create_sheet("Driver lifetimes")
-    w2["A1"] = "Original-driver lifetimes by driver maker, Weibull by maximum likelihood with suspensions"
-    w2["A1"].font = Font(name="Calibri", bold=True, size=12)
-    w2.append([])
-    w2.append(["Driver maker", "Drivers installed", "Failures to 31 Dec 2026", "Weibull shape",
-               "Characteristic life (years)", "Failed by year 12"])
-    for c in w2[3]:
-        c.font = bold
-        c.fill = head_fill
-        c.alignment = Alignment(wrap_text=True, vertical="center")
-    v = fig["fits"][AT_RISK]
-    w2.append([AT_RISK, v["drivers"], v["failures"], v["shape1"], v["life1"], v["F12"]])
-    r = w2.max_row
-    w2["B%d" % r].number_format = "#,##0"
-    w2["D%d" % r].number_format = "0.0"
-    w2["E%d" % r].number_format = "0.0"
-    w2["F%d" % r].number_format = "0%"
-    v = fig["fits"][CURED]
-    w2.append([CURED, v["drivers"], v["failures"], "no wear-out", None, "under 1%"])
-    w2["B%d" % w2.max_row].number_format = "#,##0"
-    w2["F%d" % w2.max_row].alignment = Alignment(horizontal="right")
-    w2.append([])
-    pl = fig["pooled"]
-    w2.append(["One Weibull over every conversion driver expects more than %s failures among %s' drivers by "
-               "31 December 2026, against the %d recorded." % (format(pl["expected_floor"], ","), CURED,
-                                                               fig["fits"][CURED]["failures"])])
-    w2["A%d" % w2.max_row].alignment = Alignment(wrap_text=False)
-    for col, wdt in zip("ABCDEF", [26, 13, 13, 11, 14, 11]):
-        w2.column_dimensions[col].width = wdt
-    w2.row_dimensions[3].height = 32
+    ws = wb.create_sheet("Reading center 2025-26")
+    ws["A1"] = "Pellam reads of the AI's referrals, screenings Oct 2025 to Sep 2026"
+    ws["A1"].font = Font(bold=True, size=12)
+    header(ws, 3, ["Clinic", "AI referrals read", "Closing grade Referable"])
+    r = 4
+    for c in order:
+        ws.cell(row=r, column=1, value=NAMES[c])
+        ws.cell(row=r, column=2, value=G["overreads_clinic"][c][0]).number_format = "#,##0"
+        ws.cell(row=r, column=3, value=round(G["overreads_clinic"][c][1], 4)).number_format = "0%"
+        r += 1
+    r += 1
+    header(ws, r, ["Quarter of screening", "Avg days, screening to closing grade"])
+    for q, v in G["overreads_quarter"].items():
+        r += 1
+        ws.cell(row=r, column=1, value=q)
+        ws.cell(row=r, column=2, value=round(v, 2)).number_format = "0.0"
+    ws.column_dimensions["A"].width = 22
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 18
 
-    w3 = wb.create_sheet("Towns 2026")
-    w3["A1"] = "Converted poles' 2026 energy saving and the 72-hour repair standard, by town"
-    w3["A1"].font = Font(name="Calibri", bold=True, size=12)
-    w3.append([])
-    w3.append(["Town", "Energy saved against the sodium fixtures (MWh)", "Outages repaired in 2026",
-               "Missed the 72-hour standard"])
-    for c in w3[3]:
-        c.font = bold
-        c.fill = head_fill
-        c.alignment = Alignment(wrap_text=True, vertical="center")
-    for t, v in fig["towns"].items():
-        w3.append([t, v["energy"], v["repaired"], v["late"]])
-        w3["B%d" % w3.max_row].number_format = "#,##0"
-    w3.append([])
-    w3.append(["Energy on Schedule SL's accounting (3.1, 3.2), each converted pole against the sodium fixture the "
-               "installer took down, whole MWh. Repairs timed under 4.2 from the first report of the outage, any "
-               "light on an underground circuit counting for a cable fault, or from the Company's own find."])
-    w3["A%d" % w3.max_row].font = Font(name="Calibri", italic=True, size=9, color="56616C")
-    w3.append(["Source: Schedule SL; Corrinvale networked lighting control records 2026; customer outage reports, "
-               "December 2025 to December 2026; GIS register at 31 December 2026."])
-    w3["A%d" % w3.max_row].font = Font(name="Calibri", italic=True, size=9, color="56616C")
-    for col, wdt in zip("ABCD", [18, 20, 14, 14]):
-        w3.column_dimensions[col].width = wdt
-    w3.row_dimensions[3].height = 46
+    ws = wb.create_sheet("Camera faults 2025-26")
+    ws["A1"] = "Camera faults in the reference year (CAI-03 v3, 4.2)"
+    ws["A1"].font = Font(bold=True, size=12)
+    header(ws, 3, ["Ticket", "Clinic", "Fault reported", "Clinic days with no screening"])
+    r = 4
+    for k, v in G["downtime"].items():
+        ws.cell(row=r, column=1, value=k)
+        ws.cell(row=r, column=2, value=NAMES[v["clinic"]])
+        ws.cell(row=r, column=3, value=v["opened"]).number_format = "d mmm yyyy"
+        ws.cell(row=r, column=4, value=v["days"])
+        r += 1
+    for col, wdt in zip("ABCD", (11, 16, 15, 16)):
+        ws.column_dimensions[col].width = wdt
+
+    ws = wb.create_sheet("Notes")
+    notes = [
+        ("As of", "16 November 2026; reference year 1 October 2025 to 30 September 2026 (CAI-03 v3, 2.1)"),
+        ("Point rule", "Least sensitive vendor point with estimated sensitivity at or above 85% (CAI-03 v3, 3.1)"),
+        ("Sensitivity", "Referable DR (moderate NPDR or worse, or DME) referred as Referable or Ungradable, estimated "
+                        "per camera model from the 2025 local validation study and weighted by each clinic's "
+                        "screenings on each model"),
+        ("Camera", "The serial the Biomedical Engineering location history places at the clinic on the capture date"),
+        ("Referrals", "Reference-year screenings with an Ungradable result or a DR score at or above the point's "
+                      "threshold; capacity per Pellam agreement PERC-CV-2027, 2.1"),
+        ("Reading center", "AI referrals are REF7734 referral orders; teleretinal photography reads are excluded; a "
+                           "referral closes on its last Referable or Not referable grade (CAI-03 v3, 4.1)"),
+        ("Camera faults", "Clinic days after the fault with no AI screening captured, up to the next camera's "
+                          "arrival in the location history (CAI-03 v3, 4.2)"),
+    ]
+    for i, (k, v) in enumerate(notes, 1):
+        ws.cell(row=i, column=1, value=k).font = bold
+        ws.cell(row=i, column=2, value=v).alignment = Alignment(wrap_text=True, vertical="top")
+    ws.column_dimensions["A"].width = 16
+    ws.column_dimensions["B"].width = 96
+    when = dt.datetime(2026, 11, 16, 15, 2, 0)
+    wb.properties.creator = "Quality and Clinical AI"
+    wb.properties.lastModifiedBy = "Quality and Clinical AI"
+    wb.properties.created = when
+    wb.properties.modified = when
+    wb.properties.title = "RetinaCheck operating points 2027"
     wb.save(path)
+    from pack import normalise_zip
+    normalise_zip(path, when="2026-11-16T23:02:00Z")
 
 
-# ---------------------------------------------------------------------------------------------- the chart
-def write_png(path, fig):
+def chart(P, G, order, path):
     import matplotlib
     matplotlib.use("Agg")
-    from matplotlib import font_manager
+    matplotlib.rcParams["svg.hashsalt"] = "task281"
     import matplotlib.pyplot as plt
-    fd = next((d for d in ("/usr/share/fonts/truetype/liberation/", os.path.expanduser("~/Library/Fonts/"),
-                           "/Library/Fonts/") if os.path.exists(d + "LiberationSans-Regular.ttf")), None)
-    if fd:
-        for f in ("LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf"):
-            font_manager.fontManager.addfont(fd + f)
-        plt.rcParams["font.family"] = "Liberation Sans"
-    plt.rcParams["svg.hashsalt"] = "task281"
-    ph = fig["phases"]
-    x = np.arange(len(P.PHASE_CODES))
-    vals = [ph[pc]["share"] * 100 for pc in P.PHASE_CODES]
-    cols = ["#1d4e5a" if ph[pc]["designated"] else "#a9b6bf" for pc in P.PHASE_CODES]
-    f_, ax = plt.subplots(figsize=(8.6, 4.6), dpi=110)
-    ax.bar(x, vals, color=cols, width=0.62, zorder=2)
-    ax.axhline(45, color="#9b3a1f", lw=1.4, ls="--", zorder=3)
-    ax.text(len(x) - 0.45, 46.2, "Program trigger, 45%", color="#9b3a1f", ha="right", va="bottom", fontsize=9)
-    for i, pc in enumerate(P.PHASE_CODES):
-        ax.text(i, vals[i] + 1.0, "%d%%" % ph[pc]["share5"], ha="center", va="bottom", fontsize=9,
-                color="#1b2430")
-    ax.set_xticks(x)
-    ax.set_xticklabels(P.PHASE_CODES)
-    ax.set_ylim(0, 80)
-    ax.set_ylabel("Projected share failing before year 12 (%)")
-    ax.set_xlabel("Conversion phase (installed January 2021 to September 2025)")
-    ax.set_title("Five phases clear the 45%% trigger: %s go into the 2027 program"
-                 % (", ".join(fig["call"]["set"][:-1]) + " and " + fig["call"]["set"][-1]), fontsize=10.5, loc="left")
-    f_.text(0.01, 0.01, "Share of each phase's luminaires on their original driver on 1 January 2027 expected to "
-            "fail before year 12, under each driver maker's Weibull; labels to the nearest 5%.", fontsize=7.5,
-            color="#56616c")
-    ax.grid(axis="y", color="#e3e7ea", zorder=0)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    from matplotlib.patches import Patch
-    ax.legend(handles=[Patch(color="#1d4e5a", label="In the 2027 program"),
-                       Patch(color="#a9b6bf", label="Stays on spot replacement")],
-              loc="upper left", frameon=False, fontsize=8.5)
-    f_.tight_layout(rect=(0, 0.04, 1, 1))
-    f_.savefig(path, metadata={"Software": None})
-    plt.close(f_)
+    from matplotlib.colors import LinearSegmentedColormap
+    from matplotlib.patches import Rectangle
+    L = G["ladder"]
+    ops = [nm for nm, _ in P.ops]
+    vals = [[100 * L["golden"][c][0][nm] for nm in ops] for c in order]
+    cmap = LinearSegmentedColormap.from_list("s", ["#b2182b", "#f4a582", "#f7f7f7", "#92c5de", "#2166ac"])
+    fig, ax = plt.subplots(figsize=(7.2, 6.4), dpi=150)
+    im = ax.imshow(vals, cmap=cmap, vmin=70, vmax=100, aspect="auto")
+    for i, c in enumerate(order):
+        for j, nm in enumerate(ops):
+            v = vals[i][j]
+            ax.text(j, i, "%d%%" % A_round(v), ha="center", va="center", fontsize=9,
+                    color="#111111" if 78 < v < 96 else "white")
+        j = ops.index(G["picks"][c])
+        ax.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1, fill=False, lw=2.4, ec="#111111"))
+    ax.set_xticks(range(len(ops)))
+    ax.set_xticklabels(["%s\n(DR score %d+)" % (nm, cut) for nm, cut in P.ops], fontsize=9)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels([NAMES[c] for c in order], fontsize=9)
+    ax.set_title("Five clinics fall below the 85% floor at Standard\n"
+                 "Estimated sensitivity for referable DR, Oct 2025 to Sep 2026 screenings; outlined: each clinic's "
+                 "2027 point", fontsize=9.5, loc="left")
+    cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.03)
+    cb.set_label("Estimated sensitivity (%); line at the 85% floor", fontsize=8.5)
+    cb.ax.axhline(85, color="#111111", lw=1.2)
+    cb.ax.tick_params(labelsize=8)
+    fig.text(0.01, 0.01, "Network referrals at the 2027 points: %s against Pellam capacity %s." %
+             ("{:,}".format(G["referrals"]), "{:,}".format(P.capacity)), fontsize=8)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(path, dpi=150, metadata={"Software": None})
+    plt.close(fig)
 
 
-def write(target, golden):
-    D, G, fig = compute(target)
-    os.makedirs(golden, exist_ok=True)
-    write_xlsx(os.path.join(golden, P.GOLDEN_XLSX), fig)
-    write_png(os.path.join(golden, P.GOLDEN_PNG), fig)
-    return fig, dict(D=D, G=G)
+def brief(P, G, f, order, png, path):
+    """One slide for the Clinical AI Oversight Committee: the call, the reason and the grid."""
+    from pptx import Presentation
+    from pptx.util import Inches, Pt
+    from pptx.dml.color import RGBColor
+    prs = Presentation()
+    prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    std = ", ".join(sorted(k for k, v in f["points"].items() if v == "Standard"))
+    vm = f["validation_by_model_pct"]
+
+    def box(x, y, w_, h, paras):
+        tb = s.shapes.add_textbox(Inches(x), Inches(y), Inches(w_), Inches(h))
+        tf = tb.text_frame
+        tf.word_wrap = True
+        for i, (text, size, bold) in enumerate(paras):
+            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+            r = p.add_run()
+            r.text = text
+            r.font.size = Pt(size)
+            r.font.bold = bold
+            r.font.name = "Calibri"
+            r.font.color.rgb = RGBColor(0x22, 0x22, 0x22)
+            p.space_after = Pt(6)
+
+    box(0.5, 0.35, 12.3, 0.9, [("Standard at seven clinics, Enhanced at two, High at three in 2027", 26, True),
+                               ("RetinaCheck operating points for contract year 2027. Clinical AI Oversight Committee, "
+                                "December meeting. Quality and Clinical AI.", 12, False)])
+    box(0.5, 7.0, 12.3, 0.4, [("Sources: local validation study 2025 (CVCH-QI-2025-01); RetinaCheck result export, "
+                               "screenings Oct 2025 to Sep 2026; Biomedical Engineering asset register and location "
+                               "history; CAI-03 v3 section 3; Pellam agreement PERC-CV-2027.        1", 9, False)])
+    box(0.5, 1.5, 5.6, 5.6, [
+        ("Recommendation", 16, True),
+        ("Standard at %s." % std, 13, False),
+        ("Enhanced at Kestle Road and Veldane.", 13, False),
+        ("High at Brackenfield, Hollinmoor and Rookwood.", 13, False),
+        ("On the 2025-26 screenings these points imply %s referrals against Pellam's 2027 capacity of %s." %
+         ("{:,}".format(f["referrals_total"]), "{:,}".format(f["capacity"])), 13, False),
+        ("Why not Standard everywhere", 16, True),
+        ("The validation study pooled images from both camera models. At Standard the AI found %.1f%% of referable "
+         "eyes on the NR-40 and %.1f%% on the NR-70. Rookwood, Brackenfield and Hollinmoor screened on an NR-40 all "
+         "year; Kestle Road and Veldane have run on NR-40 loaners since February and March." %
+         (vm["NR-40"]["Standard"], vm["NR-70"]["Standard"]), 13, False),
+    ])
+    s.shapes.add_picture(png, Inches(6.35), Inches(1.35), height=Inches(5.95))
+    when = dt.datetime(2026, 11, 16, 15, 2, 0)
+    cp = prs.core_properties
+    cp.author = cp.last_modified_by = "Quality and Clinical AI"
+    cp.title = "RetinaCheck operating points 2027"
+    cp.created = cp.modified = when
+    cp.revision = 3
+    prs.save(path)
+    from pack import normalise_zip
+    normalise_zip(path, when="2026-11-16T23:02:00Z", app="Microsoft Office PowerPoint")
 
 
-def write_figures(path, fig):
-    with open(path, "w") as fh:
-        json.dump(fig, fh, indent=1, sort_keys=True, default=float)
+def A_round(v):
+    return rnd(v)
+
+
+def write_all(target, golden_dir, gen_dir):
+    os.makedirs(golden_dir, exist_ok=True)
+    os.makedirs(gen_dir, exist_ok=True)
+    P = A.Pack(target)
+    G = A.golden(P)
+    f, order, per = figures(P, G)
+    workbook(P, G, f, order, per, os.path.join(golden_dir, BOOK))
+    png = os.path.join(gen_dir, "sensitivity_grid.png")
+    chart(P, G, order, png)
+    brief(P, G, f, order, png, os.path.join(golden_dir, BRIEF))
+    with open(os.path.join(gen_dir, "figures.json"), "w") as fh:
+        json.dump(f, fh, indent=1, sort_keys=True)
         fh.write("\n")
+    return P, G, f

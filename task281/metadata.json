@@ -1,90 +1,136 @@
 {
- "answer": "Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires re-driven.",
+ "architecture": 3,
+ "as_of": "2026-11-16",
+ "decision": "the vendor operating point each Corrowan Valley clinic runs Kelvory RetinaCheck at in contract year 2027 under the network's clinical AI governance standard",
  "deliverables": [
-  "2027_group_driver_replacement.xlsx",
-  "driver_failure_projection_by_phase.png"
+  "ai_operating_points_2027.xlsx",
+  "operating_points_2027_committee.pptx"
  ],
  "distractor_files": [
-  "target/sl_billing_lines_dec2026.csv",
-  "target/tpl_ops_center_daily_temperature_2021-2026.csv",
-  "target/vegetation_clearance_patrols_2025-2026.csv"
+  "retinacheck_site_dashboard_2026q3.xlsx",
+  "eye_screening_patient_survey_2026.csv",
+  "him_outside_eye_reports_2025-26.csv"
  ],
- "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
- "objective": "Descriptive & Distribution Analysis",
- "provenance": {
-  "brayle_install_logs_2021-2025.xlsx": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the installer's daily installation logs, 2021 to 2025; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+ "distractor_notes": {
+  "eye_screening_patient_survey_2026.csv": "patient experience scores for eye screening visits; relevant to the service, unused by the solution",
+  "him_outside_eye_reports_2025-26.csv": "outside eye examination reports indexed by HIM; relevant to the screening program, unused by the solution",
+  "retinacheck_site_dashboard_2026q3.xlsx": "the vendor's referral and ungradable rates by site and quarter at the Standard point; relevant to the reading center load, unused by the solution"
+ },
+ "files": {
+  "biomed_asset_register_2026-09-30.xlsx": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH Biomedical Engineering asset register with location history, exported 30 September 2026; synthetic"
   },
-  "corrinvale_nlc_dimming_profiles_2026.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "Corrinvale's networked lighting control system, monthly node records for 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "biomed_service_tickets_2025-26.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH Biomedical Engineering service tickets, 2025-26; synthetic"
   },
-  "customer_outage_reports_2026.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the customer portal's and call centre's outage reports, December 2025 to December 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "clinic_directory.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH clinic directory (EHR department, portal site and biomedical location names); synthetic"
   },
-  "halberd_certificates_of_conformance_2020-2025.pdf": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the luminaire maker's certificates of conformance, one page a delivery lot; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "clinical_ai_governance_standard_v3.pdf": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH Clinical AI Oversight Committee, governance standard CAI-03 version 3; synthetic"
   },
-  "schedule_sl_street_lighting_tariff_2026.pdf": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the utility's street lighting tariff, Schedule SL; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "diabetes_registry_2026-09-30.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH population health diabetes registry snapshot, 30 September 2026; synthetic"
   },
-  "sl_billing_lines_dec2026.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "December 2026 street lighting billing lines by municipal account; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "ehr_retinal_screening_orders_2025-26.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH EHR reporting extract, retinal imaging and reading center referral orders, 2025-26; synthetic"
   },
-  "streetlight_register_2026-12-31.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the utility's GIS streetlight inventory, exported 31 December 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "eye_screening_patient_survey_2026.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "CVCH patient experience survey, eye screening visits 2026; synthetic"
   },
-  "tpl_ops_center_daily_temperature_2021-2026.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the utility's operations centre weather station, daily; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "him_outside_eye_reports_2025-26.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "CVCH Health Information Management, index of outside eye examination reports; synthetic"
   },
-  "tpl_streetlight_lifecycle_model_note.pdf": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the utility's street lighting lifecycle model note, revision 3; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "local_validation_study_2025.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH Quality department, local validation study record (study CVCH-QI-2025-01); synthetic"
   },
-  "vegetation_clearance_patrols_2025-2026.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "vegetation clearance patrols around streetlights, 2025 and 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "pellam_overread_log_2025-26.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Pellam Eye Reading Center case log for the network's 2025-26 referrals; synthetic"
   },
-  "wms_legacy_work_orders_2021-01_2023-06.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the legacy work-management system's export at its June 2023 cutover; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "pellam_reading_agreement_2027.pdf": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Pellam Eye Reading Center, overread services agreement for contract year 2027; synthetic"
   },
-  "work_orders_2023-07_2026-12.csv": {
-   "date": "2027-01-14",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "the enterprise asset management system's work orders, July 2023 to December 2026; constructed by the task generator (seeded); Tallisford Power & Light, Halberd Lighting Company, Brayle Electric, Inc., the towns, people and records are fictional; the records follow the forms of US utility GIS inventories, installer logs, work-management exports, customer outage reports and manufacturers' certificates of conformance"
+  "retina_ai_results_2025-10_2026-09.csv": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kelvory RetinaCheck vendor portal, result export for the network's sites, screenings captured 1 October 2025 to 30 September 2026; synthetic, built for this task"
+  },
+  "retinacheck_operating_points.pdf": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kelvory Health Systems, RetinaCheck operating points site configuration guide, revision C; synthetic"
+  },
+  "retinacheck_site_configuration_2026-10-01.json": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Kelvory RetinaCheck portal, site configuration export, 1 October 2026; synthetic"
+  },
+  "retinacheck_site_dashboard_2026q3.xlsx": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "Kelvory Customer Success, RetinaCheck site dashboard Q4 2025 to Q3 2026; synthetic"
+  },
+  "validation_study_protocol_2025.pdf": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "CVCH Quality department, validation study protocol v1.2; synthetic"
   }
  },
- "rows": {
-  "brayle_install_logs_2021-2025.xlsx": 43686,
-  "corrinvale_nlc_dimming_profiles_2026.csv": 64008,
-  "customer_outage_reports_2026.csv": 4961,
-  "halberd_certificates_of_conformance_2020-2025.pdf": 140,
-  "sl_billing_lines_dec2026.csv": 48,
-  "streetlight_register_2026-12-31.csv": 44953,
-  "tpl_ops_center_daily_temperature_2021-2026.csv": 2191,
-  "vegetation_clearance_patrols_2025-2026.csv": 258,
-  "wms_legacy_work_orders_2021-01_2023-06.csv": 2984,
-  "work_orders_2023-07_2026-12.csv": 11029
+ "largest_file": {
+  "name": "retina_ai_results_2025-10_2026-09.csv",
+  "rows": 26997
  },
- "task": "task281",
- "title": "Tallisford Power & Light: the 2027 group driver replacement program across ten LED conversion phases"
+ "row_counts": {
+  "diabetes_registry_2026-09-30.csv": 42041,
+  "ehr_retinal_screening_orders_2025-26.csv": 35891,
+  "eye_screening_patient_survey_2026.csv": 2283,
+  "him_outside_eye_reports_2025-26.csv": 4394,
+  "local_validation_study_2025.csv": 3411,
+  "pellam_overread_log_2025-26.csv": 6520,
+  "retina_ai_results_2025-10_2026-09.csv": 26997
+ },
+ "stated_inputs": [
+  "7,200",
+  "7200",
+  "85"
+ ],
+ "task": "task281"
 }

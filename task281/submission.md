@@ -1,65 +1,86 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (missing data, censoring and measurement error: a censored lifetime distribution read past its follow-up).
+**Domain:** General Statistics & Data Science (robustness analysis: whether an autonomous diabetic retinopathy screening AI's validated sensitivity holds at each clinic of a community health center network).
 **Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires still on their original driver.**
-Each of the five is projected at 60 to 70 per cent of its original-driver luminaires failing before their twelfth year against the 45 per cent trigger, because only Vantrel's drivers wear out and these phases were built mostly from Vantrel lots. Not all ten, which one Weibull over every conversion driver files at 68 to 71 per cent each: it reads Corvane's survivors as failures still to come, expecting more than 500 Corvane failures by the close against the 16 recorded. Not P4 or P2, the highest of the rest at 35 and 30 per cent, built mostly from Corvane lots.
+**In 2027 run RetinaCheck at Standard at Orrin Falls, Pellsbury, Quarry Hill, Sallow Creek, Thistlebrook, Wendmere and Yarrowby, at Enhanced at Kestle Road and Veldane, and at High at Brackenfield, Hollinmoor and Rookwood; on the 2025-26 screenings these points imply 6,630 referrals, within Pellam's capacity of 7,200.** Not Standard everywhere: the pooled validation sensitivity of 89.4% at Standard mixes images from two camera models, 73.3% on the NR-40 and 95.7% on the NR-70, and five clinics screened mostly or wholly on an NR-40. Not High at Kestle Road and Veldane, where the register now shows NR-40 loaners: 68% and 58% of their year ran on an NR-40, which puts both above 85% at Enhanced and below it at Standard.
 
 ## 2. Critical Components
 
-1. Driver failures on record to 31 December 2026: **Vantrel 1,327** of 22,646 drivers and **Corvane 16** of 21,040, against the **more than 500** Corvane failures one Weibull over every driver expects
-2. Vantrel's original-driver lifetime: Weibull shape **3.3**, characteristic life **9.8 years**; Corvane's drivers show no wear-out
-3. Projected share failing before year 12, to the nearest 5 per cent: **P1 60, P3 70, P5 60, P7 65, P9 60**; P2 30, P4 35, P6 15, P8 15, P10 15
-4. Luminaires on their original driver on 1 January 2027 in the five phases: **20,922**
+1. Validation sensitivity by camera model at Standard, Enhanced, High and Maximum: NR-40 **73.3%, 82.2%, 90.1%, 96.0%**; NR-70 **95.7%, 97.3%, 98.8%, 98.8%**.
+2. Share of each clinic's 2025-26 screenings captured on an NR-40: **100%** at Brackenfield, Hollinmoor and Rookwood, **68%** Kestle Road, **58%** Veldane, **18%** Sallow Creek, **8%** Pellsbury, **6%** Orrin Falls, **6%** Yarrowby, **0%** at Quarry Hill, Thistlebrook and Wendmere.
+3. Brackenfield, Hollinmoor and Rookwood reach **90%** at High after **82%** at Enhanced; Kestle Road and Veldane clear 85% at Enhanced and fall short at Standard; the other seven clinics are at **92%** or more at Standard.
+4. The points chosen for 2027 imply **6,630** referrals on the 2025-26 screenings against Pellam's **7,200**; High at every clinic would imply 9,204.
 
 ## 3. Step-by-Step Solution
 
-1. Took each luminaire's retrofit date, phase and lot from brayle_install_logs_2021-2025.xlsx (both sheet layouts, every pole-tag form) and each lot's LED driver maker from halberd_certificates_of_conformance_2020-2025.pdf: 22,646 Vantrel and 21,040 Corvane drivers.
-2. Dated each original driver's failure at the completion of the first driver-replacement order on its pole (DRVR in wms_legacy_work_orders_2021-01_2023-06.csv, SL-DRV-RPL in work_orders_2023-07_2026-12.csv, the legacy orders open at the cutover counted once as MIGRATED) and each exit at its knockdown, warranty swap or pole removal order, per tpl_streetlight_lifecycle_model_note.pdf 2.2 to 2.4, every other luminaire suspended at its age on 31 December 2026.
-3. Fitted the two-parameter Weibull by maximum likelihood to each driver maker's drivers (the note's 3.1): Vantrel shape 3.3 and characteristic life 9.8 years on 1,327 failures; Corvane's 16 failures show no wear-out, where one fit over both makers expects more than 500.
-4. Averaged, over each phase's luminaires on their original driver on 1 January 2027, the probability of failure before the twelfth anniversary of installation given survival to their age that day, under their maker's fit: P1, P3, P5, P7 and P9 above 45 per cent, every other phase at 35 per cent or less.
-5. Energy saved: each converted pole's sodium fixture from the installer's Removed column at schedule_sl_street_lighting_tariff_2026.pdf input watts against its LED at the catalog's input watts, the LED at 70 W from the completion of a glare order without a shield part where streetlight_register_2026-12-31.csv shows the pole at 70 W, to its removal order's day, for the tariff's monthly burning hours by days in service, Corrinvale's LEDs at the dimmed level for the hours corrinvale_nlc_dimming_profiles_2026.csv records.
-6. Late repairs: every outage order completed in 2026, timed from the first report of the outage in customer_outage_reports_2026.csv (portal stamps converted from UTC to the local time the orders carry, phone reports placed by pole number or register address), an underground cable order's reports taken from every pole on its riser's feed in the register, an order the crews found from its creation; counted those over 72 hours (the tariff's 4.2).
-7. Designated the five phases above 45 per cent: 20,922 luminaires.
+1. Placed every image on its camera: validation images by the protocol's site letters (validation_study_protocol_2025.pdf) and capture_date, 2025-26 screenings by Site (clinic_directory.csv) and Captured (UTC) moved to Pacific local date; the camera is the serial the Location History sheet of biomed_asset_register_2026-09-30.xlsx places at the clinic's location that day, its model from the Assets sheet.
+2. From local_validation_study_2025.csv, counted as referable a final_level of moderate NPDR or worse or a final_dme of Y, and as referred an Ungradable result or a dr_score at or above the point's threshold (the CAI-03 definitions of referable disease and sensitivity, retinacheck_operating_points.pdf): NR-40 73.3% and NR-70 95.7% at Standard.
+3. Weighted each model's sensitivity at every point by its share of the clinic's screenings in retina_ai_results_2025-10_2026-09.csv (a screening belongs to the clinic where it was captured): Brackenfield, Hollinmoor and Rookwood 90% at High, the seven Standard clinics 92% or more at Standard.
+4. Took each clinic's least sensitive point at or above 85% (CAI-03 section 3) and counted the screenings it would have referred, an Ungradable result or a DR Score at or above its threshold: 6,630, within the 7,200 in pellam_reading_agreement_2027.pdf.
+5. For the reading center figures, kept the cases in pellam_overread_log_2025-26.csv whose Referral Order is a REF7734 referral in ehr_retinal_screening_orders_2025-26.csv (the IMG92250 teleretinal reads are not AI referrals), took each referral order as one referral closed by its last Referable or Not referable grade, and counted days from its first case's Image Date to the closing grade's Graded (UTC) on the Pacific calendar, as CAI-03 section 4 states the measure.
+6. For the camera faults, took the retinal camera tickets in biomed_service_tickets_2025-26.csv, ended each outage when the Location History moved the next camera into the clinic (not at the ticket's Closed date), and counted the weekdays after the fault day with no screening in the result export (the fault day itself had screenings before the camera failed).
+7. Recommended Standard at seven clinics, Enhanced at Kestle Road and Veldane and High at Brackenfield, Hollinmoor and Rookwood.
 
 ## 4. Deliverable Answers
 
-### 2027_group_driver_replacement.xlsx
+### ai_operating_points_2027.xlsx
 
-1. The 2027 program: P1, P3, P5, P7 and P9, 20,922 luminaires on their original driver.
-2. Projected share failing before year 12, to the nearest 5 per cent, and whether the phase goes in:
-   - P1: 60 per cent, in
-   - P2: 30 per cent, out
-   - P3: 70 per cent, in
-   - P4: 35 per cent, out
-   - P5: 60 per cent, in
-   - P6: 15 per cent, out
-   - P7: 65 per cent, in
-   - P8: 15 per cent, out
-   - P9: 60 per cent, in
-   - P10: 15 per cent, out
-3. Energy the converted poles saved in 2026 against the sodium fixtures, whole MWh:
-   - Ambrosine: 1,824
-   - Corrinvale: 2,263
-   - Dalwinter: 1,942
-   - Fallowmere: 1,684
-   - Garrick Hollow: 1,888
-   - Halverne Bend: 2,188
-   - Kesterbrook: 2,558
-   - Larkhaven: 2,304
-4. Outages repaired in 2026 that missed the 72-hour standard:
-   - Ambrosine: 186
-   - Corrinvale: 187
-   - Dalwinter: 156
-   - Fallowmere: 153
-   - Garrick Hollow: 149
-   - Halverne Bend: 161
-   - Kesterbrook: 193
-   - Larkhaven: 133
+1. 2027 operating point by clinic:
+   - Brackenfield: High
+   - Hollinmoor: High
+   - Kestle Road: Enhanced
+   - Orrin Falls: Standard
+   - Pellsbury: Standard
+   - Quarry Hill: Standard
+   - Rookwood: High
+   - Sallow Creek: Standard
+   - Thistlebrook: Standard
+   - Veldane: Enhanced
+   - Wendmere: Standard
+   - Yarrowby: Standard
+2. Referrals each clinic's point implies on the 2025-26 screenings, whole counts:
+   - Brackenfield: 754
+   - Hollinmoor: 791
+   - Kestle Road: 518
+   - Orrin Falls: 540
+   - Pellsbury: 410
+   - Quarry Hill: 488
+   - Rookwood: 686
+   - Sallow Creek: 447
+   - Thistlebrook: 451
+   - Veldane: 578
+   - Wendmere: 496
+   - Yarrowby: 471
+3. Network: 6,630 referrals against Pellam's 2027 capacity of 7,200, within capacity.
+4. AI referrals Pellam read from the 2025-26 screenings, whole counts, and the share whose closing grade is Referable, whole per cent:
+   - Brackenfield: 423 read, 49%
+   - Hollinmoor: 420 read, 43%
+   - Kestle Road: 392 read, 47%
+   - Orrin Falls: 523 read, 53%
+   - Pellsbury: 395 read, 48%
+   - Quarry Hill: 471 read, 47%
+   - Rookwood: 366 read, 49%
+   - Sallow Creek: 423 read, 48%
+   - Thistlebrook: 436 read, 56%
+   - Veldane: 411 read, 48%
+   - Wendmere: 483 read, 48%
+   - Yarrowby: 462 read, 55%
+5. Average days from screening to Pellam's closing grade by quarter of screening, one decimal:
+   - Oct-Dec 2025: 6.3
+   - Jan-Mar 2026: 6.2
+   - Apr-Jun 2026: 6.4
+   - Jul-Sep 2026: 6.3
+6. Clinic days with no AI screening after each camera fault in the reference year, whole days:
+   - Kestle Road, fault reported 2026-01-28: 7
+   - Orrin Falls, fault reported 2026-02-10: 3
+   - Veldane, fault reported 2026-03-05: 6
+   - Sallow Creek, fault reported 2026-03-30: 4
+   - Yarrowby, fault reported 2026-05-01: 5
+   - Pellsbury, fault reported 2026-06-03: 7
 
-### driver_failure_projection_by_phase.png
+### operating_points_2027_committee.pptx
 
-1. One bar per phase of its projected share, the 45 per cent trigger drawn across, the five program phases set apart in colour, each bar labelled with its share to the nearest 5 per cent.
+1. Heatmap on the slide with one row per clinic and one column per vendor point (Standard, Enhanced, High, Maximum), each cell the clinic's estimated sensitivity and each clinic's point for 2027 outlined: Standard at seven clinics, Enhanced at Kestle Road and Veldane, High at Brackenfield, Hollinmoor and Rookwood.

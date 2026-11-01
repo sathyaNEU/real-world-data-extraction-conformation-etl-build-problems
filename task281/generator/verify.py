@@ -1,274 +1,254 @@
-"""An independent path to every graded figure of task281, sharing no code with analysis.py: pandas readers, a
-regex-free certificate read by page and table position, the Weibull fitted on its full likelihood rather than the
-profile score, energy by month arithmetic in arrays, and repairs by a sort-and-scan over each light's orders and
-reports. It reads only <task>/target and compares with generator/figures.json."""
+"""Independent verifier: reads every shipped file back on its own code path (pandas for CSV, the workbook XML read
+straight from the zip, its own ASCII85 and Flate decoder for the PDFs, json for the configuration) and recomputes
+the call and every graded figure without importing analysis.py, world.py or params.py.
+
+    python3 task281/generator/verify.py           # exit 1 on any mismatch with figures.json
+"""
+import base64
 import datetime as dt
 import json
 import os
-import subprocess
+import re
 import sys
-import zoneinfo
+import zipfile
+import zlib
+import xml.etree.ElementTree as ET
+from zoneinfo import ZoneInfo
 
-import numpy as np
 import pandas as pd
-from scipy.optimize import minimize
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import params as P   # noqa: E402  (file names, the as-of dates and the trigger only)
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+LA = ZoneInfo("America/Los_Angeles")
+FAIL = []
 
 
-def digits(s):
-    s = "" if s is None or (isinstance(s, float) and np.isnan(s)) else str(s)
-    d = "".join(ch if ch.isdigit() else " " for ch in s).split()
-    six = [x for x in d if len(x) == 6]
-    return int(six[-1]) if six else None
+def say(ok, what, detail=""):
+    print("%-4s %s %s" % ("OK" if ok else "FAIL", what, detail))
+    if not ok:
+        FAIL.append(what)
 
 
-def install(target):
-    xl = pd.read_excel(os.path.join(target, P.FILES["install"]), sheet_name=None)
-    parts = []
-    for name, df in xl.items():
-        if "Pole Tag" in df.columns:
-            df = df.rename(columns={"Date": "date", "Phase": "phase", "Municipality": "town", "Pole Tag": "pole",
-                                    "Catalog No.": "catalog", "Lot #": "lot", "Removed": "removed"})
-            df["date"] = pd.to_datetime(df["date"]).dt.date
-        else:
-            df = df.rename(columns={"install_date": "date", "pole_id": "pole", "removed_fixture": "removed"})
-            df["date"] = pd.to_datetime(df["date"], format="%m/%d/%Y").dt.date
-        df["pole"] = df["pole"].map(digits)
-        parts.append(df[["date", "phase", "town", "pole", "catalog", "lot", "removed"]])
-    out = pd.concat(parts, ignore_index=True)
-    out["watts"] = out["catalog"].str.extract(r"-(\d+)W-")[0].astype(int)
-    return out.set_index("pole")
+def half_up(x, nd=0):
+    from decimal import Decimal, ROUND_HALF_UP
+    q = Decimal(1).scaleb(-nd)
+    v = Decimal(repr(float(x))).quantize(q, rounding=ROUND_HALF_UP)
+    return float(v) if nd else int(v)
 
 
-def makers(target):
-    txt = subprocess.run(["pdftotext", "-raw", os.path.join(target, P.FILES["coc"]), "-"], capture_output=True,
-                         text=True, check=True).stdout
+# ------------------------------------------------------------------------------------------------ readers
+def pdf_strings(path):
+    raw = open(path, "rb").read()
+    words = []
+    pos = 0
+    while True:
+        i = raw.find(b"stream", pos)
+        if i < 0:
+            break
+        j = raw.find(b"endstream", i)
+        head = raw[max(0, i - 120):i]
+        body = raw[i + 6:j].strip(b"\r\n")
+        pos = j + 9
+        if b"ASCII85Decode" in head:
+            if body.endswith(b"~>"):
+                body = body[:-2]
+            body = base64.a85decode(body)
+        if b"FlateDecode" in head:
+            try:
+                body = zlib.decompress(body)
+            except zlib.error:
+                continue
+        words += [m.decode("latin-1") for m in re.findall(rb"\(((?:[^()\\]|\\.)*)\)\s*Tj", body)]
+    return " ".join(w.replace("\\(", "(").replace("\\)", ")") for w in words)
+
+
+def xlsx_sheets(path):
+    """{sheet name: list of rows (lists of cell values)} read from the workbook's XML."""
+    z = zipfile.ZipFile(path)
+    shared = []
+    if "xl/sharedStrings.xml" in z.namelist():
+        for si in ET.fromstring(z.read("xl/sharedStrings.xml")).findall("m:si", NS):
+            shared.append("".join(t.text or "" for t in si.iter("{%s}t" % NS["m"])))
+    wb = ET.fromstring(z.read("xl/workbook.xml"))
+    rels = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
+    target = {r.get("Id"): r.get("Target") for r in rels}
     out = {}
-    for page in txt.split("\f"):
-        lines = [x.strip() for x in page.splitlines() if x.strip()]
-        lot = next((x.split("Lot ")[1].rstrip(".") for x in lines if " Lot HL" in x), None)
-        if not lot:
-            continue
-        drv = next(x for x in lines if x.startswith("LED driver"))
-        out[lot] = "Vantrel" if "Vantrel" in drv else ("Corvane" if "Corvane" in drv else None)
+    for s in wb.find("m:sheets", NS):
+        rid = s.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id")
+        xml = ET.fromstring(z.read("xl/" + target[rid].lstrip("/").replace("xl/", "")))
+        rows = []
+        for row in xml.iter("{%s}row" % NS["m"]):
+            vals = {}
+            for c in row.findall("m:c", NS):
+                ref = re.match(r"([A-Z]+)", c.get("r")).group(1)
+                col = 0
+                for ch in ref:
+                    col = col * 26 + ord(ch) - 64
+                v = c.find("m:v", NS)
+                t = c.get("t")
+                if t == "s":
+                    val = shared[int(v.text)]
+                elif t == "inlineStr":
+                    val = "".join(x.text or "" for x in c.iter("{%s}t" % NS["m"]))
+                elif v is None:
+                    val = None
+                else:
+                    val = float(v.text)
+                vals[col] = val
+            rows.append([vals.get(k) for k in range(1, max(vals) + 1)] if vals else [])
+        out[s.get("name")] = rows
     return out
 
 
-def orders(target):
-    lg = pd.read_csv(os.path.join(target, P.FILES["wo_legacy"]), dtype=str).fillna("")
-    lg = pd.DataFrame(dict(pole=lg["LOCATION"].map(digits), res=lg["RES"],
-                           opened=pd.to_datetime(lg["OPENED"], format="%m/%d/%Y %H:%M"),
-                           done=pd.to_datetime(lg["CLOSED"], format="%m/%d/%Y %H:%M", errors="coerce"),
-                           source="", parts="", sysname="legacy"))
-    code = {"DRVR": "SL-DRV-RPL", "KD": "SL-KNOCKDOWN", "LUM": "SL-LUM-RPL", "REM": "SL-POLE-REM", "GLR": "SL-GLARE"}
-    lg["activity"] = lg["res"].map(lambda x: code.get(x, "LEG-" + x))
-    nw = pd.read_csv(os.path.join(target, P.FILES["wo_new"]), dtype=str).fillna("")
-    wall = lambda s: pd.to_datetime(s.str[:16], format="%Y-%m-%dT%H:%M", errors="coerce")
-    nw = pd.DataFrame(dict(pole=nw["asset_id"].map(digits), activity=nw["activity"],
-                           opened=wall(nw["created_at"]), reported=wall(nw["reported_at"]),
-                           done=wall(nw["completed_at"].where(nw["status"] == "CLOSED", "")),
-                           source=nw["source"], parts=nw["parts"], sysname="eam"))
-    return pd.concat([lg, nw], ignore_index=True)
+def serial_date(x):
+    return (dt.datetime(1899, 12, 30) + dt.timedelta(days=float(x))).date()
 
 
-def nll(x, t, d):
-    k, lam = np.exp(x)
-    z = (t / lam) ** k
-    return -(np.sum(np.log(k) - np.log(lam) + (k - 1) * np.log(t / lam), where=d) - z.sum())
-
-
-def fit(t, d):
-    t = np.maximum(np.asarray(t, float), 1e-9)
-    d = np.asarray(d, bool)
-    best = None
-    for k0, l0 in ((3.0, 10.0), (1.0, 500.0), (1.5, 50.0)):
-        r = minimize(nll, [np.log(k0), np.log(l0)], args=(t, d), method="Nelder-Mead",
-                     options={"xatol": 1e-12, "fatol": 1e-12, "maxiter": 20000})
-        if best is None or r.fun < best.fun:
-            best = r
-    return np.exp(best.x)
-
-
-WORDS = {"twelfth": 12.0, "tenth": 10.0, "fifteenth": 15.0}
-
-
-def note(target):
-    """The program test as the lifecycle note files it: the trigger, the horizon and the year length."""
-    txt = " ".join(subprocess.run(["pdftotext", "-raw", os.path.join(target, P.FILES["note"]), "-"],
-                                  capture_output=True, text=True, check=True).stdout.split())
-    assert "two-parameter Weibull distribution, fitted by maximum likelihood" in txt, "the note's 3.1 not read"
-    trig = float(txt.split(" per cent of those luminaires")[0].split("more than ")[-1]) / 100.0
-    horizon = WORDS[txt.split(" anniversary of the luminaire")[0].split()[-1]]
-    year = float(txt.split(" days a year")[0].split()[-1])
-    return trig, horizon, year
-
-
-def call(target):
-    trig, horizon, year = note(target)
-    ins = install(target)
-    mk = makers(target)
-    ins["maker"] = ins["lot"].map(mk)
-    wo = orders(target)
-    wo = wo[wo["pole"].isin(ins.index) & wo["done"].notna()]
-    wo = wo[wo["done"].dt.date <= P.RECORD_END]
-    wo = wo.join(ins[["date"]], on="pole")
-    wo = wo[wo["done"].dt.date > wo["date"]]
-    first_drv = wo[wo["activity"] == "SL-DRV-RPL"].groupby("pole")["done"].min().dt.date
-    first_exit = wo[wo["activity"].isin(["SL-KNOCKDOWN", "SL-LUM-RPL", "SL-POLE-REM"])].groupby("pole")["done"].min().dt.date
-    ins["fail"] = first_drv
-    ins["exit"] = first_exit
-    failed = ins["fail"].notna() & (ins["exit"].isna() | (ins["fail"] <= ins["exit"]))
-    stop = np.where(failed, ins["fail"], ins["exit"].where(ins["exit"].notna(), P.RECORD_END))
-    stop = [min(s, P.RECORD_END) if not f else s for s, f in zip(stop, failed)]
-    ins["t"] = [(s - d0).days / year for s, d0 in zip(stop, ins["date"])]
-    ins["d"] = failed
-    ins["alive"] = (~failed) & ins["exit"].isna()
-    ins["age"] = [(P.AS_OF - d0).days / year for d0 in ins["date"]]
-    fits = {m: fit(g["t"], g["d"]) for m, g in ins.groupby("maker")}
-
-    def p(row):
-        k, lam = fits[row["maker"]]
-        F = lambda x: 1 - np.exp(-(x / lam) ** k)
-        return (F(horizon) - F(row["age"])) / (1 - F(row["age"]))
-    al = ins[ins["alive"]].copy()
-    al["p"] = al.apply(p, axis=1)
-    shares = al.groupby("phase")["p"].mean()
-    n = al.groupby("phase").size()
-    ins.attrs["trigger"] = trig
-    return shares, n, fits, ins
-
-
-def energy(target, ins):
-    tariff = subprocess.run(["pdftotext", "-layout", os.path.join(target, P.FILES["tariff"]), "-"],
-                            capture_output=True, text=True, check=True).stdout
-    watts = {}
-    for line in tariff.splitlines():
-        s = line.split()
-        if len(s) > 4 and s[0] in ("LED", "HPS") and s[2] == "W":
-            nums = [x for x in s[3:] if x.isdigit()]
-            watts[(s[0], int(s[1]))] = int(nums[0])
-        if s and s[0] == "Hours":
-            hrs = [int(x.replace(",", "")) for x in s[1:13]]
-    reg = pd.read_csv(os.path.join(target, P.FILES["register"]), dtype=str).fillna("")
-    reg["pole"] = reg["pole_id"].map(digits)
-    regw = dict(zip(reg["pole"], reg["lamp_watts"].astype(int)))
-    wo = orders(target)
-    wo = wo[wo["done"].notna() & wo["pole"].isin(ins.index)]
-    nlc = pd.read_csv(os.path.join(target, P.FILES["nlc"]), dtype={"pole_id": str})
-    nlc["pole"] = nlc["pole_id"].map(digits)
-    nlc["m"] = nlc["month"].str[5:7].astype(int)
-    nl = {(a, b): (c, e) for a, b, c, e in zip(nlc["pole"], nlc["m"], nlc["dimmed_hours"], nlc["dim_level_pct"])}
-    days = pd.date_range("2026-01-01", "2026-12-31").date
-    month = np.array([d.month for d in days])
-    ndays = np.array([pd.Timestamp(d).days_in_month for d in days])
-    perday = np.array([hrs[m - 1] for m in month]) / ndays
-    out = {}
-    for pole, g in wo.groupby("pole"):
-        pass
-    evs = {pole: g.sort_values("done") for pole, g in wo.groupby("pole")}
-    for pole, r in ins.iterrows():
-        hps = watts[("HPS", int(str(r["removed"]).split("W")[0].split()[-1]))]
-        cur = np.full(len(days), watts[("LED", int(r["watts"]))], float)
-        live = np.ones(len(days), bool)
-        gone_before = False
-        for _, e in (evs[pole].iterrows() if pole in evs else []):
-            d = e["done"].date()
-            if d <= r["date"]:
-                continue
-            ix = days >= d
-            if e["activity"] == "SL-GLARE" and not e["parts"].startswith("HSS"):
-                cur[ix] = watts[("LED", regw[pole])]
-            elif e["activity"] in ("SL-KNOCKDOWN", "SL-LUM-RPL") and "HRX-" in e["parts"]:
-                cur[ix] = watts[("LED", int(e["parts"].split("HRX-")[1].split("-")[1].rstrip("W")))]
-            elif e["activity"] in ("SL-POLE-REM",):
-                live &= ~ix
-                if d < dt.date(2026, 1, 1):
-                    gone_before = True
-        if gone_before:
-            continue
-        tot = 0.0
-        for m in range(1, 13):
-            sel = (month == m) & live
-            if not sel.any():
-                continue
-            tot += ((hps - cur[sel]) * perday[sel]).sum()
-            if (pole, m) in nl:
-                dh, lv = nl[(pole, m)]
-                tot += cur[sel].mean() * (1 - lv / 100.0) * dh
-        out[r["town"]] = out.get(r["town"], 0.0) + tot
-    return {t: v / 1e6 for t, v in out.items()}
-
-
-def repairs(target, ins):
-    ny = zoneinfo.ZoneInfo("America/New_York")
-    reg = pd.read_csv(os.path.join(target, P.FILES["register"]), dtype=str).fillna("")
-    reg["pole"] = reg["pole_id"].map(digits)
-    town = dict(zip(reg["pole"], reg["town"]))
-    for pl, r in ins.iterrows():
-        town.setdefault(pl, r["town"])
-    feed = dict(zip(reg["pole"], reg["feed"]))
-    members = reg[reg["feed"] != "OH"].groupby("feed")["pole"].apply(list).to_dict()
-    byaddr = reg.groupby(["town", "nearest_address"])["pole"].apply(list).to_dict()
-    rp = pd.read_csv(os.path.join(target, P.FILES["reports"]), dtype=str).fillna("")
-
-    def when(row):
-        if row["channel"] == "PORTAL":
-            return pd.Timestamp(row["received"]).tz_convert(ny).tz_localize(None)
-        return pd.to_datetime(row["received"][:19], format="%m/%d/%Y %I:%M %p")
-    rp["t"] = rp.apply(when, axis=1)
-    rp["pl"] = [digits(p) if digits(p) else (byaddr.get((tw, a), [None])[0] if len(byaddr.get((tw, a), [])) == 1
-                                             else None) for p, tw, a in zip(rp["pole"], rp["town"], rp["address"])]
-    rep = rp.dropna(subset=["pl"]).groupby("pl")["t"].apply(lambda s: sorted(s)).to_dict()
-    wo = orders(target)
-    wo = wo[(wo["sysname"] == "eam") & wo["done"].notna()].copy()
-    out_codes = {"SL-DRV-RPL", "SL-PC-RPL", "SL-WIRING", "SL-FUSE-RPL", "SL-LAMP-RPL", "SL-BALLAST-RPL",
-                 "SL-KNOCKDOWN", "SL-LUM-RPL", "SL-UG-CABLE"}
-    wo["lights"] = [members.get(feed.get(p), [p]) if a == "SL-UG-CABLE" else [p]
-                    for p, a in zip(wo["pole"], wo["activity"])]
-    cov = {}
-    for ls, d in zip(wo["lights"], wo["done"]):
-        for p in ls:
-            cov.setdefault(p, []).append(d)
-    late, tot = {}, {}
-    for _, w in wo[wo["activity"].isin(out_codes) & (wo["done"].dt.year == 2026)].iterrows():
-        prev = max([d for p in w["lights"] for d in cov.get(p, []) if d < w["done"]], default=None)
-        ts = [t for p in w["lights"] for t in rep.get(p, []) if (prev is None or t > prev) and t <= w["done"]]
-        base = w["reported"] if w["source"].startswith("CR-") else w["opened"]
-        first = min(ts + ([w["reported"]] if w["source"].startswith("CR-") else [])) if ts else base
-        tw = town[w["pole"]]
-        tot[tw] = tot.get(tw, 0) + 1
-        late[tw] = late.get(tw, 0) + int((w["done"] - first).total_seconds() > 72 * 3600)
-    return late, tot
-
-
-def run(target, golden):
+# ------------------------------------------------------------------------------------------------ main
+def main():
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    shares, n, fits, ins = call(target)
-    ok = True
-    print("PASS  verify: the note read through its own extractor (trigger %.2f)" % ins.attrs["trigger"])
-    sset = [pc for pc in P.PHASE_CODES if shares[pc] > ins.attrs["trigger"]]
-    good = sset == fig["call"]["set"] and int(sum(n[pc] for pc in sset)) == fig["call"]["program_luminaires"]
-    print("%s  verify: the set %s and %d luminaires" % ("PASS" if good else "FAIL", sset, sum(n[pc] for pc in sset)))
-    ok &= good
-    d = max(abs(shares[pc] - fig["phases"][pc]["share"]) for pc in P.PHASE_CODES)
-    s5 = all(int(round(shares[pc] * 20) * 5) == fig["phases"][pc]["share5"] for pc in P.PHASE_CODES)
-    print("%s  verify: every phase's share (largest gap %.2e) and its nearest 5 per cent" % (
-        "PASS" if (d < 1e-4 and s5) else "FAIL", d))
-    ok &= d < 1e-4 and s5
-    E = energy(target, ins)
-    gE = all(int(round(E[t])) == fig["towns"][t]["energy"] for t in fig["towns"])
-    print("%s  verify: every town's MWh %s" % ("PASS" if gE else "FAIL", {t: round(v, 2) for t, v in sorted(E.items())}))
-    ok &= gE
-    late, tot = repairs(target, ins)
-    gR = all(late[t] == fig["towns"][t]["late"] and tot[t] == fig["towns"][t]["repaired"] for t in fig["towns"])
-    print("%s  verify: every town's late repairs %s" % ("PASS" if gR else "FAIL", dict(sorted(late.items()))))
-    ok &= gR
-    return ok
+    f = {n: os.path.join(T, n) for n in os.listdir(T)}
+    res = pd.read_csv([p for n, p in f.items() if n.startswith("retina_ai_results")][0], dtype=str)
+    val = pd.read_csv([p for n, p in f.items() if n.startswith("local_validation_study")][0], dtype=str)
+    orders = pd.read_csv([p for n, p in f.items() if n.startswith("ehr_retinal")][0], dtype=str)
+    reg = pd.read_csv([p for n, p in f.items() if n.startswith("diabetes_registry")][0], dtype=str).fillna("")
+    him = pd.read_csv([p for n, p in f.items() if n.startswith("him_outside")][0], dtype=str)
+    log = pd.read_csv([p for n, p in f.items() if n.startswith("pellam_overread")][0], dtype=str)
+    tick = pd.read_csv([p for n, p in f.items() if n.startswith("biomed_service")][0], dtype=str).fillna("")
+    dirx = pd.read_csv(f["clinic_directory.csv"], dtype=str)
+    cfg = json.load(open([p for n, p in f.items() if n.endswith(".json")][0]))
+    say(len(cfg["sites"]) == len(dirx), "site configuration lists every directory site", str(len(cfg["sites"])))
+    for n in f:
+        if n.endswith(".xlsx"):
+            sh = xlsx_sheets(f[n])
+            say(all(len(r) > 1 for r in sh.values()), "workbook reads back: %s" % n, ", ".join(sh))
+    std = pdf_strings([p for n, p in f.items() if n.startswith("clinical_ai_governance")][0])
+    proto = pdf_strings([p for n, p in f.items() if n.startswith("validation_study_protocol")][0])
+    ops_txt = pdf_strings([p for n, p in f.items() if n.startswith("retinacheck_operating")][0])
+    agr = pdf_strings([p for n, p in f.items() if n.startswith("pellam_reading")][0])
+    for name, txt in (("standard", std), ("protocol", proto), ("guide", ops_txt), ("agreement", agr)):
+        say(len(txt) > 400, "pdf text decodes: %s" % name, "%d characters" % len(txt))
+    ops = sorted(((m.group(1), int(m.group(2))) for m in re.finditer(r"(\w+) (\d\d) or above", ops_txt)),
+                 key=lambda o: -o[1])
+    floor = int(re.search(r"at least (\d+) per cent", std).group(1)) / 100
+    cap = int(re.search(r"up to ([\d,]+) referrals", agr).group(1).replace(",", ""))
+    sites = dict(re.findall(r"Site ([ABC]) (Wendmere Primary Care|Quarry Hill|Yarrowby Medical)", proto))
+
+    # cameras: placements per location from the location history, models from the asset sheet
+    book = xlsx_sheets([p for n, p in f.items() if n.startswith("biomed_asset_register")][0])
+    model = {}
+    for r in book["Assets"][1:]:
+        if r and str(r[2]).startswith("Retinal camera"):
+            model[str(r[1]).replace("HO-", "")] = r[4]
+    spans = {}
+    openings = {}
+    for r in sorted(book["Location History"][1:], key=lambda r: (r[2], str(r[1]))):
+        s = str(r[1]).replace("HO-", "")
+        if s not in model:
+            continue
+        d = serial_date(r[2])
+        if (r[3], s) in openings:
+            spans.setdefault(r[3], []).append((openings.pop((r[3], s)), d, s))
+        openings[(r[4], s)] = d
+    for (loc, s), d in openings.items():
+        spans.setdefault(loc, []).append((d, dt.date(2100, 1, 1), s))
+
+    def cam(loc, day):
+        hit = [s for a, b, s in spans[loc] if a <= day < b]
+        assert len(hit) == 1, (loc, day, hit)
+        return model[hit[0]]
+
+    loc_of_portal = dict(zip(dirx["portal_site"], dirx["biomed_location"]))
+    name_of_portal = dict(zip(dirx["portal_site"], dirx["portal_site"]))
+    code = dict(zip(dirx["portal_site"], dirx["clinic_code"]))
+    pretty = {"OF": "Orrin Falls", "TB": "Thistlebrook", "WM": "Wendmere", "PB": "Pellsbury", "QH": "Quarry Hill",
+              "RW": "Rookwood", "SC": "Sallow Creek", "VD": "Veldane", "BF": "Brackenfield", "YB": "Yarrowby",
+              "KN": "Kestle Road", "HM": "Hollinmoor"}
+
+    # validation sensitivity by camera model
+    lv = {"moderate NPDR", "severe NPDR", "PDR"}
+    val["ref"] = val["final_level"].isin(lv) | (val["final_dme"] == "Y")
+    val["day"] = pd.to_datetime(val["capture_date"], format="%m/%d/%Y").dt.date
+    val["cam"] = [cam(loc_of_portal[sites[s]], d) for s, d in zip(val["site"], val["day"])]
+    val["score"] = pd.to_numeric(val["dr_score"])
+    sens = {}
+    for m in ("NR-40", "NR-70"):
+        rr = val[(val["cam"] == m) & val["ref"]]
+        sens[m] = {nm: float(((rr["ai_result"] == "Ungradable") | (rr["score"] >= c)).mean()) for nm, c in ops}
+        say(all(half_up(100 * sens[m][nm], 1) == fig["validation_by_model_pct"][m][nm] for nm, _ in ops),
+            "validation sensitivity by model %s" % m, str({k: round(100 * v, 2) for k, v in sens[m].items()}))
+
+    # the year's screenings on their cameras, each clinic's point, the referrals
+    res["t"] = pd.to_datetime(res["Captured (UTC)"], utc=True).dt.tz_convert(LA)
+    res["day"] = res["t"].dt.date
+    res["cam"] = [cam(loc_of_portal[s], d) for s, d in zip(res["Site"], res["day"])]
+    res["score"] = pd.to_numeric(res["DR Score"])
+    picks, per = {}, {}
+    for site, g in res.groupby("Site"):
+        sh40 = float((g["cam"] == "NR-40").mean())
+        cells = {nm: sh40 * sens["NR-40"][nm] + (1 - sh40) * sens["NR-70"][nm] for nm, _ in ops}
+        pk = next((nm for nm, _ in ops if cells[nm] >= floor), None)
+        cut = dict(ops)[pk]
+        k = pretty[code[site]]
+        picks[k] = pk
+        per[k] = int(((g["Result"] == "Ungradable") | (g["score"] >= cut)).sum())
+        say(half_up(100 * sh40) == fig["nr40_share_pct"][k], "NR-40 share %s" % k, "%.2f" % (100 * sh40))
+    say(picks == fig["points"], "2027 point at every clinic", str(picks))
+    say(per == fig["referrals_by_clinic"], "referrals by clinic", str(per))
+    say(sum(per.values()) == fig["referrals_total"] and sum(per.values()) <= cap, "network referrals within capacity",
+        "%d of %d" % (sum(per.values()), cap))
+
+    # reading center reads of the AI's referrals
+    kind = dict(zip(orders["ORDER_ID"], orders["PROC_CODE"]))
+    dept = dict(zip(orders["ORDER_ID"], orders["DEPARTMENT"]))
+    ehr_code = dict(zip(dirx["ehr_department"], dirx["clinic_code"]))
+    log["n"] = log["Case No"].astype(int)
+    ai = log[log["Referral Order"].map(kind) == "REF7734"].sort_values("n")
+    read, conf, days = {}, {}, {}
+    qname = lambda d: ("Oct-Dec 2025" if d < dt.date(2026, 1, 1) else "Jan-Mar 2026" if d < dt.date(2026, 4, 1)
+                       else "Apr-Jun 2026" if d < dt.date(2026, 7, 1) else "Jul-Sep 2026")
+    for oid, g in ai.groupby("Referral Order"):
+        k = pretty[ehr_code[dept[oid]]]
+        closing = g[g["Final Grade"].isin(["Referable", "Not referable"])]
+        read[k] = read.get(k, 0) + 1
+        conf[k] = conf.get(k, 0) + int(len(closing) > 0 and closing.iloc[-1]["Final Grade"] == "Referable")
+        if len(closing):
+            d0 = dt.datetime.strptime(g.iloc[0]["Image Date"], "%m/%d/%Y").date()
+            d1 = pd.Timestamp(closing.iloc[-1]["Graded (UTC)"]).tz_convert(LA).date()
+            days.setdefault(qname(d0), []).append((d1 - d0).days)
+    say(read == fig["reads_by_clinic"], "AI referrals read by clinic", "")
+    say({k: half_up(100 * conf[k] / read[k]) for k in read} == fig["confirmed_pct_by_clinic"],
+        "share confirmed referable by clinic", "")
+    say({q: half_up(sum(v) / len(v), 1) for q, v in days.items()} == fig["days_by_quarter"], "days by quarter",
+        str({q: round(sum(v) / len(v), 3) for q, v in days.items()}))
+
+    # camera faults
+    cams = tick[tick["Equipment Class"].str.startswith("Retinal camera")]
+    loc_code = dict(zip(dirx["biomed_location"], dirx["clinic_code"]))
+    cap_days = {}
+    for s, d in zip(res["Site"], res["day"]):
+        cap_days.setdefault(code[s], set()).add(d)
+    moves_in = {}
+    for r in book["Location History"][1:]:
+        if str(r[1]).replace("HO-", "") in model:
+            moves_in.setdefault(r[4], []).append(serial_date(r[2]))
+    dt_out = {}
+    for _, t in cams.iterrows():
+        opened = dt.datetime.strptime(t["Opened"], "%m/%d/%Y").date()
+        if not (dt.date(2025, 10, 1) <= opened <= dt.date(2026, 9, 30)):
+            continue
+        c = loc_code[t["Location"]]
+        back = min(d for d in moves_in[t["Location"]] if d > opened)
+        n_days = sum(1 for i in range(1, (back - opened).days) if (opened + dt.timedelta(days=i)).weekday() < 5
+                     and (opened + dt.timedelta(days=i)) not in cap_days[c])
+        dt_out["%s, fault reported %s" % (pretty[c], opened.isoformat())] = n_days
+    say(dt_out == fig["downtime"], "camera faults: clinic days with no screening", str(dt_out))
+
+    print("verify: %s (%d mismatches)" % ("PASS" if not FAIL else "FAIL", len(FAIL)))
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":
-    t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")
-    sys.exit(0 if run(t, None) else 1)
+    sys.exit(main())

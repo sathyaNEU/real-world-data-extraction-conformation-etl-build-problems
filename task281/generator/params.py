@@ -1,99 +1,86 @@
-"""Constants for task281: Tallisford Power & Light's 2027 group driver replacement program.
-
-The world: an investor-owned electric utility in north-central Ohio owns its company streetlights in eight towns and
-converted them from high-pressure sodium to LED cobra-heads in ten phases (January 2021 to September 2025) under one
-installation contract, all luminaires from one maker in one catalog family. The maker built each delivery lot with
-drivers from one of two driver makers. The record closes on 31 December 2026; the program is decided in January 2027."""
+"""Fixed parameters of the Corrowan Valley Community Health world (task281, architecture 3)."""
 import datetime as dt
 
-SEED = 2895
-RECORD_END = dt.date(2026, 12, 31)       # the last day the work-management record covers
-AS_OF = dt.date(2027, 1, 1)              # the program's population date
-HORIZON_Y = 12.0                         # the twelfth anniversary of installation
-TRIGGER = 0.45                           # a phase enters when the expected share exceeds 45 per cent
-YEAR_D = 365.25
-CUTOVER = dt.date(2023, 7, 1)            # the work-management system cutover (legacy to June 2023)
-ASSEMBLED = dt.datetime(2027, 1, 14, 16, 20)
+SEED = 5327
+ASSEMBLED = dt.datetime(2026, 11, 16, 16, 40, 0)        # every file's mtime, the in-fiction export date
+ASOF = dt.date(2026, 11, 16)
 
-UTILITY = "Tallisford Power & Light"
-UTIL_SHORT = "TP&L"
-MAKER = "Halberd Lighting Company"
-INSTALLER = "Brayle Electric, Inc."
-# driver makers: A wears out (the lifetime the fleet shows), B does not within any horizon here
-DRV = {"A": "Vantrel Power Systems", "B": "Corvane Electronics"}
-# each maker supplies one programmable driver, set at the factory to the luminaire's output
-DRV_PART = {"A": "VT-PD150", "B": "CV-P150"}
-DRV_REV = {"A": "B3", "B": "03"}
-CATALOG = {40: "HRX-2-40W-40K", 70: "HRX-3-70W-40K", 110: "HRX-4-110W-40K"}
+ORG = "Corrowan Valley Community Health"
+ORG_SHORT = "CVCH"
+STATE = "Oregon"
+VENDOR = "Kelvory Health Systems"
+PRODUCT = "Kelvory RetinaCheck"
+READING_CENTER = "Pellam Eye Reading Center"
+CAMERA_MAKER = "Halvard Optics"
 
-# truth: source-A drivers wear out on a two-parameter Weibull in years of service; source-B drivers fail at a low
-# constant rate (component defects); every luminaire also leaves service on knockdowns, warranty luminaire swaps
-# and pole removals, and has outages that need no driver (photocontrols, wiring faults, blown fuses)
-K_A, LAM_A = 3.2, 10.04
-RATE_B = 0.0002                          # per year
-EXIT = {"knockdown": 0.0060, "luminaire": 0.0018, "pole_removed": 0.0012}
-OTHER = {"photocontrol": 0.030, "wiring": 0.011, "fuse": 0.009}
-OTHER_HPS = {"lamp": 0.15, "ballast": 0.02, "photocontrol": 0.030, "wiring": 0.011, "fuse": 0.009}
-REPROG_2026 = 0.040                      # share of 110 W luminaires reprogrammed to 70 W in 2026 (glare complaints)
-REPROG_2025 = 0.008
-SHIELD_RATE = 0.012                      # glare complaints answered with a house-side shield instead
-UG_SHARE = 0.30                          # share of streets fed by underground circuits
-UG_FAULT_RATE = 0.10                     # cable faults per circuit-year
+# the reference year the governance standard files, and the validation window
+REF_START = dt.date(2025, 10, 1)
+REF_END = dt.date(2026, 9, 30)
+VAL_START = dt.date(2025, 1, 13)
+VAL_END = dt.date(2025, 6, 27)
 
-# towns: code, name, NLC-dimmed (networked controls dim 00:00 to 05:00)
-TOWNS = [("AMB", "Ambrosine", False), ("CRV", "Corrinvale", True), ("DLW", "Dalwinter", False),
-         ("FLM", "Fallowmere", False), ("GRH", "Garrick Hollow", False), ("HLB", "Halverne Bend", False),
-         ("KST", "Kesterbrook", False), ("LKH", "Larkhaven", False)]
-TOWN_CODES = [t[0] for t in TOWNS]
-TOWN_NAME = {t[0]: t[1] for t in TOWNS}
-TOWN_NLC = {t[0]: t[2] for t in TOWNS}
+# the vendor's operating points: a screen refers when its DR score is at or above the cutoff, or it is ungradable
+OPS = [("Standard", 50), ("Enhanced", 42), ("High", 34), ("Maximum", 26)]
+FLOOR = 0.85                 # governance standard: sensitivity at least 85 per cent at the clinic
+OVERREAD_CAPACITY = 7200     # reading center agreement: overreads a contract year
 
-# phases: code, first install, last install, luminaires, source-A share, towns (weights)
-PHASES = [
-    ("P1", "2021-01-11", "2021-06-25", 4320, 0.70, {"CRV": .55, "AMB": .45}),
-    ("P2", "2021-06-28", "2021-12-10", 3921, 0.42, {"DLW": .60, "AMB": .40}),
-    ("P3", "2022-01-10", "2022-06-24", 5139, 0.82, {"FLM": .50, "CRV": .30, "GRH": .20}),
-    ("P4", "2022-06-27", "2022-12-09", 4465, 0.44, {"GRH": .55, "HLB": .45}),
-    ("P5", "2023-01-09", "2023-06-23", 4025, 0.68, {"KST": .70, "DLW": .30}),
-    ("P6", "2023-06-26", "2023-12-08", 5540, 0.16, {"LKH": .60, "HLB": .40}),
-    ("P7", "2024-01-08", "2024-06-21", 4264, 0.76, {"FLM": .45, "KST": .55}),
-    ("P8", "2024-06-24", "2024-12-06", 3674, 0.18, {"AMB": .35, "LKH": .65}),
-    ("P9", "2025-01-13", "2025-06-20", 4918, 0.72, {"GRH": .40, "CRV": .30, "DLW": .30}),
-    ("P10", "2025-06-23", "2025-09-26", 3420, 0.14, {"HLB": .50, "KST": .50}),
+# the AI's latent score model (score = 100 * logistic(latent))
+MU_REF = {"NR-70": 1.47, "NR-40": 0.60}      # referable eyes, by camera model
+MU_REF_AGE75 = -0.22                         # older referable patients score a little lower on both models
+MU_NON = -1.40                               # non-referable
+UNGRADABLE = {"NR-70": 0.036, "NR-40": 0.038}
+SD_LAT = 1.0
+
+# twelve clinics: code, EHR department, portal site, biomed location, annual screens, referable prevalence
+CLINICS = [
+    # code   EHR department name                 portal site name           biomed location   screens prev
+    ("OF", "CVCH ORRIN FALLS FAMILY MED", "Orrin Falls Health Center", "LOC-112 Orrin Falls", 2610, 0.108),
+    ("TB", "CVCH THISTLEBROOK CLINIC", "Thistlebrook", "LOC-118 Thistlebrook", 2190, 0.121),
+    ("WM", "CVCH WENDMERE PRIMARY CARE", "Wendmere Primary Care", "LOC-121 Wendmere", 2440, 0.097),
+    ("PB", "CVCH PELLSBURY HEALTH CTR", "Pellsbury Health Center", "LOC-104 Pellsbury", 2075, 0.114),
+    ("QH", "CVCH QUARRY HILL MED GROUP", "Quarry Hill", "LOC-109 Quarry Hill", 2330, 0.103),
+    ("RW", "CVCH ROOKWOOD FAMILY HEALTH", "Rookwood Family Health", "LOC-115 Rookwood", 1985, 0.126),
+    ("SC", "CVCH SALLOW CREEK CLINIC", "Sallow Creek Clinic", "LOC-102 Sallow Creek", 2260, 0.111),
+    ("VD", "CVCH VELDANE COMMUNITY CLINIC", "Veldane", "LOC-123 Veldane", 2390, 0.099),
+    ("BF", "CVCH BRACKENFIELD HEALTH CTR", "Brackenfield Health Ctr", "LOC-107 Brackenfield", 2155, 0.118),
+    ("YB", "CVCH YARROWBY MEDICAL", "Yarrowby Medical", "LOC-126 Yarrowby", 2480, 0.106),
+    ("KN", "CVCH KESTLE ROAD FAMILY MED", "Kestle Road", "LOC-111 Kestle Road", 2035, 0.123),
+    ("HM", "CVCH HOLLINMOOR CLINIC", "Hollinmoor Clinic", "LOC-129 Hollinmoor", 2365, 0.101),
 ]
-PHASE_CODES = [p[0] for p in PHASES]
-LOT_SIZE = (260, 380)
-WATT_MIX = {40: 0.52, 70: 0.33, 110: 0.15}
-HPS_FOR = {40: [(70, .55), (100, .45)], 70: [(100, .40), (150, .60)], 110: [(150, .35), (250, .65)]}
+PILOTS = {"A": "WM", "B": "QH", "C": "YB"}      # the validation study's site labels
+PELLAM_SITE = {"OF": "CVCH/ORRIN FALLS", "TB": "CVCH/THISTLEBROOK", "WM": "CVCH/WENDMERE", "PB": "CVCH/PELLSBURY",
+               "QH": "CVCH/QUARRY HILL", "RW": "CVCH/ROOKWOOD", "SC": "CVCH/SALLOW CRK", "VD": "CVCH/VELDANE",
+               "BF": "CVCH/BRACKENFIELD", "YB": "CVCH/YARROWBY", "KN": "CVCH/KESTLE RD", "HM": "CVCH/HOLLINMOOR"}
+REGISTRY_EXTRA = {"OF": 0.12, "TB": 0.31, "WM": 0.05, "PB": 0.22, "QH": 0.09, "RW": 0.27, "SC": 0.17, "VD": 0.36,
+                  "BF": 0.02, "YB": 0.14, "KN": 0.25, "HM": 0.07}
+OUTSIDE_RATE = {"OF": 0.27, "TB": 0.16, "WM": 0.221, "PB": 0.11, "QH": 0.244, "RW": 0.095, "SC": 0.19, "VD": 0.15,
+                "BF": 0.29, "YB": 0.212, "KN": 0.182, "HM": 0.23}
+VISIT_SHARE = 0.06           # screenings of patients whose home clinic is another one
+MANUAL_SHARE = 0.032         # teleretinal photo sessions for patients excluded from AI screening, per AI screen
+NOT_READ = 0.04              # AI referrals the reading center never received (referral cancelled)
 
-# tariff (Schedule SL): input watts per fixture and the dusk-to-dawn burning hours by month
-INPUT_W = {("HPS", 70): 95, ("HPS", 100): 128, ("HPS", 150): 188, ("HPS", 250): 297,
-           ("LED", 40): 41, ("LED", 70): 72, ("LED", 110): 113}
-BURN_H = [443, 374, 360, 315, 285, 262, 274, 304, 331, 375, 404, 436]   # January to December, 4,163 a year
-DIM_LEVEL = 0.50                          # NLC luminaires burn at half input from 00:00 to 05:00
-DIM_H_PER_NIGHT = 5.0
-
-# the tariff's repair standard: an outage repaired within three days of its first report
-REPAIR_STD_H = 72
-
-PEOPLE = {"asset_engineer": "Andrew King", "wms_admin": "Shawn Hoover", "purchasing": "Sabrina Mccarthy",
-          "installer_pm": "Ebony Rivera"}
+PEOPLE = {
+    "quality": "Natalie Mckinney",       # Director of Quality and Clinical AI
+    "biomed": "Noah Odonnell",           # Biomedical Engineering Manager
+    "grader": "Christy Francis",         # lead certified retinal grader, validation study
+}
 
 FILES = {
-    "note": "tpl_streetlight_lifecycle_model_note.pdf",
-    "register": "streetlight_register_2026-12-31.csv",
-    "install": "brayle_install_logs_2021-2025.xlsx",
-    "coc": "halberd_certificates_of_conformance_2020-2025.pdf",
-    "wo_legacy": "wms_legacy_work_orders_2021-01_2023-06.csv",
-    "wo_new": "work_orders_2023-07_2026-12.csv",
-    "reports": "customer_outage_reports_2026.csv",
-    "tariff": "schedule_sl_street_lighting_tariff_2026.pdf",
-    "nlc": "corrinvale_nlc_dimming_profiles_2026.csv",
-    "billing": "sl_billing_lines_dec2026.csv",
-    "weather": "tpl_ops_center_daily_temperature_2021-2026.csv",
-    "vegetation": "vegetation_clearance_patrols_2025-2026.csv",
+    "results": "retina_ai_results_2025-10_2026-09.csv",
+    "validation": "local_validation_study_2025.csv",
+    "protocol": "validation_study_protocol_2025.pdf",
+    "assets": "biomed_asset_register_2026-09-30.xlsx",
+    "standard": "clinical_ai_governance_standard_v3.pdf",
+    "opspec": "retinacheck_operating_points.pdf",
+    "siteconfig": "retinacheck_site_configuration_2026-10-01.json",
+    "agreement": "pellam_reading_agreement_2027.pdf",
+    "orders": "ehr_retinal_screening_orders_2025-26.csv",
+    "directory": "clinic_directory.csv",
+    "reads": "pellam_overread_log_2025-26.csv",
+    "registry": "diabetes_registry_2026-09-30.csv",
+    "outside": "him_outside_eye_reports_2025-26.csv",
+    "tickets": "biomed_service_tickets_2025-26.csv",
+    "dashboard": "retinacheck_site_dashboard_2026q3.xlsx",
+    "survey": "eye_screening_patient_survey_2026.csv",
 }
-DISTRACTORS = ["billing", "weather", "vegetation"]
-GOLDEN_XLSX = "2027_group_driver_replacement.xlsx"
-GOLDEN_PNG = "driver_failure_projection_by_phase.png"
-DELIVERABLES = [GOLDEN_XLSX, GOLDEN_PNG]
+DISTRACTORS = ["dashboard", "survey", "outside"]

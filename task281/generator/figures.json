@@ -1,249 +1,274 @@
 {
- "call": {
-  "default_luminaires": 40967,
-  "program_luminaires": 20922,
-  "sentence": "Put conversion phases P1, P3, P5, P7 and P9 into the 2027 group driver replacement program, 20,922 luminaires re-driven.",
-  "set": [
-   "P1",
-   "P3",
-   "P5",
-   "P7",
-   "P9"
-  ]
+ "capacity": 7200,
+ "confirmed_pct_by_clinic": {
+  "Brackenfield": 49,
+  "Hollinmoor": 43,
+  "Kestle Road": 47,
+  "Orrin Falls": 53,
+  "Pellsbury": 48,
+  "Quarry Hill": 47,
+  "Rookwood": 49,
+  "Sallow Creek": 48,
+  "Thistlebrook": 56,
+  "Veldane": 48,
+  "Wendmere": 48,
+  "Yarrowby": 55
  },
- "constants": {
-  "clauses_cited": [
-   "2.1",
-   "2.2",
-   "2.4",
-   "3.1",
-   "3.2",
-   "4.2"
-  ],
-  "horizon_years": 12,
-  "repair_standard_hours": 72,
-  "reprogrammed_watts": 70,
-  "share_unit_pct": 5,
-  "trigger_pct": 45
+ "days_by_quarter": {
+  "Apr-Jun 2026": 6.4,
+  "Jan-Mar 2026": 6.2,
+  "Jul-Sep 2026": 6.3,
+  "Oct-Dec 2025": 6.3
  },
- "fits": {
-  "Corvane Electronics": {
-   "F12": 0.004395,
-   "drivers": 21040,
-   "failures": 16,
-   "life": 604.8225,
-   "life1": 604.8,
-   "shape": 1.384,
-   "shape1": 1.4
+ "downtime": {
+  "Kestle Road, fault reported 2026-01-28": 7,
+  "Orrin Falls, fault reported 2026-02-10": 3,
+  "Pellsbury, fault reported 2026-06-03": 7,
+  "Sallow Creek, fault reported 2026-03-30": 4,
+  "Veldane, fault reported 2026-03-05": 6,
+  "Yarrowby, fault reported 2026-05-01": 5
+ },
+ "floor_pct": 85,
+ "grid_pct": {
+  "Brackenfield": {
+   "Enhanced": 82,
+   "High": 90,
+   "Maximum": 96,
+   "Standard": 73
   },
-  "Vantrel Power Systems": {
-   "F12": 0.858678,
-   "drivers": 22646,
-   "failures": 1327,
-   "life": 9.8025,
-   "life1": 9.8,
-   "shape": 3.3187,
-   "shape1": 3.3
+  "Hollinmoor": {
+   "Enhanced": 82,
+   "High": 90,
+   "Maximum": 96,
+   "Standard": 73
+  },
+  "Kestle Road": {
+   "Enhanced": 87,
+   "High": 93,
+   "Maximum": 97,
+   "Standard": 80
+  },
+  "Orrin Falls": {
+   "Enhanced": 96,
+   "High": 98,
+   "Maximum": 99,
+   "Standard": 94
+  },
+  "Pellsbury": {
+   "Enhanced": 96,
+   "High": 98,
+   "Maximum": 99,
+   "Standard": 94
+  },
+  "Quarry Hill": {
+   "Enhanced": 97,
+   "High": 99,
+   "Maximum": 99,
+   "Standard": 96
+  },
+  "Rookwood": {
+   "Enhanced": 82,
+   "High": 90,
+   "Maximum": 96,
+   "Standard": 73
+  },
+  "Sallow Creek": {
+   "Enhanced": 95,
+   "High": 97,
+   "Maximum": 98,
+   "Standard": 92
+  },
+  "Thistlebrook": {
+   "Enhanced": 97,
+   "High": 99,
+   "Maximum": 99,
+   "Standard": 96
+  },
+  "Veldane": {
+   "Enhanced": 89,
+   "High": 94,
+   "Maximum": 97,
+   "Standard": 83
+  },
+  "Wendmere": {
+   "Enhanced": 97,
+   "High": 99,
+   "Maximum": 99,
+   "Standard": 96
+  },
+  "Yarrowby": {
+   "Enhanced": 96,
+   "High": 98,
+   "Maximum": 99,
+   "Standard": 94
   }
  },
- "phases": {
-  "P1": {
-   "at_risk_maker": 2537,
-   "cured_maker": 1087,
-   "designated": true,
-   "failed_to_date": 464,
-   "installed": 4320,
-   "on_original": 3624,
-   "pooled_pct": 68.2,
-   "pooled_share": 0.682316,
-   "share": 0.583721,
-   "share5": 60,
-   "share_pct": 58.4
+ "headroom": 570,
+ "nr40_share_pct": {
+  "Brackenfield": 100,
+  "Hollinmoor": 100,
+  "Kestle Road": 68,
+  "Orrin Falls": 6,
+  "Pellsbury": 8,
+  "Quarry Hill": 0,
+  "Rookwood": 100,
+  "Sallow Creek": 18,
+  "Thistlebrook": 0,
+  "Veldane": 58,
+  "Wendmere": 0,
+  "Yarrowby": 6
+ },
+ "points": {
+  "Brackenfield": "High",
+  "Hollinmoor": "High",
+  "Kestle Road": "Enhanced",
+  "Orrin Falls": "Standard",
+  "Pellsbury": "Standard",
+  "Quarry Hill": "Standard",
+  "Rookwood": "High",
+  "Sallow Creek": "Standard",
+  "Thistlebrook": "Standard",
+  "Veldane": "Enhanced",
+  "Wendmere": "Standard",
+  "Yarrowby": "Standard"
+ },
+ "pooled_pct": {
+  "Enhanced": 93.0,
+  "High": 96.4,
+  "Maximum": 98.1,
+  "Standard": 89.4
+ },
+ "reads_by_clinic": {
+  "Brackenfield": 423,
+  "Hollinmoor": 420,
+  "Kestle Road": 392,
+  "Orrin Falls": 523,
+  "Pellsbury": 395,
+  "Quarry Hill": 471,
+  "Rookwood": 366,
+  "Sallow Creek": 423,
+  "Thistlebrook": 436,
+  "Veldane": 411,
+  "Wendmere": 483,
+  "Yarrowby": 462
+ },
+ "referrals_by_clinic": {
+  "Brackenfield": 754,
+  "Hollinmoor": 791,
+  "Kestle Road": 518,
+  "Orrin Falls": 540,
+  "Pellsbury": 410,
+  "Quarry Hill": 488,
+  "Rookwood": 686,
+  "Sallow Creek": 447,
+  "Thistlebrook": 451,
+  "Veldane": 578,
+  "Wendmere": 496,
+  "Yarrowby": 471
+ },
+ "referrals_enhanced_everywhere": 6989,
+ "referrals_high_everywhere": 9204,
+ "referrals_total": 6630,
+ "rung_picks": {
+  "casemix": {
+   "Brackenfield": "Standard",
+   "Hollinmoor": "Standard",
+   "Kestle Road": "Standard",
+   "Orrin Falls": "Standard",
+   "Pellsbury": "Standard",
+   "Quarry Hill": "Standard",
+   "Rookwood": "Standard",
+   "Sallow Creek": "Standard",
+   "Thistlebrook": "Standard",
+   "Veldane": "Standard",
+   "Wendmere": "Standard",
+   "Yarrowby": "Standard"
   },
-  "P10": {
-   "at_risk_maker": 544,
-   "cured_maker": 2831,
-   "designated": false,
-   "failed_to_date": 1,
-   "installed": 3420,
-   "on_original": 3375,
-   "pooled_pct": 71.3,
-   "pooled_share": 0.713119,
-   "share": 0.141874,
-   "share5": 15,
-   "share_pct": 14.2
+  "pooled": {
+   "Brackenfield": "Standard",
+   "Hollinmoor": "Standard",
+   "Kestle Road": "Standard",
+   "Orrin Falls": "Standard",
+   "Pellsbury": "Standard",
+   "Quarry Hill": "Standard",
+   "Rookwood": "Standard",
+   "Sallow Creek": "Standard",
+   "Thistlebrook": "Standard",
+   "Veldane": "Standard",
+   "Wendmere": "Standard",
+   "Yarrowby": "Standard"
   },
-  "P2": {
-   "at_risk_maker": 1278,
-   "cured_maker": 2271,
-   "designated": false,
-   "failed_to_date": 199,
-   "installed": 3921,
-   "on_original": 3549,
-   "pooled_pct": 69.0,
-   "pooled_share": 0.690353,
-   "share": 0.303777,
-   "share5": 30,
-   "share_pct": 30.4
+  "snapshot": {
+   "Brackenfield": "High",
+   "Hollinmoor": "High",
+   "Kestle Road": "High",
+   "Orrin Falls": "Standard",
+   "Pellsbury": "Standard",
+   "Quarry Hill": "Standard",
+   "Rookwood": "High",
+   "Sallow Creek": "Standard",
+   "Thistlebrook": "Standard",
+   "Veldane": "High",
+   "Wendmere": "Standard",
+   "Yarrowby": "Standard"
   },
-  "P3": {
-   "at_risk_maker": 3725,
-   "cured_maker": 848,
-   "designated": true,
-   "failed_to_date": 362,
-   "installed": 5139,
-   "on_original": 4573,
-   "pooled_pct": 69.8,
-   "pooled_share": 0.697537,
-   "share": 0.689211,
-   "share5": 70,
-   "share_pct": 68.9
-  },
-  "P4": {
-   "at_risk_maker": 1746,
-   "cured_maker": 2434,
-   "designated": false,
-   "failed_to_date": 111,
-   "installed": 4465,
-   "on_original": 4180,
-   "pooled_pct": 70.2,
-   "pooled_share": 0.702224,
-   "share": 0.356833,
-   "share5": 35,
-   "share_pct": 35.7
-  },
-  "P5": {
-   "at_risk_maker": 2591,
-   "cured_maker": 1195,
-   "designated": true,
-   "failed_to_date": 106,
-   "installed": 4025,
-   "on_original": 3786,
-   "pooled_pct": 70.6,
-   "pooled_share": 0.706336,
-   "share": 0.584815,
-   "share5": 60,
-   "share_pct": 58.5
-  },
-  "P6": {
-   "at_risk_maker": 1007,
-   "cured_maker": 4341,
-   "designated": false,
-   "failed_to_date": 35,
-   "installed": 5540,
-   "on_original": 5348,
-   "pooled_pct": 70.9,
-   "pooled_share": 0.708877,
-   "share": 0.163871,
-   "share5": 15,
-   "share_pct": 16.4
-  },
-  "P7": {
-   "at_risk_maker": 3122,
-   "cured_maker": 991,
-   "designated": true,
-   "failed_to_date": 45,
-   "installed": 4264,
-   "on_original": 4113,
-   "pooled_pct": 71.1,
-   "pooled_share": 0.710915,
-   "share": 0.651012,
-   "share5": 65,
-   "share_pct": 65.1
-  },
-  "P8": {
-   "at_risk_maker": 576,
-   "cured_maker": 3017,
-   "designated": false,
-   "failed_to_date": 6,
-   "installed": 3674,
-   "on_original": 3593,
-   "pooled_pct": 71.2,
-   "pooled_share": 0.712044,
-   "share": 0.140823,
-   "share5": 15,
-   "share_pct": 14.1
-  },
-  "P9": {
-   "at_risk_maker": 3422,
-   "cured_maker": 1404,
-   "designated": true,
-   "failed_to_date": 14,
-   "installed": 4918,
-   "on_original": 4826,
-   "pooled_pct": 71.3,
-   "pooled_share": 0.712834,
-   "share": 0.609699,
-   "share5": 60,
-   "share_pct": 61.0
+  "worst_subgroup": {
+   "Brackenfield": "Enhanced",
+   "Hollinmoor": "Enhanced",
+   "Kestle Road": "Enhanced",
+   "Orrin Falls": "Enhanced",
+   "Pellsbury": "Enhanced",
+   "Quarry Hill": "Enhanced",
+   "Rookwood": "Enhanced",
+   "Sallow Creek": "Enhanced",
+   "Thistlebrook": "Enhanced",
+   "Veldane": "Enhanced",
+   "Wendmere": "Enhanced",
+   "Yarrowby": "Enhanced"
   }
  },
- "pooled": {
-  "expected_cured_failures": 554.5,
-  "expected_floor": 500,
-  "life": 11.2383,
-  "set": [
-   "P1",
-   "P2",
-   "P3",
-   "P4",
-   "P5",
-   "P6",
-   "P7",
-   "P8",
-   "P9",
-   "P10"
-  ],
-  "shape": 3.397
+ "rung_referrals": {
+  "casemix": 5411,
+  "pooled": 5411,
+  "snapshot": 6992,
+  "worst_subgroup": 6989
  },
- "towns": {
-  "Ambrosine": {
-   "energy": 1824,
-   "energy_mwh": 1823.949,
-   "late": 186,
-   "repaired": 473
+ "sensitivity_at_point_pct": {
+  "Brackenfield": 90,
+  "Hollinmoor": 90,
+  "Kestle Road": 87,
+  "Orrin Falls": 94,
+  "Pellsbury": 94,
+  "Quarry Hill": 96,
+  "Rookwood": 90,
+  "Sallow Creek": 92,
+  "Thistlebrook": 96,
+  "Veldane": 89,
+  "Wendmere": 96,
+  "Yarrowby": 94
+ },
+ "validation_by_model_pct": {
+  "NR-40": {
+   "Enhanced": 82.2,
+   "High": 90.1,
+   "Maximum": 96.0,
+   "Standard": 73.3
   },
-  "Corrinvale": {
-   "energy": 2263,
-   "energy_mwh": 2263.086,
-   "late": 187,
-   "repaired": 528
+  "NR-70": {
+   "Enhanced": 97.3,
+   "High": 98.8,
+   "Maximum": 98.8,
+   "Standard": 95.7
+  }
+ },
+ "validation_counts": {
+  "NR-40": {
+   "referable": 101,
+   "screened": 1018
   },
-  "Dalwinter": {
-   "energy": 1942,
-   "energy_mwh": 1942.073,
-   "late": 156,
-   "repaired": 414
-  },
-  "Fallowmere": {
-   "energy": 1684,
-   "energy_mwh": 1683.935,
-   "late": 153,
-   "repaired": 443
-  },
-  "Garrick Hollow": {
-   "energy": 1888,
-   "energy_mwh": 1887.82,
-   "late": 149,
-   "repaired": 429
-  },
-  "Halverne Bend": {
-   "energy": 2188,
-   "energy_mwh": 2187.896,
-   "late": 161,
-   "repaired": 441
-  },
-  "Kesterbrook": {
-   "energy": 2558,
-   "energy_mwh": 2557.855,
-   "late": 193,
-   "repaired": 479
-  },
-  "Larkhaven": {
-   "energy": 2304,
-   "energy_mwh": 2304.048,
-   "late": 133,
-   "repaired": 380
+  "NR-70": {
+   "referable": 258,
+   "screened": 2393
   }
  }
 }
