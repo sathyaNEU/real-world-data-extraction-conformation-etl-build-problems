@@ -1,48 +1,98 @@
-# Determinism verdict, task125 (pass 2)
+# determinism-check report, task125 (architecture 4, pass 2), 2027-01-06 extract, run 2026-11-01
 
-- **Verdict:** DETERMINISTIC (SOLUTION_WRONG, minor: three cells of patrol_figures_2026.csv do not reproduce, see Evidence).
-- **Disposition:** FIX_NOW. The 20-segment designation, the come-in and drop-out lists and the chart are forced. Re-derive the three Q1 hour cells (or find the unstated rule behind them) and correct the solution blocks. No model rerun is needed if the blocks only change to the literal figures. If the generator rule behind the three cells is a real convention, it must be filed in the pack instead.
-- **Why:** Read literally, the protocol designates the 20 segments with the highest expected 2027 patrol crimes. Over 2022-2026 the five Lakeshore segments and the five Gardens segments carry large, venue-specific event-night excesses. The register shows the Mariners' last Gardens game on 20 Dec 2026 and 16 Lakeshore home games booked from 8 Jan 2027. The cut falls in a 23-crime gap (57.1 against 34.1), so the 20 are forced for every reasonable event-night estimate I tried.
+Re-judge after the pass 1 FIX_NOW repair. target.zip sha256 d5c73e26832037af09d43e4a69c997433a118b7231d4ffad9841d57eba7f3ef9. One isolated sonnet thread (medium) on a fresh unzip at /tmp/determinism-check-task125-pass2/target/; its verdict is /tmp/determinism-check-task125-pass2/verdict.md. The thread saw neither pass 1's report nor the repair's description.
 
-## Evidence (recomputed from the shipped files)
+## Verdict
+DETERMINISTIC, with SOLUTION_WRONG (minor): three cells of patrol_figures_2026.csv do not reproduce.
+**Disposition (thread):** FIX_NOW.
+**Disposition (reconciled):** FIX_NOW. Gates G and H both pass, so there is no SEND_BACK. The gate that fails is Gate A (every figure recomputes from the shipped files), which fails as `solution_incorrect` and is fixable. The fault is neither G nor H.
+**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Gate H line (thread):** domain: pass | layers: pass (Layer 1: legacy codes and dates, record versions, unfounded, two register layouts, UTC against local time. Layer 2: event-night-adjusted expected counts for 2027) | decisive_step: analytical
 
-| Item | Result |
-|---|---|
-| Conformed patrol crimes | Latest version per occurrence (59,388 occurrences), legacy codes read through the crosswalk, legacy day-first dates parsed, UNFOUNDED out, occurred_from or the report date. 29,756 patrol crimes; 5,859 to 5,981 per year over 2022-2026. All have a segment_id that is in the segment file. |
-| Candidates (at least 25 in some year) | 52. Reproduced. |
-| 2026 ranking | Top 20 ends at 162877 (48), and 109465 follows at 38. The 2026 top 20 holds 145175, 162095, 162877, 168732 and 171145, which the golden drops. Reproduced. |
-| Event nights, 2022-2026 | Gardens 200 distinct dates, Lakeshore 61, no overlap. Counts are the same whether or not cancelled lines are excluded. Reproduced. |
-| 2027 register sheet | 16 Mariners dates at Lakeshore, Jan to Mar. 2027 Lakeshore dates total 32 and Gardens dates 2. The Mariners play Jan-Mar and Oct-Dec (2026: 35 Gardens dates). Reproduced. |
-| Critical component 2 | Five Gardens segments: 801 of 1345 crimes on 200 nights (11.0%). Reproduced. |
-| Critical component 3 | Five Lakeshore segments: 410 of 822 on 61 nights. Reproduced. |
-| Critical component 4 | 112148 has 116 of 354 on Gardens nights. Its fit gives a steady rate of 0.15 a day and a modest Gardens excess of 0.43; its expected 2027 count is 57.3 and it stays in. |
-| Fit | Per-segment least squares on a constant and the two venue-night indicators, expected 2027 = 365 x steady rate + excess x nights. With 48 Lakeshore and 6 Gardens nights I get exactly the golden 20. Rank 20 is 185090 (57.13) and rank 21 is 186587 (34.08). |
-| Robustness of the 20 | Identical set for 32/2 (2027 sheet only), 20/0, 30/0, 29/0, 61/0, 60/10, 48/6, fits from 2024, 2025 or 2026 only, and crimes from 14:00 to 03:00 only. Different only under wrong readings: 13 Lakeshore and 41 Gardens (no venue move) gives the 2026-style set. 0/0 and Mariners removed from Gardens but not added to Lakeshore (13/6) also differ. |
-| Come-in and drop-out lists | Reproduced: 124511, 158663, 150449, 176470, 109465 in; 162095, 171145, 168732, 145175, 162877 out. |
-| Officer-hours CSV | 29 of 32 cells reproduce after rounding. Method: non-OFFICER calls, received in 2026 local time (America/Toronto), segment_id in the file, ward from the segment, dispatch-to-clear hours times roster crew on the tour covering the dispatch local time (night tour dated by the evening it starts). Ward is the same whether taken from segment or district. |
-| Cells that do not reproduce | Ward 2 Q1: I get 455.5, the golden says 453. Ward 5 Q1: I get 911.8, the golden says 911. Ward 6 Q1: I get 1029.7, the golden says 1028. All other cells match. I could not find a rule explaining the gap: it is not DST handling, cancelled dispositions, duplicates, the UTC quarter, a fixed UTC offset, or a missing roster tour. |
+## Why
+Read literally, the protocol designates the 20 segments with the highest expected 2027 patrol crimes. The thread reproduced the main call and every deck answer:
+- The 20 designated segments reproduce.
+- The five segments that come in and the five that drop out reproduce.
+- The chart's 52 candidates reproduce.
+- Critical components 2, 3 and 4 reproduce.
 
-## Literal-reading forks
-- "Expected" is not defined as a method. The naive 2026 count or five-year average reads as a defensible literal "expected" to a careless reader, but it ignores the 2027 register, which is in the pack and is what the protocol's "expected in the year the designation covers" calls for. Both are listed in the design as the wrong easy route.
-- The 2027 event-night count is not fixed. The result is invariant across the whole defensible range, so no fork.
-- Whether hours are quarter-bounded by local or UTC receipt is closed by the directive ("local date on which it was received").
+The cut falls in a 23-crime gap (57.13 for 185090 against 34.08 for 186587). The same 20 come out under 48/6, 32/2, 20/0, 30/0, 29/0, 61/0 and 60/10 Lakeshore/Gardens nights, under fits from 2024, 2025 or 2026 only, and under crimes from 14:00 to 03:00 only. The wrong readings differ: 13/41 (no venue move), 0/0, and 13/6 (Gardens removed, Lakeshore not added).
 
-## Files/Hygiene: PASS
-11 files, 4 formats (6 CSV, 2 PDF, 1 XLSX with six sheets, 1 EML). One file is 82k rows (the RMS) and one 37.9k rows (the CAD). The register carries two different layouts across years and mixed date formats (day-first text and ISO). The RMS carries legacy codes, day-first legacy dates and multiple versions. Distractors: streetlight_service_requests_2026.csv and ward_profiles_2021_census.csv, both unused. Temporal coherence holds (protocol approved 10 Nov 2026, email 6 Jan 2027, extract to 6 Jan 2027, 2027 sheet booked). No authoring or provenance leakage and no public-data contamination seen. The email names the files but not the venue effect.
+The only failure is the officer-hours ask: 29 of 32 cells reproduce and three Q1 cells do not.
+
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Candidate segments | 52 | 52 | yes |
+| 2026 top-20 (default path) | drops 162095, 171145, 168732, 145175, 162877 | same | yes |
+| Gardens event nights, 2022-26 | 200 | 200 | yes |
+| Lakeshore event nights, 2022-26 | 61 | 61 | yes |
+| Gardens five | 801 of 1345 (11 per cent of nights) | same | yes |
+| Lakeshore five | 410 of 822 | same | yes |
+| 112148 stays | in | 116 of 354 on Gardens nights; steady 0.15 a day; expected 57.3; stays in | yes |
+| 2027 register | 16 Mariners home games at Lakeshore from 8 Jan 2027; 32 Lakeshore and 2 Gardens dates | same | yes |
+| Rank 20 / rank 21 | 185090 / 186587 | 57.13 / 34.08 | yes |
+| Officer-hours, 29 cells | as filed | match after rounding | yes |
+| Officer-hours Ward 2 Q1 | 453 | 455.5 | NO |
+| Officer-hours Ward 5 Q1 | 911 | 911.8 | NO |
+| Officer-hours Ward 6 Q1 | 1028 | 1029.7 | NO |
+
+Method behind the officer-hours recomputation:
+- Calls with source not OFFICER, received in 2026 local time (America/Toronto).
+- Only calls whose segment_id is in the segment file; ward taken from the segment (the same as the district).
+- Each unit's hours run dispatch to clear.
+- Hours are multiplied by the roster crew on the tour covering the dispatch local time, with a night tour dated by the evening it starts.
+
+The thread ruled out DST handling, cancelled dispositions, duplicates, the UTC quarter, a fixed UTC offset and a missing roster tour as the cause. It found no rule that explains the gap. The three misses differ by 2.5, 0.8 and 1.7 hours, all in Q1, the quarter that holds the 8 and 9 March clock change.
+
+## Competing answers that survived
+- Main call: none. "Expected 2027" is not defined as a method, but the result is invariant across the defensible range of 2027 nights and fit windows. The naive 2026 or five-year-average route is the declared wrong route and is not a literal reading, because the register's 2027 sheet contradicts it.
+- Officer-hours Q1, wards 2, 5 and 6: the golden and the thread's literal execution of Directive PO-14 and the roster differ by under 3 hours. Whichever side is wrong, a solver following the filed text may file a different whole number. This is an open fork on three graded cells, not a closed one.
+
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10 or more | 11 | yes |
+| Formats | 3 or more | 4 (CSV, PDF, XLSX, EML) | yes |
+| Large file | 25,000 rows or more | RMS 82,436 rows; CAD 37,874 | yes |
+| Distractors | two or more in metadata.json, none labelled by file name | ward_profiles_2021_census.csv and streetlight_service_requests_2026.csv; the file names do not say "distractor" | yes |
+| Distractor use | unused by the solution but relevant enough to weigh; none answers a graded quantity | the thread found both unused. The ward profiles are the 2021 census, a ward-level context file. The streetlight requests are 2026 service requests. Neither reproduces a graded quantity. | yes |
+| Deliverables | 1 to 3, all in golden | 2 (pptx, csv), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | one ask of 32 ward-quarter cells; "Crimes and hours are whole numbers" is in the prompt | yes (a single ask family, but it is a grid) |
+| Prompt shape and rubric | identifiable shape; 25 or more criteria | shape 01, a ranked list under a cap; 20 designated + 5 in + 5 out + chart + 32 cells gives well over 25 | yes |
+| Reads as real and not LLM generated | no | thread saw no authoring leakage; the golden .pptx and .csv are plain business products | yes |
+
+## Gate G reconciliation
+Thread: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no.
+
+Design note and card:
+- Strategy `composition_mix`, Gate G `method_or_model_selection`, family estimation_fit.
+- `stump_class: analytical`, with the analyst test and domain test filed.
+- The decisive step is splitting each segment's record into its steady rate and venue excess and carrying the excess by the 2027 calendar.
+- The declared distractors (ward profiles, streetlight requests) carry nothing.
+
+The two agree. No distractor is the surface read. The thread's "forecasting" is the same mechanism as the note's composition-mix forecast; the card's objective tag is Anomaly Detection & Diagnostics, so the objective label is a main-thread question and not a determinism finding. The thread read the decisive step as analytical, not as semantics or rule application.
+
+The field's standard hot-spot forecast (last year's count, or the mean) is the default path and lands the wrong set, so the thread is not describing a landable textbook call. No stump-power discount is needed.
+
+## Gate H reconciliation
+The thread's Gate H line matches the note's `## Three rules` (domain test, Layer 1 and 2 split, decisive step analytical). No mismatch.
 
 ## Stump power (Gate F)
-Good. A strong analyst that cleaned everything and ranks on 2026 or the five-year average files the 2026 top 20, wrong on five segments. The register's venue move (Gardens' last Mariners game 20 Dec 2026, Lakeshore bookings from 8 Jan 2027) is in a file the email names. Strong models read every file, so the part likely to stump is carrying the venue-specific excess forward rather than discovering the register. Nothing in the prompt, email or protocol names event nights.
+Good, and consistent with the note.
+- The default path ends on the five Gardens segments in and the five Lakeshore segments out: 5 wrong segments.
+- The venue move is in the register and nothing in the prompt, email or protocol names event nights.
+- The half-aware routes miss (2b, 2c), and the standing family is unanimous.
+- The thread judges that the part likely to stump strong models is carrying the venue excess forward, not finding the register.
+- The ask weight is the 32 ward-quarter cells; the unreproduced Q1 cells do not move Gate F.
 
-## Stumping type (Gate G)
-mechanism: forecasting
-stumping_family: analytical_non_defect
-surface_read_dependency: no
-sole_data_defect: no
-Reported counts are all correct; the difficulty is a forward projection that the correctly-read past does not pin because the nights that carried it move venue. On clean data it still stumps.
+## Findings, ranked
+1. **Gate A, `solution_incorrect`:** three Q1 officer-hours cells (ward 2: 453 vs 455.5; ward 5: 911 vs 911.8; ward 6: 1028 vs 1029.7) do not reproduce under the thread's literal execution of Directive PO-14 and the roster. The design note says "the judge's own pandas method reproduces all 32" and that Q1's ward 2 gap came from a night tour dated by subtracting a day of elapsed time on 9 March. Pass 2 reproduces only 29, so either the golden reckons something the filed text does not state, or the golden is off by a hair. Only Q1 fails, which makes the 8 and 9 March clock change and the night-tour dating the first things to check. The thread excluded plain DST handling, so the main thread should re-derive those cells from the generator's per-call table rather than assume a cause.
+2. No Gate G, H, B, C, D or E finding. The main call, its stump and the deck's answers hold.
 
-## Three rules (Gate H)
-domain: pass | layers: pass (Layer 1: legacy codes and dates, record versions, unfounded, two register layouts, UTC against local time. Layer 2: event-night-adjusted expected counts for 2027) | decisive_step: analytical
-The field's own analysis is a hot-spot forecast of crime by place with a known exposure change. The easy route (rank on 2026 or the five-year average) keeps the five Gardens segments and drops the five Lakeshore ones. Swap test: replace crimes with another measure and the register and event excess no longer mean anything, so the domain is not a backdrop.
+## Next action for the author
+Re-derive the three Q1 officer-hours cells (ward 2, ward 5, ward 6) from the shipped CAD and roster files with the judge's method. Rebuild every Q1 call whose dispatch falls on or near 8 and 9 March, and find which rule yields 453, 911 and 1028. Then do one of two things:
+- Correct the golden CSV and the solution blocks to the literal figures. The main call and the deck do not move.
+- If a real convention explains them, file it in Directive PO-14 so the literal reading reaches them.
 
-## Fix
-solution: correct or re-derive the Q1 cells for wards 2, 5 and 6 of patrol_figures_2026.csv, or pin the rule that produces them in the protocol or directive text if one exists. Everything else is none.
+Keep every cell a quarter hour from its rounding edge. Re-judge once, only if the repair moves anything beyond these three numbers. A repair that changes only the figures needs no new judge pass; run `verify` and `figures_check.py`.
