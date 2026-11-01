@@ -61,3 +61,25 @@ DEF_PT = (0.58, 0.64)    # detection of an unseen item, casual officers endorsed
 CA_T = (0.90, 0.93)      # casual officers at standard
 COMP_T = (0.89, 0.95)    # full-time and part-time officers at standard
 N_CA_D, N_CA_I = 10, 4
+
+# Officers' names, drawn 2026-11-01 with `guard.py names --geo Australia --locale en_AU --seed 186 --n 100`;
+# the card's two personas and architecture 1's three are left out. Assigned to officers through a seeded permutation.
+OFFICER_NAMES = ["Amy Cole", "Tara Gonzalez", "Michael Hayes", "Jennifer Hendrix", "Kim Benitez", "Amanda Stanton",
+                 "Lisa Mccarty", "William Arnold", "Deborah Schroeder", "Travis Castro", "Miranda Dean",
+                 "Cassidy Sullivan", "Kathy Waters", "Eric Meyer", "Benjamin Johnston", "Connie Hutchinson",
+                 "Anthony Hughes", "Paige Wagner", "Tammy Pierce", "Melissa Thomas", "Janet Smith",
+                 "Colleen Brown", "Kevin Hawkins", "Debra Gay", "Diana Meadows", "Olivia Simon", "Daniel Webster",
+                 "Michelle Reeves", "Dustin Carrillo", "Joseph Nguyen", "Roberta Jackson", "Richard Lucas",
+                 "Joshua Pacheco", "Aaron Norris", "Christopher Porter", "Ricardo Farmer", "Betty Bradford",
+                 "Courtney Landry", "James Newman", "Adrian Jordan", "Mary Trevino", "Kimberly Howard",
+                 "Joann Cook", "Gregory Summers", "Jack Rosales", "Carrie Le", "Veronica Garza",
+                 "Kenneth Ferguson", "Stacy Collins", "Jean Peterson", "Chad Hunter", "Kathleen Spears",
+                 "Monica Conway", "Angela Hardy", "Robert Williams", "Karen Lowery", "Charles Wyatt", "David Love",
+                 "Erica Evans", "Kaitlyn Callahan", "Gwendolyn Downs", "Patricia Hamilton", "Jessica Lambert",
+                 "Carmen Guerra", "Alyssa Combs", "Ryan Terrell", "Jared Juarez", "Peggy Bailey", "Samuel Hale",
+                 "Cassandra Patel", "Linda Vaughan", "Nicole Kline", "Susan Davis", "Becky Zavala",
+                 "Sandra Chavez", "Russell Ewing", "Maria Benjamin", "Rebecca Conrad", "Paul Levine",
+                 "Francis Cooper", "Theresa Schmidt", "Abigail Patterson", "Jeffrey Kemp", "Lauren Vincent",
+                 "Troy Little", "Beth Pineda", "Ethan Powers", "Timothy Jimenez", "Margaret Holloway",
+                 "Barbara Austin", "Connor James", "Donald Ingram", "Harry Foster", "Brittany Curry",
+                 "Natasha Lloyd", "Todd Poole"]

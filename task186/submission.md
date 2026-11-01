@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Take Douglas White (SC19116), Tina Anderson (SC46133), Meredith Rogers (SC42948), Leah Rangel (SC17045), Rhonda Perez (SC29369), Thomas Fernandez (SC46312), Emily Bridges (SC16884), Alicia Morrison (SC19645), Matthew Perry (SC43647), Valerie Scott (SC46282) off X-ray duty from 1 January 2027 for remedial training; recertify every other officer holding an X-ray endorsement on 30 November 2026.** Read on the threat objects each officer had not been shown before, their detection performance is below 75 per cent against the 80 per cent standard, and every other endorsed officer's is above 83 per cent. Not only the 3 casual officers whose hit rate over every projection in the year is under 80 per cent: that rate counts projections of objects the officer had already been shown and told were threats, which officers detect 99.5 per cent of the time against 88.5 per cent for objects new to them, so it carries the officers shown the library most over the line.
+**Take Kathy Waters (SC19116), Connie Hutchinson (SC46133), Lauren Vincent (SC42948), Carrie Le (SC17045), Kenneth Ferguson (SC29369), Becky Zavala (SC46312), Eric Meyer (SC16884), Barbara Austin (SC19645), Jared Juarez (SC43647), Richard Lucas (SC46282) off X-ray duty from 1 January 2027 for remedial training; recertify every other officer holding an X-ray endorsement on 30 November 2026.** Read on the threat objects each officer had not been shown before, their detection performance is below 75 per cent against the 80 per cent standard, and every other endorsed officer's is above 83 per cent. Not only the 3 casual officers whose hit rate over every projection in the year is under 80 per cent: that rate counts projections of objects the officer had already been shown and told were threats, which officers detect 99.5 per cent of the time against 88.5 per cent for objects new to them, so it carries the officers shown the library most over the line.
 
 ## 2. Critical Components
 
@@ -29,16 +29,16 @@
 ### recertification_2027.csv
 
 1. Officers coming off X-ray duty from 1 January 2027:
-   - SC19116, Douglas White
-   - SC46133, Tina Anderson
-   - SC42948, Meredith Rogers
-   - SC17045, Leah Rangel
-   - SC29369, Rhonda Perez
-   - SC46312, Thomas Fernandez
-   - SC16884, Emily Bridges
-   - SC19645, Alicia Morrison
-   - SC43647, Matthew Perry
-   - SC46282, Valerie Scott
+   - SC19116, Kathy Waters
+   - SC46133, Connie Hutchinson
+   - SC42948, Lauren Vincent
+   - SC17045, Carrie Le
+   - SC29369, Kenneth Ferguson
+   - SC46312, Becky Zavala
+   - SC16884, Eric Meyer
+   - SC19645, Barbara Austin
+   - SC43647, Jared Juarez
+   - SC46282, Richard Lucas
 2. Every other officer holding an X-ray endorsement on 30 November 2026 is recertified and keeps X-ray duty (81 officers).
 
 ### screening_year_review_2026.pdf

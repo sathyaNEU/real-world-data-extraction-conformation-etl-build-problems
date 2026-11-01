@@ -8,7 +8,6 @@ import os
 from collections import defaultdict
 
 import numpy as np
-from faker import Faker
 from openpyxl import Workbook
 from openpyxl.styles import Font
 
@@ -54,17 +53,9 @@ class Identities:
 
     def __init__(self, world):
         r = np.random.default_rng(P.SEED + 11)
-        fk = Faker("en_AU")
-        fk.seed_instance(P.SEED)
-        self.name = {}
-        used = set()
-        for o in world.off:
-            while True:
-                g, s = fk.first_name(), fk.last_name()
-                if (g, s) not in used:
-                    used.add((g, s))
-                    break
-            self.name[o["idx"]] = (g, s)
+        assert len(P.OFFICER_NAMES) >= len(world.off)
+        perm = np.random.default_rng(P.SEED + 1).permutation(len(P.OFFICER_NAMES))
+        self.name = {o["idx"]: tuple(P.OFFICER_NAMES[perm[k]].split(" ", 1)) for k, o in enumerate(world.off)}
         n = world.n_off
         self.staff = {o["idx"]: "SC%05d" % v for o, v in zip(world.off, r.choice(np.arange(10200, 48900), n, replace=False))}
         self.payroll = {o["idx"]: "%07d" % v for o, v in zip(world.off, r.choice(np.arange(3100000, 3999999), n, replace=False))}

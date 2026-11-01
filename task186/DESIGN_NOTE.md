@@ -56,7 +56,10 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
    with each object changes what a hit means. Against task170 (a failure probability falling with each operator's own
    count of attempts): there the practice is general and forecast forward; here the lift is specific to the item
    shown and the call is a designation now. Against task196 (capture-recapture with a contaminated second channel):
-   no second source, no count of unrecorded events.
+   no second source, no count of unrecorded events. Against task271 (a venue's post-fill move read on fills free of
+   the desk's own later orders): there the actor's continuing trading contaminates the outcome window and the clean
+   subset is found by time; here nothing contaminates a window, the officer's response to an item is lifted by having
+   met that item before, and the subset is found only through the image-to-object link over the whole history.
 8. **Four candidates, written before choosing** (the three set aside are in `## Tried and rejected`):
    (a) TIP recognition of recurring library objects (chosen); (b) an epidemiology surveillance baseline aligned on
    each area's school return; (c) interviewer falsification found through informative back-check non-response;
@@ -64,7 +67,8 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
    prevalence under cascade susceptibility testing.
 9. **People** from `guard.py names --geo Australia --locale en_AU --seed 186`: Teresa Malone (Head of Security
    Screening, approves SCS-04 and keeps the officer register), Keith Keller (screening systems coordinator, keeps the
-   TIP library). Officers' names come from Faker en_AU on the build seed. Invented names: Silverwattle Coast Airport,
+   TIP library). Officers' names come from a second draw at the build (same seed, `--n 100`), frozen in params.py
+   and assigned through a seeded permutation. Invented names: Silverwattle Coast Airport,
    Kestrine Imaging (CT unit maker), the Kestrine CTX-6 unit, the Kestrine 3D TIP library.
 10. **Pack** (twelve files, four formats): the TIP event export, 1 July 2025 to 30 November 2026, UTC (CSV, 74,704
     rows, the spine); the TIP library catalogue (XLSX: objects, images); the CT operator login register (CSV); the
@@ -329,6 +333,16 @@ Pair ceiling: 52.6 ((38 + 7 + 55 x 0.500) and (5 + 7 + 55 x 0.375), averaged)
 Mirror leakage: 37.5 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
 
+## Leak sweep
+
+- `leak.py --asof 2026-12-02`: REVIEW, one line, harmless. Sweep 4 finds four stump-paragraph terms in SCS-04
+  (projection, threat, records, return): "threat image projection system" and "records" in section 7 name the system
+  and what it records, and "return" is the year-end throughput return in section 6; nothing in the standard names
+  repeats, first showings, objects, memory or the library.
+- `guard.py surface`: three pairs promoted on surface similarity alone (0.100 to 0.101, corpus top 1 per cent), task462,
+  task172 and task271, each with a differentiation line on the card; the people screen is WARN only, the officers named
+  in the goldens drawn with `guard.py names`.
+
 ## Architecture 1 record (re-rooted 2026-11-01)
 
 A provincial statistics bureau's fuel price monitor (survey-research-official-statistics / anomaly-detection, Canada):
@@ -465,3 +479,8 @@ Gate F against Gate C one for one. Re-rooted 2026-11-01 at the Batch 3 queue res
 - (2026-11-01, build) An edge-distance assertion on the lane-quarter bag counts: exact counts with one licensed handling
   have no edge to clear; replaced by convergence assertions (every passenger bag inside rostered time, every test hour
   before it).
+- (2026-11-01, build) Officers named from the Faker en_AU stream on the build seed: the surface screen blocked three of the
+  names the goldens print (a first name and two surnames used in recent builds); the officers now take names drawn with
+  `guard.py names`, frozen in params.py.
+- (2026-11-01, build) The drawn names assigned in pool order: all ten officers coming off carried women's first names, a
+  pattern with no cause in the world that a reader would ask about; assignment now runs through a seeded permutation.

@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "10 officers off X-ray duty from 1 January 2027: SC16884, SC17045, SC19116, SC19645, SC29369, SC42948, SC43647, SC46133, SC46282, SC46312; the other 81 endorsed officers recertified",
+  "answer_source": "task186/generator/figures.json call_off (emitted by golden.py from analysis.main_call on target/)",
   "gap": [
     "time",
     "population"
@@ -33,27 +33,27 @@
   "validated_decoy": false,
   "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the threat image projection log, maps every operator login to its officer and reads the competency standard correctly takes each officer's hit rate over the twelve months' projections and withdraws only the part-time officers under 80 per cent, missing the full-time officers whose rates are carried over 80 per cent by threat objects they had already been shown.",
+  "analyst_test": "A strong analyst who conforms the threat image projection log, maps every operator login to its officer and reads the competency standard correctly takes each officer's hit rate over the screening year's projections and files three officers off X-ray duty, SC17045, SC42948 and SC46133, all casual, recertifying every full-time officer; six full-time officers whose rates of 91 to 95 per cent are carried by threat objects they had already been shown, and a fourth casual officer, detect under 75 per cent of the objects new to them.",
   "domain_test": "The deciding quantity is each officer's probability of detecting a prohibited item a passenger carries, which human factors estimates from threat image projection; recognition memory of an object shown and confirmed after every projection lifts each later projection of it, so only first showings of an object measure detection of an unseen item, and with sensors or machines in place of officers nothing remembers an image and the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:recognition-of-recurring-test-objects-lifts-a-detection-proxy",
   "layer1": [
-    "CT system event log stamped in UTC against a roster and a standard written in local time across daylight-saving changes",
-    "operator logins reissued when the international checkpoint's scanners were commissioned, so some officers carry two logins",
-    "threat image codes written with and without leading zeros between the event log and the library catalogue",
-    "a day of projection events resent by a lane's TIP server after a network outage",
-    "a scanner replaced on one lane, so the lane's machine serial changes part way through the year",
+    "CT TIP event log stamped in UTC against a roster and a standard written in Sydney time across daylight-saving changes",
+    "the international checkpoint's TIP server issued its own operator logins until the servers merged on 1 March 2026, so those officers carry two logins",
+    "image numbers written without the leading zero by the international server against six-digit numbers in the library catalogue",
+    "a day of one lane's projection records sent twice after a network outage",
+    "CT unit hourly counts keyed by serial in UTC against a unit register that keeps only each unit's current location",
     "category codes in the event log against category names in the library catalogue"
   ],
   "stakeholder_role": "the airport's screening training and standards lead, who prepares the year-end recertification list for the head of security screening",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "tip_events_2025-07-01_2026-11-30.csv",
-    "rows": 0,
+    "file": "tip_events_20250701_20261130.csv",
+    "rows": 74704,
     "entity": "one threat image projection shown to one officer on one CT lane",
     "grain": "projection",
-    "source": "synthetic"
+    "source": "constructed (declared in metadata.json)"
   },
   "forum": "line_manager_or_team",
   "forcing_event": "audit_or_inspection",
@@ -62,20 +62,42 @@
     "geography": "Australia, New South Wales (a fictional regional coastal airport)",
     "currency": "AUD",
     "org_type": "regional airport operator running its own passenger screening",
-    "invented_names": [],
+    "invented_names": [
+      "Silverwattle Coast Airport",
+      "Kestrine Imaging",
+      "Kestrine CTX-6",
+      "Kestrine 3D TIP library"
+    ],
     "people": [
       "Teresa Malone",
-      "Keith Keller"
+      "Keith Keller",
+      "Kathy Waters",
+      "Connie Hutchinson",
+      "Lauren Vincent",
+      "Carrie Le",
+      "Kenneth Ferguson",
+      "Becky Zavala",
+      "Eric Meyer",
+      "Barbara Austin",
+      "Jared Juarez",
+      "Richard Lucas"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "recertification_2027.csv",
+    "screening_year_review_2026.pdf"
+  ],
   "opening_move": "question-first",
-  "question_form": "which",
+  "question_form": "who",
   "driver": "A person's hit rate on test items drawn again and again from a fixed set, with the answer shown after each, rises with every earlier showing of the same item, so the rate over all showings measures recognition for the people shown the set most often; only the showings of items new to that person measure how they do on an item never seen before, and an item counts as seen once any of its several versions has been shown.",
   "driver_concrete": "Each screening officer's threat image projection hit rate over the twelve months to 30 November 2026 rises with every earlier projection of the same threat object, because the CT library holds a fixed set of objects, each in several scans, and a full-time officer is shown hundreds of projections a year with feedback after each; the officers shown the library most often are carried over 80 per cent by recognition, and only first showings of an object new to the officer, counting any of its scans, measure detection of an item a passenger carries.",
-  "stump": "A competent solver computes each officer's threat image projection hit rate over the year, withdraws the part-time officers under 80 per cent and leaves the full-time officers whose rates sit in the low to mid 80s only because most of their projections showed objects they had already been shown and told were threats; on objects new to them they detect about seven in ten.",
+  "stump": "A competent solver takes each officer's threat image projection hit rate over the screening year and withdraws three casual officers, recertifying every full-time officer; four in five of a full-time officer's projections show an object already shown and confirmed, which officers detect 99.5 per cent of the time against 88.5 for objects new to them, so six full-time officers who detect 56 to 74 per cent of new objects clear 80 per cent on recognition.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task271": "task271 nets each venue's post-fill move of the desk's own later child orders inside the markout window, an outcome window contaminated by the actor's continuing trading; task186 has no contaminated window: each projection's result is the officer's own response, lifted by recognition of an object shown before in any of its scans, so the deciding operation is an identity link from image to object across the officer's whole CT history, read on first showings.",
+    "task462": "task462 completes period emissions from snapshot surveys whose detection probability rises with source size; task186 has no capture or detection model, it reads a recorded per-officer outcome on the projections that measure the filed estimand.",
+    "task172": "task172 forecasts a treatment effect that starts months after assignment from an interim look dominated by early exposure; task186 designates now on a closed year, and the lift attaches to the item shown, not to time since any start."
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -98,9 +120,9 @@
   "notes": "Re-root at the Batch 3 queue reset: survey-research-official-statistics x anomaly-detection (fuel price pass-through, v1) moves to human-factors-ergonomics x anomaly-detection (never built). Axes drawn free of the live window at the draw: org utility_or_infrastructure (an airport operator running its own screening; professional_services, cooperative, manufacturer banned), forum line_manager_or_team (the head of security screening decides the list), forcing audit_or_inspection (the annual recertification of screening officers), role field_unit_lead (the screening training and standards lead), context artifact other (the CT TIP event export is a monitoring export, banned against task452; the stakeholder works from the TIP event log, the library catalogue and the login register together). Gap time first: the decisive structure is each officer's own history of showings of each object; pattern none with G10 decisive (an object recurring across its scans and across projections is one real-world item shown again).",
   "registered": "2026-11-01T22:33:21Z",
   "shell": {
-    "question form": "which",
-    "second-sentence opener": "send",
-    "rounding opener": "give",
-    "deliverable set": "docx+xlsx"
+    "question form": "who",
+    "second-sentence opener": "recertification",
+    "rounding opener": "officer",
+    "deliverable set": "csv+pdf"
   }
 }

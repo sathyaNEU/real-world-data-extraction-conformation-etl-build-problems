@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: object, routes, stations, golden, library, measure, decisive, station, register, tallis, objects, export, showings, projection, threat, sentence, device, default, records, population, already, return, memory, reading, margin
+Stump terms swept: object, routes, stations, library, golden, measure, decisive, station, register, objects, tallis, export, projection, showings, threat, records, return, sentence, nothing, device, memory, default, population, already, reading
 
 ## 4 design-note vocabulary (REVIEW 1)
 - **REVIEW** `SCS-04_screening_officer_competency_standard_rev6.pdf`: 4 of 25 stump-paragraph terms appear (projection, threat, records, return); read whether the document names the move

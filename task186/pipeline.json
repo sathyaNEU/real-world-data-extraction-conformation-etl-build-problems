@@ -10,16 +10,16 @@
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
+  "exit": 0,
   "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK; one sweep-4 line on SCS-04, ruled harmless in the design note), asof 2026-12-02",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (driver.near 0.13 task190 arch 3 lineage; people.first older builds; no BLOCK), 2026-11-01",
+  "nearest": "task190 (3, lineage) 0.13 driver; surface promoted task462 0.101, task172 0.100, task271 0.100 (differentiation lines on the card)"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "Stages 0 to 3 of architecture 2 (airport X-ray screening recertification, threat image projection) run by a builder agent; stage 4 (leak reader and determinism judge, together, medium) is the main session's next action, then ship.",
+ "resume": "Stage 3 complete for architecture 2 (airport X-ray screening recertification on threat image projection, fiction as-of 2026-12-02). Next: stage 4 in the main session, the leak reader and the determinism judge spawned together at medium; fix every finding in the generator in one pass, re-run the free gates, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -44,5 +44,18 @@
    "fate": "spent 2026-10-21 (one-dimensional outlier scale, call landable from data-free cuts); re-rooted 2026-11-01 at the Batch 3 queue reset",
    "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md"
   }
- ]
+ ],
+ "gates_2026_11_01": {
+  "generator_checks": "69 assertions, 0 failed",
+  "verify": "12 of 12 agree",
+  "byte_identical": "two builds byte-identical over 17 files",
+  "target_zip_sha256_prefix": "b4586dea",
+  "figures_check": "51 figures, 0 absent",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "ceiling": "pair 52.6, mirror leakage 37.5 per cent (generator/ceiling.py)",
+  "guard_check": "WARN, no BLOCK",
+  "guard_heart": "WARN, no BLOCK",
+  "guard_surface": "exit 0, three surface pairs promoted for author adjudication, people WARN only"
+ }
 }
