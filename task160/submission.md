@@ -30,25 +30,25 @@
 
 1. Net change in override reviews, 13 weeks from 4 January 2027: +300 (QT combination alert +500, current reviews lost 200), to the nearest 100.
 2. Desk hours, July to September 2026, nearest whole hour:
-   - 4N 4 North Medicine: 26
-   - 4S 4 South Medicine: 20
-   - 9E 9 East Medicine: 24
+   - 4N 4 North Medicine: 28
+   - 4S 4 South Medicine: 21
+   - 9E 9 East Medicine: 25
    - 9W 9 West Medicine: 14
-   - 2N 2 North Medicine: 25
-   - 12N 12 North Medicine: 15
+   - 2N 2 North Medicine: 24
+   - 12N 12 North Medicine: 16
    - 11N 11 North Geriatrics: 17
-   - 11S 11 South Pulmonary: 17
-   - 3E 3 East Stroke and Spine: 17
+   - 11S 11 South Pulmonary: 18
+   - 3E 3 East Stroke and Spine: 15
    - 3W 3 West Renal: 11
-   - 6E 6 East Orthopaedics: 45
-   - 6W 6 West General Surgery: 39
-   - 10N 10 North Surgery: 37
+   - 6E 6 East Orthopaedics: 41
+   - 6W 6 West General Surgery: 36
+   - 10N 10 North Surgery: 36
    - 10S 10 South Surgery: 22
-   - 5W 5 West Vascular Surgery: 27
+   - 5W 5 West Vascular Surgery: 26
 3. Reviews signed off, July, August and September 2026, by shift:
-   - Day shift: July 559, August 505, September 534
-   - Evening shift: July 415, August 419, September 421
-   - Night shift: July 148, August 126, September 117
+   - Day shift: July 562, August 504, September 532
+   - Evening shift: July 417, August 415, September 417
+   - Night shift: July 143, August 130, September 124
 
 ### msp26_go_live_review_memo.docx
 

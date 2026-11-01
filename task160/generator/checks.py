@@ -241,11 +241,11 @@ def main():
 
     # ---------------- house fixes: the record obeys the stated mechanism, every PDF reads back with every reader
     h = Pk.hist
-    removed_at = h[h["user_action"] == "Order removed"].groupby("order_id")["t"].min()
-    later = h[h["interacting_order_id"].isin(removed_at.index)]
-    bad_refs = int((later["t"] > later["interacting_order_id"].map(removed_at)).sum())
-    check("H6 the record obeys the golden's rule: no alert fires against an order after it was removed", bad_refs == 0,
-          "%d of %d references" % (bad_refs, len(later)))
+    removed_orders = set(h.loc[h["user_action"] == "Order removed", "order_id"])
+    refs = int(h["interacting_order_id"].isin(removed_orders).sum())
+    check("H6 the record obeys the golden's rule: no alert in the history names a removed order as the order it fired "
+          "against", len(removed_orders) > 1000 and refs == 0,
+          "%d removed orders, %d alerts naming one" % (len(removed_orders), refs))
     import pypdf
     from pdfminer.high_level import extract_text
     phrases = {"Corvane_QRMC_Service_Schedule_B_rev3.pdf": ["One overridden alert is one review", "4.3 Content changes",

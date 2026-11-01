@@ -40,7 +40,7 @@ CATS = [("FA", "GUN", "Firearms and parts", 0.45, 0.21),
         ("IE", "IED", "Improvised explosive device components", -0.40, 0.25),
         ("OP", "OTH", "Other prohibited items", -0.15, 0.24)]
 STANDARD = 0.80          # detection performance below this takes an officer off X-ray duty
-CURRENCY_H = 10.0        # monthly hours at an X-ray screen an endorsed officer must reach
+CURRENCY_H = 20.0        # monthly hours at an X-ray screen an endorsed officer must reach
 
 # Scanner serials and their history (the register only knows where each unit stands now).
 SCANNERS0 = {"D1": "KX6-0412", "D2": "KX6-0413", "D3": "KX6-0414", "D4": "KX6-0415", "D5": "KX6-0416",

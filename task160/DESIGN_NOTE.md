@@ -321,7 +321,8 @@ units and rank nothing; sweep 9, the volume plan's weeks after the as-of date ar
 - Generator: `params.py`, `world.py` (encounters, orders, alerts and answers, with hash-keyed answers so a live replay
   changes only what the package changes), `pack.py`, `docs.py`, `io_util.py`, `analysis.py`, `golden.py`, `writeup.py`,
   `checks.py`, `verify.py`, `ceiling.py`, `build.py`. Seed 169 (scanned over 160 to 170 for the narrowest standing
-  family); queue salt 352 (scanned for every ward's hours at least 0.15 h from its rounding edge).
+  family); queue salt 606 (scanned for every ward's hours at least 0.15 h from its rounding edge; the ward-day clock moved
+  the queue's draws, so the earlier salt 352 was rescanned).
 - Gates on the final cut are recorded in `pipeline.json`.
 
 ## Architecture 1 record (spent 2026-11-01)

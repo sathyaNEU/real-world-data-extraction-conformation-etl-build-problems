@@ -17,12 +17,12 @@
  ],
  "files": [
   {
-   "date": "2026-10-02",
+   "date": "2026-09-30",
    "file": "apc_spells_lumbar_cohort_2022-26.csv",
    "license": "Constructed for this task; no third-party records; CC BY 4.0",
    "provenance": "synthetic, constructed by the task author to behave as the named system's export",
-   "rows": 30883,
-   "source": "The board's commissioning data warehouse: admitted patient care spells for the lumbar spine cohort (index operations 2022-23 to 2025-26 and every later spell to 30 September 2026)"
+   "rows": 30768,
+   "source": "The board's commissioning data warehouse: admitted patient care spells for the lumbar spine cohort (index operations 2022-23 to 2025-26 and every later spell submitted by 30 September 2026)"
   },
   {
    "date": "2026-09-30",
@@ -33,7 +33,7 @@
    "source": "Code descriptions for the codes the extract carries"
   },
   {
-   "date": "2026-10-02",
+   "date": "2026-09-30",
    "file": "cohort_deaths_linked_2026-09.csv",
    "license": "Constructed for this task; no third-party records; CC BY 4.0",
    "provenance": "synthetic, constructed by the task author to behave as the named system's export",

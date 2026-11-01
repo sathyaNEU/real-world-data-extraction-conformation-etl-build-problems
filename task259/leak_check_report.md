@@ -1,14 +1,13 @@
 # leak check, task259
 
-**Verdict: REVIEW.** 12 files read, 18 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 18 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: decisive, adults, answered-for, dropped, answered, survey, comparison, self-answered, method, carries, report, quantity, rounds, person, shares, certifies, silver, as-collected, stumping, precondition, dataset, violates, deciding, reflex, variance
 
-## 3 answer figures in the pack (REVIEW 3)
-- **REVIEW** `HES_RELEASE_2026Q3_PRELIMINARY.pdf`: golden figure 68.8 appears: ...88.3 4.3 72.1 5.6 2026Q3 2111.3 1361.5 1302.3 4.3 68.8 5.3 Multiple jobholders are employed residents wh...
-- **REVIEW** `HES_RELEASE_2026Q3_PRELIMINARY.pdf`: golden figure 5.5 appears: ...4.2 72.6 5.7 2026Q1 2103.4 1348.6 1289.2 4.4 70.4 5.5 2026Q2 2107.3 1346.8 1288.3 4.3 72.1 5.6 2026Q3 2...
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `HES_RELEASE_2026Q3_PRELIMINARY.pdf`: golden figure 5.5 appears: ...4.2 72.6 5.7 2026Q1 2100.1 1346.5 1287.2 4.4 70.3 5.5 2026Q2 2102.6 1343.7 1285.4 4.3 72.0 5.6 2026Q3 2...
 - **REVIEW** `TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx`: golden figure 7.0 appears: ...each workforce development area in which at least 7.0 percent of employed residents hold more than one...
 
 ## 4 design-note vocabulary (REVIEW 2)

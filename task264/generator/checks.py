@@ -254,10 +254,11 @@ def main(target):
     def attach(pool, r, lo, hi, unique_within=None):
         c = pool[(pool.unit == site_unit[r.site]) & (pool.sex.astype(int) == r.sex) & (pool.yob_lo <= r.yob) &
                  (pool.yob_hi >= r.yob)]
-        gap = (c.procedure_date - r.sup_op).dt.days
-        c = c[(gap >= lo) & (gap <= hi)].assign(g=gap.abs()).sort_values(["g", "spell_id"])
+        c = c.assign(gap=(c.procedure_date - r.sup_op).dt.days)
+        c = c[(c.gap >= lo) & (c.gap <= hi)]
         if not len(c):
             return None
+        c = c.assign(g=c.gap.abs()).sort_values(["g", "spell_id"])
         if unique_within is not None and len(c[c.g <= unique_within]) != 1:
             return "ambiguous"
         return c.iloc[0].spell_id

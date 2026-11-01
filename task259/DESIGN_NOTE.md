@@ -309,10 +309,10 @@ of the survey behind each area.
   finally corrected on the visit date, a removal later reversed as made in error counting as never made from the date
   of the removal. The file's state at each visit is still a reconstruction across the dispositions and the
   maintenance log, which no sentence spells out.
-- Primary device (a state replayed from an event log, which records are one event): 147 units were removed in error,
+- Primary device (a state replayed from an event log, which records are one event): 155 units (17 to 22 an area) were removed in error,
   restored, and later removed again when they really emptied, before a visit coded no one home; only replaying the log
   in date order, each restore cancelling the removal it follows, keeps the second removal standing. Reading a restore
-  as clearing its unit misses every area by 0.09 to 0.2 points.
+  as clearing its unit misses every area by 0.09 to 0.23 points.
 - Second device: 239 noncontact unit-quarters sit at units removed in error and restored only after the visit; the file
   as it stood at the visit drops them and misses every area by 0.18 to 0.33. 414 units coded no one home were already
   removed as vacant or demolished (0.31 to 0.51 points under the codes alone).
@@ -328,7 +328,7 @@ restore pairs with a removal. The main population carries zero device rows (asse
 
 | Ask row | The cracker (landed the call, ran the battery, executed the filed scope reading a restore as clearing its unit) | Verdict |
 |---|---|---|
-| A, eight response rates | the 147 twice-removed units counted eligible | miss |
+| A, eight response rates | the 155 twice-removed units counted eligible | miss |
 | B, eight noncontact rates | the same units in numerator and base | miss |
 | A and B, codes alone or the file as it stood | every area off by 0.18 or more | miss |
 
@@ -355,10 +355,8 @@ Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Leak sweep answers
 
-leak.py --asof 2026-10-23 on the final cut: verdict REVIEW, no LEAK; each REVIEW line answered.
+leak.py --asof 2026-10-23 on the final cut (after judge round 1): verdict REVIEW, no LEAK; each REVIEW line answered.
 
-- HES_RELEASE_2026Q3_PRELIMINARY.pdf, 68.8: the release's 2026Q3 multiple jobholders in thousands, a different
-  quantity that happens to equal Eastern Prairie's response rate; harmless.
 - HES_RELEASE_2026Q3_PRELIMINARY.pdf, 5.5: the release's 2026Q1 as-collected share; the write-up's 5.5 is the
   four-quarter as-collected figure, the default's own basis, published as such; harmless.
 - TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx, 7.0: the rule's threshold, the filed WHAT; harmless.
@@ -376,7 +374,7 @@ pass); FIX_NOW on the rate asks only; the leak reader found no leak (question 6 
 one pass: the rates' scope filed in the technical note (the master address file as finally corrected, a reversal
 applying from the removal); the sensitivity stated in block 2 with its computation (54.4 percent of switches over 97
 percent persistence); the person file's code list shipped beside the disposition codes (HES_PERSON_CODES.csv); the
-demographer's quarterly projections made uneven by area; 147 twice-removed units added so the filed scope still needs
+demographer's quarterly projections made uneven by area; 155 twice-removed units added so the filed scope still needs
 the log replayed in order. No graded figure moved.
 
 ## Architecture 1 record (re-rooted 2026-11-01)
