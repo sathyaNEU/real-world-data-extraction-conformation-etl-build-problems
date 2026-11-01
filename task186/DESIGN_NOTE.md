@@ -70,7 +70,7 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
     rows, the spine); the TIP library catalogue (XLSX: objects, images); the CT operator login register (CSV); the
     screening officer register (XLSX); SCS-04 revision 6 (PDF, the governing WHAT); the lane roster for the screening
     year (CSV, 31,616 rows); the payroll export of leave taken (CSV); the CT units' hourly image counts, UTC (CSV,
-    38,401 rows); the CT unit register (CSV); distractors declared in `metadata.json`: daily checkpoint queue times
+    38,103 rows); the CT unit register (CSV); distractors declared in `metadata.json`: daily checkpoint queue times
     (CSV), computer-based X-ray training sessions (CSV) and the TIP manager's projection settings (JSON).
 11. **Sources, one line each:**
     - Threat image projection: CT and X-ray screening systems insert fictional threat images into real bag images at a
@@ -96,13 +96,14 @@ screening workforce. Architecture 1's record is under `## Architecture 1 record`
 - **Reflex:** the field's method, each officer's TIP hit rate over the assessment year against the standard (with
   category balancing or the image-level first showing as refinements), is rung 0 and files three officers off: the
   three casual officers whose raw rates are 76 to 78 per cent.
-- **Back-test:** the textbook route validates: the pooled hit rate climbs month by month from 90.8 per cent in July
-  2025 to 98.6 in November 2026, as a learning curve on new scanners would; officers' rates in the two halves of the
+- **Back-test:** the textbook route validates: the pooled hit rate rises from 90.8 per cent in July 2025 to 98.6
+  in November 2026, as a learning curve on new scanners would; officers' rates in the two halves of the
   screening year correlate at 0.87; and the lowest four are the casual officers endorsed between August and October
   2025, which reads as expected.
-- **Second use:** the TIP export is the spine and the lane throughput ask's numerator check; the library catalogue
-  is where every image's object and category live, which every route needs to read categories; the login register
-  is needed to name any officer at all. Delete the decisive step and every file stays.
+- **Second use:** the TIP export is the spine every route reads; the library catalogue's image list is what the
+  conformation step checks image numbers against (the international server's unpadded numbers match nothing until
+  padded) and its object sheet names the categories behind the export's codes; the login register is needed to
+  name any officer at all. Delete the decisive step and every file stays.
 - **Shock:** five of the six full-time officers the step adds sit inside the recertified officers' hit-rate range
   (91.9 to 99.5 per cent) and the sixth just under it at 91.0, and the ten are not an interval of any shipped
   statistic's sort (hit rate, projections, endorsement date, category-balanced rate, image-level first showings),
@@ -161,7 +162,7 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
   rate, the last quarter alone, first showings of each image, first showings counted inside the year only, first
   showings of each object, the same reweighted to the library's category mix, a logistic fit on prior showings read at
   none) spans three to ten officers off; the standing family once the data are read (object-level first showings over
-  the whole log, raw, category-reweighted or fitted) spreads zero officers, with every officer coming off at most 74.2
+  the whole log, raw, category-reweighted or fitted) spreads zero officers, with every officer coming off below 74.3
   per cent and every other at least 83.3 per cent under each form; what rules out the rest is loud only for a reader
   who links images to objects: repeat showings detected 99.5 per cent, an image new to the officer but of an object
   already shown 99.3, a new object 88.5.
@@ -219,7 +220,7 @@ to 74 per cent of objects new to them clear 80 per cent on recognition.
 | R3 | each object's first showing over the whole CT log (golden) | ten officers off, six of them full-time | golden |
 
 - Separation: R0 and R1 file three, R2 and R2b four, R3 ten; R3 differs from R0 in seven members (asserted by name).
-- Margins: every officer coming off at most 74.2 per cent under every licensed form (raw 74.22, category-reweighted
+- Margins: every officer coming off below 74.3 per cent under every licensed form (raw 74.22, category-reweighted
   74.06, logistic 73.96); every other officer at least 83.3 per cent (83.54, 83.34, 83.5); the nearest any officer
   sits to the line is 3.3 points. The masked full-time officers' raw rates run 91.0 to 95.0 per cent against a
   recertified range of 91.9 to 99.5, five of the six inside it.

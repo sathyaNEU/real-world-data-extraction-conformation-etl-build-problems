@@ -44,7 +44,7 @@
 ### screening_year_review_2026.pdf
 
 1. Call: the officers listed above come off X-ray duty from 1 January 2027 for remedial training; every other endorsed officer is recertified.
-2. Chart on page 1: each endorsed officer's detection performance against the 80 per cent line, the officers coming off marked in red, each officer's hit rate over every projection shown beside it.
+2. Chart in section 1 (Annual assessment): each endorsed officer's detection performance against the 80 per cent standard line, the officers coming off marked in red, each officer's hit rate over every projection shown as a hollow mark beside it.
 3. Endorsed officers short of 20 hours of X-ray time, whole officers:
    - December 2025: 19
    - January 2026: 17

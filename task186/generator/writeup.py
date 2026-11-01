@@ -94,8 +94,9 @@ def main(fig_path=os.path.join(HERE, "figures.json"), out=os.path.join(TASK, "su
     L.append("")
     L.append("1. Call: the officers listed above come off X-ray duty from 1 January 2027 for remedial training; every "
              "other endorsed officer is recertified.")
-    L.append("2. Chart on page 1: each endorsed officer's detection performance against the 80 per cent line, the "
-             "officers coming off marked in red, each officer's hit rate over every projection shown beside it.")
+    L.append("2. Chart in section 1 (Annual assessment): each endorsed officer's detection performance against the "
+             "80 per cent standard line, the officers coming off marked in red, each officer's hit rate over every "
+             "projection shown as a hollow mark beside it.")
     L.append("3. Endorsed officers short of 20 hours of X-ray time, whole officers:")
     for (y, m) in A.MONTHS:
         L.append("   - %s %d: %d" % (MONTH[m], y, f["ask_a"]["%d-%02d" % (y, m)]))
