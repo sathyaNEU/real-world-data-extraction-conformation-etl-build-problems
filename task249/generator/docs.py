@@ -1,6 +1,6 @@
 """task249 documents: the examinations manager's request (eml); the examination regulations and the item review
 panel's 2027 minutes (pdf); the item bank snapshot, the invigilators' incident reports and the test centres'
-capacity (xlsx); the data notes (md)."""
+capacity (xlsx)."""
 import datetime as dt
 import os
 
@@ -98,7 +98,7 @@ Abhiram,
 
 The Examination Committee meets on {P.COMMITTEE_DATE} and the integrity report goes to
 the accreditation body by {P.REPORT_DUE}. I need the resit exposure section
-(regulations section 7) for the ten 2027 forms: which forms are flagged under 7.3,
+(regulations section 7) for the 2027 forms: which forms are flagged under 7.3,
 so the Committee can order their reassembly, and the report's two other items
 under 7.4, each form's sittings interrupted by a workstation or power failure
 and those that ran in part without the centre's link.
@@ -145,7 +145,8 @@ def regulations(path, F):
           "3.2 Each sitting presents 170 items in a fixed order: 150 scored items and 20 trial items. Trial items are "
           "being tried for future forms and do not count towards the result. The positions of the trial items are "
           "the same on every form; the trial items themselves change from window to window.",
-          "3.3 A sitting lasts four hours of examination time. Candidates may use the current ICD-10-CM, ICD-10-PCS, "
+          "3.3 A sitting lasts four hours of examination time, timed by the examination clock, which starts when the "
+          "candidate finishes the delivery system's tutorial; the tutorial is not examination time. Candidates may use the current ICD-10-CM, ICD-10-PCS, "
           "CPT and HCPCS code books. An item not answered when the four hours end is recorded blank and scored "
           "incorrect.",
           "3.4 A form is the set of 150 scored items in their order. Forms are assembled from the Institute's item "
@@ -156,7 +157,9 @@ def regulations(path, F):
           "3.6 If a candidate's workstation (its computer, screen, keyboard or mouse) or its power fails during a "
           "sitting, the examination clock stops, and the candidate continues from their saved responses when their "
           "workstation or a spare one is ready. An invigilator may pause a sitting (for a candidate taken ill, an "
-          "identity check at the desk, a change of seat or an alarm); the clock stops while the sitting is paused."]),
+          "identity check at the desk, a change of seat or an alarm); the clock stops while the sitting is paused. A loss of the centre's link to "
+          "the provider does not stop the clock: the workstation keeps the candidate's responses and sends them to "
+          "the provider when the link is back."]),
         ("4. Results, reviews and resits",
          ["4.1 A candidate passes with 105 or more of the 150 scored items correct.",
           "4.2 Results are released about three weeks after the window closes. A candidate who fails may book one "
@@ -270,77 +273,3 @@ def capacity_xlsx(path):
     _sheet(ws, ["Centre", "Code", "Rooms", "Workstations", "Spare workstations", "Sessions a day", "Invigilators a session",
                 "Morning start", "Afternoon start"], rows, [12, 7, 7, 13, 17, 14, 21, 14, 16])
     wb.save(path)
-
-
-# ------------------------------------------------------------------ data notes (md)
-def notes(path, F):
-    text = f"""# Examination data: notes for the 2027 review
-
-Kept by the examinations department. The provider's files are as {P.VENDOR} delivers them.
-
-## Results exports ({F['export3']}, {F['export4']})
-
-One row per sitting. Release 3 of the provider's export ran to the May 2027 window; release 4 from the August 2027
-window.
-
-| Release 3 | Release 4 | Meaning |
-|---|---|---|
-| candidate_no | cand_no | Institute candidate number at the sitting |
-| booking_ref | booking_ref | the provider's booking reference |
-| window | exam_window | examination window |
-| sitting_date | sat_on | date of the sitting (release 4: day-month-year) |
-| centre | test_centre | test centre (release 4: the centre's code) |
-| form | form_code | the form the delivery system drew |
-| responses | response_string | one character per delivered position, in delivery order (170): the option chosen, A to D, or `-` where no answer was recorded |
-| item_seconds | latency_ms | time on each delivered position, in delivery order, separated by `|`, empty where no answer was recorded (release 3: whole seconds; release 4: milliseconds) |
-| end | end_reason | how the sitting ended: submitted by the candidate, or time expired |
-| score | raw_score | scored items answered correctly (of 150) |
-| result | outcome | Pass or Fail (release 4: P or F) |
-
-## Form layouts ({F['layouts']})
-
-Each window's forms position by position: the item delivered at each of the 170 positions and whether the position
-is scored or trial. Item numbers are the bank's numbering at the time: the 2026 windows' layouts use the numbers
-before the bank's migration of 11 January 2027 ({F['crosswalk']} maps them to the bank's present numbers).
-
-## Item bank snapshot ({F['bank']})
-
-Every item in the bank at 31 December 2027: its number, the item model it was written from, its format (case: an
-operative, discharge or clinic note to code; single: a stand-alone question), content area, keyed answer and status.
-
-## Candidate number changes ({F['register']})
-
-The register's changes of candidate number (regulation 2.1): the earlier number, the new number and the date.
-
-## Results review bookings ({F['reviews']})
-
-One row per review booked: the candidate number at booking, the window of the sitting reviewed, the dates booked and
-of the review, and whether it was held, cancelled or not attended, or is still to come (booked).
-
-## Seat plan and workstation event log ({F['seat']}, {F['events']})
-
-The provider's 2027 seat plan: each booking's centre code, date, session and the workstation it was seated at. The
-event log: one row per event on a centre's workstations, time in UTC, with the booking reference of the sitting it
-belongs to.
-
-| Event | Meaning |
-|---|---|
-| TUTORIAL_START | the candidate starts the tutorial; the examination clock is not running |
-| SESSION_START | the examination clock starts |
-| WS_FAIL | the workstation stopped responding |
-| SESSION_RESUME | the candidate's sitting runs again after a stop; the clock restarts |
-| SESSION_END | the sitting ended (submitted, or time expired) |
-| NET_LOST, NET_BACK | the centre's link to the provider lost and restored; the delivery client carries on and sends the responses when the link is back |
-| WS_REBOOT | a workstation restarted |
-
-## Incident reports ({F['incidents']})
-
-The invigilators' reports from each centre, in local time.
-
-## Item review panel decisions ({F['panel_log']})
-
-The bank officer's log of the panel's decisions on trial items: the item, the decision (accept, revise, reject,
-withdraw) and the date the decision was logged. Entries before 11 January 2027 use the earlier item numbers.
-"""
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write(text)

@@ -110,7 +110,8 @@
     "task144": "task144's spillover runs through a network of followers to other units; here the effect stays inside one sitting and travels through a shared time limit to the items a candidate reaches, read from latencies and unanswered items.",
     "task230": "task230 v2 read a vigilance clock resetting at task switches; here no fatigue or reset is involved: recognised items free time inside a capped sitting and the freed time buys answers at the end of the form.",
     "task193": "task193 v2 reads an ordering's chance under no effect from where each unit's first exposure falls in its observation window; here the window is a sitting's four hours and the quantity is the extra answers that the time recognised items free buys at the end of the form, read from item latencies.",
-    "task254": "task254 v3 times a passage through stages whose delay builds while the unit travels; here nothing builds: recognised items take less of a capped sitting and the saving buys answers on the end-of-form items a within-candidate comparison treats as untouched."
+    "task254": "task254 v3 times a passage through stages whose delay builds while the unit travels; here nothing builds: recognised items take less of a capped sitting and the saving buys answers on the end-of-form items a within-candidate comparison treats as untouched.",
+    "task204": "task204 recovers a rate from an unsteady balance whose response time outruns the filed windows, so a settled-level reading overstates it; here nothing is out of equilibrium: a capped sitting couples a candidate's items, and the time recognised items free buys answers on items a within-candidate comparison treats as untouched."
   },
   "mechanism_source": "design_note",
   "notes": "Generators G7, G16, G10: the four-hour operating window decides which items a sitting lets a candidate answer, G16 the counterfactual chosen, G10 the item model as one memorable unit (a lower rung).",

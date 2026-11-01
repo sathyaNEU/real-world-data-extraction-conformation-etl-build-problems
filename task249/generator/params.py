@@ -83,3 +83,15 @@ MANAGER = ("Yahvi Reddy", "yahvi.reddy")            # examinations manager
 REQUEST_DATE = (2028, 1, 17)
 COMMITTEE_DATE = "27 January 2028"
 REPORT_DUE = "31 January 2028"
+
+
+# the provider's and the Institute's own header names, as each system writes them (the generator's internal names on
+# the left); the readers map them back on reading
+SHIP_HEADERS = {
+    "export3": {"window": "sit_window", "centre": "centre_name", "form": "form_id", "responses": "resp_string",
+                "result": "pass_fail"},
+    "layouts": {"window": "win_code", "form": "form_id"},
+    "seat": {"session": "session_slot", "workstation": "ws_id"},
+    "events": {"workstation": "ws_id"},
+}
+READ_BACK = {k: {v: c for c, v in m.items()} for k, m in SHIP_HEADERS.items()}

@@ -109,6 +109,16 @@ No decoy: nothing is planted: the responses, latencies and blanks are what the d
 No certified replay: no certified or published figure sits in the pack; the regulations state the estimand and the line, the vendor's export records sittings, and no file states a form's gain or flag.
 Lesson: a within-unit comparison of treated with untreated parts measures the treatment's total effect only when the parts do not share a budget; under a binding limit the treatment's savings are spent on the untreated parts, so the comparison misses the effect exactly where the limit binds; no shipped build carries a treatment's effect through a shared time limit.
 
+## Survivor anatomy
+
+- Actor: the deciding quantity, the items a resit candidate reached only in the minutes the recognised items freed, sits in no column; the exports record each sitting's responses, latencies, blanks and end reason, and nothing records which items a candidate recognised, how long they would have taken unseen or where the four hours would have ended (rung 5 silent on the readability screen).
+- Link: the step joins two things no key invites together, an exposure marked from earlier sittings and reviews through the register, the renumbering and the bank's item models, and the same sitting's clock read from the latency string against first-time candidates' times on the same items; no filed sentence links a recognised item to the time left for the others.
+- Reflex: the field's own repeat-examinee estimate, the within-candidate excess on recognised items (siblings included) over the candidate's difficulty-adjusted ability on the others, is the default path and files CC27-A, C, G and H (checks.py R3a on the clean world and on the pack).
+- Back-test: the easy route validates on its own terms: the excess is zero on the untouched items (0.00 above ability per item), the siblings carry their 0.06, every estimator variant of the direct excess files the same four, and nothing in the pack refutes the direct excess as a measure of what the recognised items gained.
+- Second use: every file the decisive step reads has its own use: the exports, layouts, bank and renumbering feed the default path, the register and the review bookings mark exposure, the regulations file the estimand and the line; the latencies are the export's own record of every sitting, read by the default path for nothing, and deleting the decisive step drops no file.
+- Shock: the two forms the step adds (CC27-B at 0.48 and CC27-D at 0.47 on the direct excess) sit under the line on the default path and are not the pack's largest anomaly (CC27-C at 1.78 is); they are, though, the two highest of the six unflagged forms on that route, with E at 0.38 next, recorded at the 11-01 re-check as the anatomy's one open line; CC27-I is as speeded as B and D and stays under (0.44 with the reach).
+- Pins: regulation 7.2 files the WHAT (the year's resit sittings of each form, a sitting by a candidate who had sat before, the scored items answered correctly that nothing shown would have left wrong, averaged over sittings) and 7.3 the line (exceeds 1.0); 3.3 files four hours of examination time with the tutorial outside it; no filed sentence names latencies, pace, reach or time saved.
+
 ## Readability screen
 
 | Rung | Where a reader meets it | Verdict |
@@ -139,7 +149,7 @@ in-spec readers miss the call.
 | SF8 | the baseline on the unrecognised items | a logit shift on the first-time candidates' share correct | an additive shift | same call | asserted |
 | SF9 | a booked review cancelled or not attended | showed nothing | counted as held | same call | the bookings' status; asserted |
 | SF10 | the four hours | examination time: the latencies exclude the stops of 3.6 | wall time | same call | regulation 3.6; asserted (no stopped sitting's latencies exceed four hours) |
-| SF11 | release 4's latencies | milliseconds | seconds | same call | the data notes; asserted (each release's medians agree once converted) |
+| SF11 | release 4's latencies | milliseconds | seconds | same call | release 4's own header, latency_ms; asserted (each release's medians agree once converted) |
 | SF16 | an item written from the same item model as an item shown | not untouched: its excess is in the gain (7.2's counterfactual removes every earlier showing, and 3.4 keeps two items of one model off a form) | an untouched item in the baseline | A, B, D and G | the data: siblings are answered in 0.79 of the candidate's own pace and 0.06 above their ability per item, the untouched items at 1.00 and 0.00 (asserted) |
 | SF12 | a WS_FAIL (ask A) | an interruption where the sitting stopped there: its next event is its SESSION_RESUME or its SESSION_END | every WS_FAIL (a finished candidate's workstation switched off after its SESSION_END; a workstation's own connection lost while its client went on logging) | the asks only | the sitting's own events (a stopped workstation cannot carry its sitting on without a resume); asserted (every WS_FAIL counted, or every one inside the sitting, misses all ten forms) |
 | SF13 | a resume on the sitting's own workstation after that workstation's WS_REBOOT (ask A) | a restart after a freeze: interrupted, reported or not | an unreported pause (no WS_FAIL, no report) | the asks only | a working workstation is not restarted under a running sitting; every reported restart shows the WS_REBOOT and no reported pause does (asserted: the restarts dropped miss all ten forms) |
@@ -147,7 +157,7 @@ in-spec readers miss the call.
 | SF21 | a sitting that went on on a spare with no WS_FAIL and no report (ask A) | a failure where the workstation it left logged WS_REBOOT before the session's last sitting ended; a change of seat where it did not | every move counted, or none | the asks only | the technician restarts each workstation left over a freeze, a faulty keyboard, mouse or screen or a client hung at the link's loss, and none left at a candidate's request over glare, noise, a desk or a chair: every reported move bears it out (asserted: the restart follows every fault's move and no request's; every move counted, or none, misses all ten forms) |
 | SF22 | a change of seat a candidate asked for because the screen flickered, keys stuck or the mouse pointer jumped (ask A) | a failure of the workstation (regulation 3.6 names its screen, keyboard and mouse) | a change of seat | the asks only | regulation 3.6 and the technician's restart after each (asserted); a change of seat over glare on the screen is not a fault and its workstation is left as it was (asserted), and a screen too bright is turned down at the desk with no clock stopped |
 | SF15 | a loss one client logged alone (ask B) | that workstation's own connection, not the centre's link | a loss of the centre's link | the asks only | every loss of a centre's link is logged by every client logged in (three or more, within a minute of each other); each lone loss runs 1 to 35 minutes with no other client's row at the centre within 45 minutes (asserted: the lone losses counted miss all ten forms) |
-| SF17 | a loss inside a hall stop (ask B) | no clock ran: every clock stopped before the router went off and restarted after the link was back | ran without the link | the asks only | regulation 3.6 and the data notes (the clock stops; the sitting runs again at the resume) with the two reports' times; asserted (counted, all ten forms move) |
+| SF17 | a loss inside a hall stop (ask B) | no clock ran: every clock stopped before the router went off and restarted after the link was back | ran without the link | the asks only | regulation 3.6 (the clock stops; the candidate continues when the workstation is ready, and a loss of the link stops no clock) with the two reports' times; asserted (counted, all ten forms move) |
 | SF18 | where a loss of the centre's link begins and ends (ask B) | each client's own NET_LOST and NET_BACK | the centre's first NET_LOST to its first or its last NET_BACK | same call | no clock starts, ends or resumes within a client's notice of either edge (asserted: the three readings file the same sittings) |
 | SF19 | a NET_BACK with no NET_LOST before it (ask B) | the client logged in with the link down: without it from its login | dropped | the asks only | the client's login (its tutorial, or its resume on a spare) precedes it; asserted (all ten forms move) |
 | SF20 | the Kochi power cut's minutes on the UPS (ask B) | ran without the link (the router went down at once) | not counted (no rows in the log) | the asks only | the Kochi report; asserted (the August forms move) |
@@ -188,17 +198,17 @@ flags nothing.
 | 13 | Order of operations | exposure marked, ability and pace from the unrecognised items, the clock rerun, the two parts summed per sitting, then averaged | C1 (asserted) |
 | 14 | Row order | none | C1 |
 | 15 | Duplicate resolution | none in the call's rows; on the asks a sitting counts once | filed |
-| 16 | Identity normalisation | candidate numbers through the register, item numbers through the renumbering | filed (2.1; the data notes) |
+| 16 | Identity normalisation | candidate numbers through the register, item numbers through the renumbering | filed (2.1; the crosswalk's own columns, previous_item_id to item_id) |
 | 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | seconds (release 3) and milliseconds (release 4) | filed (the data notes) |
-| 19 | Code and status semantics | blanks, end reasons, review status, event codes | filed (the data notes); never the stump |
+| 18 | Dimensional units | seconds (release 3) and milliseconds (release 4) | the export's own headers (item_seconds, latency_ms) |
+| 19 | Code and status semantics | blanks, end reasons, review status, event codes | the files' own values; 3.3 (the tutorial is not examination time) and 3.6 (a loss of the centre's link stops no clock); never the stump |
 | 20 | Integerisation | the sitting counts whole | filed (the prompt) |
 | 21 | Clause scope | 7.2 and 7.3 for every 2027 form; 7.4 for every form | filed |
 | 22 | Forward window contents | a flagged form is reassembled before it is used again | filed (7.3) |
 
 ## Literal reader
 
-Executing the prompt and every filed sentence word for word (the regulations, the data notes, the request) leaves one
+Executing the prompt and every filed sentence word for word (the regulations, the request) leaves one
 open move, how the counterfactual of regulation 7.2 is estimated, and the design and the data force it: forms drawn at
 random among those not sat (3.5) make the comparison inside each resit candidate the design's own; an item recognised
 from an earlier sitting is answered in about 70 per cent of the time the candidate's own pace on the other items gives;
@@ -247,8 +257,8 @@ year-first, read day-first it turns 10 May into 5 October) and session names (FN
 stopped no clock (a query on an item, a screen turned down); three in ten logged freezes unreported; freezes while a
 candidate checked their answers closed on the saved responses; the two hall stops; the power cut (WS_REBOOT on every
 machine, resumes after half an hour of nothing); the technician's checks on workstations nobody was seated at. Path:
-the event log, the seat plan, the invigilators' reports, the regulations, the data notes and either export for each
-booking's form (6 files, 12 columns). Realism: a heartbeat monitor that cannot tell a dead workstation from one switched
+the event log, the seat plan, the invigilators' reports, the regulations and either export for each
+booking's form (5 files, 12 columns). Realism: a heartbeat monitor that cannot tell a dead workstation from one switched
 off or cut off; the workstation agent logging its own boots; a technician who restarts what failed before it is used
 again; incident reports typed up after the session, each centre in its own sheet.
 
@@ -257,8 +267,8 @@ regulation 7.4's third item, the sittings whose responses were held on the works
 call never reads the event log. Use: the same table. Devices, silent:
 - Two mechanisms, one face (a client's NET_LOST and NET_BACK): the centre's link lost, logged by every client logged in
   within a minute; and one workstation's own connection, logged by that client alone for 1 to 35 minutes while the
-  others logged nothing (every form). Only the cut across the centre's clients separates them; the data notes call both
-  the centre's link.
+  others logged nothing (every form). Only the cut across the centre's clients separates them; both log the same two
+  codes.
 - A loss with no clock running: twice a whole hall's clocks were stopped before its router went off (the Chennai fire
   alarm of 14 May 2027, smoke from the communications cabinet's UPS; Hyderabad's switch of the building's power to the
   generator on 16 November 2027, the hall on its UPS and the router on the building supply) and restarted after the
@@ -266,8 +276,8 @@ call never reads the event log. Use: the same table. Devices, silent:
 Hazards: clients that log in with the link down log only NET_BACK; a finished candidate's client logs the loss until the
 session closes; open losses to the close; flapping links; losses inside the tutorial alone; clients hung at the loss;
 the Kochi sittings' four minutes on the UPS with the router down, in the invigilator's report only. Path: the event
-log, the seat plan, the data notes, the regulations, the incident reports and either export for each booking's form
-(6 files, 9 columns). Realism: clients log their own link state and send it when the link is back; a router off the
+log, the seat plan, the regulations, the incident reports and either export for each booking's form
+(5 files, 9 columns). Realism: clients log their own link state and send it when the link is back; a router off the
 UPS; a building's switch to its generator announced to the tenants.
 
 Main population zero-counts: the event log, the seat plan and the invigilators' reports are read by the asks alone,
@@ -526,3 +536,33 @@ Mirror leakage: 0.0 per cent of ask weight
   Every v2 device sat on the readers' own path; v3 moves both asks onto rows that path never cuts (the reboots with no
   booking, the next event after a WS_FAIL, the cut across a centre's clients, the clocks stopped before a link went).
 - Ask layer v3's ask A (a WS_FAIL counted by the sitting's next event, the restarts in place from the WS_REBOOT rows with no booking, the switch-offs and the connection faults' WS_FAIL that stopped nothing): both round 3 readers on target.zip 9572c4c8 kept all ten ask A figures, joining each reboot to the resume about a minute later and reading a WS_FAIL that stopped nothing from its own client's NET rows and the elapsed time; ask B held at 0 of 10 for both (the losses one client logged alone read as the centre's link). The opus reader missed the call (A, C, G and H); the sonnet reader, spawned without its effort so it ran at max against the medium the spec sets, landed it (the time freed, rescaled and the four hours re-run) after 95 minutes and 149 tool calls. Every v3 ask A device sat on a per-sitting path; v4 puts ask A's primary on a row no sitting's events reach: the workstation a sitting left for a spare, restarted by the technician after a fault and left as it was after a change of seat asked for over glare, noise, a desk or a chair, two in five of those moves unreported and the quick ones with no WS_FAIL. The author chose (2026-10-22) to re-read the v4 pack with two in-spec medium readers and ship only if both miss the call.
+- Re-check under the 10-31 gates (2026-11-01, the shipped pack 535886d8 rebuilt byte-identically): leak.py LEAK on
+  data_notes.md (sweep 1 by name; sweep 12, 28 of the files' columns), on the regulations (sweep 12: window, centre,
+  form, responses, result, session and workstation, the plain-word headers of release 3, the layouts, the seat plan
+  and the event log) and on metadata.json (sweep 13: the licence string's CC0-1.0); the prompt disclosed a count the
+  data hold ("our ten", "each of the ten" and the range CC27-A to CC27-J). The notes leave the pack (16 files, four
+  formats); the readings they carried that the records do not settle are filed as WHATs in the regulations (3.3: the
+  examination clock starts when the candidate finishes the tutorial, which is not examination time; 3.6: a loss of the
+  centre's link stops no clock, the workstation keeping the responses until the link is back); the rest is carried by
+  the files' own headers and values (latency_ms, event_utc, previous_item_id, the end reasons); the plain-word headers
+  take the source systems' own names (sit_window, centre_name, form_id, resp_string, pass_fail; win_code, form_id;
+  session_slot, ws_id); metadata.json drops the count and the method words from its title, subdomain and prompt shape;
+  the prompt names the 2027 forms without their number (the 2027 windows deliver CC27 forms only, so the population is
+  unchanged). Call, stump, ladder and every graded figure frozen (figures.json, goldens and submission.md
+  byte-identical).
+  leak.py after the repair REVIEW, no LEAK; each REVIEW line answered: the regulations' 1.0 and the call's words are
+  7.2's estimand and 7.3's line, which the call quotes; the five stump-paragraph terms there (register, release,
+  examination, regulations, session) are the regulations' own nouns and name no move; the 28 dates after the as-of are
+  reviews still booked; the which form is the designation's own, kept against the quota WARN. guard.py heart: the
+  same-driver BLOCK against task204 (registered 10-27, after this card) cleared with a differentiation line; the
+  ban.forcing_event BLOCK against task251 v5 (statutory_or_regulatory_filing, registered 10-21 before this card's
+  draw that day) predates the re-check, changes with nothing here, and is recorded for the author (an axis ban,
+  never cleared by differentiation; the build is not re-rooted for it). guard.py surface promotes four pairs (task251
+  at 0.100 surface, task193, task204 and task254 on the card axes), as the shipped pack promoted five (task247 and
+  task248 at 0.100, task193, task204, task254): the card-axis promotions predate the repair and the adjudicated read
+  is the author's.
+  Stage 4 on fe00c50c: the leak reader clean (questions 1 to 4 none, 6 analytical); judge pass 3 DETERMINISTIC, APPROVE,
+  Gate H analytical. The judge's advisory (32 sittings logging NET_LOST, WS_FAIL and NET_BACK with no resume or report,
+  which the golden leaves out of ask A) is SF12's device: the sitting's next event tells a WS_FAIL that stopped nothing,
+  and the prompt's "interrupted" carries it; a filed sentence would hand the device over, so none is added.
+

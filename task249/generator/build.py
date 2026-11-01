@@ -1,6 +1,6 @@
 """Write the task249 pack into a target folder: the provider's results exports, layouts, the bank snapshot and its
 renumbering, the register's number changes, the review bookings, the seat plan, the event log, the incident
-reports, the panel's decision log and minutes, the regulations, the notes and the request.   B.run(target) -> world"""
+reports, the panel's decision log and minutes, the regulations and the request.   B.run(target) -> world"""
 import os
 
 import docs as D
@@ -13,7 +13,6 @@ import sim
 FILES = dict(
     request="resit_exposure_request.eml",
     regs="CCC_examination_regulations.pdf",
-    notes="data_notes.md",
     export3="results_export_r3_2026-02_to_2027-05.csv",
     export4="results_export_r4_2027-08_to_2027-11.csv",
     layouts="form_layouts_2026_2027.csv",
@@ -29,7 +28,7 @@ FILES = dict(
     practice="practice_exam_orders_2026_2027.csv",
     capacity="exam_centre_capacity_2027.xlsx",
 )
-PACK = ["request", "regs", "notes", "export3", "export4", "layouts", "bank", "crosswalk", "register", "reviews",
+PACK = ["request", "regs", "export3", "export4", "layouts", "bank", "crosswalk", "register", "reviews",
         "seat", "events", "incidents", "panel_log", "minutes", "practice", "capacity"]
 DISTRACTORS = ["practice", "capacity", "panel_log", "minutes"]
 CONTEXT = ["regs"]
@@ -61,16 +60,16 @@ def run(target):
     R0 = R.build(W)
     AK = A.build(W, R0)
     j = lambda k: os.path.join(target, F[k])
-    R0["exp_a"].to_csv(j("export3"), index=False, encoding="utf-8")
+    R0["exp_a"].rename(columns=P.SHIP_HEADERS["export3"]).to_csv(j("export3"), index=False, encoding="utf-8")
     R0["exp_b"].to_csv(j("export4"), index=False, encoding="utf-8")
-    R0["layouts"].to_csv(j("layouts"), index=False, encoding="utf-8")
+    R0["layouts"].rename(columns=P.SHIP_HEADERS["layouts"]).to_csv(j("layouts"), index=False, encoding="utf-8")
     bank = R.bank_snapshot(W, R0["ids"], R0["dec"], AK["panel"]["logged"])
     D.bank_xlsx(j("bank"), bank)
     R0["crosswalk"].to_csv(j("crosswalk"), index=False, encoding="utf-8")
     R0["changes"].to_csv(j("register"), index=False, encoding="utf-8")
     R0["reviews"].to_csv(j("reviews"), index=False, encoding="utf-8")
-    AK["a"]["seat"].to_csv(j("seat"), index=False, encoding="utf-8")
-    AK["a"]["events"].to_csv(j("events"), index=False, encoding="utf-8")
+    AK["a"]["seat"].rename(columns=P.SHIP_HEADERS["seat"]).to_csv(j("seat"), index=False, encoding="utf-8")
+    AK["a"]["events"].rename(columns=P.SHIP_HEADERS["events"]).to_csv(j("events"), index=False, encoding="utf-8")
     D.incidents_xlsx(j("incidents"), AK["a"]["reports"])
     AK["panel"]["log"].to_csv(j("panel_log"), index=False, encoding="utf-8")
     counts = {w: sum(1 for d in R0["dec"].values() if d["w"] == w) for w in range(4, 8)}
@@ -78,7 +77,6 @@ def run(target):
     practice_orders(W, R0, np.random.default_rng(P.SEED + 77)).to_csv(j("practice"), index=False, encoding="utf-8")
     D.capacity_xlsx(j("capacity"))
     D.regulations(j("regs"), F)
-    D.notes(j("notes"), F)
     D.request(j("request"), F)
     for k, stamp in STAMP_PDF.items():
         postprocess.scrub(j(k), "IHCP Examinations Department", stamp[:10])

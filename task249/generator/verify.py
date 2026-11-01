@@ -32,7 +32,7 @@ def main(target):
     b = pd.read_csv(p("export4"), dtype=str, keep_default_na=False)
     rows = []
     for r in a.itertuples(index=False):
-        rows.append((r.candidate_no, r.booking_ref, r.window, r.sitting_date, r.form, r.responses,
+        rows.append((r.candidate_no, r.booking_ref, r.sit_window, r.sitting_date, r.form_id, r.resp_string,
                      [float(v) if v else np.nan for v in r.item_seconds.split("|")], int(r.score)))
     for r in b.itertuples(index=False):
         d = dt.datetime.strptime(r.sat_on, "%d-%m-%Y").date().isoformat()
@@ -48,9 +48,9 @@ def main(target):
     cw = dict(pd.read_csv(p("crosswalk"), dtype=str)[["previous_item_id", "item_id"]].itertuples(index=False))
     lay = pd.read_csv(p("layouts"), dtype=str)
     lay["position"] = lay["position"].astype(int)
-    lay = lay.sort_values(["window", "form", "position"])
-    items = {k: [cw.get(i, i) for i in g["item_id"]] for k, g in lay.groupby(["window", "form"])}
-    scored = {k: (g["slot"] == "scored").to_numpy() for k, g in lay.groupby(["window", "form"])}
+    lay = lay.sort_values(["win_code", "form_id", "position"])
+    items = {k: [cw.get(i, i) for i in g["item_id"]] for k, g in lay.groupby(["win_code", "form_id"])}
+    scored = {k: (g["slot"] == "scored").to_numpy() for k, g in lay.groupby(["win_code", "form_id"])}
     bank = pd.read_excel(p("bank"), dtype=str)
     key, model, area, status = (dict(zip(bank["item_id"], bank[c])) for c in ("key", "item_model", "content_area", "status"))
     sit = []
@@ -128,7 +128,7 @@ def main(target):
     boot = ev[ev["event"] == "WS_REBOOT"]
     boots = {}
     for r in boot.itertuples(index=False):
-        boots.setdefault((r.centre_code, r.workstation), []).append(r.t)
+        boots.setdefault((r.centre_code, r.ws_id), []).append(r.t)
     half = {}
     for k_, (s0, e0) in clock_of.items():
         loc = s0 + shift
@@ -143,10 +143,10 @@ def main(target):
             if r.event != "SESSION_RESUME" or not n:
                 continue
             q = lst[n - 1]
-            if r.workstation.startswith("SP"):
-                if any(q.t < t <= closes[k_] for t in boots.get((r.centre_code, q.workstation), [])):
+            if r.ws_id.startswith("SP"):
+                if any(q.t < t <= closes[k_] for t in boots.get((r.centre_code, q.ws_id), [])):
                     hit.add(k_)
-            elif any(q.t < t <= r.t for t in boots.get((r.centre_code, r.workstation), [])):
+            elif any(q.t < t <= r.t for t in boots.get((r.centre_code, r.ws_id), [])):
                 hit.add(k_)
     cut_sittings, stopped_at = set(), []
     for centre, df in rep.items():
@@ -185,10 +185,10 @@ def main(target):
     netrows = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])]
     stamps = {}
     for r in netrows.itertuples(index=False):
-        stamps.setdefault(r.centre_code, []).append((r.t, r.booking_ref, r.workstation))
+        stamps.setdefault(r.centre_code, []).append((r.t, r.booking_ref, r.ws_id))
     downs = []
     walk = ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME", "NET_LOST", "NET_BACK"])]
-    for (cc, ws), g in walk.groupby(["centre_code", "workstation"], sort=True):
+    for (cc, ws), g in walk.groupby(["centre_code", "ws_id"], sort=True):
         state = {}
         for r in g.itertuples(index=False):
             k_ = r.booking_ref

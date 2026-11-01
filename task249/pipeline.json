@@ -5,30 +5,38 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-23",
+ "updated": "2026-11-01",
  "stump": "A competent analyst reads each resit candidate's gain as the excess on the items an earlier sitting or review had shown them (or their item-model siblings) over their own difficulty-adjusted performance on the other items and flags CC27-A, C, G and H; the other items share the four hours, and on CC27-B and D, where four in ten candidates run out of time, most of the gain is the items resit candidates reached only because the items they recognised took them less time.",
  "architecture": 6,
  "loops": 0,
- "precut": "PASS (51 checks, 0 FAIL, 0 WARN)",
+ "precut": "PASS (61 checks, 0 FAIL, 0 WARN), 2026-11-01",
  "leak": {
-  "leak_py": "REVIEW (no LEAK): the regulations' 1.0 line and estimand, field names in the data notes, 28 reviews still booked after 17 January 2028",
-  "reader": "round 1 (ff5b5f5b): call missed by both, asks 20/20 and 17/20 (FAIL); round 2 (2f190bcc): call missed by both (opus A, C, G, H; sonnet A, B, D, G), asks 20/20 each (FAIL); round 3 (9572c4c8, both spawned without their effort so at max against the medium spec): opus missed the call (A, C, G, H), sonnet landed it (the time freed modelled, 95 minutes), both kept the ten ask A figures and missed the ten ask B (FAIL); the author chose to re-site ask A (v4) and re-read the pack with two medium readers, shipping only if both miss the call; round 4 (535886d8, both at medium): sonnet missed the call (A, C, G, H) and kept 0 of 20 ask figures (score_reader PASS); opus missed the call (A, C, G, H) and kept 7 of 20 (ask A's C, E and H missed: it read a spare move as a failure where the left workstation rebooted before the candidate's own end, not the session's last; ask B 0 of 10), score_reader FAIL at 35.0 per cent; measured pair 21.6 (12.0 and 31.3)"
+  "leak_py": "REVIEW (no LEAK) 2026-11-01 on fe00c50c: the regulations' 1.0 line and estimand, five of their own nouns, 28 reviews still booked after 17 January 2028, the which shell quota; each answered in the design note",
+  "reader": "2026-11-01 (sonnet, medium, fresh pack fe00c50c): questions 1 to 4 none, question 5 the estimand only, question 6 analytical; 3.3 and 3.6 read as rules about the examination; earlier rounds 1 to 4 are history (in-house reads, not portal results)"
  },
  "duplicate_check": {
-  "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; NOTEs differentiated against task193 v2 and task254 v3)",
+  "heart": "BLOCK 2026-11-01, inherited: ban.forcing_event against task251 v5 (statutory_or_regulatory_filing, registered 10-21 02:34, before this card's draw); same_driver_older against task204 (registered 10-27) cleared with a differentiation line; WARN overuse.gate_g, repeat.decision, repeat.question_form; escalated to the author",
+  "surface": "4 promoted pairs (task251 surface 0.100; task193, task204, task254 on card axes); the shipped pack promoted 5 (task247, task248 at 0.100, task193, task204, task254); author-triggered adjudication",
   "nearest": "task83 at 0.12"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "gate_g": "pass (method_or_model_selection, analytical_non_defect, surface_read_dependency no)",
+  "pack": "fe00c50c",
+  "gate_g": "pass (decomposition_attribution, analytical_non_defect, surface_read_dependency no, sole_data_defect no)",
   "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "finding": "none; all 20 ask figures and the six flags reproduced (eight estimator variants split 1.47 to 2.39 against 0.15 to 0.57)",
-  "pack": "535886d8",
-  "report": "determinism_check_report_pass2.md"
+  "finding": "none; six flags, components and both 7.4 tables recomputed; advisory: 32 sittings log NET_LOST, WS_FAIL, NET_BACK with no resume or report, excluded by the golden as not interrupted (SF12)",
+  "report": "determinism_check_report_pass3.md"
  },
- "returned": [],
- "resume": "Shipped 2026-10-23 (target.zip 535886d8); waiting on the portal. Known exposure: round 3's sonnet reader at max effort (out of spec) landed the call; round 4's opus reader at medium kept 7 of 10 ask A figures by the restart join with the candidate's own end as its window. A portal return that lands the call and keeps ask A whole is the case to re-site ask A for.",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (re-check under the 10-31 gates: leak.py LEAK)",
+   "repair": "leak",
+   "commit": ""
+  }
+ ],
+ "resume": "Reshipped 2026-11-01 (target.zip fe00c50c); waiting on the portal. The heart ban.forcing_event BLOCK against task251 v5 predates the re-check and is the author's call.",
  "approved": null,
  "delivered": "2026-10-23",
  "portal": null,
@@ -79,6 +87,10 @@
   {
    "architecture": 6,
    "status": "SHIPPED 2026-10-23 (target.zip 535886d8) at the author's choice after round 4: call missed by both in-spec readers, ask B held by both, ask A held by sonnet and kept 7 of 10 by opus"
+  },
+  {
+   "architecture": 6,
+   "status": "RESHIPPED 2026-11-01 (target.zip fe00c50c): data_notes.md out, plain-word headers renamed, regulations 3.3 and 3.6 file the tutorial and the link loss, metadata and prompt drop the count; every graded figure frozen"
   }
  ]
 }

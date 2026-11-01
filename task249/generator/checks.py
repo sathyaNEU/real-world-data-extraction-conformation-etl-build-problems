@@ -171,7 +171,7 @@ def forks(target, C):
     ok(run(lambda Tt, t, Dd: S.exposure(Tt, t, D2)) == GOLD, "R2 SF9: Layer 1 item, the cancelled and missed review bookings")
     # SF10 the four hours are examination time: the clock stops for failures and pauses, and the latencies are
     # working time, so no stop moves a sitting's reach
-    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str)
+    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str).rename(columns=P.READ_BACK["events"])
     stopped = set(ev[ev["event"] == "SESSION_RESUME"]["booking_ref"])
     for t in T:
         if t["booking"] in stopped:
@@ -247,14 +247,14 @@ def rules(target, W, C, X):
     ok(D["s"].groupby(["person", "window"]).size().max() == 1, "R2: Layer 1 item, release 4's day-month-year dates: no "
        "candidate sits twice in a window, so the sittings order by window and no reading of the dates moves the call")
     cw = pd.read_csv(os.path.join(target, S.FILES["crosswalk"]), dtype=str)
-    lay = pd.read_csv(os.path.join(target, S.FILES["layouts"]), dtype=str)
+    lay = pd.read_csv(os.path.join(target, S.FILES["layouts"]), dtype=str).rename(columns=P.READ_BACK["layouts"])
     old = set(lay[lay["window"].str.startswith("2026")]["item_id"])
     ok(old <= set(cw["previous_item_id"]) and not (set(cw["previous_item_id"]) & set(cw["item_id"])),
        "R2: Layer 1 item, the renumbering: every 2026 layout number maps and no earlier number is a present one, so an "
        "unmapped read keys nothing and cannot pass silently")
 
     # R3c and the realism sweep
-    a = pd.read_csv(os.path.join(target, S.FILES["export3"]), dtype=str, keep_default_na=False)
+    a = pd.read_csv(os.path.join(target, S.FILES["export3"]), dtype=str, keep_default_na=False).rename(columns=P.READ_BACK["export3"])
     b = pd.read_csv(os.path.join(target, S.FILES["export4"]), dtype=str, keep_default_na=False)
     lat = list(a["item_seconds"]) + list(b["latency_ms"])
     ok(len(set(lat)) == len(lat), "R3c: no two sittings share a latency record")
@@ -270,7 +270,7 @@ def rules(target, W, C, X):
     cells = D["s"].groupby(["window", "centre"]).size()
     ok(cells.nunique() >= 0.7 * len(cells), "realism: sittings per window and centre vary (%d values over %d cells)"
        % (cells.nunique(), len(cells)))
-    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str, keep_default_na=False)
+    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str, keep_default_na=False).rename(columns=P.READ_BACK["events"])
     ev["t"] = pd.to_datetime(ev["event_utc"])
     first = ev[ev["booking_ref"] != ""].groupby(["booking_ref", "event"])["t"].min().unstack()   # reboots carry none
     last_end = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
@@ -300,7 +300,7 @@ def centre_view(target, ev, use_first_back):
     en = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
     where = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["centre_code"].first()
     halls = S.hall_stops(target, ev)
-    seat = pd.read_csv(os.path.join(target, S.FILES["seat"]), dtype=str)
+    seat = pd.read_csv(os.path.join(target, S.FILES["seat"]), dtype=str).rename(columns=P.READ_BACK["seat"])
     sess = dict(zip(seat["booking_ref"], zip(seat["session_date"], seat["session"])))
     net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t")
     out = set()
@@ -447,6 +447,23 @@ def gates(target):
         if f.endswith((".csv", ".md", ".eml")):
             txt = open(f, encoding="utf-8").read()
             ok("\u2014" not in txt and "\u2013" not in txt, "a dash in %s" % f)
+    # no file describes the data (dataset-generation 3): none by name, and no shipped document names the files' columns
+    import re
+    from pypdf import PdfReader
+    names = sorted(os.listdir(target))
+    ok(names == sorted(BLD.FILES[k] for k in BLD.PACK), "the pack is the listed files and nothing else")
+    ok(not [x for x in names if re.search(r"readme|dictionar|notes|manifest|codebook|schema|definition|guide", x, re.I)],
+       "no file under target/ is named as describing the data")
+    heads = set()
+    for f in files:
+        if f.endswith(".csv"):
+            heads |= {h for h in pd.read_csv(f, nrows=0).columns if len(h) >= 4}
+    for k, control in (("regs", "examination clock"), ("minutes", "panel")):
+        txt = " ".join(pg.extract_text() for pg in PdfReader(os.path.join(target, BLD.FILES[k])).pages)
+        find = lambda w: re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(w), txt) is not None
+        ok(len(txt) > 500 and find(control), "positive control: %s read through the column search" % k)
+        hit = sorted(h for h in heads if find(h))
+        ok(len(hit) <= 3, "%s names no more than three of the data files' columns %s" % (k, hit))
 
 
 def main(target, X=None):

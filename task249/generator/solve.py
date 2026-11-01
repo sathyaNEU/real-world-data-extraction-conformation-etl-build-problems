@@ -19,6 +19,7 @@ import pandas as pd
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import build as BLD
+import params as P
 
 FILES = BLD.FILES
 WINDOWS = ["2026-02", "2026-05", "2026-08", "2026-11", "2027-02", "2027-05", "2027-08", "2027-11"]
@@ -39,7 +40,7 @@ def lg(p):
 # ------------------------------------------------------------------ loading
 def load(target):
     j = lambda k: os.path.join(target, FILES[k])
-    a = pd.read_csv(j("export3"), dtype={"candidate_no": str, "booking_ref": str}, keep_default_na=False)
+    a = pd.read_csv(j("export3"), dtype={"candidate_no": str, "booking_ref": str}, keep_default_na=False).rename(columns=P.READ_BACK["export3"])
     b = pd.read_csv(j("export4"), dtype={"cand_no": str, "booking_ref": str}, keep_default_na=False)
     a["secs"] = [np.array([float(v) if v != "" else np.nan for v in s.split("|")]) for s in a["item_seconds"]]
     b["secs"] = [np.array([float(v) / 1000 if v != "" else np.nan for v in s.split("|")]) for s in b["latency_ms"]]
@@ -52,7 +53,7 @@ def load(target):
     s["w"] = s["window"].map({w: i for i, w in enumerate(WINDOWS)})
     cw = pd.read_csv(j("crosswalk"))
     old2new = dict(zip(cw["previous_item_id"], cw["item_id"]))
-    lay = pd.read_csv(j("layouts"))
+    lay = pd.read_csv(j("layouts")).rename(columns=P.READ_BACK["layouts"])
     lay["item"] = [old2new.get(i, i) for i in lay["item_id"]]
     L = {}
     for (win, f), g in lay.sort_values(["window", "form", "position"]).groupby(["window", "form"]):
@@ -249,7 +250,7 @@ HALVES = {"AM": "AM", "MORNING": "AM", "FN": "AM", "BATCH 1": "AM", "PM": "PM", 
 
 
 def events(target):
-    ev = pd.read_csv(os.path.join(target, FILES["events"]), dtype=str, keep_default_na=False)
+    ev = pd.read_csv(os.path.join(target, FILES["events"]), dtype=str, keep_default_na=False).rename(columns=P.READ_BACK["events"])
     ev["t"] = pd.to_datetime(ev["event_utc"])
     return ev
 
