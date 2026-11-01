@@ -158,6 +158,19 @@ The asks sit on the reading center's log and the equipment records, quantities t
 
 The full includer (REF7734 orders only, the fault day kept out) keeps all 34 (stress row). Zero device rows sit in the main call's population: no teleretinal read, re-photograph or cancellation is in the result export (M7, M8).
 
+## Leak review
+
+`leak.py --asof 2026-11-16` on the final cut: no LEAK; seven REVIEW lines, each ruled here (the capacity 7,200 and the floor are declared `stated_inputs`).
+- Sweep 4, clinical_ai_governance_standard_v3.pdf (camera, validation, capture, network, screen): harmless; "camera" occurs only in 4.2, the fault ask's WHAT, "capture" in 2.1 and 2.2 (the population's local date and the clinic of capture), "validation" in 2.3's reference standard; no sentence ties a camera to the AI's performance (checks.py R3c).
+- Sweep 4, retinacheck_operating_points.pdf (capture, carries, screen): harmless, the vendor's description of a result, its thresholds and its configuration.
+- Sweep 4, validation_study_protocol_2025.pdf (validation, analysis, network, screen): harmless, the study's own design and plan; it names no camera and carries no result.
+- Sweep 6, biomed_asset_register_2026-09-30.xlsx: harmless, equipment by location and its moves; no sensitivity, no operating point, nothing ranked on the decision question.
+- Sweep 6, biomed_service_tickets_2025-26.csv: harmless, repair tickets for every equipment class.
+- Sweep 6, retinacheck_site_configuration_2026-10-01.json: harmless, every site's current configuration (all at Standard since October 2025); it states the status quo and ranks nothing.
+- Sweep 6, retinacheck_site_dashboard_2026q3.xlsx: a declared distractor (metadata.json), referral and ungradable rates by site and quarter at Standard, not sensitivity.
+
+`guard.py heart`: WARN (repeat.gate_g against task255 v2, answered in the Draw). `guard.py surface`: one pair promoted for the author's adjudication, task280 against task281, back to back on the slot pairing (General Statistics & Data Science under Descriptive & Distribution Analysis) at surface 0.000. Differentiation: task280 rebuilds a broadband panel's quarter-hour delivery shares per hub from household tests (missing-data-censoring-measurement-error); this build carries a screening AI's validated sensitivity to clinics by the camera behind each image (robustness-analysis); the worlds, task types, files and drivers share nothing but the lane's objective.
+
 ## Architecture 2 record
 
 Drawn 2026-10-28 in General Statistics & Data Science / missing-data-censoring-measurement-error: Tallisford Power & Light's LED conversion phases, each phase's original-driver luminaires projected to their twelfth year, the 2027 group driver replacement program set where the projected share passed 45 per cent; the decisive step separated a maker whose drivers never wear out (a cured fraction) from the wear-out population a one-population Weibull fitted. Shipped, returned by the portal for determinism, repaired, then landed by the portal's responses; re-rooted 2026-11-01 at the Batch 3 queue reset, its world closed.

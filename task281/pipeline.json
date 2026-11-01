@@ -1,25 +1,26 @@
 {
  "task": "task281",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "general-statistics-data-science",
  "objective": "descriptive-distribution",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "The validation study's 89.4 per cent at Standard, pooled, by pilot or reweighted to each clinic's patient mix, files Standard at all twelve clinics (5,411 referrals); its images came from two camera models (73.3 against 95.7 per cent at Standard), and only each model's sensitivity, the camera behind each image recovered from the asset register's dated placements and carried by each clinic's own camera mix, moves Brackenfield, Hollinmoor and Rookwood to High and Kestle Road and Veldane to Enhanced (6,630 referrals).",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 on target.zip 11435654: no LEAK, seven REVIEW lines ruled harmless in the note",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "0.08 task181 draft lineage and task230 v2 lineage; test.same_puzzle_older differentiated against task181 v6"
+  "heart": "WARN 2026-11-01 (repeat.gate_g vs task255 v2, answered)",
+  "surface": "one promoted pair for the author's adjudication: task280 vs task281, back to back on the slot pairing, surface 0.000",
+  "nearest": "0.08 task181 draft lineage and task230 v2 lineage"
  },
  "judge": {
   "verdict": "",
@@ -40,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "Architecture 3 drawn and filed 2026-11-01 (card at WARN): a community health center network's diabetic retinopathy screening AI, the operating point each clinic runs in 2027. Next: the design note's sections and precut.py, then the generator, the pack, the goldens and every free gate.",
+ "resume": "Stage 3 complete 2026-11-01 (architecture 3, Corrowan Valley Community Health, RetinaCheck operating points by clinic). Free gates green on the final cut. Next: stage 4 in the main session, the isolated leak reader and the determinism judge, then fixes in the generator (python3 task281/generator/build.py rebuilds everything, checks.py, verify.py and ceiling.py re-measure).",
  "approved": null,
  "delivered": null,
  "portal": null,

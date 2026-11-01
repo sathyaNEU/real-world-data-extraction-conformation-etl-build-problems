@@ -262,7 +262,7 @@ def brief(P, G, f, order, png, path):
     box(0.5, 6.3, 5.6, 0.9, [("Sources: local validation study 2025 (CVCH-QI-2025-01); RetinaCheck result export, "
                               "screenings Oct 2025 to Sep 2026; Biomedical Engineering asset register and location "
                               "history; CAI-03 v3 section 3; Pellam agreement PERC-CV-2027.", 9, False)])
-    box(12.6, 7.05, 0.5, 0.3, [("1", 9, False)])
+    box(13.0, 7.1, 0.3, 0.3, [("1", 9, False)])
     box(0.5, 1.5, 5.6, 5.6, [
         ("Recommendation", 16, True),
         ("Standard at %s." % std, 13, False),
