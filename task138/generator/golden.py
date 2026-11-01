@@ -204,7 +204,7 @@ def write_book(path, S, F):
     from openpyxl.chart import BarChart, LineChart, Reference
     bar = BarChart()
     bar.type = "col"
-    bar.title = "Dunraith planning peak against the 104.0 MW firm rating, summers 2027 to 2031"
+    bar.title = "Dunraith's planning peak passes its 104.0 MW firm rating in every summer from 2027"
     bar.y_axis.title = "MW"
     bar.x_axis.title = "Summer"
     bar.add_data(Reference(ws, min_col=4, min_row=4, max_row=9), titles_from_data=True)

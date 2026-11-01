@@ -1,253 +1,248 @@
-# task138: Orrinsford levee crown review for the 2027 capital plan (architecture 2)
+# task138: Dunraith substation transfer requirement for the 2027 to 2031 construction work plan (architecture 3)
 
-Private, never ships. Re-rooted on 2026-11-01 at the Batch 3 queue reset: architecture 1 (the Kestrel Bend Irrigation
-District's 2027 season order, shipped 2026-10-15 with no portal result) is closed with its world and kept in
-`## Architecture 1 record`; its card identity is in the card's `lineage`. Seed FC09 numbered the slot; nothing of its
-world, decision or quantity is used here beyond the objective.
+Private, never ships. Re-rooted on 2026-11-01 after architecture 2 (the Orrinsford levee crown review) was spent at the
+re-judge on Gate H3; its record is in `## Architecture 2 record` and its reports are kept with the `_arch2` suffix.
+Architecture 1 (the Kestrel Bend season order) is in `## Architecture 1 record`. Seed FC09 numbered the slot; nothing of
+its world, decision or quantity is used beyond the objective. Both earlier worlds are closed.
 
 ## Draw
 
 | Axis | Value |
 |---|---|
-| Card | `.claude/skills/fingerprint/cards/task138.json`, architecture v2, registered 2026-11-01T17:20:03Z; `guard.py check` WARN only (repeat.gate_g, repeat.question_form; NOTEs differentiated against task104, task171 v5, task168); re-checked on the registered card as the draw's last act |
-| Domain / task type | physical-environmental-sciences / hydrology-flood-frequency (client domain physical-environmental-sciences; the task type serves Forecasting): the 1 per cent annual chance flood at a gauged town, carried through the hydraulic model to a levee crown |
-| Objective | Forecasting & Predictive Modeling: the flood the levee must hold in the years after the review, the 1 per cent annual chance peak at Orrinsford for the river as it now runs, a window not yet open |
-| Shape | 04 (setting one dial): the uniform crown raise 0 to 4 ft, each setting with the discharge it holds and its annual chance (5 graded figures), the call (1) and the design discharge (1); asks A (crown settlement, eight reaches) and B (warning lead time, seven floods); the chart with named parts (frequency curve, record curve, five capacity lines, the 1 per cent line, about 5); the two files (2): about 27 criteria |
-| Decision | `dial_setting`, answer unit `count` (whole feet of crown raise) |
-| Mechanism | gap population then time (the flood population the record samples is not the river's present one, and the change is dated by the levee raises); pattern none; generators G16 then G6; Gate G `forecasting`; layer 2 family `field_method`, pattern `own:post-raise-two-gauge-record-extension`; strategy `other` |
-| Furniture | forum `trustees_or_governors` (the district's Board of Trustees adopts the capital plan), forcing event `budget_or_appropriation` (the 2027 capital plan), org family `utility_or_infrastructure` (a levee and drainage district), role family `policy_adviser` (the district engineer reviews the levee against the district's standard), context artifact `published_series` (the State Water Survey's annual peak export), calibration none, question form `whether` |
-| World | Orrinsford, a fictional Midwestern river town on the Tamsen River; the Orrinsford Levee and Drainage District (OLDD); the State Water Survey's gauges at Coyle Bridge (RM 41.0, 4,930 sq mi) and Orrinsford (RM 12.6, 6,480 sq mi); the State Department of Natural Resources' levee inventory; six agricultural levee districts on the 28 miles between the gauges, raised to the 1 per cent flood between 1996 and 2008 |
-| Spine | `SWS_05432100_hourly_WY2017-2026.csv`, 87,635 hourly rows at Coyle Bridge (ask B); the main call's record is the annual peak export (280 rows, five gauges) |
-| Deliverables | `levee_raise_review.xlsx` (raise options, the present-river series and fit, settlement by reach, closure lead times), `levee_raise_memo.pdf` (one page to the Board with the frequency chart) |
-| People | `guard.py names --geo US --seed 138`: Dennis Zhang (district engineer, LS-02 and OP-04), Kristin Lucas (land surveyor, both crown surveys), Eric Thornton (State Water Survey hydrologist, the skew release), Jesus Hernandez (hydraulic engineer, the 2019 update); none appears in the prompt |
-| As of | 9 November 2026 (the district engineer's review for the 2027 capital plan) |
+| Card | `.claude/skills/fingerprint/cards/task138.json`, architecture 3, registered 2026-11-01T19:49:38Z; `guard.py check` PASS at registration (redrawn off G14, G7, G6, filed_standard and committee_or_panel). Re-run on the final cut it BLOCKs on the window: builds that stood between task273 (registered 01:51Z) and this card at registration re-registered after it, so task273 (energy-systems-utilities / forecasting, capacity_planner, operations_log) and task125 and task281 (executive_team) now sit in its last three. Open for the main session (`## Build record`). |
+| Domain / task type | energy-systems-utilities / load-forecasting (client domain energy-systems-utilities; the task type serves Forecasting): a distribution substation's summer planning peak for the construction work plan |
+| Objective | Forecasting & Predictive Modeling: the planning peaks of summers 2027 to 2031, windows not yet open, with an operating change (CVR on every feeder from 1 June 2027) the history never ran |
+| Shape | 02 (a quantity per period): the transfer requirement for each of five summers (5) and the planning peak for each (5), the relief at the planning peak and the weather-normal peak as components; ask A (members' energy by feeder, 8) and ask B (the feeders' peak 15-minute demand on the ten hottest days of 2026, 10); the chart sheet; about 31 criteria |
+| Decision | `quantity_figure`, answer unit `count` (MW in whole 0.5 MW switching blocks) |
+| Mechanism | gap population then time (the trial's hours are not the planning peak's hours, and the change starts in a window the history never saw); pattern none; generators G8 (reachability against magnitude: the change reaches the voltage-sensitive load, which is the small part at the peak) and G14 |
+| Forum and forcing | executive_team; budget_or_appropriation (the 2027 construction work plan and budget) |
+| Org and world | cooperative_or_member_body: Breckwater Electric Cooperative, a member-owned distribution cooperative in a fictional Plains state, its wholesale supplier Westmarch G&T; people from `guard.py names`: Julie Gibbs, Peter Roman, Desiree Thompson, Bailey Becker, Sherry Nixon |
+| Calibration and context | pilot_log (the 2025 week-on, week-off CVR pilot on three feeders); operations_log (the regulator controllers' event log) |
+| Layer 2 | estimand_identification, own: the voltage reduction's effect at the design conditions |
+| Shell | question form how-much; second-sentence opener "Work"; rounding opener "Transfers are"; one deliverable, `dunraith_planning.xlsx` with a chart sheet (voice-check quota PASS); architecture 2's shell was whether, alongside, pdf+xlsx |
 
-**Candidates screened before this one** (each in `## Tried and rejected`): TV audience flow after a lead-in change
-(spent, task115 and task174), hospital weekend discharges (spent, task127 and task170), a gauge rating drifting with
-channel aggradation, rating hysteresis on the rising and falling limbs (spent at the abstraction test, task279), a
-reservoir regulating the flood record, landfill airspace with waste settlement. `guard.py slots` on the chosen
-mechanism's nouns (levee floodplain, attenuation storage) and its setting's (levee raise, flood frequency, Bulletin)
-returned no slot.
+Data-native sentence: Dunraith's evening peak on a 101 F day is mostly air-conditioner compressors, which draw nearly
+the same power at a lower voltage, so a voltage cut that takes 2.4 per cent off the feeders' load over a pilot summer's
+hours takes about 1.1 per cent off at the planning peak, and the pilot's own afternoons at 99 F or more show it.
 
-**Data-native sentence.** Orrinsford's own annual peak record holds two rivers: until the last of six agricultural levees
-between the gauges was raised (in force from water year 2009) the floodplain behind them filled in every flood above
-about 46,000 cfs at Coyle Bridge and cut the town's peak, so the record's two great floods (1970 and 1973, Orrinsford at
-0.71 and 0.80 of Coyle Bridge against 1.064 since 2009) are smaller than today's river would make them, while every smaller flood, most of the
-record, is untouched; the change lives only in the upper tail the 1 per cent flood is read from, leaves no trend or
-step, and shows only against a second gauge above the reach.
+Abstraction: an operating change trialled on a few units, switched in alternate weeks against unswitched peers, is
+carried to a forward peak whose conditions the trial's average does not represent; the change acts only on part of
+the load, and that part shrinks toward the peak.
 
-**Abstraction test.** Stripped of nouns: the deciding quantity is an upper quantile of a long record whose largest
-members were produced under a regime that ended part way through, a regime that never touched the ordinary members,
-and it is recovered by carrying a second, unaffected long record across at the relation the two show since the regime
-ended. The nearest drivers on file (task104, task171 v5, task168) recover a level, a rate or a share, not a tail
-quantile of a non-homogeneous record; differentiated on the card.
+Literal-reader test at the draw (the H3 lesson): the filed sentences, read word for word with the default's inputs.
+Criteria 3.1 makes the planning peak the highest hourly load on a design-temperature day with every feeder run as the
+summer's operating plan sets it; 3.3 adjusts the weather-normal peak by the change's effect on the substation load at
+the planning peak. The default's inputs are the line of 3.2 and the pilot's effect over every hour (or at each day's
+peak hour, mostly mild days): neither is the effect at the planning peak, so the default is non-compliant on a literal
+reading, and the analysis is how to estimate, from the pilot, the quantity 3.3 already names. Run with no CVR at all, the
+default fails 3.1 and 3.3 outright. The default is an easier method on correct data, inside a filed WHAT that names what
+it leaves out; no shipped artifact is contradicted by the truth.
+
+Dropped before this draw: in `## Tried and rejected`.
 
 ## Survivor anatomy
 
-- Actor: the deciding property, whether a year's Orrinsford peak was cut by upstream floodplain storage that no longer exists, has no column anywhere: the peak export carries discharges, the inventory carries each segment's raise year, and the property is the relation between the two gauges' peaks in the years before and after those raises.
-- Link: the comparison of Orrinsford's peaks against Coyle Bridge's by water year, split at the in-force year of the raises on the segments between the two gauges' river miles (inventory Segments and Gauges sheets), which LS-02's frequency method never asks for; no key, code or sentence ties the raise years to the peak record.
-- Reflex: LS-02's own method (log-Pearson Type III by moments with the weighted skew) fitted to the Orrinsford record as published, which meets its window of one peak for every water year since 1962, is rung 0 and files no raise (95,430 cfs, 0 ft).
-- Back-test: the textbook route validates: Mann-Kendall p 0.43 and Pettitt p 0.73 on the record, no Bulletin 17B low outlier, the agency's peak codes flag nothing at Orrinsford, and Fenwick downstream (100,192 cfs at site) agrees with the town.
-- Second use: every file the decisive step reads is in the pack for its own reason: the peak export is the record LS-02 fits and carries the whole basin as the agency exports it; the inventory carries the town levee's crown at the model cross-sections and its bridge closures, which the crown check needs, beside every other segment.
-- Shock: the movement reads as ordinary hydrology: big floods smaller downstream through floodplain storage is textbook, the town record has no trend, step or outlier, and the two low ratios sit among 65 years of ratios near 1.06; the golden's answer is not an interval of any sort of the gauges or years.
-- Pins: LS-02 section 2 files the WHAT (the 1 per cent flood at the Orrinsford gauge "for the river, its floodplain and its levees as they stand at the time of the review") and section 3 its window (one annual peak for every water year since the gauge opened in 1962); no filed sentence names the upstream raises, the record's homogeneity, a second gauge or a relation, and the published record meets both sentences as they read, so the pins do not hand the step over.
+- Actor: the members' air conditioners, a constant-power load with no column of its own; the feeders' MW mix it with
+  the voltage-sensitive load and only the hour and the day's heat say how much of each is there.
+- Link: the pilot feeders against the comparison feeders, hour by hour, joined to the day's maximum at the airport (a
+  standard-time export one hour off the historian's daylight clock); no key invites the join to the weather.
+- Reflex: the field's method, the trial's CVR effect as an on-week against off-week comparison against the unswitched
+  feeders over the pilot (the average reduction a CVR evaluation reports), sits at rung 1.
+- Back-test: the pilot's relief by the day's maximum falls from 2.3 per cent on afternoons under 85 F to 1.1 per cent at
+  99 F or more, so the estimate at the planning peak's conditions is read where the data reach them, not extrapolated.
+- Second use: the relief at the planning peak is the figure the 2028 to 2031 peaks carry too; every summer's transfer
+  moves with it, so one decisive step moves five graded figures and five planning peaks.
+- Shock: CVR from 1 June 2027 on every feeder, a change none of the five summers ran except the pilot's three feeders
+  in alternate weeks of 2025.
+- Pins: the WHAT is filed (3.1, 3.3: the effect at the planning peak; 3.2's line, window, threshold, base summer and
+  growth; 4.1's blocks); the HOW of the pilot estimate is open and forced by the data (every hot-afternoon reading
+  agrees, SF12 and SF13).
 
 ## Default path
 
-1. Read LS-02: the design flood is the 1 per cent annual chance peak at the Orrinsford gauge, fitted as log-Pearson Type III by moments with the station skew weighted with the SW-16-03 regional skew (region 2, -0.08, mean square error 0.14).
-2. Take the 65 Orrinsford annual peaks from the State Water Survey export (one for every water year 1962 to 2026, the window LS-02 section 3 sets, the provisional 2026 included) and fit: mean of logs 4.4734, standard deviation 0.2089, station skew 0.281, weighted skew 0.133; the 1 per cent discharge is 95,430 cfs.
-3. Check the record before trusting it: Mann-Kendall (p 0.43) and Pettitt (p 0.73) find no trend or change point; no low outlier.
-4. Read Table 4 at that discharge (linear in discharge), add LS-02 freeboard (3.0 ft, 4.0 ft within 100 ft of a bridge, plus the upstream allowance) and compare with the 2024 crown at the 21 cross-sections: the worst, the railroad closure at 118+70, has 1.16 ft to spare.
-5. File no raise; each raise's annual chance of exceeding what it holds is 0.7, 0.5, 0.4, 0.3 and 0.2 per cent.
+1. Read the planning criteria: fit 3.2's line to five summers of daily peaks against the airport's daily maximum,
+   102.9 MW at 101 F for 2024, grown at the base case 0.95 per cent a year: 105.9 MW in 2027.
+2. See that the 2027 operating plan runs CVR on every feeder and that 3.3 calls for its effect.
+3. Estimate the effect from the 2025 pilot the way a CVR evaluation does: pilot feeders against comparison feeders,
+   CVR weeks against normal weeks, every hour: 2.4 per cent (or each day's peak hour, mostly mild days: 1.5 per cent).
+4. Take it off and round the excess over 104.0 MW up to 0.5 MW blocks.
 
-Ends on: no raise (0 ft), design discharge 95,000 cfs.
-Golden: raise 2 ft, design discharge 110,000 cfs.
+Ends on: transfers of 0, 0.5, 1.5, 2.5 and 3.5 MW for 2027 to 2031 (no transfer in 2027; from each day's peak hour,
+0.5 to 4.5 MW)
+Golden: transfers of 1.0, 2.0, 3.0, 4.0 and 5.0 MW (planning peaks 105, 106, 107, 108 and 109 MW, the relief at the
+planning peak 1.1 per cent)
 
 ## Stump sentence
 
-The default path fits LS-02's frequency curve to Orrinsford's record as published and files no raise (0 ft, a 95,000 cfs
-design flood) because it never asks whether the 1962 to 2008 peaks belong to the river as it now runs: the six levees
-between Coyle Bridge and Orrinsford, all raised by October 2008, no longer let their floodplains take the top off a big
-flood, which shows only when Coyle Bridge's record is set against the raise years; rebuilt for the present river the
-design flood is 110,000 cfs and the crown needs 2 ft.
+The capable planner takes the pilot's CVR effect over every hour, 2.4 per cent, off the weather-normal peak and files
+transfers of 0, 0.5, 1.5, 2.5 and 3.5 MW (or 0.5 to 4.5 MW from each day's peak hour, mostly mild days), but on the
+hottest afternoons air-conditioner compressors carry most of Dunraith's load and hardly respond to voltage, so the cut
+takes 1.1 per cent off at the planning peak and the transfers are 1.0, 2.0, 3.0, 4.0 and 5.0 MW.
 
 ## Three rules
 
-Task type: hydrology-flood-frequency, the 1 per cent annual chance flood estimated from a gauged annual peak record and carried to a design level, a task type that serves Forecasting.
-Domain test: the deciding quantity is the 1 per cent annual chance peak discharge at the Orrinsford gauge, estimated the field's way with a log-Pearson Type III frequency curve (moments on logs, weighted skew, the Bulletin 17 family) and read through the hydraulic model's water surfaces to the crown with freeboard.
-Swap: "Does the warehouse need a bigger dock to meet its standard against its 1 per cent busiest day, now that its suppliers' depots were enlarged?" stops making sense: there is no stage at which upstream storage starts to fill, no peak cut only above it, and no second meter above the reach whose relation changes when the storage is gone.
-Layer 1: the agency's export lists each annual peak by date with no water year column (Oct to Dec peaks belong to the next water year), three significant figures, a provisional 2026 approval code, estimate codes and gaps on the other gauges; Table 4 sits in the consultant's PDF with station strings; the DNR inventory reports raises as the sponsors wrote them ("Oct 1998", "2003-11", "Sept 2005"); the asks' telemetry, surveys and benchmarks carry two vertical datums, a re-stationed levee, a gauge datum change and a logger clock change (ask devices, ledgered).
-Layer 2: family field_method, record homogeneity: a flood frequency curve assumes its record is one population of floods under the conditions the estimate is for; upstream levee raises broke that for the large floods only, and the field's remedy (adjusting the record to present conditions through a long-record gauge above the change) has to be built from the two gauges.
-Decisive step: recognising that the Orrinsford peaks before water year 2009 belong to a river whose upstream floodplain still held back big floods, so the published record is not homogeneous with the river as it now runs, and carrying Coyle Bridge's long record across at the relation the two gauges show since the last levee raise.
-Not semantics: every field, code, unit and definition read correctly (water years, approval codes, three-figure peaks, Table 4, LS-02's freeboard and skew rules) still gives 0 ft on the published record; nothing in any field marks the attenuated years, and the agency's codes say nothing about them.
-Not rule application: the filed rules fix the WHAT (s.2, the river as it stands; s.3, one peak for every water year since 1962) and the method, and the published record satisfies both as they read, so LS-02 executed word for word files 0 ft; no rule says the 1962 to 2008 peaks are not the present river's or how to rebuild them. The window rules out the shortcut that keeps only the 18 water years since the last raise, and it does not name the rebuild. The enumerated family (the at-site fit, post-raise years only, whole-record relation, Coyle Bridge unscaled, since 1994, drainage-area ratios at 0.5 to 1.0) spreads 93,473 to 136,398 cfs, 0 to 6 ft; the standing family once the raises are seen (13 constructions: six relation forms fitted over 2009 to 2026, the inverted regression, mean of ratios, three fitting windows, carrying only the pre-raise years, keeping larger observed peaks) spreads 109,813 to 110,527 cfs, every member 2 ft with the same five chances; the ruling-out is quiet, two ratios out of 65 visible only with both gauges side by side by water year.
-Analyst test: a strong analyst who reads every rule, takes LS-02's window as given (one published peak for every water year since 1962) and fits its frequency curve to the Orrinsford record as published, after homogeneity tests that pass, files no raise (0 ft) with a 95,000 cfs design flood; the window is a WHAT (which years the record covers), and judging whether those years' peaks are the present river's is the decisive analysis it leaves open.
-Estimand: LS-02 section 2 (`OLDD_LS-02_levee_standard_rev3.pdf`): the peak discharge at the Orrinsford gauge with a 1 per cent chance of being exceeded in any year, for the river, its floodplain and its levees as they stand at the time of the review, fitted (section 3) to one annual peak discharge for every water year since the gauge opened in water year 1962, discharges from the State Water Survey's records (section 8); the crown is the latest certification survey's (section 6) and a raise is uniform in whole feet (section 7). The window is part of the WHAT: it says which years the present-river record covers, never how a year's present-river peak is found.
-No decoy: nothing is planted: no memo, prior review, published design flood or stakeholder figure ships; the hydraulic study gives water surfaces by discharge and no design discharge; the raise years are the sponsors' own inventory entries.
-No certified replay: no certified design discharge, frequency curve or prior review ships, so the method is never recovered by matching published figures; LS-02 files the frequency method openly and the record's construction is the analysis.
-Lesson: an at-site flood frequency curve is only as good as the homogeneity of its record, and upstream flood-control works change its upper tail without leaving a trend; the check is a second gauge set against the works' in-force dates; no build on file teaches record homogeneity broken by upstream floodplain storage (`guard.py slots` returns nothing on levee, floodplain or attenuation).
+- Task type: load forecasting (energy-systems-utilities), the summer planning peak of a distribution substation five
+  years out, worked the way a utility planner works it, weather-normalised and carried at the load forecast's growth.
+- Domain test: the deciding quantity is a planning peak, the load a substation carries at the design temperature, and
+  how far a voltage cut lowers it depends on what the load is made of: compressors that draw constant power against
+  load that falls with voltage; swap in another field's nouns and the voltage-dependence that sets the answer is gone.
+- Swap: "hospital beds" for "MW" and "flu season" for "summer" keeps the arithmetic but loses why a cut acts on part
+  of the load only, which is what moves the effect between the trial's average and the peak.
+- Layer 1: a historian layout change (kW, hour-ending, one column a feeder, then MW, hour-beginning, long), airport
+  observations in Celsius on local standard time, specials between routine reports, a late and a missed pilot switch,
+  overnight Bad hours, tables inside PDFs; each asserted neutral (checks R2 lines).
+- Layer 2: estimand identification: the effect at the planning peak's own conditions, read from the trial's hottest
+  afternoons against unswitched peers, not the trial's average effect.
+- Decisive step: read the voltage cut's relief on the pilot's afternoons of days at 99 F or more, pilot feeders against
+  the unswitched feeders, because the relief shrinks with the heat: 1.1 per cent, not the 2.4 per cent of every hour.
+- Not semantics: no field, code or unit flips the answer; every reading of every column gives the same rows, and the
+  answer moves only with which pilot hours stand for the planning peak.
+- Not rule application: no filed rule says which hours; 3.3 names the quantity, and a planner executing every rule
+  still takes the trial's average effect, the effect a CVR study reports, and lands on 0 MW in 2027.
+- Analyst test: a strong analyst who cleans the data and reads every rule still files 0, 0.5, 1.5, 2.5 and 3.5 MW by
+  taking the pilot's effect over every hour (asserted on the clean truth, R3a); the easy route is wrong.
+- Estimand: the highest hourly Dunraith load on a 101 F day in each summer 2027 to 2031 with CVR on every feeder
+  (3.1), carried from the 2024 line at 0.95 per cent a year less the cut's effect at that hour (3.3).
+- No decoy: no document states an effect size, a CVR factor or a savings figure; the test plan states settings and a
+  schedule only; nothing ranks the transfers.
+- No certified replay: no shipped table or memo computes a planning peak, a relief or a transfer; the forecast workbook
+  carries growth rates only.
+- Lesson: the arch 2 H3 death (a filed procedure read word for word landing on the default) is answered by 3.3 naming
+  the effect at the planning peak, which the default visibly substitutes, and by data that are correct throughout.
 
-**Layer 1 inventory** (each asserted neutral in `checks.py`, L1 and SF rows):
+## Layer 1 inventory
 
-| Item | System that writes it | File | Natural mishandling | Effect |
+| Item | System that writes it | File | Natural mishandling | Neutral (asserted) |
 |---|---|---|---|---|
-| Peaks by date, no water year column | SWS peak export | annual peaks CSV | label by calendar year | same call and bin (SF8) |
-| Published peak times in local standard time | SWS peak export | annual peaks CSV | read as UTC | ask B only (the clock routes) |
-| Provisional WY2026 | SWS approval workflow | annual peaks CSV | drop it | same call and bins (SF12) |
-| Estimate codes, missing years | SWS records at Ashby, Gale Creek, Fenwick | annual peaks CSV | none on the main gauges | none (SF13) |
-| Table 4 in a PDF, station strings | consultant's report | Table 4 PDF | parse error | asserted read (L1) |
-| Raise dates in the sponsors' words | DNR inventory | inventory XLSX | read "Oct 2008" as WY2008 | same call and bin (SF14) |
-| NGVD 29 survey and gauge datums | the 2016 surveyor, the ORF2 logger header | 2016 survey, ORF2 export | not converted | ask A and B only (ledgered) |
-| Levee re-stationed in 2019 | the 2019 tie-in project | 2016 survey | join by station number | ask A only (device) |
-| Coyle Bridge gauge datum lowered October 2019 | SWS field office | Coyle hourly, OP-04 | 21.0 ft throughout | ask B only (device) |
-| The old ORF2 logger's records in CST, three days beside the new one | the old and new loggers | ORF2 export | read as UTC | ask B only (device) |
+| Historian layout change | the retired SCADA historian | DUNRAITH_FDR_KW_2022-2023.csv | hour-ending labels read as hour-beginning; kW | SF5, R2 |
+| Standard-time airport clock | the climate data service | mossford_ap_obs_2022-2026.csv | days cut at standard-time midnight | SF3, R2 |
+| Celsius readings | the ASOS export | mossford_ap_obs_2022-2026.csv | rounded to whole F | SF4, R2 |
+| Specials | ASOS | mossford_ap_obs_2022-2026.csv | counted with routine reports | SF17, R2 |
+| Late and missed pilot switch | regulator controllers | VR_event_log_DUN_2025.csv | the plan's schedule used | SF10, SF11, R2 |
+| Overnight Bad hours | the new historian | dunraith_feeder_mw_2024-2026.csv | filled or zeroed | SF16, R2 |
+| Tables inside PDFs | the cooperative's documents | five PDFs | none (positive control) | verify.py |
 
 ## Readability screen
 
 | Rung | Column or one join | Field reflex | Named in a document | Helper narration | Largest anomaly | File read only by it | Verdict |
 |---|---|---|---|---|---|---|---|
-| Rung 0, LS-02 fit to the published record | the record is the column | yes, the reflex | LS-02 sections 2 and 3 | none | no | no | readable |
-| Rung 1, homogeneity tests | one series | yes (Bulletin 17C advises it) | no | SW-16-03's generic limitation line | no | no | readable |
-| Rung 2, post-raise years only | needs the raise years | no | no | none | no | no | silent |
-| Rung 3, Coyle Bridge at the whole-record relation | one join by water year | partly (record extension) | no | none | no | no | silent |
-| Decisive, the present river rebuilt from Coyle Bridge at the post-raise relation (decisive) | no column; two files joined by water year and split by in-force years from a third sheet | no | no | none | no (two ratios among 65) | no (the inventory and the Coyle Bridge rows each have their own use) | silent |
+| Rung 0, no CVR | the 3.2 line | yes | 3.2 | none | no | no | readable |
+| Rung 1, the pilot's effect over every hour | one join of the log to the historian | yes, the CVR evaluation's average | no | none | no | no | readable |
+| Rung 2, each day's peak hour | the same join, one hour a day | partly | no | none | no | no | silent |
+| Rung 3, the decisive: the effect on the pilot's hottest afternoons (decisive) | three files joined: log, historian, airport by day | no | no | none | no | no | silent |
 
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | design flood | 1 per cent annual chance peak at Orrinsford for the river as it now runs, over one peak for every water year since 1962 | 1 per cent of the published record as it stands | 0 ft | LS-02 s.2 and s.3 file the estimand and its window; the published record is an easier method on the same estimand, not another reading |
-| SF2 | annual chance per raise | exceedance of the discharge the raised levee holds with freeboard | exceedance of the discharge held to the crown | figures move | the prompt's "with its freeboard" and LS-02 s.7 |
-| SF3 | crown | the 2024 certification survey (the inventory's crown sheet equals it at all 21 cross-sections) | the 2016 survey, or the 2024 crown less projected settlement | 2 ft either way | LS-02 s.6, "the latest certification survey"; asserted 2 ft with three more years of settlement |
-| SF4 | where the crown is checked | the 21 cross-sections of Table 4 | every 50 ft survey shot | same raise and bins | asserted (same call) |
-| SF5 | 4 ft freeboard | within 100 ft of a bridge or closure | only at the bridge stations | same call | no other cross-section within 100 ft (asserted) |
-| SF6 | Table 4 interpolation | linear in discharge | log-linear | same raise and bins | LS-02 s.4; asserted same |
-| SF7 | which stations are bridges | 62+40 and 118+70 | none | same call | inventory Structures and the Table 4 marks agree (asserted) |
-| SF8 | annual peak year | water year | calendar year labels, or calendar-year maxima | same call and bin; maxima drop water years' peaks | asserted; LS-02 s.3 (one peak for every water year) |
-| SF9 | raise | uniform, whole feet | fractional or local raises | not an option | LS-02 s.7 |
-| SF10 | regional skew | region 2, -0.08 and 0.14 (Pell and Marrow counties) | another region | not licensed | SW-16-03 Tables 1 and 2 |
-| SF11 | 1 per cent | annual exceedance probability 0.01 | none | same call | LS-02 s.2 |
-| SF12 | provisional 2026 | included | dropped | same call and bins | asserted |
-| SF13 | estimate codes | on other gauges only | dropping estimated years | same call | asserted (no code at Orrinsford or Coyle Bridge) |
-| SF14 | first fully raised year | water year 2009 (raise reported Oct 2008) | 2008 | same call and bin | asserted |
-| SF15 | skew used | weighted | station skew only | 4 ft | LS-02 s.3 files the weighting |
-| SF16 | upstream allowance | 0.5 ft at 0+00 to nothing at 180+00 | none | figures move | LS-02 s.5 |
-| SF17 | ask A points | crown shots matched by position (every 2016 shot on today's levee pairs one to one with a 2024 shot), structures in or out | structures included; median per reach; the difference of the two surveys' reach means | same bins | asserted |
-| SF18 | ask B crossing time and rounding | interpolated within the hour, rounded | first hour at or above, last hour below, truncation | same whole hours (every lead's fraction 0.1 to 0.4) | asserted |
-| SF19 | ask B floods | every rise of the Orrinsford stage through the Main Street sill since October 2016 | none | seven floods | asserted |
-| SF20 | ask A datum | NAVD 88 = NGVD 29 + 0.27 at every district benchmark | averaging a subset | same | every pair gives 0.27 (asserted) |
-| SF21 | which years | one annual peak for every water year 1962 to 2026 | only the 18 water years since the last raise (104,714 cfs, 1 ft) | 1 ft | LS-02 s.3, "every water year since the Orrinsford gauge opened in water year 1962" |
-| SF22 | records | discharges from the State Water Survey's published records | every year's peak used as published | 0 ft | LS-02 s.8 names the source, not the years' values; s.2 sets the river they describe (asserted: no sentence says the peaks are the published ones) |
+| SF1 | summer | June to September | May to September | same call | criteria 2 files it |
+| SF2 | the five summers | 2022 to 2026 | 2021 to 2025 | not available | criteria 3.2, five most recent complete |
+| SF3 | day of the maximum | local daylight day | the export's standard-time day | same call | asserted |
+| SF4 | temperature units | Celsius to F unrounded | whole F | same call | asserted |
+| SF5 | old historian labels | hour-ending | hour-beginning | same call | asserted |
+| SF6 | pilot days in the line | as run | dropped, or relief added back | same call | 3.2 "as they ran"; asserted |
+| SF7 | base summer | 2024, the middle summer | 2026 | not taken | 3.2 files it |
+| SF8 | growth | compounded yearly | simple | not taken | 3.2 files it |
+| SF9 | growth case | base | high or low | not taken | 3.2 files it |
+| SF10 | pilot weeks | the regulator log | the test plan's schedule | same call | asserted |
+| SF11 | hours with a switch inside | left out | counted by the start | same call | asserted |
+| SF12 | the planning peak's conditions | days at 99 F, 16:00 to 21:00 | 98 or 100 F, other windows, weekdays, each hot day's peak hour | same call | asserted (relief 1.04 to 1.14 per cent) |
+| SF13 | relief estimator | ratio of means | a line in the day's maximum read at 101 F, mean of daily ratios | same call | asserted |
+| SF14 | transfer basis | unrounded peak | peak to the nearest MW | same transfers | asserted |
+| SF15 | CVR in summer 2027 | the whole summer | part | not taken | operating plan 3.1, from 1 June 2027 |
+| SF16 | Bad hours | left out | filled | same call | criteria 5; asserted |
+| SF17 | specials | counted | routine only | same call | asserted |
+| SF18 | ask A, 30 June switching minutes | day on the old feeder | pro-rated | same figures | asserted |
+| SF19 | ask B, the ten hottest days | local days | standard-time days | same ten | asserted, 1.44 F gap at the tenth |
+| SF20 | ask B, interval ending at midnight | previous day | next day | same figures | asserted |
+| SF21 | ask B, estimated intervals | kept | dropped | same figures | asserted, overnight only |
+| SF22 | ask A, a meter's set day | new multiplier | old | data decide | the kWh falls twentyfold on the set day |
 
 ## Ladder
 
-| Rung | Construction | Design discharge (cfs) | Raise | Annual chance by raise 0 to 4 ft (%) |
+| Rung | Handling | Relief | 2027 planning peak | Transfers 2027 to 2031 (MW) |
 |---|---|---|---|---|
-| 0 | LS-02 fit to the published Orrinsford record, 1962 to 2026 | 95,430 (95,000) | 0 ft | 0.71, 0.54, 0.41, 0.31, 0.24 |
-| 1 | rung 0 after Mann-Kendall (p 0.43) and Pettitt (p 0.73) | 95,430 | 0 ft | as rung 0 |
-| 2 | only the 18 water years since the last raise (outside LS-02 s.3's window) | 104,714 (105,000) | 1 ft | 1.13, 0.89, 0.70, 0.56, 0.45 |
-| 3 | Coyle Bridge's record at the whole-record relation (0.969) | 100,546 (100,000) | 0 ft | 0.94, 0.75, 0.59, 0.47, 0.38 |
-| golden | Orrinsford from 2009, Coyle Bridge x 1.064 (the 2009 to 2026 relation through the origin) before | 110,403 (110,000) | 2 ft | 1.40, 1.12, 0.90, 0.72, 0.58 |
-| off | Coyle Bridge unscaled | 103,772 | 1 ft | |
-| off | Orrinsford since 1994 | 93,473 | 0 ft | |
-| off | drainage-area ratio at 0.5, 0.7, 1.0 | 118,971, 125,658, 136,398 | 3, 5, 6 ft | |
+| R0 | 3.2's line grown, no CVR | 0 | 105.9 | 2.0, 3.0, 4.0, 5.0, 6.0 |
+| R1 | the pilot's effect over every hour | 2.4 per cent | 103.4 | 0, 0.5, 1.5, 2.5, 3.5 |
+| R2 | each day's peak hour | 1.5 per cent | 104.3 | 0.5, 1.5, 2.5, 3.5, 4.5 |
+| Golden | afternoons of days at 99 F or more | 1.1 per cent | 104.7 (105 to the MW) | 1.0, 2.0, 3.0, 4.0, 5.0 |
+| Off-path | on against off weeks without the comparison feeders | 3.1 (all hours), 1.8 (hot) | | wrong |
 
-The relation's form, every one fitted over water years 2009 to 2026 and applied to 1962 to 2008 (asserted per form in
-`checks.py`; tightest margin of any chance to its one-decimal edge, the design discharge's margin to 107,500 or
-112,500):
-
-| Form | Design discharge (cfs) | Chances by raise 0 to 4 ft (%) | Tightest chance margin | Discharge margin |
-|---|---|---|---|---|
-| through the origin (golden) | 110,403 | 1.401, 1.118, 0.896, 0.721, 0.583 | 0.029 | 2,097 |
-| ratio of means | 110,477 | 1.405, 1.121, 0.899, 0.723, 0.585 | 0.027 | 2,023 |
-| straight line (OLS) | 110,260 | 1.394, 1.112, 0.891, 0.717, 0.579 | 0.029 | 2,240 |
-| straight line in logs | 110,359 | 1.399, 1.116, 0.895, 0.720, 0.582 | 0.030 | 2,141 |
-| MOVE.1 in logs | 110,372 | 1.400, 1.117, 0.895, 0.720, 0.582 | 0.030 | 2,128 |
-| every year from Coyle Bridge at the ratio | 110,445 | 1.403, 1.120, 0.898, 0.723, 0.584 | 0.028 | 2,055 |
-
-Stress rows (mean of ratios, the inverted regression, fitting from 2008, 2010 or 2012, carrying only the pre-raise
-years, keeping a larger observed peak) stay in every bin, tightest 0.019. Shortfall at 118+70 under the golden 1.50 ft
-(the railroad closure governs every raise; Main Street 62+40 is next at 0.77 ft). Gate F count on the clean truth and
-the pack: no cheap route files 2 ft (asserted).
+Margins: every golden peak sits 0.24 MW or more from a half-MW edge and every excess 0.22 MW or more from a block edge;
+the hot-afternoon family spans 1.04 to 1.14 per cent and every member files the golden (SF12, SF13).
 
 ## Closure table
 
-| # | Axis | Reading and move |
+| # | Axis | Closure |
 |---|---|---|
-| 1 | Population | the river as it now runs (LS-02 s.2, filed) over one peak for every water year since 1962 (s.3, filed); whether a year's published peak is the present river's is the analysis; every relation form converges (C1 over six forms and seven stress rows) |
-| 2 | Unit of account | the annual peak at one gauge; the raise in whole feet (filed) |
-| 3 | Attribution window | water year (C1: calendar labels give the same call and bin) |
-| 4 | As-of dating | the review date; the record through water year 2026 (C1 with or without the provisional year) |
-| 5 | Version basis | discharges from the State Water Survey's records (LS-02 s.8), the provisional 2026 included (C1); the latest certification survey (s.6) |
-| 6 | Denominator | none in the main call; ask A averages matched shots per reach (C1 with structures) |
-| 7 | Weighting | moments on logs, equal years (filed method) |
-| 8 | Window length | every water year since the gauge opened in 1962 (LS-02 s.3, filed, which rules out the 18-year fit, SF21); the relation's fitting window converges 2008 to 2012 (C1) |
-| 9 | Boundary inclusivity | the in-force year (Oct 2008 raise, WY2009); C1 with 2008 |
-| 10 | Rounding path | figures computed unrounded, rounded once at the end (prompt) |
-| 11 | Tie-break | none arises (asserted margins) |
-| 12 | Maturity and censoring | no censored peaks; no low outlier (asserted) |
-| 13 | Order of operations | fit, then quantile, then Table 4, then freeboard; commuting |
-| 14 | Row order | none (sorted by water year; sums) |
-| 15 | Duplicate resolution | one peak per gauge and water year (asserted unique) |
-| 16 | Identity normalisation | site numbers; ask A structures matched by name across surveys (asserted one offset) |
+| 1 | Population | Dunraith's eight feeders, as run; asks: transformers in the meter data system, recorders 41-2207 and 41-2208 |
+| 2 | Unit of account | MW hourly average; MWh; MW over 15 minutes |
+| 3 | Attribution window | summers June to September (criteria 2); ask A 1 June to 30 September 2026 |
+| 4 | As-of dating | review of 27 October 2026; five complete summers 2022 to 2026 |
+| 5 | Version basis | criteria revision 4; the 2027 operating plan; the 2025 forecast's base case |
+| 6 | Denominator | relief: CVR-hour ratio over normal-hour ratio |
+| 7 | Weighting | none: least squares over days, means over hours |
+| 8 | Window length | five summers; afternoons 16:00 to 21:00 |
+| 9 | Boundary inclusivity | 85 F or more (filed); 99 F or more; excess rounded up |
+| 10 | Rounding path | unrounded to the end; peaks to the MW, transfers in 0.5 MW blocks (SF14) |
+| 11 | Tie-break | none arises (tenth hot day 1.44 F above the eleventh) |
+| 12 | Maturity and censoring | summer 2026 complete before the review |
+| 13 | Order of operations | relief and growth multiply, order-free |
+| 14 | Row order | none matters; ask B's repeated stamp read in file order |
+| 15 | Duplicate resolution | ask B: the T2 replacement recorder's first stamp repeats the old one's last; its stamps move up 15 minutes |
+| 16 | Identity normalisation | historian point names to feeders; recorders to Exhibit A's metering points |
 | 17 | Netting against gross | none |
-| 18 | Dimensional units | cfs, ft NAVD 88; ask datums converted by the benchmark pairs (C4 for the ask, asserted) |
-| 19 | Code and status semantics | approval and estimate codes neutral (asserted) |
-| 20 | Integerisation | the raise is the smallest whole foot clearing the shortfall (filed) |
-| 21 | Clause scope | LS-02 freeboard rules scope to cross-sections (s.6) |
-| 22 | Forward window contents | the design flood is a property of the present river; the record through 2026 is the driver, nothing past it is needed |
+| 18 | Dimensional units | kW to MW; Celsius to F; kWh to MW over 15 minutes |
+| 19 | Code and status semantics | Quality Bad left out (criteria 5); VEE estimated intervals kept (SF21) |
+| 20 | Integerisation | whole 0.5 MW blocks (criteria 4.1) |
+| 21 | Clause scope | 3.3 applies to every summer whose plan runs CVR, 2027 to 2031 |
+| 22 | Forward window contents | CVR on every feeder from 1 June 2027 at all hours; no other change (operating plan 2) |
 
 ## Literal reader
 
-Executed word for word, LS-02 sections 2 to 8 on the shipped files ask for the 1 per cent flood of the river as it
-stands, fitted to one annual peak for every water year since 1962, with discharges from the State Water Survey's
-records. The published record meets the window and the source as they read; whether its 1962 to 2008 peaks are the
-present river's is the analysis no sentence performs. Read literally, s.3's window rules out the 18 water years since
-the last raise (SF21), and s.8 no longer says the peaks are the published ones (SF22), so a rebuilt year breaks no
-sentence. Every other term has a row above, each converging (asserted) or ruled out by a quotable sentence, and the
-at-site fit is an easier method on the same estimand, not another reading of it.
+Read word for word on the pack: 3.2 gives 102.9 MW at 101 F (561 days at 85 F or more), 105.9 MW in 2027 at 0.95 per
+cent compounded from 2024; the operating plan runs CVR on every feeder from 1 June 2027; 3.3 asks for the change's
+effect on the substation load at the planning peak, which 3.1 puts on a day at the design temperature. The pilot is the
+only evidence of that effect, and its afternoons on days at 99 F or more (the planning peak's conditions within the
+pilot) give 1.1 per cent; every reading of those conditions agrees (SF12, SF13). 4.1 then gives 1.0, 2.0, 3.0, 4.0 and
+5.0 MW. A reader who executed the filed procedure with no CVR would breach 3.1 and 3.3; one who took the pilot's all-hours
+effect would breach 3.3's "at the planning peak". `verify.py` runs this path on its own readers.
 
 ## Oracles
 
-None ships. Table 4 has no design discharge; no prior review, published frequency curve or certified figure ties to the
-golden; Fenwick and Ashby agree with the published-record route (the back-test), not with the golden; the trend tests
-pass; the asks' controls (benchmark pairs, structure shots) tie under every handling of the main call.
+- The world's own relief at the design afternoon, 1.04 per cent, beside the golden's 1.08 (checks R3a).
+- The world's energy by feeder and its daily peaks, against asks A and B (checks, exact at the rounding).
+- `verify.py`: CSV, XLSX and PDF read on its own code path; every graded figure recomputed and matched.
 
 ## Ask sheet
 
-Two asks, both off the main call's rows: the main call reads the peak export (discharges), LS-02, SW-16-03, Table 4 and
-the inventory; the asks read the two crown surveys, the benchmark list, both hourly gauge records and OP-04, and no
-main-call file carries a datum, a stationing history, a clock or a survey (asserted).
+Two asks, both off the main call's rows: the call reads the historian, the airport, the regulator log, the criteria,
+the operating plan, the pilot plan and the forecast; the asks read the meter data system, the register, the switching
+order, the MV-90 export and Exhibit A, which the call never reads (asserted: the call computes with them deleted).
 
-- Ask A, crown settlement by reach (8 figures, 0.01 ft; maintenance program): 2016 shots against 2024 shots by
-  position, every 2016 shot on today's levee paired one to one with a 2024 shot (both surveys every 100 ft), so the
-  paired mean and the difference of the two surveys' reach means agree. Primary device (D7 keys): the 2016 survey is on
-  the stationing used before the 2019 north tie-in moved the start 700 ft, found only from the four structures both
-  surveys shot; joining by station number gives every reach 0.09 to 0.34 ft too much and every figure stays positive
-  (silent). Hazard (D3): NGVD 29 against NAVD 88, +0.27 ft
-  from the benchmark pairs (seen; unconverted settlement goes negative).
-- Ask B, warning lead time per flood (7 figures, whole hours; closure planning): from the river reaching the Coyle
-  Bridge warning level to the Orrinsford stage reaching the Main Street sill. Primary device (D2, a label stored before
-  a silent switch): OP-04 (2014) files the warning level as elevation 661.00 ft NGVD 29, "21.0 ft on the gauge" on the
-  gauge datum of the day; the Coyle Bridge export states today's 638.00 ft datum and its stage steps 2.00 ft against
-  discharge on 22 October 2019, so the level is 23.00 ft on the gauge for every flood in the ask. Second device (D8
-  clocks): the old ORF2 logger's records are CST under the export's UTC header; the two loggers ran together for three
-  days in June 2021 and their records line up only at a 6 h shift, the published peak times (local standard time) sit
-  on the old logger's yearly highs and 6 h before the new one's, and Coyle Bridge's hourly record tops out 6 h after
-  every published Coyle Bridge time, so every route gives 6 h. Hazard (D3): the ORF2 gauge datum is on NGVD 29 and the
-  sill on NAVD 88. Every lead's crossing fractions put it 0.1 to 0.4 h past the whole hour, so rounding, truncation and
-  either whole-hour crossing convention agree.
+- Ask A, members' energy by feeder, June to September 2026 (8 figures, MWh to 10; the budget's revenue papers).
+  Primary device (D7, the true key elsewhere): the meter data system and the register carry each transformer's feeder
+  as the GIS holds it now; SO-2026-114 moved the sections beyond S-1302, S-4471 and S-6120 on 30 June and lists
+  switches, not transformers, so the June energy of 25 transformers belongs to their old feeders only once the register's
+  device tree is traced below each opened switch (two levels: a fuse under the switch, a recloser and its fuses). Second
+  primary (D2, a label stored after a silent switch): three LP-3 services went onto CT metering on 2 and 3 June, the
+  register holds today's multiplier and set date, and their kWh falls twentyfold on the set day; the register's
+  multiplier on every day overstates DUN-5 and DUN-7. Hazard: multipliers held in the register (every feeder).
+- Ask B, the feeders' peak 15-minute demand on the ten hottest days of 2026 (10 figures, MW to one decimal; the
+  supplier's demand bills). Primary device (D2/D8): the replacement recorder in the T2 cabinet from 9 June stamps each
+  interval at its start under the export's interval-ending header; its first stamp repeats the old recorder's last, and
+  summing T1 and T2 by stamp pairs each T1 interval with the next T2 one. Hazards: UTC interval ends (the hot-day peaks
+  end at 18:30 to 19:45 CDT, across UTC midnight); recorder 41-2391, the 69 kV line terminal, which Exhibit A's
+  delivery point demand includes and the feeders do not.
 
 | Ask | Golden | Cracker handling | Cracker figures | Cracker |
 |---|---|---|---|---|
-| A settlement R1 to R8 (ft) | 0.07, 0.12, 0.16, 0.21, 0.29, 0.24, 0.14, 0.09 | datum converted, joined by station number | 0.24, 0.29, 0.41, 0.30, 0.37, 0.58, 0.35, 0.28 | miss |
-| B lead times, 2020 floods (h) | 37, 29, 38 | datums converted, the ORF2 clock moved 6 h, 21.0 ft as printed | 42, 33, 43 | miss |
-| B lead times, 2024 to 2025 floods (h) | 38, 32, 35, 51 | same | 43, 35, 40, 58 | miss |
+| A, feeders the reconfiguration touched (DUN-1, 2, 3, 4, 6, 8) | 16,600, 16,210, 17,670, 11,150, 8,990, 15,850 | multipliers on every day, feeders as recorded | 16,050, 16,830, 18,210, 10,570, 8,360, 16,430 | miss |
+| A, DUN-5 and DUN-7 | 16,980, 14,810 | multipliers on every day | 17,120, 14,880 | miss |
+| B, ten days | 114.1, 101.0, 101.3, 99.1, 97.1, 97.3, 95.7, 94.7, 91.0, 92.9 | CDT, T1 + T2, repeated stamp dropped | 113.6, 100.8, 100.8, 98.7, 97.0, 96.7, 94.9, 94.6, 90.7, 92.8 | miss |
 
-Mirror: off the call at rung 0, the same ask handling (nothing in the asks comes from the call): 0 of 15 ask criteria.
-The re-stationer (re-stations the 2016 survey, prints 21.0 ft) keeps 8 of 15; the full includer 15 of 15 (stress
-rows, not the gate). The ORF2 clock now shows in the battery (the stamps step back where the new logger starts), so
-the cracker is priced as fixing it; the Coyle Bridge datum change before the 2020 floods keeps every lead off it.
+Mirror: off the call at rung 1, the same ask handling (nothing in the asks comes from the call): 0 of 18. Stress rows
+(not the gate): the tracer (also traces the moved sections) keeps 6 of 18; the full includer keeps 18 of 18.
 
 Pair ceiling: 28.5 (cracker 45.0, mirror 12.0)
 Mirror leakage: 0.0 per cent of the ask weight
@@ -255,70 +250,31 @@ Measured by: generator/ceiling.py on the cut pack
 
 ## Prompt
 
-Question form `whether` (does the levee need a raise, and if so how many whole feet), second sentence opening on the
-call's companions ("Alongside the call"), deliverables a workbook and a one-page memo carrying the chart; rounding in
-the last sentence; no count the data hold, no persona; `voice-check.py` PASS at 993 characters.
+`prompt.txt`, 949 characters, voice-check PASS: question first (how much load to transfer in each summer 2027 to 2031
+with CVR on every feeder), the criteria as the WHAT, the two asks, one workbook with a chart sheet, rounding last. No
+count the data hold; no persona.
 
 ## Leak review
 
-`leak.py --asof 2026-11-09` on the final cut: REVIEW, no LEAK. Each REVIEW line:
-
-- Table 4, "Main Street" beside decision words: the bridge footnote naming the two bridge cross-sections; no ranking.
-- SW-16-03, 0.12, 0.14 and 0.16: the regional skews' mean square errors; they share digits with three settlement
-  figures and nothing else. SW-16-03's 1.50 is the skew threshold in the mean-square-error formula, which shares digits
-  with the railroad closure's shortfall.
-- Table 4's discharge columns (65,000 to 155,000 by 10,000): the write-up states the rival discharges to the nearest
-  100 cfs (95,400 and 104,700), so no column header repeats a stated figure.
-- LS-02 carrying the call's words (raise, levee, crown, flood season): the governing standard's own subject; it states
-  no figure and no direction.
-- Design-note words in Table 4 (upstream, station, floods, section), LS-02 (record, published, method, nothing,
-  upstream, station), OP-04 (record, upstream, gauges) and SW-16-03 (record, station, section): each document's
-  ordinary vocabulary (an upstream face, the upstream freeboard allowance, the published peaks, station skew,
-  calibration floods); none names the levee raises, a second gauge, a period or the record's homogeneity.
-- The inventory naming three of the answer set's names beside numbers: the Structures sheet's pump stations and the
-  Main Street closure with their stations; it ranks nothing on the decision question.
-
-## Stage 4 round 1
-
-- Judge (2026-11-01): NOT_DETERMINISTIC, SEND_BACK, the failing gates C and E; Gate G passes (nonstationary frequency,
-  analytical, no surface-read dependency) and Gate H passes (domain, layers, an analytical decisive step). The brief
-  carried the graded blocks inline, so the round broke derive-first and does not spend the one re-judge.
-- Findings: (1) the 18 water years since the last raise met LS-02 s.2 and s.8 as written, a competing answer (1 ft);
-  (2) extension forms ran 111.2k to 113.6k, the top over the bin edge; (3) the ORF2 clock offset was not forced (Coyle
-  Bridge's hourly crests 3 to 5 h after the published times pointed at 4 h); (4) "whole hours" admitted truncation;
-  (5) reach descriptors with no shipped source, and the surveys' reach means differing from the paired figure.
-- Leak reader: question 6 read "mostly rule application, with one analytical judgement left (record homogeneity)";
-  realism tells in Table 4's uniform fall, the smooth crown and the inspection summary.
-- Repair (generator, one pass): LS-02 s.3 files the window ("one annual peak discharge for every water year since the
-  Orrinsford gauge opened in water year 1962") and s.8 the source only ("Discharges are taken from the State Water
-  Survey's published records; the district's loggers record stage for flood warning only"); the relation steadier and
-  the design discharge centred (six forms 110,260 to 110,477, every chance 0.027 or more inside its bin); published
-  peak times set from the agency's own hourly crests, the two ORF2 loggers overlapping three days, all three clock
-  routes at 6 h; every lead's fraction 0.1 to 0.4 h; reach descriptors dropped, both surveys every 100 ft with a 700 ft
-  realignment; Table 4 with reach slopes and cross-section effects, the crown with low spots, a tie-in step and a level
-  floodwall top, the inspection a ratings report; the Coyle Bridge datum change moved to October 2019 and the sill to
-  616.95 ft. The Three rules lines say why the window is a WHAT and the homogeneity judgement stays the decisive step.
+`leak.py --asof 2026-10-27`: REVIEW, no LEAK. Answer figures: 2.0 (bandwidth 2.0 V in two PDFs) and 0.5 (the
+switching block, a filed input) are inputs; 15,850 matches a CSV fragment ("03:15,850.1"). The call's words in the
+criteria and the pilot plan are the world's nouns. Column names PROTECTIVE_DEVICE, Equipment and DRY_BULB_C are the
+source systems' own. Stump vocabulary: none of the decisive step's words (afternoon, compressor, constant power,
+relief) appears in a shipped file.
 
 ## Build record
 
-Round 1 repair green on 2026-11-01, every gate on the final cut (`target.zip` sha256 81bc1b755d580b192f921eeca93774a96b9c50081276155baa0c8a09fa54be99):
-
-- Generator: `generator/build.py` builds twice from the fixed seeds, byte-identical over 17 files, and installs
-  `target/`, `golden/`, `metadata.json`, `generator/figures.json` and `target.zip`; `generator/writeup.py` then emits
-  `submission.md` from `figures.json`.
-- `checks.py` 102 of 102 (the ladder and the Gate F count; each of the six relation forms and the seven stress rows in
-  every graded bin; SF1 to SF22; R1 to R3c on the clean truth; Layer 1 neutrality; the three ORF2 clock routes at 6 h;
-  rounding, truncation and both crossing conventions agreeing; one-to-one survey pairing; separation, input gates,
-  realism sweep, distractor deletion); `verify.py` 30 of 30 on its own readers; `figures_check.py` 81 of 81;
-  `precut.py` 61 checks, 0 FAIL, 0 WARN; `voice-check.py` PASS at 999 characters.
-- Pack: 13 files in three formats (seven CSV, five PDF, one XLSX); the largest `SWS_05432100_hourly_WY2017-2026.csv`
-  at 87,635 rows; distractors `coop_daily_precip_Orrinsford_Coyle.csv` and `OLDD_2025_annual_inspection_summary.pdf`.
-- `leak.py --asof 2026-11-09` REVIEW, no LEAK (each line answered in `## Leak review`); `guard.py heart` WARN
-  (repeat.gate_g, repeat.question_form), no BLOCK; `guard.py check` on the registered card WARN only; `guard.py
-  surface` exit 0, the same five pairs promoted for the author's adjudication (task136 and task139 on the
-  consecutive-build surface percentile at 0.100; task171, task168 and task104 on card axes the card differentiates),
-  personas in the pack all the card's.
-- Ceiling (`generator/ceiling.py`): pair 28.5, mirror leakage 0.0 per cent.
+Built 2026-11-01; every gate on the final cut is in `pipeline.json` and the report. Generator: `generator/build.py`
+builds twice from the fixed seeds, byte-identical, and installs `target/`, `golden/`, `metadata.json`,
+`generator/figures.json` and `target.zip`; `generator/writeup.py` emits `submission.md` from `figures.json`.
+`checks.py` (74 assertions: R1 to R3c on the clean truth, the ladder and margins, SF1 to SF22, Layer 1 neutrality,
+the asks' devices and truth, separation, distractors, input gates, realism sweep, the golden workbook), `verify.py`
+on its own CSV, XLSX and PDF readers, `figures_check.py`, `precut.py`, `voice-check.py`, `leak.py` REVIEW,
+`ceiling.py` (pair 28.5). Pack: 15 files in three formats (seven CSV, five PDF, three XLSX), the largest
+`dunraith_feeder_mw_2024-2026.csv` at 70,272 rows; distractors `OMS_outage_events_2026.csv` and
+`DUN_feeder_ties_2026.xlsx`. Open: `guard.py check` and `heart` BLOCK on the window (ban.pairing, ban.role and
+ban.artifact against task273 v6, ban.forum against task125 v4 and task281 v3), which passed at registration; the
+heart's driver similarity is 0.07 at most.
 
 ## Architecture 1 record (shipped 2026-10-15, re-rooted 2026-11-01)
 
@@ -333,6 +289,19 @@ Round 1 repair green on 2026-11-01, every gate on the final cut (`target.zip` sh
   kept with the `_arch1` suffix.
 - Fate: no portal result; re-rooted 2026-11-01 at the Batch 3 queue reset (one architecture per world: the
   irrigation-district world is closed); its card identity is in the v2 card's `lineage`.
+
+## Architecture 2 record (built 2026-11-01, spent the same day)
+
+- Draw: the Orrinsford Levee and Drainage District's crown review, physical-environmental-sciences /
+  hydrology-flood-frequency, shape 04, question form whether; the 1 per cent annual chance flood for the river as it
+  now runs, rebuilt from Coyle Bridge through the post-raise relation, carried through Table 4 to a whole-foot raise.
+- Golden: raise the crown 2 ft (design discharge 110,000 cfs); default path no raise (95,000 cfs, LS-02's fit to the
+  published Orrinsford record).
+- Build: round-1 repair green, `target.zip` 81bc1b75; reports kept with the `_arch2` suffix.
+- Fate: spent 2026-11-01. The re-judge (derive-first) returned NOT_DETERMINISTIC, SEND_BACK on Gate H3: LS-02 s.3 and
+  s.8 read word for word send the fit to the published Orrinsford peaks (95,000 cfs, no raise), and s.2's "as they
+  stand" was not read as requiring a reconstructed record. One architecture per world: the levee and flood-frequency
+  world is closed.
 
 ## Tried and rejected
 
@@ -536,3 +505,25 @@ Round 1 repair green on 2026-11-01, every gate on the final cut (`target.zip` sh
   the clock would have kept the three 2020 floods; the change moved to 22 October 2019, before every flood in the ask.
 - The Main Street sill at 617.45 ft under the repaired hydraulics: the 2025 flood crested below it; set to 616.95 ft
   (2025 over it by 0.42 ft, water year 2022 0.74 ft under).
+
+- Architecture 2, the Orrinsford levee crown (the present river rebuilt from Coyle Bridge): spent 2026-11-01 at the
+  re-judge on Gate H3, LS-02 s.3 and s.8 read literally landing on the published-record fit (95,000 cfs, no raise);
+  the filed procedure itself produced the default, so the next draw files a WHAT the default visibly substitutes.
+- Candidates dropped before architecture 3: demand response added back to a peak (task173's 4CP ground); a coincident
+  new load (task164); a reservoir inflow mass balance (task118, task120 storage change); urgent care diversion (task171
+  and task174 ground, a weak rule 1); new subdivision yields (task174, task150); historical floods or an ungauged
+  transfer (the flood world is closed).
+- Card redraws at the architecture 3 draw: decisive generator G14 (task133), G7 (task255) and G6 (task281); G2, G13 and
+  G3 on driver similarity; context artifact filed_standard and forum committee_or_panel (task281); personas redrawn off
+  first-name WARNs.
+- Air conditioning saturating at 97 F (exponent 1.8): the weather line read 6 MW above every 101 F day, which no
+  planner would file; saturation at 102 F, exponent 1.5, puts the line at the hot days' mean.
+- The airport export in UTC: a UTC-day reading moved the line 0.29 MW and crossed the 2027 block edge, so the clock
+  carried the call; the climate service's local standard time, an hour off the historian, is neutral.
+- The switching order listing the moved transformers: it narrated ask A's device; it now lists switches and sections,
+  and the transformers come from the register's device tree.
+- The T2 recorder swap on 28 July: four hot days fell before it and the cracker kept them; moved to 9 June, before
+  every hot day.
+- The 2026 summer on the shared weather stream: the tenth and eleventh hottest days 0.1 C apart; 2026 drawn on its own
+  stream, 1.44 F apart.
+- The outage log running to 31 October, after the review: cut at 20 October.

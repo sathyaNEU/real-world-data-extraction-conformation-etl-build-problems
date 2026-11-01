@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, published, bridge, golden, orrinsford, window, january, relation, design, survey, asserted, dropped, decisive, annual, discharge, method, change, station, efficiency, nothing, logger, sentence, section, upstream, gauges
+Stump terms swept: golden, record, january, dropped, effect, decisive, efficiency, asserted, default, station, change, shipped, carried, replay, device, lateral, logger, survey, sentence, design, inside, generator, acre-feet, replaced, candidate
 
 ## 3 answer figures in the pack (REVIEW 6)
 - **REVIEW** `BEC_2027_operating_plan.pdf`: golden figure 2.0 appears: ...a 120 V base (normal setting 123.5 V), bandwidth 2.0 V, line drop compensation off. 3.2 AMI bellwether...
@@ -14,10 +14,9 @@ Stump terms swept: record, published, bridge, golden, orrinsford, window, januar
 - **REVIEW** `BEC_distribution_planning_criteria_rev4.pdf`: carries 5 of 5 distinctive words of the committed call: 'Breckwater must transfer 1.0 MW off Dunraith in summer 2027, 2.0 MW in 2028, 3.0 MW in 2029, 4.0 MW in 2030 and 5.0 MW i'
 - **REVIEW** `CVR_pilot_plan_Dunraith_2025.pdf`: carries 3 of 5 distinctive words of the committed call: 'Breckwater must transfer 1.0 MW off Dunraith in summer 2027, 2.0 MW in 2028, 3.0 MW in 2029, 4.0 MW in 2030 and 5.0 MW i'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `BEC_2027_operating_plan.pdf`: 3 of 25 stump-paragraph terms appear (january, annual, change); read whether the document names the move
-- **REVIEW** `BEC_distribution_planning_criteria_rev4.pdf`: 4 of 25 stump-paragraph terms appear (record, design, change, station); read whether the document names the move
-- **REVIEW** `WPC_Exhibit_A_delivery_points.pdf`: 3 of 25 stump-paragraph terms appear (record, january, change); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `BEC_distribution_planning_criteria_rev4.pdf`: 6 of 25 stump-paragraph terms appear (record, effect, station, change, carried, design); read whether the document names the move
+- **REVIEW** `WPC_Exhibit_A_delivery_points.pdf`: 4 of 25 stump-paragraph terms appear (record, january, effect, change); read whether the document names the move
 
 ## 8 column names (REVIEW 1)
 - **REVIEW** `DUN_transformer_register_2026-10.xlsx`: columns a generator names and an organisation does not: PROTECTIVE_DEVICE

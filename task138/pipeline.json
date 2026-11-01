@@ -1,25 +1,25 @@
 {
  "task": "task138",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "energy-systems-utilities/load-forecasting (client domain energy-systems-utilities; world: a member-owned electric cooperative's substation planning peaks with conservation voltage reduction on every feeder from 2027)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "transfers of 1.0, 2.0, 3.0, 4.0 and 5.0 MW off Dunraith in summers 2027 to 2031, the voltage cut's relief read at the planning peak's conditions (1.1 per cent on the pilot's afternoons at 99 F or more) where the default takes the pilot's all-hours effect (2.4 per cent) and files 0, 0.5, 1.5, 2.5 and 3.5 MW",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK), --asof 2026-10-27; lines answered in the design note's Leak review",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "BLOCK on the guard window only: ban.pairing, ban.role and ban.artifact against task273 v6 (registered 01:51Z), ban.forum against task125 v4 and task281 v3; the card passed guard.py check at its registration (19:49Z) and the window moved when builds between re-registered; driver similarity 0.07 at most (task117)",
+  "nearest": "task117 0.07"
  },
  "judge": {
   "verdict": "",
@@ -27,7 +27,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "",
+ "resume": "stage 4 (main session): adjudicate the guard window BLOCK first (it needs another client domain under the rules, or the registration-time PASS), then the leak reader and the determinism judge together",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -53,5 +53,23 @@
   "built": "2026-11-01 (target.zip 81bc1b75 after the round-1 repair)",
   "answer": "raise the crown 2 ft (design discharge 110,000 cfs)",
   "fate": "spent 2026-11-01: the re-judge (derive-first) returned NOT_DETERMINISTIC, SEND_BACK on Gate H3: LS-02 s.3 and s.8 read word for word send the fit to the published Orrinsford peaks (95,000 cfs, no raise); s.2's 'as they stand' was not read as requiring a reconstructed record; reports kept with the _arch2 suffix"
+ },
+ "build": {
+  "date": "2026-11-01",
+  "target_zip": "8bd974fc",
+  "target_zip_sha256": "8bd974fc0c3040c53e1aa4076459f9e504d5571db89aae5dd9cccd2977ecfca3",
+  "gates": {
+   "generator_checks": "74 of 74",
+   "verify": "16 of 16 on its own readers (every graded figure)",
+   "byte_identical": "two builds byte-identical over 18 files",
+   "figures_check": "112 of 112",
+   "precut": "61 checks, 0 FAIL, 0 WARN",
+   "voice_check": "PASS (949 characters)",
+   "leak_py": "REVIEW, no LEAK",
+   "guard_heart": "BLOCK (window bans, see duplicate_check)",
+   "ceiling": "pair 28.5, mirror leakage 0.0 per cent"
+  },
+  "as_of": "2026-10-27",
+  "answer": "transfer 1.0, 2.0, 3.0, 4.0 and 5.0 MW in summers 2027 to 2031; planning peaks 105 to 109 MW"
  }
 }

@@ -150,7 +150,7 @@ def switching_order(path):
     b = [
         ("t", "Switching order SO-2026-114"),
         ("s", "%s. Dunraith feeder rebalancing. Written by Julie Gibbs, 18 June 2026. Approved by Peter Roman, "
-              "22 June 2026. Dispatcher: Luis Ortega. Crew: Line Crew 3." % COOP),
+              "22 June 2026. Dispatcher: Sherry Nixon. Crew: line crew 3 (Mossford yard)." % COOP),
         ("h", "Purpose"),
         ("p", "Move three line sections between Dunraith feeders to even out feeder loading. The moved sections "
               "become part of their new feeders' normal configuration."),
