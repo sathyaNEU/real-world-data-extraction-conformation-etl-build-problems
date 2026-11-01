@@ -36,3 +36,30 @@ Stump terms swept: background, alerts, duplicate, record, overridden, removal, h
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read (the isolated leak reader, two rounds)
+
+Every REVIEW line above is ruled harmless by the reader in each round; neither round found a decisive-step sentence, a ranking file or a figure that reads as the answer, and both answered question 6 with an analytical choice.
+
+### Leak reader, round 1 (2026-11-01, isolated, Sonnet at medium effort, on target.zip 2fd81ca5)
+
+1. Decisive step: none stated; the closest is Schedule B 4.3 ("the reviews those units will send with the change live, prescribers answering its alerts as they have on any unit where it already runs, against the reviews the same units would send over the same weeks without it"), the estimand, not a method.
+2. Nothing ranks anything.
+3. No help-only file (the rule register is ordinary reference material).
+4. Nothing reads as the answer (no forecast, net change or per-unit rate filed anywhere).
+5. Schedule B 4.3 (the units' reviews over the first 13 live weeks with the change live, less the same units' reviews over the same weeks without it, priced at USD 6.40), with 2.1 (one overridden alert is one review), 2.2 (moderate-severity alerts not reviewed), 3.1 (a review counts where it is signed off); CR-2291 names the window and the units.
+6. An analytical choice: 4.3 says to use the override behaviour on the live units, not the background-mode log; the background log and the counterfactual need a method the text does not give; nothing planted; the filed semantics (UTC against Eastern, department renames, one alert per active order) read as Layer 1.
+Sweep flags: all harmless (Schedule B and CR-2291 state scope, definitions and the window; the vendor bulletin describes the rules in general and names no deciding step; the later dates are the planned go-live and planned weeks).
+Realism: none seen (system-export features throughout); minor: the point-of-care map's effective_from of 2024-09-01 on nearly every row, plausible for a map.
+
+### Leak reader, round 2 (2026-11-01, isolated, Sonnet at medium effort, on target.zip 5586cd17)
+
+1. Decisive step: the nearest is Schedule B 4.3 (the reviews those units will send with the change live, prescribers answering its alerts as they have on any unit where it already runs, against the same units without it), which names the comparison and the behavioural basis, not the method or the count.
+2. Nothing ranks or scores anything (the rule register lists status and routing, no counts).
+3. Ordinary context files (the point-of-care map, the register's unit renames, the vendor bulletin); none walks through the method.
+4. Nothing reads as the answer (no net figure or per-unit rate anywhere).
+5. Schedule B 4.3 (the going-live units over the 13 weeks to 4 April 2027, with the change live and prescribers answering as on the live units, less the same units without it); 2.3 (one queue task per order and signing, each overridden alert on it a signed-off review) bears on counting.
+6. An analytical choice: the background log shows what would fire, not what prescribers would do, so live-unit behaviour must be carried over, estimated from the alert history; no single field flips it; nothing planted; the mess reads as Layer 1.
+Sweep flags: all harmless (Schedule B states the estimand and contract definitions; CR-2291 is a change request with dates and attachments; the vendor bulletin is generic, its "evaluates exactly as it would live" line a mild support of the counterfactual).
+Realism: none; minor: the volume plan's Basis note reads slightly like a summary, plausible for a finance planning note.
+

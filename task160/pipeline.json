@@ -1,10 +1,10 @@
 {
  "task": "task160",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics/utilization-access-demand-forecasting",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 5,
+ "stage_name": "shipped",
  "updated": "2026-11-01",
  "stump": "The silent-mode route (the MSP26 background log's QT combination alerts on the going-live units at the pilot units' 58 per cent override share, scaled to the volume plan) files about 500 more override reviews; once live, the duplicate PRN opioid alert removes 49 per cent of second PRN opioid orders and the overridden alerts on or against those orders never reach the desk (about 200), so the net change over the 13 weeks from 4 January 2027 is about 300.",
  "architecture": 2,
@@ -15,26 +15,21 @@
   "detail": "61 checks, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "reader_round_1": "no leak, question 6 analytical"
+  "leak_py": "REVIEW ruled (2026-11-01, --asof 2026-10-28)",
+  "reader": "clean in both rounds; question 6 analytical each round; the reader's sections appended to task160/leak_check_report.md"
  },
- "duplicate_check": {},
+ "duplicate_check": {
+  "heart": "PASS 2026-11-01 at the ship gate"
+ },
  "judge": {
-  "round_1": {
-   "target_zip": "2fd81ca5",
-   "disposition": "FIX_NOW on supplementary 3 (Ask B) only",
-   "reproduced": "main call +292 to +297 (300), 491 added, 195 lost; desk hours exact; Gate F good; Gate G analytical_non_defect; Gate H pass",
-   "findings": [
-    "signed-off review unfiled (tasks vs alerts; task reading moves the call to 400)",
-    "shift table scope (18 vs 15 wards)",
-    "CR-2291 date against the register's"
-   ],
-   "fixed": "Schedule B 2.3 filed; prompt pins all adult wards; CR-2291 redated 26 October; Ask B primary device moved to the queue platform's silent clock switch"
-  }
+  "verdict": "round 2 DETERMINISTIC, APPROVE (order kept; Gate F strong; Gate G forecasting / analytical_non_defect; Gate H pass)",
+  "disposition": "APPROVE, no repair; round 1's shift-ask FIX_NOW closed by Schedule B 2.3 and the prompt's ward scope",
+  "report": "task160/determinism_check_report.md"
  },
  "returned": [],
- "resume": "the re-judge of round 1's FIX_NOW (Ask B) on the rebuilt target.zip",
+ "resume": "Shipped 2026-11-01 (architecture 2, Forecasting): plan for about 300 more override reviews in the 13 weeks from 4 January 2027; target.zip 5586cd17. Next: the portal result.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -54,5 +49,8 @@
   "mirror_leakage": 33.3,
   "as_of": "2026-10-28",
   "round": "after judge round 1 FIX_NOW"
+ },
+ "build": {
+  "target_zip": "5586cd17 (12 members, each byte-identical to target/)"
  }
 }
