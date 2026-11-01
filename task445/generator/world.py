@@ -1,119 +1,166 @@
-"""The fixed world of task445 architecture 2: NHS Ellesmoor integrated care board, its six places, two coroner areas,
-two medical examiner offices, the calendar and the name lists. Nothing here is random; sim.py draws from it."""
+"""task445 architecture 3: the Arafura Examinations Board's 2026 Senior Certificate History Paper 2, simulated.
+
+Candidates answer two of three optional essays (Questions 4, 5 and 6, 25 marks each) after a compulsory Section A
+(40 marks). Each essay's mark follows the candidate's attainment, their knowledge of the essay's topic, their centre
+and the question's own demand; candidates choose the essays whose topics they know, Question 6 looking hardest, so
+few attempt it and those who do know its topic. About one candidate in twenty writes all three essays; the board
+marks every essay and credits the best two. Every number is drawn from a fixed seed."""
 import datetime as dt
-import os
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-TARGET = os.path.join(TASK, "target")
-GOLDEN = os.path.join(TASK, "golden")
+import numpy as np
 
-SEED = 44502
+SEED = 4453
+DEMAND = {"4": 0.0, "5": -0.3, "6": 1.95}          # marks harder than Question 4, for the same candidate
+TOPIC_W, CHOICE_W, LOOK = 3.4, 2.0, {"4": 0.0, "5": 0.1, "6": 2.6}
+INFRINGE = (0.035, 0.035)                          # base share writing all three, extra share below average
+TIME_COST = 1.5                                    # marks a candidate writing three essays loses on each
+BOUNDS = [("A", 66), ("B", 57), ("C", 48), ("D", 39), ("E", 30)]
+LINE, ROUND_TO = 1.5, 1
 
-START = dt.date(2021, 1, 1)          # first date of death on the extract
-ME_START = dt.date(2024, 9, 9)       # the statutory medical examiner system in force
-LAST_DEATH = dt.date(2026, 10, 7)    # last date of death any source holds
-EXTRACT = dt.date(2026, 10, 9)       # registrations and both logs extracted at the end of this day
-W0, W1 = dt.date(2026, 6, 1), dt.date(2026, 8, 31)   # the fund's window, by date of death
-HEAT26 = (dt.date(2026, 7, 14), dt.date(2026, 7, 24))
-HEAT22 = (dt.date(2022, 7, 17), dt.date(2022, 7, 19))
-LINE = 0.10                          # a place qualifies at an excess of at least a tenth of its expected deaths
-GRANT, STANDARD = 300_000, 60_000
-
-# name, residence code, mid-2025 population, coroner area, medical examiner office, annual death rate, postcode
-# districts, share of deaths at home in an ordinary month, the 2026 summer's designed excess over the expected,
-# the summer deaths the coroner still holds at the extract beyond the ordinary inquests (heat wave, found late)
-PLACES = [
-    ("Hollinsgate", "E08000951", 415_200, "North", "North", 0.00905, range(1, 13), 0.25, 0.076, 12),
-    ("Ashwold", "E08000952", 205_400, "North", "North", 0.01310, range(13, 20), 0.27, 0.130, 40),
-    ("Thornley Vale", "E07000961", 131_300, "North", "North", 0.01080, range(20, 25), 0.26, 0.136, 2),
-    ("Brinmoor", "E07000962", 178_100, "South", "South", 0.00985, range(25, 30), 0.26, 0.068, 0),
-    ("Calderholt", "E08000953", 238_600, "South", "South", 0.01010, range(30, 36), 0.25, 0.126, 1),
-    ("Moorbridge", "E07000963", 162_400, "South", "South", 0.01030, range(36, 41), 0.26, 0.055, 0),
+REGIONS = [  # code, name, countries with (tz name, offset hours), centres, mean attainment shift
+    ("NT", "Northern Territory", [("Australia", "Australia/Darwin", 9.5)], 34, -0.10),
+    ("QT", "Queensland and Torres Strait", [("Australia", "Australia/Brisbane", 10.0)], 92, 0.05),
+    ("WA", "Western Australia", [("Australia", "Australia/Perth", 8.0)], 71, 0.10),
+    ("PC", "Pacific", [("Fiji", "Pacific/Fiji", 12.0), ("Papua New Guinea", "Pacific/Port_Moresby", 10.0),
+                       ("Vanuatu", "Pacific/Efate", 11.0), ("Solomon Islands", "Pacific/Guadalcanal", 11.0)], 58, -0.25),
+    ("ID", "Indonesia and Timor-Leste", [("Indonesia", "Asia/Jakarta", 7.0), ("Timor-Leste", "Asia/Dili", 9.0)], 47, -0.05),
+    ("MS", "Malaysia and Singapore", [("Malaysia", "Asia/Kuala_Lumpur", 8.0), ("Singapore", "Asia/Singapore", 8.0)], 61, 0.20),
 ]
-NAMES = [p[0] for p in PLACES]
-CODE = {p[0]: p[1] for p in PLACES}
-POP = {p[0]: p[2] for p in PLACES}
-CORONER = {p[0]: p[3] for p in PLACES}
-OFFICE = {p[0]: p[4] for p in PLACES}
-RATE = {p[0]: p[5] for p in PLACES}
-DISTRICTS = {p[0]: list(p[6]) for p in PLACES}
-HOME = {p[0]: p[7] for p in PLACES}
-EXCESS = {p[0]: p[8] for p in PLACES}
-HELD = {p[0]: p[9] for p in PLACES}
-
-# registration districts (deaths are registered where they occur); the register's codes changed with the 2023
-# system replacement on 3 April 2023
-REG_DISTRICTS = [
-    ("Hollinsgate", "HOL", "E30000801", "North"),
-    ("Ashwold and Thornley", "ASH", "E30000802", "North"),
-    ("Calderholt", "CAL", "E30000803", "South"),
-    ("Brinmoor and Moorbridge", "BRM", "E30000804", "South"),
-]
-SYSTEM_CHANGE = dt.date(2023, 4, 3)
-DISTRICT_OF_PLACE = {"Hollinsgate": "Hollinsgate", "Ashwold": "Ashwold and Thornley",
-                     "Thornley Vale": "Ashwold and Thornley", "Calderholt": "Calderholt",
-                     "Brinmoor": "Brinmoor and Moorbridge", "Moorbridge": "Brinmoor and Moorbridge"}
-HOSPITAL = {"North": "Hollinsgate Royal Infirmary", "South": "Calderholt General Hospital"}
-HOSPICE = {"North": "St Wilfrid's Hospice", "South": "Moorbridge Hospice"}
-HOSPITAL_PLACE = {"North": "Hollinsgate", "South": "Calderholt"}
-HOSPICE_PLACE = {"North": "Ashwold", "South": "Moorbridge"}
-OUTSIDE_HOSPITALS = ["Kexley Infirmary", "Warrenby General Hospital", "Northfold University Hospital"]
-
-FORENAMES_F = ["Margaret", "Joan", "Dorothy", "Patricia", "Jean", "Barbara", "Mary", "Betty", "Doreen", "Brenda",
-               "Sheila", "Irene", "Eileen", "Joyce", "Pauline", "Ann", "Christine", "Susan", "Elizabeth", "Kathleen",
-               "Maureen", "Valerie", "Audrey", "Marjorie", "Edna", "Vera", "Iris", "Gladys", "Winifred", "Hilda",
-               "Shirley", "Janet", "Linda", "Carol", "Sandra", "Marion", "Brenda", "June", "Rita", "Evelyn",
-               "Frances", "Lesley", "Gwendoline", "Beryl", "Muriel", "Olive", "Phyllis", "Ruth", "Sylvia", "Norma"]
-FORENAMES_M = ["John", "David", "William", "Robert", "James", "Peter", "Michael", "Brian", "Kenneth", "Alan",
-               "Ronald", "George", "Thomas", "Derek", "Keith", "Raymond", "Anthony", "Dennis", "Roy", "Colin",
-               "Geoffrey", "Frank", "Eric", "Barry", "Malcolm", "Stephen", "Terence", "Philip", "Leslie", "Gordon",
-               "Harold", "Arthur", "Albert", "Norman", "Donald", "Stanley", "Edward", "Charles", "Walter", "Bernard",
-               "Trevor", "Clifford", "Gerald", "Douglas", "Frederick", "Leonard", "Ernest", "Harry", "Jack", "Joseph"]
-MIDDLE = ["Ann", "Mary", "Elizabeth", "May", "Rose", "Louise", "Jane", "Margaret", "Edith", "Grace",
-          "John", "James", "William", "Edward", "Henry", "George", "Thomas", "Arthur", "Charles", "Frederick"]
-SURNAMES = ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright",
-            "Thompson", "Evans", "Walker", "White", "Roberts", "Green", "Hall", "Wood", "Clarke", "Hughes",
-            "Edwards", "Lewis", "Harris", "Turner", "Martin", "Cooper", "Hill", "Ward", "Morris", "Moore",
-            "Clark", "Lee", "King", "Baker", "Harrison", "Morgan", "Allen", "James", "Scott", "Phillips",
-            "Watson", "Davis", "Parker", "Price", "Bennett", "Young", "Griffiths", "Mitchell", "Kelly", "Cook",
-            "Carter", "Richardson", "Bailey", "Collins", "Bell", "Shaw", "Murphy", "Miller", "Cox", "Richards",
-            "Khanom", "Marshall", "Anderson", "Simpson", "Ellis", "Adams", "Singh", "Begum", "Wilkinson", "Foster",
-            "Chapman", "Powell", "Webb", "Rogers", "Gray", "Mason", "Ali", "Hunt", "Hussain", "Campbell",
-            "Matthews", "Owen", "Palmer", "Holmes", "Mills", "Barnes", "Knight", "Lloyd", "Butler", "Russell",
-            "Barker", "Fisher", "Stevens", "Jenkins", "Murray", "Dixon", "Harvey", "Graham", "Pearson", "Ahmed",
-            "Fletcher", "Walsh", "Kaur", "Gibson", "Howard", "Andrews", "Stewart", "Elliott", "Reynolds", "Saunders",
-            "Payne", "Fox", "Ford", "Pearce", "Day", "Brooks", "West", "Lawrence", "Cole", "Atkinson",
-            "Bradley", "Spencer", "Gill", "Dawson", "Ball", "Burton", "O'Brien", "Watts", "Rose", "Booth",
-            "Perry", "Ryan", "Grant", "Wells", "Armstrong", "Francis", "Rees", "Hayes", "Hart", "Hudson",
-            "Newman", "Barrett", "Kennedy", "Robertson", "Lord", "Holt", "Hargreaves", "Ashworth", "Greenwood",
-            "Sutcliffe", "Haigh", "Crowther", "Pickles", "Firth", "Ackroyd", "Holroyd", "Brearley", "Whiteley"]
-# forename spellings a medical examiner's first entry carries and the registrar's entry corrects
-VARIANT = {"Stephen": "Steven", "Ann": "Anne", "Geoffrey": "Jeffrey", "Philip": "Phillip", "Alan": "Allan",
-           "Brian": "Bryan", "Leslie": "Lesley", "Terence": "Terrence", "Marjorie": "Margery", "Sheila": "Shiela",
-           "Doreen": "Dorreen", "Frances": "Francis", "Gwendoline": "Gwendolyn", "Clifford": "Cliford",
-           "Kathleen": "Kathlene", "Muriel": "Murial", "Winifred": "Winnifred", "Beryl": "Berul"}
-OCCUPATIONS = ["Retired", "Retired teacher", "Retired nurse", "Retired engineer", "Retired clerk",
-               "Housewife", "Retired textile worker", "Retired driver", "Retired machinist", "Retired shop assistant",
-               "Retired electrician", "Retired care assistant", "Retired joiner", "Retired secretary", "Unemployed",
-               "Bus driver", "Warehouse operative", "Self-employed builder", "Office manager", "Student"]
-MARITAL = ["Married", "Widowed", "Single", "Divorced", "Civil partner"]
-
-PERSONAS = ["Caroline Porter", "Jason Leach", "Graeme Gould", "Jayne Jackson"]
+TOWNS = {"Australia/Darwin": ["Darwin", "Palmerston", "Katherine", "Alice Springs", "Nhulunbuy", "Tennant Creek"],
+         "Australia/Brisbane": ["Brisbane", "Cairns", "Townsville", "Mackay", "Thursday Island", "Toowoomba", "Gladstone"],
+         "Australia/Perth": ["Perth", "Broome", "Karratha", "Geraldton", "Kalgoorlie", "Albany", "Bunbury"],
+         "Pacific/Fiji": ["Suva", "Nadi", "Lautoka", "Labasa"], "Pacific/Port_Moresby": ["Port Moresby", "Lae", "Madang"],
+         "Pacific/Efate": ["Port Vila", "Luganville"], "Pacific/Guadalcanal": ["Honiara", "Gizo"],
+         "Asia/Jakarta": ["Jakarta", "Bandung", "Surabaya", "Medan"], "Asia/Dili": ["Dili", "Baucau"],
+         "Asia/Kuala_Lumpur": ["Kuala Lumpur", "Penang", "Johor Bahru", "Kota Kinabalu", "Kuching"],
+         "Asia/Singapore": ["Singapore"]}
+KINDS = ["College", "Grammar School", "Christian College", "International School", "Secondary College",
+         "Catholic College", "Anglican School", "State High School", "Academy"]
 
 
-def quarter_fy(d):
-    """2025-26 quarter of a date (1 to 4), or 0 outside the year."""
-    if dt.date(2025, 4, 1) <= d <= dt.date(2025, 6, 30):
-        return 1
-    if dt.date(2025, 7, 1) <= d <= dt.date(2025, 9, 30):
-        return 2
-    if dt.date(2025, 10, 1) <= d <= dt.date(2025, 12, 31):
-        return 3
-    if dt.date(2026, 1, 1) <= d <= dt.date(2026, 3, 31):
-        return 4
-    return 0
+def build(seed=SEED):
+    rng = np.random.default_rng(seed)
+    centres = []
+    used = set()
+    for code, rname, countries, n, shift in REGIONS:
+        for k in range(n):
+            country, tz, off = countries[k % len(countries)] if len(countries) > 1 and k % 3 else countries[0]
+            while True:
+                num = int(rng.integers(1100, 9800))
+                if (code, num) not in used:
+                    used.add((code, num))
+                    break
+            town = TOWNS[tz][int(rng.integers(0, len(TOWNS[tz])))]
+            kind = KINDS[int(rng.integers(0, len(KINDS)))]
+            centres.append(dict(code="%s%04d" % (code, num), region=code, region_name=rname, country=country, tz=tz,
+                                offset=off, name="%s %s" % (town, kind), size=int(rng.integers(14, 160)),
+                                effect=float(rng.normal(shift, 0.35))))
+    # a 2025 merger of two Queensland school groups gave 18 centres new codes; the marking system still keys
+    # those centres' scripts by the old codes, which the centres register keeps as merged_from
+    qt = [c for c in centres if c["region"] == "QT"]
+    for c in qt[:18]:
+        while True:
+            num = int(rng.integers(1100, 9800))
+            if ("QL", num) not in used:
+                used.add(("QL", num))
+                break
+        c["old_code"] = "QL%04d" % num
+    cands = []
+    serial = 104000
+    for c in centres:
+        for _ in range(c["size"]):
+            serial += int(rng.integers(1, 4))
+            cands.append(dict(no="26-%06d" % serial, centre=c["code"], region=c["region"], ceff=c["effect"]))
+    n = len(cands)
+    a = rng.normal(0, 1, n) + np.array([x["ceff"] for x in cands]) * 0.0
+    ce = np.array([x["ceff"] for x in cands])
+    t = rng.normal(0, 1, (n, 3))
+    sec_a = np.clip(np.round(24 + 6.5 * a + 2.0 * ce + rng.normal(0, 2.6, n)), 0, 40).astype(int)
+    qs = ["4", "5", "6"]
+    raw = np.stack([13.0 + 3.6 * a + TOPIC_W * t[:, j] + 1.5 * ce - DEMAND[q] + rng.normal(0, 2.1, n)
+                    for j, q in enumerate(qs)], 1)
+    util = CHOICE_W * t + rng.normal(0, 0.7, (n, 3)) - np.array([LOOK[q] for q in qs])
+    infr = rng.random(n) < (INFRINGE[0] + INFRINGE[1] * (a < -0.5))
+    absent = rng.random(n) < 0.022
+    order = np.argsort(-util, 1)
+    for i, x in enumerate(cands):
+        x["a"], x["t"] = float(a[i]), [float(v) for v in t[i]]
+        x["section_a"] = int(sec_a[i])
+        x["absent"] = bool(absent[i])
+        x["infringer"] = bool(infr[i]) and not absent[i]
+        chosen = [qs[j] for j in sorted(order[i, :2])] if not x["infringer"] else list(qs)
+        if absent[i]:
+            chosen = []
+        marks = {}
+        for j, q in enumerate(qs):
+            if q in chosen:
+                m = raw[i, j] - (TIME_COST if x["infringer"] else 0.0)
+                marks[q] = int(min(25, max(0, round(m))))
+        x["marks"] = marks
+    # senior examiners re-mark a sample of essays (their mark stands), and a few scripts carry a clerical correction
+    for x in cands:
+        x["senior"] = {}
+        for q in x["marks"]:
+            if rng.random() < 0.045:
+                d = int(rng.choice([-2, -1, -1, 1, 1, 2]))
+                x["senior"][q] = int(min(25, max(0, x["marks"][q] + d)))
+    # candidates who moved centre after entry: re-entered at the new centre under a new number; the old entry is
+    # withdrawn and every script is under the new number
+    moved = []
+    idx = rng.choice(n, 160, replace=False)
+    for i in sorted(idx):
+        x = cands[i]
+        serial += int(rng.integers(1, 4))
+        other = centres[int(rng.integers(0, len(centres)))]
+        x["prev_no"], x["prev_centre"] = x["no"], x["centre"]
+        x["no"] = "26-%06d" % (500000 + serial % 99000)
+        x["centre"], x["region"] = other["code"], other["region"]
+        moved.append(x["no"])
+    markers = []
+    for k, (team, tz, off) in enumerate([("Darwin", "Australia/Darwin", 9.5), ("Brisbane", "Australia/Brisbane", 10.0),
+                                         ("Perth", "Australia/Perth", 8.0)]):
+        for j in range(22):
+            markers.append(dict(id="HX%03d" % (100 + k * 30 + j), team=team, tz=tz, offset=off,
+                                senior=j < 3))
+    return dict(centres=centres, cands=cands, markers=markers, rng=rng)
 
 
-def summer(y):
-    return dt.date(y, 6, 1), dt.date(y, 8, 31)
+def reviews_2025(W, seed=SEED + 25):
+    """The 2025 post-results reviews: requests made between results day (12 December 2025) and the close on
+    27 February 2026, one row per component reviewed, stamped in UTC by the review system."""
+    rng = np.random.default_rng(seed)
+    cents = W["centres"]
+    rows = []
+    start = dt.datetime(2025, 12, 12, 0, 0)
+    req = 880000
+    for k in range(1430):
+        c = cents[int(rng.integers(0, len(cents)))]
+        # requests cluster in the first fortnight and again after the new year
+        u = rng.random()
+        if u < 0.55:
+            day = rng.exponential(5.0)
+        elif u < 0.85:
+            day = 20 + rng.exponential(9.0)
+        else:
+            day = 45 + rng.random() * 32
+        day = min(day, 76.9)
+        local = start + dt.timedelta(days=float(day), hours=float(8 + rng.random() * 15))
+        # a cluster of late-evening requests on the last days of December and January
+        if k % 41 == 0:
+            local = dt.datetime(2026, 2, 1, 8, 0) + dt.timedelta(minutes=float(rng.integers(0, 180)))
+        if k % 53 == 0:
+            local = dt.datetime(2026, 1, 1, 7, 30) + dt.timedelta(minutes=float(rng.integers(0, 200)))
+        utc = local - dt.timedelta(hours=c["offset"])
+        req += int(rng.integers(1, 6))
+        comps = ["P2"] if rng.random() < 0.52 else (["P1"] if rng.random() < 0.6 else ["P1", "P2"])
+        if rng.random() < 0.08:
+            comps = comps + ["IA"]
+        cand = "25-%06d" % int(rng.integers(100000, 190000))
+        for comp in comps:
+            outc = rng.choice(["NC", "MC", "GC"], p=[0.62, 0.27, 0.11])
+            rows.append(dict(request=req, candidate=cand, centre=c["code"], component=comp, utc=utc,
+                             outcome=str(outc), local=local, region=c["region"]))
+        if rng.random() < 0.04:   # withdrawn by the centre before the review began
+            for r in rows[-len(comps):]:
+                r["outcome"] = "WD"
+    return rows

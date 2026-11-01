@@ -1,53 +1,80 @@
-"""The ask layer's ceiling, measured on the cut pack: each response's ask figures recomputed from target/ with the
-handling that response applies, scored against the golden handling on the same files, and the pair priced on the
-planning weights (38 for the call and its components, 7 for instruction-following, 55 for the asks).
+"""task445 architecture 3: the ask layer's pair ceiling on the cut pack (supplemental-stumping Parts 0 and 1.1).
+
+The cracker lands the call and executes every filed rule (code 2.1 to 2.3, 3.1, 6.1 to 6.3): it maps the merged
+centres through the register, sets the absent candidates aside, lets the senior re-mark stand, counts every essay a
+candidate wrote, places each review in its centre's local month and drops withdrawn requests. The mirror stops at the
+chooser comparison (no scaling) and reads the asks off the files as they stand: a centre's region from its code's
+letters, every row a marking, every review in its UTC month. Each figure is scored against the golden.
 
     python3 task445/generator/ceiling.py
-
-Rows: the cracker lands the call (the register joined to both offices' logs), runs the battery (each register
-entry once by its district and number under the latest-row rule that the battery applies to every amended record,
-exact duplicate rows dropped, the south export's UTC stamps read as local dates) and executes every filed rule, and
-counts each office's quarter on its cases, since nothing keys a referral the coroner sent back to the case the
-office reopened for it; the mirror stops at the completed register on the call and handles the asks the same way,
-since they carry nothing from it; the full includer also merges each office's cases on the person and reads each
-entry on its registration row, version 1, for every field (a stress row, not the gate)."""
+"""
+import hashlib
 import os
 import sys
+from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
 sys.path.insert(0, HERE)
-import solve as SV  # noqa: E402
-import world as W  # noqa: E402
-
-BANKED = 0
+import golden as G  # noqa: E402
 
 
-def figures(P, b_mode, c_mode):
-    b = SV.ask_b(P, b_mode)
-    c = SV.ask_c(P, c_mode)[0]
-    return {k: int(v) for k, v in b.items()}, {k: SV.r1(v) for k, v in c.items()}
+def mirror_entries(D):
+    sat = Counter()
+    ans = {q: Counter() for q in G.QS}
+    for r in D["marks"]:
+        reg = r["centre_code"][:2]
+        if r["question"]:
+            ans[r["question"][1:]][reg] += 1
+    seen = set()
+    for r in D["marks"]:
+        if r["candidate_no"] not in seen:
+            seen.add(r["candidate_no"])
+            sat[r["centre_code"][:2]] += 1
+    return {g: dict(sat=sat[g], **{"q" + q: ans[q][g] for q in G.QS}) for g in G.REGIONS}
 
 
-def kept(resp, gold):
-    return sum(resp[0][k] == v for k, v in gold[0].items()) + sum(resp[1][k] == v for k, v in gold[1].items())
+def mirror_reviews(D):
+    rows = G._read(D["target"], "post_results_reviews_2025.csv")
+    out = {"%d-%02d" % m: {g: dict(requests=0, grade_changes=0) for g in G.REGIONS} for m in G.MONTHS}
+    for r in rows:
+        if r["component"] != "P2":
+            continue
+        m = r["requested_utc"][:7]
+        g = r["centre_code"][:2]
+        if m in out and g in out[m]:
+            out[m][g]["requests"] += 1
+            out[m][g]["grade_changes"] += r["outcome"] == "GC"
+    return out
 
 
-def main(target=W.TARGET):
-    P = SV.Pack(target)
-    gold = figures(P, "golden", "golden")
-    n = len(gold[0]) + len(gold[1]) + BANKED
-    crack = kept(figures(P, "rows", "latest"), gold) + BANKED
-    full = kept(figures(P, "person", "first"), gold) + BANKED
-    lc = crack / n
-    c = 38 + 7 + 55 * lc
-    s = 5 + 7 + 55 * lc
-    print("cracker (lands the call, battery, filed rules; each office's quarter counted on its cases, each amended "
-          "entry read on its latest row): keeps %d of %d ask criteria, response %.1f" % (crack, n, c))
-    print("mirror (the completed register on the call, same ask handling): keeps %d of %d, response %.1f" % (crack, n, s))
-    print("full includer (cases merged on the person, every field off version 1, stress row): keeps %d of %d, "
-          "response %.1f" % (full, n, 38 + 7 + 55 * full / n))
-    print("pair ceiling %.1f; mirror leakage %.1f per cent of the ask weight" % ((c + s) / 2, 100 * lc))
-    return (c + s) / 2, 100 * lc, crack, full, n
+def kept(gold, other):
+    k = n = 0
+    for a in gold:
+        for b in gold[a]:
+            n += 1
+            k += gold[a][b] == other.get(a, {}).get(b)
+    return k, n
+
+
+def main():
+    S = G.solve(T)
+    D = S["D"]
+    ka, na = kept(S["entries"], mirror_entries(D))
+    kb, nb = kept(S["reviews"], mirror_reviews(D))
+    n = na + nb
+    crack = n
+    mirror = ka + kb
+    c = 38 + 7 + 55.0 * crack / n
+    s = 5 + 7 + 55.0 * mirror / n
+    zp = os.path.join(TASK, "target.zip")
+    print("measured on target.zip %s" % hashlib.sha256(open(zp, "rb").read()).hexdigest()[:8])
+    print("ask A: mirror keeps %d of %d; ask B: mirror keeps %d of %d" % (ka, na, kb, nb))
+    print("cracker keeps %d of %d ask figures, scores %.1f with the call" % (crack, n, c))
+    print("mirror keeps %d of %d, scores %.1f off it" % (mirror, n, s))
+    print("Pair ceiling: %.1f" % ((c + s) / 2))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * mirror / n))
 
 
 if __name__ == "__main__":

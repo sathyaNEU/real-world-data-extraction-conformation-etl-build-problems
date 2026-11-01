@@ -1,60 +1,51 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (data integration: an NHS integrated care board's summer 2026 deaths by date of occurrence, integrated from the death registrations and two medical examiner offices' logs that share no key).
+**Domain:** Education & Learning Sciences (item response theory and test equating: optional essay questions on a senior-certificate History paper).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Designate Ashwold, Thornley Vale and Calderholt for the 2027 heat resilience grants; Hollinsgate, Brinmoor and Moorbridge take the standard heat-health allocation.** Ashwold's residents had 666 deaths from 1 June to 31 August 2026 against 589 expected, 13.1 per cent over, but 72 of those deaths were not on the register at the close of 9 October: the medical examiner offices referred them to the coroner, who is holding them for inquest, and the logs name each one. Completed instead with the earlier summers' share registered by 9 October (94.9 per cent), Ashwold reads 6.3 per cent and is left out.
+**Scale Question 6 of the 2026 History Paper 2: raise every candidate's mark on it by 2 marks before the best two essays are credited and the grade boundaries are applied.**
+For the 1,422 candidates who wrote all three essays, Question 6 was more demanding than Questions 4 and 5 taken together by 2 marks to the nearest whole mark, over the code's 1.5; read from the candidates who chose it, it looks only about half a mark harder, because those who chose it knew its topic. Questions 4 and 5 are not more demanding and are not changed.
 
 ## 2. Critical Components
 
-1. The deaths counted are each place's residents' deaths by date of death in the window, registered or not, each once: the register's entries (version 1) plus the residents' summer deaths in the two offices' logs that no entry matches on surname, forenames, date of birth and date of death.
-2. Deaths, Table 1 expected deaths and excess by place: Hollinsgate 891, 828, 7.6 per cent; Ashwold 666, 589, 13.1 per cent; Thornley Vale 345, 304, 13.5 per cent; Brinmoor 409, 383, 6.8 per cent; Calderholt 595, 528, 12.7 per cent; Moorbridge 364, 345, 5.5 per cent.
-3. Deaths not yet registered at the count, found only in the logs: Hollinsgate 60, Ashwold 72, Thornley Vale 15, Brinmoor 21, Calderholt 20, Moorbridge 14 (202 in all).
-4. Ellesmoor in all: 3,270 deaths, 9.8 per cent over Table 1's total.
+1. Question 6's demand against Questions 4 and 5 taken together, from the candidates who wrote all three essays: **2 marks** to the nearest whole mark, over the 1.5 line; Questions 4 and 5 are less demanding than the others.
+2. The candidates who chose Question 6 knew its topic: their question means, a Section A adjustment and each two-essay candidate's own pair all put it under the 1.5 line, so every chooser route files no scaling.
+3. Grades after Question 6 is raised by 2: A **5,775**, B **5,966**, C **7,407**, D **5,937**, E **3,566**, U **2,046**, of **30,697** candidates graded; **1,857** grades change.
 
 ## 3. Step-by-Step Solution
 
-1. Read the register in both date formats, kept version 1 of each entry (district and entry number), and took residents by usual_residence_code with a date of death from 1 June to 31 August 2026.
-2. Read the north log (Deceased split at its comma, Excel dates) and the south export (UTC stamps to local dates), and placed each case by its usual postcode through the lookup, terminated postcodes included; non-residents fall outside it.
-3. Matched the logs' residents' summer deaths to the register on case-folded surname, forenames, date of birth and date of death, and added each unmatched death once to its place.
-4. Took each place's excess over Table 1 as a percentage and designated the places at 10.0 per cent or more.
-5. Counted each place's deaths by month of death for the CSV.
-6. For each office and quarter of 2025-26, merged into one death any cases that share a coroner's reference or the same person, and counted each death in the quarter its scrutiny was first completed.
-7. Read each 2025 register entry as it now stands (the latest version's fields, version 1's registration date), and took, by place and quarter of death, the share of residents' deaths with a medical certificate registered no more than five days after the date of death.
+1. Conformed the marking export to one final mark per candidate and essay (a senior examiner's re-mark stands, code 3.1), with absent candidates set aside (code 2.3).
+2. Placed every script's centre in its region through the centres register, the merged Queensland centres under the codes they held before the merger (code 2.1).
+3. Took the candidates who wrote all three essays (each essay marked, code 3.2) and, for each question, averaged each candidate's mean mark on the other two less their mark on it: Question 6 over 1.5, Questions 4 and 5 below zero.
+4. Raised every Question 6 mark by 2 (its demand to the nearest whole mark, over 1.5, no mark above 25), credited each candidate's best two essays, added Section A and applied the committee's boundaries.
+5. Counted each region's candidates who sat and each optional question's answers, credited or not, from the conformed marks.
+6. Placed each 2025 review request in its centre's local month, Paper 2 only, withdrawn requests out, grade changes by outcome GC (code 6.2 and 6.3).
 
 ## 4. Deliverable Answers
 
-### heat_resilience_grants_2027.xlsx
+### p2_question_scaling_2026.docx
 
-1. Qualifying places: Ashwold, Thornley Vale, Calderholt.
-2. Scorecard (deaths, expected, excess per cent, qualifies):
-   - Hollinsgate: 891, 828, 7.6, No
-   - Ashwold: 666, 589, 13.1, Yes
-   - Thornley Vale: 345, 304, 13.5, Yes
-   - Brinmoor: 409, 383, 6.8, No
-   - Calderholt: 595, 528, 12.7, Yes
-   - Moorbridge: 364, 345, 5.5, No
-   - Ellesmoor: 3,270 deaths, 9.8 per cent over
-3. Chart: each place's excess against the 10.0 per cent line; Ashwold, Thornley Vale and Calderholt above it.
-4. Deaths scrutinised by quarter of 2025-26 (April to June, July to September, October to December, January to March):
-   - North Ellesmoor Medical Examiner Office: 1,924, 1,812, 2,170, 2,183 (8,089 in the year)
-   - South Ellesmoor Medical Examiner Office: 1,454, 1,349, 1,713, 1,633 (6,149 in the year)
-5. Residents' deaths with a medical certificate in each quarter of 2025 registered no more than five days after the date of death, per cent (January to March, April to June, July to September, October to December):
-   - Hollinsgate: 59.3, 59.1, 59.8, 57.7
-   - Ashwold: 62.0, 62.5, 64.4, 60.0
-   - Thornley Vale: 63.9, 63.1, 63.8, 62.0
-   - Brinmoor: 60.4, 59.9, 59.4, 64.8
-   - Calderholt: 61.7, 63.6, 57.5, 61.1
-   - Moorbridge: 61.7, 60.9, 59.9, 65.5
+1. Question 6 is scaled: every candidate's Question 6 mark is raised by 2 marks.
+2. Only Question 6 is more demanding than the other optional questions; Questions 4 and 5 are not.
+3. Chart of each optional question's demand against the 1.5 line.
+4. Grades after scaling: A 5,775, B 5,966, C 7,407, D 5,937, E 3,566, U 2,046; 1,857 grades change.
 
-### summer_2026_deaths_by_place.csv
+### history_p2_results_2026.csv
 
-1. Deaths by month of death (June, July, August 2026):
-   - Hollinsgate: 297, 327, 267
-   - Ashwold: 168, 301, 197
-   - Thornley Vale: 101, 130, 114
-   - Brinmoor: 117, 155, 137
-   - Calderholt: 185, 237, 173
-   - Moorbridge: 110, 147, 107
+1. One row for each of the 30,697 candidates who sat, Question 6 raised by 2, the best two essays credited, the paper total and the grade (the counts above).
+
+### history_p2_entries_2026.xlsx
+
+1. Candidates who sat Paper 2, and answers to Questions 4, 5 and 6, by region:
+   - Northern Territory: sat 2,729; Question 4 2,337, Question 5 2,293, Question 6 947
+   - Queensland and Torres Strait: sat 7,688; Question 4 6,563, Question 5 6,468, Question 6 2,710
+   - Western Australia: sat 5,813; Question 4 4,942, Question 5 4,929, Question 6 2,013
+   - Pacific: sat 5,497; Question 4 4,678, Question 5 4,636, Question 6 1,938
+   - Indonesia and Timor-Leste: sat 4,091; Question 4 3,473, Question 5 3,480, Question 6 1,431
+   - Malaysia and Singapore: sat 4,879; Question 4 4,165, Question 5 4,158, Question 6 1,655
+2. Paper 2 post-results reviews requested, and of them the reviews that changed a grade, by month and region:
+   - December 2025: Northern Territory 53 and 3; Queensland and Torres Strait 115 and 12; Western Australia 109 and 11; Pacific 75 and 9; Indonesia and Timor-Leste 71 and 7; Malaysia and Singapore 83 and 6
+   - January 2026: Northern Territory 23 and 3; Queensland and Torres Strait 94 and 14; Western Australia 68 and 5; Pacific 48 and 10; Indonesia and Timor-Leste 43 and 9; Malaysia and Singapore 61 and 7
+   - February 2026: Northern Territory 12 and 1; Queensland and Torres Strait 42 and 6; Western Australia 28 and 4; Pacific 28 and 1; Indonesia and Timor-Leste 15 and 2; Malaysia and Singapore 18 and 1

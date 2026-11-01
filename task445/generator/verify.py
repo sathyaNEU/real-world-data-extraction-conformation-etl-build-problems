@@ -1,152 +1,82 @@
-"""An independent recomputation from target/ with its own readers (pandas for the register, the workbook's XML
-for the north log, plain json for the south export, the PDF's text for Table 1): the summer counts, the qualifying
-places, both asks. make.py compares it with the golden."""
-import datetime as dt
+"""task445 architecture 3: an independent recomputation of every graded figure from target/ with pandas, against
+generator/figures.json (no import of golden.py)."""
 import json
 import os
-import re
 import sys
-import zipfile
-from collections import defaultdict
 
+import numpy as np
 import pandas as pd
-from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import pack as PK  # noqa: E402
-import world as W  # noqa: E402
-
-EPOCH = dt.date(1899, 12, 30)
-
-
-def any_date(s):
-    s = str(s)
-    return dt.datetime.strptime(s, "%d/%m/%Y").date() if "/" in s else dt.date.fromisoformat(s)
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+FIG = json.load(open(os.path.join(HERE, "figures.json")))
+BAD = []
 
 
-def north_rows(path):
-    """read the sheet straight from its XML: shared strings and Excel serial dates"""
-    with zipfile.ZipFile(path) as z:
-        sst = re.findall(r"<si>(?:<t[^>]*>)?(.*?)(?:</t>)?</si>", z.read("xl/sharedStrings.xml").decode("utf-8"))
-        sst = [re.sub(r"<[^>]+>", "", s).replace("&amp;", "&").replace("&apos;", "'").replace("&quot;", '"')
-               .replace("&lt;", "<").replace("&gt;", ">") for s in sst]
-        xml = z.read("xl/worksheets/sheet1.xml").decode("utf-8")
-    out = []
-    for row in re.findall(r"<row [^>]*>(.*?)</row>", xml, re.S):
-        cells = {}
-        for ref, attrs, val in re.findall(r'<c r="([A-Z]+)\d+"([^>]*?)(?:/>|>(?:<v>([^<]*)</v>)?</c>)', row):
-            if val == "":
-                continue
-            cells[ref] = sst[int(val)] if 't="s"' in attrs else val
-        out.append(cells)
-    hdr = out[0]
-    cols = {v: k for k, v in hdr.items()}
-    rows = []
-    for c in out[1:]:
-        g = lambda name: c.get(cols[name])  # noqa: E731
-        ser = lambda v: EPOCH + dt.timedelta(days=int(float(v)))  # noqa: E731
-        sur, fn = g("Deceased").split(", ", 1)
-        rows.append(dict(sur=sur.lower(), fn=fn.lower(), dob=ser(g("Date of birth")), dod=ser(g("Date of death")),
-                         pc=g("Usual postcode"), done=ser(g("Scrutiny completed")), cref=g("Coroner ref") or ""))
-    return rows
+def same(name, a, b):
+    good = a == b
+    print("%s  %-46s %s" % ("PASS" if good else "FAIL", name, a if good else "%s != %s" % (a, b)))
+    if not good:
+        BAD.append(name)
 
 
-def south_rows(path):
-    doc = json.load(open(path, encoding="utf-8"))
-    rows = []
-    for c in doc["cases"]:
-        t = dt.datetime.strptime(c["scrutiny"]["completed_at"], "%Y-%m-%dT%H:%M:%SZ")
-        # British Summer Time: last Sunday of March to last Sunday of October
-        y = t.year
-        start = max(dt.date(y, 3, d) for d in range(25, 32) if dt.date(y, 3, d).weekday() == 6)
-        end = max(dt.date(y, 10, d) for d in range(25, 32) if dt.date(y, 10, d).weekday() == 6)
-        local = t + dt.timedelta(hours=1) if start <= t.date() < end else t
-        rows.append(dict(sur=c["deceased"]["family_name"].lower(), fn=c["deceased"]["given_names"].lower(),
-                         dob=dt.date.fromisoformat(c["deceased"]["date_of_birth"]),
-                         dod=dt.date.fromisoformat(c["death"]["date"]), pc=c["death"]["usual_postcode"],
-                         done=local.date(), cref=(c["coroner"] or {}).get("reference") or ""))
-    return rows
-
-
-def fy_quarter(d):
-    if dt.date(2025, 4, 1) <= d <= dt.date(2026, 3, 31):
-        return {4: 1, 5: 1, 6: 1, 7: 2, 8: 2, 9: 2, 10: 3, 11: 3, 12: 3, 1: 4, 2: 4, 3: 4}[d.month]
-    return 0
-
-
-def run(target=W.TARGET):
-    reg = pd.read_csv(os.path.join(target, PK.REG), dtype=str)
-    reg["reg"] = reg["date_of_registration"].map(any_date)
-    reg["dod"] = reg["date_of_death"].map(any_date)
-    reg["dob"] = reg["date_of_birth"].map(any_date)
-    first = reg[reg["version"] == "1"].drop_duplicates(["registration_district", "entry_number"])
-    lk = pd.read_csv(os.path.join(target, PK.LOOKUP), dtype=str)
-    place_of_pc = dict(zip(lk["postcode"], lk["place_name"]))
-    place_of_code = dict(zip(lk["place_code"], lk["place_name"]))
-    first = first.assign(place=first["usual_residence_code"].map(place_of_code))
-    txt = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, PK.TERMS)).pages)
-    expected = {p: int(re.search(re.escape(p) + r"\s+E\d{8}\s+([\d,]+)", txt).group(1).replace(",", ""))
-                for p in W.NAMES}
-    w = first[(first["dod"] >= W.W0) & (first["dod"] <= W.W1)]
-    on_reg = set(zip(w["deceased_surname"].str.lower(), w["deceased_forenames"].str.lower(), w["dob"], w["dod"]))
-    counts = w.groupby("place").size().to_dict()
-    north = north_rows(os.path.join(target, PK.NORTH))
-    south = south_rows(os.path.join(target, PK.SOUTH))
-    extra = {}
-    for r in north + south:
-        if W.W0 <= r["dod"] <= W.W1 and r["pc"] in place_of_pc:
-            k = (r["sur"], r["fn"], r["dob"], r["dod"])
-            if k not in on_reg:
-                extra[k] = place_of_pc[r["pc"]]
-    for k, p in extra.items():
-        counts[p] = counts.get(p, 0) + 1
-    ex = {p: 100.0 * (counts[p] - expected[p]) / expected[p] for p in W.NAMES}
-    qual = [p for p in W.NAMES if ex[p] >= 10.0]
-    # ask B: deaths, not cases: rows sharing a coroner reference or a person are one death
-    ask_b = {}
-    for office, rows in (("North", north), ("South", south)):
-        rows = [r for r in rows if fy_quarter(r["done"])]
-        label = {}
-        nxt = 0
-        merged = {}
-        for i, r in enumerate(rows):
-            ks = [("p", r["sur"], r["fn"], r["dob"], r["dod"])] + ([("c", r["cref"])] if r["cref"] else [])
-            ids = {label[k] for k in ks if k in label}
-            if ids:
-                tgt = min(ids)
-                for k2, v2 in list(label.items()):
-                    if v2 in ids:
-                        label[k2] = tgt
-                for v2 in ids:
-                    if v2 != tgt:
-                        merged[v2] = tgt
-            else:
-                tgt = nxt
-                nxt += 1
-            for k in ks:
-                label[k] = tgt
-            r["_g"] = tgt
-        def root(g):  # noqa: E306
-            while g in merged:
-                g = merged[g]
-            return g
-        first_q = {}
-        for r in rows:
-            g = root(r["_g"])
-            first_q[g] = min(first_q.get(g, 9), fy_quarter(r["done"]))
-        for q in (1, 2, 3, 4):
-            ask_b[(office, q)] = sum(1 for v in first_q.values() if v == q)
-    # ask C: each entry as it now stands, its fields off the last version and its date off the registration
-    reg["v"] = reg["version"].astype(int)
-    last = reg.sort_values(["registration_district", "entry_number", "v"]).drop_duplicates(
-        ["registration_district", "entry_number"], keep="last")
-    regdate = dict(zip(zip(first["registration_district"], first["entry_number"]), first["reg"]))
-    last = last.assign(reg=[regdate[k] for k in zip(last["registration_district"], last["entry_number"])],
-                       place=last["usual_residence_code"].map(place_of_code))
-    c = last[(last["dod"] >= dt.date(2025, 1, 1)) & (last["dod"] <= dt.date(2025, 12, 31))
-             & last["certification"].str.startswith("Medical certificate")]
-    c = c.assign(q=c["dod"].map(lambda d: (d.month - 1) // 3 + 1),
-                 fast=[(a - b).days <= 5 for a, b in zip(c["reg"], c["dod"])])
-    ask_c = {(p, q): 100.0 * g["fast"].mean() for (p, q), g in c.groupby(["place", "q"])}
-    return dict(counts=counts, excess=ex, qualifying=qual, ask_b=ask_b, ask_c=ask_c, expected=expected)
+m = pd.read_csv(os.path.join(T, "p2_essay_marks_2026.csv"), dtype=str)
+cen = pd.read_csv(os.path.join(T, "aeb_centres_register.csv"), dtype=str).fillna("")
+sa = pd.read_csv(os.path.join(T, "p2_section_a_scan_2026.csv"), dtype={"candidate_no": str})
+region = dict(zip(cen.centre_code, cen.region_code))
+region.update({o: r for o, r in zip(cen.merged_from, cen.region_code) if o})
+tz = dict(zip(cen.centre_code, cen.time_zone))
+tz.update({o: z for o, z in zip(cen.merged_from, cen.time_zone) if o})
+live = m[m.script_status == "MARKED"].copy()
+live["rank"] = (live.marking_event == "SENIOR").astype(int)
+live = live.sort_values(["candidate_no", "question", "rank", "marked_utc"]).drop_duplicates(
+    ["candidate_no", "question"], keep="last")
+live["mark"] = live["mark"].astype(int)
+wide = live.pivot(index="candidate_no", columns="question", values="mark")
+three = wide.dropna()
+dem = {}
+for q, a, b in (("B4", "B5", "B6"), ("B5", "B4", "B6"), ("B6", "B4", "B5")):
+    dem[q[1]] = float(((three[a] + three[b]) / 2 - three[q]).mean())
+same("demand to one decimal", {q: "%.1f" % v for q, v in dem.items()}, FIG["demand_1dp"])
+raise6 = int(np.floor(dem["6"] + 0.5)) if dem["6"] >= 1.5 else 0
+same("Question 6 raise (marks)", raise6, FIG["call"]["raise_marks"])
+same("candidates who wrote all three", int(len(three)), FIG["all_three_candidates"])
+w2 = wide.copy()
+w2["B6"] = (w2["B6"] + raise6).clip(upper=25)
+best = w2.apply(lambda r: sum(sorted([v for v in r.values if not np.isnan(v)], reverse=True)[:2]), axis=1)
+tot = best + sa.set_index("candidate_no")["section_a_total"].reindex(best.index).fillna(0)
+cuts = [("A", 66), ("B", 57), ("C", 48), ("D", 39), ("E", 30)]
+gr = tot.apply(lambda x: next((g for g, b in cuts if x >= b), "U"))
+same("grades after scaling", {g: int((gr == g).sum()) for g in "ABCDEU"}, FIG["grades"])
+best0 = wide.apply(lambda r: sum(sorted([v for v in r.values if not np.isnan(v)], reverse=True)[:2]), axis=1)
+gr0 = (best0 + sa.set_index("candidate_no")["section_a_total"].reindex(best0.index).fillna(0)).apply(
+    lambda x: next((g for g, b in cuts if x >= b), "U"))
+same("grades changed by the scaling", int((gr != gr0).sum()), FIG["grade_changed"])
+same("candidates graded", int(len(gr)), FIG["candidates_graded"])
+cand_centre = m.drop_duplicates("candidate_no").set_index("candidate_no")["centre_code"]
+reg = cand_centre.reindex(wide.index).map(region)
+ask_a = {}
+for r in ["NT", "QT", "WA", "PC", "ID", "MS"]:
+    sub = wide[reg == r]
+    ask_a[r] = {"sat": int(len(sub)), "q4": int(sub["B4"].notna().sum()), "q5": int(sub["B5"].notna().sum()),
+                "q6": int(sub["B6"].notna().sum())}
+same("ask A, by region", ask_a, FIG["ask_a"])
+rv = pd.read_csv(os.path.join(T, "post_results_reviews_2025.csv"), dtype=str)
+rv = rv[(rv.component == "P2") & (rv.outcome != "WD")].copy()
+off = {"Australia/Darwin": 9.5, "Australia/Brisbane": 10, "Australia/Perth": 8, "Pacific/Fiji": 12,
+       "Pacific/Port_Moresby": 10, "Pacific/Efate": 11, "Pacific/Guadalcanal": 11, "Asia/Jakarta": 7, "Asia/Dili": 9,
+       "Asia/Kuala_Lumpur": 8, "Asia/Singapore": 8}
+rv["local"] = pd.to_datetime(rv.requested_utc.str.replace("Z", "")) + pd.to_timedelta(
+    rv.centre_code.map(tz).map(off), unit="h")
+rv["month"] = rv.local.dt.strftime("%Y-%m")
+rv["region"] = rv.centre_code.map(region)
+ask_b = {}
+for mo in ["2025-12", "2026-01", "2026-02"]:
+    ask_b[mo] = {}
+    for r in ["NT", "QT", "WA", "PC", "ID", "MS"]:
+        s = rv[(rv.month == mo) & (rv.region == r)]
+        ask_b[mo][r] = {"requests": int(len(s)), "grade_changes": int((s.outcome == "GC").sum())}
+same("ask B, by month and region", ask_b, FIG["ask_b"])
+print("verify: %d failures" % len(BAD))
+sys.exit(1 if BAD else 0)

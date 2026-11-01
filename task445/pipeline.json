@@ -1,10 +1,10 @@
 {
  "task": "task445",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
  "stump": "A competent analyst compares Question 6's marks with the other optional questions' for the candidates who answered it, adjusting for Section A or within the candidates who answered it beside another essay, and files no scaling; the candidates who chose Question 6 knew its topic, and the candidates who answered all three essays put it over two marks harder, so its marks are raised.",
  "architecture": 3,
@@ -41,7 +41,7 @@
    "commit": "DRAWN (task445) architecture 2"
   }
  ],
- "resume": "stage 2: design note sections, then the generator under task445/generator/",
+ "resume": "stage 3, in this order. (1) figures_check: add to generator/figures.json, through golden.figures, the stated inputs and question numbers the write-up quotes (the 1.5 line, 25, the questions 4 to 6), or reword writeup.py so blocks 1 to 4 carry only figures.json numbers; rerun python3 .claude/skills/determinism-check/figures_check.py task445. (2) The asks need a silent device the cracker misses (precut's cracker sheet: every ask row 'miss'): every current device is a filed rule (code 2.1 to 2.3, 3.1, 6.1 to 6.3). Add in world.py and pack.py: candidates who sat Section A and wrote no essay (scanned, no marking rows; they sat, are graded on Section A and count in ask A's 'sat'), and for ask B a relation no sentence states (for example a request re-submitted under a new request_id after the centre corrected the candidate number, the later row standing); keep the ceiling under 60 and mirror leakage under 50 with ceiling.py, and make golden.py and verify.py carry them. (3) Write the design note's stage 2 sections (Default path with Ends on: no scaling, Q6 about 0.5 by the chooser routes; Golden: raise Q6 by 2; Stump sentence; the 13 Three rules lines; the 7 Survivor anatomy lines; Readability screen; Semantic fork table SF1 to SF12 as checks.py names them; Ladder with the measured rungs means 0.533, Section A 0.505, pairs 0.500, all-three 2.074; Closure table 22 axes; Literal reader; Oracles; Ask sheet with Pair ceiling, Mirror leakage, a cracker table and Measured by: task445/generator/ceiling.py; Leak sweep; Pre-ship check) and run python3 .claude/skills/stumping/precut.py task445 to exit 0. (4) leak.py --asof 2026-12-01, guard.py surface and heart, golden-realism on the docx. (5) Stage 4 hand-off: the leak copy at scratchpad/leak-task445/ (prompt.txt and target/), the reader brief at scratchpad/task445_stage4_leak_brief.md, PAUSED commit, push. target.zip and golden/ stay out of git until SHIPPED adds them with -f.",
  "approved": null,
  "delivered": null,
  "portal": "",
@@ -224,11 +224,21 @@
  ],
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": "",
+ "zip_sha256_16": "212982fdcb3d82b9",
  "history": [
   {
    "date": "2026-11-01",
    "event": "DRAWN: architecture 3, the Arafura Examinations Board's Question 6 scaling decision (education-learning-sciences, item-response-theory-test-equating, ETL), registered 2026-11-01T00:50:34Z"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at stage 3: the generator, pack, goldens and write-up built and green on target.zip 212982fd; figures_check, the asks' silent devices and the design note's stage 2 sections remain"
   }
- ]
+ ],
+ "build": {
+  "rebuild": "python3 task445/generator/build.py",
+  "zip": "212982fdcb3d82b9fed77d3f605c3ac90710a52f71e359f509b3784ebd022b99",
+  "gates": "two byte-identical builds; checks.py 0 failed (C1 to C5, SF1 to SF12, G1 to G6); verify.py 0 failures; voice-check PASS (716 characters); ceiling.py pair ceiling 58.0, mirror leakage 7.1; figures_check FAIL (11 figures in blocks 1 to 4 absent from figures.json)",
+  "call": "raise Question 6 by 2 marks (1,422 candidates wrote all three essays, Question 6 2.07 marks harder; every chooser route about 0.5, under the 1.5 line)"
+ }
 }

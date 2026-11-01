@@ -1,97 +1,172 @@
-"""The governing document in the pack: the Heat Resilience Fund's allocation terms (the board's paper, with
-Table 1)."""
-import re
+"""task445 architecture 3: the board's code of practice and the awarding minute (PDF), and the request (email)."""
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-from reportlab import rl_config
+import postprocess as PP
+import world as W
 
-rl_config.invariant = 1
-from reportlab.lib import colors  # noqa: E402
-from reportlab.lib.pagesizes import A4  # noqa: E402
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet  # noqa: E402
-from reportlab.lib.units import cm  # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
-
-import world as W  # noqa: E402
-
-NHS_BLUE = colors.HexColor("#005EB8")
-SS = getSampleStyleSheet()
-H1 = ParagraphStyle("h1", parent=SS["Heading1"], fontName="Helvetica-Bold", fontSize=15, textColor=NHS_BLUE,
-                    spaceAfter=6)
-H2 = ParagraphStyle("h2", parent=SS["Heading2"], fontName="Helvetica-Bold", fontSize=11.5, textColor=NHS_BLUE,
-                    spaceBefore=8, spaceAfter=3)
-P = ParagraphStyle("p", parent=SS["BodyText"], fontName="Helvetica", fontSize=9.6, leading=13.2, spaceAfter=5)
-SMALL = ParagraphStyle("s", parent=P, fontSize=8.4, leading=11, textColor=colors.HexColor("#425563"))
-CELL = ParagraphStyle("c", parent=P, fontSize=8.4, leading=10.4, spaceAfter=0)
+ORG = "Arafura Examinations Board"
+DOMAIN = "arafura-exams.edu.au"
+RESULTS = ("Christopher Turner", "c.turner")
+STANDARDS = ("Mary Deleon", "m.deleon")
+DATA = ("Melissa Chen", "m.chen")
 
 
-def _stamp(path, when, author):
-    """same-length replacements, so the cross-reference offsets stay valid"""
-    b = open(path, "rb").read()
-
-    def same(m, new):
-        old = m.group(0)
-        return new.ljust(len(old))[:len(old)]
-    b = re.sub(rb"ReportLab Generated PDF document \(opensource\)",
-               lambda m: same(m, b"Microsoft: Print To PDF"), b)
-    b = re.sub(rb"ReportLab generated PDF document -- digest \(opensource\)", lambda m: same(m, b"end"), b)
-    b = re.sub(rb"\(anonymous\)", lambda m: same(m, b"(" + author.encode()[:9] + b")"), b)
-    b = b.replace(b"D:20000101000000+00'00'", when)
-    assert b"ReportLab" not in b and b"reportlab" not in b
-    open(path, "wb").write(b)
+def _styles():
+    ss = getSampleStyleSheet()
+    body = ParagraphStyle("body", parent=ss["Normal"], fontName="Helvetica", fontSize=9.6, leading=13.4, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=4)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+                        spaceBefore=8, spaceAfter=4, keepWithNext=1)
+    small = ParagraphStyle("small", parent=body, fontSize=8, leading=10.5, textColor=colors.HexColor("#444444"))
+    cell = ParagraphStyle("cell", fontName="Helvetica", fontSize=8.4, leading=10.2)
+    return body, h1, h2, small, cell
 
 
-def _table(rows, widths, head=True):
-    data = [[Paragraph(str(c), CELL) for c in r] for r in rows]
-    t = Table(data, colWidths=widths, repeatRows=1 if head else 0)
-    st = [("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#AEB7BD")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-          ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4)]
-    if head:
-        st += [("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E8EDEE"))]
-    t.setStyle(TableStyle(st))
-    return t
+def _footer(text):
+    def foot(canvas, d):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(20 * mm, 10 * mm, text)
+        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
+        canvas.restoreState()
+    return foot
 
 
-def terms(T, path):
-    flow = [Paragraph("NHS Ellesmoor Integrated Care Board", SMALL),
-            Paragraph("Heat Resilience Fund 2027: allocation terms", H1),
-            Paragraph("Approved by the Board on 24 June 2026 (paper B/26/41). Owner: Director of Population Health.",
-                      SMALL), Spacer(1, 6),
-            Paragraph("1. Purpose", H2),
-            Paragraph("The fund helps the board's six places prepare for summer 2027: cool spaces, check-in calls for "
-                      "people who live alone, and small home adaptations for residents at risk in hot weather. It is "
-                      "allocated on what summer 2026 cost each place in deaths.", P),
-            Paragraph("2. Grants", H2),
-            Paragraph("Each qualifying place receives a heat resilience grant of GBP 300,000 for 2027. Every other "
-                      "place receives the standard heat-health allocation of GBP 60,000.", P),
-            Paragraph("3. Qualifying places", H2),
-            Paragraph("A place qualifies when the deaths of its residents from 1 June to 31 August 2026 exceed its "
-                      "expected deaths in Table 1 by 10 per cent or more. The excess is the deaths less the expected "
-                      "deaths, expressed as a percentage of the expected deaths.", P),
-            Paragraph("4. The deaths counted", H2),
-            Paragraph("A death is counted for the place of the deceased person's usual address, by the date of death. "
-                      "Every death that occurred in the period is counted, whether or not it has been registered by "
-                      "the date of the count, and each death is counted once. The count is made from the mortality "
-                      "records held by the population health intelligence team at the close of 9 October 2026 and is "
-                      "taken to the Board on 26 November 2026.", P),
-            Paragraph("5. Expected deaths", H2),
-            Paragraph("Table 1 sets each place's expected deaths for 1 June to 31 August 2026: the mean of its "
-                      "residents' deaths in the summers of 2021 to 2025, adjusted for population change. Table 1 is "
-                      "fixed for this allocation and is not recalculated.", P),
-            Spacer(1, 4),
-            Paragraph("Table 1. Expected deaths of residents, 1 June to 31 August 2026", ParagraphStyle(
-                "cap", parent=P, fontName="Helvetica-Bold", fontSize=9.2))]
-    rows = [["Place", "Local authority code", "Expected deaths"]]
-    for p in W.NAMES:
-        rows.append([p, W.CODE[p], "{:,}".format(T.expected[p])])
-    rows.append(["Ellesmoor", "", "{:,}".format(sum(T.expected.values()))])
-    flow.append(_table(rows, [5.2 * cm, 4.2 * cm, 3.6 * cm]))
-    flow += [Spacer(1, 8),
-             Paragraph("6. Use of the grants", H2),
-             Paragraph("Places report the use of their grants to the Heat Resilience Panel by 31 October 2027. Any "
-                       "grant not committed by 30 September 2027 returns to the fund.", P)]
-    doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=2.2 * cm, rightMargin=2.2 * cm, topMargin=2 * cm,
-                            bottomMargin=2 * cm, title="Heat Resilience Fund 2027: allocation terms",
-                            author="Caroline Porter", subject="Board paper B/26/41", creator="Microsoft Word",
-                            producer="Microsoft: Print To PDF")
-    doc.build(flow)
-    _stamp(path, b"D:20260624101522+01'00'", "Caroline Porter")
+def _doc(path, title, subject):
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                             bottomMargin=18 * mm, title=title, author=ORG, creator=ORG, producer=ORG, subject=subject, invariant=1)
+
+
+def code_of_practice(path):
+    body, h1, h2, small, cell = _styles()
+    doc = _doc(path, "Code of practice for examining and awarding, 2026", "Code of practice")
+    s = [Paragraph(ORG, small), Paragraph("Code of practice for examining and awarding", h1),
+         Paragraph("2026 edition, approved by the Board on 18 March 2026 and in force for the 2026 Arafura Senior "
+                   "Certificate examinations. Owner: the Head of Research and Standards.", small), Spacer(1, 4)]
+    sec = [
+        ("1. Scope", [
+            "This code governs how the board marks its written papers, how optional questions are treated, how "
+            "grades are awarded and how the board handles centres' requests for post-results reviews. It applies to "
+            "every component of the Arafura Senior Certificate."]),
+        ("2. Entries and centres", [
+            "2.1 A candidate sits a paper at the centre under whose code the candidate's script is marked. A "
+            "centre's region is the region the centres register gives it, under its current code or under the code "
+            "it held before a merger.",
+            "2.2 A candidate who is re-entered at another centre after entry keeps one entry and one result, under "
+            "the number of the later entry; the earlier entry is withdrawn.",
+            "2.3 A candidate who was absent from a paper has not sat it."]),
+        ("3. Marking and crediting", [
+            "3.1 Every answer a candidate writes is marked. Where a senior examiner re-marks an answer, the senior "
+            "examiner's mark stands.",
+            "3.2 Where a candidate answers more optional questions than the rubric asks for, every answer is marked "
+            "and the candidate is credited with the best answers the rubric allows."]),
+        ("4. Optional questions", [
+            "4.1 Optional questions on a paper are set to be equally demanding. After marking, Research and Standards "
+            "reports to the executive on each optional question of every paper that offers a choice, before the "
+            "paper's results are certified.",
+            "4.2 An optional question is more demanding than the paper's other optional questions when the paper's "
+            "candidates would have earned fewer marks on it than on the others taken together, had each of them "
+            "answered every optional question on the paper. The difference is measured in marks.",
+            "4.3 Where an optional question is more demanding by a mark and a half or more, every candidate's mark on "
+            "it is raised by that difference, to the nearest whole mark and no higher than the question's maximum, "
+            "before the best answers are credited under 3.2 and before the grade boundaries are applied. No optional "
+            "question's marks are lowered."]),
+        ("5. Grades", [
+            "5.1 A candidate's paper total is the candidate's Section A total and the marks of the credited answers.",
+            "5.2 A candidate's grade for the paper is the highest grade whose boundary the paper total reaches. A "
+            "total below the boundary for grade E is ungraded (U). The boundaries are those the Awarding Committee "
+            "sets for the paper; they are not moved after an optional question is scaled."]),
+        ("6. Post-results reviews", [
+            "6.1 After results are issued a centre may request a review of any component of a candidate's result. "
+            "One request may cover several components; each component is reviewed and reported separately.",
+            "6.2 A request is counted in the month in which the centre made it, in the centre's local time. A request "
+            "the centre withdraws before its review begins is not counted.",
+            "6.3 A review changes a grade when its outcome changes the component's grade."]),
+    ]
+    for head, paras in sec:
+        s.append(Paragraph(head, h2))
+        for p in paras:
+            s.append(Paragraph(p, body))
+    s.append(Paragraph("7. Outcome codes in the review log", h2))
+    t = Table([[Paragraph(x, cell) for x in r] for r in [
+        ["Code", "Meaning"], ["NC", "Reviewed, no change to the mark"], ["MC", "Mark changed, grade unchanged"],
+        ["GC", "Mark changed and grade changed"], ["WD", "Withdrawn by the centre before the review began"]]],
+        colWidths=[22 * mm, 148 * mm])
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9AA0AB")),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E3E8EF"))]))
+    s.append(t)
+    s.append(Spacer(1, 6))
+    s.append(Paragraph("Approved by the Board, 18 March 2026.", small))
+    doc.build(s, onFirstPage=_footer("Code of practice 2026  |  " + ORG),
+              onLaterPages=_footer("Code of practice 2026  |  " + ORG))
+    PP.normalize_pdf(path, b"D:20260318041500+09'30'", b"D:20260319233000+09'30'")
+
+
+def awarding_minute(path):
+    body, h1, h2, small, cell = _styles()
+    doc = _doc(path, "History Awarding Committee minute, 24 November 2026", "Minute")
+    s = [Paragraph(ORG, small), Paragraph("History Awarding Committee", h1),
+         Paragraph("Minute of the meeting held in Darwin on 24 November 2026.", small), Spacer(1, 4),
+         Paragraph("1. Paper 1 boundaries", h2),
+         Paragraph("The committee set the Paper 1 boundaries recorded in the Paper 1 minute.", body),
+         Paragraph("2. Paper 2 boundaries", h2),
+         Paragraph("The committee set the following boundaries for Paper 2, out of 90 marks (Section A 40, Section B "
+                   "two essays of 25):", body)]
+    t = Table([[Paragraph(x, cell) for x in r] for r in [["Grade"] + [g for g, _ in W.BOUNDS],
+                                                          ["Boundary (marks)"] + [str(b) for _, b in W.BOUNDS]]],
+              colWidths=[40 * mm] + [26 * mm] * len(W.BOUNDS))
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9AA0AB")),
+                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E3E8EF"))]))
+    s += [t, Spacer(1, 4),
+          Paragraph("3. Optional questions", h2),
+          Paragraph("Section B offered Questions 4, 5 and 6, of which candidates answer two. Research and Standards will "
+                    "report on the optional questions under sections 4.1 to 4.3 of the code of practice before the "
+                    "results are certified.", body),
+          Paragraph("4. Next meeting", h2),
+          Paragraph("The committee will meet again in March 2027 to review the 2026 examining year.", body)]
+    doc.build(s, onFirstPage=_footer("History Awarding Committee  |  " + ORG),
+              onLaterPages=_footer("History Awarding Committee  |  " + ORG))
+    PP.normalize_pdf(path, b"D:20261124063000+09'30'", b"D:20261125010500+09'30'")
+
+
+def _mail(who):
+    return "%s <%s@%s>" % (who[0], who[1], DOMAIN)
+
+
+def request(path):
+    text = """From: %s
+To: %s
+Cc: %s
+Date: Tue, 01 Dec 2026 09:18:40 +0930
+Subject: History Paper 2: certification on 14 December
+Message-ID: <20261201091840.2210.cturner@%s>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+Hi Mary,
+
+Marking of History Paper 2 closed on Friday, and the executive certifies the
+History results to the admissions centres on Monday 14 December, so I need
+your section 4 report on the paper's optional questions this week.
+
+Melissa has put the marking export, the Section A scan, the entries register
+and the centres register in the usual folder, with last year's review log for
+the annual report. The executive will want the results file for the
+certification run and the entries figures by region.
+
+Thanks,
+Chris
+
+--
+%s
+Executive Officer, Results
+%s
+""" % (_mail(RESULTS), _mail(STANDARDS), _mail(DATA), DOMAIN, RESULTS[0], ORG)
+    open(path, "w", encoding="utf-8").write(text)

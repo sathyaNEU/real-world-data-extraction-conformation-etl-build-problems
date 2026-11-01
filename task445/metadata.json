@@ -1,132 +1,108 @@
 {
-  "task": "task445",
-  "title": "Which Ellesmoor places qualify for the 2027 heat resilience grants",
-  "domain": "General Statistics & Data Science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "objective": "Data Extraction & Conformation (ETL)",
-  "prompt_shape": "10 (scorecard against thresholds): each place's summer 2026 deaths, expected deaths, excess and qualification against the fund's line, with the medical examiner offices' quarters and the registration shares by place and quarter",
-  "as_of": "2026-10-14",
-  "deliverables": [
-    "heat_resilience_grants_2027.xlsx",
-    "summer_2026_deaths_by_place.csv"
-  ],
-  "distractor_files": [
-    "population_estimates_mid-2025.csv",
-    "daily_max_temperature_2026.csv",
-    "heat_health_alerts_summer_2026.csv",
-    "care_home_locations_2026-10.xlsx"
-  ],
-  "input_gates": {
-    "files": 10,
-    "formats": [
-      "csv",
-      "json",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "ellesmoor_death_registrations_2021-2026.csv",
-    "largest_file_rows": 81590
+ "task": "task445",
+ "architecture": 3,
+ "setting": "2026-12-01",
+ "files": [
+  {
+   "name": "aeb_centres_register.csv",
+   "role": "evidence",
+   "source": "synthetic: the board's centres register",
+   "date": "2026-10-14",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task445/generator/make.py (seeded, deterministic) in the layouts of an English primary care mortality extract, two medical examiner offices' case systems and an integrated care board paper; every place, person, postcode, organisation and figure is invented",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-31",
-  "generator": "task445/generator/make.py",
-  "files": [
-    {
-      "path": "care_home_locations_2026-10.xlsx",
-      "format": "xlsx",
-      "bytes": 7822,
-      "rows": null,
-      "source": "Constructed: The board's commissioning list of care homes in the six places, October 2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "daily_max_temperature_2026.csv",
-      "format": "csv",
-      "bytes": 8820,
-      "rows": 244,
-      "source": "Constructed: Daily maximum temperatures at two Ellesmoor stations, June to September 2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "ellesmoor_death_registrations_2021-2026.csv",
-      "format": "csv",
-      "bytes": 15702851,
-      "rows": 81590,
-      "source": "Constructed: Death registrations of Ellesmoor residents from 1 January 2021, entries to 9 October 2026 (primary care mortality extract layout)",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "heat_health_alerts_summer_2026.csv",
-      "format": "csv",
-      "bytes": 495,
-      "rows": 6,
-      "source": "Constructed: Heat-health alerts for the north of England, summer 2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "heat_resilience_fund_2027_terms.pdf",
-      "format": "pdf",
-      "bytes": 3533,
-      "rows": null,
-      "source": "Constructed: Heat Resilience Fund 2027 allocation terms, board paper B/26/41, with Table 1",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "north_ellesmoor_me_office_log.xlsx",
-      "format": "xlsx",
-      "bytes": 1014672,
-      "rows": 18906,
-      "source": "Constructed: North Ellesmoor Medical Examiner Office scrutiny log, 9 September 2024 to 9 October 2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "population_estimates_mid-2025.csv",
-      "format": "csv",
-      "bytes": 1047,
-      "rows": 30,
-      "source": "Constructed: Mid-2025 population estimates by place and age band",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "postcode_to_place_lookup.csv",
-      "format": "csv",
-      "bytes": 83553,
-      "rows": 1878,
-      "source": "Constructed: Postcode to place lookup for the six Ellesmoor places, live and terminated postcodes",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "registration_districts.csv",
-      "format": "csv",
-      "bytes": 308,
-      "rows": 5,
-      "source": "Constructed: Registration districts and their codes before and after 3 April 2023",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "south_ellesmoor_me_office_cases.json",
-      "format": "json",
-      "bytes": 7163949,
-      "rows": 14231,
-      "source": "Constructed: South Ellesmoor Medical Examiner Office case export (JSON), 9 September 2024 to 9 October 2026",
-      "date": "2026-10-09",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "name": "aeb_code_of_practice_2026.pdf",
+   "role": "evidence",
+   "source": "synthetic: the board's code of practice for examining and awarding, 2026",
+   "date": "2026-03-19",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "aeb_markers_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the board's examiners for History Paper 2, 2026",
+   "date": "2026-10-30",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "asc_history_entries_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the board's entries register for History",
+   "date": "2026-11-28",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "history_awarding_minute_2026.pdf",
+   "role": "evidence",
+   "source": "synthetic: the History Awarding Committee's minute of 24 November 2026",
+   "date": "2026-11-25",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "p2_essay_marks_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the board's essay marking export, one row per marking event",
+   "date": "2026-11-28",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "p2_question_statistics_2025.xlsx",
+   "role": "distractor",
+   "source": "synthetic: the 2025 History Paper 2 question statistics",
+   "date": "2025-12-03",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "p2_section_a_scan_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the scanning system's Section A extract",
+   "date": "2026-11-28",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "post_results_reviews_2025.csv",
+   "role": "evidence",
+   "source": "synthetic: the 2025 post-results review log, one row per component reviewed",
+   "date": "2026-03-02",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "results_certification_2026-12-01.eml",
+   "role": "evidence",
+   "source": "synthetic: the Executive Officer (Results)'s request to Research and Standards",
+   "date": "2026-12-01",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "teacher_predicted_grades_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: centres' predicted grades for History, 2026",
+   "date": "2026-09-30",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  }
+ ],
+ "distractors": [
+  "teacher_predicted_grades_2026.csv",
+  "p2_question_statistics_2025.xlsx"
+ ],
+ "distractor_reasons": {
+  "teacher_predicted_grades_2026.csv": "teachers' predictions say what a centre expected of a candidate, not what any essay demanded",
+  "p2_question_statistics_2025.xlsx": "the 2025 paper's questions are not the 2026 paper's, so its statistics say nothing about 2026's demand"
+ },
+ "stated_inputs": [
+  "1.5",
+  "25",
+  "40",
+  "90",
+  "66",
+  "57",
+  "48",
+  "39",
+  "30"
+ ],
+ "deliverables": [
+  "p2_question_scaling_2026.docx",
+  "history_p2_results_2026.csv",
+  "history_p2_entries_2026.xlsx"
+ ]
 }
