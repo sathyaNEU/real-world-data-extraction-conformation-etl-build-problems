@@ -1,31 +1,31 @@
 {
  "task": "task255",
- "status": "SHIPPED",
- "domain": "actuarial-science-insurance / claims-frequency-severity",
+ "status": "DESIGN",
+ "domain": "marketing-consumer-research / media-reach-frequency-audience-measurement",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-26",
- "stump": "The default path fits the lognormal by maximum likelihood to every occurrence of 2014 to 2021, each truncated at its deductible and the 25 at the retention censored, both at 2027 cost, and carries the actuary's 432.7 occurrences above $25,000 by that one curve: $2.0 million (0.89 above it); the law enforcement occurrences carry most of the tail and the one curve is shaped by the other parts; fitted for each coverage group and weighted by the actuary's two projections (85.1 and 347.6) the count first clears one at $4.0 million (1.2 above $3.0 million, 0.8 above $4.0 million).",
- "architecture": 1,
- "loops": 2,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-11-01",
+ "stump": "",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-26"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK) on the final rebuild, anchors 85.1 and 347.6",
-  "reader": "round 1: two scored readers off the call ($2.0 million), exposure asks solved (75 per cent, asks replaced); round 2 on the final pack: both readers off the call at $2.0 million, 0 of 14 ask figures"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (people, Gate G, decision and deliverables answered in the note)",
-  "surface": "PASS (first-name WARNs)",
-  "nearest": "task255 lineage 0.28, task202 0.06"
+  "heart": "",
+  "surface": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC (round 2, layer-loss asks)",
-  "disposition": "APPROVE",
-  "report": "task255/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [
   {
@@ -39,13 +39,19 @@
    "portal": "both responses landed the call: USD 4,000,000 per occurrence from the first dollar, 0.74 expected occurrences above it, premium 735,429 (the golden to the dollar)",
    "repair": "design",
    "commit": "RESHIPPED (task255) of 2026-10-26, loop 2"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "architecture 1 re-rooted at the Batch 3 queue reset: the portal's responses filed the liability pool's retention through the truncated and censored likelihood, the field's reflex",
+   "repair": "design: re-rooted to architecture 2 (marketing-consumer-research / media-reach-frequency-audience-measurement, a metro advertising concessionaire's 2027 guaranteed-reach tier)",
+   "commit": "DRAWN (task255) architecture 2, by the main session"
   }
  ],
- "resume": "",
+ "resume": "architecture 2 drawn 2026-11-01 (card registered PASS); next: design note and generator",
  "approved": null,
- "delivered": "2026-10-26",
+ "delivered": null,
  "portal": null,
  "seed": "DA05 number (START_HERE); the seed's world is not used",
- "portal_status": "PENDING_REVIEW",
+ "portal_status": "",
  "portal_status_date": ""
 }

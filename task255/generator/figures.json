@@ -1,212 +1,124 @@
 {
- "anchor": 25000,
- "anchors": {
-  "LE": 85.1,
-  "OT": 347.6,
-  "all": 432.7
+ "agency_rates_pct": {
+  "Bureau Lindeman": 17.5,
+  "Kompasmedia": 13.5,
+  "Noordlicht Mediaplanning": 12.5
  },
- "attachments": [
-  1000000,
-  1500000,
-  2000000,
-  2500000,
-  3000000,
-  4000000,
-  5000000
+ "booking_package": {
+  "SB-26-0412": "Overstappunten",
+  "SB-26-0415": "Centraal",
+  "SB-26-0418": "Noordtak",
+  "SB-26-0421": "Oosttak",
+  "SB-26-0423": "Binnenstad",
+  "SB-26-0427": "Zuidtak",
+  "SB-26-0430": "Centraal",
+  "SB-26-0433": "Westtak",
+  "SB-26-0436": "Ringlijn",
+  "SB-26-0439": "Eindhaltes"
+ },
+ "call": [
+  "Overstappunten",
+  "Oosttak",
+  "Zuidtak"
  ],
- "attachments_millions": [
-  "1.0 million",
-  "1.5 million",
-  "2.0 million",
-  "2.5 million",
-  "3.0 million",
-  "4.0 million",
-  "5.0 million"
+ "clauses_cited": "rate card 3.1, 3.2, 3.3, 3.4, 3.5; general terms 6.1, 6.2, 6.3, 8.2, 8.3",
+ "effective_frequency": 3,
+ "headway_min": 3,
+ "make_good_allowance_pct": 0.5,
+ "make_good_hours": {
+  "SB-26-0412": 113,
+  "SB-26-0415": 34,
+  "SB-26-0418": 591,
+  "SB-26-0421": 171,
+  "SB-26-0423": 64,
+  "SB-26-0427": 203,
+  "SB-26-0430": 195,
+  "SB-26-0433": 45,
+  "SB-26-0436": 87,
+  "SB-26-0439": 137
+ },
+ "net_revenue_eur": {
+  "Binnenstad": 5050,
+  "Centraal": 9100,
+  "Eindhaltes": 4070,
+  "Noordtak": 5530,
+  "Oosttak": 5930,
+  "Overstappunten": 8190,
+  "Ringlijn": 4210,
+  "Westtak": 2310,
+  "Zuidtak": 7260
+ },
+ "peak_windows": "07:00 to 09:30 and 16:00 to 18:30",
+ "reach": {
+  "Binnenstad": 33,
+  "Centraal": 33,
+  "Eindhaltes": 36,
+  "Noordtak": 31,
+  "Oosttak": 47,
+  "Overstappunten": 49,
+  "Ringlijn": 32,
+  "Westtak": 25,
+  "Zuidtak": 48
+ },
+ "reach_exact": {
+  "Binnenstad": 32.889,
+  "Centraal": 32.735,
+  "Eindhaltes": 35.762,
+  "Noordtak": 31.144,
+  "Oosttak": 46.793,
+  "Overstappunten": 49.102,
+  "Ringlijn": 32.324,
+  "Westtak": 24.679,
+  "Zuidtak": 48.23
+ },
+ "reach_gates_only": {
+  "Binnenstad": 17,
+  "Centraal": 15,
+  "Eindhaltes": 36,
+  "Noordtak": 31,
+  "Oosttak": 39,
+  "Overstappunten": 0,
+  "Ringlijn": 32,
+  "Westtak": 25,
+  "Zuidtak": 41
+ },
+ "reach_linemap": {
+  "Binnenstad": 56,
+  "Centraal": 63,
+  "Eindhaltes": 36,
+  "Noordtak": 31,
+  "Oosttak": 47,
+  "Overstappunten": 77,
+  "Ringlijn": 32,
+  "Westtak": 25,
+  "Zuidtak": 48
+ },
+ "regular_riders": 1949,
+ "screens_on_sale_2027": {
+  "Binnenstad": 9,
+  "Centraal": 10,
+  "Eindhaltes": 14,
+  "Noordtak": 12,
+  "Oosttak": 18,
+  "Overstappunten": 10,
+  "Ringlijn": 14,
+  "Westtak": 8,
+  "Zuidtak": 19
+ },
+ "tier_codes": [
+  "OVP",
+  "OST",
+  "ZDT"
  ],
- "by_class": {
-  "city": {
-   "members": 33,
-   "toe_000": 5043163,
-   "units": 4202
-  },
-  "fire district": {
-   "members": 9,
-   "toe_000": 120787,
-   "units": 302
-  },
-  "library district": {
-   "members": 3,
-   "toe_000": 16985,
-   "units": 28
-  },
-  "park and recreation district": {
-   "members": 4,
-   "toe_000": 49785,
-   "units": 144
-  },
-  "port district": {
-   "members": 3,
-   "toe_000": 136810,
-   "units": 188
-  },
-  "transit authority": {
-   "members": 2,
-   "toe_000": 217085,
-   "units": 542
-  },
-  "water-sewer district": {
-   "members": 5,
-   "toe_000": 121297,
-   "units": 231
-  }
- },
- "call": {
-  "attachment": 4000000,
-  "count": 0.8,
-  "runner_up": 3000000,
-  "runner_up_count": 1.2
- },
- "counts": {
-  "1000000": 4.5771809456054555,
-  "1500000": 2.8183442290166725,
-  "2000000": 1.9880636206457964,
-  "2500000": 1.508007413381657,
-  "3000000": 1.1976608141484897,
-  "4000000": 0.824708860313119,
-  "5000000": 0.6121748599836281
- },
- "counts_1dp": {
-  "1000000": 4.6,
-  "1500000": 2.8,
-  "2000000": 2.0,
-  "2500000": 1.5,
-  "3000000": 1.2,
-  "4000000": 0.8,
-  "5000000": 0.6
- },
- "curves": {
-  "LE": {
-   "capped": 25,
-   "mu": 8.515768400590542,
-   "mu_2dp": 8.52,
-   "n": 314,
-   "sigma": 2.3713060830620147,
-   "sigma_2dp": 2.37
-  },
-  "OT": {
-   "capped": 0,
-   "mu": 9.885093757585866,
-   "mu_2dp": 9.89,
-   "n": 757,
-   "sigma": 1.13520547272004,
-   "sigma_2dp": 1.14
-  }
- },
- "exposure": {
-  "members": 59,
-  "toe": 5705912536,
-  "toe_000": 5705913,
-  "units": 5637
- },
- "fit": {
-  "capped": 25,
-  "capped_r1": 15,
-  "capped_r2": 10,
-  "closed": 1063,
-  "n": 1071,
-  "open": 8
- },
- "fit_sources": {
-  "current": 461,
-  "legacy": 610
- },
- "layer_limit": 10000000,
- "layer_loss": {
-  "1000000": 8276360.154953229,
-  "1500000": 6588822.06149725,
-  "2000000": 5499324.599476356,
-  "2500000": 4720200.573739387,
-  "3000000": 4129222.7496568933,
-  "4000000": 3285003.957545141,
-  "5000000": 2707609.616842004
- },
- "layer_loss_100k": {
-  "1000000": 8300000,
-  "1500000": 6600000,
-  "2000000": 5500000,
-  "2500000": 4700000,
-  "3000000": 4100000,
-  "4000000": 3300000,
-  "5000000": 2700000
- },
- "lr": {
-  "one_spread": 28.8,
-  "pooled": 158.2
- },
- "pooled": {
-  "count_call": 0.9,
-  "mu_2dp": 8.09,
-  "pick": 2000000,
-  "sigma_2dp": 1.86
- },
- "premiums": {
-  "1000000": 12985088,
-  "1500000": 10369856,
-  "2000000": 8653877,
-  "2500000": 7464632,
-  "3000000": 6467022,
-  "4000000": 5392548,
-  "5000000": 4648680
- },
- "retentions": [
-  500000,
-  1000000
+ "tier_gates_only": [
+  "Zuidtak"
  ],
- "rungs": {
-  "G": {
-   "count_3m": 1.1976608141484897,
-   "count_4m": 0.824708860313119,
-   "pick": 4000000
-  },
-  "G_closed": {
-   "count_3m": 0.7504710193114784,
-   "count_4m": 0.4800144568785479,
-   "pick": 2500000
-  },
-  "G_nominal": {
-   "count_3m": 1.64945181851035,
-   "count_4m": 1.0292242712862307,
-   "pick": 5000000
-  },
-  "R0": {
-   "count_3m": 0.1515553581700789,
-   "count_4m": 0.04775887158491297,
-   "pick": 2000000
-  },
-  "R1": {
-   "count_3m": 0.20303581472985177,
-   "count_4m": 0.06711182145258124,
-   "pick": 2000000
-  },
-  "R2": {
-   "count_3m": 0.24005285609068364,
-   "count_4m": 0.11963403991307027,
-   "pick": 2000000
-  },
-  "R3": {
-   "count_3m": 0.38652767863644555,
-   "count_4m": 0.20877726381829867,
-   "pick": 2000000
-  },
-  "parts5": {
-   "count_3m": 1.1982719506083817,
-   "count_4m": 0.8249130336352634,
-   "pick": 4000000
-  },
-  "shift": {
-   "count_3m": 0.5556988992404053,
-   "count_4m": 0.3128847824902478,
-   "pick": 2500000
-  }
- }
+ "tier_line_pct": 40,
+ "tier_linemap": [
+  "Centraal",
+  "Binnenstad",
+  "Overstappunten",
+  "Oosttak",
+  "Zuidtak"
+ ]
 }

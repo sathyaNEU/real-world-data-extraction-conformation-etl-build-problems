@@ -1,167 +1,110 @@
-"""Build task255: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch folder
-inside the task (removed after) compared byte for byte, then target.zip cut from the final build.
+"""Builds task255 twice from nothing, checks the two builds are byte-identical, and installs target/, golden/,
+figures.json, metadata.json and target.zip.
 
-    python3 task255/generator/build.py              everything
-    python3 task255/generator/build.py --out DIR    the pack only, into DIR"""
-import argparse
-import datetime as dt
+    python3 task255/generator/build.py
+"""
 import hashlib
 import json
 import os
 import shutil
 import sys
 import tempfile
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import analysis as AN      # noqa: E402
-import docs as D           # noqa: E402
-import postprocess as PP   # noqa: E402
-import records as R        # noqa: E402
-import world as W          # noqa: E402
-
 TASK = os.path.dirname(HERE)
-FILES = {
-    "legacy": R.LEGACY, "current": R.CURRENT, "log": R.LOG, "decl": R.DECL, "roster": R.ROSTER,
-    "dedhist": R.DEDHIST, "tri": R.TRIANGLES, "policy": D.POLICY, "memo": D.MEMO, "study": D.STUDY,
-    "quotes": D.QUOTES, "notes": D.NOTES,
+sys.path.insert(0, HERE)
+import golden as GD  # noqa: E402
+import io_util as IO  # noqa: E402
+import pack as PK  # noqa: E402
+import params as P  # noqa: E402
+import world as W  # noqa: E402
+
+SOURCES = {
+    "journeys": ("Ravelmondse Vervoerbedrijf data warehouse, OV-chipkaart metro journeys 1 October to 4 November "
+                 "2026 as re-exported on 5 November 2026; synthetic, constructed for this task"),
+    "network": "Ravelmondse Vervoerbedrijf metro network planning model 2026; synthetic",
+    "products": "Ravelmondse Vervoerbedrijf product code list; synthetic",
+    "rate_card": "Spoorbeeld Media rate card 2027 for the Ravelmond metro, version 1.0 of 10 November 2026; synthetic",
+    "terms": "Spoorbeeld Media general terms 2026 for metro screen advertising; synthetic",
+    "register": "Spoorbeeld Media screen register as kept by screen operations, state of 12 November 2026; synthetic",
+    "cms": "Spoorbeeld Media content management system, player event log 1 October to 4 November 2026; synthetic",
+    "bookings": "Spoorbeeld Media autumn 2026 bookings workbook kept by sales; synthetic",
+    "legacy": "Spoorbeeld Media legacy invoicing system, 2026 invoices to its close on 14 October 2026; synthetic",
+    "billing": "Spoorbeeld Media billing system export, documents 15 October to 12 November 2026; synthetic",
+    "statements": "Agency commission statements of 31 October 2026, as received and scanned; synthetic",
+    "ridership": "Ravelmondse Vervoerbedrijf published monthly boardings by stop, January to September 2026; synthetic",
+    "survey": "Passenger survey of the Ravelmond metro, third quarter 2026, by an outside agency; synthetic",
+    "benchmark": "Industry benchmark of digital transit screens in Dutch city networks, September 2026; synthetic",
 }
-DISTRACTORS = ("dedhist", "tri", "decl", "log")
 
 
-def build(out, quiet=False, st=None):
-    if os.path.exists(out):
-        shutil.rmtree(out)
-    os.makedirs(out)
-    p = lambda k: os.path.join(out, FILES[k])
-    st = st or AN.world_state()
-    counts = {}
-    counts["legacy"] = R.write_legacy(p("legacy"), st["rec"], st["mem"])
-    counts["current"] = R.write_current(p("current"), st["rec"])
-    counts["log"] = R.write_log(p("log"), st["log"])
-    counts["decl"] = R.write_declarations(p("decl"), st["dec"])
-    counts["roster"] = R.write_roster(p("roster"), st["mem"])
-    counts["dedhist"] = R.write_deductible_history(p("dedhist"), st["mem"])
-    counts["tri"] = R.write_triangles(p("tri"), st["rec"])
-    rated = W.rated(st["dec"], st["mem"]).values()
-    police = sum(ln["payroll"] for d in rated for ln in d["lines"] if ln["department"] == "Police")
-    other = sum(ln["payroll"] for d in rated for ln in d["lines"] if ln["department"] != "Police")
-    D.write_policy(p("policy"))
-    D.write_memo(p("memo"))
-    st["study_rate"] = D.write_study(p("study"), police, other)
-    D.write_quotes(p("quotes"))
-    D.write_notes(p("notes"), {"legacy": R.LEGACY, "current": R.CURRENT, "log": R.LOG, "decl": R.DECL,
-                               "dedhist": R.DEDHIST, "tri": R.TRIANGLES})
-    PP.normalize_ooxml(p("legacy"), "Tallowmark Claims", "Tallowmark Claims", "2020-07-02T15:12:40Z",
-                       "2020-07-02T15:14:03Z", excel=True)
-    PP.normalize_ooxml(p("decl"), "Declarations Intake", "Finance Office", "2026-10-05T16:21:09Z",
-                       "2026-10-05T16:21:09Z", excel=True)
-    PP.normalize_pdf(p("policy"), b"D:20260618101522-07'00'", b"D:20260618101522-07'00'")
-    PP.normalize_pdf(p("memo"), b"D:20260105143308-08'00'", b"D:20260105143851-08'00'")
-    PP.normalize_pdf(p("study"), b"D:20261009111745-07'00'", b"D:20261009112230-07'00'")
-    PP.normalize_pdf(p("quotes"), b"D:20261002160411-07'00'", b"D:20261002160940-07'00'")
-    stamp = dt.datetime(2026, 10, 20, 9, 14, tzinfo=dt.timezone(dt.timedelta(hours=-7))).timestamp()
-    for f in os.listdir(out):
-        os.utime(os.path.join(out, f), (stamp, stamp))
-    st["counts"] = counts
-    if not quiet:
-        print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in counts.items())))
-    return st
+def metadata(n):
+    return {
+        "task": P.TASK, "architecture": 2, "as_of": P.AS_OF.isoformat(),
+        "decision": "which of the concessionaire's metro screen packages are sold in the guaranteed-reach tier "
+                    "(Tier G) of its 2027 rate card",
+        "deliverables": [GD.BOOK, GD.PAGE],
+        "files": {PK.FILES[k]: {"source": SOURCES[k], "date": P.AS_OF.isoformat(), "license": "synthetic, CC0",
+                                "role": "distractor" if k in PK.DISTRACTORS else "evidence"} for k in PK.FILES},
+        "distractor_files": [PK.FILES[k] for k in PK.DISTRACTORS],
+        "largest_file": {"name": PK.FILES["journeys"], "rows": n["journeys"]},
+        "row_counts": {PK.FILES[k]: v for k, v in sorted(n.items())},
+    }
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = {}
+    for root, _d, files in os.walk(folder):
+        for fn in sorted(files):
+            p = os.path.join(root, fn)
+            h[os.path.relpath(p, folder)] = hashlib.sha256(open(p, "rb").read()).hexdigest()
+    return h
 
 
-def cut_zip(root):
-    import zipfile
-    folder = os.path.join(root, "target")
-    stamp = (2026, 10, 20, 9, 15, 2)
-    zp = os.path.join(root, "target.zip")
-    with zipfile.ZipFile(zp, "w") as z:
-        for f in sorted(os.listdir(folder)):
-            zi = zipfile.ZipInfo(f, date_time=stamp)
+def one_build(base):
+    target, golden, gen = os.path.join(base, "target"), os.path.join(base, "golden"), os.path.join(base, "gen")
+    os.makedirs(target, exist_ok=True)
+    w = W.build(P.SEED)
+    n = PK.build_all(w, target)
+    GD.write_all(target, golden, gen)
+    json.dump(metadata(n), open(os.path.join(base, "metadata.json"), "w"), indent=1, sort_keys=True)
+    return digest(base)
+
+
+def cut_zip(target, path):
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for fn in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(fn, date_time=IO.ZIP_TIME)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(folder, f), "rb").read())
-    return zp
-
-
-def write_metadata(path):
-    meta = {"task": "task255", "distractor_files": [FILES[k] for k in DISTRACTORS],
-            "deliverables": ["retention_2027.xlsx", "attachment_test_2027.png"],
-            "stated_inputs": ["{:,}".format(a) for a in W.OPTIONS] + ["25,000", "500,000", "10,000,000", "%.1f" % W.COUNT_LE,
-                                                                     "%.1f" % W.COUNT_OT, "%.1f" % W.COUNT_25K],
-            "forward_dated": {"vehicle_schedule_log_2022-2026.csv": "deletes and adds keyed before they take effect",
-                              "excess_liability_indications_2027.pdf": "the indications' validity to December 15, 2026",
-                              "actuarial_study_2026_selected_exhibits.pdf": "the 2027 index projection",
-                              "member_roster.csv": "a member's withdrawal taking effect on December 31, 2026"},
-            "provenance": "Constructed records of a fictional pool (declared): claims, schedules, declarations and "
-                          "documents generated by task255/generator; no third-party data."}
-    with open(path, "w") as fh:
-        json.dump(meta, fh, indent=2)
-        fh.write("\n")
-
-
-def everything(root, quiet=False):
-    import golden as G
-    st = build(os.path.join(root, "target"), quiet=quiet)
-    gold = os.path.join(root, "golden")
-    if os.path.exists(gold):
-        shutil.rmtree(gold)
-    os.makedirs(gold)
-    fig = AN.figures(st)
-    with open(os.path.join(root, "generator", "figures.json"), "w") as fh:
-        json.dump(fig, fh, indent=1, sort_keys=True)
-        fh.write("\n")
-    G.write_workbook(os.path.join(gold, G.WORKBOOK), fig)
-    PP.normalize_ooxml(os.path.join(gold, G.WORKBOOK), W.PEOPLE["director"][0], W.PEOPLE["director"][0],
-                       "2026-10-21T17:02:44Z", "2026-11-04T22:31:10Z", excel=True)
-    G.write_chart(os.path.join(gold, G.CHART), fig)
-    write_metadata(os.path.join(root, "metadata.json"))
-    st["fig"] = fig
-    return st
+            z.writestr(zi, open(os.path.join(target, fn), "rb").read())
 
 
 def main():
-    import checks as CK
-    import verify as V
-    st = everything(TASK)
-    CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), st, os.path.join(TASK, "metadata.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
-    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
-    try:
-        os.makedirs(os.path.join(tmp, "generator"))
-        everything(tmp, quiet=True)
-        same_t = digest(os.path.join(TASK, "target")) == digest(os.path.join(tmp, "target"))
-        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
-        same = {}
-        for f in ("metadata.json", os.path.join("generator", "figures.json")):
-            same[f] = open(os.path.join(TASK, f), "rb").read() == open(os.path.join(tmp, f), "rb").read()
-        if not (same_t and same_g and all(same.values())):
-            raise SystemExit("second build differs: target %s, golden %s, %s" % (same_t, same_g, same))
-    finally:
-        shutil.rmtree(tmp)
-    allh = hashlib.sha256("".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
-                          "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode()).hexdigest()
-    print("two builds byte-identical: %d target files, %d golden files, metadata.json and figures.json (sha256 %s)" % (
-        len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))), allh[:16]))
-    import zipfile
-    zp = cut_zip(TASK)
-    with zipfile.ZipFile(zp) as z:
-        inside = {i.filename: hashlib.sha256(z.read(i.filename)).hexdigest() for i in z.infolist()}
-    if inside != digest(os.path.join(TASK, "target")):
-        raise SystemExit("target.zip differs from target/")
-    print("target.zip cut from this build: %d files, each identical to target/ (sha256 %s)" % (
-        len(inside), hashlib.sha256(open(zp, "rb").read()).hexdigest()[:16]))
+    a, b = tempfile.mkdtemp(), tempfile.mkdtemp()
+    da, db = one_build(a), one_build(b)
+    if da != db:
+        bad = sorted(k for k in set(da) | set(db) if da.get(k) != db.get(k))
+        print("NOT byte-identical:", bad)
+        sys.exit(1)
+    print("two builds byte-identical over %d files" % len(da))
+    for sub in ("target", "golden"):
+        dst = os.path.join(TASK, sub)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
+        shutil.copytree(os.path.join(a, sub), dst)
+    shutil.copy(os.path.join(a, "gen", "figures.json"), os.path.join(HERE, "figures.json"))
+    shutil.copy(os.path.join(a, "metadata.json"), os.path.join(TASK, "metadata.json"))
+    cut_zip(os.path.join(TASK, "target"), os.path.join(TASK, "target.zip"))
+    z = hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()
+    print("target.zip", z[:8])
+    import writeup
+    writeup.main()
+    print("submission.md written")
+    shutil.rmtree(a)
+    shutil.rmtree(b)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", help="build the pack only, into this folder")
-    a = ap.parse_args()
-    if a.out:
-        build(a.out)
-    else:
-        main()
+    main()

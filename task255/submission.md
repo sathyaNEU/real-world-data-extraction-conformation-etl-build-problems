@@ -1,46 +1,76 @@
-# task255 submission
-
 ## Tags
 
-**Domain:** Actuarial Science & Insurance, claims frequency and severity (the ground-up severity of a public entity risk pool's liability occurrences, law enforcement liability against the other coverage parts, fitted to a record held above each member's deductible and up to the pool's retention, to set the pool's excess attachment).
-**Analytical objective:** Descriptive & Distribution Analysis (the tail of the ground-up severity distribution at each quoted attachment).
+**Domain:** Marketing & Consumer Research (media reach, frequency and audience measurement: a metro advertising concessionaire's screen packages, effective reach over its autumn audience window).
+**Analytical objective:** Descriptive & Distribution Analysis.
 
 ## 1. Final Recommendation
 
-**Keep the first $4,000,000 of each 2027 liability occurrence: Fallowmere's 2027 retention is the $4.0 million quoted attachment, which the pool expects 0.8 of its 2027 occurrences to cost more than.**
-
-The next quote down, $3.0 million, expects 1.2, more than the risk financing policy's one a year. Not $2.0 million, where one lognormal fitted to every occurrence and carried by the actuary's 432.7 occurrences above $25,000 points: law enforcement occurrences run a far longer tail than the other coverage parts, the record rejects one curve for both, and the one curve takes its shape from the other parts. Not $2.5 million, where law enforcement is given its own log mean but the other parts' spread.
+**Sell Overstappunten, Zuidtak and Oosttak in Tier G in 2027, at 49, 48 and 47 per cent effective reach against the 40 per cent line; every other package stays in the standard tier.** The nearest package below the line is Eindhaltes at 36 per cent. Not Centraal and Binnenstad: with every change of trains put where the line map puts it they reach 63 and 56 per cent, but on weekday peaks the north and east branches run through Centraal into each other, as do the west and south, so the riders who change there are others than the line map shows and both packages reach 33 per cent.
 
 ## 2. Critical Components
 
-1. The record of accident years 2014 to 2021: **1,071** occurrences, **314** of them law enforcement liability (every one of the **25** stopped at the pool's retention among them, **8** still open with the pool's layer paid) and **757** under the other four coverage parts.
-2. The actuary's expected 2027 occurrences costing more than $25,000: **85.1** law enforcement liability and **347.6** under the other parts.
-3. Expected 2027 occurrences costing more than $3.0 million: **1.2**; more than $4.0 million: **0.8**.
+1. The audience window holds **1,949** regular riders (passenger cards with a metro journey in each of its calendar weeks).
+2. On weekdays the trains passing Centraal from 07:00 to 09:30 and from 16:00 to 18:30 run north with east and west with south; at every other time riders change trains where the line map shows.
+3. Effective reach is **49 per cent** for Overstappunten, **48 per cent** for Zuidtak and **47 per cent** for Oosttak, and **33 per cent** for Centraal and for Binnenstad.
 
 ## 3. Step-by-Step Solution
 
-1. Took every liability occurrence of accident years 2014 to 2021 from liability_closed_claims_tallowmark_2014-2020.xlsx (610, closed before the July 2020 conversion) and liability_loss_run_brisbrook_2026-09-30.csv (461, 8 of them still open), the years risk_financing_policy_2026.pdf names: 1,071 occurrences.
-2. Read each occurrence's cost as its member's deductible plus what the pool has paid and still reserves, indemnity and defense, the policy's cost from the first dollar; 25 sit at the retention liability_coverage_memorandum_2026.pdf gives for their year, 15 at $500,000 and 10 at $1,000,000, all of them law enforcement liability (LEL in the legacy run, LAWE in the current one).
-3. Brought every cost, deductible and retention to 2027 cost by the ratio of the 2027 claim cost index to the accident year's, from actuarial_study_2026_selected_exhibits.pdf, as the policy sets.
-4. Fitted the lognormal by maximum likelihood to the record as it comes to exist, each occurrence truncated at its deductible and the 25 at the retention censored there, separately for law enforcement liability (log mean 8.52, log standard deviation 2.37) and for the other four parts (9.89 and 1.14); one curve for every occurrence fits the record far worse (twice the log likelihood difference 158.2 on two degrees of freedom) and so does a common spread (28.8 on one).
-5. Carried Exhibit 6's 85.1 law enforcement and 347.6 other occurrences above $25,000 by their own curves to each attachment in excess_liability_indications_2027.pdf and added them, the policy's expected number: 1.2 above $3.0 million and 0.8 above $4.0 million; each layer's expected 2027 losses are the same projections times each group's expected cost between the attachment and the attachment plus the indications' $10,000,000 limit for an occurrence above $25,000.
-6. Applied the policy's retention test, the lowest quoted attachment with one or fewer: $4.0 million.
-7. Recommended keeping the first $4,000,000 of each 2027 liability occurrence.
+1. Kept the passenger cards (card class reiziger in RVB_productcodes.csv) of RVB_metro_ritten_20261001_20261104.csv with a journey checked in during each calendar week from 5 October to 1 November 2026 (rate card 3.2 and 3.3): 1,949 regular riders.
+2. Gave each of their journeys its check-in and check-out halls through the Gates sheet of RVB_metronet_planningsmodel_2026.xlsx, old and new gate codes alike, and routed it over the network's lines by the fewest changes, crediting the interchange passage wherever the route changes line.
+3. Read each journey through Centraal from its own duration against the network's walking and run times in the hours trains run every 3 minutes (a change adds the passage walk and a second wait): on weekdays from 07:00 to 09:30 and 16:00 to 18:30 north-south and west-east riders change there and north-east and west-south riders ride through, and at every other hour the line map holds.
+4. Counted for each package in Annex A of Spoorbeeld_tariefkaart_2027.pdf the regular riders whose journeys passed its halls and passages 3 times or more (rate card 3.4 and 3.5): Overstappunten 49, Zuidtak 48 and Oosttak 47 per cent, every other package under 40.
+5. For make-good, took each booked screen's dark hours within the opening hours of terms 6.1 from cms_player_status_20261001_20261104.csv (UTC to Ravelmond time), on the player its Bekabeling rows in schermregister_2026-11-12.xlsx give, except that a move off a player that never came back dates from the receiving player's report of its displays rising by the moved screens, plus Wilgenhof's screens from their take-down; then the dark hours above 0.5 per cent of booked screen-hours, rounded up (terms 6.3).
+6. For the 2027 screens, took each asset tag's latest Schermen row hung by 1 January 2027 and not taken down by then, kept one screen to a location and position (the replacement units of 3 to 5 November came in under new tags beside rows left open), left out package "-" and counted by package.
+7. For net revenue, split the VAT out of facturen_oud_systeem_2026.csv, added the invoices and netted every credit note through its invoice number in billing_export_2026-10-15_2026-11-12.xlsx, and charged each agency's contract rate (its statement in bureaucommissie_najaar_2026.pdf over the value net of the credit notes issued by 31 October: Kompasmedia 13.5, Noordlicht Mediaplanning 12.5 and Bureau Lindeman 17.5 per cent) on each booking's value net of all its credit notes (terms 8.2 and 8.3).
+8. Recommended Tier G for Overstappunten, Zuidtak and Oosttak.
 
 ## 4. Deliverable Answers
 
-### retention_2027.xlsx
+### tier_g_2027.xlsx
 
-1. Recommended 2027 retention: $4,000,000 per occurrence, from the first dollar.
-2. Expected 2027 occurrences costing more than each quoted attachment (one decimal) and the 2027 losses its $10,000,000 layer should be expected to pay (nearest hundred thousand dollars):
-   - $1,000,000: 4.6 occurrences, $8,300,000 expected layer losses
-   - $1,500,000: 2.8 occurrences, $6,600,000 expected layer losses
-   - $2,000,000: 2.0 occurrences, $5,500,000 expected layer losses
-   - $2,500,000: 1.5 occurrences, $4,700,000 expected layer losses
-   - $3,000,000: 1.2 occurrences, $4,100,000 expected layer losses
-   - $4,000,000: 0.8 occurrences, $3,300,000 expected layer losses
-   - $5,000,000: 0.6 occurrences, $2,700,000 expected layer losses
+1. Tier G in 2027: Overstappunten, Zuidtak and Oosttak; every other package in the standard tier.
+2. Effective reach, whole per cent, and 2027 tier:
+   - Overstappunten (OVP): 49, Tier G
+   - Zuidtak (ZDT): 48, Tier G
+   - Oosttak (OST): 47, Tier G
+   - Eindhaltes (EIN): 36, standard tier
+   - Binnenstad (BNS): 33, standard tier
+   - Centraal (CEN): 33, standard tier
+   - Ringlijn (RNG): 32, standard tier
+   - Noordtak (NRD): 31, standard tier
+   - Westtak (WST): 25, standard tier
+3. Make-good owed per autumn booking, whole hours:
+   - SB-26-0412 (Overstappunten): 113
+   - SB-26-0415 (Centraal): 34
+   - SB-26-0418 (Noordtak): 591
+   - SB-26-0421 (Oosttak): 171
+   - SB-26-0423 (Binnenstad): 64
+   - SB-26-0427 (Zuidtak): 203
+   - SB-26-0430 (Centraal): 195
+   - SB-26-0433 (Westtak): 45
+   - SB-26-0436 (Ringlijn): 87
+   - SB-26-0439 (Eindhaltes): 137
+4. Screens on sale on 1 January 2027 by package:
+   - Centraal: 10
+   - Binnenstad: 9
+   - Overstappunten: 10
+   - Noordtak: 12
+   - Oosttak: 18
+   - Westtak: 8
+   - Zuidtak: 19
+   - Ringlijn: 14
+   - Eindhaltes: 14
+5. Net revenue from the autumn bookings by package, nearest 10 euros:
+   - Centraal: EUR 9,100
+   - Binnenstad: EUR 5,050
+   - Overstappunten: EUR 8,190
+   - Noordtak: EUR 5,530
+   - Oosttak: EUR 5,930
+   - Westtak: EUR 2,310
+   - Zuidtak: EUR 7,260
+   - Ringlijn: EUR 4,210
+   - Eindhaltes: EUR 4,070
 
-### attachment_test_2027.png
+### tier_g_2027.pdf
 
-1. Bar chart of the expected 2027 occurrences costing more than each quoted attachment from $1.0 million to $5.0 million, each bar labelled to one decimal, the risk financing policy's one-a-year line drawn across, and the $4.0 million bar highlighted and marked as recommended.
+1. One-page bar chart of every package's effective reach, highest first, with the Tier G line at 40 per cent drawn across it and Overstappunten, Zuidtak and Oosttak shaded as Tier G.

@@ -1,150 +1,212 @@
-"""The golden deliverables: the finance director's retention workbook for the trustees and the chart of the policy's
-test at each quoted attachment."""
-import matplotlib
+"""The golden deliverables (tier_g_2027.xlsx and tier_g_2027.pdf) and figures.json, from target/ alone."""
+import json
+import os
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt                       # noqa: E402
-import openpyxl                                       # noqa: E402
-from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
-from openpyxl.utils import get_column_letter          # noqa: E402
+import analysis as AN
+import io_util as IO
 
-import world as W                                     # noqa: E402
-
-WORKBOOK = "retention_2027.xlsx"
-CHART = "attachment_test_2027.png"
-CLASS_ORDER = ["city", "fire district", "water-sewer district", "port district", "transit authority",
-               "park and recreation district", "library district"]
-NAVY, TEAL, PALE = "1F3A5F", "2E7D6B", "E8F1EE"
+BOOK = "tier_g_2027.xlsx"
+PAGE = "tier_g_2027.pdf"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#c9c8c3"
+TIER = "#2a78d6"
 
 
-def millions(a):
-    return "$%.1f million" % (a / 1e6)
+def compute(target):
+    M = AN.main_call(target, "duration")
+    R1 = AN.main_call(target, "linemap")
+    R0 = AN.main_call(target, "none")
+    RA = AN.main_call(target, "allday")
+    mg = AN.make_good(target)
+    sc = AN.screens_on_sale(target)
+    rev = AN.net_revenue(target)
+    bk = AN.load_bookings(target)
+    parts = AN.net_revenue_parts(target)
+    rates = {}
+    for s in AN.load_statements(target):
+        base = sum(parts["invoiced"][r] + sum(a for d, a in parts["credits"][r] if d <= s["date"]) for r in s["refs"])
+        rates[s["agency"]] = s["amount"] / base
+    return {"M": M, "R1": R1, "R0": R0, "RA": RA, "make_good": mg, "screens": sc, "revenue": rev, "bookings": bk,
+            "rates": rates}
 
 
-def write_workbook(path, fig):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Retention 2027"
-    rec = fig["call"]["attachment"]
-    bold = Font(bold=True)
-    ws["A1"] = W.POOL
-    ws["A1"].font = Font(bold=True, color=NAVY, size=12)
-    ws["A2"] = ("Keep the first %s of each 2027 liability occurrence: the lowest quoted attachment the pool expects "
-                "its 2027 occurrences to exceed once or less (%.1f)" % ("${:,.0f}".format(rec), fig["counts"][str(rec)]))
-    ws["A2"].font = Font(bold=True, size=11)
-    ws["A3"] = ("Risk financing policy 4.1 to 5.1; expected occurrences from the actuary's %.1f law enforcement and %.1f "
-                "other occurrences above $25,000, each carried by its own ground-up severity at 2027 cost; layers of "
-                "$10,000,000 above each attachment quoted by the broker on October 2, 2026." % (W.COUNT_LE, W.COUNT_OT))
-    ws["A3"].font = Font(italic=True, color="5D646C", size=9)
-    heads = ["Attachment per occurrence", "Expected 2027 occurrences above it", "Within the policy (one or fewer)",
-             "Expected 2027 losses to the $10,000,000 layer"]
-    ws.append([])
-    ws.append(heads)
-    for c in ws[5]:
-        c.font = Font(bold=True, color="FFFFFF")
-        c.fill = PatternFill("solid", fgColor=NAVY)
-        c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
-    ws.row_dimensions[5].height = 44
-    for a in W.OPTIONS:
-        cnt = fig["counts"][str(a)]
-        ws.append([a, round(cnt, 1), "Yes" if cnt <= W.BAR else "No", fig["layer_loss_100k"][str(a)]])
-        row = ws[ws.max_row]
-        row[0].number_format = "$#,##0"
-        row[1].number_format = "0.0"
-        row[2].alignment = Alignment(horizontal="center")
-        row[3].number_format = "$#,##0"
-        if a == rec:
-            for c in row:
-                c.fill = PatternFill("solid", fgColor=PALE)
-                c.font = bold
-    r0 = ws.max_row + 2
-    lines = [
-        ("Severity, law enforcement liability (lognormal, from the first dollar at 2027 cost)",
-         "log mean %.2f, log standard deviation %.2f; %d occurrences, %d of them stopped at the retention"
-         % (fig["curves"]["LE"]["mu"], fig["curves"]["LE"]["sigma"], fig["curves"]["LE"]["n"],
-            fig["curves"]["LE"]["capped"])),
-        ("Severity, general, auto, public officials' and employment practices liability",
-         "log mean %.2f, log standard deviation %.2f; %d occurrences, %d of them stopped at the retention"
-         % (fig["curves"]["OT"]["mu"], fig["curves"]["OT"]["sigma"], fig["curves"]["OT"]["n"],
-            fig["curves"]["OT"]["capped"])),
-        ("Fitted to", "%d occurrences of accident years 2014 to 2021 in the pool's record (%d closed, %d suits still "
-         "open with the pool's layer paid)" % (fig["fit"]["n"], fig["fit"]["closed"], fig["fit"]["open"])),
-        ("How the record enters the fit", "each occurrence truncated at its member's deductible and, where it reached "
-         "the pool's retention, censored there; costs, deductibles and retentions at 2027 cost by the claim cost index; "
-         "one curve over every coverage part does not fit the record (likelihood ratio %.0f on two degrees of freedom)"
-         % fig["lr"]["pooled"]),
-        ("Runner-up", "%s: %.1f expected occurrences above it, more than the policy's one"
-         % ("${:,.0f}".format(fig["call"]["runner_up"]), fig["counts"][str(fig["call"]["runner_up"])])),
-    ]
-    for k, (lab, val) in enumerate(lines):
-        ws.cell(row=r0 + k, column=1, value=lab).font = bold
-        ws.cell(row=r0 + k, column=2, value=val)
-    for i, wd in enumerate((26, 20, 17, 24), 1):
-        ws.column_dimensions[get_column_letter(i)].width = wd
-    ws.freeze_panes = "A6"
-    ws.print_title_rows = "5:5"
-
-    nt = wb.create_sheet("Notes")
-    notes = [
-        "Prepared for the executive director's 2027 budget proposal, from the claims records at September 30, 2026, "
-        "the actuary's study of October 9, 2026 and the broker's indications of October 2, 2026.",
-        "Cost of an occurrence: from its first dollar, damages and defense together, whoever pays (policy 2.2). "
-        "Attachments are from the first dollar, inclusive of the member's deductible (policy 2.3).",
-        "The pool's record holds an occurrence only once its member's payments reached the deductible in force on "
-        "the date of the occurrence, and holds its cost only up to the pool's retention ($500,000 for 2014 to 2017, "
-        "$1,000,000 from 2018); severity is fitted to that record as it came to exist.",
-        "Expected occurrences above an attachment: the actuary's %.1f law enforcement occurrences above $25,000 times "
-        "that severity's probability of a cost above the attachment given a cost above $25,000, plus the same for "
-        "the %.1f other occurrences (policy 4.3, Exhibit 6). Shown to one decimal; compared unrounded."
-        % (W.COUNT_LE, W.COUNT_OT),
-        "Expected losses to a layer: for each coverage group, its expected 2027 occurrences above $25,000 times the "
-        "expected cost above the attachment, up to the $10,000,000 limit, of an occurrence costing more than $25,000 "
-        "on that group's severity; rounded to the nearest hundred thousand dollars.",
-    ]
-    nt["A1"] = "Notes"
-    nt["A1"].font = Font(bold=True, size=11)
-    for k, t in enumerate(notes, 3):
-        c = nt.cell(row=k, column=1, value=t)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        nt.row_dimensions[k].height = 44
-    nt.column_dimensions["A"].width = 110
-    wb.save(path)
+def r10(x):
+    return int(round(x / 10.0)) * 10
 
 
-def write_chart(path, fig):
-    rec = fig["call"]["attachment"]
-    xs = list(W.OPTIONS)
-    ys = [fig["counts"][str(a)] for a in xs]
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9.5})
-    f, ax = plt.subplots(figsize=(8.2, 4.8), dpi=150)
-    colors = [("#" + TEAL) if a == rec else "#9AA7B4" for a in xs]
-    bars = ax.bar(range(len(xs)), ys, color=colors, width=0.62, zorder=2)
-    ax.axhline(W.BAR, color="#B23A30", lw=1.4, ls="--", zorder=3,
-               label="Risk financing policy 5.1: one expected occurrence a year")
-    for b, y in zip(bars, ys):
-        if abs(y + 0.2 - W.BAR) < 0.3:      # a label the policy line would cross sits inside its bar
-            ax.text(b.get_x() + b.get_width() / 2, y - 0.08, "%.1f" % y, ha="center", va="top", fontsize=8.6,
-                    color="white", fontweight="bold")
-        else:
-            ax.text(b.get_x() + b.get_width() / 2, y + 0.1, "%.1f" % y, ha="center", va="bottom", fontsize=8.6)
-    ax.set_xticks(range(len(xs)))
-    ax.set_xticklabels(["$%.1fm" % (a / 1e6) for a in xs])
-    ax.set_xlabel("Quoted attachment per occurrence (from the first dollar)")
-    ax.set_ylabel("Expected 2027 occurrences costing more than the attachment")
-    ax.set_ylim(0, max(ys) * 1.15)
-    ax.grid(axis="y", color="#E3E6EA", zorder=0)
-    for s in ("top", "right"):
+def figures(c):
+    M = c["M"]
+    pk = M.packages
+    f = {"call": [pk[k][0] for k in M.tier], "tier_codes": M.tier,
+         "regular_riders": len(M.regular),
+         "reach": {pk[k][0]: int(round(M.reach[k])) for k in pk},
+         "reach_exact": {pk[k][0]: round(M.reach[k], 3) for k in pk},
+         "reach_linemap": {pk[k][0]: int(round(c["R1"].reach[k])) for k in pk},
+         "tier_linemap": [pk[k][0] for k in c["R1"].tier],
+         "reach_gates_only": {pk[k][0]: int(round(c["R0"].reach[k])) for k in pk},
+         "tier_gates_only": [pk[k][0] for k in c["R0"].tier],
+         "make_good_hours": {b["booking_ref"]: c["make_good"][b["booking_ref"]]["make_good"] for b in c["bookings"]},
+         "screens_on_sale_2027": {pk[k][0]: c["screens"][k] for k in pk},
+         "net_revenue_eur": {pk[k][0]: r10(c["revenue"][k]) for k in pk},
+         "tier_line_pct": 40, "effective_frequency": 3, "headway_min": 3, "make_good_allowance_pct": 0.5,
+         "agency_rates_pct": {a: round(100 * v, 1) for a, v in c["rates"].items()},
+         "booking_package": {b["booking_ref"]: b["package"] for b in c["bookings"]},
+         "peak_windows": "07:00 to 09:30 and 16:00 to 18:30",
+         "clauses_cited": "rate card 3.1, 3.2, 3.3, 3.4, 3.5; general terms 6.1, 6.2, 6.3, 8.2, 8.3"}
+    return f
+
+
+def chart(c, path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    M = c["M"]
+    pk = M.packages
+    codes = sorted(pk, key=lambda k: -M.reach[k])
+    vals = [int(round(M.reach[k])) for k in codes]
+    names = [pk[k][0] for k in codes]
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 8.5, "svg.hashsalt": "t255"})
+    fig, ax = plt.subplots(figsize=(6.9, 3.55), dpi=200)
+    cols = [TIER if k in M.tier else MUTED for k in codes]
+    ax.barh(range(len(codes)), vals, color=cols, height=0.66, edgecolor="white", linewidth=1.0)
+    ax.axvline(40, color=INK2, lw=1.0, ls=(0, (4, 3)))
+    ax.text(40.5, -0.75, "Tier G line, 40%", color=INK2, fontsize=7.8, va="center")
+    for i, v in enumerate(vals):
+        ax.text(v + 0.7, i, "%d%%" % v, va="center", fontsize=8, color=INK)
+    ax.set_yticks(range(len(codes)))
+    ax.set_yticklabels(names, color=INK)
+    ax.set_ylim(len(codes) - 0.4, -1.2)
+    ax.set_xlim(0, 60)
+    ax.set_xticks(range(0, 61, 10))
+    ax.set_xticklabels(["%d%%" % x for x in range(0, 61, 10)], color=INK2)
+    ax.set_xlabel("Regular riders passing the package's screens three times or more, 5 Oct to 1 Nov 2026",
+                  color=INK2, fontsize=7.8)
+    ax.tick_params(axis="both", length=0)
+    ax.grid(axis="x", color="#ecebe7", lw=0.7)
+    ax.set_axisbelow(True)
+    for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
-    i = xs.index(rec)
-    ax.annotate("Recommended: %s" % millions(rec), xy=(i, ys[i] + 0.55), xytext=(i - 1.7, ys[i] + 2.2),
-                arrowprops=dict(arrowstyle="->", color="#" + TEAL), color="#" + TEAL, fontsize=9.5, fontweight="bold")
-    ax.set_title("%s is the lowest quoted attachment the pool expects to be exceeded once a year or less"
-                 % millions(rec), fontsize=10.5, loc="left")
-    ax.legend(loc="upper right", frameon=False, fontsize=8.8)
-    f.text(0.01, 0.012, "%s, 2027 budget. Ground-up lognormal severities at 2027 cost for law enforcement liability and "
-           "the other parts, fitted to the pool's record of 2014 to 2021;\n%.1f and %.1f expected 2027 occurrences "
-           "above $25,000 (actuary's study, October 9, 2026); attachments as quoted October 2, 2026."
-           % (W.POOL, W.COUNT_LE, W.COUNT_OT), fontsize=7.2, color="#5D646C")
-    f.tight_layout(rect=(0, 0.05, 1, 1))
-    f.savefig(path, metadata={"Software": None})
-    plt.close(f)
+    ax.spines["bottom"].set_color("#bdbcb6")
+    fig.tight_layout()
+    fig.savefig(path, metadata={"Software": None})
+    plt.close(fig)
+
+
+def workbook(c, f, path):
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Font, PatternFill
+    M = c["M"]
+    pk = M.packages
+    wb = Workbook()
+    wb.remove(wb.active)
+    bold, grey = Font(bold=True), Font(color="52514E", italic=True, size=9)
+    head_fill = PatternFill("solid", fgColor="EDF2F8")
+
+    def sheet(name, title, header, rows, widths, formats, notes):
+        ws = wb.create_sheet(name)
+        ws.append([title])
+        ws["A1"].font = Font(bold=True, size=12)
+        ws.append([])
+        ws.append(header)
+        for cell in ws[3]:
+            cell.font = bold
+            cell.fill = head_fill
+            cell.alignment = Alignment(wrap_text=True, vertical="bottom")
+        for r in rows:
+            ws.append(list(r))
+        for i, w in enumerate(widths):
+            ws.column_dimensions[chr(65 + i)].width = w
+        for row in ws.iter_rows(min_row=4, max_row=3 + len(rows)):
+            for i, cell in enumerate(row):
+                if formats.get(i):
+                    cell.number_format = formats[i]
+                    cell.alignment = Alignment(horizontal="right")
+        ws.freeze_panes = "A4"
+        ws.row_dimensions[3].height = 30
+        r0 = 5 + len(rows)
+        for k, line in enumerate(notes):
+            ws.cell(row=r0 + k, column=1, value=line).font = grey
+        return ws
+
+    order = sorted(pk, key=lambda k: -M.reach[k])
+    sheet("Tier G 2027", "Tier G 2027: effective reach by package, audience window 5 October to 1 November 2026",
+          ["Package", "Code", "Effective reach (%)", "Tier 2027"],
+          [[pk[k][0], k, int(round(M.reach[k])), "Tier G" if k in M.tier else "standard"] for k in order],
+          [20, 8, 14, 12], {2: "0"},
+          ["Regular riders: %s passenger cards with a metro journey in each calendar week of the window; staff and "
+           "service cards left out (rate card 3.3)." % format(len(M.regular), ","),
+           "Passes: the hall of check-in, the hall of check-out and the interchange passage wherever the rider "
+           "changed trains (3.4); a journey without a check-out counts its check-in hall only.",
+           "Changes at Centraal read from each journey's duration: on weekday peaks (07:00 to 09:30, 16:00 to 18:30) "
+           "north runs through to east and west to south."])
+    bk = c["bookings"]
+    sheet("Make-good", "Make-good owed on the autumn 2026 bookings",
+          ["Booking", "Advertiser", "Package", "Flight", "Make-good (hours)"],
+          [[b["booking_ref"], b["advertiser"], b["package"], "%s to %s" % (b["start"].strftime("%d %b"),
+                                                                           b["end"].strftime("%d %b")),
+            c["make_good"][b["booking_ref"]]["make_good"]] for b in bk],
+          [12, 26, 16, 18, 14], {4: "#,##0"},
+          ["Dark hours above 0.5 per cent of booked screen-hours, in whole hours, part of an hour counted as an hour "
+           "(general terms 6.3).",
+           "Player log times are UTC and were read in Ravelmond time; re-cablings dated from the receiving player's "
+           "display report, not the register's entry."])
+    sheet("Screens 2027", "Screens on sale on 1 January 2027",
+          ["Package", "Code", "Screens"],
+          [[pk[k][0], k, c["screens"][k]] for k in pk], [20, 8, 10], {2: "0"},
+          ["From the screen register of 12 November 2026: one screen to a position; planned hangings and take-downs "
+           "dated on or before 1 January counted; screens held outside the packages left out."])
+    sheet("Net revenue", "Net revenue from the autumn 2026 bookings, by package",
+          ["Package", "Code", "Net revenue (EUR)"],
+          [[pk[k][0], k, r10(c["revenue"][k])] for k in pk], [20, 8, 16], {2: "#,##0"},
+          ["Invoiced value excluding VAT, less credit notes, less the agency commission due at each agency's contract "
+           "rate (general terms 8.2, 8.3); rounded to the nearest 10 euros."])
+    for ws in wb.worksheets:
+        ws.sheet_view.showGridLines = False
+        ws.print_title_rows = "3:3"
+    wb.save(path)
+    IO.repack_xlsx(path, "Floortje Brugman", "Floortje Brugman", "2026-11-13T13:40:00Z", "2026-11-13T15:55:00Z",
+                   "Tier G 2027", "Spoorbeeld Media B.V.")
+
+
+def page(c, f, path, png):
+    from reportlab.lib.units import mm
+    tier = sorted(f["call"], key=lambda k: -f["reach_exact"][k])
+    names = "%s, %s and %s" % tuple(tier)
+    reach, lm = f["reach"], f["reach_linemap"]
+    below = sorted((k for k in reach if k not in tier), key=lambda k: -f["reach_exact"][k])[0]
+    blocks = [
+        ("s", "Spoorbeeld Media B.V. · Audience research · 13 November 2026"),
+        ("s", "To: commercial director, rate card 2027 · From: Floortje Brugman · Subject: Tier G 2027"),
+        ("t", "%s clear the 40 per cent Tier G line; Centraal and Binnenstad do not" % names),
+        ("img", (png, 172 * mm, 88.5 * mm)),
+        ("s", "Source: RVB OV-chipkaart metro journeys 1 October to 4 November 2026 (re-export of 5 November), RVB "
+              "planning model 2026, rate card 2027 Annex A."),
+        ("p", "Three packages qualify for Tier G in 2027: %s at %d, %d and %d per cent of the %s regular riders. "
+              "%s is the nearest below the line at %d per cent." % (names, reach[tier[0]], reach[tier[1]],
+                                                                    reach[tier[2]], format(f["regular_riders"], ","),
+                                                                    below, reach[below])),
+        ("p", "Centraal and Binnenstad both come to %d per cent. Put every change of trains where the line map puts it "
+              "and they would reach %d and %d per cent, but the journeys' own durations show that on weekday peaks, "
+              "07:00 to 09:30 and 16:00 to 18:30, trains from the north branch run on to the east branch and trains "
+              "from the west run on to the south. The north-east and west-south commuters, the largest flows, stay "
+              "on board through Centraal and never use the interchange passage; the north-south and west-east "
+              "commuters change there instead." % (reach["Centraal"], lm["Centraal"], lm["Binnenstad"])),
+        ("s", "Regular riders are passenger cards with a metro journey in each calendar week from 5 October to 1 "
+              "November 2026; staff and service cards are left out (rate card 3.3). A journey without a check-out "
+              "counts its check-in hall only (3.4)."),
+    ]
+    IO.write_pdf(path, "Tier G 2027", "Floortje Brugman", "Spoorbeeld Media B.V.", blocks,
+                 "Spoorbeeld Media B.V. · Audience research · Tier G 2027", "D:20261113161000+01'00'",
+                 "D:20261113161000+01'00'")
+
+
+def write_all(target, golden, gen):
+    os.makedirs(golden, exist_ok=True)
+    os.makedirs(gen, exist_ok=True)
+    c = compute(target)
+    f = figures(c)
+    workbook(c, f, os.path.join(golden, BOOK))
+    png = os.path.join(gen, "reach_chart.png")
+    chart(c, png)
+    page(c, f, os.path.join(golden, PAGE), png)
+    json.dump(f, open(os.path.join(gen, "figures.json"), "w"), indent=1, sort_keys=True)
+    return c, f

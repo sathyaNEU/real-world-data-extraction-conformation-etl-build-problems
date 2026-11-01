@@ -1,369 +1,617 @@
-"""The golden analysis and every rung, on the records as the pool holds them. Severity is fitted by maximum likelihood
-at 2027 cost to every occurrence of accident years 2014 to 2021 in the pool's record, each occurrence's deductible
-carried as left truncation and the retention as right censoring for the occurrences that reached it, both brought to
-2027 cost with the same index as the occurrence; the golden fits law enforcement liability and the other four coverage
-parts apart and carries each group's projected 2027 occurrences above $25,000 by its own curve."""
+"""Every rung and every graded figure, computed from the shipped files under target/ alone."""
+import collections
 import datetime as dt
+import heapq
 import math
+import os
 import re
-from collections import Counter
 
-import numpy as np
-from scipy import optimize, stats
+import io_util as IO
 
-import world as W
+FILES = {
+    "journeys": "RVB_metro_ritten_20261001_20261104.csv",
+    "network": "RVB_metronet_planningsmodel_2026.xlsx",
+    "products": "RVB_productcodes.csv",
+    "rate_card": "Spoorbeeld_tariefkaart_2027.pdf",
+    "terms": "Spoorbeeld_algemene_voorwaarden_2026.pdf",
+    "register": "schermregister_2026-11-12.xlsx",
+    "cms": "cms_player_status_20261001_20261104.csv",
+    "bookings": "boekingen_najaar_2026.xlsx",
+    "legacy": "facturen_oud_systeem_2026.csv",
+    "billing": "billing_export_2026-10-15_2026-11-12.xlsx",
+    "statements": "bureaucommissie_najaar_2026.pdf",
+}
+WIN_START, WIN_END = dt.date(2026, 10, 5), dt.date(2026, 11, 1)
+SALE_DAY = dt.date(2027, 1, 1)
+LINE = {"N": "M1", "S": "M1", "W": "M2", "E": "M2"}
+SERVICE = {"N": "A", "E": "A", "W": "B", "S": "B"}
 
-STARTS = ([10.0, 1.5], [11.5, 1.0], [9.0, 2.2], [12.0, 0.8], [8.0, 2.8])
-GROUPS = {"LE": ("LE",), "OT": ("GL", "AL", "PO", "EP")}
+
+def p(target, key):
+    return os.path.join(target, FILES[key])
 
 
-def anchors():
-    return {"LE": W.COUNT_LE, "OT": W.COUNT_OT}
+# ---------------------------------------------------------------- loading
+def load_network(target):
+    path = p(target, "network")
+    h, rows = IO.read_xlsx(path, "Stops")
+    stops = {r[0]: {"name": r[1], "lines": str(r[2]).split(";")} for r in rows if r[0]}
+    h, rows = IO.read_xlsx(path, "Run times")
+    run, seqs = {}, collections.defaultdict(list)
+    for ln, a, b, m in rows:
+        if not ln:
+            continue
+        run[(ln, a, b)] = float(m)
+        run[(ln, b, a)] = float(m)
+        if not seqs[ln]:
+            seqs[ln].append(a)
+        seqs[ln].append(b)
+    h, rows = IO.read_xlsx(path, "Halls")
+    halls = {}
+    for r in rows:
+        if r[0]:
+            halls[r[0]] = {"stop": r[1], "walk": {ln: float(v) for ln, v in zip(("M1", "M2", "M3"), r[3:6])
+                                                  if v not in (None, "")}}
+    h, rows = IO.read_xlsx(path, "Interchanges")
+    inter = {r[0]: {"passage": r[1], "walk": float(r[4])} for r in rows if r[0]}
+    h, rows = IO.read_xlsx(path, "Gates")
+    gates = {r[0]: r[1] for r in rows if r[0]}
+    h, rows = IO.read_xlsx(path, "Frequencies")
+    freq = [(r[0], r[1], r[2], r[3], float(r[4])) for r in rows if r[0]]
+    net = {"stops": stops, "run": run, "seq": dict(seqs), "halls": halls, "inter": inter, "gates": gates, "freq": freq}
+    net["pos"] = {ln: {c: i for i, c in enumerate(s)} for ln, s in net["seq"].items()}
+    net["lines_of"] = {c: [ln for ln, s in net["seq"].items() if c in s] for c in stops}
+    # branches seen from Centraal: which side of CEN each M1/M2 stop lies on
+    br = {}
+    for c in stops:
+        if c == "CEN":
+            br[c] = "X"
+            continue
+        b = None
+        for ln, side in (("M1", ("N", "S")), ("M2", ("W", "E"))):
+            if c in net["pos"][ln]:
+                b = side[0] if net["pos"][ln][c] < net["pos"][ln]["CEN"] else side[1]
+        br[c] = b or "P"
+    net["branch"] = br
+    return net
 
 
-def fit_rows(rec, closed_only=False, open_at="incurred"):
-    """The record rows severity is fitted to: every occurrence of the policy's accident years in the pool's record,
-    with its recorded ground-up cost (the deductible plus what the pool has paid and still reserves), the deductible,
-    the retention and the coverage part; closed_only keeps the closed files alone, and open_at="paid" reads an open
-    file at its payments to date."""
+def load_journeys(target):
+    header, rows = IO.read_csv(p(target, "journeys"))
+    idx = {k: i for i, k in enumerate(header)}
     out = []
-    for r in rec:
-        if r["ay"] not in W.FIT_YEARS or r["status"] == "untendered":
-            continue
-        if closed_only and r["status"] != "closed":
-            continue
-        g = r["ded"] + r["paid_ind"] + r["paid_def"]
-        if r["status"] == "open" and open_at == "incurred":
-            g += r["res_ind"] + r["res_def"]
-        g = round(g, 2)
-        out.append({"ay": r["ay"], "f": W.factor(r["ay"]), "ded": r["ded"], "ret": r["ret"], "cost": g,
-                    "capped": g >= r["ret"] - 0.005, "open": r["status"] == "open", "part": r["part"]})
+    for r in rows:
+        out.append({"card": r[idx["card_id"]], "product": r[idx["product_code"]],
+                    "date": dt.date.fromisoformat(r[idx["travel_date"]]), "t_in": r[idx["check_in_time"]],
+                    "o": r[idx["check_in_stop"]], "dev_in": r[idx["check_in_gate"]],
+                    "t_out": r[idx["check_out_time"]], "d": r[idx["check_out_stop"]],
+                    "dev_out": r[idx["check_out_gate"]]})
     return out
 
 
-def _arrays(rows, trend_thresholds=True, trend_retention=True):
-    f = np.array([r["f"] for r in rows])
-    lx = np.log(np.array([r["cost"] for r in rows]) * f)
-    ld = np.log(np.array([r["ded"] for r in rows]) * (f if trend_thresholds else 1.0))
-    return f, lx, ld
+def load_products(target):
+    header, rows = IO.read_csv(p(target, "products"))
+    return {r[0]: r[2] for r in rows}
 
 
-def mle(rows, trunc=True, cens=True, trend_thresholds=True):
-    """Maximum likelihood lognormal (mu, sigma of the log of dollars at 2027 cost) and the minimised negative log
-    likelihood."""
-    f, lx, ld = _arrays(rows, trend_thresholds)
-    c = np.array([r["capped"] for r in rows]) & cens
+def load_packages(target):
+    """Annex A of the rate card: each package's halls and interchange passages, read from the shipped PDF."""
+    txt = IO.pdf_text(p(target, "rate_card"))
+    annex = txt[txt.index("Annex A"):]
+    pk = collections.OrderedDict()
+    for m in re.finditer(r"([A-Z][a-z]+)\s+([A-Z]{3})\s+((?:[A-Z]{3}-(?:H|HN|HZ|OV)\s*\([^)]*\);?\s*)+)", annex):
+        pk[m.group(2)] = (m.group(1), re.findall(r"([A-Z]{3}-(?:HN|HZ|OV|H))\s*\(", m.group(3)))
+    return pk
 
-    def nll(p):
-        m, s = p[0], abs(p[1])
-        z = (lx - m) / s
-        ll = np.where(c, stats.norm.logsf(z), stats.norm.logpdf(z) - math.log(s) - lx)
-        if trunc:
-            ll = ll - stats.norm.logsf((ld - m) / s)
-        return -ll.sum()
 
+def tmin(s):
+    h, m, sec = (int(x) for x in s.split(":"))
+    return h * 60 + m + sec / 60.0
+
+
+# ---------------------------------------------------------------- the network's line map
+def route(net, o, d, _cache={}):
+    key = (id(net), o, d)
+    if key in _cache:
+        return _cache[key]
+    heap = []
+    for ln in net["lines_of"][o]:
+        heapq.heappush(heap, (0, 0.0, o, ln, ((ln, o),)))
+    seen = {}
     best = None
-    for st in STARTS:
-        res = optimize.minimize(nll, st, method="Nelder-Mead",
-                                options=dict(xatol=1e-11, fatol=1e-11, maxiter=60000, maxfev=60000))
-        if best is None or res.fun < best.fun:
-            best = res
-    return float(best.x[0]), float(abs(best.x[1])), float(best.fun)
+    while heap:
+        nch, t, c, ln, path = heapq.heappop(heap)
+        if (c, ln) in seen and seen[(c, ln)] <= (nch, t):
+            continue
+        seen[(c, ln)] = (nch, t)
+        if c == d:
+            best = path
+            break
+        s = net["seq"][ln]
+        i = net["pos"][ln][c]
+        for j in (i - 1, i + 1):
+            if 0 <= j < len(s):
+                heapq.heappush(heap, (nch, t + net["run"][(ln, c, s[j])], s[j], ln, path))
+        for ln2 in net["lines_of"][c]:
+            if ln2 != ln:
+                walk = net["inter"].get(c, {"walk": 5.0})["walk"]
+                heapq.heappush(heap, (nch + 1, t + walk, c, ln2, path + ((ln2, c),)))
+    legs = []
+    for k, (ln, a) in enumerate(best):
+        b = best[k + 1][1] if k + 1 < len(best) else d
+        if a != b:
+            legs.append((ln, a, b))
+    _cache[key] = legs
+    return legs
 
 
-def mle_shift(rows):
-    """The rival with one spread: law enforcement's log mean shifted from the other parts', a common sigma."""
-    f, lx, ld = _arrays(rows)
-    c = np.array([r["capped"] for r in rows])
-    le = np.array([r["part"] in GROUPS["LE"] for r in rows])
-
-    def nll(p):
-        m = np.where(le, p[0] + p[2], p[0])
-        s = abs(p[1])
-        z = (lx - m) / s
-        ll = np.where(c, stats.norm.logsf(z), stats.norm.logpdf(z) - math.log(s) - lx) - stats.norm.logsf((ld - m) / s)
-        return -ll.sum()
-
-    best = None
-    for st in STARTS:
-        res = optimize.minimize(nll, st + [0.5], method="Nelder-Mead",
-                                options=dict(xatol=1e-11, fatol=1e-11, maxiter=80000, maxfev=80000))
-        if best is None or res.fun < best.fun:
-            best = res
-    m0, s, d = best.x
-    return {"OT": (float(m0), float(abs(s))), "LE": (float(m0 + d), float(abs(s)))}, float(best.fun)
+def ride(net, ln, a, b):
+    s = net["seq"][ln]
+    i, j = net["pos"][ln][a], net["pos"][ln][b]
+    st = 1 if j > i else -1
+    return sum(net["run"][(ln, s[k], s[k + st])] for k in range(i, j, st))
 
 
-def mle_accident_year_dollars(rows):
-    """The same likelihood written in each accident year's own dollars, the log mean moving with the index: the
-    thresholds are then the nominal deductible and retention. It must land on the 2027-cost fit."""
-    f = np.array([r["f"] for r in rows])
-    lx = np.log(np.array([r["cost"] for r in rows]))
-    ld = np.log(np.array([r["ded"] for r in rows], dtype=float))
-    lf = np.log(f)
-    c = np.array([r["capped"] for r in rows])
-
-    def nll(p):
-        m, s = p[0] - lf, abs(p[1])
-        z = (lx - m) / s
-        ll = np.where(c, stats.norm.logsf(z), stats.norm.logpdf(z) - math.log(s) - lx)
-        return -(ll - stats.norm.logsf((ld - m) / s)).sum()
-
-    best = None
-    for st in STARTS:
-        res = optimize.minimize(nll, st, method="Nelder-Mead",
-                                options=dict(xatol=1e-11, fatol=1e-11, maxiter=60000, maxfev=60000))
-        if best is None or res.fun < best.fun:
-            best = res
-    return float(best.x[0]), float(abs(best.x[1]))
+def movements(legs):
+    mv, k = [], 0
+    while k < len(legs):
+        ln, a, b = legs[k]
+        if ln in ("M1", "M2") and b == "CEN" and k + 1 < len(legs) and legs[k + 1][0] in ("M1", "M2") \
+                and legs[k + 1][1] == "CEN" and legs[k + 1][0] != ln:
+            mv.append(("MM", a, legs[k + 1][2]))
+            k += 2
+        else:
+            mv.append(("MM" if ln in ("M1", "M2") else "M3", a, b))
+            k += 1
+    return mv
 
 
-def tail_ratio(mu, sigma, amount):
-    return math.exp(stats.norm.logsf((math.log(amount) - mu) / sigma)
-                    - stats.norm.logsf((math.log(W.ANCHOR) - mu) / sigma))
+def crosses(net, u, v):
+    bu, bv = net["branch"][u], net["branch"][v]
+    return bu in "NSWE" and bv in "NSWE" and bu != bv
 
 
-def counts_pooled(mu, sigma, lam=None):
-    lam = W.COUNT_25K if lam is None else lam
-    return {a: lam * tail_ratio(mu, sigma, a) for a in W.OPTIONS}
+# ---------------------------------------------------------------- passes
+class Main:
+    pass
 
 
-def counts_groups(curves, anc=None):
-    anc = anc or anchors()
-    return {a: sum(anc[g] * tail_ratio(*curves[g], a) for g in GROUPS) for a in W.OPTIONS}
+_CACHE = {}
 
 
-LIMIT = 10_000_000     # each quoted layer: $10,000,000 for each occurrence above its attachment
+def _loaded(target):
+    if target not in _CACHE:
+        _CACHE[target] = (load_network(target), load_journeys(target), load_products(target), load_packages(target))
+    return _CACHE[target]
 
 
-def lev(mu, sigma, d):
-    """Limited expected value of a lognormal cost at d, E[min(X, d)]."""
-    return (math.exp(mu + sigma * sigma / 2) * stats.norm.cdf((math.log(d) - mu - sigma * sigma) / sigma)
-            + d * stats.norm.sf((math.log(d) - mu) / sigma))
+def main_call(target, interwork_rule="duration", halls="gates", staff=False, open_journeys="checkin",
+              dating="checkin", count="place", clock_shift=False, weeks_rule="calendar"):
+    """interwork_rule: 'none' (the gates only), 'linemap' (changes where the line map puts them),
+    'duration' (each Centraal change read from the journey's own duration, the golden),
+    'allday' (the peak pattern assumed for every weekday hour), 'stationpass' (every journey through Centraal).
+    The other options are the conventions the closure and the mess checks run: halls from the gate list or from the
+    stop alone; staff and service cards kept; a journey without a check-out kept at its check-in or dropped; a
+    journey dated by its check-in or its check-out; passes counted per place or per journey; the times after the
+    clock change read an hour off; a week as a calendar week or a seven-day block from the window's start."""
+    net, js, prod, pk = _loaded(target)
+    M = Main()
+    M.net, M.packages = net, pk
+
+    def jdate(j):
+        if dating == "checkout" and j["t_out"] and tmin(j["t_out"]) < tmin(j["t_in"]):
+            return j["date"] + dt.timedelta(days=1)
+        return j["date"]
+    win = [j for j in js if WIN_START <= jdate(j) <= WIN_END and (staff or prod.get(j["product"]) == "reiziger")]
+    if open_journeys == "drop":
+        win = [j for j in win if j["t_out"]]
+    weeks = collections.defaultdict(set)
+    for j in win:
+        d = jdate(j)
+        weeks[j["card"]].add(d.isocalendar()[1] if weeks_rule == "calendar" else (d - WIN_START).days // 7)
+    reg = {c for c, s in weeks.items() if len(s) == 4}
+    M.regular = reg
+    M.window_journeys = win
+    ps = collections.Counter()
+    jp = collections.defaultdict(list)
+    M.classified = collections.Counter()
+
+    def hall(gate, stop):
+        if halls == "station":
+            return "CEN-H*" if stop == "CEN" else stop + "-H"
+        return net["gates"][gate]
+    for j in win:
+        if j["card"] not in reg:
+            continue
+        jj = j
+        if clock_shift and j["date"] >= dt.date(2026, 10, 25):
+            jj = dict(j)
+            jj["t_in"] = shift_hhmmss(j["t_in"], 60)
+            jj["t_out"] = shift_hhmmss(j["t_out"], 60) if j["t_out"] else ""
+        locs = [hall(j["dev_in"], j["o"])]
+        if j["t_out"]:
+            hin, hout = net["gates"][j["dev_in"]], net["gates"][j["dev_out"]]
+            locs.append(hall(j["dev_out"], j["d"]))
+            if interwork_rule != "none":
+                locs += changes(net, jj, hin, hout, interwork_rule, M.classified)
+        if count == "journey":
+            jp[j["card"]].append(set(locs))
+        for loc in locs:
+            ps[(j["card"], loc)] += 1
+    M.passes = ps
+    M.reach = {}
+    for code, (name, places) in pk.items():
+        places = set(places)
+        if halls == "station":
+            places = {("CEN-H*" if l in ("CEN-HN", "CEN-HZ") else l) for l in places}
+        if count == "journey":
+            n = sum(1 for c in reg if sum(1 for s in jp[c] if s & places) >= 3)
+        else:
+            n = sum(1 for c in reg if sum(ps[(c, l)] for l in places) >= 3)
+        M.reach[code] = 100.0 * n / len(reg)
+    M.tier = [c for c in pk if M.reach[c] >= 40.0]
+    return M
 
 
-def layer_per_anchor(mu, sigma, a):
-    """Expected cost a quoted layer pays per occurrence costing more than $25,000."""
-    return (lev(mu, sigma, a + LIMIT) - lev(mu, sigma, a)) / W.lognormal_sf(W.ANCHOR, mu, sigma)
+def shift_hhmmss(s, minutes):
+    h, m, sec = (int(x) for x in s.split(":"))
+    t = (h * 60 + m + minutes) % 1440
+    return "%02d:%02d:%02d" % (t // 60, t % 60, sec)
 
 
-def layer_losses(curves, anc=None):
-    anc = anc or anchors()
-    return {a: sum(anc[g] * layer_per_anchor(*curves[g], a) for g in GROUPS) for a in W.OPTIONS}
+PEAK_WINDOWS = ((420, 570), (960, 1110))
 
 
-def group_fits(rows, **kw):
+def changes(net, j, hin, hout, rule, tally):
+    legs = route(net, j["o"], j["d"])
+    mv = movements(legs)
+    out = []
+    for i, (kind, u, v) in enumerate(mv):
+        if i > 0:
+            out.append(net["inter"][u]["passage"])
+        if kind != "MM" or not crosses(net, u, v):
+            continue
+        bu, bv = net["branch"][u], net["branch"][v]
+        linemap = LINE[bu] != LINE[bv]
+        if rule == "linemap":
+            ch = linemap
+        elif rule == "stationpass":
+            ch = True
+        elif rule == "allday":
+            ch = (SERVICE[bu] != SERVICE[bv]) if j["date"].weekday() < 5 else linemap
+        else:
+            ch = read_change(net, j, hin, hout, mv, i, linemap, tally)
+        if ch:
+            out.append("CEN-OV")
+    return out
+
+
+def read_change(net, j, hin, hout, mv, i, linemap, tally):
+    """The golden: whether this journey changed trains at Centraal. A journey that is one M1/M2 movement through
+    Centraal is read from its own duration against the network's walking and run times: in the hours when trains
+    run every three minutes a direct ride arrives within four minutes of its run, a change takes the passage's
+    six and a half minutes on top. Where the duration cannot tell (other hours, or an M3 leg first), the service
+    pattern the single movements show holds: the north and east branches run through each other and the west and
+    south branches each other on weekdays when trains pass Centraal from 07:00 to 09:30 and from 16:00 to 18:30,
+    the line map at every other time."""
+    kind, u, v = mv[i]
+    bu, bv = net["branch"][u], net["branch"][v]
+    lu, lv = LINE[bu], LINE[bv]
+    t_in, t_out = tmin(j["t_in"]), tmin(j["t_out"])
+    dur = t_out - t_in if t_out >= t_in else t_out + 1440 - t_in
+    if len(mv) == 1:
+        base = net["halls"][hin]["walk"][lu] + ride(net, lu, u, "CEN") + ride(net, lv, "CEN", v) + \
+            net["halls"][hout]["walk"][lv]
+        excess = dur - base
+        if excess < 4.6:
+            tally["read: no change"] += 1
+            return False
+        if excess > 5.4 and headway_at(net, j["date"], t_in) <= 3.0:
+            tally["read: change"] += 1
+            return True
+    # the pattern, by the minute the rider reaches Centraal (estimated from the check-in)
+    est = t_in + net["halls"][hin]["walk"][first_line(mv, net, u)] + 1.5
+    for k in range(i):
+        kk, a, b = mv[k]
+        est += ride(net, "M3" if kk == "M3" else LINE.get(net["branch"][a], "M1"), a, b) + 3.0
+        est += net["inter"][b]["walk"] if b in net["inter"] else 0.0
+    est += ride(net, lu, u, "CEN")
+    wk = j["date"].weekday() < 5
+    pk = wk and any(a <= est % 1440 < b for a, b in PEAK_WINDOWS)
+    tally["pattern: peak" if pk else "pattern: line map"] += 1
+    return (SERVICE[bu] != SERVICE[bv]) if pk else linemap
+
+
+def first_line(mv, net, u):
+    kind, a, b = mv[0]
+    return "M3" if kind == "M3" else LINE[net["branch"][a]] if net["branch"][a] in LINE else (
+        "M1" if a in net["pos"]["M1"] else "M2")
+
+
+def headway_at(net, day, minute):
+    days = "ma-vr" if day.weekday() < 5 else ("za" if day.weekday() == 5 else "zo")
+    for ln, dd, a, b, tph in net["freq"]:
+        if ln == "M1" and dd == days and tmin(a + ":00") <= minute < tmin(b + ":00") + (1440 if b < a else 0):
+            return 60.0 / tph
+    return 10.0
+
+
+# ---------------------------------------------------------------- ask A: make-good per autumn booking
+def opening(day):
+    wd = day.weekday()
+    start = {5: dt.time(6, 30), 6: dt.time(7, 0)}.get(wd, dt.time(5, 45))
+    return dt.datetime.combine(day, start), dt.datetime.combine(day + dt.timedelta(days=1), dt.time(0, 30))
+
+
+def utc_to_local(s):
+    t = dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:00Z")
+    # CEST (+2) until 01:00 UTC on 25 October 2026, CET (+1) after
+    return t + dt.timedelta(hours=2 if t < dt.datetime(2026, 10, 25, 1, 0) else 1)
+
+
+def load_register(target):
+    path = p(target, "register")
+    h, rows = IO.read_xlsx(path, "Schermen")
+    scr = [dict(zip(h, r)) for r in rows if r[0]]
+    h, rows = IO.read_xlsx(path, "Bekabeling")
+    cab = []
+    for r in rows:
+        if r[0]:
+            a = dt.datetime.strptime(r[2], "%Y-%m-%d %H:%M")
+            b = dt.datetime.strptime(r[3], "%Y-%m-%d %H:%M") if r[3] else None
+            cab.append((r[0], r[1], a, b))
+    return scr, cab
+
+
+def load_cms(target, clock="local"):
+    h, rows = IO.read_csv(p(target, "cms"))
+    ev = collections.defaultdict(list)
+    for pl, kind, k, t in rows:
+        tt = utc_to_local(t) if clock == "local" else dt.datetime.strptime(t, "%Y-%m-%dT%H:%M:00Z")
+        ev[pl].append((tt, kind, int(k) if k != "" else None))
+    for pl in ev:
+        ev[pl].sort()
+    return ev
+
+
+def load_spells(target, clock="local"):
+    ev = load_cms(target, clock)
+    spells = []
+    for pl, lst in ev.items():
+        cur = None
+        for tt, stt, k in lst:
+            if stt == "OFFLINE" and cur is None:
+                cur = tt
+            elif stt == "ONLINE" and cur is not None:
+                spells.append((pl, cur, tt))
+                cur = None
+        if cur is not None:
+            spells.append((pl, cur, None))
+    return spells
+
+
+def recabling_times(target, cab, clock="local"):
+    """Where the register moves screens from a player that went offline for good to another player, the move
+    happened at the receiving player's first report, after the old player went offline, of the displays it drives
+    once the moved screens are added (the register enters a move when its work order is closed)."""
+    ev = load_cms(target, clock)
+    last_off = {}
+    for pl, lst in ev.items():
+        state = None
+        for tt, kind, k in lst:
+            if kind in ("OFFLINE", "ONLINE"):
+                state = (kind, tt)
+        if state and state[0] == "OFFLINE":
+            last_off[pl] = state[1]
+    by_tag = collections.defaultdict(list)
+    for t, pl, a, b in cab:
+        by_tag[t].append((a, pl, b))
+    groups = collections.defaultdict(list)      # (old player, new player, register time) -> tags
+    for t, lst in by_tag.items():
+        lst.sort()
+        for (a0, p0, b0), (a1, p1, b1) in zip(lst, lst[1:]):
+            if p0 in last_off and b0 == a1:
+                groups[(p0, p1, a1)].append(t)
     out = {}
-    for g, parts in GROUPS.items():
-        rr = [r for r in rows if r["part"] in parts]
-        m, s, n = mle(rr, **kw)
-        out[g] = (m, s)
-        out[g + "_nll"] = n
-        out[g + "_n"] = len(rr)
-        out[g + "_capped"] = sum(r["capped"] for r in rr)
+    for (p0, p1, reg), tags in groups.items():
+        before = sum(1 for t, pl, a, b in cab if pl == p1 and a < reg and (b is None or b >= reg) and t not in tags)
+        when = None
+        for tt, kind, k in ev.get(p1, []):
+            if last_off[p0] <= tt <= reg and k == before + len(tags):
+                when = tt
+                break
+        out[(p0, p1, reg)] = when
     return out
 
 
-def pick(cnt):
-    for a in W.OPTIONS:
-        if cnt[a] <= W.BAR:
-            return a
-    return None
+def load_bookings(target):
+    path = p(target, "bookings")
+    h, rows = IO.read_xlsx(path, "Boekingen")
+    bk = [dict(zip(h, r)) for r in rows if r[0]]
+    h, rows = IO.read_xlsx(path, "Geboekte schermen")
+    lines = collections.defaultdict(list)
+    for r in rows:
+        if r[0]:
+            lines[r[0]].append(r[1])
+    for b in bk:
+        b["tags"] = sorted(lines[b["booking_ref"]])
+        b["start"] = dt.date.fromisoformat(str(b["flight_start"])[:10])
+        b["end"] = dt.date.fromisoformat(str(b["flight_end"])[:10])
+        b["booked"] = float(b["booked_screen_hours"])
+    return bk
 
 
-def crossing(cnt_fn):
-    g = lambda la: math.log(cnt_fn(math.exp(la)))
-    return math.exp(optimize.brentq(g, math.log(3e4), math.log(1e10)))
-
-
-def golden(rec):
-    rows = fit_rows(rec)
-    fits = group_fits(rows)
-    curves = {g: fits[g] for g in GROUPS}
-    return rows, fits, curves, counts_groups(curves)
-
-
-def ladder(rec):
-    """Every rung on the record of 2014 to 2021: one curve over the pooled record under each handling of the floor
-    and the ceiling, the one-spread rival, the curve per group on the closed files, with the thresholds nominal, with
-    a curve per coverage part, and the golden."""
-    rows, closed = fit_rows(rec), fit_rows(rec, closed_only=True)
+def make_good(target, mapping="cms", takedowns=True, clock="local", allowance=0.005):
+    """mapping: 'cms' (the golden: each screen on the player it was cabled to, a re-cabling dated by the receiving
+    player's display report), 'register' (the register's connection dates), 'first' (the first player each screen
+    had), 'last' (the latest player each screen had, for the whole flight)."""
+    scr, cab = load_register(target)
+    spells = load_spells(target, clock)
+    down = {}
+    for s in scr:
+        if s["taken_down"]:
+            d = dt.date.fromisoformat(str(s["taken_down"])[:10])
+            if s["asset_tag"] not in down or d < down[s["asset_tag"]]:
+                down[s["asset_tag"]] = d
+    # a screen comes down when its player reports no displays on the day the register gives (else at opening)
+    cms = load_cms(target, clock)
+    down_at = {}
+    for tag, d in down.items():
+        pls = {pl for t, pl, a, b in cab if t == tag}
+        hits = [tt for pl in pls for tt, kind, k in cms.get(pl, []) if kind == "DISPLAYS" and k == 0 and tt.date() == d]
+        down_at[tag] = min(hits) if hits else opening(d)[0]
+    if mapping == "cms":
+        moved = recabling_times(target, cab, clock)
+        fix = {}
+        for (p0, p1, reg), when in moved.items():
+            if when is not None:
+                fix[(p0, reg)] = when
+                fix[(p1, reg)] = when
+        cab = [(t, pl, fix.get((pl, a), a), fix.get((pl, b), b) if b is not None else None) for t, pl, a, b in cab]
+    by_tag = collections.defaultdict(list)
+    for t, pl, a, b in cab:
+        by_tag[t].append((pl, a, b))
+    by_pl = collections.defaultdict(list)
+    for spl, s0, s1 in spells:
+        by_pl[spl].append((s0, s1))
     out = {}
-    for k, kw in (("R0", dict(trunc=False, cens=False)), ("R1", dict(trunc=False)), ("R2", dict(cens=False)),
-                  ("R3", dict())):
-        m, s, _ = mle(rows, **kw)
-        out[k] = {"curves": {"pooled": (m, s)}, "counts": counts_pooled(m, s)}
-    sh, _ = mle_shift(rows)
-    out["shift"] = {"curves": sh, "counts": counts_groups(sh)}
-    for k, rr, kw in (("G_closed", closed, {}), ("G_nominal", rows, dict(trend_thresholds=False))):
-        f = group_fits(rr, **kw)
-        cv = {g: f[g] for g in GROUPS}
-        out[k] = {"curves": cv, "counts": counts_groups(cv)}
-    # a curve per coverage part, the other parts weighted by their share of the record's occurrences above $25,000
-    parts = {}
-    for p in W.PARTS:
-        m, s, _ = mle([r for r in rows if r["part"] == p])
-        parts[p] = (m, s)
-    oth = GROUPS["OT"]
-    n25 = {p: sum(1 for r in rows if r["part"] == p and r["cost"] * r["f"] > W.ANCHOR) for p in oth}
-    tot = sum(n25.values())
-    c5 = {a: W.COUNT_LE * tail_ratio(*parts["LE"], a)
-          + sum(W.COUNT_OT * n25[p] / tot * tail_ratio(*parts[p], a) for p in oth) for a in W.OPTIONS}
-    out["parts5"] = {"curves": parts, "counts": c5}
-    out["parts5"]["layer"] = {a: W.COUNT_LE * layer_per_anchor(*parts["LE"], a)
-                              + sum(W.COUNT_OT * n25[p] / tot * layer_per_anchor(*parts[p], a) for p in oth)
-                              for a in W.OPTIONS}
-    _, _, cv, cg = golden(rec)
-    out["G"] = {"curves": cv, "counts": cg}
-    for k, v in out.items():
-        v["pick"] = pick(v["counts"])
-        if "layer" not in v:
-            cvs = v["curves"]
-            v["layer"] = ({a: W.COUNT_25K * layer_per_anchor(*cvs["pooled"], a) for a in W.OPTIONS} if "pooled" in cvs
-                          else layer_losses(cvs))
+    end_of_time = dt.datetime(2027, 6, 1)
+    for b in load_bookings(target):
+        dark = 0.0
+        for tag in b["tags"]:
+            conns = sorted(by_tag[tag], key=lambda x: x[1])
+            if mapping == "first":
+                conns = [(conns[0][0], conns[0][1], None)]
+            elif mapping == "last":
+                conns = [(conns[-1][0], conns[0][1], None)]
+            day = b["start"]
+            while day <= b["end"]:
+                o0, o1 = opening(day)
+                if takedowns and tag in down:
+                    td = down_at[tag]
+                    if td < o1:
+                        dark += max(0.0, (o1 - max(o0, td)).total_seconds() / 3600.0)
+                        o1 = max(o0, td)
+                for pl, a, bb in conns:
+                    lo_c, hi_c = a, bb or end_of_time
+                    for s0, s1 in by_pl[pl]:
+                        lo = max(o0, s0, lo_c)
+                        hi = min(o1, s1 or end_of_time, hi_c)
+                        if lo < hi:
+                            dark += (hi - lo).total_seconds() / 3600.0
+                day += dt.timedelta(days=1)
+        allow = allowance * b["booked"]
+        mg = math.ceil(round(dark - allow, 6)) if dark > allow else 0
+        out[b["booking_ref"]] = {"dark": dark, "make_good": mg, "booked": b["booked"]}
     return out
 
 
-# ---------------------------------------------------------------- the asks: the rated exposure and the premiums
-def norm_id(s):
-    return re.sub(r"[\s\-]", "", (s or "")).upper()
-
-
-def unit_key(vin, serial):
-    v = norm_id(vin)
-    return ("VIN", v) if len(v) == 17 else ("SERIAL", norm_id(serial))
-
-
-def scheduled_units(log, at=None, leaving=()):
-    """Units on the schedule at the rating date, one per vehicle: a vehicle's record is the latest unit number added
-    for it (by its VIN, or its serial where it has none), so the consortium's numbers replace the pool's for the
-    vehicles loaded in March 2024; the vehicle belongs to the member on that number's latest row in effect, so a unit
-    another member bought inside the pool counts for its buyer; members leaving before 2027 are not rated."""
-    at = at or W.RATING_DATE
-    add, gone, ident, owner = {}, set(), {}, {}
-    for r in sorted(log, key=lambda r: (r["effective"], r["entered"])):
-        if r["effective"] > at:
-            continue
-        k = r["unit_no"]
-        if r["type"] == "ADD":
-            add[k] = (r["effective"], r["entered"])
-            ident[k] = unit_key(r["vin"], r["serial"])
-        elif r["type"] == "DELETE":
-            gone.add(k)
-        owner[k] = r["member"]
-    latest = {}
-    for k, stamp in add.items():
-        if ident[k] not in latest or stamp > latest[ident[k]][0]:
-            latest[ident[k]] = (stamp, k)
-    return Counter(owner[k] for _, (_, k) in latest.items() if k not in gone and owner[k] not in leaving)
-
-
-def units_naive(log, at=None, mode="raw"):
-    at = at or W.RATING_DATE
-    add, gone, ident, add_stamp = {}, set(), {}, {}
-    for r in log:
-        k = (r["member"], r["unit_no"])
-        if r["type"] == "ADD" and r["effective"] <= at:
-            add[k] = True
-            add_stamp[k] = (r["effective"], r["entered"])
-            ident[k] = (r["vin"], r["serial"])
-        elif r["type"] == "DELETE" and r["effective"] <= at:
-            gone.add(k)
-    live = [k for k in add if k not in gone]
-    if mode == "raw":
-        return Counter(k[0] for k in live)
-    if mode == "add_member":
-        # loop 1's reading: a vehicle's latest number added under the member that added it, gone if deleted there
+# ---------------------------------------------------------------- ask B: screens on sale on 1 January 2027
+def screens_on_sale(target, rule="golden"):
+    scr, cab = load_register(target)
+    names = {code: name for code, (name, locs) in load_packages(target).items()}
+    rows = []
+    for s in scr:
+        rows.append({"tag": s["asset_tag"], "loc": s["location_code"], "pos": s["position"], "pkg": s["package"],
+                     "hung": dt.date.fromisoformat(str(s["hung"])[:10]),
+                     "down": dt.date.fromisoformat(str(s["taken_down"])[:10]) if s["taken_down"] else None,
+                     "status": s["status"]})
+    if rule == "status":
+        up = [r for r in rows if r["status"] == "in bedrijf"]
+    elif rule == "dates_all_rows":
+        up = [r for r in rows if r["hung"] <= SALE_DAY and (r["down"] is None or r["down"] > SALE_DAY)]
+    else:
         latest = {}
-        for k in add:
-            kk = (k[0], unit_key(*ident[k]))
-            if kk not in latest or add_stamp[k] > latest[kk][0]:
-                latest[kk] = (add_stamp[k], k)
-        return Counter(kk[0] for kk, (_, k) in latest.items() if k not in gone)
-    if mode == "dedup_live":
-        return Counter(m for m, _ in {(k[0], unit_key(*ident[k])) for k in live})
-    if mode == "raw_vin":
-        return Counter(m for m, _ in {(k[0], ident[k][0] if ident[k][0] else ("unit", k[1])) for k in live})
-    if mode == "vin_only":
-        return Counter(m for m, _ in {(k[0], norm_id(ident[k][0])) for k in live})
-    raise ValueError(mode)
+        for r in rows:
+            if r["hung"] <= SALE_DAY and (r["tag"] not in latest or r["hung"] > latest[r["tag"]]["hung"]):
+                latest[r["tag"]] = r
+        up = [r for r in latest.values() if r["down"] is None or r["down"] > SALE_DAY]
+        if rule == "golden":
+            by_pos = {}
+            for r in up:
+                k = (r["loc"], r["pos"])
+                if k not in by_pos or r["hung"] > by_pos[k]["hung"]:
+                    by_pos[k] = r
+            up = list(by_pos.values())
+    cnt = collections.Counter(r["pkg"] for r in up)
+    return {code: cnt.get(code, 0) for code in names}
 
 
-def premium(toe, units, attachment):
-    gl, al = W.QUOTES[attachment]
-    return gl * toe / 1000.0 + al * units
+# ---------------------------------------------------------------- ask C: net revenue per package
+def nl_num(s):
+    return float(str(s).replace(".", "").replace(",", "."))
 
 
-def by_class(per_member, kind_of):
-    out = Counter()
-    for m, v in per_member.items():
-        out[kind_of[m]] += v
+MONTHS_NL = {"januari": 1, "februari": 2, "maart": 3, "april": 4, "mei": 5, "juni": 6, "juli": 7, "augustus": 8,
+             "september": 9, "oktober": 10, "november": 11, "december": 12}
+
+
+def load_statements(target):
+    txt = IO.pdf_text(p(target, "statements"))
+    out = []
+    pat = (r"([A-Z][A-Za-z ]+?) \xb7 Commissienota.*?datum (\d+) ([a-z]+) (\d{4}).*?\(([^)]*)\).*?"
+           r"Commissie najaarsboekingen 2026\s+([\d.,]+)")
+    for m in re.finditer(pat, txt, re.S):
+        out.append({"agency": m.group(1).strip(),
+                    "date": dt.date(int(m.group(4)), MONTHS_NL[m.group(3)], int(m.group(2))),
+                    "refs": [r.strip() for r in m.group(5).split(",")], "amount": nl_num(m.group(6))})
     return out
 
 
-# ---------------------------------------------------------------- the whole world and the figures the write-up states
-def world_state():
-    mem, occ = W.world()
-    W.member_details(W.stream(3), mem)
-    rec = W.development(W.stream(4), mem, occ)
-    units = W.fleets(W.stream(5), mem)
-    W.consortium(mem, units)
-    dec = W.notices_and_redeclarations(W.stream(8), mem, W.declarations(W.stream(6), mem))
-    log = W.schedule_log(W.stream(7), mem, units)
-    return {"mem": mem, "occ": occ, "rec": rec, "units": units, "dec": dec, "log": log}
+def net_revenue(target, vat="split", credits="both", commission="rate", parts=False):
+    """commission: 'rate' (the golden: each agency's contract rate, recovered from its statement over the value it
+    was struck on, applied to each booking's value net of every credit note), 'statements' (the statement's amount
+    shared over its bookings by their value net of credit notes), 'standard' (the rate card's 15 per cent),
+    'none'."""
+    bk = {b["booking_ref"]: b for b in load_bookings(target)}
+    pk_of_name = {name: code for code, (name, locs) in load_packages(target).items()}
+    h, rows = IO.read_csv(p(target, "legacy"), delimiter=";")
+    inv = {}
+    for no, date, ref, debtor, gross in rows:
+        g = nl_num(gross)
+        inv[no] = {"ref": ref, "net": round(g / 1.21, 2) if vat == "split" else (g / 1.21 if vat == "split_exact" else g)}
+    h, rows = IO.read_xlsx(p(target, "billing"), "Documents")
+    docs = [dict(zip(h, r)) for r in rows if r[0]]
+    for d in docs:
+        if d["document_type"] == "invoice":
+            inv[d["document_no"]] = {"ref": d["booking_ref"], "net": float(d["net_eur"])}
+    invoiced = collections.Counter()
+    for no, v in inv.items():
+        invoiced[v["ref"]] += v["net"]
+    cred = collections.defaultdict(list)      # booking -> [(date, amount)]
+    for d in docs:
+        if d["document_type"] != "credit note" or credits == "none":
+            continue
+        if credits == "new_only" and not str(d["reference"]).startswith("F"):
+            continue
+        if d["reference"] in inv:
+            cred[inv[d["reference"]]["ref"]].append((dt.date.fromisoformat(str(d["document_date"])[:10]),
+                                                    float(d["net_eur"])))
+    if parts:
+        return {"invoiced": invoiced, "credits": cred}
+    net = {r: invoiced[r] + sum(a for _, a in cred[r]) for r in bk}
+    comm = collections.Counter()
+    if commission in ("rate", "statements"):
+        for s in load_statements(target):
+            if commission == "rate":
+                base = sum(invoiced[r] + sum(a for d, a in cred[r] if d <= s["date"]) for r in s["refs"])
+                rate = s["amount"] / base
+                for r in s["refs"]:
+                    comm[r] = rate * net[r]
+            else:
+                tot = sum(net[r] for r in s["refs"])
+                for r in s["refs"]:
+                    comm[r] = s["amount"] * net[r] / tot
+    elif commission == "standard":
+        for r, b in bk.items():
+            if b["agency"]:
+                comm[r] = 0.15 * net[r]
+    out = collections.Counter()
+    for ref, b in bk.items():
+        out[pk_of_name[b["package"]]] += net[ref] - comm[ref]
+    return {code: out.get(code, 0.0) for code in pk_of_name.values()}
 
 
-def figures(st):
-    mem, rec, dec, log = st["mem"], st["rec"], st["dec"], st["log"]
-    rows, fits, curves, cnt = golden(rec)
-    call = pick(cnt)
-    i = W.OPTIONS.index(call)
-    runner = W.OPTIONS[i - 1]
-    m0, s0, n0 = mle(rows)
-    _, nsh = mle_shift(rows)
-    n1 = fits["LE_nll"] + fits["OT_nll"]
-    kind = {m["no"]: m["kind"] for m in mem}
-    toe = {k: d["toe"] for k, d in W.rated(dec, mem).items()}
-    leaving = {m["no"] for m in mem if m.get("withdraws")}
-    units = scheduled_units(log, leaving=leaving)
-    T, U = sum(toe.values()), sum(units.values())
-    prem = {str(a): round(premium(T, U, a)) for a in W.OPTIONS}
-    by = {}
-    for k in sorted(set(kind[m] for m in toe)):
-        ms = [m for m in toe if kind[m] == k]
-        by[k] = {"members": len(ms), "toe_000": round(sum(toe[m] for m in ms) / 1000),
-                 "units": sum(units.get(m, 0) for m in ms)}
-    lad = ladder(rec)
-    lay = layer_losses(curves)
-    r1, r2 = W.RETENTION[W.FIT_YEARS[0]], W.RETENTION[W.FIT_YEARS[-1]]
-    return {
-        "call": {"attachment": call, "runner_up": runner, "count": round(cnt[call], 1),
-                 "runner_up_count": round(cnt[runner], 1)},
-        "counts": {str(a): cnt[a] for a in W.OPTIONS},
-        "counts_1dp": {str(a): round(cnt[a], 1) for a in W.OPTIONS},
-        "curves": {g: {"mu": curves[g][0], "sigma": curves[g][1], "mu_2dp": round(curves[g][0], 2),
-                       "sigma_2dp": round(curves[g][1], 2), "n": fits[g + "_n"], "capped": fits[g + "_capped"]}
-                   for g in GROUPS},
-        "pooled": {"mu_2dp": round(m0, 2), "sigma_2dp": round(s0, 2), "pick": lad["R3"]["pick"],
-                   "count_call": round(lad["R3"]["counts"][lad["R3"]["pick"]], 1)},
-        "lr": {"pooled": round(2 * (n0 - n1), 1), "one_spread": round(2 * (nsh - n1), 1)},
-        "anchors": {"LE": W.COUNT_LE, "OT": W.COUNT_OT, "all": W.COUNT_25K},
-        "fit": {"n": len(rows), "capped": sum(r["capped"] for r in rows),
-                "capped_r1": sum(1 for r in rows if r["capped"] and r["ret"] == r1),
-                "capped_r2": sum(1 for r in rows if r["capped"] and r["ret"] == r2),
-                "open": sum(r["open"] for r in rows), "closed": sum(not r["open"] for r in rows)},
-        "premiums": prem,
-        "layer_loss": {str(a): lay[a] for a in W.OPTIONS},
-        "layer_loss_100k": {str(a): int(round(lay[a] / 1e5) * 100_000) for a in W.OPTIONS},
-        "exposure": {"toe": T, "toe_000": round(T / 1000), "units": U, "members": len(toe)},
-        "by_class": by,
-        "rungs": {k: {"pick": v["pick"], "count_3m": v["counts"][3_000_000], "count_4m": v["counts"][4_000_000]}
-                  for k, v in lad.items()},
-        "anchor": W.ANCHOR,
-        "layer_limit": LIMIT,
-        "retentions": sorted(set(W.RETENTION.values())),
-        "fit_sources": {"legacy": sum(1 for r in rec if r["ay"] in W.FIT_YEARS and r["system"] == "legacy"),
-                        "current": sum(1 for r in rec if r["ay"] in W.FIT_YEARS and r["system"] == "current")},
-        "attachments": list(W.OPTIONS),
-        "attachments_millions": ["%.1f million" % (a / 1e6) for a in W.OPTIONS],
-    }
+def net_revenue_parts(target):
+    """Each booking's invoiced value excluding VAT and its credit notes (date, amount), as the golden reads them."""
+    return net_revenue(target, parts=True)
