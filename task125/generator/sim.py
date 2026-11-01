@@ -111,6 +111,37 @@ def quiet(t):
     return t
 
 
+SPRING_NIGHT = dt.date(2026, 3, 8)
+
+
+def carry_crews(rost, events, bdg):
+    """The night tour that starts on the evening of the March change: every unit dispatched after midnight keeps the
+    crew it had the night before. Local midnight on 9 March less a day of elapsed time is 23:00 on 7 March (the change
+    took an hour), so a night tour dated that way names the night of 7 March for those hours, and both nights crew the
+    unit alike. Officer 1 stays; a second officer is the one who rode with the unit the night before, or the first
+    badge free on the tour. No draw is made, so the stream is untouched."""
+    z = tz()
+    lo = dt.datetime(2026, 3, 9, 0, 0, tzinfo=z).astimezone(UTC)
+    hi = dt.datetime(2026, 3, 9, 7, 0, tzinfo=z).astimezone(UTC)
+    units = {u["unit"] for e in events for u in e["units"] if lo <= u["dispatched"].astimezone(UTC) < hi}
+    night, before = (SPRING_NIGHT, "N"), (SPRING_NIGHT - dt.timedelta(1), "N")
+    on = {b for k, crew in rost.items() if k[:2] == night for b in crew}
+    moved = []
+    for u in sorted(units, key=ALL_UNITS.index):
+        now, prev = rost[night + (u,)], rost[before + (u,)]
+        if len(now) > len(prev):
+            on.difference_update(now[len(prev):])
+            rost[night + (u,)] = now[:len(prev)]
+        elif len(now) < len(prev):
+            free = [b for b in prev if b not in on] + [b for b in bdg if b not in on]
+            rost[night + (u,)] = now + free[:len(prev) - len(now)]
+            on.update(free[:len(prev) - len(now)])
+        else:
+            continue
+        moved.append(u)
+    return moved
+
+
 # ----------------------------------------------------------------------------------------------- the calls
 def address(r, s):
     side = int(r.integers(2))

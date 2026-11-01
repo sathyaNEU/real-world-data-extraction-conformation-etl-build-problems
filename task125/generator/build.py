@@ -49,6 +49,7 @@ def world():
     rost = S.roster(r, bdg)
     events = S.cad(r, segs, twp, base, nonp)
     bks = S.bookings(r, segs, ev, bdg)
+    S.carry_crews(rost, events, bdg)
     settle_edges(segs, rost, events, bks)
     return {"r": r, "segs": segs, "base": base, "inc_g": inc_g, "inc_l": inc_l, "role": role, "ev": ev,
             "crimes": crimes, "nonp": nonp, "twp": twp, "badges": bdg, "roster": rost, "events": events,

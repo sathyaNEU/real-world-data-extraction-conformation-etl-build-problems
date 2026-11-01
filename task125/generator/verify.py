@@ -104,13 +104,39 @@ def main():
     u["oh"] = (u.cleared_utc - u.dispatched_utc).dt.total_seconds() / 3600 * u.crew
     u["q"] = u.received_utc.dt.quarter
     oh = u.groupby(["ward", "q"]).oh.sum()
-    bad = 0
-    for k, v in fig["ask_officer_hours"].items():
-        w, q = k.split()
-        got = int(np.floor(oh[(int(w), int(q[1]))] + 0.5))
-        bad += got != v
+
+    def differ(cells):
+        bad = 0
+        for k, v in fig["ask_officer_hours"].items():
+            w, q = k.split()
+            bad += int(np.floor(cells[(int(w), int(q[1]))] + 0.5)) != v
+        return bad
+
+    bad = differ(oh)
     fails.append(bad)
-    print("%s  ask A recomputed (%d of 32 differ)" % ("PASS" if not bad else "FAIL", bad))
+    print("%s  ask A recomputed on the naive wall clock (%d of 32 differ)" % ("PASS" if not bad else "FAIL", bad))
+
+    # the same ask on aware local times, the way a pandas reader writes it: a night tour's date from the dispatch's
+    # local midnight less a Timedelta day, or from the dispatch less seven hours of elapsed time
+    crew = ros.set_index(["tour_date", "tour", "unit"]).crew
+    v = cad[cad.unit.notna()].copy()
+    v["q"] = v.received_utc.dt.quarter
+    v["el"] = (v.cleared_utc - v.dispatched_utc).dt.total_seconds() / 3600
+    hr = v.dispatched_utc.dt.hour
+
+    def cells(day, letter):
+        n = crew.reindex(pd.MultiIndex.from_arrays([day.dt.strftime("%Y-%m-%d"), letter, v.unit])).to_numpy()
+        return (v.el * n).groupby([v.ward, v.q]).sum()
+
+    mid = v.dispatched_utc.dt.normalize()
+    aware = cells(mid.where(hr >= 7, mid - pd.Timedelta(days=1)), np.where((hr >= 7) & (hr < 19), "D", "N"))
+    back = v.dispatched_utc - pd.Timedelta(hours=7)
+    seven = cells(back.dt.normalize(), np.where(back.dt.hour < 12, "D", "N"))
+    for name, got in (("local midnight less a Timedelta day", aware), ("seven hours of elapsed time back", seven)):
+        bad = differ(got)
+        fails.append(bad)
+        print("%s  ask A recomputed with tours dated by %s (%d of 32 differ)" % ("PASS" if not bad else "FAIL", name,
+                                                                                bad))
     return 0 if not any(fails) else 1
 
 

@@ -336,8 +336,52 @@ def tour_naive_wall(t):
     return (w - dt.timedelta(hours=7)).date(), "N"
 
 
-def ask_officer_hours(P, by_district=False, naive_tour=False, tour=None, intervals="keep"):
-    """Each ward's officer-hours on 2026 calls for service, by quarter of the call's local date."""
+def tour_midnight_elapsed(t):
+    """A night tour dated from the local midnight of an after-midnight dispatch less a day of elapsed time (pandas'
+    normalize, then a Timedelta), which on the morning after the spring change is 23:00 two evenings back."""
+    h = t.hour + t.minute / 60.0
+    if 7 <= h < 19:
+        return t.date(), "D"
+    if h >= 19:
+        return t.date(), "N"
+    mid = dt.datetime(t.year, t.month, t.day, tzinfo=TZ)
+    return (mid.astimezone(dt.timezone.utc) - dt.timedelta(days=1)).astimezone(TZ).date(), "N"
+
+
+def tour_seven_back(t):
+    """A tour dated seven hours of elapsed time back, its letter from the shifted hour."""
+    s = (t.astimezone(dt.timezone.utc) - dt.timedelta(hours=7)).astimezone(TZ)
+    return s.date(), ("D" if s.hour < 12 else "N")
+
+
+def tour_seven_back_own_letter(t):
+    """A tour's date seven hours of elapsed time back, its letter from the dispatch's own hour."""
+    s = (t.astimezone(dt.timezone.utc) - dt.timedelta(hours=7)).astimezone(TZ)
+    h = t.hour + t.minute / 60.0
+    return s.date(), ("D" if 7 <= h < 19 else "N")
+
+
+def tours_twelve_elapsed(t):
+    """Every tour holding an instant when each tour runs twelve hours of elapsed time from its local start."""
+    out = []
+    at = t.astimezone(dt.timezone.utc)
+    for back in (1, 0):
+        d = t.astimezone(TZ).date() - dt.timedelta(back)
+        for letter, hh in (("D", 7), ("N", 19)):
+            st = dt.datetime(d.year, d.month, d.day, hh, 0, tzinfo=TZ).astimezone(dt.timezone.utc)
+            if st <= at < st + dt.timedelta(hours=12):
+                out.append((d, letter))
+    return out
+
+
+TOUR_READINGS = {"a day of elapsed time back": tour_elapsed, "local midnight less a day": tour_midnight_elapsed,
+                 "seven hours back": tour_seven_back, "seven hours back, own letter": tour_seven_back_own_letter,
+                 "the naive wall clock": tour_naive_wall}
+
+
+def ask_officer_hours(P, by_district=False, naive_tour=False, tour=None, intervals="keep", wall_hours=False):
+    """Each ward's officer-hours on 2026 calls for service, by quarter of the call's local date. wall_hours reads a
+    unit's hours as the difference of its local wall-clock times (an hour out for a unit working across a change)."""
     cr = crews(P)
     out = {(w, q): 0.0 for w in range(1, 9) for q in range(1, 5)}
     for r in P.cad:
@@ -354,6 +398,8 @@ def ask_officer_hours(P, by_district=False, naive_tour=False, tour=None, interva
         n = cr.get(key + (r["unit"],), 1)
         q = (rec.month - 1) // 3 + 1
         hours = (utc_of(r["cleared_utc"]) - utc_of(r["dispatched_utc"])).total_seconds() / 3600.0
+        if wall_hours:
+            hours = (clr.replace(tzinfo=None) - dsp.replace(tzinfo=None)).total_seconds() / 3600.0
         if hours < 0 and intervals == "drop":
             continue
         if hours < 0 and intervals == "clip":

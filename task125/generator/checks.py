@@ -5,8 +5,9 @@
 C: the conformed records equal the truth; the designation equals the truth's; the standing family files one set.
 R: every route the ladder prices files its stated set (the analyst test on the clean truth included).
 M: margins, the candidate pool, ties, rounding edges.
-SF1 to SF22: the semantic fork table, each alternative shown to file the same call or figure, or ruled out.
-D: the devices of the asks (the cracker misses every figure of asks A and B).
+SF1 to SF24: the semantic fork table, each alternative shown to file the same call or figure, or ruled out.
+T: the CAD's clocks (rows forward in UTC, events in receipt order, tours read alike).
+D: the device of the ask (the cracker misses every figure of ask A).
 X: no generator pattern; each document's own save history."""
 import collections
 import datetime as dt
@@ -245,6 +246,26 @@ def main():
                 A.parse_utc(r["dispatched_utc"]).replace(tzinfo=None).strftime("%Y-%m-%d %H") == "2026-03-09 00")
     check("T3", quiet == 0, "no unit is dispatched to a call in the first hour of 9 March, where a night tour dated by "
           "a day of elapsed time lands on 7 March")
+    cr = A.crews(P)
+    calls = [r for r in P.cad if r["unit"] and r["source"] != "OFFICER"]
+    apart, parted = 0, []
+    for r in calls:
+        d0 = A.parse_utc(r["dispatched_utc"])
+        c0 = cr.get(A.tour_of(d0) + (r["unit"],))
+        for name, f in A.TOUR_READINGS.items():
+            if cr.get(f(d0) + (r["unit"],)) != c0:
+                apart += 1
+                parted.append((r["event_no"], r["unit"], name))
+    check("SF24", apart == 0, "every unit on a call for service, the City's and Elmvale's, is crewed alike on every "
+          "reading of its tour's date (%s): %d rows part%s" %
+          (", ".join(A.TOUR_READINGS), apart, (" " + str(parted[:6])) if parted else ""))
+    twelve = sum(1 for r in calls if A.tours_twelve_elapsed(A.parse_utc(r["dispatched_utc"])) !=
+                 [A.tour_of(A.parse_utc(r["dispatched_utc"]))])
+    check("T4", twelve == 0, "with each tour taken as twelve hours of elapsed time from its start, every unit on a call "
+          "for service is dispatched in its own tour and no other (%d rows in none, two or another)" % twelve)
+    two = lambda d: sum(1 for r in P.roster if r["tour_date"] == d and r["tour"] == "N" and r["officer_2"])
+    print("INFO   two-officer cars on the night tours around the spring change: 7 March %d, 8 March %d, 9 March %d" %
+          (two("2026-03-07"), two("2026-03-08"), two("2026-03-09")))
 
     # ------------------------------------------------------------------ the ask
     (ga,) = A.asks(P)
@@ -259,14 +280,24 @@ def main():
     print("INFO   ask A: Elmvale's events read into the wards by their district would move %d of 32 (Directive "
           "PO-14 files that a call outside the City's wards belongs to none)" % sum(ga[k] != da[k] for k in ga))
     readings = {"keep": A.ask_officer_hours(P), "drop": A.ask_officer_hours(P, intervals="drop"),
-                "clip": A.ask_officer_hours(P, intervals="clip"),
-                "elapsed-day tour dating": A.ask_officer_hours(P, tour=A.tour_elapsed),
-                "wall-clock tour dating": A.ask_officer_hours(P, tour=A.tour_naive_wall)}
+                "clip": A.ask_officer_hours(P, intervals="clip")}
+    for name, f in A.TOUR_READINGS.items():
+        readings["tours dated " + name] = A.ask_officer_hours(P, tour=f)
     moved = {n: [k for k in ga if int(A.half_up(v[k])) != ga[k]] for n, v in readings.items()}
     check("D3", not any(moved.values()), "every cell holds at its rounding under %s (%s)" %
           (", ".join(readings), "; ".join("%s %d" % (n, len(m)) for n, m in moved.items())))
     spread = max(abs(v[k] - ra[k]) for v in readings.values() for k in ra)
-    check("D4", spread < 1e-6, "the five readings agree to %.2g hours in every cell" % spread)
+    check("D4", spread < 1e-6, "the %d readings agree to %.2g hours in every cell" % (len(readings), spread))
+    wh = A.ask_officer_hours(P, wall_hours=True)
+    across = sum(1 for r in calls if A.tour_of(A.parse_utc(r["dispatched_utc"]))[0] in
+                 (dt.date(2026, 3, 7), dt.date(2026, 10, 31)) and
+                 A.parse_utc(r["cleared_utc"]).utcoffset() != A.parse_utc(r["dispatched_utc"]).utcoffset())
+    check("D5", all(int(A.half_up(wh[k])) == ga[k] for k in ga), "a unit's hours read as the difference of its local "
+          "wall-clock times hold every cell (%d unit rows on calls work across a change; largest cell shift %.2f)" %
+          (across, max(abs(wh[k] - ra[k]) for k in ra)))
+    keys = collections.Counter((r["tour_date"], r["tour"], r["unit"]) for r in P.roster)
+    check("T5", max(keys.values()) == 1, "the roster holds one row per tour and unit (%d rows), so a join on the tour "
+          "and the unit repeats no call" % len(P.roster))
     edge = min(abs((v % 1) - 0.5) for v in ra.values())
     check("M4", edge >= 0.25, "every officer-hours cell sits at least a quarter of an hour from its rounding edge "
           "(nearest %.3f)" % edge)

@@ -14,18 +14,18 @@
   "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-11-01 on target.zip d5c73e26: sweeps 3, 4 and 9 ruled harmless in the note; no LEAK; Directive PO-14, the protocol's section 2, the request and the prompt changed, the reader re-reads them",
+  "leak_py": "REVIEW 2026-11-01 on target.zip 1af4c489: sweeps 3, 4 and 9 ruled harmless in the note; no LEAK; the re-judge's repair changed no document and not the prompt (seven roster rows and seven CAD clear times only)",
   "reader": ""
  },
  "duplicate_check": {
   "guard_check": "PASS 2026-11-01 on the card re-registered 00:37:31Z (forum redrawn to line_manager_or_team after executive_team fell under task122 v4's ban; the forcing event period_close since 2026-10-31)",
-  "heart": "PASS 2026-11-01 on the final cut (no WARN); nearest driver 0.11",
-  "surface": "exit 0 2026-11-01 on target.zip d5c73e26: 302 builds screened, one pair promoted for the author's adjudicated read (task178, surface 0.090, on card axes the card already differentiates); the pack's personas are the card's two"
+  "heart": "PASS 2026-11-01 on target.zip 1af4c489 (no WARN); nearest driver 0.11",
+  "surface": "exit 0 2026-11-01 on target.zip 1af4c489: 302 builds screened, one pair promoted for the author's adjudicated read (task178, surface 0.090, on card axes the card already differentiates); the pack's personas are the card's two"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (officer-hours ask only; main call, deck answers and Gates G and H pass)",
-  "disposition": "SEND_BACK reconciled to FIX_NOW by the main thread",
-  "report": "determinism_check_report.md"
+  "verdict": "pass 2, the one re-judge: DETERMINISTIC (SOLUTION_WRONG minor: Wards 2, 5 and 6 Q1 of patrol_figures_2026.csv; the designation, the lists, the chart and Gates F, G and H pass); pass 1: NOT_DETERMINISTIC on the officer-hours ask, reconciled to FIX_NOW",
+  "disposition": "FIX_NOW, repaired in the generator on target.zip 1af4c489: the re-judge's tour dating (local midnight less a day of elapsed time) took the night of 7 March's crews for 14 unit rows dispatched after midnight on 9 March; those units now carry the 7 March crews on the 8 March night (SF24, T4), Wards 1, 2, 3, 5 and 6 Q1 moved, everything else unchanged",
+  "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)"
  },
  "returned": [
   {
@@ -53,7 +53,7 @@
    "commit": "DRAWN (task125) architecture 4"
   }
  ],
- "resume": "stage 4: the one re-judge of the FIX_NOW (determinism judge on task125, medium effort) and the leak re-read of the changed Directive PO-14, protocol section 2, request and prompt, together, on the fresh copy at scratchpad/leak-task125/ (target.zip d5c73e26832037af) with scratchpad/task125_stage4_leak_brief.md; then stage 5: ship",
+ "resume": "stage 4: the main thread closes the re-judge's FIX_NOW on target.zip 1af4c489310cda4f (repaired in the generator, every free gate green, no document changed): the leak re-read on the refreshed copy at scratchpad/leak-task125/ with scratchpad/task125_stage4_leak_brief.md if it is still owed, and its call on a further judge read of the officer-hours CSV; then stage 5: ship",
  "approved": null,
  "delivered": null,
  "portal": "",
@@ -74,5 +74,5 @@
  "alignment_pass": "",
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": "d5c73e26832037af"
+ "zip_sha256_16": "1af4c489310cda4f"
 }

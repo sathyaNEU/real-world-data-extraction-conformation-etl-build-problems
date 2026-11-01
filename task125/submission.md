@@ -64,11 +64,11 @@
 ### patrol_figures_2026.csv
 
 1. Officer-hours on calls for service in 2026, whole hours:
-   - Ward 1: Q1 602, Q2 567, Q3 509, Q4 556
-   - Ward 2: Q1 453, Q2 402, Q3 438, Q4 430
-   - Ward 3: Q1 773, Q2 748, Q3 817, Q4 815
+   - Ward 1: Q1 604, Q2 567, Q3 509, Q4 556
+   - Ward 2: Q1 457, Q2 402, Q3 438, Q4 430
+   - Ward 3: Q1 774, Q2 748, Q3 817, Q4 815
    - Ward 4: Q1 546, Q2 557, Q3 559, Q4 598
-   - Ward 5: Q1 911, Q2 824, Q3 838, Q4 895
-   - Ward 6: Q1 1028, Q2 1120, Q3 1177, Q4 1229
+   - Ward 5: Q1 912, Q2 824, Q3 838, Q4 895
+   - Ward 6: Q1 1034, Q2 1120, Q3 1177, Q4 1229
    - Ward 7: Q1 874, Q2 815, Q3 886, Q4 828
    - Ward 8: Q1 1280, Q2 1262, Q3 1385, Q4 1215

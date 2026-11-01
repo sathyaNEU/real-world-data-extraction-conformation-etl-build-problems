@@ -122,6 +122,7 @@ Pins: the WHAT sits in the protocol (the segments, the codes, the counting, the 
 | SF21 | officer-hours | dispatch to clear times the officers on the unit | unit-hours | moves ask A | Directive PO-14, section 2 |
 | SF22 | a crew across a tour change | none crosses | none | same figures | no assignment crosses a change (asserted) |
 | SF23 | a unit's hours across a clock change | elapsed time between the UTC stamps | wall-clock difference | same figures | every stamp is UTC (asserted: every row runs forward, D3 and D4) |
+| SF24 | a night tour's date across a clock change | the date it starts on the local clock | a day of elapsed time back from the dispatch, local midnight less a day of elapsed time, seven hours of elapsed time back, twelve elapsed hours from the tour's start | same figures | every unit on a call is crewed alike on every reading (asserted, SF24, T4, D3 and D4): the night of 8 March's after-midnight units carry the night of 7 March's crews |
 
 ## Ladder
 
@@ -206,8 +207,11 @@ the register the call reads.
 - Pin test: the asking sentence pins the ward, the quarter and the unit; Directive PO-14 pins a call, its date, its
   ward, the tours' hours and officer-hours; none names a tour's date.
 - Every cell sits at least a quarter of an hour from its rounding edge and holds under the negative-interval
-  handlings (none remain), a night tour dated by the calendar, by a day of elapsed time and by the naive wall clock
-  (D3, D4, M4); the judge's own pandas method reproduces all 32.
+  handlings (none remain) and every reading of a night tour's date (SF24): the calendar, a day of elapsed time back,
+  local midnight less a day of elapsed time (the re-judge's pandas route), seven hours of elapsed time back, the naive
+  wall clock, and tours of twelve elapsed hours (D3, D4, M4, T4); hours read on the wall clock hold too (D5, no unit on
+  a call works across a change), and the roster holds one row per tour and unit (T5); the verifier reproduces all 32
+  on the wall clock and on aware times both ways, and the re-judge's own method reproduces all 32.
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed definition executed) | Verdict |
 |---|---|---|
@@ -215,11 +219,11 @@ the register the call reads.
 
 Pair ceiling: 28.5 ((38 + 7 + 55 x 0) and (5 + 7 + 55 x 0), averaged)
 Mirror leakage: 0.0 per cent of ask weight
-Measured by: generator/ceiling.py (run on the cut pack, target.zip d5c73e26)
+Measured by: generator/ceiling.py (run on the cut pack, target.zip 1af4c489)
 
 ## Leak review
 
-`leak.py task125 --asof 2027-01-06` on target.zip d5c73e26: REVIEW, no LEAK; each line ruled.
+`leak.py task125 --asof 2027-01-06` on target.zip 1af4c489: REVIEW, no LEAK; each line ruled.
 - Sweep 3, golden figures in the pack: every hit is a segment number (the designated segments' ids) in the geography
   files (the street file, the occurrences, the CAD export, the streetlight requests), where every segment's id
   appears; harmless.
@@ -233,6 +237,8 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip d5c73e26)
   the protocol's section 2 names the Superintendent, Patrol Operations as adopting the designation (the forum
   redrawn from the command team), and the request and the prompt lost the medians and the command team; the
   main thread re-reads them beside the re-judge.
+- The re-judge's repair changed no document and not the prompt: only the CAD export's clear times (7 rows) and the
+  roster's night tour of 8 March (7 rows) moved.
 
 ## Pre-ship check
 
@@ -251,9 +257,18 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip d5c73e26)
    belongs to none, which spent the medians ask's only device, so the medians were dropped (the gate refuses an ask
    the cracker keeps). The main call, the stump, the deck's answers and every critical component are unchanged
    (figures.json); 13 of the 32 officer-hours cells moved by one to four hours.
-4. Gates on the final cut (target.zip d5c73e26): generator checks, the verifier, two byte-identical builds,
+4. The one re-judge (DETERMINISTIC, SOLUTION_WRONG minor, FIX_NOW, on target.zip d5c73e26) forced the designation,
+   the lists and the chart and reproduced 29 of 32 cells; Ward 2, 5 and 6 Q1 came out 2.6, 1.0 and 1.7 hours high.
+   Root cause, its own route: a night tour's date taken as the dispatch's local midnight less a day of elapsed time
+   (pandas' normalize, then a Timedelta) is 23:00 on 7 March for the 14 City unit rows dispatched after midnight on
+   9 March (the change took an hour from 8 March), so those rows took the Saturday night's crews, and 7 of them
+   differed from the Sunday night's. Repaired in the generator: the night of 8 March's after-midnight units carry
+   the night of 7 March's crews (7 roster rows, no draw), so every reading of a night tour's date crews every unit on
+   a call alike (SF24, T4). Wards 1, 2, 3, 5 and 6 Q1 moved by one to six hours (604, 457, 774, 912, 1034); the
+   other 27 cells, the main call, the stump, the deck and every other figure are unchanged (figures.json).
+5. Gates on the final cut (target.zip 1af4c489): generator checks, the verifier, two byte-identical builds,
    figures_check.py, precut.py, voice-check.py, leak.py (REVIEW, ruled above), guard.py heart and surface.
-5. Guard WARN repeat.gate_g (method_or_model_selection against task172 v2, drawn just before): task172 chooses how an
+6. Guard WARN repeat.gate_g (method_or_model_selection against task172 v2, drawn just before): task172 chooses how an
    interim's conditional power carries a trial's treatment effect over its remaining follow-up; here the method is a
    forecast's split of each place's count by a venue calendar. The labels share a Gate G mechanism, not a driver;
    the heart's nearest driver sits at 0.11.
@@ -346,3 +361,5 @@ Measured by: generator/ceiling.py (run on the cut pack, target.zip d5c73e26)
 - Architecture 4, a field guide to the six exports (2026-10-31, at the leak sweep): leak.py sweep 12 refused it as a document describing the data (39 columns named, every column of the roster); its definitions of a call, its date, officer-hours and the tours moved into Directive PO-14, a governing document in the Service's genre, the codes and counting stayed in the protocol, and the formats were left to the files.
 - Architecture 4, the CAD's unit times summed on the local wall clock (2026-11-01, at the stage 4 judge): across the 8 March gap three units cleared before their dispatch and one was dispatched before its call came in, and the golden's own elapsed times were wall-clock differences; every stamp is now reckoned in UTC and asserted to run forward.
 - Architecture 4, the medians ask once Directive PO-14 filed the township's calls (2026-11-01, at the repair): the township's events in the district column were its only device, so the cracker would keep all eight medians and the per-ask miss rule refuses it; dropped from the prompt, the request and the goldens.
+- Architecture 4, keeping all 32 cells through the re-judge's tour dating by moving the 9 March after-midnight calls to other cars (2026-11-01, at the pass-2 repair): in Wards 2, 5 and 6 every car of the ward and its neighbours that was one-officer on the Sunday night was two-officer on the Saturday, so no swap there kept both the cells and the crews; the Sunday night's after-midnight units carry the Saturday crews instead and five Q1 cells move.
+- Architecture 4, leaving 9 March from midnight to 07:00 without a dispatch (2026-11-01, at the pass-2 repair): a seven-hour hole in a city's calls, where about ten are due, would read as planted; the quiet first hour stays and the crews carry instead.
