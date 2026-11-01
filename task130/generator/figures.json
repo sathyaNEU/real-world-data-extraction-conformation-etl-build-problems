@@ -1,73 +1,111 @@
 {
- "call": "Add the third return-inspection officer for 2027: the routine inspections in the 2027 schedule are forecast to produce about 700 unsatisfactory inspections, above the plan's 540.",
- "forecast_total": "700",
- "forecast_unrounded": "693.4",
- "threshold": "540",
- "scheduled_routine_inspections": "5,512",
- "first_visits_2027": "1,277",
- "second_visits_2027": "1,031",
- "later_visits_2027": "3,204",
- "rate_first_visit": {
-  "1": "14.4",
-  "2": "28.2",
-  "3": "32.4"
- },
- "rate_second_visit": {
-  "1": "5.6",
-  "2": "10.2",
-  "3": "18.9"
- },
- "rate_later_visit": {
-  "1": "2.9",
-  "2": "4.8",
-  "3": "8.4"
- },
- "rung_category": "437",
- "rung_own_history": "458",
- "rung_inspector": "451",
- "ask_a_median_working_days": {
-  "1": "10.0",
-  "2": "10.0",
-  "3": "9.0",
-  "4": "9.0",
-  "5": "11.0",
-  "6": "8.5",
-  "7": "10.0",
-  "8": "9.0",
-  "9": "9.0",
-  "10": "8.5",
-  "11": "13.0"
- },
- "ask_b_median_hours": {
-  "1": "71.9",
-  "2": "89.8",
-  "3": "80.2",
-  "4": "69.1",
-  "5": "124.6",
-  "6": "60.3",
-  "7": "98.4",
-  "8": "63.1",
-  "9": "155.5",
-  "10": "63.3",
-  "11": "66.3"
- },
- "ask_c_fees_usd": {
-  "1": "1,416",
-  "2": "2,624",
-  "3": "2,544",
-  "4": "3,200",
-  "5": "4,376",
-  "6": "2,576",
-  "7": "2,024",
-  "8": "3,792",
-  "9": "2,528",
-  "10": "2,544",
-  "11": "2,424"
- },
- "fee_rates_usd": [
-  "152",
-  "168"
+ "call": "No: Redbud forecasts about 255 recordable injuries on Pinewater work in 2027, a rate of 3.57 per 200,000 hours on the 2027 work plan, above CS-4's limit of 3.0.",
+ "forecast_recordables_2027": "255",
+ "forecast_rate_2027": "3.57",
+ "forecast_quarters": [
+  "60",
+  "66",
+  "67",
+  "62"
  ],
- "daysheet_match_days": "20",
- "checks": 246
+ "forecast_quarter_rates": [
+  "3.57",
+  "3.57",
+  "3.57",
+  "3.57"
+ ],
+ "plan_hours_2027": "14,288,000",
+ "plan_quarter_hours": [
+  "3,371,900",
+  "3,686,400",
+  "3,743,500",
+  "3,486,200"
+ ],
+ "limit": "3.0",
+ "crew_rate_first_35_days": "3.84",
+ "technician_rate": "1.92",
+ "crew_rate_recorded": "2.55",
+ "all_rate_recorded": "2.46",
+ "naive_recordables_2027": "176",
+ "ask_first_aid_2026_by_quarter": {
+  "Blue Ridge": [
+   "36",
+   "44",
+   "19"
+  ],
+  "Piedmont": [
+   "38",
+   "34",
+   "32"
+  ],
+  "Lakes": [
+   "45",
+   "46",
+   "30"
+  ],
+  "Coastal": [
+   "52",
+   "51",
+   "33"
+  ]
+ },
+ "ask_first_aid_2026_total": {
+  "Blue Ridge": "99",
+  "Piedmont": "104",
+  "Lakes": "121",
+  "Coastal": "136"
+ },
+ "ytd_first_aid_2026": {
+  "quarters": [
+   "171",
+   "175",
+   "114"
+  ],
+  "total": "460"
+ },
+ "plan_crew_hours_2027": "12,258,000",
+ "plan_technician_hours_2027": "2,030,000",
+ "limit_recordables_2027": "214",
+ "count_days": [
+  "0",
+  "15",
+  "35",
+  "50",
+  "65",
+  "14",
+  "34",
+  "49",
+  "64",
+  "89"
+ ],
+ "count_length_days": "90",
+ "programme_start": "11 January 2021",
+ "bins": [
+  [
+   "0-14",
+   229,
+   "3.85"
+  ],
+  [
+   "15-34",
+   300,
+   "3.84"
+  ],
+  [
+   "35-49",
+   177,
+   "3.07"
+  ],
+  [
+   "50-64",
+   77,
+   "1.38"
+  ],
+  [
+   "65-89",
+   94,
+   "1.01"
+  ]
+ ],
+ "checks": 65
 }

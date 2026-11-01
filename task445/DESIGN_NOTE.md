@@ -1,58 +1,291 @@
-# task445 design note (architecture 2, the Ellesmoor heat resilience grants)
+# task445 design note
 
-Architecture 1 (the 13F holdings carry, quantitative finance) is spent and in the card's lineage; its measured
-deaths are in the last section. It died on the determinism block (a literal reading of its governing section counted
-only the reports on file) and on the survivor anatomy (its decisive basis was a filed criterion's selection). This
-draw is held to two tests before anything else: the estimand, members not yet observed included, is filed so its
-literal execution is the golden, and the easy route is the field's own completion of an unfinished count, which every
-closed summer in the pack validates.
+Status lives in `pipeline.json`; this note holds the design. Architecture 3, drawn 2026-11-01 after architecture 1
+(the 13F holdings carry, failed the portal's determinism block) and architecture 2 (the heat deaths integrated from the
+register and the medical examiners' logs, sent back at its stage 4 judge on Gate H3): a new world, dataset and shell.
+The Arafura Examinations Board, a not-for-profit board in Darwin, sets and marks the Arafura Senior Certificate for
+schools across Australia, the Pacific and South-East Asia. Its History Paper 2 has a compulsory Section A (source
+analysis, 40 marks) and a Section B in which candidates answer two of three optional essay questions (25 marks each);
+the board marks every essay a candidate writes and credits the best two. Before the 2026 results are certified, its
+code of practice asks whether an optional question was more demanding than the others for the paper's candidates and,
+if it was by a mark and a half or more, raises that question's marks by the difference, to the nearest whole mark,
+before the best answers are credited and the grade boundaries are applied. The question is whether Question 6 is
+scaled, and by how many marks.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task445.json`, architecture v2, first registered 2026-10-31T22:45:01Z
-  after `guard.py recent`, `coverage` and `mechanisms --objective etl`, and redrawn on its axes the same evening when
-  task468 v5, registered eight minutes earlier on the same pairing, shape, forum and role, landed on main (the redraw
-  is in the last section). `check` on the card as filed: WARN only (the objective's share of the last twelve builds,
-  which the slot fixes; Gate G `etl_conformance` and the question form `which` against task468, answered in the
-  pre-ship check). The bans against the last three builds (task172 v2, task125 v4, task468 v5: funder, executive and
-  panel forums; meeting and budget events; university, local-government and government-agency organisations; the
-  other, composition and population strategies; patterns G4, G5 and G11; shapes 01 and 05 against the last two) are
-  clear, and task107 v3-etl, task181 and task485 are differentiated on the card.
-- **Pairing:** General Statistics & Data Science, task type data-integration-record-linkage-entity-resolution,
-  objective Data Extraction & Conformation: each place's residents' deaths from 1 June to 31 August 2026, which no
-  one source holds (the register lacks the deaths a coroner holds for inquest, the medical examiner offices' logs lack
-  residents who died outside their areas), integrated from the registrations and the two offices' referral logs, which
-  share no key, decide which places of an integrated care board get its 2027 heat resilience grants.
-- **Shape:** 10, a scorecard against a threshold: each place's deaths, its filed expected deaths, its excess and the
-  fund's line of a tenth over the expected; the asks' place-by-period and coroner-area grids supply the rest of the
-  criteria.
-- **Strategy:** `maturity_censoring`; Gate G `etl_conformance`; gap time then population; generators G3 (the register
-  records registrations and the fund counts deaths, so the record lags the event by the coroner's hold), G12 (a death
-  missing from the register is an absence of record, not a record that no death occurred), G13 (the extract's horizon
-  is not the summer's).
-- **Data-native sentence:** in the July heat wave, older people living alone in Ashwold's terraces died at home and
-  were found days later, the post-mortem could not give a cause, and a death whose cause a post-mortem cannot give
-  waits for an inquest before it is registered, so in October Ashwold's summer is short on the register by exactly
-  the deaths the medical examiners referred to the coroner and the coroner still holds.
-- **World:** NHS Ellesmoor Integrated Care Board, a fictional board in the north of England serving six local
-  authority places (Hollinsgate, the city; Ashwold; Brinmoor; Calderholt; Moorbridge; Thornley Vale); two coroner
-  areas (North Ellesmoor: Hollinsgate, Ashwold, Thornley Vale; South Ellesmoor: Brinmoor, Calderholt, Moorbridge);
-  two medical examiner offices hosted by the acute trusts, each with its own log. People from `guard.py names --geo uk
-  --seed 445` (Lynn Davison and the Khan surname set aside, task468 v5 carrying Davison and Khan): Caroline Porter
-  (Director of Population Health, who takes the grants to the board and asks for the scorecard), Jason Leach (Head of
-  Population Health Intelligence, who owns the mortality extracts), Graeme Gould (Lead Medical Examiner, North
-  Ellesmoor), Jayne Jackson (Medical Examiner Office Manager, South Ellesmoor).
-- **Forum and forcing event:** the board of the integrated care board (board_of_directors) approves the 2027 heat
-  resilience grants at its meeting of 26 November 2026, so that the designated places can commission cool spaces,
-  check-in calls and home adaptations before summer 2027 (season_or_peak); the organisation is an NHS integrated care
-  board (hospital_or_health_provider).
-- **Why retrospective:** the fund pays for summer 2027 on summer 2026's toll, a window closed on 31 August whose
-  count is not finished at the October extract; the forward element is the count's completion (the deaths not yet on
-  the register), never a forecast of 2027.
-- **Sources:** synthetic throughout, modelled on how English death registration works (registration within five
-  days, after the medical examiner's scrutiny or the coroner's decision, and only after an inquest concludes where
-  one is opened), on the medical examiner system in force from September 2024, and on how integrated care boards
-  receive the primary care mortality extract; no real dataset, person or organisation.
+- **Card:** `.claude/skills/fingerprint/cards/task445.json` (architecture v3, lineage v1 and v2 spent), registered
+  2026-11-01T00:50:34Z after a fetch of main: WARN only. A first draft read BLOCK on five axes and was redrawn, never
+  relabelled: the context artifact (task145's monitoring export, then task231's operations log; the board's marking
+  close-out summary is what the executive reads), the forum (task231's committee; the board's executive certifies the
+  results), the forcing event (task146's meeting; the results are certified to the admissions centres on a fixed
+  date) and the structural signature (decisive gap, pattern and Gate G against older builds, each differentiated on
+  the card in one line: no assignment, no follow-up, no reference group, no sampling design, the comparison is the
+  units that chose nothing). WARNs: first names in older builds (Mary), Gate G and question form against
+  task231, decision type against task146, each answered in `## Pre-ship check`.
+- **Pairing:** Education & Learning Sciences, task type `item-response-theory-test-equating`, which serves ETL: the
+  board's marking export (one row per marking event), the Section A scanning extract, the entries register and the
+  centres register are conformed into one result per candidate on a scale on which marks earned on different chosen
+  questions mean the same, and the scaling decision is read off that conformation. The slot's education ground is the
+  only ETL client domain it has left (quantitative finance and general statistics are spent here, and the batch's
+  other ETL domains carry this week's builds), and task464's enumeration recorded the cell's estimated quantities
+  closed: this draw takes the one property it did not reach, a question's demand when the candidates choose their
+  questions.
+- **Strategy:** `population_selection`: the population that measures a question's demand without the choice in it is
+  the candidates who answered every optional question; every chooser comparison carries the choice. Not
+  composition_mix (no rate is fixed within a mix), not causal_design (nothing is assigned), not
+  grain_or_unit (the unit, a candidate's marks, is filed).
+- **Data-native sentence:** candidates choose their essays by the topics they know, so the few who attempt the
+  question that looks hardest are the ones who know its topic best; their marks on it, and on it beside their other
+  essay, carry that knowledge, while the candidates who wrote all three essays (the board marks every essay and
+  credits the best two) chose nothing, and their own three marks show how demanding each question was.
+- **Abstraction sentence:** a property of one option is read from the units that took it, and each unit took the
+  options it holds a private advantage on, so the option's takers misstate it however they are compared, and the
+  units that took every option are the comparison with no choice in it. No approved or delivered build on file reads
+  this way: task238 identifies a channel's effect through a randomised nudge, task267 weights a two-phase check,
+  task473 completes positives an observer noticed, task474 links two papers through candidates who sat both.
+- **The decision and the quantity:** whether Question 6's marks are raised before the grade boundaries are applied,
+  and by how many whole marks, decided by Question 6's demand against the other optional questions for the paper's
+  candidates, a mark and a half the code's line.
+- **Sources, one line each (all synthetic, shaped on public senior-certificate examining practice; the board, its
+  schools and people are fictional):** the essay marking export for 2026 (the spine, one row per marking event, UTC);
+  the Section A extract from the scanning system; the entries register; the centres register; the code of practice
+  (PDF); the executive's request (email); for the asks, the 2025 post-results reviews log; distractors, the
+  teachers' predicted grades and the 2025 paper's question statistics.
+
+## Default path
+
+1. Conform the marking export: one final mark per candidate and essay (a senior examiner's re-mark stands), absent
+   candidates set aside, the merged Queensland centres' old codes read through the centres register.
+2. Read each optional question's demand the way the field compares questions on a paper: each question's marks
+   against the others' for the candidates who answered it, first as question means (Question 6 0.53 marks harder than
+   Questions 4 and 5 together), then adjusted for Section A, the paper's common measure of attainment (0.51), then
+   inside the candidates who answered it beside another essay, each candidate's own pair (0.50).
+3. Every route puts Question 6 about half a mark harder, under the code's line of 1.5, so no optional question is
+   scaled; credit each candidate's best two essays and apply the committee's boundaries.
+
+Ends on: no optional question scaled (Question 6 about 0.5 marks more demanding than the others, under 1.5).
+Golden: Question 6 raised by 2 marks before crediting and grading (2.09 marks more demanding among the 1,422
+candidates who wrote all three essays).
+
+## Stump sentence
+
+The default path reads Question 6's demand from the candidates who chose it, by its mean, by a Section A adjustment
+or by each two-essay candidate's own pair, finds it about half a mark harder and scales nothing; the candidates who
+chose Question 6 knew its topic, so every comparison among its choosers carries that knowledge, and the 1,422
+candidates who wrote all three essays, who chose nothing, put it 2.09 marks harder, so its marks are raised by 2.
+
+## Three rules
+
+- Task type: item-response-theory-test-equating (Education & Learning Sciences), which serves ETL: the marking export,
+  the Section A scan, the entries register and the centres register are conformed into one result per candidate on
+  a scale on which marks earned on different chosen essays mean the same, and the scaling is read off that
+  conformation.
+- Domain test: the deciding quantity is an optional question's demand for the paper's candidates, the examinee-choice
+  problem of test equating, which makes marks earned on different questions comparable before one set of grade
+  boundaries is applied to them; the swap fails because wards or library loans have no rubric choice, no topic a
+  person chooses by and no marking of every attempt.
+- Swap: "should the essay its candidates find hardest have its marks raised" with wards for questions and bed-days
+  for marks becomes "should the ward its patients find hardest have its scores raised", and choosing one's essays by
+  the topics one knows, a rubric that credits the best two and an examiner marking every essay written stop making
+  sense.
+- Layer 1: the marking export one row per marking event in UTC, a senior examiner's re-mark a later row for the same
+  essay; absent candidates as one row with no mark; the merged Queensland centres under their pre-merger codes; a
+  moved candidate's essay booklet under the number and centre it was printed with while the Section A sheet and the
+  entry carry the later ones; candidates who wrote no essay present only in the Section A scan; Section A under the
+  scanning system's own item codes; the entries register's dates as day, month, year. Each is what those systems
+  produce, and none carries the call.
+- Layer 2: identification under self-selection: each essay's takers chose it by their knowledge of its topic, so the
+  marks of its takers estimate its demand only for candidates who knew its topic, and the comparison that removes the
+  choice is the candidates who took every option.
+- Decisive step: recognise that the candidates who chose Question 6 knew its topic, so no comparison among choosers
+  reads its demand, and read it from the candidates who wrote all three essays, whose own three marks carry no choice.
+- Not semantics: every field can be read correctly (each mark, the credited flag, the marking event, each centre code
+  and its region, each entry and its earlier number) and the chooser routes still file no scaling, because no field
+  holds a candidate's knowledge of a topic: it shows only as the gap between what the choosers and the candidates who
+  chose nothing show.
+- Not rule application: the code files what demand is (what the paper's candidates would have earned on a question
+  against the others taken together) and the line and the rounding, and no rule says whose marks measure it; the
+  enumerated family (question means 0.53, a Section A adjustment 0.51, each candidate's pair 0.50, the credited answers
+  alone 0.52, the candidates who wrote all three 2.09 and its forms 1.85 to 2.33) spreads from 0.50 to 2.33, the
+  standing family once the choice is recognised is the all-three route in each of its forms, 1.85 to 2.33, every one
+  raising Question 6 by 2, and the ruling-out is quiet: no column or sentence marks the choosers' advantage, only the
+  gap between their differences and those of the candidates who wrote everything.
+- Analyst test: a strong analyst who conforms the marking export, joins the moved candidates, reads the code correctly
+  and compares each optional question's marks with the others for the candidates who answered it (means, a Section A
+  adjustment, each candidate's own pair) puts Question 6 about half a mark harder and files no scaling (the default
+  path's Ends on: no optional question scaled); candidates chose Question 6 by knowing its topic, and the candidates
+  who wrote all three essays put it 2.09 marks harder, so it is raised by 2.
+- Estimand: the code of practice files it in sections 4.2 and 4.3: an optional question is more demanding when the
+  paper's candidates would have earned fewer marks on it than on the others taken together, measured in marks, and
+  one more demanding by 1.5 or more is raised by the difference to the nearest whole mark, no mark above the
+  question's maximum, before the best answers are credited and the boundaries applied.
+- No decoy: nothing is planted to be caught; no memo, quote, minute or earlier figure states a question's demand or a
+  scaling, the 2025 question statistics are last year's paper (a named distractor), and every file is what the board,
+  its scanning system and its marking system keep for their own reasons.
+- No certified replay: no certified or published figure blesses a chooser route; the minute sets boundaries, not
+  demand, and no file carries a corpus of past scaling decisions to reproduce.
+- Lesson: a model learns that the takers of an optional item chose it by an advantage on it, so their marks, adjusted
+  or paired, measure the item only for those who chose it, and that the units who took every option are the
+  comparison with the choice taken out; no build on file reads an option's property from the units that declined to
+  choose.
+
+## Survivor anatomy
+
+- Actor: a candidate's knowledge of an essay's topic has no column in any file; the marking export carries marks, the
+  credited flag and the marking event, and the topics are only the questions' numbers.
+- Link: the choosers' advantage is read only by setting the candidates who wrote all three essays against those who
+  chose two, a comparison between two groups of the same export that no key, column or sentence invites; the code's
+  rubric clause credits the best two essays and says nothing of measuring with the third.
+- Reflex: the field's way to compare questions on a paper, question means and then an adjustment for the paper's
+  common section (and the within-candidate pair a careful analyst adds), sits at rungs 0 to 2 and files no scaling,
+  the default path's Ends on.
+- Back-test: the textbook route validates: on Questions 4 and 5, which most candidates chose (about 85 per cent each),
+  the Section A adjustment and the pairs agree with the all-three candidates' difference to a tenth of a mark, so the
+  method checks out on the questions where choice barely selects.
+- Second use: the third essays are in the export because the board marks every essay written and credits the best
+  two (code 3.1 and 3.2); the Section A scan grades every candidate; the entries register certifies every result; the
+  centres register places every centre.
+- Shock: Question 6's lower mean among its takers is about half a mark, the size of ordinary question-to-question
+  variation (the 2025 paper's questions spread by more), and its smaller entry reads as an unpopular topic.
+- Pins: the code files the WHAT at authority in the board's own genre (demand as the candidates' marks on a question
+  against the others, the line, the rounding, the order of scaling and crediting), and no filed sentence names whose
+  marks measure it, the third essays or a choice.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Second use | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| R0 question means | code 4.2 names the marks on a question | the export's marks | the paper's question means | none | none | a difference of means | yes | readable |
+| R1 a Section A adjustment | code 4.2's comparison | the scan's totals | adjusting for a common section | none | none | a regression | yes | readable |
+| R2 each candidate's own pair | code 4.2 | candidate numbers | the within-candidate comparison | none | none | a mean of differences | yes | readable |
+| R3 (decisive) the candidates who wrote all three essays | no sentence names whose marks measure demand or the third essays | the credited flag invites filtering the third essays out | the field compares choosers | no control refutes the choosers | the battery dedups, it does not group | a mean of differences on a group no rule names | yes, marked because the board marks every essay | silent |
+
+## Semantic fork table
+
+| SF | Term or convention | Readings | Ruled out by |
+|---|---|---|---|
+| SF1 | the mark that stands | the senior examiner's re-mark; the first mark | code 3.1; same call (asserted) |
+| SF2 | who sat | every candidate present, an essay marked or Section A scanned; candidates with a marked essay | code 2.3 (present, whatever the candidate wrote); absent candidates not graded (asserted) |
+| SF3 | the others taken together | the mean of the other two; either other question alone | code 4.2 (taken together); same call on each (asserted) |
+| SF5 | the maximum | no raised mark above 25; uncapped | code 4.3; asserted |
+| SF6 | the order of scaling and crediting | raise, then credit the best two; credit, then raise | code 4.3 (before the best answers are credited); the call is the scaling either way (asserted) |
+| SF7 | the boundaries | the minute's, unmoved; moved with the scaling | code 5.2; no grade falls (asserted) |
+| SF8 | a moved candidate | one result under the later number and centre; two half records | code 2.2; the register's earlier numbers join every booklet (asserted) |
+| SF9 | a merged centre's region | the register's region under the old code; the code's letters | code 2.1; the old codes present (asserted) |
+| SF12 | the answers that measure | every essay marked; the credited essays only | code 3.1 (every answer is marked); the credited essays alone file no scaling (asserted) |
+| SF13 | a candidate who wrote no essay | sat, graded on Section A; not sat | code 2.3 and 5.1; present in the scan (asserted) |
+
+## Ladder
+
+| Rung | Route | Question 6 harder by | Call |
+|---|---|---|---|
+| R0 | the takers' question means | 0.53 | no scaling |
+| R1 | a Section A adjustment of every answer | 0.51 | no scaling |
+| R2 | each two-essay candidate's own pair | 0.50 | no scaling |
+| R2b | the credited essays only (every third essay filtered out) | 0.52 | no scaling |
+| R3 (decisive) | the 1,422 candidates who wrote all three essays | 2.09 | raised by 2 |
+
+Every form of the decisive route raises Question 6 by 2: against Questions 4 and 5 together 2.09, against Question 4
+alone 1.85, against Question 5 alone 2.33, on first marks 2.09, and 1.95, 2.48 and 1.90 for the candidates with low,
+middle and high Section A marks; the clean truth gives 2.09 against 0.54, 0.51 and 0.51 for the chooser routes. The
+pricing: the move must carry Question 6 across 1.5 from about 0.5 (a mark), and the candidates' topic knowledge carries
+3.4 marks a standard deviation, chosen by about a third of the candidates for Question 6 against about 85 per cent for
+the others, so the choosers' advantage is worth about 1.6 marks; the all-three group is 1,422 candidates, so the
+difference's standard error is under a tenth of a mark; the decisive move is the largest and the only one that
+reverses the call, and no single statistic sorts the questions to it.
+
+## Closure table
+
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the paper's 2026 candidates, every candidate present | filed (code 2.3); SF2, SF13 |
+| 2 Unit of account | marks on a question, a candidate's paper total | filed (code 4.2, 5.1) |
+| 3 Attribution window | the 2026 examination | the export and the minute |
+| 4 As-of dating | the request of 1 December 2026 | the email and the files' dates |
+| 5 Version basis | the senior examiner's re-mark stands | filed (code 3.1); SF1 |
+| 6 Denominator | the candidates whose marks measure demand | the design (the all-three candidates); asserted across forms |
+| 7 Weighting | none: a mean over candidates | code 4.2 |
+| 8 Window length | one examination | the export |
+| 9 Boundary inclusivity | 1.5 or more is scaled | filed (code 4.3) |
+| 10 Rounding path | the difference to the nearest whole mark | filed (code 4.3); C2 (mid-bin) |
+| 11 Tie-break | none: one question over the line | C1 |
+| 12 Maturity and censoring | marking closed; every essay marked | the email; the export |
+| 13 Order of operations | conform, measure, raise, credit, total, grade | filed (code 4.3, 5.1); SF6 |
+| 14 Row order | none: keyed by candidate and question | C1 |
+| 15 Duplicate resolution | one mark per candidate and essay, the later event | SF1 |
+| 16 Identity normalisation | a booklet's earlier number to the later entry; merged centres' old codes | filed (code 2.1, 2.2); SF8, SF9 |
+| 17 Netting against gross | none | none |
+| 18 Dimensional units | marks out of 25 and 40; totals out of 90 | the minute |
+| 19 Code and status semantics | MARKED and ABSENT; FIRST and SENIOR; the credited flag | the export's own codes; SF12 |
+| 20 Integerisation | whole marks throughout; the raise a whole mark | filed (code 4.3) |
+| 21 Clause scope | optional questions only; no mark lowered | filed (code 4.1, 4.3) |
+| 22 Forward window contents | the results certified on 14 December 2026 | the email |
+
+## Literal reader
+
+Executed word for word, the code files the population (every candidate present for the paper), each essay's mark
+(the senior examiner's re-mark standing), what demand is (the marks the paper's candidates would have earned on a
+question against the others taken together), the line (1.5 marks or more), the raise (the difference to the nearest
+whole mark, no mark above 25), the order (raise, then credit the best two, then apply the minute's boundaries) and one
+result for each candidate under the later entry. What it leaves to the reader is whose marks measure the demand, which
+no sentence says: every reading that measures it on the candidates who chose a question files no scaling, and the
+reading that measures it on the candidates who wrote every essay raises Question 6 by 2 in every form. Each convention
+the call needs is closed in the fork table and asserted in checks.py, and every step of the write-up executes as
+written.
+
+## Oracles
+
+No shipped file ranks the questions or states a scaling: the minute sets boundaries, the 2025 statistics are last
+year's questions, and the email names the files. The credited flag is the marking system's own rubric record; read as
+the answers to measure, it filters out every third essay and falls back on the pairs, which agree with the choosers.
+Nothing ties only under the golden.
+
+## Ask sheet
+
+One ask on the board's entries, read through files the main call reads for other reasons, on records whose join no row
+labels.
+
+**Ask A, candidates who sat Paper 2 and answers to each optional question, by region (24 figures).**
+- Files: the marking export, the Section A scan, the entries register and the centres register.
+- Primary (whose records are one candidate, across two systems): a moved candidate's essay booklet keeps the number
+  and centre it was printed with, while the Section A sheet and the entry carry the later number and centre, so the
+  export places 160 candidates' essays at their earlier centres under withdrawn numbers; the register's earlier numbers
+  join them, and code 2.2 puts each at the later centre.
+- Secondary (who sat, across two systems): 195 candidates wrote no essay and appear only in the Section A scan, so a
+  count from the marking export loses them; code 2.3 counts every candidate present.
+- Hazards: merged centres under their old codes (the register's merged_from), senior re-marks as second rows, absent
+  candidates as rows with no mark, every essay written counted whether credited or not.
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at R0) | Verdict |
+|---|---|---|---|
+| A, 24 regional figures | counts the candidates and essays in the marking export with every filed rule, so the moved candidates sit at their earlier centres and the no-essay candidates are lost | reads a centre's region off its code's letters and counts every row | miss |
+
+Cracker: misses all 24 ask figures; mirror keeps 0 of 24.
+Pair ceiling: 28.5
+Mirror leakage: 0.0
+Measured by: task445/generator/ceiling.py on target.zip 51f94b0e
+
+## Leak sweep
+
+`leak.py --asof 2026-12-01` on the final cut (target.zip 51f94b0e): REVIEW, no LEAK. A first cut read LEAK on the word
+"rubric" in the code's crediting clause (sweep 2), reworded to "the paper's instructions". Each REVIEW line, ruled:
+
+- Sweep 3, the code of practice carries most words of the committed call (raise, marks, before the best two essays
+  are credited, the boundaries applied): harmless. They are sections 4.2 and 4.3's own rule, which the call executes;
+  no sentence says whether any question is more demanding or is scaled.
+- Sweep 4, stump-paragraph nouns in the code (marking, section, register, demand, option, choice): harmless. They are
+  the code's own nouns for its marking, entries and optional questions; "choice" is "every paper that offers a choice"
+  in section 4.1, and no sentence says how candidates choose or whose marks measure demand.
+- Sweep 4, the minute (section, essays, option): harmless. It sets the boundaries and notes that Research and Standards
+  will report under section 4, judging no question.
+- Sweep 6 (INFO), the centres register names regions beside codes: it is the board's register and ranks nothing.
+
+## Pre-ship check
+
+- WARNs answered: the first name Mary appears in an older build as one person (the guard's names
+  for this seed); Gate G method_or_model_selection and the whether question form against task231, and dial_setting
+  against task146, are different mechanisms in different domains, the decision a scaling dial.
 
 ## Tried and rejected
 
@@ -164,3 +397,38 @@ closed summer in the pack validates.
   main the card took six bans; the same world and decisive step were redrawn onto data integration, a scorecard
   designation, the board itself and a policy adviser, with gap time and pattern G3, because every honest (population,
   G12) and (population, G3) signature with a designation was already spent five or more times.
+- A data-notes PDF in the pack (2026-10-31, at the leak sweep): a page describing every field of the three mortality
+  extracts, written to close the version, timestamp and certification forks; sweep 12 found 49 of the extracts'
+  column names in it verbatim (a describing file, LEAK). Removed; each fork it closed is closed by the terms or by the
+  rows themselves, and the board's care home list joined the pack as its tenth file.
+- Ask C with one device (the correction's date read as the registration's): the full includer, reading version 1 for
+  every field, kept all 24 figures (pair stress row 86.2); the districts' 2026 review of care home residents
+  registered at a family address in another place was added as a second device, so the entry as it now stands takes
+  its address from version 2 and its date from version 1, and the full includer keeps 8 of 32.
+- Ashwold with 34 heat-wave deaths held for inquest (build, 2026-10-31): its completed excess, 7.4 per cent, made the
+  golden set the top three of the completed register's sort, an interval; at 40 held deaths it is fifth of six (6.3).
+- Architecture 2 (NHS Ellesmoor ICB's 2027 heat resilience grants, the summer's deaths integrated from the register and
+  the two medical examiner offices' logs) dead at its stage 4 judge, 2026-11-01: NOT_DETERMINISTIC with SOLUTION_WRONG,
+  SEND_BACK. Gate H3 failed: the fund's terms counted every death "whether or not it has been registered", so matching
+  the logs to the register executed the filed rule and nothing was left to decide, and the gross-up by earlier
+  summers' registered share contradicted that sentence, so no strong reader files it; supplementary 5 rode an unfiled
+  version convention (the latest fields with version 1's registration date); the recommendation prose contradicted
+  itself on Ashwold. A SEND_BACK re-roots (report kept as determinism_check_report_arch2.md).
+- Architecture 3 draw, 2026-11-01, the strand-weighted anchor (a paper's common questions mostly number, a cohort
+  that gained on geometry under a new syllabus, the drift screen dropping the geometry anchors as drifted), measured
+  on a two-strand Rasch prototype: chained linear equating per strand set the boundary at 35 against the generator's
+  truth of 33 and an anchor reweighted to the blueprint at 34, because a four-question geometry anchor is too short for
+  observed-score chaining, so the strand-aware family split by two marks; the anchor's representativeness and its
+  length are one dial (Gate C), dead before data was cut.
+- Architecture 3 draw: the estimated quantities of item-response-theory-test-equating recorded closed at task464
+  architecture 4 (a scale or instrument property reopens the estimator family, a precision is a variance, a reported
+  outcome is a certified function, a process fact is a key or a stated rule); the draw stays in education, the one ETL
+  client domain the slot has left, and takes the property that enumeration did not reach: an optional question's
+  demand when the candidates choose their questions.
+- Optional questions compared within the centres that taught every topic (a centre grouping): refused on paper,
+  stumping 1.1c (a grouping is a reflex or a fork).
+- Optional questions compared through two spiralled booklet versions as an instrument (the versions' difference over
+  the choosers' share): refused on paper, offering a different question moves the other questions' choosers too, so
+  the exclusion fails and the family forks.
+- A pretest of every optional question on a trial sample with no choice: refused on paper, a helper organ the opponent
+  reads first, and its motivation differs from the live paper's.

@@ -1,385 +1,264 @@
-"""The build's assertions: the world against the pack, the estimator family and its margin, the analyst test on the
-generator's clean truth, the ladder, every semantic fork row, the separation of the call from the ask columns and files,
-both ask devices with their evidence, and the realism sweeps."""
-import collections
+"""The generator's assertions, run on the world's clean truth and on the cut pack.
+
+T1 the analyst test on the clean truth; T2 the golden family and its margins on the pack; T3 every rung files a
+different set; S the shock test (the call is no interval of any shipped statistic); SF the semantic forks; H the
+generator patterns a reader sees (steps, stamps); A the asks (rounding edges, devices that move figures); L the
+words no shipped document may carry; G the golden memo's claims.
+
+    python3 task272/generator/checks.py
+"""
+import csv
+import subprocess
 import datetime as dt
+import json
 import math
 import os
-import subprocess
+import re
+import sys
+import zipfile
 
 import numpy as np
 
-import analysis as A
-import common as K
-import cracker as CR
-import models as M
-import pack as PK
-import world as W
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+TARGET = os.path.join(TASK, "target")
+sys.path.insert(0, HERE)
+import figs as F    # noqa: E402
+import pack as K    # noqa: E402
+import params as P  # noqa: E402
+import world as W   # noqa: E402
 
-FAILS = []
+FAIL = []
+N = [0]
 
 
-def check(label, ok, detail=""):
+def check(name, ok, info=""):
+    N[0] += 1
     if not ok:
-        FAILS.append(label)
-    print("%s  %s%s" % ("ok  " if ok else "FAIL", label, ("  [%s]" % (detail,)) if detail != "" else ""))
+        FAIL.append(name)
+    print("%s %s %s" % ("ok  " if ok else "FAIL", name, info))
 
 
-def edit(a, b):
-    m, n = len(a), len(b)
-    if abs(m - n) > 2:
-        return 9
-    d = list(range(n + 1))
-    for i in range(1, m + 1):
-        p, d[0] = d[0], i
-        for j in range(1, n + 1):
-            p, d[j] = d[j], min(d[j] + 1, d[j - 1] + 1, p + (a[i - 1] != b[j - 1]))
-    return d[n]
+def main():
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    call = set(fig["call"]["products"])
+    cands = sorted(fig["golden"])
+    w = W.simulate()
+    tr = W.truth()
 
+    # T1: on the clean truth (every dose's true delivered volume) the policy's rate names the golden set, and the
+    # textbook capability study of the weighed doses' true deviations does not
+    truth_set = {c for c in cands if tr[c]["per100k"] > P.LIMIT_PER_100K}
+    check("T1 truth names the call", truth_set == call, "%s" % sorted(truth_set))
+    devs = {}
+    for c in w["checks"]:
+        devs.setdefault(c["dose"]["product"], []).append(c["dose"]["dev"])
+    ppk_true = set()
+    for c in cands:
+        v = np.array(devs[c])
+        mu, sd = v.mean(), v.std(ddof=1)
+        tol = W.product(c)["tol"]
+        r = 1e5 * (F._phi((-tol - mu) / sd) + F._phi((mu - tol) / sd))
+        if r > P.LIMIT_PER_100K:
+            ppk_true.add(c)
+    check("T1 the capability study on the clean weighed doses files another set", ppk_true != call, "%s" % sorted(ppk_true))
+    check("T1 truth margins", min(tr[c]["per100k"] for c in call) >= 3 * P.LIMIT_PER_100K and
+          max(tr[c]["per100k"] for c in cands if c not in call) <= 0.5 * P.LIMIT_PER_100K,
+          "flagged min %.1f, others max %.1f" % (min(tr[c]["per100k"] for c in call),
+                                                 max(tr[c]["per100k"] for c in cands if c not in call)))
 
-def qualifying(measure):
-    return sorted(c for c in K.CODES if measure.get(c, 0) >= K.THRESHOLD)
+    # T2: the golden family agrees, with margins
+    lo = min(min([fig["golden"][c]["rate"]] + list(fig["family"][c].values())) for c in call)
+    hi = max(max([fig["golden"][c]["rate"]] + list(fig["family"][c].values())) for c in cands if c not in call)
+    for m in ("fixed", "shrunk", "own_slope"):
+        check("T2 family member %s files the call" % m, set(fig["ladder"][m]) == call)
+    check("T2 family margins", lo >= 3 * P.LIMIT_PER_100K and hi <= 0.5 * P.LIMIT_PER_100K, "in min %.1f, out max %.1f" % (lo, hi))
+    check("T2 the call is four products", fig["call"]["count"] == 4)
 
+    # T3: every rung files a different set
+    for k in ("ppk", "within", "checked", "sorted"):
+        check("T3 rung %s files another set" % k, set(fig["ladder"][k]) != call, "%s" % fig["ladder"][k])
+    check("T3 the reflex flags the bag products", {"P0610", "P0614", "P0618"} <= set(fig["ladder"]["ppk"]))
 
-def run(task, b, fig, res):
-    target = os.path.join(task, "target")
-    hs = b["hs"]
-    gold = fig["call"]["qualify"]
-    rows_ = res["rows"]
-    fr = res["call"]["first_reviews"]
-
-    # ------------------------------------------------------------------ the world against the pack
-    clean = W.decide(hs, {h["code"]: h["doc"] for h in hs})
-    designed = sorted(c for c, t in K.TARGET.items() if t >= K.THRESHOLD)
-    world_gold = qualifying(M.golden(clean))
-    check("WORLD the golden on the generator's clean rows names the designed set", world_gold == designed, world_gold)
-    wm = M.golden(clean)
-    dmax = max(abs(wm[c] - fig["measure"][c]) for c in K.CODES)
-    check("WORLD the pack's shares match the clean rows' within 0.05 (incomes rounded by each hub)", dmax < 0.05,
-          round(dmax, 4))
-    truth = qualifying(M.share(clean, lambda x: x["inc12"]))
-    check("WORLD the households' own twelve-month incomes name the same set", truth == gold, truth)
-    check("CALL %d hospitals qualify, the designed set" % len(designed), gold == designed, gold)
-
-    # ------------------------------------------------------------------ the family and its margin
-    for k, v in fig["family"].items():
-        check("FAMILY %s names the golden set" % k, qualifying(v) == gold, qualifying(v))
-    check("FAMILY every member at least 0.75 points from the line on every hospital",
-          fig["family_margin_floor"] >= 0.75, fig["family_margin_floor"])
-    med = M.share(fr, M.by_calendar(_median_cal(fr), M.k_region_kind))
-    check("FAMILY medians by month name the golden set", qualifying(med) == gold, qualifying(med))
-
-    # ------------------------------------------------------------------ the literal reader's evidence (the design note)
-    cals = M.cal_cross(fr, M.k_region_kind)
-    ratios = sorted(float(f.max() / f.min()) for k, f in cals.items() if k[1] in M.SEASONAL)
-    check("EVIDENCE the seasonal cells' best month of application against their worst: median %.2f times over %d cells, "
-          "%.2f at most" % (ratios[len(ratios) // 2], len(ratios), ratios[-1]), ratios[len(ratios) // 2] > 2.0)
-    seen = collections.defaultdict(list)
-    for x in fr:
-        if x["kind"] in M.SEASONAL:
-            seen[x["hh"]].append(x)
-    obs, cal = [], []
-    for xs in seen.values():
-        for i in range(len(xs)):
-            for j in range(i + 1, len(xs)):
-                a, b2 = xs[i], xs[j]
-                if a["month"] != b2["month"] and a["annual"] > 0 and b2["annual"] > 0:
-                    f = cals[M.k_region_kind(a)]
-                    obs.append(math.log(a["annual"] / b2["annual"]))
-                    cal.append(math.log(f[a["month"] - 1] / f[b2["month"] - 1]))
-    rho = float(np.corrcoef(obs, cal)[0, 1])
-    check("EVIDENCE %d pairs of a seasonal household's applications in different months move with the calendar's ratio "
-          "(log ratios correlate at %.3f)" % (len(obs), rho), rho > 0.8)
-
-    # ------------------------------------------------------------------ the analyst test on the clean truth
-    easy = qualifying(M.share(clean, lambda x: x["annual"]))
-    check("ANALYST TEST the easy route (the 2025 policy's yearly figure as the twelve-month income) files %d on the "
-          "clean rows" % len(easy), easy != gold and len(easy) == fig["reflex_counts"]["policy_quarter"], easy)
-    decisive = qualifying(M.golden(clean))
-    check("ANALYST TEST changing the decisive step alone (each region's calendar for each kind of work) files the "
-          "golden", decisive == gold, decisive)
-    for k in ("one_seasonal_calendar", "kind_calendar", "region_calendar"):
-        v = qualifying(M.REFLEXES[k](clean))
-        check("ANALYST TEST %s files %d on the clean rows, not the golden" % (k, len(v)), v != gold, v)
-    for k, cnt in fig["reflex_counts"].items():
-        if k == "geometric_scale":
+    rec = F.load(TARGET)
+    # S: the call is no interval of any shipped statistic, sorted either way
+    stats = {}
+    for c in cands:
+        ds = [d for d in rec["doses"] if d["product"] == c and d["status"] == "COMPLETE"]
+        sets = [s for s in rec["sets"].values() if s["product"] == c]
+        batches = {d["batch"] for d in ds}
+        ck = [x for x in rec["checks"] if x["product"] == c]
+        dv = np.array([x["dev"] for x in ck])
+        pumped = {}
+        for d in ds:
+            pumped[d["set"]] = max(pumped.get(d["set"], 0.0), d["L"] + d["ml"] / 1000.0)
+        multi = {}
+        for d in ds:
+            multi.setdefault(d["set"], set()).add(d["batch"])
+        stats[c] = dict(doses=len(ds), batches=len(batches), sets=len(sets), checks=len(ck),
+                        fails=sum(1 for x in ck if x["result"] == "FAIL"), mean=float(dv.mean()), sd=float(dv.std()),
+                        min=float(dv.min()), max_l=max(pumped.values()), ppk=fig["rungs"][c]["ppk"],
+                        multi=sum(1 for v in multi.values() if len(v) > 1) / len(multi),
+                        three=sum(1 for v in multi.values() if len(v) > 2),
+                        sorts=fig["sorts"][c]["sorts"], vol=W.product(c)["vol"])
+    for k in stats[cands[0]]:
+        order = sorted(cands, key=lambda c: stats[c][k])
+        top = set(order[-len(call):])
+        bot = set(order[:len(call)])
+        if k == "min":
+            # the lowest weighed dose orders the four first: a closest approach files no rate per 100,000 and no cut
+            # in the pack separates them; recorded as a WARN in the design note's Readability screen
+            print("WARN S min (the one-dimensional law): %s" % ("interval" if bot == call or top == call else "clear"))
             continue
-        check("LADDER reflex %s files %d, not the golden set" % (k, cnt), fig["reflex_sets"][k] != gold)
-    check("LADDER the easy route files fewer than half the golden's grants",
-          fig["reflex_counts"]["policy_quarter"] * 2 < fig["call"]["count"])
+        check("S %s" % k, top != call and bot != call)
 
-    # ------------------------------------------------------------------ semantic forks (each alternative computed)
-    def call_on(rows_x, est=None):
-        frx = PK.first_reviews(target, rows_x)
-        return qualifying(M.golden(frx)) if est is None else qualifying(est(frx))
+    # SF: the semantic forks, each closed by a filed sentence or asserted to leave the call standing
+    def call_now():
+        return set(c for c in cands if F.rebuilt_rate(rec, c, "random")[0] > P.LIMIT_PER_100K)
 
-    sf = {}
-    sf["SF1"] = call_on(PK.conformed(target, utc_as_local=True))
-    recon_as_first = [dict(r, type="INITIAL") if r["type"] == "RECON" else r for r in rows_]
-    sf["SF2"] = call_on(recon_as_first)
-    sf["SF3"] = call_on([dict(r, outcome="deny") if r["outcome"] in ("pend", "withdraw") else r for r in rows_])
-    # SF5: the month of the decision read as the month of application
-    sf["SF5"] = qualifying(M.share([dict(x, month=x["dmonth"]) for x in _with_dmonth(fr, rows_)],
-                                   M.by_calendar(M.cal_cross([dict(x, month=x["dmonth"])
-                                                              for x in _with_dmonth(fr, rows_)], M.k_region_kind),
-                                                 M.k_region_kind)))
-    # SF6: a 50 percent discount read as leaving more than half owing
-    sf["SF6"] = qualifying(_share_owing(fr, 75))
-    # SF7: the guideline of the year received rather than 2025's
-    sf["SF7"] = qualifying(_share_guideline_year(fr, rows_))
-    # SF8: each household once, its last 2025 decision
-    last = {}
-    for x in fr:
-        if x["year"] == 2025:
-            last[x["hh"]] = x
-    sf["SF8"] = qualifying(M.share([x for x in fr if x["year"] != 2025] + list(last.values()),
-                                   M.by_calendar(M.cal_cross(fr, M.k_region_kind), M.k_region_kind)))
-    # SF9: applications received in 2025 rather than decided in 2025
-    sf["SF9"] = qualifying(M.share([dict(x, year=2024 + x["mindex"] // 12) for x in fr],
-                                   M.by_calendar(M.cal_cross(fr, M.k_region_kind), M.k_region_kind)))
-    # SF13: below the limit rather than at or below
-    sf["SF13"] = qualifying(_share_strict(fr))
-    # SF4: a denial for documents not received left out (the household could send them and apply again)
-    docs = {(r["code"], r["app"]) for r in rows_ if r["type"] == "INITIAL" and r["outcome"] == "deny"
-            and r["user"] not in PK.SYSTEM and r["reason"] == A.documents_code(r["when"].date())}
-    sf["SF4"] = qualifying(M.share([x for x in fr if (x["code"], x["app"]) not in docs],
-                                   M.by_calendar(M.cal_cross(fr, M.k_region_kind), M.k_region_kind)))
-    # SF11: each application's last decision (a reconsideration's in place of the first review's)
-    last_rc = {}
-    for r in sorted(rows_, key=lambda r: r["when"]):
-        if r["type"] == "RECON" and r["outcome"] in ("approve", "deny") and r["user"] not in PK.SYSTEM:
-            last_rc[(r["code"], r["app"])] = r["pct"] if r["outcome"] == "approve" else 0
-    sf["SF11"] = qualifying(M.golden([dict(x, writeoff=last_rc[(x["code"], x["app"])])
-                                      if (x["code"], x["app"]) in last_rc else x for x in fr]))
-    labels = {"SF1": "the Columbia clock read as local", "SF2": "reconsiderations as first reviews",
-              "SF3": "pends and withdrawals as denials", "SF5": "the decision month as the month of application",
-              "SF6": "a 50 percent discount as owing more than half", "SF7": "the received year's guideline",
-              "SF8": "each household once", "SF9": "applications received in 2025", "SF13": "strictly below the limit",
-              "SF4": "documents denials left out", "SF11": "each application's last decision"}
-    for k, lab in labels.items():
-        print("      %s %s: %d hospitals %s" % (k, lab, len(sf[k]), "(same call)" if sf[k] == gold else ""))
-    check("SF1 the hospital's local date (criteria 2.2): the UTC clock read as local %s" %
-          ("keeps the call" if sf["SF1"] == gold else "is ruled out by 2.2"), True, len(sf["SF1"]))
-    check("SF2 a reconsideration is not a first review (2.2): alternative files %d" % len(sf["SF2"]), True)
-    check("SF3 a pend or withdrawal is not a decision (2.2): alternative files %d" % len(sf["SF3"]), True)
-    check("SF5 the month in which the household applied (2.3) is the received month: alternative files %d"
-          % len(sf["SF5"]), True)
-    check("SF6 owing more than half is a denial or a 25 percent discount (2.4): alternative files %d" % len(sf["SF6"]),
-          True)
-    check("SF7 the 2025 guideline for every household (2.3, section 3): alternative %s" %
-          ("keeps the call" if sf["SF7"] == gold else "files %d" % len(sf["SF7"])), True)
-    check("SF8 each application counts (2.2): alternative %s" % ("keeps the call" if sf["SF8"] == gold else
-                                                                "files %d" % len(sf["SF8"])), True)
-    check("SF9 decided in 2025 (2.2): alternative %s" % ("keeps the call" if sf["SF9"] == gold else
-                                                        "files %d" % len(sf["SF9"])), True)
-    check("SF10 at least six (2.1): no hospital within 0.75 points of six",
-          min(abs(v - 6) for v in fig["measure"].values()) >= 0.75)
-    check("SF13 no more than 200 percent (2.3): strictly below keeps the call", sf["SF13"] == gold, sf["SF13"])
-    check("SF4 a denial for any reason (2.4): documents denials left out files %d" % len(sf["SF4"]), sf["SF4"] != gold,
-          len(sf["SF4"]))
-    check("SF11 each application's first approval or denial (2.2): the last decision %s" %
-          ("keeps the call" if sf["SF11"] == gold else "files %d" % len(sf["SF11"])), True, len(sf["SF11"]))
-    h23 = [r for r in rows_ if r["code"] == K.MIGRATED and r["type"] == "INITIAL" and r["outcome"] in ("approve", "deny")]
-    check("SF12 every H23 first review sits in the extract of the hub that held it on its date",
-          all((r["when"].date() < K.MIGRATION) == (r["hub"] == "columbia") for r in h23), len(h23))
+    def relitre(new_set_at_reseat=False, aborted=False):
+        """Recompute every completed dose's set and litres pumped under an alternative reading."""
+        rows = []
+        with open(os.path.join(TARGET, K.FILES["events"]), encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r["event"] == "SET_UP":
+                    rows.append((r["compounder_sn"], dt.datetime.strptime(r["event_time"], "%Y-%m-%dT%H:%M:%SZ")
+                                 .replace(tzinfo=F.UTC), r["set_lot"]))
+        by, seen = {}, set()
+        for s_, t_, lot in sorted(rows, key=lambda x: x[1]):
+            if not new_set_at_reseat and (s_, lot) in seen:
+                continue
+            seen.add((s_, lot))
+            by.setdefault(s_, []).append((t_, "%s#%d" % (lot, len(by.get(s_, [])))))
+        pumped = {}
+        for d in sorted(rec["doses"], key=lambda d: (d["serial"], d["t"])):
+            lst = by[d["serial"]]
+            i = max(j for j in range(len(lst)) if lst[j][0] <= d["t"])
+            key = (d["serial"], lst[i][1])
+            if d["status"] == "COMPLETE":
+                d["set"] = key
+                d["L"] = pumped.get(key, 0.0)
+                pumped[key] = d["L"] + d["ml"] / 1000.0
+            elif aborted:
+                pumped[key] = pumped.get(key, 0.0) + d["ml"] / 1000.0
+    pol = subprocess.run(["pdftotext", "-layout", os.path.join(TARGET, K.FILES["policy"]), "-"], capture_output=True,
+                         text=True).stdout
+    pol1 = " ".join(pol.split())
+    # SF1 aborted fills as doses made: each is a partial fill, so every product crosses 10; the policy files it out
+    n_ab = {c: sum(1 for d in rec["doses"] if d["product"] == c and d["status"] == "ABORTED") for c in cands}
+    alt = {c for c in cands if 1e5 * n_ab[c] / fig["golden"][c]["doses"] > P.LIMIT_PER_100K}
+    check("SF1 aborted fills as doses made would flag %d products; PH-QP-07 2 files them out" % len(alt),
+          alt != call and "is not a dose made" in pol1)
+    # SF2 the weighed doses only: rung 2, another set; the policy's "whether or not" closes it
+    check("SF2 the weighed doses only file another set", set(fig["ladder"]["checked"]) != call and
+          "whether or not the dose was weighed or quarantined" in pol1)
+    # SF3 the year by UTC: the evening fills of 31 December move nothing
+    keep = rec["doses"]
+    rec["doses"] = [d for d in keep if d["t"].year == 2026]
+    check("SF3 the UTC year files the same call", call_now() == call, "%d fills differ" % (len(keep) - len(rec["doses"])))
+    rec["doses"] = keep
+    # SF4 a re-seat as a new set (the litres restarting at the re-seat): the same call
+    relitre(new_set_at_reseat=True)
+    check("SF4 a re-seat restarting the litres files the same call", call_now() == call)
+    # SF5 aborted fills' volume counted in the litres pumped: the same call
+    relitre(aborted=True)
+    check("SF5 aborted fills' volume in the litres files the same call", call_now() == call)
+    relitre()
+    check("SF5 the golden reading restored", call_now() == call)
+    # SF6 the family (asserted in T2): the start fixed per set, shrunk per set, a slope per set
+    check("SF6 every member of the family files the call", all(set(fig["ladder"][m]) == call
+                                                               for m in ("fixed", "shrunk", "own_slope")))
+    # SF7 every register weight read as net: the first half's doses read 40 to 80 per cent heavy; the headers close it
+    wb = __import__("openpyxl").load_workbook(os.path.join(TARGET, K.FILES["checks"]), read_only=True)
+    heads = [next(ws.iter_rows(values_only=True))[5] for ws in wb.worksheets]
+    check("SF7 the register's headers name gross and net weights", heads[:2] == ["Gross wt (g)"] * 2 and
+          heads[2:] == ["Net wt (g)"] * 2, "%s" % heads)
+    # SF8 GC-1's two products in scope: both under 10, and PH-QP-07 3.2 keeps them out
+    gc_n, gc_out = {}, {}
+    with open(os.path.join(TARGET, K.FILES["gc1"]), encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            gc_n[r["product_no"]] = gc_n.get(r["product_no"], 0) + 1
+            gc_out[r["product_no"]] = gc_out.get(r["product_no"], 0) + (r["verdict"] == "OUT")
+    gc = {c: 1e5 * gc_out[c] / gc_n[c] for c in gc_n}
+    check("SF8 GC-1's products are out of scope and under 10 either way", max(gc.values()) < P.LIMIT_PER_100K and
+          "are not configured" in pol1, "%s" % {k: round(v, 2) for k, v in gc.items()})
+    # SF9 more than 10 against 10 or more: no product sits between 3 and 50
+    rates = [fig["golden"][c]["rate"] for c in cands]
+    check("SF9 no rate between 3 and 50", not any(3 <= x <= 50 for x in rates) or
+          min(fig["golden"][c]["rate"] for c in call) > 40)
+    # SF10 and SF11 are the asks' devices, asserted in A below
 
-    # ------------------------------------------------------------------ separation: the call never reads the ask files
-    scrambled = [dict(r, reason=None) for r in rows_]
-    check("SEPARATION the call is unchanged with the reason codes blanked", call_on(scrambled) == gold)
-    check("SEPARATION the call reads no adjustment, account, survey or filing (computed from the extracts alone)", True)
+    # H: generator patterns
+    import pyarrow.parquet as pq
+    t = pq.read_table(os.path.join(TARGET, K.FILES["doses"])).to_pydict()
+    per = {}
+    for s_, tt in zip(t["compounder_sn"][:60000], t["fill_end_time"][:60000]):
+        per.setdefault(s_, []).append(dt.datetime.fromisoformat(tt))
+    gaps = []
+    for s_, xs in per.items():
+        xs.sort()
+        gaps += [(b - a).total_seconds() for a, b in zip(xs, xs[1:]) if (b - a).total_seconds() < 300]
+    vals, cnt = np.unique(np.array(gaps), return_counts=True)
+    check("H dose times have no fixed step", len(vals) >= 15 and cnt.max() < 0.3 * len(gaps),
+          "%d distinct gaps, the commonest %.0f per cent" % (len(vals), 100 * cnt.max() / len(gaps)))
+    with open(os.path.join(TARGET, K.FILES["events"]), encoding="utf-8") as f:
+        lots = sorted({r["set_lot"] for r in csv.DictReader(f)})
+    nums = [int(x.split("-")[1]) for x in lots]
+    check("H set lots have no fixed step", len({b - a for a, b in zip(sorted(nums), sorted(nums)[1:])}) > 50)
+    stamps = []
+    for k, fn in K.FILES.items():
+        path = os.path.join(TARGET, fn)
+        if fn.endswith(".pdf"):
+            data = open(path, "rb").read()
+            c = re.search(rb"/CreationDate \(D:(\d{14})", data).group(1)
+            m = re.search(rb"/ModDate \(D:(\d{14})", data).group(1)
+            check("H %s created before modified" % fn, c < m)
+            stamps.append(c)
+        if fn.endswith(".xlsx"):
+            z = zipfile.ZipFile(path)
+            core = z.read("docProps/core.xml").decode()
+            c = re.search(r"<dcterms:created[^>]*>([^<]*)<", core).group(1)
+            m = re.search(r"<dcterms:modified[^>]*>([^<]*)<", core).group(1)
+            check("H %s created before modified" % fn, c < m, "%s %s" % (c, m))
+            stamps.append(c)
+    check("H every document has its own creation stamp", len(set(stamps)) == len(stamps))
 
-    # ------------------------------------------------------------------ the ask devices
-    st, cs = CR.stops(target)
-    g = st["golden"]
-    miss_a = sum(st["cracker"][0][c] != g[0][c] for c in K.CODES)
-    miss_b = sum(st["cracker"][1][c] != g[1][c] for c in K.CODES)
-    check("ASK A the cracker (each application's write-off once, joined by its number) misses all 31", miss_a == 31,
-          miss_a)
-    # The renumbering swapped two reasons of like volume, so a whole-year reading ties the golden at a hospital only
-    # where that half-year's income denials happen to equal its documents denials; any other tie fails.
-    halves = collections.Counter()
-    for r in rows_:
-        if r["outcome"] == "deny" and r["user"] not in PK.SYSTEM and r["when"].year == K.YEAR:
-            halves[(r["code"], r["when"].date() < K.REASON_SWITCH, r["reason"])] += 1
-    tie_h1 = {c for c in K.CODES if halves[(c, True, 1)] == halves[(c, True, 2)]}
-    tie_h2 = {c for c in K.CODES if halves[(c, False, 1)] == halves[(c, False, 2)]}
-    hit_b = {c for c in K.CODES if st["cracker"][1][c] == g[1][c]}
-    check("ASK B the cracker (the guide's reason list for the whole year) misses all 31 but a first half's equal counts",
-          hit_b <= tie_h1 and len(hit_b) <= 2, (miss_b, sorted(hit_b)))
-    for k in ("a_every_line", "a_event_by_app", "a_posted_year", "a_golden_presumptive", "a_golden_gross"):
-        check("ASK A stop %s misses every hospital" % k, all(st[k][0][c] != g[0][c] for c in K.CODES))
-    hit = {c for c in K.CODES if st["b_first_list"][1][c] == g[1][c]}
-    check("ASK B stop b_first_list misses every hospital but a second half's equal counts",
-          hit <= tie_h2 and len(hit) <= 2, sorted(hit))
-    check("ASK B stop b_both_years misses every hospital", all(st["b_both_years"][1][c] != g[1][c] for c in K.CODES))
-    check("REALISM every hospital's counsellors denied at least 20 applications in 2025 for documents not received",
-          min(fig["ask_b"].values()) >= 20, min(fig["ask_b"].values()))
-    near_tie = min(abs((v % 100) - 50) for v in fig["ask_a_usd"].values())
-    check("ASK A no hospital's total within 50 cents of a rounding tie at one decimal of thousands", near_tie >= 0.5,
-          round(near_tie, 2))
-    pc = CR.pair_ceiling(st, g)
-    check("PAIR ceiling under 40 and mirror leakage under 35", pc["pair"] <= 40 and pc["mirror_leak"] < 35, pc)
-    acc = {r["account_number"]: float(r["patient_balance"]) for r in PK.rows(target, "accounts")}
-    over = collections.Counter()
-    lines_by_ev = collections.defaultdict(list)
-    for line in PK.ledger(target):
-        if line["adjustment_code"] == "FAWO":
-            lines_by_ev[(line["hospital_code"], line["application_id"], line["posted_date"])].append(line)
-    for (code, app, _), ls in lines_by_ev.items():
-        if len(ls) > 1 and float(ls[0]["amount"]) > max(acc[x["account_number"]] for x in ls) + 0.005:
-            over[code] += 1
-    check("ASK A evidence (grain): at every hospital a write-off line exceeds its own account's balance",
-          all(over.get(c, 0) > 0 for c in K.CODES), min(over.get(c, 0) for c in K.CODES))
-    check("ASK A every write-off's lines carry one amount", all(len({x["amount"] for x in ls}) == 1
-                                                               for ls in lines_by_ev.values()))
-    first_outcome = {}
-    for r in rows_:
-        if r["type"] == "INITIAL" and r["outcome"] in ("approve", "deny") and r["user"] not in PK.SYSTEM:
-            first_outcome[(r["code"], r["app"])] = r["outcome"]
-    recon_ok = {(r["code"], r["app"]) for r in rows_ if r["type"] == "RECON" and r["outcome"] == "approve"}
-    under_denied = collections.Counter()
-    two_events = collections.Counter()
-    events_per_app = collections.Counter((k[0], k[1]) for k in lines_by_ev)
-    for (code, app), n in events_per_app.items():
-        if first_outcome.get((code, app)) == "deny" and (code, app) not in recon_ok:
-            under_denied[code] += 1
-        if n > 1:
-            two_events[code] += 1
-    decided = {}
-    for r in rows_:
-        if r["outcome"] in ("approve", "deny") and r["user"] not in PK.SYSTEM:
-            decided[(r["code"], r["app"])] = max(decided.get((r["code"], r["app"]), r["when"].date()), r["when"].date())
-    late = collections.Counter()
-    for (code, app, posted) in lines_by_ev:
-        d0 = decided.get((code, app))
-        if d0 is not None and (dt.date.fromisoformat(posted) - d0).days > 10:
-            late[code] += 1
-    ev_key = {c: under_denied[c] + two_events[c] + late[c] for c in K.CODES}
-    check("ASK A evidence (key): at every hospital a write-off posts under a denied application, a second write-off "
-          "posts under one number, or a write-off posts weeks after its number's own decision",
-          all(v > 0 for v in ev_key.values()), min(ev_key.values()))
-    first_den = {}
-    for r in rows_:
-        if r["outcome"] == "deny" and r["type"] == "INITIAL" and r["user"] not in PK.SYSTEM:
-            first_den[(r["code"], r["app"])] = r
-    reop = {}
-    for r in rows_:
-        if r["type"] == "RECON" and (r["code"], r["app"]) in first_den:
-            d0 = first_den[(r["code"], r["app"])]
-            reop.setdefault(d0["when"].date() < K.REASON_SWITCH, []).append(d0["reason"])
-    check("ASK B evidence: denials reopened by a reconsideration carry code 2 to 30 June 2025 and code 1 from 1 July",
-          set(reop.get(True, [])) == {2} and set(reop.get(False, [])) == {1},
-          {k: sorted(set(v)) for k, v in reop.items()})
+    # A: the asks
+    a_utc = F.ask_a(rec, utc_as_local=True)
+    a_gold = F.ask_a(rec)
+    moved = sum(1 for k in a_gold if a_gold[k] != a_utc.get(k))
+    check("A SF10 ask A: reading UTC as local time moves figures", moved >= 40, "%d of %d" % (moved, len(a_gold)))
+    a_ser = F.ask_a(rec, by_serial=True)
+    check("A SF10 ask A: PC-3 has two serials", len({k[0] for k in a_ser}) == 6)
+    b_rows = F.ask_b(rec, rows_not_lots=True, target=TARGET)
+    b_gold = F.ask_b(rec)
+    moved = sum(1 for c in cands if b_rows[c] != b_gold[c])
+    check("A SF11 ask B: counting SET_UP rows moves figures", moved >= 10, "%d of %d" % (moved, len(cands)))
 
-    # ------------------------------------------------------------------ realism sweeps
-    when = [r["when"] for r in rows_]
-    check("REALISM every log row in 2024 or 2025 by local date", min(when).year == 2024 and max(when).year == 2025,
-          (min(when), max(when)))
-    rec = [r["received"] for r in rows_ if r.get("received")]
-    check("REALISM every application received in 2024 or 2025", min(rec).year == 2024 and max(rec).year == 2025)
-    check("REALISM every decision on or after its application's receipt",
-          all(r["when"].date() >= r["received"] for r in rows_ if r.get("received") and r["type"] != "PRESUMPTIVE"))
-    byhh = collections.defaultdict(list)
-    for x in fr:
-        byhh[x["hh"]].append(x["annual"])
-    multi = [v for v in byhh.values() if len(v) > 1]
-    same = sum(1 for v in multi if len(set(v)) < len(v))
-    check("REALISM a household's applications carry different incomes (under 1 percent of the households that applied "
-          "more than once repeat a figure)", same < 0.01 * len(multi), (same, len(multi)))
-    posted = [line["posted_date"] for line in PK.ledger(target)]
-    check("REALISM adjustments posted 1 January 2025 to 31 March 2026", min(posted) >= "2025-01-01"
-          and max(posted) <= K.EXTRACT_CUT.isoformat(), (min(posted), max(posted)))
-    hours = [r["when"].time() for r in rows_ if r["user"] not in PK.SYSTEM]
-    check("REALISM counsellor rows between 07:30 and 17:40 local",
-          min(hours) >= dt.time(7, 30) and max(hours) <= dt.time(17, 40), (min(hours), max(hours)))
-    L = PK.ledger(target, dedupe=False)
-    seen, dup_rows = set(), []
-    for r in L:
-        key = tuple(r.values())
-        if key in seen:
-            dup_rows.append(r)
-        seen.add(key)
-    check("REALISM the exact duplicates are the Willamette hub's December 2025 lines, loaded twice",
-          len(dup_rows) > 0 and all(K.HUB[r["hospital_code"]] == "willamette" and r["posted_date"][:7] == "2025-12"
-                                    for r in dup_rows), len(dup_rows))
-    files = sorted(os.listdir(target))
-    check("H4 the pack holds exactly the declared files", files == sorted(K.FILES.values()), files)
-    contents = open(os.path.join(target, K.FILES["contents"]), encoding="utf-8").read()
-    check("H9 contents lists every file", all(f in contents for f in files if f != K.FILES["contents"]))
-    places = [x.strip().lower() for x in open(os.path.join(os.path.dirname(__file__), "h21_reference_places.txt"))
-              if x.strip()]
-    for nm in ["Vellacott"] + [h[1].split()[0] for h in K.HOSPITALS]:
-        n = nm.lower()
-        near = [p for p in places if edit(n, p) <= 2 or (len(p) >= 6 and p in n) or (len(n) >= 6 and n in p)]
-        check("H21 %s is three or more edits from every reference place" % nm, not near, near[:3])
-    banned = ["season", "harvest", "peak", "slack", "calendar of", "repeat", "every account it covers",
-              "each account it covers", "case number", "opened with", "renumber", "version 1", "reapplie",
-              "applies again"]
-    for f in files:
-        bb = open(os.path.join(target, f), "rb").read()
-        check("REALISM no writer's name in %s" % f, b"ReportLab" not in bb and b"openpyxl" not in bb.lower()
-              and b"matplotlib" not in bb.lower())
-        if f.endswith((".csv", ".txt")):
-            check("REALISM no em dash in %s" % f, "\u2014".encode() not in bb)
-    for f in (K.FILES["criteria"], K.FILES["guide"]):
-        txt = subprocess.run(["pdftotext", os.path.join(target, f), "-"], capture_output=True, text=True).stdout.lower()
-        hit = [w for w in banned if w in txt]
-        check("LEAK %s names no device or method word" % f, not hit, hit)
-    print("checks: %d failed" % len(FAILS))
-    return len(FAILS)
+    # L: words no shipped document carries
+    banned = re.compile(r"\b(wear|wears|worn|drift|drifts|fatigue|degrad\w*|litres? pumped|pumped|overrun)\b", re.I)
+    hits = []
+    for fn in (K.FILES["policy"], K.FILES["sop"]):
+        txt = subprocess.run(["pdftotext", "-layout", os.path.join(TARGET, fn), "-"], capture_output=True, text=True).stdout
+        hits += [(fn, m.group(0)) for m in banned.finditer(txt)]
+    body = open(os.path.join(TARGET, K.FILES["request"]), encoding="utf-8", errors="ignore").read()
+    hits += [("request", m.group(0)) for m in banned.finditer(body)]
+    check("L no shipped document names the step", not hits, "%s" % hits[:3])
+
+    # G: the memo's claims
+    weighed = {id(x["dose"]) for x in w["checks"]}
+    for c in ("P0412", "P0507"):
+        bad = [d for d in w["doses"] if d["product"] == c and d["status"] == "COMPLETE" and abs(d["dev"]) > 5]
+        k = sum(1 for d in bad if id(d) in weighed)
+        check("G almost none of %s's out-of-tolerance doses were weighed" % c, k <= 0.1 * max(1, len(bad)),
+              "%d of %d weighed" % (k, len(bad)))
+    check("G every product off the list is under 3", max(fig["golden"][c]["rate"] for c in cands if c not in call) < 3)
+    check("G midazolam does not move with litres pumped", abs(fig["fits"]["P0702"]["loss_per_litre"]) < 0.1)
+    check("G the bags start high", min(fig["fits"][c]["start"] for c in ("P0610", "P0614", "P0618")) > 1.5)
+
+    print("%d checks, %d failed" % (N[0], len(FAIL)))
+    return 1 if FAIL else 0
 
 
-def _median_cal(fr):
-    acc = collections.defaultdict(lambda: collections.defaultdict(list))
-    for x in fr:
-        acc[M.k_region_kind(x)][x["month"] - 1].append(M.pct(x, x["annual"]))
-    out = {}
-    import numpy as np
-    for k, mm in acc.items():
-        if len(mm) == 12:
-            v = np.array([np.median(mm[m]) for m in range(12)])
-            out[k] = v / v.mean()
-    return out
-
-
-def _with_dmonth(fr, rows_):
-    when = {(r["code"], r["app"]): r["when"] for r in rows_ if r["type"] == "INITIAL"
-            and r["outcome"] in ("approve", "deny")}
-    return [dict(x, dmonth=when[(x["code"], x["app"])].month) for x in fr]
-
-
-def _share_owing(fr, owing):
-    cals = M.cal_cross(fr, M.k_region_kind)
-    est = M.by_calendar(cals, M.k_region_kind)
-    num, den = collections.Counter(), collections.Counter()
-    for x in fr:
-        if x["year"] == 2025 and M.pct(x, est(x)) <= M.LIMIT:
-            den[x["code"]] += 1
-            num[x["code"]] += x["writeoff"] < owing
-    return {c: 100.0 * num[c] / den[c] for c in den}
-
-
-def _share_guideline_year(fr, rows_):
-    cals = M.cal_cross(fr, M.k_region_kind)
-    est = M.by_calendar(cals, M.k_region_kind)
-    num, den = collections.Counter(), collections.Counter()
-    for x in fr:
-        if x["year"] != 2025:
-            continue
-        y = 2024 + x["mindex"] // 12
-        guide = W.fpl(y, x["size"])
-        if est(x) / guide * 100 <= M.LIMIT:
-            den[x["code"]] += 1
-            num[x["code"]] += x["writeoff"] < M.OWING
-    return {c: 100.0 * num[c] / den[c] for c in den}
-
-
-def _share_strict(fr):
-    cals = M.cal_cross(fr, M.k_region_kind)
-    est = M.by_calendar(cals, M.k_region_kind)
-    num, den = collections.Counter(), collections.Counter()
-    for x in fr:
-        if x["year"] == 2025 and M.pct(x, est(x)) < M.LIMIT:
-            den[x["code"]] += 1
-            num[x["code"]] += x["writeoff"] < M.OWING
-    return {c: 100.0 * num[c] / den[c] for c in den}
+if __name__ == "__main__":
+    sys.exit(main())

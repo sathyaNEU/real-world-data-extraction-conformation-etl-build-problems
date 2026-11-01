@@ -1,396 +1,174 @@
-"""The pack's documents: the board's technical notes and its release of 8 October 2026 (PDF), the program statistics
-workbook, Employer Services' notice register and the Statistics Office's concordance (xlsx), and the online job
-advertisements index (JSON). The technical notes' text is kept here as data so that checks.py can quote it."""
-from __future__ import annotations
+"""task146 architecture 3: the VELA-2 SAP, the clinical development plan's section 7 and the request email."""
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-import datetime as dt
-import json
+import postprocess as PP
 
-from reportlab import rl_config
-
-rl_config.invariant = 1
-from reportlab.lib import colors                                                      # noqa: E402
-from reportlab.lib.pagesizes import A4                                                # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                       # noqa: E402
-from reportlab.lib.units import cm                                                    # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                              # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
-
-import common as K   # noqa: E402
-import notices as N  # noqa: E402
-import records as R  # noqa: E402
-
-FONT_DIR = "/usr/share/fonts/truetype/"
-for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
-               ("Carlito-Italic", "crosextra/Carlito-Italic.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-SANS, SANS_B, SANS_I = "Carlito", "Carlito-Bold", "Carlito-Italic"
-INK = colors.HexColor("#1b2430")
-GREY = colors.HexColor("#5b6573")
-RULE = colors.HexColor("#9aa3ad")
-PALE = colors.HexColor("#e6ecef")
-BOARD = colors.HexColor("#0f4c5c")
-
-BODY = ParagraphStyle("body", fontName=SANS, fontSize=10.0, leading=13.4, textColor=INK, spaceAfter=5)
-H1 = ParagraphStyle("h1", fontName=SANS_B, fontSize=16.0, leading=20, textColor=BOARD, spaceAfter=2)
-H1S = ParagraphStyle("h1s", fontName=SANS, fontSize=9.4, leading=12.2, textColor=GREY, spaceAfter=10)
-H2 = ParagraphStyle("h2", fontName=SANS_B, fontSize=11.6, leading=14.5, textColor=BOARD, spaceBefore=8, spaceAfter=3)
-H3 = ParagraphStyle("h3", fontName=SANS_B, fontSize=10.0, leading=13.0, textColor=INK, spaceBefore=4, spaceAfter=2)
-CELL = ParagraphStyle("cell", fontName=SANS, fontSize=9.0, leading=11.0, textColor=INK)
-CELLR = ParagraphStyle("cellr", parent=CELL, alignment=2)
-CELLB = ParagraphStyle("cellb", fontName=SANS_B, fontSize=9.0, leading=11.0, textColor=INK)
-CELLBR = ParagraphStyle("cellbr", parent=CELLB, alignment=2)
-SMALL = ParagraphStyle("small", fontName=SANS, fontSize=8.4, leading=10.8, textColor=GREY, spaceBefore=3)
+ORG = "Hvidore Biologics A/S"
+DOMAIN = "hvidorebio.dk"
 
 
-def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=A4, leftMargin=2.2 * cm, rightMargin=2.2 * cm, topMargin=1.9 * cm,
-                             bottomMargin=2.0 * cm, title=title, author=author, subject="", creator="", producer="")
+def _styles():
+    ss = getSampleStyleSheet()
+    body = ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=9.4, leading=13.2, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+                        spaceBefore=7, spaceAfter=3, keepWithNext=1)
+    small = ParagraphStyle("s", parent=body, fontSize=8, leading=10.5, textColor=colors.HexColor("#444444"))
+    cell = ParagraphStyle("c", fontName="Helvetica", fontSize=8.2, leading=10.2)
+    return body, h1, h2, small, cell
 
 
-def _footer(left, right):
-    def draw(canvas, doc):
-        canvas.saveState()
-        canvas.setFont(SANS, 7.8)
-        canvas.setFillColor(GREY)
-        canvas.drawString(2.2 * cm, 1.2 * cm, left)
-        canvas.drawRightString(A4[0] - 2.2 * cm, 1.2 * cm, "%s%s" % (right, doc.page))
-        canvas.restoreState()
-    return draw
-
-
-def _table(rows, widths, right=(), bold_last=False):
-    data = []
-    for i, r in enumerate(rows):
-        line = []
-        for j, c in enumerate(r):
-            hb = i == 0 or (bold_last and i == len(rows) - 1)
-            st = (CELLBR if j in right else CELLB) if hb else (CELLR if j in right else CELL)
-            line.append(Paragraph(str(c), st))
-        data.append(line)
-    t = Table(data, colWidths=widths, hAlign="LEFT")
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("LINEBELOW", (0, -1), (-1, -1), 0.6, RULE),
-                           ("LINEABOVE", (0, 0), (-1, 0), 0.6, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                           ("BACKGROUND", (0, 0), (-1, 0), PALE), ("TOPPADDING", (0, 0), (-1, -1), 2.2),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2)] +
-                          ([("LINEABOVE", (0, -1), (-1, -1), 0.5, RULE)] if bold_last else [])))
+def _grid(rows, widths, cell):
+    t = Table([[Paragraph(str(c), cell) for c in r] for r in rows], colWidths=widths, repeatRows=1)
+    t.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#9AA0AB")),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                           ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E6EAF0"))]))
     return t
 
 
-def n0(v):
-    return "{:,}".format(int(v))
+def _footer(text):
+    def f(canvas, d):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.setFillColor(colors.HexColor("#555555"))
+        canvas.drawString(20 * mm, 10 * mm, text)
+        canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
+        canvas.restoreState()
+    return f
 
 
-# ---------------------------------------------------------------------------------------------------- technical notes
-NOTES = [
-    ("1", "About these statistics", None, [
-        "The Unemployment Insurance Board compiles its claims statistics from the claims system and its notice "
-        "statistics from the Employer Portal. It publishes a weekly release of initial claims, monthly program "
-        "statistics, open data on initial claims by industry, and the workers in layoff notices given to the board. "
-        "These notes define the terms used in all four and set out how the figures are compiled. They replace the "
-        "notes of March 2022."]),
-    ("2", "Claims", None, []),
-    ("2.1", "The claims week", "claims_week", [
-        "A claims week runs from Sunday to the following Saturday. A claim takes effect on the Sunday of the week in "
-        "which it is filed, and is counted in that claims week. A claims week belongs to the month in which its Sunday "
-        "falls."]),
-    ("2.2", "Initial claims", "initial", [
-        "An initial claim is a new claim or an additional claim. A new claim is a claim to establish a benefit year. "
-        "An additional claim is made by a claimant returning to an open benefit year after a spell of work. "
-        "Transitional claims, made by claimants whose benefit year has ended to establish the next, are counted "
-        "separately and are not initial claims. Weeks claimed by claimants already receiving benefit are not initial "
-        "claims."]),
-    ("2.3", "The monetary determination", "monetary", [
-        "Every new claim is given a monetary determination when it is taken, unless the claimant withdraws it first. "
-        "The base period is the first four of "
-        "the last five completed calendar quarters before the quarter in which the claim takes effect. The claimant is "
-        "monetarily eligible if earnings in the base period total at least $6,800 and were paid in at least two of "
-        "its quarters. Otherwise the claimant is found monetarily ineligible and no benefit year is established. "
-        "A claimant found monetarily ineligible may file again in a later quarter, once the base period has moved. "
-        "Determinations are counted in the claims week of the claim."]),
-    ("2.4", "Regions", "regions", [
-        "Claims are counted in the region of the claimant's home address. The eight regions have had their present "
-        "boundaries since 2006. The regions file lists each region's territorial authorities and localities, with the "
-        "region codes used by the Benefit Records System."]),
-    ("3", "Publication", None, []),
-    ("3.1", "Advance and revised counts", "advance", [
-        "The weekly release, published at 08:30 on Thursday, gives the advance count of initial claims for the claims "
-        "week that ended the Saturday before, nationally and by region. Each week's count is revised once, in the "
-        "following week's release, to take in claims filed late for that week; the revised count is final."]),
-    ("3.2", "Program statistics", "program", [
-        "The program statistics for a month are published with the weekly release on the Thursday after the month's "
-        "last claims week ends. They give claims, monetary determinations, first payments, weeks claimed and benefits "
-        "paid, nationally and by region. A month's figures are the sum of its claims weeks. When a month is first "
-        "published its last week is at the advance count, and the month is revised in the next edition. The workbook "
-        "has one sheet for each fiscal year, July to June. Benefits paid are in thousands of dollars."]),
-    ("3.3", "Claims systems", "systems", [
-        "The UI Claims System replaced the Benefit Records System from the claims week of 27 June 2021. Weekly figures "
-        "to the claims week of 20 June 2021 are kept in the Benefit Records System's export layout, and program "
-        "statistics to June 2021 in its report layout, in which monetarily eligible and ineligible determinations are "
-        "headed sufficient and insufficient."]),
-    ("4", "Initial claims by industry", "industry", [
-        "The open data give initial and transitional claims by claims week, region, industry division and claim type "
-        "(N new, A additional, T transitional) from the claims week of 1 January 2023, refreshed with each weekly "
-        "release. Industry is the division of the Standard Industrial Classification of the claimant's last employer, "
-        "as recorded in the business register. Rows with no claims are left out. The latest week is at its advance "
-        "count."]),
-    ("5", "Layoff notices", "notices", [
-        "An employer that plans to lay off 20 or more workers within a period of 30 days must notify the board at "
-        "least 30 days before the first layoff, giving the address of each site, the number of workers to be laid off "
-        "there and the date of the first layoff. Notice of a cut in the hours of 20 or more workers is given on the "
-        "same form as a reduced-hours notice, which is not a layoff notice. An amended notice replaces the notice it "
-        "amends. When an employer withdraws a notice, no layoffs under it are counted. Workers are counted in the "
-        "region of the site at which they are to be laid off, and in the month of the notice's first layoff. Notices "
-        "given before 1 July 2026 were sent to Employer Services by email and entered in its register; from 1 July "
-        "2026 employers lodge them on the Employer Portal."]),
-    ("6", "Enquiries", None, [
-        "Nicola Pedersen, Manager, Labour Market Statistics, Unemployment Insurance Board. Telephone 04 912 6630."]),
-]
+def _doc(path, title, author):
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=18 * mm,
+                             bottomMargin=18 * mm, title=title, author=author, creator=author, producer=author,
+                             subject=title, invariant=1)
 
 
-def notes_text():
-    return " ".join(" ".join(p) for _, _, _, p in NOTES)
-
-
-def sentences(key):
-    """The technical notes' sentences in the section keyed key, as they ship."""
-    import re
-    for _, _, k, paras in NOTES:
-        if k == key:
-            return [s for p in paras for s in re.split(r"(?<=[.;])\s+(?=[A-Z])", p)]
-    raise KeyError(key)
-
-
-def write_notes(path):
-    s = [Paragraph("Unemployment Insurance Board &middot; Labour Market Statistics", H1S),
-         Paragraph("Unemployment insurance claims statistics: technical notes", H1),
-         Paragraph("Revised July 2026", H1S)]
-    for num, head, _, paras in NOTES:
-        s.append(Paragraph("%s&nbsp;&nbsp;%s" % (num, head), H2 if "." not in num else H3))
+def sap(path):
+    body, h1, h2, small, cell = _styles()
+    doc = _doc(path, "HB231-201 (VELA-2) Statistical Analysis Plan v2.0", "Biostatistics, " + ORG)
+    s = [Paragraph(ORG + ", Biostatistics", small), Paragraph("HB231-201 (VELA-2) Statistical Analysis Plan", h1),
+         Paragraph("Version 2.0, 12 August 2026, final before database lock. Supersedes version 1.1 of 3 June 2025.",
+                   small), Spacer(1, 4)]
+    sec = [
+        ("1. Study design", [
+            "VELA-2 is a randomised, double-blind, placebo-controlled, parallel-group phase 2b study of HB-231 in "
+            "adults with moderate-to-severe chronic plaque psoriasis (PASI 12 or more, body surface area 10 per cent "
+            "or more, IGA 3 or 4). Patients are randomised 1:1:1:1:1 to placebo or HB-231 25, 50, 100 or 200 mg, "
+            "given subcutaneously at weeks 0, 4, 8 and 12. The primary endpoint is PASI 75 at week 16."]),
+        ("2. Analysis population and study days", [
+            "The full analysis set is every randomised patient, analysed by the arm assigned. Study day 1 is the day "
+            "of the first dose of study drug, as the dosing log records it; other study days count from it.",
+            "Baseline for PASI is the last assessment on or before the day of the first dose. The week-16 value is "
+            "the assessment recorded at the week-16 visit."]),
+        ("3. PASI 75 and PASI 90", [
+            "A patient is a PASI 75 responder when the week-16 PASI is at least 75 per cent below baseline, and a "
+            "PASI 90 responder when it is at least 90 per cent below baseline, and in either case the patient took "
+            "no rescue therapy before the week-16 assessment.",
+            "Rescue therapy is any of the following started after the first dose and on or before the date of the "
+            "week-16 assessment: a potent or very potent topical corticosteroid (ATC D07AC or D07AD), or "
+            "phototherapy. A patient with no week-16 PASI, whatever the reason, is a non-responder.",
+            "Response rates are the responders as a per cent of the patients randomised to the arm."]),
+        ("4. Itch", [
+            "Patients rate their worst itch over the past 24 hours on a 0 to 10 numeric rating scale (NRS) in an "
+            "evening electronic diary, which opens at 19:00 local time. An entry completed after midnight and "
+            "before 03:00 belongs to the diary day that began the evening before. The ePRO export carries each "
+            "entry's completion time in UTC; the diary day is reckoned in the site's local time.",
+            "The weekly itch score is the mean of the daily entries over study days -7 to -1 (baseline), 22 to 28 "
+            "(week 4) and 106 to 112 (week 16), and exists when at least four of the seven days have an entry.",
+            "A patient is an itch responder at a week when the baseline weekly score is at least 4 and the weekly "
+            "score at that week is at least 4 points below it, and the patient took no rescue therapy before the "
+            "week's last day. Patients with a baseline weekly score of at least 4 form the denominator; a patient "
+            "in it without a weekly score at the week is a non-responder."]),
+        ("5. Pharmacokinetics", [
+            "Trough samples are drawn before dosing at weeks 4, 8, 12 and 16 and assayed by a validated ligand-"
+            "binding method with a lower limit of quantification of 0.10 micrograms per mL. Concentrations below "
+            "it are reported as below the limit and are not used in summaries of concentration."]),
+        ("6. Missing data and estimand", [
+            "The primary estimand is the composite one: rescue therapy and discontinuation before week 16 count as "
+            "non-response, and no value is imputed for a patient who has none."]),
+    ]
+    for head, paras in sec:
+        s.append(Paragraph(head, h2))
         for p in paras:
-            s.append(Paragraph(p.replace("&", "&amp;"), BODY))
-    doc = _doc(path, "Unemployment insurance claims statistics: technical notes", K.PEOPLE["statsmgr"])
-    f = _footer("Unemployment Insurance Board  |  Claims statistics technical notes, July 2026", "page ")
-    doc.build(s, onFirstPage=f, onLaterPages=f)
-
-
-# ---------------------------------------------------------------------------------------------------- the release
-def write_release(path, rel):
-    li = K.ASOF_LAST_SUNDAY
-    we = K.saturday(li)
-    pe = we - dt.timedelta(days=7)
-    ya = we - dt.timedelta(days=364)
-    chg = rel["adv"] - rel["prev_rev"]
-    word = "down" if chg < 0 else "up"
-    s = [Paragraph("Unemployment Insurance Board &middot; Labour Market Statistics &middot; Weekly claims release", H1S),
-         Paragraph("Initial claims: claims week ended %s" % we.strftime("%-d %B %Y"), H1),
-         Paragraph("Released Thursday %s at 08:30" % K.ASOF.strftime("%-d %B %Y"), H1S),
-         Paragraph("The advance count of initial claims for the claims week ended %s was %s, %s %s from the revised "
-                   "count of %s for the claims week ended %s (first reported as %s). In the claims week ended %s the "
-                   "board took %s initial claims." % (
-                       we.strftime("%-d %B"), n0(rel["adv"]), word, n0(abs(chg)), n0(rel["prev_rev"]),
-                       pe.strftime("%-d %B"), n0(rel["prev_adv"]), ya.strftime("%-d %B %Y"), n0(rel["year_ago"])), BODY),
-         Spacer(1, 4)]
-    head = ["Region", "Week ended %s<br/>advance" % we.strftime("%-d %b %Y"),
-            "Week ended %s<br/>revised" % pe.strftime("%-d %b %Y"), "Change", "Week ended %s" % ya.strftime("%-d %b %Y")]
-    rows = [head]
-    for x in rel["rows"]:
-        d = x["adv"] - x["prev_rev"]
-        rows.append([x["region"], n0(x["adv"]), n0(x["prev_rev"]), ("+" if d > 0 else "") + n0(d) if d else "0",
-                     n0(x["year_ago"])])
-    rows.append(["All regions", n0(rel["adv"]), n0(rel["prev_rev"]), ("+" if chg > 0 else "") + n0(chg),
-                 n0(rel["year_ago"])])
-    s.append(_table(rows, [3.6 * cm, 3.3 * cm, 3.3 * cm, 2.2 * cm, 3.3 * cm], right=(1, 2, 3, 4), bold_last=True))
+            s.append(Paragraph(p, body))
+    s.append(Paragraph("7. Document history", h2))
+    s.append(_grid([["Version", "Date", "Change"],
+                    ["1.0", "14 April 2025", "First version"],
+                    ["1.1", "3 June 2025", "Itch diary window and the after-midnight rule added (section 4)"],
+                    ["2.0", "12 August 2026", "Rescue therapy list fixed by ATC class (section 3); final"]],
+                   [22 * mm, 30 * mm, 118 * mm], cell))
     s.append(Spacer(1, 6))
-    s.append(Paragraph("Counts are not seasonally adjusted. The advance count is revised in the next release.", SMALL))
-    s.append(Paragraph("Next release: Thursday 15 October 2026 at 08:30, claims week ended 10 October 2026.", SMALL))
-    s.append(Paragraph("Definitions: Unemployment insurance claims statistics, technical notes (revised July 2026). "
-                       "Enquiries: Labour Market Statistics, telephone 04 912 6630.", SMALL))
-    doc = _doc(path, "Weekly claims release, claims week ended %s" % we.isoformat(), K.PEOPLE["statsmgr"])
-    f = _footer("Unemployment Insurance Board  |  Weekly claims release, 8 October 2026", "page ")
-    doc.build(s, onFirstPage=f, onLaterPages=f)
+    s.append(Paragraph("Approved by Bodil Lauritsen, Head of Biostatistics, and Helle Carlsen, Chief Medical Officer.",
+                       small))
+    doc.build(s, onFirstPage=_footer("HB231-201 SAP v2.0  |  " + ORG), onLaterPages=_footer("HB231-201 SAP v2.0  |  "
+                                                                                            + ORG))
+    PP.normalize_pdf(path, b"D:20260812141900+02'00'", b"D:20260812163300+02'00'", "Biostatistics")
 
 
-# ---------------------------------------------------------------------------------------------------- workbooks
-LEGACY_BLOCKS = [("NEW CLAIMS", "new"), ("ADDITIONAL CLAIMS", "additional"), ("TRANSITIONAL CLAIMS", "transitional"),
-                 ("MONETARY DETERMINATIONS", "determinations"), ("SUFFICIENT", "eligible"),
-                 ("INSUFFICIENT", "ineligible"), ("FIRST PAYMENTS", "first_payments"),
-                 ("WEEKS CLAIMED", "weeks_claimed"), ("BENEFITS PAID ($000)", "benefits")]
-CURRENT_HEAD = [("New claims", "new"), ("Additional claims", "additional"), ("Transitional claims", "transitional"),
-                ("Monetary determinations", "determinations"), ("Monetarily eligible", "eligible"),
-                ("Monetarily ineligible", "ineligible"), ("First payments", "first_payments"),
-                ("Weeks claimed", "weeks_claimed"), ("Benefits paid ($000)", "benefits")]
-MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+def cdp(path):
+    body, h1, h2, small, cell = _styles()
+    doc = _doc(path, "HB-231 Clinical Development Plan v2.1, section 7", "Clinical Development, " + ORG)
+    s = [Paragraph(ORG + ", Clinical Development", small),
+         Paragraph("HB-231 Clinical Development Plan, section 7: phase 3", h1),
+         Paragraph("Version 2.1, approved by the Executive Committee on 4 June 2026. Extract: section 7 only.", small),
+         Spacer(1, 4)]
+    sec = [
+        ("7.1 The phase 3 programme", [
+            "The phase 3 programme comprises two replicate randomised, double-blind, placebo-controlled trials, "
+            "VELA-3A and VELA-3B, each of about 600 adults with moderate-to-severe chronic plaque psoriasis, at "
+            "sites in the United States and Canada. Patients receive HB-231 or placebo subcutaneously at weeks 0, 4, "
+            "8 and 12 and every four weeks after; the primary endpoint is PASI 75 at week 16. First patient in is "
+            "planned for April 2027."]),
+        ("7.2 The phase 3 dose", [
+            "Phase 3 takes forward one dose, the lowest of 50, 100 and 200 mg whose expected PASI 75 response at "
+            "week 16 in the phase 3 population is at least 70 per cent, response defined as in the VELA-2 "
+            "statistical analysis plan.",
+            "The phase 3 population is the patients the VELA-3 sites will enrol, as the site feasibility survey "
+            "lists them."]),
+        ("7.3 Decision", [
+            "Clinical Pharmacology and Biostatistics prepare the dose recommendation from the locked VELA-2 data. "
+            "The Board approves the phase 3 plan, the dose included, at its December 2026 meeting."]),
+    ]
+    for head, paras in sec:
+        s.append(Paragraph(head, h2))
+        for p in paras:
+            s.append(Paragraph(p, body))
+    doc.build(s, onFirstPage=_footer("HB-231 CDP v2.1  |  " + ORG), onLaterPages=_footer("HB-231 CDP v2.1  |  " + ORG))
+    PP.normalize_pdf(path, b"D:20260528101200+02'00'", b"D:20260604170500+02'00'", "Clinical Development")
 
 
-def write_program(path, T, data):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Contents"
-    fys = R.fiscal_years(T)
-    bold = Font(bold=True)
-    ws["A1"] = "Unemployment insurance program statistics"
-    ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = "Unemployment Insurance Board, Labour Market Statistics. Published 8 October 2026 with the September " \
-               "2026 figures."
-    ws["A4"] = "Sheet"
-    ws["B4"] = "Months"
-    ws["A4"].font = ws["B4"].font = bold
-    row = 5
-    for fy, months in fys.items():
-        a, b = months[0], months[-1]
-        ws.cell(row=row, column=1, value=fy)
-        ws.cell(row=row, column=2, value="%s %d to %s %d" % (dt.date(a[0], a[1], 1).strftime("%B"), a[0],
-                                                              dt.date(b[0], b[1], 1).strftime("%B"), b[0]))
-        row += 1
-    row += 1
-    for line in ["September 2026 is provisional.",
-                 "Definitions are in the technical notes (Unemployment insurance claims statistics, revised July 2026).",
-                 "Enquiries: Labour Market Statistics, telephone 04 912 6630."]:
-        ws.cell(row=row, column=1, value=line)
-        row += 1
-    ws.column_dimensions["A"].width = 14
-    ws.column_dimensions["B"].width = 30
-    head_fill = PatternFill("solid", fgColor="DCE6EA")
-    order_codes = [K.LEGACY_CODE[r] for r in K.REGIONS]
-    code_region = {v: k for k, v in K.LEGACY_CODE.items()}
-    for fy, months in fys.items():
-        ws = wb.create_sheet(fy)
-        y0 = int(fy[2:6])
-        allm = [(y0, m) for m in range(7, 13)] + [(y0 + 1, m) for m in range(1, 7)]
-        if fy <= R.LEGACY_FY_LAST:
-            ws["A1"] = "UNEMPLOYMENT INSURANCE BOARD"
-            ws["A2"] = "PROGRAM STATISTICS BY REGION - FISCAL YEAR %d-%02d" % (y0, (y0 + 1) % 100)
-            ws["A1"].font = ws["A2"].font = bold
-            r0 = 4
-            for title, key in LEGACY_BLOCKS:
-                ws.cell(row=r0, column=1, value=title).font = bold
-                hdr = ["REGION"] + ["%s-%02d" % (MON[m - 1], y % 100) for y, m in allm] + ["YEAR"]
-                for j, h in enumerate(hdr, 1):
-                    c = ws.cell(row=r0 + 1, column=j, value=h)
-                    c.font = bold
-                    c.alignment = Alignment(horizontal="center" if j > 1 else "left")
-                for k, code in enumerate(order_codes + ["ALL"]):
-                    rr = r0 + 2 + k
-                    ws.cell(row=rr, column=1, value=code)
-                    tot = 0
-                    for j, ym in enumerate(allm, 2):
-                        if ym in months:
-                            v = (sum(data[(ym, x)][key] for x in K.REGIONS) if code == "ALL"
-                                 else data[(ym, code_region[code])][key])
-                            c = ws.cell(row=rr, column=j, value=v)
-                            c.number_format = "#,##0"
-                            tot += v
-                    c = ws.cell(row=rr, column=14, value=tot)
-                    c.number_format = "#,##0"
-                    if code == "ALL":
-                        for j in range(1, 15):
-                            ws.cell(row=rr, column=j).font = bold
-                r0 += len(order_codes) + 4
-            ws.column_dimensions["A"].width = 26
-            for j in range(2, 15):
-                ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = 9.5
-        else:
-            ws["A1"] = "Unemployment insurance program statistics, %d-%02d (July %d to June %d)" % (
-                y0, (y0 + 1) % 100, y0, y0 + 1)
-            ws["A1"].font = Font(bold=True, size=12)
-            hdr = ["Month", "Region"] + [h for h, _ in CURRENT_HEAD]
-            for j, h in enumerate(hdr, 1):
-                c = ws.cell(row=3, column=j, value=h)
-                c.font = bold
-                c.fill = head_fill
-                c.alignment = Alignment(horizontal="left" if j <= 2 else "right", wrap_text=True, vertical="bottom")
-            rr = 4
-            for ym in months:
-                for reg in K.REGIONS + ["All regions"]:
-                    c = ws.cell(row=rr, column=1, value=dt.date(ym[0], ym[1], 1))
-                    c.number_format = "mmm yyyy"
-                    c.alignment = Alignment(horizontal="left")
-                    ws.cell(row=rr, column=2, value=reg)
-                    for j, (_, key) in enumerate(CURRENT_HEAD, 3):
-                        v = (sum(data[(ym, x)][key] for x in K.REGIONS) if reg == "All regions"
-                             else data[(ym, reg)][key])
-                        c = ws.cell(row=rr, column=j, value=v)
-                        c.number_format = "#,##0"
-                    if reg == "All regions":
-                        for j in range(1, len(hdr) + 1):
-                            ws.cell(row=rr, column=j).font = bold
-                    rr += 1
-            if fy == "FY2026-27":
-                ws.cell(row=rr + 1, column=1, value="September 2026 is provisional.")
-            ws.column_dimensions["A"].width = 10
-            ws.column_dimensions["B"].width = 12
-            for j in range(3, len(hdr) + 1):
-                ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = 13
-            ws.row_dimensions[3].height = 30
-            ws.freeze_panes = "C4"
-    wb.save(path)
+def email(path):
+    text = """From: Villads Kjaer <vkj@%(d)s>
+To: Clinical Pharmacology and Biometrics <cpb@%(d)s>
+Cc: Helle Carlsen <hca@%(d)s>, Bodil Lauritsen <bla@%(d)s>
+Date: Mon, 16 Nov 2026 08:41:17 +0100
+Subject: HB-231 phase 3 dose for the December Board
+Message-ID: <20261116084117.5521.vkj@%(d)s>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
+Hi all,
 
-def write_register(path, rows):
-    import openpyxl
-    from openpyxl.styles import Font, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Notices"
-    ws["A1"] = "Employer Services - layoff notices received by email"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Register closed 30/06/2026. Notices from 1 July 2026 are on the Employer Portal."
-    for j, h in enumerate(N.REGISTER_COLS, 1):
-        c = ws.cell(row=4, column=j, value=h)
-        c.font = Font(bold=True)
-        c.fill = PatternFill("solid", fgColor="FFF2CC")
-    for i, r in enumerate(rows, 5):
-        for j, h in enumerate(N.REGISTER_COLS, 1):
-            v = r[h]
-            if h == "Business no.":
-                v = int(v)
-            c = ws.cell(row=i, column=j, value=v)
-            if isinstance(v, dt.date):
-                c.number_format = "dd/mm/yyyy"
-    widths = [12, 11, 42, 12, 24, 15, 7, 8, 11, 13, 10, 9, 28]
-    for j, w in enumerate(widths, 1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
-    ws.freeze_panes = "A5"
-    ws.auto_filter.ref = "A4:%s%d" % (openpyxl.utils.get_column_letter(len(N.REGISTER_COLS)), 4 + len(rows))
-    wb.save(path)
+The Board takes the VELA-3 plan on 9 December and the papers close on
+2 December, so I need the dose recommendation by then. The plan's
+section 7 sets the rule. The locked VELA-2 exports and the feasibility
+survey Clinical Operations closed on 30 October are in the folder.
 
+Helle wants the VELA-2 tables in the same pack so the Board sees what
+the trial showed.
 
-def write_concordance(path, rows):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Divisions"
-    ws["A1"] = "Standard Industrial Classification 2023: concordance with SIC 2006 at division level"
-    ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Statistics Office, Classifications and Standards. Version 1.2, November 2025."
-    hdr = ["SIC 2006 division", "SIC 2006 title", "SIC 2023 division", "SIC 2023 title", "Correspondence"]
-    for j, h in enumerate(hdr, 1):
-        c = ws.cell(row=4, column=j, value=h)
-        c.font = Font(bold=True)
-        c.alignment = Alignment(wrap_text=True)
-    for i, r in enumerate(rows, 5):
-        for j, v in enumerate(r, 1):
-            c = ws.cell(row=i, column=j, value=v)
-            if j in (1, 3):
-                c.number_format = "@"
-    for j, w in enumerate([10, 52, 10, 48, 14], 1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(j)].width = w
-    ws.freeze_panes = "A5"
-    wb.save(path)
+Thanks,
+Villads
 
-
-def write_ads(path, series):
-    doc = {"dataset": "Online job advertisements index", "publisher": "Statistics Office (experimental series)",
-           "frequency": "weekly, weeks ending Sunday", "base": "2019 average = 100", "unit": "index",
-           "retrieved": "2026-10-07T21:14:09Z",
-           "notes": "Advertisements for jobs located in each region, counted once in each week they are open, from "
-                    "the main job boards. Not seasonally adjusted.",
-           "observations": series}
-    with open(path, "w", encoding="utf-8", newline="\n") as fh:
-        json.dump(doc, fh, indent=1, ensure_ascii=False)
-        fh.write("\n")
+--
+Villads Kjaer
+HB-231 Programme Lead
+Hvidore Biologics A/S
+""" % {"d": DOMAIN}
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(text)

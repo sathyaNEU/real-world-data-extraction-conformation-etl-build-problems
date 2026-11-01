@@ -1,253 +1,209 @@
-# task130: Elkhorn County's 2027 return-inspection officer (architecture 5, a re-root into psychology-behavioral-science)
+# task130: Redbud Line Services' 2027 recordable injuries (architecture 6, a re-root into economics-econometrics)
 
-Architecture 4 (Corvane Health's claims-made trust, shipped 10-16 at $1,250,000) is spent at the batch 1 triage
-and sits in the card's lineage with every earlier architecture; `## Tried and rejected` keeps their record. This
-architecture is a new client domain, world and dataset under the same objective and number.
+Architecture 5 (Elkhorn County's third return-inspection officer) is spent at the guard window and sits in the
+card's lineage with every earlier architecture; `## Tried and rejected` keeps their record. This architecture is a
+new client domain, world and dataset under the same objective and number.
 
 ## Draw
 
-- **Pairing.** Client domain `psychology-behavioral-science`, task type
-  `decision-making-computational-behavioral-modeling`, objective Forecasting & Predictive Modeling. Batch 1's live
-  re-roots use energy (task118), epidemiology (task181), marketing (task268), actuarial (task306), survey research
-  (task470), general statistics (task250), biomedical (task191), healthcare delivery (task482) and product analytics
-  (task156); psychology is none of them, and psychology with forecasting has never been built.
-- **The call.** Whether Elkhorn County Public Health adds a third return-inspection officer for 2027 under the 2027
-  Food Safety Program Plan's staffing rule (a third officer when the routine inspections in the 2027 schedule that
-  will be marked unsatisfactory exceed 540, the two officers' capacity), with the forecast the rule compares, to the
-  nearest 100. Forward facing: the plan is issued on 11 January 2027 on the record to 31 December 2026, the decision
-  falls by 29 January, and the window is calendar 2027.
-- **Furniture.** Forum `line_manager_or_team` (the Environmental Health Director takes the decision on the program
-  manager's forecast under section 3 of the plan); forcing event `budget_or_appropriation` (the third position is a
-  2027 budget decision taken by 29 January so that the officer starts in March); organisation `local_government`;
-  role `field_unit_lead` (the food safety program manager); context artifact `capacity_report` (the return team's
-  2026 capacity report, which answers a past question, the team's 2026 return inspections against its capacity, and
-  keeps the day-sheet log); calibration `none`.
-- **World.** Elkhorn County, Washington (fictional, Pacific Time), county seat Marlow (fictional). The food safety
-  program schedules 5,512 routine inspections at 2,648 establishments for 2027, ran eleven district inspectors in 2026
-  and two return-inspection officers since February 2022. Erik Mayer and Andrew Mason retire on 31 December 2026 and
-  are not replaced; the plan redraws the districts from eleven to nine, so about half of the scheduled establishments
-  pass to another inspector than 2026's and 23 per cent fall to an inspector with no earlier inspection of the
-  establishment on the record (4.8 to 9.2 per cent a year in 2022 to 2026).
-- **Personas** (`guard.py names --geo "United States" --seed 130`, and `--seed 1130 --n 40` for the roster): Teresa
-  Hansen (Environmental Health Director), Valerie Wood (Food Safety Program Manager), Mariah Ramirez and Tina Rivera
-  (district inspectors who carry on into 2027), Erik Mayer and Andrew Mason (the two who retire); the rest of the
-  roster is drawn the same way and screened by `guard.py surface`.
-- **Structural labels.** Gap `time` first (every easy rung measures backward on years whose inspector and
-  establishment pairs held and is carried forward to a window the redraw resets), then `population` (an
-  establishment's record is its inspectors' record, not the kitchen's; that reading reaches only the own-record
-  rung); generators G14 (the pooled criterion does not fit first visits), G3 and G13; Gate G `forecasting`;
-  strategy `forecast_method_backtest` (F6: the natural fit validates on the latest years and is wrong for 2027
-  because each mark belongs to the pair that made it; only a hold-out on the 2023 appointee's first year separates
-  the two); shape `other`.
-- **Guard.** `check` at the draw (2026-10-31T19:05:15Z): WARN only, run before task156 v2's card (18:27:04Z)
-  reached this tree. At stage 3 `heart` BLOCKed against task156 v2 (ban.pattern G14, ban.strategy, ban.org_family,
-  test.same_puzzle and test.same_driver on population, G14 and go_hold_or_stop). The card was revised (the decisive
-  gap read again as time, every stale figure brought to the build) and filed anew at 2026-10-31T20:46:59Z: `check`
-  PASS and `heart` PASS, the axis bans now reading task474 v7, task181 v6 and task482 v15, none sharing an axis;
-  `test.same_driver_older` differentiated against task131 v2, task169 v1, task183, task230 v3 and task446 v3, and
-  task156 v2 carries its own line. task156 v2 still shares the pattern, the strategy and the organisation family
-  five builds back in draw order; its world (a New Zealand district council's wastewater station), domain and
-  driver differ (nearest driver 0.06). `surface` promotes five pairs for adjudication on card labels alone
-  (task131, task137, task183, task230, task446), none on files, names or seeds. WARNs at the draw:
-  `repeat.deliverables` (pdf+xlsx) against task250, the memo being the director's decision record, a PDF in the
-  office's practice; `repeat.question_form` (whether), the decision being a gate. `heart` after the final rebase
-  onto main: WARN only, `repeat.deliverables` (pdf+xlsx) against task125 v3, answered the same way: the memo is
-  the decision record and the workbook the 2026 measures, and the shell sits under every corpus cap.
-- **Screens.** `mechanisms --objective forecasting` read in full; `slots` on the mechanism words (inspector,
-  examiner, leniency, strictness, rookie; familiarity, rotation, fresh eyes, capture, reassignment; first visit,
-  repeat visit, redraw, district map, covering) and the setting words (restaurant, re-inspection, food safety,
-  driving test, retest, test centre, pass rate). No note screens a judge's familiarity with the unit. The nearest
-  records are task173 v1's service-desk opener tenure (abandoned unregistered at a guard window, never built) and the
-  tenure deaths in task182, task202 and task171, on which this world's first-year-inspector variant was set aside.
-- **Abstraction against the nearest approved builds.** task132 carries an item's wear past its probable replacement,
-  a physical renewal of the unit; task141 reads a capped term's petitions at the rate of terms already at their
-  maximum, a property of the term; task175 reads a lot's permit chance at the homes on the street it faces, a
-  neighbour's state; task179 lifts a supervisee's risk by a victim record linked by name and birth date. task130
-  reads a judge's mark at the number of earlier visits that judge has made to the unit, a property of the pair that
-  no record holds and the redraw resets.
-- **Shape (other), as built.** Call side: the call, the 2027 forecast to the nearest 100 and its comparison with 540
-  (three criteria), the memo on one page and the two files (three). Asks on 2026, for each of the eleven 2026
-  districts: the median return timeliness in working days (eleven), the median complaint response time in hours
-  (eleven) and the return visit fees in dollars (eleven), 33 criteria. About 39 in all.
-- **Data-native sentence.** A county's inspection record is written by a small team whose members see the same
-  kitchens year after year, so every mark carries the pair's history, and when the map is redrawn that history goes
-  with the inspector, not with the kitchen.
+- **Card:** `.claude/skills/fingerprint/cards/task130.json`, architecture v6, registered 2026-10-31T23:21:13Z on a
+  tree pulled at 23:20Z, `guard.py check` WARN only (`three_rules.strategy_risk`, answered in `## Three rules`).
+- **Pairing:** economics-econometrics x forecasting, task type discrete-choice-limited-dependent-variable-modeling
+  (labour economics: the choice a crew makes to report an injury under an incentive pay scheme). The last three
+  live builds in draw order are task445 (general-statistics, ETL), task272 (general-statistics, descriptive) and
+  task122 (human-factors, experiment-causal); none holds the domain, the decisive pattern (G12), the strategy
+  (time_semantics), the organisation family (other: a power line construction contractor), the forum
+  (customer_or_counterparty), the forcing event (audit_or_inspection), the role (compliance_or_audit) or the
+  context artifact (filed_standard).
+- **Shape:** 02, forecast across many periods (2027 quarter by quarter, crew type by crew type).
+- **Strategy:** time_semantics (F1). The record has to be read at each crew's position in its own rolling 90-day
+  recognition cycle, a service clock no file stores, estimated from every cycle the crews ran.
+- **Data-native sentence:** Redbud's recordable log is written from what each crew's foreman reports to the safety
+  office, and a crew's 90-day bonus is lost the moment it reports a recordable, so the log holds what each crew
+  chose to report at each point of its own cycle, and the cycle sits in no file.
+- **Abstraction sentence:** against the nearest build on file (task180 v4, small earthquakes lost to daytime noise
+  until new stations remove the masking) the sentence a reviewer could write for both is the genus of every
+  completeness repair ("a record short in part of a cycle, the cause removed forward"); the driving insight is not
+  shared: here the thinning is the recorder's own choice under a reward, its phase is each recorder's own rolling
+  cycle reset by its own records and its own completed counts, every event is exposed to it whatever its size, and the trap is the
+  comparison with recorders the reward never covered. No approved build carries a reward-thinned record.
+- **Sources:** synthetic throughout. Rate definitions follow 29 CFR 1904 (OSHA recordkeeping: a recordable case,
+  the 200,000-hour rate base); the client's contractor safety standard, the recognition programme and every record
+  are fictional.
 
 ## Survivor anatomy
 
-Actor: the property that decides is how many times the inspector named for each 2027 district has already inspected each scheduled establishment, and no file stores it: the exports list visits with an inspector and a permit, the schedule lists establishments with a 2027 district, Table 1 names a person, and the pair's history is a relation across the two exports and the roster that no column holds (R1 asserts that no column holds an earlier-visit count, a visit number or a tenure).
-Link: the pair is read through a link no key offers: the legacy export keys inspectors by three initials, the new export by employee number and the plan's Table 1 by name, so the count needs the initials resolved through the roster's names ("Last, First M.") across the March 2024 migration and each 2027 inspector placed against each establishment's record in both systems; the field's rater methods cross the inspector with nothing, and no sentence or column invites crossing the inspector with the establishment's history.
-Reflex: the field's methods for the deciding quantity sit at rungs 0 and 1 and file 424 to 458 with no third officer: base rates by risk category, each establishment's own record, one criterion per inspector (a rater-severity term read at Table 1's inspectors) and a first-year criterion for newly appointed inspectors, of whom 2027 has none.
-Back-test: the textbook route validates: risk-category rates fitted on 2022 to 2024 predict 878 unsatisfactory routine inspections for 2025 to 2026 against 834 recorded (5.3 per cent over), and the golden's construction predicts 852 (2.2 per cent), so the latest-years hold-out does not separate them; only a hold-out on the 2023 appointee's first year does (137 recorded, category rates 47, visit classes 110).
-Second use: every file the decisive step reads sits in the pack for a reason of its own: the two exports are every rung's data and every ask's, the roster is how any inspector rung reads the legacy initials and how ask A finds the return officers, the permits file carries the risk category every rung reads and the asks' 2026 districts, and the schedule and Table 1 are what every rung forecasts; deleting the decisive step drops no file.
-Shock: the movement the step recovers reads as ordinary: in 2022 to 2026 an inspector's first visit to an establishment is 4.8 to 9.2 per cent of a year's routine inspections (covering days and the 2023 appointment), the yearly unsatisfactory counts run 362 to 480 with no break, the largest year (2023, 480) carries the year's retirement and appointment, and the 2027 redraw is the plan's own answer to two retirements.
-Pins: the plan files the WHAT in its own genre (section 3: the routine inspections in the 2027 schedule that will be marked unsatisfactory, each counted as the inspector named in Table 1 for its district will make it, against 540; section 1: what makes a routine inspection unsatisfactory; section 2 and the schedule workbook: the population), and no filed sentence names earlier visits, familiarity, a first visit, rotation, tenure or experience (asserted on both PDFs).
+Actor: the deciding property is where each crew stood in its own 90-day recognition count on the day of each injury and each hour worked, and no file stores it: the case records hold the worker and the injury date, the assignment history the worker's crew for each span of days, the timesheet each crew's hours by pay period, and the count is a running relation across the three (days since 11 January 2021, the crew's last recordable injury or the end of its last completed count) that no column, code or sheet holds.
+
+Link: the signal is read through a comparison the field's recordable-rate route never asks for: each crew's recordables and hours set against its own position in its count, which needs every recordable placed on the injured worker's crew on the day (the assignment history, the crews recoded in March 2025 carried under their new codes) and every pay period's hours spread over its working days; no key, column or sentence crosses the injury record with the recognition count.
+
+Reflex: the field's method for the deciding quantity sits at rung 0 and files a wrong answer here: the OSHA recordable rate per 200,000 hours over the record, by unit type or pooled, carried onto the hours of the 2027 work plan, gives 176 recordables (2.46), and the trailing twelve months give 177 (2.48), both inside the 3.0 limit's 214.
+
+Back-test: the textbook route validates on the checks a safety analyst runs before trusting a rate: the recorded rate holds steady year on year (2.65, 2.44, 2.48, 2.43, 2.30 and 2.55 from 2021 to 2026), the technicians outside the programme record less than the crews (1.92 against 2.55), and the crews' days-away share of their recordables is no higher than the technicians' (26 against 30 per cent), so every under-reporting check the field knows clears the record; what separates the routes is a cut no step of the rate route makes, the record read by the day of each crew's own count.
+
+Second use: every file the decisive step reads sits in the pack for a reason of its own: the two case systems, the assignment history and the crew register carry every rung's recordables and the asks' first-aid cases by district, the timesheet every rung's hours, the work plan every rung's 2027 hours, CS-4 the estimand and the limit for every rung, the recognition programme the crews in and out of it (rung 1's comparison) and the notice the programme's end, which every rung reads as the reason 2027 is a new year; deleting the decisive step drops no file.
+
+Shock: the movement the step recovers reads as ordinary: the recorded rate sits at 2.3 to 2.7 every year, the technicians record less than the crews on lighter work, and no district, crew type, quarter or year stands out; sorted on any shipped statistic (by crew, type, district, month or year) nothing singles out the days late in a count, which no file carries.
+
+Pins: CS-4 files the WHAT in its own genre (section 4(a) and (b): the recordable injuries the contractor forecasts its field employees will record on Pinewater work in the 2027 contract year, total and by quarter, and the rate on the work plan's hours; 3.1 to 3.6 the definitions; "Pinewater does not prescribe the method"); HR-14 files its own rules (the award, the count, its start on 11 January 2021); no filed sentence names a day of the count, a window of it, a reporting rate, hiding or a reason the record might fall short (asserted on all three documents by leak.py's sweeps and read in `## Leak sweep`).
 
 ## Default path
 
-1. From the 2027 Food Safety Program Plan: the staffing rule (a third return-inspection officer when the routine
-   inspections in the 2027 schedule that will be marked unsatisfactory exceed 540), the definition of an
-   unsatisfactory routine inspection (25 red points or more, or a closure for an imminent health hazard), Table 1's
-   inspector for each 2027 district and the schedule workbook's routine inspections for each establishment.
-2. Stack the legacy export (January 2019 to March 2024: local times, inspector initials) and the new export (March
-   2024 to December 2026: UTC stamps, employee numbers), resolve the initials through the roster's names, convert the
-   UTC stamps to Pacific time and keep the routine inspections made (closed-premises calls out).
-3. Rung 0, the base-rate model: each risk category's unsatisfactory share over 2022 to 2026 (or a logistic on risk
-   category and establishment type), carried to the 2027 schedule: 437 (fitted on 2025 to 2026 only, 424; a linear
-   trend in the yearly counts, 437). Fitted on 2022 to 2024 it predicts 2025 to 2026 within 5.3 per cent.
-4. Rung 1, the field's rater models: each establishment's own record shrunk to its category (458), or one criterion
-   per inspector (observed against expected unsatisfactory shares, or an inspector term) read at each 2027 district's
-   named inspector (451); a first-year criterion for newly appointed inspectors changes nothing, since 2027 has none
-   (437).
-5. Compare with 540: no third officer.
+1. From CS-4 sections 3 to 5: the recordable injuries Redbud's field employees (crews and technicians) will record on
+   Pinewater work in 2027, total and by quarter, and the rate on the 2027 work plan's hours against the limit of 3.0.
+2. Stack the legacy EHS log (to 31 May 2024) and the case management export, keep the new system's copy of each
+   migrated case and each case's latest revision, drop first aid, linked recurrences (29 CFR 1904.6) and mutual-aid
+   work, and place each recordable on the injured worker's crew or team on the injury date.
+3. Hours worked from the timesheet: regular plus overtime, prior-period adjustments in the period they correct,
+   paid leave, holiday pay and mutual-aid hours out: 68,729,007 crew hours and 11,440,680 technician hours from 11
+   January 2021 to 27 September 2026.
+4. The recorded rate: crews 877 recordables, 2.55 per 200,000 hours; technicians 110, 1.92; by unit type from 1.42
+   (meter services) to 3.41 (vegetation crews).
+5. Check the record for under-reporting the way the field does: the technicians, outside HR-14, record less than the
+   crews, and the crews' days-away share (26 per cent) is no higher than the technicians' (30 per cent), so the
+   recognition award shows no sign of thinning the log.
+6. Carry each unit type's rate onto its 2027 plan hours: 176 recordables, a rate of 2.46, inside the limit's 214.
 
-Ends on: about 450 unsatisfactory routine inspections in 2027 (437 to 458) and no third return-inspection officer
-Golden: 693.4, about 700, and the third return-inspection officer is added
+Ends on: 176 recordables in 2027, a rate of 2.46 per 200,000 hours, inside the 3.0 limit
+Golden: 255 recordables in 2027, a rate of 3.57 per 200,000 hours, over the 3.0 limit
 
 ## Stump sentence
 
-Carrying the risk categories' rates, each establishment's own record or one criterion per inspector into the 2027
-schedule files about 450 unsatisfactory routine inspections and no third officer, because in the county's record an
-inspector marks an establishment unsatisfactory about four to six times as often on a first visit as on a third or
-later one, and the 2027 redraw makes 23 per cent of the schedule's routine inspections first visits for their named
-inspector, against 4.8 to 9.2 per cent a year in 2022 to 2026; read at the number of earlier visits each named inspector
-will have made, the schedule gives about 700, past the plan's 540.
+Carrying the record's recordable rate onto the 2027 work plan files 176 recordables and a rate of 2.46, inside the
+3.0 limit, because every crew in HR-14 earns its award after 90 days without a recordable and leaves injuries it can
+hide off the log as its count nears the award: the crews record 3.85 and 3.84 per 200,000 hours in days 0 to 14 and
+15 to 34 of their counts and 1.38 and 1.01 in days 50 to 64 and 65 to 89, while the days-away cases nobody can hide
+come in at much the same rate throughout; with the programme ending on 31 December 2026, read at the 3.84 the crews
+record where an award is far off (the technicians at their own 1.92), the 2027 plan makes 255 recordables, a rate
+of 3.57, over the limit.
 
 ## Three rules
 
-Task type: decision-making-computational-behavioral-modeling in psychology-behavioral-science, which serves forecasting: a model of a human judgment (an inspector's decision to mark a routine inspection unsatisfactory) fitted to the inspectors' own recorded decisions and used to forecast the decisions the 2027 schedule will produce.
+Task type: discrete-choice-limited-dependent-variable-modeling in economics-econometrics, which serves forecasting: the 2027 recordable count is forecast from a recorded count that a reporting choice under a pay incentive has thinned, the latent rate recovered where the choice exerts no pull and carried onto the hours the crews will work.
 
-Domain test: the deciding quantity is the chance that the inspector named for a 2027 district marks a scheduled routine inspection unsatisfactory, a human judgment the decision-making task type models from the judges' own recorded decisions (the criterion each judgment applies, as a function of the case's risk and the judge's state), checked on decisions held out of the fit; the call is that model summed over the 2027 schedule against 540.
+Domain test: the deciding quantity is the latent injury rate behind a count the crews thin by choosing not to report as a clean-record reward nears, worked the way labour economics reads behaviour under an incentive scheme: the observed outcome is the product of the latent rate and the choice to report, the choice varies with the reward at stake, and the forecast needs the rate in the stretch of each crew's own count where reporting costs nothing; the call compares the forecast with the client's limit.
 
-Swap: "does the water utility need a third meter-reading crew for 2027, sized on the reads that will be estimated?" keeps the sentence's shape and loses its substance: a meter read does not depend on how often the reader has read that meter, no judge's criterion relaxes with acquaintance, and a redrawn route changes who walks it but not what the meter shows, so the deciding quantity, a person's judgment shaped by the person's history with the case, stops making sense.
+Swap: "will the hospital's patient falls in 2027 keep it within the regulator's rate?" keeps the sentence's shape and loses its substance unless the hospital also paid each ward for every 90 falls-free days, and then the swap only proves the domain: the stump needs a reward that a unit earns by not recording, reset by its own records, which is labour economics' incentive problem and no other field's.
 
-Layer 1: two inspection exports either side of the March 2024 migration (the legacy system's local times and inspector initials, the new system's UTC stamps and employee numbers, the roster's names); routine, return, complaint and pre-opening visits and closed-premises calls in one file; changes of ownership reissuing a permit at the same address; seasonal establishments with one routine inspection; covering inspectors on the district inspector's leave days; the return team's paper day sheets keyed into the new system at a later stamp until 31 August 2026; several reports per complaint incident; closed-premises return calls of the paper era never keyed, evidenced only in the correspondence log. Nothing is placed to be caught, and the call's construction is mess-neutral (R2: UTC read as local 693.4, ownership merged by address 714.1, closures left out 683.6, closed-premises calls counted 695.7, each keeping the call and the bin).
+Layer 1: two incident systems with the cases open at the 2024 migration in both, cases revised from first aid to medical treatment and from restricted work to days away, recurrences opened as cases of their own, the nurse line's interface opening a first-aid case of its own from each call beside the supervisor's report, a dated crew assignment history with workers moving between crews, thirty crews recoded at the March 2025 reorganisation, timesheet hours by pay period with paid leave, holiday pay and mutual-aid hours in their own columns, prior-period adjustments and in-system storm support on the rows of the district the crew worked in; nothing is planted and none of it moves the call (the construction is mess-neutral, asserted).
 
-Layer 2: forecast validity under a shift in the decision model's covariate: the state each judgment depends on (the pair's earlier visits) moves out of its historical range in the forecast window, so a model that validates on the recent years, where new pairs make 5 to 6 per cent of inspections, misses when the redraw makes 23 per cent of the schedule new pairs; the methodological choice that flips the call is to carry the pair's visit count as the judgment's state rather than the inspector or the establishment.
+Layer 2: the data's real structure under an incentive: a recorded count is what the units choose to record, so the rate it implies is the latent rate times a reporting share that changes with each unit's position in its own reward cycle, and a forecast for a year without the reward has to be read where the reward exerts no pull, not on the record's average.
 
-Decisive step: recognise that an inspector's criterion is not one per inspector but relaxes with that inspector's earlier visits to the establishment, so count for each scheduled 2027 inspection its named inspector's earlier inspected visits there across both exports (the legacy initials resolved through the roster) and through the schedule's own earlier 2027 inspections, and read it at the first, second or later visit rates the 2022 to 2026 record gives within each risk category: 693.4, about 700.
+Decisive step: recognise that the crews' reporting falls away as each crew's own count nears its award, so rebuild every crew's count day by day from 11 January 2021 (restarting the day after a recordable to any member and after each 90th day), spread each pay period's hours over its working days, and read the crews' rate in days 0 to 34 of their counts, where the record and the days-away cases agree, onto every 2027 crew hour, with the technicians at their own recorded rate: 255 recordables, 3.57.
 
-Not semantics: every field, code and definition read correctly (the 25-point threshold and the imminent-hazard closures, the UTC stamps converted, the initials resolved, closed-premises calls left out, the schedule's inspections and Table 1's inspectors taken) still leaves the easy route at 437 to 458, because the pair's visit count is not a field: it is a state of the judge and the case that the analyst has to recognise the decision depends on and rebuild from two exports.
+Not semantics: every field, code and definition read correctly (the final classification, recurrences, mutual-aid work, the crew on the day, the recoded crews, hours worked as CS-4 defines them) still leaves the rate route at 176, because where each crew stood in its count is not a field: it is a relation the analyst has to see the forecast depends on and rebuild across the case records, the assignment history and the timesheet.
 
-Not rule application: no filed rule says the mark depends on earlier visits or tells the analyst how to read it, so executing the plan's staffing sentence (each inspection as the named inspector will make it) and its definition correctly still files 424 to 458 with any per-inspector or per-establishment model. The enumerated family (category rates on 2022 to 2026 or 2025 to 2026, a yearly trend, each establishment's own record, one criterion per inspector, a first-year criterion, pair classes fitted from 2019, first against any later visit, every 2027 inspection at its end-2026 count, and the standing members) spreads the total from 424 to 951 and splits the call; the standing family (48 crossed members: rates from 2021, 2022 or 2023 onward, classes 0, 1, 2+ or 0, 1, 2, 3+, every visit or routine visits only, any or a 36-month count, cell rates or a main-effects logistic; the classes with an inspector term, an establishment term or both; the four Layer 1 readings) spreads 675.7 to 730.2, unanimous on the call and on the nearest-100 bin; what rules out the rest is loud on a cut by the pair's visit (first visits run 3.9 to 5.9 times later visits in every risk category, second against later visits at a Mantel-Haenszel z of 8.5) and silent on every cut by inspector, establishment or year.
+Not rule application: no filed rule says the record falls short or names a stretch of the count to read, and CS-4 leaves the method to the contractor ("Pinewater does not prescribe the method"); executing CS-4 and HR-14 word for word with the field's rate files 176; the standing family (the early stretch read as days 0 to 19, 0 to 24, 0 to 29, 0 to 34 or 0 to 39, by crew type or pooled, from 2023 only, with counts started at each crew's first recordable, the recoded crews read as new) spreads 236 to 257, every member over the limit.
 
-Analyst test: a strong analyst who reads every field and rule correctly stacks the two exports, resolves the inspectors, converts the clock, keeps the routine inspections made, fits the unsatisfactory share on risk category with each establishment's own record or one criterion per inspector, validates it on 2025 to 2026 within about 5 per cent, carries it to the 2027 schedule with Table 1's inspectors and files about 450 (437 to 458) and no third officer; read at each named inspector's earlier visits to each establishment, the schedule gives about 700 and the third officer is added.
+Analyst test: a strong analyst who reads every field and rule correctly stacks the two case systems, keeps final classifications, drops recurrences and mutual-aid work, places each recordable on the worker's crew on the day, nets the hours CS-4 excludes and carries the 2021 to 2026 recorded rate onto the 2027 plan, files 176 recordables (2.46) inside the limit, and its two under-reporting checks (the technicians outside the programme, the days-away share) both clear the record; read at the rate the crews record early in their counts, 2027 makes 255 recordables, 3.57, and breaches it.
 
-Estimand: the plan (`food_safety_program_plan_2027.pdf`, section 3) files it: the routine inspections in the 2027 schedule that will be marked unsatisfactory, each scheduled routine inspection counted as the inspector named in Table 1 for its district will make it, against 540, the two officers' capacity; section 1 defines unsatisfactory (25 red points or more, or a closure for an imminent health hazard), and the schedule workbook issued with the plan lists the population (every permitted establishment, its 2027 district and its 2027 routine inspections).
+Estimand: CS-4 section 4(a) and (b) files it: the number of recordable injuries (3.1, 29 CFR 1904.7, each case once as finally classified) Redbud's field employees (3.2, crews and technicians) will record on Pinewater work (3.3) in the 2027 contract year (1 January to 31 December), in total and for each calendar quarter, and the rate that number makes on the hours worked in Redbud's 2027 work plan (3.4, 3.5), against the limit of 3.0 (section 5); the notice files that HR-14 ends on 31 December 2026, so 2027 has no award.
 
-No decoy: nothing is planted to be caught: no memo, briefing, draft or stakeholder figure states a 2027 forecast, a rate or a count; the capacity report states the team's 2026 returns against its capacity, a past quantity it answers correctly; the illness investigations and the permit invoices are distractors named in metadata.json that rank nothing.
+No decoy: nothing is planted to be caught: no memo, briefing or stakeholder states a rate, a forecast or a reason the record might be short; the notice states the programme's end and says nothing about reporting beyond its closing reminder; the good-catch reports and the subcontractors' returns are distractors named in metadata.json that rank nothing.
 
-No certified replay: the method is not recovered by reproducing certified or published figures: no published table carries an unsatisfactory rate by visit or by inspector, and the pair counts are rebuilt from raw visit rows in two systems.
+No certified replay: no published or certified figure is reproduced: no file carries a rate by day of the count, a reporting share or a forecast, and the count is rebuilt from case dates, the assignment history and pay-period hours.
 
-Lesson: a judged outcome is a property of the judge and the case together, so a forecast for a window that resets the pairs is wrong by every model keyed on the judge or the case alone, however well it validates on years when the pairs held; no build on file reads a human judgment at the judge's history with the case.
+Lesson: a recorded count that a unit is paid to keep low is the latent rate times the unit's choice to record, and the choice moves with the reward at stake, so a forecast for a period without the reward reads the units where the reward exerts no pull, not on the record's average; no build on file forecasts from a record thinned by its recorders' own clean-record reward.
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
 |---|---|---|---|---|---|---|---|---|
-| R0 risk-category rates carried to the 2027 schedule | the plan's staffing rule invites a forecast of the schedule | `risk_category` in the permits file | the field's base-rate forecast | the 2025 to 2026 hold-out validates it | none | one group-by | none | readable |
-| R1a each establishment's own record shrunk to its category | none | the permit on every visit | a repeat-offender reading | validates on 2025 to 2026 | none | one group-by | none | readable |
-| R1b one criterion per inspector read at Table 1's inspectors | section 3 names the inspector who makes each inspection | the inspector on every visit | the field's rater-severity model | validates on 2025 to 2026 | the initials resolved through the roster | one ratio | none | readable |
-| R1c a first-year criterion for appointees | none | the roster's hire dates | tenure, the reflex of task182 and task202 | none | none | one join | none | readable |
-| R2 (decisive) each scheduled inspection read at its named inspector's earlier visits to the establishment | silent: no sentence names earlier visits, a first visit, familiarity, rotation or tenure (asserted on both PDFs) | silent: no column holds a pair count (R1), and the pair is rebuilt from two exports with different inspector keys | silent: the field's rater models key on the judge, not on the judge's history with the case | silent: the latest-years hold-out validates R0 and R1, and no file scores a pair reading | silent: no duplicate, clock or key issue points at it | silent: a running count over two exports keyed through the roster, crossed with Table 1 and the schedule | silent: the exports, roster, permits, schedule and plan each serve every rung and the asks | silent |
+| R0 the recorded rate by unit type, or pooled, or the trailing year, on the 2027 plan | CS-4 3.5 defines the rate | the case and hours columns | the OSHA rate carried forward | the year-on-year rates agree | the case-system stack, revisions, recurrences, mutual aid | one ratio on one plan | none | readable |
+| R1 the technicians outside HR-14 as the comparison | HR-14 section 1's table | the unit types | the treated-against-untreated reflex | the technicians record less: the record clears | none | one comparison | none | readable |
+| R2 the days-away share as the under-reporting test | none | the OSHA class | the severity-share reflex | the crews' share is no higher: the record clears | none | one share | none | readable |
+| R3 (decisive) each crew's count rebuilt day by day and the crews read in days 0 to 34 of their counts | silent: no sentence names a day of the count, a window, a reporting rate or hiding (asserted by the sweeps) | silent: no column holds a count, a cycle day or a reporting flag | silent: the field's rate takes the record as the injuries, and its two under-reporting checks clear it | silent: no file scores a reading of the count, and both of the field's checks pass on the record | silent: no duplicate, clock or key issue points at it | silent: a running count for every crew across three files, not a ratio | silent: the case systems, the assignment history, the timesheet, the plan and the three documents each serve every rung or the asks | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "marked unsatisfactory" | 25 red points or more, or a closure for an imminent health hazard (UNSAT and IHH CLOSURE in the legacy export, Unsatisfactory and Closed - imminent health hazard in the new one) | closures left out | 683.6, same call and bin | plan section 1 names the closure; same call |
-| SF2 | "the routine inspections in the 2027 schedule" | the schedule workbook's routine inspections (5,512 at 2,648 establishments) | establishments, or the record's 2026 count | the establishment count is not the plan's unit and the 2026 count is not the schedule | plan section 3 counts inspections and the workbook lists them (asserted) |
-| SF3 | "as the inspector named in Table 1 for its district will make it" | every scheduled inspection made by its 2027 district's named inspector | 2027 covering days modelled, or the 2026 district inspector | outside the filed WHAT | plan section 3's sentence; every scheduled district has its named inspector (asserted) |
-| SF4 | an inspector's earlier visits | inspected visits of every type at the permit (routine, return, complaint, pre-opening) | routine visits only | 690.0, same call and bin | same call |
-| SF5 | a closed-premises call | not a visit: the inspector did not inspect | counted as an earlier visit | 695.7, same call and bin | same call |
-| SF6 | the years the rates come from | 2022 to 2026, visits counted from January 2019 | 2021 or 2023 onward; 2019 onward | 699.0 and 708.3, same call and bin; 2019 onward 521.5 | 2019 onward reads a pair's first visit on the record as a first visit although the record starts in January 2019, most permits are dated before it and section 1 sets one to three routine inspections a year (2019's first-visit share 50 per cent against 4.8 to 10.4 in every later year) |
-| SF7 | the visit classes | first, second, third or later | 0, 1, 2, 3 or more; first against any later | 709.6, same call and bin; first against later 626.2, the call in another bin | the record: second visits run above later visits in every risk category (Mantel-Haenszel z 8.5, asserted) |
-| SF8 | how far back the count reaches | every earlier visit on the record | within 36 months | 694.8, same call and bin | same call |
-| SF9 | 2027's own earlier inspections | a pair's second 2027 inspection is its second visit (the count advances through the schedule) | every 2027 inspection at its end-2026 count | 951.1, the call in another bin | the record's classes count the same year's earlier visits (asserted), so the end-2026 count reads the classes another way than they were fitted; section 3 counts each inspection as the inspector will make it |
-| SF10 | the new export's clock | `inspected_at_utc` converted to Pacific time | read as local | 693.4, same call and bin | the column's name; same call |
-| SF11 | an establishment across a change of ownership | the permit (a new owner's permit starts a new record) | merged by street address | 714.1, same call and bin | same call |
-| SF12 | "exceed 540" | strictly greater | at or above | same call: 693.4 is not 540 | same call |
-| SF13 | the nearest 100 | 693.4 to 700, 43.4 from the nearer edge; the standing family 675.7 to 730.2 in the same bin | none | same call | the prompt's rounding sentence (asserted) |
-| SF14 | ask A's population and count | 2026 unsatisfactory routine inspections whose first completed return inspection fell in 2026; county working days from the routine inspection to the day of that return | the inspection system's date for the return; a closed-premises call ending the count | equals the truth for every district (asserted) | plan section 4 ("a return visit that finds the premises closed does not end the count") |
-| SF15 | county working days | weekdays less the days in the county holidays file (Thanksgiving, the day after, Juneteenth among them) | federal holidays | the county's own calendar (asserted) | plan section 4 names county holidays |
-| SF16 | a paper-era closed-premises return call | dated by its RV-NA letter's visit date | the letter's date | every RV-NA letter carries a visit date (asserted) | the fee schedule charges at the rate on the day of the visit |
-| SF17 | complaint response time | the earliest report of the conditions since the permit's previous investigation, to the inspector's arrival | the report the investigation carries | equals the truth for every district (asserted) | plan section 4 ("from the program's first notice of the conditions a complaint reports") |
-| SF18 | the asks' districts | the eleven 2026 districts (`district_2026` in the permits file) | the nine 2027 districts | every 2026 district has investigations and returns (asserted) | the measures are 2026's, and plan section 2 begins the nine districts on 1 January 2027 |
-| SF19 | return visit fees | each further return visit after the first for the same routine inspection, made or found closed, at the rate on the day of the visit, for 2026 visits after 2026 unsatisfactory routine inspections | the inspection system's return visits only | equals the truth for every district (asserted) | the fee schedule's return-visit paragraph |
-| SF20 | a district with no fees | every 2026 district owes fees | none | asserted | the record |
-| SF21 | fees to the dollar | sums of 152 and 168 | none | every total divides by 8 (asserted) | the fee schedule's two rates |
+| SF1 | "recordable injury" | 29 CFR 1904.7, each case once as finally classified (CS-4 3.1) | first aid counted | 4,038 first-aid records against 996 recordables | CS-4 3.1: "First aid ... is not a recordable injury" (asserted) |
+| SF2 | "field employees" | crews and technicians (CS-4 3.2) | crews only | the forecast carries both (asserted) | CS-4 3.2: "whether in a crew or alone" |
+| SF3 | "Pinewater work" | mutual-aid work excluded (CS-4 3.3) | mutual-aid cases kept | 9 recordables: same call | CS-4 3.3 (asserted) |
+| SF4 | "hours worked" | regular and overtime, no paid leave, holiday pay or mutual aid (CS-4 3.4) | paid hours | a lower rate route; the golden's exposure is worked hours | CS-4 3.4 (asserted) |
+| SF5 | the 2027 hours | the work plan's 14,288,000 (CS-4 4(b)) | 2026 hours grown | none filed | CS-4 4(b): "the hours worked in the contractor's work plan" (asserted) |
+| SF6 | recurrences | not new cases (29 CFR 1904.6) | counted as cases and resets | 262.3: same call | CS-4 3.1 "counted once"; same call (asserted) |
+| SF7 | the contract year | calendar 2027 by calendar quarter | a fiscal year | none filed | CS-4 4: "1 January to 31 December" (asserted) |
+| SF8 | the stretch of the count read | days 0 to 34 | days 0 to 19, 0 to 24, 0 to 29, 0 to 39 | 257.2, 249.0, 251.3, 251.2: same call | same call (asserted for each) |
+| SF9 | crews pooled or by type | pooled | each crew type at its own early rate | 255.0: same call | same call (asserted) |
+| SF10 | exposure | each pay period's hours spread over its working days | the early share of recordables over the early share of hours, times the recorded rate | 255.0: same call | same call (asserted) |
+| SF11 | the years read | 2021 to 2026 | 2023 to 2026 only | 236.3: same call | same call (asserted) |
+| SF12 | the technicians' rate | their own recorded 1.92 | the crews' early rate on every hour | 274.5: same call | HR-14 section 1 (technicians are not in the programme); same call (asserted) |
+| SF13 | a recoded crew | one crew under two codes, its count carried over | a new crew from March 2025 | 253.1: same call | HR-14 section 4; same call (asserted) |
+| SF14 | the counts' start | 11 January 2021 for every crew (HR-14 section 3) | each crew's first recordable in the record | 253.1: same call | HR-14 section 3; same call (asserted) |
+| SF15 | quarters | each rounded separately | forced to the year's total | 60, 66, 67 and 62 add to 255 | same figures (asserted) |
+| SF16 | ask: a first-aid case | each injury once (CS-4 3.7), as the case record finally classifies it | each record a case, or one per worker and date | every cell moves | CS-4 3.7 and the export's `source` code (asserted) |
+| SF17 | ask: the window and quarters | 5 January to 27 September 2026, calendar quarters, by injury date | pay periods or posting dates | equals the truth | the prompt and CS-4 3.7 (asserted) |
+| SF18 | ask: a nurse-line case and the supervisor's case | the same injury when the supervisor's case is the worker's in the three days before the call | a one-day or two-day window | 1 and 3 of 16 cells kept | any window from three to seven days pairs the same cases (asserted) |
+| SF19 | ask: a nurse-line case with no supervisor's case | an injury of its own | dropped | equals the truth | every pairing unique, same body part and nature (asserted) |
 
 ## Ladder
 
-| Rung | Route | 2027 forecast | Third officer |
-|---|---|---|---|
-| R0 | risk-category rates, 2022 to 2026 | 437.3 | no |
-| R0b | risk-category rates, 2025 to 2026 | 424.1 | no |
-| R0c | a linear trend in the yearly counts | 436.8 | no |
-| R1a | each establishment's own record shrunk to its category | 458.4 | no |
-| R1b | one criterion per inspector at Table 1's inspectors | 451.0 | no |
-| R1c | a first-year criterion for appointees (none in 2027) | 437.3 | no |
-| R2a | pair classes counted and fitted from 2019 (left truncation unhandled) | 521.5 | no |
-| R2b | first visit against any later visit | 626.2 | yes, 600 at the nearest 100 |
-| R2c | every 2027 inspection at its end-2026 count | 951.1 | yes, 1,000 at the nearest 100 |
-| Golden | first, second and later visit rates by risk category, counted from 2019, fitted on 2022 to 2026, advancing through 2027 | 693.4 | yes, 700 |
-| Standing | the 48 crossed members, the inspector and establishment terms (698.2, 695.0, 701.5, 699.9), the Layer 1 readings | 675.7 to 730.2 | yes, 700 |
-| Truth | the simulation's own expected count | 637.5 | yes |
+| Rung | Route | 2027 recordables | Rate | Against the limit (214.3) |
+|---|---|---|---|---|
+| R0 | the recorded rate by unit type on the 2027 plan | 176.0 | 2.46 | inside |
+| R0b | the pooled recorded rate; the trailing twelve months | 175.9; 177.1 | 2.46; 2.48 | inside |
+| R1 | the technicians outside HR-14 (1.92) against the crews (2.55): no sign the award thins the log | 176.0 | 2.46 | inside |
+| R2 | the days-away share, crews 26 against technicians 30 per cent: no sign of under-reporting | 176.0 | 2.46 | inside |
+| Golden | each crew's count rebuilt day by day, the crews read in days 0 to 34 (3.84), the technicians at 1.92 | 255.0 | 3.57 | over |
+| Standing | days 0 to 19, 0 to 24, 0 to 29, 0 to 39; by crew type; 2023 on; counts from each crew's first recordable; recoded crews as new | 236.3 to 257.2 | 3.31 to 3.60 | over |
 
-Separation: the highest easy rung (458.4) sits 1.18 under 540 and the lowest standing member (675.7) 1.25 over it,
-both asserted against a 1.15 floor; the decisive step alone moves R0 from 437.3 to the golden's 693.4 (R3b). No cheap
-route reaches the call: every route keyed on the inspector, the establishment or the year lands under 540, and the
-two routes that reach it in another bin (R2b, R2c) both need the pair count first. The golden sits 8.8 per cent above
-the truth's expected count (asserted within 12): the record counts from 2019, so pairs with only pre-2019 visits read
-as new, and the first-visit cells carry their sampling error (about 300 to 700 inspections each).
+Separation: the highest inside rung (177.1) sits 37 recordables (17 per cent) under the limit's 214.3; the lowest
+standing member (236.3) sits 22 over it (10 per cent). No route that reads the record as the injuries leaves the
+limit's side; every route that reads the crews where their counts exert no pull lands over it. The truth the
+simulation holds: the crews' true rate is 3.72 and the 2027 plan makes 247.5 recordables (3.46); 401 of the 1,278
+injuries crews had on Pinewater work from 2021 to 2026 (31.4 per cent) never reached the log.
 
 ## Closure table
 
 | Axis | Reading | Move |
 |---|---|---|
-| 1 Population | the 2027 schedule's routine inspections, as the workbook lists them | filed: plan section 3 and the workbook (SF2) |
-| 2 Unit of account | one routine inspection, marked unsatisfactory or not | filed: plan section 3 |
-| 3 Attribution window | calendar 2027 | filed: the plan's year and the schedule |
-| 4 As-of dating | the record to 31 December 2026, the plan issued 11 January 2027 | filed: the plan's header; C1, nothing after 2026 ships |
-| 5 Version basis | one export per system, no revisions or re-pulls | C1 |
-| 6 Denominator | inspections made; a closed-premises call is not an inspection | C1: SF5 same bin |
-| 7 Weighting | each scheduled inspection counts once | filed: a count |
-| 8 Window length | rates from 2022 to 2026, visits counted from 2019 | C3: rates from 2021 or 2023 onward keep the bin (SF6); 2019 onward refuted by the record's start |
-| 9 Boundary inclusivity | "exceed 540" strictly | C1: same call (SF12) |
-| 10 Rounding path | the unrounded sum, rounded once to the nearest 100 | filed: the prompt's last sentence (SF13) |
-| 11 Tie-break | no tie at the threshold or at a bin edge | C1: 693.4 is 43.4 from the nearer edge |
-| 12 Maturity and censoring | the record's start truncates every pair's history | C2: rates start three years after the record, and every standing window agrees (SF6) |
-| 13 Order of operations | count the pair's visits, take the class rates, sum over the schedule | C1: the steps commute |
-| 14 Row order | visits in local time order, across both exports | C1: UTC read as local keeps the figure (SF10) |
-| 15 Duplicate resolution | no duplicate visits; a complaint's several reports belong to ask B | C1 for the call |
-| 16 Identity normalisation | legacy initials to employee numbers through the roster; permits keep their numbers across the migration | C1: no two staff share initials (asserted) |
-| 17 Netting against gross | a count, nothing netted | C1 |
-| 18 Dimensional units | inspections | C1 |
-| 19 Code and status semantics | UNSAT and IHH CLOSURE, Unsatisfactory and Closed - imminent health hazard are unsatisfactory; NO ACCESS and No access are not inspections | filed: plan section 1; C1 (SF1, SF5) |
-| 20 Integerisation | the expected count is not an integer and is rounded once | filed: the prompt |
-| 21 Clause scope | section 3 counts routine inspections only; other visits count only as earlier visits | filed: section 3; C3 (SF4) |
-| 22 Forward window contents | 2027's own earlier scheduled inspections advance the count; 2027 complaint visits are not forecast | C2: the record's classes count same-year visits (SF9); no member forecasts 2027 complaints |
+| 1 Population | field employees, crews and technicians, on Pinewater work | filed: CS-4 3.2 and 3.3 (SF2, SF3) |
+| 2 Unit of account | a recordable case, counted once | filed: CS-4 3.1 (SF1, SF6) |
+| 3 Attribution window | calendar 2027 by quarter | filed: CS-4 4 (SF7) |
+| 4 As-of dating | the records to 27 September 2026 (the case export to 9 October) | filed: the extracts' own spans; C1 |
+| 5 Version basis | each case's latest revision | filed: CS-4 3.1 "as finally classifies it" |
+| 6 Denominator | hours worked as CS-4 defines them | filed: CS-4 3.4 (SF4) |
+| 7 Weighting | each hour and each recordable counts once | C1 |
+| 8 Window length | the whole record from 11 January 2021 | C2: from 2023 only gives the same call (SF11) |
+| 9 Boundary inclusivity | "above the limit": 3.57 against 3.0 | C1: same call either way |
+| 10 Rounding path | recordables to whole numbers, rates to two decimals, each figure rounded once | filed: the prompt (SF15) |
+| 11 Tie-break | no figure on a half | C1: asserted in checks.py |
+| 12 Maturity and censoring | cases revised after the cut are not in the record; none is needed | C1 |
+| 13 Order of operations | the counts, then the rates, then the plan | C1: the steps commute |
+| 14 Row order | none needed | C1 |
+| 15 Duplicate resolution | a migrated case once, in the new system; a recurrence not a new case | filed: CS-4 3.1; C1 (SF6) |
+| 16 Identity normalisation | a recoded crew carried under its new code | filed: HR-14 section 4 (SF13) |
+| 17 Netting against gross | prior-period adjustments in the period they correct | C1: same call |
+| 18 Dimensional units | hours and recordables per 200,000 hours | filed: CS-4 3.5 |
+| 19 Code and status semantics | FA, MT, RW and DA as 29 CFR 1904.7; the export's codes sheet | filed: the codes sheet |
+| 20 Integerisation | the forecast rounded to whole recordables | filed: the prompt |
+| 21 Clause scope | the limit applies to the plan's forecast rate | filed: CS-4 section 5 |
+| 22 Forward window contents | 2027 without HR-14: no award at stake for any crew | filed: the notice ("ends on 31 December 2026"); C2: every reading of the early stretch keeps the call (SF8 to SF14) |
 
 ## Literal reader
 
-On paper and on the cut pack: the prompt asks for the call and the forecast the rule compares; the plan's section 3
-files the rule and its WHAT (the 2027 schedule's routine inspections that will be marked unsatisfactory, each as
-Table 1's inspector will make it, against 540), section 1 the definition and section 2 with the workbook the
-population. Executed word for word, the WHAT leaves open only how an inspector's mark is forecast, and the record
-forces it: the per-inspector and per-establishment models validate on the latest years and land under 540, while the
-pair's visit count separates first, second and later visits (second against later at z 8.5) and a hold-out on the
-2023 appointee's first year refutes the per-inspector rates (47 against 137 recorded, visit classes 110). Every
-literal reading of a convention on the call (SF1 to SF13) gives the golden's call and bin or is ruled out by a
-quotable fact, and every ask reading (SF14 to SF21) equals the simulation's own measure. Pass.
+On paper and on the cut pack: the prompt asks how many recordable injuries Redbud's field employees will record on
+Pinewater work in 2027 and whether the rate they make on the 2027 work plan keeps Redbud within CS-4's 3.0. CS-4
+4(a) and (b) file the quantity and every term of it (3.1 to 3.5), the notice files that HR-14 ends on 31 December
+2026, and CS-4 leaves the method to the contractor. Executed word for word, the WHAT leaves open only how the 2027
+rate is estimated from the record, and the record forces it: read against each crew's own count, the crews record
+3.85 and 3.84 per 200,000 hours in its first five weeks and 1.38 and 1.01 in its last five, while the days-away cases
+come in at 0.69, 0.78 and 0.55 across the count; with no award at stake in 2027, every reading of the crews where
+their counts exert no pull lands over the limit (236 to 257). Every literal reading of a convention on the call
+(SF1 to SF15) gives the golden's call or is ruled out by a quotable sentence; every ask reading (SF16 to SF19) equals
+the world's own truth. Pass.
 
 ## Oracles
 
-- The truth's expected 2027 count from the simulation's own criteria, 637.5: the golden sits 8.8 per cent above it
-  (asserted within 12 per cent), on the same call.
-- The asks: every ask A, B and C figure equals the simulation's own measure for its district, 33 of 33 (SF14, SF17,
-  SF19).
-- No shipped oracle: no file ties only under the golden reading; the capacity report states 2026's returns against
-  capacity, a past quantity; the latest-years hold-out validates both the easy route and the golden.
+- The world's own truth: the injuries the simulation generated, recorded or not, give the crews' true rate of 3.72
+  and 247.5 recordables on the 2027 plan (3.46), over the limit; on the clean truth the easy route files 175.9,
+  inside it (asserted in checks.py, `dataset-generation` 7.1); the golden (255.0) sits 3 per cent above the truth.
+- The asks: every first-aid cell equals the world's own count of first-aid injuries on Pinewater work by district
+  and quarter, read on the records' own dates (16 of 16, asserted through the verifier's own pairing).
+- No shipped oracle: no file ties only under the golden reading; the good-catch reports and the subcontractors'
+  returns are distractors that rank nothing.
 
 ## Ask sheet
 
@@ -255,41 +211,50 @@ Pair ceiling: 28.5 (the cracker 45.0, the mirror 12.0, on the planning weights o
 Mirror leakage: 0.0 per cent of the ask weight
 Measured by: generator/ceiling.py, run on the cut pack
 
+One ask, sixteen graded cells: for each district, the first-aid cases its field employees had on Pinewater work from
+5 January to 27 September 2026 in each calendar quarter and in all (H18 home: `recordables_forecast_2027.xlsx`,
+sheet "2026 by district"). It reads rows the call never reads (every first-aid record, the nurse line's cases among
+them) and no device sits on a recordable, an hour or a count.
+
 | Ask | Primary device | Golden | The cracker's figures | Cracker |
 |---|---|---|---|---|
-| A, median return timeliness in working days, eleven 2026 districts | D8: the return team's inspections keyed from paper day sheets until 31 August 2026 carry the keying stamp (the next Monday or Tuesday, sometimes a week later); the day sheets' own dates sit in the capacity report's day-sheet log, matched by officer and address as written | 8.5 to 13.0 | 11.0 to 15.5, every district off | miss |
-| B, median complaint response in hours, eleven 2026 districts | D1: an incident's several reports (telephone, online form, email, referral) sit as separate complaint records, and the investigation carries the report it was dispatched on, the latest before dispatch, while the plan measures from first notice | 60.3 to 155.5 | 35.5 to 121.4, every district off | miss |
-| C, return visit fees in dollars, eleven 2026 districts | D4: paper-era closed-premises return calls were never keyed and are evidenced only by the correspondence log's RV-NA letters; D8's day-sheet dates move visits across the 1 July rate change | 1,416 to 4,376 | 792 to 3,464, every district off | miss |
+| A, first-aid cases by district and quarter (12 cells) | D1: the nurse line's interface opens a first-aid case of its own from each call, dated the day of the call, beside the supervisor's case of the same injury; 58 per cent of calls come one to three days after the injury, so the duplicate check on worker and injury date pairs only the same-day calls, and the next-day ones stay two injuries (and a nurse-line case beside a recordable stays a first-aid case) | Blue Ridge 36, 44, 19; Piedmont 38, 34, 32; Lakes 45, 46, 30; Coastal 52, 51, 33 | every cell high by 3 to 16 | miss |
+| B, first-aid cases by district, 5 January to 27 September (4 cells) | D1, the same pairing summed over the window | 99, 104, 121, 136 | 125, 123, 140, 161 | miss |
+| Full includer (stress row): every nurse-line case paired with the supervisor's case of its worker in the three days before its call | the golden handling | 16 of 16 | the cracker's 0 of 16 | miss |
 
-The full includer (day sheets, first notice and the letters, a stress row) keeps 33 of 33; the letters without the day
-sheets keep 7 of 11 fee cells, so ask C carries two devices from two families on disjoint blocks. Every ask reads rows
-the call never reads (return and complaint visits, complaint records, letters, the day-sheet log), and no device sits
-on a routine inspection (asserted). Each ask B median sits at least 0.03 hours from a rounding edge (a clearance pass
-makes ten nudges of 150 seconds to complaint visit times, asserted), and the ask A medians are whole or half days.
+The one-day pairing window keeps 1 of 16 cells and the two-day window 3 of 16 (stress rows); any window from three
+to seven days pairs the same cases (asserted). Hazards: case revisions (first aid to medical treatment, handled by
+the cracker), the migrated cases, recurrences, mutual-aid work, nurse-line calls after the window's end, the crew on
+the day for a technician or a worker who changed crews. Accepted risk: the layer stands on one device, so a response
+that pairs the nurse line's cases with a window of three days or more keeps every cell.
 
 ## Build record
 
-- Seed 1302027; `generator/make.py` builds the pack, the goldens, metadata.json and figures.json, runs checks.py (245
-  assertions), verify.py (an independent recomputation of the forecast and all 33 ask figures from the bundle alone,
-  against the golden workbook and memo), a second build in a fresh folder compared byte for byte, and writes
-  target.zip.
-- Pack: 13 files in four formats; the legacy export 30,164 rows, the new export 18,077; distractors
-  `foodborne_illness_investigations_2019-2026.xlsx` and `permit_fee_invoices_2026.csv`.
+- World seed 130624 (`generator/world.py`); `generator/sim.py` simulates every crew and technician day from 28
+  September 2020 to 27 September 2026 (HR-14 Revision 2 starts every count on 11 January 2021); `generator/pack.py`,
+  `docs.py` and `distract.py` cut the pack; `generator/make.py` builds it, writes the goldens, metadata.json and
+  figures.json, runs `checks.py` (65 assertions) and `verify.py` (an independent pandas recomputation of the forecast
+  and the sixteen first-aid cells, its own seven-day pairing), builds a second time into a scratch folder, compares
+  target/ and golden/ byte for byte, and cuts target.zip. Rebuild: `python3 task130/generator/make.py`.
+- Pack: 12 files in four formats (CSV, XLSX, PDF, DOCX); the timesheet is the largest file (152,804 rows);
+  distractors `good_catch_reports_2025-2026.csv` and `subcontractor_monthly_safety_2026.csv`, named in metadata.json;
+  every workbook, PDF and document carries its own created and modified stamps.
+- target.zip: 12 members, 1,850,230 bytes, sha256 325d048a28a5d9eec3ef0ef13e370214e64c415754c9d36fe456bd5a2d5f7bdf.
+- Gates on the final cut: precut.py exit 0 (61 checks, 0 WARN); figures_check.py PASS (80 figures); voice-check.py
+  PASS (659 characters); leak.py REVIEW, no LEAK (two lines, ruled below); `guard.py surface` exit 0 (four pairs
+  promoted on card axes or corpus-percentile surface alone: task166, task133, task196, task180, each answered by the
+  card's differentiation lines; people Samantha Galvan, Jerome Warren, Norma Hinton and Sergio Phillips, all on the
+  card); `guard.py heart` WARN (`three_rules.strategy_risk` only, answered by the analyst test; nearest card task149
+  at 0.10, differentiated).
+- Ceiling on the cut pack (`generator/ceiling.py`): the cracker and the mirror keep 0 of 16 ask cells; pair 28.5.
 
 ## Leak sweep
 
-`leak.py --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Each REVIEW line, ruled:
-
-- Sweep 3, the plan carries most of the call's words: harmless. Section 3 files the staffing rule the call executes
-  (a third officer when the forecast exceeds 540); it states no forecast, no direction and no figure the golden
-  computes.
-- Sweep 4, stump-paragraph nouns in the plan (inspector, record, establishment, schedule, category) and the fee
-  schedule (establishment, schedule, category): harmless. They are each document's own nouns for its program; neither
-  document names earlier visits, first visits, familiarity, rotation, tenure or experience (asserted in checks.py).
-- Sweep 9, 2027 dates in `county_holidays_2025-2027.json`: harmless. The county publishes its holiday calendar ahead
-  of the year, and the file's 2027 days are that calendar, a forward-looking record by its genre.
-- The report's solver's-eye section from architecture 4 (Corvane Health) was cut from the report, since it read a
-  dead pack; the stage 4 reader appends a fresh one.
+- Sweep 3, `pinewater_contractor_safety_standard_cs4.pdf` carries most of the call's distinctive words: harmless.
+  The standard is the governing document and defines every term the call uses (recordable injury, field employee,
+  Pinewater work, the rate per 200,000 hours, the 3.0 limit); it states no figure, no forecast and no method.
+- Sweep 9, `payroll_calendar_2021-2027.csv` carries pay periods after the setting: harmless. A payroll calendar is
+  published ahead for the year it covers; it holds period dates only, no hours, cases or outcomes.
 
 ## Tried and rejected
 
@@ -668,3 +633,31 @@ Architecture 5 build (2026-10-31):
   place at 19:05Z), and the state agency answered only the organisation ban. The card was revised instead to the
   decisive gap it argues best (time, Gap 1: the measurement backward, the decision forward, which every easy rung
   shares) and filed anew; the world, the mechanism and every graded figure are unchanged.
+
+Architecture 6 draw (2026-10-31):
+
+- Architecture 5 (Elkhorn County's third return-inspection officer, the unsatisfactory rate stationary in each
+  inspector's visit number): passed two determinism passes (DETERMINISTIC, APPROVE; the reports kept as
+  determinism_check_report_arch5.md and determinism_check_report_arch5_pass2.md), but its draw repeated task156 v2's
+  decisive pattern G14, strategy forecast_method_backtest and organisation family local_government inside the
+  three-build window. The draw's check ran before task156's card reached the tree, and re-registering the card only
+  moved the window, which later moved back; the guard forbids waiting for the window to move or relabelling a card,
+  so the build re-roots.
+- This draw's first card (human-factors-ergonomics, human-reliability-assessment, strategy causal_design, shape 07,
+  organisation family utility_or_infrastructure): redrawn before registration, when task122 v3's card reached the tree
+  holding the domain, the strategy, the shape and the organisation family; the world and the mechanism moved to
+  economics-econometrics (the reporting choice under an incentive pay scheme), strategy time_semantics, shape 02.
+- Insurance claims hidden under a no-claims discount until standard protection removes the incentive: set aside at
+  the draw, actuarial-science-insurance is this slot's v3 and v4 domain (claims-frequency-severity was v3's task type).
+- A wind farm's weather-window waiting time, a vial-sharing drug budget, a storage cluster's retention plateau, a
+  hotel's duplicate bookings, a loyalty scheme's expiry bunching and an employer-change hazard: weighed and not
+  taken (the field's simulation is the golden, a withheld pooling rule, a weak domain fit, composition, task134 v2's
+  surge-filled clock and task179's other-body lift respectively).
+
+Architecture 6 (2026-11-01):
+
+- The CS-4 4(c) district table as the ask layer (each district's recordables, hours worked, recordable rate and crews' rate), with the timesheet row's work district and the case record's location as the devices: rejected at the ceiling, the careful solver who lands the call has already placed every case on the worker's crew on the day and executes CS-4 3.6 by mapping each crew to its register district, so both devices are readings it never makes and the honest cracker keeps every cell.
+- The HR-14 awards and their dollars by district: rejected, a group-by on the payroll export's crew and milestone columns with its reversal lines netted, kept whole by both sheets.
+- The payroll extract as the counts' anchors: dropped with the awards ask, since a file read by the decisive step alone announces it (readability test 7); every count now runs from HR-14 Revision 2's start on 11 January 2021, which the programme document files.
+- A payroll crew code that is the member's current crew (an awards device): rejected earlier in this architecture, it planted false anchors on the members' new crews and moved the call to 2.85.
+- Each recurrence's outcome and days carried onto its original case (29 CFR 1904.6) as the ask device: rejected, eight recurrences of 2026-window cases leave whole districts' cells unmoved.

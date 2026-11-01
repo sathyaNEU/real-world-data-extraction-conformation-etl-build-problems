@@ -1,31 +1,49 @@
 {
  "task": "task125",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "criminology-justice / crime-incidence-hotspot-analysis",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-31",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-01",
  "stump": "A competent analyst ranks the street segments by their 2026, or 2022 to 2026, patrol crimes and designates the top 20, keeping the segments beside the Memorial Gardens and leaving out those beside the Lakeshore Centre; the step that lands it there is forecasting 2027 from each segment's own record when much of those segments' crime falls on venue event days and the 2027 calendar moves the Mariners' home games to the Lakeshore.",
  "architecture": 4,
- "loops": 0,
+ "loops": 1,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-31"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on target.zip 1af4c489 (--asof 2027-01-06, no LEAK): sweeps 3, 4 and 9 ruled harmless in the note",
+  "reader": "read 1 on 5e01ea0a and read 2 on d5c73e26 (after the first repair changed PO-14, the protocol, the email and the prompt), isolated, pack and prompt only: no leak at either, question 6 analytical at both (each segment's 2027 count forecast with the event nights carried by the 2027 calendar); the final cut 1af4c489 changed data only; leak_check_report.md"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31 on the card as filed (registered 20:44:17Z): overuse.org_family and repeat.gate_g against task474 v7, answered in the note's Pre-ship check",
-  "heart": "WARN 2026-10-31 on the final cut: the same two WARNs, no BLOCK",
-  "surface": "exit 0 2026-10-31; four pairs promoted for the author's adjudicated read (task127 and task304 on surface similarity, task257 and task84 on card axes already differentiated); every persona in the pack is on the card"
+  "guard_check": "PASS 2026-11-01 on the card re-registered 00:37:31Z (forum redrawn to line_manager_or_team after executive_team fell under task122 v4's ban; the forcing event period_close since 2026-10-31)",
+  "heart": "PASS 2026-11-01 on the final cut",
+  "surface": "exit 0 on the final cut 2026-11-01 (personas Eric Gordon, Lindsey Turner; task178 promoted on card axes for the author's adjudicated read)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 2, the one re-judge: DETERMINISTIC (SOLUTION_WRONG minor: Wards 2, 5 and 6 Q1 of patrol_figures_2026.csv; the designation, the lists, the chart and Gates F, G and H pass); pass 1: NOT_DETERMINISTIC on the officer-hours ask, reconciled to FIX_NOW",
+  "disposition": "FIX_NOW, repaired in the generator on target.zip 1af4c489: the re-judge's tour dating (local midnight less a day of elapsed time) took the night of 7 March's crews for 14 unit rows dispatched after midnight on 9 March; those units now carry the 7 March crews on the 8 March night (SF24, T4), Wards 1, 2, 3, 5 and 6 Q1 moved, everything else unchanged",
+  "report": "determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+  "pass1": {
+   "date": "2026-11-01",
+   "zip": "5e01ea0a",
+   "verdict": "NOT_DETERMINISTIC on the officer-hours ask only",
+   "thread_disposition": "SEND_BACK",
+   "reconciled": "FIX_NOW (Gates A and C on one ask, G and H pass; determinism-check section 6)",
+   "report": "task125/determinism_check_report.md"
+  },
+  "pass2": {
+   "date": "2026-11-01",
+   "zip": "d5c73e26",
+   "verdict": "DETERMINISTIC, SOLUTION_WRONG minor (three Q1 officer-hours cells)",
+   "disposition": "FIX_NOW (Gate A on the ask; G and H pass)",
+   "report": "task125/determinism_check_report_pass2.md"
+  },
+  "final": "the three cells traced to a tour-dating reading on the morning after the clock change; the data now give the same 32 cells under every tour-dating reading, the verifier recomputing them three ways including the thread's own; the judge agent's pass 2 note: a repair that changes only those figures needs verify and figures_check and no further judge run",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
  "returned": [
   {
@@ -53,9 +71,9 @@
    "commit": "DRAWN (task125) architecture 4"
   }
  ],
- "resume": "stage 2: design note sections, the screens as code, prompt through voice-check, precut.py exit 0; then the build",
+ "resume": "Shipped 2026-11-01 on architecture 4: the main call forced at both judge passes (Gates F, G and H pass, the decisive step analytical); the officer-hours ask repaired twice in the generator (the spring clock change's rows, then the crews on the night after it) so every tour-dating reading gives the same 32 cells; two clean leak reads; every free gate re-run on target.zip 1af4c489 (two byte-identical builds, 65 checks, verify 4 of 4, figures_check 89 of 89, precut 61 checks, voice-check PASS, heart PASS, surface exit 0). The medians ask was withdrawn at the first repair. Waits on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": "",
  "lineage": [
   {
@@ -65,10 +83,20 @@
   {
    "architecture": 2,
    "fate": "retired at the batch audit 2026-10-31: short of the survivor anatomy (actor schema-visible, the field's estimator as the golden, the decisive step exact arithmetic); re-rooted as architecture 3"
+  },
+  {
+   "architecture": 3,
+   "fate": "spent at stage 4 2026-10-31: the determinism judge's SEND_BACK, a planted-defect flip (boundary samples in unmixed plumes); re-rooted as architecture 4"
   }
  ],
- "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline",
+ "alignment_pass": "",
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": "ad0c0db71e2cf1bd"
+ "zip_sha256_16": "1af4c489310cda4f",
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "SHIPPED: architecture 4, designate the 14 chronic segments, King St from Wellington to Albert and the five Lakeshore Centre segments; target.zip 1af4c489"
+  }
+ ]
 }

@@ -1,175 +1,119 @@
 {
-  "task": "task231",
-  "title": "Which regions go into the reminder-call extension of a central bank's business survey round",
-  "domain": "Survey Research & Official Statistics",
-  "subdomain": "nonresponse, calibration and measurement-error adjustment (eligibility of unresolved non-respondents)",
-  "objective": "Data Quality Monitoring & Alerting",
-  "prompt_shape": "10 (scorecard): twelve regions' response rates checked against the 55 and 58 per cent lines, with the contact centre's work, the June late returns and the March refreshment",
-  "as_of": "2026-09-25",
-  "deliverables": [
-    "bcs_sep2026_extension.xlsx",
-    "bcs_sep2026_response.pptx"
-  ],
-  "distractor_files": [
-    "BCS_regional_balances_2026_06.xlsx",
-    "BCS_questionnaire_2026.pdf"
-  ],
-  "input_gates": {
-    "files": 15,
-    "formats": [
-      "csv",
-      "json",
-      "pdf",
-      "xlsx"
-    ],
-    "largest_file": "bcs_round_outcomes_2017_2026.csv",
-    "largest_file_rows": 210800
+ "task": "task231",
+ "architecture": 2,
+ "setting": "2027-05-18",
+ "files": [
+  {
+   "name": "sdhd_ess_atmospheric_2026_27.csv",
+   "role": "evidence",
+   "source": "synthetic: the District's ESS atmospheric export, one row per observation delivered",
+   "date": "2027-05-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
   },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task231/generator/make.py (seeded, deterministic) around a fictional central bank's business survey (Brevland Central Bank, Business Conditions Survey); no real person, firm, organisation or register record is depicted.",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-13",
-  "generator": "task231/generator/make.py",
-  "files": [
-    {
-      "path": "BCS_fieldwork_quality_standard_v3.pdf",
-      "format": "pdf",
-      "bytes": 5196,
-      "rows": null,
-      "source": "Constructed: BCS fieldwork quality standard, version 3.0",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "BCS_round_calendar.xlsx",
-      "format": "xlsx",
-      "bytes": 9475,
-      "rows": null,
-      "source": "Constructed: BCS round calendar, March 2017 to December 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "bcs_panel_register.csv",
-      "format": "csv",
-      "bytes": 1067629,
-      "rows": 14802,
-      "source": "Constructed: Every firm recruited to the BCS panel since 2014",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "bcs_round_outcomes_2017_2026.csv",
-      "format": "csv",
-      "bytes": 9703929,
-      "rows": 210800,
-      "source": "Constructed: Outcome of every invited firm, rounds March 2017 to June 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "bcs_invitations_2026_09.csv",
-      "format": "csv",
-      "bytes": 510404,
-      "rows": 8604,
-      "source": "Constructed: Firms invited to the September 2026 round",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "bcs_returns_2026_09.csv",
-      "format": "csv",
-      "bytes": 201271,
-      "rows": 4627,
-      "source": "Constructed: Returns logged for the September 2026 round up to the main close",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "brevland_business_register_closures.csv",
-      "format": "csv",
-      "bytes": 243909,
-      "rows": 4702,
-      "source": "Constructed: Business register closure records for the panel's company numbers, as at 25 September 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "business_register_extract_notes.pdf",
-      "format": "pdf",
-      "bytes": 3219,
-      "rows": null,
-      "source": "Constructed: The register's notes on its closure extract",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "contact_centre_calls_2022_2026.csv",
-      "format": "csv",
-      "bytes": 10280866,
-      "rows": 148136,
-      "source": "Constructed: Contact centre call records, March 2022 to the September 2026 main close",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "contact_centre_outcome_codes.xlsx",
-      "format": "xlsx",
-      "bytes": 8120,
-      "rows": null,
-      "source": "Constructed: Contact centre outcome codes, both schemes",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "bcs_region_review_2023.csv",
-      "format": "csv",
-      "bytes": 531,
-      "rows": 12,
-      "source": "Constructed: Region codes before and after the 2023 regional review",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "BCS_data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 10781,
-      "rows": null,
-      "source": "Constructed: Data dictionary for these files",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "BCS_regional_balances_2026_06.xlsx",
-      "format": "xlsx",
-      "bytes": 8530,
-      "rows": null,
-      "source": "Constructed: Published net balances, June 2026 round",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "BCS_questionnaire_2026.pdf",
-      "format": "pdf",
-      "bytes": 3450,
-      "rows": null,
-      "source": "Constructed: BCS questionnaire 2026",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest.json",
-      "format": "json",
-      "bytes": 3683,
-      "rows": null,
-      "source": "Constructed: export manifest",
-      "date": "2026-09-25",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    }
-  ]
+  {
+   "name": "quillan_qc_withheld_log_2026_27.csv",
+   "role": "evidence",
+   "source": "synthetic: the vendor's QC withheld log for the District's network",
+   "date": "2027-05-04",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_rwis_site_register.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the District's RWIS site register with pavement sensors and firmware",
+   "date": "2027-05-11",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_road_weather_data_quality_standard_rev2.pdf",
+   "role": "governing",
+   "source": "synthetic: the District's RWIS data quality standard, Revision 2",
+   "date": "2026-08-28",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "quillan_air_temperature_qc_configuration_v4_3.pdf",
+   "role": "governing",
+   "source": "synthetic: the vendor's air temperature QC configuration document",
+   "date": "2027-01-13",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "quillan_service_agreement_schedule_b.pdf",
+   "role": "governing",
+   "source": "synthetic: Schedule B (service levels) of the operations and data services agreement",
+   "date": "2025-06-27",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_central_server_message_log_2026_27.csv",
+   "role": "evidence",
+   "source": "synthetic: the central server's message log",
+   "date": "2027-05-03",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_cellular_modem_register.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the District's cellular modem register",
+   "date": "2027-04-28",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_rwis_planned_outage_notices_2026_27.csv",
+   "role": "evidence",
+   "source": "synthetic: the District's planned outage notices to the vendor",
+   "date": "2027-04-22",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_pavement_sensor_readings_2026_27.csv",
+   "role": "evidence",
+   "source": "synthetic: the pavement sensor export, as the RPUs report it",
+   "date": "2027-05-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_rwis_preseason_checks_oct2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the October 2026 pre-season air temperature checks",
+   "date": "2026-10-02",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "hrrr_point_forecasts_sdhd_2026_27.csv",
+   "role": "distractor",
+   "source": "synthetic: HRRR 2 m temperature point forecasts at the District's sites",
+   "date": "2027-05-02",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "sdhd_atr_daily_volumes_2026.csv",
+   "role": "distractor",
+   "source": "synthetic: automatic traffic recorder daily volumes, calendar 2026",
+   "date": "2027-01-09",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "rwis_winter_review_request.eml",
+   "role": "voice",
+   "source": "synthetic: the program manager's review request",
+   "date": "2027-05-18",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  }
+ ],
+ "distractors": [
+  {
+   "name": "hrrr_point_forecasts_sdhd_2026_27.csv",
+   "why_unused": "a model forecast of the air, not a measurement of it; it carries little of the basins' cold pools, so it cannot say whether a station's reading was right"
+  },
+  {
+   "name": "sdhd_atr_daily_volumes_2026.csv",
+   "why_unused": "traffic volumes bear on where ice matters, not on whether the test withheld a right reading or on the service and pavement hours asked"
+  }
+ ],
+ "deliverables": [
+  "rwis_spatial_check_review_2027.xlsx",
+  "spatial_check_retune_memo_2027.docx"
+ ]
 }

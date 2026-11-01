@@ -6,12 +6,12 @@
   "domain": "general-statistics-data-science",
   "subdomain": "exploratory-data-analysis-distribution-assessment",
   "client_domain": "general-statistics-data-science",
-  "niche": "a regional hospital pharmacy's sterile compounding unit deciding which of its batch-compounded products go onto 100 percent gravimetric verification when its IV workflow system goes live in April 2027, the pharmacy's quality policy requiring it where a product's out-of-tolerance doses over 2026 exceeded 10 in 100,000 doses made, when each product is filled on peristaltic compounders whose delivered volume falls as the tubing set wears and only the first dose of each set and one in forty after it is weighed",
+  "niche": "a regional hospital pharmacy's sterile compounding unit deciding which of its batch-compounded products go onto 100 percent gravimetric verification when its IV workflow system goes live in April 2027, the pharmacy's quality policy requiring it where a product's out-of-tolerance doses over 2026 exceeded 10 in 100,000 doses made, when each product is filled on peristaltic compounders whose delivered volume falls as the tubing set wears and only the first dose of each batch and one syringe in a hundred or bag in twenty after it is weighed",
   "objective": "descriptive-distribution",
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
+  "answer": "P0412, P0431, P0507 and P0702 (cefazolin 2 g syringe, cefoxitin 2 g syringe, phenylephrine 10 mL syringe, midazolam 50 mL syringe)",
   "answer_source": "submission.md block 1 and generator/figures.json call",
   "gap": [
     "population"
@@ -47,7 +47,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "compounder_dose_log_2026.parquet",
-    "rows": 0,
+    "rows": 477875,
     "entity": "one dose filled",
     "grain": "dose",
     "source": "synthetic"

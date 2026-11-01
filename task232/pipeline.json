@@ -1,37 +1,88 @@
 {
  "task": "task232",
- "status": "SHIPPED",
- "domain": "epidemiology-public-health",
+ "status": "PAUSED",
+ "domain": "survey-research-official-statistics / nonresponse-calibration-measurement-error-adjustment (client survey-research-official-statistics)",
  "objective": "data-quality-monitoring",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-13",
- "stump": "Counting as the index's secondary cases every follow-up case ill after the index (221 of 319) gives 11.33, 4.61 and 12.16 per 1,000 child-hours and sets Larkspur 1, Halden 4 and Kestrel 2 (base hospital 12, Highfield 12, reference 24), against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98 per 1,000).",
- "architecture": 1,
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-11-01",
+ "stump": "A competent analyst who fits the survey methods' standard interviewer-effect model (the frame's dwelling covariates, then the small area held) refers interviewers 2118, 2174, 2181, 2216, 2405, 2433, 2440, 2447 and 2454, sending three interviewers whose streets and patches simply hold larger households to the review; only the households the panel visited again under a changed interviewer hold the household fixed, and on them the referrals are 2118, 2174, 2181, 2216, 2405 and 2454.",
+ "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-13"
+  "exit": 1,
+  "date": "2026-11-01",
+  "checks": "61, 4 FAIL (the stage 3 generator's checks.py, ceiling.py and the measured ask sheet), 1 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW (sweeps 3, 4, 6, 9 answered in the design note); no LEAK",
-  "reader": "two reads: first found secondary case undefined (fixed by the GL-CD-11 definition), incident templates and a register note (fixed); second clean"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS",
-  "nearest": "0.08 task122 v2 lineage; surface nothing promoted"
+  "guard_check": "PASS 2026-11-01 on the registered card (structural tests differentiated against task243, task274 v2, task450 v2, task121 v6, task129 v2; nearest driver 0.12, task245)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (pass 2 after the definition fix; pass 1 also APPROVE)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "shipped; next: the author marks approvals on the board, then the domain and second-layer review of unapproved shipped builds",
+ "resume": "stage 3, mid-build: the world (generator/world.py) and the rungs (generator/analysis.py) are written and measured on the clean truth (golden household fixed effects refer 2118, 2174, 2181, 2216, 2405, 2454; the frame-adjusted model 8 with 2223 and 2433 false, the area-held model 9 with 2433, 2440, 2447 false; the design note's ladder carries the numbers). Next: write pack.py (the eleven-plus files of the Ask sheet and Layer 1: hlp_household_interviews_2025-2026.csv as the spine, the person roster, the case file, the dwelling frame, the senior team's reissue export keyed by Eircode, the frame team's vacancy log, the UTC contact log, FQ-3 v3.2 PDF, the request email, two distractors), docs.py, golden.py (the pptx with the effect chart and the xlsx asks), writeup.py, checks.py (SF1 to SF8 asserted, every rung's set asserted, the standing family's agreement), verify.py, ceiling.py, make.py (two byte-identical builds, the zip); then precut, figures_check, voice-check, leak.py, guard surface and heart; then the stage 4 hand-off",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "source_note": "re-root into a new world (Tobar Social Research's Household Life Panel, Ireland: which field interviewers the Field Quality Committee refers to the first-quarter 2027 review on their roster effect); architecture 1 (the North Coast public health unit's per-feed SLA alert settings) spent at the batch 1 audit",
+ "architecture_1": {
+  "status": "SHIPPED",
+  "domain": "epidemiology-public-health",
+  "objective": "data-quality-monitoring",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-13",
+  "stump": "Counting as the index's secondary cases every follow-up case ill after the index (221 of 319) gives 11.33, 4.61 and 12.16 per 1,000 child-hours and sets Larkspur 1, Halden 4 and Kestrel 2 (base hospital 12, Highfield 12, reference 24), against 12, 2, 12, 4, 12 and 24 from the incubation window (141 cases; 7.94, 3.07 and 6.98 per 1,000).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+   "exit": 0,
+   "date": "2026-10-13"
+  },
+  "leak": {
+   "leak_py": "REVIEW (sweeps 3, 4, 6, 9 answered in the design note); no LEAK",
+   "reader": "two reads: first found secondary case undefined (fixed by the GL-CD-11 definition), incident templates and a register note (fixed); second clean"
+  },
+  "duplicate_check": {
+   "heart": "PASS",
+   "nearest": "0.08 task122 v2 lineage; surface nothing promoted"
+  },
+  "judge": {
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "determinism_check_report.md (pass 2 after the definition fix; pass 1 also APPROVE)"
+  },
+  "returned": [],
+  "resume": "shipped; next: the author marks approvals on the board, then the domain and second-layer review of unapproved shipped builds",
+  "approved": null,
+  "delivered": "2026-10-13",
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": ""
+ },
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "architecture 1 retired at the batch 1 audit (no survivor anatomy, precut FAIL on the unmeasured ask ceiling, the feed count in the prompt, three describing files refused by leak.py)"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 2, survey-research-official-statistics x data-quality-monitoring (interviewer roster effects in a household panel), card registered"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "stage 2 designed and the ladder measured on the generator's world; paused mid stage 3 at the fork's turn budget"
+  }
+ ]
 }

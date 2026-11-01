@@ -103,7 +103,7 @@ Pins: the WHAT sits in IC-07 (gross alpha, the twelve months of rebalances, the 
 |---|---|---|---|---|---|
 | SF1 | participation's daily traded value | 20 sessions before the trade date | 60 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
 | SF2 | daily volatility | 60 sessions before | 250 sessions | same call and rounded figures (asserted) | TCA standard section 3 |
-| SF3 | the cost curve's form and weighting | least squares, band by band, on daily volatility times the square root of participation | participation to the 0.4 to 0.7, without the volatility term, value-weighted, the exponent fitted per band, binned | same call, runner-up, gap and rounded figures under every member (asserted, C2, C3 and C7); band by band each alpha stays at least 0.25 inside its million (C8) | convergence: the desk's small-cap and mid-cap orders reach a fifth to two thirds of a thin name's day, so the executions trace the curve across the participation the candidates trade at |
+| SF3 | the cost curve's form and weighting | least squares, band by band, on daily volatility times the square root of participation | participation to the 0.4 to 0.7, without the volatility term, value-weighted, the exponent fitted per band, binned | same call, runner-up, gap and rounded figures under every member (asserted, C2, C3 and C7); band by band each alpha stays at least 0.25 inside its million (C8); a fit through the origin keeps the call, runner-up and gap and moves momentum's kept alpha to 4 (the re-judge's one open member, rejected by the fit) | convergence: the desk's small-cap and mid-cap orders reach a fifth to two thirds of a thin name's day, so the executions trace the curve across the participation the candidates trade at |
 | SF4 | the failover orders in the fit | merged into their originals | left as separate orders | same call and rounded figures (asserted) | TCA standard section 1 |
 | SF5 | re-sent fills in the fit | each execution id once | kept twice | same call and rounded figures (asserted) | TCA standard section 1 |
 | SF6 | a pounds fill | times 100 into pence | read as pence | shortfalls of minus 10,000 bps show at once (asserted) | the fill's price unit and TCA standard section 1 |
@@ -135,7 +135,11 @@ Pins: the WHAT sits in IC-07 (gross alpha, the twelve months of rebalances, the 
   Quality 5.85 to 6.03, each at least 0.25 inside its whole million (C8); the pooled fits widen that to 4.74 and 6.14,
   still 0.2 inside. The fitted power, the binned reading, 60-session participation, 250-session volatility and the
   fit without the failover merge or with the re-sent fills round to the same figures (C3, SF1 to SF5). The size-blind
-  routes file momentum by 2.4 to 7.4 million (R0).
+  routes file momentum by 2.4 to 7.4 million (R0). The one member outside the family, recorded at the re-judge: a
+  curve fitted through the origin (no half-spread) keeps the call, the runner-up and the gap but puts momentum at
+  3.64, so its kept alpha rounds to 4 against the golden's 5; the executions reject it (the small-cap band's fit
+  explains 0.77 of the shortfall's variance with the intercept against 0.68 without), and naming the curve's form
+  would file the method.
 - **Pricing sequence.** (1) The residue the filed WHAT leaves is how cost depends on size, a method, not a knob. (2)
   Momentum has to fall from about 13 kept to under 6; at GBP 400 million its pounds trade at a fifth to two fifths of
   the day, where the executions price them at about twice the band average (126 basis points against 61). (3) The one-group-by route (cost by

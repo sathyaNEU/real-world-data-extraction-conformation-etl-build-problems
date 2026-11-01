@@ -1,31 +1,38 @@
 {
  "task": "task445",
- "status": "DESIGN",
- "domain": "general-statistics-data-science / data-integration-record-linkage-entity-resolution",
+ "status": "SHIPPED",
+ "domain": "education-learning-sciences / item-response-theory-test-equating (client education-learning-sciences)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
- "updated": "2026-10-31",
- "stump": "A competent analyst completes each place's registered June to August 2026 deaths with the earlier summers' share registered by the same point in October and designates the places whose completed deaths exceed the filed expected deaths by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, named one by one in the medical examiner offices' referral logs, so Ashwold is left out.",
- "architecture": 2,
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-01",
+ "stump": "A competent analyst compares Question 6's marks with the other optional questions' for the candidates who answered it, adjusting for Section A or within the candidates who answered it beside another essay, and files no scaling; the candidates who chose Question 6 knew its topic, and the candidates who answered all three essays put it over two marks harder, so its marks are raised.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01",
+  "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW 2026-11-01 on target.zip a676a08f (--asof 2026-12-01, no LEAK), each line ruled in the note's Leak sweep",
+  "reader": "read 1 on 51f94b0e and read 2 on a676a08f (two personas renamed for the people guard), isolated, pack and prompt only: no leak at either, question 6 analytical at both (what the whole cohort would have earned on a question part of it chose); leak_check_report.md"
  },
  "duplicate_check": {
-  "guard_check": "WARN 2026-10-31 on the card as redrawn after task468 v5's same-pairing draw (overuse.objective, repeat.gate_g and repeat.question_form against task468, answered in the note); task107 v3-etl, task181 and task485 differentiated on the card",
-  "heart": "",
-  "surface": ""
+  "guard_check": "WARN 2026-11-01 on the registered card",
+  "heart": "WARN 2026-11-01 on the final cut (people.first Mary and Pamela in older builds; Gate G and the whether question form repeat task231 v2). An earlier BLOCK on the surname Turner against task125 and the first name Melissa against task231 v2, both drawn the same day, was cleared by renaming Christopher Turner to Philip Montes and Melissa Chen to Pamela Sullivan from guard.py names --geo au --seed 445; no figure moved",
+  "surface": "exit 0 on the final cut 2026-11-01 (personas Mary Deleon, Pamela Sullivan, Philip Montes)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "pass": 1,
+  "date": "2026-11-01",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task445/determinism_check_report.md",
+  "zip_judged": "51f94b0e (the shipped a676a08f differs only in two personas' names; figures.json identical)",
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "residual": "the population whose marks measure demand is not filed (the thread reads the triple writers' within-candidate comparison as the method the data force, the chooser and Section A routes confounded); the triple writers' 95 per cent band, about 1.85 to 2.33, sits inside the 1.5 to 2.5 rounding cell"
  },
  "returned": [
   {
@@ -41,9 +48,9 @@
    "commit": "DRAWN (task445) architecture 2"
   }
  ],
- "resume": "stage 2 design: write the design note's architecture 2 sections (precut.py exit 0), then stage 3 build",
+ "resume": "Shipped 2026-11-01 on architecture 3: the judge DETERMINISTIC, APPROVE (decisive step analytical, Question 6's demand read from the candidates who wrote all three essays), two clean leak reads, every free gate re-run on target.zip a676a08f (two byte-identical builds, the generator checks and verifier, figures_check 49 of 49, precut 61 checks, voice-check PASS, guard heart WARN and surface exit 0). Waits on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": "",
  "lineage": [
   {
@@ -193,9 +200,60 @@
      "leak_py": "REVIEW (0 LEAK) at --asof 2023-02-03"
     }
    }
+  },
+  {
+   "architecture_2": {
+    "stump": "A competent analyst completes each place's registered June to August 2026 deaths with the earlier summers' share registered by the same point in October and designates the places whose completed deaths exceed the filed expected deaths by a tenth; the step that lands it there is treating this summer's unregistered deaths as the usual few, when the coroner holds the heat wave's deaths of people living alone for inquest and Ashwold's are most of them, named one by one in the medical examiner offices' referral logs, so Ashwold is left out.",
+    "architecture": 2,
+    "precut": {
+     "exit": 0,
+     "date": "2026-10-31"
+    },
+    "leak": {
+     "leak_py": "REVIEW 2026-10-31 (--asof 2026-10-14): sweeps 3 and 4 on the fund's terms (Table 1's 589, the call's place names, the WHAT's words), each ruled harmless in the note's Leak sweep; 0 LEAK",
+     "reader": "pending: stage 4 from the main thread (copy at scratchpad/leak-task445/, brief at scratchpad/task445_stage4_leak_brief.md)"
+    },
+    "duplicate_check": {
+     "guard_check": "WARN 2026-10-31 on the card as redrawn after task468 v5's same-pairing draw (overuse.objective, repeat.gate_g and repeat.question_form against task468, answered in the note); task107 v3-etl, task181 and task485 differentiated on the card",
+     "heart": "WARN 2026-10-31 on the final cut: overuse.objective, repeat.gate_g against task468 v5, repeat.question_form against task125 v4, each answered in the note's Pre-ship check; no BLOCK; nearest driver 0.06 (task179 v5, task468 v4 lineage)",
+     "surface": "exit 0 2026-10-31; five pairs promoted for the author's adjudicated read on surface similarity at the corpus's top percentile (task146, task462, task447, task118, task273, about 0.10 each; task462 and task273 also share the decision type); no other build's persona in the pack"
+    },
+    "judge": {
+     "verdict": "",
+     "disposition": "",
+     "report": ""
+    },
+    "resume": "stage 4 from the main thread: rebuild with `python3 task445/generator/make.py` (two byte-identical builds, the generator checks, the independent verifier; target.zip sha256 b103f21fb2366d0eb3a4b1dfb1a89bfacc834456706c6c0f1c4b30352b3c18b2), then spawn together in the background, both at medium effort, the leak reader on scratchpad/leak-task445/ with the brief scratchpad/task445_stage4_leak_brief.md and the determinism judge on task445 (architecture 1's four reports kept as determinism_check_report_arch1*.md); fix every finding in the generator in one pass and rebuild, re-judge a FIX_NOW once; then stage 5: every gate on the final cut (precut, figures_check, voice-check, leak.py --asof 2026-10-14, guard surface and heart), append the reader's section to leak_check_report.md, git add -f task445/target.zip and task445/golden/*, ledger row, card current, commit SHIPPED (task445)",
+    "zip_sha256_16": "b103f21fb2366d0e",
+    "fate": "spent 2026-11-01 at stage 4: judge NOT_DETERMINISTIC with SOLUTION_WRONG, SEND_BACK (Gate H3, the fund's terms counted every death whether registered or not, so linking the logs executed the rule; supplementary 5's version convention unfiled; the recommendation prose contradicted itself on Ashwold); report kept as task445/determinism_check_report_arch2.md"
+   }
   }
  ],
  "portal_status": "",
  "portal_status_date": "",
- "zip_sha256_16": ""
+ "zip_sha256_16": "51f94b0ef73a713b",
+ "history": [
+  {
+   "date": "2026-11-01",
+   "event": "DRAWN: architecture 3, the Arafura Examinations Board's Question 6 scaling decision (education-learning-sciences, item-response-theory-test-equating, ETL), registered 2026-11-01T00:50:34Z"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at stage 3: the generator, pack, goldens and write-up built and green on target.zip 212982fd; figures_check, the asks' silent devices and the design note's stage 2 sections remain"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "stage 3 complete on architecture 3: the asks' silent devices (moved candidates' booklets under the earlier number and centre, candidates who wrote no essay present only in the Section A scan) put the cracker off all 24 ask figures; every free gate green on target.zip 51f94b0e; paused at stage 4 for the main thread"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "SHIPPED: architecture 3, raise every candidate's Question 6 mark by 2 before the best two essays are credited; judge DETERMINISTIC, APPROVE; target.zip a676a08f"
+  }
+ ],
+ "build": {
+  "rebuild": "python3 task445/generator/build.py",
+  "zip": "51f94b0ef73a713b64044e63a6be16bc3d91cf91657b79448210234cf1e4261c",
+  "gates": "two byte-identical builds; checks.py 0 failed (C1 to C5, SF1 to SF13, G1 to G6); verify.py 0 failures; figures_check 49 of 49; precut 61 checks, no FAIL or WARN; voice-check PASS (558 characters); leak.py REVIEW, no LEAK; guard heart WARN and surface exit 0; ceiling.py pair ceiling 28.5, mirror leakage 0.0, the cracker missing all 24 ask figures",
+  "call": "raise Question 6 by 2 marks (the 1,422 candidates who wrote all three essays put it 2.09 harder; every chooser route about 0.5, under the 1.5 line)"
+ }
 }

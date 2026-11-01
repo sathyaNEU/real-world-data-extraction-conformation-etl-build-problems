@@ -1,31 +1,31 @@
 {
  "task": "task122",
- "status": "SHIPPED",
- "domain": "biomedical-clinical-research",
+ "status": "PAUSED",
+ "domain": "human-factors-ergonomics",
  "objective": "experiment-causal",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-13",
- "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12, 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (3) and 40 mg at 2.",
- "architecture": 2,
- "card_architecture": "v3",
- "loops": 0,
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-11-01",
+ "stump": "A careful analyst prices PROBE-M at like traffic, comparing minutes with it running against minutes without at the same number of aircraft in the sector, finds the probe's minutes raising about 15 per cent more STCA activations, no benefit against the criteria's one in five, and keeps it discretionary; the step that lands it there is holding only the count, when planners switch the probe on as climbing and descending traffic gathers and almost every activation involves a climbing or descending aircraft, so at like count and like mix it prevented about 30 per cent and becomes mandatory from 1 April 2027.",
+ "architecture": 3,
+ "card_architecture": "v4",
+ "loops": 1,
  "precut": {
   "exit": 0,
-  "date": "2026-10-13"
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-13 (sweeps 3 and 4: the study nouns, the disease name and the background-therapy clause; answered in the design note)",
-  "reader": "2026-10-13 two isolated reads (before and after the stage-4 fixes): nothing names the decisive step, ranks the doses, helps only the analyst or reads as the answer; main answer an analytical choice; notes fixed (synopsis primary end point pinned; recheck panels vary)"
+  "leak_py": "REVIEW 2026-11-01 on target.zip bb6963b0 (sweeps 3 and 4: the decision's words in the criteria and the guide, the tool's and the report's own nouns; ruled in the design note's Leak sweep)",
+  "reader": "first read on target.zip c74f2a16 by the main thread; re-read pending on bb6963b0, since the safety performance report PDF changed (scratchpad/task122_stage4_leak_brief.md, copy at scratchpad/leak-task122/)"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-13 (question form which against task501); surface promotes task123 on the card axes the differentiation answers",
-  "nearest": "task228 v1 lineage 0.08"
+  "heart": "WARN 2026-11-01 (decision type go_hold_or_stop and question form whether repeat task172; a gate asks whether)",
+  "surface": "exit 0 2026-11-01 on target.zip bb6963b0; personas match the card; the one promoted pair, task81, rides the real place name New Zealand and the published-series context type, ruled not a clone in the design note's Pre-ship check"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md (2026-10-13; Gate G pass, forecasting mechanism, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
+  "verdict": "DETERMINISTIC SOLUTION_WRONG (minor), FIX_NOW",
+  "disposition": "FIX_NOW repaired 2026-11-01; one re-judge pending on bb6963b0",
+  "report": "the main thread's judge on target.zip c74f2a16: the call, the 30.3 per cent share and every xlsx cell reproduced; Gates F, G and H pass (decisive step analytical); repaired: Critical Component 1 states the 1,542 activations of the probe's running time and the 1,520 at combinations that also occur without it; one pair's records sit 243 s apart or more in a sector (A4, SF17); the safety report's months on their seasonal profile (R1); the coarse-bin and linear-Poisson forks closed by the data (SF15, SF16)"
  },
  "returned": [
   {
@@ -35,13 +35,13 @@
    "commit": ""
   }
  ],
- "resume": "",
+ "resume": "Stage 4 from the main thread on target.zip bb6963b0 (rebuild with python3 task122/generator/make.py and check the digest first): the one re-judge of the FIX_NOW (the determinism judge on task122, medium effort) and the leak re-read beside it (the reader from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task122_stage4_leak_brief.md on the copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task122/, medium effort), since the safety performance report PDF changed; fix any finding in the generator and re-run every free gate on the new cut (make.py, note.py, precut.py, figures_check.py, leak.py --asof 2026-10-09, guard.py heart and surface); then ship: target.zip and golden/ with git add -f, the ledger row, the card current, commit SHIPPED (task122).",
  "approved": null,
- "delivered": "2026-10-13",
+ "delivered": null,
  "portal": null,
  "portal_id": "",
- "portal_status": "PENDING_REVIEW",
- "portal_status_date": "2026-10-13",
+ "portal_status": null,
+ "portal_status_date": null,
  "earlier": {
   "v2": {
    "domain": "product-analytics",
@@ -50,6 +50,53 @@
    "updated": "2026-10-11",
    "harden_loops": 3,
    "source_note": "analytical_tasks/05_decision_support/DS01_carousel-slot-library-fill-off-slate.md"
+  },
+  "v3": {
+   "domain": "biomedical-clinical-research",
+   "objective": "experiment-causal",
+   "architecture": 2,
+   "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12, 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (3) and 40 mg at 2.",
+   "precut": {
+    "exit": 0,
+    "date": "2026-10-13"
+   },
+   "leak": {
+    "leak_py": "REVIEW 2026-10-13 (sweeps 3 and 4: the study nouns, the disease name and the background-therapy clause; answered in the design note)",
+    "reader": "2026-10-13 two isolated reads (before and after the stage-4 fixes): nothing names the decisive step, ranks the doses, helps only the analyst or reads as the answer; main answer an analytical choice; notes fixed (synopsis primary end point pinned; recheck panels vary)"
+   },
+   "duplicate_check": {
+    "heart": "WARN 2026-10-13 (question form which against task501); surface promotes task123 on the card axes the differentiation answers",
+    "nearest": "task228 v1 lineage 0.08"
+   },
+   "judge": {
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md (2026-10-13; Gate G pass, forecasting mechanism, analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
+   },
+   "delivered": "2026-10-13",
+   "portal": null,
+   "portal_status": "PENDING_REVIEW",
+   "portal_status_date": "2026-10-13",
+   "stage_name": "spent at the batch 1 re-root 2026-10-31 (no portal responses on record)",
+   "updated": "2026-10-13"
   }
+ },
+ "gates": {
+  "target_zip_sha256": "bb6963b01c5bef62e79cba2966c2017dec50695694a00e1370b21b74bc5d40f8",
+  "generator_checks": "47 of 47",
+  "verify": "PASS",
+  "byte_identical_builds": 2,
+  "figures_check": "96 of 96",
+  "precut": "61 checks, 0 FAIL, 0 WARN",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK",
+  "heart": "WARN",
+  "surface": "exit 0",
+  "h1_metadata": "clean",
+  "pair_ceiling": 36.9,
+  "mirror_leakage_pct": 15.2,
+  "share_prevented": 0.303,
+  "standing_family": "30.2 to 30.9, every member printing 30",
+  "rebuild": "python3 task122/generator/make.py"
  }
 }

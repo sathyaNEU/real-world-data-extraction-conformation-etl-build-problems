@@ -1,476 +1,294 @@
-# task122 design note
+# task122 design note: whether an en-route conflict probe becomes mandatory (architecture 4 on the card)
 
-Architecture v3 on the card (the second architecture built for this slot; v1 was a draft redrawn before
-registration), re-rooted 2026-10-13 under the 10/10 rules. v2, a Dutch resale platform choosing which ranking
-policy takes its home carousel's test slot, was retired after a Gate G send-back and is FAILED_TO_STUMP in the
-author's backlog: its decisive step was a field read under a filed charter and its estimator was pinned by an
-archive of certified tests. The slot is redrawn into a new domain, world, decision and quantity. v2's record is
-kept at the end of this note; its pack, goldens and reports are removed from the tree and kept in history.
+Architecture v4 on the card (the third architecture built for this slot; v1 was a draft redrawn before
+registration), re-rooted 2026-10-31 at batch 1. v3, the VMK-4410 phase 3 dose read on the eGFR slope, is spent (its
+line in Tried and rejected); its sections are retired, and a compact record of it is kept at the end of this note
+beside v2's. Its pack, generator and goldens are removed from the tree and kept in history.
 
 ## Draw
 
-| Axis | Value |
-|---|---|
-| Domain / task type | Biomedical & Clinical Research / longitudinal-outcomes-repeated-measures (serves Experiment & Causal in the client taxonomy; the domain has never been built, in any objective) |
-| Objective | Experiment & Causal Analysis: the call is a causal claim read from a randomised trial, how far each dose of the drug moves eGFR against placebo after 36 months' treatment |
-| Niche | a Copenhagen-area clinical-stage biotech chooses which of four once-daily doses of its oral aldosterone synthase inhibitor, VMK-4410, goes into the phase 3 kidney trial, from a 52-week multinational phase 2b in albuminuric chronic kidney disease whose protocol held background diuretics, RAS blockers and SGLT2 inhibitors unchanged for the first 12 weeks |
-| Shape | 11 before and after with a control: each dose's eGFR difference from placebo after 36 months' treatment, plus the call, the runner-up and the gap, a chart of each dose's difference by month and the asks |
-| Decision type / unit | pick one of four doses (named option); the graded figures are mL/min/1.73 m2 of eGFR against placebo |
-| Gap / pattern / generators | time (what the 52-week trial measured against the 36 months the decision is scored on); no A to E pattern; G4 decisive (the one-off recovery after background diuretics are eased, at the turn from the acute phase to the chronic phase, attributed to the chronic slope), G13 (the 36-month horizon multiplies a slope read over 40 weeks), G16 (where the chronic phase is fitted from) |
-| Gate G mechanism | method_or_model_selection: every laboratory value, visit and protocol rule is read correctly on the wrong route; the decision turns on the window the chronic eGFR slope is fitted over |
-| Stump strategy | decomposition_attribution: the eGFR trajectory splits into the acute haemodynamic fall, a one-off recovery once diuretics are eased, and the chronic slope, and only the last is carried for three years |
-| Decisive rule filed / decoys | the estimand is filed (the phase 3 synopsis: eGFR at month 36 against placebo, every randomised patient, as if each had stayed on the assigned dose); no official decoy (no filed slope method, knot or acute window anywhere in the pack), no validated decoy, no calibration corpus; the phase 2b's own results report is not shipped |
-| Calibration form | none |
-| Context artifact | other (the phase 3 synopsis that files the estimand, beside the phase 2b protocol) |
-| Stakeholder | the head of clinical development, who recommends the dose to the chief medical officer, who signs it for the end-of-phase-2 meeting package (the prompt names no one) |
-| Forum / forcing event / org family | line_manager_or_team / statutory_or_regulatory_filing (the end-of-phase-2 meeting package) / other (a clinical-stage biotech, not yet a manufacturer) |
-| World | Varnmark Therapeutics (invented), Copenhagen area, DKK; phase 2b VMK-4410-202 at sites in Denmark, Sweden, Germany, Poland, Spain and the United Kingdom; personas drawn da_DK seed 122: Benedicte Laursen (head of clinical development), Nicolaj Lassen (biostatistics), Kirsten Eriksen (clinical pharmacology), Lene Dam (medical monitor) |
-| Deliverables | `VMK-4410_phase3_dose_recommendation.pdf` (the call, each dose's eGFR difference from placebo after 36 months' treatment, a chart of each dose's difference by month); `VMK-4410_phase2b_tables.xlsx` (the asks) |
-| Guard | WARN only (answered below); registered 2026-10-13 |
-
-**Data-native sentence.** The protocol held background diuretics steady for the first twelve weeks, so the
-patients whose eGFR fell furthest on the higher doses, those already on a loop diuretic when the drug's
-natriuresis added to it, had their diuretic eased only from week 12 and recovered part of the fall over the
-following weeks; the eGFR record therefore turns from an acute fall to its chronic slope only around week 24, and
-a chronic slope started at the field's usual three months carries that one-off recovery forward for three years.
+- **Card:** `.claude/skills/fingerprint/cards/task122.json`, architecture v4, guard WARN only (the shell line read the
+  retired prompt), registered 2026-10-31 after a fetch of main. The first draws collided and were moved: (objective,
+  G6, go_hold_or_stop) repeated task306 v3 in the batch, committee_or_panel was banned by task468 v5, and (objective,
+  G16) with either Gate G name repeated task182, task190, task191 and task228; the card files G14, decisive pattern
+  conditioned yield, under decomposition_attribution.
+- **Pairing.** Client domain human-factors-ergonomics, task type usability-task-performance-studies (which serves
+  Experiment & Causal Analysis), objective Experiment & Causal Analysis: the effect of a controller's decision aid on
+  how often the conflict alert fires, a task-performance effect read from an operational trial. The pairing has never
+  been built; biomedical-clinical-research is spent for this slot after two architectures, and criminology was set
+  aside because task125 drew police hot spot patrols the same day.
+- **Niche.** Tasman Air Navigation (fictional), New Zealand's air navigation service provider, runs six en-route
+  sectors around the Auckland hub from its area control centre (KAIPARA, HAURAKI, WAIKATO, TARANAKI, TAUPO, KAPITI),
+  combined in pairs overnight. Since 1 April 2026 the planner controller of each sector has had PROBE-M, a medium-term
+  conflict probe that predicts conflicts up to twenty minutes ahead and tests a planned trajectory change before the
+  clearance is given, to switch on at the planner's own discretion. The short-term conflict alert (STCA) is the safety
+  net that fires when two aircraft are predicted to lose separation within about two minutes.
+- **Decision.** Whether PROBE-M becomes mandatory at every en-route planner position from 1 April 2027 (training in the
+  first quarter of 2027), decided by the executive team at its November 2026 meeting on the human factors lead's paper.
+  Forward facing: the mandate governs the 2027 operation.
+- **The quantity.** The acceptance criteria (Safety Review Board, April 2026) file it: the share of the STCA
+  activations the trial sectors would have raised in the time the probe was running that its use prevented, over the
+  trial from 1 April to 30 September 2026, activations counted as the safety performance report counts them; the bar is
+  one in five.
+- **Data-native sentence.** Planners switch the probe on as climbing and descending traffic gathers in the sector,
+  around the hub's departure and arrival banks, and almost every activation involves an aircraft climbing or
+  descending, so the minutes the probe ran hold more climbing and descending traffic than the minutes it did not even
+  at the same number of aircraft in the sector; the probe's own effect shows only when its minutes are set against
+  minutes with the same count and the same climbing and descending mix, rebuilt minute by minute from the crossings.
+- **Default path.** The safety report's measure, STCA activations per 1,000 flight hours, with the probe running
+  against without (about twice as high with it running), then the traffic-adjusted comparison at like occupancy (the
+  probe's minutes still raise about 15 per cent more than the same count without it): no benefit, keep the probe
+  discretionary.
+- **Golden.** At like count and like climbing and descending mix, the probe prevented about 30 per cent of the
+  activations the sectors would have raised in its running time: mandatory from 1 April 2027.
+- **Shape.** 07, grid of cells: the asks' sector-by-month grids (flight hours and the STCA rate the safety report
+  publishes, with the flights each sector handled), beside the call, the share and the chart.
+- **Shell.** Question form whether; deliverables docx and xlsx; forum the executive team, forcing event the mandate's
+  rollout, organisation family utility or infrastructure, all clear of the last three builds (task468, task445,
+  task272).
+- **Personas.** Tessa Freeman (human factors lead), Kieran McMurray (safety analyst), Neil Hoskins (manager, area
+  control centre), from `guard.py names --geo "New Zealand" --seed 122`; the prompt names no one.
 
 **Mechanisms on file (Experiment & Causal), one line on the insight each spends.**
 - task6: a non-randomised pilot read against each arm's own baseline once a hidden record stream is recovered.
-- task12: an arm-correlated population captured in a second party's system, recovered by anti-join.
-- task15: outcome rows missing for one arm after a client change, recovered from an independent log.
-- task43: a pooled effect carried onto a cohort whose moderator mix is reversed, the moderator behind a join.
-- task44: a pooled gain that mixes opposite effects split by a moderator in no column.
-- task69: a capped set whose members' contributions overlap; an assignment rate that moved across periods.
-- task83: an effect conditioned on each unit's own prior treatment history; allocation by single-peaked effect.
-- task122 v1 and v2: a library-fill clause; outcomes the log records only before a session closes.
-- task131: a randomised tariff's half-hourly effect at design-day heat, read on the maximum of the whole curve.
-- None separates a transient from a long-run rate inside one arm's trajectory, and none is in nephrology.
+- task12 and task15: an arm-correlated population or arm's rows recovered from a second system.
+- task43, task44 and task83: a pooled effect carried onto a population whose moderator mix differs, or an effect
+  conditioned on each unit's own treatment history.
+- task69: overlapping contributions in a capped set; an assignment rate that moved across periods.
+- task122 v1 to v3: a library-fill clause; outcomes logged only before a session closes; a chronic slope read after a
+  one-off recovery.
+- task131: a randomised tariff's effect on a design-day maximum where moved load returns after the window.
+- Across objectives: task128's capacity cut as a natural experiment, task141's rota decision-makers' let-through
+  shares, task121's rest before a shift, task136 and task137's not-yet-treated comparisons.
+- None estimates a discretionary aid whose use follows the conditions that produce the outcome, read at like
+  conditions measured at the grain the aid is switched at; none is in air traffic control.
 
 **Sources, one line each.**
-- The client's two-layer standard: the field's own method decides; here it is nephrology's acute-plus-chronic
-  eGFR slope analysis, worked on where this trial's acute phase really ends, never a stated score or a window rule.
-- The client's library (`biomedical-clinical-research/longitudinal-outcomes-repeated-measures`: MMRM over
-  completers, baseline-adjusted change): both are lower rungs here; the pattern is our own,
-  `own:egfr-chronic-slope-after-diuretic-recovery`.
-- The client's measured drivers, held group: the decisive step sits upstream of every graded figure (each dose's
-  36-month difference is built on the slope window) and the shortcut is the field's own convention.
-- task131 (an effect read at design conditions): there the conditioning was on the weather the decision faces;
-  here nothing is conditioned, the trajectory itself has three phases and only one is carried.
-- task123 v2 (a total recorded over each unit's own interval, split onto calendar periods; same gap, pattern and
-  Gate G): differentiated on the card; no interval allocation here.
-- Field practice: GFR slope as a surrogate end point (acute effect over the first months, chronic slope after),
-  the haemodynamic eGFR fall on starting a RAS blocker, SGLT2 inhibitor or aldosterone pathway drug, and the
-  stable-background period phase 2 kidney protocols write in; the build carries the practice, not any trial's
-  figures.
+- The client's two-layer standard: the field's own measure decides here (the STCA rate per flight hour, and its
+  traffic-adjusted form), worked where this trial's use of the aid departs from its preconditions, never a stated
+  score or a window rule.
+- The client's library has no human factors patterns; the nearest family is estimand_identification (confounding by
+  the conditions of use), and the pattern is our own, `own:confounding-by-the-conditions-of-use-at-the-grain-of-use`.
+- Field practice: STCA as the safety net and its activation rate per flight hour as an ANSP safety indicator; the
+  quadratic growth of conflicts with traffic; climbing and descending traffic as the main source of conflict alerts;
+  medium-term conflict detection at the planner position; the build carries the practice, not any provider's figures.
 
-**WARNs answered.**
-- repeat.gate_g and overuse.gate_g (method_or_model_selection; task449, task501 in the guard's order): the honest
-  name for choosing the window a slope is fitted over; task449 sets a dial and task501 selects an estimator for a
-  different quantity, and forecasting or decomposition_attribution would misname a model choice the trial's own
-  record forces.
-- repeat.decision (pick_one_of_n, task501): a phase 3 takes one dose, so the decision is a pick.
-- repeat.question_form (which, task501): a pick asks which.
-- The guard orders same-date cards by task number, so its bans read task448, task449 and task501; the card also
-  clears the builds registered last on 2026-10-13 (task452, task453, task454) on every banned axis: shape 11
-  against 01, 10 and 07; forum against committee_or_panel, minister_or_cabinet and customer_or_counterparty;
-  forcing event against budget_or_appropriation, period_close and launch_or_rollout; strategy against other,
-  population_selection and composition_mix; decisive pattern G4 against G14, G16 and C.
-
-**Arithmetic on the arm means** (`checks.design_routes`, carried in `generator/figures.json` as
-`note.design_coefficients`; visits at weeks 0, 2, 4, 8, 12, 16, 20, 24, 32, 40 and 52; diuretics eased at the
-week-12, 16 and 20 visits in 45, 35 and 20 per cent of the patients eased; the fall develops with a time constant of
-1.2 weeks and the recovery after easing with 1.5 weeks). Each route's 36-month value is linear in a dose's initial
-fall P, the part that comes back after easing R and its chronic benefit C (mL/min/1.73 m2 a year): golden -P + R + 3C;
-the two-slope model from week 12, -P + 3.36R + 3C (from week 16, 2.37R; week 20, 1.55R; week 24, 1.05R; week 32, 1.00R);
-one slope through every visit, -2.02P + 3.97R + 3C; the week-52 difference, -P + R + C. The draw's values (P, R, C):
-5 mg 0.9, 0, 0.30; 10 mg 1.0, 0, 0.667; 20 mg 3.85, 0.15, 2.20; 40 mg 6.9, 1.4, 2.50. The generator calibrates each
-arm's level and chronic slope so the measured week-52 difference and the week-24 route land on the draw's targets; the
-shipped values are in the Ladder. Month-36 differences by route on the draw's values:
-
-| Route | 5 mg | 10 mg | 20 mg | 40 mg | Files |
-|---|---|---|---|---|---|
-| golden: the settled level plus the chronic benefit over three years | 0.0 | 1.0 | 2.9 | 2.0 | 20 mg |
-| chronic phase from week 24 (week 32) | 0.0 | 1.0 | 2.9 (2.9) | 2.1 (2.0) | 20 mg |
-| chronic phase from week 20 | 0.0 | 1.0 | 3.0 | 2.8 | 20 mg, 40 mg's figure a bin out |
-| chronic phase from week 16 | 0.0 | 1.0 | 3.1 | 3.9 | 40 mg |
-| chronic phase from week 12, the field's month 3 | 0.0 | 1.0 | 3.2 | 5.3 | 40 mg |
-| chronic phase from week 4 | 0.0 | 1.0 | 3.2 | 5.8 | 40 mg |
-| one slope through every visit | -0.9 | 0.0 | -0.6 | -0.9 | 10 mg |
-| the week-52 difference (no projection) | -0.6 | -0.3 | -1.5 | -3.0 | 10 mg |
-
-On the shipped pack the month-3 route reads 40 mg's chronic benefit over placebo as 3.7 mL/min/1.73 m2 a year against
-2.5 from week 24; placebo declines about 4 a year, so on the convention 40 mg reads as nearly flat, a strong but
-plausible claim for a kidney drug.
-
-**Shape arithmetic (shape 11).** Each dose's eGFR difference from placebo after 36 months' treatment (4), the
-call, the runner-up and the gap (3), a chart of each dose's difference by month with four named parts (4) and the
-two files (2): 13 before the ask layer; the asks add 5 arms x 4 measures = 20, for 33 in all. The decisive
-construction moves 20 and 40 mg's figures and the call; the 12- and 24-month values are drawn on the chart and not
-graded, since a chronic benefit that is not a whole number a year cannot keep every year's value mid-bin.
+**Pricing on the cut pack (target.zip bb6963b0; every value from generator/figures.json and asserted in checks.py).** Share prevented by route: the report's rate per flight hour -108.1 per cent (the probe reads as raising activations); the hour's traffic held -109.9; like occupancy minute by minute -15.0 (with the hour of day -12.2; per aircraft pair -20.9; per climbing or descending aircraft-minute 14.2); like count and like mix, the standing family (strata, observed against expected, Poisson forms with the count as factors or pairs and the climbing count), 30.2 to 30.9, every member printing 30. The bar is 20: every route without the climbing count sits 5.8 points or more under it, and the standing family 10.2 points or more over it.
 
 ## Default path
 
-1. Read the question: which dose, judged by how much higher eGFR would be than on placebo after 36 months'
-   treatment, which the phase 3 synopsis files as the difference at month 36 for every randomised patient as if
-   each had stayed on the assigned dose.
-2. Take the central laboratory's eGFR (CKD-EPI 2021, reported beside each serum creatinine) at the scheduled
-   visits from `lb.csv`, each patient's change from the baseline the protocol defines (the mean of the screening
-   and day 1 values), and the mean change by arm and visit.
-3. Fit nephrology's standard two-slope model on every randomised patient: an acute effect from baseline to month
-   3 (week 12) and a chronic slope from week 12 to week 52, by arm, against placebo.
-4. Carry each dose's chronic slope to month 36 from its level at week 12 and take the difference from placebo.
-5. File the dose with the largest difference.
+1. Read SRB 2026/04 section 3.1: the probe becomes mandatory if its use prevented at least one in five of the STCA
+   activations the six sectors would have raised in the time it was running, counted as the Safety Performance
+   Report counts them.
+2. Clean the records the report's way: each flight's latest plan revision from the FDPS crossing list, live
+   activations once per event in the sector where they began, the planner workstation log's New Zealand time taken to
+   UTC, a combined position's display covering both sectors.
+3. Take the report's own measure, activations per 1,000 flight hours, with the probe running against without: 136.5
+   against 65.6, the probe's minutes higher.
+4. Recognise that the planners run the probe in busy traffic and hold the traffic: compare each sector's minutes with
+   the probe running against its minutes without at the same number of aircraft in the sector (the field's
+   traffic-adjusted comparison, conflicts growing with the aircraft present): the probe prevented -15.0 per cent.
+5. File: short of the one in five, keep the probe discretionary.
 
-Ends on: 40 mg, about 5 mL/min/1.73 m2 above placebo at month 36 (20 mg 3, 10 mg 1, 5 mg 1; on the shipped
-pack's arm means 4.81, 3.11, 1.03 and 0.65).
-
-Golden: 20 mg, 3 mL/min/1.73 m2 above placebo at month 36, then 40 mg at 2, 10 mg at 1 and 5 mg at 0 (3.04, 2.04,
-1.05 and -0.01 on the shipped pack), with the chronic slope taken from week 24, after the recovery, from the level each
-arm settled at.
+Ends on: -15.0 per cent prevented, keep PROBE-M discretionary
+Golden: 30 per cent prevented (30.3), mandatory from 1 April 2027
 
 ## Stump sentence
 
-A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a
-chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above
-placebo (the `Ends on:` figure); the step that lands it there is starting the chronic slope at month 3, when the
-patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12,
-16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that
-one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest
-above placebo at month 36 (3) and 40 mg at 2.
+The default path holds the number of aircraft in the sector, minute by minute, finds the probe's minutes raising
+activations at -15.0 per cent below the rate without it, short of the one in five, and keeps PROBE-M discretionary;
+the step that lands it there is holding only the count, when the planners switch the probe on as climbing and
+descending traffic gathers and almost every activation involves an aircraft climbing or descending, so at the same
+count and the same number climbing or descending the probe prevented about 30 per cent of the activations its running
+time would have raised, and becomes mandatory.
 
 ## Three rules
 
-Task type: longitudinal-outcomes-repeated-measures in Biomedical & Clinical Research, a task type that serves
-Experiment & Causal Analysis in the client taxonomy: repeated eGFR measurements per patient in a randomised trial,
-read as each dose's effect against placebo over time.
+Task type: usability-task-performance-studies (Human Factors & Ergonomics), which serves Experiment & Causal Analysis: the effect of a controller's decision aid on how often the conflict alert fires, read from an operational trial with the aid at the planner's discretion.
+Domain test: the quantity that decides is the share of STCA activations the conflict probe prevented, a task-performance effect the field estimates by comparing the alert rate with and without the aid at matched traffic load (activations per flight hour, then at like occupancy, since conflicts grow with the aircraft present); with a hospital's or a retailer's nouns there is no sector, no vertical mix and no conflict alert, and the task stops reading the same.
+Swap: "should the ward's early-warning tool be mandatory, on the share of rapid-response calls it prevented" has no aircraft pairs, no climbing or descending traffic and no planner switching the aid on into a traffic mix, so the comparison that decides it does not exist there.
+Layer 1: the FDPS crossing list's plan revisions (a revision re-issues the flight's whole list, so a superseded route's crossings drop out), the STCA log's continuation records when an alert carries into the next sector, inhibited and test activations beside live ones, combined sectors overnight on operational names against the crossings' elementary sectors, the planner workstation log in New Zealand time across both daylight-time changes against UTC everywhere else, re-entries into a sector; each is what the systems produce and none is placed to be caught.
+Layer 2: estimand_identification, confounding by the conditions of use: the probe is switched on when the climbing and descending traffic that produces the alerts gathers, so its minutes and its idle minutes differ in that mix at any count of aircraft, and the counterfactual for its minutes has to be read at like count and like mix.
+Decisive step: setting the probe's running minutes against minutes without it in the same sector at the same number of aircraft and the same number of them climbing or descending, both rebuilt minute by minute from the crossings' entry and exit levels, and reading the activations prevented from the difference.
+Not semantics: reading every field, code and definition correctly (the revisions, the continuation records, the combined sectors, the local time) still leaves the report's rate at -108.1 per cent and the like-occupancy comparison at -15.0 per cent; no column marks a climbing aircraft or holds a minute's traffic mix.
+Not rule application: SRB 2026/04 files the estimand (the share of the activations the sectors would have raised in the probe's running time) and the report the counting; no clause says which minutes stand for the probe's minutes without it, and executing every filed rule files whatever comparison the analyst picks; the enumerated family spreads from -157.1 to 30.9 per cent, the standing family (the strata, observed against expected, the Poisson forms with the count of aircraft as factors or pairs and the climbing count) from 30.2 to 30.9, every member printing 30, ruled by the data's own structure (probe use and activations both rising with the climbing and descending count at every occupancy).
+Analyst test: a strong analyst cleans the records the report's way, takes the report's rate per 1,000 flight hours (-108.1 per cent prevented), holds the number of aircraft minute by minute (-15.0 per cent prevented) and keeps the probe discretionary; every field is read and every filed rule applied, and the call is wrong because the probe's minutes carry more climbing and descending traffic at any count of aircraft.
+Estimand: probe_m_trial_acceptance_criteria.pdf section 3.1: the share of the STCA activations the trial sectors would have raised in the time PROBE-M was running that its use prevented; population, the six sectors' minutes with the probe running (section 3.3); window, 1 April to 30 September 2026, New Zealand time; unit, activations counted as the Safety Performance Report counts them (section 3.2); comparison, the same time without the probe.
+No decoy: nothing is planted to be caught: no memo, draft, briefing or stakeholder figure argues a share or a call, the report's rates are its own published series for 2024/25, and the request asks for the paper and the tables without a view.
+No certified replay: no certified or published figure reproduces any route; no file carries a share prevented, a rate with and without the probe, or a recommendation.
+Lesson: an aid used at the operator's discretion is switched on when the conditions that produce the outcome gather, so its effect has to be read at like conditions measured at the grain the aid is switched at, the traffic's mix as well as its count; no build on file teaches confounding by the conditions of use.
 
-Domain test: the deciding quantity is each dose's eGFR difference from placebo after 36 months' treatment, and
-nephrology estimates it by GFR slope analysis, an acute effect over the first months and a chronic slope after it,
-the chronic slope projected; this trial's protocol and its patients' diuretics decide where the chronic phase
-starts.
+## Survivor anatomy
 
-Swap: "Which dose leaves eGFR furthest above placebo after 36 months" with a school's nouns becomes "which tutoring
-intensity leaves test scores furthest above the control group after three years"; there is no filtration fall that
-a diuretic adds to, no background diuretic held fixed for twelve weeks and then eased, and no recovery of a
-volume-related fall, so the step that decides has nothing to act on and the task stops making sense.
-
-Layer 1: an SDTM-style extract from two central laboratory hubs and the sites' local laboratories: unscheduled
-potassium rechecks, a repeat sample after a haemolysed one filed under the visit it replaces, potassium not reported
-on a haemolysed sample (the condition on the potassium result only), rechecks requested as a renal panel or a full
-panel, creatinine in umol/L at one hub and mg/dL at the other, potassium in mmol/L and mEq/L, glucose in mmol/L and
-mg/dL, urine albumin-to-creatinine ratios in mg/mmol and mg/g, local laboratories reporting eGFR by CKD-EPI 2009 or
-not at all; visits before week 24 taken outside their windows under their scheduled names; drug collected at the site
-when a dispensing visit was missed; dosing records running from one dispensing visit to the next; a disposition form
-not reopened when a patient restarted; adverse events whose change of severity opens a new record; concomitant
-medications in each country's spelling, with free-text doses and changes recorded as new rows; screening failures in
-the demographics, visits, laboratory and vital-sign tables. This is the mess a CRO's data management, two central
-laboratory hubs and fifty sites produce; none of it is placed to be caught and none of it is on the decisive step.
-
-Layer 2: estimation_fit: fitting the chronic eGFR slope over the stretch where the trajectory is chronic, after
-the one-off recovery that easing background diuretics from week 12 produced, then carrying it to month 36 from the
-level each arm settled at.
-
-Decisive step: in the field's words, where the acute phase ends: the acute effect of VMK-4410 includes a
-volume-related fall that partly recovers once diuretics are eased after week 12, so the chronic slope starts
-around week 24, not at the conventional month 3.
-
-Not semantics: every eGFR, creatinine, visit, unit, concomitant medication record and synopsis definition can be
-read correctly and the month-3 two-slope route still files 40 mg; the difference between 40 and 20 mg is a choice
-of model window, not the meaning of any field.
-
-Not rule application: no filed rule, procedure or formula says where the chronic phase starts or how the slope is
-fitted; the synopsis files the estimand only, and the protocol's twelve-week stable-background rule is a fact of
-the trial's conduct that no sentence connects to the eGFR record.
-
-Analyst test: with every laboratory value, visit and protocol rule read correctly, a strong analyst fits the
-standard acute-plus-chronic eGFR model with the chronic phase from month 3, projects it to month 36 and files 40
-mg (the `Ends on:` answer); the week-52 change the phase 2b protocol names as a secondary end point, and one
-slope through every visit, file 10 mg instead.
-
-Estimand: the phase 3 synopsis (`VMK-4410-301_synopsis.pdf`) files it: the difference between each dose and
-placebo in the change in eGFR (CKD-EPI 2021, central laboratory) from baseline to month 36, in every randomised
-patient, as if each had stayed on the assigned dose; the prompt asks which dose and for each dose's difference
-after 12, 24 and 36 months' treatment.
-
-No decoy: nothing is planted to be caught; no document states a slope method, a knot, an acute window or a
-projected figure, the phase 2b results report is not shipped, and no file ranks the doses on the 36-month
-difference; the protocol's primary end point (the week-52 change) is the trial's own question, stated as such.
-
-No certified replay: no certified, published or prior figure has to be reproduced to recover the method; the
-method comes from the trial's own record (the shape of each arm's eGFR after week 12 and the diuretic changes
-behind it).
-
-Lesson: a model learns that the chronic phase of an eGFR response begins where the trajectory turns linear, which
-a trial's conduct (here the background changes its protocol allowed only after twelve weeks) can push well past
-the conventional three months, and that a slope fitted over a transient is multiplied by every year it is carried;
-no build on file is in nephrology or separates a transient from a long-run rate inside one arm's trajectory.
+Actor: the deciding property, how many of the aircraft in a sector are climbing or descending at a given minute, has no column; it is a relation between the crossing rows present in the same minute whose entry and exit levels differ, and the probe's minutes hold more of it at every count of aircraft.
+Link: the probe's running time comes from the planner workstation log in New Zealand time on operational, sometimes combined, sectors, the traffic from the FDPS crossings in UTC on elementary sectors, the activations from the STCA log; no key joins them, only time intervals on the configuration in force, and the report's measure never compares a minute's traffic mix across the three.
+Reflex: the field's measure, activations per 1,000 flight hours with the probe running against without (-108.1 per cent prevented), and its traffic-adjusted form at like occupancy (-15.0), sit at rungs 0 and 2 and file a wrong call.
+Back-test: the textbook route validates: the trial's minutes without the probe run at the report's 2024/25 rates for each sector, and the like-occupancy comparison is steady when the hour of day is added (-12.2 per cent), so nothing in the record flags the comparison it rests on.
+Second use: every file the decisive step reads is in the pack for a reason it independently has: the crossings for the flight hours and flights handled the tables owe, the STCA log for the activation rates, the planner log for the probe's running time the criterion names; the entry and exit levels are the crossing list's own fields.
+Shock: the climbing and descending mix swings with the hub's departure and arrival banks every day, ordinary movement; no sector, month or day stands out, and the probe's share prevented holds in every sector.
+Pins: the WHAT sits in SRB 2026/04 (the share of the activations the sectors would have raised in the probe's running time, the counting by the report, the window, the combined positions) and no filed sentence names the traffic, the count or the mix of aircraft, or a comparison; deleting section 3.1 unforces the call and the section names no step.
 
 ## Readability screen
 
-Rungs in ladder order; the six tests of `stumping` 2.1 per rung, verdict last.
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the week-52 change against placebo, unprojected (files 10 mg) | the protocol lists the week-52 change as a secondary end point | the visit column | the trial's own end point is a default | none | none | one difference per arm | readable |
-| 0b one slope through every on-treatment visit, the total slope (files 10 mg) | the synopsis's change to month 36 invites a slope | none | a mixed model of every visit is a reflex | none | none | a regression line | readable |
-| 1 the field's two-slope model, chronic phase from month 3 (files 40 mg) | none in the pack; field practice puts the acute phase in the first three months | none | the convention is the reflex | none | none | a regression with a knot | readable |
-| 2 chronic phase from week 16, after the visible turn at week 12 (files 40 mg) | none | none | moving the knot to the first change seen is a reflex | none | none | a regression with a knot | readable |
-| 3 (decisive) chronic phase from week 24, after the recovery that easing diuretics from week 12 produced, carried from the level each arm settled at (files 20 mg) | no sentence says where the chronic phase starts or links any background change to eGFR; the protocol's concomitant-medication clause (doses unchanged to week 12) is one clause among the conduct rules and names no outcome | no column marks the recovery or the eased patients; diuretic changes sit in `cm.csv`, which the eGFR path never opens; the arm curves show a rise after week 12 that reads as the drug's benefit | the convention (month 3) files 40 mg; knotting at the first visible change (week 16) files 40 mg; one slope through everything files 10 mg | no control, corpus or published figure scores the doses | keys, units, duplicates, joins and fan-out see nothing | the window of a fitted slope over a non-linear trajectory, multiplied by three years | silent |
-
-The two reflexes land on different wrong doses (10 mg, 40 mg) and the decisive move reverses the step every
-correction above rung 0 takes (towards 40 mg): the held signature.
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 0 the report's rate per 1,000 flight hours, probe running against not | the report defines the rate | flight hours from the crossings | the field's measure | none refutes it | the battery runs it | one ratio | none | readable |
+| 1 the hour's traffic held | none | hourly counts from the crossings | a careful variant | none | yes | one stratification | none | readable |
+| 2 like occupancy, minute by minute | none | the crossings give the count | the traffic-adjusted reflex | none | yes | one stratification | none | readable |
+| 2b per aircraft pair | none | pairs from the count | the conflict-geometry reflex | none | no | one ratio | none | readable |
+| 3 (decisive) like count and like climbing and descending mix | none names the mix, the levels or a comparison | no column holds a minute's climbing count | not the reflex: the field adjusts for load | none | no battery item | not affine in a shipped column | the levels are the crossing list's own fields | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | eGFR | the central laboratory's CKD-EPI 2021 eGFR from serum creatinine, reported beside each creatinine | recomputed from the reported creatinine; local-laboratory values added | same call and same figures (asserted: the recomputation is within 1 of the report on every central sample; no local eGFR sits at a scheduled visit) | the synopsis's eGFR definition (central laboratory, CKD-EPI 2021) |
-| SF2 | baseline | the mean of the screening and day-1 central values | day 1 only | same call and same figures (asserted) | the protocol's and the synopsis's baseline definition |
-| SF3 | how much higher eGFR would be than on placebo | the difference between the dose's and placebo's mean change from baseline | the difference in mean eGFR levels at month 36 | same call and same figures (asserted: every arm's baseline mean is within 0.1 of placebo's; levels read -0.02, 1.07, 3.15, 2.14) | converges; the synopsis files the change from baseline |
-| SF4 | after 36 months' treatment | on treatment at the month-36 visit, 156 weeks after randomisation | off treatment, four weeks after the last dose (the phase 2b's week-56 pattern) | 40 mg (the early fall reverses off treatment: 6.5 and 7.1 on 20 and 40 mg, asserted) | the synopsis ("the month-36 visit takes place while patients are taking study drug"); C4 |
-| SF5 | every randomised patient, as if each had stayed on the assigned dose | values from samples after a patient's last dose set aside for the patients who stopped study drug for good, read from the dosing record | values after stopping kept (treatment policy); stopping read from the disposition form | treatment policy: same call, 40 mg's figure a bin up (2.70) and 20 mg's at 3.49 (asserted); the disposition form: same call and same figures (asserted) | the synopsis's intercurrent-event strategy (values after a permanent stop set aside); C4 for treatment policy |
-| SF6 | each dose | 5, 10, 20 and 40 mg once daily as randomised | as treated | same call (asserted: every patient took the randomised dose on every dosing row) | the synopsis's population (as randomised) |
-| SF7 | the visits a slope is fitted on | scheduled on-treatment central visits by nominal week, the first sample of a visit | actual study days; unscheduled central values added | same figures (asserted) | the SAP (values analysed under the scheduled visit; the first sample of a visit) |
-| SF8 | the week-56 follow-up visit | off treatment, outside the on-treatment estimand | fitted with the on-treatment visits | 40 mg (asserted) | the synopsis's on-treatment estimand and the protocol (week 56 is four weeks after the last dose); C4 |
-| SF9 | the phase 3 the dose goes into | the phase 2b's population, dose, schedule and background rule carried forward | a phase 3 without the 12-week background rule | same call (the settled level and the chronic slope are the same; the recovery comes earlier) | the synopsis's population and background-therapy sections, which repeat the phase 2b's (asserted present) |
-| SF10 | 36 months | 156 weeks of treatment from randomisation | 3 x 365.25 days | same figures (asserted) | the synopsis's visit schedule (month 36 = week 156) |
-| SF11 | rounding | each difference computed unrounded, rounded once to a whole mL/min/1.73 m2 | arm means rounded to one decimal before the differences; to whole numbers first | one decimal: same call and same figures (asserted); whole numbers first scrambles the figures | the prompt's closing sentence rounds the differences |
-| SF12 | placebo | the phase 2b's placebo arm, on the same background therapy | none | same call | the protocol's design |
-| SF13 | the dose to take into the phase 3 | the dose with the largest difference from placebo at month 36 | the lowest dose within a margin of the best; a safety screen first | same call (20 mg is the largest and no safety rule in the pack bars it) | the prompt's question; the synopsis's dose-selection sentence names this trial's primary end point, the change in eGFR at month 36 (asserted present) |
+| SF1 | the activations the sectors would have raised in the time it was running | the counterfactual for the probe's minutes | the rate of the minutes without it | the off-time rate files discretionary | SRB 2026/04 3.1 ("would have raised"); asserted |
+| SF2 | the time it was running | the planner log's New Zealand time taken to UTC | the log read as UTC | moves the call (asserted) | the planner guide section 4 ("in New Zealand time") |
+| SF3 | activations counted as the report counts them | live, once per event where it began | every live record, or every status | same call; same printed share for the continuation reading (asserted) | the report section 2; SRB 3.2 |
+| SF4 | a combined-sector activation | the elementary sector of the first-named aircraft | the first sector of the combined name | same printed share (asserted) | the report section 2 |
+| SF5 | the trial window | 1 April to 30 September 2026, New Zealand time | UTC dates | same call (the export is the window; asserted) | SRB 2026/04 section 2 |
+| SF6 | the share prevented | over the probe's running minutes | a pooled rate ratio | same printed share (asserted) | none needed |
+| SF7 | an aircraft or a probe display in a minute | the minute's midpoint inside the interval | the minute's start, or any overlap | same printed share (asserted) | none needed |
+| SF8 | a flight's crossings | its latest plan revision's list | the latest revision of each flight and sector | same printed share; moves the asks (asserted) | the crossing list (a superseded crossing overlaps the flown one in time) |
+| SF9 | climbing or descending | entry and exit levels differ | a threshold on the change | same call (levels equal or 40 or more apart; asserted) | the crossing list |
+| SF10 | the share's rounding | the nearest five per cent | other units | the prompt files it; mid-bin asserted | the prompt |
+| SF11 | the asks' months | New Zealand calendar months | UTC months | moves 30 or more of 36 cells (asserted) | the prompt; the report section 2 |
+| SF12 | flights handled | each flight once in each sector it entered | crossings | moves every sector (asserted) | the report section 2 |
+| SF13 | an activation's month and sector | its start in New Zealand time, where it began | its end, or the receiving sector | the report's counting (asserted in figs) | the report section 2 |
+| SF14 | further strata (hour of day, configuration, weekday) | not needed | added | same printed share (asserted) | none needed |
+| SF15 | the climbing count's resolution | each exact count | bins (none, one, two, three or more), both counts binned, or the climbing count without the count of aircraft | binned cells print 20 (20.2; both binned 21.2), a binned Poisson files discretionary, the climbing count alone prints 35 (36.6) | the data: the exact cells hold all but 52 of the probe's running minutes, a top bin of three or more fails a likelihood ratio at p < 0.001, and inside it the probe's minutes carry more climbing aircraft at the same sector and count (asserted) |
+| SF16 | the adjustment's form | the cells, or a Poisson with the counts as factors (or log pairs) | a Poisson linear in the count of aircraft and the climbing count, or sector by the two counts linear | the linear form files discretionary (19.4), sector by linear counts prints 20 (22.2) | the data: the linear form fails a likelihood ratio against the factor form at p < 0.001 on every minute and on minutes with two aircraft or more (asserted); the factor, log-pair and climbing-linear forms agree at 30 |
+| SF17 | one pair's records close together in one sector | none occur (a hand-over record is in the next sector, 0 to 2 s on) | merged as one activation | no count moves (asserted in A4) | the data: one pair's records in one sector sit 243 s apart or more |
 
 ## Ladder
 
-Measured on the shipped pack (`generator/checks.py` asserts every row; `generator/figures.json` carries the values
-under `note.rungs`, `note.margins` and `note.corridor`). Figures are each dose's month-36 difference from placebo in
-mL/min/1.73 m2.
+| Rung | Construction | Share prevented (per cent) | Dies to |
+|---|---|---|---|
+| R0 | per flight hour | -108.1 | the probe's minutes are busier, with more aircraft and more of them climbing or descending |
+| R1 | hourly traffic | -109.9 | the hour's traffic misses the minute's: the probe runs in the hour's climbing and descending minutes |
+| R1b | same sector-hour | -157.1 | within the hour the probe runs in the minutes the climbing and descending traffic fills |
+| R2 | like occupancy | -15.0 | at like occupancy the probe's minutes still hold more climbing and descending aircraft |
+| R2 | like occupancy and hour of day | -12.2 | at like occupancy the probe's minutes still hold more climbing and descending aircraft |
+| R2b | per aircraft pair | -20.9 | per pair still leaves the climbing and descending mix unheld |
+| R2c | per climbing or descending aircraft | 14.2 | per climbing aircraft leaves the aircraft around it unheld, and the probe's minutes hold more of them |
+| R3 | Mantel-Haenszel (sector, n, T) | 30.7 | a standing member; prints 30 |
+| R3 | Poisson, count factors, climbing count linear | 30.2 | a standing member; prints 30 |
+| R3 | Poisson, log aircraft pairs and climbing count | 30.2 | a standing member; prints 30 |
+| R3 | Poisson, sector, count and climbing count as factors | 30.3 | a standing member; prints 30 |
+| R3 | observed against expected (sector, n, T) | 30.3 | the golden |
+| R3 | strata with hour of day | 30.9 | a standing member; prints 30 |
 
-| Rung | Construction | 5 mg | 10 mg | 20 mg | 40 mg | Winner | Margin |
-|---|---|---|---|---|---|---|---|
-| 0 default variant | the week-52 difference, no projection | -0.60 | -0.34 | -1.39 | -2.99 | 10 mg | 0.26 over 5 mg |
-| 0b | one slope through every on-treatment visit, carried to month 36 | -0.15 | 0.18 | -0.38 | -1.02 | 10 mg | 0.33 over 5 mg |
-| 1 default path | two-slope, chronic phase from week 12 (month 3) | 0.65 | 1.03 | 3.11 | 4.81 | 40 mg | 1.70 over 20 mg |
-| 2 sophisticated | two-slope, chronic phase from week 16, after the visible turn | 0.39 | 1.11 | 3.05 | 3.56 | 40 mg | 0.51 over 20 mg |
-| 3 decisive | chronic phase from week 24, after the recovery, from each arm's settled level | -0.01 | 1.05 | 3.04 | 2.04 | 20 mg | 0.99 over 40 mg |
-
-- **Position.** 20 mg is third of four on rung 0 (only 40 mg's larger fall is behind it), second on 0b, second on rungs
-  1 and 2, and first only at the decisive rung. Four candidates leave no fifth place; the margins are in
-  mL/min/1.73 m2 because the week-52 values are negative.
-- **Dominance.** Every correction above the week-52 view moves the call to 40 mg (4.81, then 3.56); only the decisive
-  move reverses it, by carrying the recovery as a level rather than a slope: 40 mg's figure falls by 2.8 from rung 1
-  (asserted at 2.5 or more), 20 mg's by 0.1.
-- **The knot at week 20,** at the last easing visit: 20 mg stays first (3.24 against 2.83) and 40 mg's figure is a bin
-  out; the 40 mg difference still rises 0.51 from week 20 to week 24, more than one and a half times its chronic rate
-  over four weeks (asserted). A fifth of the easing happens at that visit, so the knot sits inside the recovery.
-- **Corridor (C3).** From week 24 every estimator lands the golden figures (asserted within 0.4 of the whole number):
-  the knot at week 32 (0.02, 1.10, 2.98, 1.89), the mixed model with a random intercept and slope per patient (-0.07,
-  1.24, 3.02, 2.03), each patient's own line averaged (-0.20, 1.14, 3.02, 2.06), the pooled patient-level line on
-  actual study days (-0.04, 1.07, 3.08, 2.07) and the week-52 difference plus two years of the chronic slope (0.02,
-  1.08, 3.08, 2.00).
-- **Worth on the graded quantity.** From rung 1 the decisive move shifts 40 mg by 2.8 and carries the call; from rung 2
-  it shifts 40 mg by 1.5. Rungs 0 and 0b file 10 mg with every drug figure one to four whole numbers off.
-- **Grid.** Two binary moves (project at all; start the chronic phase after the recovery) and the knot's position:
-  no projection, 10 mg; one slope through every visit, 10 mg; knots at weeks 4, 12 and 16, 40 mg; the knot at week
-  20, 20 mg with 40 mg's figure a bin out; knots at weeks 24 and 32 and the within-patient estimators, the golden.
-  Lower rungs at the golden cell: levels for changes, the disposition form for the dosing record, one-decimal arm
-  means, actual days and unscheduled values leave every figure in its bin (asserted); the week-56 visit fitted in or
-  an off-treatment reading moves the call to 40 mg (SF4, SF8); treatment policy keeps the call with 40 mg a bin up
-  (SF5).
-- **Flip condition.** 40 mg overtakes 20 mg at month 36 only if its chronic benefit over placebo exceeded 20 mg's by
-  more than 0.7 mL/min/1.73 m2 a year (against 0.3 measured: 2.5 and 2.2 a year).
-- **Figures mid-bin.** 3.04, 2.04, 1.05 and -0.01 against whole-number bins, each 0.45 or more from an edge.
+- **Margins on the cut pack** (asserted in checks.py): every rung sits under the bar by more than the golden
+  clears it (highest rung -12.2, the golden 10.3 over); the crude mix route, per climbing or descending aircraft-minute,
+  sits 5.8 points under; every standing member prints 30, from 30.2 to 30.9, clear of the bin's edges; the golden 30.3
+  sits mid-bin.
+- **Separation.** The default path is wrong on the clean truth (T2) and the like-count-and-mix route on the world's
+  own records is the golden (T2); the pack's handling recovers the truth minute by minute (T1).
+- **Gate F.** No route that skips the climbing count reaches the bar (asserted).
 
 ## Closure table
 
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | every randomised patient, by randomised arm, values after a permanent stop set aside | filed (the synopsis's estimand); SF5, SF6 asserted |
-| 2 | Unit of account | a patient's eGFR at a visit; the arm mean of changes from baseline | filed (the synopsis); one central eGFR per patient-visit after duplicates collapse (asserted) |
-| 3 | Attribution window | on-treatment visits to week 52; the week-56 follow-up outside | filed; SF8 (C4) |
-| 4 | As-of dating | the phase 2b database as locked, every visit final | C1: the extract's last collection date precedes the lock date; no visit after week 56 |
-| 5 | Version basis | the central laboratory's final results | C1: no corrected or cancelled eGFR result on the main path (asserted) |
-| 6 | Denominator | the arm's patients with a value at each visit | C1: the mixed model, each patient's own line and the pooled patient-level line land the golden figures (asserted) |
-| 7 | Weighting | arm means of patients' changes, patients equal within a visit | C1 (asserted across the mixed model, arm means and per-patient lines; the dropout streams were drawn so the incomplete patients do not pull the late visit means) |
-| 8 | Window length | where the chronic phase starts | the data's structure: the easing runs from the week-12 visit to the week-20 visit and the recovery to about week 24; knots at weeks 24 and 32 and the within-patient estimators give the golden figures (C3 corridor, asserted); knots at weeks 4, 12 and 16 carry the recovery and file 40 mg; the knot at week 20 keeps 20 mg with 40 mg's figure a bin out, the 40 mg difference still rising from week 20 to 24 (asserted) |
-| 9 | Boundary inclusivity | visit windows | C1: from week 24 every visit is inside its window; visits before week 24 taken outside their windows, kept or dropped, leave every figure in its bin (asserted) |
-| 10 | Rounding path | once, at the end | filed in the prompt; SF11 asserted |
-| 11 | Tie-break | none | C1: the four figures are distinct whole numbers |
-| 12 | Maturity and censoring | every patient's 52 weeks complete at the lock | C1 |
-| 13 | Order of operations | changes from baseline, then arm means, then the projection | C1: projecting each patient and averaging lands in the same bins (asserted) |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | repeat central samples at a visit (the repeat after a haemolysed sample, filed under its visit) | filed: the SAP's first sample of a visit; averaging the repeats, or dropping the haemolysed sample for its repeat, leaves every figure in its bin (asserted) |
-| 16 | Identity normalisation | subject numbers across the laboratory and EDC extracts | C1: the laboratory's subject numbers equal the EDC's for every randomised patient |
-| 17 | Netting against gross | none on the main call | C1 |
-| 18 | Dimensional units | eGFR in mL/min/1.73 m2; creatinine in umol/L and mg/dL by laboratory | C1 on the main path (eGFR is reported in one unit); creatinine units matter only to a solver recomputing eGFR (SF1) |
-| 19 | Code and status semantics | central against local laboratory, scheduled against unscheduled | dictionary semantics; SF1, SF7 |
-| 20 | Integerisation | none | C1 |
-| 21 | Clause scope | the 12-week background rule covers diuretics, RAS blockers and SGLT2 inhibitors in both studies | filed (the protocol and the synopsis); SF9 |
-| 22 | Forward window contents | months 13 to 36 of a phase 3 not yet run | the chronic slope from the phase 2b's weeks 24 to 52 carried forward under the synopsis's identical population and conduct; the estimand is the phase 3's own |
+| Axis | Reading in this build | Move |
+|---|---|---|
+| 1 Population | the six sectors' minutes with the probe running | filed (SRB 2026/04 3.1, 3.3) |
+| 2 Unit of account | an STCA activation, once per event | filed (the report section 2) |
+| 3 Attribution window | 1 April to 30 September 2026, New Zealand time | filed (SRB 2026/04 section 2) |
+| 4 As-of dating | the extracts of 5 October 2026 | the files' own period |
+| 5 Version basis | each flight's latest plan revision | C1 (SF8) |
+| 6 Denominator | the probe's running minutes' expected activations | filed (SRB 3.1) |
+| 7 Weighting | the probe's own minutes (observed against expected) | C1 (SF6) |
+| 8 Window length | the trial | filed |
+| 9 Boundary inclusivity | at least one in five | filed (SRB 3.1) |
+| 10 Rounding path | the share unrounded, printed to the nearest five | the prompt; C1 |
+| 11 Tie-break | none | C1 |
+| 12 Maturity and censoring | the trial closed on 30 September; the log is complete | filed |
+| 13 Order of operations | clean, rebuild the minutes, stratify, compare | C1 |
+| 14 Row order | none: set operations by sector and minute | C1 |
+| 15 Duplicate resolution | a continuation record is the same event | filed (the report section 2; SF3) |
+| 16 Identity normalisation | callsign and time to the flight's crossing | SF4 |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | minutes, flight hours, activations per 1,000 flight hours | the files' own fields |
+| 19 Code and status semantics | LIVE, INHIBITED, TEST | filed (the report section 2) |
+| 20 Integerisation | whole activations and aircraft | C1 by construction |
+| 21 Clause scope | SRB section 4's survey and training plan inform the rollout, not the decision | filed scope |
+| 22 Forward window contents | the mandate from 1 April 2027 | filed (SRB 2026/04 section 1) |
 
 ## Literal reader
 
-Executed word for word (the prompt; the synopsis's estimand, eGFR definition, intercurrent-event strategy and
-on-treatment month-36 visit; the protocol's design, visit schedule, windows, baseline and conduct sections; the SAP's
-visit conventions): each dose's figure is the difference between its mean change in central CKD-EPI 2021 eGFR from
-baseline and placebo's at month 36 on treatment, every randomised patient counted as randomised and values after a
-permanent stop set aside. The phase 2b records 52 weeks; the literal estimand at week 156 needs a projection, and the
-field's projection carries each arm's chronic slope from the level the arm has settled at. The record turns linear
-only after week 24 in the 20 and 40 mg arms (the easing visits run from week 12 to week 20 and the recovery follows
-them), so the chronic slope from week 24 or 32, by arm means, each patient's own line or a mixed model, returns 20 mg
-at 3, 40 mg at 2, 10 mg at 1 and 5 mg at 0; a slope started at month 3 or week 16 is an easier method on the same
-literal estimand, never another reading of a filed sentence. The level reading of the prompt's "how much higher eGFR
-would be" converges on the same figures (SF3).
+Executed word for word, SRB 2026/04 section 3.1 asks for the share of the STCA activations the six sectors would have
+raised in the time PROBE-M was running that its use prevented. Read literally, the minutes without the probe stand for
+the probe's minutes only where they carry the same traffic: the same sector, the same aircraft present and the same of
+them climbing or descending, since the planners switched the probe on as that traffic gathered and the activations
+come from it; the probe's running time raised 1,542 activations, and its minutes at combinations that also occur without
+it (all but 52 of them) raised 1,520 against 2,181, about 30 per cent prevented. The asks' months, counts and flights read
+literally on the report's definitions give the figures in figures.json.
 
 ## Oracles
 
-- The protocol's planned sample size and the randomisation counts tie under every basis.
-- The central laboratory's reported eGFR and its recomputation from creatinine tie within 1 under every basis (SF1).
-- No phase 2b results report, published figure, investigator brochure table or corpus ships; nothing states a
-  dose's eGFR effect, slope or projection, and no document names a slope, knot or phase window (asserted on the
-  protocol, the SAP and the synopsis).
-- `vs.csv` (blood pressure, pulse and weight) and `pc.csv` (trough concentrations) are distractors; neither ranks the
-  doses on eGFR nor reproduces a figure, and deleting either leaves the golden and every ask unchanged (asserted).
-- The asks' tables (potassium, adverse events, exposure, discontinuation) never touch eGFR.
-
-None ties only under the golden.
-
-Leak sweep (`leak.py --asof 2026-10-12`, REVIEW, no LEAK), one line per REVIEW:
-- Sweep 3, the protocol and the synopsis carry words of the call (VMK-4410, phase 3, months, treatment, eGFR,
-  placebo): the study's own nouns; neither names a dose as the choice or states a figure.
-- Sweep 4, the protocol (chronic, change, window, protocol, diuretics, record), the synopsis (chronic, change, window,
-  diuretics, clinical, laboratory) and the SAP (change, protocol, laboratory, patient, repeat, second): "chronic" is
-  the disease's name, "window" the visit windows, "diuretics" the twelve-week background-therapy clause both studies
-  carry; no document names a slope, knot or phase (asserted in `checks.py`).
-
-Duplicate guard: `guard.py heart` WARN (question form "which" against task501); `guard.py surface` promotes task123
-on the card axes it shares (time gap, G4, method_or_model_selection), the overlap the card's differentiation line
-answers at registration; task123 is retired and failed to stump, and the drivers sit at 0.06.
+None on the main call: no file carries a share prevented, an activation rate with and without the probe, or a
+recommendation; the report's rates are for July 2024 to June 2025, before the probe. The asks have no oracle either:
+the report's tables cover a year with no overlap with the trial.
 
 ## Ask sheet
 
-Two asks, 20 figures, in `VMK-4410_phase2b_tables.xlsx`. Each is a component of the dose-selection case the eGFR
-call does not turn on (H18: a safety or exposure measure every candidate dose carries), on rows the call never
-reads (potassium and adverse events, dosing and disposition).
+Three asks on the trial's records, each read through a reconstruction across two systems or grains no sentence
+states.
 
-**Ask A: hyperkalaemia by arm** (10 figures: for placebo and each dose, how many patients had a serum potassium above
-5.5 mmol/L on treatment, and how many hyperkalaemia adverse events began on treatment).
-- Home: the safety component every dose of an aldosterone synthase inhibitor carries; the call does not turn on it.
-- Use: the dose decision's safety table, the first thing the chief medical officer reads after the efficacy figure.
-- Primary device, patients (D5, a silently partial extract): potassium measured at local laboratories (an
-  unscheduled repeat after a raised central value) sits in the same extract beside the central results, as rows the
-  site's own laboratory reported (named in `LBNAM`, no other marker) that also carry creatinine, sodium and glucose,
-  most of them normal; the main call's estimand is central only, and a solver who carries that filter over misses the
-  patients whose only high potassium was measured locally (2, 2, 2, 5 and 8 by arm, placebo included).
-- Primary device, events (D6, a ledger at another grain than its name): the EDC opens a new adverse-event row when an
-  event's severity changes and links the rows of one event by a group number (`AEGRPID`, filled on every event, one
-  row or several); counting rows counts an event whose severity changed twice or more (1, 1, 1, 2 and 16 extra
-  records by arm).
-- Hazards: the two preferred terms the SAP's adverse events of special interest list for hyperkalaemia
-  (Hyperkalaemia, Blood potassium increased), the SAP's on-treatment period (first dose to last dose, the day-1 sample
-  a baseline value) beside its treatment-emergent window, partial onset dates imputed by the SAP's rule, potassium in
-  mEq/L at the Spanish sites' local laboratories (equal to mmol/L), and post-treatment values at the week-56 visit.
-- Path: `lb.csv`, `ae.csv`, `ex.csv`, `dm.csv`, the SAP (5 files; USUBJID, LBTESTCD, LBSPEC, LBSTRESN, LBSTRESU,
-  LBDTC, LBNAM, AEDECOD, AESTDTC, AEGRPID, AESEV, EXSTDTC, EXENDTC, ARM).
-- Stops: central only (patients short in every arm); rows counted (events over in every arm); both preferred terms
-  missed (events and patients short); the treatment-emergent window ignored (screening events counted); the golden.
-- Realism: EDC systems record a change in an event's severity as a new record linked to the first; local potassium
-  checks after a dose change are entered on the local-laboratory form of the same extract.
+**Ask A, flight hours by sector and New Zealand month (36 figures).**
+- Files: the FDPS crossing list.
+- Primary (D9, a superseded plan): a revision re-issues the flight's whole crossing list, so a rerouted flight's
+  first-plan crossing through a sector it never flew stays in under the natural de-duplication (the latest revision
+  of each flight and sector); only each flight's latest revision is flown.
+- Hazards: month ends in New Zealand time against UTC timestamps, across both daylight-time changes.
 
-**Ask B: exposure and discontinuation by arm** (10 figures: for placebo and each dose, how many patients stopped study
-drug for good before their week-52 visit, and the arm's total years on study drug before that visit, to one decimal).
-- Home: the tolerability and exposure components every dose carries; the call does not turn on them.
-- Use: how much drug each dose's evidence rests on, and how many patients a dose lost.
-- Primary device, stopping (D2, the record is the latest accepted, not the latest delivered): a site records
-  "STUDY DRUG DISCONTINUED" in the disposition form when a patient stops, and a few patients restart after a
-  temporary stop the site first entered as permanent; the disposition row stays and the dosing record shows tablets
-  taken after its date (2, 2, 2, 2 and 1 by arm). Counting disposition rows overstates; only the dosing record says
-  who stopped for good.
-- Primary device, years (D6 and D9, an interval's quantity on every line it covers): each dosing row runs from one
-  dispensing visit to the next with both dates inclusive, so consecutive rows share their boundary day; summing row
-  lengths counts each dispensing day twice (every arm, about 1.6 patient-years an arm). Interruptions appear as gaps
-  between rows.
-- Hazards: the "before their week-52 visit" boundary (the visit day itself excluded); drug collected at the site
-  when a dispensing visit was missed (an unscheduled dispensing row); patients who left the study before week 52.
-- Path: `ex.csv`, `ds.csv`, `sv.csv` (visit dates), `dm.csv`, the SAP's exposure definition (5 files; USUBJID,
-  EXSTDTC, EXENDTC, EXDOSE, DSSCAT, DSDECOD, DSSTDTC, VISIT, SVSTDTC, ARM).
-- Stops: disposition rows counted (stopping over); row lengths summed (years over); the visit day included (years
-  over by a day a patient); the golden.
-- Realism: EDC exposure logs record each dispensing interval visit to visit; disposition forms are not reopened when
-  a patient restarts.
+**Ask B, STCA activations per 1,000 flight hours by sector and month (36 figures).**
+- Files: the STCA log, the crossing list.
+- Primary: the continuation record an alert opens as it carries into the next sector is the same event, found only
+  by its pair and its start at the hand-over second; a combined-sector activation goes to the first-named aircraft's
+  sector, read from the crossings.
+- Hazards: inhibited and test activations; Ask A's hours as the denominator.
 
-**Main population zero-counts (asserted by count).** On the main call's rows (central eGFR at the scheduled visits,
-screening to week 52): local-laboratory eGFR rows 0; eGFR results not done, cancelled or corrected 0. Split adverse-event
-rows, restarts after a disposition entry and shared-boundary dosing rows are not read by the main call. The patients
-who restarted after a disposition entry keep every on-treatment value; reading stopping from the disposition form
-instead leaves every figure in its bin (SF5, asserted).
+**Ask C, flights handled by sector over the trial (6 figures).**
+- Files: the crossing list.
+- Primary: Ask A's superseded crossings put flights in sectors they never entered.
+- Hazard: re-entries counted once (the report).
 
-**Device mass on the shipped pack (golden against the device's natural read, placebo, 5, 10, 20, 40 mg).**
-
-| Device | Golden | Natural read | Arms moved |
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at like occupancy) | Verdict |
 |---|---|---|---|
-| A patients: local potassium (D5) | 2, 4, 10, 29, 68 | central only 0, 2, 8, 24, 60 | all five |
-| A events: a new record per change of severity (D6) | 1, 2, 8, 28, 80 | records 2, 3, 9, 30, 96 | all five |
-| B stopping: the disposition form not reopened (D2) | 5, 6, 7, 9, 10 | form 7, 8, 9, 11, 11 | all five |
-| B years: bottle periods sharing their boundary day (D6, D9) | 147.1, 148.4, 145.7, 146.1, 144.7 | summed periods 148.7, 150.0, 147.3, 147.7, 146.3 | all five |
+| A, 36 monthly figures | takes the latest revision of each flight and sector | the same | miss |
+| B, 36 monthly figures | the same hours under the rates | the same | miss |
+| C, 6 figures | counts the superseded crossings' flights | the same | miss |
 
-**Hazard table.**
+Pair ceiling: 36.9 (keeps 12 of 79 ask criteria, response 53.4).
+Mirror leakage: 15.2 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack, target.zip bb6963b0)
 
-| Hazard | Asks moved | Per-ask effect on the shipped pack |
-|---|---|---|
-| the AESI preferred terms | A events | Hyperkalaemia alone: 0, 1, 2, 19, 54 |
-| the on-treatment window | A events | three pre-treatment events (placebo, 20 mg, 40 mg) counted if the window is dropped; no event begins in the 30 days after a last dose, so 'on treatment' and treatment-emergent agree (asserted) |
-| the day-1 and week-56 samples | A patients | none on this pack: no day-1 value above 5.5 and no patient whose only value above 5.5 is at week 56 (asserted counts 0) |
-| local mEq/L units | A patients | none (equal to mmol/L) |
-| the week-52 visit day | B years | the visit day included: 149.1, 150.4, 147.7, 148.1, 146.7 |
+## Leak sweep
 
-**Referee.** The adverse-event record of each restart ("drug interrupted") and the trough concentrations at later
-visits corroborate the dosing record against the disposition form; no ask needs them to be computed.
+`leak.py task122 --asof 2026-10-09` on target.zip bb6963b0: REVIEW, no LEAK; each line ruled.
+- Sweep 3 on `probe_m_trial_acceptance_criteria.pdf` and `probe_m_planner_guide_v2.1.pdf` (the call's words:
+  PROBE-M, mandatory, en-route planner position, 1 April 2027): harmless; the criteria state the decision the
+  executive team takes and the guide names the tool and its position, and neither carries a share, a rate with and
+  without the probe or a recommendation.
+- Sweep 4 on the guide (traffic, minutes, aircraft, sectors) and the safety report (traffic, aircraft, sectors):
+  harmless; the guide says what the probe predicts and the report defines its counts, and neither names a mix, a
+  level, a comparison or a count of aircraft to hold (asserted by reading, and the Pins line).
+- Fixed before this run: the 2024/25 report's published figures moved off every figure this trial owes (a flight-hour
+  cell printed as one of the trial's), and the request's signature no longer repeats its sender's first name.
 
-| Ask | Figures | Cracker (lands the call, runs the battery, executes every filed rule) |
-|---|---|---|
-| A patients with potassium above 5.5 (placebo, 5, 10, 20, 40 mg) | 5 | miss |
-| A hyperkalaemia adverse events (placebo, 5, 10, 20, 40 mg) | 5 | miss |
-| B patients who stopped for good (placebo, 5, 10, 20, 40 mg) | 5 | miss |
-| B years on study drug (placebo, 5, 10, 20, 40 mg) | 5 | miss |
+## Pre-ship check
 
-The cracker keeps the central filter it built for the call (Ask A patients), counts adverse-event records after
-applying the SAP's terms and window (Ask A events), counts the disposition form's discontinuations (Ask B stopping)
-and sums dosing-record lengths to the day before the week-52 visit (Ask B years); each device moves every arm
-(asserted per arm in `checks.py`).
-
-Mirror leakage: 10 per cent of ask weight at most (the mirror stops at rung 1, files 40 mg and runs the same ask paths
-as the cracker; with every device moving every arm it keeps no ask figure on the shipped pack, and the tenth is the
-margin for a regrade).
-
-Pair ceiling: 31 (cracker 45 with no ask kept; mirror 5 + 7 + 5.5 = 17.5 at a tenth of the ask weight).
-
-**Stage 4 (2026-10-13).** Leak reader (isolated, medium): nothing names the decisive step, ranks the doses, exists
-only to help or reads as the answer; no filed sentence names a method, slope, knot or window for the projection; the
-main answer is an analytical choice. Its two notes were fixed in the generator: the synopsis's dose-selection
-sentence now names "this trial's primary end point, the change in eGFR from baseline to the month-36 visit" (the
-phase 2b's primary is UACR), and recheck requisitions vary between a renal panel and a full panel, so the test counts
-differ. Determinism judge (isolated thread from the agent's brief, medium): DETERMINISTIC, APPROVE; Gate G pass
-(forecasting mechanism, analytical_non_defect, no surface-read dependency, no sole defect); Gate H domain pass,
-layers pass, decisive step analytical; every graded figure reproduced (3.04, 2.04, 1.05, -0.01; the four tables).
-Its low findings: the window start (the data identify week 24: residual sums of squares of the 40 mg line 0.593 from
-week 12, 0.167 from 16, 0.073 from 20, 0.014 from 24 and 0.013 from 32); the write-up's diuretic counts, which
-depended on a counting rule, are cut from `submission.md` and kept in the memo with the rule stated; dropping
-haemolysed samples moved 5 mg to the edge, fixed by filing every repeat sample under the visit it replaces and
-carrying the haemolysis condition on the potassium result only (the variant now lands 0.24, 1.17, 3.08, 2.40,
-asserted). The reader re-ran on the changed documents.
-
-**Pre-ship check, the 10/10 rules re-read against the built pack.** Domain: the deciding quantity is each dose's
-eGFR difference from placebo at month 36 on the phase 3 synopsis's estimand, estimated by nephrology's acute and
-chronic eGFR slope analysis on a randomised trial's repeated central eGFR; with another field's nouns there is no
-haemodynamic fall, no background diuretic held for twelve weeks and then eased, no recovery of a volume-related fall
-and no chronic slope to carry, so the swap breaks (judge: domain pass). Two layers: the Layer 1 mess (two laboratory
-hubs and local laboratories, units, repeat samples, out-of-window visits before week 24, bottle-period dosing
-records, a disposition form not reopened, severity changes as new records, country spellings of medications) is
-neutral on the call by assertion (R2: each item mishandled leaves every figure in its bin), and Layer 2, where the
-chronic phase starts, decides it (R3a files 40 mg on the clean pre-extract measurements with every filed rule
-applied, R3b the decisive step alone files 20 mg). Decisive step analytical: the month-3 two-slope route files 40
-mg and the week-52 difference and the total slope file 10 mg with every field read and every rule executed (judge:
-decisive_step analytical, analytical_non_defect); nothing planted, no decoy, no certified replay, no filed slope
-method.
+1. Three rules: the decisive step (the probe's minutes against minutes without it at like sector, count and climbing
+   and descending count) is analytical; nothing planted, read or executed decides (the Three rules lines).
+2. Determinism: SRB 2026/04 files the WHAT; the standing family converges on 30 across strata, observed against
+   expected and the Poisson forms, every presence convention, revision and continuation reading and added stratum
+   (SF1 to SF17, asserted; SF15 and SF16 by the data's rejection of the coarser and linear forms).
+3. Gates on the final cut (target.zip bb6963b0): generator checks, the independent verifier on every graded figure, two
+   byte-identical builds, figures_check.py, precut.py, voice-check.py, leak.py REVIEW with no LEAK, guard.py heart
+   and surface; the leak reader and the determinism judge run from the main thread.
+4. Surface: the one promoted pair, task81 (economics, a regional employment incentive costed from employer schedules,
+   a descriptive quantity), rides the place name New Zealand, a real country and not an invented name, and the
+   published-series context type; its domain, objective, decision type and driver all differ, so it is not a clone.
 
 ## Tried and rejected
 
@@ -741,6 +559,81 @@ method.
   cannot reach the decisive fit.
 - Stage 3, clinic visits on weekends and a missed dispensing visit leaving one bottle for seven months: dates moved to
   the nearest weekday and drug collected at the site on the missed visit's day.
+- 2026-10-31, at the re-root, architecture 2 on the slot (card v3, the VMK-4410 eGFR phase 3 dose) spent: the
+  portal has recorded no responses for it (PENDING_REVIEW since 10-13; the FAILED_TO_STUMP entry in pipeline.json's
+  returned record is v2's carousel build, retired 10-10 on a Gate G send-back and never submitted), so no landed
+  call's step can be read from the record. It dies on the batch audit instead (precut FAIL with no survivor
+  anatomy, leak.py LEAK on the shipped data dictionary and export manifest, the prompt counting the doses), and the
+  step it meant to stop solvers on, starting the chronic slope at month 3 rather than at week 24 once the week-12
+  diuretic easing had run its course, rides a clock the protocol states in writing, which a reader of the protocol
+  reaches without the analysis; the redraw refuses any decisive step that a filed clock or sentence points to.
+- 2026-10-31, at the draw: criminology hot spot patrols with displacement to the adjacent street segments as the
+  decisive step: set aside when task125 drew police hot spot patrols the same day, and the interference family is
+  spent by task131 v1 (left off the approved list).
+- 2026-10-31, at the draw: a decision-maker design (job seekers allocated to advisers by rota, the effect read from
+  each adviser's referral share): task141's approved driver, rota decision-makers' let-through shares, is the device.
+- 2026-10-31, at the draw: staggered adoption against not-yet-treated units: spent by task136 and task137, the latter
+  landed by a probe that compared each wave with the waves not yet treated.
+- 2026-10-31, at the draw: regression to the mean behind comparably selected controls, the dip before programme
+  entry, and immortal time from an ever-treated label: each has a textbook remedy a strong solver applies on sight (a
+  discontinuity at the selection cut, a baseline before the dip, time-varying exposure), and immortal time sits one
+  join from a column.
+- 2026-10-31, at the draw: a fast-track review route confounded by the decision maker's queue: the swap test fails
+  (the task reads the same with a hospital's nouns), and a faster route shortens the queue it is adjusted for.
+- 2026-10-31, at the draw: ambulance auto-allocation confounded by the vehicles free at each allocation: task121's
+  world (a county 911 centre dispatching ambulances).
+- 2026-10-31, design prototype: the probe confounded by occupancy alone (the count of aircraft in the sector): the
+  per-flight-hour rate and the like-occupancy comparison bracket the truth, and a solver who builds the minute grid to
+  split flight hours by probe status holds occupancy by reflex, so the decisive step moved to the climbing and
+  descending mix at like occupancy.
+- 2026-10-31, design prototype: an activation risk built on aircraft pairs, each pair's risk by whether it includes a
+  climbing or descending aircraft: parametric adjustments (linear or quadratic terms) spread four points round the
+  stratified estimate; the risk is set log-linear in the count and in the climbing and descending count, so every
+  standing adjustment agrees within two points.
+- 2026-10-31, design prototype: the probe tracking the climbing and descending count tightly: overlap thinned at high
+  counts and the observed-against-expected route drifted five points from the strata; each watch's own habit with the
+  probe (unrecorded, drawn per watch and not per controller, so no controller's habit is an instrument) gives the
+  overlap.
+- 2026-11-01, stage 4 judge on target.zip c74f2a16 (FIX_NOW, a minor SOLUTION_WRONG): Critical Component 1 put 1,520
+  activations in the probe's running time, where its minutes raised 1,542 and the 1,520 are those at combinations of
+  sector, count and climbing count that also occur without it (52 running minutes have no such match); the write-up,
+  the paper and the workbook now state both figures from figures.json.
+- 2026-11-01, the same judge: one pair's STCA alerts drawn independently minute by minute left nine same-sector,
+  same-pair records overlapping in time, so a deduplicating reading moved seven rate cells by about one per 1,000
+  flight hours; closed in the data and not by a counting rule: one pair's records sit 243 s apart or more in any
+  sector, a hand-over record aside (A4, SF17).
+- 2026-11-01, the same judge: the safety report's dodge loop added an hour to a sector's first month each time the
+  year's totals printed as a trial figure (TPO July 2024 at 2,838 flight hours against about 1,500 in every other
+  month); the moves now rotate across the months and R1 holds every month within 4 per cent of the seasonal profile.
+- 2026-11-01, the same judge's method forks, left open and closed by the data rather than by filing the comparison or
+  the covariates (filing them hands over the decisive step): the climbing count binned none, one, two, three or more
+  (20.2 on c74f2a16), both counts binned (20.9 to 21.5), the climbing count alone by sector (36.6), sector by the two
+  counts linear (22.2) and a Poisson linear in the counts (19.4, the one that files discretionary); SF15 and SF16
+  assert the likelihood ratios that reject the coarser and the linear forms.
+
+## Architecture v3 record (spent 2026-10-31)
+
+Registered 2026-10-13 under the 10/10 rules, built, judged DETERMINISTIC (APPROVE, one pass) and shipped the same
+day; pending review with no portal responses on record when the batch 1 audit spent it (Tried and rejected).
+
+| Axis | Value |
+|---|---|
+| Domain / task type | Biomedical & Clinical Research / longitudinal-outcomes-repeated-measures |
+| Objective | Experiment & Causal Analysis |
+| Niche | a Copenhagen-area biotech's phase 3 dose of its aldosterone synthase inhibitor VMK-4410, from a 52-week phase 2b in albuminuric chronic kidney disease |
+| Shape | 11 before and after with a control |
+| Decision type / unit | pick one of four doses; mL/min/1.73 m2 of eGFR against placebo at month 36 |
+| Gap / pattern / generators | time; none; G4, G13, G16 |
+| Gate G mechanism | method_or_model_selection |
+| Stump strategy | decomposition_attribution |
+| Forum / forcing / org family | line_manager_or_team / statutory_or_regulatory_filing / other |
+| Deliverables | `VMK-4410_phase3_dose_recommendation.pdf`, `VMK-4410_phase2b_tables.xlsx` |
+| Answer | 20 mg, 3 mL/min/1.73 m2 above placebo at month 36 (40 mg 2, 10 mg 1, 5 mg 0) |
+
+Stump: a competent solver fits each dose's eGFR with the two-slope model, an acute effect to month 3 and a chronic
+slope after it, carries the chronic slope to month 36 and files 40 mg; the step that lands it there is starting the
+chronic slope at month 3, when the patients whose eGFR fell most had their loop diuretics eased only from week 12 and
+recovered part of the fall over the following weeks; from week 24 the slope leaves 20 mg furthest above placebo.
 
 ## Architecture v2 record (spent 2026-10-13)
 

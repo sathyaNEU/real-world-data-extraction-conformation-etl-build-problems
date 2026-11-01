@@ -1,154 +1,146 @@
 {
  "task": "task130",
- "title": "Elkhorn County food safety program: a third return-inspection officer for 2027",
- "domain": "Psychology & Behavioral Science",
- "task_type": "decision-making and computational behavioral modeling",
+ "title": "Redbud Line Services: 2027 recordable injuries on Pinewater work",
+ "domain": "Economics & Econometrics",
+ "task_type": "discrete choice and limited dependent variable modeling",
  "objective": "Forecasting & Predictive Modeling",
- "decision": "whether the county adds a third return-inspection officer for 2027 under its program plan's staffing rule, with the forecast the rule compares",
- "as_of": "2027-01-11",
+ "decision": "how many recordable injuries Redbud's field employees will record on Pinewater work in 2027, and whether the rate they make on the 2027 work plan stays within CS-4's limit of 3.0",
+ "as_of": "2026-10-16",
  "deliverables": [
-  "return_officer_memo_2027.pdf",
-  "return_inspections_2027.xlsx"
+  "safety_plan_recordables_2027.docx",
+  "recordables_forecast_2027.xlsx",
+  "recordables_by_quarter_2027.png"
  ],
  "distractor_files": [
-  "foodborne_illness_investigations_2019-2026.xlsx",
-  "permit_fee_invoices_2026.csv"
+  "good_catch_reports_2025-2026.csv",
+  "subcontractor_monthly_safety_2026.csv"
  ],
  "input_gates": {
-  "files": 13,
+  "files": 12,
   "formats": [
    "csv",
-   "json",
+   "docx",
    "pdf",
    "xlsx"
   ],
-  "largest_file": "inspections_2019-01_2024-03.csv",
-  "largest_file_rows": 30164
+  "largest_file": "timesheet_hours_by_pay_period_2021-2026.csv",
+  "largest_file_rows": 152804
  },
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task130/generator/make.py (seeded, deterministic) around a fictional Washington county, its public health department, food establishments and people; every record and figure is invented.",
-   "date": "2027-01-11",
+   "origin": "constructed for this task by task130/generator/make.py (seeded, deterministic) around a fictional Georgia power line contractor, a fictional electric membership corporation and fictional people; every record and figure is invented. Rate definitions follow 29 CFR 1904.",
+   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work)"
   }
  ],
  "files": [
   {
-   "path": "complaints_2024-03_2026-12.csv",
+   "path": "case_management_export_2024-2026.xlsx",
+   "format": "xlsx",
+   "bytes": 170990,
+   "rows": 2360,
+   "source": "Constructed: Redbud case management export, 1 June 2024 to 9 October 2026: the cases migrated open, the supervisors' reports and the nurse line's cases",
+   "date": "2026-10-12",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "crew_assignments_2020-2026.csv",
    "format": "csv",
-   "bytes": 122780,
-   "rows": 1392,
-   "source": "Constructed: Complaint intake records, 4 March 2024 to 31 December 2026",
-   "date": "2027-01-08",
+   "bytes": 457702,
+   "rows": 12585,
+   "source": "Constructed: HR crew and team assignment history, September 2020 to September 2026",
+   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "correspondence_log_2026.csv",
-   "format": "csv",
-   "bytes": 537481,
-   "rows": 4856,
-   "source": "Constructed: Outgoing correspondence log, 2026",
-   "date": "2027-01-08",
+   "path": "crew_register_2026.xlsx",
+   "format": "xlsx",
+   "bytes": 31226,
+   "rows": 1038,
+   "source": "Constructed: Crew and technician team register as of 29 September 2026, with the March 2025 recodes",
+   "date": "2026-09-29",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "county_holidays_2025-2027.json",
-   "format": "json",
-   "bytes": 2957,
-   "rows": null,
-   "source": "Constructed: Observed county holidays, 2025 to 2027",
-   "date": "2027-01-08",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "environmental_health_fee_schedule_2026.pdf",
+   "path": "crew_safety_recognition_programme.pdf",
    "format": "pdf",
-   "bytes": 3122,
+   "bytes": 3397,
    "rows": null,
-   "source": "Constructed: Environmental health fee schedule 2026, as amended 1 July 2026",
-   "date": "2027-01-08",
+   "source": "Constructed: Redbud HR-14 Crew Safety Recognition Programme, Revision 2 (effective 11 January 2021)",
+   "date": "2021-01-04",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "food_establishment_permits.csv",
+   "path": "ehs_case_log_2021-2024.csv",
    "format": "csv",
-   "bytes": 346517,
-   "rows": 3415,
-   "source": "Constructed: Food establishment permit register, as of 31 December 2026",
-   "date": "2027-01-08",
+   "bytes": 345992,
+   "rows": 2908,
+   "source": "Constructed: Redbud EHS case log (legacy system), January 2021 to 31 May 2024, one row per case revision",
+   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "food_program_staff_roster.xlsx",
-   "format": "xlsx",
-   "bytes": 7782,
-   "rows": null,
-   "source": "Constructed: Human Resources staff roster for the food safety program, December 2026, with separations since 2019",
-   "date": "2027-01-08",
+   "path": "good_catch_reports_2025-2026.csv",
+   "format": "csv",
+   "bytes": 586469,
+   "rows": 9585,
+   "source": "Constructed: Field good-catch (near-miss) reports, January 2025 to September 2026",
+   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "food_safety_program_plan_2027.pdf",
+   "path": "payroll_calendar_2021-2027.csv",
+   "format": "csv",
+   "bytes": 7634,
+   "rows": 182,
+   "source": "Constructed: Payroll calendar of biweekly pay periods, 2021 to 2027",
+   "date": "2026-10-16",
+   "license": "CC BY 4.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pinewater_contractor_safety_standard_cs4.pdf",
    "format": "pdf",
-   "bytes": 5170,
+   "bytes": 5023,
    "rows": null,
-   "source": "Constructed: Food Safety Program Plan 2027, issued 11 January 2027",
-   "date": "2027-01-11",
+   "source": "Constructed: Pinewater EMC Contractor Safety Performance Standard CS-4, Revision 3 (effective 1 January 2026)",
+   "date": "2025-12-08",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "foodborne_illness_investigations_2019-2026.xlsx",
-   "format": "xlsx",
-   "bytes": 10963,
+   "path": "recognition_programme_2027_notice.docx",
+   "format": "docx",
+   "bytes": 9487,
    "rows": null,
-   "source": "Constructed: Communicable disease team's foodborne illness investigations, 2019 to 2026",
-   "date": "2027-01-08",
+   "source": "Constructed: Redbud notice of 2 October 2026 ending HR-14 on 31 December 2026",
+   "date": "2026-10-02",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "inspections_2019-01_2024-03.csv",
+   "path": "subcontractor_monthly_safety_2026.csv",
    "format": "csv",
-   "bytes": 1944281,
-   "rows": 30164,
-   "source": "Constructed: Inspection system export, January 2019 to 1 March 2024 (the system replaced on 4 March 2024)",
-   "date": "2027-01-08",
+   "bytes": 2209,
+   "rows": 54,
+   "source": "Constructed: Subcontractors' monthly safety returns, January to September 2026",
+   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "inspections_2024-03_2026-12.csv",
+   "path": "timesheet_hours_by_pay_period_2021-2026.csv",
    "format": "csv",
-   "bytes": 1413437,
-   "rows": 18077,
-   "source": "Constructed: Inspection system export, 4 March 2024 to 31 December 2026",
-   "date": "2027-01-08",
+   "bytes": 11510437,
+   "rows": 152804,
+   "source": "Constructed: Payroll timesheet hours by unit and biweekly pay period, 11 January 2021 to 27 September 2026",
+   "date": "2026-10-16",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   },
   {
-   "path": "permit_fee_invoices_2026.csv",
-   "format": "csv",
-   "bytes": 226244,
-   "rows": 2580,
-   "source": "Constructed: Annual permit fee invoices for 2026",
-   "date": "2027-01-08",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "return_team_capacity_report_2026.xlsx",
+   "path": "work_plan_hours_2027.xlsx",
    "format": "xlsx",
-   "bytes": 22875,
+   "bytes": 8345,
    "rows": null,
-   "source": "Constructed: Return team capacity report for calendar 2026 with the officers' day sheet log",
-   "date": "2027-01-08",
-   "license": "CC BY 4.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "routine_inspection_schedule_2027.xlsx",
-   "format": "xlsx",
-   "bytes": 117794,
-   "rows": null,
-   "source": "Constructed: Routine inspection schedule for 2027, issued with the plan",
-   "date": "2027-01-11",
+   "source": "Constructed: 2027 work plan hours by district, unit type and quarter, from Pinewater's 2027 work release",
+   "date": "2026-10-15",
    "license": "CC BY 4.0 (original work, constructed for this task)"
   }
  ]

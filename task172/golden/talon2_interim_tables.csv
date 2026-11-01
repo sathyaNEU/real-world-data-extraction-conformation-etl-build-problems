@@ -1,0 +1,23 @@
+Table,Measure,Arm,Value
+Serious adverse events,Patients with a serious adverse event,Placebo + GemCis,113
+Serious adverse events,"Serious adverse events, all",Placebo + GemCis,170
+Serious adverse events,Infections and infestations,Placebo + GemCis,53
+Serious adverse events,Hepatobiliary disorders,Placebo + GemCis,57
+Serious adverse events,Gastrointestinal disorders,Placebo + GemCis,18
+Serious adverse events,Blood and lymphatic system disorders,Placebo + GemCis,23
+Serious adverse events,Patients with a serious adverse event,Ravolimab + GemCis,132
+Serious adverse events,"Serious adverse events, all",Ravolimab + GemCis,222
+Serious adverse events,Infections and infestations,Ravolimab + GemCis,65
+Serious adverse events,Hepatobiliary disorders,Ravolimab + GemCis,74
+Serious adverse events,Gastrointestinal disorders,Ravolimab + GemCis,23
+Serious adverse events,Blood and lymphatic system disorders,Ravolimab + GemCis,30
+Liver tests,Patients with ALT above 5 x ULN,Placebo + GemCis,2
+Liver tests,Patients with AST above 5 x ULN,Placebo + GemCis,1
+Liver tests,Patients with total bilirubin above 3 x ULN,Placebo + GemCis,10
+Liver tests,Patients with ALT above 5 x ULN,Ravolimab + GemCis,10
+Liver tests,Patients with AST above 5 x ULN,Ravolimab + GemCis,10
+Liver tests,Patients with total bilirubin above 3 x ULN,Ravolimab + GemCis,16
+Exposure,Patients who received study treatment,Placebo + GemCis,223
+Exposure,Ravolimab or placebo doses given,Placebo + GemCis,1455
+Exposure,Patients who received study treatment,Ravolimab + GemCis,226
+Exposure,Ravolimab or placebo doses given,Ravolimab + GemCis,1501

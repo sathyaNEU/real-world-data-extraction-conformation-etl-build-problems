@@ -1,199 +1,224 @@
-"""The golden deliverables: return_officer_memo_2027.pdf and return_inspections_2027.xlsx, written from the analysis."""
-import io
+"""The golden deliverables: the safety plan memo (docx), the forecast workbook (xlsx) and the quarterly chart (png),
+written from analysis.main()'s figures."""
 import os
 
 import openpyxl
-from openpyxl.styles import Alignment, Font, PatternFill
-from reportlab import rl_config
-
-rl_config.invariant = 1
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 import postprocess as PP
+import world as W
 
-MEMO = "return_officer_memo_2027.pdf"
-XLSX = "return_inspections_2027.xlsx"
-GREEN = colors.HexColor("#1F5E3B")
-AREA = {"A": "Marlow West", "B": "Marlow East", "C": "Marlow South and Harborview", "D": "Kessing and the North Valley",
-        "E": "Ardell and Torvik", "F": "Wexby and the South Shore", "G": "Norrow and Callan",
-        "H": "Marlow North and Lake Road", "J": "Elsby and the East Hills"}
+MEMO = "safety_plan_recordables_2027.docx"
+BOOK = "recordables_forecast_2027.xlsx"
+CHART = "recordables_by_quarter_2027.png"
+RED = "7A2E1F"
 
 
-def round_to(v, u):
-    return int(u * int(v / u + 0.5))
+def r0(x):
+    return int(round(x))
 
 
 def summary(F):
-    G = F["G"]
-    nk = G["nk"]
-    n = sum(nk.values())
-    return dict(total=G["total"], total_r=round_to(G["total"], 100), n=n, first=nk.get(0, 0), second=nk.get(1, 0),
-                later=nk.get(2, 0), add=G["add"])
+    g = F["gold"]
+    A = F["asks"]
+    tot = dict(quarters=[sum(A[dd]["quarters"][q] for dd in W.DISTRICTS) for q in range(3)],
+               total=sum(A[dd]["total"] for dd in W.DISTRICTS))
+    return dict(total=r0(g["total"]), rate=g["rate"], quarters=[r0(x) for x in g["quarters"]],
+                qrates=g["quarter_rates"], hours=g["hours"], qhours=g["quarter_hours"], clean=g["clean"],
+                tech=g["tech"], recorded=F["recorded"]["all"], recorded_crew=F["recorded"]["crew"],
+                naive=r0(F["r0"]), asks=A, ytd=tot)
+
+
+def _cell_text(cell, text, bold=False, size=None, align=None):
+    from docx.shared import Pt
+    cell.text = ""
+    p = cell.paragraphs[0]
+    run = p.add_run(text)
+    run.bold = bold
+    if size:
+        run.font.size = Pt(size)
+    if align:
+        p.alignment = align
 
 
 def memo(path, F):
+    import docx
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Pt
     S = summary(F)
-    G = F["G"]
-    ss = getSampleStyleSheet()
-    body = ParagraphStyle("b", parent=ss["Normal"], fontName="Helvetica", fontSize=10, leading=13.2, spaceAfter=7)
-    head = ParagraphStyle("h", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=10.5, leading=13.5,
-                          spaceAfter=3, spaceBefore=4, textColor=GREEN)
-    small = ParagraphStyle("s", parent=ss["Normal"], fontName="Helvetica", fontSize=8.6, leading=11, spaceAfter=4)
-    title = ParagraphStyle("t", parent=ss["Normal"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=2)
-    r = G["rates"]
-    story = [
-        Paragraph("A third return-inspection officer is needed for 2027", title),
-        Paragraph("To: Teresa Hansen, Environmental Health Director<br/>From: Valerie Wood, Food Safety Program "
-                  "Manager<br/>Date: 25 January 2027<br/>Subject: Return-inspection staffing under section 3 of the "
-                  "2027 Food Safety Program Plan", small),
-        Spacer(1, 6),
-        Paragraph("Add the third return-inspection officer for 2027. The routine inspections in the 2027 schedule are "
-                  "forecast to produce about %s unsatisfactory inspections, against the 540 the plan sets as the two "
-                  "officers' capacity." % format(S["total_r"], ","), body),
-        Paragraph("Why 2027 runs well above 2026", head),
-        Paragraph("The redrawn districts put %s of the %s scheduled routine inspections with an inspector who has no "
-                  "earlier inspection of the establishment on the record since January 2019, and %s more at that "
-                  "inspector's second. In the county's own "
-                  "record for 2022 to 2026 an inspector marked a first visit unsatisfactory far more often than a third "
-                  "or later visit to the same establishment: %.1f against %.1f per cent in risk category 3, %.1f "
-                  "against %.1f in category 2 and %.1f against %.1f in category 1, with second visits in between. "
-                  "Carried through the schedule, the first visits alone account for about %s of the forecast."
-                  % (format(S["first"], ","), format(S["n"], ","), format(S["second"], ","),
-                     100 * r[(3, 0)], 100 * r[(3, 2)], 100 * r[(2, 0)], 100 * r[(2, 2)], 100 * r[(1, 0)],
-                     100 * r[(1, 2)], format(round_to(sum(F["first_part"].values()), 10), ",")), body),
-        Paragraph("Carrying each establishment's own record forward, or giving each inspector one rate for every "
-                  "establishment, lands near the 2022 to 2026 level and under the 540. Both read rates set almost "
-                  "entirely by inspectors who already knew the kitchens: in each year from 2022 to 2026 fewer than one "
-                  "routine inspection in ten was the inspector's first at the establishment, against nearly one in four "
-                  "in the 2027 schedule.", body),
-        Paragraph("How the forecast was built", head),
-        Paragraph("Each scheduled inspection is read at the number of earlier inspections its named inspector has made "
-                  "at the establishment, counted over both inspection systems from January 2019 (the legacy system's "
-                  "inspector initials matched to the staff roster) and through the schedule's own earlier 2027 "
-                  "inspections. Rates come from the "
-                  "routine inspections of 2022 to 2026, by risk category and by first, second or later visit, so that "
-                  "every count has at least three years of record behind it.", body),
-        Spacer(1, 4),
-    ]
-    rows = [["2027 district", "Scheduled", "First visits", "Forecast unsatisfactory"]]
-    for d in sorted(G["by"]):
-        rows.append(["%s %s" % (d, AREA[d]), format(F["sched_by"][d], ","), format(F["first_by"][d], ","),
-                     "%.0f" % G["by"][d]])
-    rows.append(["All districts", format(S["n"], ","), format(S["first"], ","), "%.0f" % S["total"]])
-    t = Table(rows, colWidths=[2.9 * inch, 0.95 * inch, 1.0 * inch, 1.55 * inch])
-    t.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8.6), ("FONT", (0, 1), (-1, -1), "Helvetica", 8.6),
-                           ("FONT", (0, -1), (-1, -1), "Helvetica-Bold", 8.6), ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
-                           ("LINEBELOW", (0, 0), (-1, 0), 0.6, GREEN), ("LINEABOVE", (0, -1), (-1, -1), 0.4, GREEN),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2), ("TOPPADDING", (0, 0), (-1, -1), 1.5)]))
-    story.append(t)
-    story.append(Spacer(1, 4))
-    story.append(Paragraph("Source: the 2027 routine inspection schedule and Table 1 of the plan; inspection records "
-                           "from January 2019 to December 2026 in both systems. Unsatisfactory is as section 1 of the "
-                           "plan defines it: 25 red points or more, or a closure for an imminent health hazard.", small))
-
-    def footer(canvas, doc):
-        canvas.saveState()
-        canvas.setFont("Helvetica", 7.5)
-        canvas.setFillColor(colors.HexColor("#555555"))
-        canvas.drawString(0.9 * inch, 0.45 * inch, "Elkhorn County Public Health, Food Safety Program")
-        canvas.drawRightString(letter[0] - 0.9 * inch, 0.45 * inch, "Page 1 of 1")
-        canvas.restoreState()
-    buf = io.BytesIO()
-    doc = SimpleDocTemplate(buf, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.7 * inch,
-                            bottomMargin=0.7 * inch, title="A third return-inspection officer is needed for 2027",
-                            author="Food Safety Program", creator="Food Safety Program", producer="Food Safety Program")
-    doc.build(story, onFirstPage=footer, onLaterPages=footer)
-    open(path, "wb").write(buf.getvalue())
-    PP.normalize_pdf(path, b"D:20270125161204-08'00'", "Food Safety Program")
+    d = docx.Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    d.add_heading("2027 contract-year safety plan: recordable injury forecast", level=1)
+    d.add_paragraph("To: Jerome Warren, Contractor Safety Manager, Pinewater EMC. From: Samantha Galvan, Director of "
+                    "Environment, Health and Safety, Redbud Line Services. Date: 23 October 2026. Under CS-4 "
+                    "section 4.")
+    d.add_heading("The forecast", level=2)
+    d.add_paragraph(
+        "Redbud forecasts %d recordable injuries on Pinewater work in 2027, a recordable rate of %.2f per 200,000 "
+        "hours on the %s hours of our 2027 work plan. That is above the 3.0 limit in CS-4 section 5, so our plan "
+        "puts Redbud in enhanced oversight for the 2027 contract year, and we would like to agree the corrective "
+        "action plan with you in November rather than in January." % (S["total"], S["rate"], "{:,}".format(r0(S["hours"]))))
+    t = d.add_table(rows=6, cols=4)
+    t.style = "Table Grid"
+    head = ["Quarter", "Hours worked (plan)", "Recordable injuries", "Recordable rate"]
+    for k, h in enumerate(head):
+        _cell_text(t.rows[0].cells[k], h, bold=True, size=9.5)
+    for q in range(4):
+        vals = ["Q%d 2027" % (q + 1), "{:,}".format(r0(S["qhours"][q])), "%d" % S["quarters"][q], "%.2f" % S["qrates"][q]]
+        for k, v in enumerate(vals):
+            _cell_text(t.rows[q + 1].cells[k], v, size=9.5, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
+    vals = ["2027", "{:,}".format(r0(S["hours"])), "%d" % S["total"], "%.2f" % S["rate"]]
+    for k, v in enumerate(vals):
+        _cell_text(t.rows[5].cells[k], v, bold=True, size=9.5, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
+    d.add_paragraph("Quarters are rounded separately and do not add exactly to the year.").runs[0].italic = True
+    d.add_heading("Why the forecast is above what we have recorded", level=2)
+    d.add_paragraph(
+        "Our crews recorded %.2f recordable injuries per 200,000 hours on Pinewater work from January 2021 to "
+        "September 2026, and our technicians %.2f. Carried onto the 2027 plan, that record gives about %d "
+        "recordables, inside the limit. We do not think it is what 2027 will record. Every crew in HR-14 earns its "
+        "recognition award after 90 days without a recordable, and the programme ends on 31 December 2026. Read "
+        "against each crew's own count, our case records show crews recording injuries at a steady rate for the "
+        "first five weeks of a count and at well under half that rate in its last month, while the cases that keep "
+        "a worker off work, which cannot go unrecorded, come in at much the same rate all through the count. In the "
+        "first 35 days of their counts, when an award is far off, crews recorded %.2f per 200,000 hours. That is "
+        "the rate we have planned on for every crew in 2027, with the technicians at their own %.2f."
+        % (S["recorded_crew"], S["tech"], S["naive"], S["clean"], S["tech"]))
+    d.add_heading("First-aid cases in 2026 to date (CS-4 section 4(c))", level=2)
+    d.add_paragraph("5 January to 27 September 2026, field employees on Pinewater work, each injury once as the case "
+                    "records finally classify it. A case the nurse line opened from a worker's call is the same "
+                    "injury as the supervisor's case for that worker in the days before the call, when there is one. "
+                    "Each injury is in the quarter of its injury date and the district of the worker's crew or team "
+                    "on that day.")
+    t2 = d.add_table(rows=6, cols=5)
+    t2.style = "Table Grid"
+    h2 = ["District", "Q1 (from 5 January)", "Q2", "Q3 (to 27 September)", "5 January to 27 September"]
+    for k, h in enumerate(h2):
+        _cell_text(t2.rows[0].cells[k], h, bold=True, size=9)
+    for i, dist in enumerate(W.DISTRICTS):
+        a = S["asks"][dist]
+        vals = [dist] + ["%d" % v for v in a["quarters"]] + ["%d" % a["total"]]
+        for k, v in enumerate(vals):
+            _cell_text(t2.rows[i + 1].cells[k], v, size=9, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
+    y = S["ytd"]
+    vals = ["All districts"] + ["%d" % v for v in y["quarters"]] + ["%d" % y["total"]]
+    for k, v in enumerate(vals):
+        _cell_text(t2.rows[5].cells[k], v, bold=True, size=9, align=None if k == 0 else WD_ALIGN_PARAGRAPH.RIGHT)
+    d.add_heading("What we are doing", level=2)
+    d.add_paragraph("We are briefing every district safety coordinator on the end of HR-14 this month, so that "
+                    "supervisors expect more recordables on the log from January and treat them as reporting, not "
+                    "as a loss of control. The quarterly forecast and the 2026 first-aid cases are in "
+                    "recordables_forecast_2027.xlsx, with the chart recordables_by_quarter_2027.png.")
+    d.save(path)
+    PP.normalize_docx(path, W.PEOPLE["director"], W.PEOPLE["director"], "2026-10-20T13:04:00Z", "2026-10-23T15:37:00Z",
+                      6, 96, "t130-memo", title="2027 contract-year safety plan: recordable injury forecast",
+                      company=W.COMPANY)
 
 
-HEAD = Font(name="Calibri", bold=True, size=11)
-FILL = PatternFill("solid", fgColor="E2EFDA")
-
-
-def _table(ws, title, head, rows, widths, note=None, formats=None):
-    ws.append([title])
-    ws["A1"].font = Font(name="Calibri", bold=True, size=12)
-    if note:
-        ws.append([note])
-        ws["A2"].font = Font(name="Calibri", italic=True, size=10)
-    ws.append([])
-    ws.append(head)
-    hr = ws.max_row
-    for c in ws[hr]:
-        c.font, c.fill = HEAD, FILL
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for r in rows:
-        ws.append(r)
-    for i, w in enumerate(widths, start=1):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(i)].width = w
-    ws.freeze_panes = "A%d" % (hr + 1)
-    for col, fmtx in (formats or {}).items():
-        for c in ws[col][hr:]:
-            if isinstance(c.value, (int, float)):
-                c.number_format = fmtx
+def _table(ws, top, head, rows, widths=None, formats=None):
+    thin = Side(style="thin", color="BBBBBB")
+    for k, h in enumerate(head):
+        c = ws.cell(row=top, column=k + 1, value=h)
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor=RED)
+        c.alignment = Alignment(wrap_text=True, vertical="center")
+    for i, r in enumerate(rows):
+        for k, v in enumerate(r):
+            c = ws.cell(row=top + 1 + i, column=k + 1, value=v)
+            c.border = Border(bottom=thin)
+            if formats and formats[k]:
+                c.number_format = formats[k]
+    if widths:
+        for k, w in enumerate(widths):
+            ws.column_dimensions[openpyxl.utils.get_column_letter(k + 1)].width = w
 
 
 def workbook(path, F):
-    G = F["G"]
     S = summary(F)
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Forecast 2027"
-    rows = [[d, AREA[d], F["sched_by"][d], F["first_by"][d], F["second_by"][d], round(G["by"][d], 1)]
-            for d in sorted(G["by"])]
-    rows.append(["", "All districts", S["n"], S["first"], S["second"], round(S["total"], 1)])
-    _table(ws, "2027 routine inspections forecast to be marked unsatisfactory",
-           ["District", "Area", "Scheduled routine inspections", "First visits", "Second visits",
-            "Forecast unsatisfactory"], rows, [9, 30, 16, 12, 12, 16],
-           formats={"C": "#,##0", "D": "#,##0", "E": "#,##0", "F": "0.0"},
-           note="Forecast %s, rounded to the nearest 100: %s. Plan threshold 540." % ("%.1f" % S["total"],
-                                                                                     format(S["total_r"], ",")))
-    rr = wb.create_sheet("Rates 2022-2026")
-    rrows = []
-    for risk in (1, 2, 3):
-        for k, lab in ((0, "First visit"), (1, "Second visit"), (2, "Third or later visit")):
-            c = G["cells"][(risk, k)]
-            rrows.append([risk, lab, c[1], c[0], round(100 * c[0] / c[1], 1)])
-    _table(rr, "Routine inspections 2022-2026 by risk category and the inspector's visit to the establishment",
-           ["Risk category", "Visit", "Routine inspections", "Unsatisfactory", "Per cent"], rrows, [13, 22, 18, 15, 10],
-           formats={"C": "#,##0", "D": "#,##0", "E": "0.0"})
-    wa = wb.create_sheet("Return timeliness 2026")
-    _table(wa, "Median county working days, unsatisfactory routine inspection to first return inspection, 2026",
-           ["District", "Return inspections", "Median working days"],
-           [[d, F["A_n"][d], float(F["A"][d])] for d in sorted(F["A"])], [10, 18, 20], formats={"C": "0.0"})
-    wbb = wb.create_sheet("Complaint response 2026")
-    _table(wbb, "Median hours, first notice of a complaint's conditions to the inspector's arrival, 2026",
-           ["District", "Complaint investigations", "Median hours"],
-           [[d, F["B_n"][d], round(F["B"][d], 1)] for d in sorted(F["B"])], [10, 22, 14], formats={"C": "0.0"})
-    wc = wb.create_sheet("Return visit fees 2026")
-    _table(wc, "Return visit fees due for 2026 visits after 2026 unsatisfactory routine inspections",
-           ["District", "Fees due (USD)"],
-           [[d, F["C"].get(d, 0)] for d in sorted(F["A"])] + [["All districts", sum(F["C"].values())]], [14, 16],
-           formats={"B": "#,##0"})
-    wn = wb.create_sheet("Notes")
-    for line in ("Inspection records from January 2019 to December 2026 in both systems; the 2027 schedule and Table 1 "
-                 "of the 2027 Food Safety Program Plan.",
-                 "Unsatisfactory: 25 red points or more, or a closure for an imminent health hazard (plan section 1).",
-                 "Return timeliness: county working days to the first return inspection at which the officer inspected "
-                 "the premises (plan section 4); return-team inspections keyed from paper day sheets are dated by the "
-                 "day sheet.",
-                 "Complaint response: hours from the first report of the conditions after the permit's previous "
-                 "investigation to the inspector's arrival (plan section 4).",
-                 "Return visit fees: each return visit after the first for the same routine inspection, made or found "
-                 "closed, at the rate on the day of the visit (fee schedule as amended 1 July 2026)."):
-        wn.append([line])
-    wn.column_dimensions["A"].width = 110
+    ws.title = "2027 forecast"
+    ws["A1"] = "Redbud Line Services: 2027 recordable injury forecast on Pinewater work (CS-4 section 4(a) and (b))"
+    ws["A1"].font = Font(bold=True, size=12)
+    rows = [["Q%d 2027" % (q + 1), r0(S["qhours"][q]), S["quarters"][q], round(S["qrates"][q], 2)] for q in range(4)]
+    rows.append(["2027", r0(S["hours"]), S["total"], round(S["rate"], 2)])
+    _table(ws, 3, ["Quarter", "Hours worked (plan)", "Recordable injuries (forecast)", "Recordable rate"], rows,
+           [14, 20, 22, 16], [None, "#,##0", "0", "0.00"])
+    ws["A10"] = "CS-4 limit"
+    ws["B10"] = 3.0
+    ws["B10"].number_format = "0.0"
+    ws["A11"] = "Above the limit"
+    ws["B11"] = "Yes" if S["rate"] > W.LIMIT else "No"
+    ws2 = wb.create_sheet("2026 by district")
+    ws2["A1"] = "First-aid cases on Pinewater work, 5 January to 27 September 2026 (CS-4 section 4(c))"
+    ws2["A1"].font = Font(bold=True, size=12)
+    rows = [[dist] + list(S["asks"][dist]["quarters"]) + [S["asks"][dist]["total"]] for dist in W.DISTRICTS]
+    y = S["ytd"]
+    rows.append(["All districts"] + list(y["quarters"]) + [y["total"]])
+    _table(ws2, 3, ["District", "Q1 (5 Jan to 31 Mar)", "Q2 (1 Apr to 30 Jun)", "Q3 (1 Jul to 27 Sep)",
+                    "5 Jan to 27 Sep"], rows, [14, 14, 14, 14, 14], [None, "0", "0", "0", "0"])
+    ws3 = wb.create_sheet("Basis")
+    ws3["A1"] = "Rates used for 2027 (recordables per 200,000 hours worked on Pinewater work, 2021 to 2026)"
+    ws3["A1"].font = Font(bold=True, size=12)
+    _table(ws3, 3, ["Rate", "Value", "Note"], [
+        ["Crews, first 35 days of each recognition count", round(S["clean"], 2),
+         "applied to every crew hour in the 2027 plan"],
+        ["Technicians (outside HR-14)", round(S["tech"], 2), "applied to every technician hour in the 2027 plan"],
+        ["Crews, as recorded over every day of the counts", round(S["recorded_crew"], 2), "for comparison"],
+        ["All field employees, as recorded", round(S["recorded"], 2), "for comparison"]], [46, 10, 48],
+        [None, "0.00", None])
+    rows = [["%d to %d" % (lo, hi - 1), int(n), r0(e), round(r, 2)] for lo, hi, n, e, r in F["bins"]]
+    _table(ws3, 10, ["Day of the crew's count", "Recordables", "Hours worked", "Rate"], rows, None,
+           [None, "0", "#,##0", "0.00"])
+    ws4 = wb.create_sheet("Notes")
+    for i, t in enumerate([
+        "Recordable injuries are cases meeting 29 CFR 1904.7, as the case records finally classify them; "
+        "recurrences linked to an earlier case are not new cases (29 CFR 1904.6).",
+        "Hours worked are regular and overtime hours on Pinewater work; paid leave, holiday pay and mutual-aid hours "
+        "are excluded, and prior-period adjustments are counted in the pay period they correct.",
+        "Each crew's count runs from 11 January 2021 (HR-14 Revision 2) and restarts the day after a recordable "
+        "injury to any member or the day after its 90th day.",
+        "First-aid cases count each injury once: a nurse-line case is the injury of the supervisor's case for the "
+        "same worker dated up to three days before the call; each injury is placed in the district of the worker's "
+        "crew or team on its injury date.",
+        "The 2027 hours are the work plan of 15 October 2026."], start=1):
+        ws4.cell(row=i, column=1, value=t)
+    ws4.column_dimensions["A"].width = 120
     wb.save(path)
-    PP.normalize_xlsx(path, "Food Safety Program", "2027-01-22T18:05:00Z", "2027-01-25T23:40:00Z",
-                      company="Elkhorn County")
+    PP.normalize_ooxml(path, W.PEOPLE["director"], W.PEOPLE["director"], "2026-10-19T16:12:00Z", "2026-10-23T15:20:00Z",
+                       excel=True, company=W.COMPANY)
+
+
+def chart(path, F):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    S = summary(F)
+    g = F["gold"]
+    q = ["Q1", "Q2", "Q3", "Q4"]
+    limit = [W.LIMIT * h / W.RATE_BASE for h in S["qhours"]]
+    recorded = [S["recorded"] * h / W.RATE_BASE for h in S["qhours"]]
+    fig, ax = plt.subplots(figsize=(7.2, 4.2), dpi=120)
+    ax.bar(q, g["quarters"], color="#7A2E1F", width=0.55, label="2027 forecast")
+    ax.plot(q, limit, color="#1B4D3E", marker="_", markersize=34, linestyle="none", markeredgewidth=2.4,
+            label="Recordables the 3.0 limit allows")
+    ax.plot(q, recorded, color="#999999", marker="_", markersize=34, linestyle="none", markeredgewidth=1.6,
+            label="At the 2021-2026 recorded rate")
+    for i, v in enumerate(g["quarters"]):
+        ax.text(i, v + 1.2, "%d" % r0(v), ha="center", fontsize=9)
+    ax.set_ylabel("Recordable injuries")
+    ax.set_ylim(0, max(g["quarters"]) * 1.25)
+    ax.set_title("Redbud on Pinewater work: 2027 recordable injuries by quarter", fontsize=11)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.legend(frameon=False, fontsize=8.5, loc="lower right")
+    fig.tight_layout()
+    fig.savefig(path, metadata={"Software": None})
+    plt.close(fig)
 
 
 def write(golden_dir, F):
     os.makedirs(golden_dir, exist_ok=True)
     memo(os.path.join(golden_dir, MEMO), F)
-    workbook(os.path.join(golden_dir, XLSX), F)
+    workbook(os.path.join(golden_dir, BOOK), F)
+    chart(os.path.join(golden_dir, CHART), F)

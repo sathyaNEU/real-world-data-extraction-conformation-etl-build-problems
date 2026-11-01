@@ -1,10 +1,10 @@
 {
  "task": "task306",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "quantitative-finance / portfolio-construction-risk (client quantitative-finance)",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-31",
  "stump": "A competent analyst nets each backtested strategy's gross alpha of its rebalances priced at what the desk's own orders paid per traded pound in the same index band and gives the GBP 400 million to small-cap momentum; cost rises with each trade's share of the stock's daily traded value, and at that size momentum's swaps take a fifth to two fifths of its small caps' day, so the mid-cap value strategy keeps the most.",
  "architecture": 4,
@@ -15,10 +15,13 @@
   "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "REVIEW on target.zip 7f2aba02 (sweeps 1, 4, 6 and 11 ruled in the note's Leak review; sweep 11 is the corpus shell quota for the 'which' question form, a voice-check WARN)",
-  "reader": "pending: re-read on the refreshed copy, since IC-07, the TCA standard and the data changed"
+  "leak_py": "REVIEW on target.zip 7f2aba02 (--asof 2026-12-01, no LEAK; sweeps 1, 4, 6 and 11 ruled in the note's Leak review; sweep 11 is the corpus shell quota for the 'which' question form, a voice-check WARN)",
+  "reader": "read 1 on 2ac88df8 and read 2 on 7f2aba02, isolated, pack and prompt only: no leak at either, question 6 analytical at both (the cost of trading GBP 400 million estimated from the desk's smaller executions by participation); leak_check_report.md"
  },
- "duplicate_check": null,
+ "duplicate_check": {
+  "heart": "WARN 2026-10-31 (people names only: Carole, Simpson and Sarah in older builds)",
+  "surface": "exit 0 on the final cut 2026-10-31 (personas Carole Shaw, Howard Simpson, Sarah Ford)"
+ },
  "judge": {
   "pass": 1,
   "date": "2026-10-31",
@@ -27,7 +30,16 @@
   "report": "task306/determinism_check_report_arch4.md",
   "finding": "the call held in every variant; the runner-up, the gap and the kept alpha moved with the curve's exponent, weighting and band terms, the consolidation day and the ESG names, since the data did not separate the forms",
   "fixed": "the world widened so the whole fit family converges (C7, 31 members; band by band each alpha 0.25 inside its million, C8): participation from thin names in the two lower bands, the consolidations in names no book trades, the ESG list before the log, the orders from 1 April 2025; IC-07 files the band's executions as the population and the TCA standard the consolidation day and the 60-session history (the WHAT); the golden fits band by band",
-  "re_judge": "pending: the one re-judge"
+  "re_judge": {
+   "pass": 2,
+   "date": "2026-10-31",
+   "verdict": "DETERMINISTIC",
+   "disposition": "APPROVE",
+   "report": "task306/determinism_check_report.md",
+   "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+   "gate_h": "domain pass, layers pass, decisive_step analytical",
+   "residual": "a cost curve fitted through the origin keeps the call, the runner-up and the gap and moves momentum's kept alpha from 5 to 4 (3.64); the executions reject it (small-cap R2 0.77 against 0.68); not filed, since naming the curve's form would file the method; recorded in the design note's SF3 row"
+  }
  },
  "returned": [
   {
@@ -37,9 +49,9 @@
    "commit": "RESHIPPED (task306), determinism repair, 2026-10-26"
   }
  ],
- "resume": "stage 4, after the FIX_NOW repair: rebuild first with python3 task306/generator/build.py (two byte-identical builds, checks.py 46 of 46, verify.py PASS; target.zip sha256 7f2aba0203b068e17d4e9f34b8d8a86f19cc4ca361c02f18128409d045b2ad35). A document changed (IC-07 section 2, the TCA standard section 3, the ESG list and every data file), so the leak reader re-reads the refreshed copy at /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/leak-task306/ (brief /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/task306_stage4_leak_brief.md), then the one re-judge on the FIX_NOW with the determinism-judge agent; fix any finding in the generator, then ship: ledger row, card current, target.zip and golden/ with git add -f, commit SHIPPED (task306): give the GBP 400 million to UK Mid Cap Value. The prompt's 'which' question form sits over the corpus shell quota (voice-check WARN, PASS): reword at the role level only if the main thread chooses.",
+ "resume": "Shipped 2026-10-31 on architecture 4 after the FIX_NOW repair: the re-judge DETERMINISTIC, APPROVE (decisive step analytical, the participation-dependent cost carried to GBP 400 million), leak read 2 clean with question 6 analytical, every free gate re-run on target.zip 7f2aba02 (two byte-identical builds, 46 checks, verify PASS, figures_check 51 of 51, precut 61 checks, voice-check PASS with the 'which' quota WARN). Waits on the portal.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-31",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
@@ -113,6 +125,10 @@
   {
    "date": "2026-10-31",
    "event": "architecture 4's stage 4 judge returned NOT_DETERMINISTIC, reconciled to FIX_NOW; repaired in the generator with the call (UK Mid Cap Value 8, UK Large Cap Quality 6, momentum 5, gap 2) and the decisive step kept; target.zip 2ac88df8 replaced by 7f2aba02"
+  },
+  {
+   "date": "2026-10-31",
+   "event": "SHIPPED: architecture 4, give the GBP 400 million to UK Mid Cap Value (8 against UK Large Cap Quality 6 and momentum 5); re-judge DETERMINISTIC, APPROVE; target.zip 7f2aba02"
   }
  ],
  "zip_sha256_16": "7f2aba0203b068e1"

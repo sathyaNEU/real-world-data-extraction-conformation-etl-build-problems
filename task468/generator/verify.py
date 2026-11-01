@@ -1,151 +1,110 @@
-"""The independent verifier: reads only the shipped pack, the golden workbook and figures.json, and recomputes the
-determination and the bonus figures with its own code (no generator module but the file names and the threshold)."""
-import csv
-import datetime as dt
+"""task468 architecture 6: an independent recomputation of every owed figure from target/ (pandas, no generator code)."""
 import json
 import os
 import sys
 
-import openpyxl
+import numpy as np
+import pandas as pd
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import world as W   # noqa: E402  (file names, the 1.15 line and the 2 per cent only)
-
-DELIVERY = {"768", "783", "784", "785", "786", "787", "788", "796", "797", "798", "805", "806", "807"}
-
-
-def iso(s):
-    return dt.date.fromisoformat(s)
+HERE = os.path.dirname(os.path.abspath(__file__))
+T = os.path.join(os.path.dirname(HERE), "target")
+FIG = json.load(open(os.path.join(HERE, "figures.json")))
+fails = 0
 
 
-def main(target, golden_dir):
-    p = lambda k: os.path.join(target, W.FILES[k])
-    npi = {r["npi"]: r["hospital_name"] for r in csv.DictReader(open(p("roster"), encoding="utf-8"))}
-    mem, cmg = {}, {}
-    for r in csv.DictReader(open(p("enrollment"), encoding="utf-8")):
-        m, d, y = r["birth_date"].split("/")
-        last = r["last_name"]
-        mem[r["member_id"]] = (dt.date(int(y), int(m), int(d)),
-                               "N" if r["ssn_last4"] else ("C" if (" " in last or "-" in last) else "S"))
-        if r["cmg_member_no"]:
-            cmg[r["cmg_member_no"]] = r["member_id"]
-    # stays, as last corrected
-    claims = list(csv.DictReader(open(p("claims"), encoding="utf-8")))
-    gone = {r["original_claim_number"] for r in claims if r["type_of_bill"] == "0118"}
-    repl = {r["original_claim_number"]: r for r in claims if r["type_of_bill"] == "0117"}
-    stays, pay = [], {h: 0.0 for h in W.CANDIDATES}
-    carried = {}                                   # claim: (the day its replacement paid, the change it made)
-    for r in claims:
-        if r["type_of_bill"] != "0111" or r["claim_number"] in gone:
-            continue
-        fin = repl.get(r["claim_number"], r)
-        stays.append((r["member_id"], npi.get(r["billing_npi"]), r["billing_npi"], iso(r["admission_date"]),
-                      iso(r["statement_thru_date"]), r["patient_status"], fin["drg"]))
-        if fin is not r:
-            ch = float(fin["paid_amount"]) - float(r["paid_amount"]) if fin["claim_number"].startswith("HC") else \
-                float(fin["paid_amount"])
-            carried[r["claim_number"]] = (iso(fin["paid_date"]), ch)
-        if npi.get(r["billing_npi"]) and dt.date(2025, 7, 1) <= iso(r["statement_thru_date"]) <= dt.date(2026, 6, 30):
-            a = float(r["paid_amount"])
-            if fin is not r:
-                a = float(fin["paid_amount"]) if fin["claim_number"].startswith("HC") else a + float(fin["paid_amount"])
-            pay[npi[r["billing_npi"]]] += a
-    # Provider Disputes' awards paid on fiscal 2026 stays, those a replacement bill already paid left out
-    lg = openpyxl.load_workbook(p("disputes"), read_only=True)["Log"].iter_rows(values_only=True)
-    hd = list(next(lg))
-    for row in lg:
-        d = dict(zip(hd, row))
-        if d["PDR No."] is None or d["Determination"] not in ("Overturned", "Partially overturned"):
-            continue
-        h, paid, dis = npi.get(str(d["Provider NPI"])), d["Payment Date"], d["Discharge Date"].date()
-        if h is None or paid is None or not (dt.date(2025, 7, 1) <= dis <= dt.date(2026, 6, 30)):
-            continue
-        c = carried.get(str(d["Claim No."]))
-        if c and c[0] == paid.date() and abs(c[1] - float(d["Additional Payment"])) < 0.005:
-            continue
-        pay[h] += float(d["Additional Payment"])
-    enc = [l.split("|") for l in open(p("encounters"), encoding="utf-8").read().splitlines() if l.startswith("D|")]
-    edel = {e[3] for e in enc if e[2] == "8"}
-    erep = {e[3]: e for e in enc if e[2] == "7"}
-    us = lambda s: dt.date(2000 + int(s[6:8]), int(s[0:2]), int(s[3:5]))
-    for e in enc:
-        if e[2] != "1" or e[1] in edel:
-            continue
-        fin = erep.get(e[1], e)
-        stays.append((cmg[e[4]], npi.get(e[5]), e[5], us(e[6]), us(e[7]), e[8], fin[9]))
-    by_m = {}
-    for s in stays:
-        if s[1]:
-            by_m.setdefault(s[0], []).append(s)
-    wb = openpyxl.load_workbook(p("scores"), read_only=True)
-    score = {(str(r[0]), r[1].date().isoformat() if hasattr(r[1], "date") else str(r[1])[:10], str(r[2])): r[4]
-             for r in wb["Scores"].iter_rows(min_row=2, values_only=True)}
-    link = {}
-    for r in csv.DictReader(open(p("linkage"), encoding="utf-8")):
-        a, d = r["ADMIT_DATE"], r["DATE_OF_DEATH"]
-        link[(r["HCHP_MEMBER_ID"], dt.date(int(a[:4]), int(a[4:6]), int(a[6:])))] = dt.date(int(d[:4]), int(d[4:6]),
-                                                                                         int(d[6:]))
-    seen = {}
-    with open(p("activity"), encoding="utf-8") as fh:
-        rd = csv.reader(fh)
-        next(rd)
-        for m, d, _c, _s in rd:
-            if d > seen.get(m, ""):
-                seen[m] = d
+def same(label, a, b):
+    global fails
+    good = a == b
+    fails += not good
+    print("%s  %-46s %s" % ("PASS" if good else "FAIL", label, "" if good else "%s != %s" % (a, b)))
+
+
+reg = pd.read_excel(os.path.join(T, "glw_trade_waste_agreements_register_2026.xlsx"), sheet_name="Agreements")
+cross = pd.read_csv(os.path.join(T, "glw_sampling_point_crosswalk.csv"))
+pt = dict(zip(reg["Sampling point"], reg["Customer"]))
+leg = {a: pt[b] for a, b in zip(cross["legacy_site_code"], cross["point_id"])}
+lim = {c: (v / 1000.0 if str(u).startswith("kg") else float(v))
+       for c, v, u in zip(reg["Customer"], reg["COD limit"], reg["COD limit unit"])}
+
+old = pd.read_csv(os.path.join(T, "glw_lims_trade_waste_results_2025-01_to_2026-02.csv"), dtype=str)
+old["when"] = pd.to_datetime(old["Sampled"], format="%d/%m/%Y %H:%M")
+old["v"] = old["Result"].astype(float)
+old.loc[(old["Test"] == "SS") & (old["Qualifier"] == "<"), "v"] = 2.5
+wide_old = old.pivot_table(index=["Sample No", "Site Code", "when"], columns="Test", values="v").reset_index()
+wide_old["cust"] = wide_old["Site Code"].map(leg)
+
+new = pd.read_csv(os.path.join(T, "glw_labware_trade_waste_results_2026.csv"), dtype=str)
+new = new[~new["sample_id"].str.endswith("-D")].copy()
+new["base"] = new["sample_id"].str.replace("-R$", "", regex=True)
+new["rr"] = new["sample_id"].str.endswith("-R")
+new["v"] = new["value"].astype(float)
+new.loc[(new["analyte"] == "Suspended Solids") & (new["result_qualifier"] == "<"), "v"] = 2.5
+new = new.sort_values(["base", "analyte", "rr"]).drop_duplicates(["base", "analyte"], keep="last")
+new["when"] = pd.to_datetime(new["collected_utc"].str[:19]) + pd.Timedelta(hours=10)
+wide_new = new.pivot_table(index=["base", "point_id", "when"], columns="analyte", values="v").reset_index()
+wide_new["cust"] = wide_new["point_id"].map(pt)
+wide_new = wide_new[wide_new["TOC (NPOC)"].notna()]   # compliance composites; inspection grabs carry SS and pH only
+
+par = wide_old.dropna(subset=["TOC", "COD"])
+X = np.c_[np.ones(len(par)), par["TOC"], par["CL"]]
+beta = np.linalg.lstsq(X, par["COD"].values, rcond=None)[0]
+
+tel = pd.read_csv(os.path.join(T, "glw_trade_waste_flow_telemetry_2026.csv"))
+tel["t"] = pd.to_datetime(tel["reading_utc"].str[:19]) + pd.Timedelta(hours=10)
+jobs = pd.read_excel(os.path.join(T, "glw_field_service_jobs_2026.xlsx"))
+ex = jobs[jobs["Job type"] == "Meter exchange"]
+reads = {m: dict(zip(g["t"], g["register"])) for m, g in tel.groupby("meter_serial")}
+
+
+def cum_fn(c):
+    cur = reg.loc[reg["Customer"] == c, "Flow meter"].iloc[0]
+    e = ex[ex["Customer"] == c]
+    if e.empty:
+        r = reads[cur]
+        t0 = r[pd.Timestamp("2026-01-01")]
+        return lambda t: r[t] - t0
+    e = e.iloc[0]
+    ro, rn = reads[e["Asset removed"]], reads[e["Asset installed"]]
+    off = pd.to_datetime(e["Started (local)"], format="%d/%m/%Y %H:%M")
+    t0 = ro[pd.Timestamp("2026-01-01")]
+    fin, opn = float(e["Removed final read (kL)"]), float(e["Installed opening read (kL)"])
+    return lambda t: (ro[t] - t0) if t <= off else (fin - t0) + (rn[t] - opn)
+
+
+bounds = [pd.Timestamp(x) for x in ("2026-01-01", "2026-04-01", "2026-07-01", "2026-10-01", "2027-01-01")]
+cod, ssm, q = {}, {}, {}
+for c in reg["Customer"]:
+    f = cum_fn(c)
+    q[c] = [int(round(f(bounds[i + 1]) - f(bounds[i]))) for i in range(4)]
+    year = f(bounds[4])
     rows = []
-    for m, v in by_m.items():
-        v.sort(key=lambda s: (s[3], s[4]))
-        for s in v:
-            if not (dt.date(2025, 7, 1) <= s[3] <= dt.date(2026, 6, 30)):
-                continue
-            if (s[3] - mem[m][0]).days < 18 * 365.25 or s[6] in DELIVERY or s[5] == "07":
-                continue
-            end = s[3] + dt.timedelta(days=30)
-            chain = [s]
-            while chain[-1][5] == "02":
-                nxt = [t for t in v if t[1] != chain[-1][1] and 0 <= (t[3] - chain[-1][4]).days <= 1]
-                if not nxt:
-                    break
-                chain.append(nxt[0])
-            dead = any(t[5] == "20" for t in chain) or any(
-                t[5] == "20" and t not in chain and t[3] >= s[3] and t[4] <= end for t in v)
-            last_alive = max([seen.get(m, "0000")] + [t[3].isoformat() for t in v] +
-                             [t[4].isoformat() for t in v if t[5] != "20"])
-            rows.append((s[1], mem[m][1], score[(m, s[3].isoformat(), s[2])], dead, (m, s[3]) in link,
-                         last_alive > end.isoformat()))
-            break
-    rate = {}
-    for c in "NSC":
-        pos = [r for r in rows if r[1] == c and r[3]]
-        neg = [r for r in rows if r[1] == c and r[5]]
-        rate[c] = (sum(r[4] for r in pos) / len(pos), sum(r[4] for r in neg) / len(neg))
-    ratio = {}
-    for h in W.CANDIDATES:
-        hr = [r for r in rows if r[0] == h]
-        d = float(sum(r[3] for r in hr))
-        for c in "NSC":
-            u = [r for r in hr if r[1] == c and not r[3] and not r[5]]
-            rr, ff = rate[c]
-            d += max((sum(r[4] for r in u) - ff * len(u)) / (rr - ff), 0.0)
-        ratio[h] = d / sum(r[2] for r in hr)
-    lose = sorted(h for h in W.CANDIDATES if ratio[h] > W.THRESHOLD)
-    fig = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures.json"), encoding="utf-8"))
-    ok = lose == fig["lose_full"]
-    bonus = {h: int(round(W.BONUS_RATE * pay[h] / 100.0)) * 100 for h in W.CANDIDATES}
-    ok &= all(bonus[r["name"]] == r["bonus"] and abs(ratio[r["name"]] - r["ratio"]) < 0.005 for r in fig["hospitals"])
-    ok &= int(round(W.BONUS_RATE * sum(pay.values()) / 100.0)) * 100 == fig["total_bonus"]
-    g = openpyxl.load_workbook(os.path.join(golden_dir, W.GOLDEN["workbook"]), data_only=True)["Determination"]
-    ok &= all((g.cell(row=i, column=8).value == "Loses") == (g.cell(row=i, column=1).value in lose) and
-              g.cell(row=i, column=10).value == bonus[g.cell(row=i, column=1).value] for i in range(5, 19))
-    print("verify: %s; %d lose the bonus (%s); %d index admissions; bonus figures and total %s" % (
-        "PASS" if ok else "FAIL", len(lose), ", ".join(W.SHORT[h] for h in lose), len(rows),
-        "match" if ok else "differ"))
-    if not ok:
-        raise SystemExit("verify failed")
-    return ok
+    for _, r in wide_old[(wide_old["cust"] == c) & (wide_old["when"].dt.year == 2026)].iterrows():
+        rows.append((r["when"].normalize(), r["COD"], r["SS"]))
+    for _, r in wide_new[(wide_new["cust"] == c) & (wide_new["when"].dt.year == 2026)].iterrows():
+        rows.append((r["when"].normalize(), beta[0] + beta[1] * r["TOC (NPOC)"] + beta[2] * r["Chloride"],
+                     r["Suspended Solids"]))
+    v = np.array([f(d + pd.Timedelta(days=1)) - f(d) for d, _, _ in rows])
+    cod[c] = year * float(np.dot([x for _, x, _ in rows], v) / v.sum()) / 1e6
+    ssm[c] = year * float(np.dot([x for _, _, x in rows], v) / v.sum()) / 1e6
 
+log = pd.read_csv(os.path.join(T, "glw_liquid_waste_receival_2026.csv"), dtype=str)
+log["t"] = pd.to_datetime(log["received"], format="%d/%m/%Y %H:%M")
+log["v"] = log["volume_kl"].astype(float)
+man = pd.read_excel(os.path.join(T, "qld_waste_tracking_manifests_glw_2026.xlsx"))
+log = log[log["status"] == "Accepted"].merge(man[["Receival docket", "Waste code"]], how="left",
+                                              left_on="docket", right_on="Receival docket")
+log = log.sort_values(["truck_rego", "t", "docket"])
+log["prev_t"] = log.groupby("truck_rego")["t"].shift()
+log["prev_c"] = log.groupby("truck_rego")["Waste code"].shift()
+second = log["Waste code"].isna() & ((log["t"] - log["prev_t"]) <= pd.Timedelta(hours=2))
+log.loc[second, "Waste code"] = log.loc[second, "prev_c"]
+log = log[log["t"].dt.year == 2026]
+log["q"] = (log["t"].dt.month - 1) // 3
+liq = {c: [int(round(log[(log["Waste code"] == c) & (log["q"] == i)]["v"].sum())) for i in range(4)]
+       for c in ("GT", "SE", "PL", "LL")}
 
-if __name__ == "__main__":
-    base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(base, "target"),
-         sys.argv[2] if len(sys.argv) > 2 else os.path.join(base, "golden"))
+same("customers over their COD limits", sorted(c for c in cod if cod[c] > lim[c]), sorted(FIG["over"]))
+same("ask A, tankered waste by type and quarter (kL)", liq, FIG["ask_a"])
+same("ask B, suspended solids (t)", {c: "%.1f" % ssm[c] for c in ssm}, FIG["ask_b"])
+print("verify: %d failed" % fails)
+sys.exit(1 if fails else 0)

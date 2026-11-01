@@ -1,190 +1,169 @@
-"""Write the evidence pack under target/ from a simulated World."""
+"""task445 architecture 3: write the pack's data files from the world (docs.py writes the PDFs and the email)."""
 import csv
 import datetime as dt
 import io
 import os
 
 import numpy as np
+from openpyxl import Workbook
 
+import postprocess as PP
 import world as W
-import docs as D
 
-SUB_COLS = ["ACCESSION_NUMBER", "FILING_DATE", "SUBMISSIONTYPE", "CIK", "PERIODOFREPORT"]
-COV_COLS = ["ACCESSION_NUMBER", "REPORTCALENDARORQUARTER", "ISAMENDMENT", "AMENDMENTNO", "AMENDMENTTYPE",
-            "CONFDENIEDEXPIRED", "DATEDENIEDEXPIRED", "DATEREPORTED", "REASONFORNONCONFIDENTIALITY",
-            "FILINGMANAGER_NAME", "FILINGMANAGER_STREET1", "FILINGMANAGER_STREET2", "FILINGMANAGER_CITY",
-            "FILINGMANAGER_STATEORCOUNTRY", "FILINGMANAGER_ZIPCODE", "REPORTTYPE", "FORM13FFILENUMBER",
-            "CRDNUMBER", "SECFILENUMBER", "PROVIDEINFOFORINSTRUCTION5", "ADDITIONALINFORMATION"]
-INF_COLS = ["ACCESSION_NUMBER", "INFOTABLE_SK", "NAMEOFISSUER", "TITLEOFCLASS", "CUSIP", "VALUE", "SSHPRNAMT",
-            "SSHPRNAMTTYPE", "PUTCALL", "INVESTMENTDISCRETION", "OTHERMANAGER", "VOTING_AUTH_SOLE",
-            "VOTING_AUTH_SHARED", "VOTING_AUTH_NONE"]
-
-
-def _w_tsv(path, cols, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        fh.write("\t".join(cols) + "\n")
-        for r in rows:
-            fh.write("\t".join("" if r.get(c) is None else str(r.get(c)) for c in cols) + "\n")
+FILES = {
+    "marks": "p2_essay_marks_2026.csv",
+    "sec_a": "p2_section_a_scan_2026.csv",
+    "entries": "asc_history_entries_2026.xlsx",
+    "centres": "aeb_centres_register.csv",
+    "code": "aeb_code_of_practice_2026.pdf",
+    "minute": "history_awarding_minute_2026.pdf",
+    "email": "results_certification_2026-12-01.eml",
+    "reviews": "post_results_reviews_2025.csv",
+    "predicted": "teacher_predicted_grades_2026.csv",
+    "stats25": "p2_question_statistics_2025.xlsx",
+    "markers": "aeb_markers_2026.csv",
+}
+DISTRACTORS = ["predicted", "stats25", "reviews"]
 
 
-# ZIP code ranges of the managers' cities (USPS delivery areas of each city centre)
-ZIP_RANGE = {"NEW YORK": (10001, 10282), "GREENWICH": (6830, 6836), "BOSTON": (2108, 2137), "SAN FRANCISCO": (94102, 94134),
-             "CHICAGO": (60601, 60661), "DALLAS": (75201, 75254), "PHILADELPHIA": (19102, 19154), "PRINCETON": (8540, 8544),
-             "MIAMI": (33125, 33199), "ATLANTA": (30303, 30363), "DENVER": (80202, 80239), "SEATTLE": (98101, 98199),
-             "MINNEAPOLIS": (55401, 55488), "COLUMBUS": (43201, 43240), "BALTIMORE": (21201, 21239),
-             "RICHMOND": (23218, 23298), "CHARLOTTE": (28202, 28299), "ST. LOUIS": (63101, 63199),
-             "MILWAUKEE": (53202, 53295), "NASHVILLE": (37201, 37250), "SCOTTSDALE": (85250, 85268)}
+def _csv(path, header, rows, crlf=False):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
+    w.writerow(header)
+    for r in rows:
+        w.writerow(r)
+    open(path, "w", encoding="utf-8", newline="").write(buf.getvalue())
 
 
-def write_drops(wd, target):
-    M = wd.M
-    rz = W.rng("pack-zip")
-    # each manager's ZIP code from its city's own range; the old uniform draw is still taken so every later draw
-    # from this stream keeps its value
-    rzc = W.rng("pack-zip-city")
-    zips = {}
-    for m in wd.mgrs:
-        rz.integers(10001, 99950)
-        lo, hi = ZIP_RANGE[m["city"]]
-        zips[m["mid"]] = f"{int(rzc.integers(lo, hi + 1)):05d}"
-    streets = {m["mid"]: f"{int(rz.integers(1, 2400))} {rz.choice(['MAIN ST', 'PARK AVENUE', 'BROAD ST', 'MARKET ST', 'STATE ST', 'WASHINGTON BLVD', 'ELM ST', 'LEXINGTON AVE', 'COMMERCE DR'])}" for m in wd.mgrs}
-    crd = {m["mid"]: ("" if m["type"] in ("banktrust", "instit") else str(int(rz.integers(100000, 330000)))) for m in wd.mgrs}
-    rzd = W.rng("pack-dev")
-    out = {}
-    for folder, d0, d1 in W.DROPS:
-        os.makedirs(os.path.join(target, folder), exist_ok=True)
-        fl = [f for f in wd.filings if d0 <= f.date <= d1]
-        fl.sort(key=lambda f: (f.date, f.acc))
-        sub, cov, inf = [], [], []
-        sk = int(rz.integers(40_000_000, 60_000_000))
-        for f in fl:
-            m = M[f.mid]
-            z = rzd if f.dev else rz          # device filings draw from their own stream
-            street2 = "SUITE " + str(100 + int(z.integers(0, 40)) * 10) if z.random() < 0.4 else ""
-            if f.ghost:                       # the loop-0 filing's draws only, so every other row keeps its bytes
-                for ln in f.lines:
-                    if m["type"] in ("ria", "banktrust") and ln["disc"] == "SOLE" and not ln["putcall"]:
-                        z.random()
-                continue
-            sub.append(dict(ACCESSION_NUMBER=f.acc, FILING_DATE=W.sec_date(f.date), SUBMISSIONTYPE=f.form,
-                            CIK=m["cik"], PERIODOFREPORT=W.sec_date(W.PERIODS[f.sub_q or f.q])))
-            cov.append(dict(ACCESSION_NUMBER=f.acc, REPORTCALENDARORQUARTER=W.sec_date(W.PERIODS[f.q]),
-                            ISAMENDMENT="Y" if f.amend_no else "N",
-                            AMENDMENTNO=f.amend_no if f.amend_no else "",
-                            AMENDMENTTYPE=f.amend_type,
-                            CONFDENIEDEXPIRED="Y" if f.conf else "", DATEDENIEDEXPIRED=f.conf,
-                            DATEREPORTED=W.sec_date(W.PERIODS[f.q]) if f.conf else "",
-                            REASONFORNONCONFIDENTIALITY="",
-                            FILINGMANAGER_NAME=f.name or m["name"], FILINGMANAGER_STREET1=streets[f.mid],
-                            FILINGMANAGER_STREET2=street2,
-                            FILINGMANAGER_CITY=m["city"], FILINGMANAGER_STATEORCOUNTRY=m["state"],
-                            FILINGMANAGER_ZIPCODE=zips[f.mid], REPORTTYPE=f.reporttype,
-                            FORM13FFILENUMBER=m["fileno"], CRDNUMBER=crd[f.mid], SECFILENUMBER="",
-                            PROVIDEINFOFORINSTRUCTION5="N",
-                            ADDITIONALINFORMATION=f.addl or _addl(f)))
-            for ln in f.lines:
-                sk += 1
-                zl = rzd if ln.get("devdraw") else z
-                sole = ln["shares"] if ln["disc"] == "SOLE" else 0
-                none = 0
-                shared = ln["shares"] - sole
-                if m["type"] in ("ria", "banktrust") and ln["disc"] == "SOLE" and not ln["putcall"]:
-                    none = int(ln["shares"] * 0.3) if zl.random() < 0.3 else 0
-                    sole -= none
-                if ln["putcall"]:
-                    sole = shared = none = 0
-                inf.append(dict(ACCESSION_NUMBER=f.acc, INFOTABLE_SK=sk, NAMEOFISSUER=ln["name"],
-                                TITLEOFCLASS=ln["title"], CUSIP=ln["cusip"], VALUE=ln["value"],
-                                SSHPRNAMT=ln["shares"], SSHPRNAMTTYPE=ln["sht"], PUTCALL=ln["putcall"],
-                                INVESTMENTDISCRETION=ln["disc"], OTHERMANAGER=ln["othmgr"],
-                                VOTING_AUTH_SOLE=sole, VOTING_AUTH_SHARED=shared, VOTING_AUTH_NONE=none))
-        _w_tsv(os.path.join(target, folder, "SUBMISSION.tsv"), SUB_COLS, sub)
-        _w_tsv(os.path.join(target, folder, "COVERPAGE.tsv"), COV_COLS, cov)
-        _w_tsv(os.path.join(target, folder, "INFOTABLE.tsv"), INF_COLS, inf)
-        out[folder] = dict(sub=len(sub), cov=len(cov), inf=len(inf))
+def _stamp(d):
+    return d.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def marks_rows(world):
+    """One row per marking event. A senior examiner's re-mark is a later row for the same answer and its mark
+    stands; an absent candidate is one ABSENT row; the best two essays by final mark are credited."""
+    rng = np.random.default_rng(W.SEED + 7)
+    markers = [m for m in world["markers"] if not m["senior"]]
+    seniors = [m for m in world["markers"] if m["senior"]]
+    old = {c["code"]: c.get("old_code") for c in world["centres"]}
+    rows = []
+    base = dt.datetime(2026, 11, 9, 22, 0)
+    for x in world["cands"]:
+        code = old.get(x["centre"]) or x["centre"]
+        cand = x["no"]
+        if "prev_no" in x:
+            cand = x["prev_no"]
+            code = old.get(x["prev_centre"]) or x["prev_centre"]
+        if x["absent"]:
+            rows.append(dict(cand=cand, centre=code, q="", mark="", credited="", event="", marker="",
+                             when=base + dt.timedelta(days=float(rng.random() * 16)), status="ABSENT"))
+            continue
+        final = {q: x["senior"].get(q, m) for q, m in x["marks"].items()}
+        best = sorted(final, key=lambda q: (-final[q], q))[:2]
+        for q, m in sorted(x["marks"].items()):
+            mk = markers[int(rng.integers(0, len(markers)))]
+            when = base + dt.timedelta(days=float(rng.random() * 14), minutes=float(rng.integers(0, 600)))
+            rows.append(dict(cand=cand, centre=code, q=q, mark=m, credited="Y" if q in best else "N",
+                             event="FIRST", marker=mk["id"], when=when, status="MARKED"))
+            if q in x["senior"]:
+                sk = seniors[int(rng.integers(0, len(seniors)))]
+                rows.append(dict(cand=cand, centre=code, q=q, mark=x["senior"][q],
+                                 credited="Y" if q in best else "N", event="SENIOR", marker=sk["id"],
+                                 when=when + dt.timedelta(days=float(1 + rng.random() * 3)), status="MARKED"))
+    rows.sort(key=lambda r: (r["when"], r["cand"], r["q"]))
+    out = []
+    ev = 3300000
+    for r in rows:
+        ev += int(rng.integers(1, 4))
+        out.append([ev, r["cand"], r["centre"], ("B" + r["q"]) if r["q"] else "", r["mark"], r["credited"], r["event"],
+                    r["marker"], _stamp(r["when"]), r["status"]])
     return out
 
 
-def _addl(f):
-    if f.amend_type == "NEW HOLDINGS" and f.conf:
-        return ""
-    if f.amend_type == "NEW HOLDINGS":
-        return "Amendment adds the holdings of one trust account omitted from the original report."
-    if f.amend_type == "RESTATEMENT":
-        return "Amendment restates the report in its entirety."
-    return ""
-
-
-def write_fsds(wd, target):
-    """Cover-page share counts in the FSDS sub/num layout, for the 10-Q and 10-K filings our
-    security master pulls (issuers on the watchlist and the wider coverage list)."""
-    folder = os.path.join(target, "fsds_cover_extract")
-    os.makedirs(folder, exist_ok=True)
-    rs = W.rng("fsds")
-    sub, num = [], []
-    for i in wd.iss:
-        cik = i["issuer_cik"]
-        # Q1 10-Q, Q2 10-Q, Q3 10-Q, FY 10-K (only those accepted by the extract)
-        docs = [("10-Q", dt.date(2022, 3, 31), "Q1", 2022, rs.integers(32, 44), i["S_apr"], 0),
-                ("10-Q", dt.date(2022, 6, 30), "Q2", 2022, rs.integers(28, 44), i["S_jul"], 0),
-                ("10-Q", dt.date(2022, 9, 30), "Q3", 2022, rs.integers(27, 43), i["S_oct"], 0)]
-        kd = int(rs.integers(26, 62))
-        if dt.date(2022, 12, 31) + dt.timedelta(days=kd) <= W.EXTRACT_DATE:
-            docs.append(("10-K", dt.date(2022, 12, 31), "FY", 2022, kd, i["S_jan"], 1))
-        if "S_A5" in i:
-            # a corrected cover page for the June quarter, filed in September after an August offering
-            docs.append(("10-Q/A", dt.date(2022, 6, 30), "Q2", 2022, int(rs.integers(75, 86)), i["S_A5"], 0))
-        amended = {(d[1], d[2]) for d in docs if d[0] == "10-Q/A"}
-        for form, per, fp, fy, lag, shares, _ in docs:
-            filed = W.business_day_on_or_after(per + dt.timedelta(days=int(lag)))
-            asof = filed - dt.timedelta(days=int(rs.integers(3, 12)))
-            prevrpt = 1 if (form == "10-Q" and (per, fp) in amended) else 0
-            seq = int(rs.integers(100, 99000))
-            adsh = f"{int(rs.integers(1000000, 1999999)):010d}-{filed.year % 100:02d}-{seq:06d}"
-            accepted = f"{filed.isoformat()} {int(rs.integers(6, 21)):02d}:{int(rs.integers(0, 60)):02d}:00.0"
-            sub.append(dict(adsh=adsh, cik=cik, name=i["name"], sic=i["sic"], countryba="US", stprba=i["state"],
-                            cityba=i["city"], form=form, period=per.strftime("%Y%m%d"), fy=fy, fp=fp,
-                            filed=filed.strftime("%Y%m%d"), accepted=accepted, prevrpt=prevrpt, nciks=1,
-                            afs=i["afs"], wksi=1 if i["afs"] == "1-LAF" else 0, fye="1231"))
-            num.append(dict(adsh=adsh, tag="EntityCommonStockSharesOutstanding", version="dei/2022",
-                            ddate=asof.strftime("%Y%m%d"), qtrs=0, uom="shares", coreg="", value=f"{shares}.0000", footnote=""))
-            if form == "10-K":
-                num.append(dict(adsh=adsh, tag="EntityPublicFloat", version="dei/2022", ddate="20220630", qtrs=0,
-                                uom="USD", coreg="", value=f"{int(i['S_jul'] * i['P2'] * rs.uniform(0.55, 0.9))}.0000", footnote=""))
-    sub_cols = ["adsh", "cik", "name", "sic", "countryba", "stprba", "cityba", "form", "period", "fy", "fp", "filed",
-                "accepted", "prevrpt", "nciks", "afs", "wksi", "fye"]
-    num_cols = ["adsh", "tag", "version", "ddate", "qtrs", "uom", "coreg", "value", "footnote"]
-    sub.sort(key=lambda r: (r["filed"], r["adsh"]))
-    num.sort(key=lambda r: (r["adsh"], r["tag"]))
-    _w_tsv(os.path.join(folder, "sub.txt"), sub_cols, sub)
-    _w_tsv(os.path.join(folder, "num.txt"), num_cols, num)
-    return dict(sub=len(sub), num=len(num))
-
-
-def write_register(wd, target):
-    rows = []
-    rr = W.rng("register")
-    for m in sorted(wd.mgrs, key=lambda m: m["cik"]):
-        since = ["2009Q4", "2012Q2", "2014Q1", "2016Q3", "2018Q1", "2019Q4", "2020Q2", "2021Q1"][int(rr.integers(8))]
-        if m["mid"] in wd.newq4:
-            since = "2022Q4"
-        rows.append({"cik": m["cik"], "manager_name": m["disp"], "family": m["family"],
-                     "manager_type": m["type_label"], "form13f_file_number": m["fileno"],
-                     "hq_state": m["state"], "covered_since": since,
-                     "status": "inactive" if m["mid"] in wd.attrit else "active"})
-    path = os.path.join(target, "manager_register.csv")
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
-        w.writeheader()
-        w.writerows(rows)
-    return len(rows)
-
-
-def write_all(wd, target):
+def write(target, world):
     os.makedirs(target, exist_ok=True)
-    counts = {}
-    counts["drops"] = write_drops(wd, target)
-    counts["fsds"] = write_fsds(wd, target)
-    counts["register"] = write_register(wd, target)
-    D.write_docs(wd, target)
-    return counts
+    rng = np.random.default_rng(W.SEED + 11)
+    _csv(os.path.join(target, FILES["marks"]),
+         ["event_id", "candidate_no", "centre_code", "question", "mark", "credited", "marking_event", "marker_id",
+          "marked_utc", "script_status"], marks_rows(world))
+    # Section A from the scanning system: three source questions, its own item codes, local scan times
+    rows = []
+    for x in world["cands"]:
+        if x["absent"]:
+            continue
+        s = x["section_a"]
+        a1 = min(12, int(round(s * 12 / 40 + rng.normal(0, 0.8))))
+        a2 = min(13, max(0, int(round(s * 13 / 40 + rng.normal(0, 0.8)))))
+        a1 = max(0, a1)
+        a3 = s - a1 - a2
+        if a3 < 0 or a3 > 15:
+            a3 = min(15, max(0, a3))
+            a1 = min(12, max(0, s - a2 - a3))
+            a2 = s - a1 - a3
+        rows.append([x["no"], "H2SA-01", a1, "H2SA-02", a2, "H2SA-03", a3, a1 + a2 + a3,
+                     "B%04d" % int(rng.integers(1, 2400))])
+    rows.sort(key=lambda r: (r[8], r[0]))
+    _csv(os.path.join(target, FILES["sec_a"]),
+         ["candidate_no", "item_1", "mark_1", "item_2", "mark_2", "item_3", "mark_3", "section_a_total", "scan_batch"],
+         rows, crlf=True)
+    # the entries register (Excel): a moved candidate's first entry withdrawn, the new entry under a new number
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Entries"
+    ws.append(["Candidate number", "Previous candidate number", "Centre", "Entry status", "Components",
+               "Entered on"])
+    ent = []
+    for x in world["cands"]:
+        if "prev_no" in x:
+            ent.append([x["prev_no"], None, x["prev_centre"], "WITHDRAWN", "P1;P2",
+                        dt.date(2026, 5, 1) + dt.timedelta(days=int(rng.integers(0, 40)))])
+            ent.append([x["no"], x["prev_no"], x["centre"], "ENTERED", "P1;P2",
+                        dt.date(2026, 7, 20) + dt.timedelta(days=int(rng.integers(0, 60)))])
+        else:
+            ent.append([x["no"], None, x["centre"], "ENTERED", "P1;P2",
+                        dt.date(2026, 5, 1) + dt.timedelta(days=int(rng.integers(0, 40)))])
+    for r in sorted(ent, key=lambda r: r[0]):  # noqa: E501
+        ws.append(r)
+        ws.cell(row=ws.max_row, column=6).number_format = "dd/mm/yyyy"
+    for col, w in zip("ABCDEF", (18, 24, 10, 13, 12, 12)):
+        ws.column_dimensions[col].width = w
+    p = os.path.join(target, FILES["entries"])
+    wb.save(p)
+    PP.normalize_ooxml(p, "Pamela Sullivan", "Pamela Sullivan", "2026-05-04T23:12:00Z", "2026-11-28T05:41:00Z",
+                       excel=True)
+    # the centres register
+    rows = []
+    for c in sorted(world["centres"], key=lambda c: c["code"]):
+        rows.append([c["code"], c.get("old_code", ""), c["name"], c["region"], c["region_name"], c["country"], c["tz"]])
+    _csv(os.path.join(target, FILES["centres"]),
+         ["centre_code", "merged_from", "centre_name", "region_code", "region", "country", "time_zone"], rows)
+    # the 2025 post-results reviews, one row per component, stamped in UTC
+    rows = []
+    old = {c["code"]: c.get("old_code") for c in world["centres"]}
+    for r in W.reviews_2025(world):
+        code = old.get(r["centre"]) if (old.get(r["centre"]) and r["local"] < dt.datetime(2026, 2, 1)) else r["centre"]
+        rows.append([r["request"], r["candidate"], code, r["component"], _stamp(r["utc"]), r["outcome"]])
+    rows.sort(key=lambda r: (r[4], r[0], r[3]))
+    _csv(os.path.join(target, FILES["reviews"]),
+         ["request_id", "candidate_no", "centre_code", "component", "requested_utc", "outcome"], rows)
+    # distractors: the teachers' predicted grades, and the 2025 paper's question statistics
+    rows = []
+    for x in world["cands"]:
+        if rng.random() < 0.93:
+            g = x["a"] + rng.normal(0.25, 0.7)
+            pg = "A" if g > 1.2 else "B" if g > 0.4 else "C" if g > -0.4 else "D" if g > -1.2 else "E"
+            rows.append([x["no"], x["centre"], pg])
+    _csv(os.path.join(target, FILES["predicted"]), ["candidate_no", "centre_code", "predicted_grade"], rows)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Paper 2 2025"
+    ws.append(["Question", "Max", "Answers", "Mean", "SD", "Facility"])
+    stats = [("1", 12, 29410, 7.62, 2.31), ("2", 13, 29410, 8.04, 2.47), ("3", 15, 29410, 8.71, 3.02),
+             ("4", 25, 25120, 13.48, 4.86), ("5", 25, 24410, 13.92, 4.71), ("6", 25, 10230, 12.87, 4.95)]
+    for q, mx, n, mean, sd in stats:
+        ws.append(["Q" + q, mx, n, mean, sd, round(mean / mx, 3)])
+    p = os.path.join(target, FILES["stats25"])
+    wb.save(p)
+    PP.normalize_ooxml(p, "Mary Deleon", "Mary Deleon", "2025-12-03T01:20:00Z", "2025-12-03T02:05:00Z", excel=True)
+    rows = [[m["id"], m["team"], m["tz"], "Senior examiner" if m["senior"] else "Examiner"] for m in world["markers"]]
+    _csv(os.path.join(target, FILES["markers"]), ["marker_id", "team", "home_time_zone", "role"], rows)

@@ -1,326 +1,278 @@
 # task231 design note
 
-The Brevland Central Bank's quarterly Business Conditions Survey (BCS), a panel of firms in twelve regions (doubled in
-March 2024; 8,604 firms invited to the September 2026 round). The September 2026 round's main fieldwork closes at 17:00 on Friday 25 September 2026. The
-BCS fieldwork quality standard sets each region's alert level on the round's response rate over the panel firms that
-were still trading on the round's frame date, 1 September 2026: under 55 per cent the region goes into the two-week
-reminder-call extension (28 September to 9 October), 55 to under 58 per cent it gets one extra email reminder, 58 per
-cent or more it needs neither.
+Architecture 2, a re-root drawn on 2026-11-01 in the same objective (Data Quality Monitoring & Alerting) and the same
+number, after architecture 1 (the Brevland Central Bank's business survey fieldwork extension, Survey Research &
+Official Statistics) was retired at the batch 1 audit. The Sawyer Divide Highway District runs a road weather
+information system of environmental sensor stations along its mountain highways in Montana's northern Rockies. Every
+station's hourly readings pass through the quality control of its vendor, Quillan Road Weather Systems, whose spatial
+test withholds an air temperature that sits more than 6.0 C from the inverse-distance-weighted mean of the station's
+neighbours within 45 km, each neighbour carried to the station's elevation at 6.5 C a kilometre. A withheld reading
+never reaches the district's maintenance decision support or its 511 road conditions. The district's road weather
+data quality standard has a station's spatial test re-tuned before the next winter when, over the winter just closed,
+the test withheld the air temperature, although the reading was the air at the sensor, in more than 2 per cent of the
+station's winter hours. The 2027/28 configuration is frozen for the season, so the re-tune list for winter 2027/28 is
+set now, in May 2027, from winter 2026/27's record.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task231.json`, architecture v1, drawn 2026-10-13. Survey Research &
-  Official Statistics (client domain), task type `nonresponse-calibration-measurement-error-adjustment`, objective
-  Data Quality Monitoring & Alerting. Shape 10 (each region's response rate checked against the 55 and 58 per cent
-  lines), decision `designation_set`, question form which. Gap time then population; no A to E pattern, decisive
-  generator G12 (absence of a closure record is not a record of trading), then G11 (eligibility precondition). Gate G
-  `forecasting`: the decisive figure is the share of this round's non-returners that the register will eventually
-  show had already closed. Strategy `maturity_censoring`. Calibration `realised_outcome_roster` (the register's
-  settled closures for earlier rounds). Stakeholder: the head of the business survey unit (`statistical_office_head`),
-  deciding with her team (`line_manager_or_team`) at the close of main fieldwork (`period_close`).
-- **Seed:** DQ04 (network-total shortfall alert with imputed missing reads), kept as an idea seed only: a network of
-  reporting zones, a shortfall alert for the round being closed, a quantity completed for the units whose state is
-  missing. The seed's Rubin's-rules pitfall is a reflex once implicates ship, and its GSD framing reads as a backdrop,
-  so the pitfall is re-found in survey nonresponse: the missing state is whether a silent firm is still in scope.
-- **Data-native sentence:** the business register learns of a closure only when the firm, its liquidator or the tax
-  office notifies it, a year or more after trading stops for strike-offs and liquidations, and the contact centre can
-  confirm a closure only if someone still answers for the firm, so the round's non-returners hide closures that only
-  the settled records of earlier rounds can count.
-- **Guard:** `guard.py check` WARN only. `repeat.gate_g` (forecasting, against task229): the label repeats, the
-  mechanism does not (task229 carries a convex rating curve's bias into 2027 months; task231 nowcasts the register's
-  eventual closures among current non-returners). `repeat.question_form` (which, against task188): the call picks
-  regions, so which is the form the decision takes. `test.same_puzzle_older` against task445 v1 is differentiated on
-  the card (task445 completes amounts held by late reporters; task231 estimates membership of the denominator).
+- **Card:** `.claude/skills/fingerprint/cards/task231.json`, architecture v2, drawn and registered 2026-11-01 after a
+  pull (registered 2026-11-01T00:33:44Z). Physical & Environmental Sciences (client domain), task type
+  `sensor-calibration-measurement` (it serves Data Quality Monitoring & Alerting only), objective Data Quality
+  Monitoring & Alerting. Shape 10 (each station's share of winter hours its spatial test withheld a right reading,
+  checked against the standard's 2 per cent line), decision `designation_set`, question form whether (a gate per
+  station: re-tune or not, none a grammatical answer). Gap rule then objective (nothing in the pack states how a
+  withheld reading is judged; the test's withheld count is a correct record and the call is scored on true readings
+  withheld), no A to E pattern, decisive generator G6 (the pooled vertical profile the test assumes does not fit the
+  basin floors on still nights, one band moving against the rest), then G16 (which comparison the data entitle) and
+  G17. Gate G `method_or_model_selection`: the comparison a withheld reading is judged against. Strategy
+  `classification_error` (the test's misclassification of true cold air as fault is the object, and the decisive step
+  is the basis a reading is classified on). Calibration `physical_verification` (the October 2026 pre-season checks,
+  every sensor against a reference thermometer). Context artifact `operations_log` (the vendor's QC log). Stakeholder:
+  the district's road weather program manager (`field_unit_lead`), deciding with the district's road weather data
+  review panel (`committee_or_panel`) ahead of the season's configuration freeze (`season_or_peak`); organisation
+  `government_agency`.
+- **People:** drawn with `guard.py names --geo US --seed 231` and `--seed 2310`: Melissa Hayden, Lynn Dalton, Robyn
+  Reeves; the pre-season technicians Kathy Phillips and Joshua Howard from the same draw.
+- **Data-native sentence:** on still clear winter nights the district's enclosed basins fill with cold air under an
+  inversion, each basin to its own depth and strength and some of them for days under a winter high, so a basin-floor
+  station's air matches only the other stations inside its own basin's pool, while the spatial test's neighbours within
+  45 km, carried up or down at 6.5 C a kilometre, sit in other basins, in windy gaps that never pool, or above the
+  pool's top.
+- **Abstraction sentence:** none can be written against an approved build. The nearest approved anatomies are task303
+  (tickets every sibling feeder opened in the same minute are the parent's event, removed by simultaneity), task182
+  (each bore's own lagged response to a shared driver) and task236 (an independent fixed-protocol network measures the
+  routine system's capture). Here no event is removed and no second system measures capture: each rejected reading is
+  judged against the units that share its own still-air pool, the pool's membership read from how the units' records
+  move together, which no distance, elevation band, route or listed grouping gives.
+- **Guard:** `guard.py check` on the registered card: WARN only. `overuse.org_family` (government_agency, 43 builds):
+  a state highway district is a government agency, and the honest key is kept. `repeat.gate_g` (method_or_model_selection
+  against task125 v4): task125 forecasts a crime count moved between sites by a schedule; this build's mechanism is the
+  comparison a quality check's rejection is judged against. `test.same_driver_older` against task309 differentiated on
+  the card. Axes redrawn at registration, when task130 v6, task125 v4 and task145 v2 filed ahead of this draw:
+  `composition_mix` to `classification_error` (the strategy the build honestly carries, the check's classification
+  being the object), `monitoring_export` to `operations_log` (the vendor's QC log is the file the program manager works
+  from), `customer_or_counterparty` to `committee_or_panel` (the district's review panel decides; the vendor only
+  receives the list) and `purchase_order_or_contract` to `season_or_peak` (the configuration freeze for the 2027/28
+  season forces the list). Gap and pattern redrawn from population and G16 (spent signatures in the older corpus) to
+  rule and G6.
 - **Sources, one line each.**
-  - Client Layer 2 patterns for the task type (cells before calibration, raking to convergence, sensitivity and
-    specificity of a classification): none is this build's step; it is the unresolved-eligibility estimate that
-    AAPOR leaves to "the best available scientific information".
-  - Client measured drivers: the held tasks built an unfamiliar unit upstream of every graded figure; here the unit is
-    the in-scope firm, and the construction is its scope at the frame date, not a replay of certified figures.
-  - Family record: the maturity attack held where the graded object crystallised after the extract and the tail sat in
-    a registry the natural pipeline never joins (73 world seven); task451 completes payments from the development in
-    force and task255 truncates and censors a size distribution; neither estimates whether a unit belongs to the
-    denominator.
-- **Shape arithmetic (10, threshold checks per segment):** twelve regions' alert levels (12), the call's three lists
-  (extension, email, neither: 3), the slide's named parts (a bar per region, the 55 and 58 per cent lines, the title
-  naming the extension regions: 4), the two files (2): 21 on the main side, before the asks' 66 figures.
+  - Boundary-layer climatology: cold-air pools in mountain basins under winter anticyclones (persistent pools, the
+    nocturnal inversion, its break-up after sunrise) are a documented phenomenon of the intermountain West; the depths,
+    strengths and break-up times used here are authored for the task within published ranges, no dataset reused.
+  - Road weather quality control: range, step, persistence, like-instrument and spatial tests with an elevation
+    adjustment at a standard lapse rate follow the public descriptions of US road weather QC practice (the Clarus and
+    MADIS test families); the parameters are the vendor's in this world.
+  - NTCIP 1204 environmental sensor stations report air temperature in tenths of a degree Celsius; the district's own
+    sheets use Fahrenheit and feet.
+  - Every file is synthetic, authored for this task, CC0 1.0.
+- **Shape arithmetic (10):** each station's share of winter hours with a right reading withheld and its verdict, about
+  two figures a station over the network's stations, the call (the re-tune list), the runner-up (the station nearest
+  the line on each side) and the memo chart's named parts (a bar per station, the 2 per cent line, the re-tuned
+  stations marked, the title naming them); the asks follow at stage 2.
 
 ## Default path
 
-1. Read the September 2026 invitation list (`bcs_invitations_2026_09.csv`, the panel firms invited, by region) and the
-   returns received by 17:00 on 25 September (`bcs_returns_2026_09.csv`), keeping one return per firm where a firm
-   answered by web and by phone.
-2. Join the invited firms to the business register's closure extract (`brevland_business_register_closures.csv`) on
-   company number and drop the firms whose recorded cessation date is on or before 1 September 2026 (24 firms).
-3. Take each region's response rate as its returns over the invited firms that remain.
-4. Set the alert level from the standard's lines: under 55 per cent the extension, 55 to under 58 the email.
+The field's own check of a spatial flag: verify each withheld reading against the background field, the regional
+lapse profile of the hour (or the HRRR point forecast for the site), and count what agrees with it as wrongly
+withheld.
 
-Ends on: five regions into the extension (Capital, Harbour, Islands, Border and Western Uplands) and seven onto the email.
-Golden: Capital and Harbour into the extension, Islands and Western Uplands onto the email, the other eight neither.
+1. Join the ESS export to the site register (RPU to site code), readings in tenths of a degree C, re-sent rows once,
+   and take the QC log's spatial-test air temperature rows, one per station and hour.
+2. Each hour, fit the regional lapse line to every station's reading on its elevation (or read the HRRR forecast for
+   the site at that hour).
+3. A withheld reading within 5 C of that background is a false rejection; anything further off was rightly withheld.
+4. Each station's share is its false-rejection hours over the winter's 5,088 hours; re-tune above 2 per cent.
+
+Ends on: SD-147, SD-226, SD-318 (Larkspur Grade, Antimony Grade and Ptarmigan Grade only)
+Golden: SD-118, SD-122, SD-131, SD-147, SD-204, SD-211, SD-226, SD-318
 
 ## Stump sentence
 
-The default path counts every non-returning firm without a business-register closure as still trading and sends five
-regions into the extension (Capital, Harbour, Islands, Border and Western Uplands) and seven onto the email; the register
-records a strike-off or liquidation a year or more after trading stops, so most firms that closed before 1 September are
-not yet on it, and the closure share of the round's non-returners read from rounds old enough for the register to have
-recorded their closures leaves only Capital and Harbour for the extension and Islands and Western Uplands for the email.
+The background-field check calls every cold basin-floor reading the test withheld wrong and re-tunes only SD-147,
+SD-226, SD-318 (the three grades above the pools), because neither the hour's regional lapse line nor the HRRR
+forecast holds the basins' cold pools; judged against the stations that share its air that hour, every one of those
+floor readings was right, and SD-118 Halvorsen Meadow, SD-122 Bitterbrush Flat, SD-131 Teller Junction, SD-204 Cutler
+Meadow and SD-211 Ransom Creek go on the list as well.
 
 ## Three rules
 
-- Task type: `nonresponse-calibration-measurement-error-adjustment` (Survey Research & Official Statistics), which
-  serves Data Quality Monitoring & Alerting.
-- Domain test: the decisive quantity is each region's response rate over the panel firms still trading on 1 September
-  2026, with the eligibility of the unresolved non-returners estimated (AAPOR's e for unknown-eligibility cases), the
-  field's own estimator, here from the register's settled closures for earlier rounds.
-- Swap: "which regions' meter read rate among connected meters falls below 98 per cent, with disconnections recorded
-  late" keeps the arithmetic but loses the survey quantity: there is no in-scope population fixed by trading status at
-  a frame date, no nonresponse follow-up whose success depends on the outcome, and no unresolved eligibility to
-  estimate; the task stops being a survey-nonresponse question.
-- Layer 1: the register's two dates per closure (its own procedure); the contact centre's two teams with their own code
-  schemes and keys (the contractor's records carry its own copy of company numbers, some in the six-digit form, and the
-  bank's pre-2023 region codes); calls placed and calls received in one log, dialler retries the same day, transfers to a
-  supervisor; returns by web, phone and post, a few firms returning twice; paper returns keyed by an outside bureau since
-  2023 and telephone returns loaded overnight since April 2024; timestamps in UTC against a 17:00 local close; round labels
-  in three forms (2026-09, 2026Q3, frame dates); a 2023 regional review that renamed two regions and recoded all twelve;
-  panel IDs freed in the 2024 expansion block issued again; NACE Rev. 2.1 sections for recruits from 2025. Each comes from
-  the systems that make the files; none is placed to be caught, and none sits on the decisive path (the main files carry
-  one company-number form, the settled rounds hold true reach times and one holder per panel ID).
-- Layer 2: `maturity_censoring` in the field-method family; the estimate of how many of this round's non-returners
-  were still trading on 1 September decides each region's alert level.
-- Decisive step: estimating the eligibility of the unresolved non-respondents from the settled outcomes of comparable
-  earlier non-respondents (rounds old enough for the register to have recorded their closures), instead of treating
-  the register as it stands as complete or carrying the call centre's resolved mix onto the unresolved.
-- Not semantics: reading every field right (the two closure dates, both company-number forms, the outcome codes)
-  still leaves the September non-returners' closures unrecorded; the register is read correctly and is simply not yet
-  complete, so no reading fixes the denominator.
-- Not rule application: the quality standard defines the response rate over firms trading on the frame date and
-  leaves open how the trading status of a silent firm is established; no filed rule or procedure estimates it, so
-  executing every stated rule still files the register-as-it-stands answer.
-- Analyst test: a strong analyst who deduplicates the returns, drops the firms the register shows closed by 1 September
-  and divides each region's returns by the rest sends five regions into the extension (the default path's Ends on:
-  Capital, Harbour, Islands, Border and Western Uplands) and seven onto the email; one who gives the unresolved
-  non-returners the eligibility of the call centre's resolved cases, or reads the closure share from every earlier round
-  or the last two years, still sends four (Capital, Harbour, Islands and Western Uplands), where only Capital and Harbour
-  fall under 55 per cent.
-- Estimand: the BCS fieldwork quality standard (`BCS_fieldwork_quality_standard_v3.pdf`, sections 4 and 5) defines the
-  round's response rate as the panel firms that return the questionnaire by the main close over the panel firms invited
-  to the round that were trading on the round's frame date, says that a firm whose business ceased on or before the
-  frame date is out of scope whether or not the register yet shows it, and sets the three alert levels; the frame date
-  for September 2026 is 1 September 2026 (`BCS_round_calendar.xlsx`).
-- No decoy: nothing is planted; the register's lag, the contact centre's selective confirmations and the panel's
-  history are the systems' own behaviour, no memo, draft or dashboard carries a region list, and no artifact ranks the
-  regions.
-- No certified replay: no published or certified figure is reproduced to recover the method; the settled rounds are
-  evidence for an estimate, not controls the method must match.
-- Lesson: a response rate's denominator is a population fixed at a date, and when the register that defines it lags,
-  the eligibility of silent units has to be estimated from cases whose fate has since become known, not taken from the
-  record as it stands or from follow-up that reaches only the units still there; no build on file teaches the
-  eligibility of non-respondents.
+Task type: sensor-calibration-measurement (Physical & Environmental Sciences), which serves Data Quality Monitoring & Alerting: the object is the health of a sensor network's automated quality control and the call is a monitoring decision (which stations' test is re-tuned).
+Domain test: the deciding quantity is each station's false-rejection share of the vendor's spatial check, which the field settles by meteorological verification of each withheld observation against the air it was measuring, using the boundary layer's structure (the free-atmosphere profile and the basins' nocturnal inversions).
+Swap: "which hospital laboratories have their analyser's delta check re-tuned" stops making sense, because nothing in a laboratory's samples pools by night, decouples from a regional profile or moves together inside a basin; the deciding relation is co-movement inside a cold-air pool, which only a meteorological network has.
+Layer 1: the ESS export in NTCIP tenths with UTC hour-end stamps and RPU ids (the RPU export), observations re-sent by the server's re-polls, the QC log mixing step, spatial and dew-point range rows across the mid-winter 4.3.2 release (the vendor's QC), a dew-point no-data code at Coyote Gap (the RPU), the modem swaps and the shop spare (the district's telemetry), the pavement export in each sensor's own units under two firmware code tables (the RPUs); nothing is placed to be caught.
+Layer 2: comparison-group choice under spatial structure: the reference a withheld reading is judged against has to be the stations sharing its air that hour, which on still nights is a basin's own cold pool, not the pooled vertical profile the test and the field's background check both assume.
+Decisive step: recognising that a basin floor's air on a still night is shared only by the other floor stations of its own pool, found from how their night records move together on the hours the QC passed, and judging each withheld reading against those stations (any other station against the free air around it carried to its elevation).
+Not semantics: with every column, unit, code and clock read correctly the background-field route still files SD-147, SD-226, SD-318 alone, because the lapse line and the forecast are correct readings of the free atmosphere and wrong references for a pooled floor; no field, code or definition flips the call.
+Not rule application: the standard defines a false rejection by the probe's accuracy against the air at the station and says nothing of how that air is known; the enumerated family (trust the test, every withheld reading right, lapse refit, the two nearest stations within 150 m, night and low, the station's own percentiles, co-withheld neighbours, the HRRR forecast) files six different sets from none to twelve stations, the standing family (pool mates by co-movement, tolerance 1.5 to 4.5 C, six groupings, three radii, any mate or the median) files one set with identical hours at every station, and the ruling-out is quiet: only the co-movement on the hours the QC passed separates the pools.
+Analyst test: a strong analyst who reads every field and the standard verifies each withheld reading against the regional lapse profile of the hour or the HRRR forecast, the field's background check, and files SD-147, SD-226, SD-318 (the floor readings look like faults against both).
+Estimand: the standard (Rev 2, sections 2 and 3, sdhd_road_weather_data_quality_standard_rev2.pdf) files the population (each station, each automated test), the outcome (a winter hour on which the test withheld an air temperature within 0.3 C of the air at the station), the window (1 October 00:00 to 1 May 00:00 Mountain time), the unit (the share of the winter's hours) and the comparison (above 2 per cent).
+No decoy: nothing is planted to be caught: the faults (rime at two passes, a connector, a radiation shield, a wet filter) are what such a network sees and are rightly withheld, no memo, draft or stakeholder figure argues a set, and the review request carries no figure or method.
+No certified replay: no file publishes a verdict on any withheld reading or a share to reproduce; the vendor's acceptance record is a summer archive with injected faults and the October checks are against a reference thermometer, neither the winter's record.
+Lesson: a spatial consistency check's rejections are judged against the stations that share the observation's air, which in mountain terrain on still nights is a cold pool's membership read from co-movement, not distance, an elevation band or a regional profile; no build on file judges a quality flag against an air-mass grouping inferred from the records.
+
+## Survivor anatomy
+
+Actor: the deciding property, which stations share a reading's air that hour, has no column: the register carries coordinates, elevations and routes, the QC log the vendor's estimate and deviation, and no file names a basin, a pool or a group.
+Link: the pool's membership is read through the co-movement of the stations' night residuals on the hours both readings passed the QC, a link no key offers; distance and elevation only bound it (gaps and grades inside the bounds do not co-move) and no sentence invites the comparison.
+Reflex: the field's background check for a spatial flag, the hour's lapse refit or the HRRR forecast, sits at rung 2 and files SD-147, SD-226, SD-318.
+Back-test: the vendor's acceptance record (summer 2024, every injected fault withheld, 0.3 per cent of clean observations withheld) and the October pre-season checks (every probe within 0.3 C of the reference) both validate the textbook routes of trusting the test or the probes.
+Second use: every file the decisive step reads has its own use: the ESS export and the QC log are the review's record, the register is the network's inventory and carries the pavement sensors the asks read, and the standard governs the asks' indicators too.
+Shock: the pooled floors' withheld hours read as ordinary cold nights in a mountain winter; sorted by withheld hours the faulted plateau and passes interleave with the floors (Big Prairie's 335 sits between Ransom Creek's 406 and Cutler Meadow's 250), so the golden set is not an interval of any single sorted statistic.
+Pins: the standard files the WHAT (population, outcome, window, unit, comparison) in the district's own genre; no filed sentence names a pool, a co-movement, a grouping, a tolerance or a reference station, and deleting any one filed sentence leaves the call forced by the readings.
 
 ## Readability screen
 
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R1 register closures recorded by 25 September dropped (the default) | the standard's scope sentence sends the solver to the register | the closure extract joins on company number | yes, the first move | none | the join is the battery's own work | one subtraction | readable |
-| R2 AAPOR proportional e from the contact centre's resolved outcomes | none, but AAPOR is the textbook for unknown eligibility | the call log carries outcome codes per firm | yes, the survey statistician's default | none | no | one ratio | readable |
-| R3 closure share from the last two years of rounds | none | the register's two dates show the lag | the most recent rounds look the most relevant | none | no | one ratio over a join | readable |
-| R4 closure share from every earlier round | none | as R3 | pooling all history is a reflex | none | no | one ratio over a join | readable |
-| R5 (decisive) closure share from rounds old enough to be settled (frame dates at least four years before the extract) | none: no sentence names settled rounds, a share or a window; the register's notes say only that closures are recorded when notified | no column marks a round as settled or a firm's status at a frame date | every reflex above lands elsewhere | no control or corpus scores the routes | the records are complete as recorded; the battery finds nothing | built from 23 rounds' non-returners joined to the register with each round's own frame and close | silent |
+| Rung | What a solver reads that points at it | Verdict |
+|---|---|---|
+| R0 trust the test | the acceptance record (every injected fault withheld) | readable |
+| R1 every withheld reading right | the October checks (every probe within 0.3 C) | readable |
+| R2 hourly lapse refit within 5 C (default path) | the QC configuration's own 6.5 C per km; the field's background check | readable |
+| R3 buddy check, two nearest within 150 m | the field's vocabulary (buddy check, like-instrument test) | readable |
+| R4 night and below 1,600 m | the cold nights at the low stations in the QC log | readable |
+| R6 the station's own month-hour range | the field's vocabulary (climatological range test) | readable |
+| R7 withheld with a neighbour within 30 km | simultaneous rows in the QC log | readable |
+| R8 HRRR forecast within 5 C | the forecast file in the pack | readable |
+| R5 pool mates by co-movement (decisive) | no sentence, column, key or code names a pool or its members | silent |
+
+Reflex row, from the field's vocabulary for verifying a spatial flag (buddy check, background field, model
+analysis, climatological range, inversion screening by elevation band): each lands on R2, R3, R4, R6 or R8 above, none
+on the golden.
 
 ## Semantic fork table
 
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | region | the region on the September 2026 invitation list (regions as reviewed in 2023) | the region at recruitment | same call | C1: the invitation list carries the current region for every invited firm; no main-population firm changed region since recruitment |
-| SF2 | panel firms invited to the round | the firms on `bcs_invitations_2026_09.csv` | every firm the panel register shows active | same call | C1: the active panel and the invitation list hold the same firms (asserted) |
-| SF3 | returned by the main close | received by the bank by 17:00 Brevland time on 25 September 2026 | received by 17:00 UTC | same call | standard section 4 (17:00 Brevland time) and C1: no September return is received between 15:00 and 17:00 UTC on 25 September |
-| SF4 | trading on the frame date | no cessation on or before 1 September 2026 | no cessation before 1 September | same call | standard section 4 ("ceased on or before the frame date") and C1: no main-population cessation falls on 1 September |
-| SF5 | frame date | 1 September 2026 | the invitation date or the close | same call | `BCS_round_calendar.xlsx` (frame date column) |
-| SF6 | response rate | returns by the close over invited firms in scope | returns over all invited firms | the default's call and worse | standard section 4 (the scope sentence) |
-| SF7 | alert levels | red under 55, amber 55 to under 58, green 58 or over | strict or inclusive at either line | same call | standard section 5 and C1: every settled-round estimate sits at least 0.5 points from both lines |
-| SF8 | a settled round's non-returners | firms not returned by that round's main close | firms not returned by the round's end (after any extension) | same call | standard section 4 (the round's status is set at the main close) and C1: the round-end variant lands the same level in every region |
-| SF9 | settled window | frame dates at least 48 months before the extract | 36 to 72 months | same call | C3: every window from 36 to 72 months lands the same level in every region (asserted) |
-| SF10 | comparable earlier non-returners | all settled non-returners pooled | by region, by rounds silent, by size band, by region and rounds silent, by call outcome (2022 rounds) | same call | C3: every comparability class lands the same level in every region (asserted) |
-| SF11 | duplicate returns | one return per firm | every row | same call | standard section 4 counts firms, and C1: every September cross-mode duplicate is received before the close |
-| SF12 | company number | the register's current form | the six-digit core | same call | C1: the invitation list, the panel register's invited and settled-round holders and the closure extract all carry the check-digit form, and an exact join and a core join select the same firms (asserted) |
-| SF13 | the extension and the email | red regions get the extension; amber get one email | both for red | same call | standard section 5 |
+| SF1 | winter | 1 October 00:00 to 1 May 00:00 Mountain time, 5,088 hours | the window from UTC midnight | same call | standard s2; checks.py SF1 |
+| SF2 | share | false-rejection hours over the hours of the winter | over the hours the station delivered | same call | standard s3 "as a percentage of the hours of the winter"; checks.py SF2 |
+| SF3 | above 2 per cent | strictly above | at or above | same call | standard s3; no share within half a point of the line, checks.py SF3 |
+| SF4 | right | within 0.3 C of the air at the station that hour | 0.3 C as the tolerance between stations | drops SD-118 and others | standard s2 (the probe's accuracy against its own air); stations sharing a pool differ by more than 0.3 C on 53 per cent of the hours the QC passed, which the October checks contradict; checks.py SF4 |
+| SF5 | the stations sharing its air | the median of the pool mates | any one pool mate within the tolerance | same hours | checks.py SF5 and G7 |
+| SF6 | withheld by that test | the spatial test's rows | every air temperature row (the step test too) | same call | standard s3 "by that test"; checks.py SF6 and R2 |
+| SF7 | the test | configuration 4.3 under both releases | 4.3.0 and 4.3.2 as two tests | same call | QC configuration s4 (air temperature tests unchanged); checks.py SF7 |
+| SF8 | station | the site code, joined from the RPU | the RPU as the station | same call | one RPU per site; checks.py SF8 |
 
 ## Ladder
 
-Rungs in climbing order; each is a complete pipeline a strong analyst can stop at. Rates are per cent of the in-scope
-firms, recomputed from the shipped files by `generator/verify.py`; bands R (extension), A (email), G (neither). The settled
-corridor is every estimator in the closure table's axes 8, 12 and SF8 to SF10; truth is the simulation's own count.
+| Rung | Route | Files | Against the golden |
+|---|---|---|---|
+| R0 | trust the test: nothing it withheld was right | none | misses all eight |
+| R1 | every withheld reading right | twelve stations | adds SD-158, SD-277, SD-336, SD-344 |
+| R2 | hourly lapse refit within 5 C (default path) | SD-147, SD-226, SD-318 | misses the five floors |
+| R3 | the two nearest stations within 150 m, within 2 C | SD-131, SD-147, SD-226, SD-318 | misses four floors |
+| R4 | night and below 1,600 m | six stations | misses SD-226, SD-318 |
+| R6 | the station's own month-hour 2nd to 98th percentile | twelve stations | adds the four faulted |
+| R7 | withheld with a neighbour within 30 km | seven stations | misses SD-318 |
+| R8 | HRRR forecast within 5 C | SD-147, SD-226, SD-318 | misses the five floors |
+| R5 | pool mates by co-movement, others against the free air (golden) | the eight | |
 
-| Region | R1 register as it stands | R2 call-centre e | R3 last two years | Unobtainable as closed | R4 all earlier rounds | Golden (settled) | Settled corridor | Truth |
-|---|---|---|---|---|---|---|---|---|
-| Capital | 44.6 R | 45.4 R | 46.6 R | 46.5 R | 47.8 R | 48.7 R | 47.8 to 49.7 | 48.5 R |
-| Harbour | 48.6 R | 49.3 R | 50.6 R | 50.7 R | 51.8 R | 52.7 R | 52.2 to 53.7 | 52.7 R |
-| North Coast | 56.5 A | 57.2 A | 58.5 G | 58.6 G | 59.7 G | 60.6 G | 60.3 to 61.3 | 62.0 G |
-| Islands | 51.4 R | 53.0 R | 53.4 R | 54.3 R | 54.6 R | 55.5 A | 55.4 to 56.4 | 56.5 A |
-| Border | 54.6 R | 56.3 A | 56.6 A | 57.1 A | 57.8 A | 58.7 G | 58.5 to 59.5 | 59.3 G |
-| Western Uplands | 51.3 R | 52.8 R | 53.3 R | 54.3 R | 54.5 R | 55.4 A | 55.3 to 56.2 | 55.8 A |
-| Northern Forests | 56.5 A | 57.6 A | 58.5 G | 58.7 G | 59.7 G | 60.6 G | 60.3 to 61.3 | 61.8 G |
-| South Coast | 57.2 A | 58.5 G | 59.2 G | 59.9 G | 60.3 G | 61.2 G | 61.1 to 62.1 | 61.7 G |
-| Eastern Lakes | 56.8 A | 57.4 A | 58.7 G | 59.1 G | 59.9 G | 60.8 G | 60.6 to 61.6 | 61.8 G |
-| Midlands | 56.3 A | 57.3 A | 58.3 G | 58.7 G | 59.5 G | 60.4 G | 60.2 to 61.2 | 60.4 G |
-| River Valley | 57.4 A | 59.0 G | 59.3 G | 60.4 G | 60.5 G | 61.4 G | 61.2 to 62.2 | 63.4 G |
-| Southern Plains | 56.8 A | 57.5 A | 58.8 G | 59.3 G | 59.9 G | 60.8 G | 60.6 to 61.6 | 61.8 G |
-
-- **R1, the register as it stands (the default):** five extension, seven email, none neither; ten regions on the wrong
-  level. Dies to the standard's scope sentence (section 4.2) and the register's notes (a company appears only once its
-  closure is registered).
-- **R2, AAPOR's proportional e from the contact centre:** of the September non-returners still out at the close, the call
-  records resolve trading firms (refusals, promises) far more often than closed ones, because a ceased report needs
-  someone to answer for the firm, so e is close to 1 and the correction small: Capital, Harbour, Islands and Western
-  Uplands into the extension, Border and five more onto the email; eight regions wrong. The same levels with staff answers
-  counted as trading or with outbound records only (asserted). Dies to the codebook (a ceased report needs an answer) and
-  to the settled rounds, whose register-settled share is far above the call outcomes' closed share.
-- **R3, the last two years of rounds (share 7.8 per cent):** Capital, Harbour, Islands and Western Uplands into the
-  extension, Border onto the email; three wrong. Dies to the register's lag: those rounds' closures are still arriving.
-- **Unobtainable as closed:** a heuristic some reach from the codebook; the same levels as R3. Dies to the codebook (an
-  unobtainable number is not a ceased report).
-- **R4, every earlier round pooled (share 12.1 per cent):** the same levels as R3; three wrong. Dies to the same lag: the
-  doubled panel puts the unsettled rounds at close to half the history. The same levels with telephone returns timed at
-  the database load (asserted).
-- **Golden, the settled rounds (share 15.3 per cent, 7,494 of 48,978 non-returners in 23 rounds):** Capital and Harbour
-  extension, Islands and Western Uplands email, the other eight neither.
-- **Over-correction (every unresolved non-returner closed):** all twelve green; four regions wrong.
-- **Position and dominance:** the default is the most distant answer (ten wrong); every correction walks the rates up and
-  every route short of the settled share still sends Islands and Western Uplands into the extension and Border onto the
-  email. The decisive move is the last and largest of the history moves (share 12.1 to 15.3 per cent). Separation:
-  Islands and Western Uplands sit 0.5 and 0.4 points above 55 under the golden (corridor floor 55.4 and 55.3) and 0.4 and
-  0.5 points below under R4; Border sits 0.7 points above 58 under the golden and 0.2 below under R4.
-- **Grid:** two binary moves (use history; use only settled rounds) and the call-centre branch give five cells, each a
-  named wrong answer above except the golden; partial applications (history without settling, settling without history)
-  land R4 and R1 respectively.
+Margins: the lowest re-tuned share is 2.83 per cent (SD-318, 144 hours, 42 hours above the line) and the highest other
+0.14 (SD-307), so the line sits in a gap and no rung's error is a rounding. Graded at whole per cents, every station's
+share is the same under each of 17 defensible variants (tolerance 1.5 to 4.5 C, six groupings, three radii, any pool
+mate, a mean of the stations sharing the air, each hour's fitted lapse), and every re-tuned station's hours sit 12.8
+hours or more from a whole-per-cent edge (checks.py G9); one decimal is not graded, because the fitted lapse moves
+SD-318 by 9 hours.
 
 ## Closure table
 
-| Axis | Reading | Closure |
+| Axis | Reading here | Move |
 |---|---|---|
-| 1 Population | the firms on the September invitation list trading on 1 September; non-returners whose closure the register does not yet show are members whose status is unobserved | filed: standard section 4 (scope sentence, unobserved members stated) |
-| 2 Unit of account | the firm (panel ID) | filed: standard section 4 counts firms; C1 for duplicates |
-| 3 Attribution window | the September 2026 round's returns received by the main close | filed: standard section 4 and the round calendar |
-| 4 As-of dating | the extract at 17:00 on 25 September 2026 | filed: `export_manifest.csv` and the register notes (extract date) |
-| 5 Version basis | the register as at the extract for every round | C1: the extract is the only register vintage shipped |
-| 6 Denominator | invited firms in scope | filed: standard section 4 |
-| 7 Weighting | unweighted firm counts | filed: standard section 4 (a share of firms) |
-| 8 Window length | settled rounds, frame dates at least 48 months before the extract | C3: windows from 36 to 72 months land the same levels (asserted) |
-| 9 Boundary inclusivity | under 55, 55 to under 58, 58 or over | filed: standard section 5; C1, no region within 0.5 of a line under any settled estimate |
-| 10 Rounding path | levels from unrounded rates | C1: no rate within 0.5 of a line |
-| 11 Tie-break | none needed | C1: no two regions or estimates tie at a line |
-| 12 Maturity and censoring | only rounds the register has settled inform the closure share | the decisive step (HOW); the register notes state that closures are recorded when notified; C3 across settled windows |
-| 13 Order of operations | deduplicate, drop recorded closures, estimate the rest, divide | C1: the steps commute on the shipped records; a closure registered on a settled round's close date counts the same either side of the close (asserted) |
-| 14 Row order | none | C1: no result depends on file order (asserted over a permutation) |
-| 15 Duplicate resolution | one return per firm, the first received | C1: every September cross-mode duplicate is received before the close |
-| 16 Identity normalisation | company numbers in the register's current form | C1: every main file carries the check-digit form, and an exact join and a core join select the same firms (asserted); the contractor's six-digit numbers sit only in the call records |
-| 17 Netting against gross | not applicable (counts only) | C1 |
-| 18 Dimensional units | counts and per cent | C1 |
-| 19 Code and status semantics | outcome codes and register routes, read by the dictionary and the codebook | dictionary semantics; never the stump |
-| 20 Integerisation | not applicable | C1 |
-| 21 Clause scope | the alert levels apply to each region's response rate for the round | filed: standard section 5 |
-| 22 Forward window contents | the extension window holds no data; the call is which regions enter it | C1: nothing in the forward window is graded |
+| 1 Population | every station of the register, every winter hour | filed (standard s3); C1 |
+| 2 Unit of account | the station and the test | filed (standard s3) |
+| 3 Attribution window | the hour ending at the observation's stamp | filed (standard s2); C1 (SF1) |
+| 4 As-of dating | the readings as the export holds them | C1: re-sent rows identical |
+| 5 Version basis | QC configuration 4.3 under both releases | filed (QC configuration s4); C1 (SF7) |
+| 6 Denominator | the winter's hours | filed (standard s3); C1 (SF2) |
+| 7 Weighting | none: an hour count per station | C1 |
+| 8 Window length | the one winter | filed |
+| 9 Boundary inclusivity | above 2 per cent | filed; C1, nothing near the edge (SF3) |
+| 10 Rounding path | hours counted, the share rounded once to a whole per cent | filed in the prompt; C3 across 17 variants (G9) |
+| 11 Tie-break | none arises | C1 |
+| 12 Maturity and censoring | the winter is closed | C1 |
+| 13 Order of operations | judge each withheld reading, then count | C1 |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | a re-sent observation once | C1: identical readings (R2) |
+| 16 Identity normalisation | RPU to site through the register | C1 (SF8) |
+| 17 Netting against gross | none | C1 |
+| 18 Dimensional units | tenths of a degree C in the export, C in the QC log | C1: the two agree reading for reading |
+| 19 Code and status semantics | the QC log's test column | filed (QC configuration s1); C1 (SF6) |
+| 20 Integerisation | whole hours | C1 |
+| 21 Clause scope | the spatial test of the air temperature | filed (standard s3, per test) |
+| 22 Forward window contents | the 2027/28 configuration is set from the closed winter | filed (standard s3, the 1 June list) |
 
 ## Literal reader
 
-Executed word for word, the prompt and the standard ask for each region's returns by 17:00 on 25 September over the
-invited firms trading on 1 September; the register notes say a closure is recorded when it is notified, so the register
-as it stands does not settle the status of every non-returner, and the only shipped evidence for the rest is the earlier
-rounds whose non-returners the register has since resolved. Every settled-round reading (pooled or by region, rounds
-silent, size band or call outcome; windows of 36 to 72 months; status at the main close or at the round's end) lands the same level in
-every region, asserted; the routes that land elsewhere each break a quotable sentence (the scope sentence for the register
-as it stands, the codebook's ceased and unobtainable definitions for the call-centre e and the unobtainable heuristic) or
-the register's own lag for the unsettled rounds. Golden: Capital and Harbour into the extension, Islands and Western
-Uplands onto the email, the other eight neither.
+Executed word for word: the standard's false rejection needs the air at the station in each withheld hour, which no
+file holds, so a literal reader must estimate it; every estimate from the stations sharing the air (median or any
+mate, tolerance 1.5 to 4.5 C, six groupings, three radii) gives the golden hours at every station (checks.py G5 to G7),
+the only literal alternative to that estimate (0.3 C between stations, SF4) contradicts the October checks, and the
+reader who estimates the air from a regional profile is the default path, not another reading of the text.
 
 ## Oracles
 
-None. No control, published figure or reconciliation column ties only under the golden: the published regional
-balances (a distractor) carry balances, not response counts; the manifest's row counts tie under every route; no shipped
-artifact states a response rate, a closure share or an alert level for the round.
-
-Leak sweep (`leak.py --asof 2026-09-25`, REVIEW, no LEAK), one line per REVIEW:
-- Sweep 4, the standard (register, rounds, closure, standard, trading, records): the estimand's own words in sections 2 to
-  4; no sentence names settled rounds, a closure share, a lag or a window.
-- Sweep 4, the register's notes (register, closure, trading, records, extract): the register's own process, stating that
-  an unregistered closure is not in the extract (`determinism-check` section 1) and never how many or which.
-- Sweep 6, the published June balances (a distractor) and the invitation list name the regions beside numbers: net
-  balances and panel attributes, neither a response rate nor an alert level; no file ranks the regions on the call.
-- Sweep 9, the round calendar's dates after 25 September (the extension window, the cut-off and publication dates, the
-  December round marked planned): a forward calendar, the allow-listed file in `checks.py` RS4.
-
-Duplicate guard: `guard.py heart` WARN (Gate G label against task229, question form which against task188, both
-answered at the draw; task445 differentiated on the card); `guard.py surface` promotes task230 (back to back: the time
-and population gap and the designation-set decision) and task447 (both file a standard). Neither shares the decisive
-move: task230's detection rate falls as targets grow rarer in a shared pool, task447's redirection share resets with
-payer terms, task231's register records exits late so the closed share of silent firms comes from settled rounds; clean,
-shares components by design.
+None ships. No file says which withheld readings were right; the vendor's estimate in the QC log is the test's own,
+the HRRR forecast is a distractor that agrees with the default path (checks.py L3), and the October checks confirm the
+probes, not the winter's readings. The generator's truth (each reading within 0.3 C of its station's air) never leaves
+the generator; checks.py G1 asserts the golden reproduces it hour for hour.
 
 ## Ask sheet
 
-Three asks, 66 figures, each decoupled from the call (none uses the eligibility estimate, the settled rounds or the
-alert lines) and each moved by silent primaries on rows outside the main population. Stops and misses are recomputed
-from the shipped files by `generator/verify.py` and asserted in `generator/checks.py`.
+Asks, each summed over a maintenance section's stations and over the network (15 figures): the unavailable hours
+under Schedule B, and the travel-lane freezing hours and ice hours under the standard's section 4. Named use: the
+contract file's section summary and the section supervisors' winter reports, in the program manager's own words
+(the review request). The main call reads none of their files (checks.py R2).
 
-**Main population (zero device rows, asserted):** the September 2026 invitation list, its receipts file (true reach times;
-the 17 firms that returned twice did so before the close), the register's closure records for those firms (check-digit
-form), and the outcome rows of the settled rounds (March 2017 to September 2022: true reach times, recorded at receipt,
-one holder per panel ID) with their firms' closure records.
+- **Unavailable hours.** Primary: four shop-spare spells (D7, the true key elsewhere). The modem register keeps each
+  spare's row with no site, so a spare's messages place at a station only through the ESS export: the one station
+  whose readings the export holds for those hours while no registered modem of its brought them (one spell in each
+  section, checks.py A3, A6). Hazards: removed modems kept in the register (D7), server times in local civil time
+  with their zone (D8), a backlog message's several hours with the one on time last (D6), notified outages (D5).
+- **Freezing and ice hours.** Primary: the heads that came out during the winter (D7 with D3). The register is kept
+  by sensor in service, so a replaced head's serial is in no sheet; its readings sit on the same RPU and port up to
+  the new head's first reading, in its own units (an IRS-31 in whole tenths of a degree C, a SCAN-16 in degrees F to
+  a tenth), and the standard counts the hours each sensor reported (one in each section, checks.py B4, B5). Hazards:
+  the firmware 4.1 code table from each serial's applied time (D2), bridge-deck ports (D5), re-sent rows (D1).
+- **Clocks.** Every local stamp carries its zone and no planned outage starts or ends in a repeated or skipped hour,
+  so the time arithmetic is one reading (checks.py B6, B7).
 
-| Ask | Figures | H18 home | Use | Primary devices (family) | Hazards | Path (files, columns) | Stops (natural read, half-handled, over-corrected, answer) |
-|---|---|---|---|---|---|---|---|
-| A: the contact centre in the September round, by region | firms reached so far (12), calls placed (12) | a qualifier of the call: the extension's calls are the contact centre's, and what it has already done per region | sizing the extension's call lists | D1: the contractor's records for 22 September were loaded a second time on 23 September under fresh record numbers, every other field identical, beside genuine same-day retries by the dialler; D5: calls firms make to the bank's inbound desk sit in the same log (direction in), so calls placed counts outbound calls only while a firm reached on its own callback counts as reached | transfers to a supervisor (code 71, the call continues in the supervisor's record); the contractor's numeric codes; the contractor's company numbers in two forms and its pre-2023 region codes; staff answers count as reached | call records (team, direction, panel ID, company number, region, agent, start, duration, outcome), outcome codes (two schemes, reached), invitation list, region review, dictionary: 5 files, 14 columns | calls: every record 12/12 high, every outbound record 12/12 high, reload dropped but legs kept 10/12 high, one call per firm a day 12/12 low; reached: outbound records only 12/12 low, respondent codes only 12/12 low, the bank's own records only 12/12 low; the answer |
-| B: the June 2026 round's late returns, by region | returns that reached the bank after the June main close (12), their share of the region's June returns to one decimal (12) | a qualifier: what arrives after the close without an extension | judging the extension against the late returns a round gets anyway | D8: since 9 April 2024 the survey database loads telephone returns in an overnight transfer, so an interview finished on the close day carries a load time after the close; the interview end is in the call records (COMP, 10) | `recorded_at` (bureau keying since February 2023) one word from `received_at`; UTC timestamps against the 17:00 local close | round outcomes (round, panel ID, region, mode, received_at, recorded_at), call records (direction, panel ID, company number, start, duration, outcome), calendar (June close), standard section 4.3, dictionary: 5 files, 12 columns | received_at as loaded 12/12 high; recorded_at 12/12 high; the answer |
-| C: the March 2026 refreshment, by industry group | firms recruited (9), of them firms that have returned at least once (9) | an audit trail of the invited population the call is computed on | checking the refreshment's take-up | D7: panel IDs freed in the 2024 expansion block were issued again to March 2026 recruits, so the outcomes file holds the earlier holder's rounds under the same ID; D1: the contractor signed some firms up twice, and the second record kept a six-digit company number and was cancelled as a withdrawal before the first round, beside genuine withdrawals before the first round; D4: September's returns sit in the receipts file, not the outcomes file | NACE Rev. 2.1 sections on recruits from 2025 (crosswalk in the dictionary) | panel register (ID, company number, NACE section, recruited, wave, left), dictionary crosswalk, round outcomes (round, panel ID, mode), September receipts, calendar: 5 files, 11 columns | recruited: register rows 5/9 high, dropping every early withdrawal 8/9 low, invitation lists 8/9 low, Rev. 2.1 letters read as groups 6/9; returned: any return under the ID 8/9 high, outcomes file only 9/9 low; the answer |
+Pair ceiling: 28.5, measured on the cut pack: the cracker drops what no key places (the spares' messages and the
+replaced heads' rows) and so misses every section and network figure; the response that places both keeps the asks,
+which puts the pair at 83.5 if it also lands the call, the residual risk recorded here.
+Mirror leakage: 0.0 per cent of ask weight kept by the default-path response, which works the asks as the cracker does.
+Measured by: generator/ceiling.py
 
-- **Span:** ten files and 37 column uses across the asks (the per-ask lists above); no two asks share a primary device or
-  a path.
-- **Shared hazards:** company-number forms move A (the contractor's records) and C (the duplicate recruitment records);
-  the region review moves A only; UTC against the local close is texture on B and A.
-- **Realism:** each device is a record the bank's systems make (a contractor re-sending a day after a fault, a database
-  stamping overnight loads, an identifier allocator recycling numbers, a recruitment form keyed twice); none needs a task
-  to exist.
-- **Referee:** none needed; no ask turns on a designed disagreement.
-
-| Ask figure | Where the cracker's path goes | Mirror (stops at R2) | Cracker (lands the call, runs the battery) |
+| Ask figure | Golden | Cracker (lands the call, executes every filed rule, runs the hygiene battery) | Verdict |
 |---|---|---|---|
-| A firms reached (12) | filters the round's outbound calls for calls placed and counts reached firms on the same records, missing firms reached only on their own callback | misses the same way | miss |
-| A calls placed (12) | the exact-duplicate check passes the reloaded records (fresh record numbers) | misses the same way | miss |
-| B late returns (12) | takes `received_at` for telephone returns, the overnight load | misses the same way | miss |
-| B late share (12) | follows the late count | misses the same way | miss |
-| C recruited (9) | counts the register's 2026 refreshment rows, or drops every withdrawal before the first round | misses the same way | miss |
-| C returned at least once (9) | counts any return under the recruit's panel ID, the earlier holder's included | misses the same way | miss |
+| Unavailable hours, each section and the network (5) | 851 to 1,391 by section, 4,572 network | 81 to 113 more by section | misses |
+| Freezing hours, each section and the network (5) | 21,386 to 33,118 by section, 108,859 network | 1,140 to 2,326 fewer by section | misses |
+| Ice hours, each section and the network (5) | 4,644 to 7,186 by section, 23,442 network | 251 to 496 fewer by section | misses |
 
-- **Cracker keeps:** about 0.15 of the ask weight (a cracker that catches the reload, the callbacks or the reissued IDs
-  keeps those cells; no single habit keeps a whole ask).
-- Mirror leakage: 15 per cent of ask weight (the mirror's ask path is the cracker's; the asks do not touch the call's
-  construction).
-- Pair ceiling: 36.8 (C = 38 + 7 + 55 x 0.15 = 53.3; S = 5 + 7 + 55 x 0.15 = 20.3; mean 36.8).
+## Leak sweep rulings
 
-## Pre-ship check
+leak.py on the final cut (target.zip e7332860), verdict REVIEW, no LEAK; the main thread's rulings:
 
-1. Domain: survey nonresponse's estimate of the eligibility of unresolved non-respondents (AAPOR's e for
-   unknown-eligibility cases), taken from the register's settled closures because follow-up resolves closed firms far
-   less often than trading ones; with a meter fleet's read rate in its place there is no in-scope population fixed by
-   trading status at a frame date and no e to estimate.
-2. Real work, nothing planted: the register's late recording, the contact centre's two teams and the contractor's
-   reload, the inbound desk, overnight loads and bureau keying, reissued identifiers, a recruitment record keyed twice,
-   NACE Rev. 2.1; each is a record the bank's or the register's systems produce, and none sits on the call's rows.
-3. The step that flips the call is methodological: the closure share of this round's silent firms read from rounds the
-   register has caught up with, not from the register as it stands, the call outcomes, or rounds still settling.
-4. Analyst test: the default path (deduplicate, drop recorded closures, divide) files five extension regions and seven
-   email regions; the call-centre e, every earlier round and the last two years each file four extension regions
-   (asserted on the clean truth, `checks.py` R3a and R3b).
-5. Standard section 4 defines the estimand (firms invited and trading on the frame date, whether or not the register yet
-   records a closure); the design forces the method, and every settled estimator lands the same levels (corridor
-   asserted, tightest margin 0.29 points).
-6. No decoy: no memo, dashboard or prior list carries a region set; the published June balances rank nothing on the call.
-7. Nothing is recovered from certified figures: the settled rounds are evidence for an estimate, not controls to match.
-8. The lesson (a response rate's denominator is fixed at a date, so the eligibility of silent units comes from cases whose
-   fate has since become known) is on no other card: nearest drivers 0.08.
+- Answer figures in `sdhd_ess_atmospheric_2026_27.csv` (two lines): harmless; each is two adjacent export fields read
+  across a comma (a wind speed in tenths of a metre a second beside a wind direction), not a figure the export states.
+- Design-note vocabulary in the QC configuration, Schedule B and the standard (three lines): harmless; the shared words
+  are reading, district, network, vendor and October, and none of the three documents names a pool, a co-movement, a
+  pool mate or any reference a withheld reading is judged against.
+- Ranking artifacts, the pre-season checks and the site register (two lines): harmless on the main thread's read; the
+  checks list each probe's October difference from the reference thermometer and the register each site's place and
+  sensors, neither on the re-tune question. Left to the stage 4 reader to confirm cold.
+
+## Architecture 1 record (spent 2026-10-31)
+
+- Draw: Survey Research & Official Statistics, `nonresponse-calibration-measurement-error-adjustment`; the Brevland
+  Central Bank's quarterly Business Conditions Survey, which regions go into the September 2026 round's reminder-call
+  extension, read on the round's response rate over the panel firms still trading on the frame date. Shipped 10-13.
+- Default path: the business register as it stands taken for the in-scope population; ended on five regions into the
+  extension. Golden: Capital and Harbour into the extension, Islands and Western Uplands onto the email, from the
+  closure share of the round's silent firms read from rounds the register had caught up with.
+- Fate: no portal result; retired at the batch 1 audit (the survivor anatomy absent, the pair ceiling unmeasured, a
+  count the data hold in the prompt, three files that describe the data). Its judge report is kept as
+  `determinism_check_report_arch1.md`.
 
 ## Tried and rejected
+
 
 - Seed pitfall kept (Rubin's rules over shipped implicates): a reflex for any strong solver once the implicates ship;
   rejected at the draw.
@@ -360,3 +312,21 @@ one holder per panel ID) with their firms' closure records.
   the post room keeps the Christmas and New Year holidays; the settled share moves from 15.32 to 15.30 per cent and no
   level or margin moves (2026-10-13).
 - A second analytical layer at the author's request (2026-10-14): the panel's closures rising 1.84 times from January 2025, read off the voluntary dissolutions the register records within months, carrying the settled share to 27.8 per cent. The leak reader was clean and the first judge pass approved, but the re-judge after closing a completeness-nowcast fork returned SEND_BACK: the defensible nowcasts of the current closed share (other rise windows, a ramp-weighted rise, contact-centre calibration, lag corrections, regional rises) spread from about 19 to 36 per cent, while Islands and Western Uplands stay amber only from 23.8 to 32.2, a band the rates' geometry near the lines fixes at about nine points; filing the estimator would make the step rule application. Reverted to the shipped build (8fd3d48), which rebuilds byte-identical.
+- Architecture 1 (the Brevland Central Bank's Business Conditions Survey extension, shipped 10-13) retired at the batch 1 re-root (2026-10-31): the audit found the survivor anatomy short in every part (no Actor, Link, Reflex, Back-test, Second use, Shock or Pins line in the note), the pair ceiling never measured by a script on the cut pack (precut FAIL), the prompt stating a count the data hold ("our twelve regions") and three shipped files that describe the data (a data dictionary, the register's extract notes and an export manifest, each a leak.py LEAK); re-rooted in a new world rather than repaired, so the portal sees one strong build.
+- Architecture 2 draw (2026-11-01), candidates weighed and set aside before the card: selective antimicrobial testing
+  by ward (the untested isolates rebuilt ward by ward is stand-ins reweighted within the selecting class, the family
+  task275's observed and unobserved trips already spent at approval); a fleet failure hazard by analyser age since
+  overhaul (a replacement restarting the wear curve, task132 approved); a calibration hour that coincides with the
+  daily peak (gaps that are not random over a count above a level, task245 delivered); airport noise monitors' capture
+  of loud departures (the field's own noise-power-distance prediction is the golden, a reflex at rung 1); a quality
+  check's false rejections with a winter maintenance log in the pack (every station the log shows fault-free hands over
+  its pooled readings as right, so the log route lands the call without the basin comparison; the pack carries only the
+  October pre-season checks); trigger-truncated blast vibration records (the censored fit is a named correction and
+  the model family stays open); the queue cap of a phone SDK (task235's world, delivered).
+- 2026-11-01, architecture 2 build: a freezing-fog rime fault at N1, added to break the co-withheld rung, was dropped. It broke the N pool's co-movement and left N2 judged against the free air; moved to Q3, it contaminated the median of Q2's two-mate reference. The floor fault became Q3's wet filter on spring afternoons, which no pool mate shares.
+- 2026-11-01, architecture 2 build: the spatial test first ran on every reading the export eventually held. A real QC run at 20 minutes past the hour sees only what the server holds, and with that change every withheld floor reading has a delivered mate in the export (checks.py G13). Planned work was booked at the mountain sites, and the long telemetry dropouts were kept inside the RPU's 96-hour buffer.
+- 2026-11-01, architecture 2 build: two-decimal shares were dropped for one decimal. Across the median-based family the hours are identical; a mean of the stations sharing the air, or each hour's fitted lapse, moves a few hours at named stations (checks.py G7, G8) and never the set.
+- 2026-11-01, architecture 2 asks: the Schedule B unavailable hours and the pavement freezing and ice hours, as built, measured a pair ceiling of 82.9 (generator/ceiling.py). Every device except the shop spare is executed from a filed rule or a register sheet. The asks return to stage 2 (supplemental-stumping) before stage 4's judge; the main call and its pack stay as built.
+- 2026-11-01, architecture 2 asks: per-station Schedule B, freezing and ice hours measured a pair ceiling of 82.9: every device except the shop spare was executed from a filed rule or a register sheet, and a device at a handful of stations leaves the other per-station figures to the cracker. The asks became section and network totals on two reconstructions, a shop spare in every section and a replaced head in every section, measured at 28.5.
+- 2026-11-01, architecture 2 build: shares at one decimal were dropped for whole per cents, because each hour's fitted lapse moves SD-318 by 9 hours and a mean of the stations sharing the air moves four stations. The station air's noise key was drawn (key 35) so that no re-tuned station sits within 12.8 hours of a whole-per-cent edge.
+- 2026-11-01, architecture 2 build: the pavement export's MST clock was dropped for local civil time with the zone. Read as civil time, the MST stamps put the winter's first hour outside it, so the freezing and ice hours did not agree under every clock reading.

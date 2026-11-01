@@ -15,7 +15,6 @@ def t(x):
 
 
 def submission(fig, res, path):
-    i2 = fig["intensity_2dp"]
     pr, co = fig["produced_t"], fig["calloff_t"]
     hours, tonnes = res["parts"]["hours"], res["parts"]["tonnes"]
     n82 = sum(1 for ld in res["d"]["h1"] if ld["family"] == "BIL6082")
@@ -31,15 +30,14 @@ def submission(fig, res, path):
          "**Velden pays Brackwell Alloys EUR %s in low-carbon premium on its 2027 call-offs: EUR 38 a tonne on "
          "%s t of 6063 extrusion billet and %s t of LM25 foundry ingot, the two families at or under SCR-2's 0.235 "
          "t CO2/t in 2026.**" % (t(fig["call"]["premium_eur"]), t(co["BIL6063"]), t(co["INGLM25"])),
-         "6082 extrusion billet (%s t CO2/t) and the LM25-TF sand castings (%s) are over the limit and earn nothing on "
-         "their %s t and %s t. The homogenizing furnace burns gas by the hours its loads soak, and a 6082 load soaks "
-         "about %.0f hours against about %.0f for 6063; shared by tonnes, the two billet alloys come out level and "
-         "6082 would wrongly qualify." % (i2["BIL6082"], i2["CSTLM25"], t(co["BIL6082"]), t(co["CSTLM25"]),
-                                          hours["BIL6082"] / n82, hours["BIL6063"] / n63), "",
+         "6082 extrusion billet and the LM25-TF sand castings are over the limit and earn nothing on their %s t and "
+         "%s t. The homogenizing furnace burns gas by the hours its loads soak, and a 6082 load soaks about %.0f "
+         "hours against about %.0f for 6063; shared by tonnes, the two billet alloys come out level and 6082 would "
+         "wrongly qualify." % (t(co["BIL6082"]), t(co["CSTLM25"]), hours["BIL6082"] / n82, hours["BIL6063"] / n63),
+         "",
          "## 2. Critical Components", "",
-         "1. 2026 specific direct emissions, t CO2 per tonne produced: 6063 billet **%s** and LM25 ingot **%s**, at or "
-         "under 0.235; 6082 billet **%s** and LM25-TF castings **%s**, over it." % (
-             i2["BIL6063"], i2["INGLM25"], i2["BIL6082"], i2["CSTLM25"]),
+         "1. 2026 specific direct emissions against SCR-2's 0.235 t CO2 per tonne produced: 6063 billet and LM25 "
+         "ingot **at or under it**; 6082 billet and LM25-TF castings **over it**.",
          "2. The homogenizing furnace's gas follows its firing hours, not its tonnes: 6082 loads take **%.0f per "
          "cent** of its hours on %.0f per cent of its billet." % (h_share, t_share),
          "3. 2026 production, tonnes that passed final inspection (each lot at its last result): 6063 billet %s, "
@@ -72,9 +70,9 @@ def submission(fig, res, path):
          "1. Premium on the 2027 call-offs: EUR %s." % t(fig["call"]["premium_eur"]),
          "2. Families earning it: 6063 extrusion billet (%s t) and LM25 foundry ingot (%s t)." % (
              t(co["BIL6063"]), t(co["INGLM25"])),
-         "3. Families over the limit: 6082 extrusion billet and LM25-TF sand castings.",
-         "4. 2026 specific direct emissions, t CO2/t: %s." % ", ".join("%s %s" % (NAME[f], i2[f]) for f in G.FAMILIES),
-         "5. Chart of each family's 2026 emissions per tonne against the 0.235 limit.", "",
+         "3. Each family's 2026 emissions per tonne against the 0.235 t CO2/t limit: 6063 extrusion billet and LM25 "
+         "foundry ingot at or under it; 6082 extrusion billet and LM25-TF sand castings over it.",
+         "4. Chart of each family's 2026 emissions per tonne against the 0.235 limit.", "",
          "### %s" % P.DELIVERABLES[1], "",
          "1. Scrap bought in, tonnes as weighed, by grade and quarter of 2026:"]
     for g in G.GRADES:

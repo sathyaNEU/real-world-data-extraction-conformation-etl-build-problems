@@ -1,98 +1,152 @@
 {
- "task": "task456",
- "architecture": "v1",
- "drawn": "2026-10-14",
- "slot_note": "",
- "domain": "general-statistics-data-science",
- "subdomain": "data-integration-record-linkage-entity-resolution",
- "niche": "a statewide hospital alliance's ICU surge compact, whose regional trigger counts full adult-ICU hospital-days that three conflicting capacity feeds (a 07:00 census survey, a transfer-status board, a transfer center's declines) each record imperfectly",
- "objective": "etl",
- "shape": "10",
- "decision_type": "designation_set",
- "answer_unit": "set_of_items",
- "answer": "Activate the Ridgeline ICU Surge Compact in Northeast, Upper Cumberland, South Central and West at the 20 January 2026 review: estimated shares of full adult ICU hospital-days 50, 50, 70 and 80 per cent against one in three, East, Southeast, Mid-State and Memphis Delta at 20, 10, 10 and 10.",
- "answer_source": "task456/submission.md, Final Recommendation; golden surge_activation_notice_2026-01-26.pdf",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G12",
-  "G3",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "capacity_report",
- "stakeholder_role": "the alliance's surge compact operations committee",
- "role_family": "operations_director",
- "scoring_unit": "other",
- "spine": {
-  "file": "bed_status_events_2025-11-01_2026-01-20.jsonl",
-  "rows": 114517,
-  "entity": "one status change of one hospital unit on the regional bed-status board",
-  "grain": "hospital unit by status change (UTC timestamp)",
-  "source": "synthetic (constructed in the layout of a regional bed-status board's event export)"
- },
- "forum": "committee_or_panel",
- "forcing_event": "season_or_peak",
- "org_family": "cooperative_or_member_body",
- "world": {
-  "geography": "United States: Tennessee (eight surge regions of a statewide hospital alliance across the Eastern and Central time zones; the alliance, its hospitals, feeds and people are fictional, counties real)",
-  "currency": "USD",
-  "org_type": "a statewide hospital alliance running an ICU surge compact among its member hospitals",
-  "invented_names": [
-   "Ridgeline Hospital Alliance",
-   "Ridgeline ICU Surge Compact",
-   "Ridgeline Transfer Center"
+  "task": "task456",
+  "architecture": "v3 (re-root after the cell clash: a Canadian regional health authority's insured population at the end of 2026 for the province's capitation round, the people its registry holds twice since the card renewal campaign estimated as the excess of same-name, same-birthday pairs over chance)",
+  "drawn": "2026-11-01",
+  "slot_note": "re-root of task456 in the same objective (Data Extraction & Conformation), batch 1; architecture 2 (the packaging plant's VOC emissions) abandoned at stage 2 for a same-cell clash with task468 v6; new world, new dataset, new shell",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "client_domain": "survey-research-official-statistics",
+  "niche": "a regional health authority's count of insured persons at 31 December 2026, conformed from the legacy health insurance registry and the new registration platform after the 2026 card renewal campaign, in which residents whose surname had changed could not pass the renewal check and applied as new, so the registry holds some of them twice under two health numbers and two surnames",
+  "objective": "etl",
+  "shape": "03",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "submission.md, Final Recommendation",
+  "gap": [
+    "population"
   ],
-  "people": [
-   "Kaitlin Levy",
-   "Ryan Bauer",
-   "Abigail Floyd"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G10",
+    "G17"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "identity_resolution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_model",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who conforms the legacy and new-platform extracts, removes the records the registry itself retired, de-duplicates by health number and links the rest probabilistically on given name, surname, birth date, sex and postal code files the linked count of active persons, because every pair that shares a given name, a birth date and a sex but not a surname scores as two people (or, read the other way, files every such pair as one person); the pairs chance alone produces in each birth year's given-name mix are only part of them, the excess is the people the renewal campaign registered twice, and the insured count lands between the two readings, below the linked count by a margin the linkage cannot see.",
+  "domain_test": "The deciding quantity is the registry's over-coverage, the persons it holds under two identifiers, which a register-quality analyst estimates rather than lists, worked here as the number of record pairs sharing a given name, a birth date and a sex in excess of the pairs the cohort's own name frequencies produce by coincidence; in another field's nouns there is no registry renewed under a changed surname, no birth cohort's name mix setting how often strangers share a birthday and a name, and the task stops reading the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:chance-coincidence-excess-of-same-name-same-birthday-pairs",
+  "layer1": [
+    "the legacy registry extract in upper-case fixed formats (birth dates day-month-year, no diacritics, compound surnames run together) beside the new platform's mixed-case export with ISO dates and accents",
+    "status codes in two vocabularies (A, I, D against ACTIVE, LAPSED, DECEASED), with the legacy file frozen at the September cutover and the platform carrying later changes",
+    "deaths from the vital statistics feed applied to the platform only, a few weeks behind",
+    "postal codes with and without the space, and rural route addresses",
+    "renewals matched by the old health number carried on the platform record, and new applications carrying none"
+  ],
+  "stakeholder_role": "the authority's registry and decision support manager, who certifies the insured count the province's capitation round funds for 2027-28",
+  "role_family": "finance_controller",
+  "spine": {
+    "file": "registry_platform_2026-12-31.csv",
+    "rows": 150000,
+    "entity": "one registration record on the new platform (an insured person as the platform holds them)",
+    "grain": "registration record",
+    "source": "synthetic"
+  },
+  "world": {
+    "geography": "Canada (a fictional regional health authority in a fictional province; the authority, the ministry, the vendor and the people are fictional)",
+    "currency": "CAD",
+    "org_type": "a regional health authority that keeps the insured persons registry for its region",
+    "invented_nouns": [
+      "Tamarack Regional Health Authority",
+      "RegistryOne"
+    ],
+    "people": [
+      "Susan Hess",
+      "Lee Villegas",
+      "Monica Gonzalez"
+    ]
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "deliverables": [
+    "insured_count_2026.xlsx",
+    "registry_conformed_2026.csv"
+  ],
+  "opening_move": "question-first",
+  "question_form": "what",
+  "scoring_unit": "per covered member",
+  "driver": "The decisive quantity is how many people a register holds twice, under two identifiers whose names disagree, read as the excess of record pairs sharing a given name, a birth date and a sex over the pairs that coincidence produces in each birth year's own name frequencies; judged pair by pair, a disagreeing surname either makes every such pair two people or every one of them one person, and both miss the count by the coincidental pairs.",
+  "driver_concrete": "The persons the registry holds twice are the same-given-name, same-birth-date, same-sex pairs across a surname change in excess of the pairs expected by chance from each birth year and sex's given-name counts, so the insured count is the de-duplicated records less that excess.",
+  "stump": "A competent solver conforms both extracts, removes retired and deceased records, de-duplicates by health number and links probabilistically, and files the linked count; the step that lands it there is treating every pair that shares a given name, a birth date and a sex but not a surname as two people (or every one as a duplicate), when coincidence produces only part of those pairs in each birth cohort's name mix and the excess is the people registered twice.",
+  "lineage": [
+    {
+      "architecture": "v1 (the regional hospital bed-status feeds read through a latent class model of their agreement)",
+      "drawn": "2026-10-14",
+      "fate": "spent 2026-11-01 at the batch 1 audit, never returned by the portal: short of the survivor anatomy on every line (the feeds' agreement pattern is the latent class model's own textbook input, so the field's method sat at the top of the ladder), an unmeasured ask ceiling, a prompt stating the feed count, and two pack files that describe the data (leak.py LEAK)",
+      "driver": "The decisive quantity is how often a state held in each group of units, seen only through three independent records that each miss some instances and flag some non-instances, one catching nearly every instance but also a third of non-instances and two rarely flagging a non-instance but missing most instances, so every rule that settles each unit from its records either keeps the first record's false flags or drops most instances, and only a latent class model of the three records, their miss and false-flag rates estimated from how they agree and the state's frequency free in each group, counts the instances.",
+      "stump": "A competent analyst conforms the three feeds to hospital-days, counts a day full when any feed shows it full (the compact's 'at some time during the day') and activates all eight regions instead of four; the step that lands it there is settling each hospital-day from the feeds' flags instead of estimating each region's share of full days from a latent class model of how often each feed misses a full day or flags an ordinary one.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a statewide hospital alliance's ICU surge compact, whose regional trigger counts full adult-ICU hospital-days that three conflicting capacity feeds (a 07:00 census survey, a transfer-status board, a transfer center's declines) each record imperfectly",
+      "domain": "general-statistics-data-science",
+      "subdomain": "data-integration-record-linkage-entity-resolution",
+      "objective": "etl",
+      "stump_strategy": "other",
+      "forum": "committee_or_panel",
+      "forcing_event": "season_or_peak",
+      "org_family": "cooperative_or_member_body"
+    },
+    {
+      "architecture": "v2 (a flexible packaging converter's 2026 VOC emissions against its 95-ton synthetic minor limit, the bypass read as the solvent above the oxidizer's air capacity)",
+      "drawn": "2026-11-01",
+      "fate": "abandoned 2026-11-01 at stage 2, before any data was cut: the same emissions-inventory ETL cell as task468 architecture 6, registered 93 seconds later and built to stage 4 first; the cell was yielded to it",
+      "driver": "The decisive quantity is a release a control device stops only up to a fixed capacity, set in one unit while the release accrues in another, the two tied by a setpoint every source holds; whenever the sources' combined demand passes the capacity the excess goes untreated, so the untreated amount is each interval's combined load above the capacity's equivalent in the release's unit, not the whole load while the relief stood open and not the average load over those intervals.",
+      "stump": "A competent solver conforms the issues, the jobs and the oxidizer record and, reading the permit's bypass clause, counts as uncontrolled all the solvent the presses applied while the bypass damper stood open, or the plant's average application rate over those hours; the step that lands it there is treating the bypass as the presses' whole exhaust or their average, when the oxidizer kept treating its full air capacity throughout and each dryer's exhaust is held at a quarter of the LEL, so only the solvent above the capacity's solvent equivalent went untreated.",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "C"
+      ],
+      "gate_g": "binding_constraint",
+      "niche": "a flexible packaging converter's 2026 actual VOC emissions under its synthetic minor permit, conformed from the ink room's issues and returns by press job, the presses' job logs, the regenerative thermal oxidizer's 15-minute record, the waste solvent shipments and the stack test, in the year a sixth press started up and the presses' combined dryer exhaust outran the oxidizer's air capacity at peak",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "objective": "etl",
+      "stump_strategy": "binding_constraint",
+      "forum": "regulator_or_inspector",
+      "forcing_event": "audit_or_inspection",
+      "org_family": "manufacturer"
+    }
+  ],
+  "differentiation": {
+    "task455": "task455 counts new administrative identifiers that continue an existing unit through a recorded continuity; here no record carries the continuity: the duplicates are counted, never listed, as an excess of coincidences over what each cohort's name mix produces.",
+    "task157": "task157 scales the pair defects a statutory sample catches by the square of its sampling fraction; here nothing is sampled: every record is present and the duplicates hide among genuine strangers who share a name and a birthday, separated only in number by the cohort's chance rate.",
+    "task471": "task471 completes a count from a census and an independent recount by their overlap; here there is one register and the error runs the other way, persons counted twice rather than missed.",
+    "task98": "task98 removes a population's members that two dated schedules both name, so the overlap is listed; here the overlap is never listed: the duplicates are counted only as an excess of chance coincidences of name and birthday.",
+    "task192": "task192 v1 counts distinct generating processes behind overlapping bursts from the interval each repeats on; here no process repeats: one person stands behind two records, and the count comes from how often strangers share a name and a birthday."
+  },
+  "mechanism_source": "design_note",
+  "notes": "re-rooted 2026-11-01 after the emissions-inventory cell was yielded to task468 v6; stump_strategy identity_resolution: duplicate persons across a surname change estimated in number from the excess of same-name, same-birthday pairs over each cohort's coincidence rate, never matched one by one.",
+  "registered": "2026-11-01T02:10:11Z",
+  "shell": {
+    "question form": "which",
+    "second-sentence opener": "put",
+    "rounding opener": "round",
+    "deliverable set": "csv+pdf"
+  },
+  "lineage_shells": [
+    {
+      "question form": "which",
+      "second-sentence opener": "put",
+      "rounding opener": "round",
+      "deliverable set": "csv+pdf"
+    }
   ]
- },
- "deliverables": [
-  "surge_activation_notice_2026-01-26.pdf",
-  "hospital_days_conformed_2025-12-22_2026-01-18.csv"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is how often a state held in each group of units, seen only through three independent records that each miss some instances and flag some non-instances, one catching nearly every instance but also a third of non-instances and two rarely flagging a non-instance but missing most instances, so every rule that settles each unit from its records either keeps the first record's false flags or drops most instances, and only a latent class model of the three records, their miss and false-flag rates estimated from how they agree and the state's frequency free in each group, counts the instances.",
- "driver_concrete": "The compact activates a region for the four weeks from 26 January 2026 when at least one in three of its adult-ICU hospital-days in the 28 days to 18 January were full; the bed-status board shows Closed on about 93 per cent of full days but also on about a third of ordinary days (hospitals close to transfers to keep their last beds), while the 07:00 census survey and the transfer center's no-bed declines rarely flag an ordinary day but catch under a third of full days, so counting a day full when any feed shows it activates all eight regions, requiring two feeds activates none or one, and only the latent class estimate of each region's share of full days activates the four regions where it is one in three or more.",
- "stump": "A competent analyst conforms the three feeds to hospital-days, counts a day full when any feed shows it full (the compact's 'at some time during the day') and activates all eight regions instead of four; the step that lands it there is settling each hospital-day from the feeds' flags instead of estimating each region's share of full days from a latent class model of how often each feed misses a full day or flags an ordinary one.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who conforms every feed correctly and reads the full-day definition literally counts a day full when any feed shows it and activates all eight regions (requiring two feeds to agree, none); no rule that settles each hospital-day from its flags, the corroborated board or the model's own most likely class included, names the four regions the latent class estimate activates.",
- "domain_test": "In general statistics the swap is of the method: the deciding quantity is each region's share of full hospital-days estimated by a latent class model of three conflicting feeds (the Fellegi-Sunter machinery of record linkage: agreement patterns, per-source miss and false-flag rates, no reference source), and replacing it with any record-level reconciliation rule (any feed, two of three, corroboration, the model's own most likely class) changes which regions activate.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task180": "task180 counts events one detector records only above a daily noise cycle and recovers the masked share from its quiet hours; here no single record is the detector: three independent feeds each miss full days and flag ordinary ones, and each region's share is estimated from their joint agreement by a latent class model",
-  "task255": "task255 fits a size distribution carrying per-item truncation and censoring; here the counted state is binary, seen through three conflicting categorical feeds, and the count is a latent class prevalence by region",
-  "task228": "task228 separates continuous random errors of three collocated series by their covariances and its stump is a shared input; here the feeds are categorical with both error directions, no feed is the reference, and the stump is the record-level reconciliation rule an ETL pipeline applies",
-  "task253": "task253 counts units below a line by summing probabilities from a hierarchical model of noisy averages; here the decisive step is the measurement model of three conflicting feeds (their miss and false-flag rates identified by three-way agreement), and every record-level rule, simple or weighted, misses the set",
-  "task446": "task446 carries a screen's two error rates onto a population whose base rate moved, rates known from past outcomes; here no outcome is ever observed and the feeds' error rates are estimated from their agreement alone",
-  "task452": "task452 corrects a map's area with a stratified reference sample that observes the truth; here nothing observes the truth and the latent class model identifies the feeds' errors without a reference",
-  "task454": "task454 fills the acquisition cost of the claims that fail to link to a priced code, imputed within product and package type from the claims that do link; here every record links to its hospital, no record is the truth, and each feed's miss and false-flag rates are estimated from the three feeds' agreement, each region's share being the latent prevalence"
- },
- "lineage": [],
- "notes": "Seed ET13 (analytical_tasks/07_data_extraction_conformation): the world, decision and quantity kept (a hospital association's regional surge compact, activated region by region from hospital capacity reporting); its decoy-era traps (average of ratios, suppression sentinels, the wrong ICU) are not used. The pairing moves to General Statistics & Data Science / data integration (record linkage): hospital operations' own analytical pitfalls (demand capped at capacity, blocking probability) live in task types serving forecasting and opportunity sizing, and the ETL decision here turns on combining conflicting sources. Strategy other: a measurement model (two-class latent class model with conditional independence, common error rates statewide, prevalence by region). Gap population (a flagged hospital-day is not a full hospital-day).",
- "client_domain": "general-statistics-data-science",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:latent-class-share-from-three-conflicting-feeds",
- "layer1": [
-  "three feeds for one picture, each with its own key, grain and clock: a daily census survey keyed by state licence number, a bed-status board's event log keyed by its own facility code with UTC timestamps, a transfer center's call log keyed by hospital names as typed",
-  "two time zones: East Tennessee hospitals keep Eastern time, the rest and the transfer center Central time, so each feed's timestamps fall on the hospital's own local date only after conversion",
-  "survey reports resubmitted after correction, the later submission superseding; a column renamed when the survey form changed",
-  "board lines for every unit (adult ICUs under several labels, pediatric and neonatal ICUs, emergency departments, medical-surgical floors), statuses carried over from before the window",
-  "transfer requests reopened under the same request number, cancelled requests, decline reasons recoded when the center's code list changed",
-  "a facility crosswalk and a name-alias list that map licence numbers, board codes and typed names onto one hospital and its region",
-  "holiday gaps in the census survey on 25 December and 1 January"
- ],
- "registered": "2026-10-14T17:55:46Z"
 }

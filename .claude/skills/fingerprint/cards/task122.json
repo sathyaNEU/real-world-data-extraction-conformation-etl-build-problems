@@ -1,144 +1,183 @@
 {
- "task": "task122",
- "architecture": "v3 (re-root 2026-10-13 under the 10/10 rules: the phase 3 dose of a kidney drug read on the eGFR slope after the background-diuretic recovery)",
- "drawn": "2026-10-13",
- "slot_note": "biomedical-clinical-research x experiment-causal, a pairing never built; re-rooted after v2 (a Dutch resale platform's carousel test slot) failed under the 10/10 rules; the DS01 seed's world, decision and quantity are all dropped",
- "domain": "biomedical-clinical-research",
- "client_domain": "biomedical-clinical-research",
- "subdomain": "longitudinal-outcomes-repeated-measures",
- "niche": "a Copenhagen biotech choosing which of four once-daily doses of its aldosterone synthase inhibitor goes into the phase 3 kidney trial, judged on the eGFR difference from placebo after 36 months' treatment, from a 52-week multinational phase 2b in albuminuric chronic kidney disease whose protocol held background diuretics, RAS blockers and SGLT2 inhibitors unchanged for the first 12 weeks",
- "objective": "experiment-causal",
- "shape": "11",
- "decision_type": "pick_one_of_n",
- "answer_unit": "named_option",
- "answer": "Take VMK-4410 20 mg into the phase 3: after 36 months' treatment eGFR would be 3 mL/min/1.73 m2 higher on it than on placebo (40 mg 2, 10 mg 1, 5 mg 0).",
- "answer_source": "submission.md block 1; golden/VMK-4410_phase3_dose_recommendation.pdf",
- "gap": [
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G4",
-  "G13",
-  "G16"
- ],
- "gate_g": "method_or_model_selection",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": true,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "other",
- "stakeholder_role": "the head of clinical development, who recommends the phase 3 dose to the chief medical officer, who signs it for the end-of-phase-2 meeting package (the prompt names no one)",
- "role_family": "other",
- "scoring_unit": "other",
- "spine": {
-  "file": "lb.csv (the phase 2b laboratory results extract)",
-  "rows": 69405,
-  "entity": "one laboratory result for one patient at one visit: test, specimen, laboratory, original and standard units, collection date and time, visit, and the eGFR the central laboratory reports beside each serum creatinine",
-  "grain": "patient x visit x test",
-  "source": "synthetic"
- },
- "forum": "line_manager_or_team",
- "forcing_event": "statutory_or_regulatory_filing",
- "org_family": "other",
- "world": {
-  "geography": "Denmark (a Copenhagen-area clinical-stage biotech; the phase 2b ran at sites in Denmark, Sweden, Germany, Poland, Spain and the United Kingdom)",
-  "currency": "DKK",
-  "org_type": "clinical-stage biotech developing an oral aldosterone synthase inhibitor for chronic kidney disease",
-  "invented_names": [
-   "Varnmark Therapeutics",
-   "VMK-4410"
+  "task": "task122",
+  "architecture": "v4 (re-root at batch 1: whether an air navigation service provider's en-route conflict probe becomes mandatory at every planner position from 1 April 2027, read on the share of short-term conflict alert activations its use prevented in the 2026 trial, at like traffic count and like climbing and descending mix minute by minute)",
+  "drawn": "2026-10-31",
+  "slot_note": "re-root of task122 in the same objective (Experiment & Causal Analysis), batch 1; biomedical-clinical-research is spent for this slot after two architectures, so the draw moves to human-factors-ergonomics (usability-task-performance-studies, which serves EC), a pairing never built; criminology was set aside because task125 drew police hot spots the same day; new world, dataset, generator and shell",
+  "domain": "human-factors-ergonomics",
+  "client_domain": "human-factors-ergonomics",
+  "subdomain": "usability-task-performance-studies",
+  "niche": "a New Zealand air navigation service provider's en-route control centre, where the planner controllers of six en-route sectors have run a medium-term conflict probe at their own discretion since 1 April 2026; the executive team decides in November 2026, on the Safety Review Board's acceptance criteria, whether the probe becomes mandatory at every en-route planner position from 1 April 2027, on the share of short-term conflict alert activations its use prevented",
+  "objective": "experiment-causal",
+  "shape": "07",
+  "decision_type": "go_hold_or_stop",
+  "answer_unit": "rate_or_share",
+  "answer": "mandatory at every en-route planner position from 1 April 2027; about 30 per cent of the STCA activations prevented in the probe running time",
+  "answer_source": "task122/generator/figures.json",
+  "gap": [
+    "objective"
   ],
-  "people": [
-   "Benedicte Laursen",
-   "Nicolaj Lassen",
-   "Kirsten Eriksen",
-   "Lene Dam"
-  ]
- },
- "deliverables": [
-  "VMK-4410_phase3_dose_recommendation.pdf",
-  "VMK-4410_phase2b_tables.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The long-run rate a three-year projection carries is read from the stretch after an early disturbance settles, and here part of the early fall is undone by a background change the protocol allowed only after a fixed opening period, so a long-run rate started at the field's conventional point includes that one-off recovery and carries it forward for years, crediting most the arms that fell and recovered most, while the rate taken after the recovery has run its course ranks a middle option first.",
- "driver_concrete": "Patients whose eGFR fell most on 20 and 40 mg of VMK-4410 had their loop diuretics eased only after week 12, because the protocol held background therapy unchanged until then, and their eGFR came part of the way back over the following weeks; the field's two-slope model with the chronic phase from month 3 reads that recovery as a slower chronic decline and carries it to month 36, which puts 40 mg first, while the chronic slope taken from week 24, after the recovery, from the level each arm settled at, puts 20 mg first and 40 mg second.",
- "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12, 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (3) and 40 mg at 2.",
- "stump_class": "analytical",
- "analyst_test": "With every laboratory value, visit and protocol rule read correctly, a strong analyst fits the standard acute-plus-chronic eGFR model with the chronic phase from month 3, projects it to month 36 and recommends 40 mg at about 5 mL/min/1.73 m2 above placebo; the week-52 difference the phase 2b protocol names as a secondary end point, and one slope through every visit, recommend 10 mg instead; neither route separates the recovery after background diuretics were eased from week 12 from the long-run slope.",
- "domain_test": "The deciding quantity is each dose's eGFR difference from placebo after 36 months' treatment, which nephrology estimates by separating the acute haemodynamic fall from the chronic eGFR slope and projecting the slope; the call turns on where the chronic phase starts once background diuretics were eased after week 12, a kidney-physiology and trial-protocol fact that has no meaning with another field's nouns (sales, test scores, megawatts).",
- "layer2_family": "estimation_fit",
- "layer2_pattern": "own:egfr-chronic-slope-after-diuretic-recovery",
- "layer1": [
-  "an SDTM-style laboratory extract from two central laboratory hubs and the sites' local laboratories, with scheduled, unscheduled and repeat samples, specimen-condition comments and potassium not reported on a haemolysed sample",
-  "serum creatinine, potassium and glucose reported in the units each laboratory uses (umol/L and mg/dL; mmol/L and mEq/L; mmol/L and mg/dL) beside standardised results, and local laboratories reporting eGFR by CKD-EPI 2009 or not at all",
-  "visits before week 24 taken outside their protocol windows under their scheduled names, and an unscheduled visit numbering that sorts between scheduled visits",
-  "a dosing record of bottle periods from one dispensing visit to the next, with interruptions as gaps and drug collected at the site when a dispensing visit was missed, beside a disposition form not reopened when a patient restarted",
-  "adverse events whose change of severity opens a new record, tied by a group identifier, with partial onset dates",
-  "concomitant medication records in each country's spelling, with free-text doses and changes recorded as new rows",
-  "urine albumin and creatinine with the ratio in mg/mmol at one hub and mg/g at the other, and screening failures in the demographics, visits, laboratory and vital-sign tables"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task123": "task123 splits totals each unit records over its own reading interval onto fixed calendar periods; here a fitted long-run eGFR slope has to start after a one-off recovery that easing background diuretics after week 12 produced, a trajectory decomposition with no interval allocation"
- },
- "lineage": [
-  {
-   "architecture": "v1 (first draft, library fill off the slate)",
-   "fate": "drafted 2026-10-08, never registered, redrawn at checkpoint A: the decisive library-fill clause is a written rule a strong solver follows once no proposal qualifies (measured trap #9 alone scored 0.58 in its nearest exemplar, so the stump leaned on lower rungs firing first, and the nearest dead shape is argmax under a stated rule over a filed candidate list, task36), and the honest Gate G, binding_constraint, collided on (objective, G11, binding_constraint) with task106 and 13 older builds and passed only after the card relabelled it method_or_model_selection",
-   "domain": "product-analytics",
-   "objective": "experiment-causal",
-   "gap": [
-    "objective",
-    "rule",
-    "population"
-   ],
-   "pattern": [
-    "none",
-    "B"
-   ],
-   "generators": [
-    "G11",
-    "G16",
-    "G2"
-   ],
-   "gate_g": "binding_constraint",
-   "decision_type": "pick_one_of_n",
-   "driver": "Every candidate put forward fails a different one of several filed conditions once each condition is read at the grain the governing document names and lift is taken from the only estimator that reproduces a closed corpus of past outcomes, and a filed fallback then widens the choice to earlier registered candidates that nothing has scored on the current record, so the one candidate that clears every condition ranks fourth on the natural estimate and is reached only by scoring each registered specification from scratch.",
-   "drawn": "2026-10-08"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G6"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the provider's human factors lead, who puts the trial's result to the executive team, which decides whether the probe becomes mandatory at every en-route planner position from 1 April 2027 (the prompt names no one)",
+  "role_family": "other",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "fdps_sector_crossings_2026-04_2026-09.csv",
+    "rows": 232088,
+    "entity": "one flight's crossing of one en-route sector in one flight plan revision: callsign, aerodromes, aircraft type, entry and exit time (UTC) and level",
+    "grain": "flight x sector x plan revision",
+    "source": "synthetic"
   },
-  {
-   "architecture": "v2 (product analytics carousel test slot, harden loop 1)",
-   "drawn": "2026-10-09",
-   "fate": "spent 2026-10-13: registered and built 2026-10-09, retired 2026-10-10 after a Gate G send-back and never submitted, then FAILED_TO_STUMP in perssathya's backlog; under the 10/10 rules its decisive step was a field read (the logger's in-session order column against the charter's count) and a filed charter condition, and its estimator was pinned by an archive of certified tests (a validated decoy), so the slot is re-rooted into a new domain, decision and quantity",
-   "domain": "product-analytics",
-   "subdomain": "experimentation-measurement",
-   "objective": "experiment-causal",
-   "gap": [
-    "time",
-    "rule",
-    "population"
-   ],
-   "pattern": [
-    "none",
-    "B"
-   ],
-   "generators": [
-    "G13",
-    "G9",
-    "G16",
-    "G2",
-    "G11"
-   ],
-   "gate_g": "decomposition_attribution",
-   "stump_strategy": "decomposition_attribution",
-   "decision_type": "pick_one_of_n",
-   "driver": "The guardrail rate counts every outcome a candidate's exposures produce, while the log the screen is scored on records only the outcomes produced before each session closed; units under the incumbent and most candidates come back to an exposure still on screen after their session times out and act on it in a new session that the outcome record credits instead, and one candidate's units almost never do, so that candidate clears the guardrail on the log's count and fails it in one cell once the late outcomes are attributed back to the exposures that produced them, which is found only by joining each unit's later outcomes to the items its logged session showed under a rule that keeps a shown item off later exposures; a solver who nets the leader's brought-forward outcomes over the window and reads the guardrail off the log files that candidate, and the candidate fourth on the natural estimate is the largest that clears every condition."
+  "forum": "executive_team",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "New Zealand (a fictional air navigation service provider's en-route control centre; the provider, the probe trial and every record are fictional)",
+    "currency": "NZD",
+    "org_type": "an air navigation service provider running New Zealand's en-route and approach control",
+    "invented_names": [
+      "Tasman Air Navigation",
+      "Tasman Area Control Centre",
+      "PROBE-M"
+    ],
+    "people": [
+      "Tessa Freeman",
+      "Kieran McMurray",
+      "Neil Hoskins"
+    ]
+  },
+  "deliverables": [
+    "probe_decision_2027.docx",
+    "probe_trial_figures.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "A discretionary aid is switched on when the conditions that produce the outcome gather, and the outcome comes almost wholly from one kind of unit present together with others, so the aid's working periods hold more of that kind than its idle periods even at the same number of units present; a comparison per unit of exposure, or at like numbers present, carries that difference into the aid's effect, while a comparison at like numbers and like mix of the two kinds, period by period, reads the aid's own effect.",
+  "driver_concrete": "Compare each sector's minutes with the probe running against its minutes without, holding the number of aircraft in the sector and the number of them climbing or descending fixed, both rebuilt minute by minute from the FDPS crossings: the probe prevented about 30 per cent of the activations the sectors would have raised in its running time, where the safety report's rate per 1,000 flight hours has it doubling them and the like-occupancy comparison has it raising them by about 15 per cent.",
+  "stump": "The default path prices the probe at like traffic, comparing minutes with it running against minutes without at the same number of aircraft in the sector, finds the probe's minutes raising about 15 per cent more activations, no benefit against the 20 per cent the criteria require, and keeps it discretionary; the step that lands it there is holding only the count of aircraft, when the planners switch the probe on as climbing and descending traffic gathers and almost every activation involves a climbing or descending aircraft, so at like count and like mix the probe prevented about 30 per cent and becomes mandatory.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who counts activations as the safety report counts them, takes each flight's latest plan revision, converts the planner log's local time to UTC and splits combined sectors, then compares the activation rate with the probe running against without, first per 100,000 flight hours (the safety report's measure, higher with it running) and then at like traffic, the same number of aircraft in the sector minute by minute, finds the probe's minutes raising about 15 per cent more activations, no benefit against the criteria's 20 per cent, and keeps it discretionary; every field is read and every filed rule applied, and the call is wrong because the planners switch the probe on as climbing and descending traffic gathers, which raises the activation risk at any count of aircraft.",
+  "domain_test": "The deciding quantity is the share of conflict alerts a controller's decision aid prevents, a task-performance effect the field estimates by comparing the alert rate with and without the aid at matched traffic load, here only at like traffic count and like vertical mix, since conflict alerts come from pairs with a climbing or descending aircraft; with a hospital's or a retailer's nouns there is no sector traffic, no vertical mix and no conflict alert, and the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:confounding-by-the-conditions-of-use-at-the-grain-of-use",
+  "layer1": [
+    "FDPS sector crossings in UTC against the planner workstation log in New Zealand local time, across the start of daylight time on 27 September 2026",
+    "combined sectors overnight, logged on the operational sector's name, against the elementary sectors of the crossings",
+    "flight plan revisions whose superseded crossings drop out of the flight's latest plan",
+    "an STCA activation that continues across a sector boundary logged once in each sector",
+    "inhibited and test activations beside live ones",
+    "activations in a combined sector attributed by the first-named aircraft's position",
+    "months counted in New Zealand time against UTC timestamps"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task121": "task121 named a cause for a 911 centre's rise in handling errors, read from the rest each worker had before the shift; this build estimates a decision aid's effect on conflict alerts and its decisive step is the traffic mix the aid is switched on into, not a worker's rest.",
+    "task131": "task131 read a randomised tariff's effect on a design-day maximum where moved load returns after the window; this build has no randomisation and no rebound, and the bias is the conditions the aid is used in.",
+    "task128": "task128 read a contact's effect where the day's queue outran the team (a capacity cut as a natural experiment); this build uses no cut and no natural experiment: it conditions on the minute's traffic count and mix.",
+    "task141": "task141 priced a release rule from decision-makers' different let-through shares by rota; no decision-maker's habit carries this build, whose probe use varies by watch only as noise.",
+    "task44": "task44 carried a pilot's pooled effect onto a request whose moderator mix differs (a transport of a heterogeneous effect); this build's effect is one ratio at every traffic level and the mix confounds the comparison, not the transport.",
+    "task69": "task69 v2 re-pooled an arm contrast within periods whose assignment rate varied; this build has no designed arms, and the aid's use follows the traffic mix minute by minute.",
+    "task170": "task170 forecast data-entry errors on a learning curve per attempt; this build forecasts nothing and estimates an aid's effect at like traffic."
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (first draft, library fill off the slate)",
+      "fate": "drafted 2026-10-08, never registered, redrawn at checkpoint A: the decisive library-fill clause is a written rule a strong solver follows once no proposal qualifies (measured trap #9 alone scored 0.58 in its nearest exemplar, so the stump leaned on lower rungs firing first, and the nearest dead shape is argmax under a stated rule over a filed candidate list, task36), and the honest Gate G, binding_constraint, collided on (objective, G11, binding_constraint) with task106 and 13 older builds and passed only after the card relabelled it method_or_model_selection",
+      "domain": "product-analytics",
+      "objective": "experiment-causal",
+      "gap": [
+        "objective",
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "generators": [
+        "G11",
+        "G16",
+        "G2"
+      ],
+      "gate_g": "binding_constraint",
+      "decision_type": "pick_one_of_n",
+      "driver": "Every candidate put forward fails a different one of several filed conditions once each condition is read at the grain the governing document names and lift is taken from the only estimator that reproduces a closed corpus of past outcomes, and a filed fallback then widens the choice to earlier registered candidates that nothing has scored on the current record, so the one candidate that clears every condition ranks fourth on the natural estimate and is reached only by scoring each registered specification from scratch.",
+      "drawn": "2026-10-08"
+    },
+    {
+      "architecture": "v2 (product analytics carousel test slot, harden loop 1)",
+      "drawn": "2026-10-09",
+      "fate": "spent 2026-10-13: registered and built 2026-10-09, retired 2026-10-10 after a Gate G send-back and never submitted, then FAILED_TO_STUMP in perssathya's backlog; under the 10/10 rules its decisive step was a field read (the logger's in-session order column against the charter's count) and a filed charter condition, and its estimator was pinned by an archive of certified tests (a validated decoy), so the slot is re-rooted into a new domain, decision and quantity",
+      "domain": "product-analytics",
+      "subdomain": "experimentation-measurement",
+      "objective": "experiment-causal",
+      "gap": [
+        "time",
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none",
+        "B"
+      ],
+      "generators": [
+        "G13",
+        "G9",
+        "G16",
+        "G2",
+        "G11"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "driver": "The guardrail rate counts every outcome a candidate's exposures produce, while the log the screen is scored on records only the outcomes produced before each session closed; units under the incumbent and most candidates come back to an exposure still on screen after their session times out and act on it in a new session that the outcome record credits instead, and one candidate's units almost never do, so that candidate clears the guardrail on the log's count and fails it in one cell once the late outcomes are attributed back to the exposures that produced them, which is found only by joining each unit's later outcomes to the items its logged session showed under a rule that keeps a shown item off later exposures; a solver who nets the leader's brought-forward outcomes over the window and reads the guardrail off the log files that candidate, and the candidate fourth on the natural estimate is the largest that clears every condition."
+    },
+    {
+      "architecture": "v3 (re-root 2026-10-13 under the 10/10 rules: the phase 3 dose of a kidney drug read on the eGFR slope after the background-diuretic recovery)",
+      "drawn": "2026-10-13",
+      "domain": "biomedical-clinical-research",
+      "subdomain": "longitudinal-outcomes-repeated-measures",
+      "objective": "experiment-causal",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G13",
+        "G16"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "decomposition_attribution",
+      "decision_type": "pick_one_of_n",
+      "forum": "line_manager_or_team",
+      "forcing_event": "statutory_or_regulatory_filing",
+      "org_family": "other",
+      "driver": "The long-run rate a three-year projection carries is read from the stretch after an early disturbance settles, and here part of the early fall is undone by a background change the protocol allowed only after a fixed opening period, so a long-run rate started at the field's conventional point includes that one-off recovery and carries it forward for years, crediting most the arms that fell and recovered most, while the rate taken after the recovery has run its course ranks a middle option first.",
+      "stump": "A competent solver fits each dose's eGFR with the field's two-slope model, an acute effect to month 3 and a chronic slope after it, carries the chronic slope to month 36 and files 40 mg at about 5 mL/min/1.73 m2 above placebo; the step that lands it there is starting the chronic slope at month 3, when the patients whose eGFR fell most on 20 and 40 mg had their loop diuretics eased only from week 12, at the week-12, 16 and 20 visits, and recovered part of the fall over the following weeks, so a slope from month 3 carries that one-off recovery forward for three years; taken from week 24, after the recovery, the slope leaves 20 mg furthest above placebo at month 36 (3) and 40 mg at 2.",
+      "fate": "spent 2026-10-31 at the batch 1 re-root: shipped 10-13 and pending review with no portal responses on record; the batch audit found it failing the current gates (no survivor anatomy, leak.py LEAK on the shipped data dictionary and export manifest, a dose count in the prompt), and its decisive step rode a clock the protocol files (diuretics eased from week 12), which a reader of the protocol reaches without the analysis"
+    }
+  ],
+  "notes": "Re-rooted 2026-10-31 at batch 1. Gate G decomposition_attribution: the safety report's higher activation rate in the probe's running time is a correctly reported movement, and the call assigns it to its driver, the traffic count and climbing and descending mix the planners switch the probe on into, before the probe's own share is read; the acceptance criteria's estimand (the share of the activations the sectors would have raised in the probe's running time that its use prevented) with the data's structure (probe use and activations both rising with the climbing and descending count at any occupancy) rule out the per-flight-hour and like-occupancy readings. Strategy causal_design: confounding by the conditions of use, read at the minute the aid is switched at. Forum executive_team (the provider's executive team, on the Safety Review Board's advice); forcing event launch_or_rollout (the mandate from 1 April 2027); org family utility_or_infrastructure; role family other (the human factors lead); context artifact published_series (the safety performance report's monthly STCA rates).",
+  "registered": "2026-10-31T23:12:08Z",
+  "shell": {
+    "question form": "whether",
+    "second-sentence opener": "set",
+    "rounding opener": "the share is wanted",
+    "deliverable set": "docx+xlsx"
   }
- ],
- "notes": "Re-rooted 2026-10-13 under the client's 10/10 rules. v2's decisive step (the logger's in-session order count) was a field read under a filed charter, and its estimator was pinned by a certified archive, so the slot moves to a new domain (Biomedical & Clinical Research, never built), a new decision (a phase 3 dose) and a new quantity (eGFR difference from placebo at month 36). Gate G method_or_model_selection: every laboratory value and protocol rule is read correctly on the wrong route; the decision turns on the window the chronic eGFR slope is fitted over. Strategy decomposition_attribution: the trajectory is split into the acute haemodynamic fall, the one-off recovery after background diuretics are eased, and the chronic slope. Forum line_manager_or_team (the chief medical officer signs the dose); forcing event statutory_or_regulatory_filing (the end-of-phase-2 meeting package); org family other (a clinical-stage biotech, not yet a manufacturer); role family other (head of clinical development); context artifact other (the phase 3 synopsis that files the estimand). The guard's draw order puts same-date cards by task number, so its bans here read task448, task449 and task501; the card also clears the builds registered last (task452, task453, task454) on every banned axis: shape 11 against 01, 10 and 07, forum against committee_or_panel, minister_or_cabinet and customer_or_counterparty, forcing event against budget_or_appropriation, period_close and launch_or_rollout, strategy against other, population_selection and composition_mix, decisive pattern G4 against G14, G16 and C."
 }

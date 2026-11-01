@@ -1,44 +1,60 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (regression, classification and model diagnostics: a software company's global mobility team quoting in its benefits portal the wait within which four in five of its January to March 2027 work-permit renewals will have USCIS's decision, each renewal's wait cut at its own card's expiry by the team's expedite request, the model chosen on the renewals filed since automatic extension ended that were still pending at their card's expiry).
+**Domain:** Biomedical & Clinical Research (survival and time-to-event analysis).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**The benefits portal should quote 5.5 months for the work-permit renewals filed from January to March 2027.** USCIS is setting fingerprint appointments 17 weeks after receipt, so about nine in ten of the quarter's renewals that need an appointment will still be pending on the day the filer's card expires, and since renewals stopped extending the card, those still pending at their card's expiry have mostly been decided about a week after the expedite request the team files when the card expires. Not 6.5 to 7.0 months, the new appointment delay laid on the record's waits (6.5 at the quarter's mix of categories, 7.0 at the record's), which ignores that those waits now end at the card's expiry. Not 4.0 months, the 80th percentile of the record's own waits with open renewals censored, which reflects appointments 4 to 5 weeks out.
+**Continue TALON-2 to its final analysis at 330 events as planned: the conditional power is 100 per cent to the nearest 10 per cent, in Schedule 2's band C (80 per cent or more).** The deciding figure is the final stratified log-rank test projected over the follow-up still to come at each arm's own progression rate before and after the week-12 to week-18 assessments. Not the stratified hazard ratio of 0.91 carried forward, which gives about 5 per cent and a futility stop, because it averages the early period that holds most interim events with the later period that holds most of the events still to come.
 
 ## 2. Critical Components
 
-1. Fingerprint appointments for renewals received in October and November 2026: a median of **17 weeks** after receipt, against **4 weeks** for renewals received in 2024 and 2025.
-2. Renewals filed in the quarter that need a new fingerprint appointment and are still pending on the day the filer's card expires: **about nine in ten**.
-3. From the team's expedite request when a card expires to USCIS's decision, renewals filed since 30 October 2025: a median of **about a week**.
+1. The interim cut is 17 November 2026, the date of the 165th BICR-confirmed event; all 450 patients were randomised by then and 267 are still at risk.
+2. The stratified hazard ratio is **0.91** (95 per cent CI 0.67 to 1.24), and as a single ratio carried forward it gives a conditional power of about **5** per cent.
+3. Ravolimab patients progress at about **1.3** times the placebo rate through the week-12 assessment and about **0.4** times from the week-18 assessment on, and 200 of the 267 patients still at risk are past the week-12 assessment.
+4. Projected patient by patient on those rates to the 330th event, the final test rejects in more than 99 per cent of continuations: conditional power **100** per cent to the nearest 10 per cent.
 
 ## 3. Step-by-Step Solution
 
-1. Joined renewal_case_notices_2024-01_2026-12.csv to renewal_case_register.xlsx (client_ref through case_id or legacy_case_id) and kept, for each renewal counsel filed, the receipt date (standard 2.3), the latest biometrics appointment notice, the decision notice and the expiry of the card it renews, withdrawn renewals left out (standard 4.2).
-2. Read the latest appointment notices: a median of 17 weeks after receipt for renewals received in October and November 2026, 4 weeks through 2024 and 2025, rising to about 5 by the summer of 2026.
-3. Estimated the review, from the appointment (or the receipt where USCIS reused fingerprints) to the decision, by Kaplan-Meier, censored at the export, at a stop of work or at an expedite request in case_actions_2024-2026.csv.
-4. For renewals filed since 30 October 2025 (standard 3.1), the case log shows the team's expedite request when each renewal still pending in its care reached its card's expiry (mostly the expiry date, some days before or after it); USCIS accepted most of the requests and decided those renewals a median of about a week later, in the busiest request months as in the quiet ones and after the appointment queue tripled, where the stage model fitted on the earlier renewals puts their typical remaining wait at more than two weeks.
-5. Took the people standard 1.3 tracks: every employee employees_2026-12.csv shows as Active under any of his IDs (one person to a benefits enrollment) and the one spouse of each such household Global Mobility took into its care, one person whichever ID a record files her card under (Global Mobility's, her Benefits ID in dependants_2026-12.csv, or her own employee ID where she works at Sallowmere, one card number in work_permits_2026-12.xlsx), leaving out employees not Active, their spouses, children, and the spouses Benefits covers in households Global Mobility never took in.
-6. Took each person's work permit (standard 1.4), the card approved most recently in the roster, the register, counsel's approval notices and green_card_tracker_2026-12.xlsx, in its approval's category (two of September 2027's (c)(26) cards are on record only under the Benefits ID), and read the quarter's mix from those whose renewals reach USCIS in it: about half are (c)(9), whose renewals mostly reuse fingerprints (fewer than three in ten went to an appointment, against seven in ten of the (c)(26) renewals).
-7. Simulated the quarter's renewals with that mix, the new appointment lead, the review, the card-expiry gaps of the renewals filed since 30 October 2025, the request timing and the expedite response: about nine in ten of those sent to an appointment reach their card's expiry undecided.
-8. Took the 80th percentile of the simulated waits in months of 30.4 days, to the nearest half month (standard 4.3): 5.5 months.
+1. Converted each randomisation time in talon2_irt_randomisation_export.csv from UTC to the site's time zone in talon2_sites.json and took the local date as the randomisation date.
+2. Built BICR progression-free survival from talon2_bicr_timepoint_reads.csv and the Deaths sheet of talon2_edc_subject_status.xlsx under the SAP's censoring table, found the cut as the date of the 165th event, and dropped every read and death after it.
+3. Ran the log-rank test and the Cox model (Efron ties) stratified by the IRT strata, then compared each arm's event rate per patient-month at each assessment visit.
+4. Fitted each arm's progression rate before and after the gap between the week-12 and week-18 assessments, followed every patient still at risk forward from the last adequate assessment (withdrawal at the observed rate) to the 330th event in 20,000 simulated continuations, and counted those where the final stratified log-rank test rejects at one-sided 2.5 per cent.
+5. For the serious adverse events, took each case's latest report in talon2_pv_sae_line_listing.xlsx, dropped nullified cases and events outside randomisation to the cut, and linked each case to its patient through the screening number, resolving the earlier screen-failure numbers of re-screened patients in talon2_screening_log.csv by site, sex, year of birth and initials.
+6. For the liver tests, dated every central sample by its collection date in talon2_edc_central_lab_kit_log.csv (the Melbourne laboratory's transfer carries the date it received the sample), added the local results with their own upper limits, and counted patients above 5 or 3 times the upper limit after the day of the first dose.
+7. For exposure, counted the ravolimab or placebo doses the IRT records as administered by the cut, with the EDC exposure pages, and the patients with any dose.
+8. Compared the conditional power with Schedule 2's bands and recommended continuing as planned.
 
 ## 4. Deliverable Answers
 
-### q1_2027_renewal_quote.xlsx
+### talon2_interim_recommendation.pdf
 
-1. Wait to quote for the renewals filed from January to March 2027: 5.5 months.
-2. Work permits held by current employees and the spouses of current employees expiring, by month and category:
-   - July 2027: (c)(9) 279, (c)(26) 182
-   - August 2027: (c)(9) 140, (c)(26) 187
-   - September 2027: (c)(9) 63, (c)(26) 771
-3. Renewal packets the lockbox rejected, by the notice date on the rejection, and those filed again within 30 days of that date:
-   - October to December 2025: 22 rejected, 19 filed again within 30 days
-   - January to March 2026: 33 rejected, 26 filed again within 30 days
-   - April to June 2026: 57 rejected, 50 filed again within 30 days
-   - July to September 2026: 18 rejected, 14 filed again within 30 days
+1. Recommendation: continue to the final analysis at 330 events as planned (band C).
+2. Conditional power, nearest 10 per cent: 100.
 
-### q1_2027_expiring_permits.svg
+### talon2_interim_tables.csv
 
-1. Grouped bar chart of the work permits expiring in July, August and September 2027, a (c)(9) and a (c)(26) bar for each month, each labelled with its count (279 and 182, 140 and 187, 63 and 771).
+3. Placebo + GemCis:
+   - Patients with a serious adverse event: 113
+   - Serious adverse events, all: 170
+   - Infections and infestations: 53
+   - Hepatobiliary disorders: 57
+   - Gastrointestinal disorders: 18
+   - Blood and lymphatic system disorders: 23
+   - Patients with ALT above 5 x ULN: 2
+   - Patients with AST above 5 x ULN: 1
+   - Patients with total bilirubin above 3 x ULN: 10
+   - Patients who received study treatment: 223
+   - Ravolimab or placebo doses given: 1455
+4. Ravolimab + GemCis:
+   - Patients with a serious adverse event: 132
+   - Serious adverse events, all: 222
+   - Infections and infestations: 65
+   - Hepatobiliary disorders: 74
+   - Gastrointestinal disorders: 23
+   - Blood and lymphatic system disorders: 30
+   - Patients with ALT above 5 x ULN: 10
+   - Patients with AST above 5 x ULN: 10
+   - Patients with total bilirubin above 3 x ULN: 16
+   - Patients who received study treatment: 226
+   - Ravolimab or placebo doses given: 1501
