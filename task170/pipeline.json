@@ -1,38 +1,52 @@
 {
  "task": "task170",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "human-factors-ergonomics/human-reliability-assessment",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
- "updated": "2026-10-25",
- "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files about 400, against about 650, because the error probability falls with each driver's own count of ETCS start-ups and the Phase 4 rural diagrams run that count up at a quarter of the suburban pace.",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-01",
+ "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files 750 (821.6), against 1,250 (1,280.2), because the error probability falls with each driver's own count of ETCS start-ups, which the suburban diagrams ran past 600 inside five months while the Phase 4 rural diagrams, at about a third of the start-ups, keep each driver on the steep early part of the curve for most of the first year.",
  "architecture": 5,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-25"
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-23 (--asof 2026-11-09), no LEAK",
-  "reader": "reader C: call missed on the IPC-clock fork (14.5M, 2,300), ask A 0 of 6, ask B 6 of 6"
+  "leak_py": "REVIEW (no LEAK), 2026-11-01, --asof 2026-11-09; every line ruled in the design note",
+  "reader": "three reads (Sonnet medium, fresh copies): on 60c3b11b, 0d6e2973 and the final cut 21761154; question 1 none on every read, no ranking or describing file, every filed sentence fixes the WHAT, question 6 an analytical choice; the asks' readings closed in the generator (SF16 to SF19)"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-23 (WARNs answered in Draw item 9), nearest text 0.05 task133",
-  "nearest": "surface: 8 pairs promoted on card axes only (gap time, G7, quantity_figure); answered in the note's Duplicate check"
+  "heart": "WARN (no BLOCK) after the stage 3 redraw of role (capacity_planner), context artifact (none) and shape (other), 2026-11-01",
+  "surface": "exit 0; 11 pairs promoted for the author's adjudicated read (task171 back to back, task168 two apart on two mechanism axes, task458, task465, task139 on surface 0.10)",
+  "nearest": "driver 0.10 task468 v2 lineage"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (underspecified_objective), SEND_BACK on zip 0c216157",
-  "disposition": "architecture 4 spent: the auto-enrolled behaviour is unidentified, a fork not a stump",
-  "report": "scratchpad judge-task170v4/verdict.md"
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task170/determinism_check_report.md",
+  "gate_g": "forecasting, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "judged_zip": "60c3b11bc414ba0d953667a2e3b5540d; later edits data-only realism and two ask closures (SF16, SF17), figures.json byte-identical, no FIX_NOW so no re-judge"
  },
  "returned": [],
- "resume": "stage 3 of architecture 5, last block, paused on the author's interruption. Done since 845f6269: the invented names re-drawn clear of real GB and IE places (H21; Elsmarra, Carvanne Vale Railways, Tolmarnie, Ashlarrick Road, Keddarby, Morwennick Bridge, Finnachy Junction, Strannoch, Cairnmorlie Central, Glenhowrie, Kilvennach, Mossbrackie, Fellbrackan; depot codes and every figure unchanged); the chart subtitle shortened to fit; ask C's fold window made a corridor in the record (drivers' event reports 1 to 12 minutes after the event, so every window from 15 minutes to 2 hours files all 16 cells, asserted SF15 in checks and at 15 and 60 minutes in verify); H4, H8, H9, H11, H16 (only the plans run past the export date), H23 and H24 pass; the pins read the same through pdftotext (D5 added to checks.py, not yet run). Last full build (before D5): checks 108, verify 0 of 31 failed, rebuild byte-identical, target.zip 23e52416. Next: the full build with D5, leak.py --asof 2026-11-09, precut, figures_check, guard surface and heart, the card's text fields at the generator's numbers, the note's Tried and rejected lines for v5, then stage 4 (two scored readers and the judge).",
+ "resume": "SHIPPED 2026-11-01, pending the portal. A portal return routes by kind: a determinism finding to /fix-determinism, a rubric at or over 70 with the call held to /fix-rubric, a landed call to /build task170 from 2 with the result in the design note.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "card_registered": true
+ "card_registered": true,
+ "build": {
+  "checks_py": "118 run, 0 failed",
+  "verify_py": "0 of 31 graded figures failed",
+  "rebuilds": "two builds byte-identical (20 files)",
+  "figures_check": "exit 0, 58 figures",
+  "target_zip_md5": "21761154a73580f6d22e580ce0c8babd"
+ },
+ "shipped_call": "Plan the Phase 4 safety case and its debriefing for about 1,250 train data entry errors (1,280.2) recorded against the six Phase 4 depots' 276 drivers in each depot's first twelve months on ETCS, on about 111,000 starts, each driver's chance of an error read at the driver's own count of ETCS starts",
+ "target_zip_md5": "21761154a73580f6d22e580ce0c8babd"
 }

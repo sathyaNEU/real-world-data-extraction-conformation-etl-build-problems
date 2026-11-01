@@ -32,7 +32,7 @@ def load(target):
     d["xwalk"] = pd.read_csv(P(C.F_XWALK), dtype=str)
     d["duty"] = pd.read_csv(P(C.F_DUTY), dtype={"staff_no": str})
     d["alloc"] = pd.read_csv(P(C.F_ALLOC), dtype=str)
-    d["works"] = pd.read_excel(P(C.F_WORKS), dtype={"Vehicle": str, "Unit": str})
+    d["works"] = pd.read_excel(P(C.F_WORKS), dtype={"Vehicle": str, "Programme Unit": str})
     d["form"] = pd.read_csv(P(C.F_FORM), dtype=str)
     d["renum"] = pd.read_csv(P(C.F_RENUM), dtype=str)
     return d
@@ -212,7 +212,7 @@ def fleet(d, how="formations"):
                 u = nxt[u]
             return u
         veh = {}
-        for v, u, end in zip(w["Vehicle"], w["Unit"], w["End"]):
+        for v, u, end in zip(w["Vehicle"], w["Programme Unit"], w["End"]):
             key = cur(u) if how == "programme" else u
             veh.setdefault(key, ["", ""])["AB".index(end)] = v
         veh = {k: tuple(v) for k, v in veh.items()}

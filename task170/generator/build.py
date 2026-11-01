@@ -49,7 +49,6 @@ def write_pack(out):
     D.write_rollout(P(C.F_ROLL))
     D.write_guidance(P(C.F_GUIDE))
     D.write_acceptance(P(C.F_ACCEPT))
-    D.write_dict(P(C.F_DICT))
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     return n, w, pk

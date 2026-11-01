@@ -20,7 +20,7 @@ The figure reads the chance of an error at each Start of Mission at the driver's
 3. Read the errors per start in bands of 50 on that count, to 600 and then one band: 0.0315 in a driver's first 50 starts and 0.0049 beyond 600.
 4. For each of the 276 drivers on a Phase 4 roster in driver_roster_2026-10-31.xlsx, took the ETCS starts already made (6 drivers transferred in with some) and twelve months at the driver's monthly cab activations on duties worked in phase4_duty_records_2026.csv, latest issue: 111,357.6 starts.
 5. Summed each driver's chance along the bands from the starts already made: 1,280.2, about 1,250 to the nearest 250.
-6. Units: each unit in fleet_allocation_2027.csv by its two driving vehicles in unit_formations_2026-10-31.csv, accepted for ETCS service by its depot's go-live in the rollout plan when both vehicles' Accepted or Planned Acceptance dates in etcs_fitment_works_records.xlsx fall on or before it; the works records' Unit is the programme's own unit, so vehicles reformed into other units and renumbered units are read through the formation list.
+6. Units: each unit in fleet_allocation_2027.csv by its two driving vehicles in unit_formations_2026-10-31.csv, accepted for ETCS service by its depot's go-live in the rollout plan when both vehicles' Accepted or Planned Acceptance dates in etcs_fitment_works_records.xlsx fall on or before it; the works records' Programme Unit is the programme's own unit, so vehicles reformed into other units and renumbered units are read through the formation list.
 7. Events: the register's LTR and BRK reports received January to October 2026, withdrawn reports out and linked reports once, each recorder download report (stamped in the recorder's UTC) folded into a driver's or signaller's report of the same driver, unit and category up to 30 minutes after it, and a later event the same day kept as its own.
 
 ## 4. Deliverable Answers
@@ -36,7 +36,7 @@ The figure reads the chance of an error at each Start of Mission at the driver's
    - Ardmorrow: **6** accepted, **4** not accepted
    - Mossbrackie: **5** accepted, **5** not accepted
    - Fellbrackan: **4** accepted, **6** not accepted
-4. Level transition errors and ETCS brake interventions of each Phase 1 to 3 depot's drivers, January to October 2026:
+4. Level transition errors and ETCS brake interventions the safety desk recorded against each Phase 1 to 3 depot, January to October 2026:
    - Brennick: **54** level transition errors, **83** brake interventions
    - Tolmarnie: **71** level transition errors, **92** brake interventions
    - Ashlarrick Road: **73** level transition errors, **92** brake interventions

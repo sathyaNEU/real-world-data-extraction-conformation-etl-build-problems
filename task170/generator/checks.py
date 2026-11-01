@@ -107,6 +107,10 @@ def main(target):
     src = open(os.path.join(HERE, "calc.py")).read()
     ok("G5 distractors unused by the golden", not any(x in src for x in ("F_PUNC", "F_WX", C.F_PUNC, C.F_WX)))
     ok("G6 every file has a source, date and licence", all(f in meta["sources"] for f in files))
+    describe = re.compile(r"read_?me|dictionar|codebook|field_?notes|field_?guide|manifest|file_list|glossary|"
+                          r"definitions|extract_?notes|export_?notes|data_?notes|how_to_read", re.I)
+    ok("G7 no shipped file describes the data (dataset-generation section 3)",
+       not [f for f in files if describe.search(f)], ", ".join(f for f in files if describe.search(f)))
     # ------------------------------------------------------------------ the call on the pack
     r = calc.compute(target)
     d, s, e, p4 = r["data"], r["starts"], r["errors"], r["p4"]
@@ -296,7 +300,7 @@ def main(target):
         ok("A2 stop %s misses every depot" % how, len(moved) == len(C.P4_CODES), ", ".join(sorted(set(C.P4_CODES) - set(moved))))
     prog = calc.fleet(d, "programme")
     ok("A3 the programme labels keep two driving vehicles a unit (no cardinality tell)",
-       d["works"].groupby("Unit").size().eq(2).all())
+       d["works"].groupby("Programme Unit").size().eq(2).all())
     ok("A4 every depot has a reformed pair", all(sum(1 for x in w.reformed if x[0] == c) >= 2 for c in C.P4_CODES))
     # ------------------------------------------------------------------ ask C: level transitions and brake interventions
     gold_c = r["events"]
@@ -333,17 +337,43 @@ def main(target):
     # so every window from 15 minutes to an hour files the golden
     for w in (15, 20, 30, 45, 60):
         ok("SF15 a %d-minute fold files every cell" % w, calc.events(d, "golden", fold=w) == gold_c)
+    # SF16 ask C counts each report at the depot the safety desk records it against (the register's Depot), which is
+    # what the asking sentence names; a driver's roster depot at 31 October 2026 is not the desk's record
+    lb = reg[reg["Category"].isin(["LTR", "BRK"])]
+    ok("SF16 every LTR and BRK report carries the depot the desk records it against",
+       lb["Depot"].notna().all() and set(lb["Depot"]) <= set(C.REC_CODES))
+    ok("SF16 the prompt asks what the desk recorded against each Phase 1 to 3 depot",
+       "the safety desk recorded against it" in open(os.path.join(task, "prompt.txt"), encoding="utf-8").read())
+    # SF17 ask A reads a unit's driving vehicles on the formation list at 31 October 2026, the units the allocation
+    # names; the works records head their unit column as the programme's own unit
+    ok("SF17 the works records head their unit as the programme's", "Programme Unit" in d["works"].columns)
+    ok("SF17 every allocated unit is on the formation list", set(d["alloc"]["unit"]) <= set(d["form"]["unit"]))
+    ok("SF16 the guidance logs each report with the depot the driver worked from that day",
+       "the depot the driver worked from that day" in guide)
+    gl_of = {c: C.DEPOT[c][3].isoformat() for c in C.P4_CODES}
+    ok("SF17 every unit is allocated to its depot before the depot's go-live, so the allocation date never decides",
+       all(a <= gl_of[dpt] for a, dpt in zip(d["alloc"]["allocated_from"], d["alloc"]["depot"])))
+    # SF18 "by its go-live date" read inclusive or exclusive files the same units: no vehicle's accepted or planned date
+    # falls on a go-live day
+    wv = d["works"]
+    vd = pd.to_datetime(wv["Accepted"]).fillna(pd.to_datetime(wv["Planned Acceptance"]))
+    ok("SF18 no vehicle is accepted or planned on a Phase 4 go-live day",
+       not set(vd.dt.date) & {C.DEPOT[c][3] for c in C.P4_CODES})
+    # SF19 ask C's January to October window read on the register's local time or on UTC files the same cells: no level
+    # transition or brake report sits within three hours of either edge
+    lbt = pd.to_datetime(lb["Received"])
+    edges = (dt.datetime(2026, 1, 1), dt.datetime(2026, 11, 1))
+    ok("SF19 no LTR or BRK report within three hours of the window's edges",
+       not any(((lbt - e).abs() <= pd.Timedelta(hours=3)).any() for e in edges))
     # ------------------------------------------------------------------ documents
-    dic = open(os.path.join(target, C.F_DICT), encoding="utf-8").read()
     banned = re.compile(r"practi[cs]e|experience|learning|learn|curve|cumulative|familiar|repetition|proficien|pace|"
                         r"count of starts|number of starts|starts (?:made|so far)|novice|new to", re.I)
-    for nm, txt in (("conventions", conv), ("rollout plan", roll), ("guidance", guide), ("acceptance note", accept),
-                    ("dictionary", dic)):
+    for nm, txt in (("conventions", conv), ("rollout plan", roll), ("guidance", guide), ("acceptance note", accept)):
         hits = sorted(set(m.group(0).lower() for m in banned.finditer(txt)))
         ok("D2 %s carries none of the decisive step's words" % nm, not hits, ", ".join(hits))
     ok("D3 the guidance links signaller and fleet reports only, silent on recorder downloads' time",
        "recorder downloads" in guide and "UTC" not in guide and "UTC" not in conv)
-    ok("D4 no em or en dash in documents or the write-up", not re.search("[–—]", conv + roll + guide + accept + dic +
+    ok("D4 no em or en dash in documents or the write-up", not re.search("[–—]", conv + roll + guide + accept +
                                                                           open(os.path.join(task, "submission.md")).read()))
     # H25 every filed sentence reads the same through a second, independent PDF reader
     import subprocess
