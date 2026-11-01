@@ -29,7 +29,7 @@ UNITS = [
     ("12N", "12 North Medicine", "med", 5.6, 4.1, False),
     ("11N", "11 North Geriatrics", "ger", 4.6, 5.0, False),
     ("11S", "11 South Pulmonary", "pulm", 5.0, 4.4, False),
-    ("3E", "3 East Neuroscience", "neuro", 5.2, 4.3, False),
+    ("3E", "3 East Stroke and Spine", "neuro", 5.2, 4.3, False),
     ("3W", "3 West Renal", "renal", 4.2, 4.6, False),
     ("6E", "6 East Orthopaedics", "ortho", 7.8, 3.1, False),
     ("6W", "6 West General Surgery", "surg", 7.2, 3.6, False),

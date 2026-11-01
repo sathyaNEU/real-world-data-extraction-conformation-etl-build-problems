@@ -28,5 +28,22 @@
   "signed_off_2026-09_evening": 374,
   "signed_off_2026-09_night": 332
  },
- "task": "task160"
+ "task": "task160",
+ "working": {
+  "base_admissions": 9765,
+  "base_qt_alerts": 1005,
+  "base_qt_reviews_added": 578,
+  "base_reviews": 3410,
+  "base_reviews_lost": 230,
+  "desk_hours_total": 353,
+  "lost_unrounded": 195,
+  "net_unrounded": 296,
+  "pilot_duplicate_removal_pct": 49,
+  "pilot_qt_override_pct": 58,
+  "pilot_qt_removal_pct": 42,
+  "plan_admissions": 8287,
+  "qt_added_unrounded": 491,
+  "rounding_unit": 100,
+  "signed_off_total": 3244
+ }
 }

@@ -20,7 +20,7 @@ BOOK = "msp26_review_forecast_q1_2027.xlsx"
 MEMO = "msp26_go_live_review_memo.docx"
 NAMES = {"4N": "4 North Medicine", "4S": "4 South Medicine", "9E": "9 East Medicine", "9W": "9 West Medicine",
          "2N": "2 North Medicine", "12N": "12 North Medicine", "11N": "11 North Geriatrics",
-         "11S": "11 South Pulmonary", "3E": "3 East Neuroscience", "3W": "3 West Renal", "6E": "6 East Orthopaedics",
+         "11S": "11 South Pulmonary", "3E": "3 East Stroke and Spine", "3W": "3 West Renal", "6E": "6 East Orthopaedics",
          "6W": "6 West General Surgery", "10N": "10 North Surgery", "10S": "10 South Surgery",
          "5W": "5 West Vascular Surgery"}
 MONTH_NAME = {"2026-07": "July 2026", "2026-08": "August 2026", "2026-09": "September 2026"}

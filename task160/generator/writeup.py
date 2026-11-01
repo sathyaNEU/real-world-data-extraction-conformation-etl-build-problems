@@ -26,8 +26,9 @@ def main():
       "ward).")
     a("**Analytical objective:** Forecasting & Predictive Modeling.\n")
     a("## 1. Final Recommendation\n")
-    a("**Plan for about %d more override reviews (to the nearest 100) from Quillfield's adult wards in the 13 weeks "
-      "from Monday 4 January 2027 than the desk would get over those weeks without the go-live.** The QT "
+    a("**Plan for about %d more override reviews (to the nearest 100) from Quillfield's adult wards in the first 13 "
+      "weeks of the hospital-wide go-live than the desk would get over those weeks without it.** The go-live is on "
+      "Monday 4 January 2027. The QT "
       "combination alert adds about %d reviews; the duplicate PRN opioid alert, answered by removing the new order "
       "%d per cent of the time on the pilot units, takes about %d of today's reviews off the desk. Not %d: the "
       "background log counts the package's own alerts, and a removed order carries no alerts of its own and has "
@@ -64,14 +65,15 @@ def main():
     a("## 4. Deliverable Answers\n")
     a("### %s\n" % GD.BOOK)
     a("1. Net change in override reviews, 13 weeks from 4 January 2027: +%d (QT combination alert +%d, current "
-      "reviews lost -%d), to the nearest 100." % (net, qt, pre))
+      "reviews lost %d), to the nearest 100." % (net, qt, pre))
     a("2. Desk hours, July to September 2026, nearest whole hour:")
     for u in P.going_live:
         a("   - %s %s: %d" % (u, GD.NAMES[u], f["desk_hours_%s" % u]))
-    a("3. Reviews signed off by shift:")
-    for m in A.MONTHS:
-        a("   - %s: day %d, evening %d, night %d" % (GD.MONTH_NAME[m], f["signed_off_%s_day" % m],
-                                                    f["signed_off_%s_evening" % m], f["signed_off_%s_night" % m]))
+    a("3. Reviews signed off, July, August and September 2026, by shift:")
+    for s in A.SHIFTS:
+        a("   - %s shift: July %d, August %d, September %d" % (s, f["signed_off_2026-07_%s" % s.lower()],
+                                                              f["signed_off_2026-08_%s" % s.lower()],
+                                                              f["signed_off_2026-09_%s" % s.lower()]))
     a("")
     a("### %s\n" % GD.MEMO)
     a("1. Net change: about %d more override reviews in the 13 weeks from 4 January 2027." % net)
