@@ -95,6 +95,9 @@ truthfully, measured a standing spread of zero and were landed (`evidence.md` 1.
 the members one source misses (every death, registered or not), shipped beside a second source that lists them,
 leaves nothing to decide: linking that source executes the rule, and the judge reads it so (task445 v2, Gate H3).
 The deciding quantity is one no shipped source lists, an estimate the filed WHAT leaves to the analyst.
+A decisive step that is an inclusion or exclusion over a second source has no safe filing: filed, it is a rule
+executed (task445 v2); left to an intent phrase, it is a withheld rule and the literal reading files the default
+(task468 v5, the repeat-sales pairs across building work). Draw the decisive step as an estimate instead.
 
 **Convergence and reach are one dial wherever the easy route is itself a member of the licensed family.**
 Where the decisive step is a choice among estimators, making the family agree (Gate C) makes the easy route
