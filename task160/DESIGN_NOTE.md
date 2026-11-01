@@ -60,7 +60,12 @@ reset; its record is below and its world is closed.
    orders at signing (the rule register and the vendor bulletin say so in their rule definitions). Lane neighbours:
    task142 (a purchasing alliance's overflow block, a percentile construction), task169 and task304 (differentiated on
    the card), task255 (adherence persistence, another pharmacology world).
-12. Pack (twelve files, four formats): the medication alert history, 1 January 2025 to 25 October 2026 (CSV, 48,434
+12. Abstraction sentence: none holds against the nearest builds. task169 v2 sends events a closed route used to
+   pre-empt through the route that remains (the record understates); task161 v1 draws a built-up stock down at each
+   holder's own rate; this build adds an upstream gate whose answers remove the inputs existing downstream events need,
+   so the new gate's own record overstates the added load. The three share a forward count and nothing else a reviewer
+   would call one move.
+13. Pack (twelve files, four formats): the medication alert history, 1 January 2025 to 25 October 2026 (CSV, 48,434
    rows, the spine); the MSP26 background log, 6 July to 25 October 2026 (CSV, UTC); the unit census by day (CSV); the
    FY2027 inpatient volume plan (XLSX, by planning week); the medication alert rule register with its Units crosswalk
    (XLSX); Halverson's MSP26 release 2026.2 client bulletin (PDF); Schedule B revision 3 (PDF); CR-2291 (DOCX);
@@ -307,6 +312,21 @@ the devices live in the queue export and the location map.
 Pair ceiling: 40.0 ((38 + 7 + 55 x 5/24) and (5 + 7 + 55 x 5/24), averaged)
 Mirror leakage: 20.8 per cent of ask weight
 Measured by: generator/ceiling.py (run on the cut pack)
+
+## Surface screen
+
+`guard.py surface task160` on the final cut: exit 0; personas in the pack are the card's three. Three pairs promoted
+for adjudication, each answered:
+- task160 against task161 (adjacent numbers): gap time and the quantity_figure family are shared; the decisive pattern
+  differs (G3 against G7), and so do the world (a port 3PL's overflow blocks after a front-loaded duty step), the actor
+  and the driver (a stock drawn down at each holder's steady share of use, against an upstream alert removing orders
+  that existing alerts fire against). No axis ban applies; the shared pair is what two forward counts share.
+- task158 against task160 (two apart): the `pilot_log` calibration form is shared; task158's pilot prices calls on
+  cold traffic for a GPU pool pick, this build's pilot units supply the answers to the package's two alerts. Nothing
+  else is shared.
+- task160 against task169: gap, pattern and decision family collide on the card; differentiated there and in the
+  abstraction sentence (`## Draw` item 12): task169 re-routes events a closed route pre-empted and the record
+  understates, this build adds a gate that removes downstream events and the gate's own record overstates.
 
 ## Leak sweep
 
