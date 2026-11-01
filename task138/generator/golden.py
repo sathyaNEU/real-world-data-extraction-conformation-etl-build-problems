@@ -23,16 +23,6 @@ import lp3 as L  # noqa: E402
 
 BOOK = "levee_raise_review.xlsx"
 MEMO = "levee_raise_memo.pdf"
-REACH_NAMES = {"R1": "north tie-in to Pump Station 1", "R2": "Riverside Park",
-               "R3": "Front Street to the Main Street closure", "R4": "Main Street closure to Cedar Street",
-               "R5": "Cedar Street to the railroad closure", "R6": "railroad closure to the grain terminal",
-               "R7": "grain terminal to Pump Station 2", "R8": "Pump Station 2 to the south tie-in"}
-
-
-def cap(s):
-    return s[0].upper() + s[1:]
-
-
 def compute(target):
     P = A.Pack(target)
     m = A.main_figures(P)
@@ -133,19 +123,17 @@ def write_book(path, G):
     wd.freeze_panes = "A5"
 
     wsl = wb.create_sheet("Crown settlement")
-    _header(wsl, 1, ["Reach", "Description", "From station", "To station", "Points compared",
-                     "Settlement 2016 to 2024 (ft)"])
+    _header(wsl, 1, ["Reach", "From station", "To station", "Shots compared", "Settlement 2016 to 2024 (ft)"])
     for k, v in a["settlement"].items():
         lo, hi = G["reach_span"].loc[k, "min"], G["reach_span"].loc[k, "max"]
-        wsl.append([k, cap(REACH_NAMES[k]), "%d+%02d" % divmod(int(lo), 100), "%d+%02d" % divmod(int(hi), 100),
-                    G["reach_pts"][k], v])
+        wsl.append([k, "%d+%02d" % divmod(int(lo), 100), "%d+%02d" % divmod(int(hi), 100), G["reach_pts"][k], v])
     wsl.append([])
     wsl.append(["2016 shots moved to the 2019 stationing (%d ft) and to NAVD 88 (+%.2f ft, district benchmarks)."
                 % (G["offset"], G["shift"])])
-    for c, w in zip("ABCDEF", (8, 40, 13, 13, 15, 16)):
+    for c, w in zip("ABCDE", (8, 13, 13, 15, 16)):
         wsl.column_dimensions[c].width = w
     for row in wsl.iter_rows(min_row=2, max_row=9):
-        row[5].number_format = "0.00"
+        row[4].number_format = "0.00"
 
     wl = wb.create_sheet("Closure lead times")
     _header(wl, 1, ["Flood", "Coyle Bridge warning level reached (UTC)", "Main Street sill reached at Orrinsford (UTC)",
@@ -155,8 +143,8 @@ def write_book(path, G):
         wl.append([t_h.strftime("%B %Y"), t_c.strftime("%Y-%m-%d %H:%M"), t_h.strftime("%Y-%m-%d %H:%M"),
                    int(round(h))])
     wl.append([])
-    wl.append(["Warning: 21.0 ft on the Coyle Bridge gauge before the %s datum change, 23.00 ft after (661.00 ft "
-               "NGVD 29). Sill: %.2f ft NAVD 88. Orrinsford logger times before %s converted from CST."
+    wl.append(["Warning level 661.00 ft NGVD 29: 23.00 ft on the Coyle Bridge gauge since its %s datum change "
+               "(21.0 ft before). Sill: %.2f ft NAVD 88. Orrinsford logger records before %s moved from CST to UTC."
                % ("%d %s" % (G["change"].day, G["change"].strftime("%B %Y")), G["AF"].sill,
                   "%d %s" % (G["swap"].day, G["swap"].strftime("%B %Y")))])
     for c, w in zip("ABCD", (16, 30, 30, 14)):
@@ -260,7 +248,7 @@ def write_memo(path, G, png):
                   "peaks for %d to %d across at the present relation and kept Orrinsford's own peaks from %d."
                   % (m["cut"], big, "{:,}".format(int(G["U"][ib])), "{:,}".format(int(G["T"][ib])), m["cut"],
                      G["r"], "{:,}".format(int(P.hal[2020])), "{:,}".format(int(P.hal[2024])),
-                     "{:,}".format(int(round(G["routes"]["R0_at_site"]["q"], -3))), int(G["wy"].min()),
+                     "{:,}".format(int(round(G["routes"]["R0_at_site"]["q"], -2))), int(G["wy"].min()),
                      m["cut"] - 1, m["cut"]), st["p"]),
         Image(io.BytesIO(png), width=width, height=width * 3.25 / 6.6),
         Paragraph("Present-river and published-record frequency curves at Orrinsford, with the discharge each "
@@ -283,11 +271,11 @@ def write_memo(path, G, png):
     words = {7: "seven", 6: "six", 8: "eight", 5: "five"}
     story += [
         Paragraph("<b>Settlement and warning time.</b> Between the 2016 and 2024 surveys the crown settled from "
-                  "%.2f ft (%s, %s) to %.2f ft (%s, %s); the workbook gives every reach. The Coyle Bridge warning "
-                  "gave between %d and %d hours before the river reached the Main Street sill in the %s floods "
-                  "since October 2016, against about 18 hours to install the stoplogs."
-                  % (sv[least], least, REACH_NAMES[least], sv[worst], worst, REACH_NAMES[worst],
-                     min(h for _, h in ld), max(h for _, h in ld), words.get(len(ld), str(len(ld)))), st["p"]),
+                  "%.2f ft (%s) to %.2f ft (%s); the workbook gives every reach. The Coyle Bridge warning gave "
+                  "between %d and %d hours before the river reached the Main Street sill in the %s floods since "
+                  "October 2016, against about 18 hours to install the stoplogs."
+                  % (sv[least], least, sv[worst], worst, min(h for _, h in ld), max(h for _, h in ld),
+                     words.get(len(ld), str(len(ld)))), st["p"]),
         Paragraph("The 2016 survey was taken on the stationing in use before the 2019 north tie-in and on NGVD 29; "
                   "its shots are compared at their present stations, on NAVD 88. Warning times use the warning "
                   "level OP-04 sets as an elevation, on the Coyle Bridge gauge datum in force at each flood.",
@@ -331,7 +319,7 @@ def figures(G):
         "flood_count": len(a["lead"]),
         "rungs": {k: {"q": int(round(v["q"])), "raise": v["raise"]} for k, v in rt.items()},
         "rungs_5k": {k: int(round(v["q"] / 5000.0) * 5000) for k, v in rt.items()},
-        "rungs_1k": {k: int(round(v["q"], -3)) for k, v in rt.items()},
+        "rungs_100": {k: int(round(v["q"], -2)) for k, v in rt.items()},
         "pre_raise_years": int((~G["post"]).sum()), "post_raise_years": int(G["post"].sum()),
         "river_miles": {"coyle": float(G["P"].gauges.set_index("Site").loc["05432100", "River mile"]),
                         "halbrook": float(G["P"].gauges.set_index("Site").loc["05433000", "River mile"])},
@@ -348,7 +336,7 @@ def figures(G):
         "rounding_cfs": 5000, "datum_names": [88, 29],
         "station_offset_ft": G["offset"], "datum_shift_ft": round(G["shift"], 2),
         "constants": {"warning_old_ft": 21.0, "warning_new_ft": 23.0, "sill_navd88": G["AF"].sill,
-                      "install_h": 18, "at_site_q_1000": int(round(rt["R0_at_site"]["q"], -3)),
+                      "install_h": 18, "at_site_q_100": int(round(rt["R0_at_site"]["q"], -2)),
                       "coyle_1970": int(G["U"][list(G["wy"]).index(1970)]),
                       "halbrook_1970": int(G["T"][list(G["wy"]).index(1970)]),
                       "halbrook_2020": int(G["P"].hal[2020]), "halbrook_2024": int(G["P"].hal[2024]),

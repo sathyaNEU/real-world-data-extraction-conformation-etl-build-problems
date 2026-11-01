@@ -7,35 +7,35 @@
   "4 ft": 0.6
  },
  "aep_raw": {
-  "0 ft": 1.3932,
-  "1 ft": 1.1124,
-  "2 ft": 0.8931,
-  "3 ft": 0.7189,
-  "4 ft": 0.582
+  "0 ft": 1.4013,
+  "1 ft": 1.1181,
+  "2 ft": 0.8963,
+  "3 ft": 0.7211,
+  "4 ft": 0.5832
  },
  "call": {
   "design_discharge_cfs": 110000,
   "raise_ft": 2
  },
  "capacity_cfs_by_raise": {
-  "0 ft": 103400,
-  "1 ft": 109100,
-  "2 ft": 114800,
-  "3 ft": 120600,
-  "4 ft": 126400
+  "0 ft": 101900,
+  "1 ft": 107600,
+  "2 ft": 113200,
+  "3 ft": 119000,
+  "4 ft": 124800
  },
  "constants": {
-  "at_site_q_1000": 97000,
+  "at_site_q_1000": 95000,
   "coyle_1970": 132000,
-  "halbrook_1970": 95100,
-  "halbrook_2020": 89900,
-  "halbrook_2024": 84300,
+  "halbrook_1970": 93200,
+  "halbrook_2020": 88700,
+  "halbrook_2024": 83600,
   "install_h": 18,
-  "mean_log": 4.4831,
+  "mean_log": 4.4774,
   "regional_skew": -0.08,
-  "sd_log": 0.2258,
-  "sill_navd88": 617.45,
-  "station_skew": 0.504,
+  "sd_log": 0.2259,
+  "sill_navd88": 616.95,
+  "station_skew": 0.505,
   "warning_new_ft": 23.0,
   "warning_old_ft": 21.0,
   "weighted_skew": 0.244,
@@ -46,7 +46,7 @@
   29
  ],
  "datum_shift_ft": 0.27,
- "design_discharge_raw": 111806.7,
+ "design_discharge_raw": 110403.1,
  "first_fully_raised_wy": 2009,
  "flood_count": 7,
  "freeboard": {
@@ -58,29 +58,29 @@
  "halbrook_gauge": {
   "clock_shift_h": 6,
   "datum_ngvd29": 599.73,
-  "sill_stage_ft": 17.45
+  "sill_stage_ft": 16.95
  },
  "lead_raw": {
-  "2020-03-14": 35.687,
-  "2020-05-24": 28.988,
-  "2020-06-30": 37.704,
-  "2024-02-29": 36.844,
-  "2024-04-18": 31.111,
-  "2024-06-15": 33.64,
-  "2025-05-11": 51.855
+  "2020-03-14": 37.123,
+  "2020-05-24": 29.322,
+  "2020-06-30": 38.104,
+  "2024-02-29": 38.147,
+  "2024-04-19": 32.135,
+  "2024-06-15": 35.132,
+  "2025-05-12": 51.135
  },
  "lead_time_h": {
-  "2020-03-14": 36,
+  "2020-03-14": 37,
   "2020-05-24": 29,
   "2020-06-30": 38,
-  "2024-02-29": 37,
-  "2024-04-18": 31,
-  "2024-06-15": 34,
-  "2025-05-11": 52
+  "2024-02-29": 38,
+  "2024-04-19": 32,
+  "2024-06-15": 35,
+  "2025-05-12": 51
  },
  "post_raise_years": 18,
  "pre_raise_years": 47,
- "present_relation": 1.078,
+ "present_relation": 1.064,
  "regional_skew_mse": 0.14,
  "river_miles": {
   "coyle": 41.0,
@@ -89,23 +89,23 @@
  "rounding_cfs": 5000,
  "rungs": {
   "R0_at_site": {
-   "q": 96995,
+   "q": 95430,
    "raise": 0
   },
   "R2_post_raise_only": {
-   "q": 106027,
+   "q": 104714,
    "raise": 1
   },
   "R3_whole_record_relation": {
-   "q": 101963,
+   "q": 100546,
    "raise": 0
   },
   "golden": {
-   "q": 111807,
+   "q": 110403,
    "raise": 2
   },
   "golden_transfer": {
-   "q": 111871,
+   "q": 110445,
    "raise": 2
   },
   "off_area_ratio_0.5": {
@@ -114,7 +114,7 @@
   },
   "off_area_ratio_0.7": {
    "q": 125658,
-   "raise": 4
+   "raise": 5
   },
   "off_area_ratio_1.0": {
    "q": 136398,
@@ -125,21 +125,21 @@
    "raise": 1
   },
   "off_since_1994": {
-   "q": 94520,
+   "q": 93473,
    "raise": 0
   }
  },
  "rungs_1k": {
-  "R0_at_site": 97000,
-  "R2_post_raise_only": 106000,
-  "R3_whole_record_relation": 102000,
-  "golden": 112000,
-  "golden_transfer": 112000,
+  "R0_at_site": 95000,
+  "R2_post_raise_only": 105000,
+  "R3_whole_record_relation": 101000,
+  "golden": 110000,
+  "golden_transfer": 110000,
   "off_area_ratio_0.5": 119000,
   "off_area_ratio_0.7": 126000,
   "off_area_ratio_1.0": 136000,
   "off_coyle_unscaled": 104000,
-  "off_since_1994": 95000
+  "off_since_1994": 93000
  },
  "rungs_5k": {
   "R0_at_site": 95000,
@@ -165,16 +165,16 @@
  },
  "settlement_raw": {
   "R1": 0.07,
-  "R2": 0.1196,
+  "R2": 0.12,
   "R3": 0.16,
-  "R4": 0.21,
-  "R5": 0.2903,
-  "R6": 0.2406,
-  "R7": 0.1392,
+  "R4": 0.2105,
+  "R5": 0.29,
+  "R6": 0.24,
+  "R7": 0.14,
   "R8": 0.091
  },
- "shortfall_118_70_ft": 1.48,
- "station_offset_ft": 650,
+ "shortfall_118_70_ft": 1.5,
+ "station_offset_ft": 700,
  "stations": [
   118,
   70,

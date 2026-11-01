@@ -5,12 +5,12 @@ planning weights (38 for the call and its components, 7 for instruction-followin
     python3 task138/generator/ceiling.py
 
 Rows: the cracker lands the call and runs the battery (the 2016 shots and the ORF2 gauge datum put on NAVD 88 with
-the benchmark pairs; the ORF2 export has no diurnal channel to profile and no daylight-saving seam, so its stamps are
-taken as its header states them), joins the two surveys on station number and reads OP-04's 21.0 ft on the Coyle
-Bridge gauge as printed; the mirror stops on the published-record rung of the call and handles the asks the same way,
+the benchmark pairs; the ORF2 export's stamps step back where the new logger's records start, so it lines the two
+loggers up and moves the old one's records 6 h), joins the two surveys on station number and reads OP-04's 21.0 ft
+on the Coyle Bridge gauge as printed; the mirror stops on the published-record rung of the call and handles the asks the same way,
 since nothing in them comes from the call; the re-stationer also re-stations the 2016 survey from the structures
-both surveys shot; the full includer also puts the warning elevation on the gauge datum in force at each flood and
-moves the ORF2 stamps before the logger swap to UTC from the published peak times (stress rows, not the gate)."""
+both surveys shot; the full includer also puts the warning elevation on the gauge datum in force at each flood (stress
+rows, not the gate)."""
 import os
 import sys
 
@@ -36,16 +36,16 @@ def main(target=TARGET):
     AF = A.AskFiles(target)
     gold = figures(AF, True, "per_datum")
     n = len(gold[0]) + len(gold[1])
-    crack = kept(figures(AF, False, "old_stage", clock_fix=False), gold)
+    crack = kept(figures(AF, False, "old_stage", clock_fix=True), gold)
     full = kept(figures(AF, True, "per_datum"), gold)
-    half = kept(figures(AF, True, "old_stage", clock_fix=False), gold)
+    half = kept(figures(AF, True, "old_stage", clock_fix=True), gold)
     lc = crack / n
     c = 38 + 7 + 55 * lc
     s = 5 + 7 + 55 * lc
-    print("cracker (lands the call, battery: datums; ORF2 stamps as headed; surveys joined by station; 21.0 ft as "
-          "printed): keeps %d of %d ask criteria, response %.1f" % (crack, n, c))
+    print("cracker (lands the call, battery: datums, the ORF2 clock; surveys joined by station; 21.0 ft as printed): "
+          "keeps %d of %d ask criteria, response %.1f" % (crack, n, c))
     print("mirror (published-record rung, same ask handling): keeps %d of %d, response %.1f" % (crack, n, s))
-    print("re-stationer (also re-stations the 2016 survey; 21.0 ft as printed, ORF2 as headed): keeps %d of %d, "
+    print("re-stationer (also re-stations the 2016 survey; 21.0 ft as printed): keeps %d of %d, "
           "response %.1f"
           % (half, n, 38 + 7 + 55 * half / n))
     print("full includer (both reconstructions, stress row): keeps %d of %d, response %.1f"

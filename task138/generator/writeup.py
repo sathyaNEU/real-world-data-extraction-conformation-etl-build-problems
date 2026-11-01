@@ -4,12 +4,6 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-REACH = {"R1": "north tie-in to Pump Station 1", "R2": "Riverside Park",
-         "R3": "Front Street to the Main Street closure", "R4": "Main Street closure to Cedar Street",
-         "R5": "Cedar Street to the railroad closure", "R6": "railroad closure to the grain terminal",
-         "R7": "grain terminal to Pump Station 2", "R8": "Pump Station 2 to the south tie-in"}
-
-
 def c(v):
     return "{:,}".format(int(v))
 
@@ -17,7 +11,7 @@ def c(v):
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
     call, aep, st, ld = f["call"], f["aep_pct_by_raise"], f["settlement_ft"], f["lead_time_h"]
-    k, r1k = f["constants"], f["rungs_1k"]
+    k, r1k = f["constants"], f["rungs_100"]
     w, hg, fb = f["warning"], f["halbrook_gauge"], f["freeboard"]
     assert call["raise_ft"] == 2 and call["design_discharge_cfs"] == 110000
     L = []
@@ -73,12 +67,13 @@ def main():
       "2024 survey's reach: %s ft."
       % (f["station_offset_ft"], f["station_offset_ft"], f["datum_shift_ft"],
          ", ".join("%s %.2f" % (r, st[r]) for r in sorted(st))))
-    a("7. Ask B: took OP-04's warning level, %.2f ft NGVD 29, on the Coyle Bridge gauge datum in force (%.1f ft "
-      "before the %.2f ft step in stage against discharge on 19 October 2021, %.2f ft after on the %.2f ft datum), "
-      "moved ORF2 stamps before the June 2021 logger swap from CST to UTC (+%d h, from the published peak times), "
-      "put the Main Street sill at %.2f ft on the ORF2 gauge and interpolated both crossings within the hour: %s "
-      "hours." % (w["elev_ngvd29"], w["stage_2014_ft"], w["step_ft"], w["stage_now_ft"], w["datum_now"],
-                  hg["clock_shift_h"], hg["sill_stage_ft"], ", ".join(str(v) for v in ld.values())))
+    a("7. Ask B: took OP-04's warning level, %.2f ft NGVD 29, on the Coyle Bridge gauge datum in force at each flood "
+      "(%.2f ft on the %.2f ft datum the hourly export states, after the %.2f ft step in stage against discharge on "
+      "22 October 2019), moved the old ORF2 logger's records %d h to UTC (where they line up with the new logger's "
+      "over the days both ran), put the Main Street sill at %.2f ft on the ORF2 gauge and interpolated both "
+      "crossings within the hour: %s hours." % (w["elev_ngvd29"], w["stage_now_ft"], w["datum_now"], w["step_ft"],
+                                                hg["clock_shift_h"], hg["sill_stage_ft"],
+                                                ", ".join(str(v) for v in ld.values())))
     a("8. Raise the crown %d ft before the 2027 flood season." % call["raise_ft"])
     a("")
     a("## 4. Deliverable Answers\n")
@@ -90,7 +85,7 @@ def main():
         a("   - %d ft: %.1f%%" % (r, aep["%d ft" % r]))
     a("4. Crown settlement between the 2016 and 2024 surveys, by reach:")
     for r in sorted(st):
-        a("   - %s (%s): %.2f ft" % (r, REACH[r], st[r]))
+        a("   - %s: %.2f ft" % (r, st[r]))
     a("5. Hours from the Coyle Bridge warning level to the Main Street sill at Orrinsford, floods since October 2016:")
     import datetime as dt
     for d, h in ld.items():

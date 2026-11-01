@@ -32,7 +32,7 @@ returned no slot.
 **Data-native sentence.** Orrinsford's own annual peak record holds two rivers: until the last of six agricultural levees
 between the gauges was raised (in force from water year 2009) the floodplain behind them filled in every flood above
 about 46,000 cfs at Coyle Bridge and cut the town's peak, so the record's two great floods (1970 and 1973, Orrinsford at
-0.72 and 0.815 of Coyle Bridge) are smaller than today's river would make them, while every smaller flood, most of the
+0.71 and 0.80 of Coyle Bridge against 1.064 since 2009) are smaller than today's river would make them, while every smaller flood, most of the
 record, is untouched; the change lives only in the upper tail the 1 per cent flood is read from, leaves no trend or
 step, and shows only against a second gauge above the reach.
 
@@ -46,19 +46,19 @@ quantile of a non-homogeneous record; differentiated on the card.
 
 - Actor: the deciding property, whether a year's Orrinsford peak was cut by upstream floodplain storage that no longer exists, has no column anywhere: the peak export carries discharges, the inventory carries each segment's raise year, and the property is the relation between the two gauges' peaks in the years before and after those raises.
 - Link: the comparison of Orrinsford's peaks against Coyle Bridge's by water year, split at the in-force year of the raises on the segments between the two gauges' river miles (inventory Segments and Gauges sheets), which LS-02's frequency method never asks for; no key, code or sentence ties the raise years to the peak record.
-- Reflex: LS-02's own method (log-Pearson Type III by moments with the weighted skew) fitted to the Orrinsford record as published is rung 0 and files no raise (96,995 cfs, 0 ft).
-- Back-test: the textbook route validates: Mann-Kendall p 0.48 and Pettitt p 0.77 on the record, no Bulletin 17B low outlier, the agency's peak codes flag nothing at Orrinsford, and Fenwick downstream (101,838 cfs at site) agrees with the town.
+- Reflex: LS-02's own method (log-Pearson Type III by moments with the weighted skew) fitted to the Orrinsford record as published, which meets its window of one peak for every water year since 1962, is rung 0 and files no raise (95,430 cfs, 0 ft).
+- Back-test: the textbook route validates: Mann-Kendall p 0.43 and Pettitt p 0.73 on the record, no Bulletin 17B low outlier, the agency's peak codes flag nothing at Orrinsford, and Fenwick downstream (100,192 cfs at site) agrees with the town.
 - Second use: every file the decisive step reads is in the pack for its own reason: the peak export is the record LS-02 fits and carries the whole basin as the agency exports it; the inventory carries the town levee's crown at the model cross-sections and its bridge closures, which the crown check needs, beside every other segment.
-- Shock: the movement reads as ordinary hydrology: big floods smaller downstream through floodplain storage is textbook, the town record has no trend, step or outlier, and the two low ratios sit among 65 years of ratios near 1.08; the golden's answer is not an interval of any sort of the gauges or years.
-- Pins: LS-02 section 2 files the WHAT (the 1 per cent flood at the Orrinsford gauge "for the river, its floodplain and its levees as they stand at the time of the review"); no filed sentence names the upstream raises, the record's homogeneity, a period, a second gauge or a relation, and deleting section 2 leaves the at-site fit as the only reading, so the pin does not hand the step over.
+- Shock: the movement reads as ordinary hydrology: big floods smaller downstream through floodplain storage is textbook, the town record has no trend, step or outlier, and the two low ratios sit among 65 years of ratios near 1.06; the golden's answer is not an interval of any sort of the gauges or years.
+- Pins: LS-02 section 2 files the WHAT (the 1 per cent flood at the Orrinsford gauge "for the river, its floodplain and its levees as they stand at the time of the review") and section 3 its window (one annual peak for every water year since the gauge opened in 1962); no filed sentence names the upstream raises, the record's homogeneity, a second gauge or a relation, and the published record meets both sentences as they read, so the pins do not hand the step over.
 
 ## Default path
 
 1. Read LS-02: the design flood is the 1 per cent annual chance peak at the Orrinsford gauge, fitted as log-Pearson Type III by moments with the station skew weighted with the SW-16-03 regional skew (region 2, -0.08, mean square error 0.14).
-2. Take the 65 Orrinsford annual peaks from the State Water Survey export (water years 1962 to 2026, the provisional 2026 included) and fit: mean of logs 4.4786, standard deviation 0.2095, station skew 0.286, weighted skew 0.136; the 1 per cent discharge is 96,995 cfs.
-3. Check the record before trusting it: Mann-Kendall (p 0.48) and Pettitt (p 0.77) find no trend or change point; no low outlier.
-4. Read Table 4 at that discharge (linear in discharge), add LS-02 freeboard (3.0 ft, 4.0 ft within 100 ft of a bridge, plus the upstream allowance) and compare with the 2024 crown at the 21 cross-sections: the worst, the railroad closure at 118+70, has 1.13 ft to spare.
-5. File no raise; each raise's annual chance of exceeding what it holds is 0.7, 0.6, 0.4, 0.3 and 0.2 per cent.
+2. Take the 65 Orrinsford annual peaks from the State Water Survey export (one for every water year 1962 to 2026, the window LS-02 section 3 sets, the provisional 2026 included) and fit: mean of logs 4.4734, standard deviation 0.2089, station skew 0.281, weighted skew 0.133; the 1 per cent discharge is 95,430 cfs.
+3. Check the record before trusting it: Mann-Kendall (p 0.43) and Pettitt (p 0.73) find no trend or change point; no low outlier.
+4. Read Table 4 at that discharge (linear in discharge), add LS-02 freeboard (3.0 ft, 4.0 ft within 100 ft of a bridge, plus the upstream allowance) and compare with the 2024 crown at the 21 cross-sections: the worst, the railroad closure at 118+70, has 1.16 ft to spare.
+5. File no raise; each raise's annual chance of exceeding what it holds is 0.7, 0.5, 0.4, 0.3 and 0.2 per cent.
 
 Ends on: no raise (0 ft), design discharge 95,000 cfs.
 Golden: raise 2 ft, design discharge 110,000 cfs.
@@ -80,9 +80,9 @@ Layer 1: the agency's export lists each annual peak by date with no water year c
 Layer 2: family field_method, record homogeneity: a flood frequency curve assumes its record is one population of floods under the conditions the estimate is for; upstream levee raises broke that for the large floods only, and the field's remedy (adjusting the record to present conditions through a long-record gauge above the change) has to be built from the two gauges.
 Decisive step: recognising that the Orrinsford peaks before water year 2009 belong to a river whose upstream floodplain still held back big floods, so the published record is not homogeneous with the river as it now runs, and carrying Coyle Bridge's long record across at the relation the two gauges show since the last levee raise.
 Not semantics: every field, code, unit and definition read correctly (water years, approval codes, three-figure peaks, Table 4, LS-02's freeboard and skew rules) still gives 0 ft on the published record; nothing in any field marks the attenuated years, and the agency's codes say nothing about them.
-Not rule application: no filed rule says which years represent the river as it now runs or how to rebuild them, and LS-02 executed word for word on the published record files 0 ft; the enumerated family (the at-site fit, post-raise years only, whole-record relation, Coyle Bridge unscaled, since 1994, drainage-area ratios at 0.5 to 1.0) spreads 94,520 to 136,398 cfs, 0 to 6 ft; the standing family once the raises are seen (12 constructions: six relation estimators, four fitting windows, carrying every year or only the pre-raise ones) spreads 111,284 to 112,040 cfs, every member 2 ft; the ruling-out is quiet, two ratios out of 65 visible only with both gauges side by side by water year.
-Analyst test: a strong analyst who fits LS-02's frequency curve to the Orrinsford record as published, after homogeneity tests that pass, files no raise (0 ft) with a 95,000 cfs design flood.
-Estimand: LS-02 section 2 (`OLDD_LS-02_levee_standard_rev3.pdf`): the peak discharge at the Orrinsford gauge with a 1 per cent chance of being exceeded in any year, for the river, its floodplain and its levees as they stand at the time of the review; the crown is the latest certification survey's (section 6) and a raise is uniform in whole feet (section 7).
+Not rule application: the filed rules fix the WHAT (s.2, the river as it stands; s.3, one peak for every water year since 1962) and the method, and the published record satisfies both as they read, so LS-02 executed word for word files 0 ft; no rule says the 1962 to 2008 peaks are not the present river's or how to rebuild them. The window rules out the shortcut that keeps only the 18 water years since the last raise, and it does not name the rebuild. The enumerated family (the at-site fit, post-raise years only, whole-record relation, Coyle Bridge unscaled, since 1994, drainage-area ratios at 0.5 to 1.0) spreads 93,473 to 136,398 cfs, 0 to 6 ft; the standing family once the raises are seen (13 constructions: six relation forms fitted over 2009 to 2026, the inverted regression, mean of ratios, three fitting windows, carrying only the pre-raise years, keeping larger observed peaks) spreads 109,813 to 110,527 cfs, every member 2 ft with the same five chances; the ruling-out is quiet, two ratios out of 65 visible only with both gauges side by side by water year.
+Analyst test: a strong analyst who reads every rule, takes LS-02's window as given (one published peak for every water year since 1962) and fits its frequency curve to the Orrinsford record as published, after homogeneity tests that pass, files no raise (0 ft) with a 95,000 cfs design flood; the window is a WHAT (which years the record covers), and judging whether those years' peaks are the present river's is the decisive analysis it leaves open.
+Estimand: LS-02 section 2 (`OLDD_LS-02_levee_standard_rev3.pdf`): the peak discharge at the Orrinsford gauge with a 1 per cent chance of being exceeded in any year, for the river, its floodplain and its levees as they stand at the time of the review, fitted (section 3) to one annual peak discharge for every water year since the gauge opened in water year 1962, discharges from the State Water Survey's records (section 8); the crown is the latest certification survey's (section 6) and a raise is uniform in whole feet (section 7). The window is part of the WHAT: it says which years the present-river record covers, never how a year's present-river peak is found.
 No decoy: nothing is planted: no memo, prior review, published design flood or stakeholder figure ships; the hydraulic study gives water surfaces by discharge and no design discharge; the raise years are the sponsors' own inventory entries.
 No certified replay: no certified design discharge, frequency curve or prior review ships, so the method is never recovered by matching published figures; LS-02 files the frequency method openly and the record's construction is the analysis.
 Lesson: an at-site flood frequency curve is only as good as the homogeneity of its record, and upstream flood-control works change its upper tail without leaving a trend; the check is a second gauge set against the works' in-force dates; no build on file teaches record homogeneity broken by upstream floodplain storage (`guard.py slots` returns nothing on levee, floodplain or attenuation).
@@ -92,14 +92,15 @@ Lesson: an at-site flood frequency curve is only as good as the homogeneity of i
 | Item | System that writes it | File | Natural mishandling | Effect |
 |---|---|---|---|---|
 | Peaks by date, no water year column | SWS peak export | annual peaks CSV | label by calendar year | same call and bin (SF8) |
+| Published peak times in local standard time | SWS peak export | annual peaks CSV | read as UTC | ask B only (the clock routes) |
 | Provisional WY2026 | SWS approval workflow | annual peaks CSV | drop it | same call and bins (SF12) |
 | Estimate codes, missing years | SWS records at Ashby, Gale Creek, Fenwick | annual peaks CSV | none on the main gauges | none (SF13) |
 | Table 4 in a PDF, station strings | consultant's report | Table 4 PDF | parse error | asserted read (L1) |
 | Raise dates in the sponsors' words | DNR inventory | inventory XLSX | read "Oct 2008" as WY2008 | same call and bin (SF14) |
 | NGVD 29 survey and gauge datums | the 2016 surveyor, the ORF2 logger header | 2016 survey, ORF2 export | not converted | ask A and B only (ledgered) |
 | Levee re-stationed in 2019 | the 2019 tie-in project | 2016 survey | join by station number | ask A only (device) |
-| Coyle Bridge gauge datum lowered 2021 | SWS field office | Coyle hourly, OP-04 | 21.0 ft throughout | ask B only (device) |
-| ORF2 stamps in CST before the logger swap | the old logger | ORF2 export | read as UTC | ask B only (device) |
+| Coyle Bridge gauge datum lowered October 2019 | SWS field office | Coyle hourly, OP-04 | 21.0 ft throughout | ask B only (device) |
+| The old ORF2 logger's records in CST, three days beside the new one | the old and new loggers | ORF2 export | read as UTC | ask B only (device) |
 
 ## Readability screen
 
@@ -115,14 +116,14 @@ Lesson: an at-site flood frequency curve is only as good as the homogeneity of i
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | design flood | 1 per cent annual chance peak at Orrinsford for the river as it now runs | 1 per cent of the published record as it stands | 0 ft | LS-02 s.2 files the estimand; the alternative is an easier method on the same estimand, not another reading |
+| SF1 | design flood | 1 per cent annual chance peak at Orrinsford for the river as it now runs, over one peak for every water year since 1962 | 1 per cent of the published record as it stands | 0 ft | LS-02 s.2 and s.3 file the estimand and its window; the published record is an easier method on the same estimand, not another reading |
 | SF2 | annual chance per raise | exceedance of the discharge the raised levee holds with freeboard | exceedance of the discharge held to the crown | figures move | the prompt's "with its freeboard" and LS-02 s.7 |
 | SF3 | crown | the 2024 certification survey (the inventory's crown sheet equals it at all 21 cross-sections) | the 2016 survey, or the 2024 crown less projected settlement | 2 ft either way | LS-02 s.6, "the latest certification survey"; asserted 2 ft with three more years of settlement |
 | SF4 | where the crown is checked | the 21 cross-sections of Table 4 | every 50 ft survey shot | same raise and bins | asserted (same call) |
 | SF5 | 4 ft freeboard | within 100 ft of a bridge or closure | only at the bridge stations | same call | no other cross-section within 100 ft (asserted) |
 | SF6 | Table 4 interpolation | linear in discharge | log-linear | same raise and bins | LS-02 s.4; asserted same |
 | SF7 | which stations are bridges | 62+40 and 118+70 | none | same call | inventory Structures and the Table 4 marks agree (asserted) |
-| SF8 | annual peak year | water year | calendar year labels, or calendar-year maxima | same call and bin; maxima drop published peaks | asserted; LS-02 s.8 (the peaks as published) |
+| SF8 | annual peak year | water year | calendar year labels, or calendar-year maxima | same call and bin; maxima drop water years' peaks | asserted; LS-02 s.3 (one peak for every water year) |
 | SF9 | raise | uniform, whole feet | fractional or local raises | not an option | LS-02 s.7 |
 | SF10 | regional skew | region 2, -0.08 and 0.14 (Pell and Marrow counties) | another region | not licensed | SW-16-03 Tables 1 and 2 |
 | SF11 | 1 per cent | annual exceedance probability 0.01 | none | same call | LS-02 s.2 |
@@ -131,39 +132,56 @@ Lesson: an at-site flood frequency curve is only as good as the homogeneity of i
 | SF14 | first fully raised year | water year 2009 (raise reported Oct 2008) | 2008 | same call and bin | asserted |
 | SF15 | skew used | weighted | station skew only | 4 ft | LS-02 s.3 files the weighting |
 | SF16 | upstream allowance | 0.5 ft at 0+00 to nothing at 180+00 | none | figures move | LS-02 s.5 |
-| SF17 | ask A points | crown shots matched by position, structures in or out | structures included | same bins | asserted |
-| SF18 | ask B crossing time | interpolated within the hour | first hour at or above, last hour below | same whole hours | asserted |
+| SF17 | ask A points | crown shots matched by position (every 2016 shot on today's levee pairs one to one with a 2024 shot), structures in or out | structures included; median per reach; the difference of the two surveys' reach means | same bins | asserted |
+| SF18 | ask B crossing time and rounding | interpolated within the hour, rounded | first hour at or above, last hour below, truncation | same whole hours (every lead's fraction 0.1 to 0.4) | asserted |
 | SF19 | ask B floods | every rise of the Orrinsford stage through the Main Street sill since October 2016 | none | seven floods | asserted |
 | SF20 | ask A datum | NAVD 88 = NGVD 29 + 0.27 at every district benchmark | averaging a subset | same | every pair gives 0.27 (asserted) |
+| SF21 | which years | one annual peak for every water year 1962 to 2026 | only the 18 water years since the last raise (104,714 cfs, 1 ft) | 1 ft | LS-02 s.3, "every water year since the Orrinsford gauge opened in water year 1962" |
+| SF22 | records | discharges from the State Water Survey's published records | every year's peak used as published | 0 ft | LS-02 s.8 names the source, not the years' values; s.2 sets the river they describe (asserted: no sentence says the peaks are the published ones) |
 
 ## Ladder
 
 | Rung | Construction | Design discharge (cfs) | Raise | Annual chance by raise 0 to 4 ft (%) |
 |---|---|---|---|---|
-| 0 | LS-02 fit to the published Orrinsford record, 1962 to 2026 | 96,995 (95,000) | 0 ft | 0.72, 0.55, 0.42, 0.32, 0.24 |
-| 1 | rung 0 after Mann-Kendall (p 0.48) and Pettitt (p 0.77) | 96,995 | 0 ft | as rung 0 |
-| 2 | only the 18 water years since the last raise | 106,027 (105,000) | 1 ft | 1.12, 0.88, 0.70, 0.56, 0.45 |
-| 3 | Coyle Bridge's record at the whole-record relation (0.983) | 101,963 (100,000) | 0 ft | 0.94, 0.75, 0.59, 0.47, 0.38 |
-| golden | Orrinsford from 2009, Coyle Bridge x 1.078 (the 2009 to 2026 relation) before | 111,807 (110,000) | 2 ft | 1.39, 1.11, 0.89, 0.72, 0.58 |
+| 0 | LS-02 fit to the published Orrinsford record, 1962 to 2026 | 95,430 (95,000) | 0 ft | 0.71, 0.54, 0.41, 0.31, 0.24 |
+| 1 | rung 0 after Mann-Kendall (p 0.43) and Pettitt (p 0.73) | 95,430 | 0 ft | as rung 0 |
+| 2 | only the 18 water years since the last raise (outside LS-02 s.3's window) | 104,714 (105,000) | 1 ft | 1.13, 0.89, 0.70, 0.56, 0.45 |
+| 3 | Coyle Bridge's record at the whole-record relation (0.969) | 100,546 (100,000) | 0 ft | 0.94, 0.75, 0.59, 0.47, 0.38 |
+| golden | Orrinsford from 2009, Coyle Bridge x 1.064 (the 2009 to 2026 relation through the origin) before | 110,403 (110,000) | 2 ft | 1.40, 1.12, 0.90, 0.72, 0.58 |
 | off | Coyle Bridge unscaled | 103,772 | 1 ft | |
-| off | Orrinsford since 1994 | 94,520 | 0 ft | |
-| off | drainage-area ratio at 0.5, 0.7, 1.0 | 118,971, 125,658, 136,398 | 3, 4, 6 ft | |
+| off | Orrinsford since 1994 | 93,473 | 0 ft | |
+| off | drainage-area ratio at 0.5, 0.7, 1.0 | 118,971, 125,658, 136,398 | 3, 5, 6 ft | |
 
-Shortfall at 118+70 under the golden 1.48 ft (the railroad closure governs every raise; Main Street 62+40 is next at
-1.03 ft). Gate F count on the clean truth and the pack: no cheap route files 2 ft (asserted).
+The relation's form, every one fitted over water years 2009 to 2026 and applied to 1962 to 2008 (asserted per form in
+`checks.py`; tightest margin of any chance to its one-decimal edge, the design discharge's margin to 107,500 or
+112,500):
+
+| Form | Design discharge (cfs) | Chances by raise 0 to 4 ft (%) | Tightest chance margin | Discharge margin |
+|---|---|---|---|---|
+| through the origin (golden) | 110,403 | 1.401, 1.118, 0.896, 0.721, 0.583 | 0.029 | 2,097 |
+| ratio of means | 110,477 | 1.405, 1.121, 0.899, 0.723, 0.585 | 0.027 | 2,023 |
+| straight line (OLS) | 110,260 | 1.394, 1.112, 0.891, 0.717, 0.579 | 0.029 | 2,240 |
+| straight line in logs | 110,359 | 1.399, 1.116, 0.895, 0.720, 0.582 | 0.030 | 2,141 |
+| MOVE.1 in logs | 110,372 | 1.400, 1.117, 0.895, 0.720, 0.582 | 0.030 | 2,128 |
+| every year from Coyle Bridge at the ratio | 110,445 | 1.403, 1.120, 0.898, 0.723, 0.584 | 0.028 | 2,055 |
+
+Stress rows (mean of ratios, the inverted regression, fitting from 2008, 2010 or 2012, carrying only the pre-raise
+years, keeping a larger observed peak) stay in every bin, tightest 0.019. Shortfall at 118+70 under the golden 1.50 ft
+(the railroad closure governs every raise; Main Street 62+40 is next at 0.77 ft). Gate F count on the clean truth and
+the pack: no cheap route files 2 ft (asserted).
 
 ## Closure table
 
 | # | Axis | Reading and move |
 |---|---|---|
-| 1 | Population | the river as it now runs (LS-02 s.2, filed); which years represent it is the analysis; the golden family converges (C1 over 12 constructions) |
+| 1 | Population | the river as it now runs (LS-02 s.2, filed) over one peak for every water year since 1962 (s.3, filed); whether a year's published peak is the present river's is the analysis; every relation form converges (C1 over six forms and seven stress rows) |
 | 2 | Unit of account | the annual peak at one gauge; the raise in whole feet (filed) |
 | 3 | Attribution window | water year (C1: calendar labels give the same call and bin) |
 | 4 | As-of dating | the review date; the record through water year 2026 (C1 with or without the provisional year) |
-| 5 | Version basis | the published peaks (LS-02 s.8); the latest certification survey (s.6) |
+| 5 | Version basis | discharges from the State Water Survey's records (LS-02 s.8), the provisional 2026 included (C1); the latest certification survey (s.6) |
 | 6 | Denominator | none in the main call; ask A averages matched shots per reach (C1 with structures) |
 | 7 | Weighting | moments on logs, equal years (filed method) |
-| 8 | Window length | the whole record (filed by "annual peak discharges"); the relation's fitting window converges 2008 to 2012 (C1) |
+| 8 | Window length | every water year since the gauge opened in 1962 (LS-02 s.3, filed, which rules out the 18-year fit, SF21); the relation's fitting window converges 2008 to 2012 (C1) |
 | 9 | Boundary inclusivity | the in-force year (Oct 2008 raise, WY2009); C1 with 2008 |
 | 10 | Rounding path | figures computed unrounded, rounded once at the end (prompt) |
 | 11 | Tie-break | none arises (asserted margins) |
@@ -181,10 +199,13 @@ Shortfall at 118+70 under the golden 1.48 ft (the railroad closure governs every
 
 ## Literal reader
 
-Executed word for word, LS-02 sections 2 to 7 on the shipped files give the golden only once the record is read as the
-present river's, which no sentence states and no reading of a sentence changes: every term in the prompt and LS-02 has
-a row above, each either converging (asserted) or ruled out by a quotable sentence, and the at-site fit is an easier
-method on the same estimand, not another reading of it.
+Executed word for word, LS-02 sections 2 to 8 on the shipped files ask for the 1 per cent flood of the river as it
+stands, fitted to one annual peak for every water year since 1962, with discharges from the State Water Survey's
+records. The published record meets the window and the source as they read; whether its 1962 to 2008 peaks are the
+present river's is the analysis no sentence performs. Read literally, s.3's window rules out the 18 water years since
+the last raise (SF21), and s.8 no longer says the peaks are the published ones (SF22), so a rebuilt year breaks no
+sentence. Every other term has a row above, each converging (asserted) or ruled out by a quotable sentence, and the
+at-site fit is an easier method on the same estimand, not another reading of it.
 
 ## Oracles
 
@@ -199,30 +220,34 @@ the inventory; the asks read the two crown surveys, the benchmark list, both hou
 main-call file carries a datum, a stationing history, a clock or a survey (asserted).
 
 - Ask A, crown settlement by reach (8 figures, 0.01 ft; maintenance program): 2016 shots against 2024 shots by
-  position. Primary device (D7 keys): the 2016 survey is on the stationing used before the 2019 north tie-in moved the
-  start 650 ft, found only from the four structures both surveys shot; joining by station number gives every reach
-  0.09 to 0.31 ft too much and every figure stays positive (silent). Hazard (D3): NGVD 29 against NAVD 88, +0.27 ft
+  position, every 2016 shot on today's levee paired one to one with a 2024 shot (both surveys every 100 ft), so the
+  paired mean and the difference of the two surveys' reach means agree. Primary device (D7 keys): the 2016 survey is on
+  the stationing used before the 2019 north tie-in moved the start 700 ft, found only from the four structures both
+  surveys shot; joining by station number gives every reach 0.09 to 0.34 ft too much and every figure stays positive
+  (silent). Hazard (D3): NGVD 29 against NAVD 88, +0.27 ft
   from the benchmark pairs (seen; unconverted settlement goes negative).
 - Ask B, warning lead time per flood (7 figures, whole hours; closure planning): from the river reaching the Coyle
-  Bridge warning level to the Orrinsford stage reaching the Main Street sill. Primary device (D2, a label stored before a
-  silent switch): OP-04 (2014) files the warning level as elevation 661.00 ft NGVD 29, "21.0 ft on the gauge" on the
+  Bridge warning level to the Orrinsford stage reaching the Main Street sill. Primary device (D2, a label stored before
+  a silent switch): OP-04 (2014) files the warning level as elevation 661.00 ft NGVD 29, "21.0 ft on the gauge" on the
   gauge datum of the day; the Coyle Bridge export states today's 638.00 ft datum and its stage steps 2.00 ft against
-  discharge on 19 October 2021, so the level is 23.00 ft on the gauge after the change and 21.0 ft before (an
-  over-correction to 23.00 ft throughout misses the 2020 floods). Second device (D8 clocks): the ORF2 stamps before the
-  8 June 2021 logger swap are CST under a UTC header; the export carries stage alone (no diurnal channel to profile,
-  no daylight-saving seam), and the shift shows only against the published peak times or the Coyle Bridge travel
-  time. Hazard (D3): the ORF2 gauge datum is on NGVD 29 and the sill on NAVD 88.
+  discharge on 22 October 2019, so the level is 23.00 ft on the gauge for every flood in the ask. Second device (D8
+  clocks): the old ORF2 logger's records are CST under the export's UTC header; the two loggers ran together for three
+  days in June 2021 and their records line up only at a 6 h shift, the published peak times (local standard time) sit
+  on the old logger's yearly highs and 6 h before the new one's, and Coyle Bridge's hourly record tops out 6 h after
+  every published Coyle Bridge time, so every route gives 6 h. Hazard (D3): the ORF2 gauge datum is on NGVD 29 and the
+  sill on NAVD 88. Every lead's crossing fractions put it 0.1 to 0.4 h past the whole hour, so rounding, truncation and
+  either whole-hour crossing convention agree.
 
 | Ask | Golden | Cracker handling | Cracker figures | Cracker |
 |---|---|---|---|---|
-| A settlement R1 to R8 (ft) | 0.07, 0.12, 0.16, 0.21, 0.29, 0.24, 0.14, 0.09 | datum converted, joined by station number | 0.21, 0.29, 0.36, 0.30, 0.39, 0.55, 0.33, 0.27 | miss |
-| B lead times, 2024 to 2025 floods (h) | 37, 31, 34, 52 | datums converted, 21.0 ft as printed, ORF2 as headed | 41, 33, 38, 58 | miss |
-| B lead times, 2020 floods (h) | 36, 29, 38 | same | 30, 23, 32 | miss |
+| A settlement R1 to R8 (ft) | 0.07, 0.12, 0.16, 0.21, 0.29, 0.24, 0.14, 0.09 | datum converted, joined by station number | 0.24, 0.29, 0.41, 0.30, 0.37, 0.58, 0.35, 0.28 | miss |
+| B lead times, 2020 floods (h) | 37, 29, 38 | datums converted, the ORF2 clock moved 6 h, 21.0 ft as printed | 42, 33, 43 | miss |
+| B lead times, 2024 to 2025 floods (h) | 38, 32, 35, 51 | same | 43, 35, 40, 58 | miss |
 
 Mirror: off the call at rung 0, the same ask handling (nothing in the asks comes from the call): 0 of 15 ask criteria.
-The re-stationer (re-stations the 2016 survey, prints 21.0 ft, takes ORF2 as headed) keeps 8 of 15; the full includer
-15 of 15 (stress rows, not the gate). Over-correction row: 23.00 ft throughout misses the three 2020 floods (32, 27,
-33 h); the ORF2 stamps moved but 21.0 ft printed misses the four later floods (41, 33, 38, 58 h).
+The re-stationer (re-stations the 2016 survey, prints 21.0 ft) keeps 8 of 15; the full includer 15 of 15 (stress
+rows, not the gate). The ORF2 clock now shows in the battery (the stamps step back where the new logger starts), so
+the cracker is priced as fixing it; the Coyle Bridge datum change before the 2020 floods keeps every lead off it.
 
 Pair ceiling: 28.5 (cracker 45.0, mirror 12.0)
 Mirror leakage: 0.0 per cent of the ask weight
@@ -249,6 +274,27 @@ the last sentence; no count the data hold, no persona; `voice-check.py` PASS at 
   calibration floods); none names the levee raises, a second gauge, a period or the record's homogeneity.
 - The inventory naming three of the answer set's names beside numbers: the Structures sheet's pump stations and the
   Main Street closure with their stations; it ranks nothing on the decision question.
+
+## Stage 4 round 1
+
+- Judge (2026-11-01): NOT_DETERMINISTIC, SEND_BACK, the failing gates C and E; Gate G passes (nonstationary frequency,
+  analytical, no surface-read dependency) and Gate H passes (domain, layers, an analytical decisive step). The brief
+  carried the graded blocks inline, so the round broke derive-first and does not spend the one re-judge.
+- Findings: (1) the 18 water years since the last raise met LS-02 s.2 and s.8 as written, a competing answer (1 ft);
+  (2) extension forms ran 111.2k to 113.6k, the top over the bin edge; (3) the ORF2 clock offset was not forced (Coyle
+  Bridge's hourly crests 3 to 5 h after the published times pointed at 4 h); (4) "whole hours" admitted truncation;
+  (5) reach descriptors with no shipped source, and the surveys' reach means differing from the paired figure.
+- Leak reader: question 6 read "mostly rule application, with one analytical judgement left (record homogeneity)";
+  realism tells in Table 4's uniform fall, the smooth crown and the inspection summary.
+- Repair (generator, one pass): LS-02 s.3 files the window ("one annual peak discharge for every water year since the
+  Orrinsford gauge opened in water year 1962") and s.8 the source only ("Discharges are taken from the State Water
+  Survey's published records; the district's loggers record stage for flood warning only"); the relation steadier and
+  the design discharge centred (six forms 110,260 to 110,477, every chance 0.027 or more inside its bin); published
+  peak times set from the agency's own hourly crests, the two ORF2 loggers overlapping three days, all three clock
+  routes at 6 h; every lead's fraction 0.1 to 0.4 h; reach descriptors dropped, both surveys every 100 ft with a 700 ft
+  realignment; Table 4 with reach slopes and cross-section effects, the crown with low spots, a tie-in step and a level
+  floodwall top, the inspection a ratings report; the Coyle Bridge datum change moved to October 2019 and the sill to
+  616.95 ft. The Three rules lines say why the window is a WHAT and the homogeneity judgement stays the decisive step.
 
 ## Build record
 
@@ -458,3 +504,33 @@ Stage 3 green on 2026-11-01, every gate on the final cut (`target.zip` sha256 1c
 - The Orrinsford gauge datum at 608.00 ft NAVD 88: low-flow stages read about -1 ft on the ORF2 logger, below any real
   gauge datum's floor; set to 600.00 ft (599.73 ft NGVD 29), the sill at 17.45 ft on the gauge, every crossing and
   lead time unchanged (both datums whole feet, so the hundredths round alike).
+- LS-02 s.3 with no window and s.8 saying the annual peaks are "those published by the State Water Survey" (judge
+  round 1, Gate C): the 18 water years since the last raise met s.2 and s.8 as written (1 ft), and s.8 read literally
+  forbade any rebuilt year; s.3 now files the window (one peak for every water year since 1962) and s.8 the source
+  only. The judge's wording ("the discharges the present river would carry in the years of the Coyle Bridge record")
+  was refused: it names the move.
+- The relation at about 2 per cent scatter (intervening share sd 0.018, noise 0.011) around 1.078: the judge's
+  extension forms ran 111.2k to 113.6k, the top past the 112,500 edge; the intervening tributaries' share made steadier
+  (they crest a day before the main stem reaches town: sd 0.009, noise 0.0055) and smaller (0.065), centring the
+  design discharge at 110,403 with six forms at 110,260 to 110,477.
+- Published peak times off the hourly records by 0 to 3 h (each crest pulled earlier by a falling baseflow), which
+  pointed at a 4 h clock: the published times are now the hour the agency's own record tops out, each annual crest a
+  single top hour in every shipped series (crest sharpness set per flood).
+- The ORF2 logger swap as a 7 h gap: nothing inside the export fixed the old clock; the two loggers now run together
+  for three days and line up only at 6 h.
+- Lead times with fractions up to 0.86 h: truncation filed other whole hours (judge round 1); every lead now sits 0.1
+  to 0.4 h past its whole hour.
+- Reach descriptors ("north tie-in to Pump Station 1" and the rest) in the golden and the write-up with no shipped
+  source: dropped; the reaches are their ids and station ranges from the 2024 survey.
+- A 2024 survey every 50 ft against a 2016 survey every 100 ft with a 650 ft realignment: the 2016 shots paired with
+  one 2024 shot in two, so the surveys' reach means differed from the paired figure (R1 0.06, R2 0.11, R8 0.10);
+  both surveys every 100 ft and the realignment 700 ft, pairing one to one.
+- Table 4 with one uniform fall and a crown falling smoothly at round steps (the leak reader read both as computed):
+  reach slopes, cross-section effects and the bridges' afflux in Table 4; low spots, the 2019 tie-in step and the
+  Cedar Street floodwall's level top in the crown, none within 400 ft of a bridge.
+- The 2025 inspection summary with an overall-rating paragraph and a follow-up line: restyled as the DNR checklist's
+  item, station, rating and remark table.
+- The Coyle Bridge datum change in October 2021: with the ORF2 overlap now visible to the battery, a cracker fixing
+  the clock would have kept the three 2020 floods; the change moved to 22 October 2019, before every flood in the ask.
+- The Main Street sill at 617.45 ft under the repaired hydraulics: the 2025 flood crested below it; set to 616.95 ft
+  (2025 over it by 0.42 ft, water year 2022 0.74 ft under).

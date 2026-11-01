@@ -73,6 +73,9 @@
   "precut": "PASS, 61 checks, 0 FAIL, 0 WARN",
   "voice_check": "PASS (988 characters)",
   "target_zip_sha256": "d613bac0e35fc25acb1cb6227a31258f33a8202e5722f4d73247c787ec45188e",
-  "pair_ceiling": "28.5 (43.5 if the cracker also finds one silent device); mirror leakage 0.0"
+  "pair_ceiling": "28.5 (43.5 if the cracker also finds one silent device); mirror leakage 0.0",
+  "guard_heart": "WARN (repeat.gate_g only)",
+  "guard_surface": "7 card-axis pairs promoted for adjudication (gap population, G14, quantity_figure: task134, task131, task465, task146, task165, task156, task54), each with a card differentiation line; surface similarity 0.080 to 0.100; no personas in the cut pack",
+  "leak_py": "REVIEW, no LEAK (--asof 2026-10-16)"
  }
 }

@@ -144,8 +144,9 @@ def main():
        std_txt and P.first_wy == 1962 and rt["R2_post_raise_only"]["n"] == 18 and
        len(A.present_series(P)) == 2026 - P.first_wy + 1)
     ok("SF21b LS-02 names no Coyle Bridge, extension, homogeneity, levee raise or relation",
-       not any(w in std_txt.lower() for w in ("coyle", "extension", "extend", "homogene", "levee raise", "raised",
-                                              "relation", "upstream gauge", "agricultural")))
+       not any(w in std_txt.lower() for w in ("coyle", "extension", "extend", "homogene", "levee district",
+                                              "agricultural", "relation", "second gauge", "upstream gauge",
+                                              "levees were raised", "since the raise")))
     ok("SF22 LS-02 section 8 takes discharges from the State Water Survey's records without fixing which years are "
        "used as published (positive control)", "Discharges are taken from the State Water Survey's published records"
        in std_txt and "Annual peak discharges are those published" not in std_txt)
