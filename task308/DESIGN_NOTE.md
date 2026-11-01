@@ -46,6 +46,16 @@ insurance world is carried.
   is answered by the decision: a pick of one offer asks which. Deliverables moved to xlsx and docx after the pdf and xlsx
   set repeated task271.
 
+## Survivor anatomy
+
+Actor: the deciding property, how available a Ketchum Ridge peaker would be in the hours that carry the replayed shortfall, has no column in any file: the offer has no record of its own, the RFO gives one annual EFORd, and nothing stores a unit's availability conditional on the fleet being short.
+Link: the property is read by setting the outage event log's hourly events for the units whose Gas transportation is Northgate IT in the fleet list against the shortfall hours the replay of the weather-year table produces, and carrying that class's hourly share to an offer the RFO describes in prose as taking gas on the same service; no key joins the offer to the existing units and no sentence invites the hourly comparison.
+Reflex: the field's accreditation of a new thermal unit, its rated EFORd (or its class's ten-year forced outage rate) applied in every hour, sits at rungs 1 to 4 and files the default path's Ends on, Ketchum Ridge at a net USD 115 million (asserted).
+Back-test: the textbook route validates: the Northgate IT class's own ten-year forced outage rate (5.2 per cent, 4.4 without lack of fuel) sits beside the manufacturer's 4.5 per cent EFORd, so a solver checking the rated figure against the record finds it confirmed.
+Second use: every file the decisive step reads (the event log, the fleet list, the weather-year table, the RFO, RA-3) is read by the default path too, for the fleet replay, the 2027 fleet, the load and renewables, the offers and the estimand; with the decisive step deleted the pack carries the same fourteen files.
+Shock: the lack-of-fuel outages read as ordinary forced outages: they are one cause code among many in a GADS-style log, the class's annual rate is unremarkable, and on MW offered, price per kW-month and the default path's net value the import is not first; on the default path's energy removed it leads Ketchum Ridge by only 200 MWh, so no sort hands over the award.
+Pins: the WHAT is filed in RA-3 Rev. 4 (the 2027 fleet, the ten weather years equally weighted, unserved energy in MWh a year at USD 20,000, each offer alone at its expected available capacity in each hour from the evidence the record holds) and the RFO (the 2027 payment, the award rule); no filed sentence names fuel, transport service, cold, curtailment, the class or a dependence between units, and the hour the section names is the grain every rung replays on.
+
 ## Default path
 
 The route a capable analyst takes with every file read and every filed rule executed:
@@ -257,6 +267,19 @@ Measured by: generator/pair.py on the cut pack.
 - The 10/10 rules re-read against the built pack: the decisive step is judging a new peaker's availability in the
   hours that carry a shortfall from its sister units' record, an analytical choice; the mess (mixed time stamps,
   revised MDM intervals, a delivery point moved between members) stays Layer 1.
+- 2026-11-01, re-check under the new gates. The rebuild (make.py, pyarrow 26.0.0 installed for the parquet writer)
+  reproduces the shipped target.zip byte for byte (7291ae6c30393d00). precut exit 0 but 8 WARN: the survivor anatomy
+  was missing (written above, 0 WARN now) and the prompt disclosed the candidate set's size ("Which of the four", "the
+  four net values"); both counts dropped from the prompt and from the docx answer line in writeup.py. leak.py REVIEW
+  (sweeps 12 and 13 clean; the REVIEW lines as before, the prompt's which-form quota answered by the decision, a pick);
+  guard heart WARN (question form which against task271), surface exit 0, figures_check 61 of 61, checks 202, verify 0.
+  freeze.py determinism moves only the prompt's call sentence, the dropped count (accepted: a count the data hold is the
+  model's to find); every graded figure, the goldens and target.zip unchanged. Second leak read clean, question 6
+  analytical; gads_cause_codes.csv, which it read as a plain code list, is the GADS cause code table the outage log keys
+  on (H9's line: a code table the organisation keeps is data).
+  Judge pass 2 DETERMINISTIC, APPROVE (Gate H analytical); its optional note, that rounding energy before valuing moves
+  Sandhill Draw and Coulee Flats by USD 1 million, is left as filed: the prompt rounds once at the close (closure axis 10)
+  and the award does not move.
 
 ## Tried and rejected
 

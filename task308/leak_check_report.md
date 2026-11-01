@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: reader, peaker, record, section, screen, replay, golden, readers, claims, asserted, severn, sentence, forced, carried, plan-only, planning, import, outages, availability, re-root, ketchum, default, decisive, catastrophe, weather
+Stump terms swept: reader, record, section, peaker, replay, sentence, golden, forced, screen, asserted, readers, claims, ketchum, default, decisive, outages, availability, severn, import, carried, plan-only, shortfall, planning, outage, re-root
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `2027_capacity_rfo_offers_received.pdf`: golden figure 300 appears: ...ortation (IT) service. Manufacturer's EFORd 4.5%. 300 MW USD 6.45 per kW-month Red Willow import Red Wi...
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `2027_capacity_rfo_offers_received.pdf`: 3 of 25 stump-paragraph terms appear (planning, import, ketchum); read whether the document names the move
-- **REVIEW** `RA-3_resource_adequacy_standard_rev4.pdf`: 7 of 25 stump-paragraph terms appear (record, replay, forced, planning, import, outages); read whether the document names the move
+- **REVIEW** `2027_capacity_rfo_offers_received.pdf`: 3 of 25 stump-paragraph terms appear (ketchum, import, planning); read whether the document names the move
+- **REVIEW** `RA-3_resource_adequacy_standard_rev4.pdf`: 7 of 25 stump-paragraph terms appear (record, replay, forced, outages, import, planning); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 1)
 - **REVIEW** `2027_capacity_rfo_offers_received.pdf`: names 4 of 12 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -24,6 +24,9 @@ Stump terms swept: reader, peaker, record, section, screen, replay, golden, read
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); reword at the role level, not the verb
+
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
@@ -33,8 +36,6 @@ Stump terms swept: reader, peaker, record, section, screen, replay, golden, read
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read
@@ -51,3 +52,14 @@ Isolated reader (sonnet, medium), 2026-10-27, on the cut pack only (prompt.txt a
 Mechanical-sweep rulings: answer-figure sweep harmless (offered MW, prices and the manufacturer's EFORd are inputs); ranking sweep on the RFO paper harmless (capacity and price only, no ranking); ranking sweep on the delivery point register harmless (no energy or peak figures); date sweep on fleet_list_2027.xlsx harmless (a retirement date and contract end dates).
 
 Realism notes: substation names in the delivery point register run in near-alphabetical order and meters repeat from four models; uniform event_id formatting; mixed time formats across files read as deliberate mess. No placeholders, hidden sheets or toolchain signatures.
+
+Second read, isolated reader (sonnet, medium), 2026-11-01, on a fresh copy of the re-check's pack (byte-identical to the shipped target.zip) and the prompt with its count dropped.
+
+1. Decisive step: none announced; RA-3 sections 4 and 7 state the estimand and leave how an offer's hourly availability is judged from the record open. No file says a gas-fired offer's availability differs in cold weather.
+2. Ranking or scoring file: none; the RFO paper restates the evaluation basis, the forward curve gives prices.
+3. Helper-only file: gads_cause_codes.csv read as a plain code list (ruled harmless by the main thread: it is the GADS cause code table the organisation's outage system keys on, codes with their published descriptions, no column glosses; `reduce-house-fixes` H9's line). RA-3, the RFO paper and MS-12 have real roles.
+4. Answer-like figure: none; no EUE, net value, member energy or 12-CP figure appears.
+5. Filed sentences: RA-3 sections 6 and 7 (hourly shortfall, equal-weight ten-year mean, each offer alone with and without), MS-12 sections 1, 2 and 4; their literal execution is the golden's construction with the offer's hourly availability left to the record.
+6. What decides the main answer: an analytical choice (estimating each offer's expected hourly availability from the evidence); the explicit replay rules are executed inside it and do not decide the call alone.
+
+Mechanical flags: all harmless (the RFO's figures are inputs; RA-3's vocabulary is the domain's; the member files hold no 2025 answer; the fleet list's later dates are a retirement and contract ends; the prompt carries no count of the data).

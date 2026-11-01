@@ -5,28 +5,40 @@
  "objective": "opportunity-sizing-decision",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-27",
+ "updated": "2026-11-01",
  "stump": "A capable analyst credits the new Ketchum Ridge peaker with its rated or class-average availability in every replayed hour and awards it (net USD 115 million), but the ten Northgate IT peakers were out together on lack of fuel in every shortfall hour, so a peaker on the same service removes 0 MWh and the Red Willow firm import (net USD 106 million) is the award.",
  "architecture": 3,
  "loops": 0,
  "precut": {
   "exit": 0,
-  "date": "2026-10-27"
+  "date": "2026-11-01",
+  "checks": 61
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-27 (offer MW and prices as inputs, lists that rank nothing, contract end dates)",
-  "reader": "2026-10-27 isolated sonnet medium: no decisive-step sentence, question 6 analytical, every REVIEW line harmless"
+  "leak_py": "REVIEW 2026-11-01 (no LEAK; sweeps 12 and 13 clean; offer MW and prices as inputs, lists that rank nothing, contract end dates; the prompt's count line cleared, its which-form quota answered by the decision)",
+  "reader": "2026-11-01 re-check, isolated sonnet medium on the shipped pack and the count-free prompt: Q1, Q2, Q4 none; Q3 gads_cause_codes.csv read as a code list, ruled harmless (the GADS cause code table the outage log keys on, H9's line); Q5 executes to the golden's construction; Q6 analytical; every REVIEW line harmless. Earlier: 2026-10-27 read, clean"
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-27 (question form which, against task271)",
+  "heart": "WARN 2026-11-01 after the final pull (question form which, against task271; no BLOCK)",
+  "surface": "2026-11-01 exit 0, no persona",
   "nearest": "task281 0.10 (driver)"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "determinism_check_report.md"
+  "verdict": "DETERMINISTIC (pass 2, 2026-11-01)",
+  "disposition": "APPROVE; every graded figure reproduced; optional note (round once at the end is filed by the prompt's closing rounding sentence and closure axis 10) left as filed",
+  "report": "task308/determinism_check_report_pass2.md (pass 1: determinism_check_report.md)",
+  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none (in-house re-check under the new gates: precut 8 WARN on the missing survivor anatomy, the prompt disclosing the candidate set's size)",
+   "repair": "determinism",
+   "fix": "survivor anatomy written; the prompt drops 'of the four' and 'the four net values' (and the docx answer line in writeup.py follows it); freeze.py --mode determinism moves only the prompt's call sentence, the dropped count; target.zip byte-identical (7291ae6c30393d00), goldens and every graded figure unchanged",
+   "commit": "RESHIPPED (task308)"
+  }
+ ],
  "resume": "",
  "approved": null,
  "delivered": "2026-10-27",

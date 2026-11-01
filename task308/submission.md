@@ -56,4 +56,4 @@ Not Ketchum Ridge, the cheapest capacity at USD 23.2 million: every hour with a 
 
 ### capacity_award_2027.docx
 
-1. The committee paper recommends the Red Willow import, with a bar chart of the four offers' net values (the Red Willow import highlighted) and the member allocation table.
+1. The committee paper recommends the Red Willow import, with a bar chart of every offer's net value (the Red Willow import highlighted) and the member allocation table.

@@ -92,8 +92,8 @@ def main():
         out.append("   - %s: %.1f" % (k, F["ask_b_mw"][k]))
     out.append("")
     out.append("### capacity_award_2027.docx\n")
-    out.append("1. The committee paper recommends the Red Willow import, with a bar chart of the four offers' net "
-               "values (the Red Willow import highlighted) and the member allocation table.")
+    out.append("1. The committee paper recommends the Red Willow import, with a bar chart of every offer's net "
+               "value (the Red Willow import highlighted) and the member allocation table.")
     text = "\n".join(out) + "\n"
     with open(os.path.join(os.path.dirname(HERE), "submission.md"), "w") as fh:
         fh.write(text)
