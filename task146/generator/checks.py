@@ -1,108 +1,116 @@
-"""task146 architecture 2: the generator's checks on the cut pack and on the world's clean truth."""
+"""task146 architecture 3: the generator's assertions on the cut pack and on the world's own truth."""
 import csv
 import json
 import os
 import re
 import sys
 
+import numpy as np
+from pypdf import PdfReader
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-sys.path.insert(0, HERE)
-import golden as G   # noqa: E402
-import pack as PK    # noqa: E402
-import world as W    # noqa: E402
-
 TARGET = os.path.join(TASK, "target")
+sys.path.insert(0, HERE)
+import analysis as A  # noqa: E402
+import pack as PK     # noqa: E402
+import world as W     # noqa: E402
+
 fails = []
 
 
-def ok(cond, label, detail=""):
-    print("%s  %-64s %s" % ("PASS" if cond else "FAIL", label, detail))
+def ok(name, cond, detail=""):
+    print(("PASS " if cond else "FAIL ") + name + ("   " + str(detail) if detail else ""))
     if not cond:
-        fails.append(label)
+        fails.append(name)
 
 
-def m(x):
-    return int(round(x / 1e6))
+def pdf_text(name):
+    return " ".join(p.extract_text() for p in PdfReader(os.path.join(TARGET, name)).pages)
 
 
-def edge(x):
-    """distance of x (pounds) from the nearest half-million rounding edge, in millions"""
-    v = x / 1e6
-    return abs((v - int(v)) - 0.5)
+def main():
+    P = A.Pack(TARGET)
+    resp = A.composite(P)
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    # ---- the call and its family -------------------------------------------------------------------------
+    g, (a16, bw) = A.golden(P, resp)
+    ok("C1 the golden files 200 mg", A.pick(g) == 200, g)
+    fam = {"golden": g, "weight exponent fixed at 1.0": A.golden(P, resp, wexp=1.0)[0],
+           "Emax exposure-response": A.golden(P, resp, form="emax")[0],
+           "prior biologic in the exposure-response": A.golden(P, resp, prior=True)[0],
+           "logistic on log dose and log weight": A.dose_weight_logistic(P, resp),
+           "observed week-16 trough with the between-patient spread": A.observed_er(P, resp)}
+    for k, v in fam.items():
+        ok("C2 standing member files 200 mg, 100 mg at least 2 points under 70: " + k,
+           A.pick(v) == 200 and v[100] <= 68.0 and v[200] >= 75.0 and v[50] < 60, {d: round(x, 1) for d, x in v.items()})
+    easy = A.easy_routes(P, resp)
+    for k, v in easy.items():
+        ok("C3 easy route files 100 mg with at least 4 points over 70: " + k, A.pick(v) == 100 and v[100] >= 74.0
+           and v[50] < 60, {d: round(x, 1) for d, x in v.items()})
+    lab = A.composite(P, label=True)
+    ok("C4 the labelled-baseline composite also files 100 mg on the arm rates",
+       A.pick({d: A.arm_rates(P, lab)["HB%d" % d] for d in A.CANDIDATES}) == 100)
+    ok("C5 the weight exponent the troughs give sits near the world's", abs(-bw - W.WEXP) < 0.15, round(-bw, 3))
+    # ---- the world's truth -------------------------------------------------------------------------------
+    w = W.World()
+    keep = np.mean([not p["disc"] and not p["resc"] for p in w.pat if p["dose"] > 0])
+    rng = np.random.default_rng(3)
+    eta = rng.normal(0, W.OMEGA, 3000)
+    ws = np.array([c["weight"] for c in w.cand])
+    truth = {}
+    for d in A.CANDIDATES:
+        c = d * W.ACC[16] / (W.CL0 * (ws[:, None] / 85.0) ** W.WEXP * np.exp(eta[None, :]) * 28)
+        truth[d] = 100 * float(W.p75(c).mean()) * keep
+    ok("C6 the world's own truth files 200 mg (100 mg under 70)", truth[100] < 68 and truth[200] > 75, truth)
+    ok("C7 every recorded number accurate: troughs follow dose over clearance (median log error under 0.02)",
+       abs(np.median([math_log_err(P, w)])) < 0.02)
+    # ---- the asks ----------------------------------------------------------------------------------------
+    ap, ai = A.ask_pasi(P), A.ask_itch(P)
+    apl, ain = A.ask_pasi(P, label=True), A.ask_itch(P, anchor="rand")
+    ok("SF1 the labelled-baseline reading moves ask A", sum(ap[k] != apl[k] for k in ap) >= 4,
+       "%d of %d" % (sum(ap[k] != apl[k] for k in ap), len(ap)))
+    ok("SF2 the randomisation-day anchor moves ask B", sum(ai[k] != ain[k] for k in ai) >= 6,
+       "%d of %d" % (sum(ai[k] != ain[k] for k in ai), len(ai)))
+    ok("SF4 figures.json carries the call and the asks", fig["call"]["dose_mg"] == 200 and
+       len(fig["ask_pasi"]) == 10 and len(fig["ask_itch"]) == 10)
+    # ---- the pack ----------------------------------------------------------------------------------------
+    files = sorted(os.listdir(TARGET))
+    ok("G1 thirteen files in four formats", len(files) == len(PK.FILES) and
+       {f.rsplit(".", 1)[1] for f in files} == {"csv", "xlsx", "pdf", "eml"}, files)
+    n = sum(1 for _ in open(os.path.join(TARGET, PK.FILES["epro"]))) - 1
+    ok("G2 a file of 25,000 rows or more", n >= 25000, n)
+    txt = pdf_text(PK.FILES["sap"]) + " " + pdf_text(PK.FILES["cdp"]) + " " + open(
+        os.path.join(TARGET, PK.FILES["email"]), encoding="utf-8").read()
+    for wd in ("weight", "clearance", "exposure", "body weight", "kg", "heavier", "lighter", "concentration-response"):
+        ok("G3 no document names the move: '%s'" % wd, re.search(r"\b%s\b" % wd, txt, re.I) is None)
+    alltxt = ""
+    for f in files:
+        if f.endswith((".csv", ".eml")):
+            alltxt += open(os.path.join(TARGET, f), encoding="utf-8").read()
+    ok("G4 no em dash in any text file", "—" not in alltxt + txt)
+    ok("G5 the documents carry their own stamps", all(b"ReportLab" not in open(os.path.join(TARGET, f), "rb").read()
+                                                       for f in files if f.endswith(".pdf")))
+    print("checks: %d failed" % len(fails))
+    sys.exit(1 if fails else 0)
 
 
-D = G.load(TARGET)
-res = G.call(D)
-g = res["golden"]
-acc = G.stable(D, money=False)
-bond = G.stable(D, money=True, bonds=True)
-mean = G.stable(D, money=True, share="mean")
-r0 = G.total_ratio(D)
-hedge = m(res["hedge"])
-after = res["after_january"]
+def math_log_err(P, w):
+    import math
+    cl = {}
+    sid_of = {}
+    for p in w.pat:
+        sid_of[p["i"]] = p
+    by_sid = {}
+    R = PK.Records(w)
+    for p in w.pat:
+        by_sid[p["sid"]] = p
+    errs = []
+    for sid, wk, d, wt, c in P.troughs(weeks=(16,)):
+        p = by_sid[sid]
+        errs.append(math.log(c) - math.log(d * W.ACC[16] / (p["cl"] * 28.0)))
+    return float(np.median(errs))
 
-# the call and its rungs
-ok(hedge == m(g["stable"][12]["total"]), "the hedge is the first-anniversary stable balance", "%d" % hedge)
-ok(m(acc["stable"][12]["total"]) <= hedge - 25, "R1 account cohorts file a hedge at least 25 million lower",
-   "%d against %d" % (m(acc["stable"][12]["total"]), hedge))
-ok(m(bond["stable"][12]["total"]) >= hedge + 3, "R2 keeping bond-funded closures files a higher hedge",
-   "%d" % m(bond["stable"][12]["total"]))
-ok(r0[12] > 0.99, "R0 the total book a year on over the book is over 0.99 (new money)", "%.3f" % r0[12])
-new = res["hedge"] - after
-ok(new > 0 and m(new) == hedge - round(after / 1e6, 1) // 1 or m(new) == m(res["hedge"] - after),
-   "the new swap brings the swaps outstanding to the hedge", "%d" % m(new))
-ok(m(acc["stable"][12]["total"]) * 1e6 < after + 1e6 * 30, "R1's hedge sits within 30 million of the swaps left, a small new swap",
-   "%d against %.1f" % (m(acc["stable"][12]["total"]), after / 1e6))
 
-# SF1 pooled against mean of ratios: same graded figure everywhere at the million
-same = all(m(mean["stable"][k][f]) == m(g["stable"][k][f]) for k in G.HORIZONS for f in list(G.FAMILIES) + ["total"])
-ok(same, "SF1 start dates taken together or averaged: every graded figure the same at the million")
-# SF2 the lowest month-end balance against the anniversary balance alone (filed in 7.3): moves the figure
-# SF3 matching on the UTC date against the local date: the overnight batch is the same instant, so the same links
-# every graded figure off a half-million edge by 0.05 million or more
-edges = [edge(g["stable"][k][f]) for k in G.HORIZONS for f in list(G.FAMILIES) + ["total"]] + \
-        [edge(g["now"][f]) for f in G.FAMILIES] + [edge(g["book"]), edge(res["hedge"] - after)]
-ok(min(edges) >= 0.05, "every graded figure at least 0.05 million off a rounding edge", "%.3f" % min(edges))
-# SF4 the product code ES02 read by date
-ok(m(g["now"]["Young Saver"]) > 0 and m(g["now"]["Easy Saver"]) > 0, "SF4 ES02 by date: Young Saver and Easy Saver both carry balances")
-# SF5 a closure with more than one same-day opening of its amount: none (the link is unique)
-succ, _ = G.links(D)
-closes = sum(1 for e in D["events"] if e[1] == "CLOSE")
-ok(len(succ) > 0.3 * closes, "the matched closures are a large share of closures", "%d of %d" % (len(succ), closes))
-
-# the analyst test on the clean truth: account cohorts on the world's own records file the low hedge
-w = W.World()
-pids = {}
-for a, v in w.accounts.items():
-    pids.setdefault(v["pid"], []).append(a)
-true_links = sum(len(v) - 1 for v in pids.values())
-ok(abs(true_links - len(succ)) <= 3, "the same-day links recover the world's switches", "%d against %d" % (len(succ), true_links))
-
-# input gates
-names = sorted(os.listdir(TARGET))
-ok(len(names) >= 10, "G1 ten or more files", "%d" % len(names))
-ext = {n.rsplit(".", 1)[1] for n in names}
-ok(len(ext) >= 3, "G2 three or more formats", str(sorted(ext)))
-rows = sum(1 for _ in open(os.path.join(TARGET, PK.FILES["balances"]))) - 1
-ok(rows >= 25000, "G3 a file of 25,000 rows or more", "%d" % rows)
-meta = json.load(open(os.path.join(TASK, "metadata.json")))
-ok(len(meta["distractors"]) >= 2, "G4 two or more named distractors", str(meta["distractors"]))
-ok(all(f.get("source") and f.get("date") and f.get("license") for f in meta["files"]), "G5 every file has a source, date and licence")
-bad = []
-for n in names:
-    if n.endswith((".csv", ".eml")):
-        if "—" in open(os.path.join(TARGET, n), encoding="utf-8").read():
-            bad.append(n)
-ok(not bad, "G6 no em dash in any text file", str(bad))
-late = []
-with open(os.path.join(TARGET, PK.FILES["events"])) as fh:
-    for r in csv.DictReader(fh):
-        if r["event_utc"] > "2026-12-01":
-            late.append(r["event_utc"])
-ok(not late, "G7 no event after the extract", str(late[:2]))
-sub = open(os.path.join(TASK, "submission.md")).read()
-ok("—" not in sub, "G8 no em dash in the write-up")
-print("%d checks, %d failed" % (len(fails) + 0 if False else len([1 for _ in range(1)]) - 1 + 0, len(fails)) if False else
-      "%d failed" % len(fails))
-sys.exit(1 if fails else 0)
+if __name__ == "__main__":
+    main()

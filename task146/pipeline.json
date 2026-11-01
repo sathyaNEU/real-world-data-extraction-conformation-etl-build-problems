@@ -1,6 +1,6 @@
 {
  "task": "task146",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "biomedical-clinical-research / dose-response-pk-pd-modeling (client biomedical-clinical-research)",
  "objective": "forecasting",
  "stage": 2,
@@ -9,7 +9,11 @@
  "stump": "A competent solver reads the phase 2b dose-response, the arms' week-16 PASI 75 rates or an Emax curve fitted on dose, and takes 100 mg, which cleared 70 per cent there; the phase 3 population weighs more and HB-231's clearance rises with weight, so at 100 mg its patients run lower troughs and the expected response falls under 70 per cent; carried through the weight-clearance relation and the exposure-response fitted on phase 2b, only 200 mg clears the bar.",
  "architecture": 3,
  "loops": 0,
- "precut": null,
+ "precut": {
+  "exit": 1,
+  "date": "2026-11-01",
+  "checks": "58, 7 FAIL, 1 WARN: every main-call section passes (three rules, survivor anatomy, readability, fork table, ladder, closure, literal reader, oracles); the FAILs are the ask layer (pair ceiling, mirror leakage, ceiling script, cracker misses every ask) and SF ids not yet asserted by label in checks.py"
+ },
  "leak": {
   "leak_py": "",
   "reader": ""
@@ -25,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: write the ladder, the three rules, the survivor anatomy, the fork and closure tables and the asks for architecture 3 (Hvidore Biologics' HB-231 phase 3 dose), gate with precut.py, then build the generator (world, pack, golden, checks, verify, writeup, ceiling, make).",
+ "resume": "stage 2, the ask layer only (the main call, its world and every main-call section of the note are done and green): (1) redesign both ask devices so a cracker that executes every filed SAP rule and reads each file as it presents itself still misses each ask: the first devices (the Finnish eCRF's Baseline label, the Norwegian pharmacies' later first doses) are defeated by the SAP's own date rules (the note's last Tried and rejected line). Candidates: ask B, the ePRO export keyed by handheld device_id with a device assignment log in which devices returned by early leavers were reissued, a windowed join no sentence states; ask A, phototherapy rescue recorded only in the dermatology units' UVB session log under the hospital's own patient reference, linked through the sites' identification log. (2) Write generator/ceiling.py on the cut pack (the cracker lands the call and executes filed rules; the mirror files 100 mg on the arm rates; planning weights 38, 7, 55) and fill the note's Ask sheet with a pair ceiling at or under 60, mirror leakage under 50 and every ask row a miss. (3) Assert SF3 and SF5 to SF15 by label in checks.py. (4) Bring the card current (shell rounding opener 'rates'; layer1 list to what the pack holds). (5) python3 task146/generator/make.py, then figures_check.py, precut.py, voice-check.py, leak.py task146 --asof 2026-11-16, guard.py heart and surface after a fresh pull, golden-realism and reduce-house-fixes; then the stage 4 hand-off (leak copy at scratchpad/leak-task146/, brief at scratchpad/task146_stage4_leak_brief.md), PAUSED commit, pull --rebase, push.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -100,6 +104,10 @@
   {
    "date": "2026-11-01",
    "event": "DRAWN: architecture 3, biomedical-clinical-research dose-response-pk-pd-modeling x forecasting, registered on a freshly pulled tree"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "PAUSED at stage 2: the main call built and green (make.py, checks, verify on target.zip 26bb6d65); the ask devices to redesign"
   }
  ],
  "lineage_v2": {
@@ -135,5 +143,11 @@
   "source_note": "re-root into a new world (a mutual building society's structural hedge on its instant-access savings); architecture 1 spent",
   "fate": "spent 2026-11-01 on paper at stage 2 by the rule-application lines of 19c4263b and 273af233: its decisive step (the money followed across same-day close-and-open moves between instant-access issues) is an inclusion over a second source"
  },
- "source_note": "re-root into a new world (Hvidore Biologics' phase 3 dose for HB-231 in plaque psoriasis, carried from the Nordic phase 2b through exposure to the heavier North American phase 3 population); architectures 1 and 2 spent"
+ "source_note": "re-root into a new world (Hvidore Biologics' phase 3 dose for HB-231 in plaque psoriasis, carried from the Nordic phase 2b through exposure to the heavier North American phase 3 population); architectures 1 and 2 spent",
+ "build": {
+  "rebuild": "python3 task146/generator/make.py",
+  "zip_sha256": "26bb6d655abf7bb8f82588180e1196fec7a980a0044dc83801e5ba6b382b452e",
+  "gates": "two byte-identical builds (18 files), checks.py 0 failed, verify.py 0 failures (20 ask figures, the call and each dose's side of the bar recomputed independently with statsmodels), voice-check PASS on prompt.txt",
+  "call": "200 mg: expected week-16 PASI 75 in the VELA-3 population 37.2 / 64.4 / 84.9 at 50 / 100 / 200 mg (standing family 64.0 to 67.2 at 100 mg); the easy routes put 100 mg at 75.4 to 81.0 in VELA-2"
+ }
 }

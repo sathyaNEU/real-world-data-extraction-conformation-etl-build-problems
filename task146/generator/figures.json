@@ -1,58 +1,49 @@
 {
- "book_m": 219,
+ "ask_itch": {
+  "Week 12|HB100": 86.5,
+  "Week 12|HB200": 90.1,
+  "Week 12|HB25": 35.1,
+  "Week 12|HB50": 55.8,
+  "Week 12|PBO": 12.0,
+  "Week 16|HB100": 85.4,
+  "Week 16|HB200": 86.8,
+  "Week 16|HB25": 30.9,
+  "Week 16|HB50": 54.7,
+  "Week 16|PBO": 12.0
+ },
+ "ask_pasi": {
+  "PASI 75|HB100": 81.0,
+  "PASI 75|HB200": 89.0,
+  "PASI 75|HB25": 25.0,
+  "PASI 75|HB50": 43.0,
+  "PASI 75|PBO": 6.0,
+  "PASI 90|HB100": 66.0,
+  "PASI 90|HB200": 74.0,
+  "PASI 90|HB25": 11.0,
+  "PASI 90|HB50": 22.0,
+  "PASI 90|PBO": 0.0
+ },
  "call": {
-  "after_january_m": 101.9,
-  "hedge_m": 165,
-  "new_swap_m": 63,
-  "swaps_now_m": 152.9
+  "dose_mg": 200
  },
- "now_m": {
-  "Easy Access Cash ISA": 40,
-  "Easy Saver": 42,
-  "Loyalty Saver": 133,
-  "Young Saver": 4
+ "mean_weight_kg": {
+  "phase2b": 84.7,
+  "phase3": 110.9
  },
- "share": {
-  "12": {
-   "Easy Access Cash ISA": 0.8247,
-   "Easy Saver": 0.692,
-   "Loyalty Saver": 0.7485,
-   "Young Saver": 0.8737
-  },
-  "24": {
-   "Easy Access Cash ISA": 0.6977,
-   "Easy Saver": 0.5142,
-   "Loyalty Saver": 0.5811,
-   "Young Saver": 0.7982
-  },
-  "36": {
-   "Easy Access Cash ISA": 0.5993,
-   "Easy Saver": 0.3863,
-   "Loyalty Saver": 0.4576,
-   "Young Saver": 0.7292
-  }
+ "phase2b_arm_pasi75": {
+  "100": 81.0,
+  "200": 89.0,
+  "50": 43.0
  },
- "stable_m": {
-  "12": {
-   "Easy Access Cash ISA": 33,
-   "Easy Saver": 29,
-   "Loyalty Saver": 99,
-   "Young Saver": 4,
-   "total": 165
-  },
-  "24": {
-   "Easy Access Cash ISA": 28,
-   "Easy Saver": 21,
-   "Loyalty Saver": 77,
-   "Young Saver": 3,
-   "total": 130
-  },
-  "36": {
-   "Easy Access Cash ISA": 24,
-   "Easy Saver": 16,
-   "Loyalty Saver": 61,
-   "Young Saver": 3,
-   "total": 104
-  }
- }
+ "phase3_expected": {
+  "100": 64.4,
+  "200": 84.9,
+  "50": 37.2
+ },
+ "phase3_side": {
+  "100": "below",
+  "200": "at or above",
+  "50": "below"
+ },
+ "weight_exponent": 1.17
 }

@@ -1,178 +1,132 @@
-"""task146 architecture 2: the golden and its rungs, computed from target/ alone.
-
-money=True follows each closing payment into the instant-access opening it funded the same local day at the same
-amount (the golden); money=False measures each account on its own (the account cohort, the field's method); bonds=True
-also keeps a closing payment that funded a fixed-rate bond the same day (a rung the policy's 'in instant-access savings'
-rules out). share='pooled' takes the kept balances over the start balances taken together across start dates.
-"""
-import collections
+"""task146 architecture 3: the golden deliverables and figures.json, every figure from analysis.py on target/."""
 import csv
-import datetime as dt
+import io
 import os
-from zoneinfo import ZoneInfo
 
-from openpyxl import load_workbook
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+from docx import Document  # noqa: E402
+from docx.shared import Inches, Pt  # noqa: E402
 
-LONDON = ZoneInfo("Europe/London")
-FAMILY = {"ES01": "Easy Saver", "IS01": "Easy Access Cash ISA", "YS01": "Young Saver"}
-FAMILIES = ("Easy Saver", "Loyalty Saver", "Easy Access Cash ISA", "Young Saver")
-RECODE = dt.date(2025, 7, 1)
-HORIZONS = (12, 24, 36)
+import analysis as A  # noqa: E402
+import postprocess as PP  # noqa: E402
 
-
-def family(code, day):
-    if code.startswith("LS"):
-        return "Loyalty Saver"
-    if code == "ES02":
-        return "Easy Saver" if day < RECODE else "Young Saver"
-    return FAMILY[code]
+DELIV = ("hb231_phase3_dose_recommendation.docx", "hb231_phase2b_tables.csv")
+ARM_NAME = {"PBO": "Placebo", "HB25": "HB-231 25 mg", "HB50": "HB-231 50 mg", "HB100": "HB-231 100 mg",
+            "HB200": "HB-231 200 mg"}
 
 
-def load(target):
-    F = lambda n: os.path.join(target, n)
-    bal = collections.defaultdict(dict)       # month index -> {account: pounds}
-    fam_at = {}                               # (account, month index) -> family
-    months = []
-    with open(F("ia_month_end_balances_2021-2026.csv")) as fh:
-        rows = list(csv.DictReader(fh))
-    keys = sorted({(dt.date.fromisoformat(r["month_end"]).year, dt.date.fromisoformat(r["month_end"]).month)
-                   for r in rows})
-    idx = {k: i for i, k in enumerate(keys)}
-    for r in rows:
-        d = dt.date.fromisoformat(r["month_end"])
-        i = idx[(d.year, d.month)]
-        a = int(r["account_no"])
-        bal[i][a] = float(r["balance_gbp"])
-        fam_at[(a, i)] = family(r["product_code"], d)
-    ev = []
-    with open(F("ia_account_events_2021-2026.csv")) as fh:
-        for r in csv.DictReader(fh):
-            t = dt.datetime.strptime(r["event_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc)
-            ev.append((t.astimezone(LONDON).date(), r["event"], int(r["account_no"]), r["product_code"],
-                       int(r["amount_pence"])))
-    return {"bal": bal, "fam": fam_at, "keys": keys, "events": ev, "target": target}
+def compute(target):
+    P = A.Pack(target)
+    resp = A.composite(P)
+    g, (a16, bw) = A.golden(P, resp)
+    easy = A.easy_routes(P, resp)
+    pasi = A.ask_pasi(P)
+    itch = A.ask_itch(P)
+    w2 = sum(float(r["weight_kg"]) for r in P.sub.values()) / len(P.sub)
+    w3 = sum(c["weight"] for c in P.feas()) / len(P.feas())
+    fig = {
+        "call": {"dose_mg": A.pick(g)},
+        "phase3_expected": {str(d): round(v, 1) for d, v in g.items()},
+        "phase3_side": {str(d): ("at or above" if v >= 70 else "below") for d, v in g.items()},
+        "phase2b_arm_pasi75": {str(d): round(easy["arm"][d], 1) for d in A.CANDIDATES},
+        "weight_exponent": round(-bw, 2),
+        "mean_weight_kg": {"phase2b": round(w2, 1), "phase3": round(w3, 1)},
+        "ask_pasi": {"%s|%s" % k: v for k, v in pasi.items()},
+        "ask_itch": {"%s|%s" % k: v for k, v in itch.items()},
+    }
+    return P, fig
 
 
-def links(D, bonds=False):
-    """Successor of each account: the instant-access account opened the same local day with the closing amount."""
-    opens = collections.defaultdict(list)
-    closes = []
-    for day, e, a, code, p in D["events"]:
-        if e == "OPEN":
-            opens[(day, p)].append(a)
-        else:
-            closes.append((day, a, p))
-    succ = {}
-    used = set()
-    for day, a, p in closes:
-        cand = [b for b in opens.get((day, p), []) if b != a and b not in used]
-        if len(cand) == 1:
-            succ[a] = cand[0]
-            used.add(cand[0])
-    bond_kept = {}
-    if bonds:
-        with open(os.path.join(D["target"], "fixed_rate_bond_openings_2021-2026.csv")) as fh:
-            bo = collections.Counter()
-            for r in csv.DictReader(fh):
-                d = dt.datetime.strptime(r["opened"], "%d/%m/%Y").date()
-                bo[(d, int(round(float(r["principal_gbp"]) * 100)))] += 1
-        for day, a, p in closes:
-            if a not in succ and bo.get((day, p)):
-                bond_kept[a] = p / 100.0
-    return succ, bond_kept
+def chart(fig):
+    d = [50, 100, 200]
+    f, ax = plt.subplots(figsize=(6.2, 3.4), dpi=150)
+    p2 = [fig["phase2b_arm_pasi75"][str(x)] for x in d]
+    p3 = [fig["phase3_expected"][str(x)] for x in d]
+    x = range(len(d))
+    ax.bar([i - 0.19 for i in x], p2, width=0.36, color="#9BB0C8", label="VELA-2 arm (observed)")
+    ax.bar([i + 0.19 for i in x], p3, width=0.36, color="#2F5D8A", label="VELA-3 population (expected)")
+    ax.axhline(70, color="#B23A2E", lw=1.2, ls="--")
+    ax.text(2.45, 71, "CDP bar 70%", color="#B23A2E", fontsize=7.5, ha="right")
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(["%d mg" % v for v in d])
+    ax.set_ylabel("PASI 75 at week 16 (%)")
+    ax.set_ylim(0, 100)
+    ax.legend(fontsize=7.5, frameon=False, loc="upper left")
+    ax.spines[["top", "right"]].set_visible(False)
+    buf = io.BytesIO()
+    f.tight_layout()
+    f.savefig(buf, format="png", metadata={"Software": None})
+    plt.close(f)
+    buf.seek(0)
+    return buf
 
 
-def stable(D, money=True, bonds=False, share="pooled"):
-    bal, keys = D["bal"], D["keys"]
-    n = len(keys)
-    succ, bond_kept = links(D, bonds) if money else ({}, {})
-    out = {}
-    for k in HORIZONS:
-        kept = collections.Counter()
-        held = collections.Counter()
-        ratios = collections.defaultdict(list)
-        for s in range(0, n - k, 12):
-            kk = collections.Counter()
-            hh = collections.Counter()
-            for a, b0 in bal[s].items():
-                if b0 <= 0:
-                    continue
-                f = D["fam"][(a, s)]
-                low = b0
-                cur = a
-                ended = False
-                for t in range(s + 1, s + k + 1):
-                    v = bal[t].get(cur, 0.0)
-                    while cur in succ and cur not in bal[t]:
-                        cur = succ[cur]
-                        v = bal[t].get(cur, 0.0)
-                    if v == 0.0 and cur in succ:
-                        nxt = succ[cur]
-                        if bal[t].get(nxt, 0.0) > 0:
-                            cur = nxt
-                            v = bal[t][nxt]
-                    if v == 0.0 and cur in bond_kept:
-                        v = min(b0, bond_kept[cur])
-                    low = min(low, v)
-                kk[f] += low
-                hh[f] += b0
-            for f in FAMILIES:
-                kept[f] += kk[f]
-                held[f] += hh[f]
-                if hh[f]:
-                    ratios[f].append(kk[f] / hh[f])
-        out[k] = {f: (kept[f] / held[f] if share == "pooled" else sum(ratios[f]) / len(ratios[f])) for f in FAMILIES}
-    now = collections.Counter()
-    for a, b in bal[n - 1].items():
-        now[D["fam"][(a, n - 1)]] += b
-    res = {"now": dict(now), "share": out, "stable": {}}
-    for k in HORIZONS:
-        res["stable"][k] = {f: now[f] * out[k][f] for f in FAMILIES}
-        res["stable"][k]["total"] = sum(res["stable"][k][f] for f in FAMILIES)
-    res["book"] = sum(now.values())
-    return res
+def docx(fig, path):
+    doc = Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    doc.add_heading("HB-231: phase 3 dose recommendation", level=1)
+    doc.add_paragraph("To: Villads Kjaer, HB-231 Programme Lead. Cc: Helle Carlsen, Bodil Lauritsen. "
+                      "From: Clinical Pharmacology and Biometrics. 30 November 2026. For the Board papers of "
+                      "2 December.")
+    p = doc.add_paragraph()
+    r = p.add_run("Recommendation: take HB-231 200 mg every four weeks into VELA-3A and VELA-3B.")
+    r.bold = True
+    e = fig["phase3_expected"]
+    doc.add_paragraph(
+        "Under section 7.2 of the clinical development plan the phase 3 dose is the lowest of 50, 100 and 200 mg "
+        "whose expected week-16 PASI 75 response in the phase 3 population is at least 70 per cent. In the "
+        "population the VELA-3 sites listed in the feasibility survey we expect %.0f per cent at 50 mg, %.0f per "
+        "cent at 100 mg and %.0f per cent at 200 mg, so 100 mg falls short of the bar and 200 mg clears it."
+        % (e["50"], e["100"], e["200"]))
+    mw = fig["mean_weight_kg"]
+    doc.add_paragraph(
+        "In VELA-2 the 100 mg arm reached %.1f per cent, but the VELA-2 patients averaged %.1f kg against %.1f kg "
+        "for the VELA-3 candidates. HB-231's trough concentrations fall with body weight (clearance rises about "
+        "in proportion to weight, exponent %.2f in the population model of the VELA-2 troughs), and response "
+        "follows the trough. Carried through the exposure model and the exposure-response fitted on VELA-2, the "
+        "heavier phase 3 patients run lower troughs at 100 mg and respond less often."
+        % (fig["phase2b_arm_pasi75"]["100"], mw["phase2b"], mw["phase3"], fig["weight_exponent"]))
+    doc.add_picture(chart(fig), width=Inches(5.6))
+    t = doc.add_table(rows=1, cols=3)
+    t.style = "Light Grid Accent 1"
+    for c, h in zip(t.rows[0].cells, ["Dose", "VELA-2 arm, PASI 75 (%)", "VELA-3 population, expected (%)"]):
+        c.text = h
+    for d in ("50", "100", "200"):
+        row = t.add_row().cells
+        row[0].text = "%s mg" % d
+        row[1].text = "%.1f" % fig["phase2b_arm_pasi75"][d]
+        row[2].text = "%.0f" % e[d]
+    doc.add_paragraph("")
+    doc.add_paragraph("Method: PASI 75 as the VELA-2 SAP defines it (composite: rescue therapy and discontinuation "
+                      "count as non-response). Population PK model of the week 4 to 16 troughs (log concentration "
+                      "per mg on visit and log body weight); logistic exposure-response of the composite on each "
+                      "patient's typical week-16 trough; expected response averaged over every feasibility "
+                      "candidate, US weights converted from pounds.")
+    doc.save(path)
+    PP.normalize_docx(path, "Clinical Pharmacology and Biometrics", "2026-11-27T13:05:00Z", "2026-11-30T09:22:00Z",
+                      "HB-231 phase 3 dose recommendation")
 
 
-def total_ratio(D):
-    """R0: the total book a year on over the book at each start date (new money included)."""
-    bal, n = D["bal"], len(D["keys"])
-    out = {}
-    for k in HORIZONS:
-        num = sum(sum(bal[s + k].values()) for s in range(0, n - k, 12))
-        den = sum(sum(bal[s].values()) for s in range(0, n - k, 12))
-        out[k] = num / den
-    return out
+def tables_csv(fig, path):
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh, lineterminator="\n")
+        w.writerow(["measure", "arm", "percent"])
+        for m in ("PASI 75", "PASI 90"):
+            for a in A.ARMS:
+                w.writerow(["%s at week 16" % m, ARM_NAME[a], "%.1f" % fig["ask_pasi"]["%s|%s" % (m, a)]])
+        for wk in ("Week 12", "Week 16"):
+            for a in A.ARMS:
+                w.writerow(["Itch NRS responders at %s" % wk.lower(), ARM_NAME[a],
+                            "%.1f" % fig["ask_itch"]["%s|%s" % (wk, a)]])
 
 
-def to1m(x):
-    return int(round(x / 1e6)) * 1000000
-
-
-def call(D, swaps_after_jan=None):
-    g = stable(D, money=True)
-    hedge = to1m(g["stable"][12]["total"])
-    wb = load_workbook(os.path.join(D["target"], "structural_hedge_swap_register_2026-12.xlsx"), read_only=True)
-    ws = wb["Swaps"]
-    sw = [(r[3], r[4]) for r in ws.iter_rows(min_row=2, values_only=True) if r and r[0]]
-    after = sum(n for mat, n in sw if mat > "2027-01-29")
-    held_now = sum(n for mat, n in sw)
-    new = hedge - after
-    return {"hedge": hedge, "swaps_now": held_now, "after_january": after, "new_swap": new, "golden": g}
-
-
-if __name__ == "__main__":
-    import sys
-    D = load(sys.argv[1])
-    c = call(D)
-    g = c["golden"]
-    print("book %.2fm hedge %.1fm new swap %.1fm (swaps now %.1fm, after January %.1fm)" % (
-        g["book"] / 1e6, c["hedge"] / 1e6, c["new_swap"] / 1e6, c["swaps_now"] / 1e6, c["after_january"] / 1e6))
-    for k in HORIZONS:
-        print(k, "total %.2fm" % (g["stable"][k]["total"] / 1e6),
-              " ".join("%s %.3f" % (f.split()[0], g["share"][k][f]) for f in FAMILIES))
-    a = stable(D, money=False)
-    b = stable(D, money=True, bonds=True)
-    m = stable(D, money=True, share="mean")
-    print("R1 account cohort 1y %.2fm, R2 with bonds %.2fm, mean-of-ratios %.2fm, R0 ratio %.3f" % (
-        a["stable"][12]["total"] / 1e6, b["stable"][12]["total"] / 1e6, m["stable"][12]["total"] / 1e6,
-        total_ratio(D)[12]))
+def write_all(target, golden_dir):
+    os.makedirs(golden_dir, exist_ok=True)
+    P, fig = compute(target)
+    docx(fig, os.path.join(golden_dir, DELIV[0]))
+    tables_csv(fig, os.path.join(golden_dir, DELIV[1]))
+    return fig

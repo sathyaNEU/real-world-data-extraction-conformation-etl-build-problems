@@ -1,91 +1,97 @@
 {
- "task": "task146",
- "architecture": 2,
- "setting": "2026-12-03",
- "files": [
-  {
-   "name": "board_minute_extract_2026-01-27.pdf",
-   "role": "evidence",
-   "source": "synthetic: the Board minute extract on the January 2026 reset",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "cash_isa_transfers_in_2026.csv",
-   "role": "distractor",
-   "source": "synthetic: cash ISA transfers received from other providers in 2026",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "fixed_rate_bond_openings_2021-2026.csv",
-   "role": "distractor",
-   "source": "synthetic: the bond ledger's openings of fixed-rate bonds",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "ia_account_events_2021-2026.csv",
-   "role": "evidence",
-   "source": "synthetic: the core banking system's account event log (openings and closures)",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "ia_month_end_balances_2021-2026.csv",
-   "role": "evidence",
-   "source": "synthetic: the core banking system's month-end balance extract for instant-access accounts",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "savings_product_register.xlsx",
-   "role": "evidence",
-   "source": "synthetic: the Society's product register kept by product governance",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "savings_rate_history_2021-2026.csv",
-   "role": "distractor",
-   "source": "synthetic: the Society's savings rate history beside Bank Rate",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "structural_hedge_swap_register_2026-12.xlsx",
-   "role": "evidence",
-   "source": "synthetic: the treasury's register of structural hedge swaps",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "treasury_request_2026-12-03.eml",
-   "role": "evidence",
-   "source": "synthetic: the Treasurer's request for the January 2027 reset",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  },
-  {
-   "name": "trentmoor_alm_policy_structural_hedge_v4.pdf",
-   "role": "evidence",
-   "source": "synthetic: the Asset and Liability Management Policy, section 7",
-   "date": "2026-12-03",
-   "license": "CC0 1.0 (synthetic, authored for this task)"
-  }
- ],
- "distractors": [
-  "fixed_rate_bond_openings_2021-2026.csv",
-  "savings_rate_history_2021-2026.csv",
-  "cash_isa_transfers_in_2026.csv"
- ],
- "distractor_reasons": {
-  "fixed_rate_bond_openings_2021-2026.csv": "fixed-rate bonds are not instant-access savings (policy 7.2), so a bond a closing payment funded is not kept",
-  "savings_rate_history_2021-2026.csv": "the stable balance is measured on balances kept, not on rates; the rate history explains margins",
-  "cash_isa_transfers_in_2026.csv": "transfers in from other providers are new money, outside the balances held on 30 November"
- },
+ "architecture": 3,
+ "as_of": "2026-11-16",
  "deliverables": [
-  "structural_hedge_reset_2027.pdf",
-  "stable_balance_ladder_2026-11.xlsx"
- ]
+  "hb231_phase3_dose_recommendation.docx",
+  "hb231_phase2b_tables.csv"
+ ],
+ "distractors": {
+  "vela2_adverse_events.csv": "the adverse event pages decide nothing on the dose rule, which is set on efficacy",
+  "vela2_dlqi.csv": "quality of life is not the plan's endpoint; the dose rule is set on PASI 75"
+ },
+ "files": {
+  "hb231_clinical_development_plan_v2.1_section7.pdf": {
+   "date": "2026-06-04",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the HB-231 clinical development plan, section 7"
+  },
+  "hb231_phase3_dose_request.eml": {
+   "date": "2026-11-16",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the programme lead's request"
+  },
+  "vela2_adverse_events.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "the eCRF's adverse event pages"
+  },
+  "vela2_concomitant_medications.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the eCRF's concomitant medication pages"
+  },
+  "vela2_dlqi.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "distractor",
+   "source": "the eCRF's DLQI pages"
+  },
+  "vela2_dosing_log.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the IRT and pharmacy dosing log"
+  },
+  "vela2_epro_diary.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the ePRO vendor's evening diary export"
+  },
+  "vela2_pasi_assessments.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the eCRF's PASI assessment pages"
+  },
+  "vela2_pk_trough_samples.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the bioanalytical laboratories' trough concentration transfer"
+  },
+  "vela2_sites.csv": {
+   "date": "2025-08-20",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the trial's site register"
+  },
+  "vela2_statistical_analysis_plan_v2.0.pdf": {
+   "date": "2026-08-12",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the VELA-2 statistical analysis plan"
+  },
+  "vela2_subjects.csv": {
+   "date": "2026-09-18",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "the trial database's subject listing at lock"
+  },
+  "vela3_feasibility_survey_2026.xlsx": {
+   "date": "2026-10-31",
+   "license": "synthetic, CC0",
+   "role": "evidence",
+   "source": "Clinical Operations' VELA-3 site feasibility survey"
+  }
+ },
+ "largest_file": {
+  "name": "vela2_epro_diary.csv",
+  "rows": 51800
+ },
+ "task": "task146"
 }
