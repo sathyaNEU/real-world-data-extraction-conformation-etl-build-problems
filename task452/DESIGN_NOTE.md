@@ -2,7 +2,20 @@
 
 Architecture 3, re-rooted 2026-11-01 at the Batch 3 queue reset (one architecture per world: architecture 2, the
 jurisdictional forest programme's deforestation area, and architecture 1, the tributary phosphorus loads, are closed
-worlds; their records sit under `## Architecture 2 record` and in `## Tried and rejected`). Fiction as-of date
+worlds; their records sit under `## Leak check
+
+`leak.py task452 --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Each REVIEW line answered:
+- DCS_event_journal_2026.txt is a text file: it is the control system's own alarm and event journal (an operator
+  station export with its own header line and the station's time base), not a description of the data.
+- IEL-1186-03_conditions_consolidated_2026.pdf carries 9 of the swept terms: they are the licence's own words
+  (reference conditions, reporting, emission points, period) and the sweep also read architecture 2's record; no
+  sentence names a balance, the raw mill's effect on mercury, the dust or a test's representativeness.
+- stack_tests_Hg_2024-2026.pdf carries 6 of the swept terms (reference, report, emission, laboratory, clinker,
+  monitoring): a test report's standard vocabulary; it states each run's conditions and ranks nothing.
+- Sweeps 2, 3, 5 to 9 and 11 clean; the container sweep finds no writer signature (producers scrubbed per issuing
+  body in build.py).
+
+## Architecture 2 record` and in `## Tried and rejected`). Fiction as-of date
 2027-01-11.
 
 ## Draw
@@ -14,7 +27,9 @@ worlds; their records sit under `## Architecture 2 record` and in `## Tried and 
 - **World.** A two-kiln cement works in Ireland (Kilcarrow Cement Ltd, fictional; no real plant, firm or licence),
   its quarry and quality laboratory. Personas from `guard.py names --geo Ireland --locale en_IE --seed 452`: Naomi
   Lynskey (environment and quality, the memo's author), Helena Sheane, Charlie Redican (unused in the pack so far).
-- **Card.** v3 registered 2026-11-01T21:33:33Z: gap objective then population, pattern none, generators G16, G7,
+- **Card.** v3 registered 2026-11-01T21:33:33Z and re-registered at 22:23:18Z once prompt.txt carried the new shell
+  (whether | for | mercury | pdf+xlsx; the dead architecture's how-many | put | give | pdf+xlsx moved to
+  `lineage_shells`): gap objective then population, pattern none, generators G16, G7,
   G13, Gate G etl_conformance, strategy forecast_method_backtest (the data support one route, conservation of the
   element through the kiln system, because the tested rate is stationary only per gram of mercury fed, not per kiln
   hour), decision quantity_figure, question form whether, forum executive_team, forcing budget_or_appropriation,
@@ -22,7 +37,10 @@ worlds; their records sit under `## Architecture 2 record` and in `## Tried and 
   moved to `lineage` with fate "shipped 2026-10-14 with no portal result, re-rooted 2026-11-01 at the Batch 3 queue
   reset". Check on the registered card: WARN only. WARNs answered: `shell.repeat` read the dead architecture's
   prompt (how-many, put, pdf+xlsx); the new prompt's shell is whether, a use-led second sentence ("For the capital
-  round") and pdf+xlsx under the corpus caps, which `voice-check.py` passes. Redrawn at the draw: shape 07 (banned
+  round") and pdf+xlsx under the corpus caps, which `voice-check.py` passes. On the re-registered card the check
+  reads WARN only: `repeat.decision` (quantity_figure, task160) is the lane's natural decision for a conformed
+  figure, and `repeat.deliverables` (pdf+xlsx, task123) is the genre of a works' memo to its executive with the
+  annual-report workbook; neither is a similarity finding. Redrawn at the draw: shape 07 (banned
   against task259), the triples (objective, G16, method_or_model_selection) and (population, G7 or G13, method
   selection), each spent in four or more builds, so Gate G is etl_conformance, the honest label for a conformed
   figure judged against a licence.
@@ -126,7 +144,7 @@ in the filter dust kiln 1 bled to silo S7: 68 kg and 83 kg, 151 kg, 66 kg over.
 - **Estimand:** licence condition 5.6 in IEL-1186-03_conditions_consolidated_2026.pdf: the mass of mercury released
   to air from emission points A1-1 and A1-2 together in a calendar year (1.7, Irish local time), over every hour each
   kiln fires, in compound operation and in direct operation (1.4, 1.5), against 85 kg; the prompt fixes 2026's
-  release as the comparison.
+  release as the comparison ("if it releases what it released in 2026") and asks the margin in kilograms.
 - **No decoy:** nothing is planted to be caught: no memo, draft, briefing or stakeholder figure ships; the stack
   tests are correct for the conditions they were run in and say so; no prior-year annual report or computed annual
   mercury figure ships; the weighbridge, fuel receipts and quarry log are declared distractors that answer other
@@ -271,6 +289,19 @@ the mirror 7.0 off it
 Mirror leakage: 0.0 per cent of ask weight on the journal route (16.7 on the historian route)
 Measured by: generator/ceiling.py, run on the cut pack
 
+
+## Leak check
+
+`leak.py task452 --asof 2027-01-11` on the final cut: REVIEW, no LEAK. Each REVIEW line answered:
+- DCS_event_journal_2026.txt is a text file: it is the control system's own alarm and event journal (an operator
+  station export with its own header line and the station's time base), not a description of the data.
+- IEL-1186-03_conditions_consolidated_2026.pdf carries 9 of the swept terms: they are the licence's own words
+  (reference conditions, reporting, emission points, period) and the sweep also read architecture 2's record; no
+  sentence names a balance, the raw mill's effect on mercury, the dust or a test's representativeness.
+- stack_tests_Hg_2024-2026.pdf carries 6 of the swept terms (reference, report, emission, laboratory, clinker,
+  monitoring): a test report's standard vocabulary; it states each run's conditions and ranks nothing.
+- Sweeps 2, 3, 5 to 9 and 11 clean; the container sweep finds no writer signature (producers scrubbed per issuing
+  body in build.py).
 
 ## Architecture 2 record
 

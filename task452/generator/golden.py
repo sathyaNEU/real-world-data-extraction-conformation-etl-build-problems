@@ -81,14 +81,14 @@ def write_memo(res, path):
     para("Mercury leaves a kiln line three ways: in clinker, in filter dust taken out of the system, and through the "
          "stack. Over a year the mercury the line took in with its raw materials and fuels is what left by those routes, "
          "so the release to air is the year's input less what went out in clinker and in dust. Inputs are the production "
-         "ledger's monthly tonnages, put on a dry basis with the laboratory's moisture, times the laboratory's monthly "
-         "(sand, iron ore and slag: quarterly) mercury composites; clinker is the ledger's clinker times its composite; "
-         "kiln 1's dust is each weighbridge ticket from silo S7 (void tickets and reprints out) times the month's dust "
-         "composite. Kiln 2 returns its dust to the kiln feed.", 9, False, 2)
+         "ledger's monthly tonnages (raw materials dry, fuels as fired) times the laboratory's mercury composite for the "
+         "month on the same basis (sand and slag: the quarter's composite); clinker is the ledger's clinker times its "
+         "composite; kiln 1's dust is the ledger's filter dust to silo S7 times the month's dust composite. Kiln 2 returns "
+         "its dust to the kiln feed.", 9, False, 2)
     rows = [("", "Kiln 1", "Kiln 2")]
     rows.append(("Mercury in raw materials and fuels, kg", "%.1f" % hg["K1"]["inputs"], "%.1f" % hg["K2"]["inputs"]))
     rows.append(("Less mercury in clinker, kg", "%.1f" % hg["K1"]["clinker"], "%.1f" % hg["K2"]["clinker"]))
-    rows.append(("Less mercury in dust shipped off site, kg", "%.1f" % hg["K1"]["dust"], "-"))
+    rows.append(("Less mercury in filter dust bled to silo S7, kg", "%.1f" % hg["K1"]["dust"], "-"))
     rows.append(("Released to air, kg", "%d" % res["k1"], "%d" % res["k2"]))
     c.setFont("Helvetica", 9)
     for i, r in enumerate(rows):
@@ -103,10 +103,10 @@ def write_memo(res, path):
     para("Why the stack tests give less", 9.5, True, 1)
     para("Every annual mercury test (2024 to 2026) ran with the raw mill on, when the mill takes the kiln gas's "
          "mercury into the raw meal and hands it back to the kiln. The tests agree with each other, but they measure "
-         "that state only: carried over the year's kiln hours they give about %.0f kg for kiln 1 and %.0f kg for kiln 2. "
+         "that state only: carried over the year's kiln hours they give about %d kg for the works. "
          "Condition 5.6 counts every hour, and with the mill stopped (direct operation) the gas goes straight to the "
          "filter and the stored mercury goes with it. The chart shows each kiln's hours in direct operation by month."
-         % (res["dflt"]["K1"]["r0"], res["dflt"]["K2"]["r0"]), 9, False, 2)
+         % int(round(res["dflt"]["K1"]["r0"] + res["dflt"]["K2"]["r0"])), 9, False, 2)
     img = ImageReader(io.BytesIO(chart_png(res)))
     c.drawImage(img, 18 * mm, y - 78 * mm, width=172 * mm, height=78 * mm)
     y -= 84 * mm
@@ -141,7 +141,7 @@ def write_workbook(res, path):
         ws.append(["In: " + MAT_LABEL[m], round(v1, 2) if v1 is not None else None, round(v2, 2) if v2 is not None else None])
     ws.append(["Total in", round(hg["K1"]["inputs"], 2), round(hg["K2"]["inputs"], 2)])
     ws.append(["Out in clinker", round(hg["K1"]["clinker"], 2), round(hg["K2"]["clinker"], 2)])
-    ws.append(["Out in dust shipped off site", round(hg["K1"]["dust"], 2), 0])
+    ws.append(["Out in filter dust bled to silo S7", round(hg["K1"]["dust"], 2), 0])
     ws.append(["Released to air", res["k1"], res["k2"]])
     ws.append([])
     ws.append(["Works, released to air", res["works"]])

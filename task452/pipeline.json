@@ -10,16 +10,17 @@
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK), 2026-11-01, as-of 2027-01-11; three REVIEW lines answered in the note",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (repeat.decision, repeat.deliverables), no BLOCK, 2026-11-01",
+  "nearest": "0.08 task474 v3 lineage",
+  "surface": "5 pairs promoted at surface 0.10 (corpus pct 99), no hard tell; persona Naomi Lynskey"
  },
  "judge": {
   "verdict": "",
@@ -45,5 +46,18 @@
   "shipped": "2026-10-14",
   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset",
   "stump": "The default path offers 3,382,582 tonnes for USD 16,912,910 because it estimates the deforested area from the final change map's error matrix with the final map's class areas as weights (171,600 ha, only 8,300 under the reference level's 179,900 for the two years), though the reference points were drawn on the preliminary map: the 124 points the final map moved out of the preliminary deforestation stratum stand for 329 ha each, not 2,367; the stratified estimator on the strata the sample was drawn from gives 122,900 ha and 23,229,780 tonnes offered for USD 116,148,900."
+ },
+ "target_zip_md5": "9f2baf91210080fb3b4a930be16c6ba0",
+ "gates_final_cut": {
+  "build": "two builds byte-identical (11 target, 2 golden files)",
+  "checks": "87 of 87",
+  "verify": "181 of 181",
+  "figures_check": "65 of 65",
+  "precut": "exit 0 (61 checks, 0 FAIL, 0 WARN)",
+  "voice_check": "PASS",
+  "leak_py": "REVIEW, no LEAK (as-of 2027-01-11)",
+  "heart": "WARN, no BLOCK",
+  "surface": "exit 0, 5 pairs promoted at surface 0.10, no hard tell",
+  "ceiling": "pair 26.0 journal route, 35.2 historian route; mirror leakage 0.0 / 16.7 per cent"
  }
 }
