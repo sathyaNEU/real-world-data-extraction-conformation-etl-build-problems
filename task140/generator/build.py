@@ -25,40 +25,6 @@ import world as WD          # noqa: E402
 TASK = os.path.dirname(HERE)
 EXPORT_STAMP = dt.datetime(2026, 12, 14, 7, 55, tzinfo=dt.timezone.utc)   # 08:55 in Alcobendas, the papers compiled
 
-FILES = [
-    (K.STANDARD_PDF, "Cell Capacity Standard CS-3, revision of June 2026", "Infrastructure, approved 22 June 2026"),
-    (K.MEMO, "Capacity memo for the C-22 review of 2027 Q1", "Head of Infrastructure, 9 December 2026"),
-    (K.HWPLAN, "C-22 hardware plan for 2027 Q1, racks and machines in service by date", "Fleet & Hardware, revision of "
-     "11 December 2026"),
-    (K.REQUESTS, "Firm tenants' reservation requests for 2027 Q1", "Quota tool, request window 16 November to "
-     "4 December 2026"),
-    (K.BUDGETS, "Technology compute budgets by cost centre, 2026 and January to March 2027, with the freeze record",
-     "Technology Controlling, 27 November 2026"),
-    (K.RATECARD, "Compute rate card for MAD1 reserved cores, every rate by effective date", "Technology Controlling"),
-    (K.LEDGER, "C-22 reservation ledger, 2025 Q1 to 2026 Q4, as approved at each review", "Compute Operations"),
-    (K.USAGE, "C-22 monitoring export, each tenant's average cores in use by hour, 1 January 2025 to 13 December 2026",
-     "Cell monitoring, pulled 14 December 2026 06:10 UTC"),
-    (K.CELLHOURLY, "C-22 machines installed and in service by hour, same period", "Cell monitoring, pulled 14 December "
-     "2026 06:10 UTC"),
-    (K.DIRECTORY, "C-22 tenant directory", "Compute Operations, 1 December 2026"),
-    (K.CAPREPORT, "C-22 capacity report for 2026 Q3", "Compute Operations, 6 October 2026"),
-    (K.OPSLOG, "MAD1 operations log, July to December 2026", "Data-centre operations"),
-    (K.RUNS, "Batch training runs that held cores in 2026 Q3", "Batch scheduler, quarter snapshot of 1 October 2026"),
-    (K.CHECKPOINTS, "Checkpoints written by those runs, and the checkpoints their resumptions restored", "Batch "
-     "scheduler, quarter snapshot of 1 October 2026"),
-    (K.RESIZES, "Resizes of elastic batch runs in 2026 Q3", "Batch scheduler, quarter snapshot of 1 October 2026"),
-    (K.MEVENTS, "C-22 machine events, 1 July to 30 September 2026", "MAD1 cluster manager event log"),
-    (K.INVENTORY, "MAD1 hardware inventory for C-22, assets and their cluster ids", "Fleet & Hardware, extract of "
-     "14 December 2026"),
-    (K.QCHANGES, "Changes to firm reservations in 2026 Q3", "Quota tool"),
-    (K.QRUNS, "Quota service reconciliation runs in 2026 Q3", "Quota service log"),
-    (K.CHARGEBACK, "Technology chargeback policy 2026", "Technology Controlling"),
-    (K.DICTIONARY, "Field definitions for these files", "Compute Operations"),
-    (K.SISTERS, "MAD1 compute cells' quarterly summary, 2025 and 2026", "Compute Operations, 2 October 2026"),
-    (K.BATCH_DEMAND, "ML Platform's note on batch training demand for January to June 2027", "ML Platform, "
-     "2 December 2026"),
-]
-
 
 def build(out, quiet=False, W=None):
     if os.path.exists(out):
@@ -87,10 +53,8 @@ def build(out, quiet=False, W=None):
     DOC.write_opslog(p(K.OPSLOG), W)
     DOC.write_inventory(p(K.INVENTORY), W)
     DOC.write_chargeback(p(K.CHARGEBACK))
-    DOC.write_dictionary(p(K.DICTIONARY))
     DOC.write_sisters(p(K.SISTERS), W)
     DOC.write_batch_demand(p(K.BATCH_DEMAND), W)
-    DOC.write_readme(p(K.README), FILES)
     P = K.PEOPLE
     PP.normalize_ooxml(p(K.MEMO), P["head"], P["head"], "2026-12-09T08:41:12Z", "2026-12-09T10:02:47Z",
                        title="C-22 capacity review 2027 Q1", company=K.COMPANY)
@@ -101,8 +65,6 @@ def build(out, quiet=False, W=None):
     PP.normalize_ooxml(p(K.BUDGETS), P["finance"], P["finance"], "2025-12-18T15:31:09Z", "2026-11-27T16:20:44Z",
                        excel=True, company=K.COMPANY)
     PP.normalize_ooxml(p(K.INVENTORY), P["fleet"], P["fleet"], "2026-12-14T06:47:30Z", "2026-12-14T06:47:30Z",
-                       excel=True, company=K.COMPANY)
-    PP.normalize_ooxml(p(K.DICTIONARY), P["requester"], P["requester"], "2025-03-10T10:22:41Z", "2026-12-14T07:31:18Z",
                        excel=True, company=K.COMPANY)
     PP.normalize_ooxml(p(K.SISTERS), P["requester"], P["requester"], "2025-04-03T08:05:57Z", "2026-10-02T14:40:26Z",
                        excel=True, company=K.COMPANY)

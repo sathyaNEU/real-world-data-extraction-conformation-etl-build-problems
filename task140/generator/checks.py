@@ -352,11 +352,13 @@ def run(target, golden, W=None, meta_path=None):
                     late.add(f)
                     break
     ok(late == {K.HWPLAN, K.RATECARD}, "dates past the export only in the plan and the rate card: %s" % sorted(late))
-    named = {f for f, _, _ in DOC.DICT}
-    data_files = {f for f in files if f.rsplit(".", 1)[1] in ("csv", "json", "xlsx") and f != K.DICTIONARY}
-    ok(named == data_files, "the dictionary names every data file: %s" % sorted(named ^ data_files))
-    readme = open(os.path.join(target, K.README), encoding="utf-8").read()
-    ok(all(f in readme for f in files if f != K.README), "the README lists every file")
+    ok(not any(re.search(r"readme|dictionar|manifest|field|notes", f, re.I) for f in files),
+       "no file that describes the data ships (no README, dictionary, manifest or field notes)")
+    for f in files:
+        if f.endswith(".csv"):
+            with open(os.path.join(target, f), encoding="utf-8") as fh:
+                hd = fh.readline().strip().split(",")
+            ok(not set(hd) & set(K.HEADER), "%s writes the systems' headers, not the generator's names" % f)
     tag_rows = sum(1 for _ in A.status)
     ok(tag_rows > 5200, "inventory assets %d" % tag_rows)
     sf_ids = ["SF%d" % i for i in range(1, 28)]
@@ -667,7 +669,7 @@ def _three_rules(target, M, g, lad, W):
             ok(not re.search(pat, t), "R1 %s states no deciding quantity (%s)" % (f, pat))
     with open(os.path.join(target, K.USAGE), encoding="utf-8") as fh:
         head = fh.readline().strip().split(",")
-    ok(head == ["hour_start_utc", "cell", "tenant", "cores_in_use"], "R1 the export is one use series per tenant")
+    ok(head == ["hour_start_utc", "cell_id", "tenant_id", "cores_in_use"], "R1 the export is one use series per tenant")
     # R2: every Layer 1 item, mishandled the natural way, leaves the call and its components where they were
     comps = (G, K.round_to(g["F"], 1000), K.round_to(g["S"], 1000), K.round_to(g["ctl"], 1000))
 
@@ -723,7 +725,7 @@ def _three_rules(target, M, g, lad, W):
         v = [M.use[name][h] for h in M.hours]
         runs = max((len(list(grp)) for _, grp in __import__("itertools").groupby(v)), default=0)
         ok(runs < 6, "R3c no repeated block in the %s series (longest run %d)" % (name, runs))
-    for f in (K.MEMO, K.STANDARD_PDF, K.CAPREPORT, K.OPSLOG, K.BATCH_DEMAND, K.README):
+    for f in (K.MEMO, K.STANDARD_PDF, K.CAPREPORT, K.OPSLOG, K.BATCH_DEMAND):
         t = re.sub(r"\s+", " ", texts[f]).lower()
         ok("per batch core" not in t and "per machine" not in t and "guarantee of" not in t,
            "R3c %s carries no storage method or 2027 guarantee" % f)

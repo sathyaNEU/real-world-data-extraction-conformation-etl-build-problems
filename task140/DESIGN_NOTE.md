@@ -138,8 +138,8 @@ together with the storage it brings: the golden is 109,000.
   service that applies changes in six-hourly reconciliation runs and ran none for three days after the August power
   event; and in the storage service's own series, the hours of its weekly rolling daemon restart (Tuesday 03:00 to
   05:00 UTC; the operations log carries one routine on-call line for it, no explanation) and hours whose daemon samples
-  reached the collector after the hour closed (no document explains them; the dictionary says only "as the collector
-  received them") both read low, beside the small tenants' daily cycle. Each is what these
+  reached the collector after the hour closed (no document explains them; the export's header says only
+  `cores_in_use`) both read low, beside the small tenants' daily cycle. Each is what these
   systems write; none decides the call (the restart hours left out, the low hours left out, a Huber fit and hour-of-week
   terms all keep 2.94, 0.208, 1.208, 38,000 and 109,000, asserted).
 - **Layer 2:** family `allocation_constraints` on a General Statistics regression: the shortcut forecasts the storage
@@ -177,6 +177,18 @@ together with the storage it brings: the golden is 109,000.
 - **Lesson:** a deduction that rises with the quantity being decided has to be modelled on its drivers and solved
   together with that quantity; carrying it forward on its own history is safe only while the decision's own value
   stands still, as it did here from 2025 to 2026.
+
+## Survivor anatomy
+
+Written at the 2026-11-01 re-check against the shipped design (no rung, figure or filed sentence moved for it).
+
+- Actor: the deciding property, `cell-store`'s cores per machine in service and per batch core running, sits in no column; the export holds one `cores_in_use` series per tenant and the cell file the machines, and the relation between storage's hour, batch-train's hour and the machines in that hour is stored nowhere (R1, asserted: no file states 2.94, 0.208 or 1.208).
+- Link: the storage series is read against another tenant's series (batch-train) and against the cell file's machines, hour by hour on `hour_start_utc`, a cross-tenant and cross-file comparison no key offers and no sentence invites; CS-3 4.1 asks only for each platform service's use forecast at its own busiest hour.
+- Reflex: the capacity planner's first method for a platform reservation, the trend through the service's own busiest hours, is rung R0 and files 122,000, the default path's Ends on; precut's shared-term warning reads the task type's label (regression) in both lines, while the reflex the field applies to a reservation forecast is the series' own trend, which the Domain test line names as the wrong route.
+- Back-test: the closed quarters validate the easy route: the four-quarter line misses each of 2026 Q1 to Q4 by 26 to 484 cores, no worse in practice than the two-driver fit's 220 to 254 (SF13, asserted), because the history's machines rose 40 to 60 a quarter and its guarantee held between 55,000 and 58,000; nothing on file refutes the trend.
+- Second use: every file the decisive step reads has its own use: the usage export feeds every tenant's busiest hour on the default path and the Q3 report's figures, the cell file is the monitoring export's companion pull (same source and pull time) and carries R1's per-machine scaling, the hardware plan gives the reservable cores; deleting the decisive step drops no file.
+- Shock: what the step recovers reads as ordinary filed movement: 2027 Q1's 640-machine step is the hardware plan's refresh racks and the guarantee's rise is the arithmetic the call strikes; `cell-store`'s own history moves smoothly, and the pack's loud anomalies are the 19 August power event and the collector's seven missing hours, which decide nothing.
+- Pins: CS-3 sections 2 to 5 file the WHAT (reservable cores, firm holds to frozen budgets at the rate in force, each platform service at the use forecast for its busiest hour of the quarter, batch inside the quarter's guarantee, the largest whole thousand left); no filed sentence names a driver, the batch tier's load on storage or a joint solve, and the judge's optional memo pin was declined for that reason (SF14).
 
 ## Readability screen
 
@@ -216,7 +228,7 @@ Standard.
 | SF8 | the rate card in force for the quarter | EUR 7.42 per core-month, MAD1 reserved cores, effective 1 January 2027 | EUR 7.70 (in force at the review, from 1 September 2026) | moves the call (120,000, asserted) | CS-3 3.2 ("in force for the quarter"); the rate card's effective dates |
 | SF9 | what a budget pays for | the largest whole number of cores the monthly budget covers at the rate | rounded to the nearest core | converges (asserted: same call) | CS-3 3.2 ("the largest whole number of cores") |
 | SF10 | the platform services | `cell-store` and `cell-ctl` | (none) | n/a | the tenant directory (class `platform`); CS-3 4.1 |
-| SF11 | a service's use in an hour | the export's average cores in use over the hour | (none) | n/a | CS-3 4.2; the dictionary |
+| SF11 | a service's use in an hour | the export's average cores in use over the hour | (none) | n/a | CS-3 4.2; the export's own headers (`hour_start_utc`, `cores_in_use`) |
 | SF12 | "its busiest hour of the quarter" | the hour of the quarter with the highest average use | the 99th percentile hour | same call (asserted: `cell-ctl` 1,988.1 against 1,999.2) | CS-3 4.1 |
 | SF13 | the use forecast for `cell-store` | its use at the quarter's busiest hour from its drivers, with the batch tier at its own guarantee (R3) | its trend (R0), last value (R0b), share of the cell (R1), batch alone (R2), one pass (R2b) | each files its own guarantee (Ladder) | a method row, not a reading: CS-3 4.1 asks for a forecast and 5.2 runs batch inside its guarantee, so the busiest hour comes when batch fills it (asserted: in every quarter on file batch reached 99.9 per cent of its guarantee or more); the method is forced by the design and never filed (`## Tried and rejected`). The closed quarters do not separate the line from the drivers: the line through the four quarters before misses each of 2026 Q1 to Q4 by 26 to 484 cores, the fit on both drivers read at the quarter's opening machines and guarantee by 220 to 254 (asserted), because the history's machines rose 40 to 60 a quarter and its guarantee held between 55,000 and 58,000. The data fact that separates them is the quarter being reserved: 2027 Q1 opens 640 machines above 2026 Q4 (no quarter on file stepped more than 60, asserted), which alone puts `cell-store` 1,552 cores above the line, and its guarantee nearly doubles; the hourly fit carries both and needs both (residual s.d. 62.0 cores, against 641.5 on machines alone and 361.3 on batch alone, asserted). Each alternative is priced and refused by the telemetry's own fit |
 | SF14 | the batch tier at its busiest | at its guarantee | at its historical average fill (98.9 per cent) | same call (asserted: 109,707.1 before the thousand) | CS-3 5.2 and the record (batch reached its guarantee in every quarter); the re-judge's residual fork 1 (2026-10-16), recorded as low risk and declined: the text never says "batch at its guarantee" and 5.2 only caps batch use, but the files close it (99.9 to 100 per cent of the guarantee held at the busiest hour in every quarter on file, and the golden's structure back-tests the eight quarterly busiest hours within +160 to +251 cores); its optional memo pin ("platform reservations are sized with batch running at its guarantee") is declined, since it would point at the coupling |
@@ -225,24 +237,24 @@ Standard.
 | SF17 | the order of the solve | the guarantee and the storage reservation solved together, the whole thousand taken last, `cell-store` reserved at the guarantee | `cell-store` read at the guarantee before the thousand | same guarantee; `cell-store` 38,160.8, the same thousand (asserted) | CS-3 5.1 and 5.2 (batch runs inside the whole-thousand guarantee) |
 | SF18 | the remainder | unreserved (587.8 cores) | added to batch | n/a: the guarantee is a whole thousand | CS-3 5.2 |
 | SF19 | a tenant's budget line | the cost-centre number in the tenant directory ("CC-4110 Search & Discovery"), matched to the workbook's CC (4110) and its MAD1 C-22 line | by cost-centre name; every line of the cost centre summed | converges (asserted: every firm tenant has one cost centre and one C-22 line; joined by name, or with every line of the cost centre summed, the same approvals) | the tenant directory's `cost_centre`; CS-3 3.3 ("for its reserved cores in the cell") |
-| SF20 | Ask A: training lost to a preemption | the preempted run's training from the state its resumption restarted from (the restored checkpoint's write start) to the preemption | from the run's own newest committed checkpoint | every team's figure (S2, asserted) | the prompt ("training lost to a preemption"); the dictionary (`restore_checkpoint`: "the checkpoint it restored from"); the record: 65 of the quarter's 192 resumptions restored an earlier checkpoint than the preempted run's newest committed one (asserted) |
-| SF21 | Ask A: a checkpoint's training state | taken when its write started (`write_started_utc`); training carries on while it is written | the write's commit time | every redone figure (S3, asserted) | the dictionary (`write_started_utc`: "When the state at step was snapshotted and the write began; checkpoint writes run in the background.") |
-| SF22 | Ask A: a run's cores over time | its cores at start, changed by each resize from the resize's time | its cores at start throughout | every figure (S1, asserted) | the resize log; the dictionary ("Cores held by the run from at_utc") |
+| SF20 | Ask A: training lost to a preemption | the preempted run's training from the state its resumption restarted from (the restored checkpoint's write start) to the preemption | from the run's own newest committed checkpoint | every team's figure (S2, asserted) | the prompt ("training lost to a preemption"); the runs file's own header (`restore_checkpoint`, on the resuming run's row); the record: 65 of the quarter's 192 resumptions restored an earlier checkpoint than the preempted run's newest committed one (asserted) |
+| SF21 | Ask A: a checkpoint's training state | taken when its state was snapshotted (`state_snapshot_utc`, the write's start); training carries on while it is written | the write's commit time | every redone figure (S3, asserted) | the checkpoint file's own header (`state_snapshot_utc` beside `committed_utc`; the reading the dictionary carried until the 2026-11-01 re-check, now in the header) |
+| SF22 | Ask A: a run's cores over time | its cores at start, changed by each resize from the resize's time | its cores at start throughout | every figure (S1, asserted) | the resize log's own headers (`at_utc`, `cores_before`, `cores_after`) and the runs file's `cores_at_start` |
 | SF23 | Ask B: a machine that came back | the same asset back in service under any machine id | the same machine id | every figure (S1, asserted) | the prompt ("machines that came back into service"); the inventory's Cluster ids sheet (every machine id an asset has been registered under; each Q3 registration in it is an event in the cluster manager's log at the same minute, asserted; 177 returns under a new id) |
 | SF24 | Ask B: hours in a month | the hours of an outage falling in that month | the outage's whole length in the month it began | converges (asserted: no outage on file crosses a month boundary) | the records converge |
-| SF25 | Ask C: the cores a tenant holds on a day | its reservation at 00:00 UTC that day, a release or grant counting from the first 00:00 UTC after the quota service applied it | from the request time (S1); from the request day's own 00:00; from the 00:00 of the day it was applied | 11, 10 and 10 tenants of 11 (asserted) | the chargeback policy 2.1 ("the cores the tenant holds in the cell at 00:00 UTC") and 2.2 ("A release or grant counts from the first 00:00 UTC after the cell's quota service has applied it.", added at stage 4; it names no file or join); the dictionary (`changes_applied`: "The changes the run applied to the cell's quotas"); the applying run's start or finish give the same midnight (no run starts at 00:00 or spans midnight, asserted); policy 2.2 executed on its own code path gives the golden for all 11 (asserted) |
+| SF25 | Ask C: the cores a tenant holds on a day | its reservation at 00:00 UTC that day, a release or grant counting from the first 00:00 UTC after the quota service applied it | from the request time (S1); from the request day's own 00:00; from the 00:00 of the day it was applied | 11, 10 and 10 tenants of 11 (asserted) | the chargeback policy 2.1 ("the cores the tenant holds in the cell at 00:00 UTC") and 2.2 ("A release or grant counts from the first 00:00 UTC after the cell's quota service has applied it.", added at stage 4; it names no file or join); the reconciler log's own header (`changes_applied`); the applying run's start or finish give the same midnight (no run starts at 00:00 or spans midnight, asserted); policy 2.2 executed on its own code path gives the golden for all 11 (asserted) |
 | SF26 | Ask C: the month's rate | the rate card's rate in force on the day: EUR 7.65 to 31 August, EUR 7.70 from 1 September | Q3's opening rate throughout (S2); the September rate all quarter; the September rate from its publication on 3 August | all 11 tenants under each (asserted) | the chargeback policy 2.1 ("in force on that day") and 3.1 ("A rate applies from its effective date"); the rate card's effective dates (the change falls on a month boundary, so no month is split, asserted) |
 | SF27 | Ask B: a retired machine replaced from spares | not a machine that came back (the spare is another asset: its own tag and serial) | the spare's registration taken as the return | every hardware-fault figure (S2, asserted) | the inventory (the retired asset's status, the spare's own tag) |
 | SF28 | Ask A: whose core-hours | the core-hours the preempted run held on the training that was lost | the resumed run's core-hours spent getting back to where the preempted run stopped | every team's figure (asserted: the two differ where the runs' cores differ) | the ask's own terms ("the core-hours its runs held on training lost to a preemption": the redo's training is kept, not lost) |
 | SF29 | the batch cores in `cell-store`'s busiest hour of 2027 Q1 | the guarantee being struck for 2027 Q1 | the last quarter's guarantee, 56,000 (R2e) | moves the call (120,000, asserted) | CS-3 4.1 ("reserved for the quarter at the use forecast for its busiest hour of the quarter": the busiest hour of the quarter the reservation and the guarantee are for) and 5.2 (batch runs inside that quarter's guarantee); the record: at `cell-store`'s busiest hour of every quarter on file batch held 99.6 per cent or more of that quarter's own guarantee, within 200 cores of it and 983 to 3,031 cores from the quarter before's in each of the seven quarters whose guarantee moved (asserted) |
 | SF30 | the guarantee the storage load is read at | the guarantee being struck: the storage reservation and the guarantee are one solve | another answer's guarantee: the default's 122,000 (R2b), or the last quarter's 56,000 (SF29) | moves the call (106,000, asserted) | CS-3 5.1 and 5.2: the guarantee filed is the one batch runs inside, so the reservations struck before it are read at it; the load read at 122,000 leaves 106,000, a guarantee that reading does not file, and 109,000 is the one whole thousand from 50,000 to 160,000 whose own storage load leaves it (asserted) |
 | SF31 | where the platform forecast takes its inputs | the services' use as the export records it (CS-3 4.2), for the quarter whose machines the hardware plan gives (2.1) | the export alone, without the plan's machines (the pull date's 4,640, R2d) | moves the call (110,000, asserted) | CS-3 2.1 and 6.2 (the review works from the hardware plan with the export); no shipped sentence confines the forecast to the export: the memo's platform line, which read "from the cell monitoring export", names no source since stage 4 (asserted) |
-| SF32 | Ask A: a checkpoint write with no commit time (under way at the preemption, or failed) | not a state the training resumed from | the preempted run's lost training counted from it (S2b) | every team's figure (S2b, asserted) | the dictionary (`committed_utc` blank when the write did not complete) and the runs file's `restore_checkpoint`: 12 of the 192 preemptions followed a write with no commit time and no resumption restored from one; every restore point in the file is committed (asserted) |
-| SF33 | Ask A: a run still running at the snapshot | its core-hours to 1 October 00:00 UTC are held | left out of the held core-hours | four teams' shares (asserted) | the prompt ("all the core-hours its runs held", July to September 2026); the dictionary (`ended_utc` blank for a run still running at the 1 October 2026 00:00 UTC snapshot: 49 runs, every one RUNNING, asserted) |
+| SF32 | Ask A: a checkpoint write with no commit time (under way at the preemption, or failed) | not a state the training resumed from | the preempted run's lost training counted from it (S2b) | every team's figure (S2b, asserted) | the checkpoint file (`committed_utc` blank on writes with no commit) and the runs file's `restore_checkpoint`: 12 of the 192 preemptions followed a write with no commit time and no resumption restored from one; every restore point in the file is committed (asserted) |
+| SF33 | Ask A: a run still running at the snapshot | its core-hours to 1 October 00:00 UTC are held | left out of the held core-hours | four teams' shares (asserted) | the prompt ("all the core-hours its runs held", July to September 2026); the runs file (`ended_utc` blank on the 49 runs whose `end_state` is RUNNING, asserted; held to 1 October 00:00 UTC, the window's end, whatever the snapshot's time) |
 | SF34 | Ask A: a run that started before 1 July | its core-hours from 1 July | its whole run from June | two teams' shares (reco-ml 0.58, nlp-ml 0.76, asserted) | the prompt ("three tables for July to September 2026"); the lost core-hours converge: no preempted run of the quarter started before 1 July and no restore point is earlier (asserted); the re-judge's residual fork 2 (2026-10-16), recorded as low risk and declined: the share's denominator clipped to July to September follows the table's period; only runs started in the window gives reco-ml 0.60 and nlp-ml 0.78 (the judge's recompute), the lost core-hours unchanged under every variant |
 | SF35 | Ask B: a removal with no return in the file | not counted: the machine never came back | counted to 30 September 24:00 | every hardware-fault month (asserted) | the prompt ("machines that came back into service"); the records converge on it: each of the 7 is an asset the inventory has retired on the day of its removal (asserted), and every other removal returns before the quarter ends |
 | SF36 | Ask B: 19 August | the power event removed no machine; the cluster manager's four re-sent removals counted once | the power event's hours counted as lost; the re-sent rows kept | August maintenance moves (HB1, asserted) | the records: no removal between the power event (01:40 UTC) and the day's maintenance wave (asserted); the operations log ("Worker rows stayed up on feed A"); the re-sent rows are byte-identical to the originals (same machine, minute, cause and ticket: one removal each, asserted) |
-| SF37 | Ask B: the month of an hour | UTC, as the machine events record it | Madrid local time (CEST) | converges (asserted: split by local month the six figures are the same; one return falls five minutes past local midnight on 1 August) | the README ("Times are UTC unless a file says otherwise"); the records converge |
+| SF37 | Ask B: the month of an hour | UTC, as the machine events record it | Madrid local time (CEST) | converges (asserted: split by local month the six figures are the same; one return falls five minutes past local midnight on 1 August) | the event file's own header (`time_utc`); the records converge |
 | SF38 | the rounding path to the guarantee | the reservations carried unrounded, the whole thousand taken last | the reservations rounded to the thousand first (577,000, 2,000, 38,000) | same call (109,624 before the thousand, asserted) | CS-3 3.2 (the largest whole number of cores), 4.1 (at the use forecast) and 5.1; the prompt's nearest 1,000 is the workbook's display. Every converging variant (SF14 to SF16, SF38, closure 8 and 19) floors to 109,000, from 109,426 to 109,707 before the thousand (asserted) |
 
 The stump is none of these rows: every term is read the same way by a careful reader, and the default path reads them
@@ -327,7 +339,7 @@ the pack and asserted by name in `checks.py`; the default path and the golden ar
 | 16 | Identity normalisation | tenant ids in the export, the ledger and the requests; cost-centre numbers in the budget workbook, joined through the directory (asserted: every firm tenant matches one C-22 line) |
 | 17 | Netting against gross | none: reservations add; the guarantee is what is left |
 | 18 | Dimensional units | cores throughout; budgets in euros per month over a rate in euros per core-month gives cores (SF9) |
-| 19 | Code and status semantics | tenant classes (`firm`, `platform`, `batch`) in the directory; the export's `cores_in_use` defined in the dictionary; machines in service against installed converge (asserted: 109,498.6 before the thousand) |
+| 19 | Code and status semantics | tenant classes (`firm`, `platform`, `batch`) in the directory; the export's `cores_in_use` as its header names it; machines in service against installed converge (asserted: 109,498.6 before the thousand) |
 | 20 | Integerisation | the guarantee's whole thousand (floor); firm holds in whole cores (floor) |
 | 21 | Clause scope | CS-3 3 applies to firm tenants, 4 to platform services, 5 to the batch tier (the directory's classes) |
 | 22 | Forward window contents | the quarter's machines (the hardware plan), overcommit (the memo), firm requests and budgets (filed); the platform services' use, forecast from the export; the batch tier at its guarantee (5.2) |
@@ -376,8 +388,8 @@ checkpoints and resize log (Ask A), the cluster manager's machine events and the
 quota change file, the quota service's reconciliation runs, the chargeback policy, the rate card's 2026 rows and the
 ledger's firm rows for 2026 Q3 (Ask C). Each ask is a measure the cell's tiers carry that the call does not turn on;
 none is keyed to the call, its construction or its figures; the three share no primary device and no primary file. No
-sentence in the pack adjudicates a device beyond closing its reading: the dictionary describes each file's fields only,
-and the chargeback policy states what a tenant pays for and, since stage 4, from when a release or grant counts (2.2),
+sentence in the pack adjudicates a device beyond closing its reading: no file describes the data (the export headers
+name each field as the source systems write it), and the chargeback policy states what a tenant pays for and, since stage 4, from when a release or grant counts (2.2),
 naming no file or join.
 
 **Ask A. For each batch training team, the core-hours its runs held in July to September 2026 on training lost to a
@@ -401,10 +413,9 @@ nearest 100, per cent to two decimals).
   to 1 July; no redone training before 1 July, asserted).
 - Converging readings (asserted): every preemption in the quarter is resumed in the file before 1 October; no restore
   checkpoint is later than its preempted run's end; every restore point is a committed checkpoint.
-- Path (5 files, 14 columns): the runs file (`run_id`, `team`, `cores`, `started_utc`, `ended_utc`, `end_state`,
-  `resumed_from`, `restore_checkpoint`), the checkpoints (`checkpoint_id`, `run_id`, `write_started_utc`,
-  `committed_utc`), the resize log (`run_id`, `at_utc`, `cores_after`), the tenant directory's batch teams, the
-  dictionary.
+- Path (5 files, 14 columns): the runs file (`run_id`, `team_id`, `cores_at_start`, `started_utc`, `ended_utc`,
+  `end_state`, `resumed_from`, `restore_checkpoint`), the checkpoints (`checkpoint_id`, `run_id`, `state_snapshot_utc`,
+  `committed_utc`), the resize log (`run_id`, `at_utc`, `cores_after`), the tenant directory's training teams.
 - Stops (each computed and asserted in `checks.py`): S1 natural (cores at start, each preempted run's own newest
   committed checkpoint); S2 resizes applied, own newest committed checkpoint; S2b resizes applied, own newest write
   started (committed or not); S3 the restore point followed, the commit time taken as the training state; each misses
@@ -436,9 +447,8 @@ maintenance on machines that came back into service** (3 months by 2 causes, 6 f
   out); HB3 spares registered in the racks of retired machines (pairing an unmatched removal with the next new
   registration in its rack counts the retired machine as back, S2).
 - Converging readings (asserted): no outage crosses a month boundary; every return is under exactly one id.
-- Path (3 files, 11 columns): the machine events (`machine_id`, `event`, `time_utc`, `cause`, `rack`), the inventory's
-  asset sheet (`Asset tag`, `Rack`, `Status`) and cluster ids (`Asset tag`, `Machine id`, `Registered (UTC)`), the
-  dictionary.
+- Path (3 files, 11 columns): the machine events (`machine_id`, `event_type`, `time_utc`, `cause`, `rack_pos`), the
+  inventory's asset sheet (`Asset tag`, `Rack`, `Status`) and cluster ids (`Asset tag`, `Machine id`, `Registered (UTC)`).
 - Stops (computed and asserted): S1 natural (matched on machine id) misses all 6; S2 over-cleaned (an unmatched removal
   paired with the next registration in its rack that no same-id return claims) misses the 3 hardware-fault figures and
   lands on the 3 maintenance figures, where re-images pair inside one rack and the pairing preserves each
@@ -468,9 +478,9 @@ nearest 100).
   primary's mechanism, a shared cause with Ask A's HA3 and the export's outage).
 - Converging readings (asserted): no change is applied at 00:00 UTC and no reconciliation run spans midnight; every
   change is applied exactly once.
-- Path (6 files, 13 columns): the ledger's 2026 Q3 firm rows (`quarter`, `tenant`, `reserved_cores`), the quota
-  changes (`change_id`, `tenant`, `delta_cores`, `requested_utc`), the reconciliation runs (`run_started_utc`,
-  `changes_applied`), the rate card (`effective_from`, `eur_per_unit_month`), the chargeback policy, the dictionary.
+- Path (6 files, 13 columns): the ledger's 2026 Q3 firm rows (`res_quarter`, `tenant_id`, `reserved_cores`), the
+  quota changes (`change_id`, `tenant_id`, `delta_cores`, `requested_utc`), the reconciliation runs (`run_started_utc`,
+  `changes_applied`), the rate card (`effective_from`, `eur_per_unit_month`), the chargeback policy.
 - Stops (computed and asserted): S1 natural (changes from their request time), all 11 off; S2 changes from the
   application time but Q3's opening rate throughout, all 11 off:
   - `search-api`: golden EUR 2,653,000; S1 2,653,300; S2 2,647,200
@@ -528,6 +538,10 @@ the firm total, the slide's parts), 7 instruction following (the two files, the 
 firm total and the slide's firm part, r about 7, and the same 5.0: S = 7 + 7 + 5.0 = 19.0.
 
 Pair ceiling: 34.5
+Measured by: `generator/checks.py`, run on the cut pack by every `build.py`: the cracker's path on each ask (`calc.ask_a`
+stop `s2`, `calc.ask_b` stop `s1`, `calc.ask_c` stop `s1`, the rows of the cracker sheet) and the asks' other stops are
+executed on `target/` and asserted to miss every ask figure (Ask A 12 of 12, Ask B 6 of 6, Ask C 11 of 11); the pair
+ceiling and the mirror leakage above are the planning weights applied to those counts.
 
 If a strong response cracks Ask C (11 of 29 ask figures, about 21 of 55 points), the cracker rises to about 66 and the
 pair to about 42.5; Ask C's device is the one to watch at the leak read. Since stage 4 policy 2.2 states Ask C's basis,
@@ -545,7 +559,7 @@ keeps 3 of its 6 figures (about 6 points). Recomputed from the generated rubric 
 | The finance freeze record and budget workbook | 2 | Q1 2027 monthly budgets held at December 2026 | any reservation, any rate |
 | The rate card | 2 | EUR per core-month for MAD1 reserved cores by effective date | a reservation |
 | The chargeback policy (asks only) | 2 | what a firm tenant pays: the cores it holds at 00:00 UTC each day at the rate in force; a release or grant from the first 00:00 UTC after the quota service has applied it (2.2) | which file records the application |
-| The dictionary | 4 | field semantics: cores in use, machines in service, run, checkpoint and resize fields, machine events, the inventory's cluster ids, quota change and reconciliation fields | what drives storage, how to follow a restore, that a re-image changes an id, when a change applies |
+| The data files' own headers | 4 | each field as its source system writes it (`cores_in_use`, `machines_in_service`, `cores_at_start`, `state_snapshot_utc`, `committed_utc`, `restore_checkpoint`, `cores_after`, `event_type`, `changes_applied`); no dictionary, README or manifest ships | what drives storage, how to follow a restore, that a re-image changes an id, when a change applies |
 
 ## Prompt
 
@@ -560,7 +574,7 @@ at the close.
   `checks.py` (every SF row, every rung by name, the grid, the asks' stops, the context artifact, the input gates, the
   realism sweep, the distractor deletions) and the independent `verify.py` (pandas, no shared code), then a second full
   build compared byte for byte, then cuts `target.zip`.
-- The pack: 24 files in six formats (csv, pdf, docx, xlsx, json, txt); the spine 239,470 rows; distractors
+- The pack: 22 files in five formats (csv, pdf, docx, xlsx, json; 24 in six with the README and the dictionary until the 2026-11-01 re-check); the spine 239,470 rows; distractors
   `mad1_cells_quarterly_summary_2025-2026.xlsx` and `batch_training_demand_2027H1.pdf`, declared in `metadata.json`,
   each deleted with the call and every ask unchanged (asserted).
 - Built figures: the guarantee 109,000 (109,492.0 before the thousand), the firm tenants 576,972, `cell-store` 38,058.5,
@@ -659,6 +673,29 @@ at the close.
   `leak.py --asof 2026-12-14` re-run on the shipped cut: REVIEW, no LEAK, the same lines; the solver's-eye reads
   re-appended. Reshipped: `pipeline.json` SHIPPED, the ledger row and the card current.
 
+- Re-check under the new gates, 2026-11-01. The rebuild reproduced the shipped target.zip (5823a2b7) byte for byte,
+  then: `precut.py` FAIL (no `Measured by:` line under the ask sheet; seven survivor-anatomy WARNs), `leak.py` LEAK
+  (sweep 1: `README_capacity_review_files.txt` and `data_dictionary.xlsx` describe the data; sweep 12: CS-3, the Q3
+  report, the chargeback policy and the README named eight to eleven of the files' plain-word headers, `quarter`,
+  `tenant`, `class`, `review`, `cell`, `cores`, `site`, `teams`; sweep 13 REVIEW, the subdomain narrated the joint
+  solve), `voice-check.py` PASS (no count the data hold; the shell-quota WARN left), `figures_check.py` PASS,
+  `guard.py surface` 0 promoted, `heart` BLOCK on `ban.forcing_event` against task448, whose card was drawn the same
+  day as this one (2026-10-12, both `vote_or_meeting`) and which this re-check does not touch: recorded for the
+  author, not re-rooted. Repair in the generator: the README and the dictionary leave the pack (22 files, five
+  formats); the CSV headers and the directory's keys are written as the source systems name them
+  (`common.HEADER`, `DIR_KEYS`; `cell_id`, `tenant_id`, `res_quarter`, `tenant_class`, `review_id`, `resource_type`,
+  `site_code`, `team_id`, `cores_at_start`, `event_type`, `rack_pos`, `state_snapshot_utc`; `tenant_records`,
+  `tenant_class`, `training_teams`), and the readers map them back, `verify.py` with its own table; every reading the
+  dictionary filed for a graded figure now sits in a header (SF21's state time as `state_snapshot_utc`, SF22's
+  `cores_at_start`) or converges on the records (SF11, SF20, SF25, SF32, SF33, SF37, closure 19); `checks.py` asserts
+  no describing file ships and no CSV writes a generator name; the subdomain says what the task decides. The
+  `## Survivor anatomy` section and the ask sheet's `Measured by:` line are written; the line names `checks.py`, which
+  already ran the cracker's three paths on the cut pack. No value in any file moved: the goldens, `figures.json` and
+  `submission.md` are byte-identical, and `freeze.py check --mode determinism` PASSes against a snapshot taken before
+  the first edit. Gates: `build.py` (2,396 assertions, `verify.py`, two builds byte-identical, target.zip 94c7a2f7),
+  `precut.py` 61 checks 0 FAIL (one WARN, the shared regression term, answered under `Reflex:`), `leak.py` REVIEW, no
+  LEAK (sweeps 1, 12 and 13 clean), `figures_check.py` 79 figures, `guard.py surface` 0 promoted, `validate` clean.
+
 ## Leak review
 
 `leak.py task140 --asof 2026-12-14`: REVIEW, no LEAK, at stage 3 and again on the stage 4 rebuild (the same lines, less
@@ -696,6 +733,18 @@ the demand note under sweep 4, and the chargeback policy at 5 of 6 call words). 
   one realism note, the operations log's 2026-12-11 line ("C-22 hardware plan revised: refresh racks in service from
   28 December."), repeats the plan: harmless, it is the plan revision's own log entry, made by fleet and hardware on the
   revision's date as the log records every rack handover, and it names no method, driver or figure.
+- Solver's-eye read, 2026-11-01 re-check (target.zip 94c7a2f7, README and dictionary out, system headers): Q1 to Q4
+  none; Q5 every quoted sentence (CS-3 2.1, 3.1 to 3.3, 4.1, 4.2, 5.1; chargeback 1.2, 2.1, 2.2) executes to the
+  golden's inputs, the forecast method open; Q6 the platform forecast as the analytical choice; sweep lines a to d
+  harmless; its realism notes (uniform 20-machine racks, round budgets, float machine counts, the distractor's queue
+  waits) recorded and left, each the source system's own shape and none touching a graded figure.
+- Determinism judge, 2026-11-01 re-check (target.zip 94c7a2f7): DETERMINISTIC, APPROVE; the guarantee, the
+  reservations and asks A to C reproduced from the bundle alone; Gate H domain pass, layers pass, decisive step
+  analytical. Its residual risks, recorded low and declined: Ask A's checkpoint state time, which no document but the
+  header `state_snapshot_utc` now closes (the optional prompt pin declined: it would add a filed sentence for a
+  reading the header already carries); the restore point (SF20, the records); batch at its guarantee (SF14); the
+  platform method open (SF13, by design); CS-3 3.1's six-week window against the 16 November opening in the log, which
+  touches no figure.
 
 ## Pre-ship check
 

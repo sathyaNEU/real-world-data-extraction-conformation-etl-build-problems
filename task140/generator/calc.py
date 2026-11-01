@@ -25,7 +25,7 @@ def P(target, name):
 
 def rows(path):
     with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+        return [{K.UNHEADER.get(k, k): v for k, v in r.items()} for r in csv.DictReader(fh)]
 
 
 def tparse(s):
@@ -59,7 +59,7 @@ def docx_text(path):
 def load(target, dedupe=True, gap="drop"):
     """The main call's inputs, as a careful reader takes them from the pack."""
     M = Pack()
-    d = json.load(open(P(target, K.DIRECTORY), encoding="utf-8"))
+    d = K.rekey(json.load(open(P(target, K.DIRECTORY), encoding="utf-8")), K.UNDIR_KEYS)
     M.classes = {t["id"]: t["class"] for t in d["tenants"]}
     M.firm = [t["id"] for t in d["tenants"] if t["class"] == "firm"]
     M.platform = [t["id"] for t in d["tenants"] if t["class"] == "platform"]
@@ -365,7 +365,7 @@ class Asks:
 
 def load_asks(target):
     A = Asks()
-    d = json.load(open(P(target, K.DIRECTORY), encoding="utf-8"))
+    d = K.rekey(json.load(open(P(target, K.DIRECTORY), encoding="utf-8")), K.UNDIR_KEYS)
     A.teams = [x["id"] for t in d["tenants"] if t["class"] == "batch" for x in t["teams"]]
     A.firm = [t["id"] for t in d["tenants"] if t["class"] == "firm"]
     A.runs = rows(P(target, K.RUNS))

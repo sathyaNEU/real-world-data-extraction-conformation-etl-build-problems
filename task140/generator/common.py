@@ -173,8 +173,24 @@ INVENTORY = "mad1_hardware_inventory_2026-12.xlsx"
 QCHANGES = "quota_changes_2026Q3.csv"
 QRUNS = "quota_reconciler_runs_2026Q3.csv"
 CHARGEBACK = "chargeback_policy_2026.pdf"
-DICTIONARY = "data_dictionary.xlsx"
-README = "README_capacity_review_files.txt"
+# Export headers and directory keys as the source systems write them (the generator's own names on the left); the
+# readers map them back, so every computation keeps the generator's names.
+HEADER = {"cell": "cell_id", "tenant": "tenant_id", "quarter": "res_quarter", "class": "tenant_class",
+          "review": "review_id", "resource": "resource_type", "site": "site_code", "team": "team_id",
+          "cores": "cores_at_start", "event": "event_type", "rack": "rack_pos", "write_started_utc": "state_snapshot_utc"}
+UNHEADER = {v: k for k, v in HEADER.items()}
+DIR_KEYS = {"cell": "cell_id", "site": "site_name", "tenants": "tenant_records", "class": "tenant_class",
+            "teams": "training_teams"}
+UNDIR_KEYS = {v: k for k, v in DIR_KEYS.items()}
+
+
+def rekey(obj, keys):
+    """A JSON value with its object keys renamed through keys, recursively."""
+    if isinstance(obj, dict):
+        return {keys.get(k, k): rekey(v, keys) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [rekey(v, keys) for v in obj]
+    return obj
 SISTERS = "mad1_cells_quarterly_summary_2025-2026.xlsx"
 BATCH_DEMAND = "batch_training_demand_2027H1.pdf"
 DISTRACTORS = [SISTERS, BATCH_DEMAND]
@@ -192,7 +208,7 @@ def rng(*keys):
 def write_csv(path, cols, rows, crlf=False):
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
-    w.writerow(cols)
+    w.writerow([HEADER.get(c, c) for c in cols])
     n = 0
     for r in rows:
         w.writerow(["" if r.get(c) is None else r.get(c) for c in cols] if isinstance(r, dict) else r)

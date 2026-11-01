@@ -1,6 +1,6 @@
 """The pack's documents: the Cell Capacity Standard CS-3, the capacity memo, the hardware plan, the technology budgets
 with the freeze, the 2026 Q3 capacity report, the MAD1 operations log, the hardware inventory, the chargeback policy,
-the data dictionary, the files note, the MAD1 cells' quarterly summary and the ML Platform's H1 2027 demand note."""
+the MAD1 cells' quarterly summary and the ML Platform's H1 2027 demand note."""
 from __future__ import annotations
 
 import datetime as dt
@@ -540,91 +540,6 @@ def write_chargeback(path):
     foot = _footer("%s Internal." % K.COMPANY, "Chargeback policy 2026")
     doc = _doc(path, "Technology chargeback policy 2026", K.PEOPLE["finance"])
     doc.build(s, onFirstPage=foot, onLaterPages=foot)
-
-
-# ---------------------------------------------------------------------------------------------------- dictionary
-
-DICT = [
-    (K.USAGE, "hour_start_utc", "Start of the hour (UTC); the row covers the hour that starts then."),
-    (K.USAGE, "cell", "Cell id."),
-    (K.USAGE, "tenant", "Tenant id, as in the tenant directory."),
-    (K.USAGE, "cores_in_use", "Cores in use, hourly average, as the collector received them."),
-    (K.CELLHOURLY, "machines_installed", "Machines installed in the cell, hourly average (in service or out for repair "
-                                         "or maintenance)."),
-    (K.CELLHOURLY, "machines_in_service", "Schedulable machines registered with the cell's scheduler, hourly average."),
-    (K.LEDGER, "reserved_cores", "The tenant's reservation for the quarter as approved at the capacity review; for "
-                                 "batch-train, the batch guarantee."),
-    (K.LEDGER, "approved_on", "Date of the review."),
-    (K.REQUESTS, "cores_requested", "Cores the firm tenant asked to reserve for the quarter."),
-    (K.REQUESTS, "filed_utc", "When the request was filed (UTC)."),
-    (K.RATECARD, "eur_per_unit_month", "Euros per unit per month."),
-    (K.RATECARD, "effective_from", "The rate applies from this date until the next effective date for the same "
-                                   "resource and site."),
-    (K.DIRECTORY, "class", "firm, platform or batch (CS-3, 1.3)."),
-    (K.DIRECTORY, "cost_centre", "The cost centre the tenant's budget and charges sit in."),
-    (K.RUNS, "job_id", "Training job; its runs are the first run and each resumption."),
-    (K.RUNS, "cores", "Cores the run held when it started."),
-    (K.RUNS, "ended_utc", "When the run ended; blank if it was still running when the snapshot was taken (1 October "
-                          "2026 00:00 UTC)."),
-    (K.RUNS, "end_state", "COMPLETED, PREEMPTED or RUNNING."),
-    (K.RUNS, "resumed_from", "For a run that resumed a preempted run of the same job: that run."),
-    (K.RUNS, "restore_checkpoint", "For a run that resumed a preempted run: the checkpoint it restored from."),
-    (K.CHECKPOINTS, "run_id", "The run that wrote the checkpoint."),
-    (K.CHECKPOINTS, "step", "Training step whose state the checkpoint holds."),
-    (K.CHECKPOINTS, "write_started_utc", "When the state at step was snapshotted and the write began; checkpoint "
-                                         "writes run in the background."),
-    (K.CHECKPOINTS, "committed_utc", "When the write completed; blank if it did not complete."),
-    (K.RESIZES, "at_utc", "When the resize took effect."),
-    (K.RESIZES, "cores_after", "Cores held by the run from at_utc."),
-    (K.MEVENTS, "machine_id", "The cluster manager's id for the machine."),
-    (K.MEVENTS, "event", "REMOVED (drained out of the cell's pool) or REGISTERED (in the pool and schedulable)."),
-    (K.MEVENTS, "cause", "For REMOVED: hw_fault or maintenance."),
-    (K.MEVENTS, "rack", "Rack position of the machine."),
-    (K.INVENTORY, "Status", "in service, retired or staged (racked, in burn-in)."),
-    (K.INVENTORY, "Cluster ids", "Machine ids registered for the asset, with registration times (UTC)."),
-    (K.QCHANGES, "delta_cores", "Change to the tenant's reserved cores: negative a release, positive a grant."),
-    (K.QCHANGES, "requested_utc", "When the change was requested in the quota tool (UTC)."),
-    (K.QRUNS, "run_started_utc", "When the quota service's reconciliation run started (UTC)."),
-    (K.QRUNS, "changes_applied", "The changes the run applied to the cell's quotas, by change id."),
-    (K.HWPLAN, "In service from", "Date the rack went into service in the cell, or is planned to."),
-    (K.HWPLAN, "Machines", "Machines in the rack."),
-    (K.BUDGETS, "CC", "Cost centre number; the tenant directory gives it with the cost centre's name."),
-    (K.BUDGETS, "Budget line", "What the line pays for: reserved cores in one cell, or block storage at a site."),
-    (K.BUDGETS, "Jan 2026 to Mar 2027", "The line's budget for the month, EUR."),
-    (K.SISTERS, "Batch held at busiest hour (% of guarantee)", "The batch tier's use at its busiest hour of the "
-                                                               "quarter, as a share of its guarantee."),
-    (K.SISTERS, "Median queue wait, batch (h)", "Median time batch runs waited between submission and start."),
-]
-
-
-def write_dictionary(path):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Fields"
-    _title_rows(ws, "Data dictionary: C-22 capacity review files", "Compute Operations, MAD1. December 2026. Fields "
-                "of the data files (CSV, JSON and workbooks) whose meaning their headers do not give.")
-    _head(ws, ["File", "Field", "Definition"], [44, 22, 96])
-    for f, c, d in DICT:
-        ws.append([f, c, d])
-        ws.cell(row=ws.max_row, column=3).alignment = Alignment(wrap_text=True, vertical="top")
-    wb.save(path)
-
-
-# ---------------------------------------------------------------------------------------------------- README
-
-def write_readme(path, files):
-    lines = ["Alisio Viajes, Compute Operations (MAD1)",
-             "C-22 capacity review for 2027 Q1: files, compiled 14 December 2026",
-             "",
-             "File, what it is, where it came from:",
-             ""]
-    for name, what, source in files:
-        lines.append(name)
-        lines.append("    %s. %s." % (what, source))
-    lines.append("")
-    lines.append("Times are UTC unless a file says otherwise. Tenant ids are those of the tenant directory.")
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write("\n".join(lines) + "\n")
 
 
 # ---------------------------------------------------------------------------------------------------- sister cells (distractor)

@@ -18,6 +18,25 @@ def half_up(x, step):
     return int(math.floor(x / step + 0.5)) * step
 
 
+# The export headers and directory keys mapped to the names this verifier works in (its own table, no shared code).
+BACK = {"cell_id": "cell", "tenant_id": "tenant", "res_quarter": "quarter", "tenant_class": "class",
+        "review_id": "review", "resource_type": "resource", "site_code": "site", "team_id": "team",
+        "cores_at_start": "cores", "event_type": "event", "rack_pos": "rack", "state_snapshot_utc": "write_started_utc"}
+DIR_BACK = {"tenant_records": "tenants", "tenant_class": "class", "training_teams": "teams"}
+
+
+def read_csv(path, **kw):
+    return pd.read_csv(path, **kw).rename(columns=BACK)
+
+
+def _dir_keys(obj):
+    if isinstance(obj, dict):
+        return {DIR_BACK.get(k, k): _dir_keys(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_dir_keys(v) for v in obj]
+    return obj
+
+
 def find(target, pattern):
     hits = [f for f in os.listdir(target) if re.search(pattern, f)]
     assert len(hits) == 1, (pattern, hits)
@@ -25,7 +44,7 @@ def find(target, pattern):
 
 
 def main_call(target):
-    dirx = json.load(open(find(target, r"^tenant_directory\.json$"), encoding="utf-8"))
+    dirx = _dir_keys(json.load(open(find(target, r"^tenant_directory\.json$"), encoding="utf-8")))
     ten = pd.DataFrame(dirx["tenants"])
     firm = ten[ten["class"] == "firm"].copy()
     firm["code"] = firm["cost_centre"].str.extract(r"CC-(\d+)")[0]
@@ -36,23 +55,23 @@ def main_call(target):
     memo = " ".join(p.text for p in docx.Document(find(target, r"capacity_memo")).paragraphs)
     oc = float(re.search(r"overcommit for 2027 Q1 is ([\d.]+)", memo).group(1))
     reservable = round(machines * 96 * oc)
-    req = pd.read_csv(find(target, r"capacity_requests"))
+    req = read_csv(find(target, r"capacity_requests"))
     bud = pd.read_excel(find(target, r"tech_budgets"), sheet_name="Compute budgets", header=None)
     hdr = bud.index[bud[0] == "CC"][0]
     bud.columns = bud.loc[hdr]
     bud = bud.loc[hdr + 1:]
     bud = bud[bud["Budget line"] == "MAD1 C-22 reserved cores"].copy()
     bud["code"] = bud["CC"].astype(str)
-    rc = pd.read_csv(find(target, r"rate_card"))
+    rc = read_csv(find(target, r"rate_card"))
     rc = rc[(rc.resource == "reserved core") & (rc.site == "MAD1")].sort_values("effective_from")
     rate = float(rc[rc.effective_from <= "2027-01-01"].iloc[-1].eur_per_unit_month)
     m = req.merge(firm[["id", "code"]], left_on="tenant", right_on="id").merge(bud[["code", "Jan 2027"]], on="code")
     m["cap"] = np.floor(m["Jan 2027"].astype(float) / rate + 1e-9).astype(int)
     m["approved"] = np.minimum(m["cores_requested"], m["cap"])
     F = int(m["approved"].sum())
-    use = pd.read_csv(find(target, r"usage_hourly")).drop_duplicates()
+    use = read_csv(find(target, r"usage_hourly")).drop_duplicates()
     wide = use.pivot(index="hour_start_utc", columns="tenant", values="cores_in_use")
-    cell = pd.read_csv(find(target, r"cell_hourly")).set_index("hour_start_utc")
+    cell = read_csv(find(target, r"cell_hourly")).set_index("hour_start_utc")
     df = wide.join(cell, how="inner").dropna(subset=["cell-store", "batch-train", "machines_in_service"])
     X = np.column_stack([np.ones(len(df)), df["machines_in_service"].values, df["batch-train"].values])
     a, c, b = np.linalg.lstsq(X, df["cell-store"].values, rcond=None)[0]
@@ -70,9 +89,9 @@ def main_call(target):
 
 
 def asks(target):
-    runs = pd.read_csv(find(target, r"batch_runs"), dtype=str, keep_default_na=False)
-    ck = pd.read_csv(find(target, r"batch_checkpoints"), dtype=str, keep_default_na=False).set_index("checkpoint_id")
-    rz = pd.read_csv(find(target, r"batch_resizes"), dtype={"run_id": str})
+    runs = read_csv(find(target, r"batch_runs"), dtype=str, keep_default_na=False)
+    ck = read_csv(find(target, r"batch_checkpoints"), dtype=str, keep_default_na=False).set_index("checkpoint_id")
+    rz = read_csv(find(target, r"batch_resizes"), dtype={"run_id": str})
     q0, q1 = pd.Timestamp("2026-07-01", tz="UTC"), pd.Timestamp("2026-10-01", tz="UTC")
     ts = lambda s: pd.Timestamp(s) if s else q1
     rz["at"] = pd.to_datetime(rz["at_utc"])
@@ -97,7 +116,7 @@ def asks(target):
             t0 = ts(c.write_started_utc) if c.run_id == row.run_id else ts(row.started_utc)
             red[row.team] = red.get(row.team, 0.0) + ch(row, max(t0, q0), q1)
     A = {t: (half_up(red.get(t, 0.0), 100), math.floor(10000 * red.get(t, 0.0) / held[t] + 0.5) / 100) for t in held}
-    ev = pd.read_csv(find(target, r"machine_events")).drop_duplicates()
+    ev = read_csv(find(target, r"machine_events")).drop_duplicates()
     ev["t"] = pd.to_datetime(ev["time_utc"])
     ids = pd.read_excel(find(target, r"hardware_inventory"), sheet_name="Cluster ids", header=None)
     ids = ids[ids[0].astype(str).str.startswith("SRV-")]
@@ -115,16 +134,16 @@ def asks(target):
                 k = (r["cause"], r["t"].month)
                 B[k] = B.get(k, 0.0) + (back["t"] - r["t"]).total_seconds() / 3600
     B = {k: half_up(v, 10) for k, v in B.items()}
-    led = pd.read_csv(find(target, r"reservation_ledger"))
+    led = read_csv(find(target, r"reservation_ledger"))
     base = led[(led.quarter == "2026Q3") & (led["class"] == "firm")].set_index("tenant")["reserved_cores"]
-    chg = pd.read_csv(find(target, r"quota_changes"))
-    qr = pd.read_csv(find(target, r"reconciler_runs"), keep_default_na=False)
+    chg = read_csv(find(target, r"quota_changes"))
+    qr = read_csv(find(target, r"reconciler_runs"), keep_default_na=False)
     app = {}
     for r in qr.itertuples():
         for cid in [x for x in r.changes_applied.split(";") if x]:
             app[cid] = pd.Timestamp(r.run_started_utc)
     chg["applied"] = chg["change_id"].map(app)
-    rc = pd.read_csv(find(target, r"rate_card"))
+    rc = read_csv(find(target, r"rate_card"))
     rc = rc[(rc.resource == "reserved core") & (rc.site == "MAD1")]
     Cc = {}
     for t, lvl in base.items():

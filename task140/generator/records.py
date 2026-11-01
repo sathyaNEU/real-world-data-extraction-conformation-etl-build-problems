@@ -134,7 +134,7 @@ def directory(W):
 
 def write_directory(path, W):
     with open(path, "w", encoding="utf-8", newline="\n") as fh:
-        json.dump(directory(W), fh, indent=2, ensure_ascii=False)
+        json.dump(K.rekey(directory(W), K.DIR_KEYS), fh, indent=2, ensure_ascii=False)
         fh.write("\n")
 
 

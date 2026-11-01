@@ -1,28 +1,26 @@
 # leak check, task140
 
-**Verdict: REVIEW.** 24 files read, 36 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 22 files read, 36 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: storage, busiest, drivers, forecast, history, cell-store, budget, objective, forecasting, running, operations, series, machine, decision, quantity, reservation, binding, decisive, solved, residual, default, compute, struck, regression, together
+Stump terms swept: storage, busiest, forecast, drivers, history, series, reservation, decisive, running, export, machine, objective, forecasting, operations, default, decision, quantity, budget, binding, regression, solved, residual, compute, struck, domain
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `mad1_operations_log_2026H2.docx`: \bdesign note\b|\bgenerator\b x3: ...03:40 Hall 2 UPS B failed to transfer during the weekly generator test. C-22 control nodes lost power, about 40 s, and restarted. Worke...
 
-## 3 answer figures in the pack (REVIEW 6)
+## 3 answer figures in the pack (REVIEW 5)
 - **REVIEW** `CS-3_cell_capacity_standard_rev2026-06.pdf`: carries 6 of 6 distinctive words of the committed call: 'C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027.'
-- **REVIEW** `README_capacity_review_files.txt`: carries 4 of 6 distinctive words of the committed call: 'C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027.'
 - **REVIEW** `batch_training_demand_2027H1.pdf`: carries 6 of 6 distinctive words of the committed call: 'C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027.'
 - **REVIEW** `c22_capacity_report_2026Q3.pdf`: carries 4 of 6 distinctive words of the committed call: 'C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027.'
 - **REVIEW** `capacity_memo_2027Q1.docx`: carries 6 of 6 distinctive words of the committed call: 'C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027.'
 - **REVIEW** `chargeback_policy_2026.pdf`: carries 5 of 6 distinctive words of the committed call: 'C-22 can guarantee 109,000 cores to batch training for the first quarter of 2027.'
 
-## 4 design-note vocabulary (REVIEW 6)
-- **REVIEW** `CS-3_cell_capacity_standard_rev2026-06.pdf`: 8 of 25 stump-paragraph terms appear (busiest, forecast, history, budget, operations, machine); read whether the document names the move
-- **REVIEW** `README_capacity_review_files.txt`: 5 of 25 stump-paragraph terms appear (budget, operations, machine, reservation, compute); read whether the document names the move
-- **REVIEW** `c22_capacity_report_2026Q3.pdf`: 7 of 25 stump-paragraph terms appear (busiest, cell-store, operations, machine, reservation, compute); read whether the document names the move
-- **REVIEW** `capacity_memo_2027Q1.docx`: 7 of 25 stump-paragraph terms appear (storage, cell-store, budget, operations, machine, reservation); read whether the document names the move
-- **REVIEW** `mad1_operations_log_2026H2.docx`: 4 of 25 stump-paragraph terms appear (cell-store, running, operations, machine); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 5)
+- **REVIEW** `CS-3_cell_capacity_standard_rev2026-06.pdf`: 9 of 25 stump-paragraph terms appear (busiest, forecast, history, reservation, export, machine); read whether the document names the move
+- **REVIEW** `c22_capacity_report_2026Q3.pdf`: 6 of 25 stump-paragraph terms appear (busiest, reservation, export, machine, operations, compute); read whether the document names the move
+- **REVIEW** `capacity_memo_2027Q1.docx`: 7 of 25 stump-paragraph terms appear (storage, reservation, export, machine, operations, budget); read whether the document names the move
+- **REVIEW** `mad1_operations_log_2026H2.docx`: 4 of 25 stump-paragraph terms appear (running, export, machine, operations); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'Give reservations to the nearest 1,000 cores, core-hours to the nearest 100, shares in per cent to two decimals, machine-hours to the nearest 10 and charges in euros to the nearest 100.'
 
 ## 9 dates after the setting (REVIEW 2)
@@ -31,6 +29,9 @@ Stump terms swept: storage, busiest, drivers, forecast, history, cell-store, bud
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
+
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'how-many' at 31% of 196 prompts (cap 30%); second-sentence opener 'put' at 40% of 196 prompts (cap 20%); rounding opener 'give' at 49% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 1 file names (clean)
 
@@ -42,7 +43,6 @@ Stump terms swept: storage, busiest, drivers, forecast, history, cell-store, bud
 
 ## 8 column names (clean)
 
-## 11 prompt gate (clean)
 
 ## Solver's-eye read
 
@@ -65,3 +65,16 @@ Disposition (fixed in the generator): the dictionary's `cores_in_use` is now the
 Targeted re-read on target.zip 5823a2b7, after the realism notes were trimmed (the cell-store telemetry, the data dictionary, the operations log and the Q3 capacity report, the rest of the folder as context). Q1 to Q4: none; the trimmed dictionary line, the on-call restart line and the shortened Q3 report no longer steer. Q5: CS-3 2.1, 3.2, 4.1 and 5.1 execute to the golden's inputs with the forecast method open. Q6: the platform forecast, an analytical choice; the reader's own route on the storage service's history landed about 120,000 to 122,000 against the golden 109,000. Realism: one note, the operations log's 2026-12-11 line on the refresh racks ("C-22 hardware plan revised: refresh racks in service from 28 December.") read as slightly steering because it repeats the plan.
 
 Disposition (ship): harmless. It is the plan revision's own log entry, written by fleet and hardware on the day the plan's revision is dated (rev2026-12-11), as the log records every rack handover; it repeats a fact the plan states and names no method, driver or figure. Left as built; no change to `target/`.
+
+## Solver's-eye read (2026-11-01 re-check)
+
+Reader: one isolated agent (sonnet, medium) on fresh copies of prompt.txt and target/ (22 files, target.zip 94c7a2f7), nothing computed.
+
+1. Decisive step stated: none. CS-3 5.1 is the estimand's definition, not a hint.
+2. File ranking or stating the 2027 Q1 answer: none (the Q3 report and the ledger carry past quarters' guarantees only; the demand note is demand).
+3. File existing only to help the analyst: none; no readme, dictionary or manifest.
+4. Figure reading as the answer: none (past-quarter tables are context).
+5. Filed sentences: CS-3 2.1, 3.1, 3.2, 3.3, 4.1, 4.2, 5.1 and chargeback 1.2, 2.1, 2.2, each executed in words to the golden's inputs; the platform forecast method is not filed and comes from the data; the asks' treatment of resumptions and re-imaged ids is left to the records.
+6. What decides the main answer: an analytical choice, the platform services' busiest-hour forecast (CS-3 4.1 with the hourly export); no planted decoy.
+Sweep lines: a (operations log "generator", the standby generator test) harmless; b (call words in five documents) harmless, none states a 2027 Q1 guarantee; c (dates after 14 December in the plan and the rate card) harmless, forward plan and a published future rate; d (headers) no derived quantity, flag or answer column.
+Realism notes: 20-machine racks and the 29 refresh racks on one date (plausible for a refresh batch); round budgets and reservations; float machine counts (export artefact); the distractor summary's median queue wait swings without trend; document properties consistent with the pull.

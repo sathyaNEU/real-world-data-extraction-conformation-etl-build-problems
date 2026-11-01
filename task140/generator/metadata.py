@@ -30,8 +30,6 @@ SOURCES = {
     K.QCHANGES: "Changes to firm reservations in 2026 Q3 from the quota tool",
     K.QRUNS: "Quota service reconciliation runs in 2026 Q3",
     K.CHARGEBACK: "Technology chargeback policy 2026",
-    K.DICTIONARY: "Field definitions for the capacity review files",
-    K.README: "Files note: each file, what it is and where it came from",
     K.SISTERS: "MAD1 compute cells' quarterly summary, 2025 and 2026",
     K.BATCH_DEMAND: "ML Platform's note on batch training demand for January to June 2027",
 }
@@ -57,10 +55,8 @@ def write(target, out_path):
         "title": "How many cores compute cell C-22 can guarantee to batch training for the first quarter of 2027",
         "domain": "Supply Chain & Logistics",
         "client_domain": "General Statistics & Data Science",
-        "subdomain": "regression-classification-model-diagnostics (data-centre capacity planning: a dependent "
-                     "platform service's load specified on its drivers and solved together with the residual "
-                     "guarantee it depends on)",
-        "objective": "Forecasting & Predictive Modeling",
+        "subdomain": "regression-classification-model-diagnostics (data-centre capacity planning: the cores a compute "
+                     "cell can guarantee to its batch tier for a quarter)",
         "prompt_shape": "other: the guarantee and the reservations it is struck after, the slide's split of the "
                         "reservable cores, and three 2026 Q3 tables (each batch team's redone core-hours and share; "
                         "each month's machine-hours lost by cause; each firm tenant's chargeback)",

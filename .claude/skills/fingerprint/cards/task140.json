@@ -82,7 +82,7 @@
     "a collector outage leaving hours missing for every series",
     "effective-dated tables (the rate card, the budget freeze)",
     "rack additions on dated changes in the machines-in-service series",
-    "documentation that has to be read (the capacity standard, the memo, the dictionary)",
+    "documentation that has to be read (the capacity standard, the memo, the chargeback policy); no dictionary or files note ships, each field named by its export header",
     "telemetry texture in the storage service's own hourly series (the small tenants' daily cycle, a slow drift, a weekly rolling daemon restart and hours with late daemon samples, each reading low and none explained to the analyst)"
   ],
   "mechanism_source": "design_note",
