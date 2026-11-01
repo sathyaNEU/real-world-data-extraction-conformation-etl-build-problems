@@ -143,6 +143,20 @@ def main():
     check("SF8 answered-for records stay in the population: self-only shares the wrong set; as-given the wrong set",
           easy["R1_self_only"] != gold and easy["R0_face"] != gold)
     sw = [state[k] for k in ("golden", "s_raw", "s_fwd", "s_bwd", "sandwich")]
+    import writeup
+    n_sw = par["n_sp"] + par["n_ps"]
+    raw_s, keep_s = float(par["s_raw"]), float(par["s_raw"]) / float(par["s_adj"])
+    half = 1.96 * np.sqrt(raw_s * (1 - raw_s) / n_sw)
+    lo_ci, hi_ci = (raw_s - half) / keep_s, (raw_s + half) / keep_s
+    check("C2a the stated sensitivity range covers the panel's 95 percent interval",
+          writeup.S_LO / 100 <= lo_ci and hi_ci <= writeup.S_HI / 100, "interval %.4f to %.4f" % (lo_ci, hi_ci))
+    grid = np.arange(writeup.S_LO / 100, writeup.S_HI / 100 + 1e-9, 0.0025)
+    sets = {tuple(A.designate(A.corrected(E, float(s), par["fp"]))) for s in grid}
+    check("C2b every sensitivity in the stated range certifies the same four areas", sets == {tuple(gold)}, str(sets))
+    sts = [A.statewide(E, float(s), par["fp"]) for s in grid]
+    check("C3 the statewide share is 7 percent as a whole percent across the stated range, 0.2 or more from an edge",
+          {round(x) for x in sts} == {7} and min(dist_edge(x, 1.0) for x in sts) >= 0.2,
+          "%.3f to %.3f" % (min(sts), max(sts)))
     check("SF9 the statewide share rounds to the same whole percent under every member, 0.2 or more from the edge",
           len({round(x) for x in sw}) == 1 and min(dist_edge(x, 1.0) for x in sw) >= 0.2,
           "%s" % ", ".join("%.2f" % x for x in sw))

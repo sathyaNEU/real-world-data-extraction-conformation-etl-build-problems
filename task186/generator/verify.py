@@ -144,20 +144,16 @@ def main():
         counts.append(n)
     say("ask A: every month's count recomputes", counts == [fig["ask_a"][mo] for mo in months], str(counts))
 
-    # ------------------------------------------------------------------ ask B, units placed from the TIP log
-    tip_hours = defaultdict(set)
-    for s, t, o, hit in events:
-        lt = t.astimezone(SYD)
-    for r in rows("tip_events_20250701_20261130.csv"):
-        t = dt.datetime.strptime(r["event_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(SYD)
-        tip_hours[(t.date().isoformat(), r["lane"])].add(t.hour)
+    # ------------------------------------------------------------------ ask B, units placed by exhaustive search
+    roster_hours = defaultdict(set)
     first_start = {}
-    for (d, ln), team in lanes.items():
-        first_start[(d, ln)] = min(x[1] for x in team) // 60
     for r in rows("lane_roster_20251201_20261130.csv"):
-        hh = int(r["start"][:2])
+        a = int(r["start"][:2]) * 60 + int(r["start"][3:])
+        b = int(r["finish"][:2]) * 60 + int(r["finish"][3:])
         k = (r["roster_date"], r["lane"])
-        first_start[k] = min(first_start.get(k, 99), hh)
+        roster_hours[k] |= set(range(a // 60, (b - 1) // 60 + 1))
+        first_start[k] = min(first_start.get(k, 99), a // 60)
+    unit_reg = {r["unit_serial"]: (r["location"], r["commissioned"]) for r in rows("ct_unit_register.csv")}
     unit_hours = defaultdict(dict)
     for r in rows("ct_unit_bag_counts_hourly_utc.csv"):
         t = dt.datetime.strptime(r["hour_start_utc"], "%Y-%m-%d %H:%M").replace(tzinfo=dt.timezone.utc).astimezone(SYD)
@@ -168,31 +164,42 @@ def main():
     bags = defaultdict(int)
     quarters = [("Q1", "2025-12-01", "2026-02-28"), ("Q2", "2026-03-01", "2026-05-31"),
                 ("Q3", "2026-06-01", "2026-08-31"), ("Q4", "2026-09-01", "2026-11-30")]
+
+    def score(d, u, ln):
+        hrs = set(unit_hours[(d, u)])
+        lanehrs = roster_hours[(d, ln)]
+        if not hrs <= (lanehrs | set(range(first_start[(d, ln)]))):
+            return None
+        sc = len(hrs & lanehrs) / float(len(hrs | lanehrs))
+        loc, com = unit_reg.get(u, ("", "9999"))
+        return sc + (0.5 if loc == ln and com <= d else 0.0)
     for d, units in by_day.items():
         if not ("2025-12-01" <= d <= "2026-11-30"):
             continue
-        lanes_today = [ln for ln in ("D1", "D2", "D3", "D4", "D5", "I1", "I2") if (d, ln) in tip_hours]
-        scored = []
-        for u in units:
-            hrs = set(unit_hours[(d, u)])
-            for ln in lanes_today:
-                th = tip_hours[(d, ln)]
-                scored.append((len(th & hrs) - 5 * len(th - hrs), u, ln))
-        scored.sort(reverse=True)
-        used_u, used_l = set(), set()
-        for sc, u, ln in scored:
-            if u in used_u or ln in used_l:
-                continue
-            used_u.add(u)
-            used_l.add(ln)
-            q = next(x[0] for x in quarters if x[1] <= d <= x[2])
-            fs = first_start.get((d, ln), 0)
-            bags[(ln, q)] += sum(v for h, v in unit_hours[(d, u)].items() if h >= fs)
+        open_l = [ln for ln in ("D1", "D2", "D3", "D4", "D5", "I1", "I2") if (d, ln) in roster_hours]
+        cand = {ln: [(score(d, u, ln), u) for u in units if score(d, u, ln) is not None] for ln in open_l}
+        best = [None, -1.0]
+
+        def search(i, used, acc, tot):
+            if i == len(open_l):
+                if tot > best[1]:
+                    best[0], best[1] = dict(acc), tot
+                return
+            ln = open_l[i]
+            for sc, u in cand[ln]:
+                if u not in used:
+                    acc[ln] = u
+                    search(i + 1, used | {u}, acc, tot + sc)
+                    del acc[ln]
+        search(0, frozenset(), {}, 0.0)
+        q = next(x[0] for x in quarters if x[1] <= d <= x[2])
+        for ln, u in (best[0] or {}).items():
+            bags[(ln, q)] += sum(v for h, v in unit_hours[(d, u)].items() if h in roster_hours[(d, ln)])
     okb = all(int(round(bags[(ln, q)] / 1000.0)) * 1000 == fig["ask_b"]["%s %s" % (ln, q)]
               for ln in ("D1", "D2", "D3", "D4", "D5", "I1", "I2") for q, _, _ in quarters)
     worst = max(abs(bags[(ln, q)] - fig["ask_b_raw"]["%s %s" % (ln, q)]) for ln in ("D1", "D2", "D3", "D4", "D5", "I1", "I2")
                 for q, _, _ in quarters)
-    say("ask B: every lane-quarter count recomputes from the TIP-hour placement", okb and worst == 0, "max diff %d" % worst)
+    say("ask B: every lane-quarter count recomputes from an exhaustive placement of units", okb and worst == 0, "max diff %d" % worst)
 
     gp = pdf_strings(os.path.join(GOLD, "screening_year_review_2026.pdf"))
     say("golden PDF read back: the call is stated", "come off X-ray duty" in gp, "%d chars" % len(gp))

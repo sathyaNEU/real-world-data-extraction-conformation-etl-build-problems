@@ -4,6 +4,9 @@ import json
 from analysis import AREAS
 
 
+S_LO, S_HI = 53, 59     # the supported range of the proxy sensitivity, in percent (asserted in checks.py)
+
+
 def fmt_list(xs):
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
@@ -28,6 +31,8 @@ def build(F, M):
         "sensitivity_pct": s_pct,
         "sensitivity_raw_pct": raw_pct,
         "persistence_pct": keep_pct,
+        "supported_sensitivity_pct": [S_LO, S_HI],
+        "interval_pct": 95,
         "false_report_pct": fp_pct,
         "shares_pct": {names[a]: round(sh[a], 1) for a in AREAS},
         "response_rate_pct": {names[a]: round(F["rr"][a], 1) for a in AREAS},
@@ -67,8 +72,9 @@ def build(F, M):
       "quarters where an employed adult answered for themselves in one and was answered for in the other (either "
       "order), the answered-for report carries the self-reported second job %.1f%% of the time, divided by the %d%% "
       "of self-reported second jobs still self-reported in the adjacent quarter." % (s_pct, raw_pct, keep_pct))
-    w("2. Shares of employed residents holding more than one job on the residents' own reporting basis: %s "
-      "(qualifying); %s." % (hi, lo))
+    w("2. Under every proxy sensitivity from %d%% to %d%% (the 95%% interval of the within-person estimate), %s each "
+      "clear 7.0%% on the residents' own reporting basis and %s each stay below it." %
+      (S_LO, S_HI, cert_names, fmt_list([names[a] for a in notc])))
     w("3. Statewide share on the same basis **%d%%** (as collected %.1f%%)." % (round(F["statewide"]),
                                                                                  F["statewide_face"]))
     w("")
