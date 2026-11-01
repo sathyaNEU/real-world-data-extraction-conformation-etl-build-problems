@@ -1,158 +1,176 @@
 {
- "task": "task138",
- "architecture": "v2",
- "drawn": "2026-11-01",
- "slot_note": "Batch 3 re-root of the forecasting slot (numbered from seed FC09); architecture v1's irrigation-district world is closed and its identity sits in lineage. Architecture v2 is a new world, dataset and shell in the same client domain and task type: a river town's levee district deciding its 2027 levee raise against the 1 per cent annual chance flood.",
- "domain": "physical-environmental-sciences",
- "subdomain": "hydrology-flood-frequency",
- "client_domain": "physical-environmental-sciences",
- "niche": "a town levee's design flood estimated at a downstream gauge whose large early floods were attenuated by a floodplain that upstream agricultural levee districts closed off with raises between 1994 and 2008",
- "objective": "forecasting",
- "shape": "04",
- "decision_type": "dial_setting",
- "answer_unit": "count",
- "answer": "Raise the Orrinsford levee crown by 2 ft before the 2027 flood season (design discharge 110,000 cfs at the Orrinsford gauge).",
- "answer_source": "submission.md, 1. Final Recommendation",
- "gap": [
-  "population",
-  "time"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G16",
-  "G6"
- ],
- "gate_g": "forecasting",
- "calibration_form": "none",
- "stump_strategy": "other",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "published_series",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads the district standard and every file correctly runs Bulletin 17C on the town gauge's 1962 to 2026 annual peaks, finds no trend or change point, reads each levee station's design water surface off the hydraulic rating and files that the levee holds the 1 per cent flood with its freeboard and needs no raise, when the record's large pre-raise floods were cut by a floodplain the river no longer has.",
- "domain_test": "The deciding quantity is the 1 per cent annual chance discharge at the levee under the river as it now runs, which flood hydrology estimates by frequency analysis on a record representative of the present channel and floodplain, here the town's post-raise peaks extended through a longer unaffected upstream gauge; with a hospital or a school in its place there is no floodplain storage, no levee raise and no flood record to restore, so the task stops existing.",
- "layer2_family": "field_method",
- "layer2_pattern": "own:post-raise-two-gauge-record-extension",
- "layer1": [
-  "vertical datums mixed (NGVD 29 and NAVD 88)",
-  "clocks mixed (UTC telemetry, local standard time legacy logger)",
-  "levee stationing changed between surveys",
-  "tables inside PDFs",
-  "logger swap and a gauge datum change",
-  "revised and provisional values overlapping",
-  "water year against calendar date"
- ],
- "stakeholder_role": "the levee district's engineer, preparing the 2027 capital plan for the board",
- "role_family": "policy_adviser",
- "scoring_unit": "other",
- "spine": {
-  "file": "SWS_05432100_hourly_WY2017-2026.csv",
-  "rows": 87635,
-  "entity": "one hourly reading of gauge height and discharge at the upstream streamgauge",
-  "grain": "gauge x hour",
-  "source": "constructed (the State Water Survey's hourly export)"
- },
- "forum": "trustees_or_governors",
- "forcing_event": "budget_or_appropriation",
- "org_family": "utility_or_infrastructure",
- "world": {
-  "geography": "United States (a fictional Midwestern state)",
-  "currency": "USD",
-  "org_type": "a levee and drainage district protecting a river town",
-  "invented_names": [],
-  "people": [
-   "Dennis Zhang",
-   "Kristin Lucas",
-   "Eric Thornton",
-   "Jesus Hernandez"
-  ]
- },
- "deliverables": [
-  "levee_raise_review.xlsx",
-  "levee_raise_memo.pdf"
- ],
- "opening_move": "question-first",
- "question_form": "whether",
- "driver": "A forward design value is fitted to a record whose large events were partly absorbed by a storage that has since been removed, so the record's upper tail understates the forward one; the present behaviour shows only in the few large events since the removal, and carrying a longer unaffected upstream record through that present relation restores a series the design value can be fitted to.",
- "driver_concrete": "The town gauge's large floods before the upstream levee districts raised their levees (1996 to 2008, the last in force from water year 2009) were attenuated by a floodplain those levees have since closed off, so the district standard's log-Pearson fit on the town's 1962 to 2026 peaks files no raise; the post-raise relation between the two gauges' peaks, carried onto the upstream gauge's unaffected record beside the town's own post-raise peaks, gives the present 1 per cent discharge and a 2 ft raise.",
- "stump": "A competent analyst fits the district standard's log-Pearson Type III curve to the town gauge's 1962 to 2026 annual peaks, finds no trend or change point and files that the levee holds the 1 per cent flood with its freeboard, no raise (95,000 cfs); the step that lands it there is taking the town's record as the present river's when its large pre-raise floods were cut by a floodplain the upstream levees have since closed off, which only the two gauges' peaks of the same floods, compared across the raises, show.",
- "mechanism_source": "design_note",
- "differentiation": {
-  "task104": "task104 re-thresholds a self-adapting scorer's log at a setting it never ran at; here no scorer or threshold is replayed: a flood record whose large events were attenuated by a floodplain since closed off is restored by carrying an unaffected upstream gauge's record through the two gauges' post-raise relation.",
-  "task171": "task171 v5 reads an exposure-response slope only where the response could not yet change how the input is lost; here no unit's response feeds back on its input: the downstream record's large floods were cut by floodplain storage that upstream levee raises removed, and the post-raise relation between the two gauges restores the series a frequency fit needs.",
-  "task168": "task168 completes the demand of units observed only until they reached a cap from units that never reached it; here nothing is capped or completed: the town's record is homogeneous only after the upstream levee raises, and the design flood rests on the upstream gauge's unaffected peaks carried through the post-raise relation.",
-  "task138": "The slot's architecture v1 rebuilt a soil store's start state for an irrigation order replay; architecture v2 shares no world, file or mechanism with it: a flood record made non-homogeneous in its upper tail by a floodplain the river no longer has is restored through a second gauge's record."
- },
- "lineage": [
-  {
-   "domain": "physical-environmental-sciences",
-   "objective": "forecasting",
-   "gap": [
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "quantity_figure",
-   "driver": "A forward requirement replayed over past driver traces has to start every trace from the store each unit actually holds at the forecast date, rebuilt from each unit's own last recorded replenishment and the observed drawdown since; starting every trace full, letting each trace inherit the store its own past year left, or rebuilding the store from the model's replenishment rule instead of the record each understates it, because most units were last replenished weeks before the rule would have replenished them and the interval since was dry.",
-   "stump_strategy": "time_semantics",
-   "generators": [
-    "G16",
-    "G3"
-   ],
-   "architecture": "v1 round 1",
-   "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the start-state fork and the stump the same gap (no filed sentence fixed the 1 February state; the judge's DETERMINISTIC was conditional on it), the decisive step visible (the 64,887-row orders file the one large non-distractor file the default path never read, Table 1's November to January coefficients, the weather to 31 January 2027; the judge and the reader both found it unprompted) and Ask A's meter chaining crackable through the shop log's registers; never on the portal"
-  },
-  {
-   "domain": "physical-environmental-sciences",
-   "objective": "forecasting",
-   "gap": [
+  "task": "task138",
+  "architecture": 3,
+  "drawn": "2026-11-01",
+  "slot_note": "Batch 3 forecasting slot (numbered from seed FC09); v1's irrigation-district world and v2's levee and flood-frequency world are closed, identities in lineage. v3 moves to another client domain (energy-systems-utilities / load-forecasting): a cooperative's substation planning peak with conservation voltage reduction on every feeder.",
+  "domain": "energy-systems-utilities",
+  "subdomain": "load-forecasting",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a member-owned electric cooperative's 2027 to 2031 summer planning peaks at one distribution substation once conservation voltage reduction runs on all its feeders, and the load it must transfer each summer to stay within the substation's firm rating, the voltage cut's effect read from a 2025 week-on, week-off pilot on three feeders",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
     "population",
     "time"
-   ],
-   "pattern": [
+  ],
+  "pattern": [
     "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "quantity_figure",
-   "driver": "A forward requirement replayed over past driver traces starts every trace from the store each unit holds at the forecast date, and that store has to be rebuilt by running each unit's recorded replenishments through the season from the last time the record shows it full, because units run at a working deficit are replenished by about what they used and never return to full: taking each unit's last recorded replenishment as a refill, starting every trace full or spinning the model up on its own refill rule each leaves out the deficit the operation carried into the off-season.",
-   "stump_strategy": "other",
-   "generators": [
-    "G3",
-    "G16"
-   ],
-   "architecture": "v1 round 2",
-   "fate": "superseded 2026-10-15 at round 3: the rule 3 audit (VERDICT FAIL, rule application) found the start state the procedure's own daily balance (WOP 3.1 to 3.3) executed on the 2026 delivery record at Table 4's efficiency, which the table defined as the share of delivered water the root zone receives, so the filed sentences executed word for word gave the golden (215,000) with nothing left to estimate; that route is now round 3's default path; never on the portal"
+  ],
+  "generators": [
+    "G8",
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong planner who reads every rule fits the planning criteria's weather line to five summers, grows it to 2027, sees that the 2027 operating plan runs a 3 per cent voltage cut on every feeder and applies the pilot's voltage-cut effect as the pilot measured it on average, about 1.9 per cent of load; the 2027 planning peak falls under the 104.0 MW firm rating and no load moves, where the cut's effect on the hottest afternoons is about 1.0 per cent and 1.0 MW must move.",
+  "domain_test": "The deciding quantity is a substation's summer planning peak, a distribution planner's weather-normalised forecast of the hourly load at the design temperature, here with conservation voltage reduction running: how far a voltage cut lowers load depends on what the load is made of, and on the hottest afternoons air-conditioner compressors, which draw about constant power whatever the voltage, carry most of it; a swap to another field's nouns loses the voltage-dependence of the load that sets the answer.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:voltage-reduction-effect-at-design-conditions",
+  "layer1": [
+    "weather station clock in UTC against local-time SCADA",
+    "pilot switches made late or missed",
+    "tables inside PDFs",
+    "feeder labels as current assignment only",
+    "meter multipliers held in another system",
+    "revenue meter interval-ending timestamps"
+  ],
+  "stakeholder_role": "system planning engineer",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "the cooperative's SCADA historian export of hourly feeder loads (five summers)",
+    "rows": 0,
+    "entity": "one feeder-hour load reading",
+    "grain": "feeder x hour",
+    "source": "constructed (the cooperative's SCADA historian)"
   },
-  {
-   "domain": "physical-environmental-sciences",
-   "subdomain": "hydrology-flood-frequency",
-   "objective": "forecasting",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "gate_g": "forecasting",
-   "decision_type": "quantity_figure",
-   "driver": "A forward requirement replayed over past driver traces starts from each unit's store at the forecast date, rebuilt by running each unit's recorded inputs through the balance at the share of each input that reaches the store; the design share is not the record's, and only the monitored units' readings through the input season identify the record's share, because at the forecast date every monitored unit's store is the same under any share: carrying the design share, the monitored units' end-point readings, their offset or their share of capacity to the unmonitored units misstates the units replenished late in the season, on which the order turns.",
-   "stump_strategy": "other",
-   "generators": [
-    "G3",
-    "G13"
-   ],
-   "architecture": "v1 round 3 (Kestrel Bend Irrigation District, the 2027 order from the Tolan Valley Project)",
-   "world": "United States, California (San Joaquin Valley): an irrigation district's season order",
-   "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 10-15 (212,000 acre-feet), no portal result; the irrigation-district world is closed (one architecture per world)"
-  }
- ],
- "lineage_shells": [],
- "notes": "Architecture v2 drawn 2026-11-01 at the Batch 3 queue reset. stump_strategy other: a record made under a river configuration the floodplain no longer has, restored by carrying a stationary upstream record through the two gauges' present relation (no listed family fits: not selection, not composition, not a time convention).",
- "registered": "2026-11-01T17:20:03Z"
+  "forum": "executive_team",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United States (a fictional Plains state)",
+    "currency": "USD",
+    "org_type": "a member-owned electric distribution cooperative",
+    "invented_names": [],
+    "people": [
+      "Julie Gibbs",
+      "Peter Roman",
+      "Desiree Thompson",
+      "Bailey Becker"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "An operating change's relief on a planning peak is the relief it gives under the peak's own conditions; measured in a trial switched week on, week off against unswitched peers, the relief shrinks as the load's make-up turns toward the parts the change cannot reduce, so the trial's average relief, carried to the peak, overstates it and the forward peak comes out low.",
+  "driver_concrete": "Conservation voltage reduction lowers a feeder's load by its voltage-sensitive part; on the hottest afternoons constant-power air-conditioner compressors carry most of Dunraith's load, so the 2025 pilot's average reduction (about 1.9 per cent) overstates the roughly 1.0 per cent the 3 per cent cut gives at the 101 F planning peak, which the pilot feeders show against the unswitched feeders only on the pilot's hottest afternoons.",
+  "stump": "A competent planner applies the pilot's average voltage-cut effect to the weather-normalised peak and files no 2027 transfer (a 2027 planning peak of about 104 MW), when the effect at the design temperature, read from the pilot feeders against the unswitched feeders on the hottest afternoons, is about 1.0 per cent and 1.0 MW must move.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task164": "task164 adds a joining intermittent load at the moments a shared peak is set; here no load joins: an operating change on every existing feeder lowers load by a share that falls as the load turns to constant-power air conditioning, read from a switched pilot against unswitched feeders on the hottest afternoons.",
+    "task173": "task173 rejected adding back load that large customers shed against a coincident-peak charge; here nothing is shed or added back: the voltage cut's relief at the planning peak is measured from a week-on, week-off pilot against comparison feeders at the peak's own temperatures.",
+    "task138": "The slot's architectures v1 (an irrigation order's root-zone start state) and v2 (a flood record restored through a second gauge) share no world, file or mechanism with v3: a voltage-reduction effect estimated at the planning peak's conditions from a switched pilot."
+  },
+  "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "objective": "forecasting",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward requirement replayed over past driver traces has to start every trace from the store each unit actually holds at the forecast date, rebuilt from each unit's own last recorded replenishment and the observed drawdown since; starting every trace full, letting each trace inherit the store its own past year left, or rebuilding the store from the model's replenishment rule instead of the record each understates it, because most units were last replenished weeks before the rule would have replenished them and the interval since was dry.",
+      "stump_strategy": "time_semantics",
+      "generators": [
+        "G16",
+        "G3"
+      ],
+      "architecture": "v1 round 1",
+      "fate": "superseded 2026-10-14 at round 2: the 10/10 audit (COMPLIANT_WEAK) found the start-state fork and the stump the same gap (no filed sentence fixed the 1 February state; the judge's DETERMINISTIC was conditional on it), the decisive step visible (the 64,887-row orders file the one large non-distractor file the default path never read, Table 1's November to January coefficients, the weather to 31 January 2027; the judge and the reader both found it unprompted) and Ask A's meter chaining crackable through the shop log's registers; never on the portal"
+    },
+    {
+      "domain": "physical-environmental-sciences",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward requirement replayed over past driver traces starts every trace from the store each unit holds at the forecast date, and that store has to be rebuilt by running each unit's recorded replenishments through the season from the last time the record shows it full, because units run at a working deficit are replenished by about what they used and never return to full: taking each unit's last recorded replenishment as a refill, starting every trace full or spinning the model up on its own refill rule each leaves out the deficit the operation carried into the off-season.",
+      "stump_strategy": "other",
+      "generators": [
+        "G3",
+        "G16"
+      ],
+      "architecture": "v1 round 2",
+      "fate": "superseded 2026-10-15 at round 3: the rule 3 audit (VERDICT FAIL, rule application) found the start state the procedure's own daily balance (WOP 3.1 to 3.3) executed on the 2026 delivery record at Table 4's efficiency, which the table defined as the share of delivered water the root zone receives, so the filed sentences executed word for word gave the golden (215,000) with nothing left to estimate; that route is now round 3's default path; never on the portal"
+    },
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A forward requirement replayed over past driver traces starts from each unit's store at the forecast date, rebuilt by running each unit's recorded inputs through the balance at the share of each input that reaches the store; the design share is not the record's, and only the monitored units' readings through the input season identify the record's share, because at the forecast date every monitored unit's store is the same under any share: carrying the design share, the monitored units' end-point readings, their offset or their share of capacity to the unmonitored units misstates the units replenished late in the season, on which the order turns.",
+      "stump_strategy": "other",
+      "generators": [
+        "G3",
+        "G13"
+      ],
+      "architecture": "v1 round 3 (Kestrel Bend Irrigation District, the 2027 order from the Tolan Valley Project)",
+      "world": "United States, California (San Joaquin Valley): an irrigation district's season order",
+      "fate": "re-rooted 2026-11-01 at the Batch 3 queue reset: shipped 10-15 (212,000 acre-feet), no portal result; the irrigation-district world is closed (one architecture per world)"
+    },
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "dial_setting",
+      "driver": "A forward design value is fitted to a record whose large events were partly absorbed by a storage that has since been removed, so the record's upper tail understates the forward one; the present behaviour shows only in the few large events since the removal, and carrying a longer unaffected upstream record through that present relation restores a series the design value can be fitted to.",
+      "stump_strategy": "other",
+      "generators": [
+        "G16",
+        "G6"
+      ],
+      "architecture": "v2 (Orrinsford levee, 2026-11-01)",
+      "fate": "spent 2026-11-01: the re-judge (derive-first) returned NOT_DETERMINISTIC, SEND_BACK on Gate H3: read word for word, LS-02 s.3 (one annual peak for every water year since 1962) and s.8 (the published records) send the fit to the published Orrinsford peaks, 95,000 cfs and no raise; s.2's 'as they stand' was not read as requiring a reconstructed record, so the easy route obeyed the filed rule; the levee and flood-frequency world is closed"
+    }
+  ],
+  "lineage_shells": [],
+  "notes": "Architecture v3 drawn 2026-11-01 after v2 was spent on the re-judge's Gate H3. stump_strategy other: an operating change's effect on a peak estimated at the peak's own conditions from a switched trial against unswitched peers (not selection, composition, censoring or a time convention).",
+  "shell": null,
+  "registered": "2026-11-01T19:49:38Z"
 }
