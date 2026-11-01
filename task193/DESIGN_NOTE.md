@@ -192,6 +192,37 @@ leaves the two orders nothing like equal room.
   not the null and the pairs it wrongly flags are exactly those on medicines leaving the market while the
   pairs it hides are those on medicines entering it. No build on file teaches it.
 
+## Survivor anatomy
+
+Written at the 2026-11-01 re-check from the analyst test run on the generator's clean truth
+(`generator/checks.py` R3 and the separation block): the equal-chance expectation refers 10, and all four
+window-aware arithmetics (`perm`, `incidence`, `pairprod`, `even`) refer the committed 7.
+
+- **Actor:** fails. The deciding property is each pair's first-receipt dates against the window, which
+  the pair's own rows carry; the expected number is one group-by on the product's first-receipt date
+  away from the dispensing file, no relation between rows that nothing stores.
+- **Link:** fails. The construction reads the product's and the marker's first receipts in the same
+  register through the person key the extracts ship; no cross-entity identity and no comparison the
+  field's method does not already ask for.
+- **Reflex:** fails. The field's named method for this quantity is prescription sequence symmetry
+  analysis with the null-effect sequence ratio taken from each medicine's incident-use distribution
+  (`incidence`), and it files the golden 7, not `Ends on:`; only the equal-chance shortcut (`half`) files
+  the 10. The field's method sits at the top of the ladder, which 1.1b names as landed.
+- **Back-test:** nothing in the pack validates the equal-chance route; no record blesses the 10, so the
+  easy route has no confirming record to stop at.
+- **Second use:** holds. Every file the decisive step reads (the two extracts, the package index, the
+  product register, the crosswalk) is read by the default path too.
+- **Shock:** holds in part: the four pairs that move sit on products whose launch or withdrawal falls in
+  the window, which the product register dates in plain sight, so the moved set is one sort of the
+  product register's dates away.
+- **Pins:** holds. No filed sentence names the expected number's construction; the standard files the
+  counterfactual's WHAT and leaves its value open, and the word sweep asserts none of nineteen
+  phrasings ships.
+
+Measured verdict: every licensed member of the null family, the cheapest one-line uniform-window
+formula included, lands the golden 7 on the clean truth, so the easy route a strong analyst takes in
+this field is the golden and the stump is dead. Architecture 2 is spent.
+
 ## Readability screen
 
 | Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
@@ -867,6 +898,11 @@ over the generator's own flag.
   Draw it away from the estimand's five parts and away from the value of a comparison the estimand
   files, which is the one structure this number has now died on twice, and price the one-group-by route
   to the call in writing before the first harness.
+- 2026-11-01 re-check: rebuilt (target.zip reproduced byte for byte, aa084e2f), the analyst test run on
+  the clean truth: `half` refers 10, `perm`, `incidence`, `pairprod` and `even` each refer the golden 7.
+  The field's own null-effect sequence ratio and the one-line uniform-window formula both land the call,
+  so the easy routes land the golden and the survivor anatomy fails on Actor, Link and Reflex.
+  Architecture 2 confirmed spent; not re-rooted, the next step is the orchestrator's.
 
 ## Architecture 1, spent at stage 4 on the judge's SEND_BACK
 

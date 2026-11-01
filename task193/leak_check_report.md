@@ -1,10 +1,15 @@
 # leak check, task193
 
-**Verdict: REVIEW.** 21 files read, 121 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 21 files read, 121 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: asserted, expected, section, nothing, standard, sentence, decisive, referral, package, patient, comparison, shipped, counterfactual, clearance, period, re-sent, carries, detection, method, arithmetic, first-receipt, distribution, replaced, reissued, minimum
+
+## 1 file names (LEAK 2, REVIEW 1)
+- **LEAK** `extract_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `register_release_notes.json`: a file whose name says it describes the data (release_notes): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `data_fee_schedule.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `screen_standard_7_2024.pdf`: carries 23 of 27 distinctive words of the committed call: 'Refer 7 of the 20 candidate pairs to formal signal assessment in the quarter beginning 1 January 2027: Dalvextin and loo'
@@ -15,10 +20,20 @@ Stump terms swept: asserted, expected, section, nothing, standard, sentence, dec
 ## 6 ranking artifacts (INFO 1)
 - **INFO** `holder_register.csv`: names 7 of 7 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 1)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); deliverable set 'png+xlsx' at 24% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (REVIEW 1)
+- **REVIEW** `screen_standard_7_2024.pdf`: names 6 column(s) of the data files verbatim (covers, medicine, quarter, region, register, submitted): confirm it is the organisation's own record and not a note written for the analyst
+
+## 13 task metadata (REVIEW 1)
+- **REVIEW** `metadata.json`: neutral_rule_inputs.signal_tracker_export.csv shares the design note's stump vocabulary (expected, section, standard, referral): say what the task decides, not how
 
 ## 2 author vocabulary (clean)
 
@@ -27,10 +42,6 @@ Stump terms swept: asserted, expected, section, nothing, standard, sentence, dec
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)

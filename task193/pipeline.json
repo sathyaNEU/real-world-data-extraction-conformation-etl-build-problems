@@ -3,9 +3,9 @@
  "status": "SHIPPED",
  "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw, re-root to architecture 3",
- "updated": "2026-10-25",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-01",
  "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
  "architecture": 2,
  "loops": 6,
@@ -42,7 +42,7 @@
   "report": "loops 6: nothing failed to reproduce, Gate G and H pass, stump power moderate, and it expects a substantial share of strong runs to file the crude expectation"
  },
  "returned": [],
- "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED on the count, asks 10 of 18 at 55.6 per cent. Owed: re-root the decisive step. Prior resume line follows. Architecture 2 is spent on measurement, not on wording. The 2026-10-21 pass measured that re-siting the ladder while the decisive step stays cannot work: every member of the licensed null family refers the committed seven in 20 of 20 redraws at 1.00 distinct designated sets, and the fourth licensed arithmetic is algebraically one group-by, one subtraction and one divide on the pair's own mean product first-receipt date, which refers the committed seven in 20 of 20. Standard 7-2024's referral test admits exactly one estimated quantity, so the decisive step cannot be redesigned inside it either. Next step: a fresh draw at stage 1 as architecture 3, the slot's last before retirement, drawn away from the estimand's five parts and away from the value of a comparison the estimand files. Evidence and the abandoned candidates are in DESIGN_NOTE.md under the 2026-10-21 pass in ## Tried and rejected.",
+ "resume": "Architecture 2 spent, confirmed on the clean truth at the 11-01 re-check; not re-rooted on the orchestrating session's rule. The shipped pack (aa084e2f) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (architecture 3, the slot's last before retirement) or leave the shipped version to the portal.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
@@ -139,5 +139,18 @@
   "opportunity_candidates": "exit-truncated span: 1.51 per cent of patients, ceiling 0.034 against 0.134 needed, short 3.9x; register-entry span: 2.28 per cent, ceiling 0.052, short 2.6x, and 97.7 per cent unaffected",
   "gates_rerun": "precut 0, build 0 (183 generator assertions, 267 verifier checks), two rebuilds byte-identical and identical to the shipped pack over 23 files, figures_check 0 (205 of 205), leak.py REVIEW unchanged, voice-check 0, guard validate 0",
   "asks": "unmeasured: the blind reader never attempted A1, A2 or A3, so the 7 of 15 ask share is not evidence about the ask layer"
+ },
+ "architecture_spent": true,
+ "recheck_2026_11_01": {
+  "rebuild": "reproduces the shipped target.zip byte for byte (aa084e2f, 21 entries); generator 183 assertions, verify 267 checks green; matplotlib installed into the container",
+  "analyst_test": "clean truth, generator/checks.py R3: half (equal chance) refers 10; perm, incidence (the field's null-effect sequence ratio), pairprod (pair-level group-by) and even (one-line uniform window) each refer the golden 7. The easy routes land the golden; the stump is dead",
+  "survivor_anatomy": "written honestly: Actor, Link and Reflex fail, Shock holds only in part",
+  "precut": "61 checks, 0 FAIL, 0 WARN once the anatomy lines are written (presence only; the lines record the failure)",
+  "voice_check": "PASS, shell quota WARN (which at 40 per cent, png+xlsx at 24 per cent)",
+  "leak_py": "LEAK on sweep 1 (extract_manifest.csv, register_release_notes.json name themselves as describing files); sweep 12 REVIEW (standard names 6 column words), sweep 13 REVIEW (metadata.json shares stump vocabulary)",
+  "figures_check": "205 of 205",
+  "heart": "BLOCK on test.same_puzzle_older and test.same_driver_older against task249 v6 and task204, predating this re-check; nothing changed here causes it",
+  "surface": "not re-read to completion; no repair cut",
+  "stage4": "not run: architecture spent before any repair"
  }
 }
