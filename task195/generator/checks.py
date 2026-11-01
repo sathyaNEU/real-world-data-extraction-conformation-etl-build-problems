@@ -14,6 +14,7 @@ import re
 import statistics
 import zipfile
 
+import asks as AS
 import golden as G
 import sim
 import world as W
@@ -397,42 +398,53 @@ def run(target, g=None):
         ok("ask 2 the release-row route misses %s" % b["month"],
            round(naive_rate, 1) != round(b["per_thousand"], 1),
            "%.2f against %.2f" % (naive_rate, b["per_thousand"]))
-    # A3's silent primary: the series was prepared from two stocks and each level ran from one
-    import openpyxl as _xl
-    _wb = _xl.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
-    first_row, stock_of = {}, {}
-    for row in _wb["Prepared levels"].iter_rows(min_row=2, values_only=True):
-        first_row.setdefault(str(row[1]).strip().upper(), float(row[3]))
-    for row in _wb["Replicate results"].iter_rows(min_row=2, values_only=True):
-        if row[4] not in (None, ""):
-            stock_of[str(row[0]).strip().upper()] = str(row[1]).strip()
-    ok("ask 3 the panel ran from one stock", set(stock_of.values()) == {"NS-27-04"},
-       str(set(stock_of.values())))
-    ok("ask 3 the workbook keeps the series of both stocks",
-       len({str(r[0]).strip() for r in _wb["Prepared levels"].iter_rows(min_row=2, values_only=True)}) == 2)
-    missed = sum(1 for d in g["dilution"] if abs(first_row[d["level"]] - d["prepared"]) > 1e-9)
-    ok("ask 3 the level-only join takes the other stock at every level", missed == len(W.DILUTION),
-       str(missed))
-    ok("ask 3 covers the panel's levels", len(g["dilution"]) == len(W.DILUTION))
-    for d in g["dilution"]:
-        ok("ask 3 %s sits mid-bin" % d["level"], _slack(d["median_recovery"], 3) > 0.0004)
-        ok("ask 3 %s recovers against the prepared fraction" % d["level"],
-           0.80 < d["median_recovery"] < 1.10)
-    ok("ask 3 the replicates within a fifth vary",
-       len({d["within_fifth"] for d in g["dilution"]}) >= 2)
-    ok("ask 3 the per cent label is two orders from the prepared level",
-       all(abs(d["median_recovery"] - d["median_recovery"] * 100) > 1 for d in g["dilution"]))
-    # the count the ask grades cannot turn on a hair: every replicate sits clear of the one-fifth
-    # line, so the flip condition is a measured distance and not a rounding accident
-    _vals = {}
-    for row in _wb["Replicate results"].iter_rows(min_row=2, values_only=True):
-        if row[4] not in (None, ""):
-            _vals.setdefault(str(row[0]).strip().upper(), []).append(float(row[4]))
-    for d in g["dilution"]:
-        lv = d["level"]
-        edge = min(abs(abs(v - d["prepared"]) - 0.20 * d["prepared"]) for v in _vals[lv])
-        ok("ask 3 %s's replicates are clear of the one-fifth line" % lv, edge >= 0.0004,
-           "nearest replicate %.5f from the line, %.1f stored steps" % (edge, edge / 0.0001))
+    # A2's silent primary: a depth top-up booked under an accession of its own, made from the
+    # specimen's extraction, released again inside the month
+    by_ext = {}
+    for r in hist:
+        by_ext.setdefault(r["extraction_id"], []).append(r)
+    tops = {k: v for k, v in by_ext.items() if len({x["specimen_id"] for x in v}) > 1}
+    ok("ask 2 the depth top-ups exist", len(tops) >= 300, str(len(tops)))
+    ok("ask 2 an extraction is one specimen: one receipt, one project, one method",
+       all(len({(x["received_utc"], x["project_code"], x["extraction_method"]) for x in v}) == 1
+           for v in by_ext.values()))
+    ok("ask 2 a top-up is one more accession, never two",
+       all(len({x["specimen_id"] for x in v}) == 2 for v in tops.values()))
+    ok("ask 2 a top-up goes out in its specimen's month",
+       all(len({x["released_date"][:7] for x in v if x["released_date"]}) == 1 for v in tops.values()))
+    ok("ask 2 a top-up carries its specimen's call",
+       all(len({(x["call_source"], x["hetx_call"], x["review_outcome"]) for x in v}) == 1
+           for v in tops.values()))
+    top_ids = {x["specimen_id"] for v in tops.values() for x in v}
+    amd_ids = {a["specimen_id"] for a in rows_of(os.path.join(target, W.FILES["amendments"]))}
+    ok("ask 2 no amendment touches a top-up or its specimen", not (top_ids & amd_ids),
+       "%d shared" % len(top_ids & amd_ids))
+    per_month_tops = {}
+    for v in tops.values():
+        m = [x["released_date"][:7] for x in v if x["released_date"]][0]
+        per_month_tops[m] = per_month_tops.get(m, 0) + 1
+    ok("ask 2 every reporting month holds top-ups", all(per_month_tops.get(b["month"], 0) >= 15
+                                                       for b in g["baseline"]),
+       ", ".join("%s %d" % (b["month"], per_month_tops.get(b["month"], 0)) for b in g["baseline"]))
+    ok("ask 2 every top-up has a later accession than its specimen",
+       all(sorted(v, key=lambda x: x["released_date"])[0]["specimen_id"]
+           < sorted(v, key=lambda x: x["released_date"])[-1]["specimen_id"] for v in tops.values()))
+    # the golden counts the specimen the warehouse never keys: it equals the clean truth
+    import tempfile
+    _tmp = tempfile.mkdtemp(prefix="t195_truth_")
+    _n, truth_rel, truth_flag, _ev, _am = AS.history(_tmp)
+    ok("ask 2 the golden is the clean truth, month by month",
+       all(b["released"] == truth_rel[b["month"]] and b["flagged"] == truth_flag[b["month"]]
+           for b in g["baseline"]))
+    import cracker as _CR
+    on_accession = _CR.ask2(target)
+    for b in g["baseline"]:
+        ok("ask 2 counting accessions misses %s" % b["month"],
+           abs(on_accession[b["month"]] - round(b["per_thousand"], 1)) >= 0.25,
+           "%.1f against %.1f" % (on_accession[b["month"]], b["per_thousand"]))
+    ok("ask 2 the extraction reproduces every month",
+       all(_CR.ask2(target, key=lambda r: r["extraction_id"])[b["month"]] == round(b["per_thousand"], 1)
+           for b in g["baseline"]))
     _covered = {r["specimen_id"] for r in cross_all}
     ok("ask 1 the biobank's register covers every accession the panel register holds",
        not ({r["specimen_id"] for r in panel_rows} - _covered),
@@ -443,17 +455,41 @@ def run(target, g=None):
                  if r["specimen_id"] in comparison_ids
                  and (int(r["result_seq"]) > 1 or r["aliquot_id"] != "A1"
                       or r["specimen_id"] in reacc))
-    dev_a2 = len({a["specimen_id"] for a in rows_of(os.path.join(target, W.FILES["amendments"]))}
-                 & comparison_ids)
-    dil_ids = {str(r[3]) for r in _wb["Replicate results"].iter_rows(min_row=2, values_only=True)}
-    dev_a3 = len(dil_ids & comparison_ids)
+    dev_a2 = len(amd_ids & comparison_ids)
+    dev_a2 = len(top_ids & comparison_ids) + dev_a2
     ok("the ask devices hold no row of the comparison's population",
-       (dev_a1, dev_a2, dev_a3) == (0, 0, 0), "A1 %d, A2 %d, A3 %d" % (dev_a1, dev_a2, dev_a3))
+       (dev_a1, dev_a2) == (0, 0), "A1 %d, A2 %d" % (dev_a1, dev_a2))
+    import openpyxl as _xl
+    _wb = _xl.load_workbook(os.path.join(target, W.FILES["dilution"]), data_only=True)
+    dil_ids = {str(r[3]) for r in _wb["Replicate results"].iter_rows(min_row=2, values_only=True)}
     read_sets = {r["read_set_id"] for r in mf_rows if r["specimen_id"] in comparison_ids}
-    ok("no ask device names a read set the comparison reads",
-       not (read_sets & dil_ids) and not (read_sets & {a["specimen_id"] for a in
-            rows_of(os.path.join(target, W.FILES["amendments"]))}),
+    ok("no file the asks read names a read set the comparison reads",
+       not (read_sets & dil_ids) and not (read_sets & amd_ids),
        "%d comparison read sets" % len(read_sets))
+    # A1's footer and the weekly reports' footer: what the files say about themselves
+    cross_text = open(os.path.join(target, W.FILES["crosswalk"]), encoding="utf-8").read()
+    ok("ask 1 the biobank's register says what its reference is",
+       "the biobank's own reference for the vial" in cross_text)
+    ok("ask 1 the weekly reports count a result per aliquot, not per specimen",
+       "for each aliquot typed" in doc_text and "per specimen and aliquot" not in doc_text)
+    _vial = {r["specimen_id"]: r["biobank_ref"] for r in cross_all}
+    _first = {}
+    for r in sorted((x for x in panel_rows if x["report_date"][:7] in ("2027-04", "2027-05")),
+                    key=lambda x: x["report_date"]):
+        _first.setdefault(_vial[r["specimen_id"]], r["report_ref"])
+    _once = {}
+    for v, ref in _first.items():
+        _once[ref] = _once.get(ref, 0) + 1
+    ok("ask 1 counting each specimen only in its first report misses some report",
+       sum(1 for w in g["panel_weeks"] if _once.get(w["report_ref"], 0) != w["specimens"]) >= 3,
+       ", ".join("%s %d/%d" % (w["report_ref"], _once.get(w["report_ref"], 0), w["specimens"])
+                 for w in g["panel_weeks"]))
+    ok("ask 1 a re-accession is one biobank record booked twice",
+       all(len({(r["request_id"], r["project_code"], r["registered_date"]) for r in cross_all
+                if r["biobank_ref"] == ref}) == 1 for ref, ids in by_ref.items() if len(ids) > 1))
+    ok("ask 2 the release desk's log says the amended value stands",
+       "the amended record carries value_after in place of value_before"
+       in open(os.path.join(target, W.FILES["amendments"]), encoding="utf-8").read())
 
     # ---------------------------------------------------------------- the pack reads as the laboratory's
     accepted = {r["specimen_id"]: float(r["mixture_fraction"]) for r in mf_rows
@@ -506,9 +542,6 @@ def run(target, g=None):
     depths = [[r[5] for r in dil if str(r[0]).upper() == lv] for lv, _l, _f in W.DILUTION]
     ok("each level was sequenced on its own",
        all(depths[i] != depths[j] for i in range(len(depths)) for j in range(i + 1, len(depths))))
-    lower = [i for i, r in enumerate(dil) if str(r[0])[0].islower()]
-    ok("the operator's casing is not a pattern",
-       len({b - a for a, b in zip(lower, lower[1:])}) > 2)
     ok("no estimate was completed after the re-run was pulled",
        max(r["completed_date"] for r in mf_rows) <= "2027-06-18")
     ok("the protocol's annex does not predate its issue",
@@ -614,7 +647,8 @@ def run(target, g=None):
     card_n = re.search(r"Read sets with an estimate\s+(\d+)", doc_text)
     accepted_now = sum(1 for r in mf_rows if r["read_set_accepted"] == "Y")
     ok("the model card's addendum does not tie to the file as filed, and says so",
-       card_n and int(card_n.group(1)) < accepted_now and "batches of 17 June" in doc_text,
+       card_n and int(card_n.group(1)) < accepted_now
+       and "batches of 17 June are not included" in re.sub(r"\s+", " ", doc_text),
        "card %s against %d accepted read sets" % (card_n.group(1) if card_n else "?", accepted_now))
     amd = rows_of(os.path.join(target, W.FILES["amendments"]))
     span = re.findall(r"(\d{4}-\d{2})", W.FILES["amendments"])
@@ -636,6 +670,9 @@ def run(target, g=None):
            "keeps %d of %d" % (hits, n))
     ok("the measured pair ceiling is at or under 40", pair <= 40.0, "%.1f" % pair)
     ok("the measured mirror leakage is under 35 per cent", mirror < 35.0, "%.1f" % mirror)
+    full = CR.full_includer(target, g)
+    ok("the full includer keeps what the sheet says it keeps",
+       [(a, n, h) for a, n, h in full] == [("A1", 18, 18), ("A2", 12, 12)], str(full))
 
     # ---------------------------------------------------------------- gates, provenance, realism
     files = sorted(os.listdir(target))
@@ -651,7 +688,7 @@ def run(target, g=None):
     ok("the distractors are shipped", all(os.path.exists(os.path.join(target, os.path.basename(d)))
                                           for d in meta["distractor_files"]))
     read_by_solution = {W.FILES[k] for k in ("qc_a", "qc_b", "mf", "panel", "weekly", "history",
-                                             "volumes", "dilution", "protocol",
+                                             "volumes", "amendments", "protocol",
                                              "crosswalk", "modelcard", "config")}
     ok("no distractor is on the solution's path",
        not (read_by_solution & {os.path.basename(d) for d in meta["distractor_files"]}))

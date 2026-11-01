@@ -30,7 +30,8 @@ def cut(target):
     PK._write(os.path.join(target, W.FILES["amendments"]),
               ["specimen_id", "field", "value_before", "value_after", "amended_date", "reason"], amend)
     with open(os.path.join(target, W.FILES["amendments"]), "a", encoding="utf-8") as fh:
-        fh.write("# Release desk amendment log: one row per field amended on a released record.\n")
+        fh.write("# Release desk amendment log: one row per field amended on a released record; the "
+                 "amended record carries value_after in place of value_before.\n")
         fh.write("# Maintained by the release desk. Owner: the laboratory manager.\n")
     counts["amendments"] = len(amend)
     AS.dilution(target)

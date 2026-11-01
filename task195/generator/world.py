@@ -89,16 +89,14 @@ FILES = {
     "crosswalk": "specimen_request_crosswalk.tsv",
     "protocol": "method_validation_protocol_kval07.pdf",
     "modelcard": "mixture_estimator_model_card_v34.pdf",
-    "dictionary": "validation_extract_dictionary.csv",
     "config": "rerun_pipeline_config_v34.json",
-    "manifest": "export_manifest.csv",
     "runlog": "lims_run_log_2027-03_2027-05.csv",
     "amendments": "release_amendments_2027-04_2027-06.csv",
     "costs": "assay_unit_costs_2027.csv",
     "platform": "extraction_platform_validation_2025.pdf",
     "plates": "plate_layout_map_2027q2.csv",
 }
-DISTRACTORS = ["runlog", "costs", "platform", "plates"]
+DISTRACTORS = ["runlog", "costs", "platform", "plates", "dilution"]
 
 # the twelve reporting months' flag propensity in the warehouse extract, as the screen in service
 # ran: higher through the winter wave, when intake is heaviest and extraction is rushed

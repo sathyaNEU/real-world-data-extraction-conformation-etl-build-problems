@@ -114,8 +114,7 @@ def protocol(target):
                    "and closed before the decision is taken. A deviation that changes the comparison's "
                    "population or the decision rule voids the parallel run.", BODY),
          Paragraph("6.2 The validation file, its extracts and the exports they were taken from are "
-                   "retained for fifteen years. Each extract is listed in the file's export manifest "
-                   "with its source, the date it was pulled and the terms it is held under.", BODY),
+                   "retained for fifteen years.", BODY),
          Paragraph("7 References and revision history", H2),
          Paragraph("7.1 KVAL-02 instrument qualification. KVAL-11 reference standards and control "
                    "material. SOP-LAB-18 release of sequencing results. The candidate method's own "
@@ -177,12 +176,11 @@ def model_card(target, estimates):
          Table(wrap(rows), colWidths=[76 * mm, 40 * mm]),
          Spacer(1, 4 * mm),
          Paragraph("Computed by the bioinformatics group on the accepted read sets of the March to May "
-                   "2027 re-run that had completed by 16 June 2027; the file %s as filed also carries "
-                   "the batches of 17 June, so recomputing from the file moves these figures a little. "
-                   "The run's scope, reference build, marker panel and depth floor are in %s, filed "
-                   "with the re-run. The group reports this distribution as the estimator's behaviour "
-                   "on production material; where a share falls relative to any screening cutoff is "
-                   "KVAL-07's matter." % (W.FILES["mf"], W.FILES["config"]), SMALL),
+                   "2027 re-run that had completed by 16 June 2027; the batches of 17 June are not "
+                   "included. The run's scope, reference build, marker panel and depth floor are in %s, "
+                   "filed with the re-run. The group reports this distribution as the estimator's "
+                   "behaviour on production material; where a share falls relative to any screening "
+                   "cutoff is KVAL-07's matter." % W.FILES["config"], SMALL),
          Paragraph("Known behaviour", H2),
          Paragraph("Specimens from the same donor sequenced twice return estimates within about 0.002 "
                    "of each other at low shares. A depth top-up library typed from the same extraction "
@@ -232,8 +230,8 @@ def weekly_reports(target, panel):
         if ref in returned:
             f.append(Paragraph("%d of these results were returned on receipt for re-typing and were "
                                "re-issued in a later week." % returned[ref], SMALL))
-    f.append(Paragraph("A result is issued per specimen and aliquot typed. Where a report is re-sent, "
-                       "the week's count includes the results sent again.", SMALL))
+    f.append(Paragraph("A result is issued for each aliquot typed. Where a report is re-sent, the "
+                       "week's count includes the results sent again.", SMALL))
     d.build(f)
 
 

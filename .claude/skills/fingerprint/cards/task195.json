@@ -34,7 +34,7 @@
  "scoring_unit": "per certified output",
  "spine": {
   "file": "qc_screen_history_2026-02-15_2027-02-28.csv",
-  "rows": 32647,
+  "rows": 32985,
   "entity": "one specimen's quality-control screen record at release",
   "grain": "specimen",
   "source": "synthetic"

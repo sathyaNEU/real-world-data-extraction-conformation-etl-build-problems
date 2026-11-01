@@ -7,10 +7,7 @@ import datetime as dt
 import json
 import math
 import os
-import statistics
 import sys
-import zipfile
-from xml.etree import ElementTree as ET
 
 Z = 1.959963985
 AS_OF = dt.date(2027, 6, 21)
@@ -31,36 +28,6 @@ def table(path, delim=","):
         lines = [l.rstrip("\n") for l in fh if not l.startswith("#")]
     head = lines[0].split(delim)
     return [dict(zip(head, l.split(delim))) for l in lines[1:] if l]
-
-
-def sheet_rows(path, name):
-    """Read a worksheet out of the workbook without a spreadsheet library."""
-    ns = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
-    rel = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
-    with zipfile.ZipFile(path) as z:
-        wb = ET.fromstring(z.read("xl/workbook.xml"))
-        rels = ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))
-        target = {r.get("Id"): r.get("Target") for r in rels}
-        sid = next(s.get(rel + "id") for s in wb.iter(ns + "sheet") if s.get("name") == name)
-        part = "xl/" + target[sid].lstrip("/")
-        shared = []
-        if "xl/sharedStrings.xml" in z.namelist():
-            sst = ET.fromstring(z.read("xl/sharedStrings.xml"))
-            shared = ["".join(t.text or "" for t in si.iter(ns + "t")) for si in sst]
-        ws = ET.fromstring(z.read(part))
-        out = []
-        for row in ws.iter(ns + "row"):
-            vals = []
-            for c in row.iter(ns + "c"):
-                v = c.find(ns + "v")
-                text = v.text if v is not None else ""
-                if c.get("t") == "s" and text != "":
-                    text = shared[int(text)]
-                elif c.get("t") == "inlineStr":
-                    text = "".join(t.text or "" for t in c.iter(ns + "t"))
-                vals.append(text)
-            out.append(vals)
-    return out
 
 
 def run(target, figures_path):
@@ -156,8 +123,9 @@ def run(target, figures_path):
     months, rel_seen, flag_seen = {}, set(), set()
     with open(os.path.join(target, "qc_screen_history_2026-02-15_2027-02-28.csv"), encoding="utf-8") as fh:
         head = fh.readline().rstrip("\n").split(",")
-        ix = {k: head.index(k) for k in ("specimen_id", "released_date", "release_status", "hetx_call",
-                                         "review_outcome", "call_source")}
+        ix = {k: head.index(k) for k in ("specimen_id", "extraction_id", "released_date",
+                                         "release_status", "hetx_call", "review_outcome",
+                                         "call_source")}
         for line in fh:
             f = line.rstrip("\n").split(",")
             if f[ix["release_status"]] != "RELEASED":
@@ -165,7 +133,8 @@ def run(target, figures_path):
             sid = f[ix["specimen_id"]]
             released = amended.get((sid, "released_date"), f[ix["released_date"]])
             m = released[:7]
-            key = (m, sid)
+            # a specimen is its extraction: a depth top-up carries an accession of its own
+            key = (m, f[ix["extraction_id"]])
             d = months.setdefault(m, [0, 0])
             if key not in rel_seen:
                 rel_seen.add(key)
@@ -184,25 +153,6 @@ def run(target, figures_path):
     same("the reporting pack counts releases, not specimens",
          all(vol[m] >= fig["baseline"][m]["released"] for m in fig["baseline"]), True)
 
-    book = os.path.join(target, "dilution_panel_2027q1.xlsx")
-    prepared = {}
-    for row in sheet_rows(book, "Prepared levels")[1:]:
-        prepared[(row[0].strip(), row[1].strip().upper())] = float(row[3])
-    results, stock = {}, {}
-    for row in sheet_rows(book, "Replicate results")[1:]:
-        if len(row) < 5 or row[4] in ("", None):
-            continue
-        key = row[0].strip().upper()
-        stock[key] = row[1].strip()
-        results.setdefault(key, []).append(float(row[4]))
-    for lv, row in sorted(fig["dilution"].items()):
-        vals = sorted(results[lv])
-        level = prepared[(stock[lv], lv)]
-        same("%s replicates" % lv, len(vals), row["replicates"])
-        same("%s median recovery" % lv, round(statistics.median(vals) / level, 3),
-             row["median_recovery"])
-        same("%s within a fifth" % lv,
-             sum(1 for v in vals if abs(v - level) <= 0.2 * level), row["within_fifth"])
     return CHECKS[0]
 
 
