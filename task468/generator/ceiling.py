@@ -13,28 +13,28 @@ T = os.path.join(os.path.dirname(HERE), "target")
 FIG = json.load(open(os.path.join(HERE, "figures.json")))
 
 
-def asks(D, S, vol):
-    ss = SV.masses(D, S, vol, None, analyte="ss")
-    a = {c: [int(round(x)) for x in vol[c]["q"]] for c in D["custs"]}
+def asks(D, S, vol, join, composites_only):
+    ss = SV.masses(D, S, vol, None, analyte="ss", composites_only=composites_only)
+    liq = SV.liquid(T, join=join)
+    a = {t: [int(round(x)) for x in liq[t]] for t in liq}
     b = {c: "%.1f" % ss[c] for c in D["custs"]}
     return a, b
 
 
 def kept(a, b):
-    n = sum(a[c][q] == FIG["ask_a"][c][q] for c in a for q in range(4)) + sum(b[c] == FIG["ask_b"][c] for c in b)
-    return n, 4 * len(a) + len(b)
+    ka = sum(a[t][q] == FIG["ask_a"][t][q] for t in a for q in range(4))
+    kb = sum(b[c] == FIG["ask_b"][c] for c in b)
+    return ka + kb, 4 * len(a) + len(b), ka, kb
 
 
 def main():
     D = SV.load(T)
-    crack = kept(*asks(D, SV.lab(D), SV.volumes(D)))
-    seg = {c: [(r["Flow meter"], None, None, None, None)] for c, r in ((r["Customer"], r) for r in D["reg"])}
-    tel_utc = SV.telemetry(D, clock="utc")
-    try:
-        vol_m = SV.volumes(D, tel=tel_utc, seg=seg)
-    except KeyError:
-        vol_m = SV.volumes(D, tel=tel_utc)
-    mirror = kept(*asks(D, SV.lab(D, dup="own", rerun="own"), vol_m))
+    vol = SV.volumes(D)
+    # the cracker: every filed rule, the battery, a docket join and every LabWare sample of the year
+    crack = kept(*asks(D, SV.lab(D), vol, "docket", False))
+    mirror = kept(*asks(D, SV.lab(D, dup="own", rerun="ignore"), vol, "docket", False))
+    print("cracker ask A %d of 16, ask B %d of 12; mirror ask A %d, ask B %d" % (crack[2], crack[3], mirror[2],
+                                                                                 mirror[3]))
     n = crack[1]
     sc = 45 + 55.0 * crack[0] / n
     sm = 12 + 55.0 * mirror[0] / n

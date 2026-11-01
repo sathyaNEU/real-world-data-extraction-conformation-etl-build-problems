@@ -38,11 +38,12 @@ new = new[~new["sample_id"].str.endswith("-D")].copy()
 new["base"] = new["sample_id"].str.replace("-R$", "", regex=True)
 new["rr"] = new["sample_id"].str.endswith("-R")
 new["v"] = new["value"].astype(float)
-new.loc[(new["analyte"] == "Suspended Solids") & (new["flag"] == "<"), "v"] = 2.5
+new.loc[(new["analyte"] == "Suspended Solids") & (new["result_qualifier"] == "<"), "v"] = 2.5
 new = new.sort_values(["base", "analyte", "rr"]).drop_duplicates(["base", "analyte"], keep="last")
 new["when"] = pd.to_datetime(new["collected_utc"].str[:19]) + pd.Timedelta(hours=10)
 wide_new = new.pivot_table(index=["base", "point_id", "when"], columns="analyte", values="v").reset_index()
 wide_new["cust"] = wide_new["point_id"].map(pt)
+wide_new = wide_new[wide_new["TOC (NPOC)"].notna()]   # compliance composites; inspection grabs carry SS and pH only
 
 par = wide_old.dropna(subset=["TOC", "COD"])
 X = np.c_[np.ones(len(par)), par["TOC"], par["CL"]]
@@ -86,8 +87,24 @@ for c in reg["Customer"]:
     cod[c] = year * float(np.dot([x for _, x, _ in rows], v) / v.sum()) / 1e6
     ssm[c] = year * float(np.dot([x for _, _, x in rows], v) / v.sum()) / 1e6
 
+log = pd.read_csv(os.path.join(T, "glw_liquid_waste_receival_2026.csv"), dtype=str)
+log["t"] = pd.to_datetime(log["received"], format="%d/%m/%Y %H:%M")
+log["v"] = log["volume_kl"].astype(float)
+man = pd.read_excel(os.path.join(T, "qld_waste_tracking_manifests_glw_2026.xlsx"))
+log = log[log["status"] == "Accepted"].merge(man[["Receival docket", "Waste code"]], how="left",
+                                              left_on="docket", right_on="Receival docket")
+log = log.sort_values(["truck_rego", "t", "docket"])
+log["prev_t"] = log.groupby("truck_rego")["t"].shift()
+log["prev_c"] = log.groupby("truck_rego")["Waste code"].shift()
+second = log["Waste code"].isna() & ((log["t"] - log["prev_t"]) <= pd.Timedelta(hours=2))
+log.loc[second, "Waste code"] = log.loc[second, "prev_c"]
+log = log[log["t"].dt.year == 2026]
+log["q"] = (log["t"].dt.month - 1) // 3
+liq = {c: [int(round(log[(log["Waste code"] == c) & (log["q"] == i)]["v"].sum())) for i in range(4)]
+       for c in ("GT", "SE", "PL", "LL")}
+
 same("customers over their COD limits", sorted(c for c in cod if cod[c] > lim[c]), sorted(FIG["over"]))
-same("ask A, quarterly volumes (kL)", q, FIG["ask_a"])
+same("ask A, tankered waste by type and quarter (kL)", liq, FIG["ask_a"])
 same("ask B, suspended solids (t)", {c: "%.1f" % ssm[c] for c in ssm}, FIG["ask_b"])
 print("verify: %d failed" % fails)
 sys.exit(1 if fails else 0)

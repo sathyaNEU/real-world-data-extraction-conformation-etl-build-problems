@@ -64,7 +64,7 @@ def lab(D, dup="drop", rerun="replace", below="half", year_clock="local"):
         sid = r["sample_id"]
         an = {"TOC (NPOC)": "toc", "Chloride": "cl", "Suspended Solids": "ss", "pH": "ph"}[r["analyte"]]
         v = float(r["value"])
-        if an == "ss" and r["flag"] == "<":
+        if an == "ss" and r["result_qualifier"] == "<":
             v = {"half": RL_SS / 2, "rl": RL_SS, "zero": 0.0}[below]
         if sid.endswith("-D"):
             if dup == "drop":
@@ -205,7 +205,7 @@ def day_volume(vol, c, d):
 
 # ------------------------------------------------------------------------------------------------ masses
 
-def masses(D, samples, vol, conv, analyte="cod"):
+def masses(D, samples, vol, conv, analyte="cod", composites_only=True):
     out = {}
     for c in D["custs"]:
         num = den = 0.0
@@ -213,6 +213,8 @@ def masses(D, samples, vol, conv, analyte="cod"):
             if s["cust"] != c or s["when"].year != 2026:
                 continue
             an = s["an"]
+            if composites_only and not ("toc" in an or "cod" in an):
+                continue      # an inspection grab: suspended solids and pH only, not a compliance composite
             if analyte == "cod":
                 if "cod" in an:
                     x = an["cod"]
@@ -231,6 +233,33 @@ def masses(D, samples, vol, conv, analyte="cod"):
     return out
 
 
+TYPES = ["GT", "SE", "PL", "LL"]
+
+
+def liquid(target, join="identity"):
+    """Tankered waste received in 2026 by waste code and quarter of the receival date (local, accepted rows)."""
+    log = rows(os.path.join(target, "glw_liquid_waste_receival_2026.csv"))
+    man = sheet(os.path.join(target, "qld_waste_tracking_manifests_glw_2026.xlsx"), "Manifests")
+    code = {m["Receival docket"]: m["Waste code"] for m in man}
+    out = {t: [0.0] * 4 for t in TYPES}
+    last = {}
+    for r in sorted(log, key=lambda r: (dt.datetime.strptime(r["received"], "%d/%m/%Y %H:%M"), r["docket"])):
+        when = dt.datetime.strptime(r["received"], "%d/%m/%Y %H:%M")
+        if r["status"] != "Accepted":
+            continue
+        c = code.get(r["docket"])
+        if c is not None:
+            last[r["truck_rego"]] = (when, c)
+        elif join == "identity":
+            prev = last.get(r["truck_rego"])
+            if prev and when - prev[0] <= dt.timedelta(hours=2):
+                c = prev[1]
+        if c is None or when.year != 2026:
+            continue
+        out[c][(when.month - 1) // 3] += float(r["volume_kl"])
+    return out
+
+
 def solve(target, route="golden"):
     D = load(target)
     S = lab(D)
@@ -239,7 +268,7 @@ def solve(target, route="golden"):
     cod = masses(D, S, vol, conv)
     ss = masses(D, S, vol, conv, analyte="ss")
     over = sorted(c for c in D["custs"] if cod[c] > D["limit"][c])
-    return {"D": D, "samples": S, "vol": vol, "cod": cod, "ss": ss, "over": over,
+    return {"D": D, "samples": S, "vol": vol, "cod": cod, "ss": ss, "over": over, "liquid": liquid(target),
             "fit": fit(parallel(S)), "n_parallel": len(parallel(S))}
 
 

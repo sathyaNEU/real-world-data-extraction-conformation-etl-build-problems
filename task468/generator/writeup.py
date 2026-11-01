@@ -16,7 +16,11 @@ SOURCES = {
     "request": "synthetic: the Trade Waste Manager's request email",
     "rain": "synthetic: daily rainfall at the utility's gauge",
     "returns": "synthetic: customers' quarterly production returns",
+    "inspections": "synthetic: the trade waste officers' inspection visits",
+    "receival": "synthetic: the treatment plant's liquid waste receival station log",
+    "manifests": "synthetic: the state waste tracking system's manifests for loads delivered to the plant",
 }
+TYPE_NAMES = {"GT": "grease trap waste", "SE": "septage", "PL": "portable toilet waste", "LL": "landfill leachate"}
 WHY = {"rain": "rainfall says how wet the catchment was, not what a customer discharged through its meter",
        "returns": "production returns are the customers' own activity figures; the policy measures mass from the "
                   "utility's meters and samples"}
@@ -26,11 +30,14 @@ def figures(R):
     custs = R["D"]["custs"]
     return {"over": R["over"],
             "verdict": {c: ("over" if c in R["over"] else "within") for c in custs},
-            "ask_a": {c: [int(round(x)) for x in R["vol"][c]["q"]] for c in custs},
+            "ask_a": {t: [int(round(x)) for x in R["liquid"][t]] for t in R["liquid"]},
             "ask_b": {c: "%.1f" % R["ss"][c] for c in custs},
             "cod_t_shown": {c: round(R["cod"][c], 1) for c in custs},
             "limit_t": {c: R["D"]["limit"][c] for c in custs},
-            "fit": [round(float(x), 4) for x in R["fit"]], "n_parallel": R["n_parallel"]}
+            "fit": [round(float(x), 4) for x in R["fit"]], "n_parallel": R["n_parallel"],
+            "stated": {"ss_reporting_limit": 5, "ss_below_limit_counts_at": 2.5,
+                       "chloride_per_mg_2dp": round(float(R["fit"][2]), 2), "toc_per_mg_1dp": round(float(R["fit"][1]), 1),
+                       "second_pass_window_hours": 2}}
 
 
 def t(x):
@@ -65,19 +72,23 @@ def submission(fig, path):
          "3. Volume: each meter's hourly register read in Queensland time over the local year; across an exchange "
          "the removed meter to its final read and the installed meter from its opening read, both from the field "
          "job log.",
-         "4. Mass: the year's volume times the volume-weighted mean concentration of the year's compliance samples, "
-         "each weighted by its day's metered volume, January on the measured COD.",
-         "5. Exceedance: each COD mass against the register's limit (kilograms read as such).", "",
+         "4. Mass: the year's volume times the volume-weighted mean concentration of the year's compliance samples "
+         "(24-hour composites; the inspection grabs, which carry suspended solids and pH only, are not compliance "
+         "samples), each weighted by its day's metered volume, January on the measured COD.",
+         "5. Exceedance: each COD mass against the register's limit (kilograms read as such).",
+         "6. Tankered waste: accepted receival dockets of 2026 by local receival date, each docket's waste code from "
+         "the manifest that carries it, a second pass of a load (the same truck within two hours, no manifest of its "
+         "own) taking the code of the pass before it.", "",
          "## 4. Deliverable Answers", "",
          "### %s" % GD.MEMO, "",
          "1. Customers that exceeded their 2026 COD limit: %s." % ", ".join(over),
          "2. Customers within their limit: %s." % ", ".join(within),
          "3. Chart of each customer's 2026 COD mass as a share of its limit, the exceeders marked.", "",
          "### %s" % GD.BOOK, "",
-         "1. Volume discharged by quarter of 2026, kL:"]
+         "1. Tankered liquid waste received at the treatment plant by quarter of 2026, kL:"]
     for c in fig["ask_a"]:
         q = fig["ask_a"][c]
-        L.append("   - %s: Q1 %s, Q2 %s, Q3 %s, Q4 %s" % ((S[c],) + tuple(t(x) for x in q)))
+        L.append("   - %s: Q1 %s, Q2 %s, Q3 %s, Q4 %s" % ((TYPE_NAMES[c],) + tuple(t(x) for x in q)))
     L.append("2. Suspended solids discharged in 2026, t:")
     L.append("   - " + "; ".join("%s %s" % (S[c], fig["ask_b"][c]) for c in fig["ask_b"]))
     open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")

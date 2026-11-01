@@ -33,8 +33,8 @@ back by its stage 4 judge) are spent. Nothing of their worlds is kept.
   reads the closed 2026 discharge year, as the policy files it.
 
 - **Shape other (a designation over a scorecard):** each customer's verdict against its limit (12), the set (1), the
-  chart's parts (the shares, the limit line, the exceeders marked: 3), the files (2), and the two asks (48 quarterly
-  volumes, 12 suspended solids masses).
+  chart's parts (the shares, the limit line, the exceeders marked: 3), the files (2), and the two asks (16 tankered
+  waste cells, 12 suspended solids masses).
 - **Data-native sentence:** Coolabah Olives brines its fruit in salt and Tallowood Tannery salts its hides, so their
   effluent carries five to twelve grams of chloride a litre, which the dichromate COD test oxidises with the carbon
   and the TOC analyser never sees; Mt Edwin Cheese started recovering its whey brine in May 2026 and Tallowood took
@@ -73,7 +73,7 @@ The default path conforms both laboratory systems and the meters, converts each 
 Task type: emissions-inventory (Physical & Environmental Sciences), which serves ETL: a utility's releases to sewer conformed from two laboratory systems, hourly meter telemetry across three meter exchanges and a field job log onto the agreements' reference basis.
 Domain test: the quantity that decides is each customer's mass of chemical oxygen demand discharged in 2026 on the dichromate reference method, the trade waste chemist's own load, and its conversion from TOC turns on how the dichromate test responds to chloride, which a water chemist knows and a reader of the files must find in the parallel samples.
 Swap: put hospitals' bed-days or a utility's megawatt-hours in place of effluent and there is no oxidant demand, no interfering ion, no parallel run of two methods and no conversion to carry; the task does not survive the swap.
-Layer 1: two laboratory exports in different layouts, codes and clocks (local before the migration, UTC after), a site code crosswalk, quality-control duplicates and re-issued results under suffixed identifiers, suspended solids below the reporting limit, hourly cumulative registers across three meter exchanges whose final and opening reads live only in the field job log, limits in tonnes for some agreements and kilograms for others; each comes from the system that keeps it and every careful handling of it leaves the call.
+Layer 1: two laboratory exports in different layouts, codes and clocks (local before the migration, UTC after), a site code crosswalk, quality-control duplicates and re-issued results under suffixed identifiers, suspended solids below the reporting limit, hourly cumulative registers across three meter exchanges whose final and opening reads live only in the field job log, limits in tonnes for some agreements and kilograms for others, a receival log and the state's manifests in two systems' keys; each comes from the system that keeps it and every careful handling of it leaves the call.
 Layer 2: estimation_fit, a method bridge validated on its overlap: the reference method's reading carries a component the new method cannot see, so the conversion is a model of the reference reading on the new reading and the interfering constituent, fitted on the parallel samples and carried to each 2026 sample's own chloride.
 Decisive step: estimating each 2026 sample's dichromate COD from its own TOC and chloride through a regression on the October to December 2025 parallel samples, instead of a ratio per customer or for all.
 Not semantics: every field, code and unit read correctly still leaves the ratio routes, because no field marks chloride as part of COD; the residuals of any TOC-only conversion track chloride (correlation 0.98 on the parallel samples, asserted) and that relation exists only across the three columns.
@@ -165,28 +165,61 @@ per customer or for all (an easy estimate of the same literal quantity, not a re
 
 ## Ask sheet
 
-Two asks in the figures workbook, each on rows the call reads only in part, each a reconstruction across two systems.
+Two asks in the figures workbook, each sited on rows the call never reads, each with a primary device that only a
+reconstruction across two systems finds. Figures are the generator's (`generator/figures.json`, `ask_a`, `ask_b`);
+deltas are asserted in `checks.py` (C6 to C10).
 
-**Ask A, each customer's volume discharged in each quarter of 2026 (48 figures).** The telemetry's UTC registers read
-on Queensland quarters, and across each of three meter exchanges the removed meter (named only in the job log, not in
-the register) to its final read and the installed meter from its opening read. Hazards: the register lists only the
-installed meter; the logger was off for hours at each exchange.
+**Ask A, the volume of each kind of tankered liquid waste the treatment plant received in each quarter of 2026 (16
+figures).**
+- H18 home: the annual return reports the liquid waste the plant received beside the trade waste customers.
+- Files and columns: the receival station's log (docket, received, truck, transporter, volume, status) and the state
+  waste tracking manifests (manifest, waste code, receival docket).
+- Primary (D6, an event recorded on two lines that one record covers): when the pit's high-level alarm stops a
+  discharge the driver finishes the load in a second pass minutes later under a second docket, and the manifest
+  carries only the first; the waste code of a second pass is read from the same truck's pass before it, an identity
+  no field states.
+- Hazards: dockets of loads rejected at the gate; manifests collected the day before receival.
+- Pin test: the sentence pins the waste, the quarter and "received"; the device sits in which dockets are one load.
 
-**Ask B, each customer's mass of suspended solids discharged in 2026 (12 figures).** The policy's mass formula on both
-laboratory systems, duplicates out, re-issued results replacing, results below 5 mg/L at 2.5.
+**Ask B, the mass of suspended solids each customer discharged in 2026 (12 figures).**
+- H18 home: the suspended solids line of the same return.
+- Files and columns: both laboratory exports, the inspections log, the meters.
+- Primary (D4, a population boundary evidenced in another file): trade waste officers take grab samples at their
+  inspection visits and LabWare registers them in the same series at the same points; they carry suspended solids and
+  pH only, and the policy's mass reads the compliance composites, so the grabs are found by the analytes they lack and
+  the inspections log's visits, neither enough alone.
+- Hazards: quality-control duplicates and re-issued results (filed); results below the reporting limit.
+- Pin test: the sentence pins the customer, the year and the mass; the device sits in which samples are compliance
+  samples.
 
-| Ask figures | Cracker (lands the call, executes every filed rule) | Mirror (stops at rung 2, conforms the habitual way) | Verdict |
+**Separation (asserted, C10):** no grab carries COD, TOC or chloride, so no device row enters the call's population;
+the receival log and the manifests are not read by the call.
+
+| Ask figures | Cracker (lands the call, runs the battery, executes every filed rule) | Mirror (stops at rung 2) | Verdict |
 |---|---|---|---|
-| A, 48 quarters | Queensland quarters, both meters from the job log: 48 of 48 kept | UTC quarters, the register's meter: 0 of 48 | split |
-| B, 12 customers | duplicates out, re-issues in: 12 of 12 kept | every LabWare row: 4 of 12 | split |
+| A, 16 cells | joins dockets to manifests and drops the unmatched: 0 of 16 kept | the same join: 0 of 16 | miss |
+| B, 12 customers | every LabWare sample of the year a compliance sample: 0 of 12 kept | the same, duplicates kept: 0 of 12 | miss |
 
-Pair ceiling: 57.8 (the cracker on the call at 100.0 keeping 60 of 60 ask figures, the mirror off it at 15.7 keeping 4 of 60).
-Mirror leakage: 6.7 per cent of the ask weight.
+The full includer (second passes given their truck's preceding code, the grabs set aside) keeps 28 of 28; it is a
+stress row, not the gate.
+
+Pair ceiling: 28.5 (the cracker on the call at 45.0, the mirror off it at 12.0, keeping 0 and 0 of 28 ask figures).
+Mirror leakage: 0.0 per cent of the ask weight.
 Measured by: generator/ceiling.py (run on the cut pack)
 
 ## Leak check
 
-Pending on the final cut: `leak.py task468 --asof 2027-01-12`.
+`leak.py task468 --asof 2027-01-12` on the final cut: REVIEW, no LEAK. Each REVIEW line, ruled:
+- Sweep 1, the register's Notes sheet: the Trade Waste unit's two lines on the agreements in force and who prepared
+  the register; it names no column of any other file. Harmless.
+- Sweep 4, the laboratory notice and the policy: the stump terms are the documents' own words (method, sample,
+  reference, laboratory, and chloride as an analyte the laboratory reports on every compliance sample); neither names
+  an interference, a factor, a model or a conversion. Harmless; the reader's question 1 asks it cold.
+- Sweep 6, the register, the field jobs, the inspections and the production returns name the customers beside
+  numbers: limits, reads, visits and production, none a COD mass or a verdict. Harmless.
+- Sweep 9, the register's review dates in 2027: the agreements' forward review dates, a register's planned dates.
+  Harmless.
+- Sweep 11, the prompt's question form over the corpus quota (a voice-check WARN, PASS).
 
 ## Tried and rejected
 
@@ -351,3 +384,10 @@ Pending on the final cut: `leak.py task468 --asof 2027-01-12`.
   to reproduce (365 against 348). An inclusion or exclusion over a second source has no safe filing; the report is
   kept as determinism_check_report_arch5.md, and architecture 6 re-roots into another domain with the decisive step an
   estimate.
+- 2026-11-01, architecture 6 at stage 3, every free gate green but one: `guard.py heart` BLOCKs the pairing, the
+  subdomain, the role, the context artifact and the forcing event against task456 v2 (a US flexible packaging
+  converter's 2026 VOC emissions, physical-environmental-sciences / emissions-inventory ETL), registered at
+  01:00:52Z, 93 seconds before this card, its DRAWN commit reaching main only after this card's `guard.py check` passed
+  on a fresh pull. The guard forbids relabelling a card or waiting for the window, and this world has no honest
+  draw outside the physical-environmental-sciences cell, so architecture 6 re-roots unless the author has task456
+  yield the cell; the build is kept whole on target.zip for that decision.

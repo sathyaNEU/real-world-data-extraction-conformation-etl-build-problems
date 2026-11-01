@@ -3,23 +3,25 @@
  "status": "PAUSED",
  "domain": "physical-environmental-sciences / emissions-inventory (client physical-environmental-sciences)",
  "objective": "etl",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-11-01",
  "stump": "The default path conforms the two laboratory systems, applies the policy's volume-weighted mass formula and converts each 2026 TOC result to COD with each customer's own COD to TOC ratio from its parallel samples, which puts Mt Edwin Cheese over its limit and leaves Tallowood Tannery under; the step that lands it there is taking a customer's parallel-period ratio as its conversion, when the dichromate COD also oxidises the chloride in brine effluents, which TOC never sees, and Mt Edwin cut its chloride with brine recovery in May 2026 while Tallowood's rose with a new hide supplier, so converted with each sample's own chloride Tallowood is over and Mt Edwin under (one pooled factor misses every brine customer).",
  "architecture": 6,
  "loops": 0,
  "precut": {
-  "exit": 1,
+  "exit": 0,
   "date": "2026-11-01",
-  "checks": "61, 1 FAIL (cracker misses every ask: the cracker keeps asks A and B), 0 WARN"
+  "checks": "61, 0 FAIL, 0 WARN"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-11-01 on target.zip 9e303b47 (--asof 2027-01-12, no LEAK), every line ruled in the note's Leak check",
   "reader": ""
  },
  "duplicate_check": {
-  "guard_check": "PASS 2026-11-01 on the registered card (registered 2026-11-01T01:02:25Z)"
+  "guard_check": "PASS 2026-11-01 on the registered card (registered 2026-11-01T01:02:25Z)",
+  "heart": "BLOCK 2026-11-01 on a fresh pull: the pairing, the subdomain, the role, the context artifact and the forcing event repeat task456 v2 (registered 2026-11-01T01:00:52Z, 93 seconds earlier, its DRAWN commit on main after this card's check passed)",
+  "surface": "exit 0 on the final cut (one pair promoted for adjudication, against task456 v2)"
  },
  "judge": {
   "verdict": "",
@@ -34,7 +36,7 @@
    "commit": "DRAWN (task468) architecture 5"
   }
  ],
- "resume": "stage 3, the asks: precut.py's one FAIL is 'cracker misses every ask' (the careful solver who lands the call and executes every filed rule keeps all 48 quarterly volumes and all 12 suspended solids masses). Give each ask its own silent device against the careful solver's path (supplemental-stumping Part 2.1), a reconstruction across two systems that no sentence states, without touching the call: for ask A, for example, a meter whose register reads in a different unit or multiplier recorded only in the field job log's asset fields, or a telemetry gap a manual read in the job log closes; for ask B, a sample whose result the laboratory re-issued under the corrected point after a mislabel recorded only in the LabWare authorisation trail. Implement in gen.py and pack.py, solve.py and verify.py, add the device's naive variant to ceiling.py's cracker, rebuild with python3 task468/generator/make.py, re-run precut.py (target exit 0), then every free gate on the final cut (figures_check.py, voice-check.py, leak.py --asof 2027-01-12, guard.py heart and surface, a golden-realism pass on the memo and the workbook), fill the design note's Leak check section, write the leak copy at scratchpad/leak-task468/ and the reader brief at scratchpad/task468_stage4_leak_brief.md, and commit PAUSED for stage 4 (the leak reader and the determinism judge from the main thread). The main call, the ladder and the conversion are built and asserted; do not move them.",
+ "resume": "held at the stage 4 hand-off by guard.py heart's BLOCK against task456 v2 (the same physical-environmental-sciences / emissions-inventory ETL cell with the same role, artifact and forcing event, registered 93 seconds before this card). The guard forbids relabelling or waiting for the window, so either the author has task456 yield the cell (then re-run guard.py heart and surface on a fresh pull and run stage 4 from the main thread: rebuild with python3 task468/generator/make.py, check target.zip 9e303b47, spawn the leak reader on scratchpad/leak-task468/ with the brief scratchpad/task468_stage4_leak_brief.md beside the determinism judge), or task468 re-roots as architecture 7 in another ETL cell (general-statistics data integration, or survey research or healthcare in a new world if the author releases them for this slot), recording architecture 6 as spent on the window in its card lineage.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -109,6 +111,10 @@
   {
    "date": "2026-11-01",
    "event": "architecture 6 built through stage 3 except the asks' silent devices: generator, pack, goldens, submission and checks green on target.zip ee814e85; precut 1 FAIL on the asks"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "architecture 6's asks re-sited with a silent device each; precut exit 0, every free gate green on target.zip 9e303b47 but guard.py heart, BLOCK against task456 v2 registered 93 seconds earlier on the same cell"
   }
  ],
  "gates": {
@@ -147,7 +153,7 @@
  },
  "build": {
   "rebuild": "python3 task468/generator/make.py",
-  "zip_sha256": "ee814e855c84e0e6cf408ab18eee052a877c785d15d467f3cc957e35a97b7cdb",
-  "gates": "two byte-identical builds (16 files); checks.py every check green (C1 to C9, SF1 to SF9, G1 to G3); verify.py 0 failed; ceiling.py pair 57.8, mirror leakage 6.7; voice-check PASS with the 'which' quota WARN; precut 61 checks, 1 FAIL"
+  "zip_sha256": "9e303b47a985884cb612a5ddcc9cccbae32fb467272edc9839f2fb63d859c78f",
+  "gates": "two byte-identical builds (19 files); checks.py every check green (C1 to C10, SF1 to SF9, G1 to G3); verify.py 0 failed; figures_check 31 of 31; precut 61 checks, 0 FAIL, 0 WARN; voice-check PASS (the 'which' quota WARN); leak.py REVIEW with no LEAK; ceiling.py pair 28.5, mirror leakage 0.0; guard.py heart BLOCK (task456 v2)"
  }
 }

@@ -69,6 +69,9 @@ FILES = {
     "request": "cod_review_request.eml",
     "rain": "glenbrae_daily_rainfall_2026.csv",
     "returns": "glw_customer_production_returns_2026.xlsx",
+    "inspections": "glw_trade_waste_inspections_2026.csv",
+    "receival": "glw_liquid_waste_receival_2026.csv",
+    "manifests": "qld_waste_tracking_manifests_glw_2026.xlsx",
 }
 DISTRACTORS = ["rain", "returns"]
 
@@ -143,6 +146,27 @@ def world(seed=SEED):
             s["dup_toc"] = s["toc"] * np.exp(rng.normal(0, 0.03))
             s["dup_ss"] = s["ss"] * np.exp(rng.normal(0, 0.08))
             s["dup_cl"] = s["cl"] * np.exp(rng.normal(0, 0.02))
+    # trade waste officers' inspection visits; at most of them a grab sample is taken for suspended solids and pH
+    W["inspections"] = []
+    for k in KEYS:
+        c = C[k]
+        days = sorted(set(dt.date(2026, 2, 3) + dt.timedelta(days=int(x)) for x in rng.randint(0, 330, 11)))
+        for d in days:
+            if d.weekday() >= 5:
+                continue
+            when = dt.datetime.combine(d, dt.time(int(rng.randint(10, 15)), int(rng.choice([0, 10, 20, 30, 40, 50]))))
+            grab = rng.rand() < 0.8
+            W["inspections"].append({"key": k, "when": when, "grab": grab})
+            if grab:
+                W["samples"].append({"key": k, "day": d, "time": when.time(), "sid": "", "grab": True, "new": True,
+                                     "ss": c["ss"] * 1.7 * np.exp(rng.normal(0, 0.35)), "parallel": False,
+                                     "ph": round(float(np.clip(rng.normal(6.6, 0.8), 4.0, 11.0)), 1),
+                                     "dup": False, "rerun_toc": False, "rerun_ss": False})
+    # LabWare numbers every sample it registers in one series, composites and grabs alike
+    sid_new = 260006
+    for s in sorted((s for s in W["samples"] if s["new"]), key=lambda s: (s["day"], s["time"], s["key"])):
+        sid_new += int(rng.randint(3, 19))
+        s["sid"] = "GW26-%06d" % sid_new
     return W
 
 
@@ -156,7 +180,7 @@ def true_masses(W):
     out = {}
     for k in KEYS:
         vol = sum(W["flow"][k][d] for d in local_dates(2026, 2026))
-        ss = [s for s in W["samples"] if s["key"] == k and s["day"].year == 2026]
+        ss = [s for s in W["samples"] if s["key"] == k and s["day"].year == 2026 and not s.get("grab")]
         v = np.array([day_volume(W, k, s["day"]) for s in ss])
         cod = np.array([s["cod"] for s in ss])
         out[k] = {"vol": vol, "cod_t": vol * float((cod * v).sum() / v.sum()) / 1e6}
@@ -202,6 +226,10 @@ def write_lims_new(W, path):
 
         def add(sid, an, val, unit="mg/L", flag="", when=auth):
             rows.append([sid, pid, utc, AN[an], val, unit, flag, when.strftime("%Y-%m-%dT%H:%M:%SZ")])
+        if s.get("grab"):
+            add(s["sid"], "ss", "5" if s["ss"] < SS_RL else fmt_val(s["ss"]), flag="<" if s["ss"] < SS_RL else "")
+            add(s["sid"], "ph", "%.1f" % s["ph"], unit="pH")
+            continue
         toc0 = s["first_toc"] if s["rerun_toc"] else s["toc"]
         add(s["sid"], "toc", fmt_val(toc0, 1))
         add(s["sid"], "cl", fmt_val(s["cl"]))
@@ -218,7 +246,7 @@ def write_lims_new(W, path):
             add(s["sid"] + "-D", "cl", fmt_val(s["dup_cl"]))
             add(s["sid"] + "-D", "ss", "5" if s["dup_ss"] < SS_RL else fmt_val(s["dup_ss"]),
                 flag="<" if s["dup_ss"] < SS_RL else "")
-    wio.csv_file(path, ["sample_id", "point_id", "collected_utc", "analyte", "value", "unit", "flag", "authorised_utc"],
+    wio.csv_file(path, ["sample_id", "point_id", "collected_utc", "analyte", "value", "unit", "result_qualifier", "authorised_utc"],
                  rows)
 
 

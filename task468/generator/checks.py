@@ -61,22 +61,32 @@ def main():
           for k in G.KEYS}
     diff = max(abs(vol[G.C[k]["name"]]["q"][q] - tv[k][q]) for k in G.KEYS for q in range(4))
     ok("C5 conformed quarterly volumes equal the meters' (kL)", diff < 0.6, "%.2f" % diff)
-    edge = min(abs((vol[c]["q"][q] % 1) - 0.5) for c in D["custs"] for q in range(4))
-    ok("C6 no quarterly volume within 0.05 kL of a rounding edge", edge >= 0.05, "%.3f" % edge)
+    import liquid as LQ
+    liq = SV.liquid(TARGET)
+    tru = LQ.truth(LQ.world())
+    dl = max(abs(liq[t][q] - tru[t][q]) for t in liq for q in range(4))
+    ok("C6 ask A, tankered waste by type and quarter equals the receival truth (kL)", dl < 0.02, "%.3f" % dl)
+    edge_a = min(abs((liq[t][q] % 1) - 0.5) for t in liq for q in range(4))
+    ok("C6 no tankered volume within 0.1 kL of a rounding edge", edge_a >= 0.1, "%.3f" % edge_a)
     ss = SV.masses(D, S, vol, None, analyte="ss")
     edge_b = min(abs(((ss[c] * 10) % 1) - 0.5) for c in D["custs"])
-    ok("C7 no suspended solids mass within 0.005 t of a rounding edge", edge_b >= 0.05, "%.3f" % edge_b)
-    # the asks' devices move figures
-    vol_utc = SV.volumes(D, tel=SV.telemetry(D, clock="utc"))
-    moved_a = sum(int(round(vol_utc[c]["q"][q])) != int(round(vol[c]["q"][q])) for c in D["custs"] for q in range(4))
-    ok("C8 the UTC clock moves quarterly volumes", moved_a >= 20, moved_a)
-    S_dup = SV.lab(D, dup="own")
+    ok("C7 no suspended solids mass within 0.012 t of a rounding edge", edge_b >= 0.12, "%.3f" % edge_b)
+    # each ask's primary device moves its figures on the careful solver's path
+    liq_dk = SV.liquid(TARGET, join="docket")
+    moved_a = sum(int(round(liq_dk[t][q])) != int(round(liq[t][q])) for t in liq for q in range(4))
+    ok("C8 ask A, a docket-only join moves the tankered figures", moved_a >= 14, "%d of 16" % moved_a)
+    ss_all = SV.masses(D, S, vol, None, analyte="ss", composites_only=False)
+    moved_b = sum("%.1f" % ss_all[c] != "%.1f" % ss[c] for c in D["custs"])
+    ok("C9 ask B, the inspection grabs counted as samples move the suspended solids masses", moved_b >= 11,
+       "%d of 12" % moved_b)
+    S_dup = SV.lab(D, dup="own", rerun="ignore")
     ss_dup = SV.masses(D, S_dup, vol, None, analyte="ss")
-    S_orig = SV.lab(D, rerun="own")
-    ss_orig = SV.masses(D, S_orig, vol, None, analyte="ss")
-    moved_b = sum(("%.1f" % ss_dup[c] != "%.1f" % ss[c]) or ("%.1f" % ss_orig[c] != "%.1f" % ss[c])
-                  for c in D["custs"])
-    ok("C9 duplicates kept or originals kept move suspended solids masses", moved_b >= 6, moved_b)
+    moved_h = sum("%.1f" % ss_dup[c] != "%.1f" % ss[c] for c in D["custs"])
+    ok("C9 ask B hazard: duplicates and original results kept move some masses", moved_h >= 3, moved_h)
+    grabs = [s for s in S.values() if not ("toc" in s["an"] or "cod" in s["an"])]
+    ok("C10 separation: no inspection grab carries COD, TOC or chloride", all(set(s["an"]) <= {"ss", "ph"}
+                                                                            for s in grabs) and len(grabs) >= 60,
+       len(grabs))
     # the semantic fork table, row by row
     conv = SV.converter(S, "golden")
 
@@ -85,6 +95,7 @@ def main():
         lm = limits or lim
         return sorted(name[c] for c in D["custs"] if cod[c] > lm[c])
     ok("SF1 the chloride family files the golden set (C2) and every ratio route another (C3)", True, "")
+    vol_utc = None
     ok("SF2 samples dated in UTC in place of Queensland time file the same set",
        over_with(SV.lab(D, year_clock="utc"), vol) == gold, "")
     seg_reg = {r["Customer"]: [(r["Flow meter"], None, None, None, None)] for r in D["reg"]}

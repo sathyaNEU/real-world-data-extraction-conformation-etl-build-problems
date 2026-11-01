@@ -53,6 +53,13 @@
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
+   "name": "glw_liquid_waste_receival_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the treatment plant's liquid waste receival station log",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
    "name": "glw_sampling_point_crosswalk.csv",
    "role": "evidence",
    "source": "synthetic: the legacy site codes to LabWare sampling points",
@@ -74,9 +81,23 @@
    "license": "CC0 1.0 (synthetic, authored for this task)"
   },
   {
+   "name": "glw_trade_waste_inspections_2026.csv",
+   "role": "evidence",
+   "source": "synthetic: the trade waste officers' inspection visits",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
    "name": "glw_trade_waste_policy_v4.pdf",
    "role": "evidence",
    "source": "synthetic: the utility's trade waste policy, version 4",
+   "date": "2027-01-12",
+   "license": "CC0 1.0 (synthetic, authored for this task)"
+  },
+  {
+   "name": "qld_waste_tracking_manifests_glw_2026.xlsx",
+   "role": "evidence",
+   "source": "synthetic: the state waste tracking system's manifests for loads delivered to the plant",
    "date": "2027-01-12",
    "license": "CC0 1.0 (synthetic, authored for this task)"
   }

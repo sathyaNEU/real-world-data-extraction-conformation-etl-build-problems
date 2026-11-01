@@ -1,76 +1,28 @@
 {
  "ask_a": {
-  "Bellbird Beverages": [
-   18761,
-   20081,
-   19139,
-   18088
+  "GT": [
+   5765,
+   5791,
+   6128,
+   6098
   ],
-  "Coolabah Olives Pty Ltd": [
-   11031,
-   11710,
-   11051,
-   10376
+  "LL": [
+   2198,
+   1926,
+   1984,
+   2414
   ],
-  "Glenbrae Meats Pty Ltd": [
-   32757,
-   35337,
-   32299,
-   30830
+  "PL": [
+   602,
+   567,
+   612,
+   623
   ],
-  "Golden Crumb Bakeries": [
-   6786,
-   7222,
-   6850,
-   6292
-  ],
-  "Hartley Street Brewing Co": [
-   7558,
-   8143,
-   7765,
-   7087
-  ],
-  "Kingfisher Linen Services": [
-   26350,
-   28195,
-   26221,
-   24479
-  ],
-  "Mt Edwin Cheese Company": [
-   16370,
-   17493,
-   16707,
-   15164
-  ],
-  "Paddock Fresh Vegetables": [
-   22969,
-   24556,
-   23187,
-   21438
-  ],
-  "Riverbend Poultry": [
-   28001,
-   30254,
-   28305,
-   26975
-  ],
-  "Sunvale Dairy Ingredients": [
-   41552,
-   44518,
-   41782,
-   39247
-  ],
-  "Tallowood Tannery Pty Ltd": [
-   13956,
-   14994,
-   13989,
-   13239
-  ],
-  "Wattle Pet Foods": [
-   11840,
-   12657,
-   12020,
-   11192
+  "SE": [
+   1724,
+   1748,
+   1879,
+   1683
   ]
  },
  "ask_b": {
@@ -127,6 +79,13 @@
   "Riverbend Poultry",
   "Tallowood Tannery Pty Ltd"
  ],
+ "stated": {
+  "chloride_per_mg_2dp": 0.23,
+  "second_pass_window_hours": 2,
+  "ss_below_limit_counts_at": 2.5,
+  "ss_reporting_limit": 5,
+  "toc_per_mg_1dp": 2.8
+ },
  "verdict": {
   "Bellbird Beverages": "within",
   "Coolabah Olives Pty Ltd": "over",

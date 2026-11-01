@@ -7,6 +7,7 @@ from email.utils import format_datetime
 import numpy as np
 
 import gen as G
+import liquid as LQ
 import wio
 
 C, KEYS, SWAPS, UTILITY = G.C, G.KEYS, G.SWAPS, G.UTILITY
@@ -213,8 +214,8 @@ def build(target, nudge=True):
         if not near:
             break
         for k in near:
-            top = max((s for s in W["samples"] if s["key"] == k and s["new"] and not s["rerun_ss"]),
-                      key=lambda s: s["ss"])
+            top = max((s for s in W["samples"] if s["key"] == k and s["new"] and not s["rerun_ss"]
+                       and not s.get("grab")), key=lambda s: s["ss"])
             top["ss"] += -4.0 if ((ss[C[k]["name"]] * 10) % 1) < 0.5 else 4.0
     return W
 
@@ -235,4 +236,23 @@ def _write(W, target):
     write_request(p("request"))
     write_rain(p("rain"))
     write_returns(p("returns"))
+    write_inspections(W, p("inspections"))
+    L = LQ.world()
+    LQ.write(L, p("receival"), p("manifests"))
+    W["liquid"] = L
     return W, tel
+
+
+OFFICERS = ["Jeffery Collins", "Wendy James", "John Henry"]
+NOTES = ["pre-treatment screens clean", "grease arrestor due for pump-out", "sampler pit clear", "pH probe reading ok",
+         "bund in order", "minor odour at pit", "screen bypassed during cleaning, reinstated", "no issues"]
+
+
+def write_inspections(W, path):
+    rng = np.random.RandomState(G.SEED + 23)
+    rows = []
+    for i, ins in enumerate(sorted(W["inspections"], key=lambda x: (x["when"], x["key"]))):
+        rows.append(["INS-26-%03d" % (101 + 3 * i + int(rng.randint(0, 3))), C[ins["key"]]["name"],
+                     ins["when"].strftime("%d/%m/%Y %H:%M"), OFFICERS[int(rng.randint(len(OFFICERS)))],
+                     "Y" if ins["grab"] else "N", NOTES[int(rng.randint(len(NOTES)))]])
+    wio.csv_file(path, ["inspection", "customer", "visited", "officer", "grab_sample", "observations"], rows)

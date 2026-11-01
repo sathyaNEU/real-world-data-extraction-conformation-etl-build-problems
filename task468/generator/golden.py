@@ -48,7 +48,7 @@ def write_memo(R, path, png):
     rows = [["Customer", "2026 COD (t)", "Limit (t)", "Share of limit", "Exceeded"]]
     for c in sorted(R["D"]["custs"], key=lambda c: SHORT[c]):
         lim = R["D"]["limit"][c]
-        rows.append([SHORT[c], "%.1f" % R["cod"][c], ("%.1f" % lim) if lim < 100 else "%.0f" % lim,
+        rows.append([SHORT[c], "%.1f" % R["cod"][c], ("%.1f" % lim) if lim != int(lim) else "%.0f" % lim,
                      "%.0f%%" % (100 * R["cod"][c] / lim), "yes" if c in R["over"] else "no"])
     blocks = [
         ("s", "Glenbrae Water, Trade Waste Unit. Prepared 2 February 2027 for the 2026 annual return."),
@@ -72,13 +72,16 @@ def write_memo(R, path, png):
 
 
 def write_book(R, path):
-    q = [["Customer", "Q1 2026 (kL)", "Q2 2026 (kL)", "Q3 2026 (kL)", "Q4 2026 (kL)", "2026 (kL)"]]
+    names = {"GT": "Grease trap waste", "SE": "Septage", "PL": "Portable toilet waste", "LL": "Landfill leachate"}
+    q = [["Waste", "Q1 2026 (kL)", "Q2 2026 (kL)", "Q3 2026 (kL)", "Q4 2026 (kL)", "2026 (kL)"]]
     s = [["Customer", "Suspended solids discharged in 2026 (t)"]]
+    for t in ("GT", "SE", "PL", "LL"):
+        qs = [int(round(x)) for x in R["liquid"][t]]
+        q.append([names[t]] + qs + [sum(qs)])
     for c in R["D"]["custs"]:
-        qs = [int(round(x)) for x in R["vol"][c]["q"]]
-        q.append([c] + qs + [sum(qs)])
         s.append([c, round(R["ss"][c], 1)])
-    wio.xlsx(path, [("Volumes", q, [1], {}), ("Suspended solids", s, [1], {"B": "0.0"})], "Trade Waste Unit",
+    wio.xlsx(path, [("Liquid waste received", q, [1], {}), ("Suspended solids", s, [1], {"B": "0.0"})],
+             "Trade Waste Unit",
              dt.datetime(2027, 1, 27, 9, 5), dt.datetime(2027, 2, 2, 4, 20), widths=[30, 14, 14, 14, 14, 14],
              company="Glenbrae Water")
 
