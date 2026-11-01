@@ -4,23 +4,23 @@
  "seed": "analytical_tasks/02_anomaly_detection/AD11_routing-engagement-measured-page-removal.md",
  "domain": "epidemiology-public-health / disease-surveillance-outbreak-anomaly-detection (a county vector control district's West Nile virus mosquito surveillance)",
  "objective": "anomaly-detection",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-25",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-11-01",
  "stump": "The natural index, each zone's Culex females per CO2 trap-night times the minimum infection rate of all its Culex pools, names Riverside South, because counting one infected mosquito per positive pool understates Westbrook's pools of fifty and the town zones' gravid-trap pools carry the infection of females that have already fed; maximum likelihood on the CO2-trap pools names Westbrook.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-13"
+  "exit": 1,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), 2026-10-13",
+  "leak_py": "LEAK, 2026-11-01 (sweep 1: field_database_data_dictionary.txt and extract_manifest_2026-08-17.csv by name; sweep 12: the dictionary and the protocol name 7 and 11 data columns; sweep 13: metadata.json carries 188 and the word trap)",
   "reader": "wave 8 audit: 18 of 18 call figures, Gate F failed"
  },
  "duplicate_check": {
-  "heart": "WARN (nearest driver 0.05, task450 v2)",
-  "nearest": "surface promotes task186 (two apart; gap key rule and decision type only)"
+  "heart": "BLOCK 2026-11-01, inherited: ban.subdomain and ban.role against task232, ban.strategy against task454, both delivered 10-13 beside this build; nothing in the re-check causes it, escalated to the author",
+  "nearest": "surface 2026-11-01: 1 of 301 pairs promoted, task186 (two apart; gap key rule and decision type pick_one_of_n), the same pair as at ship"
  },
  "judge": {
   "verdict": "DETERMINISTIC",
@@ -41,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "STATUS CORRECTED 2026-10-25. This build was marked FAILED_TO_STUMP, which build-pipeline defines as a shipped build the portal list leaves out. No portal list has ever covered this lane: the ledger's portal record runs task100 to task132 plus task500, dated 10-05 to 10-11, and every build here was delivered 10-12 or later, so no list could have left it out. `portal` and `portal_status` are empty on all of them. The status was an in-house judgement filed as a portal outcome. True state: delivered, pending review. IN-HOUSE EVIDENCE, which is not a portal result and must not be recorded as one: one isolated blind reader at medium effort, holding only a fresh unzip of target.zip, the prompt and a key list with the call's own member paths stripped, scored by score_reader.py: call LANDED (Westbrook), asks 71 of 96 at 74.0 per cent. Owed: re-root the decisive step. Prior resume line follows. Measured refusal, not a redesign: re-root at stage 1 (architecture 2, loops reset, the old card's lineage saying spent and why). Architecture 1's decisive step has no estimator content and the ladder cannot be re-sited inside this world, because every other candidate decisive step here settles a part of the estimand. Run generator/family_screen.py on any new candidate before designing it.",
+ "resume": "SHIPPED, pending review. The 10-25 re-root line is held, not run: see recheck_2026_11_01. Next action on a portal return or the author's word: re-root at stage 1, architecture 2, another world (one architecture per world), loops reset, the card's lineage marking architecture 1 spent on the 10-21 family screen.",
  "approved": null,
  "delivered": "2026-10-13",
  "portal": null,
@@ -49,5 +49,6 @@
  "portal_status": "",
  "portal_status_date": "",
  "alignment_pass": "design note and card: the analyst test follows the prompt's literal route (CO2-only minimum rate, South Prairie)",
- "architecture_spent": "architecture 1 spent on measurement 2026-10-21: the decisive step's estimator family returns 1 distinct designated zone of 12 licensed constructions (1.15 mean over 20 redraws) while spreading the printed call figure 3.5 printed units, and the designed construction is an identity in a two-group-by route at corr +0.9972 (18 of 20 redraws). generator/family_screen.py; DESIGN_NOTE.md, Gate F re-screen."
+ "architecture_spent": "architecture 1 spent on measurement 2026-10-21: the decisive step's estimator family returns 1 distinct designated zone of 12 licensed constructions (1.15 mean over 20 redraws) while spreading the printed call figure 3.5 printed units, and the designed construction is an identity in a two-group-by route at corr +0.9972 (18 of 20 redraws). generator/family_screen.py; DESIGN_NOTE.md, Gate F re-screen.",
+ "recheck_2026_11_01": "Batch 5 re-check under the new gates. Rebuild from python3 task188/generator/build.py (needs scipy and matplotlib) reproduces the shipped target.zip member for member except the sqlite file, whose rows and schema dump identically and whose header carries the writing SQLite library's version (3.45.1 shipped, 3.53.1 here); generator 939 assertions, verify 1385, two builds byte-identical, goldens byte-identical. Gates on the shipped cut: precut.py exit 1 (decisive rung readable, no Measured by: line, seven survivor-anatomy lines missing); voice-check.py exit 0 with the count WARN ('eight of our'); leak.py LEAK (sweeps 1, 12, 13); guard.py heart BLOCK (inherited, above); guard.py surface 1 promoted pair (task186, as at ship); figures_check.py exit 0 (42 of 42). Not reshipped: the leak and prompt fixes cannot ship while precut.py fails, and precut fails because the design note's own Gate F re-screen measured architecture 1 spent (Layer 2, Decisive step and Not rule application FAIL), which no file edit clears. The re-root it owes waits for the portal's word on the shipped version (build-pipeline, Re-root: the judge approved it and no leak reader killed it; the only kill evidence is the in-house scored reader, which is not a portal result). On a portal return, or the author's word, re-root at stage 1 in another world, dataset and shell, the leak fixes moot."
 }

@@ -1,10 +1,15 @@
 # leak check, task188
 
-**Verdict: REVIEW.** 12 files read, 11 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: LEAK.** 12 files read, 11 golden figures and 9 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
 Stump terms swept: westbrook, likelihood, positive, infected, protocol, prompt, method, decisive, minimum, county, prairie, population, riverside, gravid, species, estimate, maximum, passes, nothing, records, district, gravid-trap, results, second, domain
+
+## 1 file names (LEAK 2, REVIEW 1)
+- **LEAK** `extract_manifest_2026-08-17.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **LEAK** `field_database_data_dictionary.txt`: a file whose name says it describes the data (data_dictionary): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+- **REVIEW** `WNV_human_case_log_2026.xlsx`: a sheet named 'Read me': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 2 author vocabulary (REVIEW 2)
 - **REVIEW** `RCVCD_surveillance_and_control_protocol_2026.pdf`: \btraps?\b x21, a field term declared in metadata.json: ...rial application. 3 Adult mosquito sampling 3.1 CO2-baited light traps (CDC miniature light traps baited with 2 kg of dry ice, light off) st...
@@ -30,20 +35,33 @@ Stump terms swept: westbrook, likelihood, positive, infected, protocol, prompt, 
 - **REVIEW** `rcvcd_surveillance_2024_2026.sqlite`: names 7 of 9 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **INFO** `aerial_applications_2024_2026.csv`: names 6 of 9 answer-set candidates; confirm it does not rank them on the decision question
 
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
-## 1 file names (clean)
+## 11 prompt gate (REVIEW 2)
+- **REVIEW** `prompt.txt`: no data count disclosed: N of the M: "eight of our" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
+- **REVIEW** `prompt.txt`: shell quota: question form 'which' at 40% of 196 prompts (cap 30%); rounding opener 'give' at 51% of 196 prompts (cap 20%); reword at the role level, not the verb
+
+## 12 describing content (LEAK 2, REVIEW 1)
+- **LEAK** `RCVCD_surveillance_and_control_protocol_2026.pdf`: names 11 column(s) of the data files verbatim, 57% of dead_bird_reports_2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **LEAK** `field_database_data_dictionary.txt`: names 7 column(s) of the data files verbatim, 57% of dead_bird_reports_2026.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **REVIEW** `RCPHL_arbovirus_report_2026-W32_RCVCD.pdf`: names 7 column(s) of the data files verbatim (Report date, Rindal County, Rindal County Public Health, Section, date, result): confirm it is the organisation's own record and not a note written for the analyst
+
+## 13 task metadata (LEAK 5)
+- **LEAK** `metadata.json`: task carries a figure from the submission's graded blocks (188)
+- **LEAK** `metadata.json`: title uses the author's vocabulary ('trap'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism
+- **LEAK** `metadata.json`: prompt_shape uses the author's vocabulary ('trap'): metadata.json names the decision, the deliverables, the distractors and the provenance, never the method, the link or the mechanism
+- **LEAK** `metadata.json`: sources[0].origin carries a figure from the submission's graded blocks (188)
+- **LEAK** `metadata.json`: generator carries a figure from the submission's graded blocks (188)
 
 ## 5 announcements (clean)
 
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
-
-## 11 prompt gate (clean)
 
 
 ## Solver's-eye read, wave 8 audit of every shipped build (2026-10-20)
