@@ -140,6 +140,18 @@ water at each profile's own position gives the six.
   no build on file teaches (task229 converts a daily mean through a convex rating curve; task239 separates two levels
   of a factor structure).
 
+## Survivor anatomy
+
+Written at the 11-01 re-check from the clean-truth measurement (`generator/checks.py` R3) and the cut pack's routes.
+
+- **Actor:** holds. No column holds a potential temperature, a reference salinity or an offset (R1 asserted); the deciding property is each float's salinity against reference water of the same potential temperature at its position, a relation between the float levels and the reference casts that no file stores.
+- **Link:** holds only in part. No key joins a float level to reference water on potential temperature and position, and the key the schema offers (pres on both sides) is the wrong one; but the comparison itself is the release thread's premise (the true salinity of the water sampled), and positions and in-situ temperature sit on both sides, so the link is the field's own textbook join, not one the field's method never asks for.
+- **Reflex:** fails. The field's named method for a float's salinity offset (delayed-mode calibration on potential-temperature levels against reference data objectively mapped to the float's position, Owens and Wong 2009, the source this note's Draw cites) is the golden itself, the top rung; the Domain test and Decisive step lines name the same method, and the stump sentence reads "use the delayed-mode method on the floats" (the library test, stumping 1.1b). Rung 0 (fixed pressure against the casts' mean) is not the field's method, so the opponent's first move is the golden.
+- **Back-test:** fails. No validation record confirms the fixed-pressure route; nothing in the pack validates any route, and the textbook route a solver would validate against is the golden.
+- **Second use:** holds. The reference casts carry Ask A, the float levels and profile index carry Ask B, and the register and technical file are the array's own records; deleting the decisive step drops no file.
+- **Shock:** fails. Sorted by magnitude on the pooled potential-temperature rung (rung 3), the golden six are exactly the top six (0.019 to 0.043, the next 0.016), so the answer set is an interval of a one-dimensional sort one rung below the decisive step, and on the golden route they are the array's six largest offsets by a factor of six.
+- **Pins:** holds. The release thread files the population, layer, flags, averaging, tolerance and the estimand in plain words and names no coordinate, mapping or comparison (R3c asserted); deleting any of its sentences unforces nothing the stump rides on.
+
 ## Readability screen
 
 Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
@@ -399,3 +411,4 @@ Solver's-eye reads (two isolated reads, Sonnet, medium, the prompt and the bundl
   now come from a separate random stream (station keeping and the first station's time), so nothing else moved, and
   the estimator reads a receipt in the repeated October hour in the pass that keeps it after its own surfacing (the
   counts were the same either way).
+- Architecture 1, at the 11-01 re-check: the clean-truth analyst test holds (fixed pressure 15, nearest casts at fixed pressure 13, pooled temperature levels 12, drift 4, the decisive step alone the six), but the survivor anatomy written honestly fails Reflex, Back-test and Shock: the golden is the field's own delayed-mode calibration (potential-temperature levels mapped to the float's position) applied as the textbook states it, so the opponent's first move lands the call (stumping 1.1b; precut's method-family list misses this field's vocabulary, so its check passed lexically), and the six are the top six of the pooled rung's sort. Spent; not re-rooted on the orchestrating session's rule.

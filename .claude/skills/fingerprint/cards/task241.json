@@ -75,7 +75,7 @@
   "task148": "task148 (v2) estimates queue patience from censored waits for a demand forecast; task241 reads a float sensor's salinity error against reference water on the coordinate that heave carries, at the float's own position: no quantity, mechanism or file shared"
  },
  "lineage": [],
- "notes": "Seed DQ14: the decision (the reissue list of a release) and the quantity (each estimate against a calibration margin) kept; the seed's world (raking margins in a survey release) and its pairing are banned against task240, so the release is an ocean data centre's delayed-mode salinity adjustment. The seed's pitfall (one raking pass) is not used. Built: the golden adjusts six floats (four drifting fresh, two salty from deployment); the default path (fixed pressure against the casts' mean) adjusts 14 (13 to 17 across implementations), the pooled temperature-level reference 10 to 14, drift from the first profiles 4; asks: reference casts reaching 2,000 dbar by year (RHD copies of the institute's casts) and on-time complete deliveries by month (model K's profile time at the start of the ascent).",
+ "notes": "Seed DQ14: the decision (the reissue list of a release) and the quantity (each estimate against a calibration margin) kept; the seed's world (raking margins in a survey release) and its pairing are banned against task240, so the release is an ocean data centre's delayed-mode salinity adjustment. The seed's pitfall (one raking pass) is not used. Built: the golden adjusts six floats (four drifting fresh, two salty from deployment); the default path (fixed pressure against the casts' mean) adjusts 14 (13 to 17 across implementations), the pooled temperature-level reference 10 to 14, drift from the first profiles 4; asks: reference casts reaching 2,000 dbar by year (RHD copies of the institute's casts) and on-time complete deliveries by month (model K's profile time at the start of the ascent). Architecture 1 spent at the 11-01 re-check: the golden is the field's own delayed-mode salinity calibration (potential-temperature levels against reference water mapped to the float's position) applied as the textbook states it, so the field's method is the top rung rather than rung 0 or 1 (Reflex, Back-test and Shock fail on the honest anatomy); the clean-truth easy routes (15, 13, 12, 4) do file wrong answers.",
  "layer2_family": "field_method",
  "layer2_pattern": "own:float-salinity-offset-on-isotherms-against-local-reference",
  "layer1": [
@@ -88,5 +88,6 @@
   "stations worked twice a few hours apart, and casts stopping at 1,500 or 1,800 dbar",
   "the data centre's receipt log on the server's Lisbon clock against UTC float times"
  ],
- "registered": "2026-10-17T20:27:00Z"
+ "registered": "2026-10-17T20:27:00Z",
+ "architecture_spent": true
 }

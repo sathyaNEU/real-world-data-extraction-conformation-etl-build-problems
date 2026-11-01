@@ -5,7 +5,7 @@
  "objective": "data-quality-monitoring",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-17",
+ "updated": "2026-11-01",
  "stump": "A competent analyst differences each float's good 2027 salinity values between 1,400 and 1,900 dbar against the reference casts' mean salinity at the same pressure and files 14 of the 24 floats adjusted, the six whose sensors are off and eight whose sensors read true; only the offset on potential-temperature levels against reference water at each profile's own position gives the six.",
  "architecture": 1,
  "loops": 0,
@@ -27,11 +27,24 @@
   "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "returned": [],
- "resume": "",
+ "resume": "Architecture 1 spent at the 11-01 re-check, on the honest survivor anatomy; not re-rooted on the orchestrating session's rule. The shipped pack (8dca2562) stays at the portal, pending. Next step is the author's or orchestrator's call: re-root the number in another world (architecture 2) or leave the shipped version to the portal.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "architecture_spent": true,
+ "recheck_2026_11_01": {
+  "rebuild": "reproduces the shipped target.zip byte for byte (8dca2562, 16 entries); generator 172 checks and verify green; matplotlib installed into the container",
+  "analyst_test": "clean truth, generator/checks.py R3: fixed pressure against the casts' mean adjusts 15 (9 clean), nearest casts at fixed pressure 13, pooled potential-temperature levels 12, drift from first profiles 4, the decisive step alone the golden 6; on the cut pack 14, 13, 13, 4 and 6",
+  "survivor_anatomy": "written honestly: Reflex, Back-test and Shock fail, Link holds only in part. The golden is the field's own delayed-mode calibration (potential-temperature levels, reference mapped to the float's position) applied as the textbook states it (stumping 1.1b), and the six are exactly the top six by magnitude on the pooled temperature-level rung",
+  "precut": "exit 0, 61 checks, 0 FAIL, 0 WARN once the anatomy lines are written (presence only; the lines record the failure); the method-family check passes only lexically",
+  "voice_check": "PASS with WARNs: 'the two tables' read as a count, shell quota (which 40 per cent, put 39 per cent, png+xlsx 24 per cent); the prompt's '24 floats' is a count the data hold that the script does not catch",
+  "leak_py": "LEAK: sweep 1 (DATA_DICTIONARY.md and README.md ship), sweep 12 (the dictionary names 57 columns, 100 per cent of the technical file's; README, float models summary and reference note REVIEW), sweep 13 (metadata.json stated_inputs carry the 24 WMO numbers and 0.001; subdomain and prompt_shape carry 0.010)",
+  "figures_check": "135 of 135",
+  "heart": "BLOCK on test.same_puzzle_older against task479 v6 (registered 2026-10-21, after this card), predating this re-check; nothing changed here causes it; shell.repeat and repeat.deliverables WARNs",
+  "surface": "exit 0, no personas in the cut pack",
+  "stage4": "not run: architecture spent before any repair"
+ }
 }
