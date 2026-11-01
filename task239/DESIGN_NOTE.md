@@ -20,7 +20,11 @@ screening-rule build: the shared key is the generic method family, the mechanism
 (which, against task182 and task267: the decision is a designation of items, so the form follows it). At stage 3 the
 guard's heart check found task267 (filed before this card, pulled after it) on the same shape, forcing event and
 organisation family; those three axes were redrawn (below), the world relabelled with every figure unchanged. The older
-same-puzzle and same-driver signatures on G2 carry differentiation lines against task264 v1, task48 and task120 v1.
+same-puzzle and same-driver signatures on G2 carry differentiation lines against task264 v1, task48 and task120 v1. At
+the 11-01 re-check the heart check BLOCKs on test.same_puzzle and test.same_driver inside the batch against task264 v1
+(lineage, registered at 07:58 on 10-17, before this card at 16:36): a ban held by a build filed before this delivered
+build, flagged and not relabelled; task269 v3 and task270 v11, registered after this build shipped, now carry
+differentiation lines on the card.
 
 - **Pairing.** Psychology & Behavioral Science / psychometric-measurement-scale-validation, serving Data Quality
   Monitoring & Alerting. Not banned against the last three builds (task192, task182, task267). The object is the
@@ -83,6 +87,40 @@ Sources, one line each (what it teaches; how this build differs):
   wording factor), task238 (a mode effect read through a randomized contact strategy). Psychometric drivers elsewhere:
   task450 (anchor items screened for drift before a link), task257 (Pearson correlations on lopsided categories),
   task464 (a concordance by distribution matching). None separates a team-level structure from the members'.
+
+## Survivor anatomy
+
+Written at the 11-01 re-check of the shipped build, the main call frozen; each line is its test answered on this pack.
+
+- **Actor:** the property that decides, how each item's team level goes with the climate the twelve items share at
+  team level once the members' own covariance is taken out, has no column: every file holds members' answers (one row
+  per question shown, or one row per form) beside a team code, and no column holds a team mean, an ICC, a loading or a
+  within-team or between-team part (R1 in `checks.py`).
+- **Link:** the signal is read through a comparison the default route never asks for, the pooled within-team
+  covariance of the same returns taken at the member grain and set against the covariance of the team means; no key
+  is needed (the team code is on every return) and no filed sentence names a within-team matrix, a decomposition or an
+  estimator (asserted on the standard's text), so the link is a cross-grain subtraction a solver has to think of and a
+  few lines of code once thought of.
+- **Reflex:** the practitioner's reflex for a team-level structure, aggregating each item to team means and fitting
+  one factor (rung 0), files eight, and correcting the means for their unreliability (rung 2) files the wrong ten; the
+  field's textbook two-level method (the between-team covariance net of the pooled within-team covariance, as in
+  multilevel factor analysis) is the golden itself, so this line holds against the aggregation reflex only. Stump risk
+  recorded: a response that reaches for the textbook two-level fit on reading 4.1 lands the call.
+- **Back-test:** the textbook check passes the easy route: the team-means factor refitted on random halves of the
+  1,016 teams keeps the same eight items in 39 of 40 half-samples (the members' covariance the means carry is
+  systematic, so it replicates), and one factor fits the team-mean correlations with a residual RMSR of 0.08.
+- **Second use:** every file the decisive step reads (the platform's session and response exports, the scan file, the
+  pack list, the register, the reorganisation map, the tablets' log) is read by the default path too, to build the
+  returns that count and place them in teams; the decomposition adds no file and no column.
+- **Shock:** the withdrawn pair is no interval of any shipped figure: on the 2026 dashboard's percent favourable TC11
+  and TC12 sit at 70.2 and 73.5 inside a range of 52.7 to 85.0. Computed from the returns they are the two items with
+  the smallest team share of variance (ICC 0.03 and 0.04 against 0.14 to 0.18): a response that withdrew items on the
+  ICC instead of 4.3's loading would file the golden's ten, a route the standard does not license (recorded as a
+  risk), while the default path, which applies 4.3, reads the same ICCs and still withdraws both practice items.
+- **Pins:** the WHAT is filed in WI-SV-03 in the standard's own voice (4.1 what a team's level is, 4.2 one factor with
+  each item's team level standardised across the teams, 4.3 the 0.75 line, 4.4 and 5.1 the population); no filed
+  sentence names a team mean, a within-team matrix, a decomposition or an estimator, and deleting 4.1's sentence
+  reopens SF1 (the current staff's mean, which files eight), so 4.1 pins the estimand and not the method.
 
 ## Default path
 
@@ -323,27 +361,32 @@ leaves the ten (separation, asserted), and the main path is mess-neutral (R2).
 
 Referee: none needed; no control ties under any handling.
 
+The cracker sheet as measured at the 11-01 re-check, on the careful solver's route (it lands the call, runs the
+hygiene battery and executes every filed rule it points at), replacing the paper sheet the build shipped with (Lc
+0.24, pair 37.3), which scored misses the cracker does not make.
+
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed) | Verdict |
 |---|---|---|
-| Ask 1, personal link | dedups the link by code; misses members across channels and the re-sent copies' effect on the floor | miss |
-| Ask 1, site tablet | keeps the re-sent sessions (session ids unique) and joins July codes as they stand | miss |
-| Ask 1, paper form | maps the codes that fail to join, not the reissued ones that join | miss |
-| Ask 2, every item's base | counts each member's returns on two channels and the re-sent sessions | miss |
-| Ask 2, every item's favourable answers | the same returns | miss |
-| Ask 3, Hub Operations | the reissued HO codes join as they stand | miss |
-| Ask 3, Linehaul and Fleet | members across channels | miss |
-| Ask 3, Customer Service | re-sent sessions at the depots | miss |
-| Ask 3, Engineering | the current division, re-sent sessions | miss |
-| Ask 3, Delivery Operations | the current division, re-sent sessions, reissued DO codes | miss |
-| Ask 3, Corporate Services | members across channels, the CS-coded teams in Delivery Operations since 1 September | miss |
+| Ask 1, personal link | links each member's returns through the invitation code (3.3, with the battery's cross-system match of the link's code, the code typed on a tablet once case, spaces and hyphens are normalised, and the pack each form was posted in) and keeps the last received; the link's own resubmissions the same way | kept |
+| Ask 1, site tablet | keeps one copy of a session the platform holds twice (the battery's re-sent batch: one tablet reference, the same answers) and reads a code chosen before the tablet's second team list load through the map (3.4, the tablet log's loads walked) | kept |
+| Ask 1, paper form | reads every pack's code through the map (3.4: the packs were printed on 21 July), the five reissued codes reaching no single team | kept |
+| Ask 2, every item's base | every return that counts, as the dashboard note sets out, after the member rule and the one copy | kept |
+| Ask 2, every item's favourable answers | the same returns | kept |
+| Ask 3, every division | each reported team under its division on the census date, the register's previous division for a move dated after 1 September (the note's rule, the battery's walk back through the register's own change fields) | kept |
 
-The cracker keeps the item table (12 lines, construction-keyed) and the slide (3): 15 of 63 ask criteria, Lc 0.24.
-The mirror (stopped at the team means) keeps the item lines whose team-mean loading clears 0.80 (TC01, TC02, TC04,
-TC06, TC07: 5 of 63), Ls 0.08.
+Measured by: `generator/ceiling.py` on the cut pack (target.zip 8598f854): the cracker, written from the files alone and
+sharing no code with the generator's estimator, keeps 48 of 48 device figures, and with the item lines (12) and the
+slide (3) 63 of 63; the mirror, on the same ask paths, 53 of 63. Stress rows it prints beside the gate: the natural
+read (no member link, copies kept, codes as they stand, the current division) keeps 1 of 48, members linked through
+the personal link only 1, re-sent copies kept 9, July codes joined as they stand 36, every tablet code through the map
+45, the current division 44. Removing the README, the dictionary and the codebook moves none of the cracker's steps.
 
-Pair ceiling: 37.3 ((38 + 7 + 55 x 0.24) and (5 + 7 + 55 x 0.08), averaged)
+Pair ceiling: 79.1 (the cracker 38 + 7 + 55 = 100; the mirror 5 + 7 + 55 x 53/63 = 58.3)
 
-Mirror leakage: 7.9 per cent of ask weight
+Mirror leakage: 84.1 per cent of ask weight
+
+The ask layer is executable as shipped and needs a redesign before any reship; the candidates tried at the re-check
+and why each died are under `## Tried and rejected`.
 
 ## Pre-ship check
 
@@ -435,3 +478,29 @@ members' covariance in team means here): the adjudicated clone check is the auth
   the axes redrawn to shape 16, period_close and logistics_or_3pl. The council first considered was dropped because
   task468, filed after this card, is local government; shape and event `other` because task158 holds both; and the
   event audit_or_inspection because task190, once task194's re-registration moved it, holds this card in its window.
+- The shipped ask layer, re-measured at the 11-01 re-check by `generator/ceiling.py` on target.zip 8598f854 (the
+  cracker written from the files alone): 48 of 48 device figures kept, pair 79.1, mirror leakage 84.1 per cent. S1 is
+  3.3's member rule run through the battery's cross-system match of the invitation code, S7 the battery's re-sent
+  batch, S2 3.4's map read for every code of the July structure (packs printed on 21 July, the tablets' first list
+  loaded on 24 August), S3 the dashboard note's census date walked back through the register's own change fields;
+  removing the describing files moves none of those steps, so the asks are executable, not silent.
+- Ask redesign on 3.3's "received last" read from a scanning batch log's arrival dates rather than the scan stamp: the
+  log's received date is filed and 3.3 names receipt, so the cracker reads and executes it.
+- Ask redesign on a short code typed on the tablets, matched to members within the team: the key-uniqueness sweep
+  shows the ambiguity and the within-team refinement is its remedy, so noticing and repairing are one act.
+- Ask redesign on a register without its change fields, each team's census-date division read from the division
+  loaded with the personal links: the column sits in the main session file, so every solver reads it.
+- Ask redesign on payroll's 1 September headcount still coded to the July structure, asked by site: a false-clean join
+  needs most freed codes reissued (relabelling the main files' team codes, outside /fix-rubric's scope), the
+  September-only teams missing from payroll show at a coverage check, and a census-date headcount by site from a
+  July-coded list is not determinate for the new and the split teams.
+- Ask redesign on re-sent tablet copies under new references beside straight-lining respondents: the careful dedupe
+  on tablet, start time and answers is right, so only a sloppy key-only dedupe misses.
+- Ask redesign on the engagement items, the staff groups or the paper form's order coded differently by channel:
+  semantics, read off the code list once it is filed and a fork while it is not.
+- Ask redesign on the 2026 item results stored under item numbers re-sequenced for 2027 and shown with the current
+  wordings (task463's mechanism on the item axis): the 2026 order is either filed (a 2026 form or edition, read and
+  executed) or unfiled (not determinate).
+- Ask redesign on teams closed in October missing from the November register, and on team mailboxes sharing one
+  personal link: both sit in the call's own population, and telling a mailbox's members apart is an estimator.
+- Ask redesign on the platform's close set at 23:59 UTC rather than UK time: the battery's clock conversion.
