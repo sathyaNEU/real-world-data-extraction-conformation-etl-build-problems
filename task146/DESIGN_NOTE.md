@@ -52,6 +52,88 @@
   measurement. This draw is not a heterogeneity: no class of saver behaves differently; the step is the unit the
   money is followed at.
 
+## Default path
+
+1. Read the month-end extract and the ALM policy; take every instant-access account with a balance at each 30 November
+   from 2021 whose anniversary has passed.
+2. Run off each start cohort account by account, the field's method for non-maturity deposits (the client's card 3:
+   cohorts of accounts open at the start date, not total balances): each account's lowest month-end balance to the
+   anniversary, a closed account at zero.
+3. Pool each product's kept balances over its start balances across the start dates; multiply by each product's
+   30 November 2026 balance; sum.
+4. Set the hedge at the first-anniversary total to the nearest GBP 1 million and size the new swap against the
+   GBP 101.9 million left after the January maturity.
+
+**Ends on:** a hedge of GBP 125 million and a new swap of GBP 23 million (the share kept a year on 57.0 per cent).
+**Golden:** a hedge of GBP 165 million and a new swap of GBP 63 million (75.4 per cent kept a year on; GBP 130 million
+two years on and GBP 104 million three years on).
+
+## Stump sentence
+
+A competent solver runs the book off on cohorts of accounts open at each 30 November and files a GBP 125 million hedge
+(a GBP 23 million new swap), because a member who takes up a new Loyalty Saver issue closes one account and opens
+another the same day for the same amount and the cohort books that money as gone; matching each closing payment to the
+same-day opening it funded keeps it in instant-access savings and puts the hedge at GBP 165 million.
+
+## Three rules
+
+- Task type: deposit-liquidity-behaviour (banking-credit-financial-risk), which serves Forecasting.
+- Domain test: the deciding quantity is the stable (core) balance of non-maturity deposits that sizes a structural
+  hedge, estimated from the book's own run-off over each anniversary.
+- Swap: "the Board sets the hedge at the stable balance a year on" read as a school's pupils kept a year on has no
+  hedge, no notional and no money moving between savings issues; the quantity stops making sense.
+- Layer 1: pounds against pence, month ends dated on the last business day, UTC event stamps against local dates, the
+  2025 re-coding with ES02 reused, closed accounts carried at zero for a month; each comes from the core banking
+  system's own extracts.
+- Layer 2: estimand identification; the unit the run-off is measured at (the money, followed across a closure into the
+  opening it funded, not the account) flips the hedge by GBP 40 million.
+- Decisive step: following each instant-access closing payment into the same-day instant-access opening it funded, so
+  a move between issues is kept rather than run off.
+- Not semantics: every field, code, unit and date read correctly (pence converted, ES02 read by date, local dates)
+  still leaves the account cohort at GBP 125 million; no field marks a move, and no definition is misread.
+- Not rule application: no filed rule or procedure links a closure to an opening; the policy files what is kept (held
+  in instant-access savings at every month end) and the products; the enumerated family (total-book ratio, account
+  cohorts, money followed into instant-access openings, money followed into bonds too) spreads GBP 125 to 221 million,
+  the standing family once the policy excludes bonds is the money route alone at GBP 165 million (pooled and averaged
+  start dates both 165), and what rules the rest out is the policy's own words, quiet.
+- Analyst test: the easy route, account cohorts, ends on a GBP 125 million hedge and a GBP 23 million new swap.
+- Estimand: ALM Policy section 7.3 and 7.4 (trentmoor_alm_policy_structural_hedge_v4.pdf): products, the kept balance,
+  the start dates taken together, the first to third anniversaries, the hedge to the nearest GBP 1 million.
+- No decoy: nothing is planted; no memo, draft or figure argues the account-cohort answer; the Board minute states
+  last year's hedge only.
+- No certified replay: no certified or published figure is reproduced to recover the method.
+- Lesson: a deposit book's stable balance is the money kept, and where the system cannot convert an account between
+  issues the money crosses a closure; no build on file follows money across a container's closure into a stock.
+
+## Survivor anatomy
+
+- Actor: the member's move to a new issue has no column; it is a relation between a CLOSE row and an OPEN row of
+  another account, same local day, same pence.
+- Link: no key joins the two accounts (the extract carries no member number); only the amount and the local date do,
+  a cross-row comparison the cohort method never asks for.
+- Reflex: the field's named method, run-off on cohorts of accounts open at the start date, sits at rung 1 and files
+  GBP 125 million.
+- Back-test: the account cohort validates: its run-off from each earlier 30 November reproduces the accounts' own
+  month-end balances and the book reconciles to survivors plus new accounts at every month end.
+- Second use: the event log is the extract's own record of openings and closures and carries the closures that end
+  every account in the cohort route; the balance extract is the spine every route reads.
+- Shock: moves happen every April and May at about a quarter of eligible balances a year, ordinary movement; no
+  product or month stands out.
+- Pins: the WHAT is filed in the ALM policy section 7 (a policy in the Society's genre); no sentence names the link,
+  the amount, the date or the account.
+
+## Ladder
+
+| Rung | Construction | Hedge (GBP m) | New swap | Dies to |
+|---|---|---|---|---|
+| R0 | total book a year on over the book (new money in) | 221 | 119 | the policy's kept balance (7.3) |
+| R1 | account cohorts, the field's method | 125 | 23 | the same-day links |
+| R2 | money followed into instant-access and bond openings | 170 | 68 | 7.2: bonds are not instant-access |
+| R3 (decisive) | money followed into instant-access openings only | 165 | 63 | golden |
+
+Separation: R1 to R3 GBP 40 million; R2 to R3 GBP 5 million; every graded figure at least 0.05 million off a rounding
+edge (checks.py), pooled and averaged start dates agree on every graded figure (seed 146079, SF1).
+
 ## Tried and rejected
 
 - The seed's mechanism (an employer-filed block of claims for idled workers that the attention signal cannot see,

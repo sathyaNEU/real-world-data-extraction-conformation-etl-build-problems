@@ -1,160 +1,97 @@
-"""Build task146: the evidence pack into <task>/target, the goldens into <task>/golden, metadata.json and
-generator/figures.json, then the checks and the independent verifier, then a second full build into a scratch folder
-inside the task (removed after) compared byte for byte, then target.zip cut from the pack.
+"""Build task146's pack, goldens, figures.json, submission.md and metadata.json twice, require byte-identical output,
+cut target.zip, then run the checks and the verifier.
 
-    python3 task146/generator/build.py              everything
-    python3 task146/generator/build.py --out DIR    the pack only, into DIR"""
-from __future__ import annotations
-
-import argparse
+    python3 task146/generator/build.py            # the full build
+    python3 task146/generator/build.py --pack DIR # the data and documents alone, into DIR
+"""
 import datetime as dt
 import hashlib
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K          # noqa: E402
-import docs as DOC          # noqa: E402
-import industry as I        # noqa: E402
-import notices as N         # noqa: E402
-import postprocess as PP    # noqa: E402
-import records as R         # noqa: E402
-import world as WD          # noqa: E402
-
 TASK = os.path.dirname(HERE)
-EXPORT_STAMP = dt.datetime(2026, 10, 8, 2, 47, tzinfo=dt.timezone.utc)   # 15:47 on 8 October at the desk (UTC+13)
+sys.path.insert(0, HERE)
+import pack as PK    # noqa: E402
+import world as W    # noqa: E402
+
+ZIP_STAMP = (2026, 12, 3, 9, 20, 0)
+XLSX_STAMPS = {"products": (dt.datetime(2019, 2, 11, 10, 4), dt.datetime(2025, 7, 1, 8, 31)),
+               "swaps": (dt.datetime(2024, 1, 29, 15, 12), dt.datetime(2026, 12, 2, 16, 47))}
 
 
-class World:
-    pass
-
-
-def world():
-    Wd = World()
-    Wd.T = WD.simulate()
-    Wd.ind = I.simulate(Wd.T)
-    Wd.notices = N.simulate()
-    Wd.program = R.program(Wd.T, Wd.ind)
-    return Wd
-
-
-def build(out, quiet=False, Wd=None):
-    if os.path.exists(out):
-        shutil.rmtree(out)
-    os.makedirs(out)
-    p = lambda f: os.path.join(out, f)
-    Wd = Wd or world()
-    T = Wd.T
-    counts = {}
-    counts[R.F_LEGACY] = K.write_csv(p(R.F_LEGACY), R.LEGACY_COLS, R.legacy_rows(T), crlf=True)
-    counts[R.F_CURRENT] = K.write_csv(p(R.F_CURRENT), R.CURRENT_COLS, R.current_rows(T))
-    DOC.write_release(p(R.F_RELEASE), R.release(T))
-    DOC.write_program(p(R.F_PROGRAM), T, Wd.program)
-    DOC.write_notes(p(R.F_NOTES))
-    counts[R.F_REGIONS] = K.write_csv(p(R.F_REGIONS), R.REGION_COLS, R.region_rows())
-    counts[R.F_HOLIDAYS] = K.write_csv(p(R.F_HOLIDAYS), ["date", "day", "holiday"], R.holiday_rows())
-    counts[R.F_PORTAL] = K.write_csv(p(R.F_PORTAL), N.PORTAL_COLS, N.portal_rows(Wd.notices))
-    DOC.write_register(p(R.F_REGISTER), N.register_rows(Wd.notices))
-    counts[R.F_CASES] = K.write_csv(p(R.F_CASES), N.CASE_COLS, N.case_note_rows(Wd.notices))
-    counts[R.F_CUBE] = K.write_csv(p(R.F_CUBE), R.CUBE_COLS, I.cube_rows(Wd.ind))
-    counts[R.F_CODES] = K.write_csv(p(R.F_CODES), ["division", "title", "group_no", "group"], R.code_list_rows())
-    DOC.write_concordance(p(R.F_CONCORD), R.concordance_rows())
-    counts[R.F_LFS] = K.write_csv(p(R.F_LFS), ["quarter", "region", "labour_force_000", "unemployed_000",
-                                                "unemployment_rate", "unemployment_rate_sa"], R.lfs_rows(T))
-    DOC.write_ads(p(R.F_ADS), R.ads_series(T))
-    counts[R.F_LOG] = K.write_csv(p(R.F_LOG), R.LOG_COLS, R.log_rows(), crlf=True)
-    P = K.PEOPLE
-    PP.normalize_pdf(p(R.F_NOTES), b"D:20260714101522+12'00'", b"D:20260721143906+12'00'")
-    PP.normalize_pdf(p(R.F_RELEASE), b"D:20261008082114+13'00'", b"D:20261008082114+13'00'")
-    PP.normalize_ooxml(p(R.F_PROGRAM), "Labour Market Statistics", P["statsmgr"], "2021-08-04T22:10:31Z",
-                       "2026-10-07T19:02:56Z", excel=True, company=K.BOARD)
-    PP.normalize_ooxml(p(R.F_REGISTER), "Employer Services", P["employer"], "2025-07-01T20:33:12Z",
-                       "2026-06-30T04:41:27Z", excel=True, company=K.BOARD)
-    PP.normalize_ooxml(p(R.F_CONCORD), "Classifications and Standards", "Classifications and Standards",
-                       "2025-06-18T23:05:40Z", "2025-11-11T01:27:18Z", excel=True, company=K.STATS_OFFICE)
-    stamp = EXPORT_STAMP.timestamp()
-    for f in os.listdir(out):
-        os.utime(os.path.join(out, f), (stamp, stamp))
-    Wd.counts = counts
-    if not quiet:
-        print("built %s: %d files; %s" % (out, len(os.listdir(out)), ", ".join("%s %d" % kv for kv in counts.items())))
-    return Wd
+def build_pack(out):
+    os.makedirs(out, exist_ok=True)
+    f = lambda k: os.path.join(out, PK.FILES[k])
+    w = W.World()
+    n = {}
+    n["balances"] = PK.balances(w, f("balances"))
+    n["events"] = PK.events(w, f("events"))
+    PK.products(f("products"), XLSX_STAMPS["products"])
+    PK.swaps(f("swaps"), XLSX_STAMPS["swaps"])
+    n["bonds"] = PK.bonds(w, f("bonds"))
+    PK.rates(f("rates"))
+    PK.isa_in(f("isa_in"))
+    try:
+        import docs as DO
+        DO.policy(f("policy"))
+        DO.minutes(f("minutes"))
+        DO.email(f("email"))
+    except ImportError:
+        pass
+    return w, n
 
 
 def digest(folder):
-    return {f: hashlib.sha256(open(os.path.join(folder, f), "rb").read()).hexdigest() for f in sorted(os.listdir(folder))}
+    h = hashlib.sha256()
+    for root, _, files in sorted(os.walk(folder)):
+        for name in sorted(files):
+            p = os.path.join(root, name)
+            h.update(os.path.relpath(p, folder).encode())
+            h.update(open(p, "rb").read())
+    return h.hexdigest()
 
 
-def cut_zip(root):
-    import zipfile
-    folder = os.path.join(root, "target")
-    when = EXPORT_STAMP.timetuple()[:6]
-    zp = os.path.join(root, "target.zip")
-    with zipfile.ZipFile(zp, "w") as z:
-        for f in sorted(os.listdir(folder)):
-            zi = zipfile.ZipInfo(f, date_time=when)
+def full(out_task):
+    target = os.path.join(out_task, "target")
+    golden = os.path.join(out_task, "golden")
+    for d in (target, golden):
+        if os.path.isdir(d):
+            shutil.rmtree(d)
+    build_pack(target)
+    import deliver as DL
+    import writeup as WU
+    res = DL.goldens(target, golden)
+    WU.write(target, res, out_task)
+    return digest(target), digest(golden), open(os.path.join(out_task, "submission.md"), "rb").read()
+
+
+def cut_zip(target, path):
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for name in sorted(os.listdir(target)):
+            zi = zipfile.ZipInfo(name, ZIP_STAMP)
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            with open(os.path.join(folder, f), "rb") as fh:
-                z.writestr(zi, fh.read())
-    return zp
-
-
-def everything(root, quiet=False):
-    import deliver as DL
-    import metadata as MD
-    Wd = build(os.path.join(root, "target"), quiet=quiet)
-    if os.path.exists(os.path.join(root, "golden")):
-        shutil.rmtree(os.path.join(root, "golden"))
-    G = DL.main(os.path.join(root, "target"), os.path.join(root, "golden"),
-                os.path.join(root, "generator", "figures.json"), Wd=Wd)
-    stamp = dt.datetime(2026, 10, 8, 3, 58, tzinfo=dt.timezone.utc).timestamp()
-    for f in os.listdir(os.path.join(root, "golden")):
-        os.utime(os.path.join(root, "golden", f), (stamp, stamp))
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"))
-    return Wd, G
-
-
-def main():
-    import checks as CK
-    import verify as V
-    Wd, G = everything(TASK)
-    CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), Wd=Wd, G=G,
-           meta_path=os.path.join(TASK, "metadata.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
-    tmp = tempfile.mkdtemp(dir=TASK, suffix=".tmp")
-    try:
-        os.makedirs(os.path.join(tmp, "generator"))
-        everything(tmp, quiet=True)
-        same_t = digest(os.path.join(TASK, "target")) == digest(os.path.join(tmp, "target"))
-        same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
-        same = {}
-        for f in ("metadata.json", os.path.join("generator", "figures.json")):
-            same[f] = open(os.path.join(TASK, f), "rb").read() == open(os.path.join(tmp, f), "rb").read()
-        same["target.zip"] = open(cut_zip(TASK), "rb").read() == open(cut_zip(tmp), "rb").read()
-        if not (same_t and same_g and all(same.values())):
-            d1, d2 = digest(os.path.join(TASK, "target")), digest(os.path.join(tmp, "target"))
-            g1, g2 = digest(os.path.join(TASK, "golden")), digest(os.path.join(tmp, "golden"))
-            raise SystemExit("second build differs: target %s, golden %s, %s; %s" % (
-                same_t, same_g, same, [f for f in d1 if d1[f] != d2.get(f)] + [f for f in g1 if g1[f] != g2.get(f)]))
-    finally:
-        shutil.rmtree(tmp)
-    allh = hashlib.sha256("".join(v for _, v in sorted(digest(os.path.join(TASK, "target")).items())).encode() +
-                          "".join(v for _, v in sorted(digest(os.path.join(TASK, "golden")).items())).encode())
-    print("two builds byte-identical: %d target files, %d golden files, metadata.json, figures.json and target.zip "
-          "(sha256 %s; target.zip sha256 %s)" % (
-              len(os.listdir(os.path.join(TASK, "target"))), len(os.listdir(os.path.join(TASK, "golden"))),
-              allh.hexdigest()[:16], hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest()))
+            z.writestr(zi, open(os.path.join(target, name), "rb").read())
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", help="build the pack only, into this folder")
-    a = ap.parse_args()
-    if a.out:
-        build(a.out)
-    else:
-        main()
+    if len(sys.argv) > 2 and sys.argv[1] == "--pack":
+        build_pack(sys.argv[2])
+        sys.exit(0)
+    a = full(TASK)
+    with tempfile.TemporaryDirectory() as tmp:
+        b = full(tmp)
+    same = a == b
+    print("two builds byte-identical:", same)
+    if not same:
+        sys.exit(1)
+    cut_zip(os.path.join(TASK, "target"), os.path.join(TASK, "target.zip"))
+    print("target.zip", hashlib.sha256(open(os.path.join(TASK, "target.zip"), "rb").read()).hexdigest())
+    rc = subprocess.call([sys.executable, os.path.join(HERE, "checks.py")])
+    rc2 = subprocess.call([sys.executable, os.path.join(HERE, "verify.py")])
+    sys.exit(rc or rc2)
