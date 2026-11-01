@@ -129,37 +129,8 @@ def build(out, quiet=False, W=None):
     DOC.write_hca(p(K.HCA), W.hca)
     DOC.write_npp(p(K.NPP))
     DOC.write_peak(p(K.PEAK), peak_table())
-    DOC.write_dictionary(p(K.DICTIONARY), counts)
-    manifest = [
-        (K.REGISTER, "Embedded generation connections (EGC)", "2026-09-01", counts[K.REGISTER], K.PEOPLE["connections"],
-         "micro EG applications for NMIs on Yarrabin feeders, all statuses, received to 31 August 2026"),
-        (K.LEGACY, "EGC legacy archive", "2019-06-29", counts[K.LEGACY], K.PEOPLE["connections"],
-         "inverters of applications migrated from the pre-July-2019 system"),
-        (K.NETWORK, "Network model (GIS)", "2026-09-01", counts[K.NETWORK], K.PEOPLE["gis"],
-         "NMIs on Yarrabin feeders at 31 August 2026"),
-        (K.XREF, "GIS NMI-to-property match", "2026-09-01", counts[K.XREF], K.PEOPLE["gis"],
-         "NMIs on Yarrabin feeders to Merindah City Council property numbers"),
-        (K.RATES, "Merindah City Council rating system", "2026-08-03", counts[K.RATES], "Merindah City Council",
-         "2026-27 rates roll, western rating area"),
-        (K.DER, "DER Register (national) via Mirrabee extraction", "2026-09-01", counts[K.DER], K.PEOPLE["connections"],
-         "AC connections and devices at NMIs on Yarrabin feeders at 31 August 2026, all statuses"),
-        (K.REALLOC, "Market systems (NMI standing data)", "2026-09-01", counts[K.REALLOC], K.PEOPLE["connections"],
-         "NMIs replaced at Yarrabin premises since 1 July 2019"),
-        (K.REBATE, "Queensland home battery rebate (state program)", "2026-07-14", counts[K.REBATE],
-         K.PEOPLE["customer"], "approvals for Merindah addresses, FY2025-26"),
-        (K.PROGRAM_LOG, "Merindah City Council", "2025-03-03", "", "Merindah City Council",
-         "Solar Streets campaign summary 2018 to 2024, as received"),
-        (K.LETTER, "Merindah City Council", "2026-08-14", "", "Merindah City Council", "letter on the 2026 campaigns"),
-        (K.NPP, "Network Planning", "2026-03-02", "", K.PEOPLE["planning"], "procedure, revision 3"),
-        (K.HCA, "Buchanan Power Engineering", "2026-07-24", "", K.PEOPLE["consultant"], "assessment report BPE-2026-031"),
-        (K.PEAK, "Network Planning", "2026-05-12", "", K.PEOPLE["planning"], "summer peak demand forecast by feeder"),
-        (K.DICTIONARY, "Network Planning", "2026-09-07", "", K.PEOPLE["analyst"], "field definitions for these extracts"),
-    ]
-    K.write_csv(p(K.MANIFEST), R.MANIFEST_COLS, manifest)
     PP.normalize_ooxml(p(K.PROGRAM_LOG), K.PEOPLE["council"], K.PEOPLE["council"], "2019-02-11T23:12:40Z",
                        "2025-03-03T05:31:17Z", excel=True, company=K.COUNCIL)
-    PP.normalize_ooxml(p(K.DICTIONARY), K.PEOPLE["analyst"], K.PEOPLE["analyst"], "2024-05-20T01:02:11Z",
-                       "2026-09-07T03:44:58Z", excel=True)
     PP.normalize_ooxml(p(K.PEAK), K.PEOPLE["planning"], K.PEOPLE["planning"], "2026-04-29T22:05:31Z",
                        "2026-05-12T06:17:09Z", excel=True)
     PP.normalize_pdf(p(K.NPP), b"D:20260226104512+10'00'", b"D:20260302083017+10'00'")

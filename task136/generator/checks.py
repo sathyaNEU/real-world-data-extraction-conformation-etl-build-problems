@@ -569,10 +569,13 @@ def run(target, golden, W=None, meta_path=None):
     v = variant(base_kw=base_with(reg_m, C.connected_kw, C.trend(reg_m)[0]))
     SF_SEEN["SF3 migrated dropped"] = graded(v)
     ok(graded(v) != golden_tuple(), "SF3 dropping the migrated rows keeps every figure")
-    kw_def = [r_[1] for r_ in openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
-              ["Connections register"].iter_rows(values_only=True) if r_ and r_[0] == "inverter_kw_ac"]
-    ok(len(kw_def) == 1 and "Blank on applications migrated from the legacy system." in kw_def[0],
-       "SF3 the dictionary no longer says where the migrated inverters are")
+    # SF3 closed by the producing systems (no dictionary ships): every migrated row carries its legacy application
+    # number and a blank inverter_kw_ac, and every legacy number has its inverters in the legacy equipment table
+    mig = reg[reg.legacy_application_no != ""]
+    ok(len(mig) > 10000 and (mig.inverter_kw_ac == "").all(), "SF3 a migrated row carries its own inverter capacity")
+    ok(set(mig.legacy_application_no) <= set(L["leg"].legacy_application_no) and
+       {"legacy_application_no", "inverter_kw_ac_each", "inverter_count"} <= set(L["leg"].columns),
+       "SF3 a migrated row's inverters missing from the legacy equipment table")
     reg_pk = reg.assign(kw=np.where(reg.legacy_application_no != "", reg.panel_kwp.replace("", np.nan).astype(float), reg.kw))
     v = variant(base_kw=base_with(reg_pk, C.connected_kw, C.trend(reg_pk)[0]))
     SF_SEEN["SF3 migrated at panel capacity"] = graded(v)
@@ -689,9 +692,12 @@ def run(target, golden, W=None, meta_path=None):
     v = C.forecast(L3, base=base, camps=cs3, pools=ps3)
     SF_SEEN["SF24 withdrawn counted"] = graded(v)
     ok(v["winner"] == "YRB27", "SF24 withdrawn as a first application files %s" % v["winner"])
-    wbd = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
-    sdef = [r_[1] for r_ in wbd["Connections register"].iter_rows(values_only=True) if r_ and r_[0] == "status"]
-    ok(len(sdef) == 1 and "nothing was connected under the application." in sdef[0], "SF24 the dictionary's Withdrawn")
+    # SF24 closed by the register itself (no dictionary ships): the status is the system's own label, and no
+    # Withdrawn row carries a connection, a removal or an inverter capacity
+    wd_ = reg[reg.status == "Withdrawn"]
+    ok(len(wd_) > 100 and wd_.connection_date.isna().all() and wd_.removal_date.isna().all() and
+       (wd_.inverter_kw_ac == "").all(), "SF24 a Withdrawn application carries a connection")
+    ok(set(reg.status) == {"Under assessment", "Approved", "Connected", "Withdrawn", "Removed"}, "SF24 the register's status labels")
     # SF29 a house with two NMIs takes the earlier: no campaign suburb has one
     xr = L["xref"].merge(L["rates"][["property_no", "locality"]], on="property_no")
     multi = xr.groupby("property_no").nmi.count()
@@ -772,13 +778,13 @@ def run(target, golden, W=None, meta_path=None):
     # connections included (the prompt counts sites, "how many of them"; the register dates each AC connection)
     ok("how many active DER Register sites it supplies" in prompt_txt and "how many of them were first lodged" in prompt_txt,
        "SF27 and SF28 the prompt's wording")
-    wbd_ = openpyxl.load_workbook(os.path.join(target, K.DICTIONARY), read_only=True)
-    ddef = {r_[0]: r_[1] for r_ in wbd_["DER Register extract"].iter_rows(values_only=True) if r_ and r_[0]}
-    ndef = {r_[0]: r_[1] for r_ in wbd_["Network model"].iter_rows(values_only=True) if r_ and r_[0]}
-    ok(ndef.get("feeder") == "Feeder supplying the NMI at 31 August 2026." and
-       ddef.get("feeder") == "Feeder, added by Mirrabee's extraction.", "SF27 the dictionary's two feeders")
-    ok(ddef.get("registered_date") == "Date the installer lodged the AC connection." and
-       ddef.get("ac_connection_status") == "Active or Decommissioned.", "SF28 the dictionary's lodgement and status")
+    # SF27: NPP-114 3.1 places each NMI on its feeder by the network model at the base date (read through the same
+    # pypdf extraction as the verifier; the control is the clause's own text); SF28: the DER extract's own columns and
+    # labels date each AC connection and keep a replaced one (no dictionary ships, nothing describes a device)
+    ok("The network model at the base date places each NMI on its feeder." in npp and K.NETWORK.endswith("20260831.csv"),
+       "SF27 NPP-114 3.1's network model sentence, or the network model's date in its name")
+    ok({"registered_date", "ac_connection_status", "feeder"} <= set(L["der"].columns) and
+       set(L["der"].ac_connection_status) == {"Active", "Decommissioned"}, "SF28 the DER extract's own columns and labels")
     st_ = C.ask_d(L, "stamp")
     ok(sum(st_[f] != gold_asks["D sites"][f] for f in K.FEEDERS) == 8, "SF27 the stamp lands a feeder")
     af_ = C.ask_a(L, "active_first")
@@ -887,25 +893,36 @@ def run(target, golden, W=None, meta_path=None):
         ok(len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]), "distractors")
     for f in files:
         ok(not re.search(r"distract|decoy|trap|answer|golden|solution", f, re.I), "file name %s" % f)
-    man = pd.read_csv(os.path.join(target, K.MANIFEST), dtype=str, keep_default_na=False)
-    ok(set(man.owner) - {"Merindah City Council"} <= set(K.PEOPLE.values()), "a manifest owner outside the drawn personas")
-    ok(set(man.file) == set(files) - {K.MANIFEST}, "manifest lists %s" % (set(files) ^ set(man.file)))
-    dnames = {r[0] for r in wbd["Files"].iter_rows(min_row=2, values_only=True) if r and r[0]}
-    ok(dnames == {f for f in files if f.endswith(".csv") and f != K.MANIFEST}, "dictionary files %s" % dnames)
-    ext = dict(zip(man.file, man.extracted))
-    ok(ext[K.DICTIONARY] >= max(ext[f] for f in dnames), "the dictionary predates an extract it describes")
-    import zipfile
-    core = zipfile.ZipFile(os.path.join(target, K.DICTIONARY)).read("docProps/core.xml").decode()
-    ok(re.search(r"<dcterms:modified[^>]*>(\d{4}-\d\d-\d\d)", core).group(1) == ext[K.DICTIONARY],
-       "the dictionary's properties and the manifest give different dates")
-    for r_ in man.itertuples():
-        if r_.file.endswith(".csv"):
-            df = pd.read_csv(os.path.join(target, r_.file), dtype=str, keep_default_na=False)
-            ok(int(r_.rows) == len(df), "manifest rows for %s" % r_.file)
+    # no shipped file or sheet describes the data (dataset-generation section 3): by name, with the leak sweep's own
+    # patterns, positive-controlled on the names this build used to ship
+    describe = re.compile(r"(?<![a-z])(read_?me|data_?dictionar\w*|dictionar(y|ies)|codebook|field_?notes|field_?guide|"
+                          r"fields?_(guide|notes|list|descriptions?)|\w*_fields|manifest|extract_contents|file_list|"
+                          r"file_layout|glossary|column_(notes|descriptions?)|data_?notes|how_to_read|about_this|export_notes|"
+                          r"extract_notes|feed_notes|desk_notes|data_team_notes|definitions|schema|layouts?_notes|"
+                          r"handling_notes|release_notes)(?![a-z])", re.I)
+    describe_sheet = re.compile(r"^(read ?me|notes?|dictionary|data dictionary|definitions|glossary|fields|field notes|"
+                                r"about|about this (file|workbook)|how to (read|use)( this)?|columns?)$", re.I)
+    ok(describe.search("data_dictionary") and describe.search("export_manifest") and describe_sheet.search("Data dictionary"),
+       "the describing-file control: the patterns no longer match the names they exist to refuse")
+    ok(not [f for f in files if describe.search(f.rsplit(".", 1)[0])], "a shipped file describes the data: %s" % files)
+    sheets_ = [ws_ for f in files if f.endswith(".xlsx")
+               for ws_ in openpyxl.load_workbook(os.path.join(target, f), read_only=True).sheetnames]
+    ok(len(sheets_) >= 3 and not [x for x in sheets_ if describe_sheet.search(x.strip())],
+       "a shipped sheet describes the data: %s" % sheets_)
+    # provenance lives in metadata.json (K.PROVENANCE): every file has its record, and no extract runs past its date
+    ok(set(K.PROVENANCE) == set(files), "provenance lists %s" % (set(files) ^ set(K.PROVENANCE)))
+    ok(all(o is None or o in K.PEOPLE for _, _, o in K.PROVENANCE.values()), "a provenance owner outside the drawn personas")
+    for f_ in files:
+        if f_.endswith(".csv"):
+            df = pd.read_csv(os.path.join(target, f_), dtype=str, keep_default_na=False)
+            extracted = K.PROVENANCE[f_][1]
             for col in df.columns:
                 if col.endswith("_date") or col in ("first_energised", "last_verified"):
                     vals = df[col][df[col] != ""]
-                    ok(vals.max() <= r_.extracted, "%s %s runs to %s after its extract %s" % (r_.file, col, vals.max(), r_.extracted))
+                    ok(vals.max() <= extracted, "%s %s runs to %s after its extract %s" % (f_, col, vals.max(), extracted))
+    if meta_path:
+        mf = {x["path"]: x for x in json.load(open(meta_path))["files"]}
+        ok(all(mf[f_]["extracted_or_issued"] == K.PROVENANCE[f_][1] for f_ in files), "metadata.json's provenance dates")
     ok(der.registered_date.max() <= K.iso(K.BASE) and der.status_date.max() <= K.iso(K.BASE),
        "the DER extract runs past 31 August 2026")
 

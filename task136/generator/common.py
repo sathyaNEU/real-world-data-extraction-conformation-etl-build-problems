@@ -151,11 +151,27 @@ NPP = "NPP-114_micro_EG_forecasting_rev3.pdf"
 HCA = "yarrabin_hosting_capacity_assessment_2026.pdf"
 DER = "der_register_extract_yarrabin_20260901.csv"
 REALLOC = "nmi_reallocations_2019-2026.csv"
-DICTIONARY = "data_dictionary.xlsx"
-MANIFEST = "export_manifest.csv"
 PEAK = "feeder_peak_demand_forecast_2027-31.xlsx"
 REBATE = "home_battery_rebate_approvals_fy2025-26.csv"
 DISTRACTORS = [PEAK, REBATE]
+
+# Provenance of each file (source system, the date it was extracted or issued, its owner): written to metadata.json
+# only, never under target/ (dataset-generation sections 3 and 9); checks.py asserts no extract runs past its date
+PROVENANCE = {
+    REGISTER: ("Embedded generation connections (EGC)", "2026-09-01", "connections"),
+    LEGACY: ("EGC legacy archive", "2019-06-29", "connections"),
+    NETWORK: ("Network model (GIS)", "2026-09-01", "gis"),
+    XREF: ("GIS NMI-to-property match", "2026-09-01", "gis"),
+    RATES: ("Merindah City Council rating system", "2026-08-03", None),
+    DER: ("DER Register (national) via Mirrabee extraction", "2026-09-01", "connections"),
+    REALLOC: ("Market systems (NMI standing data)", "2026-09-01", "connections"),
+    REBATE: ("Queensland home battery rebate (state program)", "2026-07-14", "customer"),
+    PROGRAM_LOG: ("Merindah City Council", "2025-03-03", None),
+    LETTER: ("Merindah City Council", "2026-08-14", None),
+    NPP: ("Mirrabee Energy Network Planning", "2026-03-02", "planning"),
+    HCA: ("Buchanan Power Engineering", "2026-07-24", "consultant"),
+    PEAK: ("Mirrabee Energy Network Planning", "2026-05-12", "planning"),
+}
 
 # Golden deliverables
 GOLD_BOOK = "feeder_upgrade_2029.xlsx"

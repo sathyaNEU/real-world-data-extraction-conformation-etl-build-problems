@@ -15,7 +15,7 @@
     "home_battery_rebate_approvals_fy2025-26.csv"
   ],
   "input_gates": {
-    "files": 15,
+    "files": 13,
     "formats": [
       "csv",
       "pdf",
@@ -41,15 +41,9 @@
       "bytes": 53150,
       "rows": null,
       "source": "Constructed: Mirrabee Energy Network Planning Procedure NPP-114 revision 3 (micro EG forecasting for augmentation)",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 14182,
-      "rows": null,
-      "source": "Constructed: Data dictionary for the extracts",
+      "source_system": "Mirrabee Energy Network Planning",
+      "extracted_or_issued": "2026-03-02",
+      "owner": "Ian Fletcher",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -59,6 +53,9 @@
       "bytes": 3094199,
       "rows": 30921,
       "source": "Constructed: DER Register extract (AC connections and devices) for NMIs on the Yarrabin feeders, as at 31 August 2026",
+      "source_system": "DER Register (national) via Mirrabee extraction",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Bryan Nichols",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -68,15 +65,9 @@
       "bytes": 3197607,
       "rows": 27854,
       "source": "Constructed: Mirrabee Energy embedded generation connection register: micro EG applications (new systems and alterations, all statuses) for NMIs on the Yarrabin feeders, received to 31 August 2026",
-      "date": "2026-10-12",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "export_manifest.csv",
-      "format": "csv",
-      "bytes": 2074,
-      "rows": 14,
-      "source": "Constructed: Export manifest: each file's source system, date, rows, owner and scope",
+      "source_system": "Embedded generation connections (EGC)",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Bryan Nichols",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -86,6 +77,9 @@
       "bytes": 6694,
       "rows": null,
       "source": "Constructed: Feeder summer peak demand forecast 2027 to 2031 (Distribution Annual Planning Report working file)",
+      "source_system": "Mirrabee Energy Network Planning",
+      "extracted_or_issued": "2026-05-12",
+      "owner": "Ian Fletcher",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -95,6 +89,9 @@
       "bytes": 58595,
       "rows": 612,
       "source": "Constructed: Queensland home battery rebate approvals for Merindah addresses, FY2025-26",
+      "source_system": "Queensland home battery rebate (state program)",
+      "extracted_or_issued": "2026-07-14",
+      "owner": "Nicole Rocha",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -104,6 +101,9 @@
       "bytes": 721567,
       "rows": 15128,
       "source": "Constructed: Inverters of applications migrated from the pre-July-2019 connections system",
+      "source_system": "EGC legacy archive",
+      "extracted_or_issued": "2019-06-29",
+      "owner": "Bryan Nichols",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -113,6 +113,9 @@
       "bytes": 8078113,
       "rows": 64795,
       "source": "Constructed: Merindah City Council 2026-27 rates roll, western rating area",
+      "source_system": "Merindah City Council rating system",
+      "extracted_or_issued": "2026-08-03",
+      "owner": "Merindah City Council",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -122,6 +125,9 @@
       "bytes": 6861733,
       "rows": 62990,
       "source": "Constructed: Network model extract: NMIs on the eight Yarrabin 22 kV feeders at 31 August 2026",
+      "source_system": "Network model (GIS)",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Linda Ruiz",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -131,6 +137,9 @@
       "bytes": 2391582,
       "rows": 62990,
       "source": "Constructed: GIS cross-reference of NMIs to Merindah City Council property numbers",
+      "source_system": "GIS NMI-to-property match",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Linda Ruiz",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -140,6 +149,9 @@
       "bytes": 16924,
       "rows": 175,
       "source": "Constructed: NMI re-allocation log for Yarrabin premises since 1 July 2019",
+      "source_system": "Market systems (NMI standing data)",
+      "extracted_or_issued": "2026-09-01",
+      "owner": "Bryan Nichols",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -149,6 +161,9 @@
       "bytes": 44542,
       "rows": null,
       "source": "Constructed: Merindah City Council letter of 14 August 2026 confirming the two spring 2026 campaigns",
+      "source_system": "Merindah City Council",
+      "extracted_or_issued": "2026-08-14",
+      "owner": "Merindah City Council",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -158,6 +173,9 @@
       "bytes": 8834,
       "rows": null,
       "source": "Constructed: Merindah City Council Solar Streets campaign summary, 2018 to 2024, with the program terms",
+      "source_system": "Merindah City Council",
+      "extracted_or_issued": "2025-03-03",
+      "owner": "Merindah City Council",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -167,6 +185,9 @@
       "bytes": 52571,
       "rows": null,
       "source": "Constructed: Hosting capacity assessment BPE-2026-031 for the Yarrabin 22 kV feeders",
+      "source_system": "Buchanan Power Engineering",
+      "extracted_or_issued": "2026-07-24",
+      "owner": "Tammy Buchanan",
       "date": "2026-10-12",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }

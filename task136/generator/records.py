@@ -1,6 +1,6 @@
 """Row writers for the pack's CSV extracts: the connection register, the legacy inverter table, the network model,
-the NMI-to-property cross-reference, the council's rates roll, the DER Register extract, the NMI re-allocation log,
-the battery rebate approvals and the export manifest."""
+the NMI-to-property cross-reference, the council's rates roll, the DER Register extract, the NMI re-allocation log
+and the battery rebate approvals."""
 from __future__ import annotations
 
 import datetime as dt
@@ -24,7 +24,6 @@ DER_COLS = ["ac_connection_id", "nmi", "device_type", "manufacturer", "model", "
 REALLOC_COLS = ["old_nmi", "new_nmi", "effective_date", "reason"]
 REBATE_COLS = ["approval_ref", "property_address", "locality", "postcode", "battery_make_model", "nominal_kwh",
                "approved_date", "rebate_aud", "approval_status"]
-MANIFEST_COLS = ["file", "source_system", "extracted", "rows", "owner", "scope"]
 
 LAND_USE = {"01": "Vacant urban land", "02": "Single unit dwelling", "08": "Building units (primary use only)",
             "09": "Group title (primary use only)", "11": "Shop - single", "17": "Restaurant/fast food outlet",

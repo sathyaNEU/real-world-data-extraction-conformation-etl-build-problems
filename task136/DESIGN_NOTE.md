@@ -142,8 +142,8 @@ Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.
   abolished NMIs of rebuilt houses), the council's workbook in its own layout; on the ask paths a device-grain DER
   Register extract (checksum NMIs from the newer portal, builders' temporary NMIs and the re-allocation log,
   decommissioned connections, the feeder stamped at lodgement, per-product battery lodgement, the older portal's
-  per-inverter field). Each is what these systems produce; read by the filed rules and the dictionary each gives back
-  the world's own figures (R2, asserted), and none decides the call.
+  per-inverter field). Each is what these systems produce; read by the filed rules and the systems' own columns and
+  labels each gives back the world's own figures (R2, asserted), and none decides the call.
 - **Layer 2:** `estimand_identification`, staggered adoption: the counterfactual for a past campaign suburb is what
   its houses would have lodged over the same months without the campaign, read from the suburbs whose campaign had
   not yet run; the shortcut takes the installed systems as the addition, and the event-study reflex takes the
@@ -226,11 +226,11 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | "rooftop PV" on a feeder | all micro EG (30 kVA or less) at NMIs the network model places on the feeder, residential and business | residential NMIs only | YRB27 at 1.2, runner-up YRB24 at 1.1 | NPP-114 2.1 ("at a residential or business NMI") and 2.2, asserted; every register system is 30 kW or less |
-| SF2 | a system's capacity | the inverter capacity (kW AC) of the NMI's latest connected configuration | every connected application summed; panel capacity | summed: YRB22 at 4.3; panel: YRB24 at 6.1 | NPP-114 2.2 ("An alteration replaces the configuration it alters"; "inverter capacity (kW, AC rating)") and the dictionary's `inverter_kw_ac` |
-| SF3 | migrated rows (blank `inverter_kw_ac`) | the inverter from the legacy equipment table on the legacy application number | the rows dropped; their panel capacity | dropped: YRB27 at -1.7; panel: YRB24 at 2.6 | NPP-114 2.2 and the dictionary ("Blank on applications migrated from the legacy system"), asserted |
+| SF2 | a system's capacity | the inverter capacity (kW AC) of the NMI's latest connected configuration | every connected application summed; panel capacity | summed: YRB22 at 4.3; panel: YRB24 at 6.1 | NPP-114 2.2 ("An alteration replaces the configuration it alters"; "inverter capacity (kW, AC rating)"), asserted; the register's own `inverter_kw_ac` |
+| SF3 | migrated rows (blank `inverter_kw_ac`) | the inverter from the legacy equipment table on the legacy application number | the rows dropped; their panel capacity | dropped: YRB27 at -1.7; panel: YRB24 at 2.6 | NPP-114 2.2 and the producing systems: every row with a `legacy_application_no` has a blank `inverter_kw_ac` and its inverters in `legacy_inverter_equipment.csv` on that number (asserted; no dictionary ships) |
 | SF4 | "connected" at a date | status Connected, connection date on or before the date, not removed by it | approved but not connected counted | same call (YRB27 at 2.0); every base moves under 2 per cent | NPP-114 2.2 |
 | SF5 | the feeder of an NMI | the network model at 31 August 2026 | the feeder recorded on the application | same call (YRB27 at 2.5, runner-up YRB23); the feeder at application for the trend alone (the round-3 judge) gives YRB27 and YRB24 base forecasts of 15,426 and 23,583 kW, same call, the runner-up at 1.6 | NPP-114 3.1 and 2.2: the trend, like every other step, uses the network model's feeder at the base date, the literal reading and the golden (the round-3 judge) |
-| SF6 | the base date | 31 August 2026, the extracts' as-at date | 30 June 2026 | same call (YRB27 at 1.7, gap 0.4); no record exists after 31 August | NPP-114 3.1 and the extracts' dates (the manifest) |
+| SF6 | the base date | 31 August 2026, the extracts' as-at date | 30 June 2026 | same call (YRB27 at 1.7, gap 0.4); no record exists after 31 August | NPP-114 3.1 and the extracts' dates in their names (`nmi_network_model_20260831.csv`, the register and DER extracts `_20260901`); no record after 31 August (asserted) |
 | SF7 | the trend | the average yearly increase in connected capacity over FY2023-24 to FY2025-26 less program systems first connected that year | new connections only; program systems left in | same call under both (1.8; 1.9 with runner-up YRB21) | NPP-114 3.2 |
 | SF8 | the years carried | three | 3.25 or 2.92 | same call, figures move | NPP-114 2.4 and 3.2 |
 | SF9 | a campaign's installed systems | the applications carrying its Solar Streets reference, equal to the council's systems installed for every campaign | contracts signed | YRB24 at 4.0 (an installed-count route) | NPP-114 2.3 and the log's footnote 3 (contracts include cancellations); the golden reads every first application, program or not, so no installed count enters it |
@@ -248,11 +248,11 @@ alternative computed and shown to move a figure or to converge, and the ruling s
 | SF21 | hosting capacity | the assessment's spring 2029 minimum-demand case | the 2026 case beside it | YRB24 by 0.1 MW | NPP-114 5.1 ("for the design year's spring minimum-demand case") and 2.4, asserted; the prompt's "at 31 August 2029" |
 | SF22 | the excess, the runner-up and the gap | unrounded, ranked, rounded once to 0.1 MW | rounded figures subtracted | converges (asserted) | NPP-114 6.1 and 7.1 |
 | SF23 | a migrated row's inverter | the equipment row with the register's legacy application number | file order, panel size, summed, first or last row | converges: every number issued once on each side | the records converge |
-| SF24 | a withdrawn application | not a first application: nothing was connected under it | any status counted | same call (YRB27 at 1.8), figures move | the dictionary's status definition, asserted |
+| SF24 | a withdrawn application | not a first application: nothing was connected under it | any status counted | same call (YRB27 at 1.8), figures move | the register's own status label: no Withdrawn row carries a connection, a removal or an inverter capacity (asserted; no dictionary ships) |
 | SF25 | the two campaigns whose window the base date cuts (BNR23, PBG24) | kept, at their shorter windows | dropped | converges (asserted) | the records converge |
 | SF26 | "how much each bulk-buy will raise its feeder's PV" | its systems at the feeder's FY2025-26 average new inverter, in MW | a count of systems | the prompt gives megawatts to one decimal; NPP-114 4.3 sizes each system | the prompt and NPP-114 4.3, asserted |
-| SF27 | the feeder a DER site is on (asks 1 to 4) | the network model's feeder for the site's NMI | the DER extract's `feeder` (stamped at lodgement; 491 active connections at 431 sites differ) | the call unread; Ask 1 YRB27 1,933 and YRB23 2,336 (all 8 off) | the prompt's "sites it supplies" and the dictionary: the network model's feeder is the "Feeder supplying the NMI at 31 August 2026", the extract's only "added by Mirrabee's extraction" (asserted); the round-3 judge reproduced every DER cell on this literal reading |
-| SF28 | "first lodged" (ask 2) | the site's earliest `registered_date` over every AC connection at it, decommissioned included | the earliest of the active connections only | the call unread; YRB27 170, YRB26 108 (all 8 off) | the prompt counts sites ("how many of them"); the dictionary dates each AC connection ("Date the installer lodged the AC connection") and keeps a replaced one as Decommissioned (asserted); the round-3 judge: the literal reading is the golden (active connections only adds 12 to 53 sites a feeder) |
+| SF27 | the feeder a DER site is on (asks 1 to 4) | the network model's feeder for the site's NMI | the DER extract's `feeder` (stamped at lodgement; 491 active connections at 431 sites differ) | the call unread; Ask 1 YRB27 1,933 and YRB23 2,336 (all 8 off) | the prompt's "sites it supplies" and NPP-114 3.1 ("The network model at the base date places each NMI on its feeder.", asserted); nothing describes the extract's `feeder` (no dictionary ships); the round-3 judge reproduced every DER cell on this literal reading |
+| SF28 | "first lodged" (ask 2) | the site's earliest `registered_date` over every AC connection at it, decommissioned included | the earliest of the active connections only | the call unread; YRB27 170, YRB26 108 (all 8 off) | the prompt counts sites ("how many of them"); the DER extract's own `registered_date` per AC connection and its `ac_connection_status` labels (Active, Decommissioned) keep a replaced one (asserted; no dictionary ships); the round-3 judge: the literal reading is the golden (active connections only adds 12 to 53 sites a feeder) |
 | SF29 | a house with two NMIs | the earlier first application | the later | converges: no house in a campaign suburb has two NMIs (asserted) | the records converge |
 
 The stump is none of these rows: a careful reader reads every one the same way, and the default path reads them all
@@ -325,7 +325,7 @@ device, `supplemental-stumping`); the call reads neither.
 | 16 | Identity normalisation | NMIs are ten characters in the register, the network model and the cross-reference (asserted); legacy numbers pair one to one (SF23) |
 | 17 | Netting against gross | removals leave connected capacity (2.2); no export netting; a campaign's impact is with it against without it (4.1, SF19), and how much of its installed count would have come anyway is the decisive estimate, never a filed share |
 | 18 | Dimensional units | kW AC, MW for reporting; panel kWp never enters (SF2, SF3) |
-| 19 | Code and status semantics | status, land use and rating codes defined in the dictionary (SF24) |
+| 19 | Code and status semantics | the register's status labels (SF24) and the rates roll's own description beside each land use and rating code |
 | 20 | Integerisation | the 2026 campaigns' additions are expected counts, carried unrounded into MW |
 | 21 | Clause scope | NPP-114 section 4 applies to each program scheduled on the feeder whose sign-up window closes at least six months before the design point, confirmed in writing (4.2): the two 2026 campaigns (the council's letter) |
 | 22 | Forward window contents | the letter gives each 2026 campaign's suburb, sign-up dates (1 September to 27 November 2026, asserted) and letterbox drop; NPP-114 3.2 carries the trend to the design point |
@@ -340,7 +340,7 @@ date, the network model), 3.2 (base forecast and trend), 4.1 (the forecast is th
 impact at the design point), 4.2 (written confirmation), 4.3 (systems not connected at the base date at the feeder's
 FY2025-26 average new inverter), 5.1 (hosting capacity), 6.1 (assignment to the largest excess) and 7.1 (rounding);
 the council's letter (the two campaigns, their sign-up dates and drops); the program terms (owner-occupiers of
-houses); the dictionary's field definitions. Executed word for word on the clean records they give connected
+houses); the extracts' own column names, codes and labels. Executed word for word on the clean records they give connected
 capacity, the base forecast at 31 August 2029 and the hosting capacities exactly (R2), and leave one quantity
 unexecuted: each 2026 program's impact at the design point, which no sentence computes and no file states. The only
 per-campaign counts a document gives are the council's systems installed and homes letterboxed; taking the impact as
@@ -368,8 +368,9 @@ Device and hazard rows in it: 0. The four asks read `der_register_extract_yarrab
 the call is asserted unchanged with both ask files emptied, and the connection register carries no replaced or
 eleven-character NMI. Each ask is a measure every feeder carries (its DER on the national register) that the call does
 not turn on; none is keyed to the call, its construction or its figures; no two share a primary device. No sentence in
-the pack adjudicates a device: the dictionary states each field flatly. Round 3 left the asks' wording, files, devices
-and code unchanged; the regenerated world moved their figures, and every stop below is re-measured on the round-3 pack.
+the pack adjudicates a device, and no file describes a field (no dictionary or manifest ships). Round 3 left the
+asks' wording, files, devices and code unchanged; the regenerated world moved their figures, and every stop below is
+re-measured on the round-3 pack.
 
 **Ask 1. For every feeder, how many active DER Register sites it supplies** (8 counts; `calc.ask_d`).
 - H18 home: the market register's count of DER sites on each feeder, beside the distributor's own forecast; a measure
@@ -382,14 +383,14 @@ and code unchanged; the regenerated world moved their figures, and every stop be
 - Primary device (D2, a label stored before a silent switch): Mirrabee's extraction stamps each AC connection with
   the feeder its NMI was on when the connection was lodged; five load transfers (2023 to 2025) moved streets between
   feeders, so 491 active connections at 431 sites carry a feeder that no longer supplies them, and every feeder gains or
-  loses some. The dictionary says only "Feeder, added by Mirrabee's extraction." The tell is the register's
+  loses some. No shipped file describes the extract's `feeder`. The tell is the register's
   `feeder_at_application` against the network model for the same NMIs, a cross-file cut.
 - Hazards: H1 checksum NMIs (5,628 of 30,921 rows, at 3,678 connections, lodged through the newer portal with eleven
   characters); H2 temporary NMIs (70 rows at 61 connections lodged against a builder's supply); H3 several active
   connections at one site (an installer who left the old connection active after an alteration, beside a battery's own
   connection); H5 abolished NMIs (24 active connections at NMIs no feeder supplies).
 - Path (5 files, 9 columns): the DER extract (`ac_connection_id`, `nmi`, `ac_connection_status`, `feeder`), the
-  re-allocation log (`old_nmi`, `new_nmi`), the network model (`nmi`, `feeder`), the dictionary.
+  re-allocation log (`old_nmi`, `new_nmi`), the network model (`nmi`, `feeder`).
 - Stops (measured, each off the golden on all 8): the extract's own feeder, YRB27 1,933 and YRB23 2,336; active AC
   connections counted, YRB26 2,335; NMIs not carried through the re-allocation log, YRB27 1,831 and YRB24 2,778; NMIs as
   lodged with the extract's feeder, YRB25 3,798.
@@ -411,7 +412,7 @@ and code unchanged; the regenerated world moved their figures, and every stop be
   transfer is stamped right, asserted), so the stamp's repair earns nothing here.
 - Hazards: H1 (an old connection under ten characters and its replacement under eleven read as two sites), H2.
 - Path (5 files, 8 columns): the DER extract (`ac_connection_id`, `nmi`, `ac_connection_status`, `registered_date`),
-  the re-allocation log, the network model, the dictionary.
+  the re-allocation log, the network model.
 - Stops: the active connections' own registration, YRB27 170, YRB26 108 (all 8 off); NMIs as lodged, YRB22 248 (all 8
   off); not carried through the re-allocation log, YRB22 170 (5 of 8 off).
 - Lazy delta: the natural read misses 8 of 8.
@@ -434,7 +435,7 @@ and code unchanged; the regenerated world moved their figures, and every stop be
 - Hazards: H2, H4 the feeder stamp (all 8), H3 (an old connection left active counts, both are active).
 - Path (6 files, 11 columns): the DER extract (`ac_connection_id`, `nmi`, `device_type`, `model`, `rated_power_kw`,
   `ac_connection_status`, `registered_date`), the re-allocation log, the network model, the connection register
-  (`inverter_kw_ac`, the referee), the dictionary.
+  (`inverter_kw_ac`, the referee).
 - Stops: rows summed, YRB22 19,580 (all 8 off); duplicate rows dropped or one row per connection, YRB22 18,740 (all 8
   off); the extract's feeder, YRB25 22,130 (all 8 off); not carried through the re-allocation log, YRB27 11,740 (all 8
   off).
@@ -455,7 +456,7 @@ and code unchanged; the regenerated world moved their figures, and every stop be
 - Hazards: H2 (3 of 8), H4 (8 of 8), H5.
 - Path (6 files, 10 columns): the DER extract (`ac_connection_id`, `nmi`, `device_type`, `model`,
   `storage_capacity_kwh`, `ac_connection_status`), the re-allocation log, the network model, the connection register
-  (`battery_kwh`, the referee), the dictionary.
+  (`battery_kwh`, the referee).
 - Stops: rows summed, YRB27 2,440 (all 8 off); one row per connection or duplicate rows dropped, YRB27 1,120 (all 8
   off); the extract's feeder, YRB22 2,720 (all 8 off); not carried through the re-allocation log, YRB27 1,530 (3 of 8
   off).
@@ -484,33 +485,42 @@ referee below.
 NMI's inverter capacity) without handing over a level: the register's totals at the DER sites differ from the golden
 (asserted through the stops).
 
-**The cracker sheet.** The cracker filed YRB27 at 1.9 MW, ran the hygiene battery (NMI formats normalised, unmatched
-NMIs resolved through the re-allocation log, exact duplicates, fan-out, counts that tie) and executed every filed rule:
+**The cracker sheet.** Measured on the cut pack by `generator/ceiling.py`. The cracker filed YRB27 at 1.9 MW, ran the
+hygiene battery (NMI formats normalised, unmatched NMIs resolved through the re-allocation log, exact duplicates,
+fan-out, counts that tie), executed every filed rule and took each ask on its natural read:
 
-| Ask figures | The cracker's path | What keeps it wrong | Cracker result |
-|---|---|---|---|
-| Ask 1, 8 site counts | active connections, NMIs normalised and re-allocated, distinct sites by the extract's feeder | the feeder stamped at lodgement moved 431 sites | miss |
-| Ask 2, 8 counts | the active connections' registration dates by site | the site's first lodgement sits on a decommissioned connection | miss |
-| Ask 3, 8 capacities | inverter rows summed after dropping exact duplicate rows | the newer portal's per-inverter rows are halved; summing instead doubles the older portal's | miss |
-| Ask 4, 8 storage totals | battery rows summed after dropping exact duplicate rows | every modular stack loses its modules; summing instead multiplies the SBR stacks | miss |
-| Chart (recommendation block) | the bars from the forecast | carried by the main call, scored with it | outside |
+| Ask figures | The cracker's path | What keeps it wrong | Kept (ceiling.py) | Cracker result |
+|---|---|---|---|---|
+| Ask 1, 8 site counts | active connections, NMIs normalised and re-allocated, distinct sites by the extract's feeder | the feeder stamped at lodgement moved 431 sites (YRB27 1,933 against 1,838) | 0 of 8 | miss |
+| Ask 2, 8 counts | the active connections' registration dates by site | the site's first lodgement sits on a decommissioned connection (YRB27 170 against 158) | 0 of 8 | miss |
+| Ask 3, 8 capacities | inverter rows summed after dropping exact duplicate rows | the newer portal's per-inverter rows are halved; summing instead doubles the older portal's; the stamp moves every feeder too (YRB27 12,236 against 11,800) | 0 of 8 | miss |
+| Ask 4, 8 storage totals | battery rows summed after dropping exact duplicate rows | every modular stack loses its modules; summing instead multiplies the SBR stacks; the stamp moves every feeder too (YRB27 1,165 against 1,560) | 0 of 8 | miss |
+| Chart (recommendation block) | the bars from the forecast | carried by the main call, scored with it | not ask weight | outside |
 
-The mirror sheet (the same response stopped at R0, R1 or R2, all YRB24) differs only on the recommendation criteria:
-no ask couples to the call, and the mirror's runner-up (YRB27) is not the golden's.
+The mirror sheet: the best response off the call (the default path, YRB24 at 4.2 MW, its runner-up YRB27 not the
+golden's) on its own natural read, the pipeline without the hygiene battery (NMIs as lodged, the extract's feeder,
+every device row summed), keeps 0 of 32 (Ask 1 YRB25 3,798 against 3,680; Ask 4 YRB27 2,499 against 1,560); on the
+cracker's ask path it keeps 0 of 32 as well. No ask couples to the call.
 
-Mirror leakage: 8 per cent of the ask weight (method credit on the ask paths, no figure).
+Mirror leakage: 8.0 per cent of ask weight (`ceiling.py`: no ask figure kept; the 8 per cent is the sheet's method
+credit on the ask paths).
 
-**Pair arithmetic.** Planning weights 36 recommendation (the feeder, its excess, the runner-up and its excess, the gap,
-the two bulk-buys, the chart's named parts), 9 instruction following, 55 asks over 32 figures (1.72 each). The cracker
-keeps about 8 per cent of the ask weight: C = 36 + 9 + 4.4 = 49.4. The mirror keeps r of about 4 (the files and the
-chart's structure; no wrong route files the golden's runner-up with its figure, asserted): S = 4 + 9 + 4.4 = 17.4, a
-pair of 33.4. The most obvious device is Ask 1's stamp (a cracker who places sites on the network model's feeder after
-joining it for the NMIs cracks it): it adds 12.65 (8 figures, a quarter of the ask weight, less the credit already
-counted) and the pair rises to 39.7. Both top responses on the call with no device cracked: 49.4. A response that
-lands the feeder by assuming a round share of the installed systems additional (a third, two fifths, a half) keeps
-the feeder and at most the runner-up's name: about 12 of the 36.
+**Pair arithmetic** (`ceiling.py`, the sheet's planning weights). 36 recommendation (the feeder, its excess, the
+runner-up and its excess, the gap, the two bulk-buys, the chart's named parts), 9 instruction following, 55 asks over
+32 figures (1.72 each), a method credit of 8 per cent on every figure not kept, a response off the call keeping 4 of
+the 36 (the files and the chart's structure; no wrong route files the golden's runner-up with its figure, asserted).
+Measured: C = 49.4, S = 17.4, a pair of 33.4. One device found: the stamp (sites placed by the network model's
+feeder, NPP-114 3.1) keeps Ask 1's 8 figures, pair 39.7; dating each site from every AC connection keeps Ask 2's 8,
+pair 39.7; the older-portal or the SBR convention alone keeps nothing, the stamp still moving Asks 3 and 4. Two
+devices found: at worst 16 of 32, pair 46.0. The full includer, all four devices handled (the script's control, which
+gives back `figures.json` exactly), keeps 32 of 32, pair 58.7: no ask carries a second primary under rule 2. On the
+comparable 38, 7 and 55 the measured pair is 32.9 and the worst single crack 39.2. Both top responses on the call with
+no device found: 49.4. A response that lands the feeder by assuming a round share of the installed systems additional
+(a third, two fifths, a half) keeps the feeder and at most the runner-up's name: about 12 of the 36.
 
-Pair ceiling: 39.7
+Pair ceiling: 39.7 (`ceiling.py`: the worst of the measured pair, 33.4, and each single crack)
+
+Measured by: `generator/ceiling.py` on the cut pack (`target.zip` md5 bd4c13ada66610115ca1f88998616de5)
 
 ## Prompt
 
@@ -561,6 +571,19 @@ Stage 3 of round 3, built 2026-10-15 by `python3 task136/generator/build.py` (pa
   (SF5: the trend on the network model's feeder at the base date; SF27 and SF28: the DER asks on the literal reading).
   Leak reader round 3: Q1 to Q4 clean, Q6 analytical, every REVIEW line harmless (`leak_check_report.md`, Solver's-eye
   read). Nothing under `target/` moved after either read.
+- **Reship 2026-11-01 (the leak gate's describing-file rule).** `data_dictionary.xlsx` and `export_manifest.csv` no
+  longer ship; every other file is byte-identical to the judged pack, the goldens and `figures.json` unchanged. Their
+  provenance moved to `metadata.json` (source system, extracted or issued date, owner; `common.PROVENANCE`); each fork
+  row that cited them now cites NPP-114 or the systems' own columns and labels (SF2, SF3, SF6, SF24, SF27, SF28,
+  closure 19), each asserted, and `checks.py` asserts no shipped file or sheet describes the data, controlled on the
+  two old names. Gates: `checks.py` 476 assertions, `verify.py` 97, two builds byte-identical (`target.zip` md5
+  bd4c13ada66610115ca1f88998616de5), freeze PASS, `figures_check.py` 70 figures 0 absent, `voice-check.py` PASS,
+  `leak.py --asof 2026-10-12` REVIEW with no LEAK, `guard.py surface` exit 0. `precut.py` failed on a missing
+  `Measured by:` line older than the reship; `generator/ceiling.py` now measures the ask layer on the cut pack
+  (cracker 0 of 32, mirror leakage 8.0 per cent, pair ceiling 39.7) and the Ask sheet names it. REVIEW lines: NPP-114's call words, the
+  shared nouns in NPP-114, the letter and the assessment, and `device_type` as ruled above; the prompt's "Which of the
+  eight" is the decision's candidate set as the assessment's scope names it, not a count the analyst must find; the
+  shell quota is a corpus effect on an unchanged prompt.
 
 ## Pre-ship check
 
@@ -798,3 +821,8 @@ stump's determinism:
   anyway": declined at the reship; it names the counterfactual and hands over the decisive step (the WHAT turned into
   the comparison), and the judge found the call forced without it, the flat own-baseline and net-per-letterbox
   readings separated by the data and the wording (SF19).
+- The data dictionary (`data_dictionary.xlsx`, field definitions for every extract) and the export manifest
+  (`export_manifest.csv`, each file's source, date, rows and owner) shipped through round 3: both fail the leak gate's
+  rule that no shipped file describes the data (2026-11-01 re-check). Replaced by `metadata.json` for provenance and by
+  NPP-114 3.1 and the extracts' own columns, codes and labels for every fork row they closed; no sentence added to a
+  document, and the asks' devices stay unstated.

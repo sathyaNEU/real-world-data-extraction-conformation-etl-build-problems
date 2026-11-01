@@ -1,6 +1,5 @@
 """The pack's documents: NPP-114 (the distributor's planning procedure), the 2026 hosting capacity assessment, the
-council's letter on the 2026 campaigns and its program workbook, the data dictionary and the network's peak demand
-forecast."""
+council's letter on the 2026 campaigns and its program workbook, and the network's peak demand forecast."""
 from __future__ import annotations
 
 import datetime as dt
@@ -281,110 +280,6 @@ def write_program_log(path, rows):
         c = t.cell(row=k, column=1, value=line)
         c.alignment = Alignment(wrap_text=True, vertical="top")
     t.column_dimensions["A"].width = 110
-    wb.save(path)
-
-
-def write_dictionary(path, counts):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Files"
-    ws.append(["File", "Grain", "Rows"])
-    grains = [
-        (K.REGISTER, "One row per micro EG connection application (a new system or an alteration) at an NMI."),
-        (K.LEGACY, "One row per application migrated from the pre-July-2019 connections system: its inverters."),
-        (K.NETWORK, "One row per NMI on a Yarrabin feeder in the network model at 31 August 2026."),
-        (K.XREF, "One row per NMI: the council property it supplies."),
-        (K.RATES, "One row per rateable property in Merindah's western rating area, 2026-27 roll."),
-        (K.DER, "One row per device (inverter or battery) of each AC connection the DER Register holds at an NMI "
-                "on a Yarrabin feeder. An NMI can hold more than one AC connection."),
-        (K.REALLOC, "One row per NMI replaced by another NMI at the same premises."),
-        (K.REBATE, "One row per home battery rebate approval for a Merindah address in FY2025-26, as the state "
-                   "program sent it."),
-    ]
-    for f, g in grains:
-        ws.append([f, g, counts.get(f, "")])
-    fields = {
-        "Connections register": [
-            ("application_id", "Connection application number."),
-            ("nmi", "NMI the application is for (the NMI of the premises at the base date)."),
-            ("application_type", "New (a first system at the NMI) or Alteration (a change to the system at the NMI)."),
-            ("received_date", "Date the application was received."),
-            ("approved_date", "Date the application was approved; blank if not yet approved or withdrawn before approval."),
-            ("status", "Status at the extract. Under assessment: received, not yet approved. Approved: approved, not "
-                       "yet connected. Connected: connected (connection_date). Withdrawn: withdrawn by the applicant "
-                       "or lapsed before connection; nothing was connected under the application. Removed: connected, "
-                       "then removed (removal_date)."),
-            ("status_date", "Date of the status shown."),
-            ("connection_date", "Date the system was connected (meter reconfigured); blank until connected."),
-            ("removal_date", "Date a connected system was removed; blank otherwise."),
-            ("inverter_kw_ac", "Total inverter capacity (kW, AC rating) of the system at the NMI after the work in this "
-                               "application. Blank on applications migrated from the legacy system."),
-            ("panel_kwp", "Total panel capacity (kWp) after the work in this application."),
-            ("battery_kwh", "Battery storage capacity (kWh) after the work in this application, if any."),
-            ("export_limit_kw", "Export limit in the connection agreement (applications from 2019)."),
-            ("phases", "Number of phases of the inverter connection."),
-            ("feeder_at_application", "Feeder recorded on the application when it was received."),
-            ("installer_accreditation_no", "Installer's accreditation number."),
-            ("program_ref", "Program reference lodged with the application (SS-yy-xxx: Merindah Solar Streets)."),
-            ("legacy_application_no", "Application number in the legacy system, for applications migrated in June 2019."),
-        ],
-        "Network model": [
-            ("nmi", "National Metering Identifier (ten characters)."), ("feeder", "Feeder supplying the NMI at 31 August 2026."),
-            ("zone_substation", "Zone substation."), ("distribution_transformer", "Distribution transformer supplying the NMI."),
-            ("tariff_class", "Residential or Business network tariff class."),
-            ("street_address", "Supply address."), ("locality", "Locality of the supply address."), ("postcode", "Postcode."),
-            ("nmi_status", "Active or De-energised."), ("first_energised", "Date the NMI was first energised."),
-        ],
-        "Cross-reference": [
-            ("nmi", "NMI."), ("property_no", "Council property number the NMI supplies."),
-            ("match_method", "How GIS matched the NMI to the property: Address, Spatial or Manual."),
-            ("last_verified", "Date the match was last verified."),
-        ],
-        "Rates roll": [
-            ("property_no", "Council property number."), ("lot_on_plan", "Lot on plan."),
-            ("property_address", "Property address."), ("locality", "Locality (upper case on the roll)."),
-            ("postcode", "Postcode."), ("land_use_code", "Valuer-General primary land use code."),
-            ("land_use_description", "Land use description."),
-            ("rating_category", "Council differential general rating category for 2026-27."),
-            ("rating_category_description", "Rating category description."),
-            ("land_area_m2", "Land area (square metres); blank for building units."),
-            ("dwelling_year", "Year the dwelling was completed, from building approvals; blank where none."),
-        ],
-        "DER Register extract": [
-            ("ac_connection_id", "DER Register AC connection identifier."),
-            ("nmi", "NMI recorded for the AC connection by the installer."),
-            ("device_type", "Inverter or Battery."), ("manufacturer", "Device manufacturer."), ("model", "Device model."),
-            ("rated_power_kw", "Inverter rated AC power (kW), inverter rows."),
-            ("storage_capacity_kwh", "Storage capacity (kWh), battery rows."),
-            ("ac_connection_status", "Active or Decommissioned."), ("status_date", "Date of the status shown."),
-            ("registered_date", "Date the installer lodged the AC connection."),
-            ("installer_accreditation_no", "Installer's accreditation number."),
-            ("feeder", "Feeder, added by Mirrabee's extraction."),
-        ],
-        "NMI re-allocations": [
-            ("old_nmi", "NMI no longer in use."), ("new_nmi", "NMI that replaced it at the same premises."),
-            ("effective_date", "Date of the replacement."), ("reason", "Reason recorded."),
-        ],
-        "Battery rebate approvals": [
-            ("approval_ref", "State program approval reference."), ("property_address", "Address on the application."),
-            ("locality", "Locality."), ("postcode", "Postcode."),
-            ("battery_make_model", "Battery quoted on the application."),
-            ("nominal_kwh", "Nominal storage capacity of the quoted battery (kWh)."),
-            ("approved_date", "Date the rebate was approved."), ("rebate_aud", "Rebate approved (AUD)."),
-            ("approval_status", "Status at the program's export: Approved, Paid or Expired. The rebate is paid "
-                                "after installation."),
-        ],
-    }
-    for sheet, rows in fields.items():
-        w = wb.create_sheet(sheet)
-        w.append(["Field", "Definition"])
-        for r in rows:
-            w.append(list(r))
-        w.column_dimensions["A"].width = 28
-        w.column_dimensions["B"].width = 100
-    ws.column_dimensions["A"].width = 44
-    ws.column_dimensions["B"].width = 100
-    ws.column_dimensions["C"].width = 10
     wb.save(path)
 
 

@@ -5,7 +5,7 @@
  "objective": "forecasting",
  "stage": 5,
  "stage_name": "ship",
- "updated": "2026-10-15",
+ "updated": "2026-11-01",
  "stump": "A competent solver builds NPP-114's base forecast, takes each 2026 bulk-buy's impact as the systems it will install at the council's participation rate per home letterboxed and files YRB24 at about 4.2 MW over hosting capacity; per owner-occupied house still without PV it files YRB24 at 3.9, and each suburb's own before and after files YRB24 at 2.4; the step that lands all three there is counting a campaign's installed systems, or its suburb's rise over its own past, as what it adds, when more than half of the households the past campaigns signed up would have gone solar within three years anyway and uptake rose across the zone over the same years: read against the suburbs whose campaign had not yet run, the seven added 4.09 systems per 100 owner-occupied houses without PV, Bindarra Waters adds 1.7 MW, and the golden is YRB27 at about 1.9 MW.",
  "architecture": 1,
  "loops": 0,
@@ -97,9 +97,16 @@
    "repair": "design (round 3 rework of the decisive step: the bulk-buys' net addition against not-yet-treated suburbs)",
    "round": 3,
    "commit": "RESHIPPED (task136): rule 3 rework, each bulk-buy's net addition read against suburbs not yet treated; YRB27 at 1.9 MW"
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK data_dictionary.xlsx: a file whose name says it describes the data (data_dictionary); LEAK export_manifest.csv: a file whose name says it describes the data (manifest))",
+   "repair": "leak",
+   "move": "The generator no longer writes data_dictionary.xlsx or export_manifest.csv; the other 13 files, the goldens and figures.json are byte-identical to the judged pack. The manifest's provenance (source system, extracted or issued date, owner) moved to metadata.json through common.PROVENANCE, which checks.py also uses to assert no extract runs past its date. No sentence was added to any document: the fork rows that cited the dictionary or manifest now rest on NPP-114 (2.2 for SF2, 3.1 for SF6 and SF27) and on the producing systems' own columns and labels (SF3 the legacy number and equipment table, SF24 the Withdrawn label with no connection, SF28 registered_date and Active/Decommissioned, closure 19 the rates roll's code descriptions), each asserted; the asks' devices stay unstated. checks.py asserts no shipped file or sheet describes the data, positive-controlled on the two old names. Gates: checks 476, verify 97, two builds byte-identical, freeze determinism PASS, figures_check 70 figures 0 absent, voice-check PASS, leak.py REVIEW with no LEAK, guard surface exit 0. precut's older FAIL (no 'Measured by:' line) is closed by generator/ceiling.py, which measures the ask layer on the cut pack the way the Ask sheet's cracker sheet describes it (cracker 0 of 32 ask figures, mirror leakage 8.0 per cent, pair 33.4 measured and 39.7 at the worst single crack, the full includer 32 of 32 and 58.7); the Ask sheet names it, precut exit 0.",
+   "commit": ""
   }
  ],
- "resume": "",
+ "resume": "RESHIPPED 2026-11-01 (leak gate: data dictionary and export manifest removed; ceiling script added), pending the portal.",
  "approved": null,
  "delivered": "2026-10-15",
  "portal": null,
@@ -117,14 +124,15 @@
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-15 (people.first, Julie against task139, answered under Guard); no BLOCK",
-  "nearest": "0.16 this slot's round-2 lineage (driver, differentiated), 0.06 task142 and task94 v3; heart text nearest 0.04; surface exit 0, one pair promoted (task450, surface proximity, retired, differentiated on the card); personas Ian Fletcher, Julie Cochran, Tammy Buchanan"
+  "nearest": "0.16 this slot's round-2 lineage (driver, differentiated), 0.06 task142 and task94 v3; heart text nearest 0.04; surface exit 0, one pair promoted (task450, surface proximity, retired, differentiated on the card); personas Ian Fletcher, Julie Cochran, Tammy Buchanan",
+  "heart_2026_11_01": "BLOCK read as H27 artifacts, recorded with the dates: ban.role against task448 and ban.forcing_event against task449 (both drawn 2026-10-12 like task136 and, unstamped, after it in task-number order; heart places this unstamped card after every card of its day), test.same_driver_older against task485 v4 (drawn 2026-10-26, after this build). No finding about task136; surface exit 0."
  },
  "judge": {
-  "verdict": "DETERMINISTIC 2026-10-15 (judge-task136r3): APPROVE, no fix; every figure reproduced (YRB27 1.90, YRB24 1.70, gap 0.20, YRB22 1.39, increments 1.7 and 0.7 MW, net 627.8 systems on 15,349 houses or 4.09 per 100, all 32 DER cells); margin to the flip 0.85 per 100",
-  "disposition": "APPROVE, shipped as judged with nothing under target/ moved; the optional prompt pin ('the increment over what the suburb would have lodged anyway') declined because it hands over the decisive step (SF19, Tried and rejected); the two literal-reading notes filed (SF5 the trend on the network model's feeder at the base date; SF27 and SF28 the DER asks on the literal reading)",
-  "report": "determinism_check_report.md (round 1: determinism_check_report_round1.md and determinism_check_report_pass2.md; round 2: determinism_check_report_round2.md)",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "task136/determinism_check_report_pass3.md",
   "gate_g": "method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical"
+  "gate_h": "domain pass, layers pass, decisive_step analytical (settles the reship leak reader's rule-application reading)"
  },
  "gates": {
   "checks": "483 assertions (the three-rules block R1 to R3c, 33 constructions, one sigma, every rival route the audit measured)",
@@ -141,5 +149,6 @@
  "rule3": {
   "verdict": "PASS 2026-10-15 (re-audit of round 3, scratchpad/rule3/task136_r3.md): planted none, semantics pass, rule application pass, analyst test yes, Layer 1 does not carry the stump",
   "accepted_risks": "stump strength about one of the top two; both could land if both build a never-treated difference-in-differences (the never-treated comparison sits inside the corridor); the untreated suburbs' counts rise very smoothly (design note, Accepted risks)"
- }
+ },
+ "target_zip_md5": "bd4c13ada66610115ca1f88998616de5"
 }

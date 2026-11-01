@@ -21,8 +21,6 @@ SOURCES = {
     K.HCA: "Hosting capacity assessment BPE-2026-031 for the Yarrabin 22 kV feeders",
     K.DER: "DER Register extract (AC connections and devices) for NMIs on the Yarrabin feeders, as at 31 August 2026",
     K.REALLOC: "NMI re-allocation log for Yarrabin premises since 1 July 2019",
-    K.DICTIONARY: "Data dictionary for the extracts",
-    K.MANIFEST: "Export manifest: each file's source system, date, rows, owner and scope",
     K.PEAK: "Feeder summer peak demand forecast 2027 to 2031 (Distribution Annual Planning Report working file)",
     K.REBATE: "Queensland home battery rebate approvals for Merindah addresses, FY2025-26",
 }
@@ -39,8 +37,10 @@ def write(target, out_path):
     files = []
     for f in sorted(os.listdir(target)):
         p = os.path.join(target, f)
+        system, extracted, owner = K.PROVENANCE[f]
         files.append({"path": f, "format": f.rsplit(".", 1)[1], "bytes": os.path.getsize(p), "rows": rows_of(p),
-                      "source": "Constructed: " + SOURCES[f], "date": "2026-10-12",
+                      "source": "Constructed: " + SOURCES[f], "source_system": system, "extracted_or_issued": extracted,
+                      "owner": K.PEOPLE[owner] if owner else "Merindah City Council", "date": "2026-10-12",
                       "license": "CC0-1.0 (original work, constructed for this task)"})
     big = max((x for x in files if x["rows"]), key=lambda x: x["rows"])
     meta = {
