@@ -1,6 +1,6 @@
 """The pack's documents: the survey's public-use user guide and results bulletin, Kelvane Life's brief for the 2027
-retirement range, the Retirement Income Account PDS, the lifetime annuity key facts sheet, the data dictionary for the
-retirement book extracts and the 2026 customer research summary."""
+retirement range, the Retirement Income Account PDS, the lifetime annuity key facts sheet and the 2026 customer
+research summary."""
 from __future__ import annotations
 
 import datetime as dt
@@ -118,45 +118,44 @@ def write_user_guide(path, d, fig):
     sec = [
         ("1. The survey", [
             "The 2025 wave of the National Household Wealth Survey interviewed %s households in private dwellings in "
-            "every state and territory between 3 March and 31 October 2025. The sample was selected in two stages: the "
+            "every State and Territory between 3 March and 31 October 2025. The sample was selected in two stages: the "
             "country is divided into 60 strata by state and area type, two areas were selected in each stratum with "
             "probability proportional to their number of dwellings, and about 50 households were interviewed in each "
             "selected area. Households in non-private dwellings (aged care, hostels, prisons) are out of scope." % (
                 money(n_hh))]),
         ("2. The release", [
-            "The public-use release has three files, joined on the household identifier <i>hhid</i>: the household "
+            "The public-use release has three files, joined on the household identifier: the household "
             "summary extract (one row for each household on each of five implicates, %s rows); the person file (one "
             "row for each person, %s rows); and the replicate weight file (one row for each household with its 200 "
             "replicate weights). Stratum and area codes are not released. Ages are top-coded at 85, and the household's "
-            "location is released as the state only." % (money(5 * n_hh), money(n_p))]),
+            "location is released at the level of State or Territory only." % (money(5 * n_hh), money(n_p))]),
         ("3. Households and persons", [
             "The reference person (relationship code 1) is the household member with the highest personal income "
-            "from all sources, the elder where incomes tie. The person file gives each member's relationship to the "
+            "from all sources, the elder where incomes tie. The person file codes each member by their relation to the "
             "reference person: 1 reference person; 2 husband, wife or registered partner; 3 de facto partner; 4 child "
             "under 15; 5 dependent student aged 15 to 24; 6 non-dependent child; 7 parent of the reference person; 8 "
-            "other relative; 9 unrelated person. <i>hrp_age</i> and <i>hrp_sex</i> on the summary extract are the "
-            "reference person's; <i>couple</i> is Y where the reference person has a partner (code 2 or 3) in the "
-            "household."]),
+            "other relative; 9 unrelated person. The age and sex on the summary extract are the reference person's, "
+            "and the extract marks with Y each household whose reference person has a partner (code 2 or 3) in it."]),
         ("4. Wealth", [
-            "<i>assets</i> is the value of the household's owner-occupied home and other property, superannuation, "
-            "deposits, shares and other financial assets, business interests, vehicles and contents; <i>debts</i> is "
-            "the balance of every mortgage, property loan, personal loan, credit card and study debt owed by a member. "
-            "<i>networth</i> is assets less debts and is negative where debts exceed assets. <i>house</i> is the "
-            "owner-occupied home's value and <i>super</i> the superannuation balances of all members. All amounts are "
-            "in Australian dollars at the date of interview, whole dollars."]),
+            "A household's wealth is the value of its owner-occupied home and other property, superannuation, "
+            "deposits, shares and other financial holdings, business interests, vehicles and contents, less the "
+            "balance of every mortgage, property loan, personal loan, credit card and study debt owed by a member. "
+            "Net worth is everything the household owns less everything its members owe, and is negative where the "
+            "household owes more than it owns. The home's value and the superannuation balances of all members are "
+            "also given on their own. All amounts are in Australian dollars at the date of interview, whole dollars."]),
         ("5. Imputation", [
             "Where a household did not report the value of a wealth item, the value was imputed from households alike "
-            "in age, income, tenure and state, five times over. The summary extract carries the five implicates "
-            "(<i>imp</i> 1 to 5): a reported item is the same on every implicate and an imputed one differs. About a "
+            "in age, income, housing and location, five times over. The summary extract carries the five implicates, "
+            "numbered 1 to 5: a reported item is the same on every implicate and an imputed one differs. About a "
             "quarter of households have at least one imputed wealth item. Use all five implicates for every estimate."]),
         ("6. Weights", [
-            "<i>wgt</i> is the household's final weight, the number of households it represents, benchmarked to %s "
+            "Each household carries a final weight, the number of households it represents, benchmarked to %s "
             "households in private dwellings at 30 June 2025. It is the same on a household's five implicate rows. "
             "Every estimate must be weighted." % money(K.POPULATION_HOUSEHOLDS)]),
         ("7. Estimates and their standard errors", [
-            "7.1 An estimate is computed with <i>wgt</i> on each of the five implicates; the five are averaged.",
+            "7.1 An estimate is computed with the final weight on each of the five implicates; the five are averaged.",
             "7.2 Its standard error has two parts. The sampling variance: on implicate 1, compute the estimate again "
-            "with each of the 200 replicate weights in place of <i>wgt</i>; the sampling variance is the average of "
+            "with each of the 200 replicate weights in place of the final weight; the sampling variance is the average of "
             "the 200 squared differences between the replicate estimates and the implicate-1 estimate. The imputation "
             "variance: the variance (divisor 4) of the five implicate estimates. The total variance is the sampling "
             "variance plus 1.2 times the imputation variance, and the standard error is its square root. The relative "
@@ -243,7 +242,8 @@ def write_brief(path):
     r.bold = True
     r.font.size = Pt(12)
     for k, v in (("To", "Insights and Analytics"), ("From", "%s, Head of Retirement Products" % K.PEOPLE["head"]),
-                 ("Copy", "%s, Chair, Retirement Product Committee" % K.PEOPLE["chair"]),
+                 ("Copy", "%s, Chair, Retirement Product Committee; %s, Senior Actuary, Valuations" % (
+                     K.PEOPLE["chair"], K.PEOPLE["actuary"])),
                  ("Date", K.BRIEF_DATE.strftime("%-d %B %Y")),
                  ("Subject", "2027 retirement range: segment structure for the committee on 27 January")):
         p = doc.add_paragraph()
@@ -267,8 +267,9 @@ def write_brief(path):
         "which is in the folder with its user guide and results bulletin. Medians are weighted, and standard errors are "
         "estimated as the survey's user guide sets out." % K.CENTRE,
         "The committee will also want to see our own retirement income customers in the three groups from 55, placed "
-        "the same way. The client register, the Retirement Income Account and annuity extracts and the data dictionary "
-        "are in the folder; the PDS and the annuity key facts sheet are there for the product terms.",
+        "the same way; for our customers, a household's partners at any date, our clients or not, are those alive on "
+        "that date. The client register and the Retirement Income Account and annuity extracts are in the folder; the "
+        "PDS and the annuity key facts sheet are there for the product terms.",
         "Please send the paper, the workbook behind it and the chart by %s so I can circulate them with the committee "
         "papers." % (K.COMMITTEE - dt.timedelta(days=6)).strftime("%-d %B"),
     ]
@@ -313,7 +314,12 @@ def write_pds(path):
             "Administration fee: $78 a year plus 0.18 per cent of your balance, capped at $900 a year. Investment fees "
             "and costs depend on the option, from 0.05 per cent (Cash) to 0.74 per cent (Growth) a year."]),
         ("5. Nominating beneficiaries", [
-            "You can nominate a reversionary beneficiary: your spouse, or a child who is your dependant. If you do, your "
+            "When you make a nomination you give us each nominee's name, date of birth and relationship to you: your "
+            "spouse (your husband or wife), your de facto partner (a person you live with as a couple), your child, or "
+            "your legal personal representative. If your spouse or de facto partner is not a Kelvane client, your "
+            "nominations, whatever their type, are the only record we hold of them. We keep a nominee's details as you "
+            "gave them and do not update them, and a nomination stays current until you replace or revoke it.",
+            "You can nominate a reversionary beneficiary: your spouse or de facto partner, or a child who is your dependant. If you do, your "
             "pension continues to them automatically when you die, from the date of your death, on the same terms. You "
             "can change or remove a reversionary nomination at any time while you are alive.",
             "If you have not nominated a reversionary beneficiary, your pension stops when you die and your account "
@@ -377,95 +383,6 @@ def write_key_facts(path):
     doc = _doc(path, "Lifetime Annuity key facts", K.INSURER_LEGAL)
     doc.build(story, onFirstPage=_frame(K.INSURER_LEGAL, "Lifetime Annuity: key facts"),
               onLaterPages=_frame(K.INSURER_LEGAL, "Lifetime Annuity: key facts"))
-
-
-DICT = {
-    K.CRM: ("Client register, pulled 12 January 2027: one row per client record, everyone who holds or has held a Kelvane "
-            "product or is a life on one.", [
-                ("client_id", "Kelvane client number"),
-                ("household_id", "Household number; clients who are partners share one. A household's partners at "
-                                 "any date, our clients or not, are those alive on that date"),
-                ("date_of_birth", "Date of birth"),
-                ("sex", "M or F"),
-                ("state", "State of the postal address"),
-                ("marital_status", "As the client last told us"),
-                ("client_since", "Date the client record was opened"),
-                ("status", "Active; Deceased (we have been told of the client's death); Merged (a duplicate record retired into another)"),
-                ("date_of_death", "Date of death, where we have been told"),
-                ("merged_into", "For a merged record, the client number it was merged into")]),
-    K.RIA: ("Retirement Income Account pensions open in the fund's administration system at 31 December 2026, from the "
-            "period-end run: one row per pension account.", [
-                ("account_no", "Pension account number"),
-                ("member_id", "The member's client number as the administration system holds it"),
-                ("pension_type", "ABP (account-based pension) or TTR (transition to retirement pension)"),
-                ("commenced", "Date the pension started"),
-                ("investment_option", "Balanced, Growth, Conservative or Cash"),
-                ("payment_frequency", "Fortnightly, Monthly, Quarterly or Annually"),
-                ("annual_payment_2026_27", "Annual payment set for the 2026-27 financial year, dollars"),
-                ("balance_31_12_2026", "Balance at 31 December 2026, dollars")]),
-    K.NOMS: ("Nominations current on each Retirement Income Account pension at 31 December 2026: one row per nominee. "
-             "A member's spouse or de facto partner who is not our client is known to us only from these nominations, "
-             "whatever their type. "
-             "Nominee details are as the member gave them; the fund does not update them, and a nomination stays current "
-             "until the member replaces or revokes it.", [
-                ("account_no", "Pension account number"),
-                ("nomination_type", "Reversionary, Binding, Non-lapsing binding or Non-binding"),
-                ("nominee_name", "As written on the nomination"),
-                ("nominee_date_of_birth", "As written on the nomination; blank for the legal personal representative"),
-                ("relationship", "The nominee's relationship to the member, as the member gave it: Spouse (the member's "
-                                 "husband or wife), De facto partner (a person the member lives with as a couple), Child, "
-                                 "or Legal personal representative"),
-                ("share_percent", "Share of the benefit nominated"),
-                ("effective_from", "Date the nomination took effect")]),
-    K.ANN: ("Lifetime annuity lives in the 31 December 2026 valuation, with contracts that began since: one row per life "
-            "on each contract, pulled 12 January 2027. Amounts and statuses are as at the pull.", [
-                ("contract_no", "Annuity contract number"),
-                ("life_no", "1 for the annuitant; 2 for a reversionary annuitant"),
-                ("client_id", "The life's client number"),
-                ("date_of_birth", "The life's date of birth, as verified at purchase"),
-                ("sex", "M or F"),
-                ("commenced", "The annuity's start date"),
-                ("payments_start", "The date the annuity's income starts; later than the start date for a deferred annuity"),
-                ("indexation", "CPI, Fixed 2.5% or Level"),
-                ("payment_frequency", "Monthly, Quarterly, Half-yearly or Yearly"),
-                ("reversion_percent", "For a contract with a reversionary annuitant, the reversion percentage"),
-                ("annual_amount", "Annual amount of annuity for the life, dollars"),
-                ("life_status", "Alive or Deceased"),
-                ("date_of_death", "Date of death, where we have been told")]),
-}
-
-
-def write_dictionary(path):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "About"
-    ws.append(["Retirement book extracts: data dictionary"])
-    ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Insights and Analytics, %s. Owner of the annuity valuation listing: %s, Senior Actuary, Valuations." % (
-        K.INSURER, K.PEOPLE["actuary"])])
-    ws.append([])
-    ws.append(["File", "What it holds"])
-    for c in ws[4]:
-        c.font = Font(bold=True)
-    for f, (about, _) in DICT.items():
-        ws.append([f, about])
-    ws.column_dimensions["A"].width = 40
-    ws.column_dimensions["B"].width = 110
-    for row in ws.iter_rows(min_row=5):
-        row[1].alignment = Alignment(wrap_text=True, vertical="top")
-    for f, (about, cols) in DICT.items():
-        s = wb.create_sheet(f.replace(".csv", "")[:31])
-        s.append(["Column", "Meaning"])
-        for c in s[1]:
-            c.font = Font(bold=True)
-        for c, m in cols:
-            s.append([c, m])
-        s.column_dimensions["A"].width = 26
-        s.column_dimensions["B"].width = 100
-        s.freeze_panes = "A2"
-    wb.save(path)
 
 
 def write_research(path):

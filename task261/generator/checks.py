@@ -210,6 +210,7 @@ def run(target, golden, st, meta_path):
     # ------------------------------------------------------------------ R3c: no plant
     texts = {f: _text(os.path.join(target, f)) for f in files if not f.endswith(".csv")}
     joined = "\n".join(texts.values()).lower()
+    joined_raw = "\n".join(texts.values())
     for w in ("covarian", "correlat", "quadrature", "square root of the sum", "independent", "difference between two",
               "contrast", "five segments", "four segments", "three segments", "six segments"):
         ck("R3c: no shipped document carries '%s'" % w, w not in joined, w)
@@ -232,7 +233,8 @@ def run(target, golden, st, meta_path):
     ck("SF2: married partners only: same call", segments(zm2) == GOLD_SPLITS, zm2)
     ck("SF2: the user guide lists codes 2 and 3 as partners", "2 husband, wife or registered partner; 3 de facto partner"
        in texts[K.GUIDE].replace("\n", " "), "")
-    ck("SF3: the user guide defines net worth as assets less debts", "networth is assets less debts" in
+    ck("SF3: the user guide defines net worth as what the household owns less what its members owe",
+       "Net worth is everything the household owns less everything its members owe" in
        texts[K.GUIDE].replace("\n", " "), "")
     ck("SF3: negatives kept or dropped: same call", segments(zneg) == GOLD_SPLITS, zneg)
     ck("SF4: the user guide requires weights", "Every estimate must be weighted" in texts[K.GUIDE], "")
@@ -346,8 +348,8 @@ def run(target, golden, st, meta_path):
        "in every group (%s), beside %d members whose rows differ" % (two, len(same) - len(tie)),
        all(two[g] >= 10 for g in K.OLDER) and tie == {F.resolve(B.P[o]["client_id"]) for o in B.second} and
        len(same) - len(tie) >= 10, (two, len(same), len(tie)))
-    ck("device D6 (A): no file describes the balance or the payment as an account's", "Account balance" not in texts[K.DICT]
-       and not re.search(r"member'?s (total|summary)", texts[K.DICT], re.I), "")
+    ck("device D6 (A): no file describes the balance or the payment as an account's", "Account balance" not in joined_raw
+       and not re.search(r"member'?s (total|summary)", joined_raw, re.I), "")
     moves = {}
     for P in B.register_lag:
         M = B.hh_true[P]
@@ -371,15 +373,32 @@ def run(target, golden, st, meta_path):
            F.by.at[B.P[x]["client_id"], "marital_status"] == "Divorced" for cn in B.separated
            for x in (cn["life1"], cn["life2"])), sep)
     # the ask's conventions closed (judge r2): the partner a nomination names, a nominee who has died, the pull date
-    dct = texts[K.DICT]
-    ck("ask fork: the dictionary defines a Spouse or De facto partner nominee as the member's partner",
-       "Spouse (the member's husband or wife), De facto partner (a person the member lives with as a couple)" in dct, "")
-    ck("ask fork: the dictionary says the fund does not update nominee details",
-       "the fund does not update them" in dct, "")
-    ck("ask fork: the dictionary counts a household's partners alive on the date, clients or not",
-       "partners at any date, our clients or not, are those alive on that date" in dct, "")
-    ck("ask fork: the dictionary says where a partner who is not a client is known",
-       "who is not our client is known to us only from these nominations, whatever their type" in dct, "")
+    pds = re.sub(r"\s+", " ", texts[K.PDS])
+    brf = re.sub(r"\s+", " ", texts[K.BRIEF])
+    ck("ask fork: the PDS defines a spouse or de facto partner nominee as the member's partner",
+       "your spouse (your husband or wife), your de facto partner (a person you live with as a couple)" in pds, "")
+    ck("ask fork: the PDS says the fund does not update nominee details",
+       "We keep a nominee's details as you gave them and do not update them" in pds, "")
+    ck("ask fork: the PDS lets a de facto partner be a reversionary beneficiary, as the nominations hold",
+       "reversionary beneficiary: your spouse or de facto partner" in pds, "")
+    ck("ask fork: the brief counts a household's partners alive on the date, clients or not",
+       "a household's partners at any date, our clients or not, are those alive on that date" in brf, "")
+    ck("ask fork: the PDS says where a partner who is not a client is known",
+       "your nominations, whatever their type, are the only record we hold of them" in pds, "")
+    ck("ask fork: the annuity listing states its amounts' date in its own column",
+       set(ann["extract_date"]) == {K.PULL.isoformat()}, "")
+    ck("H: no file describes the data (no dictionary, readme, manifest or notes file in the pack)", not any(
+        re.search(r"dictionar|readme|manifest|codebook|field.?notes|schema", f, re.I) for f in files), files)
+    hdr = set()
+    for f in files:
+        if f.endswith(".csv"):
+            hdr |= {c for c in open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+                    if len(c) >= 4}
+    named = {f: sorted(c for c in hdr if re.search(r"(?<![A-Za-z0-9_])%s(?![A-Za-z0-9_])" % re.escape(c), t))
+             for f, t in texts.items() if not f.endswith(".xlsx")}
+    ck("H: no document names four or more of the data files' column names (positive control: the guide read)",
+       len(texts[K.GUIDE]) > 2000 and "Every estimate must be weighted" in texts[K.GUIDE] and
+       all(len(v) < 4 for v in named.values()), named)
     ck("ask fork: no annuity anniversary falls on the pull date", not any(
         (c["commenced"].month, c["commenced"].day) == (K.PULL.month, K.PULL.day) for c in B.ann), "")
     sp = F.sp.merge(F.acc[["account_no", "member_id"]], on="account_no")

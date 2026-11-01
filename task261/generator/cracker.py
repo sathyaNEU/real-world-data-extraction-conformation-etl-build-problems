@@ -25,9 +25,9 @@ CHART_MIRROR = 5       # the chart's form and points, its intervals drawn half a
 
 def paths(target):
     """A: merged client numbers followed, members alive at 31 December, households from the register with a partner
-    who is not a client taken from the nominations (the dictionary), and the pension of a member who died in December
+    who is not a client taken from the nominations (the PDS), and the pension of a member who died in December
     taken to the reversionary beneficiary (the PDS); every account row added. B: annuities begun and paying by 31
-    December (the dictionary's payments_start), January anniversary increases taken back (the listing is at the pull,
+    December (the listing's payments_start), January anniversary increases taken back (the listing is at the pull,
     the key facts give the rates), every life alive at 31 December at its listed amount, each with its own household."""
     F = SP.Files(target)
     return SP.ask_a(F, **SP.A_STOPS["cracker"]), SP.ask_b(F, **SP.B_STOPS["cracker"])

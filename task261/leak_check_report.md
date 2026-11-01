@@ -1,26 +1,28 @@
 # leak check, task261
 
-**Verdict: REVIEW.** 14 files read, 49 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 49 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: replicate, errors, weights, person, medians, bulletin, implicates, design, asserted, quadrature, estimate, reference, committee, standard, variance, decisive, estimates, client, clusters, replicates, insurer, recomputed, domain, together, implicate
+Stump terms swept: replicate, errors, weights, person, medians, bulletin, implicates, design, estimate, quadrature, asserted, reference, committee, standard, decisive, nominations, member, client, sentence, estimates, variance, replicates, dictionary, device, method
+
+## 1 file names (REVIEW 1)
+- **REVIEW** `nhws2025_results_bulletin.xlsx`: a sheet named 'Notes': confirm it is the organisation's own notes and does not describe the data's columns or files
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `retirement_range_2027_brief.docx`: golden figure 1.96 appears: ...een their median household net worth is more than 1.96 times the standard error of that difference. Wher...
 - **REVIEW** `retirement_range_2027_brief.docx`: carries 4 of 6 distinctive words of the committed call: "Set Kelvane Life's 2027 retirement range on five segments: under 35, 35 to 44, 45 to 54, 55 to 64, and 65 and over."
 
-## 4 design-note vocabulary (REVIEW 2)
+## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `nhws2025_user_guide.pdf`: 12 of 25 stump-paragraph terms appear (replicate, errors, weights, person, implicates, estimate); read whether the document names the move
+- **REVIEW** `retirement_income_account_pds_2026.pdf`: 4 of 25 stump-paragraph terms appear (person, nominations, member, client); read whether the document names the move
 - **REVIEW** `retirement_range_2027_brief.docx`: 9 of 25 stump-paragraph terms appear (errors, person, medians, bulletin, estimate, reference); read whether the document names the move
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 9 dates after the setting (REVIEW 1)
+- **REVIEW** `lifetime_annuity_lives_20270112.csv`: 107 ISO dates after 2027-01-13, e.g. 2030-04-01, 2030-12-01, 2032-01-01, 2032-05-01, 2032-07-01
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
-
-## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
 
@@ -33,6 +35,7 @@ Stump terms swept: replicate, errors, weights, person, medians, bulletin, implic
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read (loop 0)
 
@@ -152,3 +155,7 @@ Realism tells: none strong (the bulletin's bands differing from the brief's read
 Ruling: no fix. The stage 4 reads end here: nothing names the decisive step, no file ranks the boundaries, every question-5 sentence executes to the golden.
 
 **Reader (wave 3 audit, after the asks' re-cut).** Q1 none (the brief's rule and the guide's section 7 give the standard and the error of an estimate, never the error of a difference or the groups' covariance); Q2 none (the bulletin's ten-year bands from 30 by the reference person, context); Q3 the user guide, the dictionary and the brief as ordinary supporting files; Q4 none; Q5 the guide's variance formula applied to the difference, the combination left open; Q6 an analytical choice (the unit and the error of the difference). Q7 on the book: the partner known only from nominations, stale nominations, deaths after 31 December, deferred annuities, the January increases, the reversionary life's status; each settled by the dictionary, the PDS or the fact sheet, and none of the cut's two silent devices named. Q8 none planted; the dictionary's partner notes read careful rather than placed. Every REVIEW line harmless.
+
+## Solver's-eye read (loop 7, the 11-01 re-check: the data dictionary out, the user guide reworded)
+
+Reader (isolated, medium): Q1 none (the brief states the committee's rule, not the step); Q2 none (the bulletin's bands and basis differ from the brief's); Q3 none (the customer research summary is context and says it asked about preferences, not finances); Q4 none; Q5 the brief's placement by the older partner, its weighted medians and errors "as the survey's user guide sets out", the guide's 7.1 to 7.2 and median convention (the estimate and one estimate's error), and the brief's customer-household line (partners alive on the date, clients or not); the guide is silent on the error of a difference, which is the design (the readability screen's R3 row: silent). Q6 an analytical choice (the correct standard error of a difference across implicates and replicates); nothing planted, nothing decided by a single field. No realism tell; no ask-side sentence pointing at a trap (the PDS's nominations lines read as stated product facts). Flagged for confirmation: whether "the annual income it was paying them" reads as the listing's amount or an indexed amount (the main thread: closed by the listing's own extract_date column at the 12 January pull and the key facts sheet's anniversary increases, the judge's H3 at r2 and pass 3; left to this pass's judge). REVIEW lines: the bulletin's Notes sheet harmless (publisher's table notes, no columns or files); the brief's figure harmless (1.96, the committee's rule); the brief's call words harmless (the setting and rule, no structure); the listing's later dates harmless (deferred payments_start dates, every commenced, death and extract date on or before 12 January 2027).

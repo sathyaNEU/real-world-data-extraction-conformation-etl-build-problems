@@ -147,7 +147,7 @@ def write_nominations(path, B):
 def write_annuities(path, B):
     fh, w = _writer(path)
     w.writerow(["contract_no", "life_no", "client_id", "date_of_birth", "sex", "commenced", "payments_start",
-                "indexation", "payment_frequency", "reversion_percent", "annual_amount", "life_status", "date_of_death"])
+                "indexation", "payment_frequency", "reversion_percent", "annual_amount", "life_status", "date_of_death", "extract_date"])
     n = 0
     for c in sorted(B.ann, key=lambda c: c["contract"]):
         l1, l2 = c["life1"], c["life2"]
@@ -161,7 +161,7 @@ def write_annuities(path, B):
             w.writerow([c["contract"], no, pp["client_id"], pp["dob"].isoformat(), pp["sex"], c["commenced"].isoformat(),
                         (c["pay_from"] or c["commenced"]).isoformat(), c["index"], c["freq"],
                         c["pct"] if c["pct"] else "", "%.2f" % amt, "Deceased" if dead else "Alive",
-                        pp["dod"].isoformat() if dead else ""])
+                        pp["dod"].isoformat() if dead else "", K.PULL.isoformat()])
             n += 1
     fh.close()
     return n
