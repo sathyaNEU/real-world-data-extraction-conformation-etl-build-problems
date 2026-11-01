@@ -32,6 +32,162 @@ back by its stage 4 judge) are spent. Nothing of their worlds is kept.
 - **Retrospective quantity, forward call:** the agreement reviews and the regulator's audit fall in 2027; the test
   reads the closed 2026 discharge year, as the policy files it.
 
+- **Shape other (a designation over a scorecard):** each customer's verdict against its limit (12), the set (1), the
+  chart's parts (the shares, the limit line, the exceeders marked: 3), the files (2), and the two asks (48 quarterly
+  volumes, 12 suspended solids masses).
+- **Data-native sentence:** Coolabah Olives brines its fruit in salt and Tallowood Tannery salts its hides, so their
+  effluent carries five to twelve grams of chloride a litre, which the dichromate COD test oxidises with the carbon
+  and the TOC analyser never sees; Mt Edwin Cheese started recovering its whey brine in May 2026 and Tallowood took
+  salted hides from a new supplier from March, so their chloride is not what their 2025 parallel samples carried.
+- **Abstraction sentence (tested against every approved build):** a quantity reported on a new measurement basis is
+  converted to the reference basis through the samples both bases measured, but the reference basis also reads a
+  constituent the new basis cannot see, at levels that differ between senders and that moved for some of them after
+  the overlap, so only a conversion carrying each sample's own level of the constituent places every sender.
+
+## Survivor anatomy
+
+Actor: the deciding property, how much of each 2026 sample's dichromate COD is chloride's demand, has no column in any file; LabWare reports TOC and chloride side by side, the policy names no constituent, and the property exists only as a relation the parallel samples carry between COD, TOC and chloride.
+Link: no key or sentence ties chloride to the conversion: the policy's section 5 asks for the COD the reference method would have read, estimated from the samples tested both ways, and chloride sits in both laboratory exports for its own reason (every compliance sample carries it), with no document naming it beside COD or TOC.
+Reflex: the field's method for a TOC to COD bridge is a COD to TOC ratio, pooled or, better practice, each site's own ratio from its parallel samples (the site-specific correlation laboratories issue); the pooled ratio and the pooled regression file Glenbrae Meats, Riverbend Poultry and Sunvale Dairy, each customer's own ratio files Coolabah Olives, Mt Edwin Cheese, Glenbrae Meats and Riverbend Poultry.
+Back-test: the site-specific ratio validates on the parallel run itself: each customer's own ratio reproduces its own October to December 2025 COD within its method noise, so nothing in the overlap refutes it; only the 2026 chloride, which moved for Mt Edwin and Tallowood, shows it no longer holds.
+Second use: every file the decisive step reads sits in the pack for its own reason: the legacy LIMS export carries the January COD and the parallel run the policy names, LabWare carries the TOC and the suspended solids the second ask needs, and deleting the decisive step leaves both in the pack.
+Shock: the customers whose verdict the decisive step moves are not the largest dischargers (Glenbrae Meats and Sunvale Dairy discharge more), Mt Edwin's 2026 COD to TOC ratio falls from 4.6 to about 3.3, and the golden set is not the top of any one-column sort (COD per kilolitre, TOC mass, chloride level or volume; asserted in checks.py).
+Pins: the WHAT sits in the policy (the calendar year in Queensland time, both meters across an exchange, the volume-weighted mass, duplicates out, re-issued results replacing, half the reporting limit, the COD the reference method would have read estimated from the samples tested both ways, a limit exceeded when the mass is greater); no filed sentence names chloride, an interference, a factor or a model.
+
+## Default path
+
+1. Conform the two laboratory exports (the crosswalk, LabWare's UTC to Queensland time, duplicates out, re-issued results in) and the flow telemetry (both meters across each exchange, the job log's final and opening reads).
+2. Convert each 2026 TOC sample to COD with each customer's own COD to TOC ratio from its October to December 2025 parallel samples (the site-specific correlation).
+3. Apply the policy's mass formula: the year's volume times the volume-weighted mean COD of the year's samples, January on the measured COD.
+4. Compare each customer's mass with its agreement's limit.
+
+Ends on: Coolabah Olives, Mt Edwin Cheese, Glenbrae Meats and Riverbend Poultry over their limits (Tallowood Tannery under)
+Golden: Coolabah Olives, Tallowood Tannery, Glenbrae Meats and Riverbend Poultry over their limits (Mt Edwin Cheese under)
+
+## Stump sentence
+
+The default path conforms both laboratory systems and the meters, converts each 2026 TOC result to COD with each customer's own COD to TOC ratio from its parallel samples and files Coolabah Olives, Mt Edwin Cheese, Glenbrae Meats and Riverbend Poultry; the step that lands it there is taking a customer's 2025 ratio as its conversion, when the dichromate test also oxidises the chloride brine effluents carry and TOC never sees, Mt Edwin cut its chloride with brine recovery in May 2026 and Tallowood's rose with salted hides from March, so with COD estimated on each sample's own TOC and chloride Tallowood is over its limit and Mt Edwin under.
+
+## Three rules
+
+Task type: emissions-inventory (Physical & Environmental Sciences), which serves ETL: a utility's releases to sewer conformed from two laboratory systems, hourly meter telemetry across three meter exchanges and a field job log onto the agreements' reference basis.
+Domain test: the quantity that decides is each customer's mass of chemical oxygen demand discharged in 2026 on the dichromate reference method, the trade waste chemist's own load, and its conversion from TOC turns on how the dichromate test responds to chloride, which a water chemist knows and a reader of the files must find in the parallel samples.
+Swap: put hospitals' bed-days or a utility's megawatt-hours in place of effluent and there is no oxidant demand, no interfering ion, no parallel run of two methods and no conversion to carry; the task does not survive the swap.
+Layer 1: two laboratory exports in different layouts, codes and clocks (local before the migration, UTC after), a site code crosswalk, quality-control duplicates and re-issued results under suffixed identifiers, suspended solids below the reporting limit, hourly cumulative registers across three meter exchanges whose final and opening reads live only in the field job log, limits in tonnes for some agreements and kilograms for others; each comes from the system that keeps it and every careful handling of it leaves the call.
+Layer 2: estimation_fit, a method bridge validated on its overlap: the reference method's reading carries a component the new method cannot see, so the conversion is a model of the reference reading on the new reading and the interfering constituent, fitted on the parallel samples and carried to each 2026 sample's own chloride.
+Decisive step: estimating each 2026 sample's dichromate COD from its own TOC and chloride through a regression on the October to December 2025 parallel samples, instead of a ratio per customer or for all.
+Not semantics: every field, code and unit read correctly still leaves the ratio routes, because no field marks chloride as part of COD; the residuals of any TOC-only conversion track chloride (correlation 0.98 on the parallel samples, asserted) and that relation exists only across the three columns.
+Not rule application: no filed rule names chloride, a factor or a model, so executing the policy on any defensible conversion runs; the enumerated family (a pooled ratio, a pooled regression on TOC, each customer's own ratio by sum or median, each customer's own regression, the chloride regression with or without a constant or weighted by the inverse square) files three answers: the pooled routes' three customers, the per-customer routes' four with Mt Edwin, and the golden four with Tallowood; the standing family (the chloride members) agrees on the golden four with every customer at least 6.4 per cent from its limit, and the ruling-out is done by the parallel samples' residuals and the 2026 chloride.
+Analyst test: a strong analyst who conforms both laboratory systems and the meters, applies every policy rule and converts with each customer's own parallel-run ratio files Coolabah, Mt Edwin, Glenbrae Meats and Riverbend; every field is read and every rule executed, and the call is wrong because Mt Edwin's and Tallowood's 2026 chloride is not what their 2025 ratios carried.
+Estimand: glw_trade_waste_policy_v4.pdf sections 2 to 6: population, every customer with an agreement in force for 2026; outcome, the mass of COD on the dichromate reference method discharged in the year; window, the 2026 calendar year in Queensland time; unit, the customer; comparison, greater than the agreement's annual limit.
+No decoy: nothing is planted to be caught: no memo, factor or published conversion argues any route; the brine customers' chloride is their own process's, recorded on every sample, and the changes are ordinary process changes the samples show.
+No certified replay: no certified or published 2026 COD mass or conversion ships; the laboratory's notice states only that both methods ran in the parallel period.
+Lesson: a method bridge validated only on its overlap carries every constituent the reference method reads; a model that gets this right learns to ask what the old reading responds to besides the thing the new one measures, and whether that has moved since the overlap, before trusting a ratio carried forward.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | 7 Dedicated organ | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 1 a pooled ratio or regression on TOC | section 5 licenses an estimate | COD and TOC in the parallel rows | a conversion factor | none | runs it | one ratio | none | readable |
+| 2 each customer's own ratio from its parallel samples | section 5 | the same rows by site | the site-specific correlation | each ratio reproduces its own parallel run | runs it | one ratio per site | none | readable |
+| 3 (decisive) COD on each sample's own TOC and chloride | none names chloride | chloride sits in another column with no stated role | not the ratio reflex | no file states an interference | no battery item | the 2026 chloride carried sample by sample | the parallel run, kept for its own reason | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the COD the reference method would have reported | estimated on each sample's TOC and chloride | a ratio per customer or for all | different sets (the ladder) | the parallel samples' residuals (C4); same call across the chloride family (C2) |
+| SF2 | the agreement year | the calendar year in Queensland time | UTC | same call (asserted) | policy section 2 |
+| SF3 | an exchanged meter | both meters, the job log's final and opening reads | the register's meter only | not computable: the installed meter has no reading before its exchange (asserted) | policy section 3 |
+| SF4 | the mass | volume times the volume-weighted mean | the unweighted mean | same call (asserted) | policy section 4 |
+| SF5 | duplicates and re-issues | duplicates out, re-issues replace | kept | same call (asserted) | policy section 4 and the laboratory notice |
+| SF6 | below the reporting limit | half the limit | the limit or zero | same call (no COD rides it) | policy section 4 |
+| SF7 | January 2026 | the measured COD | converted from TOC | no TOC in January | the laboratory notice |
+| SF8 | the limit's unit | tonnes or kilograms as the register states | all tonnes | same call (asserted) | the register's unit column |
+| SF9 | exceeded | greater than the limit | at or over | no customer within 6 per cent | policy section 6 |
+
+## Ladder
+
+| Rung | Construction | Files | Dies to |
+|---|---|---|---|
+| 1 | a pooled COD to TOC ratio or regression | Glenbrae Meats, Riverbend Poultry, Sunvale Dairy | the brine customers' parallel samples sit far off any TOC-only line |
+| 2 | each customer's own parallel-run ratio (sum, median or regression) | Coolabah, Mt Edwin, Glenbrae Meats, Riverbend | Mt Edwin's and Tallowood's 2026 chloride is not their 2025 chloride |
+| 3 (decisive) | COD on each sample's own TOC and chloride, fitted on the parallel run | Coolabah, Tallowood, Glenbrae Meats, Riverbend | the golden |
+
+- **Margins on the cut pack** (asserted in checks.py): on the golden route every customer sits at least 6.5 per cent
+  from its limit (Sunvale Dairy the nearest, under); the chloride family members (no constant, inverse-square
+  weights) keep at least 6.4 per cent.
+- **No free parameter.** The decisive model has no knob: the chloride term enters linearly, its coefficient (0.23
+  mg/L of COD per mg/L of chloride) is fitted, and every family member files the same set.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | every customer with an agreement in force for 2026 | the register |
+| 2 Unit of account | the customer | policy section 6 |
+| 3 Attribution window | samples and discharge by local date | policy section 2 |
+| 4 As-of dating | the exports as issued in January 2027 | the files' dates |
+| 5 Version basis | a re-issued result replaces the earlier one | policy section 4 (SF5) |
+| 6 Denominator | the year's volume-weighted sample volume | policy section 4 (SF4) |
+| 7 Weighting | each sample by its day's volume | policy section 4 |
+| 8 Window length | the calendar year | policy section 2 |
+| 9 Boundary inclusivity | greater than the limit | policy section 6 (SF9) |
+| 10 Rounding path | masses unrounded against the limit; volumes to the kilolitre, suspended solids to 0.1 t | the prompt |
+| 11 Tie-break | none needed | no customer within 6 per cent |
+| 12 Maturity and censoring | the 2026 results all authorised by the exports | the exports |
+| 13 Order of operations | conform, convert, weight, compare | C1 |
+| 14 Row order | file order | none needed |
+| 15 Duplicate resolution | duplicates do not report the sample | policy section 4 (SF5) |
+| 16 Identity normalisation | legacy codes and points through the crosswalk | the crosswalk |
+| 17 Netting against gross | none | not applicable |
+| 18 Dimensional units | mg/L, kL, tonnes and kilograms | the files (SF8) |
+| 19 Code and status semantics | -D and -R suffixes, the less-than flag | the laboratory notice |
+| 20 Integerisation | none on the call | not applicable |
+| 21 Clause scope | section 5 governs every TOC sample | policy section 5 |
+| 22 Forward window contents | the 2027 reviews follow the 2026 verdicts | policy section 6 |
+
+## Literal reader
+
+Executing the policy word for word gives each customer's mass of COD on the dichromate reference method for the 2026
+calendar year in Queensland time, from both meters across an exchange and the volume-weighted mean of the year's
+compliance samples, with each TOC sample's COD the COD the reference method would have read, estimated from the
+samples tested both ways; no file states how that estimate is formed, so every literal reading has to fit it, and
+every fit that carries each sample's chloride files Coolabah, Tallowood, Glenbrae Meats and Riverbend, while a ratio
+per customer or for all (an easy estimate of the same literal quantity, not a reading of a sentence) files another set.
+
+## Oracles
+
+- The parallel run ties every route on its own samples within method noise except the pooled ones on the brine
+  customers; it refutes the pooled routes and not the per-customer ones.
+- January's measured COD ties every route (no conversion).
+- none ties only under the golden.
+
+## Ask sheet
+
+Two asks in the figures workbook, each on rows the call reads only in part, each a reconstruction across two systems.
+
+**Ask A, each customer's volume discharged in each quarter of 2026 (48 figures).** The telemetry's UTC registers read
+on Queensland quarters, and across each of three meter exchanges the removed meter (named only in the job log, not in
+the register) to its final read and the installed meter from its opening read. Hazards: the register lists only the
+installed meter; the logger was off for hours at each exchange.
+
+**Ask B, each customer's mass of suspended solids discharged in 2026 (12 figures).** The policy's mass formula on both
+laboratory systems, duplicates out, re-issued results replacing, results below 5 mg/L at 2.5.
+
+| Ask figures | Cracker (lands the call, executes every filed rule) | Mirror (stops at rung 2, conforms the habitual way) | Verdict |
+|---|---|---|---|
+| A, 48 quarters | Queensland quarters, both meters from the job log: 48 of 48 kept | UTC quarters, the register's meter: 0 of 48 | split |
+| B, 12 customers | duplicates out, re-issues in: 12 of 12 kept | every LabWare row: 4 of 12 | split |
+
+Pair ceiling: 57.8 (the cracker on the call at 100.0 keeping 60 of 60 ask figures, the mirror off it at 15.7 keeping 4 of 60).
+Mirror leakage: 6.7 per cent of the ask weight.
+Measured by: generator/ceiling.py (run on the cut pack)
+
+## Leak check
+
+Pending on the final cut: `leak.py task468 --asof 2027-01-12`.
+
 ## Tried and rejected
 
 - 2026-10-17, at the draw: Urban & Regional Science for a transit seed: none of its task types serves ETL, so the

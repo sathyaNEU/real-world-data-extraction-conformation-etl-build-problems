@@ -1,397 +1,253 @@
-"""The golden, computed from target/ alone: the price paid record with the January 2027 update applied, each
-dwelling's consecutive standard sales paired by address, the pairs whose dwelling had building work completed between
-its two sales set aside, each ward's repeat-sales index, the pressured wards and their shares, and the three asks.
-Every route the checks price is a parameter here."""
+"""task468 architecture 6: every owed figure computed from target/ alone, with the routes the checks price."""
 import csv
 import datetime as dt
 import os
-import re
-import sys
-from collections import defaultdict
 
 import numpy as np
-from openpyxl import load_workbook
+import openpyxl
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TARGET = os.path.join(HERE, "..", "target")
-F = {"hist": "pp-harrowmere-2015-2025.csv", "y26": "pp-harrowmere-2026.csv", "upd": "pp-monthly-update-2027-01.csv",
-     "pcs": "harrowmere_postcode_directory_2026-11.csv", "wards": "ward_codes_names_2019_2023.csv",
-     "reg": "hcc_building_control_completions_2015-2026.xlsx", "pipe": "hvha_affordable_pipeline_2027-28.xlsx",
-     "claims": "hvha_start_on_site_claims_2025-2027.csv"}
-COLS = ["id", "price", "date", "postcode", "ptype", "new", "duration", "paon", "saon", "street", "locality", "town",
-        "district", "county", "cat", "status"]
-YEARS = list(range(2015, 2027))
-LINE = 5.0
-POT = 12_000_000
-PY0, PY1 = dt.date(2027, 4, 1), dt.date(2028, 3, 31)
-SUFFIX = {"RD": "ROAD", "ST": "STREET", "AVE": "AVENUE", "GR": "GROVE", "TER": "TERRACE", "CL": "CLOSE",
-          "CRES": "CRESCENT", "DR": "DRIVE", "LN": "LANE", "PL": "PLACE", "GDNS": "GARDENS", "CT": "COURT"}
+F = {"lims_old": "glw_lims_trade_waste_results_2025-01_to_2026-02.csv",
+     "lims_new": "glw_labware_trade_waste_results_2026.csv",
+     "telemetry": "glw_trade_waste_flow_telemetry_2026.csv",
+     "register": "glw_trade_waste_agreements_register_2026.xlsx",
+     "crosswalk": "glw_sampling_point_crosswalk.csv",
+     "jobs": "glw_field_service_jobs_2026.xlsx"}
+TZ = dt.timedelta(hours=10)
+Y0, Y1 = dt.datetime(2026, 1, 1), dt.datetime(2027, 1, 1)
+QB = [dt.datetime(2026, m, 1) for m in (1, 4, 7, 10)] + [Y1]
+RL_SS = 5.0
 
 
-def p(target, k):
-    return os.path.join(target, F[k])
+def rows(path):
+    with open(path, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
 
 
-# ------------------------------------------------------------------------------------------------ loading
-
-def read_ppd(path):
-    with open(path, newline="", encoding="utf-8") as f:
-        rows = list(csv.reader(f))
-    if rows and rows[0][0].strip().lower().startswith("transaction unique identifier"):
-        rows = rows[1:]
-    return [dict(zip(COLS, row)) for row in rows]
+def sheet(path, name):
+    ws = openpyxl.load_workbook(path, read_only=True, data_only=True)[name]
+    vals = list(ws.iter_rows(values_only=True))
+    hdr = list(vals[0])
+    return [dict(zip(hdr, r)) for r in vals[1:] if any(v is not None for v in r)]
 
 
-def load_ppd(target, apply_update=True):
-    recs = {}
-    for k in ("hist", "y26"):
-        for x in read_ppd(p(target, k)):
-            recs[x["id"]] = x
-    if apply_update:
-        for x in read_ppd(p(target, "upd")):
-            if x["status"] in ("A", "C"):
-                recs[x["id"]] = x
-            elif x["status"] == "D":
-                recs.pop(x["id"], None)
-    out = []
-    for x in recs.values():
-        x = dict(x)
-        x["price"] = int(x["price"])
-        x["date"] = dt.date.fromisoformat(x["date"][:10])
-        out.append(x)
-    return out
+def load(target):
+    p = lambda k: os.path.join(target, F[k])
+    reg = sheet(p("register"), "Agreements")
+    cross = rows(p("crosswalk"))
+    point_cust = {r["Sampling point"]: r["Customer"] for r in reg}
+    legacy = {r["legacy_site_code"]: point_cust[r["point_id"]] for r in cross}
+    lim = {}
+    for r in reg:
+        v = float(r["COD limit"])
+        lim[r["Customer"]] = v / 1000.0 if str(r["COD limit unit"]).startswith("kg") else v
+    return {"target": target, "reg": reg, "point_cust": point_cust, "legacy": legacy, "limit": lim,
+            "custs": [r["Customer"] for r in reg]}
 
 
-def load_wards(target, year="23"):
-    names = {}
-    with open(p(target, "wards"), newline="") as f:
-        for r in csv.DictReader(f):
-            names[r["WD23CD"]] = r["WD23NM"]
-            names[r["WD19CD"]] = r["WD19NM"]
-    ward = {}
-    with open(p(target, "pcs"), newline="") as f:
-        for r in csv.DictReader(f):
-            ward[r["pcds"]] = names[r["wd23cd"] if year == "23" else r["wd19cd"]]
-    return ward
+# ------------------------------------------------------------------------------------------------ laboratory
 
-
-def norm_pc(s):
-    s = re.sub(r"\s+", "", (s or "").upper())
-    return s[:-3] + " " + s[-3:] if len(s) >= 5 else s
-
-
-def norm_street(s):
-    w = re.sub(r"[^A-Z0-9 ]", " ", (s or "").upper()).split()
-    if w and w[-1] in SUFFIX:
-        w[-1] = SUFFIX[w[-1]]
-    return " ".join(w)
-
-
-def addr_key(paon, saon, postcode):
-    return (re.sub(r"\s+", " ", (paon or "").upper().strip()), re.sub(r"\s+", " ", (saon or "").upper().strip()),
-            norm_pc(postcode))
-
-
-PC_RE = re.compile(r"(HW\d)\s*(\d[A-Z]{2})\s*$", re.I)
-
-
-def parse_legacy(addr):
-    """'Flat A, 14 Calder Rd, Harrowmere HW3 4QT' -> (paon, saon, street, postcode)"""
-    a = addr.strip()
-    m = PC_RE.search(a)
-    pc = norm_pc(m.group(1) + m.group(2)) if m else ""
-    a = a[:m.start()].strip(" ,") if m else a
-    a = re.sub(r",?\s*Harrowmere\s*$", "", a, flags=re.I).strip(" ,")
-    saon = ""
-    m = re.match(r"(Flat\s+\w+)\s*,\s*(.*)$", a, re.I)
-    if m:
-        saon, a = m.group(1), m.group(2)
-    parts = [x.strip() for x in a.split(",") if x.strip()]
-    if len(parts) >= 2:
-        paon, street = parts[0], parts[1]
-    else:
-        m = re.match(r"^(\d+[A-Z]?)\s+(.*)$", parts[0] if parts else "", re.I)
-        if m:
-            paon, street = m.group(1), m.group(2)
-        else:   # a house name with the street run on: take the known street suffix as the end of the street
-            toks = (parts[0] if parts else "").split()
-            cut = max([i for i, t in enumerate(toks) if t.upper() in SUFFIX or t.upper() in SUFFIX.values()] or [len(toks) - 1])
-            k = cut - 1
-            paon, street = " ".join(toks[:k]), " ".join(toks[k:cut + 1])
-    return paon, saon, street, pc
-
-
-def load_register(target):
-    wb = load_workbook(p(target, "reg"), read_only=True, data_only=True)
-    out = []
-    for row in list(wb["Legacy 2015-2020"].iter_rows(values_only=True))[1:]:
-        ref, rec, addr, desc, comp, ward, plus, minus = row[:8]
-        paon, saon, street, pc = parse_legacy(addr)
-        out.append(dict(system="legacy", ref=ref, received=dt.datetime.strptime(rec, "%d/%m/%Y").date(),
-                        completed=dt.datetime.strptime(comp, "%d/%m/%Y").date(), paon=paon, saon=saon, street=street,
-                        postcode=pc, wtype=desc, desc=desc, cert="", created=int(plus or 0), lost=int(minus or 0),
-                        lost_blank=False, ward=ward))
-    for row in list(wb["Uniform 2021-2026"].iter_rows(values_only=True))[1:]:
-        (app, rec, num, street, pc, wtype, desc, cert, cdate, body, plus, minus, ward) = row[:13]
-        saon = ""
-        num = str(num)
-        m = re.match(r"(Flat\s+\w+)\s*,\s*(.*)$", num, re.I)
-        if m:
-            saon, num = m.group(1), m.group(2)
-        out.append(dict(system="uniform", ref=app, received=dt.date.fromisoformat(rec),
-                        completed=dt.date.fromisoformat(cdate), paon=num, saon=saon, street=street, postcode=norm_pc(pc),
-                        wtype=wtype, desc=desc, cert=cert, created=int(plus or 0), lost=int(minus or 0),
-                        lost_blank=minus is None and wtype == "Conversion", ward=ward))
-    return out
-
-
-# ------------------------------------------------------------------------------------------------ the index
-
-def standard(recs, cats=("A",), types="DSTF"):
-    return [x for x in recs if x["cat"] in cats and x["ptype"] in types]
-
-
-def pairs_of(recs, key=lambda x: addr_key(x["paon"], x["saon"], x["postcode"]) + (x["street"],)):
-    by = defaultdict(list)
-    for x in recs:
-        by[key(x)].append(x)
-    out = []
-    for k, ss in by.items():
-        ss.sort(key=lambda x: (x["date"], x["id"]))
-        for a, b in zip(ss, ss[1:]):
-            out.append((k, a, b))
-    return out
-
-
-def works_index(reg, kinds=None, use="completed"):
-    idx = defaultdict(list)
-    for w in reg:
-        if kinds and not kinds(w):
-            continue
-        idx[addr_key(w["paon"], w["saon"], w["postcode"])].append(w[use])
-    return idx
-
-
-def clean(pairs, widx):
-    out = []
-    for k, a, b in pairs:
-        ds = widx.get(k[:3], [])
-        if any(a["date"] < d < b["date"] for d in ds):
-            continue
-        out.append((k, a, b))
-    return out
-
-
-def bmn(rows, weights=None):
-    """rows: (year1, year2, log ratio). Ordinary least squares on year indicators, 2015 the base."""
-    idx = {y: k for k, y in enumerate(YEARS[1:])}
-    rows = [r for r in rows if r[0] != r[1]]
-    X = np.zeros((len(rows), len(idx)))
-    yv = np.zeros(len(rows))
-    for k, (y1, y2, lr) in enumerate(rows):
-        if y2 in idx:
-            X[k, idx[y2]] += 1
-        if y1 in idx:
-            X[k, idx[y1]] -= 1
-        yv[k] = lr
-    if weights is not None:
-        w = np.sqrt(np.asarray([weights[k] for k in range(len(rows))]))
-        X, yv = X * w[:, None], yv * w
-    b, *_ = np.linalg.lstsq(X, yv, rcond=None)
-    lev = {YEARS[0]: 0.0}
-    lev.update({y: float(b[k]) for y, k in idx.items()})
-    return lev
-
-
-def change(lev, y=2026):
-    return 100.0 * (np.exp(lev[y] - lev[y - 1]) - 1.0)
-
-
-def ward_index(pairs, ward_of, min_hold=0, wrs=False):
-    rows = defaultdict(list)
-    for k, a, b in pairs:
-        w = ward_of.get(norm_pc(b["postcode"])) or ward_of.get(norm_pc(a["postcode"]))
-        if w is None:
-            continue
-        if (b["date"] - a["date"]).days < min_hold:
-            continue
-        rows[w].append((a["date"].year, b["date"].year, float(np.log(b["price"] / a["price"])), (b["date"] - a["date"]).days))
-    out = {}
-    for w, rr in rows.items():
-        base = [(y1, y2, lr) for y1, y2, lr, _ in rr]
-        if wrs:
-            lev0 = bmn(base)
-            res = [lr - (lev0[y2] - lev0[y1]) for y1, y2, lr in base]
-            days = [d for y1, y2, lr, d in rr]
-            # Case-Shiller second stage: squared residuals on the interval, weights the inverse of the fit
-            A = np.vstack([np.ones(len(days)), np.asarray(days, float)]).T
-            keep = [k for k, (y1, y2, lr) in enumerate(base) if y1 != y2]
-            c, *_ = np.linalg.lstsq(A[keep], np.asarray(res)[keep] ** 2, rcond=None)
-            fit = A @ c
-            fit = np.clip(fit, 1e-4, None)
-            wts = [1.0 / fit[k] for k in keep]
-            lev = bmn([base[k] for k in keep], weights=wts)
-        else:
-            lev = bmn(base)
-        out[w] = lev
-    return out
-
-
-def solve(target=TARGET, apply_update=True, wards="23", drop_works=True, works_kinds=None, works_use="completed",
-          min_hold=0, wrs=False, cats=("A",), types="DSTF"):
-    recs = load_ppd(target, apply_update)
-    ward_of = load_wards(target, wards)
-    reg = load_register(target)
-    st = standard(recs, cats, types)
-    prs = pairs_of(st)
-    if drop_works:
-        prs = clean(prs, works_index(reg, works_kinds, works_use))
-    idx = ward_index(prs, ward_of, min_hold, wrs)
-    ch = {w: change(lev) for w, lev in idx.items()}
-    return dict(recs=recs, ward_of=ward_of, reg=reg, pairs=prs, index=idx, change=ch)
-
-
-def pressured(ch):
-    return sorted(w for w, v in ch.items() if round(v, 1) > LINE)
-
-
-def pipeline_homes(target):
-    wb = load_workbook(p(target, "pipe"), read_only=True, data_only=True)
-    homes = defaultdict(int)
-    for row in list(wb["Pipeline"].iter_rows(values_only=True))[1:]:
-        sid, name, prov, ward, pc, h, sr, ar, so, start, comp, status, grant = row[:13]
-        d = start.date() if hasattr(start, "date") else start
-        if status in ("Approved", "In contract") and PY0 <= d <= PY1:
-            homes[ward] += int(h)
-    return dict(homes)
-
-
-def shares(press, homes):
-    tot = sum(homes.get(w, 0) for w in press)
-    return {w: int(round(POT * homes.get(w, 0) / tot)) for w in press}, {
-        w: POT * homes.get(w, 0) / tot for w in press}
-
-
-# ------------------------------------------------------------------------------------------------ the asks
-
-def dwelling_addresses(recs):
-    """addresses the price paid record shows as a dwelling (an entry for a house or flat), with the entry dates"""
-    out = defaultdict(list)
-    for x in recs:
-        if x["ptype"] in "DSTF":
-            out[addr_key(x["paon"], x["saon"], x["postcode"])].append(x["date"])
-    return out
-
-
-def ask_supply(target, reg=None, ward_of=None, recs=None, dedupe=True, infer_lost=True, blank_lost=0):
-    """net additional dwellings certified complete in 2026: created less lost, each application once; where an
-    approver's certificate leaves the dwellings lost blank, a converted building the price paid record shows as a
-    dwelling lost one"""
-    reg = reg or load_register(target)
-    ward_of = ward_of or load_wards(target)
-    recs = recs if recs is not None else load_ppd(target)
-    dwell = dwelling_addresses(recs) if infer_lost else {}
-    seen = {}
-    for w in reg:
-        if w["completed"].year != 2026 or (w["created"] == 0 and not w["lost"]):
-            continue
-        key = w["ref"] if dedupe else (w["ref"], w["cert"], w["completed"])
-        seen[key] = w
-    out = defaultdict(int)
-    for w in seen.values():
-        lost = w["lost"]
-        if w["lost_blank"]:
-            if infer_lost:
-                k = addr_key(w["paon"], w["saon"], w["postcode"])
-                lost = 1 if any(d < w["completed"] for d in dwell.get(k, [])) else 0
+def lab(D, dup="drop", rerun="replace", below="half", year_clock="local"):
+    """Each compliance sample: customer, local date, analytes. Old LIMS (local times) and LabWare (UTC)."""
+    samples = {}
+    for r in rows(os.path.join(D["target"], F["lims_old"])):
+        when = dt.datetime.strptime(r["Sampled"], "%d/%m/%Y %H:%M")
+        key = ("old", r["Sample No"])
+        s = samples.setdefault(key, {"cust": D["legacy"][r["Site Code"]], "when": when, "an": {}})
+        v = float(r["Result"])
+        if r["Test"] == "SS" and r["Qualifier"] == "<":
+            v = {"half": RL_SS / 2, "rl": RL_SS, "zero": 0.0}[below]
+        s["an"][{"COD": "cod", "TOC": "toc", "CL": "cl", "SS": "ss", "PH": "ph"}[r["Test"]]] = v
+    reruns = []
+    for r in rows(os.path.join(D["target"], F["lims_new"])):
+        utc = dt.datetime.strptime(r["collected_utc"], "%Y-%m-%dT%H:%M:%SZ")
+        when = utc + TZ if year_clock == "local" else utc
+        sid = r["sample_id"]
+        an = {"TOC (NPOC)": "toc", "Chloride": "cl", "Suspended Solids": "ss", "pH": "ph"}[r["analyte"]]
+        v = float(r["value"])
+        if an == "ss" and r["flag"] == "<":
+            v = {"half": RL_SS / 2, "rl": RL_SS, "zero": 0.0}[below]
+        if sid.endswith("-D"):
+            if dup == "drop":
+                continue
+            if dup == "own":
+                key = ("new", sid)
             else:
-                lost = blank_lost
-        out[ward_of.get(norm_pc(w["postcode"]))] += w["created"] - lost
-    return dict(out)
-
-
-def ask_company(target, recs=None, ward_of=None, group=True, rule="plausible"):
-    """money paid in 2026 additional entries for dwellings: a price standing on several entries of one day that is
-    several times a single dwelling's price in the ward is one portfolio transfer's, counted once"""
-    recs = recs if recs is not None else load_ppd(target)
-    ward_of = ward_of or load_wards(target)
-    med = defaultdict(list)
-    for x in standard(recs):
-        if x["date"].year == 2026:
-            med[ward_of.get(norm_pc(x["postcode"]))].append(x["price"])
-    med = {w: float(np.median(v)) for w, v in med.items()}
-    b = [x for x in recs if x["cat"] == "B" and x["ptype"] in "DSTF" and x["date"].year == 2026]
-    n = defaultdict(int)
-    money = defaultdict(int)
-    groups = defaultdict(list)
-    for x in b:
-        groups[(x["date"], x["price"])].append(x)
-    for (d, pr), xs in groups.items():
-        wards = [ward_of.get(norm_pc(x["postcode"])) for x in xs]
-        for wd in wards:
-            n[wd] += 1
-        one = False
-        if group and len(xs) >= 2:
-            one = pr > 3 * med.get(wards[0], 1e18) if rule == "plausible" else len(xs) >= int(rule)
-        if one:
-            money[wards[0]] += pr
-        else:
-            for wd in wards:
-                money[wd] += pr
-    return dict(n), dict(money)
-
-
-def ask_starts(target, ward_of=None, dedupe=True, statuses=("Paid", "Approved"), exact_only=False):
-    """affordable homes started on site in 2026: each start once. A claim that restates, for the whole site, the
-    homes other claims at the same postcode already started (the same total, from the first start) is not a start"""
-    ward_of = ward_of or load_wards(target)
-    with open(p(target, "claims"), newline="") as f:
-        rows = list(csv.DictReader(f))
-    for r in rows:
-        r["start"] = dt.datetime.strptime(r["Start on site"], "%d/%m/%Y").date()
-        r["homes"] = int(r["Homes"])
-        r["pc"] = norm_pc(r["Site postcode"])
-    live = [r for r in rows if r["Claim status"] in statuses]
-    keep = []
-    for r in live:
-        if r["start"].year != 2026:
+                continue
+        elif sid.endswith("-R"):
+            reruns.append((sid[:-2], an, v, when))
             continue
-        if dedupe:
-            others = [o for o in live if o is not r and o["pc"] == r["pc"] and o["Provider"] != r["Provider"]
-                      and o["start"] >= r["start"] and o["start"].year == 2026]
-            if others and (sum(o["homes"] for o in others) == r["homes"] if not exact_only else
-                           any(o["homes"] == r["homes"] and o["start"] == r["start"] for o in others)):
-                # the later claim restates starts already claimed: keep the first claims
-                first_sub = min(dt.datetime.strptime(o["Claim submitted"], "%d/%m/%Y").date() for o in others)
-                if dt.datetime.strptime(r["Claim submitted"], "%d/%m/%Y").date() > first_sub:
+        else:
+            key = ("new", sid)
+        s = samples.setdefault(key, {"cust": D["point_cust"][r["point_id"]], "when": when, "an": {}})
+        s["an"][an] = v
+    for base, an, v, when in reruns:
+        key = ("new", base)
+        if rerun == "replace":
+            samples[key]["an"][an] = v
+        elif rerun == "own":
+            samples[("new", base + "-R")] = {"cust": samples[key]["cust"], "when": when, "an": {an: v}}
+    return samples
+
+
+def parallel(samples):
+    return [s for s in samples.values() if "toc" in s["an"] and "cod" in s["an"]]
+
+
+def fit(par, form="chloride", intercept=True, weights=None):
+    toc = np.array([s["an"]["toc"] for s in par])
+    cod = np.array([s["an"]["cod"] for s in par])
+    cl = np.array([s["an"]["cl"] for s in par])
+    cols = [toc] + ([cl] if form == "chloride" else [])
+    if intercept:
+        cols = [np.ones_like(toc)] + cols
+    X = np.c_[tuple(cols)]
+    w = np.ones_like(cod) if weights is None else weights(cod)
+    b = np.linalg.lstsq(X * np.sqrt(w)[:, None], cod * np.sqrt(w), rcond=None)[0]
+    if not intercept:
+        b = np.r_[0.0, b]
+    if form != "chloride":
+        b = np.r_[b, 0.0]
+    return b   # intercept, per mg/L TOC, per mg/L chloride
+
+
+def converter(samples, route="golden"):
+    par = parallel(samples)
+    if route == "golden":
+        b = fit(par)
+        return lambda c, an: b[0] + b[1] * an["toc"] + b[2] * an["cl"]
+    if route == "chloride_origin":
+        b = fit(par, intercept=False)
+        return lambda c, an: b[1] * an["toc"] + b[2] * an["cl"]
+    if route == "chloride_wls":
+        b = fit(par, weights=lambda y: 1.0 / y ** 2)
+        return lambda c, an: b[0] + b[1] * an["toc"] + b[2] * an["cl"]
+    if route == "pooled_ratio":
+        r = sum(s["an"]["cod"] for s in par) / sum(s["an"]["toc"] for s in par)
+        return lambda c, an: r * an["toc"]
+    if route == "pooled_ols":
+        b = fit(par, form="toc")
+        return lambda c, an: b[0] + b[1] * an["toc"]
+    if route == "own_ratio":
+        own = {}
+        for c in set(s["cust"] for s in par):
+            ps = [s for s in par if s["cust"] == c]
+            own[c] = sum(s["an"]["cod"] for s in ps) / sum(s["an"]["toc"] for s in ps)
+        return lambda c, an: own[c] * an["toc"]
+    if route == "own_median_ratio":
+        own = {}
+        for c in set(s["cust"] for s in par):
+            own[c] = float(np.median([s["an"]["cod"] / s["an"]["toc"] for s in par if s["cust"] == c]))
+        return lambda c, an: own[c] * an["toc"]
+    if route == "own_ols":
+        own = {}
+        for c in set(s["cust"] for s in par):
+            own[c] = fit([s for s in par if s["cust"] == c], form="toc")
+        return lambda c, an: own[c][0] + own[c][1] * an["toc"]
+    raise ValueError(route)
+
+
+# ------------------------------------------------------------------------------------------------ volumes
+
+def meters(D):
+    """Each customer's meter segments: (serial, opening read or None, final read or None, on, off) in local time."""
+    jobs = sheet(os.path.join(D["target"], F["jobs"]), "Jobs")
+    seg = {}
+    reg_meter = {r["Customer"]: r["Flow meter"] for r in D["reg"]}
+    for c in D["custs"]:
+        ex = [j for j in jobs if j["Customer"] == c and j["Job type"] == "Meter exchange"]
+        if not ex:
+            seg[c] = [(reg_meter[c], None, None, None, None)]
+            continue
+        j = ex[0]
+        off = dt.datetime.strptime(j["Started (local)"], "%d/%m/%Y %H:%M")
+        on = dt.datetime.strptime(j["Completed (local)"], "%d/%m/%Y %H:%M")
+        seg[c] = [(j["Asset removed"], None, float(j["Removed final read (kL)"]), None, off),
+                  (j["Asset installed"], float(j["Installed opening read (kL)"]), None, on, None)]
+    return seg
+
+
+def telemetry(D, clock="local"):
+    tel = {}
+    for r in rows(os.path.join(D["target"], F["telemetry"])):
+        t = dt.datetime.strptime(r["reading_utc"], "%Y-%m-%dT%H:%M:%SZ")
+        tel.setdefault(r["meter_serial"], {})[t + TZ if clock == "local" else t] = float(r["register"])
+    return tel
+
+
+def cumulative(D, tel, seg, c):
+    """Volume a customer discharged from local 2026-01-01 00:00 to time t (local), across a meter exchange."""
+    s = seg[c]
+    first = s[0][0]
+    base = tel[first][Y0]
+
+    def cum(t):
+        if len(s) == 1 or t <= s[0][4]:
+            return tel[first][t] - base
+        old_vol = s[0][2] - base
+        return old_vol + tel[s[1][0]][t] - s[1][1]
+    return cum
+
+
+def volumes(D, tel=None, seg=None):
+    tel = tel or telemetry(D)
+    seg = seg or meters(D)
+    out = {}
+    for c in D["custs"]:
+        cum = cumulative(D, tel, seg, c)
+        out[c] = {"year": cum(Y1), "q": [cum(QB[i + 1]) - cum(QB[i]) for i in range(4)], "cum": cum}
+    return out
+
+
+def day_volume(vol, c, d):
+    t0 = dt.datetime.combine(d, dt.time(0))
+    return vol[c]["cum"](t0 + dt.timedelta(days=1)) - vol[c]["cum"](t0)
+
+
+# ------------------------------------------------------------------------------------------------ masses
+
+def masses(D, samples, vol, conv, analyte="cod"):
+    out = {}
+    for c in D["custs"]:
+        num = den = 0.0
+        for s in samples.values():
+            if s["cust"] != c or s["when"].year != 2026:
+                continue
+            an = s["an"]
+            if analyte == "cod":
+                if "cod" in an:
+                    x = an["cod"]
+                elif "toc" in an:
+                    x = conv(c, an)
+                else:
                     continue
-        keep.append(r)
-    out = defaultdict(int)
-    for r in keep:
-        out[ward_of.get(r["pc"])] += r["homes"]
-    return dict(out)
+            else:
+                if analyte not in an:
+                    continue
+                x = an[analyte]
+            v = day_volume(vol, c, s["when"].date())
+            num += x * v
+            den += v
+        out[c] = vol[c]["year"] * num / den / 1e6
+    return out
 
 
-def golden(target=TARGET):
-    S = solve(target)
-    press = pressured(S["change"])
-    homes = pipeline_homes(target)
-    sh, exact = shares(press, homes)
-    n, money = ask_company(target, S["recs"], S["ward_of"])
-    return dict(S=S, change=S["change"], pressured=press, homes=homes, shares=sh, exact_shares=exact,
-                supply=ask_supply(target, S["reg"], S["ward_of"], S["recs"]), company_n=n, company_money=money,
-                starts=ask_starts(target, S["ward_of"]))
+def solve(target, route="golden"):
+    D = load(target)
+    S = lab(D)
+    vol = volumes(D)
+    conv = converter(S, route)
+    cod = masses(D, S, vol, conv)
+    ss = masses(D, S, vol, conv, analyte="ss")
+    over = sorted(c for c in D["custs"] if cod[c] > D["limit"][c])
+    return {"D": D, "samples": S, "vol": vol, "cod": cod, "ss": ss, "over": over,
+            "fit": fit(parallel(S)), "n_parallel": len(parallel(S))}
 
 
 if __name__ == "__main__":
-    t = sys.argv[1] if len(sys.argv) > 1 else TARGET
-    G = golden(t)
-    D = solve(t, drop_works=False)
-    for w in sorted(G["change"]):
-        print("%-14s golden %6.2f  all-pairs %6.2f" % (w, G["change"][w], D["change"][w]))
-    print("pressured", G["pressured"], "default", pressured(D["change"]))
-    print("homes", G["homes"])
-    print("shares", G["shares"])
-    print("supply", G["supply"])
-    print("company", G["company_n"], G["company_money"])
-    print("starts", G["starts"])
+    import sys
+    R = solve(sys.argv[1])
+    print("fit", np.round(R["fit"], 4), "parallel samples", R["n_parallel"])
+    for c in R["D"]["custs"]:
+        print("%-30s vol %9.0f  COD %7.1f t  limit %7.1f  %s  SS %6.1f t  q %s" % (
+            c, R["vol"][c]["year"], R["cod"][c], R["D"]["limit"][c], "OVER" if c in R["over"] else "    ",
+            R["ss"][c], [round(x) for x in R["vol"][c]["q"]]))

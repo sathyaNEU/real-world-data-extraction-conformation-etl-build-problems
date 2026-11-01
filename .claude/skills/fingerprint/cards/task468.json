@@ -48,8 +48,8 @@
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "glw_trade_waste_flow_telemetry_2026.csv",
+    "rows": 105405,
     "entity": "one hourly flow telemetry reading at one customer's meter",
     "grain": "meter x hour",
     "source": "synthetic",
@@ -77,7 +77,10 @@
       "Brent Fisher"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "trade_waste_cod_review_2026.pdf",
+    "trade_waste_figures_2026.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A quantity reported on a new measurement basis is converted to the reference basis through the samples both bases measured, but the reference basis also responds to a constituent the new basis does not see, carried at levels that differ between senders and that moved for some senders after the overlap; one factor for every sender, or each sender's own factor from the overlap, misplaces the senders whose constituent level is not what it was, and only a conversion that carries each sample's own level of the constituent places every sender.",
@@ -215,9 +218,9 @@
   ],
   "notes": "Architecture 6 drawn 2026-11-01 (batch 1 re-root after architecture 5's SEND_BACK): a water utility's trade waste COD masses after its laboratory's move to TOC, the conversion carrying the chloride the reference method reads.",
   "shell": {
-    "question form": "how-much",
-    "second-sentence opener": "compile",
-    "rounding opener": "send",
+    "question form": "which",
+    "second-sentence opener": "our",
+    "rounding opener": "volumes",
     "deliverable set": "pdf+xlsx"
   },
   "registered": "2026-11-01T01:02:25Z"

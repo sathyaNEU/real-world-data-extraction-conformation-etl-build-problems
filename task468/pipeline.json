@@ -1,15 +1,19 @@
 {
  "task": "task468",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences / emissions-inventory (client physical-environmental-sciences)",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-11-01",
- "stump": "",
+ "stump": "The default path conforms the two laboratory systems, applies the policy's volume-weighted mass formula and converts each 2026 TOC result to COD with each customer's own COD to TOC ratio from its parallel samples, which puts Mt Edwin Cheese over its limit and leaves Tallowood Tannery under; the step that lands it there is taking a customer's parallel-period ratio as its conversion, when the dichromate COD also oxidises the chloride in brine effluents, which TOC never sees, and Mt Edwin cut its chloride with brine recovery in May 2026 while Tallowood's rose with a new hide supplier, so converted with each sample's own chloride Tallowood is over and Mt Edwin under (one pooled factor misses every brine customer).",
  "architecture": 6,
  "loops": 0,
- "precut": {},
+ "precut": {
+  "exit": 1,
+  "date": "2026-11-01",
+  "checks": "61, 1 FAIL (cracker misses every ask: the cracker keeps asks A and B), 0 WARN"
+ },
  "leak": {
   "leak_py": "",
   "reader": ""
@@ -30,7 +34,7 @@
    "commit": "DRAWN (task468) architecture 5"
   }
  ],
- "resume": "stage 2: write the design note's sections (survivor anatomy, default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet) and run precut.py, then build the generator",
+ "resume": "stage 3, the asks: precut.py's one FAIL is 'cracker misses every ask' (the careful solver who lands the call and executes every filed rule keeps all 48 quarterly volumes and all 12 suspended solids masses). Give each ask its own silent device against the careful solver's path (supplemental-stumping Part 2.1), a reconstruction across two systems that no sentence states, without touching the call: for ask A, for example, a meter whose register reads in a different unit or multiplier recorded only in the field job log's asset fields, or a telemetry gap a manual read in the job log closes; for ask B, a sample whose result the laboratory re-issued under the corrected point after a mislabel recorded only in the LabWare authorisation trail. Implement in gen.py and pack.py, solve.py and verify.py, add the device's naive variant to ceiling.py's cracker, rebuild with python3 task468/generator/make.py, re-run precut.py (target exit 0), then every free gate on the final cut (figures_check.py, voice-check.py, leak.py --asof 2027-01-12, guard.py heart and surface, a golden-realism pass on the memo and the workbook), fill the design note's Leak check section, write the leak copy at scratchpad/leak-task468/ and the reader brief at scratchpad/task468_stage4_leak_brief.md, and commit PAUSED for stage 4 (the leak reader and the determinism judge from the main thread). The main call, the ladder and the conversion are built and asserted; do not move them.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -101,6 +105,10 @@
   {
    "date": "2026-11-01",
    "event": "architecture 5 spent at its stage 4 judge (SEND_BACK); DRAWN: architecture 6, physical-environmental-sciences / emissions-inventory x ETL, registered 2026-11-01T01:02:25Z"
+  },
+  {
+   "date": "2026-11-01",
+   "event": "architecture 6 built through stage 3 except the asks' silent devices: generator, pack, goldens, submission and checks green on target.zip ee814e85; precut 1 FAIL on the asks"
   }
  ],
  "gates": {
@@ -136,5 +144,10 @@
   "build": null,
   "resume": "stage 4 from the main thread (a fork cannot spawn): confirm `python3 task468/generator/make.py` rebuilds target.zip 2b95ef4209da0565 byte-identical, then spawn together in the background the leak reader (general-purpose, sonnet, medium) with the prompt in scratchpad/task468_stage4_leak_brief.md on the copy at scratchpad/leak-task468/, and the determinism judge (determinism-judge, medium) on task468/; fix every finding in the generator in one pass, re-run make.py, precut.py, figures_check.py, leak.py --asof 2027-02-03, guard.py surface and heart, then stage 5 (ship)",
   "fate": "spent 2026-11-01 at its stage 4 judge, NOT_DETERMINISTIC, SEND_BACK (the methodology's pair definition executed word for word files four wards; the golden's set-aside rested on an intent phrase; filing it would make linking the completions register a rule executed); report determinism_check_report_arch5.md"
+ },
+ "build": {
+  "rebuild": "python3 task468/generator/make.py",
+  "zip_sha256": "ee814e855c84e0e6cf408ab18eee052a877c785d15d467f3cc957e35a97b7cdb",
+  "gates": "two byte-identical builds (16 files); checks.py every check green (C1 to C9, SF1 to SF9, G1 to G3); verify.py 0 failed; ceiling.py pair 57.8, mirror leakage 6.7; voice-check PASS with the 'which' quota WARN; precut 61 checks, 1 FAIL"
  }
 }

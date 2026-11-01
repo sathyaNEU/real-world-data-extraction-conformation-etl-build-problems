@@ -1,101 +1,49 @@
 ## Tags
 
-> **Domain:** Survey Research & Official Statistics (seasonal adjustment and official time series production: a ward house price index compiled from the price paid record and the council's building control register).
-> **Analytical objective:** Data Extraction & Conformation (ETL).
+**Domain:** Physical & Environmental Sciences (emissions inventory: a water utility's releases to sewer, trade waste chemical oxygen demand on the agreements' reference method).
+**Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Give the 2027-28 pressured-ward uplift to Calder Bank (GBP 5,638,095), Kestrel Rise (GBP 3,657,143) and Abbots Hollow (GBP 2,704,762).** Their Ward House Price Index rose 7.9, 6.7 and 5.8 per cent from 2025 to 2026, over the 5.0 per cent line, and no other ward's did. Not Pellbury, whose index rises 6.0 per cent on every pair of its sales but 3.1 per cent once the pairs whose dwelling had building work completed between its two sales are set aside.
+**Coolabah Olives, Glenbrae Meats, Riverbend Poultry and Tallowood Tannery exceeded their agreements' 2026 COD limits and go on the annual return with a notice of agreement review; no other customer did.**
+The dichromate COD the agreements limit also reads chloride, which TOC does not, so each 2026 TOC sample is converted on its own chloride; Mt Edwin Cheese's chloride fell after its brine recovery started in May and Tallowood Tannery's rose from March, so the ratios their 2025 parallel samples carried misstate both.
 
 ## 2. Critical Components
 
-1. Calder Bank's, Kestrel Rise's and Abbots Hollow's index rose **7.9%**, **6.7%** and **5.8%** from 2025 to 2026.
-2. Pellbury's index rose **3.1%** with the pairs spanning completed building work set aside, against **6.0%** on every pair.
-3. The pressured wards have **148**, **96** and **71** homes due to start on site in 2027-28, **315** in all.
+1. The COD equivalent of a TOC sample carries the sample's chloride: fitted on the parallel samples, COD rises **about 0.23 mg/L per mg/L of chloride** beside about 2.8 per mg/L of TOC.
+2. Customers over their limits: **Coolabah Olives, Glenbrae Meats, Riverbend Poultry, Tallowood Tannery**.
+3. Within their limits: Mt Edwin Cheese, Sunvale Dairy, Hartley St Brewing, Bellbird Beverages, Kingfisher Linen, Golden Crumb, Paddock Fresh, Wattle Pet Foods.
 
 ## 3. Step-by-Step Solution
 
-1. Read pp-harrowmere-2015-2025.csv and pp-harrowmere-2026.csv and applied pp-monthly-update-2027-01.csv by transaction identifier: A and C rows stand as published, D rows withdraw the entry.
-2. Kept standard (category A) entries for property types D, S, T and F and paired each address's consecutive sales (PAON, SAON, street and postcode), per section 3 of hvha_ward_house_price_index_methodology.pdf.
-3. Read both sheets of hcc_building_control_completions_2015-2026.xlsx to house number or name, flat and postcode, and set aside every pair whose dwelling has a completion certificate dated between its two sales, the dwelling being of a different quality at the second sale: Pellbury keeps 226 of its 261 pairs ending in 2026.
-4. Placed each pair in its May 2023 ward by postcode (wd23cd in harrowmere_postcode_directory_2026-11.csv), fitted each ward's index by ordinary least squares on the year indicators and took the 2025 to 2026 change: Calder Bank 7.9, Kestrel Rise 6.7, Abbots Hollow 5.8, every other ward under 5.0 (Pellbury 3.1).
-5. Ask A: register rows certified in 2026, dwellings created less dwellings lost, each application once (a partial completion and its completion certificate carry the same dwellings), in the ward of the site postcode's wd23cd, since the register's Ward column holds the 2019 wards: 348 in all.
-6. Ask B: category B entries for dwellings transferred in 2026, after the update; a portfolio transfer's price stands on each of its titles, so a price on three or more entries of one day is counted once: 525 entries, GBP 160,661,830 in all.
-7. Ask C: start-on-site claims in hvha_start_on_site_claims_2025-2027.csv dated 2026 and Paid or Approved, each start once (Calderstone's claims for the starts Brackwell Homes was paid for before the merger repeat the postcode, start date and homes): 1540 homes in all.
-8. Shared the GBP 12,000,000 among the three in proportion to homes in Approved or In contract schemes due to start from 1 April 2027 to 31 March 2028 in hvha_affordable_pipeline_2027-28.xlsx, per section 3 of the programme rules: Calder Bank GBP 5,638,095, Kestrel Rise GBP 3,657,143 and Abbots Hollow GBP 2,704,762.
+1. Laboratory: the legacy LIMS (local times, site codes through the crosswalk) and LabWare (UTC to Queensland time, point identifiers), duplicates (-D) dropped, re-issued results (-R) replacing the originals, suspended solids below 5 mg/L at 2.5.
+2. Conversion: COD regressed on TOC and chloride over the samples tested both ways in October to December 2025, with a constant, applied to each 2026 TOC sample with its own chloride.
+3. Volume: each meter's hourly register read in Queensland time over the local year; across an exchange the removed meter to its final read and the installed meter from its opening read, both from the field job log.
+4. Mass: the year's volume times the volume-weighted mean concentration of the year's compliance samples, each weighted by its day's metered volume, January on the measured COD.
+5. Exceedance: each COD mass against the register's limit (kilograms read as such).
 
 ## 4. Deliverable Answers
 
-### harrowmere_pressured_wards_2027-28.pdf
+### trade_waste_cod_review_2026.pdf
 
-1. Pressured wards for 2027-28: Calder Bank, Kestrel Rise and Abbots Hollow.
-2. Shares of the GBP 12,000,000 uplift: Calder Bank GBP 5,638,095; Kestrel Rise GBP 3,657,143; Abbots Hollow GBP 2,704,762.
-3. Chart on page 1: every ward's 2025 to 2026 index change as a bar, the 5.0 per cent line marked and the three pressured wards highlighted.
+1. Customers that exceeded their 2026 COD limit: Coolabah Olives, Glenbrae Meats, Riverbend Poultry, Tallowood Tannery.
+2. Customers within their limit: Mt Edwin Cheese, Sunvale Dairy, Hartley St Brewing, Bellbird Beverages, Kingfisher Linen, Golden Crumb, Paddock Fresh, Wattle Pet Foods.
+3. Chart of each customer's 2026 COD mass as a share of its limit, the exceeders marked.
 
-### harrowmere_ward_index_2026.xlsx
+### trade_waste_figures_2026.xlsx
 
-1. Index change 2025 to 2026, per cent to one decimal:
-   - Abbots Hollow: 5.8
-   - Brindley Moor: 3.4
-   - Calder Bank: 7.9
-   - Dunmore: 2.2
-   - Eastholme: 3.9
-   - Fennick: 3.6
-   - Gorsey Hill: 2.6
-   - Hollin Edge: 3.7
-   - Kestrel Rise: 6.7
-   - Moss Brow: 2.4
-   - Pellbury: 3.1
-   - Wexley: 3.5
-2. Share of the uplift, nearest pound:
-   - Abbots Hollow: GBP 2,704,762
-   - Brindley Moor: GBP 0
-   - Calder Bank: GBP 5,638,095
-   - Dunmore: GBP 0
-   - Eastholme: GBP 0
-   - Fennick: GBP 0
-   - Gorsey Hill: GBP 0
-   - Hollin Edge: GBP 0
-   - Kestrel Rise: GBP 3,657,143
-   - Moss Brow: GBP 0
-   - Pellbury: GBP 0
-   - Wexley: GBP 0
-3. Net additional dwellings from building work completed in 2026 (May 2023 wards):
-   - Abbots Hollow: 21
-   - Brindley Moor: 26
-   - Calder Bank: 61
-   - Dunmore: 19
-   - Eastholme: 16
-   - Fennick: 11
-   - Gorsey Hill: 17
-   - Hollin Edge: 22
-   - Kestrel Rise: 35
-   - Moss Brow: 60
-   - Pellbury: 12
-   - Wexley: 48
-4. Additional price paid entries for dwellings transferred in 2026, count and money paid to the nearest pound:
-   - Abbots Hollow: 45 entries, GBP 14,939,138
-   - Brindley Moor: 43 entries, GBP 18,514,750
-   - Calder Bank: 93 entries, GBP 22,234,280
-   - Dunmore: 28 entries, GBP 12,089,585
-   - Eastholme: 51 entries, GBP 15,158,172
-   - Fennick: 48 entries, GBP 11,033,449
-   - Gorsey Hill: 30 entries, GBP 14,047,363
-   - Hollin Edge: 45 entries, GBP 13,924,752
-   - Kestrel Rise: 27 entries, GBP 7,121,539
-   - Moss Brow: 34 entries, GBP 9,947,892
-   - Pellbury: 39 entries, GBP 8,806,141
-   - Wexley: 42 entries, GBP 12,844,769
-5. Affordable homes started on site in 2026:
-   - Abbots Hollow: 131
-   - Brindley Moor: 138
-   - Calder Bank: 89
-   - Dunmore: 158
-   - Eastholme: 92
-   - Fennick: 164
-   - Gorsey Hill: 139
-   - Hollin Edge: 133
-   - Kestrel Rise: 86
-   - Moss Brow: 132
-   - Pellbury: 63
-   - Wexley: 215
+1. Volume discharged by quarter of 2026, kL:
+   - Coolabah Olives: Q1 11,031, Q2 11,710, Q3 11,051, Q4 10,376
+   - Tallowood Tannery: Q1 13,956, Q2 14,994, Q3 13,989, Q4 13,239
+   - Mt Edwin Cheese: Q1 16,370, Q2 17,493, Q3 16,707, Q4 15,164
+   - Glenbrae Meats: Q1 32,757, Q2 35,337, Q3 32,299, Q4 30,830
+   - Riverbend Poultry: Q1 28,001, Q2 30,254, Q3 28,305, Q4 26,975
+   - Sunvale Dairy: Q1 41,552, Q2 44,518, Q3 41,782, Q4 39,247
+   - Hartley St Brewing: Q1 7,558, Q2 8,143, Q3 7,765, Q4 7,087
+   - Bellbird Beverages: Q1 18,761, Q2 20,081, Q3 19,139, Q4 18,088
+   - Kingfisher Linen: Q1 26,350, Q2 28,195, Q3 26,221, Q4 24,479
+   - Golden Crumb: Q1 6,786, Q2 7,222, Q3 6,850, Q4 6,292
+   - Paddock Fresh: Q1 22,969, Q2 24,556, Q3 23,187, Q4 21,438
+   - Wattle Pet Foods: Q1 11,840, Q2 12,657, Q3 12,020, Q4 11,192
+2. Suspended solids discharged in 2026, t:
+   - Coolabah Olives 16.3; Tallowood Tannery 66.2; Mt Edwin Cheese 35.1; Glenbrae Meats 189.8; Riverbend Poultry 94.1; Sunvale Dairy 45.3; Hartley St Brewing 18.3; Bellbird Beverages 8.6; Kingfisher Linen 13.6; Golden Crumb 9.1; Paddock Fresh 54.2; Wattle Pet Foods 43.4

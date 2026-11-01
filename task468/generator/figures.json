@@ -1,192 +1,144 @@
 {
  "ask_a": {
-  "Abbots Hollow": 21,
-  "Brindley Moor": 26,
-  "Calder Bank": 61,
-  "Dunmore": 19,
-  "Eastholme": 16,
-  "Fennick": 11,
-  "Gorsey Hill": 17,
-  "Hollin Edge": 22,
-  "Kestrel Rise": 35,
-  "Moss Brow": 60,
-  "Pellbury": 12,
-  "Wexley": 48
- },
- "ask_a_total": 348,
- "ask_b_count": {
-  "Abbots Hollow": 45,
-  "Brindley Moor": 43,
-  "Calder Bank": 93,
-  "Dunmore": 28,
-  "Eastholme": 51,
-  "Fennick": 48,
-  "Gorsey Hill": 30,
-  "Hollin Edge": 45,
-  "Kestrel Rise": 27,
-  "Moss Brow": 34,
-  "Pellbury": 39,
-  "Wexley": 42
- },
- "ask_b_count_total": 525,
- "ask_b_money": {
-  "Abbots Hollow": 14939138,
-  "Brindley Moor": 18514750,
-  "Calder Bank": 22234280,
-  "Dunmore": 12089585,
-  "Eastholme": 15158172,
-  "Fennick": 11033449,
-  "Gorsey Hill": 14047363,
-  "Hollin Edge": 13924752,
-  "Kestrel Rise": 7121539,
-  "Moss Brow": 9947892,
-  "Pellbury": 8806141,
-  "Wexley": 12844769
- },
- "ask_b_money_text": {
-  "Abbots Hollow": "GBP 14,939,138",
-  "Brindley Moor": "GBP 18,514,750",
-  "Calder Bank": "GBP 22,234,280",
-  "Dunmore": "GBP 12,089,585",
-  "Eastholme": "GBP 15,158,172",
-  "Fennick": "GBP 11,033,449",
-  "Gorsey Hill": "GBP 14,047,363",
-  "Hollin Edge": "GBP 13,924,752",
-  "Kestrel Rise": "GBP 7,121,539",
-  "Moss Brow": "GBP 9,947,892",
-  "Pellbury": "GBP 8,806,141",
-  "Wexley": "GBP 12,844,769"
- },
- "ask_b_money_total": 160661830,
- "ask_c": {
-  "Abbots Hollow": 131,
-  "Brindley Moor": 138,
-  "Calder Bank": 89,
-  "Dunmore": 158,
-  "Eastholme": 92,
-  "Fennick": 164,
-  "Gorsey Hill": 139,
-  "Hollin Edge": 133,
-  "Kestrel Rise": 86,
-  "Moss Brow": 132,
-  "Pellbury": 63,
-  "Wexley": 215
- },
- "ask_c_total": 1540,
- "call": {
-  "homes": {
-   "Abbots Hollow": 71,
-   "Calder Bank": 148,
-   "Kestrel Rise": 96
-  },
-  "homes_total": 315,
-  "line": 5.0,
-  "pot": 12000000,
-  "pot_text": "GBP 12,000,000",
-  "pressured": [
-   "Abbots Hollow",
-   "Calder Bank",
-   "Kestrel Rise"
+  "Bellbird Beverages": [
+   18761,
+   20081,
+   19139,
+   18088
   ],
-  "shares": {
-   "Abbots Hollow": 2704762,
-   "Calder Bank": 5638095,
-   "Kestrel Rise": 3657143
-  },
-  "shares_text": {
-   "Abbots Hollow": "GBP 2,704,762",
-   "Calder Bank": "GBP 5,638,095",
-   "Kestrel Rise": "GBP 3,657,143"
-  }
- },
- "change": {
-  "Abbots Hollow": 5.8,
-  "Brindley Moor": 3.4,
-  "Calder Bank": 7.9,
-  "Dunmore": 2.2,
-  "Eastholme": 3.9,
-  "Fennick": 3.6,
-  "Gorsey Hill": 2.6,
-  "Hollin Edge": 3.7,
-  "Kestrel Rise": 6.7,
-  "Moss Brow": 2.4,
-  "Pellbury": 3.1,
-  "Wexley": 3.5
- },
- "change_3dp": {
-  "Abbots Hollow": 5.813,
-  "Brindley Moor": 3.37,
-  "Calder Bank": 7.877,
-  "Dunmore": 2.215,
-  "Eastholme": 3.876,
-  "Fennick": 3.599,
-  "Gorsey Hill": 2.633,
-  "Hollin Edge": 3.74,
-  "Kestrel Rise": 6.735,
-  "Moss Brow": 2.425,
-  "Pellbury": 3.118,
-  "Wexley": 3.534
- },
- "default": {
-  "change": {
-   "Abbots Hollow": 5.8,
-   "Brindley Moor": 3.4,
-   "Calder Bank": 8.0,
-   "Dunmore": 2.4,
-   "Eastholme": 4.0,
-   "Fennick": 3.5,
-   "Gorsey Hill": 3.8,
-   "Hollin Edge": 3.9,
-   "Kestrel Rise": 6.7,
-   "Moss Brow": 2.2,
-   "Pellbury": 6.0,
-   "Wexley": 3.5
-  },
-  "pressured": [
-   "Abbots Hollow",
-   "Calder Bank",
-   "Kestrel Rise",
-   "Pellbury"
+  "Coolabah Olives Pty Ltd": [
+   11031,
+   11710,
+   11051,
+   10376
   ],
-  "shares": {
-   "Abbots Hollow": 1967667,
-   "Brindley Moor": 0,
-   "Calder Bank": 4101617,
-   "Dunmore": 0,
-   "Eastholme": 0,
-   "Fennick": 0,
-   "Gorsey Hill": 0,
-   "Hollin Edge": 0,
-   "Kestrel Rise": 2660508,
-   "Moss Brow": 0,
-   "Pellbury": 3270208,
-   "Wexley": 0
-  }
+  "Glenbrae Meats Pty Ltd": [
+   32757,
+   35337,
+   32299,
+   30830
+  ],
+  "Golden Crumb Bakeries": [
+   6786,
+   7222,
+   6850,
+   6292
+  ],
+  "Hartley Street Brewing Co": [
+   7558,
+   8143,
+   7765,
+   7087
+  ],
+  "Kingfisher Linen Services": [
+   26350,
+   28195,
+   26221,
+   24479
+  ],
+  "Mt Edwin Cheese Company": [
+   16370,
+   17493,
+   16707,
+   15164
+  ],
+  "Paddock Fresh Vegetables": [
+   22969,
+   24556,
+   23187,
+   21438
+  ],
+  "Riverbend Poultry": [
+   28001,
+   30254,
+   28305,
+   26975
+  ],
+  "Sunvale Dairy Ingredients": [
+   41552,
+   44518,
+   41782,
+   39247
+  ],
+  "Tallowood Tannery Pty Ltd": [
+   13956,
+   14994,
+   13989,
+   13239
+  ],
+  "Wattle Pet Foods": [
+   11840,
+   12657,
+   12020,
+   11192
+  ]
  },
- "homes": {
-  "Abbots Hollow": 71,
-  "Brindley Moor": 36,
-  "Calder Bank": 148,
-  "Dunmore": 22,
-  "Eastholme": 40,
-  "Fennick": 64,
-  "Gorsey Hill": 18,
-  "Hollin Edge": 30,
-  "Kestrel Rise": 96,
-  "Moss Brow": 88,
-  "Pellbury": 118,
-  "Wexley": 52
+ "ask_b": {
+  "Bellbird Beverages": "8.6",
+  "Coolabah Olives Pty Ltd": "16.3",
+  "Glenbrae Meats Pty Ltd": "189.8",
+  "Golden Crumb Bakeries": "9.1",
+  "Hartley Street Brewing Co": "18.3",
+  "Kingfisher Linen Services": "13.6",
+  "Mt Edwin Cheese Company": "35.1",
+  "Paddock Fresh Vegetables": "54.2",
+  "Riverbend Poultry": "94.1",
+  "Sunvale Dairy Ingredients": "45.3",
+  "Tallowood Tannery Pty Ltd": "66.2",
+  "Wattle Pet Foods": "43.4"
  },
- "pellbury": {
-  "every_pair": 6.0,
-  "golden": 3.1,
-  "pairs_2026_every": 261,
-  "pairs_2026_kept": 226
+ "cod_t_shown": {
+  "Bellbird Beverages": 149.4,
+  "Coolabah Olives Pty Ltd": 229.1,
+  "Glenbrae Meats Pty Ltd": 497.6,
+  "Golden Crumb Bakeries": 38.4,
+  "Hartley Street Brewing Co": 154.5,
+  "Kingfisher Linen Services": 71.2,
+  "Mt Edwin Cheese Company": 283.1,
+  "Paddock Fresh Vegetables": 101.7,
+  "Riverbend Poultry": 310.9,
+  "Sunvale Dairy Ingredients": 331.9,
+  "Tallowood Tannery Pty Ltd": 345.7,
+  "Wattle Pet Foods": 148.8
  },
- "window": {
-  "chart_page": 1,
-  "from": 2025,
-  "programme_year": "2027-28",
-  "to": 2026
+ "fit": [
+  -3.1843,
+  2.7976,
+  0.2325
+ ],
+ "limit_t": {
+  "Bellbird Beverages": 255.0,
+  "Coolabah Olives Pty Ltd": 205.0,
+  "Glenbrae Meats Pty Ltd": 430.0,
+  "Golden Crumb Bakeries": 78.0,
+  "Hartley Street Brewing Co": 217.5,
+  "Kingfisher Linen Services": 109.5,
+  "Mt Edwin Cheese Company": 320.0,
+  "Paddock Fresh Vegetables": 135.0,
+  "Riverbend Poultry": 285.0,
+  "Sunvale Dairy Ingredients": 355.0,
+  "Tallowood Tannery Pty Ltd": 310.0,
+  "Wattle Pet Foods": 180.0
+ },
+ "n_parallel": 264,
+ "over": [
+  "Coolabah Olives Pty Ltd",
+  "Glenbrae Meats Pty Ltd",
+  "Riverbend Poultry",
+  "Tallowood Tannery Pty Ltd"
+ ],
+ "verdict": {
+  "Bellbird Beverages": "within",
+  "Coolabah Olives Pty Ltd": "over",
+  "Glenbrae Meats Pty Ltd": "over",
+  "Golden Crumb Bakeries": "within",
+  "Hartley Street Brewing Co": "within",
+  "Kingfisher Linen Services": "within",
+  "Mt Edwin Cheese Company": "within",
+  "Paddock Fresh Vegetables": "within",
+  "Riverbend Poultry": "over",
+  "Sunvale Dairy Ingredients": "within",
+  "Tallowood Tannery Pty Ltd": "over",
+  "Wattle Pet Foods": "within"
  }
 }
