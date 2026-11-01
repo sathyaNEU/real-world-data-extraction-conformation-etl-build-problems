@@ -143,6 +143,67 @@ def complete_case(sp, horizon=K.WINDOW):
     return 100 * sum(1 for e, k in closed if k == "GR") / len(closed)
 
 
+def imputed(sp, horizon=K.WINDOW):
+    """Expected completions: the degrees earned by the ninth term, plus for each open admission the probability of the
+    degree by the ninth term given it was open at its last observed term, from the pooled rates of the same record."""
+    haz = {}
+    for t in range(1, horizon + 1):
+        n = at_risk(sp, t)
+        a = sum(1 for e, k, o in sp if e == t and k == "GR")
+        d = sum(1 for e, k, o in sp if e == t)
+        haz[t] = (a / n, d / n) if n else (0.0, 0.0)
+
+    def onward(j):
+        S, F = 1.0, 0.0
+        for t in range(j + 1, horizon + 1):
+            F += S * haz[t][0]
+            S *= 1 - haz[t][1]
+        return F
+    tot = sum(1 for e, k, o in sp if k == "GR" and e <= horizon)
+    tot += sum(onward(o) for e, k, o in sp if e is None and o < horizon)
+    return 100 * tot / len(sp)
+
+
+def actuarial(sp, horizon=K.WINDOW):
+    """The actuarial life table: an admission still open at its last observed term counted as half at risk in that
+    term."""
+    S, F = 1.0, 0.0
+    for t in range(1, horizon + 1):
+        n = at_risk(sp, t) - sum(1 for e, k, o in sp if e is None and o == t) / 2.0
+        a = sum(1 for e, k, o in sp if e == t and k == "GR")
+        d = sum(1 for e, k, o in sp if e == t)
+        if n > 0:
+            F += S * a / n
+            S *= 1 - d / n
+    return 100 * F
+
+
+def landing(sp, ref, horizon=K.WINDOW):
+    """Conditional landing: the degrees observed, plus for each open admission the share of the reference admissions
+    followed to the ninth term that, open at the same term, earned the degree by the ninth."""
+    full = [(e, k) for e, k, o in ref if o >= horizon]
+    tot = 0.0
+    for e, k, o in sp:
+        if o >= horizon or (e is not None and e <= o):
+            tot += 1 if (k == "GR" and e is not None and e <= horizon) else 0
+        else:
+            base = [(e2, k2) for e2, k2 in full if e2 is None or e2 > o]
+            tot += sum(1 for e2, k2 in base if k2 == "GR" and e2 is not None and e2 <= horizon) / len(base)
+    return 100 * tot / len(sp)
+
+
+def ratio_scaled(classes, ref, horizon=K.WINDOW):
+    """Each class's degrees to date scaled by the reference class's degrees by the ninth term over its degrees by the
+    same term. classes: [(spells, last observed index)]."""
+    cum = lambda s, k: sum(1 for e, kk, o in s if kk == "GR" and e is not None and e <= k)
+    tot = n = 0
+    for s, ob in classes:
+        ob = min(ob, horizon)
+        tot += cum(s, ob) * cum(ref, horizon) / cum(ref, ob)
+        n += len(s)
+    return 100 * tot / n
+
+
 def stratified(pk, ent, prog):
     """Class by class, each class's own rates where it was observed and the observed classes' pooled rates beyond,
     weighted by class size."""
@@ -237,11 +298,39 @@ def fall26(target):
     return pk, regs, secs, hist
 
 
-def program_at_census(hist, term=K.FALL26):
-    out = {}
+def program_at_census(hist, term=K.FALL26, how="golden"):
+    """Each student's program of record in effect for the term, from the history's rows. how: 'golden' (the row whose
+    period covers the term, a row that ends before it begins never in effect; one per student), 'asof' (the row latest
+    begun by the term, its end term not read: the version rule as an as-of join), 'latest' (among the rows covering the
+    term, the latest begun), 'first' (the earliest begun), 'last' (the last in the file's order) or 'drop' (a student
+    with more than one row covering the term has none)."""
+    by = defaultdict(list)
     for h in hist:
-        if h["effective_term"] <= term and (not h["end_term"] or h["end_term"] >= term):
-            out[h["student_id"]] = h["program_code"]
+        by[h["student_id"]].append(h)
+    covers = lambda h, t: h["effective_term"] <= t and (not h["end_term"] or h["end_term"] >= t)
+    out = {}
+    for sid, rows in by.items():
+        if how == "asof":
+            begun = [h for h in rows if h["effective_term"] <= term]
+            if begun:
+                out[sid] = max(begun, key=lambda h: (h["effective_term"], h["entered_on"]))["program_code"]
+            continue
+        cov = [h for h in rows if covers(h, term)]
+        if not cov:
+            continue
+        if how in ("golden", "latest"):
+            pick = max(cov, key=lambda h: (h["effective_term"], h["entered_on"]))
+        elif how == "first":
+            pick = min(cov, key=lambda h: (h["effective_term"], h["entered_on"]))
+        elif how == "last":
+            pick = cov[-1]
+        elif how == "drop":
+            if len(cov) > 1:
+                continue
+            pick = cov[0]
+        else:
+            raise ValueError(how)
+        out[sid] = pick["program_code"]
     return out
 
 
@@ -267,23 +356,33 @@ def census_rows(regs, census=None, mode="date"):
 
 def ask_a(target, credits="section", program="census", census="date"):
     """Each program's FTE at the fall 2026 census. credits: 'section' (the schedule's section credit hours), 'row'
-    (the registration row's credit_hours) or 'row_once' (the row's credit_hours once per student and course);
-    program: 'census' (the history's row in effect for fall 2026) or 'row' (the registration's program_code);
+    (the registration row's course_credit_hours) or 'row_once' (the row's course_credit_hours once per student and course);
+    program: 'census' (the history's program of record for fall 2026, program_at_census's golden), 'asof', 'latest',
+    'first', 'last' or 'drop' (program_at_census's other readings of the history), 'row' (the registration's
+    program_code) or
+    'arbiter' (the history where one row is in effect, the registration's program_code where more than one is);
     census: as census_rows."""
     pk, regs, secs, hist = fall26(target)
     sec_cr = {str(s["CRN"]): s["Cr Hrs"] for s in secs}
-    prog_at = program_at_census(hist)
+    if program in ("census", "asof", "latest", "first", "last", "drop"):
+        prog_at = program_at_census(hist, how="golden" if program == "census" else program)
+    elif program == "arbiter":
+        many = Counter(h["student_id"] for h in hist if h["effective_term"] <= K.FALL26 and
+                       (not h["end_term"] or h["end_term"] >= K.FALL26))
+        one = program_at_census(hist, how="drop")
+        own = {r["student_id"]: r["program_code"] for r in regs}
+        prog_at = {sid: (own[sid] if many[sid] > 1 else one.get(sid)) for sid in own}
     tot = Counter()
     seen = set()
     for r in census_rows(regs, day(pk.census[K.FALL26]), census):
-        p = prog_at.get(r["student_id"]) if program == "census" else r["program_code"]
+        p = prog_at.get(r["student_id"]) if program != "row" else r["program_code"]
         if credits == "section":
             c = sec_cr[r["crn"]]
         elif credits == "row":
-            c = int(r["credit_hours"])
+            c = int(r["course_credit_hours"])
         else:
             key = (r["student_id"], r["subject"], r["course_number"])
-            c = 0 if key in seen else int(r["credit_hours"])
+            c = 0 if key in seen else int(r["course_credit_hours"])
             seen.add(key)
         tot[p] += c
     return {p: tot[p] / K.FTE_HOURS for p in pk.programs}
@@ -299,7 +398,7 @@ def ask_b(target, enrol="census", group="dated"):
     pk, regs, secs, hist = fall26(target)
     cen = day(pk.census[K.FALL26])
     n = Counter(r["crn"] for r in census_rows(regs, cen, "date" if enrol == "census" else "status"))
-    run = [s for s in secs if s["Status"] == "A" and pk.owner.get(s["Subj"]) in pk.programs]
+    run = [s for s in secs if s["Status"] == "Active" and pk.owner.get(s["Subj"]) in pk.programs]
 
     def key(s):
         if group == "none":

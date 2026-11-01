@@ -16,6 +16,7 @@ from openpyxl import Workbook                            # noqa: E402
 from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
 
 import analysis as A                                     # noqa: E402
+import ceiling as CE                                     # noqa: E402
 import common as K                                       # noqa: E402
 import docs as D                                         # noqa: E402
 import postprocess as PP                                 # noqa: E402
@@ -40,19 +41,22 @@ def results(target):
                    row_credits_once=A.ask_a(target, credits="row_once"),
                    extract_program=A.ask_a(target, program="row"),
                    late_adds_kept=A.ask_a(target, census="status"),
-                   withdrawals_dropped=A.ask_a(target, census="all_dates"))
+                   withdrawals_dropped=A.ask_a(target, census="all_dates"),
+                   history_latest_row_begun=A.ask_a(target, program="asof"))
     stops_b = dict(natural=A.ask_b(target, enrol="export", group="none"),
                    census_uncombined=A.ask_b(target, group="none"),
                    meeting=A.ask_b(target, group="meeting"),
                    text=A.ask_b(target, group="text"),
                    room=A.ask_b(target, group="room"),
-                   late_adds_kept=A.ask_b(target, enrol="status", group="meeting"))
+                   late_adds_kept=A.ask_b(target, enrol="status", group="meeting"),
+                   across_campuses_only=CE.across_campuses(target),
+                   video_rooms_only=CE.video_rooms(target))
     secs = A.rows_xlsx(os.path.join(target, K.FILES["schedule"]), "Fall 2026 sections")
     regs = A.rows_csv(os.path.join(target, K.FILES["registrations"]))
     n = {}
     for r in A.census_rows(regs, A.day(pk.census[K.FALL26]), "date"):
         n[r["crn"]] = n.get(r["crn"], 0) + 1
-    nur_clinical = sum(1 for s in secs if s["Subj"] == "NUR" and s["Type"] == "CLN" and s["Status"] == "A"
+    nur_clinical = sum(1 for s in secs if s["Subj"] == "NUR" and s["Type"] == "CLN" and s["Status"] == "Active"
                        and n.get(str(s["CRN"]), 0) < K.SMALL)
     return dict(R=R, progs=progs, inrev=inrev, a=a, b=b, stops_a=stops_a, stops_b=stops_b, ent=ent,
                 nur_clinical=nur_clinical, pk=pk)
@@ -152,12 +156,14 @@ def write_scorecard(path, res):
         "FTE: credit hours registered at the fall 2026 census (registrations in place on 8 September 2026, later "
         "withdrawals included and registrations added after that date not), each at its section's credit hours in "
         "the fall 2026 schedule (laboratory, shop and clinical sections carry none, and English Composition I and "
-        "College Algebra ran at three), by each student's program of record for fall 2026, divided by 15.",
+        "College Algebra ran at three), by each student's program of record in effect for fall 2026, divided by 15. "
+        "An application to a limited-enrolment program sits in the program history from the term applied for, closed "
+        "the term before: it never took effect.",
         "Classes under ten students: sections of each program's own subjects that ran in fall 2026, sections taught "
         "together at one meeting (interactive video between campuses, the second campus's section meeting from the "
         "second week to the last day of classes) counted as one class with their students added; the accelerated "
-        "sections that share a room and time in the first and second eight weeks are two classes; census "
-        "registrations as above.",
+        "sections one instructor teaches at one time in the first and second eight weeks, at two campuses, are two "
+        "classes; census registrations as above.",
         "Shares are rounded to one decimal place from the unrounded estimate; the floor is applied to the unrounded "
         "share.",
         "Prepared by %s, Director of Institutional Research, 4 June 2027." % K.PEOPLE["ir"],
@@ -310,6 +316,41 @@ def figures(res):
     )
 
 
+def provenance(n):
+    """What each shipped file is, who keeps it, its date and size: the record that travels beside the pack."""
+    F = K.FILES
+    reg, ir, aa = "Office of the Registrar", "Office of Institutional Research", "Academic Affairs"
+    made = ("constructed for this task by a seeded generator; %s, its campuses, offices, students and people are "
+            "fictional; the records follow the forms of a US community college's student information system, "
+            "institutional research files and board policy" % K.COLLEGE)
+    rows = [
+        ("policy", "Board Policy 3.12, Academic Program Review, revised 10 June 2025", aa, "2025-06-11",
+         "%d page%s" % (n["policy_pages"], "" if n["policy_pages"] == 1 else "s")),
+        ("cohorts", "Fall entering-student files for fall 2023, fall 2024 and fall 2025, frozen after each census "
+         "(21 September 2023, 18 September 2024 and 19 September 2025)", ir, "2025-09-19", "%d rows, 3 sheets" % n["cohorts"]),
+        ("admissions", "Admissions with an admit term from fall 2023 to spring 2027, with exits", reg, "2027-05-28",
+         "%d rows" % n["admissions"]),
+        ("conferrals", "Associate degrees conferred, December 2023 to May 2027", reg, "2027-05-28",
+         "%d rows" % n["conferrals"]),
+        ("idmap", "Student-number map from the 2024 student-system conversion (pipe-delimited)", reg, "2024-08-03",
+         "%d rows" % n["idmap"]),
+        ("terms", "Term calendar with current and legacy term codes", reg, "2026-11-30", "%d rows" % n["terms"]),
+        ("registrations", "Fall 2026 registrations, every status", reg, "2027-05-28", "%d rows" % n["registrations"]),
+        ("history", "Program-of-record history, periods in effect from fall 2023 to spring 2027", reg, "2027-05-28",
+         "%d rows" % n["history"]),
+        ("schedule", "Fall 2026 section schedule", reg, "2027-05-28", "%d rows" % n["schedule"]),
+        ("register", "Program register, 2026-27, with the course subjects each program owns", aa, "2026-08-14",
+         "%d programs, 2 sheets" % n["register"]),
+        ("success", "Course success rates by subject, fall 2021 to spring 2026", ir, "2026-06-12",
+         "%d rows" % n["success"]),
+        ("outlook", "Occupational outlook for the college's service area, 2024 to 2034 (Workforce Development "
+         "planning extract)", "Workforce Development", "2026-02-20", "%d rows" % n["outlook"]),
+    ]
+    return {"target/" + F[k]: {"covers": what, "prepared_by": who, "date": when, "size": size, "source": made,
+                               "licence": "CC0 1.0 (constructed for this task)"}
+            for k, what, who, when, size in rows}
+
+
 def write(target, golden, T):
     res = results(target)
     if os.path.exists(golden):
@@ -326,7 +367,8 @@ def write(target, golden, T):
     meta = {"distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
             "deliverables": DELIVERABLES,
             "stated_inputs": ["30", "2023", "2024", "2025", "2026", "2027"],
-            "as_of": "2027-05-28"}
+            "as_of": "2027-05-28",
+            "provenance": provenance(T["n"])}
     json.dump(meta, open(os.path.join(os.path.dirname(HERE), "metadata.json"), "w"), indent=1)
     T["res"] = res
     return res

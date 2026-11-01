@@ -56,11 +56,8 @@ def build(out, seed=W.SEED):
     n["success"] = R.write_success(p("success"))
     n["outlook"] = R.write_outlook(p("outlook"))
     D.write_policy(p("policy"))
-    D.write_notes(p("notes"))
     from pypdf import PdfReader
-    for k in ("policy", "notes"):
-        n[k + "_pages"] = len(PdfReader(p(k)).pages)
-    D.write_manifest(p("manifest"), manifest(n))
+    n["policy_pages"] = len(PdfReader(p("policy")).pages)
     PP.COMPANY = K.COLLEGE
     PP.normalize_ooxml(p("cohorts"), K.PEOPLE["ir"], K.PEOPLE["ir"], "2023-09-21T14:12:07Z", "2025-09-19T19:03:44Z",
                        excel=True)
@@ -73,41 +70,10 @@ def build(out, seed=W.SEED):
     PP.normalize_ooxml(p("success"), K.PEOPLE["ir"], K.PEOPLE["ir"], "2022-06-27T15:02:39Z", "2026-06-12T13:55:20Z",
                        excel=True)
     PP.normalize_pdf(p("policy"), b"D:20250610143115-04'00'", b"D:20250611090412-04'00'")
-    PP.normalize_pdf(p("notes"), b"D:20270527153840-04'00'", b"D:20270528162209-04'00'")
     for f in sorted(os.listdir(out)):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     T["n"] = n
     return T
-
-
-def manifest(n):
-    F = K.FILES
-    reg, ir = "Office of the Registrar", "Office of Institutional Research"
-    return [
-        (F["policy"], "Board Policy 3.12, Academic Program Review, revised 10 June 2025", "Academic Affairs",
-         "2025-06-11", "%d page%s" % (n["policy_pages"], "" if n["policy_pages"] == 1 else "s")),
-        (F["notes"], "Notes on the registrar's extracts for the June 2027 review", reg, "2027-05-28",
-         "%d page%s" % (n["notes_pages"], "" if n["notes_pages"] == 1 else "s")),
-        (F["cohorts"], "Fall entering-student files for fall 2023, fall 2024 and fall 2025, each frozen at its census "
-         "(21 September 2023, 18 September 2024, 19 September 2025)", ir, "2025-09-19", "%d rows, 3 sheets" % n["cohorts"]),
-        (F["admissions"], "Admissions with an admit term from fall 2023 to spring 2027, with exits", reg, "2027-05-28",
-         "%d rows" % n["admissions"]),
-        (F["conferrals"], "Associate degrees conferred, December 2023 to May 2027", reg, "2027-05-28",
-         "%d rows" % n["conferrals"]),
-        (F["idmap"], "Student-number map from the 2024 conversion (pipe-delimited)", reg, "2024-07-13",
-         "%d rows" % n["idmap"]),
-        (F["terms"], "Term calendar with current and legacy term codes", reg, "2026-11-30", "%d rows" % n["terms"]),
-        (F["registrations"], "Fall 2026 registrations, every status", reg, "2027-05-28", "%d rows" % n["registrations"]),
-        (F["history"], "Program-of-record history, periods in effect from fall 2023 to spring 2027", reg, "2027-05-28",
-         "%d rows" % n["history"]),
-        (F["schedule"], "Fall 2026 section schedule", reg, "2027-05-28", "%d rows" % n["schedule"]),
-        (F["register"], "Program register, 2026-27, with the course subjects each program owns", "Academic Affairs",
-         "2026-08-14", "%d programs, 2 sheets" % n["register"]),
-        (F["success"], "Course success rates by subject, fall 2021 to spring 2026", ir, "2026-06-12",
-         "%d rows" % n["success"]),
-        (F["outlook"], "Occupational outlook for the college's service area, 2024 to 2034 (Workforce Development "
-         "planning extract)", "Workforce Development", "2026-02-20", "%d rows" % n["outlook"]),
-    ]
 
 
 def tree_digest(d):

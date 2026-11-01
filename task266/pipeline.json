@@ -1,11 +1,11 @@
 {
  "task": "task266",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "sociology-demography",
  "objective": "descriptive-distribution",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-18",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-11-01",
  "stump": "The default path sends one program into review (Early Childhood Education) and keeps the four transfer-oriented programs and Medical Assisting above the floor, because it censors an admission that ended in a transfer out or a withdrawal as if the student could still earn the award; the cumulative incidence of the award with transfer and withdrawal as competing endings, open admissions alone censored, sends six programs into review.",
  "architecture": 1,
  "loops": 0,
@@ -27,8 +27,30 @@
   "disposition": "pass 3 APPROVE; pass 4 adjudicated in the main thread: the leavers' risk-set timing does not reproduce (the same shares to the last digit under either timing, asserted R2/SF7), Ask A's credit-hour source stays as pass 3 ruled it (closed by the registrar's definitions) and goes to the author as an open risk",
   "report": "task266/determinism_check_report_pass3.md, task266/determinism_check_report_pass4.md"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house re-check under the new leak gate (LEAK sweep 1: export_manifest.csv and registrar_extract_notes_2027-05.pdf named as describing files; LEAK sweep 12: registrar_extract_notes_2027-05.pdf names 22 columns of the data files, 83% of program_of_record_history.csv); then the stage-4 determinism judge on that cut (79d75971): NOT_DETERMINISTIC on ask 2 (FTE) only, FIX_NOW, the credit-hour source a competing reading and the cross-campus class called live on ask 3",
+   "repair": "leak, then determinism",
+   "move": "The registrar's extract notes PDF and the export manifest CSV no longer ship, and IR's 'About these files' sheet is dropped from the entering-student workbook. Provenance (each file's contents, office, date and size, IR's freeze dates) moved to metadata.json's provenance. What the call's determinism took from the notes is carried by the producing system or converges: the admissions extract exports admit_type_desc and exit_reason_desc beside its codes (Graduated, Transferred Out, Withdrawn, Deceased; SF6, axis 19), an admission with no exit term has no exit reason (axis 12, asserted), the exit term is the extract's own column with its dating convergent (SF7, asserted), readmissions rest on policy 3.2 and the Readmit label (axis 2), term codes on the term calendar. For the asks the registration extract names its credit column course_credit_hours (the grain the notes stated) and exports reg_status_desc, and the schedule writes Status as Active or Cancelled; no ask device (linked sections' credit, the program's vintage, what a V room is) is filed anywhere. Policy 6 drops 'and documents each extract'. checks.py gains the no-describing-file assertions (by name and by sheet) and positive controls for each moved closure. Every graded figure, figures.json and the call unchanged (freeze PASS); cracker 0 of 18. Determinism pass on the judge's FIX_NOW: policy 4.1 adds 'The credit hours of a registration are those its section carries in the term's section schedule.' and 4.2's class becomes 'two or more sections scheduled to meet together, at one campus or across campuses, which count as one class'; verify.py reads both back from the shipped policy before computing the asks and checks.py asserts the read-back, that the registration column and the golden differ in all nine programs, and that the policy names no device word. No graded figure moved (freeze PASS, figures.json unchanged). Measured by the new generator/ceiling.py on the cut pack: the cracker keeps 9 of 18 (Ask A's nine, now rule application; Ask B none), mirror 0, pair ceiling 48.1, worst single crack 59.9; the cracker keeps an ask row, so the ask layer is owed to /fix-rubric (precut fails 'cracker misses every ask' on Ask A's row).",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house measurement standing in for a portal result (generator/ceiling.py on the determinism-fixed cut 543365d5: the cracker kept Ask A's nine FTE figures once policy 4.1 filed the credit-hour source; Ask B's cross-campus-only merging kept all nine)",
+   "repair": "rubric",
+   "move": "Main side frozen (freeze snapshot after the determinism fix; the call's files byte-identical to the judged cut, asserted). Ask A's new primary (D5, out-of-scope rows known only by structure): the program history, drawn from the curriculum rows, carries applications to the limited-enrolment programs (Nursing, Medical Assisting, the HVAC-R apprenticeship cohort) as admission rows with no end term beside 181 continuing students' open programs (none in IR's entering files), so the battery's latest-row reading puts every applicant in the program applied to and every program's FTE misses (5.2 to 75.2 FTE); the over-cleaning half is 46 predecessor rows a change, readmission or second program left open, so the earliest-row and drop-both readings miss too; the registrations' program agrees with the golden for all 227 students with two programs in effect (forcing, asserted), and the history gains change_reason_desc beside its codes. Ask B: each program's eight-week halves moved to two campuses (video classrooms where open), so merging only cross-campus sections misses all nine; merging only V-room sections keeps eight, a measured single crack. No graded figure moved (block 4 redrafted from figures.json, unchanged; figures.json gains and moves stops only); no document text changed. ceiling.py on the cut pack: cracker 0 of 18, mirror leakage 0.0 per cent, pair ceiling 36.4, worst single crack 48.1.",
+   "commit": ""
+  },
+  {
+   "date": "2026-11-01",
+   "portal": "none: in-house determinism judge pass 6 on 78dca29c, NOT_DETERMINISTIC, FIX_NOW (fork 1: the nine shares at one decimal under the 2023-class, college-wide and ratio estimators; fork 2: 229 students with two or three program-of-record rows in effect for fall 2026, Ask A's FTE; fork 3: the record at the end of the spring term read by its recorded dates drops the spring 2027 degrees and files eight programs)",
+   "repair": "determinism",
+   "move": "Policy 3.3 gains two clauses: the record at the end of the spring term is read 'the degrees conferred for that term included' (fork 3, the strict recorded-date reading's eight asserted and ruled out), and the estimate is 'made from that record for the program's three classes taken together, each student counting in full for every term in which the record follows the student' (fork 1): every estimate the sentence admits (pooled cumulative incidence, class by class with pooled rates beyond, expected completions from the pooled rates, endings out of the risk set before the term's degrees, pooled transition matrices) files the golden's shares to the last digit, and each rival outside it (conditional landing or ratio scaling from the program's or the college's fall 2023 class, each class on its own, the actuarial half-exposure) moves a share at one decimal and keeps the six, all asserted; both clauses read back through the checks' and the verifier's PDF extractors. Fork 2 closed by the data alone: the applications to the limited-enrolment programs are now closed the term before the term applied for (never in effect) and the 46 open predecessor rows are restored to their ends, so every registered student has one program of record in effect (C1, asserted) and the golden is the literal read; the device holds against the version rule as an as-of join (each student's latest row begun by fall 2026, end terms unread: every program off by 1.3 to 14.0 per cent) and falls to a reader of the end terms. No graded figure moved; the call's files are byte-identical but the policy (3.3 only, now two pages). ceiling.py on the cut pack: cracker 0 of 18, mirror 0, pair ceiling 36.4, worst single crack 48.1 (reading the end terms, or keying Ask B on the weeks in common). Pass 6b (the coordinator's re-measure with the cracker as the careful solver): on the same cut the careful cracker keeps 18 of 18 ask figures (Ask A by reading the history's end terms, Ask B by reading 4.2 as one meeting in the weeks the sections share), mirror 0, pair 59.0 and 59.9; no Ask A device survived both tests (forced by the data alone and missed by the careful read), so the pass stopped with the pack unchanged and the ask layer goes back to the main thread.",
+   "commit": ""
+  }
+ ],
+ "resume": "RE-ROOT at stage 1 (architecture 2, same number and objective): a new draw, a new dataset and a new generator. Architecture 1 is spent on its ask layer, measured 2026-11-01: with the honest careful-solver cracker both asks are executable (ceiling.py: cracker 18 of 18, mirror 0, pair 59.9 only because the mirror is off the call; two careful responses on the call reach 86.5), and every re-site and every replacement ask either reopens a fork for this build's literal judges or is read by the careful solver (design note, Tried and rejected, pass 6b and the replacement-ask table). The delivered cut stays on the portal as delivered (portal pending); the working generator and target.zip here are the spent architecture's last state (9deca6a5), never delivered. Lessons for the re-root: the main call's estimand was sound (forks 1 and 3 closed in policy 3.3, the six-program call forced); choose asks whose silent device rides on cardinality or identity across two systems that the judge accepts as forced without a header (supplemental-stumping proven-in-production), and measure them with the careful solver before any data is cut. Before drawing: guard.py recent, coverage and mechanisms --objective descriptive-distribution, then guard.py check on a fresh card with task266 v1 in lineage as spent.",
  "approved": null,
  "delivered": "2026-10-17",
  "portal": null,
@@ -36,5 +58,6 @@
  "portal_status": "",
  "portal_status_date": "",
  "seed": "DA16 worked at the draw and set aside (lending serves no Descriptive task type; its stumps composition_mix or maturity_censoring); the slot draws a new world, a community college's program review",
- "reshipped": "2026-10-18: asks re-cut in the wave 3 audit (the cracker hit all eighteen after the pass-1 fix filed each device); call frozen"
+ "reshipped": "2026-10-18: asks re-cut in the wave 3 audit (the cracker hit all eighteen after the pass-1 fix filed each device); call frozen",
+ "target_zip_md5": "9deca6a54538d585d8fa2ca5d3cd62ba"
 }

@@ -123,7 +123,6 @@ CONVERSION = "202510"   # fall 2024, the first term run in the new student syste
 # ---------------------------------------------------------------------------------------------- the pack
 FILES = {
     "policy": "policy_3-12_program_review.pdf",
-    "notes": "registrar_extract_notes_2027-05.pdf",
     "cohorts": "ir_fall_entering_students_2023-2025.xlsx",
     "admissions": "sis_admissions_exits_202410-202720.csv",
     "conferrals": "associate_degree_conferrals_2023-12_to_2027-05.csv",
@@ -135,8 +134,7 @@ FILES = {
     "register": "program_register_2026-27.xlsx",
     "success": "course_success_rates_fa2021-sp2026.xlsx",
     "outlook": "service_area_occupational_outlook_2024-2034.csv",
-    "manifest": "export_manifest.csv",
 }
 DISTRACTORS = ["success", "outlook"]
-MAIN_FILES = ["policy", "notes", "cohorts", "admissions", "conferrals", "idmap", "terms"]
+MAIN_FILES = ["policy", "cohorts", "admissions", "conferrals", "idmap", "terms"]
 ASK_FILES = ["registrations", "history", "schedule"]

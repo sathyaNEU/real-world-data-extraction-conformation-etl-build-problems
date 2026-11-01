@@ -4,6 +4,7 @@ the fall 2026 census registrations, the program-of-record history, the fall 2026
 register, IR's course success rates and the workforce office's occupational outlook."""
 import csv
 import datetime as dt
+from collections import defaultdict
 
 import numpy as np
 from openpyxl import Workbook
@@ -87,29 +88,17 @@ def write_cohorts(path, T):
                            "Transfer" if r["tr_in"] else "First-time", "Part-time" if r["pt"] else "Full-time",
                            r["age"], "Y" if r["pell"] else "N", r["credits"]])
         n += len(rows)
-    ws = wb.create_sheet("About these files")
-    ws.column_dimensions["A"].width = 112
-    for line in [
-        "Fall entering-student files, Office of Institutional Research",
-        "",
-        "Each sheet is the fall entering-student file frozen at that term's census: the degree-seeking students in their",
-        "first term at the college, first-time in college or transferring in, in an associate-degree program.",
-        "Fall 2023 was frozen in the legacy student system before the 2024 conversion and keeps its student numbers,",
-        "program codes and term code (Camp Q, T, H; Type F first-time, T transfer; Load F full-time, P part-time).",
-        "Fall 2024 and fall 2025 were frozen in the current student system.",
-        "Census credits are the credit hours the student was registered for at the census.",
-        "Prepared by %s, Director of Institutional Research. Files frozen %s, %s and %s." % (
-            K.PEOPLE["ir"], (K.TERM[K.fall(2023)]["census"] + dt.timedelta(days=9)).strftime("%d %B %Y").lstrip("0"),
-            (K.TERM[K.fall(2024)]["census"] + dt.timedelta(days=8)).strftime("%d %B %Y").lstrip("0"),
-            (K.TERM[K.fall(2025)]["census"] + dt.timedelta(days=10)).strftime("%d %B %Y").lstrip("0")),
-    ]:
-        ws.append([line or None])
-    ws["A1"].font = Font(bold=True)
     wb.save(path)
     return n
 
 
 # ---------------------------------------------------------------------------------------------- the student system
+# the student system's own code labels, exported beside each code
+ADMIT_DESC = {"N": "New", "T": "Transfer In", "R": "Readmit", "S": "Second Program", "D": "Dual Enrollment",
+              "V": "Visiting/Non-Degree"}
+EXIT_DESC = {"GR": "Graduated", "TO": "Transferred Out", "WD": "Withdrawn", "DC": "Deceased"}
+SEC_STATUS = {"A": "Active", "X": "Cancelled"}
+REG_DESC = {"RE": "Registered", "RW": "Web Registered", "WC": "Withdrawn (W)", "DD": "Dropped", "DW": "Web Dropped"}
 def write_admissions(path, T):
     rows = []
     for a in T["adm"]:
@@ -117,11 +106,12 @@ def write_admissions(path, T):
             continue
         prog = K.SIS[a["prog"]] if a["prog"] in K.SIS else a["prog"]
         when = a.get("changed") or a.get("recorded")
-        rows.append([a["sid"], a["admit"], a["type"], prog, a["campus"] if a["campus"] in K.CAMPUS else "QNL",
-                     a["exit"] or "", a["reason"] or "", when.isoformat() if when else ""])
+        rows.append([a["sid"], a["admit"], a["type"], ADMIT_DESC[a["type"]], prog,
+                     a["campus"] if a["campus"] in K.CAMPUS else "QNL", a["exit"] or "", a["reason"] or "",
+                     EXIT_DESC.get(a["reason"], ""), when.isoformat() if when else ""])
     rows.sort(key=lambda r: (r[1], r[0]))
-    return _csv(path, ["student_id", "admit_term", "admit_type", "program_code", "campus", "exit_term", "exit_reason",
-                       "exit_recorded_on"], rows)
+    return _csv(path, ["student_id", "admit_term", "admit_type", "admit_type_desc", "program_code", "campus",
+                       "exit_term", "exit_reason", "exit_reason_desc", "exit_recorded_on"], rows)
 
 
 def conferrals(T):
@@ -218,11 +208,77 @@ def current_program(H):
     return cur
 
 
+CHANGE_DESC = {"ADM": "Admission", "RDM": "Readmission", "SEC": "Second Program", "CHG": "Change of Program"}
+# applications to the limited-enrolment programs (nursing, medical assisting and the HVAC-R apprenticeship cohort) by
+# continuing students, by the program the student is in at the census, and how often
+APPLY = {"GS": {"NUR": .12, "MA": .03, "HVR": .02}, "BIO": {"NUR": .15, "MA": .03}, "PSY": {"NUR": .06, "MA": .02},
+         "MA": {"NUR": .12}, "ECE": {"NUR": .04, "MA": .03}, "BUS": {"NUR": .02, "MA": .02, "HVR": .03},
+         "CJ": {"NUR": .03, "HVR": .04}, "CERT.PHLB": {"NUR": .25, "MA": .15}, "CERT.HVTC": {"HVR": .35},
+         "CERT.WELD": {"HVR": .10}, "HVR": {"NUR": .03}}
+LIMITED = {K.SIS["NUR"], K.SIS["MA"], K.SIS["HVR"]}
+
+
+def covers(h, term):
+    return h["eff"] <= term and (not h["end"] or h["end"] >= term)
+
+
+def curriculum(T, H):
+    """The rows the registrar's program history extract carries, drawn from the student record's curriculum rows: the
+    programs of record H, and for students outside the review's entering classes the curriculum rows of applications to
+    the limited-enrolment programs, admitted or not. An application row begins with the term applied for and was closed
+    when the application was decided, before that term: its end term is the term before its effective term, so it was
+    never in effect. Its own random stream, so nothing else in the pack moves."""
+    F = T["fall26"]
+    entering = {r["sid"] for r in T["entering"]}
+    rows = [dict(h) for h in H]
+    by = defaultdict(list)
+    for h in rows:
+        by[h["sid"]].append(h)
+    rng = rng_for(12)
+    apps = []
+    applied = {}
+    for s in F["students"]:
+        sid, a = s["sid"], s["adm"]
+        if sid in entering or a["type"] in ("D", "V") or a["admit"] > "202620":
+            continue
+        if any(c > K.FALL26 for c, p in a["switches"]) or s["prog"] not in APPLY:
+            continue
+        cov = [h for h in by[sid] if covers(h, K.FALL26)]
+        if len(cov) != 1:
+            continue
+        u, acc, target = rng.random(), 0.0, None
+        for p in sorted(APPLY[s["prog"]]):
+            acc += APPLY[s["prog"]][p]
+            if u < acc:
+                target = p
+                break
+        terms = [t for t in ("202610", "202620", K.FALL26) if t > cov[0]["eff"]]
+        if target is None or not terms:
+            continue
+        w = np.array([{"202610": .25, "202620": .15, K.FALL26: .6}[t] for t in terms])
+        term = terms[int(rng.choice(len(terms), p=w / w.sum()))]
+        on = K.TERM[term]["start"] - dt.timedelta(days=int(rng.integers(95, 240)))
+        apps.append(dict(sid=sid, prog=K.SIS[target], eff=term, end=K.nth(term, -1), why="ADM", on=on))
+        applied[sid] = K.SIS[target]
+    # the applications of the students admitted to the limited-enrolment program they applied to
+    for h in sorted(rows, key=lambda h: (h["sid"], h["eff"], h["prog"])):
+        if (h["sid"] not in entering and h["why"] in ("CHG", "SEC") and h["prog"] in LIMITED
+                and "202520" <= h["eff"] <= K.FALL26 and rng.random() < .8):
+            on = K.TERM[h["eff"]]["start"] - dt.timedelta(days=int(rng.integers(95, 240)))
+            apps.append(dict(sid=h["sid"], prog=h["prog"], eff=h["eff"], end=K.nth(h["eff"], -1), why="ADM", on=on))
+    T["applied"] = applied
+    out = rows + apps
+    out.sort(key=lambda h: (h["sid"], h["eff"], h["prog"]))
+    return out
+
+
 def write_history(path, T):
     H = history(T)
     T["history"] = H
-    rows = [[h["sid"], h["prog"], h["eff"], h["end"], h["why"], h["on"].isoformat()] for h in H]
-    return _csv(path, ["student_id", "program_code", "effective_term", "end_term", "change_reason", "entered_on"], rows)
+    rows = [[h["sid"], h["prog"], h["eff"], h["end"], h["why"], CHANGE_DESC[h["why"]], h["on"].isoformat()]
+            for h in curriculum(T, H)]
+    return _csv(path, ["student_id", "program_code", "effective_term", "end_term", "change_reason",
+                       "change_reason_desc", "entered_on"], rows)
 
 
 def write_registrations(path, T):
@@ -234,10 +290,10 @@ def write_registrations(path, T):
         s = secs[r["crn"]]
         rows.append([K.FALL26, r["sid"], r["crn"], s["subj"], s["num"], s["sec"],
                      T26.REVISED.get(s["course"], T26.COURSES[s["course"]][1]),
-                     r["status"], r["date"].isoformat(), s["campus"], cur.get(r["sid"], "")])
-    rows.sort(key=lambda x: (x[1], x[2], x[8]))
-    return _csv(path, ["term_code", "student_id", "crn", "subject", "course_number", "section", "credit_hours",
-                       "reg_status", "status_date", "campus", "program_code"], rows)
+                     r["status"], REG_DESC[r["status"]], r["date"].isoformat(), s["campus"], cur.get(r["sid"], "")])
+    rows.sort(key=lambda x: (x[1], x[2], x[9]))
+    return _csv(path, ["term_code", "student_id", "crn", "subject", "course_number", "section", "course_credit_hours",
+                       "reg_status", "reg_status_desc", "status_date", "campus", "program_code"], rows)
 
 
 def write_schedule(path, T):
@@ -252,7 +308,7 @@ def write_schedule(path, T):
     ws.title = "Fall 2026 sections"
     _head(ws, ["CRN", "Subj", "Crse", "Sec", "Title", "Type", "Link", "Camp", "Start Date", "End Date", "Room", "Days",
                "Begin", "End", "Instructor", "Cr Hrs", "Max", "Enrl", "Status"],
-          [7, 6, 6, 5, 34, 6, 7, 6, 11, 11, 12, 6, 7, 7, 10, 7, 6, 6, 7])
+          [7, 6, 6, 5, 34, 6, 7, 6, 11, 11, 12, 6, 7, 7, 10, 7, 6, 6, 10])
     for s in secs:
         online = s["kind"] == "ONL"
         days = "TBA" if online else s["slot"][0]
@@ -263,7 +319,7 @@ def write_schedule(path, T):
         ws.append([int(s["crn"]), s["subj"], s["num"], s["sec"], s["title"], kind, int(s["link"]) if s["link"] else None,
                    s["campus"], first, last, s["room"] if s["status"] == "A" else None, days, begin, end,
                    s["inst"] if s["status"] == "A" else None, s["credits"], s["cap"],
-                   exp.get(s["crn"], 0) if s["status"] == "A" else 0, s["status"]])
+                   exp.get(s["crn"], 0) if s["status"] == "A" else 0, SEC_STATUS[s["status"]]])
         for c in (9, 10):
             ws.cell(ws.max_row, c).number_format = "mm/dd/yyyy"
     wb.save(path)

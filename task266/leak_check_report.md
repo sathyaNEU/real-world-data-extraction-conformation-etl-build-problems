@@ -1,36 +1,31 @@
 # leak check, task266
 
-**Verdict: LEAK.** 14 files read, 19 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 19 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: student, admission, transfer, entering, competing, sections, admissions, estimate, withdrawal, extract, recorded, decisive, record, spring, second, asserted, college, endings, degree, window, estimator, censored, reason, register, survival
+Stump terms swept: student, extract, sections, record, admission, estimate, asserted, competing, recorded, credit, entering, transfer, spring, admissions, cracker, estimator, nothing, section, college, withdrawal, reason, second, checks, course, device
 
-## 1 file names (LEAK 2, REVIEW 1)
-- **LEAK** `export_manifest.csv`: a file whose name says it describes the data (manifest): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
-- **LEAK** `registrar_extract_notes_2027-05.pdf`: a file whose name says it describes the data (extract_notes): no dictionary, field notes, readme or manifest ships (dataset-generation section 3)
+## 1 file names (REVIEW 1)
 - **REVIEW** `sis_conversion_student_id_map_2024.txt`: a text file in the pack: confirm it is the organisation's own record (a thread, a log, a letter) and does not describe the data
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `policy_3-12_program_review.pdf`: 14 of 25 stump-paragraph terms appear (student, admission, transfer, entering, sections, estimate); read whether the document names the move
-- **REVIEW** `registrar_extract_notes_2027-05.pdf`: 14 of 25 stump-paragraph terms appear (student, admission, transfer, sections, admissions, extract); read whether the document names the move
+- **REVIEW** `policy_3-12_program_review.pdf`: 15 of 25 stump-paragraph terms appear (student, extract, sections, record, admission, estimate); read whether the document names the move
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "I need each program's three-year completion share for the students who entered it in fall 2023, 2024 and 2025, and, for the review profile, each program's full-time-equivalent enrolment at the fall 2026 census and how ma"
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `fall2026_section_schedule.xlsx`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `program_register_2026-27.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
-## 9 dates after the setting (INFO 1)
-- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
+## 9 dates after the setting (REVIEW 1)
+- **REVIEW** `term_calendar_2018-2027.xlsx`: 4 ISO dates after 2027-05-28, e.g. 2027-05-31, 2027-06-08, 2027-08-06, 2027-08-10
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 11 prompt gate (REVIEW 2)
 - **REVIEW** `prompt.txt`: no data count disclosed: each of the N: "How many of our nine" (a count the data hold is the model's to find; drop it or keep only the decision parameter)
-- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 46% of 196 prompts (cap 20%); reword at the role level, not the verb
-
-## 12 describing content (LEAK 1)
-- **LEAK** `registrar_extract_notes_2027-05.pdf`: names 22 column(s) of the data files verbatim, 83% of program_of_record_history.csv: a document that lists the data's columns describes the data whatever its name (dataset-generation section 3); the WHAT belongs in a governing document in the organisation's own genre, which names observables and never the files' fields
+- **REVIEW** `prompt.txt`: shell quota: rounding opener 'give' at 44% of 196 prompts (cap 20%); reword at the role level, not the verb
 
 ## 2 author vocabulary (clean)
 

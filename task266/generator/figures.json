@@ -22,6 +22,17 @@
    "Nursing": 532.0,
    "Psychology": 430.0
   },
+  "history_latest_row_begun": {
+   "Biological Sciences": 339.7,
+   "Business Administration": 518.4,
+   "Criminal Justice": 385.3,
+   "Early Childhood Education": 331.3,
+   "General Studies": 1106.5,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 290.1,
+   "Medical Assisting": 390.1,
+   "Nursing": 607.5,
+   "Psychology": 393.0
+  },
   "late_adds_kept": {
    "Biological Sciences": 358.0,
    "Business Administration": 531.7,
@@ -101,6 +112,17 @@
   "Psychology": 7
  },
  "ask_b_stops": {
+  "across_campuses_only": {
+   "Biological Sciences": 13,
+   "Business Administration": 5,
+   "Criminal Justice": 7,
+   "Early Childhood Education": 3,
+   "General Studies": 1,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 17,
+   "Medical Assisting": 9,
+   "Nursing": 78,
+   "Psychology": 5
+  },
   "census_uncombined": {
    "Biological Sciences": 16,
    "Business Administration": 10,
@@ -146,15 +168,15 @@
    "Psychology": 9
   },
   "room": {
-   "Biological Sciences": 14,
-   "Business Administration": 8,
-   "Criminal Justice": 8,
-   "Early Childhood Education": 5,
-   "General Studies": 3,
-   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 18,
-   "Medical Assisting": 10,
-   "Nursing": 79,
-   "Psychology": 6
+   "Biological Sciences": 16,
+   "Business Administration": 10,
+   "Criminal Justice": 9,
+   "Early Childhood Education": 6,
+   "General Studies": 4,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 22,
+   "Medical Assisting": 11,
+   "Nursing": 80,
+   "Psychology": 8
   },
   "text": {
    "Biological Sciences": 13,
@@ -166,6 +188,17 @@
    "Medical Assisting": 7,
    "Nursing": 77,
    "Psychology": 2
+  },
+  "video_rooms_only": {
+   "Biological Sciences": 15,
+   "Business Administration": 7,
+   "Criminal Justice": 8,
+   "Early Childhood Education": 5,
+   "General Studies": 2,
+   "Heating, Ventilation, Air Conditioning and Refrigeration Technology": 21,
+   "Medical Assisting": 10,
+   "Nursing": 78,
+   "Psychology": 7
   }
  },
  "call": {

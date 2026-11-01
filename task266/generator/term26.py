@@ -535,6 +535,7 @@ def schedule(regs, seed):
                     busy.append(l["slot"])
     stack(sections, members, book, rng)
     accelerate()
+    rotate(sections, book, seed)
     # a linked section no student was placed in is not offered
     empty = {s["crn"] for s in sections if not members[s["crn"]]}
     sections[:] = [s for s in sections if s["crn"] not in empty]
@@ -549,6 +550,62 @@ def schedule(regs, seed):
         if s["part"] != "1" and s["kind"] == "LEC":
             s["cap"] = 24
     return sections, members
+
+
+def rotate(sections, book, seed):
+    """Each program's accelerated pair: the second eight weeks meet at another campus where the subject is taught, the
+    same instructor at the same time, in a room no other section holds in those weeks at that time; each half takes an
+    interactive video classroom where one is open (a video classroom is an ordinary classroom when no video class is
+    booked in it). Its own random stream, so the rest of the schedule is as drawn."""
+    rot = np.random.default_rng([seed, 26, 12])
+
+    def open_for(room, slot, part, kind):
+        if room == "OFF CAMPUS":
+            return True
+        return not any(x["room"] == room and overlaps(x["slot"], slot) and (x["part"] == "1" or x["part"] == part)
+                       for x in sections if x["kind"] == kind or kind == "LEC")
+
+    for prog in K.CODES:
+        pair = ACCEL[prog]
+        subj = pair[0].split()[0]
+        halves = {}
+        for s in sections:
+            if s["kind"] == "LEC" and s["part"] in ("A", "B") and s["course"] in pair and s["subj"] == subj:
+                halves[s["part"]] = s
+        if set(halves) != {"A", "B"}:
+            raise RuntimeError("no accelerated pair to rotate for %s" % prog)
+        a, b = halves["A"], halves["B"]
+        here = a["campus"]
+        there = [c for c in ("QNL", "TRV", "HOL") if c != here and c in TAUGHT.get(subj, K.CAMPUS)]
+        links = [l for l in sections if l["link"] == b["crn"]]
+        moved = False
+        for c in [there[int(k)] for k in rot.permutation(len(there))]:
+            kind = "MDA" if subj == "MDA" else "lec"
+            free_v = [r for r in VIDEO[c] if open_for(r, b["slot"], "B", "LEC")]
+            free = free_v or [r for r in ROOMS[c][kind] if open_for(r, b["slot"], "B", "LEC") and not r.endswith("V")]
+            lab_rooms = {}
+            for l in links:
+                opts = [r for r in ROOMS[c][l["kind"]] if open_for(r, l["slot"], "B", "LEC")]
+                if opts:
+                    lab_rooms[l["crn"]] = opts[int(rot.integers(len(opts)))]
+            if not free or len(lab_rooms) != len(links):
+                continue
+            book.room[b["room"]].remove(b["slot"])
+            b["campus"], b["room"] = c, free[int(rot.integers(len(free)))]
+            book.room.setdefault(b["room"], []).append(b["slot"])
+            for l in links:
+                book.room[l["room"]].remove(l["slot"])
+                l["campus"], l["room"] = c, lab_rooms[l["crn"]]
+                book.room.setdefault(l["room"], []).append(l["slot"])
+            moved = True
+            break
+        if not moved:
+            raise RuntimeError("no campus for the second eight weeks of %s" % prog)
+        free_v = [r for r in VIDEO[here] if open_for(r, a["slot"], "A", "LEC")]
+        if free_v:
+            book.room[a["room"]].remove(a["slot"])
+            a["room"] = free_v[int(rot.integers(len(free_v)))]
+            book.room.setdefault(a["room"], []).append(a["slot"])
 
 
 def stack(sections, members, book, rng):

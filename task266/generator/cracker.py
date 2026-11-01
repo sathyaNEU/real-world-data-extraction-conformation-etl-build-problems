@@ -18,23 +18,24 @@ CHART = 3              # the chart's form criteria, kept by any response that dr
 
 
 def cracker(target):
-    """Each ask as the cracker reads it. A: Policy 4.1 and 4.3 executed, the credit hours registered at the census
-    (registrations in place on the census date, later withdrawals kept) by the program of record in effect for fall
-    2026 in the history, each registration at the credit hours its row carries. B: Policy 4.2's sections scheduled to
-    meet together taken as sections sharing an instructor, days, begin time and the schedule's start and end dates
-    (online sections apart), so the eight-week halves stay apart; census registrations as in A."""
-    return dict(A=A.ask_a(target, credits="row"), B=A.ask_b(target, group="exact"))
+    """Each ask as the careful solver reads it. A: Policy 4.1 and 4.3 executed, the credit hours registered at the
+    census (registrations in place on the census date, later withdrawals kept) by the program of record in effect for
+    fall 2026, the history read by its effective and end terms, each registration at the credit hours its section
+    carries in the term's section schedule. B: Policy 4.2's sections scheduled to meet together, at one campus or across
+    campuses: one instructor at the same days and begin time in weeks the sections share (online sections apart); census
+    registrations as in A. ceiling.py measures every route."""
+    return dict(A=A.ask_a(target, program="latest"), B=A.ask_b(target, group="dated"))
 
 
 def without_dates(target):
-    """The same cracker with the meeting key that leaves the section dates out (instructor, days and begin time)."""
-    return dict(A=A.ask_a(target, credits="row"), B=A.ask_b(target, group="meeting"))
+    """The cracker with the meeting key that leaves the section dates out (instructor, days and begin time)."""
+    return dict(A=A.ask_a(target, program="latest"), B=A.ask_b(target, group="meeting"))
 
 
 def mirror(target):
-    """The natural reads: the registration rows' credit hours by the extract's program, every RE, RW and WC row; the
-    schedule's enrolment under ten, section by section."""
-    return dict(A=A.ask_a(target, credits="row", program="row", census="status"),
+    """The natural reads: the schedule's section credit hours (4.1's source) by the extract's program, every RE, RW
+    and WC row; the schedule's enrolment under ten, section by section."""
+    return dict(A=A.ask_a(target, program="row", census="status"),
                 B=A.ask_b(target, enrol="export", group="none"))
 
 

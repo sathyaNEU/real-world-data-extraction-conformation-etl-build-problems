@@ -10,6 +10,7 @@ import sys
 from collections import Counter, defaultdict
 
 from openpyxl import load_workbook
+from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FAIL = []
@@ -31,6 +32,19 @@ def sheet(path, name):
     it = ws.iter_rows(values_only=True)
     head = next(it)
     return [dict(zip(head, r)) for r in it if any(v is not None for v in r)]
+
+
+def pdf(path):
+    """A PDF's text, whitespace folded."""
+    return re.sub(r"\s+", " ", " ".join(pg.extract_text() or "" for pg in PdfReader(path).pages))
+
+
+# the policy's profile sentences the asks are computed under (read back from the shipped policy before use)
+CREDIT_SOURCE = "The credit hours of a registration are those its section carries in the term's section schedule."
+CLASS_SCOPE = "two or more sections scheduled to meet together, at one campus or across campuses, which count as one class"
+RECORD_DATE = "as it stands at the end of the spring term before the review, the degrees conferred for that term included"
+ESTIMATE_BASE = ("made from that record for the program's three classes taken together, each student counting in full for "
+                 "every term in which the record follows the student")
 
 
 def round1(x):
@@ -63,6 +77,12 @@ def main(target):
     files = os.listdir(target)
     find = lambda pat: [f for f in files if re.search(pat, f)][0]
     F = json.load(open(os.path.join(HERE, "figures.json")))
+    # the policy's 3.3 read back before the call is computed: the record at the end of spring 2027 with that term's
+    # degrees, and the estimate from the whole record of the program's three classes taken together
+    policy33 = pdf(P(find(r"policy_3-12")))
+    for clause in (RECORD_DATE, ESTIMATE_BASE):
+        if clause not in policy33:
+            FAIL.append("policy 3.3 does not read back: %s" % clause)
 
     terms = sheet(P(find(r"term_calendar")), "Terms")
     order = [str(t["Term code"]) for t in terms]
@@ -113,6 +133,11 @@ def main(target):
 
     # ------------------------------------------------------------------ Ask A: FTE at the fall 2026 census
     import datetime as _dt
+    policy = pdf(P(find(r"policy_3-12")))
+    if CREDIT_SOURCE not in policy:
+        FAIL.append("policy 4.1 does not read back the credit-hour source the verifier uses")
+    if CLASS_SCOPE not in policy:
+        FAIL.append("policy 4.2 does not read back the class it defines")
     cal = sheet(P(find(r"term_calendar")), "Terms")
     census = [t["Census date"] for t in cal if str(t["Term code"]) == "202710"][0]
     census = census.date() if hasattr(census, "date") else census
@@ -123,11 +148,18 @@ def main(target):
     secs = sheet(P(find(r"section_schedule")), "Fall 2026 sections")
     cr = {str(s["CRN"]): s["Cr Hrs"] for s in secs}
     hist = rows_csv(P(find(r"program_of_record")))
-    at = {}
+    regs = rows_csv(P(find(r"census_registrations")))
+    # the program of record in effect for fall 2026: the row whose period covers the term (a row that ends before it
+    # begins was never in effect); one per registered student
+    inforce = defaultdict(set)
     for h in hist:
         if h["effective_term"] <= "202710" and (not h["end_term"] or h["end_term"] >= "202710"):
-            at[h["student_id"]] = h["program_code"]
-    regs = rows_csv(P(find(r"census_registrations")))
+            inforce[h["student_id"]].add(h["program_code"])
+    at = {}
+    for sid, progs in inforce.items():
+        if len(progs) != 1:
+            FAIL.append("%s: %d programs of record in effect for fall 2026" % (sid, len(progs)))
+        at[sid] = sorted(progs)[0]
     # in place on the census date: registered by then, or withdrawn after it (a W grade)
     held = [r for r in regs if r["reg_status"] == "WC" or
             (r["reg_status"] in ("RE", "RW") and when(r["status_date"]) <= census)]
@@ -140,7 +172,7 @@ def main(target):
     n = Counter(r["crn"] for r in held)
     meet = defaultdict(list)
     for s in secs:
-        if s["Status"] != "A" or owner.get(s["Subj"]) not in nine:
+        if s["Status"] != "Active" or owner.get(s["Subj"]) not in nine:
             continue
         key = str(s["CRN"]) if s["Days"] == "TBA" else (s["Instructor"], s["Days"], s["Begin"])
         meet[key].append(s)
