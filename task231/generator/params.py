@@ -3,6 +3,7 @@ Every constant the world, the pack, the goldens and the checks share."""
 import datetime as dt
 
 SEED = 7
+NOISE_KEY = 35         # the stations' own air (offsets, hour-to-hour noise): drawn so no share sits on a rounding edge
 ORG = "Sawyer Divide Highway District"
 ORG_SHORT = "SDHD"
 VENDOR = "Quillan Road Weather Systems"
@@ -39,13 +40,13 @@ STATIONS = [
     ("K1", "SD-118", "ESS4417", "Halvorsen Meadow", "MT 271", 14.6, 10.0, 20.0, 1118, "K", "Sawyer 2", "IRS-31", ""),
     ("K2", "SD-131", "ESS4492", "Teller Junction", "MT 271", 22.3, 18.5, 24.0, 1142, "K", "Sawyer 2", "IRS-31", "bridge deck"),
     ("K3", "SD-122", "ESS4459", "Bitterbrush Flat", "US 487", 61.8, 25.0, 29.5, 1106, "K", "Sawyer 2", "SCAN-16", ""),
-    ("K4", "SD-147", "ESS4503", "Kimball Grade", "US 487", 55.1, 16.0, 31.0, 1560, "Kslope", "Sawyer 2", "IRS-31", ""),
+    ("K4", "SD-147", "ESS4503", "Larkspur Grade", "US 487", 55.1, 16.0, 31.0, 1560, "Kslope", "Sawyer 2", "IRS-31", ""),
     ("L1", "SD-109", "ESS4386", "Lone Tree Siding", "MT 271", 6.9, 21.5, 10.0, 1176, "L", "Sawyer 1", "IRS-31", ""),
     ("L2", "SD-113", "ESS4398", "Wister Bridge", "MT 309", 31.4, 27.0, 18.0, 1193, "L", "Sawyer 1", "IRS-31", "bridge deck"),
     ("L3", "SD-158", "ESS4547", "Sapphire Hill", "MT 309", 39.0, 30.0, 9.0, 1655, "Lslope", "Sawyer 1", "SCAN-16", ""),
     ("M1", "SD-204", "ESS4612", "Cutler Meadow", "US 487", 88.7, 52.0, 40.0, 1418, "M", "Sawyer 3", "IRS-31", ""),
     ("M2", "SD-211", "ESS4630", "Ransom Creek", "US 487", 97.2, 61.0, 46.0, 1441, "M", "Sawyer 3", "IRS-31", "bridge deck"),
-    ("M3", "SD-226", "ESS4671", "Echo Grade", "MT 52", 18.3, 57.0, 52.0, 1878, "Mslope", "Sawyer 3", "IRS-31", ""),
+    ("M3", "SD-226", "ESS4671", "Antimony Grade", "MT 52", 18.3, 57.0, 52.0, 1878, "Mslope", "Sawyer 3", "IRS-31", ""),
     ("N1", "SD-219", "ESS4655", "Dutchman Flat", "MT 52", 4.1, 58.0, 33.0, 1462, "N", "Sawyer 3", "IRS-31", ""),
     ("N2", "SD-233", "ESS4688", "Hollis Junction", "MT 52", 11.6, 67.0, 37.0, 1449, "N", "Sawyer 3", "SCAN-16", ""),
     ("N3", "SD-240", "ESS4702", "Notch Grade", "MT 52", 25.9, 72.0, 29.0, 1902, "Nslope", "Sawyer 3", "IRS-31", ""),

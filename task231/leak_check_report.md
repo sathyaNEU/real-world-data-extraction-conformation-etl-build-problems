@@ -1,25 +1,23 @@
 # leak check, task231
 
-**Verdict: REVIEW.** 14 files read, 135 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 47 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: settled, reading, district, rejected, records, points, region, judged, decisive, pooled, comparison, vendor, season, approved, capture, shipped, reflex, register, architecture, registered, monitoring, classification, calibration, government, agency
+Stump terms swept: reading, architecture, vendor, export, district, network, co-movement, register, readable, judged, decisive, pooled, comparison, checks, sentence, records, settled, record, readings, profile, nights, october, reference, family, forecast
 
-## 3 answer figures in the pack (REVIEW 5)
-- **REVIEW** `quillan_air_temperature_qc_configuration_v4_3.pdf`: golden figure 4.3 appears: ...ystems | QRWS-QC-0457 issue 3 | configuration 4.3 Page 1 Air temperature quality control: configura...
-- **REVIEW** `quillan_air_temperature_qc_configuration_v4_3.pdf`: golden figure 0.3 appears: ...per cent or more Uninjected observations withheld 0.3 per cent 1 per cent or less 4. Releases Release...
-- **REVIEW** `quillan_service_agreement_schedule_b.pdf`: golden figure 0.5 appears: ...ce period 97.5 per cent of the hours not excluded 0.5 per cent of the annual station fee for each full...
-- **REVIEW** `sdhd_road_weather_data_quality_standard_rev2.pdf`: golden figure 0.0 appears: ...eported a surface temperature at or below 32.0 F (0.0 C). Ice hours Winter hours in which the station's...
-- **REVIEW** `sdhd_road_weather_data_quality_standard_rev2.pdf`: golden figure 0.3 appears: ...t's air temperature probes are stated accurate to 0.3 C. 3. Winter review of the quality-control tests...
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `sdhd_ess_atmospheric_2026_27.csv`: golden figure 27,330 appears: ...scheduled ESS4702,2027-02-08T16:00:00Z,-67,-98,79,27,330,scheduled ESS4702,2027-02-08T17:00:00Z,-61,-117,6...
+- **REVIEW** `sdhd_ess_atmospheric_2026_27.csv`: golden figure 33,118 appears: ...5,scheduled ESS4899,2026-10-02T00:00:00Z,67,12,67,33,118,scheduled ESS4899,2026-10-02T01:00:00Z,73,5,62,88...
+
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `quillan_air_temperature_qc_configuration_v4_3.pdf`: 4 of 25 stump-paragraph terms appear (reading, district, network, readings); read whether the document names the move
+- **REVIEW** `quillan_service_agreement_schedule_b.pdf`: 4 of 25 stump-paragraph terms appear (vendor, district, network, october); read whether the document names the move
+- **REVIEW** `sdhd_road_weather_data_quality_standard_rev2.pdf`: 3 of 25 stump-paragraph terms appear (vendor, district, october); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `sdhd_rwis_preseason_checks_oct2026.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 - **REVIEW** `sdhd_rwis_site_register.xlsx`: names 8 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-
-## 8 column names (REVIEW 2)
-- **REVIEW** `sdhd_ess_atmospheric_2026_27.csv`: columns a generator names and an organisation does not: air_temp_tenths_c
-- **REVIEW** `sdhd_pavement_sensor_readings_2026_27.csv`: columns a generator names and an organisation does not: surface_temp
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -28,11 +26,11 @@ Stump terms swept: settled, reading, district, rejected, records, points, region
 
 ## 2 author vocabulary (clean)
 
-## 4 design-note vocabulary (clean)
-
 ## 5 announcements (clean)
 
 ## 7 hidden content (clean)
+
+## 8 column names (clean)
 
 ## 9 dates after the setting (clean)
 

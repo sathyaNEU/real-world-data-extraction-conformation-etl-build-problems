@@ -93,7 +93,7 @@ def build():
     W.update(deficit=deficit, floor=floor)
 
     # ---- each station's air ----
-    r = rng(4)
+    r = np.random.default_rng([P.SEED, 4, P.NOISE_KEY])
     offset = r.normal(0, 0.20, NS)
     T = np.zeros((NS, NH))
     for i, t in enumerate(P.TAGS):
@@ -183,7 +183,7 @@ def build():
                                                            "RPU firmware upgrade", "road widening",
                                                            "utility pole replacement"][int(r.integers(0, 5))]))
     W["outage"], W["notices"] = outage, sorted(notices, key=lambda x: (x[1], x[0]))
-    cover = {t: v for t, v in zip(P.TAGS, r.uniform(0.004, 0.030, NS))}
+    cover = {t: v for t, v in zip(P.TAGS, r.uniform(0.002, 0.016, NS))}
     # dropout episodes in minutes from the window's start
     episodes = {}
     total_min = (NH + 200) * 60
@@ -219,7 +219,7 @@ def build():
             queue = [q for q in queue if h - q < 96]
             end_min = (h + 1) * 60.0
             if up(t, end_min + 5):
-                slow = r.random() < 0.035
+                slow = r.random() < 0.009
                 lat = r.uniform(15.5, 48.0) if slow else r.uniform(3.5, 8.5)
                 rec_min = end_min + 5 + lat
                 if slow and rec_min > end_min + 35 and up(t, end_min + 35):
@@ -252,9 +252,21 @@ def build():
         imei[t] = "35" + "".join(str(int(x)) for x in r.integers(0, 10, 13))
     for t in ("K1", "M2", "R4", "Q3", "T2"):
         swaps[t] = (int(r.integers(900, 4200)), "35" + "".join(str(int(x)) for x in r.integers(0, 10, 13)))
-    # the Sheep Ridge modem failed some days before its replacement came; a shop spare carried the site meanwhile
-    h_new = swaps["R4"][0]
-    W["spare"] = {"R4": (h_new - int(r.integers(70, 130)), h_new, "359441205583076")}
+    # four of those modems failed some days before their replacements came, and one of the district's two shop spares
+    # carried the site meanwhile (the shop spare to Sheep Ridge and Ransom Creek, the Ashby yard spare to Fenwick and
+    # Antelope Bench); the register keeps each spare's own row, with no site
+    W["spare"] = {}
+    for spare, sites in (("359441205583076", ("R4", "M2")), ("358713046622913", ("Q3", "T2"))):
+        busy = []
+        for t in sites:
+            h_new, new = swaps[t]
+            a = h_new - int(r.integers(70, 130))
+            while any(not (h_new <= b0 or a >= b1) for b0, b1 in busy):
+                h_new += 260
+                a += 260
+            swaps[t] = (h_new, new)
+            busy.append((a, h_new))
+            W["spare"][t] = (a, h_new, spare)
     W["imei"], W["swaps"] = imei, swaps
 
     # ---- the vendor's tests: the QC run at 20 minutes past each hour checks every reading received since the last
@@ -337,7 +349,7 @@ def build():
                 if new_model == "IRS-31":
                     fw_change[ser2] = h_r      # a new IRS-31 ships with firmware 4.1
                 if model == "IRS-31":
-                    fw_change[ser] = int(r.integers(1600, 3400))
+                    int(r.integers(1600, 3400))  # the failing head was left on 3.4 until it came out
             else:
                 bmodel = model if lane == "travel lane" else "IRS-31"
                 if lane != "travel lane":

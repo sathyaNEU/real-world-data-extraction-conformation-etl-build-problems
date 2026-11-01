@@ -112,8 +112,8 @@ gb = load_workbook(os.path.join(G, "rwis_spatial_check_review_2027.xlsx"), read_
 rows = [r for r in list(gb["Spatial test review"].iter_rows(values_only=True))[1:] if r[0] and r[0].startswith("SD-")]
 gw = {r[0]: r for r in rows}
 ok("V1", all(gw[c][4] == fr[k] for k, c in enumerate(code)), "false-rejection hours, every station")
-ok("V2", all(abs(gw[c][5] - float("%.1f" % (share[k] + 1e-9))) < 1e-9 for k, c in enumerate(code)),
-   "one-decimal shares, every station")
+ok("V2", all(gw[c][5] == int(np.floor(share[k] + 0.5 + 1e-9)) for k, c in enumerate(code)),
+   "whole-per-cent shares, every station")
 ok("V3", sorted(c for c in code if gw[c][6] == "Yes") == sorted(retune), "re-tune list %s" % retune)
 ok("V4", all(gw[c][3] == wh[k].sum() for k, c in enumerate(code)), "withheld hours, every station")
 
@@ -138,11 +138,15 @@ def take(i, rec, a, b):
 for r in ms[ms["i"].notna()].itertuples():
     take(int(r.i), r.rec, r.a, r.b)
 for im, grp in ms[ms["i"].isna()].groupby("modem_imei"):
-    hs = sorted({h for r in grp.itertuples() for h in range(r.a, r.b + 1)})
-    cand = [i for i in range(n) if all(not np.isnan(val[i, h]) and np.isinf(first[i, h]) for h in hs)]
-    ok("V5", len(cand) == 1, "modem %s with no site in the register serves %s" % (im, [code[c] for c in cand]))
-    for r in grp.itertuples():
-        take(cand[0], r.rec, r.a, r.b)
+    grp = grp.sort_values("rec")
+    spell = (grp["rec"].diff() > pd.Timedelta(hours=48)).cumsum()
+    for _, sp in grp.groupby(spell):
+        hs = sorted({h for r in sp.itertuples() for h in range(r.a, r.b + 1)})
+        cand = [i for i in range(n) if all(not np.isnan(val[i, h]) and np.isinf(first[i, h]) for h in hs)]
+        ok("V5", len(cand) == 1, "modem %s with no site, %s to %s, serves %s" % (
+            im, sp["rec"].iloc[0].date(), sp["rec"].iloc[-1].date(), [code[c] for c in cand]))
+        for r in sp.itertuples():
+            take(cand[0], r.rec, r.a, r.b)
 po = pd.read_csv(os.path.join(T, "sdhd_rwis_planned_outage_notices_2026_27.csv"))
 excl = np.zeros((n, NH), bool)
 for r in po.itertuples():
@@ -152,16 +156,23 @@ for r in po.itertuples():
 avail = (first <= 20) & ~excl
 unav = NH - avail.sum(1) - excl.sum(1)
 sv = load_workbook(os.path.join(G, "rwis_spatial_check_review_2027.xlsx"), read_only=True)["Service and pavement"]
-srows = {r[0]: r for r in list(sv.iter_rows(values_only=True))[1:] if r[0] and r[0].startswith("SD-")}
-ok("V6", all(srows[c][2] == unav[k] for k, c in enumerate(code)), "unavailable hours, every station")
+srows = {r[0]: r for r in list(sv.iter_rows(values_only=True))[1:] if r[0]}
+sec_of = dict(zip(code, sites["Maintenance section"]))
+secs = sorted(set(sec_of.values()))
+
+
+def bysec(v):
+    return {x: int(sum(v[k] for k, c in enumerate(code) if sec_of[c] == x)) for x in secs}
+
+
+un_s = bysec(unav)
+ok("V6", all(srows[x][2] == un_s[x] for x in secs) and srows["Network"][2] == int(unav.sum()),
+   "unavailable station-hours by section and network %s" % un_s)
 
 # ---- pavement: freezing and ice hours ----
 ps = pd.DataFrame(list(wb["Pavement sensors"].iter_rows(values_only=True))[1:],
                   columns=list(next(wb["Pavement sensors"].iter_rows(values_only=True))))
 mdl = dict(zip(ps["Sensor serial"], ps["Model"]))
-for note in ps["Note"].dropna():
-    m = re.match(r"Replaced (\S+) serial (\S+)", note)
-    mdl[m.group(2)] = m.group(1)
 lane = {(r["RPU"], int(r["Port"])): r["Lane"] for _, r in ps.iterrows()}
 fwv = {r[0]: pd.Timestamp(r[2]) for r in list(wb["Firmware"].iter_rows(values_only=True))[1:]}
 cds = {}
@@ -169,11 +180,12 @@ for tab, c, name in list(wb["Status codes"].iter_rows(values_only=True))[1:]:
     cds.setdefault("new" if "4.1" in tab else "old", {})[int(c)] = name
 pv = pd.read_csv(os.path.join(T, "sdhd_pavement_sensor_readings_2026_27.csv"), dtype={"surface_temperature": str}).drop_duplicates()
 pv = pv[[lane[(a, b)] == "travel lane" for a, b in zip(pv["rpu_id"], pv["port"])]]
-pv["utc"] = pd.to_datetime(pv["obs_time_mst"]) + pd.Timedelta(hours=7)
+pv["utc"] = pd.to_datetime(pv["obs_time"].str[:-4]) + pd.to_timedelta(pv["obs_time"].str[-3:].map(
+    {"MDT": 6, "MST": 7}), unit="h")
 pv["h"] = ((pv["utc"] - START) / pd.Timedelta(hours=1)).astype(int) - 1
 loc = pv["utc"] - pd.to_timedelta(np.where((pv["utc"] >= pd.Timestamp("2026-11-01 08:00")) &
                                            (pv["utc"] < pd.Timestamp("2027-03-14 09:00")), 7, 6), unit="h")
-model = pv["sensor_serial"].map(mdl)
+model = pv["sensor_serial"].map(lambda x: mdl.get(x) or {"IR": "IRS-31", "SC": "SCAN-16"}[x[:2]])
 tempf = np.where(model == "IRS-31", pv["surface_temperature"].astype(float) / 10 * 9 / 5 + 32, pv["surface_temperature"].astype(float))
 newtab = (model == "IRS-31") & np.array([s_ in fwv and l_ >= fwv[s_] for s_, l_ in zip(pv["sensor_serial"], loc)])
 status = [cds["new" if nt else "old"][c] for nt, c in zip(newtab, pv["surface_status_code"])]
@@ -181,8 +193,12 @@ pv["frz"] = tempf <= 32.0 + 1e-9
 pv["ice"] = [s_ in ("ice warning", "ice watch") for s_ in status]
 pv["i"] = pv["rpu_id"].map(rpu)
 agg = pv.groupby(["i", "h"])[["frz", "ice"]].any().groupby("i").sum()
-ok("V7", all(srows[c][4] == agg.loc[k, "frz"] for k, c in enumerate(code)), "freezing hours, every station")
-ok("V8", all(srows[c][5] == agg.loc[k, "ice"] for k, c in enumerate(code)), "ice hours, every station")
+fz_s = bysec([agg.loc[k, "frz"] for k in range(n)])
+ic_s = bysec([agg.loc[k, "ice"] for k in range(n)])
+ok("V7", all(srows[x][4] == fz_s[x] for x in secs) and srows["Network"][4] == sum(fz_s.values()),
+   "freezing station-hours by section %s" % fz_s)
+ok("V8", all(srows[x][5] == ic_s[x] for x in secs) and srows["Network"][5] == sum(ic_s.values()),
+   "ice station-hours by section %s" % ic_s)
 
 # ---- the memo and submission.md say the same ----
 memo = "\n".join(p.text for p in Document(os.path.join(G, "spatial_check_retune_memo_2027.docx")).paragraphs)
@@ -191,11 +207,11 @@ ok("V9", all(names[c] in memo.split("\n")[5] if len(memo.split("\n")) > 5 else F
    all(names[c] in memo for c in retune), "the memo names every re-tuned station")
 sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
 line = [l_ for l_ in sub.splitlines() if l_.strip().startswith("- SD-")][0]
-pairs = dict(re.findall(r"(SD-\d{3}) (\d+\.\d)", line))
-ok("V10", all(pairs[c] == "%.1f" % (share[k] + 1e-9) for k, c in enumerate(code)), "submission.md shares")
-un_line = [l_ for l_ in sub.splitlines() if l_.startswith("2. Unavailable hours")][0]
-ok("V11", all(dict(re.findall(r"(SD-\d{3}) (\d+)", un_line))[c] == str(unav[k]) for k, c in enumerate(code)),
-   "submission.md unavailable hours")
+pairs = dict(re.findall(r"(SD-\d{3}) (\d+)", line))
+ok("V10", all(pairs[c] == str(int(np.floor(share[k] + 0.5 + 1e-9))) for k, c in enumerate(code)),
+   "submission.md shares")
+un_line = [l_ for l_ in sub.splitlines() if l_.startswith("2. Unavailable station-hours")][0]
+ok("V11", all(("%s %s" % (x, format(un_s[x], ","))) in un_line for x in secs), "submission.md unavailable hours")
 std = open(os.path.join(T, "sdhd_road_weather_data_quality_standard_rev2.pdf"), "rb").read()
 ok("V12", std.startswith(b"%PDF") and b"D:2026082" in std, "the standard is a PDF with its own stamps")
 em = email.message_from_bytes(open(os.path.join(T, "rwis_winter_review_request.eml"), "rb").read())

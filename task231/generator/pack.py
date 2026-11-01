@@ -144,12 +144,13 @@ def register(W, path):
                 dt.date(2015 + (len(ser) + int(ser[-2:])) % 8, 1 + int(ser[-1]) % 12, 3 + int(ser[-3]) % 24))
         note = None
         if (t, lane) in installed_old:
-            old = installed_old[(t, lane)]
-            oldm = [m for (tt, ll, ss, m, aa, bb, pp) in W["sensors"] if ss == old][0]
-            note = "Replaced %s serial %s (%s)" % (oldm, old, {"K3": "sensor head cracked by plow",
-                                                                  "N2": "heater failure",
-                                                                  "P3": "lightning damage",
-                                                                  "Q1": "heater failure"}[t])
+            # the register is kept by sensor in service: a head that came out leaves only its work order behind
+            note = "WO-27-%04d, %s" % (113 + 37 * P.TAGS.index(t) % 400, {"K3": "sensor head cracked by plow",
+                                                                         "N2": "heater failure",
+                                                                         "P3": "lightning damage",
+                                                                         "Q1": "heater failure"}[t])
+        elif lane == "bridge deck":
+            note = "deck sensor, %s span" % ("north" if int(ser[-1]) % 2 else "south")
         ws2.append([P.SITE[t], P.RPU[t], port, lane, ser, model, units, inst, note])
     ws3 = wb.create_sheet("Firmware")
     ws3.append(["Sensor serial", "Firmware", "Applied"])
@@ -236,17 +237,17 @@ def pavement(W, path):
                 continue
             tab = "4.1" if (model == "IRS-31" and fw_h is not None and h >= fw_h) else "3.4"
             code = STATUS_TABLE[tab][st[h]]
-            mst = obs_time(h) - dt.timedelta(hours=7)
+            stamp = local_str(obs_time(h))
             if model == "IRS-31":
                 temp = str(int(round(sv[h] * 10)))
             else:
                 temp = "%.1f" % (sv[h] * 9 / 5 + 32)
-            row = [P.RPU[t], ser, str(port), mst.strftime("%Y-%m-%d %H:%M"), temp, str(code)]
+            row = [P.RPU[t], ser, str(port), stamp, temp, str(code)]
             # a re-polled or re-sent RPU message carries the pavement block again
             for k in range(min(2, W["deliveries"][P.TAGS.index(t), h])):
                 rows.append((t, port, h, row))
     rows.sort(key=lambda r: (P.RPU[r[0]], r[1], r[2]))
-    write_csv(path, ["rpu_id", "sensor_serial", "port", "obs_time_mst", "surface_temperature", "surface_status_code"],
+    write_csv(path, ["rpu_id", "sensor_serial", "port", "obs_time", "surface_temperature", "surface_status_code"],
               [r[3] for r in rows])
     return len(rows)
 
@@ -259,7 +260,7 @@ def preseason(W, path):
                "Difference (C)", "Technician"])
     for c in ws[1]:
         c.font = Font(bold=True)
-    tech = ["L. Dalton", "K. Phillips", "L. Dalton", "D. Glenn", "K. Phillips"]
+    tech = ["L. Dalton", "K. Phillips", "L. Dalton", "J. Howard", "K. Phillips"]
     for k, (t, day, ref, st) in enumerate(sorted(W["preseason"], key=lambda r: (r[1], P.SITE[r[0]]))):
         ws.append([P.SITE[t], P.NAME[t], day, ref, st, round(st - ref, 2), tech[(k * 3 + day.day) % 5]])
     for k, wd in enumerate([10, 22, 12, 24, 18, 14, 12]):

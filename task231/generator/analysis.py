@@ -53,7 +53,8 @@ def register(target):
     wb = load_workbook(fpath(target, "register"), read_only=True)
     sites = []
     for r in list(wb["Sites"].iter_rows(values_only=True))[1:]:
-        sites.append({"site": r[0], "rpu": r[1], "name": r[2], "lat": r[5], "lon": r[6], "z": float(r[8])})
+        sites.append({"site": r[0], "rpu": r[1], "name": r[2], "lat": r[5], "lon": r[6], "z": float(r[8]),
+                      "section": r[10]})
     sensors = [dict(zip(["site", "rpu", "port", "lane", "serial", "model", "units", "installed", "note"], r))
                for r in list(wb["Pavement sensors"].iter_rows(values_only=True))[1:]]
     firmware = {r[0]: (r[1], dt.datetime.strptime(r[2], "%Y-%m-%d %H:%M"))
@@ -286,16 +287,28 @@ def sla(target, reg, val):
             for h in range(a, b + 1):
                 late = (rec - (P.WIN_START_UTC + dt.timedelta(hours=h + 1))).total_seconds() / 60.0
                 first[i, h] = min(first[i, h], late)
+    # a modem the register gives no site: each spell of its messages belongs to the one station whose readings the
+    # ESS export holds for those hours while no registered modem of that station brought them
     placed = {}
     for im, ms in sorted(unplaced.items()):
-        hs = sorted({h for _, a, b in ms for h in range(a, b + 1)})
-        fits = [i for i in range(n) if all(not np.isnan(val[i, h]) and np.isinf(first[i, h]) for h in hs)]
-        assert len(fits) == 1, (im, fits)
-        placed[im] = fits[0]
-        for rec, a, b in ms:
-            for h in range(a, b + 1):
-                late = (rec - (P.WIN_START_UTC + dt.timedelta(hours=h + 1))).total_seconds() / 60.0
-                first[fits[0], h] = min(first[fits[0], h], late)
+        ms.sort()
+        spells, cur = [], [ms[0]]
+        for m in ms[1:]:
+            if (m[0] - cur[-1][0]).total_seconds() > 48 * 3600:
+                spells.append(cur)
+                cur = [m]
+            else:
+                cur.append(m)
+        spells.append(cur)
+        for sp in spells:
+            hs = sorted({h for _, a, b in sp for h in range(a, b + 1)})
+            fits = [i for i in range(n) if all(not np.isnan(val[i, h]) and np.isinf(first[i, h]) for h in hs)]
+            assert len(fits) == 1, (im, fits)
+            placed.setdefault(im, []).append((fits[0], sp[0][0], sp[-1][0]))
+            for rec, a, b in sp:
+                for h in range(a, b + 1):
+                    late = (rec - (P.WIN_START_UTC + dt.timedelta(hours=h + 1))).total_seconds() / 60.0
+                    first[fits[0], h] = min(first[fits[0], h], late)
     excl = np.zeros((n, P.NH), bool)
     with open(fpath(target, "outages"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
@@ -311,15 +324,13 @@ def sla(target, reg, val):
 
 
 # ---------------- ask B: travel-lane freezing hours and ice hours ----------------
-def pavement(target, reg):
+def pavement(target, reg, drop_unregistered=False):
     n = len(reg["sites"])
     model, lane = {}, {}
     for s in reg["sensors"]:
         model[s["serial"]] = s["model"]
         lane[(reg["idx"][s["site"]], int(s["port"]))] = s["lane"]
-        m = re.match(r"Replaced (\S+) serial (\S+)", s["note"] or "")
-        if m:
-            model[m.group(2)] = m.group(1)
+    unregistered = {}
     tab_old = [k for k in reg["codes"] if "3.4" in k][0]
     tab_new = [k for k in reg["codes"] if "4.1" in k][0]
     frz = np.zeros((n, P.NH), bool)
@@ -337,22 +348,43 @@ def pavement(target, reg):
             i = reg["rpu"][r["rpu_id"]]
             if lane[(i, int(r["port"]))] != "travel lane":
                 continue
-            mst = dt.datetime.strptime(r["obs_time_mst"], "%Y-%m-%d %H:%M")
-            h = hour_of_obs(mst + dt.timedelta(hours=7))
+            u = utc_of_local(r["obs_time"])
+            h = hour_of_obs(u)
             ser = r["sensor_serial"]
-            md = model[ser]
+            if ser not in model and drop_unregistered:
+                continue
+            if ser not in model:
+                # a head that came out during the winter: the register keeps only the sensor in service; its
+                # readings sit on the same RPU and port up to the new head's first reading, an IRS-31 reporting
+                # whole tenths of a degree C and a SCAN-16 degrees F to a tenth
+                unregistered.setdefault(ser, set()).add("F" if "." in r["surface_temperature"] else "C10")
+            md = model.get(ser) or ("SCAN-16" if "." in r["surface_temperature"] else "IRS-31")
             if md == "IRS-31":
                 c = int(r["surface_temperature"]) / 10.0
                 f_ = c * 9 / 5 + 32
             else:
                 f_ = float(r["surface_temperature"])
             fw = reg["firmware"].get(ser)
-            loc = local_of_utc(mst + dt.timedelta(hours=7))
+            loc = local_of_utc(u)
             tab = tab_new if (md == "IRS-31" and fw is not None and loc >= fw[1]) else tab_old
             st = reg["codes"][tab][int(r["surface_status_code"])]
             frz[i, h] |= f_ <= 32.0 + 1e-9
             ice[i, h] |= st in ("ice warning", "ice watch")
-    return {"freezing": frz.sum(1), "ice": ice.sum(1), "rows": rows, "duplicates": dups, "frz": frz, "icem": ice}
+    assert all(len(v) == 1 for v in unregistered.values())
+    return {"freezing": frz.sum(1), "ice": ice.sum(1), "rows": rows, "duplicates": dups, "frz": frz, "icem": ice,
+            "unregistered": sorted(unregistered)}
+
+
+def by_section(reg, values):
+    out = {}
+    for k, s in enumerate(reg["sites"]):
+        out[s["section"]] = out.get(s["section"], 0) + int(values[k])
+    return dict(sorted(out.items()))
+
+
+def whole(share):
+    """a share as a whole per cent, halves up"""
+    return int(math.floor(share + 0.5 + 1e-9))
 
 
 def solve(target):
