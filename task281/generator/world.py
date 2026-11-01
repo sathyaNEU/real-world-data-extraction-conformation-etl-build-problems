@@ -54,29 +54,29 @@ CAMERAS = [
     ("HO-NR40-190547", "NR-40", D(2019, 10, 14)),
     ("HO-NR70-241188", "NR-70", D(2024, 11, 25)),
     ("HO-NR70-241193", "NR-70", D(2024, 11, 25)),
-    ("HO-NR70-250240", "NR-70", D(2025, 2, 10)),
-    ("HO-NR70-250251", "NR-70", D(2025, 2, 10)),
+    ("HO-NR70-250240", "NR-70", D(2025, 1, 27)),
+    ("HO-NR70-250251", "NR-70", D(2025, 1, 27)),
     ("HO-NR70-250677", "NR-70", D(2025, 6, 30)),
     ("HO-NR70-250689", "NR-70", D(2025, 6, 30)),
     ("HO-NR70-250694", "NR-70", D(2025, 6, 30)),
     ("HO-NR70-250912", "NR-70", D(2025, 9, 15)),
     ("HO-NR70-250931", "NR-70", D(2025, 9, 15)),
-    ("HO-NR70-251130", "NR-70", D(2025, 11, 3)),
+    ("HO-NR70-251130", "NR-70", D(2025, 10, 6)),
 ]
 MODEL = {s: m for s, m, _ in CAMERAS}
 
 PLACEMENTS = [
-    # Wendmere (pilot A): the NR-40 until the NR-70 went in on Saturday 1 March 2025
-    ("HO-NR40-180317", "WM", D(2018, 4, 23), D(2025, 3, 1), "Replaced"),
-    ("HO-NR70-250240", "WM", D(2025, 3, 1), None, "New installation"),
-    # Quarry Hill (pilot B): NR-70 from December 2024, out for repair 29 March to 17 May 2025 with an NR-40 loaner
+    # Wendmere (pilot A): the NR-40 until the NR-70 went in on Saturday 8 February 2025
+    ("HO-NR40-180317", "WM", D(2018, 4, 23), D(2025, 2, 8), "Replaced"),
+    ("HO-NR70-250240", "WM", D(2025, 2, 8), None, "New installation"),
+    # Quarry Hill (pilot B): NR-70 from December 2024, out for repair 12 April to 3 May 2025 with an NR-40 loaner
     ("HO-NR40-180322", "QH", D(2018, 4, 23), D(2024, 12, 14), "Replaced"),
-    ("HO-NR70-241188", "QH", D(2024, 12, 14), D(2025, 3, 29), "Out for repair"),
-    ("HO-NR40-190547", "QH", D(2025, 3, 29), D(2025, 5, 17), "Loaner"),
-    ("HO-NR70-241188", "QH", D(2025, 5, 17), None, "Returned from repair"),
+    ("HO-NR70-241188", "QH", D(2024, 12, 14), D(2025, 4, 12), "Out for repair"),
+    ("HO-NR40-190547", "QH", D(2025, 4, 12), D(2025, 5, 3), "Loaner"),
+    ("HO-NR70-241188", "QH", D(2025, 5, 3), None, "Returned from repair"),
     # Yarrowby (pilot C): NR-40 to 22 February 2025, NR-70 after, an NR-40 loaner 7 to 21 June 2025 and 9 to 30 May 2026
-    ("HO-NR40-180355", "YB", D(2018, 6, 4), D(2025, 2, 22), "Replaced"),
-    ("HO-NR70-250251", "YB", D(2025, 2, 22), D(2025, 6, 7), "Out for repair"),
+    ("HO-NR40-180355", "YB", D(2018, 6, 4), D(2025, 2, 1), "Replaced"),
+    ("HO-NR70-250251", "YB", D(2025, 2, 1), D(2025, 6, 7), "Out for repair"),
     ("HO-NR40-190547", "YB", D(2025, 6, 7), D(2025, 6, 21), "Loaner"),
     ("HO-NR70-250251", "YB", D(2025, 6, 21), D(2026, 5, 9), "Returned from repair"),
     ("HO-NR40-190502", "YB", D(2026, 5, 9), D(2026, 5, 30), "Loaner"),
@@ -97,23 +97,23 @@ PLACEMENTS = [
     # Rookwood: still on its NR-40 (replacement deferred to FY2027)
     ("HO-NR40-190208", "RW", D(2019, 4, 1), None, "New installation"),
     # Sallow Creek: NR-40 to 8 November 2025, NR-70 after; an NR-40 loaner 4 to 25 April 2026
-    ("HO-NR40-190219", "SC", D(2019, 4, 1), D(2025, 11, 8), "Replaced"),
-    ("HO-NR70-251130", "SC", D(2025, 11, 8), D(2026, 4, 4), "Out for repair"),
+    ("HO-NR40-190219", "SC", D(2019, 4, 1), D(2025, 10, 18), "Replaced"),
+    ("HO-NR70-251130", "SC", D(2025, 10, 18), D(2026, 4, 4), "Out for repair"),
     ("HO-NR40-190470", "SC", D(2026, 4, 4), D(2026, 4, 25), "Loaner"),
     ("HO-NR70-251130", "SC", D(2026, 4, 25), None, "Returned from repair"),
     # Veldane: NR-70 from July 2025; failed 10 March 2026, on an NR-40 loaner since 14 March (board on back-order)
     ("HO-NR40-190466", "VD", D(2019, 8, 26), D(2025, 7, 19), "Replaced"),
-    ("HO-NR70-250694", "VD", D(2025, 7, 19), D(2026, 3, 14), "Out for repair"),
-    ("HO-NR40-190533", "VD", D(2026, 3, 14), None, "Loaner"),
+    ("HO-NR70-250694", "VD", D(2025, 7, 19), D(2026, 5, 2), "Out for repair"),
+    ("HO-NR40-190533", "VD", D(2026, 5, 2), None, "Loaner"),
     # Brackenfield: still on its NR-40
     ("HO-NR40-190470", "BF", D(2019, 8, 26), D(2026, 4, 4), "Moved"),
     ("HO-NR40-180381", "BF", D(2026, 4, 4), None, "Moved"),
     # Kestle Road: NR-70 from September 2025; failed 7 February 2026, on an NR-40 loaner since
     ("HO-NR40-190502", "KN", D(2019, 10, 14), D(2025, 9, 20), "Replaced"),
-    ("HO-NR70-250931", "KN", D(2025, 9, 20), D(2026, 2, 7), "Out for repair"),
-    ("HO-NR40-181014", "KN", D(2026, 2, 7), None, "Loaner"),
+    ("HO-NR70-250931", "KN", D(2025, 9, 20), D(2026, 4, 25), "Out for repair"),
+    ("HO-NR40-181014", "KN", D(2026, 4, 25), None, "Loaner"),
     # Hollinmoor: still on its NR-40
-    ("HO-NR40-180355", "HM", D(2025, 2, 22), None, "Moved"),
+    ("HO-NR40-180355", "HM", D(2025, 2, 1), None, "Moved"),
 ]
 
 
@@ -127,8 +127,8 @@ def camera_on(code, d):
 FAULTS = [
     # (serial, location, fault date (a clinic day), swap Saturday the loaner went in, repair note)
     ("HO-NR70-250677", "OF", D(2026, 2, 10), D(2026, 2, 14), "Flash module fault"),
-    ("HO-NR70-250694", "VD", D(2026, 3, 5), D(2026, 3, 14), "Sensor board failure, part on back-order"),
-    ("HO-NR70-250931", "KN", D(2026, 1, 28), D(2026, 2, 7), "Sensor board failure, part on back-order"),
+    ("HO-NR70-250694", "VD", D(2026, 4, 23), D(2026, 5, 2), "Sensor board failure, part on back-order"),
+    ("HO-NR70-250931", "KN", D(2026, 4, 15), D(2026, 4, 25), "Sensor board failure, part on back-order"),
     ("HO-NR70-251130", "SC", D(2026, 3, 30), D(2026, 4, 4), "Joystick and focus drive fault"),
     ("HO-NR70-250251", "YB", D(2026, 5, 1), D(2026, 5, 9), "Flash module fault"),
     ("HO-NR70-250689", "PB", D(2026, 6, 3), D(2026, 6, 13), "Chin rest motor and alignment"),
@@ -184,14 +184,14 @@ class World:
         """Return (ungradable, score) for one screening on camera `model`. Exactly two draws per read whatever
         the model, so moving a screening between cameras changes that read alone and no later draw."""
         u = r.random()
-        z = r.normal(0.0, P.SD_LAT)
+        z = r.normal(0.0, 1.0)
         if u < P.UNGRADABLE[model]:
             return True, None
         if referable:
-            mu = P.MU_REF[model] + (P.MU_REF_AGE75 if age == "75+" else 0.0)
+            lat = P.MU_REF[model] + (P.MU_REF_AGE75 if age == "75+" else 0.0) + P.SD_REF * z
         else:
-            mu = P.MU_NON
-        score = int(round(100 * logistic(mu + z)))
+            lat = P.MU_NON + z
+        score = int(round(100 * logistic(lat)))
         return False, min(max(score, 0), 100)
 
     def make_validation(self):

@@ -25,11 +25,12 @@ FLOOR = 0.85                 # governance standard: sensitivity at least 85 per 
 OVERREAD_CAPACITY = 7200     # reading center agreement: overreads a contract year
 
 # the AI's latent score model (score = 100 * logistic(latent))
-MU_REF = {"NR-70": 1.47, "NR-40": 0.60}      # referable eyes, by camera model
+MU_REF = {"NR-70": 1.025, "NR-40": 0.138}    # referable eyes, by camera model
 MU_REF_AGE75 = -0.22                         # older referable patients score a little lower on both models
+SD_REF = 0.605                               # spread of the latent among referable eyes
 MU_NON = -1.40                               # non-referable
 UNGRADABLE = {"NR-70": 0.036, "NR-40": 0.038}
-SD_LAT = 1.0
+SD_LAT = 1.0                                 # spread of the latent among non-referable eyes
 
 # twelve clinics: code, EHR department, portal site, biomed location, annual screens, referable prevalence
 CLINICS = [

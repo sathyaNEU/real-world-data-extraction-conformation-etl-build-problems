@@ -5,7 +5,7 @@
 
 ## 1. Final Recommendation
 
-**Raise the Orrinsford levee crown by 2 ft before the 2027 flood season.** The design flood for the river as it now runs is 110,000 cfs at the Orrinsford gauge and the railroad closure is 1.50 ft short of it with freeboard; a 1 ft raise leaves a 1.1 per cent annual chance of exceeding what the levee holds, 2 ft brings it to 0.9 per cent. Not no raise: the fit to the published Orrinsford record (95,000 cfs) keeps floods the upstream floodplains cut before their levees were raised. Not 1 ft: the 18 water years since the last raise alone (105,000 cfs) set aside Coyle Bridge's 47 earlier years.
+**Raise the Orrinsford levee crown by 2 ft before the 2027 flood season.** The design flood for the river as it now runs is 110,000 cfs at the Orrinsford gauge and the railroad closure is 1.50 ft short of it with freeboard; a 1 ft raise leaves a 1.1 per cent annual chance of exceeding what the levee holds, 2 ft brings it to 0.9 per cent. Not no raise: the fit to the published Orrinsford record (95,400 cfs) keeps floods the upstream floodplains cut before their levees were raised. Not 1 ft: the 18 water years since the last raise alone (104,700 cfs) set aside Coyle Bridge's 47 earlier years.
 
 ## 2. Critical Components
 

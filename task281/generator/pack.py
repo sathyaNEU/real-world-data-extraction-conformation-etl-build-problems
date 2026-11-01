@@ -303,7 +303,7 @@ def write_assets(w, path, rng):
     hs.append(["Asset Tag", "Serial Number", "Moved On", "From", "To", "Reason", "Entered By"])
     moves = []
     # each placement opens with a move into the clinic; a camera leaving for the depot the same day moves out first
-    repair_out = {(f[0], f[3]) for f in W.FAULTS} | {("HO-NR70-241188", D(2025, 3, 29)), ("HO-NR70-250251", D(2025, 6, 7))}
+    repair_out = {(f[0], f[3]) for f in W.FAULTS} | {("HO-NR70-241188", D(2025, 4, 12)), ("HO-NR70-250251", D(2025, 6, 7))}
     seen_serial = set()
     prev_loc = {}
     for s_, c, a_, b_, r in sorted(W.PLACEMENTS, key=lambda t: (t[2], t[1])):

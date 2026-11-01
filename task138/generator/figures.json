@@ -25,7 +25,7 @@
   "4 ft": 124800
  },
  "constants": {
-  "at_site_q_1000": 95000,
+  "at_site_q_100": 95400,
   "coyle_1970": 132000,
   "halbrook_1970": 93200,
   "halbrook_2020": 88700,
@@ -129,17 +129,17 @@
    "raise": 0
   }
  },
- "rungs_1k": {
-  "R0_at_site": 95000,
-  "R2_post_raise_only": 105000,
-  "R3_whole_record_relation": 101000,
-  "golden": 110000,
-  "golden_transfer": 110000,
+ "rungs_100": {
+  "R0_at_site": 95400,
+  "R2_post_raise_only": 104700,
+  "R3_whole_record_relation": 100500,
+  "golden": 110400,
+  "golden_transfer": 110400,
   "off_area_ratio_0.5": 119000,
-  "off_area_ratio_0.7": 126000,
-  "off_area_ratio_1.0": 136000,
-  "off_coyle_unscaled": 104000,
-  "off_since_1994": 93000
+  "off_area_ratio_0.7": 125700,
+  "off_area_ratio_1.0": 136400,
+  "off_coyle_unscaled": 103800,
+  "off_since_1994": 93500
  },
  "rungs_5k": {
   "R0_at_site": 95000,
