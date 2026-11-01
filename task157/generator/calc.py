@@ -1,301 +1,265 @@
-"""task157 (architecture 2) the analysis, computed from the shipped bundle only.
+"""task157 architecture 3: the golden and every rung, from the records as the pack carries them.
 
-Every figure the goldens, `figures.json` and `submission.md` carry comes from here, and `checks.py` runs the
-rungs through the same functions. `verify.py` recomputes all of it from the same files on its own code path
-with pandas and no generator import.
-
-The projection: the office filed 540,000 signature lines and the statute's sample is five per cent of them,
-so the sample's own factor is twenty. A signature struck on a ground that belongs to the one signature in
-front of the recorder is one of twenty such lines in the petition. A signature struck as a duplicate is not:
-a duplicate is a relation between two signature lines, and only the sampled part of the petition was ever
-keyed, so the pair was available to be found only where the sample drew both of its members, which happens
-with probability one in four hundred."""
+The main call: each route's punctuality over the autumn record and its forecast for the closure, the closure
+replayed on the recorded days with the minutes it adds passed on by buses and by drivers; the routes forecast below
+the 80 per cent floor are the notice's routes. The asks: each route's operator-cause lost kilometres and
+reliability over the autumn; the average weekday boardings at the stops the diversion leaves unserved, by direction
+and time band, October and November."""
 from __future__ import annotations
 
-import csv
-import datetime as dt
-import math
-import os
-import sys
+from collections import defaultdict
+from datetime import date
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K      # noqa: E402
-import records as R     # noqa: E402
+import analysis as A
+import params as P
+
+OPERATOR_CAUSES = ("VD", "SS", "SI", "TR", "AV")
+EXCUSED = ("PC", "RW", "WX", "BD")
 
 
-def rd(target, name):
-    with open(os.path.join(target, name), encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
-
-
-# ---------------------------------------------------------------------------------- conforming the returns
-def parse_date(county_code, text):
-    """Each recorder's return carries dates the way its own system writes them."""
-    t = (text or "").strip()
-    if not t:
-        return None
-    if county_code == K.DMY_COUNTY:
-        d, m, y = t.split("/")
-        return dt.date(int(y), int(m), int(d))
-    if county_code == K.OLD_CODE_COUNTY:
-        d, mon, y = t.split("-")
-        return dt.date(2000 + int(y), K.UMON3.index(mon.upper()), int(d))
-    return dt.date(*(int(x) for x in t.split("-")))
-
-
-def key(row):
-    return (row["circulator_reg_no"], int(row["sheet_no"]), int(row["line_no"]))
-
-
-def conform(target):
-    """The fifteen recorders' returns on one code set and one date convention, with the division's own
-    correction notices applied line by line."""
-    rows = rd(target, R.F_RETURNS)
-    late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
-    corr = {}
-    for c in rd(target, R.F_CORR):
-        corr[(c["circulator_reg_no"], int(c["sheet_no"]), int(c["line_no"]))] = c
-    out = []
-    for r in rows:
-        cc = r["county_code"]
-        code = r["disposition_code"]
-        k = key(r)
-        if k in corr:
-            code = corr[k]["corrected_disposition_code"]
-        code = to_current(cc, code, r, late)
-        out.append(dict(county=cc, circ=r["circulator_reg_no"], sheet_no=int(r["sheet_no"]),
-                        line_no=int(r["line_no"]), vid=(int(r["voter_reg_id"]) if r["voter_reg_id"] else 0),
-                        code=code, determined_by=r["determined_by"],
-                        signed=parse_date(cc, r["signature_date"]), return_id=r["return_id"],
-                        raw_code=r["disposition_code"]))
-    return out
-
-
-def to_current(county_code, code, row, late):
-    """Navajo County's recorder files on its own 2019 list. Its code 02 covers two grounds that the current
-    set keeps apart, and the registration the recorder matched separates them: a signature struck because
-    the signer was not registered at all carries no registration identifier, and one struck because the
-    registration had been cancelled carries the cancelled registration."""
-    if county_code != K.OLD_CODE_COUNTY:
-        return code
-    if code == "02":
-        return "CA" if row["voter_reg_id"] else "NR"
-    news = K.OLD_TO_NEW[code]
-    assert len(news) == 1, code
-    return news[0]
-
-
-# ---------------------------------------------------------------------------------- the projection
-# Both are exact integers by construction: the statute's sample is one line in twenty, so a single
-# signature ground carries twenty lines and a pair, which the sample sees only when it draws both of its
-# members, carries four hundred. Computing them in floating point costs a signature to rounding.
-FACTOR = K.LINES_FILED // K.SAMPLE_LINES                # 20, the sample's own factor
-PAIR_FACTOR = FACTOR * FACTOR                           # 400, one over the pair's inclusion probability
-assert FACTOR * K.SAMPLE_LINES == K.LINES_FILED
-
-
-def tally(rows):
-    out = {c: 0 for c in K.CODE_KEYS}
-    for r in rows:
-        out[r["code"]] += 1
-    out["single"] = sum(out[c] for c in K.SINGLE_CODES)
-    out["dup"] = out["DU"]
-    return out
-
-
-def project(single, dup_estimate):
-    return K.LINES_FILED - single * FACTOR - dup_estimate
-
-
-def call(rows):
-    t = tally(rows)
-    single_proj = t["single"] * FACTOR
-    dup_proj = t["dup"] * PAIR_FACTOR
-    valid = K.LINES_FILED - single_proj - dup_proj
-    return dict(sampled=len(rows), single=t["single"], dup=t["dup"], valid_sampled=t["V"],
-                single_projected=single_proj, dup_projected=dup_proj, valid=valid,
-                printed=K.round_to(valid, K.BIN), pct=100.0 * valid / K.REQUIRED, band=K.band(valid),
-                tally=t)
-
-
-def rungs(target, rows):
-    """The ladder, each rung computed from the bundle."""
-    t = tally(rows)
-    early = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_EARLY)}
-    # rung 0: the registration grounds re-derived from the snapshot current when circulation opened, which
-    # still shows the registrations the 14 March run cancelled as active
-    slip = 0
-    for r in rows:
-        if r["code"] != "CA":
-            continue
-        e = early.get(r["vid"])
-        if e is not None and e["registration_status"] == "ACTIVE":
-            slip += 1
-    county_dup = sum(1 for r in rows if r["code"] == "DU" and r["determined_by"] == "RECORDER")
-    division_dup = t["dup"] - county_dup
-    return dict(
-        slip=slip, county_dup=county_dup, division_dup=division_dup,
-        rung0=project(t["single"] - slip, t["dup"] * FACTOR),
-        rung1=project(t["single"], t["dup"] * FACTOR),
-        rung2=project(t["single"], county_dup * FACTOR + division_dup * PAIR_FACTOR),
-        rung3=project(t["single"], t["dup"] * PAIR_FACTOR),
-    )
-
-
-# ---------------------------------------------------------------------------------- the full count's size
-def closeout(target):
-    """The 2024 full count's own record: the only settled measure the office has of what examining a
-    petition line by line costs."""
-    import postprocess as PP
-    rows = PP.read_xlsx_rows(os.path.join(target, R.F_CLOSEOUT), "Full count")
-    head = {r[0]: r[1] for r in rows if len(r) >= 2 and isinstance(r[0], str)}
-    lines = int(head["Signature lines examined"])
-    days = int(head["Examination business days"])
-    staff = int(head["Examiners assigned"])
-    rate = lines / float(days * staff)
-    need = K.LINES_FILED / rate
-    examiners = 30
-    bdays = int(math.ceil(need / examiners))
-    d, left = K.FULL_COUNT_START, bdays
-    while left > 1:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5:
-            left -= 1
-    return dict(prior_lines=lines, prior_days=days, prior_staff=staff, rate=rate,
-                examiner_days=need, examiners=examiners, business_days=bdays, finish=d,
-                deadline=K.CERTIFY_BY, inside=d <= K.CERTIFY_BY)
-
-
-# ---------------------------------------------------------------------------------- the registration state
-def reg_state(row, when):
-    """Was the registration this snapshot row carries in force on a given date?
-
-    The row carries the registration's own date and the date of a cancellation if one stands against it.
-    Where the registration date is the later of the two the registration was re-established, and the
-    cancellation no longer takes the elector off on any date after it; where the cancellation is the later,
-    the elector was registered from the registration date until the cancellation."""
-    if row is None or when is None:
-        return False
-    reg = row["registration_date"].strip()
-    if not reg:
-        return False
-    reg = dt.date(*(int(x) for x in reg.split("-")))
-    if reg > when:
-        return False
-    canc = row["cancellation_date"].strip()
-    if not canc:
-        return True
-    canc = dt.date(*(int(x) for x in canc.split("-")))
-    if reg > canc:
-        return True
-    return when < canc
-
-
-def cancelled_now(row):
-    return row is not None and row["registration_status"] == "CANCELLED"
-
-
-def lapsed(rows, late, sel=None):
-    """Lapsed sampled signatures: the snapshot's own dates put the signer's registration in force on the
-    day signed, with any cancellation of it after that day, and the snapshot now gives it as cancelled."""
-    k = 0
-    for r in (rows if sel is None else sel):
-        if not r["vid"]:
-            continue
-        e = late.get(r["vid"])
-        if reg_state(e, r["signed"]) and cancelled_now(e):
-            k += 1
-    return k
-
-
-# ---------------------------------------------------------------------------------- the circulators' firms
-def firm_register(target):
-    """The office's circulator extract, as the rows a registration number carries in date order."""
+def prev_links(S):
+    """(day type, board, first journey code of a piece) -> (board of the piece before it in the duty, that piece's
+    last journey code, scheduled gap in minutes)."""
     out = {}
-    for r in rd(target, R.F_CIRC):
-        out.setdefault(r["circulator_reg_no"], []).append(r)
-    for v in out.values():
-        v.sort(key=lambda r: r["registered_on"])
+    for dt, s in S.items():
+        pcs = s["pieces"]
+        for duty in s["duties"]:
+            for a, b in zip(duty, duty[1:]):
+                out[(dt, pcs[b]["board"], pcs[b]["journeys"][0]["code"])] = (
+                    pcs[a]["board"], pcs[a]["journeys"][-1]["code"], pcs[b]["on"] - pcs[a]["off"])
     return out
 
 
-def firm_on(reg, circ, when):
-    """The firm that had a circulator registered on a date. A circulator who moved firm inside the window
-    registered again, so the number carries two rows with their own dates, and a signature belongs to the
-    firm that had the circulator registered on the day the signature was given."""
-    if when is None:
-        return None
-    for row in reg.get(circ, []):
-        start = dt.date(*(int(x) for x in row["registered_on"].split("-")))
-        if start > when:
+def main(parsed, S):
+    links = prev_links(S)
+    autumn = A.punctuality(parsed)
+    out = dict(autumn=autumn)
+    runs = {
+        "golden": dict(),
+        "R0": dict(knock=False),
+        "R1_buses": dict(drivers=False),
+        "walk1": dict(walk=1.0), "walk2": dict(walk=2.0), "walk4": dict(walk=4.0),
+        "turn0": dict(turn=0.0), "turn2": dict(turn=2.0),
+        "turn2_walk3": dict(turn=2.0, walk=3.0),
+        "drivers_only": dict(carry_bus=False),
+        "no_corridor": dict(corridor=False),
+        "scale_close_out": dict(scale=1.05),
+        "scale_low": dict(scale=0.9),
+        "over_corrected": dict(gap_aware=False, max_gap=999.0),
+        "over_corrected_30": dict(gap_aware=False, max_gap=30.0),
+        "all_joins": dict(max_gap=999.0),
+    }
+    for name, kw in runs.items():
+        lk = links if kw.get("knock", True) else {}
+        rep = A.replay(parsed, lk, **kw)
+        p = A.punctuality(rep, drop=A.unserved)
+        out[name] = dict(p=p, set=A.designate(p))
+    # the closure's day mix (11 January to 28 March 2027: Good Friday runs the Sunday timetable)
+    mix = defaultdict(int)
+    for d in P.days(P.CLOSE_FIRST, P.CLOSE_LAST):
+        mix[P.day_type(d)] += 1
+    seen = defaultdict(set)
+    for x in parsed:
+        seen[x["dt"]].add(x["date"])
+    w = {dt: mix[dt] / len(seen[dt]) for dt in mix}
+    rep = A.replay(parsed, links)
+    p = A.punctuality(rep, drop=A.unserved, weights=w)
+    out["closure_mix"] = dict(p=p, set=A.designate(p))
+    out["mix"] = dict(mix)
+    # weekdays only, and the record after the clock change only
+    for name, keep in (("weekdays", lambda x: x["dt"] == "MF"),
+                       ("after_clock_change", lambda x: x["date"] >= P.CLOCK_CHANGE),
+                       ("term_time", lambda x: P.is_school_day(x["date"]) or x["dt"] != "MF")):
+        sub = [x for x in rep if keep(x)]
+        p = A.punctuality(sub, drop=A.unserved)
+        out[name] = dict(p=p, set=A.designate(p))
+    return out
+
+
+def seasonal(main_out, pub_rows):
+    """Each route's forecast with the published series' winter shift added (January to March 2026 against
+    September to November 2025, final figures)."""
+    vals = defaultdict(dict)
+    for r, month, dep, on, pct, status, published in pub_rows:
+        if status != "final":
             continue
-        end = row["withdrawn_on"].strip()
-        if end and dt.date(*(int(x) for x in end.split("-"))) <= when:
+        vals[r][month] = 100.0 * on / dep
+    out = {}
+    for r in vals:
+        w = sum(vals[r]["2026-%02d" % m] for m in (1, 2, 3)) / 3
+        a = sum(vals[r]["2025-%02d" % m] for m in (9, 10, 11)) / 3
+        out[r] = w - a
+    p = {r: main_out["golden"]["p"][r] + out[r] for r in main_out["golden"]["p"]}
+    return dict(shift=out, p=p, set=A.designate(p))
+
+
+# ------------------------------------------------------------------ ask A: lost kilometres and reliability
+def link_km(route, direction):
+    R = P.ROUTES[route]
+    return list(R["km"]) if direction == "O" else list(R["km_in"][::-1])
+
+
+def lost_km(route, direction, kind, i0, i1):
+    km = link_km(route, direction)
+    n = len(km) + 1
+    if kind == "whole":
+        return sum(km)
+    if kind == "part":
+        return sum(km[i0 - 1:])           # from the stop where it ended to the end
+    return sum(km[:i1 + 1])               # from the start to the stop where it started
+
+
+def scheduled_km(S):
+    out = defaultdict(float)
+    for d in P.days(P.AVL_FIRST, P.AVL_LAST):
+        dt = P.day_type(d)
+        school = P.is_school_day(d)
+        for r in P.ROUTE_ORDER:
+            for j in S[dt]["journeys"][r]:
+                if j["school"] and not school:
+                    continue
+                out[r] += sum(link_km(r, j["dir"]))
+    return dict(out)
+
+
+def ask_a(S, lost):
+    """Operator-cause lost kilometres and reliability by route, 1 September to 6 December 2026 (truth: every lost
+    span once)."""
+    km = defaultdict(float)
+    exc = defaultdict(float)
+    for x in lost:
+        kind, cause, i0, i1 = x["lost"]
+        k = lost_km(x["route"], x["dir"], kind, i0, i1)
+        if cause in OPERATOR_CAUSES:
+            km[x["route"]] += k
+        else:
+            exc[x["route"]] += k
+    sched = scheduled_km(S)
+    rel = {r: 100.0 * (sched[r] - km[r]) / sched[r] for r in P.ROUTE_ORDER}
+    return dict(op_km={r: km[r] for r in P.ROUTE_ORDER}, exc_km={r: exc[r] for r in P.ROUTE_ORDER}, sched_km=sched,
+                reliability=rel)
+
+
+# ------------------------------------------------------------------ ask B: boardings at the unserved stops
+def ask_b(truth, rows):
+    """Average weekday boardings in October and November 2026 at fare stages 3 and 4 (every stop the diversion
+    leaves unserved), by direction and time band; the re-sent copies are one upload's repeat."""
+    wk = sorted({t["date"] for t in truth if t["dt"] == "MF"})
+    n = len(wk)
+    cnt = defaultdict(int)
+    for t in truth:
+        if t["dt"] != "MF" or t["stage"] not in P.UNSERVED_STAGES:
             continue
-        return row["firm_registration_no"]
-    return None
+        cnt[(t["true_dir"], t["band"])] += 1
+    bands = ("AM peak", "PM peak", "Other times")
+    return dict(weekdays=n, cells={(d, b): cnt[(d, b)] / n for d in ("I", "O") for b in bands},
+                total=sum(cnt.values()) / n)
 
 
-# ---------------------------------------------------------------------------------- the asks
-def sheet_serials(target):
-    """The office's serial for each receipted sheet, keyed the way a sampled line identifies its sheet: the
-    circulator's registration number with the sheet number the firm printed on it."""
-    out = {}
-    for s in rd(target, R.F_SHEETS):
-        out[(s["circulator_reg_no"], int(s["sheet_no"]))] = s["sheet_serial"]
-    return out
-
-
-def ask_a(target, rows):
-    """For each county: how many of the signatures that county's own recorder determined, whatever
-    disposition code it gave, are lapsed as the asking sentence defines it: the 10 July 2028 snapshot's own
-    dates put the signer's registration in force on the day signed, any cancellation of it falls after that
-    day, and the snapshot now gives the registration as cancelled."""
-    late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
-    out = {}
-    for cc, name, _ in K.COUNTIES:
-        det = [r for r in rows if r["county"] == cc and r["determined_by"] == "RECORDER"]
-        out[cc] = dict(name=name, lapsed=lapsed(rows, late, det))
-    return out
-
-
-def ask_b(target, rows):
-    """For each circulator firm and each month of the circulation period: the sampled signatures gathered
-    by circulators that firm had registered on the day the signature was given, and how many of them the
-    recorders struck on a ground other than duplication."""
-    reg = firm_register(target)
-    out = {}
-    for fc, name, _, regno in K.FIRMS:
-        for y, m in K.WINDOW_MONTHS:
-            out[(regno, "%04d-%02d" % (y, m))] = dict(firm=name, signatures=0, struck=0)
-    for r in rows:
-        if r["signed"] is None or not (K.WINDOW_OPEN <= r["signed"] <= K.WINDOW_CLOSE):
+def ask_b_selected(truth):
+    wk = sorted({t["date"] for t in truth if t["dt"] == "MF"})
+    n = len(wk)
+    cnt = defaultdict(int)
+    for t in truth:
+        if t["dt"] != "MF" or t["stage"] not in P.UNSERVED_STAGES:
             continue
-        f = firm_on(reg, r["circ"], r["signed"])
-        if f is None:
+        cnt[(t["sel_dir"], t["band"])] += 1
+    bands = ("AM peak", "PM peak", "Other times")
+    return {(d, b): cnt[(d, b)] / n for d in ("I", "O") for b in bands}
+
+
+# ------------------------------------------------------------------ ask A from the shipped logs (the solver's path)
+def _tod(s):
+    h, m = s.split(":")
+    return int(h) * 60 + int(m)
+
+
+def ask_a_from_logs(S, log, ret, pieces_rows, mode="right", avl_seen=None):
+    """Operator-cause lost kilometres by route, rebuilt from the control room log and the depot's returns.
+    mode: right (each lost span once: the controller's journeys and the returns' uncovered pieces expanded to their
+    journeys through the duty schedule and the timetable, less those the AVL saw run, joined on date and journey),
+    union_no_avl (the same without the AVL's word on the returns), sum (the two sources added),
+    controller (the log alone), returns_whole (a part-covered piece taken as wholly lost), tr_excused (turning short
+    for late running read as excused), part_whole (a part journey counted whole)."""
+    from datetime import datetime as _dt
+    stop_idx = {}
+    for dt in ("MF", "SA", "SU"):
+        for r in P.ROUTE_ORDER:
+            for j in S[dt]["journeys"][r]:
+                stop_idx[j["code"]] = (r, j["dir"], [P.TP_ATCO[(r, k, j["dir"])] for k in j["tps"]])
+    spans = defaultdict(list)          # (date, journey) -> [(first link, last link, cause, source)]
+    for e in log:
+        if e["event"] not in ("LOST", "PART LOST"):
             continue
-        cell = out[(f, "%04d-%02d" % (r["signed"].year, r["signed"].month))]
-        cell["signatures"] += 1
-        if r["code"] in K.SINGLE_CODES:
-            cell["struck"] += 1
-    return out
+        d = e["t"].date()
+        code = e["journey"]
+        r, dirn, codes = stop_idx[code]
+        n = len(codes) - 1
+        if e["event"] == "LOST" or mode == "part_whole":
+            a, z = 0, n - 1
+        else:
+            a, z = codes.index(e["lost_from"]), codes.index(e["lost_to"]) - 1
+        spans[(d, code)].append((a, z, e["cause"], "log"))
+    if mode != "controller":
+        names = {"MF": "Mon-Fri", "SA": "Sat", "SU": "Sun"}
+        pidx = {}
+        for row in pieces_rows:
+            num, days, k, board, svc, on, on_at, off, off_at = row
+            t_on, t_off = _tod(on), _tod(off)
+            if t_off < t_on:
+                t_off += 24 * 60          # relieved after midnight
+            pidx[(num, k)] = (board, svc, t_on, on_at, t_off, off_at, days)
+        boards = {}
+        for dt in ("MF", "SA", "SU"):
+            for b in S[dt]["boards"]:
+                boards[(dt, b["board"])] = b["journeys"]
+        for e in ret:
+            if e["status"] not in ("UNCOVERED", "PART COVERED"):
+                continue
+            d = e["date"]
+            dt = P.day_type(d)
+            board, svc, on, on_at, off, off_at, days = pidx[(e["duty"], e["piece"])]
+            js = [j for j in boards[(dt, board)] if j["dep"] >= on - 0.01 and j["arr"] <= off + 0.01]
+            if e["status"] == "PART COVERED" and mode != "returns_whole":
+                cf = _tod(e["covered_from"])
+                js = [j for j in js if j["dep"] < cf]
+            for j in js:
+                if mode == "right" and avl_seen is not None and (d, j["code"]) in avl_seen:
+                    continue              # the AVL saw it run: a spare covered it after the return was made
+                n = len(j["tps"]) - 1
+                spans[(d, j["code"])].append((0, n - 1, "SS", "returns"))
+    km = defaultdict(float)
+    for (d, code), sp in spans.items():
+        r, dirn, codes = stop_idx[code]
+        kms = link_km(r, dirn)
+        if mode == "sum":
+            use = sp
+        else:
+            # one journey's lost links once: the union of its spans
+            links = set()
+            cause_of = {}
+            for a, z, c, src in sp:
+                for l in range(a, z + 1):
+                    links.add(l)
+                    cause_of.setdefault(l, c)
+            use = [(l, l, cause_of[l], "") for l in sorted(links)]
+        for a, z, c, src in use:
+            op = c in OPERATOR_CAUSES and not (mode == "tr_excused" and c == "TR")
+            if op:
+                km[r] += sum(kms[a:z + 1])
+    return {r: km[r] for r in P.ROUTE_ORDER}
 
 
-def ask_c(target, rows):
-    """For each month of the circulation period: the signatures signed in it, and how many of them are
-    lapsed on the same definition as ask A, which the asking sentence states once for both."""
-    late = {int(r["voter_reg_id"]): r for r in rd(target, R.F_SNAP_LATE)}
-    out = {}
-    for y, m in K.WINDOW_MONTHS:
-        sel = [r for r in rows if r["signed"] is not None
-               and (r["signed"].year, r["signed"].month) == (y, m)]
-        out["%04d-%02d" % (y, m)] = dict(signatures=len(sel), lapsed=lapsed(rows, late, sel))
-    return out
 
-
-def everything(target):
-    rows = conform(target)
-    c = call(rows)
-    return dict(rows=rows, call=c, rungs=rungs(target, rows), closeout=closeout(target),
-                a=ask_a(target, rows), b=ask_b(target, rows), c=ask_c(target, rows))
+def ask_b_variant(truth, use_sel=False, use_rec_band=False):
+    """The ask's table under a handling: use_sel takes the machine's selected direction (the journey not changed
+    at the terminus), use_rec_band bands the machine's clock time (two machines kept summer time from 25 October)."""
+    wk = sorted({t["date"] for t in truth if t["dt"] == "MF"})
+    n = len(wk)
+    cnt = defaultdict(int)
+    for t in truth:
+        if t["dt"] != "MF" or t["stage"] not in P.UNSERVED_STAGES:
+            continue
+        cnt[(t["sel_dir"] if use_sel else t["true_dir"], t["rec_band"] if use_rec_band else t["band"])] += 1
+    bands = ("AM peak", "PM peak", "Other times")
+    return {(d, b): cnt[(d, b)] / n for d in ("I", "O") for b in bands}

@@ -1,176 +1,118 @@
 {
- "task": "task157",
- "world": "The Arizona Secretary of State's elections division projects, from the statutory five per cent random sample, how many of the 540,000 signature lines filed for initiative serial I-18-2028 a full count would find valid, and whether the petition qualifies, goes to a full count or fails.",
- "as_of": "2028-08-04",
- "domain": "political-science-public-policy / election-polling-forecasting",
- "objective": "Forecasting & Predictive Modeling",
+ "answer": "Name routes 27, 41 and 58 in the Thornsby Bridge Disruption Notice: each is forecast below the 80 per cent punctuality floor while the bridge is shut; every other Lot 2 route stays above it.",
  "deliverables": [
-  "signature_projection_2028.xlsx",
-  "petition_disposition_2028.png"
+  "closure_punctuality_forecast_2027.xlsx",
+  "closure_punctuality_by_route.svg"
  ],
  "distractor_files": [
-  "measure_i2028-04_receipt_log.csv",
-  "voter_registration_by_county_20280701.csv"
+  "target/ring_road_crossing_atc_counts_2026.csv",
+  "target/street_works_permits_2027q1.csv"
  ],
- "stated_inputs": [
-  "365,678",
-  "404,170",
-  "384,924",
-  "540,000",
-  "27,000",
-  "38,080",
-  "38,320",
-  "2,566,154",
-  "365678",
-  "404170",
-  "384924",
-  "540000"
- ],
- "field_terms": [
-  "sample",
-  "sampled",
-  "sampling",
-  "signature",
-  "signatures"
- ],
- "official_decoy": false,
- "validated_decoy": false,
- "calibration_corpus": "measure_i2024-04_full_count_closeout.xlsx",
- "files": [
-  {
-   "file": "county_verification_returns_2028.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-08-03",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The fifteen county recorders' verification returns for the statutory sample of initiative serial I-18-2028, consolidated by the division's load, one row per sampled signature line. Each recorder's own date format and Navajo County's own 2019 disposition codes are kept as received.",
-   "rows": 27000,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+ "domain": "Urban & Regional Science (transport forecasting)",
+ "objective": "Forecasting & Predictive Modeling",
+ "provenance": {
+  "avl_timing_point_events.csv": {
+   "date": "2026-12-07",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the Combined Authority's AVL archive of Lot 2 timing point events, 1 September to 6 December 2026; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "county_return_corrections_2028.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-08-03",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "Query notices the division raised on the returns and the recorders' re-determinations, one row per line re-determined.",
-   "rows": 380,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "bus_punctuality_by_route_monthly.csv": {
+   "date": "2026-12-04",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the Combined Authority's published monthly punctuality by route, January 2025 to November 2026; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "avid_snapshot_extract_20271220.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2027-12-20",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "Registration records for the identifiers the sample transmittal cites, taken from the archived statewide voter file snapshot of 20 December 2027, the last snapshot before circulation opened.",
-   "rows": 24552,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "control_room_log_sep_dec_2026.csv": {
+   "date": "2026-12-07",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the Combined Authority's bus control room log for Lot 2, 1 September to 7 December 2026; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "avid_snapshot_extract_20280710.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-10",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The same registration records taken from the statewide voter file snapshot of 10 July 2028.",
-   "rows": 24596,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "etm_transactions_service41_oct_nov2026.csv": {
+   "date": "2026-12-02",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Pellbridge Buses' ticket machine transactions on service 41, October and November 2026; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "petition_sheet_index_2028.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-07",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's register of the petition sheets it receipted, one row per sheet, with the receipt bundle, the circulator's registration number, the firm's own sheet number and the signature lines the sheet carries.",
-   "rows": 44120,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "franchise_lot2_schedule7_performance_regime.pdf": {
+   "date": "2026-08-28",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the Lot 2 bus franchise agreement, Schedule 7 (Performance Regime), consolidated version 1.4; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "petition_receipt_log_2028.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-07",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's receipt log for the filing, one row per bundle presented, with the sheets accepted, the sheets struck at receipt and the signature lines accepted.",
-   "rows": 905,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "gcr_lot2_timetable_winter2026_txc.xml": {
+   "date": "2026-08-21",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the Lot 2 winter 2026/27 registered timetable as published in the Combined Authority's TransXChange data; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "circulator_sheet_submissions_2028.csv",
-   "source": "Petition circulator firms, filed with the office",
-   "date": "2028-07-07",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "Each circulator firm's own delivery manifest for the bundles it handed over, carrying the firm's own sheet and signature counts and the trading name it filed under.",
-   "rows": 905,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "lost_mileage_cause_codes.csv": {
+   "date": "2026-08-31",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the control room's lost mileage cause codes; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "circulator_registration_extract_i18-2028.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-11",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's extract of the paid circulators registered to gather signatures for serial I-18-2028, by registration number, with the firm that registered each and the dates each registration ran from and, where the circulator registered again under another firm, to.",
-   "rows": 351,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "marsh_lane_closure_2025_closeout.pdf": {
+   "date": "2025-05-30",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the Combined Authority's close-out note on the 2025 Marsh Lane outbound closure; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "list_maintenance_run_20280314.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-03-14",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The register of the statewide list-maintenance run of 14 March 2028: the registrations it cancelled and the registrations it moved to inactive.",
-   "rows": 24794,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "ring_road_crossing_atc_counts_2026.csv": {
+   "date": "2026-12-01",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Grainford City Council's automatic traffic counter on the Ring Road crossing, 2026; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "measure_i2024-04_full_count_closeout.xlsx",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2024-08-29",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's close-out of the full count of initiative serial I-04-2024, ordered by the Superior Court, with the examination's dates, examiners and per-county figures. The only settled measure the office holds of what examining a petition line by line takes.",
-   "rows": null,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "saltmeadow_daily_returns_autumn2026.xlsx": {
+   "date": "2026-12-07",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Pellbridge Buses' Saltmeadow depot daily returns of uncovered and covered work; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "sos_filing_and_selection_record_i18-2028.pdf",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-11",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's filing and sample record for serial I-18-2028: the filing, the receipt, the number required, the sample drawn and the statutory determination.",
-   "rows": null,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "saltmeadow_duty_schedule_winter2026.xlsx": {
+   "date": "2026-08-14",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Pellbridge Buses' Saltmeadow depot duty schedule for the winter 2026/27 registration; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "county_recorder_verification_instruction_2027.pdf",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2027-11-18",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The signature verification instruction the county recorders work to, with the current disposition code set and the order the grounds are applied in.",
-   "rows": null,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "saltmeadow_fleet_register.csv": {
+   "date": "2026-11-30",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Pellbridge Buses' Saltmeadow fleet register; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "navajo_recorder_disposition_codes_2019.txt",
-   "source": "Navajo County Recorder",
-   "date": "2019-04-15",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "Navajo County's own disposition code list, which that recorder has not reissued and still files on.",
-   "rows": null,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "service41_fare_stages.csv": {
+   "date": "2026-08-31",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "the service 41 fare stage table; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "measure_i2028-04_receipt_log.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-05",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's receipt log for initiative serial I-04-2028, a second measure filed in the same cycle.",
-   "rows": 512,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "street_works_permits_2027q1.csv": {
+   "date": "2026-12-09",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Grainford City Council's street works permit register, works starting January to March 2027; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   },
-  {
-   "file": "voter_registration_by_county_20280701.csv",
-   "source": "Arizona Secretary of State, Elections Division",
-   "date": "2028-07-01",
-   "licence": "Constructed for this task from Arizona's own statutory scheme; no third-party material. CC0-1.0.",
-   "covers": "The office's published registration report of 1 July 2028, active and inactive registrations by county and party.",
-   "rows": 75,
-   "made": "Written by task157/generator from the generator's clean truth; no third-party data."
+  "thornsby_bridge_closure_tmp_v2.pdf": {
+   "date": "2026-11-27",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "Grainford City Council's traffic management plan for the Thornsby Bridge closure, version 2; constructed by the task generator (seeded); the Grainford City Region Combined Authority, Pellbridge Buses, Grainford City Council, the places, people and records are fictional"
   }
- ]
+ },
+ "rows": {
+  "avl_timing_point_events.csv": 473216,
+  "bus_punctuality_by_route_monthly.csv": 216,
+  "control_room_log_sep_dec_2026.csv": 559,
+  "etm_transactions_service41_oct_nov2026.csv": 95234,
+  "lost_mileage_cause_codes.csv": 10,
+  "ring_road_crossing_atc_counts_2026.csv": 528,
+  "saltmeadow_fleet_register.csv": 75,
+  "service41_fare_stages.csv": 9,
+  "street_works_permits_2027q1.csv": 46
+ },
+ "stated_inputs": [
+  "target/avl_timing_point_events.csv",
+  "target/gcr_lot2_timetable_winter2026_txc.xml",
+  "target/saltmeadow_duty_schedule_winter2026.xlsx",
+  "target/control_room_log_sep_dec_2026.csv",
+  "target/saltmeadow_daily_returns_autumn2026.xlsx",
+  "target/etm_transactions_service41_oct_nov2026.csv",
+  "target/saltmeadow_fleet_register.csv",
+  "target/service41_fare_stages.csv",
+  "target/lost_mileage_cause_codes.csv",
+  "target/bus_punctuality_by_route_monthly.csv",
+  "target/franchise_lot2_schedule7_performance_regime.pdf",
+  "target/thornsby_bridge_closure_tmp_v2.pdf",
+  "target/marsh_lane_closure_2025_closeout.pdf"
+ ],
+ "task": "task157",
+ "title": "Thornsby Bridge: the routes the Disruption Notice names"
 }

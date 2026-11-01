@@ -1,30 +1,30 @@
 {
  "task": "task157",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "urban-regional-science/forecasting (architecture 3; world: the Grainford City Region Combined Authority forecasting each franchised bus route's punctuality during the 2027 Thornsby Bridge closure to name the routes its relief notice covers)",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-11-01",
  "stump": "A competent solver forecasts each route's closure punctuality from its own autumn 2026 AVL record, adds the traffic management plan's diversion minutes to route 41 and its corridor minutes to the Ring Road routes, and names route 41 alone for relief; the step that lands them there is treating every other route's departures as independent of route 41, when the duty schedule hands route 41's inbound drivers onto route 27 and route 58 departures at Merchant Row Interchange within a few minutes, so those departures inherit the diversion.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-11-01"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW, no LEAK (sweeps 3, 4, 6 and 9; every line ruled harmless in leak_check_report.md)",
+  "reader": "three isolated reads (the second after the plan's timetable sentence changed, the third after the boardings ask's pin): no decisive-step sentence, no ranking or helper file, no answer-like figure, question 6 analytical; the control room remarks rewritten in three controllers' hands after the first read"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-11-01 (repeat.gate_g and overuse.gate_g, repeat.decision against task273, answered at the draw)",
+  "nearest": "task469 at 0.11; surface: one promoted pair, task159, on the domain and objective pairing alone, differentiated"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "pass 1 DETERMINISTIC, FIX_NOW (lost km on routes 6, 27, 41: the judge left four pieces relieved after midnight empty; golden stands, step 5 names the handling); pass 2 DETERMINISTIC",
+  "disposition": "pass 2 APPROVE; its optional note on the boardings band basis and direction closed by a WHAT pin in the prompt, nothing moved",
+  "report": "determinism_check_report.md, determinism_check_report_pass2.md"
  },
  "returned": [
   {
@@ -47,12 +47,12 @@
    "portal": "architecture 2 (shipped 10-27) returned with the call landed and a determinism finding, as the author's Batch 5 sheet records it ('determinism, landed')",
    "repair": "design",
    "what_moved": "architecture 2 spent; re-rooted at stage 1 into another client domain, world, dataset and shell (architecture 3)",
-   "commit": ""
+   "commit": "db0838a"
   }
  ],
  "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-11-01",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

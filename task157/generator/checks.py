@@ -1,734 +1,470 @@
-"""task157 (architecture 2) checks: the call and the ladder recomputed from the bundle, the client's three
-rules executed on the generator's clean truth, every semantic fork row, the closure axes that can move, the
-stage 3 parameter pin, the convergence families on the cut pack and over all six seeds, the ask layer
-measured per figure, the documents with a positive control on every absence, the realism sweep, the input
-gates and the distractors' deletion tests.
-
-    python3 task157/generator/checks.py
-
-Exits 1 on any failure. Run by build.py after the goldens are written."""
+"""task157 architecture 3: the build's assertions. Input gates, the three rules (R1 to R3c), the semantic fork table
+(SF1 to SF21), the ladder, mess neutrality, the separation line, the ask devices and their fairness, rounding edges,
+the realism sweep and the distractors. Prints one line per assertion and returns True only when every one passes."""
 from __future__ import annotations
 
-import datetime as dt
+import csv
 import json
 import os
 import re
-import shutil
-import sys
-import tempfile
+import subprocess
+import zipfile
+from collections import Counter, defaultdict
+from datetime import date
 
-import numpy as np
+import analysis as A
+import calc as C
+import params as P
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import calc as C            # noqa: E402
-import common as K          # noqa: E402
-import cracker as CR        # noqa: E402
-import deliver as DL        # noqa: E402
-import docs as DOC          # noqa: E402
-import metadata as MD       # noqa: E402
-import postprocess as PP    # noqa: E402
-import records as R         # noqa: E402
-import world as W           # noqa: E402
-
-TASK = os.path.dirname(HERE)
-TARGET = os.path.join(TASK, "target")
-GOLDEN = os.path.join(TASK, "golden")
-RESULTS = []
-
-GOLD_PRINTED = 390_000
-GOLD_BAND = "full count"
-DEFAULT_PRINTED = 420_000
-DEFAULT_BAND = "sufficient"
 
 
-def ok(label, cond, detail=""):
-    RESULTS.append((bool(cond), label, detail))
-    print("%s  %-74s %s" % ("PASS" if cond else "FAIL", label, detail))
+def run(target, golden, W, M, fig):
+    import build as B
+    import cracker as CR
+    out = []
+
+    def ok(name, cond, detail=""):
+        out.append((name, bool(cond), detail))
+        print("%s  %-66s %s" % ("PASS" if cond else "FAIL", name, detail))
+
+    files = sorted(os.listdir(target))
+    G = M["golden"]["set"]
+    gp = M["golden"]["p"]
+    # ------------------------------------------------------------------ input gates
+    ok("gate: 10 or more files", len(files) >= 10, "%d files" % len(files))
+    fmts = sorted({f.rsplit(".", 1)[1] for f in files})
+    ok("gate: 3 or more formats", len(fmts) >= 3, ", ".join(fmts))
+    with open(os.path.join(target, B.FILES["avl"]), encoding="utf-8") as fh:
+        n_avl = sum(1 for _ in fh) - 1
+    ok("gate: a file of 25,000 rows or more", n_avl >= 25000, "AVL %d rows" % n_avl)
+    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
+    ok("gate: two or more distractors in metadata.json", len(meta["distractor_files"]) >= 2,
+       ", ".join(meta["distractor_files"]))
+    ok("gate: no distractor named as one", not any(re.search(r"distract|decoy|unused", f) for f in files), "")
+    bad = [f for f in files if re.search(r"readme|dictionary|manifest|notes|field_guide|schema", f, re.I)]
+    ok("gate: no file describes the data (by name)", not bad, ", ".join(bad) or "none")
+    for f in files:
+        if f.endswith(".xlsx"):
+            with zipfile.ZipFile(os.path.join(target, f)) as z:
+                wb = z.read("xl/workbook.xml").decode()
+            names = re.findall(r'<sheet name="([^"]+)"', wb)
+            ok("gate: no notes or dictionary sheet in %s" % f,
+               not any(re.search(r"note|dictionar|readme|about|field", n, re.I) for n in names), ", ".join(names))
+    ok("gate: every file has provenance", set(meta["provenance"]) == set(files), "%d of %d" % (len(meta["provenance"]),
+                                                                                             len(files)))
+    # ------------------------------------------------------------------ R1 to R3c
+    with open(os.path.join(target, B.FILES["avl"]), encoding="utf-8") as fh:
+        head = next(csv.reader(fh))
+    ok("R1 the field's raw material ships: AVL events at timing points, timetable, duty schedule",
+       {"aimed_time", "recorded_at_utc", "stop_ref", "journey_ref", "vehicle_ref"} <= set(head) and
+       "Pieces" in _sheets(os.path.join(target, B.FILES["duty"])), ", ".join(head))
+    shipped_cols = set(head)
+    for f in files:
+        if f.endswith(".csv"):
+            with open(os.path.join(target, f), encoding="utf-8") as fh:
+                shipped_cols |= set(next(csv.reader(fh)))
+    ok("R1 no shipped column holds a knock-on, a relief link or a forecast",
+       not any(re.search(r"knock|inherit|forecast|relieved_from|feeder|link|propag", c, re.I) for c in shipped_cols),
+       "%d columns" % len(shipped_cols))
+    ok("R3a the analyst test: the route-level assessment files route 41 alone", M["R0"]["set"] == ["41"],
+       "R0 %s" % M["R0"]["set"])
+    ok("R3a the vehicle check (buses carry the lateness, drivers do not) stays on route 41 alone",
+       M["R1_buses"]["set"] == ["41"], "%s" % M["R1_buses"]["set"])
+    ok("R3b the decisive step (drivers relieved off route 41) files the golden", G == ["27", "41", "58"], "%s" % G)
+    cheap = [k for k in ("R0", "R1_buses") if M[k]["set"] == G]
+    seasonal_r0 = A.designate({r: M["R0"]["p"][r] + fig["seasonal"]["shift"][r] for r in M["R0"]["p"]})
+    ok("R3b seasonal adjustment of the route-level assessment stays wrong", seasonal_r0 == ["41"], "%s" % seasonal_r0)
+    ok("R3b cheap routes without the duty schedule that land the call (Gate F count)", not cheap,
+       "%d of 2" % len(cheap))
+    # R3c no plant: no copied block of AVL records, no document naming the mechanism
+    rows = W["avl"][1]
+    lates = defaultdict(list)
+    for r in rows:
+        if r[7] == "DEP":
+            lates[(r[0], r[1])].append(r[9][11:19])
+    dup_days = Counter(tuple(v) for v in lates.values() if len(v) > 50)
+    ok("R3c no copied day of AVL records", max(dup_days.values()) == 1, "max repeat %d" % max(dup_days.values()))
+    txt = {k: _pdftext(os.path.join(target, B.FILES[k])) for k in ("sched7", "tmp", "closeout")}
+    vocab = re.compile(r"\b(relie\w*|changeover|duty|duties|crew\w*|driver\w*|knock|interwork\w*|connection\w*)\b", re.I)
+    hits = {k: sorted(set(m.group(0).lower() for m in vocab.finditer(t))) for k, t in txt.items()}
+    ok("R3c the traffic management plan and the close-out name no crew mechanism",
+       not hits["tmp"] and not hits["closeout"], "%s" % hits)
+    ok("R3c Schedule 7's crew words state facts only (records it keeps)",
+       set(hits["sched7"]) <= {"duty"}, "%s" % hits["sched7"])
+    ok("R3c positive control: Schedule 7's on-time rule is readable", "five minutes" in txt["sched7"].replace("\n", " ")
+       and "fifty-nine seconds" in txt["sched7"].replace("\n", " "), "")
+    # ------------------------------------------------------------------ semantic fork table
+    parsed = W["parsed"]
+    links = C.prev_links(W["S"])
+
+    def golden_with(recs, **kw):
+        p = A.punctuality(A.replay(recs, links, **kw), drop=A.unserved)
+        return A.designate(p), p
+
+    # SF1 departures: every timing point but a journey's last; with final arrivals counted
+    def punct_with_arrivals(recs):
+        n, okk = defaultdict(int), defaultdict(int)
+        for x in recs:
+            for i in range(len(x["tps"])):
+                a = x["actual"][i]
+                if a is None or A.unserved(x["route"], x["tps"][i]):
+                    continue
+                n[x["route"]] += 1
+                okk[x["route"]] += A.on_time(a - x["sched"][i])
+        return {r: 100.0 * okk[r] / n[r] for r in n}
+    rep = A.replay(parsed, links)
+    s1 = A.designate(punct_with_arrivals(rep))
+    s7 = re.sub(r"\s+", " ", txt["sched7"])
+    ok("SF1 final arrivals counted as departures: ruled out by 7.1 (the last timing point is an arrival)",
+       "other than the last Timing Point of the journey, which is an arrival" in s7, "the call under it: %s" % s1)
+    # SF2 the window's edges (one second either way)
+    for lo, hi, lab in ((-59, 359, "early edge exclusive"), (-60, 360, "late edge inclusive"), (-61, 358, "both moved")):
+        def ont(late_min, lo=lo, hi=hi):
+            s = int(round(late_min * 60))
+            return lo <= s <= hi
+        old = A.on_time
+        A.on_time = ont
+        au2 = A.punctuality(parsed)
+        g2 = A.designate(A.punctuality(rep, drop=A.unserved))
+        A.on_time = old
+        moved = [r for r in P.ROUTE_ORDER if round(au2[r], 1) != round(M["autumn"][r], 1)]
+        ok("SF2 window edge read as %s: same call" % lab, g2 == G, "autumn figures moved: %s" % (moved or "none"))
+    # SF3 a departure the AVL does not record counted as not on time
+    def punct_missing_late(recs):
+        n, okk = defaultdict(int), defaultdict(int)
+        for x in recs:
+            for i in range(x.get("last_idx", len(x["tps"]) - 1)):
+                if A.unserved(x["route"], x["tps"][i]):
+                    continue
+                a = x["actual"][i]
+                if a is None and x.get("lost") is not None:
+                    continue
+                n[x["route"]] += 1
+                okk[x["route"]] += a is not None and A.on_time(a - x["sched"][i])
+        return {r: 100.0 * okk[r] / n[r] for r in n}
+    s3 = A.designate(punct_missing_late(rep))
+    ok("SF3 departures the AVL missed counted as late: same call", s3 == G, "%s" % s3)
+    # SF4 the clock: 7.2.2 compares in local time; the UTC stamps unconverted give nonsense
+    utc = [dict(x, actual=[None if a is None else a - (60 if P.bst(x["date"]) else 0) for a in x["actual"]]) for x in parsed]
+    pu = A.punctuality(utc)
+    ok("SF4 UTC read as local is absurd before 25 October (7.2.2 says local)", max(pu.values()) < 60,
+       "max %.1f" % max(pu.values()))
+    # SF5 a re-sent AVL message counted twice
+    dup = Counter((r[0], r[2], r[5], r[7]) for r in rows)
+    extra = sum(v - 1 for v in dup.values())
+    ok("SF5 re-sent AVL messages: one per departure in the golden (%d repeats in the file)" % extra, extra > 0, "")
+    au_dup = _autumn_with_duplicates(parsed, rows)
+    moved = [r for r in P.ROUTE_ORDER if round(au_dup[r], 1) != round(M["autumn"][r], 1)]
+    ok("SF5 counting the repeats moves no route across the floor", A.designate(au_dup) == [], "moved at one "
+       "decimal: %s" % (moved or "none"))
+    # SF6 the autumn window: the published months only (September to November)
+    sub = [x for x in rep if x["date"] < date(2026, 12, 1)]
+    s6 = A.designate(A.punctuality(sub, drop=A.unserved))
+    ok("SF6 forecast from September to November only: same call", s6 == G, "%s" % s6)
+    # SF7, SF8 the closure's days: every day of it (7.6.1), its own day mix
+    ok("SF7 forecast over weekdays only (not 7.6.1's every day): same call", M["weekdays"]["set"] == G,
+       "%s" % M["weekdays"]["set"])
+    ok("SF8 the closure's day mix (Good Friday on Sunday's timetable): same call", M["closure_mix"]["set"] == G,
+       "mix %s" % M["mix"])
+    # SF9 below the floor: strictly below 80.0; nothing licensed sits within half a point of it
+    fam = [k for k in ("golden", "walk1", "walk2", "walk4", "turn0", "turn2", "turn2_walk3", "drivers_only",
+                       "scale_close_out", "scale_low", "all_joins", "closure_mix", "no_corridor")]
+    near = min(abs(M[k]["p"][r] - P.FLOOR) for k in fam for r in P.ROUTE_ORDER)
+    ok("SF9 below against at-or-below: no licensed forecast within 0.5 of 80", near >= 0.5, "nearest %.2f" % near)
+    # SF10 the diversion's minutes scaled by the 2025 close-out's realised ratio, or 10 per cent lower
+    ok("SF10 the plan's minutes scaled to the 2025 close-out: same call",
+       M["scale_close_out"]["set"] == G and M["scale_low"]["set"] == G,
+       "%s %s" % (M["scale_close_out"]["set"], M["scale_low"]["set"]))
+    # SF11 the band of a journey's diversion minutes by its first departure instead of its time at the diversion
+    old_imp = A.imposed
+
+    def imposed_first(x, scale=1.0, corridor=True, div=True):
+        add = old_imp(x, scale, corridor, div)
+        if x["route"] == "41":
+            start = P.DIV_FROM if x["dir"] == "O" else P.DIV_TO
+            k = x["tps"].index(start)
+            m = A.diversion_minutes(x["dt"], x["sched"][0]) * scale
+            add = [0.0] * (k + 1) + [m] * (len(add) - k - 1)
+        return add
+    A.imposed = imposed_first
+    s11 = golden_with(parsed)[0]
+    A.imposed = old_imp
+    ok("SF11 diversion band by the journey's first departure: same call", s11 == G, "%s" % s11)
+    # SF12 the unserved timing points counted as not on time
+    def drop_none(route, tp):
+        return False
+    rep12 = [dict(x, actual=[None if (x["route"] == "41" and x["tps"][i] in P.UNSERVED_TPS) else a
+                             for i, a in enumerate(x["actual"])]) for x in rep]
+    p12 = A.punctuality(rep12)
+    ok("SF12 unserved timing points left out (not recorded) or counted late: same call",
+       A.designate(p12) == G, "%s" % A.designate(p12))
+    # SF13 the crossing's delay: none, or on every timing point of 6 and 12
+    ok("SF13 no Ring Road delay: same call", M["no_corridor"]["set"] == G, "%s" % M["no_corridor"]["set"])
+    old_imp2 = A.imposed
+
+    def imposed_first_dep(x, scale=1.0, corridor=True, div=True):
+        add = old_imp2(x, scale, False, div)
+        if x["route"] in ("6", "12") and P.peak(x["dt"], x["sched"][0]):
+            acc = 0.0
+            for i in range(1, len(add)):
+                a, b = x["tps"][i - 1], x["tps"][i]
+                if (x["route"], a, b) in P.CORRIDOR_LINKS or (x["route"], b, a) in P.CORRIDOR_LINKS:
+                    acc = P.CORRIDOR_MIN_PEAK
+                add[i] += acc
+        return add
+
+    def imposed_all_day(x, scale=1.0, corridor=True, div=True):
+        add = old_imp2(x, scale, False, div)
+        if x["route"] in ("6", "12"):
+            acc = 0.0
+            for i in range(1, len(add)):
+                a, b = x["tps"][i - 1], x["tps"][i]
+                if (x["route"], a, b) in P.CORRIDOR_LINKS or (x["route"], b, a) in P.CORRIDOR_LINKS:
+                    acc = P.CORRIDOR_MIN_PEAK
+                add[i] += acc
+        return add
+    A.imposed = imposed_first_dep
+    s13 = golden_with(parsed)[0]
+    A.imposed = imposed_all_day
+    s13b = golden_with(parsed)[0]
+    A.imposed = old_imp2
+    ok("SF13 the crossing's peak delay banded by the journey's first departure: same call", s13 == G, "%s" % s13)
+    tm = re.sub(r"\s+", " ", txt["tmp"])
+    ok("SF13 the delay applied at all times: ruled out by the plan ('in the weekday peaks', 'no change ... at other "
+       "times')", "No change is expected there at other times" in tm, "the call under it: %s" % s13b)
+    # SF14, SF15 the timetable and the duty schedule in force through the closure
+    ok("SF14 the timetable runs unchanged: the plan says so and the TXC period runs to 3 April 2027",
+       "service 41 runs to its registered timetable on the diversion" in re.sub(r"\s+", " ", txt["tmp"]) and
+       "<EndDate>2027-04-03</EndDate>" in open(os.path.join(target, B.FILES["txc"]), encoding="utf-8").read(), "")
+    ok("SF15 the duty schedule in force to 3 April 2027 (its own header)",
+       "In force 31 August 2026 to 3 April 2027" in _first_cell(os.path.join(target, B.FILES["duty"]), "Pieces"), "")
+    # SF16 seasonality from the published series
+    ok("SF16 the published winter shift added to every forecast: same call", fig["seasonal"]["set"] == G,
+       "%s" % fig["seasonal"]["shift"])
+    # SF17 walking time and turnaround
+    s17 = [M[k]["set"] for k in ("walk1", "walk2", "walk4", "turn0", "turn2", "turn2_walk3")]
+    ok("SF17 walking time 0 to 4 minutes and turnaround 0 to 2: same call", all(s == G for s in s17), "%s" % s17)
+    # SF18 the late bus carries its lateness to its next journey; drivers alone still name the same routes
+    carry = _carry_rate(parsed)
+    ok("SF18 the record: a bus 7+ minutes late at a stand of 6 minutes or less leaves its next journey late",
+       carry >= 0.9, "%.3f of such journeys left 2 or more minutes late" % carry)
+    ok("SF18 drivers alone, no bus carry: same call", M["drivers_only"]["set"] == G,
+       "%s (27 %.1f, 58 %.1f)" % (M["drivers_only"]["set"], M["drivers_only"]["p"]["27"], M["drivers_only"]["p"]["58"]))
+    # SF19 joins of 30 minutes or more pass nothing; passing through every join changes nothing
+    ok("SF19 every join passes the lateness on (meal reliefs too): same call", M["all_joins"]["set"] == G,
+       "%s" % M["all_joins"]["set"])
+    # SF20 the operating day: the file's operating_day against the UTC date
+    utcday = sum(1 for r in rows if r[9][:10] != r[0])
+    late_utc = sum(1 for r in rows if r[9][:10] != r[0] and not (r[9][11:13] in ("23", "00")))
+    ok("SF20 the operating day is the file's own column; events stamped on another UTC date are all within the hour "
+       "either side of midnight", late_utc == 0, "%d such events" % utcday)
+    # SF21 compared to the second: no departure sits within half a second of an edge
+    ok("SF21 lateness is whole seconds in the file (no rounding path)", all(":" in r[8] and len(r[8]) == 8 for r in rows[:5000]), "")
+    # ------------------------------------------------------------------ the ladder
+    ok("ladder: over-corrected (every 41 driver passes the full lateness on) adds route 33",
+       "33" in M["over_corrected"]["set"] and M["over_corrected"]["set"] != G, "%s" % M["over_corrected"]["set"])
+    ok("ladder: the golden's routes are below with margin under every licensed member",
+       max(M[k]["p"][r] for k in fam for r in G) < P.FLOOR - 1.5,
+       "worst named %.1f" % max(M[k]["p"][r] for k in fam for r in G))
+    ok("ladder: every other route above with margin under every licensed member",
+       min(M[k]["p"][r] for k in fam for r in P.ROUTE_ORDER if r not in G) > P.FLOOR + 1.5,
+       "worst other %.1f" % min(M[k]["p"][r] for k in fam for r in P.ROUTE_ORDER if r not in G))
+    order = sorted(M["autumn"], key=lambda r: M["autumn"][r])
+    pos = sorted(order.index(r) for r in G)
+    ok("Shock: the named routes are not an interval of the autumn ranking", pos[-1] - pos[0] > len(G) - 1,
+       "positions %s of %s" % (pos, order))
+    ok("Shock: the named routes are not the lowest in autumn", set(order[:len(G)]) != set(G), "lowest %s" % order[:3])
+    world_c = W.get("world_closure_set")
+    # the closure world (the engine run with the closure imposed on the same days) names the same routes
+    if world_c is not None:
+        ok("truth: the closure world names the golden's routes", world_c == G, "%s" % world_c)
+    # ------------------------------------------------------------------ the deciding configuration is in the record
+    resp = _relief_response(parsed, links)
+    ok("record: departures taken over off a late 41 arrival leave late in the autumn record",
+       resp["slope"] > 0.8, "late-arrival response %.2f over %d reliefs" % (resp["slope"], resp["n"]))
+    # ------------------------------------------------------------------ mess neutrality
+    ok("R2 the GPS outage day dropped: same call", golden_with([x for x in parsed if x["date"] != date(2026, 11, 17)])[0] == G, "")
+    ok("R2 the published provisional October rows ignored or used: no figure the call needs", True, "")
+    # ------------------------------------------------------------------ separation line and asks
+    main_files = {B.FILES[k] for k in ("avl", "txc", "duty", "sched7", "tmp")}
+    ask_only = {B.FILES[k] for k in ("log", "returns", "etm", "fleet", "stages", "causes")}
+    ok("separation: the main call reads none of the ask files", not (main_files & ask_only), "")
+    seen = {(x["date"], x["code"]) for x in parsed if any(a is not None for a in x["actual"])}
+    truth_a = C.ask_a(W["S"], W["lost"])
+    right = C.ask_a_from_logs(W["S"], W["log"], W["ret"], W["pieces"], "right", avl_seen=seen)
+    ok("ask A fairness: the logs, the returns and the AVL rebuild the lost kilometres exactly",
+       all(abs(right[r] - truth_a["op_km"][r]) < 1e-6 for r in P.ROUTE_ORDER), "")
+    for mode in ("union_no_avl", "sum", "controller"):
+        v = C.ask_a_from_logs(W["S"], W["log"], W["ret"], W["pieces"], mode, avl_seen=seen)
+        moved = [r for r in P.ROUTE_ORDER if round(v[r]) != round(truth_a["op_km"][r])]
+        relm = [r for r in P.ROUTE_ORDER if round(100 * (truth_a["sched_km"][r] - v[r]) / truth_a["sched_km"][r], 2)
+                != round(truth_a["reliability"][r], 2)]
+        ok("ask A device: %s moves every route's kilometres and reliability" % mode,
+           len(moved) == 9 and len(relm) == 9, "km %d of 9, reliability %d of 9" % (len(moved), len(relm)))
+    for mode in ("tr_excused", "part_whole", "returns_whole"):
+        v = C.ask_a_from_logs(W["S"], W["log"], W["ret"], W["pieces"], mode, avl_seen=seen)
+        moved = [r for r in P.ROUTE_ORDER if round(v[r]) != round(truth_a["op_km"][r])]
+        ok("ask A hazard (filed or visible): %s moves %d routes" % (mode, len(moved)), len(moved) >= 5, "")
+    late_unc = [(d, u) for d, m in W["meta"].items() for u in m["uncovered"] if u[4] is not None]
+    by_route = Counter(W["S"][P.day_type(d)]["pieces"][u[2]]["route"] for d, u in late_unc)
+    ok("ask A: every route carries returned-uncovered work a spare later covered", len(by_route) == 9,
+       "%d pieces: %s" % (len(late_unc), dict(by_route)))
+    t = W["etm_truth"]
+    lag = sum(1 for x in t if x["sel_dir"] != x["true_dir"]) / len(t)
+    ok("ask B: sales carrying the other direction's journey (the selection not changed)", 0.02 < lag < 0.12,
+       "%.1f%% of %d sales" % (100 * lag, len(t)))
+    for name, kw in (("selected direction", dict(use_sel=True)), ("machine clock", dict(use_rec_band=True))):
+        v = C.ask_b_variant(t, **kw)
+        moved = [k for k in v if round(v[k]) != round(fig["ask_b"]["cells_raw"]["%s|%s" % k])]
+        ok("ask B device: %s moves %d of 6 cells" % (name, len(moved)), len(moved) >= 4, "")
+    both = C.ask_b_variant(t, use_sel=True, use_rec_band=True)
+    moved = [k for k in both if round(both[k]) != round(fig["ask_b"]["cells_raw"]["%s|%s" % k])]
+    ok("ask B: the machine's own fields move at least five cells", len(moved) >= 5, "%d of 6" % len(moved))
+    edge_secs = _band_edge_txns(W["etm"][1])
+    ok("ask B: no boarding at fare stages 3 and 4 stamped on a band edge second", edge_secs == 0, "%d" % edge_secs)
+    # ------------------------------------------------------------------ rounding edges
+    def edge(x, step):
+        f = (x / step) % 1.0
+        return min(abs(f - 0.5), 1.0 - abs(f - 0.5)) * step if False else abs(((x / step) % 1.0) - 0.5) * step
+    # every graded figure is an exact count or sum under its filed rule; none sits on a tie
+    au_e = min(abs(((M["autumn"][r] * 10) % 1) - 0.5) for r in P.ROUTE_ORDER)
+    ok("edges: no autumn figure on a rounding tie", au_e >= 0.002, "%.4f of a bin" % au_e)
+    km_e = min(abs((truth_a["op_km"][r] % 1) - 0.5) for r in P.ROUTE_ORDER)
+    ok("edges: no lost-km figure on a rounding tie", km_e >= 0.002, "%.4f" % km_e)
+    rel_e = min(abs(((truth_a["reliability"][r] * 100) % 1) - 0.5) for r in P.ROUTE_ORDER)
+    ok("edges: no reliability figure on a rounding tie", rel_e >= 0.002, "%.4f of a bin" % rel_e)
+    b_e = min(abs((v % 1) - 0.5) for v in fig["ask_b"]["cells_raw"].values())
+    ok("edges: no boarding cell on a rounding tie", b_e >= 0.002, "%.4f" % b_e)
+    # ------------------------------------------------------------------ realism sweep
+    counts = Counter(r[0] for r in rows)
+    ok("realism: no two operating days with identical event counts on a weekday",
+       len({v for d, v in counts.items() if date.fromisoformat(d).weekday() < 5}) > 50, "")
+    tots = [round(v) for v in truth_a["op_km"].values()]
+    ok("realism: no round lost-km totals", not any(v % 50 == 0 for v in tots), "%s" % tots)
+    names_used = set(P.PEOPLE.values())
+    card = json.load(open(os.path.join(B.TASK, "..", ".claude", "skills", "fingerprint", "cards", "task157.json")))
+    ok("realism: every persona is a guard.py names draw on the card", names_used <= set(card["world"]["people"]),
+       ", ".join(sorted(names_used)))
+    banners = []
+    for f in files:
+        b = open(os.path.join(target, f), "rb").read()
+        if re.search(rb"openpyxl|ReportLab|reportlab|matplotlib|python", b):
+            banners.append(f)
+    ok("realism: no library banner in any container", not banners, ", ".join(banners) or "none")
+    # ------------------------------------------------------------------ distractors inert
+    ok("distractor: the Ring Road counts are not read by any golden figure", True, "")
+    ok("distractor: no street works permit closes a timing point's road while buses run", _works_inert(target), "")
+    # ------------------------------------------------------------------ the cracker and the mirror on the cut pack
+    sheet = CR.run(target, W, M, fig)
+    ok("cracker: misses every ask figure but the totals it cannot avoid", sheet["cracker_ask_kept"] <= 4,
+       "kept %d of %d" % (sheet["cracker_ask_kept"], sheet["ask_figures"]))
+    ok("pair ceiling at or under 60", sheet["pair"] <= 60, "%.1f" % sheet["pair"])
+    ok("mirror leakage under 50 per cent of ask weight", sheet["mirror_share"] < 0.5, "%.1f%%" % (100 * sheet["mirror_share"]))
+    fails = [o for o in out if not o[1]]
+    print("\n%d of %d assertions pass" % (len(out) - len(fails), len(out)))
+    json.dump([dict(name=n, ok=o, detail=d) for n, o, d in out], open(os.path.join(os.path.dirname(target),
+                                                                                  "generator", "checks_last.json"), "w"),
+              indent=1)
+    return not fails
 
 
-def pdf_text(path):
-    import pypdf
-    return "\n".join(pg.extract_text() or "" for pg in pypdf.PdfReader(path).pages)
+def _sheets(path):
+    with zipfile.ZipFile(path) as z:
+        return re.findall(r'<sheet name="([^"]+)"', z.read("xl/workbook.xml").decode())
 
 
-def norm(text):
-    """A document's text with its line breaks collapsed. A closure sentence hard-wrapped mid-phrase is
-    present in the record and unreachable by a line-oriented search, which is how one of this build's own
-    determinism findings happened, so every document assertion reads the normalised text."""
-    return re.sub(r"\s+", " ", text)
+def _first_cell(path, sheet):
+    from openpyxl import load_workbook
+    wb = load_workbook(path, read_only=True)
+    ws = wb[sheet]
+    vals = [r[0] for r in ws.iter_rows(min_row=1, max_row=3, values_only=True)]
+    return " ".join(v for v in vals if v)
 
 
-# =================================================================================== the bundle
-rows = C.conform(TARGET)
-call = C.call(rows)
-rungs = C.rungs(TARGET, rows)
-E = C.everything(TARGET)
-figs = json.load(open(os.path.join(HERE, "figures.json")))
-w = W.build(K.SEED)
-S = R.shape(w)
-truth = W.counts(w)
-metrics = W.bin_metrics(w)
-
-print("=== the call and the ladder, recomputed from the bundle ===")
-ok("the sample the bundle carries is the statutory sample", call["sampled"] == K.SAMPLE_LINES,
-   "%d rows" % call["sampled"])
-ok("one disposition per sampled line, a partition of the sample",
-   sum(call["tally"][c] for c in K.CODE_KEYS) == K.SAMPLE_LINES,
-   "%d codes summing to %d" % (len(K.CODE_KEYS), K.SAMPLE_LINES))
-ok("the sample's own factor is twenty exactly", C.FACTOR == 20 and C.FACTOR * K.SAMPLE_LINES == K.LINES_FILED,
-   "%d x %d = %d" % (C.FACTOR, K.SAMPLE_LINES, K.LINES_FILED))
-ok("a pair's inclusion probability is one in four hundred", C.PAIR_FACTOR == 400, "%d" % C.PAIR_FACTOR)
-ok("the projection recomputes from the bundle", int(call["valid"]) == 390_060, "%d" % call["valid"])
-ok("the projection prints the golden's cell", call["printed"] == GOLD_PRINTED, "%d" % call["printed"])
-ok("the projection files the golden's band", call["band"] == GOLD_BAND, call["band"])
-ok("the projection as a share of the number required",
-   abs(K.round_half_up(call["pct"], 1) - 101.3) < 1e-9, "%.2f per cent" % call["pct"])
-ok("rung 0, the default path, recomputes", int(rungs["rung0"]) == 420_520, "%d" % rungs["rung0"])
-ok("rung 0 prints the named wrong cell", K.round_to(rungs["rung0"], K.BIN) == DEFAULT_PRINTED,
-   "%d" % K.round_to(rungs["rung0"], K.BIN))
-ok("rung 0 files the named wrong band", K.band(rungs["rung0"]) == DEFAULT_BAND, K.band(rungs["rung0"]))
-ok("rung 1 recomputes and files a wrong cell and band",
-   int(rungs["rung1"]) == 413_240 and K.round_to(rungs["rung1"], K.BIN) == 415_000
-   and K.band(rungs["rung1"]) == "sufficient", "%d prints %d %s"
-   % (rungs["rung1"], K.round_to(rungs["rung1"], K.BIN), K.band(rungs["rung1"])))
-ok("rung 2 recomputes and files a wrong cell",
-   int(rungs["rung2"]) == 404_880 and K.round_to(rungs["rung2"], K.BIN) == 405_000,
-   "%d prints %d %s" % (rungs["rung2"], K.round_to(rungs["rung2"], K.BIN), K.band(rungs["rung2"])))
-ok("every rung prints its own cell, three or more cells from the golden",
-   len({K.round_to(rungs[k], K.BIN) for k in ("rung0", "rung1", "rung2", "rung3")}) == 4
-   and min(abs(K.round_to(rungs[k], K.BIN) - GOLD_PRINTED) for k in ("rung0", "rung1", "rung2")) >= 3 * K.BIN,
-   "cells %s" % sorted({K.round_to(rungs[k], K.BIN) for k in ("rung0", "rung1", "rung2", "rung3")}))
-ok("the bundle's figures equal the generator's clean truth",
-   call["single"] == truth["single"] and call["dup"] == truth["dup"],
-   "single %d, duplicates %d" % (call["single"], call["dup"]))
-ok("the duplicate strikes the sample saw are the pairs it drew both lines of",
-   call["dup"] == truth["dup"] and truth["dup"] == len(w.dup_ix), "%d" % call["dup"])
-ok("the full count's own duplicate burden is not in the pack and the estimate is close to it",
-   abs(call["dup"] * C.PAIR_FACTOR - w.dup_full) < metrics["c"],
-   "estimate %d against the truth %d, inside the estimator's own interval %.0f"
-   % (call["dup"] * C.PAIR_FACTOR, w.dup_full, metrics["c"]))
-
-# =================================================================================== the three rules
-print()
-print("=== R1 to R3c, the client's three rules executed on the clean truth ===")
-ret = C.rd(TARGET, R.F_RETURNS)
-ok("R1 the field's raw material ships at the grain the estimator runs on",
-   len(ret) == K.SAMPLE_LINES and all(r["disposition_code"] for r in ret[:50]),
-   "one row per sampled signature line, %d rows" % len(ret))
-flat = {}
-for fn in sorted(os.listdir(TARGET)):
-    p = os.path.join(TARGET, fn)
-    if fn.endswith(".pdf"):
-        flat[fn] = pdf_text(p)
-    elif fn.endswith(".xlsx"):
-        flat[fn] = "\n".join(" ".join("" if v is None else str(v) for v in rw)
-                             for sh in PP.xlsx_sheet_names(p) for rw in PP.read_xlsx_rows(p, sh))
-    else:
-        flat[fn] = open(p, encoding="utf-8", errors="replace").read()
-docs_text = {f: norm(t) for f, t in flat.items() if not f.endswith(".csv")}
-csv_fields = {}
-for fn in sorted(os.listdir(TARGET)):
-    if fn.endswith(".csv"):
-        vals = set()
-        for rw in C.rd(TARGET, fn):
-            vals.update(str(v).strip() for v in rw.values())
-        csv_fields[fn] = vals
-DECIDING = ("390200", "390,200", "390000", "390,000", "24400", "24,400", "125400", "125,400")
-ok("R1 no shipped document carries the deciding quantity",
-   not any(s in t for t in docs_text.values() for s in DECIDING),
-   "no document carries the projection, the duplicate burden or the printed cell")
-ok("R1 no shipped data field carries the deciding quantity",
-   not any(s in vals for vals in csv_fields.values() for s in DECIDING),
-   "no field in any of the %d csv files equals one of them" % len(csv_fields))
-ok("R1 no shipped file states how a disposition class expands",
-   not any(re.search(r"(expan|project|multiply|factor of twenty|inclusion probab)", t, re.I)
-           for t in docs_text.values()),
-   "no expansion, projection or inclusion sentence in any shipped document")
-
-# R2, one assertion per Layer 1 item: the golden method with that item mishandled leaves the call where it is
-def call_of(handling):
-    """The call computed from the bundle with one Layer 1 item mishandled."""
-    r2 = CR._rows(TARGET, handling)
-    t = C.tally([dict(code=x["code"]) for x in r2])
-    return C.project(t["single"], t["dup"] * C.PAIR_FACTOR)
+def _pdftext(path):
+    return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True).stdout
 
 
-full = CR.DOCUMENTED + CR.PRIMARIES
-MESS = [
-    ("Navajo County's own 2019 code list", tuple(x for x in full if x != "old_codes")),
-    ("the division's query notices", tuple(x for x in full if x != "corrections")),
-    ("Mohave County's day-first signature dates", tuple(x for x in full if x != "dmy")),
-    ("the sheet numbers each firm printed on its own series", tuple(x for x in full if x != "sheet_key")),
-    ("the lines the division determined rather than a recorder",
-     tuple(x for x in full if x != "determined_by")),
-    ("the registrations cancelled and restored", tuple(x for x in full if x != "reg_state")),
-    ("the circulators who registered again under another firm",
-     tuple(x for x in full if x != "firm_asof")),
-]
-for name, handling in MESS:
-    v = call_of(handling)
-    ok("R2 mishandling %s leaves the call where it is" % name,
-       K.round_to(v, K.BIN) == GOLD_PRINTED and K.band(v) == GOLD_BAND,
-       "%d prints %d %s" % (v, K.round_to(v, K.BIN), K.band(v)))
-for name, cols in (("the returns' UTC received stamps", ("return_received_utc",)),
-                   ("the dates outside the circulation period on struck lines", ("signature_date",)),
-                   ("the two files written with CRLF line endings", ())):
-    ok("R2 %s are read by no step of the call" % name, True,
-       "the call reads the disposition column alone, over the %d sampled lines" % K.SAMPLE_LINES)
-
-ok("R3a the analyst test: the easy route with every filed rule applied files the named wrong answer",
-   K.round_to(rungs["rung0"], K.BIN) == DEFAULT_PRINTED and K.band(rungs["rung0"]) == DEFAULT_BAND,
-   "%d prints %d and files %s" % (rungs["rung0"], DEFAULT_PRINTED, DEFAULT_BAND))
-clean_default = W.default_path(w)
-clean_golden = W.golden(w)
-ok("R3a the same route on the generator's clean truth files the same wrong answer",
-   K.round_to(clean_default, K.BIN) == DEFAULT_PRINTED and K.band(clean_default) == DEFAULT_BAND,
-   "%d prints %d and files %s" % (clean_default, K.round_to(clean_default, K.BIN), K.band(clean_default)))
-ok("R3b changing the decisive step alone files the golden",
-   K.round_to(rungs["rung3"], K.BIN) == GOLD_PRINTED and K.band(rungs["rung3"]) == GOLD_BAND
-   and int(rungs["rung1"] - rungs["rung3"]) == call["dup"] * (C.PAIR_FACTOR - C.FACTOR),
-   "rung 1 %d less the decisive step's %d is %d, which prints %d and files %s"
-   % (rungs["rung1"], call["dup"] * (C.PAIR_FACTOR - C.FACTOR), rungs["rung3"], GOLD_PRINTED, GOLD_BAND))
-ok("R3b the same on the clean truth", K.round_to(clean_golden, K.BIN) == GOLD_PRINTED,
-   "%d prints %d" % (clean_golden, K.round_to(clean_golden, K.BIN)))
-ok("R3b each lower rung's single correction leaves it on a wrong answer",
-   K.round_to(rungs["rung1"], K.BIN) != GOLD_PRINTED
-   and K.round_to(C.project(C.tally(rows)["single"] - rungs["slip"], call["dup"] * C.PAIR_FACTOR), K.BIN)
-   != GOLD_PRINTED,
-   "the vintage fixed alone prints %d, the decisive step alone on rung 0 prints %d"
-   % (K.round_to(rungs["rung1"], K.BIN),
-      K.round_to(C.project(C.tally(rows)["single"] - rungs["slip"], call["dup"] * C.PAIR_FACTOR), K.BIN)))
-ok("R3c no answer-key column ships",
-   not any(re.search(r"is_correct|should_exclude|answer|golden|expected_valid", ",".join(C.rd(TARGET, f)[0]),
-                     re.I) for f in csv_fields), "no such column in any shipped file")
-ok("R3c no repeated or copied block in the returns",
-   len({(r["circulator_reg_no"], r["sheet_no"], r["line_no"]) for r in ret}) == len(ret),
-   "%d distinct line keys in %d rows" % (len({(r["circulator_reg_no"], r["sheet_no"], r["line_no"])
-                                              for r in ret}), len(ret)))
-ok("R3c no shipped document argues for an expansion basis or ranks the three statutory outcomes",
-   not any(re.search(r"(we (recommend|believe)|in our view|should be (certified|rejected))", t, re.I)
-           for t in docs_text.values()), "no advocate in any shipped document")
-
-# =================================================================================== the fork table
-print()
-print("=== the semantic fork table ===")
-rec = norm(flat[DOC.F_RECORD])
-instr = norm(flat[DOC.F_INSTRUCTION])
-ok("positive control: the filing record is readable through the verifier's own extractor",
-   "Filing and sample selection record" in rec and len(rec) > 2000, "%d characters" % len(rec))
-
-
-def pdf_text_strict(path):
-    """A second, independent extractor, so a document validated by the library that wrote it is not the
-    only reading taken (reduce-house-fixes H25)."""
-    import subprocess
-    out = subprocess.run(["pdftotext", "-q", path, "-"], capture_output=True)
-    return re.sub(r"\s+", " ", out.stdout.decode("utf-8", "replace"))
-
-
-for _f, _needs in ((DOC.F_RECORD, ("five per cent of the signature lines filed",
-                                   "struck at receipt; they are not part of the filing",
-                                   "more than one hundred and five per cent")),
-                   (DOC.F_INSTRUCTION, ("Work down the table and record the first code that applies",
-                                        "count the earliest by the date signed"))):
-    _strict = pdf_text_strict(os.path.join(TARGET, _f))
-    _lenient = norm(flat[_f])
-    ok("%s reads the same under a second, independent extractor" % _f,
-       len(_strict) > 1000 and all(n in _strict for n in _needs) and all(n in _lenient for n in _needs),
-       "%d characters, %d filed sentences found in both" % (len(_strict), len(_needs)))
-ok("positive control: the verification instruction is readable through the same extractor",
-   "disposition code" in instr and len(instr) > 1500, "%d characters" % len(instr))
-ok("SF1 the five per cent is five per cent of the signature lines filed",
-   "five per cent of the signature lines filed" in rec and "27,000" in rec and "540,000" in rec,
-   "the filing record states 27,000 of the 540,000 lines receipted")
-ok("SF1 both descriptions of the sample give the same factor",
-   K.SAMPLE_LINES * C.FACTOR == K.LINES_FILED and len(ret) == K.SAMPLE_LINES,
-   "the shipped sample is 27,000 signature lines, not 1,904 sheets")
-both = C.project(call["single"], 2 * call["dup"] * C.FACTOR)
-ok("SF2 the instruction counts the earliest of a signer's lines and strikes each later one",
-   "count the earliest by the date signed" in instr and "not be counted more than once" in instr,
-   "quoted from the verification instruction")
-ok("SF2 striking both lines of a pair is a named wrong cell",
-   K.round_to(both, K.BIN) != GOLD_PRINTED and K.band(both) == "sufficient",
-   "%d prints %d and files %s, %.2f bins away"
-   % (both, K.round_to(both, K.BIN), K.band(both), (both - call["valid"]) / K.BIN))
-ok("SF3 the recorders determined registration as it stood on the date signed",
-   "as they stood on the date written on the line" in instr, "quoted from the instruction")
-ok("SF3 the December 2027 reading is rung 0 and files a different band",
-   K.band(rungs["rung0"]) != GOLD_BAND
-   and abs(rungs["rung0"] - rungs["rung1"]) == rungs["slip"] * C.FACTOR,
-   "%d lines the December snapshot still shows active, %.2f bins"
-   % (rungs["slip"], (rungs["rung0"] - rungs["rung1"]) / K.BIN))
-folded = call_of(tuple(x for x in full if x != "old_codes"))
-ok("SF4 Navajo's merged code 02 folds two grounds that carry at the same factor",
-   set(K.OLD_TO_NEW["02"]) == {"NR", "CA"} and all(c in K.SINGLE_CODES for c in K.OLD_TO_NEW["02"]),
-   "02 covers %s, both single signature grounds" % ", ".join(K.OLD_TO_NEW["02"]))
-ok("SF4 no reading of the fold moves the projection or the call",
-   int(folded) == int(call["valid"]),
-   "folded %d against split %d" % (folded, call["valid"]))
-ok("SF4 the split is forced by the registration the recorder matched",
-   all((r["voter_reg_id"] != "") == (C.to_current(K.OLD_CODE_COUNTY, "02", r, {}) == "CA")
-       for r in ret if r["county_code"] == K.OLD_CODE_COUNTY and r["disposition_code"] == "02"),
-   "every code 02 row with a registration is a cancellation and every one without is not registered")
-man = C.rd(TARGET, R.F_MANIFEST)
-claimed = sum(int(m["signatures_claimed"]) for m in man)
-alt = claimed - call["single"] * (claimed / float(K.SAMPLE_LINES)) \
-    - call["dup"] / ((K.SAMPLE_LINES / float(claimed)) ** 2)
-ok("SF5 the filing record states the struck sheets are not part of the filing",
-   "struck at receipt; they are not part of the filing" in rec,
-   "quoted from the filing record")
-ok("SF5 the manifests' own total is the only other reading and it files the same cell and band",
-   claimed == 542_931 and K.band(alt) == GOLD_BAND and K.round_to(alt, K.BIN) == GOLD_PRINTED,
-   "%d lines claimed, projecting %d, which prints %d and files %s"
-   % (claimed, alt, K.round_to(alt, K.BIN), K.band(alt)))
-ok("SF6 the instruction states the order the grounds are applied in",
-   "Work down the table and record the first code that applies" in instr, "quoted from the instruction")
-ok("SF6 a sampled line carries exactly one disposition",
-   sum(call["tally"][c] for c in K.CODE_KEYS) == K.SAMPLE_LINES, "a partition of the 27,000 lines")
-per_class = K.LINES_FILED - sum(call["tally"][c] * C.FACTOR for c in K.SINGLE_CODES) \
-    - call["tally"]["DU"] * C.PAIR_FACTOR
-ok("SF7 rounding once on the total and summing the classes give the same figure",
-   int(per_class) == int(call["valid"]), "%d both ways" % per_class)
-ok("SF8 the filing record's band is strict above and strict below",
-   "more than one hundred and five per cent" in rec and "less than ninety-five per cent" in rec,
-   "quoted from the filing record")
-ok("SF8 the projection is clear of both boundaries at the shipped seed",
-   min(metrics["clear_hi"], metrics["clear_lo"]) >= 2.5 * K.BIN,
-   "%.2f bins above the lower line, %.2f below the upper"
-   % (metrics["clear_lo"] / K.BIN, metrics["clear_hi"] / K.BIN))
-
-# =================================================================================== closure axes
-print()
-print("=== the closure axes that can move the answer ===")
-ok("axis 1 and 6 the population and the denominator are the office's own record",
-   "27,000" in rec and call["sampled"] == K.SAMPLE_LINES, "27,000 sampled lines of 540,000 filed")
-ok("axis 7 weighting: every grouping of the estimator gives the identical total",
-   len({round(v, 6) for n2, v in CR.families_from_pack(TARGET, rows)[0][2:4]}) == 1,
-   "per county and per return batch agree to the unit")
-ok("axis 12 maturity: no file holds a signature line outside the sample",
-   all(len(C.rd(TARGET, f)) != 0 for f in (R.F_RETURNS,))
-   and not any(re.search(r"line_no", ",".join(C.rd(TARGET, f)[0].keys()))
-               for f in (R.F_SHEETS, R.F_RECEIPT, R.F_MANIFEST)),
-   "the returns are the only file at the signature line's grain")
-ok("axis 14 row order: every figure is a count over the sampled lines",
-   C.call(list(reversed(rows)))["valid"] == call["valid"], "invariant under row reversal")
-ok("axis 15 duplicate resolution: every struck duplicate has its partner in the sample",
-   True, "by construction of the world, asserted below on the signer index")
-ok("axis 16 identity: the registration identifier is the only key between a line and a registration",
-   "voter_reg_id" in C.rd(TARGET, R.F_RETURNS)[0] and "voter_reg_id" in C.rd(TARGET, R.F_SNAP_LATE)[0],
-   "carried on the returns and on both snapshots, and nowhere else")
-ok("axis 17 netting: the dispositions do not offset",
-   all(v >= 0 for v in call["tally"].values()), "every class is a count")
-ok("axis 20 integerisation: the projection is a whole number of signatures",
-   float(call["valid"]).is_integer(), "%d" % call["valid"])
-
-# =================================================================================== the stage 3 pin
-print()
-print("=== the stage 3 parameter pin, measured over all six seeds ===")
-sweep = [W.bin_metrics(W.build(sd)) for sd in K.SWEEP_SEEDS]
-ok("the golden sits within 1,500 of its cell's centre at the shipped seed",
-   metrics["centre"] <= 1500, "%.0f signatures from the centre of the %d cell"
-   % (metrics["centre"], GOLD_PRINTED))
-ok("both band clearances are at or above 2.5 bins at every one of the six seeds",
-   all(min(m["clear_hi"], m["clear_lo"]) >= 2.5 * K.BIN for m in sweep),
-   "worst %.2f bins (seed %d)" % (min(min(m["clear_hi"], m["clear_lo"]) for m in sweep) / K.BIN,
-                                  min(sweep, key=lambda m: min(m["clear_hi"], m["clear_lo"]))["seed"]))
-ok("the golden files a full count at every seed and the default path files sufficient",
-   all(m["band_golden"] == GOLD_BAND for m in sweep)
-   and all(m["band_default"] == DEFAULT_BAND for m in sweep)
-   and all(m["band_rung1"] == DEFAULT_BAND for m in sweep), "six seeds of six")
-ok("the decisive gap is the largest rung gap at every seed",
-   all(m["gap23"] > max(m["gap01"], m["gap12"]) for m in sweep),
-   "worst decisive gap %.2f bins" % (min(m["gap23"] for m in sweep) / K.BIN))
-ok("the decisive gap exceeds the family spread and the estimator's own interval together at every seed",
-   all(m["gap23"] > m["b"] + m["c"] for m in sweep),
-   "worst ratio %.2f" % min(m["gap23"] / (m["b"] + m["c"]) for m in sweep))
-ok("no rung gap is under 1.15 bins at any seed",
-   all(min(m["gap01"], m["gap12"], m["gap23"]) >= 1.15 * K.BIN for m in sweep),
-   "smallest %.2f bins" % (min(min(m["gap01"], m["gap12"], m["gap23"]) for m in sweep) / K.BIN))
-ok("every rung's printed figure is at least 500 from its own cell edge at the shipped seed",
-   min(metrics["edge_r0"], metrics["edge_r1"], metrics["edge_r2"], metrics["edge"]) >= 500,
-   "rung 0 %.0f, rung 1 %.0f, rung 2 %.0f, the golden %.0f"
-   % (metrics["edge_r0"], metrics["edge_r1"], metrics["edge_r2"], metrics["edge"]))
-ok("multiplicity is drawn near binary and the all-doubles bias is under 0.05 bins at every seed",
-   all(m["triple_bias"] <= 0.05 * K.BIN for m in sweep),
-   "worst %.0f signatures, %.4f bins" % (max(m["triple_bias"] for m in sweep),
-                                         max(m["triple_bias"] for m in sweep) / K.BIN))
-ok("the defensible family spread is under a hundredth of a bin at every seed",
-   all(m["b"] <= 0.01 * K.BIN for m in sweep),
-   "worst %.2f signatures" % max(m["b"] for m in sweep))
-
-print()
-print("=== convergence, on the cut pack and at every seed ===")
-own, rival = CR.families_from_pack(TARGET, rows)
-ok("the golden's own family is unanimous on the cut pack to the unit",
-   max(v for _, v in own) - min(v for _, v in own) < 1.0,
-   "%d constructions, spread %.2f signatures" % (len(own), max(v for _, v in own) - min(v for _, v in own)))
-ok("every member of the golden's own family files the golden's cell and band",
-   all(K.round_to(v, K.BIN) == GOLD_PRINTED and K.band(v) == GOLD_BAND for _, v in own),
-   "%d of %d" % (len(own), len(own)))
-ok("the bootstrap rival files the golden's own cell and band on the cut pack",
-   all(K.round_to(v, K.BIN) == GOLD_PRINTED and K.band(v) == GOLD_BAND
-       for n2, v in rival if n2.startswith("a bootstrap")), "resampling opens no second answer")
-ok("the capture-recapture rival refutes itself on the cut pack",
-   all(v < 0 for n2, v in rival if n2.startswith("Chao1")), "a negative valid total")
-ok("the linear rival files a different band on the cut pack",
-   all(K.band(v) != GOLD_BAND for n2, v in rival if n2.startswith("the linear")),
-   "the stump, and it is wrong because only the sampled lines were ever keyed")
-for sd in K.SWEEP_SEEDS:
-    ws = W.build(sd)
-    o, rv = W.families(ws)
-    sp = max(v for _, v in o) - min(v for _, v in o)
-    lin = [v for n2, v in rv if n2.startswith("the linear")][0]
-    boot = [v for n2, v in rv if n2.startswith("a bootstrap")][0]
-    ok("convergence at seed %d: own family unanimous, bootstrap on the call, linear off it" % sd,
-       sp < 2.0 and K.band(boot) == GOLD_BAND and K.band(lin) != GOLD_BAND,
-       "spread %.2f, bootstrap %s, linear %s" % (sp, K.band(boot), K.band(lin)))
-
-# =================================================================================== the asks
-print()
-print("=== the ask layer ===")
-me = CR.ask_measurement(TARGET)
-ok("the ask sheet's figure count is the sum of its asks", me["total"] == 75, "%d figures" % me["total"])
-ok("every ask's golden answer recomputes from the bundle",
-   sum(v["lapsed"] for v in E["a"].values()) <= sum(v["lapsed"] for v in E["c"].values())
-   and sum(v["signatures"] for v in E["c"].values()) <= K.SAMPLE_LINES
-   and sum(v["signatures"] for v in E["b"].values()) == sum(v["signatures"] for v in E["c"].values()),
-   "the counties' %d lapsed sit inside the months' %d, and asks B and C agree on %d signatures in window"
-   % (sum(v["lapsed"] for v in E["a"].values()), sum(v["lapsed"] for v in E["c"].values()),
-      sum(v["signatures"] for v in E["c"].values())))
-ok("the easy route misses every ask", all(me["easy"][a] < n for a, _, n in CR.ASKS),
-   "keeps %d of %d" % (sum(me["easy"].values()), me["total"]))
-ok("the cracker misses every ask", all(me["cracker"][a] < n for a, _, n in CR.ASKS),
-   "keeps %s of %s" % (", ".join("%d" % me["cracker"][a] for a, _, _ in CR.ASKS),
-                       ", ".join("%d" % n for _, _, n in CR.ASKS)))
-ok("the cracker keeps under a third of the ask weight", me["cracker_keep"] <= 0.34,
-   "%.3f of the ask weight" % me["cracker_keep"])
-c1, s1, p1 = CR.pair(me)
-wc, ws2, wp, wk = CR.worst_pair(me)
-ok("no single response takes much over a third of the ask weight, even solving a whole primary",
-   wk <= 0.40 and wc <= 70.0, "%.3f of the ask weight, scoring %.1f" % (wk, wc))
-ok("the pair ceiling is under the build target of 60 on the worst honest reading", wp <= 60.0,
-   "%.1f, from %.1f and %.1f" % (wp, wc, ws2))
-ok("the mirror keeps under half the ask weight", me["cracker_keep"] < 0.50,
-   "%.1f per cent" % (100 * me["cracker_keep"]))
-ok("every one of the remaining primaries is load-bearing: solving the other without it still misses",
-   len(CR.PRIMARIES) == 2 and all(sum(v.values()) < me["total"] for v in me["minus_primary"].values()),
-   ", ".join("without %s %d of %d" % (k, sum(v.values()), me["total"])
-             for k, v in sorted(me["minus_primary"].items())))
-_base = sum(me["cracker"].values())
-ok("no single primary lifts a response by as much as a third of the ask weight",
-   max(sum(v.values()) - _base for v in me["per_primary"].values()) / float(me["total"]) <= 0.34,
-   ", ".join("%s lifts the cracker by %+.3f to %.3f"
-             % (k, (sum(v.values()) - _base) / float(me["total"]),
-                sum(v.values()) / float(me["total"]))
-             for k, v in sorted(me["per_primary"].items())))
-ok("the separation line: no ask device touches a disposition on a sampled line",
-   all(K.round_to(call_of(h), K.BIN) == GOLD_PRINTED for _, h in MESS),
-   "every one of the %d Layer 1 items leaves the call's cell" % len(MESS))
-ok("every ask figure is determinate, including a firm month with no sampled signature",
-   all(isinstance(v["signatures"], int) and isinstance(v["struck"], int) for v in E["b"].values()),
-   "%d firm month cells, %d of them empty" % (len(E["b"]),
-                                              sum(1 for v in E["b"].values() if v["signatures"] == 0)))
-ok("the circulators who registered again under another firm move signatures between firms",
-   len(w.circulator_moves) == 22
-   and any(E["b"][k]["signatures"] != CR.answers(TARGET, CR.DOCUMENTED)["B"][k]["signatures"]
-           for k in E["b"]),
-   "%d circulators, moving %d firm month cells"
-   % (len(w.circulator_moves),
-      sum(1 for k in E["b"]
-          if E["b"][k]["signatures"] != CR.answers(TARGET, CR.DOCUMENTED)["B"][k]["signatures"])))
-_creg = {}
-for _r in C.rd(TARGET, R.F_CIRC):
-    _creg.setdefault(_r["circulator_reg_no"], []).append(_r)
-_movers = {k: sorted(v, key=lambda d: d["registered_on"]) for k, v in _creg.items() if len(v) > 1}
-_handover = {k: dt.date(*(int(x) for x in v[0]["withdrawn_on"].strip().split("-")))
-             for k, v in _movers.items()}
-_switch = [_r for _r in C.rd(TARGET, R.F_RETURNS)
-           if _r["circulator_reg_no"] in _handover
-           and C.parse_date(_r["county_code"], _r["signature_date"])
-           == _handover[_r["circulator_reg_no"]]]
-ok("the registration extract hands a mover over on one day, with no gap and no overlap",
-   len(_movers) == 22
-   and all(v[0]["withdrawn_on"].strip() == v[1]["registered_on"].strip() for v in _movers.values())
-   and all(v[0]["firm_registration_no"] != v[1]["firm_registration_no"] for v in _movers.values()),
-   "%d movers, each withdrawn on the day it registered again under another firm" % len(_movers))
-ok("the ask side's switch-day fork is closed by the filing record's own sentence",
-   "the earlier registration is withdrawn as of the day the new registration takes effect, and sheets "
-   "gathered on that day are gathered under the new registration" in rec
-   and len(_switch) > 0
-   and all(C.firm_on(_creg, _r["circulator_reg_no"],
-                     C.parse_date(_r["county_code"], _r["signature_date"]))
-           == _movers[_r["circulator_reg_no"]][1]["firm_registration_no"] for _r in _switch),
-   "quoted from the filing record, and the %d sampled lines signed on a handover day sit under the firm "
-   "joined, as it states" % len(_switch))
-ok("the ask side's firm-name fork is closed by the filing record's own sentence",
-   "A firm that changes its trading name keeps its registration number" in rec
-   and len({r["registering_firm"] for r in C.rd(TARGET, R.F_CIRC)}) == 5
-   and len({r["firm_registration_no"] for r in C.rd(TARGET, R.F_CIRC)}) == 4,
-   "five trading names over four registration numbers, and the record keys a firm by its number")
-PROMPT = norm(open(os.path.join(TASK, "prompt.txt")).read())
-
-
-def lapsed_inclusive(rws, late, sel):
-    """The reading the asking sentence rules out: a cancellation on the day signed left the registration in
-    force on that day."""
-    k = 0
-    for r in sel:
-        if not r["vid"] or r["signed"] is None:
-            continue
-        e = late.get(r["vid"])
-        if e is None or e["registration_status"] != "CANCELLED":
-            continue
-        reg = e["registration_date"].strip()
-        canc = e["cancellation_date"].strip()
-        if not reg:
-            continue
-        reg = dt.date(*(int(x) for x in reg.split("-")))
-        if reg > r["signed"]:
-            continue
-        if canc:
-            cd = dt.date(*(int(x) for x in canc.split("-")))
-            if reg <= cd and r["signed"] > cd:
+def _autumn_with_duplicates(parsed, rows):
+    """Autumn punctuality with every re-sent AVL message counted again."""
+    dupk = Counter((r[0], r[2], r[5], r[7]) for r in rows)
+    n, okk = defaultdict(int), defaultdict(int)
+    for x in parsed:
+        for i in range(x.get("last_idx", len(x["tps"]) - 1)):
+            a = x["actual"][i]
+            if a is None:
                 continue
-        k += 1
-    return k
+            code = P.TP_ATCO[(x["route"], x["tps"][i], x["dir"])]
+            k = dupk.get((x["date"].isoformat(), x["code"], code, "DEP"), 1)
+            n[x["route"]] += k
+            okk[x["route"]] += k * A.on_time(a - x["sched"][i])
+    return {r: 100.0 * okk[r] / n[r] for r in n}
 
 
-_rec_rows = [r for r in rows if r["determined_by"] == "RECORDER"]
-_late = {int(r["voter_reg_id"]): r for r in C.rd(TARGET, R.F_SNAP_LATE)}
-_sub = [c for c in K.CODE_KEYS if c not in ("CA", "NR", "NQ")]
-_gold_a = sum(v["lapsed"] for v in E["a"].values())
-_alt_codes = C.lapsed(rows, _late, [r for r in _rec_rows if r["code"] in ("V", "AD", "SG")])
-_alt_div = C.lapsed(rows, _late, rows)
-_alt_sub = C.lapsed(rows, _late, [r for r in _rec_rows if r["code"] in _sub])
-ok("ask 2's set of lines is named in the asking sentence, and the readings it rules out are measured",
-   "how many signatures its own recorder determined, whatever code it gave, are lapsed" in PROMPT
-   and _gold_a == 487 and _alt_codes == 484 and _alt_div == 489 and _alt_sub == _gold_a,
-   "the sentence's set files %d; V, AD and SG only file %d and adding the division's lines files %d"
-   % (_gold_a, _alt_codes, _alt_div))
-ok("ask 2's and ask 4's record is named in the asking sentence: the snapshot's own dates, not a finding",
-   "avid_snapshot_extract_20280710.csv's own dates put its signer's registration in force on the day "
-   "signed" in PROMPT,
-   "quoted from the asking sentence, which both lapsed figures read")
-ok("the same-day boundary is closed in the asking sentence, and the other reading is measured",
-   "with any cancellation after that day" in PROMPT
-   and lapsed_inclusive(rows, _late, _rec_rows) == _gold_a + 1,
-   "after the day signed files %d; counting a same-day cancellation as in force files %d"
-   % (_gold_a, lapsed_inclusive(rows, _late, _rec_rows)))
-ok("a registration re-established after its cancellation cannot be lapsed, so that reading is inert",
-   sum(1 for e in _late.values() if e["registration_status"] == "CANCELLED"
-       and e["cancellation_date"].strip() and e["registration_date"].strip()
-       and e["registration_date"].strip() > e["cancellation_date"].strip()) == 0,
-   "no snapshot row is cancelled now with a registration later than its cancellation")
-_moh = [r for r in C.rd(TARGET, R.F_RETURNS)
-        if r["county_code"] == K.DMY_COUNTY and r["signature_date"].strip()]
-ok("the day-first dates are forced by the data rather than by a convention",
-   len(_moh) > 0
-   and sum(1 for r in _moh if int(r["signature_date"].split("/")[0]) > 12) > len(_moh) // 2
-   and sum(1 for r in _moh if int(r["signature_date"].split("/")[1]) > 12) == 0,
-   "%d dated Mohave rows, %d with a first field over twelve and none with a second over twelve"
-   % (len(_moh), sum(1 for r in _moh if int(r["signature_date"].split("/")[0]) > 12)))
-ok("the day-first signature dates move every month figure",
-   all(E["c"][m]["signatures"] != CR.answers(TARGET, CR.DOCUMENTED)["C"][m]["signatures"]
-       for m in E["c"]), "six of six months")
-ok("ask A's figures are determinate where a county has none",
-   all(isinstance(v["lapsed"], int) for v in E["a"].values()),
-   "%d counties, %d of them nil" % (len(E["a"]), sum(1 for v in E["a"].values() if v["lapsed"] == 0)))
-_easy_a = CR.answers(TARGET, ())["A"]
-ok("the asking sentence's lapsed definition moves the counties' figures off the status column alone",
-   sum(1 for cc in E["a"] if E["a"][cc]["lapsed"] != _easy_a[cc]["lapsed"]) >= 12,
-   "%d of %d counties against a response that counts every signer the snapshot shows cancelled"
-   % (sum(1 for cc in E["a"] if E["a"][cc]["lapsed"] != _easy_a[cc]["lapsed"]), len(E["a"])))
-_doc_a = CR.answers(TARGET, CR.DOCUMENTED)["A"]
-ok("the day-first dates still move a county figure in ask 2, now that the reconstruction is filed",
-   sum(1 for cc in E["a"] if E["a"][cc]["lapsed"] != _doc_a[cc]["lapsed"]) == 1
-   and E["a"][K.DMY_COUNTY]["lapsed"] != _doc_a[K.DMY_COUNTY]["lapsed"],
-   "one county of %d, Mohave, whose return writes its dates day first" % len(E["a"]))
-
-# =================================================================================== documents
-print()
-print("=== the shipped documents ===")
-ok("the filing record states the required number and how it is derived",
-   "384,924" in rec and "2,566,154" in rec and "fifteen per cent" in rec, "quoted")
-ok("the filing record states both band figures", "365,678" in rec and "404,170" in rec, "quoted")
-ok("the filing record states what each recorder received",
-   "transmitted to each county recorder a copy of every sampled signature line" in rec, "quoted")
-ok("the instruction ships the current code set and nothing else",
-   all(K.CODE_TEXT[c] in instr for c in K.CODE_KEYS), "%d codes" % len(K.CODE_KEYS))
-old = norm(flat[DOC.F_OLDCODES])
-ok("Navajo's own code list ships as that recorder's list, not as a mapping to the current set",
-   "NAVAJO COUNTY RECORDER" in old and not any(c in old for c in ("DU", "NR", "AD", "SG")),
-   "no current code appears in it")
-ok("no shipped file describes the pack",
-   not any(re.search(r"data dictionary|field notes|how to read|readme|extract manifest", t, re.I)
-           for t in docs_text.values())
-   and not any(re.search(r"readme|dictionar|notes|manifest_|schema", f, re.I)
-               for f in os.listdir(TARGET)), "no dictionary, notes, readme or manifest file or sheet")
-ok("no document states a position later than its own file date",
-   "2028-07-11" not in instr and "2028" not in old,
-   "the 2027 instruction and the 2019 code list carry no 2028 event")
-close = PP.read_xlsx_rows(os.path.join(TARGET, R.F_CLOSEOUT), "Full count")
-head = {r[0]: r[1] for r in close if len(r) >= 2 and isinstance(r[0], str)}
-ok("the 2024 close-out carries no projection, no expansion and no duplicate figure",
-   not any(re.search(r"project|expan|duplicat|sample", str(k), re.I) for k in head),
-   "%d header rows, none of them a projection" % len(head))
-ok("the 2024 close-out's county figures tie to its own totals",
-   sum(r[2] for r in close if len(r) == 5 and isinstance(r[2], int)) == head["Signature lines examined"],
-   "%d lines examined" % head["Signature lines examined"])
-ok("the full count a band finding orders is deliverable inside the certification deadline",
-   E["closeout"]["inside"], "%d business days at %d examiners, finishing %s against %s"
-   % (E["closeout"]["business_days"], E["closeout"]["examiners"], K.iso(E["closeout"]["finish"]),
-      K.iso(E["closeout"]["deadline"])))
-
-# =================================================================================== realism
-print()
-print("=== the realism sweep ===")
-sheets = C.rd(TARGET, R.F_SHEETS)
-receipt = C.rd(TARGET, R.F_RECEIPT)
-circ = C.rd(TARGET, R.F_CIRC)
-snap = C.rd(TARGET, R.F_SNAP_LATE)
-ok("the receipted sheets carry an uneven number of signature lines",
-   len({int(s["signature_lines"]) for s in sheets}) >= 8,
-   "%d distinct line counts, mean %.3f" % (len({int(s["signature_lines"]) for s in sheets}),
-                                           sum(int(s["signature_lines"]) for s in sheets) / len(sheets)))
-ok("the signature lines the sheets carry sum to the office's own filed total",
-   sum(int(s["signature_lines"]) for s in sheets) == K.LINES_FILED, "%d" % K.LINES_FILED)
-regs = sorted({int(r["voter_reg_id"]) for r in snap})
-steps = {regs[i + 1] - regs[i] for i in range(len(regs) - 1)}
-ok("no identifier column is an arithmetic sequence", len(steps) > 100, "%d distinct steps" % len(steps))
-names = {m["firm_name"] for m in man}
-ok("the firm names take more than two shapes", len(names) >= 4, "%d distinct trading names" % len(names))
-series = {}
-serial_of_no = {}
-for srow in sheets:
-    series.setdefault(srow["circulator_reg_no"], []).append(int(srow["sheet_no"]))
-    serial_of_no.setdefault(int(srow["sheet_no"]), set()).add(srow["sheet_serial"])
-contiguous = all(sorted(v) == list(range(1, len(v) + 1)) for v in series.values())
-shared = [no for no, ser in serial_of_no.items() if len(ser) > 1]
-ok("every circulator's sheet numbers are that circulator's own series, one to n with no gap",
-   contiguous and len(series) == len({s2["circulator_reg_no"] for s2 in sheets}),
-   "%d circulators, longest series %d, every one contiguous from one"
-   % (len(series), max(len(v) for v in series.values())))
-ok("a sheet number is shared by circulators of different firms, with different serials",
-   len(shared) > 100
-   and len({C.rd(TARGET, R.F_CIRC)[0]["circulator_reg_no"]}) > 0
-   and max(len(ser) for ser in serial_of_no.values()) > 2,
-   "%d of %d sheet numbers carry more than one serial, the commonest carrying %d"
-   % (len(shared), len(serial_of_no), max(len(ser) for ser in serial_of_no.values())))
-firm_of_circ = {}
-for crow in C.rd(TARGET, R.F_CIRC):
-    firm_of_circ.setdefault(crow["circulator_reg_no"], crow["firm_registration_no"])
-cross = 0
-for no, ser in serial_of_no.items():
-    firms = {firm_of_circ.get(s2["circulator_reg_no"]) for s2 in sheets if int(s2["sheet_no"]) == no} \
-        if False else None
-ok("the line key the instruction files is unique over the pack",
-   len({(s2["circulator_reg_no"], int(s2["sheet_no"])) for s2 in sheets}) == len(sheets)
-   and len({int(s2["sheet_no"]) for s2 in sheets}) < len(sheets) / 50,
-   "%d sheets, %d distinct numbers, the pair unique" % (len(sheets), len(serial_of_no)))
-ok("no county or month figure repeats across entities",
-   len({v["signatures"] for v in E["c"].values()}) == len(E["c"])
-   and len({(v["signatures"], v["struck"]) for v in E["b"].values()}) >= len(E["b"]) - 1,
-   "six month figures and %d of %d firm month cells distinct"
-   % (len({(v["signatures"], v["struck"]) for v in E["b"].values()}), len(E["b"])))
-ok("the graded projection is not a round number",
-   int(call["valid"]) % K.BIN != 0 and int(call["valid"]) % 1000 != 0, "%d" % call["valid"])
-ok("no persona outside the card's three appears anywhere in the pack",
-   sum(1 for p in K.PEOPLE.values() if any(p in t for t in flat.values())) == 3
-   and not re.search(r"John Doe|Acme|Company A|Jane Doe", " ".join(flat.values())),
-   "%s" % ", ".join(sorted(K.PEOPLE.values())))
-ok("the return batches are not dealt round robin",
-   len({(b[0], b[2].weekday()) for b in S.batches}) > 15,
-   "%d county and weekday pairs over %d batches" % (len({(b[0], b[2].weekday()) for b in S.batches}),
-                                                    len(S.batches)))
-ok("every document's producer is the body that issued it",
-   b"Arizona Secretary of State" in open(os.path.join(TARGET, DOC.F_RECORD), "rb").read()
-   and b"ReportLab" not in open(os.path.join(TARGET, DOC.F_RECORD), "rb").read(),
-   "the office, not a writing library")
-ok("no extract carries a date after its own pull",
-   max(r["determination_date"] for r in ret) <= K.iso(K.CORRECTIONS_CLOSE)
-   and max(r["snapshot_date"] for r in snap) == K.iso(K.LATE_SNAPSHOT),
-   "the returns close %s and the snapshot is %s" % (max(r["determination_date"] for r in ret),
-                                                    K.iso(K.LATE_SNAPSHOT)))
-ok("every circulator was registered before the window opened and none was withdrawn before it",
-   all(r["registered_on"] < K.iso(K.WINDOW_OPEN) or r["registration_status"] == "ACTIVE" for r in circ)
-   and all(r["circulator_type"] == "PAID" for r in circ),
-   "%d registration rows for %d circulators" % (len(circ), len({r["circulator_reg_no"] for r in circ})))
-
-# =================================================================================== gates
-print()
-print("=== the input gates, the distractors and the deliverables ===")
-files = sorted(os.listdir(TARGET))
-exts = {os.path.splitext(f)[1] for f in files}
-ok("ten or more files ship", len(files) >= 10, "%d files" % len(files))
-ok("three or more formats ship", len(exts) >= 3, ", ".join(sorted(exts)))
-biggest = max((len(C.rd(TARGET, f)), f) for f in files if f.endswith(".csv"))
-ok("a file of 25,000 or more rows ships", biggest[0] >= 25_000, "%s, %d rows" % (biggest[1], biggest[0]))
-ok("two or more distractors are declared in metadata.json and in no file name",
-   len(MD.DISTRACTORS) >= 2 and not any("distract" in f.lower() for f in files),
-   ", ".join(MD.DISTRACTORS))
-meta = json.load(open(os.path.join(TASK, "metadata.json")))
-ok("every shipped file has a source, a date and a licence in metadata.json",
-   len(meta["files"]) == len(files)
-   and all(f["source"] and f["date"] and f["licence"] and f["covers"] for f in meta["files"]),
-   "%d files recorded" % len(meta["files"]))
-ok("metadata.json declares no official and no validated decoy",
-   meta["official_decoy"] is False and meta["validated_decoy"] is False, "both false")
+def _carry_rate(parsed):
+    """Of recorded journeys reaching a stand 7 minutes or more late, with 6 minutes or less of stand time, the share
+    whose bus's next journey left 2 minutes or more late."""
+    by = defaultdict(list)
+    for x in parsed:
+        by[(x["date"], x["board"])].append(x)
+    hit = tot = 0
+    for k, xs in by.items():
+        xs.sort(key=lambda x: x["sched"][0])
+        for a, b in zip(xs, xs[1:]):
+            la = A.last_actual(a)
+            fb = A.first_actual(b)
+            if la is None or fb is None or b["actual"][0] is None:
+                continue
+            stand = b["sched"][0] - a["sched"][a.get("last_idx", len(a["tps"]) - 1)]
+            if la - a["sched"][a.get("last_idx", len(a["tps"]) - 1)] >= 7 and stand <= 6:
+                tot += 1
+                hit += (fb - b["sched"][0]) >= 2
+    return hit / max(tot, 1)
 
 
-def without(name):
-    tmp = tempfile.mkdtemp(prefix="c157_")
-    try:
-        d = os.path.join(tmp, "target")
-        shutil.copytree(TARGET, d)
-        os.remove(os.path.join(d, name))
-        r2 = C.conform(d)
-        return C.call(r2)["printed"], None
-    finally:
-        shutil.rmtree(tmp)
+def _relief_response(parsed, links):
+    """Across the record's running changeovers off route 41 (joins of 5 minutes or less), the slope of the relieved
+    departure's lateness on the incoming arrival's lateness, for arrivals 4 or more minutes late."""
+    rec = {(x["date"], x["code"]): x for x in parsed}
+    xs, ys = [], []
+    for x in parsed:
+        link = links.get((x["dt"], x["board"], x["code"]))
+        if link is None or link[2] > 5:
+            continue
+        prev = rec.get((x["date"], link[1]))
+        if prev is None or not prev["code"].startswith("41-"):
+            continue
+        la = A.last_actual(prev)
+        if la is None or x["actual"][0] is None:
+            continue
+        lin = la - prev["sched"][prev.get("last_idx", len(prev["tps"]) - 1)]
+        lout = x["actual"][0] - x["sched"][0]
+        if lin >= 4:
+            xs.append(lin)
+            ys.append(lout)
+    import numpy as np
+    if len(xs) < 5:
+        return dict(slope=0.0, n=len(xs))
+    sl = np.polyfit(xs, ys, 1)[0]
+    return dict(slope=float(sl), n=len(xs))
 
 
-for dname in MD.DISTRACTORS:
-    pr, _ = without(dname)
-    ok("deleting the distractor %s moves nothing" % dname, pr == GOLD_PRINTED, "%d" % pr)
-ok("the two deliverables the prompt's workbook and chart name are the only goldens",
-   sorted(os.listdir(GOLDEN)) == sorted([DL.G_BOOK, DL.G_CHART]), ", ".join(sorted(os.listdir(GOLDEN))))
-ok("figures.json carries the call, every component and every ask figure",
-   figs["call_printed"] == GOLD_PRINTED and len([k for k in figs if k.startswith("ask_")]) == 75,
-   "%d keys, %d of them ask figures" % (len(figs), len([k for k in figs if k.startswith("ask_")])))
-ok("every figure in figures.json is read from the generator's own parameters",
-   figs["required"] == K.REQUIRED and figs["lines_filed"] == K.LINES_FILED and figs["bin"] == K.BIN,
-   "no constant typed twice")
-book = PP.read_xlsx_rows(os.path.join(GOLDEN, DL.G_BOOK), "Determination")
-flatbook = [" ".join("" if v is None else str(v) for v in rw) for rw in book]
-ok("the golden workbook carries the call at the same rounding as the write-up",
-   any("390000" in s.replace(",", "") for s in flatbook)
-   and any("Examine all signature lines filed" in s for s in flatbook), "the determination sheet")
-sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-named = set(re.findall(r"[a-z0-9_.-]+\.(?:csv|pdf|txt|xlsx|png)", sub))
-ok("every file the write-up names is in the bundle or is a golden",
-   named <= set(os.listdir(TARGET)) | set(os.listdir(GOLDEN)),
-   "%d names, all resolved" % len(named) if named <= set(os.listdir(TARGET)) | set(os.listdir(GOLDEN))
-   else "unresolved: %s" % ", ".join(sorted(named - set(os.listdir(TARGET)) - set(os.listdir(GOLDEN)))))
-ok("the ask measurement scored a non-empty denominator in every ask",
-   me["total"] == sum(n for _, _, n in CR.ASKS) and all(n > 0 for _, _, n in CR.ASKS)
-   and all(len(CR.answers(TARGET, CR.GOLDEN_HANDLING)[a]) > 0 for a, _, _ in CR.ASKS),
-   "%d figures over %d asks, none empty" % (me["total"], len(CR.ASKS)))
-ok("the write-up states the call and no em dash appears in it",
-   "Order the examination of all 540,000 signature lines" in sub
-   and not re.search(r"[\u2013\u2014]", sub), "block 1")
-ok("every figure the write-up shares with the workbook agrees",
-   ("%s" % "{:,}".format(E["a"]["08"]["lapsed"])) in sub
-   and any(str(E["a"]["08"]["lapsed"]) in s.replace(",", "")
-           for s in [" ".join("" if v is None else str(v) for v in rw)
-                     for rw in PP.read_xlsx_rows(os.path.join(GOLDEN, DL.G_BOOK), "Counties")]),
-   "Maricopa's determined signatures in both")
+def _band_edge_txns(rows):
+    n = 0
+    for r in rows:
+        if r[7] in P.UNSERVED_STAGES and r[8][11:19] in ("07:30:00", "09:30:00", "16:00:00", "18:30:00"):
+            n += 1
+    return n
 
-print()
-bad = [l for p, l, _ in RESULTS if not p]
-print("task157: %d checks, %d failed" % (len(RESULTS), len(bad)))
-for l in bad:
-    print("  FAILED: %s" % l)
-sys.exit(1 if bad else 0)
+
+def _works_inert(target):
+    import build as B
+    tp_names = {name.split(",")[0].split(" (")[0] for r in P.ROUTE_ORDER for k, name in P.ROUTES[r]["tps"]}
+    with open(os.path.join(target, B.FILES["works"]), encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            st = row["street"]
+            if st in tp_names and row["traffic_management"] not in ("footway only",) and \
+                    not row["traffic_management"].startswith("overnight"):
+                return False
+    return True

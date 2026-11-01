@@ -1,177 +1,179 @@
 {
-  "task": "task157",
-  "architecture": "v3",
-  "drawn": "2026-11-01",
-  "slot_note": "architecture 3 re-root after architecture 2 (petition sample projection) was returned by the portal with the call landed; one architecture per world, so a new client domain, world, dataset and shell",
-  "domain": "urban-regional-science",
-  "subdomain": "forecasting",
-  "client_domain": "urban-regional-science",
-  "niche": "a combined authority's bus network performance team forecasting each franchised route's departure punctuality during an emergency bridge closure, to name in its relief notice the routes the closure takes below the performance regime's floor, when drivers who finish a journey on the diverted route take over other routes' departures at the city-centre interchange",
-  "objective": "forecasting",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "population",
-    "time"
+ "task": "task157",
+ "architecture": "v3",
+ "drawn": "2026-11-01",
+ "slot_note": "architecture 3 re-root after architecture 2 (petition sample projection) was returned by the portal with the call landed; one architecture per world, so a new client domain, world, dataset and shell",
+ "domain": "urban-regional-science",
+ "subdomain": "forecasting",
+ "client_domain": "urban-regional-science",
+ "niche": "a combined authority's bus network performance team forecasting each franchised route's departure punctuality during an emergency bridge closure, to name in its relief notice the routes the closure takes below the performance regime's floor, when drivers who finish a journey on the diverted route take over other routes' departures at the city-centre interchange",
+ "objective": "forecasting",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "routes 27, 41 and 58",
+ "answer_source": "generator/figures.json call.routes",
+ "gap": [
+  "population",
+  "time"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G7",
+  "G4"
+ ],
+ "gate_g": "forecasting",
+ "calibration_form": "prior_period_close_out",
+ "stump_strategy": "causal_design",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who converts the AVL feed to local time, matches every departure to its registered timing point, applies the performance regime's on-time window and adds the traffic management plan's diversion delay to route 41's later timing points and its corridor delay to the Ring Road routes forecasts every other route at its own autumn 2026 punctuality and files route 41 alone below the 80 per cent floor.",
+ "domain_test": "The deciding quantity is each route's share of departures within the on-time window at its timing points during the closure, estimated the way a bus network forecasts disruption from AVL departure records, where late running reaches a route both from its own path and through the reliefs in the depot's duty schedule; swap the nouns for a hospital's clinic lists and the AVL timing points, the registered timetable, the diversion's running time and the duty's relief points have nothing to stand on.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:relief-point-lateness-carried-through-crew-duties",
+ "layer1": [
+  "AVL timing-point events stamped in UTC across the October clock change against a timetable in local time",
+  "AVL vehicle references as registration plates against the operator's fleet numbers",
+  "timetable journeys in an XML export keyed by the operator's journey codes, duties keyed by route and scheduled time",
+  "the duty schedule's relief points in the operator's stop codes, the AVL in national stop codes",
+  "duplicate and out-of-order AVL pings, and journeys missing from the feed on a GPS outage day",
+  "cancelled journeys in a separate lost mileage log",
+  "a bank holiday inside the closure running to the Sunday timetable"
+ ],
+ "stakeholder_role": "the combined authority's head of bus network performance, who issues the relief notice to the franchise operator before the closure starts",
+ "role_family": "operations_director",
+ "scoring_unit": "per active unit per period",
+ "spine": {
+  "file": "avl_timing_point_events.csv",
+  "rows": 473216,
+  "entity": "one AVL departure or arrival event at a registered timing point",
+  "grain": "journey x timing point x operating day",
+  "source": "synthetic (constructed in the layout of a bus open data AVL feed)"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "incident_or_complaint",
+ "org_family": "local_government",
+ "world": {
+  "geography": "England (an invented city region, Grainford)",
+  "currency": "GBP",
+  "org_type": "combined authority running a franchised bus network",
+  "invented_names": [
+   "Grainford City Region Combined Authority",
+   "Pellbridge Buses",
+   "Thornsby Bridge",
+   "Merchant Row Interchange",
+   "Saltmeadow depot",
+   "Ravensholme",
+   "Skelbrough",
+   "Garrow",
+   "Westerlow",
+   "Ulverby",
+   "Hesselcote",
+   "Gatesmoor",
+   "Harlbeck",
+   "Hollinbrigg",
+   "Moorcroft",
+   "Oxenstall"
   ],
-  "pattern": [
+  "people": [
+   "Molly Hughes",
+   "Shaun Brown",
+   "Damien Ward",
+   "Elliott Sharp",
+   "Yvonne Warner"
+  ]
+ },
+ "deliverables": [
+  "closure_punctuality_forecast_2027.xlsx",
+  "closure_punctuality_by_route.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "what",
+ "driver": "A unit's forward on-time share depends on another unit through the people who finish a task on the other unit and start their next task on this one at a shared point, so a delay imposed on the other unit is carried into this unit's starts by those handovers wherever the gap between the two tasks is shorter than the delay; neither unit's own record shows the link, and only the work schedule matched to the event record by time and place reveals it.",
+ "driver_concrete": "During the 2027 bridge closure route 41's inbound journeys reach the interchange up to nine minutes later than in autumn 2026, and the drivers who finish a route 41 journey there and take over a route 27 or route 58 departure a few minutes later carry that lateness into those departures, so routes 27 and 58 fall below the 80 per cent floor though nothing on their own paths changes, while route 33's relieving drivers have a gap long enough to absorb it.",
+ "stump": "A competent solver forecasts each route's closure punctuality from its own autumn 2026 AVL record, adds the traffic management plan's diversion delay to route 41's timing points after the bridge and the corridor delay to the Ring Road routes, and names route 41 alone for relief; the step that lands them there is treating every other route's departures as independent of route 41, when the duty schedule puts route 41's inbound drivers onto route 27 and route 58 departures at the interchange within a few minutes, so those departures inherit the diversion.",
+ "mechanism_source": "design_note",
+ "differentiation": {},
+ "lineage": [
+  {
+   "architecture": "v1",
+   "domain": "product-analytics",
+   "subdomain": "retention-cohort-lifetime-value-modeling",
+   "objective": "forecasting",
+   "gap": [
+    "time",
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G7",
-    "G4"
-  ],
-  "gate_g": "forecasting",
-  "calibration_form": "prior_period_close_out",
-  "stump_strategy": "causal_design",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who converts the AVL feed to local time, matches every departure to its registered timing point, applies the performance regime's on-time window and adds the traffic management plan's diversion delay to route 41's later timing points and its corridor delay to the Ring Road routes forecasts every other route at its own autumn 2026 punctuality and files route 41 alone below the 80 per cent floor.",
-  "domain_test": "The deciding quantity is each route's share of departures within the on-time window at its timing points during the closure, estimated the way a bus network forecasts disruption from AVL departure records, where late running reaches a route both from its own path and through the reliefs in the depot's duty schedule; swap the nouns for a hospital's clinic lists and the AVL timing points, the registered timetable, the diversion's running time and the duty's relief points have nothing to stand on.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:relief-point-lateness-carried-through-crew-duties",
-  "layer1": [
-    "AVL timing-point events stamped in UTC across the October clock change against a timetable in local time",
-    "AVL vehicle references as registration plates against the operator's fleet numbers",
-    "timetable journeys in an XML export keyed by the operator's journey codes, duties keyed by route and scheduled time",
-    "the duty schedule's relief points in the operator's stop codes, the AVL in national stop codes",
-    "duplicate and out-of-order AVL pings, and journeys missing from the feed on a GPS outage day",
-    "cancelled journeys in a separate lost mileage log",
-    "a bank holiday inside the closure running to the Sunday timetable"
-  ],
-  "stakeholder_role": "the combined authority's head of bus network performance, who issues the relief notice to the franchise operator before the closure starts",
-  "role_family": "operations_director",
-  "scoring_unit": "per active unit per period",
-  "spine": {
-    "file": "avl_timing_point_events.csv",
-    "rows": 0,
-    "entity": "one AVL departure or arrival event at a registered timing point",
-    "grain": "journey x timing point x operating day",
-    "source": "synthetic (constructed in the layout of a bus open data AVL feed)"
+   ],
+   "generators": [
+    "G12",
+    "G13",
+    "G16"
+   ],
+   "gate_g": "forecasting",
+   "stump_strategy": "maturity_censoring",
+   "decision_type": "quantity_figure",
+   "answer_unit": "currency",
+   "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
+   "fate": "spent 2026-10-27 after two portal returns (both Gates C and D, competing_defensible_answer and underspecified_objective): the graded bin was finer than the estimator, the decisive step worth 0.58 of a USD 50,000 bin and the smallest rung gap, against 0.90 bins for the un-returned remainder's subgroup choice and 0.31 for the golden rate's own 95 per cent interval; three repairs were built and measured and none closed it"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "local_government",
-  "world": {
-    "geography": "England (an invented city region, Grainford)",
-    "currency": "GBP",
-    "org_type": "combined authority running a franchised bus network",
-    "invented_names": [
-      "Grainford City Region Combined Authority",
-      "Pellbridge Buses",
-      "Thornsby Bridge",
-      "Merchant Row Interchange",
-      "Saltmeadow depot",
-      "Ravensholme",
-      "Skelby",
-      "Garrowby",
-      "Wetherden",
-      "Ulverby",
-      "Upperthorpe",
-      "Gatesby",
-      "Harcombe",
-      "Hollinsend",
-      "Moorcroft",
-      "Oxcliffe"
-    ],
-    "people": [
-      "Molly Hughes",
-      "Shaun Brown",
-      "Damien Ward"
-    ]
-  },
-  "deliverables": [
-    "closure_punctuality_forecast_2027.xlsx",
-    "closure_punctuality_by_route.svg"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A unit's forward on-time share depends on another unit through the people who finish a task on the other unit and start their next task on this one at a shared point, so a delay imposed on the other unit is carried into this unit's starts by those handovers wherever the gap between the two tasks is shorter than the delay; neither unit's own record shows the link, and only the work schedule matched to the event record by time and place reveals it.",
-  "driver_concrete": "During the 2027 bridge closure route 41's inbound journeys reach the interchange up to nine minutes later than in autumn 2026, and the drivers who finish a route 41 journey there and take over a route 27 or route 58 departure a few minutes later carry that lateness into those departures, so routes 27 and 58 fall below the 80 per cent floor though nothing on their own paths changes, while route 33's relieving drivers have a gap long enough to absorb it.",
-  "stump": "A competent solver forecasts each route's closure punctuality from its own autumn 2026 AVL record, adds the traffic management plan's diversion delay to route 41's timing points after the bridge and the corridor delay to the Ring Road routes, and names route 41 alone for relief; the step that lands them there is treating every other route's departures as independent of route 41, when the duty schedule puts route 41's inbound drivers onto route 27 and route 58 departures at the interchange within a few minutes, so those departures inherit the diversion.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [
-    {
-      "architecture": "v1",
-      "domain": "product-analytics",
-      "subdomain": "retention-cohort-lifetime-value-modeling",
-      "objective": "forecasting",
-      "gap": [
-        "time",
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G13",
-        "G16"
-      ],
-      "gate_g": "forecasting",
-      "stump_strategy": "maturity_censoring",
-      "decision_type": "quantity_figure",
-      "answer_unit": "currency",
-      "driver": "Members of a group that stopped together come back in a wave that begins before the forecast date and peaks inside the forward window; how many of the group come back is the group's own, while when each comes back follows a calendar every earlier wave kept, so the members still to come are the members already back times the ratio earlier waves showed between the window and the same date, and a rate on the members still away, the group's size at an earlier group's rate, a rate by when each stopped, a propensity fitted on last year's returners, or one ratio over every member who came back after a gap each misstates it.",
-      "fate": "spent 2026-10-27 after two portal returns (both Gates C and D, competing_defensible_answer and underspecified_objective): the graded bin was finer than the estimator, the decisive step worth 0.58 of a USD 50,000 bin and the smallest rung gap, against 0.90 bins for the un-returned remainder's subgroup choice and 0.31 for the golden rate's own 95 per cent interval; three repairs were built and measured and none closed it"
-    },
-    {
-      "domain": "political-science-public-policy",
-      "subdomain": "election-polling-forecasting",
-      "client_domain": "political-science-public-policy",
-      "niche": "a state elections division projecting, from the statutory five per cent random sample of the signature lines on a filed initiative petition, how many of its 540,000 lines a full count would find valid, when the sampled lines are the only part of the petition that is ever keyed",
-      "objective": "forecasting",
-      "shape": "03",
-      "decision_type": "quantity_figure",
-      "answer_unit": "count",
-      "gap": [
-        "population",
-        "rule"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G10",
-        "G2"
-      ],
-      "gate_g": "forecasting",
-      "calibration_form": "prior_period_close_out",
-      "stump_strategy": "other",
-      "context_artifact": "register",
-      "layer2_family": "field_method",
-      "layer2_pattern": "own:pairwise-defect-inclusion-is-the-square-of-the-sampling-fraction",
-      "forum": "regulator_or_inspector",
-      "forcing_event": "vote_or_meeting",
-      "org_family": "government_agency",
-      "role_family": "compliance_or_audit",
-      "driver": "One class of defect in a sampled population is a property of a pair of records rather than of a record, so the sample reveals it only when both members of the pair fall in the sample and its inclusion probability is the square of the sampling fraction while every other class carries the fraction itself; expanding every class alike at the design's own fraction, which is what the record's codes invite, understates that class by the reciprocal of the fraction and files a total far above the one a full enumeration would return.",
-      "driver_concrete": "A duplicate signature is struck only because a second signature by the same signer exists, so a three per cent sample of a 1,043,000 signature petition finds a duplicate pair with probability nine ten-thousandths rather than three hundredths; expanding the 106 duplicate strikes the sample found at the sampling fraction gives 3,540 duplicates and 766,110 valid signatures, which certifies the measure, while expanding them at the square of the fraction gives 118,000 duplicates and 651,650 valid signatures, inside the band that orders a full count.",
-      "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside every single-signature ground, when a duplicate is a relation between two signatures that the sample sees only when it draws both, so the duplicate burden is the found strikes over the square of the fraction, 118,000 rather than 3,540, and the projection is about 651,650, which orders a full count.",
-      "question_form": "how-many",
-      "deliverables": [
-        "signature_projection_2028.xlsx",
-        "petition_disposition_2028.png"
-      ],
-      "architecture": "v2",
-      "fate": "spent 2026-11-01: the portal returned the shipped version (delivered 10-27) with the call landed and a determinism finding (author batch sheet, Batch 5); the decisive step, the pair inclusion probability, is the field's own design-based expansion for duplicates (the random-sample duplicate formula), so a domain reader takes it on sight",
-      "shell": null
-    }
-  ],
-  "lineage_shells": [],
-  "notes": "stump_strategy causal_design: the decisive move is interference between routes through shared crews (a spillover carried by the duty schedule), not a composition or a selection. Decisive generator G7 (operating window): a departure inherits the inbound route's lateness only where the relief gap in the duty is shorter than the delay; G4 (attribution at transition) second, because the lateness belongs to the inbound route at the relief point. Calibration prior_period_close_out is the authority's close-out of the 2025 Marsh Lane diversion of route 19, used for the realised diversion delay against the traffic management estimate; it says nothing about other routes, so it blesses no method on the call. Question form which (a designation set) is over the corpus quota and repeats task273; the rest of the shell is drawn away from it (no Put opener, an xlsx with an svg chart rather than task273's docx and xlsx, no Give rounding opener).",
-  "registered": "2026-11-01T17:25:50Z",
-  "shell": {
-    "question form": "how-many",
-    "second-sentence opener": "work",
-    "rounding opener": "give",
-    "deliverable set": "csv+csv"
+  {
+   "domain": "political-science-public-policy",
+   "subdomain": "election-polling-forecasting",
+   "client_domain": "political-science-public-policy",
+   "niche": "a state elections division projecting, from the statutory five per cent random sample of the signature lines on a filed initiative petition, how many of its 540,000 lines a full count would find valid, when the sampled lines are the only part of the petition that is ever keyed",
+   "objective": "forecasting",
+   "shape": "03",
+   "decision_type": "quantity_figure",
+   "answer_unit": "count",
+   "gap": [
+    "population",
+    "rule"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G10",
+    "G2"
+   ],
+   "gate_g": "forecasting",
+   "calibration_form": "prior_period_close_out",
+   "stump_strategy": "other",
+   "context_artifact": "register",
+   "layer2_family": "field_method",
+   "layer2_pattern": "own:pairwise-defect-inclusion-is-the-square-of-the-sampling-fraction",
+   "forum": "regulator_or_inspector",
+   "forcing_event": "vote_or_meeting",
+   "org_family": "government_agency",
+   "role_family": "compliance_or_audit",
+   "driver": "One class of defect in a sampled population is a property of a pair of records rather than of a record, so the sample reveals it only when both members of the pair fall in the sample and its inclusion probability is the square of the sampling fraction while every other class carries the fraction itself; expanding every class alike at the design's own fraction, which is what the record's codes invite, understates that class by the reciprocal of the fraction and files a total far above the one a full enumeration would return.",
+   "driver_concrete": "A duplicate signature is struck only because a second signature by the same signer exists, so a three per cent sample of a 1,043,000 signature petition finds a duplicate pair with probability nine ten-thousandths rather than three hundredths; expanding the 106 duplicate strikes the sample found at the sampling fraction gives 3,540 duplicates and 766,110 valid signatures, which certifies the measure, while expanding them at the square of the fraction gives 118,000 duplicates and 651,650 valid signatures, inside the band that orders a full count.",
+   "stump": "A competent solver reads every disposition code, places every sampled signature through the two voter file vintages, expands the sample at the statutory three per cent and files about 766,110 valid signatures and an outright certification; the step that lands them there is expanding the duplicate dispositions at the sampling fraction alongside every single-signature ground, when a duplicate is a relation between two signatures that the sample sees only when it draws both, so the duplicate burden is the found strikes over the square of the fraction, 118,000 rather than 3,540, and the projection is about 651,650, which orders a full count.",
+   "question_form": "how-many",
+   "deliverables": [
+    "signature_projection_2028.xlsx",
+    "petition_disposition_2028.png"
+   ],
+   "architecture": "v2",
+   "fate": "spent 2026-11-01: the portal returned the shipped version (delivered 10-27) with the call landed and a determinism finding (author batch sheet, Batch 5); the decisive step, the pair inclusion probability, is the field's own design-based expansion for duplicates (the random-sample duplicate formula), so a domain reader takes it on sight",
+   "shell": null
   }
+ ],
+ "lineage_shells": [],
+ "notes": "stump_strategy causal_design: the decisive move is interference between routes through shared crews (a spillover carried by the duty schedule), not a composition or a selection. Decisive generator G7 (operating window): a departure inherits the inbound route's lateness only where the relief gap in the duty is shorter than the delay; G4 (attribution at transition) second, because the lateness belongs to the inbound route at the relief point. Calibration prior_period_close_out is the authority's close-out of the 2025 Marsh Lane diversion of route 19, used for the realised diversion delay against the traffic management estimate; it says nothing about other routes, so it blesses no method on the call. Question form which (a designation set) is over the corpus quota and repeats task273; the rest of the shell is drawn away from it (no Put opener, an xlsx with an svg chart rather than task273's docx and xlsx, no Give rounding opener).",
+ "registered": "2026-11-01T17:25:50Z",
+ "shell": {
+  "question form": "what",
+  "second-sentence opener": "build",
+  "rounding opener": "round",
+  "deliverable set": "svg+xlsx"
+ }
 }

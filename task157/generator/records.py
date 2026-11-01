@@ -1,480 +1,751 @@
-"""task157 (architecture 2) shipped records: the fifteen recorders' consolidated returns, the correction
-notices, the two voter file snapshots, the office's sheet index and receipt log, the firms' own delivery
-manifests, the March list-maintenance run, and the two files the solution never reads.
-
-Every file carries the conventions the system that writes it carries: the recorders' returns keep each
-county's own date format and Navajo County's own 2019 disposition codes, the snapshots carry UTC status
-stamps against local signing dates, the firms count the sheets they handed over rather than the sheets the
-office receipted, and sheet numbers are each firm's own so a sheet is identified by its circulator's
-registration number and its number together."""
+"""task157 architecture 3: the operating records cut from the simulated autumn, in the form each producing system
+writes them. The AVL archive (national stop codes, UTC, registrations, duplicate and dropped messages, a GPS outage),
+the timetable export (TransXChange), the depot's duty schedule (operator stop codes), the control room's log, the
+depot's daily returns, the route 41 ticket machine extract, the fleet register, the authority's published monthly
+punctuality and the lookups."""
 from __future__ import annotations
 
-import datetime as dt
-import os
-import sys
+import math
+from collections import defaultdict
+from datetime import date, datetime, timedelta
 
 import numpy as np
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K      # noqa: E402
-import world as WD      # noqa: E402
+import network as N
+import params as P
+import simulate as SIM
 
-F_RETURNS = "county_verification_returns_2028.csv"
-F_CORR = "county_return_corrections_2028.csv"
-F_SNAP_EARLY = "avid_snapshot_extract_20271220.csv"
-F_SNAP_LATE = "avid_snapshot_extract_20280710.csv"
-F_SHEETS = "petition_sheet_index_2028.csv"
-F_RECEIPT = "petition_receipt_log_2028.csv"
-F_MANIFEST = "circulator_sheet_submissions_2028.csv"
-F_MAINT = "list_maintenance_run_20280314.csv"
-F_CIRC = "circulator_registration_extract_i18-2028.csv"
-F_CLOSEOUT = "measure_i2024-04_full_count_closeout.xlsx"
-F_OTHER = "measure_i2028-04_receipt_log.csv"            # distractor
-F_REGSTATS = "voter_registration_by_county_20280701.csv"  # distractor
-
-RETURNS_COLS = ["county_code", "return_id", "return_received_utc", "circulator_reg_no", "sheet_no",
-                "line_no", "signature_date", "voter_reg_id", "disposition_code", "determined_by",
-                "determination_date"]
-CORR_COLS = ["correction_id", "county_code", "circulator_reg_no", "sheet_no", "line_no",
-             "prior_disposition_code", "corrected_disposition_code", "corrected_on", "query_code"]
-SNAP_COLS = ["snapshot_date", "voter_reg_id", "county_code", "registration_status", "registration_date",
-             "status_changed_utc", "cancellation_date", "cancellation_reason", "precinct_code"]
-SHEET_COLS = ["sheet_serial", "bundle_id", "receipt_date", "circulator_reg_no", "sheet_no",
-              "signature_lines", "county_circulated"]
-RECEIPT_COLS = ["bundle_id", "received_date", "received_utc", "sheets_presented", "sheets_accepted",
-                "sheets_rejected", "signature_lines_accepted", "rejection_code", "receipted_by"]
-CIRC_COLS = ["circulator_reg_no", "circulator_type", "registering_firm", "firm_registration_no",
-             "county_of_residence", "registered_on", "withdrawn_on", "registration_status"]
-MANIFEST_COLS = ["manifest_no", "firm_name", "firm_registration_no", "delivered_date", "sheets_submitted",
-                 "signatures_claimed", "office_bundle_ref"]
-MAINT_COLS = ["run_id", "run_date", "voter_reg_id", "county_code", "action_code", "reason_code",
-              "notice_mailed", "posted_utc"]
-OTHER_COLS = ["bundle_id", "received_date", "firm_code", "sheets_presented", "sheets_accepted",
-              "signature_lines_accepted", "receipted_by"]
-REGSTATS_COLS = ["report_date", "county_code", "county_name", "party_code", "active_registrations",
-                 "inactive_registrations"]
-
-CANCEL_REASON = {0: "", 1: "LM-NOTICE", 2: "MOVED-OUT", 3: "DECEASED", 4: "VOTER-REQUEST"}
-QUERY_CODES = ["ADDR-REREAD", "SIG-REREAD", "CODE-ENTRY", "DOB-REREAD"]
-WITHDRAWN_REASON = "DUP-FILING"
+OPER_CODE = {"MRI-B": "MRB", "MRI-C": "MRC", "MRI-D": "MRD", "MRI-F": "MRF", "MRI-K": "MRK", "GBS-3": "GB3",
+             "GBS-5": "GB5", "GBS-7": "GB7", "GBS-9": "GB9", "RBS": "RVB", "DEPOT": "SMD"}
+DEAD_RUN = {"41": 7, "6": 16, "12": 18, "14": 19, "19": 21, "22": 24, "27": 23, "33": 25, "58": 24}
 
 
-def _bus_days(a, b):
-    out, d = [], a
-    while d <= b:
-        if d.weekday() < 5:
-            out.append(d)
-        d += dt.timedelta(days=1)
+def hhmm(m):
+    m = int(round(m)) % (24 * 60)
+    return "%02d:%02d" % (m // 60, m % 60)
+
+
+def hhmmss(sec):
+    sec = int(sec)
+    return "%02d:%02d:%02d" % (sec // 3600, (sec % 3600) // 60, sec % 60)
+
+
+def local_to_utc(d, minutes):
+    t = datetime(d.year, d.month, d.day) + timedelta(minutes=minutes)
+    if P.bst(d):
+        t -= timedelta(hours=1)
+    return t
+
+
+def atco(route, tp, direction):
+    return P.TP_ATCO[(route, tp, direction)]
+
+
+# ------------------------------------------------------------------ the AVL archive
+def avl(recs, seed=P.SEED, protect=()):
+    """One row per AVL departure or arrival event. Returns (header, rows, parsed) where parsed is the record list
+    a solver rebuilds from the file (integer seconds, dropped events None, duplicates collapsed)."""
+    rng = np.random.RandomState(seed + 21)
+    fl = {v["reg"]: v for v in SIM.FLEET}
+    # the vehicle days on which the AVL unit stopped reporting part way through
+    vdays = sorted({(x["date"], x["vehicle"]) for x in recs if (x["date"], x["board"]) not in protect})
+    faulty = {}
+    for k in rng.choice(len(vdays), size=26, replace=False):
+        faulty[vdays[k]] = rng.uniform(9 * 60, 19 * 60)
+    outage = (date(2026, 11, 17), 10 * 60 + 40, 12 * 60 + 55)
+    rows = []
+    parsed = []
+    for x in sorted(recs, key=lambda x: (x["date"], x["vehicle"], x["sched"][0])):
+        d = x["date"]
+        reg = x["vehicle"].replace(" ", "")
+        act_sec = []
+        for i, a in enumerate(x["actual"]):
+            if a is None:
+                act_sec.append(None)
+                continue
+            drop = rng.random_sample() < 0.011
+            f = faulty.get((d, x["vehicle"]))
+            if f is not None and a >= f:
+                drop = True
+            if d == outage[0] and outage[1] <= a < outage[2]:
+                drop = True
+            if drop:
+                act_sec.append(None)
+                continue
+            act_sec.append(int(round(a * 60)))
+        n = len(x["tps"])
+        last_idx = n - 1
+        if x.get("lost") is not None and x["lost"][0] == "part":
+            last_idx = x["lost"][2] - 1
+        for i in range(n):
+            if act_sec[i] is None:
+                continue
+            ev = "ARR" if i == last_idx else "DEP"
+            sched_sec = int(round(x["sched"][i] * 60))
+            t = local_to_utc(d, act_sec[i] / 60.0)
+            row = (d.isoformat(), x["route"], x["code"], "outbound" if x["dir"] == "O" else "inbound", reg,
+                   atco(x["route"], x["tps"][i], x["dir"]), i + 1, ev, hhmmss(sched_sec), t.strftime("%Y-%m-%dT%H:%M:%SZ"))
+            rows.append(row)
+            if rng.random_sample() < 0.0026:
+                rows.append(row)          # the feed re-sent the message
+        y = dict(x)
+        y["actual"] = [None if s is None else s / 60.0 for s in act_sec]
+        y["sched"] = [int(round(s * 60)) / 60.0 for s in x["sched"]]
+        y["last_idx"] = last_idx
+        parsed.append(y)
+    # the archive is written in the order the messages were received: by vehicle, a few out of order
+    for k in range(len(rows) - 1):
+        if rng.random_sample() < 0.004:
+            rows[k], rows[k + 1] = rows[k + 1], rows[k]
+    header = ("operating_day", "line_ref", "journey_ref", "direction_ref", "vehicle_ref", "stop_ref", "stop_seq",
+              "event_type", "aimed_time", "recorded_at_utc")
+    return header, rows, parsed
+
+
+# ------------------------------------------------------------------ the TransXChange timetable export
+def txc(S):
+    """A TransXChange 2.4 document for the Lot 2 services: stops, route links with distances, journey patterns
+    (one per running-time profile), operating profiles and every vehicle journey with its block number."""
+    from xml.sax.saxutils import escape
+    L = []
+    w = L.append
+    w('<?xml version="1.0" encoding="UTF-8"?>')
+    w('<TransXChange xmlns="http://www.transxchange.org.uk/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+      'CreationDateTime="2026-08-14T10:22:31" ModificationDateTime="2026-08-21T15:07:44" Modification="revise" '
+      'RevisionNumber="4" FileName="GCR_L2_WINTER26_r4.xml" SchemaVersion="2.4" xml:lang="en">')
+    w('  <ServicedOrganisations>')
+    w('    <ServicedOrganisation>')
+    w('      <OrganisationCode>GCC_SCH</OrganisationCode>')
+    w('      <Name>Grainford City Council maintained schools</Name>')
+    w('      <WorkingDays>')
+    for a, b in P.TERMS:
+        w('        <DateRange><StartDate>%s</StartDate><EndDate>%s</EndDate></DateRange>' % (a.isoformat(), b.isoformat()))
+    w('      </WorkingDays>')
+    w('    </ServicedOrganisation>')
+    w('  </ServicedOrganisations>')
+    w('  <StopPoints>')
+    seen = set()
+    for r in P.ROUTE_ORDER:
+        for d in ("O", "I"):
+            for key, name in P.ROUTES[r]["tps"]:
+                code = atco(r, key, d)
+                if code in seen:
+                    continue
+                seen.add(code)
+                w('    <AnnotatedStopPointRef><StopPointRef>%s</StopPointRef><CommonName>%s</CommonName>'
+                  '<LocalityName>Grainford</LocalityName></AnnotatedStopPointRef>' % (code, escape(name)))
+    w('  </StopPoints>')
+    w('  <RouteSections>')
+    for r in P.ROUTE_ORDER:
+        R = P.ROUTES[r]
+        keys = [k for k, _ in R["tps"]]
+        for d in ("O", "I"):
+            seq = keys if d == "O" else keys[::-1]
+            kms = R["km"] if d == "O" else R["km_in"][::-1]
+            w('    <RouteSection id="RS_%s_%s">' % (r, d))
+            for i in range(len(seq) - 1):
+                w('      <RouteLink id="RL_%s_%s_%d"><From><StopPointRef>%s</StopPointRef></From><To><StopPointRef>%s'
+                  '</StopPointRef></To><Distance>%d</Distance></RouteLink>' % (
+                      r, d, i + 1, atco(r, seq[i], d), atco(r, seq[i + 1], d), int(round(kms[i] * 1000))))
+            w('    </RouteSection>')
+    w('  </RouteSections>')
+    w('  <Routes>')
+    for r in P.ROUTE_ORDER:
+        for d in ("O", "I"):
+            w('    <Route id="R_%s_%s"><PrivateCode>%s %s</PrivateCode><Description>%s</Description>'
+              '<RouteSectionRef>RS_%s_%s</RouteSectionRef></Route>' % (
+                  r, d, r, "out" if d == "O" else "in", escape(P.ROUTES[r]["name"]), r, d))
+    w('  </Routes>')
+    # journey patterns: one per (route, direction, running-time profile)
+    jp = {}
+    for dt in ("MF", "SA", "SU"):
+        for r in P.ROUTE_ORDER:
+            for j in S[dt]["journeys"][r]:
+                prof = tuple(int(round(b - a)) for a, b in zip(j["times"], j["times"][1:]))
+                jp.setdefault((r, j["dir"], prof), "JP_%s_%s_%d" % (r, j["dir"], 1 + sum(1 for k in jp if k[:2] == (r, j["dir"]))))
+    w('  <JourneyPatternSections>')
+    for (r, d, prof), name in sorted(jp.items(), key=lambda kv: kv[1]):
+        R = P.ROUTES[r]
+        keys = [k for k, _ in R["tps"]]
+        seq = keys if d == "O" else keys[::-1]
+        w('    <JourneyPatternSection id="JPS%s">' % name[2:])
+        for i in range(len(seq) - 1):
+            w('      <JourneyPatternTimingLink id="JPTL%s_%d"><From SequenceNumber="%d"><StopPointRef>%s</StopPointRef>'
+              '<TimingStatus>principalTimingPoint</TimingStatus></From><To SequenceNumber="%d"><StopPointRef>%s'
+              '</StopPointRef><TimingStatus>principalTimingPoint</TimingStatus></To><RouteLinkRef>RL_%s_%s_%d'
+              '</RouteLinkRef><RunTime>PT%dM</RunTime></JourneyPatternTimingLink>' % (
+                  name[2:], i + 1, i + 1, atco(r, seq[i], d), i + 2, atco(r, seq[i + 1], d), r, d, i + 1, prof[i]))
+        w('    </JourneyPatternSection>')
+    w('  </JourneyPatternSections>')
+    w('  <Operators>')
+    w('    <Operator id="OP1"><NationalOperatorCode>PBGF</NationalOperatorCode><OperatorCode>PB</OperatorCode>'
+      '<OperatorShortName>Pellbridge Buses</OperatorShortName><LicenceNumber>PB2041377</LicenceNumber>'
+      '<Garages><Garage><GarageCode>SMD</GarageCode><GarageName>Saltmeadow</GarageName></Garage></Garages></Operator>')
+    w('  </Operators>')
+    w('  <Services>')
+    for r in P.ROUTE_ORDER:
+        R = P.ROUTES[r]
+        w('    <Service>')
+        w('      <ServiceCode>GCR_L2_%s</ServiceCode>' % r)
+        w('      <Lines><Line id="L%s"><LineName>%s</LineName></Line></Lines>' % (r, r))
+        w('      <OperatingPeriod><StartDate>%s</StartDate><EndDate>%s</EndDate></OperatingPeriod>' % (
+            P.TT_START.isoformat(), P.TT_END.isoformat()))
+        w('      <RegisteredOperatorRef>OP1</RegisteredOperatorRef>')
+        a, b = R["name"].split(" - ")[0], R["name"].split(" - ")[-1]
+        w('      <StandardService><Origin>%s</Origin><Destination>%s</Destination>' % (escape(a), escape(b)))
+        for (rr, d, prof), name in sorted(jp.items(), key=lambda kv: kv[1]):
+            if rr != r:
+                continue
+            w('        <JourneyPattern id="%s"><Direction>%s</Direction><RouteRef>R_%s_%s</RouteRef>'
+              '<JourneyPatternSectionRefs>JPS%s</JourneyPatternSectionRefs></JourneyPattern>' % (
+                  name, "outbound" if d == "O" else "inbound", r, d, name[2:]))
+        w('      </StandardService>')
+        w('    </Service>')
+    w('  </Services>')
+    w('  <VehicleJourneys>')
+    days_xml = {"MF": "<MondayToFriday/>", "SA": "<Saturday/>", "SU": "<Sunday/>"}
+    for dt in ("MF", "SA", "SU"):
+        for b in S[dt]["boards"]:
+            for j in b["journeys"]:
+                prof = tuple(int(round(y - x)) for x, y in zip(j["times"], j["times"][1:]))
+                name = jp[(j["route"], j["dir"], prof)]
+                if j["school"]:
+                    op = ('<OperatingProfile><RegularDayType><DaysOfWeek><MondayToFriday/></DaysOfWeek></RegularDayType>'
+                          '<ServicedOrganisationDayType><DaysOfOperation><WorkingDays><ServicedOrganisationRef>GCC_SCH'
+                          '</ServicedOrganisationRef></WorkingDays></DaysOfOperation></ServicedOrganisationDayType>'
+                          '<BankHolidayOperation><DaysOfNonOperation><AllBankHolidays/></DaysOfNonOperation>'
+                          '</BankHolidayOperation></OperatingProfile>')
+                elif dt == "SU":
+                    op = ('<OperatingProfile><RegularDayType><DaysOfWeek><Sunday/></DaysOfWeek></RegularDayType>'
+                          '<BankHolidayOperation><DaysOfOperation><AllBankHolidays/></DaysOfOperation>'
+                          '</BankHolidayOperation></OperatingProfile>')
+                else:
+                    op = ('<OperatingProfile><RegularDayType><DaysOfWeek>%s</DaysOfWeek></RegularDayType>'
+                          '<BankHolidayOperation><DaysOfNonOperation><AllBankHolidays/></DaysOfNonOperation>'
+                          '</BankHolidayOperation></OperatingProfile>' % days_xml[dt])
+                w('    <VehicleJourney><PrivateCode>%s</PrivateCode><Operational><Block><BlockNumber>%s</BlockNumber>'
+                  '</Block></Operational>%s<VehicleJourneyCode>%s</VehicleJourneyCode><ServiceRef>GCR_L2_%s</ServiceRef>'
+                  '<LineRef>L%s</LineRef><JourneyPatternRef>%s</JourneyPatternRef><DepartureTime>%s:00</DepartureTime>'
+                  '</VehicleJourney>' % (j["code"], b["board"].replace("/", ""), op, j["code"], j["route"], j["route"],
+                                          name, hhmm(j["dep"])))
+    w('  </VehicleJourneys>')
+    w('</TransXChange>')
+    return "\n".join(L) + "\n"
+
+
+# ------------------------------------------------------------------ the duty schedule
+def duty_numbers(S):
+    """Duty numbers as the depot prints them, per day type, in order of sign-on."""
+    out = {}
+    base = {"MF": 201, "SA": 501, "SU": 701}
+    for dt in ("MF", "SA", "SU"):
+        s = S[dt]
+        order = sorted(range(len(s["duties"])), key=lambda i: s["pieces"][s["duties"][i][0]]["on"])
+        for n, i in enumerate(order):
+            out[(dt, i)] = base[dt] + n
     return out
 
 
-class Shaped:
-    pass
+def duty_rows(S):
+    nums = duty_numbers(S)
+    duties, pieces = [], []
+    names = {"MF": "Mon-Fri", "SA": "Sat", "SU": "Sun"}
+    for dt in ("MF", "SA", "SU"):
+        s = S[dt]
+        for i, duty in enumerate(s["duties"]):
+            ps = [s["pieces"][p] for p in duty]
+            num = nums[(dt, i)]
+            first, last = ps[0], ps[-1]
+            on = first["on"] - (DEAD_RUN[first["route"]] + 12 if first["first"] else (14 if first["on_at"] == "RBS" else 32))
+            off = last["off"] + (DEAD_RUN[last["route"]] + 6 if last["last"] else (10 if last["off_at"] == "RBS" else 28))
+            plat = sum(p["off"] - p["on"] for p in ps)
+            school = any(p.get("school") for p in ps)
+            days = names[dt] + (" (school days)" if school else "")
+            duties.append((num, days, hhmm(on), "SMD", hhmm(off), "SMD", _hm(off - on), _hm(plat), len(ps)))
+            for k, p in enumerate(ps, 1):
+                on_at = "SMD" if p["first"] else OPER_CODE.get(p["on_at"], p["on_at"])
+                off_at = "SMD" if p["last"] else OPER_CODE.get(p["off_at"], p["off_at"])
+                t_on = p["on"] - DEAD_RUN[p["route"]] if p["first"] else p["on"]
+                t_off = p["off"] + DEAD_RUN[p["route"]] if p["last"] else p["off"]
+                pieces.append((num, days, k, p["board"], p["route"], hhmm(t_on), on_at, hhmm(t_off), off_at))
+    return duties, pieces
 
 
-def receipt_numbers(w, count):
-    """The office numbers every receipt it issues, so this filing's bundles carry a stretch of that
-    register with the other filings' numbers missing from it."""
-    r = K.rng("receipts", seed=w.seed)
-    steps = r.integers(1, 5, size=count)
-    base = 40_861
-    out, at = [], base
-    for st in steps.tolist():
-        at += int(st)
-        out.append("B%05d" % at)
-    return out
+def _hm(m):
+    m = int(round(m))
+    return "%d:%02d" % (m // 60, m % 60)
 
 
-def receipt_staff(w, count):
-    """Who receipted each bundle. The counter is not a rota: two clerks take most of the filing and the
-    rest take what they are free for."""
-    r = K.rng("staff", seed=w.seed)
-    ids = ["ELEC-%02d" % k for k in (3, 7, 2, 11, 5, 9)]
-    wt = np.array([0.31, 0.24, 0.17, 0.12, 0.09, 0.07])
-    return [ids[i] for i in r.choice(len(ids), size=count, p=wt).tolist()]
+# ------------------------------------------------------------------ the control room log and the depot's returns
+REMARK_VD = ["air leak, bus to depot", "door fault, passengers transferred", "engine warning light", "kneeling fault",
+             "coolant leak", "brake defect reported by driver", "wheelchair ramp failed", "power steering fault",
+             "windscreen damage", "electrical fault, no ticket machine"]
+REMARK_SI = ["driver taken ill", "driver unwell, relieved", "driver taken ill at stand", "driver assaulted, police called"]
+REMARK_SS = ["no driver", "no driver available", "driver not booked on", "uncovered work"]
+REMARK_TR = ["running late, turned short to restore service", "late running, turned at", "heavy traffic, short turned",
+             "gap in service, turned short"]
+REMARK_PC = ["road closed by police", "police closure", "road closed, turned short", "emergency services on scene"]
 
 
-def shape(w):
-    """Everything the shipped files and the deliverables are cut from, at the grain each is written at."""
-    S = Shaped()
-    p = w.params
-    r = K.rng("shape", seed=w.seed)
-    samp = w.sample
-    nS = len(samp)
-
-    # ---------------------------------------------------------------- per sampled line
-    sheet = w.line_sheet[samp]
-    S.sheet = sheet
-    S.line_no = w.line_no[samp]
-    S.circ = np.array([w.sheet_circ[i] for i in sheet], dtype=object)
-    S.sheet_no = w.sheet_no[sheet]
-    S.firm = w.sheet_firm[sheet]
-    signer = w.line_signer[samp]
-    S.signer = signer
-    S.county = w.signer_county[signer]
-    S.vid = w.signer_vid[signer]
-    S.code = np.array([K.CODE_KEYS[c] for c in w.sample_code], dtype=object)
-    S.day = w.line_day[samp]
-    S.det_division = w.det_sos
-
-    # the date the line carries. A line struck as MD either carries no date or a date outside the
-    # circulation period, which is the ground the recorder struck it on.
-    md = S.code == "MD"
-    md_ix = np.where(md)[0]
-    blank = md_ix[r.random(len(md_ix)) < 0.40]
-    outside = np.array(sorted(set(md_ix.tolist()) - set(blank.tolist())), dtype=np.int64)
-    sign_date = np.array([K.WINDOW_OPEN + dt.timedelta(days=int(d)) for d in S.day], dtype=object)
-    # the serial was issued on 6 December 2027, so a date outside the circulation period is a date before
-    # that; a line dated inside it is in the period whatever month it falls in
-    off = r.integers(-(K.WINDOW_OPEN - K.SERIAL_ISSUED).days - 185,
-                     -(K.WINDOW_OPEN - K.SERIAL_ISSUED).days - 2, size=len(outside))
-    for k, i in enumerate(outside):
-        sign_date[i] = K.WINDOW_OPEN + dt.timedelta(days=int(off[k]))
-    S.sign_date = sign_date
-    S.date_blank = np.zeros(nS, dtype=bool)
-    S.date_blank[blank] = True
-    S.in_window = np.array([(not S.date_blank[i]) and K.WINDOW_OPEN <= sign_date[i] <= K.WINDOW_CLOSE
-                            for i in range(nS)])
-
-    # ---------------------------------------------------------------- the recorders' return batches
-    bus = _bus_days(K.RETURNS_OPEN, K.RETURNS_CLOSE)
-    S.return_id = np.empty(nS, dtype=object)
-    S.return_utc = np.empty(nS, dtype=object)
-    S.det_date = np.empty(nS, dtype=object)
-    batches = []
-    for ci, (cc, name, _) in enumerate(K.COUNTIES):
-        ix = np.where(S.county == ci)[0]
-        if len(ix) == 0:
+def logs(S, lost, meta, recs, seed=P.SEED):
+    """The control room's log (journey entries and incidents) and the depot's daily returns (uncovered work)."""
+    rng = np.random.RandomState(seed + 31)
+    by_code = {}
+    for dt in ("MF", "SA", "SU"):
+        for b in S[dt]["boards"]:
+            for j in b["journeys"]:
+                by_code[(dt, j["code"])] = (b, j)
+    veh = {(x["date"], x["code"]): x["vehicle"] for x in recs}
+    fleet_no = {v["reg"]: v["fleet"] for v in SIM.FLEET}
+    nums = duty_numbers(S)
+    log = []
+    ret = []
+    ev, _ = SIM.incidents(None)
+    # incidents
+    for (ed, er, elinks, es, ee, add, why) in ev:
+        log.append(dict(t=datetime(ed.year, ed.month, ed.day) + timedelta(minutes=es + int(rng.randint(2, 9))),
+                        service=er, journey="", vehicle="", event="INCIDENT", lost_from="", lost_to="",
+                        cause="PC" if ("police" in why or "RTC" in why or "collision" in why) else
+                        ("RW" if ("water" in why or "gas" in why or "main" in why or "lights" in why) else
+                         ("WX" if "flood" in why else "BD")),
+                        remarks="%s, %s to %s, delays on route %s" % (why, hhmm(es), hhmm(ee), er),
+                        rk=("INC", why, hhmm(es), hhmm(ee), er)))
+    # journey entries
+    uncovered_journeys = set()
+    for d, m in meta.items():
+        dt = P.day_type(d)
+        s = S[dt]
+        for (di, pn, pid, covered_from, late) in m["uncovered"]:
+            p = s["pieces"][pid]
+            js = p["journeys"]
+            if late is not None:
+                lost_js = [j for j in js if j["dep"] < late]
+                if rng.random_sample() < 0.5:
+                    log.append(dict(t=datetime(d.year, d.month, d.day) + timedelta(minutes=late - rng.uniform(8, 35)),
+                                    service=p["route"], journey="", vehicle="", event="NOTE", lost_from="", lost_to="",
+                                    cause="", remarks="spare driver on %s from %s" % (p["board"], hhmm(late)),
+                                    rk=("SPARE", p["board"], hhmm(late))))
+            else:
+                lost_js = [j for j in js if covered_from is None or j["dep"] < covered_from]
+            for j in lost_js:
+                uncovered_journeys.add((d, j["code"]))
+            ret.append(dict(date=d, duty=nums[(dt, di)], piece=pn, board=p["board"], service=p["route"],
+                            status="PART COVERED" if covered_from is not None else "UNCOVERED",
+                            covered_from=hhmm(covered_from) if covered_from is not None else "",
+                            reason=str(rng.choice(["No driver", "Sickness", "No driver", "Late book-on", "No driver"]))))
+    for x in lost:
+        d = x["date"]
+        dt = x["dt"]
+        kind, cause, i0, i1 = x["lost"]
+        tps = x["tps"]
+        if cause == "SS" and (d, x["code"]) in uncovered_journeys:
+            # the controller logs most, not all, of the journeys the uncovered work loses
+            if rng.random_sample() < 0.42:
+                continue
+        t = datetime(d.year, d.month, d.day) + timedelta(minutes=x["sched"][max(i0 - 1, 0)] + rng.uniform(-6, 2))
+        reg = veh.get((d, x["code"]), "")
+        if kind == "whole":
+            ev_t, lf, lt = "LOST", "", ""
+        elif kind == "part":
+            ev_t, lf, lt = "PART LOST", atco(x["route"], tps[i0 - 1], x["dir"]), atco(x["route"], tps[-1], x["dir"])
+        else:
+            ev_t, lf, lt = "PART LOST", atco(x["route"], tps[0], x["dir"]), atco(x["route"], tps[i1 + 1], x["dir"])
+        rem = {"VD": REMARK_VD, "SI": REMARK_SI, "SS": REMARK_SS, "TR": REMARK_TR, "PC": REMARK_PC}[cause]
+        remark = str(rng.choice(rem))
+        rk = ("BASE", remark, fleet_no.get(reg, 0) if (cause == "VD" and reg) else None,
+              x["board"] if cause == "SS" else None)
+        if cause == "VD" and reg:
+            remark = "bus %d %s" % (fleet_no.get(reg, 0), remark)
+        if cause == "SS":
+            remark = "%s for %s" % (remark, x["board"])
+        if kind == "start":
+            remark = "started from %s after turning short" % dict(P.ROUTES[x["route"]]["tps"])[tps[i1 + 1]]
+            rk = ("START", dict(P.ROUTES[x["route"]]["tps"])[tps[i1 + 1]])
+        log.append(dict(t=t, service=x["route"], journey=x["code"], vehicle=str(fleet_no.get(reg, "")) if reg else "",
+                        event=ev_t, lost_from=lf, lost_to=lt, cause=cause, remarks=remark, rk=rk))
+    # covered work and other notes the depot records
+    for d in P.days(P.AVL_FIRST, P.AVL_LAST):
+        dt = P.day_type(d)
+        s = S[dt]
+        for _ in range(int(rng.poisson({"MF": 2.2, "SA": 1.4, "SU": 0.8}[dt]))):
+            di = int(rng.randint(len(s["duties"])))
+            pn = int(rng.randint(1, len(s["duties"][di]) + 1))
+            p = s["pieces"][s["duties"][di][pn - 1]]
+            ret.append(dict(date=d, duty=nums[(dt, di)], piece=pn, board=p["board"], service=p["route"],
+                            status=str(rng.choice(["COVERED SPARE", "COVERED O/T", "COVERED SPARE"])),
+                            covered_from="", reason=str(rng.choice(["Sickness", "Annual leave", "Training",
+                                                                     "Sickness", "Medical appointment"]))))
+    # a few late-running notes with nothing lost (texture)
+    for _ in range(140):
+        x = recs[int(rng.randint(len(recs)))]
+        lat = [a - s for a, s in zip(x["actual"], x["sched"]) if a is not None]
+        if not lat or max(lat) < 9:
             continue
-        nb = 1 if len(ix) < 60 else (2 if len(ix) < 900 else 3)
-        pace = r.random(len(ix))
-        order = ix[np.argsort(pace, kind="stable")]
-        cuts = np.array_split(order, nb)
-        lo = int(2 + ci % 4)
-        for b, part in enumerate(cuts):
-            dayix = min(lo + b * (3 + ci % 3) + 2, len(bus) - 1)
-            day = bus[dayix]
-            rid = "R%s-%02d" % (cc, b + 1)
-            stamp = K.utc_stamp(dt.datetime.combine(day, dt.time(13 + (ci + b) % 5, 10 + (7 * ci + 3 * b) % 48)))
-            for i in part:
-                S.return_id[i] = rid
-                S.return_utc[i] = stamp
-                back = int(1 + (i % 4))
-                dd = bus[max(0, dayix - back)]
-                S.det_date[i] = dd
-            batches.append((cc, rid, day, len(part)))
-    S.batches = batches
-    # the lines the division determined itself carry the division's own determination date
-    for i in np.where(S.det_division)[0]:
-        S.det_date[i] = K.CORRECTIONS_CLOSE - dt.timedelta(days=1)
-    S.determined_by = np.where(S.det_division, "DIVISION", "RECORDER")
-
-    # ---------------------------------------------------------------- the correction notices
-    # a query notice only ever moves a line between two single-signature grounds, and never touches a
-    # cancellation ground, a counted line or a duplicate, so no reading of the notices moves the call
-    movable = {"AD": "SG", "SG": "AD", "NR": "AD", "NC": "AD", "IL": "MD", "MD": "IL"}
-    cand = np.array([i for i in range(nS) if S.code[i] in movable and not S.det_division[i]])
-    pick = cand[r.permutation(len(cand))[:p["corrections"]]]
-    pick.sort()
-    S.corrected = {}
-    corr = []
-    cdays = _bus_days(K.RETURNS_OPEN + dt.timedelta(days=3), K.CORRECTIONS_CLOSE)
-    lag = r.integers(1, 5, size=len(pick))
-    for k, i in enumerate(pick):
-        new = movable[S.code[i]]
-        S.corrected[int(i)] = new
-        got = dt.date(*(int(x) for x in S.return_utc[i][:10].split("-")))
-        later = [d for d in cdays if d > got]
-        when = later[min(int(lag[k]) - 1, len(later) - 1)] if later else cdays[-1]
-        corr.append(dict(
-            correction_id="Q-%s-%04d" % (K.COUNTY_CODES[S.county[i]], 1 + k),
-            county_code=K.COUNTY_CODES[S.county[i]], circulator_reg_no=S.circ[i],
-            sheet_no=int(S.sheet_no[i]), line_no=int(S.line_no[i]),
-            prior=S.code[i], new=new, corrected_on=when,
-            query_code=QUERY_CODES[(k + S.county[i]) % len(QUERY_CODES)]))
-    S.corrections = corr
-    S.code_current = np.array([S.corrected.get(i, S.code[i]) for i in range(nS)], dtype=object)
-
-    # ---------------------------------------------------------------- the sheet index and the receipt log
-    S.n_sheets = K.SHEETS
-    rej = _rejected(w, r)
-    S.rejected = rej
-    S.bundle_label = dict(zip(range(1, w.n_bundles + 1), receipt_numbers(w, w.n_bundles)))
-    S.bundle_staff = dict(zip(range(1, w.n_bundles + 1), receipt_staff(w, w.n_bundles)))
-    return S
+        d = x["date"]
+        k = int(np.argmax([(-1e9 if a is None else a - s) for a, s in zip(x["actual"], x["sched"])]))
+        log.append(dict(t=datetime(d.year, d.month, d.day) + timedelta(minutes=x["actual"][k]), service=x["route"],
+                        journey=x["code"], vehicle=str(fleet_no.get(x["vehicle"], "")), event="LATE", lost_from="",
+                        lost_to="", cause="", remarks="running %d late at %s" % (int(max(lat)),
+                                                                                 dict(P.ROUTES[x["route"]]["tps"])[x["tps"][k]]),
+                        rk=("LATE", int(max(lat)), dict(P.ROUTES[x["route"]]["tps"])[x["tps"][k]])))
+    log.sort(key=lambda e: e["t"])
+    _controller_hands(log, seed)
+    ret.sort(key=lambda e: (e["date"], e["duty"], e["piece"]))
+    return log, ret
 
 
-def _rejected(w, r):
-    """The 240 sheets two firms had already filed, struck at receipt. They never received a serial, so the
-    office's sheet index does not carry them and the firms' own manifests do."""
-    out = []
-    for firm_ix, count in ((0, 150), (2, 90)):
-        ix = np.where(w.sheet_firm == firm_ix)[0]
-        pick = ix[r.permutation(len(ix))[:count]]
-        for j, s in enumerate(sorted(pick.tolist())):
-            out.append(dict(firm=firm_ix, bundle=int(w.sheet_bundle[s]),
-                            lines=int(w.sheet_lines[s]), seq=j))
-    return out
+# the control room's controllers each write the log in their own hand: one in full words, one in capitals and
+# depot shorthand, one terse; drawn from a stream of its own so no record moves with the wording
+_HAND = {
+    "air leak, bus to depot": ("AIR LEAK - RTD", "air leak, to depot"),
+    "door fault, passengers transferred": ("DOOR FAULT - PASSENGERS TRANSFERRED", "door fault, pass onto following"),
+    "engine warning light": ("ENGINE WARNING LIGHT", "eng light on"),
+    "kneeling fault": ("KNEELING FAULT", "kneel u/s"),
+    "coolant leak": ("COOLANT LEAK", "coolant leak, recovered"),
+    "brake defect reported by driver": ("BRAKE DEFECT - DRV REPORT", "brakes, drv report"),
+    "wheelchair ramp failed": ("W/C RAMP FAILED", "ramp u/s"),
+    "power steering fault": ("POWER STEERING", "p/steering fault"),
+    "windscreen damage": ("WINDSCREEN DAMAGE", "screen cracked"),
+    "electrical fault, no ticket machine": ("ELECTRICAL FAULT - NO ETM", "electrics, etm dead"),
+    "driver taken ill": ("DRV TAKEN ILL", "drv ill"),
+    "driver unwell, relieved": ("DRV UNWELL - RELIEVED", "drv unwell, relieved"),
+    "driver taken ill at stand": ("DRV ILL AT STAND", "drv ill on stand"),
+    "driver assaulted, police called": ("DRV ASSAULTED - POLICE CALLED", "assault on drv, police called"),
+    "no driver": ("NO DRV", "no drv"),
+    "no driver available": ("NO DRV AVAILABLE", "no drv avail"),
+    "driver not booked on": ("DRV NOT BOOKED ON", "drv not booked on"),
+    "uncovered work": ("UNCOVERED", "u/c"),
+    "running late, turned short to restore service": ("LATE - T/S TO RESTORE SERVICE", "late, t/s to restore"),
+    "late running, turned at": ("LATE RUNNING - T/S", "late running, t/s"),
+    "heavy traffic, short turned": ("HEAVY TRAFFIC - T/S", "traffic, t/s"),
+    "gap in service, turned short": ("GAP IN SERVICE - T/S", "t/s to fill gap"),
+    "road closed by police": ("ROAD CLOSED BY POLICE", "police closed road"),
+    "police closure": ("POLICE CLOSURE", "police closure"),
+    "road closed, turned short": ("ROAD CLOSED - T/S", "road shut, t/s"),
+    "emergency services on scene": ("EMERGENCY SERVICES ON SCENE", "ems on scene"),
+}
+_FULL = {"late running, turned at": "late running, turned short"}
 
 
-# ---------------------------------------------------------------------------------- row writers
-def _code_written(cc, code):
-    """Navajo County's recorder files on its own 2019 code list; every other county on the current set."""
-    if cc != K.OLD_CODE_COUNTY:
-        return code
-    for old, news in K.OLD_TO_NEW.items():
-        if code in news:
-            return old
-    raise AssertionError(code)
-
-
-def _date_written(cc, d, blank):
-    if blank:
-        return ""
-    if cc == K.DMY_COUNTY:
-        return "%02d/%02d/%d" % (d.day, d.month, d.year)
-    if cc == K.OLD_CODE_COUNTY:
-        return "%02d-%s-%02d" % (d.day, K.UMON3[d.month], d.year % 100)
-    return K.iso(d)
-
-
-def returns_rows(w, S):
-    order = np.lexsort((S.line_no, S.sheet_no, np.array([str(c) for c in S.circ]),
-                        np.array([K.COUNTY_CODES[c] for c in S.county])))
-    for i in order:
-        cc = K.COUNTY_CODES[S.county[i]]
-        yield dict(county_code=cc, return_id=S.return_id[i], return_received_utc=S.return_utc[i],
-                   circulator_reg_no=S.circ[i], sheet_no=int(S.sheet_no[i]), line_no=int(S.line_no[i]),
-                   signature_date=_date_written(cc, S.sign_date[i], S.date_blank[i]),
-                   voter_reg_id=(int(S.vid[i]) if S.vid[i] else ""),
-                   disposition_code=_code_written(cc, S.code[i]),
-                   determined_by=S.determined_by[i], determination_date=K.iso(S.det_date[i]))
-
-
-def corr_rows(w, S):
-    for c in S.corrections:
-        cc = c["county_code"]
-        yield dict(correction_id=c["correction_id"], county_code=cc,
-                   circulator_reg_no=c["circulator_reg_no"], sheet_no=c["sheet_no"], line_no=c["line_no"],
-                   prior_disposition_code=_code_written(cc, c["prior"]),
-                   corrected_disposition_code=_code_written(cc, c["new"]),
-                   corrected_on=K.iso(c["corrected_on"]), query_code=c["query_code"])
-
-
-def _snapshot(w, S, when, late):
-    """The registration records for the identifiers the sample transmittal cites, as they stood in the
-    archived statewide snapshot of that date."""
-    seen = {}
-    for i in range(len(S.vid)):
-        v = int(S.vid[i])
-        if v:
-            seen.setdefault(v, int(S.signer[i]))
-    day_of = lambda k: K.WINDOW_OPEN + dt.timedelta(days=int(k))
-    out = []
-    for v in sorted(seen):
-        s = seen[v]
-        cc = K.COUNTY_CODES[w.signer_county[s]]
-        if w.signer_ground[s] == WD.CODE_IX["NC"]:
-            cc = K.COUNTY_CODES[(w.signer_county[s] + 4) % len(K.COUNTIES)]
-        cancel = int(w.signer_cancel[s])
-        restore = int(w.signer_restore[s])
-        reason = int(w.signer_cancel_reason[s])
-        regday = int(w.signer_regday[s])
-        has_cancel = cancel < 10 ** 6
-        cut = (when - K.WINDOW_OPEN).days
-        shown_cancel = has_cancel and cancel <= cut
-        shown_restore = restore < 10 ** 6 and restore <= cut
-        status = "ACTIVE"
-        cdate, creason = "", ""
-        if shown_cancel and not shown_restore:
-            status = "CANCELLED"
-            cdate = K.iso(day_of(cancel))
-            creason = CANCEL_REASON[reason]
-        elif shown_cancel and shown_restore:
-            cdate = K.iso(day_of(cancel))
-            creason = CANCEL_REASON[reason]
-        if regday > cut:
-            continue        # the registration did not exist when this snapshot was taken
-        touch = int(w.signer_touched[s])
-        last = max([regday] + ([touch] if touch <= cut else [])
-                   + ([cancel] if shown_cancel else []) + ([restore] if shown_restore else []))
-        stamp = dt.datetime.combine(day_of(last), dt.time(7 + (v % 11), (v // 7) % 60))
-        reg = day_of(restore) if shown_restore else day_of(regday)
-        out.append(dict(snapshot_date=K.iso(when), voter_reg_id=v, county_code=cc,
-                        registration_status=status, registration_date=K.iso(reg),
-                        status_changed_utc=K.utc_stamp(stamp), cancellation_date=cdate,
-                        cancellation_reason=creason,
-                        precinct_code="%s-%03d" % (cc, 1 + int(K.token("prec", v, n=3,
-                                                                       alphabet="0123456789"), 10) % 240)))
-    out.sort(key=lambda d: (d["county_code"], d["precinct_code"], d["voter_reg_id"]))
-    return out
-
-
-def snapshot_rows(w, S, late):
-    return _snapshot(w, S, K.LATE_SNAPSHOT if late else K.EARLY_SNAPSHOT, late)
-
-
-def sheet_rows(w, S):
-    rej = {(d["firm"], d["seq"]) for d in S.rejected}
-    for s in range(K.SHEETS):
-        yield dict(sheet_serial="S%06d" % int(w.sheet_serial[s]),
-                   bundle_id=S.bundle_label[int(w.sheet_bundle[s])],
-                   receipt_date=K.iso(K.FILED if int(w.sheet_bundle[s]) % 2 else K.RECEIPT_CLOSED),
-                   circulator_reg_no=w.sheet_circ[s],
-                   sheet_no=int(w.sheet_no[s]), signature_lines=int(w.sheet_lines[s]),
-                   county_circulated=K.COUNTY_CODES[w.sheet_county[s]])
-
-
-def receipt_rows(w, S):
-    nb = w.n_bundles
-    rej_by_bundle = {}
-    for d in S.rejected:
-        rej_by_bundle.setdefault(d["bundle"], []).append(d)
-    for b in range(1, nb + 1):
-        ix = np.where(w.sheet_bundle == b)[0]
-        if len(ix) == 0:
-            continue
-        acc = len(ix)
-        lines = int(w.sheet_lines[ix].sum())
-        rj = rej_by_bundle.get(b, [])
-        day = K.FILED if b % 2 else K.RECEIPT_CLOSED
-        yield dict(bundle_id=S.bundle_label[b], received_date=K.iso(day),
-                   received_utc=K.utc_stamp(dt.datetime.combine(day, dt.time(8 + (b % 9), (b * 17) % 60))),
-                   sheets_presented=acc + len(rj), sheets_accepted=acc,
-                   sheets_rejected=len(rj), signature_lines_accepted=lines,
-                   rejection_code=(WITHDRAWN_REASON if rj else ""),
-                   receipted_by=S.bundle_staff[b])
-
-
-def manifest_rows(w, S):
-    """Each firm's own delivery manifest. A firm counts what it handed over, so the 240 sheets the office
-    struck at receipt are inside these counts, and the firm that changed its trading name in April filed
-    under both names on one registration number."""
-    rej_by_bundle = {}
-    for d in S.rejected:
-        rej_by_bundle.setdefault(d["bundle"], []).append(d)
-    k = 0
-    for b in range(1, w.n_bundles + 1):
-        ix = np.where(w.sheet_bundle == b)[0]
-        if len(ix) == 0:
-            continue
-        fi = int(w.sheet_firm[ix[0]])
-        code, name, _, regno = K.FIRMS[fi]
-        rj = rej_by_bundle.get(b, [])
-        day = K.FILED if b % 2 else K.RECEIPT_CLOSED
-        sheets = len(ix) + len(rj)
-        lines = int(w.sheet_lines[ix].sum()) + sum(d["lines"] for d in rj)
-        # the firm's deliveries are manifested under the name it traded as when the sheets were gathered
-        med = int(np.median(w.sheet_day[ix]))
-        shown = _firm_name_on(fi, K.WINDOW_OPEN + dt.timedelta(days=med))
-        k += 1
-        yield dict(manifest_no="M-%s-%03d" % (code, k), firm_name=shown, firm_registration_no=regno,
-                   delivered_date=K.iso(day), sheets_submitted=sheets, signatures_claimed=lines,
-                   office_bundle_ref=S.bundle_label[b])
-
-
-def _firm_name_on(fi, when):
-    """The name a firm traded under on a date: one of the four changed its trading name in April and kept
-    its registration number."""
-    code, name, _, _ = K.FIRMS[fi]
-    if code == K.FIRM_RENAMED and when >= K.FIRM_RENAME_DATE:
-        return K.FIRM_NEW_NAME
+def _abbr(name):
+    for a, b in ((" Road", " Rd"), (" Street", " St"), (" Lane", " Ln"), ("Junction ", "Jct "),
+                 (" Interchange", " Int"), (" Bus Station", " BS")):
+        name = name.replace(a, b)
     return name
 
 
-def circ_rows(w, S):
-    """The office's extract of the paid circulators registered to gather signatures for this serial. A
-    circulator who left one firm for another inside the window registered again under the firm it joined,
-    so a registration number carries two rows with their own dates."""
-    r = K.rng("circ_rows", seed=w.seed)
-    out = []
-    for cid in sorted(w.circulators):
-        fi = w.circulator_firm[cid]
-        cc = K.COUNTY_CODES[int(r.choice(len(K.COUNTIES),
-                                         p=np.array([x for _, _, x in K.COUNTIES])
-                                         / sum(x for _, _, x in K.COUNTIES)))]
-        reg = K.SERIAL_ISSUED + dt.timedelta(days=int(r.integers(2, 24)))
-        if cid in w.circulator_moves:
-            was, now, day = w.circulator_moves[cid]
-            moved = K.WINDOW_OPEN + dt.timedelta(days=day)
-            out.append(dict(circulator_reg_no=cid, circulator_type="PAID",
-                            registering_firm=_firm_name_on(was, reg),
-                            firm_registration_no=K.FIRMS[was][3],
-                            county_of_residence=cc, registered_on=K.iso(reg),
-                            withdrawn_on=K.iso(moved), registration_status="WITHDRAWN"))
-            out.append(dict(circulator_reg_no=cid, circulator_type="PAID",
-                            registering_firm=_firm_name_on(now, moved),
-                            firm_registration_no=K.FIRMS[now][3],
-                            county_of_residence=cc, registered_on=K.iso(moved),
-                            withdrawn_on="", registration_status="ACTIVE"))
-        else:
-            out.append(dict(circulator_reg_no=cid, circulator_type="PAID",
-                            registering_firm=_firm_name_on(fi, reg),
-                            firm_registration_no=K.FIRMS[fi][3],
-                            county_of_residence=cc, registered_on=K.iso(reg), withdrawn_on="",
-                            registration_status="ACTIVE"))
-    out.sort(key=lambda d: (d["circulator_reg_no"], d["registered_on"]))
-    return out
+def _hand(rk, h):
+    k = rk[0]
+    if k == "INC":
+        why, a, b, rte = rk[1:]
+        return ("%s, %s to %s, delays on route %s" % (why, a, b, rte) if h == 0 else
+                ("%s %s-%s, RTE %s DELAYED" % (why, a, b, rte)).upper() if h == 1 else
+                "%s %s-%s, rte %s delayed" % (why, a, b, rte))
+    if k == "SPARE":
+        bd, t = rk[1:]
+        return ("spare driver on %s from %s" % (bd, t) if h == 0 else "SPARE ON %s FROM %s" % (bd, t) if h == 1 else
+                "spare drv %s @ %s" % (bd, t))
+    if k == "LATE":
+        m, stop = rk[1:]
+        return ("running %d late at %s" % (m, stop) if h == 0 else "%d LATE AT %s" % (m, _abbr(stop).upper())
+                if h == 1 else "+%d at %s" % (m, _abbr(stop)))
+    if k == "START":
+        stop = rk[1]
+        return ("started from %s after turning short" % stop if h == 0 else
+                "STARTED %s - T/S PREVIOUS TRIP" % _abbr(stop).upper() if h == 1 else
+                "started %s, t/s prev trip" % _abbr(stop))
+    text, fleet, board = rk[1:]
+    body = _FULL.get(text, text) if h == 0 else _HAND[text][h - 1]
+    if fleet is not None:
+        body = ("bus %d %s" if h == 0 else "VEH %d %s" if h == 1 else "%d %s") % (fleet, body)
+    if board is not None:
+        body = ("%s for %s" if h == 0 else "%s - %s" if h == 1 else "%s %s") % (body, board)
+    return body
 
 
-def maint_rows(w, S):
-    """The 14 March 2028 statewide list-maintenance run, as the division's own run register wrote it."""
-    r = K.rng("maint", seed=w.seed)
+def _controller_hands(log, seed):
+    hrng = np.random.RandomState(seed + 4441)
+    styles = (0, 1, 2, 0, 2)
+    rota = {}
+    for d in P.days(P.AVL_FIRST - timedelta(days=1), P.AVL_LAST + timedelta(days=1)):
+        for shift in ("early", "late", "night"):
+            rota[(d, shift)] = styles[int(hrng.randint(len(styles)))]
+    for e in log:
+        t = e["t"]
+        shift = "early" if 5 <= t.hour < 14 else ("late" if 14 <= t.hour < 22 else "night")
+        d = t.date() if t.hour >= 5 else t.date() - timedelta(days=1)
+        e["remarks"] = _hand(e.pop("rk"), rota[(d, shift)])
+
+
+# ------------------------------------------------------------------ the ticket machines on route 41
+TICKETS = [("ENCTS", 0, 0.29), ("GCR WEEKLY", 0, 0.17), ("ADULT SINGLE", 270, 0.17), ("ADULT DAY", 480, 0.08),
+           ("CHILD SINGLE", 130, 0.08), ("CONTACTLESS CAP", 270, 0.13), ("STUDENT WEEKLY", 0, 0.05),
+           ("ADULT RETURN", 450, 0.03)]
+# boardings per journey by fare stage (stage 1 the interchange ... 6 Ravensholme bus station), by direction and band
+RATE = {("I", "AM peak"): [0, 1.6, 4.6, 3.4, 6.2, 8.8], ("I", "PM peak"): [0, 0.9, 1.9, 1.4, 2.4, 3.1],
+        ("I", "Other times"): [0, 1.1, 2.3, 1.7, 2.9, 3.8],
+        ("O", "AM peak"): [3.2, 1.3, 0.7, 0.5, 0.4, 0], ("O", "PM peak"): [11.4, 4.1, 1.9, 1.3, 0.8, 0],
+        ("O", "Other times"): [5.6, 2.2, 1.2, 0.8, 0.6, 0]}
+STAGE_TP = {1: "MRI-D", 2: "TNS", 3: "THR", 4: "TQY", 5: "RVR", 6: "RBS"}
+ETM_SLOW = set()
+
+
+def etm(S, recs, seed=P.SEED):
+    """Ticket machine transactions on route 41, October and November 2026. A driver who forgets to select his next
+    journey at a terminus keeps selling on the previous one. Returns (header, rows, truth) where truth carries every
+    transaction's true direction."""
+    rng = np.random.RandomState(seed + 41)
+    fl = {v["reg"]: v for v in SIM.FLEET}
+    nums = duty_numbers(S)
+    # the duty driving each journey
+    duty_of = {}
+    for dt in ("MF", "SA", "SU"):
+        s = S[dt]
+        for i, duty in enumerate(s["duties"]):
+            for pid in duty:
+                for j in s["pieces"][pid]["journeys"]:
+                    duty_of[(dt, j["code"])] = (nums[(dt, i)], pid)
+    habit = {}
+    for key in set(duty_of.values()):
+        habit[key[0]] = 0.035 if rng.random_sample() < 0.7 else rng.uniform(0.16, 0.34)
     rows = []
-    mid = np.where(w.signer_ca_mid)[0]
-    for s in mid.tolist():
-        rows.append((int(w.signer_vid[s]), K.COUNTY_CODES[w.signer_county[s]], 1))
-    extra = w.params["maintenance_other"]
-    ids = r.integers(102_000_000, 499_000_000, size=int(extra * 1.03), dtype=np.int64)
-    ids = np.unique(ids)[:extra]
-    cshare = np.array([x for _, _, x in K.COUNTIES])
-    cc = r.choice(len(K.COUNTIES), size=len(ids), p=cshare / cshare.sum())
-    for j, v in enumerate(ids.tolist()):
-        rows.append((int(v), K.COUNTY_CODES[cc[j]], 0))
-    rows.sort()
-    reasons = ["LM-NOTICE", "LM-NCOA", "LM-JURY", "LM-RETURNED"]
-    act = r.random(len(rows))
-    for j, (v, cc, ours) in enumerate(rows):
-        # the run both cancels registrations and moves others to inactive; only a cancellation takes a
-        # registration out, and only a cancellation before the date signed strikes a signature
-        action = "CANCEL" if (ours or act[j] < 0.60) else "INACTIVATE"
-        notice = K.LIST_MAINTENANCE - dt.timedelta(days=int(28 + (v % 37)))
-        yield dict(run_id="LM-2028-01", run_date=K.iso(K.LIST_MAINTENANCE), voter_reg_id=v, county_code=cc,
-                   action_code=action, reason_code=reasons[0] if ours else reasons[1 + j % 3],
-                   notice_mailed=K.iso(notice),
-                   posted_utc=K.utc_stamp(dt.datetime.combine(K.LIST_MAINTENANCE,
-                                                              dt.time(18 + j % 5, (j * 11) % 60))))
+    truth = []
+    by_day = defaultdict(list)
+    for x in recs:
+        if x["route"] == "41" and P.ETM_FIRST <= x["date"] <= P.ETM_LAST:
+            by_day[x["date"]].append(x)
+    seq = defaultdict(int)
+    resent = {date(2026, 10, 13), date(2026, 11, 3), date(2026, 11, 24)}
+    # two machines on route 41's buses kept summer time after the clock change
+    pool41 = sorted(v["etm"] for v in SIM.FLEET if v["route"] == "41")
+    slow_clock = {pool41[2], pool41[7]}
+    for d in sorted(by_day):
+        dt = P.day_type(d)
+        dayf = rng.uniform(0.86, 1.12) * ({"MF": 1.0, "SA": 0.82, "SU": 0.55}[dt])
+        xs = sorted(by_day[d], key=lambda x: (x["board"], x["k"]))
+        prev_sel = {}
+        resend_unit = None
+        for x in xs:
+            dn, pid = duty_of[(dt, x["code"])]
+            trip_no = x["k"] + 1
+            piece_start = S[dt]["pieces"][pid]["journeys"][0]["code"] == x["code"]
+            sel = (trip_no, x["dir"])
+            if not piece_start and x["board"] in prev_sel and rng.random_sample() < habit[dn]:
+                sel = prev_sel[x["board"]]                  # the journey was not changed at the terminus
+            prev_sel[x["board"]] = sel if sel[0] == trip_no else (trip_no, x["dir"])
+            v = fl[x["vehicle"]]
+            unit = v["etm"]
+            for st in range(1, 7):
+                tp = STAGE_TP[st]
+                if tp not in x["tps"]:
+                    continue
+                i = x["tps"].index(tp)
+                if i == len(x["tps"]) - 1:
+                    continue
+                a = x["actual"][i]
+                if a is None:
+                    continue
+                # a stage is served only if the journey reached it (part lost journeys stop short)
+                bnd = P.band(dt, x["sched"][i])
+                lam = RATE[(x["dir"], bnd)][st - 1] * dayf
+                n = rng.poisson(lam)
+                for _ in range(n):
+                    if st in (1, 6) and i == 0:
+                        tt = a - rng.uniform(0.05, 4.5)
+                    else:
+                        tt = a + rng.uniform(-1.3, 0.25)
+                    name, fare, _w = TICKETS[int(rng.choice(len(TICKETS), p=[t[2] for t in TICKETS]))]
+                    seq[(d, unit)] += 1
+                    secs = int(round(tt * 60))
+                    if dt == "MF" and secs % 60 == 0 and secs // 60 in (450, 570, 960, 1110):
+                        secs += 1                       # the machine stamps the sale, not the band
+                    tt = secs / 60.0
+                    when = datetime(d.year, d.month, d.day) + timedelta(seconds=secs)
+                    if unit in slow_clock and d >= P.CLOCK_CHANGE:
+                        when += timedelta(hours=1)
+                    row = [unit, "U%s%s" % (d.strftime("%y%m%d"), unit[-3:]), seq[(d, unit)], dn, x["board"], sel[0],
+                           "OUT" if sel[1] == "O" else "IN", st, when.strftime("%Y-%m-%d %H:%M:%S"), name, fare]
+                    rows.append(row)
+                    rec_t = tt + (60 if (unit in slow_clock and d >= P.CLOCK_CHANGE) else 0)
+                    truth.append(dict(date=d, dt=dt, stage=st, true_dir=x["dir"], sel_dir=sel[1], band=P.band(dt, tt),
+                                      rec_band=P.band(dt, rec_t), code=x["code"], unit=unit, row=len(rows) - 1,
+                                      key=(unit, str(seq[(d, unit)]), when.strftime("%Y-%m-%d %H:%M:%S")),
+                                      slow=unit in slow_clock and d >= P.CLOCK_CHANGE))
+    # three nights the depot's upload failed and the machines sent the day again
+    extra = []
+    for d in sorted(resent):
+        units = sorted({r[0] for r in rows if r[8].startswith(d.isoformat())})
+        u = units[int(rng.randint(len(units)))]
+        for r in rows:
+            if r[0] == u and r[8].startswith(d.isoformat()):
+                rr = list(r)
+                rr[1] = rr[1] + "R"
+                extra.append(rr)
+    rows = sorted(rows + extra, key=lambda r: (r[8][:10], r[0], r[1], r[2]))
+    ETM_SLOW.clear()
+    ETM_SLOW.update(slow_clock)
+    header = ("etm_unit", "upload_id", "txn_seq", "waybill_duty", "running_board", "journey_no", "journey_direction",
+              "fare_stage", "txn_time", "ticket_type", "fare_pence")
+    return header, rows, truth
 
 
-def other_rows(w, S):
-    """A second initiative measure filed in the same cycle: the office's receipt log for I-04-2028. The
-    solution never reads it."""
-    r = K.rng("other", seed=w.seed)
-    n = 512
-    at = 38_402
-    staff = receipt_staff(w, n)
-    for b in range(1, n + 1):
-        at += int(r.integers(1, 5))
-        firm = K.FIRMS[int(r.integers(0, len(K.FIRMS)))][0]
-        acc = int(r.integers(38, 58))
-        lines = int(acc * 15 - r.integers(0, 42))
-        pres = acc + (1 if r.random() < 0.04 else 0)
-        yield dict(bundle_id="B%05d" % at,
-                   received_date=K.iso(dt.date(2028, 7, 3) + dt.timedelta(days=b % 3)),
-                   firm_code=firm, sheets_presented=pres, sheets_accepted=acc,
-                   signature_lines_accepted=lines, receipted_by=staff[b - 1])
+# ------------------------------------------------------------------ lookups
+def fleet_rows():
+    bodies = {"Double deck": ["Volvo B5LH / Wright Gemini 3", "ADL Enviro400 MMC", "Volvo B5TL / Wright Gemini 3"],
+              "Single deck": ["ADL Enviro200 MMC", "Optare Solo SR", "Wright StreetLite DF"]}
+    rng = np.random.RandomState(P.SEED + 51)
+    out = []
+    for v in SIM.FLEET:
+        b = bodies[v["type"]][int(rng.randint(3))]
+        seats = int(rng.choice([72, 73, 76])) if v["type"] == "Double deck" else int(rng.choice([38, 39, 41, 33]))
+        alloc = "Spare" if v["route"] == "SPARE" else v["route"]
+        out.append((v["fleet"], v["reg"], b, v["type"], seats, v["etm"], alloc, "%d-0%d" % (v["year"], 1 + int(rng.randint(8)))))
+    return ("fleet_no", "registration", "chassis_body", "type", "seats", "etm_unit", "allocated_service",
+            "first_registered"), out
 
 
-def regstats_rows(w, S):
-    """The office's published registration report of 1 July 2028. The solution never reads it."""
-    r = K.rng("regstats", seed=w.seed)
-    parties = ["REP", "DEM", "IND", "LBT", "GRN"]
-    base = {"REP": 0.345, "DEM": 0.302, "IND": 0.333, "LBT": 0.013, "GRN": 0.007}
-    for cc, name, share in K.COUNTIES:
-        total = 4_382_000 * share * (1 + 0.04 * (r.random() - 0.5))
-        for pc in parties:
-            act = int(total * base[pc] * (1 + 0.09 * (r.random() - 0.5)))
-            yield dict(report_date=K.iso(dt.date(2028, 7, 1)), county_code=cc, county_name=name,
-                       party_code=pc, active_registrations=act,
-                       inactive_registrations=int(act * (0.07 + 0.05 * r.random())))
+def fare_stage_rows():
+    out = []
+    for st, name, stops in P.FARE_STAGES_41:
+        for k, s in enumerate(stops, 1):
+            out.append((41, st, name, k, s))
+    return ("line_no", "fare_stage", "stage_name", "stop_order", "stop_name"), out
+
+
+CAUSES = [("VD", "Vehicle defect"), ("SS", "Staff shortage"), ("SI", "Staff illness / incident"),
+          ("TR", "Traffic / late running"), ("PC", "Police or emergency road closure"), ("RW", "Roadworks"),
+          ("WX", "Severe weather"), ("BD", "Breakdown of other vehicle"), ("PX", "Passenger incident"),
+          ("AV", "AVL / ticket machine fault")]
+
+
+def cause_rows():
+    return ("loss_code", "loss_reason", "code_list_issue"), [(c, d, "Issue 6, April 2025") for c, d in CAUSES]
+
+
+# ------------------------------------------------------------------ the authority's published monthly punctuality
+def published(parsed, seed=P.SEED):
+    """Monthly punctuality by route as the authority publishes it: January 2025 to November 2026, computed on the
+    AVL for the months the extract covers and taken from the authority's archive before. October 2026 appears as
+    the provisional figure released in November and the final one released in December."""
+    import analysis as A
+    rng = np.random.RandomState(seed + 61)
+    by_month = defaultdict(list)
+    for x in parsed:
+        by_month[(x["date"].year, x["date"].month)].append(x)
+    rows = []
+    live = {}
+    for (y, m), xs in by_month.items():
+        n, ok = defaultdict(int), defaultdict(int)
+        for x in xs:
+            for i in range(x["last_idx"]):
+                a = x["actual"][i]
+                if a is None:
+                    continue
+                n[x["route"]] += 1
+                ok[x["route"]] += A.on_time(a - x["sched"][i])
+        live[(y, m)] = (n, ok)
+    autumn = A.punctuality(parsed)
+    # the archive's levels: each route near its current level, a mild seasonal swing, the 2025 Marsh Lane
+    # closure on route 14 (outbound, 3 March to 13 April 2025)
+    season = {1: 0.4, 2: 0.6, 3: 0.2, 4: 0.1, 5: -0.1, 6: -0.3, 7: 0.3, 8: 0.5, 9: -0.3, 10: -0.5, 11: -0.6, 12: -0.2}
+    vol = {r: sum(1 for x in parsed if x["route"] == r) for r in P.ROUTE_ORDER}
+    months = [(2025, m) for m in range(1, 13)] + [(2026, m) for m in range(1, 12)]
+    drift = {r: rng.normal(0, 0.5) for r in P.ROUTE_ORDER}
+    for (y, m) in months:
+        for r in P.ROUTE_ORDER:
+            if (y, m) in live and (y, m) >= (2026, 9):
+                n, ok = live[(y, m)]
+                dep, on = n[r], ok[r]
+            else:
+                base = autumn[r] + drift[r] * (1.0 if y == 2025 else 0.5) + season[m] - np.mean([season[k] for k in (9, 10, 11)])
+                if r == "14" and (y, m) in ((2025, 3), (2025, 4)):
+                    base -= 13.9 if m == 3 else 6.1
+                dep = int(vol[r] / 97 * 30.4 * 4.6 * rng.uniform(0.96, 1.04))
+                pct = min(97.5, base + rng.normal(0, 0.55))
+                on = int(round(dep * pct / 100))
+            pub = date(y + (m == 12), (m % 12) + 1, 4 + int(rng.randint(0, 4)))
+            status = "provisional" if (y, m) == (2026, 11) else "final"
+            rows.append([r, "%d-%02d" % (y, m), dep, on, round(100.0 * on / dep, 1), status, pub.isoformat()])
+            if (y, m) == (2026, 10):
+                # the provisional October figure, released before the late AVL uploads were loaded
+                dep_p = dep - int(dep * rng.uniform(0.004, 0.011))
+                on_p = on - int((on * rng.uniform(0.004, 0.012)))
+                rows.append([r, "%d-%02d" % (y, m), dep_p, on_p, round(100.0 * on_p / dep_p, 1), "provisional",
+                             date(2026, 11, 5).isoformat()])
+    rows.sort(key=lambda r: (int(r[0]), r[1], r[6]))
+    header = ("line_no", "period_month", "departures_recorded", "departures_on_time", "punctuality_pct",
+              "release_status", "release_date")
+    return header, rows
+
+
+# ------------------------------------------------------------------ distractors
+def ring_road_counts(seed=P.SEED):
+    """The council's automatic traffic counter on the Ring Road crossing: weekday mean flow by hour and month."""
+    rng = np.random.RandomState(seed + 71)
+    prof = [60, 38, 30, 34, 70, 260, 820, 1590, 1720, 1240, 1010, 980, 1020, 990, 1060, 1290, 1610, 1680, 1240, 860,
+            640, 480, 330, 170]
+    rows = []
+    for m in range(1, 12):
+        for dirn in ("Northbound", "Southbound"):
+            f = rng.uniform(0.95, 1.05) * (1.04 if dirn == "Northbound" else 0.97)
+            for h in range(24):
+                v = prof[h] * f * (1.06 if dirn == "Northbound" and h in (7, 8) else 1.0) * \
+                    (1.05 if dirn == "Southbound" and h in (16, 17) else 1.0) * rng.uniform(0.97, 1.03)
+                rows.append(["ATC 0412 Ring Road crossing", "2026-%02d" % m, dirn, "%02d:00" % h, int(round(v)),
+                             int(rng.randint(18, 23)), v])
+    # the counter's own export also carries the seven-day mean and the heavy goods share (a stream of its own)
+    xrng = np.random.RandomState(seed + 73)
+    for r in rows:
+        h = int(r[3][:2])
+        wk = 0.62 if h in (7, 8, 16, 17) else (1.12 if h in (0, 1, 2, 3, 22, 23) else 0.84)
+        v = r.pop()
+        r.append(int(round(v * (5 + 2 * wk * xrng.uniform(0.95, 1.05)) / 7)))
+        r.append(round((7.8 if 6 <= h <= 18 else 4.6) * xrng.uniform(0.8, 1.2), 1))
+    return ("site", "count_month", "flow_direction", "hour_beginning", "mean_weekday_vehicles", "weekdays_counted",
+            "mean_7day_vehicles", "hgv_pct"), rows
+
+
+def street_works(seed=P.SEED):
+    """Street works permits granted for January to March 2027 (none of them touches a Lot 2 timing point while
+    buses run: off the network, footway only, or overnight)."""
+    rng = np.random.RandomState(seed + 81)
+    streets = [("Castle Mount", "footway only", "08:00-16:00"), ("Holm Lane", "overnight lane closure", "00:45-05:15"),
+               ("Kirkgate Walk", "lane closure", "09:30-15:30"), ("Barley Street", "road closure", "09:00-15:00"),
+               ("Cloth Hall Street", "footway only", "09:30-15:30"), ("Sheepcote Lane", "lane closure", "09:30-15:30"),
+               ("Langstrow Road", "overnight road closure", "00:40-05:20"), ("Wrayford Avenue", "footway only",
+                                                                            "09:00-15:00"),
+               ("Mill Bank", "footway only", "09:30-15:00"), ("Tanyard Close", "road closure", "08:00-17:00"),
+               ("Ashgarth Lane", "lane closure", "09:30-15:30"), ("Felbeck Green", "footway only", "09:00-15:30"),
+               ("Dyer Street", "overnight lane closure", "00:50-05:10"), ("Coldharrow Road", "footway only",
+                                                                         "09:30-15:30"),
+               ("Saltmeadow Lane", "overnight lane closure", "00:45-05:00"), ("Oak Street", "footway only",
+                                                                              "09:00-15:00"),
+               ("Garrow Lane", "footway only", "09:30-15:30"), ("Hollins Way", "road closure", "09:00-16:00"),
+               ("Morbeck Drive", "footway only", "09:00-15:00"), ("Tenter Street", "overnight lane closure",
+                                                                  "00:40-05:10")]
+    promoters = ["Northern Gas Networks", "Yorkshire Water", "Openreach", "Northern Powergrid", "Virgin Media O2",
+                 "Grainford City Council Highways", "CityFibre"]
+    rows = []
+    for k in range(46):
+        st, tm, hours = streets[int(rng.randint(len(streets)))]
+        start = date(2027, 1, 4) + timedelta(days=int(rng.randint(0, 80)))
+        end = start + timedelta(days=int(rng.randint(1, 12)))
+        rows.append(["GCC-SW-27-%04d" % (1180 + k * 7 + int(rng.randint(0, 6))), promoters[int(rng.randint(len(promoters)))],
+                     st, start.isoformat(), end.isoformat(), hours, tm,
+                     str(rng.choice(["service connection", "carriageway reinstatement", "duct repair", "valve replacement",
+                                     "pole replacement", "new supply", "leak repair", "chamber rebuild"]))])
+    # the permit register's own fields: the street's USRN, the works category and where the permit stands
+    # (a stream of its own, so the permits themselves do not move)
+    prng = np.random.RandomState(seed + 83)
+    usrn = {st: "%d" % (21400000 + 1731 * k + int(prng.randint(0, 900))) for k, (st, _, _) in enumerate(streets)}
+    for r in rows:
+        days = (date.fromisoformat(r[4]) - date.fromisoformat(r[3])).days
+        cat = "Major" if days > 10 else ("Standard" if days > 3 else "Minor")
+        status = str(prng.choice(["Granted", "Granted", "Granted", "Granted with conditions", "Granted",
+                                  "Granted with conditions", "Cancelled by promoter"]))
+        r.insert(3, usrn[r[2]])
+        r.append(cat)
+        r.append(status)
+    rows.sort(key=lambda r: (r[4], r[0]))
+    return ("permit_ref", "promoter", "street", "usrn", "start_date", "end_date", "working_hours", "traffic_management",
+            "works_description", "works_category", "permit_status"), rows

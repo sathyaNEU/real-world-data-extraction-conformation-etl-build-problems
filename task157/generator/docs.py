@@ -1,372 +1,259 @@
-"""task157 (architecture 2) shipped documents: the office's filing and sample record for serial I-18-2028,
-the verification instruction the county recorders work to, Navajo County's own 2019 disposition code list,
-and the 2024 full count's close-out workbook.
-
-Their text is kept here as data so that `checks.py` can quote and execute it, and every absence assertion in
-`checks.py` runs with a positive control through the same extractor."""
+"""task157 architecture 3: the pack's documents. The franchise agreement's performance regime (Schedule 7, the
+estimand and the relief rule), the council's traffic management plan for the Thornsby Bridge closure, and the
+authority's close-out note on the 2025 Marsh Lane closure."""
 from __future__ import annotations
 
-import datetime as dt
 import os
-import sys
 
 from reportlab import rl_config
 
 rl_config.invariant = 1
-from reportlab.lib import colors                                                        # noqa: E402
-from reportlab.lib.pagesizes import letter                                              # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
-from reportlab.lib.units import inch                                                    # noqa: E402
-from reportlab.pdfbase import pdfmetrics                                                # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont                                            # noqa: E402
+from reportlab.lib import colors                                                    # noqa: E402
+from reportlab.lib.pagesizes import A4                                              # noqa: E402
+from reportlab.lib.styles import ParagraphStyle                                     # noqa: E402
+from reportlab.lib.units import cm                                                  # noqa: E402
+from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
+from reportlab.pdfbase.ttfonts import TTFont                                        # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import common as K          # noqa: E402
-import postprocess as PP    # noqa: E402
-import records as R         # noqa: E402
+import params as P   # noqa: E402
 
-FONT_DIR = "/usr/share/fonts/truetype/"
-for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
-               ("LibSans", "liberation/LiberationSans-Regular.ttf"),
-               ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
-    pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-
-INK = colors.HexColor("#1b1f26")
-GREY = colors.HexColor("#5a6270")
-SEAL = colors.HexColor("#1f3b63")
-RULE = colors.HexColor("#aab2bd")
-HEAD = colors.HexColor("#e6eaf0")
-
-F_RECORD = "sos_filing_and_selection_record_i18-2028.pdf"
-F_INSTRUCTION = "county_recorder_verification_instruction_2027.pdf"
-F_OLDCODES = "navajo_recorder_disposition_codes_2019.txt"
+FONT_DIR = "/usr/share/fonts/truetype/liberation/"
+for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bold"), ("Sans-I", "LiberationSans-Italic"),
+              ("Serif", "LiberationSerif-Regular"), ("Serif-B", "LiberationSerif-Bold"),
+              ("Serif-I", "LiberationSerif-Italic")):
+    pdfmetrics.registerFont(TTFont(nm, FONT_DIR + f + ".ttf"))
+pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
+pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
+INK, GREY, RULE = colors.HexColor("#1b222b"), colors.HexColor("#5b6570"), colors.HexColor("#bcc3cb")
+CA_PURPLE = colors.HexColor("#4b2a6b")
+COUNCIL_GREEN = colors.HexColor("#1f5a43")
 
 
-def styles(font="Carlito", bold="Carlito-Bold", accent=SEAL, size=10.1):
+def styles(face, accent):
+    b = face + "-B"
+    body = ParagraphStyle("b", fontName=face, fontSize=10.0, leading=13.6, textColor=INK, spaceAfter=5)
     return dict(
-        body=ParagraphStyle("b", fontName=font, fontSize=size, leading=size * 1.38, textColor=INK,
-                            spaceAfter=5.0),
-        h1=ParagraphStyle("h1", fontName=bold, fontSize=14.4, leading=18.0, textColor=accent, spaceAfter=3.0),
-        sub=ParagraphStyle("s", fontName=font, fontSize=8.8, leading=11.6, textColor=GREY, spaceAfter=9.0),
-        h2=ParagraphStyle("h2", fontName=bold, fontSize=10.6, leading=13.8, textColor=accent, spaceBefore=7.0,
-                          spaceAfter=2.5),
-        cell=ParagraphStyle("c", fontName=font, fontSize=8.5, leading=10.5, textColor=INK),
-        cellr=ParagraphStyle("cr", fontName=font, fontSize=8.5, leading=10.5, textColor=INK,
-                             alignment=2),
-        cellb=ParagraphStyle("cb", fontName=bold, fontSize=8.5, leading=10.5, textColor=INK),
-        small=ParagraphStyle("sm", fontName=font, fontSize=8.1, leading=10.4, textColor=GREY, spaceBefore=4.0),
-    )
+        body=body,
+        h1=ParagraphStyle("h1", fontName=b, fontSize=14.5, leading=18.5, textColor=accent, spaceAfter=3),
+        h2=ParagraphStyle("h2", fontName=b, fontSize=10.6, leading=14, textColor=INK, spaceBefore=8, spaceAfter=3,
+                          keepWithNext=1),
+        meta=ParagraphStyle("m", fontName=face, fontSize=8.6, leading=11.4, textColor=GREY, spaceAfter=9),
+        cell=ParagraphStyle("c", fontName="Sans", fontSize=8.2, leading=10.2, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName="Sans-B", fontSize=8.2, leading=10.2, textColor=INK),
+        note=ParagraphStyle("n", fontName="Sans", fontSize=7.8, leading=10.0, textColor=GREY, spaceBefore=2,
+                            spaceAfter=6),
+        clause=ParagraphStyle("p", parent=body, leftIndent=30, firstLineIndent=-30))
 
 
-class _Doc(SimpleDocTemplate):
-    """The office's own documents carry the office as producer and creator: a state record whose producer
-    string names a writing library is a defect (reduce-house-fixes H1)."""
-
-    def __init__(self, path, title, author, **kw):
-        self._meta = (title, author)
-        SimpleDocTemplate.__init__(self, path, pagesize=letter, title=title, author=author, subject="",
-                                   creator=author, leftMargin=1.0 * inch, rightMargin=1.0 * inch,
-                                   topMargin=0.9 * inch, bottomMargin=0.85 * inch, **kw)
-
-    def handle_documentBegin(self):
-        SimpleDocTemplate.handle_documentBegin(self)
-        title, author = self._meta
-        c = self.canv
-        c.setTitle(title)
-        c.setAuthor(author)
-        c.setSubject("")
-        c.setCreator(author)
-        c.setProducer("%s document services" % K.OFFICE)
-
-
-def _doc(path, title, author):
-    return _Doc(path, title, author)
-
-
-def _footer(left, font="Carlito"):
+def _frame(left, right):
     def draw(canvas, doc):
         canvas.saveState()
-        canvas.setFont(font, 7.5)
         canvas.setFillColor(GREY)
-        canvas.drawString(1.0 * inch, 0.5 * inch, left)
-        canvas.drawRightString(letter[0] - 1.0 * inch, 0.5 * inch, "Page %d" % doc.page)
+        canvas.setFont("Sans", 7.6)
+        canvas.drawString(2.2 * cm, A4[1] - 1.35 * cm, left)
+        canvas.drawRightString(A4[0] - 2.2 * cm, A4[1] - 1.35 * cm, right)
+        canvas.drawRightString(A4[0] - 2.2 * cm, 1.2 * cm, "Page %d" % doc.page)
         canvas.restoreState()
     return draw
 
 
-def esc(s):
-    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-
-
-def _table(st, head, rows, widths, align_right=()):
-    data = [[Paragraph(esc(h), st["cellb"]) for h in head]]
-    for r in rows:
-        data.append([Paragraph(esc(str(v)), st["cellr"] if i in align_right else st["cell"])
-                     for i, v in enumerate(r)])
-    t = Table(data, colWidths=widths, hAlign="LEFT")
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), HEAD),
-        ("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE),
-        ("LINEBELOW", (0, 1), (-1, -2), 0.25, colors.HexColor("#dfe3ea")),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("TOPPADDING", (0, 0), (-1, -1), 3.0),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3.0),
-        ("LEFTPADDING", (0, 0), (-1, -1), 4.0),
-    ]))
+def _table(S, rows, widths, right=()):
+    data = [[Paragraph(str(c), S["cellb"] if i == 0 else S["cell"]) for c in r] for i, r in enumerate(rows)]
+    t = Table(data, colWidths=[w * cm for w in widths], repeatRows=1, hAlign="LEFT")
+    st = [("LINEBELOW", (0, 0), (-1, 0), .6, INK), ("LINEBELOW", (0, -1), (-1, -1), .4, RULE),
+          ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 1.8),
+          ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8)]
+    for c in right:
+        st.append(("ALIGN", (c, 0), (c, -1), "RIGHT"))
+    t.setStyle(TableStyle(st))
     return t
 
 
-# ---------------------------------------------------------------------------------- the filing record
-def record_text():
-    """The office's record of the filing and of the sample it drew. Every figure in it is the office's own
-    count or the statute's own number, and it is the highest authority in the pack."""
-    lines = "{:,}".format(K.LINES_FILED)
-    return [
-        ("Measure", [
-            "Serial number %s, a measure proposing an amendment to the Constitution of Arizona, filed by "
-            "the Arizona Water Security Committee, a political committee registered with this office."
-            % K.SERIAL,
-            "Petition sheets for serial %s were issued to the committee on %s. The committee filed the "
-            "petition at this office on %s." % (K.SERIAL, K.long_date(K.SERIAL_ISSUED), K.long_date(K.FILED)),
-        ]),
-        ("Receipt", [
-            "The committee presented %s petition sheets. %d of those sheets were sheets already filed "
-            "with this office under the same serial number and were struck at receipt; they are not part of "
-            "the filing. The office receipted %s sheets, bearing %s signature lines, and the receipt was "
-            "closed on %s." % ("{:,}".format(K.SHEETS_PRESENTED), K.SHEETS_STRUCK,
-                               "{:,}".format(K.SHEETS), lines, K.long_date(K.RECEIPT_CLOSED)),
-            "Each receipted sheet carries the registration number of the circulator who gathered it and the "
-            "number printed on the sheet. Sheets are issued to a circulator in a numbered pad, so that "
-            "number is the circulator's own series and runs from one.",
-        ]),
-        ("Circulator registrations", [
-            "A paid circulator is registered with this office by the firm that engages it, under that firm's "
-            "own registration number. A circulator who leaves one firm for another registers again under the "
-            "firm it joined: the earlier registration is withdrawn as of the day the new registration takes "
-            "effect, and sheets gathered on that day are gathered under the new registration.",
-            "A firm that changes its trading name keeps its registration number. The name shown on a "
-            "registration is the name the firm was trading under on the day the registration was taken.",
-        ]),
-        ("Signatures required", [
-            "A measure proposing a constitutional amendment requires signatures equal to fifteen per cent of "
-            "the total votes cast for Governor at the last general election at which a Governor was elected. "
-            "%s votes were cast for Governor at the general election of %s, and the number required for "
-            "serial %s is therefore %s." % ("{:,}".format(K.GOV_VOTES_2026), K.long_date(K.ELECTION_2026),
-                                            K.SERIAL, "{:,}".format(K.REQUIRED)),
-        ]),
-        ("The random sample", [
-            "The office drew a random sample of five per cent of the signature lines filed, %s of the %s "
-            "lines receipted, on %s. The selection was made by the office's random selection program over "
-            "the receipted sheets and lines." % ("{:,}".format(K.SAMPLE_LINES), lines,
-                                                 K.long_date(K.SAMPLE_DRAWN)),
-            "The office transmitted to each county recorder a copy of every sampled signature line assigned "
-            "to that recorder, with the sheet and the line it was taken from. A line is assigned to the "
-            "recorder of the county shown by the residence address written on it.",
-            "Each recorder shall complete the verification and return its determinations within fifteen "
-            "business days of transmittal, which for this filing closes on %s."
-            % K.long_date(K.RETURNS_CLOSE),
-        ]),
-        ("Determination", [
-            "If the number of valid signatures established for the petition is less than ninety-five per "
-            "cent of the number required, %s signatures, the petition is insufficient. If it is more than "
-            "one hundred and five per cent of the number required, %s signatures, the petition is "
-            "sufficient. If it is neither, the Secretary shall order the examination of all signature lines "
-            "filed." % ("{:,}".format(K.BAND_LO), "{:,}".format(K.BAND_HI)),
-            "The Secretary certifies the measures for the general election of %s no later than %s."
-            % (K.long_date(K.ELECTION_2028), K.long_date(K.CERTIFY_BY)),
-        ]),
+def _clause(S, num, text):
+    return Paragraph("<b>%s</b>&nbsp;&nbsp;%s" % (num, text), S["clause"])
+
+
+def _doc(path, title, author, subject):
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=2.2 * cm, rightMargin=2.2 * cm, topMargin=2.1 * cm,
+                             bottomMargin=1.9 * cm, title=title, author=author, subject=subject,
+                             creator="Microsoft Word for Microsoft 365", producer="Microsoft Word for Microsoft 365")
+
+
+# ---------------------------------------------------------------------------- Schedule 7
+SCHEDULE7_7_2 = ("A Departure is On Time if it is made no more than one minute before, and no more than five minutes "
+                 "fifty-nine seconds after, the time shown for it in the Registered Timetable for that day. The "
+                 "Punctuality of a Route over a period is the number of its Departures made On Time divided by the "
+                 "number of its Departures the AVL System records in that period, expressed as a percentage. A "
+                 "Departure the AVL System does not record is left out of both numbers.")
+
+
+def write_schedule7(path):
+    S = styles("Serif", CA_PURPLE)
+    doc = _doc(path, "Bus Franchise Agreement Lot 2, Schedule 7: Performance Regime", P.AUTHORITY, "Schedule 7")
+    fr = _frame(P.AUTHORITY + " - Bus Franchise Agreement, Lot 2 (Saltmeadow)", "Schedule 7, Performance Regime (v1.4)")
+    s = []
+    s.append(Paragraph("Schedule 7: Performance Regime", S["h1"]))
+    s.append(Paragraph("Bus Franchise Agreement, Lot 2 (Saltmeadow), between %s and %s Limited. Consolidated version "
+                       "1.4 incorporating Variation 3 (in force 31 August 2026). Extract: clauses 7.1 to 7.9."
+                       % (P.AUTHORITY, P.OPERATOR), S["meta"]))
+    s.append(Paragraph("7.1 Definitions", S["h2"]))
+    defs = [
+        ("AVL System", "the Authority's automatic vehicle location system, which records the time each Lot 2 vehicle "
+                       "leaves or reaches each Timing Point."),
+        ("Departure", "a scheduled departure of a journey on a Route from one of its Timing Points, other than the last "
+                      "Timing Point of the journey, which is an arrival."),
+        ("Disruption", "a closure, diversion or restriction of the highway, or other event outside the Operator's "
+                       "control, which the Authority expects to affect one or more Routes for 14 days or more."),
+        ("Excused Event", "an event listed in clause 7.5."),
+        ("Period", "each of the thirteen four-week periods of the Authority's financial year."),
+        ("Registered Timetable", "the timetable for a Route registered for the day concerned, as published in the "
+                                 "Authority's TransXChange data."),
+        ("Route", "each Lot 2 service identified by its service number."),
+        ("Timing Point", "a stop shown as a principal timing point in the Registered Timetable."),
     ]
+    for k, v in defs:
+        s.append(Paragraph("<b>%s</b> means %s" % (k, v), S["clause"]))
+    s.append(Paragraph("7.2 Punctuality", S["h2"]))
+    s.append(_clause(S, "7.2.1", SCHEDULE7_7_2))
+    s.append(_clause(S, "7.2.2", "Times are compared to the second, in local time. Punctuality is reported to one "
+                     "decimal place."))
+    s.append(Paragraph("7.3 Punctuality Floor and Deduction", S["h2"]))
+    s.append(_clause(S, "7.3.1", "The Punctuality Floor is 80 per cent for every Route."))
+    s.append(_clause(S, "7.3.2", "For each Period in which a Route's Punctuality is below the Punctuality Floor, the "
+                     "Authority deducts from the Service Payment GBP 4,250 for each whole percentage point, or part of "
+                     "one, by which it is below."))
+    s.append(Paragraph("7.4 Reliability", S["h2"]))
+    s.append(_clause(S, "7.4.1", "Scheduled Kilometres are the kilometres of the Route Links of every journey in the "
+                     "Registered Timetable. Lost Kilometres are the Scheduled Kilometres of the journeys, or of the "
+                     "parts of journeys, not operated; a journey that ends before its last stop, or starts after its "
+                     "first, loses the Route Links it does not run."))
+    s.append(_clause(S, "7.4.2", "Reliability for a Route over a period is its Scheduled Kilometres less its Lost "
+                     "Kilometres other than those lost to an Excused Event, divided by its Scheduled Kilometres, "
+                     "expressed as a percentage. Reliability is reported to two decimal places."))
+    s.append(Paragraph("7.5 Excused Events", S["h2"]))
+    s.append(_clause(S, "7.5.1", "The Excused Events are: (a) a road closed or obstructed by the police or the "
+                     "emergency services; (b) works or a closure by a highway authority or a statutory undertaker of "
+                     "which the Operator had less than seven days' notice; (c) severe weather, including flooding; "
+                     "(d) an obstruction caused by another vehicle's breakdown or collision; (e) a civil emergency."))
+    s.append(_clause(S, "7.5.2", "For the avoidance of doubt, a vehicle defect, a shortage or illness of staff, a "
+                     "ticket machine or AVL fault, traffic congestion, and a decision to turn a journey short to "
+                     "restore the timetable are not Excused Events."))
+    s.append(Paragraph("7.6 Disruption Notices", S["h2"]))
+    s.append(_clause(S, "7.6.1", "Where the Authority knows of a Disruption, it may issue a Disruption Notice to the "
+                     "Operator. The notice states the Disruption's first and last days and, for each Route, the "
+                     "Authority's forecast of that Route's Punctuality over the whole Disruption, every day of it, "
+                     "on the Registered Timetable for those days. It also states each Route's Reliability over the "
+                     "record the forecast rests on, against which Reliability during the Disruption is reported, and "
+                     "the boardings at any stops the Disruption leaves unserved, which the Operator's passenger "
+                     "information for the Disruption must cover."))
+    s.append(_clause(S, "7.6.2", "During the Disruption the Punctuality Deduction does not apply to a Route whose "
+                     "forecast in the notice is below the Punctuality Floor. Every other Route remains subject to "
+                     "clause 7.3."))
+    s.append(_clause(S, "7.6.3", "A Disruption Notice has effect only if the Authority issues it at least 21 days "
+                     "before the first day of the Disruption. A Route not named in a notice that has effect cannot be "
+                     "added to it once the Disruption has begun."))
+    s.append(_clause(S, "7.6.4", "Reliability continues to be measured on every Route during a Disruption."))
+    s.append(Paragraph("7.7 Reporting", S["h2"]))
+    s.append(_clause(S, "7.7.1", "The Authority publishes each Route's Punctuality for each calendar month, "
+                     "provisionally in the following month and finally once late AVL data has been loaded."))
+    s.append(Paragraph("7.8 Records", S["h2"]))
+    s.append(_clause(S, "7.8.1", "The Operator keeps, and on request supplies, its duty schedules, daily returns "
+                     "of uncovered work, ticket machine data and vehicle records for each Period."))
+    s.append(Paragraph("7.9 Review", S["h2"]))
+    s.append(_clause(S, "7.9.1", "The Authority and the Operator review this Schedule at each timetable change."))
+    doc.build(s, onFirstPage=fr, onLaterPages=fr)
 
 
-def write_record(path):
-    st = styles()
-    s = [Paragraph("Filing and sample selection record: initiative serial %s" % K.SERIAL, st["h1"]),
-         Paragraph("%s, %s. Record opened %s. Prepared by %s, State Elections Director."
-                   % (K.OFFICE, K.DIVISION, K.long_date(K.SAMPLE_DRAWN), K.PEOPLE["director"]), st["sub"])]
-    for head, paras in record_text():
-        s.append(Paragraph(esc(head), st["h2"]))
-        for pr in paras:
-            s.append(Paragraph(esc(pr), st["body"]))
-    s.append(Spacer(1, 6))
-    s.append(_table(st, ["Item", "Figure"], [
-        ["Petition sheets presented", "{:,}".format(K.SHEETS_PRESENTED)],
-        ["Petition sheets struck at receipt", "{:,}".format(K.SHEETS_STRUCK)],
-        ["Petition sheets receipted", "{:,}".format(K.SHEETS)],
-        ["Signature lines filed", "{:,}".format(K.LINES_FILED)],
-        ["Signature lines drawn into the sample", "{:,}".format(K.SAMPLE_LINES)],
-        ["Signatures required", "{:,}".format(K.REQUIRED)],
-        ["Ninety-five per cent of the number required", "{:,}".format(K.BAND_LO)],
-        ["One hundred and five per cent of the number required", "{:,}".format(K.BAND_HI)],
-    ], [3.5 * inch, 1.6 * inch], align_right=(1,)))
-    s.append(Paragraph("Filed under A.R.S. 19-121, 19-121.01 and 19-121.04. Record held by the Elections "
-                       "Division, Arizona Secretary of State, 1700 West Washington Street, Phoenix.",
-                       st["small"]))
-    d = _doc(path, "Filing and sample selection record: initiative serial %s" % K.SERIAL, K.OFFICE)
-    d.build(s, onFirstPage=_footer("%s %s" % (K.OFFICE, K.DIVISION)),
-            onLaterPages=_footer("%s %s" % (K.OFFICE, K.DIVISION)))
-    PP.normalize_pdf(path, b"D:20280711084200-07'00'", b"D:20280711163500-07'00'")
+# ---------------------------------------------------------------------------- the traffic management plan
+def write_tm_plan(path):
+    S = styles("Sans", COUNCIL_GREEN)
+    doc = _doc(path, "Thornsby Bridge closure: Traffic Management Plan", P.COUNCIL, "TMP-2026-117 v2")
+    fr = _frame(P.COUNCIL + " - Highways and Transportation", "Thornsby Bridge closure TMP, ref. TMP-2026-117, v2")
+    s = []
+    s.append(Paragraph("Thornsby Bridge (A6046) bearing replacement: full closure", S["h1"]))
+    s.append(Paragraph("Traffic Management Plan, reference TMP-2026-117, version 2, 27 November 2026. Prepared by "
+                       "%s, Bridges and Structures Manager. Supersedes version 1 (20 November 2026)." %
+                       P.PEOPLE["council"], S["meta"]))
+    s.append(Paragraph("1. The works", S["h2"]))
+    s.append(Paragraph(
+        "The principal inspection of Thornsby Bridge on 2 November 2026 found section loss to the bearings at the "
+        "south abutment. The bearings will be replaced with the deck jacked, which needs the bridge closed to all "
+        "vehicles. The closure runs from 06:00 on Monday 11 January 2027 to 23:59 on Sunday 28 March 2027. The east "
+        "footway stays open to pedestrians and cyclists except on four weekends, which will be notified separately.",
+        S["body"]))
+    s.append(Paragraph("2. Diversion for general traffic", S["h2"]))
+    s.append(Paragraph(
+        "Traffic is diverted in both directions via Tenter Street, the Ring Road crossing (Junction 4 to Junction 5) "
+        "and Ravensholme Road. Signal timings at Junction 4 and at the Saltmeadow Lane junction will be revised for "
+        "the duration.", S["body"]))
+    s.append(Paragraph("3. Bus services", S["h2"]))
+    s.append(Paragraph(
+        "Service 41 is the only bus service that crosses Thornsby Bridge. It is diverted in both directions between "
+        "Tenter Street and Ravensholme Road by the general traffic diversion. The stops at Thornsby Road, Bridge End "
+        "and Thornsby Quay are not served in either direction, and no temporary stops are provided on the diversion. "
+        "Agreed with the Combined Authority and Pellbridge Buses at the bus liaison meeting on 25 November 2026: "
+        "service 41 runs to its registered timetable on the diversion, and closure notices go up at the three stops "
+        "from 4 January 2027.", S["body"]))
+    s.append(Paragraph("The council's journey time model gives the following for buses on the diversion, per "
+                       "journey in each direction:", S["body"]))
+    s.append(_table(S, [["", "Weekday morning peak, 07:30 to 09:30", "Weekday evening peak, 16:00 to 18:30",
+                         "All other times"],
+                        ["Additional running time, Tenter Street to Ravensholme Road", "13 minutes", "13 minutes",
+                         "10 minutes"],
+                        ["Additional distance, northbound (towards Ravensholme)", "3.6 km", "3.6 km", "3.6 km"],
+                        ["Additional distance, southbound (towards the city)", "3.4 km", "3.4 km", "3.4 km"]],
+                    [6.2, 3.6, 3.6, 3.2]))
+    s.append(Spacer(1, 5))
+    s.append(Paragraph(
+        "Traffic on the Ring Road crossing between Junction 4 and the Junction 5 and Saltmeadow Lane slips is "
+        "expected to take about 2 minutes longer in the weekday peaks with the diverted traffic added. No change is "
+        "expected there at other times.", S["body"]))
+    s.append(Paragraph("4. Other measures", S["h2"]))
+    s.append(Paragraph(
+        "Parking suspensions on Ravensholme Road (east side) during the peaks; enforcement cameras at Junction 4; "
+        "advance signing from 14 December 2026; variable message signs on the A6046 and the Ring Road; a weekly "
+        "progress note to the Combined Authority and the emergency services.", S["body"]))
+    s.append(Paragraph("5. Monitoring", S["h2"]))
+    s.append(Paragraph(
+        "Journey time surveys on the diversion in weeks 1 and 2, with signal timings adjusted where queues exceed "
+        "the modelled lengths. The council will not change the diversion route without seven days' notice to the "
+        "Combined Authority.", S["body"]))
+    s.append(Paragraph("Contact: Bridges and Structures, Grainford City Council, Civic Centre, Grainford.", S["note"]))
+    doc.build(s, onFirstPage=fr, onLaterPages=fr)
 
 
-# ---------------------------------------------------------------------------------- the instruction
-def instruction_text():
-    return [
-        ("What is transmitted to you", [
-            "You will receive a copy of every sampled signature line assigned to your county, with the "
-            "registration number of the circulator who gathered the sheet, the number printed on that "
-            "sheet and the line number on it. Those three together identify the line, because a sheet "
-            "number is only that circulator's own series and every circulator's runs from one.",
-        ]),
-        ("Giving a line its disposition", [
-            "Verify each line against your county's registration records as they stood on the date written "
-            "on the line, which is the date the elector signed. Give every line exactly one disposition code "
-            "from the table below. Work down the table and record the first code that applies.",
-            "A signature shall not be counted more than once. Where an elector's signature appears on more "
-            "than one of the lines before you, count the earliest by the date signed and give each later "
-            "line code DU.",
-        ]),
-        ("Returning your determinations", [
-            "Return one row for each line transmitted to you, carrying the line's identification, the "
-            "disposition code, the registration identifier you matched the line to where you matched one, "
-            "and the date of your determination. You may return in more than one transmittal; mark each with "
-            "your return reference.",
-            "The Elections Division runs a consolidation check over the returned lines. Where that check "
-            "finds a line that should have carried code DU, or where a line is returned without a "
-            "disposition, the division records the determination and reports the line as determined by the "
-            "division rather than by the recorder.",
-            "The division may send you a query notice asking you to re-determine a named line. A "
-            "re-determination replaces the disposition you first returned for that line and nothing else.",
-        ]),
-    ]
-
-
-def write_instruction(path):
-    st = styles()
-    s = [Paragraph("Signature verification instruction for county recorders", st["h1"]),
-         Paragraph("%s, %s. Issued %s. Applies to every statewide initiative, referendum and recall "
-                   "petition sample transmitted on or after 1 January 2028. Supersedes the instruction of "
-                   "9 March 2024." % (K.OFFICE, K.DIVISION, K.long_date(K.INSTRUCTION_DATE)), st["sub"])]
-    for head, paras in instruction_text():
-        s.append(Paragraph(esc(head), st["h2"]))
-        for pr in paras:
-            s.append(Paragraph(esc(pr), st["body"]))
-    s.append(Spacer(1, 4))
-    s.append(_table(st, ["Code", "Disposition"], [[c, K.CODE_TEXT[c]] for c in K.CODE_KEYS],
-                    [0.7 * inch, 4.4 * inch]))
-    s.append(Paragraph("Issued by %s, State Elections Director. Questions to the Elections Division, "
-                       "Arizona Secretary of State." % K.PEOPLE["director"], st["small"]))
-    d = _doc(path, "Signature verification instruction for county recorders", K.OFFICE)
-    d.build(s, onFirstPage=_footer("%s %s" % (K.OFFICE, K.DIVISION)),
-            onLaterPages=_footer("%s %s" % (K.OFFICE, K.DIVISION)))
-    PP.normalize_pdf(path, b"D:20271114103100-07'00'", b"D:20271118161500-07'00'")
-
-
-# ---------------------------------------------------------------------------------- Navajo's own code list
-def oldcodes_text():
-    out = [
-        "NAVAJO COUNTY RECORDER",
-        "Petition signature verification: disposition codes",
-        "Issued %s by %s, Navajo County Recorder. Holbrook, Arizona." % (K.us_date(K.OLD_CODES_DATE),
-                                                                         K.PEOPLE["recorder"]),
-        "",
-        "Enter one code per line in the DISPOSITION column of the return sheet.",
-        "",
-    ]
-    for code, text in K.OLD_CODES:
-        out.append("  %s   %s" % (code, text))
-    out += [
-        "",
-        "Where a line is entered under code 02, record in the REGISTRATION column the registration",
-        "identifier the line was matched to if one was matched, and leave that column empty if none",
-        "was.",
-        "",
-        "This list is the recorder's own. It has not been reissued since %d." % K.OLD_CODES_DATE.year,
-    ]
-    return out
-
-
-def write_oldcodes(path):
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write("\n".join(oldcodes_text()) + "\n")
-
-
-# ---------------------------------------------------------------------------------- the 2024 close-out
-def closeout_county_rows(w):
-    """The examination's own administration, county by county: the lines each team took, the examiner days
-    it spent on them and the day it closed. The close-out is the record of the examination, not a table of
-    validity rates."""
-    r = K.rng("closeout", seed=w.seed)
-    shares = [s for _, _, s in K.COUNTIES]
-    tot = sum(shares)
-    out, left = [], K.PRIOR_LINES
-    rate = K.PRIOR_LINES / float(K.PRIOR_DAYS * K.PRIOR_STAFF)
-    for i, (cc, name, share) in enumerate(K.COUNTIES):
-        if i == len(K.COUNTIES) - 1:
-            ex = left
-        else:
-            ex = int(round(K.PRIOR_LINES * share / tot * (1 + 0.06 * (r.random() - 0.5))))
-            ex = min(ex, left - (len(K.COUNTIES) - i - 1) * 60)
-        left -= ex
-        edays = K.round_half_up(ex / rate * (1 + 0.09 * (r.random() - 0.5)), 1)
-        closed = K.PRIOR_CLOSEOUT - dt.timedelta(days=int(r.integers(0, 17)))
-        out.append([cc, name, ex, edays, K.iso(closed)])
-    return out
-
-
-def write_closeout(path, w):
-    import openpyxl
-    from openpyxl.styles import Alignment, Font
-    from openpyxl.utils import get_column_letter
-    rows = closeout_county_rows(w)
-    r2 = K.rng("closeout_total", seed=w.seed)
-    notc = int(round(K.PRIOR_LINES * (0.274 + 0.004 * (r2.random() - 0.5))))
-    counted = K.PRIOR_LINES - notc
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Full count"
-    head = [
-        ("Measure serial", K.PRIOR_MEASURE),
-        ("Measure", "Arizona Rural Broadband Access Act"),
-        ("Petition filed", K.iso(dt.date(2024, 7, 3))),
-        ("Signature lines filed", K.PRIOR_LINES),
-        ("Full count ordered", K.iso(K.PRIOR_ORDERED)),
-        ("Order", "Maricopa County Superior Court, cause CV2024-009718"),
-        ("Examination", "Every signature line filed was examined; no sample was drawn"),
-        ("Examination opened", K.iso(K.PRIOR_OPENED)),
-        ("Examination closed", K.iso(K.PRIOR_CLOSEOUT)),
-        ("Examination business days", K.PRIOR_DAYS),
-        ("Examiners assigned", K.PRIOR_STAFF),
-        ("Signature lines examined", K.PRIOR_LINES),
-        ("Signature lines counted", counted),
-        ("Signature lines not counted", notc),
-        ("Signatures required", K.PRIOR_REQUIRED),
-        ("Determination", "Insufficient"),
-        ("Certified", K.iso(K.PRIOR_CERTIFIED)),
-        ("Close-out prepared by", K.PEOPLE["analyst"]),
-    ]
-    for k, v in head:
-        ws.append([k, v])
-    ws.append([])
-    ws.append(["County", "County name", "Lines examined", "Examiner days", "Examination closed"])
-    for r in rows:
-        ws.append(r)
-    for i, wd in enumerate([30, 24, 16, 15, 20], start=1):
-        ws.column_dimensions[get_column_letter(i)].width = wd
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for c in ws[len(head) + 2]:
-        c.font = Font(bold=True)
-        c.alignment = Alignment(vertical="top", wrap_text=True)
-    wb.save(path)
-    PP.normalize_ooxml(path, K.PEOPLE["analyst"], K.PEOPLE["analyst"], "2024-08-29T15:41:00Z",
-                       "2024-08-29T16:12:00Z", title="%s full count close-out" % K.PRIOR_MEASURE,
-                       excel=True, company=K.OFFICE)
-    return dict(counted=counted, not_counted=notc, rows=rows)
-
-
-def write_all(out, w, n):
-    write_record(os.path.join(out, F_RECORD))
-    write_instruction(os.path.join(out, F_INSTRUCTION))
-    write_oldcodes(os.path.join(out, F_OLDCODES))
-    return write_closeout(os.path.join(out, R.F_CLOSEOUT), w)
+# ---------------------------------------------------------------------------- the 2025 close-out
+def write_closeout(path, rows):
+    """rows: (band, plan minutes, realised minutes) for route 14 outbound, and the punctuality figures."""
+    S = styles("Serif", CA_PURPLE)
+    doc = _doc(path, "Marsh Lane outbound closure 2025: close-out note", P.AUTHORITY, "Network performance note 25/07")
+    fr = _frame(P.AUTHORITY + " - Bus Network Performance", "Close-out note NP 25/07, 30 May 2025")
+    s = []
+    s.append(Paragraph("Marsh Lane outbound closure, 3 March to 13 April 2025: close-out note", S["h1"]))
+    s.append(Paragraph("Network performance note NP 25/07, 30 May 2025. Author: %s, Head of Bus Network Performance."
+                       % P.PEOPLE["authority"], S["meta"]))
+    s.append(Paragraph("1. The closure", S["h2"]))
+    s.append(Paragraph(
+        "Northern Gas Networks closed Marsh Lane to traffic leaving the city between Mill Bank and the Oxenstall "
+        "turn for a mains replacement. Traffic towards the city was not affected. Route 14's outbound journeys used "
+        "the signed diversion via Dyke Road; its inbound journeys ran normally.", S["body"]))
+    s.append(Paragraph("2. Running time", S["h2"]))
+    s.append(Paragraph("The council's traffic management plan estimated the added outbound running time. The AVL "
+                       "record for the closure gives the following against the four weeks before it:", S["body"]))
+    s.append(_table(S, [["Route 14 outbound, Mill Bank to Oxenstall", "Plan estimate", "AVL, mean added time"]] +
+                    [[r[0], r[1], r[2]] for r in rows["running"]], [7.6, 3.6, 4.4], right=(1, 2)))
+    s.append(Spacer(1, 5))
+    s.append(Paragraph("3. Disruption Notice", S["h2"]))
+    s.append(Paragraph(
+        "The Authority issued a Disruption Notice on 7 February 2025 under clause 7.6 of Schedule 7. Route 14's "
+        "forecast punctuality for the closure was %s per cent, below the floor, and the punctuality deduction was "
+        "not applied to it for the closure. Route 14's recorded punctuality over the closure was %s per cent." %
+        (rows["forecast"], rows["realised"]), S["body"]))
+    s.append(Paragraph("4. Points for future closures", S["h2"]))
+    s.append(Paragraph(
+        "The plan's running time estimates were within half a minute of the AVL record in both bands. Notices should "
+        "continue to be issued as early as the council's programme allows; this one was issued 24 days before the "
+        "closure. The council's journey time model will be used again for the Thornsby Bridge inspection programme.",
+        S["body"]))
+    doc.build(s, onFirstPage=fr, onLaterPages=fr)
