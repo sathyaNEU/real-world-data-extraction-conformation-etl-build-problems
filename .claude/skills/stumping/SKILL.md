@@ -91,7 +91,10 @@ spread of the **enumerated** family (every construction a competent analyst woul
 the **standing** family (the subset the data and the filed rules leave defensible) and the loudness of
 whatever does the ruling-out. A standing spread of zero on the graded figure means the step is a reflex,
 whatever the documents say, and the build is drawn elsewhere; eleven builds answered the first question
-truthfully, measured a standing spread of zero and were landed (`evidence.md` 1.1).
+truthfully, measured a standing spread of zero and were landed (`evidence.md` 1.1). A filed estimand that names
+the members one source misses (every death, registered or not), shipped beside a second source that lists them,
+leaves nothing to decide: linking that source executes the rule, and the judge reads it so (task445 v2, Gate H3).
+The deciding quantity is one no shipped source lists, an estimate the filed WHAT leaves to the analyst.
 
 **Convergence and reach are one dial wherever the easy route is itself a member of the licensed family.**
 Where the decisive step is a choice among estimators, making the family agree (Gate C) makes the easy route
