@@ -360,6 +360,7 @@ leak.py --asof 2026-10-23 on the final cut: verdict REVIEW, no LEAK; each REVIEW
 - TAR_24-30-104_PORTABLE_BENEFITS_PILOT_AREAS.docx, 7.0: the rule's threshold, the filed WHAT; harmless.
 - Design-note vocabulary in the technical note (adults, survey, person) and the rule (survey, report, person): the
   survey's and the rule's ordinary nouns; neither document names a comparison, a panel pair or a correction.
+- guard.py surface (2026-11-01) promoted three pairs for the author's adjudication: task454 (surface similarity only; ETL, a Medicaid pharmacy cost survey), task192 v3 (the same-driver signature, cleared at the draw by the card's differentiation line: a validation batch's carried rates against an error rate read within person), task261 (the same domain and objective pairing two numbers apart; its call is a variance-of-difference segmentation, no measurement correction).
 - Guard WARN repeat.question_form (whether, against task255 v3): the call is a gate per area ("does each area
   qualify"), and the alternative (which) runs over the corpus quota at 36 percent; whether kept.
 
